@@ -198,7 +198,16 @@ def _complete_assets(path: Path) -> None:
         assert isinstance(image_value, dict)
         relative = image_value["path"]
         assert isinstance(relative, str)
-        payload = _synthetic_webp(index)
+        if relative == theme.FIRST_ARTICLE_IMAGE_RELATIVE_PATH:
+            reviewed = (
+                REPOSITORY_ROOT
+                / "changes/st-1703/self-hosted-minimum-start-v1/theme"
+                / theme.THEME_SLUG
+                / relative
+            )
+            payload = reviewed.read_bytes()
+        else:
+            payload = _synthetic_webp(index)
         image_path = path / relative
         image_path.parent.mkdir(parents=True, exist_ok=True)
         image_path.write_bytes(payload)
@@ -359,6 +368,31 @@ def test_article_asset_manifest_rejects_missing_or_duplicated_record(
         theme.source_check()
 
 
+def test_article_asset_rejects_hash_bound_non_reviewed_dimensions(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    article_path = root / theme.FIRST_ARTICLE_IMAGE_RELATIVE_PATH
+    article_path.write_bytes(VALID_WEBP_VP8)
+    manifest = _manifest(root)
+    images = manifest["required_images"]
+    assert isinstance(images, list)
+    article = next(
+        item
+        for item in images
+        if isinstance(item, dict)
+        and item.get("path") == theme.FIRST_ARTICLE_IMAGE_RELATIVE_PATH
+    )
+    article["sha256"] = hashlib.sha256(VALID_WEBP_VP8).hexdigest()
+    _write_manifest(root, manifest)
+
+    assert theme._static_webp_canvas_dimensions(VALID_WEBP_VP8) == (1, 1)
+    with pytest.raises(
+        theme.ThemeBuildFailure, match="THEME_ARTICLE_ASSET_BINDING_INVALID"
+    ):
+        theme.source_check()
+
+
 def test_first_article_shortcode_renderer_is_same_origin_article_and_path_bound() -> (
     None
 ):
@@ -390,6 +424,19 @@ def test_first_article_shortcode_renderer_is_same_origin_article_and_path_bound(
     assert "(?:[A-Za-z0-9][A-Za-z0-9._-]*/)*kurashinoshirube-child" in functions
     assert "/assets/images/article-suitcase-guide.webp" in functions
     assert theme.FIRST_ARTICLE_IMAGE_ALT in functions
+    assert theme.FIRST_ARTICLE_LEAD_IMAGE_CLASS == "raos-first-article-lead-image"
+    assert functions.count(theme.FIRST_ARTICLE_LEAD_IMAGE_CLASS) == 1
+    assert (
+        f'class="wp-block-image size-full {theme.FIRST_ARTICLE_LEAD_IMAGE_CLASS}"'
+        in functions
+    )
+    assert theme.FIRST_ARTICLE_IMAGE_WIDTH == 1600
+    assert theme.FIRST_ARTICLE_IMAGE_HEIGHT == 900
+    assert 'width="1600" height="900"' in functions
+    article_image = (
+        theme.THEME_ROOT / theme.FIRST_ARTICLE_IMAGE_RELATIVE_PATH
+    ).read_bytes()
+    assert theme._static_webp_canvas_dimensions(article_image) == (1600, 900)
     assert functions.count("<img src=") == 1
     assert "esc_url($image_uri)" in functions
     assert "esc_attr($alt)" in functions
@@ -456,6 +503,7 @@ def test_theme_replacement_version_is_exact_and_source_checked(
     root = _isolated_theme(monkeypatch, tmp_path)
     stylesheet = root / "style.css"
     source = stylesheet.read_text(encoding="utf-8")
+    assert theme.EXPECTED_THEME_VERSION == "1.0.2"
     assert source.count(f"\nVersion: {theme.EXPECTED_THEME_VERSION}\n") == 1
 
     stylesheet.write_text(
@@ -466,6 +514,272 @@ def test_theme_replacement_version_is_exact_and_source_checked(
         ),
         encoding="utf-8",
     )
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PARENT_INVALID"):
+        theme.source_check()
+
+
+def test_first_article_lead_image_responsive_contract_is_exact_and_scoped() -> None:
+    stylesheet = (theme.THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    assert hashlib.sha256(stylesheet.encode("utf-8")).hexdigest() == (
+        theme.EXPECTED_THEME_CSS_SHA256
+    )
+    assert theme.FIRST_ARTICLE_RESPONSIVE_FIGURE_RULE == (
+        "figure.raos-first-article-lead-image {\n"
+        "  margin-inline: 0;\n"
+        "  max-width: 100%;\n"
+        "}"
+    )
+    assert theme.FIRST_ARTICLE_RESPONSIVE_IMAGE_RULE == (
+        "figure.raos-first-article-lead-image > img {\n"
+        "  display: block;\n"
+        "  height: auto;\n"
+        "  max-width: 100%;\n"
+        "  width: 100%;\n"
+        "}"
+    )
+    assert stylesheet.count(theme.FIRST_ARTICLE_RESPONSIVE_FIGURE_RULE) == 1
+    assert stylesheet.count(theme.FIRST_ARTICLE_RESPONSIVE_IMAGE_RULE) == 1
+    assert stylesheet.count(".raos-first-article-lead-image") == 2
+    assert stylesheet.count(".raos-comparison {\n  overflow-x: auto;\n}") == 1
+    assert "figure.wp-block-image" not in stylesheet
+    assert ".wp-block-image img" not in stylesheet
+
+
+@pytest.mark.parametrize(
+    ("before", "after"),
+    [
+        (
+            "figure.raos-first-article-lead-image {",
+            "figure.wp-block-image {",
+        ),
+        ("  margin-inline: 0;", "  margin-inline: auto;"),
+        (
+            "figure.raos-first-article-lead-image > img {",
+            "figure.raos-first-article-lead-image img {",
+        ),
+        ("  display: block;", "  display: inline;"),
+        ("  height: auto;", "  height: 900px;"),
+        ("  max-width: 100%;", "  max-width: none;"),
+        (
+            theme.FIRST_ARTICLE_RESPONSIVE_IMAGE_RULE,
+            theme.FIRST_ARTICLE_RESPONSIVE_IMAGE_RULE.replace(
+                "  max-width: 100%;", "  max-width: none;", 1
+            ),
+        ),
+        (
+            theme.FIRST_ARTICLE_RESPONSIVE_SEQUENCE,
+            "@media (max-width: 0px) {\n"
+            f"{theme.FIRST_ARTICLE_RESPONSIVE_SEQUENCE}\n"
+            "}",
+        ),
+        ("  width: 100%;", "  width: 1600px;"),
+        ("  overflow-x: auto;", "  overflow-x: visible;"),
+    ],
+    ids=(
+        "generic-figure-selector",
+        "figure-margin",
+        "descendant-selector",
+        "display",
+        "height",
+        "figure-max-width",
+        "image-max-width",
+        "inactive-media-context",
+        "width",
+        "comparison-overflow",
+    ),
+)
+def test_source_check_rejects_responsive_scope_or_declaration_mutation(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    before: str,
+    after: str,
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    stylesheet = root / "assets/theme.css"
+    source = stylesheet.read_text(encoding="utf-8")
+    assert source.count(before) >= 1
+    mutated = source.replace(before, after, 1)
+    stylesheet.write_text(mutated, encoding="utf-8")
+    monkeypatch.setattr(
+        theme,
+        "EXPECTED_THEME_CSS_SHA256",
+        hashlib.sha256(mutated.encode("utf-8")).hexdigest(),
+    )
+
+    with pytest.raises(
+        theme.ThemeBuildFailure, match="THEME_ARTICLE_ASSET_BINDING_INVALID"
+    ):
+        theme.source_check()
+
+
+@pytest.mark.parametrize(
+    "extra_rule",
+    [
+        "\n.wp-block-image img {\n  width: 1600px;\n}\n",
+        "\n.raos-comparison {\n  overflow-x: visible;\n}\n",
+        "\n.raos-comparison {\n  overflow: visible;\n}\n",
+    ],
+    ids=(
+        "broad-image-override",
+        "comparison-overflow-x-override",
+        "comparison-overflow-shorthand-override",
+    ),
+)
+def test_source_check_rejects_additive_responsive_scope_override(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    extra_rule: str,
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    stylesheet = root / "assets/theme.css"
+    mutated = stylesheet.read_text(encoding="utf-8") + extra_rule
+    stylesheet.write_text(mutated, encoding="utf-8")
+    monkeypatch.setattr(
+        theme,
+        "EXPECTED_THEME_CSS_SHA256",
+        hashlib.sha256(mutated.encode("utf-8")).hexdigest(),
+    )
+
+    with pytest.raises(
+        theme.ThemeBuildFailure, match="THEME_ARTICLE_ASSET_BINDING_INVALID"
+    ):
+        theme.source_check()
+
+
+@pytest.mark.parametrize(
+    ("before", "after"),
+    [
+        (
+            'class="wp-block-image size-full raos-first-article-lead-image"',
+            'class="wp-block-image size-full"',
+        ),
+        (
+            'class="wp-block-image size-full raos-first-article-lead-image"',
+            'class="wp-block-image size-full raos-first-article-lead-image '
+            'raos-first-article-lead-image"',
+        ),
+        ('width="1600" height="900"', 'width="1600"'),
+        (
+            'width="1600" height="900"',
+            'width="1600" height="900" width="1600" height="900"',
+        ),
+    ],
+    ids=(
+        "missing-unique-class",
+        "duplicate-unique-class",
+        "missing-height",
+        "duplicate-dimensions",
+    ),
+)
+def test_source_check_rejects_lead_image_output_contract_mutation(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    before: str,
+    after: str,
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    functions_path = root / "functions.php"
+    source = functions_path.read_text(encoding="utf-8")
+    assert source.count(before) == 1
+    mutated = source.replace(before, after, 1)
+    functions_path.write_text(mutated, encoding="utf-8")
+    monkeypatch.setattr(
+        theme,
+        "EXPECTED_THEME_FUNCTIONS_SHA256",
+        hashlib.sha256(mutated.encode("utf-8")).hexdigest(),
+    )
+
+    with pytest.raises(
+        theme.ThemeBuildFailure, match="THEME_ARTICLE_ASSET_BINDING_INVALID"
+    ):
+        theme.source_check()
+
+
+def test_source_check_binds_lead_image_literals_to_returned_markup(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    functions_path = root / "functions.php"
+    source = functions_path.read_text(encoding="utf-8")
+    assert source.count(theme._FIRST_ARTICLE_RETURN_FRAGMENT) == 1
+    parked_fragment = (
+        "    $unused_figure = '<figure class=\"wp-block-image size-full "
+        "raos-first-article-lead-image\">';\n"
+        '    $unused_dimensions = \'width="1600" height="900"\';\n'
+        "    return '<figure class=\"wp-block-image size-full\">'\n"
+        "        . '<img src=\"' . esc_url($image_uri) . '\" alt=\"' "
+        ". esc_attr($alt) . '\">'\n"
+        "        . '</figure>';"
+    )
+    mutated = source.replace(
+        theme._FIRST_ARTICLE_RETURN_FRAGMENT,
+        parked_fragment,
+        1,
+    )
+    functions_path.write_text(mutated, encoding="utf-8")
+    monkeypatch.setattr(
+        theme,
+        "EXPECTED_THEME_FUNCTIONS_SHA256",
+        hashlib.sha256(mutated.encode("utf-8")).hexdigest(),
+    )
+
+    with pytest.raises(
+        theme.ThemeBuildFailure, match="THEME_ARTICLE_ASSET_BINDING_INVALID"
+    ):
+        theme.source_check()
+
+
+def test_source_check_rejects_return_fragment_parked_in_comment(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    functions_path = root / "functions.php"
+    source = functions_path.read_text(encoding="utf-8")
+    generic_return = (
+        "    return '<figure class=\"wp-block-image size-full\">'\n"
+        "        . '<img src=\"' . esc_url($image_uri) . '\" alt=\"' "
+        ". esc_attr($alt) . '\">'\n"
+        "        . '</figure>';"
+    )
+    mutated = source.replace(
+        theme._FIRST_ARTICLE_RETURN_FRAGMENT,
+        generic_return,
+        1,
+    )
+    mutated += f"\n/*\n{theme._FIRST_ARTICLE_RETURN_FRAGMENT}\n*/\n"
+    functions_path.write_text(mutated, encoding="utf-8")
+    monkeypatch.setattr(
+        theme,
+        "EXPECTED_THEME_FUNCTIONS_SHA256",
+        hashlib.sha256(mutated.encode("utf-8")).hexdigest(),
+    )
+
+    with pytest.raises(
+        theme.ThemeBuildFailure, match="THEME_ARTICLE_ASSET_BINDING_INVALID"
+    ):
+        theme.source_check()
+
+
+def test_source_check_binds_asset_enqueues_to_current_theme_version(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    functions_path = root / "functions.php"
+    source = functions_path.read_text(encoding="utf-8")
+    assert source.count(theme._THEME_ASSET_ENQUEUE_BLOCK) == 1
+    assert source.count("$theme->get('Version')") == 2
+    stale_block = theme._THEME_ASSET_ENQUEUE_BLOCK.replace(
+        "$theme->get('Version')", "'1.0.1'"
+    )
+    mutated = source.replace(theme._THEME_ASSET_ENQUEUE_BLOCK, stale_block, 1)
+    mutated += f"\n/*\n{theme._THEME_ASSET_ENQUEUE_BLOCK}\n*/\n"
+    functions_path.write_text(mutated, encoding="utf-8")
+    monkeypatch.setattr(
+        theme,
+        "EXPECTED_THEME_FUNCTIONS_SHA256",
+        hashlib.sha256(mutated.encode("utf-8")).hexdigest(),
+    )
+
     with pytest.raises(theme.ThemeBuildFailure, match="THEME_PARENT_INVALID"):
         theme.source_check()
 
@@ -727,11 +1041,23 @@ def test_complete_fixture_packages_deterministically_and_checks_read_only(
         embedded = json.loads(
             archive.read("kurashinoshirube-child/raos-assets.v1.json")
         )
+        packaged_style = archive.read("kurashinoshirube-child/style.css")
+        packaged_css = archive.read("kurashinoshirube-child/assets/theme.css").decode(
+            "utf-8"
+        )
+        packaged_functions = archive.read(
+            "kurashinoshirube-child/functions.php"
+        ).decode("utf-8")
         assert embedded["generated_by"] == "scripts/build_st1703_self_hosted_theme.py"
         assert embedded["package_command"] == (
             "make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile "
             "theme-package"
         )
+        assert packaged_style.count(b"\nVersion: 1.0.2\n") == 1
+        assert packaged_css.count(theme.FIRST_ARTICLE_RESPONSIVE_FIGURE_RULE) == 1
+        assert packaged_css.count(theme.FIRST_ARTICLE_RESPONSIVE_IMAGE_RULE) == 1
+        assert packaged_functions.count(theme.FIRST_ARTICLE_LEAD_IMAGE_CLASS) == 1
+        assert packaged_functions.count('width="1600" height="900"') == 1
 
 
 def test_owner_private_package_path_is_fixed_and_gitignored() -> None:

@@ -66,8 +66,9 @@ function kurashinoshirube_render_first_article_lead_image(
 
     $image_uri = $stylesheet_uri . '/assets/images/article-suitcase-guide.webp';
     $alt = '機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景';
-    return '<figure class="wp-block-image size-full">'
-        . '<img src="' . esc_url($image_uri) . '" alt="' . esc_attr($alt) . '">'
+    return '<figure class="wp-block-image size-full raos-first-article-lead-image">'
+        . '<img src="' . esc_url($image_uri) . '" alt="' . esc_attr($alt)
+        . '" width="1600" height="900">'
         . '</figure>';
 }
 

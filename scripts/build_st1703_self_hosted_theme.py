@@ -42,21 +42,42 @@ MAX_PACKAGE_BYTES = 16 * 1024 * 1024
 PRIVATE_OUTPUT_DIRECTORY_MODE = 0o700
 PRIVATE_OUTPUT_FILE_MODE = 0o600
 EXPECTED_THEME_CSS_SHA256 = (
-    "0703a9154a12a2d4224d961ac5996b5e25c483c81f21f9a8500cd899ed913adf"
+    "89accbdfabc159c566d78e83abea8d8a4cbe1478421fff1c0da6aeb768898973"
 )
 EXPECTED_THEME_FUNCTIONS_SHA256 = (
-    "afde3f88a96744660ee22e0eb517938e0ceb47c9f8277feaf497321fd776bc2f"
+    "1b42f0cde0a82496671d2b659483ecf3e66c6ba6d161143375f47eb2786c8e88"
 )
-EXPECTED_THEME_VERSION = "1.0.1"
+EXPECTED_THEME_VERSION = "1.0.2"
 FIRST_ARTICLE_IMAGE_RELATIVE_PATH = "assets/images/article-suitcase-guide.webp"
 FIRST_ARTICLE_IMAGE_ALT = "機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景"
 FIRST_ARTICLE_IMAGE_USAGE = "first article inline lead image"
 FIRST_ARTICLE_SHORTCODE_TAG = "kurashinoshirube_first_article_lead_image"
+FIRST_ARTICLE_LEAD_IMAGE_CLASS = "raos-first-article-lead-image"
+FIRST_ARTICLE_IMAGE_WIDTH = 1600
+FIRST_ARTICLE_IMAGE_HEIGHT = 900
 FIRST_ARTICLE_SLUG = "carry-on-suitcase-comparison"
 FIRST_ARTICLE_TARGET_ORIGIN = "https://kurashinoshirube.com"
 FIRST_ARTICLE_TARGET_HOST = FIRST_ARTICLE_TARGET_ORIGIN.removeprefix("https://")
 FIRST_ARTICLE_THEME_SLUG = "kurashinoshirube-child"
 FIRST_ARTICLE_EMPTY_CONTENT_GUARD = "! in_array($content, array(null, ''), true)"
+FIRST_ARTICLE_RESPONSIVE_FIGURE_RULE = f"""figure.{FIRST_ARTICLE_LEAD_IMAGE_CLASS} {{
+  margin-inline: 0;
+  max-width: 100%;
+}}"""
+FIRST_ARTICLE_RESPONSIVE_IMAGE_RULE = f"""figure.{FIRST_ARTICLE_LEAD_IMAGE_CLASS} > img {{
+  display: block;
+  height: auto;
+  max-width: 100%;
+  width: 100%;
+}}"""
+_COMPARISON_OVERFLOW_RULE = """.raos-comparison {
+  overflow-x: auto;
+}"""
+FIRST_ARTICLE_RESPONSIVE_SEQUENCE = (
+    f"{FIRST_ARTICLE_RESPONSIVE_FIGURE_RULE}\n\n"
+    f"{FIRST_ARTICLE_RESPONSIVE_IMAGE_RULE}\n\n"
+    f"{_COMPARISON_OVERFLOW_RULE}"
+)
 FIRST_ARTICLE_TITLE = (
     "機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ"
 )
@@ -109,6 +130,18 @@ _CSS_OUTLINE_DECLARATION = re.compile(
     r"[ \t\r\n]*:[ \t\r\n]*(?P<value>[^;{}]+?)[ \t\r\n]*(?=[;}])",
     re.ASCII | re.IGNORECASE,
 )
+_CSS_FLAT_RULE = re.compile(
+    r"(?P<selector>[^{}]+)\{(?P<body>[^{}]*)\}",
+    re.ASCII,
+)
+_CSS_FIGURE_OR_IMAGE_SELECTOR = re.compile(
+    r"(?<![-A-Za-z0-9_])(?:figure|img)(?![-A-Za-z0-9_])",
+    re.ASCII | re.IGNORECASE,
+)
+_CSS_OVERFLOW_PROPERTY_TOKEN = re.compile(
+    r"(?<![-A-Za-z0-9_])overflow(?:-[xy])?[ \t\r\n]*:",
+    re.ASCII | re.IGNORECASE,
+)
 _REMOTE_REFERENCE = re.compile(r"(?:https?:)?//", re.ASCII | re.IGNORECASE)
 _TEMPLATE_PART_BLOCK = re.compile(
     r"<!--\s*wp:template-part\s+(\{[^\r\n]*\})\s*/-->", re.ASCII
@@ -137,6 +170,33 @@ _PACKAGE_COMMAND = (
 _CHECK_COMMAND = (
     "make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-check"
 )
+_THEME_ASSET_ENQUEUE_BLOCK = """add_action('wp_enqueue_scripts', static function (): void {
+    $theme = wp_get_theme();
+    wp_enqueue_style(
+        'kurashinoshirube-editorial',
+        get_stylesheet_directory_uri() . '/assets/theme.css',
+        array(),
+        $theme->get('Version')
+    );
+    wp_enqueue_script(
+        'kurashinoshirube-editorial',
+        get_stylesheet_directory_uri() . '/assets/theme.js',
+        array(),
+        $theme->get('Version'),
+        array('in_footer' => true, 'strategy' => 'defer')
+    );
+});"""
+_FUNCTIONS_ACTIVE_PREFIX = f"""<?php
+/** Local-only presentation wiring. No remote requests or write capability. */
+
+{_THEME_ASSET_ENQUEUE_BLOCK}
+
+"""
+_FIRST_ARTICLE_RETURN_FRAGMENT = f"""    return '<figure class="wp-block-image size-full {FIRST_ARTICLE_LEAD_IMAGE_CLASS}">'
+        . '<img src="' . esc_url($image_uri) . '" alt="' . esc_attr($alt)
+        . '" width="{FIRST_ARTICLE_IMAGE_WIDTH}" height="{FIRST_ARTICLE_IMAGE_HEIGHT}">'
+        . '</figure>';"""
+_FIRST_ARTICLE_HANDLER_END = "\n}\n\nadd_shortcode("
 
 
 class ThemeBuildFailure(RuntimeError):
@@ -163,6 +223,63 @@ def _validate_shortcode_content_gate(text: str) -> None:
         or _shortcode_content_gate_allows("enclosed content")
         or _shortcode_content_gate_allows(False)
         or _shortcode_content_gate_allows(0)
+    ):
+        _fail("THEME_ARTICLE_ASSET_BINDING_INVALID")
+
+
+def _validate_first_article_responsive_css(text: str) -> None:
+    sequence_start = text.find(FIRST_ARTICLE_RESPONSIVE_SEQUENCE)
+    related_rules = tuple(
+        (match.group("selector").strip(), match.group("body"))
+        for match in _CSS_FLAT_RULE.finditer(text)
+        if (
+            FIRST_ARTICLE_LEAD_IMAGE_CLASS in match.group("selector")
+            or ".wp-block-image" in match.group("selector")
+            or _CSS_FIGURE_OR_IMAGE_SELECTOR.search(match.group("selector")) is not None
+        )
+    )
+    expected_rules = (
+        (
+            f"figure.{FIRST_ARTICLE_LEAD_IMAGE_CLASS}",
+            "\n  margin-inline: 0;\n  max-width: 100%;\n",
+        ),
+        (
+            f"figure.{FIRST_ARTICLE_LEAD_IMAGE_CLASS} > img",
+            "\n  display: block;\n  height: auto;\n"
+            "  max-width: 100%;\n  width: 100%;\n",
+        ),
+    )
+    if (
+        text.count(FIRST_ARTICLE_RESPONSIVE_FIGURE_RULE) != 1
+        or text.count(FIRST_ARTICLE_RESPONSIVE_IMAGE_RULE) != 1
+        or text.count(f".{FIRST_ARTICLE_LEAD_IMAGE_CLASS}") != 2
+        or text.count(_COMPARISON_OVERFLOW_RULE) != 1
+        or text.count(FIRST_ARTICLE_RESPONSIVE_SEQUENCE) != 1
+        or sequence_start < 0
+        or text[:sequence_start].count("{") != text[:sequence_start].count("}")
+        or related_rules != expected_rules
+        or len(_CSS_OVERFLOW_PROPERTY_TOKEN.findall(text)) != 1
+    ):
+        _fail("THEME_ARTICLE_ASSET_BINDING_INVALID")
+
+
+def _validate_theme_asset_version_binding(text: str) -> None:
+    if (
+        not text.startswith(_FUNCTIONS_ACTIVE_PREFIX)
+        or text.count(_THEME_ASSET_ENQUEUE_BLOCK) != 1
+        or text.count("$theme->get('Version')") != 2
+    ):
+        _fail("THEME_PARENT_INVALID")
+
+
+def _validate_first_article_return_binding(text: str) -> None:
+    fragment_start = text.find(_FIRST_ARTICLE_RETURN_FRAGMENT)
+    handler_end = text.find(_FIRST_ARTICLE_HANDLER_END)
+    if (
+        text.count(_FIRST_ARTICLE_RETURN_FRAGMENT) != 1
+        or text.count(_FIRST_ARTICLE_HANDLER_END) != 1
+        or fragment_start < 0
+        or handler_end != fragment_start + len(_FIRST_ARTICLE_RETURN_FRAGMENT)
     ):
         _fail("THEME_ARTICLE_ASSET_BINDING_INVALID")
 
@@ -318,6 +435,23 @@ def _is_complete_static_webp_container(payload: bytes) -> bool:
         and len(alpha_payload) == 1 + canvas[0] * canvas[1]
         and alpha_payload[0] & 0xE3 == 0
     ) or (not alpha_flag and alpha_payload is None)
+
+
+def _static_webp_canvas_dimensions(payload: bytes) -> tuple[int, int] | None:
+    """Return the validated static canvas size without decoding image pixels."""
+
+    if not _is_complete_static_webp_container(payload):
+        return None
+    chunk_type = payload[12:16]
+    chunk_bytes = int.from_bytes(payload[16:20], "little")
+    chunk_payload = payload[20 : 20 + chunk_bytes]
+    if chunk_type == b"VP8X":
+        return (
+            int.from_bytes(chunk_payload[4:7], "little") + 1,
+            int.from_bytes(chunk_payload[7:10], "little") + 1,
+        )
+    image = _webp_image_dimensions(chunk_type, chunk_payload)
+    return None if image is None else image[:2]
 
 
 def _identity(details: os.stat_result) -> tuple[int, ...]:
@@ -826,6 +960,7 @@ def _validate_source_file(relative: str, payload: bytes) -> None:
             or ".raos-reveal {\n  opacity: 1;\n  transform: none;" not in text
         ):
             _fail("THEME_ACCESSIBILITY_INVALID")
+        _validate_first_article_responsive_css(text)
         _validate_footer_contrast(text)
         if hashlib.sha256(payload).hexdigest() != EXPECTED_THEME_CSS_SHA256:
             _fail("THEME_ACCESSIBILITY_INVALID")
@@ -838,6 +973,8 @@ def _validate_source_file(relative: str, payload: bytes) -> None:
         _fail("THEME_ACCESSIBILITY_INVALID")
     if relative == "functions.php":
         _validate_shortcode_content_gate(text)
+        _validate_theme_asset_version_binding(text)
+        _validate_first_article_return_binding(text)
     if relative == "functions.php" and (
         hashlib.sha256(payload).hexdigest() != EXPECTED_THEME_FUNCTIONS_SHA256
         or text.count(FIRST_ARTICLE_SHORTCODE_TAG) != 2
@@ -856,6 +993,15 @@ def _validate_source_file(relative: str, payload: bytes) -> None:
         or f"($uri['host'] ?? null) !== '{FIRST_ARTICLE_TARGET_HOST}'" not in text
         or "assets/images/article-suitcase-guide.webp" not in text
         or FIRST_ARTICLE_IMAGE_ALT not in text
+        or text.count(FIRST_ARTICLE_LEAD_IMAGE_CLASS) != 1
+        or text.count(
+            f'class="wp-block-image size-full {FIRST_ARTICLE_LEAD_IMAGE_CLASS}"'
+        )
+        != 1
+        or text.count(
+            f'width="{FIRST_ARTICLE_IMAGE_WIDTH}" height="{FIRST_ARTICLE_IMAGE_HEIGHT}"'
+        )
+        != 1
         or "featured_media" in text
         or "add_filter" in text
         or "media_handle" in text
@@ -1014,6 +1160,11 @@ def _validated_payload_snapshot(payload_values: Mapping[str, bytes]) -> _ThemeSn
             or hashlib.sha256(payload).hexdigest() != image["sha256"]
         ):
             _fail("THEME_FINAL_ASSET_INVALID")
+        if path == FIRST_ARTICLE_IMAGE_RELATIVE_PATH and (
+            _static_webp_canvas_dimensions(payload)
+            != (FIRST_ARTICLE_IMAGE_WIDTH, FIRST_ARTICLE_IMAGE_HEIGHT)
+        ):
+            _fail("THEME_ARTICLE_ASSET_BINDING_INVALID")
 
     if first_article_asset_status is None or set(payloads) != {
         *paths,
