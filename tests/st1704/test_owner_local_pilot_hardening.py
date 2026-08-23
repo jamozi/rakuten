@@ -35,13 +35,14 @@ from raos.domain.editorial.owner_local_pilot import (
     build_report,
     canonical_bytes,
     empty_ledger,
+    parse_ledger,
 )
 import scripts.build_st1704_owner_local_pilot as builder
 import scripts.st1704_owner_local_pilot as cli
 
 
 ROOT = Path(__file__).resolve().parents[2]
-PINNED_PYTHON = Path("/home/minami/rakuten/.venv/bin/python")
+PINNED_PYTHON = ROOT / ".venv/bin/python"
 EXAMPLE = (
     ROOT / "changes/st-1704/owner-local-pilot-v1/examples/"
     "bootstrap-first-publication.v1.json"
@@ -124,6 +125,43 @@ def ledger_for(payloads: list[dict[str, object]]) -> PilotLedger:
     for payload in payloads:
         ledger = append_observation(ledger, PilotObservation.parse(payload))[0]
     return ledger
+
+
+def unchecked_ledger_payload(
+    payloads: list[dict[str, object]],
+) -> dict[str, object]:
+    ledger_payload = empty_ledger().payload()
+    previous = ledger_payload["head_sha256"]
+    assert type(previous) is str
+    events: list[dict[str, object]] = []
+    for sequence, payload in enumerate(payloads, 1):
+        observation_payload = PilotObservation.parse(payload).payload()
+        observation_sha256 = hashlib.sha256(
+            canonical_bytes(observation_payload)
+        ).hexdigest()
+        event_sha256 = hashlib.sha256(
+            canonical_bytes(
+                {
+                    "observation": observation_payload,
+                    "observation_sha256": observation_sha256,
+                    "previous_event_sha256": previous,
+                    "sequence": sequence,
+                }
+            )
+        ).hexdigest()
+        events.append(
+            {
+                "event_sha256": event_sha256,
+                "observation": observation_payload,
+                "observation_sha256": observation_sha256,
+                "previous_event_sha256": previous,
+                "sequence": sequence,
+            }
+        )
+        previous = event_sha256
+    ledger_payload["events"] = events
+    ledger_payload["head_sha256"] = previous
+    return ledger_payload
 
 
 def store_with_input(tmp_path: Path) -> tuple[OwnerLocalPilotJsonStore, Path]:
@@ -537,6 +575,50 @@ def test_article_slot_identity_cannot_change() -> None:
     assert captured.value.code is PilotFailureCode.ARTICLE_IDENTITY_CONFLICT
 
 
+@pytest.mark.parametrize("identity_field", ["public_slug", "article_ref_sha256"])
+def test_article_identity_cannot_be_reused_across_slots(
+    identity_field: str,
+) -> None:
+    first = complete(1)
+    second = complete(2)
+    if identity_field == "public_slug":
+        second["article"]["public_slug"] = first["article"]["public_slug"]
+    else:
+        for payload in (first, second):
+            payload["article"] = {
+                "article_ref_sha256": "a" * 64,
+                "public_slug": None,
+                "slot": payload["article"]["slot"],
+            }
+    ledger = append_observation(
+        empty_ledger(),
+        PilotObservation.parse(first),
+    )[0]
+    with pytest.raises(PilotFailure) as captured:
+        append_observation(ledger, PilotObservation.parse(second))
+    assert captured.value.code is PilotFailureCode.ARTICLE_IDENTITY_CONFLICT
+
+
+@pytest.mark.parametrize("identity_field", ["public_slug", "article_ref_sha256"])
+def test_ledger_validation_rejects_cross_slot_identity_reuse(
+    identity_field: str,
+) -> None:
+    first = complete(1)
+    second = complete(2)
+    if identity_field == "public_slug":
+        second["article"]["public_slug"] = first["article"]["public_slug"]
+    else:
+        for payload in (first, second):
+            payload["article"] = {
+                "article_ref_sha256": "a" * 64,
+                "public_slug": None,
+                "slot": payload["article"]["slot"],
+            }
+    with pytest.raises(PilotFailure) as captured:
+        parse_ledger(unchecked_ledger_payload([first, second]))
+    assert captured.value.code is PilotFailureCode.LEDGER_TAMPERED
+
+
 @pytest.mark.parametrize(
     ("state", "value", "accepted"),
     [
@@ -856,6 +938,49 @@ def test_provider_revenue_batch_cannot_be_reused_across_articles() -> None:
         append_observation(ledger, second)
 
 
+def test_direct_provider_batch_cannot_be_reused_across_articles() -> None:
+    first = complete(1)
+    second = complete(2)
+    second_direct = metric_at(second, "revenue_jpy", "direct_jpy")
+    first_direct = metric_at(first, "revenue_jpy", "direct_jpy")
+    second_direct["input_sha256"] = first_direct["input_sha256"]
+    ledger = append_observation(
+        empty_ledger(),
+        PilotObservation.parse(first),
+    )[0]
+    with pytest.raises(PilotFailure):
+        append_observation(ledger, PilotObservation.parse(second))
+
+
+def test_ledger_validation_checks_every_rakuten_revenue_bucket() -> None:
+    first = complete(1)
+    second = complete(2)
+    second_direct = metric_at(second, "revenue_jpy", "direct_jpy")
+    first_direct = metric_at(first, "revenue_jpy", "direct_jpy")
+    second_direct["input_sha256"] = first_direct["input_sha256"]
+    with pytest.raises(PilotFailure) as captured:
+        parse_ledger(unchecked_ledger_payload([first, second]))
+    assert captured.value.code is PilotFailureCode.LEDGER_TAMPERED
+
+
+def test_earlier_critical_defect_remains_stop_after_later_zero() -> None:
+    payloads = [complete(slot) for slot in range(1, 6)]
+    payloads[2]["defects"]["critical"] = {
+        "state": "OBSERVED_VALUE",
+        "value": 1,
+    }
+    ledger = ledger_for(payloads)
+    later_zero = complete(3)
+    later_zero["observation_id"] = "PILOT-ARTICLE-03-LATER-ZERO-V1"
+    ledger = append_observation(ledger, PilotObservation.parse(later_zero))[0]
+
+    assert build_report(ledger)["decision"] == ImprovementDecision.STOP_AND_REVIEW.value
+    assert (
+        build_report(parse_ledger(ledger.payload()))["decision"]
+        == ImprovementDecision.STOP_AND_REVIEW.value
+    )
+
+
 def test_generic_click_metric_is_rejected_as_ambiguous() -> None:
     payload = complete(1)
     metrics = payload["metrics"]
@@ -1018,9 +1143,11 @@ def test_generated_manifest_schema_accepts_example_and_rejects_unknown() -> None
     assert tuple(validator.iter_errors(unknown))
 
 
-def copy_runtime_tree(tmp_path: Path) -> Path:
-    copied_root = tmp_path / "runtime-copy"
-    copied_root.mkdir(mode=0o700)
+def copy_runtime_tree(
+    tmp_path: Path, *, relative_root: Path = Path("runtime-copy")
+) -> Path:
+    copied_root = tmp_path / relative_root
+    copied_root.mkdir(mode=0o700, parents=True)
     manifest_relative = Path(
         "changes/st-1704/owner-local-pilot-v1/runtime-manifest.v1.json"
     )
@@ -1236,6 +1363,42 @@ def test_make_check_ignores_hostile_python_startup_and_user_site(
     assert result.returncode == 0, result.stdout + result.stderr
     assert "ST1704_OWNER_LOCAL_PILOT_BUILD_OK" in result.stdout
     assert not marker.exists()
+
+
+def test_make_check_uses_current_checkout_python_at_hosted_path(
+    tmp_path: Path,
+) -> None:
+    cli_source = inspect.getsource(cli)
+    assert cli.SOURCE_CLI_PATH == ROOT / "scripts/st1704_owner_local_pilot.py"
+    assert cli.OWNER_REPOSITORY_ROOT == ROOT
+    assert cli.OWNER_CLI_PATH == cli.SOURCE_CLI_PATH
+    assert cli.OWNER_PYTHON == PINNED_PYTHON.as_posix()
+    assert "/home/minami/rakuten" not in cli_source
+
+    relative_root = Path("home/runner/work/rakuten/rakuten")
+    hosted_root = copy_runtime_tree(tmp_path, relative_root=relative_root)
+    hosted_python = hosted_root / ".venv/bin/python"
+    hosted_python.parent.mkdir(mode=0o700, parents=True)
+    hosted_python.symlink_to(PINNED_PYTHON)
+    makefile = hosted_root / "changes/st-1704/owner-local-pilot-v1/Makefile"
+    makefile_text = makefile.read_text(encoding="utf-8")
+
+    assert "override ST1704_PYTHON := $(ST1704_ROOT)/.venv/bin/python" in (
+        makefile_text
+    )
+    assert "/home/minami/rakuten/.venv/bin/python" not in makefile_text
+
+    result = subprocess.run(
+        ["/usr/bin/make", "-f", makefile.as_posix(), "check"],
+        cwd=hosted_root,
+        env={"LANG": "C", "LC_ALL": "C", "PATH": "/usr/bin:/bin", "TZ": "UTC"},
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert f'"{hosted_python.as_posix()}" -B -I -S' in result.stdout
+    assert "ST1704_OWNER_LOCAL_PILOT_BUILD_OK" in result.stdout
 
 
 def test_store_api_has_no_caller_selected_path_or_external_action() -> None:

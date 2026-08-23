@@ -976,9 +976,9 @@
       "sha256": "c669594b313c734851b9ec018288246cb4aaabfdf88f66318a903ba6e4504ddc"
     },
     {
-      "bytes": 2389,
+      "bytes": 2383,
       "path": "changes/st-1704/owner-local-pilot-v1/Makefile",
-      "sha256": "8006b884cfd51310e7673fe7ee8cb183601b80af619c5d1a106c69f04d130245"
+      "sha256": "c832d7f824d7d3f7ed3170cee619751b3affba3df8d82540591b0520e943f910"
     },
     {
       "bytes": 1186,
@@ -1006,9 +1006,9 @@
       "sha256": "4f2070ee122bcd8b2ed0814da233aa1cadc7ac393155d4b834bfab20bc583c22"
     },
     {
-      "bytes": 40354,
+      "bytes": 41732,
       "path": "python/raos/domain/editorial/owner_local_pilot.py",
-      "sha256": "3f77c1f8c72d9e337da0ca153e30a0a9447c460619048be8f05dbe991ade8fb8"
+      "sha256": "3fb5edcff2823bf85fe306bed15d7af94aac9639261789c64ce4b234d4ea6dc9"
     },
     {
       "bytes": 827,
@@ -1016,14 +1016,14 @@
       "sha256": "c8ee10a2acb0fca4df8a92ff33cd96cfddb908395bd948dc37bdfa21343f7f96"
     },
     {
-      "bytes": 24846,
+      "bytes": 24847,
       "path": "scripts/build_st1704_owner_local_pilot.py",
-      "sha256": "510cd0ea7124fdd016c907d3f978a8f9b35d7974cc8ff826583c80cca3e07f9d"
+      "sha256": "a733a4488fd096a57272f6eab0da8ce4fbd317185bc3bdc5a198e8f6e7c0f4c8"
     },
     {
-      "bytes": 18462,
+      "bytes": 18405,
       "path": "scripts/st1704_owner_local_pilot.py",
-      "sha256": "2faaf60a2c4656df3fb69cac7a2cc3dea741003e38733a1207bf155ddaf5adb9"
+      "sha256": "de28b752d2f4888a82839364b7c5e982966508c313a3729d4d1311e50e0761c4"
     }
   ],
   "policy": {

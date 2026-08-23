@@ -747,9 +747,9 @@ def _atomic_write(root_fd: int, payload: bytes) -> None:
 
 def _verify_process() -> None:
     flags = sys.flags
+    expected_python = (ROOT / ".venv/bin/python").as_posix()
     if (
-        not os.path.isabs(sys.executable)
-        or not sys.executable.endswith("/.venv/bin/python")
+        sys.executable != expected_python
         or sys.version_info[:3] != (3, 14, 6)
         or flags.isolated != 1
         or flags.ignore_environment != 1

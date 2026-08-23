@@ -21,7 +21,7 @@ override SHELL := /usr/bin/busybox
 override .SHELLFLAGS := sh -eu -o pipefail -c
 override ST1704_MAKEFILE := $(lastword $(MAKEFILE_LIST))
 override ST1704_ROOT := $(abspath $(dir $(ST1704_MAKEFILE))/../../..)
-override ST1704_PYTHON := /home/minami/rakuten/.venv/bin/python
+override ST1704_PYTHON := $(ST1704_ROOT)/.venv/bin/python
 override ST1704_ENV := /usr/bin/busybox env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C TZ=UTC
 override ST1704_PYTHON_FLAGS := -B -I -S -X pycache_prefix=/dev/null
 override ST1704_CLI := $(ST1704_ROOT)/scripts/st1704_owner_local_pilot.py

@@ -14,10 +14,10 @@ import types
 from typing import cast, Final, NoReturn
 
 
-OWNER_REPOSITORY_ROOT: Final = Path("/home/minami/rakuten")
+SOURCE_CLI_PATH: Final = Path(os.path.abspath(__file__))
+OWNER_REPOSITORY_ROOT: Final = SOURCE_CLI_PATH.parent.parent
 OWNER_CLI_PATH: Final = OWNER_REPOSITORY_ROOT / "scripts/st1704_owner_local_pilot.py"
-OWNER_PYTHON: Final = "/home/minami/rakuten/.venv/bin/python"
-SOURCE_ROOT: Final = Path(os.path.abspath(__file__)).parent.parent
+OWNER_PYTHON: Final = (OWNER_REPOSITORY_ROOT / ".venv/bin/python").as_posix()
 MANIFEST_RELATIVE: Final = (
     "changes/st-1704/owner-local-pilot-v1/runtime-manifest.v1.json"
 )
@@ -400,8 +400,7 @@ def _verify_runtime_integrity(
 def _verify_stage_zero() -> None:
     flags = sys.flags
     if (
-        SOURCE_ROOT != OWNER_REPOSITORY_ROOT
-        or Path(os.path.abspath(__file__)) != OWNER_CLI_PATH
+        SOURCE_CLI_PATH != OWNER_CLI_PATH
         or sys.executable != OWNER_PYTHON
         or sys.version_info[:3] != (3, 14, 6)
         or flags.isolated != 1

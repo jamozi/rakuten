@@ -46,3 +46,25 @@
 - This mechanical reconciliation does not alter runtime behavior, activate a
   provider, publish content, or establish formal TST, release, or Production
   evidence.
+
+## Hosted portability and live P1 closure
+
+- Base CI run `32630185353` exposed a generation-host path embedded in the
+  Story-local launcher. The Makefile now derives `.venv/bin/python` from its
+  current checkout root, while both the generator and CLI require the exact
+  `<current-physical-root>/.venv/bin/python` process path before repository
+  imports or runtime access. A hosted-checkout-shaped regression also proves
+  the launcher does not retain the original workstation path.
+- A critical-defect observation remains a permanent `STOP_AND_REVIEW` input
+  across the append-only event history. A later zero cannot silently resolve
+  it because this V1 ledger has no explicit critical-defect resolution state.
+- Provider report batch reuse now checks every revenue bucket whose source is
+  `RAKUTEN_REPORT_AGGREGATE`, including direct revenue, during both append and
+  full ledger validation.
+- Public slug and safe article-reference identities are unique to one pilot
+  slot. Cross-slot reuse is rejected both during append and when validating a
+  fully hash-consistent ledger.
+- Focused regressions passed with 11 tests. Isolated local suites passed with
+  ST-1704 112 tests and ST-0106 375 tests. These are local implementation
+  checks only; formal ST-1704, TST-018/TST-020/TST-032, provider, publication,
+  release, and Production evidence remain NOT_STARTED/NOT_EXECUTED.

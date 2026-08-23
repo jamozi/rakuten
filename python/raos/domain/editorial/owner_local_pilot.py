@@ -782,23 +782,44 @@ def _valid_genesis_observation(observation: PilotObservation) -> bool:
     )
 
 
-def _provider_revenue_batch(
+RevenueBatch = tuple[str, str, str]
+
+
+def _provider_revenue_batches(
     observation: PilotObservation,
-) -> tuple[str, str, str] | None:
-    provider_total = observation.revenue_jpy.provider_total_jpy
-    if provider_total.state is ValueState.NOT_OBSERVED:
-        return None
-    if (
-        provider_total.period_start is None
-        or provider_total.period_end is None
-        or provider_total.input_sha256 is None
+) -> frozenset[RevenueBatch]:
+    batches: set[RevenueBatch] = set()
+    for metric in (
+        observation.revenue_jpy.provider_total_jpy,
+        observation.revenue_jpy.direct_jpy,
+        observation.revenue_jpy.estimated_jpy,
+        observation.revenue_jpy.unattributed_jpy,
     ):
+        if metric.source_kind is not MetricSourceKind.RAKUTEN_REPORT_AGGREGATE:
+            continue
+        if (
+            metric.state is ValueState.NOT_OBSERVED
+            or metric.period_start is None
+            or metric.period_end is None
+            or metric.input_sha256 is None
+        ):
+            fail_pilot()
+        batches.add(
+            (
+                metric.period_start,
+                metric.period_end,
+                metric.input_sha256,
+            )
+        )
+    return frozenset(batches)
+
+
+def _article_identity_key(identity: ArticleIdentity) -> tuple[str, str]:
+    if identity.public_slug is not None:
+        return ("public_slug", identity.public_slug)
+    if identity.article_ref_sha256 is None:
         fail_pilot()
-    return (
-        provider_total.period_start,
-        provider_total.period_end,
-        provider_total.input_sha256,
-    )
+    return ("article_ref_sha256", identity.article_ref_sha256)
 
 
 def parse_ledger(value: object) -> PilotLedger:
@@ -816,7 +837,8 @@ def parse_ledger(value: object) -> PilotLedger:
     previous = GENESIS_SHA256
     ids: set[str] = set()
     identities: dict[int, ArticleIdentity] = {}
-    revenue_batches: dict[tuple[str, str, str], int] = {}
+    identity_slots: dict[tuple[str, str], int] = {}
+    revenue_batches: dict[RevenueBatch, int] = {}
     pilot_window: PilotWindow | None = None
     for index, raw_event in enumerate(raw_events, 1):
         event = _mapping(raw_event)
@@ -843,8 +865,15 @@ def parse_ledger(value: object) -> PilotLedger:
         if prior_identity is not None and prior_identity != observation.article:
             fail_pilot(PilotFailureCode.LEDGER_TAMPERED)
         identities[observation.article.slot] = observation.article
-        revenue_batch = _provider_revenue_batch(observation)
-        if revenue_batch is not None:
+        identity_key = _article_identity_key(observation.article)
+        prior_identity_slot = identity_slots.get(identity_key)
+        if (
+            prior_identity_slot is not None
+            and prior_identity_slot != observation.article.slot
+        ):
+            fail_pilot(PilotFailureCode.LEDGER_TAMPERED)
+        identity_slots[identity_key] = observation.article.slot
+        for revenue_batch in _provider_revenue_batches(observation):
             prior_slot = revenue_batches.get(revenue_batch)
             if prior_slot is not None and prior_slot != observation.article.slot:
                 fail_pilot(PilotFailureCode.LEDGER_TAMPERED)
@@ -888,7 +917,8 @@ def append_observation(
         fail_pilot()
     if not ledger.events and not _valid_genesis_observation(observation):
         fail_pilot()
-    new_revenue_batch = _provider_revenue_batch(observation)
+    new_identity_key = _article_identity_key(observation.article)
+    new_revenue_batches = _provider_revenue_batches(observation)
     for event in ledger.events:
         if event.observation.pilot_window != observation.pilot_window:
             fail_pilot()
@@ -901,11 +931,15 @@ def append_observation(
             and event.observation.article != observation.article
         ):
             fail_pilot(PilotFailureCode.ARTICLE_IDENTITY_CONFLICT)
-        existing_batch = _provider_revenue_batch(event.observation)
         if (
-            new_revenue_batch is not None
-            and existing_batch == new_revenue_batch
-            and event.observation.article.slot != observation.article.slot
+            event.observation.article.slot != observation.article.slot
+            and _article_identity_key(event.observation.article) == new_identity_key
+        ):
+            fail_pilot(PilotFailureCode.ARTICLE_IDENTITY_CONFLICT)
+        existing_batches = _provider_revenue_batches(event.observation)
+        if (
+            event.observation.article.slot != observation.article.slot
+            and not new_revenue_batches.isdisjoint(existing_batches)
         ):
             fail_pilot()
     sequence = len(ledger.events) + 1
@@ -978,9 +1012,9 @@ def build_report(ledger: PilotLedger) -> dict[str, object]:
         latest[event.observation.article.slot] = event.observation
     ordered = tuple(latest[slot] for slot in sorted(latest))
     critical_positive = any(
-        observation.critical_defects.value is not None
-        and observation.critical_defects.value > 0
-        for observation in ordered
+        event.observation.critical_defects.value is not None
+        and event.observation.critical_defects.value > 0
+        for event in ledger.events
     )
     review_stop = any(
         observation.review.status
