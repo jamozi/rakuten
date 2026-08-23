@@ -1,0 +1,166 @@
+document: {id: ST0308-IDEMPOTENCY-MATRIX-001, version: 1.0.0, story_id: ST-0308}
+canonical_serialization: UTF8_LF_YAML_CANONICALIZED_TO_SORTED_COMPACT_JSON_FOR_HASH
+relation: ops.idempotency_record
+identity_columns: [actor_fingerprint, route_key, idempotency_key]
+public_protocol:
+  claim: "claim(claim: IdempotencyClaim) -> IdempotencyClaimDecision"
+  lookup: "lookup(identity: IdempotencyIdentity, request_hash: RequestHash) -> IdempotencyLookupDecision"
+  complete_success: "complete_success(handle: IdempotencyClaimHandle, outcome: IdempotencyOutcome) -> None"
+  complete_failure: "complete_failure(handle: IdempotencyClaimHandle, outcome: IdempotencyOutcome) -> None"
+claim_decisions: [ClaimGranted, ReplaySucceeded, ReplayFailed, ClaimInProgress, PayloadMismatch]
+lookup_decisions: [ReplaySucceeded, ReplayFailed, ClaimInProgress, PayloadMismatch, ClaimNotFound]
+privacy:
+  payload_mismatch_discloses_stored_hash: false
+  handle_is_opaque_nonserializable_and_adapter_issued: true
+  raw_identity_or_outcome_in_error: false
+sql:
+  initial_claim: |-
+    INSERT INTO ops.idempotency_record (
+      actor_fingerprint, route_key, idempotency_key, request_hash, status,
+      response_status, response_body, response_artifact_id, resource_type,
+      resource_id, expires_at, completed_at, created_at
+    ) VALUES (
+      :actor_fingerprint, :route_key, :idempotency_key, :request_hash, 'IN_PROGRESS',
+      NULL, NULL, NULL, NULL, NULL, :expires_at, NULL, transaction_timestamp()
+    )
+    ON CONFLICT (actor_fingerprint, route_key, idempotency_key)
+    DO NOTHING
+    RETURNING id, actor_fingerprint, route_key, idempotency_key, request_hash,
+              status, expires_at, created_at
+  loser_read: |-
+    SELECT id, actor_fingerprint, route_key, idempotency_key, request_hash,
+           status, response_status, response_body, response_artifact_id,
+           resource_type, resource_id, expires_at, completed_at, created_at
+    FROM ops.idempotency_record
+    WHERE actor_fingerprint=:actor_fingerprint
+      AND route_key=:route_key
+      AND idempotency_key=:idempotency_key
+  expired_lock: |-
+    SELECT id, actor_fingerprint, route_key, idempotency_key, request_hash,
+           status, response_status, response_body, response_artifact_id,
+           resource_type, resource_id, expires_at, completed_at, created_at
+    FROM ops.idempotency_record
+    WHERE actor_fingerprint=:actor_fingerprint
+      AND route_key=:route_key
+      AND idempotency_key=:idempotency_key
+    FOR UPDATE
+  expired_in_place_replacement: |-
+    UPDATE ops.idempotency_record
+    SET request_hash=:new_request_hash,
+        status='IN_PROGRESS',
+        response_status=NULL,
+        response_body=NULL,
+        response_artifact_id=NULL,
+        resource_type=NULL,
+        resource_id=NULL,
+        expires_at=:new_expires_at,
+        completed_at=NULL,
+        created_at=transaction_timestamp()
+    WHERE id=:record_id
+      AND actor_fingerprint=:actor_fingerprint
+      AND route_key=:route_key
+      AND idempotency_key=:idempotency_key
+      AND request_hash=:observed_request_hash
+      AND status=:observed_status
+      AND expires_at=:observed_expires_at
+      AND expires_at<=transaction_timestamp()
+    RETURNING id, actor_fingerprint, route_key, idempotency_key, request_hash,
+              status, expires_at, created_at
+  complete_success: |-
+    UPDATE ops.idempotency_record
+    SET status='COMPLETED',
+        response_status=:response_status,
+        response_body=:response_body,
+        response_artifact_id=:response_artifact_id,
+        resource_type=:resource_type,
+        resource_id=:resource_id,
+        completed_at=transaction_timestamp()
+    WHERE id=:handle_record_id
+      AND actor_fingerprint=:handle_actor_fingerprint
+      AND route_key=:handle_route_key
+      AND idempotency_key=:handle_idempotency_key
+      AND request_hash=:handle_request_hash
+      AND status='IN_PROGRESS'
+      AND completed_at IS NULL
+      AND expires_at>transaction_timestamp()
+    RETURNING id, status, response_status, response_body, response_artifact_id,
+              resource_type, resource_id, completed_at
+  complete_failure: |-
+    UPDATE ops.idempotency_record
+    SET status='FAILED',
+        response_status=:response_status,
+        response_body=:response_body,
+        response_artifact_id=:response_artifact_id,
+        resource_type=:resource_type,
+        resource_id=:resource_id,
+        completed_at=transaction_timestamp()
+    WHERE id=:handle_record_id
+      AND actor_fingerprint=:handle_actor_fingerprint
+      AND route_key=:handle_route_key
+      AND idempotency_key=:handle_idempotency_key
+      AND request_hash=:handle_request_hash
+      AND status='IN_PROGRESS'
+      AND completed_at IS NULL
+      AND expires_at>transaction_timestamp()
+    RETURNING id, status, response_status, response_body, response_artifact_id,
+              resource_type, resource_id, completed_at
+algorithm:
+  claim:
+    - validate the closed claim, cancellation, deadline, and new expiry before DML
+    - execute initial_claim; a returned row yields ClaimGranted with an adapter-issued full-identity handle
+    - a zero-row initial insert is expected and never aborts the transaction
+    - execute loser_read by the complete unique identity; missing row is STORAGE_CORRUPTION
+    - for expires_at greater than transaction_timestamp, classify exactly by nonexpired_decision_table
+    - for an apparently expired row, execute expired_lock and re-evaluate the locked row
+    - execute expired_in_place_replacement only against the exact observed row; success keeps the same record id and issues a new handle
+    - a zero-row replacement is classified once under the same transaction and never retried
+  lookup:
+    - read only by the complete identity; no row or expired row yields ClaimNotFound
+    - a nonexpired row is classified by nonexpired_decision_table without granting a handle
+  completion:
+    - validate the handle belongs to the active outer transaction and validate the closed outcome before DML
+    - execute exactly one handle-bound completion statement
+    - zero rows means LOST_IDEMPOTENCY_CLAIM after one sanitized same-transaction classification read; never retry
+nonexpired_decision_table:
+  - {predicate: request_hash differs, claim: PayloadMismatch, lookup: PayloadMismatch}
+  - {predicate: request_hash matches and status is COMPLETED, claim: ReplaySucceeded, lookup: ReplaySucceeded}
+  - {predicate: request_hash matches and status is FAILED, claim: ReplayFailed, lookup: ReplayFailed}
+  - {predicate: request_hash matches and status is IN_PROGRESS, claim: ClaimInProgress, lookup: ClaimInProgress}
+expiry:
+  database_clock: transaction_timestamp()
+  expired_predicate: expires_at<=transaction_timestamp()
+  nonexpired_predicate: expires_at>transaction_timestamp()
+  replacement: SAME_RECORD_ID_IN_PLACE_ONLY
+  replacement_cas_columns: [id, actor_fingerprint, route_key, idempotency_key, request_hash, status, expires_at]
+completion:
+  handle_predicate_columns: [id, actor_fingerprint, route_key, idempotency_key, request_hash]
+  state_predicate: status='IN_PROGRESS' AND completed_at IS NULL AND expires_at>transaction_timestamp()
+  success_status: COMPLETED
+  failure_status: FAILED
+  failure_allowance: route-approved deterministic business failures only
+  never_confirm_as_failure: [infrastructure failure, cancellation, timeout, rollback, unknown commit]
+outcome_shape:
+  response_status: integer 100..599
+  response_representation: at most one of strict immutable response_body and typed ObjectArtifactId
+  resource: resource_type and resource_id are both null or both non-null
+  disposition: SUCCESS for complete_success; ROUTE_APPROVED_DETERMINISTIC_BUSINESS_FAILURE for complete_failure
+  stored_terminal_shape: response_status non-null and completed_at non-null
+zero_row_classification:
+  replacement: [STORAGE_CORRUPTION, PayloadMismatch, ReplaySucceeded, ReplayFailed, ClaimInProgress, CONCURRENCY_CONFLICT]
+  completion: [NOT_FOUND, LOST_IDEMPOTENCY_CLAIM, STORAGE_CORRUPTION]
+forbidden:
+  - INSERT followed by uniqueness-exception recovery
+  - savepoint or begin_nested
+  - DELETE then INSERT
+  - second record generation or lease column
+  - record-id-only lookup or completion
+  - replacement without observed request_hash, status, and expiry predicates
+  - completion without completed_at and nonexpired predicates
+  - wait, poll, loop, or repository retry
+  - mutation from lookup
+two_way_gate:
+  - generated SQL equals every statement above after deterministic whitespace normalization only
+  - public protocol and result unions equal the shared Domain and Port definitions
+  - all identity columns participate in lookup, replacement, and completion
+  - every decision-table row has focused claim and lookup tests
+  - zero-row, expiry-boundary, mismatch, rollback, and unknown-commit paths have focused negative tests

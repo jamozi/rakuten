@@ -1,0 +1,125 @@
+document: {id: ST0308-CONCURRENCY-MATRIX-001, version: 1.0.0, story_id: ST-0308}
+canonical_serialization: UTF8_LF_YAML_CANONICALIZED_TO_SORTED_COMPACT_JSON_FOR_HASH
+lock_version_cas:
+  relations:
+    - ai.ai_job
+    - ai.evaluation_dataset_version
+    - ai.evaluation_run
+    - ai.evaluation_suite
+    - ai.judge_calibration
+    - ai.model_route_version
+    - ai.prompt_version
+    - ai.release_decision
+    - catalog.attribute_definition
+    - catalog.canonical_product
+    - catalog.offer
+    - catalog.product_candidate
+    - catalog.rakuten_genre
+    - catalog.shop
+    - editorial.article
+    - editorial.article_link
+    - editorial.article_plan
+    - editorial.article_version
+    - evidence.source
+    - evidence.source_packet
+    - iam.principal
+    - ops.job
+    - portfolio.action_candidate
+    - portfolio.category
+    - portfolio.intent_cluster
+    - portfolio.keyword
+    - portfolio.site
+  insert: {lock_version: 0, returned: PersistedVersion(0)}
+  update:
+    where: PRIMARY_KEY_EQUALS_ID AND lock_version=expected_version
+    set: APPROVED_BUSINESS_COLUMNS_AND_lock_version=expected_version+1
+    returned: PERSISTED_POST_WRITE_LOCK_VERSION
+  zero_rows:
+    classify_in_same_transaction:
+      - SELECT PRIMARY KEY AND lock_version BY PRIMARY KEY
+      - absent => NOT_FOUND
+      - present and lock_version differs => CONCURRENCY_CONFLICT
+      - present and lock_version equals expected => STORAGE_CORRUPTION
+    blind_retry: FORBIDDEN
+  child_root_version_bumps:
+    portfolio.intent_cluster: [portfolio.intent_cluster_keyword]
+    portfolio.keyword: [portfolio.keyword_metric_observation]
+    catalog.canonical_product: [catalog.product_attribute_value, catalog.product_relation, catalog.product_group_membership]
+    catalog.offer: [catalog.price_observation, catalog.availability_observation, catalog.review_aggregate_observation, catalog.affiliate_link_observation]
+    evidence.source: [evidence.source_snapshot]
+    evidence.source_packet: [evidence.source_packet_version, evidence.source_packet_fact, evidence.source_packet_product]
+    editorial.article_version: [editorial.article_block, editorial.article_block_product, editorial.article_disclosure_context, editorial.article_methodology_binding, editorial.comparison_axis, editorial.comparison_value, editorial.recommendation_set, editorial.recommendation, editorial.recommendation_rationale, editorial.structured_data_manifest]
+    ai.evaluation_dataset_version: [ai.evaluation_case]
+    ai.evaluation_run: [ai.evaluation_case_result, ai.human_evaluation]
+    ai.release_decision: [ai.release_approval]
+  child_mutation_methods:
+    editorial.article_disclosure_context:
+    - method: EditorialContractRepository.add_disclosure_context
+      operation: INSERT
+      expected_version_parameter: expected_version
+      returned: PersistedVersion
+      root_cas_before_child_dml: REQUIRED
+    - method: EditorialContractRepository.record_disclosure_review
+      operation: STATE_CAS_UPDATE
+      expected_version_parameter: expected_version
+      returned: ArticleDisclosureContext
+      persisted_parent_version: expected_version+1
+      precondition_reads_before_root_cas: ALLOWED
+      root_cas_before_child_dml: REQUIRED
+    editorial.article_methodology_binding:
+    - method: EditorialContractRepository.append_methodology_binding
+      operation: INSERT
+      expected_version_parameter: expected_version
+      returned: PersistedVersion
+      root_cas_before_child_dml: REQUIRED
+    editorial.structured_data_manifest:
+    - method: EditorialContractRepository.append_structured_data_manifest
+      operation: INSERT
+      expected_version_parameter: expected_version
+      returned: PersistedVersion
+      root_cas_before_child_dml: REQUIRED
+  rule: child insert/diff and one root CAS are staged in the same transaction; child mutation without the root bump is rejected
+state_cas_without_lock_version:
+  relations:
+    - ai.ai_attempt
+    - ai.model_definition
+    - ai.output_schema_version
+    - ai.task_definition
+    - catalog.ingestion_request
+    - catalog.provider_endpoint
+    - editorial.article_disclosure_context
+    - editorial.article_slug
+    - editorial.article_template_version
+    - editorial.article_type_version
+    - editorial.content_schema_version
+    - editorial.editorial_methodology_version
+    - editorial.media_asset
+    - editorial.review_comment
+    - editorial.seo_metadata_version
+    - evidence.first_hand_experience_record
+    - evidence.source_packet_version
+    - iam.principal_role_assignment
+    - ops.runtime_setting_version
+    - policy.finding
+    - policy.policy_bundle
+    - policy.quality_check_run
+    - policy.rule_version
+    - policy.waiver
+  source: changes/st-0308/contracts/persistence/state-cas-matrix.v1.yaml
+  zero_rows:
+    classify_in_same_transaction:
+      - SELECT exact identity and compared state columns by primary key
+      - absent => NOT_FOUND
+      - present but compared state differs => STATE_CONFLICT
+      - present and compared state equals predicate => STORAGE_CORRUPTION
+    partial_write: FORBIDDEN
+other_patterns:
+  append_only: no update or delete method and adapter rejects mutation
+  version_series: expected latest version check plus insert; never rewrite a prior version
+  read_only_view: catalog.v_safe_offer_current has no DML path
+  metadata_only_exclusion: ops.inbox_receipt has generated SQL metadata only and no runtime mapper repository or write port
+two_way_gate:
+  - every physical lock_version column appears in lock_version_cas exactly once
+  - every state-CAS relation appears in state-cas-matrix exactly once
+  - every repository mutation is classified by one concurrency pattern
+  - every child relation is owned by exactly one root or append-only repository

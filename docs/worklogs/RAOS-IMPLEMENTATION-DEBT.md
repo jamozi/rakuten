@@ -3513,3 +3513,28 @@ original result.
   credential evidence, persistence, staging, release and Production remain
   `NOT_EXECUTED`. OD-012 remains disabled and OD-015 remains
   recorded-fixture-only.
+
+### 2026-08-24 W2 / ST-0308 local persistence runtime completion
+
+- `DEBT-W1-054` status update: `CLOSED`. The repository owner's continuous
+  reversible-development authority, the V2 local runtime handoff, eight exact
+  executable matrices, and fresh conflict-free implementation audit close the
+  former local design/authority blocker. This closure authorizes and records
+  repository-local implementation only; it grants no credential, provider,
+  publication, staging, release, Production, or canonical status authority.
+- `DEBT-W1-055` remains `CLOSED` by its earlier recorded closure. This entry
+  does not duplicate or reopen that predecessor/toolchain identity.
+- `DEBT-W1-056` remains `EXTERNAL_BLOCKED`; its local implementation and
+  PostgreSQL subcondition is `CLOSED`. The deterministic owner check passes,
+  the exact ephemeral PostgreSQL 18.4 integration suite passes `288` tests,
+  the historical preflight/reference suites pass `165`/`134` tests, and a
+  fresh independent integration audit has no remaining HIGH or MEDIUM finding.
+  Formal TST-005/TST-008, hosted CI, human security/data governance, canonical
+  `APPLY`, staging, publication, release, live provider/credential activity,
+  and Production remain `NOT_EXECUTED`; local PostgreSQL evidence is not
+  promoted to formal TST-008.
+- Exact local completion record:
+  `changes/st-0308/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml`. The
+  append-only ST-0005 proposal is intentionally deferred to a status-only
+  branch because its workflow forbids combining status history with the
+  implementation's `scripts/**` changes.

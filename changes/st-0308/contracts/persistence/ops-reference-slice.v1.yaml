@@ -1,0 +1,144 @@
+document:
+  id: ST0308-OPS-REFERENCE-SLICE-001
+  version: 1.0.0
+  story_id: ST-0308
+  status: LOCAL_REPRESENTATIVE_RUNTIME_SOURCE
+source_matrices:
+  repository_surface: changes/st-0308/contracts/persistence/repository-surface-matrix.v1.yaml
+  domain_mapper: changes/st-0308/contracts/persistence/domain-mapper-matrix.v1.yaml
+  state_cas: changes/st-0308/contracts/persistence/state-cas-matrix.v1.yaml
+  uow_surface: changes/st-0308/contracts/persistence/uow-surface-matrix.v1.yaml
+  event_emission: changes/st-0308/contracts/persistence/event-emission-matrix.v1.yaml
+  idempotency: changes/st-0308/contracts/persistence/idempotency-matrix.v1.yaml
+  identity: changes/st-0308/contracts/persistence/identity-matrix.v1.yaml
+relations:
+  business:
+    - ops.object_artifact
+    - ops.runtime_setting_version
+  shared_atomic:
+    - ops.audit_event
+    - ops.outbox_event
+    - ops.idempotency_record
+  excluded:
+    - ops.job
+    - ops.job_attempt
+    - ops.inbox_receipt
+repositories:
+  object_artifacts:
+    protocol: ObjectArtifactRepository
+    aggregate: ObjectArtifact
+    methods:
+      - name: get
+        parameters: [{name: artifact_id, type: ObjectArtifactId}]
+        returns: ObjectArtifact | None
+        operation: READ_BY_PRIMARY_KEY
+        relation: ops.object_artifact
+      - name: add
+        parameters: [{name: artifact, type: ObjectArtifact}]
+        returns: None
+        operation: INSERT_APPEND_ONLY
+        relation: ops.object_artifact
+  runtime_settings:
+    protocol: RuntimeSettingRepository
+    aggregate: RuntimeSettingVersion
+    methods:
+      - name: get_current
+        parameters:
+          - {name: setting_key, type: str}
+          - {name: scope, type: RuntimeSettingScope}
+        returns: RuntimeSettingVersion | None
+        operation: READ_CURRENT_VERSION
+        relation: ops.runtime_setting_version
+        predicate_columns: [setting_key, scope_type, scope_id]
+        order_by: [version_no DESC, id DESC]
+      - name: append_version
+        parameters:
+          - {name: version, type: RuntimeSettingVersion}
+          - {name: expected_latest_version, type: int | None}
+        returns: PersistedVersion
+        operation: INSERT_VERSION_SERIES
+        relation: ops.runtime_setting_version
+        series_identity_columns: [setting_key, scope_type, scope_id]
+        version_column: version_no
+      - name: transition
+        parameters:
+          - {name: version_id, type: RuntimeSettingVersionId}
+          - {name: transition, type: RuntimeSettingVersion}
+          - {name: expected_status, type: RuntimeSettingVersionStatus}
+        returns: RuntimeSettingVersion
+        operation: EXACT_STATE_CAS
+        relation: ops.runtime_setting_version
+        state_source: RuntimeSettingRepository.transition
+        replacement_state_type: RuntimeSettingVersionState
+domain_composition:
+  RuntimeSettingVersion:
+    kind: AGGREGATE_WRAPPER
+    state: RuntimeSettingVersionState
+    members: []
+    pending_events: false
+  RuntimeSettingScope:
+    kind: IMMUTABLE_VALUE
+    fields:
+      - {name: scope_type, type: RuntimeSettingVersionScopeType}
+      - {name: scope_id, type: ScopeId | None}
+    invariant: GLOBAL requires null scope_id; every other scope type requires a typed scope_id
+shared_capabilities:
+  audit:
+    caller_type: AuditIntent
+    relation: ops.audit_event
+    adapter_defaults: {severity: INFO}
+    insert_only: true
+  outbox:
+    caller_type: ValidatedOutboxEvent
+    relation: ops.outbox_event
+    adapter_defaults:
+      {status: PENDING, publish_attempts: 0, published_at: null, last_error: null}
+    insert_only: true
+  idempotency:
+    protocol: IdempotencyRepository
+    relation: ops.idempotency_record
+    exact_sql_source: changes/st-0308/contracts/persistence/idempotency-matrix.v1.yaml
+    transaction_bound_handle: true
+uow:
+  module: ops
+  public_types:
+    - OpsUnitOfWork
+    - IdempotentOpsUnitOfWork
+    - JoinedOpsUnitOfWork
+    - OpsUnitOfWorkFactory
+    - IdempotentOpsUnitOfWorkFactory
+  repositories: [object_artifacts, runtime_settings]
+  lifecycle:
+    begin: returns an inactive outer context manager and performs no checkout
+    enter:
+      - checkout exactly one connection
+      - validate effective database identity before Session construction
+      - construct one hidden synchronous Session on the verified connection
+      - begin exactly one outer transaction
+      - expose repositories only after begin succeeds
+    commit: explicit outer-only commit; clean exit without commit rolls back
+    rollback: outer-only known rollback restores acknowledged pending events
+    exit_exception: rollback known transaction then propagate the original exception
+    commit_unknown: discard UoW and loaded aggregates; raise UNKNOWN_COMMIT
+    joined: reuse exact active connection, Session, transaction, and context
+    joined_exit: never commit or rollback the outer transaction
+    forbidden: [autocommit business DML, begin_nested, savepoint, blind retry]
+  join_capability:
+    issuer: active outer adapter only
+    shape: opaque nonserializable transaction-bound capability
+    validation: active registry identity and context digest must both match
+identity:
+  allowed_profiles: [API_COMMAND, WORKER_COMMAND]
+  expected_profile_owner: factory composition, never PersistenceContext
+  validation_order: connection checkout then effective-role verification then Session construction then begin
+  verification_transport: injected EffectiveRoleVerifier; no credential or Secret ownership
+  rejection: invalidate and close the checked-out connection before Session construction
+generation:
+  owner: scripts/build_st0308_persistence.py
+  deterministic: true
+  generated_outputs_only: true
+  live_database_required_for_check: false
+boundaries:
+  - no live database connection or credential resolution
+  - no migration, role, grant, dispatcher, publication, staging, release, or Production action
+  - generated adapters expose no relation outside this representative slice

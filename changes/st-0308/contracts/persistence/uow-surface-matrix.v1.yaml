@@ -1,0 +1,61 @@
+document: {id: ST0308-UOW-SURFACE-MATRIX-001, version: 1.0.0, story_id: ST-0308}
+canonical_serialization: UTF8_LF_YAML_CANONICALIZED_TO_SORTED_COMPACT_JSON_FOR_HASH
+types_per_module:
+  - <Module>UnitOfWork
+  - Idempotent<Module>UnitOfWork
+  - Joined<Module>UnitOfWork
+  - <Module>UnitOfWorkFactory
+  - Idempotent<Module>UnitOfWorkFactory
+surfaces:
+  base_outer:
+    properties: [context, audit, outbox, exact_module_repositories]
+    operations: [enter, exit, flush, commit, rollback, mark_rollback_only, join_token]
+  idempotent_outer:
+    extends: base_outer
+    additional_properties: [idempotency]
+  joined:
+    properties: [context, audit, outbox, exact_module_repositories]
+    operations: [enter, exit, flush, mark_rollback_only]
+    prohibited: [idempotency, commit, rollback, join_token, closed, close]
+  base_factory:
+    operations:
+      - begin(context) -> <Module>UnitOfWork
+      - join(join_capability, context) -> Joined<Module>UnitOfWork
+  idempotent_factory:
+    extends: base_factory
+    additional_operations:
+      - begin_idempotent(context) -> Idempotent<Module>UnitOfWork
+    prohibited: [join_idempotent]
+modules:
+  ops: [jobs, object_artifacts, runtime_settings]
+  iam: [principals, role_catalog, role_assignments, session_revocations, break_glass_records]
+  portfolio: [sites, categories, intent_clusters, keywords, opportunity_assessments, action_candidates]
+  catalog: [provider_endpoints, ingestion_requests, rakuten_genres, shops, canonical_products, product_candidates, grouping_decisions, attribute_definitions, offers, safe_offer_current]
+  evidence: [sources, source_snapshots, facts, source_packets, claims, first_hand_experiences]
+  editorial: [article_plans, articles, review_comments, editorial_contracts, media_assets]
+  ai: [task_definitions, output_schemas, model_definitions, model_routes, prompt_versions, ai_jobs, evaluation_results, evaluation_suites, evaluation_datasets, evaluation_runs, judge_calibrations, release_decisions]
+  policy: [policy_bundles, rule_versions, quality_check_runs, findings, waivers, gate_decisions]
+composition:
+  API_COMMAND:
+    modules: [ops, iam, portfolio, catalog, evidence, editorial, ai, policy]
+    factories: [base, idempotent]
+  WORKER_COMMAND:
+    modules: [ops, portfolio, catalog, evidence, editorial, ai, policy]
+    factories: [base]
+    denied: [iam, idempotency]
+transaction:
+  implementation: SYNC_SQLALCHEMY_SESSION_HIDDEN
+  owner: OUTER_ONLY
+  joined_commit_or_rollback: TRANSACTION_OWNERSHIP_ERROR
+  session: {autobegin: false, autoflush: false, expire_on_commit: false}
+  nested_savepoint: FORBIDDEN
+  repository_commit: FORBIDDEN
+  blind_retry: FORBIDDEN
+  external_io_while_open: FORBIDDEN
+  known_failure: ROLLBACK_AND_RESTORE_ACKNOWLEDGED_EVENTS
+  unknown_commit: DISCARD_UOW_AND_AGGREGATES_THEN_FRESH_IDEMPOTENCY_LOOKUP
+two_way_gate:
+  - every module has exactly five public UoW/factory types
+  - every property occurs on the owning module and no other module
+  - generated Protocols and concrete factories match this matrix exactly
+  - API/worker capabilities match in both composition and identity matrices

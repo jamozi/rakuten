@@ -1,0 +1,70 @@
+DESIGN_HANDOFF_V1:
+  approved_story: ST-0308
+  approved_scope:
+    - repository-local persistence ports and deterministic adapters
+    - adapter-owned SQLAlchemy table metadata and explicit row mappers
+    - synchronous outer and joined Unit of Work boundaries
+    - atomic business, audit, outbox, and idempotency staging
+    - prevalidated workload identity boundary without credential ownership
+  source_design_refs:
+    - docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    - docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    - docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    - docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md
+    - changes/st-0308/PRO-CORRECTION-REQUEST-v3.md
+    - changes/st-0308/CANONICAL-RECONCILIATION-v3.md
+    - changes/st-0308/IMPLEMENTATION-READINESS-v3.md
+  decision:
+    inventory: exact ST-0303/ST-0304 physical cut of 103 tables and catalog.v_safe_offer_current
+    ports: aggregate-specific inward Protocols; no public generic CRUD repository
+    mapping: generated adapter-owned SQLAlchemy metadata plus explicit fail-closed mappers
+    transaction: synchronous Session hidden by one outer owner; joined scopes cannot commit or rollback
+    concurrency: exact 27 lock-version CAS and 24 state-CAS relation sets
+    events: immutable pending events acknowledged after outbox staging and restored after known rollback
+    idempotency: non-aborting claim, exact duplicate/replay/in-progress/mismatch, in-place expired replacement, handle-bound completion CAS
+    identity: factory-private expected workload profile plus actual checked-out PostgreSQL effective-role verification before Session, transaction, Repository, or UoW exposure
+    scalar_binding: exact nominal shared identity/scalar values live only in the approved domain/shared modules; aggregate IDs and persisted enums are owned by their target module; incompatible pre-existing Story-local values are never aliased
+  rationale:
+    - This is the smallest reversible runtime that satisfies the Canonical repositories, transaction-boundary, and cross-module-write deliverables.
+    - Physical schema/catalog bytes remain owned by predecessor Stories and are consumed read-only.
+    - Shared audit, outbox, and idempotency ports avoid illegal imports of the OPS repository by inward modules.
+  rejected_alternatives:
+    - generic CRUD repositories because they bypass aggregate ownership
+    - runtime reflection because repository bytes must be deterministic and offline
+    - nested savepoints or implicit commits because there must be one transaction owner
+    - credential lookup in persistence because ST-0308 does not own Secrets
+    - dispatcher, lease, retry, inbox processing, or DLQ behavior because those belong to ST-1404
+    - live database, role, grant, migration, staging, publication, release, or Production actions
+  constraints:
+    - domain code imports no SQLAlchemy, psycopg, framework, or provider type
+    - no cross-module write through another module's repository
+    - external I/O never runs inside the transaction
+    - append-only relations expose no update operation
+    - unknown relation, column, state, type, identity, or transaction state fails closed
+    - generated outputs are changed only through scripts/build_st0308_persistence.py
+  security_and_approval_gates:
+    - local implementation does not grant credential, live-provider, migration-apply, staging, release, publication, or Production authority
+    - public readmodel and later-schema roles are outside this Story
+    - ST-0306 is candidate identity evidence only and is not a dependency
+    - formal TST-005/TST-008, security review, hosted CI, and human governance remain separate
+  acceptance_criteria:
+    - every physical relation is present once in generated SQLAlchemy metadata; ops.inbox_receipt is intentionally metadata-only with no runtime mapper or write Port; every other runtime-mapped relation has exactly one explicit mapper and every writable relation belongs to exactly one named repository
+    - version/state CAS rejects stale writes without partial mutation
+    - a command stages business writes, audit, outbox, and idempotency in one transaction
+    - rollback and known failure restore pending domain events and expose no partial effects
+    - joined scopes cannot commit, rollback, or obtain idempotency capability
+    - provider identity is validated before a Session or transaction begins
+    - mapper round trips are deterministic and reject unknown/tampered storage rows
+    - the hash-bound idempotency matrix is the sole executable claim, lookup, expired-replacement, and completion-CAS source
+  required_test_evidence:
+    - focused Python unit and architecture tests for all ports and critical negative paths
+    - deterministic owner generation and no-write check
+    - PostgreSQL-dialect SQL compilation and local fake-session transaction tests
+    - formal PostgreSQL 18.4 TST-008 remains NOT_EXECUTED
+  open_decisions: []
+  authority:
+    repository_local_development: STANDING_OWNER_AUTHORIZATION
+    external_operation: NOT_GRANTED
+    formal_validation: NOT_GRANTED
+    publication: NOT_GRANTED
+    production: NOT_GRANTED

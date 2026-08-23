@@ -1,0 +1,124 @@
+document:
+  id: RAOS-PERSISTENCE-RUNTIME-002
+  version: 2.1.0
+  story_id: ST-0308
+  status: LOCAL_IMPLEMENTATION_CONTRACT
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_008: NOT_EXECUTED
+story:
+  dependencies: [ST-0304, ST-0105]
+  affected_inputs_not_dependencies: [ST-0107, ST-0301, ST-0306]
+  deliverables: [aggregate_specific_repositories, transaction_boundary]
+  acceptance: [cross_module_write_rules]
+  open_decisions: []
+sources:
+  - {path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md, sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a}
+  - {path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml, sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d}
+  - {path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml, sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8}
+  - {path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml, sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b}
+  - {path: changes/st-0105/README.md, sha256: 15adf4e461592453f78a363ccba411c861f476aeaf58444039c6eaff12ade8de}
+  - {path: changes/st-0105/manifest.json, sha256: 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7}
+  - {path: changes/st-0303/generated/iam-ops-catalog.v1.json, sha256: 0cab8decf1a9a874248ef16a5b1bfd01c19d1babbf45bb0f73eb42b89913720a}
+  - {path: changes/st-0304/contracts/domain-schema.v1.yaml, sha256: 8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122}
+  - {path: changes/st-0304/generated/domain-catalog.v1.json, sha256: 41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208}
+  - {path: docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md, sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3}
+  - {path: docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md, sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c}
+  - {path: changes/st-0308/PRO-CORRECTION-REQUEST-v3.md, sha256: 0906d9bf46920bfd1d018590490857a6665ab9fc8eecc92411e3fcdb9d206270}
+  - {path: changes/st-0308/CANONICAL-RECONCILIATION-v3.md, sha256: 91748530eafc018823b5a6a74cc2ca052569cb3c46f6e90dd1224d720d3fdc08}
+  - {path: changes/st-0308/IMPLEMENTATION-READINESS-v3.md, sha256: 29e90628cc8ed4259b54486ab12abddb606ae414e3a2391c5055dbbf521577f7}
+  - {path: changes/st-0306/contracts/database-roles-grants.v1.yaml, sha256: b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3, authority: CANDIDATE_IDENTITY_EVIDENCE_ONLY}
+physical_fragments:
+  - {path: changes/st-0304/contracts/physical/01-domain-physical.sql, sha256: b2f937ae00d526a886e5e875e095e247702f4bd7831a3164e2eda93423d7fdb8}
+  - {path: changes/st-0304/contracts/physical/02-domain-physical.sql, sha256: b685751e4e2743ea6c7202e8ce726486ac152e46987bb832e6777e61b987aafc}
+  - {path: changes/st-0304/contracts/physical/03-domain-physical.sql, sha256: f95ad5a2fd349177b01f97237d0d9a3fb598b2781828e9531a04c3c42b811b45}
+  - {path: changes/st-0304/contracts/physical/04-domain-physical.sql, sha256: 4a3c029980e8c27957fac2291e7b0a8efb81eaf1faa74dee4e757b0836e7ba30}
+  - {path: changes/st-0304/contracts/physical/05-domain-physical.sql, sha256: c78e946f9be015d461350f347f125a2cf8f01b267647a8685158af207cefc0ec}
+  - {path: changes/st-0304/contracts/physical/06-domain-physical.sql, sha256: cc520254390d68fdc68d54c01ed6b95e031ea422814e5be924849ec61636904d}
+  - {path: changes/st-0304/contracts/physical/07-domain-physical.sql, sha256: 739cc2ecae7e49702da5e36be6e37eaebaa7a535be4a623c79dee86926212870}
+  - {path: changes/st-0304/contracts/physical/08-domain-physical.sql, sha256: eafb7b89c6fa08bd74a8c13d89aa19aea3a946e739720a8cff9e6faa3ca2bfc4}
+  - {path: changes/st-0304/contracts/physical/09-domain-physical.sql, sha256: 6cebf09249f027662557038f8367bdc586030197911046be242543cd43502ae5}
+  - {path: changes/st-0304/contracts/physical/10-domain-physical.sql, sha256: 3d806436b7ed91f25e0396e15b914dda7258b743589ec4dc6c3f4272c9fcb38d}
+  - {path: changes/st-0304/contracts/physical/11-domain-physical.sql, sha256: 947e480157a52b0d926461a4d40a7409e92e6e50482c216d394953a462d8cd09}
+executable_matrices:
+  repository_surface: {path: changes/st-0308/contracts/persistence/repository-surface-matrix.v1.yaml, sha256: 0dcd8edabe662bb94dc38960b372dfabf1afc8e83f74e3acc4757049fda6f1f0}
+  concurrency: {path: changes/st-0308/contracts/persistence/concurrency-matrix.v1.yaml, sha256: 66cb474d428703e83b7b84744c4f843463b0a040714b907e00137438f5ba08ab}
+  state_cas: {path: changes/st-0308/contracts/persistence/state-cas-matrix.v1.yaml, sha256: f865a30c2c000dfd9ca6f2f43d0be7c5cc3883077cfd41f3dcc4c340d03c94d1}
+  uow_surface: {path: changes/st-0308/contracts/persistence/uow-surface-matrix.v1.yaml, sha256: 2e298605a9679b593244d78b49a6e4f331d8927363d3513d8f7aa6527c10bdc0}
+  domain_mapper: {path: changes/st-0308/contracts/persistence/domain-mapper-matrix.v1.yaml, sha256: 8b2499f99faa223fbc5b6329bd0f0e441441e89b45d507b6bbb0ffbce470e872}
+  event_emission: {path: changes/st-0308/contracts/persistence/event-emission-matrix.v1.yaml, sha256: 3c4f8e429824849b9219faefb2867dd8444828562d0d0a1d9c79bfa2cc511ad0}
+  idempotency: {path: changes/st-0308/contracts/persistence/idempotency-matrix.v1.yaml, sha256: 1645b6b67d8ab6ae01520094cbc7f14405f2545c41d019ecb98ea48412c39e1b}
+  identity: {path: changes/st-0308/contracts/persistence/identity-matrix.v1.yaml, sha256: aa009ab2423069f782621d6f7e4cb4c4fa57185d03ad3195ad5df29c75360d0b}
+representative_slices:
+  ops_reference:
+    path: changes/st-0308/contracts/persistence/ops-reference-slice.v1.yaml
+    sha256: 77b47ea2d3ef5a238e65132fd5c13053772eaf0c7bb6f53935aa9e7572753866
+inventory:
+  schemas: [ops, iam, portfolio, catalog, evidence, editorial, ai, policy]
+  tables: 103
+  views: [catalog.v_safe_offer_current]
+  contract_bidirectional_table_mapper_rows: 102
+  contract_metadata_only_table_rows: [ops.inbox_receipt]
+  contract_read_only_view_mapper_rows: [catalog.v_safe_offer_current]
+runtime_decisions:
+  ports: AGGREGATE_SPECIFIC_PROTOCOLS_NO_GENERIC_CRUD_OR_RAW_MAPPING
+  mapping: GENERATED_ADAPTER_OWNED_SQLALCHEMY_METADATA_AND_EXPLICIT_MAPPERS_NO_REFLECTION_OR_LAZY_LOAD
+  transaction: SYNC_OUTER_OR_JOINED_UOW_ONLY_OUTER_COMMIT_ROLLBACK_NO_SAVEPOINT_OR_BLIND_RETRY
+  atomicity: BUSINESS_AUDIT_OUTBOX_IDEMPOTENCY_ONE_TRANSACTION
+  events: CLOSED_18_EVENT_REGISTRY_PENDING_ACKNOWLEDGE_RESTORE_ON_KNOWN_ROLLBACK
+  idempotency: EXACT_CLAIM_LOOKUP_REPLAY_IN_PROGRESS_MISMATCH_EXPIRY_COMPLETION_CAS
+  identity: FACTORY_OWNS_EXPECTED_PROFILE_AND_CHECKED_OUT_EFFECTIVE_ROLE_IS_VERIFIED_BEFORE_SESSION_BEGIN
+  deterministic_ids_and_bytes: REQUIRED
+  cross_module_write: REJECTED_BEFORE_DML
+execution_control:
+  visibility: ADAPTER_PRIVATE
+  factory_configuration: IMMUTABLE_BUDGET_AND_CLOCK_COMPOSITION
+  public_factory_signature_change: FORBIDDEN
+  persistence_context_field: FORBIDDEN
+  caller_generic_callback: FORBIDDEN
+  outer_state: ONE_MUTABLE_STATE_OWNED_BY_EACH_OUTER_UOW
+  joined_state: EXACT_SAME_OBJECT_IDENTITY_AS_OUTER
+  time_source: MONOTONIC_NOT_WALL_CLOCK
+  lifecycle_checks:
+    - PRE_CHECKOUT
+    - POST_CHECKOUT
+    - POST_IDENTITY
+    - PRE_SESSION_BEGIN
+    - PRE_EXPOSURE
+    - PRE_REPOSITORY_QUERY_OR_DML
+    - PRE_FLUSH
+    - PRE_COMMIT
+    - POST_KNOWN_DRIVER_RETURN
+  rejection_precedence: CANCELLED_THEN_DEADLINE_EXCEEDED
+  known_precommit_rejection: ROLLBACK_AND_RESTORE
+  indeterminate_commit: UNKNOWN_COMMIT_NEVER_CANCELLED_OR_DEADLINE_EXCEEDED
+identity_runtime:
+  query_owner: ST0308_ADAPTER
+  semantic_anchor:
+    path: changes/st-0306/contracts/database-roles-grants.v1.yaml
+    sha256: b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3
+    authority: CANDIDATE_IDENTITY_EVIDENCE_ONLY
+  migration_validation_sql_reuse: FORBIDDEN
+  selected_relation_inventory: EXACT_103_TABLES_AND_CATALOG_SAFE_OFFER_VIEW
+  query_result_fields: [login_role, inherited_groups, is_superuser, bypass_rls, create_role, create_database, owns_selected_relation]
+  inherited_groups: ALL_EFFECTIVE_NON_LOGIN_GROUPS_EXACT_MEMBERSHIP_REQUIRED
+  profile_binding: FACTORY_PRIVATE_EXPECTED_PROFILE
+  execution_stage: CHECKED_OUT_CONNECTION_BEFORE_SESSION_BEGIN
+boundary:
+  external_io_inside_transaction: FORBIDDEN
+  secret_or_credential_resolution: FORBIDDEN
+  live_connection: NOT_EXECUTED
+  migrations_roles_or_grants: FORBIDDEN
+  dispatcher_lease_retry_inbox_dlq: ST-1404
+  publication: FORBIDDEN
+  staging: NOT_EXECUTED
+  release: FORBIDDEN
+  production: FORBIDDEN
+two_way_gates:
+  - physical inventory to Domain mapper matrix to generated SQLAlchemy metadata
+  - repository relation/method ownership to generated Protocol and concrete adapter surfaces
+  - lock/state concurrency matrices to generated DML predicates and focused negative tests
+  - UoW matrix to generated Protocols concrete UoWs and API/worker composition
+  - event matrix to module event classes registry schemas and Outbox validation
+  - idempotency matrix to the shared result unions and exact generated claim replacement completion SQL
+  - identity matrix to effective-role query verification and begin-before-identity negative tests
+  - every generated artifact records source and matrix hashes and owner generator hash

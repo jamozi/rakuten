@@ -132,12 +132,12 @@ SOURCE_ROWS: Final = (
     (
         "changes/st-0308/contracts/design-handoff-validation.v1.yaml",
         18293,
-        "dbb63249a173e11e52504a6af03a87dc18991afba60b227867801a096f5cff7a",
+        "4816fef129814c3b140b4521c1f11f11ad7de749c83e7a9c238beafb8bb85f90",
     ),
     (
         "scripts/validate_st0308_design_handoff.py",
         104164,
-        "b3c5db0d3760a2973e8f8d07ee42b544a6b6bce5c34a4bd6e02f139a1ab30d36",
+        "829ae2fad11fe51c922d57c7058132640127c4a59ce1c9e705ea761766efba91",
     ),
 )
 
