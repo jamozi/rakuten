@@ -1,0 +1,858 @@
+{
+  "schema": "SELF_HOSTED_EDITORIAL_SOURCE_REGISTRY_V1",
+  "story_id": "ST-1704",
+  "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
+  "target_origin": "https://kurashinoshirube.com",
+  "publication_authority": "NONE",
+  "generated_on": "2026-08-23",
+  "source_policy": {
+    "allowed_authority": "OFFICIAL_PRIMARY_SOURCE_ONLY",
+    "competitor_sources_as_evidence": false,
+    "review_body_as_evidence": false,
+    "first_hand_experience_claims": false,
+    "missing_fact_behavior": "OMIT_OR_MARK_UNKNOWN",
+    "immutable_capture_required_for_publication": true,
+    "immutable_capture_schema": "STRUCTURED_SOURCE_FACT_PACKET_V1",
+    "immutable_capture_hash_algorithm": "SHA256_CANONICAL_UTF8_JSON_V1",
+    "immutable_capture_hash_material": "source metadata plus source-bound claim records; sorted object keys; compact separators; UTF-8; review bodies excluded from claim-evidence selection",
+    "source_packet_schema": "STRUCTURED_ARTICLE_SOURCE_PACKET_V1"
+  },
+  "sources": [
+    {
+      "source_ref": "SRC-ACE-CRESTA-06316",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "ACE クレスタ 06316（エース公式オンラインストア）",
+      "url": "https://store.ace.jp/shop/g/g06316-01/",
+      "retrieved_on": "2026-08-12",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "8c2218cc875aa20fcfb6c9b8f43a3c334e49fcb71b814f1e4ac31772c2be42e3",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-ACE-DIFFERENCE-05721",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "ace.TOKYO LABEL ディフェレンス 05721（エース公式オンラインストア）",
+      "url": "https://store.ace.jp/shop/g/g05721-01",
+      "retrieved_on": "2026-08-12",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "ec2478037d19cd3ab1a3ebd4d706656d367f76fe1465b3652d5cecc007e2d4a0",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-ACE-MAXPASS4-01471",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "PROTECA マックスパス4 01471（エース公式オンラインストア）",
+      "url": "https://store.ace.jp/shop/g/g01471-08",
+      "retrieved_on": "2026-08-12",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "2b96d24651624905cd6f59737486351624b67abb73465a98086cfb4aebaf8d66",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-ANA-CARRY-ON-BAGGAGE",
+      "authority": "CARRIER_OFFICIAL",
+      "source_type": "POLICY_PAGE",
+      "title": "ANA 手荷物について",
+      "url": "https://www.ana.co.jp/ja/tr/travel-information/baggage-information/",
+      "retrieved_on": "2026-08-12",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "6e0f0c800996b20ca5e446a1977c5d6212154df4a15cd8d2b5717ca47bfdefd1",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C300",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "Anker Solix C300 Portable Power Station",
+      "url": "https://www.ankerjapan.com/products/a1722",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "9b6e64d4dd1bf2af8e14197885a079471703470381848c2d5cf6f31867bf8069",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-JACKERY-500-NEW",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "Jackery ポータブル電源 500 New",
+      "url": "https://www.jackery.jp/products/explorer-500-new",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "562d4af39da7120566385adf20f69fae543a8a0a1bce7c8851d6870a42cabf73",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-BLUETTI-AC70",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "BLUETTI AC70",
+      "url": "https://www.bluetti.jp/products/bluetti-ac70",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "bcf584e1083308afd98e50f003ec5b8cf14fdd84d18f4233fec1f9df8d713251",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-ECOFLOW-DELTA3-CLASSIC",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "EcoFlow DELTA 3 Classic",
+      "url": "https://jp.ecoflow.com/products/delta-3-classic",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "f5ded9af910b81d7a8167e52b09128629596acee46c79ab27da41b2d0817030e",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-PANASONIC-NP-TMLK1",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_SPECIFICATION_PAGE",
+      "title": "Panasonic NP-TMLK1 仕様・詳細情報",
+      "url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "eb29aa275959bdd22f2ec6e3bd4ea3fb59338bd03c49360610d57f6b5c48a44b",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-THANKO-RAKUA-MINI-PLUS",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "THANKO ラクアmini Plus",
+      "url": "https://www.thanko.jp/view/item/000000004055",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "bd7135615bdf99ba0bf1ad745db7dfd7a26a8cc11c673f4a3f36320dba73b0f7",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-SIROCA-SS-MA251",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "siroca 食器洗い乾燥機 アドバンスシリーズ SS-MA251",
+      "url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "b0de1eb45472b9f2219755e49d98ee45003140834e0cc240649743bfe168e135",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-PANASONIC-NP-TSP1",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_SPECIFICATION_PAGE",
+      "title": "Panasonic NP-TSP1 仕様・詳細情報",
+      "url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "a402cc31c6be63d50e7478f79f968bf65742d0363ccc91cc4f115031cdd22c27",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C800-PLUS",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "Anker Solix C800 Plus Portable Power Station",
+      "url": "https://www.ankerjapan.com/products/a1754",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "0e8a6d35fa45b11db04f4de7e895f0cad40c72939e0d0cf8ab8b9bc3b6c0d7dc",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C1000",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "Anker Solix C1000 Portable Power Station",
+      "url": "https://www.ankerjapan.com/products/a1761",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "4909786bd594f835b75024d6afb3bba30e0661927b992c4d1112cd46880e8a75",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C1000-GEN2",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "Anker Solix C1000 Gen 2 Portable Power Station",
+      "url": "https://www.ankerjapan.com/products/a1763",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "7d2d645eb2849a0ebdf61bcc93cbfe094df36af8fed62577c855433cf8971f99",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "Roomba Mini 掃除機＆床拭きロボット + AutoEmpty 充電ステーション",
+      "url": "https://store.irobot-jp.com/item/F155260.html",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "7ce07274e798447f512bc5cb780d80fc232c1ae01ff0fd2bb7cd9799505a02af",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-SWITCHBOT-K11-PRO",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "SwitchBot ロボット掃除機 K11+ Pro",
+      "url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "9328f00649be3a3d09a794166d4e8b8ced06835eac50c0a329a253e99c92d2b2",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-SWITCHBOT-K10-PRO-COMBO",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "SwitchBot ロボット掃除機 K10+ Pro Combo",
+      "url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "68cd1a6b51dc4523ff57d3e882524c8278f4af1e99b8afd481260c69481b9a9f",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "source_type": "PRODUCT_PAGE",
+      "title": "Roomba Plus 515 Combo ロボット + AutoWash 充電ステーション",
+      "url": "https://store.irobot-jp.com/item/N285060.html",
+      "retrieved_on": "2026-08-23",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "7cd5532561af3b0e21f7059f0c36d6459cd58057727b468dad6c53027fda7a9e",
+      "review_body_excluded_from_claim_evidence": true
+    }
+  ],
+  "policy_sources": [
+    {
+      "source_ref": "SRC-RAKUTEN-AFFILIATE-GUIDELINE",
+      "authority": "PROVIDER_OFFICIAL",
+      "title": "楽天アフィリエイト ガイドライン",
+      "url": "https://affiliate.rakuten.co.jp/guideline/rule/",
+      "retrieved_on": "2026-08-23",
+      "source_type": "POLICY_PAGE",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "d327a48fd9531bac8a8b60c22d4f45ceac736d9f7ccb7e5c49c285414f932ec4",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-CAA-STEALTH-MARKETING-QA",
+      "authority": "GOVERNMENT_OFFICIAL",
+      "title": "消費者庁 ステルスマーケティングに関するQ&A",
+      "url": "https://www.caa.go.jp/policies/policy/representation/fair_labeling/faq/stealth_marketing/",
+      "retrieved_on": "2026-08-23",
+      "source_type": "POLICY_PAGE",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "9e255661a4abc24b2427b46af54ec42a72e29fd3bde8b305e008f96fcee87bea",
+      "review_body_excluded_from_claim_evidence": true
+    },
+    {
+      "source_ref": "SRC-GOOGLE-QUALIFY-OUTBOUND-LINKS",
+      "authority": "PLATFORM_OFFICIAL",
+      "title": "Google Search Central Qualify outbound links",
+      "url": "https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links",
+      "retrieved_on": "2026-08-23",
+      "source_type": "POLICY_PAGE",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "immutable_capture_sha256": "4b229a0583aa8b241e6216b20d1a54ea04e44d6a8d4e50acd5c1628b3f1c48f7",
+      "review_body_excluded_from_claim_evidence": true
+    }
+  ],
+  "source_packets": [
+    {
+      "source_packet_ref": "SPV-ST1704-SUITCASE-V1",
+      "article_id": "st1703-first-suitcase-comparison",
+      "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "fact_packet_sha256": "c71f9362bc09cb541cb47e06ad798cb4c687a9fad71994f697acc532a5c70273",
+      "source_refs": [
+        "SRC-ACE-CRESTA-06316",
+        "SRC-ACE-DIFFERENCE-05721",
+        "SRC-ACE-MAXPASS4-01471",
+        "SRC-ANA-CARRY-ON-BAGGAGE"
+      ],
+      "claims": [
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-CRESTA-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "ACE クレスタ 06316は非拡張時H55×W35×D25cm、34L、3.2kgで、拡張時は奥行29cm、39Lと案内されている。",
+          "evidence_refs": [
+            "SRC-ACE-CRESTA-06316"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "ディフェレンス 05721は非拡張時H55×W36×D24cm、32L、3.5kg、拡張時D27cm、38Lで、2通りの開き方、拡張機能、キャスターストッパーが案内されている。",
+          "evidence_refs": [
+            "SRC-ACE-DIFFERENCE-05721"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-MAXPASS-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "PROTECA マックスパス4 01471はH50×W40×D25cm、40L、3.6kgで、フロントポケットからメイン収納へアクセスでき、14インチPC収納、キャスターストッパーが案内されている。",
+          "evidence_refs": [
+            "SRC-ACE-MAXPASS4-01471"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-CARRYON-LIMITS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "ANAの案内では100席以上の航空機は3辺合計115cm以内かつ55×40×25cm以内、100席未満は3辺合計100cm以内かつ45×35×20cm以内で、身の回り品を含む合計重量は10kg以内とされる。",
+          "evidence_refs": [
+            "SRC-ANA-CARRY-ON-BAGGAGE"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
+          "classification": "EDITORIAL_INFERENCE",
+          "statement": "公表値ではクレスタ3.2kg、ディフェレンス3.5kg、マックスパス4 3.6kgのためクレスタが3モデルで最軽量である。非拡張容量は順に34L、32L、40Lのためマックスパス4が最大で、ディフェレンスは2通りの開き方とストッパー、マックスパス4はフロントポケットからメイン収納へのアクセスが条件別候補になる。",
+          "evidence_refs": [
+            "SRC-ACE-CRESTA-06316",
+            "SRC-ACE-DIFFERENCE-05721",
+            "SRC-ACE-MAXPASS4-01471"
+          ],
+          "status": "INFERENCE_FROM_BOUND_OFFICIAL_FACTS"
+        }
+      ],
+      "draft_claim_coverage": {
+        "major_claim_count": 5,
+        "official_source_bound_major_claim_count": 5,
+        "verifiable_claim_count": 4,
+        "official_source_bound_verifiable_claim_count": 4
+      }
+    },
+    {
+      "source_packet_ref": "SPV-ST1704-PORTABLE-POWER-V1",
+      "article_id": "st1704-portable-power-station-guide",
+      "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "fact_packet_sha256": "e659d5dd277bd01e281ecf57a91c2922e17cf9c9fe1cb8d7f3caa41ffd7c7a8c",
+      "source_refs": [
+        "SRC-ANKER-SOLIX-C300",
+        "SRC-JACKERY-500-NEW",
+        "SRC-BLUETTI-AC70",
+        "SRC-ECOFLOW-DELTA3-CLASSIC"
+      ],
+      "claims": [
+        {
+          "claim_id": "CLM-ST1704-POWER-C300-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "Anker Solix C300は288Wh、定格300W、約4.1kg、約16.4×16.1×24.0cmと案内されている。",
+          "evidence_refs": [
+            "SRC-ANKER-SOLIX-C300"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "Jackery 500 Newは512Wh、定格500W、約5.7kgと案内されている。",
+          "evidence_refs": [
+            "SRC-JACKERY-500-NEW"
+          ],
+          "status": "BOUND_WITH_EXPLICIT_SOURCE_CONFLICT"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AC70-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "BLUETTI AC70は768Wh、定格1000W、約10.2kg、314×209.5×255.8mmと案内されている。",
+          "evidence_refs": [
+            "SRC-BLUETTI-AC70"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-DELTA-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "EcoFlow DELTA 3 Classicは1024Wh、定格1500W、約12.1kg、20.0×39.8×28.3cmと案内されている。",
+          "evidence_refs": [
+            "SRC-ECOFLOW-DELTA3-CLASSIC"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "classification": "EDITORIAL_INFERENCE",
+          "statement": "公表値はC300が288Wh・定格300W・約4.1kg、Jackery 500 Newが512Wh・定格500W・約5.7kg、AC70が768Wh・定格1000W・約10.2kg、DELTA 3 Classicが1024Wh・定格1500W・約12.1kgである。この4モデルではC300が最軽量かつ容量・定格出力が最小、DELTA 3 Classicが容量・定格出力・重量で最大のため、持ち運びやすさと必要な容量・出力で候補が変わる。",
+          "evidence_refs": [
+            "SRC-ANKER-SOLIX-C300",
+            "SRC-JACKERY-500-NEW",
+            "SRC-BLUETTI-AC70",
+            "SRC-ECOFLOW-DELTA3-CLASSIC"
+          ],
+          "status": "INFERENCE_FROM_BOUND_OFFICIAL_FACTS"
+        }
+      ],
+      "draft_claim_coverage": {
+        "major_claim_count": 5,
+        "official_source_bound_major_claim_count": 5,
+        "verifiable_claim_count": 4,
+        "official_source_bound_verifiable_claim_count": 4
+      }
+    },
+    {
+      "source_packet_ref": "SPV-ST1704-DISHWASHER-V1",
+      "article_id": "st1704-countertop-dishwasher-for-small-households",
+      "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "fact_packet_sha256": "f1d30dd87cd954c87e8168d00a08afe0291600c36223f1fca4ae83bb88d84658",
+      "source_refs": [
+        "SRC-PANASONIC-NP-TMLK1",
+        "SRC-THANKO-RAKUA-MINI-PLUS",
+        "SRC-SIROCA-SS-MA251",
+        "SRC-PANASONIC-NP-TSP1"
+      ],
+      "claims": [
+        {
+          "claim_id": "CLM-ST1704-DISH-NP-TMLK1-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "Panasonic NP-TMLK1は食器6点、約2.5L、約幅310×高さ435×奥行225mm、約7.5kgの着脱タンク式で、送風乾燥に対応すると案内されている。",
+          "evidence_refs": [
+            "SRC-PANASONIC-NP-TMLK1"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-RAKUA-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "THANKO ラクアmini Plusは食器11〜12点、3.2L、幅308×高さ415×奥行315mm、扉開放時奥行594mm、約8kgのタンク式と案内されている。",
+          "evidence_refs": [
+            "SRC-THANKO-RAKUA-MINI-PLUS"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-SS-MA251-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "siroca SS-MA251は食器16点、約6L、幅42×奥行44×高さ47cm、約13.5kgで、送風とオートオープン機能を備えると案内されている。",
+          "evidence_refs": [
+            "SRC-SIROCA-SS-MA251"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-NP-TSP1-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "Panasonic NP-TSP1は食器24点、約9L、約幅550×高さ600×奥行341mm、約19kgのタンク式で、乾燥機能とリフトアップオープンドアを備えると案内されている。",
+          "evidence_refs": [
+            "SRC-PANASONIC-NP-TSP1"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "classification": "EDITORIAL_INFERENCE",
+          "statement": "公表値ではNP-TMLK1が奥行225mm・約2.5L・食器6点、ラクアmini Plusが奥行315mm・3.2L・食器11〜12点、SS-MA251が奥行44cm・約6L・食器16点、NP-TSP1が奥行341mm・約9L・食器24点である。この4モデルではNP-TMLK1が奥行と標準使用水量で最小、NP-TSP1が標準食器点数で最大であり、SS-MA251はオートオープン対応のため、設置寸法、食器点数、水量、乾燥・扉方式で候補が変わる。",
+          "evidence_refs": [
+            "SRC-PANASONIC-NP-TMLK1",
+            "SRC-THANKO-RAKUA-MINI-PLUS",
+            "SRC-SIROCA-SS-MA251",
+            "SRC-PANASONIC-NP-TSP1"
+          ],
+          "status": "INFERENCE_FROM_BOUND_OFFICIAL_FACTS"
+        }
+      ],
+      "draft_claim_coverage": {
+        "major_claim_count": 5,
+        "official_source_bound_major_claim_count": 5,
+        "verifiable_claim_count": 4,
+        "official_source_bound_verifiable_claim_count": 4
+      }
+    },
+    {
+      "source_packet_ref": "SPV-ST1704-ANKER-DIFFERENCES-V1",
+      "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "fact_packet_sha256": "d593a11260d08e2536fbba5de12919f35120faa665ba47ec3373388221ace7de",
+      "source_refs": [
+        "SRC-ANKER-SOLIX-C300",
+        "SRC-ANKER-SOLIX-C800-PLUS",
+        "SRC-ANKER-SOLIX-C1000",
+        "SRC-ANKER-SOLIX-C1000-GEN2"
+      ],
+      "claims": [
+        {
+          "claim_id": "CLM-ST1704-ANKER-C300-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "Anker Solix C300は288Wh、定格300W、約4.1kg、約16.4×16.1×24.0cmである。",
+          "evidence_refs": [
+            "SRC-ANKER-SOLIX-C300"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C800-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "Anker Solix C800 Plusは768Wh、定格1200W、約10.9kg、約37.1×20.5×25.0cmである。",
+          "evidence_refs": [
+            "SRC-ANKER-SOLIX-C800-PLUS"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "Anker Solix C1000は1056Wh、定格1500W、約12.9kg、約37.6×20.5×26.7cmである。",
+          "evidence_refs": [
+            "SRC-ANKER-SOLIX-C1000"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "Anker Solix C1000 Gen 2は1024Wh、定格1550W、約11.3kg、約38.4×20.8×24.4cmである。",
+          "evidence_refs": [
+            "SRC-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-GENERATION-DIFF",
+          "classification": "EDITORIAL_INFERENCE",
+          "statement": "C1000 Gen 2は旧C1000より公表容量が32Wh小さい一方、定格出力は50W高く、公表重量は約1.6kg軽い。固定価格差を使わず、この差が用途に必要かで判断する。",
+          "evidence_refs": [
+            "SRC-ANKER-SOLIX-C1000",
+            "SRC-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "status": "INFERENCE_FROM_BOUND_OFFICIAL_FACTS"
+        }
+      ],
+      "draft_claim_coverage": {
+        "major_claim_count": 5,
+        "official_source_bound_major_claim_count": 5,
+        "verifiable_claim_count": 4,
+        "official_source_bound_verifiable_claim_count": 4
+      }
+    },
+    {
+      "source_packet_ref": "SPV-ST1704-ROBOT-VACUUM-V1",
+      "article_id": "st1704-compact-robot-vacuum-shortlist",
+      "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
+      "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
+      "fact_packet_sha256": "6a3affcbb75a821c00edc44d87128490ac8dd8e12f1ba012f3a1e30dd66a713f",
+      "source_refs": [
+        "SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "SRC-SWITCHBOT-K11-PRO",
+        "SRC-SWITCHBOT-K10-PRO-COMBO",
+        "SRC-IROBOT-ROOMBA-PLUS-515-COMBO"
+      ],
+      "claims": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-ROOMBA-MINI-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "Roomba Mini + AutoEmptyは本体24.5×24.5×9.2cm、ステーション17.8×21.2×28.5cmで、掃除機がけと使い捨てシート式水拭き、自動ゴミ収集に対応し、自動給水、ローラーモップの自動洗浄・自動乾燥には対応しない。",
+          "evidence_refs": [
+            "SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-K11-PRO-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "SwitchBot K11+ Proは本体248×248×92mmで、ゴミ収集ステーションは底面240×180mm、高さ250mm、自動ゴミ収集に対応し、市販のお掃除シートを使って使用後に捨てる方式と案内されている。",
+          "evidence_refs": [
+            "SRC-SWITCHBOT-K11-PRO"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-K10-COMBO-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "SwitchBot K10+ Pro Comboは本体248×248×92mm、デュアル集塵ステーションは公式表記195×297×410mmで、お掃除シート式に対応し、コードレス掃除機との共用ステーションを備える。寸法の数値順は本文でも保持する。",
+          "evidence_refs": [
+            "SRC-SWITCHBOT-K10-PRO-COMBO"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-ROOMBA-515-SPECS",
+          "classification": "MAJOR_VERIFIABLE",
+          "statement": "Roomba Plus 515 Comboは本体30.3×29.8×8.4cm、ステーション34.0×33.0×48.5cmで、DualCleanモップパッドを備え、ゴミ収集、自動給水、モップパッドの温水洗浄・温風乾燥に対応する。",
+          "evidence_refs": [
+            "SRC-IROBOT-ROOMBA-PLUS-515-COMBO"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "classification": "EDITORIAL_INFERENCE",
+          "statement": "公表寸法ではRoomba Miniは本体最大底面辺24.5cm・ステーション最大底面辺21.2cm、K11+ Proは24.8cm・24.0cm、K10+ Pro Comboは24.8cm・29.7cm、Roomba Plus 515 Comboは30.3cm・34.0cmである。この4モデルでは本体とステーションをともに25cm以下とする条件にRoomba MiniとK11+ Proだけが残り、K10+ Pro ComboとRoomba Plus 515 Comboは外れる。Roomba Plus 515 Comboは本体最大底面辺とステーション最大底面辺が最大で、使い捨てシート式、自動ゴミ収集、共用ステーション、DualCleanモップパッドの自動手入れという方式差でも候補が分かれる。",
+          "evidence_refs": [
+            "SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+            "SRC-SWITCHBOT-K11-PRO",
+            "SRC-SWITCHBOT-K10-PRO-COMBO",
+            "SRC-IROBOT-ROOMBA-PLUS-515-COMBO"
+          ],
+          "status": "INFERENCE_FROM_BOUND_OFFICIAL_FACTS"
+        }
+      ],
+      "draft_claim_coverage": {
+        "major_claim_count": 5,
+        "official_source_bound_major_claim_count": 5,
+        "verifiable_claim_count": 4,
+        "official_source_bound_verifiable_claim_count": 4
+      }
+    }
+  ],
+  "affiliate_resources": [
+    {
+      "affiliate_ref": "AFF-ACE-CRESTA-06316",
+      "product_id": "PRD-ACE-CRESTA-06316",
+      "product_name": "ACE クレスタ 06316",
+      "status": "FINAL_OFFICIAL_RAKUTEN_LINK",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": "https://hb.afl.rakuten.co.jp/hgc/g00qlfdo.0l0f20c2.g00qlfdo.0l0f32e9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06316%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Face-store%2Fi%2F10007275%2F&rafcid=wsc_i_is_bff71885-68be-4da1-a7e2-a4d1c4a46aaa",
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": {
+        "api": "item-search",
+        "api_version": "2026-07-01",
+        "endpoint_id": "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701",
+        "evidence_authority": "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE",
+        "request_fingerprint": "fa04354fe072ffcab2db3bfc757314a0eb62d78fcdbd3c068595d99094c41941",
+        "response_sha256": "74fff9cd8d0133f04ea9feee15de9b00d9362a5aff6114b066db67bef346e694",
+        "result_sha256": "696958a39b640c237eea64c51946a1dbcbe6f2ee2d05af545cf20b2e613b5956",
+        "destination_attestation_sha256": "103334aac9f8856524d50cdc43f7e321767cb6944f11ac71f65c4e48b03d895b",
+        "retrieved_at": "2026-08-22T22:31:01.675356Z"
+      },
+      "publication_blocker": null
+    },
+    {
+      "affiliate_ref": "AFF-ACE-DIFFERENCE-05721",
+      "product_id": "PRD-ACE-DIFFERENCE-05721",
+      "product_name": "ace.TOKYO LABEL ディフェレンス 05721",
+      "status": "FINAL_OFFICIAL_RAKUTEN_LINK",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": "https://hb.afl.rakuten.co.jp/hgc/g00qlfdo.0l0f20c2.g00qlfdo.0l0f32e9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F05721%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Face-store%2Fi%2F10009372%2F&rafcid=wsc_i_is_bff71885-68be-4da1-a7e2-a4d1c4a46aaa",
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": {
+        "api": "item-search",
+        "api_version": "2026-07-01",
+        "endpoint_id": "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701",
+        "evidence_authority": "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE",
+        "request_fingerprint": "1726d81e71f5faf2cf465dfe761156d26eea557d4ec58ced081aed86844ebbc6",
+        "response_sha256": "b145d6833c00807d8eb9ce7f6870c5d39823bffc4af14d705cc9bf29f1aeb81f",
+        "result_sha256": "1a88bd2518e89f7c99fc6b8d41a4d212c21cff54f77d99cc7ce075d8fdf839cc",
+        "destination_attestation_sha256": "cc29a4323bed079013b24acbe3f6f7a7bce368eb5c6fca82b656fc4e7d0b5087",
+        "retrieved_at": "2026-08-22T22:31:14.775883Z"
+      },
+      "publication_blocker": null
+    },
+    {
+      "affiliate_ref": "AFF-ACE-MAXPASS4-01471",
+      "product_id": "PRD-ACE-MAXPASS4-01471",
+      "product_name": "PROTECA マックスパス4 01471",
+      "status": "FINAL_OFFICIAL_RAKUTEN_LINK",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": "https://hb.afl.rakuten.co.jp/hgc/g00qlfdo.0l0f20c2.g00qlfdo.0l0f32e9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01471%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Face-store%2Fi%2F10009099%2F&rafcid=wsc_i_is_bff71885-68be-4da1-a7e2-a4d1c4a46aaa",
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": {
+        "api": "item-search",
+        "api_version": "2026-07-01",
+        "endpoint_id": "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701",
+        "evidence_authority": "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE",
+        "request_fingerprint": "1d8a40a227adce462cd85f5d700284517a1d6d35ee9c5d620fc75463e0d670cf",
+        "response_sha256": "3523722f71c42cab6926637e58a4fb97c49f5d9441e4223e15904733bfa3da81",
+        "result_sha256": "d830eba23e21c938f0d26482138f5fdfe8caf5b5eb8bac6c420e0a7994ed1800",
+        "destination_attestation_sha256": "737ccd609ed98fda741c921a79b1bff6106c72e7299a47c9e50791e07e858b5e",
+        "retrieved_at": "2026-08-22T22:31:15.266800Z"
+      },
+      "publication_blocker": null
+    },
+    {
+      "affiliate_ref": "AFF-ANKER-SOLIX-C300",
+      "product_id": "PRD-ANKER-SOLIX-C300",
+      "product_name": "Anker Solix C300 Portable Power Station",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-JACKERY-500-NEW",
+      "product_id": "PRD-JACKERY-500-NEW",
+      "product_name": "Jackery ポータブル電源 500 New",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-BLUETTI-AC70",
+      "product_id": "PRD-BLUETTI-AC70",
+      "product_name": "BLUETTI AC70",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-ECOFLOW-DELTA3-CLASSIC",
+      "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+      "product_name": "EcoFlow DELTA 3 Classic",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-PANASONIC-NP-TMLK1",
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "product_name": "Panasonic NP-TMLK1",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-THANKO-RAKUA-MINI-PLUS",
+      "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
+      "product_name": "THANKO ラクアmini Plus",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-SIROCA-SS-MA251",
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "product_name": "siroca SS-MA251",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-PANASONIC-NP-TSP1",
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "product_name": "Panasonic NP-TSP1",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-ANKER-SOLIX-C800-PLUS",
+      "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+      "product_name": "Anker Solix C800 Plus Portable Power Station",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-ANKER-SOLIX-C1000",
+      "product_id": "PRD-ANKER-SOLIX-C1000",
+      "product_name": "Anker Solix C1000 Portable Power Station",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-ANKER-SOLIX-C1000-GEN2",
+      "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+      "product_name": "Anker Solix C1000 Gen 2 Portable Power Station",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+      "product_name": "Roomba Mini 掃除機＆床拭きロボット + AutoEmpty 充電ステーション",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-SWITCHBOT-K11-PRO",
+      "product_id": "PRD-SWITCHBOT-K11-PRO",
+      "product_name": "SwitchBot ロボット掃除機 K11+ Pro",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-SWITCHBOT-K10-PRO-COMBO",
+      "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+      "product_name": "SwitchBot ロボット掃除機 K10+ Pro Combo",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    },
+    {
+      "affiliate_ref": "AFF-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "product_name": "Roomba Plus 515 Combo ロボット + AutoWash 充電ステーション",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+      "destination_url": null,
+      "required_rel": "sponsored nofollow",
+      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
+    }
+  ]
+}

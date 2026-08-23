@@ -1,0 +1,208 @@
+{
+  "approved_base_commit": "ca271187c4c8606487193110b29597a40e4c1c9f",
+  "article_ids": [
+    "st1703-first-suitcase-comparison",
+    "st1704-portable-power-station-guide",
+    "st1704-anker-solix-c300-c800-c1000-differences",
+    "st1704-countertop-dishwasher-for-small-households",
+    "st1704-compact-robot-vacuum-shortlist"
+  ],
+  "external_action_authority": "NONE",
+  "generated_by": "scripts/build_st1704_self_hosted_editorial_manifest.py",
+  "paths": [
+    {
+      "bytes": 6806,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
+      "sha256": "d3c93e73aac1ff92475417e87abc859c15cc251e2a3f8f513a511bd94e051691"
+    },
+    {
+      "bytes": 2528,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/EDITORIAL_RESEARCH_NOTES.md",
+      "sha256": "4c1fed7b4a4679ead75ca706d9064853325d06256858052a7321b13ed08daf1b"
+    },
+    {
+      "bytes": 2789,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
+      "sha256": "e9d36d74c83d79f9d47540eda7636e2fbe678e4b49414c694d07349a16d32da5"
+    },
+    {
+      "bytes": 17600,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
+      "sha256": "2c1da93155ec590e6a3b8d1f3f4c37c784a31d4697d82ae5e13810becff3d44f"
+    },
+    {
+      "bytes": 2270,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/PREFLIGHT.md",
+      "sha256": "023d5dde036f7c3a05572ca9df6d22ed517e1d9df581b34867da509f13eba95e"
+    },
+    {
+      "bytes": 5437,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
+      "sha256": "5a6a7c796c8f1515d473d9fce573d67724ee2b069a2dbdc06f2aef321d94a182"
+    },
+    {
+      "bytes": 111502,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
+      "sha256": "cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88"
+    },
+    {
+      "bytes": 23951,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/product-media-registry.v1.json",
+      "sha256": "662a98851680ac9c1b91e8c85815a17202cbe185aadb185002d5b1f5ff1416c6"
+    },
+    {
+      "bytes": 2106,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json",
+      "sha256": "1a1827f0296f1bdd7c983d141b2c2eae87a4ad9f327e68062e036adde289c73c"
+    },
+    {
+      "bytes": 1630,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/operations/publication-plan.v1.json",
+      "sha256": "53db8c8277da9dbd3b5b98a107327845307f58a9e3b767042ea9e64757f0e163"
+    },
+    {
+      "bytes": 34778,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
+      "sha256": "42ae90cf5acd5514632d019d8ec0b38cb7f1a8b7aa9c30d5b17a314d06d16421"
+    },
+    {
+      "bytes": 41446,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
+      "sha256": "ee78241d683b345a55a022eb9bb5214b5a362e6dfab1e645ed68fceab8f23917"
+    },
+    {
+      "bytes": 70148,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
+      "sha256": "23c585a03598a8521fd797c036d2caad4350139ad709ca9b0cfc3ab18ad993ad"
+    },
+    {
+      "bytes": 331,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
+      "sha256": "bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3"
+    },
+    {
+      "bytes": 133648,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
+      "sha256": "df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea"
+    },
+    {
+      "bytes": 10345,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+      "sha256": "63b55476a03f822b6723d3df141b9f3e4215c09e99e7dd366999fa12f29db8f2"
+    },
+    {
+      "bytes": 76817,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
+      "sha256": "f1423ff573f9378d84a9d2f067d8b17472d2b2afda514d5ce632d3aba88d4442"
+    },
+    {
+      "bytes": 581,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/footer.html",
+      "sha256": "ed8d2c2242575b08ad442752786b15b2184e649e4e7839fe22ae5a4609425aa0"
+    },
+    {
+      "bytes": 403,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/header.html",
+      "sha256": "e3a125c165aa3f59e719ea9f78989fbc8a1ccb125db7f7ab69a0df28f1303e46"
+    },
+    {
+      "bytes": 1694,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
+      "sha256": "89f2d2ebff268b67effc64c958171ffeab262ea80df0e591e2dfaff59260d4e0"
+    },
+    {
+      "bytes": 265,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/style.css",
+      "sha256": "709f97a188652aaa74d78bff50c8551b8248fab6f7ddb6876760d02d2726c299"
+    },
+    {
+      "bytes": 3625,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/front-page.html",
+      "sha256": "86972888a39444adfb2882755850693d07e6bed5738b76119741f8fe669e7ae0"
+    },
+    {
+      "bytes": 944,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/single.html",
+      "sha256": "5dd6acd3d1aed444322d85f72bfcc9de1dd1aaf266334febe8d13c36e35f14bb"
+    },
+    {
+      "bytes": 10747,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme-contract.v1.json",
+      "sha256": "58c4aadb51e9f0165e1ffee60bee0800616f30bb305e791ca41f13f1ca7d341c"
+    },
+    {
+      "bytes": 1933,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme.json",
+      "sha256": "af7ed75442b05192c4185a7bbe8ba8a95ee8e757d0f006aacf804e5801c03d7c"
+    },
+    {
+      "bytes": 2508,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/yoast-seo-28.3.lock.json",
+      "sha256": "ec8681bfafc60455eee8034c97e1f469268e95304d5fc05c6c1e5c3eaedc6225"
+    },
+    {
+      "bytes": 104488,
+      "path": "python/raos/adapters/self_hosted_editorial_pilot_https.py",
+      "sha256": "13a914638b25f8211e9873a1c200b0e19412cc76e5460489977a794c290b7764"
+    },
+    {
+      "bytes": 80340,
+      "path": "python/raos/adapters/self_hosted_editorial_pilot_json.py",
+      "sha256": "bcc59c40d2110aab337dc69c645ed27e0bcc1effe6a1322e517eeaa2559e55fb"
+    },
+    {
+      "bytes": 52322,
+      "path": "python/raos/adapters/self_hosted_editorial_source_capture.py",
+      "sha256": "2f2c6c5de824c63d3db4ff716965481655e3225bb33d3f96b244570a6c06d391"
+    },
+    {
+      "bytes": 70760,
+      "path": "python/raos/application/editorial/self_hosted_editorial_pilot.py",
+      "sha256": "136f009c79b601ae45e2853f0c6f01b1bc1f19759a70f3dc5a096fc9c57dedc9"
+    },
+    {
+      "bytes": 14026,
+      "path": "python/raos/domain/editorial/content_ast.py",
+      "sha256": "7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68"
+    },
+    {
+      "bytes": 39086,
+      "path": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
+      "sha256": "462f13676edd88efec28e081729a6e49dad3770cbedccbf300e3f781ab7b02fd"
+    },
+    {
+      "bytes": 2052,
+      "path": "python/raos/ports/self_hosted_editorial_pilot.py",
+      "sha256": "c9928badddb180761299688f261e58694b357d22b99dfe7f91f44bfaa507a25d"
+    },
+    {
+      "bytes": 8353,
+      "path": "scripts/build_st1704_self_hosted_editorial_manifest.py",
+      "sha256": "f07211ede23570308e92bdea98f7cbde65116777ef59ed0d63a188f0f7f1bbcc"
+    },
+    {
+      "bytes": 12299,
+      "path": "scripts/build_st1704_self_hosted_theme.py",
+      "sha256": "ec5d856368274415da6ea865621f3461f06f6b9cb525232fc12e0813d3d5afc0"
+    },
+    {
+      "bytes": 5367,
+      "path": "scripts/st1704_official_source_capture.py",
+      "sha256": "d16c2ddc43ba62d634c2dd48711ffba7c7f2b00ad7d386c5cc3f615b34221f5d"
+    },
+    {
+      "bytes": 8579,
+      "path": "scripts/st1704_self_hosted_editorial_pilot.py",
+      "sha256": "32dd79d0e31e27bd252873d38cd2a2f10390c59c67cd547567356e09ff2cf37d"
+    }
+  ],
+  "predecessor": {
+    "path": "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json",
+    "sha256": "47dbfa52146a4f99fb6a2c4bde8ab97ea1712434392ad26d5013642771be5348"
+  },
+  "publication_authority": "NONE",
+  "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+  "schema": "SELF_HOSTED_EDITORIAL_PILOT_MANIFEST_V1",
+  "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
+  "story_id": "ST-1704"
+}

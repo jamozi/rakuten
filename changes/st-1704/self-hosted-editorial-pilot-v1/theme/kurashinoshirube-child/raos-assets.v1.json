@@ -1,0 +1,50 @@
+{
+  "required_images": [
+    {
+      "canvas_height": 900,
+      "canvas_width": 1600,
+      "delivery": "THEME_CSS_BACKGROUND_AND_SOCIAL_FALLBACK",
+      "path": "assets/images/home-hero.webp",
+      "sha256": "df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea",
+      "status": "FINAL",
+      "usage": "Homepage hero and neutral social fallback"
+    },
+    {
+      "alt": "機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景",
+      "canvas_height": 900,
+      "canvas_width": 1600,
+      "delivery": "FIRST_ARTICLE_THEME_SHORTCODE",
+      "path": "assets/images/article-suitcase-guide.webp",
+      "sha256": "23c585a03598a8521fd797c036d2caad4350139ad709ca9b0cfc3ab18ad993ad",
+      "status": "FINAL",
+      "usage": "Existing suitcase article inline lead illustration"
+    },
+    {
+      "canvas_height": 64,
+      "canvas_width": 64,
+      "delivery": "FAVICON_FALLBACK",
+      "path": "assets/images/brand-mark.svg",
+      "sha256": "bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3",
+      "status": "FINAL",
+      "usage": "Theme-owned SVG favicon when no WordPress Site Icon is configured"
+    }
+  ],
+  "schema": "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1",
+  "source_files": [
+    "assets/images/article-suitcase-guide.webp",
+    "assets/images/brand-mark.svg",
+    "assets/images/home-hero.webp",
+    "assets/theme.css",
+    "functions.php",
+    "parts/footer.html",
+    "parts/header.html",
+    "raos-assets.v1.json",
+    "style.css",
+    "templates/front-page.html",
+    "templates/single.html",
+    "theme-contract.v1.json",
+    "theme.json"
+  ],
+  "theme_slug": "kurashinoshirube-child",
+  "theme_version": "1.1.0"
+}

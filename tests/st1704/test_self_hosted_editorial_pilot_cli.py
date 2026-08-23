@@ -1,0 +1,2174 @@
+"""Preparation, owner evidence, HTTPS, and CLI tests for ST-1704."""
+
+from __future__ import annotations
+
+from collections.abc import Iterator
+from dataclasses import replace
+from datetime import datetime, timedelta, timezone
+import json
+import os
+from pathlib import Path
+import runpy
+import subprocess
+import tempfile
+from types import SimpleNamespace
+from typing import cast
+from urllib.parse import parse_qs, urlencode, urlsplit
+import zlib
+
+import pytest
+
+import raos.adapters.self_hosted_editorial_pilot_https as https_module
+import raos.adapters.self_hosted_editorial_pilot_json as json_module
+import raos.application.editorial.self_hosted_editorial_pilot as application_module
+from raos.adapters.self_hosted_editorial_pilot_https import (
+    OWNER_GATE_AUTHORITY,
+    OWNER_GATE_DIRECTORY,
+    OWNER_GATE_SCHEMA,
+    OfficialSelfHostedEditorialPilotWordPressAdapter,
+    SELF_HOSTED_WORDPRESS_HOST,
+    SELF_HOSTED_WORDPRESS_PORT,
+    owner_gate_relative_path,
+    require_owner_live_gate,
+)
+from raos.adapters.self_hosted_editorial_pilot_json import (
+    JOURNAL_DIRECTORY,
+    OWNER_DIRECTORY,
+    OwnerPrivateLiveReviewDraftJournal,
+    RAKUTEN_DIRECTORY,
+    SOURCE_DIRECTORY,
+    read_official_source_capture_evidence,
+    read_rakuten_product_evidence,
+    rakuten_affiliate_response_relative_path,
+    rakuten_image_relative_path,
+    rakuten_response_relative_path,
+    source_body_relative_path,
+    source_evidence_relative_path,
+)
+from raos.application.editorial.self_hosted_editorial_pilot import (
+    prepare_editorial_article,
+)
+from raos.domain.editorial.self_hosted_editorial_pilot import (
+    EditorialPilotFailure,
+    EditorialPilotFailureCode,
+    PILOT_ARTICLE_IDENTITIES,
+    PILOT_CREATE_PATH,
+    PILOT_CTA_LABEL,
+    PILOT_SNAPSHOT_META_KEY,
+    OfficialSourceCaptureEvidence,
+    PublicVerification,
+    RakutenProductEvidence,
+    ReviewDraftDisposition,
+    ReviewDraftReceipt,
+    ReviewDraftRequest,
+    bytes_sha256,
+    canonical_json_bytes,
+    canonical_sha256,
+)
+from test_self_hosted_editorial_pilot import request
+
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+SLICE_ROOT = REPOSITORY_ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1"
+SCRIPT = REPOSITORY_ROOT / "scripts/st1704_self_hosted_editorial_pilot.py"
+_POLICY = (
+    ("aspect_ratio_change_allowed", False),
+    ("crop_allowed", False),
+    ("modification_allowed", False),
+    ("text_overlay_allowed", False),
+    ("upscale_allowed", False),
+)
+
+
+def _fixed_clock() -> datetime:
+    return datetime(2026, 8, 23, 11, 30, tzinfo=timezone.utc)
+
+
+def _documents() -> tuple[dict[str, object], dict[str, object], dict[str, object]]:
+    return tuple(  # type: ignore[return-value]
+        json.loads((SLICE_ROOT / relative).read_text(encoding="utf-8"))
+        for relative in (
+            "content/articles.v1.json",
+            "sources/source-registry.v1.json",
+            "media/product-media-registry.v1.json",
+        )
+    )
+
+
+def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
+    _articles, sources, media = _documents()
+    asset = next(
+        cast(dict[str, object], value)
+        for value in cast(list[object], media["assets"])
+        if cast(dict[str, object], value)["product_id"] == product_id
+    )
+    affiliate = next(
+        cast(dict[str, object], value)
+        for value in cast(list[object], sources["affiliate_resources"])
+        if cast(dict[str, object], value)["product_id"] == product_id
+    )
+    tail = product_id.lower().removeprefix("prd-")
+    item_url = f"https://item.rakuten.co.jp/test-shop/{tail}/"
+    destination = affiliate["destination_url"]
+    if destination is None:
+        destination = "https://hb.afl.rakuten.co.jp/hgc/test.abc/?" + urlencode(
+            {
+                "m": f"https://m.rakuten.co.jp/test-shop/i/{tail}/",
+                "pc": item_url,
+                "rafcid": "synthetic-test",
+            }
+        )
+    else:
+        item_url = parse_qs(urlsplit(cast(str, destination)).query)["pc"][0]
+    identity = cast(dict[str, object], asset["identity"])
+    variant = cast(list[str], identity["allowed_variants"])[0]
+    required_tokens = cast(list[str], identity["required_title_tokens"])
+    kind_token = cast(list[str], identity["product_kind_tokens"])[0]
+    item_name = " ".join(
+        [cast(str, asset["product_name"]), *required_tokens, kind_token]
+    )
+    response = (
+        canonical_json_bytes(
+            {
+                "count": 1,
+                "items": [
+                    {
+                        "itemCode": f"test-shop:{tail}",
+                        "itemName": item_name,
+                        "itemUrl": item_url,
+                        "mediumImageUrls": [
+                            "https://thumbnail.image.rakuten.co.jp/@0_mall/test-shop/"
+                            f"cabinet/{tail}.jpg?_ex=128x128"
+                        ],
+                        "reviewAverage": 4.5,
+                    }
+                ],
+            }
+        )
+        + b"\n"
+    )
+    image = _synthetic_image_bytes()
+    request_material = {
+        "api_version": "2026-07-01",
+        "elements": [
+            "itemCode",
+            "itemName",
+            "itemUrl",
+            "mediumImageUrls",
+        ],
+        "endpoint": (
+            "https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701"
+        ),
+        "format": "json",
+        "format_version": 2,
+        "affiliate_id_supplied": False,
+        "image_flag": 1,
+        "item_code": f"test-shop:{tail}",
+        "schema": "RAOS_ST1704_RAKUTEN_ITEM_SEARCH_REQUEST_V1",
+        "secret_fields_excluded": ["accessKey", "affiliateId", "applicationId"],
+    }
+    image_url = (
+        "https://thumbnail.image.rakuten.co.jp/@0_mall/test-shop/"
+        f"cabinet/{tail}.jpg?_ex=128x128"
+    )
+    selected_result = {
+        "image_url": image_url,
+        "item_code": f"test-shop:{tail}",
+        "item_name": item_name,
+        "schema": "RAOS_ST1704_RAKUTEN_PROVIDER_IDENTITY_V1",
+        "source_url": item_url,
+    }
+    affiliate_request_material = {
+        **request_material,
+        "affiliate_id_supplied": True,
+        "elements": [
+            "affiliateUrl",
+            "itemCode",
+            "itemName",
+            "itemUrl",
+            "mediumImageUrls",
+        ],
+    }
+    affiliate_response = (
+        canonical_json_bytes(
+            {
+                "count": 1,
+                "items": [
+                    {
+                        "affiliateUrl": destination,
+                        "itemCode": f"test-shop:{tail}",
+                        "itemName": item_name,
+                        "itemUrl": destination,
+                        "mediumImageUrls": [image_url],
+                        "reviewAverage": 4.5,
+                    }
+                ],
+            }
+        )
+        + b"\n"
+    )
+    affiliate_selected_result = {
+        "affiliate_url": destination,
+        "image_url": image_url,
+        "item_code": f"test-shop:{tail}",
+        "item_name": item_name,
+        "item_url": destination,
+        "schema": "RAOS_ST1704_RAKUTEN_AFFILIATE_PROVIDER_IDENTITY_V1",
+    }
+    return RakutenProductEvidence(
+        product_id=product_id,
+        affiliate_ref=cast(str, affiliate["affiliate_ref"]),
+        media_asset_ref=cast(str, asset["media_asset_ref"]),
+        item_code=f"test-shop:{tail}",
+        item_name=item_name,
+        jan=cast(str | None, identity["jan"]),
+        variant=variant,
+        source_url=item_url,
+        destination_url=cast(str, destination),
+        image_url=image_url,
+        width=128,
+        height=128,
+        retrieved_at="2026-08-23T11:00:00Z",
+        request_fingerprint=canonical_sha256(request_material),
+        response_sha256=bytes_sha256(response),
+        selected_result_sha256=canonical_sha256(selected_result),
+        affiliate_request_fingerprint=canonical_sha256(affiliate_request_material),
+        affiliate_response_sha256=bytes_sha256(affiliate_response),
+        affiliate_selected_result_sha256=canonical_sha256(affiliate_selected_result),
+        image_sha256=bytes_sha256(image),
+        no_modification_policy=_POLICY,
+    )
+
+
+def _synthetic_image_bytes() -> bytes:
+    def chunk(name: bytes, payload: bytes) -> bytes:
+        return (
+            len(payload).to_bytes(4, "big")
+            + name
+            + payload
+            + (zlib.crc32(name + payload) & 0xFFFFFFFF).to_bytes(4, "big")
+        )
+
+    ihdr = (128).to_bytes(4, "big") + (128).to_bytes(4, "big") + bytes((8, 2, 0, 0, 0))
+    pixels = b"".join(b"\x00" + (b"\x00" * (128 * 3)) for _ in range(128))
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", ihdr)
+        + chunk(b"IDAT", zlib.compress(pixels))
+        + chunk(b"IEND", b"")
+    )
+
+
+def _synthetic_response_bytes(evidence: RakutenProductEvidence) -> bytes:
+    return (
+        canonical_json_bytes(
+            {
+                "count": 1,
+                "items": [
+                    {
+                        "itemCode": evidence.item_code,
+                        "itemName": evidence.item_name,
+                        "itemUrl": evidence.source_url,
+                        "mediumImageUrls": [evidence.image_url],
+                        "reviewAverage": 4.5,
+                    }
+                ],
+            }
+        )
+        + b"\n"
+    )
+
+
+def _synthetic_affiliate_response_bytes(evidence: RakutenProductEvidence) -> bytes:
+    return (
+        canonical_json_bytes(
+            {
+                "count": 1,
+                "items": [
+                    {
+                        "affiliateUrl": evidence.destination_url,
+                        "itemCode": evidence.item_code,
+                        "itemName": evidence.item_name,
+                        "itemUrl": evidence.destination_url,
+                        "mediumImageUrls": [evidence.image_url],
+                        "reviewAverage": 4.5,
+                    }
+                ],
+            }
+        )
+        + b"\n"
+    )
+
+
+def _reader(repository_root: Path, *, product_id: str) -> RakutenProductEvidence:
+    assert repository_root == REPOSITORY_ROOT
+    return _synthetic_evidence(product_id)
+
+
+def _source_reader(
+    repository_root: Path, *, source_ref: str
+) -> OfficialSourceCaptureEvidence:
+    assert repository_root == REPOSITORY_ROOT
+    _articles, sources, _media = _documents()
+    registry_sources = [
+        *cast(list[dict[str, object]], sources["sources"]),
+        *cast(list[dict[str, object]], sources["policy_sources"]),
+    ]
+    source = next(
+        value for value in registry_sources if value["source_ref"] == source_ref
+    )
+    policy_refs = {
+        value["source_ref"]
+        for value in cast(list[dict[str, object]], sources["policy_sources"])
+    }
+    if source_ref in policy_refs:
+        claim_records = [("POLICY-SOURCE-STATEMENT", cast(str, source["title"]))]
+    else:
+        claim_records = sorted(
+            (cast(str, claim["claim_id"]), cast(str, claim["statement"]))
+            for packet in cast(list[dict[str, object]], sources["source_packets"])
+            for claim in cast(list[dict[str, object]], packet["claims"])
+            if source_ref in cast(list[str], claim["evidence_refs"])
+        )
+    locators = tuple(
+        (
+            claim_id,
+            bytes_sha256(statement.encode()),
+            (
+                (
+                    f"{claim_id}: {statement}",
+                    bytes_sha256(f"{claim_id}: {statement}".encode()),
+                ),
+            ),
+        )
+        for claim_id, statement in claim_records
+    )
+    retrieved_at = f"{cast(str, source['retrieved_on'])}T00:00:00Z"
+    content_type = (
+        "application/pdf" if source["source_type"] == "PRODUCT_MANUAL" else "text/html"
+    )
+    body = _source_body_bytes(content_type, locators)
+    body_sha256 = bytes_sha256(body)
+    material = {
+        "body_sha256": body_sha256,
+        "content_type": content_type,
+        "final_url": source["url"],
+        "http_status": 200,
+        "retrieved_at": retrieved_at,
+        "schema": "RAOS_ST1704_OFFICIAL_SOURCE_CAPTURE_V1",
+        "source_ref": source_ref,
+    }
+    return OfficialSourceCaptureEvidence(
+        source_ref=source_ref,
+        final_url=cast(str, source["url"]),
+        retrieved_at=retrieved_at,
+        content_type=content_type,
+        body_sha256=body_sha256,
+        response_sha256=canonical_sha256(material),
+        locators=locators,
+    )
+
+
+def _source_body_bytes(
+    content_type: str,
+    locators: tuple[tuple[str, str, tuple[tuple[str, str], ...]], ...],
+) -> bytes:
+    fragments = "\n".join(
+        fragment
+        for _claim, _statement, fragment_records in locators
+        for fragment, _hash in fragment_records
+    )
+    if content_type == "application/pdf":
+        return f"%PDF-1.7\n{fragments}\n%%EOF\n".encode()
+    if content_type == "text/html":
+        return f"<!doctype html><html><body>{fragments}</body></html>".encode()
+    raise AssertionError("unsupported synthetic content type")
+
+
+@pytest.fixture
+def private_root() -> Iterator[Path]:
+    with tempfile.TemporaryDirectory(
+        prefix="raos-st1704-evidence-", dir="/var/tmp"
+    ) as directory:
+        yield Path(directory)
+
+
+class _ArtifactJournalPort:
+    def __init__(self, *, create_fails: bool = False) -> None:
+        self.create_fails = create_fails
+        self.created: list[ReviewDraftRequest] = []
+        self.recovered: list[ReviewDraftRequest] = []
+        self.verified: list[ReviewDraftRequest] = []
+        self.verified_public_post_ids: list[int] = []
+
+    def preflight(self, request: ReviewDraftRequest, command: str) -> None:
+        assert request.article_id in {
+            identity.article_id for identity in PILOT_ARTICLE_IDENTITIES
+        }
+        assert command in {
+            "create-review-draft",
+            "recover-create-review-draft",
+            "verify-public",
+        }
+
+    def resolve_public_target(
+        self, request: ReviewDraftRequest, command: str
+    ) -> int | None:
+        assert command in {"create-review-draft", "recover-create-review-draft"}
+        return 42 if request.article_id == "st1703-first-suitcase-comparison" else None
+
+    def create(self, request: ReviewDraftRequest) -> ReviewDraftReceipt:
+        self.created.append(request)
+        if self.create_fails:
+            raise EditorialPilotFailure(EditorialPilotFailureCode.OUTCOME_AMBIGUOUS)
+        return self._receipt(request, ReviewDraftDisposition.OWNER_LIVE_CREATED)
+
+    def recover(self, request: ReviewDraftRequest) -> ReviewDraftReceipt:
+        self.recovered.append(request)
+        return self._receipt(request, ReviewDraftDisposition.OWNER_LIVE_RECOVERED)
+
+    def verify_public(
+        self, request: ReviewDraftRequest, expected_public_post_id: int
+    ) -> PublicVerification:
+        self.verified.append(request)
+        self.verified_public_post_ids.append(expected_public_post_id)
+        return PublicVerification(
+            article_id=request.article_id,
+            packet_sha256=request.packet_sha256,
+            request_sha256=request.request_sha256,
+            response_sha256="e" * 64,
+            post_id=expected_public_post_id,
+            status="publish",
+        )
+
+    @staticmethod
+    def _receipt(
+        request: ReviewDraftRequest, disposition: ReviewDraftDisposition
+    ) -> ReviewDraftReceipt:
+        return ReviewDraftReceipt(
+            article_id=request.article_id,
+            packet_sha256=request.packet_sha256,
+            request_sha256=request.request_sha256,
+            response_sha256="d" * 64,
+            draft_id=1704,
+            disposition=disposition,
+            target_public_post_id=(
+                42 if request.article_id == "st1703-first-suitcase-comparison" else None
+            ),
+            recorded_evidence_only=False,
+            live_authority=True,
+        )
+
+
+def _install_overlay(root: Path, evidence: RakutenProductEvidence) -> Path:
+    directory = root / ".secrets" / OWNER_DIRECTORY / RAKUTEN_DIRECTORY
+    directory.mkdir(parents=True, mode=0o700)
+    (root / ".secrets").chmod(0o700)
+    (root / ".secrets" / OWNER_DIRECTORY).chmod(0o700)
+    directory.chmod(0o700)
+    document = {
+        "affiliate_request_fingerprint": evidence.affiliate_request_fingerprint,
+        "affiliate_ref": evidence.affiliate_ref,
+        "affiliate_response_sha256": evidence.affiliate_response_sha256,
+        "affiliate_selected_result_sha256": (evidence.affiliate_selected_result_sha256),
+        "destination_url": evidence.destination_url,
+        "height": evidence.height,
+        "image_sha256": evidence.image_sha256,
+        "image_url": evidence.image_url,
+        "item_code": evidence.item_code,
+        "item_name": evidence.item_name,
+        "jan": evidence.jan,
+        "media_asset_ref": evidence.media_asset_ref,
+        "no_modification_policy": dict(evidence.no_modification_policy),
+        "product_id": evidence.product_id,
+        "request_fingerprint": evidence.request_fingerprint,
+        "response_sha256": evidence.response_sha256,
+        "retrieved_at": evidence.retrieved_at,
+        "schema": evidence.schema,
+        "selected_result_sha256": evidence.selected_result_sha256,
+        "source_url": evidence.source_url,
+        "variant": evidence.variant,
+        "width": evidence.width,
+    }
+    path = directory / f"{evidence.product_id}.v1.json"
+    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        payload = canonical_json_bytes(document) + b"\n"
+        assert os.write(descriptor, payload) == len(payload)
+        os.fchmod(descriptor, 0o600)
+    finally:
+        os.close(descriptor)
+    response_path = root / rakuten_response_relative_path(evidence.product_id)
+    response_payload = _synthetic_response_bytes(evidence)
+    assert bytes_sha256(response_payload) == evidence.response_sha256
+    response_descriptor = os.open(
+        response_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600
+    )
+    try:
+        assert os.write(response_descriptor, response_payload) == len(response_payload)
+        os.fchmod(response_descriptor, 0o600)
+    finally:
+        os.close(response_descriptor)
+    affiliate_response_path = root / rakuten_affiliate_response_relative_path(
+        evidence.product_id
+    )
+    affiliate_response_payload = _synthetic_affiliate_response_bytes(evidence)
+    assert (
+        bytes_sha256(affiliate_response_payload) == evidence.affiliate_response_sha256
+    )
+    affiliate_response_descriptor = os.open(
+        affiliate_response_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600
+    )
+    try:
+        assert os.write(
+            affiliate_response_descriptor, affiliate_response_payload
+        ) == len(affiliate_response_payload)
+        os.fchmod(affiliate_response_descriptor, 0o600)
+    finally:
+        os.close(affiliate_response_descriptor)
+    image_path = root / rakuten_image_relative_path(evidence.product_id)
+    image_payload = _synthetic_image_bytes()
+    assert bytes_sha256(image_payload) == evidence.image_sha256
+    image_descriptor = os.open(image_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        assert os.write(image_descriptor, image_payload) == len(image_payload)
+        os.fchmod(image_descriptor, 0o600)
+    finally:
+        os.close(image_descriptor)
+    return path
+
+
+def _install_source_overlay(
+    root: Path, evidence: OfficialSourceCaptureEvidence
+) -> tuple[Path, Path]:
+    directory = root / ".secrets" / OWNER_DIRECTORY / SOURCE_DIRECTORY
+    directory.mkdir(parents=True, mode=0o700)
+    (root / ".secrets").chmod(0o700)
+    (root / ".secrets" / OWNER_DIRECTORY).chmod(0o700)
+    directory.chmod(0o700)
+    metadata_path = root / source_evidence_relative_path(evidence.source_ref)
+    body_path = root / source_body_relative_path(evidence.source_ref)
+    metadata = canonical_json_bytes(evidence.value()) + b"\n"
+    body = _source_body_bytes(evidence.content_type, evidence.locators)
+    assert bytes_sha256(body) == evidence.body_sha256
+    for path, payload in ((metadata_path, metadata), (body_path, body)):
+        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        try:
+            assert os.write(descriptor, payload) == len(payload)
+            os.fchmod(descriptor, 0o600)
+        finally:
+            os.close(descriptor)
+    return metadata_path, body_path
+
+
+def test_all_five_packets_render_deterministically_with_closed_draft_payload() -> None:
+    total_cards = 0
+    for identity in PILOT_ARTICLE_IDENTITIES:
+        first = prepare_editorial_article(
+            REPOSITORY_ROOT,
+            identity.article_id,
+            evidence_reader=_reader,
+            source_evidence_reader=_source_reader,
+            clock=_fixed_clock,
+        )
+        second = prepare_editorial_article(
+            REPOSITORY_ROOT,
+            identity.article_id,
+            evidence_reader=_reader,
+            source_evidence_reader=_source_reader,
+            clock=_fixed_clock,
+        )
+        assert first.packet_sha256 == second.packet_sha256
+        assert first.request.request_sha256 == second.request.request_sha256
+        assert first.request.content == second.request.content
+        assert set(first.request.wordpress_body()) == {
+            "content",
+            "excerpt",
+            "meta",
+            "slug",
+            "status",
+            "title",
+        }
+        assert first.request.wordpress_body()["status"] == "draft"
+        assert set(cast(dict[str, object], first.request.wordpress_body()["meta"])) == {
+            PILOT_SNAPSHOT_META_KEY
+        }
+        content = first.request.content
+        assert content.startswith('<aside class="raos-disclosure"')
+        assert "<h1" not in content.lower()
+        assert content.count('class="raos-product-card"') == first.product_count
+        assert content.count('class="raos-product-card__media"') == first.product_count
+        assert content.count('class="raos-comparison__table-view"') == 1
+        assert content.count('class="raos-comparison__cards"') == 1
+        assert content.count('class="raos-comparison-card"') == first.product_count
+        assert "<dl><div><dt>商品</dt><dd>" in content
+        assert content.count('width="128" height="128"') == first.product_count
+        assert content.count('class="raos-cta"') == first.product_count * 2
+        assert content.count(PILOT_CTA_LABEL) == first.product_count * 2
+        assert content.count("Supported by Rakuten Developers") == 1
+        assert 'rel="sponsored nofollow"' in content
+        assert 'data-raos-placement="product_card"' in content
+        assert 'data-raos-placement="final_summary"' in content
+        assert first.request.snapshot.payload.seo_title
+        assert first.request.snapshot.payload.seo_title != ""
+        assert first.request.snapshot.payload.packet_sha256 == first.packet_sha256
+        assert "raos-related-guides" not in content
+        assert all(
+            f'href="/{other.slug}/"' not in content
+            for other in PILOT_ARTICLE_IDENTITIES
+        )
+        assert not first.publication_authority
+        assert not first.production_evidence
+        assert first.network_requests == first.external_writes == 0
+        total_cards += first.product_count
+    assert total_cards == 19
+
+
+def test_committed_request_survives_three_day_freshness_and_shared_c300_refresh(
+    private_root: Path,
+) -> None:
+    article_id = "st1704-portable-power-station-guide"
+    original = prepare_editorial_article(
+        REPOSITORY_ROOT,
+        article_id,
+        evidence_reader=_reader,
+        source_evidence_reader=_source_reader,
+        clock=_fixed_clock,
+    )
+    port = _ArtifactJournalPort()
+    journal = OwnerPrivateLiveReviewDraftJournal(private_root, port)
+    journal.create(original.request)
+    day_seven = datetime(2026, 8, 26, 11, 30, tzinfo=timezone.utc)
+
+    with pytest.raises(EditorialPilotFailure) as stale_current_evidence:
+        prepare_editorial_article(
+            REPOSITORY_ROOT,
+            article_id,
+            evidence_reader=_reader,
+            source_evidence_reader=_source_reader,
+            clock=lambda: day_seven,
+        )
+    assert (
+        stale_current_evidence.value.code
+        is EditorialPilotFailureCode.RESOURCE_NOT_READY
+    )
+
+    def refreshed_reader(root: Path, *, product_id: str) -> RakutenProductEvidence:
+        del root
+        return replace(
+            _synthetic_evidence(product_id),
+            retrieved_at="2026-08-26T11:00:00Z",
+        )
+
+    refreshed = prepare_editorial_article(
+        REPOSITORY_ROOT,
+        article_id,
+        evidence_reader=refreshed_reader,
+        source_evidence_reader=_source_reader,
+        clock=lambda: day_seven,
+    )
+    assert refreshed.request.packet_sha256 != original.request.packet_sha256
+    assert refreshed.request.request_sha256 != original.request.request_sha256
+
+    persisted, expected_public_post_id = journal.committed_request(article_id)
+    assert persisted == original.request
+    assert persisted != refreshed.request
+    assert expected_public_post_id == 1704
+
+
+@pytest.mark.parametrize(
+    ("hidden_block_index", "expected_type"),
+    [(1, "lead"), (8, "product_card")],
+    ids=["standalone-admin-only", "adjacent-product-card-admin-only"],
+)
+def test_prepare_and_renderer_reject_every_admin_only_block(
+    monkeypatch: pytest.MonkeyPatch,
+    hidden_block_index: int,
+    expected_type: str,
+) -> None:
+    articles, _sources, _media = _documents()
+    article = next(
+        value
+        for value in cast(list[dict[str, object]], articles["articles"])
+        if value["article_id"] == "st1704-portable-power-station-guide"
+    )
+    ast_model = application_module.load_content_ast(  # type: ignore[attr-defined]
+        canonical_json_bytes(article["content_ast"])
+    )
+    ast = cast(
+        dict[str, object],
+        ast_model.model_dump(mode="json", by_alias=True, warnings=False),
+    )
+    blocks = cast(list[dict[str, object]], ast["blocks"])
+    assert blocks[hidden_block_index]["type"] == expected_type
+    if expected_type == "product_card":
+        assert blocks[hidden_block_index - 1]["type"] == "product_card"
+    blocks[hidden_block_index]["visibility"] = "admin_only"
+    model = SimpleNamespace(model_dump=lambda **_kwargs: ast)
+    monkeypatch.setattr(
+        application_module,
+        "load_content_ast",
+        lambda _raw: model,
+    )
+
+    with pytest.raises(EditorialPilotFailure) as prepared:
+        prepare_editorial_article(
+            REPOSITORY_ROOT,
+            "st1704-portable-power-station-guide",
+            evidence_reader=_reader,
+            source_evidence_reader=_source_reader,
+            clock=_fixed_clock,
+        )
+    assert prepared.value.code is EditorialPilotFailureCode.CONTENT_AST_INVALID
+
+    renderer = application_module._Renderer.__new__(  # type: ignore[attr-defined]
+        application_module._Renderer  # type: ignore[attr-defined]
+    )
+    with pytest.raises(EditorialPilotFailure) as rendered:
+        renderer.render(ast)
+    assert rendered.value.code is EditorialPilotFailureCode.CONTENT_AST_INVALID
+
+
+def test_renderer_output_is_bound_into_packet_snapshot_and_review_identity(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    baseline = prepare_editorial_article(
+        REPOSITORY_ROOT,
+        "st1704-portable-power-station-guide",
+        evidence_reader=_reader,
+        source_evidence_reader=_source_reader,
+        clock=_fixed_clock,
+    )
+    original = application_module._Renderer.render  # type: ignore[attr-defined]
+
+    def changed(renderer: object, ast: object) -> str:
+        return (
+            original(renderer, ast) + '<p class="renderer-contract-mutation">差分</p>'
+        )
+
+    monkeypatch.setattr(application_module._Renderer, "render", changed)  # type: ignore[attr-defined]
+    mutated = prepare_editorial_article(
+        REPOSITORY_ROOT,
+        "st1704-portable-power-station-guide",
+        evidence_reader=_reader,
+        source_evidence_reader=_source_reader,
+        clock=_fixed_clock,
+    )
+    assert mutated.packet_sha256 != baseline.packet_sha256
+    assert mutated.request.request_sha256 != baseline.request.request_sha256
+    assert (
+        mutated.request.snapshot.payload_sha256
+        != baseline.request.snapshot.payload_sha256
+    )
+    assert mutated.request.slug != baseline.request.slug
+
+
+def test_freshness_boundaries_reject_stale_future_and_non_utc_clock() -> None:
+    application_module._require_observed_date_not_future(  # type: ignore[attr-defined]
+        "2020-01-01", now=datetime(2026, 8, 23, tzinfo=timezone.utc)
+    )
+    with pytest.raises(EditorialPilotFailure) as future_date:
+        application_module._require_observed_date_not_future(  # type: ignore[attr-defined]
+            "2026-08-24", now=datetime(2026, 8, 23, tzinfo=timezone.utc)
+        )
+    assert future_date.value.code is EditorialPilotFailureCode.RESOURCE_NOT_READY
+
+    application_module._require_fresh_rakuten_timestamp(  # type: ignore[attr-defined]
+        "2026-08-22T11:30:00Z",
+        now=datetime(2026, 8, 23, 11, 30, tzinfo=timezone.utc),
+    )
+    with pytest.raises(EditorialPilotFailure) as stale_rakuten:
+        application_module._require_fresh_rakuten_timestamp(  # type: ignore[attr-defined]
+            "2026-08-22T11:29:59Z",
+            now=datetime(2026, 8, 23, 11, 30, tzinfo=timezone.utc),
+        )
+    assert stale_rakuten.value.code is EditorialPilotFailureCode.RESOURCE_NOT_READY
+    with pytest.raises(EditorialPilotFailure) as future_rakuten:
+        application_module._require_fresh_rakuten_timestamp(  # type: ignore[attr-defined]
+            "2026-08-23T11:30:01Z",
+            now=datetime(2026, 8, 23, 11, 30, tzinfo=timezone.utc),
+        )
+    assert future_rakuten.value.code is EditorialPilotFailureCode.RESOURCE_NOT_READY
+
+    with pytest.raises(EditorialPilotFailure) as non_utc:
+        prepare_editorial_article(
+            REPOSITORY_ROOT,
+            "st1704-portable-power-station-guide",
+            evidence_reader=_reader,
+            source_evidence_reader=_source_reader,
+            clock=lambda: datetime(
+                2026, 8, 23, 20, 30, tzinfo=timezone(timedelta(hours=9))
+            ),
+        )
+    assert non_utc.value.code is EditorialPilotFailureCode.RESOURCE_NOT_READY
+
+
+def test_source_capture_time_is_truthful_monotonic_and_independently_fresh() -> None:
+    def reader_at(retrieved_at: str):
+        def read(root: Path, *, source_ref: str) -> OfficialSourceCaptureEvidence:
+            original = _source_reader(root, source_ref=source_ref)
+            material = original.response_material()
+            material["retrieved_at"] = retrieved_at
+            return replace(
+                original,
+                retrieved_at=retrieved_at,
+                response_sha256=canonical_sha256(material),
+            )
+
+        return read
+
+    current = prepare_editorial_article(
+        REPOSITORY_ROOT,
+        "st1704-portable-power-station-guide",
+        evidence_reader=_reader,
+        source_evidence_reader=reader_at("2026-08-23T10:00:00Z"),
+        clock=_fixed_clock,
+    )
+    assert current.request.packet_sha256
+
+    delayed_now = datetime(2026, 9, 15, 11, 30, tzinfo=timezone.utc)
+
+    def current_products(root: Path, *, product_id: str) -> RakutenProductEvidence:
+        del root
+        return replace(
+            _synthetic_evidence(product_id),
+            retrieved_at="2026-09-15T11:00:00Z",
+        )
+
+    delayed = prepare_editorial_article(
+        REPOSITORY_ROOT,
+        "st1704-portable-power-station-guide",
+        evidence_reader=current_products,
+        source_evidence_reader=reader_at("2026-09-15T10:00:00Z"),
+        clock=lambda: delayed_now,
+    )
+    assert delayed.request.packet_sha256 != current.request.packet_sha256
+
+    with pytest.raises(EditorialPilotFailure) as backdated:
+        prepare_editorial_article(
+            REPOSITORY_ROOT,
+            "st1704-portable-power-station-guide",
+            evidence_reader=_reader,
+            source_evidence_reader=reader_at("2026-08-11T23:59:59Z"),
+            clock=_fixed_clock,
+        )
+    assert backdated.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+
+
+def test_missing_or_cross_bound_product_evidence_fails_closed() -> None:
+    def missing(root: Path, *, product_id: str) -> RakutenProductEvidence:
+        del root, product_id
+        raise EditorialPilotFailure(EditorialPilotFailureCode.RESOURCE_NOT_READY)
+
+    with pytest.raises(EditorialPilotFailure) as absent:
+        prepare_editorial_article(
+            REPOSITORY_ROOT,
+            "st1704-portable-power-station-guide",
+            evidence_reader=missing,
+            source_evidence_reader=_source_reader,
+            clock=_fixed_clock,
+        )
+    assert absent.value.code is EditorialPilotFailureCode.RESOURCE_NOT_READY
+
+    def mismatched(root: Path, *, product_id: str) -> RakutenProductEvidence:
+        del root
+        value = _synthetic_evidence(product_id)
+        return RakutenProductEvidence(
+            product_id=value.product_id,
+            affiliate_ref=value.affiliate_ref,
+            media_asset_ref="MEDIA-WRONG-BOUNDARY",
+            item_code=value.item_code,
+            item_name=value.item_name,
+            jan=value.jan,
+            variant=value.variant,
+            source_url=value.source_url,
+            destination_url=value.destination_url,
+            image_url=value.image_url,
+            width=value.width,
+            height=value.height,
+            retrieved_at=value.retrieved_at,
+            request_fingerprint=value.request_fingerprint,
+            response_sha256=value.response_sha256,
+            selected_result_sha256=value.selected_result_sha256,
+            affiliate_request_fingerprint=value.affiliate_request_fingerprint,
+            affiliate_response_sha256=value.affiliate_response_sha256,
+            affiliate_selected_result_sha256=(value.affiliate_selected_result_sha256),
+            image_sha256=value.image_sha256,
+            no_modification_policy=value.no_modification_policy,
+        )
+
+    with pytest.raises(EditorialPilotFailure) as mismatch:
+        prepare_editorial_article(
+            REPOSITORY_ROOT,
+            "st1704-portable-power-station-guide",
+            evidence_reader=mismatched,
+            source_evidence_reader=_source_reader,
+            clock=_fixed_clock,
+        )
+    assert mismatch.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("source_url", "https://example.invalid/item/"),
+        (
+            "image_url",
+            "https://thumbnail.image.rakuten.co.jp/@0_mall/test/item.jpg?_ex=256x256",
+        ),
+        ("width", 256),
+    ],
+)
+def test_rakuten_evidence_rejects_unbound_hosts_or_non_128_image(
+    field: str, value: object
+) -> None:
+    evidence = _synthetic_evidence("PRD-ANKER-SOLIX-C300")
+    with pytest.raises(EditorialPilotFailure) as failure:
+        replace(evidence, **{field: value})
+    assert failure.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+
+
+def test_owner_private_rakuten_overlay_is_fixed_schema_and_mode_bound(
+    private_root: Path,
+) -> None:
+    evidence = _synthetic_evidence("PRD-ANKER-SOLIX-C300")
+    path = _install_overlay(private_root, evidence)
+
+    loaded = read_rakuten_product_evidence(private_root, product_id=evidence.product_id)
+    assert loaded == evidence
+    assert path.stat().st_mode & 0o777 == 0o600
+
+    document = json.loads(path.read_text(encoding="utf-8"))
+    document["arbitrary_url"] = "https://example.invalid/"
+    path.write_bytes(canonical_json_bytes(document) + b"\n")
+    path.chmod(0o600)
+    with pytest.raises(EditorialPilotFailure) as extra:
+        read_rakuten_product_evidence(private_root, product_id=evidence.product_id)
+    assert extra.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+
+
+def test_rakuten_overlay_requires_second_affiliate_capture_and_image_bytes(
+    private_root: Path,
+) -> None:
+    evidence = _synthetic_evidence("PRD-ANKER-SOLIX-C300")
+    _install_overlay(private_root, evidence)
+    affiliate_path = private_root / rakuten_affiliate_response_relative_path(
+        evidence.product_id
+    )
+    held_path = affiliate_path.with_suffix(".held")
+    affiliate_path.rename(held_path)
+    with pytest.raises(EditorialPilotFailure) as missing:
+        read_rakuten_product_evidence(private_root, product_id=evidence.product_id)
+    assert missing.value.code is EditorialPilotFailureCode.RESOURCE_NOT_READY
+    held_path.rename(affiliate_path)
+
+    affiliate_path.write_bytes(
+        _synthetic_affiliate_response_bytes(evidence).replace(
+            evidence.destination_url.encode(), evidence.source_url.encode()
+        )
+    )
+    affiliate_path.chmod(0o600)
+    with pytest.raises(EditorialPilotFailure) as wrong_affiliate:
+        read_rakuten_product_evidence(private_root, product_id=evidence.product_id)
+    assert (
+        wrong_affiliate.value.code
+        is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+    )
+
+
+def test_product_identity_rejects_accessory_title_and_synthetic_or_variant() -> None:
+    original = _synthetic_evidence("PRD-ANKER-SOLIX-C300")
+
+    def accessory(root: Path, *, product_id: str) -> RakutenProductEvidence:
+        del root
+        value = _synthetic_evidence(product_id)
+        item_name = "Anker Solix C300 ポータブル電源用収納ケース"
+        return replace(
+            value,
+            item_name=item_name,
+            selected_result_sha256=canonical_sha256(
+                {**value.identity_material(), "item_name": item_name}
+            ),
+            affiliate_selected_result_sha256=canonical_sha256(
+                {**value.affiliate_identity_material(), "item_name": item_name}
+            ),
+        )
+
+    with pytest.raises(EditorialPilotFailure) as accessory_failure:
+        prepare_editorial_article(
+            REPOSITORY_ROOT,
+            "st1704-portable-power-station-guide",
+            evidence_reader=accessory,
+            source_evidence_reader=_source_reader,
+            clock=_fixed_clock,
+        )
+    assert (
+        accessory_failure.value.code
+        is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+    )
+
+    def or_variant(root: Path, *, product_id: str) -> RakutenProductEvidence:
+        del root
+        return replace(
+            _synthetic_evidence(product_id),
+            variant=(
+                "A17225Z1_OR_A1722511"
+                if product_id == original.product_id
+                else _synthetic_evidence(product_id).variant
+            ),
+        )
+
+    with pytest.raises(EditorialPilotFailure) as synthetic_or:
+        prepare_editorial_article(
+            REPOSITORY_ROOT,
+            "st1704-portable-power-station-guide",
+            evidence_reader=or_variant,
+            source_evidence_reader=_source_reader,
+            clock=_fixed_clock,
+        )
+    assert (
+        synthetic_or.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+    )
+
+
+@pytest.mark.parametrize(
+    ("target_product", "item_name"),
+    [
+        (
+            "PRD-ANKER-SOLIX-C300",
+            "Anker Solix C3000 Portable Power Station",
+        ),
+        (
+            "PRD-ANKER-SOLIX-C300",
+            "Anker Solix C300 DC Portable Power Station",
+        ),
+        ("PRD-BLUETTI-AC70", "BLUETTI AC70P Portable Power Station"),
+    ],
+    ids=[
+        "alphanumeric-model-prefix",
+        "known-c300-dc-sibling",
+        "known-ac70p-sibling",
+    ],
+)
+def test_product_identity_rejects_model_prefix_and_known_sibling(
+    target_product: str,
+    item_name: str,
+) -> None:
+    def confused(root: Path, *, product_id: str) -> RakutenProductEvidence:
+        del root
+        evidence = _synthetic_evidence(product_id)
+        if product_id != target_product:
+            return evidence
+        return replace(
+            evidence,
+            item_name=item_name,
+            selected_result_sha256=canonical_sha256(
+                {**evidence.identity_material(), "item_name": item_name}
+            ),
+            affiliate_selected_result_sha256=canonical_sha256(
+                {**evidence.affiliate_identity_material(), "item_name": item_name}
+            ),
+        )
+
+    with pytest.raises(EditorialPilotFailure) as failure:
+        prepare_editorial_article(
+            REPOSITORY_ROOT,
+            "st1704-portable-power-station-guide",
+            evidence_reader=confused,
+            source_evidence_reader=_source_reader,
+            clock=_fixed_clock,
+        )
+    assert failure.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+
+
+def test_base_c1000_rejects_gen2_provider_title() -> None:
+    base_product = "PRD-ANKER-SOLIX-C1000"
+
+    def confused(root: Path, *, product_id: str) -> RakutenProductEvidence:
+        del root
+        evidence = _synthetic_evidence(product_id)
+        if product_id != base_product:
+            return evidence
+        item_name = evidence.item_name + " Gen 2"
+        return replace(
+            evidence,
+            item_name=item_name,
+            selected_result_sha256=canonical_sha256(
+                {**evidence.identity_material(), "item_name": item_name}
+            ),
+            affiliate_selected_result_sha256=canonical_sha256(
+                {**evidence.affiliate_identity_material(), "item_name": item_name}
+            ),
+        )
+
+    with pytest.raises(EditorialPilotFailure) as failure:
+        prepare_editorial_article(
+            REPOSITORY_ROOT,
+            "st1704-anker-solix-c300-c800-c1000-differences",
+            evidence_reader=confused,
+            source_evidence_reader=_source_reader,
+            clock=_fixed_clock,
+        )
+    assert failure.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+
+
+def test_owner_private_source_capture_binds_raw_body_url_claims_and_modes(
+    private_root: Path,
+) -> None:
+    evidence = _source_reader(REPOSITORY_ROOT, source_ref="SRC-ANKER-SOLIX-C300")
+    metadata_path, body_path = _install_source_overlay(private_root, evidence)
+
+    loaded = read_official_source_capture_evidence(
+        private_root, source_ref=evidence.source_ref
+    )
+    assert loaded == evidence
+    assert metadata_path.stat().st_mode & 0o777 == 0o600
+    assert body_path.stat().st_mode & 0o777 == 0o600
+
+    body_path.write_bytes(b"wrong official body")
+    body_path.chmod(0o600)
+    with pytest.raises(EditorialPilotFailure) as mismatch:
+        read_official_source_capture_evidence(
+            private_root, source_ref=evidence.source_ref
+        )
+    assert mismatch.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+
+
+def test_source_capture_rejects_same_claim_duplicate_statement_drift_and_fake_formats() -> (
+    None
+):
+    evidence = _source_reader(REPOSITORY_ROOT, source_ref="SRC-ANKER-SOLIX-C300")
+    assert len(evidence.locators) > 1
+    first = evidence.locators[0]
+    with pytest.raises(EditorialPilotFailure) as reused:
+        replace(
+            evidence,
+            locators=(
+                (first[0], first[1], (first[2][0], first[2][0])),
+                *evidence.locators[1:],
+            ),
+        )
+    assert reused.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+
+    def statement_drift(
+        root: Path, *, source_ref: str
+    ) -> OfficialSourceCaptureEvidence:
+        original = _source_reader(root, source_ref=source_ref)
+        locator = original.locators[0]
+        return replace(
+            original,
+            locators=((locator[0], "f" * 64, locator[2]),) + original.locators[1:],
+        )
+
+    with pytest.raises(EditorialPilotFailure) as statement_failure:
+        prepare_editorial_article(
+            REPOSITORY_ROOT,
+            "st1704-portable-power-station-guide",
+            evidence_reader=_reader,
+            source_evidence_reader=statement_drift,
+            clock=_fixed_clock,
+        )
+    assert (
+        statement_failure.value.code
+        is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+    )
+    for body, content_type in (
+        (b"not an html document", "text/html"),
+        (b"%PDF-1.7\nmissing terminal marker", "application/pdf"),
+    ):
+        with pytest.raises(EditorialPilotFailure) as format_failure:
+            json_module._validate_source_capture_body(  # type: ignore[attr-defined]
+                body, content_type=content_type
+            )
+        assert (
+            format_failure.value.code
+            is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+        )
+
+
+def test_product_image_parser_rejects_truncated_or_corrupt_128_headers() -> None:
+    valid = _synthetic_image_bytes()
+    assert json_module._image_dimensions(valid) == (128, 128)  # type: ignore[attr-defined]
+    truncated = b"\x89PNG\r\n\x1a\n" + b"\x00" * 16
+    corrupt = bytearray(valid)
+    idat = valid.index(b"IDAT") + 4
+    corrupt[idat] ^= 0x01
+    for raw in (truncated, bytes(corrupt)):
+        with pytest.raises(EditorialPilotFailure) as failure:
+            json_module._image_dimensions(raw)  # type: ignore[attr-defined]
+        assert (
+            failure.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+        )
+
+
+def test_owner_live_gate_is_bound_to_article_packet_request_and_command(
+    private_root: Path,
+) -> None:
+    candidate = request()
+    gate_directory = private_root / OWNER_GATE_DIRECTORY
+    gate_directory.mkdir(parents=True, mode=0o700)
+    (private_root / ".secrets").chmod(0o700)
+    (private_root / ".secrets" / OWNER_DIRECTORY).chmod(0o700)
+    gate_directory.chmod(0o700)
+    document = {
+        "article_id": candidate.article_id,
+        "authority": OWNER_GATE_AUTHORITY,
+        "command": "create-review-draft",
+        "origin": candidate.origin,
+        "packet_sha256": candidate.packet_sha256,
+        "request_sha256": candidate.request_sha256,
+        "schema": OWNER_GATE_SCHEMA,
+    }
+    path = private_root / owner_gate_relative_path(candidate, "create-review-draft")
+    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        payload = canonical_json_bytes(document) + b"\n"
+        assert os.write(descriptor, payload) == len(payload)
+        os.fchmod(descriptor, 0o600)
+    finally:
+        os.close(descriptor)
+
+    require_owner_live_gate(private_root, candidate, "create-review-draft")
+    with pytest.raises(EditorialPilotFailure) as wrong_command:
+        require_owner_live_gate(private_root, candidate, "recover-create-review-draft")
+    assert wrong_command.value.code is EditorialPilotFailureCode.OWNER_GATE_REQUIRED
+
+
+class _Credentials:
+    def authorization_header(self) -> str:
+        return "Basic synthetic"
+
+
+class _CredentialStore:
+    def __init__(self, root: Path) -> None:
+        assert root.is_absolute()
+
+    def metadata_status(self) -> str:
+        return "METADATA_READY"
+
+    def read(self) -> _Credentials:
+        return _Credentials()
+
+
+class _Response:
+    def __init__(
+        self,
+        body: bytes,
+        *,
+        status: int,
+        total: str | None = None,
+        pages: str | None = None,
+        content_type: str = "application/json; charset=UTF-8",
+        headers: dict[str, str] | None = None,
+    ) -> None:
+        self.status = status
+        self.body = body
+        self.total = total
+        self.pages = pages
+        self.content_type = content_type
+        self.headers = headers or {}
+
+    def getheader(self, name: str, default: str | None = None) -> str | None:
+        return {
+            **self.headers,
+            "Content-Type": self.content_type,
+            "Content-Length": str(len(self.body)),
+            "X-WP-Total": self.total,
+            "X-WP-TotalPages": self.pages,
+        }.get(name, default)
+
+    def read(self, amount: int = -1) -> bytes:
+        assert amount > len(self.body)
+        return self.body
+
+
+class _Connection:
+    def __init__(self, response: _Response) -> None:
+        self.response = response
+        self.observed: tuple[str, str, bytes, dict[str, str]] | None = None
+        self.connected = 0
+        self.closed = 0
+
+    def connect(self) -> None:
+        self.connected += 1
+
+    def set_read_timeout(self, seconds: int) -> None:
+        assert seconds > 0
+
+    def request(
+        self, method: str, path: str, body: bytes, headers: dict[str, str]
+    ) -> None:
+        self.observed = (method, path, body, headers)
+
+    def getresponse(self) -> _Response:
+        return self.response
+
+    def close(self) -> None:
+        self.closed += 1
+
+
+class _Factory:
+    def __init__(self, connection: _Connection) -> None:
+        self.connection = connection
+
+    def open(
+        self,
+        *,
+        host: str,
+        port: int,
+        connect_timeout_seconds: int,
+        tls_context: object,
+    ) -> _Connection:
+        assert host == SELF_HOSTED_WORDPRESS_HOST
+        assert port == SELF_HOSTED_WORDPRESS_PORT == 443
+        assert connect_timeout_seconds > 0
+        assert tls_context is not None
+        return self.connection
+
+
+class _QueueFactory:
+    def __init__(self, *connections: _Connection) -> None:
+        self.connections = list(connections)
+        self.opened: list[_Connection] = []
+
+    def open(
+        self,
+        *,
+        host: str,
+        port: int,
+        connect_timeout_seconds: int,
+        tls_context: object,
+    ) -> _Connection:
+        assert host == SELF_HOSTED_WORDPRESS_HOST
+        assert port == SELF_HOSTED_WORDPRESS_PORT == 443
+        assert connect_timeout_seconds > 0
+        assert tls_context is not None
+        connection = self.connections.pop(0)
+        self.opened.append(connection)
+        return connection
+
+
+def _wp_post(
+    status: str = "draft", candidate: object | None = None
+) -> dict[str, object]:
+    candidate = request() if candidate is None else candidate
+    post: dict[str, object] = {
+        "content": {"raw": candidate.content},
+        "excerpt": {"raw": candidate.excerpt},
+        "id": 1704,
+        "meta": {PILOT_SNAPSHOT_META_KEY: candidate.snapshot.json_string()},
+        "slug": candidate.slug if status == "draft" else candidate.public_slug,
+        "status": status,
+        "title": {"raw": candidate.title},
+        "type": "post",
+    }
+    if status == "publish":
+        post.update(
+            {
+                "categories": [42],
+                "date_gmt": "2026-08-23T01:00:00",
+                "modified_gmt": "2026-08-23T02:00:00",
+            }
+        )
+    return post
+
+
+def _prepared_request(
+    article_id: str = "st1704-portable-power-station-guide",
+) -> object:
+    return prepare_editorial_article(
+        REPOSITORY_ROOT,
+        article_id,
+        evidence_reader=_reader,
+        source_evidence_reader=_source_reader,
+        clock=_fixed_clock,
+    ).request
+
+
+def _public_article_html(candidate: object) -> bytes:
+    payload = candidate.snapshot.payload
+    published = "2026-08-23T01:00:00Z"
+    modified = "2026-08-23T02:00:00Z"
+    json_ld = canonical_json_bytes(
+        https_module._expected_json_ld(  # type: ignore[attr-defined]
+            candidate, published=published, modified=modified
+        )
+    ).decode("utf-8")
+    metadata = {
+        "description": payload.description,
+        "robots": (
+            "index, follow, max-image-preview:large, max-snippet:-1, "
+            "max-video-preview:-1"
+        ),
+        "twitter:card": "summary_large_image",
+        "twitter:description": payload.og_description,
+        "twitter:image": https_module._SOCIAL_IMAGE_URL,  # type: ignore[attr-defined]
+        "twitter:title": payload.og_title,
+    }
+    properties = {
+        "og:description": payload.og_description,
+        "og:image": https_module._SOCIAL_IMAGE_URL,  # type: ignore[attr-defined]
+        "og:image:height": "900",
+        "og:image:type": "image/webp",
+        "og:image:width": "1600",
+        "og:title": payload.og_title,
+        "og:type": "article",
+        "og:url": payload.canonical_url,
+    }
+    meta_html = "".join(
+        f'<meta name="{name}" content="{value}">' for name, value in metadata.items()
+    ) + "".join(
+        f'<meta property="{name}" content="{value}">'
+        for name, value in properties.items()
+    )
+    related = (
+        '<aside class="raos-related-guides" aria-labelledby="raos-related-title">'
+        '<h2 id="raos-related-title">関連記事</h2><ul><li>'
+        '<a href="https://kurashinoshirube.com/#cluster-ready">'
+        "暮らしの道具「備え」の一覧へ</a></li></ul></aside>"
+    )
+    return (
+        "<!doctype html><html><head>"
+        f"<title>{payload.seo_title}</title>{meta_html}"
+        f'<link rel="canonical" href="{payload.canonical_url}">'
+        '<script id="raos-structured-data" type="application/ld+json">'
+        f"{json_ld}</script></head><body><article>"
+        f"<h1>{payload.title}</h1>"
+        '<div class="wp-block-post-content">'
+        f"{candidate.content}</div>{related}</article></body></html>"
+    ).encode("utf-8")
+
+
+def _public_homepage_html(candidate: object) -> bytes:
+    homepage = https_module._load_theme_homepage_clusters(  # type: ignore[attr-defined]
+        REPOSITORY_ROOT
+    )
+    clusters = cast(dict[str, dict[str, object]], homepage["clusters"])
+    sections: list[str] = []
+    for cluster_id in cast(tuple[str, ...], homepage["display_order"]):
+        posts = cast(tuple[tuple[str, str], ...], clusters[cluster_id]["posts"])
+        links = "".join(
+            (
+                f'<li><a href="{candidate.snapshot.payload.canonical_url}">{label}</a></li>'
+                if article_id == candidate.article_id
+                else ""
+            )
+            for article_id, label in posts
+        )
+        sections.append(
+            f'<section id="{cluster_id}" class="raos-cluster">'
+            f"<h3>{clusters[cluster_id]['heading']}</h3><ul>"
+            f"{links or '<li>ガイドを準備中です。</li>'}</ul></section>"
+        )
+    return (
+        "<!doctype html><html><head><title>暮らしのしるべ</title></head><body>"
+        '<section class="raos-cluster-nav alignwide">'
+        + "".join(sections)
+        + "</section></body></html>"
+    ).encode()
+
+
+def _sitemap_index() -> bytes:
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        "<sitemap><loc>https://kurashinoshirube.com/post-sitemap.xml</loc></sitemap>"
+        "<sitemap><loc>https://kurashinoshirube.com/page-sitemap.xml</loc></sitemap>"
+        "</sitemapindex>"
+    ).encode()
+
+
+def _url_sitemap(*urls: str) -> bytes:
+    records = "".join(f"<url><loc>{url}</loc></url>" for url in urls)
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        f"{records}</urlset>"
+    ).encode()
+
+
+def _public_connections(candidate: object) -> list[_Connection]:
+    return [
+        _Connection(
+            _Response(
+                canonical_json_bytes([_wp_post("publish", candidate)]),
+                status=200,
+                total="1",
+                pages="1",
+            )
+        ),
+        _Connection(
+            _Response(
+                canonical_json_bytes(
+                    [{"id": 42, "name": "暮らしの道具", "slug": "kurashi-tools"}]
+                ),
+                status=200,
+                total="1",
+                pages="1",
+            )
+        ),
+        _Connection(_Response(b"[]", status=200, total="0", pages="0")),
+        _Connection(
+            _Response(
+                canonical_json_bytes([_wp_post("publish", candidate)]),
+                status=200,
+                total="1",
+                pages="1",
+            )
+        ),
+        _Connection(
+            _Response(
+                _public_article_html(candidate),
+                status=200,
+                content_type="text/html; charset=UTF-8",
+            )
+        ),
+        _Connection(
+            _Response(
+                _public_homepage_html(candidate),
+                status=200,
+                content_type="text/html; charset=UTF-8",
+            )
+        ),
+        _Connection(
+            _Response(
+                b"User-agent: *\nDisallow:\nSitemap: https://kurashinoshirube.com/sitemap_index.xml\n",
+                status=200,
+                content_type="text/plain; charset=UTF-8",
+            )
+        ),
+        _Connection(
+            _Response(_sitemap_index(), status=200, content_type="application/xml")
+        ),
+        _Connection(
+            _Response(
+                _url_sitemap(candidate.snapshot.payload.canonical_url),
+                status=200,
+                content_type="application/xml",
+            )
+        ),
+        _Connection(
+            _Response(
+                _url_sitemap("https://kurashinoshirube.com/"),
+                status=200,
+                content_type="application/xml",
+            )
+        ),
+        _Connection(
+            _Response(
+                b"<html><body>not found</body></html>",
+                status=404,
+                content_type="text/html; charset=UTF-8",
+            )
+        ),
+    ]
+
+
+def _install_fake_live_boundary(monkeypatch: pytest.MonkeyPatch) -> None:
+    related_navigation = https_module._load_theme_related_navigation(  # type: ignore[attr-defined]
+        REPOSITORY_ROOT
+    )
+    monkeypatch.setattr(
+        https_module,
+        "_load_theme_related_navigation",
+        lambda _root: related_navigation,
+    )
+    homepage_clusters = https_module._load_theme_homepage_clusters(  # type: ignore[attr-defined]
+        REPOSITORY_ROOT
+    )
+    monkeypatch.setattr(
+        https_module,
+        "_load_theme_homepage_clusters",
+        lambda _root: homepage_clusters,
+    )
+    monkeypatch.setattr(https_module, "require_owner_live_gate", lambda *args: None)
+    monkeypatch.setattr(
+        https_module, "OwnerPrivateSelfHostedWordPressCredentialStore", _CredentialStore
+    )
+    monkeypatch.setattr(
+        https_module,
+        "require_clean_self_hosted_wordpress_environment",
+        lambda: None,
+    )
+
+
+def test_public_verifier_loads_all_five_relations_from_theme_contract() -> None:
+    related = https_module._load_theme_related_navigation(  # type: ignore[attr-defined]
+        REPOSITORY_ROOT
+    )
+    assert set(related) == {
+        identity.article_id for identity in PILOT_ARTICLE_IDENTITIES
+    }
+    assert related["st1703-first-suitcase-comparison"]["target"] is None
+    assert related["st1704-portable-power-station-guide"]["home"] == (
+        "https://kurashinoshirube.com/#cluster-ready",
+        "暮らしの道具「備え」の一覧へ",
+    )
+    homepage = https_module._load_theme_homepage_clusters(  # type: ignore[attr-defined]
+        REPOSITORY_ROOT
+    )
+    assert homepage["display_order"] == (
+        "cluster-mobility",
+        "cluster-home",
+        "cluster-ready",
+    )
+    assert (
+        sum(
+            len(cast(tuple[tuple[str, str], ...], cluster["posts"]))
+            for cluster in cast(
+                dict[str, dict[str, object]], homepage["clusters"]
+            ).values()
+        )
+        == 5
+    )
+
+
+def test_owner_https_create_posts_only_the_exact_draft_payload(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    candidate = request()
+    body = canonical_json_bytes(_wp_post())
+    target_connection = _Connection(_Response(b"[]", status=200, total="0", pages="0"))
+    inventory_connection = _Connection(
+        _Response(b"[]", status=200, total="0", pages="0")
+    )
+    connection = _Connection(_Response(body, status=201))
+    factory = _QueueFactory(target_connection, inventory_connection, connection)
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=factory
+    )
+
+    assert adapter.resolve_public_target(candidate, "create-review-draft") is None
+    receipt = adapter.create(candidate)
+
+    assert receipt.draft_id == 1704
+    assert receipt.live_authority
+    assert not receipt.publication_authority
+    assert connection.observed is not None
+    method, path, sent, headers = connection.observed
+    assert method == "POST"
+    assert path == PILOT_CREATE_PATH
+    assert json.loads(sent) == candidate.wordpress_body()
+    assert set(json.loads(sent)) == {
+        "content",
+        "excerpt",
+        "meta",
+        "slug",
+        "status",
+        "title",
+    }
+    assert json.loads(sent)["status"] == "draft"
+    assert headers["Host"] == "kurashinoshirube.com"
+    assert connection.connected == connection.closed == 1
+
+
+@pytest.mark.parametrize("orphaned_meta", [False, True])
+def test_create_preexisting_review_slug_family_leaves_no_journal_and_never_posts(
+    private_root: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    orphaned_meta: bool,
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    candidate = request()
+    existing = _wp_post(candidate=candidate)
+    if orphaned_meta:
+        existing["slug"] = candidate.slug + "-2"
+        existing["meta"] = {}
+    target_connection = _Connection(_Response(b"[]", status=200, total="0", pages="0"))
+    inventory_connection = _Connection(
+        _Response(
+            canonical_json_bytes([existing]),
+            status=200,
+            total="1",
+            pages="1",
+        )
+    )
+    factory = _QueueFactory(target_connection, inventory_connection)
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=factory
+    )
+    journal = OwnerPrivateLiveReviewDraftJournal(private_root, adapter)
+
+    with pytest.raises(EditorialPilotFailure) as failure:
+        journal.create(candidate)
+
+    assert failure.value.code is EditorialPilotFailureCode.JOURNAL_AMBIGUOUS
+    journal_path = (
+        private_root
+        / ".secrets"
+        / OWNER_DIRECTORY
+        / JOURNAL_DIRECTORY
+        / f"{candidate.article_id}.{candidate.packet_sha256}.live.v1.json"
+    )
+    assert not journal_path.exists()
+    assert len(factory.opened) == 2
+    assert all(
+        connection.observed is not None and connection.observed[0] == "GET"
+        for connection in factory.opened
+    )
+
+
+@pytest.mark.parametrize(
+    ("posts", "total"),
+    [([], "0"), ([_wp_post(), _wp_post()], "2")],
+)
+def test_owner_https_recovery_rejects_zero_or_multiple_without_post(
+    private_root: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    posts: list[object],
+    total: str,
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    target_connection = _Connection(_Response(b"[]", status=200, total="0", pages="0"))
+    connection = _Connection(
+        _Response(
+            canonical_json_bytes(posts),
+            status=200,
+            total=total,
+            pages="0" if total == "0" else "1",
+        )
+    )
+    factory = _QueueFactory(target_connection, connection)
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=factory
+    )
+
+    assert (
+        adapter.resolve_public_target(request(), "recover-create-review-draft") is None
+    )
+    with pytest.raises(EditorialPilotFailure) as failure:
+        adapter.recover(request())
+    assert failure.value.code is EditorialPilotFailureCode.OUTCOME_AMBIGUOUS
+    assert connection.observed is not None
+    method, path, sent, _headers = connection.observed
+    assert method == "GET"
+    assert path.startswith("/wp-json/wp/v2/posts?context=edit&status=draft")
+    assert "status=draft" in path
+    assert "slug=" not in path
+    assert "_raos_publication_snapshot_v1" in path
+    assert sent == b""
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["malformed-description", "wrong-excerpt", "wrong-title"],
+)
+def test_related_target_requires_complete_bound_snapshot_and_theme_title(
+    mutation: str,
+) -> None:
+    request_candidate = _prepared_request()
+    target_candidate = _prepared_request(
+        "st1704-anker-solix-c300-c800-c1000-differences"
+    )
+    post = _wp_post("publish", target_candidate)
+    if mutation == "wrong-excerpt":
+        cast(dict[str, object], post["excerpt"])["raw"] = "異なる要約"
+    elif mutation == "wrong-title":
+        cast(dict[str, object], post["title"])["raw"] = "異なる記事タイトル"
+    elif mutation == "malformed-description":
+        wrapper = json.loads(
+            cast(dict[str, object], post["meta"])[PILOT_SNAPSHOT_META_KEY]
+        )
+        wrapper["payload"]["description"] = 42
+        wrapper["payload_sha256"] = canonical_sha256(wrapper["payload"])
+        cast(dict[str, object], post["meta"])[PILOT_SNAPSHOT_META_KEY] = (
+            canonical_json_bytes(wrapper).decode()
+        )
+    else:
+        raise AssertionError("unknown mutation")
+    related = https_module._load_theme_related_navigation(  # type: ignore[attr-defined]
+        REPOSITORY_ROOT
+    )
+    with pytest.raises(EditorialPilotFailure) as failure:
+        https_module._related_target_is_bound(  # type: ignore[attr-defined]
+            canonical_json_bytes([post]), request_candidate, related
+        )
+    assert failure.value.code is EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH
+
+
+def test_verify_public_checks_exact_anonymous_surface_and_bound_post_id(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    candidate = _prepared_request()
+    connections = _public_connections(candidate)
+    factory = _QueueFactory(*connections)
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=factory
+    )
+
+    verification = adapter.verify_public(candidate, 1704)
+
+    assert verification.public_surface_verified
+    assert verification.expected_public_post_id == verification.post_id == 1704
+    assert verification.category_sha256
+    assert verification.related_target_sha256
+    assert verification.homepage_html_sha256
+    assert verification.homepage_targets_sha256
+    assert verification.core_sitemap_sha256
+    assert not factory.connections
+    observed = [connection.observed for connection in connections]
+    assert all(value is not None for value in observed)
+    paths = [
+        cast(tuple[str, str, bytes, dict[str, str]], value)[1] for value in observed
+    ]
+    assert paths[0].startswith("/wp-json/wp/v2/posts?context=edit&slug=portable")
+    assert paths[1].startswith("/wp-json/wp/v2/categories?search=")
+    assert "slug=anker-solix-c300-c800-c1000-differences" in paths[2]
+    assert paths[3].startswith("/wp-json/wp/v2/posts?context=edit&status=publish&slug=")
+    assert paths[4:] == [
+        "/portable-power-station-guide/",
+        "/",
+        "/robots.txt",
+        "/sitemap_index.xml",
+        "/post-sitemap.xml",
+        "/page-sitemap.xml",
+        "/wp-sitemap.xml",
+    ]
+    headers = [
+        cast(tuple[str, str, bytes, dict[str, str]], value)[3] for value in observed
+    ]
+    assert "Authorization" in headers[0]
+    assert "Authorization" in headers[2]
+    assert "Authorization" in headers[3]
+    assert all("Authorization" not in value for value in headers[1:2] + headers[4:])
+
+
+@pytest.mark.parametrize(
+    ("mutation", "connection_index"),
+    [
+        ("uppercase-description", 4),
+        ("extra-json-ld", 4),
+        ("extra-json-ld-head-parameter", 4),
+        ("extra-json-ld-body-parameter", 4),
+        ("extra-affiliate-outside", 4),
+        ("forbidden-microdata", 4),
+        ("forbidden-rdfa", 4),
+        ("body-text-change", 4),
+        ("bot-noindex", 4),
+        ("missing-related", 4),
+        ("homepage-unbound-link", 5),
+        ("target-robots-disallow", 6),
+        ("malformed-sitemap-port", 7),
+        ("wrong-category", 1),
+        ("core-sitemap-enabled", 10),
+    ],
+)
+def test_verify_public_rejects_duplicate_or_unindexable_public_surfaces(
+    private_root: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+    connection_index: int,
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    candidate = _prepared_request()
+    connections = _public_connections(candidate)
+    response = connections[connection_index].response
+    if mutation == "uppercase-description":
+        response.body = response.body.replace(
+            b"</head>", b'<meta name="DESCRIPTION" content="duplicate"></head>'
+        )
+    elif mutation == "extra-json-ld":
+        response.body = response.body.replace(
+            b"</body>",
+            b'<script type=" application/ld+json ">{}</script></body>',
+        )
+    elif mutation == "extra-json-ld-head-parameter":
+        response.body = response.body.replace(
+            b"</head>",
+            b'<script type="application/ld+json; charset=utf-8">{}</script></head>',
+        )
+    elif mutation == "extra-json-ld-body-parameter":
+        response.body = response.body.replace(
+            b"</body>",
+            b'<script type="application/ld+json; charset=utf-8">{}</script></body>',
+        )
+    elif mutation == "extra-affiliate-outside":
+        response.body = response.body.replace(
+            b"</body>",
+            '<a href="https://hb.afl.rakuten.co.jp/hgc/extra/">広告</a></body>'.encode(),
+        )
+    elif mutation == "forbidden-microdata":
+        response.body = response.body.replace(
+            b"<article>",
+            b'<article itemscope itemtype="https://schema.org/Product">',
+        )
+    elif mutation == "forbidden-rdfa":
+        response.body = response.body.replace(
+            b"<article>",
+            b'<article vocab="https://schema.org/" typeof="Product">',
+        )
+    elif mutation == "body-text-change":
+        response.body = response.body.replace(
+            "比較方法".encode(), "比較手法".encode(), 1
+        )
+    elif mutation == "bot-noindex":
+        response.body = response.body.replace(
+            b"</head>", b'<meta name="GoogleBot" content="noindex"></head>'
+        )
+    elif mutation == "missing-related":
+        start = response.body.index(b'<aside class="raos-related-guides"')
+        end = response.body.index(b"</aside>", start) + len(b"</aside>")
+        response.body = response.body[:start] + response.body[end:]
+    elif mutation == "homepage-unbound-link":
+        response.body = response.body.replace(
+            b"</ul></section></section>",
+            (
+                b'<li><a href="https://kurashinoshirube.com/'
+                b'anker-solix-c300-c800-c1000-differences/">'
+                + "Anker Solix 4モデルの違い".encode()
+                + b"</a></li></ul></section></section>"
+            ),
+            1,
+        )
+    elif mutation == "target-robots-disallow":
+        response.body = response.body.replace(
+            b"Disallow:\n",
+            b"Disallow: /portable-power-station-guide/\n",
+        )
+    elif mutation == "malformed-sitemap-port":
+        response.body = response.body.replace(
+            b"https://kurashinoshirube.com/post-sitemap.xml",
+            b"https://kurashinoshirube.com:invalid/post-sitemap.xml",
+        )
+    elif mutation == "wrong-category":
+        response.body = canonical_json_bytes(
+            [{"id": 42, "name": "未分類", "slug": "uncategorized"}]
+        )
+    elif mutation == "core-sitemap-enabled":
+        response.status = 200
+        response.content_type = "application/xml"
+        response.body = _sitemap_index()
+    else:
+        raise AssertionError("unknown mutation")
+
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=_QueueFactory(*connections)
+    )
+    with pytest.raises(EditorialPilotFailure) as failure:
+        adapter.verify_public(candidate, 1704)
+    assert failure.value.code is EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH
+
+
+def test_verify_public_rejects_x_robots_none_and_wrong_post_identity(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    candidate = _prepared_request()
+    connections = _public_connections(candidate)
+    connections[4].response.headers["X-Robots-Tag"] = "none"
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=_QueueFactory(*connections)
+    )
+    with pytest.raises(EditorialPilotFailure):
+        adapter.verify_public(candidate, 1704)
+
+    connections = _public_connections(candidate)
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=_QueueFactory(*connections)
+    )
+    with pytest.raises(EditorialPilotFailure) as wrong_id:
+        adapter.verify_public(candidate, 9999)
+    assert wrong_id.value.code is EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH
+
+
+def test_cli_verify_uses_committed_artifact_without_reprepare(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    article_id = "st1704-portable-power-station-guide"
+    original = prepare_editorial_article(
+        REPOSITORY_ROOT,
+        article_id,
+        evidence_reader=_reader,
+        source_evidence_reader=_source_reader,
+        clock=_fixed_clock,
+    )
+    journal = OwnerPrivateLiveReviewDraftJournal(private_root, _ArtifactJournalPort())
+    journal.create(original.request)
+    cli_port = _ArtifactJournalPort()
+
+    def reprepare_forbidden(*_args: object, **_kwargs: object) -> object:
+        raise AssertionError("verify-public attempted current-evidence prepare")
+
+    monkeypatch.setattr(
+        application_module, "prepare_editorial_article", reprepare_forbidden
+    )
+    monkeypatch.setattr(
+        https_module,
+        "OfficialSelfHostedEditorialPilotWordPressAdapter",
+        lambda _root: cli_port,
+    )
+    namespace = runpy.run_path(str(SCRIPT))
+    run = namespace["_run"]
+    run.__globals__["REPOSITORY_ROOT"] = private_root
+
+    result = run("verify-public", article_id)
+
+    assert result["packet_sha256"] == original.request.packet_sha256
+    assert result["request_sha256"] == original.request.request_sha256
+    assert cli_port.verified == [original.request]
+    assert cli_port.verified_public_post_ids == [1704]
+    with pytest.raises(AssertionError, match="current-evidence prepare"):
+        run("create-review-draft", article_id)
+
+
+def test_cli_recover_uses_intent_artifact_without_reprepare(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    article_id = "st1704-portable-power-station-guide"
+    original = prepare_editorial_article(
+        REPOSITORY_ROOT,
+        article_id,
+        evidence_reader=_reader,
+        source_evidence_reader=_source_reader,
+        clock=_fixed_clock,
+    )
+    initial_port = _ArtifactJournalPort(create_fails=True)
+    journal = OwnerPrivateLiveReviewDraftJournal(private_root, initial_port)
+    with pytest.raises(EditorialPilotFailure):
+        journal.create(original.request)
+    recovery_port = _ArtifactJournalPort()
+
+    def reprepare_forbidden(*_args: object, **_kwargs: object) -> object:
+        raise AssertionError("recovery attempted current-evidence prepare")
+
+    monkeypatch.setattr(
+        application_module, "prepare_editorial_article", reprepare_forbidden
+    )
+    monkeypatch.setattr(
+        https_module,
+        "OfficialSelfHostedEditorialPilotWordPressAdapter",
+        lambda _root: recovery_port,
+    )
+    namespace = runpy.run_path(str(SCRIPT))
+    run = namespace["_run"]
+    run.__globals__["REPOSITORY_ROOT"] = private_root
+
+    result = run("recover-create-review-draft", article_id)
+
+    assert result["packet_sha256"] == original.request.packet_sha256
+    assert result["request_sha256"] == original.request.request_sha256
+    assert recovery_port.created == []
+    assert recovery_port.recovered == [original.request]
+
+
+def test_cli_exposes_only_four_commands_and_no_caller_selected_path() -> None:
+    environment = {
+        **os.environ,
+        "LANG": "C",
+        "LC_ALL": "C",
+        "PATH": "/usr/bin:/bin",
+        "TZ": "UTC",
+    }
+    help_result = subprocess.run(
+        [
+            str(REPOSITORY_ROOT / ".venv/bin/python"),
+            "-B",
+            "-I",
+            "-S",
+            str(SCRIPT),
+            "--help",
+        ],
+        cwd=REPOSITORY_ROOT,
+        env=environment,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert help_result.returncode == 0
+    for command in (
+        "prepare",
+        "create-review-draft",
+        "recover-create-review-draft",
+        "verify-public",
+    ):
+        assert command in help_result.stdout
+    rejected = subprocess.run(
+        [
+            str(REPOSITORY_ROOT / ".venv/bin/python"),
+            str(SCRIPT),
+            "prepare",
+            "--article-id",
+            "st1704-portable-power-station-guide",
+            "--path",
+            "/arbitrary",
+        ],
+        cwd=REPOSITORY_ROOT,
+        env=environment,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert rejected.returncode == 2
+    assert "unrecognized arguments" in rejected.stderr
+
+
+def test_at003_receipt_emits_complete_fixed_tools_assertion_url() -> None:
+    namespace = runpy.run_path(str(SCRIPT))
+    payload_sha256 = "1" * 64
+    packet_sha256 = "2" * 64
+    request_sha256 = "3" * 64
+    receipt = SimpleNamespace(
+        article_id="st1703-first-suitcase-comparison",
+        disposition=SimpleNamespace(value="OWNER_LIVE_CREATED"),
+        draft_id=1704,
+        live_authority=True,
+        packet_sha256=packet_sha256,
+        publication_authority=False,
+        request_sha256=request_sha256,
+        response_sha256="4" * 64,
+        status="draft",
+        target_public_post_id=42,
+    )
+    candidate = SimpleNamespace(snapshot=SimpleNamespace(payload_sha256=payload_sha256))
+    result = namespace["_receipt_result"]("create-review-draft", receipt, candidate)
+    path = cast(str, result["owner_apply_path"])
+    parts = urlsplit(path)
+    assert parts.path == "/wp-admin/tools.php"
+    assert list(parse_qs(parts.query)) == [
+        "page",
+        "payload_sha256",
+        "packet_sha256",
+        "request_sha256",
+        "review_draft_id",
+        "target_public_post_id",
+    ]
+    assert parse_qs(parts.query) == {
+        "page": ["kurashinoshirube-at003-update-v1"],
+        "payload_sha256": [payload_sha256],
+        "packet_sha256": [packet_sha256],
+        "request_sha256": [request_sha256],
+        "review_draft_id": ["1704"],
+        "target_public_post_id": ["42"],
+    }
+    assert "nonce" not in parts.query
+    assert "authority" not in parts.query
+
+
+def test_at003_artifact_preserves_target_and_owner_apply_hashes(
+    private_root: Path,
+) -> None:
+    article_id = "st1703-first-suitcase-comparison"
+    original = prepare_editorial_article(
+        REPOSITORY_ROOT,
+        article_id,
+        evidence_reader=_reader,
+        source_evidence_reader=_source_reader,
+        clock=_fixed_clock,
+    )
+    journal = OwnerPrivateLiveReviewDraftJournal(private_root, _ArtifactJournalPort())
+    receipt = journal.create(original.request)
+    persisted, expected_public_post_id = journal.committed_request(article_id)
+    namespace = runpy.run_path(str(SCRIPT))
+
+    result = namespace["_receipt_result"]("create-review-draft", receipt, persisted)
+    query = parse_qs(urlsplit(cast(str, result["owner_apply_path"])).query)
+
+    assert persisted == original.request
+    assert receipt.target_public_post_id == expected_public_post_id == 42
+    assert query["payload_sha256"] == [original.request.snapshot.payload_sha256]
+    assert query["packet_sha256"] == [original.request.packet_sha256]
+    assert query["request_sha256"] == [original.request.request_sha256]
+    assert query["review_draft_id"] == [str(receipt.draft_id)]
+    assert query["target_public_post_id"] == ["42"]

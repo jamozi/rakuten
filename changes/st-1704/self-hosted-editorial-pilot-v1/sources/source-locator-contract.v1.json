@@ -1,0 +1,537 @@
+{
+  "schema": "SELF_HOSTED_EDITORIAL_SOURCE_LOCATOR_CONTRACT_V1",
+  "story_id": "ST-1704",
+  "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
+  "publication_authority": "NONE",
+  "generated_on": "2026-08-23",
+  "source_registry_sha256": "20bc5f2fdff5cab14e9f14095184aefd4b4663ef8b5d608b0c13ebcd5a6f531c",
+  "locator_policy": {
+    "claim_statement_source": "TRACKED_SOURCE_PACKET_EXACT",
+    "fragment_source": "TRACKED_REVIEWED_EXACT_UTF8_FRAGMENT",
+    "fragment_match": "RAW_BODY_EXACTLY_ONCE",
+    "pending_behavior": "BODY_CAPTURED_LOCATORS_PENDING_PREPARE_BLOCKED",
+    "review_body_as_evidence": false,
+    "review_body_locator_allowed": false
+  },
+  "sources": [
+    {
+      "source_ref": "SRC-ACE-CRESTA-06316",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-CRESTA-SPECS",
+          "exact_utf8_fragments": [
+            "<dt>サイズ</dt>\r\n\t\t\t<dd>H55×W35×D25/29 cm <br>※キャスター・ハンドルを含む外寸表記です。</dd>",
+            "<dt>容量</dt>\r\n\t\t\t<dd>34/39 L</dd>",
+            "<dt>重量</dt>\r\n\t\t\t<dd>3.2kg</dd>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<dt>容量</dt>\r\n\t\t\t<dd>34/39 L</dd>",
+            "<dt>重量</dt>\r\n\t\t\t<dd>3.2kg</dd>",
+            "通常時は34L、マチを広げると最大39Lまで容量アップが可能。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ACE-DIFFERENCE-05721",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS",
+          "exact_utf8_fragments": [
+            "<dt>サイズ</dt>\r\n\t\t\t<dd>H55×W36×D24/27 cm <br>※キャスター・ハンドルを含む外寸表記です。</dd>",
+            "<dt>容量</dt>\r\n\t\t\t<dd>32/38 L</dd>",
+            "<dt>重量</dt>\r\n\t\t\t<dd>3.5kg</dd>",
+            "● エキスパンド機能(容量拡張)",
+            "● キャスターストッパー",
+            "２通りの開閉が可能"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<dt>容量</dt>\r\n\t\t\t<dd>32/38 L</dd>",
+            "<dt>重量</dt>\r\n\t\t\t<dd>3.5kg</dd>",
+            "● エキスパンド機能(容量拡張)",
+            "● キャスターストッパー",
+            "２通りの開閉が可能"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ACE-MAXPASS4-01471",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-MAXPASS-SPECS",
+          "exact_utf8_fragments": [
+            "<dt>サイズ</dt>\r\n\t\t\t<dd>H50×W40×D25 cm <br>※キャスター・ハンドルを含む外寸表記です。</dd>",
+            "<dt>容量</dt>\r\n\t\t\t<dd>40 L</dd>",
+            "<dt>重量</dt>\r\n\t\t\t<dd>3.6 kg</dd>",
+            "● フロントポケット",
+            "メイン気室へアクセス可能",
+            "※PC収納可能サイズ：14.0インチ(W33×H24×D2.5cm)",
+            "キャスターストッパー機能を搭載。"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<dt>容量</dt>\r\n\t\t\t<dd>40 L</dd>",
+            "<dt>重量</dt>\r\n\t\t\t<dd>3.6 kg</dd>",
+            "● フロントポケット",
+            "メイン気室へアクセス可能"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ANA-CARRY-ON-BAGGAGE",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-CARRYON-LIMITS",
+          "exact_utf8_fragments": [
+            "3辺合計115cm以内（55cm×40cm×25cm以内）",
+            "3辺合計100cm以内（45cm×35cm×20cm以内）",
+            "合計10kg以内",
+            "(手荷物と身の回り品の総重量)"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C300",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-C300-SPECS",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約16.4 x 16.1 x 24.0cm （ 幅 x 奥行 x 高さ )</td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約4.1kg</td>",
+            "<td class=\"product-specs-heading\">出力</td>\n                <td>定格300W / 瞬間最大600W</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>",
+            "<td class=\"product-specs-heading\">出力</td>\n                <td>定格300W / 瞬間最大600W</td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約4.1kg</td>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C300-SPECS",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約16.4 x 16.1 x 24.0cm （ 幅 x 奥行 x 高さ )</td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約4.1kg</td>",
+            "<td class=\"product-specs-heading\">出力</td>\n                <td>定格300W / 瞬間最大600W</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-JACKERY-500-NEW",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-SPECS",
+          "exact_utf8_fragments": [
+            "<h2 style=\"font-size: 1.2em; line-height: 35px;\">【防災とアウトドアにぴったりの容量512Wh、定格出力500W】</h2>",
+            "<p>500Whクラスで最軽量の5.7kg"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<h2 style=\"font-size: 1.2em; line-height: 35px;\">【防災とアウトドアにぴったりの容量512Wh、定格出力500W】</h2>",
+            "<p>500Whクラスで最軽量の5.7kg"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-BLUETTI-AC70",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-AC70-SPECS",
+          "exact_utf8_fragments": [
+            "容量:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>768Wh </span>",
+            "AC出力:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>2×100V/10A、\n合計1,000W</span>",
+            "重量:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>約10.2kg</span>",
+            "本体サイズ:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>314mm × 209.5mm × 255.8mm</span>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "容量:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>768Wh </span>",
+            "AC出力:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>2×100V/10A、\n合計1,000W</span>",
+            "重量:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>約10.2kg</span>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ECOFLOW-DELTA3-CLASSIC",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-DELTA-SPECS",
+          "exact_utf8_fragments": [
+            "<p class=\"pdp-specs-title\">容量</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>1024Wh</p>",
+            "<p class=\"pdp-specs-title\">定格出力</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>1500W</p>",
+            "<p class=\"pdp-specs-title\">重量</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>約12.1㎏</p>",
+            "<p class=\"pdp-specs-title\">サイズ（W×D×H）</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>20.0×39.8×28.3cm</p>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<p class=\"pdp-specs-title\">容量</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>1024Wh</p>",
+            "<p class=\"pdp-specs-title\">定格出力</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>1500W</p>",
+            "<p class=\"pdp-specs-title\">重量</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>約12.1㎏</p>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PANASONIC-NP-TMLK1",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-NP-TMLK1-SPECS",
+          "exact_utf8_fragments": [
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">6点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約2.5L&#xff08;着脱タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★5</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">製品質量\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約7.5㎏\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○&#xff08;送風乾燥&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">6点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約2.5L&#xff08;着脱タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★5</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○&#xff08;送風乾燥&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-THANKO-RAKUA-MINI-PLUS",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-RAKUA-SPECS",
+          "exact_utf8_fragments": [
+            "<div class=\"item-spec-container none-sp\">\r\n                    <h3 class=\"item-section-title spec-header\">仕様</h3>\r\n                    <div class=\"spec-scroll-box\">\r\n                        <section class=\"section item\">\r\n                            <div class=\"add-image\">\r\n                                                                <div class=\"add-image-list\">\r\n                                    <div class=\"add-description\"><table class=\"new-table\">\n<tr>\n<th>サイズ</th>\n<td>幅 308× 高さ 415× 奥行 315(mm) 開扉時奥行：594mm</td>\n</tr>\n\n<tr>\n<th>重量</th>\n<td>約 8kg</td>\n</tr>",
+            "<tr>\n<th>製品名</th>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-Familywide.jpg\"></td>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-Familyslim.jpg\"></td>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-rakua\"></td>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-miniPlus\"></td>",
+            "<tr>\n<th>標準収納容量</th>\n<td>食器28点<br>\n(4&#12316;5人分)</td>\n<td>食器21点<br>\n(3&#12316;4人分)</td>\n<td>食器16点<br>\n(2&#12316;3人分)</td>\n<td>食器11&#12316;12点<br>\n(1&#12316;2人分)</td>\n<td>食器11&#12316;12点<br>\n(1&#12316;2人分)</td>\n</tr>",
+            "<tr>\n<th>使用水量</th>\n<td>5.2L</td>\n<td>4.5L</td>\n<td>5L</td>\n<td>3.2L</td>\n<td>3.2L</td>\n</tr>",
+            "<h1 class=\"item-name\">工事不要でシンク横に置けるタンク式食洗機「ラクアmini Plus」</h1>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<div class=\"item-spec-container none-sp\">\r\n                    <h3 class=\"item-section-title spec-header\">仕様</h3>\r\n                    <div class=\"spec-scroll-box\">\r\n                        <section class=\"section item\">\r\n                            <div class=\"add-image\">\r\n                                                                <div class=\"add-image-list\">\r\n                                    <div class=\"add-description\"><table class=\"new-table\">\n<tr>\n<th>サイズ</th>\n<td>幅 308× 高さ 415× 奥行 315(mm) 開扉時奥行：594mm</td>\n</tr>\n\n<tr>\n<th>重量</th>\n<td>約 8kg</td>\n</tr>",
+            "<tr>\n<th>製品名</th>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-Familywide.jpg\"></td>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-Familyslim.jpg\"></td>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-rakua\"></td>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-miniPlus\"></td>",
+            "<tr>\n<th>標準収納容量</th>\n<td>食器28点<br>\n(4&#12316;5人分)</td>\n<td>食器21点<br>\n(3&#12316;4人分)</td>\n<td>食器16点<br>\n(2&#12316;3人分)</td>\n<td>食器11&#12316;12点<br>\n(1&#12316;2人分)</td>\n<td>食器11&#12316;12点<br>\n(1&#12316;2人分)</td>\n</tr>",
+            "<tr>\n<th>使用水量</th>\n<td>5.2L</td>\n<td>4.5L</td>\n<td>5L</td>\n<td>3.2L</td>\n<td>3.2L</td>\n</tr>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SIROCA-SS-MA251",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-SS-MA251-SPECS",
+          "exact_utf8_fragments": [
+            "<p class=\"link\">SS-MA251</p>",
+            "家族3人分の食器<span class=\"no-break\">16点",
+            "<tr>\n<th>使用水量(約)</th>\n<td>8.5L(分岐水栓使用時)<br />9L(自動給水時)</td>\n<td>8.5L(分岐水栓使用時)<br />9L(自動給水時)</td>\n<td class=\"gray\">6L</td>\n<td class=\"gray\">6L</td>\n<td>5L</td>\n</tr>",
+            "<tr>\n<th>本体重量(約)</th>\n<td>21kg(本体、上かご、下かご、小物トレイ、小物入れ、UV除菌コース専用トレイ)</td>\n<td>21kg(本体、上かご、下かご、小物トレイ、小物入れ、UV除菌コース専用トレイ)</td>\n<td class=\"gray\">13.5kg<br />（本体、かご、小物入れ、小物かご）</td>\n<td class=\"gray\">13.5kg<br />（本体、かご、小物入れ、小物かご）</td>\n<td>13kg<br />（本体、かご、小物入れ）</td>\n</tr>",
+            "<tr>\n<th>外形寸法(約)</th>\n<td>幅55×奥行35×高さ50cm</td>\n<td>幅55×奥行35×高さ50cm</td>\n<td class=\"gray\">幅42×奥行44×高さ47cm</td>\n<td class=\"gray\">幅42×奥行44×高さ47cm</td>\n<td>幅42×奥行43.5×高さ43.5cm</td>\n</tr>",
+            "* SS-MA251で、おいそぎコースや、その他のコースでオートオープンを設定している場合は、送風（1時間）を行いません。",
+            "洗浄後に自動でドアが開く「オートオープン」機能を搭載。"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "家族3人分の食器<span class=\"no-break\">16点",
+            "<tr>\n<th>使用水量(約)</th>\n<td>8.5L(分岐水栓使用時)<br />9L(自動給水時)</td>\n<td>8.5L(分岐水栓使用時)<br />9L(自動給水時)</td>\n<td class=\"gray\">6L</td>\n<td class=\"gray\">6L</td>\n<td>5L</td>\n</tr>",
+            "<tr>\n<th>外形寸法(約)</th>\n<td>幅55×奥行35×高さ50cm</td>\n<td>幅55×奥行35×高さ50cm</td>\n<td class=\"gray\">幅42×奥行44×高さ47cm</td>\n<td class=\"gray\">幅42×奥行44×高さ47cm</td>\n<td>幅42×奥行43.5×高さ43.5cm</td>\n</tr>",
+            "* SS-MA251で、おいそぎコースや、その他のコースでオートオープンを設定している場合は、送風（1時間）を行いません。",
+            "洗浄後に自動でドアが開く「オートオープン」機能を搭載。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PANASONIC-NP-TSP1",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-NP-TSP1-SPECS",
+          "exact_utf8_fragments": [
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">24点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約9L&#xff08;タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★6</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅550×高さ600&#xff1c;712&#xff1e;×奥行341&#xff1c;上386,下362&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">製品質量\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約19㎏\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">ドアタイプ\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">リフトアップオープンドア\n\t\t</td>\n\t\n\t\n\n\t</tr>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">24点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約9L&#xff08;タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★6</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅550×高さ600&#xff1c;712&#xff1e;×奥行341&#xff1c;上386,下362&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">ドアタイプ\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">リフトアップオープンドア\n\t\t</td>\n\t\n\t\n\n\t</tr>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C800-PLUS",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ANKER-C800-SPECS",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約37.1 x 20.5 x 25.0cm （ 幅 x 奥行 x 高さ )</td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約10.9kg</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>768Wh</td>",
+            "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1200W(50/60Hz) / 1600W"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C1000",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-SPECS",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約37.6 x 20.5 x 26.7cm （ 幅 x 奥行 x 高さ )</td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約12.9kg</td>",
+            "<td class=\"product-specs-heading\">出力</td>\n                <td>AC出力：1500W</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1056Wh</td>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-GENERATION-DIFF",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1056Wh</td>",
+            "<td class=\"product-specs-heading\">出力</td>\n                <td>AC出力：1500W</td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約12.9kg</td>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C1000-GEN2",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約38.4 x 20.8 x 24.4cm ( 幅 x 奥行 x 高さ ) </td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約11.3kg</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1024Wh</td>",
+            "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1550W (50/60Hz) / 2300W"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-GENERATION-DIFF",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1024Wh</td>",
+            "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1550W (50/60Hz) / 2300W",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約11.3kg</td>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-ROOMBA-MINI-SPECS",
+          "exact_utf8_fragments": [
+            "<tr>\n              <th class=\"table_head\">ルンバ本体サイズ(cm)</th>\n              <td class=\"table_data\">24.5 (奥行き) ×24.5 (幅) ×9.2 (高さ)</td>\n            </tr>",
+            "<tr>\n              <th class=\"table_head\">充電ステーションサイズ(cm)</th>\n              <td class=\"table_data\">17.8 (奥行き) ×21.2 (幅) ×28.5 (高さ)</td>\n            </tr>",
+            "掃除機がけ、または<br />\n                使い捨て床拭きシートで",
+            "<tr>\n              <th class=\"table_head\">充電ステーション</th>\n              <td class=\"table_data\"><span class=\"check\">◯</span><br />自動ゴミ収集：最大90日分<sup>*3</sup></td>\n            </tr>",
+            "<tr>\n              <th class=\"table_head\">自動給水 / ローラーモップの自動洗浄 / 自動乾燥</th>\n              <td class=\"table_data\">―</td>\n            </tr>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<tr>\n              <th class=\"table_head\">ルンバ本体サイズ(cm)</th>\n              <td class=\"table_data\">24.5 (奥行き) ×24.5 (幅) ×9.2 (高さ)</td>\n            </tr>",
+            "<tr>\n              <th class=\"table_head\">充電ステーションサイズ(cm)</th>\n              <td class=\"table_data\">17.8 (奥行き) ×21.2 (幅) ×28.5 (高さ)</td>\n            </tr>",
+            "掃除機がけ、または<br />\n                使い捨て床拭きシートで",
+            "<tr>\n              <th class=\"table_head\">充電ステーション</th>\n              <td class=\"table_data\"><span class=\"check\">◯</span><br />自動ゴミ収集：最大90日分<sup>*3</sup></td>\n            </tr>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SWITCHBOT-K11-PRO",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-K11-PRO-SPECS",
+          "exact_utf8_fragments": [
+            "<h3 data-pf-type=\"Heading2\" class=\"sc-cMa-dPg gqnfAG rid-188\">本体サイズ</h3><p class=\"sc-leXARK dphlZo rid-190\" data-pf-type=\"Paragraph3\">248&nbsp;×&nbsp;248&nbsp;×&nbsp;92&nbsp;mm</p>",
+            "<h3 data-pf-type=\"Heading2\" class=\"sc-cMa-dPg gqnfAG rid-237\">本体サイズ</h3><p class=\"sc-leXARK dphlZo rid-239\" data-pf-type=\"Paragraph3\">240×180×250mm</p>",
+            "<h2><span>A4用紙以下の設置面積＋90日ごみ捨て不要</span></h2>",
+            ">ゴミ収集ステーション</button>",
+            "市販のお掃除シートで 、拭き掃除もおまかせ",
+            "使い終わったらそのまま捨てるだけ。モップを洗う手間もありません。"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<h3 data-pf-type=\"Heading2\" class=\"sc-cMa-dPg gqnfAG rid-188\">本体サイズ</h3><p class=\"sc-leXARK dphlZo rid-190\" data-pf-type=\"Paragraph3\">248&nbsp;×&nbsp;248&nbsp;×&nbsp;92&nbsp;mm</p>",
+            "<h3 data-pf-type=\"Heading2\" class=\"sc-cMa-dPg gqnfAG rid-237\">本体サイズ</h3><p class=\"sc-leXARK dphlZo rid-239\" data-pf-type=\"Paragraph3\">240×180×250mm</p>",
+            "<h2><span>A4用紙以下の設置面積＋90日ごみ捨て不要</span></h2>",
+            "市販のお掃除シートで 、拭き掃除もおまかせ",
+            "使い終わったらそのまま捨てるだけ。モップを洗う手間もありません。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SWITCHBOT-K10-PRO-COMBO",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-K10-COMBO-SPECS",
+          "exact_utf8_fragments": [
+            "<h3 data-pf-type=\"Heading2\" class=\"sc-iLsJvT gbBbPZ rid-188 pf-heading-2-h3\">本体サイズ</h3><p class=\"sc-doOhAX dfRERk rid-190 pf-text-5\" data-pf-type=\"Paragraph3\">248 x 248 x 92 mm</p>",
+            "<h3 data-pf-type=\"Heading2\" class=\"sc-iLsJvT gbBbPZ rid-237 pf-heading-2-h3\">本体サイズ</h3><p class=\"sc-doOhAX dfRERk rid-239 pf-text-5\" data-pf-type=\"Paragraph3\">195 x 297 x 410 mm</p>",
+            "仕上げはお掃除シートで拭き上げます。</p>",
+            "<h2>デュアル集塵ステーション</h2>",
+            "<p>ロボット+スティックが1つのステーションに。"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<h3 data-pf-type=\"Heading2\" class=\"sc-iLsJvT gbBbPZ rid-188 pf-heading-2-h3\">本体サイズ</h3><p class=\"sc-doOhAX dfRERk rid-190 pf-text-5\" data-pf-type=\"Paragraph3\">248 x 248 x 92 mm</p>",
+            "<h3 data-pf-type=\"Heading2\" class=\"sc-iLsJvT gbBbPZ rid-237 pf-heading-2-h3\">本体サイズ</h3><p class=\"sc-doOhAX dfRERk rid-239 pf-text-5\" data-pf-type=\"Paragraph3\">195 x 297 x 410 mm</p>",
+            "仕上げはお掃除シートで拭き上げます。</p>",
+            "<h2>デュアル集塵ステーション</h2>",
+            "<p>ロボット+スティックが1つのステーションに。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-ROOMBA-515-SPECS",
+          "exact_utf8_fragments": [
+            "<tr>\n              <th class=\"table_head\">ルンバ本体サイズ(cm)</th>\n              <td class=\"table_data\">30.3 (奥行き) ×29.8 (幅) ×8.4 (高さ)</td>\n            </tr>",
+            "<tr>\n              <th class=\"table_head\">充電ステーションサイズ(cm)</th>\n              <td class=\"table_data\">34.0 (奥行き) ×33.0 (幅) ×48.5 (高さ)</td>\n            </tr>",
+            "毎分180回転のDualClean&trade; モップパッド",
+            "<tr>\n              <th class=\"table_head\">自動ゴミ収集機能</th>\n              <td class=\"table_data\"><span class=\"check\">◯</span>（最大3か月分<sup>*2</sup>）</td>\n            </tr>",
+            "<tr>\n              <th class=\"table_head\">自動給水 / モップパッドの自動洗浄 / 自動乾燥</th>\n              <td class=\"table_data\"><span class=\"check\">◯</span>（温水洗浄/温風乾燥）</td>\n            </tr>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<tr>\n              <th class=\"table_head\">ルンバ本体サイズ(cm)</th>\n              <td class=\"table_data\">30.3 (奥行き) ×29.8 (幅) ×8.4 (高さ)</td>\n            </tr>",
+            "<tr>\n              <th class=\"table_head\">充電ステーションサイズ(cm)</th>\n              <td class=\"table_data\">34.0 (奥行き) ×33.0 (幅) ×48.5 (高さ)</td>\n            </tr>",
+            "毎分180回転のDualClean&trade; モップパッド",
+            "<tr>\n              <th class=\"table_head\">自動ゴミ収集機能</th>\n              <td class=\"table_data\"><span class=\"check\">◯</span>（最大3か月分<sup>*2</sup>）</td>\n            </tr>",
+            "<tr>\n              <th class=\"table_head\">自動給水 / モップパッドの自動洗浄 / 自動乾燥</th>\n              <td class=\"table_data\"><span class=\"check\">◯</span>（温水洗浄/温風乾燥）</td>\n            </tr>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-RAKUTEN-AFFILIATE-GUIDELINE",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "POLICY-SOURCE-STATEMENT",
+          "exact_utf8_fragments": [
+            "サイズ変更・周辺部分への加工は可能です",
+            "画像の上に直接文字や装飾を入れること、画像の一部を切り取って使用することは禁止といたします"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-CAA-STEALTH-MARKETING-QA",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "POLICY-SOURCE-STATEMENT",
+          "exact_utf8_fragments": [
+            "<span>アフィリエイト広告について、アフィリエイトサイトの冒頭に、「このサイトはアフィリエイト広告を利用しています。」",
+            "一般消費者にとって「事業者の表示」であることが明瞭となっているかどうかが重要となります。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-GOOGLE-QUALIFY-OUTBOUND-LINKS",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "POLICY-SOURCE-STATEMENT",
+          "exact_utf8_fragments": [
+            "Mark links that are advertisements or paid placements (commonly called <i>paid\n              links</i>) with the <code translate=\"no\" dir=\"ltr\">sponsored</code> value."
+          ]
+        }
+      ]
+    }
+  ]
+}
