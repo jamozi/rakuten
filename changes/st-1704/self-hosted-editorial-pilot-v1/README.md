@@ -72,6 +72,29 @@ runtime manifest to its current `HEAD` blob before loading any RAOS module or
 reading a registry/locator document. A direct shebang invocation is therefore a
 closed refusal rather than an alternate execution path.
 
+The four WordPress commands use the same repository-root `CLEAN_PYTHON` boundary.
+For example, preparation is invoked only as:
+
+```sh
+/usr/bin/env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C TZ=UTC \
+  "$PWD/.venv/bin/python" -B -I -S -X pycache_prefix=/dev/null \
+  scripts/st1704_self_hosted_editorial_pilot.py prepare \
+  --article-id st1704-portable-power-station-guide
+```
+
+Before any RAOS import, owner credential read, journal access, DNS lookup, or HTTP
+operation, the entry point verifies its exact direct-script process, standard-library
+import path/root/current `HEAD`, the
+committed manifest, and every listed worktree byte. It loads RAOS and the complete
+generated Content AST tree only from those frozen bytes, and binds article, source,
+media, theme-contract, and Content AST schema reads to the same snapshot. Only after
+that verification does it append the fixed owner-safe virtual-environment
+`site-packages` directory; Python `site`, `.pth`, and customization hooks are never
+run. External validation dependencies load before any RAOS package exists, and every
+subsequent RAOS module object remains bound to its verified source loader. Runtime
+drift returns only `SELF_HOSTED_EDITORIAL_PILOT_RUNTIME_INVALID` and cannot reach the
+owner credential, journal, or network boundaries.
+
 `create-review-draft` is the only command that can turn a freshly prepared request
 into a live draft. Before its single POST, the runtime durably stores the exact
 canonical request in an owner-only, no-overwrite artifact and binds that artifact's

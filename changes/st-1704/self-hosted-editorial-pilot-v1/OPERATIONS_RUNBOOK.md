@@ -4,6 +4,30 @@ This runbook starts only after the repository manifest and local checks pass. It
 not grant publication, credential, provider, plugin, theme, privacy, rollback, or
 Production authority.
 
+Run every `prepare`, `create-review-draft`, `recover-create-review-draft`, and
+`verify-public` command from the exact repository root through the isolated process
+below (substitute only the closed command and allowlisted article ID):
+
+```sh
+/usr/bin/env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C TZ=UTC \
+  "$PWD/.venv/bin/python" -B -I -S -X pycache_prefix=/dev/null \
+  scripts/st1704_self_hosted_editorial_pilot.py prepare \
+  --article-id st1704-portable-power-station-guide
+```
+
+The CLI refuses before RAOS import, credential/journal access, DNS, or HTTP unless
+its direct-script process, standard-library import path, repository root, current
+`HEAD`, committed manifest, predecessor, and all listed runtime bytes match. The
+inventory includes the transitive ST-1703 live
+credential/REST/HTTPS modules, the complete generated Content AST Python tree, and
+the frozen Content AST schema. Tracked article/source/media/theme/schema reads remain
+bound to the verified in-memory bytes even if the worktree changes later. Only then
+is the owner-safe fixed virtual-environment package directory appended directly;
+`site`, `.pth`, `sitecustomize`, and `usercustomize` are not executed. The sole
+stage-zero refusal is `SELF_HOSTED_EDITORIAL_PILOT_RUNTIME_INVALID`. External
+validation dependencies load before any RAOS package is created; every loaded RAOS
+module is then rechecked by verified-loader and object identity before live boundaries.
+
 ## Before any live change
 
 1. A human operator records the active theme and plugin inventory, the current public
@@ -74,7 +98,8 @@ The command accepts no URL, header, credential, output path, WordPress target, o
 publication action. Run it in the repository's clean environment without proxy or
 custom certificate variables. A single-source refresh may instead use
 `capture-source --source-ref <tracked-ref>`. These are the only two subcommands; the
-WordPress CLI is unchanged and still exposes exactly four commands.
+separate WordPress CLI exposes exactly four commands and independently enforces its
+own committed-manifest/verified-byte runtime boundary described above.
 
 `capture-article` commits each source independently and never treats a partial batch
 as article readiness. For one source, the body and metadata files are each replaced

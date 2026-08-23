@@ -10,7 +10,7 @@ import os
 from pathlib import Path, PurePosixPath
 import stat
 import sys
-from typing import Final, NoReturn
+from typing import Final, NoReturn, cast
 
 
 ROOT: Final = Path(__file__).resolve().parents[1]
@@ -22,6 +22,7 @@ PREDECESSOR_PATH: Final = (
 APPROVED_BASE_COMMIT: Final = "ca271187c4c8606487193110b29597a40e4c1c9f"
 MAX_FILE_BYTES: Final = 4 * 1024 * 1024
 MAX_MANIFEST_BYTES: Final = 256 * 1024
+GENERATED_CONTRACT_ROOT: Final = ROOT / "python/raos/generated/contracts"
 
 ARTICLE_IDS: Final = (
     "st1703-first-suitcase-comparison",
@@ -31,7 +32,7 @@ ARTICLE_IDS: Final = (
     "st1704-compact-robot-vacuum-shortlist",
 )
 
-REQUIRED_RUNTIME_PATHS: Final = (
+_BASE_RUNTIME_PATHS: Final[tuple[str, ...]] = (
     f"{SLICE}/DESIGN_HANDOFF_V1.yaml",
     f"{SLICE}/EDITORIAL_RESEARCH_NOTES.md",
     f"{SLICE}/Makefile",
@@ -58,17 +59,48 @@ REQUIRED_RUNTIME_PATHS: Final = (
     f"{SLICE}/theme/kurashinoshirube-child/theme-contract.v1.json",
     f"{SLICE}/theme/kurashinoshirube-child/theme.json",
     f"{SLICE}/theme/yoast-seo-28.3.lock.json",
+    "contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json",
     "python/raos/adapters/self_hosted_editorial_pilot_https.py",
     "python/raos/adapters/self_hosted_editorial_pilot_json.py",
     "python/raos/adapters/self_hosted_editorial_source_capture.py",
+    "python/raos/adapters/self_hosted_wordpress_credentials.py",
+    "python/raos/adapters/self_hosted_wordpress_https.py",
+    "python/raos/adapters/self_hosted_wordpress_rest.py",
+    "python/raos/adapters/wordpress_rest.py",
     "python/raos/application/editorial/self_hosted_editorial_pilot.py",
     "python/raos/domain/editorial/content_ast.py",
+    "python/raos/domain/editorial/market_learning_pilot.py",
     "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
+    "python/raos/domain/editorial/self_hosted_wordpress.py",
     "python/raos/ports/self_hosted_editorial_pilot.py",
     "scripts/build_st1704_self_hosted_editorial_manifest.py",
     "scripts/build_st1704_self_hosted_theme.py",
     "scripts/st1704_official_source_capture.py",
     "scripts/st1704_self_hosted_editorial_pilot.py",
+)
+
+
+def _generated_runtime_paths() -> tuple[str, ...]:
+    try:
+        root_metadata = GENERATED_CONTRACT_ROOT.lstat()
+    except OSError:
+        raise RuntimeError("generated contract root is unavailable") from None
+    if not stat.S_ISDIR(root_metadata.st_mode) or GENERATED_CONTRACT_ROOT.is_symlink():
+        raise RuntimeError("generated contract root is unsafe")
+    paths = tuple(
+        sorted(
+            path.relative_to(ROOT).as_posix()
+            for path in GENERATED_CONTRACT_ROOT.rglob("*.py")
+        )
+    )
+    if not paths or len(set(paths)) != len(paths):
+        raise RuntimeError("generated contract inventory is invalid")
+    return paths
+
+
+GENERATED_RUNTIME_PATHS: Final[tuple[str, ...]] = _generated_runtime_paths()
+REQUIRED_RUNTIME_PATHS: Final[tuple[str, ...]] = tuple(
+    sorted((*_BASE_RUNTIME_PATHS, *GENERATED_RUNTIME_PATHS))
 )
 
 
@@ -129,13 +161,18 @@ def _validate_content_identity() -> None:
     document = _load_json(f"{SLICE}/content/articles.v1.json")
     if type(document) is not dict:
         _fail()
-    articles = document.get("articles")
-    if type(articles) is not list or len(articles) != 5:
+    document = cast(dict[str, object], document)
+    articles_value = document.get("articles")
+    if type(articles_value) is not list:
+        _fail()
+    articles = cast(list[object], articles_value)
+    if len(articles) != 5:
         _fail()
     identities: list[str] = []
-    for article in articles:
-        if type(article) is not dict:
+    for article_value in articles:
+        if type(article_value) is not dict:
             _fail()
+        article = cast(dict[str, object], article_value)
         article_id = article.get("article_id")
         if type(article_id) is not str:
             _fail()
@@ -162,7 +199,7 @@ def build_manifest() -> bytes:
         "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json",
         maximum=MAX_MANIFEST_BYTES,
     )
-    paths = []
+    paths: list[dict[str, object]] = []
     for relative in REQUIRED_RUNTIME_PATHS:
         payload = _read_regular_file(relative)
         paths.append(
