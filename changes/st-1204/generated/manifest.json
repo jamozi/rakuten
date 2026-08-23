@@ -252,24 +252,24 @@
       }
     ],
     "publication_design": {
-      "sha256": "4ce2bd89583b6d6887790f9b4279cd08a482408061ae8a440c6e9f828abc050e",
+      "sha256": "9086850e54cdf4fdf621c7a47538948fe0fc9eb7b5aedec7af7d1d22554e0c75",
       "uri": "repo://changes/st-1204/DESIGN_HANDOFF_V1_ST1204_FIXTURE_v1.yaml"
     }
   },
   "source_artifacts": [
     {
       "bytes": 19801,
-      "sha256": "68234b1e7920ddbfa7202f3b14690a985022160cc655611fddb4639eeea4926d",
+      "sha256": "50c0e5985011921022500e82b2c1ffd389ee69bddac47b4ea04df4e04ab0f372",
       "uri": "repo://changes/st-1204/contracts/ga4-recorded-fixtures.v1.yaml"
     },
     {
-      "bytes": 102986,
-      "sha256": "4f2c73371275497cc67d964ac420d4702de225deed373518a48956bec8220faa",
+      "bytes": 172642,
+      "sha256": "1fa9f182b8ecaf663a28a648d0665183ddce9c5a106c0467bfa2b4bb6269f45a",
       "uri": "repo://scripts/build_st1204_ga4_recorded_adapter.py"
     },
     {
-      "bytes": 10692,
-      "sha256": "4ce2bd89583b6d6887790f9b4279cd08a482408061ae8a440c6e9f828abc050e",
+      "bytes": 12208,
+      "sha256": "9086850e54cdf4fdf621c7a47538948fe0fc9eb7b5aedec7af7d1d22554e0c75",
       "uri": "repo://changes/st-1204/DESIGN_HANDOFF_V1_ST1204_FIXTURE_v1.yaml"
     }
   ]

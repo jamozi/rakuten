@@ -3410,3 +3410,61 @@ original result.
   external evidence, live GA4/property/account/credentials, persistence,
   hosted CI, staging, release, and Production remain `NOT_EXECUTED`. This is
   local implementation evidence only, not `VALIDATED` or formal/live evidence.
+
+### 2026-08-24 W2 / ST-1204 V2 atomic-cleanup correction
+
+- Correction: independent follow-up review reproduced three material defects
+  after commit `3a616957cac905618da3dc3e30aeddfac4b42ae6`: a final-entry and
+  pre-exchange identity race, an unrecoverable destructive-cleanup crash, and
+  non-idempotent legacy cleanup. The preceding V1 local-closure conclusion is
+  therefore historical evidence only and is superseded by this V2 correction;
+  it is not deleted or rewritten.
+- V2 local implementation: publication now uses a hash-chained append-only
+  journal whose states are durably prepared then published no-replace. Fresh
+  installation is no-replace; replacement binds and re-verifies the exchanged
+  old bundle before commit. Complete old-stage and legacy trees are validated,
+  identity/hash bound, and moved no-replace into transaction-specific
+  quarantines before destructive cleanup. File, directory, journal and root
+  tombstone progress is restartable at every owner checkpoint. A final
+  authoritative-bundle and closed-inventory recheck precedes cleanup
+  completion. Nonempty orphan stages and unbound cleanup names are never
+  accepted from matching bytes alone.
+- Explicit trust boundary: POSIX provides no inode-conditional `unlinkat` or
+  `rmdirat`. This implementation does not claim to prevent an actively
+  malicious same-UID process from winning the final in-kernel name race after
+  the last identity check. Every observable identity mismatch in the covered
+  pre/post-rename and checkpoint windows is restored when no-replace-safe or
+  retained and refused without deletion. This boundary is recorded in the V2
+  design handoff and does not waive a representable race.
+- Local evidence: deterministic generation and no-write `--check` pass at
+  manifest SHA-256
+  `22e002adcc6c043701f9e050cf3f64ffb37bccbe56ef5dad3f155fd478a201b7`;
+  fixture payload bytes are unchanged; isolated ST-1204 passes `195` tests,
+  including `60` atomic fault/crash/concurrency/same-UID-swap tests. Python
+  3.10/3.14 compile, Ruff lint/format, strict mypy over the generator and all
+  ST-1204 tests, configured Pyright, canonical import, workspace no-write,
+  focused capability/static, focused maintained-file secret scanning, and
+  `git diff --check` pass. The configured Pyright gate excludes scripts/tests;
+  forced direct analysis retains pre-existing out-of-config untyped-data and
+  private-test-helper diagnostics and is not claimed green. The full
+  linked-worktree scanner remains inherited sanitized
+  `ERROR code=unsafe-git-metadata source="."`.
+- `DEBT-W2-028` status remains `OPEN_PENDING_INDEPENDENT_REAUDIT`. Its V2 local
+  implementation subcondition is `CLOSED_PENDING_INDEPENDENT_REAUDIT`, with
+  exact record `changes/st-1204/ATOMIC-PUBLICATION-CLOSURE-v1.md`; no audit
+  `PASS`, formal TST-030, or `VALIDATED` state is claimed.
+- `DEBT-W2-062` remains `OPEN` for the ST-1205 owner and final provenance
+  integration. The exact read-only owner command still exits one with
+  `SOURCE_HASH_DRIFT field=predecessor.st1204`. The exact changed direct pins
+  are `changes/st-1204/RUNTIME-SLICE-v1.md`
+  (`ac85f07ee2325aa5e1f63ffd0323cc499417b2c85d4ac36b31d07fcbe58e0d0e`),
+  `tests/st1204/test_ga4_application.py`
+  (`6631568a32d3a510a1b35f349f4cddc365af1105af978fa5048b9079a5a1e7ff`),
+  and `tests/st1204/test_recorded_ga4.py`
+  (`723d4a85d0e84784a207fcf61b23a59d9a944acb42c2f2c9f2d2f6f66fc90355`).
+  No ST-1205 owner, contract, manifest or generated plan is edited here; its
+  disabled reference-plan drift has no provider, runtime, persistence,
+  publication or Production impact.
+- OD-012 remains disabled and OD-015 remains recorded-fixture-only. No network,
+  credential, Google SDK/API, database, queue, analytics persistence, provider,
+  publication, staging, release or Production action was added or executed.

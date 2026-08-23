@@ -290,6 +290,17 @@ def test_atomic_publication_design_is_closed_without_resolving_external_decision
     assert decision["ST1204-FIXTURE-D2"]["namespace_operation"]["replacement"] == (
         "LINUX_RENAMEAT2_RENAME_EXCHANGE"
     )
+    assert decision["ST1204-FIXTURE-D2"]["namespace_operation"]["fresh_install"] == (
+        "LINUX_RENAMEAT2_RENAME_NOREPLACE_STAGE_TO_GENERATED"
+    )
+    journal = decision["ST1204-FIXTURE-D2"]["journal"]
+    assert journal["schema"] == "ST1204_ATOMIC_PUBLICATION_V2"
+    assert journal["update"] == (
+        "APPEND_ONLY_PREPARING_FILE_FSYNC_RENAME_NOREPLACE_JOURNAL_FSYNC"
+    )
+    assert decision["ST1204-FIXTURE-D2"]["filesystem_adversary_boundary"][
+        "posix_limit"
+    ].startswith("UNLINKAT_AND_RMDIRAT_HAVE_NO_CONDITIONAL_INODE_FORM")
     assert handoff["formal_tst_030"] == "NOT_EXECUTED"
     assert handoff["production_readiness"] == "NOT_READY"
 

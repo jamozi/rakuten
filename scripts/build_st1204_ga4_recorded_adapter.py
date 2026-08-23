@@ -19,7 +19,7 @@ import stat
 import sys
 from typing import Final, NoReturn, cast
 from urllib.parse import urlsplit
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from jsonschema import Draft202012Validator, FormatChecker  # type: ignore[import-untyped]
 from jsonschema.exceptions import (  # type: ignore[import-untyped]
@@ -118,15 +118,37 @@ FORBIDDEN_DECODED_MARKERS: Final = (
     "ya29.",
     "aiza",
 )
+RENAME_NOREPLACE: Final = 1
 RENAME_EXCHANGE: Final = 2
 STAGE_NAME: Final = ".generated.st1204.stage"
 JOURNAL_PREPARING_NAME: Final = ".generated.st1204.transaction.preparing"
 JOURNAL_NAME: Final = ".generated.st1204.transaction"
-JOURNAL_CLEANUP_NAME: Final = ".generated.st1204.transaction.cleanup"
-JOURNAL_STATE_NAME: Final = "state.json"
-JOURNAL_STATE_TEMPORARY_NAME: Final = ".state.json.tmp"
-JOURNAL_SCHEMA: Final = "ST1204_ATOMIC_PUBLICATION_V1"
-JOURNAL_PHASES: Final = frozenset({"PREPARED", "COMMITTED", "ROLLED_BACK"})
+JOURNAL_CLEANUP_NAME: Final = ".generated.st1204.transaction.cleanup."
+JOURNAL_STATE_NAME: Final = "state.000.json"
+JOURNAL_STATE_PREFIX: Final = "state."
+JOURNAL_STATE_PREPARING_SUFFIX: Final = ".preparing"
+MAX_JOURNAL_STATES: Final = 32
+JOURNAL_SCHEMA: Final = "ST1204_ATOMIC_PUBLICATION_V2"
+JOURNAL_PHASES: Final = frozenset(
+    {"PREPARED", "COMMITTED", "ROLLED_BACK", "DRIFT_REFUSAL"}
+)
+CLEANUP_PHASES: Final = frozenset(
+    {
+        "NONE",
+        "BUNDLE_QUARANTINING",
+        "BUNDLE_DELETING",
+        "BUNDLE_REMOVED",
+        "LEGACY_QUARANTINING",
+        "LEGACY_DELETING",
+        "CLEANUP_COMPLETE",
+    }
+)
+BUNDLE_CLEANUP_PREFIX: Final = ".generated.st1204.bundle-cleanup."
+LEGACY_CLEANUP_PREFIX: Final = ".generated.st1204.legacy-cleanup."
+DELETE_TOMBSTONE_PREFIX: Final = ".st1204-delete."
+LEGACY_MANIFEST_SHA256: Final = (
+    "14596e1852b6d99c7359a2a5354f9ec03e9d189aaa6979335d8fe71b76490f91"
+)
 EXPECTED_BUNDLE_PATHS: Final = (
     "manifest.json",
     *(f"fixtures/recorded/{name}" for name in EXPECTED_FIXTURE_NAMES),
@@ -273,6 +295,56 @@ def _stat_signature(metadata: os.stat_result) -> tuple[int, ...]:
         metadata.st_mtime_ns,
         metadata.st_ctime_ns,
     )
+
+
+def _entry_identity(metadata: os.stat_result) -> tuple[int, int]:
+    return metadata.st_dev, metadata.st_ino
+
+
+def _identity_record(identity: tuple[int, int] | None) -> dict[str, int] | None:
+    if identity is None:
+        return None
+    return {"dev": identity[0], "ino": identity[1]}
+
+
+def _validated_identity(value: object, *, label: str) -> tuple[int, int] | None:
+    if value is None:
+        return None
+    record = _mapping(value, label=label)
+    if set(record) != {"dev", "ino"}:
+        raise PublicationRecoveryRequired(f"{label} fields drifted")
+    dev = record.get("dev")
+    ino = record.get("ino")
+    if type(dev) is not int or type(ino) is not int or dev < 0 or ino <= 0:
+        raise PublicationRecoveryRequired(f"{label} is malformed")
+    return dev, ino
+
+
+def _identity_map_record(
+    identities: Mapping[str, tuple[int, int]],
+) -> dict[str, dict[str, int]]:
+    return {
+        name: cast(dict[str, int], _identity_record(identity))
+        for name, identity in sorted(identities.items())
+    }
+
+
+def _validated_identity_map(
+    value: object,
+    *,
+    label: str,
+    expected_names: set[str],
+) -> dict[str, tuple[int, int]]:
+    record = _mapping(value, label=label)
+    if set(record) != expected_names:
+        raise PublicationRecoveryRequired(f"{label} inventory drifted")
+    result: dict[str, tuple[int, int]] = {}
+    for name, identity_record in record.items():
+        identity = _validated_identity(identity_record, label=f"{label} {name}")
+        if identity is None:
+            raise PublicationRecoveryRequired(f"{label} {name} is missing")
+        result[name] = identity
+    return result
 
 
 def _read_regular(
@@ -1716,13 +1788,13 @@ def _directory_names_at(descriptor: int, *, label: str) -> set[str]:
         raise RuntimeError(f"cannot scan {label}") from exc
 
 
-def _read_regular_at(
+def _read_regular_capture_at(
     parent_fd: int,
     name: str,
     *,
     label: str,
     maximum_bytes: int = MAX_GENERATED_BYTES,
-) -> bytes:
+) -> tuple[bytes, tuple[int, int]]:
     metadata = _entry_metadata_at(parent_fd, name)
     if (
         metadata is None
@@ -1742,7 +1814,12 @@ def _read_regular_at(
     primary: BaseException | None = None
     try:
         before = os.fstat(descriptor)
-        if before.st_nlink != 1 or before.st_size > maximum_bytes:
+        if (
+            not stat.S_ISREG(before.st_mode)
+            or before.st_nlink != 1
+            or before.st_size > maximum_bytes
+            or _entry_identity(before) != _entry_identity(metadata)
+        ):
             raise RuntimeError(f"{label} exceeds its safe file boundary")
         chunks: list[bytes] = []
         remaining = maximum_bytes + 1
@@ -1761,7 +1838,10 @@ def _read_regular_at(
             or _stat_signature(before) != _stat_signature(after)
         ):
             raise RuntimeError(f"{label} changed while it was read")
-        return content
+        current = _entry_metadata_at(parent_fd, name)
+        if current is None or _entry_identity(current) != _entry_identity(after):
+            raise PublicationRecoveryRequired(f"{label} entry identity changed")
+        return content, _entry_identity(after)
     except BaseException as exc:
         primary = exc
         raise
@@ -1773,6 +1853,22 @@ def _read_regular_at(
                 primary.add_note(f"{label} descriptor cleanup also failed")
             else:
                 raise exc
+
+
+def _read_regular_at(
+    parent_fd: int,
+    name: str,
+    *,
+    label: str,
+    maximum_bytes: int = MAX_GENERATED_BYTES,
+) -> bytes:
+    content, _identity = _read_regular_capture_at(
+        parent_fd,
+        name,
+        label=label,
+        maximum_bytes=maximum_bytes,
+    )
+    return content
 
 
 def _create_regular_at(
@@ -1811,18 +1907,187 @@ def _create_regular_at(
                 raise exc
 
 
-def _unlink_regular_at(parent_fd: int, name: str, *, label: str) -> None:
-    metadata = _entry_metadata_at(parent_fd, name)
-    if metadata is None:
-        return
+def _delete_tombstone_name(name: str) -> str:
+    _checked_entry_name(name, label="cleanup tombstone source")
+    tombstone = f"{DELETE_TOMBSTONE_PREFIX}{name}"
+    _checked_entry_name(tombstone, label="cleanup tombstone")
+    return tombstone
+
+
+def _restore_mismatched_quarantine_at(
+    parent_fd: int, source: str, quarantine: str, *, label: str
+) -> None:
     if (
-        stat.S_ISLNK(metadata.st_mode)
-        or not stat.S_ISREG(metadata.st_mode)
-        or metadata.st_nlink != 1
+        _entry_metadata_at(parent_fd, source) is None
+        and _entry_metadata_at(parent_fd, quarantine) is not None
     ):
-        raise PublicationRecoveryRequired(f"unsafe {label} cannot be removed")
-    os.unlink(name, dir_fd=parent_fd)
+        _rename_noreplace_at(parent_fd, quarantine, source)
+        os.fsync(parent_fd)
+    raise PublicationRecoveryRequired(f"{label} quarantine identity drifted")
+
+
+def _unlink_regular_at(
+    parent_fd: int,
+    name: str,
+    *,
+    label: str,
+    expected_content: bytes | None = None,
+    expected_sha256: str | None = None,
+    expected_identity: tuple[int, int] | None = None,
+    checkpoint: str | None = None,
+) -> None:
+    tombstone = _delete_tombstone_name(name)
+    source = _entry_metadata_at(parent_fd, name)
+    quarantined = _entry_metadata_at(parent_fd, tombstone)
+    if source is None and quarantined is None:
+        return
+    if source is not None and quarantined is not None:
+        raise PublicationRecoveryRequired(f"conflicting {label} cleanup entries")
+    captured_identity: tuple[int, int] | None = None
+    observed_content: bytes
+    if source is not None:
+        observed_content, captured_identity = _read_regular_capture_at(
+            parent_fd,
+            name,
+            label=label,
+        )
+        if expected_content is not None and observed_content != expected_content:
+            raise PublicationRecoveryRequired(f"{label} bytes are unowned")
+        if expected_sha256 is not None and _sha256(observed_content) != expected_sha256:
+            raise PublicationRecoveryRequired(f"{label} digest is unowned")
+        if expected_identity is not None and captured_identity != expected_identity:
+            raise PublicationRecoveryRequired(f"{label} identity is unowned")
+        if checkpoint is not None:
+            _checkpoint(f"before-{checkpoint}-quarantine")
+        _rename_noreplace_at(parent_fd, name, tombstone)
+        os.fsync(parent_fd)
+        moved = _entry_metadata_at(parent_fd, tombstone)
+        if (
+            moved is None
+            or _entry_identity(moved) != captured_identity
+            or _entry_metadata_at(parent_fd, name) is not None
+        ):
+            _restore_mismatched_quarantine_at(parent_fd, name, tombstone, label=label)
+        if checkpoint is not None:
+            _checkpoint(f"after-{checkpoint}-quarantine")
+    else:
+        observed_content, captured_identity = _read_regular_capture_at(
+            parent_fd,
+            tombstone,
+            label=f"quarantined {label}",
+        )
+        if expected_content is not None and observed_content != expected_content:
+            raise PublicationRecoveryRequired(f"quarantined {label} bytes are unowned")
+        if expected_sha256 is not None and _sha256(observed_content) != expected_sha256:
+            raise PublicationRecoveryRequired(f"quarantined {label} digest is unowned")
+        if expected_identity is not None and captured_identity != expected_identity:
+            raise PublicationRecoveryRequired(
+                f"quarantined {label} identity is unowned"
+            )
+    if checkpoint is not None:
+        _checkpoint(f"before-{checkpoint}-unlink")
+    confirmed_content, confirmed_identity = _read_regular_capture_at(
+        parent_fd,
+        tombstone,
+        label=f"quarantined {label}",
+    )
+    if (
+        confirmed_identity != captured_identity
+        or confirmed_content != observed_content
+        or (expected_content is not None and confirmed_content != expected_content)
+        or (
+            expected_sha256 is not None
+            and _sha256(confirmed_content) != expected_sha256
+        )
+        or (expected_identity is not None and confirmed_identity != expected_identity)
+    ):
+        raise PublicationRecoveryRequired(f"quarantined {label} changed before unlink")
+    os.unlink(tombstone, dir_fd=parent_fd)
     os.fsync(parent_fd)
+    if checkpoint is not None:
+        _checkpoint(f"after-{checkpoint}-unlink")
+
+
+def _rmdir_empty_at(
+    parent_fd: int,
+    name: str,
+    *,
+    label: str,
+    expected_identity: tuple[int, int] | None = None,
+    checkpoint: str | None = None,
+) -> None:
+    tombstone = _delete_tombstone_name(name)
+    source = _entry_metadata_at(parent_fd, name)
+    quarantined = _entry_metadata_at(parent_fd, tombstone)
+    if source is None and quarantined is None:
+        return
+    if source is not None and quarantined is not None:
+        raise PublicationRecoveryRequired(f"conflicting {label} directory cleanup")
+    captured_identity: tuple[int, int]
+    if source is not None:
+        descriptor = _open_directory_at(parent_fd, name, label=label)
+        try:
+            captured_identity = _entry_identity(os.fstat(descriptor))
+            if expected_identity is not None and captured_identity != expected_identity:
+                raise PublicationRecoveryRequired(f"{label} identity is unowned")
+            if _directory_names_at(descriptor, label=label):
+                raise PublicationRecoveryRequired(f"{label} is not empty")
+            _assert_directory_entry_identity_at(
+                parent_fd, name, descriptor, label=label
+            )
+            if checkpoint is not None:
+                _checkpoint(f"before-{checkpoint}-quarantine")
+            _rename_noreplace_at(parent_fd, name, tombstone)
+            os.fsync(parent_fd)
+            moved = _entry_metadata_at(parent_fd, tombstone)
+            if (
+                moved is None
+                or _entry_identity(moved) != captured_identity
+                or _entry_metadata_at(parent_fd, name) is not None
+            ):
+                _restore_mismatched_quarantine_at(
+                    parent_fd,
+                    name,
+                    tombstone,
+                    label=f"{label} directory",
+                )
+        finally:
+            os.close(descriptor)
+        if checkpoint is not None:
+            _checkpoint(f"after-{checkpoint}-quarantine")
+    else:
+        descriptor = _open_directory_at(
+            parent_fd, tombstone, label=f"quarantined {label}"
+        )
+        try:
+            captured_identity = _entry_identity(os.fstat(descriptor))
+            if expected_identity is not None and captured_identity != expected_identity:
+                raise PublicationRecoveryRequired(
+                    f"quarantined {label} identity is unowned"
+                )
+            if _directory_names_at(descriptor, label=f"quarantined {label}"):
+                raise PublicationRecoveryRequired(f"quarantined {label} is not empty")
+        finally:
+            os.close(descriptor)
+    if checkpoint is not None:
+        _checkpoint(f"before-{checkpoint}-rmdir")
+    descriptor = _open_directory_at(parent_fd, tombstone, label=f"quarantined {label}")
+    try:
+        if _entry_identity(
+            os.fstat(descriptor)
+        ) != captured_identity or _directory_names_at(
+            descriptor, label=f"quarantined {label}"
+        ):
+            raise PublicationRecoveryRequired(f"quarantined {label} changed")
+        _assert_directory_entry_identity_at(
+            parent_fd, tombstone, descriptor, label=f"quarantined {label}"
+        )
+        os.rmdir(tombstone, dir_fd=parent_fd)
+        os.fsync(parent_fd)
+    finally:
+        os.close(descriptor)
+    if checkpoint is not None:
+        _checkpoint(f"after-{checkpoint}-rmdir")
 
 
 def _bundle_files(outputs: Mapping[Path, bytes]) -> dict[str, bytes]:
@@ -1874,9 +2139,9 @@ def _validate_bundle_files(files: Mapping[str, bytes]) -> str:
     return _sha256(manifest_content)
 
 
-def _read_bundle_at(
+def _read_bundle_capture_at(
     story_fd: int, name: str, *, allow_missing: bool
-) -> dict[str, bytes] | None:
+) -> tuple[dict[str, bytes], dict[str, tuple[int, int]]] | None:
     metadata = _entry_metadata_at(story_fd, name)
     if metadata is None:
         if allow_missing:
@@ -1903,25 +2168,41 @@ def _read_bundle_at(
             EXPECTED_FIXTURE_NAMES
         ):
             raise RuntimeError("ST-1204 recorded fixture inventory drifted")
-        files = {
-            "manifest.json": _read_regular_at(
-                root_fd, "manifest.json", label="generated manifest"
-            ),
-            **{
-                f"fixtures/recorded/{fixture_name}": _read_regular_at(
-                    recorded_fd,
-                    fixture_name,
-                    label=f"generated fixture {fixture_name}",
-                )
-                for fixture_name in EXPECTED_FIXTURE_NAMES
-            },
+        manifest_content, manifest_identity = _read_regular_capture_at(
+            root_fd, "manifest.json", label="generated manifest"
+        )
+        files = {"manifest.json": manifest_content}
+        identities = {
+            ".": _entry_identity(os.fstat(root_fd)),
+            "manifest.json": manifest_identity,
+            "fixtures": _entry_identity(os.fstat(fixtures_fd)),
+            "fixtures/recorded": _entry_identity(os.fstat(recorded_fd)),
         }
+        for fixture_name in EXPECTED_FIXTURE_NAMES:
+            content, identity = _read_regular_capture_at(
+                recorded_fd,
+                fixture_name,
+                label=f"generated fixture {fixture_name}",
+            )
+            path = f"fixtures/recorded/{fixture_name}"
+            files[path] = content
+            identities[path] = identity
         _validate_bundle_files(files)
-        return files
+        _assert_directory_entry_identity_at(
+            story_fd, name, root_fd, label="generated bundle"
+        )
+        return files, identities
     finally:
         for descriptor in (recorded_fd, fixtures_fd, root_fd):
             if descriptor is not None:
                 os.close(descriptor)
+
+
+def _read_bundle_at(
+    story_fd: int, name: str, *, allow_missing: bool
+) -> dict[str, bytes] | None:
+    captured = _read_bundle_capture_at(story_fd, name, allow_missing=allow_missing)
+    return None if captured is None else captured[0]
 
 
 def _create_stage_at(story_fd: int, files: Mapping[str, bytes]) -> None:
@@ -1983,161 +2264,623 @@ def _create_stage_at(story_fd: int, files: Mapping[str, bytes]) -> None:
     _checkpoint("after-stage-verify")
 
 
-def _remove_owned_bundle_tree_at(story_fd: int, name: str) -> None:
-    metadata = _entry_metadata_at(story_fd, name)
-    if metadata is None:
+def _cleanup_entry_state(parent_fd: int, name: str) -> str:
+    source = _entry_metadata_at(parent_fd, name)
+    tombstone = _entry_metadata_at(parent_fd, _delete_tombstone_name(name))
+    if source is not None and tombstone is not None:
+        return "conflict"
+    if source is not None:
+        return "source"
+    if tombstone is not None:
+        return "quarantined"
+    return "missing"
+
+
+def _validate_monotonic_file_cleanup(parent_fd: int, names: Sequence[str]) -> None:
+    states = [_cleanup_entry_state(parent_fd, name) for name in names]
+    if "conflict" in states or states.count("quarantined") > 1:
+        raise PublicationRecoveryRequired("bundle file cleanup state is ambiguous")
+    seen_remaining = False
+    for state in states:
+        if state == "missing":
+            if seen_remaining:
+                raise PublicationRecoveryRequired(
+                    "bundle file cleanup progress is not monotonic"
+                )
+        else:
+            seen_remaining = True
+    if "quarantined" in states:
+        first_remaining = next(
+            index for index, state in enumerate(states) if state != "missing"
+        )
+        if states[first_remaining] != "quarantined":
+            raise PublicationRecoveryRequired(
+                "bundle file quarantine is outside cleanup order"
+            )
+
+
+def _remove_owned_bundle_tree_at(
+    story_fd: int,
+    name: str,
+    *,
+    expected_sha256: Mapping[str, str],
+    expected_identities: Mapping[str, tuple[int, int]],
+    checkpoint_prefix: str,
+) -> None:
+    if set(expected_sha256) != set(EXPECTED_BUNDLE_PATHS) or set(
+        expected_identities
+    ) != {
+        ".",
+        "manifest.json",
+        "fixtures",
+        "fixtures/recorded",
+        *EXPECTED_BUNDLE_PATHS[1:],
+    }:
+        raise PublicationRecoveryRequired("owned bundle cleanup record is incomplete")
+    root_delete_name = _delete_tombstone_name(name)
+    root_metadata = _entry_metadata_at(story_fd, name)
+    root_delete_metadata = _entry_metadata_at(story_fd, root_delete_name)
+    if root_metadata is None and root_delete_metadata is None:
         return
-    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
-        raise PublicationRecoveryRequired("unsafe ST-1204 owned bundle tree")
-    root_fd = _open_directory_at(story_fd, name, label="owned bundle tree")
+    if root_metadata is None:
+        _rmdir_empty_at(
+            story_fd,
+            name,
+            label="owned bundle cleanup root",
+            expected_identity=expected_identities["."],
+            checkpoint=f"{checkpoint_prefix}-root",
+        )
+        return
+    if root_delete_metadata is not None:
+        raise PublicationRecoveryRequired("owned bundle cleanup root conflicts")
+    root_fd = _open_directory_at(story_fd, name, label="owned bundle cleanup root")
     fixtures_fd: int | None = None
     recorded_fd: int | None = None
     try:
-        root_names = _directory_names_at(root_fd, label="owned bundle tree")
-        if not root_names <= {"manifest.json", "fixtures"}:
-            raise PublicationRecoveryRequired("owned bundle tree has unknown entries")
-        _unlink_regular_at(root_fd, "manifest.json", label="owned manifest")
-        if "fixtures" in root_names:
+        if _entry_identity(os.fstat(root_fd)) != expected_identities["."]:
+            raise PublicationRecoveryRequired("owned bundle cleanup identity drifted")
+        manifest_delete = _delete_tombstone_name("manifest.json")
+        fixtures_delete = _delete_tombstone_name("fixtures")
+        root_names = _directory_names_at(root_fd, label="owned bundle cleanup root")
+        if not root_names <= {
+            "manifest.json",
+            manifest_delete,
+            "fixtures",
+            fixtures_delete,
+        }:
+            raise PublicationRecoveryRequired(
+                "owned bundle cleanup has unknown entries"
+            )
+        manifest_state = _cleanup_entry_state(root_fd, "manifest.json")
+        fixtures_state = _cleanup_entry_state(root_fd, "fixtures")
+        if manifest_state == "conflict" or fixtures_state == "conflict":
+            raise PublicationRecoveryRequired("owned bundle cleanup entries conflict")
+        if manifest_state != "source" and fixtures_state != "missing":
+            raise PublicationRecoveryRequired("owned bundle cleanup order drifted")
+        if fixtures_state == "source":
             fixtures_fd = _open_directory_at(
-                root_fd, "fixtures", label="owned fixture directory"
+                root_fd, "fixtures", label="owned bundle fixtures"
             )
-            fixture_names = _directory_names_at(
-                fixtures_fd, label="owned fixture directory"
-            )
-            if not fixture_names <= {"recorded"}:
+            if (
+                _entry_identity(os.fstat(fixtures_fd))
+                != expected_identities["fixtures"]
+            ):
                 raise PublicationRecoveryRequired(
-                    "owned fixture directory has unknown entries"
+                    "owned bundle fixture directory identity drifted"
                 )
-            if "recorded" in fixture_names:
+            recorded_delete = _delete_tombstone_name("recorded")
+            fixture_names = _directory_names_at(
+                fixtures_fd, label="owned bundle fixtures"
+            )
+            if not fixture_names <= {"recorded", recorded_delete}:
+                raise PublicationRecoveryRequired(
+                    "owned bundle fixture cleanup has unknown entries"
+                )
+            recorded_state = _cleanup_entry_state(fixtures_fd, "recorded")
+            if recorded_state == "conflict":
+                raise PublicationRecoveryRequired(
+                    "owned bundle recorded cleanup conflicts"
+                )
+            if recorded_state == "source":
                 recorded_fd = _open_directory_at(
-                    fixtures_fd, "recorded", label="owned recorded directory"
+                    fixtures_fd,
+                    "recorded",
+                    label="owned bundle recorded fixtures",
                 )
-                names = _directory_names_at(
-                    recorded_fd, label="owned recorded directory"
-                )
-                if not names <= set(EXPECTED_FIXTURE_NAMES):
+                if (
+                    _entry_identity(os.fstat(recorded_fd))
+                    != expected_identities["fixtures/recorded"]
+                ):
                     raise PublicationRecoveryRequired(
-                        "owned recorded directory has unknown entries"
+                        "owned bundle recorded directory identity drifted"
                     )
-                for fixture_name in sorted(names):
+                allowed_names = {
+                    *EXPECTED_FIXTURE_NAMES,
+                    *(
+                        _delete_tombstone_name(fixture_name)
+                        for fixture_name in EXPECTED_FIXTURE_NAMES
+                    ),
+                }
+                names = _directory_names_at(
+                    recorded_fd, label="owned bundle recorded fixtures"
+                )
+                if not names <= allowed_names:
+                    raise PublicationRecoveryRequired(
+                        "owned bundle recorded cleanup has unknown entries"
+                    )
+                _validate_monotonic_file_cleanup(recorded_fd, EXPECTED_FIXTURE_NAMES)
+                for fixture_name in EXPECTED_FIXTURE_NAMES:
                     _unlink_regular_at(
                         recorded_fd,
                         fixture_name,
-                        label=f"owned fixture {fixture_name}",
+                        label=f"owned bundle fixture {fixture_name}",
+                        expected_sha256=expected_sha256[
+                            f"fixtures/recorded/{fixture_name}"
+                        ],
+                        expected_identity=expected_identities[
+                            f"fixtures/recorded/{fixture_name}"
+                        ],
+                        checkpoint=f"{checkpoint_prefix}-{fixture_name}",
                     )
-                _assert_directory_entry_identity_at(
-                    fixtures_fd,
-                    "recorded",
-                    recorded_fd,
-                    label="owned recorded",
-                )
+                recorded_identity = expected_identities["fixtures/recorded"]
+                if _entry_identity(os.fstat(recorded_fd)) != recorded_identity:
+                    raise PublicationRecoveryRequired(
+                        "owned bundle recorded directory identity drifted"
+                    )
                 os.close(recorded_fd)
                 recorded_fd = None
-                os.rmdir("recorded", dir_fd=fixtures_fd)
-                os.fsync(fixtures_fd)
-            _assert_directory_entry_identity_at(
-                root_fd,
-                "fixtures",
-                fixtures_fd,
-                label="owned fixtures",
-            )
+                _rmdir_empty_at(
+                    fixtures_fd,
+                    "recorded",
+                    label="owned bundle recorded directory",
+                    expected_identity=recorded_identity,
+                    checkpoint=f"{checkpoint_prefix}-recorded",
+                )
+            elif recorded_state == "quarantined":
+                _rmdir_empty_at(
+                    fixtures_fd,
+                    "recorded",
+                    label="owned bundle recorded directory",
+                    expected_identity=expected_identities["fixtures/recorded"],
+                    checkpoint=f"{checkpoint_prefix}-recorded",
+                )
+            fixtures_identity = expected_identities["fixtures"]
+            if _entry_identity(os.fstat(fixtures_fd)) != fixtures_identity:
+                raise PublicationRecoveryRequired(
+                    "owned bundle fixture directory identity drifted"
+                )
             os.close(fixtures_fd)
             fixtures_fd = None
-            os.rmdir("fixtures", dir_fd=root_fd)
-            os.fsync(root_fd)
+            _rmdir_empty_at(
+                root_fd,
+                "fixtures",
+                label="owned bundle fixture directory",
+                expected_identity=fixtures_identity,
+                checkpoint=f"{checkpoint_prefix}-fixtures",
+            )
+        elif fixtures_state == "quarantined":
+            _rmdir_empty_at(
+                root_fd,
+                "fixtures",
+                label="owned bundle fixture directory",
+                expected_identity=expected_identities["fixtures"],
+                checkpoint=f"{checkpoint_prefix}-fixtures",
+            )
+        _unlink_regular_at(
+            root_fd,
+            "manifest.json",
+            label="owned bundle manifest",
+            expected_sha256=expected_sha256["manifest.json"],
+            expected_identity=expected_identities["manifest.json"],
+            checkpoint=f"{checkpoint_prefix}-manifest",
+        )
         _assert_directory_entry_identity_at(
-            story_fd, name, root_fd, label="owned bundle tree"
+            story_fd, name, root_fd, label="owned bundle cleanup root"
         )
     finally:
         for descriptor in (recorded_fd, fixtures_fd, root_fd):
             if descriptor is not None:
                 os.close(descriptor)
-    os.rmdir(name, dir_fd=story_fd)
-    os.fsync(story_fd)
+    _rmdir_empty_at(
+        story_fd,
+        name,
+        label="owned bundle cleanup root",
+        expected_identity=expected_identities["."],
+        checkpoint=f"{checkpoint_prefix}-root",
+    )
 
 
 def _journal_bytes(state: Mapping[str, object]) -> bytes:
     return _sorted_json(dict(state), compact=False)
 
 
+def _validated_sha256(value: object, *, label: str, optional: bool) -> str | None:
+    if value is None and optional:
+        return None
+    if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+        raise PublicationRecoveryRequired(f"{label} is malformed")
+    return value
+
+
+def _validated_cleanup_record(
+    value: object,
+    *,
+    label: str,
+    transaction_id: str,
+    kind: str,
+) -> dict[str, object] | None:
+    if value is None:
+        return None
+    record = _mapping(value, label=label)
+    expected_fields = {
+        "bundle": {
+            "role",
+            "source_name",
+            "quarantine_name",
+            "tree_identity",
+            "file_sha256",
+        },
+        "legacy_manifest": {
+            "source_name",
+            "quarantine_name",
+            "identity",
+            "sha256",
+        },
+        "legacy_fixtures": {
+            "source_name",
+            "quarantine_name",
+            "tree_identity",
+            "file_sha256",
+        },
+    }[kind]
+    if set(record) != expected_fields:
+        raise PublicationRecoveryRequired(f"{label} fields drifted")
+    identity_names: set[str] | None = None
+    sha_names: set[str] | None = None
+    if kind == "bundle":
+        if record.get("role") not in {"PREVIOUS", "NEXT"}:
+            raise PublicationRecoveryRequired(f"{label} role is malformed")
+        if record.get("source_name") != STAGE_NAME:
+            raise PublicationRecoveryRequired(f"{label} source is malformed")
+        expected_name = f"{BUNDLE_CLEANUP_PREFIX}{transaction_id}"
+        identity_names = {
+            ".",
+            "manifest.json",
+            "fixtures",
+            "fixtures/recorded",
+            *EXPECTED_BUNDLE_PATHS[1:],
+        }
+        sha_names = set(EXPECTED_BUNDLE_PATHS)
+    elif kind == "legacy_manifest":
+        if record.get("source_name") != LEGACY_MANIFEST_PATH.name:
+            raise PublicationRecoveryRequired(f"{label} source is malformed")
+        expected_name = f"{LEGACY_CLEANUP_PREFIX}{transaction_id}.manifest"
+        _validated_identity(record.get("identity"), label=f"{label} identity")
+        _validated_sha256(record.get("sha256"), label=f"{label} sha256", optional=False)
+    else:
+        if record.get("source_name") != "fixtures":
+            raise PublicationRecoveryRequired(f"{label} source is malformed")
+        expected_name = f"{LEGACY_CLEANUP_PREFIX}{transaction_id}.fixtures"
+        identity_names = {".", "recorded", *EXPECTED_FIXTURE_NAMES}
+        sha_names = set(EXPECTED_FIXTURE_NAMES)
+    if kind != "legacy_manifest":
+        if identity_names is None or sha_names is None:
+            raise PublicationRecoveryRequired(f"{label} cleanup kind is malformed")
+        _validated_identity_map(
+            record.get("tree_identity"),
+            label=f"{label} tree identity",
+            expected_names=identity_names,
+        )
+        file_sha256 = _mapping(record.get("file_sha256"), label=f"{label} file sha256")
+        if set(file_sha256) != sha_names:
+            raise PublicationRecoveryRequired(f"{label} file inventory drifted")
+        for name, digest in file_sha256.items():
+            _validated_sha256(
+                digest, label=f"{label} file {name} sha256", optional=False
+            )
+    if record.get("quarantine_name") != expected_name:
+        raise PublicationRecoveryRequired(f"{label} quarantine name is malformed")
+    return record
+
+
 def _validate_journal_state(value: object) -> dict[str, object]:
     state = _mapping(value, label="publication journal state")
     if set(state) != {
         "schema",
-        "phase",
+        "sequence",
+        "previous_state_sha256",
+        "transaction_id",
+        "mode",
+        "publication_phase",
+        "cleanup_phase",
         "had_previous",
         "previous_manifest_sha256",
         "next_manifest_sha256",
+        "previous_root_identity",
+        "next_root_identity",
+        "cleanup_bundle",
+        "legacy_manifest",
+        "legacy_fixtures",
     }:
         raise PublicationRecoveryRequired("publication journal fields drifted")
-    previous = state.get("previous_manifest_sha256")
-    next_digest = state.get("next_manifest_sha256")
+    sequence = state.get("sequence")
+    previous_state_sha256 = _validated_sha256(
+        state.get("previous_state_sha256"),
+        label="previous journal state sha256",
+        optional=True,
+    )
+    transaction_id = state.get("transaction_id")
+    if (
+        type(sequence) is not int
+        or sequence < 0
+        or sequence >= MAX_JOURNAL_STATES
+        or (sequence == 0) != (previous_state_sha256 is None)
+        or not isinstance(transaction_id, str)
+        or not re.fullmatch(r"[0-9a-f]{32}", transaction_id)
+        or UUID(hex=transaction_id).hex != transaction_id
+    ):
+        raise PublicationRecoveryRequired("publication journal sequence is malformed")
+    previous = _validated_sha256(
+        state.get("previous_manifest_sha256"),
+        label="previous manifest sha256",
+        optional=True,
+    )
+    next_digest = _validated_sha256(
+        state.get("next_manifest_sha256"),
+        label="next manifest sha256",
+        optional=False,
+    )
+    previous_identity = _validated_identity(
+        state.get("previous_root_identity"), label="previous root identity"
+    )
+    next_identity = _validated_identity(
+        state.get("next_root_identity"), label="next root identity"
+    )
+    mode = state.get("mode")
     if (
         state.get("schema") != JOURNAL_SCHEMA
-        or state.get("phase") not in JOURNAL_PHASES
+        or mode not in {"FRESH", "REPLACE", "NOOP_LEGACY"}
+        or state.get("publication_phase") not in JOURNAL_PHASES
+        or state.get("cleanup_phase") not in CLEANUP_PHASES
         or type(state.get("had_previous")) is not bool
-        or (previous is not None and not isinstance(previous, str))
-        or not isinstance(next_digest, str)
-        or (isinstance(previous, str) and not re.fullmatch(r"[0-9a-f]{64}", previous))
-        or not re.fullmatch(r"[0-9a-f]{64}", next_digest)
         or (state.get("had_previous") is True) != (previous is not None)
+        or next_identity is None
+        or (mode == "FRESH" and (previous is not None or previous_identity is not None))
+        or (mode in {"REPLACE", "NOOP_LEGACY"} and previous_identity is None)
+        or (mode == "NOOP_LEGACY" and previous != next_digest)
     ):
         raise PublicationRecoveryRequired("publication journal state is malformed")
+    bundle_record = _validated_cleanup_record(
+        state.get("cleanup_bundle"),
+        label="bundle cleanup",
+        transaction_id=transaction_id,
+        kind="bundle",
+    )
+    legacy_manifest_record = _validated_cleanup_record(
+        state.get("legacy_manifest"),
+        label="legacy manifest cleanup",
+        transaction_id=transaction_id,
+        kind="legacy_manifest",
+    )
+    legacy_fixtures_record = _validated_cleanup_record(
+        state.get("legacy_fixtures"),
+        label="legacy fixture cleanup",
+        transaction_id=transaction_id,
+        kind="legacy_fixtures",
+    )
+    publication_phase = state["publication_phase"]
+    cleanup_phase = state["cleanup_phase"]
+    if (
+        (publication_phase == "PREPARED" and cleanup_phase != "NONE")
+        or (publication_phase == "PREPARED" and bundle_record is not None)
+        or (mode == "NOOP_LEGACY" and publication_phase != "COMMITTED")
+        or (
+            cleanup_phase
+            in {"BUNDLE_QUARANTINING", "BUNDLE_DELETING", "BUNDLE_REMOVED"}
+            and bundle_record is None
+        )
+        or (
+            cleanup_phase in {"NONE", "BUNDLE_QUARANTINING", "BUNDLE_DELETING"}
+            and (
+                legacy_manifest_record is not None or legacy_fixtures_record is not None
+            )
+        )
+        or (
+            cleanup_phase in {"LEGACY_QUARANTINING", "LEGACY_DELETING"}
+            and (
+                publication_phase != "COMMITTED"
+                or legacy_manifest_record is None
+                or legacy_fixtures_record is None
+            )
+        )
+    ):
+        raise PublicationRecoveryRequired(
+            "publication journal cleanup state is malformed"
+        )
     return state
 
 
 def _new_journal_state(
-    *, previous_digest: str | None, next_digest: str
+    *,
+    mode: str,
+    previous_digest: str | None,
+    next_digest: str,
+    previous_identity: tuple[int, int] | None,
+    next_identity: tuple[int, int],
+    publication_phase: str = "PREPARED",
 ) -> dict[str, object]:
     return _validate_journal_state(
         {
             "schema": JOURNAL_SCHEMA,
-            "phase": "PREPARED",
+            "sequence": 0,
+            "previous_state_sha256": None,
+            "transaction_id": uuid4().hex,
+            "mode": mode,
+            "publication_phase": publication_phase,
+            "cleanup_phase": "NONE",
             "had_previous": previous_digest is not None,
             "previous_manifest_sha256": previous_digest,
             "next_manifest_sha256": next_digest,
+            "previous_root_identity": _identity_record(previous_identity),
+            "next_root_identity": _identity_record(next_identity),
+            "cleanup_bundle": None,
+            "legacy_manifest": None,
+            "legacy_fixtures": None,
         }
     )
 
 
-def _remove_owned_journal_tree_at(story_fd: int, name: str) -> None:
+def _journal_cleanup_entry_name(transaction_id: str, identity: tuple[int, int]) -> str:
+    return f"{JOURNAL_CLEANUP_NAME}{transaction_id}.{identity[0]}.{identity[1]}"
+
+
+def _parse_journal_cleanup_entry_name(name: str) -> tuple[str, str, tuple[int, int]]:
+    logical_name = name
+    if logical_name.startswith(DELETE_TOMBSTONE_PREFIX):
+        logical_name = logical_name.removeprefix(DELETE_TOMBSTONE_PREFIX)
+    match = re.fullmatch(
+        rf"{re.escape(JOURNAL_CLEANUP_NAME)}([0-9a-f]{{32}})\.([0-9]+)\.([1-9][0-9]*)",
+        logical_name,
+    )
+    if match is None:
+        raise PublicationRecoveryRequired("publication cleanup name is malformed")
+    transaction_id = match.group(1)
+    if UUID(hex=transaction_id).hex != transaction_id:
+        raise PublicationRecoveryRequired(
+            "publication cleanup transaction is malformed"
+        )
+    return logical_name, transaction_id, (int(match.group(2)), int(match.group(3)))
+
+
+def _load_cleanup_journal_from_fd(
+    journal_fd: int, *, transaction_id: str
+) -> list[tuple[int, str, bytes, dict[str, object]]]:
+    names = _directory_names_at(journal_fd, label="publication cleanup journal")
+    parsed: dict[int, tuple[str, bytes, dict[str, object]]] = {}
+    for physical_name in names:
+        logical_name = physical_name.removeprefix(DELETE_TOMBSTONE_PREFIX)
+        match = re.fullmatch(r"state\.([0-9]{3})\.json", logical_name)
+        if match is None:
+            raise PublicationRecoveryRequired(
+                "publication cleanup journal has unknown entries"
+            )
+        sequence = int(match.group(1))
+        if sequence in parsed:
+            raise PublicationRecoveryRequired(
+                "publication cleanup journal entries conflict"
+            )
+        content = _read_regular_at(
+            journal_fd,
+            physical_name,
+            label="publication cleanup journal state",
+            maximum_bytes=16 * 1024,
+        )
+        state = _validate_journal_state(
+            _load_json(content, label="publication cleanup journal state")
+        )
+        if state["sequence"] != sequence or state["transaction_id"] != transaction_id:
+            raise PublicationRecoveryRequired(
+                "publication cleanup journal ownership drifted"
+            )
+        parsed[sequence] = (logical_name, content, state)
+    if not parsed:
+        return []
+    sequences = sorted(parsed)
+    if sequences != list(range(sequences[0], sequences[-1] + 1)):
+        raise PublicationRecoveryRequired(
+            "publication cleanup journal progress is not monotonic"
+        )
+    result: list[tuple[int, str, bytes, dict[str, object]]] = []
+    previous_content: bytes | None = None
+    for sequence in sequences:
+        logical_name, content, state = parsed[sequence]
+        if previous_content is not None and state["previous_state_sha256"] != _sha256(
+            previous_content
+        ):
+            raise PublicationRecoveryRequired(
+                "publication cleanup journal hash chain drifted"
+            )
+        previous_content = content
+        result.append((sequence, logical_name, content, state))
+    terminal = result[-1][3]
+    if terminal["cleanup_phase"] != "CLEANUP_COMPLETE" or terminal[
+        "publication_phase"
+    ] not in {"COMMITTED", "ROLLED_BACK", "DRIFT_REFUSAL"}:
+        raise PublicationRecoveryRequired("publication cleanup journal is not terminal")
+    return result
+
+
+def _remove_owned_journal_tree_at(
+    story_fd: int,
+    name: str,
+    *,
+    transaction_id: str,
+    expected_identity: tuple[int, int],
+) -> None:
     metadata = _entry_metadata_at(story_fd, name)
-    if metadata is None:
+    root_tombstone = _entry_metadata_at(story_fd, _delete_tombstone_name(name))
+    if metadata is None and root_tombstone is None:
         return
-    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
-        raise PublicationRecoveryRequired("unsafe ST-1204 publication journal")
-    journal_fd = _open_directory_at(story_fd, name, label="publication journal")
+    if metadata is None:
+        _rmdir_empty_at(
+            story_fd,
+            name,
+            label="publication cleanup journal",
+            expected_identity=expected_identity,
+            checkpoint="journal-cleanup-root",
+        )
+        return
+    if root_tombstone is not None:
+        raise PublicationRecoveryRequired("publication cleanup journal conflicts")
+    journal_fd = _open_directory_at(story_fd, name, label="publication cleanup journal")
     try:
-        names = _directory_names_at(journal_fd, label="publication journal")
-        if not names <= {JOURNAL_STATE_NAME, JOURNAL_STATE_TEMPORARY_NAME}:
-            raise PublicationRecoveryRequired("publication journal has unknown entries")
-        for entry in sorted(names):
-            _unlink_regular_at(journal_fd, entry, label="publication journal state")
+        if _entry_identity(os.fstat(journal_fd)) != expected_identity:
+            raise PublicationRecoveryRequired(
+                "publication cleanup journal identity drifted"
+            )
+        entries = _load_cleanup_journal_from_fd(
+            journal_fd, transaction_id=transaction_id
+        )
+        for sequence, logical_name, content, _state in entries:
+            _unlink_regular_at(
+                journal_fd,
+                logical_name,
+                label="publication cleanup journal state",
+                expected_content=content,
+                checkpoint=f"journal-cleanup-state-{sequence:03d}",
+            )
         _assert_directory_entry_identity_at(
-            story_fd, name, journal_fd, label="publication journal"
+            story_fd, name, journal_fd, label="publication cleanup journal"
         )
     finally:
         os.close(journal_fd)
-    os.rmdir(name, dir_fd=story_fd)
-    os.fsync(story_fd)
+    _rmdir_empty_at(
+        story_fd,
+        name,
+        label="publication cleanup journal",
+        expected_identity=expected_identity,
+        checkpoint="journal-cleanup-root",
+    )
 
 
 def _create_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
-    for name in (JOURNAL_PREPARING_NAME, JOURNAL_NAME, JOURNAL_CLEANUP_NAME):
-        if _entry_metadata_at(story_fd, name) is not None:
-            raise PublicationRecoveryRequired("pending publication journal exists")
+    pending_names = {
+        name
+        for name in _directory_names_at(story_fd, label="ST-1204 Story directory")
+        if name in {JOURNAL_PREPARING_NAME, JOURNAL_NAME}
+        or name.startswith(JOURNAL_CLEANUP_NAME)
+        or name.startswith(f"{DELETE_TOMBSTONE_PREFIX}{JOURNAL_CLEANUP_NAME}")
+    }
+    if pending_names:
+        raise PublicationRecoveryRequired("pending publication journal exists")
     os.mkdir(JOURNAL_PREPARING_NAME, 0o700, dir_fd=story_fd)
     os.fsync(story_fd)
     preparing_fd = _open_directory_at(
         story_fd, JOURNAL_PREPARING_NAME, label="preparing publication journal"
     )
+    preparing_identity: tuple[int, int]
     try:
-        _create_regular_at(
-            preparing_fd,
-            JOURNAL_STATE_NAME,
-            _journal_bytes(state),
-            label="publication journal state",
-        )
+        _create_committed_journal_state_at(preparing_fd, state)
         os.fsync(preparing_fd)
         _assert_directory_entry_identity_at(
             story_fd,
@@ -2145,66 +2888,182 @@ def _create_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
             preparing_fd,
             label="preparing publication journal",
         )
+        preparing_identity = _entry_identity(os.fstat(preparing_fd))
     finally:
         os.close(preparing_fd)
-    os.replace(
-        JOURNAL_PREPARING_NAME,
-        JOURNAL_NAME,
-        src_dir_fd=story_fd,
-        dst_dir_fd=story_fd,
-    )
+    _rename_noreplace_at(story_fd, JOURNAL_PREPARING_NAME, JOURNAL_NAME)
     os.fsync(story_fd)
+    current = _entry_metadata_at(story_fd, JOURNAL_NAME)
+    if current is None or _entry_identity(current) != preparing_identity:
+        raise PublicationRecoveryRequired("published journal identity drifted")
     _checkpoint("after-journal-publish")
+
+
+def _journal_state_name(sequence: int) -> str:
+    if sequence < 0 or sequence >= MAX_JOURNAL_STATES:
+        raise PublicationRecoveryRequired("publication journal sequence is unsafe")
+    return f"{JOURNAL_STATE_PREFIX}{sequence:03d}.json"
+
+
+def _journal_state_preparing_name(sequence: int) -> str:
+    return f"{_journal_state_name(sequence)}{JOURNAL_STATE_PREPARING_SUFFIX}"
+
+
+def _create_committed_journal_state_at(
+    journal_fd: int, state: Mapping[str, object]
+) -> None:
+    sequence = cast(int, state["sequence"])
+    final_name = _journal_state_name(sequence)
+    preparing_name = _journal_state_preparing_name(sequence)
+    if (
+        _entry_metadata_at(journal_fd, final_name) is not None
+        or _entry_metadata_at(journal_fd, preparing_name) is not None
+    ):
+        raise PublicationRecoveryRequired("publication journal state already exists")
+    _create_regular_at(
+        journal_fd,
+        preparing_name,
+        _journal_bytes(state),
+        label="preparing publication journal state",
+    )
+    os.fsync(journal_fd)
+    _checkpoint(f"after-journal-state-{sequence:03d}-prepare")
+    _rename_noreplace_at(journal_fd, preparing_name, final_name)
+    os.fsync(journal_fd)
+    _checkpoint(f"after-journal-state-{sequence:03d}-commit")
+
+
+def _load_journal_from_fd(
+    journal_fd: int, *, ignore_preparing: bool = False
+) -> tuple[dict[str, object], list[bytes]]:
+    names = _directory_names_at(journal_fd, label="publication journal")
+    if ignore_preparing:
+        names = {
+            name for name in names if not name.endswith(JOURNAL_STATE_PREPARING_SUFFIX)
+        }
+    parsed: list[tuple[int, str]] = []
+    for name in names:
+        match = re.fullmatch(r"state\.([0-9]{3})\.json", name)
+        if match is None:
+            raise PublicationRecoveryRequired("publication journal has unknown entries")
+        parsed.append((int(match.group(1)), name))
+    parsed.sort()
+    if not parsed or [sequence for sequence, _name in parsed] != list(
+        range(len(parsed))
+    ):
+        raise PublicationRecoveryRequired("publication journal sequence is incomplete")
+    contents: list[bytes] = []
+    states: list[dict[str, object]] = []
+    for sequence, name in parsed:
+        content = _read_regular_at(
+            journal_fd,
+            name,
+            label="publication journal state",
+            maximum_bytes=16 * 1024,
+        )
+        state = _validate_journal_state(
+            _load_json(content, label="publication journal state")
+        )
+        expected_previous = None if sequence == 0 else _sha256(contents[-1])
+        if (
+            state["sequence"] != sequence
+            or state["previous_state_sha256"] != expected_previous
+        ):
+            raise PublicationRecoveryRequired("publication journal hash chain drifted")
+        contents.append(content)
+        states.append(state)
+    return states[-1], contents
+
+
+def _recover_preparing_journal_state_at(journal_fd: int) -> None:
+    names = _directory_names_at(journal_fd, label="publication journal")
+    preparing_names = sorted(
+        name for name in names if name.endswith(JOURNAL_STATE_PREPARING_SUFFIX)
+    )
+    if not preparing_names:
+        return
+    if len(preparing_names) != 1:
+        raise PublicationRecoveryRequired(
+            "publication journal has conflicting preparing states"
+        )
+    preparing_name = preparing_names[0]
+    match = re.fullmatch(r"state\.([0-9]{3})\.json\.preparing", preparing_name)
+    if match is None:
+        raise PublicationRecoveryRequired(
+            "publication journal preparing state is malformed"
+        )
+    sequence = int(match.group(1))
+    current, contents = _load_journal_from_fd(journal_fd, ignore_preparing=True)
+    if sequence != cast(int, current["sequence"]) + 1:
+        raise PublicationRecoveryRequired(
+            "publication journal preparing sequence drifted"
+        )
+    content = _read_regular_at(
+        journal_fd,
+        preparing_name,
+        label="preparing publication journal state",
+        maximum_bytes=16 * 1024,
+    )
+    try:
+        raw_candidate = _load_json(content, label="preparing publication journal state")
+    except RuntimeError:
+        _unlink_regular_at(
+            journal_fd,
+            preparing_name,
+            label="partial preparing publication journal state",
+            expected_content=content,
+        )
+        os.fsync(journal_fd)
+        return
+    candidate = _validate_journal_state(raw_candidate)
+    if candidate["sequence"] != sequence or candidate[
+        "previous_state_sha256"
+    ] != _sha256(contents[-1]):
+        raise PublicationRecoveryRequired(
+            "publication journal preparing state ownership drifted"
+        )
+    _rename_noreplace_at(
+        journal_fd,
+        preparing_name,
+        _journal_state_name(sequence),
+    )
+    os.fsync(journal_fd)
 
 
 def _load_journal_at(story_fd: int) -> dict[str, object]:
     journal_fd = _open_directory_at(story_fd, JOURNAL_NAME, label="publication journal")
     try:
-        names = _directory_names_at(journal_fd, label="publication journal")
-        if not names <= {JOURNAL_STATE_NAME, JOURNAL_STATE_TEMPORARY_NAME}:
-            raise PublicationRecoveryRequired("publication journal has unknown entries")
-        _unlink_regular_at(
-            journal_fd,
-            JOURNAL_STATE_TEMPORARY_NAME,
-            label="publication journal temporary state",
+        state, _contents = _load_journal_from_fd(journal_fd)
+        _assert_directory_entry_identity_at(
+            story_fd, JOURNAL_NAME, journal_fd, label="publication journal"
         )
-        content = _read_regular_at(
-            journal_fd,
-            JOURNAL_STATE_NAME,
-            label="publication journal state",
-            maximum_bytes=16 * 1024,
-        )
-        return _validate_journal_state(
-            _load_json(content, label="publication journal state")
-        )
+        return state
     finally:
         os.close(journal_fd)
 
 
-def _write_journal_phase_at(
-    story_fd: int, state: Mapping[str, object], phase: str
+def _write_journal_update_at(
+    story_fd: int,
+    state: Mapping[str, object],
+    **updates: object,
 ) -> dict[str, object]:
-    updated = _validate_journal_state({**state, "phase": phase})
+    sequence = cast(int, state["sequence"]) + 1
+    updated = _validate_journal_state(
+        {
+            **state,
+            **updates,
+            "sequence": sequence,
+            "previous_state_sha256": _sha256(_journal_bytes(state)),
+        }
+    )
     journal_fd = _open_directory_at(story_fd, JOURNAL_NAME, label="publication journal")
     try:
-        _unlink_regular_at(
-            journal_fd,
-            JOURNAL_STATE_TEMPORARY_NAME,
-            label="publication journal temporary state",
-        )
-        _create_regular_at(
-            journal_fd,
-            JOURNAL_STATE_TEMPORARY_NAME,
-            _journal_bytes(updated),
-            label="publication journal temporary state",
-        )
-        os.replace(
-            JOURNAL_STATE_TEMPORARY_NAME,
-            JOURNAL_STATE_NAME,
-            src_dir_fd=journal_fd,
-            dst_dir_fd=journal_fd,
-        )
-        os.fsync(journal_fd)
+        current, _contents = _load_journal_from_fd(journal_fd)
+        if current != dict(state):
+            raise PublicationRecoveryRequired(
+                "publication journal update is based on stale state"
+            )
+        _create_committed_journal_state_at(journal_fd, updated)
         _assert_directory_entry_identity_at(
             story_fd,
             JOURNAL_NAME,
@@ -2216,13 +3075,26 @@ def _write_journal_phase_at(
     return updated
 
 
-def _rename_exchange_at(parent_fd: int, left: str, right: str) -> None:
-    _checked_entry_name(left, label="atomic exchange")
-    _checked_entry_name(right, label="atomic exchange")
+def _write_journal_phase_at(
+    story_fd: int, state: Mapping[str, object], phase: str
+) -> dict[str, object]:
+    return _write_journal_update_at(story_fd, state, publication_phase=phase)
+
+
+def _renameat2_at(
+    parent_fd: int,
+    source: str,
+    destination: str,
+    *,
+    flags: int,
+    label: str,
+) -> None:
+    _checked_entry_name(source, label=label)
+    _checked_entry_name(destination, label=label)
     try:
         renameat2 = ctypes.CDLL(None, use_errno=True).renameat2
     except (AttributeError, OSError) as exc:
-        raise RuntimeError("atomic directory exchange requires renameat2") from exc
+        raise RuntimeError(f"{label} requires renameat2") from exc
     renameat2.argtypes = (
         ctypes.c_int,
         ctypes.c_char_p,
@@ -2233,16 +3105,34 @@ def _rename_exchange_at(parent_fd: int, left: str, right: str) -> None:
     renameat2.restype = ctypes.c_int
     result = renameat2(
         parent_fd,
-        os.fsencode(left),
+        os.fsencode(source),
         parent_fd,
-        os.fsencode(right),
-        RENAME_EXCHANGE,
+        os.fsencode(destination),
+        flags,
     )
     if result != 0:
         error = ctypes.get_errno()
-        raise RuntimeError(
-            f"atomic directory exchange failed: {os.strerror(error)} (errno={error})"
-        )
+        raise RuntimeError(f"{label} failed: {os.strerror(error)} (errno={error})")
+
+
+def _rename_exchange_at(parent_fd: int, left: str, right: str) -> None:
+    _renameat2_at(
+        parent_fd,
+        left,
+        right,
+        flags=RENAME_EXCHANGE,
+        label="atomic directory exchange",
+    )
+
+
+def _rename_noreplace_at(parent_fd: int, source: str, destination: str) -> None:
+    _renameat2_at(
+        parent_fd,
+        source,
+        destination,
+        flags=RENAME_NOREPLACE,
+        label="atomic no-replace rename",
+    )
 
 
 def _bundle_state_at(
@@ -2251,251 +3141,437 @@ def _bundle_state_at(
     *,
     previous_digest: str | None,
     next_digest: str,
+    previous_identity: tuple[int, int] | None = None,
+    next_identity: tuple[int, int] | None = None,
 ) -> str:
-    files = _read_bundle_at(story_fd, name, allow_missing=True)
-    if files is None:
+    try:
+        captured = _read_bundle_capture_at(story_fd, name, allow_missing=True)
+    except OSError:
+        return "unknown"
+    except RuntimeError:
+        return "unknown"
+    if captured is None:
         return "missing"
+    files, identities = captured
+    identity = identities["."]
     digest = _validate_bundle_files(files)
-    if digest == next_digest:
+    if digest == next_digest and (next_identity is None or identity == next_identity):
         return "next"
-    if previous_digest is not None and digest == previous_digest:
+    if (
+        previous_digest is not None
+        and digest == previous_digest
+        and (previous_identity is None or identity == previous_identity)
+    ):
         return "previous"
     return "unknown"
 
 
-def _finish_terminal_journal_at(story_fd: int) -> None:
-    os.replace(
-        JOURNAL_NAME,
-        JOURNAL_CLEANUP_NAME,
-        src_dir_fd=story_fd,
-        dst_dir_fd=story_fd,
-    )
+def _finish_terminal_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
+    if state["cleanup_phase"] != "CLEANUP_COMPLETE":
+        raise PublicationRecoveryRequired("publication journal cleanup is incomplete")
+    _assert_terminal_cleanup_inventory_at(story_fd, state)
+    journal_fd = _open_directory_at(story_fd, JOURNAL_NAME, label="publication journal")
+    try:
+        current, _contents = _load_journal_from_fd(journal_fd)
+        if current != dict(state):
+            raise PublicationRecoveryRequired(
+                "terminal publication journal state drifted"
+            )
+        identity = _entry_identity(os.fstat(journal_fd))
+        _assert_directory_entry_identity_at(
+            story_fd, JOURNAL_NAME, journal_fd, label="publication journal"
+        )
+    finally:
+        os.close(journal_fd)
+    transaction_id = cast(str, state["transaction_id"])
+    cleanup_name = _journal_cleanup_entry_name(transaction_id, identity)
+    if (
+        _entry_metadata_at(story_fd, cleanup_name) is not None
+        or _entry_metadata_at(story_fd, _delete_tombstone_name(cleanup_name))
+        is not None
+    ):
+        raise PublicationRecoveryRequired(
+            "publication cleanup journal destination already exists"
+        )
+    _rename_noreplace_at(story_fd, JOURNAL_NAME, cleanup_name)
     os.fsync(story_fd)
+    moved = _entry_metadata_at(story_fd, cleanup_name)
+    if (
+        moved is None
+        or _entry_identity(moved) != identity
+        or _entry_metadata_at(story_fd, JOURNAL_NAME) is not None
+    ):
+        raise PublicationRecoveryRequired("publication cleanup journal move drifted")
     _checkpoint("after-journal-cleanup-tombstone")
-    _remove_owned_journal_tree_at(story_fd, JOURNAL_CLEANUP_NAME)
+    _remove_owned_journal_tree_at(
+        story_fd,
+        cleanup_name,
+        transaction_id=transaction_id,
+        expected_identity=identity,
+    )
     _checkpoint("after-journal-cleanup")
 
 
 def _recover_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
     previous_digest = cast(str | None, state["previous_manifest_sha256"])
     next_digest = cast(str, state["next_manifest_sha256"])
+    previous_identity = _validated_identity(
+        state["previous_root_identity"], label="previous root identity"
+    )
+    next_identity = _validated_identity(
+        state["next_root_identity"], label="next root identity"
+    )
+    if next_identity is None:
+        raise PublicationRecoveryRequired("next root identity is missing")
+    phase = cast(str, state["publication_phase"])
+    mode = cast(str, state["mode"])
+    if phase == "PREPARED":
+        destination = _bundle_state_at(
+            story_fd,
+            GENERATED_ROOT.name,
+            previous_digest=previous_digest,
+            next_digest=next_digest,
+            previous_identity=previous_identity,
+            next_identity=next_identity,
+        )
+        stage = _bundle_state_at(
+            story_fd,
+            STAGE_NAME,
+            previous_digest=previous_digest,
+            next_digest=next_digest,
+            previous_identity=previous_identity,
+            next_identity=next_identity,
+        )
+        terminal_phase = "ROLLED_BACK"
+        if mode == "REPLACE" and destination == "previous" and stage == "next":
+            pass
+        elif (
+            mode == "REPLACE"
+            and destination == "next"
+            and stage
+            in {
+                "previous",
+                "unknown",
+            }
+        ):
+            _rename_exchange_at(story_fd, STAGE_NAME, GENERATED_ROOT.name)
+            os.fsync(story_fd)
+            _checkpoint("after-recovery-reverse-exchange")
+            restored_stage = _bundle_state_at(
+                story_fd,
+                STAGE_NAME,
+                previous_digest=previous_digest,
+                next_digest=next_digest,
+                previous_identity=previous_identity,
+                next_identity=next_identity,
+            )
+            restored_destination = _bundle_state_at(
+                story_fd,
+                GENERATED_ROOT.name,
+                previous_digest=previous_digest,
+                next_digest=next_digest,
+                previous_identity=previous_identity,
+                next_identity=next_identity,
+            )
+            if restored_stage != "next":
+                raise PublicationRecoveryRequired(
+                    "reversed ST-1204 stage identity drifted"
+                )
+            if stage == "previous" and restored_destination != "previous":
+                raise PublicationRecoveryRequired(
+                    "ST-1204 rollback verification failed"
+                )
+            if stage == "unknown":
+                terminal_phase = "DRIFT_REFUSAL"
+        elif mode == "REPLACE" and destination == "unknown" and stage == "next":
+            terminal_phase = "DRIFT_REFUSAL"
+        elif mode == "FRESH" and destination == "missing" and stage == "next":
+            pass
+        elif mode == "FRESH" and destination == "next" and stage == "missing":
+            _rename_noreplace_at(story_fd, GENERATED_ROOT.name, STAGE_NAME)
+            os.fsync(story_fd)
+            _checkpoint("after-recovery-fresh-rename")
+        elif mode == "FRESH" and destination == "unknown" and stage == "next":
+            terminal_phase = "DRIFT_REFUSAL"
+        else:
+            raise PublicationRecoveryRequired(
+                f"ambiguous PREPARED publication state: destination={destination}, stage={stage}"
+            )
+        state = _write_journal_phase_at(story_fd, state, terminal_phase)
+        phase = terminal_phase
+        _checkpoint("after-rolled-back-state")
+    if phase == "COMMITTED":
+        expected_destination = "next"
+    elif phase == "ROLLED_BACK":
+        expected_destination = "previous" if mode == "REPLACE" else "missing"
+    elif phase == "DRIFT_REFUSAL":
+        expected_destination = "unknown"
+    else:
+        raise PublicationRecoveryRequired("unknown ST-1204 journal phase")
     destination = _bundle_state_at(
         story_fd,
         GENERATED_ROOT.name,
         previous_digest=previous_digest,
         next_digest=next_digest,
+        previous_identity=previous_identity,
+        next_identity=next_identity,
     )
-    stage = _bundle_state_at(
+    if phase != "DRIFT_REFUSAL" and destination != expected_destination:
+        raise PublicationRecoveryRequired("terminal ST-1204 bundle is ambiguous")
+    if phase == "DRIFT_REFUSAL" and destination == "next":
+        raise PublicationRecoveryRequired("refused ST-1204 bundle became authoritative")
+    state = _continue_terminal_cleanup_at(story_fd, state)
+    if state["cleanup_phase"] != "CLEANUP_COMPLETE":
+        raise PublicationRecoveryRequired("terminal ST-1204 cleanup did not complete")
+    _finish_terminal_journal_at(story_fd, state)
+
+
+def _recover_cleanup_tombstone_at(story_fd: int, physical_name: str) -> None:
+    cleanup_name, transaction_id, expected_identity = _parse_journal_cleanup_entry_name(
+        physical_name
+    )
+    if physical_name not in {
+        cleanup_name,
+        _delete_tombstone_name(cleanup_name),
+    }:
+        raise PublicationRecoveryRequired("publication cleanup name is ambiguous")
+    if _entry_metadata_at(story_fd, cleanup_name) is not None:
+        cleanup_fd = _open_directory_at(
+            story_fd, cleanup_name, label="publication cleanup journal"
+        )
+        try:
+            entries = _load_cleanup_journal_from_fd(
+                cleanup_fd, transaction_id=transaction_id
+            )
+            if entries:
+                state = entries[-1][3]
+                previous_identity = _validated_identity(
+                    state["previous_root_identity"], label="previous root identity"
+                )
+                next_identity = _validated_identity(
+                    state["next_root_identity"], label="next root identity"
+                )
+                destination = _bundle_state_at(
+                    story_fd,
+                    GENERATED_ROOT.name,
+                    previous_digest=cast(str | None, state["previous_manifest_sha256"]),
+                    next_digest=cast(str, state["next_manifest_sha256"]),
+                    previous_identity=previous_identity,
+                    next_identity=next_identity,
+                )
+                phase = state["publication_phase"]
+                mode = state["mode"]
+                expected = (
+                    "next"
+                    if phase == "COMMITTED"
+                    else "previous"
+                    if phase == "ROLLED_BACK" and mode == "REPLACE"
+                    else "missing"
+                    if phase == "ROLLED_BACK"
+                    else "unknown"
+                )
+                if phase != "DRIFT_REFUSAL" and destination != expected:
+                    raise PublicationRecoveryRequired(
+                        "publication cleanup journal does not match terminal bundle"
+                    )
+                _assert_terminal_cleanup_inventory_at(
+                    story_fd,
+                    state,
+                    allowed_journal_cleanup=cleanup_name,
+                )
+        finally:
+            os.close(cleanup_fd)
+    _remove_owned_journal_tree_at(
         story_fd,
-        STAGE_NAME,
-        previous_digest=previous_digest,
-        next_digest=next_digest,
+        cleanup_name,
+        transaction_id=transaction_id,
+        expected_identity=expected_identity,
     )
-    phase = cast(str, state["phase"])
-    had_previous = cast(bool, state["had_previous"])
-    if phase == "PREPARED":
-        if had_previous and destination == "previous" and stage == "next":
-            pass
-        elif had_previous and destination == "next" and stage == "previous":
-            _rename_exchange_at(story_fd, STAGE_NAME, GENERATED_ROOT.name)
-            os.fsync(story_fd)
-            _checkpoint("after-recovery-reverse-exchange")
-        elif not had_previous and destination == "missing" and stage == "next":
-            pass
-        elif not had_previous and destination == "next" and stage == "missing":
-            os.replace(
-                GENERATED_ROOT.name,
-                STAGE_NAME,
-                src_dir_fd=story_fd,
-                dst_dir_fd=story_fd,
-            )
-            os.fsync(story_fd)
-            _checkpoint("after-recovery-fresh-rename")
-        else:
-            raise PublicationRecoveryRequired(
-                f"ambiguous PREPARED publication state: destination={destination}, stage={stage}"
-            )
-        restored = _bundle_state_at(
-            story_fd,
-            GENERATED_ROOT.name,
-            previous_digest=previous_digest,
-            next_digest=next_digest,
-        )
-        if restored != ("previous" if had_previous else "missing"):
-            raise PublicationRecoveryRequired("ST-1204 rollback verification failed")
-        _remove_owned_bundle_tree_at(story_fd, STAGE_NAME)
-        state = _write_journal_phase_at(story_fd, state, "ROLLED_BACK")
-        phase = "ROLLED_BACK"
-        _checkpoint("after-rolled-back-state")
-    if phase == "COMMITTED":
-        destination = _bundle_state_at(
-            story_fd,
-            GENERATED_ROOT.name,
-            previous_digest=previous_digest,
-            next_digest=next_digest,
-        )
-        stage = _bundle_state_at(
-            story_fd,
-            STAGE_NAME,
-            previous_digest=previous_digest,
-            next_digest=next_digest,
-        )
-        allowed_stage = {"missing", "previous"} if had_previous else {"missing"}
-        if destination != "next" or stage not in allowed_stage:
-            raise PublicationRecoveryRequired("committed ST-1204 bundle is ambiguous")
-        _remove_owned_bundle_tree_at(story_fd, STAGE_NAME)
-    elif phase == "ROLLED_BACK":
-        destination = _bundle_state_at(
-            story_fd,
-            GENERATED_ROOT.name,
-            previous_digest=previous_digest,
-            next_digest=next_digest,
-        )
-        stage = _bundle_state_at(
-            story_fd,
-            STAGE_NAME,
-            previous_digest=previous_digest,
-            next_digest=next_digest,
-        )
-        if destination != ("previous" if had_previous else "missing") or stage not in {
-            "missing",
-            "next",
-        }:
-            raise PublicationRecoveryRequired("rolled-back ST-1204 bundle is ambiguous")
-        _remove_owned_bundle_tree_at(story_fd, STAGE_NAME)
-    else:
-        raise PublicationRecoveryRequired("unknown ST-1204 journal phase")
-    _finish_terminal_journal_at(story_fd)
 
 
-def _recover_cleanup_tombstone_at(story_fd: int) -> None:
-    cleanup_fd = _open_directory_at(
-        story_fd,
-        JOURNAL_CLEANUP_NAME,
-        label="publication cleanup tombstone",
-    )
-    try:
-        names = _directory_names_at(cleanup_fd, label="publication cleanup tombstone")
-        if not names:
-            state = None
-        elif names == {JOURNAL_STATE_NAME}:
-            content = _read_regular_at(
-                cleanup_fd,
-                JOURNAL_STATE_NAME,
-                label="publication cleanup tombstone state",
-                maximum_bytes=16 * 1024,
-            )
-            state = _validate_journal_state(
-                _load_json(content, label="publication cleanup tombstone state")
-            )
-        else:
-            raise PublicationRecoveryRequired(
-                "publication cleanup tombstone inventory is ambiguous"
-            )
-    finally:
-        os.close(cleanup_fd)
-
-    if state is not None:
-        previous_digest = cast(str | None, state["previous_manifest_sha256"])
-        next_digest = cast(str, state["next_manifest_sha256"])
-        destination = _bundle_state_at(
-            story_fd,
-            GENERATED_ROOT.name,
-            previous_digest=previous_digest,
-            next_digest=next_digest,
-        )
-        stage = _bundle_state_at(
-            story_fd,
-            STAGE_NAME,
-            previous_digest=previous_digest,
-            next_digest=next_digest,
-        )
-        phase = state["phase"]
-        had_previous = cast(bool, state["had_previous"])
-        if phase == "COMMITTED":
-            expected_destination = "next"
-        elif phase == "ROLLED_BACK":
-            expected_destination = "previous" if had_previous else "missing"
-        else:
-            raise PublicationRecoveryRequired(
-                "publication cleanup tombstone is not terminal"
-            )
-        if destination != expected_destination or stage != "missing":
-            raise PublicationRecoveryRequired(
-                "publication cleanup tombstone does not match the terminal bundle"
-            )
-    _remove_owned_journal_tree_at(story_fd, JOURNAL_CLEANUP_NAME)
-
-
-def _recover_pending_at(story_fd: int) -> None:
+def _recover_pending_at(
+    story_fd: int, expected_outputs: Mapping[Path, bytes] | None = None
+) -> None:
+    story_names = _directory_names_at(story_fd, label="ST-1204 Story directory")
     preparing = _entry_metadata_at(story_fd, JOURNAL_PREPARING_NAME)
+    preparing_tombstone = _entry_metadata_at(
+        story_fd, _delete_tombstone_name(JOURNAL_PREPARING_NAME)
+    )
     journal = _entry_metadata_at(story_fd, JOURNAL_NAME)
-    cleanup = _entry_metadata_at(story_fd, JOURNAL_CLEANUP_NAME)
-    if cleanup is not None:
-        if preparing is not None or journal is not None:
+    cleanup_names = sorted(
+        name
+        for name in story_names
+        if name.startswith(JOURNAL_CLEANUP_NAME)
+        or name.startswith(f"{DELETE_TOMBSTONE_PREFIX}{JOURNAL_CLEANUP_NAME}")
+    )
+    gc_names = sorted(
+        name
+        for name in story_names
+        if name.startswith(BUNDLE_CLEANUP_PREFIX)
+        or name.startswith(LEGACY_CLEANUP_PREFIX)
+        or name.startswith(f"{DELETE_TOMBSTONE_PREFIX}{BUNDLE_CLEANUP_PREFIX}")
+        or name.startswith(f"{DELETE_TOMBSTONE_PREFIX}{LEGACY_CLEANUP_PREFIX}")
+    )
+    if cleanup_names:
+        if len(cleanup_names) != 1 or preparing is not None or journal is not None:
             raise PublicationRecoveryRequired("conflicting ST-1204 journal states")
-        _recover_cleanup_tombstone_at(story_fd)
-        cleanup = None
+        _recover_cleanup_tombstone_at(story_fd, cleanup_names[0])
         _checkpoint("after-stale-cleanup-tombstone")
+        story_names = _directory_names_at(story_fd, label="ST-1204 Story directory")
     if preparing is not None:
         if journal is not None:
             raise PublicationRecoveryRequired("preparing and active journals conflict")
-        _remove_owned_journal_tree_at(story_fd, JOURNAL_PREPARING_NAME)
-        _remove_owned_bundle_tree_at(story_fd, STAGE_NAME)
+        preparing_fd = _open_directory_at(
+            story_fd, JOURNAL_PREPARING_NAME, label="preparing publication journal"
+        )
+        try:
+            identity = _entry_identity(os.fstat(preparing_fd))
+            names = _directory_names_at(
+                preparing_fd, label="preparing publication journal"
+            )
+            if names:
+                if len(names) != 1:
+                    raise PublicationRecoveryRequired(
+                        "preparing publication journal is ambiguous"
+                    )
+                physical_name = next(iter(names))
+                logical_name = physical_name.removeprefix(DELETE_TOMBSTONE_PREFIX)
+                if logical_name not in {
+                    JOURNAL_STATE_NAME,
+                    _journal_state_preparing_name(0),
+                }:
+                    raise PublicationRecoveryRequired(
+                        "preparing publication journal inventory drifted"
+                    )
+                content = _read_regular_at(
+                    preparing_fd,
+                    physical_name,
+                    label="preparing publication journal state",
+                    maximum_bytes=16 * 1024,
+                )
+                if logical_name == JOURNAL_STATE_NAME:
+                    state = _validate_journal_state(
+                        _load_json(content, label="preparing publication journal state")
+                    )
+                    if state["sequence"] != 0:
+                        raise PublicationRecoveryRequired(
+                            "preparing publication journal sequence drifted"
+                        )
+                _unlink_regular_at(
+                    preparing_fd,
+                    logical_name,
+                    label="preparing publication journal state",
+                    expected_content=content,
+                )
+        finally:
+            os.close(preparing_fd)
+        _rmdir_empty_at(
+            story_fd,
+            JOURNAL_PREPARING_NAME,
+            label="preparing publication journal",
+            expected_identity=identity,
+        )
         _checkpoint("after-stale-preparing-cleanup")
-        return
+        if expected_outputs is not None:
+            _remove_partial_stage_at(story_fd, _bundle_files(expected_outputs))
+    elif preparing_tombstone is not None:
+        raise PublicationRecoveryRequired(
+            "unbound preparing-journal tombstone requires manual recovery"
+        )
     if journal is None:
-        _remove_owned_bundle_tree_at(story_fd, STAGE_NAME)
+        if gc_names:
+            raise PublicationRecoveryRequired(
+                "unbound ST-1204 cleanup entries require manual recovery"
+            )
+        stage_metadata = _entry_metadata_at(story_fd, STAGE_NAME)
+        stage_tombstone = _entry_metadata_at(
+            story_fd, _delete_tombstone_name(STAGE_NAME)
+        )
+        if stage_metadata is None and stage_tombstone is not None:
+            raise PublicationRecoveryRequired(
+                "unbound orphan stage tombstone requires manual recovery"
+            )
+        if stage_metadata is not None:
+            stage_fd = _open_directory_at(
+                story_fd, STAGE_NAME, label="orphan publication stage"
+            )
+            try:
+                stage_identity = _entry_identity(os.fstat(stage_fd))
+                empty = not _directory_names_at(
+                    stage_fd, label="orphan publication stage"
+                )
+            finally:
+                os.close(stage_fd)
+            if empty:
+                _rmdir_empty_at(
+                    story_fd,
+                    STAGE_NAME,
+                    label="orphan publication stage",
+                    expected_identity=stage_identity,
+                )
+            else:
+                raise PublicationRecoveryRequired(
+                    "nonempty orphan stage has no durable ownership record"
+                )
         return
     if stat.S_ISLNK(journal.st_mode) or not stat.S_ISDIR(journal.st_mode):
         raise PublicationRecoveryRequired("active ST-1204 journal is unsafe")
+    journal_fd = _open_directory_at(story_fd, JOURNAL_NAME, label="publication journal")
+    try:
+        _recover_preparing_journal_state_at(journal_fd)
+    finally:
+        os.close(journal_fd)
     state = _load_journal_at(story_fd)
     _recover_journal_at(story_fd, state)
 
 
 def _assert_no_pending_at(story_fd: int) -> None:
-    pending = [
+    pending = sorted(
         name
-        for name in (
-            STAGE_NAME,
-            JOURNAL_PREPARING_NAME,
-            JOURNAL_NAME,
-            JOURNAL_CLEANUP_NAME,
-        )
-        if _entry_metadata_at(story_fd, name) is not None
-    ]
+        for name in _directory_names_at(story_fd, label="ST-1204 Story directory")
+        if name in {STAGE_NAME, JOURNAL_PREPARING_NAME, JOURNAL_NAME}
+        or name.startswith(JOURNAL_CLEANUP_NAME)
+        or name.startswith(BUNDLE_CLEANUP_PREFIX)
+        or name.startswith(LEGACY_CLEANUP_PREFIX)
+        or name.startswith(f"{DELETE_TOMBSTONE_PREFIX}{JOURNAL_CLEANUP_NAME}")
+        or name.startswith(f"{DELETE_TOMBSTONE_PREFIX}{BUNDLE_CLEANUP_PREFIX}")
+        or name.startswith(f"{DELETE_TOMBSTONE_PREFIX}{LEGACY_CLEANUP_PREFIX}")
+        or name == _delete_tombstone_name(STAGE_NAME)
+        or name == _delete_tombstone_name(JOURNAL_PREPARING_NAME)
+    )
     if pending:
         raise PublicationRecoveryRequired(
             "read-only check found pending ST-1204 recovery: " + ", ".join(pending)
         )
 
 
-def _cleanup_legacy_at(story_fd: int, expected: Mapping[str, bytes]) -> None:
-    legacy_manifest = _entry_metadata_at(story_fd, LEGACY_MANIFEST_PATH.name)
-    fixtures_metadata = _entry_metadata_at(story_fd, "fixtures")
-    if legacy_manifest is not None:
-        content = _read_regular_at(
-            story_fd,
-            LEGACY_MANIFEST_PATH.name,
-            label="legacy ST-1204 manifest",
+def _record_identity_map(
+    record: Mapping[str, object], *, label: str, expected_names: set[str]
+) -> dict[str, tuple[int, int]]:
+    return _validated_identity_map(
+        record["tree_identity"], label=label, expected_names=expected_names
+    )
+
+
+def _record_sha256_map(
+    record: Mapping[str, object], *, label: str, expected_names: set[str]
+) -> dict[str, str]:
+    value = _mapping(record["file_sha256"], label=label)
+    if set(value) != expected_names:
+        raise PublicationRecoveryRequired(f"{label} inventory drifted")
+    return {
+        name: cast(
+            str,
+            _validated_sha256(digest, label=f"{label} {name}", optional=False),
         )
-        legacy = _load_json(content, label="legacy ST-1204 manifest")
-        document = _mapping(legacy.get("document"), label="legacy manifest document")
-        if (
-            document.get("id") != "RAOS-GA4-RECORDED-MANIFEST-001"
-            or document.get("story_id") != "ST-1204"
-        ):
-            raise PublicationRecoveryRequired("legacy ST-1204 manifest is unowned")
-        _unlink_regular_at(
-            story_fd, LEGACY_MANIFEST_PATH.name, label="legacy ST-1204 manifest"
-        )
-    if fixtures_metadata is None:
-        return
-    if stat.S_ISLNK(fixtures_metadata.st_mode) or not stat.S_ISDIR(
-        fixtures_metadata.st_mode
-    ):
-        raise PublicationRecoveryRequired("legacy fixture root is unsafe")
-    fixtures_fd = _open_directory_at(story_fd, "fixtures", label="legacy fixtures")
+        for name, digest in value.items()
+    }
+
+
+def _capture_legacy_fixtures_at(
+    story_fd: int, name: str
+) -> tuple[dict[str, bytes], dict[str, tuple[int, int]]]:
+    fixtures_fd = _open_directory_at(story_fd, name, label="legacy fixtures")
     recorded_fd: int | None = None
     try:
         if _directory_names_at(fixtures_fd, label="legacy fixtures") != {"recorded"}:
@@ -2503,43 +3579,523 @@ def _cleanup_legacy_at(story_fd: int, expected: Mapping[str, bytes]) -> None:
         recorded_fd = _open_directory_at(
             fixtures_fd, "recorded", label="legacy recorded fixtures"
         )
-        names = _directory_names_at(recorded_fd, label="legacy recorded fixtures")
-        if not names <= set(EXPECTED_FIXTURE_NAMES):
+        if _directory_names_at(recorded_fd, label="legacy recorded fixtures") != set(
+            EXPECTED_FIXTURE_NAMES
+        ):
             raise PublicationRecoveryRequired(
-                "legacy recorded fixtures have unknown entries"
+                "legacy recorded fixture inventory drifted"
             )
-        for fixture_name in sorted(names):
-            observed = _read_regular_at(
+        files: dict[str, bytes] = {}
+        identities = {
+            ".": _entry_identity(os.fstat(fixtures_fd)),
+            "recorded": _entry_identity(os.fstat(recorded_fd)),
+        }
+        for fixture_name in EXPECTED_FIXTURE_NAMES:
+            content, identity = _read_regular_capture_at(
                 recorded_fd,
                 fixture_name,
                 label=f"legacy fixture {fixture_name}",
             )
-            if observed != expected[f"fixtures/recorded/{fixture_name}"]:
-                raise PublicationRecoveryRequired("legacy fixture bytes are unowned")
-            _unlink_regular_at(
-                recorded_fd,
-                fixture_name,
-                label=f"legacy fixture {fixture_name}",
-            )
+            files[fixture_name] = content
+            identities[fixture_name] = identity
         _assert_directory_entry_identity_at(
-            fixtures_fd,
-            "recorded",
-            recorded_fd,
-            label="legacy recorded fixtures",
+            fixtures_fd, "recorded", recorded_fd, label="legacy recorded fixtures"
         )
-        os.close(recorded_fd)
-        recorded_fd = None
-        os.rmdir("recorded", dir_fd=fixtures_fd)
-        os.fsync(fixtures_fd)
         _assert_directory_entry_identity_at(
-            story_fd, "fixtures", fixtures_fd, label="legacy fixture root"
+            story_fd, name, fixtures_fd, label="legacy fixtures"
+        )
+        return files, identities
+    finally:
+        if recorded_fd is not None:
+            os.close(recorded_fd)
+        os.close(fixtures_fd)
+
+
+def _remove_owned_legacy_fixtures_at(
+    story_fd: int,
+    name: str,
+    *,
+    expected_sha256: Mapping[str, str],
+    expected_identities: Mapping[str, tuple[int, int]],
+) -> None:
+    root_metadata = _entry_metadata_at(story_fd, name)
+    root_tombstone = _entry_metadata_at(story_fd, _delete_tombstone_name(name))
+    if root_metadata is None and root_tombstone is None:
+        return
+    if root_metadata is None:
+        _rmdir_empty_at(
+            story_fd,
+            name,
+            label="legacy fixture cleanup root",
+            expected_identity=expected_identities["."],
+            checkpoint="legacy-fixtures-root",
+        )
+        return
+    if root_tombstone is not None:
+        raise PublicationRecoveryRequired("legacy fixture cleanup root conflicts")
+    fixtures_fd = _open_directory_at(story_fd, name, label="legacy fixture cleanup")
+    recorded_fd: int | None = None
+    try:
+        if _entry_identity(os.fstat(fixtures_fd)) != expected_identities["."]:
+            raise PublicationRecoveryRequired("legacy fixture cleanup identity drifted")
+        allowed_root = {"recorded", _delete_tombstone_name("recorded")}
+        if (
+            not _directory_names_at(fixtures_fd, label="legacy fixture cleanup")
+            <= allowed_root
+        ):
+            raise PublicationRecoveryRequired(
+                "legacy fixture cleanup has unknown entries"
+            )
+        recorded_state = _cleanup_entry_state(fixtures_fd, "recorded")
+        if recorded_state == "conflict":
+            raise PublicationRecoveryRequired("legacy recorded cleanup conflicts")
+        if recorded_state == "source":
+            recorded_fd = _open_directory_at(
+                fixtures_fd, "recorded", label="legacy recorded cleanup"
+            )
+            if (
+                _entry_identity(os.fstat(recorded_fd))
+                != expected_identities["recorded"]
+            ):
+                raise PublicationRecoveryRequired(
+                    "legacy recorded cleanup identity drifted"
+                )
+            allowed_files = {
+                *EXPECTED_FIXTURE_NAMES,
+                *(_delete_tombstone_name(item) for item in EXPECTED_FIXTURE_NAMES),
+            }
+            if (
+                not _directory_names_at(recorded_fd, label="legacy recorded cleanup")
+                <= allowed_files
+            ):
+                raise PublicationRecoveryRequired(
+                    "legacy recorded cleanup has unknown entries"
+                )
+            _validate_monotonic_file_cleanup(recorded_fd, EXPECTED_FIXTURE_NAMES)
+            for fixture_name in EXPECTED_FIXTURE_NAMES:
+                _unlink_regular_at(
+                    recorded_fd,
+                    fixture_name,
+                    label=f"legacy fixture {fixture_name}",
+                    expected_sha256=expected_sha256[fixture_name],
+                    expected_identity=expected_identities[fixture_name],
+                    checkpoint=f"legacy-fixture-{fixture_name}",
+                )
+            os.close(recorded_fd)
+            recorded_fd = None
+            _rmdir_empty_at(
+                fixtures_fd,
+                "recorded",
+                label="legacy recorded cleanup",
+                expected_identity=expected_identities["recorded"],
+                checkpoint="legacy-recorded",
+            )
+        elif recorded_state == "quarantined":
+            _rmdir_empty_at(
+                fixtures_fd,
+                "recorded",
+                label="legacy recorded cleanup",
+                expected_identity=expected_identities["recorded"],
+                checkpoint="legacy-recorded",
+            )
+        _assert_directory_entry_identity_at(
+            story_fd, name, fixtures_fd, label="legacy fixture cleanup"
         )
     finally:
         if recorded_fd is not None:
             os.close(recorded_fd)
         os.close(fixtures_fd)
-    os.rmdir("fixtures", dir_fd=story_fd)
-    os.fsync(story_fd)
+    _rmdir_empty_at(
+        story_fd,
+        name,
+        label="legacy fixture cleanup root",
+        expected_identity=expected_identities["."],
+        checkpoint="legacy-fixtures-root",
+    )
+
+
+def _continue_bundle_cleanup_at(
+    story_fd: int, state: Mapping[str, object]
+) -> dict[str, object]:
+    phase = cast(str, state["publication_phase"])
+    mode = cast(str, state["mode"])
+    cleanup_phase = cast(str, state["cleanup_phase"])
+    role: str | None = None
+    if phase == "COMMITTED" and mode == "REPLACE":
+        role = "PREVIOUS"
+    elif phase in {"ROLLED_BACK", "DRIFT_REFUSAL"}:
+        role = "NEXT"
+    if role is None:
+        return dict(state)
+    if cleanup_phase == "NONE":
+        captured = _read_bundle_capture_at(story_fd, STAGE_NAME, allow_missing=False)
+        if captured is None:
+            raise PublicationRecoveryRequired("owned cleanup stage is missing")
+        files, identities = captured
+        expected_digest = cast(
+            str,
+            state[
+                "previous_manifest_sha256"
+                if role == "PREVIOUS"
+                else "next_manifest_sha256"
+            ],
+        )
+        expected_root = _validated_identity(
+            state[
+                "previous_root_identity" if role == "PREVIOUS" else "next_root_identity"
+            ],
+            label="bundle cleanup root identity",
+        )
+        if (
+            _validate_bundle_files(files) != expected_digest
+            or identities["."] != expected_root
+        ):
+            raise PublicationRecoveryRequired("owned cleanup stage identity drifted")
+        transaction_id = cast(str, state["transaction_id"])
+        new_cleanup_record = {
+            "role": role,
+            "source_name": STAGE_NAME,
+            "quarantine_name": f"{BUNDLE_CLEANUP_PREFIX}{transaction_id}",
+            "tree_identity": _identity_map_record(identities),
+            "file_sha256": {
+                name: _sha256(value) for name, value in sorted(files.items())
+            },
+        }
+        state = _write_journal_update_at(
+            story_fd,
+            state,
+            cleanup_phase="BUNDLE_QUARANTINING",
+            cleanup_bundle=new_cleanup_record,
+        )
+        cleanup_phase = "BUNDLE_QUARANTINING"
+        _checkpoint("after-bundle-cleanup-owned-state")
+    cleanup_record = _mapping(state["cleanup_bundle"], label="bundle cleanup record")
+    quarantine_name = cast(str, cleanup_record["quarantine_name"])
+    identities = _record_identity_map(
+        cleanup_record,
+        label="bundle cleanup identities",
+        expected_names={
+            ".",
+            "manifest.json",
+            "fixtures",
+            "fixtures/recorded",
+            *EXPECTED_BUNDLE_PATHS[1:],
+        },
+    )
+    hashes = _record_sha256_map(
+        cleanup_record,
+        label="bundle cleanup hashes",
+        expected_names=set(EXPECTED_BUNDLE_PATHS),
+    )
+    if cleanup_phase == "BUNDLE_QUARANTINING":
+        source = _entry_metadata_at(story_fd, STAGE_NAME)
+        quarantined = _entry_metadata_at(story_fd, quarantine_name)
+        if source is not None and quarantined is not None:
+            raise PublicationRecoveryRequired("bundle cleanup quarantine conflicts")
+        if source is not None:
+            captured = _read_bundle_capture_at(
+                story_fd, STAGE_NAME, allow_missing=False
+            )
+            if captured is None or captured[1] != identities:
+                raise PublicationRecoveryRequired("bundle cleanup source drifted")
+            _checkpoint("before-bundle-cleanup-quarantine")
+            _rename_noreplace_at(story_fd, STAGE_NAME, quarantine_name)
+            os.fsync(story_fd)
+            _checkpoint("after-bundle-cleanup-quarantine")
+        try:
+            captured = _read_bundle_capture_at(
+                story_fd, quarantine_name, allow_missing=False
+            )
+            quarantine_matches = (
+                captured is not None
+                and captured[1] == identities
+                and {name: _sha256(value) for name, value in captured[0].items()}
+                == hashes
+            )
+        except RuntimeError:
+            quarantine_matches = False
+        if not quarantine_matches:
+            _restore_mismatched_quarantine_at(
+                story_fd,
+                STAGE_NAME,
+                quarantine_name,
+                label="bundle cleanup",
+            )
+        state = _write_journal_update_at(
+            story_fd, state, cleanup_phase="BUNDLE_DELETING"
+        )
+        cleanup_phase = "BUNDLE_DELETING"
+        _checkpoint("after-bundle-cleanup-deleting-state")
+    if cleanup_phase == "BUNDLE_DELETING":
+        if _entry_metadata_at(story_fd, STAGE_NAME) is not None:
+            raise PublicationRecoveryRequired("bundle cleanup source reappeared")
+        _remove_owned_bundle_tree_at(
+            story_fd,
+            quarantine_name,
+            expected_sha256=hashes,
+            expected_identities=identities,
+            checkpoint_prefix="bundle-cleanup",
+        )
+        state = _write_journal_update_at(
+            story_fd, state, cleanup_phase="BUNDLE_REMOVED"
+        )
+    return dict(state)
+
+
+def _continue_legacy_cleanup_at(
+    story_fd: int, state: Mapping[str, object]
+) -> dict[str, object]:
+    cleanup_phase = cast(str, state["cleanup_phase"])
+    if cleanup_phase == "CLEANUP_COMPLETE":
+        return dict(state)
+    if cleanup_phase in {"NONE", "BUNDLE_REMOVED"}:
+        legacy_manifest = _entry_metadata_at(story_fd, LEGACY_MANIFEST_PATH.name)
+        legacy_fixtures = _entry_metadata_at(story_fd, "fixtures")
+        if legacy_manifest is None and legacy_fixtures is None:
+            _assert_terminal_cleanup_inventory_at(story_fd, state)
+            return _write_journal_update_at(
+                story_fd, state, cleanup_phase="CLEANUP_COMPLETE"
+            )
+        if legacy_manifest is None or legacy_fixtures is None:
+            raise PublicationRecoveryRequired("legacy ST-1204 tree is incomplete")
+        manifest_content, manifest_identity = _read_regular_capture_at(
+            story_fd, LEGACY_MANIFEST_PATH.name, label="legacy ST-1204 manifest"
+        )
+        if _sha256(manifest_content) != LEGACY_MANIFEST_SHA256:
+            raise PublicationRecoveryRequired("legacy ST-1204 manifest is unowned")
+        legacy_files, legacy_identities = _capture_legacy_fixtures_at(
+            story_fd, "fixtures"
+        )
+        generated = _read_bundle_at(story_fd, GENERATED_ROOT.name, allow_missing=False)
+        if generated is None or any(
+            legacy_files[name] != generated[f"fixtures/recorded/{name}"]
+            for name in EXPECTED_FIXTURE_NAMES
+        ):
+            raise PublicationRecoveryRequired("legacy fixture bytes are unowned")
+        transaction_id = cast(str, state["transaction_id"])
+        new_manifest_record = {
+            "source_name": LEGACY_MANIFEST_PATH.name,
+            "quarantine_name": f"{LEGACY_CLEANUP_PREFIX}{transaction_id}.manifest",
+            "identity": _identity_record(manifest_identity),
+            "sha256": LEGACY_MANIFEST_SHA256,
+        }
+        new_fixtures_record = {
+            "source_name": "fixtures",
+            "quarantine_name": f"{LEGACY_CLEANUP_PREFIX}{transaction_id}.fixtures",
+            "tree_identity": _identity_map_record(legacy_identities),
+            "file_sha256": {
+                name: _sha256(value) for name, value in sorted(legacy_files.items())
+            },
+        }
+        state = _write_journal_update_at(
+            story_fd,
+            state,
+            cleanup_phase="LEGACY_QUARANTINING",
+            legacy_manifest=new_manifest_record,
+            legacy_fixtures=new_fixtures_record,
+        )
+        cleanup_phase = "LEGACY_QUARANTINING"
+        _checkpoint("after-legacy-cleanup-owned-state")
+    manifest_record = _mapping(
+        state["legacy_manifest"], label="legacy manifest cleanup"
+    )
+    fixtures_record = _mapping(state["legacy_fixtures"], label="legacy fixture cleanup")
+    manifest_quarantine = cast(str, manifest_record["quarantine_name"])
+    fixtures_quarantine = cast(str, fixtures_record["quarantine_name"])
+    recorded_manifest_identity = _validated_identity(
+        manifest_record["identity"], label="legacy manifest identity"
+    )
+    if recorded_manifest_identity is None:
+        raise PublicationRecoveryRequired("legacy manifest identity is missing")
+    fixture_identities = _record_identity_map(
+        fixtures_record,
+        label="legacy fixture identities",
+        expected_names={".", "recorded", *EXPECTED_FIXTURE_NAMES},
+    )
+    fixture_hashes = _record_sha256_map(
+        fixtures_record,
+        label="legacy fixture hashes",
+        expected_names=set(EXPECTED_FIXTURE_NAMES),
+    )
+    if cleanup_phase == "LEGACY_QUARANTINING":
+        for source_name, quarantine_name, expected_identity, is_directory in (
+            (
+                LEGACY_MANIFEST_PATH.name,
+                manifest_quarantine,
+                recorded_manifest_identity,
+                False,
+            ),
+            ("fixtures", fixtures_quarantine, fixture_identities["."], True),
+        ):
+            source = _entry_metadata_at(story_fd, source_name)
+            quarantined = _entry_metadata_at(story_fd, quarantine_name)
+            if source is not None and quarantined is not None:
+                raise PublicationRecoveryRequired("legacy cleanup quarantine conflicts")
+            if source is not None:
+                if is_directory:
+                    source_files, source_identities = _capture_legacy_fixtures_at(
+                        story_fd, source_name
+                    )
+                    if (
+                        source_identities != fixture_identities
+                        or {
+                            name: _sha256(value) for name, value in source_files.items()
+                        }
+                        != fixture_hashes
+                    ):
+                        raise PublicationRecoveryRequired(
+                            "legacy fixture source drifted"
+                        )
+                else:
+                    source_content, source_identity = _read_regular_capture_at(
+                        story_fd, source_name, label="legacy manifest source"
+                    )
+                    if (
+                        source_identity != expected_identity
+                        or _sha256(source_content) != LEGACY_MANIFEST_SHA256
+                    ):
+                        raise PublicationRecoveryRequired(
+                            "legacy manifest source drifted"
+                        )
+                _checkpoint(f"before-legacy-{source_name}-quarantine")
+                _rename_noreplace_at(story_fd, source_name, quarantine_name)
+                os.fsync(story_fd)
+                _checkpoint(f"after-legacy-{source_name}-quarantine")
+            try:
+                if is_directory:
+                    captured_files, captured_identities = _capture_legacy_fixtures_at(
+                        story_fd, quarantine_name
+                    )
+                    quarantine_matches = (
+                        captured_identities == fixture_identities
+                        and {
+                            name: _sha256(value)
+                            for name, value in captured_files.items()
+                        }
+                        == fixture_hashes
+                    )
+                else:
+                    content, identity = _read_regular_capture_at(
+                        story_fd, quarantine_name, label="legacy manifest quarantine"
+                    )
+                    quarantine_matches = (
+                        identity == expected_identity
+                        and _sha256(content) == LEGACY_MANIFEST_SHA256
+                    )
+            except RuntimeError:
+                quarantine_matches = False
+            if not quarantine_matches:
+                _restore_mismatched_quarantine_at(
+                    story_fd,
+                    source_name,
+                    quarantine_name,
+                    label="legacy cleanup",
+                )
+        state = _write_journal_update_at(
+            story_fd, state, cleanup_phase="LEGACY_DELETING"
+        )
+        cleanup_phase = "LEGACY_DELETING"
+        _checkpoint("after-legacy-cleanup-deleting-state")
+    if cleanup_phase == "LEGACY_DELETING":
+        _unlink_regular_at(
+            story_fd,
+            manifest_quarantine,
+            label="legacy manifest quarantine",
+            expected_sha256=LEGACY_MANIFEST_SHA256,
+            expected_identity=recorded_manifest_identity,
+            checkpoint="legacy-manifest",
+        )
+        _remove_owned_legacy_fixtures_at(
+            story_fd,
+            fixtures_quarantine,
+            expected_sha256=fixture_hashes,
+            expected_identities=fixture_identities,
+        )
+        _assert_terminal_cleanup_inventory_at(story_fd, state)
+        state = _write_journal_update_at(
+            story_fd, state, cleanup_phase="CLEANUP_COMPLETE"
+        )
+    return dict(state)
+
+
+def _assert_terminal_cleanup_inventory_at(
+    story_fd: int,
+    state: Mapping[str, object],
+    *,
+    allowed_journal_cleanup: str | None = None,
+) -> None:
+    _checkpoint("before-cleanup-complete-verification")
+    story_names = _directory_names_at(story_fd, label="ST-1204 Story directory")
+    forbidden = {
+        STAGE_NAME,
+        _delete_tombstone_name(STAGE_NAME),
+        JOURNAL_PREPARING_NAME,
+        _delete_tombstone_name(JOURNAL_PREPARING_NAME),
+        LEGACY_MANIFEST_PATH.name,
+        _delete_tombstone_name(LEGACY_MANIFEST_PATH.name),
+        "fixtures",
+        _delete_tombstone_name("fixtures"),
+    }
+    forbidden.update(
+        name
+        for name in story_names
+        if name.startswith(BUNDLE_CLEANUP_PREFIX)
+        or name.startswith(LEGACY_CLEANUP_PREFIX)
+        or name.startswith(f"{DELETE_TOMBSTONE_PREFIX}{BUNDLE_CLEANUP_PREFIX}")
+        or name.startswith(f"{DELETE_TOMBSTONE_PREFIX}{LEGACY_CLEANUP_PREFIX}")
+        or name.startswith(JOURNAL_CLEANUP_NAME)
+        or name.startswith(f"{DELETE_TOMBSTONE_PREFIX}{JOURNAL_CLEANUP_NAME}")
+    )
+    if allowed_journal_cleanup is not None:
+        forbidden.discard(allowed_journal_cleanup)
+        forbidden.discard(_delete_tombstone_name(allowed_journal_cleanup))
+    present = sorted(forbidden & story_names)
+    if present:
+        raise PublicationRecoveryRequired(
+            "terminal ST-1204 cleanup inventory is not closed: " + ", ".join(present)
+        )
+    phase = cast(str, state["publication_phase"])
+    if phase == "DRIFT_REFUSAL":
+        return
+    previous_identity = _validated_identity(
+        state["previous_root_identity"], label="previous root identity"
+    )
+    next_identity = _validated_identity(
+        state["next_root_identity"], label="next root identity"
+    )
+    destination = _bundle_state_at(
+        story_fd,
+        GENERATED_ROOT.name,
+        previous_digest=cast(str | None, state["previous_manifest_sha256"]),
+        next_digest=cast(str, state["next_manifest_sha256"]),
+        previous_identity=previous_identity,
+        next_identity=next_identity,
+    )
+    expected = (
+        "next"
+        if phase == "COMMITTED"
+        else "previous"
+        if state["mode"] == "REPLACE"
+        else "missing"
+    )
+    if destination != expected:
+        raise PublicationRecoveryRequired(
+            "terminal ST-1204 authoritative bundle drifted during cleanup"
+        )
+
+
+def _continue_terminal_cleanup_at(
+    story_fd: int, state: Mapping[str, object]
+) -> dict[str, object]:
+    state = _continue_bundle_cleanup_at(story_fd, state)
+    if state["publication_phase"] == "COMMITTED":
+        return _continue_legacy_cleanup_at(story_fd, state)
+    if state["cleanup_phase"] in {"NONE", "BUNDLE_REMOVED"}:
+        _assert_terminal_cleanup_inventory_at(story_fd, state)
+        return _write_journal_update_at(
+            story_fd, state, cleanup_phase="CLEANUP_COMPLETE"
+        )
+    return dict(state)
 
 
 def _assert_legacy_absent_at(story_fd: int) -> None:
@@ -2550,12 +4106,140 @@ def _assert_legacy_absent_at(story_fd: int) -> None:
         raise RuntimeError("non-authoritative legacy ST-1204 outputs remain")
 
 
+def _remove_partial_stage_at(story_fd: int, expected: Mapping[str, bytes]) -> None:
+    root_metadata = _entry_metadata_at(story_fd, STAGE_NAME)
+    root_tombstone = _entry_metadata_at(story_fd, _delete_tombstone_name(STAGE_NAME))
+    if root_metadata is None and root_tombstone is None:
+        return
+    if root_metadata is None:
+        _rmdir_empty_at(story_fd, STAGE_NAME, label="partial publication stage")
+        return
+    if root_tombstone is not None:
+        raise PublicationRecoveryRequired("partial publication stage conflicts")
+    stage_fd = _open_directory_at(
+        story_fd, STAGE_NAME, label="partial publication stage"
+    )
+    fixtures_fd: int | None = None
+    recorded_fd: int | None = None
+    try:
+        stage_identity = _entry_identity(os.fstat(stage_fd))
+        stage_names = _directory_names_at(stage_fd, label="partial publication stage")
+        if not stage_names <= {"manifest.json", "fixtures"}:
+            raise PublicationRecoveryRequired("partial publication stage is unowned")
+        if "fixtures" in stage_names:
+            fixtures_fd = _open_directory_at(
+                stage_fd, "fixtures", label="partial staged fixtures"
+            )
+            fixtures_identity = _entry_identity(os.fstat(fixtures_fd))
+            fixture_names = _directory_names_at(
+                fixtures_fd, label="partial staged fixtures"
+            )
+            if not fixture_names <= {"recorded"}:
+                raise PublicationRecoveryRequired("partial staged fixtures are unowned")
+            if "recorded" in fixture_names:
+                recorded_fd = _open_directory_at(
+                    fixtures_fd, "recorded", label="partial recorded fixtures"
+                )
+                recorded_identity = _entry_identity(os.fstat(recorded_fd))
+                names = _directory_names_at(
+                    recorded_fd, label="partial recorded fixtures"
+                )
+                expected_prefix = set(EXPECTED_FIXTURE_NAMES[: len(names)])
+                if names != expected_prefix:
+                    raise PublicationRecoveryRequired(
+                        "partial recorded fixture progress is unowned"
+                    )
+                for fixture_name in EXPECTED_FIXTURE_NAMES:
+                    if fixture_name not in names:
+                        continue
+                    content, identity = _read_regular_capture_at(
+                        recorded_fd,
+                        fixture_name,
+                        label=f"partial staged fixture {fixture_name}",
+                    )
+                    if content != expected[f"fixtures/recorded/{fixture_name}"]:
+                        raise PublicationRecoveryRequired(
+                            "partial staged fixture bytes are unowned"
+                        )
+                    _unlink_regular_at(
+                        recorded_fd,
+                        fixture_name,
+                        label=f"partial staged fixture {fixture_name}",
+                        expected_content=content,
+                        expected_identity=identity,
+                    )
+                os.close(recorded_fd)
+                recorded_fd = None
+                _rmdir_empty_at(
+                    fixtures_fd,
+                    "recorded",
+                    label="partial recorded fixtures",
+                    expected_identity=recorded_identity,
+                )
+            os.close(fixtures_fd)
+            fixtures_fd = None
+            _rmdir_empty_at(
+                stage_fd,
+                "fixtures",
+                label="partial staged fixtures",
+                expected_identity=fixtures_identity,
+            )
+        if "manifest.json" in stage_names:
+            content, identity = _read_regular_capture_at(
+                stage_fd, "manifest.json", label="partial staged manifest"
+            )
+            if content != expected["manifest.json"]:
+                raise PublicationRecoveryRequired(
+                    "partial staged manifest bytes are unowned"
+                )
+            _unlink_regular_at(
+                stage_fd,
+                "manifest.json",
+                label="partial staged manifest",
+                expected_content=content,
+                expected_identity=identity,
+            )
+        _assert_directory_entry_identity_at(
+            story_fd, STAGE_NAME, stage_fd, label="partial publication stage"
+        )
+    finally:
+        for descriptor in (recorded_fd, fixtures_fd, stage_fd):
+            if descriptor is not None:
+                os.close(descriptor)
+    _rmdir_empty_at(
+        story_fd,
+        STAGE_NAME,
+        label="partial publication stage",
+        expected_identity=stage_identity,
+    )
+
+
 def _publish_outputs_at(story_fd: int, outputs: Mapping[Path, bytes]) -> str:
     expected = _bundle_files(outputs)
     next_digest = _validate_bundle_files(expected)
-    installed = _read_bundle_at(story_fd, GENERATED_ROOT.name, allow_missing=True)
+    installed_capture = _read_bundle_capture_at(
+        story_fd, GENERATED_ROOT.name, allow_missing=True
+    )
+    installed = None if installed_capture is None else installed_capture[0]
     if installed == expected:
-        _cleanup_legacy_at(story_fd, expected)
+        if (
+            _entry_metadata_at(story_fd, LEGACY_MANIFEST_PATH.name) is None
+            and _entry_metadata_at(story_fd, "fixtures") is None
+        ):
+            return next_digest
+        if installed_capture is None:
+            raise PublicationRecoveryRequired("installed bundle capture disappeared")
+        installed_identities = installed_capture[1]
+        state = _new_journal_state(
+            mode="NOOP_LEGACY",
+            previous_digest=next_digest,
+            next_digest=next_digest,
+            previous_identity=installed_identities["."],
+            next_identity=installed_identities["."],
+            publication_phase="COMMITTED",
+        )
+        _create_journal_at(story_fd, state)
+        _recover_journal_at(story_fd, state)
         return next_digest
     committed = False
     primary: BaseException | None = None
@@ -2563,36 +4247,64 @@ def _publish_outputs_at(story_fd: int, outputs: Mapping[Path, bytes]) -> str:
         previous_digest = (
             _validate_bundle_files(installed) if installed is not None else None
         )
+        previous_identities = (
+            installed_capture[1] if installed_capture is not None else None
+        )
         _create_stage_at(story_fd, expected)
+        staged_capture = _read_bundle_capture_at(
+            story_fd, STAGE_NAME, allow_missing=False
+        )
+        if staged_capture is None:
+            raise PublicationRecoveryRequired("publication stage disappeared")
+        staged_files, staged_identities = staged_capture
+        if staged_files != expected:
+            raise PublicationRecoveryRequired("publication stage bytes drifted")
         state = _new_journal_state(
-            previous_digest=previous_digest, next_digest=next_digest
+            mode="REPLACE" if installed is not None else "FRESH",
+            previous_digest=previous_digest,
+            next_digest=next_digest,
+            previous_identity=(
+                None if previous_identities is None else previous_identities["."]
+            ),
+            next_identity=staged_identities["."],
         )
         _create_journal_at(story_fd, state)
         _checkpoint("before-publication")
+        current_stage = _read_bundle_capture_at(
+            story_fd, STAGE_NAME, allow_missing=False
+        )
+        if current_stage != staged_capture:
+            raise PublicationRecoveryRequired("publication stage identity drifted")
         if installed is None:
-            os.replace(
-                STAGE_NAME,
-                GENERATED_ROOT.name,
-                src_dir_fd=story_fd,
-                dst_dir_fd=story_fd,
-            )
+            _rename_noreplace_at(story_fd, STAGE_NAME, GENERATED_ROOT.name)
         else:
+            current_installed = _read_bundle_capture_at(
+                story_fd, GENERATED_ROOT.name, allow_missing=False
+            )
+            if current_installed != installed_capture:
+                raise PublicationRecoveryRequired("installed bundle identity drifted")
+            _checkpoint("after-installed-revalidation")
             _rename_exchange_at(story_fd, STAGE_NAME, GENERATED_ROOT.name)
         os.fsync(story_fd)
         _checkpoint("after-publication-namespace")
-        if (
-            _read_bundle_at(story_fd, GENERATED_ROOT.name, allow_missing=False)
-            != expected
-        ):
+        published_capture = _read_bundle_capture_at(
+            story_fd, GENERATED_ROOT.name, allow_missing=False
+        )
+        if published_capture != staged_capture:
             raise RuntimeError("published ST-1204 bundle failed exact verification")
+        if installed is not None:
+            preserved_capture = _read_bundle_capture_at(
+                story_fd, STAGE_NAME, allow_missing=False
+            )
+            if preserved_capture != installed_capture:
+                raise PublicationRecoveryRequired(
+                    "exchanged previous ST-1204 bundle was not preserved"
+                )
         _checkpoint("after-publication-verify")
         state = _write_journal_phase_at(story_fd, state, "COMMITTED")
         committed = True
         _checkpoint("after-committed-state")
-        _remove_owned_bundle_tree_at(story_fd, STAGE_NAME)
-        _checkpoint("after-old-stage-cleanup")
-        _finish_terminal_journal_at(story_fd)
-        _cleanup_legacy_at(story_fd, expected)
+        _recover_journal_at(story_fd, state)
         if (
             _read_bundle_at(story_fd, GENERATED_ROOT.name, allow_missing=False)
             != expected
@@ -2602,7 +4314,9 @@ def _publish_outputs_at(story_fd: int, outputs: Mapping[Path, bytes]) -> str:
     except BaseException as exc:
         primary = exc
         try:
-            _recover_pending_at(story_fd)
+            if _entry_metadata_at(story_fd, JOURNAL_NAME) is None:
+                _remove_partial_stage_at(story_fd, expected)
+            _recover_pending_at(story_fd, outputs)
         except BaseException as recovery_error:
             primary.add_note(
                 "ST-1204 automatic publication recovery also failed: "
@@ -2617,8 +4331,9 @@ def generate(root: Path = REPOSITORY_ROOT) -> str:
     story_fd = _acquire_story_lock(root, exclusive=True, create=True)
     primary: BaseException | None = None
     try:
-        _recover_pending_at(story_fd)
-        return _publish_outputs_at(story_fd, build_outputs(root))
+        outputs = build_outputs(root)
+        _recover_pending_at(story_fd, outputs)
+        return _publish_outputs_at(story_fd, outputs)
     except BaseException as exc:
         primary = exc
         raise

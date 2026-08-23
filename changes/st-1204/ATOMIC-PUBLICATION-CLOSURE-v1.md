@@ -1,11 +1,75 @@
 # ST-1204 local atomic-publication closure record
 
 - Finding: `ST1204-AUDIT-001`
-- Local implementation disposition: `REMEDIATED`
+- Local implementation disposition: `REMEDIATED_V2_PENDING_REAUDIT`
 - Independent read-only re-audit: `NOT_EXECUTED`
 - Formal TST-030: `NOT_EXECUTED`
 - Live provider validation: `NOT_EXECUTED`
 - Staging / release / Production: `NOT_EXECUTED`
+
+## V2 follow-up correction
+
+The evidence below for commit `3a616957cac905618da3dc3e30aeddfac4b42ae6`
+is retained as historical local evidence, but its implementation conclusion was
+invalidated by a subsequent independent review. That review reproduced three
+remaining defects: a final-entry and pre-exchange identity race, an
+unrecoverable crash during destructive old-stage cleanup, and non-idempotent
+legacy cleanup.
+
+The V2 follow-up replaces the mutable three-state record with a hash-chained,
+append-only journal whose state files are prepared, fsynced, and published with
+`RENAME_NOREPLACE`. It binds transaction mode, old/new root identities, cleanup
+tree identities and file hashes before mutation. Old-stage and complete legacy
+trees are moved into transaction-specific no-replace quarantines before any
+destructive cleanup; every owner checkpoint is restartable, identity mismatch
+is restored when no-replace-safe or retained and refused, and completion
+rechecks the authoritative bundle plus the closed cleanup inventory. Fresh
+publication also uses `RENAME_NOREPLACE`, so a late destination is preserved.
+Nonempty orphan stages and unbound cleanup names are not inferred owned from
+matching bytes.
+
+The local guarantee intentionally does not claim protection against an actively
+malicious same-UID process that wins the final in-kernel `unlinkat` or
+`rmdirat` name race after the last identity check: POSIX exposes no conditional
+inode form of either syscall. All observable pre/post-rename and checkpoint
+identity mismatches are covered and fail without deletion. This explicit trust
+boundary is recorded in the V2 design handoff and is not a waiver of any
+representable race.
+
+## V2 local evidence
+
+- Owner generation and the read-only owner `--check` pass at generated
+  manifest SHA-256
+  `22e002adcc6c043701f9e050cf3f64ffb37bccbe56ef5dad3f155fd478a201b7`.
+  The three fixture payload bytes are unchanged from commit
+  `3a616957cac905618da3dc3e30aeddfac4b42ae6`.
+- The isolated ST-1204 suite passes `195` tests. Its `60` atomic-publication
+  tests include subprocess termination at journal preparation, publication,
+  quarantine, file unlink, directory removal, legacy migration and terminal
+  cleanup checkpoints; concurrent owners; ancestor replacement; fresh
+  no-replace collision; same-UID file, directory, bundle and legacy swaps;
+  byte-identical unowned-orphan refusal; closed-inventory reappearance; and
+  rejection of every tested mixed-generation state.
+- Python 3.10 and 3.14 direct compilation, Ruff lint/format, strict mypy over
+  the generator and all ST-1204 tests, configured repository Pyright,
+  canonical import verification, workspace no-write verification, focused
+  capability/static checks, focused maintained-file secret scanning, and
+  `git diff --check` pass. The repository Pyright configuration excludes this
+  generator and its tests; a forced direct invocation still reports the
+  pre-existing untyped YAML/JSON and private-test-helper diagnostics and is
+  not represented as green.
+- The linked-worktree-wide secret scanner remains an inherited operational
+  limitation with sanitized result
+  `ERROR code=unsafe-git-metadata source="."`; the exact maintained-file scan
+  is the applicable local result for this isolated worktree.
+- The ST-1205 owner check continues to fail closed with
+  `SOURCE_HASH_DRIFT field=predecessor.st1204`. Its direct drift is limited to
+  the already changed ST-1204 runtime slice, application test and recorded
+  adapter test; no downstream owner or generated output is changed here.
+- This record is local implementation evidence only. Independent re-audit,
+  formal TST-030, live provider/account/credential evidence, persistence,
+  hosted CI, staging, release and Production remain `NOT_EXECUTED`; no
+  `VALIDATED` or audit-`PASS` state is claimed.
 
 ## Closed implementation boundary
 

@@ -46,7 +46,7 @@ provenance:
       sha256: 4d2233a321e9e2576911182f4d38092e61ca47b2800d2730b40ecce84dd71a5d
   publication_design:
     uri: repo://changes/st-1204/DESIGN_HANDOFF_V1_ST1204_FIXTURE_v1.yaml
-    sha256: 4ce2bd89583b6d6887790f9b4279cd08a482408061ae8a440c6e9f828abc050e
+    sha256: 9086850e54cdf4fdf621c7a47538948fe0fc9eb7b5aedec7af7d1d22554e0c75
   installed_contract_repository:
     uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
     sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
