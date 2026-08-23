@@ -21,14 +21,14 @@
       "sha256": "4c1fed7b4a4679ead75ca706d9064853325d06256858052a7321b13ed08daf1b"
     },
     {
-      "bytes": 2789,
+      "bytes": 2896,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
-      "sha256": "e9d36d74c83d79f9d47540eda7636e2fbe678e4b49414c694d07349a16d32da5"
+      "sha256": "08cf49641db92ca0f9f4a68f7f7d9430cb4162f5614184d2a0bc51203630d1e8"
     },
     {
-      "bytes": 17600,
+      "bytes": 18702,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "2c1da93155ec590e6a3b8d1f3f4c37c784a31d4697d82ae5e13810becff3d44f"
+      "sha256": "7ad7e094e8b351d4f2f412a766d2ae7151973a3116e805d8e3c27c0302e35591"
     },
     {
       "bytes": 2270,
@@ -36,9 +36,9 @@
       "sha256": "023d5dde036f7c3a05572ca9df6d22ed517e1d9df581b34867da509f13eba95e"
     },
     {
-      "bytes": 5437,
+      "bytes": 6119,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
-      "sha256": "5a6a7c796c8f1515d473d9fce573d67724ee2b069a2dbdc06f2aef321d94a182"
+      "sha256": "c181c77b1a8f0334e1b94d51b18324eb784512ae6f31e75e48669a16b43e07d5"
     },
     {
       "bytes": 111502,
@@ -186,9 +186,9 @@
       "sha256": "ec5d856368274415da6ea865621f3461f06f6b9cb525232fc12e0813d3d5afc0"
     },
     {
-      "bytes": 5367,
+      "bytes": 34184,
       "path": "scripts/st1704_official_source_capture.py",
-      "sha256": "d16c2ddc43ba62d634c2dd48711ffba7c7f2b00ad7d386c5cc3f615b34221f5d"
+      "sha256": "7a6ba4314549928275409b1e0d862b7b664133a6b23f01844fe00c86949c5355"
     },
     {
       "bytes": 8579,

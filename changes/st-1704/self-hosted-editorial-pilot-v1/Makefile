@@ -35,6 +35,7 @@ help:
 	@echo 'Local artifacts: manifest-generate theme-package'
 	@echo 'Article operations: use the four closed subcommands shown by cli-help'
 	@echo 'Read-only source capture: use the two closed subcommands shown by source-cli-help'
+	@echo 'Source capture process: repository-root CLEAN_PYTHON only (-B -I -S; ambient environment removed)'
 
 check: manifest-check theme-source-check theme-check tests
 

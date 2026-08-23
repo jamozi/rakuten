@@ -57,6 +57,21 @@ locator matches. It has no Rakuten, WordPress, publication, plugin, theme, media
 generic HTTP capability. The WordPress CLI remains limited to its four closed
 commands.
 
+Run source capture only from the repository root with the repository interpreter
+and the isolated, environment-free process boundary used by `CLEAN_PYTHON`:
+
+```sh
+/usr/bin/env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C TZ=UTC \
+  "$PWD/.venv/bin/python" -B -I -S -X pycache_prefix=/dev/null \
+  scripts/st1704_official_source_capture.py capture-source \
+  --source-ref SRC-ANKER-SOLIX-C300
+```
+
+The CLI verifies that exact process boundary and byte-compares the worktree
+runtime manifest to its current `HEAD` blob before loading any RAOS module or
+reading a registry/locator document. A direct shebang invocation is therefore a
+closed refusal rather than an alternate execution path.
+
 `create-review-draft` is the only command that can turn a freshly prepared request
 into a live draft. Before its single POST, the runtime durably stores the exact
 canonical request in an owner-only, no-overwrite artifact and binds that artifact's

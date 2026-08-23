@@ -48,8 +48,28 @@ sources, install these two fixed artifacts under
   `response_sha256`, and `locators`;
 - `<source-ref>.body`, containing the captured response body bytes without rewriting.
 
-Codex creates or refreshes these pairs through the separate closed source command:
-`scripts/st1704_official_source_capture.py capture-article --article-id <allowlisted-id>`.
+Codex creates or refreshes these pairs through the separate closed source command,
+run from the exact repository root and isolated from ambient Python and environment
+configuration:
+
+```sh
+/usr/bin/env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C TZ=UTC \
+  "$PWD/.venv/bin/python" -B -I -S -X pycache_prefix=/dev/null \
+  scripts/st1704_official_source_capture.py capture-article \
+  --article-id st1704-portable-power-station-guide
+```
+
+Before importing any RAOS runtime module or reading either tracked source document,
+the command requires the exact `.venv/bin/python` 3.14.6 process, `-B -I -S`, safe
+path, ignored environment and user site, and repository-root working directory. It
+then byte-compares `runtime-manifest.v1.json` with the same path in the current
+`HEAD` commit, requires every listed runtime file and the ST-1703 predecessor to be
+byte-identical to their blobs in that same commit, and verifies the manifest's closed
+file inventory before loading runtime modules plus registry/locator documents only
+from those verified bytes. The Git anchor must report this exact repository root; terminal
+prompts and partial-clone lazy object retrieval are disabled. Any mismatch returns only
+`OFFICIAL_SOURCE_CAPTURE_RUNTIME_INVALID` and performs no DNS or HTTP operation.
+
 The command accepts no URL, header, credential, output path, WordPress target, or
 publication action. Run it in the repository's clean environment without proxy or
 custom certificate variables. A single-source refresh may instead use
