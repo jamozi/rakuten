@@ -15,7 +15,8 @@ publication, release, or Production evidence.
 
 - `content/first-suitcase-comparison.v1.json` is the first self-hosted
   article packet. It is bound to the exact origin, draft-only authority, three
-  pending official Rakuten affiliate slots, editorial/affiliate disclosure,
+  provider-issued official Rakuten affiliate destinations, audit-safe Result
+  V3 provenance, editorial/affiliate disclosure,
   source records, freshness caveats, and a closed SEO/structured-data policy.
   Its generated review body starts with exactly one packet-owned
   `[kurashinoshirube_first_article_lead_image]` token. The packet's source
@@ -39,9 +40,11 @@ publication, release, or Production evidence.
   `get_stylesheet_directory_uri()`, and refuses a
   non-HTTPS/different-host/unsafe theme path or a missing, unreadable, or
   symlinked local asset. It does not guess a `/wp-content` prefix. Both images
-  intentionally remain
-  `PENDING_FINAL_ASSET`; no image provider was called by this slice.
-  A future `FINAL` byte stream must also satisfy the closed, bounded static
+  are `FINAL`: opaque 1600x900 static WebP files below 4 MiB with exact
+  lowercase SHA-256 values recorded in the manifest. Their reviewed originals
+  remain outside the repository; this encoding/finalization slice made no
+  image-provider call. Every `FINAL` byte stream must satisfy the closed,
+  bounded static
   WebP profile: exact RIFF length, complete chunks and odd padding, one
   structurally valid VP8/VP8L image, or one non-animated VP8X image whose
   canvas, reserved bits, feature flags and ordered chunks agree. Hash and
@@ -72,19 +75,17 @@ Do not edit or relocate the zip by hand. Update the owned theme
 source/manifest, then run the generator. The fixed ignored output means a
 successful `theme-package` followed by `theme-check` does not dirty the Git
 worktree or weaken the launcher's exact clean-head gate. The source-only check
-is available while final assets remain pending:
+is also available without creating a package:
 
 ```bash
 make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile theme-source-check
 ```
 
-The expected result in this slice is `SOURCE_VALID` with
-`package_ready=false` and the first article asset reported as
-`PENDING_FINAL_ASSET`. Package and package-check commands fail closed until the
-final asset gate is completed. `create-draft` applies the same verified theme
-check before credential metadata or network construction; it cannot proceed
-until both required images are `FINAL` and the deterministic theme package is
-ready.
+The expected result in this slice is `SOURCE_VALID` with `package_ready=true`
+and the first article asset reported as `FINAL`. `create-draft` applies the
+same verified theme check before credential metadata or network construction;
+it cannot proceed unless both required images remain `FINAL` and the
+deterministic theme package is ready.
 
 The footer contrast contract closes the expected foreground, background,
 focus-outline and custom-property declarations, then binds the complete
@@ -92,11 +93,64 @@ reviewed stylesheet bytes. A later or alternate low-contrast cascade,
 opacity, or browser-specific text-fill override therefore fails source
 validation instead of silently defeating the reviewed state colors.
 
+## Affiliate verification boundary
+
+`scripts/finalize_st1703_affiliate_links.py` is the import-only read-only
+verifier used by the verified exact-root runtime for the already-FINAL tracked
+packet. Direct Python execution is disabled before argument parsing, repository
+path resolution, shadowable imports, or private-file access; only builtin
+`sys` is imported before the fixed refusal. Only the launcher supplies the
+three exact owner-private request files. The verifier decodes only the bounded
+bytes already obtained through its no-follow descriptor snapshot; it never
+reopens a request pathname through the adapter. Its ST-1703-local closed decoder
+accepts only the exact keys and reviewed values for these three slots, then uses
+the existing domain request types to recompute each canonical fingerprint. This
+keeps the fixed ST-0505 installed-runtime bundle unchanged. The verifier scans
+only the fixed owner-local sanitized Result V3 store, reads no credential,
+performs no network request, and has no tracked-file writer.
+
+The verifier requires the exact successful 2026-07-01 item-search Result V3
+record whose request fingerprint, response hash, complete Result hash and
+retrieval time are already committed in each FINAL slot. It requires one
+request and zero retry/pagination and exactly one matching `ace-store`
+item/model record. The unchanged provider destination must be a
+public HTTPS Rakuten affiliate URL whose embedded desktop target is the exact
+Rakuten item path and whose mobile target is the exact reviewed item identity
+for that slot. It runs the full runtime loader, compares all three exact CTA
+and evidence records before private Result selection, rescans the Result store,
+and proves the complete file-name/hash/inode inventory and content bytes did not
+change during verification. The runtime recomputes the fixed ST-0505 request
+fingerprint and requires the reviewed destination/evidence attestation digest.
+An exact committed Result remains verifiable after 24 hours; this command does
+not assert current product freshness or perform live re-attestation. A stable,
+valid newer Result with the same request fingerprint is not selected and does
+not replace the committed evidence. PENDING, a missing/replaced exact Result,
+future-skewed exact committed evidence, mixed or mismatched state, manual
+injection, unsafe material, or any mid-verification store mutation fails
+closed. An unselected same-fingerprint Result has no authority to impose its
+timestamp on the committed evidence. URLs and private result paths are never
+logged, and every receipt reports `external_writes: 0`.
+
+Verify the reviewed FINAL packet. The Make target supplies only the three fixed
+owner-private request paths under `.secrets/rakuten-owner-local/requests/`;
+caller-provided paths are not accepted:
+
+```bash
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-verify
+```
+
+The JSON receipt contains hashes and counts only. This command runs through the
+same exact-root, clean-HEAD, `-B -I -S`, manifest-bound launcher as doctor and
+draft create. It cannot fill a PENDING packet or mutate the reviewed FINAL
+packet. Run owner-private maintenance commands without another same-UID
+repository/private-store mutator; this is the existing owner-local maintenance
+boundary, not an additional live-provider authority.
+
 ## Runtime boundary
 
 Every owner command is bound before RAOS imports or credential access to the
 physical `/home/minami/rakuten` repository, an exact committed clean `HEAD`
-descending from the guaranteed shipped PR base `b5a6157b`, and the 26 ordered
+descending from the guaranteed shipped PR base `b5a6157b`, and the 31 ordered
 base source/input files in `runtime-manifest.v1.json`. When either of the two
 fixed `required_images` records is explicitly `FINAL`, that manifest-declared,
 lowercase-SHA-256-bound WebP is added to the reviewed inventory; pending images
@@ -113,12 +167,12 @@ captures and hash-checks the complete committed CLI blob before Python is
 started. The shell-stage `HEAD`, blob ID and CLI SHA-256 are carried into the
 stdlib-only Python bootstrap and must match the same current `HEAD`. The
 bootstrap first binds the runtime manifest to the matching `HEAD` blob, then
-derives an exact 26-plus-zero-to-two path inventory from the fixed committed
+derives an exact 31-plus-zero-to-two path inventory from the fixed committed
 asset manifest before opening any listed working payload. It checks every
 bounded SHA-256, the same complete static WebP container/profile used by the
 package and offline doctor, matching `HEAD` blob, the exact tracked
 image-directory inventory, pending-path absence, tracked state and clean worktree before
-installing the narrow self-hosted package namespaces. The ten leaf modules
+installing the narrow self-hosted package namespaces. The fifteen leaf modules
 execute only through a closed loader backed by the already verified bytes;
 source paths are not reopened. Site
 startup processing is disabled, live repository import roots are not added to
@@ -206,11 +260,6 @@ This slice does not add or replace a root Make target.
 
 ## Explicit blockers and exclusions
 
-- Three official Rakuten affiliate destinations remain pending. Each final
-  anchor must be direct, match the named product, and carry
-  `rel="sponsored nofollow"`; this slice supplies no fabricated link.
-- Two final editorial WebP assets remain pending. Placeholder or synthetic
-  test bytes do not satisfy package readiness.
 - The child theme is not installed or activated by this slice, and no live
   draft preview has confirmed the shortcode-rendered first-article image.
 - Live read-only credential proof, draft creation, theme activation,

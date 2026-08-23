@@ -30,12 +30,12 @@ override ROOT_OWNED_RUNTIME_GENERATOR_PYTHON := /usr/bin/python3.10
 
 .PHONY: help doctor install-credentials create-draft \
 	runtime-manifest-generate runtime-manifest-check \
-	theme-source-check theme-package theme-check
+	theme-source-check theme-package theme-check affiliate-verify
 
 help:
-	@echo 'Offline: doctor runtime-manifest-check theme-source-check theme-check'
-	@echo 'Local maintenance: runtime-manifest-generate'
-	@echo 'Human gated: install-credentials create-draft theme-package'
+	@echo 'Offline: doctor runtime-manifest-check theme-source-check theme-check affiliate-verify'
+	@echo 'Local maintenance: runtime-manifest-generate theme-package'
+	@echo 'Human gated: install-credentials create-draft'
 
 doctor:
 	"$(OWNER_LAUNCHER)" doctor
@@ -75,3 +75,12 @@ theme-check:
 	cd "$(SELF_HOSTED_SOURCE_ROOT)" && \
 		"$(MANAGED_PYTHON)" -B -I -S -X pycache_prefix=/dev/null \
 		scripts/build_st1703_self_hosted_theme.py --check
+
+affiliate-verify:
+	"$(OWNER_LAUNCHER)" affiliate-verify \
+		--ace-cresta-06316-request \
+		"$(OWNER_REPOSITORY_ROOT)/.secrets/rakuten-owner-local/requests/keyword-ace-cresta-06316.json" \
+		--ace-difference-05721-request \
+		"$(OWNER_REPOSITORY_ROOT)/.secrets/rakuten-owner-local/requests/keyword-ace-difference-05721.json" \
+		--proteca-maxpass4-01471-request \
+		"$(OWNER_REPOSITORY_ROOT)/.secrets/rakuten-owner-local/requests/keyword-proteca-maxpass4-01471.json"

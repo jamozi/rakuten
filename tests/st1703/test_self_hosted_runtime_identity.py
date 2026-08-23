@@ -981,13 +981,16 @@ scope = {"__file__": str(script), "__name__": "runtime_prefix_probe"}
 exec(compile(prefix, str(script), "exec"), scope)
 verified = {
     relative: (root / relative).read_bytes()
-    for relative in scope["_RUNTIME_REQUIRED_PATHS"]
+    for relative in (
+        *scope["_RUNTIME_REQUIRED_PATHS"],
+        *scope["_RUNTIME_FINAL_THEME_IMAGE_PATHS"],
+    )
 }
 scope["_install_scoped_runtime_packages"](root, verified)
 for name in (
     "raos", "raos.adapters", "raos.application",
     "raos.application.editorial", "raos.domain",
-    "raos.domain.editorial", "raos.ports",
+    "raos.domain.catalog", "raos.domain.editorial", "raos.ports",
 ):
     package = sys.modules[name]
     assert package.__spec__.name == name
@@ -996,10 +999,12 @@ for name in (
     if separator:
         assert getattr(sys.modules[parent], child) is package
 sys.path[:0] = [str(root / "scripts"), str(root / "python")]
+runtime_import_path = tuple(sys.path)
 before = set(sys.modules)
 runtime = runpy.run_path(str(script), run_name="runtime_import_probe")
+assert tuple(sys.path) == runtime_import_path
 assert sorted(runtime["_parser"]()._subparsers._group_actions[0].choices) == [
-    "create-draft", "doctor", "install-credentials"
+    "affiliate-verify", "create-draft", "doctor", "install-credentials"
 ]
 for name in runtime["_RUNTIME_MODULE_PATHS"]:
     leaf = sys.modules[name]
@@ -1007,11 +1012,14 @@ for name in runtime["_RUNTIME_MODULE_PATHS"]:
     if separator:
         assert getattr(sys.modules[parent], child) is leaf
     assert leaf.__loader__.__class__.__name__ == "_VerifiedSourceLoader"
-candidate = runtime["load_first_article_candidate"](
+candidate, affiliate_status = runtime[
+    "load_first_article_candidate_with_affiliate_status"
+](
     root,
     operation=runtime["SelfHostedWordPressOperation"].CREATE_DRAFT,
     packet_bytes=verified[runtime["_CONTENT_PACKET_RUNTIME_PATH"]],
 )
+assert affiliate_status == "FINAL"
 theme_prefix = runtime["_THEME_RUNTIME_PREFIX"]
 theme_payloads = {
     path.removeprefix(theme_prefix): payload
@@ -1072,24 +1080,32 @@ print(json.dumps({
     assert result.returncode == 0, (result.stdout, result.stderr)
     evidence = json.loads(result.stdout)
     assert evidence["paths"] == [
+        "python/raos/adapters/rakuten_owner_local.py",
         "python/raos/adapters/self_hosted_wordpress_credentials.py",
         "python/raos/adapters/self_hosted_wordpress_https.py",
         "python/raos/adapters/self_hosted_wordpress_journal.py",
         "python/raos/adapters/self_hosted_wordpress_rest.py",
         "python/raos/adapters/wordpress_rest.py",
         "python/raos/application/editorial/self_hosted_minimum_start.py",
+        "python/raos/domain/catalog/rakuten_item_search.py",
+        "python/raos/domain/catalog/rakuten_item_search_live_request_v1.py",
+        "python/raos/domain/catalog/rakuten_owner_local.py",
         "python/raos/domain/editorial/market_learning_pilot.py",
         "python/raos/domain/editorial/self_hosted_wordpress.py",
         "python/raos/ports/self_hosted_wordpress.py",
         "scripts/build_st1703_self_hosted_theme.py",
+        "scripts/finalize_st1703_affiliate_links.py",
     ]
     ordinary = _load(CLI_PATH, "self_hosted_runtime_parity_test")
     packet = (ROOT / ordinary._CONTENT_PACKET_RUNTIME_PATH).read_bytes()
-    candidate = ordinary.load_first_article_candidate(
-        ROOT,
-        operation=ordinary.SelfHostedWordPressOperation.CREATE_DRAFT,
-        packet_bytes=packet,
+    candidate, affiliate_status = (
+        ordinary.load_first_article_candidate_with_affiliate_status(
+            ROOT,
+            operation=ordinary.SelfHostedWordPressOperation.CREATE_DRAFT,
+            packet_bytes=packet,
+        )
     )
+    assert affiliate_status == "FINAL"
     assert evidence["title"] == candidate.title
     assert evidence["content_sha256"] == candidate.content_sha256
     assert evidence["operation_sha256"] == candidate.operation_sha256
@@ -1169,12 +1185,30 @@ def test_runtime_manifest_generator_check_is_current_and_inventory_matches() -> 
     assert generator.render_python_runtime_inventory() == python_inventory_bytes
     paths = tuple(row["path"] for row in manifest["paths"])
     resolved_paths, theme_manifest, final_assets = generator._resolved_runtime_paths()
-    assert final_assets == {}
-    assert cli._declared_final_theme_runtime_assets(theme_manifest) == {}
+    decoded_theme_manifest = json.loads(theme_manifest.decode("utf-8"))
+    expected_final_assets = {
+        f"{generator.THEME_RUNTIME_PREFIX}{row['path']}": row["sha256"]
+        for row in decoded_theme_manifest["required_images"]
+    }
+    assert final_assets == expected_final_assets
+    assert cli._declared_final_theme_runtime_assets(theme_manifest) == (
+        expected_final_assets
+    )
     assert paths == resolved_paths
-    assert paths == tuple(sorted(generator.REQUIRED_RUNTIME_PATHS))
-    assert paths == tuple(sorted(cli._RUNTIME_REQUIRED_PATHS))
-    assert not set(paths).intersection(generator.FINAL_THEME_IMAGE_RUNTIME_PATHS)
+    assert paths == tuple(
+        sorted(
+            (
+                *generator.REQUIRED_RUNTIME_PATHS,
+                *generator.FINAL_THEME_IMAGE_RUNTIME_PATHS,
+            )
+        )
+    )
+    assert paths == tuple(
+        sorted((*cli._RUNTIME_REQUIRED_PATHS, *cli._RUNTIME_FINAL_THEME_IMAGE_PATHS))
+    )
+    assert set(paths).intersection(generator.FINAL_THEME_IMAGE_RUNTIME_PATHS) == set(
+        generator.FINAL_THEME_IMAGE_RUNTIME_PATHS
+    )
     assert generator.APPROVED_BASE_COMMIT == SHIPPED_PR_BASE
     assert cli._RUNTIME_APPROVED_BASE_COMMIT == SHIPPED_PR_BASE
     assert manifest["approved_base_commit"] == SHIPPED_PR_BASE

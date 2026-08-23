@@ -282,20 +282,19 @@ def test_hash_bound_malformed_final_asset_never_becomes_package_ready(
         theme.source_check()
 
 
-def test_real_source_is_valid_but_final_assets_block_package() -> None:
+def test_real_source_and_final_assets_are_package_ready() -> None:
     result = theme.source_check()
     assert result == {
-        "asset_status": "PENDING_FINAL_ASSETS",
-        "first_article_asset_status": "PENDING_FINAL_ASSET",
+        "asset_status": "FINAL",
+        "first_article_asset_status": "FINAL",
         "network_requests": 0,
-        "package_ready": False,
-        "pending_asset_count": 2,
+        "package_ready": True,
+        "pending_asset_count": 0,
         "source_file_count": 10,
         "status": "SOURCE_VALID",
         "theme_slug": "kurashinoshirube-child",
     }
-    with pytest.raises(theme.ThemeBuildFailure, match="THEME_FINAL_ASSET_MISSING"):
-        theme.package_bytes()
+    assert theme.package_bytes() == theme.package_bytes()
 
 
 @pytest.mark.parametrize(
@@ -609,7 +608,7 @@ def test_verified_theme_snapshot_does_not_reopen_mutated_paths(
     (root / "assets/theme.css").write_bytes(b"unreviewed replacement")
     result = theme.source_check_from_verified_files(payloads)
     assert result["status"] == "SOURCE_VALID"
-    assert result["package_ready"] is False
+    assert result["package_ready"] is True
 
 
 def test_complete_fixture_packages_deterministically_and_checks_read_only(

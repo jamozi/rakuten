@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import hashlib
 import json
 import os
@@ -93,15 +94,20 @@ _RUNTIME_REQUIRED_PATHS: Final = (
     "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/templates/single.html",
     "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/theme.json",
     "python/raos/adapters/self_hosted_wordpress_credentials.py",
+    "python/raos/adapters/rakuten_owner_local.py",
     "python/raos/adapters/self_hosted_wordpress_https.py",
     "python/raos/adapters/self_hosted_wordpress_journal.py",
     "python/raos/adapters/self_hosted_wordpress_rest.py",
     "python/raos/adapters/wordpress_rest.py",
     "python/raos/application/editorial/self_hosted_minimum_start.py",
+    "python/raos/domain/catalog/rakuten_item_search.py",
+    "python/raos/domain/catalog/rakuten_item_search_live_request_v1.py",
+    "python/raos/domain/catalog/rakuten_owner_local.py",
     "python/raos/domain/editorial/market_learning_pilot.py",
     "python/raos/domain/editorial/self_hosted_wordpress.py",
     "python/raos/ports/self_hosted_wordpress.py",
     "scripts/build_st1703_self_hosted_theme.py",
+    "scripts/finalize_st1703_affiliate_links.py",
     _RUNTIME_CLI_PATH,
     "scripts/self_hosted_wordpress_python.sh",
 )
@@ -126,12 +132,17 @@ _RUNTIME_EXPECTED_ENVIRONMENT: Final = {
 }
 _RUNTIME_MODULE_PATHS: Final = {
     "build_st1703_self_hosted_theme": "scripts/build_st1703_self_hosted_theme.py",
+    "finalize_st1703_affiliate_links": "scripts/finalize_st1703_affiliate_links.py",
+    "raos.adapters.rakuten_owner_local": "python/raos/adapters/rakuten_owner_local.py",
     "raos.adapters.self_hosted_wordpress_credentials": "python/raos/adapters/self_hosted_wordpress_credentials.py",
     "raos.adapters.self_hosted_wordpress_https": "python/raos/adapters/self_hosted_wordpress_https.py",
     "raos.adapters.self_hosted_wordpress_journal": "python/raos/adapters/self_hosted_wordpress_journal.py",
     "raos.adapters.self_hosted_wordpress_rest": "python/raos/adapters/self_hosted_wordpress_rest.py",
     "raos.adapters.wordpress_rest": "python/raos/adapters/wordpress_rest.py",
     "raos.application.editorial.self_hosted_minimum_start": "python/raos/application/editorial/self_hosted_minimum_start.py",
+    "raos.domain.catalog.rakuten_item_search": "python/raos/domain/catalog/rakuten_item_search.py",
+    "raos.domain.catalog.rakuten_item_search_live_request_v1": "python/raos/domain/catalog/rakuten_item_search_live_request_v1.py",
+    "raos.domain.catalog.rakuten_owner_local": "python/raos/domain/catalog/rakuten_owner_local.py",
     "raos.domain.editorial.market_learning_pilot": "python/raos/domain/editorial/market_learning_pilot.py",
     "raos.domain.editorial.self_hosted_wordpress": "python/raos/domain/editorial/self_hosted_wordpress.py",
     "raos.ports.self_hosted_wordpress": "python/raos/ports/self_hosted_wordpress.py",
@@ -1160,6 +1171,10 @@ def _install_scoped_runtime_packages(
             "raos.domain.editorial",
             repository_root / "python/raos/domain/editorial",
         ),
+        (
+            "raos.domain.catalog",
+            repository_root / "python/raos/domain/catalog",
+        ),
         ("raos.ports", repository_root / "python/raos/ports"),
     )
     for name, path in package_roots:
@@ -1216,6 +1231,12 @@ if not _runtime_authorized:
             sys.path.insert(0, str(_development_import_root))
 
 try:
+    from finalize_st1703_affiliate_links import (  # noqa: E402
+        AffiliateFinalizationFailure,
+        OWNER_REQUEST_PATHS,
+        OWNER_RESULT_STORE,
+        verify as verify_affiliate_links,
+    )
     from build_st1703_self_hosted_theme import (  # noqa: E402
         source_check as theme_source_check,
         source_check_from_verified_files as verified_theme_source_check,
@@ -1231,7 +1252,7 @@ try:
         DurableSelfHostedWordPressDraftAdapter,
     )
     from raos.application.editorial.self_hosted_minimum_start import (  # noqa: E402
-        load_first_article_candidate,
+        load_first_article_candidate_with_affiliate_status,
     )
     from raos.domain.editorial.self_hosted_wordpress import (  # noqa: E402
         SelfHostedWordPressDraftReceipt,
@@ -1365,7 +1386,7 @@ def _doctor(
     credential_status = OwnerPrivateSelfHostedWordPressCredentialStore(
         repository_root
     ).metadata_status()
-    load_first_article_candidate(
+    _candidate, affiliate_status = load_first_article_candidate_with_affiliate_status(
         repository_root,
         operation=SelfHostedWordPressOperation.CREATE_DRAFT,
         packet_bytes=content_packet_bytes,
@@ -1375,7 +1396,9 @@ def _doctor(
         if theme_payloads is None
         else verified_theme_source_check(theme_payloads)
     )
-    blockers = ["AFFILIATE_SLOTS_PENDING"]
+    blockers = []
+    if affiliate_status != "FINAL":
+        blockers.append("AFFILIATE_SLOTS_PENDING")
     if theme["first_article_asset_status"] != "FINAL":
         blockers.append("FIRST_ARTICLE_IMAGE_PENDING")
     if credential_status != "METADATA_READY":
@@ -1416,11 +1439,13 @@ def _apply_draft(
     content_packet_bytes: bytes | None = None,
     theme_payloads: dict[str, bytes],
 ) -> dict[str, object]:
-    candidate = load_first_article_candidate(
+    candidate, affiliate_status = load_first_article_candidate_with_affiliate_status(
         repository_root,
         operation=SelfHostedWordPressOperation.CREATE_DRAFT,
         packet_bytes=content_packet_bytes,
     )
+    if affiliate_status != "FINAL":
+        _fail(SelfHostedWordPressFailureCode.AFFILIATE_LINK_NOT_READY)
     theme = verified_theme_source_check(theme_payloads)
     if (
         theme.get("package_ready") is not True
@@ -1448,6 +1473,10 @@ def _parser() -> argparse.ArgumentParser:
     commands.add_parser("doctor", allow_abbrev=False)
     commands.add_parser("install-credentials", allow_abbrev=False)
     commands.add_parser("create-draft", allow_abbrev=False)
+    affiliate = commands.add_parser("affiliate-verify", allow_abbrev=False)
+    affiliate.add_argument("--ace-cresta-06316-request", required=True)
+    affiliate.add_argument("--ace-difference-05721-request", required=True)
+    affiliate.add_argument("--proteca-maxpass4-01471-request", required=True)
     return parser
 
 
@@ -1494,10 +1523,40 @@ def main(
                 content_packet_bytes=content_packet_bytes,
                 theme_payloads=theme_payloads,
             )
+        elif arguments.command == "affiliate-verify":
+            request_paths = {
+                "ace-cresta-06316": Path(arguments.ace_cresta_06316_request),
+                "ace-difference-05721": Path(arguments.ace_difference_05721_request),
+                "proteca-maxpass4-01471": Path(
+                    arguments.proteca_maxpass4_01471_request
+                ),
+            }
+            if request_paths != OWNER_REQUEST_PATHS:
+                raise AffiliateFinalizationFailure("AFFILIATE_ARGUMENT_INVALID")
+            result = verify_affiliate_links(
+                repository_root=root,
+                result_store=OWNER_RESULT_STORE,
+                request_paths=request_paths,
+                now=datetime.now(timezone.utc),
+                expected_content_packet_bytes=content_packet_bytes,
+            )
         else:
             _fail(SelfHostedWordPressFailureCode.OPERATION_NOT_ALLOWED)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0
+    except AffiliateFinalizationFailure as error:
+        print(
+            json.dumps(
+                {
+                    "external_writes": 0,
+                    "reason_code": error.code,
+                    "status": "BLOCKED",
+                },
+                ensure_ascii=True,
+                sort_keys=True,
+            )
+        )
+        return 2
     except SelfHostedWordPressFailure as error:
         print(
             json.dumps(

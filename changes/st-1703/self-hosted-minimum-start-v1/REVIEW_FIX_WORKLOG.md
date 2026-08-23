@@ -207,6 +207,28 @@ The integrated exact-root doctor, credential access, provider/network call,
 draft write, browser operation, hosted CI, activation, publication, formal
 TST, staging, release, and Production remain `NOT_EXECUTED`.
 
+## Final assets and affiliate completion slice (2026-08-23)
+
+- Two already reviewed originals were mechanically encoded as opaque
+  1600x900 static WebP assets, structurally validated, and bound as `FINAL` by
+  exact lowercase SHA-256. The originals remain outside the repository.
+- A one-way local generator recomputed the three exact ST-0505 request
+  fingerprints and consumed one matching sanitized Result V3 success per
+  slot from the fixed owner-local store. It made zero credential reads and
+  zero network requests and printed no provider destination.
+- The generator requires the reviewed 2026-07-01 item-search evidence shape,
+  one request, zero retry/pagination, a unique `ace-store` model match, equal
+  provider URL fields, a direct closed Rakuten destination, and fresh
+  fingerprint/hash/time provenance. Partial, duplicate, stale, mismatched,
+  unsafe, and manually injected states fail closed.
+- The reviewed article now contains three exact CTA anchors with
+  `rel="sponsored nofollow"` and the official unmodified Rakuten Developers
+  credit snippet exactly once. Draft create rejects pending affiliate state
+  before theme, credential metadata, or transport construction.
+- No WordPress/provider/browser call, credential access, theme activation,
+  draft write, publication, ST-1704 implementation, release, staging, or
+  Production action was performed.
+
 ## Review diagnostic incident
 
 An independent read-only review diagnostic accidentally emitted inherited
@@ -215,3 +237,78 @@ external write. No names or values are recorded here. Any affected credentials
 must be treated as compromised and rotated or revoked. External Git/PR activity
 is suspended; this slice is limited to a local atomic commit until the owner
 completes that response.
+
+## Affiliate verification capability-removal follow-up (2026-08-23)
+
+- Review showed that a plain tracked-file replace could not provide an atomic
+  compare-and-swap against concurrent target changes, and no Result-store
+  snapshot could atomically authorize a later Git commit. The PENDING-to-FINAL
+  mutation path, stage/replace/cleanup writer, and legacy upgrade were therefore
+  removed instead of adding more race logic.
+- `affiliate-verify` is read-only and accepts only the already-FINAL tracked
+  packet. It validates a stable first Result snapshot, the full runtime packet,
+  a second Result snapshot with the same store identity and three records, and
+  a terminally identical content snapshot. PENDING fails closed. Success and
+  failure receipts report `external_writes: 0`.
+- Each final slot now carries a destination attestation over its unchanged
+  provider URL and exact audit-safe evidence. The runtime recomputes the closed
+  ST-0505 request fingerprint from its byte-identical closed canonical
+  projection and requires the reviewed attestation digest, rejecting coherent
+  destination/CTA/self-attestation mutation and arbitrary evidence hashes.
+- These are local file/runtime changes only. Credential access, provider or
+  network calls, WordPress/browser operations, activation, draft creation,
+  publication, release, staging and Production remain outside this follow-up.
+
+## Affiliate launcher, mobile identity and disclosure follow-up (2026-08-23)
+
+- The affiliate verifier is now reachable only through the exact-root launcher
+  with three fixed owner-private request paths. Clean committed HEAD, runtime
+  manifest/code inventory, `-B -I -S`, verified source loading and verified
+  content bytes all precede private request/Result reads.
+- Each slot binds both its desktop model path and reviewed mobile item identity;
+  the matching Result V3 `itemCode` must name that same item. Coherent alternate
+  mobile targets fail closed without URL reflection.
+- The FINAL article uses a present-tense affiliate disclosure. The content
+  loader requires exact, mutually exclusive PENDING and FINAL disclosure text.
+- The verifier remains read-only with zero credential reads, network calls,
+  external writes, browser/WordPress actions and URL output.
+- A final exact-head review found that the verifier module still exposed its
+  predecessor standalone CLI. That parser/main capability was removed. Direct
+  Python execution now emits one fixed non-reflective refusal before repository
+  path resolution or private request/Result reads; only verified-loader import
+  of `verify()` remains operational.
+- A follow-up moved that refusal directly after the sole builtin `sys` import.
+  Normal Python startup with a hostile sibling `dataclasses.py` now proves the
+  shadow module, request files and Result store remain unopened before refusal.
+
+## Immutable affiliate evidence verification follow-up (2026-08-23)
+
+- The predecessor 24-hour Result-age limit made the immutable FINAL packet
+  permanently unverifiable even though `affiliate-verify` has no writer or
+  re-attestation capability. Verification now loads the reviewed FINAL packet
+  first and treats its exact request fingerprint, response hash, Result hash,
+  retrieval time, destination and attestation as the selection key.
+- A committed Result remains valid historical evidence after 24 hours. This
+  command does not claim product freshness and does not promote a newer Result.
+  A stable, valid newer record with the same request fingerprint may coexist in
+  the store but is not selected; removal or replacement of the exact committed
+  record fails closed.
+- Both Result scans now bind every file name to its raw SHA-256 and inode/file
+  identity in addition to the store directory identity. Mid-run insert,
+  removal, byte mutation, inode replacement or store replacement therefore
+  fails before a success receipt. Future clock skew remains a closed failure.
+- A final request-read review found that the adapter pathname reader reopened
+  a request after the verifier had already captured descriptor-bound bytes.
+  The verifier now uses an ST-1703-local closed decoder on only its original
+  no-follow snapshot; swap/restore cannot substitute the fingerprint input.
+  It accepts only the three reviewed exact request mappings and rebuilds the
+  canonical fingerprint through the existing domain request types, leaving the
+  fixed ST-0505 installed-runtime bundle unchanged.
+- Future skew now applies only after a Result matches every packet-bound
+  provider-evidence field. A structurally valid but unselected future-dated
+  same-fingerprint Result is inventory-bound and ignored, while a future-dated
+  exact committed Result still fails closed.
+- The existing same-UID owner-local maintenance rule still applies: do not run
+  another repository/private-store mutator concurrently. No provider call,
+  credential read, external write, tracked packet writer, browser/WordPress
+  action, publication, release, staging or Production authority was added.
