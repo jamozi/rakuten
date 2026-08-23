@@ -312,3 +312,58 @@ completes that response.
   another repository/private-store mutator concurrently. No provider call,
   credential read, external write, tracked packet writer, browser/WordPress
   action, publication, release, staging or Production authority was added.
+
+## First-article lead-image overflow follow-up preflight (2026-08-23)
+
+- Story and objective: ST-1703 only; keep the packet-bound 1600x900 lead image
+  inside the WordPress post-content width at desktop and mobile viewports.
+- Read before implementation: Canonical integration precedence, ST-1703 and
+  its TST-021/TST-022/TST-032 boundaries, the self-hosted design handoff,
+  theme source/package generator, runtime-manifest owner, focused theme tests,
+  and the accessibility/publication constraints.
+- Ambiguities and open decisions: none. This is a reversible presentation fix
+  under the existing exact shortcode/theme/article/image binding; it does not
+  resolve a Canonical Open Decision or alter publication authority.
+- Planned files: the tracked child-theme CSS, shortcode handler and version;
+  their exact source validator and focused negative tests; the minimum README
+  contract note; this worklog; and the generator-owned runtime manifest.
+- Planned evidence: theme source/package/check, runtime-manifest regeneration
+  and no-write check, focused and complete isolated ST-1703 tests, Ruff,
+  mypy, Pyright, diff checks, and a changed-path sensitive-data scan.
+- Out of scope: browser/provider/WordPress access, theme installation or
+  activation, draft mutation, publication, ST-1704, staging, release and
+  Production. The intentional comparison-table overflow wrapper and all other
+  images remain unchanged.
+
+### Local implementation evidence
+
+- The shortcode output now adds one unique lead-image figure class and exact
+  `1600x900` intrinsic dimensions while retaining the title, slug, active
+  theme, origin, URI-path, filesystem, alt and empty-content guards.
+- Only that figure and its direct image receive the closed margin, max-width,
+  display, width and height declarations. The existing comparison-table
+  `overflow-x: auto` rule remains exact and separate. Theme version `1.0.2`
+  also changes the existing enqueue version used for cache invalidation.
+- The source validator binds the complete CSS and PHP bytes, the exact scoped
+  top-level active rules, returned markup, enqueue-version wiring, and the
+  structurally validated `1600x900` WebP canvas. Hash-rebound negative tests
+  reject selector, declaration, additive cascade, inactive media placement,
+  parked output literals, stale cache version, duplicate class/dimensions,
+  intrinsic-dimension and responsive-scope mutations.
+- Theme source/package/check passed. The ignored worktree-local package is
+  212969 bytes with SHA-256
+  `36601453b385acf7ed0a34a236fceeccfc8d119f827e91aa2ee971ab2cc485bb`.
+- The owner generator regenerated `runtime-manifest.v1.json`; its no-write
+  check passed against the final generator and tracked theme bytes.
+- Focused theme tests passed (`145 passed`); focused runtime/content/CLI tests
+  passed (`165 passed, 1 skipped`); complete isolated `tests/st1703` passed
+  (`1275 passed, 1 skipped`). Both skips are the existing linked-worktree
+  exact-root launcher boundary for post-integration verification.
+- Ruff format/lint, mypy, Pyright, Python compile, `git diff --check`, and the
+  project scanner over the eight exact changed paths passed; the scanner found
+  zero sensitive-data findings.
+- PHP lint is `NOT_EXECUTED` because no PHP executable is installed. No
+  browser, provider, WordPress, credential, draft, activation or publication
+  action was performed. The updated package's actual live desktop/mobile
+  layout and formal TST-021/TST-022/TST-032 remain separate human/integration
+  evidence and are not established by these local checks.

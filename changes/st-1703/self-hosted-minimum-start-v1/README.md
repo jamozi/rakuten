@@ -25,7 +25,7 @@ staging, formal TST, publication, release, or Production evidence.
   preserves exact reviewed body bytes while granting no media-upload or
   `featured_media` capability.
 - `theme/kurashinoshirube-child/` is the Twenty Twenty-Five child-theme source.
-  The current replacement package is version `1.0.1`.
+  The current replacement package is version `1.0.2`.
   It contains presentation only: no tracking, remote font/script/image load,
   publication, upload, taxonomy, plugin activation, or generic HTTP behavior.
   Reveal motion is progressive enhancement: content is visible without
@@ -44,7 +44,12 @@ staging, formal TST, publication, release, or Production evidence.
   and active child theme, derives the URI from
   `get_stylesheet_directory_uri()`, and refuses a
   non-HTTPS/different-host/unsafe theme path or a missing, unreadable, or
-  symlinked local asset. It does not guess a `/wp-content` prefix. Both images
+  symlinked local asset. The renderer emits the exact reviewed `1600x900`
+  dimensions and a unique `raos-first-article-lead-image` figure class. Only
+  that figure and its direct image receive the closed responsive declarations;
+  the image stays inside the article width while the comparison table retains
+  its separate intentional horizontal-overflow wrapper. The renderer does not
+  guess a `/wp-content` prefix. Both images
   are `FINAL`: opaque 1600x900 static WebP files below 4 MiB with exact
   lowercase SHA-256 values recorded in the manifest. Their reviewed originals
   remain outside the repository; this encoding/finalization slice made no
