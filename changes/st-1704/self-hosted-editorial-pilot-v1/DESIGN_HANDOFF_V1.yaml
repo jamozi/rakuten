@@ -1,0 +1,139 @@
+DESIGN_HANDOFF_V1:
+  record_status: REPOSITORY_LOCAL_DESIGN_RECORD
+  authority: DESIGN_IMPLEMENTATION_AND_LOCAL_EVIDENCE_ONLY
+  approved_story: ST-1704
+  approved_scope: SELF_HOSTED_EDITORIAL_PILOT_V1
+  source_design_refs:
+    - docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    - docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    - docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    - docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+    - docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    - docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    - docs/upstream/key_documents/RAOS_06_content_editorial_evidence_design_v0.1.md
+    - docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1704
+    - changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml
+    - changes/st-1704/owner-local-pilot-v1/DESIGN_HANDOFF_V1.yaml
+  decision:
+    site:
+      exact_origin: https://kurashinoshirube.com
+      cms: SELF_HOSTED_WORDPRESS
+      hosting_migration: DISABLED
+      child_theme_version: 1.1.0
+    editorial:
+      article_slots: 5
+      existing_article_counts_as_slot_one: true
+      umbrella_category: 暮らしの道具
+      intent_clusters:
+        - 移動
+        - 家事
+        - 備え
+      article_types:
+        - AT-003
+        - AT-001
+        - AT-002
+        - AT-004
+        - AT-005
+      official_source_comparison_only: true
+      fabricated_first_hand_experience: FORBIDDEN
+      recommendation_inputs_exclude_finance: true
+    affiliate:
+      provider: RAKUTEN
+      destination: DIRECT_ONLY
+      required_rel: sponsored nofollow
+      fixed_price_inventory_points_in_body: DISABLED
+      exact_cta_label: 楽天市場で写真・価格・在庫を見る
+    media:
+      allowed_public_product_image: EXACT_VALIDATED_RAKUTEN_ITEM_SEARCH_IMAGE
+      image_modification: FORBIDDEN
+      cropping_overlay_aspect_change_upscale: FORBIDDEN
+      wordpress_media_upload: DISABLED
+      featured_media: DISABLED
+      missing_or_unverified_image: BLOCK_PUBLICATION
+    seo:
+      plugin: wordpress-seo
+      pinned_version: 28.3
+      yoast_owns:
+        - title
+        - meta_description
+        - canonical
+        - robots
+        - open_graph
+        - x_card
+        - sitemap
+      yoast_schema: DISABLED
+      yoast_headless_rest: DISABLED
+      raos_jsonld_types:
+        - Article
+        - BreadcrumbList
+        - Organization
+        - WebSite
+      forbidden_jsonld_types:
+        - Product
+        - Offer
+        - Review
+        - AggregateRating
+        - FAQPage
+    automation:
+      one_allowlisted_article_per_invocation: true
+      official_source_capture: EXACT_REGISTRY_READ_ONLY_HTTPS
+      official_source_capture_credentials: ABSENT
+      official_source_capture_publication_authority: NONE
+      review_draft_status: draft
+      immutable_request_artifact: OWNER_ONLY_NO_OVERWRITE
+      create_requires_fresh_evidence: true
+      recover_request_source: SOLE_INTENT_BOUND_ARTIFACT
+      public_verification_request_source: SOLE_COMMITTED_BOUND_ARTIFACT
+      publication_command: ABSENT
+      arbitrary_url_or_html_input: FORBIDDEN
+      generic_http_capability: FORBIDDEN
+      improvement_output: PROPOSAL_AND_DIFF_ONLY
+  constraints:
+    - existing ST-1703 runtime and its hash-pinned package remain unchanged
+    - exactly five packet identities and paths are bound by a generated manifest
+    - content references approved sources, affiliate destinations, and media resources by id
+    - author or AI supplied raw external URLs are never rendered directly
+    - provider images remain exact HTTPS provider resources with evidence, dimensions, alt, and hashes
+    - provider image failure, identity ambiguity, or missing affiliate evidence fails closed
+    - review preview contains no publication authority
+    - WordPress capability excludes publish, schedule, private, delete, media, taxonomy, plugin, theme, and generic meta
+    - one closed RAOS snapshot meta is the only Story-local post meta accepted
+    - create binds the exact canonical request artifact name and hash into durable INTENT before its sole POST
+    - recover never reprepares and accepts only the sole INTENT-bound immutable request
+    - public verification never reprepares and accepts only the sole COMMITTED-bound immutable request
+    - refreshed or stale provider evidence cannot mutate a previously confirmed snapshot
+    - tracked fact dates are nonfuture audit baselines while exact current source captures provide the recurring fourteen-day freshness authority
+    - Site Kit is not reconfigured and new analytics transmission is not added
+    - Yoast telemetry, AI, Semrush, Wincher, additional Google integration, and auto-update are disabled
+    - publication order is suitcase, portable-power guide, Anker differences, dishwasher, robot vacuum
+    - related-article and homepage-cluster graphs are hash-bound theme contracts shared with public verification
+    - human approval binds the exact immutable snapshot before every public update or publication
+  security_and_approval_gates:
+    local_repository_implementation: AUTHORIZED_REVERSIBLE
+    github_branch_pr_ci: AUTHORIZED_AFTER_LOCAL_CHECKS
+    rakuten_provider_live_retrieval: HUMAN_OWNER_REQUIRED
+    credential_entry: OWNER_INTERACTIVE_ONLY
+    wordpress_review_draft_write: SEPARATE_OWNER_OPERATION
+    theme_and_plugin_activation: HUMAN_OPERATOR_REQUIRED
+    privacy_and_analytics_activation: HUMAN_PRIVACY_OPERATOR_REQUIRED
+    public_article_update_or_publish: HUMAN_OWNER_REQUIRED_PER_ARTICLE
+    rollback: HUMAN_OPERATOR_REQUIRED
+    release: NOT_AUTHORIZED_BY_THIS_RECORD
+    production_claim: FORBIDDEN
+  acceptance_criteria:
+    - five article types and five allowlisted identities render deterministically
+    - all major claims are bound to approved primary sources
+    - all nineteen product-card placements require exact media and affiliate evidence
+    - disclosure is first-view visible and recommendation order excludes affiliate economics
+    - one H1, one canonical, one description, one robots policy, one social metadata set, and one RAOS JSON-LD graph are emitted
+    - no forbidden structured-data type, fixed price, inventory, points, fake experience, or review-body claim is emitted
+    - keyboard, zoom, contrast, reduced-motion, mobile table, alt, and fail-visible checks pass
+    - dedicated WordPress principal cannot publish, upload, mutate taxonomy, install plugins, or switch themes
+    - missing live or staging evidence remains missing and is never promoted to Production evidence
+  formal_evidence_status:
+    ST_1704: NOT_STARTED
+    TST_018: NOT_EXECUTED
+    TST_020: NOT_EXECUTED
+    TST_032: NOT_EXECUTED
+    staging: NOT_CONFIGURED
+    production: NOT_READY

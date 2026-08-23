@@ -1,0 +1,69 @@
+{
+  "articles": [
+    {
+      "article_id": "st1703-first-suitcase-comparison",
+      "broken_link_count": null,
+      "confirmed_reward_jpy": null,
+      "external_rakuten_clicks": null,
+      "organic_sessions": null,
+      "outcome_count": null,
+      "public_action_at": null,
+      "record_at_day": 14,
+      "search_impressions": null,
+      "status": "NOT_RECORDED"
+    },
+    {
+      "article_id": "st1704-portable-power-station-guide",
+      "broken_link_count": null,
+      "confirmed_reward_jpy": null,
+      "external_rakuten_clicks": null,
+      "organic_sessions": null,
+      "outcome_count": null,
+      "public_action_at": null,
+      "record_at_day": 14,
+      "search_impressions": null,
+      "status": "NOT_RECORDED"
+    },
+    {
+      "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "broken_link_count": null,
+      "confirmed_reward_jpy": null,
+      "external_rakuten_clicks": null,
+      "organic_sessions": null,
+      "outcome_count": null,
+      "public_action_at": null,
+      "record_at_day": 14,
+      "search_impressions": null,
+      "status": "NOT_RECORDED"
+    },
+    {
+      "article_id": "st1704-countertop-dishwasher-for-small-households",
+      "broken_link_count": null,
+      "confirmed_reward_jpy": null,
+      "external_rakuten_clicks": null,
+      "organic_sessions": null,
+      "outcome_count": null,
+      "public_action_at": null,
+      "record_at_day": 14,
+      "search_impressions": null,
+      "status": "NOT_RECORDED"
+    },
+    {
+      "article_id": "st1704-compact-robot-vacuum-shortlist",
+      "broken_link_count": null,
+      "confirmed_reward_jpy": null,
+      "external_rakuten_clicks": null,
+      "organic_sessions": null,
+      "outcome_count": null,
+      "public_action_at": null,
+      "record_at_day": 14,
+      "search_impressions": null,
+      "status": "NOT_RECORDED"
+    }
+  ],
+  "analytics_transmission_added": false,
+  "finance_signal_policy": "OBSERVATION_ONLY_NEVER_RECOMMENDATION_ORDER",
+  "publication_authority": "NONE",
+  "schema": "SELF_HOSTED_EDITORIAL_MEASUREMENT_LEDGER_V1",
+  "story_id": "ST-1704"
+}

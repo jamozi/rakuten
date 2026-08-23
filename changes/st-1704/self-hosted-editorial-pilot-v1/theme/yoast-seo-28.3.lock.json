@@ -1,0 +1,68 @@
+{
+  "activation_authority": "HUMAN_ONLY",
+  "activation_blockers": [
+    "OFFICIAL_CHECKSUM_UNAVAILABLE",
+    "PERSISTED_CONFIGURATION_READBACK_NOT_EXECUTED",
+    "WORDPRESS_YOAST_INTEGRATION_NOT_EXECUTED"
+  ],
+  "archive": {
+    "byte_length": 5151735,
+    "download_url": "https://downloads.wordpress.org/plugin/wordpress-seo.28.3.zip",
+    "sha256": "381edc1603147bd76af81341f21c9155ff3e9f6ce29ed20886d889fb9d6744fb",
+    "verification": "LOCAL_SHA256_OF_OFFICIAL_HTTPS_ARCHIVE_NOT_AN_OFFICIAL_CHECKSUM"
+  },
+  "compatibility": {
+    "requires_php": "7.4",
+    "requires_wordpress": "6.9",
+    "tested_wordpress": "7.1"
+  },
+  "configuration_readback": {
+    "authority": "HUMAN_PERSISTED_OPTIONS_WITH_THEME_READBACK_GATE",
+    "site_health_test": "kurashinoshirube_yoast_configuration",
+    "status": "NOT_EXECUTED"
+  },
+  "required_configuration": {
+    "ai_features": false,
+    "author_archives_index": false,
+    "automatic_updates": false,
+    "category_uncategorized_index": false,
+    "headless_rest_api": false,
+    "semrush_integration": false,
+    "sitemap_owner": "YOAST_POSTS_AND_PAGES_ONLY",
+    "usage_tracking": false,
+    "wincher_integration": false,
+    "wpseo_option_values": {
+      "enable_ai_generator": false,
+      "enable_headless_rest_endpoints": false,
+      "enable_index_now": false,
+      "enable_schema": false,
+      "enable_schema_aggregation_endpoint": false,
+      "enable_xml_sitemap": true,
+      "google_site_kit_feature_enabled": false,
+      "googleverify": "",
+      "semrush_integration_active": false,
+      "tracking": false,
+      "wincher_integration_active": false
+    },
+    "wpseo_social_option_values": {
+      "og_default_image": "VERIFIED_THEME_SOCIAL_IMAGE_URI",
+      "og_default_image_id": "",
+      "opengraph": true,
+      "twitter": true,
+      "twitter_card_type": "summary_large_image"
+    },
+    "yoast_frontend_schema": false
+  },
+  "downloaded_archive_committed": false,
+  "official_checksum_api": {
+    "status": "NOT_AVAILABLE_HTTP_404_AT_OBSERVATION_TIME",
+    "url": "https://api.wordpress.org/plugins/checksums/1.0/?slug=wordpress-seo&version=28.3"
+  },
+  "official_plugin_info_url": "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request%5Bslug%5D=wordpress-seo",
+  "official_plugin_page": "https://wordpress.org/plugins/wordpress-seo/",
+  "observed_at": "2026-08-23T10:55:54Z",
+  "plugin_slug": "wordpress-seo",
+  "release_status": "BLOCKED",
+  "schema": "RAOS_WORDPRESS_PLUGIN_LOCK_V1",
+  "version": "28.3"
+}
