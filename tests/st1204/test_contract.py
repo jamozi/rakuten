@@ -5,9 +5,9 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
-from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema import Draft202012Validator, FormatChecker  # type: ignore[import-untyped]
 import yaml
 
 from scripts import build_st1204_ga4_recorded_adapter as generator
@@ -25,7 +25,7 @@ WIRE_REQUEST_SHA256 = "42a74836abe8d2be8cea6c4ffa47a3899e22cdec3f9ba31aa21be2362
 def _record(document: dict[str, Any], collection: str, identity: str) -> dict[str, Any]:
     matches = [item for item in document[collection] if item["id"] == identity]
     assert len(matches) == 1
-    return matches[0]
+    return cast(dict[str, Any], matches[0])
 
 
 def test_canonical_story_and_safe_defaults_are_unchanged() -> None:
@@ -258,13 +258,49 @@ def test_synthetic_and_safe_boundaries_are_materially_declared(
     assert boundary["production_readiness"] == "NOT_READY"
 
 
+def test_atomic_publication_design_is_closed_without_resolving_external_decisions(
+    source_contract: dict[str, Any],
+) -> None:
+    generation = source_contract["generation"]
+    assert generation["authoritative_root"] == "changes/st-1204/generated"
+    assert generation["fixture_root"] == ("changes/st-1204/generated/fixtures/recorded")
+    assert generation["manifest_path"] == "changes/st-1204/generated/manifest.json"
+    assert generation["legacy_disposition"] == (
+        "NON_AUTHORITATIVE_AFTER_COMMIT_THEN_DESCRIPTOR_RELATIVE_REMOVAL"
+    )
+
+    handoff_path = REPOSITORY_ROOT / generator.PUBLICATION_DESIGN_PATH
+    handoff = yaml.safe_load(handoff_path.read_bytes())["DESIGN_HANDOFF_V1"]
+    assert handoff["approved_story"] == "ST-1204"
+    assert handoff["open_decisions"] == []
+    assert [item["id"] for item in handoff["deferred_external_decisions"]] == [
+        "OD-012",
+        "OD-015",
+    ]
+    decision = handoff["decision"]
+    assert decision["ST1204-FIXTURE-D1"]["selected_layout"] == (
+        "SINGLE_GENERATED_DIRECTORY"
+    )
+    assert decision["ST1204-FIXTURE-D2"]["locking"] == {
+        "owner": "CAPTURED_STORY_DIRECTORY_INODE",
+        "check": "NONBLOCKING_SHARED_FLOCK",
+        "generate_and_recovery": "NONBLOCKING_EXCLUSIVE_FLOCK",
+        "contention": "FAIL_CLOSED_WITHOUT_RETRY",
+    }
+    assert decision["ST1204-FIXTURE-D2"]["namespace_operation"]["replacement"] == (
+        "LINUX_RENAMEAT2_RENAME_EXCHANGE"
+    )
+    assert handoff["formal_tst_030"] == "NOT_EXECUTED"
+    assert handoff["production_readiness"] == "NOT_READY"
+
+
 def test_manifest_inventory_is_closed_and_byte_bound() -> None:
     manifest_path = REPOSITORY_ROOT / generator.MANIFEST_PATH
     manifest = json.loads(manifest_path.read_bytes())
     assert manifest["document"] == {
         "id": "RAOS-GA4-RECORDED-MANIFEST-001",
         "story_id": "ST-1204",
-        "version": "1.0.0",
+        "version": "1.1.0",
     }
     assert manifest["fixture_count"] == 3
     assert [item["path"] for item in manifest["fixtures"]] == list(

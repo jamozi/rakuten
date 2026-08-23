@@ -8,6 +8,8 @@ from typing import cast
 
 import pytest
 
+from scripts import build_st1204_ga4_recorded_adapter as generator
+
 from raos.adapters.recorded_ga4 import RecordedGa4Adapter
 from raos.application.analytics.ga4_import import RecordedGa4Import
 from raos.domain.analytics.ga4 import (
@@ -63,7 +65,7 @@ def _command(recording_id: str) -> Ga4RecordedImportCommand:
 def _exchange(recording_id: str) -> Ga4RecordedExchange:
     command = _command(recording_id)
     raw = (
-        REPOSITORY_ROOT / "changes/st-1204/fixtures/recorded" / f"{recording_id}.json"
+        REPOSITORY_ROOT / generator.FIXTURE_ROOT / f"{recording_id}.json"
     ).read_bytes()
     return RecordedGa4Adapter(command=command, fixture_bytes=raw).read(
         recording_id=command.recording_id,

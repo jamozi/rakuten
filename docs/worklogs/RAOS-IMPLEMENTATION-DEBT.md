@@ -3318,3 +3318,95 @@ original result.
   TST-016 and live auth/schema/rate evidence remain `NOT_EXECUTED`; this is
   local provenance closure only, not `VALIDATED`, live, formal, staging,
   release, or Production evidence.
+
+### 2026-08-23 W2 / ST-1204 atomic recorded-fixture publication preflight
+
+- Story and objective: close local finding `ST1204-AUDIT-001` for canonical
+  `ST-1204` by replacing its four sequential full-path writes with one
+  descriptor-confined atomic generated-tree publication unit. The semantic
+  GA4 recordings, caller-supplied runtime bytes, and recorded-only boundary
+  remain unchanged.
+- Authority and inputs read: root and canonical implementation rules,
+  canonical integration precedence, ST-1204 and dependencies ST-0204/ST-0305,
+  FR-013, TST-030, OD-012/OD-015, the analytics/security catalogs, the current
+  source contract, runtime slice, design-decision request, publication audit,
+  owner generator, and isolated ST-1204 tests. Repository standing development
+  authority permits this reversible Story-local design and implementation;
+  it does not grant external operational authority.
+- Local decision: `changes/st-1204/generated` becomes the only authoritative
+  generated bundle. A descriptor-opened physical Story directory owns a
+  nonblocking shared/exclusive `flock`, fixed hidden stage and durable journal
+  entries, Linux `renameat2(RENAME_EXCHANGE)` replacement, reverse-exchange
+  rollback before commit, terminal cleanup recovery after commit, and exact
+  closed-tree verification. Unsupported atomic exchange, symlink/special/
+  multiply-linked material, ambiguous recovery state, or ownership drift fails
+  closed.
+- Owned paths: `scripts/build_st1204_ga4_recorded_adapter.py`,
+  `changes/st-1204/**`, `tests/st1204/**`, and ST-1204-only append records in
+  this ledger. Downstream Story owners, status/evidence overlays, canonical or
+  imported sources, runtime Domain/Application/adapter modules, provider code,
+  databases, and shared ST-1704 work remain outside this commit.
+- Planned checks: deterministic owner generation and no-write `--check`, fresh
+  install/replacement/fault/crash/recovery/concurrency/ancestor-swap hostile
+  tests, the full isolated ST-1204 suite, Python parse/import, Ruff lint/format,
+  strict mypy and available Pyright over owned source, canonical/workspace
+  verification, focused static capability and maintained-file secret checks,
+  downstream provenance drift inventory, and `git diff --check`.
+- Formal/live boundary: OD-012 optional tracking remains disabled and OD-015
+  remains recorded-fixture-only. No credential, environment secret, Google
+  SDK/API, network, database, queue, analytics persistence, job/event,
+  publication, staging, release, or Production action is authorized or run.
+  Formal TST-030 and independent audit/status application remain separate.
+
+### 2026-08-24 W2 / ST-1204 atomic recorded-fixture publication checkpoint
+
+- Implementation boundary: the containing single ST-1204 commit replaces the
+  former four sequential full-path output replacements with one exact
+  `changes/st-1204/generated` namespace unit. It captures and locks the physical
+  Story directory once, uses descriptor-relative staging and cleanup, a durable
+  three-state journal, same-parent rename or Linux
+  `renameat2(RENAME_EXCHANGE)`, reverse rollback before durable commit, and
+  deterministic committed cleanup/recovery. Unsupported exchange, identity
+  drift, malformed recovery state, symlink/special/multiply-linked material,
+  and lock contention fail closed.
+- Safe semantics: fixture payload hashes remain unchanged. Runtime consumers
+  still receive caller-supplied bytes only; optional tracking remains
+  `DISABLED_OD_012`, provider mode remains `RECORDED_FIXTURE_ONLY`, and no
+  network, credential, environment-secret, Google SDK/API, database, queue,
+  job/event, analytics persistence, or public write surface was added.
+- Local evidence: owner generation and no-write `--check` passed at manifest
+  SHA-256
+  `76a2d81d36b43333d4bed1ae82fe017f6d2c186b2737aca5180261154eaf4328`;
+  isolated ST-1204 passed `159` tests, including `24` dedicated fault/crash/
+  recovery/concurrency/confinement tests. Python 3.14.6 compile/import, Ruff
+  0.16.1 lint/format, strict mypy 2.3.0 over the generator and all ST-1204
+  tests, configured Pyright 1.1.411, canonical import, workspace drift,
+  focused capability/static, focused maintained-file secret, and
+  `git diff --check` checks passed. The configured Pyright gate excludes
+  scripts/tests; a forced direct strict run retains existing out-of-config
+  untyped-data/private-test-helper diagnostics and is not claimed green.
+- `DEBT-W2-028` status update: `OPEN_PENDING_INDEPENDENT_REAUDIT`. Its local
+  implementation subcondition is `CLOSED`: the exact closure record is
+  `changes/st-1204/ATOMIC-PUBLICATION-CLOSURE-v1.md`, and the hostile local
+  evidence above remediates the writer defect without a waiver. The original
+  audit's required fresh independent read-only re-audit remains unexecuted, so
+  this worker does not rewrite its `FAIL` disposition or claim audit `PASS`.
+- `DEBT-W2-062` status: `OPEN`, introduced-by `ST-1204`, closure owner: ST-1205
+  owner and final provenance integration. Exact read-only command
+  `/home/minami/rakuten/.venv/bin/python scripts/build_st1205_kpi_read_model_reference_plan.py --check`
+  exits one with
+  `ST-1205 build failed: SOURCE_HASH_DRIFT field=predecessor.st1204`.
+  The changed direct predecessor artifacts are the ST-1204 runtime slice,
+  application test, and recorded-adapter test; affected owner outputs are the
+  ST-1205 source contract, generated reference plan, and manifest. ST-1205 is
+  a disabled reference-plan boundary, so this drift has no provider, runtime,
+  persistence, publication, or Production impact. No downstream file was
+  edited or regenerated in this Story.
+- Remaining debt: `DEBT-W2-027` remains `OPEN` and `DEBT-W2-029` remains
+  `EXTERNAL_BLOCKED`. The linked-worktree-wide secret scan retains sanitized
+  `ERROR code=unsafe-git-metadata source="."`; the exact focused ST-1204
+  maintained-file scan is green and does not reopen or weaken the prior normal-
+  checkout scanner closure. Formal TST-030, independent audit, OD-012/OD-015
+  external evidence, live GA4/property/account/credentials, persistence,
+  hosted CI, staging, release, and Production remain `NOT_EXECUTED`. This is
+  local implementation evidence only, not `VALIDATED` or formal/live evidence.

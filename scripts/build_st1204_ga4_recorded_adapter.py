@@ -6,7 +6,9 @@ from __future__ import annotations
 import argparse
 from collections.abc import Mapping, Sequence
 from copy import deepcopy
+import ctypes
 from datetime import date, datetime
+import fcntl
 import hashlib
 import json
 import math
@@ -14,13 +16,16 @@ import os
 from pathlib import Path, PurePosixPath
 import re
 import stat
-import tempfile
+import sys
 from typing import Final, NoReturn, cast
 from urllib.parse import urlsplit
 from uuid import UUID
 
-from jsonschema import Draft202012Validator, FormatChecker
-from jsonschema.exceptions import SchemaError, ValidationError
+from jsonschema import Draft202012Validator, FormatChecker  # type: ignore[import-untyped]
+from jsonschema.exceptions import (  # type: ignore[import-untyped]
+    SchemaError,
+    ValidationError,
+)
 import yaml
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
@@ -28,14 +33,23 @@ from yaml.tokens import AliasToken, AnchorToken
 
 
 REPOSITORY_ROOT: Final = Path(__file__).resolve().parents[1]
+STORY_ROOT: Final = Path("changes/st-1204")
 CONTRACT_PATH: Final = Path("changes/st-1204/contracts/ga4-recorded-fixtures.v1.yaml")
-FIXTURE_ROOT: Final = Path("changes/st-1204/fixtures/recorded")
-MANIFEST_PATH: Final = Path("changes/st-1204/manifest.json")
+PUBLICATION_DESIGN_PATH: Final = Path(
+    "changes/st-1204/DESIGN_HANDOFF_V1_ST1204_FIXTURE_v1.yaml"
+)
+GENERATED_ROOT: Final = STORY_ROOT / "generated"
+FIXTURE_ROOT: Final = GENERATED_ROOT / "fixtures/recorded"
+MANIFEST_PATH: Final = GENERATED_ROOT / "manifest.json"
+LEGACY_FIXTURE_ROOT: Final = STORY_ROOT / "fixtures/recorded"
+LEGACY_MANIFEST_PATH: Final = STORY_ROOT / "manifest.json"
 GENERATOR_PATH: Final = Path("scripts/build_st1204_ga4_recorded_adapter.py")
 MAX_CONTRACT_BYTES: Final = 256 * 1024
+MAX_DESIGN_BYTES: Final = 256 * 1024
 MAX_SOURCE_BYTES: Final = 16 * 1024 * 1024
 MAX_GENERATED_BYTES: Final = 256 * 1024
 FIXTURE_VERSION: Final = "1.0.0"
+MANIFEST_VERSION: Final = "1.1.0"
 SYNTHETIC_MARKER: Final = "SYNTHETIC_TEST_ONLY"
 SYNTHETIC_PROPERTY_ID: Final = "1000001204"
 SYNTHETIC_PROPERTY_RESOURCE: Final = "properties/1000001204"
@@ -104,6 +118,27 @@ FORBIDDEN_DECODED_MARKERS: Final = (
     "ya29.",
     "aiza",
 )
+RENAME_EXCHANGE: Final = 2
+STAGE_NAME: Final = ".generated.st1204.stage"
+JOURNAL_PREPARING_NAME: Final = ".generated.st1204.transaction.preparing"
+JOURNAL_NAME: Final = ".generated.st1204.transaction"
+JOURNAL_CLEANUP_NAME: Final = ".generated.st1204.transaction.cleanup"
+JOURNAL_STATE_NAME: Final = "state.json"
+JOURNAL_STATE_TEMPORARY_NAME: Final = ".state.json.tmp"
+JOURNAL_SCHEMA: Final = "ST1204_ATOMIC_PUBLICATION_V1"
+JOURNAL_PHASES: Final = frozenset({"PREPARED", "COMMITTED", "ROLLED_BACK"})
+EXPECTED_BUNDLE_PATHS: Final = (
+    "manifest.json",
+    *(f"fixtures/recorded/{name}" for name in EXPECTED_FIXTURE_NAMES),
+)
+
+
+class PublicationRecoveryRequired(RuntimeError):
+    """A durable ST-1204 publication needs another owner invocation."""
+
+
+def _checkpoint(_name: str) -> None:
+    """Fault-injection seam; production generation deliberately does nothing."""
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -464,6 +499,29 @@ def _validate_pinned_sources(
                 raise RuntimeError(f"pinned source hash drift in {group_name}")
             captured[relative] = content
 
+    publication_design = _mapping(
+        provenance.get("publication_design"), label="publication_design"
+    )
+    if set(publication_design) != {"uri", "sha256"}:
+        raise RuntimeError("publication design fields drifted")
+    relative = _repo_uri_path(
+        publication_design.get("uri"), label="publication design URI"
+    )
+    if relative != PUBLICATION_DESIGN_PATH or relative in seen:
+        raise RuntimeError("ST-1204 publication design path drifted")
+    content = _read_regular(
+        root,
+        relative,
+        label="ST-1204 publication design",
+        maximum_bytes=MAX_DESIGN_BYTES,
+    )
+    if _sha256(content) != _text(
+        publication_design.get("sha256"), label="publication design sha256"
+    ):
+        raise RuntimeError("ST-1204 publication design hash drift")
+    seen.add(relative)
+    captured[relative] = content
+
     installed = _mapping(
         provenance.get("installed_contract_repository"),
         label="installed_contract_repository",
@@ -503,7 +561,7 @@ def _validate_exact_contract(contract: Mapping[str, object]) -> None:
     document = _mapping(contract.get("document"), label="document")
     if document != {
         "id": "RAOS-GA4-RECORDED-FIXTURES-001",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "story_id": "ST-1204",
         "status": "LOCAL_SOURCE_CONTRACT_CANDIDATE",
     }:
@@ -533,8 +591,15 @@ def _validate_exact_contract(contract: Mapping[str, object]) -> None:
     generation = _mapping(contract.get("generation"), label="generation")
     required_generation = {
         "source_contract": CONTRACT_PATH.as_posix(),
+        "publication_design": PUBLICATION_DESIGN_PATH.as_posix(),
+        "authoritative_root": GENERATED_ROOT.as_posix(),
         "fixture_root": FIXTURE_ROOT.as_posix(),
         "manifest_path": MANIFEST_PATH.as_posix(),
+        "legacy_fixture_root": LEGACY_FIXTURE_ROOT.as_posix(),
+        "legacy_manifest_path": LEGACY_MANIFEST_PATH.as_posix(),
+        "legacy_disposition": (
+            "NON_AUTHORITATIVE_AFTER_COMMIT_THEN_DESCRIPTOR_RELATIVE_REMOVAL"
+        ),
         "generated_by": GENERATOR_PATH.as_posix(),
         "generation_command": (
             "uv run --locked --no-sync --no-env-file python "
@@ -566,6 +631,7 @@ def _validate_exact_contract(contract: Mapping[str, object]) -> None:
     if set(provenance) != {
         "canonical_inputs",
         "predecessors",
+        "publication_design",
         "installed_contract_repository",
         "contract_schemas",
         "official_provider_references",
@@ -1256,6 +1322,7 @@ def _render_recording(
     )
 
     reporting_identity_sha256: str | None
+    recorded_result: dict[str, object]
     if recording_id == "provider-error-429":
         if run_capture.get("http_status") != 429:
             raise RuntimeError("provider-error recording must retain HTTP 429")
@@ -1475,17 +1542,18 @@ def build_outputs(root: Path = REPOSITORY_ROOT) -> dict[Path, bytes]:
         label="ST-1204 generator",
         maximum_bytes=MAX_SOURCE_BYTES,
     )
+    source_generation = _mapping(contract.get("generation"), label="generation")
     manifest = {
         "document": {
             "id": "RAOS-GA4-RECORDED-MANIFEST-001",
-            "version": "1.0.0",
+            "version": MANIFEST_VERSION,
             "story_id": "ST-1204",
         },
         "generation": {
             "source_contract": f"repo://{CONTRACT_PATH.as_posix()}",
             "generated_by": f"repo://{GENERATOR_PATH.as_posix()}",
-            "generation_command": contract["generation"]["generation_command"],
-            "check_command": contract["generation"]["check_command"],
+            "generation_command": source_generation["generation_command"],
+            "check_command": source_generation["check_command"],
         },
         "source_artifacts": [
             {
@@ -1497,6 +1565,11 @@ def build_outputs(root: Path = REPOSITORY_ROOT) -> dict[Path, bytes]:
                 "uri": f"repo://{GENERATOR_PATH.as_posix()}",
                 "bytes": len(generator_content),
                 "sha256": _sha256(generator_content),
+            },
+            {
+                "uri": f"repo://{PUBLICATION_DESIGN_PATH.as_posix()}",
+                "bytes": len(captured[PUBLICATION_DESIGN_PATH]),
+                "sha256": _sha256(captured[PUBLICATION_DESIGN_PATH]),
             },
         ],
         "provenance": deepcopy(contract["provenance"]),
@@ -1513,103 +1586,1062 @@ def build_outputs(root: Path = REPOSITORY_ROOT) -> dict[Path, bytes]:
     return outputs
 
 
-def _actual_fixture_names(root: Path, *, allow_missing_root: bool) -> set[str]:
-    _require_directory(root, label="repository root")
-    fixture_root = root
-    for part in FIXTURE_ROOT.parts:
-        fixture_root = fixture_root / part
-        try:
-            metadata = fixture_root.lstat()
-        except FileNotFoundError:
-            if allow_missing_root:
-                return set()
-            raise RuntimeError("fixture root is missing") from None
-        if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
-            raise RuntimeError("fixture-root ancestors must be real directories")
-    names: set[str] = set()
-    with os.scandir(fixture_root) as entries:
-        for entry in entries:
-            metadata = entry.stat(follow_symlinks=False)
-            if entry.is_symlink() or not stat.S_ISREG(metadata.st_mode):
-                raise RuntimeError("fixture root may contain only regular files")
-            if metadata.st_nlink != 1:
-                raise RuntimeError("fixture files must have one filesystem link")
-            normalized = _normalized_relative(entry.name, label="fixture filename")
-            if normalized.parent != Path(".") or normalized.suffix != ".json":
-                raise RuntimeError("fixture root contains an invalid filename")
-            names.add(entry.name)
-    return names
+def _checked_entry_name(name: str, *, label: str) -> str:
+    if not name or name in {".", ".."} or "/" in name or "\x00" in name:
+        raise RuntimeError(f"unsafe {label} entry name")
+    return name
 
 
-def _ensure_output_parent(root: Path, relative_parent: Path) -> None:
-    _require_directory(root, label="repository root")
-    current = root
-    for part in relative_parent.parts:
-        current = current / part
-        if current.exists():
-            _require_directory(current, label="generated-output ancestor")
-        else:
-            current.mkdir(mode=0o755)
+def _directory_open_flags() -> int:
+    if not os.O_DIRECTORY or not os.O_NOFOLLOW:
+        raise RuntimeError("ST-1204 publication requires O_DIRECTORY and O_NOFOLLOW")
+    return os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC
 
 
-def _atomic_write(root: Path, relative: Path, content: bytes) -> None:
-    _ensure_output_parent(root, relative.parent)
-    destination = root / relative
-    if destination.exists() or destination.is_symlink():
-        metadata = destination.lstat()
-        if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISREG(metadata.st_mode):
-            raise RuntimeError("generated output destination must be a regular file")
-        if metadata.st_nlink != 1:
-            raise RuntimeError("generated output destination must have one link")
-    descriptor, temporary_name = tempfile.mkstemp(
-        prefix=f".{relative.name}.", suffix=".tmp", dir=destination.parent
-    )
-    temporary = Path(temporary_name)
+def _open_story_directory(root: Path, *, create: bool) -> int:
     try:
-        with os.fdopen(descriptor, "wb", closefd=True) as handle:
-            handle.write(content)
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.replace(temporary, destination)
-        directory_fd = os.open(
-            destination.parent,
-            os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC,
+        root_metadata = root.lstat()
+    except OSError as exc:
+        raise RuntimeError("physical repository root is unavailable") from exc
+    if stat.S_ISLNK(root_metadata.st_mode) or not stat.S_ISDIR(root_metadata.st_mode):
+        raise RuntimeError("physical repository root must be a real directory")
+    try:
+        descriptor = os.open(root, _directory_open_flags())
+    except OSError as exc:
+        raise RuntimeError("physical repository root could not be opened") from exc
+    try:
+        opened_root = os.fstat(descriptor)
+        if (opened_root.st_dev, opened_root.st_ino) != (
+            root_metadata.st_dev,
+            root_metadata.st_ino,
+        ):
+            raise RuntimeError("physical repository root identity changed")
+        for component in STORY_ROOT.parts:
+            _checked_entry_name(component, label="Story directory")
+            if create:
+                try:
+                    os.mkdir(component, 0o755, dir_fd=descriptor)
+                    os.fsync(descriptor)
+                except FileExistsError:
+                    pass
+            try:
+                child = os.open(
+                    component,
+                    _directory_open_flags(),
+                    dir_fd=descriptor,
+                )
+            except OSError as exc:
+                raise RuntimeError(
+                    "ST-1204 Story directory is missing or unsafe"
+                ) from exc
+            os.close(descriptor)
+            descriptor = child
+        return descriptor
+    except BaseException:
+        os.close(descriptor)
+        raise
+
+
+def _acquire_story_lock(root: Path, *, exclusive: bool, create: bool) -> int:
+    descriptor = _open_story_directory(root, create=create)
+    mode = fcntl.LOCK_EX if exclusive else fcntl.LOCK_SH
+    try:
+        fcntl.flock(descriptor, mode | fcntl.LOCK_NB)
+    except (BlockingIOError, OSError) as exc:
+        os.close(descriptor)
+        raise RuntimeError(
+            "another ST-1204 generate/check operation is active"
+        ) from exc
+    return descriptor
+
+
+def _release_story_lock(descriptor: int, primary: BaseException | None) -> None:
+    cleanup_error: OSError | None = None
+    try:
+        fcntl.flock(descriptor, fcntl.LOCK_UN)
+    except OSError as exc:
+        cleanup_error = exc
+    try:
+        os.close(descriptor)
+    except OSError as exc:
+        cleanup_error = cleanup_error or exc
+    if cleanup_error is not None and primary is not None:
+        primary.add_note("ST-1204 Story lock cleanup also failed")
+    elif cleanup_error is not None:
+        raise cleanup_error
+
+
+def _entry_metadata_at(parent_fd: int, name: str) -> os.stat_result | None:
+    _checked_entry_name(name, label="managed")
+    try:
+        return os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+    except FileNotFoundError:
+        return None
+    except OSError as exc:
+        raise RuntimeError(f"cannot inspect managed ST-1204 entry: {name}") from exc
+
+
+def _open_directory_at(parent_fd: int, name: str, *, label: str) -> int:
+    _checked_entry_name(name, label=label)
+    try:
+        descriptor = os.open(name, _directory_open_flags(), dir_fd=parent_fd)
+    except OSError as exc:
+        raise RuntimeError(f"{label} must be a non-symlink directory") from exc
+    metadata = os.fstat(descriptor)
+    if not stat.S_ISDIR(metadata.st_mode):
+        os.close(descriptor)
+        raise RuntimeError(f"{label} must open as a directory")
+    return descriptor
+
+
+def _assert_directory_entry_identity_at(
+    parent_fd: int, name: str, descriptor: int, *, label: str
+) -> None:
+    current = _entry_metadata_at(parent_fd, name)
+    opened = os.fstat(descriptor)
+    if (
+        current is None
+        or stat.S_ISLNK(current.st_mode)
+        or not stat.S_ISDIR(current.st_mode)
+        or (current.st_dev, current.st_ino) != (opened.st_dev, opened.st_ino)
+    ):
+        raise PublicationRecoveryRequired(f"{label} directory identity changed")
+
+
+def _directory_names_at(descriptor: int, *, label: str) -> set[str]:
+    try:
+        with os.scandir(descriptor) as entries:
+            return {entry.name for entry in entries}
+    except OSError as exc:
+        raise RuntimeError(f"cannot scan {label}") from exc
+
+
+def _read_regular_at(
+    parent_fd: int,
+    name: str,
+    *,
+    label: str,
+    maximum_bytes: int = MAX_GENERATED_BYTES,
+) -> bytes:
+    metadata = _entry_metadata_at(parent_fd, name)
+    if (
+        metadata is None
+        or stat.S_ISLNK(metadata.st_mode)
+        or not stat.S_ISREG(metadata.st_mode)
+        or metadata.st_nlink != 1
+    ):
+        raise RuntimeError(f"{label} must be a one-link regular file")
+    try:
+        descriptor = os.open(
+            name,
+            os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC,
+            dir_fd=parent_fd,
         )
-        try:
-            os.fsync(directory_fd)
-        finally:
-            os.close(directory_fd)
+    except OSError as exc:
+        raise RuntimeError(f"{label} could not be opened safely") from exc
+    primary: BaseException | None = None
+    try:
+        before = os.fstat(descriptor)
+        if before.st_nlink != 1 or before.st_size > maximum_bytes:
+            raise RuntimeError(f"{label} exceeds its safe file boundary")
+        chunks: list[bytes] = []
+        remaining = maximum_bytes + 1
+        while remaining:
+            chunk = os.read(descriptor, min(64 * 1024, remaining))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        content = b"".join(chunks)
+        after = os.fstat(descriptor)
+        if (
+            after.st_nlink != 1
+            or len(content) > maximum_bytes
+            or len(content) != after.st_size
+            or _stat_signature(before) != _stat_signature(after)
+        ):
+            raise RuntimeError(f"{label} changed while it was read")
+        return content
+    except BaseException as exc:
+        primary = exc
+        raise
     finally:
-        if temporary.exists():
-            temporary.unlink()
+        try:
+            os.close(descriptor)
+        except OSError as exc:
+            if primary is not None:
+                primary.add_note(f"{label} descriptor cleanup also failed")
+            else:
+                raise exc
+
+
+def _create_regular_at(
+    parent_fd: int,
+    name: str,
+    content: bytes,
+    *,
+    label: str,
+) -> None:
+    _checked_entry_name(name, label=label)
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC
+    try:
+        descriptor = os.open(name, flags, 0o600, dir_fd=parent_fd)
+    except OSError as exc:
+        raise RuntimeError(f"cannot create {label}") from exc
+    primary: BaseException | None = None
+    try:
+        offset = 0
+        while offset < len(content):
+            written = os.write(descriptor, content[offset:])
+            if written <= 0:
+                raise RuntimeError(f"short write while creating {label}")
+            offset += written
+        os.fchmod(descriptor, 0o644)
+        os.fsync(descriptor)
+    except BaseException as exc:
+        primary = exc
+        raise
+    finally:
+        try:
+            os.close(descriptor)
+        except OSError as exc:
+            if primary is not None:
+                primary.add_note(f"{label} descriptor cleanup also failed")
+            else:
+                raise exc
+
+
+def _unlink_regular_at(parent_fd: int, name: str, *, label: str) -> None:
+    metadata = _entry_metadata_at(parent_fd, name)
+    if metadata is None:
+        return
+    if (
+        stat.S_ISLNK(metadata.st_mode)
+        or not stat.S_ISREG(metadata.st_mode)
+        or metadata.st_nlink != 1
+    ):
+        raise PublicationRecoveryRequired(f"unsafe {label} cannot be removed")
+    os.unlink(name, dir_fd=parent_fd)
+    os.fsync(parent_fd)
+
+
+def _bundle_files(outputs: Mapping[Path, bytes]) -> dict[str, bytes]:
+    expected_paths = {
+        MANIFEST_PATH,
+        *(FIXTURE_ROOT / name for name in EXPECTED_FIXTURE_NAMES),
+    }
+    if set(outputs) != expected_paths:
+        raise RuntimeError("generated output paths drifted from the atomic bundle")
+    result: dict[str, bytes] = {}
+    for relative, content in outputs.items():
+        try:
+            bundled = relative.relative_to(GENERATED_ROOT).as_posix()
+        except ValueError as exc:
+            raise RuntimeError("generated output escapes the bundle root") from exc
+        result[bundled] = content
+    if tuple(sorted(result)) != tuple(sorted(EXPECTED_BUNDLE_PATHS)):
+        raise RuntimeError("generated atomic bundle inventory drifted")
+    _validate_bundle_files(result)
+    return result
+
+
+def _validate_bundle_files(files: Mapping[str, bytes]) -> str:
+    if set(files) != set(EXPECTED_BUNDLE_PATHS):
+        raise RuntimeError("ST-1204 generated tree inventory is not exact")
+    manifest_content = files["manifest.json"]
+    manifest = _load_json(manifest_content, label="ST-1204 generated manifest")
+    document = _mapping(manifest.get("document"), label="generated manifest document")
+    if (
+        document.get("id") != "RAOS-GA4-RECORDED-MANIFEST-001"
+        or document.get("story_id") != "ST-1204"
+        or document.get("version") not in {"1.0.0", MANIFEST_VERSION}
+        or manifest.get("fixture_count") != len(EXPECTED_FIXTURE_NAMES)
+    ):
+        raise RuntimeError("ST-1204 generated manifest identity drifted")
+    fixtures = [
+        _mapping(value, label="generated manifest fixture")
+        for value in _sequence(manifest.get("fixtures"), label="manifest fixtures")
+    ]
+    if [value.get("path") for value in fixtures] != list(EXPECTED_FIXTURE_NAMES):
+        raise RuntimeError("ST-1204 generated manifest fixture inventory drifted")
+    for fixture in fixtures:
+        name = _text(fixture.get("path"), label="manifest fixture path")
+        content = files[f"fixtures/recorded/{name}"]
+        if fixture.get("bytes") != len(content) or fixture.get("sha256") != _sha256(
+            content
+        ):
+            raise RuntimeError("ST-1204 generated fixture integrity drifted")
+    return _sha256(manifest_content)
+
+
+def _read_bundle_at(
+    story_fd: int, name: str, *, allow_missing: bool
+) -> dict[str, bytes] | None:
+    metadata = _entry_metadata_at(story_fd, name)
+    if metadata is None:
+        if allow_missing:
+            return None
+        raise RuntimeError("ST-1204 generated bundle is missing")
+    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+        raise RuntimeError("ST-1204 generated bundle must be a real directory")
+    root_fd = _open_directory_at(story_fd, name, label="generated bundle")
+    fixtures_fd: int | None = None
+    recorded_fd: int | None = None
+    try:
+        if _directory_names_at(root_fd, label="generated bundle") != {
+            "manifest.json",
+            "fixtures",
+        }:
+            raise RuntimeError("ST-1204 generated bundle top-level inventory drifted")
+        fixtures_fd = _open_directory_at(root_fd, "fixtures", label="fixture directory")
+        if _directory_names_at(fixtures_fd, label="fixture directory") != {"recorded"}:
+            raise RuntimeError("ST-1204 fixture directory inventory drifted")
+        recorded_fd = _open_directory_at(
+            fixtures_fd, "recorded", label="recorded fixture directory"
+        )
+        if _directory_names_at(recorded_fd, label="recorded fixture directory") != set(
+            EXPECTED_FIXTURE_NAMES
+        ):
+            raise RuntimeError("ST-1204 recorded fixture inventory drifted")
+        files = {
+            "manifest.json": _read_regular_at(
+                root_fd, "manifest.json", label="generated manifest"
+            ),
+            **{
+                f"fixtures/recorded/{fixture_name}": _read_regular_at(
+                    recorded_fd,
+                    fixture_name,
+                    label=f"generated fixture {fixture_name}",
+                )
+                for fixture_name in EXPECTED_FIXTURE_NAMES
+            },
+        }
+        _validate_bundle_files(files)
+        return files
+    finally:
+        for descriptor in (recorded_fd, fixtures_fd, root_fd):
+            if descriptor is not None:
+                os.close(descriptor)
+
+
+def _create_stage_at(story_fd: int, files: Mapping[str, bytes]) -> None:
+    if _entry_metadata_at(story_fd, STAGE_NAME) is not None:
+        raise PublicationRecoveryRequired("stale ST-1204 stage requires recovery")
+    os.mkdir(STAGE_NAME, 0o700, dir_fd=story_fd)
+    os.fsync(story_fd)
+    _checkpoint("after-stage-directory")
+    stage_fd = _open_directory_at(story_fd, STAGE_NAME, label="publication stage")
+    fixtures_fd: int | None = None
+    recorded_fd: int | None = None
+    try:
+        os.mkdir("fixtures", 0o755, dir_fd=stage_fd)
+        os.fsync(stage_fd)
+        fixtures_fd = _open_directory_at(stage_fd, "fixtures", label="staged fixtures")
+        os.mkdir("recorded", 0o755, dir_fd=fixtures_fd)
+        os.fsync(fixtures_fd)
+        recorded_fd = _open_directory_at(
+            fixtures_fd, "recorded", label="staged recorded fixtures"
+        )
+        _create_regular_at(
+            stage_fd,
+            "manifest.json",
+            files["manifest.json"],
+            label="staged manifest",
+        )
+        _checkpoint("after-staged-manifest")
+        for fixture_name in EXPECTED_FIXTURE_NAMES:
+            _create_regular_at(
+                recorded_fd,
+                fixture_name,
+                files[f"fixtures/recorded/{fixture_name}"],
+                label=f"staged fixture {fixture_name}",
+            )
+            _checkpoint(f"after-staged-{fixture_name}")
+        os.fsync(recorded_fd)
+        os.fsync(fixtures_fd)
+        os.fsync(stage_fd)
+        _assert_directory_entry_identity_at(
+            fixtures_fd,
+            "recorded",
+            recorded_fd,
+            label="staged recorded fixtures",
+        )
+        _assert_directory_entry_identity_at(
+            stage_fd, "fixtures", fixtures_fd, label="staged fixtures"
+        )
+        _assert_directory_entry_identity_at(
+            story_fd, STAGE_NAME, stage_fd, label="publication stage"
+        )
+    finally:
+        for descriptor in (recorded_fd, fixtures_fd, stage_fd):
+            if descriptor is not None:
+                os.close(descriptor)
+    _checkpoint("after-stage-fsync")
+    observed = _read_bundle_at(story_fd, STAGE_NAME, allow_missing=False)
+    if observed != files:
+        raise RuntimeError("staged ST-1204 bundle failed exact verification")
+    _checkpoint("after-stage-verify")
+
+
+def _remove_owned_bundle_tree_at(story_fd: int, name: str) -> None:
+    metadata = _entry_metadata_at(story_fd, name)
+    if metadata is None:
+        return
+    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+        raise PublicationRecoveryRequired("unsafe ST-1204 owned bundle tree")
+    root_fd = _open_directory_at(story_fd, name, label="owned bundle tree")
+    fixtures_fd: int | None = None
+    recorded_fd: int | None = None
+    try:
+        root_names = _directory_names_at(root_fd, label="owned bundle tree")
+        if not root_names <= {"manifest.json", "fixtures"}:
+            raise PublicationRecoveryRequired("owned bundle tree has unknown entries")
+        _unlink_regular_at(root_fd, "manifest.json", label="owned manifest")
+        if "fixtures" in root_names:
+            fixtures_fd = _open_directory_at(
+                root_fd, "fixtures", label="owned fixture directory"
+            )
+            fixture_names = _directory_names_at(
+                fixtures_fd, label="owned fixture directory"
+            )
+            if not fixture_names <= {"recorded"}:
+                raise PublicationRecoveryRequired(
+                    "owned fixture directory has unknown entries"
+                )
+            if "recorded" in fixture_names:
+                recorded_fd = _open_directory_at(
+                    fixtures_fd, "recorded", label="owned recorded directory"
+                )
+                names = _directory_names_at(
+                    recorded_fd, label="owned recorded directory"
+                )
+                if not names <= set(EXPECTED_FIXTURE_NAMES):
+                    raise PublicationRecoveryRequired(
+                        "owned recorded directory has unknown entries"
+                    )
+                for fixture_name in sorted(names):
+                    _unlink_regular_at(
+                        recorded_fd,
+                        fixture_name,
+                        label=f"owned fixture {fixture_name}",
+                    )
+                _assert_directory_entry_identity_at(
+                    fixtures_fd,
+                    "recorded",
+                    recorded_fd,
+                    label="owned recorded",
+                )
+                os.close(recorded_fd)
+                recorded_fd = None
+                os.rmdir("recorded", dir_fd=fixtures_fd)
+                os.fsync(fixtures_fd)
+            _assert_directory_entry_identity_at(
+                root_fd,
+                "fixtures",
+                fixtures_fd,
+                label="owned fixtures",
+            )
+            os.close(fixtures_fd)
+            fixtures_fd = None
+            os.rmdir("fixtures", dir_fd=root_fd)
+            os.fsync(root_fd)
+        _assert_directory_entry_identity_at(
+            story_fd, name, root_fd, label="owned bundle tree"
+        )
+    finally:
+        for descriptor in (recorded_fd, fixtures_fd, root_fd):
+            if descriptor is not None:
+                os.close(descriptor)
+    os.rmdir(name, dir_fd=story_fd)
+    os.fsync(story_fd)
+
+
+def _journal_bytes(state: Mapping[str, object]) -> bytes:
+    return _sorted_json(dict(state), compact=False)
+
+
+def _validate_journal_state(value: object) -> dict[str, object]:
+    state = _mapping(value, label="publication journal state")
+    if set(state) != {
+        "schema",
+        "phase",
+        "had_previous",
+        "previous_manifest_sha256",
+        "next_manifest_sha256",
+    }:
+        raise PublicationRecoveryRequired("publication journal fields drifted")
+    previous = state.get("previous_manifest_sha256")
+    next_digest = state.get("next_manifest_sha256")
+    if (
+        state.get("schema") != JOURNAL_SCHEMA
+        or state.get("phase") not in JOURNAL_PHASES
+        or type(state.get("had_previous")) is not bool
+        or (previous is not None and not isinstance(previous, str))
+        or not isinstance(next_digest, str)
+        or (isinstance(previous, str) and not re.fullmatch(r"[0-9a-f]{64}", previous))
+        or not re.fullmatch(r"[0-9a-f]{64}", next_digest)
+        or (state.get("had_previous") is True) != (previous is not None)
+    ):
+        raise PublicationRecoveryRequired("publication journal state is malformed")
+    return state
+
+
+def _new_journal_state(
+    *, previous_digest: str | None, next_digest: str
+) -> dict[str, object]:
+    return _validate_journal_state(
+        {
+            "schema": JOURNAL_SCHEMA,
+            "phase": "PREPARED",
+            "had_previous": previous_digest is not None,
+            "previous_manifest_sha256": previous_digest,
+            "next_manifest_sha256": next_digest,
+        }
+    )
+
+
+def _remove_owned_journal_tree_at(story_fd: int, name: str) -> None:
+    metadata = _entry_metadata_at(story_fd, name)
+    if metadata is None:
+        return
+    if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+        raise PublicationRecoveryRequired("unsafe ST-1204 publication journal")
+    journal_fd = _open_directory_at(story_fd, name, label="publication journal")
+    try:
+        names = _directory_names_at(journal_fd, label="publication journal")
+        if not names <= {JOURNAL_STATE_NAME, JOURNAL_STATE_TEMPORARY_NAME}:
+            raise PublicationRecoveryRequired("publication journal has unknown entries")
+        for entry in sorted(names):
+            _unlink_regular_at(journal_fd, entry, label="publication journal state")
+        _assert_directory_entry_identity_at(
+            story_fd, name, journal_fd, label="publication journal"
+        )
+    finally:
+        os.close(journal_fd)
+    os.rmdir(name, dir_fd=story_fd)
+    os.fsync(story_fd)
+
+
+def _create_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
+    for name in (JOURNAL_PREPARING_NAME, JOURNAL_NAME, JOURNAL_CLEANUP_NAME):
+        if _entry_metadata_at(story_fd, name) is not None:
+            raise PublicationRecoveryRequired("pending publication journal exists")
+    os.mkdir(JOURNAL_PREPARING_NAME, 0o700, dir_fd=story_fd)
+    os.fsync(story_fd)
+    preparing_fd = _open_directory_at(
+        story_fd, JOURNAL_PREPARING_NAME, label="preparing publication journal"
+    )
+    try:
+        _create_regular_at(
+            preparing_fd,
+            JOURNAL_STATE_NAME,
+            _journal_bytes(state),
+            label="publication journal state",
+        )
+        os.fsync(preparing_fd)
+        _assert_directory_entry_identity_at(
+            story_fd,
+            JOURNAL_PREPARING_NAME,
+            preparing_fd,
+            label="preparing publication journal",
+        )
+    finally:
+        os.close(preparing_fd)
+    os.replace(
+        JOURNAL_PREPARING_NAME,
+        JOURNAL_NAME,
+        src_dir_fd=story_fd,
+        dst_dir_fd=story_fd,
+    )
+    os.fsync(story_fd)
+    _checkpoint("after-journal-publish")
+
+
+def _load_journal_at(story_fd: int) -> dict[str, object]:
+    journal_fd = _open_directory_at(story_fd, JOURNAL_NAME, label="publication journal")
+    try:
+        names = _directory_names_at(journal_fd, label="publication journal")
+        if not names <= {JOURNAL_STATE_NAME, JOURNAL_STATE_TEMPORARY_NAME}:
+            raise PublicationRecoveryRequired("publication journal has unknown entries")
+        _unlink_regular_at(
+            journal_fd,
+            JOURNAL_STATE_TEMPORARY_NAME,
+            label="publication journal temporary state",
+        )
+        content = _read_regular_at(
+            journal_fd,
+            JOURNAL_STATE_NAME,
+            label="publication journal state",
+            maximum_bytes=16 * 1024,
+        )
+        return _validate_journal_state(
+            _load_json(content, label="publication journal state")
+        )
+    finally:
+        os.close(journal_fd)
+
+
+def _write_journal_phase_at(
+    story_fd: int, state: Mapping[str, object], phase: str
+) -> dict[str, object]:
+    updated = _validate_journal_state({**state, "phase": phase})
+    journal_fd = _open_directory_at(story_fd, JOURNAL_NAME, label="publication journal")
+    try:
+        _unlink_regular_at(
+            journal_fd,
+            JOURNAL_STATE_TEMPORARY_NAME,
+            label="publication journal temporary state",
+        )
+        _create_regular_at(
+            journal_fd,
+            JOURNAL_STATE_TEMPORARY_NAME,
+            _journal_bytes(updated),
+            label="publication journal temporary state",
+        )
+        os.replace(
+            JOURNAL_STATE_TEMPORARY_NAME,
+            JOURNAL_STATE_NAME,
+            src_dir_fd=journal_fd,
+            dst_dir_fd=journal_fd,
+        )
+        os.fsync(journal_fd)
+        _assert_directory_entry_identity_at(
+            story_fd,
+            JOURNAL_NAME,
+            journal_fd,
+            label="publication journal",
+        )
+    finally:
+        os.close(journal_fd)
+    return updated
+
+
+def _rename_exchange_at(parent_fd: int, left: str, right: str) -> None:
+    _checked_entry_name(left, label="atomic exchange")
+    _checked_entry_name(right, label="atomic exchange")
+    try:
+        renameat2 = ctypes.CDLL(None, use_errno=True).renameat2
+    except (AttributeError, OSError) as exc:
+        raise RuntimeError("atomic directory exchange requires renameat2") from exc
+    renameat2.argtypes = (
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_int,
+        ctypes.c_char_p,
+        ctypes.c_uint,
+    )
+    renameat2.restype = ctypes.c_int
+    result = renameat2(
+        parent_fd,
+        os.fsencode(left),
+        parent_fd,
+        os.fsencode(right),
+        RENAME_EXCHANGE,
+    )
+    if result != 0:
+        error = ctypes.get_errno()
+        raise RuntimeError(
+            f"atomic directory exchange failed: {os.strerror(error)} (errno={error})"
+        )
+
+
+def _bundle_state_at(
+    story_fd: int,
+    name: str,
+    *,
+    previous_digest: str | None,
+    next_digest: str,
+) -> str:
+    files = _read_bundle_at(story_fd, name, allow_missing=True)
+    if files is None:
+        return "missing"
+    digest = _validate_bundle_files(files)
+    if digest == next_digest:
+        return "next"
+    if previous_digest is not None and digest == previous_digest:
+        return "previous"
+    return "unknown"
+
+
+def _finish_terminal_journal_at(story_fd: int) -> None:
+    os.replace(
+        JOURNAL_NAME,
+        JOURNAL_CLEANUP_NAME,
+        src_dir_fd=story_fd,
+        dst_dir_fd=story_fd,
+    )
+    os.fsync(story_fd)
+    _checkpoint("after-journal-cleanup-tombstone")
+    _remove_owned_journal_tree_at(story_fd, JOURNAL_CLEANUP_NAME)
+    _checkpoint("after-journal-cleanup")
+
+
+def _recover_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
+    previous_digest = cast(str | None, state["previous_manifest_sha256"])
+    next_digest = cast(str, state["next_manifest_sha256"])
+    destination = _bundle_state_at(
+        story_fd,
+        GENERATED_ROOT.name,
+        previous_digest=previous_digest,
+        next_digest=next_digest,
+    )
+    stage = _bundle_state_at(
+        story_fd,
+        STAGE_NAME,
+        previous_digest=previous_digest,
+        next_digest=next_digest,
+    )
+    phase = cast(str, state["phase"])
+    had_previous = cast(bool, state["had_previous"])
+    if phase == "PREPARED":
+        if had_previous and destination == "previous" and stage == "next":
+            pass
+        elif had_previous and destination == "next" and stage == "previous":
+            _rename_exchange_at(story_fd, STAGE_NAME, GENERATED_ROOT.name)
+            os.fsync(story_fd)
+            _checkpoint("after-recovery-reverse-exchange")
+        elif not had_previous and destination == "missing" and stage == "next":
+            pass
+        elif not had_previous and destination == "next" and stage == "missing":
+            os.replace(
+                GENERATED_ROOT.name,
+                STAGE_NAME,
+                src_dir_fd=story_fd,
+                dst_dir_fd=story_fd,
+            )
+            os.fsync(story_fd)
+            _checkpoint("after-recovery-fresh-rename")
+        else:
+            raise PublicationRecoveryRequired(
+                f"ambiguous PREPARED publication state: destination={destination}, stage={stage}"
+            )
+        restored = _bundle_state_at(
+            story_fd,
+            GENERATED_ROOT.name,
+            previous_digest=previous_digest,
+            next_digest=next_digest,
+        )
+        if restored != ("previous" if had_previous else "missing"):
+            raise PublicationRecoveryRequired("ST-1204 rollback verification failed")
+        _remove_owned_bundle_tree_at(story_fd, STAGE_NAME)
+        state = _write_journal_phase_at(story_fd, state, "ROLLED_BACK")
+        phase = "ROLLED_BACK"
+        _checkpoint("after-rolled-back-state")
+    if phase == "COMMITTED":
+        destination = _bundle_state_at(
+            story_fd,
+            GENERATED_ROOT.name,
+            previous_digest=previous_digest,
+            next_digest=next_digest,
+        )
+        stage = _bundle_state_at(
+            story_fd,
+            STAGE_NAME,
+            previous_digest=previous_digest,
+            next_digest=next_digest,
+        )
+        allowed_stage = {"missing", "previous"} if had_previous else {"missing"}
+        if destination != "next" or stage not in allowed_stage:
+            raise PublicationRecoveryRequired("committed ST-1204 bundle is ambiguous")
+        _remove_owned_bundle_tree_at(story_fd, STAGE_NAME)
+    elif phase == "ROLLED_BACK":
+        destination = _bundle_state_at(
+            story_fd,
+            GENERATED_ROOT.name,
+            previous_digest=previous_digest,
+            next_digest=next_digest,
+        )
+        stage = _bundle_state_at(
+            story_fd,
+            STAGE_NAME,
+            previous_digest=previous_digest,
+            next_digest=next_digest,
+        )
+        if destination != ("previous" if had_previous else "missing") or stage not in {
+            "missing",
+            "next",
+        }:
+            raise PublicationRecoveryRequired("rolled-back ST-1204 bundle is ambiguous")
+        _remove_owned_bundle_tree_at(story_fd, STAGE_NAME)
+    else:
+        raise PublicationRecoveryRequired("unknown ST-1204 journal phase")
+    _finish_terminal_journal_at(story_fd)
+
+
+def _recover_cleanup_tombstone_at(story_fd: int) -> None:
+    cleanup_fd = _open_directory_at(
+        story_fd,
+        JOURNAL_CLEANUP_NAME,
+        label="publication cleanup tombstone",
+    )
+    try:
+        names = _directory_names_at(cleanup_fd, label="publication cleanup tombstone")
+        if not names:
+            state = None
+        elif names == {JOURNAL_STATE_NAME}:
+            content = _read_regular_at(
+                cleanup_fd,
+                JOURNAL_STATE_NAME,
+                label="publication cleanup tombstone state",
+                maximum_bytes=16 * 1024,
+            )
+            state = _validate_journal_state(
+                _load_json(content, label="publication cleanup tombstone state")
+            )
+        else:
+            raise PublicationRecoveryRequired(
+                "publication cleanup tombstone inventory is ambiguous"
+            )
+    finally:
+        os.close(cleanup_fd)
+
+    if state is not None:
+        previous_digest = cast(str | None, state["previous_manifest_sha256"])
+        next_digest = cast(str, state["next_manifest_sha256"])
+        destination = _bundle_state_at(
+            story_fd,
+            GENERATED_ROOT.name,
+            previous_digest=previous_digest,
+            next_digest=next_digest,
+        )
+        stage = _bundle_state_at(
+            story_fd,
+            STAGE_NAME,
+            previous_digest=previous_digest,
+            next_digest=next_digest,
+        )
+        phase = state["phase"]
+        had_previous = cast(bool, state["had_previous"])
+        if phase == "COMMITTED":
+            expected_destination = "next"
+        elif phase == "ROLLED_BACK":
+            expected_destination = "previous" if had_previous else "missing"
+        else:
+            raise PublicationRecoveryRequired(
+                "publication cleanup tombstone is not terminal"
+            )
+        if destination != expected_destination or stage != "missing":
+            raise PublicationRecoveryRequired(
+                "publication cleanup tombstone does not match the terminal bundle"
+            )
+    _remove_owned_journal_tree_at(story_fd, JOURNAL_CLEANUP_NAME)
+
+
+def _recover_pending_at(story_fd: int) -> None:
+    preparing = _entry_metadata_at(story_fd, JOURNAL_PREPARING_NAME)
+    journal = _entry_metadata_at(story_fd, JOURNAL_NAME)
+    cleanup = _entry_metadata_at(story_fd, JOURNAL_CLEANUP_NAME)
+    if cleanup is not None:
+        if preparing is not None or journal is not None:
+            raise PublicationRecoveryRequired("conflicting ST-1204 journal states")
+        _recover_cleanup_tombstone_at(story_fd)
+        cleanup = None
+        _checkpoint("after-stale-cleanup-tombstone")
+    if preparing is not None:
+        if journal is not None:
+            raise PublicationRecoveryRequired("preparing and active journals conflict")
+        _remove_owned_journal_tree_at(story_fd, JOURNAL_PREPARING_NAME)
+        _remove_owned_bundle_tree_at(story_fd, STAGE_NAME)
+        _checkpoint("after-stale-preparing-cleanup")
+        return
+    if journal is None:
+        _remove_owned_bundle_tree_at(story_fd, STAGE_NAME)
+        return
+    if stat.S_ISLNK(journal.st_mode) or not stat.S_ISDIR(journal.st_mode):
+        raise PublicationRecoveryRequired("active ST-1204 journal is unsafe")
+    state = _load_journal_at(story_fd)
+    _recover_journal_at(story_fd, state)
+
+
+def _assert_no_pending_at(story_fd: int) -> None:
+    pending = [
+        name
+        for name in (
+            STAGE_NAME,
+            JOURNAL_PREPARING_NAME,
+            JOURNAL_NAME,
+            JOURNAL_CLEANUP_NAME,
+        )
+        if _entry_metadata_at(story_fd, name) is not None
+    ]
+    if pending:
+        raise PublicationRecoveryRequired(
+            "read-only check found pending ST-1204 recovery: " + ", ".join(pending)
+        )
+
+
+def _cleanup_legacy_at(story_fd: int, expected: Mapping[str, bytes]) -> None:
+    legacy_manifest = _entry_metadata_at(story_fd, LEGACY_MANIFEST_PATH.name)
+    fixtures_metadata = _entry_metadata_at(story_fd, "fixtures")
+    if legacy_manifest is not None:
+        content = _read_regular_at(
+            story_fd,
+            LEGACY_MANIFEST_PATH.name,
+            label="legacy ST-1204 manifest",
+        )
+        legacy = _load_json(content, label="legacy ST-1204 manifest")
+        document = _mapping(legacy.get("document"), label="legacy manifest document")
+        if (
+            document.get("id") != "RAOS-GA4-RECORDED-MANIFEST-001"
+            or document.get("story_id") != "ST-1204"
+        ):
+            raise PublicationRecoveryRequired("legacy ST-1204 manifest is unowned")
+        _unlink_regular_at(
+            story_fd, LEGACY_MANIFEST_PATH.name, label="legacy ST-1204 manifest"
+        )
+    if fixtures_metadata is None:
+        return
+    if stat.S_ISLNK(fixtures_metadata.st_mode) or not stat.S_ISDIR(
+        fixtures_metadata.st_mode
+    ):
+        raise PublicationRecoveryRequired("legacy fixture root is unsafe")
+    fixtures_fd = _open_directory_at(story_fd, "fixtures", label="legacy fixtures")
+    recorded_fd: int | None = None
+    try:
+        if _directory_names_at(fixtures_fd, label="legacy fixtures") != {"recorded"}:
+            raise PublicationRecoveryRequired("legacy fixture root has unknown entries")
+        recorded_fd = _open_directory_at(
+            fixtures_fd, "recorded", label="legacy recorded fixtures"
+        )
+        names = _directory_names_at(recorded_fd, label="legacy recorded fixtures")
+        if not names <= set(EXPECTED_FIXTURE_NAMES):
+            raise PublicationRecoveryRequired(
+                "legacy recorded fixtures have unknown entries"
+            )
+        for fixture_name in sorted(names):
+            observed = _read_regular_at(
+                recorded_fd,
+                fixture_name,
+                label=f"legacy fixture {fixture_name}",
+            )
+            if observed != expected[f"fixtures/recorded/{fixture_name}"]:
+                raise PublicationRecoveryRequired("legacy fixture bytes are unowned")
+            _unlink_regular_at(
+                recorded_fd,
+                fixture_name,
+                label=f"legacy fixture {fixture_name}",
+            )
+        _assert_directory_entry_identity_at(
+            fixtures_fd,
+            "recorded",
+            recorded_fd,
+            label="legacy recorded fixtures",
+        )
+        os.close(recorded_fd)
+        recorded_fd = None
+        os.rmdir("recorded", dir_fd=fixtures_fd)
+        os.fsync(fixtures_fd)
+        _assert_directory_entry_identity_at(
+            story_fd, "fixtures", fixtures_fd, label="legacy fixture root"
+        )
+    finally:
+        if recorded_fd is not None:
+            os.close(recorded_fd)
+        os.close(fixtures_fd)
+    os.rmdir("fixtures", dir_fd=story_fd)
+    os.fsync(story_fd)
+
+
+def _assert_legacy_absent_at(story_fd: int) -> None:
+    if (
+        _entry_metadata_at(story_fd, LEGACY_MANIFEST_PATH.name) is not None
+        or _entry_metadata_at(story_fd, "fixtures") is not None
+    ):
+        raise RuntimeError("non-authoritative legacy ST-1204 outputs remain")
+
+
+def _publish_outputs_at(story_fd: int, outputs: Mapping[Path, bytes]) -> str:
+    expected = _bundle_files(outputs)
+    next_digest = _validate_bundle_files(expected)
+    installed = _read_bundle_at(story_fd, GENERATED_ROOT.name, allow_missing=True)
+    if installed == expected:
+        _cleanup_legacy_at(story_fd, expected)
+        return next_digest
+    committed = False
+    primary: BaseException | None = None
+    try:
+        previous_digest = (
+            _validate_bundle_files(installed) if installed is not None else None
+        )
+        _create_stage_at(story_fd, expected)
+        state = _new_journal_state(
+            previous_digest=previous_digest, next_digest=next_digest
+        )
+        _create_journal_at(story_fd, state)
+        _checkpoint("before-publication")
+        if installed is None:
+            os.replace(
+                STAGE_NAME,
+                GENERATED_ROOT.name,
+                src_dir_fd=story_fd,
+                dst_dir_fd=story_fd,
+            )
+        else:
+            _rename_exchange_at(story_fd, STAGE_NAME, GENERATED_ROOT.name)
+        os.fsync(story_fd)
+        _checkpoint("after-publication-namespace")
+        if (
+            _read_bundle_at(story_fd, GENERATED_ROOT.name, allow_missing=False)
+            != expected
+        ):
+            raise RuntimeError("published ST-1204 bundle failed exact verification")
+        _checkpoint("after-publication-verify")
+        state = _write_journal_phase_at(story_fd, state, "COMMITTED")
+        committed = True
+        _checkpoint("after-committed-state")
+        _remove_owned_bundle_tree_at(story_fd, STAGE_NAME)
+        _checkpoint("after-old-stage-cleanup")
+        _finish_terminal_journal_at(story_fd)
+        _cleanup_legacy_at(story_fd, expected)
+        if (
+            _read_bundle_at(story_fd, GENERATED_ROOT.name, allow_missing=False)
+            != expected
+        ):
+            raise RuntimeError("committed ST-1204 bundle changed during cleanup")
+        return next_digest
+    except BaseException as exc:
+        primary = exc
+        try:
+            _recover_pending_at(story_fd)
+        except BaseException as recovery_error:
+            primary.add_note(
+                "ST-1204 automatic publication recovery also failed: "
+                f"{type(recovery_error).__name__}"
+            )
+        if committed:
+            primary.add_note("the exact new ST-1204 bundle was durably committed")
+        raise
 
 
 def generate(root: Path = REPOSITORY_ROOT) -> str:
-    outputs = build_outputs(root)
-    actual = _actual_fixture_names(root, allow_missing_root=True)
-    extras = sorted(actual - set(EXPECTED_FIXTURE_NAMES))
-    if extras:
-        raise RuntimeError("fixture root contains files outside the closed inventory")
-    for relative in sorted(outputs, key=lambda path: path.as_posix()):
-        _atomic_write(root, relative, outputs[relative])
-    return _sha256(outputs[MANIFEST_PATH])
+    story_fd = _acquire_story_lock(root, exclusive=True, create=True)
+    primary: BaseException | None = None
+    try:
+        _recover_pending_at(story_fd)
+        return _publish_outputs_at(story_fd, build_outputs(root))
+    except BaseException as exc:
+        primary = exc
+        raise
+    finally:
+        _release_story_lock(story_fd, primary)
 
 
 def check(root: Path = REPOSITORY_ROOT) -> str:
-    outputs = build_outputs(root)
-    actual = _actual_fixture_names(root, allow_missing_root=False)
-    if actual != set(EXPECTED_FIXTURE_NAMES):
-        raise RuntimeError("fixture inventory has missing or extra files")
-    for relative, expected in outputs.items():
-        observed = _read_regular(
-            root,
-            relative,
-            label=f"generated output {relative.as_posix()}",
-            maximum_bytes=MAX_GENERATED_BYTES,
-        )
+    story_fd = _acquire_story_lock(root, exclusive=False, create=False)
+    primary: BaseException | None = None
+    try:
+        _assert_no_pending_at(story_fd)
+        expected = _bundle_files(build_outputs(root))
+        observed = _read_bundle_at(story_fd, GENERATED_ROOT.name, allow_missing=False)
         if observed != expected:
-            raise RuntimeError(f"generated output drift: {relative.as_posix()}")
-    return _sha256(outputs[MANIFEST_PATH])
+            raise RuntimeError("generated ST-1204 bundle drifted")
+        _assert_legacy_absent_at(story_fd)
+        return _validate_bundle_files(expected)
+    except BaseException as exc:
+        primary = exc
+        raise
+    finally:
+        _release_story_lock(story_fd, primary)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -1623,7 +2655,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         digest = check() if arguments.check else generate()
     except (OSError, RuntimeError) as exc:
-        print(f"ST-1204 recorded fixture generation failed: {exc}", file=os.sys.stderr)
+        print(f"ST-1204 recorded fixture generation failed: {exc}", file=sys.stderr)
         return 1
     action = "verified" if arguments.check else "generated"
     print(f"ST-1204 recorded fixtures {action}; manifest sha256={digest}")

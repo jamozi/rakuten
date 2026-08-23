@@ -1,6 +1,6 @@
 document:
   id: RAOS-GA4-RECORDED-FIXTURES-001
-  version: 1.0.0
+  version: 1.1.0
   story_id: ST-1204
   status: LOCAL_SOURCE_CONTRACT_CANDIDATE
 
@@ -40,10 +40,13 @@ provenance:
   predecessors:
     - story_id: ST-0204
       uri: repo://changes/st-0204/manifest.yaml
-      sha256: 064cc7a686cc785fe0981e5f68bac3fac48624cf850c38c8ea03244473d5a5f2
+      sha256: 59b1ab441a04c75f97ea6c34753009ffb262d85efe564c3157d745f88ece526a
     - story_id: ST-0305
       uri: repo://changes/st-0305/manifest.yaml
-      sha256: ee7ef9a8fac40dc11ed90f4fe90e3cd78560ecdff8e4f8f84202a4b0609b681d
+      sha256: 4d2233a321e9e2576911182f4d38092e61ca47b2800d2730b40ecce84dd71a5d
+  publication_design:
+    uri: repo://changes/st-1204/DESIGN_HANDOFF_V1_ST1204_FIXTURE_v1.yaml
+    sha256: 4ce2bd89583b6d6887790f9b4279cd08a482408061ae8a440c6e9f828abc050e
   installed_contract_repository:
     uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
     sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef
@@ -115,8 +118,13 @@ provenance:
 
 generation:
   source_contract: changes/st-1204/contracts/ga4-recorded-fixtures.v1.yaml
-  fixture_root: changes/st-1204/fixtures/recorded
-  manifest_path: changes/st-1204/manifest.json
+  publication_design: changes/st-1204/DESIGN_HANDOFF_V1_ST1204_FIXTURE_v1.yaml
+  authoritative_root: changes/st-1204/generated
+  fixture_root: changes/st-1204/generated/fixtures/recorded
+  manifest_path: changes/st-1204/generated/manifest.json
+  legacy_fixture_root: changes/st-1204/fixtures/recorded
+  legacy_manifest_path: changes/st-1204/manifest.json
+  legacy_disposition: NON_AUTHORITATIVE_AFTER_COMMIT_THEN_DESCRIPTOR_RELATIVE_REMOVAL
   generated_by: scripts/build_st1204_ga4_recorded_adapter.py
   generation_command: >-
     uv run --locked --no-sync --no-env-file python

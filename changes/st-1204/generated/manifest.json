@@ -26,7 +26,7 @@
   "document": {
     "id": "RAOS-GA4-RECORDED-MANIFEST-001",
     "story_id": "ST-1204",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "fixture_count": 3,
   "fixtures": [
@@ -241,27 +241,36 @@
     },
     "predecessors": [
       {
-        "sha256": "064cc7a686cc785fe0981e5f68bac3fac48624cf850c38c8ea03244473d5a5f2",
+        "sha256": "59b1ab441a04c75f97ea6c34753009ffb262d85efe564c3157d745f88ece526a",
         "story_id": "ST-0204",
         "uri": "repo://changes/st-0204/manifest.yaml"
       },
       {
-        "sha256": "ee7ef9a8fac40dc11ed90f4fe90e3cd78560ecdff8e4f8f84202a4b0609b681d",
+        "sha256": "4d2233a321e9e2576911182f4d38092e61ca47b2800d2730b40ecce84dd71a5d",
         "story_id": "ST-0305",
         "uri": "repo://changes/st-0305/manifest.yaml"
       }
-    ]
+    ],
+    "publication_design": {
+      "sha256": "4ce2bd89583b6d6887790f9b4279cd08a482408061ae8a440c6e9f828abc050e",
+      "uri": "repo://changes/st-1204/DESIGN_HANDOFF_V1_ST1204_FIXTURE_v1.yaml"
+    }
   },
   "source_artifacts": [
     {
-      "bytes": 19285,
-      "sha256": "6ef0766daf2f0af943adcf6049f70d7dc76f5a4b1f8900e3f4345f075ebe2eb1",
+      "bytes": 19801,
+      "sha256": "68234b1e7920ddbfa7202f3b14690a985022160cc655611fddb4639eeea4926d",
       "uri": "repo://changes/st-1204/contracts/ga4-recorded-fixtures.v1.yaml"
     },
     {
-      "bytes": 64534,
-      "sha256": "21d7f0ed30935158b60b905b71fc9ffcb43efe41692134be4dcadd9fa188fe96",
+      "bytes": 102986,
+      "sha256": "4f2c73371275497cc67d964ac420d4702de225deed373518a48956bec8220faa",
       "uri": "repo://scripts/build_st1204_ga4_recorded_adapter.py"
+    },
+    {
+      "bytes": 10692,
+      "sha256": "4ce2bd89583b6d6887790f9b4279cd08a482408061ae8a440c6e9f828abc050e",
+      "uri": "repo://changes/st-1204/DESIGN_HANDOFF_V1_ST1204_FIXTURE_v1.yaml"
     }
   ]
 }

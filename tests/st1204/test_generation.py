@@ -29,8 +29,10 @@ EXPECTED_GENERATOR_IMPORTS = frozenset(
         ("collections.abc", "Mapping", None),
         ("collections.abc", "Sequence", None),
         ("copy", "deepcopy", None),
+        ("", "ctypes", None),
         ("datetime", "date", None),
         ("datetime", "datetime", None),
+        ("", "fcntl", None),
         ("", "hashlib", None),
         ("", "json", None),
         ("", "math", None),
@@ -39,7 +41,7 @@ EXPECTED_GENERATOR_IMPORTS = frozenset(
         ("pathlib", "PurePosixPath", None),
         ("", "re", None),
         ("", "stat", None),
-        ("", "tempfile", None),
+        ("", "sys", None),
         ("typing", "Final", None),
         ("typing", "NoReturn", None),
         ("typing", "cast", None),
@@ -59,26 +61,34 @@ EXPECTED_GENERATOR_IMPORTS = frozenset(
 ALLOWED_GENERATOR_OS_ATTRIBUTES = frozenset(
     {
         "O_CLOEXEC",
+        "O_CREAT",
         "O_DIRECTORY",
+        "O_EXCL",
         "O_NOFOLLOW",
         "O_RDONLY",
+        "O_WRONLY",
         "close",
-        "fdopen",
+        "fchmod",
+        "fsencode",
         "fstat",
         "fsync",
+        "mkdir",
         "open",
         "read",
         "replace",
+        "rmdir",
         "scandir",
+        "stat",
         "stat_result",
-        "sys",
+        "strerror",
+        "unlink",
+        "write",
     }
 )
 FORBIDDEN_DYNAMIC_REFERENCES = frozenset({"__builtins__", "__import__", "eval", "exec"})
 FORBIDDEN_GENERATOR_MODULES = frozenset(
     {
         "_socket",
-        "ctypes",
         "google",
         "googleapiclient",
         "httpx",
@@ -205,6 +215,38 @@ def _rehash_identity_response(recording: dict[str, Any]) -> None:
     )
 
 
+def _synthetic_outputs(tag: str) -> dict[Path, bytes]:
+    fixtures = {
+        name: generator._sorted_json({"name": name, "tag": tag}, compact=False)
+        for name in generator.EXPECTED_FIXTURE_NAMES
+    }
+    manifest = generator._sorted_json(
+        {
+            "document": {
+                "id": "RAOS-GA4-RECORDED-MANIFEST-001",
+                "story_id": "ST-1204",
+                "version": generator.MANIFEST_VERSION,
+            },
+            "fixture_count": len(fixtures),
+            "fixtures": [
+                {
+                    "bytes": len(fixtures[name]),
+                    "path": name,
+                    "sha256": hashlib.sha256(fixtures[name]).hexdigest(),
+                }
+                for name in generator.EXPECTED_FIXTURE_NAMES
+            ],
+        },
+        compact=False,
+    )
+    return {
+        generator.MANIFEST_PATH: manifest,
+        **{
+            generator.FIXTURE_ROOT / name: content for name, content in fixtures.items()
+        },
+    }
+
+
 def test_generation_is_deterministic_and_matches_installed_outputs() -> None:
     first = generator.build_outputs(REPOSITORY_ROOT)
     second = generator.build_outputs(REPOSITORY_ROOT)
@@ -297,7 +339,7 @@ def test_schema_is_parsed_from_the_hash_checked_capture(
 
     monkeypatch.setattr(generator, "_read_regular", forbidden_reopen)
     schema = generator._schema_by_role(source_contract, "run_report_request", captured)
-    assert schema["$id"].endswith("ga4-run-report-request.schema.json")
+    assert str(schema["$id"]).endswith("ga4-run-report-request.schema.json")
 
 
 def test_regular_read_is_descriptor_relative_after_parent_capture(
@@ -331,7 +373,7 @@ def test_regular_read_is_descriptor_relative_after_parent_capture(
             replacement_parent.rename(trusted_parent)
         return descriptor
 
-    monkeypatch.setattr(generator.os, "open", tracked_open)
+    monkeypatch.setattr(os, "open", tracked_open)
 
     assert (
         generator._read_regular(
@@ -370,7 +412,7 @@ def test_regular_read_preserves_primary_error_when_descriptor_close_fails(
         real_close(descriptor)
         raise OSError("synthetic descriptor close failure")
 
-    monkeypatch.setattr(generator.os, "close", close_then_fail)
+    monkeypatch.setattr(os, "close", close_then_fail)
 
     with pytest.raises(RuntimeError, match="exceeds its size limit") as exc_info:
         generator._read_regular(
@@ -634,13 +676,7 @@ def test_provider_error_shape_is_exact(
 def test_closed_inventory_rejects_extra_missing_and_symlink_files(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    outputs = {
-        generator.MANIFEST_PATH: b"{}\n",
-        **{
-            generator.FIXTURE_ROOT / name: b"{}\n"
-            for name in generator.EXPECTED_FIXTURE_NAMES
-        },
-    }
+    outputs = _synthetic_outputs("closed-inventory")
     for relative, content in outputs.items():
         target = tmp_path / relative
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -650,19 +686,19 @@ def test_closed_inventory_rejects_extra_missing_and_symlink_files(
     generator.check(tmp_path)
     extra = tmp_path / generator.FIXTURE_ROOT / "extra.json"
     extra.write_bytes(b"{}\n")
-    with pytest.raises(RuntimeError, match="missing or extra"):
+    with pytest.raises(RuntimeError, match="inventory drifted"):
         generator.check(tmp_path)
     extra.unlink()
 
     baseline = tmp_path / generator.FIXTURE_ROOT / "baseline.json"
     baseline.unlink()
-    with pytest.raises(RuntimeError, match="missing or extra"):
+    with pytest.raises(RuntimeError, match="inventory drifted"):
         generator.check(tmp_path)
 
     outside = tmp_path / "outside.json"
     outside.write_bytes(b"unchanged")
     baseline.symlink_to(outside)
-    with pytest.raises(RuntimeError, match="regular files"):
+    with pytest.raises(RuntimeError, match="one-link regular file"):
         generator.check(tmp_path)
     assert outside.read_bytes() == b"unchanged"
 
@@ -670,13 +706,7 @@ def test_closed_inventory_rejects_extra_missing_and_symlink_files(
 def test_generate_uses_atomic_closed_output_set(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    outputs = {
-        generator.MANIFEST_PATH: b'{"manifest":true}\n',
-        **{
-            generator.FIXTURE_ROOT / name: f'{{"name":"{name}"}}\n'.encode()
-            for name in generator.EXPECTED_FIXTURE_NAMES
-        },
-    }
+    outputs = _synthetic_outputs("fresh")
     monkeypatch.setattr(generator, "build_outputs", lambda _root: outputs)
     digest = generator.generate(tmp_path)
     assert digest == hashlib.sha256(outputs[generator.MANIFEST_PATH]).hexdigest()
