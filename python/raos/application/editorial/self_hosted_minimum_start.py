@@ -57,6 +57,16 @@ RAKUTEN_CREDIT_SNIPPET = (
 AFFILIATE_CTA_LABEL = "楽天市場でこの商品の詳細を見る"
 AFFILIATE_PENDING_STATUS = "PENDING"
 AFFILIATE_FINAL_STATUS = "FINAL"
+AFFILIATE_PENDING_DISCLOSURE_HTML = (
+    "<p><strong>広告・アフィリエイトについて</strong>：この記事には楽天アフィリエイトの"
+    "リンクを掲載する予定です。リンク経由の購入により運営者が成果報酬を受け取る場合が"
+    "ありますが、報酬率、価格、ポイント、在庫は評価や掲載順に使いません。</p>"
+)
+AFFILIATE_FINAL_DISCLOSURE_HTML = (
+    "<p><strong>広告・アフィリエイトについて</strong>：この記事には楽天アフィリエイトの"
+    "リンクを掲載しています。リンク経由の購入により運営者が成果報酬を受け取る場合が"
+    "ありますが、報酬率、価格、ポイント、在庫は評価や掲載順に使いません。</p>"
+)
 
 _TOP_KEYS = frozenset(
     {
@@ -161,6 +171,11 @@ _EXPECTED_AFFILIATE_PATHS = {
     "ace-cresta-06316": "/ace-store/06316/",
     "ace-difference-05721": "/ace-store/05721/",
     "proteca-maxpass4-01471": "/ace-store/01471/",
+}
+_EXPECTED_AFFILIATE_MOBILE_PATHS = {
+    "ace-cresta-06316": "/ace-store/i/10007275/",
+    "ace-difference-05721": "/ace-store/i/10009372/",
+    "proteca-maxpass4-01471": "/ace-store/i/10009099/",
 }
 _EXPECTED_SLOT_MODEL_CODES = {
     "ace-cresta-06316": "06316",
@@ -272,6 +287,11 @@ def _validated_affiliate_url(value: object, slot_id: str | None = None) -> str:
         if slot_id is None
         else frozenset({_EXPECTED_AFFILIATE_PATHS.get(slot_id)})
     )
+    expected_mobile_paths = (
+        frozenset(_EXPECTED_AFFILIATE_MOBILE_PATHS.values())
+        if slot_id is None
+        else frozenset({_EXPECTED_AFFILIATE_MOBILE_PATHS.get(slot_id)})
+    )
     try:
         desktop = urlsplit(query["pc"])
         mobile = urlsplit(query["m"])
@@ -281,6 +301,7 @@ def _validated_affiliate_url(value: object, slot_id: str | None = None) -> str:
         _fail()
     if (
         None in expected_paths
+        or None in expected_mobile_paths
         or desktop.scheme != "https"
         or desktop.netloc != "item.rakuten.co.jp"
         or desktop.hostname != "item.rakuten.co.jp"
@@ -297,6 +318,7 @@ def _validated_affiliate_url(value: object, slot_id: str | None = None) -> str:
         or mobile.password is not None
         or mobile_port is not None
         or _RAKUTEN_MOBILE_ITEM_PATH.fullmatch(mobile.path) is None
+        or mobile.path not in expected_mobile_paths
         or mobile.query
         or mobile.fragment
     ):
@@ -805,6 +827,8 @@ def load_first_article_candidate_with_affiliate_status(
             or html_credit_anchor_count != 0
             or html_credit_comments
             or RAKUTEN_CREDIT_SNIPPET in content
+            or content.count(AFFILIATE_PENDING_DISCLOSURE_HTML) != 1
+            or AFFILIATE_FINAL_DISCLOSURE_HTML in content
         ):
             _fail()
     elif (
@@ -814,6 +838,8 @@ def load_first_article_candidate_with_affiliate_status(
         != (RAKUTEN_CREDIT_FROM_COMMENT, RAKUTEN_CREDIT_TO_COMMENT)
         or content.count(RAKUTEN_CREDIT_SNIPPET) != 1
         or content.count(RAKUTEN_CREDIT_ANCHOR) != 1
+        or content.count(AFFILIATE_FINAL_DISCLOSURE_HTML) != 1
+        or AFFILIATE_PENDING_DISCLOSURE_HTML in content
     ):
         _fail()
     structured = article["structured_data"]

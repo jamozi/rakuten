@@ -258,3 +258,17 @@ completes that response.
 - These are local file/runtime changes only. Credential access, provider or
   network calls, WordPress/browser operations, activation, draft creation,
   publication, release, staging and Production remain outside this follow-up.
+
+## Affiliate launcher, mobile identity and disclosure follow-up (2026-08-23)
+
+- The affiliate verifier is now reachable only through the exact-root launcher
+  with three fixed owner-private request paths. Clean committed HEAD, runtime
+  manifest/code inventory, `-B -I -S`, verified source loading and verified
+  content bytes all precede private request/Result reads.
+- Each slot binds both its desktop model path and reviewed mobile item identity;
+  the matching Result V3 `itemCode` must name that same item. Coherent alternate
+  mobile targets fail closed without URL reflection.
+- The FINAL article uses a present-tense affiliate disclosure. The content
+  loader requires exact, mutually exclusive PENDING and FINAL disclosure text.
+- The verifier remains read-only with zero credential reads, network calls,
+  external writes, browser/WordPress actions and URL output.

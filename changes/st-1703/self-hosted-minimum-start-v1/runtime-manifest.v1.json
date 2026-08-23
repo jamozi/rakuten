@@ -4,19 +4,19 @@
   "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
   "paths": [
     {
-      "bytes": 15039,
+      "bytes": 15528,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "59693873053b2ccb444c5be7c00f8f649d84dbe2855cb33bfe63861ec8012a15"
+      "sha256": "cf28bbee449460f00ceeec4baeb48d45b63cdcef4de82820c0db4b0a82ab0184"
     },
     {
-      "bytes": 3665,
+      "bytes": 3473,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/Makefile",
-      "sha256": "41a0388231889dbca5b1bf4166a188f161eb6287c92fe8ea71d26a4655e796c2"
+      "sha256": "390640af7597d3b587323102b74cb242c9199dfe9edae655c45136992871daac"
     },
     {
-      "bytes": 16498,
+      "bytes": 16495,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/content/first-suitcase-comparison.v1.json",
-      "sha256": "4eb04c2e1916ae41a989fb7d87e8d309e207b6b03d1dacbeae78639b19c973da"
+      "sha256": "dd0d4cf4cf49ab9c2db97482f81567e782d7ae56c04325f142db1c01df617881"
     },
     {
       "bytes": 112138,
@@ -84,6 +84,11 @@
       "sha256": "7918be5a8b5e04dc90ca3f4a7b9a9792598cd172ce7b44a3c2057e5bd9469db0"
     },
     {
+      "bytes": 87500,
+      "path": "python/raos/adapters/rakuten_owner_local.py",
+      "sha256": "a137fb9da6caf51a2626314d530ba9b2142c7e960150815f092004f8f4cdc325"
+    },
+    {
       "bytes": 14674,
       "path": "python/raos/adapters/self_hosted_wordpress_credentials.py",
       "sha256": "95d5aeb931b4a8ffdcb6c9d3afbddaf1cbdbb65f6f63dae8a5914e674e578e79"
@@ -109,9 +114,24 @@
       "sha256": "4103ce178e92e12a5357e2e9c35b05485b67e18889fc057a8f41b4e16d61e4f8"
     },
     {
-      "bytes": 29878,
+      "bytes": 31407,
       "path": "python/raos/application/editorial/self_hosted_minimum_start.py",
-      "sha256": "e0924ff5ca09cdc36f0c6dffb356166a99c2ee01e6b196f8d067f158451eccf4"
+      "sha256": "2618616d3f3f5222c9ee957e4a738403bc4d1e0f264077b36dd4bd0daf23b26b"
+    },
+    {
+      "bytes": 26586,
+      "path": "python/raos/domain/catalog/rakuten_item_search.py",
+      "sha256": "4ea7f33ecee122f7e1e57590c2a972ffe7fb9aa493575a547e3354d0f01570c2"
+    },
+    {
+      "bytes": 7764,
+      "path": "python/raos/domain/catalog/rakuten_item_search_live_request_v1.py",
+      "sha256": "acd53bc3b12925e09859833ed9fc817e52a14872ae946336cc3dd039e990849e"
+    },
+    {
+      "bytes": 65812,
+      "path": "python/raos/domain/catalog/rakuten_owner_local.py",
+      "sha256": "d1c30a2d33fb48eadc0e1c4de2db59c3effda80328d982a8455c5770ed0c7977"
     },
     {
       "bytes": 20400,
@@ -134,14 +154,19 @@
       "sha256": "3fbbbd3d0080b875955ce57d3e75f2347541be661650dba185f4b49c16507878"
     },
     {
-      "bytes": 54924,
-      "path": "scripts/self_hosted_wordpress.py",
-      "sha256": "4442c099c830bde03f08df60650d33f8943126f7a8912f9c21d024bd3fdda2ee"
+      "bytes": 38996,
+      "path": "scripts/finalize_st1703_affiliate_links.py",
+      "sha256": "3e80b706b959f95a6770d11638092f5c0c058ad361e782e824611ab2dcad6840"
     },
     {
-      "bytes": 21688,
+      "bytes": 57577,
+      "path": "scripts/self_hosted_wordpress.py",
+      "sha256": "0720a6887ccfbe4535da853d8d98c7bbd82e1f37a65dc0479576c59af9501f53"
+    },
+    {
+      "bytes": 22712,
       "path": "scripts/self_hosted_wordpress_python.sh",
-      "sha256": "25fc8daf290901f56380c1219a208c0db123d5b64c10c721b902021d71fe01a8"
+      "sha256": "8732a33e2af47cce770313be49ccf00812daad0062c6b8622d43e148cd13f04e"
     }
   ],
   "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",

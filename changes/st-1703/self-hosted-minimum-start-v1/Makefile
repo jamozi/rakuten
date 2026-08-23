@@ -77,12 +77,10 @@ theme-check:
 		scripts/build_st1703_self_hosted_theme.py --check
 
 affiliate-verify:
-	@test -n "$(ST1703_ACE_CRESTA_REQUEST)" || { echo 'ST1703_REQUEST_PATHS_REQUIRED'; exit 2; }
-	@test -n "$(ST1703_ACE_DIFFERENCE_REQUEST)" || { echo 'ST1703_REQUEST_PATHS_REQUIRED'; exit 2; }
-	@test -n "$(ST1703_PROTECA_MAXPASS4_REQUEST)" || { echo 'ST1703_REQUEST_PATHS_REQUIRED'; exit 2; }
-	@cd "$(SELF_HOSTED_SOURCE_ROOT)" && \
-		"$(MANAGED_PYTHON)" -B -I -X pycache_prefix=/dev/null \
-		scripts/finalize_st1703_affiliate_links.py \
-		--ace-cresta-06316-request "$(ST1703_ACE_CRESTA_REQUEST)" \
-		--ace-difference-05721-request "$(ST1703_ACE_DIFFERENCE_REQUEST)" \
-		--proteca-maxpass4-01471-request "$(ST1703_PROTECA_MAXPASS4_REQUEST)"
+	"$(OWNER_LAUNCHER)" affiliate-verify \
+		--ace-cresta-06316-request \
+		"$(OWNER_REPOSITORY_ROOT)/.secrets/rakuten-owner-local/requests/keyword-ace-cresta-06316.json" \
+		--ace-difference-05721-request \
+		"$(OWNER_REPOSITORY_ROOT)/.secrets/rakuten-owner-local/requests/keyword-ace-difference-05721.json" \
+		--proteca-maxpass4-01471-request \
+		"$(OWNER_REPOSITORY_ROOT)/.secrets/rakuten-owner-local/requests/keyword-proteca-maxpass4-01471.json"

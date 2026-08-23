@@ -21,6 +21,8 @@ from raos.adapters.rakuten_owner_local import (
 )
 from raos.application.editorial.self_hosted_minimum_start import (
     AFFILIATE_CTA_LABEL,
+    AFFILIATE_FINAL_DISCLOSURE_HTML,
+    AFFILIATE_PENDING_DISCLOSURE_HTML,
     CONTENT_PACKET_RELATIVE_PATH,
     RAKUTEN_CREDIT_SNIPPET,
     affiliate_destination_attestation_sha256,
@@ -65,6 +67,11 @@ SLOTS = (
         "01471",
     ),
 )
+MOBILE_ITEM_IDS = {
+    "06316": "10007275",
+    "05721": "10009372",
+    "01471": "10009099",
+}
 
 
 def _pending_slot_html(slot_id: str) -> str:
@@ -103,6 +110,10 @@ def _pending_repository(tmp_path: Path) -> Path:
             }
         )
     article["content_html"] = content.replace(f"{RAKUTEN_CREDIT_SNIPPET}\n", "")
+    article["content_html"] = article["content_html"].replace(
+        AFFILIATE_FINAL_DISCLOSURE_HTML,
+        AFFILIATE_PENDING_DISCLOSURE_HTML,
+    )
     content_path.write_text(
         json.dumps(packet, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
@@ -158,7 +169,7 @@ def _affiliate_url(
         {
             "pc": f"https://item.rakuten.co.jp/ace-store/{code}/",
             "m": (
-                f"http://m.rakuten.co.jp/ace-store/i/100{code}/"
+                f"http://m.rakuten.co.jp/ace-store/i/{MOBILE_ITEM_IDS[code]}/"
                 if mobile_target is None
                 else mobile_target
             ),
@@ -183,7 +194,7 @@ def _result_object(
         "affiliateUrl": destination,
         "availability": 1,
         "genreId": 0,
-        "itemCode": f"ace-store:synthetic-{run_index}",
+        "itemCode": f"ace-store:{MOBILE_ITEM_IDS[code]}",
         "itemName": f"synthetic model {code}",
         "itemPrice": 1,
         "itemUrl": destination if alternate_item_url is None else alternate_item_url,
@@ -299,6 +310,10 @@ def _complete_final_inputs(
         '<p class="raos-freshness">',
         f'{RAKUTEN_CREDIT_SNIPPET}\n<p class="raos-freshness">',
         1,
+    )
+    article["content_html"] = article["content_html"].replace(
+        AFFILIATE_PENDING_DISCLOSURE_HTML,
+        AFFILIATE_FINAL_DISCLOSURE_HTML,
     )
     content_path.write_text(
         json.dumps(packet, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
@@ -480,6 +495,29 @@ def test_verifier_rejects_pending_packet_without_write_or_success_receipt(
     assert content_path.read_bytes() == pending
 
 
+def test_verifier_rejects_runtime_bound_packet_drift_before_private_read(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, _fingerprints = _complete_inputs(tmp_path)
+    monkeypatch.setattr(
+        finalizer,
+        "_request_fingerprints",
+        lambda paths: (_ for _ in ()).throw(
+            AssertionError(f"private request read reached: {len(paths)}")
+        ),
+    )
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.verify(
+            repository_root=root,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+            expected_content_packet_bytes=b"different-runtime-bound-packet",
+        )
+    assert failure.value.code == "AFFILIATE_CONTENT_STATE_INVALID"
+
+
 @pytest.mark.parametrize(
     ("field", "value"),
     [
@@ -570,6 +608,71 @@ def test_finalizer_rejects_raos_destination_hidden_in_mobile_redirect(
             now=NOW,
         )
     assert failure.value.code == "AFFILIATE_DESTINATION_INVALID"
+
+
+def test_finalizer_rejects_wrong_reviewed_mobile_item_target(tmp_path: Path) -> None:
+    _pending_repository(tmp_path)
+    requests, fingerprints = _request_files(tmp_path)
+    store = _result_store(tmp_path)
+    for index, (slot_id, _product_name, code) in enumerate(SLOTS):
+        destination = None
+        if index == 0:
+            destination = _affiliate_url(
+                code,
+                mobile_target=("http://m.rakuten.co.jp/ace-store/i/10009372/"),
+            )
+        _write_result(
+            store,
+            _result_object(
+                fingerprint=fingerprints[slot_id],
+                code=code,
+                run_index=index,
+                destination_url=destination,
+            ),
+        )
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.verify(
+            repository_root=tmp_path,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+    assert failure.value.code == "AFFILIATE_DESTINATION_INVALID"
+
+
+def test_finalizer_rejects_synchronized_wrong_item_code_and_mobile_target(
+    tmp_path: Path,
+) -> None:
+    _pending_repository(tmp_path)
+    requests, fingerprints = _request_files(tmp_path)
+    store = _result_store(tmp_path)
+    for index, (slot_id, _product_name, code) in enumerate(SLOTS):
+        destination = None
+        mutation = None
+        if index == 0:
+            destination = _affiliate_url(
+                code,
+                mobile_target=("http://m.rakuten.co.jp/ace-store/i/10009999/"),
+            )
+            mutation = ("itemCode", "ace-store:10009999")
+        _write_result(
+            store,
+            _result_object(
+                fingerprint=fingerprints[slot_id],
+                code=code,
+                run_index=index,
+                item_mutation=mutation,
+                destination_url=destination,
+            ),
+        )
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.verify(
+            repository_root=tmp_path,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+    assert failure.value.code == "AFFILIATE_RESULT_IDENTITY_MISMATCH"
 
 
 @pytest.mark.parametrize("mode", ["missing", "duplicate", "fingerprint"])
@@ -763,13 +866,17 @@ def test_content_rejects_mixed_pending_and_final_states(tmp_path: Path) -> None:
         )
 
 
-@pytest.mark.parametrize("unsafe", ["request-mode", "result-mode", "unknown-file"])
+@pytest.mark.parametrize(
+    "unsafe", ["request-mode", "request-parent-mode", "result-mode", "unknown-file"]
+)
 def test_finalizer_rejects_malformed_or_non_private_files(
     tmp_path: Path, unsafe: str
 ) -> None:
     root, store, requests, _fingerprints = _complete_inputs(tmp_path)
     if unsafe == "request-mode":
         requests["ace-cresta-06316"].chmod(0o644)
+    elif unsafe == "request-parent-mode":
+        requests["ace-cresta-06316"].parent.chmod(0o755)
     elif unsafe == "result-mode":
         next(store.iterdir()).chmod(0o644)
     else:
@@ -898,6 +1005,15 @@ def test_content_rejects_synchronized_destination_and_cta_mutation(
             tmp_path,
             operation=SelfHostedWordPressOperation.CREATE_DRAFT,
         )
+
+
+def test_runtime_cta_rejects_cross_slot_mobile_item_target() -> None:
+    wrong_mobile = _affiliate_url(
+        "06316",
+        mobile_target="http://m.rakuten.co.jp/ace-store/i/10009372/",
+    )
+    with pytest.raises(SelfHostedWordPressFailure):
+        affiliate_cta_html("ace-cresta-06316", wrong_mobile)
 
 
 @pytest.mark.parametrize(

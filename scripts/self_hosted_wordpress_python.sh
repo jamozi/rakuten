@@ -24,13 +24,26 @@ IFS=$(/usr/bin/busybox printf ' \t\n_') || refuse
 IFS=${IFS%_}
 umask 0077
 
+expected_root=/home/minami/rakuten
+affiliate_request_root=$expected_root/.secrets/rakuten-owner-local/requests
+ace_cresta_request=$affiliate_request_root/keyword-ace-cresta-06316.json
+ace_difference_request=$affiliate_request_root/keyword-ace-difference-05721.json
+proteca_maxpass4_request=$affiliate_request_root/keyword-proteca-maxpass4-01471.json
+
 case "${1-}:$#" in
   doctor:1|install-credentials:1|create-draft:1) ;;
+  affiliate-verify:7)
+    [ "$2" = --ace-cresta-06316-request ] || refuse
+    [ "$3" = "$ace_cresta_request" ] || refuse
+    [ "$4" = --ace-difference-05721-request ] || refuse
+    [ "$5" = "$ace_difference_request" ] || refuse
+    [ "$6" = --proteca-maxpass4-01471-request ] || refuse
+    [ "$7" = "$proteca_maxpass4_request" ] || refuse
+    ;;
   *) refuse ;;
 esac
 requested_command=$1
 
-expected_root=/home/minami/rakuten
 approved_base=b5a6157b878ca0435ee4120d33162aba5ae51f77
 python_root=/home/minami/.local/share/uv/python/cpython-3.14.6-linux-x86_64-gnu
 python_target=$python_root/bin/python3.14
@@ -542,6 +555,18 @@ case "$captured_cli_sha" in *[!0-9a-f]*) refuse ;; esac
 startup_landmarks_absent || refuse
 runtime_bin_path_sets_match || refuse
 
+case "$requested_command" in
+  affiliate-verify)
+    set -- \
+      affiliate-verify \
+      --ace-cresta-06316-request "$ace_cresta_request" \
+      --ace-difference-05721-request "$ace_difference_request" \
+      --proteca-maxpass4-01471-request "$proteca_maxpass4_request"
+    ;;
+  doctor|install-credentials|create-draft) set -- "$requested_command" ;;
+  *) refuse ;;
+esac
+
 /usr/bin/busybox printf '%s' "$captured_cli" | \
   /usr/bin/busybox env -i \
     PATH=/usr/bin:/bin LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
@@ -555,4 +580,4 @@ runtime_bin_path_sets_match || refuse
       --library-path "$dynamic_library_directory" \
       --argv0 "$python" \
       "$python_target" \
-      -B -I -S -X pycache_prefix=/dev/null - "$requested_command"
+      -B -I -S -X pycache_prefix=/dev/null - "$@"

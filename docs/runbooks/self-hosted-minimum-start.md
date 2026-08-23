@@ -23,7 +23,7 @@ or cherry-pick integration. It also refuses staged/unstaged/untracked drift, a
 runtime-manifest mismatch, a non-`HEAD` runtime blob, or an unsafe pinned
 toolchain. This binding happens before RAOS imports, credential reads, or
 network construction. Do not bypass it or use Git index flags to hide an edit.
-The inventory has 26 fixed base paths and zero to two optional image paths.
+The inventory has 31 fixed base paths and zero to two optional image paths.
 Optional paths are not caller input: they can only be the two exact WebP paths
 declared by the committed `raos-assets.v1.json`, and are included only when the
 corresponding record is `FINAL` with a matching lowercase SHA-256. A pending
@@ -49,6 +49,20 @@ All examples use the Story-local
 `changes/st-1703/self-hosted-minimum-start-v1/Makefile`. The root Makefile has
 no self-hosted target because it remains byte/hash-bound by the active
 historical WordPress.com runtime inventory.
+
+The read-only affiliate evidence check uses the same exact-root launcher and
+does not accept caller-selected files. Install the three owner-only request
+records as mode `0600` regular single-link files in the fixed
+`.secrets/rakuten-owner-local/requests/` directory (mode `0700`), then run:
+
+```bash
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-verify
+```
+
+The launcher refuses dirty/untracked state or runtime drift before Python, and
+the verified CLI refuses content drift before reading those request records.
+The check is read-only: it performs no provider, browser, or WordPress call and
+never prints affiliate URLs.
 
 ## Evidence and action layers
 
@@ -243,17 +257,16 @@ Result V3 store. It reads no credential, makes no network request, never prints
 a destination URL or private result path, and reports `external_writes: 0`.
 It rejects PENDING, zero/duplicate, stale, mixed, fingerprint-mismatched,
 non-HTTPS, non-Rakuten/RAOS redirect, wrong item/shop/model, URL mutation, and
-manual/generic injection. The full packet loader independently requires the
-closed request fingerprints and destination/evidence attestations. A second
+manual/generic injection. Each mobile target must identify the exact reviewed
+Result V3 item for its slot. The full packet loader independently requires the
+closed request fingerprints, exact state-specific disclosure and
+destination/evidence attestations. A second
 Result-store scan and terminal content reread must reproduce the same snapshot.
 The command cannot finalize or otherwise mutate a packet. Run it against the
-already-FINAL packet with all three named absolute request inputs:
+already-FINAL packet using only the fixed owner-private request paths:
 
 ```bash
-make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-verify \
-  ST1703_ACE_CRESTA_REQUEST=/absolute/owner-private/keyword-ace-cresta-06316.json \
-  ST1703_ACE_DIFFERENCE_REQUEST=/absolute/owner-private/keyword-ace-difference-05721.json \
-  ST1703_PROTECA_MAXPASS4_REQUEST=/absolute/owner-private/keyword-proteca-maxpass4-01471.json
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-verify
 ```
 
 The lead-image token is part of the exact content hash sent to WordPress. The

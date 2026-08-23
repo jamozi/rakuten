@@ -105,7 +105,8 @@ The verifier requires one fresh successful 2026-07-01 item-search result per
 fingerprint, one request and zero retry/pagination, and exactly one matching
 `ace-store` item/model record. The unchanged provider destination must be a
 public HTTPS Rakuten affiliate URL whose embedded desktop target is the exact
-Rakuten item path. It runs the full runtime loader, compares all three exact CTA
+Rakuten item path and whose mobile target is the exact reviewed item identity
+for that slot. It runs the full runtime loader, compares all three exact CTA
 and evidence records, rescans the Result store, and proves the content bytes did
 not change during verification. The runtime recomputes the fixed ST-0505
 request fingerprint and requires the reviewed destination/evidence attestation
@@ -113,24 +114,24 @@ digest. PENDING, zero, duplicate, late, stale, mixed, mismatched, manually
 injected, or unsafe material fails closed. URLs and private result paths are
 never logged, and every receipt reports `external_writes: 0`.
 
-Verify the reviewed FINAL packet with all three named request inputs:
+Verify the reviewed FINAL packet. The Make target supplies only the three fixed
+owner-private request paths under `.secrets/rakuten-owner-local/requests/`;
+caller-provided paths are not accepted:
 
 ```bash
-make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-verify \
-  ST1703_ACE_CRESTA_REQUEST=/absolute/owner-private/keyword-ace-cresta-06316.json \
-  ST1703_ACE_DIFFERENCE_REQUEST=/absolute/owner-private/keyword-ace-difference-05721.json \
-  ST1703_PROTECA_MAXPASS4_REQUEST=/absolute/owner-private/keyword-proteca-maxpass4-01471.json
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-verify
 ```
 
-Make hides the command line, and the JSON receipt contains hashes and counts
-only. This command cannot fill a PENDING packet or mutate the reviewed FINAL
+The JSON receipt contains hashes and counts only. This command runs through the
+same exact-root, clean-HEAD, `-B -I -S`, manifest-bound launcher as doctor and
+draft create. It cannot fill a PENDING packet or mutate the reviewed FINAL
 packet.
 
 ## Runtime boundary
 
 Every owner command is bound before RAOS imports or credential access to the
 physical `/home/minami/rakuten` repository, an exact committed clean `HEAD`
-descending from the guaranteed shipped PR base `b5a6157b`, and the 26 ordered
+descending from the guaranteed shipped PR base `b5a6157b`, and the 31 ordered
 base source/input files in `runtime-manifest.v1.json`. When either of the two
 fixed `required_images` records is explicitly `FINAL`, that manifest-declared,
 lowercase-SHA-256-bound WebP is added to the reviewed inventory; pending images
@@ -147,12 +148,12 @@ captures and hash-checks the complete committed CLI blob before Python is
 started. The shell-stage `HEAD`, blob ID and CLI SHA-256 are carried into the
 stdlib-only Python bootstrap and must match the same current `HEAD`. The
 bootstrap first binds the runtime manifest to the matching `HEAD` blob, then
-derives an exact 26-plus-zero-to-two path inventory from the fixed committed
+derives an exact 31-plus-zero-to-two path inventory from the fixed committed
 asset manifest before opening any listed working payload. It checks every
 bounded SHA-256, the same complete static WebP container/profile used by the
 package and offline doctor, matching `HEAD` blob, the exact tracked
 image-directory inventory, pending-path absence, tracked state and clean worktree before
-installing the narrow self-hosted package namespaces. The ten leaf modules
+installing the narrow self-hosted package namespaces. The fifteen leaf modules
 execute only through a closed loader backed by the already verified bytes;
 source paths are not reopened. Site
 startup processing is disabled, live repository import roots are not added to

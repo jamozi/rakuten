@@ -990,7 +990,7 @@ scope["_install_scoped_runtime_packages"](root, verified)
 for name in (
     "raos", "raos.adapters", "raos.application",
     "raos.application.editorial", "raos.domain",
-    "raos.domain.editorial", "raos.ports",
+    "raos.domain.catalog", "raos.domain.editorial", "raos.ports",
 ):
     package = sys.modules[name]
     assert package.__spec__.name == name
@@ -999,10 +999,12 @@ for name in (
     if separator:
         assert getattr(sys.modules[parent], child) is package
 sys.path[:0] = [str(root / "scripts"), str(root / "python")]
+runtime_import_path = tuple(sys.path)
 before = set(sys.modules)
 runtime = runpy.run_path(str(script), run_name="runtime_import_probe")
+assert tuple(sys.path) == runtime_import_path
 assert sorted(runtime["_parser"]()._subparsers._group_actions[0].choices) == [
-    "create-draft", "doctor", "install-credentials"
+    "affiliate-verify", "create-draft", "doctor", "install-credentials"
 ]
 for name in runtime["_RUNTIME_MODULE_PATHS"]:
     leaf = sys.modules[name]
@@ -1078,16 +1080,21 @@ print(json.dumps({
     assert result.returncode == 0, (result.stdout, result.stderr)
     evidence = json.loads(result.stdout)
     assert evidence["paths"] == [
+        "python/raos/adapters/rakuten_owner_local.py",
         "python/raos/adapters/self_hosted_wordpress_credentials.py",
         "python/raos/adapters/self_hosted_wordpress_https.py",
         "python/raos/adapters/self_hosted_wordpress_journal.py",
         "python/raos/adapters/self_hosted_wordpress_rest.py",
         "python/raos/adapters/wordpress_rest.py",
         "python/raos/application/editorial/self_hosted_minimum_start.py",
+        "python/raos/domain/catalog/rakuten_item_search.py",
+        "python/raos/domain/catalog/rakuten_item_search_live_request_v1.py",
+        "python/raos/domain/catalog/rakuten_owner_local.py",
         "python/raos/domain/editorial/market_learning_pilot.py",
         "python/raos/domain/editorial/self_hosted_wordpress.py",
         "python/raos/ports/self_hosted_wordpress.py",
         "scripts/build_st1703_self_hosted_theme.py",
+        "scripts/finalize_st1703_affiliate_links.py",
     ]
     ordinary = _load(CLI_PATH, "self_hosted_runtime_parity_test")
     packet = (ROOT / ordinary._CONTENT_PACKET_RUNTIME_PATH).read_bytes()

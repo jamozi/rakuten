@@ -133,6 +133,70 @@ def test_main_projects_verified_final_webp_bytes_into_theme_doctor(
     assert json.loads(capsys.readouterr().out) == {"status": "SYNTHETIC_LOCAL_ONLY"}
 
 
+def test_main_dispatches_fixed_affiliate_verify_only_after_runtime_binding(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    _authorize_imported_cli(monkeypatch)
+    monkeypatch.setattr(cli, "_physical_repository_root", lambda root: root)
+    observed: dict[str, object] = {}
+
+    def verify_affiliate_links(**kwargs: object) -> dict[str, object]:
+        observed.update(kwargs)
+        return {"external_writes": 0, "status": "SYNTHETIC_VERIFIED"}
+
+    monkeypatch.setattr(cli, "verify_affiliate_links", verify_affiliate_links)
+    arguments = ["affiliate-verify"]
+    for slot_id, flag in (
+        ("ace-cresta-06316", "--ace-cresta-06316-request"),
+        ("ace-difference-05721", "--ace-difference-05721-request"),
+        ("proteca-maxpass4-01471", "--proteca-maxpass4-01471-request"),
+    ):
+        arguments.extend((flag, str(cli.OWNER_REQUEST_PATHS[slot_id])))
+
+    assert cli.main(arguments, repository_root=tmp_path) == 0
+    assert observed["repository_root"] == tmp_path
+    assert observed["result_store"] == cli.OWNER_RESULT_STORE
+    assert observed["request_paths"] == cli.OWNER_REQUEST_PATHS
+    assert observed["expected_content_packet_bytes"] == b"synthetic-bound-packet"
+    assert json.loads(capsys.readouterr().out) == {
+        "external_writes": 0,
+        "status": "SYNTHETIC_VERIFIED",
+    }
+
+
+def test_main_rejects_nonfixed_affiliate_request_before_private_verifier(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    _authorize_imported_cli(monkeypatch)
+    monkeypatch.setattr(cli, "_physical_repository_root", lambda root: root)
+    monkeypatch.setattr(
+        cli,
+        "verify_affiliate_links",
+        lambda **kwargs: (_ for _ in ()).throw(
+            AssertionError(f"private verifier reached: {sorted(kwargs)}")
+        ),
+    )
+    arguments = [
+        "affiliate-verify",
+        "--ace-cresta-06316-request",
+        "/tmp/not-owner-request.json",
+        "--ace-difference-05721-request",
+        str(cli.OWNER_REQUEST_PATHS["ace-difference-05721"]),
+        "--proteca-maxpass4-01471-request",
+        str(cli.OWNER_REQUEST_PATHS["proteca-maxpass4-01471"]),
+    ]
+    assert cli.main(arguments, repository_root=tmp_path) == 2
+    assert json.loads(capsys.readouterr().out) == {
+        "external_writes": 0,
+        "reason_code": "AFFILIATE_ARGUMENT_INVALID",
+        "status": "BLOCKED",
+    }
+
+
 def test_create_draft_rejects_pending_article_asset_before_credentials_or_network(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -503,9 +567,61 @@ def test_launcher_is_exact_root_pinned_isolated_and_sanitizes_environment() -> N
     assert '"$python_target" \\' in launcher
     assert "-B -I -S -X pycache_prefix=/dev/null -" in launcher
     assert "doctor:1|install-credentials:1|create-draft:1" in launcher
+    assert "affiliate-verify:7" in launcher
+    assert '-B -I -S -X pycache_prefix=/dev/null - "$@"' in launcher
+    assert launcher.index("fixed_git status --porcelain=v1 --untracked-files=all") < (
+        launcher.index('case "$requested_command" in')
+    )
+    assert launcher.index("runtime_bin_path_sets_match || refuse") < launcher.index(
+        'case "$requested_command" in'
+    )
     assert "update-draft" not in launcher
     assert "curl" not in launcher
     assert "wget" not in launcher
+
+
+@pytest.mark.parametrize(
+    "arguments",
+    [
+        ["affiliate-verify"],
+        ["affiliate-verify", "--ace-cresta-06316-request", "/tmp/rejected"],
+        [
+            "affiliate-verify",
+            "--ace-difference-05721-request",
+            "/tmp/rejected",
+            "--ace-cresta-06316-request",
+            "/tmp/rejected",
+            "--proteca-maxpass4-01471-request",
+            "/tmp/rejected",
+        ],
+        [
+            "affiliate-verify",
+            "rejected",
+            "rejected",
+            "rejected",
+            "rejected",
+            "rejected",
+            "rejected",
+        ],
+    ],
+)
+def test_launcher_rejects_nonclosed_affiliate_arguments_without_reflection(
+    arguments: list[str],
+) -> None:
+    result = subprocess.run(
+        [str(SCRIPTS_ROOT / "self_hosted_wordpress_python.sh"), *arguments],
+        cwd=REPOSITORY_ROOT,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=5,
+        check=False,
+        env={"PATH": "/untrusted", "PYTHONPATH": "/untrusted"},
+    )
+    assert result.returncode == 69
+    assert result.stdout == b"SELF_HOSTED_WORDPRESS_LAUNCH_REFUSED\n"
+    assert result.stderr == b""
+    assert b"rejected" not in result.stdout
 
 
 def test_imported_main_refuses_before_credentials_or_network(
@@ -525,6 +641,27 @@ def test_imported_main_refuses_before_credentials_or_network(
     monkeypatch.setattr(cli, "_apply_draft", forbidden)
     assert cli.main(["create-draft"], repository_root=tmp_path) == 2
     assert calls == []
+    assert json.loads(capsys.readouterr().out)["reason_code"] == (
+        "SELF_HOSTED_RUNTIME_BINDING_INVALID"
+    )
+    assert not (tmp_path / ".secrets").exists()
+
+
+def test_imported_main_refuses_affiliate_verify_before_private_read(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    monkeypatch.setattr(cli, "_runtime_authorized", False)
+    monkeypatch.setattr(cli, "_verified_runtime_bytes", None)
+    monkeypatch.setattr(
+        cli,
+        "verify_affiliate_links",
+        lambda **kwargs: (_ for _ in ()).throw(
+            AssertionError(f"private verifier reached: {sorted(kwargs)}")
+        ),
+    )
+    assert cli.main(["affiliate-verify"], repository_root=tmp_path) == 2
     assert json.loads(capsys.readouterr().out)["reason_code"] == (
         "SELF_HOSTED_RUNTIME_BINDING_INVALID"
     )
@@ -560,6 +697,10 @@ def test_story_makefile_has_closed_targets_and_sanitized_help() -> None:
     assert content.count("/usr/bin/busybox env -i PATH=/usr/bin:/bin") == 2
     assert content.count("umask 0077") == 1
     assert "update-draft" not in content
+    affiliate_target = content.split("affiliate-verify:", maxsplit=1)[1]
+    assert '"$(OWNER_LAUNCHER)" affiliate-verify' in affiliate_target
+    assert "scripts/finalize_st1703_affiliate_links.py" not in affiliate_target
+    assert "ST1703_ACE_" not in affiliate_target
 
 
 @pytest.mark.parametrize(

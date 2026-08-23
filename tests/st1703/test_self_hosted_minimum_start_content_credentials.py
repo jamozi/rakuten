@@ -17,6 +17,8 @@ from raos.adapters.self_hosted_wordpress_credentials import (
     SelfHostedWordPressCredentials,
 )
 from raos.application.editorial.self_hosted_minimum_start import (
+    AFFILIATE_FINAL_DISCLOSURE_HTML,
+    AFFILIATE_PENDING_DISCLOSURE_HTML,
     AFFILIATE_CTA_LABEL,
     CONTENT_PACKET_RELATIVE_PATH,
     FIRST_ARTICLE_THEME_IMAGE_RELATIVE_PATH,
@@ -76,7 +78,11 @@ def _make_all_slots_pending(packet: dict[str, object]) -> None:
                 "status": "PENDING_OFFICIAL_RAKUTEN_LINK",
             }
         )
-    article["content_html"] = content.replace(f"{RAKUTEN_CREDIT_SNIPPET}\n", "")
+    content = content.replace(f"{RAKUTEN_CREDIT_SNIPPET}\n", "")
+    article["content_html"] = content.replace(
+        AFFILIATE_FINAL_DISCLOSURE_HTML,
+        AFFILIATE_PENDING_DISCLOSURE_HTML,
+    )
 
 
 def _credentials() -> SelfHostedWordPressCredentials:
@@ -366,6 +372,37 @@ def test_content_packet_rejects_active_html_fake_experience_or_disclosure_loss(
     packet = json.loads(path.read_text(encoding="utf-8"))
     article = packet["article"]
     article["content_html"] = mutation(article["content_html"])
+    path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(SelfHostedWordPressFailure):
+        load_first_article_candidate(
+            tmp_path,
+            operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        )
+
+
+@pytest.mark.parametrize(
+    ("pending", "wrong_disclosure", "right_disclosure"),
+    [
+        (True, AFFILIATE_FINAL_DISCLOSURE_HTML, AFFILIATE_PENDING_DISCLOSURE_HTML),
+        (False, AFFILIATE_PENDING_DISCLOSURE_HTML, AFFILIATE_FINAL_DISCLOSURE_HTML),
+    ],
+)
+def test_content_packet_enforces_state_specific_affiliate_disclosure(
+    tmp_path: Path,
+    pending: bool,
+    wrong_disclosure: str,
+    right_disclosure: str,
+) -> None:
+    path = _copy_content(tmp_path)
+    packet = json.loads(path.read_text(encoding="utf-8"))
+    if pending:
+        _make_all_slots_pending(packet)
+    article = packet["article"]
+    assert isinstance(article, dict)
+    content = article["content_html"]
+    assert isinstance(content, str)
+    article["content_html"] = content.replace(right_disclosure, wrong_disclosure)
     path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
 
     with pytest.raises(SelfHostedWordPressFailure):

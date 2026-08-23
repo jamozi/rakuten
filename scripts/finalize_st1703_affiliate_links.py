@@ -27,10 +27,11 @@ from urllib.parse import parse_qsl, urlsplit
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 PYTHON_ROOT = REPOSITORY_ROOT / "python"
-if str(PYTHON_ROOT) not in sys.path:
+if "raos" not in sys.modules and str(PYTHON_ROOT) not in sys.path:
     sys.path.insert(0, str(PYTHON_ROOT))
 
 from raos.adapters.rakuten_owner_local import (  # noqa: E402
+    MAX_REQUEST_BYTES,
     MAX_RESULT_BYTES,
     OwnerPrivateRakutenOwnerLocalRequestReader,
 )
@@ -66,6 +67,7 @@ from raos.domain.editorial.self_hosted_wordpress import (  # noqa: E402
 
 OWNER_REPOSITORY_ROOT = Path("/home/minami/rakuten")
 OWNER_RESULT_STORE = OWNER_REPOSITORY_ROOT / ".secrets/rakuten-owner-local/results"
+OWNER_REQUEST_ROOT = OWNER_REPOSITORY_ROOT / ".secrets/rakuten-owner-local/requests"
 MAX_RESULT_AGE = timedelta(hours=24)
 MAX_FUTURE_SKEW = timedelta(minutes=5)
 MAX_JSON_DEPTH = 32
@@ -146,6 +148,7 @@ class _SlotDefinition:
     slot_id: str
     product_name: str
     model_code: str
+    mobile_item_id: str
 
     @property
     def request_file_name(self) -> str:
@@ -155,20 +158,33 @@ class _SlotDefinition:
     def exact_item_path(self) -> str:
         return f"/ace-store/{self.model_code}/"
 
+    @property
+    def exact_mobile_item_path(self) -> str:
+        return f"/ace-store/i/{self.mobile_item_id}/"
+
+    @property
+    def exact_item_code(self) -> str:
+        return f"ace-store:{self.mobile_item_id}"
+
 
 _SLOTS = (
-    _SlotDefinition("ace-cresta-06316", "ACE クレスタ 06316", "06316"),
+    _SlotDefinition("ace-cresta-06316", "ACE クレスタ 06316", "06316", "10007275"),
     _SlotDefinition(
         "ace-difference-05721",
         "ace.TOKYO LABEL ディフェレンス 05721",
         "05721",
+        "10009372",
     ),
     _SlotDefinition(
         "proteca-maxpass4-01471",
         "PROTECA マックスパス4 01471",
         "01471",
+        "10009099",
     ),
 )
+OWNER_REQUEST_PATHS = {
+    slot.slot_id: OWNER_REQUEST_ROOT / slot.request_file_name for slot in _SLOTS
+}
 
 _FAILURE_CODES = frozenset(
     {
@@ -593,6 +609,7 @@ def _validate_direct_destination(value: object, slot: _SlotDefinition) -> str:
         or mobile.password is not None
         or mobile_port is not None
         or _RAKUTEN_MOBILE_ITEM_PATH.fullmatch(mobile.path) is None
+        or mobile.path != slot.exact_mobile_item_path
         or mobile.query
         or mobile.fragment
     ):
@@ -746,10 +763,57 @@ def _request_fingerprints(
         path = request_paths[slot.slot_id]
         if not path.is_absolute() or path.name != slot.request_file_name:
             _fail("AFFILIATE_REQUEST_INVALID")
+        parent_fd = _open_absolute_directory(
+            path.parent,
+            require_private=True,
+            code="AFFILIATE_REQUEST_INVALID",
+        )
         try:
+            request_bytes, _request_details = _read_regular_at(
+                parent_fd,
+                path.name,
+                maximum=MAX_REQUEST_BYTES,
+                required_mode=PRIVATE_FILE_MODE,
+                code="AFFILIATE_REQUEST_INVALID",
+            )
+            request_parent_identity = _require_directory_binding(
+                path.parent,
+                parent_fd,
+                require_private=True,
+                code="AFFILIATE_REQUEST_INVALID",
+            )
             request = reader.read(path, RakutenOwnerLocalApi.ITEM_SEARCH)
         except BaseException:
             _fail("AFFILIATE_REQUEST_INVALID")
+        finally:
+            os.close(parent_fd)
+        terminal_parent_fd = _open_absolute_directory(
+            path.parent,
+            require_private=True,
+            code="AFFILIATE_REQUEST_INVALID",
+        )
+        try:
+            terminal_bytes, _terminal_details = _read_regular_at(
+                terminal_parent_fd,
+                path.name,
+                maximum=MAX_REQUEST_BYTES,
+                required_mode=PRIVATE_FILE_MODE,
+                code="AFFILIATE_REQUEST_INVALID",
+            )
+            if (
+                terminal_bytes != request_bytes
+                or _require_directory_binding(
+                    path.parent,
+                    terminal_parent_fd,
+                    require_private=True,
+                    expected_identity=request_parent_identity,
+                    code="AFFILIATE_REQUEST_INVALID",
+                )
+                != request_parent_identity
+            ):
+                _fail("AFFILIATE_REQUEST_INVALID")
+        finally:
+            os.close(terminal_parent_fd)
         if (
             type(request) is not RakutenOwnerLocalItemSearchRequest
             or request.policy.keyword != slot.model_code
@@ -853,9 +917,7 @@ def _scan_results(
                 item.get("shopCode") == "ace-store"
                 and type(item_name) is str
                 and slot.model_code in item_name
-                and type(item_code) is str
-                and item_code.startswith("ace-store:")
-                and len(item_code) > len("ace-store:")
+                and item_code == slot.exact_item_code
             ):
                 identity_matches.append(item)
         if len(identity_matches) != 1:
@@ -1014,6 +1076,7 @@ def verify(
     result_store: Path,
     request_paths: Mapping[str, Path],
     now: datetime,
+    expected_content_packet_bytes: bytes | None = None,
 ) -> dict[str, object]:
     if (
         not repository_root.is_absolute()
@@ -1024,6 +1087,11 @@ def verify(
 
     content_path = repository_root / CONTENT_PACKET_RELATIVE_PATH
     content_snapshot = _read_content_packet(content_path)
+    if expected_content_packet_bytes is not None and (
+        type(expected_content_packet_bytes) is not bytes
+        or content_snapshot.raw != expected_content_packet_bytes
+    ):
+        _fail("AFFILIATE_CONTENT_STATE_INVALID")
     fingerprints = _request_fingerprints(request_paths)
     result_snapshot = _scan_results(
         result_store,
