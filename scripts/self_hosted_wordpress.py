@@ -80,6 +80,7 @@ _WEBP_VP8X_EXIF_FLAG: Final = 0x08
 _WEBP_VP8X_XMP_FLAG: Final = 0x04
 _RUNTIME_REQUIRED_PATHS: Final = (
     "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml",
+    "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1_AMBIGUOUS_DRAFT_RECOVERY.yaml",
     "changes/st-1703/self-hosted-minimum-start-v1/Makefile",
     "changes/st-1703/self-hosted-minimum-start-v1/content/first-suitcase-comparison.v1.json",
     "changes/st-1703/self-hosted-minimum-start-v1/python-runtime-code-inventory.v1.sha256",
@@ -1064,6 +1065,7 @@ def _runtime_refusal_and_exit() -> NoReturn:
     print(
         json.dumps(
             {
+                "production_eligible": False,
                 "publication_authorized": False,
                 "reason_code": "SELF_HOSTED_RUNTIME_BINDING_INVALID",
                 "status": "BLOCKED",
@@ -1247,9 +1249,11 @@ try:
     )
     from raos.adapters.self_hosted_wordpress_https import (  # noqa: E402
         OfficialSelfHostedWordPressDraftAdapter,
+        OfficialSelfHostedWordPressRecoveryProbeAdapter,
     )
     from raos.adapters.self_hosted_wordpress_journal import (  # noqa: E402
         DurableSelfHostedWordPressDraftAdapter,
+        DurableSelfHostedWordPressDraftRecoveryAdapter,
     )
     from raos.application.editorial.self_hosted_minimum_start import (  # noqa: E402
         load_first_article_candidate_with_affiliate_status,
@@ -1467,12 +1471,49 @@ def _apply_draft(
     return _receipt_output(durable.apply(candidate))
 
 
+def _recover_draft(
+    repository_root: Path,
+    *,
+    content_packet_bytes: bytes | None = None,
+    theme_payloads: dict[str, bytes],
+) -> dict[str, object]:
+    candidate, affiliate_status = load_first_article_candidate_with_affiliate_status(
+        repository_root,
+        operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+        packet_bytes=content_packet_bytes,
+    )
+    if affiliate_status != "FINAL":
+        _fail(SelfHostedWordPressFailureCode.AFFILIATE_LINK_NOT_READY)
+    theme = verified_theme_source_check(theme_payloads)
+    if (
+        theme.get("package_ready") is not True
+        or theme.get("first_article_asset_status") != "FINAL"
+    ):
+        _fail(SelfHostedWordPressFailureCode.THEME_ASSET_NOT_READY)
+    if (
+        OwnerPrivateSelfHostedWordPressCredentialStore(
+            repository_root
+        ).metadata_status()
+        != "METADATA_READY"
+    ):
+        _fail(SelfHostedWordPressFailureCode.CREDENTIAL_METADATA_INVALID)
+    probe = OfficialSelfHostedWordPressRecoveryProbeAdapter(repository_root)
+    attempt = OfficialSelfHostedWordPressDraftAdapter(repository_root)
+    durable = DurableSelfHostedWordPressDraftRecoveryAdapter(
+        repository_root=repository_root,
+        probe_port=probe,
+        attempt_port=attempt,
+    )
+    return _receipt_output(durable.recover(candidate))
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = _ClosedArgumentParser(allow_abbrev=False)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("doctor", allow_abbrev=False)
     commands.add_parser("install-credentials", allow_abbrev=False)
     commands.add_parser("create-draft", allow_abbrev=False)
+    commands.add_parser("recover-create-draft", allow_abbrev=False)
     affiliate = commands.add_parser("affiliate-verify", allow_abbrev=False)
     affiliate.add_argument("--ace-cresta-06316-request", required=True)
     affiliate.add_argument("--ace-difference-05721-request", required=True)
@@ -1491,6 +1532,7 @@ def main(
         print(
             json.dumps(
                 {
+                    "production_eligible": False,
                     "publication_authorized": False,
                     "reason_code": "SELF_HOSTED_RUNTIME_BINDING_INVALID",
                     "status": "BLOCKED",
@@ -1519,6 +1561,12 @@ def main(
             result = _install_credentials(root, tty_reader=tty_reader)
         elif arguments.command == "create-draft":
             result = _apply_draft(
+                root,
+                content_packet_bytes=content_packet_bytes,
+                theme_payloads=theme_payloads,
+            )
+        elif arguments.command == "recover-create-draft":
+            result = _recover_draft(
                 root,
                 content_packet_bytes=content_packet_bytes,
                 theme_payloads=theme_payloads,
@@ -1561,6 +1609,7 @@ def main(
         print(
             json.dumps(
                 {
+                    "production_eligible": False,
                     "publication_authorized": False,
                     "reason_code": error.code.value,
                     "status": "BLOCKED",
@@ -1574,6 +1623,7 @@ def main(
         print(
             json.dumps(
                 {
+                    "production_eligible": False,
                     "publication_authorized": False,
                     "reason_code": "SELF_HOSTED_RUNTIME_BINDING_INVALID",
                     "status": "BLOCKED",

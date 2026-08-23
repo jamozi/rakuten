@@ -6,10 +6,11 @@ self-hosted site `https://kurashinoshirube.com` and brand
 `kurashierabinote.wordpress.com` and does not change any historical exact-hash
 handoff or artifact.
 
-The durable design record is `DESIGN_HANDOFF_V1.yaml`. It records owner inputs
-for this local slice but does not resolve the Canonical Open Decision registry,
-complete ST-1703, authorize a provider call, or constitute staging, formal TST,
-publication, release, or Production evidence.
+The base durable design record is `DESIGN_HANDOFF_V1.yaml`. The separate
+`DESIGN_HANDOFF_V1_AMBIGUOUS_DRAFT_RECOVERY.yaml` owns only the one-use
+read-before-recovery amendment. These records do not resolve the Canonical Open
+Decision registry, complete ST-1703, authorize a provider call, or constitute
+staging, formal TST, publication, release, or Production evidence.
 
 ## Owned boundaries
 
@@ -61,6 +62,14 @@ publication, release, or Production evidence.
   its held output-directory descriptor to that exact no-symlink path and,
   after atomic publication and directory fsync, stably reopens the ZIP and
   requires its bytes to equal the intended deterministic package.
+- `.secrets/wordpress-owner-local/state/draft-recovery.v1.json` is created only
+  by the explicit `recover-create-draft` operation after it proves the existing
+  journal contains the exact pending first-article create. It is an
+  integrity-bound, owner-private, one-use sidecar. Its presence in any valid,
+  partial, failed, or terminal state permanently blocks another recovery run.
+  It stores only closed state, hashes and an exact draft ID/status on success;
+  it stores no credential, Authorization header, title, slug, content, URL,
+  response body, browser data, or private pathname.
 
 The generated package identifies its owner through the embedded
 `raos-assets.v1.json`:
@@ -150,7 +159,7 @@ boundary, not an additional live-provider authority.
 
 Every owner command is bound before RAOS imports or credential access to the
 physical `/home/minami/rakuten` repository, an exact committed clean `HEAD`
-descending from the guaranteed shipped PR base `b5a6157b`, and the 31 ordered
+descending from the guaranteed shipped PR base `b5a6157b`, and the 32 ordered
 base source/input files in `runtime-manifest.v1.json`. When either of the two
 fixed `required_images` records is explicitly `FINAL`, that manifest-declared,
 lowercase-SHA-256-bound WebP is added to the reviewed inventory; pending images
@@ -167,7 +176,7 @@ captures and hash-checks the complete committed CLI blob before Python is
 started. The shell-stage `HEAD`, blob ID and CLI SHA-256 are carried into the
 stdlib-only Python bootstrap and must match the same current `HEAD`. The
 bootstrap first binds the runtime manifest to the matching `HEAD` blob, then
-derives an exact 31-plus-zero-to-two path inventory from the fixed committed
+derives an exact 32-plus-zero-to-two path inventory from the fixed committed
 asset manifest before opening any listed working payload. It checks every
 bounded SHA-256, the same complete static WebP container/profile used by the
 package and offline doctor, matching `HEAD` blob, the exact tracked
@@ -225,10 +234,44 @@ The implementation keeps `domain <- application <- adapters/framework`:
   Basic authentication only for the exact origin, one direct POST, system TLS,
   bounded timeouts/response
   bytes, strict JSON, no redirect/proxy inheritance, and zero retry;
+- the separate recovery probe exposes one exact authenticated Posts collection
+  GET only. Its fixed query uses `context=edit`, the exact candidate slug, all
+  relevant post statuses, exact raw fields, one bounded page and strict total/
+  page headers. It has no write method, redirect, proxy, retry, pagination or
+  fallback;
 - the journal durably fsyncs `INTENT` before the sole attempt and `COMMITTED`
   after strict response validation. Exact committed replay reads no credential
   and performs no network operation. Pending, ambiguous, mismatched, or
   tampered state fails closed.
+
+## One-use ambiguous create recovery
+
+`create-draft` has not changed: an exact pending journal still blocks and is
+never replayed automatically. The only recovery surface is the distinct,
+human-invoked command:
+
+```bash
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile recover-create-draft
+```
+
+Do not run it as a credential or connectivity test. Before any credential value
+or network access, it requires the exact current pending `CREATE_DRAFT`, creates
+and fsyncs the integrity-bound sidecar under the existing journal lock, and is
+then permanently consumed. It performs exactly one fixed-origin official REST
+GET. Exactly one matching `draft` with the same ID-safe type, slug, raw title and
+raw content is reconciled to `COMMITTED` with zero POSTs. A strictly proven
+empty collection permits exactly one additional invocation of the existing
+four-field create POST. Only its exact success receipt is committed.
+
+Any authentication/transport uncertainty, redirect, timeout, bad header,
+pagination, malformed or oversized JSON, duplicate, nonzero mismatch, sidecar
+or journal drift, crash, or ambiguous second POST leaves no replay path. A
+controlled failure records a closed terminal reason when safely possible; an
+interrupted partial intent itself remains the permanent block. Never edit,
+remove, chmod, relink, or replace either state file to obtain another attempt.
+The command always reports `publication_authorized=false` and
+`production_eligible=false`; it cannot publish, update, delete, upload media,
+or alter theme/plugin/taxonomy/publicize state. `doctor` never starts recovery.
 
 The create request has exactly `title`, the fixed `slug`, the reviewed
 generated `content`, and `status="draft"`. The slug is included in the content
@@ -262,7 +305,7 @@ This slice does not add or replace a root Make target.
 
 - The child theme is not installed or activated by this slice, and no live
   draft preview has confirmed the shortcode-rendered first-article image.
-- Live read-only credential proof, draft creation, theme activation,
+- Live read-only credential proof, draft creation or one-use recovery, theme activation,
   consent/analytics activation, human review/publication, formal
   TST-021/TST-022/TST-032, staging, release, and Production are not executed.
 - The planned 14-day/five-article pilot belongs to ST-1704, not this slice.

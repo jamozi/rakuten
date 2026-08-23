@@ -33,8 +33,14 @@ class SelfHostedWordPressOperation(StrEnum):
 
 class SelfHostedWordPressDisposition(StrEnum):
     CREATED = "CREATED"
+    RECONCILED = "RECONCILED"
     UPDATED = "UPDATED"
     REPLAYED = "REPLAYED"
+
+
+class SelfHostedWordPressRecoveryObservationDisposition(StrEnum):
+    EXACT_DRAFT = "EXACT_DRAFT"
+    EXACT_ABSENCE = "EXACT_ABSENCE"
 
 
 class SelfHostedWordPressFailureCode(StrEnum):
@@ -54,6 +60,11 @@ class SelfHostedWordPressFailureCode(StrEnum):
     JOURNAL_MISMATCH = "JOURNAL_MISMATCH"
     OUTCOME_MISMATCH = "OUTCOME_MISMATCH"
     OPERATION_NOT_ALLOWED = "OPERATION_NOT_ALLOWED"
+    RECOVERY_NOT_AVAILABLE = "RECOVERY_NOT_AVAILABLE"
+    RECOVERY_ALREADY_CONSUMED = "RECOVERY_ALREADY_CONSUMED"
+    RECOVERY_STATE_INVALID = "RECOVERY_STATE_INVALID"
+    RECOVERY_READ_UNCERTAIN = "RECOVERY_READ_UNCERTAIN"
+    RECOVERY_REMOTE_MISMATCH = "RECOVERY_REMOTE_MISMATCH"
 
 
 class SelfHostedWordPressFailure(RuntimeError):
@@ -270,6 +281,52 @@ class SelfHostedWordPressDraftReceipt(_RedactedValue):
             _require_sha256(value)
 
 
+@dataclass(frozen=True, slots=True, repr=False)
+class SelfHostedWordPressRecoveryObservation(_RedactedValue):
+    disposition: SelfHostedWordPressRecoveryObservationDisposition
+    draft_id: int | None
+    status: str | None
+    content_sha256: str
+    operation_sha256: str
+    query_sha256: str
+    response_sha256: str
+    publication_authorized: bool = False
+    production_eligible: bool = False
+
+    def __post_init__(self) -> None:
+        if (
+            type(self.disposition)
+            is not SelfHostedWordPressRecoveryObservationDisposition
+            or self.publication_authorized is not False
+            or self.production_eligible is not False
+        ):
+            fail_self_hosted_wordpress(
+                SelfHostedWordPressFailureCode.RECOVERY_REMOTE_MISMATCH
+            )
+        for value in (
+            self.content_sha256,
+            self.operation_sha256,
+            self.query_sha256,
+            self.response_sha256,
+        ):
+            _require_sha256(value)
+        if (
+            self.disposition
+            is SelfHostedWordPressRecoveryObservationDisposition.EXACT_DRAFT
+        ):
+            valid_result = (
+                type(self.draft_id) is int
+                and 1 <= self.draft_id <= _MAX_DRAFT_ID
+                and self.status == SELF_HOSTED_WORDPRESS_STATUS
+            )
+        else:
+            valid_result = self.draft_id is None and self.status is None
+        if not valid_result:
+            fail_self_hosted_wordpress(
+                SelfHostedWordPressFailureCode.RECOVERY_REMOTE_MISMATCH
+            )
+
+
 __all__ = [
     "SELF_HOSTED_WORDPRESS_ORIGIN",
     "SELF_HOSTED_WORDPRESS_STATUS",
@@ -279,5 +336,7 @@ __all__ = [
     "SelfHostedWordPressFailure",
     "SelfHostedWordPressFailureCode",
     "SelfHostedWordPressOperation",
+    "SelfHostedWordPressRecoveryObservation",
+    "SelfHostedWordPressRecoveryObservationDisposition",
     "fail_self_hosted_wordpress",
 ]

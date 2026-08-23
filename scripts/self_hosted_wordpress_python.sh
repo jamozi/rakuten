@@ -31,7 +31,7 @@ ace_difference_request=$affiliate_request_root/keyword-ace-difference-05721.json
 proteca_maxpass4_request=$affiliate_request_root/keyword-proteca-maxpass4-01471.json
 
 case "${1-}:$#" in
-  doctor:1|install-credentials:1|create-draft:1) ;;
+  doctor:1|install-credentials:1|create-draft:1|recover-create-draft:1) ;;
   affiliate-verify:7)
     [ "$2" = --ace-cresta-06316-request ] || refuse
     [ "$3" = "$ace_cresta_request" ] || refuse
@@ -563,7 +563,9 @@ case "$requested_command" in
       --ace-difference-05721-request "$ace_difference_request" \
       --proteca-maxpass4-01471-request "$proteca_maxpass4_request"
     ;;
-  doctor|install-credentials|create-draft) set -- "$requested_command" ;;
+  doctor|install-credentials|create-draft|recover-create-draft)
+    set -- "$requested_command"
+    ;;
   *) refuse ;;
 esac
 

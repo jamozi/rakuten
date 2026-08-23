@@ -334,6 +334,9 @@ Recovery rules are strict:
   journal mismatch, or tamper means stop; never issue a second request;
 - do not delete/edit the journal to force a resend.
 
+The ordinary `create-draft` command never interprets a pending journal as
+permission to retry. Keep it that way.
+
 The journal stores only operation/content hashes, exact draft ID, draft
 status, and response hash. It stores no credential, title, content, or response
 body.
@@ -346,7 +349,62 @@ it before credential access/network construction, and CLI/Make expose no
 update command. Improvements remain proposal/diff output and the owner applies
 any edit manually in the WordPress dashboard before publication.
 
-## 6. Human site controls
+## 6. One-use ambiguous create recovery — separate owner operation
+
+Use this section only when the exact first-article `CREATE_DRAFT` journal is
+pending because the sole POST outcome was ambiguous, and an authorized human
+has independently completed the required dashboard reconciliation. Do not put
+dashboard observations, usernames, private paths, response bodies, or other
+browser/account data in tracked files or command arguments.
+
+Before invoking recovery, the dedicated draft writer must have the exact live
+capability required for authenticated `context=edit` collection reads and
+creating its own draft. Credential metadata alone does not prove the role,
+Application Password, or REST permissions. A Subscriber is not sufficient.
+Do not use the one-use command as a role, authentication, DNS, TLS, or
+connectivity probe: once its durable intent is created, every credential/live
+refusal or uncertainty consumes it.
+
+After reviewing the exact journal and confirming that no other writer or owner
+maintenance process is active, the only recovery command is:
+
+```bash
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile recover-create-draft
+```
+
+The command first validates the exact pending candidate, then exclusively
+creates and fsyncs
+`.secrets/wordpress-owner-local/state/draft-recovery.v1.json` under the existing
+journal lock. Network access cannot begin before that durable intent. The
+sidecar may be used only once and contains closed state, hashes, and the exact
+draft ID/status on success. It never contains credential, Authorization
+header, title, slug, content, URL, response body, browser material, PII, or a
+private path.
+
+The fixed authenticated official Posts REST GET uses `context=edit`, the exact
+candidate slug, all relevant statuses, exact raw fields, `per_page=100`, and
+requires collection total/page headers to prove zero or one result with no
+hidden page. It follows no redirect, inherits no proxy, retries nothing, and
+has no alternate route/status/page fallback.
+
+- One exact `draft` whose type, slug, raw title and raw content match the
+  candidate reconciles the existing journal to `COMMITTED` with zero POSTs.
+- An exact empty collection permits one and only one additional existing
+  create POST. Only its strict successful receipt is committed.
+- Any nonzero mismatch, duplicate, malformed/oversized/non-JSON body, bad
+  header/status, pagination, redirect, proxy, timeout, authentication failure,
+  sidecar/journal drift, crash, or ambiguous second POST performs no further
+  request and permanently blocks the recovery path.
+
+The total create POST count can therefore never exceed the original ambiguous
+attempt plus one recovery POST. There is no third attempt. Never delete, edit,
+chmod, hardlink, symlink, or replace the journal, sidecar, lock, or terminal
+staging entry. A terminal result remains `publication_authorized=false` and
+`production_eligible=false`. The command cannot publish, update, delete,
+upload media, or change theme/plugin/taxonomy/publicize state, and `doctor`
+never invokes it.
+
+## 7. Human site controls
 
 After a real draft, the owner
 must review in WordPress at minimum:
@@ -379,10 +437,10 @@ indexing, consent behavior, or analytics is a dated live observation only. It
 does not prove this implementation fixed or activated that behavior; repeat
 external verification is required after the relevant human site change.
 
-## 7. Remaining gates
+## 8. Remaining gates
 
-The following remain outside this local slice: live credential proof; real
-draft create; theme installation/activation and browser preview;
+The following remain outside local implementation evidence: live credential
+proof; real draft create or recovery; theme installation/activation and browser preview;
 consent/GA4/Search Console activation; legal
 and editorial review; human publication; ST-1704's 14-day/five-article pilot;
 formal TST-021/TST-022/TST-032; hosted CI; staging; release; revenue evidence;

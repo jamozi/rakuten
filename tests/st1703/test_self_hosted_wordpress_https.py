@@ -18,6 +18,7 @@ from raos.adapters.self_hosted_wordpress_https import (
     CONNECT_TIMEOUT_SECONDS,
     MAX_RESPONSE_BYTES,
     OfficialSelfHostedWordPressDraftAdapter,
+    OfficialSelfHostedWordPressRecoveryProbeAdapter,
     SELF_HOSTED_WORDPRESS_HOST,
     SELF_HOSTED_WORDPRESS_PORT,
 )
@@ -89,6 +90,10 @@ class FakeResponse:
         content_length: str | None = None,
         content_encoding: str | None = None,
         transfer_encoding: str | None = None,
+        total: str | None = None,
+        total_pages: str | None = None,
+        location: str | None = None,
+        link: str | None = None,
     ) -> None:
         self.status = status
         self.body = body
@@ -96,6 +101,10 @@ class FakeResponse:
         self.content_length = content_length
         self.content_encoding = content_encoding
         self.transfer_encoding = transfer_encoding
+        self.total = total
+        self.total_pages = total_pages
+        self.location = location
+        self.link = link
         self.read_amounts: list[int] = []
 
     def getheader(self, name: str, default: str | None = None) -> str | None:
@@ -104,6 +113,10 @@ class FakeResponse:
             "Content-Length": self.content_length,
             "Content-Encoding": self.content_encoding,
             "Transfer-Encoding": self.transfer_encoding,
+            "X-WP-Total": self.total,
+            "X-WP-TotalPages": self.total_pages,
+            "Location": self.location,
+            "Link": self.link,
         }.get(name, default)
 
     def read(self, amount: int = -1) -> bytes:
@@ -467,3 +480,257 @@ def test_adapter_and_credential_representations_never_expose_values(
     for rendered in (repr(credentials), str(credentials), repr(adapter)):
         assert "synthetic" not in rendered
         assert "owner-editor" not in rendered
+
+
+def _recovery_body(**overrides: object) -> bytes:
+    value: dict[str, object] = {
+        "content": {"raw": "<p>Bound content.</p>"},
+        "id": 1703,
+        "slug": _SYNTHETIC_SLUG,
+        "status": "draft",
+        "title": {"raw": "Synthetic draft"},
+        "type": "post",
+    }
+    value.update(overrides)
+    return json.dumps([value], sort_keys=True, separators=(",", ":")).encode("utf-8")
+
+
+def test_recovery_probe_uses_exact_authenticated_collection_get(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _clean_environment(monkeypatch)
+    credentials = _install(tmp_path)
+    body = _recovery_body()
+    response = FakeResponse(
+        status=200,
+        body=body,
+        content_length=str(len(body)),
+        total="1",
+        total_pages="1",
+    )
+    connection = FakeConnection(response)
+
+    observation = OfficialSelfHostedWordPressRecoveryProbeAdapter(
+        tmp_path,
+        connection_factory=FakeFactory(connection),
+    ).observe(_candidate())
+
+    assert observation.draft_id == 1703
+    assert observation.status == "draft"
+    assert connection.connect_count == connection.request_count == 1
+    assert connection.closed == 1
+    assert connection.observed_request is not None
+    method, path, request_body, headers = connection.observed_request
+    assert method == "GET"
+    assert path == (
+        "/wp-json/wp/v2/posts?context=edit&slug=synthetic-draft"
+        "&status=publish%2Cfuture%2Cdraft%2Cpending%2Cprivate%2Ctrash"
+        "&_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Ccontent.raw"
+        "&per_page=100"
+    )
+    assert request_body == b""
+    assert headers == {
+        "Accept": "application/json",
+        "Authorization": credentials.authorization_header(),
+        "Connection": "close",
+        "Content-Length": "0",
+        "Host": "kurashinoshirube.com",
+        "User-Agent": "RAOS-ST-1703-owner-local-recovery/1",
+    }
+    assert response.read_amounts == [MAX_RESPONSE_BYTES + 1]
+
+
+def test_recovery_probe_accepts_only_header_proven_empty_collection(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _clean_environment(monkeypatch)
+    _install(tmp_path)
+    connection = FakeConnection(
+        FakeResponse(
+            status=200,
+            body=b"[]",
+            content_length="2",
+            total="0",
+            total_pages="0",
+        )
+    )
+    observation = OfficialSelfHostedWordPressRecoveryProbeAdapter(
+        tmp_path,
+        connection_factory=FakeFactory(connection),
+    ).observe(_candidate())
+    assert observation.draft_id is None
+    assert observation.status is None
+    assert connection.request_count == 1
+
+
+@pytest.mark.parametrize(
+    "response",
+    [
+        FakeResponse(status=302, body=b"[]", total="0", total_pages="0"),
+        FakeResponse(status=500, body=b"[]", total="0", total_pages="0"),
+        FakeResponse(
+            status=200,
+            body=b"[]",
+            content_type="text/html",
+            total="0",
+            total_pages="0",
+        ),
+        FakeResponse(status=200, body=b"{", total="0", total_pages="0"),
+        FakeResponse(
+            status=200,
+            body=b"x" * (MAX_RESPONSE_BYTES + 1),
+            total="0",
+            total_pages="0",
+        ),
+        FakeResponse(status=200, body=b"[]", total=None, total_pages="0"),
+        FakeResponse(status=200, body=b"[]", total="1", total_pages="0"),
+        FakeResponse(status=200, body=b"[]", total="0", total_pages="1"),
+        FakeResponse(status=200, body=b"[]", total="0", total_pages="2"),
+        FakeResponse(
+            status=200,
+            body=b"[]",
+            total="0",
+            total_pages="0",
+            location="https://kurashinoshirube.com/elsewhere",
+        ),
+        FakeResponse(
+            status=200,
+            body=b"[]",
+            total="0",
+            total_pages="0",
+            link="<https://kurashinoshirube.com/page/2>; rel=next",
+        ),
+        FakeResponse(
+            status=200,
+            body=b"[]",
+            total="0",
+            total_pages="0",
+            content_encoding="gzip",
+        ),
+        FakeResponse(
+            status=200,
+            body=b"[]",
+            total="0",
+            total_pages="0",
+            transfer_encoding="gzip",
+        ),
+    ],
+    ids=(
+        "redirect",
+        "error-status",
+        "wrong-media",
+        "non-json",
+        "oversize",
+        "missing-total",
+        "hidden-result",
+        "page-count-mismatch",
+        "pagination",
+        "location",
+        "link-pagination",
+        "encoding",
+        "transfer-encoding",
+    ),
+)
+def test_recovery_probe_rejects_uncertain_status_body_headers_or_pagination(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    response: FakeResponse,
+) -> None:
+    _clean_environment(monkeypatch)
+    _install(tmp_path)
+    connection = FakeConnection(response)
+    with pytest.raises(SelfHostedWordPressFailure) as failure:
+        OfficialSelfHostedWordPressRecoveryProbeAdapter(
+            tmp_path,
+            connection_factory=FakeFactory(connection),
+        ).observe(_candidate())
+    assert failure.value.code is SelfHostedWordPressFailureCode.RECOVERY_READ_UNCERTAIN
+    assert connection.request_count == 1
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        json.dumps(
+            [json.loads(_recovery_body())[0], json.loads(_recovery_body())[0]],
+            separators=(",", ":"),
+        ).encode("utf-8"),
+        _recovery_body(title={"raw": "Wrong title"}),
+        _recovery_body(content={"raw": "<p>Wrong content.</p>"}),
+        _recovery_body(slug="wrong-slug"),
+        _recovery_body(status="publish"),
+        _recovery_body(type="page"),
+        _recovery_body(extra="unexpected"),
+        _recovery_body(title={"raw": "Synthetic draft", "rendered": "extra"}),
+    ],
+    ids=(
+        "duplicate",
+        "title",
+        "content",
+        "slug",
+        "status",
+        "type",
+        "extra-field",
+        "nested-extra-field",
+    ),
+)
+def test_recovery_probe_rejects_duplicate_mismatch_or_schema_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    body: bytes,
+) -> None:
+    _clean_environment(monkeypatch)
+    _install(tmp_path)
+    count = len(json.loads(body))
+    connection = FakeConnection(
+        FakeResponse(
+            status=200,
+            body=body,
+            total=str(count),
+            total_pages="1",
+        )
+    )
+    with pytest.raises(SelfHostedWordPressFailure) as failure:
+        OfficialSelfHostedWordPressRecoveryProbeAdapter(
+            tmp_path,
+            connection_factory=FakeFactory(connection),
+        ).observe(_candidate())
+    assert failure.value.code in {
+        SelfHostedWordPressFailureCode.RECOVERY_READ_UNCERTAIN,
+        SelfHostedWordPressFailureCode.RECOVERY_REMOTE_MISMATCH,
+    }
+    assert connection.request_count == 1
+
+
+def test_recovery_probe_timeout_and_proxy_are_one_shot_and_no_fallback(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _clean_environment(monkeypatch)
+    _install(tmp_path)
+    connection = FakeConnection(FakeResponse(), request_error=TimeoutError())
+    adapter = OfficialSelfHostedWordPressRecoveryProbeAdapter(
+        tmp_path,
+        connection_factory=FakeFactory(connection),
+    )
+    with pytest.raises(SelfHostedWordPressFailure) as timeout:
+        adapter.observe(_candidate())
+    assert timeout.value.code is SelfHostedWordPressFailureCode.RECOVERY_READ_UNCERTAIN
+    with pytest.raises(SelfHostedWordPressFailure) as repeated:
+        adapter.observe(_candidate())
+    assert (
+        repeated.value.code is SelfHostedWordPressFailureCode.RECOVERY_ALREADY_CONSUMED
+    )
+    assert connection.request_count == 1
+
+    monkeypatch.setenv("HTTPS_PROXY", "untrusted")
+    factory = FakeFactory(FakeConnection(FakeResponse()))
+    with pytest.raises(SelfHostedWordPressFailure) as proxy:
+        OfficialSelfHostedWordPressRecoveryProbeAdapter(
+            tmp_path,
+            connection_factory=factory,
+        ).observe(_candidate())
+    assert proxy.value.code is SelfHostedWordPressFailureCode.TRANSPORT_REFUSED
+    assert factory.open_count == 0

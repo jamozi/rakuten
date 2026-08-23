@@ -7,6 +7,7 @@ from typing import Protocol, runtime_checkable
 from raos.domain.editorial.self_hosted_wordpress import (
     SelfHostedWordPressDraft,
     SelfHostedWordPressDraftReceipt,
+    SelfHostedWordPressRecoveryObservation,
 )
 
 
@@ -36,4 +37,17 @@ class SelfHostedWordPressAttemptPort(Protocol):
     ) -> SelfHostedWordPressDraftReceipt: ...
 
 
-__all__ = ["SelfHostedWordPressAttemptPort", "SelfHostedWordPressDraftPort"]
+@runtime_checkable
+class SelfHostedWordPressRecoveryProbePort(Protocol):
+    """Observe the exact draft slug once without any mutation or fallback."""
+
+    def observe(
+        self, candidate: SelfHostedWordPressDraft
+    ) -> SelfHostedWordPressRecoveryObservation: ...
+
+
+__all__ = [
+    "SelfHostedWordPressAttemptPort",
+    "SelfHostedWordPressDraftPort",
+    "SelfHostedWordPressRecoveryProbePort",
+]

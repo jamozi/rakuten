@@ -56,6 +56,7 @@ MAX_PYTHON_INVENTORY_BYTES: Final = 512 * 1024
 MAX_PYTHON_TREE_ENTRIES: Final = 10_000
 REQUIRED_RUNTIME_PATHS: Final = (
     "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml",
+    "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1_AMBIGUOUS_DRAFT_RECOVERY.yaml",
     "changes/st-1703/self-hosted-minimum-start-v1/Makefile",
     "changes/st-1703/self-hosted-minimum-start-v1/content/first-suitcase-comparison.v1.json",
     "changes/st-1703/self-hosted-minimum-start-v1/python-runtime-code-inventory.v1.sha256",
