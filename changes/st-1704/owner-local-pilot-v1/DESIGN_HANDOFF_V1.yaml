@@ -1,0 +1,106 @@
+DESIGN_HANDOFF_V1:
+  record_status: REPOSITORY_LOCAL_DESIGN_RECORD
+  authority: DESIGN_AND_EVIDENCE_ONLY
+  approved_story: ST-1704
+  approved_scope: ST1704_OWNER_LOCAL_PILOT_LEDGER_V1
+  source_design_refs:
+    - docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    - docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    - docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    - docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    - docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml
+    - docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml
+    - docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    - docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    - docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    - docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1704
+    - changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml
+  decision:
+    classification: ST1704_OWNER_LOCAL_PILOT_LEDGER_V1
+    site_origin: https://kurashinoshirube.com
+    duration_days: 14
+    article_slots: 5
+    monthly_incremental_cost_cap_jpy: 2000
+    owner_local_labor_cost_per_hour_jpy: 3000
+    first_five_drafts: CODEX_NOT_OPENAI_API
+    improvement_output: PROPOSAL_AND_DIFF_ONLY
+    per_article_human_review_and_publish_required: true
+    automatic_publication: DISABLED
+    nonessential_tracking: DISABLED_OD_012
+  rationale:
+    - 公開済み第1記事から最短で品質・工数・費用の校正を始める
+    - 未接続のaccess/click/revenueを0へ変換せず、集計値だけをowner-private ledgerへ記録する
+    - WordPress、Provider、Browser、Trackingへの書込み能力をledgerから分離する
+  rejected_alternatives:
+    - option: 既存90日market-learning profileを置換する
+      reason: 別scopeの履歴であり、今回の14日pilotは追加のowner-local decisionである
+    - option: 既存30日low-cost publication profileを置換する
+      reason: 別scopeの履歴を保持し、今回の5記事ledgerへ暗黙移行しない
+    - option: themeへanalytics instrumentationを追加する
+      reason: OD-012未解決かつST-1201/ST-1202 runtime未接続のためtrackingを有効化しない
+    - option: 楽天成果Report行をledgerへ保存する
+      reason: OD-003未解決であり、集計値・期間・source kind・input hash・basisだけを許可する
+  constraints:
+    - ledgerはowner-local固定.secrets pathだけを使用する
+    - credential、raw URL query、affiliate destination、本文、source packet、raw prompt、PII、raw IP、full UA、search query、provider row、cookie、storageを保存しない
+    - doctorとreportはread-onlyである
+    - initとrecordはlocal ledger以外へ書き込まない
+    - WordPress、Provider、Browser、network、publication、tracking、ranking変更を実装しない
+    - Financeをrecommendation inputにしない
+    - publication factはowner commandで明示記録されたhuman confirmationだけを扱う
+    - missing、unavailable、unverified、observed zero、observed valueを区別する
+    - KPI-006 affiliate CTA clicksとKPI-012 Search Console organic clicksを別metricとして扱う
+    - revenueはprovider total、direct、estimated、unattributedを上書きせず別bucketで保持する
+    - 同一provider input hashとperiodのrevenue batchを複数article slotへ重複計上しない
+    - metric fieldごとに許可されたsource kindとattribution basisだけを受け入れる
+    - observation、publication、review、metric periodは同一の明示的14日window内に限定する
+    - improvementはdeterministic proposalだけを返す
+  security_and_approval_gates:
+    local_repository_implementation: AUTHORIZED_REVERSIBLE
+    owner_private_ledger_write: OWNER_LOCAL_COMMAND_ONLY
+    first_publication_fact: HUMAN_CONFIRMED_INPUT_REQUIRED
+    additional_article_publication: HUMAN_OWNER_REQUIRED_PER_ARTICLE
+    analytics_activation: HUMAN_PRIVACY_OPERATOR_REQUIRED
+    provider_live_call: NOT_AUTHORIZED
+    wordpress_write: NOT_AUTHORIZED
+    release: NOT_AUTHORIZED
+    production_claim: FORBIDDEN
+  acceptance_criteria:
+    - exactly five slots and the 14-day/2000-JPY/3000-JPY policy are fixed
+    - strict owner-private JSON rejects unknown and duplicate fields
+    - logical events form a validated append-only SHA-256 chain
+    - write uses owner-only atomic replace and directory fsync
+    - replay is idempotent and same observation id with changed content is rejected
+    - report never coerces missing metrics to zero
+    - critical defect yields STOP_AND_REVIEW
+    - incomplete data yields COLLECT_BASELINE or INSUFFICIENT_EVIDENCE
+    - complete data yields review candidates only and performs no action
+  required_test_evidence:
+    - isolated ST-1704 positive, negative, mutation, and filesystem tests
+    - ruff, mypy, Pyright, bash syntax, generator check, git diff check, and secret scan
+  open_decision_state:
+    canonical_registry_mutated: false
+    formal_resolution_claimed: false
+    owner_local_values_selected:
+      - exact self-hosted origin
+      - 14-day duration
+      - exactly five slots
+      - 2000 JPY monthly incremental cost cap
+      - 3000 JPY/hour owner-local labor assumption
+    remain_unresolved:
+      - OD-003
+      - OD-006
+      - OD-007
+      - OD-008
+      - OD-009
+      - OD-012
+      - OD-014
+      - OD-015
+  evidence_status:
+    formal_story_ST_1704: NOT_STARTED
+    TST_018: NOT_EXECUTED
+    TST_020: NOT_EXECUTED
+    TST_032: NOT_EXECUTED
+    analytics_activation: NOT_EXECUTED
+    provider_proof: NOT_EXECUTED
+    production: NOT_READY

@@ -1,0 +1,1043 @@
+{
+  "contract_sha256": "9251302614dc0e0901680236d29966ac3d51a20aa898890f7ed68f8ae068a580",
+  "external_action_authority": "NONE",
+  "generated_by": "scripts/build_st1704_owner_local_pilot.py",
+  "observation_input_schema": {
+    "$id": "urn:raos:st1704:owner-local-pilot-observation:v1",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+      "article": {
+        "additionalProperties": false,
+        "properties": {
+          "article_ref_sha256": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "public_slug": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "slot": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "article_ref_sha256",
+          "public_slug",
+          "slot"
+        ],
+        "type": "object"
+      },
+      "defects": {
+        "additionalProperties": false,
+        "properties": {
+          "critical": {
+            "additionalProperties": false,
+            "properties": {
+              "state": {
+                "enum": [
+                  "NOT_OBSERVED",
+                  "UNAVAILABLE",
+                  "UNVERIFIED",
+                  "OBSERVED_ZERO",
+                  "OBSERVED_VALUE"
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "state",
+              "value"
+            ],
+            "type": "object"
+          },
+          "major": {
+            "additionalProperties": false,
+            "properties": {
+              "state": {
+                "enum": [
+                  "NOT_OBSERVED",
+                  "UNAVAILABLE",
+                  "UNVERIFIED",
+                  "OBSERVED_ZERO",
+                  "OBSERVED_VALUE"
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "state",
+              "value"
+            ],
+            "type": "object"
+          },
+          "minor": {
+            "additionalProperties": false,
+            "properties": {
+              "state": {
+                "enum": [
+                  "NOT_OBSERVED",
+                  "UNAVAILABLE",
+                  "UNVERIFIED",
+                  "OBSERVED_ZERO",
+                  "OBSERVED_VALUE"
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "state",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "critical",
+          "major",
+          "minor"
+        ],
+        "type": "object"
+      },
+      "incremental_cost_jpy": {
+        "additionalProperties": false,
+        "properties": {
+          "state": {
+            "enum": [
+              "NOT_OBSERVED",
+              "UNAVAILABLE",
+              "UNVERIFIED",
+              "OBSERVED_ZERO",
+              "OBSERVED_VALUE"
+            ]
+          },
+          "value": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "state",
+          "value"
+        ],
+        "type": "object"
+      },
+      "metrics": {
+        "additionalProperties": false,
+        "properties": {
+          "affiliate_clicks": {
+            "additionalProperties": false,
+            "properties": {
+              "attribution_basis": {
+                "enum": [
+                  "NOT_APPLICABLE",
+                  "UNVERIFIED",
+                  "OWNER_REPORTED_PROVIDER_TOTAL",
+                  "OWNER_REPORTED_DIRECT",
+                  "OWNER_REPORTED_ESTIMATED",
+                  "OWNER_REPORTED_UNATTRIBUTED"
+                ]
+              },
+              "input_sha256": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "period_end": {
+                "anyOf": [
+                  {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "period_start": {
+                "anyOf": [
+                  {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source_kind": {
+                "enum": [
+                  "NOT_CONNECTED",
+                  "OWNER_MANUAL_AGGREGATE",
+                  "WORDPRESS_ADMIN_AGGREGATE",
+                  "FIRST_PARTY_AGGREGATE",
+                  "SEARCH_CONSOLE_AGGREGATE",
+                  "RAKUTEN_REPORT_AGGREGATE"
+                ]
+              },
+              "state": {
+                "enum": [
+                  "NOT_OBSERVED",
+                  "UNAVAILABLE",
+                  "UNVERIFIED",
+                  "OBSERVED_ZERO",
+                  "OBSERVED_VALUE"
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "attribution_basis",
+              "input_sha256",
+              "period_end",
+              "period_start",
+              "source_kind",
+              "state",
+              "value"
+            ],
+            "type": "object"
+          },
+          "article_views": {
+            "additionalProperties": false,
+            "properties": {
+              "attribution_basis": {
+                "enum": [
+                  "NOT_APPLICABLE",
+                  "UNVERIFIED",
+                  "OWNER_REPORTED_PROVIDER_TOTAL",
+                  "OWNER_REPORTED_DIRECT",
+                  "OWNER_REPORTED_ESTIMATED",
+                  "OWNER_REPORTED_UNATTRIBUTED"
+                ]
+              },
+              "input_sha256": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "period_end": {
+                "anyOf": [
+                  {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "period_start": {
+                "anyOf": [
+                  {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source_kind": {
+                "enum": [
+                  "NOT_CONNECTED",
+                  "OWNER_MANUAL_AGGREGATE",
+                  "WORDPRESS_ADMIN_AGGREGATE",
+                  "FIRST_PARTY_AGGREGATE",
+                  "SEARCH_CONSOLE_AGGREGATE",
+                  "RAKUTEN_REPORT_AGGREGATE"
+                ]
+              },
+              "state": {
+                "enum": [
+                  "NOT_OBSERVED",
+                  "UNAVAILABLE",
+                  "UNVERIFIED",
+                  "OBSERVED_ZERO",
+                  "OBSERVED_VALUE"
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "attribution_basis",
+              "input_sha256",
+              "period_end",
+              "period_start",
+              "source_kind",
+              "state",
+              "value"
+            ],
+            "type": "object"
+          },
+          "organic_clicks": {
+            "additionalProperties": false,
+            "properties": {
+              "attribution_basis": {
+                "enum": [
+                  "NOT_APPLICABLE",
+                  "UNVERIFIED",
+                  "OWNER_REPORTED_PROVIDER_TOTAL",
+                  "OWNER_REPORTED_DIRECT",
+                  "OWNER_REPORTED_ESTIMATED",
+                  "OWNER_REPORTED_UNATTRIBUTED"
+                ]
+              },
+              "input_sha256": {
+                "anyOf": [
+                  {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "period_end": {
+                "anyOf": [
+                  {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "period_start": {
+                "anyOf": [
+                  {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source_kind": {
+                "enum": [
+                  "NOT_CONNECTED",
+                  "OWNER_MANUAL_AGGREGATE",
+                  "WORDPRESS_ADMIN_AGGREGATE",
+                  "FIRST_PARTY_AGGREGATE",
+                  "SEARCH_CONSOLE_AGGREGATE",
+                  "RAKUTEN_REPORT_AGGREGATE"
+                ]
+              },
+              "state": {
+                "enum": [
+                  "NOT_OBSERVED",
+                  "UNAVAILABLE",
+                  "UNVERIFIED",
+                  "OBSERVED_ZERO",
+                  "OBSERVED_VALUE"
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "attribution_basis",
+              "input_sha256",
+              "period_end",
+              "period_start",
+              "source_kind",
+              "state",
+              "value"
+            ],
+            "type": "object"
+          },
+          "revenue_jpy": {
+            "additionalProperties": false,
+            "properties": {
+              "direct_jpy": {
+                "additionalProperties": false,
+                "properties": {
+                  "attribution_basis": {
+                    "enum": [
+                      "NOT_APPLICABLE",
+                      "UNVERIFIED",
+                      "OWNER_REPORTED_PROVIDER_TOTAL",
+                      "OWNER_REPORTED_DIRECT",
+                      "OWNER_REPORTED_ESTIMATED",
+                      "OWNER_REPORTED_UNATTRIBUTED"
+                    ]
+                  },
+                  "input_sha256": {
+                    "anyOf": [
+                      {
+                        "pattern": "^[0-9a-f]{64}$",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "period_end": {
+                    "anyOf": [
+                      {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "period_start": {
+                    "anyOf": [
+                      {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "NOT_CONNECTED",
+                      "OWNER_MANUAL_AGGREGATE",
+                      "WORDPRESS_ADMIN_AGGREGATE",
+                      "FIRST_PARTY_AGGREGATE",
+                      "SEARCH_CONSOLE_AGGREGATE",
+                      "RAKUTEN_REPORT_AGGREGATE"
+                    ]
+                  },
+                  "state": {
+                    "enum": [
+                      "NOT_OBSERVED",
+                      "UNAVAILABLE",
+                      "UNVERIFIED",
+                      "OBSERVED_ZERO",
+                      "OBSERVED_VALUE"
+                    ]
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "attribution_basis",
+                  "input_sha256",
+                  "period_end",
+                  "period_start",
+                  "source_kind",
+                  "state",
+                  "value"
+                ],
+                "type": "object"
+              },
+              "estimated_jpy": {
+                "additionalProperties": false,
+                "properties": {
+                  "attribution_basis": {
+                    "enum": [
+                      "NOT_APPLICABLE",
+                      "UNVERIFIED",
+                      "OWNER_REPORTED_PROVIDER_TOTAL",
+                      "OWNER_REPORTED_DIRECT",
+                      "OWNER_REPORTED_ESTIMATED",
+                      "OWNER_REPORTED_UNATTRIBUTED"
+                    ]
+                  },
+                  "input_sha256": {
+                    "anyOf": [
+                      {
+                        "pattern": "^[0-9a-f]{64}$",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "period_end": {
+                    "anyOf": [
+                      {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "period_start": {
+                    "anyOf": [
+                      {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "NOT_CONNECTED",
+                      "OWNER_MANUAL_AGGREGATE",
+                      "WORDPRESS_ADMIN_AGGREGATE",
+                      "FIRST_PARTY_AGGREGATE",
+                      "SEARCH_CONSOLE_AGGREGATE",
+                      "RAKUTEN_REPORT_AGGREGATE"
+                    ]
+                  },
+                  "state": {
+                    "enum": [
+                      "NOT_OBSERVED",
+                      "UNAVAILABLE",
+                      "UNVERIFIED",
+                      "OBSERVED_ZERO",
+                      "OBSERVED_VALUE"
+                    ]
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "attribution_basis",
+                  "input_sha256",
+                  "period_end",
+                  "period_start",
+                  "source_kind",
+                  "state",
+                  "value"
+                ],
+                "type": "object"
+              },
+              "provider_total_jpy": {
+                "additionalProperties": false,
+                "properties": {
+                  "attribution_basis": {
+                    "enum": [
+                      "NOT_APPLICABLE",
+                      "UNVERIFIED",
+                      "OWNER_REPORTED_PROVIDER_TOTAL",
+                      "OWNER_REPORTED_DIRECT",
+                      "OWNER_REPORTED_ESTIMATED",
+                      "OWNER_REPORTED_UNATTRIBUTED"
+                    ]
+                  },
+                  "input_sha256": {
+                    "anyOf": [
+                      {
+                        "pattern": "^[0-9a-f]{64}$",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "period_end": {
+                    "anyOf": [
+                      {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "period_start": {
+                    "anyOf": [
+                      {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "NOT_CONNECTED",
+                      "OWNER_MANUAL_AGGREGATE",
+                      "WORDPRESS_ADMIN_AGGREGATE",
+                      "FIRST_PARTY_AGGREGATE",
+                      "SEARCH_CONSOLE_AGGREGATE",
+                      "RAKUTEN_REPORT_AGGREGATE"
+                    ]
+                  },
+                  "state": {
+                    "enum": [
+                      "NOT_OBSERVED",
+                      "UNAVAILABLE",
+                      "UNVERIFIED",
+                      "OBSERVED_ZERO",
+                      "OBSERVED_VALUE"
+                    ]
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "attribution_basis",
+                  "input_sha256",
+                  "period_end",
+                  "period_start",
+                  "source_kind",
+                  "state",
+                  "value"
+                ],
+                "type": "object"
+              },
+              "unattributed_jpy": {
+                "additionalProperties": false,
+                "properties": {
+                  "attribution_basis": {
+                    "enum": [
+                      "NOT_APPLICABLE",
+                      "UNVERIFIED",
+                      "OWNER_REPORTED_PROVIDER_TOTAL",
+                      "OWNER_REPORTED_DIRECT",
+                      "OWNER_REPORTED_ESTIMATED",
+                      "OWNER_REPORTED_UNATTRIBUTED"
+                    ]
+                  },
+                  "input_sha256": {
+                    "anyOf": [
+                      {
+                        "pattern": "^[0-9a-f]{64}$",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "period_end": {
+                    "anyOf": [
+                      {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "period_start": {
+                    "anyOf": [
+                      {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "NOT_CONNECTED",
+                      "OWNER_MANUAL_AGGREGATE",
+                      "WORDPRESS_ADMIN_AGGREGATE",
+                      "FIRST_PARTY_AGGREGATE",
+                      "SEARCH_CONSOLE_AGGREGATE",
+                      "RAKUTEN_REPORT_AGGREGATE"
+                    ]
+                  },
+                  "state": {
+                    "enum": [
+                      "NOT_OBSERVED",
+                      "UNAVAILABLE",
+                      "UNVERIFIED",
+                      "OBSERVED_ZERO",
+                      "OBSERVED_VALUE"
+                    ]
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "attribution_basis",
+                  "input_sha256",
+                  "period_end",
+                  "period_start",
+                  "source_kind",
+                  "state",
+                  "value"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "direct_jpy",
+              "estimated_jpy",
+              "provider_total_jpy",
+              "unattributed_jpy"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "affiliate_clicks",
+          "article_views",
+          "organic_clicks",
+          "revenue_jpy"
+        ],
+        "type": "object"
+      },
+      "observation_id": {
+        "maxLength": 128,
+        "pattern": "^[A-Z0-9][A-Z0-9_.:-]*$",
+        "type": "string"
+      },
+      "observed_at_utc": {
+        "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+        "type": "string"
+      },
+      "pilot_window": {
+        "additionalProperties": false,
+        "properties": {
+          "duration_days": {
+            "const": 14
+          },
+          "end_exclusive_date": {
+            "format": "date",
+            "type": "string"
+          },
+          "start_date": {
+            "format": "date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "duration_days",
+          "end_exclusive_date",
+          "start_date"
+        ],
+        "type": "object"
+      },
+      "publication": {
+        "additionalProperties": false,
+        "properties": {
+          "confirmed_at_utc": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confirmed_by_role": {
+            "enum": [
+              "OWNER",
+              null
+            ]
+          },
+          "status": {
+            "enum": [
+              "NOT_OBSERVED",
+              "HUMAN_CONFIRMED_PUBLISHED",
+              "HUMAN_CONFIRMED_NOT_PUBLISHED"
+            ]
+          }
+        },
+        "required": [
+          "confirmed_at_utc",
+          "confirmed_by_role",
+          "status"
+        ],
+        "type": "object"
+      },
+      "review": {
+        "additionalProperties": false,
+        "properties": {
+          "reviewed_at_utc": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reviewer_role": {
+            "enum": [
+              "OWNER",
+              null
+            ]
+          },
+          "status": {
+            "enum": [
+              "NOT_OBSERVED",
+              "HUMAN_REVIEW_COMPLETE",
+              "CHANGES_REQUIRED",
+              "BLOCKED"
+            ]
+          }
+        },
+        "required": [
+          "reviewed_at_utc",
+          "reviewer_role",
+          "status"
+        ],
+        "type": "object"
+      },
+      "schema": {
+        "const": "ST1704_OWNER_LOCAL_PILOT_OBSERVATION_V1"
+      },
+      "work_minutes": {
+        "additionalProperties": false,
+        "properties": {
+          "state": {
+            "enum": [
+              "NOT_OBSERVED",
+              "UNAVAILABLE",
+              "UNVERIFIED",
+              "OBSERVED_ZERO",
+              "OBSERVED_VALUE"
+            ]
+          },
+          "value": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "state",
+          "value"
+        ],
+        "type": "object"
+      }
+    },
+    "required": [
+      "article",
+      "defects",
+      "incremental_cost_jpy",
+      "metrics",
+      "observation_id",
+      "observed_at_utc",
+      "pilot_window",
+      "publication",
+      "review",
+      "schema",
+      "work_minutes"
+    ],
+    "title": "ST-1704 owner-local sanitized pilot observation",
+    "type": "object"
+  },
+  "paths": [
+    {
+      "bytes": 5726,
+      "path": "changes/st-1704/owner-local-pilot-v1/DESIGN_HANDOFF_V1.yaml",
+      "sha256": "c669594b313c734851b9ec018288246cb4aaabfdf88f66318a903ba6e4504ddc"
+    },
+    {
+      "bytes": 2383,
+      "path": "changes/st-1704/owner-local-pilot-v1/Makefile",
+      "sha256": "c832d7f824d7d3f7ed3170cee619751b3affba3df8d82540591b0520e943f910"
+    },
+    {
+      "bytes": 1186,
+      "path": "changes/st-1704/owner-local-pilot-v1/PREFLIGHT.md",
+      "sha256": "5886943ad0b56693f4888e508a75b2eea7ed5601636a4ffd6e3cca4ef874f4bc"
+    },
+    {
+      "bytes": 2592,
+      "path": "changes/st-1704/owner-local-pilot-v1/README.md",
+      "sha256": "287a670399ce5f1f40e68a231f4b3547858a9095f26324bba2eb8d5ae82d04f9"
+    },
+    {
+      "bytes": 2412,
+      "path": "changes/st-1704/owner-local-pilot-v1/examples/bootstrap-first-publication.v1.json",
+      "sha256": "63c5440e2f2b4c366138c06390e51b3fe4a2a71435c3e7a1c89dd93a938871a0"
+    },
+    {
+      "bytes": 30751,
+      "path": "python/raos/adapters/owner_local_pilot_json.py",
+      "sha256": "d9a51011195b908b509635bea9d697d3f8d210d7c67e903389ed0c5ffb6ad66d"
+    },
+    {
+      "bytes": 2631,
+      "path": "python/raos/application/editorial/owner_local_pilot.py",
+      "sha256": "4f2070ee122bcd8b2ed0814da233aa1cadc7ac393155d4b834bfab20bc583c22"
+    },
+    {
+      "bytes": 41732,
+      "path": "python/raos/domain/editorial/owner_local_pilot.py",
+      "sha256": "3fb5edcff2823bf85fe306bed15d7af94aac9639261789c64ce4b234d4ea6dc9"
+    },
+    {
+      "bytes": 827,
+      "path": "python/raos/ports/owner_local_pilot.py",
+      "sha256": "c8ee10a2acb0fca4df8a92ff33cd96cfddb908395bd948dc37bdfa21343f7f96"
+    },
+    {
+      "bytes": 24847,
+      "path": "scripts/build_st1704_owner_local_pilot.py",
+      "sha256": "a733a4488fd096a57272f6eab0da8ce4fbd317185bc3bdc5a198e8f6e7c0f4c8"
+    },
+    {
+      "bytes": 18405,
+      "path": "scripts/st1704_owner_local_pilot.py",
+      "sha256": "de28b752d2f4888a82839364b7c5e982966508c313a3729d4d1311e50e0761c4"
+    }
+  ],
+  "policy": {
+    "article_slots": 5,
+    "automatic_publication": "DISABLED",
+    "duration_days": 14,
+    "first_five_drafts": "CODEX_NOT_OPENAI_API",
+    "improvement_output": "PROPOSAL_AND_DIFF_ONLY",
+    "labor_cost_per_hour_jpy": 3000,
+    "monthly_incremental_cost_cap_jpy": 2000,
+    "nonessential_tracking": "DISABLED_OD_012",
+    "site_origin": "https://kurashinoshirube.com"
+  },
+  "schema": "ST1704_OWNER_LOCAL_PILOT_RUNTIME_MANIFEST_V1",
+  "slice_id": "ST1704_OWNER_LOCAL_PILOT_LEDGER_V1",
+  "story_id": "ST-1704"
+}
