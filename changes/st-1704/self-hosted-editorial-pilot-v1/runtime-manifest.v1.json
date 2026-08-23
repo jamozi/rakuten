@@ -151,9 +151,9 @@
       "sha256": "bcc59c40d2110aab337dc69c645ed27e0bcc1effe6a1322e517eeaa2559e55fb"
     },
     {
-      "bytes": 52322,
+      "bytes": 53919,
       "path": "python/raos/adapters/self_hosted_editorial_source_capture.py",
-      "sha256": "2f2c6c5de824c63d3db4ff716965481655e3225bb33d3f96b244570a6c06d391"
+      "sha256": "39f809647e581efbb248bf6088f90137527e193c1d83fd1f77071745ec4be66b"
     },
     {
       "bytes": 70760,

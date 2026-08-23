@@ -461,6 +461,107 @@ class _Factory:
         return self.connection
 
 
+class _PeerSocket:
+    def __init__(self, address: tuple[str, int] | tuple[str, int, int, int]) -> None:
+        self.address = address
+        self.read_timeout: int | None = None
+
+    def getpeername(self) -> tuple[str, int] | tuple[str, int, int, int]:
+        return self.address
+
+    def settimeout(self, seconds: int) -> None:
+        self.read_timeout = seconds
+
+
+class _SystemHttpsConnection:
+    def __init__(
+        self,
+        *,
+        host: str,
+        port: int,
+        timeout: int,
+        context: ssl.SSLContext,
+        response: _Response,
+        failing_ips: frozenset[str],
+        attempts: list[str],
+    ) -> None:
+        self._create_connection: object | None = None
+        self._tunnel_host: str | None = None
+        self.host = host
+        self.port = port
+        self.timeout = timeout
+        self.context = context
+        self.response = response
+        self.failing_ips = failing_ips
+        self.attempts = attempts
+        self.sock: _PeerSocket | None = None
+        self.closed = False
+        self.requests: list[tuple[str, str, dict[str, str]]] = []
+
+    def connect(self) -> None:
+        connector = cast(capture_module._PinnedConnector, self._create_connection)
+        candidate = connector.candidate
+        candidate_ip = str(candidate.ip)
+        self.attempts.append(candidate_ip)
+        if candidate_ip in self.failing_ips:
+            raise ConnectionRefusedError(candidate_ip)
+        self.sock = _PeerSocket(candidate.socket_address)
+
+    def request(
+        self,
+        method: str,
+        path: str,
+        body: object,
+        headers: dict[str, str],
+    ) -> None:
+        assert body is None
+        self.requests.append((method, path, dict(headers)))
+
+    def getresponse(self) -> _Response:
+        return self.response
+
+    def close(self) -> None:
+        self.closed = True
+
+
+def _system_connection_doubles(
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    failing_ips: frozenset[str],
+) -> tuple[list[_SystemHttpsConnection], list[str]]:
+    connections: list[_SystemHttpsConnection] = []
+    attempts: list[str] = []
+
+    def open_connection(
+        *, host: str, port: int, timeout: int, context: ssl.SSLContext
+    ) -> _SystemHttpsConnection:
+        connection = _SystemHttpsConnection(
+            host=host,
+            port=port,
+            timeout=timeout,
+            context=context,
+            response=_Response(),
+            failing_ips=failing_ips,
+            attempts=attempts,
+        )
+        connections.append(connection)
+        return connection
+
+    monkeypatch.setattr(capture_module.http.client, "HTTPSConnection", open_connection)
+    return connections, attempts
+
+
+def _public_resolved_address(value: str) -> capture_module._ResolvedAddress:
+    ip = capture_module._public_ip(value, family=capture_module.socket.AF_INET)
+    return capture_module._ResolvedAddress(
+        family=capture_module.socket.AF_INET,
+        socket_type=capture_module.socket.SOCK_STREAM,
+        protocol=capture_module.socket.IPPROTO_TCP,
+        socket_address=(str(ip), 443),
+        ip=ip,
+    )
+
+
 def _target(
     *,
     locator_status: str = "LOCATORS_PENDING",
@@ -748,6 +849,100 @@ def test_exact_get_uses_fixed_tls_timeouts_and_no_credentials() -> None:
     headers = connection.requests[0][2]
     assert "Authorization" not in headers
     assert "Cookie" not in headers
+
+
+def test_system_transport_tries_later_verified_endpoint_before_one_get(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    first = _public_resolved_address("1.1.1.1")
+    second = _public_resolved_address("8.8.8.8")
+    resolved_hosts: list[str] = []
+
+    def resolve(host: str) -> tuple[capture_module._ResolvedAddress, ...]:
+        resolved_hosts.append(host)
+        return (first, second)
+
+    monkeypatch.setattr(capture_module, "_resolve_public_addresses", resolve)
+    connections, attempts = _system_connection_doubles(
+        monkeypatch, failing_ips=frozenset({str(first.ip)})
+    )
+
+    fetched = capture_module._fetch_source(
+        _target(),
+        connection_factory=(
+            capture_module._SystemOfficialSourceHttpsConnectionFactory()
+        ),
+        clock=lambda: FIXED_NOW,
+        environment={},
+    )
+
+    assert fetched.body == HTML_BODY
+    assert resolved_hosts == ["official.example"]
+    assert attempts == [str(first.ip), str(second.ip)]
+    assert len(connections) == 2
+    assert all(connection.host == "official.example" for connection in connections)
+    assert all(connection.port == 443 for connection in connections)
+    assert all(
+        connection.timeout == capture_module.CONNECT_TIMEOUT_SECONDS
+        for connection in connections
+    )
+    assert all(connection.context.check_hostname for connection in connections)
+    assert all(
+        connection.context.verify_mode == ssl.CERT_REQUIRED
+        for connection in connections
+    )
+    assert connections[0].requests == []
+    assert connections[1].requests == [
+        (
+            "GET",
+            "/specifications",
+            {
+                "Accept": capture_module.CAPTURE_ACCEPT,
+                "Accept-Encoding": "identity",
+                "Connection": "close",
+                "Host": "official.example",
+                "User-Agent": capture_module.CAPTURE_USER_AGENT,
+            },
+        )
+    ]
+    assert sum(len(connection.requests) for connection in connections) == 1
+    assert connections[0].closed and connections[1].closed
+    assert connections[1].sock is not None
+    assert connections[1].sock.read_timeout == capture_module.READ_TIMEOUT_SECONDS
+
+
+def test_system_transport_reports_failure_only_after_all_endpoints_fail(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    first = _public_resolved_address("1.1.1.1")
+    second = _public_resolved_address("8.8.8.8")
+    monkeypatch.setattr(
+        capture_module,
+        "_resolve_public_addresses",
+        lambda _host: (first, second),
+    )
+    connections, attempts = _system_connection_doubles(
+        monkeypatch,
+        failing_ips=frozenset({str(first.ip), str(second.ip)}),
+    )
+
+    with pytest.raises(capture_module.OfficialSourceCaptureFailure) as failure:
+        capture_module._fetch_source(
+            _target(),
+            connection_factory=(
+                capture_module._SystemOfficialSourceHttpsConnectionFactory()
+            ),
+            clock=lambda: FIXED_NOW,
+            environment={},
+        )
+
+    assert _failure_code(failure) is (
+        capture_module.OfficialSourceCaptureFailureCode.CONNECTION_FAILED
+    )
+    assert attempts == [str(first.ip), str(second.ip)]
+    assert len(connections) == 2
+    assert all(connection.closed for connection in connections)
+    assert all(connection.requests == [] for connection in connections)
 
 
 @pytest.mark.parametrize(

@@ -807,35 +807,89 @@ class _PinnedConnector:
 
 @final
 class _SystemConnection:
-    __slots__ = ("_candidate", "_connection")
+    __slots__ = (
+        "_attempted",
+        "_candidates",
+        "_connection",
+        "_host",
+        "_tls_context",
+    )
 
     def __init__(
-        self, connection: http.client.HTTPSConnection, candidate: _ResolvedAddress
+        self,
+        *,
+        host: str,
+        candidates: tuple[_ResolvedAddress, ...],
+        tls_context: ssl.SSLContext,
     ) -> None:
-        self._connection = connection
-        self._candidate = candidate
+        self._attempted = False
+        self._candidates = candidates
+        self._connection: http.client.HTTPSConnection | None = None
+        self._host = host
+        self._tls_context = tls_context
 
     def connect(self) -> None:
-        if getattr(self._connection, "_tunnel_host", None) is not None:
+        if self._attempted or not self._candidates:
             _fail(OfficialSourceCaptureFailureCode.CONNECTION_FAILED)
-        self._connection.connect()
-        if self._connection.sock is None:
-            _fail(OfficialSourceCaptureFailureCode.CONNECTION_FAILED)
-        _require_peer(self._candidate, self._connection.sock.getpeername())
+        self._attempted = True
+        for candidate in self._candidates:
+            connection: http.client.HTTPSConnection | None = None
+            try:
+                connection = http.client.HTTPSConnection(
+                    host=self._host,
+                    port=443,
+                    timeout=CONNECT_TIMEOUT_SECONDS,
+                    context=self._tls_context,
+                )
+                setattr(
+                    connection,
+                    "_create_connection",
+                    _PinnedConnector(self._host, candidate),
+                )
+                if getattr(connection, "_tunnel_host", None) is not None:
+                    _fail(OfficialSourceCaptureFailureCode.CONNECTION_FAILED)
+                connection.connect()
+                if connection.sock is None:
+                    _fail(OfficialSourceCaptureFailureCode.CONNECTION_FAILED)
+                _require_peer(candidate, connection.sock.getpeername())
+            except BaseException:
+                if connection is not None:
+                    try:
+                        connection.close()
+                    except BaseException:
+                        pass
+                continue
+            self._connection = connection
+            return
+        _fail(OfficialSourceCaptureFailureCode.CONNECTION_FAILED)
 
     def set_read_timeout(self, seconds: int) -> None:
-        if self._connection.sock is None or seconds != READ_TIMEOUT_SECONDS:
+        connection = self._connection
+        if (
+            connection is None
+            or connection.sock is None
+            or seconds != READ_TIMEOUT_SECONDS
+        ):
             _fail(OfficialSourceCaptureFailureCode.CONNECTION_FAILED)
-        self._connection.sock.settimeout(seconds)
+        connection.sock.settimeout(seconds)
 
     def request(self, method: str, path: str, headers: dict[str, str]) -> None:
-        self._connection.request(method, path, body=None, headers=headers)
+        connection = self._connection
+        if connection is None:
+            _fail(OfficialSourceCaptureFailureCode.CONNECTION_FAILED)
+        connection.request(method, path, body=None, headers=headers)
 
     def getresponse(self) -> OfficialSourceHttpsResponse:
-        return cast(OfficialSourceHttpsResponse, self._connection.getresponse())
+        connection = self._connection
+        if connection is None:
+            _fail(OfficialSourceCaptureFailureCode.CONNECTION_FAILED)
+        return cast(OfficialSourceHttpsResponse, connection.getresponse())
 
     def close(self) -> None:
-        self._connection.close()
+        connection = self._connection
+        self._connection = None
+        if connection is not None:
+            connection.close()
 
 
 @final
@@ -859,15 +913,11 @@ class _SystemOfficialSourceHttpsConnectionFactory:
             or not tls_context.check_hostname
         ):
             _fail(OfficialSourceCaptureFailureCode.TLS_CONTEXT_INVALID)
-        candidate = _resolve_public_addresses(host)[0]
-        connection = http.client.HTTPSConnection(
+        return _SystemConnection(
             host=host,
-            port=443,
-            timeout=CONNECT_TIMEOUT_SECONDS,
-            context=tls_context,
+            candidates=_resolve_public_addresses(host),
+            tls_context=tls_context,
         )
-        setattr(connection, "_create_connection", _PinnedConnector(host, candidate))
-        return _SystemConnection(connection, candidate)
 
 
 def _response_headers(response: OfficialSourceHttpsResponse) -> dict[str, str]:
