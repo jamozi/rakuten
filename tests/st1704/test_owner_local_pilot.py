@@ -21,6 +21,7 @@ from raos.application.editorial.owner_local_pilot import OwnerLocalPilotService
 from raos.domain.editorial.owner_local_pilot import (
     AppendDisposition,
     ImprovementDecision,
+    MetricObservation,
     PILOT_POLICY,
     PilotFailure,
     PilotFailureCode,
@@ -67,6 +68,7 @@ def write_input(tmp_path: Path, payload: dict[str, object]) -> Path:
 def complete(slot: int, *, critical: int = 0) -> dict[str, object]:
     payload = example()
     payload["observation_id"] = f"PILOT-ARTICLE-{slot:02d}-COMPLETE-V1"
+    payload["observed_at_utc"] = "2026-09-05T23:00:00Z"
     payload["article"] = {
         "article_ref_sha256": None,
         "public_slug": f"pilot-article-{slot}",
@@ -91,20 +93,66 @@ def complete(slot: int, *, critical: int = 0) -> dict[str, object]:
         "minor": {"state": "OBSERVED_ZERO", "value": 0},
     }
     metric = {
-        "attribution_basis": "UNVERIFIED",
         "input_sha256": f"{slot}" * 64,
         "period_end": "2026-09-05",
         "period_start": "2026-08-23",
-        "source_kind": "OWNER_MANUAL_AGGREGATE",
         "state": "OBSERVED_ZERO",
         "value": 0,
     }
     payload["metrics"] = {
-        "access": deepcopy(metric),
-        "clicks": deepcopy(metric),
-        "revenue_jpy": deepcopy(metric),
+        "article_views": {
+            **deepcopy(metric),
+            "attribution_basis": "NOT_APPLICABLE",
+            "source_kind": "WORDPRESS_ADMIN_AGGREGATE",
+        },
+        "affiliate_clicks": {
+            **deepcopy(metric),
+            "attribution_basis": "NOT_APPLICABLE",
+            "source_kind": "FIRST_PARTY_AGGREGATE",
+        },
+        "organic_clicks": {
+            **deepcopy(metric),
+            "attribution_basis": "NOT_APPLICABLE",
+            "source_kind": "SEARCH_CONSOLE_AGGREGATE",
+        },
+        "revenue_jpy": {
+            "provider_total_jpy": {
+                **deepcopy(metric),
+                "attribution_basis": "OWNER_REPORTED_PROVIDER_TOTAL",
+                "source_kind": "RAKUTEN_REPORT_AGGREGATE",
+            },
+            "direct_jpy": {
+                **deepcopy(metric),
+                "attribution_basis": "OWNER_REPORTED_DIRECT",
+                "source_kind": "RAKUTEN_REPORT_AGGREGATE",
+            },
+            "estimated_jpy": {
+                **deepcopy(metric),
+                "attribution_basis": "OWNER_REPORTED_ESTIMATED",
+                "source_kind": "OWNER_MANUAL_AGGREGATE",
+            },
+            "unattributed_jpy": {
+                **deepcopy(metric),
+                "attribution_basis": "OWNER_REPORTED_UNATTRIBUTED",
+                "source_kind": "OWNER_MANUAL_AGGREGATE",
+            },
+        },
     }
     return payload
+
+
+def observation_metrics(
+    observation: PilotObservation,
+) -> tuple[MetricObservation, ...]:
+    return (
+        observation.article_views,
+        observation.affiliate_clicks,
+        observation.organic_clicks,
+        observation.revenue_jpy.provider_total_jpy,
+        observation.revenue_jpy.direct_jpy,
+        observation.revenue_jpy.estimated_jpy,
+        observation.revenue_jpy.unattributed_jpy,
+    )
 
 
 def test_policy_is_exact_owner_local_decision() -> None:
@@ -125,7 +173,12 @@ def test_first_publication_bootstrap_keeps_metrics_not_observed() -> None:
     observation = PilotObservation.parse(example())
     assert observation.publication.status.value == "HUMAN_CONFIRMED_PUBLISHED"
     assert observation.review.status.value == "NOT_OBSERVED"
-    for metric in (observation.access, observation.clicks, observation.revenue_jpy):
+    assert observation.pilot_window.payload() == {
+        "duration_days": 14,
+        "end_exclusive_date": "2026-09-06",
+        "start_date": "2026-08-23",
+    }
+    for metric in observation_metrics(observation):
         assert metric.state.value == "NOT_OBSERVED"
         assert metric.value is None
         assert metric.period_start is None
@@ -144,10 +197,10 @@ def test_first_publication_bootstrap_keeps_metrics_not_observed() -> None:
 def test_explicit_zero_is_not_unknown() -> None:
     unknown = PilotObservation.parse(example())
     zero = PilotObservation.parse(complete(1))
-    assert unknown.access.value is None
-    assert unknown.access.state.value == "NOT_OBSERVED"
-    assert zero.access.value == 0
-    assert zero.access.state.value == "OBSERVED_ZERO"
+    assert unknown.article_views.value is None
+    assert unknown.article_views.state.value == "NOT_OBSERVED"
+    assert zero.article_views.value == 0
+    assert zero.article_views.state.value == "OBSERVED_ZERO"
 
 
 @pytest.mark.parametrize(
@@ -157,13 +210,18 @@ def test_explicit_zero_is_not_unknown() -> None:
         lambda value: value["article"].update(
             {"public_slug": "https://example.test/a?affiliate=secret"}
         ),
-        lambda value: value["metrics"]["access"].update({"raw_ip": "127.0.0.1"}),
-        lambda value: value["metrics"]["access"].update({"source_kind": "GA4_LIVE"}),
-        lambda value: value["metrics"]["access"].update(
+        lambda value: value["metrics"]["article_views"].update({"raw_ip": "127.0.0.1"}),
+        lambda value: value["metrics"]["article_views"].update(
+            {"source_kind": "GA4_LIVE"}
+        ),
+        lambda value: value["metrics"]["article_views"].update(
             {"state": "OBSERVED_ZERO", "value": None}
         ),
-        lambda value: value["metrics"]["access"].update(
+        lambda value: value["metrics"]["article_views"].update(
             {"state": "NOT_OBSERVED", "value": 0}
+        ),
+        lambda value: value["metrics"].update(
+            {"clicks": deepcopy(value["metrics"]["affiliate_clicks"])}
         ),
     ],
 )
@@ -235,6 +293,21 @@ def test_tampered_chain_is_rejected(tmp_path: Path) -> None:
     ledger_path.chmod(0o600)
     with pytest.raises(PilotFailure) as captured:
         store.read()
+    assert captured.value.code is PilotFailureCode.LEDGER_TAMPERED
+
+
+@pytest.mark.parametrize("invalid_sequence", [True, False])
+def test_ledger_sequence_rejects_boolean_type_confusion(
+    invalid_sequence: bool,
+) -> None:
+    ledger = append_observation(
+        empty_ledger(),
+        PilotObservation.parse(example()),
+    )[0]
+    payload = ledger.payload()
+    payload["events"][0]["sequence"] = invalid_sequence
+    with pytest.raises(PilotFailure) as captured:
+        parse_ledger(payload)
     assert captured.value.code is PilotFailureCode.LEDGER_TAMPERED
 
 

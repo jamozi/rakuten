@@ -7,7 +7,7 @@ WordPress, browser, publication, tracking, or recommendation mutation capability
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from enum import Enum
 import hashlib
 import json
@@ -98,6 +98,7 @@ class MetricSourceKind(str, Enum):
     NOT_CONNECTED = "NOT_CONNECTED"
     OWNER_MANUAL_AGGREGATE = "OWNER_MANUAL_AGGREGATE"
     WORDPRESS_ADMIN_AGGREGATE = "WORDPRESS_ADMIN_AGGREGATE"
+    FIRST_PARTY_AGGREGATE = "FIRST_PARTY_AGGREGATE"
     SEARCH_CONSOLE_AGGREGATE = "SEARCH_CONSOLE_AGGREGATE"
     RAKUTEN_REPORT_AGGREGATE = "RAKUTEN_REPORT_AGGREGATE"
 
@@ -105,10 +106,10 @@ class MetricSourceKind(str, Enum):
 class AttributionBasis(str, Enum):
     NOT_APPLICABLE = "NOT_APPLICABLE"
     UNVERIFIED = "UNVERIFIED"
-    PROVIDER_REPORTED_UNVERIFIED = "PROVIDER_REPORTED_UNVERIFIED"
-    DIRECT_UNVERIFIED = "DIRECT_UNVERIFIED"
-    ESTIMATED_UNVERIFIED = "ESTIMATED_UNVERIFIED"
-    UNATTRIBUTED = "UNATTRIBUTED"
+    OWNER_REPORTED_PROVIDER_TOTAL = "OWNER_REPORTED_PROVIDER_TOTAL"
+    OWNER_REPORTED_DIRECT = "OWNER_REPORTED_DIRECT"
+    OWNER_REPORTED_ESTIMATED = "OWNER_REPORTED_ESTIMATED"
+    OWNER_REPORTED_UNATTRIBUTED = "OWNER_REPORTED_UNATTRIBUTED"
 
 
 class AppendDisposition(str, Enum):
@@ -124,7 +125,10 @@ class ImprovementDecision(str, Enum):
 
 
 def _mapping(value: object) -> Mapping[str, object]:
-    if type(value) is not dict or any(type(key) is not str for key in value):
+    if type(value) is not dict:
+        fail_pilot()
+    untyped = cast(dict[object, object], value)
+    if any(type(key) is not str for key in untyped):
         fail_pilot()
     return cast(Mapping[str, object], value)
 
@@ -315,6 +319,90 @@ class MetricObservation:
 
 
 @dataclass(frozen=True, slots=True)
+class RevenueObservation:
+    provider_total_jpy: MetricObservation
+    direct_jpy: MetricObservation
+    estimated_jpy: MetricObservation
+    unattributed_jpy: MetricObservation
+
+    def __post_init__(self) -> None:
+        if any(
+            type(value) is not MetricObservation
+            for value in (
+                self.provider_total_jpy,
+                self.direct_jpy,
+                self.estimated_jpy,
+                self.unattributed_jpy,
+            )
+        ):
+            fail_pilot()
+
+    @classmethod
+    def parse(cls, value: object) -> RevenueObservation:
+        source = _mapping(value)
+        _keys(
+            source,
+            {"provider_total_jpy", "direct_jpy", "estimated_jpy", "unattributed_jpy"},
+        )
+        return cls(
+            provider_total_jpy=MetricObservation.parse(source["provider_total_jpy"]),
+            direct_jpy=MetricObservation.parse(source["direct_jpy"]),
+            estimated_jpy=MetricObservation.parse(source["estimated_jpy"]),
+            unattributed_jpy=MetricObservation.parse(source["unattributed_jpy"]),
+        )
+
+    def payload(self) -> dict[str, object]:
+        return {
+            "direct_jpy": self.direct_jpy.payload(),
+            "estimated_jpy": self.estimated_jpy.payload(),
+            "provider_total_jpy": self.provider_total_jpy.payload(),
+            "unattributed_jpy": self.unattributed_jpy.payload(),
+        }
+
+
+@dataclass(frozen=True, slots=True)
+class PilotWindow:
+    start_date: str
+    end_exclusive_date: str
+    duration_days: int
+
+    def __post_init__(self) -> None:
+        start = date.fromisoformat(_date(self.start_date))
+        end = date.fromisoformat(_date(self.end_exclusive_date))
+        if (
+            type(self.duration_days) is not int
+            or self.duration_days != 14
+            or end != start + timedelta(days=14)
+        ):
+            fail_pilot()
+
+    @classmethod
+    def parse(cls, value: object) -> PilotWindow:
+        source = _mapping(value)
+        _keys(source, {"start_date", "end_exclusive_date", "duration_days"})
+        return cls(
+            start_date=cast(str, source["start_date"]),
+            end_exclusive_date=cast(str, source["end_exclusive_date"]),
+            duration_days=cast(int, source["duration_days"]),
+        )
+
+    def contains_date(self, value: str) -> bool:
+        observed = date.fromisoformat(_date(value))
+        return (
+            date.fromisoformat(self.start_date)
+            <= observed
+            < date.fromisoformat(self.end_exclusive_date)
+        )
+
+    def payload(self) -> dict[str, object]:
+        return {
+            "duration_days": self.duration_days,
+            "end_exclusive_date": self.end_exclusive_date,
+            "start_date": self.start_date,
+        }
+
+
+@dataclass(frozen=True, slots=True)
 class ArticleIdentity:
     slot: int
     public_slug: str | None
@@ -400,6 +488,7 @@ class ReviewObservation:
 class PilotObservation:
     observation_id: str
     observed_at_utc: str
+    pilot_window: PilotWindow
     article: ArticleIdentity
     publication: PublicationObservation
     review: ReviewObservation
@@ -408,9 +497,10 @@ class PilotObservation:
     critical_defects: NumberObservation
     major_defects: NumberObservation
     minor_defects: NumberObservation
-    access: MetricObservation
-    clicks: MetricObservation
-    revenue_jpy: MetricObservation
+    article_views: MetricObservation
+    affiliate_clicks: MetricObservation
+    organic_clicks: MetricObservation
+    revenue_jpy: RevenueObservation
 
     def __post_init__(self) -> None:
         if (
@@ -421,6 +511,7 @@ class PilotObservation:
         _timestamp(self.observed_at_utc)
         expected_types = (
             (self.article, ArticleIdentity),
+            (self.pilot_window, PilotWindow),
             (self.publication, PublicationObservation),
             (self.review, ReviewObservation),
             (self.work_minutes, NumberObservation),
@@ -428,12 +519,14 @@ class PilotObservation:
             (self.critical_defects, NumberObservation),
             (self.major_defects, NumberObservation),
             (self.minor_defects, NumberObservation),
-            (self.access, MetricObservation),
-            (self.clicks, MetricObservation),
-            (self.revenue_jpy, MetricObservation),
+            (self.article_views, MetricObservation),
+            (self.affiliate_clicks, MetricObservation),
+            (self.organic_clicks, MetricObservation),
+            (self.revenue_jpy, RevenueObservation),
         )
         if any(type(value) is not expected for value, expected in expected_types):
             fail_pilot()
+        _validate_observation_contracts(self)
 
     @classmethod
     def parse(cls, value: object) -> PilotObservation:
@@ -444,6 +537,7 @@ class PilotObservation:
                 "schema",
                 "observation_id",
                 "observed_at_utc",
+                "pilot_window",
                 "article",
                 "publication",
                 "review",
@@ -464,10 +558,14 @@ class PilotObservation:
         defects = _mapping(source["defects"])
         _keys(defects, {"critical", "major", "minor"})
         metrics = _mapping(source["metrics"])
-        _keys(metrics, {"access", "clicks", "revenue_jpy"})
+        _keys(
+            metrics,
+            {"article_views", "affiliate_clicks", "organic_clicks", "revenue_jpy"},
+        )
         return cls(
             observation_id=cast(str, source["observation_id"]),
             observed_at_utc=cast(str, source["observed_at_utc"]),
+            pilot_window=PilotWindow.parse(source["pilot_window"]),
             article=ArticleIdentity(
                 slot=cast(int, article["slot"]),
                 public_slug=cast(str | None, article["public_slug"]),
@@ -493,9 +591,10 @@ class PilotObservation:
             critical_defects=NumberObservation.parse(defects["critical"]),
             major_defects=NumberObservation.parse(defects["major"]),
             minor_defects=NumberObservation.parse(defects["minor"]),
-            access=MetricObservation.parse(metrics["access"]),
-            clicks=MetricObservation.parse(metrics["clicks"]),
-            revenue_jpy=MetricObservation.parse(metrics["revenue_jpy"]),
+            article_views=MetricObservation.parse(metrics["article_views"]),
+            affiliate_clicks=MetricObservation.parse(metrics["affiliate_clicks"]),
+            organic_clicks=MetricObservation.parse(metrics["organic_clicks"]),
+            revenue_jpy=RevenueObservation.parse(metrics["revenue_jpy"]),
         )
 
     def payload(self) -> dict[str, object]:
@@ -508,17 +607,129 @@ class PilotObservation:
             },
             "incremental_cost_jpy": self.incremental_cost_jpy.payload(),
             "metrics": {
-                "access": self.access.payload(),
-                "clicks": self.clicks.payload(),
+                "affiliate_clicks": self.affiliate_clicks.payload(),
+                "article_views": self.article_views.payload(),
+                "organic_clicks": self.organic_clicks.payload(),
                 "revenue_jpy": self.revenue_jpy.payload(),
             },
             "observation_id": self.observation_id,
             "observed_at_utc": self.observed_at_utc,
+            "pilot_window": self.pilot_window.payload(),
             "publication": self.publication.payload(),
             "review": self.review.payload(),
             "schema": OBSERVATION_SCHEMA,
             "work_minutes": self.work_minutes.payload(),
         }
+
+
+def _validate_metric_contract(
+    *,
+    metric: MetricObservation,
+    sources: frozenset[MetricSourceKind],
+    basis: AttributionBasis,
+    window: PilotWindow,
+    observed_date: date,
+) -> None:
+    if metric.state is ValueState.NOT_OBSERVED:
+        return
+    if metric.source_kind not in sources:
+        fail_pilot()
+    if metric.state is ValueState.UNVERIFIED:
+        if metric.attribution_basis not in {basis, AttributionBasis.UNVERIFIED}:
+            fail_pilot()
+    elif metric.attribution_basis is not basis:
+        fail_pilot()
+    if metric.period_start is None or metric.period_end is None:
+        fail_pilot()
+    start = date.fromisoformat(metric.period_start)
+    end = date.fromisoformat(metric.period_end)
+    if (
+        not window.contains_date(start.isoformat())
+        or not window.contains_date(end.isoformat())
+        or end > observed_date
+    ):
+        fail_pilot()
+
+
+def _validate_observation_contracts(observation: PilotObservation) -> None:
+    observed = datetime.strptime(
+        observation.observed_at_utc, "%Y-%m-%dT%H:%M:%SZ"
+    ).replace(tzinfo=timezone.utc)
+    if not observation.pilot_window.contains_date(observed.date().isoformat()):
+        fail_pilot()
+    for timestamp in (
+        observation.publication.confirmed_at_utc,
+        observation.review.reviewed_at_utc,
+    ):
+        if timestamp is None:
+            continue
+        point = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").replace(
+            tzinfo=timezone.utc
+        )
+        if point > observed or not observation.pilot_window.contains_date(
+            point.date().isoformat()
+        ):
+            fail_pilot()
+    _validate_metric_contract(
+        metric=observation.article_views,
+        sources=frozenset(
+            {
+                MetricSourceKind.OWNER_MANUAL_AGGREGATE,
+                MetricSourceKind.WORDPRESS_ADMIN_AGGREGATE,
+            }
+        ),
+        basis=AttributionBasis.NOT_APPLICABLE,
+        window=observation.pilot_window,
+        observed_date=observed.date(),
+    )
+    _validate_metric_contract(
+        metric=observation.affiliate_clicks,
+        sources=frozenset(
+            {
+                MetricSourceKind.OWNER_MANUAL_AGGREGATE,
+                MetricSourceKind.FIRST_PARTY_AGGREGATE,
+            }
+        ),
+        basis=AttributionBasis.NOT_APPLICABLE,
+        window=observation.pilot_window,
+        observed_date=observed.date(),
+    )
+    _validate_metric_contract(
+        metric=observation.organic_clicks,
+        sources=frozenset({MetricSourceKind.SEARCH_CONSOLE_AGGREGATE}),
+        basis=AttributionBasis.NOT_APPLICABLE,
+        window=observation.pilot_window,
+        observed_date=observed.date(),
+    )
+    for metric, sources, basis in (
+        (
+            observation.revenue_jpy.provider_total_jpy,
+            frozenset({MetricSourceKind.RAKUTEN_REPORT_AGGREGATE}),
+            AttributionBasis.OWNER_REPORTED_PROVIDER_TOTAL,
+        ),
+        (
+            observation.revenue_jpy.direct_jpy,
+            frozenset({MetricSourceKind.RAKUTEN_REPORT_AGGREGATE}),
+            AttributionBasis.OWNER_REPORTED_DIRECT,
+        ),
+        (
+            observation.revenue_jpy.estimated_jpy,
+            frozenset({MetricSourceKind.OWNER_MANUAL_AGGREGATE}),
+            AttributionBasis.OWNER_REPORTED_ESTIMATED,
+        ),
+        (
+            observation.revenue_jpy.unattributed_jpy,
+            frozenset({MetricSourceKind.OWNER_MANUAL_AGGREGATE}),
+            AttributionBasis.OWNER_REPORTED_UNATTRIBUTED,
+        ),
+    ):
+        _validate_metric_contract(
+            metric=metric,
+            sources=sources,
+            basis=basis,
+            window=observation.pilot_window,
+            observed_date=observed.date(),
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -560,18 +771,53 @@ def empty_ledger() -> PilotLedger:
     return PilotLedger(events=())
 
 
+def _valid_genesis_observation(observation: PilotObservation) -> bool:
+    confirmed = observation.publication.confirmed_at_utc
+    return (
+        observation.article.slot == 1
+        and observation.publication.status
+        is PublicationStatus.HUMAN_CONFIRMED_PUBLISHED
+        and confirmed is not None
+        and confirmed[:10] == observation.pilot_window.start_date
+    )
+
+
+def _provider_revenue_batch(
+    observation: PilotObservation,
+) -> tuple[str, str, str] | None:
+    provider_total = observation.revenue_jpy.provider_total_jpy
+    if provider_total.state is ValueState.NOT_OBSERVED:
+        return None
+    if (
+        provider_total.period_start is None
+        or provider_total.period_end is None
+        or provider_total.input_sha256 is None
+    ):
+        fail_pilot()
+    return (
+        provider_total.period_start,
+        provider_total.period_end,
+        provider_total.input_sha256,
+    )
+
+
 def parse_ledger(value: object) -> PilotLedger:
     source = _mapping(value)
     _keys(source, {"schema", "policy", "events", "head_sha256"})
     if source["schema"] != LEDGER_SCHEMA or source["policy"] != PILOT_POLICY:
         fail_pilot(PilotFailureCode.LEDGER_TAMPERED)
-    raw_events = source["events"]
-    if type(raw_events) is not list or len(raw_events) > 1000:
+    raw_events_value = source["events"]
+    if type(raw_events_value) is not list:
+        fail_pilot(PilotFailureCode.LEDGER_TAMPERED)
+    raw_events = cast(list[object], raw_events_value)
+    if len(raw_events) > 1000:
         fail_pilot(PilotFailureCode.LEDGER_TAMPERED)
     events: list[LedgerEvent] = []
     previous = GENESIS_SHA256
     ids: set[str] = set()
     identities: dict[int, ArticleIdentity] = {}
+    revenue_batches: dict[tuple[str, str, str], int] = {}
+    pilot_window: PilotWindow | None = None
     for index, raw_event in enumerate(raw_events, 1):
         event = _mapping(raw_event)
         _keys(
@@ -585,6 +831,11 @@ def parse_ledger(value: object) -> PilotLedger:
             },
         )
         observation = PilotObservation.parse(event["observation"])
+        if index == 1 and not _valid_genesis_observation(observation):
+            fail_pilot(PilotFailureCode.LEDGER_TAMPERED)
+        if pilot_window is not None and observation.pilot_window != pilot_window:
+            fail_pilot(PilotFailureCode.LEDGER_TAMPERED)
+        pilot_window = observation.pilot_window
         if observation.observation_id in ids:
             fail_pilot(PilotFailureCode.LEDGER_TAMPERED)
         ids.add(observation.observation_id)
@@ -592,6 +843,12 @@ def parse_ledger(value: object) -> PilotLedger:
         if prior_identity is not None and prior_identity != observation.article:
             fail_pilot(PilotFailureCode.LEDGER_TAMPERED)
         identities[observation.article.slot] = observation.article
+        revenue_batch = _provider_revenue_batch(observation)
+        if revenue_batch is not None:
+            prior_slot = revenue_batches.get(revenue_batch)
+            if prior_slot is not None and prior_slot != observation.article.slot:
+                fail_pilot(PilotFailureCode.LEDGER_TAMPERED)
+            revenue_batches[revenue_batch] = observation.article.slot
         observation_hash = digest(observation.payload())
         expected_event_hash = digest(
             {
@@ -602,7 +859,8 @@ def parse_ledger(value: object) -> PilotLedger:
             }
         )
         if (
-            event["sequence"] != index
+            type(event["sequence"]) is not int
+            or event["sequence"] != index
             or event["previous_event_sha256"] != previous
             or event["observation_sha256"] != observation_hash
             or event["event_sha256"] != expected_event_hash
@@ -628,7 +886,12 @@ def append_observation(
 ) -> tuple[PilotLedger, AppendDisposition, str]:
     if type(ledger) is not PilotLedger or type(observation) is not PilotObservation:
         fail_pilot()
+    if not ledger.events and not _valid_genesis_observation(observation):
+        fail_pilot()
+    new_revenue_batch = _provider_revenue_batch(observation)
     for event in ledger.events:
+        if event.observation.pilot_window != observation.pilot_window:
+            fail_pilot()
         if event.observation.observation_id == observation.observation_id:
             if event.observation.payload() != observation.payload():
                 fail_pilot(PilotFailureCode.OBSERVATION_ID_CONFLICT)
@@ -638,6 +901,13 @@ def append_observation(
             and event.observation.article != observation.article
         ):
             fail_pilot(PilotFailureCode.ARTICLE_IDENTITY_CONFLICT)
+        existing_batch = _provider_revenue_batch(event.observation)
+        if (
+            new_revenue_batch is not None
+            and existing_batch == new_revenue_batch
+            and event.observation.article.slot != observation.article.slot
+        ):
+            fail_pilot()
     sequence = len(ledger.events) + 1
     previous = ledger.head_sha256
     observation_hash = digest(observation.payload())
@@ -663,8 +933,41 @@ def append_observation(
     )
 
 
-def _observed(number: NumberObservation) -> bool:
+def _observed(number: NumberObservation | MetricObservation) -> bool:
     return number.state in {ValueState.OBSERVED_ZERO, ValueState.OBSERVED_VALUE}
+
+
+def _metric_complete(metric: MetricObservation) -> bool:
+    return (
+        _observed(metric)
+        and metric.attribution_basis is not AttributionBasis.UNVERIFIED
+    )
+
+
+def _revenue_reconciled(revenue: RevenueObservation) -> bool:
+    metrics = (
+        revenue.provider_total_jpy,
+        revenue.direct_jpy,
+        revenue.estimated_jpy,
+        revenue.unattributed_jpy,
+    )
+    if not all(_metric_complete(metric) for metric in metrics):
+        return False
+    periods = {(metric.period_start, metric.period_end) for metric in metrics}
+    if len(periods) != 1:
+        return False
+    if revenue.provider_total_jpy.input_sha256 != revenue.direct_jpy.input_sha256:
+        return False
+    provider_total = cast(int, revenue.provider_total_jpy.value)
+    attributed_total = sum(
+        cast(int, metric.value)
+        for metric in (
+            revenue.direct_jpy,
+            revenue.estimated_jpy,
+            revenue.unattributed_jpy,
+        )
+    )
+    return provider_total == attributed_total
 
 
 def build_report(ledger: PilotLedger) -> dict[str, object]:
@@ -695,11 +998,11 @@ def build_report(ledger: PilotLedger) -> dict[str, object]:
                 observation.critical_defects,
                 observation.major_defects,
                 observation.minor_defects,
-                observation.access,
-                observation.clicks,
-                observation.revenue_jpy,
             )
         )
+        and _metric_complete(observation.article_views)
+        and _metric_complete(observation.affiliate_clicks)
+        and _metric_complete(observation.organic_clicks)
         for observation in ordered
     )
     candidates: set[str] = set()
@@ -735,17 +1038,14 @@ def build_report(ledger: PilotLedger) -> dict[str, object]:
     ):
         candidates.add("COMPLETE_WORK_COST_OBSERVATIONS")
     if any(
-        not all(
-            _observed(value)
-            for value in (
-                observation.access,
-                observation.clicks,
-                observation.revenue_jpy,
-            )
-        )
+        not _metric_complete(observation.article_views)
+        or not _metric_complete(observation.affiliate_clicks)
+        or not _metric_complete(observation.organic_clicks)
         for observation in ordered
     ):
         candidates.add("COLLECT_AGGREGATED_METRICS")
+    if any(not _revenue_reconciled(observation.revenue_jpy) for observation in ordered):
+        candidates.add("RECONCILE_SEPARATE_REVENUE_BUCKETS")
     if any(
         (observation.major_defects.value or 0) > 0
         or (observation.minor_defects.value or 0) > 0
@@ -767,7 +1067,7 @@ def build_report(ledger: PilotLedger) -> dict[str, object]:
         decision = ImprovementDecision.INSUFFICIENT_EVIDENCE
     else:
         decision = ImprovementDecision.REVIEW_CANDIDATES_ONLY
-    articles = []
+    articles: list[dict[str, object]] = []
     for observation in ordered:
         articles.append(
             {
@@ -779,8 +1079,9 @@ def build_report(ledger: PilotLedger) -> dict[str, object]:
                 },
                 "incremental_cost_jpy": observation.incremental_cost_jpy.payload(),
                 "metrics": {
-                    "access": observation.access.payload(),
-                    "clicks": observation.clicks.payload(),
+                    "affiliate_clicks": observation.affiliate_clicks.payload(),
+                    "article_views": observation.article_views.payload(),
+                    "organic_clicks": observation.organic_clicks.payload(),
                     "revenue_jpy": observation.revenue_jpy.payload(),
                 },
                 "observation_id": observation.observation_id,
@@ -807,6 +1108,7 @@ def build_report(ledger: PilotLedger) -> dict[str, object]:
         "freshness": "PERIOD_REPORTED_NO_SLA_OD_007_UNRESOLVED",
         "head_sha256": ledger.head_sha256,
         "policy": PILOT_POLICY,
+        "pilot_window": ordered[0].pilot_window.payload() if ordered else None,
         "proposal_candidates": sorted(candidates),
         "schema": "ST1704_OWNER_LOCAL_PILOT_REPORT_V1",
         "slot_count": len(ordered),

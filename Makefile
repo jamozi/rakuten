@@ -746,6 +746,8 @@ ci-repository-policy: | python-sync local-compose-check queue-check config-check
 		scripts/build_st0006_decision_gates.py --check
 	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
 		scripts/build_st0107_pr_governance.py --check
+	$(UV_READONLY_RUN) python -B -I -S -X pycache_prefix=/dev/null \
+		scripts/build_st1704_owner_local_pilot.py --check
 
 ci-static: ci-network-assert check-workspace ci-repository-policy python-tool-versions \
 	python-lint python-format-check python-typecheck node-tool-versions \
@@ -785,6 +787,7 @@ ci-unit: ci-network-assert | python-sync node-sync
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0701
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0703
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0801
+	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st1704
 	$(NODE_RUN) "$(NODE_MODULES)/vitest/vitest.mjs" run \
 		--config "$(RAOS_REPOSITORY_ROOT)/vitest.config.ts" \
 		--configLoader native

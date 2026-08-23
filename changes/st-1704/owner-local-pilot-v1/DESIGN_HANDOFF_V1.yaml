@@ -49,6 +49,11 @@ DESIGN_HANDOFF_V1:
     - Financeをrecommendation inputにしない
     - publication factはowner commandで明示記録されたhuman confirmationだけを扱う
     - missing、unavailable、unverified、observed zero、observed valueを区別する
+    - KPI-006 affiliate CTA clicksとKPI-012 Search Console organic clicksを別metricとして扱う
+    - revenueはprovider total、direct、estimated、unattributedを上書きせず別bucketで保持する
+    - 同一provider input hashとperiodのrevenue batchを複数article slotへ重複計上しない
+    - metric fieldごとに許可されたsource kindとattribution basisだけを受け入れる
+    - observation、publication、review、metric periodは同一の明示的14日window内に限定する
     - improvementはdeterministic proposalだけを返す
   security_and_approval_gates:
     local_repository_implementation: AUTHORIZED_REVERSIBLE

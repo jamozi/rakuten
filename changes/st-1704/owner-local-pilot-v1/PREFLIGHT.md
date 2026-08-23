@@ -7,10 +7,10 @@
 - Selected slice: `ST1704_OWNER_LOCAL_PILOT_LEDGER_V1`.
 - Open decisions: OD-003/006/007/008/009/012/014/015 remain unresolved. The slice
   uses no provider, tracking, retention automation, ranking mutation, or publication action.
-- Planned files: Story-local handoff/docs/Makefile/generated policy/runtime manifest,
+- Planned files: Story-local handoff/docs/Makefile/single generated runtime manifest,
   one domain model, inward ports, application service, local JSON adapter, CLI, and isolated tests.
-- Verification: focused ST-1704 tests; generator/check; Ruff; mypy; Pyright; shell syntax;
-  diff/secret checks. Formal and live suites remain unexecuted.
+- Verification: focused ST-1704 tests; Base CI unit/policy routing; generator/check; Ruff;
+  mypy; Pyright; shell syntax; diff/secret checks. Formal and live suites remain unexecuted.
 - Out of scope: WordPress writes, Browser automation, provider/network calls, analytics
   activation, revenue-row ingestion, recommendation changes, auto-publication, release,
   Production, and Canonical/status overlay mutation.

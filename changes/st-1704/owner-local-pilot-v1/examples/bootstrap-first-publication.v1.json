@@ -11,12 +11,23 @@
   },
   "incremental_cost_jpy": {"state": "NOT_OBSERVED", "value": null},
   "metrics": {
-    "access": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null},
-    "clicks": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null},
-    "revenue_jpy": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null}
+    "affiliate_clicks": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null},
+    "article_views": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null},
+    "organic_clicks": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null},
+    "revenue_jpy": {
+      "direct_jpy": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null},
+      "estimated_jpy": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null},
+      "provider_total_jpy": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null},
+      "unattributed_jpy": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null}
+    }
   },
   "observation_id": "PILOT-ARTICLE-01-PUBLICATION-V1",
   "observed_at_utc": "2026-08-23T00:00:00Z",
+  "pilot_window": {
+    "duration_days": 14,
+    "end_exclusive_date": "2026-09-06",
+    "start_date": "2026-08-23"
+  },
   "publication": {
     "confirmed_at_utc": "2026-08-23T00:00:00Z",
     "confirmed_by_role": "OWNER",

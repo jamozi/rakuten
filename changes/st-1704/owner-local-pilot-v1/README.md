@@ -11,6 +11,14 @@ Fixed owner-private paths:
 - `.secrets/st1704-owner-local-pilot/ledger.lock`
 - `.secrets/st1704-owner-local-pilot/ledger.v1.json.preparing`
 
+The single generated `runtime-manifest.v1.json` contains the closed observation
+schema, owner-local policy, and exact runtime-file hashes. Every runtime command
+verifies that manifest and descriptor-stably reads the closed source inventory
+before loading only those verified source bytes. Runtime domain validation is
+stricter still: it binds state/value pairs, the exact 14-day window, period
+metadata, article identity, human-confirmation fields, and metric-specific
+source/attribution contracts.
+
 From the exact physical repository root:
 
 ```bash
@@ -23,10 +31,14 @@ make -f changes/st-1704/owner-local-pilot-v1/Makefile report
 `doctor` and `report` are read-only. `init` and `record` write only inside the
 fixed pilot directory. `record` reads the fixed owner-private observation input;
 there is no caller-selected path. Copy the tracked example to that path with
-mode `0600`, replace its observation timestamp with the human-confirmed value,
-and retain `NOT_OBSERVED` for access, clicks, and revenue until aggregate evidence
-actually exists. Never paste credentials, URLs, article body, prompts, source text,
-personal data, IP/UA, search queries, cookies, storage, or provider rows into it.
+mode `0600`, set the exact pilot start and human-confirmed publication timestamp,
+and retain `NOT_OBSERVED` for article views, affiliate CTA clicks, Search Console
+organic clicks, and all four revenue buckets until aggregate evidence actually
+exists. Revenue preserves provider total, direct, estimated, and unattributed
+values separately, reconciles one exact period at a time, and rejects reuse of
+the same provider input/period batch across article slots. Never paste
+credentials, URLs, article body, prompts, source text, personal data, IP/UA,
+search queries, cookies, storage, or provider rows into it.
 
 The report is deterministic. It can only propose `STOP_AND_REVIEW`,
 `COLLECT_BASELINE`, `INSUFFICIENT_EVIDENCE`, or `REVIEW_CANDIDATES_ONLY`; it has
