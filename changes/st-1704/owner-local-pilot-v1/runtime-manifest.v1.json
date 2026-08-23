@@ -1,0 +1,69 @@
+{
+  "external_action_authority": "NONE",
+  "generated_by": "scripts/build_st1704_owner_local_pilot.py",
+  "paths": [
+    {
+      "bytes": 5208,
+      "path": "changes/st-1704/owner-local-pilot-v1/DESIGN_HANDOFF_V1.yaml",
+      "sha256": "9147884fa7a06d49214f6223c6f2909f25223b79b94e29168769b4efe227d9ff"
+    },
+    {
+      "bytes": 1903,
+      "path": "changes/st-1704/owner-local-pilot-v1/Makefile",
+      "sha256": "bf8402901d1ec554326cc2ee3839cf3b63511ca908be1df205d05beed6f33c4d"
+    },
+    {
+      "bytes": 1157,
+      "path": "changes/st-1704/owner-local-pilot-v1/PREFLIGHT.md",
+      "sha256": "19de05f1a8b55f2b87ce34e31a06fc04c8dc6b536ebfa5d222354ef0765efce9"
+    },
+    {
+      "bytes": 1812,
+      "path": "changes/st-1704/owner-local-pilot-v1/README.md",
+      "sha256": "18b3c84970a7009e9924f273965a62dc18a465af74e5d5a5f3028cf1d9812629"
+    },
+    {
+      "bytes": 1439,
+      "path": "changes/st-1704/owner-local-pilot-v1/examples/bootstrap-first-publication.v1.json",
+      "sha256": "c5b0135dc3e564159bd5e055de446cb17e009b0d63f0f0eb0c355b0a91036c39"
+    },
+    {
+      "bytes": 507,
+      "path": "changes/st-1704/owner-local-pilot-v1/pilot-policy.v1.json",
+      "sha256": "f03e38b35d4d4907cf20dfdb5aa1761a9b9c06ebc3a46664e99ac8f4c40e5fe1"
+    },
+    {
+      "bytes": 12625,
+      "path": "python/raos/adapters/owner_local_pilot_json.py",
+      "sha256": "7dc4b765c9d3c9379deea3aff2932a1e2be3ac86256479a1c2024c6beda74975"
+    },
+    {
+      "bytes": 2631,
+      "path": "python/raos/application/editorial/owner_local_pilot.py",
+      "sha256": "4f2070ee122bcd8b2ed0814da233aa1cadc7ac393155d4b834bfab20bc583c22"
+    },
+    {
+      "bytes": 29057,
+      "path": "python/raos/domain/editorial/owner_local_pilot.py",
+      "sha256": "a2964d3373f240e8ae11bb29837057f8d282cccc5892e2a67a6e58874d2e8ca6"
+    },
+    {
+      "bytes": 827,
+      "path": "python/raos/ports/owner_local_pilot.py",
+      "sha256": "c8ee10a2acb0fca4df8a92ff33cd96cfddb908395bd948dc37bdfa21343f7f96"
+    },
+    {
+      "bytes": 5065,
+      "path": "scripts/build_st1704_owner_local_pilot.py",
+      "sha256": "b81faae59aa7a1c7991f6c5018e6720fe5c2efd835ce4071f5d1b531722b0d0e"
+    },
+    {
+      "bytes": 2606,
+      "path": "scripts/st1704_owner_local_pilot.py",
+      "sha256": "3f179d836bc602111d0e014c5b1cd03def414f4bd6bcfe272cc62900d35aee84"
+    }
+  ],
+  "schema": "ST1704_OWNER_LOCAL_PILOT_RUNTIME_MANIFEST_V1",
+  "slice_id": "ST1704_OWNER_LOCAL_PILOT_LEDGER_V1",
+  "story_id": "ST-1704"
+}

@@ -1,0 +1,32 @@
+{
+  "article": {
+    "article_ref_sha256": null,
+    "public_slug": "carry-on-suitcase-comparison",
+    "slot": 1
+  },
+  "defects": {
+    "critical": {"state": "NOT_OBSERVED", "value": null},
+    "major": {"state": "NOT_OBSERVED", "value": null},
+    "minor": {"state": "NOT_OBSERVED", "value": null}
+  },
+  "incremental_cost_jpy": {"state": "NOT_OBSERVED", "value": null},
+  "metrics": {
+    "access": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null},
+    "clicks": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null},
+    "revenue_jpy": {"attribution_basis": "NOT_APPLICABLE", "input_sha256": null, "period_end": null, "period_start": null, "source_kind": "NOT_CONNECTED", "state": "NOT_OBSERVED", "value": null}
+  },
+  "observation_id": "PILOT-ARTICLE-01-PUBLICATION-V1",
+  "observed_at_utc": "2026-08-23T00:00:00Z",
+  "publication": {
+    "confirmed_at_utc": "2026-08-23T00:00:00Z",
+    "confirmed_by_role": "OWNER",
+    "status": "HUMAN_CONFIRMED_PUBLISHED"
+  },
+  "review": {
+    "reviewed_at_utc": null,
+    "reviewer_role": null,
+    "status": "NOT_OBSERVED"
+  },
+  "schema": "ST1704_OWNER_LOCAL_PILOT_OBSERVATION_V1",
+  "work_minutes": {"state": "NOT_OBSERVED", "value": null}
+}
