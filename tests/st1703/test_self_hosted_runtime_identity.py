@@ -1004,7 +1004,8 @@ before = set(sys.modules)
 runtime = runpy.run_path(str(script), run_name="runtime_import_probe")
 assert tuple(sys.path) == runtime_import_path
 assert sorted(runtime["_parser"]()._subparsers._group_actions[0].choices) == [
-    "affiliate-verify", "create-draft", "doctor", "install-credentials"
+    "affiliate-verify", "create-draft", "doctor", "install-credentials",
+    "recover-create-draft"
 ]
 for name in runtime["_RUNTIME_MODULE_PATHS"]:
     leaf = sys.modules[name]

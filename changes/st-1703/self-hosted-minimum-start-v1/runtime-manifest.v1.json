@@ -9,9 +9,14 @@
       "sha256": "14e58b72d2a9de1d3dc1daba9e053ee08339b9b024d1f0620494d9d2d29f59b5"
     },
     {
-      "bytes": 3473,
+      "bytes": 10427,
+      "path": "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1_AMBIGUOUS_DRAFT_RECOVERY.yaml",
+      "sha256": "b1699aceb8baf785218c0f2bb7df4d3f0c761c5dca5ffd5fd2f4f423784746cd"
+    },
+    {
+      "bytes": 3580,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/Makefile",
-      "sha256": "390640af7597d3b587323102b74cb242c9199dfe9edae655c45136992871daac"
+      "sha256": "a0556636a999e5fc7fa7bb9a714fe7299278d2d9a164c09f8cbf1dd48349f569"
     },
     {
       "bytes": 16495,
@@ -94,19 +99,19 @@
       "sha256": "95d5aeb931b4a8ffdcb6c9d3afbddaf1cbdbb65f6f63dae8a5914e674e578e79"
     },
     {
-      "bytes": 13555,
+      "bytes": 19086,
       "path": "python/raos/adapters/self_hosted_wordpress_https.py",
-      "sha256": "d19bdc39436bef65fda5ae1ba4382732f7bc339ae926b4e8f05b840ba83a96cc"
+      "sha256": "40613aaaffa20086e0c913da15376fd6ddc3046d2c58d6efe3ab23ccffb1d1f1"
     },
     {
-      "bytes": 17638,
+      "bytes": 52630,
       "path": "python/raos/adapters/self_hosted_wordpress_journal.py",
-      "sha256": "e3a0c06b9274be2dbc48732beef00f3eae5268759bf152b3274b061415ddf04b"
+      "sha256": "a5f7854623711ee0cac0ec84233da17b73579d309849ba60638e1a2fb5fd0cbd"
     },
     {
-      "bytes": 4392,
+      "bytes": 9698,
       "path": "python/raos/adapters/self_hosted_wordpress_rest.py",
-      "sha256": "7c0989a590fc58f7c36d62fae2711d870794af67b413d64c2c853442c70c2352"
+      "sha256": "fc26f618fe0b819c00745ad9ee72012a0aa65cdb55d6a0ed6b54bd24a9eb7905"
     },
     {
       "bytes": 17391,
@@ -139,14 +144,14 @@
       "sha256": "69f4c373dca5ddcbebf7dcefc23a8a9376792ca85b70fb3d48d6137212fb6f27"
     },
     {
-      "bytes": 9248,
+      "bytes": 11383,
       "path": "python/raos/domain/editorial/self_hosted_wordpress.py",
-      "sha256": "7fc93a4eaae7a7067d2702d26525c814fd69698c2978a2993fbce9b60cd9fdd3"
+      "sha256": "a84c70d294949f45fe58648d216e8e0489f3e1abb58b470bbb4a0aed52c1af43"
     },
     {
-      "bytes": 1121,
+      "bytes": 1494,
       "path": "python/raos/ports/self_hosted_wordpress.py",
-      "sha256": "7669c179c8df496de0277b6ef88c9678afe72f29cef72f28d48db5417f2bda1d"
+      "sha256": "e962fec07de9846da994dafadce044f199251d9feafb471784a88c27cba5489b"
     },
     {
       "bytes": 49145,
@@ -159,14 +164,14 @@
       "sha256": "d3bb775e37a7eff41f7cdd76c0fb98055ef60452a3078bf877bacca06bc05cd0"
     },
     {
-      "bytes": 57577,
+      "bytes": 59631,
       "path": "scripts/self_hosted_wordpress.py",
-      "sha256": "0720a6887ccfbe4535da853d8d98c7bbd82e1f37a65dc0479576c59af9501f53"
+      "sha256": "19277851d225de853acb576728999cf2fce413b1f5239291ff3dcc8c1be38db2"
     },
     {
-      "bytes": 22712,
+      "bytes": 22764,
       "path": "scripts/self_hosted_wordpress_python.sh",
-      "sha256": "8732a33e2af47cce770313be49ccf00812daad0062c6b8622d43e148cd13f04e"
+      "sha256": "632f3b973be11aeed994148380841bc4cbd333c637da4cc0dd9311a9137af0b4"
     }
   ],
   "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",

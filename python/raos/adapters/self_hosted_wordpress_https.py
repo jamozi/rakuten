@@ -18,6 +18,7 @@ from raos.adapters.self_hosted_wordpress_credentials import (
     OwnerPrivateSelfHostedWordPressCredentialStore,
 )
 from raos.adapters.self_hosted_wordpress_rest import (
+    SelfHostedWordPressRecoveryRequestBuilder,
     SelfHostedWordPressRestRequestBuilder,
 )
 from raos.domain.editorial.market_learning_pilot import MarketLearningPilotFailure
@@ -28,6 +29,7 @@ from raos.domain.editorial.self_hosted_wordpress import (
     SelfHostedWordPressFailure,
     SelfHostedWordPressFailureCode,
     SelfHostedWordPressOperation,
+    SelfHostedWordPressRecoveryObservation,
     fail_self_hosted_wordpress,
 )
 
@@ -223,27 +225,174 @@ class SystemSelfHostedWordPressHttpsConnectionFactory:
         )
 
 
-def _bounded_body(response: SelfHostedWordPressHttpsResponse) -> bytes:
+def _bounded_body(
+    response: SelfHostedWordPressHttpsResponse,
+    *,
+    failure_code: SelfHostedWordPressFailureCode = (
+        SelfHostedWordPressFailureCode.OUTCOME_AMBIGUOUS
+    ),
+) -> bytes:
     content_encoding = response.getheader("Content-Encoding")
     content_length = response.getheader("Content-Length")
     transfer_encoding = response.getheader("Transfer-Encoding")
     if content_encoding not in {None, "identity"}:
-        _fail(SelfHostedWordPressFailureCode.OUTCOME_AMBIGUOUS)
+        _fail(failure_code)
     if transfer_encoding not in {None, "chunked"} or (
         transfer_encoding is not None and content_length is not None
     ):
-        _fail(SelfHostedWordPressFailureCode.OUTCOME_AMBIGUOUS)
+        _fail(failure_code)
     if content_length is not None:
         if re.fullmatch(r"(?:0|[1-9][0-9]*)", content_length, re.ASCII) is None:
-            _fail(SelfHostedWordPressFailureCode.OUTCOME_AMBIGUOUS)
+            _fail(failure_code)
         if int(content_length) > MAX_RESPONSE_BYTES:
-            _fail(SelfHostedWordPressFailureCode.OUTCOME_AMBIGUOUS)
+            _fail(failure_code)
     payload = response.read(MAX_RESPONSE_BYTES + 1)
     if type(payload) is not bytes or not 2 <= len(payload) <= MAX_RESPONSE_BYTES:
-        _fail(SelfHostedWordPressFailureCode.OUTCOME_AMBIGUOUS)
+        _fail(failure_code)
     if content_length is not None and len(payload) != int(content_length):
-        _fail(SelfHostedWordPressFailureCode.OUTCOME_AMBIGUOUS)
+        _fail(failure_code)
     return payload
+
+
+def _recovery_collection_headers(
+    response: SelfHostedWordPressHttpsResponse,
+    *,
+    result_count: int,
+) -> None:
+    total = response.getheader("X-WP-Total")
+    pages = response.getheader("X-WP-TotalPages")
+    if (
+        type(result_count) is not int
+        or result_count not in {0, 1}
+        or type(total) is not str
+        or type(pages) is not str
+        or re.fullmatch(r"(?:0|[1-9][0-9]*)", total, re.ASCII) is None
+        or re.fullmatch(r"(?:0|[1-9][0-9]*)", pages, re.ASCII) is None
+        or int(total) != result_count
+        or int(pages) != (0 if result_count == 0 else 1)
+        or response.getheader("Location") is not None
+        or response.getheader("Link") is not None
+    ):
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_READ_UNCERTAIN)
+
+
+@final
+class OfficialSelfHostedWordPressRecoveryProbeAdapter:
+    """Perform one authenticated fixed collection GET and no mutation."""
+
+    __slots__ = (
+        "_attempt_lock",
+        "_attempted",
+        "connection_factory",
+        "repository_root",
+    )
+
+    def __init__(
+        self,
+        repository_root: object,
+        connection_factory: object = (
+            SystemSelfHostedWordPressHttpsConnectionFactory()
+        ),
+    ) -> None:
+        if (
+            not isinstance(repository_root, Path)
+            or not repository_root.is_absolute()
+            or not isinstance(
+                connection_factory, SelfHostedWordPressHttpsConnectionFactory
+            )
+        ):
+            _fail(SelfHostedWordPressFailureCode.RECOVERY_NOT_AVAILABLE)
+        self.repository_root = repository_root
+        self.connection_factory = connection_factory
+        self._attempt_lock = threading.Lock()
+        self._attempted = False
+
+    def __repr__(self) -> str:
+        return "OfficialSelfHostedWordPressRecoveryProbeAdapter(<redacted>)"
+
+    def observe(
+        self, candidate: SelfHostedWordPressDraft
+    ) -> SelfHostedWordPressRecoveryObservation:
+        if (
+            type(candidate) is not SelfHostedWordPressDraft
+            or candidate.operation is not SelfHostedWordPressOperation.CREATE_DRAFT
+        ):
+            _fail(SelfHostedWordPressFailureCode.RECOVERY_NOT_AVAILABLE)
+        with self._attempt_lock:
+            if self._attempted:
+                _fail(SelfHostedWordPressFailureCode.RECOVERY_ALREADY_CONSUMED)
+            self._attempted = True
+        require_clean_self_hosted_wordpress_environment()
+        _request_deadline_supported()
+        builder = SelfHostedWordPressRecoveryRequestBuilder()
+        path = builder.build_path(candidate)
+        credentials = OwnerPrivateSelfHostedWordPressCredentialStore(
+            self.repository_root
+        ).read()
+        try:
+            context = ssl.create_default_context()
+            if not context.check_hostname or context.verify_mode != ssl.CERT_REQUIRED:
+                _fail(SelfHostedWordPressFailureCode.RECOVERY_READ_UNCERTAIN)
+            connection = self.connection_factory.open(
+                host=SELF_HOSTED_WORDPRESS_HOST,
+                port=SELF_HOSTED_WORDPRESS_PORT,
+                connect_timeout_seconds=CONNECT_TIMEOUT_SECONDS,
+                tls_context=context,
+            )
+        except SelfHostedWordPressFailure:
+            raise
+        except BaseException:
+            _fail(SelfHostedWordPressFailureCode.RECOVERY_READ_UNCERTAIN)
+        try:
+            with _connect_deadline():
+                connection.connect()
+            with _request_deadline():
+                connection.set_read_timeout(READ_TIMEOUT_SECONDS)
+                connection.request(
+                    "GET",
+                    path,
+                    b"",
+                    {
+                        "Accept": "application/json",
+                        "Authorization": credentials.authorization_header(),
+                        "Connection": "close",
+                        "Content-Length": "0",
+                        "Host": SELF_HOSTED_WORDPRESS_HOST,
+                        "User-Agent": "RAOS-ST-1703-owner-local-recovery/1",
+                    },
+                )
+                response = connection.getresponse()
+                content_type = response.getheader("Content-Type")
+                if (
+                    type(response.status) is not int
+                    or response.status != 200
+                    or type(content_type) is not str
+                    or _CONTENT_TYPE.fullmatch(content_type) is None
+                ):
+                    _fail(SelfHostedWordPressFailureCode.RECOVERY_READ_UNCERTAIN)
+                response_body = _bounded_body(
+                    response,
+                    failure_code=(
+                        SelfHostedWordPressFailureCode.RECOVERY_READ_UNCERTAIN
+                    ),
+                )
+                observation = builder.validate_response(
+                    candidate=candidate,
+                    path=path,
+                    body=response_body,
+                )
+                result_count = 0 if observation.draft_id is None else 1
+                _recovery_collection_headers(response, result_count=result_count)
+                return observation
+        except SelfHostedWordPressFailure:
+            raise
+        except BaseException:
+            _fail(SelfHostedWordPressFailureCode.RECOVERY_READ_UNCERTAIN)
+        finally:
+            try:
+                connection.close()
+            except BaseException:
+                pass
 
 
 @final
@@ -388,6 +537,7 @@ __all__ = [
     "CONNECT_TIMEOUT_SECONDS",
     "MAX_RESPONSE_BYTES",
     "OfficialSelfHostedWordPressDraftAdapter",
+    "OfficialSelfHostedWordPressRecoveryProbeAdapter",
     "READ_TIMEOUT_SECONDS",
     "SELF_HOSTED_WORDPRESS_HOST",
     "SELF_HOSTED_WORDPRESS_PORT",

@@ -1,0 +1,120 @@
+DESIGN_HANDOFF_V1:
+  record_status: REPOSITORY_LOCAL_DESIGN_RECORD
+  authority: DESIGN_AND_EVIDENCE_ONLY
+  approved_story: ST-1703
+  approved_scope: SELF_HOSTED_AMBIGUOUS_DRAFT_RECOVERY_V1
+  source_design_refs:
+    - docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    - docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    - docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    - docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    - docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    - docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1703
+    - changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml
+    - https://developer.wordpress.org/rest-api/reference/posts/
+    - https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/
+  decision:
+    command: recover-create-draft
+    operation: CREATE_DRAFT
+    exact_origin: https://kurashinoshirube.com
+    recovery_authority: ONE_HUMAN_INVOKED_RECOVERY_ONLY
+    preflight_read:
+      method: GET
+      route: /wp/v2/posts
+      context: edit
+      exact_slug_required: true
+      all_relevant_statuses_required: true
+      pagination: FORBIDDEN
+      retry: FORBIDDEN
+    exact_existing_result: RECONCILE_PENDING_TO_COMMITTED_WITH_ZERO_POST
+    exact_absence_result: PERMIT_ONE_ADDITIONAL_EXISTING_CREATE_POST
+    all_other_results: PERMANENTLY_CONSUME_AND_BLOCK
+    pre_network_journal_state: EXACT_ORIGINAL_PENDING_UNCHANGED
+    network_window_binding: HELD_DESCRIPTOR_IDENTITY_BYTES_AND_INTEGRITY
+    recovery_budget_guard: DURABLE_PERMANENT_SINGLE_USE
+    terminal_write_target: VALIDATED_HELD_DESCRIPTOR_ONLY
+    terminal_write_crash: FAIL_CLOSED_PARTIAL_HELD_INODE_PERMITTED
+    publication: DISABLED
+    production_eligibility: false
+  rationale:
+    - 最初のcreate結果が不明な場合にblind retryせず、公式Posts REST GETの厳格なread proofを先行させる
+    - exact draftが存在する場合はPOSTせず既存pending journalをCOMMITTEDへreconcileする
+    - exact absenceだけが既存create requestの追加1回を許可し、合計試行回数を最大2回に閉じる
+    - recovery intentをnetworkより前にdurable化し、crashや曖昧結果からloopへ戻れないようにする
+    - same-UID processによるnetwork window中のunlinkまたはatomic replaceでsidecarだけに依存したone-use markerを失えるため、独立したpermanent guardをnetworkより前にfsyncし、original pending journalをheld descriptorで固定する
+  rejected_alternatives:
+    - option: pending journalを削除してcreate-draftを再実行
+      reason: blind retryとthird attemptを可能にしexactly-once境界を破壊する
+    - option: doctorから自動recovery
+      reason: read-only doctorにcredential readとprovider actionを混入させる
+    - option: WordPress dashboardまたはbrowser automationによる自動修復
+      reason: UI state、session、publication capabilityを信頼境界へ追加する
+    - option: generic REST clientまたはstatus/page fallback
+      reason: exact origin、route、status、pagination、retry closureを弱める
+  constraints:
+    - existing create-draft behaviorは変更せず、pending journalは引き続き自動retryを拒否する
+    - exact current pending CREATE_DRAFT candidateだけを受理し、content/operation binding mismatchをnetwork前に拒否する
+    - owner-private mode 0600 single-link recovery sidecarをexisting journal lock内でexclusive createし、fileとparent directoryをfsyncしてからcredential valueまたはnetworkへ進む
+    - recovery sidecarはexact pending journal integrity、content hash、operation hash、closed recovery scopeへintegrity bindする
+    - recovery budget guard、sidecar、またはterminal staging entryが一度でも存在すれば、success、failure、crashを問わず同じrecoveryを再実行しない
+    - networkより前にguardとsidecarのfileとparent directoryをfsyncし、exact pending journalはbyte-for-byte変更せずheld descriptorで固定する。exact successだけがそのheld journalをCOMMITTEDへ更新する
+    - guard、sidecar、journalはheld nofollow descriptor、named identity、exact bytes、owner、mode 0600、single-link、size、mtime、ctime、integrity、candidate bindingをGETとconditional POSTの直前直後に再検証する
+    - network windowでnamed journalがatomic replaceされた場合、replacement pathnameを上書きせずheld descriptorだけをterminal化する。identity driftはfail closedとする
+    - exact success後のheld journal/sidecar in-place terminal write中にprocessが停止した場合、partial inodeを自動修復しない。durable guardがrecoveryをpermanently consumedに保ち、ordinary createも追加network attemptより前にfail closedとする
+    - sidecarまたはjournalがunlink/replacedされterminal recordを安全に復元できない場合も、permanent guardとunchanged pending stateがordinary createとrecoveryの追加network attemptを拒否する
+    - GETはApplication Password Basic Auth、system TLS、exact origin、fixed path、bounded timeout/body、no redirect、no proxy、zero retryで1回だけ行う
+    - GET queryはcontext=edit、exact slug、publish/future/draft/pending/private/trash、per_page=100、exact fieldsに固定する
+    - collection total/page headersはbody countと一致し、0件またはsingle pageだけを許可する。missing、malformed、oversize、non-JSON、redirect、timeout、pagination、header driftはread uncertaintyとしてPOSTなしで停止する
+    - nonzero responseはexactly oneで、id、type=post、slug、status=draft、raw title、raw content、fixed request originのすべてがcandidateと一致するときだけreconcileする
+    - duplicate、wrong title/content/slug/status/type、unexpected field/schema、またはorigin/path driftはPOSTなしでpermanent blockする
+    - exact zeroだけがexisting four-field create requestとexisting create response validatorを通る追加POSTを1回だけ許可する
+    - second POSTのrefusal、mismatch、timeout、ambiguous outcomeはoriginal pending journalをbyte-for-byte維持し、recovery pathをpermanently consumedにする
+    - journal/sidecarにはclosed state、hash、exact draft ID/statusだけを保存し、credential、Authorization header、title、slug、content、URL、response body、private path、browser data、PIIを保存または出力しない
+    - outputは常にpublication_authorized=falseとproduction_eligible=falseを含む
+    - publish、update、delete、media、theme、plugin、taxonomy、publicize、generic HTTP capabilityを追加しない
+    - doctorからrecoveryを開始せず、publicationはWordPress dashboardでのhuman-only actionのままにする
+  security_and_approval_gates:
+    local_repository_implementation: AUTHORIZED_REVERSIBLE
+    recovery_invocation: EXPLICIT_HUMAN_OWNER_OPERATION
+    credential_entry: OWNER_INTERACTIVE_ONLY
+    live_get_and_conditional_post: SEPARATE_OWNER_OPERATION_NOT_AUTHORIZED_BY_THIS_RECORD
+    publication: HUMAN_OWNER_REQUIRED
+    formal_staging_tst: NOT_EXECUTED
+    release: NOT_AUTHORIZED
+    production_claim: FORBIDDEN
+  acceptance_criteria:
+    - pending journalなし、non-create pending、binding mismatch、committed/pending混在はsidecar、credential、networkより前に拒否する
+    - durable recovery intentがGETより先に存在し、同じcommandの2回目はGETもPOSTも行わない
+    - one exact existing draftはjournalをCOMMITTEDへreconcileしPOSTを0回に保つ
+    - exact absenceはPOSTを最大1回に保ち、exact successful receiptだけをCOMMITTEDにする
+    - duplicateまたはnonzero mismatchとすべてのread uncertaintyはPOSTを0回に保つ
+    - second POST ambiguityはoriginal pending journalを維持し、permanent guardによりthird attemptを不可能にする
+    - child processによるnetwork window中のsidecar unlink/byte-identical replace、journal valid-state/byte-identical atomic replace、またはsidecar unlinkとjournal replaceの組合せはfail closedとし、replacementを上書きせずGET/POSTをreplayしない
+    - held journal/sidecar terminal write中のabrupt process exitはpartial stateでもguardによりrecoveryをreplayせず、追加POSTを0回に保つ
+    - sidecar/journal tamper、mode drift、symlink、hardlink、concurrency、crashはfail closedでrecoveryをreplayしない
+    - create-draftのpending no-retry testは変更後も合格する
+    - CLI、launcher、Make、runtime manifestのcommand/path allowlistはrecover-create-draftだけを追加し、それ以外のcapabilityを追加しない
+    - fake-only test outputとtracked artifactにsecret、auth、raw content、raw destination、private path、browser data、PIIが存在しない
+  required_test_evidence:
+    - exact existing reconciliation with zero POST
+    - exact absence then one successful POST
+    - duplicate、title/content/slug/status/type mismatch with zero POST
+    - malformed、oversize、non-JSON、bad status/header、redirect、proxy、timeout、pagination failures with zero POST
+    - pending journal and recovery sidecar tamper、mode、symlink、hardlink、concurrency、crash tests
+    - child processによるGET/POST windowのjournal valid-state/byte-identical atomic replace、POST windowのsidecar unlink/byte-identical replace、およびsidecar unlink plus journal replace tests
+    - child processによるheld journal/sidecar terminal write中のpartial-write exit tests
+    - one-use、second POST ambiguity、no third attempt tests
+    - credential、Authorization、content、URL、private-path redaction tests
+    - CLI、launcher、Make、runtime-manifest closure tests
+    - existing create-draft no-retry regression
+    - ruff lint/format、mypy、Pyright、bash syntax、runtime-manifest no-write、git diff --check
+  open_decision_state:
+    canonical_registry_mutated: false
+    formal_resolution_claimed: false
+    new_canonical_open_decision: none
+    external_owner_checks_remain:
+      - dedicated draft writer role and capability proof
+      - live credential validity
+      - explicit owner invocation of the recovery command
+      - human browser preview and publication decision
+    production_gate_advanced: false

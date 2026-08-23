@@ -28,14 +28,14 @@ override OWNER_LAUNCHER := $(OWNER_REPOSITORY_ROOT)/scripts/self_hosted_wordpres
 override MANAGED_PYTHON := $(OWNER_REPOSITORY_ROOT)/.venv/bin/python
 override ROOT_OWNED_RUNTIME_GENERATOR_PYTHON := /usr/bin/python3.10
 
-.PHONY: help doctor install-credentials create-draft \
+.PHONY: help doctor install-credentials create-draft recover-create-draft \
 	runtime-manifest-generate runtime-manifest-check \
 	theme-source-check theme-package theme-check affiliate-verify
 
 help:
 	@echo 'Offline: doctor runtime-manifest-check theme-source-check theme-check affiliate-verify'
 	@echo 'Local maintenance: runtime-manifest-generate theme-package'
-	@echo 'Human gated: install-credentials create-draft'
+	@echo 'Human gated: install-credentials create-draft recover-create-draft'
 
 doctor:
 	"$(OWNER_LAUNCHER)" doctor
@@ -45,6 +45,9 @@ install-credentials:
 
 create-draft:
 	"$(OWNER_LAUNCHER)" create-draft
+
+recover-create-draft:
+	"$(OWNER_LAUNCHER)" recover-create-draft
 
 runtime-manifest-generate:
 	cd "$(SELF_HOSTED_SOURCE_ROOT)" && \

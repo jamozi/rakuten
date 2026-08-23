@@ -74,6 +74,16 @@ def test_doctor_is_metadata_only_and_has_zero_network_or_external_writes(
     )
     monkeypatch.setattr(
         cli,
+        "OfficialSelfHostedWordPressRecoveryProbeAdapter",
+        forbidden_transport,
+    )
+    monkeypatch.setattr(
+        cli,
+        "DurableSelfHostedWordPressDraftRecoveryAdapter",
+        forbidden_transport,
+    )
+    monkeypatch.setattr(
+        cli,
         "load_first_article_candidate_with_affiliate_status",
         lambda *args, **kwargs: (object(), "PENDING"),
     )
@@ -361,6 +371,149 @@ def test_main_projects_verified_theme_bytes_into_create_preflight(
     assert json.loads(capsys.readouterr().out) == {"status": "SYNTHETIC_DRAFT_ONLY"}
 
 
+def test_recover_create_draft_wires_probe_and_existing_create_only_after_preflight(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    calls: list[str] = []
+    candidate = object()
+    probe = object()
+    attempt = object()
+    receipt = object()
+
+    monkeypatch.setattr(
+        cli,
+        "load_first_article_candidate_with_affiliate_status",
+        lambda *args, **kwargs: (candidate, "FINAL"),
+    )
+    monkeypatch.setattr(
+        cli,
+        "verified_theme_source_check",
+        lambda payloads: {
+            "first_article_asset_status": "FINAL",
+            "package_ready": True,
+        },
+    )
+
+    def metadata_status(_store: object) -> str:
+        calls.append("credential-metadata")
+        return "METADATA_READY"
+
+    def make_probe(root: Path) -> object:
+        assert root == tmp_path
+        calls.append("probe-adapter")
+        return probe
+
+    def make_attempt(root: Path) -> object:
+        assert root == tmp_path
+        calls.append("attempt-adapter")
+        return attempt
+
+    class FakeRecovery:
+        def __init__(
+            self,
+            *,
+            repository_root: Path,
+            probe_port: object,
+            attempt_port: object,
+        ) -> None:
+            assert repository_root == tmp_path
+            assert probe_port is probe
+            assert attempt_port is attempt
+            calls.append("recovery-adapter")
+
+        def recover(self, observed: object) -> object:
+            assert observed is candidate
+            calls.append("recover")
+            return receipt
+
+    monkeypatch.setattr(
+        cli.OwnerPrivateSelfHostedWordPressCredentialStore,
+        "metadata_status",
+        metadata_status,
+    )
+    monkeypatch.setattr(
+        cli,
+        "OfficialSelfHostedWordPressRecoveryProbeAdapter",
+        make_probe,
+    )
+    monkeypatch.setattr(cli, "OfficialSelfHostedWordPressDraftAdapter", make_attempt)
+    monkeypatch.setattr(
+        cli,
+        "DurableSelfHostedWordPressDraftRecoveryAdapter",
+        FakeRecovery,
+    )
+    monkeypatch.setattr(
+        cli,
+        "_receipt_output",
+        lambda observed: {"receipt": "recovered"} if observed is receipt else {},
+    )
+
+    assert cli._recover_draft(
+        tmp_path,
+        content_packet_bytes=b"reviewed-packet",
+        theme_payloads={"raos-assets.v1.json": b"reviewed-theme"},
+    ) == {"receipt": "recovered"}
+    assert calls == [
+        "credential-metadata",
+        "probe-adapter",
+        "attempt-adapter",
+        "recovery-adapter",
+        "recover",
+    ]
+
+
+def test_main_projects_verified_theme_bytes_into_recovery_command(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    image_path = f"{cli._THEME_RUNTIME_PREFIX}assets/images/home-hero.webp"
+    monkeypatch.setattr(cli, "_runtime_authorized", True)
+    monkeypatch.setattr(
+        cli,
+        "_verified_runtime_bytes",
+        {
+            cli._CONTENT_PACKET_RUNTIME_PATH: b"reviewed-packet",
+            image_path: VALID_WEBP_VP8,
+        },
+    )
+    monkeypatch.setattr(cli, "_physical_repository_root", lambda root: root)
+    observed: dict[str, object] = {}
+
+    def recover_draft(
+        repository_root: Path,
+        *,
+        content_packet_bytes: bytes | None,
+        theme_payloads: dict[str, bytes],
+    ) -> dict[str, object]:
+        observed.update(
+            {
+                "repository_root": repository_root,
+                "content_packet_bytes": content_packet_bytes,
+                "theme_payloads": theme_payloads,
+            }
+        )
+        return {
+            "production_eligible": False,
+            "publication_authorized": False,
+            "status": "SYNTHETIC_RECOVERED_DRAFT",
+        }
+
+    monkeypatch.setattr(cli, "_recover_draft", recover_draft)
+    assert cli.main(["recover-create-draft"], repository_root=tmp_path) == 0
+    assert observed == {
+        "repository_root": tmp_path,
+        "content_packet_bytes": b"reviewed-packet",
+        "theme_payloads": {"assets/images/home-hero.webp": VALID_WEBP_VP8},
+    }
+    assert json.loads(capsys.readouterr().out) == {
+        "production_eligible": False,
+        "publication_authorized": False,
+        "status": "SYNTHETIC_RECOVERED_DRAFT",
+    }
+
+
 def test_doctor_rejects_hash_bound_structurally_invalid_final_webp(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -450,6 +603,7 @@ def test_hidden_installer_prints_no_values_and_creates_owner_private_json(
         ["update-draft", "--draft-id", str(1 << 63)],
         ["publish"],
         ["delete"],
+        ["recover-create-draft", "--retry"],
         ["create-draft", "--application-password", "never-reflect-this-secret"],
         ["doc"],
     ],
@@ -468,6 +622,7 @@ def test_unknown_forbidden_and_invalid_controls_are_sanitized(
     refusal = json.loads(output.out)
     assert refusal["status"] == "BLOCKED"
     assert refusal["publication_authorized"] is False
+    assert refusal["production_eligible"] is False
     assert refusal["reason_code"] in {"INVALID_ARGUMENT", "OPERATION_NOT_ALLOWED"}
 
 
@@ -496,6 +651,7 @@ def test_direct_linked_worktree_execution_refuses_before_command_imports() -> No
     assert b"Traceback" not in result.stdout
     refusal = json.loads(result.stdout)
     assert refusal == {
+        "production_eligible": False,
         "publication_authorized": False,
         "reason_code": "SELF_HOSTED_RUNTIME_BINDING_INVALID",
         "status": "BLOCKED",
@@ -566,7 +722,10 @@ def test_launcher_is_exact_root_pinned_isolated_and_sanitizes_environment() -> N
     assert '"RAOS_SELF_HOSTED_STAGE_CLI_SHA256=$captured_cli_sha"' in launcher
     assert '"$python_target" \\' in launcher
     assert "-B -I -S -X pycache_prefix=/dev/null -" in launcher
-    assert "doctor:1|install-credentials:1|create-draft:1" in launcher
+    assert (
+        "doctor:1|install-credentials:1|create-draft:1|recover-create-draft:1"
+        in launcher
+    )
     assert "affiliate-verify:7" in launcher
     assert '-B -I -S -X pycache_prefix=/dev/null - "$@"' in launcher
     assert launcher.index("fixed_git status --porcelain=v1 --untracked-files=all") < (
@@ -603,6 +762,7 @@ def test_launcher_is_exact_root_pinned_isolated_and_sanitizes_environment() -> N
             "rejected",
             "rejected",
         ],
+        ["recover-create-draft", "rejected"],
     ],
 )
 def test_launcher_rejects_nonclosed_affiliate_arguments_without_reflection(
@@ -647,6 +807,33 @@ def test_imported_main_refuses_before_credentials_or_network(
     assert not (tmp_path / ".secrets").exists()
 
 
+def test_imported_main_refuses_recovery_before_credentials_or_network(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    calls: list[str] = []
+
+    def forbidden(*args: object, **kwargs: object) -> None:
+        del args, kwargs
+        calls.append("recovery-capability")
+        raise AssertionError("recovery capability reached")
+
+    monkeypatch.setattr(cli, "_runtime_authorized", False)
+    monkeypatch.setattr(cli, "_verified_runtime_bytes", None)
+    monkeypatch.setattr(cli, "_recover_draft", forbidden)
+    assert cli.main(["recover-create-draft"], repository_root=tmp_path) == 2
+    assert calls == []
+    refusal = json.loads(capsys.readouterr().out)
+    assert refusal == {
+        "production_eligible": False,
+        "publication_authorized": False,
+        "reason_code": "SELF_HOSTED_RUNTIME_BINDING_INVALID",
+        "status": "BLOCKED",
+    }
+    assert not (tmp_path / ".secrets").exists()
+
+
 def test_imported_main_refuses_affiliate_verify_before_private_read(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -684,7 +871,7 @@ def test_story_makefile_has_closed_targets_and_sanitized_help() -> None:
     assert result.stdout.splitlines() == [
         b"Offline: doctor runtime-manifest-check theme-source-check theme-check affiliate-verify",
         b"Local maintenance: runtime-manifest-generate theme-package",
-        b"Human gated: install-credentials create-draft",
+        b"Human gated: install-credentials create-draft recover-create-draft",
     ]
     assert b"update" not in result.stdout
     content = SLICE_MAKEFILE.read_text(encoding="utf-8")
@@ -697,6 +884,7 @@ def test_story_makefile_has_closed_targets_and_sanitized_help() -> None:
     assert content.count("/usr/bin/busybox env -i PATH=/usr/bin:/bin") == 2
     assert content.count("umask 0077") == 1
     assert "update-draft" not in content
+    assert content.count("recover-create-draft") >= 3
     affiliate_target = content.split("affiliate-verify:", maxsplit=1)[1]
     assert '"$(OWNER_LAUNCHER)" affiliate-verify' in affiliate_target
     assert "scripts/finalize_st1703_affiliate_links.py" not in affiliate_target
