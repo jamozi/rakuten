@@ -32,10 +32,12 @@ module is then rechecked by verified-loader and object identity before live boun
 
 1. A human operator records the active theme and plugin inventory, the current public
    HTML, `robots.txt`, and every current sitemap response outside this repository.
-2. A human owner performs the bounded Rakuten Item Search retrieval for the selected
-   article. Every product must resolve to the exact product code or JAN, direct
+2. The owner-authorized command performs the bounded Rakuten Item Search retrieval
+   for one selected article using the already-installed owner-private
+   credential. Every product must resolve to the exact product code or JAN, direct
    affiliate URL, exact 128×128 HTTPS image, retrieval time, response hash, and image
-   hash. A missing or ambiguous product keeps that article blocked.
+   hash. A missing or ambiguous product keeps that article blocked. The command has
+   no publication, WordPress, arbitrary URL, or generic HTTP capability.
 3. Run the repository manifest check and the complete local test target. Local output
    remains local evidence and is not staging or Production evidence.
 4. Review and merge the exact tested GitHub head only after required CI is terminal and
@@ -163,6 +165,32 @@ than 24 hours old. The policy contains only
 `text_overlay_allowed`, and `upscale_allowed`, all `false`. Product IDs and binding
 references come from the tracked source/media registries; no field is chosen by a CLI
 argument. Credentials and secret values are never written to any artifact.
+
+The separate bounded capture command installs those four artifacts. Run it from the
+exact repository root, substituting only one of the five closed article IDs:
+
+```sh
+/usr/bin/env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C TZ=UTC \
+  "$PWD/.venv/bin/python" -B -I -S -X pycache_prefix=/dev/null \
+  scripts/st1704_rakuten_product_capture.py capture-article \
+  --article-id st1703-first-suitcase-comparison
+```
+
+It first verifies `rakuten-capture-runtime-manifest.v1.json`, the current committed
+HEAD, the approved base, and every capture runtime byte before reading credential
+metadata or issuing DNS/HTTPS. Product discovery is bounded to the registry's model
+variants and 30 results on page one. It then issues exact item-code requests without
+and with `affiliateId`, followed by one exact provider-image request. Secret values
+are excluded from fingerprints, results, logs, argv, environment, and all four
+artifacts. Before persistence, every provider string and string-list member is checked
+in normalized raw and single-percent-decoded form: the access key is forbidden
+everywhere, while application and affiliate IDs are permitted only in validated
+`itemUrl`/`affiliateUrl` fields. A private cross-process lock records the outbound
+request boundary so direct
+requests are paced at least 1.1 seconds apart across CLI invocations and are never
+retried automatically. Do not retry `REQUEST_AMBIGUOUS` blindly; inspect provider availability
+before a new owner-authorized run. The existing WordPress CLI remains limited to its
+four documented commands.
 
 After a fresh `prepare` succeeds, a human creates a separate one-operation gate at
 `.secrets/st1704-self-hosted-editorial-pilot/owner-live-gates/<article-id>.<packet-sha256>.<command>.v1.json`.

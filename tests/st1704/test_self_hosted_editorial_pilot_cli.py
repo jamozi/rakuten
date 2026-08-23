@@ -120,6 +120,7 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
         )
     else:
         item_url = parse_qs(urlsplit(cast(str, destination)).query)["pc"][0]
+    item_code = f"{urlsplit(item_url).path.split('/')[1]}:{tail}"
     identity = cast(dict[str, object], asset["identity"])
     variant = cast(list[str], identity["allowed_variants"])[0]
     required_tokens = cast(list[str], identity["required_title_tokens"])
@@ -130,17 +131,15 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
     response = (
         canonical_json_bytes(
             {
-                "count": 1,
-                "items": [
+                "Items": [
                     {
-                        "itemCode": f"test-shop:{tail}",
+                        "itemCode": item_code,
                         "itemName": item_name,
                         "itemUrl": item_url,
                         "mediumImageUrls": [
                             "https://thumbnail.image.rakuten.co.jp/@0_mall/test-shop/"
                             f"cabinet/{tail}.jpg?_ex=128x128"
                         ],
-                        "reviewAverage": 4.5,
                     }
                 ],
             }
@@ -163,7 +162,7 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
         "format_version": 2,
         "affiliate_id_supplied": False,
         "image_flag": 1,
-        "item_code": f"test-shop:{tail}",
+        "item_code": item_code,
         "schema": "RAOS_ST1704_RAKUTEN_ITEM_SEARCH_REQUEST_V1",
         "secret_fields_excluded": ["accessKey", "affiliateId", "applicationId"],
     }
@@ -173,7 +172,7 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
     )
     selected_result = {
         "image_url": image_url,
-        "item_code": f"test-shop:{tail}",
+        "item_code": item_code,
         "item_name": item_name,
         "schema": "RAOS_ST1704_RAKUTEN_PROVIDER_IDENTITY_V1",
         "source_url": item_url,
@@ -192,15 +191,13 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
     affiliate_response = (
         canonical_json_bytes(
             {
-                "count": 1,
-                "items": [
+                "Items": [
                     {
                         "affiliateUrl": destination,
-                        "itemCode": f"test-shop:{tail}",
+                        "itemCode": item_code,
                         "itemName": item_name,
                         "itemUrl": destination,
                         "mediumImageUrls": [image_url],
-                        "reviewAverage": 4.5,
                     }
                 ],
             }
@@ -210,7 +207,7 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
     affiliate_selected_result = {
         "affiliate_url": destination,
         "image_url": image_url,
-        "item_code": f"test-shop:{tail}",
+        "item_code": item_code,
         "item_name": item_name,
         "item_url": destination,
         "schema": "RAOS_ST1704_RAKUTEN_AFFILIATE_PROVIDER_IDENTITY_V1",
@@ -219,7 +216,7 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
         product_id=product_id,
         affiliate_ref=cast(str, affiliate["affiliate_ref"]),
         media_asset_ref=cast(str, asset["media_asset_ref"]),
-        item_code=f"test-shop:{tail}",
+        item_code=item_code,
         item_name=item_name,
         jan=cast(str | None, identity["jan"]),
         variant=variant,
@@ -240,7 +237,16 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
     )
 
 
-def _synthetic_image_bytes() -> bytes:
+def _synthetic_image_bytes(
+    *,
+    compressed_payload: bytes | None = None,
+    color_type: int = 2,
+    include_palette: bool = False,
+    indexed_sample: int = 0,
+    width: int = 128,
+    height: int = 128,
+    zero_idat_before_palette: bool = False,
+) -> bytes:
     def chunk(name: bytes, payload: bytes) -> bytes:
         return (
             len(payload).to_bytes(4, "big")
@@ -249,13 +255,109 @@ def _synthetic_image_bytes() -> bytes:
             + (zlib.crc32(name + payload) & 0xFFFFFFFF).to_bytes(4, "big")
         )
 
-    ihdr = (128).to_bytes(4, "big") + (128).to_bytes(4, "big") + bytes((8, 2, 0, 0, 0))
-    pixels = b"".join(b"\x00" + (b"\x00" * (128 * 3)) for _ in range(128))
+    channels = {2: 3, 3: 1}[color_type]
+    ihdr = (
+        width.to_bytes(4, "big")
+        + height.to_bytes(4, "big")
+        + bytes((8, color_type, 0, 0, 0))
+    )
+    sample = bytes((indexed_sample,)) if color_type == 3 else b"\x00" * channels
+    pixels = b"".join(b"\x00" + (sample * width) for _ in range(height))
     return (
         b"\x89PNG\r\n\x1a\n"
         + chunk(b"IHDR", ihdr)
-        + chunk(b"IDAT", zlib.compress(pixels))
+        + (
+            chunk(b"IDAT", b"") + chunk(b"PLTE", b"\x00\x00\x00")
+            if zero_idat_before_palette
+            else b""
+        )
+        + (chunk(b"PLTE", b"\x00\x00\x00") if include_palette else b"")
+        + chunk(
+            b"IDAT",
+            zlib.compress(pixels) if compressed_payload is None else compressed_payload,
+        )
         + chunk(b"IEND", b"")
+    )
+
+
+def _synthetic_gif_bytes(
+    *, valid_lzw: bool, width: int = 128, height: int = 128
+) -> bytes:
+    def blocks(payload: bytes) -> bytes:
+        return (
+            b"".join(
+                bytes((len(payload[offset : offset + 255]),))
+                + payload[offset : offset + 255]
+                for offset in range(0, len(payload), 255)
+            )
+            + b"\x00"
+        )
+
+    if valid_lzw:
+        codes = [4]
+        for _pixel in range(width * height):
+            codes.extend((0, 4))
+        codes[-1] = 5
+        packed = bytearray()
+        buffer = 0
+        buffered_bits = 0
+        for code in codes:
+            buffer |= code << buffered_bits
+            buffered_bits += 3
+            while buffered_bits >= 8:
+                packed.append(buffer & 0xFF)
+                buffer >>= 8
+                buffered_bits -= 8
+        if buffered_bits:
+            packed.append(buffer & 0xFF)
+        image_data = bytes(packed)
+    else:
+        image_data = b"\xff"
+    screen_width = width.to_bytes(2, "little")
+    screen_height = height.to_bytes(2, "little")
+    return (
+        b"GIF89a"
+        + screen_width
+        + screen_height
+        + b"\x80\x00\x00"
+        + b"\x00\x00\x00\xff\xff\xff"
+        + b"\x2c\x00\x00\x00\x00"
+        + screen_width
+        + screen_height
+        + b"\x00\x02"
+        + blocks(image_data)
+        + b"\x3b"
+    )
+
+
+def _synthetic_jpeg_bytes(
+    *, valid_entropy: bool, width: int = 128, height: int = 128
+) -> bytes:
+    def segment(marker: int, payload: bytes) -> bytes:
+        return (
+            b"\xff" + bytes((marker,)) + (len(payload) + 2).to_bytes(2, "big") + payload
+        )
+
+    dqt = b"\x00" + (b"\x01" * 64)
+    sof = (
+        b"\x08"
+        + height.to_bytes(2, "big")
+        + width.to_bytes(2, "big")
+        + b"\x01\x01\x11\x00"
+    )
+    counts = b"\x01" + (b"\x00" * 15)
+    dht = b"\x00" + counts + b"\x00" + b"\x10" + counts + b"\x00"
+    sos = b"\x01\x01\x00\x00\x3f\x00"
+    entropy_bits = ((width + 7) // 8) * ((height + 7) // 8) * 2
+    entropy = b"\x00" * ((entropy_bits + 7) // 8 if valid_entropy else 1)
+    return (
+        b"\xff\xd8"
+        + segment(0xDB, dqt)
+        + segment(0xC0, sof)
+        + segment(0xC4, dht)
+        + segment(0xDA, sos)
+        + entropy
+        + b"\xff\xd9"
     )
 
 
@@ -263,14 +365,12 @@ def _synthetic_response_bytes(evidence: RakutenProductEvidence) -> bytes:
     return (
         canonical_json_bytes(
             {
-                "count": 1,
-                "items": [
+                "Items": [
                     {
                         "itemCode": evidence.item_code,
                         "itemName": evidence.item_name,
                         "itemUrl": evidence.source_url,
                         "mediumImageUrls": [evidence.image_url],
-                        "reviewAverage": 4.5,
                     }
                 ],
             }
@@ -283,15 +383,13 @@ def _synthetic_affiliate_response_bytes(evidence: RakutenProductEvidence) -> byt
     return (
         canonical_json_bytes(
             {
-                "count": 1,
-                "items": [
+                "Items": [
                     {
                         "affiliateUrl": evidence.destination_url,
                         "itemCode": evidence.item_code,
                         "itemName": evidence.item_name,
                         "itemUrl": evidence.destination_url,
                         "mediumImageUrls": [evidence.image_url],
-                        "reviewAverage": 4.5,
                     }
                 ],
             }
@@ -928,6 +1026,29 @@ def test_rakuten_evidence_rejects_unbound_hosts_or_non_128_image(
     assert failure.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
 
 
+def test_rakuten_evidence_binds_item_url_shop_to_item_code() -> None:
+    evidence = _synthetic_evidence("PRD-ANKER-SOLIX-C300")
+    wrong_source = evidence.source_url.replace("/test-shop/", "/different-shop/")
+    destination = urlsplit(evidence.destination_url)
+    query = parse_qs(destination.query)
+    wrong_destination = destination._replace(
+        query=urlencode(
+            {
+                "m": "https://m.rakuten.co.jp/different-shop/i/item/",
+                "pc": wrong_source,
+                "rafcid": query["rafcid"][0],
+            }
+        )
+    ).geturl()
+    with pytest.raises(EditorialPilotFailure) as failure:
+        replace(
+            evidence,
+            source_url=wrong_source,
+            destination_url=wrong_destination,
+        )
+    assert failure.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+
+
 def test_owner_private_rakuten_overlay_is_fixed_schema_and_mode_bound(
     private_root: Path,
 ) -> None:
@@ -1189,16 +1310,112 @@ def test_source_capture_rejects_same_claim_duplicate_statement_drift_and_fake_fo
 def test_product_image_parser_rejects_truncated_or_corrupt_128_headers() -> None:
     valid = _synthetic_image_bytes()
     assert json_module._image_dimensions(valid) == (128, 128)  # type: ignore[attr-defined]
+    valid_indexed = _synthetic_image_bytes(color_type=3, include_palette=True)
+    assert json_module._image_dimensions(valid_indexed) == (  # type: ignore[attr-defined]
+        128,
+        128,
+    )
+    valid_gif = _synthetic_gif_bytes(valid_lzw=True)
+    assert json_module._image_dimensions(valid_gif) == (128, 128)  # type: ignore[attr-defined]
+    valid_jpeg = _synthetic_jpeg_bytes(valid_entropy=True)
+    assert json_module._image_dimensions(valid_jpeg) == (  # type: ignore[attr-defined]
+        128,
+        128,
+    )
     truncated = b"\x89PNG\r\n\x1a\n" + b"\x00" * 16
     corrupt = bytearray(valid)
     idat = valid.index(b"IDAT") + 4
     corrupt[idat] ^= 0x01
-    for raw in (truncated, bytes(corrupt)):
+    invalid_compressed = _synthetic_image_bytes(compressed_payload=b"not-zlib-data")
+    indexed_without_palette = _synthetic_image_bytes(color_type=3)
+    palette_after_zero_idat = _synthetic_image_bytes(zero_idat_before_palette=True)
+    non_target_png = _synthetic_image_bytes(width=96)
+    indexed_outside_palette = _synthetic_image_bytes(
+        color_type=3, include_palette=True, indexed_sample=1
+    )
+    invalid_gif = _synthetic_gif_bytes(valid_lzw=False)
+    non_target_gif = _synthetic_gif_bytes(valid_lzw=True, width=96)
+    invalid_jpeg = _synthetic_jpeg_bytes(valid_entropy=False)
+    non_target_jpeg = _synthetic_jpeg_bytes(valid_entropy=True, width=129, height=128)
+    for raw in (
+        truncated,
+        bytes(corrupt),
+        invalid_compressed,
+        indexed_without_palette,
+        palette_after_zero_idat,
+        non_target_png,
+        indexed_outside_palette,
+        invalid_gif,
+        non_target_gif,
+        invalid_jpeg,
+        non_target_jpeg,
+    ):
         with pytest.raises(EditorialPilotFailure) as failure:
             json_module._image_dimensions(raw)  # type: ignore[attr-defined]
         assert (
             failure.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
         )
+
+
+def test_evidence_reader_rejects_unrequested_provider_item_fields() -> None:
+    evidence = _synthetic_evidence("PRD-ANKER-SOLIX-C300")
+    raw = (
+        canonical_json_bytes(
+            {
+                "Items": [
+                    {
+                        "itemCode": evidence.item_code,
+                        "itemName": evidence.item_name,
+                        "itemUrl": evidence.source_url,
+                        "mediumImageUrls": [evidence.image_url],
+                        "reviewAverage": 4.5,
+                    }
+                ]
+            }
+        )
+        + b"\n"
+    )
+    bound = replace(evidence, response_sha256=bytes_sha256(raw))
+    with pytest.raises(EditorialPilotFailure) as failure:
+        json_module._validate_rakuten_response(  # type: ignore[attr-defined]
+            raw,
+            evidence=bound,
+            affiliate_id_supplied=False,
+        )
+    assert failure.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+
+
+def test_evidence_reader_rejects_compact_response_with_extra_rows() -> None:
+    evidence = _synthetic_evidence("PRD-ANKER-SOLIX-C300")
+    raw = (
+        canonical_json_bytes(
+            {
+                "Items": [
+                    {
+                        "itemCode": evidence.item_code,
+                        "itemName": evidence.item_name,
+                        "itemUrl": evidence.source_url,
+                        "mediumImageUrls": [evidence.image_url],
+                    },
+                    {
+                        "itemCode": "test-shop:unrelated-item",
+                        "itemName": "Unrelated product",
+                        "itemUrl": "https://item.rakuten.co.jp/test-shop/unrelated-item/",
+                        "mediumImageUrls": [evidence.image_url],
+                    },
+                ]
+            }
+        )
+        + b"\n"
+    )
+    bound = replace(evidence, response_sha256=bytes_sha256(raw))
+    with pytest.raises(EditorialPilotFailure) as failure:
+        json_module._validate_rakuten_response(  # type: ignore[attr-defined]
+            raw,
+            evidence=bound,
+            affiliate_id_supplied=False,
+        )
+    assert failure.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
 
 
 def test_owner_live_gate_is_bound_to_article_packet_request_and_command(
