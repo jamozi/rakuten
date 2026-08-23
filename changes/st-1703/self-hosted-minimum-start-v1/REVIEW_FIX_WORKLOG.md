@@ -297,6 +297,17 @@ completes that response.
   identity in addition to the store directory identity. Mid-run insert,
   removal, byte mutation, inode replacement or store replacement therefore
   fails before a success receipt. Future clock skew remains a closed failure.
+- A final request-read review found that the adapter pathname reader reopened
+  a request after the verifier had already captured descriptor-bound bytes.
+  The verifier now uses an ST-1703-local closed decoder on only its original
+  no-follow snapshot; swap/restore cannot substitute the fingerprint input.
+  It accepts only the three reviewed exact request mappings and rebuilds the
+  canonical fingerprint through the existing domain request types, leaving the
+  fixed ST-0505 installed-runtime bundle unchanged.
+- Future skew now applies only after a Result matches every packet-bound
+  provider-evidence field. A structurally valid but unselected future-dated
+  same-fingerprint Result is inventory-bound and ignored, while a future-dated
+  exact committed Result still fails closed.
 - The existing same-UID owner-local maintenance rule still applies: do not run
   another repository/private-store mutator concurrently. No provider call,
   credential read, external write, tracked packet writer, browser/WordPress

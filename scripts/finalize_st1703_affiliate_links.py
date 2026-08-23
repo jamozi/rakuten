@@ -47,7 +47,6 @@ if "raos" not in sys.modules and str(PYTHON_ROOT) not in sys.path:
 from raos.adapters.rakuten_owner_local import (  # noqa: E402
     MAX_REQUEST_BYTES,
     MAX_RESULT_BYTES,
-    OwnerPrivateRakutenOwnerLocalRequestReader,
 )
 from raos.application.editorial.self_hosted_minimum_start import (  # noqa: E402
     CONTENT_PACKET_RELATIVE_PATH,
@@ -57,7 +56,9 @@ from raos.application.editorial.self_hosted_minimum_start import (  # noqa: E402
     load_first_article_candidate_with_affiliate_status,
 )
 from raos.domain.catalog.rakuten_item_search_live_request_v1 import (  # noqa: E402
+    LIVE_ITEM_SEARCH_ELEMENTS_V1,
     LiveItemSearchSortV1,
+    RakutenItemSearchLiveRequestV1,
 )
 from raos.domain.catalog.rakuten_owner_local import (  # noqa: E402
     RAKUTEN_OWNER_LOCAL_EVIDENCE_AUTHORITY,
@@ -94,6 +95,18 @@ _RUN_FILE = re.compile(
     re.ASCII,
 )
 _MALFORMED_PERCENT_ESCAPE = re.compile(r"%(?![0-9A-Fa-f]{2})", re.ASCII)
+_CLOSED_REQUEST_KEYS = frozenset(
+    {
+        "schema_version",
+        "keyword",
+        "shop_code",
+        "item_code",
+        "genre_id",
+        "hits",
+        "page",
+        "sort",
+    }
+)
 _DIRECT_HOST = "hb.afl.rakuten.co.jp"
 _RAKUTEN_AFFILIATE_PATH = re.compile(
     r"/hgc/[A-Za-z0-9._~-]{1,256}/\Z",
@@ -735,12 +748,64 @@ def _validated_result(
     )
 
 
+def _decode_closed_request_snapshot(
+    raw: bytes,
+    slot: _SlotDefinition,
+) -> RakutenOwnerLocalItemSearchRequest:
+    """Decode only the three reviewed ST-1703 request shapes from captured bytes."""
+
+    if type(raw) is not bytes or not 1 <= len(raw) <= MAX_REQUEST_BYTES:
+        _fail("AFFILIATE_REQUEST_INVALID")
+    mapping = _strict_json(raw, code="AFFILIATE_REQUEST_INVALID")
+    if (
+        frozenset(mapping) != _CLOSED_REQUEST_KEYS
+        or type(mapping["schema_version"]) is not int
+        or mapping["schema_version"] != 1
+        or type(mapping["keyword"]) is not str
+        or mapping["keyword"] != slot.model_code
+        or mapping["shop_code"] is not None
+        or mapping["item_code"] is not None
+        or mapping["genre_id"] is not None
+        or type(mapping["hits"]) is not int
+        or mapping["hits"] != 30
+        or type(mapping["page"]) is not int
+        or mapping["page"] != 1
+        or type(mapping["sort"]) is not str
+        or mapping["sort"] != LiveItemSearchSortV1.STANDARD.value
+    ):
+        _fail("AFFILIATE_REQUEST_INVALID")
+    try:
+        policy = RakutenItemSearchLiveRequestV1(
+            api_version="2026-07-01",
+            format_version=2,
+            keyword=slot.model_code,
+            shop_code=None,
+            item_code=None,
+            genre_id=None,
+            hits=30,
+            page=1,
+            sort=LiveItemSearchSortV1.STANDARD,
+            elements=LIVE_ITEM_SEARCH_ELEMENTS_V1,
+            min_price_jpy=None,
+            max_price_jpy=None,
+            or_flag=False,
+            availability=True,
+            postage_included_only=False,
+            has_review_only=False,
+            appoint_delivery_date_only=False,
+            attribute_flag=False,
+            genre_information_flag=False,
+        )
+        return RakutenOwnerLocalItemSearchRequest(policy=policy)
+    except BaseException:
+        _fail("AFFILIATE_REQUEST_INVALID")
+
+
 def _request_fingerprints(
     request_paths: Mapping[str, Path],
 ) -> dict[str, str]:
     if frozenset(request_paths) != frozenset(slot.slot_id for slot in _SLOTS):
         _fail("AFFILIATE_ARGUMENT_INVALID")
-    reader = OwnerPrivateRakutenOwnerLocalRequestReader()
     fingerprints: dict[str, str] = {}
     for slot in _SLOTS:
         path = request_paths[slot.slot_id]
@@ -765,7 +830,7 @@ def _request_fingerprints(
                 require_private=True,
                 code="AFFILIATE_REQUEST_INVALID",
             )
-            request = reader.read(path, RakutenOwnerLocalApi.ITEM_SEARCH)
+            request = _decode_closed_request_snapshot(request_bytes, slot)
         except BaseException:
             _fail("AFFILIATE_REQUEST_INVALID")
         finally:
@@ -941,8 +1006,6 @@ def _scan_results(
                 continue
             if fingerprint in expected:
                 result = _validated_result(raw, file_name=name)
-                if result.finished_at - now > MAX_FUTURE_SKEW:
-                    _fail("AFFILIATE_RESULT_STALE")
                 committed = expected_by_fingerprint[result.request_fingerprint]
                 expected_provider_evidence = {
                     key: committed.evidence[key]
@@ -950,6 +1013,9 @@ def _scan_results(
                     if key != "destination_attestation_sha256"
                 }
                 if _provider_evidence(result) == expected_provider_evidence:
+                    # Only the immutable selected evidence has timestamp authority.
+                    if result.finished_at - now > MAX_FUTURE_SKEW:
+                        _fail("AFFILIATE_RESULT_STALE")
                     matches[result.request_fingerprint].append(result)
         try:
             terminal_names = sorted(os.listdir(directory_fd))

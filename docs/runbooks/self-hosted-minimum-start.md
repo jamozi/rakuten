@@ -256,19 +256,26 @@ official unmodified Rakuten Developers credit snippet exactly once. It has no
 pending marker.
 
 The read-only local verifier consumes three exact owner-private request files,
-recomputes their ST-0505 fingerprints, and scans only the fixed sanitized
-Result V3 store. It reads no credential, makes no network request, never prints
-a destination URL or private result path, and reports `external_writes: 0`.
+decodes only each bounded no-follow descriptor snapshot through its ST-1703-
+local closed decoder, and scans only the fixed sanitized Result V3 store. The
+decoder accepts the exact keys and reviewed values for these three slots and
+recomputes each canonical fingerprint through the existing domain request
+types, without changing the fixed ST-0505 installed runtime. It never reopens
+a request pathname through the adapter, reads no credential, makes no network
+request, never prints a destination URL or private result path, and reports
+`external_writes: 0`.
 It first validates the FINAL packet and extracts its exact committed request,
 response, Result-hash and retrieval-time evidence. It then selects only the
 byte-exact Result V3 record bound by that evidence. A stable newer Result with
 the same request fingerprint is validated but not selected, and an exact
 committed Result remains historical evidence after 24 hours. This command is
 not a product-freshness check or live re-attestation. It rejects PENDING,
-missing/replaced exact evidence, future clock skew, mixed or fingerprint-
-mismatched state, non-HTTPS, non-Rakuten/RAOS redirect, wrong item/shop/model,
-URL mutation, and manual/generic injection. Each mobile target must identify
-the exact reviewed Result V3 item for its slot. The full packet loader
+missing/replaced exact evidence, future clock skew on the selected exact
+evidence, mixed or fingerprint-mismatched state, non-HTTPS,
+non-Rakuten/RAOS redirect, wrong item/shop/model, URL mutation, and
+manual/generic injection. An unselected same-fingerprint Result has no
+timestamp authority over the packet-bound evidence. Each mobile target must
+identify the exact reviewed Result V3 item for its slot. The full packet loader
 independently requires the closed request fingerprints, exact state-specific
 disclosure and destination/evidence attestations. A second Result-store scan
 must reproduce the same file-name/hash/inode inventory and a terminal content

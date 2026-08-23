@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 import hashlib
 from html import escape
@@ -36,6 +37,7 @@ from raos.domain.catalog.rakuten_owner_local import (
     RakutenOwnerLocalApi,
     RakutenOwnerLocalOutcome,
     RakutenOwnerLocalProviderResult,
+    RakutenOwnerLocalRequest,
     RakutenOwnerLocalResultEnvelope,
     normalized_record,
 )
@@ -578,6 +580,144 @@ def test_finalizer_is_local_all_or_nothing_and_redacts_destinations(
         assert not any("result_store" in key for key in slot["evidence"])
 
 
+def test_verifier_decodes_descriptor_snapshot_without_reopening_request_path(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, fingerprints = _complete_final_inputs(
+        tmp_path,
+        monkeypatch,
+    )
+    target = requests["ace-cresta-06316"]
+    original_target = target.read_bytes()
+    original_decode = finalizer._decode_closed_request_snapshot
+    decoded_fingerprints: list[str] = []
+
+    def swap_restore_while_decoding(
+        raw: bytes,
+        slot: finalizer._SlotDefinition,
+    ) -> RakutenOwnerLocalRequest:
+        if not decoded_fingerprints:
+            target.write_text(
+                json.dumps(_request_payload("99999"), sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+            target.chmod(0o600)
+            try:
+                request = original_decode(raw, slot)
+            finally:
+                target.write_bytes(original_target)
+                target.chmod(0o600)
+        else:
+            request = original_decode(raw, slot)
+        decoded_fingerprints.append(request.fingerprint)
+        return request
+
+    monkeypatch.setattr(
+        finalizer,
+        "_decode_closed_request_snapshot",
+        swap_restore_while_decoding,
+    )
+    monkeypatch.setattr(
+        OwnerPrivateRakutenOwnerLocalRequestReader,
+        "read",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("request pathname reopened")
+        ),
+    )
+
+    receipt = finalizer.verify(
+        repository_root=root,
+        result_store=store,
+        request_paths=requests,
+        now=NOW,
+    )
+    assert receipt["status"] == "AFFILIATE_LINKS_VERIFIED"
+    assert decoded_fingerprints == [
+        fingerprints[slot_id] for slot_id, _product_name, _code in SLOTS
+    ]
+
+
+@pytest.mark.parametrize(("slot_id", "_product_name", "model_code"), SLOTS)
+def test_closed_request_snapshot_decoder_matches_owner_local_reader(
+    tmp_path: Path,
+    slot_id: str,
+    _product_name: str,
+    model_code: str,
+) -> None:
+    slot = next(
+        definition for definition in finalizer._SLOTS if definition.slot_id == slot_id
+    )
+    raw = (json.dumps(_request_payload(model_code), sort_keys=True) + "\n").encode()
+    path = tmp_path / f"keyword-{slot_id}.json"
+    path.write_bytes(raw)
+    path.chmod(0o600)
+
+    expected = OwnerPrivateRakutenOwnerLocalRequestReader().read(
+        path,
+        RakutenOwnerLocalApi.ITEM_SEARCH,
+    )
+    actual = finalizer._decode_closed_request_snapshot(raw, slot)
+
+    assert actual.fingerprint == expected.fingerprint
+    assert actual.canonical_parameters == expected.canonical_parameters
+
+
+@pytest.mark.parametrize(
+    ("field", "replacement"),
+    [
+        ("schema_version", True),
+        ("keyword", "unreviewed-model"),
+        ("shop_code", "ace-store"),
+        ("item_code", "ace-store:unreviewed"),
+        ("genre_id", 0),
+        ("hits", 29),
+        ("hits", True),
+        ("page", 2),
+        ("sort", "+itemPrice"),
+    ],
+)
+def test_closed_request_snapshot_decoder_rejects_nonexact_fields(
+    field: str,
+    replacement: object,
+) -> None:
+    slot = finalizer._SLOTS[0]
+    payload = _request_payload(slot.model_code)
+    payload[field] = replacement
+    raw = json.dumps(payload, sort_keys=True).encode()
+
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer._decode_closed_request_snapshot(raw, slot)
+    assert failure.value.code == "AFFILIATE_REQUEST_INVALID"
+
+
+@pytest.mark.parametrize(
+    "case",
+    ["duplicate", "missing", "extra", "non_object", "invalid_utf8", "empty"],
+)
+def test_closed_request_snapshot_decoder_rejects_malformed_shape(case: str) -> None:
+    slot = finalizer._SLOTS[0]
+    payload = _request_payload(slot.model_code)
+    if case == "duplicate":
+        raw = b'{"keyword":"06316","keyword":"06316"}'
+    elif case == "missing":
+        payload.pop("sort")
+        raw = json.dumps(payload, sort_keys=True).encode()
+    elif case == "extra":
+        payload["unexpected"] = None
+        raw = json.dumps(payload, sort_keys=True).encode()
+    elif case == "non_object":
+        raw = b"[]"
+    elif case == "invalid_utf8":
+        raw = b"\xff"
+    else:
+        raw = b""
+
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer._decode_closed_request_snapshot(raw, slot)
+    assert failure.value.code == "AFFILIATE_REQUEST_INVALID"
+
+
 def test_finalizer_rejects_unreviewed_attestation_before_write_or_success_receipt(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -681,6 +821,48 @@ def test_verifier_rejects_tampered_packet_evidence_before_private_read(
             now=NOW,
         )
     assert failure.value.code == "AFFILIATE_CONTENT_STATE_INVALID"
+
+
+@pytest.mark.parametrize(
+    ("evidence_key", "replacement"),
+    [
+        ("api", "product-search"),
+        ("api_version", "2026-07-02"),
+        ("endpoint_id", "OTHER_ENDPOINT"),
+        ("evidence_authority", "OTHER_AUTHORITY"),
+        ("request_fingerprint", "f" * 64),
+        ("response_sha256", "e" * 64),
+        ("result_sha256", "d" * 64),
+        ("retrieved_at", "2026-08-23T12:00:01.000000Z"),
+    ],
+)
+def test_result_selection_rejects_any_packet_provider_evidence_tamper(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    evidence_key: str,
+    replacement: str,
+) -> None:
+    root, store, _requests, _fingerprints = _complete_final_inputs(
+        tmp_path,
+        monkeypatch,
+    )
+    content_snapshot = finalizer._read_content_packet(
+        root / CONTENT_PACKET_RELATIVE_PATH
+    )
+    committed = list(
+        finalizer._load_committed_final_slots(root, snapshot=content_snapshot)
+    )
+    evidence = dict(committed[0].evidence)
+    evidence[evidence_key] = replacement
+    committed[0] = replace(committed[0], evidence=evidence)
+
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer._scan_results(
+            store,
+            committed_slots=tuple(committed),
+            now=NOW,
+        )
+    assert failure.value.code == "AFFILIATE_RESULT_MISSING_OR_DUPLICATE"
 
 
 @pytest.mark.parametrize(
@@ -829,7 +1011,7 @@ def test_verifier_ignores_preexisting_newer_same_fingerprint_result(
             fingerprint=fingerprints["ace-cresta-06316"],
             code="06316",
             run_index=9,
-            finished_at=NOW,
+            finished_at=NOW + timedelta(minutes=6),
         ),
     )
     assert hashlib.sha256(newer.read_bytes()).hexdigest() != committed_sha256
@@ -1064,6 +1246,48 @@ def test_finalizer_rejects_result_inserted_after_initial_scan(
     assert scans == 2
     assert failure.value.code == "AFFILIATE_RESULT_STORE_INVALID"
     assert (root / CONTENT_PACKET_RELATIVE_PATH).read_bytes() == pending
+
+
+@pytest.mark.parametrize("action", ["remove", "replace"])
+def test_finalizer_rejects_exact_result_removal_or_replacement_between_scans(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    action: str,
+) -> None:
+    root, store, requests, fingerprints = _complete_final_inputs(tmp_path, monkeypatch)
+    fingerprint = fingerprints["ace-cresta-06316"]
+    exact = _result_path_for_fingerprint(store, fingerprint)
+    original_scan = finalizer._scan_results
+    scans = 0
+
+    def mutate_before_terminal_scan(*args: object, **kwargs: object):
+        nonlocal scans
+        scans += 1
+        if scans == 2:
+            exact.unlink()
+            if action == "replace":
+                _write_result(
+                    store,
+                    _result_object(
+                        fingerprint=fingerprint,
+                        code="06316",
+                        run_index=10,
+                        finished_at=NOW,
+                    ),
+                )
+        return original_scan(*args, **kwargs)
+
+    monkeypatch.setattr(finalizer, "_scan_results", mutate_before_terminal_scan)
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.verify(
+            repository_root=root,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+
+    assert scans == 2
+    assert failure.value.code == "AFFILIATE_RESULT_MISSING_OR_DUPLICATE"
 
 
 def test_finalizer_rejects_byte_identical_result_inode_replacement_between_scans(

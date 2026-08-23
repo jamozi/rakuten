@@ -100,10 +100,14 @@ verifier used by the verified exact-root runtime for the already-FINAL tracked
 packet. Direct Python execution is disabled before argument parsing, repository
 path resolution, shadowable imports, or private-file access; only builtin
 `sys` is imported before the fixed refusal. Only the launcher supplies the
-three exact owner-private request files. The verifier recomputes each ST-0505 request
-fingerprint and scans only the fixed owner-local sanitized Result V3 store. It
-reads no credential, performs no network request, and has no tracked-file
-writer.
+three exact owner-private request files. The verifier decodes only the bounded
+bytes already obtained through its no-follow descriptor snapshot; it never
+reopens a request pathname through the adapter. Its ST-1703-local closed decoder
+accepts only the exact keys and reviewed values for these three slots, then uses
+the existing domain request types to recompute each canonical fingerprint. This
+keeps the fixed ST-0505 installed-runtime bundle unchanged. The verifier scans
+only the fixed owner-local sanitized Result V3 store, reads no credential,
+performs no network request, and has no tracked-file writer.
 
 The verifier requires the exact successful 2026-07-01 item-search Result V3
 record whose request fingerprint, response hash, complete Result hash and
@@ -121,9 +125,11 @@ An exact committed Result remains verifiable after 24 hours; this command does
 not assert current product freshness or perform live re-attestation. A stable,
 valid newer Result with the same request fingerprint is not selected and does
 not replace the committed evidence. PENDING, a missing/replaced exact Result,
-future-skewed evidence, mixed or mismatched state, manual injection, unsafe
-material, or any mid-verification store mutation fails closed. URLs and private
-result paths are never logged, and every receipt reports `external_writes: 0`.
+future-skewed exact committed evidence, mixed or mismatched state, manual
+injection, unsafe material, or any mid-verification store mutation fails
+closed. An unselected same-fingerprint Result has no authority to impose its
+timestamp on the committed evidence. URLs and private result paths are never
+logged, and every receipt reports `external_writes: 0`.
 
 Verify the reviewed FINAL packet. The Make target supplies only the three fixed
 owner-private request paths under `.secrets/rakuten-owner-local/requests/`;
