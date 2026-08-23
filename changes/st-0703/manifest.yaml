@@ -7,10 +7,10 @@ document:
   generation_command: uv run --locked --no-sync --no-env-file python scripts/build_st0703_recorded_adapter.py
 provenance:
   contract_uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
-  contract_sha256: d4fdab9d4babfaf8110ad83798cec68f7bc0038116d4bb25cf655e924325d04d
+  contract_sha256: ecceb5ee39c752266b10e7ae5923627995941e006c97b078d4a90e29649e3b66
   handoff_uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v5.yaml
   fixture_registry_uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
-  fixture_registry_sha256: ef92ef6bb6899629a78a3903fa17c8398b0970c3adbd9ec89331009c78a0654b
+  fixture_registry_sha256: f0cb4152da277af57175a3e4512096256529ae4e3fad229067825e9636486a28
   predecessor_story_ids:
   - ST-0204
   - ST-0701
@@ -25,17 +25,17 @@ source_artifacts:
   bytes: 20122
   sha256: 790af484fea8aaa38f040de7bd51dbb729bd643d255847a23310aaa37462510f
 - uri: repo://Makefile
-  bytes: 34123
-  sha256: e939974e286ab5bf11997c5d7e4780f1fdb7c03c2cb848e6ceb89470d3db03fc
+  bytes: 34422
+  sha256: 8d4030bfcffaa5bde56842b6a2475bbe2b845e074722c787b9d712bc22d2a40f
 - uri: repo://README.md
   bytes: 58459
   sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
 - uri: repo://changes/st-0204/manifest.yaml
   bytes: 5976
-  sha256: 064cc7a686cc785fe0981e5f68bac3fac48624cf850c38c8ea03244473d5a5f2
+  sha256: 59b1ab441a04c75f97ea6c34753009ffb262d85efe564c3157d745f88ece526a
 - uri: repo://changes/st-0701/manifest.yaml
   bytes: 15114
-  sha256: 6d73ea4b5fa5fdaeec8b6e115ca75ab8b246fe6aba5024d789734a19151e5f04
+  sha256: ff487dee8b0db9f8c69afa3663e8fd1e90b48d5c4edec6ad474927df58179136
 - uri: repo://changes/st-0703/CANONICAL-RECONCILIATION-v3.md
   bytes: 8513
   sha256: 3c0629b4c308e316991d64ae49d4a9b002f77dd78afe684c17da7e47d3bca290
@@ -77,7 +77,7 @@ source_artifacts:
   sha256: 18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c
 - uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
   bytes: 15689
-  sha256: d4fdab9d4babfaf8110ad83798cec68f7bc0038116d4bb25cf655e924325d04d
+  sha256: ecceb5ee39c752266b10e7ae5923627995941e006c97b078d4a90e29649e3b66
 - uri: repo://changes/st-0703/fixtures/recorded/error-rate-limit-429.json
   bytes: 1736
   sha256: e0ce4372d287766cf4b5f3ec1f0afcaf17b49dc41939c379e64c4773dac2eb72
@@ -95,7 +95,7 @@ source_artifacts:
   sha256: a6a7506c8201a979cdba2cf1e41c9c9d7288d801cf6f2f72aa5e6684e6da168c
 - uri: repo://changes/st-0801/manifest.yaml
   bytes: 32586
-  sha256: 835ac391798f640a230577a1c41ec043420184559f61907705f62d8f069002db
+  sha256: 97f06a9ac2ad359b363ef3b5cd2c02a8f70b5d4dedf3a9c1bf3489240f6439d3
 - uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-request.schema.json
   bytes: 1766
   sha256: 163fee46bb70bb87c4cb43c6fd304d5d551c72be204d50a9db9ffad12f5e7e31
@@ -140,7 +140,7 @@ source_artifacts:
   sha256: 3b4ccb19ba26793251b938954c736fdc8be871d618312d3eea2d6a4eff1a5c62
 - uri: repo://scripts/build_st0703_recorded_adapter.py
   bytes: 78521
-  sha256: 2715ca9ba1fbb8e37026c34b3a983d113bc5221b402147cec0588a0027b6845f
+  sha256: 9e486abf197c66f45e3d04771c017946405cb5b80faba178b8fbef869d3a0c8c
 - uri: repo://scripts/ci_job.sh
   bytes: 7456
   sha256: 6f93f7ceeacf1ed69158adc6d0e9176ec658cd1a71d6db05fb90d84a1570a067
@@ -151,8 +151,8 @@ source_artifacts:
   bytes: 5621
   sha256: a4bcbf7d25931065d61b0cfa585577f996e30e52b2ecbe60b32fedda5a0d8482
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 65038
-  sha256: aa25fdb3ed0071391699f06cb341d312f3b89e83ff974db34378aae9c27c4e32
+  bytes: 65686
+  sha256: c2a2cb14e7bd80ea514443890843108e47762afc207e54b31b4d21e895a6ce01
 - uri: repo://tests/st0703/conftest.py
   bytes: 366
   sha256: 0d381662b12f3a67ad8bd9d78a0351fbf525870b9503947558995e4b8a00c369
@@ -161,7 +161,7 @@ source_artifacts:
   sha256: 3912a42b5a3417901c555db9fabdc2c96cfa29d8f1812f8939ff6b360861203b
 - uri: repo://tests/st0703/test_generation.py
   bytes: 58129
-  sha256: ef19dde943088a6f4e02f598c5abe74536c453779682dffb37aab2a1ee31a893
+  sha256: 8cd0e7b90b43fcd676ef7d140ca4cc6521b45c0b1551b1d4a305b67dbd41cbb7
 - uri: repo://tests/st0703/test_implementation_manifest.py
   bytes: 2343
   sha256: 6a2f721e321227f2e97f30fad67605485d69a11431f1987b801f9aa51d6c389b
@@ -178,7 +178,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
   bytes: 5547
-  sha256: ef92ef6bb6899629a78a3903fa17c8398b0970c3adbd9ec89331009c78a0654b
+  sha256: f0cb4152da277af57175a3e4512096256529ae4e3fad229067825e9636486a28
 manifest_self_integrity:
   included_in_source_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check-installed

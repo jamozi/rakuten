@@ -117,10 +117,10 @@ source_artifacts:
   sha256: b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92
 - uri: repo://changes/st-0107/manifest.yaml
   bytes: 4848
-  sha256: 05140585e5796d9b88d4fcab6f4c5d04fbd96dd51323c39c234a86f387ee5582
+  sha256: bc673e3cbc3194c976a800541bacabd037d7261591982554772726484d0d4393
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 65062
-  sha256: 654679f3b10789aa8f2afd53b84eefff9f4a0f2b406f0de77a3a75999eac453c
+  bytes: 65686
+  sha256: c2a2cb14e7bd80ea514443890843108e47762afc207e54b31b4d21e895a6ce01
 - uri: repo://workspace-layout.json
   bytes: 6679
   sha256: 7d9e3a5d83fd20b10009c51f2589645e78a57eb6522ee9e060e9f6332d034a85
@@ -131,8 +131,8 @@ source_artifacts:
   bytes: 54428
   sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
 - uri: repo://Makefile
-  bytes: 34304
-  sha256: 08aad88f370498ef37b459303e42a788e051d3422c0860c0add06ea2356aa1d1
+  bytes: 34422
+  sha256: 8d4030bfcffaa5bde56842b6a2475bbe2b845e074722c787b9d712bc22d2a40f
 - uri: repo://README.md
   bytes: 58459
   sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749

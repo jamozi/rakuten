@@ -1332,6 +1332,18 @@ def test_shared_compose_generator_is_the_single_repository_policy_check() -> Non
     assert "postgres-check: local-compose-check" in makefile
 
 
+def test_st1704_repository_policy_uses_exact_isolated_python_launcher() -> None:
+    makefile = (REPOSITORY_ROOT / "Makefile").read_text(encoding="utf-8")
+    policy = makefile.split("\nci-repository-policy:", 1)[1].split("\nci-static:", 1)[0]
+
+    assert policy.count("scripts/build_st1704_owner_local_pilot.py --check") == 1
+    assert "/usr/bin/env -i PATH=/usr/bin:/bin" in policy
+    assert 'HOME="$(RAOS_REPOSITORY_ROOT)"' in policy
+    assert "LANG=C LC_ALL=C TZ=UTC" in policy
+    assert '"$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -B -I -S' in policy
+    assert "$(UV_READONLY_RUN) python -B -I -S" not in policy
+
+
 def test_queue_fake_uses_the_offline_unit_boundary_without_a_broker_job() -> None:
     makefile = (REPOSITORY_ROOT / "Makefile").read_text(encoding="utf-8")
     workflow = (REPOSITORY_ROOT / ".github/workflows/ci.yml").read_text(

@@ -912,6 +912,11 @@ def test_base_ci_routes_story_test_and_generator_check() -> None:
     policy = makefile.split("\nci-repository-policy:", 1)[1].split("\nci-static:", 1)[0]
     assert unit.count("tests/st1704") == 1
     assert policy.count("scripts/build_st1704_owner_local_pilot.py --check") == 1
+    assert "/usr/bin/env -i PATH=/usr/bin:/bin" in policy
+    assert 'HOME="$(RAOS_REPOSITORY_ROOT)"' in policy
+    assert "LANG=C LC_ALL=C TZ=UTC" in policy
+    assert '"$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -B -I -S' in policy
+    assert "$(UV_READONLY_RUN) python -B -I -S" not in policy
 
 
 def test_generator_check_rejects_manifest_mutation(

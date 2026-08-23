@@ -746,7 +746,10 @@ ci-repository-policy: | python-sync local-compose-check queue-check config-check
 		scripts/build_st0006_decision_gates.py --check
 	PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \
 		scripts/build_st0107_pr_governance.py --check
-	$(UV_READONLY_RUN) python -B -I -S -X pycache_prefix=/dev/null \
+	/usr/bin/env -i PATH=/usr/bin:/bin HOME="$(RAOS_REPOSITORY_ROOT)" \
+		LANG=C LC_ALL=C TZ=UTC \
+		"$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -B -I -S \
+		-X pycache_prefix=/dev/null \
 		scripts/build_st1704_owner_local_pilot.py --check
 
 ci-static: ci-network-assert check-workspace ci-repository-policy python-tool-versions \
