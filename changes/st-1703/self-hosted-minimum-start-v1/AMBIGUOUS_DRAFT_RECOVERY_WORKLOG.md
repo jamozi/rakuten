@@ -66,6 +66,52 @@ publicize capability was added, and `doctor` does not call recovery.
 - The project scanner engine reported zero findings across the exact changed
   files under this slice.
 
+## P2 hostile-mutation amendment
+
+Review found that the first implementation trusted the journal pathname again
+after the GET/conditional POST and terminalized the recovery sidecar by
+pathname. A same-UID child that ignored the advisory lock could therefore
+atomically replace the journal and have that replacement overwritten, or
+unlink the sidecar during an ambiguous second POST and remove the only durable
+one-use marker.
+
+The recovery now fsyncs two independent closed records before network: a
+permanent recovery-budget guard and the existing integrity-bound intent
+sidecar. It also holds the exact original pending journal without changing its
+bytes. It revalidates no-follow descriptor identity, exact bytes, owner, mode,
+link count, size, mtime, ctime, integrity and candidate binding before and
+after every GET/POST, and writes a successful journal or terminal sidecar only
+through the corresponding validated held descriptor. Detected pathname
+replacement is never overwritten. If safe terminalization is impossible, the
+permanent guard and unchanged original pending no-retry state still block both
+recovery and ordinary create before another network attempt. Controlled
+failures leave the original pending journal byte-for-byte unchanged. An abrupt
+exit during the held in-place journal or sidecar terminal write may leave that
+inode partial; this is intentionally not auto-repaired, and the durable guard
+keeps the path permanently consumed with no additional network attempt.
+
+P2 local evidence:
+
+- forked child tests cover valid-different and byte-identical journal atomic
+  replacement in both GET and POST windows, sidecar unlink and byte-identical
+  replacement during an ambiguous POST, combined sidecar unlink plus journal
+  replacement, and abrupt process exit in both network windows and both held
+  terminal-write targets; all assert bounded GET/POST counts and no third
+  attempt;
+- focused recovery/HTTPS/journal/CLI tests: `119 passed, 1 skipped`; the skip is
+  the unchanged exact-root launcher integration boundary;
+- complete isolated `tests/st1703`: `1243 passed, 1 skipped` for the same
+  exact-root reason; runtime identity separately remains `79 passed`;
+- Ruff format/lint, strict mypy for the seven affected runtime/generator source
+  files, project Pyright (`0 errors, 0 warnings`), Bash/BusyBox syntax, runtime
+  manifest regeneration/no-write check, theme source, workspace drift,
+  Canonical import, YAML parse and `git diff --check` passed;
+- the project scanner engine reported zero findings across the seven exact P2
+  changed paths; the aggregate linked-worktree scan retained the already
+  documented closed `unsafe-git-metadata` result;
+- an independent read-only security review found no remaining P2 blocker and
+  separately exercised journal/sidecar replacement plus GET/POST crash paths.
+
 ## Deferred verification ledger
 
 - Command: project worktree/history secret scan with the reviewed-findings

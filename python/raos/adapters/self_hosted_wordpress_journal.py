@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Generator
 from contextlib import contextmanager
+from dataclasses import dataclass
 import fcntl
 import hashlib
 import json
@@ -40,6 +41,8 @@ _JOURNAL_PREPARING_FILE = ".draft-journal.v1.preparing"
 _RECOVERY_SCHEMA = "SELF_HOSTED_WORDPRESS_DRAFT_RECOVERY_V1"
 _RECOVERY_SCOPE = "SELF_HOSTED_AMBIGUOUS_DRAFT_RECOVERY_V1"
 _RECOVERY_FILE = "draft-recovery.v1.json"
+_RECOVERY_GUARD_SCHEMA = "SELF_HOSTED_WORDPRESS_DRAFT_RECOVERY_GUARD_V1"
+_RECOVERY_GUARD_FILE = "draft-recovery.v1.guard"
 _RECOVERY_TERMINAL_FILE = ".draft-recovery.v1.terminal"
 _RECOVERY_ORIGIN_SHA256 = hashlib.sha256(
     SELF_HOSTED_WORDPRESS_ORIGIN.encode("ascii")
@@ -47,6 +50,7 @@ _RECOVERY_ORIGIN_SHA256 = hashlib.sha256(
 _MAX_STATE_BYTES = 64 * 1024
 _DIRECTORY_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW
 _FILE_FLAGS = os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK
+_HELD_FILE_FLAGS = os.O_RDWR | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK
 _TOP_KEYS = frozenset(
     {"schema", "site_origin", "committed", "pending", "integrity_sha256"}
 )
@@ -72,6 +76,17 @@ _RECOVERY_KEYS = frozenset(
         "integrity_sha256",
     }
 )
+_RECOVERY_GUARD_KEYS = frozenset(
+    {
+        "schema",
+        "scope",
+        "origin_sha256",
+        "state",
+        "candidate",
+        "pending_journal_integrity_sha256",
+        "integrity_sha256",
+    }
+)
 _SHA256_PATTERN = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 
 
@@ -86,6 +101,14 @@ def _same_identity(left: os.stat_result, right: os.stat_result) -> bool:
         and left.st_mode == right.st_mode
         and left.st_uid == right.st_uid
     )
+
+
+@dataclass(slots=True)
+class _HeldPrivateFile:
+    descriptor: int
+    name: str
+    payload: bytes
+    details: os.stat_result
 
 
 def _open_absolute_directory(path: Path) -> int:
@@ -277,6 +300,25 @@ def _recovery_value(
     }
 
 
+def _recovery_guard_value(
+    *,
+    candidate: object,
+    pending_journal_integrity_sha256: object,
+) -> dict[str, object]:
+    payload = {
+        "candidate": candidate,
+        "origin_sha256": _RECOVERY_ORIGIN_SHA256,
+        "pending_journal_integrity_sha256": pending_journal_integrity_sha256,
+        "schema": _RECOVERY_GUARD_SCHEMA,
+        "scope": _RECOVERY_SCOPE,
+        "state": "CONSUMED",
+    }
+    return {
+        **payload,
+        "integrity_sha256": hashlib.sha256(_canonical_json(payload)).hexdigest(),
+    }
+
+
 def _valid_sha256(value: object) -> bool:
     return type(value) is str and _SHA256_PATTERN.fullmatch(value) is not None
 
@@ -303,6 +345,43 @@ def _validated_recovery_candidate(value: object) -> dict[str, object]:
     ):
         _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
     return candidate
+
+
+def _validated_integrity_record(
+    value: object,
+    *,
+    expected_keys: frozenset[str],
+    expected_schema: str,
+    expected_state: str,
+) -> dict[str, object]:
+    if type(value) is not dict:
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+    record = cast(dict[str, object], value)
+    if frozenset(record) != expected_keys:
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+    integrity = record["integrity_sha256"]
+    payload = {key: record[key] for key in record if key != "integrity_sha256"}
+    if (
+        record["schema"] != expected_schema
+        or record["scope"] != _RECOVERY_SCOPE
+        or record["origin_sha256"] != _RECOVERY_ORIGIN_SHA256
+        or record["state"] != expected_state
+        or not _valid_sha256(integrity)
+        or integrity != hashlib.sha256(_canonical_json(payload)).hexdigest()
+        or not _valid_sha256(record["pending_journal_integrity_sha256"])
+    ):
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+    _validated_recovery_candidate(record["candidate"])
+    return record
+
+
+def _validated_recovery_guard(value: object) -> dict[str, object]:
+    return _validated_integrity_record(
+        value,
+        expected_keys=_RECOVERY_GUARD_KEYS,
+        expected_schema=_RECOVERY_GUARD_SCHEMA,
+        expected_state="CONSUMED",
+    )
 
 
 def _read_recovery_state(directory_fd: int) -> dict[str, object] | None:
@@ -427,7 +506,7 @@ def _write_recovery_intent(
     *,
     candidate: SelfHostedWordPressDraft,
     pending_journal_integrity_sha256: str,
-) -> dict[str, object]:
+) -> tuple[dict[str, object], _HeldPrivateFile]:
     if _entry_exists(directory_fd, _RECOVERY_FILE) or _entry_exists(
         directory_fd, _RECOVERY_TERMINAL_FILE
     ):
@@ -439,45 +518,43 @@ def _write_recovery_intent(
         pending_journal_integrity_sha256=pending_journal_integrity_sha256,
     )
     payload = _canonical_json(value)
-    descriptor = -1
-    try:
-        descriptor = os.open(
-            _RECOVERY_FILE,
-            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
-            0o600,
-            dir_fd=directory_fd,
-        )
-        _write_all(descriptor, payload)
-        os.fchmod(descriptor, 0o600)
-        os.fsync(descriptor)
-        opened = os.fstat(descriptor)
-        named = os.stat(_RECOVERY_FILE, dir_fd=directory_fd, follow_symlinks=False)
-        if (
-            not _same_identity(opened, named)
-            or not stat.S_ISREG(opened.st_mode)
-            or opened.st_uid != os.getuid()
-            or stat.S_IMODE(opened.st_mode) != 0o600
-            or opened.st_nlink != 1
-            or opened.st_size != len(payload)
-        ):
-            _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
-        os.fsync(directory_fd)
-    except SelfHostedWordPressFailure:
-        raise
-    except OSError, TypeError, ValueError:
-        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
-    finally:
-        if descriptor >= 0:
-            os.close(descriptor)
+    held = _create_held_private_file(
+        directory_fd,
+        name=_RECOVERY_FILE,
+        payload=payload,
+    )
     observed = _read_recovery_state(directory_fd)
     if observed != value:
+        _close_held_private_file(held)
         _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
-    return value
+    return value, held
+
+
+def _write_recovery_guard(
+    directory_fd: int,
+    *,
+    candidate: SelfHostedWordPressDraft,
+    pending_journal_integrity_sha256: str,
+) -> tuple[dict[str, object], _HeldPrivateFile]:
+    if _entry_exists(directory_fd, _RECOVERY_GUARD_FILE):
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_ALREADY_CONSUMED)
+    value = _recovery_guard_value(
+        candidate=_candidate_record(candidate),
+        pending_journal_integrity_sha256=pending_journal_integrity_sha256,
+    )
+    _validated_recovery_guard(value)
+    held = _create_held_private_file(
+        directory_fd,
+        name=_RECOVERY_GUARD_FILE,
+        payload=_canonical_json(value),
+    )
+    return value, held
 
 
 def _write_recovery_terminal(
     directory_fd: int,
     *,
+    held: _HeldPrivateFile,
     intent: dict[str, object],
     outcome: str,
     query_sha256: str | None = None,
@@ -486,9 +563,7 @@ def _write_recovery_terminal(
     draft_id: int | None = None,
     status_value: str | None = None,
     reason_code: SelfHostedWordPressFailureCode | None = None,
-) -> None:
-    if _entry_exists(directory_fd, _RECOVERY_TERMINAL_FILE):
-        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+) -> dict[str, object]:
     current = _read_recovery_state(directory_fd)
     if current != intent or current is None or current["state"] != "INTENT":
         _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
@@ -504,51 +579,10 @@ def _write_recovery_terminal(
         status_value=status_value,
         reason_code=None if reason_code is None else reason_code.value,
     )
-    payload = _canonical_json(value)
-    descriptor = -1
-    try:
-        descriptor = os.open(
-            _RECOVERY_TERMINAL_FILE,
-            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
-            0o600,
-            dir_fd=directory_fd,
-        )
-        _write_all(descriptor, payload)
-        os.fchmod(descriptor, 0o600)
-        os.fsync(descriptor)
-        opened = os.fstat(descriptor)
-        named = os.stat(
-            _RECOVERY_TERMINAL_FILE,
-            dir_fd=directory_fd,
-            follow_symlinks=False,
-        )
-        if (
-            not _same_identity(opened, named)
-            or not stat.S_ISREG(opened.st_mode)
-            or opened.st_uid != os.getuid()
-            or stat.S_IMODE(opened.st_mode) != 0o600
-            or opened.st_nlink != 1
-            or opened.st_size != len(payload)
-        ):
-            _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
-        if _read_recovery_state(directory_fd) != intent:
-            _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
-        os.replace(
-            _RECOVERY_TERMINAL_FILE,
-            _RECOVERY_FILE,
-            src_dir_fd=directory_fd,
-            dst_dir_fd=directory_fd,
-        )
-        os.fsync(directory_fd)
-    except SelfHostedWordPressFailure:
-        raise
-    except OSError, TypeError, ValueError:
-        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
-    finally:
-        if descriptor >= 0:
-            os.close(descriptor)
+    _rewrite_held_private_file(directory_fd, held, _canonical_json(value))
     if _read_recovery_state(directory_fd) != value:
         _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+    return value
 
 
 def _candidate_record(candidate: SelfHostedWordPressDraft) -> dict[str, object]:
@@ -683,6 +717,269 @@ def _write_all(descriptor: int, payload: bytes) -> None:
         offset += written
 
 
+def _validated_held_details(
+    directory_fd: int,
+    held: _HeldPrivateFile,
+    *,
+    expected_previous: os.stat_result | None,
+) -> os.stat_result:
+    try:
+        before = os.fstat(held.descriptor)
+        raw = os.pread(held.descriptor, _MAX_STATE_BYTES + 1, 0)
+        after = os.fstat(held.descriptor)
+        named = os.stat(held.name, dir_fd=directory_fd, follow_symlinks=False)
+    except OSError:
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+    if (
+        not stat.S_ISREG(before.st_mode)
+        or before.st_uid != os.getuid()
+        or stat.S_IMODE(before.st_mode) != 0o600
+        or before.st_nlink != 1
+        or not 1 <= before.st_size <= _MAX_STATE_BYTES
+        or raw != held.payload
+        or len(raw) != before.st_size
+        or not _same_identity(before, after)
+        or not _same_identity(after, named)
+        or before.st_mtime_ns != after.st_mtime_ns
+        or before.st_ctime_ns != after.st_ctime_ns
+    ):
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+    if expected_previous is not None and (
+        not _same_identity(expected_previous, before)
+        or expected_previous.st_nlink != before.st_nlink
+        or expected_previous.st_size != before.st_size
+        or expected_previous.st_mtime_ns != before.st_mtime_ns
+        or expected_previous.st_ctime_ns != before.st_ctime_ns
+    ):
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+    return after
+
+
+def _open_held_private_file(
+    directory_fd: int,
+    *,
+    name: str,
+    payload: bytes,
+) -> _HeldPrivateFile:
+    descriptor = -1
+    try:
+        descriptor = os.open(name, _HELD_FILE_FLAGS, dir_fd=directory_fd)
+        held = _HeldPrivateFile(
+            descriptor=descriptor,
+            name=name,
+            payload=payload,
+            details=os.fstat(descriptor),
+        )
+        held.details = _validated_held_details(
+            directory_fd,
+            held,
+            expected_previous=None,
+        )
+        return held
+    except SelfHostedWordPressFailure:
+        if descriptor >= 0:
+            os.close(descriptor)
+        raise
+    except OSError, TypeError, ValueError:
+        if descriptor >= 0:
+            os.close(descriptor)
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+
+
+def _create_held_private_file(
+    directory_fd: int,
+    *,
+    name: str,
+    payload: bytes,
+) -> _HeldPrivateFile:
+    if type(payload) is not bytes or not 1 <= len(payload) <= _MAX_STATE_BYTES:
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+    descriptor = -1
+    try:
+        descriptor = os.open(
+            name,
+            _HELD_FILE_FLAGS | os.O_CREAT | os.O_EXCL,
+            0o600,
+            dir_fd=directory_fd,
+        )
+        _write_all(descriptor, payload)
+        os.fchmod(descriptor, 0o600)
+        os.fsync(descriptor)
+        os.fsync(directory_fd)
+        held = _HeldPrivateFile(
+            descriptor=descriptor,
+            name=name,
+            payload=payload,
+            details=os.fstat(descriptor),
+        )
+        held.details = _validated_held_details(
+            directory_fd,
+            held,
+            expected_previous=None,
+        )
+        return held
+    except SelfHostedWordPressFailure:
+        if descriptor >= 0:
+            os.close(descriptor)
+        raise
+    except OSError, TypeError, ValueError:
+        if descriptor >= 0:
+            os.close(descriptor)
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+
+
+def _revalidate_held_private_file(
+    directory_fd: int,
+    held: _HeldPrivateFile,
+) -> None:
+    _validated_held_details(
+        directory_fd,
+        held,
+        expected_previous=held.details,
+    )
+
+
+def _rewrite_held_private_file(
+    directory_fd: int,
+    held: _HeldPrivateFile,
+    payload: bytes,
+) -> None:
+    if type(payload) is not bytes or not 1 <= len(payload) <= _MAX_STATE_BYTES:
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+    _revalidate_held_private_file(directory_fd, held)
+    try:
+        os.ftruncate(held.descriptor, 0)
+        os.lseek(held.descriptor, 0, os.SEEK_SET)
+        _write_all(held.descriptor, payload)
+        os.fchmod(held.descriptor, 0o600)
+        os.fsync(held.descriptor)
+        os.fsync(directory_fd)
+    except OSError, TypeError, ValueError:
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+    held.payload = payload
+    held.details = _validated_held_details(
+        directory_fd,
+        held,
+        expected_previous=None,
+    )
+
+
+def _close_held_private_file(held: _HeldPrivateFile | None) -> None:
+    if held is None:
+        return
+    try:
+        os.close(held.descriptor)
+    except OSError:
+        pass
+
+
+def _validate_recovery_window(
+    directory_fd: int,
+    *,
+    guard: dict[str, object],
+    guard_held: _HeldPrivateFile,
+    intent: dict[str, object],
+    intent_held: _HeldPrivateFile,
+    pending_journal: dict[str, object],
+    journal_held: _HeldPrivateFile,
+) -> None:
+    _revalidate_held_private_file(directory_fd, guard_held)
+    _revalidate_held_private_file(directory_fd, intent_held)
+    _revalidate_held_private_file(directory_fd, journal_held)
+    validated_guard = _validated_recovery_guard(guard)
+    observed_intent = _read_recovery_state(directory_fd)
+    observed_journal = _read_state(directory_fd)
+    pending = _validated_candidate(pending_journal.get("pending"))
+    if (
+        observed_intent != intent
+        or observed_journal != pending_journal
+        or intent.get("state") != "INTENT"
+        or intent.get("outcome") != "PENDING"
+        or pending_journal.get("committed") is not None
+        or pending != validated_guard["candidate"]
+        or pending != intent["candidate"]
+        or pending_journal.get("integrity_sha256")
+        != validated_guard["pending_journal_integrity_sha256"]
+        or pending_journal.get("integrity_sha256")
+        != intent["pending_journal_integrity_sha256"]
+        or _entry_exists(directory_fd, _RECOVERY_TERMINAL_FILE)
+    ):
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+
+
+def _write_committed_recovery_journal(
+    directory_fd: int,
+    *,
+    held: _HeldPrivateFile,
+    candidate: SelfHostedWordPressDraft,
+    receipt: SelfHostedWordPressDraftReceipt,
+) -> dict[str, object]:
+    value = _state_value(
+        committed=_committed_record(candidate, receipt),
+        pending=None,
+    )
+    _rewrite_held_private_file(directory_fd, held, _canonical_json(value))
+    if _read_state(directory_fd) != value:
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+    return value
+
+
+def _ensure_recovery_guard(
+    directory_fd: int,
+    *,
+    guard: dict[str, object],
+) -> None:
+    try:
+        if _entry_exists(directory_fd, _RECOVERY_GUARD_FILE):
+            return
+        replacement = _create_held_private_file(
+            directory_fd,
+            name=_RECOVERY_GUARD_FILE,
+            payload=_canonical_json(guard),
+        )
+        _close_held_private_file(replacement)
+    except BaseException:
+        pass
+
+
+def _terminalize_recovery_failure(
+    directory_fd: int,
+    *,
+    guard: dict[str, object],
+    guard_held: _HeldPrivateFile,
+    intent: dict[str, object],
+    intent_held: _HeldPrivateFile,
+    pending_journal: dict[str, object],
+    journal_held: _HeldPrivateFile,
+    reason_code: SelfHostedWordPressFailureCode,
+) -> None:
+    _validate_recovery_window(
+        directory_fd,
+        guard=guard,
+        guard_held=guard_held,
+        intent=intent,
+        intent_held=intent_held,
+        pending_journal=pending_journal,
+        journal_held=journal_held,
+    )
+    terminal = _write_recovery_terminal(
+        directory_fd,
+        held=intent_held,
+        intent=intent,
+        outcome="BLOCKED",
+        reason_code=reason_code,
+    )
+    _revalidate_held_private_file(directory_fd, guard_held)
+    _revalidate_held_private_file(directory_fd, intent_held)
+    _revalidate_held_private_file(directory_fd, journal_held)
+    if (
+        _validated_recovery_guard(guard) != guard
+        or _read_state(directory_fd) != pending_journal
+        or _read_recovery_state(directory_fd) != terminal
+    ):
+        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+
+
 def _write_state(directory_fd: int, value: dict[str, object]) -> None:
     payload = _canonical_json(value)
     temporary = ".draft-journal.v1.preparing"
@@ -777,13 +1074,28 @@ class DurableSelfHostedWordPressDraftAdapter:
         try:
             directory_fd = _open_state_directory(self._repository_root)
             with _locked(directory_fd):
-                state = _read_state(directory_fd)
+                recovery_marker = any(
+                    _entry_exists(directory_fd, name)
+                    for name in (
+                        _RECOVERY_GUARD_FILE,
+                        _RECOVERY_FILE,
+                        _RECOVERY_TERMINAL_FILE,
+                    )
+                )
+                try:
+                    state = _read_state(directory_fd)
+                except SelfHostedWordPressFailure:
+                    if recovery_marker:
+                        _fail(SelfHostedWordPressFailureCode.JOURNAL_AMBIGUOUS)
+                    raise
                 committed = None
                 if state is not None:
                     pending = _validated_candidate(state["pending"])
                     if pending is not None:
                         _fail(SelfHostedWordPressFailureCode.JOURNAL_AMBIGUOUS)
                     committed = _validated_committed(state["committed"])
+                if recovery_marker and committed is None:
+                    _fail(SelfHostedWordPressFailureCode.JOURNAL_AMBIGUOUS)
                 if committed is not None:
                     if committed["operation_sha256"] == candidate.operation_sha256:
                         if (
@@ -889,12 +1201,16 @@ class DurableSelfHostedWordPressDraftRecoveryAdapter:
         ):
             _fail(SelfHostedWordPressFailureCode.RECOVERY_NOT_AVAILABLE)
         directory_fd = -1
-        intent: dict[str, object] | None = None
+        guard_held: _HeldPrivateFile | None = None
+        intent_held: _HeldPrivateFile | None = None
+        journal_held: _HeldPrivateFile | None = None
         try:
             directory_fd = _open_state_directory(self._repository_root)
             with _locked(directory_fd):
                 if _entry_exists(directory_fd, _JOURNAL_PREPARING_FILE):
                     _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
+                if _entry_exists(directory_fd, _RECOVERY_GUARD_FILE):
+                    _fail(SelfHostedWordPressFailureCode.RECOVERY_ALREADY_CONSUMED)
                 existing_recovery = _read_recovery_state(directory_fd)
                 if existing_recovery is not None or _entry_exists(
                     directory_fd, _RECOVERY_TERMINAL_FILE
@@ -917,13 +1233,41 @@ class DurableSelfHostedWordPressDraftRecoveryAdapter:
                 journal_integrity = state["integrity_sha256"]
                 if not _valid_sha256(journal_integrity):
                     _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
-                intent = _write_recovery_intent(
+                journal_held = _open_held_private_file(
+                    directory_fd,
+                    name=_STATE_FILE,
+                    payload=_canonical_json(state),
+                )
+                guard, guard_held = _write_recovery_guard(
+                    directory_fd,
+                    candidate=candidate,
+                    pending_journal_integrity_sha256=cast(str, journal_integrity),
+                )
+                intent, intent_held = _write_recovery_intent(
                     directory_fd,
                     candidate=candidate,
                     pending_journal_integrity_sha256=cast(str, journal_integrity),
                 )
                 try:
+                    _validate_recovery_window(
+                        directory_fd,
+                        guard=guard,
+                        guard_held=guard_held,
+                        intent=intent,
+                        intent_held=intent_held,
+                        pending_journal=state,
+                        journal_held=journal_held,
+                    )
                     observation = self._probe_port.observe(candidate)
+                    _validate_recovery_window(
+                        directory_fd,
+                        guard=guard,
+                        guard_held=guard_held,
+                        intent=intent,
+                        intent_held=intent_held,
+                        pending_journal=state,
+                        journal_held=journal_held,
+                    )
                     if (
                         type(observation) is not SelfHostedWordPressRecoveryObservation
                         or observation.content_sha256 != candidate.content_sha256
@@ -953,7 +1297,25 @@ class DurableSelfHostedWordPressDraftRecoveryAdapter:
                         observation.disposition
                         is SelfHostedWordPressRecoveryObservationDisposition.EXACT_ABSENCE
                     ):
+                        _validate_recovery_window(
+                            directory_fd,
+                            guard=guard,
+                            guard_held=guard_held,
+                            intent=intent,
+                            intent_held=intent_held,
+                            pending_journal=state,
+                            journal_held=journal_held,
+                        )
                         receipt = self._attempt_port.attempt(candidate)
+                        _validate_recovery_window(
+                            directory_fd,
+                            guard=guard,
+                            guard_held=guard_held,
+                            intent=intent,
+                            intent_held=intent_held,
+                            pending_journal=state,
+                            journal_held=journal_held,
+                        )
                         if (
                             type(receipt) is not SelfHostedWordPressDraftReceipt
                             or receipt.operation
@@ -969,15 +1331,24 @@ class DurableSelfHostedWordPressDraftRecoveryAdapter:
                         write_response_sha256 = receipt.response_sha256
                     else:
                         _fail(SelfHostedWordPressFailureCode.RECOVERY_REMOTE_MISMATCH)
-                    _write_state(
+                    _validate_recovery_window(
                         directory_fd,
-                        _state_value(
-                            committed=_committed_record(candidate, receipt),
-                            pending=None,
-                        ),
+                        guard=guard,
+                        guard_held=guard_held,
+                        intent=intent,
+                        intent_held=intent_held,
+                        pending_journal=state,
+                        journal_held=journal_held,
                     )
-                    _write_recovery_terminal(
+                    committed_journal = _write_committed_recovery_journal(
                         directory_fd,
+                        held=journal_held,
+                        candidate=candidate,
+                        receipt=receipt,
+                    )
+                    terminal = _write_recovery_terminal(
+                        directory_fd,
+                        held=intent_held,
                         intent=intent,
                         outcome=outcome,
                         query_sha256=observation.query_sha256,
@@ -986,36 +1357,57 @@ class DurableSelfHostedWordPressDraftRecoveryAdapter:
                         draft_id=receipt.draft_id,
                         status_value=receipt.status,
                     )
+                    _revalidate_held_private_file(directory_fd, guard_held)
+                    _revalidate_held_private_file(directory_fd, intent_held)
+                    _revalidate_held_private_file(directory_fd, journal_held)
+                    if (
+                        _validated_recovery_guard(guard) != guard
+                        or _read_recovery_state(directory_fd) != terminal
+                        or _read_state(directory_fd) != committed_journal
+                    ):
+                        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
                     return receipt
                 except SelfHostedWordPressFailure as error:
                     try:
-                        _write_recovery_terminal(
+                        _terminalize_recovery_failure(
                             directory_fd,
+                            guard=guard,
+                            guard_held=guard_held,
                             intent=intent,
-                            outcome="BLOCKED",
+                            intent_held=intent_held,
+                            pending_journal=state,
+                            journal_held=journal_held,
                             reason_code=error.code,
                         )
                     except BaseException:
-                        pass
+                        _ensure_recovery_guard(directory_fd, guard=guard)
+                        _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
                     raise
                 except BaseException:
                     try:
-                        _write_recovery_terminal(
+                        _terminalize_recovery_failure(
                             directory_fd,
+                            guard=guard,
+                            guard_held=guard_held,
                             intent=intent,
-                            outcome="BLOCKED",
+                            intent_held=intent_held,
+                            pending_journal=state,
+                            journal_held=journal_held,
                             reason_code=(
                                 SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID
                             ),
                         )
                     except BaseException:
-                        pass
+                        _ensure_recovery_guard(directory_fd, guard=guard)
                     _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
         except SelfHostedWordPressFailure:
             raise
         except BaseException:
             _fail(SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID)
         finally:
+            _close_held_private_file(journal_held)
+            _close_held_private_file(intent_held)
+            _close_held_private_file(guard_held)
             if directory_fd >= 0:
                 os.close(directory_fd)
 

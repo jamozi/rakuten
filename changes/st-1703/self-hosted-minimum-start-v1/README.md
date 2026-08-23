@@ -70,6 +70,14 @@ staging, formal TST, publication, release, or Production evidence.
   It stores only closed state, hashes and an exact draft ID/status on success;
   it stores no credential, Authorization header, title, slug, content, URL,
   response body, browser data, or private pathname.
+- `.secrets/wordpress-owner-local/state/draft-recovery.v1.guard` is the
+  permanent recovery-budget tombstone. Before any recovery network access, the
+  command fsyncs this owner-private single-link guard and the sidecar, while
+  retaining the exact pending journal byte-for-byte through the network window
+  and all controlled failure paths before an exact success transition. The
+  permanent guard, sidecar and ordinary pending no-retry rule are independent
+  fail-closed blockers: never remove, edit, chmod, relink or replace any of
+  them.
 
 The generated package identifies its owner through the embedded
 `raos-assets.v1.json`:
@@ -256,19 +264,30 @@ make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile recover-create-dra
 
 Do not run it as a credential or connectivity test. Before any credential value
 or network access, it requires the exact current pending `CREATE_DRAFT`, creates
-and fsyncs the integrity-bound sidecar under the existing journal lock, and is
-then permanently consumed. It performs exactly one fixed-origin official REST
-GET. Exactly one matching `draft` with the same ID-safe type, slug, raw title and
-raw content is reconciled to `COMMITTED` with zero POSTs. A strictly proven
-empty collection permits exactly one additional invocation of the existing
-four-field create POST. Only its exact success receipt is committed.
+and fsyncs the integrity-bound guard and sidecar under the existing journal
+lock, and pins those records plus the unchanged original pending journal by
+descriptor. It revalidates their exact identity, bytes, metadata, integrity and
+candidate binding immediately before and after each network operation. It
+performs exactly one fixed-origin official REST GET. Exactly one matching
+`draft` with the same ID-safe type, slug, raw title and raw content is
+reconciled to `COMMITTED` with zero POSTs. A strictly proven empty collection
+permits exactly one additional invocation of the existing four-field create
+POST. Only its exact success receipt is committed.
 
 Any authentication/transport uncertainty, redirect, timeout, bad header,
 pagination, malformed or oversized JSON, duplicate, nonzero mismatch, sidecar
 or journal drift, crash, or ambiguous second POST leaves no replay path. A
 controlled failure records a closed terminal reason when safely possible; an
-interrupted partial intent itself remains the permanent block. Never edit,
-remove, chmod, relink, or replace either state file to obtain another attempt.
+interrupted partial intent or guard itself remains a permanent block, and the
+original pending journal remains unchanged on controlled failure. Named state
+replaced during the network window is never overwritten: terminal writes use
+only the held, revalidated descriptor. An abrupt process exit during an
+in-place successful journal or sidecar terminal write may leave that held inode
+partial; it is not repaired or replayed automatically, and the permanent guard
+still blocks every further recovery attempt. The independently durable guard
+also prevents sidecar unlink or replacement from re-enabling a third POST.
+Never edit, remove, chmod, relink, or replace any state file to obtain another
+attempt.
 The command always reports `publication_authorized=false` and
 `production_eligible=false`; it cannot publish, update, delete, upload media,
 or alter theme/plugin/taxonomy/publicize state. `doctor` never starts recovery.

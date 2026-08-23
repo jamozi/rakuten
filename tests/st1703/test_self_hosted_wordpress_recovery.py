@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -31,6 +33,78 @@ from raos.domain.editorial.self_hosted_wordpress import (
 STATE_ROOT = Path(".secrets/wordpress-owner-local/state")
 JOURNAL_PATH = STATE_ROOT / "draft-journal.v1.json"
 RECOVERY_PATH = STATE_ROOT / "draft-recovery.v1.json"
+RECOVERY_GUARD_PATH = STATE_ROOT / "draft-recovery.v1.guard"
+
+
+def _canonical_json(value: object) -> bytes:
+    return (
+        json.dumps(
+            value,
+            ensure_ascii=True,
+            allow_nan=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("ascii")
+        + b"\n"
+    )
+
+
+def _empty_journal_bytes() -> bytes:
+    payload = {
+        "committed": None,
+        "pending": None,
+        "schema": "SELF_HOSTED_WORDPRESS_DRAFT_JOURNAL_V1",
+        "site_origin": "https://kurashinoshirube.com",
+    }
+    return _canonical_json(
+        {
+            **payload,
+            "integrity_sha256": hashlib.sha256(_canonical_json(payload)).hexdigest(),
+        }
+    )
+
+
+def _fork_and_wait(action: Callable[[], None]) -> None:
+    child = os.fork()
+    if child == 0:
+        try:
+            action()
+        except BaseException:
+            os._exit(1)
+        os._exit(0)
+    waited, wait_status = os.waitpid(child, 0)
+    assert waited == child
+    assert os.waitstatus_to_exitcode(wait_status) == 0
+
+
+def _atomic_replace(path: Path, payload: bytes) -> None:
+    replacement = path.with_name(f".hostile-{path.name}-replacement")
+    descriptor = os.open(
+        replacement,
+        os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
+        0o600,
+    )
+    try:
+        assert os.write(descriptor, payload) == len(payload)
+        os.fchmod(descriptor, 0o600)
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+    os.replace(replacement, path)
+    directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC)
+    try:
+        os.fsync(directory)
+    finally:
+        os.close(directory)
+
+
+def _unlink_and_fsync(path: Path) -> None:
+    path.unlink()
+    directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC)
+    try:
+        os.fsync(directory)
+    finally:
+        os.close(directory)
 
 
 def _candidate(
@@ -254,13 +328,317 @@ def test_second_post_ambiguity_leaves_original_pending_and_blocks_third_attempt(
         recovery.recover(candidate)
     assert ambiguous.value.code is SelfHostedWordPressFailureCode.OUTCOME_AMBIGUOUS
     journal = json.loads((tmp_path / JOURNAL_PATH).read_text(encoding="ascii"))
+    assert journal["schema"] == "SELF_HOSTED_WORDPRESS_DRAFT_JOURNAL_V1"
     assert journal["pending"]["operation_sha256"] == candidate.operation_sha256
     assert journal["committed"] is None
+    assert (tmp_path / RECOVERY_GUARD_PATH).is_file()
 
     with pytest.raises(SelfHostedWordPressFailure) as third:
         recovery.recover(candidate)
     assert third.value.code is SelfHostedWordPressFailureCode.RECOVERY_ALREADY_CONSUMED
     assert original.calls == probe.calls == second.calls == 1
+
+    ordinary_post = Attempt()
+    with pytest.raises(SelfHostedWordPressFailure) as ordinary:
+        DurableSelfHostedWordPressDraftAdapter(
+            repository_root=tmp_path,
+            attempt_port=ordinary_post,
+        ).apply(candidate)
+    assert ordinary.value.code is SelfHostedWordPressFailureCode.JOURNAL_AMBIGUOUS
+    assert ordinary_post.calls == 0
+
+
+@pytest.mark.parametrize("replacement_kind", ["valid-different", "byte-identical"])
+@pytest.mark.parametrize("network_window", ["get", "post"])
+def test_child_atomic_journal_replace_during_network_is_not_overwritten(
+    tmp_path: Path,
+    replacement_kind: str,
+    network_window: str,
+) -> None:
+    candidate = _candidate()
+    _pending(tmp_path, candidate)
+    replacement = _empty_journal_bytes()
+
+    def replace_journal() -> None:
+        path = tmp_path / JOURNAL_PATH
+        _fork_and_wait(
+            lambda: _atomic_replace(
+                path,
+                replacement
+                if replacement_kind == "valid-different"
+                else path.read_bytes(),
+            )
+        )
+
+    class ReplacingProbe(Probe):
+        def observe(
+            self, observed: SelfHostedWordPressDraft
+        ) -> SelfHostedWordPressRecoveryObservation:
+            replace_journal()
+            return super().observe(observed)
+
+    class ReplacingAttempt(Attempt):
+        def attempt(
+            self, observed: SelfHostedWordPressDraft
+        ) -> SelfHostedWordPressDraftReceipt:
+            replace_journal()
+            return super().attempt(observed)
+
+    probe_type = ReplacingProbe if network_window == "get" else Probe
+    probe = probe_type(SelfHostedWordPressRecoveryObservationDisposition.EXACT_ABSENCE)
+    post = ReplacingAttempt() if network_window == "post" else Attempt()
+    recovery = DurableSelfHostedWordPressDraftRecoveryAdapter(
+        repository_root=tmp_path,
+        probe_port=probe,
+        attempt_port=post,
+    )
+
+    with pytest.raises(SelfHostedWordPressFailure) as drift:
+        recovery.recover(candidate)
+    assert drift.value.code is SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID
+    assert probe.calls == 1
+    assert post.calls == (1 if network_window == "post" else 0)
+    if replacement_kind == "valid-different":
+        assert (tmp_path / JOURNAL_PATH).read_bytes() == replacement
+    else:
+        replaced = json.loads((tmp_path / JOURNAL_PATH).read_text(encoding="ascii"))
+        assert replaced["pending"]["operation_sha256"] == candidate.operation_sha256
+        assert replaced["committed"] is None
+    assert (tmp_path / RECOVERY_GUARD_PATH).is_file()
+
+    with pytest.raises(SelfHostedWordPressFailure) as repeated:
+        recovery.recover(candidate)
+    assert (
+        repeated.value.code is SelfHostedWordPressFailureCode.RECOVERY_ALREADY_CONSUMED
+    )
+    assert probe.calls == 1
+    assert post.calls == (1 if network_window == "post" else 0)
+
+    ordinary_post = Attempt()
+    with pytest.raises(SelfHostedWordPressFailure) as ordinary:
+        DurableSelfHostedWordPressDraftAdapter(
+            repository_root=tmp_path,
+            attempt_port=ordinary_post,
+        ).apply(candidate)
+    assert ordinary.value.code is SelfHostedWordPressFailureCode.JOURNAL_AMBIGUOUS
+    assert ordinary_post.calls == 0
+    if replacement_kind == "valid-different":
+        assert (tmp_path / JOURNAL_PATH).read_bytes() == replacement
+
+
+@pytest.mark.parametrize(
+    "mutation", ["unlink", "replace", "unlink-and-journal-replace"]
+)
+def test_child_sidecar_mutation_during_ambiguous_post_cannot_enable_third_attempt(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    candidate = _candidate()
+    _pending(tmp_path, candidate)
+    probe = Probe(SelfHostedWordPressRecoveryObservationDisposition.EXACT_ABSENCE)
+
+    class UnlinkingAmbiguousAttempt(Attempt):
+        def attempt(
+            self, observed: SelfHostedWordPressDraft
+        ) -> SelfHostedWordPressDraftReceipt:
+            assert observed is candidate
+            self.calls += 1
+            sidecar = tmp_path / RECOVERY_PATH
+            if mutation == "unlink":
+                _fork_and_wait(lambda: _unlink_and_fsync(sidecar))
+            elif mutation == "replace":
+                _fork_and_wait(lambda: _atomic_replace(sidecar, sidecar.read_bytes()))
+            else:
+
+                def replace_both() -> None:
+                    _unlink_and_fsync(sidecar)
+                    _atomic_replace(tmp_path / JOURNAL_PATH, _empty_journal_bytes())
+
+                _fork_and_wait(replace_both)
+            fail_self_hosted_wordpress(SelfHostedWordPressFailureCode.OUTCOME_AMBIGUOUS)
+
+    post = UnlinkingAmbiguousAttempt()
+    recovery = DurableSelfHostedWordPressDraftRecoveryAdapter(
+        repository_root=tmp_path,
+        probe_port=probe,
+        attempt_port=post,
+    )
+
+    with pytest.raises(SelfHostedWordPressFailure) as drift:
+        recovery.recover(candidate)
+    assert drift.value.code is SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID
+    assert probe.calls == 1
+    assert post.calls == 1
+    assert (tmp_path / RECOVERY_PATH).exists() is (mutation == "replace")
+    assert (tmp_path / RECOVERY_GUARD_PATH).is_file()
+    journal = json.loads((tmp_path / JOURNAL_PATH).read_text(encoding="ascii"))
+    if mutation == "unlink-and-journal-replace":
+        assert journal["pending"] is None
+    else:
+        assert journal["pending"]["operation_sha256"] == candidate.operation_sha256
+    assert journal["committed"] is None
+
+    with pytest.raises(SelfHostedWordPressFailure) as repeated:
+        recovery.recover(candidate)
+    assert (
+        repeated.value.code is SelfHostedWordPressFailureCode.RECOVERY_ALREADY_CONSUMED
+    )
+    assert probe.calls == post.calls == 1
+
+    ordinary_post = Attempt()
+    with pytest.raises(SelfHostedWordPressFailure) as ordinary:
+        DurableSelfHostedWordPressDraftAdapter(
+            repository_root=tmp_path,
+            attempt_port=ordinary_post,
+        ).apply(candidate)
+    assert ordinary.value.code is SelfHostedWordPressFailureCode.JOURNAL_AMBIGUOUS
+    assert ordinary_post.calls == 0
+
+
+@pytest.mark.parametrize("network_window", ["get", "post"])
+def test_process_exit_during_network_keeps_recovery_permanently_consumed(
+    tmp_path: Path,
+    network_window: str,
+) -> None:
+    candidate = _candidate()
+    _pending(tmp_path, candidate)
+
+    class ExitingProbe:
+        def observe(
+            self, observed: SelfHostedWordPressDraft
+        ) -> SelfHostedWordPressRecoveryObservation:
+            assert observed is candidate
+            os._exit(23)
+
+    class ExitingAttempt:
+        def attempt(
+            self, observed: SelfHostedWordPressDraft
+        ) -> SelfHostedWordPressDraftReceipt:
+            assert observed is candidate
+            os._exit(24)
+
+    child = os.fork()
+    if child == 0:
+        probe: object = (
+            ExitingProbe()
+            if network_window == "get"
+            else Probe(SelfHostedWordPressRecoveryObservationDisposition.EXACT_ABSENCE)
+        )
+        post: object = ExitingAttempt() if network_window == "post" else Attempt()
+        DurableSelfHostedWordPressDraftRecoveryAdapter(
+            repository_root=tmp_path,
+            probe_port=probe,
+            attempt_port=post,
+        ).recover(candidate)
+        os._exit(1)
+    waited, wait_status = os.waitpid(child, 0)
+    assert waited == child
+    assert os.waitstatus_to_exitcode(wait_status) == (
+        23 if network_window == "get" else 24
+    )
+
+    assert (tmp_path / RECOVERY_GUARD_PATH).is_file()
+    pending = json.loads((tmp_path / JOURNAL_PATH).read_text(encoding="ascii"))
+    assert pending["pending"]["operation_sha256"] == candidate.operation_sha256
+    assert pending["committed"] is None
+    intent = json.loads((tmp_path / RECOVERY_PATH).read_text(encoding="ascii"))
+    assert intent["state"] == "INTENT"
+
+    probe_after = Probe(SelfHostedWordPressRecoveryObservationDisposition.EXACT_ABSENCE)
+    post_after = Attempt()
+    with pytest.raises(SelfHostedWordPressFailure) as repeated:
+        DurableSelfHostedWordPressDraftRecoveryAdapter(
+            repository_root=tmp_path,
+            probe_port=probe_after,
+            attempt_port=post_after,
+        ).recover(candidate)
+    assert (
+        repeated.value.code is SelfHostedWordPressFailureCode.RECOVERY_ALREADY_CONSUMED
+    )
+    assert probe_after.calls == post_after.calls == 0
+
+    ordinary_post = Attempt()
+    with pytest.raises(SelfHostedWordPressFailure) as ordinary:
+        DurableSelfHostedWordPressDraftAdapter(
+            repository_root=tmp_path,
+            attempt_port=ordinary_post,
+        ).apply(candidate)
+    assert ordinary.value.code is SelfHostedWordPressFailureCode.JOURNAL_AMBIGUOUS
+    assert ordinary_post.calls == 0
+
+
+@pytest.mark.parametrize("terminal_target", ["journal", "sidecar"])
+def test_process_exit_during_held_terminal_write_keeps_recovery_consumed(
+    tmp_path: Path,
+    terminal_target: str,
+) -> None:
+    candidate = _candidate()
+    _pending(tmp_path, candidate)
+
+    class ArmingProbe(Probe):
+        def observe(
+            self, observed: SelfHostedWordPressDraft
+        ) -> SelfHostedWordPressRecoveryObservation:
+            result = super().observe(observed)
+            original_write_all = journal_module._write_all
+            write_calls = 0
+
+            def exit_during_write(descriptor: int, payload: bytes) -> None:
+                nonlocal write_calls
+                write_calls += 1
+                target_call = 1 if terminal_target == "journal" else 2
+                if write_calls == target_call:
+                    assert os.write(descriptor, payload[:1]) == 1
+                    os._exit(25 if terminal_target == "journal" else 26)
+                original_write_all(descriptor, payload)
+
+            journal_module._write_all = exit_during_write
+            return result
+
+    child = os.fork()
+    if child == 0:
+        DurableSelfHostedWordPressDraftRecoveryAdapter(
+            repository_root=tmp_path,
+            probe_port=ArmingProbe(
+                SelfHostedWordPressRecoveryObservationDisposition.EXACT_DRAFT,
+                draft_id=91703,
+            ),
+            attempt_port=Attempt(),
+        ).recover(candidate)
+        os._exit(1)
+    waited, wait_status = os.waitpid(child, 0)
+    assert waited == child
+    assert os.waitstatus_to_exitcode(wait_status) == (
+        25 if terminal_target == "journal" else 26
+    )
+    assert (tmp_path / RECOVERY_GUARD_PATH).is_file()
+
+    probe_after = Probe(SelfHostedWordPressRecoveryObservationDisposition.EXACT_ABSENCE)
+    post_after = Attempt()
+    with pytest.raises(SelfHostedWordPressFailure) as repeated:
+        DurableSelfHostedWordPressDraftRecoveryAdapter(
+            repository_root=tmp_path,
+            probe_port=probe_after,
+            attempt_port=post_after,
+        ).recover(candidate)
+    assert (
+        repeated.value.code is SelfHostedWordPressFailureCode.RECOVERY_ALREADY_CONSUMED
+    )
+    assert probe_after.calls == post_after.calls == 0
+
+    ordinary_post = Attempt()
+    ordinary = DurableSelfHostedWordPressDraftAdapter(
+        repository_root=tmp_path,
+        attempt_port=ordinary_post,
+    )
+    if terminal_target == "journal":
+        with pytest.raises(SelfHostedWordPressFailure) as blocked:
+            ordinary.apply(candidate)
+        assert blocked.value.code is SelfHostedWordPressFailureCode.JOURNAL_AMBIGUOUS
+    else:
+        replay = ordinary.apply(candidate)
+        assert replay.disposition is SelfHostedWordPressDisposition.REPLAYED
+    assert ordinary_post.calls == 0
 
 
 def test_missing_or_mismatched_pending_refuses_before_sidecar_probe_or_post(
@@ -364,7 +742,9 @@ def test_recovery_sidecar_metadata_tamper_blocks_without_capability(
 
     with pytest.raises(SelfHostedWordPressFailure) as failure:
         recovery.recover(candidate)
-    assert failure.value.code is SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID
+    assert (
+        failure.value.code is SelfHostedWordPressFailureCode.RECOVERY_ALREADY_CONSUMED
+    )
     assert probe.calls == 1
 
 
@@ -459,11 +839,20 @@ def test_recovery_sidecar_is_integrity_bound_and_redacted(tmp_path: Path) -> Non
     recovery_path = tmp_path / RECOVERY_PATH
     journal = json.loads((tmp_path / JOURNAL_PATH).read_text(encoding="ascii"))
     sidecar = json.loads(recovery_path.read_text(encoding="ascii"))
-    assert sidecar["candidate"] == journal["pending"]
-    assert sidecar["pending_journal_integrity_sha256"] == journal["integrity_sha256"]
+    guard_path = tmp_path / RECOVERY_GUARD_PATH
+    guard = json.loads(guard_path.read_text(encoding="ascii"))
+    assert sidecar["candidate"] == journal["pending"] == guard["candidate"]
+    assert (
+        sidecar["pending_journal_integrity_sha256"]
+        == guard["pending_journal_integrity_sha256"]
+        == journal["integrity_sha256"]
+    )
     assert stat.S_IMODE(recovery_path.stat().st_mode) == 0o600
+    assert stat.S_IMODE(guard_path.stat().st_mode) == 0o600
     assert stat.S_IMODE(recovery_path.parent.stat().st_mode) == 0o700
-    serialized = recovery_path.read_text(encoding="ascii")
+    serialized = "".join(
+        path.read_text(encoding="ascii") for path in (recovery_path, guard_path)
+    )
     for forbidden in (
         candidate.title,
         candidate.slug,
@@ -485,7 +874,9 @@ def test_recovery_sidecar_is_integrity_bound_and_redacted(tmp_path: Path) -> Non
     recovery_path.chmod(0o600)
     with pytest.raises(SelfHostedWordPressFailure) as tampered:
         recovery.recover(candidate)
-    assert tampered.value.code is SelfHostedWordPressFailureCode.RECOVERY_STATE_INVALID
+    assert (
+        tampered.value.code is SelfHostedWordPressFailureCode.RECOVERY_ALREADY_CONSUMED
+    )
     assert probe.calls == 1
 
 

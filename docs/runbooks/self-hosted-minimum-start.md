@@ -373,13 +373,17 @@ make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile recover-create-dra
 ```
 
 The command first validates the exact pending candidate, then exclusively
-creates and fsyncs
+creates and fsyncs both
+`.secrets/wordpress-owner-local/state/draft-recovery.v1.guard` and
 `.secrets/wordpress-owner-local/state/draft-recovery.v1.json` under the existing
-journal lock. Network access cannot begin before that durable intent. The
-sidecar may be used only once and contains closed state, hashes, and the exact
-draft ID/status on success. It never contains credential, Authorization
-header, title, slug, content, URL, response body, browser material, PII, or a
-private path.
+journal lock before network access. The permanent guard, sidecar and unchanged
+original pending journal are then pinned by no-follow descriptors;
+their identity, exact bytes, private metadata, integrity and candidate binding
+are revalidated immediately before and after each GET or conditional POST.
+The recovery may be used only once, and its new records contain only closed
+state, hashes, and the exact draft ID/status on success. They never contain
+credential, Authorization header, title, slug, content, URL, response body,
+browser material, PII, or a private path.
 
 The fixed authenticated official Posts REST GET uses `context=edit`, the exact
 candidate slug, all relevant statuses, exact raw fields, `per_page=100`, and
@@ -399,7 +403,16 @@ has no alternate route/status/page fallback.
 The total create POST count can therefore never exceed the original ambiguous
 attempt plus one recovery POST. There is no third attempt. Never delete, edit,
 chmod, hardlink, symlink, or replace the journal, sidecar, lock, or terminal
-staging entry. A terminal result remains `publication_authorized=false` and
+staging entry, and never remove or modify the recovery guard. A recovery
+controlled failure leaves the original pending journal byte-for-byte unchanged.
+If another same-UID process unlinks or atomically replaces a named state file
+during a network window, recovery fails closed, never overwrites that
+replacement by pathname, and the permanent guard plus ordinary pending
+no-retry boundary still blocks another GET/POST. An abrupt exit during the
+in-place held journal or sidecar terminal write may leave that inode partial;
+do not repair it manually or retry. The permanent guard remains the terminal
+block and no additional provider request is permitted.
+A terminal result remains `publication_authorized=false` and
 `production_eligible=false`. The command cannot publish, update, delete,
 upload media, or change theme/plugin/taxonomy/publicize state, and `doctor`
 never invokes it.
