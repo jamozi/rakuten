@@ -142,8 +142,11 @@ exchange operation fails closed before changing an installed generation.
 
 A failure before durable `COMMITTED` reverses the namespace operation and
 verifies the exact old generation or exact absence. A failure after durable
-`COMMITTED` retains the exact new generation and is completed by deterministic
-next-run cleanup. `PREPARED`, `COMMITTED`, and `ROLLED_BACK` recovery, stale
+`COMMITTED` retains the exact new generation. Bundle and legacy cleanup resume
+deterministically on the next run; a process loss after the terminal journal
+root is quarantined instead preserves that root and returns explicit recovery
+required because no durable, nonrecursive per-file identity anchor survives.
+`PREPARED`, `COMMITTED`, and `ROLLED_BACK` recovery, stale
 stage/preparing/cleanup entries, lock contention, malformed journals, symlink,
 special-file, and multiply-linked entries all have explicit recovery or
 fail-closed behavior. Read-only check mode accepts only one exact complete
