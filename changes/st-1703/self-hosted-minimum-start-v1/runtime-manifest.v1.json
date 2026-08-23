@@ -4,9 +4,9 @@
   "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
   "paths": [
     {
-      "bytes": 15772,
+      "bytes": 15844,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "78dd91f6514383abb0131f57d56c424a8ae5fd7f13d0915713e335e30992db49"
+      "sha256": "b0fb72a7aab705e38b33ad9acce0504e5fe14473c0b171f3be83bb704954ad4a"
     },
     {
       "bytes": 3473,
@@ -154,9 +154,9 @@
       "sha256": "3fbbbd3d0080b875955ce57d3e75f2347541be661650dba185f4b49c16507878"
     },
     {
-      "bytes": 37061,
+      "bytes": 37160,
       "path": "scripts/finalize_st1703_affiliate_links.py",
-      "sha256": "a720c927dc292e71e621d1713f4e0314e33891ba72deb293d27aab3d67012164"
+      "sha256": "421fa9a1436a209ab0d39bf4b831fafb65b00085edabd6cb5eeb3057b2487859"
     },
     {
       "bytes": 57577,

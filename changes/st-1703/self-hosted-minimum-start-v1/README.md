@@ -98,8 +98,9 @@ validation instead of silently defeating the reviewed state colors.
 `scripts/finalize_st1703_affiliate_links.py` is the import-only read-only
 verifier used by the verified exact-root runtime for the already-FINAL tracked
 packet. Direct Python execution is disabled before argument parsing, repository
-path resolution, or private-file access. Only the launcher supplies the three
-exact owner-private request files. The verifier recomputes each ST-0505 request
+path resolution, shadowable imports, or private-file access; only builtin
+`sys` is imported before the fixed refusal. Only the launcher supplies the
+three exact owner-private request files. The verifier recomputes each ST-0505 request
 fingerprint and scans only the fixed owner-local sanitized Result V3 store. It
 reads no credential, performs no network request, and has no tracked-file
 writer.

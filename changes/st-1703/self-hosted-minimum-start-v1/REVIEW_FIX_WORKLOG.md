@@ -277,3 +277,6 @@ completes that response.
   Python execution now emits one fixed non-reflective refusal before repository
   path resolution or private request/Result reads; only verified-loader import
   of `verify()` remains operational.
+- A follow-up moved that refusal directly after the sole builtin `sys` import.
+  Normal Python startup with a hostile sibling `dataclasses.py` now proves the
+  shadow module, request files and Result store remain unopened before refusal.

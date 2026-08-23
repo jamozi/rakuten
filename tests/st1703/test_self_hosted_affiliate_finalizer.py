@@ -360,6 +360,9 @@ def test_direct_execution_is_disabled_before_private_read(tmp_path: Path) -> Non
     assert source.index('if __name__ == "__main__":') < source.index(
         "REPOSITORY_ROOT ="
     )
+    assert source.index('if __name__ == "__main__":') < source.index(
+        "from dataclasses import dataclass"
+    )
     assert "def _parser(" not in source
     assert "def main(" not in source
 
@@ -411,6 +414,58 @@ def test_direct_execution_is_disabled_before_private_read(tmp_path: Path) -> Non
             ("proteca-maxpass4-01471", "--proteca-maxpass4-01471-request"),
         )
     )
+
+
+def test_normal_direct_execution_cannot_load_shadow_module_or_private_files(
+    tmp_path: Path,
+) -> None:
+    disposable_scripts = tmp_path / "scripts"
+    disposable_scripts.mkdir()
+    script = disposable_scripts / "finalize_st1703_affiliate_links.py"
+    shutil.copyfile(SCRIPTS_ROOT / script.name, script)
+    marker = tmp_path / "shadow-module-executed"
+    (disposable_scripts / "dataclasses.py").write_text(
+        f"open({str(marker)!r}, 'wb').write(b'shadowed')\n",
+        encoding="utf-8",
+    )
+    trace = tmp_path / "normal-direct-execution.trace"
+    arguments = [str(script)]
+    for slot_id, flag in (
+        ("ace-cresta-06316", "--ace-cresta-06316-request"),
+        ("ace-difference-05721", "--ace-difference-05721-request"),
+        ("proteca-maxpass4-01471", "--proteca-maxpass4-01471-request"),
+    ):
+        arguments.extend((flag, str(finalizer.OWNER_REQUEST_PATHS[slot_id])))
+    result = subprocess.run(
+        [
+            "/usr/bin/strace",
+            "-f",
+            "-e",
+            "trace=openat",
+            "-o",
+            str(trace),
+            sys.executable,
+            *arguments,
+        ],
+        cwd=tmp_path,
+        env={"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C"},
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=10,
+        check=False,
+    )
+    assert result.returncode == 2, (result.stdout, result.stderr)
+    assert result.stderr == b""
+    assert json.loads(result.stdout) == {
+        "external_writes": 0,
+        "reason_code": "AFFILIATE_DIRECT_EXECUTION_DISABLED",
+        "status": "BLOCKED",
+    }
+    assert not marker.exists()
+    trace_text = trace.read_text(encoding="utf-8")
+    assert str(disposable_scripts / "dataclasses.py") not in trace_text
+    assert ".secrets/rakuten-owner-local" not in trace_text
 
 
 def test_finalizer_is_local_all_or_nothing_and_redacts_destinations(

@@ -1,27 +1,16 @@
 #!/usr/bin/env python3
 """Verify the three final ST-1703 affiliate slots against Result V3 files.
 
-This is an import-only verifier for the verified ST-1703 runtime.  It never reads Rakuten
-credentials, performs a provider request, mutates the tracked article, or
-prints destination URLs.  The operational input is three owner-only request
-files; matching provider evidence is discovered only in the fixed owner-local
-Result V3 store.
+This is an import-only verifier for the verified ST-1703 runtime.  It never
+reads Rakuten credentials, performs a provider request, mutates the tracked
+article, or prints destination URLs.  The operational input is three owner-only
+request files; matching provider evidence is discovered only in the fixed
+owner-local Result V3 store.
 """
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
-import hashlib
-import json
-import os
-from pathlib import Path
-import re
-import stat
 import sys
-from typing import Any, NoReturn, cast
-from urllib.parse import parse_qsl, urlsplit
 
 
 _DIRECT_EXECUTION_REFUSAL = (
@@ -31,6 +20,21 @@ _DIRECT_EXECUTION_REFUSAL = (
 if __name__ == "__main__":
     sys.stdout.write(_DIRECT_EXECUTION_REFUSAL)
     raise SystemExit(2)
+
+
+# Security ordering: direct execution must stop before any shadowable import.
+# ruff: noqa: E402
+from collections.abc import Mapping
+from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import stat
+from typing import Any, NoReturn, cast
+from urllib.parse import parse_qsl, urlsplit
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
