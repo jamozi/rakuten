@@ -1,0 +1,1738 @@
+{
+  "approved_base_commit": "ca271187c4c8606487193110b29597a40e4c1c9f",
+  "article_ids": [
+    "st1703-first-suitcase-comparison",
+    "st1704-portable-power-station-guide",
+    "st1704-anker-solix-c300-c800-c1000-differences",
+    "st1704-countertop-dishwasher-for-small-households",
+    "st1704-compact-robot-vacuum-shortlist"
+  ],
+  "external_action_authority": "NONE",
+  "generated_by": "scripts/build_st1704_self_hosted_editorial_manifest.py",
+  "paths": [
+    {
+      "bytes": 6806,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
+      "sha256": "d3c93e73aac1ff92475417e87abc859c15cc251e2a3f8f513a511bd94e051691"
+    },
+    {
+      "bytes": 2528,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/EDITORIAL_RESEARCH_NOTES.md",
+      "sha256": "4c1fed7b4a4679ead75ca706d9064853325d06256858052a7321b13ed08daf1b"
+    },
+    {
+      "bytes": 2893,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
+      "sha256": "0ca45fcd082e9ea165e769384d9c12c6b1b5e084569c135f8b777a21d75ce349"
+    },
+    {
+      "bytes": 20226,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
+      "sha256": "a07e6b01b906036fc6410ec800f8043ed5651f2b94b4db19cc5fdb0201ef21ed"
+    },
+    {
+      "bytes": 2270,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/PREFLIGHT.md",
+      "sha256": "023d5dde036f7c3a05572ca9df6d22ed517e1d9df581b34867da509f13eba95e"
+    },
+    {
+      "bytes": 7413,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
+      "sha256": "304efbb41728002bbb649c27a0c196aadff5070b73b5fb8115a1c40eac4566b3"
+    },
+    {
+      "bytes": 111502,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
+      "sha256": "cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88"
+    },
+    {
+      "bytes": 23951,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/product-media-registry.v1.json",
+      "sha256": "662a98851680ac9c1b91e8c85815a17202cbe185aadb185002d5b1f5ff1416c6"
+    },
+    {
+      "bytes": 2106,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json",
+      "sha256": "1a1827f0296f1bdd7c983d141b2c2eae87a4ad9f327e68062e036adde289c73c"
+    },
+    {
+      "bytes": 1630,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/operations/publication-plan.v1.json",
+      "sha256": "53db8c8277da9dbd3b5b98a107327845307f58a9e3b767042ea9e64757f0e163"
+    },
+    {
+      "bytes": 34778,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
+      "sha256": "42ae90cf5acd5514632d019d8ec0b38cb7f1a8b7aa9c30d5b17a314d06d16421"
+    },
+    {
+      "bytes": 41446,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
+      "sha256": "ee78241d683b345a55a022eb9bb5214b5a362e6dfab1e645ed68fceab8f23917"
+    },
+    {
+      "bytes": 70148,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
+      "sha256": "23c585a03598a8521fd797c036d2caad4350139ad709ca9b0cfc3ab18ad993ad"
+    },
+    {
+      "bytes": 331,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
+      "sha256": "bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3"
+    },
+    {
+      "bytes": 133648,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
+      "sha256": "df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea"
+    },
+    {
+      "bytes": 10345,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+      "sha256": "63b55476a03f822b6723d3df141b9f3e4215c09e99e7dd366999fa12f29db8f2"
+    },
+    {
+      "bytes": 76817,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
+      "sha256": "f1423ff573f9378d84a9d2f067d8b17472d2b2afda514d5ce632d3aba88d4442"
+    },
+    {
+      "bytes": 581,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/footer.html",
+      "sha256": "ed8d2c2242575b08ad442752786b15b2184e649e4e7839fe22ae5a4609425aa0"
+    },
+    {
+      "bytes": 403,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/header.html",
+      "sha256": "e3a125c165aa3f59e719ea9f78989fbc8a1ccb125db7f7ab69a0df28f1303e46"
+    },
+    {
+      "bytes": 1694,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
+      "sha256": "89f2d2ebff268b67effc64c958171ffeab262ea80df0e591e2dfaff59260d4e0"
+    },
+    {
+      "bytes": 265,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/style.css",
+      "sha256": "709f97a188652aaa74d78bff50c8551b8248fab6f7ddb6876760d02d2726c299"
+    },
+    {
+      "bytes": 3625,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/front-page.html",
+      "sha256": "86972888a39444adfb2882755850693d07e6bed5738b76119741f8fe669e7ae0"
+    },
+    {
+      "bytes": 944,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/single.html",
+      "sha256": "5dd6acd3d1aed444322d85f72bfcc9de1dd1aaf266334febe8d13c36e35f14bb"
+    },
+    {
+      "bytes": 10747,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme-contract.v1.json",
+      "sha256": "58c4aadb51e9f0165e1ffee60bee0800616f30bb305e791ca41f13f1ca7d341c"
+    },
+    {
+      "bytes": 1933,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme.json",
+      "sha256": "af7ed75442b05192c4185a7bbe8ba8a95ee8e757d0f006aacf804e5801c03d7c"
+    },
+    {
+      "bytes": 2508,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/yoast-seo-28.3.lock.json",
+      "sha256": "ec8681bfafc60455eee8034c97e1f469268e95304d5fc05c6c1e5c3eaedc6225"
+    },
+    {
+      "bytes": 46209,
+      "path": "contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json",
+      "sha256": "a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac"
+    },
+    {
+      "bytes": 104488,
+      "path": "python/raos/adapters/self_hosted_editorial_pilot_https.py",
+      "sha256": "13a914638b25f8211e9873a1c200b0e19412cc76e5460489977a794c290b7764"
+    },
+    {
+      "bytes": 80340,
+      "path": "python/raos/adapters/self_hosted_editorial_pilot_json.py",
+      "sha256": "bcc59c40d2110aab337dc69c645ed27e0bcc1effe6a1322e517eeaa2559e55fb"
+    },
+    {
+      "bytes": 53919,
+      "path": "python/raos/adapters/self_hosted_editorial_source_capture.py",
+      "sha256": "39f809647e581efbb248bf6088f90137527e193c1d83fd1f77071745ec4be66b"
+    },
+    {
+      "bytes": 14674,
+      "path": "python/raos/adapters/self_hosted_wordpress_credentials.py",
+      "sha256": "95d5aeb931b4a8ffdcb6c9d3afbddaf1cbdbb65f6f63dae8a5914e674e578e79"
+    },
+    {
+      "bytes": 19086,
+      "path": "python/raos/adapters/self_hosted_wordpress_https.py",
+      "sha256": "40613aaaffa20086e0c913da15376fd6ddc3046d2c58d6efe3ab23ccffb1d1f1"
+    },
+    {
+      "bytes": 9698,
+      "path": "python/raos/adapters/self_hosted_wordpress_rest.py",
+      "sha256": "fc26f618fe0b819c00745ad9ee72012a0aa65cdb55d6a0ed6b54bd24a9eb7905"
+    },
+    {
+      "bytes": 17391,
+      "path": "python/raos/adapters/wordpress_rest.py",
+      "sha256": "4103ce178e92e12a5357e2e9c35b05485b67e18889fc057a8f41b4e16d61e4f8"
+    },
+    {
+      "bytes": 70760,
+      "path": "python/raos/application/editorial/self_hosted_editorial_pilot.py",
+      "sha256": "136f009c79b601ae45e2853f0c6f01b1bc1f19759a70f3dc5a096fc9c57dedc9"
+    },
+    {
+      "bytes": 14026,
+      "path": "python/raos/domain/editorial/content_ast.py",
+      "sha256": "7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68"
+    },
+    {
+      "bytes": 20400,
+      "path": "python/raos/domain/editorial/market_learning_pilot.py",
+      "sha256": "69f4c373dca5ddcbebf7dcefc23a8a9376792ca85b70fb3d48d6137212fb6f27"
+    },
+    {
+      "bytes": 39086,
+      "path": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
+      "sha256": "462f13676edd88efec28e081729a6e49dad3770cbedccbf300e3f781ab7b02fd"
+    },
+    {
+      "bytes": 11383,
+      "path": "python/raos/domain/editorial/self_hosted_wordpress.py",
+      "sha256": "a84c70d294949f45fe58648d216e8e0489f3e1abb58b470bbb4a0aed52c1af43"
+    },
+    {
+      "bytes": 43711,
+      "path": "python/raos/generated/contracts/__init__.py",
+      "sha256": "a592d42f7fac1d6a93ae66f5593352c1842c8d5dfc316b75799d6caf4bf901e3"
+    },
+    {
+      "bytes": 221159,
+      "path": "python/raos/generated/contracts/_internal.py",
+      "sha256": "bccdefcfd53c052e5091ff2ee00dbb482d3fe86241d8a6f91cd02ba58b6e75c9"
+    },
+    {
+      "bytes": 775,
+      "path": "python/raos/generated/contracts/actor_ref.py",
+      "sha256": "61737e6ab5b7f769c336cddb1b1b63978c4b9c1a8f0988d8c7f86b73723eb870"
+    },
+    {
+      "bytes": 1209,
+      "path": "python/raos/generated/contracts/affiliate_click_input.py",
+      "sha256": "2dd636cdcaf2ed968f62d00cd207260673db72e6dadabe828ab43286901549d2"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/article_draft/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/article_draft/v1/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 3473,
+      "path": "python/raos/generated/contracts/ai/article_draft/v1/output.py",
+      "sha256": "9aa472e08f9e1e49303bde1ad7ae8a3f045665307274c0186312646f6e6ed0e3"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/article_outline/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/article_outline/v1/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1614,
+      "path": "python/raos/generated/contracts/ai/article_outline/v1/output.py",
+      "sha256": "064e25a87a98533d93823d5f30d9b715918ba1971962da6e5888ce090e4155db"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/claim_extraction/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/claim_extraction/v1/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1378,
+      "path": "python/raos/generated/contracts/ai/claim_extraction/v1/output.py",
+      "sha256": "e32ec08cde7849d01638b7c27248bbb14e80d744c5792150ee98d3b27f83f6fd"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/comparison_axis_suggestion/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/comparison_axis_suggestion/v1/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1547,
+      "path": "python/raos/generated/contracts/ai/comparison_axis_suggestion/v1/output.py",
+      "sha256": "c2937e7c4f6c19e120b041db601973e48d1bd851e6467160bb3c609bb4030646"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/internal_link_suggestion/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/internal_link_suggestion/v1/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1020,
+      "path": "python/raos/generated/contracts/ai/internal_link_suggestion/v1/output.py",
+      "sha256": "7bf33a0bbfd3776610eab4ca2dece80467b0766cb6f43ecac982071a17b266c1"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/opportunity_assessment/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/opportunity_assessment/v1/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1157,
+      "path": "python/raos/generated/contracts/ai/opportunity_assessment/v1/output.py",
+      "sha256": "8aa5bb72e091624e3acdbcdb62fb69c34c2487d34ba2151572178f6fc877f6c2"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/policy_assist/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/policy_assist/v1/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1928,
+      "path": "python/raos/generated/contracts/ai/policy_assist/v1/output.py",
+      "sha256": "555b41f804632365e4fdd89448a41cd4a72d4b16cb583ea34b5322177d984186"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/quality_remediation/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/quality_remediation/v1/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1320,
+      "path": "python/raos/generated/contracts/ai/quality_remediation/v1/output.py",
+      "sha256": "62dd986faea40fce4915fafdc47a5eaceecad5ba705703b4d5fe4325a957aa48"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/refresh_diff_summary/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/refresh_diff_summary/v1/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 2428,
+      "path": "python/raos/generated/contracts/ai/refresh_diff_summary/v1/output.py",
+      "sha256": "f0bba1969093da2b2006eeb6b6de22c6ebe7ab4dd2895065067827db4f9365dd"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/search_intent_classification/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/search_intent_classification/v1/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 694,
+      "path": "python/raos/generated/contracts/ai/search_intent_classification/v1/output.py",
+      "sha256": "cb949a80a306e0ae0cdea8aa037033043b0b73db41431e5431ca1a8973a20a51"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/source_packet_gap_analysis/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/source_packet_gap_analysis/v1/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 2169,
+      "path": "python/raos/generated/contracts/ai/source_packet_gap_analysis/v1/output.py",
+      "sha256": "d027729bf6f00484ed62d7bec6a1a68c8212d64fe719c20711a335580b70804e"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/update_priority_explanation/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai/update_priority_explanation/v1/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 947,
+      "path": "python/raos/generated/contracts/ai/update_priority_explanation/v1/output.py",
+      "sha256": "b97fa4ed807fefbbf567d2d0e95b71248f5972e252124551dfb35787477e499a"
+    },
+    {
+      "bytes": 1316,
+      "path": "python/raos/generated/contracts/ai_assess_opportunity_v1.py",
+      "sha256": "92927dd2c2d4cfc176176acf4e0cbae1d085c9e0b8eb3a0717f931b6b136b4c8"
+    },
+    {
+      "bytes": 1339,
+      "path": "python/raos/generated/contracts/ai_classify_search_intent_v1.py",
+      "sha256": "5b4a14353d35f9f6919e0388f8fe5343197d2bf6dec0510ec8bf4e6e88566314"
+    },
+    {
+      "bytes": 1326,
+      "path": "python/raos/generated/contracts/ai_evaluate_output_v1.py",
+      "sha256": "5a38963e3985cf001f1fcfe7bed5b87f36e4a30e55ebe95645ce39cd27597ec5"
+    },
+    {
+      "bytes": 1284,
+      "path": "python/raos/generated/contracts/ai_extract_claims_v1.py",
+      "sha256": "5a214fefedd626572450390d28c618d77e496ea8f2f39658bb7db30f73c6525d"
+    },
+    {
+      "bytes": 1412,
+      "path": "python/raos/generated/contracts/ai_generate_article_draft_v1.py",
+      "sha256": "bdae53ff77041cb0fa6bf0483e41f4f6f479482f9fa39173a7f7a9903c8b61c6"
+    },
+    {
+      "bytes": 1379,
+      "path": "python/raos/generated/contracts/ai_generic_task_v1.py",
+      "sha256": "9cdd75b04fdd729b7742aa30f6efa654d4f69cbb79a2efedd304ebb32dbe3e71"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai_job/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1872,
+      "path": "python/raos/generated/contracts/ai_job/v1.py",
+      "sha256": "984389da13185f7696511aafe981e2c82f51b8d82d12e5c8f62aa576b11be280"
+    },
+    {
+      "bytes": 1310,
+      "path": "python/raos/generated/contracts/ai_policy_assist_v1.py",
+      "sha256": "cc9b10c164bf493319abbed7171ee3024b069831298ca60179c602a55b238c63"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai_task_contract/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1047,
+      "path": "python/raos/generated/contracts/ai_task_contract/v1.py",
+      "sha256": "c1fbeefe6a42fa2b1a30b0bf9afb8f42029140ccb2c4c80730f3a18f7ddaaa7b"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/ai_task_definition/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1259,
+      "path": "python/raos/generated/contracts/ai_task_definition/v1.py",
+      "sha256": "822bd40f64ce0ec6c5eddbebce0d9c9a3e67fac9db0c3abaf9033297c561ff5b"
+    },
+    {
+      "bytes": 1304,
+      "path": "python/raos/generated/contracts/analytics_import_ga4_v1.py",
+      "sha256": "17b4372dffae8ec54d9aafeb8a7b40d311e234f3979751bcd818dd308f9ad1ca"
+    },
+    {
+      "bytes": 1282,
+      "path": "python/raos/generated/contracts/analytics_import_keyword_rank_csv_v1.py",
+      "sha256": "44e9943667e1d3eab95905fc81339a2156d1538ce2bf58728ee59cdd94b92e35"
+    },
+    {
+      "bytes": 1458,
+      "path": "python/raos/generated/contracts/analytics_import_provider_data_v1.py",
+      "sha256": "f2efe4a0d4dd254ce9d0f6476c5a191908e3cd7885b3987061f8bbc805bbc8ee"
+    },
+    {
+      "bytes": 1396,
+      "path": "python/raos/generated/contracts/analytics_import_search_console_v1.py",
+      "sha256": "8d2977790e1cce2a60393bfdc558eac8984cfe5946458cc1e3df45af62a05e12"
+    },
+    {
+      "bytes": 1255,
+      "path": "python/raos/generated/contracts/analytics_rollup_daily_metrics_v1.py",
+      "sha256": "1c595226e0bab05b1d9785618a3be0990b911ed7055ea355bc36ad44aae77bd6"
+    },
+    {
+      "bytes": 1782,
+      "path": "python/raos/generated/contracts/article_ast.py",
+      "sha256": "10c170facbb75a36285306978f2b2cd48bd0c5c87baeede8a2b3b35e0418f785"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/article_disclosure_context/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1146,
+      "path": "python/raos/generated/contracts/article_disclosure_context/v1.py",
+      "sha256": "7ab0cf5c70740ce059445c3cf91562fba190a21659da1f7d99c527922f805abc"
+    },
+    {
+      "bytes": 1451,
+      "path": "python/raos/generated/contracts/article_draft_output.py",
+      "sha256": "dcd80fc74e19cf9808b0ddd8f1e6f88f5a3ae1fa0e053695f0a4bf098aaab3a2"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/article_methodology_binding/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 760,
+      "path": "python/raos/generated/contracts/article_methodology_binding/v1.py",
+      "sha256": "24c003cf516db64f2947435800e0e86716c3dbe6ee561231525788282d5349b6"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/article_template_version/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1125,
+      "path": "python/raos/generated/contracts/article_template_version/v1.py",
+      "sha256": "f34e339604a7ff18793696eb7410918006676f25a0e9c3097ed35c324518b811"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/article_type_version/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1166,
+      "path": "python/raos/generated/contracts/article_type_version/v1.py",
+      "sha256": "f85d978714404369871fb02021d4489061059bf841fef96452d9adce7f8a2bc0"
+    },
+    {
+      "bytes": 782,
+      "path": "python/raos/generated/contracts/artifact_ref.py",
+      "sha256": "6fb1ef8ad7db34963b2f5991e73ea6163ea387bdc987970adc0b4cefe50b37f9"
+    },
+    {
+      "bytes": 511,
+      "path": "python/raos/generated/contracts/bullet_list.py",
+      "sha256": "a6396f9d9ec2f526181176a7108851e97e4422c6b9045d63ae4828e957fb049a"
+    },
+    {
+      "bytes": 520,
+      "path": "python/raos/generated/contracts/callout.py",
+      "sha256": "49778007f1e66a89f2faa7842f2c5efd0a0fc17de5329669aef984a09aa26ede"
+    },
+    {
+      "bytes": 1350,
+      "path": "python/raos/generated/contracts/catalog_group_product_candidates_v1.py",
+      "sha256": "ffe6e8881ae8c20c188937fd7f73e822092f03bf5d0d0a127d4a4cabb86440fd"
+    },
+    {
+      "bytes": 1295,
+      "path": "python/raos/generated/contracts/catalog_normalize_ingestion_v1.py",
+      "sha256": "f2b67bd39c1427b97bdce3fca1f979161331db2292f578c35d8e1779ce5ad46a"
+    },
+    {
+      "bytes": 1247,
+      "path": "python/raos/generated/contracts/catalog_rakuten_genre_sync_v1.py",
+      "sha256": "b44707df68524012bf92c3ec158d02ca9d8c5c2adda65105c67dd3c2127e3036"
+    },
+    {
+      "bytes": 1444,
+      "path": "python/raos/generated/contracts/catalog_rakuten_item_search_v1.py",
+      "sha256": "eeaca7b3e3b3a5024edf2c668368e43b8e8423184352983be708872f1136e9d4"
+    },
+    {
+      "bytes": 1449,
+      "path": "python/raos/generated/contracts/catalog_refresh_offer_v1.py",
+      "sha256": "36972dafbf998c96bad39ee72e7842582c74664ab4465e80dce7585a323eaf35"
+    },
+    {
+      "bytes": 523,
+      "path": "python/raos/generated/contracts/caution.py",
+      "sha256": "46718221ddf6bf36ec4bddec3c066165e34613c9bee78f0a9a07e307e4e18a2d"
+    },
+    {
+      "bytes": 2486,
+      "path": "python/raos/generated/contracts/claim.py",
+      "sha256": "e489694a293be4ce2878b78a0cac63115ab416dc80c2504ef72eb147d62345fd"
+    },
+    {
+      "bytes": 1132,
+      "path": "python/raos/generated/contracts/claim_extraction_output.py",
+      "sha256": "a3618e25578d89d7195ac5e5e174be613c61cca6ddd687e7c86dce88a6ee2759"
+    },
+    {
+      "bytes": 2238,
+      "path": "python/raos/generated/contracts/comparison_table.py",
+      "sha256": "54e85257fc7a572c14d88993b73409511e16fe7d81cb0528a3206cada9122bb8"
+    },
+    {
+      "bytes": 434,
+      "path": "python/raos/generated/contracts/content_ast.py",
+      "sha256": "2b7eaf20108494c857fe942a390a0d8557cbda2547e547bf8f5a039231d651cf"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/content_review_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1047,
+      "path": "python/raos/generated/contracts/content_review_request/v1.py",
+      "sha256": "627cd664462120fa05debf13d8f80c8cf44ff8930bca7357372abc578a08bcab"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/content_schema_version/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1219,
+      "path": "python/raos/generated/contracts/content_schema_version/v1.py",
+      "sha256": "e6728c3f8a0496545f26edea1d1923cda05ad149a9102aad22e404e53f3a12a1"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/content_validation_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 347,
+      "path": "python/raos/generated/contracts/content_validation_request/v1.py",
+      "sha256": "815972a52b87a5a6490bec5343a2c954c8dc6416ddf580e6bc53cb513b1c85ec"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/content_validation_result/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 777,
+      "path": "python/raos/generated/contracts/content_validation_result/v1.py",
+      "sha256": "1c66cd1f3b413f67830c1cd071b0cda923c3f5b8b1b3f46efcad8dadda0c854c"
+    },
+    {
+      "bytes": 511,
+      "path": "python/raos/generated/contracts/decision_summary.py",
+      "sha256": "d9a5519ce132b5ba9f3ad892481ecb42b585292915ac590efc8b3a3f510ed8e5"
+    },
+    {
+      "bytes": 2091,
+      "path": "python/raos/generated/contracts/difference_matrix.py",
+      "sha256": "5916876166c4b2ec3ab514074ff38e8210b33ad1dd510e94f778e32731a65438"
+    },
+    {
+      "bytes": 1144,
+      "path": "python/raos/generated/contracts/disclosure_slot.py",
+      "sha256": "78d5af11cc13988b3e869803703245805462e3b0b6f7924a2f3367d1ee331b29"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/editorial_methodology_version/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1255,
+      "path": "python/raos/generated/contracts/editorial_methodology_version/v1.py",
+      "sha256": "e690e00e67b57cc5f03a8d1b4ad0ecab7a9f4df852d171c8adbbe9f4bd6aaa6c"
+    },
+    {
+      "bytes": 2022,
+      "path": "python/raos/generated/contracts/editorial_review_decision.py",
+      "sha256": "d4014e7a5da881baa5e91ff36a29f84a321b3180d6cfb824c4fc222cd9be3f98"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/evaluation_case/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 2998,
+      "path": "python/raos/generated/contracts/evaluation_case/v1.py",
+      "sha256": "d1150405a2092ff9a7583672f5fec2c888cd285997ff633d338fb58c14a2f8ff"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/evaluation_case_result/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 2245,
+      "path": "python/raos/generated/contracts/evaluation_case_result/v1.py",
+      "sha256": "5b9551fcfdadece3b3d081e06ff91eb809153cf72b98329f6594b79d703ec6ca"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/evaluation_dataset_create_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1422,
+      "path": "python/raos/generated/contracts/evaluation_dataset_create_request/v1.py",
+      "sha256": "49a0c103ed0d19106d058e249f805e9565dc21b8e31f7f3cf35f57c70e58ebdd"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/evaluation_dataset_version/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1474,
+      "path": "python/raos/generated/contracts/evaluation_dataset_version/v1.py",
+      "sha256": "45ebc4fed20a6e0eb7ac337f021670c1d03432d8262acb6b9bd9fd93eecc3d02"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/evaluation_run/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1477,
+      "path": "python/raos/generated/contracts/evaluation_run/v1.py",
+      "sha256": "67f8ac072139289e6579258f006d79705f8220af0f75fb841db172e4d10c28b3"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/evaluation_run_create_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 874,
+      "path": "python/raos/generated/contracts/evaluation_run_create_request/v1.py",
+      "sha256": "a1e0f374b2b9faa7777f3e2da4ba4ab3733be48bdbb550cf0318499e5f551269"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/evaluation_run_detail/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 2528,
+      "path": "python/raos/generated/contracts/evaluation_run_detail/v1.py",
+      "sha256": "83dd06d66ed13800d56e3c410069f886d249e699c294f66394fe2d75c57ebf74"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/evaluation_suite/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1259,
+      "path": "python/raos/generated/contracts/evaluation_suite/v1.py",
+      "sha256": "096fcef8af89673957d977dce69c6db21f8723b0645e6869131775b0ee797256"
+    },
+    {
+      "bytes": 2292,
+      "path": "python/raos/generated/contracts/event_envelope.py",
+      "sha256": "f65477b6ef88af8194c2ca762e438bc986cfb84eebc35ed96fa797bc513a27bf"
+    },
+    {
+      "bytes": 1407,
+      "path": "python/raos/generated/contracts/evidence_build_source_packet_v1.py",
+      "sha256": "5217a0e44ccf60344499fb61ead437f43de2f09fc4a43ca49124752f1a81906e"
+    },
+    {
+      "bytes": 1331,
+      "path": "python/raos/generated/contracts/evidence_capture_source_snapshot_v1.py",
+      "sha256": "880e1135fade53d2c94c680b8bd424d63ab6a9503e4e4eabe1294563d9062e03"
+    },
+    {
+      "bytes": 1276,
+      "path": "python/raos/generated/contracts/evidence_extract_facts_v1.py",
+      "sha256": "3d0d61c29078b3b7a78d38f9bc00fd8758bd2fa8b9d4304d04a68a9b619339f7"
+    },
+    {
+      "bytes": 1581,
+      "path": "python/raos/generated/contracts/evidence_note.py",
+      "sha256": "413ad44a7ac2f8d664e4d39c29613e0860c53a4d38099447f83523d5dfb66996"
+    },
+    {
+      "bytes": 511,
+      "path": "python/raos/generated/contracts/faq.py",
+      "sha256": "e0c27e1b198c9848d2d955afd968b8f80b37b753a491e892389b515b075e8e82"
+    },
+    {
+      "bytes": 1443,
+      "path": "python/raos/generated/contracts/finance_calculate_unit_economics_v1.py",
+      "sha256": "53efbff119513404c4ed2d722c8383d42134f2693e99aabdf843a441e4fa8139"
+    },
+    {
+      "bytes": 1368,
+      "path": "python/raos/generated/contracts/finance_commit_revenue_import_v1.py",
+      "sha256": "1ae7c9b5a83d47e7d01982e35425bcc40e582c6a4f2d2badc7919467f026eff4"
+    },
+    {
+      "bytes": 1293,
+      "path": "python/raos/generated/contracts/finance_parse_revenue_csv_v1.py",
+      "sha256": "bb6955864655a9c95da958e633507dc3cbe95cb14c2a26341e187cd33a61ca65"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/first_hand_experience_asset/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 869,
+      "path": "python/raos/generated/contracts/first_hand_experience_asset/v1.py",
+      "sha256": "55c61900383089a4a4b80f7eff1ad2d84d8f7f51e8dca61521aa449384d25b5e"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/first_hand_experience_create_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 824,
+      "path": "python/raos/generated/contracts/first_hand_experience_create_request/v1.py",
+      "sha256": "4c6099043dc5bb7be6e442af80dc8e31635c33e562e6d4beedb174343b8bc592"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/first_hand_experience_record/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1231,
+      "path": "python/raos/generated/contracts/first_hand_experience_record/v1.py",
+      "sha256": "c5dc97464279b1e968ff510d560603d4f96d57a279e7a885c805aa646cf6dd6f"
+    },
+    {
+      "bytes": 1262,
+      "path": "python/raos/generated/contracts/freshness_assess_change_impact_v1.py",
+      "sha256": "a9ff5575310a47402fdb61012528386004451e9066748a128ba115256f9b77f9"
+    },
+    {
+      "bytes": 1256,
+      "path": "python/raos/generated/contracts/freshness_check_affiliate_link_v1.py",
+      "sha256": "2a6156c26709556472bdbf30928ac6edcda8ff98e8cf61bb7d0a4ebc9600bb95"
+    },
+    {
+      "bytes": 1330,
+      "path": "python/raos/generated/contracts/freshness_run_refresh_batch_v1.py",
+      "sha256": "1226b523749f5636bc6f53a066087afb08b0b5155dcd0a4c26c56a113a9e416a"
+    },
+    {
+      "bytes": 1450,
+      "path": "python/raos/generated/contracts/ga4_metric_row.py",
+      "sha256": "208e7fbd16adad8417cd737f0d8c16cd1244cb749d67413e2dfc84d0d3248cfc"
+    },
+    {
+      "bytes": 1187,
+      "path": "python/raos/generated/contracts/ga4_run_report_request.py",
+      "sha256": "dacc5023ab30197ca4f2a9b3ea2cb260ab6b1ad291ae550372e3b256d6a6493d"
+    },
+    {
+      "bytes": 2155,
+      "path": "python/raos/generated/contracts/gsc_search_analytics_request.py",
+      "sha256": "01175123b6dfd00094958751724184e107a085f3968bfbd3036981c592b3dc7e"
+    },
+    {
+      "bytes": 1264,
+      "path": "python/raos/generated/contracts/gsc_search_analytics_row.py",
+      "sha256": "fa42faad71e10f0d8683326e2e794c4955715f7f7d5438d6ce6b81ea6da8f6bb"
+    },
+    {
+      "bytes": 514,
+      "path": "python/raos/generated/contracts/heading.py",
+      "sha256": "b623d231c109596918c9c66c15b6be667132f2eaa924d66390320d5c473ff9fe"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/human_evaluation/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1085,
+      "path": "python/raos/generated/contracts/human_evaluation/v1.py",
+      "sha256": "ca4c4479eca9e1f756645057c135f50ba67ae5e71fabb5903a868050aa0f3d88"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/human_evaluation_create_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 959,
+      "path": "python/raos/generated/contracts/human_evaluation_create_request/v1.py",
+      "sha256": "2b50cc43de89d1a7ef6c5fcf19ad159cde27abbfe92cc8272cbef3b57cf05817"
+    },
+    {
+      "bytes": 465,
+      "path": "python/raos/generated/contracts/intended_reader.py",
+      "sha256": "9d38d0bd116e162fbb98f7c68227e328fbaef6df346078dcfe59db1ff197e331"
+    },
+    {
+      "bytes": 1376,
+      "path": "python/raos/generated/contracts/internal_links.py",
+      "sha256": "d9a440f59add07904a8851f2d12915c850cf97dce74bca6f0bfe2ce34de7ffcc"
+    },
+    {
+      "bytes": 1945,
+      "path": "python/raos/generated/contracts/job_message.py",
+      "sha256": "1e557f2cb19bc4775d4b64d23d68d39c6cfa9099294dd52793863ca4eb817f42"
+    },
+    {
+      "bytes": 1099,
+      "path": "python/raos/generated/contracts/jp_raos_ai_evaluation_completed_v1.py",
+      "sha256": "89dc0ce9fb0c619af240905f642bf5674fb3e5774920a34f14d42980fa9f3eb3"
+    },
+    {
+      "bytes": 1924,
+      "path": "python/raos/generated/contracts/jp_raos_ai_evaluation_completed_v2.py",
+      "sha256": "3cf7b8d04dd56742ad1536a22e60a11d36dc3abdc6d2392d1ea5c2a74114a7b4"
+    },
+    {
+      "bytes": 1068,
+      "path": "python/raos/generated/contracts/jp_raos_ai_job_failed_v1.py",
+      "sha256": "31c7558b8b5813e1e8c326cbe4c94cd0f62eb8e0d168c0c260daf07991b6a7bf"
+    },
+    {
+      "bytes": 1064,
+      "path": "python/raos/generated/contracts/jp_raos_ai_job_requested_v1.py",
+      "sha256": "7cc0855c5bb5b0e43cd1a42c690eb85af47206dff0e6416190f06daab5ba1f45"
+    },
+    {
+      "bytes": 1160,
+      "path": "python/raos/generated/contracts/jp_raos_ai_job_succeeded_v1.py",
+      "sha256": "484acc77509fc3d3d6f7ddcf8cc2a307ea7092686b345e819715085d1dfbd5e6"
+    },
+    {
+      "bytes": 1109,
+      "path": "python/raos/generated/contracts/jp_raos_ai_policy_assist_completed_v1.py",
+      "sha256": "8765d023115ac4a73e4cd4f589d2684643d2b46f3a3396a08e87f7c58efd6057"
+    },
+    {
+      "bytes": 2862,
+      "path": "python/raos/generated/contracts/jp_raos_ai_release_decision_approved_v1.py",
+      "sha256": "b0797e981b0e93e8cb2985f9e6bd8d07cbe26bfbb771c7360a6efa9ad23df5b4"
+    },
+    {
+      "bytes": 1939,
+      "path": "python/raos/generated/contracts/jp_raos_ai_release_decision_revoked_v1.py",
+      "sha256": "a18ae850cd2cb1bed34293f7a60318d4605adcadddd397debf88d9b89326b827"
+    },
+    {
+      "bytes": 1098,
+      "path": "python/raos/generated/contracts/jp_raos_analytics_daily_metrics_updated_v1.py",
+      "sha256": "8fdb7ede18251f50de5c4e327c2e78f071e00501565366f96f886160ca58d90c"
+    },
+    {
+      "bytes": 1170,
+      "path": "python/raos/generated/contracts/jp_raos_analytics_import_completed_v1.py",
+      "sha256": "a9399657c36397677f5280d469c49012938c791488ba9a00824fbd005c9fcb60"
+    },
+    {
+      "bytes": 1104,
+      "path": "python/raos/generated/contracts/jp_raos_catalog_affiliate_link_invalid_v1.py",
+      "sha256": "9465722004be2d2e96e83a6e5bedc745bb326a047243a8d932b365211488b13f"
+    },
+    {
+      "bytes": 1100,
+      "path": "python/raos/generated/contracts/jp_raos_catalog_candidates_normalized_v1.py",
+      "sha256": "501cf958a1cf38550ba3ca9334d7c8d04eee66a64795cd5c619f36d9322c7e00"
+    },
+    {
+      "bytes": 1097,
+      "path": "python/raos/generated/contracts/jp_raos_catalog_genre_sync_completed_v1.py",
+      "sha256": "351f29a9fbc6ecb6801378a2791ed1bace07c1a09adedffd510977fb1d7254ae"
+    },
+    {
+      "bytes": 1166,
+      "path": "python/raos/generated/contracts/jp_raos_catalog_grouping_decision_recorded_v1.py",
+      "sha256": "d89568fcd30be8d81c20795e3ff8c55d716b5e40faa09db454b889811eb4e165"
+    },
+    {
+      "bytes": 1066,
+      "path": "python/raos/generated/contracts/jp_raos_catalog_grouping_proposals_created_v1.py",
+      "sha256": "a805c6d9fb62df5f6ca7c2231e4015070ec2cce3a5ab1b079adbed61e60f3f83"
+    },
+    {
+      "bytes": 1182,
+      "path": "python/raos/generated/contracts/jp_raos_catalog_ingestion_completed_v1.py",
+      "sha256": "28e5c860c10b831282c16844235d3761f56b36af94fa01e1c1c77786bb15ed9b"
+    },
+    {
+      "bytes": 1110,
+      "path": "python/raos/generated/contracts/jp_raos_catalog_offer_observed_v1.py",
+      "sha256": "092ef9a7803eb700b8e5d919c679661f4c359be65eb4b857751a2cbcb812f7a8"
+    },
+    {
+      "bytes": 1083,
+      "path": "python/raos/generated/contracts/jp_raos_catalog_offer_unavailable_v1.py",
+      "sha256": "8f1f64b4af7a3d5bbe495a2dec616180c2dca209a41e5f26452e1c888a057c71"
+    },
+    {
+      "bytes": 1048,
+      "path": "python/raos/generated/contracts/jp_raos_editorial_article_created_v1.py",
+      "sha256": "0b4a779d5b011273d4fb321952bfaa2e2e22acfcab5eea0d6e33a61a9ce7674e"
+    },
+    {
+      "bytes": 1079,
+      "path": "python/raos/generated/contracts/jp_raos_editorial_article_plan_approved_v1.py",
+      "sha256": "80db1e4b55479ed48ca9e65c49897f6ac0f99308f40142b0a11551132f497d23"
+    },
+    {
+      "bytes": 1099,
+      "path": "python/raos/generated/contracts/jp_raos_editorial_article_version_submitted_v1.py",
+      "sha256": "d195bc86206f86539db382d07acd657060e56493a2a9ffd1883102c48a30efef"
+    },
+    {
+      "bytes": 1157,
+      "path": "python/raos/generated/contracts/jp_raos_editorial_draft_generated_v1.py",
+      "sha256": "47a6be7c44e7d6d9c2f692f08ed3268c18b698e100e809611ce105c747cfec06"
+    },
+    {
+      "bytes": 1051,
+      "path": "python/raos/generated/contracts/jp_raos_evidence_claim_unsupported_v1.py",
+      "sha256": "b7495e3153f21d381c03bcd99f6b65e72aac920ac2a3f3b0fd0bfb839c2475e8"
+    },
+    {
+      "bytes": 1075,
+      "path": "python/raos/generated/contracts/jp_raos_evidence_claims_extracted_v1.py",
+      "sha256": "78329f6537035ebc071c708d2f9566f207279cfcbebbf247cdd10eee05f587ab"
+    },
+    {
+      "bytes": 1078,
+      "path": "python/raos/generated/contracts/jp_raos_evidence_facts_extracted_v1.py",
+      "sha256": "e939771fa9072a4f0061df7a80c2f6588fa51515277dc836190052a490640780"
+    },
+    {
+      "bytes": 1100,
+      "path": "python/raos/generated/contracts/jp_raos_evidence_source_packet_approved_v1.py",
+      "sha256": "49f9d551a8e3222d9b61fff9d23feddc4e30bdc96ab92a8bbd1b43cd9f63f965"
+    },
+    {
+      "bytes": 1162,
+      "path": "python/raos/generated/contracts/jp_raos_evidence_source_packet_ready_v1.py",
+      "sha256": "2a41572576072c42bcd7d293b74ba1aa19347a7a1087987411770a98c1a0a691"
+    },
+    {
+      "bytes": 1195,
+      "path": "python/raos/generated/contracts/jp_raos_evidence_source_snapshot_captured_v1.py",
+      "sha256": "d22532f90c46ed11063ce6a83c86d7044569aa0e4f670f215d5157990742c7ee"
+    },
+    {
+      "bytes": 1127,
+      "path": "python/raos/generated/contracts/jp_raos_finance_commission_status_changed_v1.py",
+      "sha256": "f371e3d1c660fc688970df72b73b079cf34cfd23c7bf7255e351aad57850b133"
+    },
+    {
+      "bytes": 1165,
+      "path": "python/raos/generated/contracts/jp_raos_finance_revenue_import_committed_v1.py",
+      "sha256": "530f02cc16efe82f4f6709bae14657cc03a0236ee2833155b4b4af9a98215d75"
+    },
+    {
+      "bytes": 1243,
+      "path": "python/raos/generated/contracts/jp_raos_finance_revenue_import_dry_run_ready_v1.py",
+      "sha256": "270176c497f59d26c29253e0eb66d7f0683d90d5922b6e810b4e9ca560df1b57"
+    },
+    {
+      "bytes": 1244,
+      "path": "python/raos/generated/contracts/jp_raos_finance_unit_economics_calculated_v1.py",
+      "sha256": "25a2ab0443291203693240de9ce475d928dea1cb86d6d6aba6b4f561e8506a9a"
+    },
+    {
+      "bytes": 1170,
+      "path": "python/raos/generated/contracts/jp_raos_freshness_impact_detected_v1.py",
+      "sha256": "6aaaba31e5b9786238120d26534ba937c4c74dc3bc9450ca1554ab24d6e20e77"
+    },
+    {
+      "bytes": 1104,
+      "path": "python/raos/generated/contracts/jp_raos_freshness_link_check_completed_v1.py",
+      "sha256": "88b24d1528e5ae71318120d8d5e31af241315b331603344ef934cc399940efad"
+    },
+    {
+      "bytes": 1154,
+      "path": "python/raos/generated/contracts/jp_raos_freshness_refresh_completed_v1.py",
+      "sha256": "ba00296081ea26a79a674858ad4cb001ca0fe94bcee34915cff512e575a3f117"
+    },
+    {
+      "bytes": 1080,
+      "path": "python/raos/generated/contracts/jp_raos_freshness_staleness_assessed_v1.py",
+      "sha256": "ece9c58c7e74c783a20b936155dcd7ddf5d075ac8389f5f6804b709b4a5f1861"
+    },
+    {
+      "bytes": 1116,
+      "path": "python/raos/generated/contracts/jp_raos_ops_audit_export_completed_v1.py",
+      "sha256": "c440029f09ad324fe0f21d16c784dbc9aa6deed0ed5c78f812027fed4553166b"
+    },
+    {
+      "bytes": 1061,
+      "path": "python/raos/generated/contracts/jp_raos_ops_child_jobs_created_v1.py",
+      "sha256": "bbac97d16abdff288562aceff30f569b4acaa0bc4a04a3857244245da802d37e"
+    },
+    {
+      "bytes": 1047,
+      "path": "python/raos/generated/contracts/jp_raos_ops_incident_closed_v1.py",
+      "sha256": "3b1cc7ade0ec2804383fc67f922345d159847abc4aa1b3a3efcbb7531c220d60"
+    },
+    {
+      "bytes": 1054,
+      "path": "python/raos/generated/contracts/jp_raos_ops_incident_declared_v1.py",
+      "sha256": "8c4a82941ed4856c26188502b188225fd992b74e17ab8c9e92cbbdc5f784b7ef"
+    },
+    {
+      "bytes": 1077,
+      "path": "python/raos/generated/contracts/jp_raos_ops_job_failed_terminal_v1.py",
+      "sha256": "353038704dd4071bf947a1ec89e325e51170e746d7bde492023c4ab31278c529"
+    },
+    {
+      "bytes": 1060,
+      "path": "python/raos/generated/contracts/jp_raos_ops_job_quarantined_v1.py",
+      "sha256": "ca2bef8b437521222ab63ba6f4ba35df031e0e483a459ee475b2a04c7476e7b2"
+    },
+    {
+      "bytes": 1046,
+      "path": "python/raos/generated/contracts/jp_raos_ops_job_requested_v1.py",
+      "sha256": "f8012b55b3a993584411deaa2d089abdcd33cdccd7daa3167514f608ef0247da"
+    },
+    {
+      "bytes": 1133,
+      "path": "python/raos/generated/contracts/jp_raos_ops_job_succeeded_v1.py",
+      "sha256": "381e8b8fe764795dbdeb8ccf995e317be540108e9fb1a73e2430c5b0ee867ec0"
+    },
+    {
+      "bytes": 1208,
+      "path": "python/raos/generated/contracts/jp_raos_ops_kill_switch_changed_v1.py",
+      "sha256": "03371c60c81ed2a6f35adcfde3b781d1bc34e0cb41f6d72a65e4bbf03cd4d240"
+    },
+    {
+      "bytes": 1079,
+      "path": "python/raos/generated/contracts/jp_raos_ops_notification_dispatched_v1.py",
+      "sha256": "80e72292f8638313e28e9a3f840343ef173bb0ad4fb7ff8ac52d6926263540fb"
+    },
+    {
+      "bytes": 1113,
+      "path": "python/raos/generated/contracts/jp_raos_ops_readmodel_rebuilt_v1.py",
+      "sha256": "35e09b4a0a9564bea51bffe2258af5d53e105ada3b4862588a5ba6f6d452a291"
+    },
+    {
+      "bytes": 1121,
+      "path": "python/raos/generated/contracts/jp_raos_ops_retention_sweep_completed_v1.py",
+      "sha256": "8f3b1e485ae725cbb333edf35e8609b21f3aa5108de989170dee580a59986ba9"
+    },
+    {
+      "bytes": 1084,
+      "path": "python/raos/generated/contracts/jp_raos_policy_blocking_finding_raised_v1.py",
+      "sha256": "e432151984a5f35747e0811d6369edd5bca3be31edc7e3d7bd057238e2cf03da"
+    },
+    {
+      "bytes": 1039,
+      "path": "python/raos/generated/contracts/jp_raos_policy_finding_resolved_v1.py",
+      "sha256": "d3483bf4970af7644c34559530c000444be9e74723334969fc6e81d70b75d91c"
+    },
+    {
+      "bytes": 1108,
+      "path": "python/raos/generated/contracts/jp_raos_policy_gate_decision_recorded_v1.py",
+      "sha256": "f832fd9faed733eae1174314aae1fdd3acbffe4c8e23d34e4da6036a1e2339b9"
+    },
+    {
+      "bytes": 1147,
+      "path": "python/raos/generated/contracts/jp_raos_policy_policy_bundle_activated_v1.py",
+      "sha256": "dce79c5a0f3eb9b541afae7419cec2645cf61654ad2fb2e662f14edee505ae5e"
+    },
+    {
+      "bytes": 1145,
+      "path": "python/raos/generated/contracts/jp_raos_policy_policy_recheck_completed_v1.py",
+      "sha256": "5e0cb5f8c29dc474ed6be765fabc6b9f0e5708e55f261961586cf57ba4e4b934"
+    },
+    {
+      "bytes": 1135,
+      "path": "python/raos/generated/contracts/jp_raos_policy_quality_check_completed_v1.py",
+      "sha256": "a547911450ac73f7faa6c41eb8a8ff2ba95e4370684621e97e279c21be7a2db2"
+    },
+    {
+      "bytes": 1063,
+      "path": "python/raos/generated/contracts/jp_raos_portfolio_action_candidate_decided_v1.py",
+      "sha256": "f365b2572274f6c33c1711da54a71a89f962606579c8dcc5d18472e3124037d5"
+    },
+    {
+      "bytes": 1088,
+      "path": "python/raos/generated/contracts/jp_raos_portfolio_action_candidates_generated_v1.py",
+      "sha256": "0febf85d5a7b35f6e5d4b26f7dda905ea51b209d9c7806a269f931b11e42cf88"
+    },
+    {
+      "bytes": 1227,
+      "path": "python/raos/generated/contracts/jp_raos_portfolio_opportunity_assessed_v1.py",
+      "sha256": "fb83f4097e6437a63cafcf0edc20c585ab1ef0a29d970b0fa1b3454cd99bf726"
+    },
+    {
+      "bytes": 1156,
+      "path": "python/raos/generated/contracts/jp_raos_publishing_approval_granted_v1.py",
+      "sha256": "251dce9e30e31ac65ee02fc0a40d15639d4b0724e1e70ea73b80e025a36cfa52"
+    },
+    {
+      "bytes": 1076,
+      "path": "python/raos/generated/contracts/jp_raos_publishing_approval_revoked_v1.py",
+      "sha256": "a89771db3aeaa77016600fd344b637e16d1902e87ccb7ada003364ce53cbefc8"
+    },
+    {
+      "bytes": 1147,
+      "path": "python/raos/generated/contracts/jp_raos_publishing_article_published_v1.py",
+      "sha256": "cdcca30202776656de5b44d25606a3a6941e5addf4a4b17a1217ff8fa975a3ec"
+    },
+    {
+      "bytes": 1119,
+      "path": "python/raos/generated/contracts/jp_raos_publishing_article_rolled_back_v1.py",
+      "sha256": "a787c3a14098d5a99d3bd8d62b95919ed7cef75a770b698c2070a6b03b5f9bee"
+    },
+    {
+      "bytes": 1109,
+      "path": "python/raos/generated/contracts/jp_raos_publishing_article_unpublished_v1.py",
+      "sha256": "7a530903cc397a53a94c5c1ff567f6e13a2efdf8b4d7ee0dcc886b1864730153"
+    },
+    {
+      "bytes": 1080,
+      "path": "python/raos/generated/contracts/jp_raos_publishing_public_projection_rebuilt_v1.py",
+      "sha256": "b6a04d1a521fe0154ff855297be5481486803ee4baaa792a5b7eaf862981434b"
+    },
+    {
+      "bytes": 1134,
+      "path": "python/raos/generated/contracts/jp_raos_publishing_review_assigned_v1.py",
+      "sha256": "ab1afd7f6182eef4a7bda929d03dd7f92a178d3f8240e8ec949b0637f793e5af"
+    },
+    {
+      "bytes": 1124,
+      "path": "python/raos/generated/contracts/jp_raos_publishing_review_decision_recorded_v1.py",
+      "sha256": "46341f3584f0520745e6293338b3831a5cab12198c7aecf9903ee242ac87cbd5"
+    },
+    {
+      "bytes": 1174,
+      "path": "python/raos/generated/contracts/jp_raos_publishing_snapshot_built_v1.py",
+      "sha256": "ec10d81bc682a2f9304c9a89e83678fb7b56f4b7cf30f586a24cab6aa119b9ff"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/judge_calibration/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1697,
+      "path": "python/raos/generated/contracts/judge_calibration/v1.py",
+      "sha256": "f44bacf5372522f03d61d4343fae4c718cca45ec43ee1bb2b784d7a4f681a843"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/judge_calibration_create_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 884,
+      "path": "python/raos/generated/contracts/judge_calibration_create_request/v1.py",
+      "sha256": "71234b124106e023a2b6f0717322ece64f4037b1eb34dfca0f222b0e0390b3b8"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/judge_output/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1767,
+      "path": "python/raos/generated/contracts/judge_output/v1.py",
+      "sha256": "f6c9047ec0e84fe82529891738ed34393f92b4df16da1627a48763a5ab25efbd"
+    },
+    {
+      "bytes": 1109,
+      "path": "python/raos/generated/contracts/keyword_rank_row.py",
+      "sha256": "62bd397bebcef5ac77bb387886580a42d0ecc1228b638b778e9e7369f697d2b6"
+    },
+    {
+      "bytes": 466,
+      "path": "python/raos/generated/contracts/lead.py",
+      "sha256": "96fd2e80260a1d71743805a83badf1c9a7fddfaac0b9558918df5976b257c691"
+    },
+    {
+      "bytes": 1228,
+      "path": "python/raos/generated/contracts/llm_structured_task_request.py",
+      "sha256": "f3ebfade80b0a92759d46893ad41257d5b08a8e589fbc6205749c2cfd0f92e69"
+    },
+    {
+      "bytes": 1450,
+      "path": "python/raos/generated/contracts/llm_structured_task_result.py",
+      "sha256": "8f82c4ef5cffb74f8225fc60a75cc4a65979138e37a4bcfa08eb47244492421b"
+    },
+    {
+      "bytes": 624,
+      "path": "python/raos/generated/contracts/media.py",
+      "sha256": "5a2adc027a9e837d3b171da83ef8021676fe9af7b9d398c51b0078e0e8ea057d"
+    },
+    {
+      "bytes": 2411,
+      "path": "python/raos/generated/contracts/media_asset.py",
+      "sha256": "2362694a6749d46e207e3525b7200f66255204a27da5ea205e79e8f59e3a4417"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/media_asset_create_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1090,
+      "path": "python/raos/generated/contracts/media_asset_create_request/v1.py",
+      "sha256": "65d6223e2f2df2683beac5dc874a302f88da15f43b9f137f151bb086138e12e9"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/media_asset_resource/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1444,
+      "path": "python/raos/generated/contracts/media_asset_resource/v1.py",
+      "sha256": "f271dc06be955cf3ed0afd910a7a70bef9187995f60af31c3f8d38d4e4fe9b6d"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/media_asset_update_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 835,
+      "path": "python/raos/generated/contracts/media_asset_update_request/v1.py",
+      "sha256": "e6882d4623a80da806c230142ddc931a65af630e339107d8a08230de754f9917"
+    },
+    {
+      "bytes": 468,
+      "path": "python/raos/generated/contracts/methodology.py",
+      "sha256": "a6e1add54b4650258b061718f48c7c85f1b3ba2db0537d739b762ce5451afd38"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/methodology_validation_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 552,
+      "path": "python/raos/generated/contracts/methodology_validation_request/v1.py",
+      "sha256": "f0229ceb92f4ff0f4ae202ae25e6d8442bfccf8a374695bf5f12315603bdd7f8"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/model_definition/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1636,
+      "path": "python/raos/generated/contracts/model_definition/v1.py",
+      "sha256": "08e6ec54b9bb93ee37fd587fbf4a575230179388dbcdf1a5343e7ecb0f98d8bf"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/model_route_version/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1414,
+      "path": "python/raos/generated/contracts/model_route_version/v1.py",
+      "sha256": "4ab3b327d064ac9b0cfefbbc2626634ccd1d4dfe929836b2665faa38c62c64e0"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/model_route_version_create_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 2682,
+      "path": "python/raos/generated/contracts/model_route_version_create_request/v1.py",
+      "sha256": "43415a71e5af850b638cc6c78610bd103d18ea526633284af9f60a4398734b02"
+    },
+    {
+      "bytes": 555,
+      "path": "python/raos/generated/contracts/money.py",
+      "sha256": "dfa9a099faee8ea9e2b75ee15d38f07bff96b7abcab111b3bf7d6eee68f89ac6"
+    },
+    {
+      "bytes": 514,
+      "path": "python/raos/generated/contracts/numbered_list.py",
+      "sha256": "ace64a78b9f1178f2f079ab80b37c3969d5b2e122724775da8c40891f791ddd1"
+    },
+    {
+      "bytes": 666,
+      "path": "python/raos/generated/contracts/opportunity_assessment_output.py",
+      "sha256": "0349504baecd03fa7349ba830e1b128559eb342de5efb9de5040ece7150c7089"
+    },
+    {
+      "bytes": 1306,
+      "path": "python/raos/generated/contracts/ops_export_audit_v1.py",
+      "sha256": "734aa19963ca8a3711703abe684f7de42c8ea7fa6c01c9f17032c8742ac95121"
+    },
+    {
+      "bytes": 1528,
+      "path": "python/raos/generated/contracts/ops_rebuild_readmodel_v1.py",
+      "sha256": "3742634dcf3eb0c4384d551dc5978691442d9e0e47d1c1d35d3916fbf5f904a3"
+    },
+    {
+      "bytes": 1334,
+      "path": "python/raos/generated/contracts/ops_retention_sweep_v1.py",
+      "sha256": "2673d19d374af971ff2616a018005fe89bb183929b622e2866543d3852aeb10d"
+    },
+    {
+      "bytes": 1330,
+      "path": "python/raos/generated/contracts/ops_send_notification_v1.py",
+      "sha256": "90565676cec45243192e225c01289ca325130f6ca30dd89ce58d39c90ea9098c"
+    },
+    {
+      "bytes": 468,
+      "path": "python/raos/generated/contracts/paragraph.py",
+      "sha256": "c37c934a7ccc612c3f1961a6bee3c25dff4ac916708609b96ab4ede224988bb8"
+    },
+    {
+      "bytes": 1126,
+      "path": "python/raos/generated/contracts/policy_assist_output.py",
+      "sha256": "2a5c9be09a862eef4ca5d83592d44cf267e118448fa5b66c1d40e875524b83fc"
+    },
+    {
+      "bytes": 1303,
+      "path": "python/raos/generated/contracts/portfolio_assess_opportunity_v1.py",
+      "sha256": "98beef54da6f3af9921e73d37b4ffab9c01f1b6fc9492d42eceec572ba986a4b"
+    },
+    {
+      "bytes": 1312,
+      "path": "python/raos/generated/contracts/portfolio_generate_action_candidates_v1.py",
+      "sha256": "6c6ccc941401a91e227fc354796b806a2f812a511ff485cf8d142d532d5b3fa6"
+    },
+    {
+      "bytes": 1185,
+      "path": "python/raos/generated/contracts/problem_details.py",
+      "sha256": "802f90530d25762ba3c10a269fea88a8eed79abc8282bcdc6835896517494364"
+    },
+    {
+      "bytes": 1807,
+      "path": "python/raos/generated/contracts/product_card.py",
+      "sha256": "2d61febceabf36b20f53e83a35c2dc5f8d362956dfc0612ab9751c3f757b1a53"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/prompt_version/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 2054,
+      "path": "python/raos/generated/contracts/prompt_version/v1.py",
+      "sha256": "84ad4549dccab0351859a358a09279aeb0f8f8643be927d3f3d9fb4f3bd356d8"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/prompt_version_create_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1246,
+      "path": "python/raos/generated/contracts/prompt_version_create_request/v1.py",
+      "sha256": "fd71e37503e3a4831c7143ec102642d30c963561edd71ac5cd4946be6319f77d"
+    },
+    {
+      "bytes": 554,
+      "path": "python/raos/generated/contracts/pros_cons.py",
+      "sha256": "54bf0035a44f5b48d237bbd47d9387182b006efcbd44e96e9dbbfb0dc76d1f59"
+    },
+    {
+      "bytes": 2617,
+      "path": "python/raos/generated/contracts/publication_content_manifest.py",
+      "sha256": "c39024afc57f5f44333ff230b7b42b172482dbf14c743d6ab1db174f0464d6ae"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/publication_manifest_create_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 991,
+      "path": "python/raos/generated/contracts/publication_manifest_create_request/v1.py",
+      "sha256": "a8426d023983686630a53fccb3acfb723c18e3945c928bee319ded91f1e2d50f"
+    },
+    {
+      "bytes": 1328,
+      "path": "python/raos/generated/contracts/publication_snapshot.py",
+      "sha256": "04ad4367ab5a783d5b043fa1a77f1fcbebf78172932905b4472e70d8d725edf0"
+    },
+    {
+      "bytes": 1302,
+      "path": "python/raos/generated/contracts/publishing_build_snapshot_v1.py",
+      "sha256": "d32ef124d9918cadb15e1acdd9f84ca60efb62b5a9d6e2691e0eb1fd06fafac8"
+    },
+    {
+      "bytes": 1319,
+      "path": "python/raos/generated/contracts/publishing_publish_snapshot_v1.py",
+      "sha256": "40740a0353c1ca3622d711c42301902abc0238acf5a67fe1d19889d752f20ff9"
+    },
+    {
+      "bytes": 1391,
+      "path": "python/raos/generated/contracts/publishing_rebuild_public_projection_v1.py",
+      "sha256": "5384440a32b44adf4aa1f53a23eb07202d5d119ac65ecc8a751dee08c65de524"
+    },
+    {
+      "bytes": 1310,
+      "path": "python/raos/generated/contracts/publishing_rollback_v1.py",
+      "sha256": "4244572b898919a3863f8a0a39205a5189132a1fe07296048b91294daa4d4fe5"
+    },
+    {
+      "bytes": 1213,
+      "path": "python/raos/generated/contracts/publishing_unpublish_v1.py",
+      "sha256": "5fe79f018085303cf9cbb995bd51de96e761450740a67cd262f098aab19beccb"
+    },
+    {
+      "bytes": 1306,
+      "path": "python/raos/generated/contracts/quality_evaluate_article_v1.py",
+      "sha256": "d3c8bc1ea82e976dcb525194fb7d226af1729d56c6c4500c54520cf37153b799"
+    },
+    {
+      "bytes": 1397,
+      "path": "python/raos/generated/contracts/quality_recheck_policy_bundle_v1.py",
+      "sha256": "bd34bd8be054ac831e5d4d483a366d9ba5659b3ee4cae56c94fc817b031e9d22"
+    },
+    {
+      "bytes": 2085,
+      "path": "python/raos/generated/contracts/rakuten_item_search_canonical_page.py",
+      "sha256": "ff3b55a7f9b3f6d5f9172a9747308631433b1b6551411f977f08e5713d5543de"
+    },
+    {
+      "bytes": 6981,
+      "path": "python/raos/generated/contracts/rakuten_item_search_request.py",
+      "sha256": "9bae8c7aea3c76f80acb05455745803d54e0fb21520fe434b17dd5ccebf55796"
+    },
+    {
+      "bytes": 579,
+      "path": "python/raos/generated/contracts/recommendation_group.py",
+      "sha256": "4ff3995845cca3bc6e946e352e6fe84dccf49e1216a783644765e0463db5cecd"
+    },
+    {
+      "bytes": 3156,
+      "path": "python/raos/generated/contracts/recommendation_methodology.py",
+      "sha256": "a861b27ec373609ba8e0177b9cf383582d0a8d965bc928959e56727a5a1fa0d6"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/release_active_approval_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1311,
+      "path": "python/raos/generated/contracts/release_active_approval_request/v1.py",
+      "sha256": "d47ec924372dbf2cb4d5cfc15a4358a9803d902257b45c2672c094f0474c0685"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/release_approval/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1241,
+      "path": "python/raos/generated/contracts/release_approval/v1.py",
+      "sha256": "fc95c19b53e5cb2c93a934f7fdd9d2dd3f5c1e57d44c53f53f9235c4a8b8fc7a"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/release_canary_approval_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 991,
+      "path": "python/raos/generated/contracts/release_canary_approval_request/v1.py",
+      "sha256": "e9674bc8f9f8e2120aedab785cfb3dc0b002815e0158c82c82ef1e6a1d29d1ab"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/release_decision/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 5850,
+      "path": "python/raos/generated/contracts/release_decision/v1.py",
+      "sha256": "1f00482cabd70e135c31e97b553fa76ffe9734842ddefd4cc5db84759db6ab4e"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/release_decision_approval_result/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 593,
+      "path": "python/raos/generated/contracts/release_decision_approval_result/v1.py",
+      "sha256": "c3f5e3c527089e04f3a06e740b0ccc83e9629b60f13ea527dca1d183cfd78959"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/release_decision_create_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1691,
+      "path": "python/raos/generated/contracts/release_decision_create_request/v1.py",
+      "sha256": "7a7b9052666f85d3c76a392a7704d27c538486dbdcc523bce4beda2a6f896d78"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/release_decision_revoke_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 550,
+      "path": "python/raos/generated/contracts/release_decision_revoke_request/v1.py",
+      "sha256": "2e5854acf1b9a60d26bac8dfe87f62b3937c0019284145304b9111ebfe40c717"
+    },
+    {
+      "bytes": 731,
+      "path": "python/raos/generated/contracts/resource_ref.py",
+      "sha256": "6f310c5eb6b3995f3144c7ec0610dfc292d7d3776b20a5a4de7ce6742df3bf96"
+    },
+    {
+      "bytes": 1721,
+      "path": "python/raos/generated/contracts/revenue_canonical_row.py",
+      "sha256": "4ae3070d6f9c311d0f119f9a677b061caf83e0d77fd4203678e56b0e5c16b413"
+    },
+    {
+      "bytes": 610,
+      "path": "python/raos/generated/contracts/rich_text.py",
+      "sha256": "8cd41fce8acc4c99cabd523fd87b8c173cb4228caadf0f77f41c32dddf446f2a"
+    },
+    {
+      "bytes": 529,
+      "path": "python/raos/generated/contracts/selection_criteria.py",
+      "sha256": "036c7ee772ba16a7a09bfb2009618d8829fea0562df0d4662a078eb7be7296a1"
+    },
+    {
+      "bytes": 2202,
+      "path": "python/raos/generated/contracts/seo_metadata.py",
+      "sha256": "08384e45777c83566b753793e6ab097469fc847c565713f60e756860929245b6"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/seo_metadata_update_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 795,
+      "path": "python/raos/generated/contracts/seo_metadata_update_request/v1.py",
+      "sha256": "2f112a2e3b14d247f7be79c00234b74d041e712992e3f86fb39dfb5c553ade0d"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/seo_metadata_version/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1163,
+      "path": "python/raos/generated/contracts/seo_metadata_version/v1.py",
+      "sha256": "3d5c56ee30b16910f10d523312651afe89ab4932015611a1ab448c38731699a2"
+    },
+    {
+      "bytes": 1647,
+      "path": "python/raos/generated/contracts/source_summary.py",
+      "sha256": "d93c05325e6930a2d9613ee8956332f49a3158308036c5b866ff20110ab9fc5d"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/structured_data_command_request/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 796,
+      "path": "python/raos/generated/contracts/structured_data_command_request/v1.py",
+      "sha256": "2ef343f8972c5aa59195e6005e7caa8a706992efe84d6a3fcaf40163202625f6"
+    },
+    {
+      "bytes": 1672,
+      "path": "python/raos/generated/contracts/structured_data_manifest.py",
+      "sha256": "48d821673dda0552e9c63078b3871b68a5d66f069b055b69499d5cbd6e0ab630"
+    },
+    {
+      "bytes": 281,
+      "path": "python/raos/generated/contracts/structured_data_manifest_resource/__init__.py",
+      "sha256": "f206623ba86c8a629c835c95d1555bc3528a5f0b517214e719f248c55fd1fa39"
+    },
+    {
+      "bytes": 1326,
+      "path": "python/raos/generated/contracts/structured_data_manifest_resource/v1.py",
+      "sha256": "e1f39232f98f8773126c934a515f8c4f2fb798a98979447973fb68569f0b6839"
+    },
+    {
+      "bytes": 468,
+      "path": "python/raos/generated/contracts/tradeoff.py",
+      "sha256": "1883821dc895095a39575e44e872150834290be95013fb5d7581960825b79444"
+    },
+    {
+      "bytes": 568,
+      "path": "python/raos/generated/contracts/update_notice.py",
+      "sha256": "f758cfa20bca9bb23186c9fca984298dbb4d8aea264f2a713f77aba34bea6f90"
+    },
+    {
+      "bytes": 2052,
+      "path": "python/raos/ports/self_hosted_editorial_pilot.py",
+      "sha256": "c9928badddb180761299688f261e58694b357d22b99dfe7f91f44bfaa507a25d"
+    },
+    {
+      "bytes": 9964,
+      "path": "scripts/build_st1704_self_hosted_editorial_manifest.py",
+      "sha256": "098874027b4f5061095d980399fb337efccee31651469936466a55a740697aa2"
+    },
+    {
+      "bytes": 12299,
+      "path": "scripts/build_st1704_self_hosted_theme.py",
+      "sha256": "ec5d856368274415da6ea865621f3461f06f6b9cb525232fc12e0813d3d5afc0"
+    },
+    {
+      "bytes": 56375,
+      "path": "scripts/st1704_official_source_capture.py",
+      "sha256": "87a9e1af2b20ba1d17dfc6908b7240ae18b051d468f7a7cfe2758182e77b8a22"
+    },
+    {
+      "bytes": 42098,
+      "path": "scripts/st1704_self_hosted_editorial_pilot.py",
+      "sha256": "b9deadc3660aaa8b7ed9f9dede5de9b18b1db5d727c483bead6d4dff369d4863"
+    }
+  ],
+  "predecessor": {
+    "path": "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json",
+    "sha256": "47dbfa52146a4f99fb6a2c4bde8ab97ea1712434392ad26d5013642771be5348"
+  },
+  "publication_authority": "NONE",
+  "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
+  "schema": "SELF_HOSTED_EDITORIAL_PILOT_MANIFEST_V1",
+  "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
+  "story_id": "ST-1704"
+}

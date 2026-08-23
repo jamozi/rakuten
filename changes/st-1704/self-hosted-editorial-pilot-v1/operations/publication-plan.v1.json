@@ -1,0 +1,48 @@
+{
+  "articles": [
+    {
+      "action": "UPDATE_EXISTING",
+      "article_id": "st1703-first-suitcase-comparison",
+      "day_number": 1,
+      "immutable_snapshot_sha256": null,
+      "public_verification": "NOT_EXECUTED",
+      "status": "BLOCKED_PENDING_EXACT_SNAPSHOT_HUMAN_CONFIRMATION"
+    },
+    {
+      "action": "PUBLISH_NEW",
+      "article_id": "st1704-portable-power-station-guide",
+      "day_number": 4,
+      "immutable_snapshot_sha256": null,
+      "public_verification": "NOT_EXECUTED",
+      "status": "BLOCKED_PENDING_EXACT_SNAPSHOT_HUMAN_CONFIRMATION"
+    },
+    {
+      "action": "PUBLISH_NEW",
+      "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "day_number": 7,
+      "immutable_snapshot_sha256": null,
+      "public_verification": "NOT_EXECUTED",
+      "status": "BLOCKED_PENDING_EXACT_SNAPSHOT_HUMAN_CONFIRMATION"
+    },
+    {
+      "action": "PUBLISH_NEW",
+      "article_id": "st1704-countertop-dishwasher-for-small-households",
+      "day_number": 10,
+      "immutable_snapshot_sha256": null,
+      "public_verification": "NOT_EXECUTED",
+      "status": "BLOCKED_PENDING_EXACT_SNAPSHOT_HUMAN_CONFIRMATION"
+    },
+    {
+      "action": "PUBLISH_NEW",
+      "article_id": "st1704-compact-robot-vacuum-shortlist",
+      "day_number": 13,
+      "immutable_snapshot_sha256": null,
+      "public_verification": "NOT_EXECUTED",
+      "status": "BLOCKED_PENDING_EXACT_SNAPSHOT_HUMAN_CONFIRMATION"
+    }
+  ],
+  "publication_authority": "NONE",
+  "schema": "SELF_HOSTED_EDITORIAL_PUBLICATION_PLAN_V1",
+  "schedule_anchor": "FIRST_HUMAN_CONFIRMED_PUBLIC_ACTION",
+  "story_id": "ST-1704"
+}
