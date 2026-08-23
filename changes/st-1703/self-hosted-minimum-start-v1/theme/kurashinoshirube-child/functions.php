@@ -26,7 +26,7 @@ function kurashinoshirube_render_first_article_lead_image(
 ): string {
     if (
         $attributes !== array()
-        || $content !== null
+        || ! in_array($content, array(null, ''), true)
         || $tag !== 'kurashinoshirube_first_article_lead_image'
         || ! is_singular('post')
         || get_post_field('post_title', get_the_ID(), 'raw')

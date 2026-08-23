@@ -370,7 +370,8 @@ def test_first_article_shortcode_renderer_is_same_origin_article_and_path_bound(
     )
     assert functions.count("kurashinoshirube_first_article_lead_image") == 2
     assert "$attributes !== array()" in functions
-    assert "$content !== null" in functions
+    assert functions.count(theme.FIRST_ARTICLE_EMPTY_CONTENT_GUARD) == 1
+    assert "$content !== null" not in functions
     assert "$tag !== 'kurashinoshirube_first_article_lead_image'" in functions
     assert "! is_singular('post')" in functions
     assert "get_post_field('post_title', get_the_ID(), 'raw')" in functions
@@ -399,6 +400,74 @@ def test_first_article_shortcode_renderer_is_same_origin_article_and_path_bound(
     assert "add_filter" not in functions
     assert "wp:post-featured-image" not in single
     assert single.count("<!-- wp:post-content ") == 1
+
+
+@pytest.mark.parametrize(
+    ("content", "accepted"),
+    [
+        (None, True),
+        ("", True),
+        (" ", False),
+        ("enclosed content", False),
+        (False, False),
+        (0, False),
+        ([], False),
+    ],
+)
+def test_first_article_shortcode_content_gate_accepts_only_strict_empty_forms(
+    content: object, accepted: bool
+) -> None:
+    assert theme._shortcode_content_gate_allows(content) is accepted
+
+
+@pytest.mark.parametrize(
+    "replacement",
+    [
+        "$content !== null",
+        "! in_array($content, array(null, '', 'enclosed content'), true)",
+    ],
+)
+def test_source_check_rejects_regressed_or_permissive_shortcode_content_gate(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, replacement: str
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    functions_path = root / "functions.php"
+    functions = functions_path.read_text(encoding="utf-8").replace(
+        theme.FIRST_ARTICLE_EMPTY_CONTENT_GUARD,
+        replacement,
+        1,
+    )
+    functions_path.write_text(functions, encoding="utf-8")
+    monkeypatch.setattr(
+        theme,
+        "EXPECTED_THEME_FUNCTIONS_SHA256",
+        hashlib.sha256(functions.encode("utf-8")).hexdigest(),
+    )
+
+    with pytest.raises(
+        theme.ThemeBuildFailure, match="THEME_ARTICLE_ASSET_BINDING_INVALID"
+    ):
+        theme.source_check()
+
+
+def test_theme_replacement_version_is_exact_and_source_checked(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    root = _isolated_theme(monkeypatch, tmp_path)
+    stylesheet = root / "style.css"
+    source = stylesheet.read_text(encoding="utf-8")
+    assert source.count(f"\nVersion: {theme.EXPECTED_THEME_VERSION}\n") == 1
+
+    stylesheet.write_text(
+        source.replace(
+            f"\nVersion: {theme.EXPECTED_THEME_VERSION}\n",
+            "\nVersion: 1.0.0\n",
+            1,
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_PARENT_INVALID"):
+        theme.source_check()
 
 
 @pytest.mark.parametrize(

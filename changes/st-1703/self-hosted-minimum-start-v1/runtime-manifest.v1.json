@@ -49,9 +49,9 @@
       "sha256": "799763f0f4edc08a21c551ee72064ef4436243e28e493251d5b59c312c487d8b"
     },
     {
-      "bytes": 2697,
+      "bytes": 2723,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/functions.php",
-      "sha256": "4e12cedfb266dac20d7bc19d28a1558fa69e34a0ac79d35ff85a58258a447ed3"
+      "sha256": "afde3f88a96744660ee22e0eb517938e0ceb47c9f8277feaf497321fd776bc2f"
     },
     {
       "bytes": 958,
@@ -71,7 +71,7 @@
     {
       "bytes": 210,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/style.css",
-      "sha256": "fcb2bca0f60cfe84be082c3140089eb16738056e48e6ea9e12faad5541368886"
+      "sha256": "7e329a8fa9f0b32e47b524c60344542e5fb8734296556cca10abb3443dd90bbd"
     },
     {
       "bytes": 2848,
@@ -154,9 +154,9 @@
       "sha256": "e962fec07de9846da994dafadce044f199251d9feafb471784a88c27cba5489b"
     },
     {
-      "bytes": 49145,
+      "bytes": 50154,
       "path": "scripts/build_st1703_self_hosted_theme.py",
-      "sha256": "3fbbbd3d0080b875955ce57d3e75f2347541be661650dba185f4b49c16507878"
+      "sha256": "9a2750d06542683032ba514c7c7716df56c3349681d2209ff398b5c11b890f91"
     },
     {
       "bytes": 41947,
