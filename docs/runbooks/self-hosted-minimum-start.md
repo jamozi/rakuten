@@ -237,20 +237,20 @@ ranking. The packet contains unchanged provider-issued destinations and the
 official unmodified Rakuten Developers credit snippet exactly once. It has no
 pending marker.
 
-The one-way local finalizer consumes three exact owner-private request files,
+The read-only local verifier consumes three exact owner-private request files,
 recomputes their ST-0505 fingerprints, and scans only the fixed sanitized
-Result V3 store. It reads no credential, makes no network request, and never
-prints a destination URL or private result path. It rejects zero/duplicate,
-stale, mixed, fingerprint-mismatched, non-HTTPS, non-Rakuten/RAOS redirect,
-wrong item/shop/model, URL mutation, and manual/generic injection. The packet
-loader independently recomputes each fixed ST-0505 request fingerprint and
-requires the closed attestation digest; the finalizer also terminally rescans
-the fixed Result store and rebinds/reopens the owned content write. The packet
-is already final, so do not rerun it. For a future reviewed all-pending rebuild,
-use the closed target and all three named absolute request inputs:
+Result V3 store. It reads no credential, makes no network request, never prints
+a destination URL or private result path, and reports `external_writes: 0`.
+It rejects PENDING, zero/duplicate, stale, mixed, fingerprint-mismatched,
+non-HTTPS, non-Rakuten/RAOS redirect, wrong item/shop/model, URL mutation, and
+manual/generic injection. The full packet loader independently requires the
+closed request fingerprints and destination/evidence attestations. A second
+Result-store scan and terminal content reread must reproduce the same snapshot.
+The command cannot finalize or otherwise mutate a packet. Run it against the
+already-FINAL packet with all three named absolute request inputs:
 
 ```bash
-make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-finalize \
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-verify \
   ST1703_ACE_CRESTA_REQUEST=/absolute/owner-private/keyword-ace-cresta-06316.json \
   ST1703_ACE_DIFFERENCE_REQUEST=/absolute/owner-private/keyword-ace-difference-05721.json \
   ST1703_PROTECA_MAXPASS4_REQUEST=/absolute/owner-private/keyword-proteca-maxpass4-01471.json

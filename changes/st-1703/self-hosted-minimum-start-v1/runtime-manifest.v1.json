@@ -4,14 +4,14 @@
   "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
   "paths": [
     {
-      "bytes": 14683,
+      "bytes": 15039,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "13f9ea48275f399385c710ab8d9be2326dfb41d761319ec1bbb9b78e0c0e41c7"
+      "sha256": "59693873053b2ccb444c5be7c00f8f649d84dbe2855cb33bfe63861ec8012a15"
     },
     {
-      "bytes": 3671,
+      "bytes": 3665,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/Makefile",
-      "sha256": "f57970b554cbd9eefc6b8539d7cdf57fa980fc3627a2ace1da5b1439ef190251"
+      "sha256": "41a0388231889dbca5b1bf4166a188f161eb6287c92fe8ea71d26a4655e796c2"
     },
     {
       "bytes": 16498,
@@ -109,9 +109,9 @@
       "sha256": "4103ce178e92e12a5357e2e9c35b05485b67e18889fc057a8f41b4e16d61e4f8"
     },
     {
-      "bytes": 29792,
+      "bytes": 29878,
       "path": "python/raos/application/editorial/self_hosted_minimum_start.py",
-      "sha256": "cee763d7361f1a5c0c8e2729f06452d603056fb73fc484bd2d117ec207eee2ab"
+      "sha256": "e0924ff5ca09cdc36f0c6dffb356166a99c2ee01e6b196f8d067f158451eccf4"
     },
     {
       "bytes": 20400,

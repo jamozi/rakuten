@@ -238,23 +238,22 @@ must be treated as compromised and rotated or revoked. External Git/PR activity
 is suspended; this slice is limited to a local atomic commit until the owner
 completes that response.
 
-## Affiliate finalization P2 hardening follow-up (2026-08-23)
+## Affiliate verification capability-removal follow-up (2026-08-23)
 
-- The content writer now carries the original target bytes, SHA-256, complete
-  inode identity, mode and parent identity through publication. It rebinds the
-  parent and target, verifies the owned stage name/inode and exact bytes,
-  terminally reopens the published target, and never removes a foreign stale or
-  substituted stage.
-- Result V3 selection is no longer a one-shot directory listing. Each scan
-  checks a stable directory inventory and fixed-path identity, and a second
-  complete scan immediately before publication must reproduce the same store
-  identity and three finalized records. Late duplicates and store replacement
-  fail closed.
+- Review showed that a plain tracked-file replace could not provide an atomic
+  compare-and-swap against concurrent target changes, and no Result-store
+  snapshot could atomically authorize a later Git commit. The PENDING-to-FINAL
+  mutation path, stage/replace/cleanup writer, and legacy upgrade were therefore
+  removed instead of adding more race logic.
+- `affiliate-verify` is read-only and accepts only the already-FINAL tracked
+  packet. It validates a stable first Result snapshot, the full runtime packet,
+  a second Result snapshot with the same store identity and three records, and
+  a terminally identical content snapshot. PENDING fails closed. Success and
+  failure receipts report `external_writes: 0`.
 - Each final slot now carries a destination attestation over its unchanged
   provider URL and exact audit-safe evidence. The runtime recomputes the closed
   ST-0505 request fingerprint from its byte-identical closed canonical
-  projection and requires both the recomputed and reviewed attestation digest,
-  rejecting coherent
+  projection and requires the reviewed attestation digest, rejecting coherent
   destination/CTA/self-attestation mutation and arbitrary evidence hashes.
 - These are local file/runtime changes only. Credential access, provider or
   network calls, WordPress/browser operations, activation, draft creation,

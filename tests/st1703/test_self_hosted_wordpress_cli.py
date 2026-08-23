@@ -545,8 +545,8 @@ def test_story_makefile_has_closed_targets_and_sanitized_help() -> None:
     assert result.returncode == 0, (result.stdout, result.stderr)
     assert result.stderr == b""
     assert result.stdout.splitlines() == [
-        b"Offline: doctor runtime-manifest-check theme-source-check theme-check",
-        b"Local maintenance: runtime-manifest-generate theme-package affiliate-finalize",
+        b"Offline: doctor runtime-manifest-check theme-source-check theme-check affiliate-verify",
+        b"Local maintenance: runtime-manifest-generate theme-package",
         b"Human gated: install-credentials create-draft",
     ]
     assert b"update" not in result.stdout

@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
-"""Finalize the three ST-1703 affiliate slots from sanitized Result V3 files.
+"""Verify the three final ST-1703 affiliate slots against Result V3 files.
 
-This is a one-way, repository-local generator.  It never reads Rakuten
-credentials, never performs a provider request, and never prints destination
-URLs.  The operational input is three owner-only request files; matching
-provider evidence is discovered only in the fixed owner-local Result V3 store.
+This is a read-only, repository-local verifier.  It never reads Rakuten
+credentials, performs a provider request, mutates the tracked article, or
+prints destination URLs.  The operational input is three owner-only request
+files; matching provider evidence is discovered only in the fixed owner-local
+Result V3 store.
 """
 
 from __future__ import annotations
 
 import argparse
-from collections.abc import Callable, Mapping
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 import hashlib
@@ -186,7 +187,7 @@ _FAILURE_CODES = frozenset(
 
 
 class AffiliateFinalizationFailure(RuntimeError):
-    """Closed value-free failure for the local finalizer."""
+    """Closed value-free failure for the local affiliate verifier."""
 
     __slots__ = ("code",)
 
@@ -900,7 +901,6 @@ def _scan_results(
 class _ContentSnapshot:
     raw: bytes
     raw_sha256: str
-    packet: dict[str, object]
     target_identity: tuple[int, ...]
     target_mode: int
     parent_identity: tuple[int, ...]
@@ -946,69 +946,38 @@ def _read_content_packet(path: Path) -> _ContentSnapshot:
     finally:
         if parent_fd >= 0:
             os.close(parent_fd)
-    packet = _strict_json(raw, code="AFFILIATE_CONTENT_STATE_INVALID")
     return _ContentSnapshot(
         raw=raw,
         raw_sha256=hashlib.sha256(raw).hexdigest(),
-        packet=packet,
         target_identity=_identity(details),
         target_mode=target_mode,
         parent_identity=parent_identity,
     )
 
 
-def _upgrade_reviewed_legacy_final_packet(
-    packet: dict[str, object],
-    finalized: tuple[_FinalSlot, ...],
-) -> bool:
-    article = packet.get("article")
-    if type(article) is not dict or len(finalized) != len(_SLOTS):
-        return False
-    article_mapping = cast(dict[str, object], article)
-    raw_slots = article_mapping.get("affiliate_slots")
-    content = article_mapping.get("content_html")
-    if type(raw_slots) is not list or type(content) is not str:
-        return False
-    slots = cast(list[object], raw_slots)
-    if len(slots) != len(finalized) or content.count(RAKUTEN_CREDIT_SNIPPET) != 1:
-        return False
-    replacements: list[dict[str, object]] = []
-    for existing, final in zip(slots, finalized, strict=True):
-        provider_evidence = {
-            key: value
-            for key, value in final.evidence.items()
-            if key != "destination_attestation_sha256"
-        }
-        expected = {
-            "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
-            "destination_url": final.destination_url,
-            "evidence": provider_evidence,
-            "product_name": final.definition.product_name,
-            "required_rel": "sponsored nofollow",
-            "slot_id": final.definition.slot_id,
-            "status": "FINAL_OFFICIAL_RAKUTEN_LINK",
-        }
-        if (
-            existing != expected
-            or content.count(
-                affiliate_cta_html(final.definition.slot_id, final.destination_url)
-            )
-            != 1
-        ):
-            return False
-        replacements.append({**expected, "evidence": dict(final.evidence)})
-    slots[:] = replacements
-    return True
-
-
-def _validate_generated_packet(
-    rendered: bytes,
+def _validate_final_packet(
+    repository_root: Path,
+    *,
+    snapshot: _ContentSnapshot,
     finalized: tuple[_FinalSlot, ...],
 ) -> None:
-    parsed = _strict_json(rendered, code="AFFILIATE_OUTPUT_INVALID")
+    try:
+        _candidate, affiliate_status = (
+            load_first_article_candidate_with_affiliate_status(
+                repository_root,
+                operation=SelfHostedWordPressOperation.CREATE_DRAFT,
+                packet_bytes=snapshot.raw,
+            )
+        )
+    except BaseException:
+        _fail("AFFILIATE_CONTENT_STATE_INVALID")
+    if affiliate_status != "FINAL" or len(finalized) != len(_SLOTS):
+        _fail("AFFILIATE_CONTENT_STATE_INVALID")
+
+    parsed = _strict_json(snapshot.raw, code="AFFILIATE_CONTENT_STATE_INVALID")
     article = parsed.get("article")
     if type(article) is not dict:
-        _fail("AFFILIATE_OUTPUT_INVALID")
+        _fail("AFFILIATE_CONTENT_STATE_INVALID")
     article_mapping = cast(dict[str, object], article)
     slots = article_mapping.get("affiliate_slots")
     content = article_mapping.get("content_html")
@@ -1018,7 +987,7 @@ def _validate_generated_packet(
         or len(slots) != len(finalized)
         or content.count(RAKUTEN_CREDIT_SNIPPET) != 1
     ):
-        _fail("AFFILIATE_OUTPUT_INVALID")
+        _fail("AFFILIATE_CONTENT_STATE_INVALID")
     for item, final in zip(cast(list[object], slots), finalized, strict=True):
         expected = {
             "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
@@ -1036,336 +1005,10 @@ def _validate_generated_packet(
             )
             != 1
         ):
-            _fail("AFFILIATE_OUTPUT_INVALID")
-
-
-def _render_final_packet(
-    repository_root: Path,
-    *,
-    raw: bytes,
-    packet: dict[str, object],
-    finalized: tuple[_FinalSlot, ...],
-) -> bytes:
-    upgraded_legacy = False
-    try:
-        _candidate, status = load_first_article_candidate_with_affiliate_status(
-            repository_root,
-            operation=SelfHostedWordPressOperation.CREATE_DRAFT,
-            packet_bytes=raw,
-        )
-    except BaseException:
-        if not _upgrade_reviewed_legacy_final_packet(packet, finalized):
             _fail("AFFILIATE_CONTENT_STATE_INVALID")
-        status = "FINAL"
-        upgraded_legacy = True
-    if (
-        status not in {"PENDING", "FINAL"}
-        or (status == "FINAL" and not upgraded_legacy)
-        or len(finalized) != len(_SLOTS)
-    ):
-        _fail("AFFILIATE_CONTENT_STATE_INVALID")
-    article = packet.get("article")
-    if type(article) is not dict:
-        _fail("AFFILIATE_CONTENT_STATE_INVALID")
-    article_mapping = cast(dict[str, object], article)
-    raw_slots = article_mapping.get("affiliate_slots")
-    content = article_mapping.get("content_html")
-    if type(raw_slots) is not list or type(content) is not str:
-        _fail("AFFILIATE_CONTENT_STATE_INVALID")
-    slots = cast(list[object], raw_slots)
-    if status == "PENDING":
-        for index, final in enumerate(finalized):
-            existing = slots[index]
-            if type(existing) is not dict:
-                _fail("AFFILIATE_CONTENT_STATE_INVALID")
-            expected_pending = (
-                f"<!-- RAOS-AFFILIATE-SLOT:{final.definition.slot_id} BEGIN -->"
-                f'<div class="raos-affiliate-slot" '
-                f'data-raos-affiliate-slot="{final.definition.slot_id}">'
-                "<p>公式楽天アフィリエイトリンク未設定</p></div>"
-                f"<!-- RAOS-AFFILIATE-SLOT:{final.definition.slot_id} END -->"
-            )
-            rendered_cta = affiliate_cta_html(
-                final.definition.slot_id,
-                final.destination_url,
-            )
-            if content.count(expected_pending) != 1:
-                _fail("AFFILIATE_CONTENT_STATE_INVALID")
-            content = content.replace(expected_pending, rendered_cta, 1)
-            slots[index] = {
-                "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
-                "destination_url": final.destination_url,
-                "evidence": final.evidence,
-                "product_name": final.definition.product_name,
-                "required_rel": "sponsored nofollow",
-                "slot_id": final.definition.slot_id,
-                "status": "FINAL_OFFICIAL_RAKUTEN_LINK",
-            }
-        freshness_marker = '<p class="raos-freshness">'
-        if content.count(freshness_marker) != 1 or RAKUTEN_CREDIT_SNIPPET in content:
-            _fail("AFFILIATE_CONTENT_STATE_INVALID")
-        content = content.replace(
-            freshness_marker,
-            f"{RAKUTEN_CREDIT_SNIPPET}\n{freshness_marker}",
-            1,
-        )
-        article_mapping["content_html"] = content
-    try:
-        rendered = (
-            json.dumps(
-                packet,
-                ensure_ascii=False,
-                allow_nan=False,
-                indent=2,
-                sort_keys=True,
-            )
-            + "\n"
-        ).encode("utf-8", errors="strict")
-    except BaseException:
-        _fail("AFFILIATE_OUTPUT_INVALID")
-    _validate_generated_packet(rendered, finalized)
-    if upgraded_legacy:
-        try:
-            _candidate, final_status = (
-                load_first_article_candidate_with_affiliate_status(
-                    repository_root,
-                    operation=SelfHostedWordPressOperation.CREATE_DRAFT,
-                    packet_bytes=rendered,
-                )
-            )
-        except BaseException:
-            _fail("AFFILIATE_OUTPUT_INVALID")
-        if final_status != "FINAL":
-            _fail("AFFILIATE_OUTPUT_INVALID")
-    return rendered
 
 
-def _write_atomic(
-    path: Path,
-    payload: bytes,
-    *,
-    expected: _ContentSnapshot,
-    pre_publish: Callable[[], None],
-) -> None:
-    if (
-        not path.is_absolute()
-        or not payload
-        or len(payload) > 256 * 1024
-        or path.parent == path
-    ):
-        _fail("AFFILIATE_OUTPUT_INVALID")
-    parent_fd = -1
-    descriptor = -1
-    temporary = f".{path.name}.affiliate-finalizing"
-    staging_inode: tuple[int, int] | None = None
-    try:
-        parent_fd = _open_absolute_directory(
-            path.parent,
-            require_private=False,
-            code="AFFILIATE_OUTPUT_INVALID",
-        )
-        _require_directory_binding(
-            path.parent,
-            parent_fd,
-            require_private=False,
-            expected_identity=expected.parent_identity,
-            code="AFFILIATE_OUTPUT_INVALID",
-        )
-        original_raw, original = _read_regular_at(
-            parent_fd,
-            path.name,
-            maximum=256 * 1024,
-            required_mode=expected.target_mode,
-            code="AFFILIATE_OUTPUT_INVALID",
-        )
-        if (
-            _identity(original) != expected.target_identity
-            or original_raw != expected.raw
-            or hashlib.sha256(original_raw).hexdigest() != expected.raw_sha256
-        ):
-            _fail("AFFILIATE_OUTPUT_INVALID")
-        try:
-            descriptor = os.open(
-                temporary,
-                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
-                expected.target_mode,
-                dir_fd=parent_fd,
-            )
-        except OSError:
-            _fail("AFFILIATE_OUTPUT_INVALID")
-        os.fchmod(descriptor, expected.target_mode)
-        before = os.fstat(descriptor)
-        if (
-            not stat.S_ISREG(before.st_mode)
-            or before.st_uid != os.getuid()
-            or before.st_nlink != 1
-            or stat.S_IMODE(before.st_mode) != expected.target_mode
-        ):
-            _fail("AFFILIATE_OUTPUT_INVALID")
-        staging_inode = (before.st_dev, before.st_ino)
-        os.fsync(parent_fd)
-        offset = 0
-        while offset < len(payload):
-            written = os.write(descriptor, payload[offset:])
-            if written <= 0:
-                _fail("AFFILIATE_OUTPUT_INVALID")
-            offset += written
-        os.fsync(descriptor)
-        staged = os.fstat(descriptor)
-        if (
-            staged.st_dev != before.st_dev
-            or staged.st_ino != before.st_ino
-            or staged.st_uid != before.st_uid
-            or staged.st_gid != before.st_gid
-            or staged.st_nlink != before.st_nlink
-            or staged.st_size != len(payload)
-            or stat.S_IMODE(staged.st_mode) != expected.target_mode
-        ):
-            _fail("AFFILIATE_OUTPUT_INVALID")
-        _same_named_object(
-            staged,
-            parent_fd=parent_fd,
-            name=temporary,
-            code="AFFILIATE_OUTPUT_INVALID",
-        )
-        _require_directory_binding(
-            path.parent,
-            parent_fd,
-            require_private=False,
-            expected_identity=expected.parent_identity,
-            code="AFFILIATE_OUTPUT_INVALID",
-        )
-        pre_publish()
-        terminal_stage_raw, terminal_stage = _read_regular_at(
-            parent_fd,
-            temporary,
-            maximum=256 * 1024,
-            required_mode=expected.target_mode,
-            code="AFFILIATE_OUTPUT_INVALID",
-        )
-        if (
-            _identity(terminal_stage) != _identity(staged)
-            or terminal_stage_raw != payload
-            or hashlib.sha256(terminal_stage_raw).digest()
-            != hashlib.sha256(payload).digest()
-        ):
-            _fail("AFFILIATE_OUTPUT_INVALID")
-        _same_named_object(
-            terminal_stage,
-            parent_fd=parent_fd,
-            name=temporary,
-            code="AFFILIATE_OUTPUT_INVALID",
-        )
-        _require_directory_binding(
-            path.parent,
-            parent_fd,
-            require_private=False,
-            expected_identity=expected.parent_identity,
-            code="AFFILIATE_OUTPUT_INVALID",
-        )
-        terminal_raw, terminal_target = _read_regular_at(
-            parent_fd,
-            path.name,
-            maximum=256 * 1024,
-            required_mode=expected.target_mode,
-            code="AFFILIATE_OUTPUT_INVALID",
-        )
-        if (
-            _identity(terminal_target) != expected.target_identity
-            or terminal_raw != expected.raw
-            or hashlib.sha256(terminal_raw).hexdigest() != expected.raw_sha256
-        ):
-            _fail("AFFILIATE_OUTPUT_INVALID")
-        os.replace(
-            temporary,
-            path.name,
-            src_dir_fd=parent_fd,
-            dst_dir_fd=parent_fd,
-        )
-        published = os.stat(path.name, dir_fd=parent_fd, follow_symlinks=False)
-        if (
-            not stat.S_ISREG(published.st_mode)
-            or published.st_dev != staged.st_dev
-            or published.st_ino != staged.st_ino
-            or published.st_uid != staged.st_uid
-            or published.st_gid != staged.st_gid
-            or published.st_nlink != staged.st_nlink
-            or published.st_size != staged.st_size
-            or stat.S_IMODE(published.st_mode) != expected.target_mode
-        ):
-            _fail("AFFILIATE_OUTPUT_INVALID")
-        _same_named_object(
-            published,
-            parent_fd=parent_fd,
-            name=path.name,
-            code="AFFILIATE_OUTPUT_INVALID",
-        )
-        os.fsync(parent_fd)
-        _require_directory_binding(
-            path.parent,
-            parent_fd,
-            require_private=False,
-            expected_identity=expected.parent_identity,
-            code="AFFILIATE_OUTPUT_INVALID",
-        )
-        verified_payload, verified = _read_regular_at(
-            parent_fd,
-            path.name,
-            maximum=256 * 1024,
-            required_mode=expected.target_mode,
-            code="AFFILIATE_OUTPUT_INVALID",
-        )
-        if (
-            staging_inode is None
-            or (verified.st_dev, verified.st_ino) != staging_inode
-            or verified_payload != payload
-            or hashlib.sha256(verified_payload).digest()
-            != hashlib.sha256(payload).digest()
-        ):
-            _fail("AFFILIATE_OUTPUT_INVALID")
-    except AffiliateFinalizationFailure:
-        raise
-    except OSError:
-        _fail("AFFILIATE_OUTPUT_INVALID")
-    finally:
-        if descriptor >= 0:
-            os.close(descriptor)
-        if parent_fd >= 0:
-            try:
-                stale: os.stat_result | None
-                try:
-                    stale = os.stat(
-                        temporary,
-                        dir_fd=parent_fd,
-                        follow_symlinks=False,
-                    )
-                except FileNotFoundError:
-                    stale = None
-                except OSError:
-                    _fail("AFFILIATE_OUTPUT_INVALID")
-                if stale is not None:
-                    if (
-                        staging_inode is None
-                        or (stale.st_dev, stale.st_ino) != staging_inode
-                    ):
-                        _fail("AFFILIATE_OUTPUT_INVALID")
-                    try:
-                        os.unlink(temporary, dir_fd=parent_fd)
-                        os.fsync(parent_fd)
-                    except OSError:
-                        _fail("AFFILIATE_OUTPUT_INVALID")
-                _require_directory_binding(
-                    path.parent,
-                    parent_fd,
-                    require_private=False,
-                    expected_identity=expected.parent_identity,
-                    code="AFFILIATE_OUTPUT_INVALID",
-                )
-            finally:
-                os.close(parent_fd)
-
-
-def finalize(
+def verify(
     *,
     repository_root: Path,
     result_store: Path,
@@ -1378,6 +1021,7 @@ def finalize(
         or type(request_paths) is not dict
     ):
         _fail("AFFILIATE_ARGUMENT_INVALID")
+
     content_path = repository_root / CONTENT_PACKET_RELATIVE_PATH
     content_snapshot = _read_content_packet(content_path)
     fingerprints = _request_fingerprints(request_paths)
@@ -1386,38 +1030,34 @@ def finalize(
         fingerprints=fingerprints,
         now=now,
     )
-    rendered = _render_final_packet(
+    _validate_final_packet(
         repository_root,
-        raw=content_snapshot.raw,
-        packet=content_snapshot.packet,
+        snapshot=content_snapshot,
         finalized=result_snapshot.finalized,
     )
 
-    def validate_terminal_results() -> None:
-        terminal = _scan_results(
-            result_store,
-            fingerprints=fingerprints,
-            now=now,
-        )
-        if (
-            terminal.store_identity != result_snapshot.store_identity
-            or terminal.finalized != result_snapshot.finalized
-        ):
-            _fail("AFFILIATE_RESULT_STORE_INVALID")
-
-    _write_atomic(
-        content_path,
-        rendered,
-        expected=content_snapshot,
-        pre_publish=validate_terminal_results,
+    terminal_results = _scan_results(
+        result_store,
+        fingerprints=fingerprints,
+        now=now,
     )
+    if (
+        terminal_results.store_identity != result_snapshot.store_identity
+        or terminal_results.finalized != result_snapshot.finalized
+    ):
+        _fail("AFFILIATE_RESULT_STORE_INVALID")
+    terminal_content = _read_content_packet(content_path)
+    if terminal_content != content_snapshot:
+        _fail("AFFILIATE_CONTENT_STATE_INVALID")
+
     return {
-        "affiliate_slots_final": len(result_snapshot.finalized),
+        "affiliate_slots_verified": len(result_snapshot.finalized),
         "credential_value_reads": 0,
+        "external_writes": 0,
         "network_requests": 0,
-        "packet_sha256": hashlib.sha256(rendered).hexdigest(),
+        "packet_sha256": content_snapshot.raw_sha256,
         "provider_urls_printed": 0,
-        "status": "AFFILIATE_LINKS_FINALIZED",
+        "status": "AFFILIATE_LINKS_VERIFIED",
     }
 
 
@@ -1440,7 +1080,7 @@ def main(
     try:
         arguments = _parser().parse_args(argv)
         observed_now = datetime.now(timezone.utc) if now is None else now
-        result = finalize(
+        result = verify(
             repository_root=repository_root,
             result_store=result_store,
             request_paths={
@@ -1457,7 +1097,11 @@ def main(
     except AffiliateFinalizationFailure as error:
         print(
             json.dumps(
-                {"reason_code": error.code, "status": "BLOCKED"},
+                {
+                    "external_writes": 0,
+                    "reason_code": error.code,
+                    "status": "BLOCKED",
+                },
                 ensure_ascii=True,
                 sort_keys=True,
             )
@@ -1466,7 +1110,11 @@ def main(
     except BaseException:
         print(
             json.dumps(
-                {"reason_code": "AFFILIATE_OUTPUT_INVALID", "status": "BLOCKED"},
+                {
+                    "external_writes": 0,
+                    "reason_code": "AFFILIATE_OUTPUT_INVALID",
+                    "status": "BLOCKED",
+                },
                 ensure_ascii=True,
                 sort_keys=True,
             )

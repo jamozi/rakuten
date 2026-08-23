@@ -357,18 +357,19 @@ def affiliate_destination_attestation_sha256(
         type(slot_id) is not str
         or slot_id not in _EXPECTED_SLOT_MODEL_CODES
         or type(provider_evidence) is not dict
-        or frozenset(provider_evidence) != _AFFILIATE_PROVIDER_EVIDENCE_KEYS
     ):
         _fail()
+    evidence = cast(dict[str, object], provider_evidence)
+    if frozenset(evidence) != _AFFILIATE_PROVIDER_EVIDENCE_KEYS:
+        _fail()
     destination = _validated_affiliate_url(destination_url, slot_id)
-    return _canonical_sha256(
-        {
-            "destination_url": destination,
-            "provider_evidence": dict(provider_evidence),
-            "schema": "RAOS_ST1703_AFFILIATE_DESTINATION_ATTESTATION_V1",
-            "slot_id": slot_id,
-        }
-    )
+    attestation_material: dict[str, object] = {
+        "destination_url": destination,
+        "provider_evidence": dict(evidence),
+        "schema": "RAOS_ST1703_AFFILIATE_DESTINATION_ATTESTATION_V1",
+        "slot_id": slot_id,
+    }
+    return _canonical_sha256(attestation_material)
 
 
 def affiliate_cta_html(slot_id: str, destination_url: str) -> str:

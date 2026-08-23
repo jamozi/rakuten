@@ -93,42 +93,38 @@ reviewed stylesheet bytes. A later or alternate low-contrast cascade,
 opacity, or browser-specific text-fill override therefore fails source
 validation instead of silently defeating the reviewed state colors.
 
-## Affiliate finalization boundary
+## Affiliate verification boundary
 
-`scripts/finalize_st1703_affiliate_links.py` is the sole writer for moving the
-three article slots from the closed all-pending state to the closed all-final
-state. It accepts the three exact owner-private request files through named
-flags, recomputes each ST-0505 request fingerprint, and scans only the fixed
-owner-local sanitized Result V3 store. It reads no credential and performs no
-network request.
+`scripts/finalize_st1703_affiliate_links.py` is a read-only verifier for the
+already-FINAL tracked packet. It accepts the three exact owner-private request
+files through named flags, recomputes each ST-0505 request fingerprint, and
+scans only the fixed owner-local sanitized Result V3 store. It reads no
+credential, performs no network request, and has no tracked-file writer.
 
-The generator requires one fresh successful 2026-07-01 item-search result per
+The verifier requires one fresh successful 2026-07-01 item-search result per
 fingerprint, one request and zero retry/pagination, and exactly one matching
 `ace-store` item/model record. The unchanged provider destination must be a
 public HTTPS Rakuten affiliate URL whose embedded desktop target is the exact
-Rakuten item path. It writes three exact CTA anchors with
-`rel="sponsored nofollow"`, audit-safe fingerprint/hash/time provenance, and
-one closed destination attestation that binds the unchanged URL to that exact
-provider evidence. Runtime recomputes the fixed ST-0505 request fingerprint and
-requires the reviewed attestation digest, so synchronized CTA/URL or plausible
-hash replacement also fails. The writer terminally rescans and rebinds the
-Result store, target parent, target inode and owned stage before publication,
-then stably reopens the published bytes. Zero, duplicate, late, stale, mixed,
-mismatched, manually injected, raced, or unsafe material fails closed; URLs and
-private result paths are never logged.
+Rakuten item path. It runs the full runtime loader, compares all three exact CTA
+and evidence records, rescans the Result store, and proves the content bytes did
+not change during verification. The runtime recomputes the fixed ST-0505
+request fingerprint and requires the reviewed destination/evidence attestation
+digest. PENDING, zero, duplicate, late, stale, mixed, mismatched, manually
+injected, or unsafe material fails closed. URLs and private result paths are
+never logged, and every receipt reports `external_writes: 0`.
 
-Run the one-way finalizer only from the reviewed all-pending packet:
+Verify the reviewed FINAL packet with all three named request inputs:
 
 ```bash
-make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-finalize \
+make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-verify \
   ST1703_ACE_CRESTA_REQUEST=/absolute/owner-private/keyword-ace-cresta-06316.json \
   ST1703_ACE_DIFFERENCE_REQUEST=/absolute/owner-private/keyword-ace-difference-05721.json \
   ST1703_PROTECA_MAXPASS4_REQUEST=/absolute/owner-private/keyword-proteca-maxpass4-01471.json
 ```
 
 Make hides the command line, and the JSON receipt contains hashes and counts
-only. The reviewed packet is already final in this slice; rerunning the
-finalizer is intentionally refused.
+only. This command cannot fill a PENDING packet or mutate the reviewed FINAL
+packet.
 
 ## Runtime boundary
 

@@ -90,8 +90,8 @@ DESIGN_HANDOFF_V1:
     - article imageはmanifestのexact path、alt、delivery、usageと一致し、article assetを含む全required imageがFINALでpackage-readyになるまでcreate-draftをcredential metadataとnetwork constructionより前に拒否する
     - child-theme installation/activationとdraft preview上のactual image、same-origin src、exact alt確認はhuman operator gateに残す
     - review済み画像originalはrepository外に維持し、exact 1600x900 opaque static WebPとlowercase SHA-256だけをFINAL assetとしてbindする
-    - affiliate finalizerは3つのclosed named request inputから既存ST-0505 fingerprintを再計算し、固定owner-local sanitized Result V3 store以外を読まない
-    - 3 slotはall-PENDINGまたはall-FINALだけを許可し、zero、duplicate、mixed、stale、mismatch、manual URL、unsafe redirectを拒否する
+    - affiliate verifierは3つのclosed named request inputから既存ST-0505 fingerprintを再計算し、固定owner-local sanitized Result V3 store以外を読まず、tracked packetを含むexternal write capabilityを持たない
+    - 3 slotはall-PENDINGまたはall-FINALだけを許可するが、affiliate verifierはreview済みall-FINALだけを受け入れ、PENDING、zero、duplicate、mixed、stale、mismatch、manual URL、unsafe redirectを拒否する
     - provider URLは変更せず、public HTTPS Rakuten affiliate URL、exact ace-store item target、exact CTA、rel="sponsored nofollow"へbindし、URLとprivate result pathをlogしない
     - official Rakuten Developers credit snippetは供給されたFROM/TO commentとanchorを変更せずreviewed articleへexactly once含める
   security_and_approval_gates:
@@ -123,6 +123,7 @@ DESIGN_HANDOFF_V1:
     - pinned Python code inventory and captured CLI stage identity match before interpreter startup and remain bound in the verifier
     - managed bin path sets and optional startup landmarks are closed, and the pinned root-owned loader bypasses owner-writable RPATH before Python starts
     - final image and affiliate-slot state remains closed and fails on pending/final mixing or drift
+    - affiliate verificationはfull runtime loader、同一Result store identityの2回のsnapshot、terminally identicalなcontent snapshotを必須とし、success/failureともexternal_writes=0を報告する
     - all three affiliate links retain exact request/response/result hash and retrieval-time provenance without credential or private result path
     - manifest-declared FINAL WebP bytes are included in the reviewed runtime payload supplied to offline doctor
     - reviewed first-article body bytes contain exactly one leading image shortcode and no raw image、media-upload、or featured-media capability
