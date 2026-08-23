@@ -25,6 +25,7 @@ staging, formal TST, publication, release, or Production evidence.
   preserves exact reviewed body bytes while granting no media-upload or
   `featured_media` capability.
 - `theme/kurashinoshirube-child/` is the Twenty Twenty-Five child-theme source.
+  The current replacement package is version `1.0.1`.
   It contains presentation only: no tracking, remote font/script/image load,
   publication, upload, taxonomy, plugin activation, or generic HTTP behavior.
   Reveal motion is progressive enhancement: content is visible without
@@ -36,7 +37,10 @@ staging, formal TST, publication, release, or Production evidence.
 - `theme/kurashinoshirube-child/raos-assets.v1.json` owns the two final image
   requirements, closed delivery modes and prompts. The suitcase-guide image is
   delivered only by the first-article shortcode. Its handler accepts no
-  attributes or content, requires the exact raw article title, exact post slug,
+  attributes and permits only WordPress's empty callback forms (`null` for
+  compatibility or the empty string supplied for a standalone shortcode);
+  non-empty enclosing content is refused. It requires the exact raw article
+  title, exact post slug,
   and active child theme, derives the URI from
   `get_stylesheet_directory_uri()`, and refuses a
   non-HTTPS/different-host/unsafe theme path or a missing, unreadable, or
@@ -103,6 +107,12 @@ and the first article asset reported as `FINAL`. `create-draft` applies the
 same verified theme check before credential metadata or network construction;
 it cannot proceed unless both required images remain `FINAL` and the
 deterministic theme package is ready.
+
+The owner-local toolchain has no PHP executable, so this offline gate does not
+claim PHP lint or WordPress runtime execution. Instead, it byte-pins the complete
+handler, requires the exact strict null-or-empty PHP guard, and exercises the
+same closed truth table in the deterministic Python validator tests. Actual
+rendering remains part of the separately human-gated WordPress preview.
 
 The footer contrast contract closes the expected foreground, background,
 focus-outline and custom-property declarations, then binds the complete

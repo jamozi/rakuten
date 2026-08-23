@@ -45,8 +45,9 @@ EXPECTED_THEME_CSS_SHA256 = (
     "0703a9154a12a2d4224d961ac5996b5e25c483c81f21f9a8500cd899ed913adf"
 )
 EXPECTED_THEME_FUNCTIONS_SHA256 = (
-    "4e12cedfb266dac20d7bc19d28a1558fa69e34a0ac79d35ff85a58258a447ed3"
+    "afde3f88a96744660ee22e0eb517938e0ceb47c9f8277feaf497321fd776bc2f"
 )
+EXPECTED_THEME_VERSION = "1.0.1"
 FIRST_ARTICLE_IMAGE_RELATIVE_PATH = "assets/images/article-suitcase-guide.webp"
 FIRST_ARTICLE_IMAGE_ALT = "機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景"
 FIRST_ARTICLE_IMAGE_USAGE = "first article inline lead image"
@@ -55,6 +56,7 @@ FIRST_ARTICLE_SLUG = "carry-on-suitcase-comparison"
 FIRST_ARTICLE_TARGET_ORIGIN = "https://kurashinoshirube.com"
 FIRST_ARTICLE_TARGET_HOST = FIRST_ARTICLE_TARGET_ORIGIN.removeprefix("https://")
 FIRST_ARTICLE_THEME_SLUG = "kurashinoshirube-child"
+FIRST_ARTICLE_EMPTY_CONTENT_GUARD = "! in_array($content, array(null, ''), true)"
 FIRST_ARTICLE_TITLE = (
     "機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ"
 )
@@ -143,6 +145,26 @@ class ThemeBuildFailure(RuntimeError):
 
 def _fail(code: str) -> NoReturn:
     raise ThemeBuildFailure(code) from None
+
+
+def _shortcode_content_gate_allows(value: object) -> bool:
+    """Model the exact PHP strict-in-array empty-content gate for offline tests."""
+
+    return value is None or (type(value) is str and value == "")
+
+
+def _validate_shortcode_content_gate(text: str) -> None:
+    if (
+        text.count(FIRST_ARTICLE_EMPTY_CONTENT_GUARD) != 1
+        or "$content !== null" in text
+        or not _shortcode_content_gate_allows(None)
+        or not _shortcode_content_gate_allows("")
+        or _shortcode_content_gate_allows(" ")
+        or _shortcode_content_gate_allows("enclosed content")
+        or _shortcode_content_gate_allows(False)
+        or _shortcode_content_gate_allows(0)
+    ):
+        _fail("THEME_ARTICLE_ASSET_BINDING_INVALID")
 
 
 class _DuplicateKey(ValueError):
@@ -814,6 +836,8 @@ def _validate_source_file(relative: str, payload: bytes) -> None:
         or "if (reduced ||" not in text
     ):
         _fail("THEME_ACCESSIBILITY_INVALID")
+    if relative == "functions.php":
+        _validate_shortcode_content_gate(text)
     if relative == "functions.php" and (
         hashlib.sha256(payload).hexdigest() != EXPECTED_THEME_FUNCTIONS_SHA256
         or text.count(FIRST_ARTICLE_SHORTCODE_TAG) != 2
@@ -841,6 +865,7 @@ def _validate_source_file(relative: str, payload: bytes) -> None:
     if relative == "style.css" and (
         "Theme Name: 暮らしのしるべ Editorial" not in text
         or "Template: twentytwentyfive" not in text
+        or text.count(f"\nVersion: {EXPECTED_THEME_VERSION}\n") != 1
     ):
         _fail("THEME_PARENT_INVALID")
     if relative == "theme.json" and (
