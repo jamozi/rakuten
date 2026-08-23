@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Verify the three final ST-1703 affiliate slots against Result V3 files.
+"""Verify three immutable FINAL ST-1703 affiliate evidence records.
 
 This is an import-only verifier for the verified ST-1703 runtime.  It never
 reads Rakuten credentials, performs a provider request, mutates the tracked
 article, or prints destination URLs.  The operational input is three owner-only
 request files; matching provider evidence is discovered only in the fixed
-owner-local Result V3 store.
+owner-local Result V3 store.  This is historical evidence verification, not a
+freshness check or live re-attestation: only the exact Result bytes committed
+into each FINAL slot can satisfy the verifier.
 """
 
 from __future__ import annotations
@@ -80,7 +82,6 @@ from raos.domain.editorial.self_hosted_wordpress import (  # noqa: E402
 OWNER_REPOSITORY_ROOT = Path("/home/minami/rakuten")
 OWNER_RESULT_STORE = OWNER_REPOSITORY_ROOT / ".secrets/rakuten-owner-local/results"
 OWNER_REQUEST_ROOT = OWNER_REPOSITORY_ROOT / ".secrets/rakuten-owner-local/requests"
-MAX_RESULT_AGE = timedelta(hours=24)
 MAX_FUTURE_SKEW = timedelta(minutes=5)
 MAX_JSON_DEPTH = 32
 MAX_JSON_NODES = 50_000
@@ -463,7 +464,10 @@ def _read_regular_at(
             os.close(descriptor)
 
 
-def _read_private_result(directory_fd: int, name: str) -> bytes:
+def _read_private_result(
+    directory_fd: int,
+    name: str,
+) -> tuple[bytes, tuple[int, ...]]:
     flags = os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK
     descriptor = -1
     try:
@@ -497,36 +501,9 @@ def _read_private_result(directory_fd: int, name: str) -> bytes:
             verification += chunk
         after = os.fstat(descriptor)
         named = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
-        identity_before = (
-            before.st_dev,
-            before.st_ino,
-            before.st_mode,
-            before.st_uid,
-            before.st_nlink,
-            before.st_size,
-            before.st_mtime_ns,
-            before.st_ctime_ns,
-        )
-        identity_after = (
-            after.st_dev,
-            after.st_ino,
-            after.st_mode,
-            after.st_uid,
-            after.st_nlink,
-            after.st_size,
-            after.st_mtime_ns,
-            after.st_ctime_ns,
-        )
-        identity_named = (
-            named.st_dev,
-            named.st_ino,
-            named.st_mode,
-            named.st_uid,
-            named.st_nlink,
-            named.st_size,
-            named.st_mtime_ns,
-            named.st_ctime_ns,
-        )
+        identity_before = _identity(before)
+        identity_after = _identity(after)
+        identity_named = _identity(named)
         if (
             len(payload) != before.st_size
             or len(payload) > MAX_RESULT_BYTES
@@ -535,7 +512,7 @@ def _read_private_result(directory_fd: int, name: str) -> bytes:
             or identity_after != identity_named
         ):
             _fail("AFFILIATE_RESULT_STORE_INVALID")
-        return payload
+        return payload, identity_before
     except AffiliateFinalizationFailure:
         raise
     except OSError:
@@ -838,7 +815,7 @@ def _request_fingerprints(
 
 
 @dataclass(frozen=True, slots=True)
-class _FinalSlot:
+class _CommittedFinalSlot:
     definition: _SlotDefinition
     destination_url: str
     evidence: dict[str, str]
@@ -846,18 +823,95 @@ class _FinalSlot:
 
 @dataclass(frozen=True, slots=True)
 class _ResultSnapshot:
-    finalized: tuple[_FinalSlot, ...]
+    verified: tuple[_CommittedFinalSlot, ...]
     store_identity: tuple[int, ...]
+    inventory: tuple[tuple[str, str, tuple[int, ...]], ...]
+
+
+def _provider_evidence(result: _ValidatedResult) -> dict[str, str]:
+    definition = api_definition(RakutenOwnerLocalApi.ITEM_SEARCH)
+    return {
+        "api": RakutenOwnerLocalApi.ITEM_SEARCH.value,
+        "api_version": definition.api_version,
+        "endpoint_id": definition.endpoint_id,
+        "evidence_authority": RAKUTEN_OWNER_LOCAL_EVIDENCE_AUTHORITY,
+        "request_fingerprint": result.request_fingerprint,
+        "response_sha256": result.response_sha256,
+        "result_sha256": result.result_sha256,
+        "retrieved_at": result.retrieved_at,
+    }
+
+
+def _verified_slot_from_result(
+    slot: _SlotDefinition,
+    result: _ValidatedResult,
+) -> _CommittedFinalSlot:
+    identity_matches: list[dict[str, object]] = []
+    for item in result.items:
+        item_name = item.get("itemName")
+        item_code = item.get("itemCode")
+        if (
+            item.get("shopCode") == "ace-store"
+            and type(item_name) is str
+            and slot.model_code in item_name
+            and item_code == slot.exact_item_code
+        ):
+            identity_matches.append(item)
+    if len(identity_matches) != 1:
+        _fail("AFFILIATE_RESULT_IDENTITY_MISMATCH")
+    item = identity_matches[0]
+    affiliate_url = item.get("affiliateUrl")
+    if affiliate_url != item.get("itemUrl"):
+        _fail("AFFILIATE_DESTINATION_INVALID")
+    destination = _validate_direct_destination(affiliate_url, slot)
+    provider_evidence = _provider_evidence(result)
+    evidence = {
+        **provider_evidence,
+        "destination_attestation_sha256": (
+            affiliate_destination_attestation_sha256(
+                slot.slot_id,
+                destination,
+                provider_evidence,
+            )
+        ),
+    }
+    if frozenset(evidence) != _EVIDENCE_KEYS:
+        _fail("AFFILIATE_OUTPUT_INVALID")
+    return _CommittedFinalSlot(
+        definition=slot,
+        destination_url=destination,
+        evidence=evidence,
+    )
 
 
 def _scan_results(
     result_store: Path,
     *,
-    fingerprints: Mapping[str, str],
+    committed_slots: tuple[_CommittedFinalSlot, ...],
     now: datetime,
 ) -> _ResultSnapshot:
     if type(now) is not datetime or now.tzinfo is not timezone.utc or now.fold != 0:
         _fail("AFFILIATE_ARGUMENT_INVALID")
+    if (
+        type(committed_slots) is not tuple
+        or len(committed_slots) != len(_SLOTS)
+        or any(
+            type(committed) is not _CommittedFinalSlot
+            or committed.definition != definition
+            for committed, definition in zip(committed_slots, _SLOTS, strict=True)
+        )
+    ):
+        _fail("AFFILIATE_CONTENT_STATE_INVALID")
+    expected_by_fingerprint: dict[str, _CommittedFinalSlot] = {}
+    for committed in committed_slots:
+        fingerprint = committed.evidence.get("request_fingerprint")
+        if (
+            type(fingerprint) is not str
+            or _SHA256.fullmatch(fingerprint) is None
+            or fingerprint in expected_by_fingerprint
+        ):
+            _fail("AFFILIATE_CONTENT_STATE_INVALID")
+        expected_by_fingerprint[fingerprint] = committed
     directory_fd = _open_absolute_directory(result_store, require_private=True)
     try:
         try:
@@ -870,12 +924,14 @@ def _scan_results(
             _fail("AFFILIATE_RESULT_STORE_INVALID")
         if not names or any(_RUN_FILE.fullmatch(name) is None for name in names):
             _fail("AFFILIATE_RESULT_STORE_INVALID")
-        expected = set(fingerprints.values())
+        expected = set(expected_by_fingerprint)
         matches: dict[str, list[_ValidatedResult]] = {
             fingerprint: [] for fingerprint in expected
         }
+        inventory: list[tuple[str, str, tuple[int, ...]]] = []
         for name in names:
-            raw = _read_private_result(directory_fd, name)
+            raw, result_identity = _read_private_result(directory_fd, name)
+            inventory.append((name, hashlib.sha256(raw).hexdigest(), result_identity))
             fingerprint = _result_fingerprint(
                 raw,
                 file_name=name,
@@ -885,12 +941,16 @@ def _scan_results(
                 continue
             if fingerprint in expected:
                 result = _validated_result(raw, file_name=name)
-                if (
-                    now - result.finished_at > MAX_RESULT_AGE
-                    or result.finished_at - now > MAX_FUTURE_SKEW
-                ):
+                if result.finished_at - now > MAX_FUTURE_SKEW:
                     _fail("AFFILIATE_RESULT_STALE")
-                matches[result.request_fingerprint].append(result)
+                committed = expected_by_fingerprint[result.request_fingerprint]
+                expected_provider_evidence = {
+                    key: committed.evidence[key]
+                    for key in _EVIDENCE_KEYS
+                    if key != "destination_attestation_sha256"
+                }
+                if _provider_evidence(result) == expected_provider_evidence:
+                    matches[result.request_fingerprint].append(result)
         try:
             terminal_names = sorted(os.listdir(directory_fd))
             terminal_identity = _directory_object_identity(os.fstat(directory_fd))
@@ -908,61 +968,18 @@ def _scan_results(
     finally:
         os.close(directory_fd)
 
-    finalized: list[_FinalSlot] = []
-    definition = api_definition(RakutenOwnerLocalApi.ITEM_SEARCH)
-    for slot in _SLOTS:
-        matching_results = matches[fingerprints[slot.slot_id]]
+    verified: list[_CommittedFinalSlot] = []
+    for committed in committed_slots:
+        fingerprint = committed.evidence["request_fingerprint"]
+        matching_results = matches[fingerprint]
         if len(matching_results) != 1:
             _fail("AFFILIATE_RESULT_MISSING_OR_DUPLICATE")
         result = matching_results[0]
-        identity_matches: list[dict[str, object]] = []
-        for item in result.items:
-            item_name = item.get("itemName")
-            item_code = item.get("itemCode")
-            if (
-                item.get("shopCode") == "ace-store"
-                and type(item_name) is str
-                and slot.model_code in item_name
-                and item_code == slot.exact_item_code
-            ):
-                identity_matches.append(item)
-        if len(identity_matches) != 1:
+        verified_slot = _verified_slot_from_result(committed.definition, result)
+        if verified_slot != committed:
             _fail("AFFILIATE_RESULT_IDENTITY_MISMATCH")
-        item = identity_matches[0]
-        affiliate_url = item.get("affiliateUrl")
-        if affiliate_url != item.get("itemUrl"):
-            _fail("AFFILIATE_DESTINATION_INVALID")
-        destination = _validate_direct_destination(affiliate_url, slot)
-        provider_evidence = {
-            "api": RakutenOwnerLocalApi.ITEM_SEARCH.value,
-            "api_version": definition.api_version,
-            "endpoint_id": definition.endpoint_id,
-            "evidence_authority": RAKUTEN_OWNER_LOCAL_EVIDENCE_AUTHORITY,
-            "request_fingerprint": result.request_fingerprint,
-            "response_sha256": result.response_sha256,
-            "result_sha256": result.result_sha256,
-            "retrieved_at": result.retrieved_at,
-        }
-        evidence = {
-            **provider_evidence,
-            "destination_attestation_sha256": (
-                affiliate_destination_attestation_sha256(
-                    slot.slot_id,
-                    destination,
-                    provider_evidence,
-                )
-            ),
-        }
-        if frozenset(evidence) != _EVIDENCE_KEYS:
-            _fail("AFFILIATE_OUTPUT_INVALID")
-        finalized.append(
-            _FinalSlot(
-                definition=slot,
-                destination_url=destination,
-                evidence=evidence,
-            )
-        )
-    return _ResultSnapshot(tuple(finalized), store_identity)
+        verified.append(verified_slot)
+    return _ResultSnapshot(tuple(verified), store_identity, tuple(inventory))
 
 
 @dataclass(frozen=True, slots=True)
@@ -1023,12 +1040,11 @@ def _read_content_packet(path: Path) -> _ContentSnapshot:
     )
 
 
-def _validate_final_packet(
+def _load_committed_final_slots(
     repository_root: Path,
     *,
     snapshot: _ContentSnapshot,
-    finalized: tuple[_FinalSlot, ...],
-) -> None:
+) -> tuple[_CommittedFinalSlot, ...]:
     try:
         _candidate, affiliate_status = (
             load_first_article_candidate_with_affiliate_status(
@@ -1039,7 +1055,7 @@ def _validate_final_packet(
         )
     except BaseException:
         _fail("AFFILIATE_CONTENT_STATE_INVALID")
-    if affiliate_status != "FINAL" or len(finalized) != len(_SLOTS):
+    if affiliate_status != "FINAL":
         _fail("AFFILIATE_CONTENT_STATE_INVALID")
 
     parsed = _strict_json(snapshot.raw, code="AFFILIATE_CONTENT_STATE_INVALID")
@@ -1052,28 +1068,62 @@ def _validate_final_packet(
     if (
         type(slots) is not list
         or type(content) is not str
-        or len(slots) != len(finalized)
+        or len(slots) != len(_SLOTS)
         or content.count(RAKUTEN_CREDIT_SNIPPET) != 1
     ):
         _fail("AFFILIATE_CONTENT_STATE_INVALID")
-    for item, final in zip(cast(list[object], slots), finalized, strict=True):
+    committed_slots: list[_CommittedFinalSlot] = []
+    for item, definition in zip(cast(list[object], slots), _SLOTS, strict=True):
+        if type(item) is not dict:
+            _fail("AFFILIATE_CONTENT_STATE_INVALID")
+        item_mapping = cast(dict[str, object], item)
+        destination = item_mapping.get("destination_url")
+        evidence_value = item_mapping.get("evidence")
+        if (
+            frozenset(item_mapping)
+            != frozenset(
+                {
+                    "destination_policy",
+                    "destination_url",
+                    "evidence",
+                    "product_name",
+                    "required_rel",
+                    "slot_id",
+                    "status",
+                }
+            )
+            or type(destination) is not str
+            or type(evidence_value) is not dict
+        ):
+            _fail("AFFILIATE_CONTENT_STATE_INVALID")
+        evidence_mapping = cast(dict[str, object], evidence_value)
+        if frozenset(evidence_mapping) != _EVIDENCE_KEYS or any(
+            type(value) is not str for value in evidence_mapping.values()
+        ):
+            _fail("AFFILIATE_CONTENT_STATE_INVALID")
+        evidence = {key: cast(str, evidence_mapping[key]) for key in _EVIDENCE_KEYS}
         expected = {
             "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
-            "destination_url": final.destination_url,
-            "evidence": final.evidence,
-            "product_name": final.definition.product_name,
+            "destination_url": destination,
+            "evidence": evidence,
+            "product_name": definition.product_name,
             "required_rel": "sponsored nofollow",
-            "slot_id": final.definition.slot_id,
+            "slot_id": definition.slot_id,
             "status": "FINAL_OFFICIAL_RAKUTEN_LINK",
         }
         if (
-            item != expected
-            or content.count(
-                affiliate_cta_html(final.definition.slot_id, final.destination_url)
-            )
-            != 1
+            item_mapping != expected
+            or content.count(affiliate_cta_html(definition.slot_id, destination)) != 1
         ):
             _fail("AFFILIATE_CONTENT_STATE_INVALID")
+        committed_slots.append(
+            _CommittedFinalSlot(
+                definition=definition,
+                destination_url=destination,
+                evidence=evidence,
+            )
+        )
+    return tuple(committed_slots)
 
 
 def verify(
@@ -1098,34 +1148,36 @@ def verify(
         or content_snapshot.raw != expected_content_packet_bytes
     ):
         _fail("AFFILIATE_CONTENT_STATE_INVALID")
-    fingerprints = _request_fingerprints(request_paths)
-    result_snapshot = _scan_results(
-        result_store,
-        fingerprints=fingerprints,
-        now=now,
-    )
-    _validate_final_packet(
+    committed_slots = _load_committed_final_slots(
         repository_root,
         snapshot=content_snapshot,
-        finalized=result_snapshot.finalized,
+    )
+    fingerprints = _request_fingerprints(request_paths)
+    if any(
+        fingerprints[committed.definition.slot_id]
+        != committed.evidence["request_fingerprint"]
+        for committed in committed_slots
+    ):
+        _fail("AFFILIATE_REQUEST_INVALID")
+    result_snapshot = _scan_results(
+        result_store,
+        committed_slots=committed_slots,
+        now=now,
     )
 
     terminal_results = _scan_results(
         result_store,
-        fingerprints=fingerprints,
+        committed_slots=committed_slots,
         now=now,
     )
-    if (
-        terminal_results.store_identity != result_snapshot.store_identity
-        or terminal_results.finalized != result_snapshot.finalized
-    ):
+    if terminal_results != result_snapshot:
         _fail("AFFILIATE_RESULT_STORE_INVALID")
     terminal_content = _read_content_packet(content_path)
     if terminal_content != content_snapshot:
         _fail("AFFILIATE_CONTENT_STATE_INVALID")
 
     return {
-        "affiliate_slots_verified": len(result_snapshot.finalized),
+        "affiliate_slots_verified": len(result_snapshot.verified),
         "credential_value_reads": 0,
         "external_writes": 0,
         "network_requests": 0,

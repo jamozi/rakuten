@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+import hashlib
 from html import escape
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shutil
 import socket
@@ -243,19 +245,59 @@ def _result_store(tmp_path: Path) -> Path:
     return store
 
 
+def _result_bytes(value: dict[str, object]) -> bytes:
+    return (
+        json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        + "\n"
+    ).encode()
+
+
 def _write_result(store: Path, value: dict[str, object]) -> Path:
     path = store / f"{value['run_id']}.json"
-    path.write_text(
-        json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-        + "\n",
-        encoding="utf-8",
-    )
+    path.write_bytes(_result_bytes(value))
     path.chmod(0o600)
     return path
 
 
+def _validated_fixture_result(
+    *,
+    fingerprint: str,
+    code: str,
+    run_index: int = 0,
+    item_mutation: tuple[str, object] | None = None,
+    alternate_item_url: str | None = None,
+    destination_url: str | None = None,
+    finished_at: datetime = NOW,
+) -> finalizer._ValidatedResult:
+    value = _result_object(
+        fingerprint=fingerprint,
+        code=code,
+        run_index=run_index,
+        item_mutation=item_mutation,
+        alternate_item_url=alternate_item_url,
+        destination_url=destination_url,
+        finished_at=finished_at,
+    )
+    return finalizer._validated_result(
+        _result_bytes(value),
+        file_name=f"{value['run_id']}.json",
+    )
+
+
+def _result_path_for_fingerprint(store: Path, fingerprint: str) -> Path:
+    matches = []
+    for path in sorted(store.iterdir()):
+        result = finalizer._validated_result(path.read_bytes(), file_name=path.name)
+        if result.request_fingerprint == fingerprint:
+            matches.append(path)
+    assert len(matches) == 1
+    return matches[0]
+
+
 def _complete_inputs(
     tmp_path: Path,
+    *,
+    finished_at: datetime = NOW,
 ) -> tuple[Path, Path, dict[str, Path], dict[str, str]]:
     _pending_repository(tmp_path)
     paths, fingerprints = _request_files(tmp_path)
@@ -267,6 +309,7 @@ def _complete_inputs(
                 fingerprint=fingerprints[slot_id],
                 code=code,
                 run_index=index,
+                finished_at=finished_at,
             ),
         )
     return tmp_path, store, paths, fingerprints
@@ -277,23 +320,40 @@ def _complete_final_inputs(
     monkeypatch: pytest.MonkeyPatch,
     *,
     review_attestations: bool = True,
+    finished_at: datetime = NOW,
 ) -> tuple[Path, Path, dict[str, Path], dict[str, str]]:
-    root, store, requests, fingerprints = _complete_inputs(tmp_path)
-    snapshot = finalizer._scan_results(store, fingerprints=fingerprints, now=NOW)
+    root, store, requests, fingerprints = _complete_inputs(
+        tmp_path,
+        finished_at=finished_at,
+    )
+    results_by_fingerprint: dict[str, finalizer._ValidatedResult] = {}
+    for result_path in sorted(store.iterdir()):
+        result = finalizer._validated_result(
+            result_path.read_bytes(),
+            file_name=result_path.name,
+        )
+        results_by_fingerprint[result.request_fingerprint] = result
+    finalized = tuple(
+        finalizer._verified_slot_from_result(
+            definition,
+            results_by_fingerprint[fingerprints[definition.slot_id]],
+        )
+        for definition in finalizer._SLOTS
+    )
     if review_attestations:
         monkeypatch.setattr(
             minimum_start,
             "_EXPECTED_AFFILIATE_ATTESTATIONS",
             {
                 slot.definition.slot_id: slot.evidence["destination_attestation_sha256"]
-                for slot in snapshot.finalized
+                for slot in finalized
             },
         )
     content_path = root / CONTENT_PACKET_RELATIVE_PATH
     packet = json.loads(content_path.read_text(encoding="utf-8"))
     article = packet["article"]
     content = article["content_html"]
-    for index, slot in enumerate(snapshot.finalized):
+    for index, slot in enumerate(finalized):
         content = content.replace(
             _pending_slot_html(slot.definition.slot_id),
             affiliate_cta_html(slot.definition.slot_id, slot.destination_url),
@@ -593,6 +653,36 @@ def test_verifier_rejects_runtime_bound_packet_drift_before_private_read(
     assert failure.value.code == "AFFILIATE_CONTENT_STATE_INVALID"
 
 
+def test_verifier_rejects_tampered_packet_evidence_before_private_read(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, _fingerprints = _complete_final_inputs(
+        tmp_path,
+        monkeypatch,
+    )
+    content_path = root / CONTENT_PACKET_RELATIVE_PATH
+    packet = json.loads(content_path.read_text(encoding="utf-8"))
+    packet["article"]["affiliate_slots"][0]["evidence"]["result_sha256"] = "d" * 64
+    content_path.write_text(json.dumps(packet, ensure_ascii=False), encoding="utf-8")
+    monkeypatch.setattr(
+        finalizer,
+        "_request_fingerprints",
+        lambda paths: (_ for _ in ()).throw(
+            AssertionError(f"private request read reached: {len(paths)}")
+        ),
+    )
+
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.verify(
+            repository_root=root,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+    assert failure.value.code == "AFFILIATE_CONTENT_STATE_INVALID"
+
+
 @pytest.mark.parametrize(
     ("field", "value"),
     [
@@ -601,184 +691,100 @@ def test_verifier_rejects_runtime_bound_packet_drift_before_private_read(
         ("itemCode", "other-shop:synthetic"),
     ],
 )
-def test_finalizer_rejects_item_shop_or_name_mismatch(
-    tmp_path: Path, field: str, value: str
-) -> None:
-    _pending_repository(tmp_path)
-    requests, fingerprints = _request_files(tmp_path)
-    store = _result_store(tmp_path)
-    for index, (slot_id, _product_name, code) in enumerate(SLOTS):
-        mutation = (field, value) if index == 0 else None
-        _write_result(
-            store,
-            _result_object(
-                fingerprint=fingerprints[slot_id],
-                code=code,
-                run_index=index,
-                item_mutation=mutation,
-            ),
-        )
+def test_finalizer_rejects_item_shop_or_name_mismatch(field: str, value: str) -> None:
+    result = _validated_fixture_result(
+        fingerprint="a" * 64,
+        code="06316",
+        item_mutation=(field, value),
+    )
     with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
-        finalizer.verify(
-            repository_root=tmp_path,
-            result_store=store,
-            request_paths=requests,
-            now=NOW,
-        )
+        finalizer._verified_slot_from_result(finalizer._SLOTS[0], result)
     assert failure.value.code == "AFFILIATE_RESULT_IDENTITY_MISMATCH"
 
 
-def test_finalizer_rejects_provider_url_inequality(tmp_path: Path) -> None:
-    _pending_repository(tmp_path)
-    requests, fingerprints = _request_files(tmp_path)
-    store = _result_store(tmp_path)
-    for index, (slot_id, _product_name, code) in enumerate(SLOTS):
-        alternate = _affiliate_url(code, token="different") if index == 0 else None
-        _write_result(
-            store,
-            _result_object(
-                fingerprint=fingerprints[slot_id],
-                code=code,
-                run_index=index,
-                alternate_item_url=alternate,
-            ),
-        )
+def test_finalizer_rejects_provider_url_inequality() -> None:
+    result = _validated_fixture_result(
+        fingerprint="a" * 64,
+        code="06316",
+        alternate_item_url=_affiliate_url("06316", token="different"),
+    )
     with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
-        finalizer.verify(
-            repository_root=tmp_path,
-            result_store=store,
-            request_paths=requests,
-            now=NOW,
-        )
+        finalizer._verified_slot_from_result(finalizer._SLOTS[0], result)
     assert failure.value.code == "AFFILIATE_DESTINATION_INVALID"
 
 
-def test_finalizer_rejects_raos_destination_hidden_in_mobile_redirect(
-    tmp_path: Path,
-) -> None:
-    _pending_repository(tmp_path)
-    requests, fingerprints = _request_files(tmp_path)
-    store = _result_store(tmp_path)
-    for index, (slot_id, _product_name, code) in enumerate(SLOTS):
-        destination = None
-        if index == 0:
-            destination = _affiliate_url(
-                code,
-                mobile_target="https://kurashinoshirube.com/go/product",
-            )
-        _write_result(
-            store,
-            _result_object(
-                fingerprint=fingerprints[slot_id],
-                code=code,
-                run_index=index,
-                destination_url=destination,
-            ),
-        )
+def test_finalizer_rejects_raos_destination_hidden_in_mobile_redirect() -> None:
+    result = _validated_fixture_result(
+        fingerprint="a" * 64,
+        code="06316",
+        destination_url=_affiliate_url(
+            "06316",
+            mobile_target="https://kurashinoshirube.com/go/product",
+        ),
+    )
     with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
-        finalizer.verify(
-            repository_root=tmp_path,
-            result_store=store,
-            request_paths=requests,
-            now=NOW,
-        )
+        finalizer._verified_slot_from_result(finalizer._SLOTS[0], result)
     assert failure.value.code == "AFFILIATE_DESTINATION_INVALID"
 
 
-def test_finalizer_rejects_wrong_reviewed_mobile_item_target(tmp_path: Path) -> None:
-    _pending_repository(tmp_path)
-    requests, fingerprints = _request_files(tmp_path)
-    store = _result_store(tmp_path)
-    for index, (slot_id, _product_name, code) in enumerate(SLOTS):
-        destination = None
-        if index == 0:
-            destination = _affiliate_url(
-                code,
-                mobile_target=("http://m.rakuten.co.jp/ace-store/i/10009372/"),
-            )
-        _write_result(
-            store,
-            _result_object(
-                fingerprint=fingerprints[slot_id],
-                code=code,
-                run_index=index,
-                destination_url=destination,
-            ),
-        )
+def test_finalizer_rejects_wrong_reviewed_mobile_item_target() -> None:
+    result = _validated_fixture_result(
+        fingerprint="a" * 64,
+        code="06316",
+        destination_url=_affiliate_url(
+            "06316",
+            mobile_target="http://m.rakuten.co.jp/ace-store/i/10009372/",
+        ),
+    )
     with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
-        finalizer.verify(
-            repository_root=tmp_path,
-            result_store=store,
-            request_paths=requests,
-            now=NOW,
-        )
+        finalizer._verified_slot_from_result(finalizer._SLOTS[0], result)
     assert failure.value.code == "AFFILIATE_DESTINATION_INVALID"
 
 
-def test_finalizer_rejects_synchronized_wrong_item_code_and_mobile_target(
-    tmp_path: Path,
-) -> None:
-    _pending_repository(tmp_path)
-    requests, fingerprints = _request_files(tmp_path)
-    store = _result_store(tmp_path)
-    for index, (slot_id, _product_name, code) in enumerate(SLOTS):
-        destination = None
-        mutation = None
-        if index == 0:
-            destination = _affiliate_url(
-                code,
-                mobile_target=("http://m.rakuten.co.jp/ace-store/i/10009999/"),
-            )
-            mutation = ("itemCode", "ace-store:10009999")
-        _write_result(
-            store,
-            _result_object(
-                fingerprint=fingerprints[slot_id],
-                code=code,
-                run_index=index,
-                item_mutation=mutation,
-                destination_url=destination,
-            ),
-        )
+def test_finalizer_rejects_synchronized_wrong_item_code_and_mobile_target() -> None:
+    result = _validated_fixture_result(
+        fingerprint="a" * 64,
+        code="06316",
+        item_mutation=("itemCode", "ace-store:10009999"),
+        destination_url=_affiliate_url(
+            "06316",
+            mobile_target="http://m.rakuten.co.jp/ace-store/i/10009999/",
+        ),
+    )
     with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
-        finalizer.verify(
-            repository_root=tmp_path,
-            result_store=store,
-            request_paths=requests,
-            now=NOW,
-        )
+        finalizer._verified_slot_from_result(finalizer._SLOTS[0], result)
     assert failure.value.code == "AFFILIATE_RESULT_IDENTITY_MISMATCH"
 
 
-@pytest.mark.parametrize("mode", ["missing", "duplicate", "fingerprint"])
-def test_finalizer_rejects_partial_duplicate_or_fingerprint_mismatch(
-    tmp_path: Path, mode: str
+@pytest.mark.parametrize("action", ["remove", "replace"])
+def test_verifier_rejects_removed_or_replaced_exact_committed_result(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    action: str,
 ) -> None:
-    _pending_repository(tmp_path)
-    requests, fingerprints = _request_files(tmp_path)
-    store = _result_store(tmp_path)
-    for index, (slot_id, _product_name, code) in enumerate(SLOTS):
-        if mode == "missing" and index == 2:
-            continue
-        fingerprint = fingerprints[slot_id]
-        if mode == "fingerprint" and index == 2:
-            fingerprint = "f" * 64
-        result = _result_object(
-            fingerprint=fingerprint,
-            code=code,
-            run_index=index,
-        )
-        _write_result(store, result)
-        if mode == "duplicate" and index == 0:
-            duplicate = _result_object(
-                fingerprint=fingerprint,
-                code=code,
+    root, store, requests, fingerprints = _complete_final_inputs(
+        tmp_path,
+        monkeypatch,
+        finished_at=NOW - timedelta(days=2),
+    )
+    exact = _result_path_for_fingerprint(
+        store,
+        fingerprints["proteca-maxpass4-01471"],
+    )
+    exact.unlink()
+    if action == "replace":
+        _write_result(
+            store,
+            _result_object(
+                fingerprint=fingerprints["proteca-maxpass4-01471"],
+                code="01471",
                 run_index=9,
-            )
-            _write_result(store, duplicate)
+                finished_at=NOW + timedelta(minutes=1),
+            ),
+        )
     with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
         finalizer.verify(
-            repository_root=tmp_path,
+            repository_root=root,
             result_store=store,
             request_paths=requests,
             now=NOW,
@@ -786,24 +792,70 @@ def test_finalizer_rejects_partial_duplicate_or_fingerprint_mismatch(
     assert failure.value.code == "AFFILIATE_RESULT_MISSING_OR_DUPLICATE"
 
 
-def test_finalizer_rejects_stale_matching_result(tmp_path: Path) -> None:
-    _pending_repository(tmp_path)
-    requests, fingerprints = _request_files(tmp_path)
-    store = _result_store(tmp_path)
-    for index, (slot_id, _product_name, code) in enumerate(SLOTS):
-        finished = NOW - timedelta(days=2) if index == 0 else NOW
-        _write_result(
-            store,
-            _result_object(
-                fingerprint=fingerprints[slot_id],
-                code=code,
-                run_index=index,
-                finished_at=finished,
-            ),
-        )
+def test_verifier_accepts_exact_committed_result_older_than_24_hours(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, _fingerprints = _complete_final_inputs(
+        tmp_path,
+        monkeypatch,
+        finished_at=NOW - timedelta(days=2),
+    )
+    receipt = finalizer.verify(
+        repository_root=root,
+        result_store=store,
+        request_paths=requests,
+        now=NOW,
+    )
+    assert receipt["status"] == "AFFILIATE_LINKS_VERIFIED"
+
+
+def test_verifier_ignores_preexisting_newer_same_fingerprint_result(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, fingerprints = _complete_final_inputs(
+        tmp_path,
+        monkeypatch,
+        finished_at=NOW - timedelta(days=2),
+    )
+    packet = json.loads((root / CONTENT_PACKET_RELATIVE_PATH).read_text())
+    committed_sha256 = packet["article"]["affiliate_slots"][0]["evidence"][
+        "result_sha256"
+    ]
+    newer = _write_result(
+        store,
+        _result_object(
+            fingerprint=fingerprints["ace-cresta-06316"],
+            code="06316",
+            run_index=9,
+            finished_at=NOW,
+        ),
+    )
+    assert hashlib.sha256(newer.read_bytes()).hexdigest() != committed_sha256
+
+    receipt = finalizer.verify(
+        repository_root=root,
+        result_store=store,
+        request_paths=requests,
+        now=NOW,
+    )
+    assert receipt["status"] == "AFFILIATE_LINKS_VERIFIED"
+    assert receipt["affiliate_slots_verified"] == 3
+
+
+def test_verifier_rejects_exact_committed_result_beyond_future_skew(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, _fingerprints = _complete_final_inputs(
+        tmp_path,
+        monkeypatch,
+        finished_at=NOW + timedelta(minutes=6),
+    )
     with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
         finalizer.verify(
-            repository_root=tmp_path,
+            repository_root=root,
             result_store=store,
             request_paths=requests,
             now=NOW,
@@ -945,9 +997,14 @@ def test_content_rejects_mixed_pending_and_final_states(tmp_path: Path) -> None:
     "unsafe", ["request-mode", "request-parent-mode", "result-mode", "unknown-file"]
 )
 def test_finalizer_rejects_malformed_or_non_private_files(
-    tmp_path: Path, unsafe: str
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    unsafe: str,
 ) -> None:
-    root, store, requests, _fingerprints = _complete_inputs(tmp_path)
+    root, store, requests, _fingerprints = _complete_final_inputs(
+        tmp_path,
+        monkeypatch,
+    )
     if unsafe == "request-mode":
         requests["ace-cresta-06316"].chmod(0o644)
     elif unsafe == "request-parent-mode":
@@ -1004,9 +1061,81 @@ def test_finalizer_rejects_result_inserted_after_initial_scan(
             now=NOW,
         )
 
-    assert scans == 1
-    assert failure.value.code == "AFFILIATE_RESULT_MISSING_OR_DUPLICATE"
+    assert scans == 2
+    assert failure.value.code == "AFFILIATE_RESULT_STORE_INVALID"
     assert (root / CONTENT_PACKET_RELATIVE_PATH).read_bytes() == pending
+
+
+def test_finalizer_rejects_byte_identical_result_inode_replacement_between_scans(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, fingerprints = _complete_final_inputs(tmp_path, monkeypatch)
+    exact = _result_path_for_fingerprint(
+        store,
+        fingerprints["ace-cresta-06316"],
+    )
+    original_scan = finalizer._scan_results
+    scans = 0
+
+    def replace_exact_after_initial_scan(*args: object, **kwargs: object):
+        nonlocal scans
+        result = original_scan(*args, **kwargs)
+        scans += 1
+        if scans == 1:
+            replacement = tmp_path / "byte-identical-result.json"
+            replacement.write_bytes(exact.read_bytes())
+            replacement.chmod(0o600)
+            os.replace(replacement, exact)
+        return result
+
+    monkeypatch.setattr(finalizer, "_scan_results", replace_exact_after_initial_scan)
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.verify(
+            repository_root=root,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+
+    assert scans == 2
+    assert failure.value.code == "AFFILIATE_RESULT_STORE_INVALID"
+
+
+def test_finalizer_rejects_terminal_packet_inode_replacement(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root, store, requests, _fingerprints = _complete_final_inputs(
+        tmp_path,
+        monkeypatch,
+    )
+    content_path = root / CONTENT_PACKET_RELATIVE_PATH
+    original_scan = finalizer._scan_results
+    scans = 0
+
+    def replace_packet_after_terminal_scan(*args: object, **kwargs: object):
+        nonlocal scans
+        result = original_scan(*args, **kwargs)
+        scans += 1
+        if scans == 2:
+            replacement = tmp_path / "byte-identical-content-packet.json"
+            replacement.write_bytes(content_path.read_bytes())
+            replacement.chmod(content_path.stat().st_mode & 0o777)
+            os.replace(replacement, content_path)
+        return result
+
+    monkeypatch.setattr(finalizer, "_scan_results", replace_packet_after_terminal_scan)
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.verify(
+            repository_root=root,
+            result_store=store,
+            request_paths=requests,
+            now=NOW,
+        )
+
+    assert scans == 2
+    assert failure.value.code == "AFFILIATE_CONTENT_STATE_INVALID"
 
 
 def test_finalizer_rejects_result_store_inode_replacement(

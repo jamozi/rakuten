@@ -259,15 +259,22 @@ The read-only local verifier consumes three exact owner-private request files,
 recomputes their ST-0505 fingerprints, and scans only the fixed sanitized
 Result V3 store. It reads no credential, makes no network request, never prints
 a destination URL or private result path, and reports `external_writes: 0`.
-It rejects PENDING, zero/duplicate, stale, mixed, fingerprint-mismatched,
-non-HTTPS, non-Rakuten/RAOS redirect, wrong item/shop/model, URL mutation, and
-manual/generic injection. Each mobile target must identify the exact reviewed
-Result V3 item for its slot. The full packet loader independently requires the
-closed request fingerprints, exact state-specific disclosure and
-destination/evidence attestations. A second
-Result-store scan and terminal content reread must reproduce the same snapshot.
-The command cannot finalize or otherwise mutate a packet. Run it against the
-already-FINAL packet using only the fixed owner-private request paths:
+It first validates the FINAL packet and extracts its exact committed request,
+response, Result-hash and retrieval-time evidence. It then selects only the
+byte-exact Result V3 record bound by that evidence. A stable newer Result with
+the same request fingerprint is validated but not selected, and an exact
+committed Result remains historical evidence after 24 hours. This command is
+not a product-freshness check or live re-attestation. It rejects PENDING,
+missing/replaced exact evidence, future clock skew, mixed or fingerprint-
+mismatched state, non-HTTPS, non-Rakuten/RAOS redirect, wrong item/shop/model,
+URL mutation, and manual/generic injection. Each mobile target must identify
+the exact reviewed Result V3 item for its slot. The full packet loader
+independently requires the closed request fingerprints, exact state-specific
+disclosure and destination/evidence attestations. A second Result-store scan
+must reproduce the same file-name/hash/inode inventory and a terminal content
+reread must reproduce the same packet snapshot. The command cannot finalize or
+otherwise mutate a packet. Run it against the already-FINAL packet using only
+the fixed owner-private request paths:
 
 ```bash
 make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-verify

@@ -74,7 +74,7 @@ DESIGN_HANDOFF_V1:
     - pre-Python stageはpinned stdlib code inventory、python314.zip不在、完全capture済みCLI blobを検証し、stage HEAD/blob/SHA-256をsame-process verifierへ連続bindする
     - manifest entry path/orderはclosed inventoryと完全一致した後にだけdescriptor-relativeにpayloadを開く
     - runtime inventoryはaffiliate verifierとST-0505 request/result validatorを含む固定31 base pathと、固定asset manifestの2つのallowlist済みrequired_imagesのうちFINALかつlowercase SHA-256一致のWebPだけで構成する
-    - affiliate-verifyはexact-root launcherからのみ到達可能とし、3つの固定owner-private request path以外を拒否し、verified content bytesとworking packetが一致してからrequest/resultを読む
+    - affiliate-verifyはexact-root launcherからのみ到達可能とし、3つの固定owner-private request path以外を拒否し、verified content bytesとworking packetが一致しfull loaderでFINAL packetのimmutable evidenceを抽出してからrequest/resultを読む
     - affiliate verifier moduleのdirect Python executionはbuiltin sysだけをimportした直後、shadow可能なstdlib import、argv parse、repository path resolution、private request/result readより前に固定refusalで停止し、verified loaderからのimport-only verify()以外の入口を持たない
     - FINAL affiliate destinationはslotごとのexact desktop model pathとreview済みmobile item identityの両方へbindし、FINALとPENDINGの広告開示文はstate別exact wordingを必須とする
     - FINAL WebPは4 MiB以下のstatic single-image closed profileとし、exact RIFF length、全chunk boundary、odd padding、最大16 chunk、単一VP8/VP8L image、または先頭VP8Xのreserved bit、canvas、feature/chunk順序整合をpackage、runtime-manifest生成、pre-import runtime、offline doctorのすべてで検証する。VP8X+VP8 alphaはC=0 uncompressed ALPHだけを許可し、payload bytesをheader 1 byte + canvas pixel countへ固定する
@@ -94,7 +94,7 @@ DESIGN_HANDOFF_V1:
     - child-theme installation/activationとdraft preview上のactual image、same-origin src、exact alt確認はhuman operator gateに残す
     - review済み画像originalはrepository外に維持し、exact 1600x900 opaque static WebPとlowercase SHA-256だけをFINAL assetとしてbindする
     - affiliate verifierは3つのclosed named request inputから既存ST-0505 fingerprintを再計算し、固定owner-local sanitized Result V3 store以外を読まず、tracked packetを含むexternal write capabilityを持たない
-    - 3 slotはall-PENDINGまたはall-FINALだけを許可するが、affiliate verifierはreview済みall-FINALだけを受け入れ、PENDING、zero、duplicate、mixed、stale、mismatch、manual URL、unsafe redirectを拒否する
+    - 3 slotはall-PENDINGまたはall-FINALだけを許可する。affiliate verifierはreview済みall-FINALのrequest fingerprint、response/result SHA-256、retrieved_atを含むprovider evidenceと完全一致するResult V3を各slot exactly one選択し、past ageをfreshness failureにせず、stableな別のsame-fingerprint Resultは非選択とする。PENDING、exact evidenceのmissing/replacement、future skew、mixed、mismatch、manual URL、unsafe redirectを拒否する
     - provider URLは変更せず、public HTTPS Rakuten affiliate URL、exact ace-store item target、exact CTA、rel="sponsored nofollow"へbindし、URLとprivate result pathをlogしない
     - official Rakuten Developers credit snippetは供給されたFROM/TO commentとanchorを変更せずreviewed articleへexactly once含める
   security_and_approval_gates:
@@ -126,7 +126,7 @@ DESIGN_HANDOFF_V1:
     - pinned Python code inventory and captured CLI stage identity match before interpreter startup and remain bound in the verifier
     - managed bin path sets and optional startup landmarks are closed, and the pinned root-owned loader bypasses owner-writable RPATH before Python starts
     - final image and affiliate-slot state remains closed and fails on pending/final mixing or drift
-    - affiliate verificationはfull runtime loader、同一Result store identityの2回のsnapshot、terminally identicalなcontent snapshotを必須とし、success/failureともexternal_writes=0を報告する
+    - affiliate verificationはprivate read前のfull runtime loader、同一Result store identityとfile-name/hash/inode inventoryを持つ2回のsnapshot、terminally identicalなcontent snapshotを必須とし、success/failureともexternal_writes=0を報告する
     - all three affiliate links retain exact request/response/result hash and retrieval-time provenance without credential or private result path
     - manifest-declared FINAL WebP bytes are included in the reviewed runtime payload supplied to offline doctor
     - reviewed first-article body bytes contain exactly one leading image shortcode and no raw image、media-upload、or featured-media capability
@@ -142,7 +142,7 @@ DESIGN_HANDOFF_V1:
     - pending/mixed/final theme-image inventory parity, arbitrary-path, symlink, missing, untracked, dirty, and hash-mismatch negative tests
     - decoder-confirmed fixed VP8、VP8L、VP8X fixturesと、RIFF length、truncation、chunk boundary、padding、codec header、feature/order、runtime/doctor parityのnegative tests
     - first-article image token missing、duplicate、additional shortcode、wrong origin/theme/path/alt/title/post slug、PENDING/FINAL、request/response slug parity、media/featured-media absenceのnegative tests
-    - affiliate request/result fingerprint、schema/version、endpoint、HTTP/request/retry/pagination、freshness、item/shop/model、duplicate/partial/mixed、URL/CTA/rel/credit mutation、private-file、no-credential/no-network negative tests
+    - affiliate request/result fingerprint、schema/version、endpoint、HTTP/request/retry/pagination、exact evidenceの24時間超過受理、future skew、stable newer same-fingerprint非選択、exact evidence removal/replacement、store inventory race、item/shop/model、partial/mixed、URL/CTA/rel/credit mutation、private-file、no-credential/no-network tests
     - template-part wrapper and part-root semantic-landmark duplication and omission negative tests
     - owner-private package directory/file mode, symlink, hardlink, stale-stage, overwrite, directory-rename, same-inode content mutation, terminal byte verification, atomic fsync, fixed-path, and ignored-clean-head tests
     - calculated footer normal, visited, hover, active, focus text and focus-indicator contrast tests

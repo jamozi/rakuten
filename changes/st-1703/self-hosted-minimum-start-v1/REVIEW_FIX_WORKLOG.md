@@ -280,3 +280,24 @@ completes that response.
 - A follow-up moved that refusal directly after the sole builtin `sys` import.
   Normal Python startup with a hostile sibling `dataclasses.py` now proves the
   shadow module, request files and Result store remain unopened before refusal.
+
+## Immutable affiliate evidence verification follow-up (2026-08-23)
+
+- The predecessor 24-hour Result-age limit made the immutable FINAL packet
+  permanently unverifiable even though `affiliate-verify` has no writer or
+  re-attestation capability. Verification now loads the reviewed FINAL packet
+  first and treats its exact request fingerprint, response hash, Result hash,
+  retrieval time, destination and attestation as the selection key.
+- A committed Result remains valid historical evidence after 24 hours. This
+  command does not claim product freshness and does not promote a newer Result.
+  A stable, valid newer record with the same request fingerprint may coexist in
+  the store but is not selected; removal or replacement of the exact committed
+  record fails closed.
+- Both Result scans now bind every file name to its raw SHA-256 and inode/file
+  identity in addition to the store directory identity. Mid-run insert,
+  removal, byte mutation, inode replacement or store replacement therefore
+  fails before a success receipt. Future clock skew remains a closed failure.
+- The existing same-UID owner-local maintenance rule still applies: do not run
+  another repository/private-store mutator concurrently. No provider call,
+  credential read, external write, tracked packet writer, browser/WordPress
+  action, publication, release, staging or Production authority was added.

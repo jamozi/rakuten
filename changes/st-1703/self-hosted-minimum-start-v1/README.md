@@ -105,18 +105,25 @@ fingerprint and scans only the fixed owner-local sanitized Result V3 store. It
 reads no credential, performs no network request, and has no tracked-file
 writer.
 
-The verifier requires one fresh successful 2026-07-01 item-search result per
-fingerprint, one request and zero retry/pagination, and exactly one matching
-`ace-store` item/model record. The unchanged provider destination must be a
+The verifier requires the exact successful 2026-07-01 item-search Result V3
+record whose request fingerprint, response hash, complete Result hash and
+retrieval time are already committed in each FINAL slot. It requires one
+request and zero retry/pagination and exactly one matching `ace-store`
+item/model record. The unchanged provider destination must be a
 public HTTPS Rakuten affiliate URL whose embedded desktop target is the exact
 Rakuten item path and whose mobile target is the exact reviewed item identity
 for that slot. It runs the full runtime loader, compares all three exact CTA
-and evidence records, rescans the Result store, and proves the content bytes did
-not change during verification. The runtime recomputes the fixed ST-0505
-request fingerprint and requires the reviewed destination/evidence attestation
-digest. PENDING, zero, duplicate, late, stale, mixed, mismatched, manually
-injected, or unsafe material fails closed. URLs and private result paths are
-never logged, and every receipt reports `external_writes: 0`.
+and evidence records before private Result selection, rescans the Result store,
+and proves the complete file-name/hash/inode inventory and content bytes did not
+change during verification. The runtime recomputes the fixed ST-0505 request
+fingerprint and requires the reviewed destination/evidence attestation digest.
+An exact committed Result remains verifiable after 24 hours; this command does
+not assert current product freshness or perform live re-attestation. A stable,
+valid newer Result with the same request fingerprint is not selected and does
+not replace the committed evidence. PENDING, a missing/replaced exact Result,
+future-skewed evidence, mixed or mismatched state, manual injection, unsafe
+material, or any mid-verification store mutation fails closed. URLs and private
+result paths are never logged, and every receipt reports `external_writes: 0`.
 
 Verify the reviewed FINAL packet. The Make target supplies only the three fixed
 owner-private request paths under `.secrets/rakuten-owner-local/requests/`;
@@ -129,7 +136,9 @@ make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-verify
 The JSON receipt contains hashes and counts only. This command runs through the
 same exact-root, clean-HEAD, `-B -I -S`, manifest-bound launcher as doctor and
 draft create. It cannot fill a PENDING packet or mutate the reviewed FINAL
-packet.
+packet. Run owner-private maintenance commands without another same-UID
+repository/private-store mutator; this is the existing owner-local maintenance
+boundary, not an additional live-provider authority.
 
 ## Runtime boundary
 
