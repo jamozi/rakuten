@@ -75,6 +75,7 @@ DESIGN_HANDOFF_V1:
     - manifest entry path/orderはclosed inventoryと完全一致した後にだけdescriptor-relativeにpayloadを開く
     - runtime inventoryはaffiliate verifierとST-0505 request/result validatorを含む固定31 base pathと、固定asset manifestの2つのallowlist済みrequired_imagesのうちFINALかつlowercase SHA-256一致のWebPだけで構成する
     - affiliate-verifyはexact-root launcherからのみ到達可能とし、3つの固定owner-private request path以外を拒否し、verified content bytesとworking packetが一致してからrequest/resultを読む
+    - affiliate verifier moduleのdirect Python executionはargv parse、repository path resolution、private request/result readより前に固定refusalで停止し、verified loaderからのimport-only verify()以外の入口を持たない
     - FINAL affiliate destinationはslotごとのexact desktop model pathとreview済みmobile item identityの両方へbindし、FINALとPENDINGの広告開示文はstate別exact wordingを必須とする
     - FINAL WebPは4 MiB以下のstatic single-image closed profileとし、exact RIFF length、全chunk boundary、odd padding、最大16 chunk、単一VP8/VP8L image、または先頭VP8Xのreserved bit、canvas、feature/chunk順序整合をpackage、runtime-manifest生成、pre-import runtime、offline doctorのすべてで検証する。VP8X+VP8 alphaはC=0 uncompressed ALPHだけを許可し、payload bytesをheader 1 byte + canvas pixel countへ固定する
     - pinned full-pixel decoderはself-hosted stdlib runtimeに存在しないため、このsliceはcomplete-containerとcodec header structureを証明するがentropy decode完走を主張せず、final visual/decode reviewとtheme activationをhuman gateに残す

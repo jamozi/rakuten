@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import shutil
 import socket
+import subprocess
 import sys
 from urllib.parse import urlencode
 
@@ -353,6 +354,65 @@ def _assert_final_content(repository_root: Path) -> dict[str, object]:
     return packet
 
 
+def test_direct_execution_is_disabled_before_private_read(tmp_path: Path) -> None:
+    script = SCRIPTS_ROOT / "finalize_st1703_affiliate_links.py"
+    source = script.read_text(encoding="utf-8")
+    assert source.index('if __name__ == "__main__":') < source.index(
+        "REPOSITORY_ROOT ="
+    )
+    assert "def _parser(" not in source
+    assert "def main(" not in source
+
+    trace = tmp_path / "direct-execution.trace"
+    arguments = [str(script)]
+    for slot_id, flag in (
+        ("ace-cresta-06316", "--ace-cresta-06316-request"),
+        ("ace-difference-05721", "--ace-difference-05721-request"),
+        ("proteca-maxpass4-01471", "--proteca-maxpass4-01471-request"),
+    ):
+        arguments.extend((flag, str(finalizer.OWNER_REQUEST_PATHS[slot_id])))
+    result = subprocess.run(
+        [
+            "/usr/bin/strace",
+            "-f",
+            "-e",
+            "trace=openat",
+            "-o",
+            str(trace),
+            sys.executable,
+            "-B",
+            "-I",
+            "-S",
+            *arguments,
+        ],
+        cwd=REPOSITORY_ROOT,
+        env={"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C"},
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=10,
+        check=False,
+    )
+    assert result.returncode == 2, (result.stdout, result.stderr)
+    assert result.stderr == b""
+    assert json.loads(result.stdout) == {
+        "external_writes": 0,
+        "reason_code": "AFFILIATE_DIRECT_EXECUTION_DISABLED",
+        "status": "BLOCKED",
+    }
+    assert b"AFFILIATE_LINKS_VERIFIED" not in result.stdout
+    trace_text = trace.read_text(encoding="utf-8")
+    assert ".secrets/rakuten-owner-local" not in trace_text
+    assert not any(
+        slot_id in trace_text
+        for slot_id, _flag in (
+            ("ace-cresta-06316", "--ace-cresta-06316-request"),
+            ("ace-difference-05721", "--ace-difference-05721-request"),
+            ("proteca-maxpass4-01471", "--proteca-maxpass4-01471-request"),
+        )
+    )
+
+
 def test_finalizer_is_local_all_or_nothing_and_redacts_destinations(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -380,27 +440,15 @@ def test_finalizer_is_local_all_or_nothing_and_redacts_destinations(
                 AssertionError("external write")
             ),
         )
-    argv = [
-        "--ace-cresta-06316-request",
-        str(requests["ace-cresta-06316"]),
-        "--ace-difference-05721-request",
-        str(requests["ace-difference-05721"]),
-        "--proteca-maxpass4-01471-request",
-        str(requests["proteca-maxpass4-01471"]),
-    ]
-    assert (
-        finalizer.main(
-            argv,
-            repository_root=root,
-            result_store=store,
-            now=NOW,
-        )
-        == 0
+    receipt = finalizer.verify(
+        repository_root=root,
+        result_store=store,
+        request_paths=requests,
+        now=NOW,
     )
     output = capsys.readouterr()
     packet = _assert_final_content(root)
     assert output.err == ""
-    receipt = json.loads(output.out)
     assert receipt["status"] == "AFFILIATE_LINKS_VERIFIED"
     assert receipt["external_writes"] == 0
     assert receipt["provider_urls_printed"] == 0
@@ -427,32 +475,18 @@ def test_finalizer_rejects_unreviewed_attestation_before_write_or_success_receip
     )
     content_path = root / CONTENT_PACKET_RELATIVE_PATH
     pending = content_path.read_bytes()
-    argv = [
-        "--ace-cresta-06316-request",
-        str(requests["ace-cresta-06316"]),
-        "--ace-difference-05721-request",
-        str(requests["ace-difference-05721"]),
-        "--proteca-maxpass4-01471-request",
-        str(requests["proteca-maxpass4-01471"]),
-    ]
-
-    assert (
-        finalizer.main(
-            argv,
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.verify(
             repository_root=root,
             result_store=store,
+            request_paths=requests,
             now=NOW,
         )
-        == 2
-    )
 
     output = capsys.readouterr()
     assert output.err == ""
-    assert json.loads(output.out) == {
-        "external_writes": 0,
-        "reason_code": "AFFILIATE_CONTENT_STATE_INVALID",
-        "status": "BLOCKED",
-    }
+    assert output.out == ""
+    assert failure.value.code == "AFFILIATE_CONTENT_STATE_INVALID"
     assert content_path.read_bytes() == pending
     assert not content_path.with_name(
         f".{content_path.name}.affiliate-finalizing"
@@ -466,32 +500,18 @@ def test_verifier_rejects_pending_packet_without_write_or_success_receipt(
     root, store, requests, _fingerprints = _complete_inputs(tmp_path)
     content_path = root / CONTENT_PACKET_RELATIVE_PATH
     pending = content_path.read_bytes()
-    argv = [
-        "--ace-cresta-06316-request",
-        str(requests["ace-cresta-06316"]),
-        "--ace-difference-05721-request",
-        str(requests["ace-difference-05721"]),
-        "--proteca-maxpass4-01471-request",
-        str(requests["proteca-maxpass4-01471"]),
-    ]
-
-    assert (
-        finalizer.main(
-            argv,
+    with pytest.raises(finalizer.AffiliateFinalizationFailure) as failure:
+        finalizer.verify(
             repository_root=root,
             result_store=store,
+            request_paths=requests,
             now=NOW,
         )
-        == 2
-    )
 
     output = capsys.readouterr()
     assert output.err == ""
-    assert json.loads(output.out) == {
-        "external_writes": 0,
-        "reason_code": "AFFILIATE_CONTENT_STATE_INVALID",
-        "status": "BLOCKED",
-    }
+    assert output.out == ""
+    assert failure.value.code == "AFFILIATE_CONTENT_STATE_INVALID"
     assert content_path.read_bytes() == pending
 
 

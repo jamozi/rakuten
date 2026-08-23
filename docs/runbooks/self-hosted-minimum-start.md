@@ -62,7 +62,9 @@ make -f changes/st-1703/self-hosted-minimum-start-v1/Makefile affiliate-verify
 The launcher refuses dirty/untracked state or runtime drift before Python, and
 the verified CLI refuses content drift before reading those request records.
 The check is read-only: it performs no provider, browser, or WordPress call and
-never prints affiliate URLs.
+never prints affiliate URLs. Do not invoke the verifier module with Python
+directly: direct execution is intentionally disabled before argv or private
+files are inspected, and only the exact-root launcher has operational access.
 
 ## Evidence and action layers
 

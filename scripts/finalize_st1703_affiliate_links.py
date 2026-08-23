@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Verify the three final ST-1703 affiliate slots against Result V3 files.
 
-This is a read-only, repository-local verifier.  It never reads Rakuten
+This is an import-only verifier for the verified ST-1703 runtime.  It never reads Rakuten
 credentials, performs a provider request, mutates the tracked article, or
 prints destination URLs.  The operational input is three owner-only request
 files; matching provider evidence is discovered only in the fixed owner-local
@@ -10,7 +10,6 @@ Result V3 store.
 
 from __future__ import annotations
 
-import argparse
 from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -23,6 +22,15 @@ import stat
 import sys
 from typing import Any, NoReturn, cast
 from urllib.parse import parse_qsl, urlsplit
+
+
+_DIRECT_EXECUTION_REFUSAL = (
+    '{"external_writes":0,"reason_code":"AFFILIATE_DIRECT_EXECUTION_DISABLED",'
+    '"status":"BLOCKED"}\n'
+)
+if __name__ == "__main__":
+    sys.stdout.write(_DIRECT_EXECUTION_REFUSAL)
+    raise SystemExit(2)
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
@@ -219,12 +227,6 @@ class AffiliateFinalizationFailure(RuntimeError):
 
 def _fail(code: str) -> NoReturn:
     raise AffiliateFinalizationFailure(code) from None
-
-
-class _ClosedArgumentParser(argparse.ArgumentParser):
-    def error(self, message: str) -> NoReturn:
-        del message
-        _fail("AFFILIATE_ARGUMENT_INVALID")
 
 
 class _DuplicateKey(ValueError):
@@ -1127,68 +1129,3 @@ def verify(
         "provider_urls_printed": 0,
         "status": "AFFILIATE_LINKS_VERIFIED",
     }
-
-
-def _parser() -> argparse.ArgumentParser:
-    parser = _ClosedArgumentParser(allow_abbrev=False)
-    parser.add_argument("--ace-cresta-06316-request", required=True)
-    parser.add_argument("--ace-difference-05721-request", required=True)
-    parser.add_argument("--proteca-maxpass4-01471-request", required=True)
-    return parser
-
-
-def main(
-    argv: list[str] | None = None,
-    *,
-    repository_root: Path = REPOSITORY_ROOT,
-    result_store: Path = OWNER_RESULT_STORE,
-    now: datetime | None = None,
-) -> int:
-    os.umask(0o077)
-    try:
-        arguments = _parser().parse_args(argv)
-        observed_now = datetime.now(timezone.utc) if now is None else now
-        result = verify(
-            repository_root=repository_root,
-            result_store=result_store,
-            request_paths={
-                "ace-cresta-06316": Path(arguments.ace_cresta_06316_request),
-                "ace-difference-05721": Path(arguments.ace_difference_05721_request),
-                "proteca-maxpass4-01471": Path(
-                    arguments.proteca_maxpass4_01471_request
-                ),
-            },
-            now=observed_now,
-        )
-        print(json.dumps(result, ensure_ascii=True, sort_keys=True))
-        return 0
-    except AffiliateFinalizationFailure as error:
-        print(
-            json.dumps(
-                {
-                    "external_writes": 0,
-                    "reason_code": error.code,
-                    "status": "BLOCKED",
-                },
-                ensure_ascii=True,
-                sort_keys=True,
-            )
-        )
-        return 2
-    except BaseException:
-        print(
-            json.dumps(
-                {
-                    "external_writes": 0,
-                    "reason_code": "AFFILIATE_OUTPUT_INVALID",
-                    "status": "BLOCKED",
-                },
-                ensure_ascii=True,
-                sort_keys=True,
-            )
-        )
-        return 2
-
-
-if __name__ == "__main__":
-    sys.exit(main())

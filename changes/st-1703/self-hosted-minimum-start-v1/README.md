@@ -95,11 +95,14 @@ validation instead of silently defeating the reviewed state colors.
 
 ## Affiliate verification boundary
 
-`scripts/finalize_st1703_affiliate_links.py` is a read-only verifier for the
-already-FINAL tracked packet. It accepts the three exact owner-private request
-files through named flags, recomputes each ST-0505 request fingerprint, and
-scans only the fixed owner-local sanitized Result V3 store. It reads no
-credential, performs no network request, and has no tracked-file writer.
+`scripts/finalize_st1703_affiliate_links.py` is the import-only read-only
+verifier used by the verified exact-root runtime for the already-FINAL tracked
+packet. Direct Python execution is disabled before argument parsing, repository
+path resolution, or private-file access. Only the launcher supplies the three
+exact owner-private request files. The verifier recomputes each ST-0505 request
+fingerprint and scans only the fixed owner-local sanitized Result V3 store. It
+reads no credential, performs no network request, and has no tracked-file
+writer.
 
 The verifier requires one fresh successful 2026-07-01 item-search result per
 fingerprint, one request and zero retry/pagination, and exactly one matching

@@ -272,3 +272,8 @@ completes that response.
   loader requires exact, mutually exclusive PENDING and FINAL disclosure text.
 - The verifier remains read-only with zero credential reads, network calls,
   external writes, browser/WordPress actions and URL output.
+- A final exact-head review found that the verifier module still exposed its
+  predecessor standalone CLI. That parser/main capability was removed. Direct
+  Python execution now emits one fixed non-reflective refusal before repository
+  path resolution or private request/Result reads; only verified-loader import
+  of `verify()` remains operational.
