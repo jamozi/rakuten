@@ -146,9 +146,9 @@
       "sha256": "a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac"
     },
     {
-      "bytes": 104488,
+      "bytes": 105363,
       "path": "python/raos/adapters/self_hosted_editorial_pilot_https.py",
-      "sha256": "13a914638b25f8211e9873a1c200b0e19412cc76e5460489977a794c290b7764"
+      "sha256": "eb805e837ec7bc5a75870505527bb3f776a0927c68c1412d90da5b9ff9fd2425"
     },
     {
       "bytes": 90381,
