@@ -106,16 +106,15 @@ def _install(
 def _assert_installed(root: Path, outputs: dict[Path, bytes]) -> None:
     for relative, content in outputs.items():
         assert (root / relative).read_bytes() == content
-    story = root / generator.STORY_ROOT
-    assert not any(
-        (story / name).exists() or (story / name).is_symlink()
-        for name in (
-            generator.STAGE_NAME,
-            generator.JOURNAL_PREPARING_NAME,
-            generator.JOURNAL_NAME,
-            generator.JOURNAL_CLEANUP_NAME,
-        )
-    )
+    story_fd = generator._acquire_story_lock(root, exclusive=False, create=False)
+    primary: BaseException | None = None
+    try:
+        generator._assert_no_pending_at(story_fd)
+    except BaseException as exc:
+        primary = exc
+        raise
+    finally:
+        generator._release_story_lock(story_fd, primary)
 
 
 def _write_bundle_directory(destination: Path, outputs: dict[Path, bytes]) -> None:
@@ -125,6 +124,26 @@ def _write_bundle_directory(destination: Path, outputs: dict[Path, bytes]) -> No
         target = destination / below_bundle
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(content)
+
+
+def _terminal_cleanup_directory(story: Path) -> Path:
+    candidates = [
+        entry
+        for entry in story.iterdir()
+        if entry.name.startswith(generator.JOURNAL_CLEANUP_NAME)
+    ]
+    assert len(candidates) == 1
+    return candidates[0]
+
+
+def _replace_with_byte_identical_inode(
+    source: Path, preserved: Path
+) -> tuple[int, int]:
+    content = source.read_bytes()
+    source.rename(preserved)
+    source.write_bytes(content)
+    metadata = source.stat()
+    return metadata.st_dev, metadata.st_ino
 
 
 def test_fresh_install_and_replacement_publish_one_exact_tree(
@@ -157,7 +176,6 @@ def test_fresh_install_and_replacement_publish_one_exact_tree(
         ("after-publication-namespace", "old"),
         ("after-publication-verify", "old"),
         ("after-committed-state", "new"),
-        ("after-journal-cleanup-tombstone", "new"),
     ],
 )
 def test_fault_injection_restores_old_or_keeps_committed_new_tree(
@@ -310,10 +328,6 @@ def test_interrupted_initial_journal_state_write_recovers_without_inference(
         "after-bundle-cleanup-manifest-unlink",
         "after-bundle-cleanup-root-quarantine",
         "after-bundle-cleanup-root-rmdir",
-        "after-journal-cleanup-state-000-quarantine",
-        "after-journal-cleanup-state-000-unlink",
-        "after-journal-cleanup-root-quarantine",
-        "after-journal-cleanup-root-rmdir",
     ],
 )
 def test_real_crash_during_destructive_bundle_cleanup_is_restartable(
@@ -334,6 +348,101 @@ def test_real_crash_during_destructive_bundle_cleanup_is_restartable(
     monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
     generator.generate(tmp_path)
     _assert_installed(tmp_path, new)
+
+
+@pytest.mark.parametrize(
+    "checkpoint",
+    [
+        "after-journal-cleanup-tombstone",
+        "after-journal-cleanup-state-000-quarantine",
+        "after-journal-cleanup-state-000-unlink",
+        "after-journal-cleanup-root-quarantine",
+    ],
+)
+def test_crashed_terminal_journal_cleanup_is_preserved_and_refused(
+    checkpoint: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    old = _outputs("terminal-crash-old")
+    new = _outputs("terminal-crash-new")
+    _install(tmp_path, old, monkeypatch)
+    completed = _run_crashing_generate(
+        tmp_path,
+        new,
+        checkpoint=checkpoint,
+        exit_code=96,
+    )
+    assert completed.returncode == 96, completed.stderr
+    story = tmp_path / generator.STORY_ROOT
+    cleanup_entries = [
+        entry
+        for entry in story.iterdir()
+        if entry.name.startswith(generator.JOURNAL_CLEANUP_NAME)
+        or entry.name.startswith(
+            f"{generator.DELETE_TOMBSTONE_PREFIX}{generator.JOURNAL_CLEANUP_NAME}"
+        )
+    ]
+    assert len(cleanup_entries) == 1
+    cleanup_entry = cleanup_entries[0]
+    before_identity = generator._stat_signature(cleanup_entry.lstat())
+    before_names = sorted(path.name for path in cleanup_entry.iterdir())
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="no durable state identity inventory",
+    ):
+        generator.generate(tmp_path)
+    assert generator._stat_signature(cleanup_entry.lstat()) == before_identity
+    assert sorted(path.name for path in cleanup_entry.iterdir()) == before_names
+    for relative, content in new.items():
+        assert (tmp_path / relative).read_bytes() == content
+
+
+def test_crash_after_terminal_journal_root_removal_needs_no_recovery_identity(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("terminal-root-old")
+    new = _outputs("terminal-root-new")
+    _install(tmp_path, old, monkeypatch)
+    completed = _run_crashing_generate(
+        tmp_path,
+        new,
+        checkpoint="after-journal-cleanup-root-rmdir",
+        exit_code=97,
+    )
+    assert completed.returncode == 97, completed.stderr
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    generator.generate(tmp_path)
+    _assert_installed(tmp_path, new)
+
+
+def test_restart_does_not_infer_byte_identical_journal_state_ownership(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("restart-state-old")
+    new = _outputs("restart-state-new")
+    _install(tmp_path, old, monkeypatch)
+    completed = _run_crashing_generate(
+        tmp_path,
+        new,
+        checkpoint="after-journal-cleanup-tombstone",
+        exit_code=98,
+    )
+    assert completed.returncode == 98, completed.stderr
+    story = tmp_path / generator.STORY_ROOT
+    cleanup = _terminal_cleanup_directory(story)
+    state = cleanup / generator.JOURNAL_STATE_NAME
+    preserved = story / "preserved-crashed-journal-state-000.json"
+    foreign_identity = _replace_with_byte_identical_inode(state, preserved)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="no durable state identity inventory",
+    ):
+        generator.generate(tmp_path)
+    assert (state.stat().st_dev, state.stat().st_ino) == foreign_identity
+    assert state.read_bytes() == preserved.read_bytes()
 
 
 @pytest.mark.parametrize(
@@ -497,6 +606,192 @@ def test_same_uid_file_swap_after_quarantine_is_refused_without_deletion(
     )
     assert (foreign.stat().st_dev, foreign.stat().st_ino) == foreign_identity
     assert preserved.read_bytes() == old[generator.FIXTURE_ROOT / "baseline.json"]
+
+
+def test_byte_identical_journal_state_swap_after_root_move_is_not_deleted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("journal-state-old")
+    new = _outputs("journal-state-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    preserved = story / "preserved-owned-journal-state-000.json"
+    foreign_identity: tuple[int, int] | None = None
+
+    def swap_state(name: str) -> None:
+        nonlocal foreign_identity
+        if name != "after-journal-cleanup-tombstone" or preserved.exists():
+            return
+        state = _terminal_cleanup_directory(story) / generator.JOURNAL_STATE_NAME
+        foreign_identity = _replace_with_byte_identical_inode(state, preserved)
+
+    monkeypatch.setattr(generator, "_checkpoint", swap_state)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="state identity inventory drifted",
+    ):
+        generator.generate(tmp_path)
+    foreign = _terminal_cleanup_directory(story) / generator.JOURNAL_STATE_NAME
+    assert foreign_identity is not None
+    assert (foreign.stat().st_dev, foreign.stat().st_ino) == foreign_identity
+    assert preserved.read_bytes() == foreign.read_bytes()
+
+
+@pytest.mark.parametrize("mutation", ["mode", "mtime"])
+def test_journal_state_full_signature_drift_after_root_move_is_not_deleted(
+    mutation: str,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    old = _outputs(f"journal-signature-{mutation}-old")
+    new = _outputs(f"journal-signature-{mutation}-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    state_identity: tuple[int, int] | None = None
+    state_content: bytes | None = None
+
+    def mutate_signature(name: str) -> None:
+        nonlocal state_content, state_identity
+        if name != "after-journal-cleanup-tombstone" or state_identity is not None:
+            return
+        state = _terminal_cleanup_directory(story) / generator.JOURNAL_STATE_NAME
+        state_content = state.read_bytes()
+        if mutation == "mode":
+            state.chmod(0o600)
+        else:
+            metadata = state.stat()
+            os.utime(
+                state,
+                ns=(metadata.st_atime_ns, metadata.st_mtime_ns + 1_000_000),
+            )
+        metadata = state.stat()
+        state_identity = metadata.st_dev, metadata.st_ino
+
+    monkeypatch.setattr(generator, "_checkpoint", mutate_signature)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="state identity inventory drifted",
+    ):
+        generator.generate(tmp_path)
+    state = _terminal_cleanup_directory(story) / generator.JOURNAL_STATE_NAME
+    assert state_identity is not None
+    assert state_content is not None
+    assert (state.stat().st_dev, state.stat().st_ino) == state_identity
+    assert state.read_bytes() == state_content
+
+
+def test_terminal_journal_preparing_reappearance_refuses_before_deletion(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("journal-temp-old")
+    new = _outputs("journal-temp-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    injected: Path | None = None
+
+    def add_preparing_state(name: str) -> None:
+        nonlocal injected
+        if name != "after-journal-cleanup-tombstone" or injected is not None:
+            return
+        cleanup = _terminal_cleanup_directory(story)
+        source = cleanup / generator.JOURNAL_STATE_NAME
+        injected = cleanup / f"{generator.JOURNAL_STATE_NAME}.preparing"
+        injected.write_bytes(source.read_bytes())
+
+    monkeypatch.setattr(generator, "_checkpoint", add_preparing_state)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="publication journal has unknown entries",
+    ):
+        generator.generate(tmp_path)
+    assert injected is not None
+    assert injected.is_file()
+    assert (_terminal_cleanup_directory(story) / generator.JOURNAL_STATE_NAME).is_file()
+
+
+def test_byte_identical_journal_tombstone_swap_is_not_deleted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("journal-quarantine-old")
+    new = _outputs("journal-quarantine-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    preserved = story / "preserved-owned-journal-tombstone-000.json"
+    foreign_identity: tuple[int, int] | None = None
+
+    def swap_tombstone(name: str) -> None:
+        nonlocal foreign_identity
+        if name != "after-journal-cleanup-state-000-quarantine" or preserved.exists():
+            return
+        tombstone = _terminal_cleanup_directory(
+            story
+        ) / generator._delete_tombstone_name(generator.JOURNAL_STATE_NAME)
+        foreign_identity = _replace_with_byte_identical_inode(tombstone, preserved)
+
+    monkeypatch.setattr(generator, "_checkpoint", swap_tombstone)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="changed before unlink",
+    ):
+        generator.generate(tmp_path)
+    foreign = _terminal_cleanup_directory(story) / generator._delete_tombstone_name(
+        generator.JOURNAL_STATE_NAME
+    )
+    assert foreign_identity is not None
+    assert (foreign.stat().st_dev, foreign.stat().st_ino) == foreign_identity
+    assert preserved.read_bytes() == foreign.read_bytes()
+
+
+def test_byte_identical_last_journal_state_swap_after_prefix_cleanup_is_not_deleted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("journal-last-old")
+    new = _outputs("journal-last-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    preserved = story / "preserved-owned-journal-last.json"
+    last_name: str | None = None
+    foreign_identity: tuple[int, int] | None = None
+
+    def swap_last_state(name: str) -> None:
+        nonlocal foreign_identity, last_name
+        if name not in {
+            "after-journal-cleanup-tombstone",
+            "after-journal-cleanup-state-000-unlink",
+        }:
+            return
+        cleanup = _terminal_cleanup_directory(story)
+        if name == "after-journal-cleanup-tombstone":
+            last_name = sorted(
+                entry.name
+                for entry in cleanup.iterdir()
+                if entry.name.startswith(generator.JOURNAL_STATE_PREFIX)
+                and entry.name.endswith(".json")
+            )[-1]
+            assert last_name != generator.JOURNAL_STATE_NAME
+        elif name == "after-journal-cleanup-state-000-unlink":
+            assert last_name is not None
+            foreign_identity = _replace_with_byte_identical_inode(
+                cleanup / last_name,
+                preserved,
+            )
+
+    monkeypatch.setattr(generator, "_checkpoint", swap_last_state)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="identity is unowned",
+    ):
+        generator.generate(tmp_path)
+    assert last_name is not None
+    foreign = _terminal_cleanup_directory(story) / last_name
+    assert foreign_identity is not None
+    assert (foreign.stat().st_dev, foreign.stat().st_ino) == foreign_identity
+    assert preserved.read_bytes() == foreign.read_bytes()
 
 
 def test_same_uid_old_stage_swap_before_quarantine_is_restored_and_refused(
@@ -790,7 +1085,7 @@ def _create_terminal_cleanup_tombstone(
         generator._release_story_lock(story_fd, primary)
 
 
-def test_committed_cleanup_tombstone_requires_exact_new_bundle(
+def test_committed_cleanup_tombstone_without_identity_inventory_is_preserved(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     outputs = _outputs("committed")
@@ -807,8 +1102,8 @@ def test_committed_cleanup_tombstone_requires_exact_new_bundle(
     fixture.write_bytes(b"tampered\n")
 
     with pytest.raises(
-        RuntimeError,
-        match="publication cleanup journal does not match terminal bundle",
+        generator.PublicationRecoveryRequired,
+        match="no durable state identity inventory",
     ):
         generator.generate(tmp_path)
     assert any(
@@ -817,7 +1112,7 @@ def test_committed_cleanup_tombstone_requires_exact_new_bundle(
     )
 
 
-def test_rolled_back_cleanup_tombstone_verifies_then_recovers(
+def test_rolled_back_cleanup_tombstone_without_identity_inventory_is_preserved(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     previous = _outputs("previous")
@@ -833,8 +1128,16 @@ def test_rolled_back_cleanup_tombstone_verifies_then_recovers(
     )
 
     monkeypatch.setattr(generator, "build_outputs", lambda _root: next_outputs)
-    generator.generate(tmp_path)
-    _assert_installed(tmp_path, next_outputs)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="no durable state identity inventory",
+    ):
+        generator.generate(tmp_path)
+    story = tmp_path / generator.STORY_ROOT
+    assert any(
+        entry.name.startswith(generator.JOURNAL_CLEANUP_NAME)
+        for entry in story.iterdir()
+    )
 
 
 def test_malformed_cleanup_tombstone_fails_closed(
@@ -855,7 +1158,7 @@ def test_malformed_cleanup_tombstone_fails_closed(
 
     with pytest.raises(
         generator.PublicationRecoveryRequired,
-        match="publication journal fields drifted",
+        match="no durable state identity inventory",
     ):
         generator.generate(tmp_path)
     assert cleanup.is_dir()

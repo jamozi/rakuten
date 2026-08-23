@@ -1,7 +1,7 @@
 # ST-1204 local atomic-publication closure record
 
 - Finding: `ST1204-AUDIT-001`
-- Local implementation disposition: `REMEDIATED_V2_PENDING_REAUDIT`
+- Local implementation disposition: `REMEDIATED_V3_PENDING_REAUDIT`
 - Independent read-only re-audit: `NOT_EXECUTED`
 - Formal TST-030: `NOT_EXECUTED`
 - Live provider validation: `NOT_EXECUTED`
@@ -36,7 +36,34 @@ identity mismatches are covered and fail without deletion. This explicit trust
 boundary is recorded in the V2 design handoff and is not a waiver of any
 representable race.
 
-## V2 local evidence
+## V3 terminal journal-state identity correction
+
+An independent V2 re-audit reproduced one further observable swap. The
+terminal journal directory identity was bound across its move, but its
+individual state files were re-owned from valid bytes after the move. A
+same-UID process could replace `state.000.json` with byte-identical bytes on a
+different inode at `after-journal-cleanup-tombstone`; cleanup then deleted that
+foreign inode. This invalidates the V2 claim that every terminal cleanup
+checkpoint was safely restartable.
+
+The V3 implementation captures each trusted chain entry's exact
+`(dev, ino, mode, nlink, size, mtime_ns, ctime_ns)` signature while the active
+journal root is still open. That immutable in-memory inventory crosses the
+no-replace terminal-root move. Before any state quarantine, the source must
+match its captured full signature and bytes; after quarantine, the opened
+tombstone must retain the captured inode and exact bytes. Any observed mismatch
+is retained and refused without deletion.
+
+No external nonrecursive anchor persists that per-state identity inventory
+after process death. A later invocation therefore never infers ownership from
+journal bytes, root-name self-attestation, or a recursively trusted companion
+file: any interrupted terminal journal root is preserved and refused for
+manual evidence-led recovery. Bundle and legacy destructive cleanup remain
+restartable. If the terminal root was already completely removed before the
+crash, no recovery identity is needed and the next owner invocation proceeds.
+The exact unavoidable final POSIX syscall-window limitation remains unchanged.
+
+## V2 local evidence (superseded)
 
 - Owner generation and the read-only owner `--check` pass at generated
   manifest SHA-256
@@ -70,6 +97,32 @@ representable race.
   formal TST-030, live provider/account/credential evidence, persistence,
   hosted CI, staging, release and Production remain `NOT_EXECUTED`; no
   `VALIDATED` or audit-`PASS` state is claimed.
+
+## V3 local evidence
+
+- Owner generation and read-only `--check` pass at manifest SHA-256
+  `b0adffaa89c5ffdd931a46b319e19ace04246d19820e394c29795fbd9b3c47ce`;
+  the three recorded fixture payloads remain byte-identical.
+- The isolated ST-1204 suite passes `202` tests, including `67`
+  atomic-publication tests. New hostile cases cover the exact byte-identical
+  `state.000.json` swap after the terminal root move, a byte-identical
+  post-quarantine tombstone swap, mode/mtime signature drift, a final remaining
+  state swapped after prefix deletion, a preparing-state reappearance, every
+  retained terminal-cleanup crash boundary, and the already-removed-root
+  success boundary. A separate-process restart test replaces a crashed
+  journal state with byte-identical bytes on a new inode and proves that
+  recovery retains it without inferring ownership. The common
+  success assertion now invokes the complete read-only managed-pending-state
+  check instead of testing one literal cleanup name.
+- Python 3.10/3.14 compilation, Ruff lint/format, strict mypy, configured
+  Pyright, canonical import, workspace no-write, focused capability/static,
+  focused maintained-file secret scanning, and `git diff --check` pass. The
+  inherited linked-worktree-wide secret-scan limitation and out-of-config
+  direct Pyright diagnostics remain reported rather than promoted to green.
+- Independent V3 re-audit, formal TST-030, hosted CI, live provider,
+  persistence, staging, release and Production remain `NOT_EXECUTED`. This is
+  local implementation evidence only and does not claim `VALIDATED` or audit
+  `PASS`.
 
 ## Closed implementation boundary
 

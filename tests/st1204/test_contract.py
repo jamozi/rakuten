@@ -298,6 +298,12 @@ def test_atomic_publication_design_is_closed_without_resolving_external_decision
     assert journal["update"] == (
         "APPEND_ONLY_PREPARING_FILE_FSYNC_RENAME_NOREPLACE_JOURNAL_FSYNC"
     )
+    assert journal["terminal_state_identity_capture"].startswith(
+        "EXACT_DEV_INO_MODE_NLINK_SIZE_MTIME_NS_CTIME_NS"
+    )
+    assert decision["ST1204-FIXTURE-D2"]["crash_recovery"][
+        "terminal_journal_after_root_move"
+    ].startswith("CONSERVATIVELY_RETAIN_AND_REFUSE")
     assert decision["ST1204-FIXTURE-D2"]["filesystem_adversary_boundary"][
         "posix_limit"
     ].startswith("UNLINKAT_AND_RMDIRAT_HAVE_NO_CONDITIONAL_INODE_FORM")

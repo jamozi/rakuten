@@ -153,6 +153,7 @@ EXPECTED_BUNDLE_PATHS: Final = (
     "manifest.json",
     *(f"fixtures/recorded/{name}" for name in EXPECTED_FIXTURE_NAMES),
 )
+StatSignature = tuple[int, int, int, int, int, int, int]
 
 
 class PublicationRecoveryRequired(RuntimeError):
@@ -285,7 +286,7 @@ def _require_directory(path: Path, *, label: str) -> None:
         raise RuntimeError(f"{label} must be a real directory")
 
 
-def _stat_signature(metadata: os.stat_result) -> tuple[int, ...]:
+def _stat_signature(metadata: os.stat_result) -> StatSignature:
     return (
         metadata.st_dev,
         metadata.st_ino,
@@ -1788,13 +1789,13 @@ def _directory_names_at(descriptor: int, *, label: str) -> set[str]:
         raise RuntimeError(f"cannot scan {label}") from exc
 
 
-def _read_regular_capture_at(
+def _read_regular_stat_capture_at(
     parent_fd: int,
     name: str,
     *,
     label: str,
     maximum_bytes: int = MAX_GENERATED_BYTES,
-) -> tuple[bytes, tuple[int, int]]:
+) -> tuple[bytes, StatSignature]:
     metadata = _entry_metadata_at(parent_fd, name)
     if (
         metadata is None
@@ -1838,10 +1839,11 @@ def _read_regular_capture_at(
             or _stat_signature(before) != _stat_signature(after)
         ):
             raise RuntimeError(f"{label} changed while it was read")
+        signature = _stat_signature(after)
         current = _entry_metadata_at(parent_fd, name)
-        if current is None or _entry_identity(current) != _entry_identity(after):
+        if current is None or _stat_signature(current) != signature:
             raise PublicationRecoveryRequired(f"{label} entry identity changed")
-        return content, _entry_identity(after)
+        return content, signature
     except BaseException as exc:
         primary = exc
         raise
@@ -1853,6 +1855,22 @@ def _read_regular_capture_at(
                 primary.add_note(f"{label} descriptor cleanup also failed")
             else:
                 raise exc
+
+
+def _read_regular_capture_at(
+    parent_fd: int,
+    name: str,
+    *,
+    label: str,
+    maximum_bytes: int = MAX_GENERATED_BYTES,
+) -> tuple[bytes, tuple[int, int]]:
+    content, signature = _read_regular_stat_capture_at(
+        parent_fd,
+        name,
+        label=label,
+        maximum_bytes=maximum_bytes,
+    )
+    return content, (signature[0], signature[1])
 
 
 def _read_regular_at(
@@ -1934,6 +1952,7 @@ def _unlink_regular_at(
     expected_content: bytes | None = None,
     expected_sha256: str | None = None,
     expected_identity: tuple[int, int] | None = None,
+    expected_signature: StatSignature | None = None,
     checkpoint: str | None = None,
 ) -> None:
     tombstone = _delete_tombstone_name(name)
@@ -1944,19 +1963,23 @@ def _unlink_regular_at(
     if source is not None and quarantined is not None:
         raise PublicationRecoveryRequired(f"conflicting {label} cleanup entries")
     captured_identity: tuple[int, int] | None = None
+    captured_signature: StatSignature | None = None
     observed_content: bytes
     if source is not None:
-        observed_content, captured_identity = _read_regular_capture_at(
+        observed_content, captured_signature = _read_regular_stat_capture_at(
             parent_fd,
             name,
             label=label,
         )
+        captured_identity = (captured_signature[0], captured_signature[1])
         if expected_content is not None and observed_content != expected_content:
             raise PublicationRecoveryRequired(f"{label} bytes are unowned")
         if expected_sha256 is not None and _sha256(observed_content) != expected_sha256:
             raise PublicationRecoveryRequired(f"{label} digest is unowned")
         if expected_identity is not None and captured_identity != expected_identity:
             raise PublicationRecoveryRequired(f"{label} identity is unowned")
+        if expected_signature is not None and captured_signature != expected_signature:
+            raise PublicationRecoveryRequired(f"{label} signature is unowned")
         if checkpoint is not None:
             _checkpoint(f"before-{checkpoint}-quarantine")
         _rename_noreplace_at(parent_fd, name, tombstone)
@@ -1971,11 +1994,12 @@ def _unlink_regular_at(
         if checkpoint is not None:
             _checkpoint(f"after-{checkpoint}-quarantine")
     else:
-        observed_content, captured_identity = _read_regular_capture_at(
+        observed_content, captured_signature = _read_regular_stat_capture_at(
             parent_fd,
             tombstone,
             label=f"quarantined {label}",
         )
+        captured_identity = (captured_signature[0], captured_signature[1])
         if expected_content is not None and observed_content != expected_content:
             raise PublicationRecoveryRequired(f"quarantined {label} bytes are unowned")
         if expected_sha256 is not None and _sha256(observed_content) != expected_sha256:
@@ -1983,6 +2007,10 @@ def _unlink_regular_at(
         if expected_identity is not None and captured_identity != expected_identity:
             raise PublicationRecoveryRequired(
                 f"quarantined {label} identity is unowned"
+            )
+        if expected_signature is not None and captured_signature != expected_signature:
+            raise PublicationRecoveryRequired(
+                f"quarantined {label} signature is unowned"
             )
     if checkpoint is not None:
         _checkpoint(f"before-{checkpoint}-unlink")
@@ -2752,84 +2780,22 @@ def _parse_journal_cleanup_entry_name(name: str) -> tuple[str, str, tuple[int, i
     return logical_name, transaction_id, (int(match.group(2)), int(match.group(3)))
 
 
-def _load_cleanup_journal_from_fd(
-    journal_fd: int, *, transaction_id: str
-) -> list[tuple[int, str, bytes, dict[str, object]]]:
-    names = _directory_names_at(journal_fd, label="publication cleanup journal")
-    parsed: dict[int, tuple[str, bytes, dict[str, object]]] = {}
-    for physical_name in names:
-        logical_name = physical_name.removeprefix(DELETE_TOMBSTONE_PREFIX)
-        match = re.fullmatch(r"state\.([0-9]{3})\.json", logical_name)
-        if match is None:
-            raise PublicationRecoveryRequired(
-                "publication cleanup journal has unknown entries"
-            )
-        sequence = int(match.group(1))
-        if sequence in parsed:
-            raise PublicationRecoveryRequired(
-                "publication cleanup journal entries conflict"
-            )
-        content = _read_regular_at(
-            journal_fd,
-            physical_name,
-            label="publication cleanup journal state",
-            maximum_bytes=16 * 1024,
-        )
-        state = _validate_journal_state(
-            _load_json(content, label="publication cleanup journal state")
-        )
-        if state["sequence"] != sequence or state["transaction_id"] != transaction_id:
-            raise PublicationRecoveryRequired(
-                "publication cleanup journal ownership drifted"
-            )
-        parsed[sequence] = (logical_name, content, state)
-    if not parsed:
-        return []
-    sequences = sorted(parsed)
-    if sequences != list(range(sequences[0], sequences[-1] + 1)):
-        raise PublicationRecoveryRequired(
-            "publication cleanup journal progress is not monotonic"
-        )
-    result: list[tuple[int, str, bytes, dict[str, object]]] = []
-    previous_content: bytes | None = None
-    for sequence in sequences:
-        logical_name, content, state = parsed[sequence]
-        if previous_content is not None and state["previous_state_sha256"] != _sha256(
-            previous_content
-        ):
-            raise PublicationRecoveryRequired(
-                "publication cleanup journal hash chain drifted"
-            )
-        previous_content = content
-        result.append((sequence, logical_name, content, state))
-    terminal = result[-1][3]
-    if terminal["cleanup_phase"] != "CLEANUP_COMPLETE" or terminal[
-        "publication_phase"
-    ] not in {"COMMITTED", "ROLLED_BACK", "DRIFT_REFUSAL"}:
-        raise PublicationRecoveryRequired("publication cleanup journal is not terminal")
-    return result
-
-
 def _remove_owned_journal_tree_at(
     story_fd: int,
     name: str,
     *,
     transaction_id: str,
     expected_identity: tuple[int, int],
+    expected_state_signatures: Mapping[str, StatSignature],
 ) -> None:
     metadata = _entry_metadata_at(story_fd, name)
     root_tombstone = _entry_metadata_at(story_fd, _delete_tombstone_name(name))
     if metadata is None and root_tombstone is None:
         return
     if metadata is None:
-        _rmdir_empty_at(
-            story_fd,
-            name,
-            label="publication cleanup journal",
-            expected_identity=expected_identity,
-            checkpoint="journal-cleanup-root",
+        raise PublicationRecoveryRequired(
+            "terminal publication cleanup has no durable state identity inventory"
         )
-        return
     if root_tombstone is not None:
         raise PublicationRecoveryRequired("publication cleanup journal conflicts")
     journal_fd = _open_directory_at(story_fd, name, label="publication cleanup journal")
@@ -2838,15 +2804,25 @@ def _remove_owned_journal_tree_at(
             raise PublicationRecoveryRequired(
                 "publication cleanup journal identity drifted"
             )
-        entries = _load_cleanup_journal_from_fd(
-            journal_fd, transaction_id=transaction_id
-        )
-        for sequence, logical_name, content, _state in entries:
+        current, contents, observed_signatures = _load_journal_from_fd(journal_fd)
+        if (
+            current["transaction_id"] != transaction_id
+            or current["cleanup_phase"] != "CLEANUP_COMPLETE"
+            or observed_signatures != dict(expected_state_signatures)
+        ):
+            raise PublicationRecoveryRequired(
+                "publication cleanup journal state identity inventory drifted"
+            )
+        for sequence, content in enumerate(contents):
+            logical_name = _journal_state_name(sequence)
+            expected_signature = expected_state_signatures[logical_name]
             _unlink_regular_at(
                 journal_fd,
                 logical_name,
                 label="publication cleanup journal state",
                 expected_content=content,
+                expected_identity=(expected_signature[0], expected_signature[1]),
+                expected_signature=expected_signature,
                 checkpoint=f"journal-cleanup-state-{sequence:03d}",
             )
         _assert_directory_entry_identity_at(
@@ -2935,7 +2911,7 @@ def _create_committed_journal_state_at(
 
 def _load_journal_from_fd(
     journal_fd: int, *, ignore_preparing: bool = False
-) -> tuple[dict[str, object], list[bytes]]:
+) -> tuple[dict[str, object], list[bytes], dict[str, StatSignature]]:
     names = _directory_names_at(journal_fd, label="publication journal")
     if ignore_preparing:
         names = {
@@ -2954,8 +2930,9 @@ def _load_journal_from_fd(
         raise PublicationRecoveryRequired("publication journal sequence is incomplete")
     contents: list[bytes] = []
     states: list[dict[str, object]] = []
+    signatures: dict[str, StatSignature] = {}
     for sequence, name in parsed:
-        content = _read_regular_at(
+        content, signature = _read_regular_stat_capture_at(
             journal_fd,
             name,
             label="publication journal state",
@@ -2972,7 +2949,8 @@ def _load_journal_from_fd(
             raise PublicationRecoveryRequired("publication journal hash chain drifted")
         contents.append(content)
         states.append(state)
-    return states[-1], contents
+        signatures[name] = signature
+    return states[-1], contents, signatures
 
 
 def _recover_preparing_journal_state_at(journal_fd: int) -> None:
@@ -2993,7 +2971,9 @@ def _recover_preparing_journal_state_at(journal_fd: int) -> None:
             "publication journal preparing state is malformed"
         )
     sequence = int(match.group(1))
-    current, contents = _load_journal_from_fd(journal_fd, ignore_preparing=True)
+    current, contents, _signatures = _load_journal_from_fd(
+        journal_fd, ignore_preparing=True
+    )
     if sequence != cast(int, current["sequence"]) + 1:
         raise PublicationRecoveryRequired(
             "publication journal preparing sequence drifted"
@@ -3033,7 +3013,7 @@ def _recover_preparing_journal_state_at(journal_fd: int) -> None:
 def _load_journal_at(story_fd: int) -> dict[str, object]:
     journal_fd = _open_directory_at(story_fd, JOURNAL_NAME, label="publication journal")
     try:
-        state, _contents = _load_journal_from_fd(journal_fd)
+        state, _contents, _signatures = _load_journal_from_fd(journal_fd)
         _assert_directory_entry_identity_at(
             story_fd, JOURNAL_NAME, journal_fd, label="publication journal"
         )
@@ -3058,7 +3038,7 @@ def _write_journal_update_at(
     )
     journal_fd = _open_directory_at(story_fd, JOURNAL_NAME, label="publication journal")
     try:
-        current, _contents = _load_journal_from_fd(journal_fd)
+        current, _contents, _signatures = _load_journal_from_fd(journal_fd)
         if current != dict(state):
             raise PublicationRecoveryRequired(
                 "publication journal update is based on stale state"
@@ -3172,7 +3152,7 @@ def _finish_terminal_journal_at(story_fd: int, state: Mapping[str, object]) -> N
     _assert_terminal_cleanup_inventory_at(story_fd, state)
     journal_fd = _open_directory_at(story_fd, JOURNAL_NAME, label="publication journal")
     try:
-        current, _contents = _load_journal_from_fd(journal_fd)
+        current, _contents, state_signatures = _load_journal_from_fd(journal_fd)
         if current != dict(state):
             raise PublicationRecoveryRequired(
                 "terminal publication journal state drifted"
@@ -3208,6 +3188,7 @@ def _finish_terminal_journal_at(story_fd: int, state: Mapping[str, object]) -> N
         cleanup_name,
         transaction_id=transaction_id,
         expected_identity=identity,
+        expected_state_signatures=state_signatures,
     )
     _checkpoint("after-journal-cleanup")
 
@@ -3326,66 +3307,17 @@ def _recover_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
     _finish_terminal_journal_at(story_fd, state)
 
 
-def _recover_cleanup_tombstone_at(story_fd: int, physical_name: str) -> None:
-    cleanup_name, transaction_id, expected_identity = _parse_journal_cleanup_entry_name(
-        physical_name
+def _recover_cleanup_tombstone_at(_story_fd: int, physical_name: str) -> None:
+    cleanup_name, _transaction_id, _expected_identity = (
+        _parse_journal_cleanup_entry_name(physical_name)
     )
     if physical_name not in {
         cleanup_name,
         _delete_tombstone_name(cleanup_name),
     }:
         raise PublicationRecoveryRequired("publication cleanup name is ambiguous")
-    if _entry_metadata_at(story_fd, cleanup_name) is not None:
-        cleanup_fd = _open_directory_at(
-            story_fd, cleanup_name, label="publication cleanup journal"
-        )
-        try:
-            entries = _load_cleanup_journal_from_fd(
-                cleanup_fd, transaction_id=transaction_id
-            )
-            if entries:
-                state = entries[-1][3]
-                previous_identity = _validated_identity(
-                    state["previous_root_identity"], label="previous root identity"
-                )
-                next_identity = _validated_identity(
-                    state["next_root_identity"], label="next root identity"
-                )
-                destination = _bundle_state_at(
-                    story_fd,
-                    GENERATED_ROOT.name,
-                    previous_digest=cast(str | None, state["previous_manifest_sha256"]),
-                    next_digest=cast(str, state["next_manifest_sha256"]),
-                    previous_identity=previous_identity,
-                    next_identity=next_identity,
-                )
-                phase = state["publication_phase"]
-                mode = state["mode"]
-                expected = (
-                    "next"
-                    if phase == "COMMITTED"
-                    else "previous"
-                    if phase == "ROLLED_BACK" and mode == "REPLACE"
-                    else "missing"
-                    if phase == "ROLLED_BACK"
-                    else "unknown"
-                )
-                if phase != "DRIFT_REFUSAL" and destination != expected:
-                    raise PublicationRecoveryRequired(
-                        "publication cleanup journal does not match terminal bundle"
-                    )
-                _assert_terminal_cleanup_inventory_at(
-                    story_fd,
-                    state,
-                    allowed_journal_cleanup=cleanup_name,
-                )
-        finally:
-            os.close(cleanup_fd)
-    _remove_owned_journal_tree_at(
-        story_fd,
-        cleanup_name,
-        transaction_id=transaction_id,
-        expected_identity=expected_identity,
+    raise PublicationRecoveryRequired(
+        "terminal publication cleanup has no durable state identity inventory"
     )
 
 

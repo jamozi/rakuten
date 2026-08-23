@@ -1,6 +1,6 @@
 DESIGN_HANDOFF_V1:
   document_id: RAOS-ST1204-ATOMIC-FIXTURE-PUBLICATION-001
-  version: 1.1.0
+  version: 1.2.0
   status: LOCAL_IMPLEMENTATION_DECISION_RECORDED
   canonical_reconciliation: LOCAL_CANDIDATE_PENDING_HUMAN_APPLY
   implementation_authority: REPOSITORY_STANDING_DEVELOPMENT_AUTHORITY
@@ -77,6 +77,7 @@ DESIGN_HANDOFF_V1:
         publication: PREPARING_DIRECTORY_FSYNC_THEN_SAME_PARENT_RENAME_AND_PARENT_FSYNC
         update: APPEND_ONLY_PREPARING_FILE_FSYNC_RENAME_NOREPLACE_JOURNAL_FSYNC
         interrupted_update: VALID_NEXT_STATE_PROMOTED_OR_MALFORMED_PARTIAL_PREPARING_FILE_REMOVED
+        terminal_state_identity_capture: EXACT_DEV_INO_MODE_NLINK_SIZE_MTIME_NS_CTIME_NS_FOR_EVERY_TRUSTED_CHAIN_ENTRY
       namespace_operation:
         fresh_install: LINUX_RENAMEAT2_RENAME_NOREPLACE_STAGE_TO_GENERATED
         replacement: LINUX_RENAMEAT2_RENAME_EXCHANGE
@@ -92,10 +93,10 @@ DESIGN_HANDOFF_V1:
         authoritative_state: EXACT_NEW_GENERATED_TREE_REMAINS_COMMITTED
         old_stage: JOURNAL_BIND_EXACT_TREE_THEN_NOREPLACE_QUARANTINE_BEFORE_DESTRUCTIVE_CLEANUP
         legacy_outputs: FULL_TREE_VALIDATE_AND_JOURNAL_BIND_THEN_NOREPLACE_QUARANTINE_AFTER_COMMIT
-        journal: RENAME_TO_TRANSACTION_AND_INODE_BOUND_TERMINAL_TOMBSTONE_FSYNC_THEN_REMOVE
-        deletion_progress: MONOTONIC_IDENTITY_AND_HASH_BOUND_TOMBSTONES_RECOVERABLE_AT_EVERY_OWNER_CHECKPOINT
+        journal: RENAME_TO_TRANSACTION_AND_INODE_BOUND_TERMINAL_TOMBSTONE_FSYNC_THEN_REMOVE_WITH_SAME_INVOCATION_STATE_IDENTITY_INVENTORY
+        deletion_progress: BUNDLE_AND_LEGACY_TOMBSTONES_RESTARTABLE;TERMINAL_JOURNAL_STATE_DELETION_REQUIRES_THE_TRUSTED_IN_MEMORY_FULL_IDENTITY_INVENTORY
         final_inventory: REVERIFY_AUTHORITATIVE_TREE_AND_REQUIRE_ALL_BOUND_CLEANUP_NAMES_ABSENT_BEFORE_COMPLETE
-        cleanup_failure: NEW_TREE_REMAINS_AUTHORITATIVE_AND_NEXT_GENERATE_RECOVERS
+        cleanup_failure: NEW_TREE_REMAINS_AUTHORITATIVE;BUNDLE_AND_LEGACY_RECOVER;INTERRUPTED_TERMINAL_JOURNAL_ROOT_IS_RETAINED_AND_REFUSED_WITHOUT_A_DURABLE_NONRECURSIVE_STATE_IDENTITY_SOURCE
       crash_recovery:
         stage_without_journal: EMPTY_STAGE_REMOVED_NONEMPTY_STAGE_REFUSED_WITHOUT_DURABLE_OWNERSHIP
         preparing_without_journal: REMOVE_ONLY_STRUCTURALLY_OWNED_PREPARING_TREE
@@ -103,6 +104,7 @@ DESIGN_HANDOFF_V1:
         prepared_after_exchange: REVERSE_NAMESPACE_OPERATION_AND_RESTORE_PREVIOUS_OR_ABSENT_STATE
         committed: VERIFY_NEW_TREE_AND_FINISH_CLEANUP_WITHOUT_ROLLBACK
         rolled_back: VERIFY_PREVIOUS_OR_ABSENT_STATE_AND_FINISH_CLEANUP
+        terminal_journal_after_root_move: CONSERVATIVELY_RETAIN_AND_REFUSE_BECAUSE_THE_PRIOR_IN_MEMORY_STATE_IDENTITY_INVENTORY_IS_NOT_DURABLE
         ambiguous_or_malformed: FAIL_CLOSED_AND_RETAIN_EVIDENCE
       filesystem_adversary_boundary:
         covered: CAPTURED_ANCESTOR_AND_ENTRY_IDENTITIES_NOREPLACE_COLLISIONS_OBSERVED_PRE_AND_POST_RENAME_SWAPS_AND_RESTARTABLE_OWNER_CHECKPOINTS
@@ -177,7 +179,8 @@ DESIGN_HANDOFF_V1:
     - Ancestor swaps cannot redirect a write outside the captured Story directory; every observed final-entry identity swap is restored when no-replace-safe or retained and refused without deletion.
     - Mid-stage and pre-publication failures leave the installed bundle exact and unchanged.
     - Post-exchange pre-commit failures restore the exact old bundle or exact absence atomically.
-    - Committed cleanup failures leave the exact new bundle authoritative and recoverable.
+    - Committed bundle and legacy cleanup failures leave the exact new bundle authoritative and recoverable.
+    - A crash after the terminal journal root move preserves the exact authoritative bundle and retains/refuses the cleanup tree rather than inferring state-file ownership from bytes or self-attestation.
     - Concurrent check/generate operations obey shared/exclusive nonblocking locks.
     - Stale stage, preparing, journal, cleanup tombstone, and rollback-failure states have deterministic recovery or refusal tests.
     - No check-accepted mixed generation exists and check mode changes no bytes or metadata.

@@ -3468,3 +3468,48 @@ original result.
 - OD-012 remains disabled and OD-015 remains recorded-fixture-only. No network,
   credential, Google SDK/API, database, queue, analytics persistence, provider,
   publication, staging, release or Production action was added or executed.
+
+### 2026-08-24 W2 / ST-1204 V3 journal-state identity correction
+
+- Correction: independent V2 re-audit reproduced a byte-identical,
+  different-inode replacement of terminal `state.000.json` at
+  `after-journal-cleanup-tombstone`. V2 bound the moved journal root but
+  re-inferred individual state ownership from bytes, allowing the foreign
+  state inode to be deleted. The V2 local evidence remains historical and its
+  every-checkpoint restartability claim is superseded by this entry.
+- V3 implementation: the already trusted active chain read now captures exact
+  `(dev, ino, mode, nlink, size, mtime_ns, ctime_ns)` signatures for every
+  state. The inventory is carried in memory across the terminal root move.
+  Every state must match the captured full signature and exact bytes before
+  quarantine; the quarantined descriptor must retain the captured inode and
+  bytes before unlink. Observable source, tombstone, preparing and last-state
+  mismatches are retained and refused without deleting the replacement.
+- Conservative recovery boundary: there is no durable nonrecursive anchor for
+  that per-state identity inventory after process death. A later invocation
+  encountering an interrupted terminal journal root preserves and refuses it;
+  it never derives ownership from valid bytes, an identity-bearing name, root
+  self-attestation, or a recursively trusted companion record. Bundle and
+  legacy cleanup remain restartable. A crash after the terminal root was
+  already removed proceeds normally. The existing unavoidable final POSIX
+  `unlinkat`/`rmdirat` kernel-window limitation is unchanged.
+- Local evidence: owner generation and no-write `--check` pass at manifest
+  SHA-256
+  `b0adffaa89c5ffdd931a46b319e19ace04246d19820e394c29795fbd9b3c47ce`;
+  fixture payloads are unchanged; isolated ST-1204 passes `202` tests,
+  including `67` atomic tests and the exact reproduced swap plus adjacent
+  post-quarantine, preparing, last-state and crash-retention cases. The common
+  success assertion now invokes the complete managed pending-state check.
+  Python 3.10/3.14 compile, Ruff lint/format, strict mypy, configured Pyright,
+  canonical import, workspace no-write, focused capability/static, focused
+  maintained-file secret scanning, and `git diff --check` pass. The inherited
+  linked-worktree-wide `unsafe-git-metadata` result and out-of-config direct
+  Pyright diagnostics remain non-green and explicitly reported.
+- `DEBT-W2-028` remains `OPEN_PENDING_INDEPENDENT_REAUDIT`; its current local
+  subcondition is `CLOSED_PENDING_V3_INDEPENDENT_REAUDIT`. Terminal-journal
+  post-crash automatic cleanup is deliberately not claimed complete without a
+  future nonrecursive durable ownership design. `DEBT-W2-062` remains `OPEN`
+  with the same ST-1205 predecessor drift; no downstream owner is edited.
+- Independent V3 re-audit, formal TST-030, hosted CI, live provider/account/
+  credential evidence, persistence, staging, release and Production remain
+  `NOT_EXECUTED`. OD-012 remains disabled and OD-015 remains
+  recorded-fixture-only.
