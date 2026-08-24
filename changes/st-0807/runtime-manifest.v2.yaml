@@ -1,0 +1,79 @@
+document:
+  id: RAOS-ST0807-SEO-RENDER-RUNTIME-MANIFEST-002
+  version: 2.0.0
+  story_id: ST-0807
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  authority: NONE
+  production_eligible: false
+contract_sha256: 9336feeddbc0d095708d60e9718c1636c9c16068db36fffab651222fdd279b5c
+v1_renderer_sha256: 8dd849cbb3c99f7c9302c908fe1efdd9567799010ae97b10c3d9bfe57d1287de
+st0805_fixture_sha256: 7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849
+st0805_manifest_sha256: 19dd52b254b648f88c6cda0ea3d9d5b6167b184a0a4ce735431ebb09056d6367
+hardened_writer_sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+source_sha256:
+  changes/st-0807/contracts/seo-render-runtime.v2.yaml: 9336feeddbc0d095708d60e9718c1636c9c16068db36fffab651222fdd279b5c
+  changes/st-0807/README.md: 841f8bc9a6cd15310d19f3be25121ef8875d51bbb0861745735b8a3b5d5caf2a
+  changes/st-0807/README-v2.md: 2932b0801f1d80a77e6e01d3830f2f51728c2e41e0ec41e60536910cb2bb8041
+  changes/st-0807/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: 3e0ee50841acb2e485269f1805c15c6eab82faf04e23e40209b59372a77e0c07
+  docs/execplans/ST-0807.md: 850d4802a1b4339829db47d4a6de93200f5ad2567d9753f9f5dde9617df5c0db
+  docs/worklogs/ST-0807.md: fa6c0c8c1e8b4da9c594a47b6da4094a2832fd6430b4085d5e075ad0d013fb59
+  scripts/build_st0807_seo_render_runtime.py: 5203d8f180db2ab18fcfb8e9d2309aec525862b5c6bb3c0762727391d2d11bf0
+  scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+  python/raos/domain/editorial/seo_renderer.py: 8dd849cbb3c99f7c9302c908fe1efdd9567799010ae97b10c3d9bfe57d1287de
+  tests/st0807/conftest.py: 5418a2a4aa5ca525e971e57dd0134b7208651fecc30a277c4b4b0999f6f20f7a
+  tests/st0807/test_contracts.py: 5d23987ca722eba5b44aba2af351787635037ae5a829ff023a5ffab4b1829455
+  tests/st0807/test_renderer.py: eb3743d31a5d3800e617f276d56c113db3220085ac76d431df80f1dfc2f0f799
+  tests/st0807/test_boundaries.py: aecef8d1d8e765b181c15f8d05862c48bae4637b8be38c07dd047d90a56a3856
+  tests/st0807/test_negative_cases.py: 98bc3548854d45093ac4c5cd809fde2cb9e58fa8ef40ebcd4255c41363f12598
+  tests/st0807_v2/__init__.py: 30b9d10ad8c43cc15bd9dd7c2cc6576316a382ef9b91beaef633476f9ec7c587
+  tests/st0807_v2/conftest.py: b07bc4db29eacd0e85c25a1f686ff42989cee05d0838ccba468da951a6f7a106
+  tests/st0807_v2/test_recorded_runtime.py: e59e45d036669986eee992f5522013d556def134a7bfee657b6b336e1c8b2d4c
+  tests/st0807_v2/test_generation.py: fc69af409d07699e30106f2c1fbe324c70ff362759d3732c2362f46371dc3ba0
+  tests/st0807_v2/test_boundaries.py: 3f425ecd3a962667fb07f819be43fe3a6a39e5b5d36f75b0960e30e9c2b88ff4
+  changes/st-0805/generated/policy-pass.v2.json: 7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849
+  changes/st-0805/runtime-manifest.v2.yaml: 19dd52b254b648f88c6cda0ea3d9d5b6167b184a0a4ce735431ebb09056d6367
+  python/raos/domain/editorial/article_lifecycle.py: c44cb8c5d26f4862e7527bcb179c20f1f60d3a069d9ba67fad3b0109ef0c6edd
+  python/raos/domain/editorial/content_ast.py: 7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68
+  python/raos/domain/editorial/policy_engine_v2.py: 86e0af8ff6b651b50a7959a0a8c0f85864c230a57144b51e190041d658ee7d93
+  python/raos/adapters/recorded_policy_engine.py: d6355547e2b90aa2c21aa61ca76d14203e05559c614dcb0336e565c1fddb67c3
+  contracts/raos-v0.4/contracts/content/RAOS_06_seo_metadata_structured_data_policy_v0.1.yaml: 2fa67e012c67f8a6a90b39cfd64f27da9fb76534e57ebbff60ccd78ba51bb98a
+  contracts/raos-v0.4/contracts/content/schemas/seo-metadata.schema.json: 347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad
+  contracts/raos-v0.4/contracts/content/schemas/structured-data-manifest.schema.json: 6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e
+  contracts/raos-v0.4/contracts/content/RAOS_06_content_test_matrix_v0.1.csv: 9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564
+  docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  .python-version: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
+  pyproject.toml: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
+  uv.toml: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+  uv.lock: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+generated_sha256:
+  changes/st-0807/generated/seo-render-recorded.v2.json: ab0ad1cf37368834cb4a9e3856938dce73e0525f26c45acc2255372cb0f593ef
+generation:
+  command: /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --locked --offline
+    --no-cache --no-sync --no-env-file --no-python-downloads python scripts/build_st0807_seo_render_runtime.py
+  check_command: /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --locked
+    --offline --no-cache --no-sync --no-env-file --no-python-downloads python scripts/build_st0807_seo_render_runtime.py
+    --check
+toolchain:
+  uv_version: 0.12.1
+  python_implementation: cpython
+  python_version: 3.14.6
+  pyyaml_version: 6.0.3
+bounds:
+  activation: DISABLED
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  origin_mode: ROUTE_ONLY
+  render_mode: PREVIEW
+  network: false
+  credentials: false
+  database: false
+  browser: false
+  publication: false
+  release: false
+  production: false
+formal_TST_020: NOT_EXECUTED
+formal_TST_022: NOT_EXECUTED

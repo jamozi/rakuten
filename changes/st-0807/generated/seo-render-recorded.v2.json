@@ -1,0 +1,370 @@
+{
+  "authority": {
+    "approval_authorized": false,
+    "domain_approved": false,
+    "policy_apply_authorized": false,
+    "production_authorized": false,
+    "production_eligible": false,
+    "publication_authorized": false,
+    "release_authorized": false
+  },
+  "classification": "RECORDED_SYNTHETIC_ROUTE_ONLY_PREVIEW",
+  "dependency": {
+    "st0802_article_id": "018f3e90-7b00-7000-8000-000000000805",
+    "st0802_article_version_id": "018f3e90-7b00-7000-8000-000000000806",
+    "st0802_body_sha256": "4c9bf36fac581e746126668ef8b36a27ea8e1acc0dc18bf9fc76c3af274311b9",
+    "st0802_published_at": null,
+    "st0802_state": "DRAFT",
+    "st0805_evaluation_input_sha256": "d4376e4554da70e821a575344ee8a25262178b749e4c243feb88c2d12ec041f5",
+    "st0805_fixture_sha256": "7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849",
+    "st0805_local_eligibility": true,
+    "st0805_report_sha256": "4222b076411f165967b5802f5b2057fc8635c0f0e94aadf6bcd7462e9ffa4fec",
+    "st0805_status": "LOCAL_EVALUATED"
+  },
+  "document_id": "RAOS-ST0807-SEO-RENDER-RECORDED-002",
+  "jsonld_sha256": "ba7900f690b4a6be86f792897e0ea9cba035df3a396b65ed8727e33e72c99ff2",
+  "local_status": "LOCAL_IMPLEMENTATION_COMPLETE",
+  "render": {
+    "article_schema_type": "Article",
+    "authority": {
+      "approval_authorized": false,
+      "browser": "NOT_EXECUTED",
+      "browser_executed": false,
+      "domain_approved": false,
+      "formal_evidence": false,
+      "formal_test": "NOT_EXECUTED",
+      "live_validation": "NOT_EXECUTED",
+      "origin_source": "NONE",
+      "production": "NOT_EXECUTED",
+      "production_authorized": false,
+      "production_domain_selected": false,
+      "production_eligible": false,
+      "publication_authorized": false,
+      "release": "NOT_EXECUTED",
+      "release_authorized": false,
+      "runtime": "NOT_EXECUTED",
+      "staging": "NOT_EXECUTED",
+      "staging_executed": false,
+      "tst_020": "NOT_EXECUTED",
+      "tst_020_executed": false,
+      "tst_022": "NOT_EXECUTED",
+      "tst_022_executed": false
+    },
+    "binding_ledger": [
+      {
+        "comparison": "EXACT_TEXT",
+        "field": "METADATA_TITLE",
+        "position": null,
+        "result": "MATCH",
+        "source_pointer": "VISIBLE_TITLE"
+      },
+      {
+        "comparison": "EXACT_TEXT",
+        "field": "VISIBLE_H1",
+        "position": null,
+        "result": "MATCH",
+        "source_pointer": "VISIBLE_TITLE"
+      },
+      {
+        "comparison": "EXACT_TEXT",
+        "field": "JSONLD_HEADLINE",
+        "position": null,
+        "result": "MATCH",
+        "source_pointer": "VISIBLE_H1"
+      },
+      {
+        "comparison": "EXACT_STRUCTURE",
+        "field": "JSONLD_AUTHOR",
+        "position": null,
+        "result": "MATCH",
+        "source_pointer": "VISIBLE_AUTHOR"
+      },
+      {
+        "comparison": "EXACT_TIMESTAMP",
+        "field": "JSONLD_DATE_PUBLISHED",
+        "position": null,
+        "result": "MATCH",
+        "source_pointer": "VISIBLE_DATE_PUBLISHED"
+      },
+      {
+        "comparison": "EXACT_TIMESTAMP",
+        "field": "JSONLD_DATE_MODIFIED",
+        "position": null,
+        "result": "MATCH",
+        "source_pointer": "VISIBLE_DATE_MODIFIED"
+      },
+      {
+        "comparison": "EXACT_TYPE",
+        "field": "JSONLD_SCHEMA_TYPE",
+        "position": null,
+        "result": "MATCH",
+        "source_pointer": "CALLER_ARTICLE_SCHEMA_TYPE"
+      },
+      {
+        "comparison": "EXACT_URL",
+        "field": "JSONLD_CANONICAL_URL",
+        "position": null,
+        "result": "MATCH",
+        "source_pointer": "CANONICAL_ROUTE"
+      },
+      {
+        "comparison": "EXACT_STRUCTURE",
+        "field": "JSONLD_PROFILE_SHAPE",
+        "position": null,
+        "result": "MATCH",
+        "source_pointer": "LOCAL_RENDER_PROFILE"
+      },
+      {
+        "comparison": "EXACT_ROUTE",
+        "field": "CANONICAL_ROUTE",
+        "position": null,
+        "result": "MATCH",
+        "source_pointer": "CURRENT_ROUTE"
+      }
+    ],
+    "breadcrumbs": [
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "breadcrumb_ref": "ROUTE-HOME-ST0807-V2",
+        "name": "ホーム",
+        "position": 1,
+        "route": "/"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "breadcrumb_ref": "ROUTE-ST0807-V2",
+        "name": "ST-0805 recorded policy draft",
+        "position": 2,
+        "route": "/guides/synthetic-recorded-policy-seo"
+      }
+    ],
+    "caller_origin": null,
+    "change": {
+      "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+      "classification": "INITIAL_PUBLICATION",
+      "previous_substantive_updated_at": null
+    },
+    "conditional_local_eligibility": false,
+    "contracts": {
+      "content_test_matrix_sha256": "9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564",
+      "seo_metadata_schema_id": "https://schemas.raos.local/content/v1/seo-metadata.schema.json",
+      "seo_metadata_schema_sha256": "347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad",
+      "seo_policy_id": "RAOS-CONTENT-SEO-001",
+      "seo_policy_sha256": "2fa67e012c67f8a6a90b39cfd64f27da9fb76534e57ebbff60ccd78ba51bb98a",
+      "seo_policy_version": "1.0.0",
+      "structured_data_manifest_schema_id": "https://schemas.raos.local/content/v1/structured-data-manifest.schema.json",
+      "structured_data_manifest_schema_sha256": "6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e"
+    },
+    "eligibility_reasons": [
+      "ROUTE_ONLY_ORIGIN_UNAVAILABLE",
+      "PREVIEW_NOINDEX",
+      "EXTERNAL_ASSESSMENT_NOT_EVALUATED"
+    ],
+    "external_assessments": [
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-TITLE_UNIQUENESS-NOT-EVALUATED",
+        "check": "TITLE_UNIQUENESS",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-CANONICAL_GRAPH-NOT-EVALUATED",
+        "check": "CANONICAL_GRAPH",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-ST0805-POLICY-ENGINE-V2",
+        "check": "ST_0805_POLICY_ELIGIBILITY",
+        "evidence": {
+          "ref": "EVIDENCE-ST0805-POLICY-REPORT-V2",
+          "sha256": "4222b076411f165967b5802f5b2057fc8635c0f0e94aadf6bcd7462e9ffa4fec"
+        },
+        "state": "PASS"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-BROWSER_VISIBLE_EQUALITY-NOT-EVALUATED",
+        "check": "BROWSER_VISIBLE_EQUALITY",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-SUBSTANTIVE_CHANGE_CLASSIFICATION-NOT-EVALUATED",
+        "check": "SUBSTANTIVE_CHANGE_CLASSIFICATION",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-ROUTE_EXISTENCE-NOT-EVALUATED",
+        "check": "ROUTE_EXISTENCE",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-HTTP_200-NOT-EVALUATED",
+        "check": "HTTP_200",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-RUNTIME_INDEXABILITY-NOT-EVALUATED",
+        "check": "RUNTIME_INDEXABILITY",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-PAUSE_OR_REDIRECT_SOURCE_STATE-NOT-EVALUATED",
+        "check": "PAUSE_OR_REDIRECT_SOURCE_STATE",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-PUBLICATION_SNAPSHOT_CURRENCY-NOT-EVALUATED",
+        "check": "PUBLICATION_SNAPSHOT_CURRENCY",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-IMAGE_PUBLICABILITY-NOT-EVALUATED",
+        "check": "IMAGE_PUBLICABILITY",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-AUTH_CACHE_CTA_BEHAVIOR-NOT-EVALUATED",
+        "check": "AUTH_CACHE_CTA_BEHAVIOR",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-AFFILIATE_REL-NOT-EVALUATED",
+        "check": "AFFILIATE_REL",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      },
+      {
+        "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+        "assessor_ref": "ASSESSOR-AFFILIATE_REDIRECT_BEHAVIOR-NOT-EVALUATED",
+        "check": "AFFILIATE_REDIRECT_BEHAVIOR",
+        "evidence": null,
+        "state": "NOT_EVALUATED"
+      }
+    ],
+    "jsonld_json": "{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"Article\",\"author\":{\"@type\":\"Organization\",\"name\":\"RAOS \\u5408\\u6210\\u7de8\\u96c6\\u90e8\"},\"dateModified\":\"2026-08-24T00:00:00.000000Z\",\"datePublished\":\"2026-08-24T00:00:00.000000Z\",\"headline\":\"ST-0805 recorded policy draft\"}]}",
+    "manifest": {
+      "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+      "disabled_types": [
+        "Product",
+        "Offer",
+        "Review",
+        "AggregateRating",
+        "FAQPage"
+      ],
+      "enabled_types": [
+        "Article"
+      ],
+      "generator_version": "ST0807_LOCAL_RENDER_V1",
+      "jsonld_sha256": "ba7900f690b4a6be86f792897e0ea9cba035df3a396b65ed8727e33e72c99ff2",
+      "manifest_id": "STRUCTURED-DATA-ST0807-V2",
+      "validated_at": "2026-08-24T00:00:00.000000Z",
+      "validation_result": "pass",
+      "visible_content_hash": "4c9bf36fac581e746126668ef8b36a27ea8e1acc0dc18bf9fc76c3af274311b9"
+    },
+    "mode": "PREVIEW",
+    "origin_mode": "ROUTE_ONLY",
+    "profile": "ST0807_LOCAL_RENDER_V1",
+    "raw_metadata_candidate": {
+      "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+      "breadcrumb_refs": [
+        "ROUTE-HOME-ST0807-V2",
+        "ROUTE-ST0807-V2"
+      ],
+      "canonical_route_ref": "ROUTE-ST0807-V2",
+      "index_state": "noindex",
+      "meta_description": "合成済みの編集候補から、公開権限を持たないSEO情報を決定的に生成します。",
+      "robots": [
+        "noindex",
+        "nofollow"
+      ],
+      "seo_metadata_id": "SEO-METADATA-ST0807-V2",
+      "sitemap_inclusion": false,
+      "slug": "synthetic-recorded-policy-seo",
+      "structured_data_manifest_ref": "STRUCTURED-DATA-ST0807-V2",
+      "substantive_updated_at": "2026-08-24T00:00:00.000000Z",
+      "title": "ST-0805 recorded policy draft"
+    },
+    "rendered_metadata": {
+      "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+      "breadcrumb_refs": [
+        "ROUTE-HOME-ST0807-V2",
+        "ROUTE-ST0807-V2"
+      ],
+      "canonical_route_ref": "ROUTE-ST0807-V2",
+      "canonical_url": null,
+      "index_state": "noindex",
+      "meta_description": "合成済みの編集候補から、公開権限を持たないSEO情報を決定的に生成します。",
+      "robots": [
+        "noindex",
+        "nofollow"
+      ],
+      "seo_metadata_id": "SEO-METADATA-ST0807-V2",
+      "sitemap_inclusion": false,
+      "slug": "synthetic-recorded-policy-seo",
+      "structured_data_manifest_ref": "STRUCTURED-DATA-ST0807-V2",
+      "substantive_updated_at": "2026-08-24T00:00:00.000000Z",
+      "title": "ST-0805 recorded policy draft"
+    },
+    "route": {
+      "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+      "canonical_route": "/guides/synthetic-recorded-policy-seo",
+      "canonical_route_ref": "ROUTE-ST0807-V2",
+      "current_route": "/guides/synthetic-recorded-policy-seo",
+      "current_route_ref": "ROUTE-ST0807-V2"
+    },
+    "site_projection": null,
+    "status": "RENDERED_LOCAL",
+    "validated_at": "2026-08-24T00:00:00.000000Z",
+    "visible": {
+      "article_version_id": "018F3E90-7B00-7000-8000-000000000806",
+      "author": {
+        "display_name": "RAOS 合成編集部",
+        "kind": "Organization"
+      },
+      "date_modified": "2026-08-24T00:00:00.000000Z",
+      "date_published": "2026-08-24T00:00:00.000000Z",
+      "h1": "ST-0805 recorded policy draft",
+      "title": "ST-0805 recorded policy draft",
+      "visible_content_hash": "4c9bf36fac581e746126668ef8b36a27ea8e1acc0dc18bf9fc76c3af274311b9",
+      "visible_content_profile": "ST0807-RECORDED-VISIBLE-AST-V2",
+      "visible_content_source_sha256": "4c9bf36fac581e746126668ef8b36a27ea8e1acc0dc18bf9fc76c3af274311b9"
+    }
+  },
+  "render_date_semantics": "SYNTHETIC_PREVIEW_INPUT_NOT_PUBLICATION_FACT",
+  "render_local_result_sha256": "14eff94659aa66ddda8ebb398159fbad9461ef27c213abaf13b94af11e9c63b1",
+  "schema_version": 2,
+  "story_id": "ST-0807",
+  "verification": {
+    "TST-020": "NOT_EXECUTED",
+    "TST-022": "NOT_EXECUTED",
+    "browser": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  }
+}
