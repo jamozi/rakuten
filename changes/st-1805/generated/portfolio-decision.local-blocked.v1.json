@@ -31,7 +31,7 @@
       "actual_observation_count": 0,
       "gate_pass_claim": false,
       "overall": "BLOCKED",
-      "pack_sha256": "ecb367211e98b8c8432c7b5322b0dacf697393f9d5e6ae58b670269db7ee7855",
+      "pack_sha256": "a455e7050847dc7f008746d8e4200e761649587df30aa39a263a7961d65801af",
       "scale_authority": "NONE",
       "schema": "ST1804_GATE3_PACK_V1",
       "synthetic": true
@@ -70,7 +70,7 @@
   },
   "generated_by": {
     "command": "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1805_portfolio_decision.py",
-    "generator_sha256": "70789a7d394dd2da056253b930e88f87f6317c32af950911f9fcfd524be6ed8b",
+    "generator_sha256": "85e430d1cdcf344e9ff8004be22686f8c8b6032b57b8682bac20a57fb3414000",
     "uri": "repo://scripts/build_st1805_portfolio_decision.py"
   },
   "mandatory_criteria": [
@@ -108,9 +108,9 @@
   "overall": "BLOCKED",
   "provenance": {
     "dependency_bindings": {
-      "changes/st-1804/contracts/gate3-economics.v1.yaml": "46075d28770e5128b184c3a2ca8089d92ee066fbafe0d29322cdd6ccb293bd9b",
-      "changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json": "a31852950e1ffa602cfd272945e08874597c7143ccd0dd0f4c1a44a1cf9a297a",
-      "changes/st-1804/generated/gate3-economics.local-blocked.v1.json": "ecb367211e98b8c8432c7b5322b0dacf697393f9d5e6ae58b670269db7ee7855",
+      "changes/st-1804/contracts/gate3-economics.v1.yaml": "175eebea290129352a8f328331e7ceb7410cc9fecb76c5f8d808512e9521a7ed",
+      "changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json": "c2ebe8ba14bd772e8842e348cd8d9e853ec4273c86eaf6a9f28627301226f10a",
+      "changes/st-1804/generated/gate3-economics.local-blocked.v1.json": "a455e7050847dc7f008746d8e4200e761649587df30aa39a263a7961d65801af",
       "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626",
       "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
       "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
@@ -122,19 +122,19 @@
       "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
       "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
       "docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md": "5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea",
-      "scripts/build_st1804_gate3_economics.py": "bdb53952af0949010f614731a2aebbdd5054a860c93df8f001b9a7f504af2d14"
+      "scripts/build_st1804_gate3_economics.py": "d74ef2e200bf6e9c3bf0d034ebbd5afaae7bb1794f5b4a28d4c28894dfff1b18"
     },
-    "fixture_sha256": "939bbbc756b02af031ac55e8ba775cfe72d265c02fd2d6eae22ecb3556fc9168",
-    "input_sha256": "136b332c42fccc8fe5631049ee5cd903f3402e7cb22bb1a99511620c5f179def",
+    "fixture_sha256": "0a424c77aa49030d909a09bc16fdbf0d648fe11d64aace394ddeaadf9ec5a34e",
+    "input_sha256": "8d3456cb25dc00da70d4a6331a53f60999846279e82f2214166ce38e10a05602",
     "source_artifacts": [
       {
         "bytes": 4044,
-        "sha256": "08074aa61ca253e32a485192be6b2903cc2f086e52e4437b030d937ca2b3f3cc",
+        "sha256": "1d8066ba1bdc7ef5ac5b8cf0c01d98b78eaaed8639e50d2c00965d0ebe2637c3",
         "uri": "repo://changes/st-1805/contracts/portfolio-decision.v1.yaml"
       },
       {
         "bytes": 1051,
-        "sha256": "939bbbc756b02af031ac55e8ba775cfe72d265c02fd2d6eae22ecb3556fc9168",
+        "sha256": "0a424c77aa49030d909a09bc16fdbf0d648fe11d64aace394ddeaadf9ec5a34e",
         "uri": "repo://changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json"
       },
       {
@@ -169,7 +169,7 @@
       },
       {
         "bytes": 23265,
-        "sha256": "70789a7d394dd2da056253b930e88f87f6317c32af950911f9fcfd524be6ed8b",
+        "sha256": "85e430d1cdcf344e9ff8004be22686f8c8b6032b57b8682bac20a57fb3414000",
         "uri": "repo://scripts/build_st1805_portfolio_decision.py"
       }
     ]
@@ -254,13 +254,13 @@
       "recommendation_order_changed": false,
       "reward_used_for_product_ranking": false
     },
-    "input_sha256": "136b332c42fccc8fe5631049ee5cd903f3402e7cb22bb1a99511620c5f179def",
+    "input_sha256": "8d3456cb25dc00da70d4a6331a53f60999846279e82f2214166ce38e10a05602",
     "method_version": "RAOS_ST1805_PORTFOLIO_DECISION_V1",
     "overall": "BLOCKED",
     "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
     "recording_id": "blocked-synthetic-no-decision",
     "schema": "ST1805_PORTFOLIO_DECISION_REPORT_V1",
-    "source_pack_sha256": "ecb367211e98b8c8432c7b5322b0dacf697393f9d5e6ae58b670269db7ee7855"
+    "source_pack_sha256": "a455e7050847dc7f008746d8e4200e761649587df30aa39a263a7961d65801af"
   },
   "schema": "ST1805_PORTFOLIO_DECISION_PACK_V1",
   "story_id": "ST-1805",

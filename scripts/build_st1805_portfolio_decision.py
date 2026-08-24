@@ -90,14 +90,14 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st1805_portfolio_decision.py"
 )
 CONTRACT_SHA256: Final = (
-    "08074aa61ca253e32a485192be6b2903cc2f086e52e4437b030d937ca2b3f3cc"
+    "1d8066ba1bdc7ef5ac5b8cf0c01d98b78eaaed8639e50d2c00965d0ebe2637c3"
 )
 FIXTURE_SHA256: Final = (
-    "939bbbc756b02af031ac55e8ba775cfe72d265c02fd2d6eae22ecb3556fc9168"
+    "0a424c77aa49030d909a09bc16fdbf0d648fe11d64aace394ddeaadf9ec5a34e"
 )
-INPUT_SHA256: Final = "136b332c42fccc8fe5631049ee5cd903f3402e7cb22bb1a99511620c5f179def"
+INPUT_SHA256: Final = "8d3456cb25dc00da70d4a6331a53f60999846279e82f2214166ce38e10a05602"
 ST1804_OUTPUT_SHA256: Final = (
-    "ecb367211e98b8c8432c7b5322b0dacf697393f9d5e6ae58b670269db7ee7855"
+    "a455e7050847dc7f008746d8e4200e761649587df30aa39a263a7961d65801af"
 )
 
 EXPECTED_BINDINGS: Final = {
@@ -135,16 +135,16 @@ EXPECTED_BINDINGS: Final = {
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
     ),
     "changes/st-1804/contracts/gate3-economics.v1.yaml": (
-        "46075d28770e5128b184c3a2ca8089d92ee066fbafe0d29322cdd6ccb293bd9b"
+        "175eebea290129352a8f328331e7ceb7410cc9fecb76c5f8d808512e9521a7ed"
     ),
     "changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json": (
-        "a31852950e1ffa602cfd272945e08874597c7143ccd0dd0f4c1a44a1cf9a297a"
+        "c2ebe8ba14bd772e8842e348cd8d9e853ec4273c86eaf6a9f28627301226f10a"
     ),
     "changes/st-1804/generated/gate3-economics.local-blocked.v1.json": (
         ST1804_OUTPUT_SHA256
     ),
     "scripts/build_st1804_gate3_economics.py": (
-        "bdb53952af0949010f614731a2aebbdd5054a860c93df8f001b9a7f504af2d14"
+        "d74ef2e200bf6e9c3bf0d034ebbd5afaae7bb1794f5b4a28d4c28894dfff1b18"
     ),
 }
 
