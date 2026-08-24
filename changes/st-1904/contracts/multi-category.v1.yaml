@@ -78,10 +78,10 @@ authority:
 predecessor:
   story_id: ST-1805
   binding: EXACT_BASE_COMMIT_BYTES
-  base_commit: c5d7ea73e22dbb1169fd4439c5dd24d2c9fe1121
+  base_commit: aa289a91916b21d04865ac79dfae540c83ea0831
   artifacts:
-    changes/st-1805/contracts/portfolio-decision.v1.yaml: 08074aa61ca253e32a485192be6b2903cc2f086e52e4437b030d937ca2b3f3cc
-    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: 1e653fde08183745063de7d6362de8d890e7dc9f540a4a71eb30cb9def60a72a
+    changes/st-1805/contracts/portfolio-decision.v1.yaml: 1d8066ba1bdc7ef5ac5b8cf0c01d98b78eaaed8639e50d2c00965d0ebe2637c3
+    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: 18e4115223c37109f796e211dd5f92e69dec9e6c6235b1cd1aa8e72ccb95cbe8
   required_semantics:
     overall: BLOCKED
     outcome: NO_DECISION
@@ -183,8 +183,8 @@ multi_category_contract:
 recorded_fixture:
   path: changes/st-1904/fixtures/recorded/multi-category.synthetic.v1.json
   bytes: 2992
-  sha256: 4d33f8be3fb7bf692c11cc9857ebafe60196a3c8c2106b50f105d97ad6edea27
-  binding_set_sha256: 1b78ddbc50889e6bae3f7fc846001eee302cb2b2496178de7da245345aec99ea
+  sha256: 3cbc83d55abf908096ca2bfdccff7769eb043269368b2c23334fd5e485e9a439
+  binding_set_sha256: 46dff9e6a22cfae30f8b5655ab2c74fab4e097322d1e5bcb5e1af0746553040a
   synthetic: true
   real_category_present: false
   provider_evidence_present: false
