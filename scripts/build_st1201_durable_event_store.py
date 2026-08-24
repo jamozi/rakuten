@@ -25,6 +25,8 @@ TEST_CATALOG = Path("docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
 OWNED_SOURCES = (
     CONTRACT,
     Path("changes/st-1201/README.md"),
+    Path("changes/st-1201/PREFLIGHT-20260825-v3.md"),
+    Path("changes/st-1201/LOCAL-IMPLEMENTATION-COMPLETION-20260825-v2.json"),
     Path("python/raos/domain/analytics/event_collector.py"),
     Path("python/raos/domain/analytics/event_collector_runtime_v2.py"),
     Path("python/raos/ports/event_collector_runtime_v2.py"),
@@ -33,6 +35,14 @@ OWNED_SOURCES = (
     Path("python/raos/adapters/recorded_event_store.py"),
     Path("python/raos/adapters/sqlite_event_collector_runtime_v2.py"),
     Path("scripts/build_st1201_durable_event_store.py"),
+    Path("tests/st1201/conftest.py"),
+    Path("tests/st1201/test_boundaries.py"),
+    Path("tests/st1201/test_collector.py"),
+    Path("tests/st1201/test_durable_boundary_hardening_v3.py"),
+    Path("tests/st1201/test_durable_generation_v2.py"),
+    Path("tests/st1201/test_durable_runtime_v2.py"),
+    Path("tests/st1201/test_durable_sqlite_hardening_v3.py"),
+    Path("tests/st1201/test_failure_isolation.py"),
 )
 BOUND_SOURCES = (
     BACKLOG,
@@ -147,7 +157,7 @@ def _canonical_checks() -> dict[str, object]:
         if type(item) is dict
         for row in [cast(dict[str, object], item)]
     }
-    if set(suites).isdisjoint({"TST-012", "TST-030", "TST-031"}):
+    if not {"TST-012", "TST-030", "TST-031"}.issubset(suites):
         _fail("TEST_CATALOG_INVALID", "suite_ids")
     for suite_id in ("TST-012", "TST-030", "TST-031"):
         row = suites.get(suite_id)
@@ -191,10 +201,36 @@ def render() -> tuple[bytes, bytes]:
         or contract.get("canonical_status") != "UNCHANGED"
     ):
         _fail("CONTRACT_INVALID", CONTRACT.as_posix())
+    durability_value = contract.get("durability_boundary")
+    application_port_value = contract.get("application_port_boundary")
+    if type(durability_value) is not dict or type(application_port_value) is not dict:
+        _fail("CONTRACT_INVALID", CONTRACT.as_posix())
+    durability = cast(dict[str, object], durability_value)
+    application_port = cast(dict[str, object], application_port_value)
+    if (
+        durability.get("created_only_schema_initialization") is not True
+        or durability.get("root_and_database_device_inode_pinned") is not True
+        or durability.get("same_process_event_count_head_prefix_anchor") is not True
+        or durability.get("fresh_process_rollback_detection_without_external_anchor")
+        is not False
+        or durability.get("metadata_old_count_head_digest_cas") is not True
+        or durability.get("commit_recovery_outcomes")
+        != ["COMMITTED", "NOT_COMMITTED", "AMBIGUOUS"]
+        or application_port.get("collaborator_inputs_reconstructed") is not True
+        or application_port.get(
+            "post_success_domain_error_unexpected_error_verification"
+        )
+        is not True
+        or application_port.get(
+            "action_count_exact_integer_zero_before_and_after_each_exchange"
+        )
+        is not True
+    ):
+        _fail("CONTRACT_INVALID", CONTRACT.as_posix())
     story = _story()
     checks = _canonical_checks()
     source_bindings = [_binding(path) for path in OWNED_SOURCES + BOUND_SOURCES]
-    generated_document = {
+    generated_document: dict[str, object] = {
         "schema_version": "2.0.0",
         "story_id": "ST-1201",
         "classification": contract["classification"],
@@ -209,6 +245,8 @@ def render() -> tuple[bytes, bytes]:
         },
         "contract_sha256": _sha256(_bytes(CONTRACT)),
         "source_bindings": source_bindings,
+        "durability_boundary": durability,
+        "application_port_boundary": application_port,
         "authority": contract["authority"],
         "formal_evidence": contract["formal_evidence"],
     }

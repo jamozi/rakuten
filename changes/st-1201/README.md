@@ -28,23 +28,46 @@ not generate identifiers, timestamps, consent state, or pseudonyms.
 ## Durable local journal
 
 - The absolute owner-private root must be a real directory owned by the current
-  process at mode `0700`. The SQLite file is no-follow, owner-only `0600`, and
-  single-link.
-- Each accepted event stores its exact canonical bytes, payload SHA-256,
-  identity/source metadata, sequence, and previous-record digest in one
-  `BEGIN IMMEDIATE` transaction.
+  process at mode `0700`. Initialization opens that root by directory
+  descriptor and creates only a missing database with `O_EXCL`, no-follow,
+  owner-only `0600`, and one link. The created file and root are fsynced.
+  A preexisting empty, partial, foreign, symlinked, hardlinked, or non-`0600`
+  database is rejected without schema initialization or modification.
+- The store pins the exact root and named database device/inode pair. It also
+  pins the greatest verified event count/head and its known chain prefix for
+  the lifetime of the process. This detects named-file replacement, a
+  same-inode older valid snapshot, and an alternate valid prefix. A fresh
+  process has no external durable anchor, so ST-1201 explicitly does not claim
+  fresh-process rollback detection.
+- Each accepted event stores its exact canonical JSON bytes, payload SHA-256,
+  redundant identity/source/schema/time columns, command hash, recovery hash,
+  sequence, and previous-record digest in one `BEGIN IMMEDIATE` transaction.
+  Persisted UUIDs must be lower-case canonical UUIDv7 and timestamps must be
+  exact UTC RFC3339 `Z` values; every redundant column must equal the decoded
+  canonical payload.
 - Event IDs are durable idempotency keys. An exact replay returns
   `RECORDED_DUPLICATE`; the same ID with changed bytes is a conflict. Concurrent
   requests converge on one accepted record.
-- The exact schema, SQLite integrity, metadata digest, row digests, contiguous
-  sequence, payload digests, and global hash chain are checked on every
-  transaction and restart.
-- Before-commit failure rolls back. A simulated after-commit ambiguity recovers
-  the exact committed record without retrying the write.
-- Event rows are protected by append-only triggers. There is no public read,
-  list, query, export, update, delete, purge, retention, or lifecycle API.
+- Schema V2 checks the exact `sqlite_master` SQL inventory, `table_xinfo`,
+  STRICT flags, indexes, triggers, absence of foreign keys, configured PRAGMAs,
+  `foreign_key_check`, and SQLite quick/full integrity. Metadata may advance by
+  exactly count+1 only after the matching append. The writer uses compare-and-
+  swap on the old count, head, and metadata digest and requires rowcount one.
+  Event update/delete and metadata insert/delete are trigger-denied.
+- A commit exception is unknown at the point it occurs. A new read transaction
+  verifies the full schema, metadata, chain, exact command/event/recovery row,
+  and pinned prefix before returning a committed receipt or raising the closed
+  `COMMIT_NOT_COMMITTED` / `COMMIT_AMBIGUOUS` classification. Neither recovery
+  path retries the write.
+- At the application/port boundary, the event and digest passed to a hostile
+  collaborator are reconstructed. Their pre-call canonical bytes and identity
+  are rechecked after success, an exact domain error, and an unexpected error.
+  Store `action_count` must be the exact integer zero before and after every
+  exchange; booleans, nonzero values, and getter/call mutation fail closed.
+- There is no public read, list, query, export, update, delete, purge,
+  retention, or lifecycle API.
 
-The legacy 67-test process-local scripted seam remains supported. Its closed
+The legacy process-local scripted seam remains supported. Its closed
 exception was changed from a frozen dataclass exception to a regular slotted
 exception so Python can safely restore `__traceback__` during context-manager
 re-raise; its observable code/string/repr contract remains unchanged.

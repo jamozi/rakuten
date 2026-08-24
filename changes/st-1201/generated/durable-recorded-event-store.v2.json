@@ -1,4 +1,11 @@
 {
+  "application_port_boundary": {
+    "action_count_exact_integer_zero_before_and_after_each_exchange": true,
+    "boolean_nonzero_and_getter_mutation_rejected": true,
+    "collaborator_inputs_reconstructed": true,
+    "post_success_domain_error_unexpected_error_verification": true,
+    "pre_call_canonical_bytes_and_event_identity_pinned": true
+  },
   "authority": {
     "credential": false,
     "external_action_count": 0,
@@ -22,7 +29,53 @@
   },
   "canonical_status": "UNCHANGED",
   "classification": "MAXIMUM_SAFE_LOCAL_DURABLE_RECORDED_EVENT_COLLECTOR",
-  "contract_sha256": "400bd3325bc6ea10e51537e4549fd1a2eb1b962e955507f792b9371efe7a057f",
+  "contract_sha256": "d5b579a892e31c1966910656e930a20b80c8a5306f9ce8ecba07a5296bbd16dc",
+  "durability_boundary": {
+    "append_only_hash_chain": true,
+    "backend": "OWNER_PRIVATE_SQLITE",
+    "canonical_json_bytes_required": true,
+    "canonical_payload_sha256": true,
+    "cas_rowcount_required": 1,
+    "command_and_recovery_material_hash_bound": true,
+    "commit_exception_initial_classification": "UNKNOWN_UNTIL_FULL_READBACK",
+    "commit_recovery_outcomes": [
+      "COMMITTED",
+      "NOT_COMMITTED",
+      "AMBIGUOUS"
+    ],
+    "commit_recovery_verifies_command_event_chain_and_metadata": true,
+    "concurrent_idempotency": true,
+    "created_file_and_root_fsync": true,
+    "created_only_schema_initialization": true,
+    "created_with_o_excl_and_root_dirfd": true,
+    "database_mode": "0600",
+    "delete_purge_export_query_lifecycle_surface": false,
+    "event_id_deduplication": true,
+    "event_update_and_delete": false,
+    "exact_connection_pragmas": true,
+    "exact_schema": true,
+    "exact_table_xinfo_indexes_triggers_foreign_keys": true,
+    "exact_utc_rfc3339_z_required": true,
+    "foreign_key_and_integrity_checks": true,
+    "fresh_process_rollback_detection_without_external_anchor": false,
+    "lowercase_canonical_uuid7_required": true,
+    "metadata_count_plus_one_transition_guard": true,
+    "metadata_old_count_head_digest_cas": true,
+    "named_file_replacement_detected": true,
+    "preexisting_empty_partial_foreign_rejected_unchanged": true,
+    "redundant_columns_equal_canonical_payload": true,
+    "restart_recovery": true,
+    "retention_period": null,
+    "root_and_database_device_inode_pinned": true,
+    "root_mode": "0700",
+    "same_id_changed_payload_conflict": true,
+    "same_inode_older_valid_snapshot_detected_same_process": true,
+    "same_process_event_count_head_prefix_anchor": true,
+    "schema_inventory": "ST1201_DURABLE_RECORDED_EVENT_STORE_V2",
+    "strict_tables": true,
+    "symlink_hardlink_and_non_0600_rejected_unchanged": true,
+    "tamper_detection": true
+  },
   "formal_evidence": {
     "TST-012": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
     "TST-030": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
@@ -36,14 +89,24 @@
   "schema_version": "2.0.0",
   "source_bindings": [
     {
-      "bytes": 2402,
+      "bytes": 4148,
       "path": "changes/st-1201/contracts/durable-recorded-event-store.v2.json",
-      "sha256": "400bd3325bc6ea10e51537e4549fd1a2eb1b962e955507f792b9371efe7a057f"
+      "sha256": "d5b579a892e31c1966910656e930a20b80c8a5306f9ce8ecba07a5296bbd16dc"
     },
     {
-      "bytes": 3663,
+      "bytes": 5398,
       "path": "changes/st-1201/README.md",
-      "sha256": "9449cab3953bc8d6b7383fd94a1f6cdf592cb18f4edc784918b9256b89319c1a"
+      "sha256": "1d48cdd47187f00833737eade4b6f9ec7ee9cf4dc4f9000e6413b3d401a89b10"
+    },
+    {
+      "bytes": 2769,
+      "path": "changes/st-1201/PREFLIGHT-20260825-v3.md",
+      "sha256": "cf5e587a64e1066433aa6f07d08818bfae4513a1c1f46b8da5906dae750ab3fa"
+    },
+    {
+      "bytes": 3677,
+      "path": "changes/st-1201/LOCAL-IMPLEMENTATION-COMPLETION-20260825-v2.json",
+      "sha256": "d2694f098956b4c8adfc15de5cd2e17f2ae1aff7201e96daf6492e43868b4a36"
     },
     {
       "bytes": 23108,
@@ -51,9 +114,9 @@
       "sha256": "c152f57cf7f95ae924a8510ff4b153c4dd4b78c17fbe5f579019fb30a759fa6b"
     },
     {
-      "bytes": 4805,
+      "bytes": 4813,
       "path": "python/raos/domain/analytics/event_collector_runtime_v2.py",
-      "sha256": "128e1f02a5eeed659c487207adcb8797e57302aa97c1759e06aa3e4671905eef"
+      "sha256": "e88362158bd271d0ef77a9f8527edc0bef9cfa401e77c876919157a418a67541"
     },
     {
       "bytes": 616,
@@ -66,9 +129,9 @@
       "sha256": "8d35153ee3bc801e9653d4773358b31746fce195fd651b9caeaddfa8b1ebea85"
     },
     {
-      "bytes": 5736,
+      "bytes": 14111,
       "path": "python/raos/application/analytics/event_collector_runtime_v2.py",
-      "sha256": "e3db1dd80ef3959aab6f3ff29eaa1fb419233255c7d6e45679f3ddf98f95a477"
+      "sha256": "f569a6255ccb793955681bf84033696fa0d293bc330c4e2f1d10551178c6bae2"
     },
     {
       "bytes": 4317,
@@ -76,14 +139,54 @@
       "sha256": "1e80a17f648138c7cff885e06eae452c8c89f93e441c4efedbd3f65a9c6d6c30"
     },
     {
-      "bytes": 22574,
+      "bytes": 55156,
       "path": "python/raos/adapters/sqlite_event_collector_runtime_v2.py",
-      "sha256": "ffbc1b477741b2905a0dcbdaa057dbcfd1cabe6e7a04827bca2731de21528935"
+      "sha256": "6e8cd714e597e624a969a2881af4592eef0cefb47c5ae57e642ef23eb790ebd9"
     },
     {
-      "bytes": 9957,
+      "bytes": 11973,
       "path": "scripts/build_st1201_durable_event_store.py",
-      "sha256": "9b953569de8dca5e489c3802707ec36d626570ef3afa49d8a8273361af78e402"
+      "sha256": "79a6949e03b56f91603d751788cf85285920e89c88b477acf341653998d062a0"
+    },
+    {
+      "bytes": 5504,
+      "path": "tests/st1201/conftest.py",
+      "sha256": "4ae5cb8ca3cc747a269fd9d552d639cb8846935101ff3e208004b269246c555e"
+    },
+    {
+      "bytes": 7556,
+      "path": "tests/st1201/test_boundaries.py",
+      "sha256": "32a1813d7409d5b4dc6865e5f3f1bf7b538722656826be595d1404940ea272b6"
+    },
+    {
+      "bytes": 5462,
+      "path": "tests/st1201/test_collector.py",
+      "sha256": "e009577784a5450b66dbd421fdfdf1e6c5beb0b8ab3fb1593735363b402bd183"
+    },
+    {
+      "bytes": 7616,
+      "path": "tests/st1201/test_durable_boundary_hardening_v3.py",
+      "sha256": "371f6090f866812409f8d820d0bfd970278d3418e86f70b7397a930bf091d7bf"
+    },
+    {
+      "bytes": 4212,
+      "path": "tests/st1201/test_durable_generation_v2.py",
+      "sha256": "4f912545d0dfa653482bf8506ce9db84f546009a9b367c10a1ce47f39c81b930"
+    },
+    {
+      "bytes": 10516,
+      "path": "tests/st1201/test_durable_runtime_v2.py",
+      "sha256": "07f05f4edec897a507bfdd5fb52cacbfe4e626049e2735c5ee28f293271c57a0"
+    },
+    {
+      "bytes": 21758,
+      "path": "tests/st1201/test_durable_sqlite_hardening_v3.py",
+      "sha256": "70af5b78624f491e67be0d64e23f5a8e94387a4e7042ba313258063c5a243dd4"
+    },
+    {
+      "bytes": 12872,
+      "path": "tests/st1201/test_failure_isolation.py",
+      "sha256": "3acb571f2d5bc5323bd4246d71977342dad7d269196c2897b0c57000b7ea697e"
     },
     {
       "bytes": 32199,
