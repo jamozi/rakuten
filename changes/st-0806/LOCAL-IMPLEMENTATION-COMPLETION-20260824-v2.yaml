@@ -1,0 +1,45 @@
+document:
+  id: RAOS-ST0806-LOCAL-IMPLEMENTATION-COMPLETION-002
+  version: 2.0.0
+  story_id: ST-0806
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  canonical_registry_changed: false
+  authority: NONE
+base:
+  integration_sha: f9428c375f19e478c7233dc78652ec518663dafa
+  branch: codex/st-0806-ai-draft-v2
+scope:
+  mode: STRICT_STORY
+  v1_compatibility: PRESERVED
+  durable_queue_owner: ST-0706
+  generic_runtime_owner: ST-1404
+  provider_or_external_writes: false
+local_evidence:
+  focused_v2: PASS_46_TESTS
+  historical_and_v2_st0806: PASS_61_TESTS
+  affected_st0706: PASS_78_TESTS
+  affected_st0802: PASS_59_TESTS
+  affected_st0605: PASS_61_TESTS
+  generator_build_and_check: PASS
+  ruff_format_and_check: PASS
+  strict_mypy_runtime_generator_and_v2_tests: PASS
+  compile_and_import: PASS
+  focused_changed_file_secret_scan: PASS_0_FINDINGS
+  git_diff_check: PASS
+bindings:
+  st0706_contract_sha256: eef608f77d99a37716541873cd91ecf18257ee4c7532848046aa3bdb1640ae7c
+  st0706_policy_sha256: f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8
+  st0806_contract_sha256: 4ca2dfb59f60a4c65bb6c0c31595cac1281d6b62b3900bfe5204770f5cc8c6e7
+  st0806_policy_sha256: 443b5ea91544ea1e8d5f9c7c2e71ebe331fda6f81397f0b51e25aa70da5c77f2
+  hardened_writer_sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+formal_and_external:
+  canonical_implementation_status: NOT_CHANGED
+  TST-018: NOT_EXECUTED
+  TST-020: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+debt:
+  introduced: []
