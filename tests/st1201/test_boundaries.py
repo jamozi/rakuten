@@ -27,7 +27,7 @@ PINNED_PREDECESSORS = {
     "changes/st-0305/README.md": "b45c333996c723ab1978c8b474420de86c563277a3c4a0d2e2a7d76cdbaed4bb",
     "changes/st-0305/contracts/publication-analytics-finance.v1.yaml": "2947fe100633a2611b9287c6530856b9679365bb10d4af4728a5148ed970377f",
     "changes/st-0305/generated/publication-analytics-finance-catalog.v1.json": "0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61",
-    "changes/st-0305/manifest.yaml": "ee7ef9a8fac40dc11ed90f4fe90e3cd78560ecdff8e4f8f84202a4b0609b681d",
+    "changes/st-0305/manifest.yaml": "4d2233a321e9e2576911182f4d38092e61ca47b2800d2730b40ecce84dd71a5d",
     "scripts/build_st0305_publication_analytics_finance.py": "6275ad1f451b16ff7a51fbaf7337917c262c668dca70257949c15ba015bb1435",
     "changes/st-0404/README.md": "e86677ccceaa0991ffa641ffe22de22815a32f9e837bb4c924bf76d6958d680d",
     "python/raos/domain/http/security.py": "954bf52f719e95402847f82cfab1e616cf8b3988ab6467e577b3225f611ed532",
