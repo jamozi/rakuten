@@ -20,8 +20,11 @@ from typing import Final, NoReturn, cast
 from urllib.parse import urlsplit
 from uuid import UUID
 
-from jsonschema import Draft202012Validator, FormatChecker
-from jsonschema.exceptions import SchemaError, ValidationError
+from jsonschema import Draft202012Validator, FormatChecker  # type: ignore[import-untyped]
+from jsonschema.exceptions import (  # type: ignore[import-untyped]
+    SchemaError,
+    ValidationError,
+)
 import yaml
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
@@ -205,14 +208,14 @@ EXPECTED_PROVENANCE: Final[dict[str, object]] = {
             "story_id": "ST-0204",
             "uri": "repo://changes/st-0204/manifest.yaml",
             "sha256": (
-                "064cc7a686cc785fe0981e5f68bac3fac48624cf850c38c8ea03244473d5a5f2"
+                "976d023f476f471867be7f0d04a6260414b2b5c4c9e42ce24d20800a9edc33fd"
             ),
         },
         {
             "story_id": "ST-0305",
             "uri": "repo://changes/st-0305/manifest.yaml",
             "sha256": (
-                "ee7ef9a8fac40dc11ed90f4fe90e3cd78560ecdff8e4f8f84202a4b0609b681d"
+                "4d2233a321e9e2576911182f4d38092e61ca47b2800d2730b40ecce84dd71a5d"
             ),
         },
     ],
@@ -1133,6 +1136,7 @@ def build_outputs(root: Path = REPOSITORY_ROOT) -> dict[Path, bytes]:
         label="ST-1203 generator",
         maximum_bytes=MAX_SOURCE_BYTES,
     )
+    generation = _mapping(contract.get("generation"), label="generation")
     manifest = {
         "document": {
             "id": "RAOS-SEARCH-CONSOLE-RECORDED-MANIFEST-001",
@@ -1142,8 +1146,12 @@ def build_outputs(root: Path = REPOSITORY_ROOT) -> dict[Path, bytes]:
         "generation": {
             "source_contract": f"repo://{CONTRACT_PATH.as_posix()}",
             "generated_by": f"repo://{GENERATOR_PATH.as_posix()}",
-            "generation_command": contract["generation"]["generation_command"],
-            "check_command": contract["generation"]["check_command"],
+            "generation_command": _text(
+                generation.get("generation_command"), label="generation command"
+            ),
+            "check_command": _text(
+                generation.get("check_command"), label="check command"
+            ),
         },
         "source_artifacts": [
             {
