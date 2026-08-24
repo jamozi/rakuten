@@ -1,0 +1,39 @@
+schema: RAOS_LOCAL_AUDIT_RUNTIME_V2
+story_id: ST-0405
+mode: RECORDED_OWNER_PRIVATE_LOCAL_ONLY
+authorization:
+  source_story: ST-0403
+  service: DurableAuthorizationService.recover_admin
+  required_action: edit_article_draft
+  required_resource_kind: ARTICLE_VERSION
+  required_resource_state: DRAFT
+  direct_grant_provenance: FORBIDDEN
+  audit_store_open_before_authorization: FORBIDDEN
+writer:
+  backend: SQLITE_OWNER_PRIVATE
+  append_only: true
+  idempotency_binding: authorization_command_id_fingerprint
+  hash_chain: SHA256
+  readback_required: true
+  ambiguous_commit_recovery: EXACT_ONLY
+  synthetic_atomicity_marker: true
+  business_mutation_claim: NONE
+query:
+  internal_integrity_query: BOUNDED_CORRELATION_ONLY
+  outward_query: DISABLED
+  reason: ST0403_OPS012_SITE_SCOPE_CONFLICT
+capabilities:
+  update: NONE
+  delete: NONE
+  retention: NONE_OD014_UNRESOLVED
+  export: NONE
+  http: NONE
+  network: NONE
+  provider: NONE
+  credential: NONE
+  production: NONE
+formal_evidence:
+  tst_011_postgresql: NOT_EXECUTED
+  tst_012_http: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  production: NOT_AUTHORIZED
