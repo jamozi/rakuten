@@ -3,10 +3,13 @@
 Classification:
 `PROVISIONAL_CANONICAL_SAFE_DEFAULT_DISABLED_RECORDED_FRESHNESS_INTERFACE`
 
-This is a partial, DEV/CI-only, non-persistent, non-attesting implementation
-of the maximum safe ST-1401 interface boundary. It does not complete the
-Canonical Story, activate a freshness policy, resolve a category SLA, or
-provide formal TST-005/TST-028 evidence.
+This is the locally complete, DEV/CI-only, non-persistent, non-attesting
+implementation of the maximum safe ST-1401 interface boundary while OD-007 is
+unresolved. It satisfies the local scheduler/state deliverables with the
+installed conservative provisional policy, but it does not change the
+Canonical Story status, activate a freshness policy, resolve a category SLA,
+or provide formal TST-005/TST-028 evidence. The exact local completion record
+is `LOCAL-IMPLEMENTATION-COMPLETION-20260824-v1.yaml`.
 
 ## Authority and source binding
 
@@ -115,7 +118,9 @@ provider override and remain subject to Wave-end review.
   provider, database, random source, clock, or state lifecycle is used.
 
 The implementation does not add an API, schema, migration, repository,
-provider adapter, generated artifact, status transition, or evidence record.
+provider adapter, generated runtime artifact, Canonical status transition, or
+formal evidence record. Its human-readable local completion record has no
+runtime or governance authority.
 ST-0503 and ST-0605 remain dependency inputs with only their separately
 recorded local candidate evidence; this slice does not promote their Canonical
 status.
@@ -151,7 +156,7 @@ PYTHONDONTWRITEBYTECODE=1 MYPYPATH=python \
   python/raos/adapters/recorded_freshness.py
 ```
 
-## Remaining unexecuted work
+## Remaining governed and external work
 
 Formal/hosted TST-005, staging reliability TST-028, runtime integration,
 category SLA approval, policy activation, provider/live tests, database and
