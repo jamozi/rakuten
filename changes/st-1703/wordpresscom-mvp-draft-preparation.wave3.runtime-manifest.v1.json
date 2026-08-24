@@ -4,9 +4,9 @@
   "generated_by": "python3 scripts/build_wordpresscom_mvp_runtime_manifest.py",
   "paths": [
     {
-      "bytes": 34123,
+      "bytes": 34422,
       "path": "Makefile",
-      "sha256": "e939974e286ab5bf11997c5d7e4780f1fdb7c03c2cb848e6ceb89470d3db03fc"
+      "sha256": "8d4030bfcffaa5bde56842b6a2475bbe2b845e074722c787b9d712bc22d2a40f"
     },
     {
       "bytes": 1991,
