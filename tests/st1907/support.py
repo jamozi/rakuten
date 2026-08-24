@@ -160,7 +160,7 @@ def signal(
         "recommendation_order_change_requested": False,
         "signal_id": signal_id,
         "signal_policy_sha256": (
-            "3a654c9ebd8184a8f23d563dbed789cd1743a1a34437dcd0423963d58ba7242d"
+            "afc540e9cc866e4ef48cb276eb56f2aec636e614c6c2b863c3865b8be873a922"
         ),
         "source_sha256": "a" * 64,
         "verification": "VERIFIED",
