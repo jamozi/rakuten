@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st1603_security_verification_pack.py
   generation_command: uv run --locked --no-sync python scripts/build_st1603_security_verification_pack.py
 provenance:
-  contract_sha256: 582ccca3eaf82b1b04a48bee7f4b68f6592517b72d8758423ae0235650f2fd55
+  contract_sha256: 13bf42391140a8d641f4fd5959bc57bae25b60a518b6617767f4f0aa505ce9dd
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -38,27 +38,27 @@ provenance:
   - uri: repo://python/raos/adapters/development_workload_credentials.py
     sha256: 42164321018c35f61d71c215d2a0c764d8e04c973dff56194db79e96926046e0
   - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
-    sha256: b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b
+    sha256: d7cddea6d006f620835c4facf1e76e62ce7f69d9ac0ae8d824b7ff67237764e5
   - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
-    sha256: 8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4
+    sha256: 7dc30e3f703c2e3f6a4e40729ae122d033f4a84b75646b1c1609e4da6c95d968
   - uri: repo://changes/st-1505/manifest.yaml
-    sha256: c27f4df8316621933f5d2d1e5d510dff6b8f65fe6a812ea036c70ba0c9334aa9
+    sha256: 97d3cda19e6f2c35543c0056a5f2bbbfdaab3ed9cadbc273dfc9ff198a587137
   implementation_inputs:
   - uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    sha256: cd22f5fcf16cfd135b1ecac64ea65c0f8b9d86b60d812d0ab987ff6bc3a4f42d
   - uri: repo://scripts/build_st1506_production_deployment.py
-    sha256: f58b1ed91bcfcc4376262a3e3aa3653154dcbb0672e8508daac874e0042f1176
+    sha256: a55385ccdd8fb3f9740eb2cbb2c24c3ba67006a46e1612dd27cd9e0973b6cc7e
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-1603/contracts/security-verification-pack.v1.yaml
   bytes: 7344
-  sha256: 582ccca3eaf82b1b04a48bee7f4b68f6592517b72d8758423ae0235650f2fd55
+  sha256: 13bf42391140a8d641f4fd5959bc57bae25b60a518b6617767f4f0aa505ce9dd
 - uri: repo://changes/st-1603/README.md
   bytes: 4314
   sha256: 9ba0c2b99dafe8e6a64e65495cf66b30cd6403dc8858f96762de78796c9706f7
 - uri: repo://scripts/build_st1603_security_verification_pack.py
-  bytes: 32424
-  sha256: ac9f893455f6721c1e558a480a2f65ead7f197b63b97c72e663f8199c0e503b2
+  bytes: 32428
+  sha256: 47dec01f4d28885dacb9bb4e712b74767950d66e3faa2e1a8e0268a90fdb85cc
 - uri: repo://tests/st1603/conftest.py
   bytes: 702
   sha256: e2f249f30ea8a794107a4e5edde2f69ffc3b786c485601b09b2e7a8733ee0e23
@@ -75,7 +75,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1603/generated/security-verification-pack.reference-plan.v1.json
   bytes: 44948
-  sha256: 8fb4460e5e1b6c6439ac9b34dd7735f05b8fefa89fae1589f592d4f3a2fd38f3
+  sha256: 4f6a09e76f2bc44ebd3ceb9a309a6abf6ed0f4db28d9cd6414d2912aa446d623
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
