@@ -37,6 +37,7 @@ from raos.domain.iam.authentication import Session, SessionId
 from raos.domain.iam.authorization import (
     ActionCode,
     AuthorizationDecision,
+    AuthorizationDecisionReason,
     AuthorizationFailure,
     AuthorizationFailureCode,
     AuthorizationGrant,
@@ -46,6 +47,7 @@ from raos.domain.iam.authorization import (
     CorrelationId,
     DecisionEffect,
     EntitlementSnapshot,
+    EntitlementRevision,
     PermissionScope,
     PolicyMode,
     PolicyRevision,
@@ -118,6 +120,27 @@ def test_exact_synthetic_match_records_then_returns_one_redacted_grant() -> None
     assert "TEST_ONLY" not in repr(grant)
     with pytest.raises(TypeError, match="serialization is not supported"):
         pickle.dumps(grant)
+
+
+def test_direct_grant_value_is_explicitly_in_process_tcb_and_never_an_executor() -> (
+    None
+):
+    direct_decision = AuthorizationDecision(
+        correlation_id=CORRELATION,
+        effect=DecisionEffect.ALLOW,
+        reason=AuthorizationDecisionReason.RULE_MATCH,
+        policy_revision=PolicyRevision("TEST_ONLY:DIRECT_VALUE_POLICY"),
+        policy_fingerprint="1" * 64,
+        entitlement_revision=EntitlementRevision("TEST_ONLY:DIRECT_VALUE_ENTITLEMENT"),
+        matched_rule_id=rule().rule_id,
+        action=ACTION,
+        target=target(),
+    )
+    direct_value = AuthorizationGrant(recorded_decision=direct_decision)
+    assert direct_value.action == ACTION
+    assert not callable(direct_value)
+    assert not hasattr(direct_value, "execute")
+    assert not hasattr(direct_value, "service_provenance")
 
 
 def test_action_scope_role_state_and_kind_mismatches_deny() -> None:

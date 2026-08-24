@@ -1,70 +1,73 @@
-# ST-0403 deny-default authorization seam
+# ST-0403 deny-default authorization runtime
 
-Status: `LOCAL_IMPLEMENTATION_CANDIDATE` (partial)
+Status: `LOCAL_CODE_COMPLETE`
 
-This Story implements the maximum safe local portion of the approved ST-0403
-authorization design. The seam starts with the exact ST-0401 active-session
-check, derives a `USER`/`ADMIN` principal server-side, loads one immutable
-policy snapshot and one trusted entitlement snapshot, and records a minimal
-decision before returning an allow grant. Every non-exact path exposes only the
-stable external result `DENIED`.
+This Story implements the repository-local authorization boundary without
+granting live, provider, publication, service-principal, or Production
+authority. It composes the active ST-0401 session and, for every mapped matrix
+action that requires MFA or step-up, the exact single-use ST-0402 grant. It
+returns an authorization grant only; it never invokes a business handler.
 
-## Implemented local boundary
+## Closed registry
 
-- Policy is allowlist-only and deny-default. The stable default is an empty
-  `DISABLED` policy.
-- The only non-disabled policy source is an exact `ENV-DEV`, in-memory,
-  `TEST_ONLY:*` recorded adapter. It contains no real assignments, provider
-  claims, or canonical business allow policy.
-- Matching is exact on business role, required OAuth permission scope, action,
-  resource kind, optional state, site UUID, and resource UUID. A site or parent
-  assignment never implies child-resource authority; `None` state means only
-  stateless matching.
-- Rules and entitlement snapshots are immutable, bounded, canonical-order
-  values. Duplicate rule IDs, duplicate semantics, reordered data, ambiguous
-  matches, malformed collaborator output, and collaborator failures deny.
-- Active-session failure occurs before policy, entitlement, or decision-sink
-  access. A would-be allow is returned only after one successful sink record;
-  the sink is ephemeral inward recording, not durable security audit evidence.
-- Internal decisions contain normalized action/target and revision metadata,
-  but no raw issuer, subject, display name, token, credential, claim payload,
-  or role list. Sensitive values, decisions, grants, failures, and adapters are
-  redacted and non-serializable.
+The owner contract and generated registry cover all 19 Canonical matrix
+actions. Each binding fixes the operation ID, OAuth permission scope, resource
+kind, allowed state, roles, step-up/MFA requirement, and separation-of-duty
+requirement. Unknown operations, wildcards, hierarchy inference, ambiguous
+operation variants, state drift, cross-site/resource identifiers, incomplete
+step-up pairs, and missing independent-actor evidence deny.
 
-UI hiding and PostgreSQL roles are defense-in-depth boundaries, not
-application authorization. This slice adds no UI, HTTP decorator/dependency,
-middleware, route, database role/grant, migration, workflow, service principal
-entrypoint, provider adapter, network/file/process/environment access, logging,
-or durable audit service.
+Only seven exact recorded bindings are active: `AI-113`, `AI-114`, `AI-115`,
+`ED-011`, `FIN-006`, `PUBADM-004`, and `PUBADM-012`. The other 13 operation
+bindings expose a typed `BLOCKED` reason and the exact evidence needed to close
+the mapping. In particular, final approval, publication, policy/product
+identity management, audit scope, kill-switch variants, and pre-create
+resource bindings remain closed. The ST-0306 workload-role inventory is
+recorded, but no service principal is mapped to it; the service-principal port
+always denies.
 
-## Local verification
+## Durable recorded boundary
 
-After the exact locked environment is already hydrated, the owned checks are
-run directly with pinned uv 0.12.1 and `--frozen --offline --no-cache
---no-sync --no-env-file`:
+The `ENV-DEV`/`ENV-CI` adapter owns a fixed owner-private SQLite database. Its
+default policy is immutable and empty. Non-empty policy and entitlement
+snapshots are recorded fixtures only and use revision compare-and-set. Active
+snapshot pointers and immutable rows carry verified SHA-256 records. Decision
+commands are idempotent, audit rows form an append-only verified hash chain,
+and explicit units of work distinguish before-commit failure from
+after-commit ambiguity. Recovery revalidates the active ST-0401 session and
+its fingerprint before returning an existing result. The adapter rejects any
+symlinked private-root ancestor and verifies an exact digest of all owned
+`sqlite_master` table constraints, indexes, foreign keys, and checks on every
+transaction; a same-column weakened schema cannot become authoritative.
+
+The framework-neutral decorator stores operation metadata only. The disabled
+HTTP adapter registers no route, ignores every external request with an
+RFC 9457 `503`, and admits only an exact in-process loopback recorded harness
+with no Cookie or Bearer delivery. Neither path executes a business action.
+
+`AuthorizationDecision`, `AuthorizationCommandResult`, and
+`AuthorizationGrant` are trusted in-process normalization values, not
+unforgeable capabilities or proof that an application service ran. Their
+constructors never accept external input in the runtime composition, and a
+grant has no business-action executor. The only enforcement entrypoints are
+the application guard and durable authorization service; arbitrary Python code
+inside the process is part of the trusted computing base. This preserves the
+existing cross-Story value-normalization API without representing constructor
+availability as public or provider authority.
+
+## Owner generation
+
+Run the deterministic generator and then its no-write check:
 
 ```bash
-uv run --frozen --offline --no-cache --no-sync --no-env-file pytest -q tests/st0403
-uv run --frozen --offline --no-cache --no-sync --no-env-file ruff check <owned paths>
-uv run --frozen --offline --no-cache --no-sync --no-env-file ruff format --check <owned paths>
-uv run --frozen --offline --no-cache --no-sync --no-env-file mypy --strict <owned paths>
+PYTHONPATH=python:. .venv/bin/python scripts/build_st0403_authorization_runtime.py
+PYTHONPATH=python:. .venv/bin/python scripts/build_st0403_authorization_runtime.py --check
 ```
 
-The ST-0306 owner check and ST-0401 isolated regression remain separate
-read-only predecessor checks. Generated manifests, canonical/status artifacts,
-and the append-only implementation debt ledger are integration-owner work and
-are not hand-edited by this slice.
+The manifest binds the Canonical/design/API/ST-0402/ST-0306 sources, the owner
+contract, generated artifacts, implementation sources, and verification
+files. All authority flags remain `false`.
 
-## Deferred and unexecuted
-
-The action-to-OAuth-scope-to-operation/resource/state map and the service-role
-inventory are not defined by current canonical sources, so this Story does not
-invent or activate them. A real/canonical allow policy, HTTP enforcement,
-database integration, durable audit through ST-0405, service authorization,
-live identity/provider configuration, and external environments remain absent
-and disabled.
-
-Formal `TST-011`, `TST-012`, and `TST-026`, hosted CI, security review, live or
-staging validation, release, deployment, publication, and Production remain
-`NOT_EXECUTED`. A local focused pass is implementation-candidate evidence only;
-it is not `VALIDATED` or Production readiness.
+Formal TST-011/TST-012/TST-026, real OIDC/MFA/DB/provider integration, hosted
+CI, staging, release, publication, and Production are `NOT_EXECUTED`. Local
+evidence is not `VALIDATED` or Production readiness.
