@@ -5,19 +5,19 @@ document:
   status: LOCAL_IMPLEMENTATION_COMPLETE
   authority: NONE
   production_eligible: false
-contract_sha256: 35caa750dc7edf230d6d18c066348f400294c98daf15c8744f56a997d95e1458
+contract_sha256: 27c6e326c2b4485d97fa0179eb01a9f01f904ab45b2361de648fec02bd307e20
 policy_sha256: f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8
 source_sha256:
-  changes/st-0706/contracts/durable-ai-job-queue.v2.yaml: 35caa750dc7edf230d6d18c066348f400294c98daf15c8744f56a997d95e1458
+  changes/st-0706/contracts/durable-ai-job-queue.v2.yaml: 27c6e326c2b4485d97fa0179eb01a9f01f904ab45b2361de648fec02bd307e20
   changes/st-0706/README.md: 2ea7aefa0acd747a4df13d39ebbdc45340a98e95ecbe642a2763b2f0bb35bbbd
   changes/st-0706/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: f3f3574fec061ccfa3d8244e2b81bb7f06c561984448ce95ee1b9fe480ee6c58
-  scripts/build_st0706_durable_ai_job_queue.py: 28970efd13aa4b9226b3a5dc5eec0295aabbdb641a604dfde0baa2659ac089b5
+  scripts/build_st0706_durable_ai_job_queue.py: 3126aeae0f47e0b9d812064debc2f379e5708bb6ea28b22e78c2494c661b3b09
   scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
   python/raos/domain/ai/job_orchestration.py: 5ef0e0d90f5bb07257d4a9d27829647dd07ced443310f9ba5bc6fed8fc7d97c2
   python/raos/ports/ai_job_orchestration.py: 6a3a33345d17ca4072c468b0a018d95b9b5f33241bbfe6d97a4ae260b992ff9d
   python/raos/application/ai/job_orchestration.py: 515d9172400ec282c7b0b3893be8f66ec87dfb165a95bfab1d823371c9a4d244
   python/raos/adapters/recorded_ai_job_orchestration.py: 089b8d3353e2adafe284c03839b2a36dc9a391ab0c060df28bf68dfc9bc38641
-  python/raos/domain/ai/durable_job_queue_v2.py: 6f949f7d4d517facb0184ec5a0f97ec3a8b66652bebf92caa91168ff9369b753
+  python/raos/domain/ai/durable_job_queue_v2.py: 90d8745313ebdf624f61a212f1c35a13777cf10abb1177ca4f7e75a40f865629
   python/raos/ports/durable_ai_job_queue_v2.py: b0cc4840d1f39b50482a7d954bcc5f5ba3d3f89fd4e000f21ae24e6ef2a68660
   python/raos/application/ai/durable_job_queue_v2.py: 862e5690a06e2dbea5a4c78067d17d729f8e3662719ef5be8ca28babee200435
   python/raos/adapters/recorded_durable_ai_job_queue_v2.py: 3339f96f8577b5eb551b49f6c947111d44d2056b41e57e363a0eef3611a5d998
@@ -30,7 +30,7 @@ source_sha256:
   tests/st0706/test_durable_queue_v2_boundaries.py: b394cd05867013c580cfb8184c176063cb607651709c34c73819c888f81edfb8
   tests/st0706/test_durable_queue_v2_generation.py: ba771a0e43a1a5949fe585574aa168d1223fd33ff7d81044da6a1951e69d8568
 generated_sha256:
-  changes/st-0706/generated/durable-ai-job-queue.v2.json: ba8ff266bc0828c4ce969377d2e1351117552189fbd9a18023a9b1c4d9334f45
+  changes/st-0706/generated/durable-ai-job-queue.v2.json: bf5a60509879837bb25928c5da54b804755a1ee91025a9f6f1140379a6771912
 generation:
   command: uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads
     python scripts/build_st0706_durable_ai_job_queue.py
