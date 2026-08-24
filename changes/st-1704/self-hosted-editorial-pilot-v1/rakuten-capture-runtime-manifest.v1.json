@@ -56,9 +56,9 @@
       "sha256": "ee78241d683b345a55a022eb9bb5214b5a362e6dfab1e645ed68fceab8f23917"
     },
     {
-      "bytes": 86680,
+      "bytes": 86796,
       "path": "python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
-      "sha256": "2edf0d4e15bb9b03ffdb9abc1d72ed3b00102f53fe88f08f2188bb6ae4bf8f19"
+      "sha256": "d8b2f6946962daad68fcfcd39053c4633f07cd096db54da0f2677654080d085b"
     },
     {
       "bytes": 54968,

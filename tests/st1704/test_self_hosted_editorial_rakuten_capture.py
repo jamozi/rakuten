@@ -534,6 +534,18 @@ def test_capture_plan_binds_five_articles_and_eighteen_unique_products() -> None
         "anker:10001654",
         "anker:10002336",
     ]
+    assert [target.fixed_item_code for target in rows[3]] == [
+        "panasonic-store:10000735",
+        "thanko:000000004055",
+        "siroca:10000024",
+        "jyupro:10136298",
+    ]
+    assert [target.fixed_item_code for target in rows[4]] == [
+        "irobotstore:f15",
+        "switchbot:10000327",
+        "switchbot:10000240",
+        "edion:10909675",
+    ]
     assert [target.fixed_item_code for target in rows[0]] == [
         "ace-store:10007275",
         "ace-store:10009372",
@@ -990,9 +1002,14 @@ def test_system_factory_store_refusal_precedes_credentialed_request(
 
 
 def test_ambiguous_discovery_stops_before_discovered_product_evidence(
-    private_root_path: Path, clean_network_environment: None
+    private_root_path: Path,
+    clean_network_environment: None,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     repository = _private_root(private_root_path)
+    fixed_codes = dict(capture_module._FIXED_PRODUCT_ITEM_CODES)
+    del fixed_codes["PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"]
+    monkeypatch.setattr(capture_module, "_FIXED_PRODUCT_ITEM_CODES", fixed_codes)
     targets = load_product_capture_plan(repository).for_article(DISCOVERY_ARTICLE_ID)
     with pytest.raises(RakutenProductCaptureFailure) as captured:
         capture_article_products(
@@ -1015,9 +1032,14 @@ def test_ambiguous_discovery_stops_before_discovered_product_evidence(
 
 
 def test_discovery_aggregates_identity_across_every_allowed_variant(
-    private_root_path: Path, clean_network_environment: None
+    private_root_path: Path,
+    clean_network_environment: None,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     repository = _private_root(private_root_path)
+    fixed_codes = dict(capture_module._FIXED_PRODUCT_ITEM_CODES)
+    del fixed_codes["PRD-THANKO-RAKUA-MINI-PLUS"]
+    monkeypatch.setattr(capture_module, "_FIXED_PRODUCT_ITEM_CODES", fixed_codes)
     targets = load_product_capture_plan(repository).for_article(DISHWASHER_ARTICLE_ID)
     factory = _Factory(targets)
     with pytest.raises(RakutenProductCaptureFailure) as captured:
