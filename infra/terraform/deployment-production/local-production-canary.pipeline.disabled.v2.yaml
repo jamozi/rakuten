@@ -1,0 +1,90 @@
+document:
+  schema: RAOS_LOCAL_PRODUCTION_CANARY_PIPELINE_FIXTURE_V2
+  version: 2
+  story_id: ST-1506
+  source_contract: repo://changes/st-1506/contracts/local-production-canary-runtime.v2.yaml
+  generated_by: repo://scripts/build_st1506_production_canary_runtime.py
+  classification: REPOSITORY_INERT_LOCAL_SIMULATION_FIXTURE_ONLY
+activation:
+  enabled: false
+  default_enabled: false
+  active_workflow_path: null
+  trigger: NONE
+  selected_provider: null
+  selected_account: null
+  selected_region: null
+  selected_target: null
+  credentials: ABSENT
+  network_client: ABSENT
+  commands: []
+  activation_authority: NONE
+  public_write_authority: NONE
+pipeline:
+  fixture_id: st1506-fixture-local-canary-v2
+  pipeline_id: st1506-pipeline-local-canary-v2
+  contract_sha256: 6c4576882e38afbddb89aa8c2f63c2d383127ad0c2b1c017f4a56693abb9ab6a
+  phases:
+  - SAFETY_BOUNDARY
+  - PREDECESSOR_BINDING
+  - STAGING_ARTIFACT_ADMISSION
+  - HUMAN_APPROVAL_GATE
+  - CANARY
+  - OBSERVE
+  - ABORT_OR_ROLLBACK_DECISION
+  - LOCAL_SIMULATION_COMPLETE
+  one_step_per_call: true
+  auto_advance: FORBIDDEN
+  action_counts:
+    network: 0
+    credential: 0
+    provider: 0
+    build: 0
+    promote: 0
+    approve: 0
+    deploy: 0
+    migrate: 0
+    traffic: 0
+    smoke: 0
+    telemetry: 0
+    alert: 0
+    rollback: 0
+    restore: 0
+    staging: 0
+    release: 0
+    production: 0
+    public_write: 0
+capability_boundary:
+  required_capability_ids:
+  - workload_runtime
+  - relational_persistence
+  - immutable_object_storage
+  - asynchronous_queue
+  - public_edge
+  - workload_identity_and_secrets
+  - telemetry_and_alerting
+  - backup_and_restore
+  - deployment_and_release
+  - region_and_data_residency
+  selected_mapping_count: 0
+  selected_profile: null
+  default_profile: null
+  fallback_profile: null
+  eligibility: BLOCKED_NOT_CONFIGURED
+kill_switch:
+  safeguard_enabled: true
+  deactivation_allowed: false
+  deactivation_authority: NONE
+  external_action_count: 0
+human_approval_artifacts:
+  release_decision: ABSENT
+  gate_report: ABSENT
+  security_approval: ABSENT
+  operations_approval: ABSENT
+  populated_count: 0
+external_evidence:
+  formal_tst_009: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

@@ -1,0 +1,461 @@
+document:
+  id: RAOS-LOCAL-PRODUCTION-CANARY-002
+  version: 2.0.0
+  story_id: ST-1506
+  status: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE_PROPOSAL
+  canonical_status_effect: NONE
+  formal_verification: NOT_EXECUTED
+
+predecessor_bindings:
+  ST-1501:
+    story_id: ST-1501
+    design_handoff_uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+    design_handoff_sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
+    design_handoff_semantic_sha256: e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722
+    contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+    contract_sha256: 5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e
+    contract_semantic_sha256: 9e88addbfe93c6d6754111d508ba1d7461a703c2aa6b329fa319b6566d9a55e1
+    owner_generator_uri: repo://scripts/build_st1501_terraform_foundation.py
+    owner_generator_sha256: ca5bf43cb45578207678f7afcce77cab01a9e54b34f45a3f1c9a5f4f417aa7cb
+    reference_plan_uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
+    reference_plan_sha256: bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72
+    reference_plan_semantic_sha256: 1deb0efe9ff2d99ccc27ad6f50d1a07c6ed13b6c45cdd6914a7fdcd1a0edbf20
+    manifest_uri: repo://changes/st-1501/manifest.yaml
+    manifest_sha256: 5897481a16bd99292d18b1044f90a41f0b010950b069f90eb929619938ca91a4
+    manifest_semantic_sha256: bc3cbb321bb20d06ebbe0283d3e78a827fcc9777d0099045d72a15e79b2f62ca
+    owner_check_required: true
+    admission_status: BLOCKED_NO_PRODUCTION_AUTHORITY
+  ST-1502:
+    story_id: ST-1502
+    design_handoff_uri: repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
+    design_handoff_sha256: 2826ec76994e6fb1d4e1c41bc0ce7affecc96351d1fcf527e45c2909bb89f97c
+    design_handoff_semantic_sha256: 0d1069b18729a8997e81cdbe1edc40f770348adea10cb12349d9b915547d5845
+    contract_uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
+    contract_sha256: 89a0f1e7babfceffd2b270bc3a16f5d74fbeb6b62699e03156c860c9ae16c7e1
+    contract_semantic_sha256: 6339ecf8ba6846efb3efdea69ecba3ef74cb5280a70838c735f3778c3bb0079b
+    owner_generator_uri: repo://scripts/build_st1502_data_services.py
+    owner_generator_sha256: 73876b415aba2f7160d94dbe8df113087d4bf5be27b4830b82425b34f6ea6abe
+    reference_plan_uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
+    reference_plan_sha256: 2d52d7b99a4edda75814af603e48016f06fa34507bc221e3f573379c066f35c5
+    reference_plan_semantic_sha256: abce483dc017145c1511bbe82f3a5fb055f99ff12636e1fddfffa6bd19f6efdc
+    manifest_uri: repo://changes/st-1502/manifest.yaml
+    manifest_sha256: efa59447601cf20f0fca3daf271567e1eeb5d81497b4414b0847cd9ae21bc390
+    manifest_semantic_sha256: c640a83b2c435117515bd2b9eeb87b18d23cbff9584a27876a87c779e420a862
+    owner_check_required: true
+    admission_status: BLOCKED_NO_PRODUCTION_AUTHORITY
+  ST-1503:
+    story_id: ST-1503
+    design_handoff_uri: repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
+    design_handoff_sha256: 2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d
+    design_handoff_semantic_sha256: ad5e207a8f201d0ccdff72670a0f1cd7d90ba76f3e52ad7e51db2eb96d0dd707
+    contract_uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
+    contract_sha256: 682ab350c5036bf8697a99f08269d5d6db1aaff7387ca8401db07b9d811b1c08
+    contract_semantic_sha256: 344fc69777a14c50fef91fff3fa4c3d724136ae414039b4a1659383ea7f4acc1
+    owner_generator_uri: repo://scripts/build_st1503_compute_edge.py
+    owner_generator_sha256: a19e6eec9dac3c5f46b34538189bc2cac95836e57762925d53823f9948497d27
+    reference_plan_uri: repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json
+    reference_plan_sha256: 1ac46b4ac6a779f41776c10f69416c05e770f2119fb1ce3b6898c11d7e1295ee
+    reference_plan_semantic_sha256: a0100d4256e39d6aed035010534a00c8373c2f916b182eb7d6cd13265d8287a4
+    manifest_uri: repo://changes/st-1503/manifest.yaml
+    manifest_sha256: 74b09c47890f855744fa744ba2b2fef46a8ea6ff7553209f1b6773e0de9a8106
+    manifest_semantic_sha256: 8cf25bd1b31403affeb34cd0097fe0988914c19780015c0ce7fb5349edc9e847
+    owner_check_required: true
+    admission_status: BLOCKED_NO_PRODUCTION_AUTHORITY
+  ST-1504:
+    story_id: ST-1504
+    design_handoff_uri: repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml
+    design_handoff_sha256: 36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04
+    design_handoff_semantic_sha256: e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282
+    contract_uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
+    contract_sha256: 3cb7faf3a5c2515bf76150ed8cc9e5dc109bb5a519c5b15c0727b1bfe20bc4c8
+    contract_semantic_sha256: f0a8a5ca57f34f8b983aa547f8b5f036ee91e0cc9acb63813da64e62a317d2db
+    owner_generator_uri: repo://scripts/build_st1504_github_oidc.py
+    owner_generator_sha256: 24268932c010afe9ff1b6e003d06cb402b637fa9cfb07e4ff8f712761205938c
+    reference_plan_uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
+    reference_plan_sha256: 2bbdc8579473be7df47167be57e0c0ec7d3c1f800ffc9afea1b3270adfa9aff8
+    reference_plan_semantic_sha256: 20f3e810ce17aa546b88a7510f8d5fa4dd249593ca233e7bcd8fb37211310f51
+    manifest_uri: repo://changes/st-1504/manifest.yaml
+    manifest_sha256: f75cecdea748d6bd174753be87c35d681daf0ff3b8e45d671f3cea0573c8765e
+    manifest_semantic_sha256: ad6c7c0b06e04eb100ccb161caba8af0208af46cf8930e058cdc31b28c8923f3
+    owner_check_required: true
+    admission_status: BLOCKED_NO_PRODUCTION_AUTHORITY
+  ST-1505:
+    story_id: ST-1505
+    design_handoff_uri: repo://changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml
+    design_handoff_sha256: 5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5
+    design_handoff_semantic_sha256: d4f680a468ab1246734595394d7e2b1edefa6a590e33c418f7c0c9b487e30448
+    contract_uri: repo://changes/st-1505/contracts/local-staging-admission-runtime.v2.yaml
+    contract_sha256: b475a2bcdeb18b12ec61fd7364d1488a22aad9e525adff23a3321e2e396be76d
+    contract_semantic_sha256: 509bfd0102d54c035e4c514b30389936695f8779c39adf02340fa66706c314fd
+    owner_generator_uri: repo://scripts/build_st1505_staging_deployment.py
+    owner_generator_sha256: ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5
+    reference_plan_uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
+    reference_plan_sha256: 0731e1274623628016e41cc1f04a7a7e5e37717efe376ca066ed8259ed1f6624
+    reference_plan_semantic_sha256: 86929c3e59918645ab6193855e5f296eb3446a84b851b64695d5856e26cd5b29
+    manifest_uri: repo://changes/st-1505/manifest.yaml
+    manifest_sha256: a9ad6a56a6d98c6e4258463334525255ed45452f288764a1edf4113a17acbdd9
+    manifest_semantic_sha256: 7568d876e7de9db33ab15e7b0288feef0ade519f6e3db68cb4909f9136c36b79
+    pipeline_uri: repo://infra/terraform/staging/local-staging-admission.pipeline.disabled.v2.yaml
+    pipeline_sha256: c427bad717bda13de880ab7af45b1a82745390919b0ea3bee43f30d932e96146
+    result_uri: repo://infra/terraform/staging/local-staging-admission.result.recorded.v2.json
+    result_sha256: bcd16eb96868da461150a09a10f9277dbe1a4421d65389bf2ffeeafca2ccc15b
+    admitted_result_sha256: 696668a3f9dc74e6de614cad18c4185b30cd2658c39f547d8070cbf733a342e9
+    artifact_payload_sha256: d615727014ef5fd32023e7d1ce745cc89c08cbfde37d2838ace4acf3956cc345
+    sbom_sha256: 171cd38d63d5e37c8ec352a1a5fe8e735524d8fcf5bd909342e1536ce4a1a3df
+    provenance_sha256: 254caf782caa5f8417f27d559231f594b37de21cd5a9da47a2874d532145211e
+    required_status: LOCAL_ADMISSION_SIMULATION_COMPLETE
+    required_classification: DETERMINISTIC_RECORDED_LOCAL_ONLY_NOT_STAGING_EVIDENCE
+    required_external_actions: 0
+    owner_check_required: true
+    admission_status: BLOCKED_NO_PRODUCTION_AUTHORITY
+
+v1_compatibility_binding:
+  contract_uri: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
+  contract_sha256: 5543dc6b6f3c2c0ca4d12d3e2b7154351a9e0e732baeccbdec82082c4648179a
+  contract_semantic_sha256: 176c1fb22be9676655d9339eeb2a715ade654a4f8c998dcd5d84ce4602c16735
+  compatibility: PRESERVED_BYTES_NOT_ADMITTED_DUE_INHERITED_PREDECESSOR_DRIFT
+  activation_authority: NONE
+
+capability_boundary:
+  classification: CLOSED_TEN_CAPABILITY_INVENTORY_UNCONFIGURED
+  required_capability_ids:
+    - workload_runtime
+    - relational_persistence
+    - immutable_object_storage
+    - asynchronous_queue
+    - public_edge
+    - workload_identity_and_secrets
+    - telemetry_and_alerting
+    - backup_and_restore
+    - deployment_and_release
+    - region_and_data_residency
+  mapping_requirements:
+    - capability_id: workload_runtime
+      selected_mapping: null
+      status: ABSENT
+    - capability_id: relational_persistence
+      selected_mapping: null
+      status: ABSENT
+    - capability_id: immutable_object_storage
+      selected_mapping: null
+      status: ABSENT
+    - capability_id: asynchronous_queue
+      selected_mapping: null
+      status: ABSENT
+    - capability_id: public_edge
+      selected_mapping: null
+      status: ABSENT
+    - capability_id: workload_identity_and_secrets
+      selected_mapping: null
+      status: ABSENT
+    - capability_id: telemetry_and_alerting
+      selected_mapping: null
+      status: ABSENT
+    - capability_id: backup_and_restore
+      selected_mapping: null
+      status: ABSENT
+    - capability_id: deployment_and_release
+      selected_mapping: null
+      status: ABSENT
+    - capability_id: region_and_data_residency
+      selected_mapping: null
+      status: ABSENT
+  exact_one_mapping_required_for_future_eligibility: true
+  missing_unknown_duplicate_partial_or_label_only: BLOCK
+  selected_profile: null
+  default_profile: null
+  fallback_profile: null
+  eligibility: BLOCKED_NOT_CONFIGURED
+
+pipeline:
+  schema: RAOS_LOCAL_PRODUCTION_CANARY_PIPELINE_V2
+  fixture_id: st1506-fixture-local-canary-v2
+  pipeline_id: st1506-pipeline-local-canary-v2
+  classification: REPOSITORY_INERT_EXPLICIT_SYNTHETIC_SIMULATION_ONLY
+  repository_inert: true
+  default_enabled: false
+  active_workflow_path: null
+  trigger: NONE
+  auto_advance: false
+  phases:
+    - SAFETY_BOUNDARY
+    - PREDECESSOR_BINDING
+    - STAGING_ARTIFACT_ADMISSION
+    - HUMAN_APPROVAL_GATE
+    - CANARY
+    - OBSERVE
+    - ABORT_OR_ROLLBACK_DECISION
+    - LOCAL_SIMULATION_COMPLETE
+
+approval_boundary:
+  classification: FOUR_DISTINCT_IMMUTABLE_HUMAN_CONTROLLED_ARTIFACTS
+  release_decision:
+    artifact_type: RELEASE_DECISION
+    artifact_value: null
+    artifact_digest: null
+    human_reviewer: null
+    status: ABSENT
+  gate_report:
+    artifact_type: GATE_REPORT
+    artifact_value: null
+    artifact_digest: null
+    human_reviewer: null
+    status: ABSENT
+  security_approval:
+    artifact_type: SECURITY_APPROVAL
+    artifact_value: null
+    artifact_digest: null
+    human_reviewer: null
+    status: ABSENT
+  operations_approval:
+    artifact_type: OPERATIONS_APPROVAL
+    artifact_value: null
+    artifact_digest: null
+    human_reviewer: null
+    status: ABSENT
+  populated_artifact_count: 0
+  distinct_artifacts_required: true
+  immutable_artifacts_required: true
+  human_control_required: true
+  automation_as_approval: FORBIDDEN
+  shared_artifact_slots: FORBIDDEN
+  synthesized_or_forged_approval: FORBIDDEN
+  bypass_or_override: FORBIDDEN
+
+open_decision_defaults:
+  OD-009:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    selected_value: null
+    safe_default: PRODUCTION_DISABLED
+  OD-011:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    selected_value: null
+    safe_default: LOCAL_LOG_ONLY_PRODUCTION_UNAVAILABLE
+  OD-013:
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    blocking: true
+    selected_value: null
+    reference_region_metadata: ap-northeast-1
+    safe_default: REFERENCE_METADATA_ONLY_PRODUCTION_APPLY_FORBIDDEN
+  OD-015:
+    status: EXTERNAL_EVIDENCE_REQUIRED
+    resolved: false
+    blocking: true
+    selected_value: null
+    safe_default: RECORDED_FIXTURES_ONLY
+
+activation_boundary:
+  default_enabled: false
+  activation_enabled: false
+  activation_authority: NONE
+  deployment_authority: NONE
+  migration_authority: NONE
+  traffic_authority: NONE
+  rollback_authority: NONE
+  release_authority: NONE
+  public_write_authority: NONE
+  selected_provider: null
+  selected_account: null
+  selected_region: null
+  selected_backup_region: null
+  selected_target: null
+  selected_repository: null
+  selected_ref: null
+  selected_workflow: null
+  selected_environment: null
+  selected_identity: null
+  selected_credential: null
+  selected_endpoint: null
+  credentials: ABSENT
+  provider_sdk: ABSENT
+  network_client: ABSENT
+  auto_advance: FORBIDDEN
+  external_actions: FORBIDDEN
+
+kill_switch_boundary:
+  safeguard_enabled: true
+  fail_closed: true
+  generation: 1
+  generation_scope: SYNTHETIC_LOCAL_SIMULATION_ONLY
+  triggered_by_default: false
+  deactivation_allowed: false
+  deactivation_authority: NONE
+  stale_generation_override: FORBIDDEN
+  bypass: FORBIDDEN
+  external_action_count: 0
+
+observation_policy:
+  classification: CLOSED_SYNTHETIC_RECORDED_METRIC_POLICY
+  source: SYNTHETIC_RECORDED_FIXTURE_ONLY
+  cohort_id: st1506-synthetic-cohort-v2
+  maximum_age_seconds: 300
+  minimum_sample_count: 3
+  minimum_window_seconds: 60
+  maximum_error_rate_ppm: 1000
+  maximum_latency_p95_milliseconds: 500
+  maximum_health_failure_count: 0
+  maximum_critical_alert_count: 0
+  missing_value: BLOCK
+  unknown_value: BLOCK
+  stale_value: BLOCK
+  future_value: BLOCK
+  contract_mismatch: BLOCK
+  artifact_mismatch: BLOCK
+  staging_result_mismatch: BLOCK
+  immature_cohort: BLOCK
+  zero_sample_cohort: BLOCK
+  local_success_effect: HOLD_FOR_FOUR_HUMAN_APPROVALS
+  recommendation_or_ranking_input: FORBIDDEN
+
+state_machine:
+  schema: RAOS_LOCAL_PRODUCTION_CANARY_STATE_MACHINE_V2
+  initial_state: CANARY_READY
+  states:
+    - CANARY_READY
+    - OBSERVE
+    - HOLD_FOR_HUMAN_APPROVAL
+    - ABORT_REQUIRED
+    - ROLLBACK_REQUIRED
+  terminal_states:
+    - HOLD_FOR_HUMAN_APPROVAL
+    - ABORT_REQUIRED
+    - ROLLBACK_REQUIRED
+  commands:
+    - START_CANARY_SIMULATION
+    - RECORD_SYNTHETIC_OBSERVATION
+  outcomes:
+    - OBSERVE_REQUIRED
+    - DATA_BLOCKED
+    - HUMAN_APPROVALS_REQUIRED
+    - ABORT_REQUIRED
+    - ROLLBACK_REQUIRED
+  one_step_per_call: true
+  loop: FORBIDDEN
+  sleep: FORBIDDEN
+  network: FORBIDDEN
+  auto_advance: FORBIDDEN
+  automatic_promotion: FORBIDDEN
+  automatic_rollback: FORBIDDEN
+
+recorded_scenarios:
+  - scenario_id: st1506-healthy-mature-v2
+    release_phase: CANARY
+    observed_at_epoch_seconds: 2000000000
+    evaluated_at_epoch_seconds: 2000000060
+    sample_count: 5
+    window_seconds: 120
+    error_rate_ppm: 100
+    latency_p95_milliseconds: 250
+    health_failure_count: 0
+    critical_alert_count: 0
+    kill_switch_triggered: false
+    expected_outcome: HUMAN_APPROVALS_REQUIRED
+    expected_state: HOLD_FOR_HUMAN_APPROVAL
+  - scenario_id: st1506-canary-regression-v2
+    release_phase: CANARY
+    observed_at_epoch_seconds: 2000000000
+    evaluated_at_epoch_seconds: 2000000060
+    sample_count: 5
+    window_seconds: 120
+    error_rate_ppm: 5000
+    latency_p95_milliseconds: 250
+    health_failure_count: 0
+    critical_alert_count: 0
+    kill_switch_triggered: false
+    expected_outcome: ABORT_REQUIRED
+    expected_state: ABORT_REQUIRED
+  - scenario_id: st1506-post-canary-regression-v2
+    release_phase: POST_CANARY
+    observed_at_epoch_seconds: 2000000000
+    evaluated_at_epoch_seconds: 2000000060
+    sample_count: 5
+    window_seconds: 120
+    error_rate_ppm: 100
+    latency_p95_milliseconds: 250
+    health_failure_count: 1
+    critical_alert_count: 0
+    kill_switch_triggered: false
+    expected_outcome: ROLLBACK_REQUIRED
+    expected_state: ROLLBACK_REQUIRED
+
+durable_journal:
+  classification: OWNER_PRIVATE_LOCAL_SQLITE_JOURNAL_ONLY
+  persistence: LOCAL_ONLY
+  owner_private_directory_mode: "0700"
+  owner_private_file_mode: "0600"
+  exact_schema_required: true
+  content_addressed_result_bytes: true
+  hash_chain: REQUIRED
+  compare_and_swap: REQUIRED
+  idempotency: REQUIRED
+  restart_recovery: REQUIRED
+  commit_ambiguity_recovery: REQUIRED
+  concurrency_control: REQUIRED
+  tamper_detection: REQUIRED
+  symlink_hardlink_traversal: FORBIDDEN
+  credential_personal_or_production_data: FORBIDDEN
+
+execution_boundary:
+  local_simulation: IMPLEMENTED_EXPLICIT_ONLY
+  external_activation: DISABLED
+  external_action_categories:
+    - network
+    - credential
+    - provider
+    - build
+    - promote
+    - approve
+    - deploy
+    - migrate
+    - traffic
+    - smoke
+    - telemetry
+    - alert
+    - rollback
+    - restore
+    - staging
+    - release
+    - production
+    - public_write
+  action_counts:
+    network: 0
+    credential: 0
+    provider: 0
+    build: 0
+    promote: 0
+    approve: 0
+    deploy: 0
+    migrate: 0
+    traffic: 0
+    smoke: 0
+    telemetry: 0
+    alert: 0
+    rollback: 0
+    restore: 0
+    staging: 0
+    release: 0
+    production: 0
+    public_write: 0
+
+evidence_boundary:
+  local_runtime: IMPLEMENTED_LOCAL_NOT_FORMAL
+  predecessor_hash_binding: IMPLEMENTED_LOCAL_NOT_FORMAL
+  synthetic_state_machine: IMPLEMENTED_LOCAL_NOT_FORMAL
+  durable_journal: IMPLEMENTED_LOCAL_NOT_FORMAL
+  synthetic_success: LOCAL_SIMULATION_EVIDENCE_ONLY
+  formal_tst_009: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  security_approval: NOT_EXECUTED
+  operations_approval: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  canonical_status_effect: NONE
