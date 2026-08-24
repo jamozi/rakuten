@@ -1,0 +1,230 @@
+document:
+  schema_version: 2.0.0
+  story_id: ST-1104
+  classification: MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_ANALYTICS_FINANCE_DASHBOARD_V2
+  status: LOCAL_CODE_COMPLETE
+  executable_environments: [ENV-DEV, ENV-CI]
+  canonical_status: UNCHANGED
+  historical_v1_replaced: false
+  formal_validation_claimed: false
+  production_eligible: false
+
+source_bindings:
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  canonical_decisions:
+    path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  story_backlog:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  ui_design:
+    path: docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+    sha256: 0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e
+  screen_catalog:
+    path: docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml
+    sha256: dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050
+  component_catalog:
+    path: docs/canonical/02_ui/RAOS_08_component_catalog_v1.0.yaml
+    sha256: 986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2
+  workflow_catalog:
+    path: docs/canonical/02_ui/RAOS_08_workflow_catalog_v1.0.yaml
+    sha256: 59983683ec920cf450d0d887ee43f0b9871e500c2025562f9bec5c6bbc6fe87e
+  accessibility_checklist:
+    path: docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv
+    sha256: 690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e
+  analytics_design:
+    path: docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  dashboard_catalog:
+    path: docs/canonical/03_analytics/RAOS_09_dashboard_catalog_v1.0.yaml
+    sha256: ad3a246ffe53d8f8cf9a8e96172d480bde61ca2039994e52244a424d6b4115f7
+  kpi_catalog:
+    path: docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml
+    sha256: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+  security_design:
+    path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  data_classification:
+    path: docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  role_matrix:
+    path: docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  test_design:
+    path: docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  st1101_route_guard:
+    path: packages/web-ui/src/route-guard.ts
+    sha256: 8395f542c7c65445fa3d1bec4a0e037c96610da8589e1807604b4fb3fa6a584f
+  historical_st1104_v1:
+    path: packages/web-ui/src/analytics-finance-workspace.ts
+    sha256: f01349dae9f14b3790972da53fc77d9d973a142f3c10cca87c0965d27ffaa3ce
+  st1205_runtime:
+    path: changes/st-1205/contracts/kpi-read-model.v2.yaml
+    sha256: 2777cf19d0482f84172ac581ed72f27bc6e93b51b5bd45ea4b23e14cf0f95665
+  st1205_projection:
+    path: changes/st-1205/generated/kpi-read-model.v2.json
+    sha256: 295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb
+  st1205_fixture:
+    path: changes/st-1205/fixtures/recorded/kpi-calculation-complete.v2.json
+    sha256: da6d51ccd7ba56411ec81e316994659849e4ea7fa11e5458982a99a6f2317676
+  st1205_domain:
+    path: python/raos/domain/analytics/kpi_read_model.py
+    sha256: 7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac
+  st1205_application:
+    path: python/raos/application/analytics/kpi_read_model.py
+    sha256: 7485112a452eec41c93578863030893f5758c310430f7db5e899f6ec53c8adbf
+  st1205_port:
+    path: python/raos/ports/kpi_read_model.py
+    sha256: e6a07dd38e01d10f68b150343e21c3fa1f5fb3dfa6cf6526f1171dfc4141ebc4
+  st1205_adapter:
+    path: python/raos/adapters/recorded_kpi_input.py
+    sha256: 864e0f4f7d6925b3fe513ed329ad5b21a8fec32a193a18cd3aee91cbbac0b0f0
+  st1304_runtime:
+    path: changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
+    sha256: 28fb4b6d0d198c1ccaca56124f133a8c9045577b61f01029ed5d6f338beda60f
+  st1304_projection:
+    path: changes/st-1304/generated/cost-unit-economics-recorded.v2.json
+    sha256: 23f468589e408555e5506f873a74df89b806d809855d5c1b53e8237b6edb4ddc
+  st1304_fixture:
+    path: changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
+    sha256: 90b3ccaecc1345b26054f563365936f4fd06b5def3259c5786adeea0327a8942
+  st1304_domain:
+    path: python/raos/domain/finance/unit_economics.py
+    sha256: 3c1c723b19cb61715e9f3f95018ebe5d14d3efa719c56a65c8164981bff25eb6
+  st1304_application:
+    path: python/raos/application/finance/unit_economics.py
+    sha256: 429ae3d7be1de6375df42f80412c046c0e6fccd3691b1c520b85796abd5f2b85
+  st1304_port:
+    path: python/raos/ports/unit_economics.py
+    sha256: e9ed53b135a98c625cc110b94e844ba6f7c58dd232b3db34fe47b7b2f53d6137
+  st1304_adapter:
+    path: python/raos/adapters/recorded_unit_economics.py
+    sha256: 191937ab2764bc032a4fbda15d17232c8f7cff39181a43726f8aea85f29f4f09
+  st1303_generator:
+    path: scripts/build_st1303_attribution_engine.py
+    sha256: 508bd593b24fd9dca3d0e1119ae26f0d7e6d49d85c36a7c6818adaf8a9612f14
+  st1303_contract:
+    path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
+    sha256: 417919e2c4552b8e1e6e3fef18f4daccfa0cf44d13803db62d474fe154fb574b
+  st1303_fixture:
+    path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
+    sha256: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b
+
+recorded_fixture:
+  path: changes/st-1104/fixtures/analytics-finance-dashboard-recorded.synthetic.v2.json
+  sha256: 8fc81882b1b6b169f38ceb155b8b511c1d5f4e22cecdde1a7676fae369077b0d
+  bytes: 1734
+  synthetic: true
+  environment: ENV-CI
+  st1205_input_sha256: 5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92
+  st1304_input_sha256: 6756429c32484b34a1beb8d628b8823b49570bcd9dc504fc268d9aa6d1bfa141
+  st1304_result_sha256: e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3
+  provider_execution: NOT_EXECUTED
+
+screen_contract:
+  order: [ANA-001, ANA-002, ANA-003, FIN-001, FIN-002, FIN-003]
+  exact_count: 6
+  route_registration: DISABLED_ST1101_AUTH_TRANSPORT
+  mapping_authority: LOCAL_HEADLESS_CANDIDATE_ONLY
+  canonical_dashboard_references: [DASH-002, DASH-003]
+  source_period_merge_allowed: false
+  unknown_as_zero_allowed: false
+  unavailable_as_empty_success_allowed: false
+
+data_contract:
+  classification: CONFIDENTIAL
+  source_mode: RECORDED_SYNTHETIC_DEV_CI_ONLY
+  program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
+  source_required: true
+  period_required: true
+  basis_required: true
+  freshness_required: true
+  verification_required: true
+  live_verification_claimed: false
+  freshness_threshold_selected: false
+  current_or_stale_inference_allowed: false
+  provider_total_allocation_allowed: false
+  unattributed_allocation_allowed: false
+  recommendation_input_allowed: false
+  public_projection_allowed: false
+
+unavailable_contract:
+  missing: UNAVAILABLE
+  unverified: UNAVAILABLE
+  stale_without_approved_policy: UNKNOWN_FRESHNESS
+  zero_denominator: UNAVAILABLE
+  period_mismatch: UNAVAILABLE_PERIOD_MISMATCH
+  verified_zero: AVAILABLE_ZERO
+  unavailable_value: null
+
+accessibility_contract:
+  one_h1_required: true
+  skip_link_required: true
+  landmarks_required: true
+  status_text_code_icon_required: true
+  color_only_allowed: false
+  table_caption_headers_scope_required: true
+  chart_table_or_text_alternative_required: true
+  keyboard_model_required: true
+  zoom_target_percent: 200
+  rendered: false
+  browser_verified: false
+
+security_controls:
+  - SEC-IAM-002
+  - SEC-IAM-004
+  - SEC-IAM-005
+  - SEC-APP-008
+  - SEC-DATA-003
+  - SEC-DATA-005
+  - SEC-SDLC-006
+
+authority_boundary:
+  authentication_established: false
+  authorization_granted: false
+  mfa_established: false
+  step_up_established: false
+  route_registered: false
+  render_enabled: false
+  file_intake_enabled: false
+  import_commit_enabled: false
+  reconciliation_commit_enabled: false
+  mutation_enabled: false
+  persistence_enabled: false
+  database_enabled: false
+  network_enabled: false
+  provider_enabled: false
+  telemetry_enabled: false
+  financial_allocation_enabled: false
+  ranking_or_editorial_mutation_enabled: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+
+verification_boundary:
+  local_model_and_negative_tests: CANDIDATE
+  owner_generator_check: CANDIDATE
+  TST-022: NOT_EXECUTED
+  TST-024: NOT_EXECUTED
+  TST-030: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  keyboard: NOT_EXECUTED
+  zoom: NOT_EXECUTED
+  screen_reader: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

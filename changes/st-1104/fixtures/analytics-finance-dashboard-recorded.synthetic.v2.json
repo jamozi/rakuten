@@ -1,0 +1,52 @@
+{
+  "schema_version": "2.0.0",
+  "profile": "RAOS_ST1104_RECORDED_SYNTHETIC_DASHBOARD_V2",
+  "recording_id": "st1104-six-screen-recorded-v2",
+  "synthetic": true,
+  "environment": "ENV-CI",
+  "evaluated_at": "2026-09-08T00:00:00Z",
+  "screen_order": [
+    "ANA-001",
+    "ANA-002",
+    "ANA-003",
+    "FIN-001",
+    "FIN-002",
+    "FIN-003"
+  ],
+  "source_bindings": {
+    "st1205_fixture_sha256": "da6d51ccd7ba56411ec81e316994659849e4ea7fa11e5458982a99a6f2317676",
+    "st1205_input_sha256": "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92",
+    "st1304_fixture_sha256": "90b3ccaecc1345b26054f563365936f4fd06b5def3259c5786adeea0327a8942",
+    "st1304_input_sha256": "6756429c32484b34a1beb8d628b8823b49570bcd9dc504fc268d9aa6d1bfa141",
+    "st1304_result_sha256": "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+  },
+  "view_mapping": {
+    "ANA-001": ["KPI-012", "KPI-014", "KPI-006", "KPI-018", "KPI-020"],
+    "ANA-002": ["KPI-012", "KPI-014"],
+    "ANA-003": ["KPI-006", "KPI-007"],
+    "FIN-001": ["REVENUE_IMPORT_STATUS"],
+    "FIN-002": [
+      "PROVIDER_CONFIRMED_REWARD",
+      "DIRECT_CONFIRMED_REWARD",
+      "ESTIMATED_CONFIRMED_REWARD",
+      "UNATTRIBUTED_CONFIRMED_REWARD",
+      "REWARD_CONSERVATION_DIFFERENCE"
+    ],
+    "FIN-003": [
+      "KPI-001",
+      "SUPPLEMENTAL-DIRECT-REWARD",
+      "KPI-002-DIRECT-VIEW",
+      "KPI-003",
+      "KPI-004",
+      "KPI-022",
+      "KPI-023",
+      "KPI-025",
+      "SUPPLEMENTAL-CONTENT-HOUR"
+    ]
+  },
+  "freshness_policy": "SHOW_SOURCE_TIMESTAMPS_NO_INFERRED_CURRENT_OR_STALE",
+  "cross_source_comparison": "UNAVAILABLE_PERIOD_MISMATCH",
+  "route_registered": false,
+  "publication_authorized": false,
+  "production_eligible": false
+}

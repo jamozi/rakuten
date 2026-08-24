@@ -1,4 +1,47 @@
-# ST-1104 analytics and finance workspace static disabled metadata
+# ST-1104 analytics and finance workspace
+
+Status: `LOCAL_CODE_COMPLETE` / additive V2 recorded headless read model
+
+The additive V2 executes only in `ENV-DEV` or `ENV-CI`. It projects the current
+ST-1205 recorded KPI snapshot and ST-1304 recorded unit-economics result into the
+six canonical `ANA-001..003` and `FIN-001..003` screen models. Every metric carries
+its exact source Story, source digest, period boundary, attribution basis,
+freshness state, verification state, and explicit availability. The V2 projection
+is process-local, synthetic, confidential, and non-attesting.
+
+The two dependency fixtures cover different periods. V2 records
+`UNAVAILABLE_PERIOD_MISMATCH` and never combines their values. ST-1205's exact
+recorded timestamp and upstream freshness label are visible. ST-1304 declares no
+approved freshness policy, so its freshness is `UNKNOWN`; the implementation does
+not invent a threshold or label the data current/stale. Missing, unverified, and
+zero-denominator upstream values remain `UNAVAILABLE` with `null` values. An
+explicit verified zero remains available as zero.
+
+`FIN-001` remains `UNAVAILABLE_DEPENDENCY`: ST-1301 is not a declared ST-1104
+dependency and V2 does not invent CSV intake or commit authority. `FIN-002` shows
+only the ST-1304 synthetic reward-conservation view, keeping provider, Direct,
+Estimated, and Unattributed totals separate. `FIN-003` preserves the basis of each
+recorded unit-economics metric. No finance value is a recommendation, editorial,
+CTA, product-selection, article, or publication input.
+
+The existing V1 implementation below remains compatible and unmodified. V2 adds
+a Python domain/application/port/recorded-adapter boundary, a versioned contract,
+strict synthetic fixture, generated JSON read model, immutable TypeScript wrapper,
+and provenance manifest. Generate and verify with:
+
+```text
+.venv/bin/python scripts/build_st1104_analytics_finance_dashboard.py
+.venv/bin/python scripts/build_st1104_analytics_finance_dashboard.py --check
+```
+
+ST-1101 authentication remains disabled; V2 registers no route or DOM and grants
+no role authority. Upload, reconciliation commit, provider/network/credential,
+database/persistence, telemetry, public projection, publication, staging, release,
+and Production are impossible at this boundary. Formal TST-022/TST-024/TST-030,
+browser, keyboard, zoom, screen-reader, live, staging, release, and Production
+remain `NOT_EXECUTED`.
+
+## Historical V1 static disabled metadata
 
 Status: `LOCAL_IMPLEMENTATION_CANDIDATE` / headless metadata-only partial safe slice
 
