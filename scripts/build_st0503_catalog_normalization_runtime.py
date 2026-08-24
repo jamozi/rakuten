@@ -200,6 +200,8 @@ def _validate_contract(contract: dict[str, object]) -> None:
                 "full_provenance_required",
                 "collaborator_exceptions_sanitized",
                 "collaborator_returns_revalidated",
+                "collaborator_arguments_recomputed_after_call",
+                "collaborator_external_action_count_recomputed",
             )
         )
     ):
@@ -243,20 +245,35 @@ def _validate_contract(contract: dict[str, object]) -> None:
             durability.get(key) is not True
             for key in (
                 "atomic_snapshot_batch_records_outbox_journal_and_cas",
+                "exclusive_create_initialization",
+                "preexisting_uninitialized_or_foreign_database_rejected_without_repair",
                 "exact_schema_sql_bound",
                 "exact_autoindex_and_column_inventory_bound",
+                "exact_trigger_inventory_bound",
+                "exact_foreign_key_inventory_bound",
+                "strict_table_inventory_bound",
+                "append_only_record_triggers_bound",
                 "symlink_rejected",
                 "hardlink_rejected",
                 "path_traversal_rejected",
-                "restart_and_commit_ambiguity_recovery",
+                "live_inode_pinned",
+                "identity_verified_before_and_after_connections_and_transactions",
+                "open_process_monotonic_committed_count_head_and_chain_prefix_pinned",
+                "restart_reopens_current_valid_snapshot",
+                "commit_ambiguity_exact_recovery_only",
                 "command_idempotency",
                 "source_receipt_idempotency",
                 "catalog_compare_and_swap",
                 "hash_chain",
+                "canonical_json_uuid_and_rfc3339_required",
                 "outbox",
                 "tamper_and_schema_drift_fail_closed",
             )
         )
+        or durability.get("cross_process_or_restart_rollback_detection")
+        != "NOT_CLAIMED_WITHOUT_EXTERNAL_ANCHOR"
+        or durability.get("partial_missing_or_ambiguous_commit_recovery")
+        != "COMMIT_UNKNOWN"
     ):
         _fail("DURABILITY_BOUNDARY_INVALID")
     if any(
@@ -302,6 +319,24 @@ def _validate_fixture(fixture: dict[str, object]) -> None:
         or expected.get("external_actions") != 0
         or _string_list(fixture.get("commit_faults"))
         != [value.value for value in CatalogNormalizationSqliteCommitFaultV2]
+        or _string_list(fixture.get("hostile_cases"))
+        != [
+            "ARBITRARY_COLLABORATOR_EXCEPTION",
+            "FORGED_EXACT_CLASS_SOURCE_PAGE",
+            "FORGED_EXACT_CLASS_STORE_RESULT",
+            "COLLABORATOR_ARGUMENT_MUTATION",
+            "COLLABORATOR_ACTION_COUNT_SPOOF",
+            "RECEIPT_PAGE_HASH_DRIFT",
+            "PREEXISTING_EMPTY_OR_FOREIGN_DATABASE",
+            "PATH_REPLACEMENT",
+            "SAME_INODE_VALID_SNAPSHOT_ROLLBACK",
+            "NONCANONICAL_JSON_UUID_OR_RFC3339",
+            "APPEND_ONLY_TRIGGER_VIOLATION",
+            "PAYLOAD_TAMPER",
+            "SCHEMA_DRIFT",
+            "CONCURRENT_CAS",
+            "DENIED_NETWORK",
+        ]
     ):
         _fail("FIXTURE_BOUNDARY_INVALID")
 

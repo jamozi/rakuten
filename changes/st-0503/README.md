@@ -22,12 +22,28 @@ OD-006 remains unresolved. V2 always emits `HUMAN_REVIEW` / `NOT_READY`, empty
 canonical-product and grouping decisions, no model/JAN extraction, no merge or
 split, no canonical identity, and no provider-derived confidence shortcut.
 
-The durable adapter fixes schema SQL, autoindex/column inventory, directory
-`0700`, database `0600`, no symlink/hardlink/path traversal, one atomic batch,
-CAS, source and command idempotency, outbox, hash chain, restart recovery, and
-known/unknown commit outcomes. Schema drift, payload tampering, partial rows,
-concurrency conflicts, arbitrary collaborator exceptions, and forged
-exact-class returns fail closed with sanitized errors.
+The durable adapter initializes schema only when its constructor wins an
+`O_CREAT|O_EXCL` create of a new regular `0600` database. A pre-existing empty,
+partial, foreign, symlinked, hard-linked, or non-`0600` database is never
+initialized or repaired. Exact table, autoindex, column, trigger, foreign-key,
+and `STRICT` inventories are bound. Record tables are append-only by trigger;
+the singleton state may move only through the runtime's transaction-local CAS.
+
+Each open store pins the database device/inode and its last verified committed
+count, head hash, and chain prefix. Identity is rechecked around every
+connection and transaction, so path replacement, an older valid snapshot, and
+same-inode rollback are rejected during that open process. There is deliberately
+no claim that a fresh process can detect rollback to an older otherwise-valid
+database without an external durable anchor.
+
+Stored JSON bytes, UUIDs, UTC RFC3339 text, scalar columns, payload hashes,
+result hashes, outbox, journal, and chain are reconstructed through the shared
+domain and compared exactly. Collaborator arguments and returns are copied and
+recomputed at both sides of each call, and source/store action counts must stay
+exactly zero. A commit error is recovered only when a fresh verified read proves
+the exact operation, command fingerprint, batch, event, result bytes, hashes,
+and chain fully durable; missing, partial, conflicting, or ambiguous state stays
+closed as `COMMIT_UNKNOWN`.
 
 ## V1 compatibility seam
 

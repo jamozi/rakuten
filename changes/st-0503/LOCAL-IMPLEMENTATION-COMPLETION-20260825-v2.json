@@ -2,9 +2,9 @@
   "schema_version": "2.0.0",
   "story_id": "ST-0503",
   "classification": "MAXIMUM_SAFE_LOCAL_DURABLE_CATALOG_NORMALIZATION_RUNTIME",
-  "recorded_at": "2026-08-24T18:35:07Z",
-  "base_commit": "61565261b6bee147e71aa068a46076088e8b3df7",
-  "branch": "agent/st0503-catalog-normalization-local-complete",
+  "recorded_at": "2026-08-24T20:21:22Z",
+  "base_commit": "14a71754715d9264c1c1110a324b57b3836bca6f",
+  "branch": "codex/st0503-sqlite-hardening-20260825",
   "local_status": "LOCAL_CODE_COMPLETE",
   "canonical_status": "UNCHANGED",
   "status_registry_updated": false,
@@ -18,11 +18,13 @@
     "OD-006 fail-closed HUMAN_REVIEW and NOT_READY with no merge split grouping canonical identity model or JAN inference",
     "no ranking surface and explicit exclusion of affiliate rate commission EPC RPM profit reward and review inputs",
     "owner-private SQLite atomic snapshot batch records outbox journal CAS and hash-chain UoW",
-    "exact SQLite schema SQL autoindex column STRICT and foreign-key binding",
-    "0700 directory 0600 database symlink hardlink path traversal and permission fail-closed boundary",
-    "command and source idempotency restart recovery concurrency CAS and known or unknown commit handling",
-    "payload schema partial-row journal event and chain tamper detection",
-    "arbitrary collaborator exception sanitization and forged exact-class return reconstruction and source revalidation",
+    "exclusive-create-only SQLite initialization with pre-existing empty partial foreign symlink and non-0600 databases rejected without repair",
+    "exact SQLite schema SQL autoindex column trigger STRICT and foreign-key binding with append-only record triggers",
+    "0700 directory 0600 database symlink hardlink path traversal permission and live device-inode fail-closed boundary",
+    "open-process monotonic committed count head and chain-prefix pinning with explicit no cross-restart rollback-detection claim without an external anchor",
+    "command and source idempotency exact commit recovery concurrency CAS and known or unknown commit handling",
+    "canonical JSON UUID UTC timestamp payload schema scalar column partial-row journal outbox result and chain tamper detection",
+    "arbitrary collaborator exception sanitization argument mutation action-count spoof and forged exact-class return reconstruction and source revalidation",
     "regular slotted closed runtime exception with assignable traceback and context-manager regression",
     "recorded and disabled source modes only with no HTTP network credential provider worker or external action capability",
     "deterministic closed contract synthetic fixture owner generator manifest and no-write check",
@@ -37,17 +39,17 @@
     {
       "name": "ST-0503_V2_focused_suite",
       "result": "PASS",
-      "detail": "27 passed"
+      "detail": "43 passed"
     },
     {
       "name": "ST-0503_combined_suite",
       "result": "PASS",
-      "detail": "86 passed"
+      "detail": "102 passed"
     },
     {
       "name": "ST-0503_denied_network_suite",
       "result": "PASS",
-      "detail": "Linux user and network namespace isolated; external network denied; socket API denied; 86 passed"
+      "detail": "Linux user and process namespaces isolated; external network and socket API denied; 102 passed"
     },
     {
       "name": "ST-0502_regression",
@@ -62,7 +64,7 @@
     {
       "name": "owner_generator_no_write",
       "result": "PASS",
-      "detail": "generated projection 9dd934c8efb8037ea507e488f18ef02e7c43a5fcf2bcc8173f138194c4022940; manifest ffba021718a6fb550cd1a5baed2f9eccb552f088f3165b3caa631d73b19277bf"
+      "detail": "generated projection a44b77d6bea2c1f34c6f68484b4c2be672c0f961d07fe6cd07c24100546ada71; manifest 6b7a67645b61a0f97d2650010b1daddf82deef3c557c93559367eb9432a61e88"
     },
     {
       "name": "ruff_format_and_lint",

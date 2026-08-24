@@ -18,6 +18,10 @@ from raos.domain.catalog.catalog_normalization_runtime_v2 import (
     CatalogReplayStatusV2,
     CatalogSourceModeV2,
     PersistedCatalogNormalizationV2,
+    catalog_normalization_batch_from_mapping_v2,
+    catalog_normalization_batch_mapping_v2,
+    catalog_normalized_event_from_mapping_v2,
+    catalog_normalized_event_mapping_v2,
     fail_catalog_normalization_runtime,
     normalize_persisted_item_search_page_v2,
     persisted_catalog_normalization_from_mapping_v2,
@@ -222,6 +226,22 @@ def _copy_receipt(value: object) -> RawArchiveReceiptV2:
     )
 
 
+def _copy_receipt_at_boundary(
+    value: object,
+    *,
+    failure_code: CatalogNormalizationRuntimeFailureCode,
+) -> RawArchiveReceiptV2:
+    outcome: RawArchiveReceiptV2 | None = None
+    failed = False
+    try:
+        outcome = _copy_receipt(value)
+    except Exception:
+        failed = True
+    if failed or outcome is None:
+        fail_catalog_normalization_runtime(failure_code)
+    return outcome
+
+
 def _copy_session(value: object) -> ItemSearchIngestionSessionV2:
     if type(value) is not ItemSearchIngestionSessionV2:
         fail_catalog_normalization_runtime()
@@ -266,6 +286,22 @@ def _copy_source_step(value: object) -> PersistedItemSearchStepV2:
     )
 
 
+def _copy_request_at_boundary(
+    value: object,
+    *,
+    failure_code: CatalogNormalizationRuntimeFailureCode,
+) -> ItemSearchWireRequestV2:
+    outcome: ItemSearchWireRequestV2 | None = None
+    failed = False
+    try:
+        outcome = _copy_request(value)
+    except Exception:
+        failed = True
+    if failed or outcome is None:
+        fail_catalog_normalization_runtime(failure_code)
+    return outcome
+
+
 def _copy_command(value: object) -> CatalogNormalizationCommandV2:
     try:
         if type(value) is not CatalogNormalizationCommandV2:
@@ -287,6 +323,62 @@ def _copy_command(value: object) -> CatalogNormalizationCommandV2:
         fail_catalog_normalization_runtime()
 
 
+def _copy_command_at_boundary(
+    value: object,
+    *,
+    failure_code: CatalogNormalizationRuntimeFailureCode,
+) -> CatalogNormalizationCommandV2:
+    outcome: CatalogNormalizationCommandV2 | None = None
+    failed = False
+    try:
+        outcome = _copy_command(value)
+    except Exception:
+        failed = True
+    if failed or outcome is None:
+        fail_catalog_normalization_runtime(failure_code)
+    return outcome
+
+
+def _copy_batch_at_boundary(
+    value: object,
+    *,
+    failure_code: CatalogNormalizationRuntimeFailureCode,
+) -> CatalogNormalizationBatchV2:
+    outcome: CatalogNormalizationBatchV2 | None = None
+    failed = False
+    try:
+        if type(value) is not CatalogNormalizationBatchV2:
+            raise TypeError
+        outcome = catalog_normalization_batch_from_mapping_v2(
+            catalog_normalization_batch_mapping_v2(value)
+        )
+    except Exception:
+        failed = True
+    if failed or outcome is None:
+        fail_catalog_normalization_runtime(failure_code)
+    return outcome
+
+
+def _copy_event_at_boundary(
+    value: object,
+    *,
+    failure_code: CatalogNormalizationRuntimeFailureCode,
+) -> CatalogNormalizedOutboxEventV2:
+    outcome: CatalogNormalizedOutboxEventV2 | None = None
+    failed = False
+    try:
+        if type(value) is not CatalogNormalizedOutboxEventV2:
+            raise TypeError
+        outcome = catalog_normalized_event_from_mapping_v2(
+            catalog_normalized_event_mapping_v2(value)
+        )
+    except Exception:
+        failed = True
+    if failed or outcome is None:
+        fail_catalog_normalization_runtime(failure_code)
+    return outcome
+
+
 def _copy_persisted(value: object) -> PersistedCatalogNormalizationV2:
     try:
         if type(value) is not PersistedCatalogNormalizationV2:
@@ -302,6 +394,51 @@ def _copy_persisted(value: object) -> PersistedCatalogNormalizationV2:
         fail_catalog_normalization_runtime(
             CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE
         )
+
+
+def _copy_persisted_at_boundary(
+    value: object,
+    *,
+    failure_code: CatalogNormalizationRuntimeFailureCode,
+) -> PersistedCatalogNormalizationV2:
+    outcome: PersistedCatalogNormalizationV2 | None = None
+    failed = False
+    try:
+        outcome = _copy_persisted(value)
+    except Exception:
+        failed = True
+    if failed or outcome is None:
+        fail_catalog_normalization_runtime(failure_code)
+    return outcome
+
+
+def _copy_recovery_at_boundary(
+    value: object,
+    *,
+    failure_code: CatalogNormalizationRuntimeFailureCode,
+) -> CatalogCommitRecoveryV2:
+    outcome: CatalogCommitRecoveryV2 | None = None
+    failed = False
+    try:
+        if type(value) is not CatalogCommitRecoveryV2:
+            raise TypeError
+        persisted = (
+            None
+            if value.persisted is None
+            else _copy_persisted_at_boundary(
+                value.persisted,
+                failure_code=failure_code,
+            )
+        )
+        outcome = CatalogCommitRecoveryV2(
+            outcome=CatalogCommitRecoveryOutcomeV2(value.outcome.value),
+            persisted=persisted,
+        )
+    except Exception:
+        failed = True
+    if failed or outcome is None:
+        fail_catalog_normalization_runtime(failure_code)
+    return outcome
 
 
 def _source_mode(source: PersistedItemSearchPageSourceV2) -> CatalogSourceModeV2:
@@ -325,6 +462,22 @@ def _source_action_count(source: PersistedItemSearchPageSourceV2) -> int:
         fail_catalog_normalization_runtime(
             CatalogNormalizationRuntimeFailureCode.SOURCE_MISMATCH
         )
+    return candidate
+
+
+def _store_action_count(
+    store: CatalogNormalizationUnitOfWorkStoreV2,
+    *,
+    failure_code: CatalogNormalizationRuntimeFailureCode = (
+        CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE
+    ),
+) -> int:
+    candidate = _collaborator_call(
+        lambda: store.external_action_count,
+        failure_code=failure_code,
+    )
+    if type(candidate) is not int or candidate != 0:
+        fail_catalog_normalization_runtime(failure_code)
     return candidate
 
 
@@ -379,6 +532,7 @@ class CatalogNormalizationRuntimeServiceV2:
             fail_catalog_normalization_runtime()
         mode = _source_mode(source)
         _source_action_count(source)
+        _store_action_count(store)
         self._source = source
         self._source_mode = mode
         self._store = store
@@ -391,12 +545,31 @@ class CatalogNormalizationRuntimeServiceV2:
         self, command: CatalogNormalizationCommandV2
     ) -> CatalogNormalizationResultV2:
         exact_command = _copy_command(command)
-        existing_value = _collaborator_call(
-            lambda: self._store.lookup(exact_command),
+        lookup_command = _copy_command_at_boundary(
+            exact_command,
             failure_code=CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE,
         )
+        _store_action_count(self._store)
+        existing_value = _collaborator_call(
+            lambda: self._store.lookup(lookup_command),
+            failure_code=CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE,
+        )
+        _store_action_count(self._store)
+        if (
+            _copy_command_at_boundary(
+                lookup_command,
+                failure_code=CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE,
+            )
+            != exact_command
+        ):
+            fail_catalog_normalization_runtime(
+                CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE
+            )
         if existing_value is not None:
-            existing = _copy_persisted(existing_value)
+            existing = _copy_persisted_at_boundary(
+                existing_value,
+                failure_code=CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE,
+            )
             _validate_persisted_for_command(
                 command=exact_command,
                 persisted=existing,
@@ -412,16 +585,61 @@ class CatalogNormalizationRuntimeServiceV2:
                 external_actions=0,
             )
         batch, event = self._load_expected(exact_command)
+        store_command = _copy_command_at_boundary(
+            exact_command,
+            failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+        )
+        store_batch = _copy_batch_at_boundary(
+            batch,
+            failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+        )
+        store_event = _copy_event_at_boundary(
+            event,
+            failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+        )
+        committed: PersistedCatalogNormalizationV2 | None = None
+        commit_unknown = False
         try:
+            _store_action_count(
+                self._store,
+                failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+            )
             committed_value = _collaborator_call(
                 lambda: self._store.commit(
-                    command=exact_command,
-                    batch=batch,
-                    event=event,
+                    command=store_command,
+                    batch=store_batch,
+                    event=store_event,
                 ),
                 failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
             )
-            committed = _copy_persisted(committed_value)
+            _store_action_count(
+                self._store,
+                failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+            )
+            if (
+                _copy_command_at_boundary(
+                    store_command,
+                    failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+                )
+                != exact_command
+                or _copy_batch_at_boundary(
+                    store_batch,
+                    failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+                )
+                != batch
+                or _copy_event_at_boundary(
+                    store_event,
+                    failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+                )
+                != event
+            ):
+                fail_catalog_normalization_runtime(
+                    CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN
+                )
+            committed = _copy_persisted_at_boundary(
+                committed_value,
+                failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+            )
         except CatalogNormalizationRuntimeFailure as error:
             if (
                 type(error) is not CatalogNormalizationRuntimeFailure
@@ -429,10 +647,16 @@ class CatalogNormalizationRuntimeServiceV2:
                 is not CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN
             ):
                 raise
+            commit_unknown = True
+        if commit_unknown:
             return self._recover_unknown_commit(
                 command=exact_command,
                 expected_batch=batch,
                 expected_event=event,
+            )
+        if committed is None:
+            fail_catalog_normalization_runtime(
+                CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN
             )
         _validate_persisted_for_command(command=exact_command, persisted=committed)
         if committed.batch != batch or committed.event != event:
@@ -457,29 +681,68 @@ class CatalogNormalizationRuntimeServiceV2:
                 CatalogNormalizationRuntimeFailureCode.SOURCE_UNAVAILABLE
             )
         _source_action_count(self._source)
-        receipt = cast(RawArchiveReceiptV2, command.source_step.receipt)
+        receipt = _copy_receipt_at_boundary(
+            cast(RawArchiveReceiptV2, command.source_step.receipt),
+            failure_code=CatalogNormalizationRuntimeFailureCode.SOURCE_MISMATCH,
+        )
+        request = _copy_request_at_boundary(
+            command.source_request,
+            failure_code=CatalogNormalizationRuntimeFailureCode.SOURCE_MISMATCH,
+        )
+        source_receipt = _copy_receipt(receipt)
         raw_candidate = _collaborator_call(
-            lambda: self._source.read_raw(receipt),
+            lambda: self._source.read_raw(source_receipt),
             failure_code=CatalogNormalizationRuntimeFailureCode.SOURCE_UNAVAILABLE,
         )
+        _source_action_count(self._source)
+        if (
+            _copy_receipt_at_boundary(
+                source_receipt,
+                failure_code=CatalogNormalizationRuntimeFailureCode.SOURCE_MISMATCH,
+            )
+            != receipt
+        ):
+            fail_catalog_normalization_runtime(
+                CatalogNormalizationRuntimeFailureCode.SOURCE_MISMATCH
+            )
         if type(raw_candidate) is not bytes:
             fail_catalog_normalization_runtime(
                 CatalogNormalizationRuntimeFailureCode.SOURCE_MISMATCH
             )
         raw_body = bytes(raw_candidate)
+        page_receipt = _copy_receipt(receipt)
+        page_request = _copy_request(request)
         page_candidate = _collaborator_call(
             lambda: self._source.read_page(
-                receipt=receipt,
-                request=command.source_request,
+                receipt=page_receipt,
+                request=page_request,
             ),
             failure_code=CatalogNormalizationRuntimeFailureCode.SOURCE_UNAVAILABLE,
         )
+        _source_action_count(self._source)
+        if (
+            _copy_receipt_at_boundary(
+                page_receipt,
+                failure_code=CatalogNormalizationRuntimeFailureCode.SOURCE_MISMATCH,
+            )
+            != receipt
+            or _copy_request_at_boundary(
+                page_request,
+                failure_code=CatalogNormalizationRuntimeFailureCode.SOURCE_MISMATCH,
+            )
+            != request
+        ):
+            fail_catalog_normalization_runtime(
+                CatalogNormalizationRuntimeFailureCode.SOURCE_MISMATCH
+            )
+        page: ParsedItemSearchPageV2 | None = None
+        integrity_failure: CatalogNormalizationRuntimeFailureCode | None = None
         try:
             page = _copy_page(page_candidate)
             observation = ItemSearchProviderObservationV2(
                 kind=ProviderObservationKindV2.SUCCESS,
                 mode=ProviderModeV2.RECORDED_SYNTHETIC,
-                request_fingerprint=command.source_request.request_fingerprint,
+                request_fingerprint=request.request_fingerprint,
                 observed_at=receipt.observed_at,
                 http_status=200,
                 request_id="ARCHIVE:ST0503:VERIFY",
@@ -491,18 +754,33 @@ class CatalogNormalizationRuntimeServiceV2:
                 external_actions=0,
             )
             reparsed = parse_item_search_page_v2(
-                request=command.source_request,
+                request=request,
                 observation=observation,
             )
             if reparsed != page:
                 fail_catalog_normalization_runtime(
                     CatalogNormalizationRuntimeFailureCode.SOURCE_INTEGRITY
                 )
-        except CatalogNormalizationRuntimeFailure:
-            raise
+        except CatalogNormalizationRuntimeFailure as error:
+            candidate_code = _runtime_failure_code(
+                error,
+                CatalogNormalizationRuntimeFailureCode.SOURCE_INTEGRITY,
+            )
+            integrity_failure = (
+                candidate_code
+                if candidate_code
+                in {
+                    CatalogNormalizationRuntimeFailureCode.SOURCE_INTEGRITY,
+                    CatalogNormalizationRuntimeFailureCode.SOURCE_MISMATCH,
+                }
+                else CatalogNormalizationRuntimeFailureCode.SOURCE_INTEGRITY
+            )
         except Exception:
+            integrity_failure = CatalogNormalizationRuntimeFailureCode.SOURCE_INTEGRITY
+        if integrity_failure is not None or page is None:
             fail_catalog_normalization_runtime(
-                CatalogNormalizationRuntimeFailureCode.SOURCE_INTEGRITY
+                integrity_failure
+                or CatalogNormalizationRuntimeFailureCode.SOURCE_INTEGRITY
             )
         if (
             _source_mode(self._source) is not self._source_mode
@@ -526,29 +804,36 @@ class CatalogNormalizationRuntimeServiceV2:
         expected_batch: CatalogNormalizationBatchV2,
         expected_event: CatalogNormalizedOutboxEventV2,
     ) -> CatalogNormalizationResultV2:
-        try:
-            candidate = _collaborator_call(
-                lambda: self._store.recover_commit(command),
+        recovery_command = _copy_command_at_boundary(
+            command,
+            failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+        )
+        _store_action_count(
+            self._store,
+            failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+        )
+        candidate = _collaborator_call(
+            lambda: self._store.recover_commit(recovery_command),
+            failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+        )
+        _store_action_count(
+            self._store,
+            failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+        )
+        if (
+            _copy_command_at_boundary(
+                recovery_command,
                 failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
             )
-            if type(candidate) is not CatalogCommitRecoveryV2:
-                fail_catalog_normalization_runtime(
-                    CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN
-                )
-            recovery = CatalogCommitRecoveryV2(
-                outcome=CatalogCommitRecoveryOutcomeV2(candidate.outcome.value),
-                persisted=(
-                    None
-                    if candidate.persisted is None
-                    else _copy_persisted(candidate.persisted)
-                ),
-            )
-        except CatalogNormalizationRuntimeFailure:
-            raise
-        except Exception:
+            != command
+        ):
             fail_catalog_normalization_runtime(
                 CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN
             )
+        recovery = _copy_recovery_at_boundary(
+            candidate,
+            failure_code=CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN,
+        )
         if recovery.outcome is CatalogCommitRecoveryOutcomeV2.NOT_COMMITTED:
             fail_catalog_normalization_runtime(
                 CatalogNormalizationRuntimeFailureCode.COMMIT_UNKNOWN
@@ -569,30 +854,31 @@ class CatalogNormalizationRuntimeServiceV2:
         self, command: CatalogNormalizationCommandV2
     ) -> CatalogCommitRecoveryV2:
         exact_command = _copy_command(command)
-        candidate = _collaborator_call(
-            lambda: self._store.recover_commit(exact_command),
+        recovery_command = _copy_command_at_boundary(
+            exact_command,
             failure_code=CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE,
         )
-        try:
-            if type(candidate) is not CatalogCommitRecoveryV2:
-                fail_catalog_normalization_runtime(
-                    CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE
-                )
-            persisted = (
-                None
-                if candidate.persisted is None
-                else _copy_persisted(candidate.persisted)
+        _store_action_count(self._store)
+        candidate = _collaborator_call(
+            lambda: self._store.recover_commit(recovery_command),
+            failure_code=CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE,
+        )
+        _store_action_count(self._store)
+        if (
+            _copy_command_at_boundary(
+                recovery_command,
+                failure_code=CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE,
             )
-            recovery = CatalogCommitRecoveryV2(
-                outcome=CatalogCommitRecoveryOutcomeV2(candidate.outcome.value),
-                persisted=persisted,
-            )
-        except CatalogNormalizationRuntimeFailure:
-            raise
-        except Exception:
+            != exact_command
+        ):
             fail_catalog_normalization_runtime(
                 CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE
             )
+        recovery = _copy_recovery_at_boundary(
+            candidate,
+            failure_code=CatalogNormalizationRuntimeFailureCode.STORE_UNAVAILABLE,
+        )
+        persisted = recovery.persisted
         if persisted is not None:
             _validate_persisted_for_command(
                 command=exact_command,

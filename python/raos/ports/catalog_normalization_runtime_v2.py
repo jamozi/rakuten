@@ -47,6 +47,9 @@ class PersistedItemSearchPageSourceV2(Protocol):
 class CatalogNormalizationUnitOfWorkStoreV2(Protocol):
     """One atomic batch/CAS/idempotency/outbox/hash-chain transaction."""
 
+    @property
+    def external_action_count(self) -> int: ...
+
     def lookup(
         self,
         command: CatalogNormalizationCommandV2,

@@ -195,7 +195,22 @@ def _parse_utc(value: object) -> datetime:
         parsed = datetime.fromisoformat(value)
     except ValueError:
         fail_catalog_normalization_runtime()
-    return _utc(parsed)
+    parsed = _utc(parsed)
+    if _utc_text(parsed) != value:
+        fail_catalog_normalization_runtime()
+    return parsed
+
+
+def _parse_uuid(value: object) -> UUID:
+    if type(value) is not str:
+        fail_catalog_normalization_runtime()
+    try:
+        parsed = UUID(value)
+    except ValueError:
+        fail_catalog_normalization_runtime()
+    if parsed.int == 0 or str(parsed) != value:
+        fail_catalog_normalization_runtime()
+    return parsed
 
 
 def _sha256(value: object) -> str:
@@ -1441,13 +1456,13 @@ def catalog_source_snapshot_from_mapping_v2(
         )
     try:
         return CatalogSourceSnapshotV2(
-            snapshot_id=UUID(cast(str, data["snapshot_id"])),
+            snapshot_id=_parse_uuid(data["snapshot_id"]),
             provider=cast(str, data["provider"]),
             api_version=cast(str, data["api_version"]),
             source_mode=CatalogSourceModeV2.RECORDED_PERSISTED,
-            source_session_id=UUID(cast(str, data["source_session_id"])),
+            source_session_id=_parse_uuid(data["source_session_id"]),
             source_session_version=cast(int, data["source_session_version"]),
-            receipt_id=UUID(cast(str, data["receipt_id"])),
+            receipt_id=_parse_uuid(data["receipt_id"]),
             request_fingerprint=cast(str, data["request_fingerprint"]),
             raw_sha256=cast(str, data["raw_sha256"]),
             raw_byte_size=cast(int, data["raw_byte_size"]),
@@ -1537,7 +1552,7 @@ def catalog_candidate_from_mapping_v2(value: object) -> CatalogCandidateV2:
         )
     try:
         return CatalogCandidateV2(
-            candidate_id=UUID(cast(str, data["candidate_id"])),
+            candidate_id=_parse_uuid(data["candidate_id"]),
             ordinal=cast(int, data["ordinal"]),
             provider=cast(str, data["provider"]),
             api_version=cast(str, data["api_version"]),
@@ -1549,7 +1564,7 @@ def catalog_candidate_from_mapping_v2(value: object) -> CatalogCandidateV2:
                 CatalogUntrustedTextV2,
                 _text_from_mapping(data["external_shop_code"]),
             ),
-            shop_id=UUID(cast(str, data["shop_id"])),
+            shop_id=_parse_uuid(data["shop_id"]),
             item_name=cast(
                 CatalogUntrustedTextV2, _text_from_mapping(data["item_name"])
             ),
@@ -1561,7 +1576,7 @@ def catalog_candidate_from_mapping_v2(value: object) -> CatalogCandidateV2:
                 cast(CatalogUntrustedUrlV2, _url_from_mapping(item))
                 for item in cast(list[object], images)
             ),
-            source_snapshot_id=UUID(cast(str, data["source_snapshot_id"])),
+            source_snapshot_id=_parse_uuid(data["source_snapshot_id"]),
             observed_at=_parse_utc(data["observed_at"]),
             identity_status=CatalogIdentityStatusV2.HUMAN_REVIEW,
             readiness=CatalogReadinessV2.NOT_READY,
@@ -1627,7 +1642,7 @@ def catalog_offer_from_mapping_v2(value: object) -> CatalogOfferV2:
         )
     try:
         return CatalogOfferV2(
-            offer_id=UUID(cast(str, data["offer_id"])),
+            offer_id=_parse_uuid(data["offer_id"]),
             ordinal=cast(int, data["ordinal"]),
             provider=cast(str, data["provider"]),
             api_version=cast(str, data["api_version"]),
@@ -1635,10 +1650,10 @@ def catalog_offer_from_mapping_v2(value: object) -> CatalogOfferV2:
                 CatalogUntrustedTextV2,
                 _text_from_mapping(data["external_offer_id"]),
             ),
-            candidate_id=UUID(cast(str, data["candidate_id"])),
-            shop_id=UUID(cast(str, data["shop_id"])),
+            candidate_id=_parse_uuid(data["candidate_id"]),
+            shop_id=_parse_uuid(data["shop_id"]),
             item_url=cast(CatalogUntrustedUrlV2, _url_from_mapping(data["item_url"])),
-            source_snapshot_id=UUID(cast(str, data["source_snapshot_id"])),
+            source_snapshot_id=_parse_uuid(data["source_snapshot_id"]),
             observed_at=_parse_utc(data["observed_at"]),
             canonical_product_id=cast(None, data["canonical_product_id"]),
             identity_status=CatalogIdentityStatusV2.HUMAN_REVIEW,
@@ -1700,9 +1715,9 @@ def catalog_observation_from_mapping_v2(value: object) -> CatalogObservationV2:
             cast(str, data["confidence_status"])
         )
         return CatalogObservationV2(
-            observation_id=UUID(cast(str, data["observation_id"])),
+            observation_id=_parse_uuid(data["observation_id"]),
             ordinal=cast(int, data["ordinal"]),
-            offer_id=UUID(cast(str, data["offer_id"])),
+            offer_id=_parse_uuid(data["offer_id"]),
             kind=kind,
             integer_value=cast(int | None, data["integer_value"]),
             boolean_value=cast(bool | None, data["boolean_value"]),
@@ -1710,7 +1725,7 @@ def catalog_observation_from_mapping_v2(value: object) -> CatalogObservationV2:
             unit_code=cast(str | None, data["unit_code"]),
             observed_at=_parse_utc(data["observed_at"]),
             normalized_at=_parse_utc(data["normalized_at"]),
-            source_snapshot_id=UUID(cast(str, data["source_snapshot_id"])),
+            source_snapshot_id=_parse_uuid(data["source_snapshot_id"]),
             confidence=cast(None, data["confidence"]),
             confidence_status=confidence_status,
             recommendation_input=cast(bool, data["recommendation_input"]),
@@ -1798,8 +1813,8 @@ def catalog_normalization_batch_from_mapping_v2(
         )
     try:
         return CatalogNormalizationBatchV2(
-            batch_id=UUID(cast(str, data["batch_id"])),
-            operation_id=UUID(cast(str, data["operation_id"])),
+            batch_id=_parse_uuid(data["batch_id"]),
+            operation_id=_parse_uuid(data["operation_id"]),
             command_fingerprint=cast(str, data["command_fingerprint"]),
             expected_catalog_version=cast(int, data["expected_catalog_version"]),
             normalizer_version=cast(str, data["normalizer_version"]),
@@ -1879,13 +1894,13 @@ def catalog_normalized_event_from_mapping_v2(
     data = _exact_mapping(value, keys)
     try:
         return CatalogNormalizedOutboxEventV2(
-            event_id=UUID(cast(str, data["event_id"])),
+            event_id=_parse_uuid(data["event_id"]),
             event_type=cast(str, data["event_type"]),
             channel=cast(str, data["channel"]),
-            aggregate_id=UUID(cast(str, data["aggregate_id"])),
+            aggregate_id=_parse_uuid(data["aggregate_id"]),
             aggregate_version=cast(int, data["aggregate_version"]),
-            batch_id=UUID(cast(str, data["batch_id"])),
-            source_snapshot_id=UUID(cast(str, data["source_snapshot_id"])),
+            batch_id=_parse_uuid(data["batch_id"]),
+            source_snapshot_id=_parse_uuid(data["source_snapshot_id"]),
             candidate_count=cast(int, data["candidate_count"]),
             offer_count=cast(int, data["offer_count"]),
             observation_count=cast(int, data["observation_count"]),
@@ -1935,7 +1950,7 @@ def persisted_catalog_normalization_from_mapping_v2(
     data = _exact_mapping(value, keys)
     try:
         return PersistedCatalogNormalizationV2(
-            operation_id=UUID(cast(str, data["operation_id"])),
+            operation_id=_parse_uuid(data["operation_id"]),
             payload_fingerprint=cast(str, data["payload_fingerprint"]),
             catalog_version=cast(int, data["catalog_version"]),
             previous_chain_hash=cast(str, data["previous_chain_hash"]),
