@@ -1,6 +1,6 @@
 {
   "actual_observation": false,
-  "contract_sha256": "dd6c742d295f5bc7baa036aa6cca0a42e84b7a3168f0302aec8e40e46a87f4b9",
+  "contract_sha256": "08074aa61ca253e32a485192be6b2903cc2f086e52e4437b030d937ca2b3f3cc",
   "evidence": {
     "dependency_acceptance_criteria_satisfied": false,
     "dependency_actual_observation_count": 0,
@@ -14,10 +14,10 @@
     "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
     "quality_state": "NOT_EXECUTED",
     "risk_state": "NOT_EXECUTED",
-    "source_pack_sha256": "1be17ed3769bf4804ee96b38d03e610b08640ec6805f97dd510d32e89a78c49d"
+    "source_pack_sha256": "ecb367211e98b8c8432c7b5322b0dacf697393f9d5e6ae58b670269db7ee7855"
   },
   "immutable": true,
-  "input_sha256": "2f2765267d23c7e9f0c0b2e401570fa731dd2bacc79a4e82eccb92485135c26e",
+  "input_sha256": "136b332c42fccc8fe5631049ee5cd903f3402e7cb22bb1a99511620c5f179def",
   "recorded_at": "2026-04-01T00:00:00Z",
   "recording_id": "blocked-synthetic-no-decision",
   "schema": "ST1805_RECORDED_SYNTHETIC_PORTFOLIO_DECISION_V1",
