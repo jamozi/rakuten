@@ -48,7 +48,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -85,11 +85,11 @@ EXPECTED_SOURCES: Final = (
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
     ),
 )
-PREDECESSOR_COMMIT: Final = "b61d4dd83b87495dfd672bdf8960dc3b1ff29d79"
+PREDECESSOR_COMMIT: Final = "4481d98a5c20a43f03418b1cdabee2a9e723adbe"
 EXPECTED_PREDECESSOR_ARTIFACTS: Final = (
     (
         Path("changes/st-0503/README.md"),
-        "aa956454a96c0c88dedd52982264fdf5ad66f181ee3c3717a1aea8204bfbf138",
+        "e9be25beef080b38df4ee4559833bf693d231befbf6a0f62ca66d96528ce5a13",
     ),
     (
         Path("python/raos/domain/catalog/catalog_normalization.py"),
@@ -178,13 +178,13 @@ def _fail(code: str, field: str) -> NoReturn:
 def _mapping(value: object, field: str) -> Mapping[str, Any]:
     if type(value) is not dict:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(dict[str, Any], value)
 
 
 def _list(value: object, field: str) -> list[Any]:
     if type(value) is not list:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(list[Any], value)  # type: ignore[redundant-cast]
 
 
 def _same_exact(left: object, right: object) -> bool:
@@ -215,7 +215,9 @@ def _sha256(content: bytes) -> str:
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
-    physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    physical = base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        root, relative, field
+    )
     try:
         content = physical.read_bytes()
     except OSError:
@@ -226,16 +228,18 @@ def _read(root: Path, relative: Path, field: str) -> bytes:
 
 
 def _load_yaml(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
-    base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        root, relative, field
+    )
     return _mapping(base.load_yaml(root / relative), field)
 
 
 def _find(items: object, identity: str, field: str) -> Mapping[str, Any]:
-    matches = [
-        _mapping(item, field)
-        for item in _list(items, field)
-        if type(item) is dict and item.get("id") == identity
-    ]
+    matches: list[Mapping[str, Any]] = []
+    for item in _list(items, field):
+        candidate = _mapping(item, field)
+        if candidate.get("id") == identity:
+            matches.append(candidate)
     if len(matches) != 1:
         _fail("CANONICAL_RECORD_MISSING", field)
     return matches[0]
@@ -710,7 +714,9 @@ def check_outputs(root: Path, expected: Mapping[Path, bytes]) -> None:
     if set(expected) != set(GENERATED_PATHS):
         _fail("GENERATED_INVENTORY_DRIFT", "output")
     for relative in GENERATED_PATHS:
-        path = base._output_file(root, relative)  # noqa: SLF001
+        path = base._output_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative
+        )
         try:
             actual = path.read_bytes()
         except OSError:
@@ -725,7 +731,9 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
         check_outputs(root, outputs)
         return
     for relative, content in outputs.items():
-        base._atomic_write(root, relative, content)  # noqa: SLF001
+        base._atomic_write(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative, content
+        )
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
