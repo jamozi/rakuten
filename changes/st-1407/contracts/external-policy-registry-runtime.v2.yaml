@@ -1,0 +1,105 @@
+document:
+  id: RAOS-ST1407-EXTERNAL-POLICY-REGISTRY-RUNTIME-002
+  version: 2.0.0
+  story_id: ST-1407
+  classification: RECORDED_SYNTHETIC_DEV_CI_ONLY
+  status: LOCAL_IMPLEMENTATION_COMPLETE_FOR_UNRESOLVED_BOUNDARY
+  authority: NONE
+  official_source_attested: false
+  production_eligible: false
+authority_inputs:
+- role: integration
+  uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+- role: open_decisions
+  uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+  sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+- role: story
+  uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+- role: security_controls
+  uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+- role: threat_register
+  uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+  sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+- role: alert_catalog
+  uri: repo://docs/canonical/06_ops/RAOS_12_alert_catalog_v1.0.yaml
+  sha256: f180e950f659d27e9270b6c1f9c1dcb6d0fa6194acdc1fdd7026ac7cea560be0
+- role: runbook_catalog
+  uri: repo://docs/canonical/06_ops/RAOS_12_runbook_index_v1.0.yaml
+  sha256: 2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100
+contract_inputs:
+- role: external_rule_catalog
+  uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_external_rule_snapshot_v0.1.yaml
+  sha256: 14a4131215f8c2f70a2f5b73aef0ccb1162f1a8ac6d410079c6a3b6b68955042
+- role: official_reference_catalog
+  uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_official_references_v0.1.yaml
+  sha256: d7a3986affce9d2fc1110d6b3fffb196c668dae7db00288d466b9e62ba57e030
+- role: editorial_policy_catalog
+  uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_editorial_policy_catalog_v0.1.yaml
+  sha256: d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a
+dependency_inputs:
+- story_id: ST-0405
+  role: audit_port
+  uri: repo://python/raos/ports/audit.py
+  sha256: d358f8349ebeb70c3b8f046b82c109a80f162fe88432d1e0d4e11e4ff21592ec
+  use: NOT_CALLED_NO_AUTHORIZED_BUSINESS_MUTATION
+- story_id: ST-0805
+  role: policy_engine_v1
+  uri: repo://python/raos/domain/editorial/policy_engine.py
+  sha256: d858a9b010253cf411083bd5eb9da995ff3f9a172c7626ca9e499a6256559e51
+  use: EXACT_POLICY_ID_VERSION_AND_CATALOG_BINDING
+- story_id: ST-0805
+  role: policy_engine_v2
+  uri: repo://python/raos/domain/editorial/policy_engine_v2.py
+  sha256: 86e0af8ff6b651b50a7959a0a8c0f85864c230a57144b51e190041d658ee7d93
+  use: ADDITIVE_RUNTIME_PROVENANCE_ONLY
+- story_id: ST-0805
+  role: runtime_manifest_v2
+  uri: repo://changes/st-0805/runtime-manifest.v2.yaml
+  sha256: 19dd52b254b648f88c6cda0ea3d9d5b6167b184a0a4ce735431ebb09056d6367
+  use: ADDITIVE_RUNTIME_PROVENANCE_ONLY
+safe_defaults:
+  source_acquisition: NOT_IMPLEMENTED_OPEN_018
+  legal_review: NOT_COMPLETED_OD_008
+  notification: LOCAL_LOG_ONLY_NOT_DELIVERED_OD_011
+  audit: NOT_EXECUTED
+  activation: NOT_AUTHORIZED
+  article_mutation: NOT_AUTHORIZED
+  recommendation_mutation: NOT_AUTHORIZED
+  publication: NOT_AUTHORIZED
+  live: NOT_EXECUTED
+fixtures:
+- fixture_id: ST1407-OVERDUE-AFFECTED-001
+  snapshot_id: 10000000-0000-4000-8000-000000001407
+  external_rule_id: EXT-GOOGLE-003
+  source_content_sha256: 704ac3ba39de4c6685839d88aaae3407d5c65b2a6b0d01397faf4fec33171b14
+  acquired_at: '2026-08-01T00:00:00.000000Z'
+  review_due_at: '2026-08-20T00:00:00.000000Z'
+  evaluated_at: '2026-08-24T00:00:00.000000Z'
+  article_bindings:
+  - article_id: 20000000-0000-4000-8000-000000001407
+    article_version_id: 30000000-0000-4000-8000-000000001407
+    publication_snapshot_sha256: 07fffa938d2125f8d6d038977bac128d71b5589df4ae17cc6293c6bdc909ed94
+    policy_ids:
+    - POL-CONT-010
+    - POL-CONT-020
+  - article_id: 20000000-0000-4000-8000-000000001408
+    article_version_id: 30000000-0000-4000-8000-000000001408
+    publication_snapshot_sha256: db495e81b6fda8e5b197f43d9614d069f8bb23af0fe7989ed6d7e8514d3219f4
+    policy_ids:
+    - POL-CONT-019
+- fixture_id: ST1407-NOT-DUE-EMPTY-001
+  snapshot_id: 10000000-0000-4000-8000-000000001408
+  external_rule_id: EXT-W3C-001
+  source_content_sha256: f916366ca6de80add63f94d78c0f02266ad627c9dfb7e8ec4ddfadbb172d7ed6
+  acquired_at: '2026-08-01T00:00:00.000000Z'
+  review_due_at: '2026-09-01T00:00:00.000000Z'
+  evaluated_at: '2026-08-24T00:00:00.000000Z'
+  article_bindings:
+  - article_id: 20000000-0000-4000-8000-000000001409
+    article_version_id: 30000000-0000-4000-8000-000000001409
+    publication_snapshot_sha256: f799686a8a72b5d097bdb62b2d8bd171340ea533760387d8cdf3c82f0342de98
+    policy_ids:
+    - POL-CONT-019

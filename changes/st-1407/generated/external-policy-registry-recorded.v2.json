@@ -1,0 +1,462 @@
+{
+  "boundary": {
+    "activation_authorized": false,
+    "article_mutation_authorized": false,
+    "audit": "NOT_EXECUTED",
+    "current_source_verified": false,
+    "database": "NOT_EXECUTED",
+    "formal_tst_005": "NOT_EXECUTED",
+    "formal_tst_008": "NOT_EXECUTED",
+    "formal_tst_019": "NOT_EXECUTED",
+    "formal_tst_020": "NOT_EXECUTED",
+    "legal_review": "NOT_COMPLETED_OD_008",
+    "live": "NOT_EXECUTED",
+    "notification": "LOCAL_LOG_ONLY_NOT_DELIVERED_OD_011",
+    "official_source_attested": false,
+    "production": "NOT_EXECUTED",
+    "publication_authorized": false,
+    "recommendation_mutation_authorized": false,
+    "release": "NOT_EXECUTED",
+    "source_acquisition": "NOT_IMPLEMENTED_OPEN_018",
+    "staging": "NOT_EXECUTED"
+  },
+  "classification": "RECORDED_SYNTHETIC_DEV_CI_ONLY",
+  "contract_id": "RAOS-ST1407-EXTERNAL-POLICY-REGISTRY-RUNTIME-002",
+  "contract_sha256": "19ce14a8fb9937f61f7e7466ee9c5fb7002a3e93e3245fdc24451182f99c0db4",
+  "contract_version": "2.0.0",
+  "external_rule_policy_links": [
+    {
+      "external_rule_id": "EXT-GOOGLE-001",
+      "policy_ids": [
+        "POL-CONT-019",
+        "POL-CONT-020",
+        "POL-CONT-021"
+      ]
+    },
+    {
+      "external_rule_id": "EXT-GOOGLE-002",
+      "policy_ids": [
+        "POL-CONT-020",
+        "POL-CONT-030"
+      ]
+    },
+    {
+      "external_rule_id": "EXT-GOOGLE-003",
+      "policy_ids": [
+        "POL-CONT-010"
+      ]
+    },
+    {
+      "external_rule_id": "EXT-GOOGLE-004",
+      "policy_ids": [
+        "POL-CONT-001",
+        "POL-CONT-002",
+        "POL-CONT-020"
+      ]
+    },
+    {
+      "external_rule_id": "EXT-GOOGLE-005",
+      "policy_ids": [
+        "POL-CONT-020",
+        "POL-CONT-030"
+      ]
+    },
+    {
+      "external_rule_id": "EXT-GOOGLE-006",
+      "policy_ids": [
+        "POL-CONT-027",
+        "POL-CONT-029"
+      ]
+    },
+    {
+      "external_rule_id": "EXT-GOOGLE-007",
+      "policy_ids": [
+        "POL-CONT-028"
+      ]
+    },
+    {
+      "external_rule_id": "EXT-GOOGLE-008",
+      "policy_ids": [
+        "POL-CONT-032",
+        "POL-CONT-033"
+      ]
+    },
+    {
+      "external_rule_id": "EXT-W3C-001",
+      "policy_ids": [
+        "POL-CONT-032"
+      ]
+    },
+    {
+      "external_rule_id": "EXT-RAKUTEN-001",
+      "policy_ids": [
+        "POL-CONT-004",
+        "POL-CONT-007",
+        "POL-CONT-011",
+        "POL-CONT-013"
+      ]
+    },
+    {
+      "external_rule_id": "EXT-RAKUTEN-002",
+      "policy_ids": [
+        "POL-CONT-008"
+      ]
+    },
+    {
+      "external_rule_id": "EXT-RAKUTEN-003",
+      "policy_ids": [
+        "POL-CONT-012"
+      ]
+    },
+    {
+      "external_rule_id": "EXT-CAA-001",
+      "policy_ids": [
+        "POL-CONT-008"
+      ]
+    }
+  ],
+  "fixtures": [
+    {
+      "fixture_id": "ST1407-OVERDUE-AFFECTED-001",
+      "fixture_sha256": "7d3bae8e175fd1099c2d85b0b03c461933de236e82a2cb468b060aed71af24f0",
+      "report": {
+        "authority": {
+          "activation_authorized": false,
+          "audit_written": false,
+          "current_source_verified": false,
+          "legal_review_completed": false,
+          "notification_delivered": false,
+          "official_source_attested": false,
+          "publication_authorized": false
+        },
+        "binding_sha256": "6880436a6b13ca321dd0eacdd6ee7bda8fc932cd01c19437749009cc28aa4a6a",
+        "execution": {
+          "live": "NOT_EXECUTED",
+          "production": "NOT_EXECUTED",
+          "release": "NOT_EXECUTED",
+          "staging": "NOT_EXECUTED"
+        },
+        "impact": {
+          "affected_articles": [
+            {
+              "article_id": "20000000-0000-4000-8000-000000001407",
+              "article_version_id": "30000000-0000-4000-8000-000000001407",
+              "matched_policy_ids": [
+                "POL-CONT-010"
+              ],
+              "publication_snapshot_sha256": "07fffa938d2125f8d6d038977bac128d71b5589df4ae17cc6293c6bdc909ed94"
+            }
+          ],
+          "article_binding_set_sha256": "d8f1713a8c19adbf343dbd80cadedd66d11899582327015627a97e670f7512ec",
+          "article_mutation_authorized": false,
+          "changed_policy_ids": [
+            "POL-CONT-010"
+          ],
+          "empty_affected_meaning": "NOT_EMPTY",
+          "external_rule_id": "EXT-GOOGLE-003",
+          "persistence_status": "NOT_EXECUTED",
+          "publication_authorized": false,
+          "query_scope": "EXACT_COMPLETE_RECORDED_FIXTURE",
+          "recommendation_mutation_authorized": false,
+          "request_sha256": "3d7f995d6957ee0893be1a20d785f0d899fe5093b951bd39024aeda08056a8c4",
+          "snapshot_id": "10000000-0000-4000-8000-000000001407",
+          "status": "LOCAL_EVALUATED"
+        },
+        "mode": "RECORDED_DEV_CI_ONLY",
+        "request_sha256": "3d7f995d6957ee0893be1a20d785f0d899fe5093b951bd39024aeda08056a8c4",
+        "review": {
+          "alert_candidate": {
+            "alert_catalog_id": "ALT-019",
+            "assignment_state": "NOT_ASSIGNED",
+            "audit_write_authorized": false,
+            "delivery_authorized": false,
+            "external_action_authorized": false,
+            "external_rule_id": "EXT-GOOGLE-003",
+            "request_sha256": "3d7f995d6957ee0893be1a20d785f0d899fe5093b951bd39024aeda08056a8c4",
+            "reviewer_assignment_authorized": false,
+            "route": "LOCAL_LOG_ONLY",
+            "runbook_id": "RB-018",
+            "severity": "SEV4",
+            "snapshot_id": "10000000-0000-4000-8000-000000001407"
+          },
+          "cadence_inferred": false,
+          "evaluated_at": "2026-08-24T00:00:00.000000Z",
+          "review_due_at": "2026-08-20T00:00:00.000000Z",
+          "state": "OVERDUE"
+        },
+        "snapshot_sha256": "d82cb5da3672189469b337299023ea148d6855cc72c2fdf9093ee93f7ecb9994"
+      },
+      "report_sha256": "84f7d26adf2e002fe6b0fba9538e23cd7c9f93fe2cc34c1e6f90188a5b426210",
+      "request": {
+        "article_binding_set_sha256": "d8f1713a8c19adbf343dbd80cadedd66d11899582327015627a97e670f7512ec",
+        "article_bindings": [
+          {
+            "article_id": "20000000-0000-4000-8000-000000001407",
+            "article_version_id": "30000000-0000-4000-8000-000000001407",
+            "content_mutation_authorized": false,
+            "policy_ids": [
+              "POL-CONT-010",
+              "POL-CONT-020"
+            ],
+            "publication_authorized": false,
+            "publication_snapshot_sha256": "07fffa938d2125f8d6d038977bac128d71b5589df4ae17cc6293c6bdc909ed94",
+            "recommendation_mutation_authorized": false,
+            "scope": "EXACT_COMPLETE_RECORDED_FIXTURE"
+          },
+          {
+            "article_id": "20000000-0000-4000-8000-000000001408",
+            "article_version_id": "30000000-0000-4000-8000-000000001408",
+            "content_mutation_authorized": false,
+            "policy_ids": [
+              "POL-CONT-019"
+            ],
+            "publication_authorized": false,
+            "publication_snapshot_sha256": "db495e81b6fda8e5b197f43d9614d069f8bb23af0fe7989ed6d7e8514d3219f4",
+            "recommendation_mutation_authorized": false,
+            "scope": "EXACT_COMPLETE_RECORDED_FIXTURE"
+          }
+        ],
+        "binding": {
+          "contract_id": "RAOS-ST1407-EXTERNAL-POLICY-REGISTRY-RUNTIME-002",
+          "contract_version": "2.0.0",
+          "external_rule_catalog": {
+            "id": "RAOS-CONTENT-EXTERNAL-001",
+            "sha256": "14a4131215f8c2f70a2f5b73aef0ccb1162f1a8ac6d410079c6a3b6b68955042",
+            "version": "0.1"
+          },
+          "official_reference_catalog": {
+            "id": "RAOS-CONTENT-REF-001",
+            "sha256": "d7a3986affce9d2fc1110d6b3fffb196c668dae7db00288d466b9e62ba57e030",
+            "version": "0.1"
+          },
+          "policy_catalog": {
+            "id": "RAOS-CONTENT-POLICY-001",
+            "sha256": "d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a",
+            "version": "0.1"
+          },
+          "unresolved_decisions": [
+            "OPEN-018",
+            "OD-008",
+            "OD-011"
+          ]
+        },
+        "evaluated_at": "2026-08-24T00:00:00.000000Z",
+        "snapshot": {
+          "acquired_at": "2026-08-01T00:00:00.000000Z",
+          "contract_binding_sha256": "6880436a6b13ca321dd0eacdd6ee7bda8fc932cd01c19437749009cc28aa4a6a",
+          "current_source_verified": false,
+          "external_rule_id": "EXT-GOOGLE-003",
+          "mode": "RECORDED_DEV_CI_ONLY",
+          "official_source_attested": false,
+          "review_due_at": "2026-08-20T00:00:00.000000Z",
+          "snapshot_id": "10000000-0000-4000-8000-000000001407",
+          "source_content_sha256": "704ac3ba39de4c6685839d88aaae3407d5c65b2a6b0d01397faf4fec33171b14",
+          "validation": "RECORDED_SYNTHETIC_VALID"
+        },
+        "version_links": [
+          {
+            "activation_authorized": false,
+            "external_rule_id": "EXT-GOOGLE-003",
+            "policy_catalog_sha256": "d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a",
+            "policy_id": "POL-CONT-010",
+            "policy_version": "0.1",
+            "reference_only": true,
+            "snapshot_id": "10000000-0000-4000-8000-000000001407"
+          }
+        ]
+      },
+      "request_sha256": "3d7f995d6957ee0893be1a20d785f0d899fe5093b951bd39024aeda08056a8c4"
+    },
+    {
+      "fixture_id": "ST1407-NOT-DUE-EMPTY-001",
+      "fixture_sha256": "cbdeb4831da669f5e1246cdbbc6878d4dd8fb3c9620dd9ef1edead810443344d",
+      "report": {
+        "authority": {
+          "activation_authorized": false,
+          "audit_written": false,
+          "current_source_verified": false,
+          "legal_review_completed": false,
+          "notification_delivered": false,
+          "official_source_attested": false,
+          "publication_authorized": false
+        },
+        "binding_sha256": "6880436a6b13ca321dd0eacdd6ee7bda8fc932cd01c19437749009cc28aa4a6a",
+        "execution": {
+          "live": "NOT_EXECUTED",
+          "production": "NOT_EXECUTED",
+          "release": "NOT_EXECUTED",
+          "staging": "NOT_EXECUTED"
+        },
+        "impact": {
+          "affected_articles": [],
+          "article_binding_set_sha256": "28bb5cc92bc27cbe388e7146a59721c2d7409940a5f6ecb896ac971a8038648e",
+          "article_mutation_authorized": false,
+          "changed_policy_ids": [
+            "POL-CONT-032"
+          ],
+          "empty_affected_meaning": "ZERO_WITHIN_EXACT_COMPLETE_RECORDED_FIXTURE",
+          "external_rule_id": "EXT-W3C-001",
+          "persistence_status": "NOT_EXECUTED",
+          "publication_authorized": false,
+          "query_scope": "EXACT_COMPLETE_RECORDED_FIXTURE",
+          "recommendation_mutation_authorized": false,
+          "request_sha256": "aca34743ac05c92a6bab514fd1c65e83721e21f04e54739ae451953c942c2b30",
+          "snapshot_id": "10000000-0000-4000-8000-000000001408",
+          "status": "LOCAL_EVALUATED"
+        },
+        "mode": "RECORDED_DEV_CI_ONLY",
+        "request_sha256": "aca34743ac05c92a6bab514fd1c65e83721e21f04e54739ae451953c942c2b30",
+        "review": {
+          "alert_candidate": null,
+          "cadence_inferred": false,
+          "evaluated_at": "2026-08-24T00:00:00.000000Z",
+          "review_due_at": "2026-09-01T00:00:00.000000Z",
+          "state": "NOT_DUE"
+        },
+        "snapshot_sha256": "a02381ebb9d778c62799de019ca72507c6c050117b7faef653118b8b30a3d304"
+      },
+      "report_sha256": "2e95fc8de63d219b2ee30a3724ced59b542fb8f859d6d16e434ae952b0c46dff",
+      "request": {
+        "article_binding_set_sha256": "28bb5cc92bc27cbe388e7146a59721c2d7409940a5f6ecb896ac971a8038648e",
+        "article_bindings": [
+          {
+            "article_id": "20000000-0000-4000-8000-000000001409",
+            "article_version_id": "30000000-0000-4000-8000-000000001409",
+            "content_mutation_authorized": false,
+            "policy_ids": [
+              "POL-CONT-019"
+            ],
+            "publication_authorized": false,
+            "publication_snapshot_sha256": "f799686a8a72b5d097bdb62b2d8bd171340ea533760387d8cdf3c82f0342de98",
+            "recommendation_mutation_authorized": false,
+            "scope": "EXACT_COMPLETE_RECORDED_FIXTURE"
+          }
+        ],
+        "binding": {
+          "contract_id": "RAOS-ST1407-EXTERNAL-POLICY-REGISTRY-RUNTIME-002",
+          "contract_version": "2.0.0",
+          "external_rule_catalog": {
+            "id": "RAOS-CONTENT-EXTERNAL-001",
+            "sha256": "14a4131215f8c2f70a2f5b73aef0ccb1162f1a8ac6d410079c6a3b6b68955042",
+            "version": "0.1"
+          },
+          "official_reference_catalog": {
+            "id": "RAOS-CONTENT-REF-001",
+            "sha256": "d7a3986affce9d2fc1110d6b3fffb196c668dae7db00288d466b9e62ba57e030",
+            "version": "0.1"
+          },
+          "policy_catalog": {
+            "id": "RAOS-CONTENT-POLICY-001",
+            "sha256": "d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a",
+            "version": "0.1"
+          },
+          "unresolved_decisions": [
+            "OPEN-018",
+            "OD-008",
+            "OD-011"
+          ]
+        },
+        "evaluated_at": "2026-08-24T00:00:00.000000Z",
+        "snapshot": {
+          "acquired_at": "2026-08-01T00:00:00.000000Z",
+          "contract_binding_sha256": "6880436a6b13ca321dd0eacdd6ee7bda8fc932cd01c19437749009cc28aa4a6a",
+          "current_source_verified": false,
+          "external_rule_id": "EXT-W3C-001",
+          "mode": "RECORDED_DEV_CI_ONLY",
+          "official_source_attested": false,
+          "review_due_at": "2026-09-01T00:00:00.000000Z",
+          "snapshot_id": "10000000-0000-4000-8000-000000001408",
+          "source_content_sha256": "f916366ca6de80add63f94d78c0f02266ad627c9dfb7e8ec4ddfadbb172d7ed6",
+          "validation": "RECORDED_SYNTHETIC_VALID"
+        },
+        "version_links": [
+          {
+            "activation_authorized": false,
+            "external_rule_id": "EXT-W3C-001",
+            "policy_catalog_sha256": "d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a",
+            "policy_id": "POL-CONT-032",
+            "policy_version": "0.1",
+            "reference_only": true,
+            "snapshot_id": "10000000-0000-4000-8000-000000001408"
+          }
+        ]
+      },
+      "request_sha256": "aca34743ac05c92a6bab514fd1c65e83721e21f04e54739ae451953c942c2b30"
+    }
+  ],
+  "local_status": "LOCAL_IMPLEMENTATION_COMPLETE_FOR_UNRESOLVED_BOUNDARY",
+  "pinned_inputs": [
+    {
+      "role": "integration",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md"
+    },
+    {
+      "role": "open_decisions",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml"
+    },
+    {
+      "role": "story",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+      "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
+    },
+    {
+      "role": "security_controls",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml"
+    },
+    {
+      "role": "threat_register",
+      "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd",
+      "uri": "repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml"
+    },
+    {
+      "role": "alert_catalog",
+      "sha256": "f180e950f659d27e9270b6c1f9c1dcb6d0fa6194acdc1fdd7026ac7cea560be0",
+      "uri": "repo://docs/canonical/06_ops/RAOS_12_alert_catalog_v1.0.yaml"
+    },
+    {
+      "role": "runbook_catalog",
+      "sha256": "2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100",
+      "uri": "repo://docs/canonical/06_ops/RAOS_12_runbook_index_v1.0.yaml"
+    },
+    {
+      "role": "external_rule_catalog",
+      "sha256": "14a4131215f8c2f70a2f5b73aef0ccb1162f1a8ac6d410079c6a3b6b68955042",
+      "uri": "repo://contracts/raos-v0.4/contracts/content/RAOS_06_external_rule_snapshot_v0.1.yaml"
+    },
+    {
+      "role": "official_reference_catalog",
+      "sha256": "d7a3986affce9d2fc1110d6b3fffb196c668dae7db00288d466b9e62ba57e030",
+      "uri": "repo://contracts/raos-v0.4/contracts/content/RAOS_06_official_references_v0.1.yaml"
+    },
+    {
+      "role": "editorial_policy_catalog",
+      "sha256": "d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a",
+      "uri": "repo://contracts/raos-v0.4/contracts/content/RAOS_06_editorial_policy_catalog_v0.1.yaml"
+    },
+    {
+      "role": "ST-0405:audit_port",
+      "sha256": "d358f8349ebeb70c3b8f046b82c109a80f162fe88432d1e0d4e11e4ff21592ec",
+      "uri": "repo://python/raos/ports/audit.py"
+    },
+    {
+      "role": "ST-0805:policy_engine_v1",
+      "sha256": "d858a9b010253cf411083bd5eb9da995ff3f9a172c7626ca9e499a6256559e51",
+      "uri": "repo://python/raos/domain/editorial/policy_engine.py"
+    },
+    {
+      "role": "ST-0805:policy_engine_v2",
+      "sha256": "86e0af8ff6b651b50a7959a0a8c0f85864c230a57144b51e190041d658ee7d93",
+      "uri": "repo://python/raos/domain/editorial/policy_engine_v2.py"
+    },
+    {
+      "role": "ST-0805:runtime_manifest_v2",
+      "sha256": "19dd52b254b648f88c6cda0ea3d9d5b6167b184a0a4ce735431ebb09056d6367",
+      "uri": "repo://changes/st-0805/runtime-manifest.v2.yaml"
+    }
+  ],
+  "schema_version": 2,
+  "story_id": "ST-1407"
+}

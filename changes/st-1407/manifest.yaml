@@ -113,8 +113,8 @@ source_artifacts:
   bytes: 4758
   sha256: 7adf9c9c897f1d287ec2ebeac9419ac477f86b77115a8ff63fed6551116fccf4
 - uri: repo://tests/st1407/test_negative_cases.py
-  bytes: 11917
-  sha256: b7c5043589429f67d563c670b6968291ce6413914c2df11c2bc0327352e97e73
+  bytes: 12396
+  sha256: 957b6d5269a1cd4e1468fa4a78c70e890292f3105f1447f7381aba630614984c
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1407/generated/external-policy-registry-reference-plan.v1.json
