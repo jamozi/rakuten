@@ -49,25 +49,25 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml",
-    "source_contract_sha256": "f57848109939eb1a1df191b031ea12cb91bd3c029f97472af53dd923bfbc4488",
-    "source_contract_model_sha256": "0c429d4afdc2e33e27e28398614893f2f701cfe477096071b71e22c107a56a66",
+    "source_contract_sha256": "f26a454fadee0cb7b86f63c720a4963b61e00ac2f1acbca3e908b35a3b95ed53",
+    "source_contract_model_sha256": "514d491987d6546f02ca1077ebc8cce685aaf17e5375934bec35205e37b57c74",
     "generated_by": "repo://scripts/build_st1303_attribution_engine_reference_plan.py",
     "generation_command": "/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --frozen --offline --no-cache --no-sync --no-env-file python scripts/build_st1303_attribution_engine_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+      "sha256": "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
     }
   },
   "dependency_bindings": {
     "st1202": {
       "story_id": "ST-1202",
       "feature_commit": "af7c63685fdfb5042fc0e5cfa9de22b08262fba8",
-      "artifact_binding_commit": "54a6d21169f70a0093d8b10a3c9508d9a332c234",
+      "artifact_binding_commit": "c54507bb95763790ac4a8c48e225b76b105be14d",
       "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
       "artifacts": {
         "changes/st-1202/README.md": "5ba96d4dd41115e3af0bc37703eb011defaff9eb681422093d126bf1338a8bba",
         "packages/web-ui/src/public-event-instrumentation.ts": "9a8f6e1e73bf1711c179d130bb1d3f8efbd766a4c0252bc1d9143617aa89944e",
-        "packages/web-ui/src/index.ts": "527efe6b033da86de0b6dd05d6e74eb1711bee83e34fe3d5d6477f125aa8f22d",
+        "packages/web-ui/src/index.ts": "ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c",
         "tests/st1202/public-event-instrumentation-contract.test.ts": "f19a47768d62e0cef8da208f6f20e8ac2806a1f1c6d3552e311ff721c982df6b",
         "tests/st1202/public-event-instrumentation-model.test.ts": "be590bbb18e0af6012b440fc9a25e1d208f0f00fb875a5a08141330c4f674d9c",
         "tests/st1202/public-event-instrumentation-boundaries.test.ts": "2c20d25c12bf61d52768fd176ea5f27206e6e9d1d3099bdd037f02b09abde922",

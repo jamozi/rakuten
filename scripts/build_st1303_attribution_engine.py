@@ -121,7 +121,7 @@ SOURCE_BINDINGS: Final = {
     },
     "st1202_runtime": {
         "path": "changes/st-1202/runtime-manifest.v2.yaml",
-        "sha256": "409472d46de8df3b30d6de13dcde49bfb13149c1dd6b208c10ad40741f441a25",
+        "sha256": "03f334898c53ed39132c09460ff0ed1b44c17b41f245011c942ae3e7b6dd173c",
     },
     "st1302_runtime": {
         "path": "changes/st-1302/manifest.v2.yaml",

@@ -11,40 +11,40 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml
   bytes: 13051
-  sha256: f57848109939eb1a1df191b031ea12cb91bd3c029f97472af53dd923bfbc4488
+  sha256: f26a454fadee0cb7b86f63c720a4963b61e00ac2f1acbca3e908b35a3b95ed53
 - uri: repo://changes/st-1303/README.md
   bytes: 2764
   sha256: d7f1bf588c88ee54c35dd386fca7ee125d66e8e655560f587854d17aa3eb9bef
 - uri: repo://scripts/build_st1303_attribution_engine_reference_plan.py
   bytes: 30801
-  sha256: 64e1811b01ecb96e13978bbfd5b294cce64308a9a09b34723a3df9414ad9d6a0
+  sha256: e7aca133084caa4232b5678b7b529bce09633f0dd92a46412cca695d58ce3cf9
 - uri: repo://tests/st1303/conftest.py
   bytes: 1000
   sha256: 1d972ef360dbfda49b235f8c5066b8fa812d55db4cb0114cf34165cc7340e62f
 - uri: repo://tests/st1303/test_contract.py
   bytes: 9549
-  sha256: 1046c7c65747447ae4d30a075e6cce3eb4a82326a64956ce4c973197af27ac1f
+  sha256: 7ef020b5f7c058417b75ed4944e4ef06343127727e16a62173ca6926eb5f31dc
 - uri: repo://tests/st1303/test_generation.py
   bytes: 5161
-  sha256: 51dbd6fe45ec20bcb63119a383369fd47370d1a820a763bf8b88a58fb481a5b9
+  sha256: b08e8fd25f69de432ccabc7685d4752ab63cd7565c4e8a8eee874fd0b4e884fb
 - uri: repo://tests/st1303/test_negative_cases.py
   bytes: 11326
   sha256: b2afcd5ea05cc8927becc95d3a7987ec72e3a14ef8386d4aebad7efd2a56bf52
 generated_artifacts:
 - uri: repo://changes/st-1303/generated/attribution-engine-reference-plan.v1.json
   bytes: 16908
-  sha256: 06eacacfefc10dd0a3b3f6b30a5c65a395e41cbfd6bf77ec5e530eae5929810a
+  sha256: 681408bab17a819779ab668ef8e916e5fcf3343af3b31bc55cc4efe2638f3e30
 provenance:
   generated_by: repo://scripts/build_st1303_attribution_engine_reference_plan.py
   generation_command: /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --frozen
     --offline --no-cache --no-sync --no-env-file python scripts/build_st1303_attribution_engine_reference_plan.py
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    sha256: ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5
   dependency_provenance:
     st1202:
       feature_commit: af7c63685fdfb5042fc0e5cfa9de22b08262fba8
-      artifact_binding_commit: 54a6d21169f70a0093d8b10a3c9508d9a332c234
+      artifact_binding_commit: c54507bb95763790ac4a8c48e225b76b105be14d
       binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
     st1302:
       feature_commit: 96d388761f4e933f06760f3a7e3d3b0f2c12b65c
@@ -64,7 +64,7 @@ provenance:
   - uri: repo://packages/web-ui/src/public-event-instrumentation.ts
     sha256: 9a8f6e1e73bf1711c179d130bb1d3f8efbd766a4c0252bc1d9143617aa89944e
   - uri: repo://packages/web-ui/src/index.ts
-    sha256: 527efe6b033da86de0b6dd05d6e74eb1711bee83e34fe3d5d6477f125aa8f22d
+    sha256: ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c
   - uri: repo://tests/st1202/public-event-instrumentation-contract.test.ts
     sha256: f19a47768d62e0cef8da208f6f20e8ac2806a1f1c6d3552e311ff721c982df6b
   - uri: repo://tests/st1202/public-event-instrumentation-model.test.ts
