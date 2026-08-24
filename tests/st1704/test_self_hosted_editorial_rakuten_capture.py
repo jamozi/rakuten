@@ -541,7 +541,7 @@ def test_capture_plan_binds_five_articles_and_eighteen_unique_products() -> None
         "jyupro:10136298",
     ]
     assert [target.fixed_item_code for target in rows[4]] == [
-        "edion:0885155053053",
+        "edion:10895202",
         "switchbot:10000327",
         "switchbot:10000240",
         "edion:10909675",
