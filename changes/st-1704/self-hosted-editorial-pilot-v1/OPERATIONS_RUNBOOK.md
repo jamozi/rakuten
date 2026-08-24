@@ -304,10 +304,15 @@ recover and verify do not rebuild the confirmed request from current provider fi
    use each end's original `COMMITTED` artifact even when the 24-hour Rakuten evidence,
    14-day source evidence, or the shared C300 provider files have since been refreshed.
 
-Use the order and offsets in `operations/publication-plan.v1.json`. Fourteen days after
-each public action, a human records the observations in
-`operations/measurement-ledger.v1.json`. Finance and conversion observations may
-inform a proposed presentation change, but never the recommendation order.
+Use the order and offsets in `operations/publication-plan.v1.json`. The tracked
+`operations/measurement-ledger.v1.json` is an immutable compatibility template; do
+not record observations in it. Fourteen days after each public action, a human records
+sanitized aggregates through the owner-private V2 interface documented at
+`../affiliate-learning-v2/README.md`. Its fixed ledger is
+`.secrets/st1704-owner-local-pilot/affiliate-learning-ledger.v2.json`. Finance and
+conversion observations may inform human-review improvement proposals only. They may
+never mutate article HTML, CTA copy, product selection, a publication snapshot, or the
+recommendation order.
 
 ## Rollback
 

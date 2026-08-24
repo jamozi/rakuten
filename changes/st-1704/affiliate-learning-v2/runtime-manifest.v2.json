@@ -1,0 +1,68 @@
+{
+  "authority": {
+    "analytics_activation": false,
+    "external_writes": false,
+    "network_requests": false,
+    "publication": false,
+    "recommendation_mutation": false,
+    "tracking": false
+  },
+  "contract_sha256": "637fb222fd5dbb9e86d1e4a23ee040a86919795b15994268797e6c186ce7228c",
+  "fixtures": [
+    {
+      "path": "changes/st-1704/affiliate-learning-v2/examples/article-observation.v2.json",
+      "sha256": "4ff6dde58186828bdfb512f72968696d7f174de1dfb1ba970c4ff659f866a6e7"
+    },
+    {
+      "path": "changes/st-1704/affiliate-learning-v2/examples/program-observation.v2.json",
+      "sha256": "4483f30eacb516c0416bed576315d0c162368bbc2f441244250ce743672b7c47"
+    }
+  ],
+  "generated_by": "scripts/build_st1704_affiliate_learning.py",
+  "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+  "runtime_sources": [
+    {
+      "path": "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json",
+      "sha256": "9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8",
+      "size": 4785
+    },
+    {
+      "path": "python/raos/adapters/affiliate_learning_json.py",
+      "sha256": "24be45223104925b7ef7c6c57a101d385c4ec00514bd62195092e7e84ae0d731",
+      "size": 16604
+    },
+    {
+      "path": "python/raos/application/editorial/affiliate_learning.py",
+      "sha256": "871d62cf604c5c24bfc6d8c8b4661db3c43bb4b17b4073fe4fa579fc229702bb",
+      "size": 3099
+    },
+    {
+      "path": "python/raos/domain/editorial/affiliate_learning.py",
+      "sha256": "7a6d2a716369e439a935dbca9b1cb325882a140f863544b777189361fd10d187",
+      "size": 48204
+    },
+    {
+      "path": "python/raos/domain/editorial/owner_local_pilot.py",
+      "sha256": "3fb5edcff2823bf85fe306bed15d7af94aac9639261789c64ce4b234d4ea6dc9",
+      "size": 41732
+    },
+    {
+      "path": "python/raos/ports/affiliate_learning.py",
+      "sha256": "2326e3280d179539e3bf11e83a1d030698bc056ed1af4f42e733a08f9c4969e7",
+      "size": 987
+    },
+    {
+      "path": "scripts/build_st1704_affiliate_learning.py",
+      "sha256": "fae20a358246b31cfb598031adf59967b9fdb37684a4f097c8005ad9765dcd44",
+      "size": 15101
+    },
+    {
+      "path": "scripts/st1704_affiliate_learning.py",
+      "sha256": "d3ab85abc8bfef6afd9d48529cbf7a097143bdec0141008508509c6fc8d61331",
+      "size": 8888
+    }
+  ],
+  "schema": "ST1704_AFFILIATE_LEARNING_RUNTIME_MANIFEST_V2",
+  "slice_id": "AFFILIATE_LEARNING_MEASUREMENT_V2",
+  "story_id": "ST-1704"
+}

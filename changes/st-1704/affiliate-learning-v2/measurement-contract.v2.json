@@ -1,0 +1,131 @@
+{
+  "articles": [
+    {
+      "article_id": "st1703-first-suitcase-comparison",
+      "article_type_code": "AT-003",
+      "intent_classification": "CONDITION_COMPARISON",
+      "intent_cluster": "移動",
+      "packet_sha256": "9d0e7032fab6200566639555dce6ebdd29113e3ea87982f0c80fc048d6b9b537",
+      "slot": 1,
+      "slug": "carry-on-suitcase-comparison"
+    },
+    {
+      "article_id": "st1704-portable-power-station-guide",
+      "article_type_code": "AT-001",
+      "intent_classification": "SELECTION_GUIDE",
+      "intent_cluster": "備え",
+      "packet_sha256": "4d670e37a45d96c775a6f42132fc8d9e8e6ac6d97e67cb26a1ecea8e6acfd9c1",
+      "slot": 2,
+      "slug": "portable-power-station-guide"
+    },
+    {
+      "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "article_type_code": "AT-004",
+      "intent_classification": "MODEL_DIFFERENCES",
+      "intent_cluster": "備え",
+      "packet_sha256": "edea36dcc82f9ba1705d1cde8916b2c8da70eab2e41892d94dc9bfb35547c7b3",
+      "slot": 3,
+      "slug": "anker-solix-c300-c800-c1000-differences"
+    },
+    {
+      "article_id": "st1704-countertop-dishwasher-for-small-households",
+      "article_type_code": "AT-002",
+      "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
+      "intent_cluster": "家事",
+      "packet_sha256": "b1a0c447cd07d6d3d65bbe5b842110a246351c3e6ddfb8dae9bf8363f12b7adb",
+      "slot": 4,
+      "slug": "countertop-dishwasher-for-small-households"
+    },
+    {
+      "article_id": "st1704-compact-robot-vacuum-shortlist",
+      "article_type_code": "AT-005",
+      "intent_classification": "CONDITION_SHORTLIST",
+      "intent_cluster": "家事",
+      "packet_sha256": "229da594e299fab8d869b6e38e73011bc449e6716500017cc2e42766e3f643b2",
+      "slot": 5,
+      "slug": "compact-robot-vacuum-shortlist"
+    }
+  ],
+  "derivation_contract": {
+    "affiliate_click_rate": "sum(affiliate_clicks)/sum(article_views)",
+    "confirmation_rate": "sum(confirmed_outcomes)/sum(confirmed_outcomes+rejected_outcomes)",
+    "confirmed_reward_per_click_jpy": "sum(direct_confirmed_reward_jpy)/sum(affiliate_clicks)",
+    "confirmed_reward_per_content_hour_jpy": "sum(direct_confirmed_reward_jpy)*60/sum(work_minutes)",
+    "decimal_places": 6,
+    "rounding": "ROUND_HALF_EVEN",
+    "search_ctr": "sum(search_clicks)/sum(search_impressions)",
+    "unavailability": [
+      "MISSING_INPUT",
+      "UNVERIFIED_INPUT",
+      "ZERO_DENOMINATOR",
+      "COHORT_IMMATURE",
+      "PERIOD_MISMATCH",
+      "PROGRAM_MISMATCH",
+      "MISSING_ARTICLE_SLOTS"
+    ]
+  },
+  "guardrails": {
+    "arbitrary_total_allocation": false,
+    "article_html_mutation": false,
+    "automatic_publication": false,
+    "cta_mutation": false,
+    "live_provider_calls": false,
+    "network_requests": false,
+    "product_selection_mutation": false,
+    "publication_snapshot_mutation": false,
+    "recommendation_inputs_excluded": [
+      "AFFILIATE_COMMISSION_RATE",
+      "EPC",
+      "RPM",
+      "PROFIT"
+    ],
+    "recommendation_order_mutation": false,
+    "tracking_activation": false,
+    "unattributed_reward_article_allocation": false
+  },
+  "metric_contract": {
+    "article_metrics": [
+      "search_impressions",
+      "search_clicks",
+      "article_views",
+      "affiliate_clicks",
+      "pending_outcomes",
+      "confirmed_outcomes",
+      "rejected_outcomes",
+      "direct_confirmed_reward_jpy",
+      "work_minutes",
+      "incremental_cost_jpy",
+      "broken_links"
+    ],
+    "program_metrics": [
+      "unattributed_confirmed_reward_jpy"
+    ],
+    "states": [
+      "NOT_OBSERVED",
+      "UNAVAILABLE",
+      "UNVERIFIED",
+      "OBSERVED_ZERO",
+      "OBSERVED_VALUE"
+    ],
+    "zero_is_observed_only_when_explicit": true
+  },
+  "owner_private_paths": {
+    "directory": ".secrets/st1704-owner-local-pilot",
+    "input": "affiliate-learning-observation-input.v2.json",
+    "ledger": "affiliate-learning-ledger.v2.json",
+    "lock": "affiliate-learning-ledger.v2.lock",
+    "stage": "affiliate-learning-ledger.v2.json.preparing"
+  },
+  "packet_hash_basis": "TRACKED_ARTICLE_OBJECT_CANONICAL_JSON_SHA256",
+  "period_duration_days": 14,
+  "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+  "schema": "ST1704_AFFILIATE_LEARNING_MEASUREMENT_CONTRACT_V2",
+  "slice_id": "AFFILIATE_LEARNING_MEASUREMENT_V2",
+  "source_bindings": {
+    "article_collection_path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
+    "article_collection_sha256": "cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88",
+    "compatibility_template_path": "changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json",
+    "compatibility_template_sha256": "1a1827f0296f1bdd7c983d141b2c2eae87a4ad9f327e68062e036adde289c73c"
+  },
+  "story_id": "ST-1704"
+}

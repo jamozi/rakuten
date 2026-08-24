@@ -1,0 +1,87 @@
+{
+  "article": {
+    "article_id": "st1703-first-suitcase-comparison",
+    "article_type_code": "AT-003",
+    "intent_classification": "CONDITION_COMPARISON",
+    "intent_cluster": "移動",
+    "packet_sha256": "9d0e7032fab6200566639555dce6ebdd29113e3ea87982f0c80fc048d6b9b537",
+    "slot": 1,
+    "slug": "carry-on-suitcase-comparison"
+  },
+  "cohort": {
+    "input_sha256": null,
+    "state": "UNAVAILABLE",
+    "verified_at_utc": null
+  },
+  "metrics": {
+    "affiliate_clicks": {
+      "input_sha256": null,
+      "state": "UNAVAILABLE",
+      "value": null
+    },
+    "article_views": {
+      "input_sha256": null,
+      "state": "UNAVAILABLE",
+      "value": null
+    },
+    "broken_links": {
+      "input_sha256": null,
+      "state": "UNAVAILABLE",
+      "value": null
+    },
+    "confirmed_outcomes": {
+      "input_sha256": null,
+      "state": "UNAVAILABLE",
+      "value": null
+    },
+    "direct_confirmed_reward_jpy": {
+      "input_sha256": null,
+      "state": "UNAVAILABLE",
+      "value": null
+    },
+    "incremental_cost_jpy": {
+      "input_sha256": null,
+      "state": "UNAVAILABLE",
+      "value": null
+    },
+    "pending_outcomes": {
+      "input_sha256": null,
+      "state": "UNAVAILABLE",
+      "value": null
+    },
+    "rejected_outcomes": {
+      "input_sha256": null,
+      "state": "UNAVAILABLE",
+      "value": null
+    },
+    "search_clicks": {
+      "input_sha256": null,
+      "state": "UNAVAILABLE",
+      "value": null
+    },
+    "search_impressions": {
+      "input_sha256": null,
+      "state": "UNAVAILABLE",
+      "value": null
+    },
+    "work_minutes": {
+      "input_sha256": null,
+      "state": "UNAVAILABLE",
+      "value": null
+    }
+  },
+  "observation_id": "EXAMPLE.UNAVAILABLE.ARTICLE.001",
+  "observed_at_utc": "2026-09-08T00:00:00Z",
+  "period": {
+    "duration_days": 14,
+    "end_exclusive_date": "2026-09-08",
+    "start_date": "2026-08-25"
+  },
+  "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+  "schema": "ST1704_AFFILIATE_LEARNING_ARTICLE_OBSERVATION_V2",
+  "verification": {
+    "attribution_basis": "UNAVAILABLE",
+    "input_sha256": null,
+    "state": "UNAVAILABLE"
+  }
+}
