@@ -347,6 +347,7 @@ def test_completion_commit_uncertainty_rehydrates_and_replays_exact_result() -> 
         lambda data: {**data, "unknown": True},
         lambda data: {**data, "schema_version": 1},
         lambda data: {**data, "policy_id": "wrong.policy"},
+        lambda data: {**data, "policy_sha256": "0" * 64},
         lambda data: {**data, "revision": 99},
         lambda data: {**data, "queue_id": "queue.other.v2"},
     ),

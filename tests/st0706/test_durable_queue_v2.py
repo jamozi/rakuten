@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
+import json
 from threading import Barrier, Thread
 from uuid import UUID
 
@@ -21,6 +22,7 @@ from raos.domain.ai.durable_job_queue_v2 import (
     DurableJobStatus,
     DurableLeaseClaim,
     MAXIMUM_CUMULATIVE_RETRY_BACKOFF_SECONDS,
+    POLICY_SHA256,
     DurableQueueFailure,
     DurableQueueFailureCode,
     RecordedAttemptKind,
@@ -359,6 +361,8 @@ def test_three_attempt_policy_has_strictly_increasing_bounded_retry_timestamps()
     )
     assert exhausted.status is DurableJobStatus.DEAD_LETTERED
     assert exhausted.attempt_number == 3
+    persisted = json.loads(adapter.export_snapshot().state_bytes)
+    assert persisted["policy_sha256"] == POLICY_SHA256
 
 
 def test_validation_failure_is_terminal_and_records_only_a_failed_intent() -> None:

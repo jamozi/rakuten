@@ -34,7 +34,8 @@ from raos.domain.ai.routing import (
 
 
 POLICY_ID = "st-0706.recorded-durable-ai-job-queue.v2"
-CONTRACT_SHA256 = "06a9776f63232ce2c0917f09c9101eed6bea25b7a8b965a345e80f9d09f04bd2"
+POLICY_SHA256 = "f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8"
+CONTRACT_SHA256 = "eef608f77d99a37716541873cd91ecf18257ee4c7532848046aa3bdb1640ae7c"
 STATE_DOCUMENT_ID = "RAOS-ST0706-DURABLE-AI-JOB-QUEUE-STATE-002"
 STATE_SCHEMA_VERSION = 2
 QUEUE_CAPACITY = 32
@@ -368,6 +369,7 @@ class RecordedDurableQueueActivation(_RedactedValue):
                     "environment": self.environment.value,
                     "enabled": self.enabled,
                     "policy_id": self.policy_id,
+                    "policy_sha256": POLICY_SHA256,
                 }
             ),
         )
@@ -1333,6 +1335,7 @@ def encode_durable_queue_state(state: DurableQueueState) -> bytes:
         "document_id": STATE_DOCUMENT_ID,
         "schema_version": STATE_SCHEMA_VERSION,
         "policy_id": POLICY_ID,
+        "policy_sha256": POLICY_SHA256,
         "queue_id": state.queue_id,
         "revision": state.revision,
         "jobs": [
@@ -1376,6 +1379,7 @@ def decode_durable_queue_state(
                 "document_id",
                 "schema_version",
                 "policy_id",
+                "policy_sha256",
                 "queue_id",
                 "revision",
                 "jobs",
@@ -1387,6 +1391,7 @@ def decode_durable_queue_state(
         root["document_id"] != STATE_DOCUMENT_ID
         or root["schema_version"] != STATE_SCHEMA_VERSION
         or root["policy_id"] != POLICY_ID
+        or root["policy_sha256"] != POLICY_SHA256
         or root["queue_id"] != expected_queue_id
         or root["revision"] != expected_revision
     ):
@@ -1445,6 +1450,7 @@ __all__ = [
     "MAXIMUM_OUTBOX_INTENTS",
     "MAXIMUM_STATE_BYTES",
     "POLICY_ID",
+    "POLICY_SHA256",
     "QUEUE_CAPACITY",
     "RETRY_BACKOFF_SECONDS_AFTER_ATTEMPT",
     "RecordedAttemptKind",

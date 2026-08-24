@@ -3,19 +3,22 @@ document:
   schema_version: 1
   story_id: ST-0706
   status: LOCAL_IMPLEMENTATION_COMPLETE
-  recorded_at: '2026-08-24T03:42:54Z'
+  recorded_at: '2026-08-24T03:55:10Z'
   authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
 base:
   branch: codex/st-0706-durable-queue-v2
   base_commit_sha: 5e431434ea3891824f2bb861bf809b0011e91850
-  implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_INTEGRATION_EVIDENCE
+  local_commit_count: 2
+  base_story_commit_sha: 7d630ff3f4dbf6baebfb1c67712945885b6fa49e
+  integrated_base_story_commit_sha: 2211f21103616b1e5f6c079b745145aa2c0fac6d
+  policy_hash_hardening_commit_sha: TO_BE_BOUND_BY_SEPARATE_INTEGRATION_EVIDENCE
 compatibility:
   v1_interface: PRESERVED_UNCHANGED
   v1_runtime: PROCESS_LOCAL_RECORDED_ONE_ATTEMPT
   v2_interface: VERSIONED_ADDITIVE
 contract:
   path: changes/st-0706/contracts/durable-ai-job-queue.v2.yaml
-  sha256: 06a9776f63232ce2c0917f09c9101eed6bea25b7a8b965a345e80f9d09f04bd2
+  sha256: eef608f77d99a37716541873cd91ecf18257ee4c7532848046aa3bdb1640ae7c
   exact_dependency_bindings: 17
 local_deliverables:
   state_document: STRICT_CANONICAL_JSON_WITH_EMBEDDED_REVISION
@@ -29,6 +32,7 @@ local_deliverables:
   idempotency: EXACT_COMMAND_FINGERPRINT_AND_THREE_IDENTITY_BINDINGS
   lease_fence: TOKEN_SHA256_AND_MONOTONIC_JOB_EPOCH
   retry: PURE_DECISION_WITH_PERSISTED_7_AND_31_SECOND_TIMESTAMPS
+  retry_policy_sha256: f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8
   retry_cumulative_time_horizon_seconds: 38
   clock_source: CALLER_SUPPLIED_EXPLICIT_UTC_ONLY
   dead_letter: NON_REDRIVABLE_TERMINAL_STATE
@@ -50,15 +54,19 @@ owner_generation:
   no_write_check: PASS
 verification:
   results:
+    - check: explicit_retry_policy_hash_binding
+      result: PASS
+      policy_sha256: f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8
+      persisted_state_tamper: REJECTED
     - check: focused_v2_runtime_tests
       result: PASS
-      passed: 40
+      passed: 41
     - check: focused_v2_generator_and_publication_tests
       result: PASS
       passed: 8
     - check: full_tests_st0706
       result: PASS
-      passed: 77
+      passed: 78
     - check: dependency_tests_st0303
       result: PASS_WITH_DECLARED_ENVIRONMENT_SKIPS
       passed: 26

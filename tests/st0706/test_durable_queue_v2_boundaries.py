@@ -5,6 +5,7 @@ from __future__ import annotations
 import ast
 import hashlib
 import inspect
+import json
 from pathlib import Path
 
 import yaml
@@ -21,6 +22,7 @@ from raos.domain.ai.durable_job_queue_v2 import (
     DurableLeaseClaim,
     DurableQueueSnapshot,
     RecordedAttemptOutcome,
+    POLICY_SHA256,
 )
 from raos.ports.durable_ai_job_queue_v2 import DurableAiJobStateCasPort
 
@@ -189,9 +191,27 @@ def test_contract_preserves_disabled_recorded_only_and_generic_owner_boundaries(
         "publication_authorized": False,
     }
     assert document["authority"]["generic_runtime_owner"] == "ST-1404"
-    assert document["recorded_policy"]["automatic_redrive"] is False
-    assert document["recorded_policy"]["automatic_loop"] is False
-    assert document["recorded_policy"]["sleep"] is False
+    policy = dict(document["recorded_policy"])
+    claimed_policy_sha256 = policy.pop("policy_sha256")
+    canonical_policy = json.dumps(
+        policy,
+        ensure_ascii=False,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    assert claimed_policy_sha256 == POLICY_SHA256
+    assert hashlib.sha256(canonical_policy).hexdigest() == POLICY_SHA256
+    assert policy["retry_backoff_seconds_after_attempt"] == [7, 31]
+    assert policy["retry_backoff_strictly_increasing"] is True
+    assert policy["maximum_attempts_cap"] == 3
+    assert policy["maximum_cumulative_retry_backoff_seconds"] == 38
+    assert sum(policy["retry_backoff_seconds_after_attempt"]) == 38
+    assert policy["clock_source"] == "CALLER_SUPPLIED_EXPLICIT_UTC"
+    assert policy["jitter_runtime_selection"] is False
+    assert policy["automatic_redrive"] is False
+    assert policy["automatic_loop"] is False
+    assert policy["sleep"] is False
     assert document["durability_boundary"]["storage"] == "CALLER_OWNED_CAS_ATOMIC_PORT"
     assert document["outbox_boundary"]["dispatch"] == "NOT_IMPLEMENTED"
     assert document["safe_defaults"]["activation"] == "DISABLED"

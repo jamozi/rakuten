@@ -27,7 +27,10 @@ PLAN_PATH: Final = Path("changes/st-0706/generated/durable-ai-job-queue.v2.json"
 MANIFEST_PATH: Final = Path("changes/st-0706/manifest.yaml")
 GENERATED_PATHS: Final = (PLAN_PATH, MANIFEST_PATH)
 EXPECTED_CONTRACT_SHA256: Final = (
-    "06a9776f63232ce2c0917f09c9101eed6bea25b7a8b965a345e80f9d09f04bd2"
+    "eef608f77d99a37716541873cd91ecf18257ee4c7532848046aa3bdb1640ae7c"
+)
+EXPECTED_POLICY_SHA256: Final = (
+    "f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8"
 )
 HARDENED_WRITER_PATH: Final = Path("scripts/secure_generated_publication.py")
 HARDENED_WRITER_SHA256: Final = (
@@ -194,6 +197,18 @@ def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _canonical_json_sha256(value: object) -> str:
+    return _sha256(
+        json.dumps(
+            value,
+            ensure_ascii=False,
+            allow_nan=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8", errors="strict")
+    )
+
+
 def _exact_mapping(
     value: object, *, keys: frozenset[str], field: str
 ) -> Mapping[str, object]:
@@ -283,7 +298,11 @@ def _validate_contract(root: Path, contract: Mapping[str, object]) -> None:
         or authority.get("generic_runtime_owner") != "ST-1404"
     ):
         _fail("GENERIC_OWNER_INVALID", "authority")
-    if not isinstance(policy, Mapping) or dict(policy) != {
+    if not isinstance(policy, Mapping):
+        _fail("CONTRACT_VALUE_INVALID", "recorded_policy")
+    policy_values = dict(policy)
+    policy_sha256 = policy_values.pop("policy_sha256", None)
+    if policy_values != {
         "policy_id": "st-0706.recorded-durable-ai-job-queue.v2",
         "state_schema_version": 2,
         "allowed_environments": ["ENV-DEV", "ENV-CI"],
@@ -311,7 +330,10 @@ def _validate_contract(root: Path, contract: Mapping[str, object]) -> None:
         "sleep": False,
         "jitter_runtime_selection": False,
         "note": "Delays are exact recorded fixture data, not Production policy or OD-009 resolution.",
-    }:
+    } or not (
+        policy_sha256 == EXPECTED_POLICY_SHA256
+        and _canonical_json_sha256(policy_values) == EXPECTED_POLICY_SHA256
+    ):
         _fail("CONTRACT_VALUE_INVALID", "recorded_policy")
     if (
         not isinstance(durability, Mapping)
@@ -363,17 +385,27 @@ def _validate_runtime_contract_binding(root: Path) -> None:
         tree = ast.parse(raw.decode("utf-8", errors="strict"), filename=path.as_posix())
     except UnicodeDecodeError, SyntaxError:
         _fail("RUNTIME_PARSE_FAILED", "runtime_contract_binding")
-    values: list[object] = []
+    values: dict[str, list[object]] = {
+        "CONTRACT_SHA256": [],
+        "POLICY_SHA256": [],
+    }
     for node in tree.body:
-        if isinstance(node, ast.Assign) and any(
-            isinstance(target, ast.Name) and target.id == "CONTRACT_SHA256"
+        if not isinstance(node, ast.Assign):
+            continue
+        names = {
+            target.id
             for target in node.targets
-        ):
+            if isinstance(target, ast.Name) and target.id in values
+        }
+        for name in names:
             try:
-                values.append(ast.literal_eval(node.value))
+                values[name].append(ast.literal_eval(node.value))
             except ValueError, TypeError:
                 _fail("RUNTIME_CONTRACT_BINDING_INVALID", "runtime_contract_binding")
-    if values != [EXPECTED_CONTRACT_SHA256]:
+    if values != {
+        "CONTRACT_SHA256": [EXPECTED_CONTRACT_SHA256],
+        "POLICY_SHA256": [EXPECTED_POLICY_SHA256],
+    }:
         _fail("RUNTIME_CONTRACT_BINDING_INVALID", "runtime_contract_binding")
 
 
@@ -402,6 +434,7 @@ def _plan_bytes(
         "enabled": False,
         "executable": False,
         "contract_sha256": EXPECTED_CONTRACT_SHA256,
+        "policy_sha256": EXPECTED_POLICY_SHA256,
         "policy": dict(policy),
         "state_machine": contract["state_machine"],
         "durability_boundary": contract["durability_boundary"],
@@ -439,6 +472,7 @@ def _manifest_bytes(source_hashes: Mapping[str, str], plan_bytes: bytes) -> byte
             "production_eligible": False,
         },
         "contract_sha256": EXPECTED_CONTRACT_SHA256,
+        "policy_sha256": EXPECTED_POLICY_SHA256,
         "source_sha256": dict(source_hashes),
         "generated_sha256": {PLAN_PATH.as_posix(): _sha256(plan_bytes)},
         "generation": {

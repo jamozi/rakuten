@@ -29,6 +29,7 @@ def test_manifest_binds_every_owner_source_and_generated_plan() -> None:
     manifest = yaml.safe_load((REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes())
     assert manifest["document"]["status"] == "LOCAL_IMPLEMENTATION_COMPLETE"
     assert manifest["contract_sha256"] == generator.EXPECTED_CONTRACT_SHA256
+    assert manifest["policy_sha256"] == generator.EXPECTED_POLICY_SHA256
     assert set(manifest["source_sha256"]) == {
         path.as_posix() for path in generator.SOURCE_ARTIFACT_PATHS
     }
@@ -43,6 +44,8 @@ def test_manifest_binds_every_owner_source_and_generated_plan() -> None:
     }
     plan = json.loads(plan_bytes)
     assert plan["contract_sha256"] == generator.EXPECTED_CONTRACT_SHA256
+    assert plan["policy_sha256"] == generator.EXPECTED_POLICY_SHA256
+    assert plan["policy"]["policy_sha256"] == generator.EXPECTED_POLICY_SHA256
     assert plan["status"] == "LOCAL_IMPLEMENTATION_COMPLETE"
     assert plan["enabled"] is False
     assert plan["executable"] is False

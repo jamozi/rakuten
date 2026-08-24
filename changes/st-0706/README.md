@@ -31,7 +31,8 @@ tests therefore keep their original behavior.
 ## V2 durable-state boundary
 
 The V2 domain encodes one strict canonical JSON state document. The bytes bind
-the exact queue ID, schema version, recorded policy ID, and storage revision.
+the exact queue ID, schema version, recorded policy ID, canonical policy
+SHA-256, and storage revision.
 Unknown fields, alternate JSON bytes, oversized state, mismatched revision,
 duplicate identities, invalid nested commands, and broken hashes fail closed.
 The document is bounded to 32 AI jobs, 128 outbox intents, 1 MiB, three attempts,
@@ -64,7 +65,8 @@ atomically applied.
 - Retry eligibility is a pure decision. The exact recorded delays after
   attempts one and two are 7 and 31 seconds. They are persisted timestamps;
   there is no sleep, loop, jitter selection, automatic scheduling, fallback,
-  or redrive.
+  or redrive. The strictly increasing two-delay schedule, three-attempt cap,
+  and 38-second cumulative horizon are bound by the exact policy SHA-256.
 - Retry is permitted only for the contract allowlist, within the command and
   policy attempt cap, before the deadline, and with remaining reserved cost.
   Exhaustion enters non-redrivable `DEAD_LETTERED` state.
