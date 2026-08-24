@@ -66,7 +66,7 @@ def test_dependencies_bind_feature_and_current_artifact_commits() -> None:
     )
     assert (
         dependencies["st1205"]["artifact_binding_commit"]
-        == "a3ea6d1a1e8621d9ff198c9dea31b0c6f7a768d5"
+        == "5660b842f1a73a885915171e19b9072aee44a1f8"
     )
     assert (
         dependencies["st1303"]["feature_commit"]

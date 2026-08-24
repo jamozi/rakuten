@@ -44,8 +44,8 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-1304/contracts/cost-unit-economics-reference-plan.v1.yaml",
-    "source_contract_sha256": "85b51b79bc9ba3326bbc48e7ab8103b0bf5a36b56416fb3abefa86615679bd99",
-    "source_contract_model_sha256": "4dc551c21d6594dedf3c47a45add9d09cce17c0fc79663a8bfe15546477de483",
+    "source_contract_sha256": "80d775e8f38744e93ecf319756ee5c2d53cd91750e9061c8902d205ee5af0fdf",
+    "source_contract_model_sha256": "9467589389da990744a92c7aece1a642a701cba58611ce97bf10e1f61fc534d8",
     "generated_by": "repo://scripts/build_st1304_cost_unit_economics_reference_plan.py",
     "generation_command": "/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --frozen --offline --no-cache --no-sync --no-env-file python scripts/build_st1304_cost_unit_economics_reference_plan.py",
     "implementation_helper": {
@@ -85,14 +85,14 @@
     "st1205": {
       "story_id": "ST-1205",
       "feature_commit": "fe18734820cb6f78622950549d32f1ab5394214e",
-      "artifact_binding_commit": "a3ea6d1a1e8621d9ff198c9dea31b0c6f7a768d5",
+      "artifact_binding_commit": "5660b842f1a73a885915171e19b9072aee44a1f8",
       "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
       "artifacts": {
         "changes/st-1205/README.md": "4722c69a67112898a1d070021d6262f64442d95f9296c956287d2fb829c10b72",
         "changes/st-1205/contracts/kpi-read-model-reference-plan.v1.yaml": "83335492346ccf1f830d859eb9930290f3bdd469f642db38eeb874995ddc8de7",
         "changes/st-1205/generated/kpi-read-model-reference-plan.v1.json": "5c6d41670a7da68490abc3b9bd7e97c849322e2dd176f1637375b6729e4c130b",
-        "changes/st-1205/manifest.yaml": "a1ee3011f7253787fe2b447572ba27a02c080d22d7d6b865a0cdf0c0f6167ebf",
-        "scripts/build_st1205_kpi_read_model_reference_plan.py": "5040401e8ec10370353348e85e367c8dfecaf2132ddb71746f4490fdd4c6ef67",
+        "changes/st-1205/manifest.yaml": "4f9ac1ec5dc0a8588788b98c972bd44f5db6f21925238ece6c62a2bb9f38032d",
+        "scripts/build_st1205_kpi_read_model_reference_plan.py": "613033f689228f6c3c722086e20f00e7e898d2108f82daa2b7d5a6b90454c458",
         "tests/st1205/conftest.py": "5658caf178b330bc77d38af1077aff78de7729c312baddcf7d5f2311f2b142f8",
         "tests/st1205/test_contract.py": "59b0280f951557eb4979edc07864c8d0f445da07b087d8f85d09b25a51479ba6",
         "tests/st1205/test_generation.py": "d9bee72fbc33353d9f993c7fa80a96aa0c00938e14b16e9021076414b60c22b2",
