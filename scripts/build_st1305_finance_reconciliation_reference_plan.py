@@ -46,10 +46,10 @@ HELPER_SHA256: Final = (
     "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
 )
 CONTRACT_SHA256: Final = (
-    "8bf477c7d510488ac9958c296e859ef1ec43c259f6cfdce1eb9c6cb71ef8e8d0"
+    "96d0fab8b450d5f343cc794ab8db29e629c1d0150d8361f12ceeb9abee47c2d6"
 )
 CONTRACT_MODEL_SHA256: Final = (
-    "826b237a55f647a32047e21984283bbfd5776216e455b6682880044551fd3792"
+    "322e80c1b1d9caecc0169fa24c2f4fa01f6e9c6912616b9e349d7ac2f86a277b"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 SOURCE_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
@@ -372,7 +372,7 @@ def _sha256(content: bytes) -> str:
 def _read(root: Path, relative: Path, field: str) -> bytes:
     physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
     try:
-        content = physical.read_bytes()
+        content = cast(bytes, physical.read_bytes())
     except OSError:
         _fail("FILE_UNAVAILABLE", field)
     if len(content) > MAX_SOURCE_BYTES:

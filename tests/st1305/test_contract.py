@@ -58,7 +58,7 @@ def test_dependency_binds_exact_current_st1304_feature_bytes() -> None:
     dependency = dependencies["st1304"]
     assert dependency["feature_commit"] == "6c73e41d630657138d8f51752d8cd1541026a0f1"
     assert dependency["artifact_binding_commit"] == (
-        "6c73e41d630657138d8f51752d8cd1541026a0f1"
+        "fc17a5e6465846df74ced681a3e0b2aeaa94fc9c"
     )
     assert dependency["binding"] == "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT"
     assert len(dependency["artifacts"]) == 9
