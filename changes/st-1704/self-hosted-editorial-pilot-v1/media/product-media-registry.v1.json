@@ -326,7 +326,7 @@
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": "0885155053053", "allowed_variants": ["F155260"], "required_title_tokens": ["Roomba", "Mini", "AutoEmpty"], "product_kind_tokens": ["ロボット掃除機", "掃除機＆床拭きロボット", "Robot Vacuum"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
+      "identity": {"item_code": null, "jan": "0885155053053", "allowed_variants": ["F155260"], "required_title_tokens": ["Roomba", "Mini", "AutoEmpty"], "product_kind_tokens": ["ロボット掃除機", "掃除機＆床拭きロボット", "掃除機&床拭きロボット", "Robot Vacuum"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
       "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },

@@ -153,7 +153,7 @@ def _load_json(relative: str) -> object:
     payload = _read_regular_file(relative)
     try:
         return json.loads(payload.decode("utf-8"))
-    except UnicodeDecodeError, json.JSONDecodeError:
+    except (UnicodeDecodeError, json.JSONDecodeError):
         _fail()
 
 
