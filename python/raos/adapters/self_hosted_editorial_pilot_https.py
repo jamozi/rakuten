@@ -119,6 +119,9 @@ _SOCIAL_IMAGE_URL: Final = (
     f"{PILOT_ORIGIN}/wp-content/themes/kurashinoshirube-child/"
     "assets/images/home-hero.webp"
 )
+_WORDPRESS_API_DISCOVERY_LINK: Final = (
+    f'<{PILOT_ORIGIN}/wp-json/>; rel="https://api.w.org/"'
+)
 _PUBLIC_KINDS: Final = frozenset(
     {
         "wordpress-post",
@@ -160,6 +163,12 @@ def _fail(
     code: EditorialPilotFailureCode = EditorialPilotFailureCode.TRANSPORT_REFUSED,
 ) -> NoReturn:
     fail_editorial_pilot(code)
+
+
+def _collection_link_header_is_fixed(value: object) -> bool:
+    """Accept only no Link header or WordPress's fixed API-discovery relation."""
+
+    return value is None or value == _WORDPRESS_API_DISCOVERY_LINK
 
 
 class _DeadlineExpired(TimeoutError):
@@ -2083,7 +2092,9 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                         not 0 <= len(collection) <= 100
                         or total != str(len(collection))
                         or pages != expected_pages
-                        or response.getheader("Link") is not None
+                        or not _collection_link_header_is_fixed(
+                            response.getheader("Link")
+                        )
                     ):
                         _fail(EditorialPilotFailureCode.OUTCOME_AMBIGUOUS)
                     return collection, bytes_sha256(raw)
@@ -2291,7 +2302,9 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                         len(collection) != 1
                         or response.getheader("X-WP-Total") != "1"
                         or response.getheader("X-WP-TotalPages") != "1"
-                        or response.getheader("Link") is not None
+                        or not _collection_link_header_is_fixed(
+                            response.getheader("Link")
+                        )
                     ):
                         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
                 elif kind == "draft-inventory":
@@ -2304,7 +2317,9 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                         not 0 <= len(collection) <= 100
                         or response.getheader("X-WP-Total") != str(len(collection))
                         or response.getheader("X-WP-TotalPages") != expected_pages
-                        or response.getheader("Link") is not None
+                        or not _collection_link_header_is_fixed(
+                            response.getheader("Link")
+                        )
                     ):
                         _fail(EditorialPilotFailureCode.OUTCOME_AMBIGUOUS)
                 elif kind == "publication-target":
@@ -2322,7 +2337,9 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                         or response.getheader("X-WP-Total") != str(expected_count)
                         or response.getheader("X-WP-TotalPages")
                         != ("1" if expected_count else "0")
-                        or response.getheader("Link") is not None
+                        or not _collection_link_header_is_fixed(
+                            response.getheader("Link")
+                        )
                     ):
                         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
                 elif kind == "related-target":
@@ -2335,7 +2352,9 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                         or response.getheader("X-WP-Total") != str(len(collection))
                         or response.getheader("X-WP-TotalPages")
                         != ("1" if collection else "0")
-                        or response.getheader("Link") is not None
+                        or not _collection_link_header_is_fixed(
+                            response.getheader("Link")
+                        )
                     ):
                         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
                 elif kind == "homepage-targets":
@@ -2347,7 +2366,9 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                         not 1 <= len(collection) <= len(PILOT_ARTICLE_IDENTITIES)
                         or response.getheader("X-WP-Total") != str(len(collection))
                         or response.getheader("X-WP-TotalPages") != "1"
-                        or response.getheader("Link") is not None
+                        or not _collection_link_header_is_fixed(
+                            response.getheader("Link")
+                        )
                     ):
                         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
                 elif kind == "category":
@@ -2359,7 +2380,9 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                         len(collection) != 1
                         or response.getheader("X-WP-Total") != "1"
                         or response.getheader("X-WP-TotalPages") != "1"
-                        or response.getheader("Link") is not None
+                        or not _collection_link_header_is_fixed(
+                            response.getheader("Link")
+                        )
                     ):
                         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
                 return raw

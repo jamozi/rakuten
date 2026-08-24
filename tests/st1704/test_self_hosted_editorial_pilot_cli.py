@@ -78,6 +78,9 @@ _POLICY = (
     ("text_overlay_allowed", False),
     ("upscale_allowed", False),
 )
+_WORDPRESS_API_DISCOVERY_LINK = (
+    '<https://kurashinoshirube.com/wp-json/>; rel="https://api.w.org/"'
+)
 
 
 def _fixed_clock() -> datetime:
@@ -1846,9 +1849,23 @@ def test_owner_https_create_posts_only_the_exact_draft_payload(
     _install_fake_live_boundary(monkeypatch)
     candidate = request()
     body = canonical_json_bytes(_wp_post())
-    target_connection = _Connection(_Response(b"[]", status=200, total="0", pages="0"))
+    target_connection = _Connection(
+        _Response(
+            b"[]",
+            status=200,
+            total="0",
+            pages="0",
+            headers={"Link": _WORDPRESS_API_DISCOVERY_LINK},
+        )
+    )
     inventory_connection = _Connection(
-        _Response(b"[]", status=200, total="0", pages="0")
+        _Response(
+            b"[]",
+            status=200,
+            total="0",
+            pages="0",
+            headers={"Link": _WORDPRESS_API_DISCOVERY_LINK},
+        )
     )
     connection = _Connection(_Response(body, status=201))
     factory = _QueueFactory(target_connection, inventory_connection, connection)
@@ -1878,6 +1895,37 @@ def test_owner_https_create_posts_only_the_exact_draft_payload(
     assert json.loads(sent)["status"] == "draft"
     assert headers["Host"] == "kurashinoshirube.com"
     assert connection.connected == connection.closed == 1
+
+
+def test_public_target_rejects_pagination_or_unbound_link_header(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    target_connection = _Connection(
+        _Response(
+            b"[]",
+            status=200,
+            total="0",
+            pages="0",
+            headers={
+                "Link": (
+                    "<https://kurashinoshirube.com/wp-json/wp/v2/posts?page=2>; "
+                    'rel="next"'
+                )
+            },
+        )
+    )
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root,
+        connection_factory=_QueueFactory(target_connection),
+    )
+
+    with pytest.raises(EditorialPilotFailure) as failure:
+        adapter.resolve_public_target(request(), "create-review-draft")
+
+    assert failure.value.code is EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH
+    assert target_connection.observed is not None
+    assert target_connection.observed[0] == "GET"
 
 
 @pytest.mark.parametrize("orphaned_meta", [False, True])
