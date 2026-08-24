@@ -1,0 +1,127 @@
+{
+  "canonical_status": "UNCHANGED",
+  "external_actions": [],
+  "local_implementation_status": "LOCAL_CODE_COMPLETE",
+  "runtime_contract": {
+    "authority": {
+      "credential": false,
+      "external_action_count": 0,
+      "production": false,
+      "provider": false,
+      "publication": false,
+      "release": false,
+      "socket": false,
+      "staging": false,
+      "subprocess": false
+    },
+    "authorization": {
+      "action": "edit_article_draft",
+      "active_session_recheck": true,
+      "allowed_intake_kinds": [
+        "MEDIA_ASSET",
+        "SOURCE_DOCUMENT"
+      ],
+      "binding_status": "ACTIVE_RECORDED",
+      "denied_intake_kinds": [
+        "REVENUE_REPORT"
+      ],
+      "operation_id": "ED-011",
+      "recover_before_source_or_quarantine_io": true,
+      "recovered_result_exact_equality": true,
+      "request_digest_recomputed_from_recovered_session_fingerprint": true,
+      "resource_kind": "ARTICLE_VERSION",
+      "resource_state": "DRAFT",
+      "service": "DurableAuthorizationService.recover_admin",
+      "site_and_resource_exact_descriptor_binding": true,
+      "value_constructor_service_provenance": false
+    },
+    "canonical_status": "UNCHANGED",
+    "dependencies": [
+      "ST-0202",
+      "ST-0403"
+    ],
+    "formal_evidence": {
+      "TST-014": "NOT_EXECUTED",
+      "TST-026": "NOT_EXECUTED",
+      "TST-031": "NOT_EXECUTED",
+      "live_provider": "NOT_EXECUTED",
+      "production": "NOT_EXECUTED",
+      "staging": "NOT_EXECUTED"
+    },
+    "inspection": {
+      "archive_absolute_path_rejected": true,
+      "archive_encrypted_rejected": true,
+      "archive_entry_size_ratio_bounds": true,
+      "archive_extraction": false,
+      "archive_nested_rejected": true,
+      "archive_path_traversal_rejected": true,
+      "archive_symlink_hardlink_special_rejected": true,
+      "csv_encoding": "STRICT_UTF_8_NO_BOM",
+      "csv_formula_prefix_rejected": true,
+      "csv_shape_closed": true,
+      "magic_mime_extension_exact": true,
+      "malware_scanner": [
+        "RECORDED_DIGEST_SCRIPT",
+        "DISABLED_FAIL_CLOSED"
+      ],
+      "privacy_classifier": "RECORDED_DIGEST_SCRIPT"
+    },
+    "local_implementation_status": "LOCAL_CODE_COMPLETE",
+    "open_decision_boundary": {
+      "automatic_deletion": false,
+      "decision_id": "OD-014",
+      "read_export_promote_delete_lifecycle_surfaces": false,
+      "retention_default": null,
+      "state": "UNRESOLVED"
+    },
+    "schema_version": "2.0.0",
+    "storage": {
+      "blob_quarantine": true,
+      "commit_ambiguity_recovery": true,
+      "compare_and_set": true,
+      "database_link_count": 1,
+      "database_mode": "0600",
+      "duplicate_index": "APPEND_ONLY_EXACT_SHA256",
+      "environments": [
+        "ENV-CI",
+        "ENV-DEV"
+      ],
+      "idempotency_conflict_rejection": true,
+      "integrity_check_each_transaction": true,
+      "journal": "APPEND_ONLY_SHA256_HASH_CHAIN",
+      "mode": "RECORDED_LOCAL",
+      "owner_private_root_mode": "0700",
+      "public_byte_read_surface": false,
+      "schema_exact_match": true,
+      "symlink_safe_ancestors": true,
+      "transaction": "BEGIN_IMMEDIATE_UNIT_OF_WORK"
+    },
+    "story_id": "ST-0406",
+    "stream": {
+      "authorization_digest_bound": true,
+      "chunk_count_bound": true,
+      "chunk_size_bound": true,
+      "declared_sha256_exact": true,
+      "declared_size_exact": true,
+      "descriptor_digest_bound": true,
+      "exact_bytes_chunks": true,
+      "object_size_bound": true
+    }
+  },
+  "schema_version": "2.0.0",
+  "story": {
+    "depends_on": [
+      "ST-0202",
+      "ST-0403"
+    ],
+    "design_refs": [
+      "RAOS-SEC-001"
+    ],
+    "test_suites": [
+      "TST-014",
+      "TST-026",
+      "TST-031"
+    ]
+  },
+  "story_id": "ST-0406"
+}

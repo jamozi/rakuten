@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import sys
 from uuid import UUID
@@ -55,6 +56,61 @@ from raos.domain.ops.object_intake import (  # noqa: E402
     SafeLeafName,
     Sha256Digest,
 )
+from raos.adapters.development_oidc import (  # noqa: E402
+    DevelopmentOidcAdapter,
+    InMemoryAuthenticationRepository,
+    SystemEntropySource,
+)
+from raos.adapters.generated_st0403_authorization_registry import (  # noqa: E402
+    CANONICAL_AUTHORIZATION_REGISTRY,
+)
+from raos.adapters.recorded_authorization import (  # noqa: E402
+    RecordedSqliteAuthorizationRepository,
+    recorded_authorization_policy_snapshot,
+)
+from raos.adapters.recorded_object_intake_runtime_v2 import (  # noqa: E402
+    DeterministicContentInspectorV2,
+    RecordedMalwareScannerV2,
+    RecordedPrivacyClassifierV2,
+    RecordedSqliteObjectIntakeRepositoryV2,
+)
+from raos.application.iam.authentication import AuthenticationService  # noqa: E402
+from raos.application.iam.authorization import DurableAuthorizationService  # noqa: E402
+from raos.application.ops.object_intake_runtime_v2 import (  # noqa: E402
+    SecureObjectIntakeRuntimeV2,
+)
+from raos.domain.iam.authentication import (  # noqa: E402
+    Issuer,
+    PrincipalIdentity as AuthenticatedPrincipalIdentity,
+    Session,
+    SessionId,
+    Subject,
+)
+from raos.domain.iam.authorization import (  # noqa: E402
+    AuthorizationCommandId,
+    AuthorizationCommandResult,
+    AuthorizationEvaluationCommand,
+    AuthorizationRule,
+    BusinessRole,
+    EntitlementSnapshot,
+    MatrixAction,
+    OperationId,
+    PermissionScope,
+    PrincipalIdentity,
+    ResourceState,
+    ScopedBusinessRole,
+    ScopedPermission,
+)
+from raos.domain.ops.object_intake_runtime_v2 import (  # noqa: E402
+    DurableIntakeDescriptorV2,
+    IntakeRuntimeMode,
+    IntakeRuntimePolicyV2,
+    MalwareScanReceiptV2,
+    PrivacyClassificationReceiptV2,
+    RecordedMalwareVerdict,
+    RecordedPrivacyVerdict,
+)
+from raos.ports.object_intake_runtime_v2 import MalwareScannerV2  # noqa: E402
 
 
 SITE_A = UUID("11111111-1111-4111-8111-111111111111")
@@ -213,5 +269,269 @@ def synthetic_source(content: bytes = CONTENT) -> SyntheticChunkReader:
     return SyntheticChunkReader(
         environment=RuntimeEnvironment.ENV_DEV,
         byte_capacity=4_096,
+        content=content,
+    )
+
+
+V2_NOW = datetime(2026, 8, 25, 12, 0, tzinfo=timezone.utc)
+V2_RESOURCE_ID = UUID("33333333-3333-4333-8333-333333333333")
+V2_POLICY_REVISION = PolicyRevision("RECORDED:ST0403:ST0406:POLICY:V2")
+V2_ENTITLEMENT_REVISION = EntitlementRevision("RECORDED:ST0403:ST0406:ENTITLEMENT:V2")
+
+
+def v2_session(
+    *,
+    idle_expires_at: datetime = V2_NOW + timedelta(hours=1),
+    absolute_expires_at: datetime = V2_NOW + timedelta(hours=2),
+    revoked_at: datetime | None = None,
+) -> Session:
+    principal = AuthenticatedPrincipalIdentity(
+        issuer=Issuer("https://st0406.test.invalid"),
+        subject=Subject("RECORDED:ST0406:EDITOR"),
+        display_name="ST-0406 recorded editor",
+    )
+    return Session(
+        session_id=SessionId.from_bytes(hashlib.sha256(b"ST0406-SESSION-V2").digest()),
+        principal=principal,
+        created_at=V2_NOW - timedelta(minutes=5),
+        last_seen_at=V2_NOW - timedelta(seconds=1),
+        idle_expires_at=idle_expires_at,
+        absolute_expires_at=absolute_expires_at,
+        revoked_at=revoked_at,
+    )
+
+
+def v2_authentication_service(active_session: Session) -> AuthenticationService:
+    repository = InMemoryAuthenticationRepository(
+        environment=RuntimeEnvironment.ENV_DEV
+    )
+    repository.create_session(active_session)
+    return AuthenticationService(
+        provider=DevelopmentOidcAdapter(
+            environment=RuntimeEnvironment.ENV_DEV,
+            principal=active_session.principal,
+        ),
+        repository=repository,
+        entropy=SystemEntropySource(),
+    )
+
+
+def v2_authorization_target(
+    *,
+    site_id: UUID = SITE_A,
+    resource_id: UUID = V2_RESOURCE_ID,
+    state: str = "DRAFT",
+) -> AuthorizationTarget:
+    return AuthorizationTarget(
+        scope=ResourceScope(
+            kind=ResourceScopeKind.ARTICLE_VERSION,
+            site_id=site_id,
+            resource_id=resource_id,
+        ),
+        state=ResourceState(state),
+    )
+
+
+def v2_authorization_principal(active_session: Session) -> PrincipalIdentity:
+    return PrincipalIdentity.admin_user(
+        issuer=active_session.principal.issuer,
+        subject=active_session.principal.subject,
+    )
+
+
+def v2_authorization_rule() -> AuthorizationRule:
+    return AuthorizationRule(
+        rule_id=RuleId("RECORDED:ST0406:ED011:EDITOR"),
+        role=BusinessRole.EDITOR,
+        permission_scope=PermissionScope("editorial:version:write"),
+        action=ActionCode(MatrixAction.EDIT_ARTICLE_DRAFT.value),
+        resource_kind=ResourceScopeKind.ARTICLE_VERSION,
+        resource_state=ResourceState("DRAFT"),
+    )
+
+
+def v2_entitlements(active_session: Session) -> EntitlementSnapshot:
+    target = v2_authorization_target()
+    return EntitlementSnapshot(
+        revision=V2_ENTITLEMENT_REVISION,
+        principal=v2_authorization_principal(active_session),
+        roles=(ScopedBusinessRole(role=BusinessRole.EDITOR, scope=target.scope),),
+        permission_scopes=(
+            ScopedPermission(
+                permission_scope=PermissionScope("editorial:version:write"),
+                scope=target.scope,
+            ),
+        ),
+    )
+
+
+def v2_authorization_command(
+    *,
+    label: str = "ALLOW-1",
+    target: AuthorizationTarget | None = None,
+    operation_id: str = "ED-011",
+) -> AuthorizationEvaluationCommand:
+    return AuthorizationEvaluationCommand(
+        command_id=AuthorizationCommandId(f"RECORDED:ST0406:AUTH:{label}"),
+        operation_id=OperationId(operation_id),
+        target=v2_authorization_target() if target is None else target,
+        correlation_id=CorrelationId(f"RECORDED:ST0406:CORRELATION:{label}"),
+        expected_policy_revision=V2_POLICY_REVISION,
+        expected_entitlement_revision=V2_ENTITLEMENT_REVISION,
+        observed_at=V2_NOW,
+    )
+
+
+def v2_authorization_runtime(
+    root: Path,
+    *,
+    active_session: Session | None = None,
+    command: AuthorizationEvaluationCommand | None = None,
+    install_rule: bool = True,
+) -> tuple[
+    DurableAuthorizationService,
+    Session,
+    AuthorizationEvaluationCommand,
+    AuthorizationCommandResult,
+    RecordedSqliteAuthorizationRepository,
+]:
+    exact_session = v2_session() if active_session is None else active_session
+    auth_root = root / "authorization"
+    auth_root.mkdir(mode=0o700)
+    repository = RecordedSqliteAuthorizationRepository(
+        environment=RuntimeEnvironment.ENV_DEV,
+        private_root=auth_root,
+    )
+    if install_rule:
+        repository.install_policy(
+            expected_revision="TEST_ONLY:DISABLED",
+            snapshot=recorded_authorization_policy_snapshot(
+                revision=V2_POLICY_REVISION,
+                rules=(v2_authorization_rule(),),
+            ),
+        )
+    repository.install_entitlements(
+        principal=v2_authorization_principal(exact_session),
+        expected_revision=None,
+        snapshot=v2_entitlements(exact_session),
+    )
+    service = DurableAuthorizationService(
+        session_service=v2_authentication_service(exact_session),
+        repository=repository,
+        registry=CANONICAL_AUTHORIZATION_REGISTRY,
+        step_up_consumer=None,
+    )
+    exact_command = v2_authorization_command() if command is None else command
+    result = service.evaluate_admin(
+        session_id=exact_session.session_id,
+        command=exact_command,
+    )
+    return service, exact_session, exact_command, result, repository
+
+
+def v2_descriptor(
+    *,
+    content: bytes = CONTENT,
+    intake_id: UUID = INTAKE_A,
+    site_id: UUID = SITE_A,
+    resource_id: UUID = V2_RESOURCE_ID,
+    kind: ObjectIntakeKind = ObjectIntakeKind.SOURCE_DOCUMENT,
+    leaf_name: str = "synthetic.csv",
+    media_type: str = "text/csv",
+    privacy_class: IntakePrivacyClass = IntakePrivacyClass.SYNTHETIC,
+) -> DurableIntakeDescriptorV2:
+    return DurableIntakeDescriptorV2(
+        descriptor=IntakeDescriptor(
+            intake_id=intake_id,
+            site_id=site_id,
+            kind=kind,
+            leaf_name=SafeLeafName(leaf_name),
+            media_type=MediaType(media_type),
+            declared_size=len(content),
+            declared_sha256=Sha256Digest(hashlib.sha256(content).hexdigest()),
+            privacy_class=privacy_class,
+        ),
+        authorization_resource_id=resource_id,
+    )
+
+
+def v2_policy(
+    *, allowed_media_types: tuple[str, ...] = ("text/csv",)
+) -> IntakeRuntimePolicyV2:
+    return IntakeRuntimePolicyV2(
+        mode=IntakeRuntimeMode.RECORDED_LOCAL,
+        max_object_bytes=16_384,
+        max_chunk_bytes=8,
+        max_chunk_count=2_048,
+        max_archive_entries=16,
+        max_archive_uncompressed_bytes=32_768,
+        max_archive_ratio=100,
+        max_archive_nesting=1,
+        max_csv_rows=32,
+        max_csv_columns=8,
+        max_csv_cell_bytes=128,
+        allowed_media_types=allowed_media_types,
+        allowed_privacy_classes=(IntakePrivacyClass.SYNTHETIC,),
+    )
+
+
+def v2_intake_runtime(
+    root: Path,
+    *,
+    authorization_service: DurableAuthorizationService,
+    content: bytes = CONTENT,
+    policy: IntakeRuntimePolicyV2 | None = None,
+    malware_scanner: MalwareScannerV2 | None = None,
+    repository: RecordedSqliteObjectIntakeRepositoryV2 | None = None,
+) -> tuple[SecureObjectIntakeRuntimeV2, RecordedSqliteObjectIntakeRepositoryV2]:
+    descriptor = v2_descriptor(content=content)
+    digest = descriptor.descriptor.declared_sha256
+    intake_repository = repository
+    if intake_repository is None:
+        intake_repository = RecordedSqliteObjectIntakeRepositoryV2(
+            environment=RuntimeEnvironment.ENV_DEV,
+            private_root=root / "intake",
+        )
+    scanner = (
+        RecordedMalwareScannerV2(
+            (
+                (
+                    digest,
+                    MalwareScanReceiptV2(
+                        verdict=RecordedMalwareVerdict.CLEAN,
+                        engine_revision="RECORDED-V2",
+                    ),
+                ),
+            )
+        )
+        if malware_scanner is None
+        else malware_scanner
+    )
+    runtime = SecureObjectIntakeRuntimeV2(
+        policy=v2_policy() if policy is None else policy,
+        authorization_service=authorization_service,
+        repository=intake_repository,
+        inspector=DeterministicContentInspectorV2(),
+        privacy_classifier=RecordedPrivacyClassifierV2(
+            (
+                (
+                    digest,
+                    PrivacyClassificationReceiptV2(
+                        verdict=RecordedPrivacyVerdict.MATCH,
+                        classified_as=IntakePrivacyClass.SYNTHETIC,
+                        classifier_revision="RECORDED-V2",
+                    ),
+                ),
+            )
+        ),
+        malware_scanner=malware_scanner if malware_scanner is not None else scanner,
+    )
+    return runtime, intake_repository
+
+
+def v2_source(content: bytes = CONTENT) -> SyntheticChunkReader:
+    return SyntheticChunkReader(
+        environment=RuntimeEnvironment.ENV_DEV,
+        byte_capacity=max(len(content), 1),
         content=content,
     )
