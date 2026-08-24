@@ -4,7 +4,7 @@
   "context": {
     "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE"
   },
-  "contract_sha256": "46075d28770e5128b184c3a2ca8089d92ee066fbafe0d29322cdd6ccb293bd9b",
+  "contract_sha256": "175eebea290129352a8f328331e7ceb7410cc9fecb76c5f8d808512e9521a7ed",
   "entries": [
     {
       "entry_sha256": "36b4babc7ee2466bfde930ac36625ae94cd7362c7ed1ed2dede2a23226715e84",
