@@ -18,6 +18,7 @@ from raos.adapters.recorded_claim_evidence import (
 )
 from raos.domain.evidence.claim_evidence import (
     CoverageStatus,
+    ValidationAttestationKind,
     evaluate_claim_evidence,
     validation_attestation_owner_binding,
 )
@@ -383,6 +384,37 @@ def test_attestation_owner_mapping_and_source_hash_are_cross_bound(
         match="ATTESTATION_OWNER_BINDING_INVALID",
     ):
         generator.load_contract(root)
+
+
+def test_packet_approval_receipt_binds_current_st0604_runtime_semantics() -> None:
+    owner, version, digest = validation_attestation_owner_binding(
+        ValidationAttestationKind.PACKET_APPROVAL_MEMBERSHIP
+    )
+    assert (owner, version, digest.value) == (
+        "ST-0604",
+        generator.ST0604_CURRENT_CONTRACT_VERSION,
+        generator.ST0604_CURRENT_CONTRACT_SHA256,
+    )
+    assert generator.ST0604_CURRENT_CONTRACT_PATH == Path(
+        "changes/st-0604/contracts/source-packet-lifecycle-runtime.v2.json"
+    )
+    generator._validate_st0604_runtime_semantics(ROOT)
+
+
+def test_packet_approval_runtime_semantic_drift_is_rejected(tmp_path: Path) -> None:
+    root, _contract = _contract_copy(tmp_path)
+    source_path = root / generator.ST0604_CURRENT_CONTRACT_PATH
+    document = json.loads(source_path.read_bytes())
+    document["generation_gate"]["required_lock"] = False
+    source_path.write_text(
+        json.dumps(document, ensure_ascii=True, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(
+        generator.RuntimeGenerationError,
+        match="ST0604_RUNTIME_SEMANTIC_DRIFT",
+    ):
+        generator._validate_st0604_runtime_semantics(root)
 
 
 def test_attestation_owner_source_hash_drift_is_rejected(tmp_path: Path) -> None:

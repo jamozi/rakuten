@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Iterable
 import hashlib
 from importlib.metadata import PackageNotFoundError, version as distribution_version
 import json
@@ -56,6 +57,13 @@ FIXTURE_PATH: Final = Path(
 MANIFEST_PATH: Final = Path("changes/st-0605/runtime-manifest.v1.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st0605_claim_evidence_runtime.py")
 RUNTIME_DOCUMENTATION_PATH: Final = Path("changes/st-0605/RUNTIME.md")
+ST0604_CURRENT_CONTRACT_PATH: Final = Path(
+    "changes/st-0604/contracts/source-packet-lifecycle-runtime.v2.json"
+)
+ST0604_CURRENT_CONTRACT_VERSION: Final = "SOURCE-PACKET-LIFECYCLE-RUNTIME@2.0.0"
+ST0604_CURRENT_CONTRACT_SHA256: Final = (
+    "719f5366eced10c19a16dc11355d92680fb66dfe08bebce5be5251618e79cfbe"
+)
 SOURCE_BINDINGS: Final = (
     (
         Path(
@@ -128,11 +136,9 @@ ATTESTATION_OWNER_BINDINGS: Final[
     (
         ValidationAttestationKind.PACKET_APPROVAL_MEMBERSHIP,
         "ST-0604",
-        "SOURCE-PACKET-LIFECYCLE-REFERENCE-PLAN@1",
-        Path(
-            "changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml"
-        ),
-        "a80c41890e6bae7077728d1456f5a3b5d99b1877e047f581beff8ed41e0c2cec",
+        ST0604_CURRENT_CONTRACT_VERSION,
+        ST0604_CURRENT_CONTRACT_PATH,
+        ST0604_CURRENT_CONTRACT_SHA256,
     ),
     (
         ValidationAttestationKind.FACT_VALIDATION,
@@ -142,14 +148,14 @@ ATTESTATION_OWNER_BINDINGS: Final[
             "changes/st-0602/contracts/"
             "fact-extraction-validation-reference-plan.v1.yaml"
         ),
-        "ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e",
+        "c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073",
     ),
     (
         ValidationAttestationKind.CONFLICT_CLOSURE,
         "ST-0603",
         "FACT-CONFLICT-REVIEW-REFERENCE-PLAN@1",
         Path("changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml"),
-        "51df56b9475e9a635a0e33ed39109fa4b1d91e7c5a9be08996007eea3698ae07",
+        "bca7c63e49be113d7e2b7d15017d22ad6a9b27c59509325b2bbca407081246ef",
     ),
     (
         ValidationAttestationKind.IDENTITY_DECISION,
@@ -159,7 +165,7 @@ ATTESTATION_OWNER_BINDINGS: Final[
             "changes/st-0504/contracts/"
             "product-identity-human-review-reference-plan.v1.yaml"
         ),
-        "246c21aa1d79489ed8c8a02fe0b7d1a50ffe1b2f7e85fcc4ba210369477512b8",
+        "9e73f7e436ab14df75394b2337e853f1dcbf553c16e0f950a8bdb604da685304",
     ),
     (
         ValidationAttestationKind.DERIVATION,
@@ -169,7 +175,7 @@ ATTESTATION_OWNER_BINDINGS: Final[
             "changes/st-0602/contracts/"
             "fact-extraction-validation-reference-plan.v1.yaml"
         ),
-        "ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e",
+        "c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073",
     ),
     (
         ValidationAttestationKind.COMPARISON,
@@ -351,10 +357,17 @@ def _construct_mapping(
 ) -> dict[object, object]:
     result: dict[object, object] = {}
     for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+        key = cast(
+            object,
+            loader.construct_object(  # pyright: ignore[reportUnknownMemberType]
+                key_node, deep=deep
+            ),
+        )
         if key in result:
             _fail("DUPLICATE_YAML_KEY")
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = loader.construct_object(  # pyright: ignore[reportUnknownMemberType]
+            value_node, deep=deep
+        )
     return result
 
 
@@ -406,6 +419,113 @@ def _require_exact(value: object, expected: object, code: str) -> None:
         _fail(code)
 
 
+def _load_closed_json_object(root: Path, relative: Path) -> dict[str, Any]:
+    path = _safe_file(root, relative)
+    try:
+        payload = path.read_bytes()
+    except OSError:
+        _fail("ST0604_RUNTIME_CONTRACT_INVALID")
+    if not payload or len(payload) > MAX_CONTRACT_BYTES:
+        _fail("ST0604_RUNTIME_CONTRACT_INVALID")
+
+    def reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                _fail("ST0604_RUNTIME_CONTRACT_INVALID")
+            result[key] = value
+        return result
+
+    try:
+        loaded: object = json.loads(
+            payload.decode("utf-8", errors="strict"),
+            object_pairs_hook=reject_duplicate_keys,
+        )
+    except RuntimeGenerationError:
+        raise
+    except OSError, UnicodeDecodeError, json.JSONDecodeError:
+        _fail("ST0604_RUNTIME_CONTRACT_INVALID")
+    if type(loaded) is not dict:
+        _fail("ST0604_RUNTIME_CONTRACT_INVALID")
+    return cast(dict[str, Any], loaded)
+
+
+def _validate_st0604_runtime_semantics(root: Path) -> None:
+    document = _load_closed_json_object(root, ST0604_CURRENT_CONTRACT_PATH)
+    _require_exact(
+        {
+            "schema_version": document.get("schema_version"),
+            "story_id": document.get("story_id"),
+            "classification": document.get("classification"),
+            "local_implementation_status": document.get("local_implementation_status"),
+            "canonical_status": document.get("canonical_status"),
+        },
+        {
+            "schema_version": "2.0.0",
+            "story_id": "ST-0604",
+            "classification": (
+                "MAXIMUM_SAFE_RECORDED_LOCAL_DURABLE_SOURCE_PACKET_LIFECYCLE"
+            ),
+            "local_implementation_status": "LOCAL_CODE_COMPLETE",
+            "canonical_status": "UNCHANGED",
+        },
+        "ST0604_RUNTIME_SEMANTIC_DRIFT",
+    )
+    _require_exact(
+        document.get("approval_binding"),
+        {
+            "human_recorded_authorization_required": True,
+            "active_session_recovery_required": True,
+            "exact_packet_version_content_sha256": True,
+            "exact_ST0602_fact_membership_sha256": True,
+            "exact_ST0603_no_open_conflict_scan_sha256": True,
+            "exact_ST0403_authorization_audit_digest": True,
+            "reviewer_session_fingerprint_bound": True,
+            "deny_default": True,
+            "synthetic_or_recorded_local_only": True,
+        },
+        "ST0604_RUNTIME_SEMANTIC_DRIFT",
+    )
+    _require_exact(
+        document.get("generation_gate"),
+        {
+            "required_current": True,
+            "required_status": "APPROVED",
+            "required_lock": True,
+            "required_open_conflict_count": 0,
+            "required_conflict_queue_count": 0,
+            "unapproved_cannot_generate": True,
+            "noncurrent_cannot_generate": True,
+            "unlocked_cannot_generate": True,
+            "rejected_cannot_generate": True,
+            "dedicated_output_type": "ApprovedLockedGenerationInputV2",
+        },
+        "ST0604_RUNTIME_SEMANTIC_DRIFT",
+    )
+    _require_exact(
+        document.get("authority_boundary"),
+        {
+            "ai": False,
+            "network": False,
+            "provider": False,
+            "publication": False,
+            "ranking": False,
+            "recommendation": False,
+            "revenue": False,
+            "credential_read": False,
+            "staging": False,
+            "release": False,
+            "production": False,
+            "external_action_count": 0,
+            "provider_action_count": 0,
+            "publication_action_count": 0,
+            "ai_action_count": 0,
+            "production_authority": "NONE",
+        },
+        "ST0604_RUNTIME_SEMANTIC_DRIFT",
+    )
+
+
 def _expected_source_bindings() -> list[dict[str, str]]:
     return [
         {"path": path.as_posix(), "sha256": digest} for path, digest in SOURCE_BINDINGS
@@ -446,7 +566,12 @@ def load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     if not payload or len(payload) > MAX_CONTRACT_BYTES:
         _fail("CONTRACT_SIZE_INVALID")
     try:
-        tokens = tuple(yaml.scan(payload))
+        tokens = tuple(
+            cast(
+                Iterable[object],
+                yaml.scan(payload),  # pyright: ignore[reportUnknownMemberType]
+            )
+        )
         if any(
             isinstance(token, (AliasToken, AnchorToken, TagToken)) for token in tokens
         ):
@@ -456,9 +581,11 @@ def load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
         raise
     except Exception:
         _fail("CONTRACT_PARSE_FAILED")
-    if type(loaded) is not dict or tuple(loaded) != TOP_LEVEL_KEYS:
+    if type(loaded) is not dict:
         _fail("CONTRACT_SHAPE_INVALID")
     contract = cast(dict[str, Any], loaded)
+    if tuple(contract) != TOP_LEVEL_KEYS:
+        _fail("CONTRACT_SHAPE_INVALID")
     if (
         contract["schema_version"] != 1
         or type(contract["schema_version"]) is not int
@@ -601,6 +728,7 @@ def load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
         source = _safe_file(root, source_path)
         if not source.is_file() or _sha(source) != expected_digest:
             _fail("ATTESTATION_OWNER_SOURCE_HASH_DRIFT")
+    _validate_st0604_runtime_semantics(root)
     _validate_policy_source_identity(root)
     return contract
 
@@ -755,7 +883,8 @@ def _replace_generated(
     if (
         not artifacts
         or any(
-            not isinstance(path, Path) or type(payload) is not bytes
+            not isinstance(path, Path)  # pyright: ignore[reportUnnecessaryIsInstance]
+            or type(payload) is not bytes
             for path, payload in artifacts
         )
         or len({path for path, _payload in artifacts}) != len(artifacts)

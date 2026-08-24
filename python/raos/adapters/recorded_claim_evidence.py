@@ -81,15 +81,21 @@ def _pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
 
 
 def _mapping(value: object, keys: tuple[str, ...]) -> Mapping[str, object]:
-    if type(value) is not dict or tuple(value) != keys:
+    if type(value) is not dict:
         _fail()
-    return cast(Mapping[str, object], value)
+    mapping = cast(dict[str, object], value)
+    if tuple(mapping) != keys:
+        _fail()
+    return mapping
 
 
 def _sequence(value: object) -> list[object]:
-    if type(value) is not list or len(value) > _MAX_CAPACITY:
+    if type(value) is not list:
         _fail()
-    return cast(list[object], value)
+    sequence = cast(list[object], value)
+    if len(sequence) > _MAX_CAPACITY:
+        _fail()
+    return sequence
 
 
 def _string(value: object) -> str:

@@ -50,15 +50,15 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
 STORY_PATH: Final = Path("docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml")
 STORY_SHA256: Final = "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
-ST0602_COMMIT: Final = "f281d02c489d4d9f74ec351a57a4a476fa77eab3"
-ST0603_COMMIT: Final = "a64799570606aa4cb5e3ce79930e156fa500d644"
-ST0604_COMMIT: Final = "24e9640f7fa2b681ea40bb539837e40403928ec8"
+ST0602_COMMIT: Final = "d95d90ccbf314ca66db61711021d924faa90173d"
+ST0603_COMMIT: Final = "df02920d3da3eb37d39e1e8b088264fc8accb72a"
+ST0604_COMMIT: Final = "ced9029f767c63b82690b13cb8d90d1b8eb4b882"
 
 POLICY_PATH: Final = Path(
     "contracts/raos-v0.4/contracts/content/RAOS_06_claim_evidence_policy_v0.1.yaml"
@@ -107,33 +107,33 @@ CONTEXT_SOURCES: Final = (
 ST0602_ARTIFACTS: Final = (
     (
         Path("changes/st-0602/README.md"),
-        "c08e9d2f2145d1c3e4018a39e5e8373b60131d7e7b3c0ba72ca9d3bc09a7aaa5",
+        "f3590fb864de262eb1d31769ffe892010f41f98084c27634f099dfca9573f2f8",
     ),
     (
         Path(
             "changes/st-0602/contracts/"
             "fact-extraction-validation-reference-plan.v1.yaml"
         ),
-        "ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e",
+        "c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073",
     ),
     (
         Path(
             "changes/st-0602/generated/"
             "fact-extraction-validation-reference-plan.v1.json"
         ),
-        "2d68d32281ee909bba05eaa8fdb42b545e194af12a450585601e19f670e15944",
+        "c6b725cb8a52d6bbe4a085803587a1ad0679b0ad4f1ffe77c302891d7f66c23d",
     ),
     (
         Path("changes/st-0602/manifest.yaml"),
-        "b977fd764ea83c5e44087bef5c62d93e579e39aebd110082cf01b7790b915c42",
+        "b31af1f0425c158dd5df32abcadc23dd4f663c2cc0f01d117a65c6eef9d02839",
     ),
     (
         Path("scripts/build_st0602_fact_extraction_validation_reference_plan.py"),
-        "fc31b9594da3d0a11bd80044bdb753a5950f023d4150f97cc52779ac12603daf",
+        "b4726b0b59761ad716599373084bdc56917566e4acba45e0ec0692f6de2a893b",
     ),
     (
         Path("tests/st0602/conftest.py"),
-        "8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9",
+        "a687a2fee7033a83b82caa305712a1885a3c66d11d0efc7b761397447746d1c8",
     ),
     (
         Path("tests/st0602/test_contract.py"),
@@ -151,23 +151,23 @@ ST0602_ARTIFACTS: Final = (
 ST0603_ARTIFACTS: Final = (
     (
         Path("changes/st-0603/README.md"),
-        "87398b8122d9ef365a073159dd65258488cc1482163ea7449504dccdb11887fb",
+        "91b91669033257dd6011fd1eac1a27fac9c31a19fad9594d77c815bfd8d0a54a",
     ),
     (
         Path("changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml"),
-        "51df56b9475e9a635a0e33ed39109fa4b1d91e7c5a9be08996007eea3698ae07",
+        "bca7c63e49be113d7e2b7d15017d22ad6a9b27c59509325b2bbca407081246ef",
     ),
     (
         Path("changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json"),
-        "755f88f9084717f85b644f6b4f9904a3ac3d71b36dfeae9cf34de2104e0518a5",
+        "46610808af7a16cace0bab9329d01361573388adc926103b253ba8aa26f67ad3",
     ),
     (
         Path("changes/st-0603/manifest.yaml"),
-        "a418addb612aec85c79213dda71b82ae8e3a40285d48399683d0e40cc5586ad7",
+        "ba9b020e5d26dc4db2d9069288458cb8246692c1522ed607ed0a5bb8e7f6f0d9",
     ),
     (
         Path("scripts/build_st0603_fact_conflict_review_reference_plan.py"),
-        "5b52c2790b48a39e04853144f34f48edac2775edfc118bc19586b7887943f341",
+        "b70c114019c73cb2d20433dc70f3a1865119bbf1b4a9ffaa48a634666acae308",
     ),
     (
         Path("tests/st0603/conftest.py"),
@@ -195,21 +195,21 @@ ST0604_ARTIFACTS: Final = (
         Path(
             "changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml"
         ),
-        "a80c41890e6bae7077728d1456f5a3b5d99b1877e047f581beff8ed41e0c2cec",
+        "b7144670eab5f12eb79c2f49380d152a4ef5700a030b799878aa147ca563ec2c",
     ),
     (
         Path(
             "changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json"
         ),
-        "00e6e974f9003ee92cb0a9b4a0ca5a975286e7fd41a6e32cf1224e312cd78cec",
+        "f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb",
     ),
     (
         Path("changes/st-0604/manifest.yaml"),
-        "56144e0b9ab315a647d92c665f7502129d3576fac2d9524ca647dc29bfeabdc0",
+        "cb3313f3fb5e3460cbc39e2b9a3c64b8e3859c975c58b54e7ca45f59636a2795",
     ),
     (
         Path("scripts/build_st0604_source_packet_lifecycle_reference_plan.py"),
-        "74e2260b2e647129de96d38a8dff0477a8b43947539640dccbcbc35e2072267c",
+        "745704cb20a54e2073e487b706112fcce00d022cf01ec26da8d52776932d10e1",
     ),
     (
         Path("tests/st0604/conftest.py"),
@@ -299,13 +299,13 @@ def _fail(code: str, field: str) -> NoReturn:
 def _mapping(value: object, field: str) -> Mapping[str, Any]:
     if type(value) is not dict:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(dict[str, Any], value)
 
 
 def _list(value: object, field: str) -> list[Any]:
     if type(value) is not list:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(list[Any], value)  # type: ignore[redundant-cast]
 
 
 def _same_exact(left: object, right: object) -> bool:
@@ -336,7 +336,9 @@ def _sha256(content: bytes) -> str:
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
-    physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    physical = base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        root, relative, field
+    )
     try:
         content: bytes = physical.read_bytes()
     except OSError:
@@ -346,15 +348,10 @@ def _read(root: Path, relative: Path, field: str) -> bytes:
     return content
 
 
-def _text(root: Path, relative: Path, field: str) -> str:
-    try:
-        return _read(root, relative, field).decode("utf-8", errors="strict")
-    except UnicodeDecodeError:
-        _fail("UTF8_REQUIRED", field)
-
-
 def _load_yaml(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
-    base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        root, relative, field
+    )
     return _mapping(base.load_yaml(root / relative), field)
 
 
@@ -367,11 +364,13 @@ def _load_json(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
 
 
 def _find(items: object, identity: str, field: str) -> Mapping[str, Any]:
-    matches = [
-        _mapping(item, field)
-        for item in _list(items, field)
-        if type(item) is dict and item.get("id") == identity
-    ]
+    matches: list[Mapping[str, Any]] = []
+    for item in _list(items, field):
+        if type(item) is not dict:
+            continue
+        row = cast(dict[str, Any], item)
+        if row.get("id") == identity:
+            matches.append(row)
     if len(matches) != 1:
         _fail("CANONICAL_RECORD_MISSING", field)
     return matches[0]
@@ -1268,7 +1267,9 @@ def check_outputs(root: Path, expected: Mapping[Path, bytes]) -> None:
     if set(expected) != set(GENERATED_PATHS):
         _fail("GENERATED_INVENTORY_DRIFT", "output")
     for relative in GENERATED_PATHS:
-        path = base._output_file(root, relative)  # noqa: SLF001
+        path = base._output_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative
+        )
         try:
             actual = path.read_bytes()
         except OSError:
@@ -1283,7 +1284,9 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
         check_outputs(root, outputs)
         return
     for relative, content in outputs.items():
-        base._atomic_write(root, relative, content)  # noqa: SLF001
+        base._atomic_write(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative, content
+        )
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

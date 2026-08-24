@@ -25,21 +25,21 @@ authority:
   - TST-021
 predecessors:
 - story_id: ST-0602
-  commit: f281d02c489d4d9f74ec351a57a4a476fa77eab3
+  commit: d95d90ccbf314ca66db61711021d924faa90173d
   relationship: EMPTY_FACT_INPUT_REFERENCE_ONLY
   files:
   - path: changes/st-0602/README.md
-    sha256: c08e9d2f2145d1c3e4018a39e5e8373b60131d7e7b3c0ba72ca9d3bc09a7aaa5
+    sha256: f3590fb864de262eb1d31769ffe892010f41f98084c27634f099dfca9573f2f8
   - path: changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml
-    sha256: ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e
+    sha256: c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073
   - path: changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json
-    sha256: 2d68d32281ee909bba05eaa8fdb42b545e194af12a450585601e19f670e15944
+    sha256: c6b725cb8a52d6bbe4a085803587a1ad0679b0ad4f1ffe77c302891d7f66c23d
   - path: changes/st-0602/manifest.yaml
-    sha256: b977fd764ea83c5e44087bef5c62d93e579e39aebd110082cf01b7790b915c42
+    sha256: b31af1f0425c158dd5df32abcadc23dd4f663c2cc0f01d117a65c6eef9d02839
   - path: scripts/build_st0602_fact_extraction_validation_reference_plan.py
-    sha256: fc31b9594da3d0a11bd80044bdb753a5950f023d4150f97cc52779ac12603daf
+    sha256: b4726b0b59761ad716599373084bdc56917566e4acba45e0ec0692f6de2a893b
   - path: tests/st0602/conftest.py
-    sha256: 8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9
+    sha256: a687a2fee7033a83b82caa305712a1885a3c66d11d0efc7b761397447746d1c8
   - path: tests/st0602/test_contract.py
     sha256: 8d1fe6cfa6edac6910802a1be71370a2e371144e4b7ca7d4e3a3bc145f66e775
   - path: tests/st0602/test_generation.py
@@ -56,19 +56,19 @@ predecessors:
     extraction: NOT_EXECUTED
     validation: NOT_EXECUTED
 - story_id: ST-0603
-  commit: a64799570606aa4cb5e3ce79930e156fa500d644
+  commit: df02920d3da3eb37d39e1e8b088264fc8accb72a
   relationship: EMPTY_CONFLICT_INPUT_REFERENCE_ONLY
   files:
   - path: changes/st-0603/README.md
-    sha256: 87398b8122d9ef365a073159dd65258488cc1482163ea7449504dccdb11887fb
+    sha256: 91b91669033257dd6011fd1eac1a27fac9c31a19fad9594d77c815bfd8d0a54a
   - path: changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml
-    sha256: 51df56b9475e9a635a0e33ed39109fa4b1d91e7c5a9be08996007eea3698ae07
+    sha256: bca7c63e49be113d7e2b7d15017d22ad6a9b27c59509325b2bbca407081246ef
   - path: changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json
-    sha256: 755f88f9084717f85b644f6b4f9904a3ac3d71b36dfeae9cf34de2104e0518a5
+    sha256: 46610808af7a16cace0bab9329d01361573388adc926103b253ba8aa26f67ad3
   - path: changes/st-0603/manifest.yaml
-    sha256: a418addb612aec85c79213dda71b82ae8e3a40285d48399683d0e40cc5586ad7
+    sha256: ba9b020e5d26dc4db2d9069288458cb8246692c1522ed607ed0a5bb8e7f6f0d9
   - path: scripts/build_st0603_fact_conflict_review_reference_plan.py
-    sha256: 5b52c2790b48a39e04853144f34f48edac2775edfc118bc19586b7887943f341
+    sha256: b70c114019c73cb2d20433dc70f3a1865119bbf1b4a9ffaa48a634666acae308
   - path: tests/st0603/conftest.py
     sha256: b0041b91eac50acd6ba109e7218b24886197619130b2ddf5e803e84a5311f977
   - path: tests/st0603/test_contract.py
@@ -93,19 +93,19 @@ predecessors:
     queue_count: null
     resolution_count: null
 - story_id: ST-0604
-  commit: 24e9640f7fa2b681ea40bb539837e40403928ec8
+  commit: ced9029f767c63b82690b13cb8d90d1b8eb4b882
   relationship: EMPTY_UNAPPROVED_PACKET_REFERENCE_ONLY
   files:
   - path: changes/st-0604/README.md
     sha256: 5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8
   - path: changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml
-    sha256: a80c41890e6bae7077728d1456f5a3b5d99b1877e047f581beff8ed41e0c2cec
+    sha256: b7144670eab5f12eb79c2f49380d152a4ef5700a030b799878aa147ca563ec2c
   - path: changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json
-    sha256: 00e6e974f9003ee92cb0a9b4a0ca5a975286e7fd41a6e32cf1224e312cd78cec
+    sha256: f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb
   - path: changes/st-0604/manifest.yaml
-    sha256: 56144e0b9ab315a647d92c665f7502129d3576fac2d9524ca647dc29bfeabdc0
+    sha256: cb3313f3fb5e3460cbc39e2b9a3c64b8e3859c975c58b54e7ca45f59636a2795
   - path: scripts/build_st0604_source_packet_lifecycle_reference_plan.py
-    sha256: 74e2260b2e647129de96d38a8dff0477a8b43947539640dccbcbc35e2072267c
+    sha256: 745704cb20a54e2073e487b706112fcce00d022cf01ec26da8d52776932d10e1
   - path: tests/st0604/conftest.py
     sha256: d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a
   - path: tests/st0604/test_contract.py

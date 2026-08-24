@@ -18,16 +18,20 @@ publication is forbidden, and the canonical Story remains `NOT_STARTED` /
 The plan binds exact path inventories and bytes derived from the committed
 feature commits themselves:
 
-- ST-0602 `f281d02c489d4d9f74ec351a57a4a476fa77eab3` contributes an
+- ST-0602 `d95d90ccbf314ca66db61711021d924faa90173d` contributes an
   interface-only Fact extraction reference with no Facts or derivations and a
   `NOT_READY` decision.
-- ST-0603 `a64799570606aa4cb5e3ce79930e156fa500d644` contributes a
+- ST-0603 `df02920d3da3eb37d39e1e8b088264fc8accb72a` contributes a
   non-executable conflict-review reference with no comparisons, conflicts,
   findings, queue records, or resolutions and a `NOT_READY` decision.
-- ST-0604 `24e9640f7fa2b681ea40bb539837e40403928ec8` contributes a
+- ST-0604 `ced9029f767c63b82690b13cb8d90d1b8eb4b882` contributes a
   non-executable lifecycle reference with no packets, versions, jobs,
   transitions, mappings, reviews, approvals, or artifacts. Approval and
   generation permission are false.
+
+The executable recorded runtime is bound separately to ST-0604's current V2
+contract. The historical V1 projection above remains intentionally
+non-executable and is not treated as an approval receipt.
 
 Empty predecessor projections are unavailable input, not evidence that the
 runtime population is zero and not authority to pass a coverage gate.

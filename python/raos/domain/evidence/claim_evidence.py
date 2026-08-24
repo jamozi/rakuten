@@ -152,28 +152,28 @@ _ATTESTATION_OWNER_BINDING: dict[ValidationAttestationKind, tuple[str, str, str]
     ),
     ValidationAttestationKind.PACKET_APPROVAL_MEMBERSHIP: (
         "ST-0604",
-        "SOURCE-PACKET-LIFECYCLE-REFERENCE-PLAN@1",
-        "a80c41890e6bae7077728d1456f5a3b5d99b1877e047f581beff8ed41e0c2cec",
+        "SOURCE-PACKET-LIFECYCLE-RUNTIME@2.0.0",
+        "719f5366eced10c19a16dc11355d92680fb66dfe08bebce5be5251618e79cfbe",
     ),
     ValidationAttestationKind.FACT_VALIDATION: (
         "ST-0602",
         "FACT-EXTRACTION-VALIDATION-REFERENCE-PLAN@1",
-        "ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e",
+        "c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073",
     ),
     ValidationAttestationKind.CONFLICT_CLOSURE: (
         "ST-0603",
         "FACT-CONFLICT-REVIEW-REFERENCE-PLAN@1",
-        "51df56b9475e9a635a0e33ed39109fa4b1d91e7c5a9be08996007eea3698ae07",
+        "bca7c63e49be113d7e2b7d15017d22ad6a9b27c59509325b2bbca407081246ef",
     ),
     ValidationAttestationKind.IDENTITY_DECISION: (
         "ST-0504",
         "PRODUCT-IDENTITY-HUMAN-REVIEW-REFERENCE-PLAN@1",
-        "246c21aa1d79489ed8c8a02fe0b7d1a50ffe1b2f7e85fcc4ba210369477512b8",
+        "9e73f7e436ab14df75394b2337e853f1dcbf553c16e0f950a8bdb604da685304",
     ),
     ValidationAttestationKind.DERIVATION: (
         "ST-0602",
         "FACT-EXTRACTION-VALIDATION-REFERENCE-PLAN@1",
-        "ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e",
+        "c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073",
     ),
     ValidationAttestationKind.COMPARISON: (
         "ST-0803",
@@ -748,20 +748,23 @@ def _valid_id(value: object, expected: type[EntityId]) -> bool:
 
 
 def _exact_ids(values: object, expected: type[EntityId]) -> bool:
-    return (
-        type(values) is tuple
-        and len(values) <= _MAX_COLLECTION
-        and all(_valid_id(value, expected) for value in values)
+    if type(values) is not tuple:
+        return False
+    items = cast(tuple[object, ...], values)
+    return len(items) <= _MAX_COLLECTION and all(
+        _valid_id(value, expected) for value in items
     )
 
 
 def _exact_digests(values: object, *, allow_empty: bool = False) -> bool:
+    if type(values) is not tuple:
+        return False
+    items = cast(tuple[object, ...], values)
     return (
-        type(values) is tuple
-        and len(values) <= _MAX_COLLECTION
-        and (allow_empty or bool(values))
-        and all(type(value) is Sha256Digest for value in values)
-        and len(values) == len(set(values))
+        len(items) <= _MAX_COLLECTION
+        and (allow_empty or bool(items))
+        and all(type(value) is Sha256Digest for value in items)
+        and len(items) == len(set(items))
     )
 
 
@@ -1846,6 +1849,7 @@ def _evaluate_claim_evidence(value: object) -> ClaimEvidenceCoverageReport:
             findings.add(CoverageFindingCode.ARTICLE_PACKET_BINDING_MISMATCH)
     if set(proof_by_claim) != claim_ids or len(proofs) != len(claims):
         findings.add(CoverageFindingCode.REQUIREMENT_PROOF_SET_MISMATCH)
+    packet_fact_ids: set[FactId]
     if _packet_valid(snapshot.approved_packet):
         packet_fact_ids = set(snapshot.approved_packet.fact_ids)
         if packet_fact_ids != fact_ids or len(facts) != len(

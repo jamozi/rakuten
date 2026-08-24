@@ -21,6 +21,11 @@ Story, contract version, contract hash, subject hash, input hash, decision
 hash, and validation time. This V1 accepts only recorded-synthetic receipts;
 missing, extra, stale, mismatched, or self-renamed receipts make the result
 `UNEVALUABLE`.
+The Packet approval/membership receipt is bound to ST-0604's current
+`SOURCE-PACKET-LIFECYCLE-RUNTIME@2.0.0` contract. That contract requires the
+exact current, approved, locked Version, exact Fact membership, a no-open-
+conflict scan, and deny-default recorded human authorization; ST-0605 does not
+weaken or recreate that lifecycle decision.
 Recorded-synthetic attestation decision hashes are deterministic corruption
 checks for fixture integrity; they are not signatures, authentication, or
 proof that an owner Story executed in a live system.
