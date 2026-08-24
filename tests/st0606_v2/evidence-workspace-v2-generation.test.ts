@@ -34,7 +34,7 @@ describe('ST-0606 V2 generated evidence projection', () => {
       ),
       {
         uri: 'repo://changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json',
-        sha256: '00e6e974f9003ee92cb0a9b4a0ca5a975286e7fd41a6e32cf1224e312cd78cec',
+        sha256: 'f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb',
       },
     );
     assert.deepEqual(
@@ -44,7 +44,7 @@ describe('ST-0606 V2 generated evidence projection', () => {
       ),
       {
         uri: 'repo://changes/st-0605/generated/claim-evidence-runtime-pass.v1.json',
-        sha256: 'eb1c36bd1f70ea27e57e1720b937211286578136e701664b5fb4c8c823395226',
+        sha256: '9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106',
       },
     );
     assert.equal(projection.lifecycle['authority'], 'CURRENT_LIFECYCLE_SOURCE');
@@ -54,11 +54,11 @@ describe('ST-0606 V2 generated evidence projection', () => {
     assert.equal(projection.coverage.authority, 'RECORDED_SYNTHETIC_COVERAGE_ONLY');
     assert.equal(
       projection.coverage.report['report_sha256'],
-      '3a824290625cb30ee75ede4c547540f06dcf28a5b9cb12e53ce3fa4bcc0bcd38',
+      'dbbd1b02fdc84d17bc058be669c434dc5a5a93cc0274496bdab7bc23a52d5a0d',
     );
     assert.equal(
       projection.coverage.report['evaluation_input_sha256'],
-      '96347887ace475691d5a62ff0b7d05525ca2465204d29601e2eb106573a90a30',
+      '1ee43fc1aecd8d8afd382b2d340f86014809f05d479a74e65a11184813bc5094',
     );
     assert.equal(projection.coverage.publication_authorized, false);
     assert.equal(projection.coverage.production_eligible, false);

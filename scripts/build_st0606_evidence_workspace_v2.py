@@ -59,37 +59,37 @@ ST0605_FIXTURE_PATH: Final = Path(
 
 EXPECTED_SOURCE_BINDINGS: Final = {
     "repo://changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml": (
-        "a80c41890e6bae7077728d1456f5a3b5d99b1877e047f581beff8ed41e0c2cec"
+        "b7144670eab5f12eb79c2f49380d152a4ef5700a030b799878aa147ca563ec2c"
     ),
     "repo://changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json": (
-        "00e6e974f9003ee92cb0a9b4a0ca5a975286e7fd41a6e32cf1224e312cd78cec"
+        "f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb"
     ),
     "repo://changes/st-0604/manifest.yaml": (
-        "56144e0b9ab315a647d92c665f7502129d3576fac2d9524ca647dc29bfeabdc0"
+        "cb3313f3fb5e3460cbc39e2b9a3c64b8e3859c975c58b54e7ca45f59636a2795"
     ),
     "repo://changes/st-0605/contracts/claim-evidence-runtime.v1.yaml": (
         "7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb"
     ),
     "repo://changes/st-0605/generated/claim-evidence-runtime-pass.v1.json": (
-        "eb1c36bd1f70ea27e57e1720b937211286578136e701664b5fb4c8c823395226"
+        "9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106"
     ),
     "repo://changes/st-0605/runtime-manifest.v1.yaml": (
-        "1bdc789e2faed53a66c3d6605a7fe0d4d842a21799c3a6202b02e3231eac3efb"
+        "b8e76e4013eb097ba514b7d2cb39f5861c2694acb7cc19919149011ccdc44c41"
     ),
     "repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml": (
-        "3eb1bccf5e6b2599690e2c9cdd2490dc0a2177e41689f8955c0bc1dfb8e068f2"
+        "b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49"
     ),
     "repo://changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json": (
-        "820ca8cb8e302adc862be95ad9e6ca59f30ca8795ba0191018b99407aae08d74"
+        "015938473428cea3e028f0bc969a8fc290cfe8c87cb0a700383f492821c86142"
     ),
     "repo://changes/st-0605/manifest.yaml": (
-        "c6d79d4d566ec1bc2a3268cf3394ec5c9f4bb27a335466f12be0a87cef9e1573"
+        "888808d5992dae9da65db7e095157495138b3c612e48336fe163c35b1ff46de8"
     ),
     "repo://packages/web-ui/src/route-guard.ts": (
         "8395f542c7c65445fa3d1bec4a0e037c96610da8589e1807604b4fb3fa6a584f"
     ),
     "repo://changes/st-1101/README.md": (
-        "b2bb91e89d5948f8081853e39596951adcee16974ce2a6ffa159892310ead08c"
+        "a2c2cebdf12493b52af1ed70ad148eafef3828249082eda5b8683043f417f936"
     ),
 }
 

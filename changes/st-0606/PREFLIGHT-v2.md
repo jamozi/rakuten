@@ -37,15 +37,15 @@
 
 | Binding                          | SHA-256                                                            |
 | -------------------------------- | ------------------------------------------------------------------ |
-| ST-0604 lifecycle contract       | `a80c41890e6bae7077728d1456f5a3b5d99b1877e047f581beff8ed41e0c2cec` |
-| ST-0604 generated lifecycle plan | `00e6e974f9003ee92cb0a9b4a0ca5a975286e7fd41a6e32cf1224e312cd78cec` |
-| ST-0604 manifest                 | `56144e0b9ab315a647d92c665f7502129d3576fac2d9524ca647dc29bfeabdc0` |
+| ST-0604 lifecycle contract       | `b7144670eab5f12eb79c2f49380d152a4ef5700a030b799878aa147ca563ec2c` |
+| ST-0604 generated lifecycle plan | `f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb` |
+| ST-0604 manifest                 | `cb3313f3fb5e3460cbc39e2b9a3c64b8e3859c975c58b54e7ca45f59636a2795` |
 | ST-0605 runtime contract         | `7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb` |
-| ST-0605 recorded runtime fixture | `eb1c36bd1f70ea27e57e1720b937211286578136e701664b5fb4c8c823395226` |
-| ST-0605 runtime manifest         | `1bdc789e2faed53a66c3d6605a7fe0d4d842a21799c3a6202b02e3231eac3efb` |
-| ST-0605 reference contract       | `3eb1bccf5e6b2599690e2c9cdd2490dc0a2177e41689f8955c0bc1dfb8e068f2` |
-| ST-0605 generated reference plan | `820ca8cb8e302adc862be95ad9e6ca59f30ca8795ba0191018b99407aae08d74` |
-| ST-0605 reference manifest       | `c6d79d4d566ec1bc2a3268cf3394ec5c9f4bb27a335466f12be0a87cef9e1573` |
+| ST-0605 recorded runtime fixture | `9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106` |
+| ST-0605 runtime manifest         | `b8e76e4013eb097ba514b7d2cb39f5861c2694acb7cc19919149011ccdc44c41` |
+| ST-0605 reference contract       | `b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49` |
+| ST-0605 generated reference plan | `015938473428cea3e028f0bc969a8fc290cfe8c87cb0a700383f492821c86142` |
+| ST-0605 reference manifest       | `888808d5992dae9da65db7e095157495138b3c612e48336fe163c35b1ff46de8` |
 | ST-1101 route guard              | `8395f542c7c65445fa3d1bec4a0e037c96610da8589e1807604b4fb3fa6a584f` |
 | ST-1101 README                   | `b2bb91e89d5948f8081853e39596951adcee16974ce2a6ffa159892310ead08c` |
 
