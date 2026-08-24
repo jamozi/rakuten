@@ -75,10 +75,10 @@ provenance:
   predecessors:
     - story_id: ST-0701
       uri: repo://changes/st-0701/manifest.yaml
-      sha256: ff487dee8b0db9f8c69afa3663e8fd1e90b48d5c4edec6ad474927df58179136
+      sha256: cb7dd9723c9b4fcd8584ff790d154499f603b5cf1904cc7a9971313d32fdcb49
     - story_id: ST-0204
       uri: repo://changes/st-0204/manifest.yaml
-      sha256: 59b1ab441a04c75f97ea6c34753009ffb262d85efe564c3157d745f88ece526a
+      sha256: 976d023f476f471867be7f0d04a6260414b2b5c4c9e42ce24d20800a9edc33fd
   provider_contracts:
     - uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-request.schema.json
       sha256: 163fee46bb70bb87c4cb43c6fd304d5d551c72be204d50a9db9ffad12f5e7e31

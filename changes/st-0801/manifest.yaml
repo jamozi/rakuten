@@ -313,8 +313,8 @@ source_artifacts:
   bytes: 309
   sha256: 9c3a8d576fc17ec66c271c8b33514c4ad75408f336cff681d5472cc3c779916f
 - uri: repo://python/raos/domain/editorial/__init__.py
-  bytes: 612
-  sha256: 8490e939208baf5d4f733bceee99ede44936da19921bfd3dfcfbbf5f68bbbe80
+  bytes: 1586
+  sha256: 87c23c3852e46a31c1997b318b8226efe0826f9342bd382bf470068eb57d332c
 - uri: repo://python/raos/domain/editorial/content_ast.py
   bytes: 14026
   sha256: 7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68

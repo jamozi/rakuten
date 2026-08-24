@@ -46,7 +46,7 @@
   "source_inputs": [
     {
       "path": "changes/st-0703/contracts/openai-responses-adapter.v1.yaml",
-      "sha256": "ecceb5ee39c752266b10e7ae5923627995941e006c97b078d4a90e29649e3b66"
+      "sha256": "1f4ee219a93fb12bdd4d2d66ab2a87a33e9f608d24654aceb50e28b6efa96349"
     },
     {
       "path": "pyproject.toml",
@@ -130,11 +130,11 @@
     },
     {
       "path": "changes/st-0701/manifest.yaml",
-      "sha256": "ff487dee8b0db9f8c69afa3663e8fd1e90b48d5c4edec6ad474927df58179136"
+      "sha256": "cb7dd9723c9b4fcd8584ff790d154499f603b5cf1904cc7a9971313d32fdcb49"
     },
     {
       "path": "changes/st-0204/manifest.yaml",
-      "sha256": "59b1ab441a04c75f97ea6c34753009ffb262d85efe564c3157d745f88ece526a"
+      "sha256": "976d023f476f471867be7f0d04a6260414b2b5c4c9e42ce24d20800a9edc33fd"
     },
     {
       "path": "contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-request.schema.json",

@@ -59,14 +59,14 @@ source_artifacts:
   bytes: 16428
   sha256: dea3a0cb6b6e12be7a3b74835758205df2e50c3406cb46fe7755a2bf4c795eaa
 - uri: repo://python/raos/ports/__init__.py
-  bytes: 885
-  sha256: 3e3494de5cabf28a3857383e6a3c4833465cc442af4c75ae1a37c5d8104d3363
+  bytes: 3031
+  sha256: 512efd7c0063720f4181881455af518e3e72365edc4637ccda05c2bd9d2ebf4e
 - uri: repo://python/raos/ports/queue.py
   bytes: 5388
   sha256: 97bf4cc18221a21949dd62273008067ea9a631c188a9ba5dcbf15a83679020df
 - uri: repo://python/raos/adapters/__init__.py
-  bytes: 889
-  sha256: e534922ed314f5c234fb32ab625c3b030277d9261b570616d8488f54fbdec7fa
+  bytes: 3033
+  sha256: 6f6ede5e08b6050430852e856234a157475c0977005dfd6a533f49d1863e1029
 - uri: repo://python/raos/adapters/queue_fake.py
   bytes: 12046
   sha256: 0d810f68e77e66a259dca28164825e93d05300edf6915f4c956f9bf3a31ab857

@@ -3538,3 +3538,62 @@ original result.
   append-only ST-0005 proposal is intentionally deferred to a status-only
   branch because its workflow forbids combining status history with the
   implementation's `scripts/**` changes.
+
+### 2026-08-24 W2 / ST-0605 local Claim--Evidence runtime
+
+- `DEBT-W2-063` status: `CLOSED`, introduced-by `ST-0605`. The historical
+  interface-only plan had no executable Claim/evidence or coverage behavior.
+  The additive recorded-synthetic runtime now hash-binds Article body to its
+  exact approved Packet Version/content and requires separately owned,
+  version/hash-bound receipts for Claim inventory, Packet membership, Fact
+  validation, conflict closure, Product/Variant identity, and type-specific
+  validation. It closes all supplied relations, binds the full evaluation
+  input/report, and evaluates the 100%/95% thresholds with integer arithmetic.
+  Missing or mismatched receipts are `UNEVALUABLE`; no upstream or ST-0803/
+  ST-0804 owner algorithm is inferred. Pure evaluation has no authority; the
+  recorder resolves a trusted preloaded Article snapshot, checks an immutable
+  constructor-time full-input anchor, re-evaluates it, and stores report
+  history as immutable digest/canonical-byte values. Smaller self-declared
+  denominators, coherent forged reports, and alias mutation cannot enter the
+  record. The owner generator, nested-contract mutation and rollback tests,
+  combined historical/runtime suite,
+  compile/import, Ruff, strict mypy, focused secret scan, and diff check are the
+  local closure evidence. This is local implementation closure only, not
+  formal TST-020/TST-021 or canonical status evidence.
+- Mechanical provenance closure: the provider-free import boundary required
+  lazy public facades in `raos.adapters`, `raos.ports`, and
+  `raos.domain.editorial`. Their only downstream deltas are owner-generated
+  byte/hash metadata in ST-0203, ST-0701, and ST-0801, followed by exact
+  predecessor pin propagation through ST-0204, ST-0703, and ST-1204. No
+  non-hash semantic, executable fixture/output, policy, authority, or status
+  changes occurred in that chain; the owner-named semantic projection digest
+  changed only because it retains the predecessor provenance hash. Older
+  ST-0301/ST-0702/ST-0705/ST-0708/ST-1203 branch
+  bindings remain their pre-existing Story-owned integration debt and were not
+  silently rebased here.
+- `DEBT-W2-064` status: `OPEN`, introduced-by `ST-0605`, closure owner:
+  `ST-0705` implementation/integration owner. The current ST-0705 reference
+  predates this executable runtime and still binds the historical
+  non-executable ST-0605 surface. Rebind it semantically when ST-0705 is
+  implemented; do not infer policy/persistence/AI vocabulary mappings. Safe
+  impact: the current ST-0705 artifact is non-executable and grants no
+  publication, provider, persistence, or Production authority.
+- `DEBT-W2-065` status: `OPEN`, introduced-by `ST-0605`, closure owner:
+  `ST-0902` implementation/integration owner. The current final-approval
+  reference pins the historical ST-0605 README and explicitly treats Claim
+  coverage as unavailable. Rebind it to the new report evaluator version,
+  evaluation-input hash, status, coverage fractions, and immutable report hash
+  when ST-0902 is implemented. It remains non-executable and cannot grant
+  approval or publication authority meanwhile.
+- `DEBT-W2-066` status: `OPEN`, introduced-by `ST-0605`, closure owners:
+  `ST-0606`, `ST-0803`, `ST-0805`, and `ST-0806`. Their current reference or
+  candidate context predates the executable receipt boundary. Each owner must
+  consume only its exact attestation kind/subject/input/contract binding and
+  must not infer policy/persistence/AI vocabulary mappings. The current
+  artifacts are non-authoritative; this debt records semantic integration work
+  rather than formal/live evidence.
+- Formal TST-020/TST-021, hosted CI, human editorial/data/security review,
+  live Source Packet approval, database integration, staging, release,
+  publication, and Production remain `NOT_EXECUTED`. Reports and receipts are
+  permanently non-authoritative (`publication_authorized=false`,
+  `production_eligible=false`).
