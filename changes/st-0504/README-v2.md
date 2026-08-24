@@ -18,15 +18,30 @@ Decision recording rechecks an active ST-0401 session through the exact
 `DurableAuthorizationService.recover_admin` surface and revalidates the exact
 ST-0403 result, request digest, audit chain, `CAT-006` operation,
 `manage_product_identity` action, PRODUCT target, stateless target, and site.
+The ST-0403 audit digest and every authorization/store input are recomputed
+from shared-domain fields before and after collaborator calls; the inward
+store must continue to report an exact integer zero action count.
 The canonical CAT-006 resource mapping remains blocked, so the runtime never
 issues a new authorization and infers no resource ID.  Without a previously
 durable exact allow record, processing stops at the generic review queue.
 
-The local DEV/CI SQLite adapter uses owner-only `0700`/`0600` paths, an exact
-STRICT schema, CAS, an idempotency journal, a local outbox, a per-queue hash
-chain, restart recovery, and ambiguous-commit recovery.  Network, provider,
-credentials, workers, publication, staging, release, Production, and external
-actions are structurally absent.
+The local DEV/CI SQLite adapter initializes a schema only in the regular
+`0600` file that its constructor created with exclusive create.  Pre-existing
+empty, partial, foreign, symlinked, hard-linked, or non-private databases fail
+closed.  It pins the live device/inode around connections and transactions,
+uses exact STRICT tables, foreign keys and append-only triggers, and validates
+canonical JSON/UUID/RFC3339 bytes, CAS, the journal, outbox and per-queue hash
+chain.  A SQLite commit exception is recovered only when the complete expected
+queue or decision, result bytes, hashes, chain, journal and outbox revalidate;
+otherwise the result remains `COMMIT_UNKNOWN`.
+
+Within one store process, monotonic record sets and each previously observed
+queue-chain prefix are pinned, so path replacement, an older valid snapshot,
+and same-inode rollback are rejected.  No external anchor exists: rollback
+across a process boundary or restart is explicitly **not detected or claimed**.
+`restart_recovery` means only that an untampered current schema can be reopened.
+Network, provider, credentials, workers, publication, staging, release,
+Production, and external actions are structurally absent.
 
 Formal TST-005/TST-007/TST-008/TST-020, live, staging, release, and Production
 evidence remain `NOT_EXECUTED`; local checks are not promoted to those states.

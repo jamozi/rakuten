@@ -61,9 +61,11 @@ def test_generated_projection_preserves_human_review_and_blocked_authorization()
     identity = projection["identity_boundary"]
     authorization = projection["authorization_boundary"]
     execution = projection["execution_boundary"]
+    durability = projection["durability_boundary"]
     assert type(identity) is dict
     assert type(authorization) is dict
     assert type(execution) is dict
+    assert type(durability) is dict
     assert identity["open_decision"] == "OD-006"
     assert identity["open_decision_resolved"] is False
     assert identity["automatic_merge"] is False
@@ -74,6 +76,11 @@ def test_generated_projection_preserves_human_review_and_blocked_authorization()
     assert authorization["new_authorization_issuance"] is False
     assert execution["external_actions"] == 0
     assert execution["production_authority"] == "NONE"
+    assert durability["exclusive_created_initialization"] is True
+    assert durability["live_device_inode_pinned"] is True
+    assert durability["process_local_monotonic_prefix_pin"] is True
+    assert durability["cross_process_restart_rollback_detection"] is False
+    assert durability["external_rollback_anchor"] is False
 
 
 def test_manifest_binds_every_owned_source_and_generated_output() -> None:

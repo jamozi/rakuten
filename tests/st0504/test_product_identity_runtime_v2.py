@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
+import copy
 from dataclasses import replace
 from datetime import timedelta
 import hashlib
@@ -58,6 +59,7 @@ from raos.domain.catalog.product_identity_runtime_v2 import (
     persisted_product_identity_review_queue_mapping_v2,
 )
 from raos.domain.iam.authorization import (
+    AuthorizationCommandResult,
     AuthorizationBindingStatus,
     OperationId,
 )
@@ -363,6 +365,36 @@ def test_stale_cas_and_wrong_supersedes_are_rejected(tmp_path: Path) -> None:
     assert store.list_decisions(queue.queue.queue_id) == (first.persisted,)
 
 
+def test_conflicting_decision_idempotency_key_is_rejected(tmp_path: Path) -> None:
+    runtime, store, authorization, queue = prepared_queue_v2(tmp_path)
+    operation_id = DECISION_OPERATION_IDS_V2[0]
+    runtime.record_human_decision(
+        _request(
+            queue=queue,
+            authorization=authorization,
+            operation_id=operation_id,
+            decision_type=ProductIdentityDecisionTypeV2.MERGE,
+            expected_version=1,
+            supersedes=None,
+            reason="Original human decision for this operation key.",
+        )
+    )
+    conflict = _request(
+        queue=queue,
+        authorization=authorization,
+        operation_id=operation_id,
+        decision_type=ProductIdentityDecisionTypeV2.SPLIT,
+        expected_version=1,
+        supersedes=None,
+        reason="Conflicting human decision for the same operation key.",
+    )
+
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
+        runtime.record_human_decision(conflict)
+    _assert_failure(caught, ProductIdentityRuntimeFailureCodeV2.IDEMPOTENCY_CONFLICT)
+    assert len(store.list_decisions(queue.queue.queue_id)) == 1
+
+
 def test_mapping_round_trips_are_exact_and_unknown_fields_fail(tmp_path: Path) -> None:
     runtime, _store, authorization, queue = prepared_queue_v2(tmp_path)
     queue_mapping = persisted_product_identity_review_queue_mapping_v2(queue)
@@ -388,6 +420,67 @@ def test_mapping_round_trips_are_exact_and_unknown_fields_fail(tmp_path: Path) -
     _assert_failure(caught, ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED)
 
 
+def test_mapping_rejects_noncanonical_uuid_and_rfc3339_text(tmp_path: Path) -> None:
+    _runtime, _store, _authorization, queue = prepared_queue_v2(tmp_path)
+    mapping = persisted_product_identity_review_queue_mapping_v2(queue)
+
+    noncanonical_uuid = copy.deepcopy(mapping)
+    noncanonical_uuid["operation_id"] = "{" + str(queue.operation_id) + "}"
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as uuid_caught:
+        persisted_product_identity_review_queue_from_mapping_v2(noncanonical_uuid)
+    _assert_failure(
+        uuid_caught,
+        ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED,
+    )
+
+    noncanonical_time = copy.deepcopy(mapping)
+    noncanonical_time["committed_at"] = queue.committed_at.isoformat(
+        timespec="microseconds"
+    ).replace("+00:00", "Z")
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as time_caught:
+        persisted_product_identity_review_queue_from_mapping_v2(noncanonical_time)
+    _assert_failure(
+        time_caught,
+        ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED,
+    )
+
+
+def test_arbitrary_authorization_audit_digest_is_recomputed_and_rejected(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    runtime, store, authorization, queue = prepared_queue_v2(tmp_path)
+    forged_audit = replace(authorization.result.audit, digest="f" * 64)
+    forged_result = replace(authorization.result, audit=forged_audit)
+    assert type(forged_result) is AuthorizationCommandResult
+    request = replace(
+        _request(
+            queue=queue,
+            authorization=authorization,
+            operation_id=DECISION_OPERATION_IDS_V2[0],
+            decision_type=ProductIdentityDecisionTypeV2.MERGE,
+            expected_version=1,
+            supersedes=None,
+            reason="Forged audit digest must not authorize a decision.",
+        ),
+        authorization_result=forged_result,
+    )
+
+    def recover_forged(_self: object, **_kwargs: object) -> AuthorizationCommandResult:
+        return forged_result
+
+    monkeypatch.setattr(
+        type(authorization.service),
+        "recover_admin",
+        recover_forged,
+    )
+
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
+        runtime.record_human_decision(request)
+    _assert_failure(caught, ProductIdentityRuntimeFailureCodeV2.AUTHORIZATION_MISMATCH)
+    assert store.list_decisions(queue.queue.queue_id) == ()
+
+
 def test_forged_exact_st0503_source_is_sanitized() -> None:
     forged = object.__new__(PersistedCatalogNormalizationV2)
     with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
@@ -396,6 +489,10 @@ def test_forged_exact_st0503_source_is_sanitized() -> None:
 
 
 class _ForgedStore:
+    @property
+    def action_count(self) -> int:
+        return 0
+
     def lookup_review_queue(
         self, command: PrepareProductIdentityReviewQueueCommandV2
     ) -> PersistedProductIdentityReviewQueueV2 | None:
@@ -477,6 +574,51 @@ class _ForgedRecoveryStore(_ForgedStore):
         return object.__new__(ProductIdentityQueueCommitRecoveryV2)
 
 
+class _MutatingStore(_ForgedStore):
+    def lookup_review_queue(
+        self, command: PrepareProductIdentityReviewQueueCommandV2
+    ) -> PersistedProductIdentityReviewQueueV2 | None:
+        object.__setattr__(command, "payload_fingerprint", "0" * 64)
+        return None
+
+
+class _ActionCountMutationStore(_ForgedStore):
+    def __init__(self) -> None:
+        self.count = 0
+
+    @property
+    def action_count(self) -> int:
+        return self.count
+
+    def lookup_review_queue(
+        self, command: PrepareProductIdentityReviewQueueCommandV2
+    ) -> PersistedProductIdentityReviewQueueV2 | None:
+        del command
+        self.count = 1
+        return None
+
+
+class _ActionCountInputMutationStore(_ForgedStore):
+    def __init__(self, command: PrepareProductIdentityReviewQueueCommandV2) -> None:
+        self.command = command
+        self.action_count_reads = 0
+        self.lookup_calls = 0
+
+    @property
+    def action_count(self) -> int:
+        self.action_count_reads += 1
+        if self.action_count_reads == 2:
+            object.__setattr__(self.command, "payload_fingerprint", "0" * 64)
+        return 0
+
+    def lookup_review_queue(
+        self, command: PrepareProductIdentityReviewQueueCommandV2
+    ) -> PersistedProductIdentityReviewQueueV2 | None:
+        del command
+        self.lookup_calls += 1
+        return None
+
+
 @pytest.mark.parametrize(
     ("store", "code"),
     (
@@ -509,6 +651,48 @@ def test_forged_and_exploding_collaborators_are_sanitized(
     with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
         runtime.prepare_review_queue(command)
     _assert_failure(caught, code)
+
+
+@pytest.mark.parametrize(
+    "store",
+    (
+        cast(ProductIdentityUnitOfWorkStoreV2, _MutatingStore()),
+        cast(ProductIdentityUnitOfWorkStoreV2, _ActionCountMutationStore()),
+    ),
+)
+def test_collaborator_input_mutation_and_action_spoof_fail_closed(
+    tmp_path: Path,
+    store: ProductIdentityUnitOfWorkStoreV2,
+) -> None:
+    source = persisted_catalog_v2(tmp_path / "source")
+    command = queue_command_v2(source)
+    authorization = authorization_fixture_v2(tmp_path / "auth")
+    runtime = DurableProductIdentityRuntimeV2(
+        authorization_service=authorization.service,
+        store=store,
+    )
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
+        runtime.prepare_review_queue(command)
+    _assert_failure(caught, ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED)
+
+
+def test_action_count_input_mutation_is_rejected_before_store_call(
+    tmp_path: Path,
+) -> None:
+    source = persisted_catalog_v2(tmp_path / "source")
+    command = queue_command_v2(source)
+    authorization = authorization_fixture_v2(tmp_path / "auth")
+    store = _ActionCountInputMutationStore(command)
+    runtime = DurableProductIdentityRuntimeV2(
+        authorization_service=authorization.service,
+        store=cast(ProductIdentityUnitOfWorkStoreV2, store),
+    )
+
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
+        runtime.prepare_review_queue(command)
+
+    _assert_failure(caught, ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED)
+    assert store.lookup_calls == 0
 
 
 def test_closed_exception_supports_traceback_and_context_manager_unwinding() -> None:

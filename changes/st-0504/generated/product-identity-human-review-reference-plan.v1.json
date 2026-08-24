@@ -49,13 +49,13 @@
   },
   "predecessor_binding": {
     "story_id": "ST-0503",
-    "commit": "4481d98a5c20a43f03418b1cdabee2a9e723adbe",
+    "commit": "80162f932738f9c3854ff012ae8e488275f7e1f5",
     "status": "NORMALIZED_PROVENANCE_PRESERVING_CANDIDATES_ONLY",
     "connection_status": "INTERFACE_AVAILABLE_NOT_CONNECTED",
     "artifacts": [
       {
         "uri": "repo://changes/st-0503/README.md",
-        "sha256": "e9be25beef080b38df4ee4559833bf693d231befbf6a0f62ca66d96528ce5a13"
+        "sha256": "e372c00533e7ddddb71e10308fb703e8c31261351c61d593c520371c505b2f0b"
       },
       {
         "uri": "repo://python/raos/domain/catalog/catalog_normalization.py",

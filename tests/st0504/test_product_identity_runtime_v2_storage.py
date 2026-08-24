@@ -4,11 +4,14 @@ from __future__ import annotations
 
 from pathlib import Path
 import os
+import shutil
 import sqlite3
 from threading import Barrier, Thread
+from typing import Callable, cast
 from uuid import UUID
 
 import pytest
+import raos.adapters.sqlite_product_identity_runtime_v2 as sqlite_runtime_v2
 
 from runtime_v2_support import (
     DECISION_AT_V2,
@@ -91,6 +94,48 @@ def test_queue_unknown_after_commit_recovers_exactly(tmp_path: Path) -> None:
 
 
 @pytest.mark.parametrize(
+    "fault",
+    (
+        ProductIdentitySqliteCommitFaultV2.SQLITE_ERROR_AFTER_COMMIT,
+        ProductIdentitySqliteCommitFaultV2.UNKNOWN_AFTER_COMMIT,
+    ),
+)
+def test_queue_commit_acknowledgement_exception_recovers_only_exact_record(
+    tmp_path: Path,
+    fault: ProductIdentitySqliteCommitFaultV2,
+) -> None:
+    source = persisted_catalog_v2(tmp_path / "catalog")
+    command = queue_command_v2(source)
+    authorization = authorization_fixture_v2(tmp_path / "auth")
+    store = product_identity_store_v2(tmp_path / "store", faults=(fault,))
+    runtime = runtime_v2(authorization=authorization, store=store)
+
+    result = runtime.prepare_review_queue(command)
+
+    assert result.replay_status is ProductIdentityReplayStatusV2.RECOVERED_COMMIT
+    assert store.lookup_review_queue(command) == result.persisted
+
+
+def test_queue_commit_exception_before_commit_remains_unknown_and_absent(
+    tmp_path: Path,
+) -> None:
+    source = persisted_catalog_v2(tmp_path / "catalog")
+    command = queue_command_v2(source)
+    authorization = authorization_fixture_v2(tmp_path / "auth")
+    store = product_identity_store_v2(
+        tmp_path / "store",
+        faults=(ProductIdentitySqliteCommitFaultV2.SQLITE_ERROR_BEFORE_COMMIT,),
+    )
+    runtime = runtime_v2(authorization=authorization, store=store)
+
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
+        runtime.prepare_review_queue(command)
+
+    _assert_code(caught, ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN)
+    assert store.lookup_review_queue(command) is None
+
+
+@pytest.mark.parametrize(
     ("fault", "code"),
     (
         (
@@ -120,14 +165,41 @@ def test_queue_precommit_fault_is_not_fabricated_as_success(
     assert store.lookup_review_queue(command) is None
 
 
+def test_conflicting_queue_idempotency_key_is_rejected(tmp_path: Path) -> None:
+    source = persisted_catalog_v2(tmp_path / "catalog")
+    command = queue_command_v2(source)
+    authorization = authorization_fixture_v2(tmp_path / "auth")
+    store = product_identity_store_v2(tmp_path / "store")
+    runtime = runtime_v2(authorization=authorization, store=store)
+    runtime.prepare_review_queue(command)
+    conflicting = type(command).from_persisted_catalog(
+        operation_id=command.operation_id,
+        site_id=command.site_id,
+        source=command.source,
+        prepared_at=command.prepared_at.replace(microsecond=1),
+    )
+
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
+        runtime.prepare_review_queue(conflicting)
+    _assert_code(caught, ProductIdentityRuntimeFailureCodeV2.IDEMPOTENCY_CONFLICT)
+
+
+@pytest.mark.parametrize(
+    "fault",
+    (
+        ProductIdentitySqliteCommitFaultV2.UNKNOWN_AFTER_COMMIT,
+        ProductIdentitySqliteCommitFaultV2.SQLITE_ERROR_AFTER_COMMIT,
+    ),
+)
 def test_decision_unknown_after_commit_recovers_without_duplicate(
     tmp_path: Path,
+    fault: ProductIdentitySqliteCommitFaultV2,
 ) -> None:
     runtime, store, authorization, queue = prepared_queue_v2(
         tmp_path,
         faults=(
             ProductIdentitySqliteCommitFaultV2.NONE,
-            ProductIdentitySqliteCommitFaultV2.UNKNOWN_AFTER_COMMIT,
+            fault,
         ),
     )
     request = _request(
@@ -199,18 +271,182 @@ def test_concurrent_same_version_allows_one_append_only_winner(tmp_path: Path) -
     assert history[0].history_version == 2
 
 
-def test_payload_tamper_is_detected_on_next_open(tmp_path: Path) -> None:
+def test_payload_mutation_is_blocked_and_trigger_removal_is_detected(
+    tmp_path: Path,
+) -> None:
     _runtime, store, _authorization, queue = prepared_queue_v2(tmp_path)
     connection = sqlite3.connect(store.database_path)
-    connection.execute(
-        "UPDATE st0504_pairs SET payload_bytes = ? WHERE pair_id = ?",
-        (b"{}", str(queue.queue.pairs[0].pair_id)),
-    )
+    with pytest.raises(sqlite3.IntegrityError, match="append-only"):
+        connection.execute(
+            "UPDATE st0504_pairs SET payload_bytes = ? WHERE pair_id = ?",
+            (b"{}", str(queue.queue.pairs[0].pair_id)),
+        )
+    connection.rollback()
+    connection.execute("DROP TRIGGER st0504_pairs_no_update")
     connection.commit()
     connection.close()
 
     with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
         store.load_review_queue(queue.queue.queue_id)
+    _assert_code(caught, ProductIdentityRuntimeFailureCodeV2.SCHEMA_INTEGRITY)
+
+
+def test_preexisting_empty_partial_and_foreign_databases_fail_closed(
+    tmp_path: Path,
+) -> None:
+    for name, initialize in (
+        ("empty", None),
+        ("partial", "CREATE TABLE partial(value TEXT) STRICT"),
+        ("foreign", "CREATE TABLE foreign_table(value TEXT) STRICT"),
+    ):
+        root = tmp_path / name
+        root.mkdir(mode=0o700)
+        database = root / "st0504-product-identity.sqlite3"
+        if initialize is None:
+            descriptor = os.open(database, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+            os.close(descriptor)
+        else:
+            connection = sqlite3.connect(database)
+            connection.execute(initialize)
+            if name == "foreign":
+                connection.execute("PRAGMA user_version = 2")
+            connection.commit()
+            connection.close()
+            database.chmod(0o600)
+        with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
+            OwnerPrivateSqliteProductIdentityStoreV2(
+                environment=RuntimeEnvironment.CI,
+                root=root,
+            )
+        _assert_code(caught, ProductIdentityRuntimeFailureCodeV2.SCHEMA_INTEGRITY)
+
+
+def test_database_symlink_and_preexisting_non_private_mode_fail_closed(
+    tmp_path: Path,
+) -> None:
+    target = tmp_path / "target.sqlite3"
+    target.write_bytes(b"foreign")
+    target.chmod(0o600)
+    symlink_root = tmp_path / "symlink-db"
+    symlink_root.mkdir(mode=0o700)
+    (symlink_root / "st0504-product-identity.sqlite3").symlink_to(target)
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as symlink_caught:
+        OwnerPrivateSqliteProductIdentityStoreV2(
+            environment=RuntimeEnvironment.CI,
+            root=symlink_root,
+        )
+    _assert_code(symlink_caught, ProductIdentityRuntimeFailureCodeV2.UNSAFE_PATH)
+
+    mode_root = tmp_path / "mode-db"
+    mode_root.mkdir(mode=0o700)
+    database = mode_root / "st0504-product-identity.sqlite3"
+    database.write_bytes(b"")
+    database.chmod(0o640)
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as mode_caught:
+        OwnerPrivateSqliteProductIdentityStoreV2(
+            environment=RuntimeEnvironment.CI,
+            root=mode_root,
+        )
+    _assert_code(mode_caught, ProductIdentityRuntimeFailureCodeV2.UNSAFE_PATH)
+
+
+def test_live_inode_replacement_is_rejected_even_with_valid_snapshot(
+    tmp_path: Path,
+) -> None:
+    _runtime, store, _authorization, queue = prepared_queue_v2(tmp_path)
+    replacement = tmp_path / "replacement.sqlite3"
+    shutil.copyfile(store.database_path, replacement)
+    original = tmp_path / "original.sqlite3"
+    store.database_path.rename(original)
+    replacement.rename(store.database_path)
+    store.database_path.chmod(0o600)
+
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
+        store.load_review_queue(queue.queue.queue_id)
+    _assert_code(caught, ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED)
+
+
+def test_process_local_prefix_pin_rejects_same_inode_valid_rollback(
+    tmp_path: Path,
+) -> None:
+    runtime, store, authorization, queue = prepared_queue_v2(tmp_path)
+    older = tmp_path / "older.sqlite3"
+    shutil.copyfile(store.database_path, older)
+    request = _request(
+        queue=queue,
+        authorization=authorization,
+        operation_id=DECISION_OPERATION_IDS_V2[0],
+        reason="Pin a later valid append before rollback.",
+    )
+    runtime.record_human_decision(request)
+    identity_before = store.database_path.stat().st_ino
+    shutil.copyfile(older, store.database_path)
+    assert store.database_path.stat().st_ino == identity_before
+
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
+        store.load_review_queue(queue.queue.queue_id)
+    _assert_code(caught, ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED)
+
+    restarted = OwnerPrivateSqliteProductIdentityStoreV2(
+        environment=RuntimeEnvironment.CI,
+        root=store.database_path.parent,
+    )
+    assert restarted.current_history_version(queue.queue.queue_id) == 1
+
+
+def test_exact_schema_is_strict_foreign_keyed_and_append_only(
+    tmp_path: Path,
+) -> None:
+    _runtime, store, _authorization, queue = prepared_queue_v2(tmp_path)
+    connection = sqlite3.connect(store.database_path)
+    tables = {
+        row[1]: row[5]
+        for row in connection.execute("PRAGMA table_list").fetchall()
+        if str(row[1]).startswith("st0504_")
+    }
+    triggers = {
+        row[0]
+        for row in connection.execute(
+            "SELECT name FROM sqlite_master WHERE type='trigger'"
+        ).fetchall()
+    }
+    pair_foreign_keys = {
+        (row[3], row[2], row[4], row[5], row[6])
+        for row in connection.execute("PRAGMA foreign_key_list(st0504_pairs)")
+    }
+    assert tables and set(tables.values()) == {1}
+    assert len(triggers) == 12
+    assert (
+        "queue_id",
+        "st0504_queues",
+        "queue_id",
+        "RESTRICT",
+        "RESTRICT",
+    ) in pair_foreign_keys
+    with pytest.raises(sqlite3.IntegrityError, match="append-only"):
+        connection.execute(
+            "DELETE FROM st0504_outbox WHERE queue_id = ?",
+            (str(queue.queue.queue_id),),
+        )
+    connection.rollback()
+    connection.close()
+
+
+@pytest.mark.parametrize(
+    "payload",
+    (
+        b'{"b":1,"a":2}',
+        b'{"a":1, "b":2}',
+        b'{"a":1}\n',
+    ),
+)
+def test_noncanonical_stored_json_bytes_are_rejected(payload: bytes) -> None:
+    decoder = cast(
+        Callable[[object], dict[str, object]],
+        getattr(sqlite_runtime_v2, "_json_object"),
+    )
+    with pytest.raises(ProductIdentityRuntimeFailureV2) as caught:
+        decoder(payload)
     _assert_code(caught, ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED)
 
 

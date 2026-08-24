@@ -85,11 +85,11 @@ EXPECTED_SOURCES: Final = (
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
     ),
 )
-PREDECESSOR_COMMIT: Final = "4481d98a5c20a43f03418b1cdabee2a9e723adbe"
+PREDECESSOR_COMMIT: Final = "80162f932738f9c3854ff012ae8e488275f7e1f5"
 EXPECTED_PREDECESSOR_ARTIFACTS: Final = (
     (
         Path("changes/st-0503/README.md"),
-        "e9be25beef080b38df4ee4559833bf693d231befbf6a0f62ca66d96528ce5a13",
+        "e372c00533e7ddddb71e10308fb703e8c31261351c61d593c520371c505b2f0b",
     ),
     (
         Path("python/raos/domain/catalog/catalog_normalization.py"),

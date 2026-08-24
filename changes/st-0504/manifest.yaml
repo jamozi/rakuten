@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0504_product_identity_human_review_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0504_product_identity_human_review_reference_plan.py
 provenance:
-  contract_sha256: 62e3d838cb049ae142afb85f640ab584824bacf0cc59d33217c94483d99e4a26
+  contract_sha256: 9e73f7e436ab14df75394b2337e853f1dcbf553c16e0f950a8bdb604da685304
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -20,10 +20,10 @@ provenance:
   - role: story
     uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
-  predecessor_commit: 4481d98a5c20a43f03418b1cdabee2a9e723adbe
+  predecessor_commit: 80162f932738f9c3854ff012ae8e488275f7e1f5
   predecessor_inputs:
   - uri: repo://changes/st-0503/README.md
-    sha256: e9be25beef080b38df4ee4559833bf693d231befbf6a0f62ca66d96528ce5a13
+    sha256: e372c00533e7ddddb71e10308fb703e8c31261351c61d593c520371c505b2f0b
   - uri: repo://python/raos/domain/catalog/catalog_normalization.py
     sha256: 6fa0adbd3ade25c5e6880e5aaec70f2c010173873b3cd3d11987d317f81642d9
   - uri: repo://python/raos/ports/catalog_normalization.py
@@ -47,13 +47,13 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0504/contracts/product-identity-human-review-reference-plan.v1.yaml
   bytes: 5361
-  sha256: 62e3d838cb049ae142afb85f640ab584824bacf0cc59d33217c94483d99e4a26
+  sha256: 9e73f7e436ab14df75394b2337e853f1dcbf553c16e0f950a8bdb604da685304
 - uri: repo://changes/st-0504/README.md
   bytes: 2896
   sha256: c4cd69c43baf7af50a1e2698a202fd22a4fa9698d6fadec1329ea7ba6c79c369
 - uri: repo://scripts/build_st0504_product_identity_human_review_reference_plan.py
   bytes: 26043
-  sha256: 6a89892c75b124d077d2c098b0554fed702b62e322da5aed5438036f096b8f6c
+  sha256: beb0208fc773c6fb2a9fce00a5af3c0e252820818ab2cf9649f8710b5d955e13
 - uri: repo://tests/st0504/conftest.py
   bytes: 972
   sha256: e76a58c45929decedbbcc268bf0b56f8aadfe8c44332de3674523812ab5bc530
@@ -70,7 +70,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json
   bytes: 8598
-  sha256: 32cdf44acb62897ec5e321a595268d5f725b2c4d56c824bfd24ca4ca1435350c
+  sha256: 8c938fab6b2b51d644cec4add08a6ee2eba7b208f6cbc477a8251a422e55050e
 boundary:
   classification: SOURCE_DERIVED_NON_EXECUTABLE_PRODUCT_IDENTITY_HUMAN_REVIEW_REFERENCE_PLAN
   executable: false

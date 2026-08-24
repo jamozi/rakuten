@@ -207,7 +207,30 @@ def _parse_utc(value: object) -> datetime:
         fail_product_identity_runtime_v2(
             ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
         )
-    return _utc(parsed)
+    parsed = _utc(parsed)
+    if _utc_text(parsed) != value:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+    return parsed
+
+
+def _parse_uuid(value: object) -> UUID:
+    if type(value) is not str:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+    try:
+        parsed = UUID(value)
+    except ValueError, AttributeError:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+    if parsed.int == 0 or str(parsed) != value:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+    return parsed
 
 
 def _text(value: object, *, maximum_bytes: int) -> str:
@@ -1377,20 +1400,18 @@ def product_identity_source_binding_from_mapping_v2(
     )
     try:
         return ProductIdentitySourceBindingV2(
-            catalog_operation_id=UUID(cast(str, data["catalog_operation_id"])),
+            catalog_operation_id=_parse_uuid(data["catalog_operation_id"]),
             catalog_payload_fingerprint=cast(str, data["catalog_payload_fingerprint"]),
             catalog_version=cast(int, data["catalog_version"]),
             catalog_previous_chain_hash=cast(str, data["catalog_previous_chain_hash"]),
             catalog_chain_hash=cast(str, data["catalog_chain_hash"]),
-            catalog_batch_id=UUID(cast(str, data["catalog_batch_id"])),
+            catalog_batch_id=_parse_uuid(data["catalog_batch_id"]),
             catalog_batch_sha256=cast(str, data["catalog_batch_sha256"]),
-            catalog_source_snapshot_id=UUID(
-                cast(str, data["catalog_source_snapshot_id"])
-            ),
+            catalog_source_snapshot_id=_parse_uuid(data["catalog_source_snapshot_id"]),
             catalog_source_snapshot_sha256=cast(
                 str, data["catalog_source_snapshot_sha256"]
             ),
-            catalog_receipt_id=UUID(cast(str, data["catalog_receipt_id"])),
+            catalog_receipt_id=_parse_uuid(data["catalog_receipt_id"]),
             catalog_request_fingerprint=cast(str, data["catalog_request_fingerprint"]),
             catalog_raw_sha256=cast(str, data["catalog_raw_sha256"]),
             catalog_normalizer_version=cast(str, data["catalog_normalizer_version"]),
@@ -1438,10 +1459,10 @@ def product_identity_candidate_ref_from_mapping_v2(
     )
     try:
         return ProductIdentityCandidateRefV2(
-            candidate_id=UUID(cast(str, data["candidate_id"])),
+            candidate_id=_parse_uuid(data["candidate_id"]),
             ordinal=cast(int, data["ordinal"]),
-            batch_id=UUID(cast(str, data["batch_id"])),
-            source_snapshot_id=UUID(cast(str, data["source_snapshot_id"])),
+            batch_id=_parse_uuid(data["batch_id"]),
+            source_snapshot_id=_parse_uuid(data["source_snapshot_id"]),
             record_sha256=cast(str, data["record_sha256"]),
             identity_status=ProductIdentityReviewStatusV2(
                 cast(str, data["identity_status"])
@@ -1506,7 +1527,7 @@ def product_identity_candidate_pair_from_mapping_v2(
             )
     try:
         return ProductIdentityCandidatePairV2(
-            pair_id=UUID(cast(str, data["pair_id"])),
+            pair_id=_parse_uuid(data["pair_id"]),
             ordinal=cast(int, data["ordinal"]),
             left=product_identity_candidate_ref_from_mapping_v2(data["left"]),
             right=product_identity_candidate_ref_from_mapping_v2(data["right"]),
@@ -1593,8 +1614,8 @@ def product_identity_review_queue_from_mapping_v2(
         )
     try:
         return ProductIdentityReviewQueueV2(
-            queue_id=UUID(cast(str, data["queue_id"])),
-            site_id=UUID(cast(str, data["site_id"])),
+            queue_id=_parse_uuid(data["queue_id"]),
+            site_id=_parse_uuid(data["site_id"]),
             runtime_version=cast(str, data["runtime_version"]),
             source=product_identity_source_binding_from_mapping_v2(data["source"]),
             pairs=tuple(
@@ -1706,9 +1727,9 @@ def product_identity_authorization_proof_from_mapping_v2(
             authorization_checked_at=_parse_utc(data["authorization_checked_at"]),
             operation_id=cast(str, data["operation_id"]),
             action=cast(str, data["action"]),
-            site_id=UUID(cast(str, data["site_id"])),
+            site_id=_parse_uuid(data["site_id"]),
             resource_kind=cast(str, data["resource_kind"]),
-            resource_id=UUID(cast(str, data["resource_id"])),
+            resource_id=_parse_uuid(data["resource_id"]),
             resource_state=cast(None, data["resource_state"]),
             step_up_receipt_fingerprint=cast(None, data["step_up_receipt_fingerprint"]),
         )
@@ -1786,8 +1807,8 @@ def product_identity_human_decision_from_mapping_v2(
     raw_supersedes = data["supersedes_decision_id"]
     try:
         return ProductIdentityHumanDecisionV2(
-            decision_id=UUID(cast(str, data["decision_id"])),
-            queue_id=UUID(cast(str, data["queue_id"])),
+            decision_id=_parse_uuid(data["decision_id"]),
+            queue_id=_parse_uuid(data["queue_id"]),
             pair=product_identity_candidate_pair_from_mapping_v2(data["pair"]),
             history_version=cast(int, data["history_version"]),
             decision_type=ProductIdentityDecisionTypeV2(
@@ -1800,7 +1821,7 @@ def product_identity_human_decision_from_mapping_v2(
                 data["authorization"]
             ),
             supersedes_decision_id=(
-                None if raw_supersedes is None else UUID(cast(str, raw_supersedes))
+                None if raw_supersedes is None else _parse_uuid(raw_supersedes)
             ),
             decided_at=_parse_utc(data["decided_at"]),
             source_binding_sha256=cast(str, data["source_binding_sha256"]),
@@ -1884,27 +1905,25 @@ def product_identity_outbox_event_from_mapping_v2(
     raw_supersedes = data["supersedes_decision_id"]
     try:
         return ProductIdentityOutboxEventV2(
-            event_id=UUID(cast(str, data["event_id"])),
+            event_id=_parse_uuid(data["event_id"]),
             event_type=cast(str, data["event_type"]),
             channel=cast(str, data["channel"]),
             commit_kind=ProductIdentityCommitKindV2(cast(str, data["commit_kind"])),
-            queue_id=UUID(cast(str, data["queue_id"])),
+            queue_id=_parse_uuid(data["queue_id"]),
             aggregate_version=cast(int, data["aggregate_version"]),
-            pair_id=None if raw_pair is None else UUID(cast(str, raw_pair)),
-            decision_id=(
-                None if raw_decision is None else UUID(cast(str, raw_decision))
-            ),
+            pair_id=None if raw_pair is None else _parse_uuid(raw_pair),
+            decision_id=(None if raw_decision is None else _parse_uuid(raw_decision)),
             decision_type=(
                 None
                 if raw_type is None
                 else ProductIdentityDecisionTypeV2(cast(str, raw_type))
             ),
             supersedes_decision_id=(
-                None if raw_supersedes is None else UUID(cast(str, raw_supersedes))
+                None if raw_supersedes is None else _parse_uuid(raw_supersedes)
             ),
-            source_batch_id=UUID(cast(str, data["source_batch_id"])),
+            source_batch_id=_parse_uuid(data["source_batch_id"]),
             source_batch_sha256=cast(str, data["source_batch_sha256"]),
-            source_snapshot_id=UUID(cast(str, data["source_snapshot_id"])),
+            source_snapshot_id=_parse_uuid(data["source_snapshot_id"]),
             source_snapshot_sha256=cast(str, data["source_snapshot_sha256"]),
             occurred_at=_parse_utc(data["occurred_at"]),
             external_actions=cast(int, data["external_actions"]),
@@ -1952,7 +1971,7 @@ def persisted_product_identity_review_queue_from_mapping_v2(
     )
     try:
         return PersistedProductIdentityReviewQueueV2(
-            operation_id=UUID(cast(str, data["operation_id"])),
+            operation_id=_parse_uuid(data["operation_id"]),
             payload_fingerprint=cast(str, data["payload_fingerprint"]),
             history_version=cast(int, data["history_version"]),
             previous_chain_hash=cast(str, data["previous_chain_hash"]),
@@ -2004,7 +2023,7 @@ def persisted_product_identity_decision_from_mapping_v2(
     )
     try:
         return PersistedProductIdentityDecisionV2(
-            operation_id=UUID(cast(str, data["operation_id"])),
+            operation_id=_parse_uuid(data["operation_id"]),
             payload_fingerprint=cast(str, data["payload_fingerprint"]),
             history_version=cast(int, data["history_version"]),
             previous_chain_hash=cast(str, data["previous_chain_hash"]),

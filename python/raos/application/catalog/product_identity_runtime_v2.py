@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
+import hashlib
 import hmac
+import json
 from typing import final
 from uuid import UUID
 
@@ -26,6 +28,7 @@ from raos.domain.catalog.product_identity_runtime_v2 import (
     ProductIdentityOutboxEventV2,
     ProductIdentityQueueCommitRecoveryV2,
     ProductIdentityReplayStatusV2,
+    ProductIdentityReviewQueueV2,
     ProductIdentityReviewQueueResultV2,
     ProductIdentityRuntimeFailureCodeV2,
     ProductIdentityRuntimeFailureV2,
@@ -36,6 +39,12 @@ from raos.domain.catalog.product_identity_runtime_v2 import (
     persisted_product_identity_decision_mapping_v2,
     persisted_product_identity_review_queue_from_mapping_v2,
     persisted_product_identity_review_queue_mapping_v2,
+    product_identity_authorization_proof_mapping_v2,
+    product_identity_outbox_event_mapping_v2,
+    product_identity_review_queue_mapping_v2,
+)
+from raos.domain.catalog.catalog_normalization_runtime_v2 import (
+    persisted_catalog_normalization_mapping_v2,
 )
 from raos.domain.iam.authentication import SessionId
 from raos.domain.iam.authorization import (
@@ -100,6 +109,159 @@ def _exact_decision(
     if parsed != value:
         fail_product_identity_runtime_v2(failure_code)
     return parsed
+
+
+def _authorization_audit_digest(result: AuthorizationCommandResult) -> str:
+    audit = result.audit
+    try:
+        payload = json.dumps(
+            {
+                "schema": "ST0403_AUTHORIZATION_AUDIT_V1",
+                "sequence": audit.sequence,
+                "command_fingerprint": audit.command_fingerprint,
+                "request_digest": audit.request_digest,
+                "effect": audit.effect.value,
+                "occurred_at": audit.occurred_at.isoformat(
+                    timespec="microseconds"
+                ).replace("+00:00", "Z"),
+                "previous_digest": audit.previous_digest,
+            },
+            allow_nan=False,
+            ensure_ascii=True,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("ascii")
+    except Exception:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.AUTHORIZATION_NOT_DURABLE
+        )
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _authorization_command_material(
+    command: AuthorizationEvaluationCommand,
+) -> tuple[object, ...]:
+    try:
+        return (
+            command.command_id.value,
+            command.operation_id.value,
+            command.target.canonical_key,
+            command.correlation_id.value,
+            command.expected_policy_revision.value,
+            command.expected_entitlement_revision.value,
+            command.observed_at.isoformat(timespec="microseconds"),
+            None
+            if command.step_up_command_id is None
+            else command.step_up_command_id.fingerprint(),
+            None
+            if command.step_up_grant_id is None
+            else command.step_up_grant_id.fingerprint(),
+            None
+            if command.independent_actor_evidence_id is None
+            else command.independent_actor_evidence_id.hex,
+        )
+    except Exception:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.AUTHORIZATION_NOT_DURABLE
+        )
+
+
+def _authorization_result_material(
+    result: AuthorizationCommandResult,
+) -> tuple[object, ...]:
+    try:
+        decision = result.decision
+        audit = result.audit
+        return (
+            result.command_id.value,
+            result.command_id_fingerprint,
+            result.request_digest,
+            result.session_fingerprint,
+            decision.canonical_key,
+            audit.sequence,
+            audit.command_fingerprint,
+            audit.request_digest,
+            audit.effect.value,
+            audit.occurred_at.isoformat(timespec="microseconds"),
+            audit.previous_digest,
+            audit.digest,
+            result.step_up_receipt_fingerprint,
+        )
+    except Exception:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.AUTHORIZATION_NOT_DURABLE
+        )
+
+
+def _canonical_material_hash(value: object) -> str:
+    try:
+        payload = json.dumps(
+            value,
+            allow_nan=False,
+            ensure_ascii=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("utf-8")
+    except Exception:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _queue_call_hash(
+    command: PrepareProductIdentityReviewQueueCommandV2,
+    queue: object,
+    event: ProductIdentityOutboxEventV2,
+) -> str:
+    if type(queue) is not ProductIdentityReviewQueueV2:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+    return _canonical_material_hash(
+        {
+            "command": {
+                "operation_id": str(command.operation_id),
+                "site_id": str(command.site_id),
+                "source": persisted_catalog_normalization_mapping_v2(command.source),
+                "expected_history_version": command.expected_history_version,
+                "prepared_at": command.prepared_at.isoformat(timespec="microseconds"),
+                "payload_fingerprint": command.payload_fingerprint,
+            },
+            "queue": product_identity_review_queue_mapping_v2(queue),
+            "event": product_identity_outbox_event_mapping_v2(event),
+        }
+    )
+
+
+def _decision_call_hash(
+    command: ProductIdentityDecisionCommandV2,
+    decision: ProductIdentityHumanDecisionV2,
+    event: ProductIdentityOutboxEventV2,
+) -> str:
+    return _canonical_material_hash(
+        {
+            "command": {
+                "operation_id": str(command.operation_id),
+                "queue_id": str(command.queue_id),
+                "pair_id": str(command.pair_id),
+                "decision_type": command.decision_type.value,
+                "reason": command.reason,
+                "reason_sha256": command.reason_sha256,
+                "expected_history_version": command.expected_history_version,
+                "supersedes_decision_id": None
+                if command.supersedes_decision_id is None
+                else str(command.supersedes_decision_id),
+                "decided_at": command.decided_at.isoformat(timespec="microseconds"),
+                "authorization": product_identity_authorization_proof_mapping_v2(
+                    command.authorization
+                ),
+                "payload_fingerprint": command.payload_fingerprint,
+            },
+            "decision_sha256": decision.sha256,
+            "event": product_identity_outbox_event_mapping_v2(event),
+        }
+    )
 
 
 @dataclass(frozen=True, slots=True, repr=False)
@@ -172,10 +334,23 @@ class DurableProductIdentityRuntimeV2:
             fail_product_identity_runtime_v2()
         self._authorization = authorization_service
         self._store = store
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.STORE_UNAVAILABLE
+        )
 
     @property
     def external_action_count(self) -> int:
         return 0
+
+    def _require_store_idle(
+        self, *, failure_code: ProductIdentityRuntimeFailureCodeV2
+    ) -> None:
+        try:
+            count = self._store.action_count
+        except Exception:
+            fail_product_identity_runtime_v2(failure_code)
+        if type(count) is not int or count != 0:
+            fail_product_identity_runtime_v2(failure_code)
 
     def prepare_review_queue(
         self, command: PrepareProductIdentityReviewQueueCommandV2
@@ -191,13 +366,42 @@ class DurableProductIdentityRuntimeV2:
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.SOURCE_INTEGRITY
             )
+        call_hash = _queue_call_hash(command, queue, event)
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+        if _queue_call_hash(command, queue, event) != call_hash:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
         try:
             existing = self._store.lookup_review_queue(command)
         except ProductIdentityRuntimeFailureV2:
+            self._require_store_idle(
+                failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
+            if _queue_call_hash(command, queue, event) != call_hash:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
             raise
         except Exception:
+            self._require_store_idle(
+                failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
+            if _queue_call_hash(command, queue, event) != call_hash:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.STORE_UNAVAILABLE
+            )
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+        if _queue_call_hash(command, queue, event) != call_hash:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
             )
         if existing is not None:
             exact = _exact_queue(
@@ -211,6 +415,8 @@ class DurableProductIdentityRuntimeV2:
                 )
                 or exact.queue != queue
                 or exact.event != event
+                or exact.history_version != 1
+                or exact.committed_at != command.prepared_at
             ):
                 fail_product_identity_runtime_v2(
                     ProductIdentityRuntimeFailureCodeV2.IDEMPOTENCY_CONFLICT
@@ -220,6 +426,13 @@ class DurableProductIdentityRuntimeV2:
                 replay_status=ProductIdentityReplayStatusV2.IDEMPOTENT_REPLAY,
                 external_actions=0,
             )
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+        if _queue_call_hash(command, queue, event) != call_hash:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
         try:
             persisted = self._store.commit_review_queue(
                 command=command,
@@ -227,18 +440,48 @@ class DurableProductIdentityRuntimeV2:
                 event=event,
             )
         except ProductIdentityRuntimeFailureV2 as error:
+            self._require_store_idle(
+                failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
+            if _queue_call_hash(command, queue, event) != call_hash:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
             if error.code is not ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN:
                 raise
             return self._recover_queue(command=command, queue=queue, event=event)
         except Exception:
+            self._require_store_idle(
+                failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
+            if _queue_call_hash(command, queue, event) != call_hash:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.STORE_UNAVAILABLE
+            )
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+        if _queue_call_hash(command, queue, event) != call_hash:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
             )
         exact = _exact_queue(
             persisted,
             failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED,
         )
-        if exact.queue != queue or exact.event != event:
+        if (
+            exact.operation_id != command.operation_id
+            or not hmac.compare_digest(
+                exact.payload_fingerprint, command.payload_fingerprint
+            )
+            or exact.history_version != 1
+            or exact.queue != queue
+            or exact.event != event
+            or exact.committed_at != command.prepared_at
+        ):
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
             )
@@ -255,9 +498,31 @@ class DurableProductIdentityRuntimeV2:
         queue: object,
         event: ProductIdentityOutboxEventV2,
     ) -> ProductIdentityReviewQueueResultV2:
+        call_hash = _queue_call_hash(command, queue, event)
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+        )
+        if _queue_call_hash(command, queue, event) != call_hash:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+            )
         try:
             recovered = self._store.recover_review_queue_commit(command)
         except Exception:
+            self._require_store_idle(
+                failure_code=ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+            )
+            if _queue_call_hash(command, queue, event) != call_hash:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+                )
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+            )
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+        )
+        if _queue_call_hash(command, queue, event) != call_hash:
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
             )
@@ -282,7 +547,16 @@ class DurableProductIdentityRuntimeV2:
             persisted,
             failure_code=ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN,
         )
-        if exact.queue != queue or exact.event != event:
+        if (
+            exact.operation_id != command.operation_id
+            or not hmac.compare_digest(
+                exact.payload_fingerprint, command.payload_fingerprint
+            )
+            or exact.history_version != 1
+            or exact.queue != queue
+            or exact.event != event
+            or exact.committed_at != command.prepared_at
+        ):
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
             )
@@ -321,13 +595,42 @@ class DurableProductIdentityRuntimeV2:
             decision=decision,
             queue=queue_record.queue,
         )
+        call_hash = _decision_call_hash(command, decision, event)
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+        if _decision_call_hash(command, decision, event) != call_hash:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
         try:
             existing = self._store.lookup_decision(command)
         except ProductIdentityRuntimeFailureV2:
+            self._require_store_idle(
+                failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
+            if _decision_call_hash(command, decision, event) != call_hash:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
             raise
         except Exception:
+            self._require_store_idle(
+                failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
+            if _decision_call_hash(command, decision, event) != call_hash:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.STORE_UNAVAILABLE
+            )
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+        if _decision_call_hash(command, decision, event) != call_hash:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
             )
         if existing is not None:
             exact_existing = _exact_decision(
@@ -341,6 +644,8 @@ class DurableProductIdentityRuntimeV2:
                 )
                 or exact_existing.decision != decision
                 or exact_existing.event != event
+                or exact_existing.history_version != decision.history_version
+                or exact_existing.committed_at != decision.decided_at
             ):
                 fail_product_identity_runtime_v2(
                     ProductIdentityRuntimeFailureCodeV2.IDEMPOTENCY_CONFLICT
@@ -350,6 +655,13 @@ class DurableProductIdentityRuntimeV2:
                 replay_status=ProductIdentityReplayStatusV2.IDEMPOTENT_REPLAY,
                 external_actions=0,
             )
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+        if _decision_call_hash(command, decision, event) != call_hash:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
         try:
             persisted = self._store.commit_decision(
                 command=command,
@@ -357,6 +669,13 @@ class DurableProductIdentityRuntimeV2:
                 event=event,
             )
         except ProductIdentityRuntimeFailureV2 as error:
+            self._require_store_idle(
+                failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
+            if _decision_call_hash(command, decision, event) != call_hash:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
             if error.code is not ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN:
                 raise
             return self._recover_decision(
@@ -365,14 +684,37 @@ class DurableProductIdentityRuntimeV2:
                 event=event,
             )
         except Exception:
+            self._require_store_idle(
+                failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
+            if _decision_call_hash(command, decision, event) != call_hash:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.STORE_UNAVAILABLE
+            )
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+        if _decision_call_hash(command, decision, event) != call_hash:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
             )
         exact = _exact_decision(
             persisted,
             failure_code=ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED,
         )
-        if exact.decision != decision or exact.event != event:
+        if (
+            exact.operation_id != command.operation_id
+            or not hmac.compare_digest(
+                exact.payload_fingerprint, command.payload_fingerprint
+            )
+            or exact.history_version != decision.history_version
+            or exact.decision != decision
+            or exact.event != event
+            or exact.committed_at != decision.decided_at
+        ):
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
             )
@@ -389,9 +731,31 @@ class DurableProductIdentityRuntimeV2:
         decision: ProductIdentityHumanDecisionV2,
         event: ProductIdentityOutboxEventV2,
     ) -> ProductIdentityDecisionResultV2:
+        call_hash = _decision_call_hash(command, decision, event)
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+        )
+        if _decision_call_hash(command, decision, event) != call_hash:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+            )
         try:
             recovered = self._store.recover_decision_commit(command)
         except Exception:
+            self._require_store_idle(
+                failure_code=ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+            )
+            if _decision_call_hash(command, decision, event) != call_hash:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+                )
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+            )
+        self._require_store_idle(
+            failure_code=ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+        )
+        if _decision_call_hash(command, decision, event) != call_hash:
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
             )
@@ -409,6 +773,10 @@ class DurableProductIdentityRuntimeV2:
         except ProductIdentityRuntimeFailureV2:
             raise
         except Exception:
+            if _decision_call_hash(command, decision, event) != call_hash:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+                )
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
             )
@@ -416,7 +784,16 @@ class DurableProductIdentityRuntimeV2:
             persisted,
             failure_code=ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN,
         )
-        if exact.decision != decision or exact.event != event:
+        if (
+            exact.operation_id != command.operation_id
+            or not hmac.compare_digest(
+                exact.payload_fingerprint, command.payload_fingerprint
+            )
+            or exact.history_version != decision.history_version
+            or exact.decision != decision
+            or exact.event != event
+            or exact.committed_at != decision.decided_at
+        ):
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
             )
@@ -432,6 +809,11 @@ class DurableProductIdentityRuntimeV2:
         request: ProductIdentityHumanDecisionRequestV2,
         queue: PersistedProductIdentityReviewQueueV2,
     ) -> ProductIdentityAuthorizationProofV2:
+        command_material = _authorization_command_material(
+            request.authorization_command
+        )
+        result_material = _authorization_result_material(request.authorization_result)
+        queue_material = persisted_product_identity_review_queue_mapping_v2(queue)
         try:
             recovered = self._authorization.recover_admin(
                 command_id=request.authorization_command.command_id,
@@ -439,6 +821,28 @@ class DurableProductIdentityRuntimeV2:
                 now=request.authorization_checked_at,
             )
         except Exception:
+            if (
+                _authorization_command_material(request.authorization_command)
+                != command_material
+                or _authorization_result_material(request.authorization_result)
+                != result_material
+                or persisted_product_identity_review_queue_mapping_v2(queue)
+                != queue_material
+            ):
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.AUTHORIZATION_NOT_DURABLE
+                )
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.AUTHORIZATION_NOT_DURABLE
+            )
+        if (
+            _authorization_command_material(request.authorization_command)
+            != command_material
+            or _authorization_result_material(request.authorization_result)
+            != result_material
+            or persisted_product_identity_review_queue_mapping_v2(queue)
+            != queue_material
+        ):
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.AUTHORIZATION_NOT_DURABLE
             )
@@ -479,6 +883,13 @@ class DurableProductIdentityRuntimeV2:
                 or exact.audit.command_fingerprint != exact.command_id_fingerprint
                 or exact.audit.request_digest != exact.request_digest
                 or exact.audit.effect is not DecisionEffect.ALLOW
+                or exact.audit.occurred_at != command.observed_at
+                or not hmac.compare_digest(
+                    exact.audit.digest, _authorization_audit_digest(exact)
+                )
+                or command.step_up_command_id is not None
+                or command.step_up_grant_id is not None
+                or command.independent_actor_evidence_id is not None
                 or exact.step_up_receipt_fingerprint is not None
             ):
                 fail_product_identity_runtime_v2(

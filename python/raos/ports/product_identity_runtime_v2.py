@@ -21,6 +21,9 @@ from raos.domain.catalog.product_identity_runtime_v2 import (
 class ProductIdentityUnitOfWorkStoreV2(Protocol):
     """One owner-private queue/decision CAS, journal, outbox and hash chain."""
 
+    @property
+    def action_count(self) -> int: ...
+
     def lookup_review_queue(
         self, command: PrepareProductIdentityReviewQueueCommandV2
     ) -> PersistedProductIdentityReviewQueueV2 | None: ...

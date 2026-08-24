@@ -259,6 +259,9 @@ def _validate_contract(contract: dict[str, object]) -> None:
             "service": "DurableAuthorizationService.recover_admin",
             "active_session_recheck_required": True,
             "exact_result_and_request_digest_revalidation": True,
+            "exact_audit_digest_recomputation": True,
+            "collaborator_material_pre_post_recomputation": True,
+            "store_action_count_exact_zero": True,
             "operation_id": PRODUCT_IDENTITY_AUTHORIZATION_OPERATION_V2,
             "action": PRODUCT_IDENTITY_AUTHORIZATION_ACTION_V2,
             "resource_kind": PRODUCT_IDENTITY_AUTHORIZATION_RESOURCE_KIND_V2,
@@ -277,11 +280,21 @@ def _validate_contract(contract: dict[str, object]) -> None:
         durability.get("backend") != "OWNER_PRIVATE_SQLITE"
         or durability.get("directory_mode") != "0700"
         or durability.get("database_mode") != "0600"
+        or durability.get("rollback_detection_scope") != "SAME_STORE_PROCESS_ONLY"
+        or durability.get("cross_process_restart_rollback_detection") is not False
+        or durability.get("external_rollback_anchor") is not False
         or any(
             durability.get(key) is not True
             for key in (
                 "exact_schema_binding",
                 "strict_tables",
+                "exclusive_created_initialization",
+                "preexisting_uninitialized_database_rejected",
+                "live_device_inode_pinned",
+                "exact_foreign_keys",
+                "append_only_schema_triggers",
+                "canonical_stored_json_required",
+                "canonical_uuid_and_rfc3339_required",
                 "atomic_queue_pairs_state_outbox_journal",
                 "atomic_decision_state_outbox_journal",
                 "compare_and_swap",
@@ -289,7 +302,10 @@ def _validate_contract(contract: dict[str, object]) -> None:
                 "per_queue_hash_chain",
                 "append_only_decisions",
                 "ambiguous_commit_recovery",
+                "sqlite_commit_exception_exact_recovery",
                 "restart_recovery",
+                "process_local_monotonic_prefix_pin",
+                "same_process_rollback_detection",
                 "concurrency_fail_closed",
                 "tamper_fail_closed",
                 "schema_drift_fail_closed",

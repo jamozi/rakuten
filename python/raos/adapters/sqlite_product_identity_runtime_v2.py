@@ -8,6 +8,7 @@ publication, ranking, staging, release, or Production capability.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from enum import Enum
 import hashlib
 import json
@@ -49,7 +50,7 @@ from raos.domain.catalog.product_identity_runtime_v2 import (
 
 
 _DATABASE_NAME = "st0504-product-identity.sqlite3"
-_SCHEMA_VERSION = 1
+_SCHEMA_VERSION = 2
 _MAX_JSON_BYTES = 16 * 1024 * 1024
 _MAX_JSON_DEPTH = 48
 _MAX_JSON_NODES = 500_000
@@ -61,7 +62,8 @@ _SCHEMA_CREATE_SQL: tuple[tuple[str, str], ...] = (
     queue_id TEXT PRIMARY KEY,
     schema_binding TEXT NOT NULL CHECK (length(schema_binding) = 64),
     history_version INTEGER NOT NULL CHECK (history_version >= 1),
-    head_hash TEXT NOT NULL CHECK (length(head_hash) = 64)
+    head_hash TEXT NOT NULL CHECK (length(head_hash) = 64),
+    FOREIGN KEY(queue_id) REFERENCES st0504_queues(queue_id) ON UPDATE RESTRICT ON DELETE RESTRICT
 ) STRICT""",
     ),
     (
@@ -91,7 +93,7 @@ _SCHEMA_CREATE_SQL: tuple[tuple[str, str], ...] = (
     payload_bytes BLOB NOT NULL,
     payload_sha256 TEXT NOT NULL CHECK (length(payload_sha256) = 64),
     UNIQUE(queue_id, ordinal),
-    FOREIGN KEY(queue_id) REFERENCES st0504_queues(queue_id)
+    FOREIGN KEY(queue_id) REFERENCES st0504_queues(queue_id) ON UPDATE RESTRICT ON DELETE RESTRICT
 ) STRICT""",
     ),
     (
@@ -111,9 +113,9 @@ _SCHEMA_CREATE_SQL: tuple[tuple[str, str], ...] = (
     payload_sha256 TEXT NOT NULL CHECK (length(payload_sha256) = 64),
     committed_at TEXT NOT NULL,
     UNIQUE(queue_id, history_version),
-    FOREIGN KEY(queue_id) REFERENCES st0504_queues(queue_id),
-    FOREIGN KEY(pair_id) REFERENCES st0504_pairs(pair_id),
-    FOREIGN KEY(supersedes_decision_id) REFERENCES st0504_decisions(decision_id)
+    FOREIGN KEY(queue_id) REFERENCES st0504_queues(queue_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+    FOREIGN KEY(pair_id) REFERENCES st0504_pairs(pair_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+    FOREIGN KEY(supersedes_decision_id) REFERENCES st0504_decisions(decision_id) ON UPDATE RESTRICT ON DELETE RESTRICT
 ) STRICT""",
     ),
     (
@@ -128,7 +130,7 @@ _SCHEMA_CREATE_SQL: tuple[tuple[str, str], ...] = (
     payload_sha256 TEXT NOT NULL CHECK (length(payload_sha256) = 64),
     created_at TEXT NOT NULL,
     UNIQUE(queue_id, aggregate_version),
-    FOREIGN KEY(queue_id) REFERENCES st0504_queues(queue_id)
+    FOREIGN KEY(queue_id) REFERENCES st0504_queues(queue_id) ON UPDATE RESTRICT ON DELETE RESTRICT
 ) STRICT""",
     ),
     (
@@ -142,13 +144,58 @@ _SCHEMA_CREATE_SQL: tuple[tuple[str, str], ...] = (
     result_bytes BLOB NOT NULL,
     result_sha256 TEXT NOT NULL CHECK (length(result_sha256) = 64),
     committed_at TEXT NOT NULL,
-    FOREIGN KEY(queue_id) REFERENCES st0504_queues(queue_id)
+    FOREIGN KEY(queue_id) REFERENCES st0504_queues(queue_id) ON UPDATE RESTRICT ON DELETE RESTRICT
 ) STRICT""",
     ),
 )
 
+_SCHEMA_TRIGGER_SQL: tuple[tuple[str, str, str], ...] = (
+    (
+        "st0504_state_no_delete",
+        "st0504_state",
+        """CREATE TRIGGER st0504_state_no_delete
+BEFORE DELETE ON st0504_state BEGIN SELECT RAISE(ABORT, 'append-only'); END""",
+    ),
+    (
+        "st0504_state_guard_update",
+        "st0504_state",
+        """CREATE TRIGGER st0504_state_guard_update
+BEFORE UPDATE ON st0504_state WHEN
+    NEW.queue_id != OLD.queue_id OR
+    NEW.schema_binding != OLD.schema_binding OR
+    NEW.history_version != OLD.history_version + 1 OR
+    NEW.head_hash = OLD.head_hash
+BEGIN SELECT RAISE(ABORT, 'invalid-state-transition'); END""",
+    ),
+    *tuple(
+        (
+            f"{table}_no_{action}",
+            table,
+            f"CREATE TRIGGER {table}_no_{action}\n"
+            f"BEFORE {action.upper()} ON {table} "
+            "BEGIN SELECT RAISE(ABORT, 'append-only'); END",
+        )
+        for table in (
+            "st0504_queues",
+            "st0504_pairs",
+            "st0504_decisions",
+            "st0504_outbox",
+            "st0504_journal",
+        )
+        for action in ("update", "delete")
+    ),
+)
+
 _SCHEMA_BINDING = hashlib.sha256(
-    "\n".join(f"{name}\0{sql}" for name, sql in _SCHEMA_CREATE_SQL).encode("utf-8")
+    "\n".join(
+        (
+            *(f"table\0{name}\0{sql}" for name, sql in _SCHEMA_CREATE_SQL),
+            *(
+                f"trigger\0{name}\0{table}\0{sql}"
+                for name, table, sql in _SCHEMA_TRIGGER_SQL
+            ),
+        )
+    ).encode("utf-8")
 ).hexdigest()
 
 _AUTO_INDEX_COUNTS: dict[str, int] = {
@@ -235,12 +282,53 @@ _SCHEMA_COLUMNS: dict[str, tuple[tuple[str, str, int, int, int], ...]] = {
     ),
 }
 
+_SCHEMA_FOREIGN_KEYS: dict[str, frozenset[tuple[str, str, str, str, str]]] = {
+    "st0504_state": frozenset(
+        {("queue_id", "st0504_queues", "queue_id", "RESTRICT", "RESTRICT")}
+    ),
+    "st0504_queues": frozenset(),
+    "st0504_pairs": frozenset(
+        {("queue_id", "st0504_queues", "queue_id", "RESTRICT", "RESTRICT")}
+    ),
+    "st0504_decisions": frozenset(
+        {
+            ("queue_id", "st0504_queues", "queue_id", "RESTRICT", "RESTRICT"),
+            ("pair_id", "st0504_pairs", "pair_id", "RESTRICT", "RESTRICT"),
+            (
+                "supersedes_decision_id",
+                "st0504_decisions",
+                "decision_id",
+                "RESTRICT",
+                "RESTRICT",
+            ),
+        }
+    ),
+    "st0504_outbox": frozenset(
+        {("queue_id", "st0504_queues", "queue_id", "RESTRICT", "RESTRICT")}
+    ),
+    "st0504_journal": frozenset(
+        {("queue_id", "st0504_queues", "queue_id", "RESTRICT", "RESTRICT")}
+    ),
+}
+
+
+@dataclass(frozen=True, slots=True)
+class _IntegritySnapshotV2:
+    queue_payloads: tuple[tuple[str, str], ...]
+    pair_payloads: tuple[tuple[str, str], ...]
+    decision_payloads: tuple[tuple[str, str], ...]
+    outbox_payloads: tuple[tuple[str, str], ...]
+    journal_results: tuple[tuple[str, str], ...]
+    queue_heads: tuple[tuple[str, int, str], ...]
+
 
 class ProductIdentitySqliteCommitFaultV2(str, Enum):
     NONE = "NONE"
     KNOWN_BEFORE_COMMIT = "KNOWN_BEFORE_COMMIT"
     UNKNOWN_BEFORE_COMMIT = "UNKNOWN_BEFORE_COMMIT"
     UNKNOWN_AFTER_COMMIT = "UNKNOWN_AFTER_COMMIT"
+    SQLITE_ERROR_BEFORE_COMMIT = "SQLITE_ERROR_BEFORE_COMMIT"
+    SQLITE_ERROR_AFTER_COMMIT = "SQLITE_ERROR_AFTER_COMMIT"
 
 
 def _environment(value: object) -> RuntimeEnvironment:
@@ -343,7 +431,12 @@ def _json_object(payload: object) -> dict[str, object]:
         fail_product_identity_runtime_v2(
             ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
         )
-    return {cast(str, key): item for key, item in raw.items()}
+    normalized = {cast(str, key): item for key, item in raw.items()}
+    if _json_bytes(normalized) != payload:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+    return normalized
 
 
 def _payload_from_row(row: sqlite3.Row, *, prefix: str = "payload") -> bytes:
@@ -358,6 +451,24 @@ def _payload_from_row(row: sqlite3.Row, *, prefix: str = "payload") -> bytes:
             ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
         )
     return payload
+
+
+def _stored_uuid(value: object) -> UUID:
+    if type(value) is not str:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+    try:
+        parsed = UUID(value)
+    except ValueError, AttributeError:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+    if parsed.int == 0 or str(parsed) != value:
+        fail_product_identity_runtime_v2(
+            ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+        )
+    return parsed
 
 
 def _validate_root_path(root: object) -> Path:
@@ -406,23 +517,74 @@ def _validate_private_directory(root: Path) -> None:
         )
 
 
-def _validate_private_database(path: Path) -> None:
+def _open_private_database(
+    root: Path, *, allow_create: bool
+) -> tuple[bool, tuple[int, int]]:
+    _validate_private_directory(root)
+    root_descriptor = -1
+    descriptor = -1
+    created = False
+    nofollow = getattr(os, "O_NOFOLLOW", 0)
     try:
-        metadata = path.lstat()
+        root_descriptor = os.open(
+            root,
+            os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | nofollow,
+        )
+        if allow_create:
+            try:
+                descriptor = os.open(
+                    _DATABASE_NAME,
+                    os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | nofollow,
+                    0o600,
+                    dir_fd=root_descriptor,
+                )
+                created = True
+            except FileExistsError:
+                descriptor = os.open(
+                    _DATABASE_NAME,
+                    os.O_RDWR | os.O_CLOEXEC | nofollow,
+                    dir_fd=root_descriptor,
+                )
+        else:
+            descriptor = os.open(
+                _DATABASE_NAME,
+                os.O_RDWR | os.O_CLOEXEC | nofollow,
+                dir_fd=root_descriptor,
+            )
+        metadata = os.fstat(descriptor)
+        path_metadata = os.stat(
+            _DATABASE_NAME,
+            dir_fd=root_descriptor,
+            follow_symlinks=False,
+        )
+        if (
+            not stat.S_ISREG(metadata.st_mode)
+            or stat.S_ISLNK(path_metadata.st_mode)
+            or metadata.st_uid != os.geteuid()
+            or stat.S_IMODE(metadata.st_mode) != 0o600
+            or metadata.st_nlink != 1
+            or (path_metadata.st_dev, path_metadata.st_ino)
+            != (metadata.st_dev, metadata.st_ino)
+        ):
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.UNSAFE_PATH
+            )
+        if created:
+            os.fsync(descriptor)
+            os.fsync(root_descriptor)
+        identity = (metadata.st_dev, metadata.st_ino)
+    except ProductIdentityRuntimeFailureV2:
+        raise
     except OSError:
         fail_product_identity_runtime_v2(
             ProductIdentityRuntimeFailureCodeV2.UNSAFE_PATH
         )
-    if (
-        not stat.S_ISREG(metadata.st_mode)
-        or stat.S_ISLNK(metadata.st_mode)
-        or metadata.st_uid != os.geteuid()
-        or stat.S_IMODE(metadata.st_mode) != 0o600
-        or metadata.st_nlink != 1
-    ):
-        fail_product_identity_runtime_v2(
-            ProductIdentityRuntimeFailureCodeV2.UNSAFE_PATH
-        )
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        if root_descriptor >= 0:
+            os.close(root_descriptor)
+    return created, identity
 
 
 @final
@@ -433,8 +595,11 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         "_commit_fault_index",
         "_commit_faults",
         "_database",
+        "_database_identity",
         "_fault_lock",
+        "_pinned_snapshot",
         "_root",
+        "_state_lock",
     )
 
     def __init__(
@@ -451,38 +616,33 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         ):
             fail_product_identity_runtime_v2()
         private_root = _validate_root_path(root)
-        if not private_root.exists():
-            try:
-                os.mkdir(private_root, 0o700)
-            except OSError:
-                fail_product_identity_runtime_v2(
-                    ProductIdentityRuntimeFailureCodeV2.UNSAFE_PATH
-                )
+        try:
+            os.mkdir(private_root, 0o700)
+        except FileExistsError:
+            pass
+        except OSError:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.UNSAFE_PATH
+            )
         _validate_private_directory(private_root)
         database = private_root / _DATABASE_NAME
-        if not database.exists():
-            flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC
-            if hasattr(os, "O_NOFOLLOW"):
-                flags |= os.O_NOFOLLOW
-            try:
-                descriptor = os.open(database, flags, 0o600)
-                os.close(descriptor)
-            except OSError:
-                fail_product_identity_runtime_v2(
-                    ProductIdentityRuntimeFailureCodeV2.UNSAFE_PATH
-                )
-        _validate_private_database(database)
         self._root = private_root
         self._database = database
         self._commit_faults = commit_faults
         self._commit_fault_index = 0
         self._fault_lock = RLock()
+        self._state_lock = RLock()
+        self._pinned_snapshot: _IntegritySnapshotV2 | None = None
+        created, self._database_identity = _open_private_database(
+            private_root, allow_create=True
+        )
         connection = self._connect(verify=False)
         try:
-            self._initialize(connection)
+            self._initialize(connection, created=created)
         finally:
-            connection.close()
-        _validate_private_database(database)
+            self._close_verified(connection)
+        verified = self._connect()
+        self._close_verified(verified)
 
     @property
     def database_path(self) -> Path:
@@ -492,12 +652,36 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
     def external_action_count(self) -> int:
         return 0
 
+    @property
+    def action_count(self) -> int:
+        return 0
+
+    def _validate_database_identity(self) -> None:
+        _created, identity = _open_private_database(self._root, allow_create=False)
+        if identity != self._database_identity:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
+
+    def _close_verified(self, connection: sqlite3.Connection) -> None:
+        try:
+            self._validate_database_identity()
+        finally:
+            try:
+                connection.close()
+            except sqlite3.Error:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.STORE_UNAVAILABLE
+                )
+        self._validate_database_identity()
+
     def _connect(self, *, verify: bool = True) -> sqlite3.Connection:
-        _validate_private_directory(self._root)
-        _validate_private_database(self._database)
+        self._validate_database_identity()
+        connection: sqlite3.Connection | None = None
         try:
             connection = sqlite3.connect(
-                self._database,
+                f"{self._database.as_uri()}?mode=rw",
+                uri=True,
                 timeout=1.0,
                 isolation_level=None,
                 check_same_thread=False,
@@ -506,24 +690,54 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
             connection.execute("PRAGMA foreign_keys = ON")
             connection.execute("PRAGMA trusted_schema = OFF")
             connection.execute("PRAGMA temp_store = MEMORY")
-            connection.execute("PRAGMA journal_mode = DELETE")
             connection.execute("PRAGMA synchronous = FULL")
             connection.execute("PRAGMA secure_delete = ON")
             connection.execute("PRAGMA busy_timeout = 1000")
+            journal_mode = connection.execute("PRAGMA journal_mode").fetchone()
+            foreign_keys = connection.execute("PRAGMA foreign_keys").fetchone()
+            trusted_schema = connection.execute("PRAGMA trusted_schema").fetchone()
+            if (
+                journal_mode is None
+                or tuple(journal_mode) != ("delete",)
+                or foreign_keys is None
+                or tuple(foreign_keys) != (1,)
+                or trusted_schema is None
+                or tuple(trusted_schema) != (0,)
+            ):
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.STORE_UNAVAILABLE
+                )
+            self._validate_database_identity()
+        except ProductIdentityRuntimeFailureV2:
+            if connection is not None:
+                connection.close()
+            raise
         except sqlite3.OperationalError:
+            if connection is not None:
+                connection.close()
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.CONCURRENCY_CONFLICT
             )
         except sqlite3.Error:
+            if connection is not None:
+                connection.close()
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.STORE_UNAVAILABLE
             )
+        assert connection is not None
         if verify:
             try:
                 connection.execute("BEGIN")
+                self._validate_database_identity()
                 self._verify_schema(connection)
-                self._verify_integrity(connection)
+                snapshot = self._verify_integrity(connection)
+                with self._state_lock:
+                    self._require_monotonic_state(connection, snapshot=snapshot)
+                self._validate_database_identity()
                 connection.execute("ROLLBACK")
+                self._validate_database_identity()
+                with self._state_lock:
+                    self._pin_state(snapshot)
             except ProductIdentityRuntimeFailureV2:
                 self._rollback(connection)
                 connection.close()
@@ -540,35 +754,52 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
                 )
         return connection
 
-    @staticmethod
-    def _initialize(connection: sqlite3.Connection) -> None:
+    def _verify_transaction_state(
+        self, connection: sqlite3.Connection
+    ) -> _IntegritySnapshotV2:
+        self._validate_database_identity()
+        self._verify_schema(connection)
+        snapshot = self._verify_integrity(connection)
+        self._require_monotonic_state(connection, snapshot=snapshot)
+        self._validate_database_identity()
+        return snapshot
+
+    def _initialize(self, connection: sqlite3.Connection, *, created: bool) -> None:
         try:
+            connection.execute("BEGIN IMMEDIATE")
+            self._validate_database_identity()
             version = connection.execute("PRAGMA user_version").fetchone()
         except sqlite3.Error:
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.STORE_UNAVAILABLE
             )
-        if version is None or version[0] not in {0, _SCHEMA_VERSION}:
+        if (
+            version is None
+            or (created and version[0] != 0)
+            or (not created and version[0] != _SCHEMA_VERSION)
+        ):
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.SCHEMA_INTEGRITY
             )
-        if version[0] == _SCHEMA_VERSION:
-            OwnerPrivateSqliteProductIdentityStoreV2._verify_schema(connection)
-            OwnerPrivateSqliteProductIdentityStoreV2._verify_integrity(connection)
-            return
         try:
-            existing = connection.execute(
-                "SELECT COUNT(*) FROM sqlite_master"
-            ).fetchone()
-            if existing is None or existing[0] != 0:
-                fail_product_identity_runtime_v2(
-                    ProductIdentityRuntimeFailureCodeV2.SCHEMA_INTEGRITY
-                )
-            connection.execute("BEGIN IMMEDIATE")
-            for _table, statement in _SCHEMA_CREATE_SQL:
-                connection.execute(statement)
-            connection.execute(f"PRAGMA user_version = {_SCHEMA_VERSION}")
+            if created:
+                existing = connection.execute(
+                    "SELECT COUNT(*) FROM sqlite_master"
+                ).fetchone()
+                if existing is None or existing[0] != 0:
+                    fail_product_identity_runtime_v2(
+                        ProductIdentityRuntimeFailureCodeV2.SCHEMA_INTEGRITY
+                    )
+                for _table, statement in _SCHEMA_CREATE_SQL:
+                    connection.execute(statement)
+                for _name, _table, statement in _SCHEMA_TRIGGER_SQL:
+                    connection.execute(statement)
+                connection.execute(f"PRAGMA user_version = {_SCHEMA_VERSION}")
+            self._verify_schema(connection)
+            self._verify_integrity(connection)
+            self._validate_database_identity()
             connection.execute("COMMIT")
+            self._validate_database_identity()
         except ProductIdentityRuntimeFailureV2:
             OwnerPrivateSqliteProductIdentityStoreV2._rollback(connection)
             raise
@@ -577,8 +808,6 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.STORE_UNAVAILABLE
             )
-        OwnerPrivateSqliteProductIdentityStoreV2._verify_schema(connection)
-        OwnerPrivateSqliteProductIdentityStoreV2._verify_integrity(connection)
 
     @staticmethod
     def _verify_schema(connection: sqlite3.Connection) -> None:
@@ -599,18 +828,22 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
                     ("table", name, name, statement)
                     for name, statement in _SCHEMA_CREATE_SQL
                 ),
+                *(
+                    ("trigger", name, table, statement)
+                    for name, table, statement in _SCHEMA_TRIGGER_SQL
+                ),
                 *_SCHEMA_AUTO_INDEXES,
             }
             if observed_objects != expected_objects:
                 fail_product_identity_runtime_v2(
                     ProductIdentityRuntimeFailureCodeV2.SCHEMA_INTEGRITY
                 )
-            for table, expected in _SCHEMA_COLUMNS.items():
+            for table, expected_columns in _SCHEMA_COLUMNS.items():
                 rows = connection.execute(f"PRAGMA table_xinfo({table})").fetchall()
                 observed = tuple(
                     (row[1], row[2], row[3], row[5], row[6]) for row in rows
                 )
-                if observed != expected:
+                if observed != expected_columns:
                     fail_product_identity_runtime_v2(
                         ProductIdentityRuntimeFailureCodeV2.SCHEMA_INTEGRITY
                     )
@@ -622,6 +855,17 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
                 fail_product_identity_runtime_v2(
                     ProductIdentityRuntimeFailureCodeV2.SCHEMA_INTEGRITY
                 )
+            for table, expected_foreign_keys in _SCHEMA_FOREIGN_KEYS.items():
+                observed_foreign_keys = frozenset(
+                    (row[3], row[2], row[4], row[5], row[6])
+                    for row in connection.execute(
+                        f"PRAGMA foreign_key_list({table})"
+                    ).fetchall()
+                )
+                if observed_foreign_keys != expected_foreign_keys:
+                    fail_product_identity_runtime_v2(
+                        ProductIdentityRuntimeFailureCodeV2.SCHEMA_INTEGRITY
+                    )
             if connection.execute("PRAGMA foreign_key_check").fetchall():
                 fail_product_identity_runtime_v2(
                     ProductIdentityRuntimeFailureCodeV2.SCHEMA_INTEGRITY
@@ -634,8 +878,13 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
             )
 
     @staticmethod
-    def _verify_integrity(connection: sqlite3.Connection) -> None:
+    def _verify_integrity(connection: sqlite3.Connection) -> _IntegritySnapshotV2:
         try:
+            integrity = connection.execute("PRAGMA integrity_check").fetchall()
+            if len(integrity) != 1 or tuple(integrity[0]) != ("ok",):
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
             queue_rows = connection.execute(
                 "SELECT * FROM st0504_queues ORDER BY queue_id"
             ).fetchall()
@@ -775,6 +1024,52 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
                 fail_product_identity_runtime_v2(
                     ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
                 )
+            return _IntegritySnapshotV2(
+                queue_payloads=tuple(
+                    (cast(str, row["queue_id"]), cast(str, row["payload_sha256"]))
+                    for row in queue_rows
+                ),
+                pair_payloads=tuple(
+                    (cast(str, row["pair_id"]), cast(str, row["payload_sha256"]))
+                    for row in connection.execute(
+                        "SELECT pair_id,payload_sha256 FROM st0504_pairs ORDER BY pair_id"
+                    ).fetchall()
+                ),
+                decision_payloads=tuple(
+                    (
+                        cast(str, row["decision_id"]),
+                        cast(str, row["payload_sha256"]),
+                    )
+                    for row in connection.execute(
+                        "SELECT decision_id,payload_sha256 FROM st0504_decisions ORDER BY decision_id"
+                    ).fetchall()
+                ),
+                outbox_payloads=tuple(
+                    (cast(str, row["event_id"]), cast(str, row["payload_sha256"]))
+                    for row in connection.execute(
+                        "SELECT event_id,payload_sha256 FROM st0504_outbox ORDER BY event_id"
+                    ).fetchall()
+                ),
+                journal_results=tuple(
+                    (
+                        cast(str, row["operation_id"]),
+                        cast(str, row["result_sha256"]),
+                    )
+                    for row in connection.execute(
+                        "SELECT operation_id,result_sha256 FROM st0504_journal ORDER BY operation_id"
+                    ).fetchall()
+                ),
+                queue_heads=tuple(
+                    (
+                        cast(str, row["queue_id"]),
+                        cast(int, row["history_version"]),
+                        cast(str, row["head_hash"]),
+                    )
+                    for row in connection.execute(
+                        "SELECT queue_id,history_version,head_hash FROM st0504_state ORDER BY queue_id"
+                    ).fetchall()
+                ),
+            )
         except ProductIdentityRuntimeFailureV2:
             raise
         except sqlite3.OperationalError as error:
@@ -789,6 +1084,71 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
             )
+
+    def _require_monotonic_state(
+        self,
+        connection: sqlite3.Connection,
+        *,
+        snapshot: _IntegritySnapshotV2,
+    ) -> None:
+        pinned = self._pinned_snapshot
+        if pinned is None:
+            return
+        for old, current in (
+            (pinned.queue_payloads, snapshot.queue_payloads),
+            (pinned.pair_payloads, snapshot.pair_payloads),
+            (pinned.decision_payloads, snapshot.decision_payloads),
+            (pinned.outbox_payloads, snapshot.outbox_payloads),
+            (pinned.journal_results, snapshot.journal_results),
+        ):
+            if len(current) < len(old) or not set(old).issubset(current):
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
+        current_heads = {
+            queue_id: (version, head)
+            for queue_id, version, head in snapshot.queue_heads
+        }
+        for queue_id, old_version, old_head in pinned.queue_heads:
+            current_head = current_heads.get(queue_id)
+            if current_head is None or current_head[0] < old_version:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
+            if old_version == 1:
+                prefix = connection.execute(
+                    "SELECT chain_hash FROM st0504_queues WHERE queue_id = ?",
+                    (queue_id,),
+                ).fetchone()
+            else:
+                prefix = connection.execute(
+                    "SELECT chain_hash FROM st0504_decisions WHERE queue_id = ? AND history_version = ?",
+                    (queue_id, old_version),
+                ).fetchone()
+            if prefix is None or prefix["chain_hash"] != old_head:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
+            if current_head[0] == old_version and current_head[1] != old_head:
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
+
+    def _pin_state(self, snapshot: _IntegritySnapshotV2) -> None:
+        pinned = self._pinned_snapshot
+        if pinned is not None:
+            for old, current in (
+                (pinned.queue_payloads, snapshot.queue_payloads),
+                (pinned.pair_payloads, snapshot.pair_payloads),
+                (pinned.decision_payloads, snapshot.decision_payloads),
+                (pinned.outbox_payloads, snapshot.outbox_payloads),
+                (pinned.journal_results, snapshot.journal_results),
+            ):
+                if len(current) < len(old) or not set(old).issubset(current):
+                    fail_product_identity_runtime_v2(
+                        ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                    )
+        self._pinned_snapshot = snapshot
 
     @staticmethod
     def _verify_queue_records(
@@ -846,23 +1206,31 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
                     cast(PersistedProductIdentityDecisionV2, persisted)
                 )
             )
+            expected_result_bytes = _json_bytes(expected_result)
+            expected_event_bytes = _json_bytes(
+                product_identity_outbox_event_mapping_v2(event)
+            )
+            expected_committed_at = (
+                persisted_queue.committed_at
+                if kind is ProductIdentityCommitKindV2.REVIEW_QUEUE
+                else cast(PersistedProductIdentityDecisionV2, persisted).committed_at
+            ).isoformat(timespec="microseconds")
             if (
                 journal is None
                 or journal["commit_kind"] != kind.value
                 or journal["queue_id"] != str(persisted_queue.queue.queue_id)
                 or journal["history_version"] != version
                 or journal["payload_fingerprint"] != fingerprint
-                or _json_object(_payload_from_row(journal, prefix="result"))
-                != expected_result
+                or _payload_from_row(journal, prefix="result") != expected_result_bytes
+                or journal["committed_at"] != expected_committed_at
                 or outbox is None
                 or outbox["queue_id"] != str(event.queue_id)
                 or outbox["aggregate_version"] != event.aggregate_version
                 or outbox["event_type"] != event.event_type
                 or outbox["channel"] != event.channel
-                or product_identity_outbox_event_from_mapping_v2(
-                    _json_object(_payload_from_row(outbox))
-                )
-                != event
+                or _payload_from_row(outbox) != expected_event_bytes
+                or outbox["created_at"]
+                != event.occurred_at.isoformat(timespec="microseconds")
             ):
                 fail_product_identity_runtime_v2(
                     ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
@@ -875,6 +1243,48 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
             value = self._commit_faults[self._commit_fault_index]
             self._commit_fault_index += 1
             return value
+
+    def _commit_transaction(
+        self,
+        connection: sqlite3.Connection,
+        *,
+        fault: ProductIdentitySqliteCommitFaultV2,
+    ) -> None:
+        try:
+            if fault is ProductIdentitySqliteCommitFaultV2.SQLITE_ERROR_BEFORE_COMMIT:
+                raise sqlite3.OperationalError("injected commit failure")
+            connection.execute("COMMIT")
+            if fault is ProductIdentitySqliteCommitFaultV2.SQLITE_ERROR_AFTER_COMMIT:
+                raise sqlite3.OperationalError(
+                    "injected commit acknowledgement failure"
+                )
+        except sqlite3.Error:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+            )
+        if fault is ProductIdentitySqliteCommitFaultV2.UNKNOWN_AFTER_COMMIT:
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+            )
+        try:
+            self._validate_database_identity()
+            connection.execute("BEGIN")
+            self._verify_schema(connection)
+            snapshot = self._verify_integrity(connection)
+            with self._state_lock:
+                self._require_monotonic_state(connection, snapshot=snapshot)
+            self._validate_database_identity()
+            connection.execute("ROLLBACK")
+            self._validate_database_identity()
+            with self._state_lock:
+                self._pin_state(snapshot)
+        except ProductIdentityRuntimeFailureV2:
+            raise
+        except sqlite3.Error:
+            self._rollback(connection)
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
+            )
 
     @staticmethod
     def _rollback(connection: sqlite3.Connection) -> None:
@@ -908,6 +1318,12 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
     def lookup_review_queue(
         self, command: PrepareProductIdentityReviewQueueCommandV2
     ) -> PersistedProductIdentityReviewQueueV2 | None:
+        with self._state_lock:
+            return self._lookup_review_queue_locked(command)
+
+    def _lookup_review_queue_locked(
+        self, command: PrepareProductIdentityReviewQueueCommandV2
+    ) -> PersistedProductIdentityReviewQueueV2 | None:
         if type(command) is not PrepareProductIdentityReviewQueueCommandV2:
             fail_product_identity_runtime_v2()
         connection = self._connect()
@@ -919,7 +1335,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         except sqlite3.Error as error:
             self._map_sqlite_error(error)
         finally:
-            connection.close()
+            self._close_verified(connection)
         if row is None:
             return None
         if (
@@ -929,11 +1345,39 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.IDEMPOTENCY_CONFLICT
             )
-        return persisted_product_identity_review_queue_from_mapping_v2(
+        persisted = persisted_product_identity_review_queue_from_mapping_v2(
             _json_object(_payload_from_row(row, prefix="result"))
         )
+        if (
+            persisted.operation_id != command.operation_id
+            or persisted.payload_fingerprint != command.payload_fingerprint
+            or persisted.queue.site_id != command.site_id
+            or persisted.committed_at != command.prepared_at
+            or row["queue_id"] != str(persisted.queue.queue_id)
+            or row["history_version"] != persisted.history_version
+            or row["committed_at"]
+            != persisted.committed_at.isoformat(timespec="microseconds")
+        ):
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
+        return persisted
 
     def commit_review_queue(
+        self,
+        *,
+        command: PrepareProductIdentityReviewQueueCommandV2,
+        queue: ProductIdentityReviewQueueV2,
+        event: ProductIdentityOutboxEventV2,
+    ) -> PersistedProductIdentityReviewQueueV2:
+        with self._state_lock:
+            return self._commit_review_queue_locked(
+                command=command,
+                queue=queue,
+                event=event,
+            )
+
+    def _commit_review_queue_locked(
         self,
         *,
         command: PrepareProductIdentityReviewQueueCommandV2,
@@ -952,6 +1396,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         fault = self._next_fault()
         try:
             connection.execute("BEGIN IMMEDIATE")
+            self._verify_transaction_state(connection)
             existing = connection.execute(
                 "SELECT payload_fingerprint FROM st0504_journal WHERE operation_id = ?",
                 (str(command.operation_id),),
@@ -985,6 +1430,16 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
                 committed_at=queue.prepared_at,
             )
             self._insert_queue(connection, persisted=persisted)
+            appended = self._verify_transaction_state(connection)
+            if not any(
+                queue_id == str(queue.queue_id)
+                and version == 1
+                and head == persisted.chain_hash
+                for queue_id, version, head in appended.queue_heads
+            ):
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
             if fault in {
                 ProductIdentitySqliteCommitFaultV2.KNOWN_BEFORE_COMMIT,
                 ProductIdentitySqliteCommitFaultV2.UNKNOWN_BEFORE_COMMIT,
@@ -995,11 +1450,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
                     if fault is ProductIdentitySqliteCommitFaultV2.KNOWN_BEFORE_COMMIT
                     else ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
                 )
-            connection.execute("COMMIT")
-            if fault is ProductIdentitySqliteCommitFaultV2.UNKNOWN_AFTER_COMMIT:
-                fail_product_identity_runtime_v2(
-                    ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
-                )
+            self._commit_transaction(connection, fault=fault)
             return persisted
         except ProductIdentityRuntimeFailureV2:
             self._rollback(connection)
@@ -1008,7 +1459,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
             self._rollback(connection)
             self._map_sqlite_error(error)
         finally:
-            connection.close()
+            self._close_verified(connection)
 
     @staticmethod
     def _insert_queue(
@@ -1107,7 +1558,8 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
     def recover_review_queue_commit(
         self, command: PrepareProductIdentityReviewQueueCommandV2
     ) -> ProductIdentityQueueCommitRecoveryV2:
-        persisted = self.lookup_review_queue(command)
+        with self._state_lock:
+            persisted = self._lookup_review_queue_locked(command)
         return ProductIdentityQueueCommitRecoveryV2(
             outcome=(
                 ProductIdentityCommitRecoveryOutcomeV2.COMMITTED
@@ -1118,6 +1570,12 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         )
 
     def lookup_decision(
+        self, command: ProductIdentityDecisionCommandV2
+    ) -> PersistedProductIdentityDecisionV2 | None:
+        with self._state_lock:
+            return self._lookup_decision_locked(command)
+
+    def _lookup_decision_locked(
         self, command: ProductIdentityDecisionCommandV2
     ) -> PersistedProductIdentityDecisionV2 | None:
         if type(command) is not ProductIdentityDecisionCommandV2:
@@ -1131,7 +1589,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         except sqlite3.Error as error:
             self._map_sqlite_error(error)
         finally:
-            connection.close()
+            self._close_verified(connection)
         if row is None:
             return None
         if (
@@ -1141,11 +1599,41 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.IDEMPOTENCY_CONFLICT
             )
-        return persisted_product_identity_decision_from_mapping_v2(
+        persisted = persisted_product_identity_decision_from_mapping_v2(
             _json_object(_payload_from_row(row, prefix="result"))
         )
+        if (
+            persisted.operation_id != command.operation_id
+            or persisted.payload_fingerprint != command.payload_fingerprint
+            or persisted.decision.queue_id != command.queue_id
+            or persisted.decision.pair.pair_id != command.pair_id
+            or persisted.history_version != command.expected_history_version + 1
+            or persisted.committed_at != command.decided_at
+            or row["queue_id"] != str(command.queue_id)
+            or row["history_version"] != persisted.history_version
+            or row["committed_at"]
+            != persisted.committed_at.isoformat(timespec="microseconds")
+        ):
+            fail_product_identity_runtime_v2(
+                ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+            )
+        return persisted
 
     def commit_decision(
+        self,
+        *,
+        command: ProductIdentityDecisionCommandV2,
+        decision: ProductIdentityHumanDecisionV2,
+        event: ProductIdentityOutboxEventV2,
+    ) -> PersistedProductIdentityDecisionV2:
+        with self._state_lock:
+            return self._commit_decision_locked(
+                command=command,
+                decision=decision,
+                event=event,
+            )
+
+    def _commit_decision_locked(
         self,
         *,
         command: ProductIdentityDecisionCommandV2,
@@ -1165,6 +1653,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         fault = self._next_fault()
         try:
             connection.execute("BEGIN IMMEDIATE")
+            self._verify_transaction_state(connection)
             journal = connection.execute(
                 "SELECT payload_fingerprint FROM st0504_journal WHERE operation_id = ?",
                 (str(command.operation_id),),
@@ -1209,7 +1698,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
                 "SELECT decision_id FROM st0504_decisions WHERE queue_id = ? AND pair_id = ? ORDER BY history_version DESC LIMIT 1",
                 (str(command.queue_id), str(command.pair_id)),
             ).fetchone()
-            latest_id = None if latest is None else UUID(latest["decision_id"])
+            latest_id = None if latest is None else _stored_uuid(latest["decision_id"])
             if (
                 command.supersedes_decision_id != latest_id
                 or decision.supersedes_decision_id != latest_id
@@ -1253,6 +1742,16 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
                 fail_product_identity_runtime_v2(
                     ProductIdentityRuntimeFailureCodeV2.CONCURRENCY_CONFLICT
                 )
+            appended = self._verify_transaction_state(connection)
+            if not any(
+                queue_id == str(command.queue_id)
+                and version == decision.history_version
+                and head == persisted.chain_hash
+                for queue_id, version, head in appended.queue_heads
+            ):
+                fail_product_identity_runtime_v2(
+                    ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
+                )
             if fault in {
                 ProductIdentitySqliteCommitFaultV2.KNOWN_BEFORE_COMMIT,
                 ProductIdentitySqliteCommitFaultV2.UNKNOWN_BEFORE_COMMIT,
@@ -1263,11 +1762,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
                     if fault is ProductIdentitySqliteCommitFaultV2.KNOWN_BEFORE_COMMIT
                     else ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
                 )
-            connection.execute("COMMIT")
-            if fault is ProductIdentitySqliteCommitFaultV2.UNKNOWN_AFTER_COMMIT:
-                fail_product_identity_runtime_v2(
-                    ProductIdentityRuntimeFailureCodeV2.COMMIT_UNKNOWN
-                )
+            self._commit_transaction(connection, fault=fault)
             return persisted
         except ProductIdentityRuntimeFailureV2:
             self._rollback(connection)
@@ -1280,7 +1775,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
                 ProductIdentityRuntimeFailureCodeV2.TAMPER_DETECTED
             )
         finally:
-            connection.close()
+            self._close_verified(connection)
 
     @staticmethod
     def _insert_decision(
@@ -1331,7 +1826,8 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
     def recover_decision_commit(
         self, command: ProductIdentityDecisionCommandV2
     ) -> ProductIdentityDecisionCommitRecoveryV2:
-        persisted = self.lookup_decision(command)
+        with self._state_lock:
+            persisted = self._lookup_decision_locked(command)
         return ProductIdentityDecisionCommitRecoveryV2(
             outcome=(
                 ProductIdentityCommitRecoveryOutcomeV2.COMMITTED
@@ -1344,6 +1840,12 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
     def load_review_queue(
         self, queue_id: object
     ) -> PersistedProductIdentityReviewQueueV2:
+        with self._state_lock:
+            return self._load_review_queue_locked(queue_id)
+
+    def _load_review_queue_locked(
+        self, queue_id: object
+    ) -> PersistedProductIdentityReviewQueueV2:
         identifier = self._identifier(queue_id)
         connection = self._connect()
         try:
@@ -1354,7 +1856,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         except sqlite3.Error as error:
             self._map_sqlite_error(error)
         finally:
-            connection.close()
+            self._close_verified(connection)
         if row is None:
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.STATE_CONFLICT
@@ -1364,6 +1866,12 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         )
 
     def list_decisions(
+        self, queue_id: object
+    ) -> tuple[PersistedProductIdentityDecisionV2, ...]:
+        with self._state_lock:
+            return self._list_decisions_locked(queue_id)
+
+    def _list_decisions_locked(
         self, queue_id: object
     ) -> tuple[PersistedProductIdentityDecisionV2, ...]:
         identifier = self._identifier(queue_id)
@@ -1376,7 +1884,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         except sqlite3.Error as error:
             self._map_sqlite_error(error)
         finally:
-            connection.close()
+            self._close_verified(connection)
         return tuple(
             persisted_product_identity_decision_from_mapping_v2(
                 _json_object(_payload_from_row(row))
@@ -1385,6 +1893,10 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         )
 
     def load_outbox(self, event_id: object) -> ProductIdentityOutboxEventV2:
+        with self._state_lock:
+            return self._load_outbox_locked(event_id)
+
+    def _load_outbox_locked(self, event_id: object) -> ProductIdentityOutboxEventV2:
         identifier = self._identifier(event_id)
         connection = self._connect()
         try:
@@ -1395,7 +1907,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         except sqlite3.Error as error:
             self._map_sqlite_error(error)
         finally:
-            connection.close()
+            self._close_verified(connection)
         if row is None:
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.STATE_CONFLICT
@@ -1405,6 +1917,10 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         )
 
     def current_history_version(self, queue_id: object) -> int:
+        with self._state_lock:
+            return self._current_history_version_locked(queue_id)
+
+    def _current_history_version_locked(self, queue_id: object) -> int:
         identifier = self._identifier(queue_id)
         connection = self._connect()
         try:
@@ -1415,7 +1931,7 @@ class OwnerPrivateSqliteProductIdentityStoreV2:
         except sqlite3.Error as error:
             self._map_sqlite_error(error)
         finally:
-            connection.close()
+            self._close_verified(connection)
         if row is None or type(row["history_version"]) is not int:
             fail_product_identity_runtime_v2(
                 ProductIdentityRuntimeFailureCodeV2.STATE_CONFLICT
