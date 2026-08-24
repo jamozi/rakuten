@@ -149,13 +149,13 @@ EXPECTED_DEPENDENCY_HASHES: Final = {
         "10bcbe759f9c1aa89d064748136b88a6694500956f049a6679041fe44e0785ce"
     ),
     "changes/st-1603/contracts/security-verification-pack.v1.yaml": (
-        "582ccca3eaf82b1b04a48bee7f4b68f6592517b72d8758423ae0235650f2fd55"
+        "13bf42391140a8d641f4fd5959bc57bae25b60a518b6617767f4f0aa505ce9dd"
     ),
     "changes/st-1603/generated/security-verification-pack.reference-plan.v1.json": (
-        "8fb4460e5e1b6c6439ac9b34dd7735f05b8fefa89fae1589f592d4f3a2fd38f3"
+        "4f6a09e76f2bc44ebd3ceb9a309a6abf6ed0f4db28d9cd6414d2912aa446d623"
     ),
     "changes/st-1603/manifest.yaml": (
-        "bce4c04cbba7ae8bfa927e0cf7a580a7089fa5e2bc3bd037643fbb0a6b27d3c1"
+        "bbb99b282a353904a466fd042bb5087e25ccef6ea90e1d12bc55ef9fad66c9ee"
     ),
     "changes/st-1605/contracts/failure-injection-drill.v1.yaml": (
         "38a2510ee368938227fe3b20b25671e6f0df42b105314650badcbe374e04d706"
@@ -164,16 +164,16 @@ EXPECTED_DEPENDENCY_HASHES: Final = {
         "898df290a5bcfc738e4c7e12405b5478bb4dd659a58a68c77f1a542e48aa722d"
     ),
     "changes/st-1605/manifest.yaml": (
-        "553b56a102645c81963732954ab2664a7206fc7648ff4cdacff10d565c260594"
+        "25b502bb4c965a0a7b69bd84f7a6dcaaf7bb5b80986f06a1cd83c4126b100509"
     ),
     "changes/st-1606/contracts/backup-restore-drill.v1.yaml": (
-        "fad487c3c241f1105056fbd1f7d5a5ce936b404496dfdda392473a92af657363"
+        "7ba3d67d412ed0a27ab67155de8dc6844d8a30f425c5c008ae4cf98a93b3153c"
     ),
     "changes/st-1606/generated/backup-restore-drill.reference-plan.v1.json": (
-        "2e8c1c801e4f3dce50677d7c29e6eb20dcaa604db6499b4b5d8f01512a055903"
+        "30c9aeea87d760dd8072af87e5c072ea4c1fc7e233ef6bb4d276ad8bdc0b822d"
     ),
     "changes/st-1606/manifest.yaml": (
-        "64b75ebe1418896458c980bbfcb3bc5f1ac47f7b99809a4a55d7333a3b80becc"
+        "34839a81eaf1d55e04246381263fa11c0ebc96db87b97a8d0e96e8cbcb18da62"
     ),
 }
 
@@ -191,7 +191,7 @@ EXPECTED_DECISION_GATE_HASHES: Final = {
 
 EXPECTED_IMPLEMENTATION_HASHES: Final = {
     "scripts/build_st1505_staging_deployment.py": (
-        "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+        "cd22f5fcf16cfd135b1ecac64ea65c0f8b9d86b60d812d0ab987ff6bc3a4f42d"
     )
 }
 

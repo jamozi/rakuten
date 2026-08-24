@@ -20,7 +20,7 @@ provenance:
   reviewed_implementation_tree_commit_status: ABSENT
   reviewed_implementation_tree_commit: null
   reviewed_implementation_tree_commit_qualifying_evidence: false
-  contract_sha256: 2c95c189987b1072a16aae0446f65a0aacd976173059165af1d3274ab2ca4040
+  contract_sha256: 56905553f6c8883f1fbb4bfdb18a0491056640174d321d38967aa8522d0a7cf9
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -50,23 +50,23 @@ provenance:
   - uri: repo://changes/st-0005/manifest.yaml
     sha256: 10bcbe759f9c1aa89d064748136b88a6694500956f049a6679041fe44e0785ce
   - uri: repo://changes/st-1603/contracts/security-verification-pack.v1.yaml
-    sha256: 582ccca3eaf82b1b04a48bee7f4b68f6592517b72d8758423ae0235650f2fd55
+    sha256: 13bf42391140a8d641f4fd5959bc57bae25b60a518b6617767f4f0aa505ce9dd
   - uri: repo://changes/st-1603/generated/security-verification-pack.reference-plan.v1.json
-    sha256: 8fb4460e5e1b6c6439ac9b34dd7735f05b8fefa89fae1589f592d4f3a2fd38f3
+    sha256: 4f6a09e76f2bc44ebd3ceb9a309a6abf6ed0f4db28d9cd6414d2912aa446d623
   - uri: repo://changes/st-1603/manifest.yaml
-    sha256: bce4c04cbba7ae8bfa927e0cf7a580a7089fa5e2bc3bd037643fbb0a6b27d3c1
+    sha256: bbb99b282a353904a466fd042bb5087e25ccef6ea90e1d12bc55ef9fad66c9ee
   - uri: repo://changes/st-1605/contracts/failure-injection-drill.v1.yaml
     sha256: 38a2510ee368938227fe3b20b25671e6f0df42b105314650badcbe374e04d706
   - uri: repo://changes/st-1605/generated/failure-injection-drill.local-synthetic-evidence.v1.json
     sha256: 898df290a5bcfc738e4c7e12405b5478bb4dd659a58a68c77f1a542e48aa722d
   - uri: repo://changes/st-1605/manifest.yaml
-    sha256: 553b56a102645c81963732954ab2664a7206fc7648ff4cdacff10d565c260594
+    sha256: 25b502bb4c965a0a7b69bd84f7a6dcaaf7bb5b80986f06a1cd83c4126b100509
   - uri: repo://changes/st-1606/contracts/backup-restore-drill.v1.yaml
-    sha256: fad487c3c241f1105056fbd1f7d5a5ce936b404496dfdda392473a92af657363
+    sha256: 7ba3d67d412ed0a27ab67155de8dc6844d8a30f425c5c008ae4cf98a93b3153c
   - uri: repo://changes/st-1606/generated/backup-restore-drill.reference-plan.v1.json
-    sha256: 2e8c1c801e4f3dce50677d7c29e6eb20dcaa604db6499b4b5d8f01512a055903
+    sha256: 30c9aeea87d760dd8072af87e5c072ea4c1fc7e233ef6bb4d276ad8bdc0b822d
   - uri: repo://changes/st-1606/manifest.yaml
-    sha256: 64b75ebe1418896458c980bbfcb3bc5f1ac47f7b99809a4a55d7333a3b80becc
+    sha256: 34839a81eaf1d55e04246381263fa11c0ebc96db87b97a8d0e96e8cbcb18da62
   decision_gate_inputs:
   - uri: repo://changes/st-0006/contracts/decision-gate-policy.v1.yaml
     sha256: 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
@@ -76,12 +76,12 @@ provenance:
     sha256: bbff3aee2fb89a4ecf45bfb92550d06b3936cceb7f3bce247f45daf5b9ca82be
   implementation_inputs:
   - uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    sha256: cd22f5fcf16cfd135b1ecac64ea65c0f8b9d86b60d812d0ab987ff6bc3a4f42d
 source_artifact_count: 9
 source_artifacts:
 - uri: repo://changes/st-1607/contracts/gate-evidence-pack.v1.yaml
   bytes: 12861
-  sha256: 2c95c189987b1072a16aae0446f65a0aacd976173059165af1d3274ab2ca4040
+  sha256: 56905553f6c8883f1fbb4bfdb18a0491056640174d321d38967aa8522d0a7cf9
 - uri: repo://changes/st-1607/README.md
   bytes: 5828
   sha256: eaabe1e6537f6a33be23885f0bd93535936a6ff962553ebd58628c3acb5395f2
@@ -90,7 +90,7 @@ source_artifacts:
   sha256: 9a0d784fe8b00c7c4b79a8e28ffa8194be9376355bcbffe527f732fd43ee2c15
 - uri: repo://scripts/build_st1607_gate_evidence_pack.py
   bytes: 93189
-  sha256: 33d9bdc48db497e9ab85c76d161ee03021ed8a67257c812f5d72f14196463cef
+  sha256: 399668b4d4bcce976a40e1032bcf5b9a153397532e57f8b7ab315b08bf2c7540
 - uri: repo://tests/st1607/conftest.py
   bytes: 864
   sha256: c53e57a5d7d5b84fe5c69213672348911db1ae1d37d4dc0842359a6b57506c07
@@ -110,7 +110,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1607/generated/gate-evidence-pack.local-blocked.v1.json
   bytes: 17474
-  sha256: 3ff622e63bbf4ae7d20fdf6bae3564efb84042bedb7245c4f87dd0d8a8b3a6f1
+  sha256: b3ed3df7c3e94e356576543722bdb461fb8f5b861c5235c0c1b5aa9f31641ffa
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check

@@ -47,13 +47,13 @@ dependency_bindings:
     artifacts:
     - kind: CONTRACT
       uri: repo://changes/st-1603/contracts/security-verification-pack.v1.yaml
-      sha256: 582ccca3eaf82b1b04a48bee7f4b68f6592517b72d8758423ae0235650f2fd55
+      sha256: 13bf42391140a8d641f4fd5959bc57bae25b60a518b6617767f4f0aa505ce9dd
     - kind: GENERATED_REFERENCE_PLAN
       uri: repo://changes/st-1603/generated/security-verification-pack.reference-plan.v1.json
-      sha256: 8fb4460e5e1b6c6439ac9b34dd7735f05b8fefa89fae1589f592d4f3a2fd38f3
+      sha256: 4f6a09e76f2bc44ebd3ceb9a309a6abf6ed0f4db28d9cd6414d2912aa446d623
     - kind: MANIFEST
       uri: repo://changes/st-1603/manifest.yaml
-      sha256: bce4c04cbba7ae8bfa927e0cf7a580a7089fa5e2bc3bd037643fbb0a6b27d3c1
+      sha256: bbb99b282a353904a466fd042bb5087e25ccef6ea90e1d12bc55ef9fad66c9ee
   st_1605:
     story_id: ST-1605
     role: FAILURE_INJECTION_INPUT
@@ -66,20 +66,20 @@ dependency_bindings:
       sha256: 898df290a5bcfc738e4c7e12405b5478bb4dd659a58a68c77f1a542e48aa722d
     - kind: MANIFEST
       uri: repo://changes/st-1605/manifest.yaml
-      sha256: 553b56a102645c81963732954ab2664a7206fc7648ff4cdacff10d565c260594
+      sha256: 25b502bb4c965a0a7b69bd84f7a6dcaaf7bb5b80986f06a1cd83c4126b100509
   st_1606:
     story_id: ST-1606
     role: BACKUP_RESTORE_INPUT
     artifacts:
     - kind: CONTRACT
       uri: repo://changes/st-1606/contracts/backup-restore-drill.v1.yaml
-      sha256: fad487c3c241f1105056fbd1f7d5a5ce936b404496dfdda392473a92af657363
+      sha256: 7ba3d67d412ed0a27ab67155de8dc6844d8a30f425c5c008ae4cf98a93b3153c
     - kind: GENERATED_REFERENCE_PLAN
       uri: repo://changes/st-1606/generated/backup-restore-drill.reference-plan.v1.json
-      sha256: 2e8c1c801e4f3dce50677d7c29e6eb20dcaa604db6499b4b5d8f01512a055903
+      sha256: 30c9aeea87d760dd8072af87e5c072ea4c1fc7e233ef6bb4d276ad8bdc0b822d
     - kind: MANIFEST
       uri: repo://changes/st-1606/manifest.yaml
-      sha256: 64b75ebe1418896458c980bbfcb3bc5f1ac47f7b99809a4a55d7333a3b80becc
+      sha256: 34839a81eaf1d55e04246381263fa11c0ebc96db87b97a8d0e96e8cbcb18da62
 decision_gate_binding:
   story_id: ST-0006
   role: OPEN_DECISION_BLOCKER_INPUT
