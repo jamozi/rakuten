@@ -1,0 +1,109 @@
+document:
+  id: RAOS-ST1001-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V2
+  schema_version: 2
+  story_id: ST-1001
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  generated: false
+implementation:
+  exact_base_commit: 895155a69b075f3b2abb5856c2e812ccbff0b4cc
+  branch: codex/st1001-local-complete-20260824-v2
+  historical_v1_preserved: true
+  exact_ssr_route_count: 4
+  local_only: true
+  no_domain_or_site_identity: true
+  nonessential_tracking_disabled: true
+  server_components_only: true
+  no_javascript_required_for_reading: true
+  deterministic_owner_artifacts: true
+  introduced_implementation_debt: NONE
+  introduced_verification_debt: DV-ST1001-001
+verification:
+  focused_v1_node_suite: PASS_19
+  focused_v2_node_suite: PASS_14
+  owner_generator_check: PASS_NO_WRITE
+  owner_generator_python_suite: PASS_5
+  strict_typescript: PASS
+  eslint_owned_scope: PASS
+  prettier_owned_scope: PASS
+  ruff_lint_and_format: PASS
+  strict_mypy: PASS_2_FILES
+  configured_repository_pyright: INHERITED_FAILURE_613_ERRORS
+  next_production_build: PASS_4_FORCE_DYNAMIC_SSR_ROUTES_WEBPACK
+  local_ssr_http: PASS_4_ROUTES_AND_1_UNKNOWN_ROUTE
+  local_chromium_axe: PASS_320_CSS_PX_KEYBOARD_0_VIOLATIONS_0_INCOMPLETE
+  affected_st0807_suite: PASS_170
+  dependency_st0103_vitest: PASS_4
+  canonical_import_verify: PASS_105_FILES_6_ARCHIVES_104_CHECKSUMS_103_MANIFEST
+  workspace_check: PASS_42_DIRECTORIES_NO_WRITE
+  focused_secret_scan: PASS_0_FINDINGS_29_OWNED_OR_GENERATED_FILES
+  git_diff_check: PASS
+deferred_verification:
+  - id: DV-ST1001-001
+    status: OPEN
+    introduced_by: ST-1001
+    failing_command: >-
+      .venv/bin/python -m pytest -p no:cacheprovider -q
+      tests/st0103/test_lock_contract.py tests/st0103/test_toolchain_contract.py
+    observed_result: 1_FAILED_17_PASSED
+    affected_owner_artifact: tests/st0103/test_toolchain_contract.py
+    reason: >-
+      The ST-0103 predecessor test still requires apps/web/app and
+      apps/web/next.config.ts to be absent; ST-1001 intentionally activates
+      those exact boundaries.
+    closure_wave: W4_INTEGRATION_FREEZE
+    closure_owner: INTEGRATION_OWNER_PREDECESSOR_TEST_RECONCILIATION
+    safe_impact: TEST_ASSERTION_ONLY_RUNTIME_AND_ST0103_TOOLCHAIN_PINS_PASS
+  - id: DV-ST1001-002
+    status: INHERITED_ENVIRONMENT_LIMITATION
+    introduced_by: PREEXISTING_LINKED_WORKTREE_SCANNER_BOUNDARY
+    failing_command: >-
+      .venv/bin/python scripts/scan_secrets.py --worktree
+      --reviewed-findings
+      changes/st-0106/contracts/reviewed-secret-findings.v2.yaml
+    observed_result: ERROR_UNSAFE_GIT_METADATA
+    affected_owner_artifact: scripts/scan_secrets.py
+    closure_wave: FINAL_LOCAL_INTEGRATION_AUDIT
+    closure_owner: INTEGRATION_OWNER_NORMAL_CHECKOUT_OR_SCANNER_OWNER
+    safe_impact: FOCUSED_ST1001_SCAN_PASSED_WITH_ZERO_FINDINGS
+  - id: DV-ST1001-003
+    status: INHERITED_UNRELATED_FAILURE
+    introduced_by: PREEXISTING_BASE_ARTIFACT
+    failing_command: npm run format:check
+    observed_result: PRETTIER_DRIFT_PACKAGES_WEB_UI_AI_GOVERNANCE_RECORDED_V2
+    affected_owner_artifact: packages/web-ui/src/ai-governance-recorded.v2.ts
+    closure_wave: FINAL_LOCAL_INTEGRATION_AUDIT
+    closure_owner: INTEGRATION_OWNER_ARTIFACT_OWNER
+    safe_impact: ST1001_OWNED_PRETTIER_SCOPE_PASSED
+  - id: DV-ST1001-004
+    status: INHERITED_UNRELATED_FAILURE
+    introduced_by: PREEXISTING_BASE_PYTHON_SOURCES
+    failing_command: >-
+      node node_modules/pyright/index.js --pythonpath .venv/bin/python
+      --project pyrightconfig.json
+    observed_result: 613_ERRORS_0_WARNINGS
+    affected_owner_artifact: python/raos
+    closure_wave: FINAL_LOCAL_INTEGRATION_AUDIT
+    closure_owner: INTEGRATION_OWNER_PYTHON_ARTIFACT_OWNERS
+    safe_impact: ST1001_STRICT_MYPY_AND_TYPESCRIPT_SCOPES_PASSED
+authority:
+  site_identity_approved: false
+  domain_approved: false
+  operator_approved: false
+  consent_approved: false
+  legal_copy_approved: false
+  external_publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+not_executed:
+  canonical_registry_apply: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  formal_tst_023: NOT_EXECUTED
+  manual_keyboard_zoom_screen_reader: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_domain: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
