@@ -1,0 +1,95 @@
+schema_version: 2
+story_id: ST-1202
+base_commit: b0edce0b18c42cfcb013fe886d2ff9de07f5c7be
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_DEFAULT_DISABLED_PROCESS_LOCAL_RECORDED_PUBLIC_EVENT_INSTRUMENTATION_V2
+scope:
+  actual_route_boundary: EXECUTED_DISABLED_NO_EFFECT
+  actual_route_event_count: 0
+  actual_route_cta_available: false
+  recorded_event_ids: [EVT-001, EVT-002, EVT-003, EVT-004, EVT-006, EVT-012]
+  recorded_harness: PROCESS_LOCAL_SYNTHETIC_ONLY
+  tracking_activation: DISABLED
+  persistence: NOT_EXECUTED
+local_checks:
+  source_freeze: PASS
+  owner_generate: PASS
+  owner_no_write_check: PASS
+  st1202_v1_node_tests: 16_PASS
+  st1202_v2_node_tests: 17_PASS
+  st1202_v2_python_tests: 5_PASS
+  direct_dependency_tests:
+    ST-1002-v1: 16_PASS
+    ST-1002-v2: 18_PASS
+    ST-1004-v1: 16_PASS
+    ST-1004-v2: 15_PASS
+    ST-1201: 67_PASS
+  typescript_strict: PASS
+  next_application_typecheck_and_build: PASS
+  eslint: PASS
+  prettier: PASS
+  ruff: PASS
+  mypy_strict: PASS
+  local_loopback_browser: PASS_NO_EXTERNAL_REQUEST
+  focused_secret_scan: 18_FILES_0_FINDINGS
+  canonical_import_verify: PASS
+  workspace_drift_check: PASS
+  git_diff_check: PASS
+authority:
+  tracking_activation_authorized: false
+  public_endpoint_authorized: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+  TST-022: NOT_EXECUTED
+  TST-030: NOT_EXECUTED
+  privacy_review: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+debt:
+  introduced: []
+  inherited_or_external:
+    - OD-012 privacy and consent mode remains HUMAN_DECISION_REQUIRED
+    - ST-1201 canonical event and public click contracts remain non-isomorphic and disconnected
+    - formal TST-022/TST-030 require designated CI/staging evidence
+    - live browser collection, durable persistence/dedupe and external operational gates remain NOT_EXECUTED
+  deferred_verification:
+    - owner: ST-1002
+      command: .venv/bin/python scripts/build_st1002_public_article_renderer.py --check
+      observed: ST-1002 public article renderer generation failed
+      affected_owner_artifact: changes/st-1002/runtime-manifest.v2.yaml
+      introduced_by: ST-1202
+      closure_wave: ROOT_WAVE_FREEZE_OWNER_REGENERATION
+      safe_impact: PROVENANCE_ONLY_DIRECT_TESTS_AND_LOCAL_ROUTE_GREEN
+    - owner: ST-1004
+      command: .venv/bin/python scripts/build_st1004_disclosure_affiliate_runtime.py --check
+      observed: SOURCE_BINDING_DRIFT
+      affected_owner_artifact: changes/st-1004/contracts/disclosure-affiliate-runtime.v2.yaml
+      introduced_by: ST-1202
+      closure_wave: ROOT_WAVE_FREEZE_OWNER_REGENERATION
+      safe_impact: ADDITIVE_SOURCE_BINDING_ONLY_DIRECT_TESTS_AND_LOCAL_ROUTE_GREEN
+    - owner: ST-1102
+      command: .venv/bin/python scripts/build_st1102_article_workspace_v2.py --check
+      observed: GENERATED_OUTPUT_DRIFT
+      affected_owner_artifact: changes/st-1102/runtime-manifest.v2.yaml
+      introduced_by: ST-1202
+      closure_wave: ROOT_WAVE_FREEZE_OWNER_REGENERATION
+      safe_impact: PROVENANCE_ONLY_RUNTIME_OUTPUT_UNCHANGED
+    - owner: ST-1103
+      command: .venv/bin/python scripts/build_st1103_freshness_operations_workspace.py --check
+      observed: ST-1103 V2 workspace generation failed
+      affected_owner_artifact: changes/st-1103/runtime-manifest.v2.yaml
+      introduced_by: ST-1202
+      closure_wave: ROOT_WAVE_FREEZE_OWNER_REGENERATION
+      safe_impact: PROVENANCE_ONLY_RUNTIME_OUTPUT_UNCHANGED
+    - owner: ST-1303
+      command: .venv/bin/python scripts/build_st1303_attribution_engine_reference_plan.py --check
+      observed: INPUT_HASH_DRIFT field=input
+      affected_owner_artifact: changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml
+      introduced_by: ST-1202
+      closure_wave: ROOT_WAVE_FREEZE_OWNER_REGENERATION
+      safe_impact: DEPENDENCY_HASH_BINDING_ONLY_NO_ST1303_RUNTIME_CHANGE

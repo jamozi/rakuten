@@ -8,6 +8,7 @@ import {
   type PublicAffiliateCtaUnavailableViewV2,
   type PublicDisclosureAffiliateArticleViewV2,
 } from '../../../packages/web-ui/src/disclosure-affiliate-cta.ts';
+import { createDisabledPublicEventInstrumentationRouteBoundaryV2 } from '../../../packages/web-ui/src/public-event-instrumentation.ts';
 
 import { PUBLIC_POLICY_PAGES } from './public-policy.ts';
 
@@ -157,6 +158,23 @@ function disclosureAffiliateView(
 
 export function PublicArticlePage({ model }: { readonly model: PublicArticleViewModelV2 }) {
   const disclosureAffiliate = disclosureAffiliateView(model);
+  createDisabledPublicEventInstrumentationRouteBoundaryV2({
+    schemaVersion: 2,
+    screenId: model.screen.id,
+    routePath: model.route.path,
+    sourceProfile: 'EXACT_ST1002_RECORDED_PUBLIC_ARTICLE_V2',
+    identities: {
+      articleId: null,
+      snapshotId: null,
+      categoryId: null,
+    },
+    affiliateCta: {
+      state: disclosureAffiliate.affiliateCta.state,
+      ctaId: null,
+      offerId: null,
+      rendered: false,
+    },
+  });
   return (
     <div className={styles['siteFrame']}>
       <a className={styles['skipLink']} href="#public-article-main">
