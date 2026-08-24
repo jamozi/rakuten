@@ -1,0 +1,214 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1905
+  classification: MAXIMUM_SAFE_LOCAL_DISABLED_RECORDED_ADVANCED_RANK_PROVIDER_V1
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  mvp: false
+  canonical_implementation_status: DEFERRED_POST_MVP
+  canonical_status_changed: false
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+
+authority:
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  canonical_decisions:
+    path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    decision_id: OD-004
+    status: HUMAN_DECISION_REQUIRED
+    default_behavior: Search Consoleと手動CSVのみ
+    resolved_by_this_story: false
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1905
+    depends_on: ST-1206
+    effective_status: DEFERRED_POST_MVP
+  analytics_design:
+    path: docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  test_acceptance_design:
+    path: docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    required_suite: TST-032
+    formal_status: NOT_EXECUTED
+  security_design:
+    path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    controls:
+      - SEC-APP-001
+      - SEC-APP-005
+      - SEC-DATA-003
+      - SEC-DATA-004
+      - SEC-DATA-007
+      - SEC-INFRA-003
+      - SEC-SDLC-006
+      - SEC-SDLC-009
+  threat_register:
+    path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+    threats:
+      - THR-005
+      - THR-010
+      - THR-020
+      - THR-022
+      - THR-025
+      - THR-027
+      - THR-030
+
+predecessor:
+  story_id: ST-1206
+  binding: EXACT_BASE_COMMIT_BYTES
+  base_commit: 943a5a073e398b013169a1e4c4e5bdad39ee66d9
+  artifacts:
+    changes/st-1206/contracts/keyword-rank-import.v1.yaml: 7a378d8344562cc729bae88feb89b93b5fd372f7c54f20b0f2850edccfe59c46
+    changes/st-1206/fixtures/recorded/keyword-rank-synthetic.v1.csv: e06d21cf450a75250e096d3528ac45839fa3fb7d08d9988a58d0e0b9ecd59611
+    changes/st-1206/generated/keyword-rank-evaluation.v1.json: 4eb66b74c34f2dffaccfde948ef87844c8e01639aa0cb1c41544c09ebfd944f3
+    changes/st-1206/manifest.yaml: e1ec3fed5f91b49d4c1de4a3ccb4e4115c67418cfe8f15eb85241c5eb374cef4
+    python/raos/domain/analytics/keyword_rank.py: 9d73e103487598762d914c036a79c933c2d4f3b4d309637851f3985369c903e7
+    python/raos/ports/keyword_rank.py: 132af0eb97addf17ea3e8de5ca3cee045c87d17f34ff1f4a0f29e45f1e0af2e8
+    python/raos/application/analytics/keyword_rank_import.py: 56738068ce8dbe705f5ed8b0a31e19ec252b9e6a2f0035ece3dda93a07914b00
+    python/raos/adapters/recorded_keyword_rank.py: cd598c7a8846875c32963a32fa1bbcebabec0e08ac458ee338f9375e8e48661c
+  required_semantics:
+    default_scope: DISABLED
+    recorded_synthetic_evaluation_only: true
+    live_provider_rows: false
+    serp_scrape: FORBIDDEN
+    persistence: NOT_EXECUTED
+    recommendation_input: DISABLED
+    formal_TST-030: NOT_EXECUTED
+    canonical_status: DEFERRED_POST_MVP
+
+canonical_contracts:
+  keyword_rank_row:
+    path: contracts/raos-v0.4/contracts/schemas/imports/keyword-rank-row.schema.json
+    sha256: d1c311cf0afabf6c83c5acb0154ca8f89d023165683a08adff28f09e607bec4c
+  provider_dispatch_job:
+    path: contracts/raos-v0.4/contracts/schemas/jobs/analytics-import-provider-data-v1.schema.json
+    sha256: 7610a9b4927ffddd191409b597497eac39f49712c34115a3f27fb254694c16ab
+    advanced_provider_source_type_present: false
+    dispatch_modified_by_this_story: false
+
+feature_scope:
+  default: DISABLED
+  closed_states:
+    - DISABLED
+    - RECORDED_SYNTHETIC_CONTRACT_EVALUATION_ONLY
+  live_enabled_state_exists: false
+  selected_provider_state_exists: false
+  activation_interface_exists: false
+  disabled_fails_before_port_call: true
+  provider_approval_input_rejected: true
+  release_decision_input_rejected: true
+  canonical_deferred_status_preserved: true
+
+port_contract:
+  direction: INWARD_PROVIDER_NEUTRAL
+  method: read(command) -> immutable recorded normalized batch
+  canonical_row_type: ST-1206 KeywordRankObservation
+  provider_sdk_types: false
+  endpoint_field: false
+  url_field: false
+  credential_field: false
+  raw_query_field: false
+  raw_response_field: false
+  arbitrary_metadata_field: false
+  filesystem_path_field: false
+  implementation: CALLER_BYTES_RECORDED_SYNTHETIC_JSON
+  calls_per_instance: 1
+  retry: false
+  replay: false
+  fallback: false
+
+recorded_fixture:
+  path: changes/st-1905/fixtures/recorded/advanced-rank-provider.v1.json
+  sha256: 0f11d433f1fad9bfc2509087fdb99f7714e03a9cb3287dd65ffb746ed2f1b404
+  bytes: 1976
+  profile: RAOS_ST1905_SYNTHETIC_PROVIDER_V1
+  synthetic: true
+  observations: 6
+  unique_keyword_ids: 2
+  raw_keyword_text: false
+  endpoint: false
+  credentials: false
+  provider_sdk_payload: false
+  personal_data: false
+  finance_fields: false
+  recommendation_fields: false
+
+deterministic_evaluation:
+  expected:
+    row_count: 6
+    unique_keyword_count: 2
+    metric_counts:
+      POSITION: 2
+      SEARCH_VOLUME: 2
+      DIFFICULTY: 2
+    observation_from: '2026-08-03'
+    observation_to: '2026-08-04'
+    command_sha256: 43d46fe0fe15197667ccc9600899b1784dabbe5a20f09ad789865a7ba5c2d50c
+    normalized_sha256: eb6287ec8da876abfa4e2c6968f7a88a1813ef980f8104734f399d93ab228bc4
+    report_sha256: b58a32283d761b830bc91e939d97f1d5cdfd599e1ba27ab84627b9793dacfe3e
+    outcome: CONTRACT_COMPATIBLE_RECORDED_ONLY
+  immutable_blockers:
+    - FORMAL_TST_032_NOT_EXECUTED
+    - LIVE_PROVIDER_VALIDATION_NOT_EXECUTED
+    - OD_004_PROVIDER_SELECTION_UNRESOLVED
+    - PROVIDER_APPROVAL_ABSENT
+    - RECORDED_SYNTHETIC_ONLY
+    - RELEASE_DECISION_ABSENT
+  provider_activation_possible: false
+
+mutation_boundary:
+  output_fields: IDS_HASHES_COUNTS_CLOSED_STATUSES_ONLY
+  authority: NONE
+  kpi_read_model_write: NOT_EXECUTED
+  tracking_activation: DISABLED
+  recommendation_order: FORBIDDEN
+  cta_mutation: FORBIDDEN
+  article_mutation: FORBIDDEN
+  publication_snapshot_mutation: FORBIDDEN
+  public_projection: NOT_EXECUTED
+  publication: FORBIDDEN
+
+execution_boundary:
+  provider_selection: HUMAN_DECISION_REQUIRED
+  provider_approval: ABSENT
+  provider_call: NOT_EXECUTED
+  provider_sdk: NOT_USED
+  credentials: NOT_USED
+  network: FORBIDDEN
+  serp_scrape: FORBIDDEN
+  filesystem_runtime: NOT_USED
+  persistence: NOT_EXECUTED
+  queue: NOT_EXECUTED
+  event: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release_decision: REQUIRED_SEPARATELY
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  formal_TST-032: NOT_EXECUTED
+  story_acceptance: false
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - OD-004 provider selection and terms review
+    - approved provider account, credential reference, endpoint allowlist, and quota
+    - sanitized real recorded fixtures for success and failure states
+    - bounded staging-only live validation and reconciliation
+    - separate release decision and formal TST-032 gate acceptance
+    - persistence, monitoring, rollback, staging, release, and Production evidence
