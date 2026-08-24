@@ -114,13 +114,13 @@ EXPECTED_PREDECESSOR_HASHES: Final = {
         "c3c25d72a14d5cc302702a1e20cf6ad9ee19614c5ca6ac4550d6cea46ec91a7d"
     ),
     "changes/st-1505/contracts/staging-deployment.v1.yaml": (
-        "b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b"
+        "d7cddea6d006f620835c4facf1e76e62ce7f69d9ac0ae8d824b7ff67237764e5"
     ),
     "infra/terraform/staging/staging-deployment.reference-plan.v1.json": (
-        "8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4"
+        "7dc30e3f703c2e3f6a4e40729ae122d033f4a84b75646b1c1609e4da6c95d968"
     ),
     "changes/st-1505/manifest.yaml": (
-        "c27f4df8316621933f5d2d1e5d510dff6b8f65fe6a812ea036c70ba0c9334aa9"
+        "97d3cda19e6f2c35543c0056a5f2bbbfdaab3ed9cadbc273dfc9ff198a587137"
     ),
 }
 EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES: Final = {
@@ -128,7 +128,7 @@ EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES: Final = {
         "ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf"
     ),
     "scripts/build_st1505_staging_deployment.py": (
-        "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+        "cd22f5fcf16cfd135b1ecac64ea65c0f8b9d86b60d812d0ab987ff6bc3a4f42d"
     ),
 }
 
@@ -421,7 +421,7 @@ def _sha256_bytes(content: bytes) -> str:
 def _read(root: Path, relative: Path, field: str) -> bytes:
     physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
     try:
-        return physical.read_bytes()
+        return bytes(physical.read_bytes())
     except OSError:
         _fail("FILE_UNAVAILABLE", field)
 
@@ -745,8 +745,8 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
         ),
         (Path("changes/st-1505/manifest.yaml"), staging_owner_manifest),
     )
-    for relative, rendered in owner_outputs:
-        if _read(root, relative, "predecessor.owner_output") != rendered:
+    for owner_path, rendered in owner_outputs:
+        if _read(root, owner_path, "predecessor.owner_output") != rendered:
             _fail("PREDECESSOR_OWNER_OUTPUT_DRIFT", "predecessors")
 
     data_plan = _load_json(

@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st1606_backup_restore_drill.py
   generation_command: uv run --locked --no-sync python scripts/build_st1606_backup_restore_drill.py
 provenance:
-  contract_sha256: fad487c3c241f1105056fbd1f7d5a5ce936b404496dfdda392473a92af657363
+  contract_sha256: 7ba3d67d412ed0a27ab67155de8dc6844d8a30f425c5c008ae4cf98a93b3153c
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -44,27 +44,27 @@ provenance:
   - uri: repo://changes/st-1502/manifest.yaml
     sha256: c3c25d72a14d5cc302702a1e20cf6ad9ee19614c5ca6ac4550d6cea46ec91a7d
   - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
-    sha256: b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b
+    sha256: d7cddea6d006f620835c4facf1e76e62ce7f69d9ac0ae8d824b7ff67237764e5
   - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
-    sha256: 8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4
+    sha256: 7dc30e3f703c2e3f6a4e40729ae122d033f4a84b75646b1c1609e4da6c95d968
   - uri: repo://changes/st-1505/manifest.yaml
-    sha256: c27f4df8316621933f5d2d1e5d510dff6b8f65fe6a812ea036c70ba0c9334aa9
+    sha256: 97d3cda19e6f2c35543c0056a5f2bbbfdaab3ed9cadbc273dfc9ff198a587137
   implementation_inputs:
   - uri: repo://scripts/build_st1502_data_services.py
     sha256: ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf
   - uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    sha256: cd22f5fcf16cfd135b1ecac64ea65c0f8b9d86b60d812d0ab987ff6bc3a4f42d
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-1606/contracts/backup-restore-drill.v1.yaml
   bytes: 10958
-  sha256: fad487c3c241f1105056fbd1f7d5a5ce936b404496dfdda392473a92af657363
+  sha256: 7ba3d67d412ed0a27ab67155de8dc6844d8a30f425c5c008ae4cf98a93b3153c
 - uri: repo://changes/st-1606/README.md
   bytes: 4691
   sha256: eac1828e53b23dabc232ad48429a237719bb7a5440ed335b7832c9828cfeb89c
 - uri: repo://scripts/build_st1606_backup_restore_drill.py
-  bytes: 43618
-  sha256: 274c4a3424f8b1e4561ef065e712e1112605e7f22146e216bed9a51cb8c504fe
+  bytes: 43629
+  sha256: cce55816118710697a7051bc966bec1519d68453059efd3256da65bd0e4e2b7e
 - uri: repo://tests/st1606/conftest.py
   bytes: 1054
   sha256: ad8a8591ddc0f5fc175cc3e645ea13eae560d27e28c0a6b05a1bc775145954f0
@@ -81,7 +81,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1606/generated/backup-restore-drill.reference-plan.v1.json
   bytes: 13664
-  sha256: 2e8c1c801e4f3dce50677d7c29e6eb20dcaa604db6499b4b5d8f01512a055903
+  sha256: 30c9aeea87d760dd8072af87e5c072ea4c1fc7e233ef6bb4d276ad8bdc0b822d
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
