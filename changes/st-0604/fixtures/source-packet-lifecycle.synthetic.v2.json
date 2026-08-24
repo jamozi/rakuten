@@ -1,0 +1,69 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-0604",
+  "recorded_synthetic": true,
+  "operational_default": false,
+  "activation": false,
+  "contains_credentials": false,
+  "contains_provider_text": false,
+  "contains_raw_source_body": false,
+  "contains_url": false,
+  "input_summary": {
+    "fact_batch_count": 1,
+    "fact_count": 3,
+    "open_conflict_count": 0,
+    "conflict_queue_count": 0,
+    "authorization_mode": "RECORDED_LOCAL_PUBADM_004",
+    "packet_purpose": "ARTICLE_DRAFT"
+  },
+  "expected_transition_sequence": [
+    "CREATE_PACKET",
+    "CREATE_VERSION",
+    "SUBMIT_REVIEW",
+    "RECORD_REVIEW:APPROVE",
+    "LOCK_VERSION",
+    "READ_GENERATION_INPUT",
+    "CREATE_VERSION:SUPERSEDE_PRIOR"
+  ],
+  "expected_generation_boundary": {
+    "before_approval": "DENIED",
+    "approved_unlocked": "DENIED",
+    "approved_locked_current": "ALLOWED_TYPED_INPUT",
+    "superseded_approved_locked": "DENIED",
+    "new_building_current": "DENIED",
+    "rejected": "DENIED",
+    "unresolved_conflict": "DENIED"
+  },
+  "expected_action_counts": {
+    "external": 0,
+    "provider": 0,
+    "publication": 0,
+    "ai": 0
+  },
+  "metamorphic_cases": [
+    "CANONICAL_ROUND_TRIP",
+    "UNKNOWN_FIELD",
+    "FACT_MEMBERSHIP_MISMATCH",
+    "CONFLICT_SCAN_MISMATCH",
+    "UNRESOLVED_CONFLICT",
+    "AUTHORIZATION_OPERATION_MISMATCH",
+    "AUTHORIZATION_TARGET_MISMATCH",
+    "AUTHORIZATION_RESULT_MISMATCH",
+    "EXPIRED_SESSION",
+    "COMMAND_REPLAY",
+    "COMMAND_CONFLICT",
+    "CAS_CONCURRENCY",
+    "COMMIT_UNKNOWN_BEFORE",
+    "COMMIT_UNKNOWN_AFTER",
+    "RESTART",
+    "PROCESS_LOCAL_ROLLBACK",
+    "OBSERVED_PEER_PREFIX_ROLLBACK",
+    "JOURNAL_TAMPER",
+    "DENIED_NETWORK",
+    "BACKDATED_LIFECYCLE",
+    "SAME_COLUMN_SCHEMA_WEAKENING",
+    "UNSAFE_SYMLINK_PATH",
+    "DATABASE_HARDLINK",
+    "OVERDEEP_CANONICAL_JSON"
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-0604",
+  "classification": "MAXIMUM_SAFE_RECORDED_LOCAL_DURABLE_SOURCE_PACKET_LIFECYCLE",
+  "recorded_at": "2026-08-25T16:00:00Z",
+  "local_status": "LOCAL_CODE_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "status_registry_updated": false,
+  "formal_validation_claimed": false,
+  "completed_local_scope": [
+    "deterministic typed packet creation immutable content-version creation review submission recorded human approve-or-reject supersede lock and generation-input commands",
+    "current APPROVED exact locked Version gate with dedicated ApprovedLockedGenerationInputV2 output",
+    "structural denial for building in-review rejected unlocked non-current superseded and unresolved-conflict Versions",
+    "exact ST-0602 PersistedFactExtractionV2 membership and exact ST-0603 PersistedFactConflictDetectionV2 no-open-conflict binding",
+    "exact deny-default recorded ST-0403 PUBADM-004 REVIEW_ASSIGNMENT IN_PROGRESS authorization recovery with actor-session target request result and audit binding",
+    "approval binding to packet Version content Fact membership Conflict scan authorization audit digest and reviewer-session fingerprint",
+    "new immutable Version on every edit with prior current Version superseded and historical approval and lock evidence retained",
+    "owner-private DEV and CI SQLite O_EXCL initialization exact STRICT FK schema inventory immutable triggers CAS journal and hash chain",
+    "0700 directory 0600 database symlink hardlink owner device inode and created-file controls",
+    "canonical JSON duplicate-key nonfinite depth node byte UUID RFC3339 mapping and cross-table recomputation boundaries",
+    "append-only packet Version lifecycle review lock command and sanitized audit journals",
+    "idempotent command replay command conflict restart concurrency tamper and exact known-versus-ambiguous commit recovery without blind retry",
+    "process-lifetime database identity count head and observed-prefix rollback floor with no cross-restart external-anchor claim",
+    "zero AI provider browser credential network ranking recommendation revenue publication staging release or Production actions",
+    "closed V2 contract recorded synthetic fixture deterministic owner generator no-write manifest and V2 documentation",
+    "V1 reference-plan compatibility owner rebound to exact current predecessor bytes without making the V1 artifact executable"
+  ],
+  "local_checks_completed": [
+    "ST-0604 V2 runtime SQLite hostile authorization canonical rollback and boundary core: 36 passed",
+    "ST-0604 V1 reference-plan suite: 206 passed after exact predecessor and helper rebind",
+    "ST-0604 V2 complete suite including owner generator: 49 passed",
+    "ST-0604 combined V1 and V2 suite: 255 passed",
+    "affected complete ST-0602 suite: 206 passed with owner-private Linux TMPDIR",
+    "affected complete ST-0603 suite: 219 passed with owner-private Linux TMPDIR",
+    "affected complete ST-0403 suite: 99 passed with owner-private Linux TMPDIR",
+    "V1 and V2 owner generation and deterministic no-write checks passed",
+    "V1 owner generation used repository-pinned uv 0.12.1 with the existing reviewed environment",
+    "Ruff format and lint passed for owned runtime sources tests and both owner generators",
+    "strict mypy passed with 0 issues for both owner generators and all four V2 runtime modules",
+    "target Pyright passed with 0 errors and 0 warnings for the V2 owner generator and four V2 runtime modules",
+    "Python compile and import smoke passed for both owner generators all four V2 runtime modules and V2 tests",
+    "JSON and YAML document parse checks passed",
+    "recorded pipeline passed with Python socket DNS and create-connection paths denied",
+    "SQLite direct replay restart two-writer CAS same-inode rollback peer-prefix rollback tamper and commit-ambiguity paths passed",
+    "owned target secret scan exact scope scan and git diff check passed"
+  ],
+  "pending_local_checks": [],
+  "debt_disposition": [
+    {
+      "debt_id": "ST0604-LOCAL-RUNTIME",
+      "status": "CLOSED_LOCAL_MAXIMUM_SAFE",
+      "detail": "The deterministic lifecycle generation gate recorded authorization boundary durable local journal recovery and hostile-input controls are implemented and locally green."
+    },
+    {
+      "debt_id": "ST0604-PREDECESSOR-REBIND",
+      "status": "CLOSED_EXACT_REBIND",
+      "detail": "Both ST-0604 owners bind exact current ST-0602 ST-0603 and ST-0403 bytes at final integration dependency HEAD ad36831bef1182b555baeb03ba977623f9a68854; the V2 binding includes the ST-0403 durable authorization schema-V2 contract."
+    },
+    {
+      "debt_id": "ST0604-CROSS-RESTART-ROLLBACK-ANCHOR",
+      "status": "EXTERNAL_ANCHOR_NOT_IMPLEMENTED_NO_CLAIM",
+      "detail": "The database identity count head and every completely verified observed prefix are monotonic only during one process lifetime; no independent durable external anchor or cross-restart rollback claim is made."
+    },
+    {
+      "debt_id": "ST0604-DOWNSTREAM-PROVENANCE",
+      "status": "SUCCESSOR_OWNER_REBIND_REQUIRED_NOT_ST0604_DEBT",
+      "detail": "Read-only ST-0605 and ST-0702 owner checks correctly report predecessor or helper hash drift after this ST-0604 owner change. Their deterministic provenance rebind belongs to each successor Story owner and no downstream path was edited here."
+    },
+    {
+      "debt_id": "FORMAL-AND-LIVE-GATES",
+      "status": "EXTERNAL_NOT_EXECUTED",
+      "detail": "Formal TST-012 and TST-020, live provider, hosted CI, staging, release, publication, and Production remain separately gated."
+    }
+  ],
+  "introduced_local_debt": [],
+  "deferred_external_gates": {
+    "TST-012": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-020": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "credentials": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  },
+  "external_actions": [],
+  "production_authority": "NONE"
+}
