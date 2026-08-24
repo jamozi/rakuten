@@ -1,0 +1,61 @@
+document:
+  id: RAOS-ST1103-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V2
+  schema_version: 2
+  story_id: ST-1103
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  generated: false
+implementation:
+  additive_v2: true
+  historical_v1_compatible: true
+  exact_screen_count: 8
+  st1401_recorded_projection: true
+  st1404_recorded_projection: true
+  undeclared_dependencies_explicitly_unavailable: true
+  unknown_as_zero_allowed: false
+  status_text_code_icon: true
+  color_only_allowed: false
+  effect_free_review_intents: true
+  owner_generated_fixture_manifest: true
+authority:
+  route_registered: false
+  authentication_established: false
+  authorization_granted: false
+  step_up_established: false
+  mutation_authorized: false
+  retry_authorized: false
+  cancellation_authorized: false
+  redrive_authorized: false
+  kill_switch_authorized: false
+  publication_authorized: false
+  activation_authorized: false
+  release_authorized: false
+  production_authorized: false
+verification:
+  focused_node_suite: PASS_30_OF_30
+  owner_generator_check: PASS
+  python_generator_suite: PASS_3_OF_3
+  affected_st1101_st1102_suite: PASS_54_OF_54
+  affected_st1401_suite: PASS_166_OF_166
+  affected_st1404_suite: PASS_42_OF_42
+  typescript_strict: PASS
+  eslint: PASS
+  prettier: PASS
+  ruff: PASS
+  strict_mypy: PASS
+  owned_path_secret_scan: PASS_NO_FINDINGS
+  repository_snapshot_secret_scan: INTEGRATION_REMEDIATION_REQUIRED_OUTSIDE_ST1103
+  workspace_check: PASS_ZERO_CHANGED_PATHS_42_DIRECTORIES
+  canonical_import_verify: PASS_105_FILES_104_CHECKSUMS_103_MANIFEST_ENTRIES
+  git_diff_check: PASS
+debt:
+  introduced_local_debt: NONE
+not_executed:
+  canonical_registry_apply: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  formal_tst_024: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  production: NOT_EXECUTED

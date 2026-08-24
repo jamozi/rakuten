@@ -376,6 +376,29 @@ export type {
 } from './freshness-operations-workspace.ts';
 
 export {
+  FRESHNESS_OPERATIONS_WORKSPACE_V2_CLASSIFICATION,
+  FRESHNESS_OPERATIONS_WORKSPACE_V2_ERROR_CODES,
+  FreshnessOperationsWorkspaceV2Error,
+  createFreshnessOperationsReviewIntentV2,
+  createFreshnessOperationsWorkspaceV2,
+  validateFreshnessOperationsReviewIntentV2,
+  validateFreshnessOperationsWorkspaceV2,
+} from './freshness-operations-workspace-v2.ts';
+export type {
+  FreshnessOperationsActionDescriptorV2,
+  FreshnessOperationsDependencyV2,
+  FreshnessOperationsReviewIntentInputV2,
+  FreshnessOperationsReviewIntentV2,
+  FreshnessOperationsScreenProjectionV2,
+  FreshnessOperationsStatusCueV2,
+  FreshnessOperationsTableColumnV2,
+  FreshnessOperationsTableV2,
+  FreshnessOperationsWorkspaceV2ErrorCode,
+  FreshnessOperationsWorkspaceV2Input,
+  FreshnessOperationsWorkspaceV2Model,
+} from './freshness-operations-workspace-v2.ts';
+
+export {
   ANALYTICS_FINANCE_SCREEN_IDS,
   ANALYTICS_FINANCE_SCREENS,
   ANALYTICS_FINANCE_WORKSPACE_CLASSIFICATION,
