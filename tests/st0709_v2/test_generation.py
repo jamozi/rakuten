@@ -73,11 +73,11 @@ def test_projection_uses_exact_recorded_reports_and_preserves_unknown_cost() -> 
         cast(dict[str, object], sections["COST"]["table"])["rows"],
     )
     assert evaluation["reportSha256"] == (
-        "34f4fd238d209b11173afe8df8031a8931a63c6cbe143c19029e8f938331db86"
+        "4458db297cb5f0d324dfde5c22fc4847b5c74e148326c32dfc77ff27aba54962"
     )
     assert evaluation["outcome"] == "REFUSED_INCOMPLETE_EVIDENCE"
     assert release["reportSha256"] == (
-        "83da5c0e7d0b9fa71c0495d528e90957af471092f69e946ca8d22321708a1920"
+        "7dd7c804ce2e85c2246bd70fbdeb1fa3a3ee7c9eb198004de6534d56594865bd"
     )
     assert release["outcome"] == "REFUSED_INCOMPLETE_EVIDENCE"
     assert release["authority"] == "NONE"

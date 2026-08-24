@@ -18,7 +18,7 @@ compatibility:
   v2_interface: VERSIONED_ADDITIVE
 contract:
   path: changes/st-0706/contracts/durable-ai-job-queue.v2.yaml
-  sha256: eef608f77d99a37716541873cd91ecf18257ee4c7532848046aa3bdb1640ae7c
+  sha256: 35caa750dc7edf230d6d18c066348f400294c98daf15c8744f56a997d95e1458
   exact_dependency_bindings: 17
 local_deliverables:
   state_document: STRICT_CANONICAL_JSON_WITH_EMBEDDED_REVISION

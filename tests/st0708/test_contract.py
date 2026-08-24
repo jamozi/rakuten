@@ -77,10 +77,10 @@ def test_exact_st0703_binding_and_st0707_report_are_declared() -> None:
     )
     st0707 = contract["st0707_report_binding"]
     assert st0707["bundle_sha256"] == (
-        "95279655c5e1dec9ab5c63333bb08fad3da82637a8ab5087f83d19f3d30f42fb"
+        "200c8378d8312133b838f6d167d6b2532f8c28e0d3d1c446c122536b76c355ed"
     )
     assert st0707["report_sha256"] == (
-        "34f4fd238d209b11173afe8df8031a8931a63c6cbe143c19029e8f938331db86"
+        "4458db297cb5f0d324dfde5c22fc4847b5c74e148326c32dfc77ff27aba54962"
     )
     assert st0707["source_task_code"] == "ai.opportunity_assessment.v1"
     assert st0707["dataset_provenance"] == "SYNTHETIC_PLUMBING_ONLY"

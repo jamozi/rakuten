@@ -17,32 +17,32 @@ Introduced debt: `[]`.
 ## Installed local evidence
 
 - V2 runtime contract SHA-256:
-  `e8b2607955b3e5de9dad1b50bb028710e49e71af8bd40805ee2ef46fa50946af`
+  `dc7733254fa3549ef5f30922ae5e02e252cc7378158a55535d90e979d9d2289f`
 - Historical V1 compatibility artifact SHA-256:
   `6310dd1107e8685feb8b86f9babbb0d889ffe611e3e2d92f4e0b83154e65d805`
 - V2 request artifact SHA-256:
-  `d089a3da197112f62b4338d4915e67ccc3ae132fabb6aab824f6d6d420989788`
+  `3d440efa6d6a7a5b807de2180cac6c063741797effc1c213746deb1abb205463`
 - V2 request identity:
-  `51bd6efc5a5efbbc492c4a034f228cc0d2e3da089ecf160d05feb70bab7b8fc2`
+  `36a17adb5166bf53797fc2fc1076e02e4177549cebf044ec870d74a1caf4405c`
 - V2 report artifact SHA-256:
-  `b2697d5e73766cd1c67ac1ba2ea29f1bf07709a1ea319a81aee72ca7d537b652`
+  `08059f2de2ca59c3712735be63c450ef0dc12b71df8632fc243ef34f7bbfb053`
 - V2 report identity:
-  `83da5c0e7d0b9fa71c0495d528e90957af471092f69e946ca8d22321708a1920`
+  `7dd7c804ce2e85c2246bd70fbdeb1fa3a3ee7c9eb198004de6534d56594865bd`
 - V2 runtime-manifest artifact SHA-256:
-  `d7b77b420ada0244710f62e02104e3e3a4c8dec4f852115a846526fce33ecfae`
+  `e24ca761f4a3f0e12348014ea675274e4ea3f342db338efef9504435f0c701c6`
 - V2 runtime-manifest identity:
-  `75f26f08d01cc053e6354511208590cd40f18b34944338c328340a347a2d255d`
+  `4c4132ae57e7351482e78e03f84f5b6ae1f61e02f54202b71662e1da7a166626`
 - Owner manifest SHA-256:
-  `5b560dab40071f0200171638cc700be541e6eb60e04909782b1fe0ec4690abc4`
+  `39849c03c9f4fb694a9bab4c3fc4c68bfdcb2e2364ee167d6ba3d8f83f4a0d16`
 - Hardened publication helper SHA-256:
   `38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e`
 
 The installed report binds ST-0703 candidate identity
 `78b441e412807279824dc2487ed7aa1d668a7c0e68d49220aa065f61dcb03fda`,
 ST-0707 bundle
-`95279655c5e1dec9ab5c63333bb08fad3da82637a8ab5087f83d19f3d30f42fb`,
+`200c8378d8312133b838f6d167d6b2532f8c28e0d3d1c446c122536b76c355ed`,
 and ST-0707 report
-`34f4fd238d209b11173afe8df8031a8931a63c6cbe143c19029e8f938331db86`.
+`4458db297cb5f0d324dfde5c22fc4847b5c74e148326c32dfc77ff27aba54962`.
 All nine AIT-004 CRITICAL metrics and all eight zero-tolerance classes remain
 `UNAVAILABLE`, so the result is not a pass.
 

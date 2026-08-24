@@ -36,26 +36,26 @@ st0705_bindings:
     sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
   runtime_contract:
     path: changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml
-    sha256: 82a157b6973db54bece7ee67a05b7321bc85f1e6ca5270039077c3cd20873bfb
+    sha256: 892369944ee610c53c0ac61cac8c4bb2c6d3d10488493ce516c97fd609966f28
   profile_registry:
     path: changes/st-0705/generated/ai-output-validation-profiles.v1.json
-    sha256: 5034379d1c8800f6cacf33bc7b2022e0e471189490c28c1c8d03eac429dd5e27
+    sha256: bc102480a6eb56f030e27d92e4dc239851ea482474e747ab408dfa23f962971a
   recorded_fixture:
     path: changes/st-0705/generated/ai-output-validation-pass.v1.json
-    sha256: ce3ac4a0680cad45f60951a873d408789b24d66683b523695484219552102f4f
+    sha256: afc22bd0c54169a19401b4156c4f66887888d86de2311143bd949b8ede2c008d
   runtime_manifest:
     path: changes/st-0705/runtime-manifest.v1.yaml
-    sha256: 51ea6c318a58e549397826ab7a12a377d59213767a2f34960ebcc7fe7d672d64
+    sha256: 1e8da112bdcd3413565433c368994777d94c636e0955f8cc1c525ec206ba17f4
   task_schema:
     path: contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.opportunity_assessment.v1.output.schema.json
     sha256: 504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123
   task_id: AIT-001
   task_code: ai.opportunity_assessment.v1
-  profile_sha256: e3dd4f27fec1af3273906537975ee0956a5e881810e0a906a85a49a255f92f8b
-  validation_manifest_sha256: ee9743297185b874aca4a68363bab8baacae9473205142b79f7eeb8462ddb0a5
+  profile_sha256: 998ed297cc77f463c9aa805d408ea9a2785a329d68f2d438ac755dd46e0b70a0
+  validation_manifest_sha256: 85aa396934f32024ccdffcf4ad790e8f3391a3763e16e1ed650c8ff9b84ea99b
   output_sha256: e59813caeafb3375ca931e4f1c7bc9bab53d2c3f84916ac8942ff78c182ea03f
   provider_exchange_sha256: e6d5b8cbbed495404ba4d560dbd6a073fbe1ace516dc2e239203b3d72b91d02e
-  validation_report_sha256: 303147524d777da6f5271c16cf86a4bc62f9426d3791889ed6eb8d76a837425a
+  validation_report_sha256: 1131f99733f8990bbb66903c74e0824c6114498028ace6615c8f43590f641846
 
 suite:
   suite_code: suite.ai.opportunity_assessment.v1.release.v1

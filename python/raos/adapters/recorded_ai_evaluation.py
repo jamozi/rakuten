@@ -33,10 +33,10 @@ from raos.domain.ai.output_validation import evaluate_ai_output
 _MAX_ARTIFACT_BYTES = 4 * 1024 * 1024
 _MAX_COLLECTION = 256
 _EXPECTED_ST0705 = {
-    "runtime_contract": "82a157b6973db54bece7ee67a05b7321bc85f1e6ca5270039077c3cd20873bfb",
-    "profile_registry": "5034379d1c8800f6cacf33bc7b2022e0e471189490c28c1c8d03eac429dd5e27",
-    "recorded_fixture": "ce3ac4a0680cad45f60951a873d408789b24d66683b523695484219552102f4f",
-    "runtime_manifest": "51ea6c318a58e549397826ab7a12a377d59213767a2f34960ebcc7fe7d672d64",
+    "runtime_contract": "892369944ee610c53c0ac61cac8c4bb2c6d3d10488493ce516c97fd609966f28",
+    "profile_registry": "bc102480a6eb56f030e27d92e4dc239851ea482474e747ab408dfa23f962971a",
+    "recorded_fixture": "afc22bd0c54169a19401b4156c4f66887888d86de2311143bd949b8ede2c008d",
+    "runtime_manifest": "1e8da112bdcd3413565433c368994777d94c636e0955f8cc1c525ec206ba17f4",
     "task_schema": "504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123",
 }
 _EXPECTED_EVALUATION_CASE_SCHEMA_SHA256 = (

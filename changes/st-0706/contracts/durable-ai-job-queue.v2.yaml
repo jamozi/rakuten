@@ -63,7 +63,7 @@ source_bindings:
     owner: ST-0704
     role: AUTHORIZATION_AND_BUDGET_RESERVATION_VALUES
   - path: changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml
-    sha256: 82a157b6973db54bece7ee67a05b7321bc85f1e6ca5270039077c3cd20873bfb
+    sha256: 892369944ee610c53c0ac61cac8c4bb2c6d3d10488493ce516c97fd609966f28
     owner: ST-0705
     role: OUTPUT_VALIDATION_RUNTIME_CONTRACT
   - path: changes/st-0004/contracts/ai/RAOS_05_failure_taxonomy_v0.1.yaml

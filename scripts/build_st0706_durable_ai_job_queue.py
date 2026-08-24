@@ -27,7 +27,7 @@ PLAN_PATH: Final = Path("changes/st-0706/generated/durable-ai-job-queue.v2.json"
 MANIFEST_PATH: Final = Path("changes/st-0706/manifest.yaml")
 GENERATED_PATHS: Final = (PLAN_PATH, MANIFEST_PATH)
 EXPECTED_CONTRACT_SHA256: Final = (
-    "eef608f77d99a37716541873cd91ecf18257ee4c7532848046aa3bdb1640ae7c"
+    "35caa750dc7edf230d6d18c066348f400294c98daf15c8744f56a997d95e1458"
 )
 EXPECTED_POLICY_SHA256: Final = (
     "f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8"
@@ -79,7 +79,7 @@ PINNED_SOURCE_BINDINGS: Final = {
         "884ce44d875339d9cd7f88e896d5779b2eac3154a5af39d3238748acc144924e"
     ),
     "changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml": (
-        "82a157b6973db54bece7ee67a05b7321bc85f1e6ca5270039077c3cd20873bfb"
+        "892369944ee610c53c0ac61cac8c4bb2c6d3d10488493ce516c97fd609966f28"
     ),
     "changes/st-0004/contracts/ai/RAOS_05_failure_taxonomy_v0.1.yaml": (
         "55db49d67678a1d8052fd4da9035ebfe2516913659c528bccd9f1a0313b38504"

@@ -12,7 +12,7 @@ base:
 runtime:
   contract:
     path: changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml
-    sha256: 5edccc09f52bf3c697331a951a98c67b79a2d60faeba7bfe7f07dc69b6165299
+    sha256: f1c0e37bd4b12b83c76ea3a40c77c94ac3b852733ece71f1352cf5263fade963
     status: LOCAL_IMPLEMENTATION_COMPLETE
   owner_generator:
     path: scripts/build_st0707_evaluation_harness_runtime.py
@@ -25,22 +25,22 @@ runtime:
     foreign_preserving: true
   runtime_manifest:
     path: changes/st-0707/runtime-manifest.v1.json
-    sha256: 8e41f06229399fa18d4b85f540f72eda7d35d505dcce8cf4ba84753c0b70f41b
+    sha256: 3f812e194c8eaadbf9fb42d1861a1a791927e4041b744eb79ff446df60db137e
     status: LOCAL_IMPLEMENTATION_COMPLETE
     source_artifact_count: 28
     generated_artifact_count: 2
   suite_registry:
     path: changes/st-0707/generated/evaluation-suite-registry.v1.json
-    sha256: 7f0b9d940bf013afff3573bbd2c87df99fe69736d66ff1844f604772c00a2114
+    sha256: 701c9dcff604a1c82262077bb317aaad0f4ec055968f1ef357d3ba6b205ae7e9
     suite_count: 1
     metric_threshold_count: 8
     zero_tolerance_failure_class_count: 8
   locked_synthetic_holdout:
     path: changes/st-0707/generated/locked-synthetic-holdout.v1.json
-    sha256: 9b61796e201917e672380cfc4340f798113fee15b45ab9e5e51f69a905b754b5
-    dataset_sha256: 6dd45b8758b36a85825915817d4397e77c39918e0e4e43bd5f2b393e195f7280
-    holdout_sha256: a2c1fd0a83e0ba7bae7712f453eadf3fd373ec766e39425b19c09e7f1529dd13
-    case_sha256: a34b676e5d73d1b00f3d75fc5b92cfe20f2dfcb63cf1e8fc0e26102ca4e00609
+    sha256: 99862bc68d594aac02a9f7e653a21fc98faa5a85887e4558bc6cfdc146a71ab9
+    dataset_sha256: 965283ad023e83e452e9fc4d13df87db842b198f20d18cbdb2b7a4fadb1abeb7
+    holdout_sha256: 3b63e8b1b30c434f251d6fcbccf915ef460261143660c9245c8a5c18592824f9
+    case_sha256: 2638e838faa48144fa671ff870a5374c386bce780472a9e55834e09909a4623a
     evaluation_case_sha256: eedc069a89399b87a9d120e91958723076b1d543a802a03f1b2d8ecc7b17dbb3
     case_count: 1
     split: HOLDOUT
@@ -52,16 +52,16 @@ runtime:
     human_labeled: false
     release_eligible: false
 st0705_exact_bindings:
-  runtime_contract_sha256: 82a157b6973db54bece7ee67a05b7321bc85f1e6ca5270039077c3cd20873bfb
-  profile_registry_sha256: 5034379d1c8800f6cacf33bc7b2022e0e471189490c28c1c8d03eac429dd5e27
-  recorded_fixture_sha256: ce3ac4a0680cad45f60951a873d408789b24d66683b523695484219552102f4f
-  runtime_manifest_sha256: 51ea6c318a58e549397826ab7a12a377d59213767a2f34960ebcc7fe7d672d64
+  runtime_contract_sha256: 892369944ee610c53c0ac61cac8c4bb2c6d3d10488493ce516c97fd609966f28
+  profile_registry_sha256: bc102480a6eb56f030e27d92e4dc239851ea482474e747ab408dfa23f962971a
+  recorded_fixture_sha256: afc22bd0c54169a19401b4156c4f66887888d86de2311143bd949b8ede2c008d
+  runtime_manifest_sha256: 1e8da112bdcd3413565433c368994777d94c636e0955f8cc1c525ec206ba17f4
   task_schema_sha256: 504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123
-  profile_sha256: e3dd4f27fec1af3273906537975ee0956a5e881810e0a906a85a49a255f92f8b
-  validation_manifest_sha256: ee9743297185b874aca4a68363bab8baacae9473205142b79f7eeb8462ddb0a5
+  profile_sha256: 998ed297cc77f463c9aa805d408ea9a2785a329d68f2d438ac755dd46e0b70a0
+  validation_manifest_sha256: 85aa396934f32024ccdffcf4ad790e8f3391a3763e16e1ed650c8ff9b84ea99b
   output_sha256: e59813caeafb3375ca931e4f1c7bc9bab53d2c3f84916ac8942ff78c182ea03f
   provider_exchange_sha256: e6d5b8cbbed495404ba4d560dbd6a073fbe1ace516dc2e239203b3d72b91d02e
-  validation_report_sha256: 303147524d777da6f5271c16cf86a4bc62f9426d3791889ed6eb8d76a837425a
+  validation_report_sha256: 1131f99733f8990bbb66903c74e0824c6114498028ace6615c8f43590f641846
 evaluation_boundary:
   provider_mode: RECORDED_SYNTHETIC_ONLY
   evaluation_case_schema: DRAFT_2020_12_EXACT_PINNED
@@ -83,8 +83,8 @@ evaluation_boundary:
     - REFUSED_INCOMPLETE_EVIDENCE
   accepted_outcome: NONE
 deterministic_local_report:
-  bundle_sha256: 95279655c5e1dec9ab5c63333bb08fad3da82637a8ab5087f83d19f3d30f42fb
-  report_sha256: 34f4fd238d209b11173afe8df8031a8931a63c6cbe143c19029e8f938331db86
+  bundle_sha256: 200c8378d8312133b838f6d167d6b2532f8c28e0d3d1c446c122536b76c355ed
+  report_sha256: 4458db297cb5f0d324dfde5c22fc4847b5c74e148326c32dfc77ff27aba54962
   proposal_outcome: REFUSED_INCOMPLETE_EVIDENCE
   case_count: 1
   metric_count: 8
