@@ -1,0 +1,85 @@
+{
+  "authority_boundary": {
+    "account_or_project_selection": "FORBIDDEN",
+    "activation": "DISABLED",
+    "backend_selection": "FORBIDDEN",
+    "credential_access": "FORBIDDEN",
+    "formal_tst_026": "NOT_EXECUTED",
+    "formal_tst_029": "NOT_EXECUTED",
+    "infrastructure_actions": "FORBIDDEN",
+    "network_during_normal_checks": "FORBIDDEN",
+    "provider_calls": "FORBIDDEN",
+    "provider_selection": "FORBIDDEN",
+    "region_selection": "FORBIDDEN"
+  },
+  "document": {
+    "classification": "INHERITED_PINNED_VALIDATION_ONLY_NO_INFRASTRUCTURE_AUTHORITY",
+    "generated_by": "repo://scripts/build_st1502_data_services.py",
+    "generation_command": "uv run --locked --no-sync python scripts/build_st1502_data_services.py",
+    "id": "RAOS-DATA-SERVICES-TERRAFORM-VALIDATION-LOCK-001",
+    "source_contract": "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml",
+    "story_id": "ST-1502",
+    "version": "1.0.0"
+  },
+  "module": {
+    "backend": "ABSENT",
+    "logical_resource_node_count": 37,
+    "path": "infra/terraform/data-services",
+    "physical_resources": [],
+    "provider_lock": "ABSENT_BY_DESIGN_NO_PROVIDER_REQUIRED_OR_SELECTED",
+    "provider_requirements": [],
+    "provider_schema": "ABSENT_UNTIL_SUCCESSOR_CONTRACT",
+    "required_version": "= 1.15.9"
+  },
+  "predecessor": {
+    "sha256": "696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44",
+    "story_id": "ST-1501",
+    "uri": "repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"
+  },
+  "toolchain": {
+    "classification": "PINNED_VALIDATION_ONLY_NO_INFRASTRUCTURE_AUTHORITY",
+    "official_release": {
+      "archive_filename": "terraform_1.15.9_linux_amd64.zip",
+      "archive_sha256": "76edd0b22d2f27d3d2e097cd793209646f719cf60f02ff3af626b07361137da1",
+      "archive_url": "https://releases.hashicorp.com/terraform/1.15.9/terraform_1.15.9_linux_amd64.zip",
+      "checksum_manifest_url": "https://releases.hashicorp.com/terraform/1.15.9/terraform_1.15.9_SHA256SUMS",
+      "checksum_signature_url": "https://releases.hashicorp.com/terraform/1.15.9/terraform_1.15.9_SHA256SUMS.72D7468F.sig",
+      "extracted_binary_sha256": "c39d41adb17963bac5dd610ad47815dd81e945371a7cabc344a45d63b1b093bd",
+      "release_index_url": "https://releases.hashicorp.com/terraform/1.15.9/",
+      "signing_key_fingerprint": "C874011F0AB405110D02105534365D9472D7468F",
+      "signing_key_url": "https://www.hashicorp.com/.well-known/pgp-key.txt"
+    },
+    "platform": "linux_amd64",
+    "product": "Terraform",
+    "queried_at": "2026-08-25",
+    "required_version_constraint": "= 1.15.9",
+    "validation_boundary": {
+      "allowed_commands": [
+        "version -json",
+        "fmt -check -recursive",
+        "validate -json"
+      ],
+      "backend_access": "FORBIDDEN",
+      "binary_acquisition": "EXPLICIT_ONLINE_MAINTENANCE_ONLY",
+      "credential_inheritance": "FORBIDDEN",
+      "forbidden_commands": [
+        "init",
+        "plan",
+        "apply",
+        "destroy",
+        "import",
+        "refresh",
+        "test",
+        "console"
+      ],
+      "initialization": "FORBIDDEN",
+      "module_downloads": "FORBIDDEN",
+      "network_namespace": "REQUIRED",
+      "normal_check_network_access": "FORBIDDEN",
+      "provider_installation": "FORBIDDEN",
+      "provider_plugins": [],
+      "repository_writes": "FORBIDDEN"
+    },
+    "version": "1.15.9"
+  }
+}

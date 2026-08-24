@@ -17,14 +17,14 @@ def _mapping(value: object) -> dict[str, Any]:
     return cast(dict[str, Any], value)
 
 
-def test_contract_loads_as_closed_interface_only_model(
+def test_contract_loads_as_maximum_safe_local_model(
     data_services_model: generator.DataServicesModel,
 ) -> None:
     assert data_services_model.contract["document"] == {
         "id": "RAOS-DATA-SERVICES-FOUNDATION-001",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "story_id": "ST-1502",
-        "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        "status": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
         "formal_verification": "NOT_EXECUTED",
     }
     assert set(data_services_model.contract) == generator.TOP_LEVEL_KEYS
@@ -262,28 +262,40 @@ def test_activation_actions_gates_and_evidence_remain_fail_closed(
     assert all(
         value == "NOT_EXECUTED"
         for key, value in plan["verification_boundary"].items()
-        if key.endswith("validation")
-        or key.startswith("formal_")
-        or key == "live_staging_release_production"
+        if key
+        in {
+            "transport_encryption_validation",
+            "relational_migration_validation",
+            "queue_delivery_validation",
+            "formal_tst_026",
+            "formal_tst_029",
+            "restore_validation",
+            "provider_validation",
+            "live_staging_release_production",
+        }
+    )
+    assert plan["verification_boundary"]["local_native_validation"] == (
+        "EXECUTED_LOCAL_NOT_FORMAL"
     )
 
 
-def test_generated_document_is_non_executable_provider_neutral_reference(
+def test_generated_document_is_executable_provider_free_logical_reference(
     data_services_model: generator.DataServicesModel,
 ) -> None:
     document = generator.reference_plan_document(data_services_model)["document"]
     assert document == {
         "id": "RAOS-DATA-SERVICES-REFERENCE-PLAN-001",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "story_id": "ST-1502",
         "source_contract": generator.SOURCE_CONTRACT_URI,
         "generated_by": generator.GENERATOR_URI,
         "generation_command": generator.GENERATION_COMMAND,
         "artifact_kind": (
-            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_REFERENCE_PLAN"
+            "SOURCE_DERIVED_PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_DATA_SERVICES_HCL"
         ),
-        "executable": False,
-        "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        "executable": True,
+        "implementation_scope": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
+        "execution_kind": "PROVIDER_FREE_VALIDATION_ONLY_LOGICAL_HCL",
     }
 
 
@@ -306,16 +318,12 @@ def test_generated_json_matches_strict_renderer(
     )
 
 
-def test_data_services_directory_contains_only_non_native_reference_plan() -> None:
+def test_data_services_directory_contains_only_owner_generated_closed_bundle() -> None:
     directory = REPOSITORY_ROOT / "infra/terraform/data-services"
-    assert sorted(path.name for path in directory.iterdir()) == [
-        generator.REFERENCE_PLAN_PATH.name
-    ]
-    forbidden_suffixes = {".tf", ".tfvars", ".hcl", ".lock"}
-    assert not any(
-        path.is_file() and path.suffix in forbidden_suffixes
-        for path in directory.rglob("*")
+    assert sorted(path.name for path in directory.iterdir()) == sorted(
+        path.name for path in generator.GENERATED_ARTIFACT_PATHS
     )
+    assert all(path.is_file() and not path.is_symlink() for path in directory.iterdir())
 
 
 def test_contract_top_level_and_generated_inventory_are_closed(
@@ -323,6 +331,6 @@ def test_contract_top_level_and_generated_inventory_are_closed(
 ) -> None:
     assert set(contract_document) == generator.TOP_LEVEL_KEYS
     assert generator.GENERATED_PATHS == (
-        Path("infra/terraform/data-services/data-services.reference-plan.v1.json"),
+        *generator.GENERATED_ARTIFACT_PATHS,
         Path("changes/st-1502/manifest.yaml"),
     )

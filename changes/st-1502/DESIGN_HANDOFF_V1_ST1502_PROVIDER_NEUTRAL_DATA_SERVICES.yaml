@@ -9,6 +9,9 @@ approved_scope:
   - Admit non-AWS and owner-managed profiles only as additional portable implementation paths with identical complete capabilities and evidence.
   - Require every future data-services profile to map the same closed capability inventory and provide equivalent security, operations, release, recovery, migration, isolation, and residency evidence.
   - Keep every provider, account or project, region, service, plugin or adapter, credential, network, retention, and physical-resource binding unset while the relevant Open Decisions remain unresolved.
+  - Generate an executable Terraform logical-resource graph that materializes no provider resource and remains validation-only, default-disabled, provider-schema-free, backend-free, credential-free, and incapable of infrastructure action.
+  - Bind the logical module to the exact ST-1501 Terraform 1.15.9 validation-only toolchain and its init-free, provider-free, network-isolated native validation boundary.
+  - Expose a closed successor activation port that requires a new contract revision plus complete provider schema, identity, network, residency, retention, security, recovery, release, and human-approval evidence before physical resources can be introduced.
 source_design_refs:
   - repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
   - repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml#INT-DEC-007
@@ -109,17 +112,43 @@ decision:
     - environment_and_private_data_plane_isolation
     - region_and_data_residency
     - human_approved_release_migration_and_rollback
+  local_hcl_implementation:
+    classification: PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_RESOURCE_GRAPH
+    terraform_version_source: ST-1501_PINNED_VALIDATION_ONLY_TOOLCHAIN
+    provider_requirements: []
+    provider_blocks: []
+    backend_blocks: []
+    module_blocks: []
+    data_blocks: []
+    resource_blocks: []
+    provisioners: []
+    default_disabled: true
+    planned_actions:
+      create: 0
+      update: 0
+      delete: 0
+      migrate: 0
+      backup: 0
+      restore: 0
+      redrive: 0
+      rotate: 0
+    successor_contract_revision_required: true
+    physical_resource_materialization: FORBIDDEN_IN_CURRENT_REVISION
+    production_apply: FORBIDDEN
 rationale:
   - INT-DEC-007 makes AWS Tokyo a Reference Architecture while requiring a portable Core, so data-service admission must evaluate capabilities and evidence rather than AWS service names.
   - Provider, account, region, service, plugin, adapter, or backend defaults would silently turn the current Canonical Reference Architecture mappings into live selected infrastructure choices.
   - PostgreSQL-compatible persistence, object durability, at-least-once delivery, secret and key boundaries, recovery, observability, isolation, and residency are provider-neutral operational outcomes.
   - Keeping all bindings null and eligibility unevaluated preserves OD-013, OD-014, OD-015, TST-026, TST-029, and every external security, operations, release, and Production gate.
+  - A provider-schema-free HCL graph closes the reversible local modules/config gap and permits deterministic Terraform syntax and semantic validation without silently selecting AWS provider schema, installing a plugin, contacting a registry, creating state, or granting apply authority.
 rejected_alternatives:
   - Require AWS, RDS, S3, SQS, Secrets Manager, KMS, an AWS account, or ap-northeast-1 merely because Canonical sources record them as reference mappings.
   - Select a different cloud or owner-managed data platform before capability mapping, residency, retention, credentials, operations, migration, and recovery evidence exist.
   - Infer a provider or service binding from names, reference metadata, defaults, ambient configuration, compatibility claims, or fallback behavior.
   - Permit partial, unknown, duplicate, implicit, provider-label-only, service-label-only, or reference-only capability mappings.
   - Lower security, operations, release, backup, restore, migration, isolation, or residency evidence for any provider kind.
+  - Pin or install an AWS provider, emit an aws_* resource, select a backend, or create a speculative physical plan before account, region, network, IAM, retention, recovery, cost, and credential evidence exists.
+  - Use terraform_data, null_resource, provisioners, external data sources, local execution, or generated provider payloads as a disguised infrastructure action.
 constraints:
   - Exactly one explicit mapping is required for every required data-services capability before a future profile can be eligible.
   - Missing, unknown, duplicate, partial, implicit, provider-label-only, service-label-only, or reference-only mappings fail closed.
@@ -130,6 +159,10 @@ constraints:
   - Development and Production must be isolated by account, project, tenant, or equivalent boundary, and every data plane must remain private unless a separately reviewed interface explicitly permits access.
   - Region, backup region, cross-border transfer, retention, automatic deletion, credentials, and physical service choices remain unset while OD-013, OD-014, and OD-015 are unresolved.
   - No credential, provider call, network access, external write, infrastructure init, plan, apply, migration, deployment, release, restore, deletion, or status transition is authorized by this record.
+  - The generated HCL may contain only terraform, variable, locals, check, and output blocks, and must reject provider, backend, cloud, module, data, resource, import, run, provisioner, remote-state, registry, external-execution, and wildcard-IAM material.
+  - The logical graph must include the relational database, five object-storage roles, seven queues and seven DLQs, material-free secret metadata, purpose-separated encryption keys, backup/recovery declarations, and separated workload/operator permission sets.
+  - Every persisted-data node must require encryption at rest, every data-service interaction must require transport encryption, every database/object node must declare recovery protection, every primary queue must bind one DLQ, and every permission set must be wildcard-free.
+  - Native validation may run only through the ST-1501 checksum-pinned Terraform binary with version -json, fmt -check -recursive, and validate -json inside a fresh user/network namespace; init, plan, apply, destroy, import, refresh, test, and console remain forbidden.
 security_and_approval_gates:
   - Preserve private data planes, encryption in transit and at rest, least privilege, workload identity, separated duties, auditability, deletion protection, and immutable evidence requirements.
   - Preserve explicit human approval for Production change, migration, restore, redrive, destructive action, release, rollback, and every external status transition.
@@ -145,12 +178,17 @@ acceptance_criteria:
   - The Canonical AWS-specific ST-1502 objective and modules/config deliverable remain authoritative and NOT_STARTED/NOT_EXECUTED; this overlay neither erases, replaces, nor completes them.
   - Non-AWS and owner-managed profiles are additional portable implementation paths only and require the same complete capability mapping and evidence as AWS.
   - Existing private, encrypted, backup, policy, retention, deletion, disabled activation, forbidden native commands, zero action counts, and NOT_EXECUTED boundaries remain fail closed.
+  - Owner generation emits deterministic validation-only HCL, a pinned toolchain lock, and a no-apply logical-plan fixture whose exact graph proves private access, encryption, recovery declarations, queue/DLQ relationships, material-free secrets, purpose-separated keys, and wildcard-free least-privilege permissions.
+  - The current module contains no provider requirement or physical resource, accepts no account, region, backend, credential, network, retention, or policy binding, and cannot activate or plan infrastructure actions.
+  - Physical AWS or alternate-provider resources can only be added by a successor contract revision after all closed activation-port evidence is supplied; the current revision cannot treat reference metadata or local checks as that evidence.
 required_test_evidence:
   - Isolated tests/st1502 positive contract and generated-plan assertions.
   - Hostile tests for missing, unknown, duplicate, reordered, partial, defaulted, fallback, provider or service binding, and AWS-label-only admission attempts.
   - Hash-rebound hostile tests for the complete direct-owner handoff and exact ST-1501 provider-neutral predecessor semantics.
   - Existing hostile filesystem, closed-schema, exact-type, no-provider-call, no-network, and no-write tests remain passing.
   - Owner generator regeneration and read-only --check, Ruff for changed Python, and git diff --check.
+  - Hostile HCL and logical-plan tests reject public exposure, disabled transport or at-rest encryption, wildcard IAM, missing backup/PITR/version recovery, missing or mismatched DLQ, secret material, provider/backend/resource injection, tool digest drift, network-capable native commands, credential inheritance, and repository or module writes.
+  - Native offline fmt/validate runs only when the exact checksum-pinned Terraform binary is already available; binary acquisition, provider installation, init, and plan are never performed by this Story.
   - Formal TST-026, TST-029, hosted CI, native IaC, provider, migration, restore, staging, release, deployment, and Production evidence remain separately unexecuted.
 open_decision_state:
   OD-013:

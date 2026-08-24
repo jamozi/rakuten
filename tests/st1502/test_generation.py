@@ -50,12 +50,11 @@ def test_manifest_inventory_and_hashes_are_complete() -> None:
         assert row["sha256"] == generator.sha256_bytes(content)
     assert manifest["generated_artifacts"] == [
         {
-            "uri": f"repo://{generator.REFERENCE_PLAN_PATH.as_posix()}",
-            "bytes": (REPOSITORY_ROOT / generator.REFERENCE_PLAN_PATH).stat().st_size,
-            "sha256": generator.sha256_file(
-                REPOSITORY_ROOT / generator.REFERENCE_PLAN_PATH
-            ),
+            "uri": f"repo://{relative.as_posix()}",
+            "bytes": (REPOSITORY_ROOT / relative).stat().st_size,
+            "sha256": generator.sha256_file(REPOSITORY_ROOT / relative),
         }
+        for relative in generator.GENERATED_ARTIFACT_PATHS
     ]
 
 
@@ -63,7 +62,7 @@ def test_manifest_pins_authority_predecessor_and_status_boundary() -> None:
     manifest = yaml.safe_load((REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes())
     assert manifest["document"] == {
         "id": "RAOS-DATA-SERVICES-MANIFEST-001",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "story_id": "ST-1502",
         "source_contract": generator.SOURCE_CONTRACT_URI,
         "generated_by": generator.GENERATOR_URI,
@@ -80,66 +79,53 @@ def test_manifest_pins_authority_predecessor_and_status_boundary() -> None:
         {"uri": f"repo://{path}", "sha256": digest}
         for path, digest in generator.PREDECESSOR_SOURCES.items()
     ]
-    assert manifest["boundary"] == {
-        "classification": (
-            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_REFERENCE_PLAN"
-        ),
-        "activation": "DISABLED",
-        "network_access": "FORBIDDEN",
-        "credential_access": "FORBIDDEN",
-        "live_provider_calls": "FORBIDDEN",
-        "external_writes": "FORBIDDEN",
-        "migration_action": "FORBIDDEN",
-        "backup_action": "FORBIDDEN",
-        "restore_action": "FORBIDDEN",
-        "redrive_action": "FORBIDDEN",
-        "destructive_action": "FORBIDDEN",
-        "deploy_action": "FORBIDDEN",
-        "release_action": "FORBIDDEN",
-        "production_action": "FORBIDDEN",
-        "admission_status": "NOT_EVALUATED",
-        "eligible": False,
-        "planned_actions": {action: 0 for action in generator.ACTION_NAMES},
-        "selected_provider_profile": None,
-        "default_provider_profile": None,
-        "fallback_provider_profile": None,
-        "selected_provider_name": None,
-        "selected_provider_account_or_project": None,
-        "selected_production_region": None,
-        "selected_backup_region": None,
-        "selected_relational_service_binding": None,
-        "selected_object_storage_service_binding": None,
-        "selected_queue_service_binding": None,
-        "selected_secrets_service_binding": None,
-        "selected_key_management_service_binding": None,
-        "selected_data_services_plugin_or_adapter": None,
-        "required_capability_count": len(generator.DATA_SERVICE_CAPABILITY_OUTCOMES),
-        "configured_mapping_count": 0,
-        "complete_mapping": False,
-        "aws_reference_role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
-        "canonical_story_deliverables": (
-            "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
-        ),
-        "portable_implementation_paths": "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS",
-        "aws_reference_default": False,
-        "aws_reference_implicit_fallback": False,
-        "aws_reference_selected_binding": False,
-        "aws_reference_eligibility_shortcut": False,
-        "aws_reference_admission_requirement": False,
-        "aws_reference_evidence_substitute": False,
-        "credentials": "ABSENT",
-        "physical_resource_definitions": [],
-        "native_iac_validation": "NOT_EXECUTED",
-        "transport_encryption_validation": "NOT_EXECUTED",
-        "relational_migration_validation": "NOT_EXECUTED",
-        "queue_delivery_validation": "NOT_EXECUTED",
-        "formal_tst_026": "NOT_EXECUTED",
-        "formal_tst_029": "NOT_EXECUTED",
-        "restore_validation": "NOT_EXECUTED",
-        "provider_validation": "NOT_EXECUTED",
-        "live_staging_release_production": "NOT_EXECUTED",
-        "effective_canonical_status": "UNCHANGED",
+    boundary = manifest["boundary"]
+    assert boundary["classification"] == (
+        "SOURCE_DERIVED_PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_DATA_SERVICES_HCL"
+    )
+    assert boundary["activation"] == "DISABLED"
+    assert boundary["planned_actions"] == {
+        action: 0 for action in generator.ACTION_NAMES
     }
+    assert boundary["hcl_module"] == (
+        "PROVIDER_SCHEMA_FREE_VALIDATION_ONLY_LOGICAL_GRAPH"
+    )
+    assert boundary["hcl_file_count"] == len(generator.HCL_PATHS)
+    assert boundary["logical_resource_node_count"] == len(
+        generator.logical_resource_nodes()
+    )
+    assert boundary["logical_edge_count"] == len(generator.logical_resource_edges())
+    assert boundary["logical_iam_role_count"] == len(generator.IAM_ROLE_IDS)
+    assert boundary["terraform_cli_version"] == generator.TERRAFORM_VERSION
+    assert boundary["terraform_binary_sha256"] == generator.TERRAFORM_BINARY_SHA256
+    assert boundary["provider_schema"] is None
+    assert boundary["provider_plugins"] == []
+    assert boundary["backend"] is None
+    assert boundary["physical_resources"] == []
+    assert boundary["local_native_validation"] == "EXECUTED_LOCAL_NOT_FORMAL"
+    for field in (
+        "network_access",
+        "credential_access",
+        "live_provider_calls",
+        "external_writes",
+        "migration_action",
+        "backup_action",
+        "restore_action",
+        "redrive_action",
+        "destructive_action",
+        "deploy_action",
+        "release_action",
+        "production_action",
+    ):
+        assert boundary[field] == "FORBIDDEN"
+    for field in (
+        "formal_tst_026",
+        "formal_tst_029",
+        "restore_validation",
+        "provider_validation",
+        "live_staging_release_production",
+    ):
+        assert boundary[field] == "NOT_EXECUTED"
     assert manifest["manifest_self_integrity"] == {
         "included_in_generated_artifacts": False,
         "verification": "deterministic byte-for-byte regeneration via --check",
@@ -196,7 +182,7 @@ def test_atomic_writer_replaces_only_fixed_regular_output(tmp_path: Path) -> Non
     assert not list(target.parent.glob(f".{target.name}.*.tmp"))
 
 
-def test_builder_has_no_native_provider_network_env_or_subprocess_surface() -> None:
+def test_builder_has_no_provider_or_network_client_surface() -> None:
     path = REPOSITORY_ROOT / "scripts/build_st1502_data_services.py"
     tree = ast.parse(path.read_text(encoding="utf-8"))
     imported_roots: set[str] = set()
@@ -219,7 +205,6 @@ def test_builder_has_no_native_provider_network_env_or_subprocess_surface() -> N
             "http",
             "requests",
             "socket",
-            "subprocess",
             "urllib",
         }
     )
@@ -231,18 +216,26 @@ def test_builder_has_no_native_provider_network_env_or_subprocess_surface() -> N
             "environ",
             "getenv",
             "popen",
-            "run",
             "spawn",
             "system",
         }
     )
+    assert "subprocess" in imported_roots
+    assert "run" in called_attributes
 
 
-def test_builder_cli_exposes_only_read_only_check_switch() -> None:
+def test_builder_cli_exposes_only_generation_and_read_only_validation_switches() -> (
+    None
+):
     parser_result = generator.parse_args([])
     check_result = generator.parse_args(["--check"])
     assert parser_result.check is False
     assert check_result.check is True
+    native = generator.parse_args(
+        ["--native-check", "--terraform", "/absolute/terraform"]
+    )
+    assert native.native_check is True
+    assert native.terraform == Path("/absolute/terraform")
     source = (REPOSITORY_ROOT / "scripts/build_st1502_data_services.py").read_text(
         encoding="utf-8"
     )

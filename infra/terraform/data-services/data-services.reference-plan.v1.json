@@ -25,15 +25,16 @@
     "status": "DISABLED"
   },
   "document": {
-    "artifact_kind": "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_REFERENCE_PLAN",
-    "executable": false,
+    "artifact_kind": "SOURCE_DERIVED_PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_DATA_SERVICES_HCL",
+    "executable": true,
+    "execution_kind": "PROVIDER_FREE_VALIDATION_ONLY_LOGICAL_HCL",
     "generated_by": "repo://scripts/build_st1502_data_services.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st1502_data_services.py",
     "id": "RAOS-DATA-SERVICES-REFERENCE-PLAN-001",
-    "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+    "implementation_scope": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
     "source_contract": "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml",
     "story_id": "ST-1502",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "logical_data_services": {
     "data_boundary": {
@@ -336,6 +337,46 @@
       "workload_least_privilege": "REQUIRED_NOT_CONFIGURED"
     }
   },
+  "logical_hcl_module": {
+    "allowed_top_level_blocks": [
+      "terraform",
+      "variable",
+      "locals",
+      "check",
+      "output"
+    ],
+    "backend_blocks": [],
+    "classification": "PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_RESOURCE_GRAPH",
+    "cloud_blocks": [],
+    "data_blocks": [],
+    "default_disabled": true,
+    "deterministic_no_apply_plan_fixture": "infra/terraform/data-services/data-services.logical-plan.v1.json",
+    "generated": true,
+    "generated_files": [
+      "versions.tf",
+      "variables.tf",
+      "locals.tf",
+      "checks.tf",
+      "outputs.tf"
+    ],
+    "logical_dlq_count": 7,
+    "logical_iam_role_count": 9,
+    "logical_object_storage_role_count": 5,
+    "logical_primary_queue_count": 7,
+    "logical_resource_node_count": 37,
+    "module_blocks": [],
+    "module_path": "infra/terraform/data-services",
+    "physical_resource_materialization": "FORBIDDEN_IN_CURRENT_REVISION",
+    "policy_validation": "EXACT_CLOSED_BUNDLE_FORBIDDEN_BLOCK_AND_SAFETY_SCAN",
+    "provider_blocks": [],
+    "provider_requirements": [],
+    "provider_schema_binding": null,
+    "provisioners": [],
+    "resource_blocks": [],
+    "semantic_validation": "TERRAFORM_VALIDATE_JSON_INIT_FREE_PROVIDER_FREE",
+    "terraform_required_version": "= 1.15.9",
+    "toolchain_lock_source": "ST-1501_PINNED_VALIDATION_ONLY_TOOLCHAIN"
+  },
   "planned_actions": {
     "backup": 0,
     "create": 0,
@@ -347,12 +388,12 @@
     "update": 0
   },
   "predecessor_binding": {
-    "contract_sha256": "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9",
+    "contract_sha256": "5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e",
     "contract_uri": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
     "design_handoff_sha256": "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f",
     "design_handoff_uri": "repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
     "extension_kind": "DATA_SERVICES",
-    "reference_plan_sha256": "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70",
+    "reference_plan_sha256": "bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72",
     "reference_plan_uri": "repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
     "required_activation_status": "DISABLED",
     "required_admission_status": "NOT_EVALUATED",
@@ -364,7 +405,11 @@
     },
     "required_provider_policy": "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
     "required_resource_payloads": "FORBIDDEN",
-    "story_id": "ST-1501"
+    "required_terraform_binary_sha256": "c39d41adb17963bac5dd610ad47815dd81e945371a7cabc344a45d63b1b093bd",
+    "required_terraform_version": "1.15.9",
+    "story_id": "ST-1501",
+    "toolchain_lock_sha256": "696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44",
+    "toolchain_lock_uri": "repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"
   },
   "provider_neutral_data_services_admission": {
     "admission_status": "NOT_EVALUATED",
@@ -592,17 +637,52 @@
     "secrets_service_binding": null,
     "traffic_control_policy_ids": []
   },
+  "successor_activation_port": {
+    "classification": "CLOSED_PHYSICAL_RESOURCE_ACTIVATION_PORT",
+    "complete_gate_evidence": false,
+    "current_revision_activation": "FORBIDDEN",
+    "infrastructure_apply": "FORBIDDEN",
+    "infrastructure_plan": "FORBIDDEN",
+    "provider_binding": "FORBIDDEN_IN_CURRENT_REVISION",
+    "required_gate_evidence": [
+      "OD-013_RESOLVED_REGION_RESIDENCY",
+      "OD-014_RESOLVED_RETENTION_DELETION",
+      "OD-015_PROVIDER_CREDENTIAL_EVIDENCE",
+      "TST-026_FORMAL_SECURITY_EVIDENCE",
+      "TST-029_ISOLATED_RESTORE_EVIDENCE",
+      "PROVIDER_SCHEMA_AND_PLUGIN_PROVENANCE",
+      "PRIVATE_NETWORK_AND_ACCOUNT_ISOLATION",
+      "LEAST_PRIVILEGE_POLICY_REVIEW",
+      "BACKUP_RESTORE_AND_KEY_RECOVERY",
+      "HUMAN_APPROVED_RELEASE_AND_ROLLBACK"
+    ],
+    "resource_materialization": "FORBIDDEN_IN_CURRENT_REVISION",
+    "selected_account_or_project": null,
+    "selected_backup_region": null,
+    "selected_credential_source": null,
+    "selected_network_segments": [],
+    "selected_primary_region": null,
+    "selected_provider_plugin": null,
+    "selected_provider_schema": null,
+    "selected_retention_policy_id": null,
+    "selected_security_policy_bindings": [],
+    "selected_state_backend": null,
+    "successor_contract_revision_required": true,
+    "supplied_gate_evidence": []
+  },
   "verification_boundary": {
     "credentials": "ABSENT",
     "effective_canonical_status": "UNCHANGED",
-    "executable_iac": "ABSENT",
+    "executable_iac": "VALIDATABLE_NO_PROVIDER_NO_RESOURCE_HCL_LOGICAL_GRAPH",
     "formal_tst_026": "NOT_EXECUTED",
     "formal_tst_029": "NOT_EXECUTED",
-    "iac_toolchain": "UNPINNED_NOT_INVOKED",
+    "iac_toolchain": "PINNED_FROM_ST1501_VALIDATION_ONLY_1_15_9",
     "live_staging_release_production": "NOT_EXECUTED",
-    "native_iac_validation": "NOT_EXECUTED",
+    "local_native_validation": "EXECUTED_LOCAL_NOT_FORMAL",
+    "logical_plan_validation": "EXECUTED_LOCAL_NOT_FORMAL",
+    "offline_native_validation_path": "IMPLEMENTED",
     "provider_account_or_project": "UNSET",
-    "provider_plugins_or_adapters": "UNPINNED_NOT_INVOKED",
+    "provider_plugins_or_adapters": "NONE_REQUIRED_NOT_SELECTED",
     "provider_profile": "UNSET",
     "provider_validation": "NOT_EXECUTED",
     "queue_delivery_validation": "NOT_EXECUTED",

@@ -1,0 +1,1388 @@
+{
+  "document": {
+    "classification": "DETERMINISTIC_NO_APPLY_LOGICAL_RESOURCE_GRAPH",
+    "generated_by": "repo://scripts/build_st1502_data_services.py",
+    "generation_command": "uv run --locked --no-sync python scripts/build_st1502_data_services.py",
+    "id": "RAOS-DATA-SERVICES-LOGICAL-PLAN-001",
+    "physical_resources": false,
+    "provider_plugin_required": false,
+    "provider_schema_bound": false,
+    "source_contract": "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml",
+    "story_id": "ST-1502",
+    "terraform_state": false,
+    "terraform_version": "1.15.9",
+    "version": "1.0.0"
+  },
+  "edges": [
+    {
+      "from": "relational_database",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_relational"
+    },
+    {
+      "from": "object_raw",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_object_storage"
+    },
+    {
+      "from": "object_publication",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_object_storage"
+    },
+    {
+      "from": "object_uploads_quarantine",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_object_storage"
+    },
+    {
+      "from": "object_exports",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_object_storage"
+    },
+    {
+      "from": "object_audit_logs",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_object_storage"
+    },
+    {
+      "from": "queue_ingestion",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_ai",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_quality",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_publication",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_freshness",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_analytics",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_notification",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_ingestion_dlq",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_ai_dlq",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_quality_dlq",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_publication_dlq",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_freshness_dlq",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_analytics_dlq",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "queue_notification_dlq",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_queue"
+    },
+    {
+      "from": "secret_metadata",
+      "relationship": "ENCRYPTED_BY",
+      "to": "kms_secret_metadata"
+    },
+    {
+      "from": "queue_ingestion",
+      "relationship": "REDRIVES_TO",
+      "to": "queue_ingestion_dlq"
+    },
+    {
+      "from": "queue_ai",
+      "relationship": "REDRIVES_TO",
+      "to": "queue_ai_dlq"
+    },
+    {
+      "from": "queue_quality",
+      "relationship": "REDRIVES_TO",
+      "to": "queue_quality_dlq"
+    },
+    {
+      "from": "queue_publication",
+      "relationship": "REDRIVES_TO",
+      "to": "queue_publication_dlq"
+    },
+    {
+      "from": "queue_freshness",
+      "relationship": "REDRIVES_TO",
+      "to": "queue_freshness_dlq"
+    },
+    {
+      "from": "queue_analytics",
+      "relationship": "REDRIVES_TO",
+      "to": "queue_analytics_dlq"
+    },
+    {
+      "from": "queue_notification",
+      "relationship": "REDRIVES_TO",
+      "to": "queue_notification_dlq"
+    },
+    {
+      "from": "backup_relational_pitr",
+      "relationship": "PROTECTS",
+      "to": "relational_database"
+    },
+    {
+      "from": "backup_object_versions",
+      "relationship": "PROTECTS",
+      "to": "object_raw"
+    },
+    {
+      "from": "backup_object_versions",
+      "relationship": "PROTECTS",
+      "to": "object_publication"
+    },
+    {
+      "from": "backup_object_versions",
+      "relationship": "PROTECTS",
+      "to": "object_uploads_quarantine"
+    },
+    {
+      "from": "backup_object_versions",
+      "relationship": "PROTECTS",
+      "to": "object_exports"
+    },
+    {
+      "from": "backup_object_versions",
+      "relationship": "PROTECTS",
+      "to": "object_audit_logs"
+    },
+    {
+      "from": "backup_configuration",
+      "relationship": "RECONSTRUCTS",
+      "to": "secret_metadata"
+    },
+    {
+      "from": "backup_configuration",
+      "relationship": "RECONSTRUCTS",
+      "to": "kms_relational"
+    },
+    {
+      "from": "backup_configuration",
+      "relationship": "RECONSTRUCTS",
+      "to": "kms_object_storage"
+    },
+    {
+      "from": "backup_configuration",
+      "relationship": "RECONSTRUCTS",
+      "to": "kms_queue"
+    },
+    {
+      "from": "backup_configuration",
+      "relationship": "RECONSTRUCTS",
+      "to": "kms_secret_metadata"
+    },
+    {
+      "from": "iam_db_workload",
+      "relationship": "AUTHORIZES",
+      "to": "relational_database"
+    },
+    {
+      "from": "iam_object_writer",
+      "relationship": "AUTHORIZES",
+      "to": "object_raw"
+    },
+    {
+      "from": "iam_object_writer",
+      "relationship": "AUTHORIZES",
+      "to": "object_publication"
+    },
+    {
+      "from": "iam_object_writer",
+      "relationship": "AUTHORIZES",
+      "to": "object_uploads_quarantine"
+    },
+    {
+      "from": "iam_object_writer",
+      "relationship": "AUTHORIZES",
+      "to": "object_exports"
+    },
+    {
+      "from": "iam_object_writer",
+      "relationship": "AUTHORIZES",
+      "to": "object_audit_logs"
+    },
+    {
+      "from": "iam_object_reader",
+      "relationship": "AUTHORIZES",
+      "to": "object_raw"
+    },
+    {
+      "from": "iam_object_reader",
+      "relationship": "AUTHORIZES",
+      "to": "object_publication"
+    },
+    {
+      "from": "iam_object_reader",
+      "relationship": "AUTHORIZES",
+      "to": "object_uploads_quarantine"
+    },
+    {
+      "from": "iam_object_reader",
+      "relationship": "AUTHORIZES",
+      "to": "object_exports"
+    },
+    {
+      "from": "iam_object_reader",
+      "relationship": "AUTHORIZES",
+      "to": "object_audit_logs"
+    },
+    {
+      "from": "iam_queue_producer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_ingestion"
+    },
+    {
+      "from": "iam_queue_producer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_ai"
+    },
+    {
+      "from": "iam_queue_producer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_quality"
+    },
+    {
+      "from": "iam_queue_producer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_publication"
+    },
+    {
+      "from": "iam_queue_producer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_freshness"
+    },
+    {
+      "from": "iam_queue_producer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_analytics"
+    },
+    {
+      "from": "iam_queue_producer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_notification"
+    },
+    {
+      "from": "iam_queue_consumer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_ingestion"
+    },
+    {
+      "from": "iam_queue_consumer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_ai"
+    },
+    {
+      "from": "iam_queue_consumer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_quality"
+    },
+    {
+      "from": "iam_queue_consumer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_publication"
+    },
+    {
+      "from": "iam_queue_consumer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_freshness"
+    },
+    {
+      "from": "iam_queue_consumer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_analytics"
+    },
+    {
+      "from": "iam_queue_consumer",
+      "relationship": "AUTHORIZES",
+      "to": "queue_notification"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_ingestion"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_ai"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_quality"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_publication"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_freshness"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_analytics"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_notification"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_ingestion_dlq"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_ai_dlq"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_quality_dlq"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_publication_dlq"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_freshness_dlq"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_analytics_dlq"
+    },
+    {
+      "from": "iam_queue_redrive_operator",
+      "relationship": "AUTHORIZES",
+      "to": "queue_notification_dlq"
+    },
+    {
+      "from": "iam_secret_reader",
+      "relationship": "AUTHORIZES",
+      "to": "secret_metadata"
+    },
+    {
+      "from": "iam_backup_operator",
+      "relationship": "AUTHORIZES",
+      "to": "backup_relational_pitr"
+    },
+    {
+      "from": "iam_backup_operator",
+      "relationship": "AUTHORIZES",
+      "to": "backup_object_versions"
+    },
+    {
+      "from": "iam_backup_operator",
+      "relationship": "AUTHORIZES",
+      "to": "backup_configuration"
+    },
+    {
+      "from": "iam_restore_operator",
+      "relationship": "AUTHORIZES",
+      "to": "backup_relational_pitr"
+    },
+    {
+      "from": "iam_restore_operator",
+      "relationship": "AUTHORIZES",
+      "to": "backup_object_versions"
+    },
+    {
+      "from": "iam_restore_operator",
+      "relationship": "AUTHORIZES",
+      "to": "backup_configuration"
+    }
+  ],
+  "execution_boundary": {
+    "activation_enabled": false,
+    "apply": "FORBIDDEN",
+    "credential_access": "FORBIDDEN",
+    "external_writes": "FORBIDDEN",
+    "init": "FORBIDDEN",
+    "network_access": "FORBIDDEN",
+    "plan": "FORBIDDEN",
+    "provider_calls": "FORBIDDEN"
+  },
+  "iam_permissions": {
+    "iam_backup_operator": [
+      "backup.create",
+      "backup.verify"
+    ],
+    "iam_db_workload": [
+      "database.connect",
+      "database.read",
+      "database.write"
+    ],
+    "iam_object_reader": [
+      "object.read",
+      "object.version.read"
+    ],
+    "iam_object_writer": [
+      "object.create",
+      "object.version.read"
+    ],
+    "iam_queue_consumer": [
+      "queue.receive",
+      "queue.delete",
+      "queue.visibility.change"
+    ],
+    "iam_queue_producer": [
+      "queue.send"
+    ],
+    "iam_queue_redrive_operator": [
+      "queue.redrive"
+    ],
+    "iam_restore_operator": [
+      "restore.isolated",
+      "restore.verify"
+    ],
+    "iam_secret_reader": [
+      "secret.metadata.read",
+      "secret.value.resolve_by_workload"
+    ]
+  },
+  "module": {
+    "allowed_top_level_blocks": [
+      "terraform",
+      "variable",
+      "locals",
+      "check",
+      "output"
+    ],
+    "backend_blocks": [],
+    "classification": "PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_RESOURCE_GRAPH",
+    "cloud_blocks": [],
+    "data_blocks": [],
+    "default_disabled": true,
+    "deterministic_no_apply_plan_fixture": "infra/terraform/data-services/data-services.logical-plan.v1.json",
+    "generated": true,
+    "generated_files": [
+      "versions.tf",
+      "variables.tf",
+      "locals.tf",
+      "checks.tf",
+      "outputs.tf"
+    ],
+    "logical_dlq_count": 7,
+    "logical_iam_role_count": 9,
+    "logical_object_storage_role_count": 5,
+    "logical_primary_queue_count": 7,
+    "logical_resource_node_count": 37,
+    "module_blocks": [],
+    "module_path": "infra/terraform/data-services",
+    "physical_resource_materialization": "FORBIDDEN_IN_CURRENT_REVISION",
+    "policy_validation": "EXACT_CLOSED_BUNDLE_FORBIDDEN_BLOCK_AND_SAFETY_SCAN",
+    "provider_blocks": [],
+    "provider_requirements": [],
+    "provider_schema_binding": null,
+    "provisioners": [],
+    "resource_blocks": [],
+    "semantic_validation": "TERRAFORM_VALIDATE_JSON_INIT_FREE_PROVIDER_FREE",
+    "terraform_required_version": "= 1.15.9",
+    "toolchain_lock_source": "ST-1501_PINNED_VALIDATION_ONLY_TOOLCHAIN"
+  },
+  "nodes": [
+    {
+      "backup_declared": true,
+      "backup_required": true,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "RELATIONAL_DATABASE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "relational_database",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "RDS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": true,
+      "backup_required": true,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": true,
+      "immutable_required": true,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "OBJECT_STORAGE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "object_raw",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "S3",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": true,
+      "backup_required": true,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": true,
+      "immutable_required": true,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "OBJECT_STORAGE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "object_publication",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "S3",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": true,
+      "backup_required": true,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": true,
+      "immutable_required": true,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "OBJECT_STORAGE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "object_uploads_quarantine",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "S3",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": true,
+      "backup_required": true,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": true,
+      "immutable_required": true,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "OBJECT_STORAGE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "object_exports",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "S3",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": true,
+      "backup_required": true,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": true,
+      "immutable_required": true,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "OBJECT_STORAGE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "object_audit_logs",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "S3",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": true,
+      "dlq_required": true,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "PRIMARY_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_ingestion",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": true,
+      "dlq_required": true,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "PRIMARY_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_ai",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": true,
+      "dlq_required": true,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "PRIMARY_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_quality",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": true,
+      "dlq_required": true,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "PRIMARY_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_publication",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": true,
+      "dlq_required": true,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "PRIMARY_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_freshness",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": true,
+      "dlq_required": true,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "PRIMARY_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_analytics",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": true,
+      "dlq_required": true,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "PRIMARY_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_notification",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "DEAD_LETTER_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_ingestion_dlq",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "DEAD_LETTER_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_ai_dlq",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "DEAD_LETTER_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_quality_dlq",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "DEAD_LETTER_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_publication_dlq",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "DEAD_LETTER_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_freshness_dlq",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "DEAD_LETTER_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_analytics_dlq",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "DEAD_LETTER_QUEUE",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "queue_notification_dlq",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "SQS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": true,
+      "backup_required": true,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": true,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "SECRET_METADATA_BOUNDARY",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "secret_metadata",
+      "persisted_data": true,
+      "public_access": false,
+      "reference_service": "Secrets Manager",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": true,
+      "key_rotation_required": true,
+      "kind": "ENCRYPTION_KEY",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "kms_relational",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "KMS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": true,
+      "key_rotation_required": true,
+      "kind": "ENCRYPTION_KEY",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "kms_object_storage",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "KMS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": true,
+      "key_rotation_required": true,
+      "kind": "ENCRYPTION_KEY",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "kms_queue",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "KMS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": true,
+      "key_rotation_required": true,
+      "kind": "ENCRYPTION_KEY",
+      "least_privilege": true,
+      "network_interaction": true,
+      "node_id": "kms_secret_metadata",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "KMS",
+      "transport_encryption": true,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "RECOVERY_DECLARATION",
+      "least_privilege": true,
+      "network_interaction": false,
+      "node_id": "backup_relational_pitr",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "LOGICAL",
+      "transport_encryption": false,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "RECOVERY_DECLARATION",
+      "least_privilege": true,
+      "network_interaction": false,
+      "node_id": "backup_object_versions",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "LOGICAL",
+      "transport_encryption": false,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "RECOVERY_DECLARATION",
+      "least_privilege": true,
+      "network_interaction": false,
+      "node_id": "backup_configuration",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "LOGICAL",
+      "transport_encryption": false,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "IAM_PERMISSION_SET",
+      "least_privilege": true,
+      "network_interaction": false,
+      "node_id": "iam_db_workload",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "LOGICAL",
+      "transport_encryption": false,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "IAM_PERMISSION_SET",
+      "least_privilege": true,
+      "network_interaction": false,
+      "node_id": "iam_object_writer",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "LOGICAL",
+      "transport_encryption": false,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "IAM_PERMISSION_SET",
+      "least_privilege": true,
+      "network_interaction": false,
+      "node_id": "iam_object_reader",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "LOGICAL",
+      "transport_encryption": false,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "IAM_PERMISSION_SET",
+      "least_privilege": true,
+      "network_interaction": false,
+      "node_id": "iam_queue_producer",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "LOGICAL",
+      "transport_encryption": false,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "IAM_PERMISSION_SET",
+      "least_privilege": true,
+      "network_interaction": false,
+      "node_id": "iam_queue_consumer",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "LOGICAL",
+      "transport_encryption": false,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "IAM_PERMISSION_SET",
+      "least_privilege": true,
+      "network_interaction": false,
+      "node_id": "iam_queue_redrive_operator",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "LOGICAL",
+      "transport_encryption": false,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "IAM_PERMISSION_SET",
+      "least_privilege": true,
+      "network_interaction": false,
+      "node_id": "iam_secret_reader",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "LOGICAL",
+      "transport_encryption": false,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "IAM_PERMISSION_SET",
+      "least_privilege": true,
+      "network_interaction": false,
+      "node_id": "iam_backup_operator",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "LOGICAL",
+      "transport_encryption": false,
+      "wildcard_iam": false
+    },
+    {
+      "backup_declared": false,
+      "backup_required": false,
+      "contains_secret_material": false,
+      "dlq_declared": false,
+      "dlq_required": false,
+      "encryption_at_rest": false,
+      "immutable_declared": false,
+      "immutable_required": false,
+      "key_rotation_declared": false,
+      "key_rotation_required": false,
+      "kind": "IAM_PERMISSION_SET",
+      "least_privilege": true,
+      "network_interaction": false,
+      "node_id": "iam_restore_operator",
+      "persisted_data": false,
+      "public_access": false,
+      "reference_service": "LOGICAL",
+      "transport_encryption": false,
+      "wildcard_iam": false
+    }
+  ],
+  "planned_actions": {
+    "backup": 0,
+    "create": 0,
+    "delete": 0,
+    "migrate": 0,
+    "redrive": 0,
+    "restore": 0,
+    "rotate": 0,
+    "update": 0
+  },
+  "reference_architecture": {
+    "admission_requirement": false,
+    "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
+    "cloud": "AWS",
+    "default": false,
+    "eligibility_shortcut": false,
+    "evidence_substitute": false,
+    "implicit_fallback": false,
+    "inherited_from": "INT-DEC-007",
+    "portable_core_required": true,
+    "region": "ap-northeast-1",
+    "selected_binding": false,
+    "service_mappings": [
+      {
+        "capability_id": "relational_postgresql_compatible_persistence_and_migrations",
+        "reference_name": "RDS"
+      },
+      {
+        "capability_id": "immutable_versioned_object_storage_and_integrity",
+        "reference_name": "S3"
+      },
+      {
+        "capability_id": "at_least_once_queue_dlq_and_idempotency",
+        "reference_name": "SQS"
+      },
+      {
+        "capability_id": "workload_secrets_and_key_management",
+        "reference_name": "Secrets Manager"
+      },
+      {
+        "capability_id": "workload_secrets_and_key_management",
+        "reference_name": "KMS"
+      }
+    ]
+  },
+  "successor_activation_port": {
+    "classification": "CLOSED_PHYSICAL_RESOURCE_ACTIVATION_PORT",
+    "complete_gate_evidence": false,
+    "current_revision_activation": "FORBIDDEN",
+    "infrastructure_apply": "FORBIDDEN",
+    "infrastructure_plan": "FORBIDDEN",
+    "provider_binding": "FORBIDDEN_IN_CURRENT_REVISION",
+    "required_gate_evidence": [
+      "OD-013_RESOLVED_REGION_RESIDENCY",
+      "OD-014_RESOLVED_RETENTION_DELETION",
+      "OD-015_PROVIDER_CREDENTIAL_EVIDENCE",
+      "TST-026_FORMAL_SECURITY_EVIDENCE",
+      "TST-029_ISOLATED_RESTORE_EVIDENCE",
+      "PROVIDER_SCHEMA_AND_PLUGIN_PROVENANCE",
+      "PRIVATE_NETWORK_AND_ACCOUNT_ISOLATION",
+      "LEAST_PRIVILEGE_POLICY_REVIEW",
+      "BACKUP_RESTORE_AND_KEY_RECOVERY",
+      "HUMAN_APPROVED_RELEASE_AND_ROLLBACK"
+    ],
+    "resource_materialization": "FORBIDDEN_IN_CURRENT_REVISION",
+    "selected_account_or_project": null,
+    "selected_backup_region": null,
+    "selected_credential_source": null,
+    "selected_network_segments": [],
+    "selected_primary_region": null,
+    "selected_provider_plugin": null,
+    "selected_provider_schema": null,
+    "selected_retention_policy_id": null,
+    "selected_security_policy_bindings": [],
+    "selected_state_backend": null,
+    "successor_contract_revision_required": true,
+    "supplied_gate_evidence": []
+  }
+}
