@@ -42,6 +42,15 @@ def test_manifest_descriptors_and_hashes_are_exact() -> None:
     assert manifest["authority"]["publication_authorized"] is False
     assert manifest["authority"]["recommendation_authorized"] is False
     assert manifest["authority"]["ranking_authorized"] is False
+    assert manifest["generation"]["existing_destination_commit"] == (
+        "RENAMEAT2_EXCHANGE_WITH_REVERSE_VERIFY"
+    )
+    assert manifest["generation"]["missing_destination_commit"] == (
+        "HARDLINK_NO_CLOBBER"
+    )
+    assert manifest["generation"]["foreign_target_policy"] == (
+        "PRESERVE_AND_FAIL_CLOSED"
+    )
     allowed_roles = {
         "OWNER_SOURCE",
         "UPSTREAM_RECORDED_FIXTURE",

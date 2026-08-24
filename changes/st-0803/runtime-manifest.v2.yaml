@@ -1,7 +1,7 @@
 schema_version: 2
 story_id: ST-0803
 classification: LOCAL_EXECUTABLE_RECORDED_COMPARISON_VALIDATION_RUNTIME_MANIFEST_V2
-source_artifact_count: 53
+source_artifact_count: 54
 source_artifacts:
 - uri: repo://changes/st-0803/contracts/comparison-validation-runtime.v2.yaml
   artifact_role: OWNER_SOURCE
@@ -11,8 +11,8 @@ source_artifacts:
 - uri: repo://scripts/build_st0803_comparison_validation_runtime.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 41162
-  sha256: a33e5a9a1f161b470c0632bbefaf270745c9e987b17497c95a036e4aa32e2928
+  bytes: 37784
+  sha256: 7475cf25277084e85a323d42c7d5810ce4d2d4a34b7247404ac5e6020aff2931
 - uri: repo://python/raos/domain/editorial/comparison_validation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -41,8 +41,8 @@ source_artifacts:
 - uri: repo://changes/st-0803/README.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
-  bytes: 2763
-  sha256: 03d78a55e00624cc2328fcee15f6d32c88135fbec585e8bba27134e9df63cf22
+  bytes: 2855
+  sha256: 8bb43e24dc12865761bd22bc2b02b1123ebe4a73fa0f7f2e51df90dfb31d0d9b
 - uri: repo://changes/st-0803/HISTORICAL-DRIFT.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
@@ -52,22 +52,22 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: application/yaml
   bytes: 2163
-  sha256: ad2112be00afdca9327cc1c03bf81dad5c8ddb83f7af0e444fa0dc5d13b79d0d
+  sha256: 15873164ebb2c11ebcdb46e31a3285e136d6b5bf55276e8e482bbd6b4960170f
 - uri: repo://docs/execplans/ST-0803.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
-  bytes: 2135
-  sha256: 7b4bcfecdb560871db4e0f538391918a0d1a471514fb6895f6f5be200b389ff3
+  bytes: 2190
+  sha256: 71d8755e160e1ec2a2201fc3886656373b3ba01a2413c689d4782a890a9fe350
 - uri: repo://docs/worklogs/ST-0803.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
-  bytes: 1632
-  sha256: 0acefad0ef61c4bb5b7403d0ac5a875e2b8eae2de35964bf0a949e9cee02e2b3
+  bytes: 1676
+  sha256: 5bbb694553539038abd179b9e3b25867734afd7e490c7e9632c7ff989eb57ef5
 - uri: repo://docs/worklogs/RAOS-IMPLEMENTATION-DEBT.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
-  bytes: 243475
-  sha256: b197f39369480896668005b9dfdb0efe7c5ba245e2a1baadcb846045014e9f3d
+  bytes: 244001
+  sha256: 5280a540590fd293c5c68303ab855a8f77e43d2149b64346778c253c1461d9e3
 - uri: repo://tests/st0803_runtime/__init__.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -91,13 +91,18 @@ source_artifacts:
 - uri: repo://tests/st0803_runtime/test_generation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 4602
-  sha256: 7ad8f67d7f2c805885500d89cdcdcf348a0509aa12c3ac4a6d02988631999ab1
+  bytes: 10214
+  sha256: e749d44fe09a436c5d12aa9e7384220ee6a82ebe554cc74274975326043bac1d
 - uri: repo://tests/st0803_runtime/test_static_boundary.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 2323
-  sha256: cc97e8c545852a64f5cb711d428a405709872c69acae718d954144b5e0fb5e47
+  bytes: 2658
+  sha256: 38e717a3e0b949fcad0764f3fbc3e6f3ff5411703281cd70820f2ba75f744cc4
+- uri: repo://scripts/secure_generated_publication.py
+  artifact_role: OWNER_SOURCE
+  media_type: text/x-python
+  bytes: 22651
+  sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
 - uri: repo://changes/st-0605/generated/claim-evidence-runtime-pass.v1.json
   artifact_role: UPSTREAM_RECORDED_FIXTURE
   media_type: application/json
@@ -280,6 +285,9 @@ generation:
   check_command: .venv/bin/python scripts/build_st0803_comparison_validation_runtime.py
     --check
   transaction: ATOMIC_MULTI_OUTPUT_WITH_ROLLBACK
+  existing_destination_commit: RENAMEAT2_EXCHANGE_WITH_REVERSE_VERIFY
+  missing_destination_commit: HARDLINK_NO_CLOBBER
+  foreign_target_policy: PRESERVE_AND_FAIL_CLOSED
   symlink_policy: REJECT
   hardlink_policy: REJECT
   source_identity: LSTAT_FSTAT_DEVICE_INODE_SIZE_MTIME

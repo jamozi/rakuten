@@ -42,7 +42,9 @@ authentication. Live identity resolution remains outside this runtime.
 - Adapter: generated fixture bytes only, ENV-DEV/CI only, reparsed and
   hash-checked on every read.
 - Generator: exact locked toolchain and source hashes, bounded YAML/JSON,
-  symlink/hardlink rejection, multi-output transaction and rollback.
+  symlink/hardlink rejection, descriptor-relative
+  `renameat2(RENAME_EXCHANGE)`/no-clobber publication, foreign-target
+  restoration and multi-output rollback.
 - Network, credential, provider, persistence, Article, recommendation,
   ranking and publication operations: forbidden.
 

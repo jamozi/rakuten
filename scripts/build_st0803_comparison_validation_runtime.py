@@ -14,7 +14,6 @@ import os
 from pathlib import Path
 import stat
 import sys
-import tempfile
 from typing import Any, Final, NoReturn, cast
 from uuid import UUID
 
@@ -23,8 +22,12 @@ from yaml.tokens import AliasToken, AnchorToken, TagToken
 
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 if str(REPO_ROOT / "python") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "python"))
+
+from scripts import secure_generated_publication  # noqa: E402
 
 from raos.adapters.recorded_claim_evidence import (  # noqa: E402
     load_recorded_claim_evidence_fixture,
@@ -217,6 +220,7 @@ OWNED_SOURCE_PATHS: Final = (
     Path("tests/st0803_runtime/test_application_adapter.py"),
     Path("tests/st0803_runtime/test_generation.py"),
     Path("tests/st0803_runtime/test_static_boundary.py"),
+    Path("scripts/secure_generated_publication.py"),
 )
 LOCKED_TOOLCHAIN_PATHS: Final = (
     Path("pyproject.toml"),
@@ -232,6 +236,7 @@ SOURCE_PATHS: Final = (
 )
 GENERATED_PATHS: Final = (FIXTURE_PATH, MANIFEST_PATH)
 MAX_CONTRACT_BYTES: Final = 262_144
+MAX_GENERATED_BYTES: Final = 4 * 1024 * 1024
 TOP_LEVEL_KEYS: Final = (
     "schema_version",
     "story_id",
@@ -923,6 +928,9 @@ def _manifest_bytes(root: Path, fixture: bytes) -> bytes:
                 "scripts/build_st0803_comparison_validation_runtime.py --check"
             ),
             "transaction": "ATOMIC_MULTI_OUTPUT_WITH_ROLLBACK",
+            "existing_destination_commit": "RENAMEAT2_EXCHANGE_WITH_REVERSE_VERIFY",
+            "missing_destination_commit": "HARDLINK_NO_CLOBBER",
+            "foreign_target_policy": "PRESERVE_AND_FAIL_CLOSED",
             "symlink_policy": "REJECT",
             "hardlink_policy": "REJECT",
             "source_identity": "LSTAT_FSTAT_DEVICE_INODE_SIZE_MTIME",
@@ -957,117 +965,15 @@ def _manifest_bytes(root: Path, fixture: bytes) -> bytes:
     ).encode("utf-8")
 
 
-def _stage_payload(path: Path, payload: bytes, *, mode: int) -> Path:
-    directory = path.parent
-    directory.mkdir(parents=True, exist_ok=True)
-    temporary: Path | None = None
-    try:
-        with tempfile.NamedTemporaryFile(dir=directory, delete=False) as handle:
-            temporary = Path(handle.name)
-            handle.write(payload)
-            handle.flush()
-            os.fsync(handle.fileno())
-        staged = temporary.lstat()
-        if not stat.S_ISREG(staged.st_mode) or staged.st_nlink != 1:
-            _fail("GENERATION_STAGE_IDENTITY_INVALID")
-        os.chmod(temporary, mode)
-        return temporary
-    except BaseException:
-        if temporary is not None:
-            try:
-                temporary.unlink(missing_ok=True)
-            except BaseException:
-                _fail("GENERATION_STAGE_CLEANUP_FAILED")
-        raise
-
-
-def _validate_destination(path: Path) -> None:
-    try:
-        observed = path.lstat()
-    except FileNotFoundError:
-        return
-    if not stat.S_ISREG(observed.st_mode) or observed.st_nlink != 1:
-        _fail("GENERATION_DESTINATION_INVALID")
-
-
 def _replace_generated(artifacts: tuple[tuple[Path, bytes], ...]) -> None:
-    if (
-        not artifacts
-        or any(
-            not isinstance(path, Path) or type(payload) is not bytes
-            for path, payload in artifacts
-        )
-        or len({path for path, _payload in artifacts}) != len(artifacts)
-    ):
-        _fail("GENERATION_TRANSACTION_INPUT_INVALID")
-    prepared: list[tuple[Path, Path, Path | None]] = []
-    committed: list[tuple[Path, Path, Path | None]] = []
-    preserve: set[Path] = set()
     try:
-        for destination, payload in artifacts:
-            _validate_destination(destination)
-            backup: Path | None = None
-            if destination.exists():
-                original = _read_regular(destination)
-                mode = destination.lstat().st_mode & 0o777
-                backup = _stage_payload(destination, original, mode=mode)
-            try:
-                staged = _stage_payload(destination, payload, mode=0o644)
-            except BaseException:
-                if backup is not None:
-                    backup.unlink(missing_ok=True)
-                raise
-            prepared.append((destination, staged, backup))
-        for row in prepared:
-            destination, staged, _backup = row
-            _validate_destination(staged)
-            _validate_destination(destination)
-            committed.append(row)
-            os.replace(staged, destination)
-    except BaseException as failure:
-        rollback_failed = False
-        for destination, _staged, backup in reversed(committed):
-            try:
-                if backup is None:
-                    destination.unlink(missing_ok=True)
-                else:
-                    os.replace(backup, destination)
-            except BaseException:
-                rollback_failed = True
-                if backup is not None:
-                    preserve.add(backup)
-        for _destination, staged, backup in prepared:
-            try:
-                staged.unlink(missing_ok=True)
-            except BaseException:
-                rollback_failed = True
-            if backup is not None and backup not in preserve:
-                try:
-                    backup.unlink(missing_ok=True)
-                except BaseException:
-                    rollback_failed = True
-        if rollback_failed:
-            _fail("GENERATION_ROLLBACK_FAILED")
-        if isinstance(failure, Exception):
-            _fail("GENERATION_TRANSACTION_FAILED")
-        raise
-    pending = [
-        candidate
-        for _destination, staged, backup in prepared
-        for candidate in (staged, backup)
-        if candidate is not None
-    ]
-    for _attempt in range(2):
-        remaining: list[Path] = []
-        for candidate in pending:
-            try:
-                candidate.unlink(missing_ok=True)
-            except BaseException:
-                remaining.append(candidate)
-        pending = remaining
-        if not pending:
-            return
-    _fail("GENERATION_POST_COMMIT_CLEANUP_FAILED")
+        secure_generated_publication.publish_generated(
+            artifacts,
+            namespace="st0803",
+            maximum_payload_bytes=MAX_GENERATED_BYTES,
+        )
+    except secure_generated_publication.SecurePublicationError:
+        _fail("GENERATION_TRANSACTION_FAILED")
 
 
 def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
@@ -1081,7 +987,6 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
     if check:
         for relative, payload in expected:
             destination = _safe_path(root, relative)
-            _validate_destination(destination)
             if _read_regular(destination) != payload:
                 _fail("GENERATED_ARTIFACT_DRIFT")
         return

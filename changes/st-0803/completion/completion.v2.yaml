@@ -31,7 +31,7 @@ verification:
   owner_no_write_check: PASS
   focused_v2_tests:
     result: PASS
-    passed: 47
+    passed: 52
   historical_v1_tests:
     result: PASS
     passed: 31
@@ -40,7 +40,7 @@ verification:
     passed: 90
   combined_affected_tests:
     result: PASS
-    passed: 168
+    passed: 173
     local_tmpfs: /tmp
   compile_import: PASS
   ruff_format_and_lint: PASS

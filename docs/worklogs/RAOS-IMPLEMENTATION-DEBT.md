@@ -3617,3 +3617,10 @@ original result.
   formal-test, staging, release or Production authority. Formal TST-007/
   TST-020, hosted CI, live validation and all external operations remain
   `NOT_EXECUTED`.
+- Integration audit found and closed the owner-generator target race that
+  existed between destination validation and clobbering replacement. Existing
+  outputs now use descriptor-relative `renameat2(RENAME_EXCHANGE)` with
+  displaced-identity and reverse verification; missing outputs use a
+  no-clobber hard-link install. Target swaps before and after exchange, fresh
+  target races, parent-directory swaps, rollback and cleanup preserve foreign
+  material and fail closed. No generator race debt remains open for ST-0803.
