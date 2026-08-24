@@ -48,7 +48,7 @@
   "gate_pass_claim": false,
   "generated_by": {
     "command": "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1803_gate2_observation.py",
-    "generator_sha256": "9c97e4a04342ef1151c0fb98952a77c3f9e80f118958f48bf5bfee27a5176bb2",
+    "generator_sha256": "420c3eca1dc40de71169ee2fda7c8880f4445f1a0e6a29c32a84ef4ee59e2737",
     "uri": "repo://scripts/build_st1803_gate2_observation.py"
   },
   "mandatory_criteria": [
@@ -295,7 +295,7 @@
       "unattributed_confirmed_reward_jpy": 2500,
       "unattributed_reward_allocated_to_articles": false
     },
-    "input_contract_sha256": "dff94ddc392ebb5a70ba88d38d654585f2303af8e71b83ed2f12963251421db7",
+    "input_contract_sha256": "e85bfb0886be3f51ab99f81c6654efcdb88397cdfc43cc627ac984db2ee84e72",
     "input_sha256": "5dd59db906b6c3fbb234ec725fef375280f2b8234ceb94e339270b5abddb4e62",
     "input_totals": [
       {
@@ -573,7 +573,7 @@
       "start_date": "2026-01-01"
     },
     "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-    "recorded_fixture_sha256": "47884764cd2d812e8597957c6025e797d8149c0f88cb4597e886e49dabd7bf54",
+    "recorded_fixture_sha256": "1a8fa35229d8f12bca5dc94de396175b5e97c359c775c50dd5b07671018f6c2e",
     "schema": "ST1803_GATE2_OBSERVATION_REPORT_V1",
     "source_head_sha256": "df9466fc8a3cca55fcd5c1a7b91ac1183663171c9100e350af9a46f59aa407c0",
     "synthetic": true
@@ -605,15 +605,15 @@
       "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml"
     },
     {
-      "sha256": "caad3c76eab2e8dd09de98cbef7b1b195a5f3fb4cb53f8f01d20062912255ca7",
+      "sha256": "338f677505780ea4f2e0f6ae085e0232728d0f2c708556885c0fb6546a3f6d78",
       "uri": "repo://changes/st-1802/generated/gate1-decision.local-blocked.v1.json"
     },
     {
-      "sha256": "631eae02d744778bd81c289b5810b89b6ac8738696ab3dbc30605ba8f2e720d2",
+      "sha256": "f6f75d503e509fccd5b2502008fcc29434400a2233f9405825469d81b006e785",
       "uri": "repo://changes/st-1802/generated/runtime-manifest.v1.yaml"
     },
     {
-      "sha256": "b182bb6e77a5f012ead2d015c4b64c8da6e24afae80bfdd355ea4698985ec8ba",
+      "sha256": "0ae5aa8399db32e94f47ded65c5b8d91f7ef82e3f483c5d9e740cd61a8070e7e",
       "uri": "repo://scripts/build_st1802_gate1_decision.py"
     },
     {

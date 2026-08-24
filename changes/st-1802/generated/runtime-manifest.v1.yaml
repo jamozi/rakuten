@@ -6,7 +6,7 @@ source_artifact_count: 13
 source_artifacts:
 - uri: repo://changes/st-1802/contracts/gate1-decision.v1.yaml
   bytes: 13998
-  sha256: 0a4722c72b3a0a7687664414c0856d7944884155794b6d71ca4e7fd4af55b5e2
+  sha256: 98094a53b0e584424bf7be2b369ef51dd4b7cb3decc7ec9ec51a96af282cf248
 - uri: repo://changes/st-1802/contracts/recorded-synthetic-gate1-evaluation.v1.schema.json
   bytes: 4135
   sha256: b671401b5859690052217c1caefb6001828a841c0f57064658ecd1d158148c52
@@ -24,7 +24,7 @@ source_artifacts:
   sha256: c7244373b97aebd988491e1dff7e6b67c2ab2d87bd3392dfb4d9332e0ccd9939
 - uri: repo://scripts/build_st1802_gate1_decision.py
   bytes: 90145
-  sha256: b182bb6e77a5f012ead2d015c4b64c8da6e24afae80bfdd355ea4698985ec8ba
+  sha256: 0ae5aa8399db32e94f47ded65c5b8d91f7ef82e3f483c5d9e740cd61a8070e7e
 - uri: repo://tests/st1802/conftest.py
   bytes: 933
   sha256: 9df8b2d46b18027b9fd5e260a3bcc7fa83bfbdfa1007f69f973a65e35a0b8b28
@@ -79,19 +79,19 @@ bound_inputs:
   sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
   classification: CANONICAL_OR_GATE_AUTHORITY
 - uri: repo://changes/st-1801/generated/portfolio-expansion.local-blocked.v1.json
-  sha256: f1d222a2739140478c628a2efe9b7f267f13f703de29665954a13b688fe9c4d5
+  sha256: 1fd61a6c4ce53a207747c3d1ac8ec1340b42a9b5bf282466c70bd92635599d4d
   classification: NON_ATTESTING_DEPENDENCY_INPUT
 - uri: repo://changes/st-1801/generated/runtime-manifest.v1.yaml
-  sha256: c2e0584b5f1110fef8283b07dde8d11f563cf05103987d72909fa8069b57f2cd
+  sha256: 6ff6c14ff206cfc3eeb6099dae844cf6a9d2fb526f843b8effd65fc5eb2773a4
   classification: NON_ATTESTING_DEPENDENCY_INPUT
 - uri: repo://scripts/build_st1801_portfolio_expansion.py
-  sha256: 9f370b435b4dc713a1e04ffe3eef9e0efef70eaefc6910f6db83ffb1314cf284
+  sha256: 64b226fade8ea9ec48bf0ed8ab52809974984bbe4f592031af4e6672ef5bddd9
   classification: NON_ATTESTING_DEPENDENCY_INPUT
 - uri: repo://changes/st-1705/generated/pilot-security-recovery-signoff.local-blocked.v1.json
-  sha256: 7a3310d1ec909055f92c2584bf98313ab71962124b31dc05dbe089436c50af20
+  sha256: 012f5f1eb930105c7d1bbc19500d6133afd60a717dc453aec4993ff9137bb5d4
   classification: NON_ATTESTING_DEPENDENCY_INPUT
 - uri: repo://changes/st-1705/manifest.yaml
-  sha256: c39bed5c565d3e50e1cc38c69374a2bc1e943d5427f113cda6a9d539338e040c
+  sha256: 5efaba638a756839bbd2067e54e2504bbf285bc3e93b2f1c49c89e26db29df30
   classification: NON_ATTESTING_DEPENDENCY_INPUT
 - uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json
   sha256: cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88
@@ -103,10 +103,10 @@ generated_artifact_count: 2
 generated_artifacts:
 - uri: repo://changes/st-1802/generated/recorded-synthetic-gate1-evaluation.v1.json
   bytes: 10558
-  sha256: 7c42b710b92703f5c44fd4f3e34045b9e259deb03e16baae76c54a0bd3e7b589
+  sha256: 944f2fc972a591d488907ace4cbcf5461dec407744e2f1c05b53d2c9a40d121c
 - uri: repo://changes/st-1802/generated/gate1-decision.local-blocked.v1.json
   bytes: 20902
-  sha256: caad3c76eab2e8dd09de98cbef7b1b195a5f3fb4cb53f8f01d20062912255ca7
+  sha256: 338f677505780ea4f2e0f6ae085e0232728d0f2c708556885c0fb6546a3f6d78
 transaction:
   model: THREE_OUTPUT_RECOVERABLE_ALL_OR_NOTHING
   writer_lock: GENERATED_DIRECTORY_FLOCK

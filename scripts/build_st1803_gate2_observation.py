@@ -78,10 +78,10 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st1803_gate2_observation.py"
 )
 CONTRACT_SHA256: Final = (
-    "dff94ddc392ebb5a70ba88d38d654585f2303af8e71b83ed2f12963251421db7"
+    "e85bfb0886be3f51ab99f81c6654efcdb88397cdfc43cc627ac984db2ee84e72"
 )
 FIXTURE_SHA256: Final = (
-    "47884764cd2d812e8597957c6025e797d8149c0f88cb4597e886e49dabd7bf54"
+    "1a8fa35229d8f12bca5dc94de396175b5e97c359c775c50dd5b07671018f6c2e"
 )
 INPUT_SHA256: Final = "5dd59db906b6c3fbb234ec725fef375280f2b8234ceb94e339270b5abddb4e62"
 SOURCE_HEAD_SHA256: Final = (
@@ -108,13 +108,13 @@ EXPECTED_BINDINGS: Final = {
         "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
     ),
     "changes/st-1802/generated/gate1-decision.local-blocked.v1.json": (
-        "caad3c76eab2e8dd09de98cbef7b1b195a5f3fb4cb53f8f01d20062912255ca7"
+        "338f677505780ea4f2e0f6ae085e0232728d0f2c708556885c0fb6546a3f6d78"
     ),
     "changes/st-1802/generated/runtime-manifest.v1.yaml": (
-        "631eae02d744778bd81c289b5810b89b6ac8738696ab3dbc30605ba8f2e720d2"
+        "f6f75d503e509fccd5b2502008fcc29434400a2233f9405825469d81b006e785"
     ),
     "scripts/build_st1802_gate1_decision.py": (
-        "b182bb6e77a5f012ead2d015c4b64c8da6e24afae80bfdd355ea4698985ec8ba"
+        "0ae5aa8399db32e94f47ded65c5b8d91f7ef82e3f483c5d9e740cd61a8070e7e"
     ),
     "changes/st-1205/generated/kpi-read-model.v2.json": (
         "295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb"

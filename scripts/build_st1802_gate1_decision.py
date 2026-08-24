@@ -142,19 +142,19 @@ EXPECTED_SOURCE_HASHES: Final = {
 }
 EXPECTED_DEPENDENCY_HASHES: Final = {
     "changes/st-1801/generated/portfolio-expansion.local-blocked.v1.json": (
-        "f1d222a2739140478c628a2efe9b7f267f13f703de29665954a13b688fe9c4d5"
+        "1fd61a6c4ce53a207747c3d1ac8ec1340b42a9b5bf282466c70bd92635599d4d"
     ),
     "changes/st-1801/generated/runtime-manifest.v1.yaml": (
-        "c2e0584b5f1110fef8283b07dde8d11f563cf05103987d72909fa8069b57f2cd"
+        "6ff6c14ff206cfc3eeb6099dae844cf6a9d2fb526f843b8effd65fc5eb2773a4"
     ),
     "scripts/build_st1801_portfolio_expansion.py": (
-        "9f370b435b4dc713a1e04ffe3eef9e0efef70eaefc6910f6db83ffb1314cf284"
+        "64b226fade8ea9ec48bf0ed8ab52809974984bbe4f592031af4e6672ef5bddd9"
     ),
     "changes/st-1705/generated/pilot-security-recovery-signoff.local-blocked.v1.json": (
-        "7a3310d1ec909055f92c2584bf98313ab71962124b31dc05dbe089436c50af20"
+        "012f5f1eb930105c7d1bbc19500d6133afd60a717dc453aec4993ff9137bb5d4"
     ),
     "changes/st-1705/manifest.yaml": (
-        "c39bed5c565d3e50e1cc38c69374a2bc1e943d5427f113cda6a9d539338e040c"
+        "5efaba638a756839bbd2067e54e2504bbf285bc3e93b2f1c49c89e26db29df30"
     ),
     "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json": (
         "cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88"
