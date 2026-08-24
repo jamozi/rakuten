@@ -216,6 +216,20 @@ def test_repository_path_rejects_symlink_ancestor(tmp_path: Path) -> None:
         generator._repository_path(root, Path("linked/file.json"))
 
 
+def test_context_contract_semantic_audit_rejects_hash_rebind_of_unsafe_data(
+    tmp_path: Path,
+) -> None:
+    target = tmp_path / generator.CONTEXT_CONTRACT_PATH
+    target.parent.mkdir(parents=True)
+    context = yaml.safe_load((ROOT / generator.CONTEXT_CONTRACT_PATH).read_bytes())
+    context["predecessors"]["st0701"]["required_semantics"][
+        "provider_storage_allowed"
+    ] = True
+    target.write_text(yaml.safe_dump(context, sort_keys=False), encoding="utf-8")
+    with pytest.raises(generator.St0705BuildError):
+        generator._validate_context_contract_semantics(tmp_path)
+
+
 def test_runtime_manifest_has_closed_authority_and_generated_hashes() -> None:
     manifest = yaml.safe_load((ROOT / generator.RUNTIME_MANIFEST_PATH).read_bytes())
     assert manifest["document"]["authority"] == "NONE"

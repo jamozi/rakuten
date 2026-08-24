@@ -58,6 +58,22 @@ def test_owner_generator_is_reproducible_and_all_profiles_are_exact(
         assert profile.max_output_bytes == 4 * 1024 * 1024
 
 
+def test_all_profiles_bind_the_repaired_st0702_context_contract(
+    trusted_profiles: TrustedTaskValidationProfiles,
+) -> None:
+    expected = "b684e534268de79e4b118713f07932cfa71d10bda2e092003f00985f76811eaf"
+    for profile in trusted_profiles.values():
+        context_receipts = profile.required_semantic_receipts[:2]
+        assert tuple(item.receipt_kind for item in context_receipts) == (
+            SemanticReceiptKind.CONTEXT_MANIFEST_BINDING,
+            SemanticReceiptKind.INPUT_TAINT_SCAN,
+        )
+        assert all(item.owner_story_id == "ST-0702" for item in context_receipts)
+        assert all(
+            item.owner_contract_sha256.value == expected for item in context_receipts
+        )
+
+
 def test_profile_capability_gaps_versions_and_disabled_lifecycle_are_explicit(
     trusted_profiles: TrustedTaskValidationProfiles,
 ) -> None:

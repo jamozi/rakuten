@@ -14,26 +14,27 @@ toolchain:
   referencing: 0.37.0
   rpds-py: 2026.6.3
 source_sha256:
-  changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml: 82a157b6973db54bece7ee67a05b7321bc85f1e6ca5270039077c3cd20873bfb
-  scripts/build_st0705_ai_output_validation_runtime.py: 9a25299d7529739272bf1a30cf683180e1c8c5039f9e090eeb3960d5a2381af3
-  python/raos/domain/ai/output_validation.py: 1f7f1a61fb5fe9745c7b23af822f64d1a48393f69d6c4874eec6e984d92a3841
+  changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml: 892369944ee610c53c0ac61cac8c4bb2c6d3d10488493ce516c97fd609966f28
+  scripts/build_st0705_ai_output_validation_runtime.py: 9e7b6e081ea516e28bdf664207234a43002ee1874b63816bd24f934d5119ae4f
+  python/raos/domain/ai/output_validation.py: f35e4a6a59d25155cad83020ab3c8747e46998984562548b3a2ad874e989116c
   python/raos/ports/ai_output_validation.py: eb0298e1e5b72fed0eb1301c4362cc62ee16a2d1b573b69162d4dc15c9e8e046
   python/raos/application/ai/output_validation.py: 6a1a182c80a1f9dff4de286f87017811bc2eff35425fc057c31ad333cc0f02d6
   python/raos/adapters/recorded_ai_output_validation.py: 378a5036b4cd004c1bb4faa165a199fa07663a31da8f1a095adfba2b140e7158
-  changes/st-0705/README.md: 6a3b28ee5782d7442bc10df4bedd6bedac4f805bfc5edcaea0896e7bd92ed1ff
-  changes/st-0705/RUNTIME.md: dec0902ec3d8bc98e4efd4d34be1060a339ab57727abb4386388b033b8961d6d
-  docs/execplans/ST-0705.md: a184eea687361478e7adf7626659ef0ea01ab745a9e47fe755adac60e9822acd
-  docs/worklogs/ST-0705.md: e71dfb4ad459070b6e235aa3b076f81dd194e372c34b19ac49c57651159bfc6e
+  changes/st-0705/README.md: 380d96e9de697fc7c89a10506b9a40cfd7b2ad7faa8434511b2d3202876c47f7
+  changes/st-0705/RUNTIME.md: dbb15152076de73c88742147468eb581e2483503d71f11e1a2c669f0a73193bf
+  docs/execplans/ST-0705.md: 90eb0b4c71c28f3dacadfee54c2ab8587e69d88cd0ae9a793ebc3055a5c2e4e3
+  docs/worklogs/ST-0705.md: f2e072c655ae91d2d4c7e3086d78bde4706280115da255e392940330c5b109cc
   tests/st0705_runtime/__init__.py: 7a64288ecc61334d8b009bed3c5b81bb74fdaa4bfcae45911e33c95673ef6142
   tests/st0705_runtime/conftest.py: 4a362ff82b6715882b3e5f52f2aa5bbf93756d4aba781e555d497d07e5635aba
   tests/st0705_runtime/test_coverage_binding.py: 67f7b5b4f885c8bd2a477b0b95e98cd6903e7ed31d5fbe535fb7d857d4a0242c
-  tests/st0705_runtime/test_generation_security.py: 6123dd745c89bfb690ff957d28c981fc35cf2996d648404ddadcffc6a4f0e88f
-  tests/st0705_runtime/test_profiles_and_application.py: 422150bca32f014ca3c504064e525f5f70d7e33a3eb30d0ef630610ed4e7fd18
+  tests/st0705_runtime/test_generation_security.py: db6ca0a8603d4c29a84e5aa889cad49e1fbbfae9a29a74a09caee3761e72d16d
+  tests/st0705_runtime/test_profiles_and_application.py: 95c18b30782dcb668d586844a57482d52cbfccacbb9506f520a4c0c18bd017a5
   tests/st0705_runtime/test_task_semantics_and_limits.py: 3ac70913fc2630a60d03c1af8ad93e564d5a6707b5cb997a09ab5a4d7156198d
   tests/st0705_runtime/test_validation_negative_paths.py: bb3940bc9aff9b46167f073fbb84c09a1d37b76384c753ffdc77e9afbd008bd2
   pyproject.toml: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
   uv.lock: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
   changes/st-0701/generated/ai-task-registry.v1.json: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
+  changes/st-0702/contracts/context-pack-reference-plan.v1.yaml: b684e534268de79e4b118713f07932cfa71d10bda2e092003f00985f76811eaf
   changes/st-0004/contracts/content/ai-content-alignment.v0.4.yaml: 7b141fdb7e401ee886efe59f65e9bdff6be4af566deca73d29ebc50a1f200477
   python/raos/domain/ai/provider.py: 179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991
   python/raos/domain/evidence/claim_evidence.py: 97996a564e6fe21a417f06110fbb7dfd66d605bd2fa43aa9f19e9a4c11592c81
@@ -54,8 +55,8 @@ source_sha256:
   contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json: 1b13b6f11f16ac289a0548b6519e288639ee92271516d65d9fc5a026af51a57c
   contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.update_priority_explanation.v1.output.schema.json: 0de826d10e8b6f4ddd10543eb68b70af209a4fac67f79482d24dc7b5922be4ef
 generated_sha256:
-  changes/st-0705/generated/ai-output-validation-profiles.v1.json: 5034379d1c8800f6cacf33bc7b2022e0e471189490c28c1c8d03eac429dd5e27
-  changes/st-0705/generated/ai-output-validation-pass.v1.json: ce3ac4a0680cad45f60951a873d408789b24d66683b523695484219552102f4f
+  changes/st-0705/generated/ai-output-validation-profiles.v1.json: bc102480a6eb56f030e27d92e4dc239851ea482474e747ab408dfa23f962971a
+  changes/st-0705/generated/ai-output-validation-pass.v1.json: afc22bd0c54169a19401b4156c4f66887888d86de2311143bd949b8ede2c008d
 profile_count: 12
 schema_count: 12
 local_status_vocabulary:

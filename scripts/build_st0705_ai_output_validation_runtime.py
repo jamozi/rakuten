@@ -73,6 +73,9 @@ PORT_PATH: Final = Path("python/raos/ports/ai_output_validation.py")
 APPLICATION_PATH: Final = Path("python/raos/application/ai/output_validation.py")
 ADAPTER_PATH: Final = Path("python/raos/adapters/recorded_ai_output_validation.py")
 TASK_REGISTRY_PATH: Final = Path("changes/st-0701/generated/ai-task-registry.v1.json")
+CONTEXT_CONTRACT_PATH: Final = Path(
+    "changes/st-0702/contracts/context-pack-reference-plan.v1.yaml"
+)
 ALIGNMENT_PATH: Final = Path(
     "changes/st-0004/contracts/content/ai-content-alignment.v0.4.yaml"
 )
@@ -103,6 +106,7 @@ MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 EXPECTED_PROFILE_IDS: Final = tuple(f"AIT-{number:03d}" for number in range(1, 13))
 PINNED_INPUTS: Final[dict[Path, str]] = {
     TASK_REGISTRY_PATH: "33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07",
+    CONTEXT_CONTRACT_PATH: "b684e534268de79e4b118713f07932cfa71d10bda2e092003f00985f76811eaf",
     ALIGNMENT_PATH: "7b141fdb7e401ee886efe59f65e9bdff6be4af566deca73d29ebc50a1f200477",
     PROVIDER_PATH: "179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991",
     COVERAGE_PATH: "97996a564e6fe21a417f06110fbb7dfd66d605bd2fa43aa9f19e9a4c11592c81",
@@ -142,6 +146,63 @@ RUNTIME_CHECK_BINDINGS: Final[dict[str, tuple[str, ...]]] = {
     "schema_hash_match": ("AIOV-000", "AIOV-010"),
     "typed_arguments": ("RECEIPT:CONTEXT_MANIFEST_BINDING",),
 }
+EXPECTED_CONTEXT_ST0701_SEMANTICS: Final[dict[str, object]] = {
+    "task_count": 12,
+    "complete_binding_metadata": True,
+    "source_packet_required_task_count": 9,
+    "source_packet_not_required_task_count": 3,
+    "typed_manifest_only": True,
+    "tools_allowed": False,
+    "task_activation": False,
+    "selected_provider": None,
+    "provider_call": "NOT_EXECUTED",
+    "route_execution": "NOT_EXECUTED",
+    "network_access": False,
+    "state_change_allowed": False,
+    "provider_storage_allowed": False,
+    "strict_structured_output": True,
+    "forbidden_inputs_excluded": True,
+    "required_input_checks_complete": True,
+    "formal_validation": "NOT_EXECUTED",
+}
+EXPECTED_CONTEXT_PACKING_RULES: Final[dict[str, object]] = {
+    "typed_manifest_required": True,
+    "input_manifest_check_required": True,
+    "audit_manifest_check_required": True,
+    "source_packet_requirement_is_task_scoped": True,
+    "deterministic_repack_on_context_overflow_required": True,
+    "silent_required_fact_truncation_forbidden": True,
+    "only_allowlisted_inputs_may_be_considered": True,
+    "denied_inputs_must_be_excluded": True,
+    "task_input_and_output_bounds_are_descriptive_only": True,
+}
+EXPECTED_CONTEXT_ACTION_COUNTS: Final[dict[str, object]] = {
+    "build": 0,
+    "select": 0,
+    "scan": 0,
+    "pack": 0,
+    "serialize": 0,
+    "hash": 0,
+    "estimate": 0,
+    "reduce_scope": 0,
+    "drop_item": 0,
+    "create_manifest": 0,
+    "provider_call": 0,
+    "network": 0,
+    "repository_write": 0,
+    "database_write": 0,
+    "job": 0,
+    "event": 0,
+    "external": 0,
+}
+EXPECTED_COMMON_RECEIPT_KINDS: Final = (
+    SemanticReceiptKind.CONTEXT_MANIFEST_BINDING,
+    SemanticReceiptKind.INPUT_TAINT_SCAN,
+    SemanticReceiptKind.PROVIDER_SUCCESS_SAFETY,
+    SemanticReceiptKind.POLICY_BUNDLE_BINDING,
+    SemanticReceiptKind.REVIEW_CONTAMINATION_SCAN,
+    SemanticReceiptKind.SENSITIVE_DATA_SCAN,
+)
 
 
 class St0705BuildError(ValueError):
@@ -292,6 +353,63 @@ def _check_pins(root: Path) -> None:
             _fail()
 
 
+def _exact_scalar_mapping(
+    value: dict[str, object], expected: dict[str, object]
+) -> None:
+    if set(value) != set(expected):
+        _fail()
+    for key, expected_value in expected.items():
+        actual = value[key]
+        if type(actual) is not type(expected_value) or actual != expected_value:
+            _fail()
+
+
+def _validate_context_contract_semantics(root: Path) -> None:
+    context = _load_yaml_bytes(_read_regular(root, CONTEXT_CONTRACT_PATH))
+    document = _mapping(context.get("document"))
+    if (
+        document.get("story_id") != "ST-0702"
+        or document.get("executable") is not False
+        or document.get("interface_only") is not True
+        or document.get("decision") != "NOT_READY"
+        or document.get("story_acceptance") is not False
+        or document.get("production_eligible") is not False
+    ):
+        _fail()
+
+    predecessors = _mapping(context.get("predecessors"))
+    st0701 = _mapping(predecessors.get("st0701"))
+    _exact_scalar_mapping(
+        _mapping(st0701.get("required_semantics")),
+        EXPECTED_CONTEXT_ST0701_SEMANTICS,
+    )
+    packing = _mapping(context.get("packing_rules"))
+    _exact_scalar_mapping(
+        _mapping(packing.get("available")),
+        EXPECTED_CONTEXT_PACKING_RULES,
+    )
+    execution = _mapping(context.get("execution_boundary"))
+    _exact_scalar_mapping(
+        _mapping(execution.get("action_counts")),
+        EXPECTED_CONTEXT_ACTION_COUNTS,
+    )
+    build = _mapping(context.get("build_boundary"))
+    if (
+        build.get("build_permitted") is not False
+        or build.get("provider_call_permitted") is not False
+        or build.get("manifest_creation_permitted") is not False
+        or build.get("decision") != "NOT_READY"
+        or execution.get("provider_call") != "NOT_EXECUTED"
+        or execution.get("network_access") != "NOT_EXECUTED"
+        or execution.get("repository_write") != "NOT_EXECUTED"
+        or execution.get("database_write") != "NOT_EXECUTED"
+        or execution.get("event_emission") != "NOT_EXECUTED"
+        or execution.get("external_action") != "NOT_EXECUTED"
+        or execution.get("external_actions") != []
+    ):
+        _fail()
+
+
 def _toolchain() -> dict[str, str]:
     versions: dict[str, str] = {
         "python_implementation": sys.implementation.name,
@@ -387,6 +505,7 @@ def build_profiles(
     contract: dict[str, object], root: Path = REPO_ROOT
 ) -> tuple[TaskValidationProfile, ...]:
     _check_pins(root)
+    _validate_context_contract_semantics(root)
     contract_bytes = _read_regular(root, CONTRACT_PATH)
     contract_sha256 = _sha(contract_bytes)
     profiles_raw = _mapping(contract.get("profiles"))
@@ -398,6 +517,15 @@ def build_profiles(
         _receipt_requirement(root, contract_sha256, item)
         for item in _sequence(contract.get("common_semantic_receipts"))
     )
+    if tuple(item.receipt_kind for item in common) != EXPECTED_COMMON_RECEIPT_KINDS:
+        _fail()
+    context_digest = Sha256Digest(PINNED_INPUTS[CONTEXT_CONTRACT_PATH])
+    for item in common[:2]:
+        if (
+            item.owner_story_id != "ST-0702"
+            or item.owner_contract_sha256 != context_digest
+        ):
+            _fail()
     built: list[TaskValidationProfile] = []
     for task_id in EXPECTED_PROFILE_IDS:
         spec = _mapping(profiles_raw[task_id])

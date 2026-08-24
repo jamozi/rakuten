@@ -112,15 +112,15 @@ ST0605_PATHS: Final = (
     Path("tests/st0605/test_negative_cases.py"),
 )
 PREDECESSOR_SHA256: Final[dict[Path, str]] = {
-    ST0702_PATHS[0]: "c0e31aec0c41ccd61d91c0f3fba464a06464686eb961e3b855cef703051184d9",
-    ST0702_PATHS[1]: "4b916ccea6906ecd6795260adbd34e0e4657dcaf7104ab84cfee60aa5c672d33",
-    ST0702_PATHS[2]: "e183a8bdce38d86ed3319131c715b29be3fb63b0d1e130230f243f0c92bb31dd",
-    ST0702_PATHS[3]: "5544813bd36df7becca7d3eb63fc3afe95c5fbed0e90a9255842a829f0c32e7e",
-    ST0702_PATHS[4]: "da627461d0264e5cfaf91236fa9dd0c2dd72166096b3a1832bab6df2022a3ac9",
+    ST0702_PATHS[0]: "b74b5f6a5cf783be0efcc2a13e84e8f870e1c994d81e30d56568b8a2bd8599c7",
+    ST0702_PATHS[1]: "b684e534268de79e4b118713f07932cfa71d10bda2e092003f00985f76811eaf",
+    ST0702_PATHS[2]: "0ec2d61cffeb9490b821c6cca0e43d1ba331f76ad7ca75ef53bfcd168ff102dd",
+    ST0702_PATHS[3]: "4aae11e681e761a350fdc710f1228935f21d2f02a103804e44d98da9fbc61936",
+    ST0702_PATHS[4]: "8891efbb099ee56740d47150d5cf9d8dd127208959b0ecfde32bce32f423a655",
     ST0702_PATHS[5]: "264e9473e46515d4992542f38ea329887a316e9e9216a4db399727679df7f6ab",
-    ST0702_PATHS[6]: "876b66542dd6f2ad338ed96aa7a2a793c3118e38329ee2da439cff8d48bc72df",
+    ST0702_PATHS[6]: "0903cd0a657f9f552d58b0b1bbd547c7c91bd9daed534fe83b8f22be534329b3",
     ST0702_PATHS[7]: "f13d528f54216dfcba9b415acba7075bc28fb5263a4fa17ba0cbdafdda97c979",
-    ST0702_PATHS[8]: "c2e116fb803a013b80ed52cde46f0f8f7bb5dd210436f89ce98f9bd1d8272808",
+    ST0702_PATHS[8]: "7d9e991e00ab1d8b4794f12c9a361eac5005f70c1a0b4635c128d7308e520ece",
     ST0703_PATHS[0]: "18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c",
     ST0703_PATHS[1]: "1f4ee219a93fb12bdd4d2d66ab2a87a33e9f608d24654aceb50e28b6efa96349",
     ST0703_PATHS[2]: "a604bfbaf4744a78eb9c556a4b27a57a40926d3a89829b32c10d216d91f3666f",
@@ -287,9 +287,59 @@ SECURITY_IDS: Final = tuple(f"SEC-AI-{number:03d}" for number in range(1, 9))
 TEST_IDS: Final = ("TST-019", "TST-020")
 
 FEATURE_COMMITS: Final = {
-    "ST-0702": "8d57e38b622285a4de1aeb2beeafcb3596b66d0b",
+    "ST-0702": "3fc1bd8b3135ecefaa05989b90906ecab8380119",
     "ST-0703": "aff94a21ac9f03886b19e32fef6e1c8b16de5b95",
     "ST-0605": "72541b0e855954005231368e48a7811abe4b3ea4",
+}
+
+EXPECTED_ST0702_ST0701_SEMANTICS: Final = {
+    "task_count": 12,
+    "complete_binding_metadata": True,
+    "source_packet_required_task_count": 9,
+    "source_packet_not_required_task_count": 3,
+    "typed_manifest_only": True,
+    "tools_allowed": False,
+    "task_activation": False,
+    "selected_provider": None,
+    "provider_call": "NOT_EXECUTED",
+    "route_execution": "NOT_EXECUTED",
+    "network_access": False,
+    "state_change_allowed": False,
+    "provider_storage_allowed": False,
+    "strict_structured_output": True,
+    "forbidden_inputs_excluded": True,
+    "required_input_checks_complete": True,
+    "formal_validation": "NOT_EXECUTED",
+}
+EXPECTED_ST0702_PACKING_RULES: Final = {
+    "typed_manifest_required": True,
+    "input_manifest_check_required": True,
+    "audit_manifest_check_required": True,
+    "source_packet_requirement_is_task_scoped": True,
+    "deterministic_repack_on_context_overflow_required": True,
+    "silent_required_fact_truncation_forbidden": True,
+    "only_allowlisted_inputs_may_be_considered": True,
+    "denied_inputs_must_be_excluded": True,
+    "task_input_and_output_bounds_are_descriptive_only": True,
+}
+EXPECTED_ST0702_ACTION_COUNTS: Final = {
+    "build": 0,
+    "select": 0,
+    "scan": 0,
+    "pack": 0,
+    "serialize": 0,
+    "hash": 0,
+    "estimate": 0,
+    "reduce_scope": 0,
+    "drop_item": 0,
+    "create_manifest": 0,
+    "provider_call": 0,
+    "network": 0,
+    "repository_write": 0,
+    "database_write": 0,
+    "job": 0,
+    "event": 0,
+    "external": 0,
 }
 
 
@@ -458,8 +508,66 @@ def _validate_authority(
     return gates, failures, controls, suites
 
 
+def _require_st0702_safe_semantics(
+    source: Mapping[str, Any], *, predecessor_key: str
+) -> None:
+    document = _mapping(source.get("document"), "ST0702_DRIFT")
+    if (
+        document.get("story_id") != "ST-0702"
+        or document.get("executable") is not False
+        or document.get("interface_only") is not True
+        or document.get("decision") != "NOT_READY"
+        or document.get("story_acceptance") is not False
+        or document.get("production_eligible") is not False
+    ):
+        _fail("ST0702_SEMANTIC_DRIFT")
+
+    predecessors = _mapping(source.get(predecessor_key), "ST0702_DRIFT")
+    st0701 = _mapping(predecessors.get("st0701"), "ST0702_DRIFT")
+    semantics = _mapping(st0701.get("required_semantics"), "ST0702_DRIFT")
+    packing = _mapping(source.get("packing_rules"), "ST0702_DRIFT")
+    available = _mapping(packing.get("available"), "ST0702_DRIFT")
+    execution = _mapping(source.get("execution_boundary"), "ST0702_DRIFT")
+    action_counts = _mapping(execution.get("action_counts"), "ST0702_DRIFT")
+    try:
+        base._strict_match(
+            semantics,
+            EXPECTED_ST0702_ST0701_SEMANTICS,
+            "st0702.predecessors.st0701.required_semantics",
+        )
+        base._strict_match(
+            available,
+            EXPECTED_ST0702_PACKING_RULES,
+            "st0702.packing_rules.available",
+        )
+        base._strict_match(
+            action_counts,
+            EXPECTED_ST0702_ACTION_COUNTS,
+            "st0702.execution_boundary.action_counts",
+        )
+    except base.StagingDeploymentContractError:
+        _fail("ST0702_SEMANTIC_DRIFT")
+
+    build = _mapping(source.get("build_boundary"), "ST0702_DRIFT")
+    if (
+        build.get("build_permitted") is not False
+        or build.get("provider_call_permitted") is not False
+        or build.get("manifest_creation_permitted") is not False
+        or build.get("decision") != "NOT_READY"
+        or execution.get("provider_call") != "NOT_EXECUTED"
+        or execution.get("network_access") != "NOT_EXECUTED"
+        or execution.get("repository_write") != "NOT_EXECUTED"
+        or execution.get("database_write") != "NOT_EXECUTED"
+        or execution.get("event_emission") != "NOT_EXECUTED"
+        or execution.get("external_action") != "NOT_EXECUTED"
+        or execution.get("external_actions") != []
+    ):
+        _fail("ST0702_SEMANTIC_DRIFT")
+
+
 def _validate_predecessors(root: Path) -> None:
     st0702 = _load_yaml_mapping(root, ST0702_PATHS[1])
+    _require_st0702_safe_semantics(st0702, predecessor_key="predecessors")
     st0702_document = _mapping(st0702.get("document"), "ST0702_DRIFT")
     if (
         st0702_document.get("executable") is not False
@@ -468,6 +576,7 @@ def _validate_predecessors(root: Path) -> None:
     ):
         _fail("ST0702_SEMANTIC_DRIFT")
     st0702_plan = _load_json_mapping(root, ST0702_PATHS[2])
+    _require_st0702_safe_semantics(st0702_plan, predecessor_key="predecessor_bindings")
     st0702_execution = _mapping(st0702_plan.get("execution_boundary"), "ST0702_DRIFT")
     if (
         st0702_execution.get("provider_call") != "NOT_EXECUTED"

@@ -3,37 +3,45 @@ document:
   schema_version: 1
   story_id: ST-0705
   status: LOCAL_IMPLEMENTATION_COMPLETE
-  recorded_at: '2026-08-24T02:33:40Z'
+  recorded_at: '2026-08-24T07:42:22Z'
   authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
 base:
-  branch: codex/raos-local-integration-complete
-  base_commit_sha: 6ee875b7d14e35db9cc4b5d3ea8a6fb8c3cd7cd5
+  branch: codex/st0705-local-complete-20260824
+  base_commit_sha: 3fc1bd8b3135ecefaa05989b90906ecab8380119
   implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
 runtime:
   contract:
     path: changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml
-    sha256: 82a157b6973db54bece7ee67a05b7321bc85f1e6ca5270039077c3cd20873bfb
+    sha256: 892369944ee610c53c0ac61cac8c4bb2c6d3d10488493ce516c97fd609966f28
   owner_generator:
     path: scripts/build_st0705_ai_output_validation_runtime.py
-    sha256: 9a25299d7529739272bf1a30cf683180e1c8c5039f9e090eeb3960d5a2381af3
+    sha256: 9e7b6e081ea516e28bdf664207234a43002ee1874b63816bd24f934d5119ae4f
   runtime_manifest:
     path: changes/st-0705/runtime-manifest.v1.yaml
-    sha256: 51ea6c318a58e549397826ab7a12a377d59213767a2f34960ebcc7fe7d672d64
-    source_artifact_count: 39
+    sha256: 1e8da112bdcd3413565433c368994777d94c636e0955f8cc1c525ec206ba17f4
+    source_artifact_count: 40
     generated_artifact_count: 2
   profile_registry:
     path: changes/st-0705/generated/ai-output-validation-profiles.v1.json
-    sha256: 5034379d1c8800f6cacf33bc7b2022e0e471189490c28c1c8d03eac429dd5e27
+    sha256: bc102480a6eb56f030e27d92e4dc239851ea482474e747ab408dfa23f962971a
     exact_profile_count: 12
     exact_schema_count: 12
   recorded_fixture:
     path: changes/st-0705/generated/ai-output-validation-pass.v1.json
-    sha256: ce3ac4a0680cad45f60951a873d408789b24d66683b523695484219552102f4f
+    sha256: afc22bd0c54169a19401b4156c4f66887888d86de2311143bd949b8ede2c008d
   preserved_historical_reference:
     manifest_path: changes/st-0705/manifest.yaml
-    manifest_sha256: 25191a2aff14f18fbf61303559b21a08d483d00e3dbd5de4eb69ba92261514ac
+    manifest_sha256: 642e38afc998b14af9374850600318f14de625c9276947d8e8b90d5696169d86
     generated_plan_path: changes/st-0705/generated/ai-output-validation-reference-plan.v1.json
-    generated_plan_sha256: 3689c75cba6032f96a3efcfb0e98fa2363a0aebb98846d72f9dcfabc4f25ca88
+    generated_plan_sha256: 9a50aae95b4b6233f82a1671dd87882512d500ffa56b7eca11afc6c19543e5bd
+predecessor_reconciliation:
+  story_id: ST-0702
+  exact_commit_sha: 3fc1bd8b3135ecefaa05989b90906ecab8380119
+  context_contract_sha256: b684e534268de79e4b118713f07932cfa71d10bda2e092003f00985f76811eaf
+  exact_runtime_receipt_count: 2
+  historical_pinned_artifact_count: 9
+  semantic_revalidation: PASS
+  unsafe_hash_only_rebind: FORBIDDEN
 validation_boundary:
   evaluator: PURE_DETERMINISTIC
   ordered_gates:
@@ -105,28 +113,63 @@ verification:
       result: PASS
     - check: tests_st0705_runtime
       result: PASS
-      passed: 42
+      passed: 44
     - check: historical_tests_st0705
       result: PASS
-      passed: 73
+      passed: 74
       environment_note: TMPDIR=/tmp avoids non-POSIX mode semantics on the Windows-mounted default temp directory
     - check: combined_focused_tests
       result: PASS
-      passed: 115
+      passed: 118
+    - check: predecessor_tests_st0702
+      result: PASS
+      passed: 38
+    - check: affected_tests_st0706
+      result: EXPECTED_OWNER_REBIND_REQUIRED
+      passed: 75
+      failed: 3
+      error_class: PINNED_SOURCE_HASH_MISMATCH
+    - check: affected_tests_st0707
+      result: EXPECTED_OWNER_REBIND_REQUIRED
+      passed: 50
+      failed: 3
+      errors: 9
+      error_class: ST0705_ARTIFACT_HASH_DRIFT
+    - check: affected_tests_st0708
+      result: EXPECTED_TRANSITIVE_OWNER_REBIND_REQUIRED
+      passed: 141
+      failed: 5
+      errors: 12
+      error_class: PINNED_INPUT_DRIFT
+    - check: affected_tests_st0709
+      result: EXPECTED_TRANSITIVE_OWNER_REBIND_REQUIRED
+      passed: 5
+      failed: 1
+      error_class: ST0709_AI_GOVERNANCE_BUILD_FAILED
     - check: ruff_format_and_lint
       result: PASS
-      files: 13
+      files: 7
     - check: strict_mypy
       result: PASS
-      files: 5
-    - check: py_compile
+      files: 6
+    - check: ast_parse
       result: PASS
+      files: 7
     - check: fresh_import
       result: PASS
     - check: focused_changed_file_secret_scan
       result: PASS
-      scanned_files: 10
+      scanned_files: 18
       findings: 0
+    - check: workspace_layout_no_write_check
+      result: PASS
+      directories: 42
+    - check: canonical_import_verification
+      result: PASS
+      imported_files: 105
+      verified_package_checksums: 104
+      verified_package_manifest_entries: 103
+      read_order: PASS
     - check: git_diff_check
       result: PASS
 formal_and_external_boundaries:
@@ -143,6 +186,35 @@ formal_and_external_boundaries:
   formal_validated_claim: FORBIDDEN
 debt:
   introduced_local_debt: []
+  deferred_integration_rebinds:
+    - id: ST0705-DOWNSTREAM-OWNER-REBIND
+      state: OPEN
+      closure_owner_stories:
+        - ST-0706
+        - ST-0707
+        - ST-0708
+        - ST-0709
+      reason: >-
+        Those owner contracts and generated artifacts intentionally fail closed
+        on the repaired ST-0705 byte identities until regenerated in dependency
+        order by their owning Stories.
+      safe_impact: >-
+        Only local exact-pin verification and recorded-fixture loading are
+        refused; no provider, publication, release, staging, or Production
+        authority is enabled.
+      observed_checks:
+        - command: >-
+            pytest -p no:cacheprovider -q tests/st0706
+          result: 3 failed, 75 passed
+        - command: >-
+            pytest -p no:cacheprovider -q tests/st0707 tests/st0707_runtime
+          result: 3 failed, 50 passed, 9 errors
+        - command: >-
+            pytest -p no:cacheprovider -q tests/st0708 tests/st0708_v2
+          result: 5 failed, 141 passed, 12 errors
+        - command: >-
+            pytest -p no:cacheprovider -q tests/st0709 tests/st0709_v2
+          result: 1 failed, 5 passed
   deferred_canonical_limitations:
     - id: ST0705-LIM-AIT004-CONTENT-AST
       state: UNEVALUABLE

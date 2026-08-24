@@ -14,6 +14,13 @@ JSON object bytes.  JSON Schema uses Draft 2020-12 with a format checker, and
 UUID/resource, scalar, order, policy, taint, review, sensitive-data, and
 semantic checks use explicit profile locators and hash-bound receipts.
 
+The ST-0702 `CONTEXT_MANIFEST_BINDING` and `INPUT_TAINT_SCAN` receipts bind
+exactly to the current non-executable context contract. Owner generation also
+rechecks its typed-manifest, 9/3 Source Packet requirement split, denylist,
+strict-output, disabled tool/network/state/storage, and zero-action semantics.
+Changing bytes and merely updating a digest cannot admit an unsafe context
+contract.
+
 ST-0605 evidence coverage is accepted only through an exact binding of the
 output, Article Version, Article body, Source Packet version/content, complete
 Claim set, evaluation input, and validated report hashes.  A valid blocked

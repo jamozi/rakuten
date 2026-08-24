@@ -24,11 +24,11 @@ common_semantic_receipts:
   - receipt_kind: CONTEXT_MANIFEST_BINDING
     owner_story_id: ST-0702
     owner_contract_path: changes/st-0702/contracts/context-pack-reference-plan.v1.yaml
-    owner_contract_sha256: 4b916ccea6906ecd6795260adbd34e0e4657dcaf7104ab84cfee60aa5c672d33
+    owner_contract_sha256: b684e534268de79e4b118713f07932cfa71d10bda2e092003f00985f76811eaf
   - receipt_kind: INPUT_TAINT_SCAN
     owner_story_id: ST-0702
     owner_contract_path: changes/st-0702/contracts/context-pack-reference-plan.v1.yaml
-    owner_contract_sha256: 4b916ccea6906ecd6795260adbd34e0e4657dcaf7104ab84cfee60aa5c672d33
+    owner_contract_sha256: b684e534268de79e4b118713f07932cfa71d10bda2e092003f00985f76811eaf
   - receipt_kind: PROVIDER_SUCCESS_SAFETY
     owner_story_id: ST-0703
     owner_contract_path: changes/st-0703/contracts/openai-responses-adapter.v1.yaml
