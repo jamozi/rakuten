@@ -1,0 +1,155 @@
+document:
+  id: RAOS-ST1602-SLO-ALERT-RUNTIME-002
+  version: 2.0.0
+  story_id: ST-1602
+  classification: LOCAL_SYNTHETIC_NON_ATTESTING_SLO_ALERT_RUNTIME
+  status: LOCAL_CODE_COMPLETE_CANDIDATE
+  executable_external_actions: false
+  production_eligible: false
+  approval: null
+
+authority:
+  precedence: CANONICAL_INTEGRATION_THEN_STORY_THEN_CATALOGS
+  sources:
+    - role: open_decisions
+      uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - role: test_catalog
+      uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - role: story
+      uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    - role: operations_design
+      uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+      sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+    - role: slo_catalog
+      uri: repo://docs/canonical/06_ops/RAOS_12_slo_catalog_v1.0.yaml
+      sha256: 320a880073e3c9d87c361fa8620e1202898ffa719e2b8e94872d185415abcdf2
+    - role: alert_catalog
+      uri: repo://docs/canonical/06_ops/RAOS_12_alert_catalog_v1.0.yaml
+      sha256: f180e950f659d27e9270b6c1f9c1dcb6d0fa6194acdc1fdd7026ac7cea560be0
+    - role: runbook_catalog
+      uri: repo://docs/canonical/06_ops/RAOS_12_runbook_index_v1.0.yaml
+      sha256: 2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100
+    - role: security_design
+      uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+      sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+    - role: security_controls
+      uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+
+dependency:
+  story_id: ST-1601
+  sources:
+    - uri: repo://changes/st-1601/README.md
+      sha256: 9eade86a2f3f7cae147d0ca26db1be0828be09250b068ac8f78832cf36ca65ef
+    - uri: repo://python/raos/domain/ops/telemetry.py
+      sha256: 6639598c0d7019297a9843b72a06cac35a2eb4a6fd76cfc24d64cbd8dbd64e93
+    - uri: repo://python/raos/ports/telemetry.py
+      sha256: 7892fc09f5913b96be84b35e1da118cd0a031669cca133bdcb58af8cc8fb2db9
+    - uri: repo://python/raos/application/ops/telemetry.py
+      sha256: ae9f2c2bede2d4b4f251f6b28f1a474096870de30b1818fe81a5153d308cf016
+    - uri: repo://python/raos/adapters/recorded_telemetry.py
+      sha256: dc958ba32e94ab2aa601bac471958cc9f5a74a0dedfda1d0f6e8a17a32ca03ee
+  interface_status: AVAILABLE_RECORDED_INPUT_ONLY
+  live_connection: NOT_EXECUTED
+
+v1_compatibility:
+  semantics: UNCHANGED
+  artifacts:
+    - uri: repo://changes/st-1602/README.md
+      sha256: 9ed7dfa14f736cf30aa166c8c79d3f42386abfab90ec31b2792454e89ad976bc
+    - uri: repo://changes/st-1602/contracts/slo-alert-reference-plan.v1.yaml
+      sha256: 31c8d3c57501e351bd9bcde3c796abe70eb80277b4cb7a1c738cf93817ba65b1
+    - uri: repo://changes/st-1602/generated/slo-alert-reference-plan.v1.json
+      sha256: 34e613c246dba10f6ff390d0a676d42b61701f2d47251a1fb81a8e8aa19b8de6
+    - uri: repo://changes/st-1602/manifest.yaml
+      sha256: c1854c8a16bf1fb10e1ab10fb38498511cca5d5cf62fc50e505c4bf13b62dc14
+    - uri: repo://scripts/build_st1602_slo_alert_reference_plan.py
+      sha256: 9fd96a891ad72db9f46201c5b8b8c69f9e1156484ca7b845567c026151fe92aa
+
+implementation_helper:
+  uri: repo://scripts/build_st1505_staging_deployment.py
+  sha256: ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5
+  purpose: OWNER_SAFE_LOCAL_FILE_IO_ONLY
+  semantics: NO_RUNTIME_AUTHORITY
+
+compiler:
+  exact_slo_count: 14
+  exact_alert_count: 20
+  exact_runbook_count: 20
+  preserve_catalog_order: true
+  targets_are_provisional: true
+  actual_measurement_claim: false
+  missing_is_unavailable: true
+  invalid_is_unavailable: true
+  stale_is_unavailable: true
+  zero_denominator_is_unavailable: true
+
+alert_routing:
+  owner: Operations Owner
+  owner_source: OD-011
+  mappings:
+    - {alert_id: ALT-001, runbook_id: RB-001}
+    - {alert_id: ALT-002, runbook_id: RB-002}
+    - {alert_id: ALT-003, runbook_id: RB-003}
+    - {alert_id: ALT-004, runbook_id: RB-004}
+    - {alert_id: ALT-005, runbook_id: RB-005}
+    - {alert_id: ALT-006, runbook_id: RB-006}
+    - {alert_id: ALT-007, runbook_id: RB-006}
+    - {alert_id: ALT-008, runbook_id: RB-009}
+    - {alert_id: ALT-009, runbook_id: RB-011}
+    - {alert_id: ALT-010, runbook_id: RB-013}
+    - {alert_id: ALT-011, runbook_id: RB-017}
+    - {alert_id: ALT-012, runbook_id: RB-016}
+    - {alert_id: ALT-013, runbook_id: RB-002}
+    - {alert_id: ALT-014, runbook_id: RB-010}
+    - {alert_id: ALT-015, runbook_id: RB-012}
+    - {alert_id: ALT-016, runbook_id: RB-014}
+    - {alert_id: ALT-017, runbook_id: RB-014}
+    - {alert_id: ALT-018, runbook_id: RB-007}
+    - {alert_id: ALT-019, runbook_id: RB-018}
+    - {alert_id: ALT-020, runbook_id: RB-017}
+  notification_mode: LOCAL_LOG_ONLY_DISABLED
+  notifications_enabled: false
+  channel: null
+  contact: null
+  delivery_claim: false
+
+runtime_boundary:
+  source: SYNTHETIC_RECORDED_FIXTURE_ONLY
+  auto_evaluation_loop: false
+  clock_source: CALLER_SUPPLIED
+  network: FORBIDDEN
+  credentials: ABSENT
+  smtp: ABSENT
+  webhook: ABSENT
+  provider: ABSENT
+  external_actions: 0
+  production: NOT_AUTHORIZED
+
+journal:
+  mode: OWNER_PRIVATE_SQLITE_APPEND_ONLY
+  schema_version: 2
+  hash_algorithm: SHA-256
+  hash_chain: true
+  compare_and_swap: true
+  idempotency: true
+  restart_recovery: true
+  commit_ambiguity_recovery: true
+  cross_restart_rollback_detection: NOT_CLAIMED_NO_EXTERNAL_ANCHOR
+  exact_schema: true
+  owner_directory_mode: '0700'
+  database_file_mode: '0600'
+
+verification_boundary:
+  formal_tst_027: NOT_EXECUTED
+  formal_tst_028: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  notification_delivery: NOT_EXECUTED
+  actual_slo_attainment: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

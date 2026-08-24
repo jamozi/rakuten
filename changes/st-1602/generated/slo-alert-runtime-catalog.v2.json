@@ -1,0 +1,1130 @@
+{
+  "document": {
+    "id": "RAOS-ST1602-SLO-ALERT-RUNTIME-CATALOG-002",
+    "version": "2.0.0",
+    "story_id": "ST-1602",
+    "contract_sha256": "3737fd25156119db659138bf372b68a8730261f9785aa12b2d8be65bbae27095",
+    "classification": "LOCAL_SYNTHETIC_NON_ATTESTING_SLO_ALERT_RUNTIME"
+  },
+  "authority": {
+    "slo_catalog_sha256": "320a880073e3c9d87c361fa8620e1202898ffa719e2b8e94872d185415abcdf2",
+    "alert_catalog_sha256": "f180e950f659d27e9270b6c1f9c1dcb6d0fa6194acdc1fdd7026ac7cea560be0",
+    "runbook_catalog_sha256": "2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100"
+  },
+  "slos": [
+    {
+      "id": "SLO-001",
+      "name": "Public availability",
+      "scope": "public web",
+      "sli": "successful eligible requests / eligible requests",
+      "target": "99.5%",
+      "window": "rolling 30d",
+      "notes": "planned maintenance and abusive traffic exclusion versioned",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "RATIO_MINIMUM",
+        "components": [
+          "numerator",
+          "denominator"
+        ],
+        "thresholds": [
+          995000,
+          1000000
+        ]
+      }
+    },
+    {
+      "id": "SLO-002",
+      "name": "Admin availability",
+      "scope": "admin",
+      "sli": "successful eligible admin requests / eligible requests",
+      "target": "99.0%",
+      "window": "rolling 30d",
+      "notes": "MVP business-hours operation",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "RATIO_MINIMUM",
+        "components": [
+          "numerator",
+          "denominator"
+        ],
+        "thresholds": [
+          990000,
+          1000000
+        ]
+      }
+    },
+    {
+      "id": "SLO-003",
+      "name": "Public API latency",
+      "scope": "public api",
+      "sli": "p95 server duration",
+      "target": "<=500 ms",
+      "window": "rolling 7d",
+      "notes": "cache hit/miss split",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "UPPER_BOUND",
+        "components": [
+          "p95_milliseconds"
+        ],
+        "thresholds": [
+          500
+        ]
+      }
+    },
+    {
+      "id": "SLO-004",
+      "name": "Admin API latency",
+      "scope": "admin api",
+      "sli": "p95 non-job command/query duration",
+      "target": "<=1000 ms",
+      "window": "rolling 7d",
+      "notes": "long jobs return 202",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "UPPER_BOUND",
+        "components": [
+          "p95_milliseconds"
+        ],
+        "thresholds": [
+          1000
+        ]
+      }
+    },
+    {
+      "id": "SLO-005",
+      "name": "Publication completion",
+      "scope": "publishing",
+      "sli": "publish jobs completed or safely failed within threshold",
+      "target": "99% within 5 min",
+      "window": "rolling 30d",
+      "notes": "provider-independent",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "RATIO_MINIMUM",
+        "components": [
+          "numerator",
+          "denominator"
+        ],
+        "thresholds": [
+          990000,
+          1000000
+        ]
+      }
+    },
+    {
+      "id": "SLO-006",
+      "name": "Affiliate click continuity",
+      "scope": "public CTA",
+      "sli": "eligible clicks reaching direct Rakuten navigation when beacon fails",
+      "target": "99.9%",
+      "window": "rolling 30d",
+      "notes": "synthetic plus client telemetry",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "RATIO_MINIMUM",
+        "components": [
+          "numerator",
+          "denominator"
+        ],
+        "thresholds": [
+          999000,
+          1000000
+        ]
+      }
+    },
+    {
+      "id": "SLO-007",
+      "name": "Job terminal success",
+      "scope": "workers",
+      "sli": "succeeded / terminal jobs by type",
+      "target": ">=99% excluding validated business rejection",
+      "window": "rolling 7d",
+      "notes": "retry storm separately monitored",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "RATIO_MINIMUM",
+        "components": [
+          "numerator",
+          "denominator"
+        ],
+        "thresholds": [
+          990000,
+          1000000
+        ]
+      }
+    },
+    {
+      "id": "SLO-008",
+      "name": "Queue age",
+      "scope": "async",
+      "sli": "oldest ready message age",
+      "target": "<10 min P95",
+      "window": "rolling 24h",
+      "notes": "critical queues lower threshold",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "UPPER_BOUND",
+        "components": [
+          "p95_seconds"
+        ],
+        "thresholds": [
+          600
+        ]
+      }
+    },
+    {
+      "id": "SLO-009",
+      "name": "Freshness scan completion",
+      "scope": "freshness",
+      "sli": "scheduled scans completed by deadline",
+      "target": ">=99%",
+      "window": "rolling 30d",
+      "notes": "category SLA provisional",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "RATIO_MINIMUM",
+        "components": [
+          "numerator",
+          "denominator"
+        ],
+        "thresholds": [
+          990000,
+          1000000
+        ]
+      }
+    },
+    {
+      "id": "SLO-010",
+      "name": "Analytics import freshness",
+      "scope": "analytics",
+      "sli": "latest successful GSC/GA4 import age",
+      "target": "<=72 h",
+      "window": "daily",
+      "notes": "provider availability considered",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "UPPER_BOUND",
+        "components": [
+          "age_seconds"
+        ],
+        "thresholds": [
+          259200
+        ]
+      }
+    },
+    {
+      "id": "SLO-011",
+      "name": "Revenue reconciliation",
+      "scope": "finance",
+      "sli": "committed import batches reconciled",
+      "target": "100%",
+      "window": "per batch",
+      "notes": "no partial commit",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "RATIO_MINIMUM",
+        "components": [
+          "numerator",
+          "denominator"
+        ],
+        "thresholds": [
+          1000000,
+          1000000
+        ]
+      }
+    },
+    {
+      "id": "SLO-012",
+      "name": "Core Web Vitals",
+      "scope": "public UX",
+      "sli": "75th percentile by device",
+      "target": "LCP<=2.5s, INP<=200ms, CLS<=0.1",
+      "window": "rolling 28d",
+      "notes": "field target, not achieved until RUM",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "COMPOSITE_UPPER_BOUND",
+        "components": [
+          "lcp_milliseconds",
+          "inp_milliseconds",
+          "cls_ppm"
+        ],
+        "thresholds": [
+          2500,
+          200,
+          100000
+        ]
+      }
+    },
+    {
+      "id": "SLO-013",
+      "name": "DB recovery point",
+      "scope": "recovery",
+      "sli": "maximum committed data loss in drill",
+      "target": "<=15 min",
+      "window": "per drill",
+      "notes": "design target",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "UPPER_BOUND",
+        "components": [
+          "data_loss_seconds"
+        ],
+        "thresholds": [
+          900
+        ]
+      }
+    },
+    {
+      "id": "SLO-014",
+      "name": "DB recovery time",
+      "scope": "recovery",
+      "sli": "incident declaration to validated core service",
+      "target": "<=4 h",
+      "window": "per drill",
+      "notes": "MVP design target",
+      "status": "PROVISIONAL_TARGET",
+      "implementation_status": "NOT_STARTED",
+      "measurement_status": "NOT_EXECUTED",
+      "evaluation": {
+        "kind": "UPPER_BOUND",
+        "components": [
+          "recovery_seconds"
+        ],
+        "thresholds": [
+          14400
+        ]
+      }
+    }
+  ],
+  "alerts": [
+    {
+      "id": "ALT-001",
+      "severity": "SEV1",
+      "name": "Publication safety",
+      "condition": "unauthorized publish or snapshot hash mismatch",
+      "detection": "immediate",
+      "initial_action": "activate publication kill switch",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-001",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "IMMEDIATE",
+        "variants": [
+          {
+            "variant": "DEFAULT",
+            "duration_seconds": 0,
+            "cycle_required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-002",
+      "severity": "SEV1",
+      "name": "Affiliate integrity",
+      "condition": "destination mismatch/invalid affiliate link widespread",
+      "detection": "immediate",
+      "initial_action": "activate affiliate kill switch",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-002",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "IMMEDIATE",
+        "variants": [
+          {
+            "variant": "DEFAULT",
+            "duration_seconds": 0,
+            "cycle_required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-003",
+      "severity": "SEV1",
+      "name": "Credential compromise",
+      "condition": "provider/cloud/admin credential suspected",
+      "detection": "immediate",
+      "initial_action": "revoke credential and isolate",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-003",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "IMMEDIATE",
+        "variants": [
+          {
+            "variant": "DEFAULT",
+            "duration_seconds": 0,
+            "cycle_required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-004",
+      "severity": "SEV1",
+      "name": "Public data leak",
+      "condition": "confidential/internal fields exposed publicly",
+      "detection": "immediate",
+      "initial_action": "block route/CDN purge/incident",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-004",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "IMMEDIATE",
+        "variants": [
+          {
+            "variant": "DEFAULT",
+            "duration_seconds": 0,
+            "cycle_required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-005",
+      "severity": "SEV2",
+      "name": "DB unavailable",
+      "condition": "core DB connectivity/health failure",
+      "detection": "5 min",
+      "initial_action": "fail public to last snapshot; investigate",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-005",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "DURATION",
+        "variants": [
+          {
+            "variant": "DEFAULT",
+            "duration_seconds": 300,
+            "cycle_required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-006",
+      "severity": "SEV2",
+      "name": "Queue backlog",
+      "condition": "oldest critical job above threshold",
+      "detection": "10 min",
+      "initial_action": "scale/stop producers/inspect DLQ",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-006",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "DURATION",
+        "variants": [
+          {
+            "variant": "DEFAULT",
+            "duration_seconds": 600,
+            "cycle_required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-007",
+      "severity": "SEV2",
+      "name": "Retry storm",
+      "condition": "provider/job retry rate spike",
+      "detection": "10 min",
+      "initial_action": "circuit breaker",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-006",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "DURATION",
+        "variants": [
+          {
+            "variant": "DEFAULT",
+            "duration_seconds": 600,
+            "cycle_required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-008",
+      "severity": "SEV2",
+      "name": "AI zero tolerance",
+      "condition": "fabrication/review/injection/secret finding",
+      "detection": "immediate",
+      "initial_action": "disable route and quarantine",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-009",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "IMMEDIATE",
+        "variants": [
+          {
+            "variant": "DEFAULT",
+            "duration_seconds": 0,
+            "cycle_required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-009",
+      "severity": "SEV2",
+      "name": "Revenue mismatch",
+      "condition": "dry run/commit/provider totals mismatch",
+      "detection": "per batch",
+      "initial_action": "block commit",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-011",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "CYCLE",
+        "variants": [
+          {
+            "variant": "PER_BATCH",
+            "duration_seconds": null,
+            "cycle_required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-010",
+      "severity": "SEV2",
+      "name": "Backup failure",
+      "condition": "scheduled backup or copy failure",
+      "detection": "30 min",
+      "initial_action": "protect changes and investigate",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-013",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "DURATION",
+        "variants": [
+          {
+            "variant": "DEFAULT",
+            "duration_seconds": 1800,
+            "cycle_required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-011",
+      "severity": "SEV2",
+      "name": "Security auth anomaly",
+      "condition": "MFA bypass/privilege anomaly",
+      "detection": "immediate",
+      "initial_action": "disable account",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-017",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "IMMEDIATE",
+        "variants": [
+          {
+            "variant": "DEFAULT",
+            "duration_seconds": 0,
+            "cycle_required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-012",
+      "severity": "SEV3",
+      "name": "High stale exposure",
+      "condition": "stale critical fact sessions above threshold",
+      "detection": "daily",
+      "initial_action": "degrade/refresh",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-016",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "CYCLE",
+        "variants": [
+          {
+            "variant": "DAILY",
+            "duration_seconds": null,
+            "cycle_required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-013",
+      "severity": "SEV3",
+      "name": "Affiliate link degradation",
+      "condition": "link health below SLO",
+      "detection": "15 min",
+      "initial_action": "scope kill switch",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-002",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "DURATION",
+        "variants": [
+          {
+            "variant": "DEFAULT",
+            "duration_seconds": 900,
+            "cycle_required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-014",
+      "severity": "SEV3",
+      "name": "Analytics import late",
+      "condition": "GSC/GA4 import age above threshold",
+      "detection": "daily",
+      "initial_action": "retry and mark dashboard stale",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-010",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "CYCLE",
+        "variants": [
+          {
+            "variant": "DAILY",
+            "duration_seconds": null,
+            "cycle_required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-015",
+      "severity": "SEV3",
+      "name": "Cost anomaly",
+      "condition": "AWS/AI/provider spend velocity above budget",
+      "detection": "hourly",
+      "initial_action": "throttle/disable optional jobs",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-012",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "CYCLE",
+        "variants": [
+          {
+            "variant": "HOURLY",
+            "duration_seconds": null,
+            "cycle_required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-016",
+      "severity": "SEV3",
+      "name": "Public error budget burn",
+      "condition": "fast/slow burn",
+      "detection": "5/30 min",
+      "initial_action": "rollback recent release",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-014",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "DUAL_DURATION",
+        "variants": [
+          {
+            "variant": "FAST",
+            "duration_seconds": 300,
+            "cycle_required": false
+          },
+          {
+            "variant": "SLOW",
+            "duration_seconds": 1800,
+            "cycle_required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-017",
+      "severity": "SEV3",
+      "name": "Core Web Vitals regression",
+      "condition": "field/lab threshold regression",
+      "detection": "daily/release",
+      "initial_action": "investigate asset/script",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-014",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "DUAL_CYCLE",
+        "variants": [
+          {
+            "variant": "DAILY",
+            "duration_seconds": null,
+            "cycle_required": true
+          },
+          {
+            "variant": "RELEASE",
+            "duration_seconds": null,
+            "cycle_required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-018",
+      "severity": "SEV4",
+      "name": "DLQ item",
+      "condition": "new terminal/quarantined job",
+      "detection": "hourly",
+      "initial_action": "triage by job type",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-007",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "CYCLE",
+        "variants": [
+          {
+            "variant": "HOURLY",
+            "duration_seconds": null,
+            "cycle_required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-019",
+      "severity": "SEV4",
+      "name": "Policy/reference due",
+      "condition": "external rules snapshot review overdue",
+      "detection": "weekly",
+      "initial_action": "assign reviewer",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-018",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "CYCLE",
+        "variants": [
+          {
+            "variant": "WEEKLY",
+            "duration_seconds": null,
+            "cycle_required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "ALT-020",
+      "severity": "SEV4",
+      "name": "Access review due",
+      "condition": "admin/service access review overdue",
+      "detection": "monthly",
+      "initial_action": "complete review",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "route": {
+        "owner": "Operations Owner",
+        "runbook_id": "RB-017",
+        "notification_mode": "LOCAL_LOG_ONLY_DISABLED"
+      },
+      "hold": {
+        "kind": "CYCLE",
+        "variants": [
+          {
+            "variant": "MONTHLY",
+            "duration_seconds": null,
+            "cycle_required": true
+          }
+        ]
+      }
+    }
+  ],
+  "runbooks": [
+    {
+      "id": "RB-001",
+      "title": "Unauthorized publication",
+      "severity": "SEV1",
+      "minimum_steps": [
+        "publication kill switch",
+        "preserve snapshot/audit",
+        "rollback",
+        "scope investigation"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-002",
+      "title": "Affiliate link incident",
+      "severity": "SEV1",
+      "minimum_steps": [
+        "affiliate kill switch",
+        "validate destination",
+        "purge cache",
+        "re-enable bounded"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-003",
+      "title": "Credential compromise",
+      "severity": "SEV1",
+      "minimum_steps": [
+        "revoke",
+        "rotate",
+        "audit access",
+        "restore service"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-004",
+      "title": "Public data exposure",
+      "severity": "SEV1",
+      "minimum_steps": [
+        "block route",
+        "purge",
+        "preserve evidence",
+        "notification decision"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-005",
+      "title": "Database outage",
+      "severity": "SEV2",
+      "minimum_steps": [
+        "freeze writes",
+        "serve last snapshot",
+        "failover/restore",
+        "validate"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-006",
+      "title": "Queue backlog/retry storm",
+      "severity": "SEV2",
+      "minimum_steps": [
+        "pause producer",
+        "circuit breaker",
+        "scale worker",
+        "replay safely"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-007",
+      "title": "DLQ/quarantine triage",
+      "severity": "SEV4",
+      "minimum_steps": [
+        "classify",
+        "inspect redacted artifact",
+        "fix",
+        "idempotent replay"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-008",
+      "title": "Rakuten API outage/schema drift",
+      "severity": "SEV2/3",
+      "minimum_steps": [
+        "circuit break",
+        "mark stale",
+        "safe degrade",
+        "contract update"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-009",
+      "title": "OpenAI outage/model regression",
+      "severity": "SEV2/3",
+      "minimum_steps": [
+        "disable route",
+        "use approved fallback only",
+        "quarantine",
+        "eval before resume"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-010",
+      "title": "GSC/GA4 import failure",
+      "severity": "SEV3",
+      "minimum_steps": [
+        "mark stale",
+        "retry",
+        "provider status",
+        "backfill"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-011",
+      "title": "Revenue import mismatch",
+      "severity": "SEV2",
+      "minimum_steps": [
+        "block commit",
+        "compare file/provider",
+        "fix mapping",
+        "new dry run"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-012",
+      "title": "Cost anomaly",
+      "severity": "SEV3",
+      "minimum_steps": [
+        "stop optional AI/jobs",
+        "check abuse",
+        "budget owner approval"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-013",
+      "title": "Backup restore",
+      "severity": "SEV2",
+      "minimum_steps": [
+        "isolate environment",
+        "restore DB/object/config",
+        "integrity checks",
+        "RTO/RPO record"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-014",
+      "title": "Release rollback",
+      "severity": "SEV2/3",
+      "minimum_steps": [
+        "stop rollout",
+        "restore artifact/snapshot",
+        "migration strategy",
+        "smoke"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-015",
+      "title": "Kill switch activation/deactivation",
+      "severity": "SEV1/2",
+      "minimum_steps": [
+        "step-up",
+        "scope/reason",
+        "generation update",
+        "synthetic verify"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-016",
+      "title": "Stale product/content",
+      "severity": "SEV3",
+      "minimum_steps": [
+        "identify affected claims",
+        "hide values/CTA",
+        "refresh",
+        "reapprove"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-017",
+      "title": "Security vulnerability",
+      "severity": "varies",
+      "minimum_steps": [
+        "triage severity",
+        "mitigate",
+        "patch/test",
+        "exception if approved"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-018",
+      "title": "External policy change",
+      "severity": "varies",
+      "minimum_steps": [
+        "capture official change",
+        "impact query",
+        "kill/hold affected flow",
+        "approve patch"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-019",
+      "title": "Domain/DNS/certificate issue",
+      "severity": "SEV1/2",
+      "minimum_steps": [
+        "registrar/DNS verify",
+        "restore records",
+        "certificate rotate",
+        "monitor"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "RB-020",
+      "title": "Disaster recovery declaration",
+      "severity": "SEV1",
+      "minimum_steps": [
+        "incident commander",
+        "recovery site/restore",
+        "business communication",
+        "return plan"
+      ],
+      "document_status": "DESIGNED_INDEX_ONLY",
+      "implementation_status": "NOT_STARTED",
+      "drill_status": "NOT_EXECUTED"
+    }
+  ],
+  "boundary": {
+    "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+    "notifications_enabled": false,
+    "notification_mode": "LOCAL_LOG_ONLY_DISABLED",
+    "external_action_count": 0,
+    "formal_tst_027": "NOT_EXECUTED",
+    "formal_tst_028": "NOT_EXECUTED",
+    "production": "NOT_AUTHORIZED"
+  }
+}

@@ -1,0 +1,26 @@
+document:
+  id: RAOS-ST1602-SLO-ALERT-LOCAL-COMPLETION-002
+  version: 2.0.0
+  story_id: ST-1602
+  classification: LOCAL_GENERATED_NON_ATTESTING_EVIDENCE
+inventory:
+  typed_slo_rules: 14
+  typed_alert_rules: 20
+  runbook_catalog_rows: 20
+  owner_routes: 20
+  runbook_routes: 20
+  recorded_slo_windows: 14
+  recorded_alert_observations: 20
+safety_boundary:
+  od_011: HUMAN_DECISION_REQUIRED
+  notification_mode: LOCAL_LOG_ONLY_DISABLED
+  notification_delivery_claim: false
+  actual_slo_attainment_claim: false
+  external_action_count: 0
+  formal_tst_027: NOT_EXECUTED
+  formal_tst_028: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  effective_canonical_status: UNCHANGED

@@ -1,0 +1,122 @@
+document:
+  id: RAOS-ST1602-SLO-ALERT-RUNTIME-MANIFEST-002
+  version: 2.0.0
+  story_id: ST-1602
+  source_contract: repo://changes/st-1602/contracts/slo-alert-runtime.v2.yaml
+  generated_by: repo://scripts/build_st1602_slo_alert_runtime.py
+  generation_command: uv run --locked --no-sync python scripts/build_st1602_slo_alert_runtime.py
+provenance:
+  contract_sha256: 3737fd25156119db659138bf372b68a8730261f9785aa12b2d8be65bbae27095
+  authority_sources:
+  - role: open_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - role: test_catalog
+    uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - role: story
+    uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - role: operations_design
+    uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+    sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+  - role: slo_catalog
+    uri: repo://docs/canonical/06_ops/RAOS_12_slo_catalog_v1.0.yaml
+    sha256: 320a880073e3c9d87c361fa8620e1202898ffa719e2b8e94872d185415abcdf2
+  - role: alert_catalog
+    uri: repo://docs/canonical/06_ops/RAOS_12_alert_catalog_v1.0.yaml
+    sha256: f180e950f659d27e9270b6c1f9c1dcb6d0fa6194acdc1fdd7026ac7cea560be0
+  - role: runbook_catalog
+    uri: repo://docs/canonical/06_ops/RAOS_12_runbook_index_v1.0.yaml
+    sha256: 2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100
+  - role: security_design
+    uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - role: security_controls
+    uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  dependency_sources:
+  - uri: repo://changes/st-1601/README.md
+    sha256: 9eade86a2f3f7cae147d0ca26db1be0828be09250b068ac8f78832cf36ca65ef
+  - uri: repo://python/raos/domain/ops/telemetry.py
+    sha256: 6639598c0d7019297a9843b72a06cac35a2eb4a6fd76cfc24d64cbd8dbd64e93
+  - uri: repo://python/raos/ports/telemetry.py
+    sha256: 7892fc09f5913b96be84b35e1da118cd0a031669cca133bdcb58af8cc8fb2db9
+  - uri: repo://python/raos/application/ops/telemetry.py
+    sha256: ae9f2c2bede2d4b4f251f6b28f1a474096870de30b1818fe81a5153d308cf016
+  - uri: repo://python/raos/adapters/recorded_telemetry.py
+    sha256: dc958ba32e94ab2aa601bac471958cc9f5a74a0dedfda1d0f6e8a17a32ca03ee
+  v1_compatibility_sources:
+  - uri: repo://changes/st-1602/README.md
+    sha256: 9ed7dfa14f736cf30aa166c8c79d3f42386abfab90ec31b2792454e89ad976bc
+  - uri: repo://changes/st-1602/contracts/slo-alert-reference-plan.v1.yaml
+    sha256: 31c8d3c57501e351bd9bcde3c796abe70eb80277b4cb7a1c738cf93817ba65b1
+  - uri: repo://changes/st-1602/generated/slo-alert-reference-plan.v1.json
+    sha256: 34e613c246dba10f6ff390d0a676d42b61701f2d47251a1fb81a8e8aa19b8de6
+  - uri: repo://changes/st-1602/manifest.yaml
+    sha256: c1854c8a16bf1fb10e1ab10fb38498511cca5d5cf62fc50e505c4bf13b62dc14
+  - uri: repo://scripts/build_st1602_slo_alert_reference_plan.py
+    sha256: 9fd96a891ad72db9f46201c5b8b8c69f9e1156484ca7b845567c026151fe92aa
+  implementation_helper:
+    uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5
+    purpose: OWNER_SAFE_LOCAL_FILE_IO_ONLY
+    semantics: NO_RUNTIME_AUTHORITY
+source_artifact_count: 12
+source_artifacts:
+- uri: repo://changes/st-1602/contracts/slo-alert-runtime.v2.yaml
+  bytes: 6177
+  sha256: 3737fd25156119db659138bf372b68a8730261f9785aa12b2d8be65bbae27095
+- uri: repo://changes/st-1602/README-v2.md
+  bytes: 3042
+  sha256: 4a5a16a4666abd3e60fdeb09bdeb8cf8a879f9b07cdeee12854208f14f90a49d
+- uri: repo://python/raos/domain/ops/slo_alert_runtime_v2.py
+  bytes: 49691
+  sha256: f9083fabd78c40e3165c9390ae21485300129954d519b68219c16cac1b8be120
+- uri: repo://python/raos/ports/slo_alert_runtime_v2.py
+  bytes: 3418
+  sha256: f2b8a347b5b07a5c926ea98b2d1a2d879af9cf64a2b0fdb91a6c556ac7f45b3d
+- uri: repo://python/raos/application/ops/slo_alert_runtime_v2.py
+  bytes: 11507
+  sha256: dba10121b0b53a00b1c497c328a86b8db686f14f64e17bf14eed2d4dc030f73d
+- uri: repo://python/raos/adapters/recorded_slo_alert_runtime_v2.py
+  bytes: 43663
+  sha256: 06ba82ad3b655849157bd3999fed58c8af016d693a912533e119a8c73d7e5c68
+- uri: repo://scripts/build_st1602_slo_alert_runtime.py
+  bytes: 31807
+  sha256: 104a6b1f16e521e0e94c37e72d736da7bcaf531130f1b61e5e7fcacbd8f8f79c
+- uri: repo://tests/st1602/test_local_runtime_v2.py
+  bytes: 9362
+  sha256: ca83fedd6aa2e7bc0a6e3a402db89b9ed00553e85985557d630bc1c8bd120356
+- uri: repo://tests/st1602/test_local_journal_v2.py
+  bytes: 14752
+  sha256: 2f88b5800818bcb124a1dd68f020d9487c5c27dc9d73ffdf14f320c964513c29
+- uri: repo://tests/st1602/test_local_hostile_v2.py
+  bytes: 14667
+  sha256: eae1b1207580299c0b1991d6d58a73f35d2195345bf5577c7a82b67e671a3030
+- uri: repo://tests/st1602/test_local_generation_v2.py
+  bytes: 5669
+  sha256: a845b5cfa8686b8d983ce9848d42466b2af90bc568fc9e8772b03736f6c60c1d
+- uri: repo://tests/st1602/test_local_static_v2.py
+  bytes: 4637
+  sha256: cfd4ef77f21d8ce726d414b9341e6eb40ca7087dc08942eb79822e60eb505b37
+generated_artifact_count: 3
+generated_artifacts:
+- uri: repo://changes/st-1602/generated/slo-alert-runtime-catalog.v2.json
+  bytes: 30686
+  sha256: e1f3703cce549ff3eb17c5ac99aff9c4f3d04d8fec1f0c7aad4ee2f6f0ffe189
+- uri: repo://changes/st-1602/generated/slo-alert-runtime-recorded-fixture.v2.json
+  bytes: 18619
+  sha256: e18b8f2e52419e1a942faa2f21174189f6a0ce2953fcd7728d53a02517b2b7c2
+- uri: repo://changes/st-1602/evidence/slo-alert-runtime-local-completion.v2.yaml
+  bytes: 738
+  sha256: de64cb5fc20da34d1124861b6ce082f7a79d740a9d6cc8f2c18ddf2abf3c3bf1
+boundary:
+  v1_semantics: UNCHANGED
+  external_action_count: 0
+  formal_tst_027: NOT_EXECUTED
+  formal_tst_028: NOT_EXECUTED
+  notification_delivery: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
