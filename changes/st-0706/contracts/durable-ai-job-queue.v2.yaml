@@ -1,0 +1,211 @@
+document:
+  id: RAOS-ST0706-DURABLE-AI-JOB-QUEUE-002
+  version: 2.0.0
+  story_id: ST-0706
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  classification: RECORDED_SYNTHETIC_DURABLE_STATE_CONTRACT
+  enabled_by_default: false
+  authority: NONE
+  production_eligible: false
+  publication_authorized: false
+
+authority:
+  depends_on: [ST-0303, ST-0704, ST-0705]
+  requirement_ids: [FR-018]
+  test_suites: [TST-013, TST-017]
+  open_decisions: []
+  generic_runtime_owner: ST-1404
+  canonical_status_changes: false
+
+source_bindings:
+  - path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    owner: CANONICAL
+    role: PRECEDENCE_AND_SAFE_DEFAULTS
+  - path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+    owner: CANONICAL
+    role: CANONICAL_DECISIONS
+  - path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    owner: CANONICAL
+    role: OPEN_DECISION_SAFE_DEFAULTS
+  - path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    owner: CANONICAL
+    role: SECURITY_CONTROLS
+  - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    owner: CANONICAL
+    role: TST_013_AND_TST_017
+  - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    owner: CANONICAL
+    role: APPROVED_STORY
+  - path: docs/upstream/key_documents/RAOS_01_requirements_catalog_v0.1.yaml
+    sha256: bd4398da2aa73008b7332d2403e7a2e290b7bf1dd77df7bd7e7fd44bb3620827
+    owner: RAOS-RD-001
+    role: FR_018
+  - path: docs/upstream/key_documents/RAOS_05_ai_agent_prompt_routing_evaluation_design_v0.1.md
+    sha256: 475e4b6b4490110fd9f94a07aaf4cf979bea99d59b7ef8b95ba0fdbe61219476
+    owner: RAOS-AI-001
+    role: AI_JOB_STATE_IDEMPOTENCY_COST_AND_RETRY
+  - path: docs/upstream/key_documents/RAOS_05_ai_task_catalog_v0.1.yaml
+    sha256: 8b5a0d820f0a6180dd0bbbd050553114c22efe499a553d72bbdb24ffc8483c04
+    owner: RAOS-AI-001
+    role: TASK_AND_COST_BOUNDARIES
+  - path: changes/st-0303/contracts/iam-ops-schema.v1.yaml
+    sha256: af80127539a9c2c27fb0c63b7ef09c477380f90e94fedc408c5cd9a83036271b
+    owner: ST-0303
+    role: JOB_ATTEMPT_OUTBOX_INBOX_AND_IDEMPOTENCY_SCHEMA
+  - path: python/raos/domain/ai/routing.py
+    sha256: 884ce44d875339d9cd7f88e896d5779b2eac3154a5af39d3238748acc144924e
+    owner: ST-0704
+    role: AUTHORIZATION_AND_BUDGET_RESERVATION_VALUES
+  - path: changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml
+    sha256: 82a157b6973db54bece7ee67a05b7321bc85f1e6ca5270039077c3cd20873bfb
+    owner: ST-0705
+    role: OUTPUT_VALIDATION_RUNTIME_CONTRACT
+  - path: changes/st-0004/contracts/ai/RAOS_05_failure_taxonomy_v0.1.yaml
+    sha256: 55db49d67678a1d8052fd4da9035ebfe2516913659c528bccd9f1a0313b38504
+    owner: ST-0004
+    role: RETRY_AND_QUARANTINE_TAXONOMY
+  - path: contracts/raos-v0.4/contracts/schemas/events/jp-raos-ai-job-requested-v1.schema.json
+    sha256: 9937ac30df245d120ccf06aaaf406a8b29cdc9773307e9c9c61d9fc025abd42c
+    owner: ST-0004
+    role: REQUESTED_EVENT_CONTRACT
+  - path: contracts/raos-v0.4/contracts/schemas/events/jp-raos-ai-job-succeeded-v1.schema.json
+    sha256: 670dbd4036129bb41284eafa6fb8809b260593f9aab4bc270384509d41d2057a
+    owner: ST-0004
+    role: SUCCEEDED_EVENT_CONTRACT
+  - path: contracts/raos-v0.4/contracts/schemas/events/jp-raos-ai-job-failed-v1.schema.json
+    sha256: 5cb07491fe735a9e1724b7539f50763928a32befb96627d642c1ad30e39fa2c7
+    owner: ST-0004
+    role: FAILED_EVENT_CONTRACT
+  - path: python/raos/domain/ai/job_orchestration.py
+    sha256: 5ef0e0d90f5bb07257d4a9d27829647dd07ced443310f9ba5bc6fed8fc7d97c2
+    owner: ST-0706-V1
+    role: COMPATIBLE_COMMAND_AND_RESULT_INTERFACE
+
+recorded_policy:
+  policy_id: st-0706.recorded-durable-ai-job-queue.v2
+  state_schema_version: 2
+  allowed_environments: [ENV-DEV, ENV-CI]
+  queue_capacity: 32
+  maximum_state_bytes: 1048576
+  maximum_outbox_intents: 128
+  maximum_completion_receipts_per_job: 3
+  maximum_attempts_cap: 3
+  lease_duration_seconds: 30
+  retry_backoff_seconds_after_attempt: [7, 31]
+  retry_backoff_strictly_increasing: true
+  maximum_cumulative_retry_backoff_seconds: 38
+  clock_source: CALLER_SUPPLIED_EXPLICIT_UTC
+  retryable_provider_failure_classes:
+    - RATE_LIMIT
+    - TRANSIENT_ERROR
+    - TIMEOUT
+    - MODEL_UNAVAILABLE
+  lease_expiry_disposition: QUARANTINED
+  unknown_cost_disposition: QUARANTINED
+  cost_overrun_disposition: QUARANTINED
+  automatic_redrive: false
+  automatic_loop: false
+  sleep: false
+  jitter_runtime_selection: false
+  note: Delays are exact recorded fixture data, not Production policy or OD-009 resolution.
+
+state_machine:
+  initial: READY
+  active: [READY, LEASED, RETRY_SCHEDULED]
+  terminal: [SUCCEEDED, FAILED_TERMINAL, DEAD_LETTERED, QUARANTINED, CANCELLED, EXPIRED]
+  transitions:
+    - READY_TO_LEASED
+    - RETRY_SCHEDULED_TO_LEASED
+    - LEASED_TO_SUCCEEDED
+    - LEASED_TO_RETRY_SCHEDULED
+    - LEASED_TO_FAILED_TERMINAL
+    - LEASED_TO_DEAD_LETTERED
+    - LEASED_TO_QUARANTINED
+    - LEASED_TO_CANCELLED
+    - LEASED_TO_EXPIRED
+    - EXPIRED_LEASE_TO_QUARANTINED
+  invariants:
+    - LEASE_TOKEN_AND_EPOCH_FENCE_EVERY_COMPLETION
+    - SAME_IDEMPOTENCY_BINDING_REPLAYS_WITHOUT_NEW_INTENT
+    - SAME_KEY_DIFFERENT_FINGERPRINT_FAILS_CLOSED
+    - OPERATION_AND_RESERVATION_BIND_TO_EXACTLY_ONE_JOB
+    - COMPLETION_RECEIPT_BINDS_EXACT_CLAIM_AND_OUTCOME_HASHES
+    - COST_TOTAL_NEVER_EXCEEDS_AUTHORIZED_JOB_RESERVATION
+    - RETRY_USES_IMMUTABLE_COMMAND_FINGERPRINT
+    - EXHAUSTED_RETRY_ENTERS_NON_REDRIVABLE_DEAD_LETTER
+    - AMBIGUOUS_EXPIRED_LEASE_NEVER_REEXECUTES_AUTOMATICALLY
+    - OUTBOX_LIFECYCLE_IS_ATOMIC_WITH_STATE_REVISION
+
+durability_boundary:
+  storage: CALLER_OWNED_CAS_ATOMIC_PORT
+  compare_inputs: [queue_id, expected_revision, expected_state_sha256]
+  replacement: exact_canonical_state_bytes
+  successful_revision_rule: expected_revision_plus_one
+  state_binds_revision: true
+  stale_writer: REJECT
+  uncertain_commit: RELOAD_AND_IDEMPOTENTLY_REPLAY
+  restart_evidence: EXPORT_BYTES_AND_REVISION_THEN_REHYDRATE_A_NEW_SERVICE_INSTANCE
+  database: NOT_IMPLEMENTED
+  broker: NOT_IMPLEMENTED
+  filesystem: NOT_OWNED
+
+outbox_boundary:
+  transactional_with_state_bytes: true
+  status: RECORDED_PENDING
+  event_types:
+    - jp.raos.ai.job_requested.v1
+    - jp.raos.ai.job_succeeded.v1
+    - jp.raos.ai.job_failed.v1
+  payloads_persisted: false
+  metadata_hash_only: true
+  dispatch: NOT_IMPLEMENTED
+  publication: false
+
+security_controls:
+  - SEC-APP-001
+  - SEC-APP-011
+  - SEC-DATA-003
+  - SEC-DATA-004
+  - SEC-DATA-007
+  - SEC-AI-002
+  - SEC-AI-003
+  - SEC-AI-005
+  - SEC-AI-006
+  - SEC-AI-007
+  - SEC-SDLC-006
+  - SEC-SDLC-009
+  - SEC-SDLC-011
+
+safe_defaults:
+  activation: DISABLED
+  recorded_fixture_activation_only: true
+  provider: false
+  credentials: false
+  database: false
+  broker: false
+  network: false
+  filesystem: false
+  background_worker: false
+  event_dispatch: false
+  redrive: false
+  approval: false
+  publication: false
+  staging: false
+  release: false
+  production: false
+
+verification_boundary:
+  local_focused_tests: IMPLEMENTED_BY_THIS_STORY
+  formal_TST_013: NOT_EXECUTED
+  formal_TST_017: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

@@ -1,0 +1,278 @@
+{
+  "authority": "NONE",
+  "contract_sha256": "06a9776f63232ce2c0917f09c9101eed6bea25b7a8b965a345e80f9d09f04bd2",
+  "document_id": "RAOS-ST0706-DURABLE-AI-JOB-QUEUE-PLAN-002",
+  "durability_boundary": {
+    "broker": "NOT_IMPLEMENTED",
+    "compare_inputs": [
+      "queue_id",
+      "expected_revision",
+      "expected_state_sha256"
+    ],
+    "database": "NOT_IMPLEMENTED",
+    "filesystem": "NOT_OWNED",
+    "replacement": "exact_canonical_state_bytes",
+    "restart_evidence": "EXPORT_BYTES_AND_REVISION_THEN_REHYDRATE_A_NEW_SERVICE_INSTANCE",
+    "stale_writer": "REJECT",
+    "state_binds_revision": true,
+    "storage": "CALLER_OWNED_CAS_ATOMIC_PORT",
+    "successful_revision_rule": "expected_revision_plus_one",
+    "uncertain_commit": "RELOAD_AND_IDEMPOTENTLY_REPLAY"
+  },
+  "enabled": false,
+  "executable": false,
+  "formal_and_external": {
+    "formal_TST_013": "NOT_EXECUTED",
+    "formal_TST_017": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "local_focused_tests": "IMPLEMENTED_BY_THIS_STORY",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  },
+  "generation": {
+    "check_command": "uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads python scripts/build_st0706_durable_ai_job_queue.py --check",
+    "command": "uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads python scripts/build_st0706_durable_ai_job_queue.py",
+    "generated_paths": [
+      "changes/st-0706/generated/durable-ai-job-queue.v2.json",
+      "changes/st-0706/manifest.yaml"
+    ]
+  },
+  "outbox_boundary": {
+    "dispatch": "NOT_IMPLEMENTED",
+    "event_types": [
+      "jp.raos.ai.job_requested.v1",
+      "jp.raos.ai.job_succeeded.v1",
+      "jp.raos.ai.job_failed.v1"
+    ],
+    "metadata_hash_only": true,
+    "payloads_persisted": false,
+    "publication": false,
+    "status": "RECORDED_PENDING",
+    "transactional_with_state_bytes": true
+  },
+  "owner_source_sha256": {
+    "changes/st-0706/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml": "7924b92080c500fa9f718951314a8d93bf31e3e8b852e32a6afb27a4b7848d28",
+    "changes/st-0706/README.md": "a9ae397ebc1812200e80cbd6b97c70bdd9ae0400b273db7885da961bda03f628",
+    "changes/st-0706/contracts/durable-ai-job-queue.v2.yaml": "06a9776f63232ce2c0917f09c9101eed6bea25b7a8b965a345e80f9d09f04bd2",
+    "python/raos/adapters/recorded_ai_job_orchestration.py": "089b8d3353e2adafe284c03839b2a36dc9a391ab0c060df28bf68dfc9bc38641",
+    "python/raos/adapters/recorded_durable_ai_job_queue_v2.py": "3339f96f8577b5eb551b49f6c947111d44d2056b41e57e363a0eef3611a5d998",
+    "python/raos/application/ai/durable_job_queue_v2.py": "862e5690a06e2dbea5a4c78067d17d729f8e3662719ef5be8ca28babee200435",
+    "python/raos/application/ai/job_orchestration.py": "515d9172400ec282c7b0b3893be8f66ec87dfb165a95bfab1d823371c9a4d244",
+    "python/raos/domain/ai/durable_job_queue_v2.py": "cf0e8b74f74490f5c60573dc0413e713b9e38585e9a77f7789140cde21ceb5df",
+    "python/raos/domain/ai/job_orchestration.py": "5ef0e0d90f5bb07257d4a9d27829647dd07ced443310f9ba5bc6fed8fc7d97c2",
+    "python/raos/ports/ai_job_orchestration.py": "6a3a33345d17ca4072c468b0a018d95b9b5f33241bbfe6d97a4ae260b992ff9d",
+    "python/raos/ports/durable_ai_job_queue_v2.py": "b0cc4840d1f39b50482a7d954bcc5f5ba3d3f89fd4e000f21ae24e6ef2a68660",
+    "scripts/build_st0706_durable_ai_job_queue.py": "6c5351e00bdf0ed351260fc6c2ca0c1de630c76b4f3745aff8792c1000569b3a",
+    "scripts/secure_generated_publication.py": "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e",
+    "tests/st0706/conftest.py": "3121a41dc54fdc593d9599db864a6fff7efc897df3d4a7cfbafa02e775979b0b",
+    "tests/st0706/test_boundaries.py": "2dc8480e2360b83274b303cd5ea7142ad8bfb9b4d7b6d51fb251b026b37bb9a7",
+    "tests/st0706/test_durable_queue_v2.py": "d5a53b3fbaae9e2ff311c6548829ab06154bf93e8ada5c6e8113fac371c25936",
+    "tests/st0706/test_durable_queue_v2_boundaries.py": "046c9c19be0e079dd170b0fb033b2ebce87924dd0cefc4ac7cd2d4d6cd8d502f",
+    "tests/st0706/test_durable_queue_v2_generation.py": "a7a3614229e18951f3e713e70dad849835842d04dd0f48fc416cf15522e00c1a",
+    "tests/st0706/test_durable_queue_v2_negative.py": "c4516c5f6be61ce1811133383def691d5877ad3a92a501b8de252772d089b6d2",
+    "tests/st0706/test_failure_isolation.py": "15396dc093d69143456ecedfed749ab0ac20e73d6f4a6b9d3d8df9fd8e19712a",
+    "tests/st0706/test_orchestration.py": "d15e19bdb2559043d9c74612bde81fba454b31c37acd8d5a00f54fa58718bf52"
+  },
+  "policy": {
+    "allowed_environments": [
+      "ENV-DEV",
+      "ENV-CI"
+    ],
+    "automatic_loop": false,
+    "automatic_redrive": false,
+    "clock_source": "CALLER_SUPPLIED_EXPLICIT_UTC",
+    "cost_overrun_disposition": "QUARANTINED",
+    "jitter_runtime_selection": false,
+    "lease_duration_seconds": 30,
+    "lease_expiry_disposition": "QUARANTINED",
+    "maximum_attempts_cap": 3,
+    "maximum_completion_receipts_per_job": 3,
+    "maximum_cumulative_retry_backoff_seconds": 38,
+    "maximum_outbox_intents": 128,
+    "maximum_state_bytes": 1048576,
+    "note": "Delays are exact recorded fixture data, not Production policy or OD-009 resolution.",
+    "policy_id": "st-0706.recorded-durable-ai-job-queue.v2",
+    "queue_capacity": 32,
+    "retry_backoff_seconds_after_attempt": [
+      7,
+      31
+    ],
+    "retry_backoff_strictly_increasing": true,
+    "retryable_provider_failure_classes": [
+      "RATE_LIMIT",
+      "TRANSIENT_ERROR",
+      "TIMEOUT",
+      "MODEL_UNAVAILABLE"
+    ],
+    "sleep": false,
+    "state_schema_version": 2,
+    "unknown_cost_disposition": "QUARANTINED"
+  },
+  "safe_defaults": {
+    "activation": "DISABLED",
+    "approval": false,
+    "background_worker": false,
+    "broker": false,
+    "credentials": false,
+    "database": false,
+    "event_dispatch": false,
+    "filesystem": false,
+    "network": false,
+    "production": false,
+    "provider": false,
+    "publication": false,
+    "recorded_fixture_activation_only": true,
+    "redrive": false,
+    "release": false,
+    "staging": false
+  },
+  "source_bindings": [
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "role": "PRECEDENCE_AND_SAFE_DEFAULTS",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+      "role": "CANONICAL_DECISIONS",
+      "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+    },
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "role": "OPEN_DECISION_SAFE_DEFAULTS",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "role": "SECURITY_CONTROLS",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "role": "TST_013_AND_TST_017",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "role": "APPROVED_STORY",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "owner": "RAOS-RD-001",
+      "path": "docs/upstream/key_documents/RAOS_01_requirements_catalog_v0.1.yaml",
+      "role": "FR_018",
+      "sha256": "bd4398da2aa73008b7332d2403e7a2e290b7bf1dd77df7bd7e7fd44bb3620827"
+    },
+    {
+      "owner": "RAOS-AI-001",
+      "path": "docs/upstream/key_documents/RAOS_05_ai_agent_prompt_routing_evaluation_design_v0.1.md",
+      "role": "AI_JOB_STATE_IDEMPOTENCY_COST_AND_RETRY",
+      "sha256": "475e4b6b4490110fd9f94a07aaf4cf979bea99d59b7ef8b95ba0fdbe61219476"
+    },
+    {
+      "owner": "RAOS-AI-001",
+      "path": "docs/upstream/key_documents/RAOS_05_ai_task_catalog_v0.1.yaml",
+      "role": "TASK_AND_COST_BOUNDARIES",
+      "sha256": "8b5a0d820f0a6180dd0bbbd050553114c22efe499a553d72bbdb24ffc8483c04"
+    },
+    {
+      "owner": "ST-0303",
+      "path": "changes/st-0303/contracts/iam-ops-schema.v1.yaml",
+      "role": "JOB_ATTEMPT_OUTBOX_INBOX_AND_IDEMPOTENCY_SCHEMA",
+      "sha256": "af80127539a9c2c27fb0c63b7ef09c477380f90e94fedc408c5cd9a83036271b"
+    },
+    {
+      "owner": "ST-0704",
+      "path": "python/raos/domain/ai/routing.py",
+      "role": "AUTHORIZATION_AND_BUDGET_RESERVATION_VALUES",
+      "sha256": "884ce44d875339d9cd7f88e896d5779b2eac3154a5af39d3238748acc144924e"
+    },
+    {
+      "owner": "ST-0705",
+      "path": "changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml",
+      "role": "OUTPUT_VALIDATION_RUNTIME_CONTRACT",
+      "sha256": "82a157b6973db54bece7ee67a05b7321bc85f1e6ca5270039077c3cd20873bfb"
+    },
+    {
+      "owner": "ST-0004",
+      "path": "changes/st-0004/contracts/ai/RAOS_05_failure_taxonomy_v0.1.yaml",
+      "role": "RETRY_AND_QUARANTINE_TAXONOMY",
+      "sha256": "55db49d67678a1d8052fd4da9035ebfe2516913659c528bccd9f1a0313b38504"
+    },
+    {
+      "owner": "ST-0004",
+      "path": "contracts/raos-v0.4/contracts/schemas/events/jp-raos-ai-job-requested-v1.schema.json",
+      "role": "REQUESTED_EVENT_CONTRACT",
+      "sha256": "9937ac30df245d120ccf06aaaf406a8b29cdc9773307e9c9c61d9fc025abd42c"
+    },
+    {
+      "owner": "ST-0004",
+      "path": "contracts/raos-v0.4/contracts/schemas/events/jp-raos-ai-job-succeeded-v1.schema.json",
+      "role": "SUCCEEDED_EVENT_CONTRACT",
+      "sha256": "670dbd4036129bb41284eafa6fb8809b260593f9aab4bc270384509d41d2057a"
+    },
+    {
+      "owner": "ST-0004",
+      "path": "contracts/raos-v0.4/contracts/schemas/events/jp-raos-ai-job-failed-v1.schema.json",
+      "role": "FAILED_EVENT_CONTRACT",
+      "sha256": "5cb07491fe735a9e1724b7539f50763928a32befb96627d642c1ad30e39fa2c7"
+    },
+    {
+      "owner": "ST-0706-V1",
+      "path": "python/raos/domain/ai/job_orchestration.py",
+      "role": "COMPATIBLE_COMMAND_AND_RESULT_INTERFACE",
+      "sha256": "5ef0e0d90f5bb07257d4a9d27829647dd07ced443310f9ba5bc6fed8fc7d97c2"
+    }
+  ],
+  "state_machine": {
+    "active": [
+      "READY",
+      "LEASED",
+      "RETRY_SCHEDULED"
+    ],
+    "initial": "READY",
+    "invariants": [
+      "LEASE_TOKEN_AND_EPOCH_FENCE_EVERY_COMPLETION",
+      "SAME_IDEMPOTENCY_BINDING_REPLAYS_WITHOUT_NEW_INTENT",
+      "SAME_KEY_DIFFERENT_FINGERPRINT_FAILS_CLOSED",
+      "OPERATION_AND_RESERVATION_BIND_TO_EXACTLY_ONE_JOB",
+      "COMPLETION_RECEIPT_BINDS_EXACT_CLAIM_AND_OUTCOME_HASHES",
+      "COST_TOTAL_NEVER_EXCEEDS_AUTHORIZED_JOB_RESERVATION",
+      "RETRY_USES_IMMUTABLE_COMMAND_FINGERPRINT",
+      "EXHAUSTED_RETRY_ENTERS_NON_REDRIVABLE_DEAD_LETTER",
+      "AMBIGUOUS_EXPIRED_LEASE_NEVER_REEXECUTES_AUTOMATICALLY",
+      "OUTBOX_LIFECYCLE_IS_ATOMIC_WITH_STATE_REVISION"
+    ],
+    "terminal": [
+      "SUCCEEDED",
+      "FAILED_TERMINAL",
+      "DEAD_LETTERED",
+      "QUARANTINED",
+      "CANCELLED",
+      "EXPIRED"
+    ],
+    "transitions": [
+      "READY_TO_LEASED",
+      "RETRY_SCHEDULED_TO_LEASED",
+      "LEASED_TO_SUCCEEDED",
+      "LEASED_TO_RETRY_SCHEDULED",
+      "LEASED_TO_FAILED_TERMINAL",
+      "LEASED_TO_DEAD_LETTERED",
+      "LEASED_TO_QUARANTINED",
+      "LEASED_TO_CANCELLED",
+      "LEASED_TO_EXPIRED",
+      "EXPIRED_LEASE_TO_QUARANTINED"
+    ]
+  },
+  "status": "LOCAL_IMPLEMENTATION_COMPLETE",
+  "story_id": "ST-0706",
+  "version": "2.0.0"
+}
