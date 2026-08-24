@@ -1264,11 +1264,11 @@ def _validate_authority_semantics(root: Path) -> None:
         "docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
         "threat_register",
     )
-    for threat_id, expected in EXPECTED_THREATS.items():
+    for threat_id, expected_threat in EXPECTED_THREATS.items():
         threat = _find_exact_record(
             threats, "threats", threat_id, "threat_register.threats"
         )
-        _strict_match(threat, expected, f"threat_register.{threat_id}")
+        _strict_match(threat, expected_threat, f"threat_register.{threat_id}")
 
     slices = _load_repo_yaml(
         root,

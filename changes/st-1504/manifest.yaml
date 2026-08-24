@@ -64,8 +64,8 @@ source_artifacts:
   bytes: 6751
   sha256: 6569dd51283864ec1ee29f5b9e6c86ff9c063ef97f144af64cd03ad03e804fd5
 - uri: repo://scripts/build_st1504_github_oidc.py
-  bytes: 82465
-  sha256: 996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f
+  bytes: 82479
+  sha256: f8f8716f9f5ac8e68f0f1e586dfe3f693fd517393c5bfd21cfe4507af7d335a5
 - uri: repo://tests/st1504/conftest.py
   bytes: 631
   sha256: e7ea76882f2d42aa0928fe519d9bf38449f33cf118c42cfdaa86b336bcbc9bf3
