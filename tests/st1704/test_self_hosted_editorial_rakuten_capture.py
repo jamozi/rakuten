@@ -552,6 +552,7 @@ def test_capture_plan_binds_five_articles_and_eighteen_unique_products() -> None
         "switchbot",
         "edion",
     ]
+    assert "掃除機&床拭きロボット" in rows[4][0].product_kind_tokens
     assert [target.fixed_item_code for target in rows[0]] == [
         "ace-store:10007275",
         "ace-store:10009372",
