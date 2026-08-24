@@ -541,10 +541,16 @@ def test_capture_plan_binds_five_articles_and_eighteen_unique_products() -> None
         "jyupro:10136298",
     ]
     assert [target.fixed_item_code for target in rows[4]] == [
-        "irobotstore:f15",
+        "edion:0885155053053",
         "switchbot:10000327",
         "switchbot:10000240",
         "edion:10909675",
+    ]
+    assert [target.shop_code for target in rows[4]] == [
+        "edion",
+        "switchbot",
+        "switchbot",
+        "edion",
     ]
     assert [target.fixed_item_code for target in rows[0]] == [
         "ace-store:10007275",
