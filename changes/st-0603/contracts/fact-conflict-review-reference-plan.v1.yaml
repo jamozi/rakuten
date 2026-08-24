@@ -24,21 +24,21 @@ authority:
   - TST-020
 predecessor:
   story_id: ST-0602
-  commit: f281d02c489d4d9f74ec351a57a4a476fa77eab3
+  commit: 1829e1ba31addce6579b445da51be5b604732278
   relationship: EMPTY_FACT_INPUT_REFERENCE_ONLY
   files:
   - path: changes/st-0602/README.md
-    sha256: c08e9d2f2145d1c3e4018a39e5e8373b60131d7e7b3c0ba72ca9d3bc09a7aaa5
+    sha256: f3590fb864de262eb1d31769ffe892010f41f98084c27634f099dfca9573f2f8
   - path: changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml
-    sha256: ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e
+    sha256: c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073
   - path: changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json
-    sha256: 2d68d32281ee909bba05eaa8fdb42b545e194af12a450585601e19f670e15944
+    sha256: c6b725cb8a52d6bbe4a085803587a1ad0679b0ad4f1ffe77c302891d7f66c23d
   - path: changes/st-0602/manifest.yaml
-    sha256: b977fd764ea83c5e44087bef5c62d93e579e39aebd110082cf01b7790b915c42
+    sha256: b31af1f0425c158dd5df32abcadc23dd4f663c2cc0f01d117a65c6eef9d02839
   - path: scripts/build_st0602_fact_extraction_validation_reference_plan.py
-    sha256: fc31b9594da3d0a11bd80044bdb753a5950f023d4150f97cc52779ac12603daf
+    sha256: b4726b0b59761ad716599373084bdc56917566e4acba45e0ec0692f6de2a893b
   - path: tests/st0602/conftest.py
-    sha256: 8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9
+    sha256: a687a2fee7033a83b82caa305712a1885a3c66d11d0efc7b761397447746d1c8
   - path: tests/st0602/test_contract.py
     sha256: 8d1fe6cfa6edac6910802a1be71370a2e371144e4b7ca7d4e3a3bc145f66e775
   - path: tests/st0602/test_generation.py

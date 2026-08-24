@@ -6,24 +6,24 @@ document:
   generated_by: repo://scripts/build_st0603_fact_conflict_review_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0603_fact_conflict_review_reference_plan.py
 provenance:
-  contract_sha256: 51df56b9475e9a635a0e33ed39109fa4b1d91e7c5a9be08996007eea3698ae07
+  contract_sha256: bca7c63e49be113d7e2b7d15017d22ad6a9b27c59509325b2bbca407081246ef
   canonical_story:
     uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
-  predecessor_commit: f281d02c489d4d9f74ec351a57a4a476fa77eab3
+  predecessor_commit: 1829e1ba31addce6579b445da51be5b604732278
   predecessor_inputs:
   - uri: repo://changes/st-0602/README.md
-    sha256: c08e9d2f2145d1c3e4018a39e5e8373b60131d7e7b3c0ba72ca9d3bc09a7aaa5
+    sha256: f3590fb864de262eb1d31769ffe892010f41f98084c27634f099dfca9573f2f8
   - uri: repo://changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml
-    sha256: ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e
+    sha256: c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073
   - uri: repo://changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json
-    sha256: 2d68d32281ee909bba05eaa8fdb42b545e194af12a450585601e19f670e15944
+    sha256: c6b725cb8a52d6bbe4a085803587a1ad0679b0ad4f1ffe77c302891d7f66c23d
   - uri: repo://changes/st-0602/manifest.yaml
-    sha256: b977fd764ea83c5e44087bef5c62d93e579e39aebd110082cf01b7790b915c42
+    sha256: b31af1f0425c158dd5df32abcadc23dd4f663c2cc0f01d117a65c6eef9d02839
   - uri: repo://scripts/build_st0602_fact_extraction_validation_reference_plan.py
-    sha256: fc31b9594da3d0a11bd80044bdb753a5950f023d4150f97cc52779ac12603daf
+    sha256: b4726b0b59761ad716599373084bdc56917566e4acba45e0ec0692f6de2a893b
   - uri: repo://tests/st0602/conftest.py
-    sha256: 8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9
+    sha256: a687a2fee7033a83b82caa305712a1885a3c66d11d0efc7b761397447746d1c8
   - uri: repo://tests/st0602/test_contract.py
     sha256: 8d1fe6cfa6edac6910802a1be71370a2e371144e4b7ca7d4e3a3bc145f66e775
   - uri: repo://tests/st0602/test_generation.py
@@ -32,18 +32,18 @@ provenance:
     sha256: 46b65c0b3954da438425f734c7898dccdf39c9dd7445d4b4e15ac682b15c78c9
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    sha256: ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml
   bytes: 4302
-  sha256: 51df56b9475e9a635a0e33ed39109fa4b1d91e7c5a9be08996007eea3698ae07
+  sha256: bca7c63e49be113d7e2b7d15017d22ad6a9b27c59509325b2bbca407081246ef
 - uri: repo://changes/st-0603/README.md
   bytes: 2815
-  sha256: 87398b8122d9ef365a073159dd65258488cc1482163ea7449504dccdb11887fb
+  sha256: 91b91669033257dd6011fd1eac1a27fac9c31a19fad9594d77c815bfd8d0a54a
 - uri: repo://scripts/build_st0603_fact_conflict_review_reference_plan.py
   bytes: 23881
-  sha256: 5b52c2790b48a39e04853144f34f48edac2775edfc118bc19586b7887943f341
+  sha256: b70c114019c73cb2d20433dc70f3a1865119bbf1b4a9ffaa48a634666acae308
 - uri: repo://tests/st0603/conftest.py
   bytes: 906
   sha256: b0041b91eac50acd6ba109e7218b24886197619130b2ddf5e803e84a5311f977
@@ -60,7 +60,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json
   bytes: 5969
-  sha256: 755f88f9084717f85b644f6b4f9904a3ac3d71b36dfeae9cf34de2104e0518a5
+  sha256: 46610808af7a16cace0bab9329d01361573388adc926103b253ba8aa26f67ad3
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_FACT_CONFLICT_REVIEW_REFERENCE_PLAN
   executable: false

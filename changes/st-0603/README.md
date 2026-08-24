@@ -16,7 +16,7 @@ the canonical Story remains `NOT_STARTED` / `NOT_EXECUTED`.
 ## Source boundary
 
 The plan binds the exact nine owned bytes of committed ST-0602 feature
-`f281d02c489d4d9f74ec351a57a4a476fa77eab3`. That predecessor supplies only a
+`1829e1ba31addce6579b445da51be5b604732278`. That predecessor supplies only a
 source-derived, interface-only Fact extraction and validation reference plan.
 Its Fact inputs are null, its Fact and Fact-ID projections are empty, and its
 extraction, validation, repository, database, job, and event boundaries remain

@@ -48,43 +48,43 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
 STORY_PATH: Final = Path("docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml")
 STORY_SHA256: Final = "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
-PREDECESSOR_COMMIT: Final = "f281d02c489d4d9f74ec351a57a4a476fa77eab3"
+PREDECESSOR_COMMIT: Final = "1829e1ba31addce6579b445da51be5b604732278"
 PREDECESSOR_ARTIFACTS: Final = (
     (
         Path("changes/st-0602/README.md"),
-        "c08e9d2f2145d1c3e4018a39e5e8373b60131d7e7b3c0ba72ca9d3bc09a7aaa5",
+        "f3590fb864de262eb1d31769ffe892010f41f98084c27634f099dfca9573f2f8",
     ),
     (
         Path(
             "changes/st-0602/contracts/"
             "fact-extraction-validation-reference-plan.v1.yaml"
         ),
-        "ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e",
+        "c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073",
     ),
     (
         Path(
             "changes/st-0602/generated/"
             "fact-extraction-validation-reference-plan.v1.json"
         ),
-        "2d68d32281ee909bba05eaa8fdb42b545e194af12a450585601e19f670e15944",
+        "c6b725cb8a52d6bbe4a085803587a1ad0679b0ad4f1ffe77c302891d7f66c23d",
     ),
     (
         Path("changes/st-0602/manifest.yaml"),
-        "b977fd764ea83c5e44087bef5c62d93e579e39aebd110082cf01b7790b915c42",
+        "b31af1f0425c158dd5df32abcadc23dd4f663c2cc0f01d117a65c6eef9d02839",
     ),
     (
         Path("scripts/build_st0602_fact_extraction_validation_reference_plan.py"),
-        "fc31b9594da3d0a11bd80044bdb753a5950f023d4150f97cc52779ac12603daf",
+        "b4726b0b59761ad716599373084bdc56917566e4acba45e0ec0692f6de2a893b",
     ),
     (
         Path("tests/st0602/conftest.py"),
-        "8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9",
+        "a687a2fee7033a83b82caa305712a1885a3c66d11d0efc7b761397447746d1c8",
     ),
     (
         Path("tests/st0602/test_contract.py"),

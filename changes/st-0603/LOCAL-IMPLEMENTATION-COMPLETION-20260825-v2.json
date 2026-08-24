@@ -1,0 +1,85 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-0603",
+  "classification": "MAXIMUM_SAFE_RECORDED_LOCAL_DURABLE_FACT_CONFLICT_RUNTIME",
+  "recorded_at": "2026-08-25T15:00:00Z",
+  "local_status": "LOCAL_CODE_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "status_registry_updated": false,
+  "formal_validation_claimed": false,
+  "completed_local_scope": [
+    "exact PersistedFactExtractionV2 mapping batch Fact event chain hash and action-count revalidation boundary",
+    "deterministic exact subject-type subject-id predicate grouping and half-open validity overlap comparison",
+    "exact typed numeric and boolean comparison with no tolerance conversion authority inference or winner selection",
+    "exact duplicate and equal-value exclusion plus disjoint and touching-window exclusion",
+    "explicit incompatible unit-or-locale unresolved HUMAN_REVIEW route without conversion",
+    "UNRESOLVED HUMAN_REVIEW NOT_READY conflict and queue records with exact source_conflict and silent_resolution_forbidden true policy",
+    "scan-bound deterministic conflict identity preventing cross-scan persistence collision",
+    "owner-private DEV and CI SQLite O_EXCL initialization exact STRICT FK schema inventory immutable triggers CAS journal and hash chain",
+    "canonical JSON UUID RFC3339 typed value cross-table payload and chain recomputation",
+    "0700 directory 0600 database dirfd O_NOFOLLOW symlink hardlink device inode and preexisting database controls",
+    "atomic scan conflict queue undelivered local outbox journal and state commit",
+    "idempotent replay restart concurrency tamper and exact known-versus-ambiguous commit handling",
+    "process-lifetime monotonic count head and prefix with no cross-restart rollback-anchor claim",
+    "zero external provider publication and AI actions before and after collaborator boundaries",
+    "no review decision publication provider network credential browser AI ranking recommendation revenue staging release or Production capability",
+    "closed V2 contract recorded synthetic fixture deterministic owner generator and V2 documentation"
+  ],
+  "local_checks_completed": [
+    "ST-0603 V2 runtime domain SQLite hostile and boundary suites: 41 passed",
+    "ST-0603 V1 reference-plan suite: 164 passed after exact predecessor and helper rebind",
+    "ST-0603 V2 complete suite including owner generator: 55 passed",
+    "ST-0603 combined V1 and V2 suite: 219 passed",
+    "affected complete ST-0602 suite: 206 passed with owner-private Linux TMPDIR",
+    "V1 and V2 owner generation and deterministic no-write checks passed",
+    "V1 owner generation used the repository-pinned uv 0.12.1 toolchain",
+    "Ruff format and lint passed for owned runtime sources tests and both owner generators",
+    "strict mypy passed with 0 issues for six owned source and generator files",
+    "target Pyright passed with 0 errors and 0 warnings for four V2 runtime modules and the V2 owner generator",
+    "Python compile and import smoke passed for six owned source and generator files",
+    "JSON and YAML document parse checks passed",
+    "closed contract fixture and owner render validation passed with temporary current-file predecessor hashes before the exact final pin",
+    "recorded pipeline passed with Python socket and create_connection denied",
+    "SQLite direct commit replay readback restart concurrency tamper and commit-ambiguity paths passed",
+    "new V2 test and fixture module basenames are unique repository-wide",
+    "owned 22-path target secret scan and exact scope scan passed",
+    "git diff check passed for all owned paths"
+  ],
+  "pending_local_checks": [],
+  "debt_disposition": [
+    {
+      "debt_id": "ST0603-LOCAL-RUNTIME",
+      "status": "CLOSED_LOCAL_MAXIMUM_SAFE",
+      "detail": "The deterministic detector unresolved queue durable local unit of work recovery and hostile-input boundaries are implemented and focused-runtime green."
+    },
+    {
+      "debt_id": "ST0603-PREDECESSOR-REBIND",
+      "status": "CLOSED_EXACT_REBIND",
+      "detail": "V1 and V2 owner sources bind exact integration predecessor commit 1829e1ba31addce6579b445da51be5b604732278 and the current required ST-0602 artifact hashes; both owners generated and checked without drift."
+    },
+    {
+      "debt_id": "ST0603-CROSS-RESTART-ROLLBACK-ANCHOR",
+      "status": "EXTERNAL_ANCHOR_NOT_IMPLEMENTED_NO_CLAIM",
+      "detail": "Hash-chain rollback detection is process-lifetime monotonic; no independent durable external anchor or cross-restart rollback claim is made."
+    },
+    {
+      "debt_id": "FORMAL-AND-LIVE-GATES",
+      "status": "EXTERNAL_NOT_EXECUTED",
+      "detail": "Formal TST-007 and TST-020, live provider, hosted CI, staging, release, and Production remain separately gated."
+    }
+  ],
+  "introduced_local_debt": [],
+  "deferred_external_gates": {
+    "TST-007": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-020": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "credentials": "NOT_EXECUTED",
+    "event_delivery_worker": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  },
+  "external_actions": [],
+  "production_authority": "NONE"
+}
