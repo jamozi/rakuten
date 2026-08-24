@@ -69,7 +69,7 @@ _EXPECTED_SOURCE_BINDINGS: dict[str, tuple[str, str]] = {
     ),
     "step_up_contract": (
         "changes/st-0402/contracts/local-step-up-runtime.v2.json",
-        "62c057afde754c2aa74226cc3ae6e896e0cfaa5aaf54bdc0b21a54301a462b8e",
+        "c42931a148e4852aac9be2c1bab5012ed9c588e568daef2fe6a5c61cbd157bfa",
     ),
     "database_role_contract": (
         "changes/st-0306/contracts/database-roles-grants.v1.yaml",
