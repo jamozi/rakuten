@@ -3,7 +3,9 @@
 - Finding: `ST1204-AUDIT-001`
 - Local implementation disposition: `REMEDIATED_V3_PENDING_REAUDIT`
 - V4 local implementation disposition: `REMEDIATED_V4_PENDING_REAUDIT`
-- Independent read-only re-audit: `NOT_EXECUTED`
+- Independent V4 read-only re-audit: `FAIL_LOCAL_REPRODUCED`
+- V5 local implementation disposition: `REMEDIATED_V5_PENDING_REAUDIT`
+- Independent V5 read-only re-audit: `NOT_EXECUTED`
 - Formal TST-030: `NOT_EXECUTED`
 - Live provider validation: `NOT_EXECUTED`
 - Staging / release / Production: `NOT_EXECUTED`
@@ -182,6 +184,55 @@ read-only opens may update it; V4 does not claim or conditionally fall back from
   persistence, staging, release and Production remain `NOT_EXECUTED`. This is
   local implementation evidence only and does not claim `VALIDATED` or audit
   `PASS`.
+
+## V5 final destructive-cleanup signature correction
+
+The independent V4 review reproduced two analogous observable metadata races.
+After a file or empty directory had been moved into its cleanup tombstone, the
+last confirmation before `unlinkat` or `rmdirat` checked identity, bytes, or
+emptiness but did not retain and compare the complete post-quarantine
+signature. A same-inode `chmod` at the final owner checkpoint was therefore
+deleted. The pre-quarantine transition also compared identity alone, allowing
+non-identity signature drift to cross the rename boundary before deletion.
+
+V5 captures the complete post-quarantine signature for every cleanup file and
+directory and requires that exact signature at the final observation. The
+pre/post rename transition must retain device, inode, mode, link count, size,
+and mtime; only ctime may change as a consequence of rename. A mode, size,
+link-count, mtime, or identity change observed immediately before quarantine,
+unlink, or rmdir is restored when no-replace-safe or retained and refused. The
+existing explicit POSIX limit remains narrow: no claim is made about an
+actively malicious same-UID replacement inside the final kernel syscall window
+after the validated observation.
+
+## V5 local evidence
+
+- Owner generation and the immediately following no-write `--check` pass at
+  generated manifest SHA-256
+  `e4744fd4cc1242509cb1dfb061b1063f0bcef668f707a6706cb3955f0cca96e9`;
+  the three recorded fixture payloads remain byte-identical.
+- The isolated ST-1204 suite passes `214` tests, including `79`
+  atomic-publication tests. Four exact hostile regressions mutate a journal
+  state or journal-root directory in place immediately before quarantine,
+  unlink, or rmdir and prove that the changed material is preserved and the
+  operation fails closed.
+- The V5 source checkpoint hashes are: generator
+  `8af5e72ac199f6b0570a2c2ed338b3b2a5ad6e35051d449a679a6644791d01e9`,
+  design handoff
+  `bee21944c98432a6b7632e208fec4f20a4b06699879133d5f321513275ba8c38`,
+  runtime slice
+  `021e21ca20d8fa82c3b0a9134de6cf989daf4fd80f1dc8d4a5ddbfc9a2579b69`,
+  and source contract
+  `47d93ee08eb7b09ceba9e39c10ea634e3985613ed28aa9a9ed776b97182518d6`.
+- ST-1205 has been rebound to the exact V5 runtime/manifest and its owner
+  generation plus no-write check pass; ST-1304 has been regenerated against
+  the resulting current ST-1205 V2 contract. This closes the local provenance
+  subcondition formerly tracked as `DEBT-W2-062`.
+- Ruff format/lint and strict mypy over the changed owner scripts pass together
+  with the isolated ST-1205 and ST-1304 regressions. These results are local
+  evidence only. A fresh independent V5 re-audit, formal TST-030, hosted CI,
+  live provider, persistence, staging, release and Production remain
+  `NOT_EXECUTED`; neither `VALIDATED` nor audit `PASS` is claimed.
 
 ## Closed implementation boundary
 

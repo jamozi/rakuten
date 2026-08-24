@@ -1,6 +1,6 @@
 DESIGN_HANDOFF_V1:
   document_id: RAOS-ST1204-ATOMIC-FIXTURE-PUBLICATION-001
-  version: 1.3.0
+  version: 1.4.0
   status: LOCAL_IMPLEMENTATION_DECISION_RECORDED
   canonical_reconciliation: LOCAL_CANDIDATE_PENDING_HUMAN_APPLY
   implementation_authority: REPOSITORY_STANDING_DEVELOPMENT_AUTHORITY
@@ -32,7 +32,7 @@ DESIGN_HANDOFF_V1:
     - path: changes/st-1204/ATOMIC-PUBLICATION-AUDIT-v1.md
       sha256: ee2d2986a2d44ab07ea3e83fe5a320ace771d93d57300ee98716b9c65138b87b
     - path: changes/st-1204/RUNTIME-SLICE-v1.md
-      sha256: 6d8b61dab7c296f6156f2ed249cd5498a23d82427f139fda614a7f1272a57aa7
+      sha256: 021e21ca20d8fa82c3b0a9134de6cf989daf4fd80f1dc8d4a5ddbfc9a2579b69
 
   decision:
     ST1204-FIXTURE-D1:
@@ -95,7 +95,8 @@ DESIGN_HANDOFF_V1:
         old_stage: JOURNAL_BIND_EXACT_TREE_THEN_NOREPLACE_QUARANTINE_BEFORE_DESTRUCTIVE_CLEANUP
         legacy_outputs: FULL_TREE_VALIDATE_AND_JOURNAL_BIND_THEN_NOREPLACE_QUARANTINE_AFTER_COMMIT
         journal: RENAME_TO_TRANSACTION_AND_INODE_BOUND_TERMINAL_TOMBSTONE_FSYNC_THEN_REMOVE_WITH_SAME_INVOCATION_STATE_IDENTITY_INVENTORY
-        deletion_progress: BUNDLE_AND_LEGACY_TOMBSTONES_RESTARTABLE;TERMINAL_JOURNAL_STATE_DELETION_REQUIRES_THE_TRUSTED_IN_MEMORY_FULL_IDENTITY_INVENTORY
+        deletion_progress: BUNDLE_AND_LEGACY_TOMBSTONES_RESTARTABLE;TERMINAL_JOURNAL_STATE_DELETION_REQUIRES_THE_TRUSTED_IN_MEMORY_FULL_IDENTITY_INVENTORY;EVERY_QUARANTINED_FILE_AND_DIRECTORY_CARRIES_A_POST_RENAME_FULL_SIGNATURE_TO_THE_FINAL_PRE_DELETE_OBSERVATION
+        quarantine_transition: PRE_RENAME_AND_POST_RENAME_SIGNATURES_MUST_PRESERVE_DEV_INO_MODE_NLINK_SIZE_MTIME_NS;CTIME_MAY_CHANGE_ONLY_BECAUSE_OF_RENAME
         final_inventory: REVERIFY_AUTHORITATIVE_TREE_AND_REQUIRE_ALL_BOUND_CLEANUP_NAMES_ABSENT_BEFORE_COMPLETE
         cleanup_failure: NEW_TREE_REMAINS_AUTHORITATIVE;BUNDLE_AND_LEGACY_RECOVER;INTERRUPTED_TERMINAL_JOURNAL_ROOT_IS_RETAINED_AND_REFUSED_WITHOUT_A_DURABLE_NONRECURSIVE_STATE_IDENTITY_SOURCE
       crash_recovery:
@@ -108,7 +109,7 @@ DESIGN_HANDOFF_V1:
         terminal_journal_after_root_move: CONSERVATIVELY_RETAIN_AND_REFUSE_BECAUSE_THE_PRIOR_IN_MEMORY_STATE_IDENTITY_INVENTORY_IS_NOT_DURABLE
         ambiguous_or_malformed: FAIL_CLOSED_AND_RETAIN_EVIDENCE
       filesystem_adversary_boundary:
-        covered: CAPTURED_ANCESTOR_AND_ENTRY_IDENTITIES_NOREPLACE_COLLISIONS_OBSERVED_PRE_AND_POST_RENAME_SWAPS_AND_RESTARTABLE_OWNER_CHECKPOINTS
+        covered: CAPTURED_ANCESTOR_AND_ENTRY_IDENTITIES_NOREPLACE_COLLISIONS_OBSERVED_PRE_AND_POST_RENAME_SWAPS_MODE_OR_MTIME_DRIFT_BEFORE_QUARANTINE_OR_DELETE_AND_RESTARTABLE_OWNER_CHECKPOINTS
         posix_limit: UNLINKAT_AND_RMDIRAT_HAVE_NO_CONDITIONAL_INODE_FORM_SO_AN_ACTIVELY_MALICIOUS_SAME_UID_SWAP_INSIDE_THE_FINAL_KERNEL_SYSCALL_WINDOW_IS_NOT_CLAIMED_PREVENTED
         response: EVERY_OBSERVED_IDENTITY_MISMATCH_IS_RESTORED_WHEN_NOREPLACE_SAFE_OR_RETAINED_AND_REFUSED_WITHOUT_DELETION
       nested_bundle_read:
@@ -183,6 +184,7 @@ DESIGN_HANDOFF_V1:
     - Ancestor swaps cannot redirect a write outside the captured Story directory; every observed final-entry identity swap is restored when no-replace-safe or retained and refused without deletion.
     - Mid-stage and pre-publication failures leave the installed bundle exact and unchanged; cleanup deletes only entries whose identities were captured by the same invocation before the failure checkpoint.
     - A detected partial-stage root, directory, or byte-identical file replacement is preserved and refused rather than re-owned or deleted.
+    - A cleanup file or directory whose full signature drifts immediately before quarantine, unlink, or rmdir is preserved and refused; quarantine ctime changes are not treated as authority for other metadata drift.
     - Post-exchange pre-commit failures restore the exact old bundle or exact absence atomically.
     - Committed bundle and legacy cleanup failures leave the exact new bundle authoritative and recoverable.
     - A crash after the terminal journal root move preserves the exact authoritative bundle and retains/refuses the cleanup tree rather than inferring state-file ownership from bytes or self-attestation.

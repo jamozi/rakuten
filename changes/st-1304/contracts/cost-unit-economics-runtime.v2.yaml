@@ -48,7 +48,7 @@ source_bindings:
     sha256: bf5a60509879837bb25928c5da54b804755a1ee91025a9f6f1140379a6771912
   st1205_runtime:
     path: changes/st-1205/contracts/kpi-read-model.v2.yaml
-    sha256: bfc6ca7722e8cafdaee558881227531e8e74e3630f3cc13455f2e3e05ff2137f
+    sha256: 2777cf19d0482f84172ac581ed72f27bc6e93b51b5bd45ea4b23e14cf0f95665
   st1205_projection:
     path: changes/st-1205/generated/kpi-read-model.v2.json
     sha256: 295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb

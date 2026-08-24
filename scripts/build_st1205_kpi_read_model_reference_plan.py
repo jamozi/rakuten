@@ -107,7 +107,7 @@ INTEGRATION_PATH: Final = Path(
 )
 
 EXPECTED_CONTRACT_SHA256: Final = (
-    "bfc6ca7722e8cafdaee558881227531e8e74e3630f3cc13455f2e3e05ff2137f"
+    "2777cf19d0482f84172ac581ed72f27bc6e93b51b5bd45ea4b23e14cf0f95665"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 GENERATION_COMMAND: Final = (
@@ -140,10 +140,10 @@ PREDECESSOR_HASHES: Final = {
     ): "e49396e6dfac336b05488ae4ba80100c106fc4bf64c2ed476d16f459c16759ce",
     Path(
         "changes/st-1204/RUNTIME-SLICE-v1.md"
-    ): "6d8b61dab7c296f6156f2ed249cd5498a23d82427f139fda614a7f1272a57aa7",
+    ): "021e21ca20d8fa82c3b0a9134de6cf989daf4fd80f1dc8d4a5ddbfc9a2579b69",
     Path(
         "changes/st-1204/generated/manifest.json"
-    ): "80ee0253d5a7d0a051932bee8a8916fddf16c7ace8580081a1331ffa56d65924",
+    ): "e4744fd4cc1242509cb1dfb061b1063f0bcef668f707a6706cb3955f0cca96e9",
     Path(
         "python/raos/domain/analytics/ga4.py"
     ): "785dd16788fffabd5ab6c05c6f43f535bc6521630a246c93a54d23d257de124f",

@@ -97,7 +97,12 @@ deleted only when the same invocation captured every directory identity and
 file signature before the relevant checkpoint. A nonempty stage surviving a
 process boundary is preserved and refused. Bundle reads revalidate both nested
 `fixtures` and `recorded` names against their already-open descriptors before
-acceptance.
+acceptance. Destructive cleanup also carries an invocation-local post-quarantine
+full-signature baseline through the final pre-`unlinkat` or pre-`rmdirat`
+observation. Mode, size, link-count, mtime, or identity drift immediately before
+quarantine or deletion is therefore retained and refused; only the already
+documented in-kernel race after the last validated observation remains outside
+the POSIX guarantee.
 
 Owner `--check` preserves bytes, namespace, device/inode, size, mode, mtime and
 ctime. Access time is explicitly outside that guarantee because portable

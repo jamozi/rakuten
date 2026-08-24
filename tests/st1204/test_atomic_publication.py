@@ -887,6 +887,151 @@ def test_journal_state_full_signature_drift_after_root_move_is_not_deleted(
     assert state.read_bytes() == state_content
 
 
+def test_journal_state_signature_drift_immediately_before_unlink_is_not_deleted(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    old = _outputs("journal-pre-unlink-signature-old")
+    new = _outputs("journal-pre-unlink-signature-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    mutated: Path | None = None
+    mutated_identity: tuple[int, int] | None = None
+    mutated_content: bytes | None = None
+
+    def mutate_signature(name: str) -> None:
+        nonlocal mutated, mutated_content, mutated_identity
+        if name != "before-journal-cleanup-state-000-unlink" or mutated is not None:
+            return
+        cleanup = _terminal_cleanup_directory(story)
+        mutated = cleanup / generator._delete_tombstone_name(
+            generator.JOURNAL_STATE_NAME
+        )
+        mutated_content = mutated.read_bytes()
+        mutated.chmod(0o600)
+        metadata = mutated.stat()
+        mutated_identity = metadata.st_dev, metadata.st_ino
+
+    monkeypatch.setattr(generator, "_checkpoint", mutate_signature)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="signature",
+    ):
+        generator.generate(tmp_path)
+    assert mutated is not None
+    assert mutated.exists()
+    assert mutated_identity is not None
+    assert mutated_content is not None
+    assert (mutated.stat().st_dev, mutated.stat().st_ino) == mutated_identity
+    assert mutated.read_bytes() == mutated_content
+
+
+def test_journal_state_signature_drift_immediately_before_quarantine_is_not_deleted(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    old = _outputs("journal-pre-quarantine-signature-old")
+    new = _outputs("journal-pre-quarantine-signature-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    mutated: Path | None = None
+    mutated_identity: tuple[int, int] | None = None
+
+    def mutate_signature(name: str) -> None:
+        nonlocal mutated, mutated_identity
+        if name != "before-journal-cleanup-state-000-quarantine" or mutated is not None:
+            return
+        mutated = _terminal_cleanup_directory(story) / generator.JOURNAL_STATE_NAME
+        mutated.chmod(0o600)
+        metadata = mutated.stat()
+        mutated_identity = metadata.st_dev, metadata.st_ino
+
+    monkeypatch.setattr(generator, "_checkpoint", mutate_signature)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="quarantine identity drifted",
+    ):
+        generator.generate(tmp_path)
+    assert mutated is not None
+    assert mutated.exists()
+    assert mutated_identity is not None
+    assert (mutated.stat().st_dev, mutated.stat().st_ino) == mutated_identity
+
+
+def test_journal_root_signature_drift_immediately_before_rmdir_is_not_deleted(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    old = _outputs("journal-root-pre-rmdir-signature-old")
+    new = _outputs("journal-root-pre-rmdir-signature-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    mutated: Path | None = None
+    mutated_identity: tuple[int, int] | None = None
+
+    def mutate_signature(name: str) -> None:
+        nonlocal mutated, mutated_identity
+        if name != "before-journal-cleanup-root-rmdir" or mutated is not None:
+            return
+        mutated = next(
+            entry
+            for entry in story.iterdir()
+            if entry.name.startswith(
+                f"{generator.DELETE_TOMBSTONE_PREFIX}{generator.JOURNAL_CLEANUP_NAME}"
+            )
+        )
+        mutated.chmod(0o755)
+        metadata = mutated.stat()
+        mutated_identity = metadata.st_dev, metadata.st_ino
+
+    monkeypatch.setattr(generator, "_checkpoint", mutate_signature)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="directory signature changed",
+    ):
+        generator.generate(tmp_path)
+    assert mutated is not None
+    assert mutated.is_dir()
+    assert mutated_identity is not None
+    assert (mutated.stat().st_dev, mutated.stat().st_ino) == mutated_identity
+
+
+def test_journal_root_signature_drift_before_quarantine_is_not_deleted(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    old = _outputs("journal-root-pre-quarantine-signature-old")
+    new = _outputs("journal-root-pre-quarantine-signature-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    mutated: Path | None = None
+    mutated_identity: tuple[int, int] | None = None
+
+    def mutate_signature(name: str) -> None:
+        nonlocal mutated, mutated_identity
+        if name != "before-journal-cleanup-root-quarantine" or mutated is not None:
+            return
+        mutated = _terminal_cleanup_directory(story)
+        mutated.chmod(0o755)
+        metadata = mutated.stat()
+        mutated_identity = metadata.st_dev, metadata.st_ino
+
+    monkeypatch.setattr(generator, "_checkpoint", mutate_signature)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="quarantine identity drifted",
+    ):
+        generator.generate(tmp_path)
+    assert mutated is not None
+    assert mutated.is_dir()
+    assert mutated_identity is not None
+    assert (mutated.stat().st_dev, mutated.stat().st_ino) == mutated_identity
+
+
 def test_terminal_journal_preparing_reappearance_refuses_before_deletion(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

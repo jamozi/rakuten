@@ -3648,3 +3648,31 @@ original result.
   ST-0806 consumer slices. ST-0805 introduced no local implementation debt.
   Formal TST-019/TST-020, hosted CI, live validation, staging, release,
   publication, and Production remain `NOT_EXECUTED`.
+
+### 2026-08-24 W2 / ST-1204 V5 destructive-cleanup signature correction
+
+- `DEBT-W2-028` status remains `OPEN_PENDING_INDEPENDENT_REAUDIT`; the current
+  local implementation subcondition is
+  `CLOSED_PENDING_V5_INDEPENDENT_REAUDIT`. The independent V4 review reproduced
+  same-inode mode drift immediately before file unlink and directory removal.
+  V4 retained identity and content/emptiness at the last observation but not
+  the full post-quarantine signature, so its pending conclusion is superseded
+  rather than erased.
+- V5 binds each cleanup entry's full signature after its no-replace quarantine,
+  preserves all non-ctime signature fields across the rename, and requires the
+  exact post-quarantine signature immediately before `unlinkat` or `rmdirat`.
+  Four new hostile tests cover file and directory drift immediately before both
+  quarantine and deletion. The isolated ST-1204 suite passes `214` tests
+  (`79` atomic-publication tests), and owner generation/check passes at
+  manifest SHA-256
+  `e4744fd4cc1242509cb1dfb061b1063f0bcef668f707a6706cb3955f0cca96e9`.
+- `DEBT-W2-062` status: `CLOSED_LOCAL_IMPLEMENTATION`. ST-1205 now pins the
+  exact V5 runtime slice and generated manifest, its V2 owner generation and
+  no-write check pass, and ST-1304 has been regenerated against the resulting
+  current ST-1205 V2 contract. No provider, persistence, publication, ranking,
+  staging, release, or Production authority is introduced by this provenance
+  chain.
+- A fresh independent V5 read-only re-audit remains required before
+  `DEBT-W2-028` can close or any audit `PASS` can be recorded. Formal TST-030,
+  hosted CI, live GA4/account/credential evidence, persistence, staging,
+  release, publication and Production remain `NOT_EXECUTED`.

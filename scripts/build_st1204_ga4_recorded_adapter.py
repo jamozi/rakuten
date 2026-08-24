@@ -1986,7 +1986,7 @@ def _delete_tombstone_name(name: str) -> str:
 
 def _restore_mismatched_quarantine_at(
     parent_fd: int, source: str, quarantine: str, *, label: str
-) -> None:
+) -> NoReturn:
     if (
         _entry_metadata_at(parent_fd, source) is None
         and _entry_metadata_at(parent_fd, quarantine) is not None
@@ -2016,6 +2016,7 @@ def _unlink_regular_at(
         raise PublicationRecoveryRequired(f"conflicting {label} cleanup entries")
     captured_identity: tuple[int, int] | None = None
     captured_signature: StatSignature | None = None
+    quarantine_signature: StatSignature | None = None
     observed_content: bytes
     if source is not None:
         observed_content, captured_signature = _read_regular_stat_capture_at(
@@ -2040,9 +2041,11 @@ def _unlink_regular_at(
         if (
             moved is None
             or _entry_identity(moved) != captured_identity
+            or _stat_signature(moved)[:-1] != captured_signature[:-1]
             or _entry_metadata_at(parent_fd, name) is not None
         ):
             _restore_mismatched_quarantine_at(parent_fd, name, tombstone, label=label)
+        quarantine_signature = _stat_signature(moved)
         if checkpoint is not None:
             _checkpoint(f"after-{checkpoint}-quarantine")
     else:
@@ -2064,15 +2067,18 @@ def _unlink_regular_at(
             raise PublicationRecoveryRequired(
                 f"quarantined {label} signature is unowned"
             )
+        quarantine_signature = captured_signature
     if checkpoint is not None:
         _checkpoint(f"before-{checkpoint}-unlink")
-    confirmed_content, confirmed_identity = _read_regular_capture_at(
+    confirmed_content, confirmed_signature = _read_regular_stat_capture_at(
         parent_fd,
         tombstone,
         label=f"quarantined {label}",
     )
+    confirmed_identity = (confirmed_signature[0], confirmed_signature[1])
     if (
         confirmed_identity != captured_identity
+        or confirmed_signature != quarantine_signature
         or confirmed_content != observed_content
         or (expected_content is not None and confirmed_content != expected_content)
         or (
@@ -2081,7 +2087,9 @@ def _unlink_regular_at(
         )
         or (expected_identity is not None and confirmed_identity != expected_identity)
     ):
-        raise PublicationRecoveryRequired(f"quarantined {label} changed before unlink")
+        raise PublicationRecoveryRequired(
+            f"quarantined {label} signature changed before unlink"
+        )
     os.unlink(tombstone, dir_fd=parent_fd)
     os.fsync(parent_fd)
     if checkpoint is not None:
@@ -2104,10 +2112,12 @@ def _rmdir_empty_at(
     if source is not None and quarantined is not None:
         raise PublicationRecoveryRequired(f"conflicting {label} directory cleanup")
     captured_identity: tuple[int, int]
+    quarantine_signature: StatSignature
     if source is not None:
         descriptor = _open_directory_at(parent_fd, name, label=label)
         try:
-            captured_identity = _entry_identity(os.fstat(descriptor))
+            source_signature = _stat_signature(os.fstat(descriptor))
+            captured_identity = (source_signature[0], source_signature[1])
             if expected_identity is not None and captured_identity != expected_identity:
                 raise PublicationRecoveryRequired(f"{label} identity is unowned")
             if _directory_names_at(descriptor, label=label):
@@ -2123,6 +2133,7 @@ def _rmdir_empty_at(
             if (
                 moved is None
                 or _entry_identity(moved) != captured_identity
+                or _stat_signature(moved)[:-1] != source_signature[:-1]
                 or _entry_metadata_at(parent_fd, name) is not None
             ):
                 _restore_mismatched_quarantine_at(
@@ -2131,6 +2142,7 @@ def _rmdir_empty_at(
                     tombstone,
                     label=f"{label} directory",
                 )
+            quarantine_signature = _stat_signature(moved)
         finally:
             os.close(descriptor)
         if checkpoint is not None:
@@ -2140,7 +2152,11 @@ def _rmdir_empty_at(
             parent_fd, tombstone, label=f"quarantined {label}"
         )
         try:
-            captured_identity = _entry_identity(os.fstat(descriptor))
+            quarantine_signature = _stat_signature(os.fstat(descriptor))
+            captured_identity = (
+                quarantine_signature[0],
+                quarantine_signature[1],
+            )
             if expected_identity is not None and captured_identity != expected_identity:
                 raise PublicationRecoveryRequired(
                     f"quarantined {label} identity is unowned"
@@ -2153,14 +2169,14 @@ def _rmdir_empty_at(
         _checkpoint(f"before-{checkpoint}-rmdir")
     descriptor = _open_directory_at(parent_fd, tombstone, label=f"quarantined {label}")
     try:
-        if _entry_identity(
-            os.fstat(descriptor)
-        ) != captured_identity or _directory_names_at(
-            descriptor, label=f"quarantined {label}"
-        ):
+        if _directory_names_at(descriptor, label=f"quarantined {label}"):
             raise PublicationRecoveryRequired(f"quarantined {label} changed")
-        _assert_directory_entry_identity_at(
-            parent_fd, tombstone, descriptor, label=f"quarantined {label}"
+        _assert_directory_signature_at(
+            parent_fd,
+            tombstone,
+            descriptor,
+            expected_signature=quarantine_signature,
+            label=f"quarantined {label}",
         )
         os.rmdir(tombstone, dir_fd=parent_fd)
         os.fsync(parent_fd)
