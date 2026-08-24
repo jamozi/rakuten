@@ -52,7 +52,7 @@ REPORT_PATH: Final = Path(
 MANIFEST_PATH: Final = Path("changes/st-1903/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1903_partial_auto_publication.py")
 HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
-BASE_COMMIT: Final = "0aef05373e4ecc45aee2a4fc4f2ca6f4a0dd19cb"
+BASE_COMMIT: Final = "c5d7ea73e22dbb1169fd4439c5dd24d2c9fe1121"
 RECORDING_ID: Final = "st1903_recorded_evaluation_v1"
 FIXTURE_SHA256: Final = (
     "bc08ab6988c28f2b992049d71202a46dd312a80906c04e6e47651ff9d314b5b4"
