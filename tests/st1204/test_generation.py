@@ -189,8 +189,10 @@ def _assert_generator_ast_is_closed(source: str) -> None:
         raise AssertionError("generator os attribute surface drifted")
 
 
-def _snapshot(path: Path) -> tuple[int, int, int, int, int, int]:
-    metadata = path.stat()
+def _owner_metadata_snapshot(path: Path) -> tuple[int, int, int, int, int, int]:
+    """Capture exact owner metadata; access time is intentionally out of contract."""
+
+    metadata = path.lstat()
     return (
         metadata.st_dev,
         metadata.st_ino,
@@ -259,23 +261,41 @@ def test_generation_is_deterministic_and_matches_installed_outputs() -> None:
         assert (REPOSITORY_ROOT / relative).read_bytes() == content
 
 
-def test_check_mode_is_read_only() -> None:
-    paths = [
+def test_check_preserves_bytes_namespace_and_owner_metadata_excluding_access_time() -> (
+    None
+):
+    file_paths = [
         REPOSITORY_ROOT / generator.MANIFEST_PATH,
         *(
             REPOSITORY_ROOT / generator.FIXTURE_ROOT / name
             for name in generator.EXPECTED_FIXTURE_NAMES
         ),
     ]
-    before = {path: _snapshot(path) for path in paths}
+    directory_paths = [
+        REPOSITORY_ROOT / generator.GENERATED_ROOT,
+        REPOSITORY_ROOT / generator.GENERATED_ROOT / "fixtures",
+        REPOSITORY_ROOT / generator.FIXTURE_ROOT,
+    ]
+    paths = [*directory_paths, *file_paths]
+    before_metadata = {path: _owner_metadata_snapshot(path) for path in paths}
+    before_bytes = {path: path.read_bytes() for path in file_paths}
+    before_namespace = {
+        path: tuple(sorted(entry.name for entry in path.iterdir()))
+        for path in directory_paths
+    }
     digest = generator.check(REPOSITORY_ROOT)
     assert (
         digest
         == hashlib.sha256(
-            (REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes()
+            before_bytes[REPOSITORY_ROOT / generator.MANIFEST_PATH]
         ).hexdigest()
     )
-    assert {path: _snapshot(path) for path in paths} == before
+    assert {path: path.read_bytes() for path in file_paths} == before_bytes
+    assert {path: _owner_metadata_snapshot(path) for path in paths} == before_metadata
+    assert {
+        path: tuple(sorted(entry.name for entry in path.iterdir()))
+        for path in directory_paths
+    } == before_namespace
 
 
 def test_source_contract_has_no_yaml_anchors_or_aliases() -> None:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -146,6 +147,13 @@ def _replace_with_byte_identical_inode(
     return metadata.st_dev, metadata.st_ino
 
 
+def _clone_journal_directory(source: Path, destination: Path) -> None:
+    destination.mkdir()
+    for entry in source.iterdir():
+        assert entry.is_file()
+        destination.joinpath(entry.name).write_bytes(entry.read_bytes())
+
+
 def test_fresh_install_and_replacement_publish_one_exact_tree(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -262,7 +270,6 @@ def test_rollback_failure_retains_journal_then_next_generate_recovers(
 @pytest.mark.parametrize(
     ("checkpoint", "exit_code"),
     [
-        ("after-journal-state-000-prepare", 72),
         ("after-publication-namespace", 73),
         ("after-journal-state-001-prepare", 75),
         ("after-committed-state", 74),
@@ -287,6 +294,33 @@ def test_real_process_crash_is_recovered_without_mixed_generation(
     monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
     generator.generate(tmp_path)
     _assert_installed(tmp_path, new)
+
+
+def test_initial_journal_prepare_crash_preserves_unbound_nonempty_stage(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("initial-journal-old")
+    new = _outputs("initial-journal-new")
+    _install(tmp_path, old, monkeypatch)
+    completed = _run_crashing_generate(
+        tmp_path,
+        new,
+        checkpoint="after-journal-state-000-prepare",
+        exit_code=72,
+    )
+    assert completed.returncode == 72
+    story = tmp_path / generator.STORY_ROOT
+    stage = story / generator.STAGE_NAME
+    stage_identity = generator._stat_signature(stage.lstat())
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="no invocation ownership inventory",
+    ):
+        generator.generate(tmp_path)
+    assert generator._stat_signature(stage.lstat()) == stage_identity
+    for relative, content in old.items():
+        assert (tmp_path / relative).read_bytes() == content
 
 
 def test_interrupted_initial_journal_state_write_recovers_without_inference(
@@ -638,6 +672,177 @@ def test_byte_identical_journal_state_swap_after_root_move_is_not_deleted(
     assert preserved.read_bytes() == foreign.read_bytes()
 
 
+def test_active_journal_state_signature_is_captured_before_commit_checkpoint(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("active-state-old")
+    new = _outputs("active-state-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    preserved = story / "preserved-active-journal-state.json"
+    foreign_identity: tuple[int, int] | None = None
+
+    def swap_final_committed_state(name: str) -> None:
+        nonlocal foreign_identity
+        if not name.startswith("after-journal-state-") or not name.endswith("-commit"):
+            return
+        journal = story / generator.JOURNAL_NAME
+        if not journal.is_dir() or preserved.exists():
+            return
+        states = sorted(journal.glob("state.*.json"))
+        latest = json.loads(states[-1].read_bytes())
+        if latest["cleanup_phase"] != "CLEANUP_COMPLETE":
+            return
+        foreign_identity = _replace_with_byte_identical_inode(states[-1], preserved)
+
+    monkeypatch.setattr(generator, "_checkpoint", swap_final_committed_state)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match=(
+            "active publication journal (?:state identity inventory drifted|"
+            "directory signature changed)"
+        ),
+    ):
+        generator.generate(tmp_path)
+    journal = story / generator.JOURNAL_NAME
+    assert foreign_identity is not None
+    foreign = sorted(journal.glob("state.*.json"))[-1]
+    assert (foreign.stat().st_dev, foreign.stat().st_ino) == foreign_identity
+    assert foreign.read_bytes() == preserved.read_bytes()
+
+
+def test_active_journal_swap_and_commit_checkpoint_failure_never_recaptures_replacement(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("active-state-fault-old")
+    new = _outputs("active-state-fault-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    preserved = story / "preserved-active-journal-state-with-fault.json"
+    foreign_identity: tuple[int, int] | None = None
+
+    def swap_state_then_fail(name: str) -> None:
+        nonlocal foreign_identity
+        if not name.startswith("after-journal-state-") or not name.endswith("-commit"):
+            return
+        journal = story / generator.JOURNAL_NAME
+        if not journal.is_dir() or preserved.exists():
+            return
+        states = sorted(journal.glob("state.*.json"))
+        latest = json.loads(states[-1].read_bytes())
+        if latest["cleanup_phase"] != "CLEANUP_COMPLETE":
+            return
+        foreign_identity = _replace_with_byte_identical_inode(states[-1], preserved)
+        raise RuntimeError("synthetic checkpoint failure after journal replacement")
+
+    monkeypatch.setattr(generator, "_checkpoint", swap_state_then_fail)
+    with pytest.raises(
+        RuntimeError,
+        match="synthetic checkpoint failure after journal replacement",
+    ) as caught:
+        generator.generate(tmp_path)
+    assert any(
+        "automatic publication recovery also failed" in note
+        for note in getattr(caught.value, "__notes__", ())
+    )
+    journal = story / generator.JOURNAL_NAME
+    assert foreign_identity is not None
+    foreign = sorted(journal.glob("state.*.json"))[-1]
+    assert (foreign.stat().st_dev, foreign.stat().st_ino) == foreign_identity
+    assert foreign.read_bytes() == preserved.read_bytes()
+
+
+def test_new_active_journal_root_swap_and_publish_checkpoint_failure_is_preserved(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("active-root-publish-fault-old")
+    new = _outputs("active-root-publish-fault-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    preserved = story / "preserved-new-active-journal-root"
+    foreign_identity: tuple[int, int] | None = None
+
+    def swap_root_then_fail(name: str) -> None:
+        nonlocal foreign_identity
+        if name != "after-journal-publish" or preserved.exists():
+            return
+        journal = story / generator.JOURNAL_NAME
+        journal.rename(preserved)
+        _clone_journal_directory(preserved, journal)
+        metadata = journal.stat()
+        foreign_identity = metadata.st_dev, metadata.st_ino
+        raise RuntimeError(
+            "synthetic checkpoint failure after journal root replacement"
+        )
+
+    monkeypatch.setattr(generator, "_checkpoint", swap_root_then_fail)
+    with pytest.raises(
+        RuntimeError,
+        match="synthetic checkpoint failure after journal root replacement",
+    ) as caught:
+        generator.generate(tmp_path)
+    assert any(
+        "automatic publication recovery also failed" in note
+        for note in getattr(caught.value, "__notes__", ())
+    )
+    journal = story / generator.JOURNAL_NAME
+    assert foreign_identity is not None
+    assert (journal.stat().st_dev, journal.stat().st_ino) == foreign_identity
+    assert preserved.is_dir()
+    assert sorted(item.read_bytes() for item in journal.iterdir()) == sorted(
+        item.read_bytes() for item in preserved.iterdir()
+    )
+    for relative, content in old.items():
+        assert (tmp_path / relative).read_bytes() == content
+
+
+def test_whole_active_journal_root_clone_swap_is_preserved_before_terminal_move(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("active-root-old")
+    new = _outputs("active-root-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    preserved = story / "preserved-active-journal-root"
+    foreign_identity: tuple[int, int] | None = None
+
+    def swap_terminal_root(name: str) -> None:
+        nonlocal foreign_identity
+        if name != "before-cleanup-complete-verification" or preserved.exists():
+            return
+        journal = story / generator.JOURNAL_NAME
+        if not journal.is_dir():
+            return
+        states = sorted(journal.glob("state.*.json"))
+        if not states:
+            return
+        latest = json.loads(states[-1].read_bytes())
+        if latest["cleanup_phase"] != "CLEANUP_COMPLETE":
+            return
+        journal.rename(preserved)
+        _clone_journal_directory(preserved, journal)
+        metadata = journal.stat()
+        foreign_identity = metadata.st_dev, metadata.st_ino
+
+    monkeypatch.setattr(generator, "_checkpoint", swap_terminal_root)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="active publication journal directory signature changed",
+    ):
+        generator.generate(tmp_path)
+    journal = story / generator.JOURNAL_NAME
+    assert foreign_identity is not None
+    assert (journal.stat().st_dev, journal.stat().st_ino) == foreign_identity
+    assert preserved.is_dir()
+    assert sorted(item.read_bytes() for item in journal.iterdir()) == sorted(
+        item.read_bytes() for item in preserved.iterdir()
+    )
+
+
 @pytest.mark.parametrize("mutation", ["mode", "mtime"])
 def test_journal_state_full_signature_drift_after_root_move_is_not_deleted(
     mutation: str,
@@ -823,6 +1028,70 @@ def test_same_uid_old_stage_swap_before_quarantine_is_restored_and_refused(
     assert (stage.stat().st_dev, stage.stat().st_ino) == foreign_identity
     assert preserved.is_dir()
     assert not any(story.glob(f"{generator.BUNDLE_CLEANUP_PREFIX}*"))
+
+
+def test_detected_partial_stage_root_replacement_is_preserved_not_reowned(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("partial-root-old")
+    new = _outputs("partial-root-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    preserved = story / "preserved-invocation-stage-root"
+    foreign_identity: tuple[int, int] | None = None
+
+    def swap_stage_root(name: str) -> None:
+        nonlocal foreign_identity
+        if name != "after-stage-directory" or preserved.exists():
+            return
+        stage = story / generator.STAGE_NAME
+        stage.rename(preserved)
+        stage.mkdir()
+        metadata = stage.stat()
+        foreign_identity = metadata.st_dev, metadata.st_ino
+
+    monkeypatch.setattr(generator, "_checkpoint", swap_stage_root)
+    with pytest.raises(generator.PublicationRecoveryRequired):
+        generator.generate(tmp_path)
+    stage = story / generator.STAGE_NAME
+    assert foreign_identity is not None
+    assert (stage.stat().st_dev, stage.stat().st_ino) == foreign_identity
+    assert preserved.is_dir()
+    for relative, content in old.items():
+        assert (tmp_path / relative).read_bytes() == content
+
+
+def test_byte_identical_partial_stage_file_replacement_is_preserved_not_published(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    old = _outputs("partial-file-old")
+    new = _outputs("partial-file-new")
+    _install(tmp_path, old, monkeypatch)
+    monkeypatch.setattr(generator, "build_outputs", lambda _root: new)
+    story = tmp_path / generator.STORY_ROOT
+    preserved = story / "preserved-invocation-stage-manifest.json"
+    foreign_identity: tuple[int, int] | None = None
+
+    def swap_staged_manifest(name: str) -> None:
+        nonlocal foreign_identity
+        if name != "after-staged-manifest" or preserved.exists():
+            return
+        manifest = story / generator.STAGE_NAME / "manifest.json"
+        foreign_identity = _replace_with_byte_identical_inode(manifest, preserved)
+
+    monkeypatch.setattr(generator, "_checkpoint", swap_staged_manifest)
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="partial staged manifest invocation identity drifted",
+    ):
+        generator.generate(tmp_path)
+    manifest = story / generator.STAGE_NAME / "manifest.json"
+    assert foreign_identity is not None
+    assert (manifest.stat().st_dev, manifest.stat().st_ino) == foreign_identity
+    assert manifest.read_bytes() == preserved.read_bytes()
+    for relative, content in old.items():
+        assert (tmp_path / relative).read_bytes() == content
 
 
 def test_same_uid_directory_swap_after_quarantine_is_refused_without_deletion(
@@ -1056,9 +1325,9 @@ def _create_terminal_cleanup_tombstone(
             next_identity=installed_identity,
             publication_phase=phase,
         )
-        generator._create_journal_at(story_fd, state)
+        trust = generator._create_journal_at(story_fd, state)
         state = generator._write_journal_update_at(
-            story_fd, state, cleanup_phase="CLEANUP_COMPLETE"
+            story_fd, state, trust, cleanup_phase="CLEANUP_COMPLETE"
         )
         journal_fd = generator._open_directory_at(
             story_fd, generator.JOURNAL_NAME, label="test journal"
@@ -1237,6 +1506,103 @@ def test_check_cannot_accept_intermediate_namespace_during_generation(
     assert not thread.is_alive()
     assert failures == []
     _assert_installed(tmp_path, new)
+
+
+def test_bundle_acceptance_revalidates_fixtures_name_against_open_descriptor(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    outputs = _outputs("nested-fixtures")
+    _install(tmp_path, outputs, monkeypatch)
+    fixtures = tmp_path / generator.GENERATED_ROOT / "fixtures"
+    preserved = tmp_path / generator.STORY_ROOT / "preserved-bundle-fixtures"
+    foreign_identity: tuple[int, int] | None = None
+    real_read = generator._read_regular_capture_at
+
+    def swap_fixtures_on_manifest_read(
+        parent_fd: int,
+        name: str,
+        *,
+        label: str,
+        maximum_bytes: int = generator.MAX_GENERATED_BYTES,
+    ) -> tuple[bytes, tuple[int, int]]:
+        nonlocal foreign_identity
+        result = real_read(
+            parent_fd,
+            name,
+            label=label,
+            maximum_bytes=maximum_bytes,
+        )
+        if label == "generated manifest" and foreign_identity is None:
+            fixtures.rename(preserved)
+            recorded = fixtures / "recorded"
+            recorded.mkdir(parents=True)
+            for fixture_name in generator.EXPECTED_FIXTURE_NAMES:
+                recorded.joinpath(fixture_name).write_bytes(
+                    preserved.joinpath("recorded", fixture_name).read_bytes()
+                )
+            metadata = fixtures.stat()
+            foreign_identity = metadata.st_dev, metadata.st_ino
+        return result
+
+    monkeypatch.setattr(
+        generator, "_read_regular_capture_at", swap_fixtures_on_manifest_read
+    )
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="fixture directory identity changed",
+    ):
+        generator.check(tmp_path)
+    assert foreign_identity is not None
+    assert (fixtures.stat().st_dev, fixtures.stat().st_ino) == foreign_identity
+    assert preserved.is_dir()
+
+
+def test_bundle_acceptance_revalidates_recorded_name_against_open_descriptor(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    outputs = _outputs("nested-recorded")
+    _install(tmp_path, outputs, monkeypatch)
+    recorded = tmp_path / generator.FIXTURE_ROOT
+    preserved = tmp_path / generator.STORY_ROOT / "preserved-bundle-recorded"
+    foreign_identity: tuple[int, int] | None = None
+    real_read = generator._read_regular_capture_at
+
+    def swap_recorded_on_manifest_read(
+        parent_fd: int,
+        name: str,
+        *,
+        label: str,
+        maximum_bytes: int = generator.MAX_GENERATED_BYTES,
+    ) -> tuple[bytes, tuple[int, int]]:
+        nonlocal foreign_identity
+        result = real_read(
+            parent_fd,
+            name,
+            label=label,
+            maximum_bytes=maximum_bytes,
+        )
+        if label == "generated manifest" and foreign_identity is None:
+            recorded.rename(preserved)
+            recorded.mkdir()
+            for fixture_name in generator.EXPECTED_FIXTURE_NAMES:
+                recorded.joinpath(fixture_name).write_bytes(
+                    preserved.joinpath(fixture_name).read_bytes()
+                )
+            metadata = recorded.stat()
+            foreign_identity = metadata.st_dev, metadata.st_ino
+        return result
+
+    monkeypatch.setattr(
+        generator, "_read_regular_capture_at", swap_recorded_on_manifest_read
+    )
+    with pytest.raises(
+        generator.PublicationRecoveryRequired,
+        match="recorded fixture directory identity changed",
+    ):
+        generator.check(tmp_path)
+    assert foreign_identity is not None
+    assert (recorded.stat().st_dev, recorded.stat().st_ino) == foreign_identity
+    assert preserved.is_dir()
 
 
 @pytest.mark.parametrize("entry_kind", ["hardlink", "fifo"])

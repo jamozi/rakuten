@@ -301,6 +301,21 @@ def test_atomic_publication_design_is_closed_without_resolving_external_decision
     assert journal["terminal_state_identity_capture"].startswith(
         "EXACT_DEV_INO_MODE_NLINK_SIZE_MTIME_NS_CTIME_NS"
     )
+    assert journal["active_invocation_identity_capture"] == (
+        "ROOT_AND_EVERY_COMMITTED_STATE_FULL_SIGNATURE_CAPTURED_BEFORE_EACH_"
+        "CHECKPOINT_AND_REVALIDATED_ACROSS_EVERY_APPEND"
+    )
+    assert decision["ST1204-FIXTURE-D2"]["crash_recovery"][
+        "stage_without_journal"
+    ].endswith("SURVIVING_NONEMPTY_STAGE_REFUSED")
+    assert decision["ST1204-FIXTURE-D2"]["nested_bundle_read"] == {
+        "fixtures": "REVALIDATE_NAME_AGAINST_OPEN_DESCRIPTOR_BEFORE_ACCEPTANCE",
+        "recorded": "REVALIDATE_NAME_AGAINST_OPEN_DESCRIPTOR_BEFORE_ACCEPTANCE",
+    }
+    assert decision["ST1204-FIXTURE-D3"]["check_semantics"] == (
+        "SHARED_LOCK_BYTE_AND_NAMESPACE_EXACT;PRESERVE_DEV_INO_SIZE_MODE_MTIME_NS_"
+        "CTIME_NS;ACCESS_TIME_EXCLUDED_WITHOUT_O_NOATIME_CLAIM"
+    )
     assert decision["ST1204-FIXTURE-D2"]["crash_recovery"][
         "terminal_journal_after_root_move"
     ].startswith("CONSERVATIVELY_RETAIN_AND_REFUSE")

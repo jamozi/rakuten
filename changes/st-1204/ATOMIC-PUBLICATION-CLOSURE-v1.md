@@ -2,6 +2,7 @@
 
 - Finding: `ST1204-AUDIT-001`
 - Local implementation disposition: `REMEDIATED_V3_PENDING_REAUDIT`
+- V4 local implementation disposition: `REMEDIATED_V4_PENDING_REAUDIT`
 - Independent read-only re-audit: `NOT_EXECUTED`
 - Formal TST-030: `NOT_EXECUTED`
 - Live provider validation: `NOT_EXECUTED`
@@ -120,6 +121,64 @@ The exact unavoidable final POSIX syscall-window limitation remains unchanged.
   inherited linked-worktree-wide secret-scan limitation and out-of-config
   direct Pyright diagnostics remain reported rather than promoted to green.
 - Independent V3 re-audit, formal TST-030, hosted CI, live provider,
+  persistence, staging, release and Production remain `NOT_EXECUTED`. This is
+  local implementation evidence only and does not claim `VALIDATED` or audit
+  `PASS`.
+
+## V4 invocation-identity and read-boundary correction
+
+A subsequent independent review identified four remaining overclaims or
+identity gaps. First, the terminal cleanup path captured active journal state
+inodes only immediately before the root move, so a byte-identical state or
+whole-root replacement earlier in the same invocation could be re-owned.
+Second, pre-journal partial-stage cleanup inferred ownership again from the
+expected bytes and current inode. Third, bundle acceptance revalidated only the
+outer generated directory name, not the nested `fixtures` and `recorded` names
+against their open descriptors. Fourth, the check-mode evidence omitted access
+time while the design claimed that no metadata changed.
+
+V4 keeps an invocation-scoped full signature for the active journal root and
+every committed state. Each state signature is captured before its prepare and
+commit checkpoints; the complete inventory is revalidated before every append
+and immediately before the terminal root move. Same-invocation automatic
+recovery receives the existing inventory rather than recapturing the active
+journal, including when a checkpoint raises after a replacement. An observed
+state or root swap raises a non-recapturable identity-drift refusal and
+preserves the replacement.
+
+Partial-stage cleanup now requires the same invocation's pre-checkpoint
+directory identity and file-signature inventory. This preserves automatic
+cleanup for ordinary pre-journal faults in the creating invocation. A detected
+replacement is preserved and refused, and a nonempty stage that survives a
+process boundary is no longer inferred owned from matching bytes. Nested
+bundle reads revalidate both directory names against their already-open
+descriptors before acceptance.
+
+The exact check guarantee is narrowed to bytes, namespace, device/inode, size,
+mode, mtime and ctime. Access time is explicitly excluded because portable
+read-only opens may update it; V4 does not claim or conditionally fall back from
+`O_NOATIME`.
+
+## V4 local evidence
+
+- Owner generation and the immediately following owner `--check` pass at
+  generated manifest SHA-256
+  `80ee0253d5a7d0a051932bee8a8916fddf16c7ace8580081a1331ffa56d65924`.
+  All three recorded fixture payloads remain byte-identical.
+- The isolated ST-1204 suite passes `210` tests, including `75`
+  atomic-publication tests. New exact hostile regressions cover an active state
+  replaced by byte-identical bytes at its commit checkpoint, a whole active
+  journal root clone/swap before terminal movement, state and root replacement
+  combined with a raising checkpoint, partial-stage root and byte-identical
+  file replacements, and nested `fixtures` and `recorded` directory swaps
+  before bundle acceptance. Existing same-invocation
+  pre-journal fault recovery remains green; separate-process unbound nonempty
+  stage recovery now proves preservation and refusal.
+- Python compilation, Ruff lint/format, strict mypy, owner no-write checking,
+  focused capability/static checking, and `git diff --check` are required by
+  this V4 checkpoint. The exact final command results accompany the Story
+  commit rather than being promoted to formal TST-030 evidence.
+- Independent V4 re-audit, formal TST-030, hosted CI, live provider,
   persistence, staging, release and Production remain `NOT_EXECUTED`. This is
   local implementation evidence only and does not claim `VALIDATED` or audit
   `PASS`.

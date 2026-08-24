@@ -160,6 +160,40 @@ class PublicationRecoveryRequired(RuntimeError):
     """A durable ST-1204 publication needs another owner invocation."""
 
 
+class _InvocationIdentityDrift(PublicationRecoveryRequired):
+    """An invocation-owned inode changed and must not be re-captured."""
+
+
+class _ActiveJournalTrust:
+    """Invocation-local identities that journal bytes cannot self-attest."""
+
+    __slots__ = ("root_signature", "state_signatures")
+
+    root_signature: StatSignature | None
+    state_signatures: dict[str, StatSignature]
+
+    def __init__(
+        self,
+        *,
+        root_signature: StatSignature | None = None,
+        state_signatures: Mapping[str, StatSignature] | None = None,
+    ) -> None:
+        self.root_signature = root_signature
+        self.state_signatures = (
+            {} if state_signatures is None else dict(state_signatures)
+        )
+
+
+class _ActiveStageTrust:
+    """Invocation-local identities for a stage created by this process."""
+
+    __slots__ = ("directory_identities", "file_signatures")
+
+    def __init__(self) -> None:
+        self.directory_identities: dict[str, tuple[int, int]] = {}
+        self.file_signatures: dict[str, StatSignature] = {}
+
+
 def _checkpoint(_name: str) -> None:
     """Fault-injection seam; production generation deliberately does nothing."""
 
@@ -1778,7 +1812,25 @@ def _assert_directory_entry_identity_at(
         or not stat.S_ISDIR(current.st_mode)
         or (current.st_dev, current.st_ino) != (opened.st_dev, opened.st_ino)
     ):
-        raise PublicationRecoveryRequired(f"{label} directory identity changed")
+        raise PublicationRecoveryRequired(f"{label} identity changed")
+
+
+def _assert_directory_signature_at(
+    parent_fd: int,
+    name: str,
+    descriptor: int,
+    *,
+    expected_signature: StatSignature,
+    label: str,
+) -> None:
+    current = _entry_metadata_at(parent_fd, name)
+    opened_signature = _stat_signature(os.fstat(descriptor))
+    if (
+        current is None
+        or _stat_signature(current) != expected_signature
+        or opened_signature != expected_signature
+    ):
+        raise _InvocationIdentityDrift(f"{label} directory signature changed")
 
 
 def _directory_names_at(descriptor: int, *, label: str) -> set[str]:
@@ -2217,6 +2269,15 @@ def _read_bundle_capture_at(
             identities[path] = identity
         _validate_bundle_files(files)
         _assert_directory_entry_identity_at(
+            fixtures_fd,
+            "recorded",
+            recorded_fd,
+            label="recorded fixture directory",
+        )
+        _assert_directory_entry_identity_at(
+            root_fd, "fixtures", fixtures_fd, label="fixture directory"
+        )
+        _assert_directory_entry_identity_at(
             story_fd, name, root_fd, label="generated bundle"
         )
         return files, identities
@@ -2233,23 +2294,168 @@ def _read_bundle_at(
     return None if captured is None else captured[0]
 
 
-def _create_stage_at(story_fd: int, files: Mapping[str, bytes]) -> None:
+def _assert_stage_trust_at(
+    story_fd: int,
+    expected: Mapping[str, bytes],
+    trust: _ActiveStageTrust,
+    *,
+    complete: bool,
+) -> None:
+    root_identity = trust.directory_identities.get(".")
+    if root_identity is None:
+        raise _InvocationIdentityDrift(
+            "partial publication stage has no invocation ownership"
+        )
+    stage_fd = _open_directory_at(
+        story_fd, STAGE_NAME, label="invocation-owned publication stage"
+    )
+    fixtures_fd: int | None = None
+    recorded_fd: int | None = None
+    try:
+        if _entry_identity(os.fstat(stage_fd)) != root_identity:
+            raise _InvocationIdentityDrift(
+                "partial publication stage invocation identity drifted"
+            )
+        expected_root_names: set[str] = set()
+        if "manifest.json" in trust.file_signatures:
+            expected_root_names.add("manifest.json")
+        if "fixtures" in trust.directory_identities:
+            expected_root_names.add("fixtures")
+        if (
+            _directory_names_at(stage_fd, label="invocation-owned publication stage")
+            != expected_root_names
+        ):
+            raise _InvocationIdentityDrift(
+                "partial publication stage invocation inventory drifted"
+            )
+        manifest_signature = trust.file_signatures.get("manifest.json")
+        if manifest_signature is not None:
+            content, signature = _read_regular_stat_capture_at(
+                stage_fd, "manifest.json", label="invocation-owned staged manifest"
+            )
+            if signature != manifest_signature or content != expected["manifest.json"]:
+                raise _InvocationIdentityDrift(
+                    "partial staged manifest invocation identity drifted"
+                )
+        fixtures_identity = trust.directory_identities.get("fixtures")
+        if fixtures_identity is not None:
+            fixtures_fd = _open_directory_at(
+                stage_fd, "fixtures", label="invocation-owned staged fixtures"
+            )
+            if _entry_identity(os.fstat(fixtures_fd)) != fixtures_identity:
+                raise _InvocationIdentityDrift(
+                    "partial staged fixture directory invocation identity drifted"
+                )
+            expected_fixture_names = (
+                {"recorded"}
+                if "fixtures/recorded" in trust.directory_identities
+                else set()
+            )
+            if (
+                _directory_names_at(
+                    fixtures_fd, label="invocation-owned staged fixtures"
+                )
+                != expected_fixture_names
+            ):
+                raise _InvocationIdentityDrift(
+                    "partial staged fixture directory invocation inventory drifted"
+                )
+            recorded_identity = trust.directory_identities.get("fixtures/recorded")
+            if recorded_identity is not None:
+                recorded_fd = _open_directory_at(
+                    fixtures_fd,
+                    "recorded",
+                    label="invocation-owned staged recorded fixtures",
+                )
+                if _entry_identity(os.fstat(recorded_fd)) != recorded_identity:
+                    raise _InvocationIdentityDrift(
+                        "partial recorded fixture directory invocation identity drifted"
+                    )
+                recorded_signatures = {
+                    path.removeprefix("fixtures/recorded/"): signature
+                    for path, signature in trust.file_signatures.items()
+                    if path.startswith("fixtures/recorded/")
+                }
+                if _directory_names_at(
+                    recorded_fd, label="invocation-owned staged recorded fixtures"
+                ) != set(recorded_signatures):
+                    raise _InvocationIdentityDrift(
+                        "partial recorded fixture invocation inventory drifted"
+                    )
+                for fixture_name, expected_signature in recorded_signatures.items():
+                    content, signature = _read_regular_stat_capture_at(
+                        recorded_fd,
+                        fixture_name,
+                        label=f"invocation-owned staged fixture {fixture_name}",
+                    )
+                    if (
+                        signature != expected_signature
+                        or content != expected[f"fixtures/recorded/{fixture_name}"]
+                    ):
+                        raise _InvocationIdentityDrift(
+                            "partial staged fixture invocation identity drifted"
+                        )
+                _assert_directory_entry_identity_at(
+                    fixtures_fd,
+                    "recorded",
+                    recorded_fd,
+                    label="invocation-owned staged recorded fixtures",
+                )
+            _assert_directory_entry_identity_at(
+                stage_fd,
+                "fixtures",
+                fixtures_fd,
+                label="invocation-owned staged fixtures",
+            )
+        _assert_directory_entry_identity_at(
+            story_fd,
+            STAGE_NAME,
+            stage_fd,
+            label="invocation-owned publication stage",
+        )
+        if complete and (
+            set(trust.directory_identities) != {".", "fixtures", "fixtures/recorded"}
+            or set(trust.file_signatures)
+            != {
+                "manifest.json",
+                *(f"fixtures/recorded/{name}" for name in EXPECTED_FIXTURE_NAMES),
+            }
+        ):
+            raise _InvocationIdentityDrift(
+                "complete publication stage invocation inventory is incomplete"
+            )
+    finally:
+        for descriptor in (recorded_fd, fixtures_fd, stage_fd):
+            if descriptor is not None:
+                os.close(descriptor)
+
+
+def _create_stage_at(
+    story_fd: int,
+    files: Mapping[str, bytes],
+    trust: _ActiveStageTrust,
+) -> None:
     if _entry_metadata_at(story_fd, STAGE_NAME) is not None:
         raise PublicationRecoveryRequired("stale ST-1204 stage requires recovery")
     os.mkdir(STAGE_NAME, 0o700, dir_fd=story_fd)
     os.fsync(story_fd)
-    _checkpoint("after-stage-directory")
     stage_fd = _open_directory_at(story_fd, STAGE_NAME, label="publication stage")
+    trust.directory_identities["."] = _entry_identity(os.fstat(stage_fd))
+    _checkpoint("after-stage-directory")
     fixtures_fd: int | None = None
     recorded_fd: int | None = None
     try:
         os.mkdir("fixtures", 0o755, dir_fd=stage_fd)
         os.fsync(stage_fd)
         fixtures_fd = _open_directory_at(stage_fd, "fixtures", label="staged fixtures")
+        trust.directory_identities["fixtures"] = _entry_identity(os.fstat(fixtures_fd))
         os.mkdir("recorded", 0o755, dir_fd=fixtures_fd)
         os.fsync(fixtures_fd)
         recorded_fd = _open_directory_at(
             fixtures_fd, "recorded", label="staged recorded fixtures"
+        )
+        trust.directory_identities["fixtures/recorded"] = _entry_identity(
+            os.fstat(recorded_fd)
         )
         _create_regular_at(
             stage_fd,
@@ -2257,6 +2463,10 @@ def _create_stage_at(story_fd: int, files: Mapping[str, bytes]) -> None:
             files["manifest.json"],
             label="staged manifest",
         )
+        _manifest_content, manifest_signature = _read_regular_stat_capture_at(
+            stage_fd, "manifest.json", label="staged manifest"
+        )
+        trust.file_signatures["manifest.json"] = manifest_signature
         _checkpoint("after-staged-manifest")
         for fixture_name in EXPECTED_FIXTURE_NAMES:
             _create_regular_at(
@@ -2264,6 +2474,14 @@ def _create_stage_at(story_fd: int, files: Mapping[str, bytes]) -> None:
                 fixture_name,
                 files[f"fixtures/recorded/{fixture_name}"],
                 label=f"staged fixture {fixture_name}",
+            )
+            _fixture_content, fixture_signature = _read_regular_stat_capture_at(
+                recorded_fd,
+                fixture_name,
+                label=f"staged fixture {fixture_name}",
+            )
+            trust.file_signatures[f"fixtures/recorded/{fixture_name}"] = (
+                fixture_signature
             )
             _checkpoint(f"after-staged-{fixture_name}")
         os.fsync(recorded_fd)
@@ -2286,10 +2504,13 @@ def _create_stage_at(story_fd: int, files: Mapping[str, bytes]) -> None:
             if descriptor is not None:
                 os.close(descriptor)
     _checkpoint("after-stage-fsync")
+    _assert_stage_trust_at(story_fd, files, trust, complete=True)
     observed = _read_bundle_at(story_fd, STAGE_NAME, allow_missing=False)
     if observed != files:
         raise RuntimeError("staged ST-1204 bundle failed exact verification")
+    _assert_stage_trust_at(story_fd, files, trust, complete=True)
     _checkpoint("after-stage-verify")
+    _assert_stage_trust_at(story_fd, files, trust, complete=True)
 
 
 def _cleanup_entry_state(parent_fd: int, name: str) -> str:
@@ -2839,7 +3060,17 @@ def _remove_owned_journal_tree_at(
     )
 
 
-def _create_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
+def _create_journal_at(
+    story_fd: int,
+    state: Mapping[str, object],
+    trust: _ActiveJournalTrust | None = None,
+) -> _ActiveJournalTrust:
+    if trust is None:
+        trust = _ActiveJournalTrust()
+    elif trust.root_signature is not None or trust.state_signatures:
+        raise _InvocationIdentityDrift(
+            "new publication journal trust is already activated"
+        )
     pending_names = {
         name
         for name in _directory_names_at(story_fd, label="ST-1204 Story directory")
@@ -2855,8 +3086,11 @@ def _create_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
         story_fd, JOURNAL_PREPARING_NAME, label="preparing publication journal"
     )
     preparing_identity: tuple[int, int]
+    initial_state_signature: StatSignature
     try:
-        _create_committed_journal_state_at(preparing_fd, state)
+        initial_state_signature, _preparing_root_signature = (
+            _create_committed_journal_state_at(preparing_fd, state)
+        )
         os.fsync(preparing_fd)
         _assert_directory_entry_identity_at(
             story_fd,
@@ -2871,8 +3105,31 @@ def _create_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
     os.fsync(story_fd)
     current = _entry_metadata_at(story_fd, JOURNAL_NAME)
     if current is None or _entry_identity(current) != preparing_identity:
-        raise PublicationRecoveryRequired("published journal identity drifted")
+        raise _InvocationIdentityDrift("published journal identity drifted")
+    journal_fd = _open_directory_at(
+        story_fd, JOURNAL_NAME, label="published publication journal"
+    )
+    try:
+        loaded, _contents, observed_signatures = _load_journal_from_fd(journal_fd)
+        if loaded != dict(state) or observed_signatures != {
+            JOURNAL_STATE_NAME: initial_state_signature
+        }:
+            raise _InvocationIdentityDrift("published journal state identity drifted")
+        root_signature = _stat_signature(os.fstat(journal_fd))
+        _assert_directory_signature_at(
+            story_fd,
+            JOURNAL_NAME,
+            journal_fd,
+            expected_signature=root_signature,
+            label="published publication journal",
+        )
+    finally:
+        os.close(journal_fd)
+    trust.root_signature = root_signature
+    trust.state_signatures.update(observed_signatures)
     _checkpoint("after-journal-publish")
+    _assert_active_journal_trust_at(story_fd, trust)
+    return trust
 
 
 def _journal_state_name(sequence: int) -> str:
@@ -2886,8 +3143,10 @@ def _journal_state_preparing_name(sequence: int) -> str:
 
 
 def _create_committed_journal_state_at(
-    journal_fd: int, state: Mapping[str, object]
-) -> None:
+    journal_fd: int,
+    state: Mapping[str, object],
+    trust: _ActiveJournalTrust | None = None,
+) -> tuple[StatSignature, StatSignature]:
     sequence = cast(int, state["sequence"])
     final_name = _journal_state_name(sequence)
     preparing_name = _journal_state_preparing_name(sequence)
@@ -2902,11 +3161,48 @@ def _create_committed_journal_state_at(
         _journal_bytes(state),
         label="preparing publication journal state",
     )
+    expected_content = _journal_bytes(state)
+    preparing_content, preparing_signature = _read_regular_stat_capture_at(
+        journal_fd,
+        preparing_name,
+        label="preparing publication journal state",
+        maximum_bytes=16 * 1024,
+    )
+    if preparing_content != expected_content:
+        raise PublicationRecoveryRequired(
+            "preparing publication journal state bytes drifted"
+        )
     os.fsync(journal_fd)
     _checkpoint(f"after-journal-state-{sequence:03d}-prepare")
+    preparing_current = _entry_metadata_at(journal_fd, preparing_name)
+    if (
+        preparing_current is None
+        or _stat_signature(preparing_current) != preparing_signature
+    ):
+        raise _InvocationIdentityDrift(
+            "preparing publication journal state identity drifted"
+        )
     _rename_noreplace_at(journal_fd, preparing_name, final_name)
     os.fsync(journal_fd)
+    final_content, final_signature = _read_regular_stat_capture_at(
+        journal_fd,
+        final_name,
+        label="committed publication journal state",
+        maximum_bytes=16 * 1024,
+    )
+    if final_content != expected_content or (
+        final_signature[0],
+        final_signature[1],
+    ) != (preparing_signature[0], preparing_signature[1]):
+        raise _InvocationIdentityDrift(
+            "committed publication journal state identity drifted"
+        )
+    root_signature = _stat_signature(os.fstat(journal_fd))
+    if trust is not None:
+        trust.state_signatures[final_name] = final_signature
+        trust.root_signature = root_signature
     _checkpoint(f"after-journal-state-{sequence:03d}-commit")
+    return final_signature, root_signature
 
 
 def _load_journal_from_fd(
@@ -2953,7 +3249,85 @@ def _load_journal_from_fd(
     return states[-1], contents, signatures
 
 
-def _recover_preparing_journal_state_at(journal_fd: int) -> None:
+def _capture_active_journal_trust_from_fd_at(
+    story_fd: int,
+    journal_fd: int,
+    *,
+    ignore_preparing: bool = False,
+) -> tuple[dict[str, object], list[bytes], _ActiveJournalTrust]:
+    current, contents, signatures = _load_journal_from_fd(
+        journal_fd, ignore_preparing=ignore_preparing
+    )
+    root_signature = _stat_signature(os.fstat(journal_fd))
+    _assert_directory_signature_at(
+        story_fd,
+        JOURNAL_NAME,
+        journal_fd,
+        expected_signature=root_signature,
+        label="active publication journal",
+    )
+    return (
+        current,
+        contents,
+        _ActiveJournalTrust(
+            root_signature=root_signature,
+            state_signatures=signatures,
+        ),
+    )
+
+
+def _assert_active_journal_trust_from_fd_at(
+    story_fd: int,
+    journal_fd: int,
+    trust: _ActiveJournalTrust,
+    *,
+    ignore_preparing: bool = False,
+) -> tuple[dict[str, object], list[bytes], dict[str, StatSignature]]:
+    if trust.root_signature is None:
+        raise _InvocationIdentityDrift(
+            "active publication journal has no invocation root signature"
+        )
+    _assert_directory_signature_at(
+        story_fd,
+        JOURNAL_NAME,
+        journal_fd,
+        expected_signature=trust.root_signature,
+        label="active publication journal",
+    )
+    current, contents, signatures = _load_journal_from_fd(
+        journal_fd, ignore_preparing=ignore_preparing
+    )
+    if signatures != trust.state_signatures:
+        raise _InvocationIdentityDrift(
+            "active publication journal state identity inventory drifted"
+        )
+    _assert_directory_signature_at(
+        story_fd,
+        JOURNAL_NAME,
+        journal_fd,
+        expected_signature=trust.root_signature,
+        label="active publication journal",
+    )
+    return current, contents, signatures
+
+
+def _assert_active_journal_trust_at(
+    story_fd: int, trust: _ActiveJournalTrust
+) -> tuple[dict[str, object], list[bytes], dict[str, StatSignature]]:
+    journal_fd = _open_directory_at(
+        story_fd, JOURNAL_NAME, label="active publication journal"
+    )
+    try:
+        return _assert_active_journal_trust_from_fd_at(story_fd, journal_fd, trust)
+    finally:
+        os.close(journal_fd)
+
+
+def _recover_preparing_journal_state_at(
+    story_fd: int,
+    journal_fd: int,
+    trust: _ActiveJournalTrust,
+) -> None:
     names = _directory_names_at(journal_fd, label="publication journal")
     preparing_names = sorted(
         name for name in names if name.endswith(JOURNAL_STATE_PREPARING_SUFFIX)
@@ -2971,14 +3345,14 @@ def _recover_preparing_journal_state_at(journal_fd: int) -> None:
             "publication journal preparing state is malformed"
         )
     sequence = int(match.group(1))
-    current, contents, _signatures = _load_journal_from_fd(
-        journal_fd, ignore_preparing=True
+    current, contents, _signatures = _assert_active_journal_trust_from_fd_at(
+        story_fd, journal_fd, trust, ignore_preparing=True
     )
     if sequence != cast(int, current["sequence"]) + 1:
         raise PublicationRecoveryRequired(
             "publication journal preparing sequence drifted"
         )
-    content = _read_regular_at(
+    content, preparing_signature = _read_regular_stat_capture_at(
         journal_fd,
         preparing_name,
         label="preparing publication journal state",
@@ -2992,8 +3366,12 @@ def _recover_preparing_journal_state_at(journal_fd: int) -> None:
             preparing_name,
             label="partial preparing publication journal state",
             expected_content=content,
+            expected_identity=(preparing_signature[0], preparing_signature[1]),
+            expected_signature=preparing_signature,
         )
         os.fsync(journal_fd)
+        trust.root_signature = _stat_signature(os.fstat(journal_fd))
+        _assert_active_journal_trust_from_fd_at(story_fd, journal_fd, trust)
         return
     candidate = _validate_journal_state(raw_candidate)
     if candidate["sequence"] != sequence or candidate[
@@ -3008,6 +3386,23 @@ def _recover_preparing_journal_state_at(journal_fd: int) -> None:
         _journal_state_name(sequence),
     )
     os.fsync(journal_fd)
+    final_name = _journal_state_name(sequence)
+    final_content, final_signature = _read_regular_stat_capture_at(
+        journal_fd,
+        final_name,
+        label="recovered publication journal state",
+        maximum_bytes=16 * 1024,
+    )
+    if final_content != content or (final_signature[0], final_signature[1]) != (
+        preparing_signature[0],
+        preparing_signature[1],
+    ):
+        raise _InvocationIdentityDrift(
+            "recovered publication journal state identity drifted"
+        )
+    trust.state_signatures[final_name] = final_signature
+    trust.root_signature = _stat_signature(os.fstat(journal_fd))
+    _assert_active_journal_trust_from_fd_at(story_fd, journal_fd, trust)
 
 
 def _load_journal_at(story_fd: int) -> dict[str, object]:
@@ -3025,6 +3420,7 @@ def _load_journal_at(story_fd: int) -> dict[str, object]:
 def _write_journal_update_at(
     story_fd: int,
     state: Mapping[str, object],
+    trust: _ActiveJournalTrust,
     **updates: object,
 ) -> dict[str, object]:
     sequence = cast(int, state["sequence"]) + 1
@@ -3038,27 +3434,31 @@ def _write_journal_update_at(
     )
     journal_fd = _open_directory_at(story_fd, JOURNAL_NAME, label="publication journal")
     try:
-        current, _contents, _signatures = _load_journal_from_fd(journal_fd)
+        current, _contents, _signatures = _assert_active_journal_trust_from_fd_at(
+            story_fd, journal_fd, trust
+        )
         if current != dict(state):
             raise PublicationRecoveryRequired(
                 "publication journal update is based on stale state"
             )
-        _create_committed_journal_state_at(journal_fd, updated)
-        _assert_directory_entry_identity_at(
-            story_fd,
-            JOURNAL_NAME,
-            journal_fd,
-            label="publication journal",
+        state_signature, root_signature = _create_committed_journal_state_at(
+            journal_fd, updated, trust
         )
+        trust.state_signatures[_journal_state_name(sequence)] = state_signature
+        trust.root_signature = root_signature
+        _assert_active_journal_trust_from_fd_at(story_fd, journal_fd, trust)
     finally:
         os.close(journal_fd)
     return updated
 
 
 def _write_journal_phase_at(
-    story_fd: int, state: Mapping[str, object], phase: str
+    story_fd: int,
+    state: Mapping[str, object],
+    trust: _ActiveJournalTrust,
+    phase: str,
 ) -> dict[str, object]:
-    return _write_journal_update_at(story_fd, state, publication_phase=phase)
+    return _write_journal_update_at(story_fd, state, trust, publication_phase=phase)
 
 
 def _renameat2_at(
@@ -3146,13 +3546,19 @@ def _bundle_state_at(
     return "unknown"
 
 
-def _finish_terminal_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
+def _finish_terminal_journal_at(
+    story_fd: int,
+    state: Mapping[str, object],
+    trust: _ActiveJournalTrust,
+) -> None:
     if state["cleanup_phase"] != "CLEANUP_COMPLETE":
         raise PublicationRecoveryRequired("publication journal cleanup is incomplete")
     _assert_terminal_cleanup_inventory_at(story_fd, state)
     journal_fd = _open_directory_at(story_fd, JOURNAL_NAME, label="publication journal")
     try:
-        current, _contents, state_signatures = _load_journal_from_fd(journal_fd)
+        current, _contents, state_signatures = _assert_active_journal_trust_from_fd_at(
+            story_fd, journal_fd, trust
+        )
         if current != dict(state):
             raise PublicationRecoveryRequired(
                 "terminal publication journal state drifted"
@@ -3193,7 +3599,11 @@ def _finish_terminal_journal_at(story_fd: int, state: Mapping[str, object]) -> N
     _checkpoint("after-journal-cleanup")
 
 
-def _recover_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
+def _recover_journal_at(
+    story_fd: int,
+    state: Mapping[str, object],
+    trust: _ActiveJournalTrust,
+) -> None:
     previous_digest = cast(str | None, state["previous_manifest_sha256"])
     next_digest = cast(str, state["next_manifest_sha256"])
     previous_identity = _validated_identity(
@@ -3278,7 +3688,7 @@ def _recover_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
             raise PublicationRecoveryRequired(
                 f"ambiguous PREPARED publication state: destination={destination}, stage={stage}"
             )
-        state = _write_journal_phase_at(story_fd, state, terminal_phase)
+        state = _write_journal_phase_at(story_fd, state, trust, terminal_phase)
         phase = terminal_phase
         _checkpoint("after-rolled-back-state")
     if phase == "COMMITTED":
@@ -3301,10 +3711,10 @@ def _recover_journal_at(story_fd: int, state: Mapping[str, object]) -> None:
         raise PublicationRecoveryRequired("terminal ST-1204 bundle is ambiguous")
     if phase == "DRIFT_REFUSAL" and destination == "next":
         raise PublicationRecoveryRequired("refused ST-1204 bundle became authoritative")
-    state = _continue_terminal_cleanup_at(story_fd, state)
+    state = _continue_terminal_cleanup_at(story_fd, state, trust)
     if state["cleanup_phase"] != "CLEANUP_COMPLETE":
         raise PublicationRecoveryRequired("terminal ST-1204 cleanup did not complete")
-    _finish_terminal_journal_at(story_fd, state)
+    _finish_terminal_journal_at(story_fd, state, trust)
 
 
 def _recover_cleanup_tombstone_at(_story_fd: int, physical_name: str) -> None:
@@ -3322,7 +3732,10 @@ def _recover_cleanup_tombstone_at(_story_fd: int, physical_name: str) -> None:
 
 
 def _recover_pending_at(
-    story_fd: int, expected_outputs: Mapping[Path, bytes] | None = None
+    story_fd: int,
+    expected_outputs: Mapping[Path, bytes] | None = None,
+    stage_trust: _ActiveStageTrust | None = None,
+    journal_trust: _ActiveJournalTrust | None = None,
 ) -> None:
     story_names = _directory_names_at(story_fd, label="ST-1204 Story directory")
     preparing = _entry_metadata_at(story_fd, JOURNAL_PREPARING_NAME)
@@ -3405,7 +3818,9 @@ def _recover_pending_at(
         )
         _checkpoint("after-stale-preparing-cleanup")
         if expected_outputs is not None:
-            _remove_partial_stage_at(story_fd, _bundle_files(expected_outputs))
+            _remove_partial_stage_at(
+                story_fd, _bundle_files(expected_outputs), stage_trust
+            )
     elif preparing_tombstone is not None:
         raise PublicationRecoveryRequired(
             "unbound preparing-journal tombstone requires manual recovery"
@@ -3450,11 +3865,22 @@ def _recover_pending_at(
         raise PublicationRecoveryRequired("active ST-1204 journal is unsafe")
     journal_fd = _open_directory_at(story_fd, JOURNAL_NAME, label="publication journal")
     try:
-        _recover_preparing_journal_state_at(journal_fd)
+        if journal_trust is None:
+            state, _contents, active_trust = _capture_active_journal_trust_from_fd_at(
+                story_fd, journal_fd, ignore_preparing=True
+            )
+        else:
+            active_trust = journal_trust
+            state, _contents, _signatures = _assert_active_journal_trust_from_fd_at(
+                story_fd, journal_fd, active_trust, ignore_preparing=True
+            )
+        _recover_preparing_journal_state_at(story_fd, journal_fd, active_trust)
+        state, _contents, _signatures = _assert_active_journal_trust_from_fd_at(
+            story_fd, journal_fd, active_trust
+        )
     finally:
         os.close(journal_fd)
-    state = _load_journal_at(story_fd)
-    _recover_journal_at(story_fd, state)
+    _recover_journal_at(story_fd, state, active_trust)
 
 
 def _assert_no_pending_at(story_fd: int) -> None:
@@ -3647,7 +4073,9 @@ def _remove_owned_legacy_fixtures_at(
 
 
 def _continue_bundle_cleanup_at(
-    story_fd: int, state: Mapping[str, object]
+    story_fd: int,
+    state: Mapping[str, object],
+    trust: _ActiveJournalTrust,
 ) -> dict[str, object]:
     phase = cast(str, state["publication_phase"])
     mode = cast(str, state["mode"])
@@ -3696,6 +4124,7 @@ def _continue_bundle_cleanup_at(
         state = _write_journal_update_at(
             story_fd,
             state,
+            trust,
             cleanup_phase="BUNDLE_QUARANTINING",
             cleanup_bundle=new_cleanup_record,
         )
@@ -3754,7 +4183,7 @@ def _continue_bundle_cleanup_at(
                 label="bundle cleanup",
             )
         state = _write_journal_update_at(
-            story_fd, state, cleanup_phase="BUNDLE_DELETING"
+            story_fd, state, trust, cleanup_phase="BUNDLE_DELETING"
         )
         cleanup_phase = "BUNDLE_DELETING"
         _checkpoint("after-bundle-cleanup-deleting-state")
@@ -3769,13 +4198,15 @@ def _continue_bundle_cleanup_at(
             checkpoint_prefix="bundle-cleanup",
         )
         state = _write_journal_update_at(
-            story_fd, state, cleanup_phase="BUNDLE_REMOVED"
+            story_fd, state, trust, cleanup_phase="BUNDLE_REMOVED"
         )
     return dict(state)
 
 
 def _continue_legacy_cleanup_at(
-    story_fd: int, state: Mapping[str, object]
+    story_fd: int,
+    state: Mapping[str, object],
+    trust: _ActiveJournalTrust,
 ) -> dict[str, object]:
     cleanup_phase = cast(str, state["cleanup_phase"])
     if cleanup_phase == "CLEANUP_COMPLETE":
@@ -3786,7 +4217,7 @@ def _continue_legacy_cleanup_at(
         if legacy_manifest is None and legacy_fixtures is None:
             _assert_terminal_cleanup_inventory_at(story_fd, state)
             return _write_journal_update_at(
-                story_fd, state, cleanup_phase="CLEANUP_COMPLETE"
+                story_fd, state, trust, cleanup_phase="CLEANUP_COMPLETE"
             )
         if legacy_manifest is None or legacy_fixtures is None:
             raise PublicationRecoveryRequired("legacy ST-1204 tree is incomplete")
@@ -3822,6 +4253,7 @@ def _continue_legacy_cleanup_at(
         state = _write_journal_update_at(
             story_fd,
             state,
+            trust,
             cleanup_phase="LEGACY_QUARANTINING",
             legacy_manifest=new_manifest_record,
             legacy_fixtures=new_fixtures_record,
@@ -3924,7 +4356,7 @@ def _continue_legacy_cleanup_at(
                     label="legacy cleanup",
                 )
         state = _write_journal_update_at(
-            story_fd, state, cleanup_phase="LEGACY_DELETING"
+            story_fd, state, trust, cleanup_phase="LEGACY_DELETING"
         )
         cleanup_phase = "LEGACY_DELETING"
         _checkpoint("after-legacy-cleanup-deleting-state")
@@ -3945,7 +4377,7 @@ def _continue_legacy_cleanup_at(
         )
         _assert_terminal_cleanup_inventory_at(story_fd, state)
         state = _write_journal_update_at(
-            story_fd, state, cleanup_phase="CLEANUP_COMPLETE"
+            story_fd, state, trust, cleanup_phase="CLEANUP_COMPLETE"
         )
     return dict(state)
 
@@ -4017,15 +4449,17 @@ def _assert_terminal_cleanup_inventory_at(
 
 
 def _continue_terminal_cleanup_at(
-    story_fd: int, state: Mapping[str, object]
+    story_fd: int,
+    state: Mapping[str, object],
+    trust: _ActiveJournalTrust,
 ) -> dict[str, object]:
-    state = _continue_bundle_cleanup_at(story_fd, state)
+    state = _continue_bundle_cleanup_at(story_fd, state, trust)
     if state["publication_phase"] == "COMMITTED":
-        return _continue_legacy_cleanup_at(story_fd, state)
+        return _continue_legacy_cleanup_at(story_fd, state, trust)
     if state["cleanup_phase"] in {"NONE", "BUNDLE_REMOVED"}:
         _assert_terminal_cleanup_inventory_at(story_fd, state)
         return _write_journal_update_at(
-            story_fd, state, cleanup_phase="CLEANUP_COMPLETE"
+            story_fd, state, trust, cleanup_phase="CLEANUP_COMPLETE"
         )
     return dict(state)
 
@@ -4038,7 +4472,11 @@ def _assert_legacy_absent_at(story_fd: int) -> None:
         raise RuntimeError("non-authoritative legacy ST-1204 outputs remain")
 
 
-def _remove_partial_stage_at(story_fd: int, expected: Mapping[str, bytes]) -> None:
+def _remove_partial_stage_at(
+    story_fd: int,
+    expected: Mapping[str, bytes],
+    trust: _ActiveStageTrust | None = None,
+) -> None:
     root_metadata = _entry_metadata_at(story_fd, STAGE_NAME)
     root_tombstone = _entry_metadata_at(story_fd, _delete_tombstone_name(STAGE_NAME))
     if root_metadata is None and root_tombstone is None:
@@ -4048,13 +4486,45 @@ def _remove_partial_stage_at(story_fd: int, expected: Mapping[str, bytes]) -> No
         return
     if root_tombstone is not None:
         raise PublicationRecoveryRequired("partial publication stage conflicts")
+    if trust is None:
+        unbound_fd = _open_directory_at(
+            story_fd, STAGE_NAME, label="unbound partial publication stage"
+        )
+        try:
+            unbound_identity = _entry_identity(os.fstat(unbound_fd))
+            if _directory_names_at(
+                unbound_fd, label="unbound partial publication stage"
+            ):
+                raise PublicationRecoveryRequired(
+                    "nonempty partial stage has no invocation ownership inventory"
+                )
+            _assert_directory_entry_identity_at(
+                story_fd,
+                STAGE_NAME,
+                unbound_fd,
+                label="unbound partial publication stage",
+            )
+        finally:
+            os.close(unbound_fd)
+        _rmdir_empty_at(
+            story_fd,
+            STAGE_NAME,
+            label="empty partial publication stage",
+            expected_identity=unbound_identity,
+        )
+        return
+    _assert_stage_trust_at(story_fd, expected, trust, complete=False)
     stage_fd = _open_directory_at(
         story_fd, STAGE_NAME, label="partial publication stage"
     )
     fixtures_fd: int | None = None
     recorded_fd: int | None = None
     try:
-        stage_identity = _entry_identity(os.fstat(stage_fd))
+        stage_identity = trust.directory_identities["."]
+        if _entry_identity(os.fstat(stage_fd)) != stage_identity:
+            raise PublicationRecoveryRequired(
+                "partial publication stage invocation identity drifted"
+            )
         stage_names = _directory_names_at(stage_fd, label="partial publication stage")
         if not stage_names <= {"manifest.json", "fixtures"}:
             raise PublicationRecoveryRequired("partial publication stage is unowned")
@@ -4062,7 +4532,11 @@ def _remove_partial_stage_at(story_fd: int, expected: Mapping[str, bytes]) -> No
             fixtures_fd = _open_directory_at(
                 stage_fd, "fixtures", label="partial staged fixtures"
             )
-            fixtures_identity = _entry_identity(os.fstat(fixtures_fd))
+            fixtures_identity = trust.directory_identities["fixtures"]
+            if _entry_identity(os.fstat(fixtures_fd)) != fixtures_identity:
+                raise PublicationRecoveryRequired(
+                    "partial staged fixture directory invocation identity drifted"
+                )
             fixture_names = _directory_names_at(
                 fixtures_fd, label="partial staged fixtures"
             )
@@ -4072,7 +4546,11 @@ def _remove_partial_stage_at(story_fd: int, expected: Mapping[str, bytes]) -> No
                 recorded_fd = _open_directory_at(
                     fixtures_fd, "recorded", label="partial recorded fixtures"
                 )
-                recorded_identity = _entry_identity(os.fstat(recorded_fd))
+                recorded_identity = trust.directory_identities["fixtures/recorded"]
+                if _entry_identity(os.fstat(recorded_fd)) != recorded_identity:
+                    raise PublicationRecoveryRequired(
+                        "partial recorded fixture directory invocation identity drifted"
+                    )
                 names = _directory_names_at(
                     recorded_fd, label="partial recorded fixtures"
                 )
@@ -4084,21 +4562,31 @@ def _remove_partial_stage_at(story_fd: int, expected: Mapping[str, bytes]) -> No
                 for fixture_name in EXPECTED_FIXTURE_NAMES:
                     if fixture_name not in names:
                         continue
-                    content, identity = _read_regular_capture_at(
+                    content, signature = _read_regular_stat_capture_at(
                         recorded_fd,
                         fixture_name,
                         label=f"partial staged fixture {fixture_name}",
                     )
-                    if content != expected[f"fixtures/recorded/{fixture_name}"]:
+                    expected_signature = trust.file_signatures[
+                        f"fixtures/recorded/{fixture_name}"
+                    ]
+                    if (
+                        signature != expected_signature
+                        or content != expected[f"fixtures/recorded/{fixture_name}"]
+                    ):
                         raise PublicationRecoveryRequired(
-                            "partial staged fixture bytes are unowned"
+                            "partial staged fixture invocation identity drifted"
                         )
                     _unlink_regular_at(
                         recorded_fd,
                         fixture_name,
                         label=f"partial staged fixture {fixture_name}",
                         expected_content=content,
-                        expected_identity=identity,
+                        expected_identity=(
+                            expected_signature[0],
+                            expected_signature[1],
+                        ),
+                        expected_signature=expected_signature,
                     )
                 os.close(recorded_fd)
                 recorded_fd = None
@@ -4117,19 +4605,21 @@ def _remove_partial_stage_at(story_fd: int, expected: Mapping[str, bytes]) -> No
                 expected_identity=fixtures_identity,
             )
         if "manifest.json" in stage_names:
-            content, identity = _read_regular_capture_at(
+            content, signature = _read_regular_stat_capture_at(
                 stage_fd, "manifest.json", label="partial staged manifest"
             )
-            if content != expected["manifest.json"]:
+            expected_signature = trust.file_signatures["manifest.json"]
+            if signature != expected_signature or content != expected["manifest.json"]:
                 raise PublicationRecoveryRequired(
-                    "partial staged manifest bytes are unowned"
+                    "partial staged manifest invocation identity drifted"
                 )
             _unlink_regular_at(
                 stage_fd,
                 "manifest.json",
                 label="partial staged manifest",
                 expected_content=content,
-                expected_identity=identity,
+                expected_identity=(expected_signature[0], expected_signature[1]),
+                expected_signature=expected_signature,
             )
         _assert_directory_entry_identity_at(
             story_fd, STAGE_NAME, stage_fd, label="partial publication stage"
@@ -4170,11 +4660,14 @@ def _publish_outputs_at(story_fd: int, outputs: Mapping[Path, bytes]) -> str:
             next_identity=installed_identities["."],
             publication_phase="COMMITTED",
         )
-        _create_journal_at(story_fd, state)
-        _recover_journal_at(story_fd, state)
+        legacy_journal_trust = _ActiveJournalTrust()
+        _create_journal_at(story_fd, state, legacy_journal_trust)
+        _recover_journal_at(story_fd, state, legacy_journal_trust)
         return next_digest
     committed = False
     primary: BaseException | None = None
+    stage_trust = _ActiveStageTrust()
+    journal_trust: _ActiveJournalTrust | None = None
     try:
         previous_digest = (
             _validate_bundle_files(installed) if installed is not None else None
@@ -4182,7 +4675,7 @@ def _publish_outputs_at(story_fd: int, outputs: Mapping[Path, bytes]) -> str:
         previous_identities = (
             installed_capture[1] if installed_capture is not None else None
         )
-        _create_stage_at(story_fd, expected)
+        _create_stage_at(story_fd, expected, stage_trust)
         staged_capture = _read_bundle_capture_at(
             story_fd, STAGE_NAME, allow_missing=False
         )
@@ -4200,7 +4693,8 @@ def _publish_outputs_at(story_fd: int, outputs: Mapping[Path, bytes]) -> str:
             ),
             next_identity=staged_identities["."],
         )
-        _create_journal_at(story_fd, state)
+        journal_trust = _ActiveJournalTrust()
+        _create_journal_at(story_fd, state, journal_trust)
         _checkpoint("before-publication")
         current_stage = _read_bundle_capture_at(
             story_fd, STAGE_NAME, allow_missing=False
@@ -4233,10 +4727,10 @@ def _publish_outputs_at(story_fd: int, outputs: Mapping[Path, bytes]) -> str:
                     "exchanged previous ST-1204 bundle was not preserved"
                 )
         _checkpoint("after-publication-verify")
-        state = _write_journal_phase_at(story_fd, state, "COMMITTED")
+        state = _write_journal_phase_at(story_fd, state, journal_trust, "COMMITTED")
         committed = True
         _checkpoint("after-committed-state")
-        _recover_journal_at(story_fd, state)
+        _recover_journal_at(story_fd, state, journal_trust)
         if (
             _read_bundle_at(story_fd, GENERATED_ROOT.name, allow_missing=False)
             != expected
@@ -4245,14 +4739,24 @@ def _publish_outputs_at(story_fd: int, outputs: Mapping[Path, bytes]) -> str:
         return next_digest
     except BaseException as exc:
         primary = exc
-        try:
-            if _entry_metadata_at(story_fd, JOURNAL_NAME) is None:
-                _remove_partial_stage_at(story_fd, expected)
-            _recover_pending_at(story_fd, outputs)
-        except BaseException as recovery_error:
+        if not isinstance(exc, _InvocationIdentityDrift):
+            try:
+                if _entry_metadata_at(story_fd, JOURNAL_NAME) is None:
+                    _remove_partial_stage_at(story_fd, expected, stage_trust)
+                _recover_pending_at(
+                    story_fd,
+                    outputs,
+                    stage_trust,
+                    journal_trust,
+                )
+            except BaseException as recovery_error:
+                primary.add_note(
+                    "ST-1204 automatic publication recovery also failed: "
+                    f"{type(recovery_error).__name__}"
+                )
+        else:
             primary.add_note(
-                "ST-1204 automatic publication recovery also failed: "
-                f"{type(recovery_error).__name__}"
+                "ST-1204 invocation identity drift was preserved without re-capture"
             )
         if committed:
             primary.add_note("the exact new ST-1204 bundle was durably committed")

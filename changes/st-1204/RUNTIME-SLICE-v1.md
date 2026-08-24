@@ -88,6 +88,20 @@ regenerated through its owner after a mechanical downstream pin rebind. The
 former atomic-publication `FAIL`/`MEDIUM` finding is locally remediated by the
 owner generator's captured-Story-directory lock, single-tree namespace
 publication, durable recovery journal, reverse rollback, and hostile tests.
+The active journal root and every committed state carry an invocation-local
+full-signature inventory from creation or recovery capture through terminal
+cleanup; same-invocation automatic recovery carries that inventory forward and
+never recaptures an active journal after a failure. Later byte equality cannot
+re-own a replaced inode. A partial stage is
+deleted only when the same invocation captured every directory identity and
+file signature before the relevant checkpoint. A nonempty stage surviving a
+process boundary is preserved and refused. Bundle reads revalidate both nested
+`fixtures` and `recorded` names against their already-open descriptors before
+acceptance.
+
+Owner `--check` preserves bytes, namespace, device/inode, size, mode, mtime and
+ctime. Access time is explicitly outside that guarantee because portable
+read-only opens may update it; the implementation does not claim `O_NOATIME`.
 Independent read-only re-audit remains separate. The runtime adapter boundary
 still contains no publisher and still receives bytes only from its caller.
 

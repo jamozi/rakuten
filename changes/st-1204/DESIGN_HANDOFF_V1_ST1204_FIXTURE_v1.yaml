@@ -1,6 +1,6 @@
 DESIGN_HANDOFF_V1:
   document_id: RAOS-ST1204-ATOMIC-FIXTURE-PUBLICATION-001
-  version: 1.2.0
+  version: 1.3.0
   status: LOCAL_IMPLEMENTATION_DECISION_RECORDED
   canonical_reconciliation: LOCAL_CANDIDATE_PENDING_HUMAN_APPLY
   implementation_authority: REPOSITORY_STANDING_DEVELOPMENT_AUTHORITY
@@ -32,7 +32,7 @@ DESIGN_HANDOFF_V1:
     - path: changes/st-1204/ATOMIC-PUBLICATION-AUDIT-v1.md
       sha256: ee2d2986a2d44ab07ea3e83fe5a320ace771d93d57300ee98716b9c65138b87b
     - path: changes/st-1204/RUNTIME-SLICE-v1.md
-      sha256: ac85f07ee2325aa5e1f63ffd0323cc499417b2c85d4ac36b31d07fcbe58e0d0e
+      sha256: 6d8b61dab7c296f6156f2ed249cd5498a23d82427f139fda614a7f1272a57aa7
 
   decision:
     ST1204-FIXTURE-D1:
@@ -77,7 +77,8 @@ DESIGN_HANDOFF_V1:
         publication: PREPARING_DIRECTORY_FSYNC_THEN_SAME_PARENT_RENAME_AND_PARENT_FSYNC
         update: APPEND_ONLY_PREPARING_FILE_FSYNC_RENAME_NOREPLACE_JOURNAL_FSYNC
         interrupted_update: VALID_NEXT_STATE_PROMOTED_OR_MALFORMED_PARTIAL_PREPARING_FILE_REMOVED
-        terminal_state_identity_capture: EXACT_DEV_INO_MODE_NLINK_SIZE_MTIME_NS_CTIME_NS_FOR_EVERY_TRUSTED_CHAIN_ENTRY
+        active_invocation_identity_capture: ROOT_AND_EVERY_COMMITTED_STATE_FULL_SIGNATURE_CAPTURED_BEFORE_EACH_CHECKPOINT_AND_REVALIDATED_ACROSS_EVERY_APPEND
+        terminal_state_identity_capture: EXACT_DEV_INO_MODE_NLINK_SIZE_MTIME_NS_CTIME_NS_CONTINUOUS_FROM_ACTIVE_JOURNAL_THROUGH_TERMINAL_MOVE
       namespace_operation:
         fresh_install: LINUX_RENAMEAT2_RENAME_NOREPLACE_STAGE_TO_GENERATED
         replacement: LINUX_RENAMEAT2_RENAME_EXCHANGE
@@ -98,7 +99,7 @@ DESIGN_HANDOFF_V1:
         final_inventory: REVERIFY_AUTHORITATIVE_TREE_AND_REQUIRE_ALL_BOUND_CLEANUP_NAMES_ABSENT_BEFORE_COMPLETE
         cleanup_failure: NEW_TREE_REMAINS_AUTHORITATIVE;BUNDLE_AND_LEGACY_RECOVER;INTERRUPTED_TERMINAL_JOURNAL_ROOT_IS_RETAINED_AND_REFUSED_WITHOUT_A_DURABLE_NONRECURSIVE_STATE_IDENTITY_SOURCE
       crash_recovery:
-        stage_without_journal: EMPTY_STAGE_REMOVED_NONEMPTY_STAGE_REFUSED_WITHOUT_DURABLE_OWNERSHIP
+        stage_without_journal: EMPTY_STAGE_REMOVED;SAME_INVOCATION_PARTIAL_STAGE_REMOVED_ONLY_WITH_PRECAPTURED_COMPLETE_IDENTITY_INVENTORY;SURVIVING_NONEMPTY_STAGE_REFUSED
         preparing_without_journal: REMOVE_ONLY_STRUCTURALLY_OWNED_PREPARING_TREE
         prepared_before_exchange: RESTORE_PREVIOUS_OR_ABSENT_STATE
         prepared_after_exchange: REVERSE_NAMESPACE_OPERATION_AND_RESTORE_PREVIOUS_OR_ABSENT_STATE
@@ -110,10 +111,13 @@ DESIGN_HANDOFF_V1:
         covered: CAPTURED_ANCESTOR_AND_ENTRY_IDENTITIES_NOREPLACE_COLLISIONS_OBSERVED_PRE_AND_POST_RENAME_SWAPS_AND_RESTARTABLE_OWNER_CHECKPOINTS
         posix_limit: UNLINKAT_AND_RMDIRAT_HAVE_NO_CONDITIONAL_INODE_FORM_SO_AN_ACTIVELY_MALICIOUS_SAME_UID_SWAP_INSIDE_THE_FINAL_KERNEL_SYSCALL_WINDOW_IS_NOT_CLAIMED_PREVENTED
         response: EVERY_OBSERVED_IDENTITY_MISMATCH_IS_RESTORED_WHEN_NOREPLACE_SAFE_OR_RETAINED_AND_REFUSED_WITHOUT_DELETION
+      nested_bundle_read:
+        fixtures: REVALIDATE_NAME_AGAINST_OPEN_DESCRIPTOR_BEFORE_ACCEPTANCE
+        recorded: REVALIDATE_NAME_AGAINST_OPEN_DESCRIPTOR_BEFORE_ACCEPTANCE
 
     ST1204-FIXTURE-D3:
       local_acceptance: ALL_REQUIRED_HOSTILE_AND_DETERMINISTIC_TESTS_PASS
-      check_semantics: SHARED_LOCK_BYTE_EXACT_AND_STRICTLY_READ_ONLY
+      check_semantics: SHARED_LOCK_BYTE_AND_NAMESPACE_EXACT;PRESERVE_DEV_INO_SIZE_MODE_MTIME_NS_CTIME_NS;ACCESS_TIME_EXCLUDED_WITHOUT_O_NOATIME_CLAIM
       publication_semantics: ONE_NAMESPACE_OLD_OR_NEW_NEVER_CHECK_ACCEPTED_MIXED
       audit_claim: LOCAL_FINDING_REMEDIATED_PENDING_INDEPENDENT_READ_ONLY_REAUDIT
 
@@ -177,13 +181,14 @@ DESIGN_HANDOFF_V1:
     - Fresh install and replacement publish exactly one complete generated tree.
     - Missing, extra, symlink, special, multiply-linked, or malformed outputs fail closed.
     - Ancestor swaps cannot redirect a write outside the captured Story directory; every observed final-entry identity swap is restored when no-replace-safe or retained and refused without deletion.
-    - Mid-stage and pre-publication failures leave the installed bundle exact and unchanged.
+    - Mid-stage and pre-publication failures leave the installed bundle exact and unchanged; cleanup deletes only entries whose identities were captured by the same invocation before the failure checkpoint.
+    - A detected partial-stage root, directory, or byte-identical file replacement is preserved and refused rather than re-owned or deleted.
     - Post-exchange pre-commit failures restore the exact old bundle or exact absence atomically.
     - Committed bundle and legacy cleanup failures leave the exact new bundle authoritative and recoverable.
     - A crash after the terminal journal root move preserves the exact authoritative bundle and retains/refuses the cleanup tree rather than inferring state-file ownership from bytes or self-attestation.
     - Concurrent check/generate operations obey shared/exclusive nonblocking locks.
     - Stale stage, preparing, journal, cleanup tombstone, and rollback-failure states have deterministic recovery or refusal tests.
-    - No check-accepted mixed generation exists and check mode changes no bytes or metadata.
+    - No check-accepted mixed generation exists and check mode changes no bytes, namespace, device/inode, size, mode, mtime, or ctime; access time is explicitly excluded because portable read-only opens may update it.
 
   required_test_evidence:
     - isolated tests/st1204 pytest including fault injection, real crash recovery, concurrency, ancestor swap, and mixed-generation rejection
