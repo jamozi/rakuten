@@ -48,10 +48,10 @@ canonical_sources:
 st0703_recorded_binding:
   adapter_contract:
     path: changes/st-0703/contracts/openai-responses-adapter.v1.yaml
-    sha256: 1f4ee219a93fb12bdd4d2d66ab2a87a33e9f608d24654aceb50e28b6efa96349
+    sha256: 6628bc64b527cc049d691b4f61da787f7623c93abb482fe331e289f91ab89d64
   fixture_registry:
     path: changes/st-0703/generated/recorded-fixture-registry.v1.json
-    sha256: a604bfbaf4744a78eb9c556a4b27a57a40926d3a89829b32c10d216d91f3666f
+    sha256: 8d1dfe95f08b37fac85a0f2fc74695381ae35491630ac5453e6122e88cd680d9
   success_fixture:
     path: changes/st-0703/fixtures/recorded/success-structured.json
     sha256: a6a7506c8201a979cdba2cf1e41c9c9d7288d801cf6f2f72aa5e6684e6da168c
@@ -72,28 +72,28 @@ st0703_recorded_binding:
 st0707_report_binding:
   runtime_contract:
     path: changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml
-    sha256: f1c0e37bd4b12b83c76ea3a40c77c94ac3b852733ece71f1352cf5263fade963
+    sha256: fda479ad619144e22c8b41cb734ef741baa95152dd16e37ff54ee08a4afac6eb
   runtime_manifest:
     path: changes/st-0707/runtime-manifest.v1.json
-    sha256: 3f812e194c8eaadbf9fb42d1861a1a791927e4041b744eb79ff446df60db137e
+    sha256: 77a3871007c115699418c6d0243daeac8c6cbc04f9d9ca12866d0e142026e7c9
   suite_registry:
     path: changes/st-0707/generated/evaluation-suite-registry.v1.json
-    sha256: 701c9dcff604a1c82262077bb317aaad0f4ec055968f1ef357d3ba6b205ae7e9
+    sha256: 37ec0ca48b794a691bc9b643b1ee28a88208116f77536dd5e8df5d6edab3010d
   locked_dataset:
     path: changes/st-0707/generated/locked-synthetic-holdout.v1.json
-    sha256: 99862bc68d594aac02a9f7e653a21fc98faa5a85887e4558bc6cfdc146a71ab9
+    sha256: d4f3855a1f54e4de5d62e0dcb9d0c0b892e40704f476182349df45d7de1b0a79
   st0705_runtime_contract:
     path: changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml
-    sha256: 892369944ee610c53c0ac61cac8c4bb2c6d3d10488493ce516c97fd609966f28
+    sha256: 26673778bd1d73110714ca7568b16d249599069fcc2a59f9505d49086fbed2e6
   st0705_profile_registry:
     path: changes/st-0705/generated/ai-output-validation-profiles.v1.json
-    sha256: bc102480a6eb56f030e27d92e4dc239851ea482474e747ab408dfa23f962971a
+    sha256: 1831c39897914faa3695eef1b2ca8239d3172f937f00511d173aa41a3074592b
   st0705_fixture:
     path: changes/st-0705/generated/ai-output-validation-pass.v1.json
-    sha256: afc22bd0c54169a19401b4156c4f66887888d86de2311143bd949b8ede2c008d
+    sha256: 903ff2a612f5754259fad9664c8fdb3cc47be5c9264293538df64f3459dd50d3
   st0705_runtime_manifest:
     path: changes/st-0705/runtime-manifest.v1.yaml
-    sha256: 1e8da112bdcd3413565433c368994777d94c636e0955f8cc1c525ec206ba17f4
+    sha256: 68daa05c266bab0bfd49572c2cf44d6d40be76e99e91e9aa46ec7ceb99319cd6
   task_schema:
     path: contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.opportunity_assessment.v1.output.schema.json
     sha256: 504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123
@@ -102,11 +102,11 @@ st0707_report_binding:
     sha256: 363094954df80ab4bd8c28804d27e4634f79210fcd28fa82062ea49729549b7a
   source_task_code: ai.opportunity_assessment.v1
   suite_code: suite.ai.opportunity_assessment.v1.release.v1
-  bundle_sha256: 200c8378d8312133b838f6d167d6b2532f8c28e0d3d1c446c122536b76c355ed
-  report_sha256: 4458db297cb5f0d324dfde5c22fc4847b5c74e148326c32dfc77ff27aba54962
+  bundle_sha256: c955d57442be07a4da7a1459bd759b9f03c346be18f7fe8885310da77249a5ea
+  report_sha256: e16248e167bf267645ebdbf25ca7e7e9b2e220925bd8461566cc07a9ba3b381d
   report_outcome: REFUSED_INCOMPLETE_EVIDENCE
-  dataset_sha256: 965283ad023e83e452e9fc4d13df87db842b198f20d18cbdb2b7a4fadb1abeb7
-  holdout_sha256: 3b63e8b1b30c434f251d6fcbccf915ef460261143660c9245c8a5c18592824f9
+  dataset_sha256: 0134c6d35f5fef3c7fc5320bdc909f6e00136cb721047d4bcc60ed4f1f3c66c8
+  holdout_sha256: 558f356cf9cf729a25e3d8ff732df4c3f461ce33097843686c37b3ad4033ef4c
   observed_case_count: 1
   observed_splits:
     - HOLDOUT

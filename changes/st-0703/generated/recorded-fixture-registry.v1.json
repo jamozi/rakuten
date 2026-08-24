@@ -46,7 +46,7 @@
   "source_inputs": [
     {
       "path": "changes/st-0703/contracts/openai-responses-adapter.v1.yaml",
-      "sha256": "1f4ee219a93fb12bdd4d2d66ab2a87a33e9f608d24654aceb50e28b6efa96349"
+      "sha256": "6628bc64b527cc049d691b4f61da787f7623c93abb482fe331e289f91ab89d64"
     },
     {
       "path": "pyproject.toml",
@@ -130,7 +130,7 @@
     },
     {
       "path": "changes/st-0701/manifest.yaml",
-      "sha256": "cb7dd9723c9b4fcd8584ff790d154499f603b5cf1904cc7a9971313d32fdcb49"
+      "sha256": "55a07bd216eef26ce9b49e236ae068b7d838e7b9678d1e52e665fb5385ec414e"
     },
     {
       "path": "changes/st-0204/manifest.yaml",

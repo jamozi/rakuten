@@ -7,27 +7,27 @@ document:
   version: 2.0.0
 provenance:
   base_commit: 71c709844d625ee26026b2ba8555a16fa351b982
-  runtime_contract_sha256: dc7733254fa3549ef5f30922ae5e02e252cc7378158a55535d90e979d9d2289f
+  runtime_contract_sha256: aa337bcf043eb95ee9dfd094f5f6ea1d2b4d6216f391a91272f311010540763b
   implementation_helper:
     uri: repo://scripts/secure_generated_publication.py
     sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
 source_artifact_count: 45
 source_sha256:
-  changes/st-0703/contracts/openai-responses-adapter.v1.yaml: 1f4ee219a93fb12bdd4d2d66ab2a87a33e9f608d24654aceb50e28b6efa96349
+  changes/st-0703/contracts/openai-responses-adapter.v1.yaml: 6628bc64b527cc049d691b4f61da787f7623c93abb482fe331e289f91ab89d64
   changes/st-0703/fixtures/recorded/success-structured.json: a6a7506c8201a979cdba2cf1e41c9c9d7288d801cf6f2f72aa5e6684e6da168c
-  changes/st-0703/generated/recorded-fixture-registry.v1.json: a604bfbaf4744a78eb9c556a4b27a57a40926d3a89829b32c10d216d91f3666f
-  changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml: 892369944ee610c53c0ac61cac8c4bb2c6d3d10488493ce516c97fd609966f28
-  changes/st-0705/generated/ai-output-validation-pass.v1.json: afc22bd0c54169a19401b4156c4f66887888d86de2311143bd949b8ede2c008d
-  changes/st-0705/generated/ai-output-validation-profiles.v1.json: bc102480a6eb56f030e27d92e4dc239851ea482474e747ab408dfa23f962971a
-  changes/st-0705/runtime-manifest.v1.yaml: 1e8da112bdcd3413565433c368994777d94c636e0955f8cc1c525ec206ba17f4
-  changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml: f1c0e37bd4b12b83c76ea3a40c77c94ac3b852733ece71f1352cf5263fade963
-  changes/st-0707/generated/evaluation-suite-registry.v1.json: 701c9dcff604a1c82262077bb317aaad0f4ec055968f1ef357d3ba6b205ae7e9
-  changes/st-0707/generated/locked-synthetic-holdout.v1.json: 99862bc68d594aac02a9f7e653a21fc98faa5a85887e4558bc6cfdc146a71ab9
-  changes/st-0707/runtime-manifest.v1.json: 3f812e194c8eaadbf9fb42d1861a1a791927e4041b744eb79ff446df60db137e
+  changes/st-0703/generated/recorded-fixture-registry.v1.json: 8d1dfe95f08b37fac85a0f2fc74695381ae35491630ac5453e6122e88cd680d9
+  changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml: 26673778bd1d73110714ca7568b16d249599069fcc2a59f9505d49086fbed2e6
+  changes/st-0705/generated/ai-output-validation-pass.v1.json: 903ff2a612f5754259fad9664c8fdb3cc47be5c9264293538df64f3459dd50d3
+  changes/st-0705/generated/ai-output-validation-profiles.v1.json: 1831c39897914faa3695eef1b2ca8239d3172f937f00511d173aa41a3074592b
+  changes/st-0705/runtime-manifest.v1.yaml: 68daa05c266bab0bfd49572c2cf44d6d40be76e99e91e9aa46ec7ceb99319cd6
+  changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml: fda479ad619144e22c8b41cb734ef741baa95152dd16e37ff54ee08a4afac6eb
+  changes/st-0707/generated/evaluation-suite-registry.v1.json: 37ec0ca48b794a691bc9b643b1ee28a88208116f77536dd5e8df5d6edab3010d
+  changes/st-0707/generated/locked-synthetic-holdout.v1.json: d4f3855a1f54e4de5d62e0dcb9d0c0b892e40704f476182349df45d7de1b0a79
+  changes/st-0707/runtime-manifest.v1.json: 77a3871007c115699418c6d0243daeac8c6cbc04f9d9ca12866d0e142026e7c9
   changes/st-0708/README.md: ca4c433958122f86bf00918723e7a3a917c013bd4cdb2b1feda8eea449646bfc
   changes/st-0708/RUNTIME.md: 2714875e4df50476166b0a62c11e8d066fb822f59c3a466d4ee7335f46670a7d
   changes/st-0708/contracts/openai-live-bounded-evaluation-reference-plan.v1.yaml: 4252b0dd7c92a494b281ca406183b593b5d8ea6fb8b1f54d57c3d73efc6a1f65
-  changes/st-0708/contracts/recorded-live-evaluation-runtime.v2.yaml: dc7733254fa3549ef5f30922ae5e02e252cc7378158a55535d90e979d9d2289f
+  changes/st-0708/contracts/recorded-live-evaluation-runtime.v2.yaml: aa337bcf043eb95ee9dfd094f5f6ea1d2b4d6216f391a91272f311010540763b
   contracts/raos-v0.4/contracts/ai/RAOS_05_ai_task_catalog_v0.1.yaml: 8b5a0d820f0a6180dd0bbbd050553114c22efe499a553d72bbdb24ffc8483c04
   contracts/raos-v0.4/contracts/ai/RAOS_05_evaluation_catalog_v0.1.yaml: a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3
   contracts/raos-v0.4/contracts/ai/RAOS_05_model_routing_catalog_v0.1.yaml: dc76ed6d2586eec9bf18b8ac2e95eb76971179fe87fa1ee07b1ba8702f8faa96
@@ -43,19 +43,19 @@ source_sha256:
   docs/worklogs/ST-0708.md: b09a9418dd6ea065e8aa3d9b9402485c7fecf73cf031b2874ccefac39d0f904f
   python/raos/adapters/recorded_live_evaluation.py: b364589fb9645d06213f3e315552691797bcf748061826dee2334b1c95beb8d2
   python/raos/application/ai/live_evaluation.py: 9fe29acc16ff0e5a6f540c45d0f9db2930ccdfb9e563fea8307dc55f9359e88a
-  python/raos/domain/ai/live_evaluation.py: e065961563f1ed8daf42aa89cc9436016997314b99bd815d0b1d8f4e58a18a7c
+  python/raos/domain/ai/live_evaluation.py: d8b7be4dac4d0df4f2abf611d5a8b2af0944a1ca1bcc61a93f4ff80d086500b5
   python/raos/ports/live_evaluation.py: 4fb29af21dd1efb9f46867041f5772dacf9d57a5f3ab5e75de2f4e7eec0a64d6
-  scripts/build_st0708_openai_live_bounded_evaluation_reference_plan.py: c013012f4d135ce012d5494b648152caa331dcde5bd82659dd28f796e6bc339d
+  scripts/build_st0708_openai_live_bounded_evaluation_reference_plan.py: a3fb460ecaabece60961ce53e8a410b9d01407154a47c626763152b8128f4586
   scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
   tests/st0703/test_adapter.py: 3912a42b5a3417901c555db9fabdc2c96cfa29d8f1812f8939ff6b360861203b
   tests/st0708/conftest.py: d271d3c5d2ffdfe27f393603e2a600dfff736dc2ae22f585b46a5349693807a0
-  tests/st0708/test_contract.py: 5be33c3fda000d1a46dd87fbbaea527f95f391c235b3d68cefeb634f4f5aca7f
+  tests/st0708/test_contract.py: 441ada1acdbaf50c2af96b18fae8d07bdf4c492c7b41e16e90052bf76844bb10
   tests/st0708/test_generation.py: a4e4192dedd27f097bd6263ffcc309e94184d7ec4fc3dac44ae7a08194606c37
   tests/st0708/test_negative_cases.py: 56a50f352ee24715bfde8bc9aa1a2cd05a9f9a0cf4164b0383111bbe8cb3ea18
   tests/st0708_v2/__init__.py: 2b9683050e6198a9d40a3113e61e62661818e5e1ae9d61095c5c28a811924c83
   tests/st0708_v2/conftest.py: a93049ef748575f23efae74314aac320c165dd1cadd61798e375427a19db12ac
   tests/st0708_v2/support.py: 708ab4b0bb46866a5d6a715e7404b6986f01eca1104be32bb3730fa314ad646e
-  tests/st0708_v2/test_application.py: 54a2c81bdd74928912f187bedf9b758a03ddfc1466deff3f4002a179d7b805eb
+  tests/st0708_v2/test_application.py: 8c323d549d700103277132d0adbea73540264eab3809a4ca978b56d3f3ff7fd4
   tests/st0708_v2/test_generation_and_bindings.py: ee2ef7e398aa79ea4e10ef26a8d9e5760c8343916e425d73414fc576cc8283f9
   tests/st0708_v2/test_security_boundaries.py: 4ac4664e630076b41c7de4d560b33b344986fc4f51e3b782763ef7fda3d27b79
 generated_artifact_count: 4
@@ -65,13 +65,13 @@ generated_artifacts:
   sha256: 6310dd1107e8685feb8b86f9babbb0d889ffe611e3e2d92f4e0b83154e65d805
 - uri: repo://changes/st-0708/generated/recorded-live-evaluation-request.v2.json
   bytes: 4230
-  sha256: 3d440efa6d6a7a5b807de2180cac6c063741797effc1c213746deb1abb205463
+  sha256: 30e6c23c49c7610921cff7df5e68ba08baa5b1246a4256a8961d2851fa47be62
 - uri: repo://changes/st-0708/generated/recorded-live-evaluation-report.v2.json
   bytes: 5662
-  sha256: 08059f2de2ca59c3712735be63c450ef0dc12b71df8632fc243ef34f7bbfb053
+  sha256: b24d6bc3fdf4c671609af6ca5651cdcc50aa698a81c308650e4d6492eea6d52b
 - uri: repo://changes/st-0708/runtime-manifest.v2.json
   bytes: 6424
-  sha256: e24ca761f4a3f0e12348014ea675274e4ea3f342db338efef9504435f0c701c6
+  sha256: 6f6f39ebdd36db4e270e8533c89df9162630513845921f8b92ce3af828d91855
 boundary:
   classification: RECORDED_SYNTHETIC_ONLY_RELEASE_DECISION_PROPOSAL
   default_enabled: false
