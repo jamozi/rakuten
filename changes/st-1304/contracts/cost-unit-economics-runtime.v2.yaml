@@ -45,7 +45,7 @@ source_bindings:
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
   st0706_cost_boundary:
     path: changes/st-0706/generated/durable-ai-job-queue.v2.json
-    sha256: ba8ff266bc0828c4ce969377d2e1351117552189fbd9a18023a9b1c4d9334f45
+    sha256: bf5a60509879837bb25928c5da54b804755a1ee91025a9f6f1140379a6771912
   st1205_runtime:
     path: changes/st-1205/contracts/kpi-read-model.v2.yaml
     sha256: bfc6ca7722e8cafdaee558881227531e8e74e3630f3cc13455f2e3e05ff2137f
