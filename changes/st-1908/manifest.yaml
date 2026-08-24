@@ -1,0 +1,120 @@
+document:
+  id: RAOS-ST1908-FINE-TUNING-EVALUATION-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-1908
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  canonical_status: DEFERRED_POST_MVP
+  authority: NONE
+  production_eligible: false
+provenance:
+  base_commit: 0fab69e92d0896f58f0efc633aa350bbf3561f73
+  contract_uri: repo://changes/st-1908/contracts/fine-tuning-evaluation.v1.yaml
+  contract_sha256: 62dab56b9c6dea27c252e4463e7bbc59f061392c41cb3a7c44025637c0f702f5
+  fixture_uri: repo://changes/st-1908/fixtures/recorded/fine-tuning-candidate.synthetic.v1.json
+  fixture_sha256: 5bfc483d7102ac8155f12d6d13f480039e079a0e011baad4692cfbb9b6515a43
+  report_sha256: 8188e832365bc7c7740a7ed7b9a0dabbc876f03aec24db241830824296534422
+  evaluation_report_sha256: 49c42e24608313425aea002abec66b02c16a47ffb4f937eb2679b1ff3dfdfb95
+source_artifact_count: 20
+source_artifacts:
+- uri: repo://changes/st-1908/contracts/fine-tuning-evaluation.v1.yaml
+  bytes: 11015
+  sha256: 62dab56b9c6dea27c252e4463e7bbc59f061392c41cb3a7c44025637c0f702f5
+- uri: repo://changes/st-1908/fixtures/recorded/fine-tuning-candidate.synthetic.v1.json
+  bytes: 2858
+  sha256: 5bfc483d7102ac8155f12d6d13f480039e079a0e011baad4692cfbb9b6515a43
+- uri: repo://changes/st-1908/README.md
+  bytes: 3392
+  sha256: 54bcaa15f5df34e0fbade34f63f21a065a3d1625cf19e02b60e478869a518333
+- uri: repo://changes/st-1908/completion/completion.v1.yaml
+  bytes: 1803
+  sha256: 396e9aadbce102abbf0572d94429fba46fda71051f2f301e76a9eb0c39561b57
+- uri: repo://docs/execplans/ST-1908.md
+  bytes: 1001
+  sha256: 4f105182d02b383ecd90762d627c97ee614f6d9c88a978ddea4375bea142a8a5
+- uri: repo://docs/worklogs/ST-1908.md
+  bytes: 1533
+  sha256: 7ff6114618f11f05c80611de4a00945708baf46c53bee54b456680934b6ee1f6
+- uri: repo://python/raos/domain/ai/fine_tuning_evaluation.py
+  bytes: 35119
+  sha256: 667785f69cc676191c399bb07ac9cdf40da8110d87548a4910d548e32dbe8fa9
+- uri: repo://python/raos/ports/fine_tuning_evaluation.py
+  bytes: 556
+  sha256: 8e72256e245cdb0003026ff20533f828562691a5b60568fe7c345ce2782cd671
+- uri: repo://python/raos/application/ai/fine_tuning_evaluation.py
+  bytes: 11274
+  sha256: 8d8e382f4f8e553079a0ce53dd4485084468e3af1fdcd3a8bb0f57cbd2883979
+- uri: repo://python/raos/adapters/recorded_fine_tuning_evaluation.py
+  bytes: 14431
+  sha256: 90f46ae498f6a10f8a1f8b2ec1d32bbf76e4436acdcf9115ce82db8160c7b9a4
+- uri: repo://scripts/build_st1908_fine_tuning_evaluation.py
+  bytes: 20263
+  sha256: 6a1d97f5a37aff59254021093ba043a98298a25faab57aacaedad9fac498bdaa
+- uri: repo://tests/st1908/__init__.py
+  bytes: 49
+  sha256: ab711141e771329ca9776c25d16e1f0289df53c902629de19a241ca097f7ee98
+- uri: repo://tests/st1908/conftest.py
+  bytes: 252
+  sha256: dcbb637bd9601a295da2512cb9578e8c2707ee638cf86f9897b210c449babc76
+- uri: repo://tests/st1908/support.py
+  bytes: 4183
+  sha256: 1d875e269b57d4b91a4746dcc51d92016e1774745416719fa4eef2358fa3f9b0
+- uri: repo://tests/st1908/test_contract.py
+  bytes: 6192
+  sha256: ab4c97d2f799586985cb07f65d73905dce0a43273737c45903c547e4152a8a43
+- uri: repo://tests/st1908/test_evaluator.py
+  bytes: 7020
+  sha256: e826396923b862bf4d4c25de2426849620a4266f2ab0095d66fea5dd65fccb08
+- uri: repo://tests/st1908/test_generation.py
+  bytes: 6149
+  sha256: 9231412426d3cf41d79fd78305cfaf1916782b0ebd21a9ffb6044678d3c36bbe
+- uri: repo://tests/st1908/test_negative_cases.py
+  bytes: 5143
+  sha256: b35e4d6db36fdaf654d35dd3e5a6834b2bf61b69946f601349cfe35885298e1b
+- uri: repo://tests/st1908/test_security_boundaries.py
+  bytes: 3414
+  sha256: cbaf5194c4160c481f22b01c123bc78427b72340a0321652bd43c4c1859b7aeb
+- uri: repo://scripts/secure_generated_publication.py
+  bytes: 22651
+  sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+generated_artifacts:
+- uri: repo://changes/st-1908/generated/fine-tuning-evaluation-report.v1.json
+  bytes: 2357
+  sha256: 8188e832365bc7c7740a7ed7b9a0dabbc876f03aec24db241830824296534422
+boundary:
+  default_enabled: false
+  recorded_synthetic_only: true
+  raw_training_examples: false
+  actual_training_executed: false
+  live_enabled_state_exists: false
+  activation_interface_exists: false
+  provider_called: false
+  network_used: false
+  credential_read: false
+  persistence_used: false
+  model_or_route_mutated: false
+  editorial_mutated: false
+  recommendation_mutated: false
+  publication_snapshot_mutated: false
+  publication_allowed: false
+  release_authorized: false
+  production_eligible: false
+formal_status:
+  formal_TST-032: NOT_EXECUTED
+  legal_dataset_rights_review: NOT_EXECUTED
+  actual_fine_tuning: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+debt:
+  introduced: []
+  external_or_formal_remaining:
+  - licensed and approved representative dataset plus legal rights evidence
+  - approved data inventory, retention, deletion, and sanitization workflow
+  - verified prompt/route exhaustion and recurring-error evidence
+  - actual provider-neutral fine-tuned candidate and independent holdout comparison
+  - verified workload, provider pricing, labor cost, and lifecycle cost evidence
+  - independent AI/security/privacy/legal review
+  - separate release decision and formal TST-032 gate acceptance
+  - persistence, monitoring, rollback, staging, release, and Production evidence

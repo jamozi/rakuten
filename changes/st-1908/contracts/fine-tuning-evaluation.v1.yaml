@@ -1,0 +1,296 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1908
+  classification: MAXIMUM_SAFE_LOCAL_DISABLED_RECORDED_FINE_TUNING_EVALUATION_V1
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  mvp: false
+  canonical_implementation_status: DEFERRED_POST_MVP
+  canonical_status_changed: false
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+
+authority:
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  canonical_decisions:
+    path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    labor_cost_decision_id: OD-005
+    labor_cost_status: HUMAN_DECISION_REQUIRED
+    retention_decision_id: OD-014
+    retention_status: HUMAN_DECISION_REQUIRED
+    production_credentials_decision_id: OD-015
+    production_credentials_status: EXTERNAL_EVIDENCE_REQUIRED
+    resolved_by_this_story: false
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1908
+    depends_on: ST-0707
+    effective_status: DEFERRED_POST_MVP
+  ai_design:
+    path: docs/upstream/key_documents/RAOS_05_ai_agent_prompt_routing_evaluation_design_v0.1.md
+    sha256: 475e4b6b4490110fd9f94a07aaf4cf979bea99d59b7ef8b95ba0fdbe61219476
+    fine_tuning_policy_section: 23
+    provider_assumptions_adopted: false
+  test_acceptance_design:
+    path: docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    required_suite: TST-032
+    formal_status: NOT_EXECUTED
+  security_design:
+    path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  data_classification:
+    path: docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    controls:
+      - SEC-GOV-004
+      - SEC-GOV-006
+      - SEC-GOV-008
+      - SEC-APP-001
+      - SEC-DATA-003
+      - SEC-DATA-004
+      - SEC-DATA-007
+      - SEC-DATA-008
+      - SEC-AI-001
+      - SEC-AI-002
+      - SEC-AI-003
+      - SEC-AI-005
+      - SEC-AI-006
+      - SEC-AI-007
+      - SEC-SDLC-006
+      - SEC-SDLC-009
+  threat_register:
+    path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+    threats:
+      - THR-009
+      - THR-010
+      - THR-020
+      - THR-025
+      - THR-027
+      - THR-030
+
+predecessor:
+  story_id: ST-0707
+  binding: EXACT_BASE_COMMIT_BYTES
+  base_commit: 0fab69e92d0896f58f0efc633aa350bbf3561f73
+  artifacts:
+    changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml: fda479ad619144e22c8b41cb734ef741baa95152dd16e37ff54ee08a4afac6eb
+    changes/st-0707/runtime-manifest.v1.json: 77a3871007c115699418c6d0243daeac8c6cbc04f9d9ca12866d0e142026e7c9
+    changes/st-0707/generated/evaluation-suite-registry.v1.json: 37ec0ca48b794a691bc9b643b1ee28a88208116f77536dd5e8df5d6edab3010d
+    changes/st-0707/generated/locked-synthetic-holdout.v1.json: d4f3855a1f54e4de5d62e0dcb9d0c0b892e40704f476182349df45d7de1b0a79
+    python/raos/domain/ai/evaluation_harness.py: e8465d503d18b266f0c0bb93a954fe1385cc3df8aee50beb65bde4a764364698
+    python/raos/ports/ai_evaluation.py: e59355f34144e41d2ee6a62529758c46d2c120b29b041320894258fbf84feed4
+    python/raos/application/ai/evaluation_harness.py: 1b959a4e685cb6565beb964c94bb70001a887b0516d7582fc17ef0de8a36ea24
+    python/raos/adapters/recorded_ai_evaluation.py: eea06d32b13b2241486b5b1965170c60d11ab09a796735142bc790fc39ce8fd2
+  required_semantics:
+    recorded_synthetic_only: true
+    synthetic_release_eligible: false
+    human_label_status: UNAVAILABLE
+    missing_evidence: UNAVAILABLE
+    unavailable_numeric_coercion: FORBIDDEN
+    zero_tolerance_waiver: FORBIDDEN
+    release_authority: NONE
+
+canonical_contracts:
+  evaluation_catalog:
+    path: contracts/raos-v0.4/contracts/ai/RAOS_05_evaluation_catalog_v0.1.yaml
+    sha256: a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3
+  dataset_manifest_template:
+    path: contracts/raos-v0.4/contracts/ai/RAOS_05_eval_dataset_manifest_template_v0.1.yaml
+    sha256: 3215018516a010a93b14d0e90f2b944532892c626ea9db7ea54cb578796b2c51
+    forbidden_sources:
+      - Rakuten review body
+      - unlicensed third-party content
+      - secrets
+      - unnecessary personal data
+  atomic_publication_owner:
+    path: scripts/secure_generated_publication.py
+    sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+
+feature_scope:
+  default: DISABLED
+  closed_states:
+    - DISABLED
+    - RECORDED_SYNTHETIC_EVALUATION_ONLY
+  executable_environments:
+    - ENV-DEV
+    - ENV-CI
+  live_enabled_state_exists: false
+  training_state_exists: false
+  activation_interface_exists: false
+  provider_neutral: true
+  caller_bytes_only: true
+  disabled_fails_before_port_call: true
+
+dataset_gate:
+  allowed_source_kinds:
+    - SYNTHETIC
+    - SANITIZED_PRODUCTION_FAILURE
+    - LICENSED_EDITORIAL_EXAMPLE
+    - HUMAN_AUTHORED_ADVERSARIAL
+  rights_review_required: true
+  data_inventory_required: true
+  retention_policy_required: true
+  deletion_policy_required: true
+  representative_dataset_required: true
+  locked_holdout_required: true
+  compromised_holdout_refused: true
+  minimum_high_risk_holdout_cases: 150
+  personal_data: FORBIDDEN
+  rakuten_review_body: FORBIDDEN
+  unlicensed_content: FORBIDDEN
+  secrets: FORBIDDEN
+  raw_training_examples_represented: false
+
+evaluation_gate:
+  prompt_optimization_exhaustion_required: true
+  route_optimization_exhaustion_required: true
+  repeated_same_error_required: true
+  same_dataset_and_holdout_required: true
+  baseline_and_candidate_verification_required: true
+  quality_dimensions:
+    - schema_valid_rate_micros
+    - critical_claim_support_rate_micros
+    - human_acceptance_rate_micros
+  quality_rule: STRICT_PARETO_IMPROVEMENT_LOCAL_RESEARCH_GUARD
+  zero_tolerance_failures_required: 0
+  zero_tolerance_waiver: false
+  actual_fine_tuning_executed: false
+  positive_release_outcome_exists: false
+
+cost_gate:
+  status_required: RECORDED_SYNTHETIC_VERIFIED
+  inputs:
+    - verified workload forecast
+    - baseline inference cost
+    - candidate inference cost
+    - training cost
+    - dataset curation cost
+    - evaluation cost
+    - human labor cost
+  comparison: CANDIDATE_LIFECYCLE_COST_STRICTLY_LOWER_THAN_BASELINE
+  arbitrary_quality_cost_weight: FORBIDDEN
+  missing_or_unverified: UNAVAILABLE
+  missing_to_zero_coercion: FORBIDDEN
+  affiliate_reward_or_rate_present: false
+  recommendation_input: false
+
+recorded_fixture:
+  path: changes/st-1908/fixtures/recorded/fine-tuning-candidate.synthetic.v1.json
+  bytes: 2858
+  sha256: 5bfc483d7102ac8155f12d6d13f480039e079a0e011baad4692cfbb9b6515a43
+  synthetic: true
+  representative: false
+  rights_status: UNAVAILABLE
+  governance_status: UNAVAILABLE
+  baseline_evaluation_status: UNAVAILABLE
+  candidate_evaluation_status: UNAVAILABLE
+  cost_status: UNAVAILABLE
+  actual_training_executed: false
+  release_eligible: false
+
+result_contract:
+  possible_outcomes:
+    - REFUSED_ZERO_TOLERANCE
+    - REFUSED_NOT_BENEFICIAL
+    - REFUSED_UNAVAILABLE_EVIDENCE
+  consideration_candidate_outcome_exists: false
+  missing_or_unverified_metrics: null
+  missing_or_unverified_cost: null
+  decision_kind: RESEARCH_EVALUATION_ONLY
+  authority: NONE
+  report_fields: IDS_HASHES_AGGREGATE_METRICS_CLOSED_STATUS_ONLY
+
+mutation_boundary:
+  provider_call: FORBIDDEN
+  training_job: FORBIDDEN
+  network: FORBIDDEN
+  credentials: FORBIDDEN
+  persistence: NOT_EXECUTED
+  dataset_write: FORBIDDEN
+  prompt_mutation: FORBIDDEN
+  route_or_model_mutation: FORBIDDEN
+  editorial_mutation: FORBIDDEN
+  article_html_mutation: FORBIDDEN
+  cta_mutation: FORBIDDEN
+  product_selection_mutation: FORBIDDEN
+  recommendation_order_mutation: FORBIDDEN
+  publication_snapshot_mutation: FORBIDDEN
+  publication: FORBIDDEN
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  recommendation_inputs_excluded:
+    - AFFILIATE_COMMISSION_RATE
+    - CONFIRMED_REWARD
+    - UNATTRIBUTED_REWARD
+    - COMMISSION
+    - EPC
+    - RPM
+    - PROFIT
+
+verification_boundary:
+  focused_local_behavior_security_negative: LOCAL_CANDIDATE
+  owner_generator_check: LOCAL_CANDIDATE
+  dependency_ST-0707_regression: LOCAL_CANDIDATE
+  formal_TST-032: NOT_EXECUTED
+  legal_or_dataset_rights_review: NOT_EXECUTED
+  actual_fine_tuning: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  database: NOT_EXECUTED
+  network: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+
+outputs:
+  evaluation_report: changes/st-1908/generated/fine-tuning-evaluation-report.v1.json
+  runtime_manifest: changes/st-1908/manifest.yaml
+
+owned_sources:
+  - changes/st-1908/contracts/fine-tuning-evaluation.v1.yaml
+  - changes/st-1908/fixtures/recorded/fine-tuning-candidate.synthetic.v1.json
+  - changes/st-1908/README.md
+  - changes/st-1908/completion/completion.v1.yaml
+  - docs/execplans/ST-1908.md
+  - docs/worklogs/ST-1908.md
+  - python/raos/domain/ai/fine_tuning_evaluation.py
+  - python/raos/ports/fine_tuning_evaluation.py
+  - python/raos/application/ai/fine_tuning_evaluation.py
+  - python/raos/adapters/recorded_fine_tuning_evaluation.py
+  - scripts/build_st1908_fine_tuning_evaluation.py
+  - tests/st1908/__init__.py
+  - tests/st1908/conftest.py
+  - tests/st1908/support.py
+  - tests/st1908/test_contract.py
+  - tests/st1908/test_evaluator.py
+  - tests/st1908/test_generation.py
+  - tests/st1908/test_negative_cases.py
+  - tests/st1908/test_security_boundaries.py
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - licensed and approved representative dataset plus legal rights evidence
+    - approved data inventory, retention, deletion, and sanitization workflow
+    - verified prompt/route exhaustion and recurring-error evidence
+    - actual provider-neutral fine-tuned candidate and independent holdout comparison
+    - verified workload, provider pricing, labor cost, and lifecycle cost evidence
+    - independent AI/security/privacy/legal review
+    - separate release decision and formal TST-032 gate acceptance
+    - persistence, monitoring, rollback, staging, release, and Production evidence
