@@ -17,8 +17,8 @@ source_artifacts:
     sha256: d97c459fc695cc4c5f0ef0c79e7efd61172a4317cfac46fdeb2866b101a44a21
     role: OWNER_SOURCE
   - uri: repo://packages/web-ui/src/index.ts
-    bytes: 18566
-    sha256: b6fd3b221fa7aef69124f0361d25f6ce53bc423b63fb4f3e94362b2eaecc6235
+    bytes: 19601
+    sha256: 527efe6b033da86de0b6dd05d6e74eb1711bee83e34fe3d5d6477f125aa8f22d
     role: OWNER_SOURCE
   - uri: repo://apps/web/app/articles/[slug]/page.tsx
     bytes: 1333

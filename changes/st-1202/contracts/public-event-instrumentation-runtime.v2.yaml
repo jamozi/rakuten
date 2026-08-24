@@ -38,20 +38,20 @@ dependency_bindings:
       sha256: 866c7348e6a08806ed16fa14cbed4cbdc80f39c22d1982e1c56c16921f8ecc99
     manifest:
       path: changes/st-1002/runtime-manifest.v2.yaml
-      sha256: 28ddfcf7c7ce0b734fb26e2e05eebfc0c4602ae651116a1200b9405851210bae
+      sha256: 1b7016e4f5c982fc8d6c276275225d3ec56f2ebf2180c5e0fe06eedc4c31b571
     route_path: /articles/synthetic-recorded-policy-seo
     screen_id: PUB-003
     public_identity_fields_available: false
   ST-1004:
     contract:
       path: changes/st-1004/contracts/disclosure-affiliate-runtime.v2.yaml
-      sha256: 2dae9876ea9ed437bbf29c7b8bcc9453e6039397cb25b55a22d0c647cc861259
+      sha256: 5b67210a8a0960964c6104226a4bc7696333e4648db234d64658574f77946f52
     recorded_view:
       path: changes/st-1004/generated/disclosure-affiliate-recorded.v2.json
       sha256: 4dcec2348f41b1533ed944a6d6ab63f14b6dd9900bab8cfcbab0fa11f46e7167
     manifest:
       path: changes/st-1004/runtime-manifest.v2.yaml
-      sha256: f23d7d99b86c577e3563221caea5b8cae485370c961b08189e8111df6d990c77
+      sha256: 8882bdfcb12b83941f778a2dd12e0ace67a6a6cb757d505a718721d006e010cd
     affiliate_cta_state: UNAVAILABLE_SOURCE
     affiliate_cta_rendered: false
     direct_native_navigation_independent: true

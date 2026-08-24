@@ -27,8 +27,8 @@ source_artifacts:
 - uri: repo://packages/web-ui/src/index.ts
   artifact_role: OWNER_SOURCE
   media_type: text/typescript
-  bytes: 17510
-  sha256: 83d3e9e78dfc13d265fe49f1b9da03b1f143a6a7c6e29dc7a8ca404dc3cbe9fd
+  bytes: 19601
+  sha256: 527efe6b033da86de0b6dd05d6e74eb1711bee83e34fe3d5d6477f125aa8f22d
 - uri: repo://changes/st-0906/README.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown

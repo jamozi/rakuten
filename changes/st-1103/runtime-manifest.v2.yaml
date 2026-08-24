@@ -21,8 +21,8 @@ source_artifacts:
   sha256: 2d58a8c280bd3cc04333ace3b5e619b2f60844af4aec1b0b79d7a5c3acc4490d
   role: OWNER_SOURCE
 - uri: repo://packages/web-ui/src/index.ts
-  bytes: 15012
-  sha256: 24311dfd851b3a7db439c1dd05ccb82fa0a25b927d9dcb25bdc2fb266b6f850a
+  bytes: 19601
+  sha256: 527efe6b033da86de0b6dd05d6e74eb1711bee83e34fe3d5d6477f125aa8f22d
   role: OWNER_SOURCE
 - uri: repo://changes/st-1103/README.md
   bytes: 6857

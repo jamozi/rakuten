@@ -11,7 +11,7 @@ source_sha256:
   changes/st-1102/contracts/article-workspace.v2.yaml: ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52f
   scripts/build_st1102_article_workspace_v2.py: 439f46d96a2873d1020044aabf5ebf6c9dca23a74c7fe9582cb1e978f657681a
   packages/web-ui/src/article-workspace-v2.ts: d696e713b00239c2b4089a360ca95109720218b2a66071c8106105ae24583bae
-  packages/web-ui/src/index.ts: 24311dfd851b3a7db439c1dd05ccb82fa0a25b927d9dcb25bdc2fb266b6f850a
+  packages/web-ui/src/index.ts: 527efe6b033da86de0b6dd05d6e74eb1711bee83e34fe3d5d6477f125aa8f22d
   changes/st-1102/README.md: 87fd7d5e8b7ccf0d9de46729e56af21ba6939bb5be14415376bc74b2d84a5912
   changes/st-1102/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: 9db6e0565e762f72fdd78a896fd7cd4ca2b58aa1aa4a33b0dd4f11bf302665f8
   docs/execplans/ST-1102.md: ec8d3c68b7c846a556ea8a4dcf765758beb1102b36cfafb717972601fdd7aff3
