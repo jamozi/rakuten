@@ -1,0 +1,84 @@
+{
+  "document": {
+    "authority": "NONE",
+    "canonical_status": "DEFERRED_POST_MVP",
+    "classification": "RECORDED_SYNTHETIC_AGGREGATE_CAUSAL_ANALYSIS_CANDIDATE",
+    "formal_TST-032": "NOT_EXECUTED",
+    "production_eligible": false,
+    "schema_version": "1.0.0",
+    "story_id": "ST-1906"
+  },
+  "evaluation": {
+    "authority": {
+      "article_html_mutation": false,
+      "cta_mutation": false,
+      "editorial_mutation": false,
+      "network": false,
+      "persistence": false,
+      "product_selection_mutation": false,
+      "production": false,
+      "provider_call": false,
+      "publication": false,
+      "publication_snapshot_mutation": false,
+      "recommendation_order_mutation": false,
+      "release": false,
+      "staging": false,
+      "tracking_activation": false
+    },
+    "availability": "AVAILABLE",
+    "blockers": [
+      "FORMAL_TST_032_NOT_EXECUTED",
+      "LIVE_PRIVACY_REVIEW_NOT_EXECUTED",
+      "LIVE_SIGNAL_VALIDATION_NOT_EXECUTED",
+      "RECORDED_SYNTHETIC_ONLY",
+      "SEPARATE_RELEASE_DECISION_REQUIRED"
+    ],
+    "candidate_state": "ANALYSIS_CANDIDATE_ONLY",
+    "cell_count": 5,
+    "command_sha256": "59ca3b0597c8810eba69c033d00507f94f9cabe6c46aa7166b511901704ef2c7",
+    "contract_sha256": "34adb2a67246888ec0773a20ab4ed4c71912fc3a3df653bca559d04f48dda78c",
+    "estimate": {
+      "confidence_bps": 9500,
+      "confidence_lower_micros": 30723,
+      "confidence_upper_micros": 49277,
+      "control_exposures": 5000,
+      "control_outcomes": 200,
+      "control_rate_micros": 40000,
+      "risk_difference_micros": 40000,
+      "treatment_exposures": 5000,
+      "treatment_outcomes": 400,
+      "treatment_rate_micros": 80000
+    },
+    "method_version": "RAOS_ST1906_RANDOMIZED_AGGREGATE_RISK_DIFFERENCE_V1",
+    "outcome_code": "AFFILIATE_CLICK",
+    "policy": {
+      "arbitrary_provider_total_allocation": false,
+      "automatic_editorial_use": false,
+      "automatic_recommendation_use": false,
+      "finance_values_represented": false,
+      "recommendation_inputs_excluded": [
+        "AFFILIATE_COMMISSION_RATE",
+        "CONFIRMED_REWARD",
+        "UNATTRIBUTED_REWARD",
+        "COMMISSION",
+        "INCREMENTAL_COST",
+        "EPC",
+        "RPM",
+        "PROFIT"
+      ],
+      "result_is_provider_fact": false
+    },
+    "preregistration_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "privacy_review_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "report_sha256": "2d2828b19cc8227e26a4c685c43e744bff33ce318b701167bebed3f74f6b3cae",
+    "source_sha256": "667c42e8f6dd217d68df54b122ec4ee6315a8aca22e2011299dfcd9726708d2e",
+    "unavailable_reason": null
+  },
+  "source": {
+    "bytes": 5542,
+    "fixture_profile": "RAOS_ST1906_SYNTHETIC_CAUSAL_AGGREGATE_V1",
+    "path": "changes/st-1906/fixtures/recorded/causal-attribution.synthetic.v1.json",
+    "sha256": "667c42e8f6dd217d68df54b122ec4ee6315a8aca22e2011299dfcd9726708d2e",
+    "synthetic": true
+  }
+}

@@ -1,0 +1,149 @@
+document:
+  id: RAOS-ST1906-ADVANCED-CAUSAL-ATTRIBUTION-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-1906
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  canonical_status: DEFERRED_POST_MVP
+  authority: NONE
+  production_eligible: false
+provenance:
+  base_commit: 6b89b412ea061af36544cce817ecede4cce7d457
+  contract_uri: repo://changes/st-1906/contracts/advanced-causal-attribution.v1.yaml
+  contract_sha256: 0ecb8c11d762edc641d128cad6ffe87523ed103dcb9f615ebd83ddcabed676d0
+  authority_inputs:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml
+    sha256: 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  predecessor_inputs:
+  - uri: repo://changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
+    sha256: 417919e2c4552b8e1e6e3fef18f4daccfa0cf44d13803db62d474fe154fb574b
+  - uri: repo://changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
+    sha256: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b
+  - uri: repo://changes/st-1303/generated/attribution-engine-recorded.v2.json
+    sha256: f6711833620948acf144aacdc1329f470203e893292570d8f1374f75306d4f32
+  - uri: repo://python/raos/domain/finance/attribution.py
+    sha256: 20d7fa4e365d80a000564279f138e7e544fbb8d0cf4158cbe503b56b6be24749
+  - uri: repo://python/raos/ports/attribution.py
+    sha256: 3d56b802a2898be2c14b45f03e7747400ec1a060b78db4fd1e139174bed73a42
+  - uri: repo://python/raos/application/finance/attribution.py
+    sha256: 9943325951342a3d21d23bcecc0e17b98082a4466d0a21643057997b0e254b4f
+  - uri: repo://python/raos/adapters/recorded_attribution.py
+    sha256: a9d10fd9137264cd890f81acb10152dd8dbf8b296caae48ed44aea97e504d0d0
+  - uri: repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
+    sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+source_artifact_count: 19
+source_artifacts:
+- uri: repo://changes/st-1906/contracts/advanced-causal-attribution.v1.yaml
+  bytes: 8751
+  sha256: 0ecb8c11d762edc641d128cad6ffe87523ed103dcb9f615ebd83ddcabed676d0
+- uri: repo://changes/st-1906/fixtures/recorded/causal-attribution.synthetic.v1.json
+  bytes: 5542
+  sha256: 667c42e8f6dd217d68df54b122ec4ee6315a8aca22e2011299dfcd9726708d2e
+- uri: repo://changes/st-1906/README.md
+  bytes: 3943
+  sha256: 9a2b3c7051bb6b6dd97e8adef790ff820aeb670c41bc2f4cb68ca5d818d9a078
+- uri: repo://changes/st-1906/completion/completion.v1.yaml
+  bytes: 1737
+  sha256: 1656d9b8794c5253aa09a2541e09d1bc11a15fb5a620b39b3302b9b6cefc7aa3
+- uri: repo://docs/worklogs/ST-1906.md
+  bytes: 2156
+  sha256: 804db611b6b9ffa86f9dd605ebfe68dc1ff939b2eefc8cdcd7857ca5a60e1d34
+- uri: repo://python/raos/domain/analytics/causal_attribution.py
+  bytes: 31852
+  sha256: d4171ffe4fc05012896e8b93632c68a4d7edb4589b3ba6ab35696d7a1ec1785b
+- uri: repo://python/raos/ports/causal_attribution.py
+  bytes: 577
+  sha256: d39ff55d5b61cda59b1a3248b9a519af97db35f3ccd0bd8663d9f12332b2ecc4
+- uri: repo://python/raos/application/analytics/causal_attribution.py
+  bytes: 5032
+  sha256: 96a84bd3860b5ba0175122d491bc3b49f372e81c1cd23d336f11f0454bc8bf7e
+- uri: repo://python/raos/adapters/recorded_causal_attribution.py
+  bytes: 10383
+  sha256: 8120ed6c1b12e44cb6d21a809c08230822199a06a2b5aa426fcd378ffd9419f6
+- uri: repo://scripts/build_st1906_advanced_causal_attribution.py
+  bytes: 29664
+  sha256: 1f501ff504e87a49ea13b327ab09eea9ef6abba25bcdfe16dc5147b0f9096684
+- uri: repo://scripts/secure_generated_publication.py
+  bytes: 22651
+  sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+- uri: repo://tests/st1906/__init__.py
+  bytes: 35
+  sha256: 784c75384c703f860ad6baa76974075ba12000cfabea82b3626742a0274cd149
+- uri: repo://tests/st1906/conftest.py
+  bytes: 318
+  sha256: ec09d2872c425876e41c8e48b959d7dfb9740dace430ef6e8baf559e346a0387
+- uri: repo://tests/st1906/support.py
+  bytes: 4258
+  sha256: 3918c6faf8d8c98890a0c563c0b65979160b094ebecfc4a3e89dbfb612a87950
+- uri: repo://tests/st1906/test_contract.py
+  bytes: 7009
+  sha256: 07f10316a8e001248ab78f7b2537abedd07564f6f2cc3a5f23f2aba7aa783664
+- uri: repo://tests/st1906/test_generation.py
+  bytes: 5441
+  sha256: 3b9329c0b852b667cc75314eb954793f58a82fb5b83c67872fd4392a4ec5136e
+- uri: repo://tests/st1906/test_causal_service.py
+  bytes: 5261
+  sha256: 9c0349ceb3f98bff7d111e2e1a20f6c7e0084c38af0543c3309c5767320f9665
+- uri: repo://tests/st1906/test_unavailable_cases.py
+  bytes: 4399
+  sha256: 8b81fa28de21c7ba6017288d79f3afb8fcf0c3b60972550d91fd8e8c28a43477
+- uri: repo://tests/st1906/test_negative_cases.py
+  bytes: 6157
+  sha256: 88d868ca66da93a48c121a48902d4de290e3fd89788ac4825b319589fb2893d6
+generated_artifacts:
+- uri: repo://changes/st-1906/generated/causal-attribution-report.v1.json
+  bytes: 3000
+  sha256: 3c9d290ac78f3224e6f38839b4d7bfec1e3947f2d5ad6848d84054ceee869f29
+boundary:
+  default_scope: DISABLED
+  executable_environments:
+  - ENV-DEV
+  - ENV-CI
+  personal_data: false
+  tracking_activation: false
+  finance_values_represented: false
+  provider_total_allocation: false
+  editorial_mutation: false
+  recommendation_order_mutation: false
+  publication: false
+  release: false
+  production: false
+verification:
+  focused_local: CANDIDATE
+  formal_TST-032: NOT_EXECUTED
+  live_privacy_review: NOT_EXECUTED
+  real_signal_calibration: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+debt:
+  introduced: []
+  external_or_formal_remaining:
+  - Privacy Owner review, consent/purpose/retention approval, and data inventory
+  - real randomized design, pre-registration, power analysis, and sanitized aggregate
+    signal
+  - independent statistical review and real-signal calibration
+  - separate release decision and formal TST-032 gate acceptance
+  - persistence, monitoring, rollback, staging, release, and Production evidence
