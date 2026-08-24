@@ -13,7 +13,7 @@ import yaml
 
 from .conftest import REPO_ROOT, read
 from scripts import build_st0904_public_projection_runtime_v2 as generator
-from raos.generated.public_projection_pass_v2 import (
+from raos.adapters.recorded_public_projection_fixture_v2 import (
     PUBLIC_PROJECTION_PASS_V2_JSON,
     PUBLIC_PROJECTION_PASS_V2_SHA256,
 )

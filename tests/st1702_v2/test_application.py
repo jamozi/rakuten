@@ -20,7 +20,7 @@ from raos.domain.catalog.category_fixtures import (
     CategoryFixtureLoadRequest,
     CategoryFixtureLoadResult,
 )
-from raos.generated.category_fixtures_recorded_v2 import (
+from raos.adapters.recorded_category_fixture_v2 import (
     ST1702_RECORDED_CATEGORY_FIXTURE_V2_SHA256,
 )
 from raos.ports.category_fixtures import RecordedCategoryFixturePort
@@ -130,7 +130,9 @@ def test_adapter_rejects_post_init_fixture_rebinding(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     adapter = RecordedCategoryFixtureAdapter(environment=RuntimeEnvironment.CI)
-    changed = json.loads(adapter_module.ST1702_RECORDED_CATEGORY_FIXTURE_V2_JSON)
+    changed = json.loads(
+        adapter_module.ST1702_RECORDED_CATEGORY_FIXTURE_V2_JSON  # type: ignore[attr-defined]
+    )
     changed["category"]["displayName"] = "Changed synthetic category"
     payload = (
         json.dumps(changed, ensure_ascii=False, allow_nan=False, separators=(",", ":"))

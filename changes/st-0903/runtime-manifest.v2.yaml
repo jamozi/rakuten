@@ -8,12 +8,12 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: application/yaml
   bytes: 5025
-  sha256: 73799615a5263672ab2941bf57a632f95a49f99a6602da467a50c9889f7a441b
+  sha256: 4fec80a9fb5bea3985d85bf4ac347cda588d8eba1c98cdf708d416452f63169e
 - uri: repo://scripts/build_st0903_publication_snapshot_runtime_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 22860
-  sha256: a4b0041ff64954ebc4a4277b61c403cfb01f931d8c395df9efd2a9a1ab4e5cbb
+  bytes: 22877
+  sha256: 419e95599a29e78767b7085a9c0c9d9a3adb670fc0c988c86c589819afab8be0
 - uri: repo://python/raos/domain/publishing/publication_snapshot_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -77,8 +77,8 @@ source_artifacts:
 - uri: repo://tests/st0903_v2/test_generation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 3915
-  sha256: 274412dba95a39e91c72039b06de81abd68fd4807fa9ffe72e2341b58a54456d
+  bytes: 3926
+  sha256: 16ee541671d60bddbdc8401b23ace52642caa86f5f19b8335aef09b144801e4d
 - uri: repo://tests/st0903_v2/test_static_boundary.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -177,8 +177,8 @@ source_artifacts:
 - uri: repo://changes/st-0902/runtime-manifest.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
-  bytes: 11777
-  sha256: d938d9f29f1c582a858424f6e75b3bcdf92d927048916f3b6d1193dd5a9cb619
+  bytes: 11788
+  sha256: b21b2ece37b206f38f4e0fd96a7985085a643f0d7f2104c54be5347043e67627
 - uri: repo://python/raos/domain/publishing/final_approval.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
@@ -271,7 +271,7 @@ generated_artifacts:
   media_type: application/json
   bytes: 12357
   sha256: 6f18ed11cbed99c57dac757875ce4ab3e1fab09cc24710c1fd7bce7e5823cd99
-- uri: repo://python/raos/generated/publication_snapshot_pass_v2.py
+- uri: repo://python/raos/adapters/recorded_publication_snapshot_fixture_v2.py
   artifact_role: GENERATED_RUNTIME_MODULE
   media_type: text/x-python
   bytes: 12914

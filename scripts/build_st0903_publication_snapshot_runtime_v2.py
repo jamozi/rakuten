@@ -40,7 +40,9 @@ CONTRACT_PATH: Final = Path(
 FIXTURE_PATH: Final = Path(
     "changes/st-0903/generated/publication-snapshot-pass.v2.json"
 )
-MODULE_PATH: Final = Path("python/raos/generated/publication_snapshot_pass_v2.py")
+MODULE_PATH: Final = Path(
+    "python/raos/adapters/recorded_publication_snapshot_fixture_v2.py"
+)
 MANIFEST_PATH: Final = Path("changes/st-0903/runtime-manifest.v2.yaml")
 FINAL_APPROVAL_FIXTURE_PATH: Final = Path(
     "changes/st-0902/generated/final-approval-pass.v2.json"

@@ -11,7 +11,7 @@ import yaml
 
 from .conftest import REPO_ROOT, read
 from scripts import build_st0903_publication_snapshot_runtime_v2 as generator
-from raos.generated.publication_snapshot_pass_v2 import (
+from raos.adapters.recorded_publication_snapshot_fixture_v2 import (
     PUBLICATION_SNAPSHOT_PASS_V2_JSON,
     PUBLICATION_SNAPSHOT_PASS_V2_SHA256,
 )

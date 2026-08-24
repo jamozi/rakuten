@@ -21,7 +21,7 @@ bindings:
   st0903_fixture_uri: repo://changes/st-0903/generated/publication-snapshot-pass.v2.json
   st0903_fixture_sha256: 6f18ed11cbed99c57dac757875ce4ab3e1fab09cc24710c1fd7bce7e5823cd99
   st0903_runtime_manifest_uri: repo://changes/st-0903/runtime-manifest.v2.yaml
-  st0903_runtime_manifest_sha256: f7a95693cb8cb3fbd50f3438d0e4494ea82cdc6337b9c1bb0bd7728de08a2c33
+  st0903_runtime_manifest_sha256: 094b8ecc79fd76605025cf816eff65d9bad05778496c7e612d5b43e7c2081157
   st0902_final_approval_fixture_uri: repo://changes/st-0902/generated/final-approval-pass.v2.json
   st0902_final_approval_fixture_sha256: 93c44f4d303fef41304962bf4235e19491bcb45c555aecb66a87dcd34e6bca07
   st0805_policy_fixture_uri: repo://changes/st-0805/generated/policy-pass.v2.json

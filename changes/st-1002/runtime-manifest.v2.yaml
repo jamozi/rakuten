@@ -6,11 +6,11 @@ source_artifact_count: 40
 source_artifacts:
   - uri: repo://changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
     bytes: 6462
-    sha256: f31be78d65a6207f2e2cef215070f78074b69ca7f907f4e695142afb51952341
+    sha256: 5674f573b0a812395ada32667dab1ba84ed9b2fd5549915824948406fbea938f
     role: OWNER_SOURCE
   - uri: repo://scripts/build_st1002_public_article_renderer.py
     bytes: 41606
-    sha256: 92ed22bed0df086a8f441f243bd65b427a3accbab265eaf9c9cbb994cc21b009
+    sha256: d298ffeb76fc3b37465534d7082b270f5343232e0f1377dc7d8a45e56497de12
     role: OWNER_SOURCE
   - uri: repo://packages/web-ui/src/public-article-renderer.ts
     bytes: 32612
@@ -129,12 +129,12 @@ source_artifacts:
     sha256: d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1
     role: DEPENDENCY_ARTIFACT
   - uri: repo://changes/st-0904/runtime-manifest.v2.yaml
-    bytes: 12188
-    sha256: eb906e477ca20ed5ac6e2f4d1b05f9c82952beaeb2cec338709e6b1b632e842f
+    bytes: 12199
+    sha256: 463887fc57ccc2aeda2a1707eef302962c730bf1c19f6f59bfb986bf3523be9f
     role: DEPENDENCY_ARTIFACT
   - uri: repo://changes/st-0904/contracts/public-projection-runtime.v2.yaml
     bytes: 4503
-    sha256: 088c48e4a1665acf9ac0e27cdc6e7753978fa90782b0304b1b762c390c53bd40
+    sha256: 210961b25d78bc3f9f7994855eea425a813b9e978d52709fa26618f2653a5463
     role: DEPENDENCY_ARTIFACT
   - uri: repo://changes/st-1001/contracts/public-app-shell-runtime.v2.yaml
     bytes: 11431

@@ -55,7 +55,7 @@ from raos.domain.publishing.review_workflow import (  # noqa: E402
 
 CONTRACT_PATH: Final = Path("changes/st-0902/contracts/final-approval-runtime.v2.yaml")
 FIXTURE_PATH: Final = Path("changes/st-0902/generated/final-approval-pass.v2.json")
-MODULE_PATH: Final = Path("python/raos/generated/final_approval_pass_v2.py")
+MODULE_PATH: Final = Path("python/raos/adapters/recorded_final_approval_fixture_v2.py")
 MANIFEST_PATH: Final = Path("changes/st-0902/runtime-manifest.v2.yaml")
 POLICY_FIXTURE_PATH: Final = Path("changes/st-0805/generated/policy-pass.v2.json")
 REVIEW_FIXTURE_PATH: Final = Path(

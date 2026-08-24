@@ -5,7 +5,7 @@ import hashlib
 import pytest
 import yaml
 
-from raos.generated.review_completion_pass_v2 import (
+from raos.adapters.recorded_review_completion_fixture_v2 import (
     REVIEW_COMPLETION_PASS_V2_JSON,
     REVIEW_COMPLETION_PASS_V2_SHA256,
 )

@@ -81,10 +81,10 @@ DEPENDENCY_HASHES: Final = {
     SOURCE_FIXTURE_PATH: "d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1",
     Path(
         "changes/st-0904/runtime-manifest.v2.yaml"
-    ): "eb906e477ca20ed5ac6e2f4d1b05f9c82952beaeb2cec338709e6b1b632e842f",
+    ): "463887fc57ccc2aeda2a1707eef302962c730bf1c19f6f59bfb986bf3523be9f",
     Path(
         "changes/st-0904/contracts/public-projection-runtime.v2.yaml"
-    ): "088c48e4a1665acf9ac0e27cdc6e7753978fa90782b0304b1b762c390c53bd40",
+    ): "210961b25d78bc3f9f7994855eea425a813b9e978d52709fa26618f2653a5463",
     Path(
         "changes/st-1001/contracts/public-app-shell-runtime.v2.yaml"
     ): "e916db42258a52ab30139349fd13f0d64742f21464882ef10bc282276201f459",

@@ -40,7 +40,7 @@ FIXTURE_PATH: Final = Path(
     "changes/st-1702/generated/category-fixture-runtime-recorded.v2.json"
 )
 GENERATED_PYTHON_PATH: Final = Path(
-    "python/raos/generated/category_fixtures_recorded_v2.py"
+    "python/raos/adapters/recorded_category_fixture_v2.py"
 )
 MANIFEST_PATH: Final = Path("changes/st-1702/runtime-manifest.v2.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1702_category_fixture_runtime.py")

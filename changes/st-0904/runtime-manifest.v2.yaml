@@ -8,12 +8,12 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: application/yaml
   bytes: 4503
-  sha256: 088c48e4a1665acf9ac0e27cdc6e7753978fa90782b0304b1b762c390c53bd40
+  sha256: 210961b25d78bc3f9f7994855eea425a813b9e978d52709fa26618f2653a5463
 - uri: repo://scripts/build_st0904_public_projection_runtime_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 22679
-  sha256: 968d558a9cfab836c93fb6c83f2cbed61270bc64324125cd728c0f28fcaaf73f
+  bytes: 22696
+  sha256: 635bae43f31cf9d2c63ed85aaf3a89937c8451cd725b873ddbb2aac024631703
 - uri: repo://python/raos/domain/publishing/public_projection_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -77,8 +77,8 @@ source_artifacts:
 - uri: repo://tests/st0904_v2/test_generation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 4815
-  sha256: 9b2cda64830852718ebaef181bd93559fa6b6971c172bed9aeb1c632ad592138
+  bytes: 4826
+  sha256: 2f3988298bd32cfe44e7ae01df009ce284b47944b9b44c2d4d55ce572e6ef015
 - uri: repo://tests/st0904_v2/test_static_boundary.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -157,8 +157,8 @@ source_artifacts:
 - uri: repo://changes/st-0903/runtime-manifest.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
-  bytes: 13315
-  sha256: f7a95693cb8cb3fbd50f3438d0e4494ea82cdc6337b9c1bb0bd7728de08a2c33
+  bytes: 13326
+  sha256: 094b8ecc79fd76605025cf816eff65d9bad05778496c7e612d5b43e7c2081157
 - uri: repo://python/raos/domain/publishing/publication_snapshot_v2.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
@@ -246,7 +246,7 @@ generated_artifacts:
   media_type: application/json
   bytes: 7764
   sha256: d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1
-- uri: repo://python/raos/generated/public_projection_pass_v2.py
+- uri: repo://python/raos/adapters/recorded_public_projection_fixture_v2.py
   artifact_role: GENERATED_RUNTIME_MODULE
   media_type: text/x-python
   bytes: 8441

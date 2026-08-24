@@ -32,13 +32,13 @@ dependency_bindings:
   ST-1002:
     contract:
       path: changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
-      sha256: f31be78d65a6207f2e2cef215070f78074b69ca7f907f4e695142afb51952341
+      sha256: 5674f573b0a812395ada32667dab1ba84ed9b2fd5549915824948406fbea938f
     recorded_view:
       path: changes/st-1002/generated/public-article-renderer-recorded.v2.json
       sha256: 866c7348e6a08806ed16fa14cbed4cbdc80f39c22d1982e1c56c16921f8ecc99
     manifest:
       path: changes/st-1002/runtime-manifest.v2.yaml
-      sha256: 1b7016e4f5c982fc8d6c276275225d3ec56f2ebf2180c5e0fe06eedc4c31b571
+      sha256: 00c96a6e5ab2a31f069b4f9d394d10ece8f440df626e373577d0199906aabf27
     exact_slug: synthetic-recorded-policy-seo
     exact_path: /articles/synthetic-recorded-policy-seo
     recorded_disclosure_copy: この記事にはアフィリエイト広告が含まれます。

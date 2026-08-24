@@ -6,7 +6,7 @@ source_artifact_count: 29
 source_artifacts:
 - uri: repo://changes/st-1004/contracts/disclosure-affiliate-runtime.v2.yaml
   bytes: 7905
-  sha256: 5b67210a8a0960964c6104226a4bc7696333e4648db234d64658574f77946f52
+  sha256: 476b1bebd416fec4038e620144e91760f3a459084f3503dacbbc049c289963eb
   role: OWNER_SOURCE
 - uri: repo://scripts/build_st1004_disclosure_affiliate_runtime.py
   bytes: 22370
@@ -98,7 +98,7 @@ source_artifacts:
   role: CANONICAL_INPUT
 - uri: repo://changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
   bytes: 6462
-  sha256: f31be78d65a6207f2e2cef215070f78074b69ca7f907f4e695142afb51952341
+  sha256: 5674f573b0a812395ada32667dab1ba84ed9b2fd5549915824948406fbea938f
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1002/generated/public-article-renderer-recorded.v2.json
   bytes: 5229
@@ -106,7 +106,7 @@ source_artifacts:
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1002/runtime-manifest.v2.yaml
   bytes: 8759
-  sha256: 1b7016e4f5c982fc8d6c276275225d3ec56f2ebf2180c5e0fe06eedc4c31b571
+  sha256: 00c96a6e5ab2a31f069b4f9d394d10ece8f440df626e373577d0199906aabf27
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-0503/README.md
   bytes: 3554

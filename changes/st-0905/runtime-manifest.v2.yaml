@@ -8,7 +8,7 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: application/yaml
   bytes: 5866
-  sha256: 8c9c13360baa24fc47f769c94ad77eefcc97695d8a907cf9b6efdcfe17623a58
+  sha256: 511bfb88e3eac00a28b6dddaedbdbaf090a675c16a0ea6c82acf579d5408d76d
 - uri: repo://scripts/build_st0905_publication_commands_runtime_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -137,8 +137,8 @@ source_artifacts:
 - uri: repo://changes/st-0903/runtime-manifest.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
-  bytes: 13315
-  sha256: f7a95693cb8cb3fbd50f3438d0e4494ea82cdc6337b9c1bb0bd7728de08a2c33
+  bytes: 13326
+  sha256: 094b8ecc79fd76605025cf816eff65d9bad05778496c7e612d5b43e7c2081157
 - uri: repo://changes/st-0904/generated/public-projection-recorded.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
@@ -147,8 +147,8 @@ source_artifacts:
 - uri: repo://changes/st-0904/runtime-manifest.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
-  bytes: 12188
-  sha256: eb906e477ca20ed5ac6e2f4d1b05f9c82952beaeb2cec338709e6b1b632e842f
+  bytes: 12199
+  sha256: 463887fc57ccc2aeda2a1707eef302962c730bf1c19f6f59bfb986bf3523be9f
 - uri: repo://changes/st-0902/generated/final-approval-pass.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json

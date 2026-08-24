@@ -16,7 +16,9 @@ from raos.domain.publishing.final_approval import (
     SiteId,
 )
 from raos.domain.publishing.review_workflow import PrincipalId, UtcTimestamp
-from raos.generated.final_approval_pass_v2 import FINAL_APPROVAL_PASS_V2_JSON
+from raos.adapters.recorded_final_approval_fixture_v2 import (
+    FINAL_APPROVAL_PASS_V2_JSON,
+)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]

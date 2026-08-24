@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from raos.generated.final_approval_pass_v2 import (
+from raos.adapters.recorded_final_approval_fixture_v2 import (
     FINAL_APPROVAL_PASS_V2_JSON,
     FINAL_APPROVAL_PASS_V2_SHA256,
 )

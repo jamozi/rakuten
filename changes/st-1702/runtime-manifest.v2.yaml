@@ -9,8 +9,8 @@ source_artifacts:
   sha256: 85cc1693ec4f842aaf9e156658c5fa7f95edfd32aef688f162565e40943dd914
   role: OWNER_SOURCE
 - uri: repo://scripts/build_st1702_category_fixture_runtime.py
-  bytes: 19756
-  sha256: 90c8bfc79f553c195eb64da9519c759160c0ee2f1632b8e7d7f3e1a436cbfd0c
+  bytes: 19754
+  sha256: 556ff3364aa547932084b25b6432adae9318bafb6160d25dc549a7dc065c2642
   role: OWNER_SOURCE
 - uri: repo://python/raos/domain/catalog/category_fixtures.py
   bytes: 34306
@@ -25,8 +25,8 @@ source_artifacts:
   sha256: 91a66d6183b26f2d1ee7be0106af027a208e0bbad7a7d5a6bde926b31d6e285b
   role: OWNER_SOURCE
 - uri: repo://python/raos/adapters/recorded_category_fixtures.py
-  bytes: 5425
-  sha256: fedba22c34a054ab835c6035569bcddeacf40d60d508cc83e7af0a0a4e68adef
+  bytes: 5423
+  sha256: 33faefd04e1616d937d2652d90a850157ee345d532908c20c24ff92b4020ae9a
   role: OWNER_SOURCE
 - uri: repo://changes/st-1702/README.md
   bytes: 9894
@@ -53,8 +53,8 @@ source_artifacts:
   sha256: db3522c320b99ac427a48ab14dd08a157f23901995f3066260b5a3d25e86bf0e
   role: OWNER_SOURCE
 - uri: repo://tests/st1702_v2/test_application.py
-  bytes: 11879
-  sha256: bc69b90e02917728b4c1dc9f4ad56a745e75446b5b595a9d81d53cb54caff52d
+  bytes: 11921
+  sha256: ce04aaed2083798c51586c004ec99c88c7f532a297ec5dc8b4b8a8285dad0a74
   role: OWNER_SOURCE
 - uri: repo://tests/st1702_v2/test_generation.py
   bytes: 6495
@@ -117,7 +117,7 @@ generated_artifacts:
   role: RECORDED_SYNTHETIC_FIXTURE
   bytes: 4513
   sha256: 24ec5547c1e55380c3ec5d7d62d201bc63408232d6d7af8b5e21510a0ddfc1b9
-- uri: repo://python/raos/generated/category_fixtures_recorded_v2.py
+- uri: repo://python/raos/adapters/recorded_category_fixture_v2.py
   role: IMMUTABLE_PYTHON_FIXTURE_WRAPPER
   bytes: 4858
   sha256: b7a996534a9204ae51508c5987ab000203db3613fb07c44a73a79a05e420ec49

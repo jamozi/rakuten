@@ -12,8 +12,8 @@ source_artifacts:
 - uri: repo://scripts/build_st0901_review_completion_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 18018
-  sha256: 8cd792cc6280e0a460781e4bd263c3f646bc76ba7d7933bc2151fd1992f10716
+  bytes: 18035
+  sha256: 39f087f53c613ac5830a3dfd160584123af350a82286c57d7948fd18bd605338
 - uri: repo://python/raos/domain/publishing/review_completion_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -62,8 +62,8 @@ source_artifacts:
 - uri: repo://tests/st0901_v2/conftest.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 2658
-  sha256: 8027cb0b244b180862c85b82d3cf94d9ac6629df89bfce5148aa13560f513ebb
+  bytes: 2669
+  sha256: 187660846c1b62728dcf76f722a53e86958220a53cc807a5a81694f79b589fac
 - uri: repo://tests/st0901_v2/test_domain.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -77,8 +77,8 @@ source_artifacts:
 - uri: repo://tests/st0901_v2/test_generation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 2750
-  sha256: 612d4fc9c3bb6540daa694170bd783e58241059895287fb230d351b6b5597264
+  bytes: 2761
+  sha256: 5045f8880358b3984b9f64634360ba7fd5cad91552761b74853fd98627adf5fc
 - uri: repo://tests/st0901_v2/test_static_boundary.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -186,7 +186,7 @@ generated_artifacts:
   media_type: application/json
   bytes: 1456
   sha256: 57587322562eae4a2b58bebfc6b917e39fb05f077cf7268deb4056563950a361
-- uri: repo://python/raos/generated/review_completion_pass_v2.py
+- uri: repo://python/raos/adapters/recorded_review_completion_fixture_v2.py
   artifact_role: GENERATED_RUNTIME_MODULE
   media_type: text/x-python
   bytes: 1795

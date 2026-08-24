@@ -43,7 +43,9 @@ CONTRACT_PATH: Final = Path(
     "changes/st-0901/contracts/review-completion-runtime.v2.yaml"
 )
 FIXTURE_PATH: Final = Path("changes/st-0901/generated/review-completion-pass.v2.json")
-MODULE_PATH: Final = Path("python/raos/generated/review_completion_pass_v2.py")
+MODULE_PATH: Final = Path(
+    "python/raos/adapters/recorded_review_completion_fixture_v2.py"
+)
 MANIFEST_PATH: Final = Path("changes/st-0901/runtime-manifest.v2.yaml")
 POLICY_FIXTURE_PATH: Final = Path("changes/st-0805/generated/policy-pass.v2.json")
 GENERATOR_PATH: Final = Path("scripts/build_st0901_review_completion_v2.py")

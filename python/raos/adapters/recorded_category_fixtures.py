@@ -16,7 +16,7 @@ from raos.domain.catalog.category_fixtures import (
     category_fixture_sha256,
     fail_category_fixture,
 )
-from raos.generated.category_fixtures_recorded_v2 import (
+from raos.adapters.recorded_category_fixture_v2 import (
     ST1702_RECORDED_CATEGORY_FIXTURE_V2_JSON,
     ST1702_RECORDED_CATEGORY_FIXTURE_V2_SHA256,
 )

@@ -12,8 +12,8 @@ source_artifacts:
 - uri: repo://scripts/build_st0902_final_approval_runtime_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 26914
-  sha256: 62e2ea945ea893c73b9e1212ae862f9e3235fa962b53c707a97c0fb4b502939f
+  bytes: 26925
+  sha256: eac84e88442d594988dd6d0e3681d7965dd8a454bf5800fc04b47ee1c36c03c2
 - uri: repo://python/raos/domain/publishing/final_approval.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -62,8 +62,8 @@ source_artifacts:
 - uri: repo://tests/st0902_v2/conftest.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 2395
-  sha256: c4b2e1849f7996b5c9d729bd30b55bf75767de8050df915d1b8b0faf664c0e1b
+  bytes: 2415
+  sha256: f836763759aea7e65cf93331f498f767cdd78c27b0fd7b6dea7780a7be00a835
 - uri: repo://tests/st0902_v2/test_domain.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -77,8 +77,8 @@ source_artifacts:
 - uri: repo://tests/st0902_v2/test_generation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 4098
-  sha256: 7edf0db73eff389556b359403610338c3b83d00674a636cee5e289b989ada8f1
+  bytes: 4109
+  sha256: 8dd03f6964683e2e9e2aee6d9d34e7ab92dce630c4bdec6320a96f5f58081640
 - uri: repo://tests/st0902_v2/test_static_boundary.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -202,8 +202,8 @@ source_artifacts:
 - uri: repo://changes/st-0901/runtime-manifest.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
-  bytes: 9281
-  sha256: d5497fd0eecd7d433e27498cd9b864782e81c7e4ca3f1fff960f2fe50f64b398
+  bytes: 9292
+  sha256: f49c142b9b3ec6847fa5b1f67ec46088188bc58594d3a4645ace40131744c885
 - uri: repo://changes/st-0902/README.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown
@@ -241,7 +241,7 @@ generated_artifacts:
   media_type: application/json
   bytes: 2562
   sha256: 93c44f4d303fef41304962bf4235e19491bcb45c555aecb66a87dcd34e6bca07
-- uri: repo://python/raos/generated/final_approval_pass_v2.py
+- uri: repo://python/raos/adapters/recorded_final_approval_fixture_v2.py
   artifact_role: GENERATED_RUNTIME_MODULE
   media_type: text/x-python
   bytes: 2889
