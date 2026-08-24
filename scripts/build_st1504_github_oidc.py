@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the disabled, non-executable ST-1504 GitHub OIDC artifacts."""
+"""Build the repository-inert ST-1504 GitHub OIDC offline harness."""
 
 from __future__ import annotations
 
@@ -31,8 +31,27 @@ DESIGN_HANDOFF_PATH: Final = Path(
 REFERENCE_PLAN_PATH: Final = Path(
     "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json"
 )
+CLAIMS_FIXTURE_PATH: Final = Path(
+    "infra/terraform/deployment-identity/github-oidc.claims.recorded.v1.json"
+)
+TRUST_POLICY_FIXTURE_PATH: Final = Path(
+    "infra/terraform/deployment-identity/github-oidc.trust-policy.recorded.v1.json"
+)
+EVALUATION_FIXTURE_PATH: Final = Path(
+    "infra/terraform/deployment-identity/github-oidc.evaluation.recorded.v1.json"
+)
+WORKFLOW_FIXTURE_PATH: Final = Path(
+    "infra/terraform/deployment-identity/github-oidc-deploy.disabled.workflow.yml"
+)
 MANIFEST_PATH: Final = Path("changes/st-1504/manifest.yaml")
-GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
+GENERATED_NON_MANIFEST_PATHS: Final = (
+    REFERENCE_PLAN_PATH,
+    CLAIMS_FIXTURE_PATH,
+    TRUST_POLICY_FIXTURE_PATH,
+    EVALUATION_FIXTURE_PATH,
+    WORKFLOW_FIXTURE_PATH,
+)
+GENERATED_PATHS: Final = (*GENERATED_NON_MANIFEST_PATHS, MANIFEST_PATH)
 
 SOURCE_CONTRACT_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = "repo://scripts/build_st1504_github_oidc.py"
@@ -101,10 +120,28 @@ PREDECESSOR_SOURCES: Final = {
         "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f"
     ),
     "changes/st-1501/contracts/terraform-foundation.v1.yaml": (
-        "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9"
+        "5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e"
     ),
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json": (
-        "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70"
+        "bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72"
+    ),
+    "infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json": (
+        "696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44"
+    ),
+    "infra/terraform/foundation/versions.tf": (
+        "87d23505f127e84430a32ac458b67b46b6614f3d2f976c2539fe3163b4eecab7"
+    ),
+    "infra/terraform/foundation/variables.tf": (
+        "ce13d5d7eb4ed483c5afd170e1ec74738aa73455e5b4036e861cf5786ff6e76e"
+    ),
+    "infra/terraform/foundation/locals.tf": (
+        "a113d24697b1f00c6f3fe32459280672d271dd5a1757364e8e2aac97db1c3b3c"
+    ),
+    "infra/terraform/foundation/checks.tf": (
+        "e4d826ee2881a74f2cc1c49f80ef817d090fb9c0f86040a30f37c231af663787"
+    ),
+    "infra/terraform/foundation/outputs.tf": (
+        "dac1835d490dc50355a9d4510d6ee8991f2a945ad1bfc1ee395e8c2134431d72"
     ),
 }
 PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
@@ -112,19 +149,26 @@ PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
 SOURCE_ARTIFACT_PATHS: Final = (
     CONTRACT_PATH,
     DESIGN_HANDOFF_PATH,
+    Path("changes/st-1504/IMPLEMENTATION_RECORD_V2_ST1504_OFFLINE_OIDC.yaml"),
+    Path("changes/st-1504/LOCAL_COMPLETION_EVIDENCE_V2.md"),
     Path("changes/st-1504/README.md"),
     Path("scripts/build_st1504_github_oidc.py"),
+    Path("python/raos/domain/deployment_identity.py"),
+    Path("python/raos/ports/deployment_identity.py"),
+    Path("python/raos/adapters/disabled_deployment_identity.py"),
     Path("tests/st1504/conftest.py"),
     Path("tests/st1504/test_contract.py"),
     Path("tests/st1504/test_generation.py"),
     Path("tests/st1504/test_negative_cases.py"),
+    Path("tests/st1504/test_offline_runtime.py"),
+    Path("tests/st1504/test_offline_runtime_negative.py"),
 )
 
 EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
     "e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282"
 )
 EXPECTED_CONTRACT_SEMANTIC_SHA256: Final = (
-    "86c418b07701b4cf47f478b13f7665911ece7c4a46d39edd07f7b6944019a4b7"
+    "f0a8a5ca57f34f8b983aa547f8b5f036ee91e0cc9acb63813da64e62a317d2db"
 )
 EXPECTED_PR_GOVERNANCE_CONTRACT_SEMANTIC_SHA256: Final = (
     "141dce557ae5b16c1ef54490ed1c41ce083c33cf27c5e9b66a38de4827dd6dfb"
@@ -136,10 +180,13 @@ EXPECTED_PREDECESSOR_HANDOFF_SEMANTIC_SHA256: Final = (
     "e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722"
 )
 EXPECTED_PREDECESSOR_CONTRACT_SEMANTIC_SHA256: Final = (
-    "dcf15e5dd721b504a6bac04b71a0c6d26c7ba72bf86e074459babc59f2e3f080"
+    "9e88addbfe93c6d6754111d508ba1d7461a703c2aa6b329fa319b6566d9a55e1"
 )
 EXPECTED_PREDECESSOR_PLAN_SEMANTIC_SHA256: Final = (
-    "8679ac98b14f1bd33572679d7fa1fcd1d64e65d3f94b0a973d35637c176567d7"
+    "1deb0efe9ff2d99ccc27ad6f50d1a07c6ed13b6c45cdd6914a7fdcd1a0edbf20"
+)
+EXPECTED_PREDECESSOR_TOOLCHAIN_LOCK_SEMANTIC_SHA256: Final = (
+    "db631e5421d5eea0534737b1df03425ccb873cfe981ad96409d3c90aeef4de1a"
 )
 EXPECTED_HANDOFF_SOURCE_DESIGN_REFS: Final = (
     "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
@@ -385,6 +432,59 @@ DEPLOYMENT_IDENTITY_CAPABILITY_OUTCOMES: Final = (
 ACTION_NAMES: Final = ("create", "update", "delete")
 MAX_DOCUMENT_BYTES: Final = 2 * 1024 * 1024
 SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
+FIXTURE_ID: Final = "st1504-fixture-repository-inert-v1"
+POLICY_ID: Final = "st1504-policy-repository-inert-v1"
+RECORDED_CLAIM_KEYS: Final = (
+    "iss",
+    "aud",
+    "sub",
+    "repository",
+    "repository_id",
+    "repository_owner_id",
+    "ref",
+    "ref_type",
+    "workflow",
+    "workflow_ref",
+    "workflow_sha",
+    "job_workflow_ref",
+    "environment",
+    "event_name",
+    "repository_visibility",
+    "actor_id",
+    "run_id",
+    "run_attempt",
+    "base_ref",
+    "head_ref",
+)
+RECORDED_CLAIMS: Final = {
+    "iss": "https://token.actions.githubusercontent.invalid",
+    "aud": "raos-deployment-fixture.invalid",
+    "sub": (
+        "repo:raos-fixture/not-a-real-repository:"
+        "environment:production-fixture-disabled"
+    ),
+    "repository": "raos-fixture/not-a-real-repository",
+    "repository_id": "100000001",
+    "repository_owner_id": "100000002",
+    "ref": "refs/heads/fixture-deploy",
+    "ref_type": "branch",
+    "workflow": "ST-1504 disabled deployment fixture",
+    "workflow_ref": (
+        "raos-fixture/not-a-real-repository/infra/terraform/"
+        "deployment-identity/github-oidc-deploy.disabled.workflow.yml@"
+        "refs/heads/fixture-deploy"
+    ),
+    "workflow_sha": "1111111111111111111111111111111111111111",
+    "job_workflow_ref": "",
+    "environment": "production-fixture-disabled",
+    "event_name": "workflow_dispatch",
+    "repository_visibility": "private",
+    "actor_id": "100000003",
+    "run_id": "100000004",
+    "run_attempt": "1",
+    "base_ref": "",
+    "head_ref": "",
+}
 
 
 def _aws_reference_mappings() -> list[dict[str, str]]:
@@ -486,9 +586,9 @@ def _selected_bindings() -> dict[str, object]:
 EXPECTED_SECTIONS: Final[dict[str, Any]] = {
     "document": {
         "id": "RAOS-GITHUB-OIDC-DEPLOYMENT-001",
-        "version": "1.1.0",
+        "version": "2.0.0",
         "story_id": "ST-1504",
-        "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        "status": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
         "formal_verification": "NOT_EXECUTED",
     },
     "predecessor_bindings": {
@@ -542,9 +642,24 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
             "reference_plan_sha256": PREDECESSOR_SOURCES[
                 "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"
             ],
+            "validation_toolchain_lock_uri": (
+                "repo://infra/terraform/foundation/"
+                "terraform-validation-toolchain.lock.v1.json"
+            ),
+            "validation_toolchain_lock_sha256": PREDECESSOR_SOURCES[
+                "infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"
+            ],
+            "required_contract_status": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
             "required_provider_policy": (
                 "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION"
             ),
+            "required_terraform_cli_version": "1.15.9",
+            "required_hcl_module": (
+                "PROVIDER_NEUTRAL_VALIDATION_ONLY_FOUNDATION_ADMISSION_MODULE"
+            ),
+            "required_hcl_default_disabled": True,
+            "required_provider_count": 0,
+            "required_resource_count": 0,
             "required_admission_status": "NOT_EVALUATED",
             "required_eligible": False,
             "required_activation_status": "DISABLED",
@@ -643,17 +758,69 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
         "capability_mapping_requirements": _capability_mapping_requirements(),
     },
     "reference_intent": {
-        "classification": "LOGICAL_PROVIDER_NEUTRAL_IDENTITY_PATH_REFERENCE_ONLY",
+        "classification": (
+            "REPOSITORY_INERT_PROVIDER_NEUTRAL_OFFLINE_IDENTITY_HARNESS"
+        ),
         "source": "GITHUB_ACTIONS_OIDC",
         "destination": "PROVIDER_NEUTRAL_SHORT_LIVED_WORKLOAD_SESSION",
         "github_workload_identity": "REQUIRED_NOT_CONFIGURED",
         "target_federated_session": "REQUIRED_NOT_CONFIGURED",
         "target_provider": "UNSELECTED",
         "github_source_is_target_provider_selection": False,
-        "executable_workflow": "ABSENT",
-        "target_trust_policy": "ABSENT",
+        "executable_workflow": "REPOSITORY_INERT_DISABLED_FIXTURE_ONLY",
+        "target_trust_policy": "RECORDED_OFFLINE_EVALUATOR_FIXTURE_ONLY",
         "provider_sdk_types": "ABSENT",
         "production_deployment": "FORBIDDEN",
+    },
+    "recorded_fixture_boundary": {
+        "classification": ("SYNTHETIC_RECORDED_VALUES_NOT_SELECTED_OR_LIVE_BINDINGS"),
+        "fixture_id": FIXTURE_ID,
+        "claims_fixture_uri": f"repo://{CLAIMS_FIXTURE_PATH.as_posix()}",
+        "trust_policy_fixture_uri": (f"repo://{TRUST_POLICY_FIXTURE_PATH.as_posix()}"),
+        "evaluation_fixture_uri": f"repo://{EVALUATION_FIXTURE_PATH.as_posix()}",
+        "workflow_fixture_uri": f"repo://{WORKFLOW_FIXTURE_PATH.as_posix()}",
+        "workflow_active_path": False,
+        "workflow_default_disabled": True,
+        "workflow_external_actions": [],
+        "workflow_provider_commands": [],
+        "claim_keys": list(RECORDED_CLAIM_KEYS),
+        "jwt_compact_token": "ABSENT",
+        "jwt_header": "ABSENT",
+        "jwt_signature": "ABSENT",
+        "signature_verification": "NOT_PERFORMED",
+        "authentication": "NOT_PERFORMED",
+        "credential_material": "ABSENT",
+        "selected_binding_effect": "NONE",
+    },
+    "offline_trust_evaluator": {
+        "classification": "POLICY_MATCH_ONLY_NOT_AUTHENTICATION",
+        "domain_module_uri": "repo://python/raos/domain/deployment_identity.py",
+        "input_mode": "CLOSED_RECORDED_FIXTURES_ONLY",
+        "exact_match": "REQUIRED",
+        "unknown_fields": "REJECT",
+        "wildcards": "REJECT",
+        "jwt_parser": "ABSENT",
+        "signature_verifier": "ABSENT",
+        "authentication_authority": "NONE",
+        "credential_issuance_authority": "NONE",
+        "network_access": "FORBIDDEN",
+        "provider_sdk": "ABSENT",
+        "evaluation_status": "EXECUTED_LOCAL_RECORDED_NOT_FORMAL",
+        "evaluation_result": "RECORDED_EXACT_CLAIMS_MATCHED",
+        "deployment_authority": "NONE",
+    },
+    "activation_port": {
+        "classification": "STRICT_DISABLED_ZERO_ACTION_PORT",
+        "port_module_uri": "repo://python/raos/ports/deployment_identity.py",
+        "adapter_module_uri": (
+            "repo://python/raos/adapters/disabled_deployment_identity.py"
+        ),
+        "status": "DISABLED",
+        "activation_allowed": False,
+        "credential_issuance_allowed": False,
+        "deployment_allowed": False,
+        "planned_actions": {action: 0 for action in ACTION_NAMES},
+        "executed_actions": 0,
     },
     "selected_bindings": _selected_bindings(),
     "trust_constraints": {
@@ -703,10 +870,10 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
         "secret_values": [],
     },
     "workflow_permission_intent": {
-        "classification": "INTENT_ONLY_WORKFLOW_ABSENT",
-        "actual_workflow": "ABSENT",
-        "id_token_write_scope": "FUTURE_EXACT_APPROVED_DEPLOY_JOB_ONLY",
-        "contents_permission": "READ_MINIMUM_REQUIRED_NOT_CONFIGURED",
+        "classification": "REPOSITORY_INERT_DISABLED_WORKFLOW_FIXTURE",
+        "actual_workflow": "ACTIVE_WORKFLOW_ABSENT_INERT_FIXTURE_PRESENT",
+        "id_token_write_scope": "INERT_DISABLED_FIXTURE_JOB_ONLY",
+        "contents_permission": "READ_IN_INERT_DISABLED_FIXTURE_ONLY",
         "write_all": "FORBIDDEN",
         "admin_permissions": "FORBIDDEN",
         "secrets_access": "FORBIDDEN",
@@ -784,11 +951,16 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
     },
     "evidence_boundary": {
         "deliverable_classification": (
-            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_"
-            "DEPLOYMENT_IDENTITY_REFERENCE_PLAN"
+            "SOURCE_DERIVED_REPOSITORY_INERT_PROVIDER_NEUTRAL_OFFLINE_"
+            "DEPLOYMENT_IDENTITY_HARNESS"
         ),
-        "executable_workflow": "ABSENT",
-        "target_trust_policy": "ABSENT",
+        "executable_workflow": "REPOSITORY_INERT_DISABLED_FIXTURE_ONLY",
+        "target_trust_policy": "RECORDED_OFFLINE_FIXTURE_ONLY",
+        "offline_trust_evaluator": "IMPLEMENTED",
+        "local_recorded_evaluation": "EXECUTED_NOT_FORMAL",
+        "jwt_authentication": "NOT_IMPLEMENTED_NOT_CLAIMED",
+        "signature_verification": "NOT_IMPLEMENTED_NOT_CLAIMED",
+        "activation_port": "DISABLED_ZERO_ACTIONS",
         "github_actions_ci_source": (
             "APPROVED_FIXED_SOURCE_NOT_TARGET_PROVIDER_SELECTION"
         ),
@@ -803,8 +975,10 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
         "credentials": "ABSENT",
         "credential_issuance": "NOT_EXECUTED",
         "native_iac_validation": "NOT_EXECUTED",
-        "workflow_inspection": "NOT_EXECUTED",
-        "provenance_audit_revocation_rollback": "NOT_EXECUTED",
+        "workflow_inspection": "LOCAL_INERT_FIXTURE_ONLY_NOT_FORMAL",
+        "provenance_audit_revocation_rollback": (
+            "REQUIRED_RECORDED_FIXTURE_ONLY_NOT_FORMAL"
+        ),
         "formal_tst_026": "NOT_EXECUTED",
         "hosted_github_target_provider": "NOT_EXECUTED",
         "live_oidc_federation": "NOT_EXECUTED",
@@ -1492,9 +1666,9 @@ def _validate_foundation_predecessor(root: Path) -> None:
         contract.get("document"),
         {
             "id": "RAOS-TERRAFORM-FOUNDATION-001",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "story_id": "ST-1501",
-            "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+            "status": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
             "formal_verification": "NOT_EXECUTED",
         },
         "predecessor.foundation.document",
@@ -1601,6 +1775,11 @@ def _validate_foundation_predecessor(root: Path) -> None:
             "commands": {
                 command: "FORBIDDEN" for command in FOUNDATION_NATIVE_COMMANDS
             },
+            "validation_commands": {
+                "version": "OFFLINE_READ_ONLY",
+                "format": "OFFLINE_READ_ONLY",
+                "validate": "OFFLINE_READ_ONLY",
+            },
             "planned_actions": {action: 0 for action in ACTION_NAMES},
         },
         "predecessor.foundation.execution",
@@ -1612,6 +1791,8 @@ def _validate_foundation_predecessor(root: Path) -> None:
             "current_resource_payloads": "FORBIDDEN",
             "successor_contract_revision_required": True,
             "native_toolchain_pin_required_before_hcl": True,
+            "validation_only_hcl_module_available": True,
+            "successor_resource_module_required": True,
             "successors": {
                 "ST-1502": "DATA_SERVICES",
                 "ST-1503": "COMPUTE_CDN_WAF",
@@ -1625,10 +1806,14 @@ def _validate_foundation_predecessor(root: Path) -> None:
     _strict_match(
         evidence,
         {
-            "deliverable_classification": "SOURCE_DERIVED_REFERENCE_STATE_PLAN",
-            "executable_terraform": "ABSENT",
-            "terraform_cli": "UNPINNED_NOT_INVOKED",
-            "provider_plugins": "UNPINNED_NOT_INVOKED",
+            "deliverable_classification": (
+                "SOURCE_DERIVED_PROVIDER_NEUTRAL_HCL_FOUNDATION"
+            ),
+            "executable_terraform": ("VALIDATABLE_NO_RESOURCE_NO_PROVIDER_HCL_MODULE"),
+            "terraform_cli": "PINNED_VALIDATION_ONLY_1_15_9",
+            "provider_plugins": "NONE_REQUIRED_NOT_SELECTED",
+            "offline_native_validation_path": "IMPLEMENTED",
+            "local_native_validation": "EXECUTED_NOT_FORMAL",
             "remote_state": "NOT_CONFIGURED",
             "provider_account_or_project": "UNSET",
             "credentials": "ABSENT",
@@ -1638,6 +1823,107 @@ def _validate_foundation_predecessor(root: Path) -> None:
         },
         "predecessor.foundation.evidence",
     )
+
+    toolchain = _mapping(
+        contract.get("iac_validation_toolchain"),
+        "predecessor.foundation.iac_validation_toolchain",
+    )
+    _strict_match(
+        {
+            "classification": toolchain.get("classification"),
+            "product": toolchain.get("product"),
+            "version": toolchain.get("version"),
+            "required_version_constraint": toolchain.get("required_version_constraint"),
+            "platform": toolchain.get("platform"),
+        },
+        {
+            "classification": "PINNED_VALIDATION_ONLY_NO_INFRASTRUCTURE_AUTHORITY",
+            "product": "Terraform",
+            "version": "1.15.9",
+            "required_version_constraint": "= 1.15.9",
+            "platform": "linux_amd64",
+        },
+        "predecessor.foundation.iac_validation_toolchain.summary",
+    )
+    validation_boundary = _mapping(
+        toolchain.get("validation_boundary"),
+        "predecessor.foundation.iac_validation_boundary",
+    )
+    _strict_match(
+        validation_boundary.get("allowed_commands"),
+        ["version -json", "fmt -check -recursive", "validate -json"],
+        "predecessor.foundation.iac_validation_boundary.allowed_commands",
+    )
+    for field in (
+        "normal_check_network_access",
+        "initialization",
+        "provider_installation",
+        "module_downloads",
+        "backend_access",
+        "credential_inheritance",
+        "repository_writes",
+    ):
+        _strict_match(
+            validation_boundary.get(field),
+            "FORBIDDEN",
+            f"predecessor.foundation.iac_validation_boundary.{field}",
+        )
+    _strict_match(
+        validation_boundary.get("provider_plugins"),
+        [],
+        "predecessor.foundation.iac_validation_boundary.provider_plugins",
+    )
+
+    hcl_module = _mapping(
+        contract.get("hcl_foundation_module"),
+        "predecessor.foundation.hcl_foundation_module",
+    )
+    _strict_match(
+        hcl_module.get("classification"),
+        "PROVIDER_NEUTRAL_VALIDATION_ONLY_FOUNDATION_ADMISSION_MODULE",
+        "predecessor.foundation.hcl_foundation_module.classification",
+    )
+    _strict_match(
+        hcl_module.get("default_disabled"),
+        True,
+        "predecessor.foundation.hcl_foundation_module.default_disabled",
+    )
+    for field in (
+        "provider_requirements",
+        "provider_blocks",
+        "backend_blocks",
+        "cloud_blocks",
+        "module_blocks",
+        "data_blocks",
+        "resource_blocks",
+        "provisioners",
+        "selected_bindings",
+        "capability_mappings",
+    ):
+        _strict_match(
+            hcl_module.get(field),
+            [],
+            f"predecessor.foundation.hcl_foundation_module.{field}",
+        )
+    _strict_match(
+        hcl_module.get("planned_actions"),
+        {action: 0 for action in ACTION_NAMES},
+        "predecessor.foundation.hcl_foundation_module.planned_actions",
+    )
+
+    toolchain_lock_path = _repository_regular_file(
+        root,
+        Path("infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"),
+        "foundation_toolchain_lock",
+    )
+    toolchain_lock = _mapping(
+        load_json(toolchain_lock_path), "foundation_toolchain_lock"
+    )
+    if (
+        semantic_sha256(toolchain_lock)
+        != EXPECTED_PREDECESSOR_TOOLCHAIN_LOCK_SEMANTIC_SHA256
+    ):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "foundation_toolchain_lock")
 
     plan_path = _repository_regular_file(
         root,
@@ -1650,7 +1936,7 @@ def _validate_foundation_predecessor(root: Path) -> None:
     expected_plan = {
         "document": {
             "id": "RAOS-TERRAFORM-FOUNDATION-REFERENCE-PLAN-001",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "story_id": "ST-1501",
             "source_contract": (
                 "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml"
@@ -1661,12 +1947,16 @@ def _validate_foundation_predecessor(root: Path) -> None:
                 "scripts/build_st1501_terraform_foundation.py"
             ),
             "artifact_kind": evidence["deliverable_classification"],
-            "executable": False,
-            "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+            "executable": True,
+            "executable_for": ["fmt", "validate"],
+            "infrastructure_actions": False,
+            "implementation_scope": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
         },
         "reference_architecture": copy.deepcopy(contract["reference_architecture"]),
         "provider_neutral_foundation_admission": copy.deepcopy(admission),
         "selected_configuration": copy.deepcopy(contract["selected_configuration"]),
+        "iac_validation_toolchain": copy.deepcopy(contract["iac_validation_toolchain"]),
+        "hcl_foundation_module": copy.deepcopy(contract["hcl_foundation_module"]),
         "planned_actions": copy.deepcopy(execution["planned_actions"]),
         "activation": {
             "enabled": execution["activation_enabled"],
@@ -1680,6 +1970,7 @@ def _validate_foundation_predecessor(root: Path) -> None:
             "release_action": execution["release_action"],
             "production_action": execution["production_action"],
             "native_commands": copy.deepcopy(execution["commands"]),
+            "validation_commands": copy.deepcopy(execution["validation_commands"]),
         },
         "future_requirements": {
             "remote_state": copy.deepcopy(contract["state_requirements"]),
@@ -1788,14 +2079,15 @@ def reference_plan_document(model: GithubOidcModel) -> dict[str, object]:
     return {
         "document": {
             "id": "RAOS-GITHUB-OIDC-REFERENCE-PLAN-001",
-            "version": "1.1.0",
+            "version": "2.0.0",
             "story_id": "ST-1504",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
             "generation_command": GENERATION_COMMAND,
             "artifact_kind": evidence["deliverable_classification"],
             "executable": False,
-            "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+            "implementation_scope": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
+            "harness_execution": "OFFLINE_RECORDED_FIXTURE_ONLY",
         },
         "predecessor_bindings": _section(model, "predecessor_bindings"),
         "ci_source_boundary": _section(model, "ci_source_boundary"),
@@ -1804,6 +2096,9 @@ def reference_plan_document(model: GithubOidcModel) -> dict[str, object]:
             model, "provider_neutral_deployment_identity_admission"
         ),
         "logical_identity_path": _section(model, "reference_intent"),
+        "recorded_fixture_boundary": _section(model, "recorded_fixture_boundary"),
+        "offline_trust_evaluator": _section(model, "offline_trust_evaluator"),
+        "activation_port": _section(model, "activation_port"),
         "selected_bindings": _section(model, "selected_bindings"),
         "trust_constraints": _section(model, "trust_constraints"),
         "credential_boundary": _section(model, "credential_boundary"),
@@ -1846,6 +2141,151 @@ def render_reference_plan(model: GithubOidcModel) -> bytes:
     ).encode("utf-8")
 
 
+def recorded_claims_document() -> dict[str, object]:
+    """Return a token-free decoded claim-shape fixture in an invalid namespace."""
+
+    return {
+        "schema": "RAOS_RECORDED_GITHUB_OIDC_CLAIMS_V1",
+        "version": 1,
+        "fixture_id": FIXTURE_ID,
+        "classification": "SYNTHETIC_DECODED_CLAIM_SHAPE_ONLY",
+        "authentication_status": "NOT_AUTHENTICATED",
+        "signature_verification_status": "NOT_PERFORMED",
+        "token_material": "ABSENT",
+        "claims": copy.deepcopy(RECORDED_CLAIMS),
+    }
+
+
+def recorded_trust_policy_document() -> dict[str, object]:
+    """Return the provider-neutral policy consumed only by the offline evaluator."""
+
+    return {
+        "schema": "RAOS_OFFLINE_GITHUB_OIDC_TRUST_POLICY_V1",
+        "version": 1,
+        "policy_id": POLICY_ID,
+        "fixture_id": FIXTURE_ID,
+        "classification": ("RECORDED_SYNTHETIC_PROVIDER_NEUTRAL_OFFLINE_FIXTURE"),
+        "source_system": "GITHUB_ACTIONS_OIDC",
+        "authentication_authority": "NONE",
+        "credential_issuance_authority": "NONE",
+        "expected_claims": copy.deepcopy(RECORDED_CLAIMS),
+        "trust": {
+            "exact_match_required": True,
+            "wildcards_allowed": False,
+            "fork_pull_request_allowed": False,
+            "pull_request_allowed": False,
+            "pull_request_target_allowed": False,
+            "reusable_workflow_callers": [],
+        },
+        "session": {
+            "requested_duration_seconds": 600,
+            "maximum_duration_seconds": 900,
+            "permission_scopes": ["deployment-fixture:evaluate"],
+            "least_privilege_required": True,
+            "role_chaining_allowed": False,
+            "privilege_escalation_allowed": False,
+            "static_credentials_allowed": False,
+            "human_credentials_allowed": False,
+            "cross_environment_reuse_allowed": False,
+        },
+        "approval": {
+            "protected_environment_required": True,
+            "distinct_human_approval_required": True,
+            "self_approval_allowed": False,
+            "bypass_allowed": False,
+            "approval_record_status": "NOT_EXECUTED",
+        },
+        "lifecycle": {
+            "signed_provenance_required": True,
+            "immutable_audit_required": True,
+            "revocation_required": True,
+            "rollback_required": True,
+            "evidence_retention_required": True,
+            "evidence_status": "RECORDED_FIXTURE_ONLY_NOT_FORMAL",
+        },
+        "activation": {
+            "enabled": False,
+            "status": "DISABLED",
+            "planned_actions": {action: 0 for action in ACTION_NAMES},
+        },
+    }
+
+
+def recorded_evaluation_document() -> dict[str, object]:
+    """Return a deterministic policy-match-only result with all authority denied."""
+
+    reason_codes = [
+        "RECORDED_EXACT_CLAIMS_MATCHED",
+        "SIGNATURE_NOT_VERIFIED",
+        "AUTHENTICATION_NOT_PERFORMED",
+        "ACTIVATION_DISABLED",
+        "CREDENTIAL_ISSUANCE_FORBIDDEN",
+        "DEPLOYMENT_FORBIDDEN",
+    ]
+    payload: dict[str, object] = {
+        "policy_id": POLICY_ID,
+        "fixture_id": FIXTURE_ID,
+        "classification": "OFFLINE_POLICY_MATCH_ONLY_NOT_AUTHENTICATION",
+        "policy_match": True,
+        "authentication_status": "NOT_AUTHENTICATED",
+        "signature_verification_status": "NOT_PERFORMED",
+        "credential_issuance_authorized": False,
+        "activation_authorized": False,
+        "deployment_authorized": False,
+        "action_count": 0,
+        "reason_codes": reason_codes,
+    }
+    return {
+        "schema": "RAOS_OFFLINE_TRUST_EVALUATION_V1",
+        "version": 1,
+        **payload,
+        "evidence_digest": semantic_sha256(payload),
+        "formal_evidence": "NOT_EXECUTED",
+    }
+
+
+def inert_workflow_document() -> dict[str, object]:
+    """Return valid workflow syntax stored outside GitHub's active workflow path."""
+
+    return {
+        "name": "ST-1504 repository-inert deployment identity fixture",
+        "on": {"workflow_dispatch": {}},
+        "permissions": {},
+        "jobs": {
+            "recorded_deployment_identity_fixture": {
+                "if": "${{ false }}",
+                "runs-on": "ubuntu-24.04",
+                "timeout-minutes": 1,
+                "environment": RECORDED_CLAIMS["environment"],
+                "permissions": {"contents": "read", "id-token": "write"},
+                "steps": [
+                    {
+                        "name": "Fail-closed repository-inert fixture sentinel",
+                        "shell": "bash",
+                        "run": "set -euo pipefail\nexit 1\n",
+                    }
+                ],
+            }
+        },
+    }
+
+
+def _render_json(document: object) -> bytes:
+    return (
+        json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+
+
+def render_inert_workflow() -> bytes:
+    return yaml.dump(
+        inert_workflow_document(),
+        Dumper=NoAliasDumper,
+        allow_unicode=True,
+        default_flow_style=False,
+        sort_keys=False,
+    ).encode("utf-8")
+
+
 def _artifact_row(root: Path, relative: Path) -> dict[str, object]:
     path = _repository_regular_file(root, relative, "source_artifact")
     content = path.read_bytes()
@@ -1857,7 +2297,9 @@ def _artifact_row(root: Path, relative: Path) -> dict[str, object]:
 
 
 def render_manifest(
-    model: GithubOidcModel, reference_plan: bytes, root: Path = REPO_ROOT
+    model: GithubOidcModel,
+    generated_outputs: Mapping[Path, bytes],
+    root: Path = REPO_ROOT,
 ) -> bytes:
     source_artifacts = [
         _artifact_row(root, relative) for relative in SOURCE_ARTIFACT_PATHS
@@ -1872,7 +2314,7 @@ def render_manifest(
     document: dict[str, object] = {
         "document": {
             "id": "RAOS-GITHUB-OIDC-MANIFEST-001",
-            "version": "1.1.0",
+            "version": "2.0.0",
             "story_id": "ST-1504",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -1894,13 +2336,14 @@ def render_manifest(
         },
         "source_artifact_count": len(source_artifacts),
         "source_artifacts": source_artifacts,
-        "generated_artifact_count": 1,
+        "generated_artifact_count": len(GENERATED_NON_MANIFEST_PATHS),
         "generated_artifacts": [
             {
-                "uri": f"repo://{REFERENCE_PLAN_PATH.as_posix()}",
-                "bytes": len(reference_plan),
-                "sha256": sha256_bytes(reference_plan),
+                "uri": f"repo://{relative.as_posix()}",
+                "bytes": len(generated_outputs[relative]),
+                "sha256": sha256_bytes(generated_outputs[relative]),
             }
+            for relative in GENERATED_NON_MANIFEST_PATHS
         ],
         "manifest_self_integrity": {
             "included_in_generated_artifacts": False,
@@ -1958,6 +2401,27 @@ def render_manifest(
             ],
             "federation_trust_material": selection["federation_trust_material"],
             "workflow_file_path": selection["workflow_file_path"],
+            "recorded_fixture_id": FIXTURE_ID,
+            "recorded_claims_sha256": sha256_bytes(
+                generated_outputs[CLAIMS_FIXTURE_PATH]
+            ),
+            "recorded_trust_policy_sha256": sha256_bytes(
+                generated_outputs[TRUST_POLICY_FIXTURE_PATH]
+            ),
+            "recorded_evaluation_sha256": sha256_bytes(
+                generated_outputs[EVALUATION_FIXTURE_PATH]
+            ),
+            "inert_workflow_sha256": sha256_bytes(
+                generated_outputs[WORKFLOW_FIXTURE_PATH]
+            ),
+            "offline_evaluation_digest": recorded_evaluation_document()[
+                "evidence_digest"
+            ],
+            "offline_trust_evaluator": evidence["offline_trust_evaluator"],
+            "local_recorded_evaluation": evidence["local_recorded_evaluation"],
+            "jwt_authentication": evidence["jwt_authentication"],
+            "signature_verification": evidence["signature_verification"],
+            "activation_port": evidence["activation_port"],
             "credentials": evidence["credentials"],
             "credential_issuance": evidence["credential_issuance"],
             "workflow_inspection": evidence["workflow_inspection"],
@@ -1981,10 +2445,16 @@ def render_manifest(
 
 def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
     model = load_and_validate_contract(root)
-    reference_plan = render_reference_plan(model)
+    generated_outputs = {
+        REFERENCE_PLAN_PATH: render_reference_plan(model),
+        CLAIMS_FIXTURE_PATH: _render_json(recorded_claims_document()),
+        TRUST_POLICY_FIXTURE_PATH: _render_json(recorded_trust_policy_document()),
+        EVALUATION_FIXTURE_PATH: _render_json(recorded_evaluation_document()),
+        WORKFLOW_FIXTURE_PATH: render_inert_workflow(),
+    }
     return {
-        REFERENCE_PLAN_PATH: reference_plan,
-        MANIFEST_PATH: render_manifest(model, reference_plan, root),
+        **generated_outputs,
+        MANIFEST_PATH: render_manifest(model, generated_outputs, root),
     }
 
 
@@ -2082,7 +2552,7 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build the disabled ST-1504 GitHub OIDC reference artifacts."
+        description=("Build the repository-inert ST-1504 GitHub OIDC offline harness.")
     )
     parser.add_argument(
         "--check",

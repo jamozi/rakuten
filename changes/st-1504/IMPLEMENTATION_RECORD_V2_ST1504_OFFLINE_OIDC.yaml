@@ -1,0 +1,80 @@
+document:
+  id: RAOS-ST1504-OFFLINE-OIDC-IMPLEMENTATION-RECORD-002
+  version: 2.0.0
+  story_id: ST-1504
+  record_kind: REPOSITORY_LOCAL_IMPLEMENTATION_DETAIL
+  status: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE_PROPOSAL
+  canonical_status_effect: NONE
+implementation_input:
+  mode: STRICT_STORY
+  base_integration_commit: d8941c590cc8ba3a5d379659a41d6f9419694fb3
+  design_handoff: repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml
+  source_contract: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
+  predecessor_stories:
+    - ST-0107
+    - ST-1501
+implementation:
+  classification: REPOSITORY_INERT_PROVIDER_NEUTRAL_OFFLINE_DEPLOYMENT_IDENTITY_HARNESS
+  deterministic_owner: repo://scripts/build_st1504_github_oidc.py
+  offline_trust_evaluator: repo://python/raos/domain/deployment_identity.py
+  activation_port: repo://python/raos/ports/deployment_identity.py
+  disabled_adapter: repo://python/raos/adapters/disabled_deployment_identity.py
+  recorded_fixture:
+    fixture_id: st1504-fixture-repository-inert-v1
+    synthetic_only: true
+    token_material: ABSENT
+    jwt_parsing: ABSENT
+    signature_verification: NOT_PERFORMED
+    authentication: NOT_PERFORMED
+    exact_claim_binding: REQUIRED
+    unknown_claims: REJECT
+    wildcard_or_template_values: REJECT
+  inert_workflow:
+    uri: repo://infra/terraform/deployment-identity/github-oidc-deploy.disabled.workflow.yml
+    under_active_github_workflow_path: false
+    trigger_shape: workflow_dispatch
+    job_condition: ALWAYS_FALSE
+    uses_actions: []
+    fail_sentinel: REQUIRED
+  activation:
+    enabled: false
+    action_count: 0
+    credential_material: ABSENT
+    credential_issuance: FORBIDDEN
+    deployment: FORBIDDEN
+security_and_approval_boundary:
+  exact_repository_ref_workflow_environment_audience_subject: REQUIRED
+  fork_pull_request: FORBIDDEN
+  pull_request_target: FORBIDDEN
+  reusable_caller_ambiguity: FORBIDDEN
+  role_chaining: FORBIDDEN
+  privilege_escalation: FORBIDDEN
+  static_or_human_credentials: FORBIDDEN
+  cross_environment_reuse: FORBIDDEN
+  bounded_session_seconds:
+    minimum: 300
+    maximum: 900
+  least_privilege_scope:
+    - deployment-fixture:evaluate
+  protected_environment: REQUIRED_NOT_CONFIGURED
+  distinct_human_approval: REQUIRED_NOT_CONFIGURED
+  self_approval_or_bypass: FORBIDDEN
+  signed_provenance: REQUIRED_NOT_CONFIGURED
+  immutable_audit: REQUIRED_NOT_CONFIGURED
+  revocation: REQUIRED_NOT_CONFIGURED
+  rollback: REQUIRED_NOT_CONFIGURED
+provisional_local_assumptions:
+  - The recorded .invalid repository, issuer, audience, ref, workflow, and environment values are test data only and never select a live GitHub or provider binding.
+  - The workflow fixture is intentionally stored outside .github/workflows; its syntax is testable without creating a hosted trigger or deployment path.
+completion_boundary:
+  local_closed_contract: IMPLEMENTED
+  deterministic_generation_and_no_write_check: IMPLEMENTED
+  offline_claim_policy_evaluation: IMPLEMENTED
+  disabled_activation_port: IMPLEMENTED
+  activation_receipt_fail_closed: IMPLEMENTED
+  repository_inert_workflow_fixture: IMPLEMENTED
+  real_repository_account_issuer_audience_role: NOT_CONFIGURED
+  hosted_oidc_and_live_federation: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  staging_release_and_production: NOT_EXECUTED
+  canonical_status_transition: NOT_PROPOSED_BY_THIS_RECORD

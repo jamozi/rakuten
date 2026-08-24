@@ -1,0 +1,31 @@
+{
+  "authentication_status": "NOT_AUTHENTICATED",
+  "claims": {
+    "actor_id": "100000003",
+    "aud": "raos-deployment-fixture.invalid",
+    "base_ref": "",
+    "environment": "production-fixture-disabled",
+    "event_name": "workflow_dispatch",
+    "head_ref": "",
+    "iss": "https://token.actions.githubusercontent.invalid",
+    "job_workflow_ref": "",
+    "ref": "refs/heads/fixture-deploy",
+    "ref_type": "branch",
+    "repository": "raos-fixture/not-a-real-repository",
+    "repository_id": "100000001",
+    "repository_owner_id": "100000002",
+    "repository_visibility": "private",
+    "run_attempt": "1",
+    "run_id": "100000004",
+    "sub": "repo:raos-fixture/not-a-real-repository:environment:production-fixture-disabled",
+    "workflow": "ST-1504 disabled deployment fixture",
+    "workflow_ref": "raos-fixture/not-a-real-repository/infra/terraform/deployment-identity/github-oidc-deploy.disabled.workflow.yml@refs/heads/fixture-deploy",
+    "workflow_sha": "1111111111111111111111111111111111111111"
+  },
+  "classification": "SYNTHETIC_DECODED_CLAIM_SHAPE_ONLY",
+  "fixture_id": "st1504-fixture-repository-inert-v1",
+  "schema": "RAOS_RECORDED_GITHUB_OIDC_CLAIMS_V1",
+  "signature_verification_status": "NOT_PERFORMED",
+  "token_material": "ABSENT",
+  "version": 1
+}

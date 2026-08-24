@@ -25,6 +25,21 @@
     "release_action": "FORBIDDEN",
     "status": "DISABLED"
   },
+  "activation_port": {
+    "activation_allowed": false,
+    "adapter_module_uri": "repo://python/raos/adapters/disabled_deployment_identity.py",
+    "classification": "STRICT_DISABLED_ZERO_ACTION_PORT",
+    "credential_issuance_allowed": false,
+    "deployment_allowed": false,
+    "executed_actions": 0,
+    "planned_actions": {
+      "create": 0,
+      "delete": 0,
+      "update": 0
+    },
+    "port_module_uri": "repo://python/raos/ports/deployment_identity.py",
+    "status": "DISABLED"
+  },
   "ci_source_boundary": {
     "ci_source": "GITHUB_ACTIONS",
     "classification": "APPROVED_FIXED_SOURCE_NOT_TARGET_PROVIDER_SELECTION",
@@ -60,15 +75,16 @@
     "untrusted_ref_credential_issuance": "FORBIDDEN"
   },
   "document": {
-    "artifact_kind": "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_REFERENCE_PLAN",
+    "artifact_kind": "SOURCE_DERIVED_REPOSITORY_INERT_PROVIDER_NEUTRAL_OFFLINE_DEPLOYMENT_IDENTITY_HARNESS",
     "executable": false,
     "generated_by": "repo://scripts/build_st1504_github_oidc.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st1504_github_oidc.py",
+    "harness_execution": "OFFLINE_RECORDED_FIXTURE_ONLY",
     "id": "RAOS-GITHUB-OIDC-REFERENCE-PLAN-001",
-    "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+    "implementation_scope": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
     "source_contract": "repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml",
     "story_id": "ST-1504",
-    "version": "1.1.0"
+    "version": "2.0.0"
   },
   "environment_protection": {
     "approval_bypass": "FORBIDDEN",
@@ -96,9 +112,9 @@
     "signed_provenance": "REQUIRED_NOT_CONFIGURED"
   },
   "logical_identity_path": {
-    "classification": "LOGICAL_PROVIDER_NEUTRAL_IDENTITY_PATH_REFERENCE_ONLY",
+    "classification": "REPOSITORY_INERT_PROVIDER_NEUTRAL_OFFLINE_IDENTITY_HARNESS",
     "destination": "PROVIDER_NEUTRAL_SHORT_LIVED_WORKLOAD_SESSION",
-    "executable_workflow": "ABSENT",
+    "executable_workflow": "REPOSITORY_INERT_DISABLED_FIXTURE_ONLY",
     "github_source_is_target_provider_selection": false,
     "github_workload_identity": "REQUIRED_NOT_CONFIGURED",
     "production_deployment": "FORBIDDEN",
@@ -106,7 +122,24 @@
     "source": "GITHUB_ACTIONS_OIDC",
     "target_federated_session": "REQUIRED_NOT_CONFIGURED",
     "target_provider": "UNSELECTED",
-    "target_trust_policy": "ABSENT"
+    "target_trust_policy": "RECORDED_OFFLINE_EVALUATOR_FIXTURE_ONLY"
+  },
+  "offline_trust_evaluator": {
+    "authentication_authority": "NONE",
+    "classification": "POLICY_MATCH_ONLY_NOT_AUTHENTICATION",
+    "credential_issuance_authority": "NONE",
+    "deployment_authority": "NONE",
+    "domain_module_uri": "repo://python/raos/domain/deployment_identity.py",
+    "evaluation_result": "RECORDED_EXACT_CLAIMS_MATCHED",
+    "evaluation_status": "EXECUTED_LOCAL_RECORDED_NOT_FORMAL",
+    "exact_match": "REQUIRED",
+    "input_mode": "CLOSED_RECORDED_FIXTURES_ONLY",
+    "jwt_parser": "ABSENT",
+    "network_access": "FORBIDDEN",
+    "provider_sdk": "ABSENT",
+    "signature_verifier": "ABSENT",
+    "unknown_fields": "REJECT",
+    "wildcards": "REJECT"
   },
   "open_decision_boundary": {
     "OD-009": {
@@ -166,23 +199,31 @@
       "story_id": "ST-0107"
     },
     "terraform_foundation": {
-      "contract_sha256": "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9",
+      "contract_sha256": "5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e",
       "contract_uri": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
       "design_handoff_sha256": "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f",
       "design_handoff_uri": "repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
-      "reference_plan_sha256": "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70",
+      "reference_plan_sha256": "bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72",
       "reference_plan_uri": "repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
       "required_activation_status": "DISABLED",
       "required_admission_status": "NOT_EVALUATED",
+      "required_contract_status": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
       "required_eligible": false,
+      "required_hcl_default_disabled": true,
+      "required_hcl_module": "PROVIDER_NEUTRAL_VALIDATION_ONLY_FOUNDATION_ADMISSION_MODULE",
       "required_planned_actions": {
         "create": 0,
         "delete": 0,
         "update": 0
       },
+      "required_provider_count": 0,
       "required_provider_policy": "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
+      "required_resource_count": 0,
       "required_resource_payloads": "FORBIDDEN",
-      "story_id": "ST-1501"
+      "required_terraform_cli_version": "1.15.9",
+      "story_id": "ST-1501",
+      "validation_toolchain_lock_sha256": "696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44",
+      "validation_toolchain_lock_uri": "repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"
     }
   },
   "provider_neutral_deployment_identity_admission": {
@@ -340,6 +381,47 @@
     "selected_profile_kind": null,
     "selected_provider_name": null
   },
+  "recorded_fixture_boundary": {
+    "authentication": "NOT_PERFORMED",
+    "claim_keys": [
+      "iss",
+      "aud",
+      "sub",
+      "repository",
+      "repository_id",
+      "repository_owner_id",
+      "ref",
+      "ref_type",
+      "workflow",
+      "workflow_ref",
+      "workflow_sha",
+      "job_workflow_ref",
+      "environment",
+      "event_name",
+      "repository_visibility",
+      "actor_id",
+      "run_id",
+      "run_attempt",
+      "base_ref",
+      "head_ref"
+    ],
+    "claims_fixture_uri": "repo://infra/terraform/deployment-identity/github-oidc.claims.recorded.v1.json",
+    "classification": "SYNTHETIC_RECORDED_VALUES_NOT_SELECTED_OR_LIVE_BINDINGS",
+    "credential_material": "ABSENT",
+    "evaluation_fixture_uri": "repo://infra/terraform/deployment-identity/github-oidc.evaluation.recorded.v1.json",
+    "fixture_id": "st1504-fixture-repository-inert-v1",
+    "jwt_compact_token": "ABSENT",
+    "jwt_header": "ABSENT",
+    "jwt_signature": "ABSENT",
+    "selected_binding_effect": "NONE",
+    "signature_verification": "NOT_PERFORMED",
+    "trust_policy_fixture_uri": "repo://infra/terraform/deployment-identity/github-oidc.trust-policy.recorded.v1.json",
+    "workflow_active_path": false,
+    "workflow_default_disabled": true,
+    "workflow_external_actions": [],
+    "workflow_fixture_uri": "repo://infra/terraform/deployment-identity/github-oidc-deploy.disabled.workflow.yml",
+    "workflow_provider_commands": []
+  },
   "reference_architecture": {
     "admission_requirement": false,
     "architecture_id": "RAOS-ARCH-001",
@@ -441,20 +523,25 @@
     "wildcard_trust": "FORBIDDEN"
   },
   "verification_boundary": {
+    "activation_port": "DISABLED_ZERO_ACTIONS",
     "credential_issuance": "NOT_EXECUTED",
     "credentials": "ABSENT",
     "effective_canonical_status": "UNCHANGED",
-    "executable_workflow": "ABSENT",
+    "executable_workflow": "REPOSITORY_INERT_DISABLED_FIXTURE_ONLY",
     "formal_tst_026": "NOT_EXECUTED",
     "github_actions_ci_source": "APPROVED_FIXED_SOURCE_NOT_TARGET_PROVIDER_SELECTION",
     "github_environment": "UNSET",
     "github_repository": "UNSET",
     "hosted_github_target_provider": "NOT_EXECUTED",
+    "jwt_authentication": "NOT_IMPLEMENTED_NOT_CLAIMED",
     "live_oidc_federation": "NOT_EXECUTED",
+    "local_recorded_evaluation": "EXECUTED_NOT_FORMAL",
     "native_iac_validation": "NOT_EXECUTED",
+    "offline_trust_evaluator": "IMPLEMENTED",
     "production": "NOT_EXECUTED",
-    "provenance_audit_revocation_rollback": "NOT_EXECUTED",
+    "provenance_audit_revocation_rollback": "REQUIRED_RECORDED_FIXTURE_ONLY_NOT_FORMAL",
     "release": "NOT_EXECUTED",
+    "signature_verification": "NOT_IMPLEMENTED_NOT_CLAIMED",
     "staging_deployment": "NOT_EXECUTED",
     "target_account_project_or_tenant": "UNSET",
     "target_audience": "UNSET",
@@ -462,15 +549,15 @@
     "target_profile": "UNSET",
     "target_provider": "UNSET",
     "target_region": "UNSET",
-    "target_trust_policy": "ABSENT",
-    "workflow_inspection": "NOT_EXECUTED"
+    "target_trust_policy": "RECORDED_OFFLINE_FIXTURE_ONLY",
+    "workflow_inspection": "LOCAL_INERT_FIXTURE_ONLY_NOT_FORMAL"
   },
   "workflow_permissions": {
-    "actual_workflow": "ABSENT",
+    "actual_workflow": "ACTIVE_WORKFLOW_ABSENT_INERT_FIXTURE_PRESENT",
     "admin_permissions": "FORBIDDEN",
-    "classification": "INTENT_ONLY_WORKFLOW_ABSENT",
-    "contents_permission": "READ_MINIMUM_REQUIRED_NOT_CONFIGURED",
-    "id_token_write_scope": "FUTURE_EXACT_APPROVED_DEPLOY_JOB_ONLY",
+    "classification": "REPOSITORY_INERT_DISABLED_WORKFLOW_FIXTURE",
+    "contents_permission": "READ_IN_INERT_DISABLED_FIXTURE_ONLY",
+    "id_token_write_scope": "INERT_DISABLED_FIXTURE_JOB_ONLY",
     "mutable_external_action_references": "FORBIDDEN",
     "pull_request_target_credential_path": "FORBIDDEN",
     "secrets_access": "FORBIDDEN",

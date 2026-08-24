@@ -48,14 +48,16 @@ def test_manifest_inventory_and_hashes_are_complete() -> None:
         content = path.read_bytes()
         assert row["bytes"] == len(content)
         assert row["sha256"] == generator.sha256_bytes(content)
+    assert manifest["generated_artifact_count"] == len(
+        generator.GENERATED_NON_MANIFEST_PATHS
+    )
     assert manifest["generated_artifacts"] == [
         {
-            "uri": f"repo://{generator.REFERENCE_PLAN_PATH.as_posix()}",
-            "bytes": (REPOSITORY_ROOT / generator.REFERENCE_PLAN_PATH).stat().st_size,
-            "sha256": generator.sha256_file(
-                REPOSITORY_ROOT / generator.REFERENCE_PLAN_PATH
-            ),
+            "uri": f"repo://{relative.as_posix()}",
+            "bytes": (REPOSITORY_ROOT / relative).stat().st_size,
+            "sha256": generator.sha256_file(REPOSITORY_ROOT / relative),
         }
+        for relative in generator.GENERATED_NON_MANIFEST_PATHS
     ]
 
 
@@ -63,7 +65,7 @@ def test_manifest_pins_authority_predecessors_and_status_boundary() -> None:
     manifest = yaml.safe_load((REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes())
     assert manifest["document"] == {
         "id": "RAOS-GITHUB-OIDC-MANIFEST-001",
-        "version": "1.1.0",
+        "version": "2.0.0",
         "story_id": "ST-1504",
         "source_contract": generator.SOURCE_CONTRACT_URI,
         "generated_by": generator.GENERATOR_URI,
@@ -80,11 +82,13 @@ def test_manifest_pins_authority_predecessors_and_status_boundary() -> None:
         {"uri": f"repo://{path}", "sha256": digest}
         for path, digest in generator.PREDECESSOR_SOURCES.items()
     ]
-    assert manifest["boundary"] == {
-        "classification": (
-            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_"
-            "DEPLOYMENT_IDENTITY_REFERENCE_PLAN"
-        ),
+    boundary = manifest["boundary"]
+    assert boundary["classification"] == (
+        "SOURCE_DERIVED_REPOSITORY_INERT_PROVIDER_NEUTRAL_OFFLINE_"
+        "DEPLOYMENT_IDENTITY_HARNESS"
+    )
+    assert boundary == {
+        "classification": boundary["classification"],
         "activation": "DISABLED",
         "planned_actions": {"create": 0, "update": 0, "delete": 0},
         "admission_status": "NOT_EVALUATED",
@@ -119,9 +123,30 @@ def test_manifest_pins_authority_predecessors_and_status_boundary() -> None:
         "selected_target_identity_role": None,
         "federation_trust_material": None,
         "workflow_file_path": None,
+        "recorded_fixture_id": generator.FIXTURE_ID,
+        "recorded_claims_sha256": generator.sha256_file(
+            REPOSITORY_ROOT / generator.CLAIMS_FIXTURE_PATH
+        ),
+        "recorded_trust_policy_sha256": generator.sha256_file(
+            REPOSITORY_ROOT / generator.TRUST_POLICY_FIXTURE_PATH
+        ),
+        "recorded_evaluation_sha256": generator.sha256_file(
+            REPOSITORY_ROOT / generator.EVALUATION_FIXTURE_PATH
+        ),
+        "inert_workflow_sha256": generator.sha256_file(
+            REPOSITORY_ROOT / generator.WORKFLOW_FIXTURE_PATH
+        ),
+        "offline_evaluation_digest": generator.recorded_evaluation_document()[
+            "evidence_digest"
+        ],
+        "offline_trust_evaluator": "IMPLEMENTED",
+        "local_recorded_evaluation": "EXECUTED_NOT_FORMAL",
+        "jwt_authentication": "NOT_IMPLEMENTED_NOT_CLAIMED",
+        "signature_verification": "NOT_IMPLEMENTED_NOT_CLAIMED",
+        "activation_port": "DISABLED_ZERO_ACTIONS",
         "credentials": "ABSENT",
         "credential_issuance": "NOT_EXECUTED",
-        "workflow_inspection": "NOT_EXECUTED",
+        "workflow_inspection": "LOCAL_INERT_FIXTURE_ONLY_NOT_FORMAL",
         "formal_tst_026": "NOT_EXECUTED",
         "hosted_github_target_provider": "NOT_EXECUTED",
         "live_oidc_federation": "NOT_EXECUTED",

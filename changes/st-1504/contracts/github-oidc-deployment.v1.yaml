@@ -1,8 +1,8 @@
 document:
   id: RAOS-GITHUB-OIDC-DEPLOYMENT-001
-  version: 1.1.0
+  version: 2.0.0
   story_id: ST-1504
-  status: INTERFACE_ONLY_PARTIAL_LOCAL_CODE
+  status: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE
   formal_verification: NOT_EXECUTED
 sources:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -44,9 +44,21 @@ sources:
   - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
     sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
   - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-    sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
+    sha256: 5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e
   - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-    sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
+    sha256: bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72
+  - uri: repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json
+    sha256: 696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44
+  - uri: repo://infra/terraform/foundation/versions.tf
+    sha256: 87d23505f127e84430a32ac458b67b46b6614f3d2f976c2539fe3163b4eecab7
+  - uri: repo://infra/terraform/foundation/variables.tf
+    sha256: ce13d5d7eb4ed483c5afd170e1ec74738aa73455e5b4036e861cf5786ff6e76e
+  - uri: repo://infra/terraform/foundation/locals.tf
+    sha256: a113d24697b1f00c6f3fe32459280672d271dd5a1757364e8e2aac97db1c3b3c
+  - uri: repo://infra/terraform/foundation/checks.tf
+    sha256: e4d826ee2881a74f2cc1c49f80ef817d090fb9c0f86040a30f37c231af663787
+  - uri: repo://infra/terraform/foundation/outputs.tf
+    sha256: dac1835d490dc50355a9d4510d6ee8991f2a945ad1bfc1ee395e8c2134431d72
 predecessor_bindings:
   pr_governance:
     story_id: ST-0107
@@ -75,10 +87,18 @@ predecessor_bindings:
     design_handoff_uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
     design_handoff_sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
     contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-    contract_sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
+    contract_sha256: 5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e
     reference_plan_uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-    reference_plan_sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
+    reference_plan_sha256: bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72
+    validation_toolchain_lock_uri: repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json
+    validation_toolchain_lock_sha256: 696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44
+    required_contract_status: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE
     required_provider_policy: STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION
+    required_terraform_cli_version: 1.15.9
+    required_hcl_module: PROVIDER_NEUTRAL_VALIDATION_ONLY_FOUNDATION_ADMISSION_MODULE
+    required_hcl_default_disabled: true
+    required_provider_count: 0
+    required_resource_count: 0
     required_admission_status: NOT_EVALUATED
     required_eligible: false
     required_activation_status: DISABLED
@@ -226,17 +246,82 @@ provider_neutral_deployment_identity_admission:
       evidence_refs: []
       mapping_status: REQUIRED_NOT_CONFIGURED
 reference_intent:
-  classification: LOGICAL_PROVIDER_NEUTRAL_IDENTITY_PATH_REFERENCE_ONLY
+  classification: REPOSITORY_INERT_PROVIDER_NEUTRAL_OFFLINE_IDENTITY_HARNESS
   source: GITHUB_ACTIONS_OIDC
   destination: PROVIDER_NEUTRAL_SHORT_LIVED_WORKLOAD_SESSION
   github_workload_identity: REQUIRED_NOT_CONFIGURED
   target_federated_session: REQUIRED_NOT_CONFIGURED
   target_provider: UNSELECTED
   github_source_is_target_provider_selection: false
-  executable_workflow: ABSENT
-  target_trust_policy: ABSENT
+  executable_workflow: REPOSITORY_INERT_DISABLED_FIXTURE_ONLY
+  target_trust_policy: RECORDED_OFFLINE_EVALUATOR_FIXTURE_ONLY
   provider_sdk_types: ABSENT
   production_deployment: FORBIDDEN
+recorded_fixture_boundary:
+  classification: SYNTHETIC_RECORDED_VALUES_NOT_SELECTED_OR_LIVE_BINDINGS
+  fixture_id: st1504-fixture-repository-inert-v1
+  claims_fixture_uri: repo://infra/terraform/deployment-identity/github-oidc.claims.recorded.v1.json
+  trust_policy_fixture_uri: repo://infra/terraform/deployment-identity/github-oidc.trust-policy.recorded.v1.json
+  evaluation_fixture_uri: repo://infra/terraform/deployment-identity/github-oidc.evaluation.recorded.v1.json
+  workflow_fixture_uri: repo://infra/terraform/deployment-identity/github-oidc-deploy.disabled.workflow.yml
+  workflow_active_path: false
+  workflow_default_disabled: true
+  workflow_external_actions: []
+  workflow_provider_commands: []
+  claim_keys:
+    - iss
+    - aud
+    - sub
+    - repository
+    - repository_id
+    - repository_owner_id
+    - ref
+    - ref_type
+    - workflow
+    - workflow_ref
+    - workflow_sha
+    - job_workflow_ref
+    - environment
+    - event_name
+    - repository_visibility
+    - actor_id
+    - run_id
+    - run_attempt
+    - base_ref
+    - head_ref
+  jwt_compact_token: ABSENT
+  jwt_header: ABSENT
+  jwt_signature: ABSENT
+  signature_verification: NOT_PERFORMED
+  authentication: NOT_PERFORMED
+  credential_material: ABSENT
+  selected_binding_effect: NONE
+offline_trust_evaluator:
+  classification: POLICY_MATCH_ONLY_NOT_AUTHENTICATION
+  domain_module_uri: repo://python/raos/domain/deployment_identity.py
+  input_mode: CLOSED_RECORDED_FIXTURES_ONLY
+  exact_match: REQUIRED
+  unknown_fields: REJECT
+  wildcards: REJECT
+  jwt_parser: ABSENT
+  signature_verifier: ABSENT
+  authentication_authority: NONE
+  credential_issuance_authority: NONE
+  network_access: FORBIDDEN
+  provider_sdk: ABSENT
+  evaluation_status: EXECUTED_LOCAL_RECORDED_NOT_FORMAL
+  evaluation_result: RECORDED_EXACT_CLAIMS_MATCHED
+  deployment_authority: NONE
+activation_port:
+  classification: STRICT_DISABLED_ZERO_ACTION_PORT
+  port_module_uri: repo://python/raos/ports/deployment_identity.py
+  adapter_module_uri: repo://python/raos/adapters/disabled_deployment_identity.py
+  status: DISABLED
+  activation_allowed: false
+  credential_issuance_allowed: false
+  deployment_allowed: false
+  planned_actions: {create: 0, update: 0, delete: 0}
+  executed_actions: 0
 selected_bindings:
   oidc_issuer_url: null
   oidc_subject: null
@@ -315,10 +400,10 @@ credential_boundary:
   secret_names: []
   secret_values: []
 workflow_permission_intent:
-  classification: INTENT_ONLY_WORKFLOW_ABSENT
-  actual_workflow: ABSENT
-  id_token_write_scope: FUTURE_EXACT_APPROVED_DEPLOY_JOB_ONLY
-  contents_permission: READ_MINIMUM_REQUIRED_NOT_CONFIGURED
+  classification: REPOSITORY_INERT_DISABLED_WORKFLOW_FIXTURE
+  actual_workflow: ACTIVE_WORKFLOW_ABSENT_INERT_FIXTURE_PRESENT
+  id_token_write_scope: INERT_DISABLED_FIXTURE_JOB_ONLY
+  contents_permission: READ_IN_INERT_DISABLED_FIXTURE_ONLY
   write_all: FORBIDDEN
   admin_permissions: FORBIDDEN
   secrets_access: FORBIDDEN
@@ -379,9 +464,14 @@ execution_boundary:
     iac_apply: FORBIDDEN
   planned_actions: {create: 0, update: 0, delete: 0}
 evidence_boundary:
-  deliverable_classification: SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_REFERENCE_PLAN
-  executable_workflow: ABSENT
-  target_trust_policy: ABSENT
+  deliverable_classification: SOURCE_DERIVED_REPOSITORY_INERT_PROVIDER_NEUTRAL_OFFLINE_DEPLOYMENT_IDENTITY_HARNESS
+  executable_workflow: REPOSITORY_INERT_DISABLED_FIXTURE_ONLY
+  target_trust_policy: RECORDED_OFFLINE_FIXTURE_ONLY
+  offline_trust_evaluator: IMPLEMENTED
+  local_recorded_evaluation: EXECUTED_NOT_FORMAL
+  jwt_authentication: NOT_IMPLEMENTED_NOT_CLAIMED
+  signature_verification: NOT_IMPLEMENTED_NOT_CLAIMED
+  activation_port: DISABLED_ZERO_ACTIONS
   github_actions_ci_source: APPROVED_FIXED_SOURCE_NOT_TARGET_PROVIDER_SELECTION
   github_repository: UNSET
   github_environment: UNSET
@@ -394,8 +484,8 @@ evidence_boundary:
   credentials: ABSENT
   credential_issuance: NOT_EXECUTED
   native_iac_validation: NOT_EXECUTED
-  workflow_inspection: NOT_EXECUTED
-  provenance_audit_revocation_rollback: NOT_EXECUTED
+  workflow_inspection: LOCAL_INERT_FIXTURE_ONLY_NOT_FORMAL
+  provenance_audit_revocation_rollback: REQUIRED_RECORDED_FIXTURE_ONLY_NOT_FORMAL
   formal_tst_026: NOT_EXECUTED
   hosted_github_target_provider: NOT_EXECUTED
   live_oidc_federation: NOT_EXECUTED
