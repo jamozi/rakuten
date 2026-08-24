@@ -35,13 +35,22 @@ def test_predecessors_bind_exact_commits_bytes_and_safe_semantics() -> None:
         "24e9640f7fa2b681ea40bb539837e40403928ec8"
     )
     assert predecessors["st0701"]["base_commit"] == (
-        "d56da0c85035a85507636c025132550c0b1a7cd2"
+        "679ccdc4a49fca8e1bee8827177be7130d6d45b6"
     )
     assert len(predecessors["st0604"]["artifacts"]) == 9
     assert len(predecessors["st0701"]["artifacts"]) == 9
-    assert predecessors["st0701"]["known_owner_debt"] == (
-        "EXPECTED_MANIFEST_ONLY_DRIFT"
-    )
+    assert "known_owner_debt" not in predecessors["st0701"]
+    semantics = predecessors["st0701"]["required_semantics"]
+    assert semantics["source_packet_required_task_count"] == 9
+    assert semantics["source_packet_not_required_task_count"] == 3
+    assert semantics["typed_manifest_only"] is True
+    assert semantics["tools_allowed"] is False
+    assert semantics["network_access"] is False
+    assert semantics["state_change_allowed"] is False
+    assert semantics["provider_storage_allowed"] is False
+    assert semantics["strict_structured_output"] is True
+    assert semantics["forbidden_inputs_excluded"] is True
+    assert semantics["required_input_checks_complete"] is True
 
 
 def test_registry_projection_preserves_all_rows_order_metadata_and_token_limits() -> (
@@ -65,6 +74,20 @@ def test_registry_projection_preserves_all_rows_order_metadata_and_token_limits(
         for row in projection["token_limit_distribution"]
     ] == list(generator.EXPECTED_TOKEN_LIMITS)
     assert all(tuple(row) == generator.TASK_ROW_KEYS for row in projection["tasks"])
+    required = [
+        row["task"]["task_code"]
+        for row in projection["tasks"]
+        if row["task"]["input_contract"]["source_packet_required"] is True
+    ]
+    not_required = [
+        row["task"]["task_code"]
+        for row in projection["tasks"]
+        if row["task"]["input_contract"]["source_packet_required"] is False
+    ]
+    assert required == list(generator.EXPECTED_SOURCE_PACKET_REQUIRED_TASK_CODES)
+    assert not_required == list(
+        generator.EXPECTED_SOURCE_PACKET_NOT_REQUIRED_TASK_CODES
+    )
 
 
 def test_all_runtime_inputs_algorithms_collections_and_actions_remain_absent() -> None:
