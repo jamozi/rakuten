@@ -1,6 +1,6 @@
 # ST-1406 recorded incident command seam
 
-Status: `LOCAL_IMPLEMENTATION_CANDIDATE` (partial)
+Local code status: `LOCAL_CODE_COMPLETE_MAX_SAFE`
 
 Canonical Story status remains `NOT_STARTED`. Formal `TST-012` and `TST-028`
 remain `NOT_EXECUTED`. This Story slice implements only a reversible,
@@ -74,9 +74,12 @@ publication, or Production authority.
 - ST-0405 provides a local audit-recording seam, but that seam explicitly does
   not make an incident mutation and audit record durable or atomic. The current
   IAM vocabulary also does not establish a Production incident permission.
-  This slice therefore does not fabricate an `AuditService`, commit token,
-  authorization mapping, durable audit event, or business-plus-audit
-  transaction. Those acceptance elements remain integration work.
+  Calling that seam before or after the process-local incident mutation would
+  create a split-brain success/failure window, so this maximum-safe boundary
+  deliberately stops at the typed incident port. It does not fabricate an
+  `AuditService`, commit token, authorization mapping, durable audit event, or
+  business-plus-audit transaction. Those governed integration elements remain
+  unavailable rather than being represented as a local pass.
 
 ## Provisional provider-neutral mappings
 
