@@ -1,0 +1,266 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1903
+  classification: MAXIMUM_SAFE_LOCAL_DISABLED_RECORDED_PARTIAL_AUTO_PUBLICATION_V1
+  status: LOCAL_IMPLEMENTATION_COMPLETE_MAX_SAFE_DISABLED
+  mvp: false
+  canonical_implementation_status: DEFERRED_POST_MVP
+  canonical_status_changed: false
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+
+authority:
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  canonical_decisions:
+    path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+    automation_boundary: INT-DEC-009
+    codex_authority: INT-DEC-013
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    resolved_by_this_story: false
+  backlog_design:
+    path: docs/canonical/07_backlog/RAOS_13_implementation_backlog_design_v1.0.md
+    sha256: 0814ef66ae76bda7721c86ffc43095f125ecbee02ea9f270a926da7ae41a15b6
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1903
+    depends_on: ST-1805
+    effective_status: DEFERRED_POST_MVP
+  test_acceptance_design:
+    path: docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    required_suite: TST-032
+    formal_status: NOT_EXECUTED
+  security_design:
+    path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  role_matrix:
+    path: docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+    publish_requires_active_human_step_up: true
+    changed_by_this_story: false
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    controls:
+      - SEC-GOV-005
+      - SEC-IAM-003
+      - SEC-IAM-004
+      - SEC-IAM-005
+      - SEC-IAM-009
+      - SEC-APP-001
+      - SEC-APP-011
+      - SEC-APP-012
+      - SEC-DATA-003
+      - SEC-DATA-004
+      - SEC-DATA-005
+      - SEC-DATA-006
+      - SEC-AI-007
+      - SEC-SDLC-006
+      - SEC-SDLC-008
+      - SEC-SDLC-009
+      - SEC-SDLC-011
+      - SEC-SDLC-012
+      - SEC-OPS-007
+  threat_register:
+    path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+    threats:
+      - THR-002
+      - THR-003
+      - THR-010
+      - THR-015
+      - THR-016
+      - THR-017
+      - THR-018
+      - THR-019
+      - THR-020
+      - THR-024
+      - THR-027
+
+predecessor:
+  story_id: ST-1805
+  binding: EXACT_BASE_COMMIT_BYTES
+  base_commit: 0aef05373e4ecc45aee2a4fc4f2ca6f4a0dd19cb
+  artifacts:
+    changes/st-1805/contracts/portfolio-decision.v1.yaml: dd6c742d295f5bc7baa036aa6cca0a42e84b7a3168f0302aec8e40e46a87f4b9
+    changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json: c2b06e525c3d5c8e86997cbd67285eedad85c9b90fd12f95f162d6a6c6fc910e
+    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: 1288a29454435293fc47ff556215c5afee6e58fad8b995b13e4aca81d2535e22
+    scripts/build_st1805_portfolio_decision.py: 79ed861e82efd80b10e884028fd99b122ac3b1713b66d63203c671162fdbb23e
+    python/raos/domain/portfolio/scale_decision.py: 40b2f943bd19ea24d5df9a6ad8c6fce20681b2a07620b91693697b6bcf3458cd
+    python/raos/ports/scale_decision.py: 10e1728ad94a911c137b0d361adba3cd4b464e0691978c2afb13cbeaaf6834a7
+    python/raos/application/portfolio/scale_decision.py: 9dc9cfb21eaeec106fc51a76db032ed4ba74abc5f4ba930483a7581377ffb30e
+    python/raos/adapters/recorded_scale_decision.py: 9a73d36b2998f5fb41ee6cbf21927c3b7ef31a046f0398b617f3a97edb532c60
+  current_semantics:
+    overall: BLOCKED
+    outcome: NO_DECISION
+    authorized: false
+    acceptance_criteria_satisfied: false
+    human_decision_required: true
+    local_integration_complete: false
+
+feature_scope:
+  default: DISABLED
+  closed_states:
+    - DISABLED
+    - RECORDED_SYNTHETIC_ELIGIBILITY_EVALUATION_ONLY
+  executable_environments:
+    - ENV-DEV
+    - ENV-CI
+  live_enabled_state_exists: false
+  activation_state_exists: false
+  activation_interface_exists: false
+  publication_command_exists: false
+  disabled_fails_before_port_call: true
+  separate_human_release_decision_required: true
+  release_decision_input_currently_rejected: true
+
+low_risk_candidate_contract:
+  representable_change_classes:
+    - STALE_VALUE_SUPPRESSION_ONLY
+    - INVALID_AFFILIATE_CTA_DISABLEMENT_ONLY
+  change_count: 1
+  safety_contraction_only: true
+  ambiguity_fails_closed: true
+  high_risk_fails_closed: true
+  content_addition: false
+  claim_change: false
+  recommendation_order_change: false
+  product_identity_change: false
+  affiliate_destination_change: false
+  raw_html: false
+  price_or_stock_assertion_addition: false
+  personal_data: false
+  finance_input: false
+  public_write_request: false
+  raw_article_or_cms_payload_representable: false
+
+port_contract:
+  direction: INWARD_PROVIDER_NEUTRAL
+  method: read(command) -> immutable recorded synthetic metadata bundle
+  implementation: CALLER_BYTES_RECORDED_SYNTHETIC_JSON
+  calls_per_instance: 1
+  filesystem_discovery: false
+  provider_sdk_type: false
+  endpoint_or_url_field: false
+  credential_field: false
+  cms_payload_field: false
+  html_or_article_body_field: false
+  retry: false
+  replay: false
+  fallback: false
+
+recorded_fixture:
+  path: changes/st-1903/fixtures/recorded/partial-auto-publication.synthetic.v1.json
+  bytes: 1456
+  sha256: bc08ab6988c28f2b992049d71202a46dd312a80906c04e6e47651ff9d314b5b4
+  profile: RAOS_ST1903_RECORDED_SYNTHETIC_ELIGIBILITY_V1
+  synthetic: true
+  actual_publication: false
+  candidate_count: 1
+  candidate_sha256: 9aa89fe974527848d464d5933f43c41003bbde30e89d9e11aa10aea740849b8f
+  release_decision: ABSENT
+  formal_TST-032: NOT_EXECUTED
+
+result_contract:
+  closed_outcomes:
+    - REFUSED_AMBIGUOUS_OR_HIGH_RISK
+    - REFUSED_DEPENDENCY_BLOCKED
+    - REFUSED_REQUIRED_EVIDENCE_UNAVAILABLE
+  recorded_fixture_outcome: REFUSED_DEPENDENCY_BLOCKED
+  positive_publication_outcome_exists: false
+  eligibility_or_publish_authority: NONE
+  actions: []
+  effects: []
+  mutations_applied: []
+  report_fields: IDS_HASHES_CLOSED_CLASSES_CRITERIA_AND_REFUSAL_ONLY
+
+mutation_boundary:
+  approval: FORBIDDEN
+  provider_call: FORBIDDEN
+  network: FORBIDDEN
+  credentials: FORBIDDEN
+  persistence: NOT_EXECUTED
+  database_write: FORBIDDEN
+  queue_or_event: FORBIDDEN
+  cms: FORBIDDEN
+  public_write: FORBIDDEN
+  editorial_mutation: FORBIDDEN
+  article_html_mutation: FORBIDDEN
+  cta_insertion_or_destination_change: FORBIDDEN
+  product_selection_mutation: FORBIDDEN
+  recommendation_order_mutation: FORBIDDEN
+  publication_snapshot_mutation: FORBIDDEN
+  publication: FORBIDDEN
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  status_apply: FORBIDDEN
+  recommendation_inputs_excluded:
+    - AFFILIATE_COMMISSION_RATE
+    - CONFIRMED_REWARD
+    - UNATTRIBUTED_REWARD
+    - COMMISSION
+    - EPC
+    - RPM
+    - PROFIT
+
+verification_boundary:
+  focused_local_behavior_security_negative: LOCAL_CANDIDATE
+  owner_generator_check: LOCAL_CANDIDATE
+  dependency_ST-1805_exact_binding: LOCAL_CANDIDATE
+  formal_TST-032: NOT_EXECUTED
+  human_release_decision: NOT_OBTAINED
+  security_and_operations_review: NOT_EXECUTED
+  kill_switch_runtime_evidence: NOT_EXECUTED
+  idempotency_and_rollback_runtime_evidence: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  database: NOT_EXECUTED
+  network: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - actual ST-1805 Product Owner portfolio decision
+    - approved low-risk classification policy and immutable release revision
+    - formal TST-032 staging evidence pack
+    - Security and Operations approval with kill-switch evidence
+    - idempotency, ambiguous-result recovery, rollback, audit, and monitoring evidence
+    - separate human release decision
+    - bounded staging validation before any activation or public write
+
+owned_sources:
+  - changes/st-1903/PREFLIGHT.md
+  - changes/st-1903/README.md
+  - changes/st-1903/completion/completion.v1.yaml
+  - changes/st-1903/contracts/partial-auto-publication.v1.yaml
+  - changes/st-1903/fixtures/recorded/partial-auto-publication.synthetic.v1.json
+  - docs/execplans/ST-1903.md
+  - docs/worklogs/ST-1903.md
+  - python/raos/domain/publishing/partial_auto_publication.py
+  - python/raos/ports/publishing/partial_auto_publication.py
+  - python/raos/application/publishing/partial_auto_publication.py
+  - python/raos/adapters/publishing/recorded_partial_auto_publication.py
+  - scripts/build_st1903_partial_auto_publication.py
+  - tests/st1903/__init__.py
+  - tests/st1903/conftest.py
+  - tests/st1903/support.py
+  - tests/st1903/test_adapter.py
+  - tests/st1903/test_application.py
+  - tests/st1903/test_contract_generation.py
+  - tests/st1903/test_domain.py
+  - tests/st1903/test_security_boundaries.py
