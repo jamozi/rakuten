@@ -361,6 +361,29 @@ def test_secure_read_rejects_repository_root_swap(
     assert swapped
 
 
+def test_secure_read_allows_unrelated_parent_entry_churn(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = tmp_path / "reader-root"
+    root.mkdir()
+    (root / "payload.bin").write_bytes(b"trusted")
+    repository = direct_reader(root)
+    real_read = os.read
+    churned = False
+
+    def churn_parent_then_read(descriptor: int, count: int) -> bytes:
+        nonlocal churned
+        if not churned:
+            churned = True
+            (tmp_path / "unrelated-sibling.bin").write_bytes(b"outside")
+        return real_read(descriptor, count)
+
+    monkeypatch.setattr(os, "read", churn_parent_then_read)
+    assert repository._read_regular(PurePosixPath("payload.bin")) == b"trusted"
+    assert churned
+
+
 @pytest.mark.parametrize("after_open", [False, True], ids=["before", "after"])
 def test_secure_read_rejects_artifact_ancestor_swap(
     tmp_path: Path,
@@ -860,6 +883,30 @@ def test_inventory_rejects_repository_root_swap(
             == "contract repository root changed before inventory capture"
         )
     assert swapped
+
+
+def test_inventory_allows_unrelated_parent_entry_churn(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = tmp_path / "inventory-root"
+    root.mkdir()
+    (root / "payload.bin").write_bytes(b"trusted")
+    repository = direct_reader(root)
+    real_listdir = os.listdir
+    churned = False
+
+    def churn_parent_after_listing(descriptor: int) -> list[str]:
+        nonlocal churned
+        names = real_listdir(descriptor)
+        if not churned:
+            churned = True
+            (tmp_path / "unrelated-sibling.bin").write_bytes(b"outside")
+        return names
+
+    monkeypatch.setattr(os, "listdir", churn_parent_after_listing)
+    assert repository._filesystem_inventory() == ({"payload.bin"}, set())
+    assert churned
 
 
 @pytest.mark.parametrize("after_open", [False, True], ids=["before", "after"])
