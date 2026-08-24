@@ -1,0 +1,35 @@
+schema_version: 2
+story_id: ST-0903
+status: LOCAL_CODE_COMPLETE
+classification: LOCAL_IMMUTABLE_PUBLICATION_SNAPSHOT_CANDIDATE_V2
+base_commit: 28c4f68899e22c7f2894d8afb1885f5335a21e0a
+scope:
+  deterministic_content_manifest: true
+  deterministic_publication_snapshot: true
+  exact_recorded_st0902_approval: true
+  exact_st0807_seo_input: true
+  exact_st0808_media_input: true
+  process_local_only: true
+  external_write_authority: false
+compatibility:
+  current_content_ast_version: 1.0.0
+  legacy_publication_snapshot_schema_validated: false
+  reconciliation_required: true
+verification:
+  focused_local_checks: PASS_37
+  affected_local_checks: PASS
+  owner_generation_check: PASS
+  exact_postgresql_dependency_checks: NOT_EXECUTED_RAOS_PG_BIN_UNAVAILABLE
+  formal_TST_014: NOT_EXECUTED
+  formal_TST_021: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+authority:
+  public_projection_authorized: false
+  publication_authorized: false
+  release_authorized: false
+  production_authorized: false
