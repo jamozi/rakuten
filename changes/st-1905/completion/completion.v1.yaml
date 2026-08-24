@@ -9,8 +9,8 @@ document:
   production_eligible: false
 
 base:
-  commit: 943a5a073e398b013169a1e4c4e5bdad39ee66d9
-  branch: codex/st1905-local-complete-20260824
+  commit: 6739246fa6f13a490d4dbd6333d9721c62f7c413
+  branch: codex/raos-local-integration-complete
 
 local_boundary:
   provider_neutral: true

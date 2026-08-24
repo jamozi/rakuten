@@ -71,7 +71,7 @@ authority:
 predecessor:
   story_id: ST-1206
   binding: EXACT_BASE_COMMIT_BYTES
-  base_commit: 943a5a073e398b013169a1e4c4e5bdad39ee66d9
+  base_commit: 6739246fa6f13a490d4dbd6333d9721c62f7c413
   artifacts:
     changes/st-1206/contracts/keyword-rank-import.v1.yaml: 7a378d8344562cc729bae88feb89b93b5fd372f7c54f20b0f2850edccfe59c46
     changes/st-1206/fixtures/recorded/keyword-rank-synthetic.v1.csv: e06d21cf450a75250e096d3528ac45839fa3fb7d08d9988a58d0e0b9ecd59611

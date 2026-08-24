@@ -7,9 +7,9 @@ document:
   story_id: ST-1905
   version: 1.0.0
 provenance:
-  base_commit: 943a5a073e398b013169a1e4c4e5bdad39ee66d9
+  base_commit: 6739246fa6f13a490d4dbd6333d9721c62f7c413
   contract_uri: repo://changes/st-1905/contracts/advanced-rank-provider.v1.yaml
-  contract_sha256: 2999383c90fe035cf0b72a77b85b12cf67480b58a37a610156dcd40d3c3df7d2
+  contract_sha256: 3b0f8f50644016df3ed659e1a1f30cfdcbda89d525151bed33f526557aacd9d3
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -52,7 +52,7 @@ source_artifact_count: 18
 source_artifacts:
 - uri: repo://changes/st-1905/contracts/advanced-rank-provider.v1.yaml
   bytes: 8083
-  sha256: 2999383c90fe035cf0b72a77b85b12cf67480b58a37a610156dcd40d3c3df7d2
+  sha256: 3b0f8f50644016df3ed659e1a1f30cfdcbda89d525151bed33f526557aacd9d3
 - uri: repo://changes/st-1905/fixtures/recorded/advanced-rank-provider.v1.json
   bytes: 1976
   sha256: 0f11d433f1fad9bfc2509087fdb99f7714e03a9cb3287dd65ffb746ed2f1b404
@@ -60,8 +60,8 @@ source_artifacts:
   bytes: 3340
   sha256: 20294105135f16728e87b59a48298c4a14870e709f27b385c86798b9a49c04af
 - uri: repo://changes/st-1905/completion/completion.v1.yaml
-  bytes: 1626
-  sha256: 74550fce7ba78ff01728c357ed27e126d396d4530a2282f8d572f4e283529518
+  bytes: 1627
+  sha256: e0ac7b1802b9985150f5f1ce09a09a75539022a498c80049cec007eeff5ea62a
 - uri: repo://docs/worklogs/ST-1905.md
   bytes: 2110
   sha256: a3ff8d90f391a11d99367f03a66bcbfdbc488ea632cd5fdc02113d0611b0bb6a
@@ -79,7 +79,7 @@ source_artifacts:
   sha256: 6c263499bfa035b2aa1d0359ae86db55c205bc03b4a1926c6ed57efbe14a01f9
 - uri: repo://scripts/build_st1905_advanced_rank_provider.py
   bytes: 25970
-  sha256: f563db09675421d65b1f630a835900aa7ff950d2e68c45c6752b471423d55e7b
+  sha256: 9599536b83e32feaa41870c9910f0021eb4c332be110ea5c193c2f6226f11032
 - uri: repo://scripts/secure_generated_publication.py
   bytes: 22651
   sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
