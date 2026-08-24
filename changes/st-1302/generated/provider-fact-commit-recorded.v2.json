@@ -1,0 +1,256 @@
+{
+  "document": {
+    "schema_version": "2.0.0",
+    "story_id": "ST-1302",
+    "classification": "MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_PROVIDER_FACT_COMMIT",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "local_executable": true,
+    "environments": [
+      "ENV-DEV",
+      "ENV-CI"
+    ],
+    "authority": "RECORDED_SYNTHETIC_ONLY",
+    "canonical_status": "UNCHANGED",
+    "story_acceptance_claimed": false,
+    "formal_validation_claimed": false,
+    "production_eligible": false
+  },
+  "provenance": {
+    "source_contract": "repo://changes/st-1302/contracts/provider-fact-commit-recorded.v2.yaml",
+    "recorded_fixture": "repo://changes/st-1302/fixtures/provider-fact-commit-recorded.synthetic.v1.json",
+    "generated_by": "repo://scripts/build_st1302_provider_fact_commit_recorded.py",
+    "generation_command": "uv run --locked --offline --no-cache --no-sync --no-env-file python scripts/build_st1302_provider_fact_commit_recorded.py",
+    "source_bindings": [
+      {
+        "name": "canonical_story",
+        "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+      },
+      {
+        "name": "analytics_design",
+        "uri": "repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md",
+        "sha256": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460"
+      },
+      {
+        "name": "attribution_policy",
+        "uri": "repo://docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml",
+        "sha256": "29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c"
+      },
+      {
+        "name": "open_decisions",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+        "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+      },
+      {
+        "name": "role_permission_matrix",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml",
+        "sha256": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984"
+      },
+      {
+        "name": "finance_data_contract",
+        "uri": "repo://changes/st-0305/contracts/publication-analytics-finance.v1.yaml",
+        "sha256": "2947fe100633a2611b9287c6530856b9679365bb10d4af4728a5148ed970377f"
+      },
+      {
+        "name": "canonical_row_schema",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/imports/revenue-canonical-row.schema.json",
+        "sha256": "02bc3d854a7420a74a8b302342a9ad0e23cfe4529565716a185c333b43ebbff8"
+      },
+      {
+        "name": "commit_job_schema",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/jobs/finance-commit-revenue-import-v1.schema.json",
+        "sha256": "9e0b860aacd151888e67e76a64ad94e8c3dd33072de42f570b8b233e1a9dce0d"
+      },
+      {
+        "name": "job_catalog",
+        "uri": "repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml",
+        "sha256": "70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1"
+      },
+      {
+        "name": "committed_event_schema",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-finance-revenue-import-committed-v1.schema.json",
+        "sha256": "b5c6ad9f2ca522b87e7c630a941817a84a2c8e2ce2604bb9767e976079d71f21"
+      },
+      {
+        "name": "status_event_schema",
+        "uri": "repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-finance-commission-status-changed-v1.schema.json",
+        "sha256": "7fc5e7c5949b5e4588ad7970bfc54d42fd27f898e035a56116b3726a0602865b"
+      },
+      {
+        "name": "st1301_domain",
+        "uri": "repo://python/raos/domain/finance/revenue_import.py",
+        "sha256": "9698846ff18dfa7fb81b338f126fe70e28f96151ed8283eac8cb5da7132265eb"
+      },
+      {
+        "name": "v1_reference_contract",
+        "uri": "repo://changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml",
+        "sha256": "6f4848b121ecdd31b63fda9b41488b2e690d839bb7d4806de1e09039a7418a10"
+      },
+      {
+        "name": "recorded_fixture",
+        "uri": "repo://changes/st-1302/fixtures/provider-fact-commit-recorded.synthetic.v1.json",
+        "sha256": "1839d9bdc4a5dfae3008e0f285bc36f45e48ef6b95b2dfd15ad7c4984cba3cb2"
+      }
+    ]
+  },
+  "open_decision_boundary": {
+    "id": "OD-003",
+    "status": "EXTERNAL_EVIDENCE_REQUIRED",
+    "blocking": true,
+    "safe_default": "SYNTHETIC_FIXTURE_ONLY_REAL_ATTRIBUTION_UNVERIFIED",
+    "resolved": false
+  },
+  "preview_binding": {
+    "algorithm": "RAOS_ST1302_LOCAL_PREVIEW_BINDING_SHA256_V1",
+    "required": true,
+    "binds": [
+      "source_sha256",
+      "ST-1301 command fingerprint",
+      "accepted row number and row hash",
+      "hashed synthetic provider event key",
+      "source event type and event timestamp",
+      "generated and confirmed Decimal JPY",
+      "confirmed missingness",
+      "status summaries",
+      "observed period"
+    ],
+    "canonical_preview_hash_equivalence": "NOT_ASSERTED",
+    "canonical_contract_inconsistency": "UNRESOLVED",
+    "canonical_contract_changed": false
+  },
+  "commit_boundary": {
+    "profile": "RAOS_ST1302_RECORDED_SYNTHETIC_V1",
+    "provider_code": "RAKUTEN_AFFILIATE",
+    "currency": "JPY",
+    "exact_amount_type": "INTEGRAL_DECIMAL_JPY",
+    "source_duplicate_policy": "REJECT",
+    "idempotency_policy": "SAME_KEY_SAME_REQUEST_REPLAY_DIFFERENT_REQUEST_REJECT",
+    "atomicity": "PROCESS_LOCAL_ATOMIC_SWAP",
+    "artifacts": [
+      "immutable provider facts",
+      "immutable source-vocabulary commission events",
+      "immutable audit record",
+      "immutable outbox-like local records"
+    ],
+    "database_write": "NOT_EXECUTED",
+    "provider_call": "NOT_EXECUTED",
+    "network": "NOT_EXECUTED"
+  },
+  "authorization_boundary": {
+    "subject": "ACTIVE_HUMAN_RECORDED_SYNTHETIC",
+    "roles": [
+      "PRODUCT_OWNER",
+      "ANALYST"
+    ],
+    "mfa": "REQUIRED_RECORDED_SYNTHETIC",
+    "step_up": "REQUIRED_RECORDED_SYNTHETIC",
+    "max_step_up_age_seconds": 300,
+    "site_scope": "REQUIRED",
+    "dry_run_preparer_committer_separation": "REQUIRED_LOCAL_SAFE_HARDENING",
+    "real_authorization_asserted": false
+  },
+  "vocabulary_boundary": {
+    "source_event": [
+      "GENERATED",
+      "CONFIRMED",
+      "CANCELLED",
+      "ADJUSTED"
+    ],
+    "provider_fact_status": [
+      "GENERATED",
+      "CONFIRMED",
+      "CANCELLED",
+      "ADJUSTED"
+    ],
+    "canonical_commission_event": [
+      "GENERATED",
+      "CONFIRMED",
+      "CANCELLED",
+      "AMOUNT_CHANGED",
+      "CORRECTED"
+    ],
+    "mapping_defined": false,
+    "emitted_canonical_commission_event_type": null,
+    "mapping_state": "UNVERIFIED_PRESERVED_UNMAPPED"
+  },
+  "recorded_result": {
+    "scenario_id": "ST1302-RECORDED-SYNTHETIC-0001",
+    "fixture_sha256": "1839d9bdc4a5dfae3008e0f285bc36f45e48ef6b95b2dfd15ad7c4984cba3cb2",
+    "source_sha256": "368f6df678d38618b25abb0ff316d35f6489707b0b3bdecbde54e0c94724d1d7",
+    "local_preview_binding_sha256": "4ca67982a8faf600be644e950cd2cdd8826df069f9d6c3d4633550e0d6f6b5ac",
+    "result_sha256": "882a330bdc6485d424d55033c0cddbe1748b8b4b3b0751ddf3e4682ef574f7d0",
+    "execution": "RECORDED_SYNTHETIC_ONLY",
+    "commit_state": "PROCESS_LOCAL_ATOMIC_COMMITTED",
+    "mapping": "UNVERIFIED_PRESERVED_UNMAPPED",
+    "accepted_count": 2,
+    "provider_fact_count": 2,
+    "commission_event_count": 2,
+    "audit_count": 1,
+    "outbox_count": 3,
+    "generated_commission_jpy": "200",
+    "confirmed_commission_jpy": "80",
+    "confirmed_missing_count": 1,
+    "currency": "JPY",
+    "period_from": "2026-08-01",
+    "period_to": "2026-08-02",
+    "status_summaries": [
+      {
+        "confirmed_commission_jpy": null,
+        "confirmed_missing_count": 1,
+        "event_type": "GENERATED",
+        "generated_commission_jpy": "100",
+        "row_count": 1
+      },
+      {
+        "confirmed_commission_jpy": "80",
+        "confirmed_missing_count": 0,
+        "event_type": "CONFIRMED",
+        "generated_commission_jpy": "100",
+        "row_count": 1
+      },
+      {
+        "confirmed_commission_jpy": null,
+        "confirmed_missing_count": 0,
+        "event_type": "CANCELLED",
+        "generated_commission_jpy": "0",
+        "row_count": 0
+      },
+      {
+        "confirmed_commission_jpy": null,
+        "confirmed_missing_count": 0,
+        "event_type": "ADJUSTED",
+        "generated_commission_jpy": "0",
+        "row_count": 0
+      }
+    ],
+    "canonical_commission_event_types": [
+      null,
+      null
+    ],
+    "idempotent_replay": true,
+    "process_local_source_count": 1
+  },
+  "authority_boundary": {
+    "recorded_synthetic_only": true,
+    "database_write_authorized": false,
+    "provider_call_authorized": false,
+    "network_authorized": false,
+    "publication_authorized": false,
+    "live_authorized": false,
+    "staging_authorized": false,
+    "release_authorized": false,
+    "production_authorized": false
+  },
+  "verification_boundary": {
+    "local_unit_and_adversarial_tests": "CANDIDATE",
+    "owner_generator_check": "CANDIDATE",
+    "TST-008": "NOT_EXECUTED",
+    "TST-030": "NOT_EXECUTED",
+    "real_provider_mapping": "NOT_EXECUTED",
+    "database_integration": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  }
+}

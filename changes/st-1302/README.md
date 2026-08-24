@@ -54,3 +54,53 @@ The generated JSON and manifest are owned only by:
 Local generation and tests do not satisfy Story acceptance or formal
 TST-008/TST-030. Runtime, database, provider, live, staging, release, and
 Production work remains `NOT_EXECUTED` and unauthorized.
+
+## Maximum-safe recorded implementation (V2)
+
+The V1 reference above remains the fail-closed description of the unresolved
+canonical/live boundary. V2 adds a separate executable-local profile,
+`RAOS_ST1302_RECORDED_SYNTHETIC_V1`, for `ENV-DEV` and `ENV-CI` only. It does
+not replace V1 and does not resolve OD-003.
+
+The V2 fixture reconstructs the exact accepted ST-1301 dry-run artifact and
+binds each accepted row by source hash, ST-1301 command fingerprint, row number
+and hash, hashed synthetic event key, source event type, event timestamp,
+integral `Decimal` JPY, missingness, status summary, and observed period. The
+resulting `RAOS_ST1302_LOCAL_PREVIEW_BINDING_SHA256_V1` value is an explicit
+reversible local contract. It is not claimed to equal the unresolved canonical
+`preview_hash`.
+
+The application boundary validates the recorded typed authorization before one
+process-local atomic exchange. It enforces the canonical allowed roles
+`PRODUCT_OWNER`/`ANALYST`, recorded active-human, MFA, step-up freshness, and
+site scope. A distinct dry-run preparer and committer is an additive local
+safety hardening, not a newly inferred canonical role mapping. Same-key,
+same-request replay is idempotent; a changed request under the same key and a
+second key for an already committed source are rejected.
+
+The exchange produces immutable local provider facts, source-vocabulary
+commission observations, one audit record, and outbox-like local records.
+`GENERATED`, `CONFIRMED`, `CANCELLED`, and `ADJUSTED` remain source values. The
+canonical commission-event vocabulary remains preserved separately and V2
+emits no inferred canonical event type: every observation is
+`UNVERIFIED_PRESERVED_UNMAPPED`.
+
+The implementation has no provider, network, database, publication, staging,
+release, or Production adapter. Every such authority flag is false and every
+execution value is `NOT_EXECUTED`. The process-local adapter is an executable
+recorded test seam, not durable persistence or evidence for TST-008/TST-030.
+
+V2 artifacts are owned only by:
+
+```text
+/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run \
+  --frozen --offline --no-cache --no-sync --no-env-file \
+  python scripts/build_st1302_provider_fact_commit_recorded.py
+
+/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run \
+  --frozen --offline --no-cache --no-sync --no-env-file \
+  python scripts/build_st1302_provider_fact_commit_recorded.py --check
+```
+
+See `LOCAL_COMPLETION.md` for the exact local completion and external-debt
+boundary. Neither document changes Canonical Story status.

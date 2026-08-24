@@ -148,15 +148,15 @@ AUTHORITY_ARTIFACTS: Final = (
 REFERENCE_INPUT_ARTIFACTS: Final = (
     (
         ST0308_CONTRACT_PATH,
-        "98a5b51b8098dcdd2993fb6eb2a5bdae98087f5a46da696fd79a41bd33d9f4a9",
+        "71cf5c6f7e6f9df42594d8cf4cdfda8323b2c9888d5585d05f07f1643f9ee25f",
     ),
     (
         ST0308_PLAN_PATH,
-        "290a0475fbf9e1996eba989e15344bd9974bb08053ab8def0fd35246b3636305",
+        "84a7068faf73ecb134145b31f1646e0af778bae9fd3263efec0498469d869dcc",
     ),
     (
         ST0308_MANIFEST_PATH,
-        "b38e8de274b95edd2950850e3eea8f4a3d2e51e8624fa5626dcf16ea5638425d",
+        "e24d118e4043500c7d8da67679ce97ce71108cec6ac9b57248c27f11cb021d1b",
     ),
     (
         ST0305_CONTRACT_PATH,
