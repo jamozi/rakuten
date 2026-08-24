@@ -1,0 +1,213 @@
+document:
+  id: RAOS-ST1605-FAILURE-INJECTION-DRILL-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-1605
+  source_contract: repo://changes/st-1605/contracts/failure-injection-drill.v1.yaml
+  generated_by: repo://scripts/build_st1605_failure_injection_drill.py
+  generation_command: uv run --locked --no-sync python -I -B scripts/build_st1605_failure_injection_drill.py
+provenance:
+  contract_sha256: e99058f7b008313fa761f4d509c8486fd1c4b23027cdfdac704168446ce880e5
+  authority_inputs:
+  - role: integration
+    uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - role: canonical_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - role: open_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - role: story_backlog
+    uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - role: test_catalog
+    uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - role: operations_design
+    uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+    sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+  - role: alert_catalog
+    uri: repo://docs/canonical/06_ops/RAOS_12_alert_catalog_v1.0.yaml
+    sha256: f180e950f659d27e9270b6c1f9c1dcb6d0fa6194acdc1fdd7026ac7cea560be0
+  - role: runbook_catalog
+    uri: repo://docs/canonical/06_ops/RAOS_12_runbook_index_v1.0.yaml
+    sha256: 2aed21892e78ead32fc647b928f50014971d280142d0f49f4e0d1e7d68897100
+  - role: security_design
+    uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - role: security_controls
+    uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - role: threat_register
+    uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  - role: implementation_first_execplan
+    uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
+    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
+  dependency_inputs:
+  - uri: repo://changes/st-1602/README.md
+    sha256: 9ed7dfa14f736cf30aa166c8c79d3f42386abfab90ec31b2792454e89ad976bc
+  - uri: repo://changes/st-1602/contracts/slo-alert-reference-plan.v1.yaml
+    sha256: 31c8d3c57501e351bd9bcde3c796abe70eb80277b4cb7a1c738cf93817ba65b1
+  - uri: repo://changes/st-1602/generated/slo-alert-reference-plan.v1.json
+    sha256: 5191a56d42154982bbfefc09c7686df751a4b08eb1e5ea84865bf74a487767e9
+  - uri: repo://changes/st-1602/manifest.yaml
+    sha256: 94a620384cb74bddc06bb17bb5517fd5fb7cca782af13b97c3c76b49b61d999a
+  - uri: repo://changes/st-1405/README.md
+    sha256: e2a3852a020a2b64aa0f300cea5dcc7a99dacbf07337f9b511536ccb48b0c041
+  - uri: repo://python/raos/domain/ops/kill_switch.py
+    sha256: 6b4c014b89cb8b330885e5deae0849b9b0e2089272f7c8371627cd7f4eb353d3
+  - uri: repo://python/raos/application/ops/kill_switch.py
+    sha256: 15f4deef25bd60d07a69dab81c5427677c184be9b67a8c4b2cfe6eb96937f0de
+  - uri: repo://python/raos/adapters/recorded_kill_switch.py
+    sha256: f88f23c6003e0a3d7859487426aa4dfa3c60f8687f4aab349501c01d3c72eeed
+  - uri: repo://python/raos/ports/kill_switch.py
+    sha256: 857f53d3e6f1efd41a31858d9c31241aef554f8322809276d6e435584a6c2880
+  implementation_inputs:
+  - uri: repo://scripts/build_st1506_production_deployment.py
+    sha256: f58b1ed91bcfcc4376262a3e3aa3653154dcbb0672e8508daac874e0042f1176
+  runtime_module_inputs:
+  - module: raos
+    uri: repo://python/raos/__init__.py
+    sha256: 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
+  - module: raos.adapters.development_oidc
+    uri: repo://python/raos/adapters/development_oidc.py
+    sha256: 5ec698d48ca310e141baacde3db23f2b038a6aa715832e053a615aa1cdb73fd9
+  - module: raos.adapters.development_step_up
+    uri: repo://python/raos/adapters/development_step_up.py
+    sha256: bfc55e2b952db59972591816c0d85f0fab3d0c8c40e8c6860a54483a59923d5d
+  - module: raos.adapters.recorded_kill_switch
+    uri: repo://python/raos/adapters/recorded_kill_switch.py
+    sha256: f88f23c6003e0a3d7859487426aa4dfa3c60f8687f4aab349501c01d3c72eeed
+  - module: raos.application.iam
+    uri: repo://python/raos/application/iam/__init__.py
+    sha256: 7fe03d690c880cd0694c12f35ff2e01a2ca9427e90b166b15362951f79c10e2d
+  - module: raos.application.iam.authentication
+    uri: repo://python/raos/application/iam/authentication.py
+    sha256: 12f7685aed8f0f6526726355bc7863ae57118f1cf9d01465bb4659078badcb04
+  - module: raos.application.iam.step_up
+    uri: repo://python/raos/application/iam/step_up.py
+    sha256: 7b427e6c9e24a48776019731a25bb87673d6d9161f744aca56857e2e7312338f
+  - module: raos.application.ops
+    uri: repo://python/raos/application/ops/__init__.py
+    sha256: 79f1d1c2feee171acf8051ac621686dfcc8f68793f7c8dda2f0fbf7cf50f21c2
+  - module: raos.application.ops.job_runtime
+    uri: repo://python/raos/application/ops/job_runtime.py
+    sha256: b1ea28fcc6b0e051b5f4a7ba0ae09d1628b4ed9f0400fd747fa7c2f032dc0403
+  - module: raos.application.ops.kill_switch
+    uri: repo://python/raos/application/ops/kill_switch.py
+    sha256: 15f4deef25bd60d07a69dab81c5427677c184be9b67a8c4b2cfe6eb96937f0de
+  - module: raos.application.ops.object_intake
+    uri: repo://python/raos/application/ops/object_intake.py
+    sha256: b75c86c003254436640ebecbf6f3c6aa399dbda334ca89cd4404102b800ca927
+  - module: raos.application.ops.telemetry
+    uri: repo://python/raos/application/ops/telemetry.py
+    sha256: ae9f2c2bede2d4b4f251f6b28f1a474096870de30b1818fe81a5153d308cf016
+  - module: raos.config
+    uri: repo://python/raos/config/__init__.py
+    sha256: e893d5e333ec1b4d84d74cb59a6cc4ac62672b493d5905c379ee4ebe9936c314
+  - module: raos.config.runtime
+    uri: repo://python/raos/config/runtime.py
+    sha256: 2a1b7b550bcf5365df610c8ebffe1994d12ab888a5be4042dde032ed7c5a0ac3
+  - module: raos.domain.iam
+    uri: repo://python/raos/domain/iam/__init__.py
+    sha256: ca8540dc060f08cdad74855e90aed5fa56e8beff311b22c6b89370b46060bbca
+  - module: raos.domain.iam.authentication
+    uri: repo://python/raos/domain/iam/authentication.py
+    sha256: b8273a2116cde06134ebe1d27005c0a85549e5d0674e027bf91effe947d4486f
+  - module: raos.domain.iam.authorization
+    uri: repo://python/raos/domain/iam/authorization.py
+    sha256: dd08de5f2330fd322571230f0634413665360b2c362968f2ee46647bd48b55ce
+  - module: raos.domain.iam.step_up
+    uri: repo://python/raos/domain/iam/step_up.py
+    sha256: d208f35bf42711229c743b41eacad84dc43c040ff5cc614d29e16e653e39ddb7
+  - module: raos.domain.ops
+    uri: repo://python/raos/domain/ops/__init__.py
+    sha256: 74a1ab664703a1856e640b11bdd9e934f14f05e3776bd6b1d2f5ab0f698732a1
+  - module: raos.domain.ops.job_runtime
+    uri: repo://python/raos/domain/ops/job_runtime.py
+    sha256: e3623bdef2c6bdce9a3ed49c2d76929e7e590189af9ae65418cee565120162e6
+  - module: raos.domain.ops.kill_switch
+    uri: repo://python/raos/domain/ops/kill_switch.py
+    sha256: 6b4c014b89cb8b330885e5deae0849b9b0e2089272f7c8371627cd7f4eb353d3
+  - module: raos.domain.ops.object_intake
+    uri: repo://python/raos/domain/ops/object_intake.py
+    sha256: 7ba9fce9e91be4f4a76fe47c65b9582699b841743048a83629a12c8b54f916c7
+  - module: raos.domain.ops.telemetry
+    uri: repo://python/raos/domain/ops/telemetry.py
+    sha256: 6639598c0d7019297a9843b72a06cac35a2eb4a6fd76cfc24d64cbd8dbd64e93
+  - module: raos.ports.job_runtime
+    uri: repo://python/raos/ports/job_runtime.py
+    sha256: 4e42943c5ca04d2da63d00b80c7a23c9ac6222096f0a1edbd1b0fd72e6155cd3
+  - module: raos.ports.kill_switch
+    uri: repo://python/raos/ports/kill_switch.py
+    sha256: 857f53d3e6f1efd41a31858d9c31241aef554f8322809276d6e435584a6c2880
+  - module: raos.ports.object_intake
+    uri: repo://python/raos/ports/object_intake.py
+    sha256: a173ddbac56a20ff4f10f7bc62dd0d441b6c0d4a956de8697f351ea8fe214d59
+  - module: raos.ports.oidc
+    uri: repo://python/raos/ports/oidc.py
+    sha256: 2cde4026ca3c983a637445ddc2101f59a9f55598566f900caafbf5575fdfac74
+  - module: raos.ports.queue
+    uri: repo://python/raos/ports/queue.py
+    sha256: 97bf4cc18221a21949dd62273008067ea9a631c188a9ba5dcbf15a83679020df
+  - module: raos.ports.step_up
+    uri: repo://python/raos/ports/step_up.py
+    sha256: 50a676339aebf9b101c22ce2ee0524c99300a913320ce00250ef718775208e0a
+  - module: raos.ports.telemetry
+    uri: repo://python/raos/ports/telemetry.py
+    sha256: 7892fc09f5913b96be84b35e1da118cd0a031669cca133bdcb58af8cc8fb2db9
+  runtime_namespace_packages:
+  - raos.adapters
+  - raos.application
+  - raos.domain
+  - raos.ports
+source_artifact_count: 9
+source_artifacts:
+- uri: repo://changes/st-1605/contracts/failure-injection-drill.v1.yaml
+  bytes: 10769
+  sha256: e99058f7b008313fa761f4d509c8486fd1c4b23027cdfdac704168446ce880e5
+- uri: repo://changes/st-1605/README.md
+  bytes: 6713
+  sha256: 237fb2c609ced29e20ae99889d7159011074b344bd37d62f2718509e0f05a993
+- uri: repo://changes/st-1605/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v1.yaml
+  bytes: 3169
+  sha256: 575f01263d97e9959873c049757dd9fe3229d80dadfaf64e6c9b9053ba640bcb
+- uri: repo://scripts/build_st1605_failure_injection_drill.py
+  bytes: 81461
+  sha256: b484a102a7ce717ab55c7e215bcd81ec326159639768f281d0b3724e735f6661
+- uri: repo://tests/st1605/conftest.py
+  bytes: 2102
+  sha256: fb05aa343357bf21c0483b8b0e92909ea019646815fa2464d9acdbb9f8dc68af
+- uri: repo://tests/st1605/test_contract.py
+  bytes: 7168
+  sha256: b79067256fd02d915908ef6b8f80ed4dbada10abfb9bee30b139e07677d497fa
+- uri: repo://tests/st1605/test_generation.py
+  bytes: 25942
+  sha256: e4ac4579825b1b5a281ae8fe7a88d2b6aa0f3e68bf2725cf30d460767e75a456
+- uri: repo://tests/st1605/test_scenarios.py
+  bytes: 6410
+  sha256: 3075e87b79b31d33736f120b2f47a269de0c950f4dd3f8fa0d354f24ebea54ad
+- uri: repo://tests/st1605/test_negative_cases.py
+  bytes: 25808
+  sha256: ced4d0c23fa51f967b6efb955f9073831b39746f7d62ff7426193518e588b345
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-1605/generated/failure-injection-drill.local-synthetic-evidence.v1.json
+  bytes: 21314
+  sha256: 6f15fec141acadf2744340050d9801514f1a784598f9fde0aa8a08239eeb364a
+manifest_self_integrity:
+  included_in_generated_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  classification: LOCAL_SYNTHETIC_NON_ATTESTING
+  formal_tst_028: NOT_EXECUTED
+  recorded_safe_degradation_evaluations: 6
+  recorded_synthetic_responder_responses: 6
+  recorded_synthetic_responder_is_actual_owner: false
+  owner_response: NOT_EXECUTED
+  runbook_validation: NOT_EXECUTED
+  staging_drill: NOT_EXECUTED
+  story_acceptance: false
+  st_1607_eligible: false
+  effective_canonical_status: UNCHANGED
