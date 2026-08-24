@@ -142,10 +142,10 @@ EXPECTED_SOURCE_HASHES: Final = {
 
 EXPECTED_DEPENDENCY_HASHES: Final = {
     "changes/st-1607/generated/gate-evidence-pack.local-blocked.v1.json": (
-        "b22dc4587a80cd2e679af7f0c038194812573c77a9e635ce074c40665a147261"
+        "3ff622e63bbf4ae7d20fdf6bae3564efb84042bedb7245c4f87dd0d8a8b3a6f1"
     ),
     "changes/st-1607/manifest.yaml": (
-        "5ffad284b6c97d404f10ba5d1708550d5c511d54c67749d66fd565500c5b8a40"
+        "9bed8165d21821fed63d737d145619c369403debc58924b36c466ffdc90003a3"
     ),
     "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml": (
         "49902bbbbfe791f313c68c7d450c47271972bbf94f7486d2837040fdbceb0371"

@@ -127,10 +127,10 @@ EXPECTED_SOURCE_HASHES: Final = {
 
 EXPECTED_DEPENDENCY_HASHES: Final = {
     "changes/st-1705/generated/pilot-security-recovery-signoff.local-blocked.v1.json": (
-        "012f5f1eb930105c7d1bbc19500d6133afd60a717dc453aec4993ff9137bb5d4"
+        "81e776375b6faaaa55a4f2d45bf75750f3bbcf03450b6b3d8ba07723b1d82909"
     ),
     "changes/st-1705/manifest.yaml": (
-        "5efaba638a756839bbd2067e54e2504bbf285bc3e93b2f1c49c89e26db29df30"
+        "b21c4a683237cefb0f215e2bb17b3438bee314f5d716d180a0963c9e3cba698d"
     ),
     "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json": (
         "cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88"

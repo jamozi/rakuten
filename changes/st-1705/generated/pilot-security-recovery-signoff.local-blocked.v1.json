@@ -66,12 +66,12 @@
         {
           "kind": "GENERATED_LOCAL_BLOCKED_GATE_PACK",
           "uri": "repo://changes/st-1607/generated/gate-evidence-pack.local-blocked.v1.json",
-          "sha256": "b22dc4587a80cd2e679af7f0c038194812573c77a9e635ce074c40665a147261"
+          "sha256": "3ff622e63bbf4ae7d20fdf6bae3564efb84042bedb7245c4f87dd0d8a8b3a6f1"
         },
         {
           "kind": "MANIFEST",
           "uri": "repo://changes/st-1607/manifest.yaml",
-          "sha256": "5ffad284b6c97d404f10ba5d1708550d5c511d54c67749d66fd565500c5b8a40"
+          "sha256": "9bed8165d21821fed63d737d145619c369403debc58924b36c466ffdc90003a3"
         }
       ]
     },

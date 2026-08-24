@@ -37,7 +37,7 @@ from raos.domain.analytics.gate2_observation import (  # noqa: E402
 
 
 CONTRACT_DIGEST = Sha256Digest(
-    "e85bfb0886be3f51ab99f81c6654efcdb88397cdfc43cc627ac984db2ee84e72"
+    "bb05923b77d48424692879b8fa9c4acba2de7b76a27c37085186684a99ca1b00"
 )
 INPUT_DIGEST = Sha256Digest(
     "5dd59db906b6c3fbb234ec725fef375280f2b8234ceb94e339270b5abddb4e62"

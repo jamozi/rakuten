@@ -20,7 +20,7 @@ provenance:
   reviewed_implementation_tree_commit_status: ABSENT
   reviewed_implementation_tree_commit: null
   reviewed_implementation_tree_commit_qualifying_evidence: false
-  contract_sha256: 0e5bc04f061a0ae5c4c03cd2ff363da55c4af45777f3cd7e7d775dd400b97d43
+  contract_sha256: 2c95c189987b1072a16aae0446f65a0aacd976173059165af1d3274ab2ca4040
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -56,11 +56,11 @@ provenance:
   - uri: repo://changes/st-1603/manifest.yaml
     sha256: bce4c04cbba7ae8bfa927e0cf7a580a7089fa5e2bc3bd037643fbb0a6b27d3c1
   - uri: repo://changes/st-1605/contracts/failure-injection-drill.v1.yaml
-    sha256: e99058f7b008313fa761f4d509c8486fd1c4b23027cdfdac704168446ce880e5
+    sha256: 38a2510ee368938227fe3b20b25671e6f0df42b105314650badcbe374e04d706
   - uri: repo://changes/st-1605/generated/failure-injection-drill.local-synthetic-evidence.v1.json
-    sha256: 6f15fec141acadf2744340050d9801514f1a784598f9fde0aa8a08239eeb364a
+    sha256: 898df290a5bcfc738e4c7e12405b5478bb4dd659a58a68c77f1a542e48aa722d
   - uri: repo://changes/st-1605/manifest.yaml
-    sha256: d73a7e0e11db3c36b79acb5dcb5bf28edea6f0f67d99839611ee2e8c2769453a
+    sha256: 553b56a102645c81963732954ab2664a7206fc7648ff4cdacff10d565c260594
   - uri: repo://changes/st-1606/contracts/backup-restore-drill.v1.yaml
     sha256: fad487c3c241f1105056fbd1f7d5a5ce936b404496dfdda392473a92af657363
   - uri: repo://changes/st-1606/generated/backup-restore-drill.reference-plan.v1.json
@@ -81,7 +81,7 @@ source_artifact_count: 9
 source_artifacts:
 - uri: repo://changes/st-1607/contracts/gate-evidence-pack.v1.yaml
   bytes: 12861
-  sha256: 0e5bc04f061a0ae5c4c03cd2ff363da55c4af45777f3cd7e7d775dd400b97d43
+  sha256: 2c95c189987b1072a16aae0446f65a0aacd976173059165af1d3274ab2ca4040
 - uri: repo://changes/st-1607/README.md
   bytes: 5828
   sha256: eaabe1e6537f6a33be23885f0bd93535936a6ff962553ebd58628c3acb5395f2
@@ -90,7 +90,7 @@ source_artifacts:
   sha256: 9a0d784fe8b00c7c4b79a8e28ffa8194be9376355bcbffe527f732fd43ee2c15
 - uri: repo://scripts/build_st1607_gate_evidence_pack.py
   bytes: 93189
-  sha256: dfe708213ea21507694b452d25a889981b09f1f3f2eceb84c583ccd5ac6c5d27
+  sha256: 33d9bdc48db497e9ab85c76d161ee03021ed8a67257c812f5d72f14196463cef
 - uri: repo://tests/st1607/conftest.py
   bytes: 864
   sha256: c53e57a5d7d5b84fe5c69213672348911db1ae1d37d4dc0842359a6b57506c07
@@ -110,7 +110,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1607/generated/gate-evidence-pack.local-blocked.v1.json
   bytes: 17474
-  sha256: b22dc4587a80cd2e679af7f0c038194812573c77a9e635ce074c40665a147261
+  sha256: 3ff622e63bbf4ae7d20fdf6bae3564efb84042bedb7245c4f87dd0d8a8b3a6f1
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check

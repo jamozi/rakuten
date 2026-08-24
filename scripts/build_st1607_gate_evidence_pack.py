@@ -158,13 +158,13 @@ EXPECTED_DEPENDENCY_HASHES: Final = {
         "bce4c04cbba7ae8bfa927e0cf7a580a7089fa5e2bc3bd037643fbb0a6b27d3c1"
     ),
     "changes/st-1605/contracts/failure-injection-drill.v1.yaml": (
-        "e99058f7b008313fa761f4d509c8486fd1c4b23027cdfdac704168446ce880e5"
+        "38a2510ee368938227fe3b20b25671e6f0df42b105314650badcbe374e04d706"
     ),
     "changes/st-1605/generated/failure-injection-drill.local-synthetic-evidence.v1.json": (
-        "6f15fec141acadf2744340050d9801514f1a784598f9fde0aa8a08239eeb364a"
+        "898df290a5bcfc738e4c7e12405b5478bb4dd659a58a68c77f1a542e48aa722d"
     ),
     "changes/st-1605/manifest.yaml": (
-        "d73a7e0e11db3c36b79acb5dcb5bf28edea6f0f67d99839611ee2e8c2769453a"
+        "553b56a102645c81963732954ab2664a7206fc7648ff4cdacff10d565c260594"
     ),
     "changes/st-1606/contracts/backup-restore-drill.v1.yaml": (
         "fad487c3c241f1105056fbd1f7d5a5ce936b404496dfdda392473a92af657363"
