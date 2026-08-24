@@ -3624,3 +3624,27 @@ original result.
   no-clobber hard-link install. Target swaps before and after exchange, fresh
   target races, parent-directory swaps, rollback and cleanup preserve foreign
   material and fail closed. No generator race debt remains open for ST-0803.
+
+### 2026-08-24 W2 / ST-0805 local policy receipt consumer V2
+
+- `DEBT-W2-066` ST-0805 owner slice status: `CLOSED_LOCAL_IMPLEMENTATION`.
+  The additive V2 runtime independently re-evaluates and binds the exact
+  ST-0605 coverage report/receipt, the exact ST-0802 UUIDv7 DRAFT and canonical
+  Content AST, and the exact ST-0804 recommendation report/receipt. The
+  complete ST-0605 COMPARISON receipt and ST-0803's precomputed COMPARISON
+  tuple view are derived from one article/version/body/Packet/Claim-set core,
+  preserving both predecessor contracts without circular validation.
+  Candidate-universe, axis-catalog, Fact-set, temporal-scope, decision-context,
+  methodology, legacy policy-result, and aggregate input hashes are fixed.
+- The canonical 40 policies, 8 quality axes, 13 zero-tolerance blockers, and 12
+  gates remain evaluated by the unchanged V1 calculator. V2 adds bounds,
+  recursive Unicode/leet finance-key rejection, explicit UNEVALUABLE/BLOCK
+  separation, immutable receipts, and a race-safe owner generator. Unknown,
+  missing, conflict, and unevaluated material cannot become zero or PASS.
+  Findings and waivers remain proposals only; all approval, apply, merge,
+  override, ranking, publication, activation, and Production authority is
+  false.
+- `DEBT-W2-066` overall remains `OPEN` for its independently owned ST-0606 and
+  ST-0806 consumer slices. ST-0805 introduced no local implementation debt.
+  Formal TST-019/TST-020, hosted CI, live validation, staging, release,
+  publication, and Production remain `NOT_EXECUTED`.

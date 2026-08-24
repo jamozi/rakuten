@@ -1,0 +1,52 @@
+schema_version: 2
+story_id: ST-0805
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
+base_integration_sha: 8522870c8fcaf959f7d037a812e468bf172b5e97
+implementation:
+  additive_v2: true
+  legacy_v1_compatible: true
+  exact_st0802_draft_ast_binding: true
+  exact_st0605_coverage_report_receipt_binding: true
+  exact_st0804_recommendation_report_receipt_binding: true
+  canonical_40_policy_13_zero_tolerance_12_gate_evaluation: true
+  explicit_unknown_missing_conflict_unevaluated: true
+  recursive_unicode_finance_alias_rejection: true
+  findings_and_waivers_proposal_only: true
+  process_local_recording_only: true
+  foreign_preserving_atomic_generation: true
+authority:
+  approval_authorized: false
+  waiver_apply_authorized: false
+  merge_authorized: false
+  recommendation_override_authorized: false
+  ranking_override_authorized: false
+  publication_authorized: false
+  activation_authorized: false
+  production_eligible: false
+local_checks:
+  focused_runtime_suite: PASS
+  historical_st0805_suite: PASS
+  st0605_regression: PASS
+  st0802_regression: PASS
+  st0804_v2_regression: PASS
+  owner_generator_check: PASS
+  compile_import: PASS
+  ruff_check: PASS
+  ruff_format_check: PASS
+  strict_mypy: PASS
+  secret_scan: PASS
+  git_diff_check: PASS
+debt:
+  introduced_local_debt: NONE
+  debt_w2_066_st0805_consumer_slice: CLOSED_LOCAL_IMPLEMENTATION
+not_executed:
+  canonical_registry_apply: NOT_EXECUTED
+  formal_tst_019: NOT_EXECUTED
+  formal_tst_020: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_validation: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  production: NOT_EXECUTED
