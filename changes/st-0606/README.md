@@ -1,4 +1,46 @@
-# ST-0606 disabled headless evidence workspace model
+# ST-0606 evidence workspace
+
+Status: `LOCAL_CODE_COMPLETE` / additive V2 recorded headless read projection
+
+The additive V2 consumes the current ST-0604 Source Packet lifecycle source and
+the current ST-0605 recorded synthetic coverage runtime. It projects typed
+Source, Fact, Conflict, Coverage, Claim–Evidence Matrix, and validation
+attestation read models for the canonical `EVD-001..004` screens. ST-0605's
+report and every attestation are bound by exact kind, subject digest, input
+digest, contract version/digest, owner, and decision digest. ST-0604 remains the
+lifecycle authority and currently reports no ready Packet.
+
+This is an `ENV-DEV`/`ENV-CI` recorded/synthetic model only. It does not expose
+source body bytes or URLs. Recorded ST-0605 coverage is labelled non-live and
+non-publication-authoritative. Current lifecycle absence, current freshness,
+and other unevaluated values remain `UNAVAILABLE`, `UNKNOWN`, or `null`; they
+are never converted to zero or pass. The known empty Conflict collection in the
+fixed fixture is separately labelled and may accurately report zero.
+
+Each displayed Fact and Claim–Evidence Matrix row has a deterministic semantic
+focus path to its Source metadata in at most two steps. The screen contract
+defines a skip link, one H1, a main landmark, labelled sections, text-plus-icon
+status, table captions and column/row scope, and keyboard order. No DOM or route
+is activated, so browser, keyboard, zoom, and screen-reader evidence remains
+`NOT_EXECUTED`.
+
+OD-010 remains unresolved. All four EVD routes are unregistered, role metadata
+is display-only, and authentication, authorization, backend data, network,
+actions, mutation, persistence, publication, activation, staging, release, and
+Production authority are false. Affiliate compensation, commercial-performance,
+and recommendation-ordering inputs are prohibited from the projection.
+
+Generate and verify the owner artifacts with the pinned local Python runtime:
+
+```text
+.venv/bin/python scripts/build_st0606_evidence_workspace_v2.py
+.venv/bin/python scripts/build_st0606_evidence_workspace_v2.py --check
+```
+
+The generated JSON and TypeScript string constant must not be edited manually.
+The committed V1 implementation below remains compatible and unchanged.
+
+## Historical V1 disabled model
 
 Status: `LOCAL_IMPLEMENTATION_CANDIDATE` / partial maximum-safe slice
 

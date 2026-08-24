@@ -1,0 +1,210 @@
+document:
+  schema_version: 2
+  story_id: ST-0606
+  classification: MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_EVIDENCE_WORKSPACE_V2
+  status: LOCAL_CODE_COMPLETE
+  executable_environments:
+    - ENV-DEV
+    - ENV-CI
+  canonical_status: UNCHANGED
+  historical_v1_replaced: false
+  data_classification: CONFIDENTIAL
+  production_eligible: false
+source_bindings:
+  - story_id: ST-0604
+    semantic: CURRENT_SOURCE_PACKET_LIFECYCLE_AUTHORITY
+    artifacts:
+      - uri: repo://changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml
+        sha256: a80c41890e6bae7077728d1456f5a3b5d99b1877e047f581beff8ed41e0c2cec
+      - uri: repo://changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json
+        sha256: 00e6e974f9003ee92cb0a9b4a0ca5a975286e7fd41a6e32cf1224e312cd78cec
+      - uri: repo://changes/st-0604/manifest.yaml
+        sha256: 56144e0b9ab315a647d92c665f7502129d3576fac2d9524ca647dc29bfeabdc0
+  - story_id: ST-0605
+    semantic: CURRENT_CLAIM_EVIDENCE_REPORT_AND_ATTESTATION_AUTHORITY
+    artifacts:
+      - uri: repo://changes/st-0605/contracts/claim-evidence-runtime.v1.yaml
+        sha256: 7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb
+      - uri: repo://changes/st-0605/generated/claim-evidence-runtime-pass.v1.json
+        sha256: eb1c36bd1f70ea27e57e1720b937211286578136e701664b5fb4c8c823395226
+      - uri: repo://changes/st-0605/runtime-manifest.v1.yaml
+        sha256: 1bdc789e2faed53a66c3d6605a7fe0d4d842a21799c3a6202b02e3231eac3efb
+      - uri: repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml
+        sha256: 3eb1bccf5e6b2599690e2c9cdd2490dc0a2177e41689f8955c0bc1dfb8e068f2
+      - uri: repo://changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json
+        sha256: 820ca8cb8e302adc862be95ad9e6ca59f30ca8795ba0191018b99407aae08d74
+      - uri: repo://changes/st-0605/manifest.yaml
+        sha256: c6d79d4d566ec1bc2a3268cf3394ec5c9f4bb27a335466f12be0a87cef9e1573
+  - story_id: ST-1101
+    semantic: DISABLED_ADMIN_AUTH_AND_ROUTE_BOUNDARY
+    artifacts:
+      - uri: repo://packages/web-ui/src/route-guard.ts
+        sha256: 8395f542c7c65445fa3d1bec4a0e037c96610da8589e1807604b4fb3fa6a584f
+      - uri: repo://changes/st-1101/README.md
+        sha256: b2bb91e89d5948f8081853e39596951adcee16974ce2a6ffa159892310ead08c
+canonical_bindings:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+    sha256: 0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e
+  - uri: repo://docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml
+    sha256: dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050
+  - uri: repo://docs/canonical/02_ui/RAOS_08_component_catalog_v1.0.yaml
+    sha256: 986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2
+  - uri: repo://docs/canonical/02_ui/RAOS_08_workflow_catalog_v1.0.yaml
+    sha256: 59983683ec920cf450d0d887ee43f0b9871e500c2025562f9bec5c6bbc6fe87e
+  - uri: repo://docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv
+    sha256: 690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e
+  - uri: repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  - uri: repo://docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+screen_contract:
+  - id: EVD-001
+    name: Source Packet一覧
+    route: /admin/evidence/source-packets
+    roles:
+      - MANAGING_EDITOR
+      - EDITOR
+      - REVIEWER
+    components:
+      - UI-C001
+      - UI-C005
+      - UI-C007
+      - UI-C010
+      - UI-C035
+      - UI-C036
+  - id: EVD-002
+    name: Source Packet詳細
+    route: /admin/evidence/source-packets/{id}
+    roles:
+      - MANAGING_EDITOR
+      - EDITOR
+      - REVIEWER
+    components:
+      - UI-C001
+      - UI-C005
+      - UI-C018
+      - UI-C019
+      - UI-C020
+      - UI-C021
+      - UI-C035
+      - UI-C036
+  - id: EVD-003
+    name: Fact Explorer
+    route: /admin/evidence/facts
+    roles:
+      - EDITOR
+      - REVIEWER
+      - ANALYST
+    components:
+      - UI-C001
+      - UI-C005
+      - UI-C007
+      - UI-C019
+      - UI-C035
+      - UI-C036
+  - id: EVD-004
+    name: Evidence Conflict Queue
+    route: /admin/evidence/conflicts
+    roles:
+      - MANAGING_EDITOR
+      - EDITOR
+      - REVIEWER
+    components:
+      - UI-C001
+      - UI-C005
+      - UI-C007
+      - UI-C010
+      - UI-C035
+      - UI-C036
+projection_contract:
+  source_projection: RECORDED_SYNTHETIC_READ_ONLY
+  fact_projection: RECORDED_SYNTHETIC_READ_ONLY
+  conflict_projection: RECORDED_SYNTHETIC_READ_ONLY
+  coverage_projection: EXACT_ST0605_REPORT_READ_ONLY
+  matrix_projection: CLAIM_FACT_SOURCE_CITATION_READ_ONLY
+  lifecycle_projection: EXACT_ST0604_CURRENT_SOURCE_READ_ONLY
+  attestation_projection: EXACT_KIND_SUBJECT_INPUT_CONTRACT_PROVENANCE
+  raw_source_bytes_included: false
+  source_url_included: false
+  personal_data_included: false
+  finance_inputs_included: false
+  recommendation_ranking_inputs_included: false
+source_access_contract:
+  maximum_deterministic_actions: 2
+  action_semantics: READ_ONLY_FOCUS_PATH_CONTRACT
+  dispatch: NOT_EXECUTED
+  target: RECORDED_SOURCE_METADATA_AND_SNAPSHOT_HASH_ONLY
+unknown_contract:
+  missing: UNAVAILABLE
+  unevaluated: UNKNOWN
+  conflict: EXPLICIT_CONFLICT
+  live_freshness: UNKNOWN
+  nullable_value: null
+  unknown_as_zero_allowed: false
+  unknown_as_pass_allowed: false
+  known_recorded_empty_collection_may_be_zero: true
+accessibility_contract:
+  semantic_main_landmark: true
+  one_h1_per_screen: true
+  skip_link: true
+  status_not_color_only: true
+  table_caption: true
+  column_scope: col
+  row_scope: row
+  keyboard_order_declared: true
+  source_focus_path_declared: true
+  zoom_target_percent: 200
+  browser_verified: false
+  screen_reader_verified: false
+security_controls:
+  - IAM-001
+  - IAM-002
+  - IAM-003
+  - IAM-007
+  - APP-001
+  - APP-002
+  - APP-004
+  - APP-010
+  - APP-015
+  - DATA-003
+  - DATA-004
+  - DATA-006
+  - DATA-007
+  - SDLC-006
+  - SDLC-009
+authority_boundary:
+  route_registration: false
+  rendering: false
+  authentication: false
+  authorization: false
+  backend_data: false
+  network: false
+  user_actions: false
+  mutation: false
+  persistence: false
+  publication: false
+  activation: false
+  staging: false
+  release: false
+  production: false
+  role_metadata_is_authority: false
+verification_boundary:
+  local_owner_check: EXECUTED
+  local_model_tests: EXECUTED
+  TST-022: NOT_EXECUTED
+  TST-024: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

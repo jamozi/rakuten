@@ -86,6 +86,41 @@ export type {
 } from './evidence-workspace.ts';
 
 export {
+  EVIDENCE_WORKSPACE_V2_CLASSIFICATION,
+  EVIDENCE_WORKSPACE_V2_ERROR_CODES,
+  EVIDENCE_WORKSPACE_V2_SCREEN_IDS,
+  EvidenceWorkspaceV2Error,
+  ST0606_EVIDENCE_WORKSPACE_RECORDED_V2,
+  createEvidenceWorkspaceModelV2,
+  validateEvidenceWorkspaceProjectionV2,
+} from './evidence-workspace-v2.ts';
+export type {
+  EvidenceAttestationV2,
+  EvidenceCoverageFractionV2,
+  EvidenceCoverageReportV2,
+  EvidenceFactV2,
+  EvidenceMatrixRowV2,
+  EvidenceSemanticViewV2,
+  EvidenceSourceAccessPathV2,
+  EvidenceSourceAccessStepV2,
+  EvidenceSourceSnapshotV2,
+  EvidenceSourceV2,
+  EvidenceStatusCueV2,
+  EvidenceTableColumnV2,
+  EvidenceTableV2,
+  EvidenceWorkspaceModelV2,
+  EvidenceWorkspaceProjectionV2,
+  EvidenceWorkspaceScreenIdV2,
+  EvidenceWorkspaceScreenV2,
+  EvidenceWorkspaceV2ErrorCode,
+  EvidenceWorkspaceV2Input,
+} from './evidence-workspace-v2.ts';
+export {
+  ST0606_RECORDED_PROJECTION_V2_JSON,
+  ST0606_RECORDED_PROJECTION_V2_SHA256,
+} from './evidence-workspace-recorded.v2.ts';
+
+export {
   AI_GOVERNANCE_MODEL_ERROR_CODES,
   AI_GOVERNANCE_SCREEN,
   AI_GOVERNANCE_SECTION_IDS,
