@@ -9,7 +9,12 @@ from typing import TypeVar, cast
 from uuid import UUID
 
 from raos.application.iam.authentication import AuthenticationService
-from raos.domain.iam.authentication import Session, SessionId
+from raos.domain.iam.authentication import (
+    Session,
+    SessionId,
+    snapshot_session,
+    snapshot_session_id,
+)
 from raos.domain.iam.step_up import (
     BoundStepUpGrant,
     BoundStepUpGrantId,
@@ -31,6 +36,16 @@ from raos.domain.iam.step_up import (
     StepUpVerificationReceiptId,
     fail_step_up,
     require_step_up_utc,
+    snapshot_bound_step_up_grant,
+    snapshot_bound_step_up_grant_id,
+    snapshot_step_up_binding,
+    snapshot_step_up_challenge,
+    snapshot_step_up_challenge_id,
+    snapshot_step_up_command_id,
+    snapshot_step_up_command_result,
+    snapshot_step_up_grant,
+    snapshot_step_up_receipt_id,
+    snapshot_step_up_verification,
 )
 from raos.ports.step_up import (
     StepUpChallengeVerifier,
@@ -41,22 +56,31 @@ from raos.ports.step_up import (
 
 
 def _normalize_grant(candidate: StepUpGrant) -> StepUpGrant:
-    failed = False
-    normalized: StepUpGrant | None = None
     try:
-        normalized = StepUpGrant(
-            session_id=candidate.session_id,
-            issuer=candidate.issuer,
-            subject=candidate.subject,
-            assurance_type=candidate.assurance_type,
-            authenticated_at=candidate.authenticated_at,
-            expires_at=candidate.expires_at,
-        )
+        return snapshot_step_up_grant(candidate)
     except Exception:
-        failed = True
-    if failed or normalized is None:
         fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
-    return normalized
+
+
+def _require_unchanged(before: object, after: object, code: StepUpFailureCode) -> None:
+    try:
+        unchanged = type(before) is type(after) and before == after
+    except Exception:
+        unchanged = False
+    if not unchanged:
+        fail_step_up(code)
+
+
+def _require_zero_external_actions(
+    verifier: StepUpChallengeVerifier, *, failure: StepUpFailureCode
+) -> None:
+    try:
+        first = verifier.external_action_count
+        second = verifier.external_action_count
+    except Exception:
+        fail_step_up(failure)
+    if type(first) is not int or type(second) is not int or first != 0 or second != 0:
+        fail_step_up(failure)
 
 
 def _same_session(grant: StepUpGrant, session: Session) -> bool:
@@ -93,13 +117,28 @@ class StepUpGuard:
         are intentionally checked by ST-0401 before the verifier is invoked.
         """
 
-        session = self._session_service.require_session(session_id=session_id, now=now)
+        try:
+            requested_session_id = snapshot_session_id(session_id)
+        except Exception:
+            fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+        session = snapshot_session(
+            self._session_service.require_session(
+                session_id=requested_session_id, now=now
+            )
+        )
         observed_at = require_step_up_utc(now)
 
         outcome: object = None
         verifier_failure: StepUpFailureCode | None = None
+        verifier_session = snapshot_session(session)
+        verifier_baseline = snapshot_session(verifier_session)
         try:
-            outcome = self._verifier.verify(session=session, now=observed_at)
+            outcome = self._verifier.verify(session=verifier_session, now=observed_at)
+            _require_unchanged(
+                verifier_baseline,
+                snapshot_session(verifier_session),
+                StepUpFailureCode.VERIFIER_FAILURE,
+            )
         except StepUpFailure as error:
             if (
                 type(error) is StepUpFailure
@@ -134,7 +173,7 @@ class StepUpGuard:
             fail_step_up(StepUpFailureCode.SESSION_MISMATCH)
         if not _same_principal(grant, session):
             fail_step_up(StepUpFailureCode.PRINCIPAL_MISMATCH)
-        return grant
+        return snapshot_step_up_grant(grant)
 
 
 _IdentifierT = TypeVar(
@@ -162,7 +201,10 @@ def _lifecycle_failure(
         fail_step_up(fallback)
     if type(result) is not StepUpCommandResult:
         fail_step_up(fallback)
-    return result
+    try:
+        return snapshot_step_up_command_result(result)
+    except Exception:
+        fail_step_up(fallback)
 
 
 def _repository_read(
@@ -177,6 +219,44 @@ def _repository_read(
     except Exception:
         fail_step_up(StepUpFailureCode.STORAGE_FAILURE)
     if type(result) is not expected_type:
+        fail_step_up(StepUpFailureCode.STORAGE_FAILURE)
+    detached: object
+    try:
+        if expected_type is StepUpChallenge:
+            detached = snapshot_step_up_challenge(result)
+        elif expected_type is StepUpVerificationReceipt:
+            detached = snapshot_step_up_verification(result)
+        elif expected_type is BoundStepUpGrant:
+            detached = snapshot_bound_step_up_grant(result)
+        else:
+            fail_step_up(StepUpFailureCode.STORAGE_FAILURE)
+    except Exception:
+        fail_step_up(StepUpFailureCode.STORAGE_FAILURE)
+    return cast(_RepositoryValueT, detached)
+
+
+def _repository_command(
+    operation: Callable[[], object],
+    tracked: tuple[tuple[object, Callable[[object], object]], ...],
+) -> StepUpCommandResult:
+    """Invoke a repository only with detached values that it cannot mutate."""
+
+    baselines: list[object] = []
+    try:
+        baselines = [snapshotter(value) for value, snapshotter in tracked]
+    except Exception:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+    result = _lifecycle_failure(operation)
+    try:
+        for baseline, (value, snapshotter) in zip(baselines, tracked, strict=True):
+            _require_unchanged(
+                baseline,
+                snapshotter(value),
+                StepUpFailureCode.STORAGE_FAILURE,
+            )
+    except StepUpFailure:
+        raise
+    except Exception:
         fail_step_up(StepUpFailureCode.STORAGE_FAILURE)
     return result
 
@@ -208,6 +288,9 @@ class DurableStepUpService:
             raise TypeError("entropy must implement StepUpEntropySource")
         if type(policy) is not CriticalStepUpPolicyRegistry:
             raise TypeError("policy must be an exact CriticalStepUpPolicyRegistry")
+        _require_zero_external_actions(
+            verifier, failure=StepUpFailureCode.CLAIM_MALFORMED
+        )
         self._session_service = session_service
         self._repository = repository
         self._verifier = verifier
@@ -279,15 +362,27 @@ class DurableStepUpService:
         expires_at: datetime,
     ) -> StepUpCommandResult:
         observed_at = require_step_up_utc(now)
-        session = self._session_service.require_session(
-            session_id=session_id, now=observed_at
-        )
+        try:
+            received_command_id = snapshot_step_up_command_id(command_id)
+            received_session_id = snapshot_session_id(session_id)
+            if type(resource_id) is not UUID:
+                fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+            received_resource_id = UUID(str(resource_id))
+        except StepUpFailure:
+            raise
+        except Exception:
+            fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
         self._policy.require(action=action, resource_type=resource_type)
+        session = snapshot_session(
+            self._session_service.require_session(
+                session_id=received_session_id, now=observed_at
+            )
+        )
         binding = self._binding_for(
             session=session,
             action=action,
             resource_type=resource_type,
-            resource_id=resource_id,
+            resource_id=received_resource_id,
         )
         challenge = StepUpChallenge(
             challenge_id=self._identifier(StepUpChallengeId),
@@ -295,10 +390,16 @@ class DurableStepUpService:
             created_at=observed_at,
             expires_at=expires_at,
         )
-        return _lifecycle_failure(
+        repository_command = snapshot_step_up_command_id(received_command_id)
+        repository_challenge = snapshot_step_up_challenge(challenge)
+        return _repository_command(
             lambda: self._repository.create_challenge(
-                command_id=command_id, challenge=challenge
-            )
+                command_id=repository_command, challenge=repository_challenge
+            ),
+            (
+                (repository_command, snapshot_step_up_command_id),
+                (repository_challenge, snapshot_step_up_challenge),
+            ),
         )
 
     def verify_challenge(
@@ -311,11 +412,27 @@ class DurableStepUpService:
         expires_at: datetime,
     ) -> StepUpCommandResult:
         observed_at = require_step_up_utc(now)
-        session = self._session_service.require_session(
-            session_id=session_id, now=observed_at
+        try:
+            received_command_id = snapshot_step_up_command_id(command_id)
+            received_session_id = snapshot_session_id(session_id)
+            received_challenge_id = snapshot_step_up_challenge_id(challenge_id)
+        except Exception:
+            fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+        session = snapshot_session(
+            self._session_service.require_session(
+                session_id=received_session_id, now=observed_at
+            )
         )
+        repository_challenge_id = snapshot_step_up_challenge_id(received_challenge_id)
+        challenge_id_baseline = snapshot_step_up_challenge_id(repository_challenge_id)
         challenge = _repository_read(
-            lambda: self._repository.load_challenge(challenge_id), StepUpChallenge
+            lambda: self._repository.load_challenge(repository_challenge_id),
+            StepUpChallenge,
+        )
+        _require_unchanged(
+            challenge_id_baseline,
+            snapshot_step_up_challenge_id(repository_challenge_id),
+            StepUpFailureCode.STORAGE_FAILURE,
         )
         self._require_session_binding(challenge.binding, session)
         if observed_at < challenge.created_at or observed_at >= challenge.expires_at:
@@ -324,17 +441,51 @@ class DurableStepUpService:
         if not observed_at < normalized_expiry <= challenge.expires_at:
             fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
         receipt_id = self._identifier(StepUpVerificationReceiptId)
+        verifier_challenge = snapshot_step_up_challenge(challenge)
+        verifier_challenge_baseline = snapshot_step_up_challenge(verifier_challenge)
+        verifier_receipt_id = snapshot_step_up_receipt_id(receipt_id)
+        verifier_receipt_baseline = snapshot_step_up_receipt_id(verifier_receipt_id)
+        _require_zero_external_actions(
+            self._verifier, failure=StepUpFailureCode.VERIFIER_FAILURE
+        )
+        verification: object = None
+        verifier_failure: StepUpFailureCode | None = None
         try:
             verification = self._verifier.verify(
-                challenge=challenge,
-                receipt_id=receipt_id,
+                challenge=verifier_challenge,
+                receipt_id=verifier_receipt_id,
                 now=observed_at,
                 expires_at=normalized_expiry,
             )
         except StepUpFailure as error:
             if type(error) is StepUpFailure and type(error.code) is StepUpFailureCode:
-                fail_step_up(error.code)
-            fail_step_up(StepUpFailureCode.VERIFIER_FAILURE)
+                verifier_failure = error.code
+            else:
+                verifier_failure = StepUpFailureCode.VERIFIER_FAILURE
+        except Exception:
+            verifier_failure = StepUpFailureCode.VERIFIER_FAILURE
+        try:
+            _require_zero_external_actions(
+                self._verifier, failure=StepUpFailureCode.VERIFIER_FAILURE
+            )
+            _require_unchanged(
+                verifier_challenge_baseline,
+                snapshot_step_up_challenge(verifier_challenge),
+                StepUpFailureCode.VERIFIER_FAILURE,
+            )
+            _require_unchanged(
+                verifier_receipt_baseline,
+                snapshot_step_up_receipt_id(verifier_receipt_id),
+                StepUpFailureCode.VERIFIER_FAILURE,
+            )
+        except StepUpFailure:
+            verifier_failure = StepUpFailureCode.VERIFIER_FAILURE
+        except Exception:
+            verifier_failure = StepUpFailureCode.VERIFIER_FAILURE
+        if verifier_failure is not None:
+            fail_step_up(verifier_failure)
+        try:
+            verification = snapshot_step_up_verification(verification)
         except Exception:
             fail_step_up(StepUpFailureCode.VERIFIER_FAILURE)
         if (
@@ -346,12 +497,18 @@ class DurableStepUpService:
             or verification.expires_at != normalized_expiry
         ):
             fail_step_up(StepUpFailureCode.VERIFIER_FAILURE)
-        return _lifecycle_failure(
+        repository_command = snapshot_step_up_command_id(received_command_id)
+        repository_verification = snapshot_step_up_verification(verification)
+        return _repository_command(
             lambda: self._repository.record_verification(
-                command_id=command_id,
-                verification=verification,
+                command_id=repository_command,
+                verification=repository_verification,
                 now=observed_at,
-            )
+            ),
+            (
+                (repository_command, snapshot_step_up_command_id),
+                (repository_verification, snapshot_step_up_verification),
+            ),
         )
 
     def issue_grant(
@@ -364,12 +521,27 @@ class DurableStepUpService:
         expires_at: datetime,
     ) -> StepUpCommandResult:
         observed_at = require_step_up_utc(now)
-        session = self._session_service.require_session(
-            session_id=session_id, now=observed_at
+        try:
+            received_command_id = snapshot_step_up_command_id(command_id)
+            received_session_id = snapshot_session_id(session_id)
+            received_receipt_id = snapshot_step_up_receipt_id(receipt_id)
+        except Exception:
+            fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+        session = snapshot_session(
+            self._session_service.require_session(
+                session_id=received_session_id, now=observed_at
+            )
         )
+        repository_receipt_id = snapshot_step_up_receipt_id(received_receipt_id)
+        receipt_id_baseline = snapshot_step_up_receipt_id(repository_receipt_id)
         verification = _repository_read(
-            lambda: self._repository.load_verification(receipt_id),
+            lambda: self._repository.load_verification(repository_receipt_id),
             StepUpVerificationReceipt,
+        )
+        _require_unchanged(
+            receipt_id_baseline,
+            snapshot_step_up_receipt_id(repository_receipt_id),
+            StepUpFailureCode.STORAGE_FAILURE,
         )
         self._require_session_binding(verification.binding, session)
         if (
@@ -387,12 +559,18 @@ class DurableStepUpService:
             issued_at=observed_at,
             expires_at=normalized_expiry,
         )
-        return _lifecycle_failure(
+        repository_command = snapshot_step_up_command_id(received_command_id)
+        repository_grant = snapshot_bound_step_up_grant(grant)
+        return _repository_command(
             lambda: self._repository.issue_grant(
-                command_id=command_id,
-                grant=grant,
+                command_id=repository_command,
+                grant=repository_grant,
                 now=observed_at,
-            )
+            ),
+            (
+                (repository_command, snapshot_step_up_command_id),
+                (repository_grant, snapshot_bound_step_up_grant),
+            ),
         )
 
     def consume_grant(
@@ -407,23 +585,44 @@ class DurableStepUpService:
         now: datetime,
     ) -> StepUpCommandResult:
         observed_at = require_step_up_utc(now)
-        session = self._session_service.require_session(
-            session_id=session_id, now=observed_at
-        )
+        try:
+            received_command_id = snapshot_step_up_command_id(command_id)
+            received_session_id = snapshot_session_id(session_id)
+            received_grant_id = snapshot_bound_step_up_grant_id(grant_id)
+            if type(resource_id) is not UUID:
+                fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+            received_resource_id = UUID(str(resource_id))
+        except StepUpFailure:
+            raise
+        except Exception:
+            fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
         self._policy.require(action=action, resource_type=resource_type)
+        session = snapshot_session(
+            self._session_service.require_session(
+                session_id=received_session_id, now=observed_at
+            )
+        )
         binding = self._binding_for(
             session=session,
             action=action,
             resource_type=resource_type,
-            resource_id=resource_id,
+            resource_id=received_resource_id,
         )
-        return _lifecycle_failure(
+        repository_command = snapshot_step_up_command_id(received_command_id)
+        repository_grant_id = snapshot_bound_step_up_grant_id(received_grant_id)
+        repository_binding = snapshot_step_up_binding(binding)
+        return _repository_command(
             lambda: self._repository.consume_grant(
-                command_id=command_id,
-                grant_id=grant_id,
-                expected_binding=binding,
+                command_id=repository_command,
+                grant_id=repository_grant_id,
+                expected_binding=repository_binding,
                 now=observed_at,
-            )
+            ),
+            (
+                (repository_command, snapshot_step_up_command_id),
+                (repository_grant_id, snapshot_bound_step_up_grant_id),
+                (repository_binding, snapshot_step_up_binding),
+            ),
         )
 
     def revoke_grant(
@@ -438,27 +637,56 @@ class DurableStepUpService:
         now: datetime,
     ) -> StepUpCommandResult:
         observed_at = require_step_up_utc(now)
-        session = self._session_service.require_session(
-            session_id=session_id, now=observed_at
-        )
+        try:
+            received_command_id = snapshot_step_up_command_id(command_id)
+            received_session_id = snapshot_session_id(session_id)
+            received_grant_id = snapshot_bound_step_up_grant_id(grant_id)
+            if type(resource_id) is not UUID:
+                fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+            received_resource_id = UUID(str(resource_id))
+        except StepUpFailure:
+            raise
+        except Exception:
+            fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
         self._policy.require(action=action, resource_type=resource_type)
+        session = snapshot_session(
+            self._session_service.require_session(
+                session_id=received_session_id, now=observed_at
+            )
+        )
         binding = self._binding_for(
             session=session,
             action=action,
             resource_type=resource_type,
-            resource_id=resource_id,
+            resource_id=received_resource_id,
         )
-        return _lifecycle_failure(
+        repository_command = snapshot_step_up_command_id(received_command_id)
+        repository_grant_id = snapshot_bound_step_up_grant_id(received_grant_id)
+        repository_binding = snapshot_step_up_binding(binding)
+        return _repository_command(
             lambda: self._repository.revoke_grant(
-                command_id=command_id,
-                grant_id=grant_id,
-                expected_binding=binding,
+                command_id=repository_command,
+                grant_id=repository_grant_id,
+                expected_binding=repository_binding,
                 now=observed_at,
-            )
+            ),
+            (
+                (repository_command, snapshot_step_up_command_id),
+                (repository_grant_id, snapshot_bound_step_up_grant_id),
+                (repository_binding, snapshot_step_up_binding),
+            ),
         )
 
     def recover(self, *, command_id: StepUpCommandId) -> StepUpCommandResult:
-        return _lifecycle_failure(lambda: self._repository.recover(command_id))
+        try:
+            received_command_id = snapshot_step_up_command_id(command_id)
+        except Exception:
+            fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+        repository_command = snapshot_step_up_command_id(received_command_id)
+        return _repository_command(
+            lambda: self._repository.recover(repository_command),
+            ((repository_command, snapshot_step_up_command_id),),
+        )
 
 
 __all__ = ["DurableStepUpService", "StepUpGuard"]

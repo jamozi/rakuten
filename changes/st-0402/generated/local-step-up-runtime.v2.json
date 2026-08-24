@@ -63,6 +63,7 @@
         ],
         "role_authorization_granted": false
       },
+      "collaborator_values": "DEEP_DETACHED_INPUT_OUTPUT_WITH_MUTATION_REJECTION",
       "credential_resolution": "ABSENT",
       "environment": "ENV-DEV",
       "external_provider_calls": false,
@@ -75,23 +76,30 @@
       },
       "persistence": {
         "append_only_audit": "SHA256_HASH_CHAIN",
+        "append_only_commands": "EXACT_CANONICAL_INTENT_RESULT_AND_COMMAND_HASH_CHAIN",
+        "append_only_lifecycle": "CHALLENGE_RECEIPT_GRANT_REVISION_HASH_CHAINS",
         "classification": "OWNER_PRIVATE_RECORDED_LOCAL_ADAPTER_ONLY",
         "commit_fault_points": [
           "BEFORE_COMMIT",
           "AFTER_COMMIT"
         ],
         "compare_and_set_transitions": true,
-        "database": "SQLITE_FIXED_FILENAME_NO_CALLER_SQL",
+        "cross_restart_rollback_anchor": "ABSENT_NOT_CLAIMED",
+        "database": "SQLITE_FIXED_FILENAME_CREATED_ONLY_O_EXCL_PREEXISTING_REJECTED",
         "external_io_inside_transaction": false,
-        "known_rollback": "NO_LIFECYCLE_OR_AUDIT_CHANGE",
+        "file_identity": "OWNER_MODE_ROOT_AND_DATABASE_DEVICE_INODE_PINNED",
+        "known_rollback": "ONLY_BEFORE_COMMIT_OR_SURVIVING_TRANSACTION_NO_LIFECYCLE_COMMAND_AUDIT_CHANGE",
         "lifecycle_command_audit_atomicity": true,
         "migration_or_production_schema_authority": false,
-        "record_integrity": "CANONICAL_SHA256_PER_RECORD_AND_RELATIONSHIP_VALIDATION",
+        "record_integrity": "CANONICAL_JSON_UUID_UTC_REDUNDANT_BINDING_FULL_CHAIN_AND_RELATIONSHIP_VALIDATION",
+        "rollback_detection": "FILE_ROOT_IDENTITY_AND_PROCESS_LOCAL_VALID_PREFIX_ANCHOR",
+        "schema": "V2_STRICT_FOREIGN_KEYS_EXACT_PRAGMA_TABLE_INDEX_TRIGGER_INVENTORY",
         "st0308_alignment": "EXPLICIT_OUTER_TRANSACTION_ATOMIC_AUDIT_NO_EXTERNAL_IO_NO_BLIND_COMMIT_RETRY",
         "transaction_owner": "ADAPTER_OUTER_TRANSACTION_PER_MUTATION",
         "unknown_commit": "STORAGE_COMMIT_UNKNOWN_THEN_READ_ONLY_COMMAND_RECOVERY"
       },
       "provider_sdk": "ABSENT",
+      "recorded_external_action_count": 0,
       "transport": {
         "actions": [
           "BEGIN",
@@ -135,17 +143,17 @@
       "staging": "NOT_EXECUTED"
     }
   },
-  "contract_sha256": "62c057afde754c2aa74226cc3ae6e896e0cfaa5aaf54bdc0b21a54301a462b8e",
+  "contract_sha256": "c42931a148e4852aac9be2c1bab5012ed9c588e568daef2fe6a5c61cbd157bfa",
   "document": "RAOS_ST0402_LOCAL_STEP_UP_RUNTIME_V2",
   "generation_authority": "REPOSITORY_LOCAL_ONLY",
   "source_artifacts": [
     {
       "path": "changes/st-0402/contracts/local-step-up-runtime.v2.json",
-      "sha256": "62c057afde754c2aa74226cc3ae6e896e0cfaa5aaf54bdc0b21a54301a462b8e"
+      "sha256": "c42931a148e4852aac9be2c1bab5012ed9c588e568daef2fe6a5c61cbd157bfa"
     },
     {
       "path": "scripts/build_st0402_local_step_up_runtime.py",
-      "sha256": "cede84f65bc5e2b4dd0352c8abefad4ccee692e5a27366ca565452ae8e933fe9"
+      "sha256": "286fe99ab80d4a5c687ab31ea4e8d0353133438d9f09bbf328350228b9f38bb5"
     },
     {
       "path": "scripts/secure_generated_publication.py",
@@ -153,15 +161,15 @@
     },
     {
       "path": "python/raos/domain/iam/step_up.py",
-      "sha256": "85f8a5a2b0dded9011c54187be7b275620b80a999d9458b3fd1b06c4da8cfad5"
+      "sha256": "ae17d9db24acf4133c41e2aef8c8f035a12ec063b77da3d9c3a182605052f4a9"
     },
     {
       "path": "python/raos/ports/step_up.py",
-      "sha256": "437cd5ea9d70f90733005fb7eb42048addf2cec33fb37dbff0592c520e9a82f2"
+      "sha256": "756822270b9c71b2600ec2d631c6696d004eb1ebd51e2d3fac9d8212d7de92e9"
     },
     {
       "path": "python/raos/application/iam/step_up.py",
-      "sha256": "7005bf755d475129e1be1515bfb77d43b9e40e9cc7e7e4b89cb27b0c0b610cd4"
+      "sha256": "a1bf4216013e6cbe878f8964c936c95a9bc41c31a87b9a2272c0b26a6e70181b"
     },
     {
       "path": "python/raos/adapters/development_step_up.py",
@@ -169,11 +177,11 @@
     },
     {
       "path": "python/raos/adapters/recorded_step_up.py",
-      "sha256": "45ea13e6fc5839e5a86d054f371f247ba4631a6d6dacdde9c2dbbd1710da8c75"
+      "sha256": "d9ee50be469553949b9ea2b779df388976bc397eb8421a52c3778b437b390963"
     },
     {
       "path": "python/raos/adapters/disabled_admin_mfa_http.py",
-      "sha256": "24b573c4fad4974df6b59af31fec69915ccc3823ccd0b18e74e70871c0362012"
+      "sha256": "a765dd3299c52988b8f60e0ecb27678686652337d6135a79f9cd9c17d4b66a70"
     },
     {
       "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
@@ -209,11 +217,11 @@
     },
     {
       "path": "changes/st-0401/generated/local-auth-runtime.v2.json",
-      "sha256": "a73d66e88779f67f0fdda1e42e76831e6d11c314be336933a0fddb10a89ebbbc"
+      "sha256": "3a13c251f5cea13583696b04ae5131c81030abec75805d6773a118ce7902db6d"
     },
     {
       "path": "changes/st-0401/generated/local-auth-runtime-manifest.v2.json",
-      "sha256": "8ac73e91ff684d356144c320c36b7c6a0eb69e67d9028fe5bc48d1863e1683cb"
+      "sha256": "b95e37fccc9ebe7fe2fa9d002eaa9a20b075ebeca7c2d6f9624900e936407581"
     }
   ],
   "story_id": "ST-0402"

@@ -33,6 +33,7 @@ from raos.domain.iam.step_up import (
     StepUpVerificationReceiptId,
     fail_step_up,
     require_step_up_utc,
+    snapshot_step_up_command_result,
 )
 
 
@@ -95,6 +96,17 @@ def _instant(value: object) -> datetime:
     if normalized.isoformat(timespec="microseconds").replace("+00:00", "Z") != text:
         _fail(StepUpFailureCode.CLAIM_MALFORMED)
     return normalized
+
+
+def _uuid(value: object) -> UUID:
+    text = _string(value, maximum=36)
+    try:
+        parsed = UUID(text)
+    except ValueError:
+        _fail(StepUpFailureCode.CLAIM_MALFORMED)
+    if str(parsed) != text or parsed.int == 0:
+        _fail(StepUpFailureCode.CLAIM_MALFORMED)
+    return parsed
 
 
 def _response_body(value: object) -> dict[str, JsonScalar]:
@@ -210,7 +222,7 @@ class RecordedAdminMfaHttpRequest:
                 resource_type = StepUpResourceType(
                     _string(value["resource_type"], maximum=64)
                 )
-                resource_id = UUID(_string(value["resource_id"], maximum=36))
+                resource_id = _uuid(value["resource_id"])
             except ValueError:
                 _fail(StepUpFailureCode.CLAIM_MALFORMED)
             return cls(
@@ -286,7 +298,7 @@ class RecordedAdminMfaHttpRequest:
             resource_type = StepUpResourceType(
                 _string(value["resource_type"], maximum=64)
             )
-            resource_id = UUID(_string(value["resource_id"], maximum=36))
+            resource_id = _uuid(value["resource_id"])
         except ValueError:
             _fail(StepUpFailureCode.CLAIM_MALFORMED)
         return cls(
@@ -375,6 +387,14 @@ class AdminMfaHttpResponse:
 class RecordedAdminMfaDispatch:
     response: AdminMfaHttpResponse
     result: StepUpCommandResult | None = field(default=None, repr=False)
+
+    def __post_init__(self) -> None:
+        if type(self.response) is not AdminMfaHttpResponse:
+            raise ValueError("INVALID_ST0402_RECORDED_DISPATCH") from None
+        if self.result is not None:
+            object.__setattr__(
+                self, "result", snapshot_step_up_command_result(self.result)
+            )
 
     def __repr__(self) -> str:
         return "RecordedAdminMfaDispatch(<redacted>)"
@@ -569,7 +589,10 @@ class DisabledAdminMfaHttpAdapter:
                         resource_id=request.resource_id,
                         now=observed_at,
                     )
-            return RecordedAdminMfaDispatch(response=_success(result), result=result)
+            detached_result = snapshot_step_up_command_result(result)
+            return RecordedAdminMfaDispatch(
+                response=_success(detached_result), result=detached_result
+            )
         except AuthenticationFailure:
             return RecordedAdminMfaDispatch(
                 response=_problem("AUTHENTICATION_REJECTED")

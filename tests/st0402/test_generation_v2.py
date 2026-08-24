@@ -63,7 +63,12 @@ def test_runtime_and_manifest_keep_od010_and_all_external_authority_closed() -> 
     }
     assert all(value is False for value in contract["authority"].values())
     assert contract["runtime"]["transport"]["route_registration"] is False
+    assert type(contract["runtime"]["recorded_external_action_count"]) is int
+    assert contract["runtime"]["recorded_external_action_count"] == 0
     assert contract["runtime"]["persistence"]["external_io_inside_transaction"] is False
+    assert contract["runtime"]["persistence"]["cross_restart_rollback_anchor"] == (
+        "ABSENT_NOT_CLAIMED"
+    )
     assert contract["runtime"]["action_policy"]["mapping"] == dict(
         generator.ACTION_MAPPING
     )
@@ -112,6 +117,13 @@ def test_duplicate_nonfinite_and_wrong_contract_shapes_are_rejected() -> None:
         generator._parse_contract(b'{"schema_version":NaN}')
     with pytest.raises(generator.LocalStepUpRuntimeGenerationError):
         generator._validate_contract({"story_id": "ST-0402"})
+    contract = json.loads((REPOSITORY_ROOT / generator.CONTRACT_PATH).read_bytes())
+    contract["runtime"]["recorded_external_action_count"] = False
+    with pytest.raises(
+        generator.LocalStepUpRuntimeGenerationError,
+        match="RUNTIME_BOUNDARY_INVALID",
+    ):
+        generator._validate_contract(contract)
 
 
 def test_hash_pin_rejects_contract_or_canonical_mutation() -> None:

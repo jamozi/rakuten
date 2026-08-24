@@ -20,6 +20,8 @@
     "provider_sdk": "ABSENT",
     "credential_resolution": "ABSENT",
     "external_provider_calls": false,
+    "recorded_external_action_count": 0,
+    "collaborator_values": "DEEP_DETACHED_INPUT_OUTPUT_WITH_MUTATION_REJECTION",
     "transport": {
       "route_registration": false,
       "external_target": "/admin/mfa",
@@ -86,19 +88,25 @@
     },
     "persistence": {
       "classification": "OWNER_PRIVATE_RECORDED_LOCAL_ADAPTER_ONLY",
-      "database": "SQLITE_FIXED_FILENAME_NO_CALLER_SQL",
+      "database": "SQLITE_FIXED_FILENAME_CREATED_ONLY_O_EXCL_PREEXISTING_REJECTED",
+      "schema": "V2_STRICT_FOREIGN_KEYS_EXACT_PRAGMA_TABLE_INDEX_TRIGGER_INVENTORY",
+      "file_identity": "OWNER_MODE_ROOT_AND_DATABASE_DEVICE_INODE_PINNED",
       "transaction_owner": "ADAPTER_OUTER_TRANSACTION_PER_MUTATION",
       "lifecycle_command_audit_atomicity": true,
       "compare_and_set_transitions": true,
+      "append_only_lifecycle": "CHALLENGE_RECEIPT_GRANT_REVISION_HASH_CHAINS",
+      "append_only_commands": "EXACT_CANONICAL_INTENT_RESULT_AND_COMMAND_HASH_CHAIN",
       "append_only_audit": "SHA256_HASH_CHAIN",
       "external_io_inside_transaction": false,
       "commit_fault_points": [
         "BEFORE_COMMIT",
         "AFTER_COMMIT"
       ],
-      "known_rollback": "NO_LIFECYCLE_OR_AUDIT_CHANGE",
+      "known_rollback": "ONLY_BEFORE_COMMIT_OR_SURVIVING_TRANSACTION_NO_LIFECYCLE_COMMAND_AUDIT_CHANGE",
       "unknown_commit": "STORAGE_COMMIT_UNKNOWN_THEN_READ_ONLY_COMMAND_RECOVERY",
-      "record_integrity": "CANONICAL_SHA256_PER_RECORD_AND_RELATIONSHIP_VALIDATION",
+      "record_integrity": "CANONICAL_JSON_UUID_UTC_REDUNDANT_BINDING_FULL_CHAIN_AND_RELATIONSHIP_VALIDATION",
+      "rollback_detection": "FILE_ROOT_IDENTITY_AND_PROCESS_LOCAL_VALID_PREFIX_ANCHOR",
+      "cross_restart_rollback_anchor": "ABSENT_NOT_CLAIMED",
       "migration_or_production_schema_authority": false,
       "st0308_alignment": "EXPLICIT_OUTER_TRANSACTION_ATOMIC_AUDIT_NO_EXTERNAL_IO_NO_BLIND_COMMIT_RETRY"
     }

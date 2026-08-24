@@ -627,6 +627,228 @@ class StepUpCommandResult:
         raise TypeError("step-up command result serialization is not supported")
 
 
+def snapshot_step_up_grant(value: object) -> StepUpGrant:
+    """Return one exact detached legacy assurance grant."""
+
+    if type(value) is not StepUpGrant:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+    try:
+        return StepUpGrant(
+            session_id=SessionId(value.session_id.reveal()),
+            issuer=Issuer(value.issuer.reveal()),
+            subject=Subject(value.subject.reveal()),
+            assurance_type=value.assurance_type,
+            authenticated_at=value.authenticated_at,
+            expires_at=value.expires_at,
+        )
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+
+
+def snapshot_step_up_challenge_id(value: object) -> StepUpChallengeId:
+    if type(value) is not StepUpChallengeId:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+    try:
+        return StepUpChallengeId(value.reveal())
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+
+
+def snapshot_step_up_receipt_id(value: object) -> StepUpVerificationReceiptId:
+    if type(value) is not StepUpVerificationReceiptId:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+    try:
+        return StepUpVerificationReceiptId(value.reveal())
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+
+
+def snapshot_bound_step_up_grant_id(value: object) -> BoundStepUpGrantId:
+    if type(value) is not BoundStepUpGrantId:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+    try:
+        return BoundStepUpGrantId(value.reveal())
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+
+
+def snapshot_step_up_command_id(value: object) -> StepUpCommandId:
+    if type(value) is not StepUpCommandId:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+    try:
+        return StepUpCommandId(value.reveal())
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+
+
+def snapshot_step_up_resource(value: object) -> StepUpResource:
+    if type(value) is not StepUpResource:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+    try:
+        return StepUpResource(
+            resource_type=value.resource_type,
+            resource_id=UUID(str(value.resource_id)),
+        )
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+
+
+def snapshot_step_up_binding(value: object) -> StepUpBinding:
+    if type(value) is not StepUpBinding:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+    try:
+        return StepUpBinding(
+            session_id=SessionId(value.session_id.reveal()),
+            issuer=Issuer(value.issuer.reveal()),
+            subject=Subject(value.subject.reveal()),
+            action=value.action,
+            resource=snapshot_step_up_resource(value.resource),
+        )
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+
+
+def snapshot_step_up_challenge(value: object) -> StepUpChallenge:
+    if type(value) is not StepUpChallenge:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+    try:
+        return StepUpChallenge(
+            challenge_id=snapshot_step_up_challenge_id(value.challenge_id),
+            binding=snapshot_step_up_binding(value.binding),
+            created_at=value.created_at,
+            expires_at=value.expires_at,
+        )
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+
+
+def snapshot_step_up_verification(
+    value: object,
+) -> StepUpVerificationReceipt:
+    if type(value) is not StepUpVerificationReceipt:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+    try:
+        return StepUpVerificationReceipt(
+            receipt_id=snapshot_step_up_receipt_id(value.receipt_id),
+            challenge_id=snapshot_step_up_challenge_id(value.challenge_id),
+            binding=snapshot_step_up_binding(value.binding),
+            assurance_type=value.assurance_type,
+            verified_at=value.verified_at,
+            expires_at=value.expires_at,
+        )
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+
+
+def snapshot_bound_step_up_grant(value: object) -> BoundStepUpGrant:
+    if type(value) is not BoundStepUpGrant:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+    try:
+        return BoundStepUpGrant(
+            grant_id=snapshot_bound_step_up_grant_id(value.grant_id),
+            receipt_id=snapshot_step_up_receipt_id(value.receipt_id),
+            binding=snapshot_step_up_binding(value.binding),
+            issued_at=value.issued_at,
+            expires_at=value.expires_at,
+        )
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+
+
+def snapshot_step_up_authorization(
+    value: object,
+) -> StepUpAuthorizationReceipt:
+    if type(value) is not StepUpAuthorizationReceipt:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+    try:
+        return StepUpAuthorizationReceipt(
+            grant_id=snapshot_bound_step_up_grant_id(value.grant_id),
+            binding=snapshot_step_up_binding(value.binding),
+            authorized_at=value.authorized_at,
+        )
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.CLAIM_MALFORMED)
+
+
+def snapshot_step_up_audit(value: object) -> StepUpAuditRecord:
+    if type(value) is not StepUpAuditRecord:
+        fail_step_up(StepUpFailureCode.STORAGE_FAILURE)
+    try:
+        return StepUpAuditRecord(
+            sequence=value.sequence,
+            command_fingerprint=value.command_fingerprint,
+            operation=value.operation,
+            outcome=value.outcome,
+            binding=snapshot_step_up_binding(value.binding),
+            occurred_at=value.occurred_at,
+            previous_digest=value.previous_digest,
+            digest=value.digest,
+        )
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.STORAGE_FAILURE)
+
+
+def snapshot_step_up_command_result(value: object) -> StepUpCommandResult:
+    """Deep-copy one repository result before it crosses a trust boundary."""
+
+    if type(value) is not StepUpCommandResult:
+        fail_step_up(StepUpFailureCode.STORAGE_FAILURE)
+    try:
+        return StepUpCommandResult(
+            command_id=snapshot_step_up_command_id(value.command_id),
+            operation=value.operation,
+            audit=snapshot_step_up_audit(value.audit),
+            challenge=(
+                None
+                if value.challenge is None
+                else snapshot_step_up_challenge(value.challenge)
+            ),
+            verification=(
+                None
+                if value.verification is None
+                else snapshot_step_up_verification(value.verification)
+            ),
+            grant=(
+                None
+                if value.grant is None
+                else snapshot_bound_step_up_grant(value.grant)
+            ),
+            authorization=(
+                None
+                if value.authorization is None
+                else snapshot_step_up_authorization(value.authorization)
+            ),
+        )
+    except StepUpFailure:
+        raise
+    except Exception:
+        fail_step_up(StepUpFailureCode.STORAGE_FAILURE)
+
+
 __all__ = [
     "BoundStepUpGrant",
     "BoundStepUpGrantId",
@@ -652,4 +874,17 @@ __all__ = [
     "StepUpVerificationOutcome",
     "fail_step_up",
     "require_step_up_utc",
+    "snapshot_bound_step_up_grant",
+    "snapshot_bound_step_up_grant_id",
+    "snapshot_step_up_audit",
+    "snapshot_step_up_authorization",
+    "snapshot_step_up_binding",
+    "snapshot_step_up_challenge",
+    "snapshot_step_up_challenge_id",
+    "snapshot_step_up_command_id",
+    "snapshot_step_up_command_result",
+    "snapshot_step_up_grant",
+    "snapshot_step_up_receipt_id",
+    "snapshot_step_up_resource",
+    "snapshot_step_up_verification",
 ]

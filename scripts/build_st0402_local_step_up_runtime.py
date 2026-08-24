@@ -43,7 +43,7 @@ GENERATED_PATHS: Final = (RUNTIME_PATH, MANIFEST_PATH)
 GENERATED_DIRECTORY_PATH: Final = Path("changes/st-0402/generated")
 
 EXPECTED_CONTRACT_SHA256: Final = (
-    "62c057afde754c2aa74226cc3ae6e896e0cfaa5aaf54bdc0b21a54301a462b8e"
+    "c42931a148e4852aac9be2c1bab5012ed9c588e568daef2fe6a5c61cbd157bfa"
 )
 EXPECTED_SECURE_HELPER_SHA256: Final = (
     "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e"
@@ -80,10 +80,10 @@ DEPENDENCY_BINDINGS: Final = MappingProxyType(
         ): "8ee74a13fd1232f86887e988cbeb475421f2ed17c6a73257968e62ecc0dc54c7",
         Path(
             "changes/st-0401/generated/local-auth-runtime.v2.json"
-        ): "a73d66e88779f67f0fdda1e42e76831e6d11c314be336933a0fddb10a89ebbbc",
+        ): "3a13c251f5cea13583696b04ae5131c81030abec75805d6773a118ce7902db6d",
         Path(
             "changes/st-0401/generated/local-auth-runtime-manifest.v2.json"
-        ): "8ac73e91ff684d356144c320c36b7c6a0eb69e67d9028fe5bc48d1863e1683cb",
+        ): "b95e37fccc9ebe7fe2fa9d002eaa9a20b075ebeca7c2d6f9624900e936407581",
     }
 )
 OWNED_IMPLEMENTATION_PATHS: Final = (
@@ -343,12 +343,14 @@ def _validate_contract(contract: dict[str, object]) -> None:
             {
                 "action_policy",
                 "binding",
+                "collaborator_values",
                 "credential_resolution",
                 "environment",
                 "external_provider_calls",
                 "lifecycle",
                 "persistence",
                 "provider_sdk",
+                "recorded_external_action_count",
                 "transport",
                 "verifier",
             }
@@ -412,15 +414,21 @@ def _validate_contract(contract: dict[str, object]) -> None:
         keys=frozenset(
             {
                 "append_only_audit",
+                "append_only_commands",
+                "append_only_lifecycle",
                 "classification",
                 "commit_fault_points",
                 "compare_and_set_transitions",
+                "cross_restart_rollback_anchor",
                 "database",
                 "external_io_inside_transaction",
+                "file_identity",
                 "known_rollback",
                 "lifecycle_command_audit_atomicity",
                 "migration_or_production_schema_authority",
                 "record_integrity",
+                "rollback_detection",
+                "schema",
                 "st0308_alignment",
                 "transaction_owner",
                 "unknown_commit",
@@ -434,6 +442,10 @@ def _validate_contract(contract: dict[str, object]) -> None:
         or runtime["provider_sdk"] != "ABSENT"
         or runtime["credential_resolution"] != "ABSENT"
         or runtime["external_provider_calls"] is not False
+        or type(runtime["recorded_external_action_count"]) is not int
+        or runtime["recorded_external_action_count"] != 0
+        or runtime["collaborator_values"]
+        != "DEEP_DETACHED_INPUT_OUTPUT_WITH_MUTATION_REJECTION"
         or transport["route_registration"] is not False
         or transport["external_dispatch"] != "UNCONDITIONAL_RFC9457_503_REFUSAL"
         or transport["recorded_origin"]
@@ -454,7 +466,24 @@ def _validate_contract(contract: dict[str, object]) -> None:
         or persistence["lifecycle_command_audit_atomicity"] is not True
         or persistence["compare_and_set_transitions"] is not True
         or persistence["append_only_audit"] != "SHA256_HASH_CHAIN"
+        or persistence["append_only_commands"]
+        != "EXACT_CANONICAL_INTENT_RESULT_AND_COMMAND_HASH_CHAIN"
+        or persistence["append_only_lifecycle"]
+        != "CHALLENGE_RECEIPT_GRANT_REVISION_HASH_CHAINS"
+        or persistence["database"]
+        != "SQLITE_FIXED_FILENAME_CREATED_ONLY_O_EXCL_PREEXISTING_REJECTED"
+        or persistence["schema"]
+        != "V2_STRICT_FOREIGN_KEYS_EXACT_PRAGMA_TABLE_INDEX_TRIGGER_INVENTORY"
+        or persistence["file_identity"]
+        != "OWNER_MODE_ROOT_AND_DATABASE_DEVICE_INODE_PINNED"
+        or persistence["rollback_detection"]
+        != "FILE_ROOT_IDENTITY_AND_PROCESS_LOCAL_VALID_PREFIX_ANCHOR"
+        or persistence["cross_restart_rollback_anchor"] != "ABSENT_NOT_CLAIMED"
         or persistence["external_io_inside_transaction"] is not False
+        or persistence["known_rollback"]
+        != "ONLY_BEFORE_COMMIT_OR_SURVIVING_TRANSACTION_NO_LIFECYCLE_COMMAND_AUDIT_CHANGE"
+        or persistence["record_integrity"]
+        != "CANONICAL_JSON_UUID_UTC_REDUNDANT_BINDING_FULL_CHAIN_AND_RELATIONSHIP_VALIDATION"
         or persistence["migration_or_production_schema_authority"] is not False
         or persistence["unknown_commit"]
         != "STORAGE_COMMIT_UNKNOWN_THEN_READ_ONLY_COMMAND_RECOVERY"

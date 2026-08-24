@@ -320,6 +320,24 @@ def test_body_schema_policy_and_session_failures_are_closed_and_sanitized(
     )
     assert malformed.response.body["code"] == "CLAIM_MALFORMED"
 
+    noncanonical_uuid = adapter.dispatch_recorded(
+        _document(
+            {
+                "action": "BEGIN",
+                "command_id": _command("NONCANONICAL-UUID"),
+                "session_id": session.session_id.reveal(),
+                "critical_action": CriticalStepUpAction.PUBLISH.value,
+                "resource_type": StepUpResourceType.PUBLICATION_SNAPSHOT.value,
+                "resource_id": str(RESOURCE_ID).upper(),
+                "expires_at": (NOW + timedelta(minutes=5))
+                .isoformat(timespec="microseconds")
+                .replace("+00:00", "Z"),
+            }
+        ),
+        now=NOW,
+    )
+    assert noncanonical_uuid.response.body["code"] == "CLAIM_MALFORMED"
+
     mismatched = adapter.dispatch_recorded(
         _document(
             {
@@ -358,7 +376,7 @@ def test_body_schema_policy_and_session_failures_are_closed_and_sanitized(
     assert rejected.result is None
     assert rejected.response.status == 401
     assert rejected.response.body["code"] == "AUTHENTICATION_REJECTED"
-    for dispatch in (malformed, mismatched, rejected):
+    for dispatch in (malformed, noncanonical_uuid, mismatched, rejected):
         _assert_safe(dispatch)
 
 

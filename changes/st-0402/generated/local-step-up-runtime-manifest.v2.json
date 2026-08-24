@@ -36,7 +36,7 @@
   "generated_artifacts": [
     {
       "path": "changes/st-0402/generated/local-step-up-runtime.v2.json",
-      "sha256": "05cfbb0f51c4f88a60e06ab7439e74026c165a010bccfb5978fc84bd1edb36b1"
+      "sha256": "01e70daeb3800d6f5b9c1453a016f47e27555fb5c74a715d1f05e6368d8f1db4"
     }
   ],
   "generation": {
@@ -48,11 +48,11 @@
   "source_artifacts": [
     {
       "path": "changes/st-0402/contracts/local-step-up-runtime.v2.json",
-      "sha256": "62c057afde754c2aa74226cc3ae6e896e0cfaa5aaf54bdc0b21a54301a462b8e"
+      "sha256": "c42931a148e4852aac9be2c1bab5012ed9c588e568daef2fe6a5c61cbd157bfa"
     },
     {
       "path": "scripts/build_st0402_local_step_up_runtime.py",
-      "sha256": "cede84f65bc5e2b4dd0352c8abefad4ccee692e5a27366ca565452ae8e933fe9"
+      "sha256": "286fe99ab80d4a5c687ab31ea4e8d0353133438d9f09bbf328350228b9f38bb5"
     },
     {
       "path": "scripts/secure_generated_publication.py",
@@ -60,15 +60,15 @@
     },
     {
       "path": "python/raos/domain/iam/step_up.py",
-      "sha256": "85f8a5a2b0dded9011c54187be7b275620b80a999d9458b3fd1b06c4da8cfad5"
+      "sha256": "ae17d9db24acf4133c41e2aef8c8f035a12ec063b77da3d9c3a182605052f4a9"
     },
     {
       "path": "python/raos/ports/step_up.py",
-      "sha256": "437cd5ea9d70f90733005fb7eb42048addf2cec33fb37dbff0592c520e9a82f2"
+      "sha256": "756822270b9c71b2600ec2d631c6696d004eb1ebd51e2d3fac9d8212d7de92e9"
     },
     {
       "path": "python/raos/application/iam/step_up.py",
-      "sha256": "7005bf755d475129e1be1515bfb77d43b9e40e9cc7e7e4b89cb27b0c0b610cd4"
+      "sha256": "a1bf4216013e6cbe878f8964c936c95a9bc41c31a87b9a2272c0b26a6e70181b"
     },
     {
       "path": "python/raos/adapters/development_step_up.py",
@@ -76,11 +76,11 @@
     },
     {
       "path": "python/raos/adapters/recorded_step_up.py",
-      "sha256": "45ea13e6fc5839e5a86d054f371f247ba4631a6d6dacdde9c2dbbd1710da8c75"
+      "sha256": "d9ee50be469553949b9ea2b779df388976bc397eb8421a52c3778b437b390963"
     },
     {
       "path": "python/raos/adapters/disabled_admin_mfa_http.py",
-      "sha256": "24b573c4fad4974df6b59af31fec69915ccc3823ccd0b18e74e70871c0362012"
+      "sha256": "a765dd3299c52988b8f60e0ecb27678686652337d6135a79f9cd9c17d4b66a70"
     },
     {
       "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
@@ -116,11 +116,11 @@
     },
     {
       "path": "changes/st-0401/generated/local-auth-runtime.v2.json",
-      "sha256": "a73d66e88779f67f0fdda1e42e76831e6d11c314be336933a0fddb10a89ebbbc"
+      "sha256": "3a13c251f5cea13583696b04ae5131c81030abec75805d6773a118ce7902db6d"
     },
     {
       "path": "changes/st-0401/generated/local-auth-runtime-manifest.v2.json",
-      "sha256": "8ac73e91ff684d356144c320c36b7c6a0eb69e67d9028fe5bc48d1863e1683cb"
+      "sha256": "b95e37fccc9ebe7fe2fa9d002eaa9a20b075ebeca7c2d6f9624900e936407581"
     }
   ],
   "story_id": "ST-0402"

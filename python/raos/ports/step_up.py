@@ -45,6 +45,12 @@ class StepUpEntropySource(Protocol):
 class StepUpChallengeVerifier(Protocol):
     """Factor-neutral verifier used after one recorded challenge is loaded."""
 
+    @property
+    def external_action_count(self) -> int:
+        """Return the exact recorded count; the local boundary requires zero."""
+
+        ...
+
     def verify(
         self,
         *,
