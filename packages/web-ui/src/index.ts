@@ -107,6 +107,27 @@ export type {
 } from './ai-governance-workspace.ts';
 
 export {
+  AI_GOVERNANCE_RECORDED_FIXTURE_V2,
+  AI_GOVERNANCE_V2_ERROR_CODES,
+  AI_GOVERNANCE_V2_SECTION_IDS,
+  AiGovernanceWorkspaceErrorV2,
+  createAiGovernanceWorkspaceModelV2,
+  validateAiGovernanceWorkspaceCandidateV2,
+} from './ai-governance-workspace-v2.ts';
+export type {
+  AiGovernanceScreenV2,
+  AiGovernanceSectionIdV2,
+  AiGovernanceSectionV2,
+  AiGovernanceSourceBindingV2,
+  AiGovernanceStatusV2,
+  AiGovernanceTableColumnV2,
+  AiGovernanceTableV2,
+  AiGovernanceWorkspaceErrorCodeV2,
+  AiGovernanceWorkspaceInputV2,
+  AiGovernanceWorkspaceModelV2,
+} from './ai-governance-workspace-v2.ts';
+
+export {
   ARTICLE_WORKSPACE_COMPONENT_IDS,
   ARTICLE_WORKSPACE_COMPONENTS,
   ARTICLE_WORKSPACE_ERROR_CODES,
