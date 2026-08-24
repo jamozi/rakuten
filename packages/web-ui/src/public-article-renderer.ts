@@ -1,4 +1,5 @@
 import { createJsonValue, type JsonObject, type JsonValue } from './serializable.ts';
+import { ST1002_RECORDED_PUBLIC_ARTICLE_SOURCE_V2 } from './public-article-recorded.v2.ts';
 
 export const PUBLIC_ARTICLE_RENDERER_CLASSIFICATION =
   'UNREGISTERED_DISABLED_HEADLESS_PUBLIC_ARTICLE_RENDERER_CANDIDATE' as const;
@@ -629,4 +630,385 @@ export function createPublicArticleRendererCandidate(
   input: PublicArticleRendererInput,
 ): PublicArticleRendererCandidate {
   return validatePublicArticleRendererCandidate(buildCandidate(validatedInput(input)));
+}
+
+/*
+ * Additive V2 runtime. The V1 candidate above remains available as the
+ * historical disabled boundary; V2 accepts only the owner-generated ST-0904
+ * recorded source and maps it to a closed noindex SSR view model.
+ */
+
+export const PUBLIC_ARTICLE_RECORDED_SLUG_V2 = 'synthetic-recorded-policy-seo' as const;
+export const PUBLIC_ARTICLE_RECORDED_PATH_V2 = '/articles/synthetic-recorded-policy-seo' as const;
+export const PUBLIC_ARTICLE_VIEW_CLASSIFICATION_V2 =
+  'LOCAL_RECORDED_NOINDEX_SSR_ARTICLE_PREVIEW_V2' as const;
+
+export const PUBLIC_ARTICLE_V2_ERROR_CODES = Object.freeze([
+  'PUBLIC_ARTICLE_V2_SOURCE_INVALID',
+  'PUBLIC_ARTICLE_V2_SOURCE_MISMATCH',
+  'PUBLIC_ARTICLE_V2_SLUG_INVALID',
+  'PUBLIC_ARTICLE_V2_VIEW_INVALID',
+] as const);
+
+export type PublicArticleV2ErrorCode = (typeof PUBLIC_ARTICLE_V2_ERROR_CODES)[number];
+
+export class PublicArticleV2Error extends TypeError {
+  readonly code: PublicArticleV2ErrorCode;
+
+  constructor(code: PublicArticleV2ErrorCode) {
+    super(code);
+    this.name = 'PublicArticleV2Error';
+    this.code = code;
+    Object.freeze(this);
+  }
+}
+
+export type PublicArticleViewKindV2 =
+  'SUMMARY' | 'CONDITIONS' | 'METHODOLOGY' | 'CRITERIA' | 'DECISION' | 'WARNING';
+
+export interface PublicArticleViewSectionV2 {
+  readonly blockKey: string;
+  readonly kind: PublicArticleViewKindV2;
+  readonly heading: string;
+  readonly items: readonly string[];
+}
+
+export interface PublicArticleOmittedBlockV2 {
+  readonly blockKey: string;
+  readonly reason: 'OMITTED_DOWNSTREAM_EMPTY_ONLY' | 'OMITTED_EMPTY_SOURCE';
+}
+
+export interface PublicArticleViewModelV2 {
+  readonly schemaVersion: 2;
+  readonly storyId: 'ST-1002';
+  readonly classification: typeof PUBLIC_ARTICLE_VIEW_CLASSIFICATION_V2;
+  readonly screen: {
+    readonly id: 'PUB-003';
+    readonly name: '記事詳細';
+    readonly routeTemplate: '/articles/{slug}';
+  };
+  readonly route: {
+    readonly slug: typeof PUBLIC_ARTICLE_RECORDED_SLUG_V2;
+    readonly path: typeof PUBLIC_ARTICLE_RECORDED_PATH_V2;
+    readonly localRouteRegistered: true;
+    readonly sourceRouteActivated: false;
+    readonly exactSlugOnly: true;
+  };
+  readonly metadata: {
+    readonly title: string;
+    readonly description: string;
+    readonly canonical: null;
+    readonly openGraph: null;
+    readonly twitter: null;
+    readonly robots: {
+      readonly index: false;
+      readonly follow: false;
+      readonly noarchive: true;
+      readonly nosnippet: true;
+      readonly noimageindex: true;
+      readonly nocache: true;
+    };
+  };
+  readonly article: {
+    readonly languageTag: 'ja-JP';
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly disclosureText: string;
+    readonly previewLabel: string;
+    readonly previewMessage: string;
+    readonly freshnessStatus: 'UNKNOWN';
+    readonly freshnessText: string;
+    readonly breadcrumbRoot: string;
+    readonly skipLink: string;
+    readonly lead: readonly string[];
+    readonly sections: readonly PublicArticleViewSectionV2[];
+    readonly omittedBlocks: readonly PublicArticleOmittedBlockV2[];
+  };
+  readonly sourceBinding: {
+    readonly fixtureUri: string;
+    readonly fixtureSha256: string;
+    readonly projectionSha256: string;
+    readonly profile: 'ST0904_PUBLIC_PROJECTION_RECORDED_LOCAL_V2';
+    readonly fixtureHashVerifiedByOwner: true;
+    readonly projectionHashVerifiedByOwner: true;
+  };
+  readonly runtimeBoundary: {
+    readonly framework: 'NEXT_APP_ROUTER_SERVER_COMPONENTS';
+    readonly rendering: 'FORCE_DYNAMIC_SERVER_RENDERING';
+    readonly dataSource: 'EXACT_OWNER_GENERATED_ST0904_V2_RECORDED_FIXTURE';
+    readonly remotePublicReadModel: 'DISCONNECTED';
+    readonly api: 'NONE';
+    readonly database: 'NONE';
+    readonly provider: 'NONE';
+    readonly outboundIo: 'NONE';
+    readonly browserStorage: 'NONE';
+    readonly cookieWrite: 'NONE';
+    readonly tracking: 'NONE';
+    readonly analytics: 'NONE';
+    readonly clientComponentCount: 0;
+    readonly rawHtmlAllowed: false;
+    readonly javascriptRequiredForReading: false;
+    readonly productCardsRendered: false;
+    readonly offersRendered: false;
+    readonly affiliateCtaRendered: false;
+    readonly comparisonRendered: false;
+    readonly structuredDataRendered: false;
+    readonly canonicalUrlRendered: false;
+    readonly internalIdentifiersRendered: false;
+  };
+  readonly authority: Readonly<Record<string, false | 'NOT_EXECUTED'>>;
+  readonly actions: readonly [];
+}
+
+interface PublicArticleRecordedBlockV2 {
+  readonly blockKey: string;
+  readonly blockType: string;
+  readonly position: number;
+  readonly sourceType: string;
+  readonly text: readonly string[];
+  readonly viewKind:
+    'LEAD' | PublicArticleViewKindV2 | 'OMITTED_DOWNSTREAM_EMPTY_ONLY' | 'OMITTED_EMPTY_SOURCE';
+  readonly heading: string | null;
+}
+
+interface PublicArticleRecordedSourceV2 {
+  readonly schemaVersion: 2;
+  readonly storyId: 'ST-1002';
+  readonly classification: 'EXACT_ST0904_V2_RECORDED_PUBLIC_ARTICLE_SOURCE';
+  readonly sourceBinding: PublicArticleViewModelV2['sourceBinding'];
+  readonly route: {
+    readonly screenId: 'PUB-003';
+    readonly template: '/articles/{slug}';
+    readonly slug: typeof PUBLIC_ARTICLE_RECORDED_SLUG_V2;
+    readonly path: typeof PUBLIC_ARTICLE_RECORDED_PATH_V2;
+    readonly sourcePath: '/synthetic-recorded-policy-seo/';
+    readonly exactSlugOnly: true;
+    readonly sourceRouteActivated: false;
+  };
+  readonly article: {
+    readonly title: string;
+    readonly metaTitle: string;
+    readonly metaDescription: string;
+    readonly disclosureText: string;
+    readonly languageTag: 'ja-JP';
+    readonly freshnessStatus: 'UNKNOWN';
+    readonly isIndexable: false;
+    readonly blocks: readonly PublicArticleRecordedBlockV2[];
+  };
+  readonly presentation: {
+    readonly eyebrow: string;
+    readonly previewLabel: string;
+    readonly previewMessage: string;
+    readonly freshnessUnknown: string;
+    readonly breadcrumbRoot: string;
+    readonly skipLink: string;
+  };
+}
+
+function rejectV2(code: PublicArticleV2ErrorCode): never {
+  throw new PublicArticleV2Error(code);
+}
+
+function canonicalizeV2(value: JsonValue): JsonValue {
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => canonicalizeV2(item));
+  }
+  return Object.fromEntries(
+    Object.entries(value)
+      .sort(([left], [right]) => left.localeCompare(right, 'en'))
+      .map(([key, item]) => [key, canonicalizeV2(item)]),
+  );
+}
+
+function canonicalEqualV2(left: JsonValue, right: JsonValue): boolean {
+  return JSON.stringify(canonicalizeV2(left)) === JSON.stringify(canonicalizeV2(right));
+}
+
+function cloneRecordedSourceV2(value: unknown): PublicArticleRecordedSourceV2 {
+  if (!isStrictPlainTree(value)) {
+    return rejectV2('PUBLIC_ARTICLE_V2_SOURCE_INVALID');
+  }
+  let clone: JsonValue;
+  try {
+    clone = createJsonValue(value);
+  } catch {
+    return rejectV2('PUBLIC_ARTICLE_V2_SOURCE_INVALID');
+  }
+  if (clone === null || typeof clone !== 'object' || Array.isArray(clone)) {
+    return rejectV2('PUBLIC_ARTICLE_V2_SOURCE_INVALID');
+  }
+  return clone as unknown as PublicArticleRecordedSourceV2;
+}
+
+const EXPECTED_RECORDED_SOURCE_V2 = cloneRecordedSourceV2(ST1002_RECORDED_PUBLIC_ARTICLE_SOURCE_V2);
+
+function requireExactRecordedSourceV2(value: unknown): PublicArticleRecordedSourceV2 {
+  const clone = cloneRecordedSourceV2(value);
+  if (
+    !canonicalEqualV2(
+      clone as unknown as JsonValue,
+      EXPECTED_RECORDED_SOURCE_V2 as unknown as JsonValue,
+    )
+  ) {
+    return rejectV2('PUBLIC_ARTICLE_V2_SOURCE_MISMATCH');
+  }
+  return clone;
+}
+
+function buildPublicArticleViewModelV2(
+  source: PublicArticleRecordedSourceV2,
+): PublicArticleViewModelV2 {
+  const lead: string[] = [];
+  const sections: PublicArticleViewSectionV2[] = [];
+  const omittedBlocks: PublicArticleOmittedBlockV2[] = [];
+  for (const block of source.article.blocks) {
+    if (block.viewKind === 'LEAD') {
+      lead.push(...block.text);
+      continue;
+    }
+    if (
+      block.viewKind === 'OMITTED_DOWNSTREAM_EMPTY_ONLY' ||
+      block.viewKind === 'OMITTED_EMPTY_SOURCE'
+    ) {
+      omittedBlocks.push({ blockKey: block.blockKey, reason: block.viewKind });
+      continue;
+    }
+    if (block.heading === null) {
+      return rejectV2('PUBLIC_ARTICLE_V2_SOURCE_MISMATCH');
+    }
+    sections.push({
+      blockKey: block.blockKey,
+      kind: block.viewKind,
+      heading: block.heading,
+      items: block.text,
+    });
+  }
+  return createJsonValue({
+    schemaVersion: 2,
+    storyId: 'ST-1002',
+    classification: PUBLIC_ARTICLE_VIEW_CLASSIFICATION_V2,
+    screen: { id: 'PUB-003', name: '記事詳細', routeTemplate: '/articles/{slug}' },
+    route: {
+      slug: PUBLIC_ARTICLE_RECORDED_SLUG_V2,
+      path: PUBLIC_ARTICLE_RECORDED_PATH_V2,
+      localRouteRegistered: true,
+      sourceRouteActivated: false,
+      exactSlugOnly: true,
+    },
+    metadata: {
+      title: source.article.metaTitle,
+      description: source.article.metaDescription,
+      canonical: null,
+      openGraph: null,
+      twitter: null,
+      robots: {
+        index: false,
+        follow: false,
+        noarchive: true,
+        nosnippet: true,
+        noimageindex: true,
+        nocache: true,
+      },
+    },
+    article: {
+      languageTag: source.article.languageTag,
+      eyebrow: source.presentation.eyebrow,
+      title: source.article.title,
+      disclosureText: source.article.disclosureText,
+      previewLabel: source.presentation.previewLabel,
+      previewMessage: source.presentation.previewMessage,
+      freshnessStatus: source.article.freshnessStatus,
+      freshnessText: source.presentation.freshnessUnknown,
+      breadcrumbRoot: source.presentation.breadcrumbRoot,
+      skipLink: source.presentation.skipLink,
+      lead,
+      sections,
+      omittedBlocks,
+    },
+    sourceBinding: source.sourceBinding,
+    runtimeBoundary: {
+      framework: 'NEXT_APP_ROUTER_SERVER_COMPONENTS',
+      rendering: 'FORCE_DYNAMIC_SERVER_RENDERING',
+      dataSource: 'EXACT_OWNER_GENERATED_ST0904_V2_RECORDED_FIXTURE',
+      remotePublicReadModel: 'DISCONNECTED',
+      api: 'NONE',
+      database: 'NONE',
+      provider: 'NONE',
+      outboundIo: 'NONE',
+      browserStorage: 'NONE',
+      cookieWrite: 'NONE',
+      tracking: 'NONE',
+      analytics: 'NONE',
+      clientComponentCount: 0,
+      rawHtmlAllowed: false,
+      javascriptRequiredForReading: false,
+      productCardsRendered: false,
+      offersRendered: false,
+      affiliateCtaRendered: false,
+      comparisonRendered: false,
+      structuredDataRendered: false,
+      canonicalUrlRendered: false,
+      internalIdentifiersRendered: false,
+    },
+    authority: {
+      approval_authorized: false,
+      public_projection_authorized: false,
+      source_route_activated: false,
+      public_read_served: false,
+      publication_authorized: false,
+      staging_authorized: false,
+      release_authorized: false,
+      production_authorized: false,
+      external_write: false,
+      'TST-021': 'NOT_EXECUTED',
+      'TST-022': 'NOT_EXECUTED',
+      'TST-023': 'NOT_EXECUTED',
+      live: 'NOT_EXECUTED',
+      staging: 'NOT_EXECUTED',
+      publication: 'NOT_EXECUTED',
+      release: 'NOT_EXECUTED',
+      production: 'NOT_EXECUTED',
+    },
+    actions: [],
+  }) as unknown as PublicArticleViewModelV2;
+}
+
+const EXPECTED_VIEW_MODEL_V2 = buildPublicArticleViewModelV2(EXPECTED_RECORDED_SOURCE_V2);
+
+export function createPublicArticleViewModelV2(source: unknown): PublicArticleViewModelV2 {
+  return buildPublicArticleViewModelV2(requireExactRecordedSourceV2(source));
+}
+
+export function createRecordedPublicArticleViewModelV2(): PublicArticleViewModelV2 {
+  return buildPublicArticleViewModelV2(EXPECTED_RECORDED_SOURCE_V2);
+}
+
+export function resolveRecordedPublicArticleV2(slug: unknown): PublicArticleViewModelV2 | null {
+  if (typeof slug !== 'string' || slug !== PUBLIC_ARTICLE_RECORDED_SLUG_V2) {
+    return null;
+  }
+  return createRecordedPublicArticleViewModelV2();
+}
+
+export function requireRecordedPublicArticleV2(slug: unknown): PublicArticleViewModelV2 {
+  return resolveRecordedPublicArticleV2(slug) ?? rejectV2('PUBLIC_ARTICLE_V2_SLUG_INVALID');
+}
+
+export function validatePublicArticleViewModelV2(value: unknown): PublicArticleViewModelV2 {
+  if (!isStrictPlainTree(value)) {
+    return rejectV2('PUBLIC_ARTICLE_V2_VIEW_INVALID');
+  }
+  let clone: JsonValue;
+  try {
+    clone = createJsonValue(value);
+  } catch {
+    return rejectV2('PUBLIC_ARTICLE_V2_VIEW_INVALID');
+  }
+  if (!canonicalEqualV2(clone, EXPECTED_VIEW_MODEL_V2 as unknown as JsonValue)) {
+    return rejectV2('PUBLIC_ARTICLE_V2_VIEW_INVALID');
+  }
+  return clone as unknown as PublicArticleViewModelV2;
 }

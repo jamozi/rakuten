@@ -1,0 +1,59 @@
+schema_version: 2
+story_id: ST-1002
+base_commit: cd19ee75f5f7805d8f7fe93ac4d1257a5369ce38
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_RECORDED_NOINDEX_SSR_ARTICLE_PREVIEW_V2
+scope:
+  exact_recorded_slug_count: 1
+  source_fixture: changes/st-0904/generated/public-projection-recorded.v2.json
+  source_fixture_sha256: d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1
+  source_projection_sha256: 4c5d4c8e2f2465d53d2ead84cd20e9ea9328b353854d0b365bcde63211ef1980
+  internal_identifiers_rendered: false
+  product_cards_rendered: false
+  offers_rendered: false
+  affiliate_cta_rendered: false
+  comparison_rendered: false
+  structured_data_rendered: false
+  canonical_url_rendered: false
+local_checks:
+  v1_node: PASS_16
+  v2_node: PASS_18
+  generator_pytest: PASS_5
+  owner_check: PASS_NO_WRITE
+  strict_typescript: PASS_NEXT_TYPEGEN_AND_TSC_NO_EMIT
+  next_production_build: PASS_WEBPACK_SERVER_ROUTE
+  eslint_owned: PASS_ZERO_WARNINGS
+  prettier_owned: PASS
+  ruff: PASS_LINT_AND_FORMAT
+  strict_mypy: PASS
+  browser_ssr: PASS_EXACT_ROUTE_AND_NON_REFLECTING_404
+  browser_viewports_320_360_768_1440: PASS_NO_HORIZONTAL_OVERFLOW
+  browser_keyboard_focus: PASS
+  axe_local: PASS_ZERO_VIOLATIONS_ZERO_INCOMPLETE
+  affected_st1001: PASS_34
+  affected_st0904: PASS_61
+  canonical_import: PASS_105_FILES_104_CHECKSUMS_103_MANIFEST_ENTRIES
+  workspace_drift: PASS_42_DIRECTORIES_NO_CHANGE
+  sensitive_data_scan: PASS_23_OWNED_AND_GENERATED_FILES_ZERO_FINDINGS
+  git_diff_check: PASS
+authority:
+  source_route_activated: false
+  public_read_served: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+  TST-021: NOT_EXECUTED
+  TST-022: NOT_EXECUTED
+  TST-023: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+debt:
+  introduced: []
+  inherited_or_external:
+    - formal TST-021/TST-022/TST-023 require their designated CI/staging environments
+    - manual 200 percent zoom and screen-reader acceptance remain NOT_EXECUTED
+    - live domain, public serving, publication, staging, release, and Production remain gated

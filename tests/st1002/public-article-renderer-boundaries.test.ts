@@ -71,7 +71,7 @@ describe('ST-1002 execution and authority boundaries', () => {
   it('uses no runtime, framework, browser, I/O, clock, random, database, or provider import', () => {
     assert.deepEqual(
       [...source.matchAll(/^import .* from ['"]([^'"]+)['"];$/gm)].map((match) => match[1]),
-      ['./serializable.ts'],
+      ['./serializable.ts', './public-article-recorded.v2.ts'],
     );
     assert.doesNotMatch(source, /from ['"](?:react|react-dom|next(?:\/|['"])|node:)/i);
     assert.doesNotMatch(

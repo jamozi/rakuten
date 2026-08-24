@@ -1,0 +1,166 @@
+{
+  "actions": [],
+  "article": {
+    "breadcrumbRoot": "記事詳細",
+    "disclosureText": "この記事にはアフィリエイト広告が含まれます。",
+    "eyebrow": "ARTICLE / RECORDED LOCAL PREVIEW",
+    "freshnessStatus": "UNKNOWN",
+    "freshnessText": "情報の鮮度は未確認です",
+    "languageTag": "ja-JP",
+    "lead": [
+      "この合成Fixtureは、対象条件に応じた商品選びを説明します。"
+    ],
+    "omittedBlocks": [
+      {
+        "blockKey": "block-006",
+        "reason": "OMITTED_DOWNSTREAM_EMPTY_ONLY"
+      },
+      {
+        "blockKey": "block-009",
+        "reason": "OMITTED_EMPTY_SOURCE"
+      }
+    ],
+    "previewLabel": "記録済み合成Fixtureのローカル表示",
+    "previewMessage": "このページは公開経路を有効にせず、記録済み合成Fixtureだけをサーバー描画しています。外部公開には使用できません。",
+    "sections": [
+      {
+        "blockKey": "block-002",
+        "heading": "要点",
+        "items": [
+          "条件Aを優先する場合",
+          "商品Aを第一候補として比較します。"
+        ],
+        "kind": "SUMMARY"
+      },
+      {
+        "blockKey": "block-003",
+        "heading": "想定する条件",
+        "items": [
+          "日本国内で購入する前提",
+          "条件Aを重視する人",
+          "条件Bを最優先する人"
+        ],
+        "kind": "CONDITIONS"
+      },
+      {
+        "blockKey": "block-004",
+        "heading": "選定方法",
+        "items": [
+          "公開条件を満たす3商品を比較対象としました。",
+          "商品同定が未解決",
+          "公式仕様を確認できる"
+        ],
+        "kind": "METHODOLOGY"
+      },
+      {
+        "blockKey": "block-005",
+        "heading": "選ぶ基準",
+        "items": [
+          "持ち運び条件に影響する軸です。",
+          "重量"
+        ],
+        "kind": "CRITERIA"
+      },
+      {
+        "blockKey": "block-007",
+        "heading": "条件別の考え方",
+        "items": [
+          "条件Aを優先する場合",
+          "条件A向け"
+        ],
+        "kind": "DECISION"
+      },
+      {
+        "blockKey": "block-008",
+        "heading": "確認しておきたいこと",
+        "items": [
+          "価格と在庫は楽天市場で最新情報を確認してください。"
+        ],
+        "kind": "WARNING"
+      }
+    ],
+    "skipLink": "本文へ移動",
+    "title": "ST-0805 recorded policy draft"
+  },
+  "authority": {
+    "TST-021": "NOT_EXECUTED",
+    "TST-022": "NOT_EXECUTED",
+    "TST-023": "NOT_EXECUTED",
+    "approval_authorized": false,
+    "external_write": false,
+    "live": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "production_authorized": false,
+    "public_projection_authorized": false,
+    "public_read_served": false,
+    "publication": "NOT_EXECUTED",
+    "publication_authorized": false,
+    "release": "NOT_EXECUTED",
+    "release_authorized": false,
+    "source_route_activated": false,
+    "staging": "NOT_EXECUTED",
+    "staging_authorized": false
+  },
+  "classification": "LOCAL_RECORDED_NOINDEX_SSR_ARTICLE_PREVIEW_V2",
+  "metadata": {
+    "canonical": null,
+    "description": "合成済みの編集候補から、公開権限を持たないSEO情報を決定的に生成します。",
+    "openGraph": null,
+    "robots": {
+      "follow": false,
+      "index": false,
+      "noarchive": true,
+      "nocache": true,
+      "noimageindex": true,
+      "nosnippet": true
+    },
+    "title": "ST-0805 recorded policy draft",
+    "twitter": null
+  },
+  "route": {
+    "exactSlugOnly": true,
+    "localRouteRegistered": true,
+    "path": "/articles/synthetic-recorded-policy-seo",
+    "slug": "synthetic-recorded-policy-seo",
+    "sourceRouteActivated": false
+  },
+  "runtimeBoundary": {
+    "affiliateCtaRendered": false,
+    "analytics": "NONE",
+    "api": "NONE",
+    "browserStorage": "NONE",
+    "canonicalUrlRendered": false,
+    "clientComponentCount": 0,
+    "comparisonRendered": false,
+    "cookieWrite": "NONE",
+    "dataSource": "EXACT_OWNER_GENERATED_ST0904_V2_RECORDED_FIXTURE",
+    "database": "NONE",
+    "framework": "NEXT_APP_ROUTER_SERVER_COMPONENTS",
+    "internalIdentifiersRendered": false,
+    "javascriptRequiredForReading": false,
+    "offersRendered": false,
+    "outboundIo": "NONE",
+    "productCardsRendered": false,
+    "provider": "NONE",
+    "rawHtmlAllowed": false,
+    "remotePublicReadModel": "DISCONNECTED",
+    "rendering": "FORCE_DYNAMIC_SERVER_RENDERING",
+    "structuredDataRendered": false,
+    "tracking": "NONE"
+  },
+  "schemaVersion": 2,
+  "screen": {
+    "id": "PUB-003",
+    "name": "記事詳細",
+    "routeTemplate": "/articles/{slug}"
+  },
+  "sourceBinding": {
+    "fixtureHashVerifiedByOwner": true,
+    "fixtureSha256": "d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1",
+    "fixtureUri": "repo://changes/st-0904/generated/public-projection-recorded.v2.json",
+    "profile": "ST0904_PUBLIC_PROJECTION_RECORDED_LOCAL_V2",
+    "projectionHashVerifiedByOwner": true,
+    "projectionSha256": "4c5d4c8e2f2465d53d2ead84cd20e9ea9328b353854d0b365bcde63211ef1980"
+  },
+  "storyId": "ST-1002"
+}

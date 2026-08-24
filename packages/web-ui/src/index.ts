@@ -244,9 +244,19 @@ export {
   PUBLIC_ARTICLE_RENDERER_CLASSIFICATION,
   PUBLIC_ARTICLE_RENDERER_ERROR_CODES,
   PUBLIC_ARTICLE_RENDERER_SCREEN,
+  PUBLIC_ARTICLE_RECORDED_PATH_V2,
+  PUBLIC_ARTICLE_RECORDED_SLUG_V2,
+  PUBLIC_ARTICLE_V2_ERROR_CODES,
+  PUBLIC_ARTICLE_VIEW_CLASSIFICATION_V2,
   PublicArticleRendererError,
+  PublicArticleV2Error,
   createPublicArticleRendererCandidate,
+  createPublicArticleViewModelV2,
+  createRecordedPublicArticleViewModelV2,
+  requireRecordedPublicArticleV2,
+  resolveRecordedPublicArticleV2,
   validatePublicArticleRendererCandidate,
+  validatePublicArticleViewModelV2,
 } from './public-article-renderer.ts';
 export type {
   PublicArticleBoundaryResult,
@@ -257,6 +267,11 @@ export type {
   PublicArticleRendererCandidate,
   PublicArticleRendererErrorCode,
   PublicArticleRendererInput,
+  PublicArticleOmittedBlockV2,
+  PublicArticleV2ErrorCode,
+  PublicArticleViewKindV2,
+  PublicArticleViewModelV2,
+  PublicArticleViewSectionV2,
 } from './public-article-renderer.ts';
 
 export {
