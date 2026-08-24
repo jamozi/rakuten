@@ -1,0 +1,83 @@
+document:
+  id: RAOS-ST1102-ARTICLE-WORKSPACE-MANIFEST-002
+  version: 2.0.0
+  story_id: ST-1102
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  authority: NONE
+  production_eligible: false
+contract_sha256: ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52f
+hardened_writer_sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+source_sha256:
+  changes/st-1102/contracts/article-workspace.v2.yaml: ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52f
+  scripts/build_st1102_article_workspace_v2.py: 439f46d96a2873d1020044aabf5ebf6c9dca23a74c7fe9582cb1e978f657681a
+  packages/web-ui/src/article-workspace-v2.ts: d696e713b00239c2b4089a360ca95109720218b2a66071c8106105ae24583bae
+  packages/web-ui/src/index.ts: ae2ae7794ab0a6812ad6b4c6e23e6e466e12451bc35365440a7d0d662aa7593d
+  changes/st-1102/README.md: 87fd7d5e8b7ccf0d9de46729e56af21ba6939bb5be14415376bc74b2d84a5912
+  changes/st-1102/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: 9db6e0565e762f72fdd78a896fd7cd4ca2b58aa1aa4a33b0dd4f11bf302665f8
+  docs/execplans/ST-1102.md: ec8d3c68b7c846a556ea8a4dcf765758beb1102b36cfafb717972601fdd7aff3
+  docs/worklogs/ST-1102.md: 2840c90b57599fc21b773b2a6e1cc2d6f2798b3631273dd790f904c0a85db45a
+  tests/st1102/article-workspace-v2-model.test.ts: c19adf834a6189ce288c322fa07941636524974bb6848f6884399afa6f553bcb
+  tests/st1102/article-workspace-v2-concurrency.test.ts: e327b8821185a86ee90fe3a6f57c05cb9c69f54a60b77bd54e72e3b560bd7c0e
+  tests/st1102/article-workspace-v2-accessibility.test.ts: 1d94f26796d201e1a21ae208f5a0c4117c6acf167ff6c1ded0c17a5d80d28669
+  tests/st1102/article-workspace-v2-negative.test.ts: b89378047c21b792f6d68de15fb553e3f73239c33787c1c18f0d94e6e7646565
+  tests/st1102/article-workspace-v2-generation.test.ts: 53a4d152df3a3f26a0116c0759b6a830cc1806602278e13a52bc741e7ca629e9
+  tests/st1102/test_generation_v2.py: 22359006c276c8413823400eaf1e0921d8a41a8d5407e7ea8b22182b5834a764
+  docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md: 0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e
+  docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml: dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050
+  docs/canonical/02_ui/RAOS_08_component_catalog_v1.0.yaml: 986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2
+  docs/canonical/02_ui/RAOS_08_workflow_catalog_v1.0.yaml: 59983683ec920cf450d0d887ee43f0b9871e500c2025562f9bec5c6bbc6fe87e
+  docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv: 690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e
+  docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml: 6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70
+  contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json: a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac
+  changes/st-0806/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: 277e6376107a5b3a9237cf47f69f4e128a51fc4400e2438b88f0e8ed82f9517d
+  changes/st-0806/generated/ai-draft-integration.v2.json: 9b52b5d4070d8dc5f8efe62a84ba9e8113c5f6bd2e24221c3714a1c6a14d9c33
+  changes/st-0806/generated/ai-draft-integration-fixture.v2.json: a890cfa8a5c371f8f79b83bbe846fff2076eebad567613c772956ebfb5b8d78b
+  changes/st-0806/contracts/ai-draft-integration.v2.yaml: 4ca2dfb59f60a4c65bb6c0c31595cac1281d6b62b3900bfe5204770f5cc8c6e7
+  python/raos/domain/editorial/ai_draft_integration_v2.py: fa04d6c194f84741e4f8d94cfa55d76babd516c9132c648cde7c2eb98cb75ad1
+  python/raos/adapters/recorded_ai_draft_integration_v2.py: 716ed3f59abb63bda6291549c61a079c08272db6ff58fa807592e1ec0604bcbd
+  contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json: 8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489
+  packages/web-ui/src/serializable.ts: 56adb1e0356fba66e147be4c055b7a40f1115608a3e29bbee4584234f8b3273d
+  packages/web-ui/src/route-guard.ts: 8395f542c7c65445fa3d1bec4a0e037c96610da8589e1807604b4fb3fa6a584f
+  packages/web-ui/src/app-shell.ts: 600c7aa29ddf9572390f7e2eec8710ed726746aa41125fe23abe2f72ba820129
+  packages/web-ui/src/data-table.ts: bb999786019d1c01ece36929124359af00c5362134c4ee4faf50ce496d3689f4
+  packages/web-ui/src/dialog.ts: 494ac8b9e2a4087de2d003dd6c28bfcab7c85961f418a5892453c865058724bc
+  packages/web-ui/src/article-workspace.ts: 01d2f680ddfb5a64fa9d84db1c10e1ae9cd3de490520e67f135f3be63260db89
+  scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+  package.json: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+  package-lock.json: d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b
+  pyproject.toml: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
+  uv.lock: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+generated_sha256:
+  changes/st-1102/article-workspace-recorded.v2.json: 35cbe2d3817c375d30bece98518e3ac598475f6218851ac3a33805091d350030
+  packages/web-ui/src/article-workspace-recorded.v2.ts: b45bcca73d774cbba9f2f93c81b476f5e2d8bd6d6337dbdfd24cf0985238bd95
+generation:
+  command: uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads
+    python scripts/build_st1102_article_workspace_v2.py
+  check_command: uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads
+    python scripts/build_st1102_article_workspace_v2.py --check
+bounds:
+  mode: RECORDED_SYNTHETIC_DEV_CI_ONLY
+  routes_registered: false
+  rendering: false
+  authentication: false
+  authorization: false
+  mutation: false
+  navigation_effect: false
+  dispatch: false
+  persistence: false
+  provider: false
+  network: false
+  publication: false
+  release: false
+  production: false
+formal_TST_022: NOT_EXECUTED
+formal_TST_024: NOT_EXECUTED

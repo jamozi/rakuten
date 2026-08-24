@@ -1,0 +1,748 @@
+{
+  "article": {
+    "articleId": "018f3e90-7b00-7000-8000-000000000806",
+    "articleType": "selection_guide",
+    "baselineAstSha256": "675e9e2fc59191135810c9f168fe1175ddd746301d0ebcff453e55b272af6843",
+    "proposalApplied": false,
+    "proposalAstSha256": "1da809c515e3a804dd413cc7e897e6422c3906d35beaf06236625e8b3c7042fc",
+    "proposalDisposition": "HUMAN_EDITABLE_PROPOSAL_ONLY",
+    "publicationAuthorized": false,
+    "recordedEtag": "\"sha256:675e9e2fc59191135810c9f168fe1175ddd746301d0ebcff453e55b272af6843\"",
+    "sourcePacketVersionId": "018f3e90-7b00-7000-8000-000000000808",
+    "title": "Synthetic AI draft integration article V2",
+    "versionId": "018f3e90-7b00-7000-8000-000000000807",
+    "versionState": "DRAFT"
+  },
+  "authority": {
+    "approval_authorized": false,
+    "authentication_established": false,
+    "authorization_granted": false,
+    "dispatch_enabled": false,
+    "mutation_enabled": false,
+    "navigation_effect_enabled": false,
+    "network_enabled": false,
+    "persistence_enabled": false,
+    "production_authorized": false,
+    "provider_enabled": false,
+    "publication_authorized": false,
+    "release_authorized": false,
+    "render_enabled": false,
+    "route_registered": false,
+    "step_up_established": false
+  },
+  "bindings": {
+    "canonical": {
+      "accessibilityChecklist": "690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e",
+      "adminOpenApi": "6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70",
+      "canonicalDecisions": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626",
+      "componentCatalog": "986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2",
+      "contentAstSchema": "a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac",
+      "integration": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
+      "openDecisions": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
+      "roleMatrix": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984",
+      "screenCatalog": "dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050",
+      "securityCatalog": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8",
+      "securityDesign": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b",
+      "storyBacklog": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+      "testCatalog": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
+      "testDesign": "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac",
+      "uiDesign": "0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e",
+      "workflowCatalog": "59983683ec920cf450d0d887ee43f0b9871e500c2025562f9bec5c6bbc6fe87e"
+    },
+    "dependencies": {
+      "securePublicationHelper": "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e",
+      "st0806Adapter": "716ed3f59abb63bda6291549c61a079c08272db6ff58fa807592e1ec0604bcbd",
+      "st0806BeforeAstFixture": "8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489",
+      "st0806Completion": "277e6376107a5b3a9237cf47f69f4e128a51fc4400e2438b88f0e8ed82f9517d",
+      "st0806Contract": "4ca2dfb59f60a4c65bb6c0c31595cac1281d6b62b3900bfe5204770f5cc8c6e7",
+      "st0806Domain": "fa04d6c194f84741e4f8d94cfa55d76babd516c9132c648cde7c2eb98cb75ad1",
+      "st0806Fixture": "a890cfa8a5c371f8f79b83bbe846fff2076eebad567613c772956ebfb5b8d78b",
+      "st0806Plan": "9b52b5d4070d8dc5f8efe62a84ba9e8113c5f6bd2e24221c3714a1c6a14d9c33",
+      "st1101AppShell": "600c7aa29ddf9572390f7e2eec8710ed726746aa41125fe23abe2f72ba820129",
+      "st1101DataTable": "bb999786019d1c01ece36929124359af00c5362134c4ee4faf50ce496d3689f4",
+      "st1101Dialog": "494ac8b9e2a4087de2d003dd6c28bfcab7c85961f418a5892453c865058724bc",
+      "st1101RouteGuard": "8395f542c7c65445fa3d1bec4a0e037c96610da8589e1807604b4fb3fa6a584f",
+      "st1101Serializable": "56adb1e0356fba66e147be4c055b7a40f1115608a3e29bbee4584234f8b3273d",
+      "st1102HistoricalV1": "01d2f680ddfb5a64fa9d84db1c10e1ae9cd3de490520e67f135f3be63260db89"
+    }
+  },
+  "canonicalStatus": {
+    "implementation": "NOT_STARTED",
+    "verification": "NOT_EXECUTED"
+  },
+  "classification": "LOCAL_EXECUTABLE_RECORDED_ARTICLE_WORKSPACE_V2",
+  "evaluatedAt": "2026-08-24T02:00:00Z",
+  "header": {
+    "article": {
+      "status": "AVAILABLE_RECORDED",
+      "value": "018f3e90-7b00-7000-8000-000000000806"
+    },
+    "etag": {
+      "status": "AVAILABLE_RECORDED",
+      "value": "\"sha256:675e9e2fc59191135810c9f168fe1175ddd746301d0ebcff453e55b272af6843\""
+    },
+    "freshness": {
+      "status": "UNAVAILABLE_DEPENDENCY",
+      "value": null
+    },
+    "owner": {
+      "status": "UNAVAILABLE_DEPENDENCY",
+      "value": null
+    },
+    "quality": {
+      "status": "AVAILABLE_RECORDED",
+      "value": "PASS"
+    },
+    "state": {
+      "status": "AVAILABLE_RECORDED",
+      "value": "DRAFT"
+    },
+    "version": {
+      "status": "AVAILABLE_RECORDED",
+      "value": "018f3e90-7b00-7000-8000-000000000807"
+    }
+  },
+  "localStatus": "LOCAL_IMPLEMENTATION_COMPLETE",
+  "projections": {
+    "AI_DIFF": {
+      "componentIds": [
+        "UI-C015"
+      ],
+      "payload": {
+        "adoptionAuthorized": false,
+        "adoptionPerformed": false,
+        "afterAstSha256": "1da809c515e3a804dd413cc7e897e6422c3906d35beaf06236625e8b3c7042fc",
+        "beforeAstSha256": "675e9e2fc59191135810c9f168fe1175ddd746301d0ebcff453e55b272af6843",
+        "diffSha256": "9bf9d3ab41745ed8ed38849302de10d1427ed1a8096222d0c325c177ab2616a0",
+        "operations": [
+          {
+            "afterValueSha256": "4e1b9fee7aac8955d1f9aad159440398cb01842c90a068967370ce752a33ad17",
+            "beforeValueSha256": "c539032f025422b005fba983c0fb8bb9fb29a0a027cbc8e6a8a6687427833891",
+            "jsonPointer": "/blocks/1/claim_ids/0",
+            "kind": "REPLACE",
+            "ordinal": 1
+          },
+          {
+            "afterValueSha256": "1339775cab40cb1964bf90e72dbb0636794d72223824c5de8d2ad765f710ea8e",
+            "beforeValueSha256": "541277eca378a2599216bedbd73ff6821bb71f4f1180754abb6555571529f9bc",
+            "jsonPointer": "/blocks/1/content/0/text",
+            "kind": "REPLACE",
+            "ordinal": 2
+          },
+          {
+            "afterValueSha256": "1fb7f8a114e9a77257f3b05d7502769c87673851ecea454455cbcea8c124eb05",
+            "beforeValueSha256": "bd1249d83814960d9fe33b016ca6ca3c025ca098c2919ccb25aa289ed1262dfe",
+            "jsonPointer": "/blocks/2/items/0/claim_ids/0",
+            "kind": "REPLACE",
+            "ordinal": 3
+          },
+          {
+            "afterValueSha256": "4e1b9fee7aac8955d1f9aad159440398cb01842c90a068967370ce752a33ad17",
+            "beforeValueSha256": "0c24db7047e95d53820f5f497f3338c8f4027d6cfc39952154070d8f65127bc6",
+            "jsonPointer": "/blocks/3/claim_ids/0",
+            "kind": "REPLACE",
+            "ordinal": 4
+          },
+          {
+            "afterValueSha256": "1fb7f8a114e9a77257f3b05d7502769c87673851ecea454455cbcea8c124eb05",
+            "beforeValueSha256": "2f1942027f901602a18f90b277f4deecb7bf28ebe49678aa4126af893c7f3d6b",
+            "jsonPointer": "/blocks/4/claim_ids/0",
+            "kind": "REPLACE",
+            "ordinal": 5
+          },
+          {
+            "afterValueSha256": "4e1b9fee7aac8955d1f9aad159440398cb01842c90a068967370ce752a33ad17",
+            "beforeValueSha256": "e2ca8ea5a944912f51ffa7d3614fa9b66b52eb881cdfa12c1b3ee9e75e8067fc",
+            "jsonPointer": "/blocks/5/criteria/0/claim_ids/0",
+            "kind": "REPLACE",
+            "ordinal": 6
+          },
+          {
+            "afterValueSha256": "1fb7f8a114e9a77257f3b05d7502769c87673851ecea454455cbcea8c124eb05",
+            "beforeValueSha256": "32b64267dbc0a98946d9f0174ba73bee538f31215a81754280ae796eeb742fd5",
+            "jsonPointer": "/blocks/6/claim_ids/0",
+            "kind": "REPLACE",
+            "ordinal": 7
+          },
+          {
+            "afterValueSha256": "4e1b9fee7aac8955d1f9aad159440398cb01842c90a068967370ce752a33ad17",
+            "beforeValueSha256": "ae28c06841f19590dfe23cb849733b3d79a337ebbc12be90d906060ad6d6eb60",
+            "jsonPointer": "/blocks/7/rationale_claim_ids/0",
+            "kind": "REPLACE",
+            "ordinal": 8
+          },
+          {
+            "afterValueSha256": "1fb7f8a114e9a77257f3b05d7502769c87673851ecea454455cbcea8c124eb05",
+            "beforeValueSha256": "e6a4b3eeba578bc1f0e8a3966ba1569a732ef6718f8cb907fe372da9e2fafbc0",
+            "jsonPointer": "/blocks/8/claim_ids/0",
+            "kind": "REPLACE",
+            "ordinal": 9
+          },
+          {
+            "afterValueSha256": "4e1b9fee7aac8955d1f9aad159440398cb01842c90a068967370ce752a33ad17",
+            "beforeValueSha256": "6c80fc04b0fb0dc1a741666e2e7abee7de34ad51d8c6d315ee8f157186598e6c",
+            "jsonPointer": "/blocks/9/claim_ids/0",
+            "kind": "REPLACE",
+            "ordinal": 10
+          }
+        ],
+        "valuesExposed": false
+      },
+      "sourceStoryIds": [
+        "ST-0806"
+      ],
+      "status": "AVAILABLE_RECORDED",
+      "statusCue": {
+        "code": "AVAILABLE_RECORDED",
+        "colorOnly": false,
+        "icon": "circle-check",
+        "text": "Available Recorded"
+      }
+    },
+    "AST": {
+      "componentIds": [
+        "UI-C022"
+      ],
+      "payload": {
+        "active": {
+          "articleType": "selection_guide",
+          "blockCount": 10,
+          "blocks": [
+            {
+              "blockId": "BLK-FIX-001",
+              "claimIds": [],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "disclosure_slot"
+            },
+            {
+              "blockId": "BLK-FIX-002",
+              "claimIds": [
+                "CLM-FIX-002"
+              ],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "lead"
+            },
+            {
+              "blockId": "BLK-FIX-003",
+              "claimIds": [],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "decision_summary"
+            },
+            {
+              "blockId": "BLK-FIX-004",
+              "claimIds": [
+                "CLM-FIX-004"
+              ],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "intended_reader"
+            },
+            {
+              "blockId": "BLK-FIX-005",
+              "claimIds": [
+                "CLM-FIX-005"
+              ],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "methodology"
+            },
+            {
+              "blockId": "BLK-FIX-006",
+              "claimIds": [],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "selection_criteria"
+            },
+            {
+              "blockId": "BLK-FIX-007",
+              "claimIds": [
+                "CLM-FIX-007"
+              ],
+              "comparisonAxisRefs": [
+                "AXIS-FIX-001",
+                "AXIS-FIX-002"
+              ],
+              "displayMode": "desktop_table_mobile_cards",
+              "productSelectionRefs": [
+                "PSEL-FIX-001",
+                "PSEL-FIX-002",
+                "PSEL-FIX-003"
+              ],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": true,
+              "type": "comparison_table"
+            },
+            {
+              "blockId": "BLK-FIX-008",
+              "claimIds": [],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [
+                "CLM-FIX-008"
+              ],
+              "recommendationRefs": [
+                "REC-FIX-001"
+              ],
+              "showUnknownValues": null,
+              "type": "recommendation_group"
+            },
+            {
+              "blockId": "BLK-FIX-009",
+              "claimIds": [
+                "CLM-FIX-009"
+              ],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "caution"
+            },
+            {
+              "blockId": "BLK-FIX-010",
+              "claimIds": [
+                "CLM-FIX-010"
+              ],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "source_summary"
+            }
+          ],
+          "locale": "ja-JP",
+          "schemaVersion": "1.0.0",
+          "sha256": "675e9e2fc59191135810c9f168fe1175ddd746301d0ebcff453e55b272af6843"
+        },
+        "humanEditable": true,
+        "proposalApplied": false,
+        "proposed": {
+          "articleType": "selection_guide",
+          "blockCount": 10,
+          "blocks": [
+            {
+              "blockId": "BLK-FIX-001",
+              "claimIds": [],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "disclosure_slot"
+            },
+            {
+              "blockId": "BLK-FIX-002",
+              "claimIds": [
+                "44444444-4444-4444-8444-444444444444"
+              ],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "lead"
+            },
+            {
+              "blockId": "BLK-FIX-003",
+              "claimIds": [],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "decision_summary"
+            },
+            {
+              "blockId": "BLK-FIX-004",
+              "claimIds": [
+                "44444444-4444-4444-8444-444444444444"
+              ],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "intended_reader"
+            },
+            {
+              "blockId": "BLK-FIX-005",
+              "claimIds": [
+                "55555555-5555-4555-8555-555555555555"
+              ],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "methodology"
+            },
+            {
+              "blockId": "BLK-FIX-006",
+              "claimIds": [],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "selection_criteria"
+            },
+            {
+              "blockId": "BLK-FIX-007",
+              "claimIds": [
+                "55555555-5555-4555-8555-555555555555"
+              ],
+              "comparisonAxisRefs": [
+                "AXIS-FIX-001",
+                "AXIS-FIX-002"
+              ],
+              "displayMode": "desktop_table_mobile_cards",
+              "productSelectionRefs": [
+                "PSEL-FIX-001",
+                "PSEL-FIX-002",
+                "PSEL-FIX-003"
+              ],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": true,
+              "type": "comparison_table"
+            },
+            {
+              "blockId": "BLK-FIX-008",
+              "claimIds": [],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [
+                "44444444-4444-4444-8444-444444444444"
+              ],
+              "recommendationRefs": [
+                "REC-FIX-001"
+              ],
+              "showUnknownValues": null,
+              "type": "recommendation_group"
+            },
+            {
+              "blockId": "BLK-FIX-009",
+              "claimIds": [
+                "55555555-5555-4555-8555-555555555555"
+              ],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "caution"
+            },
+            {
+              "blockId": "BLK-FIX-010",
+              "claimIds": [
+                "44444444-4444-4444-8444-444444444444"
+              ],
+              "comparisonAxisRefs": [],
+              "displayMode": null,
+              "productSelectionRefs": [],
+              "rationaleClaimIds": [],
+              "recommendationRefs": [],
+              "showUnknownValues": null,
+              "type": "source_summary"
+            }
+          ],
+          "locale": "ja-JP",
+          "schemaVersion": "1.0.0",
+          "sha256": "1da809c515e3a804dd413cc7e897e6422c3906d35beaf06236625e8b3c7042fc"
+        }
+      },
+      "sourceStoryIds": [
+        "ST-0806"
+      ],
+      "status": "AVAILABLE_RECORDED",
+      "statusCue": {
+        "code": "AVAILABLE_RECORDED",
+        "colorOnly": false,
+        "icon": "circle-check",
+        "text": "Available Recorded"
+      }
+    },
+    "CLAIMS": {
+      "componentIds": [
+        "UI-C021"
+      ],
+      "payload": {
+        "caption": "Recorded synthetic Claim and Evidence coverage",
+        "claimTextPresent": false,
+        "columns": [
+          {
+            "id": "claim",
+            "label": "Claim ID",
+            "scope": "col"
+          },
+          {
+            "id": "criticality",
+            "label": "Criticality",
+            "scope": "col"
+          },
+          {
+            "id": "evidence",
+            "label": "Evidence",
+            "scope": "col"
+          },
+          {
+            "id": "freshness",
+            "label": "Freshness",
+            "scope": "col"
+          },
+          {
+            "id": "conflict",
+            "label": "Conflict",
+            "scope": "col"
+          }
+        ],
+        "coverage": {
+          "allVerifiable": {
+            "evidenced": 2,
+            "total": 2
+          },
+          "bindingSha256": "42e4db753b6a364aba407f010364bce067cc4d97b1f1b48a308c44121d82ed75",
+          "major": {
+            "evidenced": 1,
+            "total": 1
+          },
+          "receiptSequence": 1,
+          "reportSha256": "9f79e0a4558d2d5f9c8d2458862056dbddc352f653b11c7c81bf2b157f055b9b",
+          "status": "PASS"
+        },
+        "rowHeaderColumn": "claim",
+        "rows": [
+          {
+            "affectsPurchaseDecision": true,
+            "claimId": "44444444-4444-4444-8444-444444444444",
+            "claimType": "direct_fact",
+            "conflictCount": 0,
+            "coverage": "EVIDENCED",
+            "criticality": 5,
+            "evidenceFactIds": [
+              "66666666-6666-4666-8666-666666666666"
+            ],
+            "identityStatuses": [
+              "MATCHED"
+            ],
+            "sources": [
+              {
+                "acquiredAt": "2026-08-23T00:00:00Z",
+                "expiresAt": "2026-09-01T00:00:00Z",
+                "sourceSnapshotId": "99999999-9999-4999-8999-999999999999",
+                "validationStatus": "VALID"
+              }
+            ]
+          },
+          {
+            "affectsPurchaseDecision": false,
+            "claimId": "55555555-5555-4555-8555-555555555555",
+            "claimType": "direct_fact",
+            "conflictCount": 0,
+            "coverage": "EVIDENCED",
+            "criticality": 2,
+            "evidenceFactIds": [
+              "77777777-7777-4777-8777-777777777777"
+            ],
+            "identityStatuses": [
+              "MATCHED"
+            ],
+            "sources": [
+              {
+                "acquiredAt": "2026-08-23T00:00:00Z",
+                "expiresAt": "2026-09-01T00:00:00Z",
+                "sourceSnapshotId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+                "validationStatus": "VALID"
+              }
+            ]
+          }
+        ]
+      },
+      "sourceStoryIds": [
+        "ST-0806",
+        "ST-0605"
+      ],
+      "status": "AVAILABLE_RECORDED",
+      "statusCue": {
+        "code": "AVAILABLE_RECORDED",
+        "colorOnly": false,
+        "icon": "circle-check",
+        "text": "Available Recorded"
+      }
+    },
+    "COMPARISON": {
+      "componentIds": [
+        "UI-C023",
+        "UI-C036"
+      ],
+      "payload": {
+        "axisRefs": [
+          "AXIS-FIX-001",
+          "AXIS-FIX-002"
+        ],
+        "comparisonTableRef": "TABLE-FIX-001",
+        "displayMode": "desktop_table_mobile_cards",
+        "financeOrAffiliateEconomicsPresent": false,
+        "productSelectionRefs": [
+          "PSEL-FIX-001",
+          "PSEL-FIX-002",
+          "PSEL-FIX-003"
+        ],
+        "recommendationGroups": [
+          {
+            "groupId": "GROUP-FIX-001",
+            "rationaleClaimIds": [
+              "44444444-4444-4444-8444-444444444444"
+            ],
+            "recommendationRefs": [
+              "REC-FIX-001"
+            ],
+            "strictOrder": false
+          }
+        ],
+        "recommendationOrderMutationAuthorized": false,
+        "showUnknownValues": true
+      },
+      "sourceStoryIds": [
+        "ST-0806"
+      ],
+      "status": "AVAILABLE_RECORDED",
+      "statusCue": {
+        "code": "AVAILABLE_RECORDED",
+        "colorOnly": false,
+        "icon": "circle-check",
+        "text": "Available Recorded"
+      }
+    },
+    "SEO": {
+      "componentIds": [],
+      "payload": {
+        "canonical": null,
+        "jsonLd": null,
+        "missingOwner": "ST-0807_NOT_DECLARED_DEPENDENCY",
+        "resolvedMetadataStatus": "UNAVAILABLE_DEPENDENCY",
+        "robots": null,
+        "seoMetadataRef": "SEO-FIX-001",
+        "title": "Synthetic AI draft integration article V2",
+        "titleSource": "TYPED_AST"
+      },
+      "sourceStoryIds": [
+        "ST-0806"
+      ],
+      "status": "PARTIAL_RECORDED",
+      "statusCue": {
+        "code": "PARTIAL_RECORDED",
+        "colorOnly": false,
+        "icon": "circle-alert",
+        "text": "Partial Recorded"
+      }
+    }
+  },
+  "schemaVersion": 2,
+  "screenOrder": [
+    "EDT-002",
+    "EDT-003",
+    "EDT-005",
+    "EDT-006",
+    "EDT-007",
+    "EDT-009"
+  ],
+  "security": {
+    "arbitraryUrlPresent": false,
+    "controls": [
+      "SEC-IAM-004",
+      "SEC-IAM-005",
+      "SEC-APP-001",
+      "SEC-APP-004",
+      "SEC-APP-010",
+      "SEC-APP-012",
+      "SEC-APP-015",
+      "SEC-DATA-003",
+      "SEC-DATA-007",
+      "SEC-AI-001",
+      "SEC-AI-003",
+      "SEC-AI-004",
+      "SEC-AI-007",
+      "SEC-SDLC-006",
+      "SEC-SDLC-009"
+    ],
+    "credentialPresent": false,
+    "financeOrAffiliateEconomicsPresent": false,
+    "personalDataPresent": false,
+    "prohibitedSurfaces": [
+      "RAW_PROMPT",
+      "RAW_SOURCE_BODY",
+      "REVIEW_BODY",
+      "RAW_HTML",
+      "SCRIPT_OR_EVENT_HANDLER",
+      "ARBITRARY_URL",
+      "FINANCE_OR_AFFILIATE_ECONOMICS",
+      "SECRET_OR_CREDENTIAL",
+      "PERSONAL_DATA",
+      "CALLBACK_OR_EXECUTABLE_VALUE",
+      "PUBLIC_PROJECTION"
+    ],
+    "publicProjectionPresent": false,
+    "rawHtmlPresent": false,
+    "rawPromptPresent": false,
+    "rawSourcePresent": false,
+    "reviewBodyPresent": false
+  },
+  "storyId": "ST-1102",
+  "verification": {
+    "TST-022": "NOT_EXECUTED",
+    "TST-024": "NOT_EXECUTED",
+    "browser": "NOT_EXECUTED",
+    "formal_validation": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "keyboard": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "local_model": "IMPLEMENTED_BY_THIS_STORY",
+    "production": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "screen_reader": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "zoom": "NOT_EXECUTED"
+  }
+}

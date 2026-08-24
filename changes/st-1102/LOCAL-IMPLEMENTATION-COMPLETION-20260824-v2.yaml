@@ -1,0 +1,55 @@
+document:
+  id: RAOS-ST1102-LOCAL-IMPLEMENTATION-COMPLETION-002
+  version: 2.0.0
+  story_id: ST-1102
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  canonical_registry_changed: false
+  authority: NONE
+base:
+  integration_sha: b05d33e9a7e3836d86f9f0f4700e4daa904ca266
+  branch: codex/st-1102-admin-v2
+scope:
+  mode: STRICT_STORY
+  v1_compatibility: BYTE_IDENTICAL
+  input_mode: RECORDED_SYNTHETIC_DEV_CI_ONLY
+  declared_dependencies:
+    - ST-0806
+    - ST-1101
+  seo_resolved_dependency: UNAVAILABLE
+  provider_or_external_writes: false
+local_evidence:
+  focused_v2: PASS_23_TESTS
+  historical_and_v2_st1102: PASS_46_TESTS
+  affected_st1101: PASS_31_TESTS
+  affected_st0806: PASS_61_TESTS
+  dependency_st0806_owner_check: PASS
+  generator_build_and_check: PASS
+  prettier_eslint_typescript: PASS
+  ruff_format_and_check: PASS
+  strict_mypy_generator_and_python_tests: PASS
+  compile_and_import: PASS
+  sensitive_data_scan: PASS_0_UNREVIEWED_FINDINGS_WITH_EXACT_V2_LEDGER
+  focused_changed_file_sensitive_data_scan: PASS_0_FINDINGS
+  workspace_and_canonical_drift: PASS
+  git_diff_check: PASS
+bindings:
+  st0806_fixture_sha256: a890cfa8a5c371f8f79b83bbe846fff2076eebad567613c772956ebfb5b8d78b
+  st0806_plan_sha256: 9b52b5d4070d8dc5f8efe62a84ba9e8113c5f6bd2e24221c3714a1c6a14d9c33
+  st1102_v1_sha256: 01d2f680ddfb5a64fa9d84db1c10e1ae9cd3de490520e67f135f3be63260db89
+  hardened_writer_sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+formal_and_external:
+  canonical_implementation_status: NOT_CHANGED
+  TST-022: NOT_EXECUTED
+  TST-024: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  keyboard: NOT_EXECUTED
+  zoom: NOT_EXECUTED
+  screen_reader: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  production: NOT_EXECUTED
+debt:
+  introduced: []

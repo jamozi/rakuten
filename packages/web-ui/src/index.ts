@@ -138,6 +138,29 @@ export type {
 } from './article-workspace.ts';
 
 export {
+  ARTICLE_WORKSPACE_V2_CLASSIFICATION,
+  ARTICLE_WORKSPACE_V2_ERROR_CODES,
+  ARTICLE_WORKSPACE_V2_PROJECTION_IDS,
+  ArticleWorkspaceV2Error,
+  createArticleWorkspaceV2,
+  evaluateArticleWorkspaceEtagV2,
+  evaluateArticleWorkspaceUnsavedGuardV2,
+  validateArticleWorkspaceV2Model,
+} from './article-workspace-v2.ts';
+export type {
+  ArticleWorkspaceEtagDecisionV2,
+  ArticleWorkspaceEtagInputV2,
+  ArticleWorkspaceUnsavedDecisionV2,
+  ArticleWorkspaceUnsavedInputV2,
+  ArticleWorkspaceV2ErrorCode,
+  ArticleWorkspaceV2Input,
+  ArticleWorkspaceV2Model,
+  ArticleWorkspaceV2Projection,
+  ArticleWorkspaceV2ProjectionId,
+  ArticleWorkspaceV2StatusCue,
+} from './article-workspace-v2.ts';
+
+export {
   PUBLICATION_REVIEW_COMPONENT_IDS,
   PUBLICATION_REVIEW_COMPONENTS,
   PUBLICATION_REVIEW_ERROR_CODES,
