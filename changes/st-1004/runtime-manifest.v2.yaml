@@ -6,7 +6,7 @@ source_artifact_count: 29
 source_artifacts:
 - uri: repo://changes/st-1004/contracts/disclosure-affiliate-runtime.v2.yaml
   bytes: 7905
-  sha256: 2d79ad0031bf2401be2bedc8b5d1255df2788dc446a1c43a9ad81daa62ffa519
+  sha256: 2dae9876ea9ed437bbf29c7b8bcc9453e6039397cb25b55a22d0c647cc861259
   role: OWNER_SOURCE
 - uri: repo://scripts/build_st1004_disclosure_affiliate_runtime.py
   bytes: 22370
@@ -17,12 +17,12 @@ source_artifacts:
   sha256: 4e53048e1c59030dfabc882b868d7e6ccafd57adf715707b1fe2bc80091c47be
   role: OWNER_SOURCE
 - uri: repo://packages/web-ui/src/index.ts
-  bytes: 16649
-  sha256: 414a441c55ae3f16a0c508bf02e545271a331d6f75111746d260c15984dbade1
+  bytes: 18566
+  sha256: b6fd3b221fa7aef69124f0361d25f6ce53bc423b63fb4f3e94362b2eaecc6235
   role: OWNER_SOURCE
 - uri: repo://apps/web/src/public-article-page.tsx
-  bytes: 7452
-  sha256: a3e9b65b168a3f4e97c63ae76855ee79aebf0cd85e5b17e92efece8514c4de44
+  bytes: 8041
+  sha256: 664a1c35c483848d57e78a2dfda315e918d4bac1f9d4ecea6b2265411b8c2777
   role: OWNER_SOURCE
 - uri: repo://apps/web/app/articles/[slug]/article.module.css
   bytes: 7535
@@ -106,7 +106,7 @@ source_artifacts:
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1002/runtime-manifest.v2.yaml
   bytes: 8759
-  sha256: 810a4fdf021c1b4e1769700506cb21af864b85c857341066af8311ce2de193ec
+  sha256: 28ddfcf7c7ce0b734fb26e2e05eebfc0c4602ae651116a1200b9405851210bae
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-0503/README.md
   bytes: 3554

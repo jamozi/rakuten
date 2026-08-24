@@ -38,7 +38,7 @@ dependency_bindings:
       sha256: 866c7348e6a08806ed16fa14cbed4cbdc80f39c22d1982e1c56c16921f8ecc99
     manifest:
       path: changes/st-1002/runtime-manifest.v2.yaml
-      sha256: 810a4fdf021c1b4e1769700506cb21af864b85c857341066af8311ce2de193ec
+      sha256: 28ddfcf7c7ce0b734fb26e2e05eebfc0c4602ae651116a1200b9405851210bae
     exact_slug: synthetic-recorded-policy-seo
     exact_path: /articles/synthetic-recorded-policy-seo
     recorded_disclosure_copy: この記事にはアフィリエイト広告が含まれます。
