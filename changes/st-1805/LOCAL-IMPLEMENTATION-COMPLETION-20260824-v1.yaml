@@ -1,0 +1,71 @@
+schema_version: 1
+story_id: ST-1805
+record_type: LOCAL_IMPLEMENTATION_COMPLETION_CANDIDATE
+scope: RECORDED_SYNTHETIC_PORTFOLIO_DECISION_BOUNDARY_ONLY
+integration_base_sha: 4f680b197b5a37811b3a6f9afcbd02ed2b806e58
+implementation_status_claim: LOCAL_CODE_COMPLETE
+classification: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE_RECORDED_SYNTHETIC_NO_DECISION
+canonical_status_mutated: false
+acceptance_criteria_satisfied: false
+decision:
+  overall: BLOCKED
+  outcome: NO_DECISION
+  authorized: false
+  actual_observations: []
+  human_decision_required: true
+dependency_truth:
+  ST-1804: LOCAL_BLOCKED_RECORDED_SYNTHETIC_GATE3_NON_ATTESTING
+  actual_gate3_economics: NOT_EXECUTED
+  formal_TST-032: NOT_EXECUTED
+implementation:
+  domain: repo://python/raos/domain/portfolio/scale_decision.py
+  port: repo://python/raos/ports/scale_decision.py
+  application: repo://python/raos/application/portfolio/scale_decision.py
+  recorded_adapter: repo://python/raos/adapters/recorded_scale_decision.py
+  contract: repo://changes/st-1805/contracts/portfolio-decision.v1.yaml
+  fixture: repo://changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json
+  generator: repo://scripts/build_st1805_portfolio_decision.py
+  generated_pack: repo://changes/st-1805/generated/portfolio-decision.local-blocked.v1.json
+  tests: repo://tests/st1805
+verification:
+  focused_tests: 46_PASSED
+  owner_generate: PASSED
+  owner_check: PASSED
+  ruff: PASSED
+  strict_mypy: PASSED
+  compile: PASSED
+authority:
+  provider: NONE
+  credential: NONE
+  network: NONE
+  database: NONE
+  persistence: NONE
+  public_projection: NONE
+  editorial_mutation: NONE
+  publication: NONE
+  gate_approval: NONE
+  scale_hold_pivot: NONE
+  category_change: NONE
+  status_propose: NONE
+  status_apply: NONE
+  staging: NONE
+  release: NONE
+  production: NONE
+not_executed:
+  actual_30_45_article_pilot: NOT_EXECUTED
+  actual_gate3_economics: NOT_EXECUTED
+  formal_security_and_compliance_risk_evidence: NOT_EXECUTED
+  formal_TST-032: NOT_EXECUTED
+  human_portfolio_decision: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+introduced_local_debt: []
+external_remaining:
+  - ACTUAL_30_45_ARTICLE_PILOT
+  - ACTUAL_GATE3_ECONOMICS
+  - REAL_PROVIDER_REPORT_OD_003
+  - APPROVED_LABOR_BASIS_OD_005
+  - FORMAL_SECURITY_AND_COMPLIANCE_RISK_EVIDENCE
+  - FORMAL_TST_032
+  - PRODUCT_OWNER_SCALE_HOLD_PIVOT_DECISION
