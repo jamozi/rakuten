@@ -92,6 +92,8 @@ def test_authority_and_external_action_surfaces_are_absent(
     assert isinstance(execution, dict)
     assert all(value == "NONE" for value in authority.values())
     assert execution["external_action_count"] == 0
+    assert execution["pre_backup_target_identity_revalidation"] == "REQUIRED"
+    assert execution["committed_recovery_original_binding"] == "REQUIRED_BEFORE_CLEANUP"
     assert execution["network_access"] == "FORBIDDEN"
     assert execution["credential_access"] == "FORBIDDEN"
     assert execution["status_registry_mutation"] == "FORBIDDEN"

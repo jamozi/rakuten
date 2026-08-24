@@ -200,6 +200,66 @@ def test_existing_outputs_are_restored_before_rebuild_after_crash(
     _assert_no_companions(repository_copy)
 
 
+def test_same_byte_target_replacement_before_backup_is_rejected(
+    repository_copy: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    builder.build(repository_copy)
+    relative = builder.DECISION_PATH
+    target = repository_copy / relative
+    original = target.read_bytes()
+
+    def replace_target(observed: str) -> None:
+        if observed == "PREPARED":
+            target.unlink()
+            target.write_bytes(original)
+            target.chmod(builder.OUTPUT_MODE)
+
+    monkeypatch.setattr(builder, "_transaction_checkpoint", replace_target)
+    with pytest.raises(builder.PilotSignoffError) as error:
+        builder.build(repository_copy)
+    assert error.value.code == "OUTPUT_TARGET_CHANGED"
+    assert target.read_bytes() == original
+    _assert_no_companions(repository_copy)
+
+
+@pytest.mark.parametrize("relative", builder.GENERATED_PATHS)
+@pytest.mark.parametrize("tamper", ("CONTENT", "COMPANION_KIND"))
+def test_committed_recovery_rejects_companion_not_bound_to_journal(
+    tamper: str,
+    relative: Path,
+    repository_copy: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    builder.build(repository_copy)
+
+    def crash(observed: str) -> None:
+        if observed == "COMMITTED":
+            raise _Crash
+
+    monkeypatch.setattr(builder, "_transaction_checkpoint", crash)
+    with pytest.raises(_Crash):
+        builder.build(repository_copy)
+
+    target = repository_copy / relative
+    previous = target.with_name(f".{target.name}{builder.PREVIOUS_SUFFIX}")
+    absent = target.with_name(f".{target.name}{builder.ABSENT_SUFFIX}")
+    if tamper == "CONTENT":
+        previous.write_bytes(b"tampered previous output\n")
+        previous.chmod(builder.OUTPUT_MODE)
+    else:
+        previous.unlink()
+        absent.write_bytes(builder.ABSENT_MARKER)
+        absent.chmod(builder.PRIVATE_MODE)
+
+    before = _snapshot(repository_copy)
+    monkeypatch.setattr(builder, "_transaction_checkpoint", lambda _name: None)
+    with pytest.raises(builder.PilotSignoffError) as error:
+        builder.build(repository_copy)
+    assert error.value.code == "TRANSACTION_INVALID"
+    assert _snapshot(repository_copy) == before
+
+
 def test_concurrent_writer_is_rejected(repository_copy: Path) -> None:
     lock = builder._acquire_lock(repository_copy, shared=False)  # noqa: SLF001
     try:

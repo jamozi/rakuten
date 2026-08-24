@@ -192,6 +192,8 @@ execution_boundary:
   input_read_model: ROOT_FD_DESCRIPTOR_RELATIVE_CAPTURED_LEAF
   writer_model: SINGLE_PROCESS_DIRECTORY_LOCK
   output_transaction: TWO_OUTPUT_RECOVERABLE_ALL_OR_NOTHING
+  pre_backup_target_identity_revalidation: REQUIRED
+  committed_recovery_original_binding: REQUIRED_BEFORE_CLEANUP
   check_pending_recovery_behavior: READ_ONLY_REJECT
   network_access: FORBIDDEN
   environment_access: FORBIDDEN
@@ -207,7 +209,7 @@ execution_boundary:
   external_action_count: 0
 evidence_boundary:
   classification: LOCAL_BLOCKED_PILOT_SIGNOFF_NON_ATTESTING
-  local_base_commit: 9894d87a19b0ad407d070ea9dbe43ea39f36e935
+  local_base_commit: 94a1ecc75f148149dae4e825a9bd90727bd85dbb
   local_base_commit_status: RECORDED_IMPLEMENTATION_BASE_ONLY
   local_base_commit_qualifying_evidence: false
   source_freeze_status: UNAVAILABLE

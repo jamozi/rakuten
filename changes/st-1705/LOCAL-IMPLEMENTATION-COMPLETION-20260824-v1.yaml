@@ -7,9 +7,9 @@ document:
   authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
   generated: false
 base:
-  integration_commit_sha: 9894d87a19b0ad407d070ea9dbe43ea39f36e935
+  integration_commit_sha: 94a1ecc75f148149dae4e825a9bd90727bd85dbb
   integration_commit_sha_type: GIT_SHA1_LOWER_HEX_40
-  isolated_branch: agent/st1705-pilot-signoff
+  isolated_branch: codex/st1705-local-complete-20260824
   implementation_commit_sha: TO_BE_REPORTED_BY_GIT_ONLY
 local_deliverables:
   classification: LOCAL_BLOCKED_PILOT_SIGNOFF_NON_ATTESTING
@@ -38,7 +38,7 @@ canonical_boundary:
   effective_status_changed: false
   status_registry_propose_or_apply: NOT_EXECUTED
 verification:
-  focused_st1705: PASS_57_OF_57
+  focused_st1705: PASS_62_OF_62
   affected_st1607: PASS_73_OF_73
   affected_st1704: PASS_373_OF_373
   owner_generation: PASS
@@ -52,6 +52,13 @@ verification:
   git_diff_check: PASS
 debt:
   introduced_local_debt: []
+  closed_local_debt:
+    - id: ST1705-DEBT-PREBACKUP-TARGET-IDENTITY
+      state: CLOSED
+      closure: EXACT_CAPTURED_SNAPSHOT_REVALIDATION_BEFORE_BACKUP
+    - id: ST1705-DEBT-COMMITTED-COMPANION-BINDING
+      state: CLOSED
+      closure: ORIGINAL_PRESENCE_AND_SHA256_REQUIRED_BEFORE_CLEANUP
   inherited_formal_or_external_limitations:
     - id: ST1705-LIM-OPEN-DECISIONS
       state: BLOCKED_14_ACTIVE

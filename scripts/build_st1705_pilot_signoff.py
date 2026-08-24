@@ -87,7 +87,7 @@ TRANSACTION_SCHEMA: Final = "ST1705_OUTPUT_TRANSACTION_V1"
 GENERATION_COMMAND: Final = (
     "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1705_pilot_signoff.py"
 )
-LOCAL_BASE_COMMIT: Final = "9894d87a19b0ad407d070ea9dbe43ea39f36e935"
+LOCAL_BASE_COMMIT: Final = "94a1ecc75f148149dae4e825a9bd90727bd85dbb"
 
 TOP_LEVEL_KEYS: Final = (
     "document",
@@ -710,6 +710,8 @@ def _expected_contract_sections() -> dict[str, object]:
             "input_read_model": "ROOT_FD_DESCRIPTOR_RELATIVE_CAPTURED_LEAF",
             "writer_model": "SINGLE_PROCESS_DIRECTORY_LOCK",
             "output_transaction": "TWO_OUTPUT_RECOVERABLE_ALL_OR_NOTHING",
+            "pre_backup_target_identity_revalidation": "REQUIRED",
+            "committed_recovery_original_binding": "REQUIRED_BEFORE_CLEANUP",
             "check_pending_recovery_behavior": "READ_ONLY_REJECT",
             "network_access": "FORBIDDEN",
             "environment_access": "FORBIDDEN",
@@ -1645,6 +1647,7 @@ def _recover_pending(root: Path, slots: Sequence[_Slot], *, mutate: bool) -> Non
                 is not None
             ):
                 _fail("TRANSACTION_INVALID", "output_companion")
+        companions: list[tuple[_Slot, _Snapshot | None, _Snapshot | None]] = []
         for slot in slots:
             previous = _snapshot(
                 slot, slot.previous, "output_companion", missing_ok=True
@@ -1658,11 +1661,25 @@ def _recover_pending(root: Path, slots: Sequence[_Slot], *, mutate: bool) -> Non
             )
             if (previous is None) == (absent is None):
                 _fail("TRANSACTION_INVALID", "output_companion")
+            original_digest = original_hashes[slot.relative]
+            if original_digest is None:
+                if (
+                    previous is not None
+                    or absent is None
+                    or absent.content != ABSENT_MARKER
+                ):
+                    _fail("TRANSACTION_INVALID", "output_companion")
+            elif (
+                previous is None
+                or absent is not None
+                or _sha256(previous.content) != original_digest
+            ):
+                _fail("TRANSACTION_INVALID", "output_companion")
+            companions.append((slot, previous, absent))
+        for slot, previous, absent in companions:
             if previous is not None:
                 _unlink(slot, slot.previous)
             if absent is not None:
-                if absent.content != ABSENT_MARKER:
-                    _fail("TRANSACTION_INVALID", "output_companion")
                 _unlink(slot, slot.absent)
         _unlink(coordinator, TRANSACTION_NAME)
         return
@@ -1766,11 +1783,7 @@ def _write_transaction(
         _assert_parent(root, slot)
         observed = _snapshot(slot, slot.target, "generated_output", missing_ok=True)
         original = originals[slot.relative]
-        if (observed is None) != (original is None) or (
-            observed is not None
-            and original is not None
-            and _sha256(observed.content) != _sha256(original.content)
-        ):
+        if observed != original:
             _fail("OUTPUT_TARGET_CHANGED", "generated_output")
         try:
             if original is None:

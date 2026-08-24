@@ -40,7 +40,10 @@ read-only and refuses pending recovery state.
 All bound inputs are captured through descriptor-relative, no-follow reads under a
 2 MiB ceiling. JSON and YAML duplicate keys are rejected. Fixed output companions,
 unsafe ancestors, symlinks, hardlinks, unexpected modes, ambiguous transaction state,
-and target races fail closed.
+and target races fail closed. Before backup, an output target must retain the exact
+captured identity and bytes. During committed recovery, every previous/absent
+companion must match the journal's original-presence flag and original content hash
+before any cleanup mutation occurs.
 
 ## Future evidence input port
 
