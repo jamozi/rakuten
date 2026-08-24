@@ -1,0 +1,228 @@
+document:
+  id: RAOS-AI-OUTPUT-VALIDATION-RUNTIME-001
+  version: 1.0.0
+  story_id: ST-0705
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  authority: NONE
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  publication_authorized: false
+  persistence_authorized: false
+  production_eligible: false
+runtime:
+  validator_version: ST0705_AI_OUTPUT_VALIDATION_V1
+  profile_registry_version: ST0705_TASK_VALIDATION_PROFILES_V1
+  maximum_output_bytes: 4194304
+  repair_attempts: 0
+  output_ast: AI_TASK_STRUCTURED_OUTPUT
+  content_ast_conversion_owner: ST-0806
+  local_gate_scope: [AIG-040, AIG-050, AIG-060]
+  not_executed_gates: [AIG-070, AIG-080, AIG-090]
+  formal_suites:
+    TST-019: NOT_EXECUTED
+    TST-020: NOT_EXECUTED
+common_semantic_receipts:
+  - receipt_kind: CONTEXT_MANIFEST_BINDING
+    owner_story_id: ST-0702
+    owner_contract_path: changes/st-0702/contracts/context-pack-reference-plan.v1.yaml
+    owner_contract_sha256: 4b916ccea6906ecd6795260adbd34e0e4657dcaf7104ab84cfee60aa5c672d33
+  - receipt_kind: INPUT_TAINT_SCAN
+    owner_story_id: ST-0702
+    owner_contract_path: changes/st-0702/contracts/context-pack-reference-plan.v1.yaml
+    owner_contract_sha256: 4b916ccea6906ecd6795260adbd34e0e4657dcaf7104ab84cfee60aa5c672d33
+  - receipt_kind: PROVIDER_SUCCESS_SAFETY
+    owner_story_id: ST-0703
+    owner_contract_path: changes/st-0703/contracts/openai-responses-adapter.v1.yaml
+    owner_contract_sha256: 1f4ee219a93fb12bdd4d2d66ab2a87a33e9f608d24654aceb50e28b6efa96349
+  - receipt_kind: POLICY_BUNDLE_BINDING
+    owner_story_id: ST-0805
+    owner_contract_path: contracts/raos-v0.4/contracts/content/RAOS_06_editorial_policy_catalog_v0.1.yaml
+    owner_contract_sha256: d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a
+  - receipt_kind: REVIEW_CONTAMINATION_SCAN
+    owner_story_id: ST-0705
+    owner_contract_path: SELF
+    owner_contract_sha256: SELF
+  - receipt_kind: SENSITIVE_DATA_SCAN
+    owner_story_id: ST-0705
+    owner_contract_path: SELF
+    owner_contract_sha256: SELF
+profiles:
+  AIT-001:
+    resource_locators:
+      - {locator_id: source_fact_ids, pointer: /source_fact_ids/*, reference_format: CANONICAL_UUID, resource_kind: FACT, membership_required: true}
+    scalar_locators: []
+    order_locators: []
+    claim_collection: null
+    schema_versions: [{locator_id: root_schema_version, pointer: /schema_version, value: '1.0'}]
+    coverage_mode: NONE
+    additional_receipts: []
+    semantic_capability_limitations: []
+  AIT-002:
+    resource_locators:
+      - {locator_id: axis_fact_ids, pointer: /axes/*/fact_ids/*, reference_format: CANONICAL_UUID, resource_kind: FACT, membership_required: true}
+    scalar_locators: []
+    order_locators:
+      - {locator_id: axes_input_order, collection_pointer: /axes, identity_field: axis_key, rank_field: priority}
+    claim_collection: null
+    schema_versions: [{locator_id: root_schema_version, pointer: /schema_version, value: '1.0'}]
+    coverage_mode: NONE
+    additional_receipts:
+      - receipt_kind: EXPERIENCE_AUTHORIZATION
+        owner_story_id: ST-0605
+        owner_contract_path: contracts/raos-v0.4/contracts/schemas/content-revision/first-hand-experience-record.v1.schema.json
+        owner_contract_sha256: 34dcb19731e44c3aa8a6991503cb78933461866f6393635d118eae9143f2f4ce
+    semantic_capability_limitations: []
+  AIT-003:
+    resource_locators:
+      - {locator_id: section_fact_ids, pointer: /sections/*/required_fact_ids/*, reference_format: CANONICAL_UUID, resource_kind: FACT, membership_required: true}
+    scalar_locators: []
+    order_locators:
+      - {locator_id: section_order, collection_pointer: /sections, identity_field: section_key, rank_field: position}
+    claim_collection: null
+    schema_versions: [{locator_id: root_schema_version, pointer: /schema_version, value: '1.0'}]
+    coverage_mode: NONE
+    additional_receipts: []
+    semantic_capability_limitations: []
+  AIT-004:
+    resource_locators:
+      - {locator_id: block_products, pointer: /article/blocks/*/product_refs/*, reference_format: CANONICAL_UUID, resource_kind: PRODUCT, membership_required: true}
+      - {locator_id: claim_facts, pointer: /claims/*/fact_ids/*, reference_format: CANONICAL_UUID, resource_kind: FACT, membership_required: true}
+      - {locator_id: recommendation_products, pointer: /product_recommendations/*/product_id, reference_format: CANONICAL_UUID, resource_kind: PRODUCT, membership_required: true}
+      - {locator_id: recommendation_facts, pointer: /product_recommendations/*/rationale_fact_ids/*, reference_format: CANONICAL_UUID, resource_kind: FACT, membership_required: true}
+    scalar_locators: []
+    order_locators:
+      - {locator_id: block_order, collection_pointer: /article/blocks, identity_field: block_key, rank_field: position}
+      - {locator_id: recommendation_order, collection_pointer: /product_recommendations, identity_field: product_id, rank_field: rank}
+    claim_collection: {locator_id: claims, pointer: /claims, maximum: 2000}
+    schema_versions:
+      - {locator_id: root_schema_version, pointer: /schema_version, value: '1.0'}
+      - {locator_id: article_schema_version, pointer: /article/schema_version, value: '1.0'}
+    coverage_mode: REQUIRED_EXACT_ARTICLE_BINDING
+    additional_receipts:
+      - receipt_kind: EXPERIENCE_AUTHORIZATION
+        owner_story_id: ST-0605
+        owner_contract_path: contracts/raos-v0.4/contracts/schemas/content-revision/first-hand-experience-record.v1.schema.json
+        owner_contract_sha256: 34dcb19731e44c3aa8a6991503cb78933461866f6393635d118eae9143f2f4ce
+    semantic_capability_limitations:
+      - ARTICLE_BLOCK_CONTENT_IS_NOT_CONTENT_AST_BEFORE_ST0806
+  AIT-005:
+    resource_locators:
+      - {locator_id: candidate_fact_ids, pointer: /claims/*/candidate_fact_ids/*, reference_format: CANONICAL_UUID, resource_kind: FACT, membership_required: true}
+    scalar_locators: []
+    order_locators: []
+    claim_collection: {locator_id: claims, pointer: /claims, maximum: 3000}
+    schema_versions: [{locator_id: root_schema_version, pointer: /schema_version, value: '1.0'}]
+    coverage_mode: REQUIRED_EXACT_ARTICLE_BINDING
+    additional_receipts: []
+    semantic_capability_limitations:
+      - ALIGNMENT_SUBJECT_REFS_EVIDENCE_REQUIREMENTS_TEMPORAL_SCOPE_ABSENT_FROM_SCHEMA
+  AIT-006:
+    resource_locators:
+      - {locator_id: remediation_findings, pointer: /remediations/*/finding_id, reference_format: BOUNDED_TOKEN, resource_kind: FINDING, membership_required: true}
+      - {locator_id: remediation_blocks, pointer: /remediations/*/target_block_key, reference_format: BOUNDED_TOKEN, resource_kind: OTHER, membership_required: true}
+      - {locator_id: remediation_facts, pointer: /remediations/*/fact_ids/*, reference_format: CANONICAL_UUID, resource_kind: FACT, membership_required: true}
+    scalar_locators: []
+    order_locators: []
+    claim_collection: null
+    schema_versions: [{locator_id: root_schema_version, pointer: /schema_version, value: '1.0'}]
+    coverage_mode: NONE
+    additional_receipts: []
+    semantic_capability_limitations: []
+  AIT-007:
+    resource_locators:
+      - {locator_id: priority_items, pointer: /items/*/item_id, reference_format: BOUNDED_TOKEN, resource_kind: OTHER, membership_required: true}
+      - {locator_id: priority_facts, pointer: /items/*/fact_ids/*, reference_format: CANONICAL_UUID, resource_kind: FACT, membership_required: true}
+    scalar_locators:
+      - {locator_id: input_scores, pointer: /items/*/input_score, scalar_kind: NUMBER}
+    order_locators:
+      - {locator_id: priority_order, collection_pointer: /items, identity_field: item_id, rank_field: input_rank}
+    claim_collection: null
+    schema_versions: [{locator_id: root_schema_version, pointer: /schema_version, value: '1.0'}]
+    coverage_mode: NONE
+    additional_receipts: []
+    semantic_capability_limitations: []
+  AIT-008:
+    resource_locators:
+      - {locator_id: link_targets, pointer: /links/*/target_article_id, reference_format: CANONICAL_UUID, resource_kind: ARTICLE, membership_required: true}
+      - {locator_id: placement_blocks, pointer: /links/*/placement_block_key, reference_format: BOUNDED_TOKEN, resource_kind: OTHER, membership_required: true}
+    scalar_locators:
+      - {locator_id: link_confidence, pointer: /links/*/confidence, scalar_kind: NUMBER}
+    order_locators: []
+    claim_collection: null
+    schema_versions: [{locator_id: root_schema_version, pointer: /schema_version, value: '1.0'}]
+    coverage_mode: NONE
+    additional_receipts: []
+    semantic_capability_limitations: []
+  AIT-009:
+    resource_locators:
+      - {locator_id: classified_keywords, pointer: /classified_keywords/*/keyword_id, reference_format: RAOS_RESOURCE_ID, resource_kind: KEYWORD, membership_required: true}
+      - {locator_id: classified_facts, pointer: /classified_keywords/*/fact_ids/*, reference_format: RAOS_RESOURCE_ID, resource_kind: FACT, membership_required: true}
+      - {locator_id: cluster_keywords, pointer: /cluster_suggestions/*/keyword_ids/*, reference_format: RAOS_RESOURCE_ID, resource_kind: KEYWORD, membership_required: true}
+      - {locator_id: unresolved_keywords, pointer: /unresolved/*/keyword_id, reference_format: RAOS_RESOURCE_ID, resource_kind: KEYWORD, membership_required: true}
+    scalar_locators:
+      - {locator_id: classified_keyword_text, pointer: /classified_keywords/*/keyword_text, scalar_kind: TEXT}
+    order_locators: []
+    claim_collection: null
+    schema_versions: []
+    coverage_mode: NONE
+    additional_receipts: []
+    semantic_capability_limitations:
+      - ALIGNMENT_PRIMARY_DECISION_INTENT_CLUSTER_MERGE_REFS_ABSENT_FROM_SCHEMA
+  AIT-010:
+    resource_locators:
+      - {locator_id: policy_rules, pointer: /findings/*/rule_code, reference_format: BOUNDED_TOKEN, resource_kind: OTHER, membership_required: true}
+      - {locator_id: policy_entities, pointer: /findings/*/entity_ref, reference_format: BOUNDED_TOKEN, resource_kind: OTHER, membership_required: true}
+      - {locator_id: policy_claims, pointer: /findings/*/claim_key, reference_format: BOUNDED_TOKEN, resource_kind: CLAIM, membership_required: true}
+      - {locator_id: policy_paths, pointer: /findings/*/evidence_paths/*, reference_format: BOUNDED_TOKEN, resource_kind: OTHER, membership_required: true}
+    scalar_locators:
+      - {locator_id: policy_confidence, pointer: /findings/*/confidence, scalar_kind: NUMBER}
+    order_locators: []
+    claim_collection: null
+    schema_versions: []
+    coverage_mode: NONE
+    additional_receipts:
+      - receipt_kind: POLICY_COMPLETENESS_SCAN
+        owner_story_id: ST-0805
+        owner_contract_path: contracts/raos-v0.4/contracts/content/RAOS_06_editorial_policy_catalog_v0.1.yaml
+        owner_contract_sha256: d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a
+    semantic_capability_limitations: []
+  AIT-011:
+    resource_locators:
+      - {locator_id: planned_claims, pointer: /blocking_gaps/*/planned_claim_ref, reference_format: BOUNDED_TOKEN, resource_kind: CLAIM, membership_required: true}
+      - {locator_id: acquisition_paths, pointer: /blocking_gaps/*/allowed_acquisition_paths/*, reference_format: BOUNDED_TOKEN, resource_kind: OTHER, membership_required: true}
+    scalar_locators: []
+    order_locators: []
+    claim_collection: null
+    schema_versions: []
+    coverage_mode: NONE
+    additional_receipts: []
+    semantic_capability_limitations: []
+  AIT-012:
+    resource_locators:
+      - {locator_id: diff_subjects, pointer: /changes/*/subject_ref, reference_format: BOUNDED_TOKEN, resource_kind: OTHER, membership_required: true}
+      - {locator_id: affected_claims, pointer: /changes/*/affected_claim_refs/*, reference_format: BOUNDED_TOKEN, resource_kind: CLAIM, membership_required: true}
+      - {locator_id: action_targets, pointer: /recommended_actions/*/target_ref, reference_format: BOUNDED_TOKEN, resource_kind: OTHER, membership_required: true}
+    scalar_locators: []
+    order_locators:
+      - {locator_id: action_order, collection_pointer: /recommended_actions, identity_field: target_ref, rank_field: priority}
+    claim_collection: null
+    schema_versions: []
+    coverage_mode: NONE
+    additional_receipts:
+      - receipt_kind: REFRESH_DIFF_BINDING
+        owner_story_id: ST-0705
+        owner_contract_path: SELF
+        owner_contract_sha256: SELF
+    semantic_capability_limitations: []
+safe_defaults:
+  live_provider: false
+  credentials: false
+  filesystem_from_evaluator: false
+  network: false
+  database: false
+  clock: caller_supplied_only
+  random: false
+  repair: false
+  event_emission: false
+  approval: false
+  publication: false
+  production: false

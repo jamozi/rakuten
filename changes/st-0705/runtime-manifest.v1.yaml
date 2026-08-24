@@ -1,0 +1,70 @@
+document:
+  id: RAOS-ST0705-RUNTIME-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-0705
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  authority: NONE
+  production_eligible: false
+toolchain:
+  python_implementation: cpython
+  python_version: 3.14.6
+  pyyaml: 6.0.3
+  jsonschema: 4.26.0
+  attrs: 26.1.0
+  referencing: 0.37.0
+  rpds-py: 2026.6.3
+source_sha256:
+  changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml: 82a157b6973db54bece7ee67a05b7321bc85f1e6ca5270039077c3cd20873bfb
+  scripts/build_st0705_ai_output_validation_runtime.py: 9a25299d7529739272bf1a30cf683180e1c8c5039f9e090eeb3960d5a2381af3
+  python/raos/domain/ai/output_validation.py: 1f7f1a61fb5fe9745c7b23af822f64d1a48393f69d6c4874eec6e984d92a3841
+  python/raos/ports/ai_output_validation.py: eb0298e1e5b72fed0eb1301c4362cc62ee16a2d1b573b69162d4dc15c9e8e046
+  python/raos/application/ai/output_validation.py: 6a1a182c80a1f9dff4de286f87017811bc2eff35425fc057c31ad333cc0f02d6
+  python/raos/adapters/recorded_ai_output_validation.py: 378a5036b4cd004c1bb4faa165a199fa07663a31da8f1a095adfba2b140e7158
+  changes/st-0705/README.md: 6a3b28ee5782d7442bc10df4bedd6bedac4f805bfc5edcaea0896e7bd92ed1ff
+  changes/st-0705/RUNTIME.md: dec0902ec3d8bc98e4efd4d34be1060a339ab57727abb4386388b033b8961d6d
+  docs/execplans/ST-0705.md: a184eea687361478e7adf7626659ef0ea01ab745a9e47fe755adac60e9822acd
+  docs/worklogs/ST-0705.md: e71dfb4ad459070b6e235aa3b076f81dd194e372c34b19ac49c57651159bfc6e
+  tests/st0705_runtime/__init__.py: 7a64288ecc61334d8b009bed3c5b81bb74fdaa4bfcae45911e33c95673ef6142
+  tests/st0705_runtime/conftest.py: 4a362ff82b6715882b3e5f52f2aa5bbf93756d4aba781e555d497d07e5635aba
+  tests/st0705_runtime/test_coverage_binding.py: 67f7b5b4f885c8bd2a477b0b95e98cd6903e7ed31d5fbe535fb7d857d4a0242c
+  tests/st0705_runtime/test_generation_security.py: 6123dd745c89bfb690ff957d28c981fc35cf2996d648404ddadcffc6a4f0e88f
+  tests/st0705_runtime/test_profiles_and_application.py: 422150bca32f014ca3c504064e525f5f70d7e33a3eb30d0ef630610ed4e7fd18
+  tests/st0705_runtime/test_task_semantics_and_limits.py: 3ac70913fc2630a60d03c1af8ad93e564d5a6707b5cb997a09ab5a4d7156198d
+  tests/st0705_runtime/test_validation_negative_paths.py: bb3940bc9aff9b46167f073fbb84c09a1d37b76384c753ffdc77e9afbd008bd2
+  pyproject.toml: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
+  uv.lock: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+  changes/st-0701/generated/ai-task-registry.v1.json: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
+  changes/st-0004/contracts/content/ai-content-alignment.v0.4.yaml: 7b141fdb7e401ee886efe59f65e9bdff6be4af566deca73d29ebc50a1f200477
+  python/raos/domain/ai/provider.py: 179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991
+  python/raos/domain/evidence/claim_evidence.py: 97996a564e6fe21a417f06110fbb7dfd66d605bd2fa43aa9f19e9a4c11592c81
+  docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.article_draft.v1.output.schema.json: 3f7fe932eee1d967455a2613000bda988edd1b1848bca52933cc56d9ed985eae
+  contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.article_outline.v1.output.schema.json: d57afe6f1b4ab33cbb8553cee4a9270ff3800ae3372f76fa0ae6b47eeba84848
+  contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.claim_extraction.v1.output.schema.json: 54a4f58a3ba4136dbac0a17b992dcda969ef7d2a19d42ae8d3c4c253cc4302b5
+  contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.comparison_axis_suggestion.v1.output.schema.json: 9702e97765468c7aa1fec27fbfec974dc8c8037ab154c647dfc0764ff693bb16
+  contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.internal_link_suggestion.v1.output.schema.json: 1271052c0aa4105ac0b0c1824b057651339ba78f32eee4d7d4f4461067cf536b
+  contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.opportunity_assessment.v1.output.schema.json: 504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123
+  contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.policy_assist.v1.output.schema.json: 242428ea37446f57c6cc819770ae065004a411229fe04b3e60a8f780ae290e2f
+  contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.quality_remediation.v1.output.schema.json: 10098facd422a7b8bd9784b1091ff31b7b4a0b99e4add3d0e2b902e810f93581
+  contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.refresh_diff_summary.v1.output.schema.json: 68b4c97de6d7811f20c88d6918d946de58e1489d0ac5a19f390f8301d929f0e2
+  contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.search_intent_classification.v1.output.schema.json: c7753ca61a03868d7d91a0760b35224087fa09d2c99252621553d6c21edcc69d
+  contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json: 1b13b6f11f16ac289a0548b6519e288639ee92271516d65d9fc5a026af51a57c
+  contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.update_priority_explanation.v1.output.schema.json: 0de826d10e8b6f4ddd10543eb68b70af209a4fac67f79482d24dc7b5922be4ef
+generated_sha256:
+  changes/st-0705/generated/ai-output-validation-profiles.v1.json: 5034379d1c8800f6cacf33bc7b2022e0e471189490c28c1c8d03eac429dd5e27
+  changes/st-0705/generated/ai-output-validation-pass.v1.json: ce3ac4a0680cad45f60951a873d408789b24d66683b523695484219552102f4f
+profile_count: 12
+schema_count: 12
+local_status_vocabulary:
+- LOCAL_VALIDATED
+- BLOCKED
+- UNEVALUABLE
+formal_tst_019: NOT_EXECUTED
+formal_tst_020: NOT_EXECUTED
+live: NOT_EXECUTED
+staging: NOT_EXECUTED
+release: NOT_EXECUTED
+production: NOT_EXECUTED
