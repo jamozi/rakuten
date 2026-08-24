@@ -153,14 +153,16 @@ class _RedactedValue:
         raise TypeError("event collector serialization is not supported")
 
 
-@dataclass(frozen=True, slots=True, repr=False)
 class EventCollectorFailure(RuntimeError):
-    code: EventCollectorFailureCode
+    """Closed failure whose traceback remains assignable during re-raise."""
 
-    def __post_init__(self) -> None:
-        if type(self.code) is not EventCollectorFailureCode:
+    __slots__ = ("code",)
+
+    def __init__(self, code: EventCollectorFailureCode) -> None:
+        if type(code) is not EventCollectorFailureCode:
             raise TypeError("invalid event collector failure code")
-        RuntimeError.__init__(self, self.code.value)
+        self.code = code
+        RuntimeError.__init__(self, code.value)
 
     def __str__(self) -> str:
         return self.code.value

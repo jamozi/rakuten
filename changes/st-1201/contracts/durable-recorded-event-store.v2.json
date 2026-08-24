@@ -1,0 +1,71 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-1201",
+  "classification": "MAXIMUM_SAFE_LOCAL_DURABLE_RECORDED_EVENT_COLLECTOR",
+  "local_implementation_status": "LOCAL_CODE_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "dependencies": ["ST-0305", "ST-0404"],
+  "catalog_boundary": {
+    "canonical_event_definitions_projected": 20,
+    "durable_recorded_public_mvp_events": 11,
+    "content_feedback_enabled": false,
+    "worker_admin_backend_runtime_activation": false,
+    "unknown_parameters_rejected": true,
+    "pii_and_secret_parameters_rejected": true
+  },
+  "consent_boundary": {
+    "open_decision": "OD-012",
+    "decision_status": "HUMAN_DECISION_REQUIRED",
+    "production_default": "NONESSENTIAL_TRACKING_DISABLED",
+    "local_accepting_fixture": "EXPLICIT_GRANTED_FULL_CONSENT_SYNTHETIC_ONLY",
+    "browser_tracking_activation": false,
+    "consent_authority_claimed": false
+  },
+  "http_boundary": {
+    "guard": "ST-0404_HTTP_SECURITY_GUARD",
+    "request": "ANONYMOUS_POST_APPLICATION_JSON_RECORDED_METADATA_ONLY",
+    "framework_route": false,
+    "beacon_or_browser_integration": false
+  },
+  "durability_boundary": {
+    "backend": "OWNER_PRIVATE_SQLITE",
+    "root_mode": "0700",
+    "database_mode": "0600",
+    "event_id_deduplication": true,
+    "same_id_changed_payload_conflict": true,
+    "canonical_payload_sha256": true,
+    "append_only_hash_chain": true,
+    "exact_schema": true,
+    "restart_recovery": true,
+    "commit_ambiguity_recovery": true,
+    "concurrent_idempotency": true,
+    "tamper_detection": true,
+    "retention_period": null,
+    "delete_purge_export_query_lifecycle_surface": false
+  },
+  "authority": {
+    "external_action_count": 0,
+    "tracking": false,
+    "network": false,
+    "provider": false,
+    "credential": false,
+    "publication": false,
+    "staging": false,
+    "release": false,
+    "production": false
+  },
+  "recommendation_boundary": {
+    "ranking_surface": false,
+    "reward_commission_epc_rpm_profit_inputs": false,
+    "event_data_changes_content_or_recommendations": false
+  },
+  "formal_evidence": {
+    "TST-012": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-030": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-031": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "privacy_owner_review": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  }
+}

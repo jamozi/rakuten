@@ -1,64 +1,68 @@
-# ST-1201 disabled first-party event collector seam
+# ST-1201 canonical event collector
 
-Classification:
-`MAXIMUM_SAFE_LOCAL_RECORDED_DISABLED_FIRST_PARTY_EVENT_COLLECTOR_SEAM`.
+Status: `LOCAL_CODE_COMPLETE` (maximum-safe durable recorded-local V2)
 
-This implementation-first slice projects the exact ordered canonical event
-catalog (`EVT-001` through `EVT-020`) and provides a synthetic, process-local
-recorded validation boundary. It is partial, non-authoritative, local-only,
-non-persistent, and runtime-ineligible.
+ST-1201 V2 adds an owner-private, append-only event journal behind the existing
+ST-0404-guarded first-party collector. It deterministically projects all 20
+canonical event definitions and can durably exercise the 11 MVP `public_web`
+events with explicit synthetic consent. It does not activate tracking or create
+an HTTP route, browser beacon, provider integration, credential path, or public
+write.
 
-OD-012 remains unresolved. The explicit default is
-`DISABLED_OD_012` with an empty event allowlist. The only other mode is
-`RECORDED_TEST_ONLY`, which may compare allowlisted synthetic fixtures for the
-eleven MVP `public_web` events. Neither mode activates tracking.
+## Consent and privacy boundary
 
-## Closed behavior
+OD-012 remains `HUMAN_DECISION_REQUIRED`. Production and browser tracking stay
+disabled. The only accepting local path is `RECORDED_TEST_ONLY` with an exact
+caller-supplied `GRANTED` / `FULL_CONSENT` synthetic context and an explicit
+MVP-event allowlist. The disabled policy has an empty allowlist and stops before
+event storage. `DENIED`, `NOT_REQUIRED`, `UNKNOWN`, `COOKILESS`, and
+`ESSENTIAL_ONLY` fail closed.
 
-- The committed ST-0404 framework-neutral guard runs first against an explicit
-  caller-supplied synthetic, default-deny policy.
-- The local collector then requires anonymous `POST` metadata and
-  `application/json`; cookie and bearer credential modes remain denied.
-- Only exact `GRANTED` consent with the closed synthetic full-consent context
-  can reach the recorded port. `DENIED`, `NOT_REQUIRED`, `UNKNOWN`,
-  `COOKILESS`, and `ESSENTIAL_ONLY` remain blocked pending OD-012.
-- The public collector rejects worker, admin, backend, and non-MVP events.
-  `content_feedback` remains disabled.
-- Envelope members and event-specific parameters are exact and immutable.
-  Unknown, missing, duplicate-represented, or reordered parameters fail closed.
-- Raw IP, full user agent, email, phone, raw search query, article body,
-  Source Packet text, affiliate URL query secrets, nested values, and unbounded
-  or control-bearing values are rejected.
-- Event IDs, timestamps, site/correlation IDs, session pseudonyms, and all
-  parameter values are supplied by synthetic fixtures. This slice generates no
-  ID, clock value, session identifier, or pseudonym.
-- The deterministic payload SHA-256 is used only to compare an event with an
-  immutable ordered script. `RECORDED_ACCEPTED` and `RECORDED_DUPLICATE` do not
-  mean stored, persisted, committed, measured, or durably deduplicated.
+The canonical envelope and event-specific parameter order are exact. Unknown,
+missing, reordered, nested, unbounded, control-bearing, or non-finite values
+are rejected. Raw IP, full user agent, email, phone, raw search query, article
+body, Source Packet text, affiliate URL query secrets, URL-shaped values, and
+credential-shaped values are prohibited before persistence. The collector does
+not generate identifiers, timestamps, consent state, or pseudonyms.
 
-Every successful local result remains:
+## Durable local journal
 
-- execution: `RECORDED_TEST_ONLY`
-- tracking activation: `DISABLED`
-- persistence: `NOT_EXECUTED`
-- consent authority: `UNRESOLVED_OD_012`
-- measurement observed: false
-- decision: `NOT_READY`
-- formal TST-012/TST-030/TST-031: `NOT_EXECUTED`
+- The absolute owner-private root must be a real directory owned by the current
+  process at mode `0700`. The SQLite file is no-follow, owner-only `0600`, and
+  single-link.
+- Each accepted event stores its exact canonical bytes, payload SHA-256,
+  identity/source metadata, sequence, and previous-record digest in one
+  `BEGIN IMMEDIATE` transaction.
+- Event IDs are durable idempotency keys. An exact replay returns
+  `RECORDED_DUPLICATE`; the same ID with changed bytes is a conflict. Concurrent
+  requests converge on one accepted record.
+- The exact schema, SQLite integrity, metadata digest, row digests, contiguous
+  sequence, payload digests, and global hash chain are checked on every
+  transaction and restart.
+- Before-commit failure rolls back. A simulated after-commit ambiguity recovers
+  the exact committed record without retrying the write.
+- Event rows are protected by append-only triggers. There is no public read,
+  list, query, export, update, delete, purge, retention, or lifecycle API.
 
-## Explicitly unavailable
+The legacy 67-test process-local scripted seam remains supported. Its closed
+exception was changed from a frozen dataclass exception to a regular slotted
+exception so Python can safely restore `__traceback__` during context-manager
+re-raise; its observable code/string/repr contract remains unchanged.
 
-There is no API route, framework response, browser/beacon integration,
-repository, unit of work, transaction, database, filesystem or object store,
-provider/network call, environment lookup, cookie, credential, retention
-policy, deletion, retry, or external action.
+## Authority and evidence
 
-The frozen `PUB-004` AffiliateClickInput vocabulary is not mapped to canonical
-`EVT-004`, and canonical events are not mapped to ST-0305 physical analytics
-rows. Those approved contracts are not isomorphic; choosing either mapping is
-deferred integration debt and is outside this safe slice.
+Every V2 collaborator exposes `action_count == 0`. Tracking activation,
+measurement observation, recommendation/content mutation, reward/commission/
+EPC/RPM/profit ranking input, external network, provider, credential,
+publication, staging, release, and Production authority are absent. OD-014 is
+not selected, so no retention or automatic deletion behavior is introduced.
 
-Local tests, lint, and type checks are implementation evidence only. They do
-not satisfy privacy review, formal TST execution, browser/runtime validation,
-database persistence, hosted CI, staging, release, or Production acceptance.
-Canonical Story acceptance and release eligibility remain false.
+`scripts/build_st1201_durable_event_store.py` validates the Canonical Story,
+event catalog, OD-012, release-blocking suite identities, ST-0305/ST-0404
+dependencies, owned sources, and deterministic generated artifacts. Run it with
+`--check` for a no-write drift check.
+
+Focused local tests are implementation evidence only. Formal TST-012, TST-030,
+TST-031, Privacy/Security owner review, hosted CI, real browser/runtime,
+staging, release, Production, and Canonical status `APPLY` remain
+`NOT_EXECUTED`.

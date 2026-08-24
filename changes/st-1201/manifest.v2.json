@@ -1,0 +1,96 @@
+{
+  "external_action_count": 0,
+  "formal_evidence": "NOT_EXECUTED",
+  "outputs": [
+    {
+      "bytes": 4248,
+      "path": "changes/st-1201/generated/durable-recorded-event-store.v2.json",
+      "sha256": "4a8aeb928b1588136e4dbab38bb2146ab45cd60bfff21e6755e84dda9092dfb4"
+    }
+  ],
+  "owner_generator": "scripts/build_st1201_durable_event_store.py",
+  "schema_version": "2.0.0",
+  "sources": [
+    {
+      "bytes": 2402,
+      "path": "changes/st-1201/contracts/durable-recorded-event-store.v2.json",
+      "sha256": "400bd3325bc6ea10e51537e4549fd1a2eb1b962e955507f792b9371efe7a057f"
+    },
+    {
+      "bytes": 3663,
+      "path": "changes/st-1201/README.md",
+      "sha256": "9449cab3953bc8d6b7383fd94a1f6cdf592cb18f4edc784918b9256b89319c1a"
+    },
+    {
+      "bytes": 23108,
+      "path": "python/raos/domain/analytics/event_collector.py",
+      "sha256": "c152f57cf7f95ae924a8510ff4b153c4dd4b78c17fbe5f579019fb30a759fa6b"
+    },
+    {
+      "bytes": 4805,
+      "path": "python/raos/domain/analytics/event_collector_runtime_v2.py",
+      "sha256": "128e1f02a5eeed659c487207adcb8797e57302aa97c1759e06aa3e4671905eef"
+    },
+    {
+      "bytes": 616,
+      "path": "python/raos/ports/event_collector_runtime_v2.py",
+      "sha256": "8cf6e051e5ffa6681b59c23e1be8227b0bf9d880abac83ef439954d67f46f3ce"
+    },
+    {
+      "bytes": 7134,
+      "path": "python/raos/application/analytics/event_collector.py",
+      "sha256": "8d35153ee3bc801e9653d4773358b31746fce195fd651b9caeaddfa8b1ebea85"
+    },
+    {
+      "bytes": 5736,
+      "path": "python/raos/application/analytics/event_collector_runtime_v2.py",
+      "sha256": "e3db1dd80ef3959aab6f3ff29eaa1fb419233255c7d6e45679f3ddf98f95a477"
+    },
+    {
+      "bytes": 4317,
+      "path": "python/raos/adapters/recorded_event_store.py",
+      "sha256": "1e80a17f648138c7cff885e06eae452c8c89f93e441c4efedbd3f65a9c6d6c30"
+    },
+    {
+      "bytes": 22574,
+      "path": "python/raos/adapters/sqlite_event_collector_runtime_v2.py",
+      "sha256": "ffbc1b477741b2905a0dcbdaa057dbcfd1cabe6e7a04827bca2731de21528935"
+    },
+    {
+      "bytes": 9957,
+      "path": "scripts/build_st1201_durable_event_store.py",
+      "sha256": "9b953569de8dca5e489c3802707ec36d626570ef3afa49d8a8273361af78e402"
+    },
+    {
+      "bytes": 32199,
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.csv",
+      "sha256": "e8d14ae3e7b9b74c4b5b85f62e6afac46366b29b23152e60268ceec34a09099b"
+    },
+    {
+      "bytes": 9760,
+      "path": "docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml",
+      "sha256": "b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa"
+    },
+    {
+      "bytes": 3318,
+      "path": "docs/canonical/00_master/RAOS_open_decisions_v1.0.csv",
+      "sha256": "23a2d5afbdf83e4afeceaa2cbd784cd0e5da4c34fd2eb0ce4fc1dda5671f3276"
+    },
+    {
+      "bytes": 11395,
+      "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "bytes": 2099,
+      "path": "changes/st-0305/README.md",
+      "sha256": "b45c333996c723ab1978c8b474420de86c563277a3c4a0d2e2a7d76cdbaed4bb"
+    },
+    {
+      "bytes": 3453,
+      "path": "changes/st-0404/README.md",
+      "sha256": "e86677ccceaa0991ffa641ffe22de22815a32f9e837bb4c924bf76d6958d680d"
+    }
+  ],
+  "story_id": "ST-1201"
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-1201",
+  "classification": "MAXIMUM_SAFE_LOCAL_DURABLE_RECORDED_EVENT_COLLECTOR",
+  "recorded_at": "2026-08-25T04:10:00+09:00",
+  "base_commit": "4481d98a5c20a43f03418b1cdabee2a9e723adbe",
+  "branch": "codex/raos-local-integration-complete",
+  "local_status": "LOCAL_CODE_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "status_registry_updated": false,
+  "formal_validation_claimed": false,
+  "completed_local_scope": [
+    "exact deterministic projection of canonical EVT-001 through EVT-020",
+    "ST-0404 guarded synthetic anonymous POST application/json boundary",
+    "explicit GRANTED FULL_CONSENT recorded fixture path while OD-012 remains unresolved",
+    "PII secret unknown parameter and hostile scalar rejection before persistence",
+    "owner-private SQLite exact-schema append-only durable event journal",
+    "event-id idempotency exact duplicate and changed-payload conflict",
+    "canonical payload SHA-256 row hashes metadata digest and global hash chain",
+    "restart concurrency tamper schema and before or after commit ambiguity behavior",
+    "regular slotted EventCollectorFailure traceback compatibility",
+    "no tracking browser route provider credential retention deletion or external action surface"
+  ],
+  "local_checks": {
+    "focused_pytest": "PASS_87",
+    "owner_generator_check": "PASS",
+    "ruff_lint_and_format": "PASS",
+    "strict_mypy": "PASS_7_RUNTIME_AND_1_GENERATOR",
+    "pinned_pyright_1_1_411": "PASS_0_ERRORS",
+    "git_diff_check": "PASS",
+    "external_action_count": 0
+  },
+  "open_decision_boundary": {
+    "OD-012": "UNRESOLVED_NONESSENTIAL_TRACKING_DISABLED",
+    "OD-014": "UNRESOLVED_NO_RETENTION_OR_DELETE_BEHAVIOR"
+  },
+  "introduced_local_debt": [],
+  "deferred_external_gates": {
+    "TST-012": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-030": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-031": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "privacy_security_owner_review": "NOT_EXECUTED",
+    "browser_runtime": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  },
+  "external_actions": [],
+  "production_authority": "NONE"
+}
