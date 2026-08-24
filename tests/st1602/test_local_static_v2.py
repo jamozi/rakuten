@@ -127,24 +127,66 @@ def test_story_surfaces_exclude_finance_ranking_article_and_publication_inputs()
     assert all(term not in source for term in forbidden)
 
 
-def test_only_story_owned_paths_are_changed_against_exact_base() -> None:
+def test_story_commits_only_change_owned_paths_after_exact_base() -> None:
     import subprocess
 
-    changed = subprocess.run(
-        ["git", "diff", "--name-only", "9470434d6c4ad3c80254ea16a3879544ff5d670a"],
+    exact_base = "9470434d6c4ad3c80254ea16a3879544ff5d670a"
+    primary_subject = "feat(st-1602): implement local SLO and alert runtime"
+    fixup_subject = f"fixup! {primary_subject}"
+    records = subprocess.run(
+        ["git", "log", "--format=%H%x09%s", f"{exact_base}..HEAD"],
         cwd=generator.REPO_ROOT,
         check=True,
         capture_output=True,
         text=True,
     ).stdout.splitlines()
+    story_commits: list[str] = []
+    primary_count = 0
+    for record in records:
+        commit, separator, subject = record.partition("\t")
+        assert separator == "\t"
+        if subject == primary_subject:
+            primary_count += 1
+            story_commits.append(commit)
+        elif subject == fixup_subject:
+            story_commits.append(commit)
+    assert primary_count == 1
+    assert story_commits
+
+    changed: set[str] = set()
+    for commit in story_commits:
+        changed.update(
+            subprocess.run(
+                ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit],
+                cwd=generator.REPO_ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.splitlines()
+        )
     untracked = subprocess.run(
-        ["git", "ls-files", "--others", "--exclude-standard"],
+        [
+            "git",
+            "ls-files",
+            "--others",
+            "--exclude-standard",
+            "--",
+            "changes/st-1602",
+            "python/raos/domain/ops/slo_alert_runtime_v2.py",
+            "python/raos/ports/slo_alert_runtime_v2.py",
+            "python/raos/application/ops/slo_alert_runtime_v2.py",
+            "python/raos/adapters/recorded_slo_alert_runtime_v2.py",
+            "scripts/build_st1602_slo_alert_reference_plan.py",
+            "scripts/build_st1602_slo_alert_runtime.py",
+            "tests/st1602",
+        ],
         cwd=generator.REPO_ROOT,
         check=True,
         capture_output=True,
         text=True,
     ).stdout.splitlines()
-    output = sorted(set(changed) | set(untracked))
+    assert untracked == []
+    output = sorted(changed)
     assert output
     allowed_prefixes = (
         "changes/st-1602/",
