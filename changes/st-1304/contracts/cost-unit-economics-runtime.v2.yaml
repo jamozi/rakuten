@@ -54,10 +54,10 @@ source_bindings:
     sha256: 295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb
   st1303_runtime:
     path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: 417919e2c4552b8e1e6e3fef18f4daccfa0cf44d13803db62d474fe154fb574b
+    sha256: fb6eb68a838f08ef8e52002da198424230cdf77f7bb4e4f9db21a94cd2c4d9b6
   st1303_projection:
     path: changes/st-1303/generated/attribution-engine-recorded.v2.json
-    sha256: f6711833620948acf144aacdc1329f470203e893292570d8f1374f75306d4f32
+    sha256: 424e7aec5cb798416c23ad2613d2e8e9700c33e3a835d47ec73acafaaa5cfaeb
   st1303_fixture:
     path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
     sha256: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b

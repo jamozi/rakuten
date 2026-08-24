@@ -74,7 +74,7 @@ def test_dependencies_bind_feature_and_current_artifact_commits() -> None:
     )
     assert (
         dependencies["st1303"]["artifact_binding_commit"]
-        == "acdcc3719670c110bf6ec94af1762d87ac7fcb74"
+        == "e757ddd27f534d85a25383de1d438eb550fed8a6"
     )
     assert [len(dependencies[key]["artifacts"]) for key in dependencies] == [9, 9, 9]
 

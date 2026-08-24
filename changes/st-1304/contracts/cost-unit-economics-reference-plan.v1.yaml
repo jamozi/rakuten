@@ -92,17 +92,17 @@ dependencies:
   st1303:
     story_id: ST-1303
     feature_commit: 0436364b8737d05b9aea3a08da8bf15c04292b12
-    artifact_binding_commit: acdcc3719670c110bf6ec94af1762d87ac7fcb74
+    artifact_binding_commit: e757ddd27f534d85a25383de1d438eb550fed8a6
     binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
     artifacts:
       changes/st-1303/README.md: d7f1bf588c88ee54c35dd386fca7ee125d66e8e655560f587854d17aa3eb9bef
-      changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml: f57848109939eb1a1df191b031ea12cb91bd3c029f97472af53dd923bfbc4488
-      changes/st-1303/generated/attribution-engine-reference-plan.v1.json: 06eacacfefc10dd0a3b3f6b30a5c65a395e41cbfd6bf77ec5e530eae5929810a
-      changes/st-1303/manifest.yaml: bb6468c1944f7aff35fc8b40acbc1930e9296ca48c3b2a064b2a43dcda67b927
-      scripts/build_st1303_attribution_engine_reference_plan.py: 64e1811b01ecb96e13978bbfd5b294cce64308a9a09b34723a3df9414ad9d6a0
+      changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml: f26a454fadee0cb7b86f63c720a4963b61e00ac2f1acbca3e908b35a3b95ed53
+      changes/st-1303/generated/attribution-engine-reference-plan.v1.json: 681408bab17a819779ab668ef8e916e5fcf3343af3b31bc55cc4efe2638f3e30
+      changes/st-1303/manifest.yaml: 06586d6af67b5e8a6717b8ca3f9bc2fb1aaf7510592bdf35a64e29f502050e38
+      scripts/build_st1303_attribution_engine_reference_plan.py: e7aca133084caa4232b5678b7b529bce09633f0dd92a46412cca695d58ce3cf9
       tests/st1303/conftest.py: 1d972ef360dbfda49b235f8c5066b8fa812d55db4cb0114cf34165cc7340e62f
-      tests/st1303/test_contract.py: 1046c7c65747447ae4d30a075e6cce3eb4a82326a64956ce4c973197af27ac1f
-      tests/st1303/test_generation.py: 51dbd6fe45ec20bcb63119a383369fd47370d1a820a763bf8b88a58fb481a5b9
+      tests/st1303/test_contract.py: 7ef020b5f7c058417b75ed4944e4ef06343127727e16a62173ca6926eb5f31dc
+      tests/st1303/test_generation.py: b08e8fd25f69de432ccabc7685d4752ab63cd7565c4e8a8eee874fd0b4e884fb
       tests/st1303/test_negative_cases.py: b2afcd5ea05cc8927becc95d3a7987ec72e3a14ef8386d4aebad7efd2a56bf52
     required_semantics:
       classification: SOURCE_DERIVED_NONEXECUTABLE_ATTRIBUTION_ENGINE_REFERENCE_PLAN

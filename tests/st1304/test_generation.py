@@ -71,7 +71,7 @@ def test_manifest_binds_sources_dependencies_and_generated_plan() -> None:
         },
         "st1303": {
             "feature_commit": "0436364b8737d05b9aea3a08da8bf15c04292b12",
-            "artifact_binding_commit": "acdcc3719670c110bf6ec94af1762d87ac7fcb74",
+            "artifact_binding_commit": "e757ddd27f534d85a25383de1d438eb550fed8a6",
             "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
         },
     }
