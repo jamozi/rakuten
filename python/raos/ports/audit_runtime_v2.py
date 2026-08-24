@@ -5,6 +5,8 @@ from __future__ import annotations
 from typing import Protocol, runtime_checkable
 from uuid import UUID
 
+from raos.domain.iam.authorization import AuthorizationGrant
+from raos.domain.ops.audit import AuditContext
 from raos.domain.ops.audit_runtime_v2 import (
     AuditAppendReceiptV2,
     AuditAuthorizationProofV2,
@@ -14,8 +16,21 @@ from raos.domain.ops.audit_runtime_v2 import (
 
 
 @runtime_checkable
+class AuditRuntimeContextSourceV2(Protocol):
+    """Recorded context source with no external-action authority."""
+
+    @property
+    def external_action_count(self) -> int: ...
+
+    def issue(self, grant: AuthorizationGrant) -> AuditContext: ...
+
+
+@runtime_checkable
 class AuditRuntimeStoreV2(Protocol):
     """One append-only owner-private store; update/delete/export are absent."""
+
+    @property
+    def external_action_count(self) -> int: ...
 
     def lookup_authorization(
         self, proof: AuditAuthorizationProofV2
@@ -43,9 +58,16 @@ class AuditRuntimeStoreFactoryV2(Protocol):
     """Lazily open the audit store only after ST-0403 authorization succeeds."""
 
     @property
+    def external_action_count(self) -> int: ...
+
+    @property
     def open_count(self) -> int: ...
 
     def open(self) -> AuditRuntimeStoreV2: ...
 
 
-__all__ = ["AuditRuntimeStoreFactoryV2", "AuditRuntimeStoreV2"]
+__all__ = [
+    "AuditRuntimeContextSourceV2",
+    "AuditRuntimeStoreFactoryV2",
+    "AuditRuntimeStoreV2",
+]

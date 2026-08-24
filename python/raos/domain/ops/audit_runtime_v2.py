@@ -30,7 +30,7 @@ AUDIT_RUNTIME_SCHEMA_VERSION_V2 = "ST0405_RECORDED_AUDIT_RUNTIME_V2"
 AUDIT_RUNTIME_GENESIS_SHA256_V2 = "0" * 64
 AUDIT_QUERY_BLOCK_REASON_V2 = "ST0403_OPS012_SITE_SCOPE_CONFLICT"
 AUDIT_RUNTIME_CONTRACT_SHA256_V2 = (
-    "b39b35db127592ca9bc59b3b45796036731a55d617459095a1382fd3b7559eb6"
+    "3a9d10115c6f4544b4a030b77fb46a81db8a6a5e47a6690f4ee2041ec4fc9ff7"
 )
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 _TOKEN = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9._:/-]{0,126}[A-Za-z0-9])?\Z", re.ASCII)
@@ -427,6 +427,108 @@ def audit_entry_sha256_v2(
     )
 
 
+def snapshot_audit_authorization_proof_v2(
+    value: object,
+) -> AuditAuthorizationProofV2:
+    """Detach one exact collaborator-supplied authorization proof."""
+
+    if type(value) is not AuditAuthorizationProofV2:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    try:
+        snapshot = AuditAuthorizationProofV2(
+            command_id_fingerprint=value.command_id_fingerprint,
+            request_digest=value.request_digest,
+            session_fingerprint=value.session_fingerprint,
+            authorization_audit_digest=value.authorization_audit_digest,
+        )
+    except AuditRuntimeFailureV2:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    except Exception:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    if snapshot != value:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    return snapshot
+
+
+def snapshot_audit_candidate_v2(value: object) -> AuditEventCandidateV2:
+    """Detach and fully revalidate one exact canonical event candidate."""
+
+    if type(value) is not AuditEventCandidateV2:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    try:
+        snapshot = AuditEventCandidateV2(
+            authorization=snapshot_audit_authorization_proof_v2(value.authorization),
+            request_sha256=value.request_sha256,
+            event_id=UUID(str(value.event_id)),
+            occurred_at=value.occurred_at.replace(),
+            actor_type=value.actor_type,
+            actor_id=(None if value.actor_id is None else UUID(str(value.actor_id))),
+            action=value.action,
+            target_type=value.target_type,
+            target_id=UUID(str(value.target_id)),
+            outcome=value.outcome,
+            severity=value.severity,
+            correlation_id=UUID(str(value.correlation_id)),
+            request_id=value.request_id,
+            reason_code=value.reason_code,
+            before_hash=value.before_hash,
+            after_hash=value.after_hash,
+            event_digest=value.event_digest,
+        )
+    except AuditRuntimeFailureV2:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    except Exception:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    if snapshot != value or snapshot.canonical_material != value.canonical_material:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    return snapshot
+
+
+def snapshot_persisted_audit_event_v2(value: object) -> PersistedAuditEventV2:
+    """Detach and revalidate a store-returned event plus all chain bindings."""
+
+    if type(value) is not PersistedAuditEventV2:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    try:
+        snapshot = PersistedAuditEventV2(
+            candidate=snapshot_audit_candidate_v2(value.candidate),
+            sequence=value.sequence,
+            previous_entry_sha256=value.previous_entry_sha256,
+            entry_sha256=value.entry_sha256,
+            atomic_marker_sha256=value.atomic_marker_sha256,
+        )
+    except AuditRuntimeFailureV2:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    except Exception:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    if snapshot != value:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    return snapshot
+
+
+def snapshot_audit_append_receipt_v2(value: object) -> AuditAppendReceiptV2:
+    """Detach one store receipt without trusting caller-owned identity."""
+
+    if type(value) is not AuditAppendReceiptV2:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    try:
+        snapshot = AuditAppendReceiptV2(
+            event_id=UUID(str(value.event_id)),
+            request_sha256=value.request_sha256,
+            sequence=value.sequence,
+            previous_entry_sha256=value.previous_entry_sha256,
+            entry_sha256=value.entry_sha256,
+            replayed=value.replayed,
+        )
+    except AuditRuntimeFailureV2:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    except Exception:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    if snapshot != value:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    return snapshot
+
+
 __all__ = [
     "AUDIT_QUERY_BLOCK_REASON_V2",
     "AUDIT_RUNTIME_CONTRACT_SHA256_V2",
@@ -442,4 +544,8 @@ __all__ = [
     "audit_request_sha256_v2",
     "canonical_sha256_v2",
     "fail_audit_runtime_v2",
+    "snapshot_audit_append_receipt_v2",
+    "snapshot_audit_authorization_proof_v2",
+    "snapshot_audit_candidate_v2",
+    "snapshot_persisted_audit_event_v2",
 ]

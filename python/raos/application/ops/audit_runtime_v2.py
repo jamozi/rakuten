@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import cast
+from typing import Protocol, cast
 from uuid import UUID
 
 from raos.application.iam.authorization import DurableAuthorizationService
@@ -12,15 +12,20 @@ from raos.domain.iam.authentication import SessionId
 from raos.domain.iam.authorization import (
     AuthorizationCommandId,
     AuthorizationCommandResult,
+    AuthorizationGrant,
     DecisionEffect,
     MatrixAction,
     ResourceScopeKind,
+    snapshot_authorization_result,
 )
 from raos.domain.ops.audit import (
+    AuditActor,
     AuditContext,
     AuditEvent,
+    AuditEventId,
     AuditOutcome,
     AuditReasonCode,
+    AuditRequestId,
     AuditSeverity,
 )
 from raos.domain.ops.audit_runtime_v2 import (
@@ -33,9 +38,16 @@ from raos.domain.ops.audit_runtime_v2 import (
     PersistedAuditEventV2,
     audit_request_sha256_v2,
     fail_audit_runtime_v2,
+    snapshot_audit_append_receipt_v2,
+    snapshot_audit_authorization_proof_v2,
+    snapshot_audit_candidate_v2,
+    snapshot_persisted_audit_event_v2,
 )
-from raos.ports.audit import AuditContextSource
-from raos.ports.audit_runtime_v2 import AuditRuntimeStoreFactoryV2, AuditRuntimeStoreV2
+from raos.ports.audit_runtime_v2 import (
+    AuditRuntimeContextSourceV2,
+    AuditRuntimeStoreFactoryV2,
+    AuditRuntimeStoreV2,
+)
 
 
 @dataclass(frozen=True, slots=True, repr=False)
@@ -98,9 +110,10 @@ def _authorization_proof(
 ) -> tuple[AuthorizationCommandResult, AuditAuthorizationProofV2]:
     if type(result) is not AuthorizationCommandResult:
         fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.AUTHORIZATION_MISMATCH)
-    exact = cast(  # pyright: ignore[reportUnnecessaryCast]
-        AuthorizationCommandResult, result
-    )
+    try:
+        exact = snapshot_authorization_result(result)
+    except Exception:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.AUTHORIZATION_MISMATCH)
     try:
         if (
             exact.command_id != expected_command_id
@@ -127,6 +140,88 @@ def _authorization_proof(
     return exact, proof
 
 
+class _ExternalActionCounter(Protocol):
+    @property
+    def external_action_count(self) -> int: ...
+
+
+def _require_zero_external_actions(value: object) -> None:
+    """Reject mutable, boolean, nonzero, or unavailable authority counters."""
+
+    try:
+        counter = cast(_ExternalActionCounter, value)
+        first: object = counter.external_action_count
+        second: object = counter.external_action_count
+    except Exception:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    if type(first) is not int or first != 0 or type(second) is not int or second != 0:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+
+
+def _context_material(value: AuditContext) -> tuple[object, ...]:
+    try:
+        return (
+            value.event_id.value,
+            value.actor.actor_type,
+            value.actor.actor_id,
+            value.occurred_at,
+            None if value.request_id is None else value.request_id.value,
+            value.action.value,
+            value.target_type.value,
+            value.target_id,
+            value.correlation_id,
+        )
+    except Exception:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+
+
+def _snapshot_context(value: object, *, grant: AuthorizationGrant) -> AuditContext:
+    if type(value) is not AuditContext:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    try:
+        before = _context_material(value)
+        snapshot = AuditContext(
+            grant=grant,
+            event_id=AuditEventId(UUID(str(value.event_id.value))),
+            actor=AuditActor(
+                actor_type=value.actor.actor_type,
+                actor_id=(
+                    None
+                    if value.actor.actor_id is None
+                    else UUID(str(value.actor.actor_id))
+                ),
+            ),
+            occurred_at=value.occurred_at.replace(),
+            request_id=(
+                None
+                if value.request_id is None
+                else AuditRequestId(value.request_id.value)
+            ),
+        )
+        snapshot.require_bound_to(grant)
+        after = _context_material(value)
+    except AuditRuntimeFailureV2:
+        raise
+    except Exception:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    if before != after or _context_material(snapshot) != before:
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    return snapshot
+
+
+def _issue_context(
+    source: AuditRuntimeContextSourceV2, *, grant: AuthorizationGrant
+) -> AuditContext:
+    _require_zero_external_actions(source)
+    try:
+        issued = source.issue(grant)
+    except Exception:
+        _require_zero_external_actions(source)
+        fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    _require_zero_external_actions(source)
+    return _snapshot_context(issued, grant=grant)
+
+
 def _same_authorization(
     record: PersistedAuditEventV2, proof: AuditAuthorizationProofV2
 ) -> bool:
@@ -143,14 +238,14 @@ class DurableAuditWriterV2:
         self,
         *,
         authorization: DurableAuthorizationService,
-        context_source: AuditContextSource,
+        context_source: AuditRuntimeContextSourceV2,
         store_factory: AuditRuntimeStoreFactoryV2,
     ) -> None:
         if type(authorization) is not DurableAuthorizationService:
             raise TypeError("authorization must be the exact durable service")
         try:
             valid_context = isinstance(  # pyright: ignore[reportUnnecessaryIsInstance]
-                context_source, AuditContextSource
+                context_source, AuditRuntimeContextSourceV2
             )
             valid_store = isinstance(  # pyright: ignore[reportUnnecessaryIsInstance]
                 store_factory, AuditRuntimeStoreFactoryV2
@@ -163,6 +258,10 @@ class DurableAuditWriterV2:
         self._authorization = authorization
         self._context_source = context_source
         self._store_factory = store_factory
+
+    @property
+    def external_action_count(self) -> int:
+        return 0
 
     def record(self, request: DurableAuditRequestV2) -> DurableAuditCommitV2:
         if type(request) is not DurableAuditRequestV2:
@@ -199,10 +298,7 @@ class DurableAuditWriterV2:
 
         try:
             grant = result.grant()
-            context = self._context_source.issue(grant)
-            if type(context) is not AuditContext:
-                fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
-            context.require_bound_to(grant)
+            context = _issue_context(self._context_source, grant=grant)
             event = AuditEvent(
                 grant=grant,
                 context=context,
@@ -212,10 +308,12 @@ class DurableAuditWriterV2:
                 before_hash=request.before_hash,
                 after_hash=request.after_hash,
             )
-            candidate = AuditEventCandidateV2.from_event(
-                authorization=proof,
-                request_sha256=request_sha256,
-                event=event,
+            candidate = snapshot_audit_candidate_v2(
+                AuditEventCandidateV2.from_event(
+                    authorization=proof,
+                    request_sha256=request_sha256,
+                    event=event,
+                )
             )
         except AuditRuntimeFailureV2:
             raise
@@ -224,12 +322,12 @@ class DurableAuditWriterV2:
 
         recovered = False
         try:
-            receipt = store.append_atomic(candidate)
+            receipt = self._append_atomic(store, candidate)
         except AuditRuntimeFailureV2 as error:
             if error.code is not AuditRuntimeFailureCodeV2.STORAGE_COMMIT_UNKNOWN:
                 raise
             try:
-                receipt = store.recover_exact(candidate)
+                receipt = self._recover_exact(store, candidate)
             except AuditRuntimeFailureV2 as recovery_error:
                 if recovery_error.code is AuditRuntimeFailureCodeV2.RECOVERY_NOT_FOUND:
                     fail_audit_runtime_v2(
@@ -239,7 +337,7 @@ class DurableAuditWriterV2:
             recovered = True
         except Exception:
             fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.STORE_UNAVAILABLE)
-        receipt = self._copy_receipt(receipt)
+        receipt = snapshot_audit_append_receipt_v2(receipt)
         persisted = self._load_exact(store, candidate.event_id)
         if persisted is None or persisted.candidate != candidate:
             fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
@@ -252,12 +350,22 @@ class DurableAuditWriterV2:
         )
 
     def _open_store(self) -> AuditRuntimeStoreV2:
+        _require_zero_external_actions(self._store_factory)
         try:
             store = self._store_factory.open()
+        except AuditRuntimeFailureV2:
+            _require_zero_external_actions(self._store_factory)
+            raise
+        except Exception:
+            _require_zero_external_actions(self._store_factory)
+            fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.STORE_UNAVAILABLE)
+        _require_zero_external_actions(self._store_factory)
+        try:
             if not isinstance(  # pyright: ignore[reportUnnecessaryIsInstance]
                 store, AuditRuntimeStoreV2
             ):
                 fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.STORE_UNAVAILABLE)
+            _require_zero_external_actions(store)
             return store
         except AuditRuntimeFailureV2:
             raise
@@ -268,45 +376,91 @@ class DurableAuditWriterV2:
     def _lookup(
         store: AuditRuntimeStoreV2, proof: AuditAuthorizationProofV2
     ) -> PersistedAuditEventV2 | None:
+        detached = snapshot_audit_authorization_proof_v2(proof)
         try:
-            record = store.lookup_authorization(proof)
+            _require_zero_external_actions(store)
+            record = store.lookup_authorization(detached)
+            _require_zero_external_actions(store)
+            if snapshot_audit_authorization_proof_v2(detached) != proof:
+                fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
         except AuditRuntimeFailureV2:
+            _require_zero_external_actions(store)
+            if snapshot_audit_authorization_proof_v2(detached) != proof:
+                fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
             raise
         except Exception:
+            _require_zero_external_actions(store)
+            if snapshot_audit_authorization_proof_v2(detached) != proof:
+                fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
             fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.STORE_UNAVAILABLE)
-        if record is not None and type(record) is not PersistedAuditEventV2:
-            fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
-        return record
+        if record is None:
+            return None
+        return snapshot_persisted_audit_event_v2(record)
 
     @staticmethod
     def _load_exact(
         store: AuditRuntimeStoreV2, event_id: UUID
     ) -> PersistedAuditEventV2 | None:
+        exact_event_id = UUID(str(event_id))
         try:
-            record = store.load_exact(event_id)
+            _require_zero_external_actions(store)
+            record = store.load_exact(exact_event_id)
+            _require_zero_external_actions(store)
         except AuditRuntimeFailureV2:
+            _require_zero_external_actions(store)
             raise
         except Exception:
+            _require_zero_external_actions(store)
             fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.STORE_UNAVAILABLE)
-        if record is not None and type(record) is not PersistedAuditEventV2:
-            fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
-        return record
+        if record is None:
+            return None
+        return snapshot_persisted_audit_event_v2(record)
 
     @staticmethod
-    def _copy_receipt(value: object) -> AuditAppendReceiptV2:
-        if type(value) is not AuditAppendReceiptV2:
-            fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+    def _append_atomic(
+        store: AuditRuntimeStoreV2, candidate: AuditEventCandidateV2
+    ) -> AuditAppendReceiptV2:
+        detached = snapshot_audit_candidate_v2(candidate)
         try:
-            return AuditAppendReceiptV2(
-                event_id=value.event_id,
-                request_sha256=value.request_sha256,
-                sequence=value.sequence,
-                previous_entry_sha256=value.previous_entry_sha256,
-                entry_sha256=value.entry_sha256,
-                replayed=value.replayed,
-            )
+            _require_zero_external_actions(store)
+            receipt = store.append_atomic(detached)
+            _require_zero_external_actions(store)
+            if snapshot_audit_candidate_v2(detached) != candidate:
+                fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+            return snapshot_audit_append_receipt_v2(receipt)
+        except AuditRuntimeFailureV2:
+            _require_zero_external_actions(store)
+            if snapshot_audit_candidate_v2(detached) != candidate:
+                fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+            raise
         except Exception:
-            fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+            _require_zero_external_actions(store)
+            if snapshot_audit_candidate_v2(detached) != candidate:
+                fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+            fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.STORE_UNAVAILABLE)
+
+    @staticmethod
+    def _recover_exact(
+        store: AuditRuntimeStoreV2, candidate: AuditEventCandidateV2
+    ) -> AuditAppendReceiptV2:
+        detached = snapshot_audit_candidate_v2(candidate)
+        try:
+            _require_zero_external_actions(store)
+            receipt = store.recover_exact(detached)
+            _require_zero_external_actions(store)
+            if snapshot_audit_candidate_v2(detached) != candidate:
+                fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+            return snapshot_audit_append_receipt_v2(receipt)
+        except AuditRuntimeFailureV2:
+            _require_zero_external_actions(store)
+            if snapshot_audit_candidate_v2(detached) != candidate:
+                fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+            raise
+        except Exception:
+            _require_zero_external_actions(store)
+            if snapshot_audit_candidate_v2(detached) != candidate:
+                fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
+            fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.STORE_UNAVAILABLE)
 
     @staticmethod
     def _validate_receipt(
@@ -329,6 +483,7 @@ class DurableAuditWriterV2:
         replayed: bool,
         recovered: bool,
     ) -> DurableAuditCommitV2:
+        record = snapshot_persisted_audit_event_v2(record)
         receipt = AuditAppendReceiptV2(
             event_id=record.candidate.event_id,
             request_sha256=record.candidate.request_sha256,
@@ -348,10 +503,14 @@ class DurableAuditWriterV2:
         store: AuditRuntimeStoreV2, record: PersistedAuditEventV2
     ) -> None:
         try:
+            _require_zero_external_actions(store)
             tail, count = store.verify_chain()
+            _require_zero_external_actions(store)
         except AuditRuntimeFailureV2:
+            _require_zero_external_actions(store)
             raise
         except Exception:
+            _require_zero_external_actions(store)
             fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.STORE_UNAVAILABLE)
         if type(tail) is not str or type(count) is not int or count < record.sequence:
             fail_audit_runtime_v2(AuditRuntimeFailureCodeV2.TAMPER_DETECTED)
@@ -370,6 +529,10 @@ class DisabledAuditQueryServiceV2:
         ):
             raise TypeError("invalid audit store factory")
         self._store_factory = store_factory
+
+    @property
+    def external_action_count(self) -> int:
+        return 0
 
     @property
     def block_reason(self) -> str:

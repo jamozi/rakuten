@@ -222,6 +222,10 @@ def test_authorization_failure_precedes_audit_store_open_and_context_issue(
     class ContextProbe:
         calls = 0
 
+        @property
+        def external_action_count(self) -> int:
+            return 0
+
         def issue(self, grant: object) -> object:
             del grant
             self.calls += 1
@@ -281,7 +285,17 @@ def test_database_row_and_schema_tampering_fail_closed(tmp_path: Path) -> None:
     writer.record(_request())
     database = tmp_path / "audit" / "st0405-recorded-audit-runtime-v2.sqlite3"
     connection = sqlite3.connect(database)
+    with pytest.raises(sqlite3.IntegrityError, match="ST0405_EVENT_IMMUTABLE"):
+        connection.execute(
+            "UPDATE audit_event_v2 SET candidate_json='{}' WHERE sequence=1"
+        )
+    trigger = connection.execute(
+        "SELECT sql FROM sqlite_master WHERE type='trigger' AND name='audit_event_v2_no_update'"
+    ).fetchone()
+    assert trigger is not None and type(trigger[0]) is str
+    connection.execute("DROP TRIGGER audit_event_v2_no_update")
     connection.execute("UPDATE audit_event_v2 SET candidate_json='{}' WHERE sequence=1")
+    connection.execute(trigger[0])
     connection.commit()
     connection.close()
     _failure(AuditRuntimeFailureCodeV2.TAMPER_DETECTED, factory.open)

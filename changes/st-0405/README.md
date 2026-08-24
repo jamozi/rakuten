@@ -15,16 +15,41 @@ synthetic atomicity marker in one transaction.
   session through `recover_admin`, and accepts only the service-recorded
   `edit_article_draft` / `ARTICLE_VERSION` / `DRAFT` decision.  Command,
   request, session, and ST-0403 authorization-audit hashes are persisted.
-- The audit database is opened lazily only after authorization succeeds.  Its
-  owner-private root and 0600 database file are revalidated without following
-  symlinks.  DEV/CI recorded environments are the only admitted modes.
+- The audit database is opened lazily only after authorization succeeds. The
+  owner-private 0700 root is opened descriptor-relatively, and the 0600,
+  single-link database is created with `O_EXCL`. A pre-existing empty,
+  partial, or foreign database is rejected unchanged; ST-0405 never adopts or
+  initializes it. DEV/CI recorded environments are the only admitted modes.
+- A database created by the predecessor's less strict local schema is also
+  rejected unchanged. This Story adds no implicit migration, copy, deletion,
+  or legacy-data authority; local callers must select a fresh owner-private
+  path for the hardened schema and preserve any predecessor file separately.
+- The root path/device/inode and database device/inode are pinned. Named-file
+  replacement fails closed. A process-wide count/head/prior-prefix anchor also
+  rejects a valid older same-inode snapshot after that process has observed a
+  newer prefix. A fresh process has no independent external durable rollback
+  anchor, so cross-restart rollback detection is deliberately not claimed.
 - Each authorization command is idempotent.  Reuse with a different audit
   request is rejected; exact replay returns the existing immutable row without
   consuming a new context.
-- Rows use a deterministic SHA-256 chain, redundant source bindings, fixed
-  schema/column validation, readback verification, restart recovery, CAS-like
-  SQLite serialization, and exact recovery after a simulated ambiguous
-  commit.  Marker-before-event fault injection proves both rows roll back.
+- Every open validates the exact SQLite application/user versions, connection
+  PRAGMAs, `STRICT` tables, `table_xinfo`, indexes, triggers, foreign keys,
+  integrity, and the complete canonical event/marker/metadata hash chain.
+  Event and marker rows are protected by update/delete triggers; metadata may
+  advance only by one event whose previous/head hashes match.
+- Appends use an immediate transaction plus count/head/record-hash CAS,
+  deterministic SHA-256 chaining, redundant source bindings, full readback,
+  verified read snapshots, and a process-wide lock; SQLite locking serializes
+  separate local processes. A commit exception while the transaction remains
+  open is a known rollback. Once SQLite reports the transaction closed, the
+  result stays `STORAGE_COMMIT_UNKNOWN` until exact candidate recovery; there
+  is no blind retry. Marker-before-event and before/after-commit fault points
+  exercise the closed classifications.
+- V2 reconstructs authorization, context, candidate, persisted record, and
+  receipt values at their trust boundaries. Its recorded context, store,
+  factory, writer, and disabled query surfaces expose exact integer
+  `external_action_count == 0`; mutable, non-integer, or nonzero collaborator
+  counters fail closed before and after calls.
 - The store has no update, delete, retention, export, network, provider,
   credential, or background-job capability.  The atomic marker is explicitly
   synthetic local evidence and is not represented as a real business change.
@@ -65,11 +90,11 @@ guarantee can be made.
 
 ## Local verification
 
-The owned isolated suite, Ruff, strict mypy, compile/import, focused sensitive
-data scan, canonical import verification, workspace check, ST-0403 regression,
-and scoped diff checks are the local implementation-candidate gates. They are
-run with pinned uv 0.12.1 using frozen/locked, offline, no-cache, no-sync, and
-no-env-file options.
+The owned isolated suite, repeated hostile concurrency/recovery checks, Ruff,
+strict mypy, targeted Pyright, compile/import, denied-network execution,
+focused sensitive-data scan, canonical import verification, workspace check,
+read-only downstream regressions, and scoped diff checks are the local
+implementation-candidate gates.
 
 ## Deferred and unexecuted
 
