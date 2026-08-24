@@ -33,15 +33,15 @@ provenance:
     sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
   - story_id: ST-0202
     uri: repo://changes/st-0202/manifest.yaml
-    sha256: f3a0d98c67389b4b5de977f935103acd4383884ee0c9ef375d189bae5e3e3ae6
+    sha256: d6add6c501bd5eb199ce8db0311ae750583d244eb1c3a717c3fc536d38a099e4
 source_artifact_count: 17
 source_artifacts:
 - uri: repo://changes/st-0205/contracts/synthetic-data-factory.v1.yaml
   bytes: 5425
-  sha256: b42b4ab203dc1d9718bb163093e7b6ce6c95f6655aeef32f6b500d0930b4c927
+  sha256: e92d1afa4d5bb91373c4b8112eb310be52ad9430c9a06ee611303cf9ad2d13bd
 - uri: repo://changes/st-0205/README.md
   bytes: 2404
-  sha256: 30b1fce022e726a8503186d9952e00a09278495058c11f6d2b000bc0beecffe6
+  sha256: bf42783c04b34aa04dcfcf80e40484a3e8367ae7bb09c61da8a4394ddf134a54
 - uri: repo://docs/execplans/ST-0205.md
   bytes: 2541
   sha256: 5bed7ac276b36da1ddc7aa89632e1c71dc886a709d9c3366f53d46518dd5652e
@@ -50,7 +50,7 @@ source_artifacts:
   sha256: 52a2e3e23c105280eacc04e1ec74761480158a8ddf0e3dc38f97787dc3739fb9
 - uri: repo://scripts/build_st0205_synthetic_data.py
   bytes: 57003
-  sha256: 9d922dd92b24931cfb75f03c6207c185c96c3f8efa1cdcad5ae50496fbb1d837
+  sha256: 339646b3b203921d15a418d9ec8d5361714d9ce86642a4f87c4e8f5dac1eabea
 - uri: repo://tests/st0205/conftest.py
   bytes: 1101
   sha256: c20c6ef1a0421cef2635739a0038dc244185fb6fce01a76355d8688729f582d0
@@ -73,8 +73,8 @@ source_artifacts:
   bytes: 5656
   sha256: 3af19eab45beab577f8ad16e08cbe6e084ec00bb7c6509f35212a16bee8721dc
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 65686
-  sha256: c2a2cb14e7bd80ea514443890843108e47762afc207e54b31b4d21e895a6ce01
+  bytes: 66604
+  sha256: 3993db51b4783f33bc993720a45a44e908e8f007aad611317d4d3042eb6c71f0
 - uri: repo://Makefile
   bytes: 34422
   sha256: 8d4030bfcffaa5bde56842b6a2475bbe2b845e074722c787b9d712bc22d2a40f
@@ -82,8 +82,8 @@ source_artifacts:
   bytes: 58459
   sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
 - uri: repo://package.json
-  bytes: 1850
-  sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+  bytes: 1906
+  sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
 - uri: repo://scripts/scan_secrets.py
   bytes: 43062
   sha256: 3af1b7c468cd5eb55016f3a9199204dcac11ab8b1cbffee831876408d7b57970

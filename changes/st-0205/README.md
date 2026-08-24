@@ -20,7 +20,7 @@ bytes in the generated catalog. The generator binds both current dependency
 manifests: ST-0201
 `fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3`
 and ST-0202
-`16c446aaf162416edf4a3197b0b3489aa9ea68bce6e3406ec9376294ea924467`.
+`d6add6c501bd5eb199ce8db0311ae750583d244eb1c3a717c3fc536d38a099e4`.
 Any drift fails before output generation.
 
 The seed bundle covers Time, Currency, Locale, Unicode, large integer values,
