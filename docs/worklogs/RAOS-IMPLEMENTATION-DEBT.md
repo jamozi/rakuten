@@ -3676,3 +3676,19 @@ original result.
   `DEBT-W2-028` can close or any audit `PASS` can be recorded. Formal TST-030,
   hosted CI, live GA4/account/credential evidence, persistence, staging,
   release, publication and Production remain `NOT_EXECUTED`.
+
+### 2026-08-24 W2 / ST-1204 V5 independent local re-audit closure
+
+- `DEBT-W2-028` status: `CLOSED_LOCAL_IMPLEMENTATION`. A fresh detached
+  physical clone at exact commit
+  `5660b842f1a73a885915171e19b9072aee44a1f8` received an independent read-only
+  review with zero HIGH, MEDIUM, or LOW finding. The owner no-write check, all
+  four V5 metadata-drift regressions, all `79` atomic-publication tests, and all
+  `214` isolated ST-1204 tests passed; the clone remained clean. Exact record:
+  `changes/st-1204/ATOMIC-PUBLICATION-REAUDIT-v5.md`.
+- The close applies only to the local implementation and independent local
+  re-audit subconditions. The documented POSIX final-syscall interval remains
+  an explicit platform boundary, not a waived representable defect. Formal
+  TST-030, hosted CI, live GA4/account/credential validation, persistence,
+  staging, release, publication, Production and canonical `VALIDATED` remain
+  `NOT_EXECUTED` or unchanged.

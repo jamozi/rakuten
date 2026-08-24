@@ -4,8 +4,8 @@
 - Local implementation disposition: `REMEDIATED_V3_PENDING_REAUDIT`
 - V4 local implementation disposition: `REMEDIATED_V4_PENDING_REAUDIT`
 - Independent V4 read-only re-audit: `FAIL_LOCAL_REPRODUCED`
-- V5 local implementation disposition: `REMEDIATED_V5_PENDING_REAUDIT`
-- Independent V5 read-only re-audit: `NOT_EXECUTED`
+- V5 local implementation disposition: `REMEDIATED_V5_REAUDITED_LOCAL`
+- Independent V5 read-only re-audit: `PASS_LOCAL_READ_ONLY_REAUDIT`
 - Formal TST-030: `NOT_EXECUTED`
 - Live provider validation: `NOT_EXECUTED`
 - Staging / release / Production: `NOT_EXECUTED`
@@ -230,9 +230,24 @@ after the validated observation.
   subcondition formerly tracked as `DEBT-W2-062`.
 - Ruff format/lint and strict mypy over the changed owner scripts pass together
   with the isolated ST-1205 and ST-1304 regressions. These results are local
-  evidence only. A fresh independent V5 re-audit, formal TST-030, hosted CI,
-  live provider, persistence, staging, release and Production remain
-  `NOT_EXECUTED`; neither `VALIDATED` nor audit `PASS` is claimed.
+  evidence only.
+
+## V5 independent local re-audit
+
+A fresh detached physical clone at exact commit
+`5660b842f1a73a885915171e19b9072aee44a1f8` was reviewed read-only by an
+independent agent. It found no HIGH, MEDIUM, or LOW defect, reproduced all four
+new metadata-drift regressions, passed all `79` atomic-publication tests and all
+`214` isolated ST-1204 tests, and passed the owner no-write check at manifest
+SHA-256
+`e4744fd4cc1242509cb1dfb061b1063f0bcef668f707a6706cb3955f0cca96e9`.
+The audited worktree remained clean. The exact record is
+`changes/st-1204/ATOMIC-PUBLICATION-REAUDIT-v5.md`.
+
+This closes the independent local implementation re-audit subcondition only.
+Formal TST-030, hosted CI, live provider, persistence, staging, release and
+Production remain `NOT_EXECUTED`; no canonical `VALIDATED` transition or formal
+audit status is claimed.
 
 ## Closed implementation boundary
 
