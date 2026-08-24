@@ -4,7 +4,7 @@
     "period": {"as_of_date": "2026-04-01", "elapsed_days": 90, "end_exclusive_date": "2026-04-01", "start_date": "2026-01-01"},
     "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE"
   },
-  "contract_sha256": "bb05923b77d48424692879b8fa9c4acba2de7b76a27c37085186684a99ca1b00",
+  "contract_sha256": "4e494e2e974f2aa7b6e0d623f0bc038d7be3a65d8108e3edaf86c2c5b30e8714",
   "entries": [
     {
       "entry_sha256": "c8cfcfff4ab90d8c4b8353e3c4aa896484a7c9dbb784de3bdda5233c6d7141c8",
