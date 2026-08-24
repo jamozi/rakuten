@@ -1,0 +1,112 @@
+schema_version: 2
+story_id: ST-0905
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_RECORDED_PUBLICATION_COMMAND_RUNTIME_V2
+profile: ST0905_PUBLICATION_COMMANDS_RECORDED_LOCAL_V2
+runtime:
+  executable: true
+  environments: [ENV-DEV, CI]
+  process_local_only: true
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  immutable_st0903_input_only: true
+  immutable_st0904_projection_only: true
+  persistence: false
+  database_write: false
+  network: false
+  http_route: false
+  cms_write: false
+  queue_write: false
+  event_emit: false
+  outbox_write: false
+  public_state_change: false
+  publication_authorized: false
+  release_authorized: false
+  production_authorized: false
+bindings:
+  st0903_fixture_uri: repo://changes/st-0903/generated/publication-snapshot-pass.v2.json
+  st0903_fixture_sha256: 6f18ed11cbed99c57dac757875ce4ab3e1fab09cc24710c1fd7bce7e5823cd99
+  st0903_manifest_uri: repo://changes/st-0903/runtime-manifest.v2.yaml
+  st0903_manifest_sha256: f7a95693cb8cb3fbd50f3438d0e4494ea82cdc6337b9c1bb0bd7728de08a2c33
+  st0904_fixture_uri: repo://changes/st-0904/generated/public-projection-recorded.v2.json
+  st0904_fixture_sha256: d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1
+  st0904_manifest_uri: repo://changes/st-0904/runtime-manifest.v2.yaml
+  st0904_manifest_sha256: eb906e477ca20ed5ac6e2f4d1b05f9c82952beaeb2cec338709e6b1b632e842f
+  final_approval_fixture_uri: repo://changes/st-0902/generated/final-approval-pass.v2.json
+  final_approval_fixture_sha256: 93c44f4d303fef41304962bf4235e19491bcb45c555aecb66a87dcd34e6bca07
+  policy_fixture_uri: repo://changes/st-0805/generated/policy-pass.v2.json
+  policy_fixture_sha256: 7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849
+  review_fixture_uri: repo://changes/st-0901/generated/review-completion-pass.v2.json
+  review_fixture_sha256: 57587322562eae4a2b58bebfc6b917e39fb05f077cf7268deb4056563950a361
+  seo_fixture_uri: repo://changes/st-0807/generated/seo-render-recorded.v2.json
+  seo_fixture_sha256: ab0ad1cf37368834cb4a9e3856938dce73e0525f26c45acc2255372cb0f593ef
+  step_up_domain_uri: repo://python/raos/domain/iam/step_up.py
+  step_up_domain_sha256: d208f35bf42711229c743b41eacad84dc43c040ff5cc614d29e16e653e39ddb7
+  step_up_application_uri: repo://python/raos/application/iam/step_up.py
+  step_up_application_sha256: 7b427e6c9e24a48776019731a25bb87673d6d9161f744aca56857e2e7312338f
+  step_up_port_uri: repo://python/raos/ports/step_up.py
+  step_up_port_sha256: 50a676339aebf9b101c22ce2ee0524c99300a913320ce00250ef718775208e0a
+  step_up_adapter_uri: repo://python/raos/adapters/development_step_up.py
+  step_up_adapter_sha256: bfc55e2b952db59972591816c0d85f0fab3d0c8c40e8c6860a54483a59923d5d
+  role_matrix_uri: repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+  role_matrix_sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  security_controls_uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  security_controls_sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  admin_openapi_uri: repo://contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml
+  admin_openapi_sha256: 6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70
+  publish_job_uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-publish-snapshot-v1.schema.json
+  publish_job_sha256: 81f885e435bcaf4af75ab3149a2007668b7585155cfbe730242e78efefc5a6e7
+  rollback_job_uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-rollback-v1.schema.json
+  rollback_job_sha256: 8dd422009feea40da8821e57403ac493dd86f24ccf333beb29b637b60d7276d9
+  unpublish_job_uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/publishing-unpublish-v1.schema.json
+  unpublish_job_sha256: 037516debc7d44f860de113f68973c85141ded552d9b45de88fdc6a6ac84a862
+  published_event_uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-article-published-v1.schema.json
+  published_event_sha256: 70fbe58d58399d44bd386ed39673682f7fa3eb3acfdbc8c5e2f46fcf7be12f19
+  rolled_back_event_uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-article-rolled-back-v1.schema.json
+  rolled_back_event_sha256: a405b5826a80f2e95029d7a5b824caf9e5795e8050edfc97e2e76906742cf660
+  unpublished_event_uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-publishing-article-unpublished-v1.schema.json
+  unpublished_event_sha256: 91fc5b6322bd98301440b493c639955541aba9a45b24420888ca855e90eac9b6
+command_boundary:
+  publish: PROCESS_LOCAL_RECORDED_TRANSACTION
+  rollback: PROCESS_LOCAL_RECORDED_TRANSACTION
+  unpublish: DENY_NO_CANONICAL_ROLE_ACTION
+  active_human_required: true
+  allowed_roles: [MANAGING_EDITOR, OPERATOR]
+  mfa_required: true
+  step_up_required: true
+  final_approval_required: true
+  exact_snapshot_identity_required: true
+  exact_source_hash_required: true
+  kill_switch_safe_state_required: true
+  separation_of_duties_publish: true
+transaction_boundary:
+  same_request_replay: BYTE_IDENTICAL_RESULT
+  same_key_different_request: IDEMPOTENCY_CONFLICT
+  double_publish: NO_DUPLICATE_PROJECTION_EVENT_AUDIT_OUTBOX
+  rollback_target: KNOWN_STRICTLY_PREVIOUS_IMMUTABLE_SNAPSHOT_ONLY
+  copy_stage_swap_atomicity: true
+  partial_failure: NO_STATE_CHANGE
+execution_boundary:
+  network: FORBIDDEN
+  credential: FORBIDDEN
+  browser: FORBIDDEN
+  database: FORBIDDEN
+  cms: FORBIDDEN
+  http_route: FORBIDDEN
+  queue: FORBIDDEN
+  provider: FORBIDDEN
+  public_state: FORBIDDEN
+  publication: FORBIDDEN
+  staging: FORBIDDEN
+  release: FORBIDDEN
+  production: FORBIDDEN
+verification_boundary:
+  TST-012: NOT_EXECUTED
+  TST-013: NOT_EXECUTED
+  TST-021: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
