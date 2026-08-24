@@ -55,7 +55,7 @@
     {
       "debt_id": "ST0603-PREDECESSOR-REBIND",
       "status": "CLOSED_EXACT_REBIND",
-      "detail": "V1 and V2 owner sources bind exact integration predecessor commit 1829e1ba31addce6579b445da51be5b604732278 and the current required ST-0602 artifact hashes; both owners generated and checked without drift."
+      "detail": "The V1 reference-plan owner remains bound to its exact integration predecessor commit 1829e1ba31addce6579b445da51be5b604732278. The V2 runtime owner binds exact current integration predecessor commit d95d90ccbf314ca66db61711021d924faa90173d and the current required ST-0602 artifact hashes; both owners generate and check without drift."
     },
     {
       "debt_id": "ST0603-CROSS-RESTART-ROLLBACK-ANCHOR",
