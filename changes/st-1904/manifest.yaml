@@ -7,9 +7,9 @@ document:
   authority: NONE
   production_eligible: false
 provenance:
-  base_commit: 0aef05373e4ecc45aee2a4fc4f2ca6f4a0dd19cb
+  base_commit: c5d7ea73e22dbb1169fd4439c5dd24d2c9fe1121
   contract_uri: repo://changes/st-1904/contracts/multi-category.v1.yaml
-  contract_sha256: d8bfc96b71bc0f343a3ed0bfc9b312f86bff01e4c8c72861d6ec5f0065b6c2f5
+  contract_sha256: 557c9edb6c3b3ae77d22ed53cc68f8f8d5557c9c7423e9971dbfcf9fb61fc9bd
   fixture_uri: repo://changes/st-1904/fixtures/recorded/multi-category.synthetic.v1.json
   fixture_sha256: 4d33f8be3fb7bf692c11cc9857ebafe60196a3c8c2106b50f105d97ad6edea27
   binding_set_sha256: 1b78ddbc50889e6bae3f7fc846001eee302cb2b2496178de7da245345aec99ea
@@ -19,7 +19,7 @@ source_artifact_count: 20
 source_artifacts:
 - uri: repo://changes/st-1904/contracts/multi-category.v1.yaml
   bytes: 10442
-  sha256: d8bfc96b71bc0f343a3ed0bfc9b312f86bff01e4c8c72861d6ec5f0065b6c2f5
+  sha256: 557c9edb6c3b3ae77d22ed53cc68f8f8d5557c9c7423e9971dbfcf9fb61fc9bd
 - uri: repo://changes/st-1904/fixtures/recorded/multi-category.synthetic.v1.json
   bytes: 2992
   sha256: 4d33f8be3fb7bf692c11cc9857ebafe60196a3c8c2106b50f105d97ad6edea27
@@ -49,7 +49,7 @@ source_artifacts:
   sha256: 3b4c5c1ceb7df61c9099d754b89d13bbb38c82da13b2a877f2ef00d0135eaa66
 - uri: repo://scripts/build_st1904_multi_category.py
   bytes: 31452
-  sha256: e04c64806d1f8fdc17f2d1fa72ea6d6ff17052bdf9bb857cff7f8754d060e852
+  sha256: 2574af6c10aa4e67d8cb34802e64a6b1a7cbdc06bcb1f83d4cc0f37df6cb0e46
 - uri: repo://tests/st1904/__init__.py
   bytes: 49
   sha256: 8ad32383ce689b06e486edf004fc62685a90a4ec3f542be2218c307e2f6e651c

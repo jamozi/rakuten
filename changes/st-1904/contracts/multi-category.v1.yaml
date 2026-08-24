@@ -78,10 +78,10 @@ authority:
 predecessor:
   story_id: ST-1805
   binding: EXACT_BASE_COMMIT_BYTES
-  base_commit: 0aef05373e4ecc45aee2a4fc4f2ca6f4a0dd19cb
+  base_commit: c5d7ea73e22dbb1169fd4439c5dd24d2c9fe1121
   artifacts:
-    changes/st-1805/contracts/portfolio-decision.v1.yaml: dd6c742d295f5bc7baa036aa6cca0a42e84b7a3168f0302aec8e40e46a87f4b9
-    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: 1288a29454435293fc47ff556215c5afee6e58fad8b995b13e4aca81d2535e22
+    changes/st-1805/contracts/portfolio-decision.v1.yaml: 08074aa61ca253e32a485192be6b2903cc2f086e52e4437b030d937ca2b3f3cc
+    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: 1e653fde08183745063de7d6362de8d890e7dc9f540a4a71eb30cb9def60a72a
   required_semantics:
     overall: BLOCKED
     outcome: NO_DECISION
@@ -116,7 +116,7 @@ dependency_contracts:
     sha256: 4310c1f09710d597ba2a77bcd2b4a8263c427d6fd8ae30f4912fe57184f32ab6
   identity_reference_plan:
     path: changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json
-    sha256: 8c30308b4f18e250f2117b78d37a72059c9a36646c31e9906d565bee80d4ef90
+    sha256: 8c938fab6b2b51d644cec4add08a6ee2eba7b208f6cbc477a8251a422e55050e
     required_semantics:
       decision: NOT_READY
       safe_default: NO_AUTOMATIC_MERGE_HUMAN_REVIEW_REQUIRED
