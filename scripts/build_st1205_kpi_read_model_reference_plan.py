@@ -1,487 +1,170 @@
 #!/usr/bin/env python3
-"""Build the non-executable, non-attesting ST-1205 KPI reference plan."""
+"""Build the executable recorded-only ST-1205 KPI V2 contract projection."""
 
 from __future__ import annotations
 
 import argparse
+from collections.abc import Mapping, Sequence
+from datetime import date
 import hashlib
+import importlib
 import json
+from pathlib import Path
 import stat
 import sys
-from collections import Counter
-from collections.abc import Mapping, Sequence
-from pathlib import Path
 from typing import Any, Final, NoReturn, cast
 
 import yaml
 
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+if __package__ in {None, ""} and str(REPO_ROOT / "python") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "python"))
 if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts import build_st1505_staging_deployment as base  # noqa: E402
+from raos.adapters.recorded_kpi_input import (  # noqa: E402
+    COMPLETE_FIXTURE_BYTES,
+    COMPLETE_FIXTURE_SHA256,
+    RecordedKpiInputAdapter,
+)
+from raos.application.analytics.kpi_read_model import (  # noqa: E402
+    RecordedKpiCalculationJob,
+)
+from raos.domain.analytics.kpi_read_model import (  # noqa: E402
+    AttributionBasis,
+    CalculationContext,
+    COMPLETE_RECORDED_INPUT_SHA256,
+    FixtureByteLength,
+    InputSpec,
+    KPI_CALCULATION_VERSION,
+    KPI_DEFINITIONS,
+    KPI_DEFINITION_VERSION,
+    KPI_IDS,
+    KpiAvailability,
+    KpiCalculationCommand,
+    KpiDefinition,
+    MeasurementPeriod,
+    ProgramId,
+    RAKUTEN_BLOG_PROGRAM,
+    Sha256Digest,
+)
+
+base: Any = importlib.import_module("scripts.build_st1505_staging_deployment")
 
 
-CONTRACT_PATH: Final = Path(
+CONTRACT_PATH: Final = Path("changes/st-1205/contracts/kpi-read-model.v2.yaml")
+FIXTURE_PATH: Final = Path(
+    "changes/st-1205/fixtures/recorded/kpi-calculation-complete.v2.json"
+)
+LEGACY_CONTRACT_PATH: Final = Path(
     "changes/st-1205/contracts/kpi-read-model-reference-plan.v1.yaml"
 )
-REFERENCE_PLAN_PATH: Final = Path(
+LEGACY_REFERENCE_PATH: Final = Path(
     "changes/st-1205/generated/kpi-read-model-reference-plan.v1.json"
 )
+REFERENCE_PLAN_PATH: Final = Path("changes/st-1205/generated/kpi-read-model.v2.json")
 MANIFEST_PATH: Final = Path("changes/st-1205/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1205_kpi_read_model_reference_plan.py")
 README_PATH: Final = Path("changes/st-1205/README.md")
+DOMAIN_PATH: Final = Path("python/raos/domain/analytics/kpi_read_model.py")
+PORT_PATH: Final = Path("python/raos/ports/kpi_read_model.py")
+APPLICATION_PATH: Final = Path("python/raos/application/analytics/kpi_read_model.py")
+ADAPTER_PATH: Final = Path("python/raos/adapters/recorded_kpi_input.py")
 TEST_PATHS: Final = (
     Path("tests/st1205/conftest.py"),
     Path("tests/st1205/test_contract.py"),
-    Path("tests/st1205/test_generation.py"),
+    Path("tests/st1205/test_calculation.py"),
+    Path("tests/st1205/test_adapter_job.py"),
     Path("tests/st1205/test_negative_cases.py"),
+    Path("tests/st1205/test_generation.py"),
 )
-SOURCE_PATHS: Final = (CONTRACT_PATH, README_PATH, GENERATOR_PATH, *TEST_PATHS)
+SOURCE_PATHS: Final = (
+    CONTRACT_PATH,
+    FIXTURE_PATH,
+    README_PATH,
+    GENERATOR_PATH,
+    DOMAIN_PATH,
+    PORT_PATH,
+    APPLICATION_PATH,
+    ADAPTER_PATH,
+    *TEST_PATHS,
+)
 GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
-SOURCE_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
-GENERATOR_URI: Final = f"repo://{GENERATOR_PATH.as_posix()}"
-GENERATION_COMMAND: Final = (
-    "uv run --frozen --offline --no-cache --no-sync --no-env-file python "
-    "scripts/build_st1205_kpi_read_model_reference_plan.py"
-)
-EXPECTED_CONTRACT_SHA256: Final = (
-    "83335492346ccf1f830d859eb9930290f3bdd469f642db38eeb874995ddc8de7"
-)
-HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
-HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
-)
-MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
 STORY_PATH: Final = Path("docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml")
-STORY_SHA256: Final = "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
 KPI_CATALOG_PATH: Final = Path(
     "docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml"
 )
-KPI_CATALOG_SHA256: Final = (
-    "f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2"
+ANALYTICS_DESIGN_PATH: Final = Path(
+    "docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md"
+)
+ATTRIBUTION_PATH: Final = Path(
+    "docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml"
 )
 INTEGRATION_PATH: Final = Path(
     "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md"
 )
-INTEGRATION_SHA256: Final = (
-    "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+
+EXPECTED_CONTRACT_SHA256: Final = (
+    "bfc6ca7722e8cafdaee558881227531e8e74e3630f3cc13455f2e3e05ff2137f"
+)
+MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
+GENERATION_COMMAND: Final = (
+    "uv run --frozen --offline --no-cache --no-sync --no-env-file python "
+    "scripts/build_st1205_kpi_read_model_reference_plan.py"
 )
 
-ST1201_COMMIT: Final = "db19e538ed5a8c7e208ded7c3319a15c5e809492"
-ST1203_COMMIT: Final = "bdb97355eb27100d92787b6bbd3b5608b729250e"
-ST1204_COMMIT: Final = "73b7782502f249f91eafd3d0bc9d229fb770d7c6"
-
-ST1201_ARTIFACTS: Final = (
-    (
-        Path("changes/st-1201/README.md"),
-        "f7264bda2e0e6c4fcfbd6d7050552170974f85ae014106d10ad36e03b94b2e09",
-    ),
-    (
-        Path("python/raos/domain/analytics/event_collector.py"),
-        "e7350bac934fc3d190d9c041915a7ea708092519e4ddccb2c70e0c850bde50ff",
-    ),
-    (
-        Path("python/raos/ports/event_collector.py"),
-        "ab3f5b8df9dd7c324006c948ec0322c0c583dffe1b2facf7900d000cb632298c",
-    ),
-    (
-        Path("python/raos/application/analytics/event_collector.py"),
-        "8d35153ee3bc801e9653d4773358b31746fce195fd651b9caeaddfa8b1ebea85",
-    ),
-    (
-        Path("python/raos/adapters/recorded_event_store.py"),
-        "1e80a17f648138c7cff885e06eae452c8c89f93e441c4efedbd3f65a9c6d6c30",
-    ),
-    (
-        Path("tests/st1201/conftest.py"),
-        "4ae5cb8ca3cc747a269fd9d552d639cb8846935101ff3e208004b269246c555e",
-    ),
-    (
-        Path("tests/st1201/test_collector.py"),
-        "e009577784a5450b66dbd421fdfdf1e6c5beb0b8ab3fb1593735363b402bd183",
-    ),
-    (
-        Path("tests/st1201/test_failure_isolation.py"),
-        "3acb571f2d5bc5323bd4246d71977342dad7d269196c2897b0c57000b7ea697e",
-    ),
-    (
-        Path("tests/st1201/test_boundaries.py"),
-        "0180df481c69e764888aba594bd6a0439828ec7024bf020e572f150aedbb3f74",
-    ),
-)
-ST1203_ARTIFACTS: Final = (
-    (
-        Path("changes/st-1203/README.md"),
-        "c333b3400b8f0f13ce18be7e04d43345caa812b4d818dae8222cb8b498099c3e",
-    ),
-    (
-        Path("python/raos/domain/analytics/search_console.py"),
-        "e49396e6dfac336b05488ae4ba80100c106fc4bf64c2ed476d16f459c16759ce",
-    ),
-    (
-        Path("python/raos/ports/search_console.py"),
-        "569ee34c9202bf673338c0b87039a3ad461cf56d964537750427512288ac1bf5",
-    ),
-    (
-        Path("python/raos/application/analytics/search_console_import.py"),
-        "9a74033080728fa1b65bec071ec5e97ccf74cd0151153455e022029320ffa40e",
-    ),
-    (
-        Path("python/raos/adapters/recorded_search_console.py"),
-        "410e04383731edac7228a522d0275e8ea6f43a1bdb981075740c426655577e49",
-    ),
-    (
-        Path("tests/st1203/test_search_console_domain.py"),
-        "6ee3a1857d49d11447413955d0a65408c3a4f51e47f7d5c1eba95fd6783bea3c",
-    ),
-    (
-        Path("tests/st1203/test_search_console_application.py"),
-        "bc83080860f3217730876b48c1f6bd0f1b5c071d676984608da2eb4d99f30f98",
-    ),
-    (
-        Path("tests/st1203/test_recorded_search_console.py"),
-        "03f07ce52f9863a22ea83732d11a4d1a501ef356c8f85b930a2c111bf2ae571b",
-    ),
-    (
-        Path("tests/st1203/test_runtime_boundaries.py"),
-        "19ee7216c40948c888739a21c087f137019187a7e85abc88c8b6f768f4a8ce3d",
-    ),
-)
-ST1204_ARTIFACTS: Final = (
-    (
-        Path("changes/st-1204/RUNTIME-SLICE-v1.md"),
-        "e5ca8b2e38e0b46c9a40232af26bd5b4ebbbf20099c6a7856a7ab007443ca17e",
-    ),
-    (
-        Path("python/raos/domain/analytics/ga4.py"),
-        "785dd16788fffabd5ab6c05c6f43f535bc6521630a246c93a54d23d257de124f",
-    ),
-    (
-        Path("python/raos/ports/ga4.py"),
-        "16edfe96aad71f44d454a5474fc99fcf0528d9a85f88fc2047680f8b0a3d9a80",
-    ),
-    (
-        Path("python/raos/application/analytics/ga4_import.py"),
-        "663b057a4ce091d601ed0ea5b35a17632aaee0f53cb41d2c13eba69b27e28dc2",
-    ),
-    (
-        Path("python/raos/adapters/recorded_ga4.py"),
-        "9d07350b94109da403db764930be46fcfa666864350f1c6f6893f5daa759b840",
-    ),
-    (
-        Path("tests/st1204/test_ga4_domain.py"),
-        "d1afeb6e7537aa7be6e0e41bc51c02bbcec31d88af8cca493f083be665368a59",
-    ),
-    (
-        Path("tests/st1204/test_ga4_application.py"),
-        "8e8aae09e0749a31957c91a1de8f76abbc61f2e57a3bfecb7382f137196caf52",
-    ),
-    (
-        Path("tests/st1204/test_recorded_ga4.py"),
-        "e8c427264d11fd9e88bfa92a663a8704fbccd70c443bd055e658062c48a95677",
-    ),
-    (
-        Path("tests/st1204/test_runtime_boundaries.py"),
-        "b47d3981eb6d36b8c0aed93fddb9fd939e663e3261f6a444ebe8069f551c20a9",
-    ),
-)
-
-CONTRACT_KEYS: Final = (
-    "document",
-    "authority",
-    "predecessors",
-    "catalog_projection",
-    "calculation_boundary",
-    "execution_boundary",
-    "verification_boundary",
-)
-PLAN_KEYS: Final = (
-    "document",
-    "authority",
-    "provenance",
-    "predecessor_bindings",
-    "catalog_projection",
-    "calculation_boundary",
-    "execution_boundary",
-    "verification_boundary",
-)
-KPI_FIELDS: Final = (
-    "id",
-    "name",
-    "formula",
-    "domain",
-    "interpretation",
-    "cadence",
-    "design_status",
-    "implementation_status",
-    "runtime_verification",
-)
-KPI_IDS: Final = tuple(f"KPI-{number:03d}" for number in range(1, 31))
-KPI_ROW_HASHES: Final = (
-    "028dab6ec388e2988bf76a69e285b44fba5d46fadeb5ac2ada17c5aab0087215",
-    "b5d4908e5bd6092b1221c001aac8cb91cc333b1710d2b32c3d6c2c7b2debde68",
-    "943740d37670096944d4a4089d68d7276211e8e26fd6ad0cfe7f8ce9a65fd7d0",
-    "5ad2441fc6c89297c654eaddf47b5089a62234cbb5faec0d25eb339a01f0a8b9",
-    "34f44730ae3a1700ced50b133e247611b28e6736efa906ad2fbfe8af376599e2",
-    "fc5f59a0d91cab7bfbad21b87594a3eeef3dd433e5b75e187fcc5cada32559c2",
-    "95a014fbc4da4d54113df7081ffd300225d25b0d1406dea7dc40fe54d2d2f408",
-    "e809452d031ce2e6c2618c828cddae82fab85d4077591714aaf2664465c90501",
-    "b31abd0e84c1310fffca538b9c6ec7f3a8a9bb235296e25ff4848cb666f57cb2",
-    "4b8a684804834b4f48e7a2923487a24f7b0c3e5c84ceaf3c200c7af10e247262",
-    "b5d0ad5bef152b01fb5aaaf5dc671d1ee2709a1b61c14f89243dc7a9282e88fc",
-    "4f0abb4a606d9a7974e272b904abaa4bd27d1a7091d8887020439e0eea844754",
-    "dfff640b8c6ae52663e4b5e457cc32d9b2b073c61dc452ec5fe936f5c8363000",
-    "0f153c06d34e5fc990bd893a9dfa960cd754a57dfa0ebb5525d2f75c0968c20c",
-    "41d5b66d264885f854fc039070d8cffb767aac432f69ab4bc543025748a1187d",
-    "8d74d8f01dc022c84a2803f19b84cf5961702b6af6fd21dc7bace25963064d9f",
-    "510f0741b933f4474f0d70ee11051686b140734ee1835340f0a90d959cd98b1e",
-    "df6593cd5a0f66081f122c778963a2db6c84d72c4e7d10d97a86100899d6ba33",
-    "54a465fd3d2a09b9dd6bbf42e3ff2f796ccbff5f7b78e733fb8ae3d2228d688b",
-    "659124bd2358a797adfdfa39269f30f51df1cc84a2257ef4dbac2714ec6efbb9",
-    "1277c6bbf9b82c2bff4573e53e618e46f9611d57028feda87fa83202a56f14f9",
-    "2c2d98702fb413c1fa55e0e0ced593f60ee9883ffd84ed86b4ffb298ed1d6270",
-    "3934e46df15c07e52f56c13d5d4fc999e893fe5d8266deb175bda532fb2f90e3",
-    "c8492f31cfeb1b63e00354714e7c5a944258e1217baf73667170ec9d995a34fb",
-    "2df16cbb4b569cacd40bc74c59cebe579df674634e4b8edd1eb63a3b2f2d3245",
-    "7531d02a964f78319d7e463d13496c56f190fba14bd49f3f4e55ad300e4d3a9b",
-    "55383ea4403a708defb1b3a39d83363d03d91f7562391436cbad3893ebb71c44",
-    "ae1db042b5eea712209269e238da01788d430af4782031c2659ac8704a6f2924",
-    "1dba9376666c9e4aafa8dfa2182a9370bc823395c7c78aba37893569ae7511fc",
-    "1b31bc997745df0626eed399d44618aef6b0d73676683eb1456eb3273fe52009",
-)
-DOMAIN_DISTRIBUTION: Final = {
-    "finance": 9,
-    "finance+analytics": 2,
-    "analytics": 3,
-    "search": 6,
-    "quality": 2,
-    "freshness": 2,
-    "ai+finance": 1,
-    "ai/editorial": 1,
-    "operations": 2,
-    "ux": 1,
-    "governance": 1,
+AUTHORITY_HASHES: Final = {
+    STORY_PATH: "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+    KPI_CATALOG_PATH: "f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2",
+    ANALYTICS_DESIGN_PATH: "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460",
+    ATTRIBUTION_PATH: "29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c",
+    INTEGRATION_PATH: "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
 }
-ACTION_COUNT_KEYS: Final = (
-    "calculate",
-    "verify",
-    "map",
-    "read",
-    "write",
-    "execute_sql",
-    "create_table",
-    "enqueue_job",
-    "database",
-    "repository",
-    "activate_tracking",
-    "public_projection",
-    "recommendation_input",
-    "provider",
-    "network",
-    "external",
-)
-
-EXPECTED_STORY: Final = {
-    "id": "ST-1205",
-    "epic_id": "EPIC-12",
-    "title": "KPI read models",
-    "objective": "30 KPIを定義Version付きで計算",
-    "depends_on": ["ST-1201", "ST-1203", "ST-1204"],
-    "requirement_ids": ["FR-013", "FR-015"],
-    "design_refs": [],
-    "deliverables": ["SQL/jobs/read models"],
-    "acceptance_criteria": ["fixture formulas reproduce"],
-    "test_suites": ["TST-030"],
-    "priority": "P0",
-    "mvp": True,
-    "size": "L",
-    "open_decisions": [],
-    "one_pr_preferred": False,
-    "design_status": "APPROVED_FOR_IMPLEMENTATION",
-    "implementation_status": "NOT_STARTED",
-    "verification_status": "NOT_EXECUTED",
-}
-EXPECTED_DOCUMENT: Final = {
-    "schema_version": "1.0.0",
-    "story_id": "ST-1205",
-    "classification": (
-        "SOURCE_DERIVED_NON_EXECUTABLE_NON_ATTESTING_KPI_READ_MODEL_REFERENCE_PLAN"
-    ),
-    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
-    "executable": False,
-    "non_attesting": True,
-    "interface_only": True,
-    "decision": "NOT_READY",
-    "story_acceptance": False,
-    "production_eligible": False,
-    "approval": None,
-    "canonical_status": "UNCHANGED",
-}
-EXPECTED_AUTHORITY: Final = {
-    "canonical_story": {
-        "path": STORY_PATH.as_posix(),
-        "sha256": STORY_SHA256,
-        "story_id": "ST-1205",
-    },
-    "kpi_catalog": {
-        "path": KPI_CATALOG_PATH.as_posix(),
-        "sha256": KPI_CATALOG_SHA256,
-    },
-    "integration_precedence": {
-        "path": INTEGRATION_PATH.as_posix(),
-        "sha256": INTEGRATION_SHA256,
-    },
-    "authority_kind": "SOURCE_DERIVED_REFERENCE_ONLY",
-    "changes_canonical_status": False,
+PREDECESSOR_HASHES: Final = {
+    Path(
+        "changes/st-1201/README.md"
+    ): "f7264bda2e0e6c4fcfbd6d7050552170974f85ae014106d10ad36e03b94b2e09",
+    Path(
+        "python/raos/domain/analytics/event_collector.py"
+    ): "e7350bac934fc3d190d9c041915a7ea708092519e4ddccb2c70e0c850bde50ff",
+    Path(
+        "changes/st-1203/README.md"
+    ): "c333b3400b8f0f13ce18be7e04d43345caa812b4d818dae8222cb8b498099c3e",
+    Path(
+        "changes/st-1203/manifest.json"
+    ): "d9f40d3fa26bdaeea2d84fb9f28550a84981edeef8a93aa6e1e44494a0de441f",
+    Path(
+        "python/raos/domain/analytics/search_console.py"
+    ): "e49396e6dfac336b05488ae4ba80100c106fc4bf64c2ed476d16f459c16759ce",
+    Path(
+        "changes/st-1204/RUNTIME-SLICE-v1.md"
+    ): "6d8b61dab7c296f6156f2ed249cd5498a23d82427f139fda614a7f1272a57aa7",
+    Path(
+        "changes/st-1204/generated/manifest.json"
+    ): "80ee0253d5a7d0a051932bee8a8916fddf16c7ace8580081a1331ffa56d65924",
+    Path(
+        "python/raos/domain/analytics/ga4.py"
+    ): "785dd16788fffabd5ab6c05c6f43f535bc6521630a246c93a54d23d257de124f",
 }
 
 
-def _artifact_rows(artifacts: Sequence[tuple[Path, str]]) -> dict[str, str]:
-    return {path.as_posix(): digest for path, digest in artifacts}
-
-
-def _artifact_uri_rows(
-    artifacts: Sequence[tuple[Path, str]],
-) -> list[dict[str, str]]:
-    return [
-        {"uri": f"repo://{path.as_posix()}", "sha256": digest}
-        for path, digest in artifacts
-    ]
-
-
-EXPECTED_PREDECESSORS: Final = {
-    "st1201": {
-        "story_id": "ST-1201",
-        "feature_commit": ST1201_COMMIT,
-        "binding": "EXACT_CURRENT_COMMITTED_BYTES",
-        "artifacts": _artifact_rows(ST1201_ARTIFACTS),
-        "required_semantics": {
-            "default_mode": "DISABLED_OD_012",
-            "tracking": "DISABLED",
-            "persistence": "NOT_EXECUTED",
-            "measurement": False,
-            "decision": "NOT_READY",
-            "read_model_rows": [],
-        },
-    },
-    "st1203": {
-        "story_id": "ST-1203",
-        "feature_commit": ST1203_COMMIT,
-        "binding": "EXACT_CURRENT_COMMITTED_BYTES",
-        "artifacts": _artifact_rows(ST1203_ARTIFACTS),
-        "required_semantics": {
-            "top_rows_only": True,
-            "rows_not_guaranteed_complete": True,
-            "empty_page_proves_zero": False,
-            "supersession": "NOT_DEFINED",
-            "provider": "NOT_EXECUTED",
-            "persistence": "NOT_EXECUTED",
-        },
-    },
-    "st1204": {
-        "story_id": "ST-1204",
-        "feature_commit": ST1204_COMMIT,
-        "binding": "EXACT_CURRENT_COMMITTED_BYTES",
-        "artifacts": _artifact_rows(ST1204_ARTIFACTS),
-        "required_semantics": {
-            "returned_row_count": 2,
-            "provider_row_count": 3,
-            "pagination_performed": False,
-            "numeric_aggregation_performed": False,
-            "metric_values_preserved_as_strings": True,
-            "supersession": "NOT_DEFINED",
-            "tracking": "DISABLED_OD_012",
-            "provider": "NOT_EXECUTED",
-            "persistence": "NOT_EXECUTED",
-        },
-    },
-}
-EXPECTED_CATALOG_PROJECTION: Final = {
-    "source_order": "EXACT_CANONICAL_ORDER",
-    "source_fields": list(KPI_FIELDS),
-    "definition_count": 30,
-    "calculation_count": 0,
-    "verified_count": 0,
-    "domain_distribution": DOMAIN_DISTRIBUTION,
-    "formula_representation": "NON_EXECUTABLE_SOURCE_TEXT",
-    "activation_inferred": False,
-}
-EXPECTED_CALCULATION_BOUNDARY: Final[dict[str, object]] = {
-    "calculation_version": None,
-    "kpi_mappings": [],
-    "source_mappings": [],
-    "watermarks": [],
-    "period": None,
-    "inputs": [],
-    "sql": None,
-    "tables": [],
-    "job_payloads": [],
-    "read_model_rows": [],
-    "results": [],
-    "evidence": [],
-    "mapping_count": None,
-    "watermark_count": None,
-    "input_count": None,
-    "table_count": None,
-    "job_payload_count": None,
-    "read_model_row_count": None,
-    "result_count": None,
-    "evidence_count": None,
-    "empty_means_zero": False,
-}
-EXPECTED_ACTION_COUNTS: Final = {key: 0 for key in ACTION_COUNT_KEYS}
-EXPECTED_EXECUTION_BOUNDARY: Final = {
-    "formula_engine": "NOT_EXECUTED",
-    "calculation": "NOT_EXECUTED",
-    "verification": "NOT_EXECUTED",
-    "sql": "NOT_EXECUTED",
-    "job": "NOT_EXECUTED",
-    "database": "NOT_EXECUTED",
-    "repository": "NOT_EXECUTED",
-    "tracking_activation": "NOT_EXECUTED",
-    "public_projection": "NOT_EXECUTED",
-    "recommendation_input": "NOT_EXECUTED",
-    "provider": "NOT_EXECUTED",
-    "network": "NOT_EXECUTED",
-    "live": "NOT_EXECUTED",
-    "staging": "NOT_EXECUTED",
-    "release": "NOT_EXECUTED",
-    "production": "NOT_EXECUTED",
-    "action_counts": EXPECTED_ACTION_COUNTS,
-    "external_actions": [],
-}
-EXPECTED_VERIFICATION_BOUNDARY: Final = {
-    "definitions_projected": 30,
-    "definitions_total": 30,
-    "calculations_completed": 0,
-    "calculations_total": 30,
-    "calculations_verified": 0,
-    "verified_total": 30,
-    "calculation_status": "NOT_EXECUTED",
-    "verification_status": "NOT_EXECUTED",
-    "TST-030": "NOT_EXECUTED",
-    "formal_validation": "NOT_EXECUTED",
-    "story_acceptance": False,
-    "decision": "NOT_READY",
-}
-
-
-class KpiReferencePlanError(RuntimeError):
-    """Stable, sanitized contract or generation failure."""
+class KpiReadModelBuildError(RuntimeError):
+    """Stable, sanitized owner-generator failure."""
 
 
 class NoAliasDumper(yaml.SafeDumper):
-    """Keep generated YAML explicit and deterministic."""
-
     def ignore_aliases(self, data: object) -> bool:
         return True
 
 
 def _fail(code: str, field: str) -> NoReturn:
-    raise KpiReferencePlanError(f"ST-1205 build failed: {code} field={field}")
+    raise KpiReadModelBuildError(f"ST-1205 build failed: {code} field={field}")
+
+
+def _sha256(content: bytes) -> str:
+    return hashlib.sha256(content).hexdigest()
 
 
 def _mapping(value: object, field: str) -> Mapping[str, Any]:
@@ -496,64 +179,18 @@ def _list(value: object, field: str) -> list[Any]:
     return value
 
 
-def _same_exact(left: object, right: object) -> bool:
-    if type(left) is not type(right):
-        return False
-    if type(right) is dict:
-        left_map = cast(dict[str, object], left)
-        right_map = cast(dict[str, object], right)
-        return tuple(left_map) == tuple(right_map) and all(
-            _same_exact(left_map[key], right_map[key]) for key in right_map
-        )
-    if type(right) is list:
-        left_list = cast(list[object], left)
-        right_list = cast(list[object], right)
-        return len(left_list) == len(right_list) and all(
-            _same_exact(left_item, right_item)
-            for left_item, right_item in zip(left_list, right_list, strict=True)
-        )
-    return left == right
-
-
-def _exact(value: object, expected: object, field: str) -> None:
-    if not _same_exact(value, expected):
-        _fail("VALUE_MISMATCH", field)
-
-
-def _sha256(content: bytes) -> str:
-    return hashlib.sha256(content).hexdigest()
-
-
-def _canonical_sha256(value: object) -> str:
-    try:
-        content = json.dumps(
-            value,
-            ensure_ascii=False,
-            allow_nan=False,
-            separators=(",", ":"),
-            sort_keys=True,
-        ).encode("utf-8")
-    except TypeError, ValueError, RecursionError:
-        _fail("CANONICAL_JSON_INVALID", "canonical.value")
-    return _sha256(content)
-
-
 def _read(root: Path, relative: Path, field: str) -> bytes:
     physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
     try:
-        content = physical.read_bytes()
+        observed = physical.read_bytes()
     except OSError:
         _fail("FILE_UNAVAILABLE", field)
+    if type(observed) is not bytes:
+        _fail("FILE_TYPE_MISMATCH", field)
+    content = observed
     if len(content) > MAX_SOURCE_BYTES:
         _fail("FILE_SIZE_LIMIT", field)
     return content
-
-
-def _text(root: Path, relative: Path, field: str) -> str:
-    try:
-        return _read(root, relative, field).decode("utf-8", errors="strict")
-    except UnicodeDecodeError:
-        _fail("UTF8_REQUIRED", field)
 
 
 def _load_yaml(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
@@ -561,256 +198,312 @@ def _load_yaml(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
     return _mapping(base.load_yaml(root / relative), field)
 
 
-def _find(items: object, identity: str, field: str) -> Mapping[str, Any]:
+def _load_json(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
+    base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    return _mapping(base.load_json(root / relative), field)
+
+
+def _find_story(stories: Mapping[str, Any]) -> Mapping[str, Any]:
     matches = [
-        _mapping(item, field)
-        for item in _list(items, field)
-        if type(item) is dict and item.get("id") == identity
+        _mapping(item, "authority.story")
+        for item in _list(stories.get("stories"), "authority.story")
+        if type(item) is dict and item.get("id") == "ST-1205"
     ]
     if len(matches) != 1:
-        _fail("CANONICAL_RECORD_MISSING", field)
+        _fail("CANONICAL_RECORD_MISSING", "authority.story")
     return matches[0]
 
 
 def _validate_hashes(root: Path) -> None:
-    expected = (
-        (CONTRACT_PATH, EXPECTED_CONTRACT_SHA256, "contract"),
-        (STORY_PATH, STORY_SHA256, "authority.story"),
-        (KPI_CATALOG_PATH, KPI_CATALOG_SHA256, "authority.kpi_catalog"),
-        (INTEGRATION_PATH, INTEGRATION_SHA256, "authority.integration"),
-        (HELPER_PATH, HELPER_SHA256, "implementation.helper"),
-        *((path, digest, "predecessor.st1201") for path, digest in ST1201_ARTIFACTS),
-        *((path, digest, "predecessor.st1203") for path, digest in ST1203_ARTIFACTS),
-        *((path, digest, "predecessor.st1204") for path, digest in ST1204_ARTIFACTS),
-    )
-    for relative, digest, field in expected:
-        if _sha256(_read(root, relative, field)) != digest:
-            _fail("SOURCE_HASH_DRIFT", field)
+    if _sha256(_read(root, CONTRACT_PATH, "contract")) != EXPECTED_CONTRACT_SHA256:
+        _fail("SOURCE_HASH_DRIFT", "contract")
+    for relative, digest in (*AUTHORITY_HASHES.items(), *PREDECESSOR_HASHES.items()):
+        if _sha256(_read(root, relative, "bound_source")) != digest:
+            _fail("SOURCE_HASH_DRIFT", "bound_source")
+    fixture = _read(root, FIXTURE_PATH, "recorded_fixture")
+    if (
+        len(fixture) != COMPLETE_FIXTURE_BYTES
+        or _sha256(fixture) != COMPLETE_FIXTURE_SHA256
+    ):
+        _fail("SOURCE_HASH_DRIFT", "recorded_fixture")
 
 
-def _validate_authority(root: Path) -> None:
-    stories = _load_yaml(root, STORY_PATH, "authority.story")
-    _exact(
-        _find(stories.get("stories"), "ST-1205", "authority.story"),
-        EXPECTED_STORY,
-        "authority.story",
-    )
+def _validate_story(root: Path) -> None:
+    story = _find_story(_load_yaml(root, STORY_PATH, "authority.story"))
+    expected = {
+        "id": "ST-1205",
+        "epic_id": "EPIC-12",
+        "title": "KPI read models",
+        "objective": "30 KPIを定義Version付きで計算",
+        "depends_on": ["ST-1201", "ST-1203", "ST-1204"],
+        "requirement_ids": ["FR-013", "FR-015"],
+        "design_refs": [],
+        "deliverables": ["SQL/jobs/read models"],
+        "acceptance_criteria": ["fixture formulas reproduce"],
+        "test_suites": ["TST-030"],
+        "priority": "P0",
+        "mvp": True,
+        "size": "L",
+        "open_decisions": [],
+        "one_pr_preferred": False,
+        "design_status": "APPROVED_FOR_IMPLEMENTATION",
+        "implementation_status": "NOT_STARTED",
+        "verification_status": "NOT_EXECUTED",
+    }
+    if story != expected or tuple(story) != tuple(expected):
+        _fail("CANONICAL_SEMANTIC_DRIFT", "authority.story")
 
 
-def _require_fragments(
-    root: Path,
-    relative: Path,
-    fragments: Sequence[str],
-    field: str,
-) -> None:
-    source = _text(root, relative, field)
-    if any(fragment not in source for fragment in fragments):
-        _fail("PREDECESSOR_SEMANTIC_DRIFT", field)
-
-
-def _validate_st1201(root: Path) -> None:
-    _require_fragments(
-        root,
-        ST1201_ARTIFACTS[1][0],
-        (
-            "return cls(mode=EventCollectorMode.DISABLED_OD_012, event_allowlist=())",
-            "self.tracking_activation is not TrackingActivation.DISABLED",
-            "self.persistence is not CollectorExecution.NOT_EXECUTED",
-            "measurement_observed: bool",
-            "or self.measurement_observed",
-            "self.decision is not CollectorDecision.NOT_READY",
-            "self.formal_tst_030 is not CollectorExecution.NOT_EXECUTED",
-        ),
-        "predecessor.st1201.domain",
-    )
-    _require_fragments(
-        root,
-        ST1201_ARTIFACTS[3][0],
-        (
-            "tracking_activation=TrackingActivation.DISABLED",
-            "persistence=CollectorExecution.NOT_EXECUTED",
-            "measurement_observed=False",
-            "decision=CollectorDecision.NOT_READY",
-        ),
-        "predecessor.st1201.application",
-    )
-
-
-def _validate_st1203(root: Path) -> None:
-    _require_fragments(
-        root,
-        ST1203_ARTIFACTS[1][0],
-        (
-            "self.top_rows_only is not True",
-            "top_rows_only: bool",
-            "self.rows_not_guaranteed_complete is not True",
-            "EmptyPageMeaning.RECORDED_ZERO_ROWS_ONLY if not self.rows else None",
-            "self.supersession is not SearchConsoleBoundaryStatus.NOT_DEFINED",
-            "self.provider is not SearchConsoleBoundaryStatus.NOT_EXECUTED",
-            "self.persistence is not SearchConsoleBoundaryStatus.NOT_EXECUTED",
-            "self.decision is not SearchConsoleBoundaryStatus.NOT_READY",
-        ),
-        "predecessor.st1203.domain",
-    )
-    _require_fragments(
-        root,
-        ST1203_ARTIFACTS[0][0],
-        (
-            "It does not establish complete retrieval, zero traffic, or zero analytics.",
-            "supersession remains `NOT_DEFINED`",
-        ),
-        "predecessor.st1203.readme",
-    )
-
-
-def _validate_st1204(root: Path) -> None:
-    _require_fragments(
-        root,
-        ST1204_ARTIFACTS[1][0],
-        (
-            "metric_values: tuple[str, ...]",
-            "len(self.rows) != 2",
-            "self.provider_row_count != 3",
-            "self.row_count_independent_of_pagination is not True",
-            "self.tracking is not Ga4BoundaryStatus.DISABLED_OD_012",
-            "self.provider_execution is not Ga4BoundaryStatus.NOT_EXECUTED",
-            "self.persistence is not Ga4BoundaryStatus.NOT_EXECUTED",
-            "self.supersession is not Ga4BoundaryStatus.NOT_DEFINED",
-            "self.decision is not Ga4BoundaryStatus.NOT_READY",
-        ),
-        "predecessor.st1204.domain",
-    )
-    _require_fragments(
-        root,
-        ST1204_ARTIFACTS[0][0],
-        (
-            "Metric values remain ordered provider strings.",
-            "It never attempts another page",
-            "supersession relationship is asserted.",
-        ),
-        "predecessor.st1204.readme",
-    )
-
-
-def _catalog(root: Path) -> Mapping[str, Any]:
+def _validate_catalog(root: Path) -> list[Mapping[str, Any]]:
     catalog = _load_yaml(root, KPI_CATALOG_PATH, "authority.kpi_catalog")
-    if tuple(catalog) != ("document", "kpis"):
-        _fail("SOURCE_SCHEMA_DRIFT", "authority.kpi_catalog")
-    _exact(
-        catalog["document"],
-        {"id": "RAOS-ANALYTICS-KPI-001", "version": "1.0"},
-        "authority.kpi_catalog.document",
-    )
-    rows = _list(catalog["kpis"], "authority.kpi_catalog.kpis")
-    if len(rows) != 30:
-        _fail("SOURCE_SEMANTIC_DRIFT", "authority.kpi_catalog.count")
-    ids: list[str] = []
-    hashes: list[str] = []
-    domains: list[str] = []
-    for raw_row in rows:
-        row = _mapping(raw_row, "authority.kpi_catalog.row")
-        if tuple(row) != KPI_FIELDS or any(type(row[key]) is not str for key in row):
-            _fail("SOURCE_SCHEMA_DRIFT", "authority.kpi_catalog.row")
-        ids.append(cast(str, row["id"]))
-        domains.append(cast(str, row["domain"]))
-        hashes.append(_canonical_sha256(row))
+    if tuple(catalog) != ("document", "kpis") or catalog["document"] != {
+        "id": "RAOS-ANALYTICS-KPI-001",
+        "version": "1.0",
+    }:
+        _fail("CANONICAL_SCHEMA_DRIFT", "authority.kpi_catalog")
+    rows = [
+        _mapping(item, "authority.kpi_catalog.row")
+        for item in _list(catalog["kpis"], "authority.kpi_catalog.kpis")
+    ]
+    if len(rows) != 30 or tuple(row.get("id") for row in rows) != KPI_IDS:
+        _fail("CANONICAL_SEMANTIC_DRIFT", "authority.kpi_catalog.order")
+    for row, definition in zip(rows, KPI_DEFINITIONS, strict=True):
         if (
-            row["design_status"] != "APPROVED_FOR_IMPLEMENTATION"
-            or row["implementation_status"] != "NOT_STARTED"
-            or row["runtime_verification"] != "NOT_EXECUTED"
+            row.get("id") != definition.kpi_id
+            or row.get("name") != definition.name
+            or row.get("formula") != definition.canonical_formula
+            or row.get("cadence") != definition.time_grain
+            or row.get("design_status") != "APPROVED_FOR_IMPLEMENTATION"
+            or row.get("implementation_status") != "NOT_STARTED"
+            or row.get("runtime_verification") != "NOT_EXECUTED"
         ):
-            _fail("SOURCE_SEMANTIC_DRIFT", "authority.kpi_catalog.status")
-    _exact(ids, list(KPI_IDS), "authority.kpi_catalog.order")
-    _exact(hashes, list(KPI_ROW_HASHES), "authority.kpi_catalog.rows")
-    _exact(
-        dict(Counter(domains)),
-        DOMAIN_DISTRIBUTION,
-        "authority.kpi_catalog.domains",
-    )
-    return catalog
+            _fail("RUNTIME_DEFINITION_DRIFT", "authority.kpi_catalog.row")
+    return rows
 
 
-def validate_contract(
-    contract: Mapping[str, Any], root: Path = REPO_ROOT
-) -> Mapping[str, Any]:
-    if tuple(contract) != CONTRACT_KEYS:
-        _fail("CONTRACT_SCHEMA_DRIFT", "contract")
-    _exact(contract["document"], EXPECTED_DOCUMENT, "document")
-    _exact(contract["authority"], EXPECTED_AUTHORITY, "authority")
-    _exact(contract["predecessors"], EXPECTED_PREDECESSORS, "predecessors")
-    _exact(
-        contract["catalog_projection"],
-        EXPECTED_CATALOG_PROJECTION,
-        "catalog_projection",
-    )
-    _exact(
-        contract["calculation_boundary"],
-        EXPECTED_CALCULATION_BOUNDARY,
-        "calculation_boundary",
-    )
-    _exact(
-        contract["execution_boundary"],
-        EXPECTED_EXECUTION_BOUNDARY,
+def _validate_contract(contract: Mapping[str, Any], root: Path) -> None:
+    expected_keys = (
+        "document",
+        "authority",
+        "predecessors",
+        "input_contract",
+        "definition_contract",
+        "availability_contract",
+        "read_model_contract",
+        "learning_contract",
+        "recorded_fixture_contract",
         "execution_boundary",
+        "debt",
     )
-    _exact(
-        contract["verification_boundary"],
-        EXPECTED_VERIFICATION_BOUNDARY,
-        "verification_boundary",
+    if tuple(contract) != expected_keys:
+        _fail("CONTRACT_SCHEMA_DRIFT", "contract")
+    document = _mapping(contract["document"], "document")
+    if document != {
+        "schema_version": "2.0.0",
+        "story_id": "ST-1205",
+        "classification": "MAXIMUM_SAFE_LOCAL_EXECUTABLE_RECORDED_KPI_READ_MODEL_V2",
+        "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+        "local_formula_engine": True,
+        "local_read_model": True,
+        "recorded_synthetic_only": True,
+        "non_attesting": True,
+        "formal_validation": "NOT_EXECUTED",
+        "production_eligible": False,
+        "approval": None,
+        "canonical_status": "UNCHANGED",
+    }:
+        _fail("CONTRACT_SEMANTIC_DRIFT", "document")
+    inputs = _mapping(contract["input_contract"], "input_contract")
+    definitions = _mapping(contract["definition_contract"], "definition_contract")
+    availability = _mapping(contract["availability_contract"], "availability_contract")
+    learning = _mapping(contract["learning_contract"], "learning_contract")
+    recorded = _mapping(
+        contract["recorded_fixture_contract"], "recorded_fixture_contract"
     )
+    execution = _mapping(contract["execution_boundary"], "execution_boundary")
+    if (
+        inputs.get("program_id") != RAKUTEN_BLOG_PROGRAM
+        or inputs.get("numeric_type")
+        != "decimal.Decimal from canonical decimal strings only"
+        or inputs.get("float_allowed") is not False
+        or inputs.get("missing_allowed_as_zero") is not False
+        or inputs.get("live_provider_rows") is not False
+        or definitions.get("definition_version") != KPI_DEFINITION_VERSION
+        or definitions.get("calculation_version") != KPI_CALCULATION_VERSION
+        or definitions.get("canonical_definition_count") != 30
+        or definitions.get("calculation_count") != 30
+        or definitions.get("rounding") != "ROUND_HALF_EVEN"
+        or definitions.get("zero_denominator") != "UNAVAILABLE"
+        or availability.get("unavailable_value") is not None
+        or availability.get("unavailable_is_zero") is not False
+        or learning.get("same_period_required") is not True
+        or learning.get("same_program_required") is not True
+        or learning.get("verified_attribution_required") is not True
+        or learning.get("modifies_recommendation_order") is not False
+        or recorded.get("sha256") != COMPLETE_FIXTURE_SHA256
+        or recorded.get("bytes") != COMPLETE_FIXTURE_BYTES
+        or recorded.get("normalized_input_sha256") != COMPLETE_RECORDED_INPUT_SHA256
+        or execution.get("provider") != "NOT_EXECUTED"
+        or execution.get("network") != "NOT_EXECUTED"
+        or execution.get("public_projection") != "NOT_EXECUTED"
+        or execution.get("recommendation_input") != "DISABLED"
+        or execution.get("production") != "NOT_EXECUTED"
+        or execution.get("formal_TST-030") != "NOT_EXECUTED"
+        or execution.get("story_acceptance") is not False
+    ):
+        _fail("CONTRACT_SEMANTIC_DRIFT", "safety_boundary")
     _validate_hashes(root)
-    _validate_authority(root)
-    _catalog(root)
-    _validate_st1201(root)
-    _validate_st1203(root)
-    _validate_st1204(root)
-    return contract
+    _validate_story(root)
 
 
 def load_contract(root: Path = REPO_ROOT) -> Mapping[str, Any]:
-    return validate_contract(_load_yaml(root, CONTRACT_PATH, "contract"), root)
+    contract = _load_yaml(root, CONTRACT_PATH, "contract")
+    _validate_contract(contract, root)
+    return contract
 
 
-def reference_plan(
-    contract: Mapping[str, Any], catalog: Mapping[str, Any]
-) -> dict[str, Any]:
-    rows = _list(catalog["kpis"], "catalog.kpis")
-    projection = {
-        **_mapping(contract["catalog_projection"], "catalog_projection"),
-        "catalog_document": catalog["document"],
-        "kpi_ids": list(KPI_IDS),
-        "definitions": rows,
+def _input_document(spec: InputSpec) -> dict[str, object]:
+    return {
+        "metric_key": spec.metric_key,
+        "source": spec.source.value,
+        "role": spec.role.value,
+        "attribution_requirement": spec.attribution_requirement.value,
+        "allow_negative": spec.allow_negative,
     }
-    plan: dict[str, Any] = {
+
+
+def _definition_document(
+    definition: KpiDefinition, canonical: Mapping[str, Any]
+) -> dict[str, object]:
+    return {
+        "id": definition.kpi_id,
+        "name": definition.name,
+        "canonical_formula": definition.canonical_formula,
+        "canonical_domain": canonical["domain"],
+        "canonical_interpretation": canonical["interpretation"],
+        "formula_kind": definition.formula_kind.value,
+        "typed_sources_and_roles": [
+            _input_document(item) for item in definition.inputs
+        ],
+        "result_unit": definition.unit.value,
+        "decimal_quantization": str(definition.quantize),
+        "time_grain": definition.time_grain,
+        "cohort": definition.cohort,
+        "included_traffic": list(definition.included_traffic),
+        "excluded_traffic": list(definition.excluded_traffic),
+        "attribution_display": definition.attribution_display,
+        "rounding": definition.rounding,
+        "zero_semantics": definition.zero_semantics,
+        "division_by_zero": definition.division_by_zero,
+        "owner": definition.owner,
+        "decision_use": definition.decision_use,
+        "definition_version": KPI_DEFINITION_VERSION,
+    }
+
+
+def _recorded_reproduction(root: Path) -> dict[str, object]:
+    fixture_bytes = _read(root, FIXTURE_PATH, "recorded_fixture")
+    fixture = _load_json(root, FIXTURE_PATH, "recorded_fixture")
+    period = _mapping(fixture["period"], "recorded_fixture.period")
+    command = KpiCalculationCommand(
+        recording_id="complete",
+        fixture_digest=Sha256Digest(COMPLETE_FIXTURE_SHA256),
+        fixture_length=FixtureByteLength(COMPLETE_FIXTURE_BYTES),
+        expected_input_digest=Sha256Digest(COMPLETE_RECORDED_INPUT_SHA256),
+        context=CalculationContext(
+            MeasurementPeriod(
+                date.fromisoformat(cast(str, period["start_date"])),
+                date.fromisoformat(cast(str, period["end_date"])),
+            ),
+            ProgramId(cast(str, fixture["program_id"])),
+            AttributionBasis(cast(str, fixture["selected_attribution_basis"])),
+        ),
+    )
+    snapshot = RecordedKpiCalculationJob(
+        exchange=RecordedKpiInputAdapter(fixture_bytes)
+    ).calculate(command)
+    expected = _list(fixture["expected_results"], "recorded_fixture.expected_results")
+    expected_learning = _list(
+        fixture["expected_learning_results"],
+        "recorded_fixture.expected_learning_results",
+    )
+    actual = [
+        {"kpi_id": row.kpi_id, "value": None if row.value is None else str(row.value)}
+        for row in snapshot.rows
+    ]
+    actual_learning = [
+        {
+            "metric_id": row.metric_id,
+            "value": None if row.value is None else str(row.value),
+        }
+        for row in snapshot.learning_rows
+    ]
+    if (
+        any(row.availability is not KpiAvailability.AVAILABLE for row in snapshot.rows)
+        or actual != expected
+        or actual_learning != expected_learning
+    ):
+        _fail("FIXTURE_REPRODUCTION_FAILED", "recorded_fixture")
+    return {
+        "recording_id": "complete",
+        "fixture_sha256": COMPLETE_FIXTURE_SHA256,
+        "input_sha256": snapshot.input_digest.value,
+        "period": {
+            "start_date": snapshot.context.period.start_date.isoformat(),
+            "end_date": snapshot.context.period.end_date.isoformat(),
+        },
+        "program_id": snapshot.context.program_id.value,
+        "attribution_basis": snapshot.context.selected_attribution_basis.value,
+        "available_kpis": 30,
+        "expected_kpis_reproduced": 30,
+        "expected_learning_metrics_reproduced": 5,
+        "results": actual,
+        "learning_results": actual_learning,
+        "execution": snapshot.execution.value,
+        "read_model": snapshot.read_model.value,
+        "persistence": snapshot.persistence.value,
+        "provider": snapshot.provider.value,
+        "network": snapshot.network.value,
+        "public_projection": snapshot.public_projection.value,
+        "recommendation_input": snapshot.recommendation_input.value,
+        "formal_TST-030": snapshot.formal_tst_030.value,
+        "decision": snapshot.decision.value,
+    }
+
+
+def reference_plan(root: Path = REPO_ROOT) -> dict[str, object]:
+    contract = load_contract(root)
+    canonical_rows = _validate_catalog(root)
+    return {
         "document": contract["document"],
         "authority": contract["authority"],
-        "provenance": {
-            "source_contract": SOURCE_URI,
-            "generated_by": GENERATOR_URI,
-            "generation_command": GENERATION_COMMAND,
-            "inventory_derivation": "EXACT_CANONICAL_KPI_CATALOG_PROJECTION",
-            "implementation_helper": {
-                "uri": f"repo://{HELPER_PATH.as_posix()}",
-                "sha256": HELPER_SHA256,
-            },
-        },
-        "predecessor_bindings": contract["predecessors"],
-        "catalog_projection": projection,
-        "calculation_boundary": contract["calculation_boundary"],
+        "definition_version": KPI_DEFINITION_VERSION,
+        "calculation_version": KPI_CALCULATION_VERSION,
+        "definition_count": 30,
+        "definitions": [
+            _definition_document(definition, canonical)
+            for definition, canonical in zip(
+                KPI_DEFINITIONS, canonical_rows, strict=True
+            )
+        ],
+        "input_contract": contract["input_contract"],
+        "availability_contract": contract["availability_contract"],
+        "read_model_contract": contract["read_model_contract"],
+        "learning_contract": contract["learning_contract"],
+        "recorded_reproduction": _recorded_reproduction(root),
         "execution_boundary": contract["execution_boundary"],
-        "verification_boundary": contract["verification_boundary"],
+        "debt": contract["debt"],
     }
-    if tuple(plan) != PLAN_KEYS:
-        _fail("PLAN_SCHEMA_DRIFT", "plan")
-    return plan
 
 
 def _json_bytes(value: object) -> bytes:
-    return (json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    return (
+        json.dumps(value, ensure_ascii=False, allow_nan=False, indent=2) + "\n"
+    ).encode("utf-8")
 
 
-def _artifact(root: Path, relative: Path) -> dict[str, object]:
-    content = _read(root, relative, "manifest.source")
+def _artifact_row(root: Path, relative: Path) -> dict[str, object]:
+    content = _read(root, relative, "source_artifact")
     return {
         "uri": f"repo://{relative.as_posix()}",
         "bytes": len(content),
@@ -818,62 +511,33 @@ def _artifact(root: Path, relative: Path) -> dict[str, object]:
     }
 
 
-def _predecessor_manifest_rows() -> list[dict[str, object]]:
-    return [
-        {
-            "story_id": "ST-1201",
-            "feature_commit": ST1201_COMMIT,
-            "binding": "EXACT_CURRENT_COMMITTED_BYTES",
-            "inputs": _artifact_uri_rows(ST1201_ARTIFACTS),
-        },
-        {
-            "story_id": "ST-1203",
-            "feature_commit": ST1203_COMMIT,
-            "binding": "EXACT_CURRENT_COMMITTED_BYTES",
-            "inputs": _artifact_uri_rows(ST1203_ARTIFACTS),
-        },
-        {
-            "story_id": "ST-1204",
-            "feature_commit": ST1204_COMMIT,
-            "binding": "EXACT_CURRENT_COMMITTED_BYTES",
-            "inputs": _artifact_uri_rows(ST1204_ARTIFACTS),
-        },
-    ]
-
-
 def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
+    contract = load_contract(root)
+    legacy_contract = _read(root, LEGACY_CONTRACT_PATH, "legacy_reference")
+    legacy_reference = _read(root, LEGACY_REFERENCE_PATH, "legacy_reference")
     manifest = {
         "document": {
-            "id": "RAOS-ST1205-KPI-READ-MODEL-REFERENCE-PLAN-MANIFEST-001",
-            "version": "1.0.0",
+            "id": "RAOS-ST1205-KPI-READ-MODEL-V2-MANIFEST-001",
+            "version": "2.0.0",
             "story_id": "ST-1205",
-            "source_contract": SOURCE_URI,
-            "generated_by": GENERATOR_URI,
+            "source_contract": f"repo://{CONTRACT_PATH.as_posix()}",
+            "generated_by": f"repo://{GENERATOR_PATH.as_posix()}",
             "generation_command": GENERATION_COMMAND,
         },
         "provenance": {
             "contract_sha256": EXPECTED_CONTRACT_SHA256,
-            "canonical_story": {
-                "uri": f"repo://{STORY_PATH.as_posix()}",
-                "sha256": STORY_SHA256,
-            },
-            "kpi_catalog": {
-                "uri": f"repo://{KPI_CATALOG_PATH.as_posix()}",
-                "sha256": KPI_CATALOG_SHA256,
-            },
-            "integration_precedence": {
-                "uri": f"repo://{INTEGRATION_PATH.as_posix()}",
-                "sha256": INTEGRATION_SHA256,
-            },
-            "inventory_derivation": "EXACT_CANONICAL_KPI_CATALOG_PROJECTION",
-            "predecessors": _predecessor_manifest_rows(),
-            "implementation_helper": {
-                "uri": f"repo://{HELPER_PATH.as_posix()}",
-                "sha256": HELPER_SHA256,
+            "authority": contract["authority"],
+            "predecessors": contract["predecessors"],
+            "legacy_reference": {
+                "classification": "SUPERSEDED_NON_EXECUTABLE_REFERENCE_PRESERVED",
+                "contract_uri": f"repo://{LEGACY_CONTRACT_PATH.as_posix()}",
+                "contract_sha256": _sha256(legacy_contract),
+                "projection_uri": f"repo://{LEGACY_REFERENCE_PATH.as_posix()}",
+                "projection_sha256": _sha256(legacy_reference),
             },
         },
         "source_artifact_count": len(SOURCE_PATHS),
-        "source_artifacts": [_artifact(root, path) for path in SOURCE_PATHS],
+        "source_artifacts": [_artifact_row(root, path) for path in SOURCE_PATHS],
         "generated_artifact_count": 1,
         "generated_artifacts": [
             {
@@ -882,27 +546,19 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
                 "sha256": _sha256(reference_bytes),
             }
         ],
-        "boundary": {
-            "classification": EXPECTED_DOCUMENT["classification"],
-            "executable": False,
-            "non_attesting": True,
-            "decision": "NOT_READY",
-            "definition_count": 30,
-            "calculation_count": 0,
-            "verified_count": 0,
-            "calculation_version": None,
-            "mapping_count": None,
-            "watermark_count": None,
-            "input_count": None,
-            "table_count": None,
-            "job_payload_count": None,
-            "read_model_row_count": None,
-            "result_count": None,
-            "evidence_count": None,
-            "empty_means_zero": False,
-            "action_count_total": 0,
-            "runtime_actions": "NOT_EXECUTED",
-            "formal_tst_030": "NOT_EXECUTED",
+        "local_completion": {
+            "local_code_status": "LOCAL_CODE_COMPLETE",
+            "definitions": 30,
+            "calculations": 30,
+            "recorded_fixture_reproductions": 30,
+            "learning_metric_reproductions": 5,
+            "DEBT-W2-054": "CLOSED",
+            "DEBT-W2-062": "CLOSED",
+            "formal_TST-030": "NOT_EXECUTED",
+            "live_provider": "NOT_EXECUTED",
+            "database": "NOT_EXECUTED",
+            "public_projection": "NOT_EXECUTED",
+            "recommendation_input": "DISABLED",
             "staging": "NOT_EXECUTED",
             "release": "NOT_EXECUTED",
             "production": "NOT_EXECUTED",
@@ -920,9 +576,7 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
 
 
 def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
-    contract = load_contract(root)
-    catalog = _catalog(root)
-    reference_bytes = _json_bytes(reference_plan(contract, catalog))
+    reference_bytes = _json_bytes(reference_plan(root))
     return {
         REFERENCE_PLAN_PATH: reference_bytes,
         MANIFEST_PATH: _manifest_bytes(root, reference_bytes),
@@ -949,8 +603,8 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
     if check:
         check_outputs(root, outputs)
         return
-    for relative, content in outputs.items():
-        base._atomic_write(root, relative, content)  # noqa: SLF001
+    for relative in GENERATED_PATHS:
+        base._atomic_write(root, relative, outputs[relative])  # noqa: SLF001
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -966,14 +620,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     try:
         build(check=args.check)
-    except (KpiReferencePlanError, base.StagingDeploymentContractError) as exc:
+    except (KpiReadModelBuildError, base.StagingDeploymentContractError) as exc:
         print(str(exc), file=sys.stderr)
         return 1
-    print(
-        "ST-1205 KPI reference plan checked"
-        if args.check
-        else "ST-1205 KPI reference plan generated"
-    )
+    except Exception:
+        print("ST-1205 build failed: UNEXPECTED_FAILURE field=builder", file=sys.stderr)
+        return 1
+    print("ST-1205 KPI V2 checked" if args.check else "ST-1205 KPI V2 generated")
     return 0
 
 

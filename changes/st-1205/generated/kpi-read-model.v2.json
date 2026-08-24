@@ -1,0 +1,1548 @@
+{
+  "document": {
+    "schema_version": "2.0.0",
+    "story_id": "ST-1205",
+    "classification": "MAXIMUM_SAFE_LOCAL_EXECUTABLE_RECORDED_KPI_READ_MODEL_V2",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "local_formula_engine": true,
+    "local_read_model": true,
+    "recorded_synthetic_only": true,
+    "non_attesting": true,
+    "formal_validation": "NOT_EXECUTED",
+    "production_eligible": false,
+    "approval": null,
+    "canonical_status": "UNCHANGED"
+  },
+  "authority": {
+    "canonical_story": {
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+      "story_id": "ST-1205"
+    },
+    "kpi_catalog": {
+      "path": "docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml",
+      "sha256": "f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2",
+      "version": "1.0"
+    },
+    "analytics_design": {
+      "path": "docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md",
+      "sha256": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460"
+    },
+    "attribution_policy": {
+      "path": "docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml",
+      "sha256": "29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c"
+    },
+    "integration_precedence": {
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    "changes_canonical_status": false
+  },
+  "definition_version": "2.0.0",
+  "calculation_version": "2.0.0",
+  "definition_count": 30,
+  "definitions": [
+    {
+      "id": "KPI-001",
+      "name": "monthly_confirmed_commission_jpy",
+      "canonical_formula": "sum(confirmed provider commission)",
+      "canonical_domain": "finance",
+      "canonical_interpretation": "Provider confirmed only",
+      "formula_kind": "IDENTITY",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "confirmed_provider_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "VALUE",
+          "attribution_requirement": "PROVIDER_FACT",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "JPY",
+      "decimal_quantization": "0.01",
+      "time_grain": "monthly",
+      "cohort": "provider confirmation cohort; mature only",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "PROVIDER_FACT",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Finance",
+      "decision_use": "monthly confirmed reward",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-002",
+      "name": "monthly_confirmed_contribution_profit_jpy",
+      "canonical_formula": "confirmed commission - variable external cost - editorial/update labor cost",
+      "canonical_domain": "finance",
+      "canonical_interpretation": "North star",
+      "formula_kind": "SUBTRACT",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "confirmed_provider_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "MINUEND",
+          "attribution_requirement": "PROVIDER_FACT",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "variable_external_cost_jpy",
+          "source": "COST_LEDGER",
+          "role": "SUBTRAHEND",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "editorial_update_labor_cost_jpy",
+          "source": "COST_LEDGER",
+          "role": "SUBTRAHEND",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "JPY",
+      "decimal_quantization": "0.01",
+      "time_grain": "monthly",
+      "cohort": "provider confirmation cohort; mature only",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "PROVIDER_FACT costs separate",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Finance",
+      "decision_use": "north-star contribution",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-003",
+      "name": "confirmed_epc_jpy",
+      "canonical_formula": "confirmed attributed commission / eligible affiliate clicks",
+      "canonical_domain": "finance+analytics",
+      "canonical_interpretation": "basis別に表示",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "confirmed_attributed_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "NUMERATOR",
+          "attribution_requirement": "SELECTED_ATTRIBUTED",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "eligible_affiliate_clicks",
+          "source": "FIRST_PARTY_EVENT",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "JPY_PER_CLICK",
+      "decimal_quantization": "0.01",
+      "time_grain": "weekly/monthly",
+      "cohort": "provider confirmation cohort; mature only",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "selected basis displayed",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Analytics/Finance",
+      "decision_use": "confirmed reward per eligible click",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-004",
+      "name": "confirmed_rpm_jpy",
+      "canonical_formula": "confirmed attributed commission / qualified sessions * 1000",
+      "canonical_domain": "finance+analytics",
+      "canonical_interpretation": "basis別に表示",
+      "formula_kind": "RATIO_X_1000",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "confirmed_attributed_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "NUMERATOR",
+          "attribution_requirement": "SELECTED_ATTRIBUTED",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "qualified_sessions",
+          "source": "GA4_AGGREGATE",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "JPY_PER_1000_SESSIONS",
+      "decimal_quantization": "0.01",
+      "time_grain": "weekly/monthly",
+      "cohort": "provider confirmation cohort; mature only",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "selected basis displayed",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Analytics/Finance",
+      "decision_use": "confirmed reward per thousand qualified sessions",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-005",
+      "name": "qualified_decision_sessions",
+      "canonical_formula": "count distinct eligible sessions meeting engagement rule",
+      "canonical_domain": "analytics",
+      "canonical_interpretation": "Bot/consent rules versioned",
+      "formula_kind": "IDENTITY",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "qualified_decision_sessions",
+          "source": "FIRST_PARTY_EVENT",
+          "role": "VALUE",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "COUNT",
+      "decimal_quantization": "1",
+      "time_grain": "daily",
+      "cohort": "period cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Analytics",
+      "decision_use": "qualified demand",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-006",
+      "name": "affiliate_click_through_rate",
+      "canonical_formula": "eligible affiliate clicks / article sessions",
+      "canonical_domain": "analytics",
+      "canonical_interpretation": "記事/placement別",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "eligible_affiliate_clicks",
+          "source": "FIRST_PARTY_EVENT",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "article_sessions",
+          "source": "FIRST_PARTY_EVENT",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "daily",
+      "cohort": "period cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Analytics",
+      "decision_use": "affiliate click rate",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-007",
+      "name": "cta_impression_to_click_rate",
+      "canonical_formula": "affiliate clicks / CTA impressions",
+      "canonical_domain": "analytics",
+      "canonical_interpretation": "beacon lossを注記",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "affiliate_clicks",
+          "source": "FIRST_PARTY_EVENT",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "cta_impressions",
+          "source": "FIRST_PARTY_EVENT",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "daily",
+      "cohort": "period cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Analytics",
+      "decision_use": "CTA interaction",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-008",
+      "name": "provider_confirmation_rate",
+      "canonical_formula": "confirmed commission amount / generated commission amount",
+      "canonical_domain": "finance",
+      "canonical_interpretation": "cohort basis",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "confirmed_provider_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "NUMERATOR",
+          "attribution_requirement": "PROVIDER_FACT",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "generated_provider_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "PROVIDER_FACT",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "monthly",
+      "cohort": "provider outcome cohort; mature only",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "PROVIDER_FACT",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Finance",
+      "decision_use": "provider confirmation rate",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-009",
+      "name": "provider_cancellation_rate",
+      "canonical_formula": "cancelled amount / generated amount",
+      "canonical_domain": "finance",
+      "canonical_interpretation": "cohort basis",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "cancelled_provider_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "NUMERATOR",
+          "attribution_requirement": "PROVIDER_FACT",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "generated_provider_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "PROVIDER_FACT",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "monthly",
+      "cohort": "provider outcome cohort; mature only",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "PROVIDER_FACT",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Finance",
+      "decision_use": "provider cancellation rate",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-010",
+      "name": "direct_attribution_share",
+      "canonical_formula": "direct confirmed amount / total confirmed amount",
+      "canonical_domain": "finance",
+      "canonical_interpretation": "estimatedを含めない",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "direct_confirmed_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "NUMERATOR",
+          "attribution_requirement": "DIRECT",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "confirmed_provider_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "PROVIDER_FACT",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "monthly",
+      "cohort": "provider confirmation cohort; mature only",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "DIRECT / PROVIDER_FACT",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Finance",
+      "decision_use": "direct attribution coverage",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-011",
+      "name": "unattributed_share",
+      "canonical_formula": "unattributed confirmed amount / total confirmed amount",
+      "canonical_domain": "finance",
+      "canonical_interpretation": "高い場合も無理に配賦しない",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "unattributed_confirmed_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "NUMERATOR",
+          "attribution_requirement": "UNATTRIBUTED",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "confirmed_provider_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "PROVIDER_FACT",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "monthly",
+      "cohort": "provider confirmation cohort; mature only",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "UNATTRIBUTED / PROVIDER_FACT; never allocated",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Finance",
+      "decision_use": "unattributed risk",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-012",
+      "name": "organic_clicks",
+      "canonical_formula": "Search Console clicks",
+      "canonical_domain": "search",
+      "canonical_interpretation": "Provider fact",
+      "formula_kind": "IDENTITY",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "organic_clicks",
+          "source": "SEARCH_CONSOLE",
+          "role": "VALUE",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "COUNT",
+      "decimal_quantization": "1",
+      "time_grain": "daily",
+      "cohort": "request dimension cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Search",
+      "decision_use": "organic demand",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-013",
+      "name": "organic_impressions",
+      "canonical_formula": "Search Console impressions",
+      "canonical_domain": "search",
+      "canonical_interpretation": "Provider fact",
+      "formula_kind": "IDENTITY",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "organic_impressions",
+          "source": "SEARCH_CONSOLE",
+          "role": "VALUE",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "COUNT",
+      "decimal_quantization": "1",
+      "time_grain": "daily",
+      "cohort": "request dimension cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Search",
+      "decision_use": "search visibility",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-014",
+      "name": "organic_ctr",
+      "canonical_formula": "Search Console clicks / impressions",
+      "canonical_domain": "search",
+      "canonical_interpretation": "Provider fact",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "organic_clicks",
+          "source": "SEARCH_CONSOLE",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "organic_impressions",
+          "source": "SEARCH_CONSOLE",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "daily",
+      "cohort": "same request dimension cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Search",
+      "decision_use": "search CTR",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-015",
+      "name": "average_search_position",
+      "canonical_formula": "Search Console weighted average position",
+      "canonical_domain": "search",
+      "canonical_interpretation": "集計粒度を表示",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "search_position_weighted_sum",
+          "source": "SEARCH_CONSOLE",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "search_position_weight",
+          "source": "SEARCH_CONSOLE",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "POSITION",
+      "decimal_quantization": "0.0001",
+      "time_grain": "daily",
+      "cohort": "same request dimension cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Search",
+      "decision_use": "weighted search position",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-016",
+      "name": "indexed_article_rate",
+      "canonical_formula": "indexed eligible articles / published eligible articles",
+      "canonical_domain": "search",
+      "canonical_interpretation": "URL inspection availabilityに依存",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "indexed_eligible_articles",
+          "source": "URL_INSPECTION",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "published_eligible_articles",
+          "source": "URL_INSPECTION",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "weekly",
+      "cohort": "eligible article cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Search",
+      "decision_use": "index coverage",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-017",
+      "name": "top20_article_rate",
+      "canonical_formula": "articles with target query position <=20 / eligible articles",
+      "canonical_domain": "search",
+      "canonical_interpretation": "query mapping versioned",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "top20_mapped_articles",
+          "source": "SEARCH_CONSOLE",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "eligible_mapped_articles",
+          "source": "SEARCH_CONSOLE",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "weekly",
+      "cohort": "versioned query-mapping cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Search",
+      "decision_use": "top-20 coverage",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-018",
+      "name": "claim_evidence_coverage",
+      "canonical_formula": "evidenced verifiable claims / verifiable claims",
+      "canonical_domain": "quality",
+      "canonical_interpretation": "主要Claimは100%",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "evidenced_verifiable_claims",
+          "source": "EDITORIAL_QUALITY",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "verifiable_claims",
+          "source": "EDITORIAL_QUALITY",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "per release",
+      "cohort": "release cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Editorial Quality",
+      "decision_use": "evidence coverage",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-019",
+      "name": "critical_finding_rate",
+      "canonical_formula": "versions with critical finding / evaluated versions",
+      "canonical_domain": "quality",
+      "canonical_interpretation": "0をRelease目標",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "versions_with_critical_finding",
+          "source": "EDITORIAL_QUALITY",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "evaluated_versions",
+          "source": "EDITORIAL_QUALITY",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "weekly",
+      "cohort": "evaluated-version cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Editorial Quality",
+      "decision_use": "critical finding exposure",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-020",
+      "name": "stale_exposure_rate",
+      "canonical_formula": "sessions on snapshots with stale critical fact / article sessions",
+      "canonical_domain": "freshness",
+      "canonical_interpretation": "0を目標",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "stale_critical_fact_sessions",
+          "source": "FRESHNESS_MONITOR",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "article_sessions",
+          "source": "FIRST_PARTY_EVENT",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "daily",
+      "cohort": "period cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Freshness",
+      "decision_use": "stale exposure",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-021",
+      "name": "affiliate_link_health_rate",
+      "canonical_formula": "healthy eligible CTA / eligible CTA",
+      "canonical_domain": "freshness",
+      "canonical_interpretation": "Kill switch対象を分離",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "healthy_eligible_cta",
+          "source": "FRESHNESS_MONITOR",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "eligible_cta",
+          "source": "FRESHNESS_MONITOR",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "hourly/daily",
+      "cohort": "eligible CTA cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Freshness",
+      "decision_use": "link health",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-022",
+      "name": "article_update_cost_ratio",
+      "canonical_formula": "article update cost / confirmed article commission",
+      "canonical_domain": "finance",
+      "canonical_interpretation": "記事別採算",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "article_update_cost_jpy",
+          "source": "COST_LEDGER",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "confirmed_article_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "SELECTED_ATTRIBUTED",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "monthly",
+      "cohort": "article provider-confirmation cohort; mature only",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "selected article attribution; provider total allocation forbidden",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Finance",
+      "decision_use": "article update economics",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-023",
+      "name": "content_payback_months",
+      "canonical_formula": "initial content cost / trailing monthly confirmed contribution",
+      "canonical_domain": "finance",
+      "canonical_interpretation": "収益0時はundefined",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "initial_content_cost_jpy",
+          "source": "COST_LEDGER",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "trailing_monthly_confirmed_contribution_jpy",
+          "source": "COST_LEDGER",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": true
+        }
+      ],
+      "result_unit": "MONTHS",
+      "decimal_quantization": "0.01",
+      "time_grain": "monthly",
+      "cohort": "mature trailing cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "selected basis displayed in source contribution",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Finance",
+      "decision_use": "content payback",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-024",
+      "name": "revenue_concentration_top10",
+      "canonical_formula": "top10 article confirmed commission / total",
+      "canonical_domain": "finance",
+      "canonical_interpretation": "依存リスク",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "top10_confirmed_attributed_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "NUMERATOR",
+          "attribution_requirement": "SELECTED_ATTRIBUTED",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "confirmed_attributed_commission_jpy",
+          "source": "PROVIDER_REVENUE",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "SELECTED_ATTRIBUTED",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "monthly",
+      "cohort": "provider confirmation cohort; mature only",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "same selected attributed basis; unattributed never allocated",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Finance",
+      "decision_use": "concentration risk",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-025",
+      "name": "ai_cost_per_approved_article",
+      "canonical_formula": "AI actual cost / approved article versions",
+      "canonical_domain": "ai+finance",
+      "canonical_interpretation": "Human costと分離",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "ai_actual_cost_jpy",
+          "source": "AI_LEDGER",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "approved_article_versions",
+          "source": "EDITORIAL_QUALITY",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "JPY",
+      "decimal_quantization": "0.01",
+      "time_grain": "monthly",
+      "cohort": "approved-version cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "AI/Finance",
+      "decision_use": "AI cost efficiency",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-026",
+      "name": "human_edit_ratio",
+      "canonical_formula": "human-changed tokens or AST nodes / AI proposed nodes",
+      "canonical_domain": "ai/editorial",
+      "canonical_interpretation": "品質学習用",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "human_changed_nodes",
+          "source": "EDITORIAL_QUALITY",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "ai_proposed_nodes",
+          "source": "EDITORIAL_QUALITY",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "per release",
+      "cohort": "release cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Editorial",
+      "decision_use": "quality learning only",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-027",
+      "name": "job_success_rate",
+      "canonical_formula": "succeeded terminal jobs / terminal jobs",
+      "canonical_domain": "operations",
+      "canonical_interpretation": "job type別",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "succeeded_terminal_jobs",
+          "source": "JOB_LEDGER",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "terminal_jobs",
+          "source": "JOB_LEDGER",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "hourly/daily",
+      "cohort": "job-type cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Operations",
+      "decision_use": "job reliability",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-028",
+      "name": "publication_rollback_rate",
+      "canonical_formula": "rolled back publications / publications",
+      "canonical_domain": "operations",
+      "canonical_interpretation": "reason別",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "rolled_back_publications",
+          "source": "PUBLICATION_LEDGER",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "publications",
+          "source": "PUBLICATION_LEDGER",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "monthly",
+      "cohort": "publication cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Operations",
+      "decision_use": "rollback frequency",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-029",
+      "name": "core_web_vitals_pass_rate",
+      "canonical_formula": "eligible page views meeting all CWV good thresholds",
+      "canonical_domain": "ux",
+      "canonical_interpretation": "mobile/desktop別",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "cwv_good_eligible_page_views",
+          "source": "WEB_VITALS",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "cwv_eligible_page_views",
+          "source": "WEB_VITALS",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "daily",
+      "cohort": "device-class page-view cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "UX",
+      "decision_use": "CWV quality",
+      "definition_version": "2.0.0"
+    },
+    {
+      "id": "KPI-030",
+      "name": "gate_readiness",
+      "canonical_formula": "passed mandatory checks / mandatory checks",
+      "canonical_domain": "governance",
+      "canonical_interpretation": "Gateごと",
+      "formula_kind": "RATIO",
+      "typed_sources_and_roles": [
+        {
+          "metric_key": "passed_mandatory_checks",
+          "source": "GATE_EVIDENCE",
+          "role": "NUMERATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        },
+        {
+          "metric_key": "mandatory_checks",
+          "source": "GATE_EVIDENCE",
+          "role": "DENOMINATOR",
+          "attribution_requirement": "NOT_APPLICABLE",
+          "allow_negative": false
+        }
+      ],
+      "result_unit": "RATIO",
+      "decimal_quantization": "0.000001",
+      "time_grain": "on demand",
+      "cohort": "gate snapshot cohort",
+      "included_traffic": [
+        "eligible verified recorded/synthetic facts"
+      ],
+      "excluded_traffic": [
+        "bot preview admin invalid unverified missing mismatched-period mismatched-program"
+      ],
+      "attribution_display": "NOT_APPLICABLE",
+      "rounding": "ROUND_HALF_EVEN",
+      "zero_semantics": "VERIFIED_ZERO_IS_ZERO",
+      "division_by_zero": "UNAVAILABLE",
+      "owner": "Governance",
+      "decision_use": "gate readiness; never auto-approves",
+      "definition_version": "2.0.0"
+    }
+  ],
+  "input_contract": {
+    "port": "provider-neutral caller-supplied immutable observations",
+    "program_id": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+    "program_policy": "ONE_EXACT_PROGRAM_PER_CALCULATION",
+    "period_policy": "EVERY_REQUIRED_INPUT_MUST_EQUAL_COMMAND_PERIOD",
+    "source_policy": "EVERY_INPUT_SOURCE_MUST_MATCH_ITS_VERSIONED_DEFINITION",
+    "verification_policy": "EVERY_REQUIRED_INPUT_MUST_BE_EXPLICITLY_VERIFIED",
+    "cohort_policy": "IMMATURE_IS_UNAVAILABLE_NEVER_ZERO",
+    "attribution_policy": "BASIS_MUST_MATCH_AND_BE_VERIFIED",
+    "allocation_policy": "PROVIDER_TOTAL_AND_UNATTRIBUTED_MUST_NEVER_BE_ALLOCATED_TO_ARTICLES",
+    "numeric_type": "decimal.Decimal from canonical decimal strings only",
+    "float_allowed": false,
+    "missing_allowed_as_zero": false,
+    "live_provider_rows": false
+  },
+  "availability_contract": {
+    "available_requires": [
+      "every required input is present",
+      "exact period and exact program match",
+      "exact declared source match",
+      "verified source fact",
+      "mature or not-applicable cohort",
+      "exact and verified attribution basis when applicable",
+      "nonzero positive denominator for division"
+    ],
+    "closed_unavailable_reasons": [
+      "MISSING_INPUT",
+      "PERIOD_MISMATCH",
+      "PROGRAM_MISMATCH",
+      "SOURCE_MISMATCH",
+      "UNVERIFIED_INPUT",
+      "IMMATURE_COHORT",
+      "ATTRIBUTION_BASIS_MISMATCH",
+      "ATTRIBUTION_UNVERIFIED",
+      "INVALID_NUMERIC_INPUT",
+      "ZERO_DENOMINATOR"
+    ],
+    "unavailable_value": null,
+    "unavailable_is_zero": false
+  },
+  "read_model_contract": {
+    "materialization": "IMMUTABLE_PROCESS_LOCAL_SNAPSHOT",
+    "rows": 30,
+    "row_order": "KPI-001_THROUGH_KPI-030",
+    "includes": [
+      "definition_version",
+      "calculation_version",
+      "period",
+      "fixed_program",
+      "attribution_basis",
+      "input_keys",
+      "freshness",
+      "last_successful_import",
+      "availability_or_typed_unavailable_reason"
+    ],
+    "persistence": "NOT_EXECUTED",
+    "database": "NOT_EXECUTED",
+    "sql": "NOT_EXECUTED",
+    "public_projection": "NOT_EXECUTED"
+  },
+  "learning_contract": {
+    "metrics": {
+      "search_ctr": "KPI-014",
+      "affiliate_click_rate": "KPI-006",
+      "confirmed_reward_per_click": "KPI-003",
+      "confirmation_rate": "KPI-008",
+      "confirmed_reward_per_content_hour": "SUPPLEMENTAL_SAME_GATES"
+    },
+    "confirmed_reward_per_content_hour_formula": "confirmed attributed commission / content work minutes * 60",
+    "same_period_required": true,
+    "same_program_required": true,
+    "verified_attribution_required": true,
+    "missing_or_immature": "UNAVAILABLE",
+    "modifies_article_html": false,
+    "modifies_cta": false,
+    "modifies_product_selection": false,
+    "modifies_recommendation_order": false,
+    "recommendation_inputs_forbidden": [
+      "affiliate rate",
+      "EPC",
+      "RPM",
+      "commission",
+      "profit"
+    ]
+  },
+  "recorded_reproduction": {
+    "recording_id": "complete",
+    "fixture_sha256": "da6d51ccd7ba56411ec81e316994659849e4ea7fa11e5458982a99a6f2317676",
+    "input_sha256": "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92",
+    "period": {
+      "start_date": "2026-07-01",
+      "end_date": "2026-07-31"
+    },
+    "program_id": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+    "attribution_basis": "DIRECT",
+    "available_kpis": 30,
+    "expected_kpis_reproduced": 30,
+    "expected_learning_metrics_reproduced": 5,
+    "results": [
+      {
+        "kpi_id": "KPI-001",
+        "value": "1200.00"
+      },
+      {
+        "kpi_id": "KPI-002",
+        "value": "900.00"
+      },
+      {
+        "kpi_id": "KPI-003",
+        "value": "9.00"
+      },
+      {
+        "kpi_id": "KPI-004",
+        "value": "3000.00"
+      },
+      {
+        "kpi_id": "KPI-005",
+        "value": "250"
+      },
+      {
+        "kpi_id": "KPI-006",
+        "value": "0.250000"
+      },
+      {
+        "kpi_id": "KPI-007",
+        "value": "0.150000"
+      },
+      {
+        "kpi_id": "KPI-008",
+        "value": "0.800000"
+      },
+      {
+        "kpi_id": "KPI-009",
+        "value": "0.100000"
+      },
+      {
+        "kpi_id": "KPI-010",
+        "value": "0.750000"
+      },
+      {
+        "kpi_id": "KPI-011",
+        "value": "0.250000"
+      },
+      {
+        "kpi_id": "KPI-012",
+        "value": "200"
+      },
+      {
+        "kpi_id": "KPI-013",
+        "value": "5000"
+      },
+      {
+        "kpi_id": "KPI-014",
+        "value": "0.040000"
+      },
+      {
+        "kpi_id": "KPI-015",
+        "value": "12.5000"
+      },
+      {
+        "kpi_id": "KPI-016",
+        "value": "0.900000"
+      },
+      {
+        "kpi_id": "KPI-017",
+        "value": "0.666667"
+      },
+      {
+        "kpi_id": "KPI-018",
+        "value": "0.950000"
+      },
+      {
+        "kpi_id": "KPI-019",
+        "value": "0.000000"
+      },
+      {
+        "kpi_id": "KPI-020",
+        "value": "0.020000"
+      },
+      {
+        "kpi_id": "KPI-021",
+        "value": "0.950000"
+      },
+      {
+        "kpi_id": "KPI-022",
+        "value": "0.300000"
+      },
+      {
+        "kpi_id": "KPI-023",
+        "value": "4.00"
+      },
+      {
+        "kpi_id": "KPI-024",
+        "value": "0.666667"
+      },
+      {
+        "kpi_id": "KPI-025",
+        "value": "2.00"
+      },
+      {
+        "kpi_id": "KPI-026",
+        "value": "0.400000"
+      },
+      {
+        "kpi_id": "KPI-027",
+        "value": "0.980000"
+      },
+      {
+        "kpi_id": "KPI-028",
+        "value": "0.020000"
+      },
+      {
+        "kpi_id": "KPI-029",
+        "value": "0.850000"
+      },
+      {
+        "kpi_id": "KPI-030",
+        "value": "0.900000"
+      }
+    ],
+    "learning_results": [
+      {
+        "metric_id": "search_ctr",
+        "value": "0.040000"
+      },
+      {
+        "metric_id": "affiliate_click_rate",
+        "value": "0.250000"
+      },
+      {
+        "metric_id": "confirmed_reward_per_click",
+        "value": "9.00"
+      },
+      {
+        "metric_id": "confirmation_rate",
+        "value": "0.800000"
+      },
+      {
+        "metric_id": "confirmed_reward_per_content_hour",
+        "value": "90.00"
+      }
+    ],
+    "execution": "RECORDED_FIXTURE_ONLY",
+    "read_model": "IN_MEMORY_ONLY",
+    "persistence": "NOT_EXECUTED",
+    "provider": "NOT_EXECUTED",
+    "network": "NOT_EXECUTED",
+    "public_projection": "NOT_EXECUTED",
+    "recommendation_input": "DISABLED",
+    "formal_TST-030": "NOT_EXECUTED",
+    "decision": "NOT_READY"
+  },
+  "execution_boundary": {
+    "formula_engine": "LOCAL_RECORDED_FIXTURE_ONLY",
+    "calculation_job": "PROCESS_LOCAL_ONLY",
+    "read_model": "PROCESS_LOCAL_IMMUTABLE",
+    "repository": "NOT_EXECUTED",
+    "database": "NOT_EXECUTED",
+    "provider": "NOT_EXECUTED",
+    "credential": "NOT_USED",
+    "network": "NOT_EXECUTED",
+    "tracking_activation": "DISABLED",
+    "public_projection": "NOT_EXECUTED",
+    "recommendation_input": "DISABLED",
+    "live": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "formal_TST-030": "NOT_EXECUTED",
+    "story_acceptance": false
+  },
+  "debt": {
+    "closed": [
+      {
+        "id": "DEBT-W2-054",
+        "reason": "all 30 formulas now have executable versioned local definitions and recorded reproduction fixtures"
+      },
+      {
+        "id": "DEBT-W2-062",
+        "reason": "current ST-1201/ST-1203/ST-1204 bytes and safe semantics are hash-bound"
+      }
+    ],
+    "remaining": [
+      {
+        "id": "EXTERNAL-TST-030",
+        "reason": "formal CI/staging provider reconciliation has not executed"
+      },
+      {
+        "id": "LIVE-PROVIDERS",
+        "reason": "OD-012 and OD-015 remain unresolved; only recorded fixtures are accepted"
+      }
+    ]
+  }
+}
