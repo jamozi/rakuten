@@ -448,11 +448,23 @@ def test_tampering_is_detected_before_raw_state_or_result_is_returned(
         "artifact": "UPDATE st0502_artifacts SET body = X'7B7D'",
         "artifact_sha": "UPDATE st0502_artifacts SET sha256 = '0000000000000000000000000000000000000000000000000000000000000000'",
         "session": "UPDATE st0502_sessions SET state_bytes = X'7B7D'",
-        "result": "UPDATE st0502_commands SET result_bytes = X'7B7D'",
+        "result": "UPDATE st0502_journal SET result_bytes = X'7B7D'",
     }
     with sqlite3.connect(store.database_path) as connection:
-        connection.execute(statements[target])
-        connection.commit()
+        if target == "session":
+            connection.execute(statements[target])
+            connection.commit()
+        else:
+            with pytest.raises(sqlite3.IntegrityError, match="IMMUTABLE_ST0502_V2"):
+                connection.execute(statements[target])
+            trigger = {
+                "artifact": "st0502_artifacts_no_update",
+                "artifact_sha": "st0502_artifacts_no_update",
+                "result": "st0502_journal_no_update",
+            }[target]
+            connection.execute(f"DROP TRIGGER {trigger}")
+            connection.execute(statements[target])
+            connection.commit()
 
     with pytest.raises(ItemSearchRuntimeFailure) as captured:
         if target in {"artifact", "artifact_sha"}:
@@ -472,7 +484,7 @@ def test_schema_or_version_drift_is_rejected_on_the_next_store_operation(
     store = runtime_store_v2(tmp_path / "private")
     with sqlite3.connect(store.database_path) as connection:
         if drift == "user_version":
-            connection.execute("PRAGMA user_version = 2")
+            connection.execute("PRAGMA user_version = 3")
         else:
             connection.execute("CREATE TABLE unexpected(value TEXT) STRICT")
         connection.commit()

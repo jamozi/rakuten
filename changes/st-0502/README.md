@@ -1,4 +1,15 @@
-# ST-0502 — recorded Item Search and non-executable live-safe request policy
+# ST-0502 — Item Search local implementation records
+
+The current additive runtime is V2 and is documented in
+`ITEM-SEARCH-RUNTIME-V2.md`. Its owner-private SQLite schema V2 uses exclusive
+creation, exact schema and integrity recomputation, append-only durable rows,
+hash-bound mutation history, device/inode and process-local monotonic pins,
+exact commit recovery, and hostile provider/store boundary copies. It performs
+zero live/provider actions. Cross-restart rollback detection has no external
+anchor and is not claimed. Formal TST-014/TST-015, hosted CI, staging, release,
+and Production remain `NOT_EXECUTED`.
+
+## Predecessor V1 record
 
 Classification: `MAXIMUM_SAFE_LOCAL_RECORDED_TEST_ONLY_ONE_PAGE_ITEM_SEARCH_SEAM`
 

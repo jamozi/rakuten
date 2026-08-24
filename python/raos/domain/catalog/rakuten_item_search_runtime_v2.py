@@ -689,7 +689,11 @@ class ItemSearchProviderObservationV2(_RedactedValue):
             or _SAFE_TOKEN.fullmatch(self.request_id) is None
         ):
             fail_item_search_runtime()
-        if type(self.rate) is not RateLimitObservationV2 or self.external_actions != 0:
+        if (
+            type(self.rate) is not RateLimitObservationV2
+            or type(self.external_actions) is not int
+            or self.external_actions != 0
+        ):
             fail_item_search_runtime()
         if self.retry_after_at is not None:
             _utc(self.retry_after_at)
@@ -1271,7 +1275,11 @@ class ItemSearchStepResultV2(_RedactedValue):
             or self.persisted.receipt.observed_at != self.page.observed_at
         ):
             fail_item_search_runtime(ItemSearchRuntimeFailureCode.ARCHIVE_INTEGRITY)
-        if type(self.provider_mode) is not ProviderModeV2 or self.external_actions != 0:
+        if (
+            type(self.provider_mode) is not ProviderModeV2
+            or type(self.external_actions) is not int
+            or self.external_actions != 0
+        ):
             fail_item_search_runtime()
 
 

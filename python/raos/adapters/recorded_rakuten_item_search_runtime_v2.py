@@ -43,6 +43,7 @@ class RecordedItemSearchExchangeV2:
             or type(self.observation) is not ItemSearchProviderObservationV2
             or self.observation.mode is not ProviderModeV2.RECORDED_SYNTHETIC
             or self.observation.request_fingerprint != self.request.request_fingerprint
+            or type(self.observation.external_actions) is not int
             or self.observation.external_actions != 0
         ):
             fail_item_search_runtime()

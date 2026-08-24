@@ -17,6 +17,7 @@ from raos.domain.catalog.rakuten_item_search_runtime_v2 import (
     CommitRecoveryOutcomeV2,
     IngestionSessionStateV2,
     IngestionStepOutcomeV2,
+    ItemSearchCommitRecoveryV2,
     ItemSearchIngestionSessionV2,
     ItemSearchProviderObservationV2,
     ItemSearchRuntimeFailure,
@@ -202,6 +203,10 @@ class _HostileStore:
         self.replacement: object = _NO_REPLACEMENT
         self._counts: dict[str, int] = {}
 
+    @property
+    def external_action_count(self) -> int:
+        return 0
+
     def arm(
         self,
         target: str,
@@ -248,6 +253,15 @@ class _HostileStore:
         return self._invoke(
             "lookup_step",
             lambda: self._delegate.lookup_step(command),
+        )
+
+    def recover_commit(
+        self,
+        command: ItemSearchStepCommandV2,
+    ) -> ItemSearchCommitRecoveryV2:
+        return self._invoke(
+            "recover_commit",
+            lambda: self._delegate.recover_commit(command),
         )
 
     def commit_success(
@@ -559,3 +573,176 @@ def test_exact_class_persisted_cross_field_forgery_is_rejected(
     assert captured.value.code is ItemSearchRuntimeFailureCode.CONTRACT_DRIFT
     _assert_sanitized(captured.value)
     assert getattr(provider, "call_count") == 1
+
+
+class _MutatingRequestProvider:
+    mode = ProviderModeV2.RECORDED_SYNTHETIC
+    external_action_count = 0
+
+    def __init__(self, observation: ItemSearchProviderObservationV2) -> None:
+        self._observation = observation
+
+    def fetch_once(
+        self,
+        request: ItemSearchWireRequestV2,
+        *,
+        observed_at: datetime,
+    ) -> ItemSearchProviderObservationV2:
+        del observed_at
+        object.__setattr__(request, "page", 2)
+        return self._observation
+
+
+class _MutatingCommitStore(_HostileStore):
+    def commit_success(
+        self,
+        *,
+        command: ItemSearchStepCommandV2,
+        before: ItemSearchIngestionSessionV2,
+        after: ItemSearchIngestionSessionV2,
+        request: ItemSearchWireRequestV2,
+        observation: ItemSearchProviderObservationV2,
+        page: ParsedItemSearchPageV2,
+    ) -> PersistedItemSearchStepV2:
+        object.__setattr__(command, "expected_version", 1)
+        return self._delegate.commit_success(
+            command=command,
+            before=before,
+            after=after,
+            request=request,
+            observation=observation,
+            page=page,
+        )
+
+
+class _BadActionCountStore(_HostileStore):
+    def __init__(
+        self,
+        delegate: ItemSearchIngestionUnitOfWorkStoreV2,
+        value: object,
+    ) -> None:
+        super().__init__(delegate)
+        self._value = value
+
+    @property
+    def external_action_count(self) -> int:
+        return cast(int, self._value)
+
+
+class _BadActionCountProvider:
+    mode = ProviderModeV2.RECORDED_SYNTHETIC
+
+    def __init__(self, value: object) -> None:
+        self._value = value
+
+    @property
+    def external_action_count(self) -> int:
+        return cast(int, self._value)
+
+    def fetch_once(
+        self,
+        request: ItemSearchWireRequestV2,
+        *,
+        observed_at: datetime,
+    ) -> ItemSearchProviderObservationV2:
+        del request, observed_at
+        raise AssertionError("unreachable")
+
+
+def test_provider_argument_mutation_fails_before_store_persistence(
+    tmp_path: Path,
+) -> None:
+    plan = runtime_plan_v2()
+    request = ItemSearchWireRequestV2.from_plan(plan, page=1)
+    observation = runtime_success_observation_v2(
+        request,
+        observed_at=OBSERVED_AT_V2,
+    )
+    store = runtime_store_v2(tmp_path / "private")
+    service = runtime_service_v2(
+        provider=_MutatingRequestProvider(observation),
+        store=store,
+    )
+    service.create_session(
+        session_id=SESSION_ID_V2,
+        plan=plan,
+        created_at=OBSERVED_AT_V2,
+    )
+
+    with pytest.raises(ItemSearchRuntimeFailure) as captured:
+        service.step_once(
+            runtime_command_v2(
+                operation_index=0,
+                expected_version=0,
+                observed_at=OBSERVED_AT_V2,
+            )
+        )
+    assert captured.value.code is ItemSearchRuntimeFailureCode.CONTRACT_DRIFT
+    assert store.load_session(SESSION_ID_V2).version == 0
+
+
+def test_store_argument_mutation_fails_before_delegate_persistence(
+    tmp_path: Path,
+) -> None:
+    plan = runtime_plan_v2()
+    request = ItemSearchWireRequestV2.from_plan(plan, page=1)
+    observation = runtime_success_observation_v2(
+        request,
+        observed_at=OBSERVED_AT_V2,
+    )
+    delegate = runtime_store_v2(tmp_path / "private")
+    store = _MutatingCommitStore(delegate)
+    service = runtime_service_v2(
+        provider=runtime_provider_v2(runtime_exchange_v2(request, observation)),
+        store=store,
+    )
+    service.create_session(
+        session_id=SESSION_ID_V2,
+        plan=plan,
+        created_at=OBSERVED_AT_V2,
+    )
+
+    result = service.step_once(
+        runtime_command_v2(
+            operation_index=0,
+            expected_version=0,
+            observed_at=OBSERVED_AT_V2,
+        )
+    )
+    assert result.persisted.outcome is IngestionStepOutcomeV2.COMMIT_UNKNOWN
+    assert delegate.load_session(SESSION_ID_V2).version == 0
+
+
+@pytest.mark.parametrize("value", (False, True, 1))
+def test_bool_or_nonzero_collaborator_action_count_is_rejected(
+    tmp_path: Path,
+    value: object,
+) -> None:
+    delegate = runtime_store_v2(tmp_path / f"store-{value!s}")
+    plan = runtime_plan_v2()
+    request = ItemSearchWireRequestV2.from_plan(plan, page=1)
+    observation = runtime_success_observation_v2(
+        request,
+        observed_at=OBSERVED_AT_V2,
+    )
+    with pytest.raises(ItemSearchRuntimeFailure):
+        runtime_service_v2(
+            provider=runtime_provider_v2(runtime_exchange_v2(request, observation)),
+            store=_BadActionCountStore(delegate, value),
+        )
+    with pytest.raises(ItemSearchRuntimeFailure):
+        runtime_service_v2(
+            provider=_BadActionCountProvider(value),
+            store=delegate,
+        )
+
+
+def test_bool_observation_external_action_count_is_invalid() -> None:
+    plan = runtime_plan_v2()
+    request = ItemSearchWireRequestV2.from_plan(plan, page=1)
+    observation = runtime_success_observation_v2(
+        request,
+        observed_at=OBSERVED_AT_V2,
+    )
+    with pytest.raises(ItemSearchRuntimeFailure):
+        replace(observation, external_actions=cast(int, False))

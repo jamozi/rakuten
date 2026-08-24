@@ -26,23 +26,38 @@ Production authority and does not claim formal Story validation.
   per command. Cursor, maximum-page, rate-limit, retry-delay, circuit-open, and
   terminal decisions are explicit typed state. It contains no sleep, automatic
   loop, worker activation, or network call.
-- Every provider/store property, call, and returned value is treated as a
-  hostile collaborator boundary. Arbitrary exceptions are reduced to fixed
-  non-echoing failure codes, commit ambiguity remains recoverable, and exact
-  domain values are reconstructed before outcome/session/failure/receipt/cursor
-  cross-field consistency is accepted.
+- Every provider/store property, call, argument, and returned value is treated
+  as a hostile collaborator boundary. Arguments are reconstructed into boundary
+  copies, zero action count is checked before and after every call, and copies
+  are revalidated after normal and exceptional returns. Arbitrary exceptions
+  are reduced to fixed non-echoing failure codes, commit ambiguity remains
+  recoverable, and exact domain values are reconstructed before cross-field
+  consistency is accepted.
 - Duplicate keys, malformed UTF-8, non-finite values, oversized/deep/large JSON,
   unknown output fields, cursor drift, repeated request/response/item identity,
   unsafe URLs, and hostile provider text fail closed. Provider text remains
   `UNTRUSTED_DATA` and is redacted from representations and failures.
-- The owner-private SQLite adapter stores raw response bytes as content-addressed
-  BLOBs with SHA-256, immutable version, logical key, and receipt. Artifact,
-  page metadata, session CAS, and idempotency result journal commit in one local
-  Unit of Work. Directory mode `0700`, database mode `0600`, no symlink or
-  hardlink, traversal rejection, tamper detection, restart replay, and known or
-  unknown commit recovery are enforced. The complete owned `sqlite_master` SQL,
-  autoindex inventory, foreign keys, columns, STRICT flags, and schema version
-  are exact-bound so same-column constraint weakening also fails closed.
+- The owner-private SQLite schema V2 stores raw response bytes as
+  content-addressed BLOBs and hash-binds artifact metadata, receipt, rate
+  metadata, command, result, session before/after state, and an append-only
+  mutation chain. Only the `dirfd` + `O_CREAT|O_EXCL` winner initializes;
+  preexisting empty, partial, foreign, linked, or incorrectly permissioned
+  files are rejected without repair. Created file and directory entries are
+  synchronously flushed.
+- Artifact, receipt, page metadata, command, journal, and history tables deny
+  `UPDATE` and `DELETE`; session CAS remains mutable but is bound to history.
+  Every open recomputes canonical JSON bytes, lower-case UUIDs, exact UTC
+  RFC3339 values, redundant columns, foreign keys, hashes, chain prefix,
+  `foreign_key_check`, `quick_check`, and `integrity_check`. Device/inode and a
+  process-local monotonic mutation count/head/prefix are pinned across connect,
+  transaction, commit, and rollback boundaries. This detects replacement and
+  same-inode old-byte rollback in the active process. There is deliberately no
+  claim of rollback detection across restart without an external anchor.
+- Exact `COMMITTED` recovery is returned only after all related material is
+  recomputed. Missing, ambiguous, deleted, or corrupt journal material fails
+  closed; a process-local committed operation is never projected as
+  `NOT_COMMITTED`. Known-before, unknown-before, and unknown-after commit faults
+  remain deterministic local fixtures.
 - Recorded synthetic pages exercise the same parser, state transition, archive,
   and replay path. The disabled future HTTP activation port accepts no client,
   credential reader, URL, headers, or ambient environment and always performs

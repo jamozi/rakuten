@@ -2,9 +2,9 @@
   "schema_version": "2.0.0",
   "story_id": "ST-0502",
   "classification": "MAXIMUM_SAFE_LOCAL_ITEM_SEARCH_RUNTIME",
-  "recorded_at": "2026-08-24T17:53:41Z",
-  "base_commit": "1b60df88e340e6181312ba4f70c99ec6b1f5646e",
-  "branch": "codex/st0502-item-search-local-complete-20260825",
+  "recorded_at": "2026-08-24T21:08:10Z",
+  "base_commit": "f9c6ceb2f77033eded24e463f831e1e2648a3136",
+  "branch": "codex/st0502-sqlite-hardening-20260825",
   "local_status": "LOCAL_CODE_COMPLETE",
   "canonical_status": "UNCHANGED",
   "status_registry_updated": false,
@@ -29,6 +29,14 @@
     "recorded synthetic provider through the production parser and state path",
     "always-disabled HTTP activation port with zero external actions",
     "owner-private content-addressed SQLite BLOB archive and atomic UoW",
+    "exclusive dirfd create-winner initialization and preexisting database rejection",
+    "SQLite schema V2 STRICT foreign-key and exact autoindex inventory",
+    "append-only artifact receipt metadata command journal and history triggers",
+    "canonical JSON lowercase UUID exact UTC and typed persisted validation",
+    "hash-bound command result rate session receipt artifact and mutation chain",
+    "device-inode and process-local monotonic count-head-prefix rollback detection",
+    "exact recomputed commit recovery without a false cross-restart anchor claim",
+    "boundary-copied provider-store arguments and zero action checks around calls",
     "exact SQLite schema SQL autoindex foreign-key column and STRICT binding",
     "session CAS idempotency restart tamper concurrency and commit ambiguity recovery",
     "hostile provider and store exception sanitization and exact return revalidation",
@@ -39,17 +47,22 @@
     {
       "name": "owned_story_suite",
       "result": "PASS",
-      "detail": "263 passed"
+      "detail": "281 passed"
     },
     {
       "name": "owned_story_suite_denied_network",
       "result": "PASS",
-      "detail": "network namespace isolated; external network denied; socket API denied; 263 passed"
+      "detail": "user, network, and process namespaces isolated; external network and socket API denied; 281 passed"
     },
     {
-      "name": "ST-0202_regression",
+      "name": "mandatory_persistence_hardening_focus",
       "result": "PASS",
-      "detail": "329 passed"
+      "detail": "58 passed across storage, hostile collaborator, and persistence-hardening modules"
+    },
+    {
+      "name": "repeated_concurrency_stress",
+      "result": "PASS",
+      "detail": "10 pytest invocations; 200 two-writer rounds; each classified exactly one COMMITTED and one CONCURRENCY_CONFLICT"
     },
     {
       "name": "ST-0308_regression",
@@ -57,44 +70,39 @@
       "detail": "165 passed"
     },
     {
-      "name": "ST-1404_regression",
-      "result": "PASS",
-      "detail": "76 passed"
-    },
-    {
-      "name": "ST-0503_regression",
-      "result": "PASS",
-      "detail": "59 passed"
-    },
-    {
       "name": "owner_generator_no_write",
       "result": "PASS",
-      "detail": "generated projection b5a8dc65cfc89e8b1e637f8376d97a916e8f6f5ed122a22126bde438d096e2db; manifest bfddf0478a22f020cdb9086a31246af81cfdc7160f23fcde032f20c078317ae7"
+      "detail": "generated projection 4e1298153a52c73d65fe7d319c9c079aea63c8a5c718b76e9142f3a2d85fe8b1; manifest a97fe3f0310ec69666a8a915b9f44c214342b22633e1243e3e285e8f0aead239; SHA-256 and mtime unchanged by --check"
     },
     {
       "name": "ruff_format_and_lint",
       "result": "PASS",
-      "detail": "13 owned Python files"
+      "detail": "10 owned changed Python files"
     },
     {
       "name": "strict_mypy",
       "result": "PASS",
-      "detail": "13 owned Python files"
+      "detail": "10 owned changed Python files; no issues"
     },
     {
       "name": "pinned_pyright_1_1_411",
       "result": "PASS",
-      "detail": "0 errors, 0 warnings, 0 informations"
+      "detail": "0 errors, 0 warnings, 0 informations across 10 owned changed Python files"
     },
     {
       "name": "compile_and_import",
       "result": "PASS",
-      "detail": "5 runtime modules and 1 generator"
+      "detail": "5 runtime modules and 1 owner generator"
     },
     {
       "name": "focused_secret_scan",
       "result": "PASS",
-      "detail": "repository scanner rules; sanitized source locations only; zero findings"
+      "detail": "repository scanner rules; 16 exact owned payloads; zero findings"
+    },
+    {
+      "name": "static_authority_boundary",
+      "result": "PASS",
+      "detail": "10 focused boundary tests; no network, credential, publication, delete, ranking, or general repository capability"
     },
     {
       "name": "git_diff_check",
@@ -103,6 +111,16 @@
     }
   ],
   "debt_disposition": [
+    {
+      "debt_id": "ST0502-SQLITE-PERSISTENCE-HARDENING",
+      "status": "CLOSED_LOCAL_MAXIMUM_SAFE",
+      "detail": "Exclusive creation, exact schema V2, append-only denial, canonical typed persistence, complete hash recomputation, inode and process-local monotonic pins, exact commit recovery, hostile boundary copies, and deterministic concurrency classification are implemented and locally checked."
+    },
+    {
+      "debt_id": "ST0502-CROSS-RESTART-ROLLBACK-ANCHOR",
+      "status": "EXTERNAL_ANCHOR_NOT_IMPLEMENTED_OR_CLAIMED",
+      "detail": "A self-consistent older database snapshot cannot be distinguished after process restart without an external trusted anchor. The runtime claims detection only within an active store process and tests that limitation explicitly."
+    },
     {
       "debt_id": "DEBT-W2-013",
       "status": "CLOSED_LOCAL_MAXIMUM_SAFE",

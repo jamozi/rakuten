@@ -200,6 +200,15 @@ def _validate_contract(contract: dict[str, object]) -> None:
         or provider.get("ambient_environment_read") is not False
         or provider.get("credential_value_read") is not False
         or provider.get("external_actions") != 0
+        or provider.get("collaborator_arguments_boundary_copied") is not True
+        or provider.get(
+            "collaborator_arguments_revalidated_after_normal_or_exception_return"
+        )
+        is not True
+        or provider.get(
+            "provider_and_store_action_count_checked_before_and_after_calls"
+        )
+        is not True
         or provider.get("loop") is not False
         or provider.get("sleep") is not False
         or provider.get("worker_activation") is not False
@@ -219,6 +228,22 @@ def _validate_contract(contract: dict[str, object]) -> None:
             )
         )
         or durability.get("backend") != "OWNER_PRIVATE_SQLITE_BLOB"
+        or durability.get("sqlite_schema_version") != 2
+        or durability.get("exclusive_dirfd_create_winner_only") is not True
+        or durability.get("preexisting_empty_partial_or_foreign_database_rejected")
+        is not True
+        or durability.get("append_only_update_delete_triggers") is not True
+        or durability.get("hash_bound_command_result_rate_and_mutation_chain")
+        is not True
+        or durability.get("foreign_key_and_integrity_checks_recomputed") is not True
+        or durability.get("device_inode_pinned") is not True
+        or durability.get("process_local_mutation_count_head_and_prefix_pinned")
+        is not True
+        or durability.get("same_inode_process_local_rollback_rejected") is not True
+        or durability.get("cross_restart_rollback_external_anchor") is not False
+        or durability.get("exact_committed_recovery_recomputed") is not True
+        or durability.get("canonical_json_uuid_and_utc_persistence") is not True
+        or durability.get("persisted_external_action_count") != 0
         or durability.get("object_cloud_storage") != "NOT_EXECUTED"
         or _string_list(recommendation.get("provider_derived_recommendation_inputs"))
         != []

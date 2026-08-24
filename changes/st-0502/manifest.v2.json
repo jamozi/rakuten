@@ -2,7 +2,7 @@
   "credential_or_sample_value_committed": false,
   "formal_evidence": "NOT_EXECUTED",
   "generated_sha256": {
-    "changes/st-0502/generated/item-search-runtime.v2.json": "b5a8dc65cfc89e8b1e637f8376d97a916e8f6f5ed122a22126bde438d096e2db"
+    "changes/st-0502/generated/item-search-runtime.v2.json": "4e1298153a52c73d65fe7d319c9c079aea63c8a5c718b76e9142f3a2d85fe8b1"
   },
   "generation_command": "python scripts/build_st0502_item_search_runtime.py",
   "hosted_ci": "NOT_EXECUTED",
@@ -14,19 +14,19 @@
   "release": "NOT_EXECUTED",
   "schema_version": "2.0.0",
   "source_sha256": {
-    "changes/st-0502/contracts/item-search-runtime.v2.json": "a577466b1ae6b0706228733f32e4bfbf32a8aa67c39415563cb679fff3c30a92",
+    "changes/st-0502/contracts/item-search-runtime.v2.json": "77daeaec5555c13accdb9896b553acf98596225e46af0d1e8ee8fc4b4e5fb9e4",
     "changes/st-0502/contracts/rakuten-item-search-official-source-facts.v2.json": "b8093881cef78524a4a13e52211c743a4db6a216ec96b23f92cff083ca0832f4",
     "changes/st-0502/fixtures/item-search-pages.synthetic.v2.json": "280267470ed4c2d2d67dd5e41ce729ace9c43f1e7665948743a2a78b2b2f8bff",
     "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
     "docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b",
     "docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md": "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac",
     "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
-    "python/raos/adapters/recorded_rakuten_item_search_runtime_v2.py": "b2efb1e5ef87efeea46833804703e6674f2a4f900fc14eec8abed77b7b14b6d0",
-    "python/raos/adapters/sqlite_rakuten_item_search_runtime_v2.py": "2841f4304451b9e761813ce2614414f2be7a8d407c04f1bc022c84a86060fe81",
-    "python/raos/application/catalog/rakuten_item_search_runtime_v2.py": "0d0215d0a96642c2264f413771bac9d7e14c06ba021353a8f1224ee8b0b3182b",
-    "python/raos/domain/catalog/rakuten_item_search_runtime_v2.py": "edf7a80ec563eccfb3539d285363c1a1500aa5977a5422186a1412fe11711570",
-    "python/raos/ports/rakuten_item_search_runtime_v2.py": "61e918135b3be77b2b386399078f1c6ef1e7b307a52530eef740528a815a757c",
-    "scripts/build_st0502_item_search_runtime.py": "89253601c1bdb22344a81cf5871c9243622ef2f697438e711533b918f932a612"
+    "python/raos/adapters/recorded_rakuten_item_search_runtime_v2.py": "f047fc4b252c771576ffb3b8f1df3f5d10dac162573889d36b0f36c4a971c2be",
+    "python/raos/adapters/sqlite_rakuten_item_search_runtime_v2.py": "a09b6b6f8ade0b6b1ba61724c566531961f07fe4d5cf8a2b9c9ac132e082caba",
+    "python/raos/application/catalog/rakuten_item_search_runtime_v2.py": "3a2954ee981b8425925bb09db77ee44408b55c1845134ff468166551a7e0352d",
+    "python/raos/domain/catalog/rakuten_item_search_runtime_v2.py": "76ec60dfdd36f09376bf2fe94f596ffbc15bd3c5d59b20628a89eea6bf261b67",
+    "python/raos/ports/rakuten_item_search_runtime_v2.py": "fd7f385825fb80c1ee8966923fa19828b2916cb9a78a66b154c7736a70598628",
+    "scripts/build_st0502_item_search_runtime.py": "901f65d0b3f8ade972ad37b02f107aeb8f3eaac068b6735f5348941cc85185d9"
   },
   "staging": "NOT_EXECUTED",
   "story_id": "ST-0502"

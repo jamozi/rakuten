@@ -188,6 +188,7 @@ def test_closed_ports_have_no_network_delete_publish_or_general_repository_surfa
         "create_session",
         "load_session",
         "lookup_step",
+        "recover_commit",
         "commit_success",
         "commit_failure",
         "read_raw",

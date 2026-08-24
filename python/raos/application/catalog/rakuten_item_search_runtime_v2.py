@@ -28,6 +28,8 @@ from raos.domain.catalog.rakuten_item_search_runtime_v2 import (
     ProviderObservationKindV2,
     RateLimitObservationV2,
     RawArchiveReceiptV2,
+    SecretNameBindingV2,
+    SecretTransportV2,
     UntrustedProviderTextV2,
     fail_item_search_runtime,
     failure_transition_v2,
@@ -41,6 +43,7 @@ from raos.ports.rakuten_item_search_runtime_v2 import (
 
 
 _T = TypeVar("_T")
+_NO_VALUE = object()
 
 
 def _supports(value: object, protocol: type[object]) -> bool:
@@ -86,6 +89,45 @@ def _validated_collaborator_value(
     fail_item_search_runtime(failure_code)
 
 
+def _checked_collaborator_call(
+    invoke: Callable[[], _T],
+    *,
+    verify_after: Callable[[], None],
+    failure_code: ItemSearchRuntimeFailureCode,
+) -> _T:
+    """Always run the closed postcondition, including exception returns."""
+
+    value: object = _NO_VALUE
+    captured_code: ItemSearchRuntimeFailureCode | None = None
+    try:
+        value = invoke()
+    except ItemSearchRuntimeFailure as error:
+        captured_code = (
+            error.code
+            if type(error) is ItemSearchRuntimeFailure
+            and type(error.code) is ItemSearchRuntimeFailureCode
+            else failure_code
+        )
+    except Exception:
+        captured_code = failure_code
+    try:
+        verify_after()
+    except ItemSearchRuntimeFailure as error:
+        fail_item_search_runtime(
+            error.code
+            if type(error) is ItemSearchRuntimeFailure
+            and type(error.code) is ItemSearchRuntimeFailureCode
+            else failure_code
+        )
+    except Exception:
+        fail_item_search_runtime(failure_code)
+    if captured_code is not None:
+        fail_item_search_runtime(captured_code)
+    if value is _NO_VALUE:
+        fail_item_search_runtime(failure_code)
+    return cast(_T, value)
+
+
 def _copy_plan(value: object) -> ItemSearchPlanV2:
     if type(value) is not ItemSearchPlanV2:
         fail_item_search_runtime()
@@ -96,7 +138,7 @@ def _copy_plan(value: object) -> ItemSearchPlanV2:
         item_code=plan.item_code,
         genre_id=plan.genre_id,
         hits=plan.hits,
-        sort=plan.sort,
+        sort=type(plan.sort)(plan.sort.value),
         min_price_jpy=plan.min_price_jpy,
         max_price_jpy=plan.max_price_jpy,
         or_flag=plan.or_flag,
@@ -106,9 +148,51 @@ def _copy_plan(value: object) -> ItemSearchPlanV2:
         attribute_flag=plan.attribute_flag,
         genre_information_flag=plan.genre_information_flag,
         max_pages=plan.max_pages,
-        retry_delays_seconds=plan.retry_delays_seconds,
+        retry_delays_seconds=tuple(plan.retry_delays_seconds),
         circuit_failure_threshold=plan.circuit_failure_threshold,
         circuit_cooldown_seconds=plan.circuit_cooldown_seconds,
+    )
+
+
+def _copy_secret_binding(value: object) -> SecretNameBindingV2:
+    if type(value) is not SecretNameBindingV2:
+        fail_item_search_runtime()
+    binding = value
+    return SecretNameBindingV2(
+        provider_name=binding.provider_name,
+        secret_name=binding.secret_name,
+        transport=SecretTransportV2(binding.transport.value),
+        required=binding.required,
+    )
+
+
+def _copy_request(value: object) -> ItemSearchWireRequestV2:
+    if type(value) is not ItemSearchWireRequestV2:
+        fail_item_search_runtime()
+    request = value
+    return ItemSearchWireRequestV2(
+        plan_fingerprint=request.plan_fingerprint,
+        page=request.page,
+        origin=request.origin,
+        endpoint_path=request.endpoint_path,
+        parameter_pairs=tuple((pair[0], pair[1]) for pair in request.parameter_pairs),
+        canonical_query=bytes(request.canonical_query),
+        request_fingerprint=request.request_fingerprint,
+        secret_name_bindings=tuple(
+            _copy_secret_binding(binding) for binding in request.secret_name_bindings
+        ),
+    )
+
+
+def _copy_command(value: object) -> ItemSearchStepCommandV2:
+    if type(value) is not ItemSearchStepCommandV2:
+        fail_item_search_runtime()
+    command = value
+    return ItemSearchStepCommandV2(
+        operation_id=command.operation_id,
+        session_id=command.session_id,
+        expected_version=command.expected_version,
+        observed_at=command.observed_at,
     )
 
 
@@ -185,13 +269,15 @@ def _copy_observation(value: object) -> ItemSearchProviderObservationV2:
         fail_item_search_runtime()
     observation = value
     return ItemSearchProviderObservationV2(
-        kind=observation.kind,
-        mode=observation.mode,
+        kind=ProviderObservationKindV2(observation.kind.value),
+        mode=ProviderModeV2(observation.mode.value),
         request_fingerprint=observation.request_fingerprint,
         observed_at=observation.observed_at,
         http_status=observation.http_status,
         request_id=observation.request_id,
-        raw_body=observation.raw_body,
+        raw_body=(
+            None if observation.raw_body is None else bytes(observation.raw_body)
+        ),
         raw_sha256=observation.raw_sha256,
         rate=_copy_rate(observation.rate),
         retry_after_at=observation.retry_after_at,
@@ -251,6 +337,18 @@ def _copy_persisted(value: object) -> PersistedItemSearchStepV2:
             None if persisted.receipt is None else _copy_receipt(persisted.receipt)
         ),
         failure_class=persisted.failure_class,
+    )
+
+
+def _copy_recovery(value: object) -> ItemSearchCommitRecoveryV2:
+    if type(value) is not ItemSearchCommitRecoveryV2:
+        fail_item_search_runtime()
+    recovery = value
+    return ItemSearchCommitRecoveryV2(
+        outcome=CommitRecoveryOutcomeV2(recovery.outcome.value),
+        persisted=(
+            None if recovery.persisted is None else _copy_persisted(recovery.persisted)
+        ),
     )
 
 
@@ -401,6 +499,22 @@ def _provider_action_count(provider: ItemSearchPageProviderV2) -> int:
     return candidate
 
 
+def _store_action_count(
+    store: ItemSearchIngestionUnitOfWorkStoreV2,
+    *,
+    failure_code: ItemSearchRuntimeFailureCode = (
+        ItemSearchRuntimeFailureCode.ARCHIVE_UNAVAILABLE
+    ),
+) -> None:
+    candidate = _collaborator_call(
+        lambda: store.external_action_count,
+        failure_code=failure_code,
+    )
+    if type(candidate) is not int or candidate != 0:
+        fail_item_search_runtime(failure_code)
+    return None
+
+
 def _terminal_outcome(state: IngestionSessionStateV2) -> IngestionStepOutcomeV2:
     mapping = {
         IngestionSessionStateV2.COMPLETED: IngestionStepOutcomeV2.COMPLETED,
@@ -450,6 +564,7 @@ class RakutenItemSearchRuntimeServiceV2:
             fail_item_search_runtime()
         mode = _provider_mode(provider)
         _provider_action_count(provider)
+        _store_action_count(store)
         self._provider = provider
         self._provider_mode = mode
         self._store = store
@@ -470,8 +585,15 @@ class RakutenItemSearchRuntimeServiceV2:
             plan=plan,
             created_at=created_at,
         )
-        created = _collaborator_call(
-            lambda: self._store.create_session(session),
+        store_session = _copy_session(session)
+        _store_action_count(self._store)
+        created = _checked_collaborator_call(
+            lambda: self._store.create_session(store_session),
+            verify_after=lambda: self._verify_store_session_argument(
+                store_session,
+                session,
+                failure_code=ItemSearchRuntimeFailureCode.ARCHIVE_UNAVAILABLE,
+            ),
             failure_code=ItemSearchRuntimeFailureCode.ARCHIVE_UNAVAILABLE,
         )
         if created is not None:
@@ -482,8 +604,10 @@ class RakutenItemSearchRuntimeServiceV2:
         return loaded
 
     def _load_session(self, session_id: UUID) -> ItemSearchIngestionSessionV2:
-        candidate = _collaborator_call(
+        _store_action_count(self._store)
+        candidate = _checked_collaborator_call(
             lambda: self._store.load_session(session_id),
+            verify_after=lambda: _store_action_count(self._store),
             failure_code=ItemSearchRuntimeFailureCode.ARCHIVE_UNAVAILABLE,
         )
         session = _validated_collaborator_value(candidate, _copy_session)
@@ -495,30 +619,37 @@ class RakutenItemSearchRuntimeServiceV2:
         self,
         command: ItemSearchStepCommandV2,
     ) -> PersistedItemSearchStepV2 | None:
-        candidate = _collaborator_call(
-            lambda: self._store.lookup_step(command),
+        exact_command = _copy_command(command)
+        store_command = _copy_command(exact_command)
+        _store_action_count(self._store)
+        candidate = _checked_collaborator_call(
+            lambda: self._store.lookup_step(store_command),
+            verify_after=lambda: self._verify_store_command_argument(
+                store_command,
+                exact_command,
+                failure_code=ItemSearchRuntimeFailureCode.ARCHIVE_UNAVAILABLE,
+            ),
             failure_code=ItemSearchRuntimeFailureCode.ARCHIVE_UNAVAILABLE,
         )
         if candidate is None:
             return None
         persisted = _validated_persisted(candidate)
         if (
-            persisted.session.session_id != command.session_id
-            or persisted.session.version != command.expected_version + 1
-            or persisted.session.updated_at != command.observed_at
+            persisted.session.session_id != exact_command.session_id
+            or persisted.session.version != exact_command.expected_version + 1
+            or persisted.session.updated_at != exact_command.observed_at
             or persisted.request_fingerprint is None
         ):
             fail_item_search_runtime(ItemSearchRuntimeFailureCode.CONTRACT_DRIFT)
         return persisted
 
     def step_once(self, command: ItemSearchStepCommandV2) -> ItemSearchStepResultV2:
-        if type(command) is not ItemSearchStepCommandV2:
-            fail_item_search_runtime()
-        existing = self._lookup_step(command)
+        exact_command = _copy_command(command)
+        existing = self._lookup_step(exact_command)
         if existing is not None:
             return self._rehydrate(existing)
-        session = self._load_session(command.session_id)
-        if session.version != command.expected_version:
+        session = self._load_session(exact_command.session_id)
+        if session.version != exact_command.expected_version:
             fail_item_search_runtime(ItemSearchRuntimeFailureCode.CONCURRENCY_CONFLICT)
         if session.terminal:
             persisted = PersistedItemSearchStepV2(
@@ -536,7 +667,7 @@ class RakutenItemSearchRuntimeServiceV2:
             )
         if (
             session.next_allowed_at is not None
-            and command.observed_at < session.next_allowed_at
+            and exact_command.observed_at < session.next_allowed_at
         ):
             persisted = PersistedItemSearchStepV2(
                 outcome=_waiting_outcome(session.state),
@@ -555,10 +686,10 @@ class RakutenItemSearchRuntimeServiceV2:
             session.plan,
             page=session.next_page,
         )
-        observation = self._fetch(request, observed_at=command.observed_at)
+        observation = self._fetch(request, observed_at=exact_command.observed_at)
         if observation.kind is ProviderObservationKindV2.SUCCESS:
             return self._success(
-                command=command,
+                command=exact_command,
                 before=session,
                 request=request,
                 observation=observation,
@@ -569,11 +700,11 @@ class RakutenItemSearchRuntimeServiceV2:
         after, outcome = failure_transition_v2(
             session=session,
             failure_class=failure_class,
-            observed_at=command.observed_at,
+            observed_at=exact_command.observed_at,
             retry_after_at=observation.retry_after_at,
         )
         return self._commit_failure(
-            command=command,
+            command=exact_command,
             before=session,
             after=after,
             request=request,
@@ -586,17 +717,53 @@ class RakutenItemSearchRuntimeServiceV2:
         self,
         command: ItemSearchStepCommandV2,
     ) -> ItemSearchCommitRecoveryV2:
-        if type(command) is not ItemSearchStepCommandV2:
-            fail_item_search_runtime()
-        persisted = self._lookup_step(command)
-        return ItemSearchCommitRecoveryV2(
-            outcome=(
-                CommitRecoveryOutcomeV2.COMMITTED
-                if persisted is not None
-                else CommitRecoveryOutcomeV2.NOT_COMMITTED
+        exact_command = _copy_command(command)
+        store_command = _copy_command(exact_command)
+        _store_action_count(self._store)
+        candidate = _checked_collaborator_call(
+            lambda: self._store.recover_commit(store_command),
+            verify_after=lambda: self._verify_store_command_argument(
+                store_command,
+                exact_command,
+                failure_code=ItemSearchRuntimeFailureCode.COMMIT_UNKNOWN,
             ),
-            persisted=persisted,
+            failure_code=ItemSearchRuntimeFailureCode.COMMIT_UNKNOWN,
         )
+        recovery = _validated_collaborator_value(
+            candidate,
+            _copy_recovery,
+            failure_code=ItemSearchRuntimeFailureCode.COMMIT_UNKNOWN,
+        )
+        persisted = recovery.persisted
+        if persisted is not None and (
+            persisted.session.session_id != exact_command.session_id
+            or persisted.session.version != exact_command.expected_version + 1
+            or persisted.session.updated_at != exact_command.observed_at
+        ):
+            fail_item_search_runtime(ItemSearchRuntimeFailureCode.COMMIT_UNKNOWN)
+        return recovery
+
+    def _verify_store_command_argument(
+        self,
+        actual: object,
+        expected: ItemSearchStepCommandV2,
+        *,
+        failure_code: ItemSearchRuntimeFailureCode,
+    ) -> None:
+        _store_action_count(self._store, failure_code=failure_code)
+        if _copy_command(actual) != expected:
+            fail_item_search_runtime(failure_code)
+
+    def _verify_store_session_argument(
+        self,
+        actual: object,
+        expected: ItemSearchIngestionSessionV2,
+        *,
+        failure_code: ItemSearchRuntimeFailureCode,
+    ) -> None:
+        _store_action_count(self._store, failure_code=failure_code)
+        if _copy_session(actual) != expected:
+            fail_item_search_runtime(failure_code)
 
     def _fetch(
         self,
@@ -607,10 +774,16 @@ class RakutenItemSearchRuntimeServiceV2:
         if _provider_mode(self._provider) is not self._provider_mode:
             fail_item_search_runtime(ItemSearchRuntimeFailureCode.CONTRACT_DRIFT)
         _provider_action_count(self._provider)
-        candidate: object = _collaborator_call(
+        exact_request = _copy_request(request)
+        provider_request = _copy_request(exact_request)
+        candidate: object = _checked_collaborator_call(
             lambda: self._provider.fetch_once(
-                request,
+                provider_request,
                 observed_at=observed_at,
+            ),
+            verify_after=lambda: self._verify_provider_fetch_boundary(
+                provider_request,
+                exact_request,
             ),
             failure_code=ItemSearchRuntimeFailureCode.PROVIDER_UNAVAILABLE,
         )
@@ -618,7 +791,7 @@ class RakutenItemSearchRuntimeServiceV2:
         after_mode = _provider_mode(self._provider)
         _provider_action_count(self._provider)
         if (
-            observation.request_fingerprint != request.request_fingerprint
+            observation.request_fingerprint != exact_request.request_fingerprint
             or observation.observed_at != observed_at
             or observation.mode is not self._provider_mode
             or after_mode is not self._provider_mode
@@ -626,6 +799,18 @@ class RakutenItemSearchRuntimeServiceV2:
         ):
             fail_item_search_runtime(ItemSearchRuntimeFailureCode.CONTRACT_DRIFT)
         return observation
+
+    def _verify_provider_fetch_boundary(
+        self,
+        actual_request: object,
+        expected_request: ItemSearchWireRequestV2,
+    ) -> None:
+        if (
+            _copy_request(actual_request) != expected_request
+            or _provider_mode(self._provider) is not self._provider_mode
+            or _provider_action_count(self._provider) != 0
+        ):
+            fail_item_search_runtime(ItemSearchRuntimeFailureCode.CONTRACT_DRIFT)
 
     def _success(
         self,
@@ -662,14 +847,38 @@ class RakutenItemSearchRuntimeServiceV2:
                 expected_outcome=outcome,
             )
         try:
-            candidate = _collaborator_call(
+            store_command = _copy_command(command)
+            store_before = _copy_session(before)
+            store_after = _copy_session(after)
+            store_request = _copy_request(request)
+            store_observation = _copy_observation(observation)
+            store_page = _copy_page(page)
+            _store_action_count(
+                self._store,
+                failure_code=ItemSearchRuntimeFailureCode.COMMIT_UNKNOWN,
+            )
+            candidate = _checked_collaborator_call(
                 lambda: self._store.commit_success(
-                    command=command,
-                    before=before,
-                    after=after,
-                    request=request,
-                    observation=observation,
-                    page=page,
+                    command=store_command,
+                    before=store_before,
+                    after=store_after,
+                    request=store_request,
+                    observation=store_observation,
+                    page=store_page,
+                ),
+                verify_after=lambda: self._verify_success_commit_boundary(
+                    command=store_command,
+                    expected_command=command,
+                    before=store_before,
+                    expected_before=before,
+                    after=store_after,
+                    expected_after=after,
+                    request=store_request,
+                    expected_request=request,
+                    observation=store_observation,
+                    expected_observation=observation,
+                    page=store_page,
+                    expected_page=page,
                 ),
                 failure_code=ItemSearchRuntimeFailureCode.COMMIT_UNKNOWN,
             )
@@ -711,14 +920,37 @@ class RakutenItemSearchRuntimeServiceV2:
         expected_outcome: IngestionStepOutcomeV2,
     ) -> ItemSearchStepResultV2:
         try:
-            candidate = _collaborator_call(
+            store_command = _copy_command(command)
+            store_before = _copy_session(before)
+            store_after = _copy_session(after)
+            store_request = _copy_request(request)
+            store_observation = (
+                None if observation is None else _copy_observation(observation)
+            )
+            _store_action_count(
+                self._store,
+                failure_code=ItemSearchRuntimeFailureCode.COMMIT_UNKNOWN,
+            )
+            candidate = _checked_collaborator_call(
                 lambda: self._store.commit_failure(
-                    command=command,
-                    before=before,
-                    after=after,
-                    request=request,
+                    command=store_command,
+                    before=store_before,
+                    after=store_after,
+                    request=store_request,
                     failure_class=failure_class,
-                    observation=observation,
+                    observation=store_observation,
+                ),
+                verify_after=lambda: self._verify_failure_commit_boundary(
+                    command=store_command,
+                    expected_command=command,
+                    before=store_before,
+                    expected_before=before,
+                    after=store_after,
+                    expected_after=after,
+                    request=store_request,
+                    expected_request=request,
+                    observation=store_observation,
+                    expected_observation=observation,
                 ),
                 failure_code=ItemSearchRuntimeFailureCode.COMMIT_UNKNOWN,
             )
@@ -749,6 +981,66 @@ class RakutenItemSearchRuntimeServiceV2:
             provider_mode=self._provider_mode,
             external_actions=0,
         )
+
+    def _verify_success_commit_boundary(
+        self,
+        *,
+        command: object,
+        expected_command: ItemSearchStepCommandV2,
+        before: object,
+        expected_before: ItemSearchIngestionSessionV2,
+        after: object,
+        expected_after: ItemSearchIngestionSessionV2,
+        request: object,
+        expected_request: ItemSearchWireRequestV2,
+        observation: object,
+        expected_observation: ItemSearchProviderObservationV2,
+        page: object,
+        expected_page: ParsedItemSearchPageV2,
+    ) -> None:
+        _store_action_count(
+            self._store,
+            failure_code=ItemSearchRuntimeFailureCode.COMMIT_UNKNOWN,
+        )
+        if (
+            _copy_command(command) != expected_command
+            or _copy_session(before) != expected_before
+            or _copy_session(after) != expected_after
+            or _copy_request(request) != expected_request
+            or _copy_observation(observation) != expected_observation
+            or _copy_page(page) != expected_page
+        ):
+            fail_item_search_runtime(ItemSearchRuntimeFailureCode.COMMIT_UNKNOWN)
+
+    def _verify_failure_commit_boundary(
+        self,
+        *,
+        command: object,
+        expected_command: ItemSearchStepCommandV2,
+        before: object,
+        expected_before: ItemSearchIngestionSessionV2,
+        after: object,
+        expected_after: ItemSearchIngestionSessionV2,
+        request: object,
+        expected_request: ItemSearchWireRequestV2,
+        observation: object,
+        expected_observation: ItemSearchProviderObservationV2 | None,
+    ) -> None:
+        _store_action_count(
+            self._store,
+            failure_code=ItemSearchRuntimeFailureCode.COMMIT_UNKNOWN,
+        )
+        copied_observation = (
+            None if observation is None else _copy_observation(observation)
+        )
+        if (
+            _copy_command(command) != expected_command
+            or _copy_session(before) != expected_before
+            or _copy_session(after) != expected_after
+            or _copy_request(request) != expected_request
+            or copied_observation != expected_observation
+        ):
+            fail_item_search_runtime(ItemSearchRuntimeFailureCode.COMMIT_UNKNOWN)
 
     @staticmethod
     def _validate_committed_step(
@@ -821,10 +1113,22 @@ class RakutenItemSearchRuntimeServiceV2:
                 persisted.session.plan,
                 page=persisted.receipt.page,
             )
-            candidate = _collaborator_call(
+            store_receipt = _copy_receipt(persisted.receipt)
+            store_request = _copy_request(request)
+            _store_action_count(self._store)
+            candidate = _checked_collaborator_call(
                 lambda: self._store.read_page(
-                    receipt=cast(RawArchiveReceiptV2, persisted.receipt),
-                    request=request,
+                    receipt=store_receipt,
+                    request=store_request,
+                ),
+                verify_after=lambda: self._verify_read_page_boundary(
+                    receipt=store_receipt,
+                    expected_receipt=cast(
+                        RawArchiveReceiptV2,
+                        persisted.receipt,
+                    ),
+                    request=store_request,
+                    expected_request=request,
                 ),
                 failure_code=ItemSearchRuntimeFailureCode.ARCHIVE_UNAVAILABLE,
             )
@@ -842,6 +1146,21 @@ class RakutenItemSearchRuntimeServiceV2:
             provider_mode=self._provider_mode,
             external_actions=0,
         )
+
+    def _verify_read_page_boundary(
+        self,
+        *,
+        receipt: object,
+        expected_receipt: RawArchiveReceiptV2,
+        request: object,
+        expected_request: ItemSearchWireRequestV2,
+    ) -> None:
+        _store_action_count(self._store)
+        if (
+            _copy_receipt(receipt) != expected_receipt
+            or _copy_request(request) != expected_request
+        ):
+            fail_item_search_runtime(ItemSearchRuntimeFailureCode.CONTRACT_DRIFT)
 
 
 __all__ = ["RakutenItemSearchRuntimeServiceV2"]

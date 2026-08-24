@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Protocol, runtime_checkable
 
 from raos.domain.catalog.rakuten_item_search_runtime_v2 import (
+    ItemSearchCommitRecoveryV2,
     ItemSearchIngestionSessionV2,
     ItemSearchProviderObservationV2,
     ItemSearchStepCommandV2,
@@ -40,6 +41,9 @@ class ItemSearchPageProviderV2(Protocol):
 class ItemSearchIngestionUnitOfWorkStoreV2(Protocol):
     """Atomic local archive, session-CAS, and command-journal capability."""
 
+    @property
+    def external_action_count(self) -> int: ...
+
     def create_session(self, session: ItemSearchIngestionSessionV2) -> None: ...
 
     def load_session(self, session_id: object) -> ItemSearchIngestionSessionV2: ...
@@ -48,6 +52,11 @@ class ItemSearchIngestionUnitOfWorkStoreV2(Protocol):
         self,
         command: ItemSearchStepCommandV2,
     ) -> PersistedItemSearchStepV2 | None: ...
+
+    def recover_commit(
+        self,
+        command: ItemSearchStepCommandV2,
+    ) -> ItemSearchCommitRecoveryV2: ...
 
     def commit_success(
         self,
