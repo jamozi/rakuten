@@ -46,9 +46,9 @@
       "sha256": "cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88"
     },
     {
-      "bytes": 23896,
+      "bytes": 23931,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/product-media-registry.v1.json",
-      "sha256": "30aa0443bbe6fd50818fdcc62ad4d91e51667e3adeb8332d26b555df4da4c670"
+      "sha256": "d6d4d20514840ff637eb2b37052525f2c69ddd3edc6edc12ad04eb4d32dfed46"
     },
     {
       "bytes": 2106,
@@ -1706,9 +1706,9 @@
       "sha256": "c9928badddb180761299688f261e58694b357d22b99dfe7f91f44bfaa507a25d"
     },
     {
-      "bytes": 9964,
+      "bytes": 9966,
       "path": "scripts/build_st1704_self_hosted_editorial_manifest.py",
-      "sha256": "098874027b4f5061095d980399fb337efccee31651469936466a55a740697aa2"
+      "sha256": "3f32b92ca4872906bc5a7d4de00305246354179347423ccf5c10ec9af1b6432d"
     },
     {
       "bytes": 12299,
