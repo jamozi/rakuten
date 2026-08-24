@@ -1,0 +1,96 @@
+schema_version: 2
+story_id: ST-0906
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_EXECUTABLE_RECORDED_PUBLICATION_REVIEW_WORKSPACE_V2
+profile: ST0906_PUBLICATION_REVIEW_RECORDED_LOCAL_V2
+screen_order:
+  - REV-001
+  - REV-002
+  - REV-003
+  - PUBA-001
+  - PUBA-002
+  - PUBA-003
+  - PUBA-004
+runtime_boundary:
+  environments: [ENV-DEV, CI]
+  source_mode: RECORDED_SYNTHETIC_ONLY
+  deterministic_view_model: true
+  deterministic_html_renderer: true
+  route_registered: false
+  routable: false
+  authentication_established: false
+  authorization_granted: false
+  data_fetch: false
+  network: false
+  persistence: false
+  database_write: false
+  cms_write: false
+  public_state_change: false
+  publication_authorized: false
+  release_authorized: false
+  production_authorized: false
+projection_boundary:
+  exact_st0901_review_required: true
+  exact_st0902_final_approval_required: true
+  exact_st0903_immutable_snapshot_required: true
+  exact_st0904_public_projection_required: true
+  exact_st0905_recorded_command_fixture_required: true
+  public_projection_text_only: true
+  raw_article_body_allowed: false
+  raw_source_allowed: false
+  raw_prompt_allowed: false
+  finance_allowed: false
+  credential_allowed: false
+  arbitrary_html_allowed: false
+  snapshot_projection_hash_equality_claimed: false
+  legacy_reconciliation_status: NOT_ESTABLISHED_RECONCILIATION_REQUIRED
+command_boundary:
+  ui_dispatch: DISABLED_AUTH_ROUTE_STEP_UP_UNAVAILABLE
+  only_future_adapter: python.raos.adapters.publishing.recorded_publication_commands_v2
+  only_future_profile: ST0905_PUBLICATION_COMMANDS_RECORDED_LOCAL_V2
+  allowed_environments: [ENV-DEV, CI]
+  active_human_required: true
+  allowed_roles: [MANAGING_EDITOR, OPERATOR]
+  mfa_required: true
+  step_up_required: true
+  site_scope_required: true
+  server_reauthorization_required: true
+  final_approval_required: true
+  separation_of_duties_publish_required: true
+  exact_snapshot_required: true
+  exact_source_binding_required: true
+  kill_switch_safe_state_required: true
+  reason_required: true
+  idempotency_required: true
+  audit_required: true
+  publish_enabled: false
+  rollback_enabled: false
+  unpublish_enabled: false
+  unpublish_decision: DENIED_DEFAULT_NO_CANONICAL_ROLE_ACTION
+accessibility_boundary:
+  semantic_html_required: true
+  one_h1_required: true
+  skip_link_required: true
+  landmark_labels_required: true
+  status_text_required: true
+  status_code_required: true
+  color_only_allowed: false
+  diff_caption_required: true
+  diff_column_headers_required: true
+  diff_row_headers_required: true
+  disabled_action_reason_required: true
+  visible_focus_required: true
+  zoom_target_percent: 200
+  keyboard_model_required: true
+  motion: NONE
+  browser_verified: false
+  screen_reader_verified: false
+verification_boundary:
+  TST-022: NOT_EXECUTED
+  TST-024: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

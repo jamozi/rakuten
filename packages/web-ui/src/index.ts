@@ -212,6 +212,31 @@ export type {
 } from './publication-review-workspace.ts';
 
 export {
+  PUBLICATION_REVIEW_WORKSPACE_V2_CLASSIFICATION,
+  PUBLICATION_REVIEW_WORKSPACE_V2_ERROR_CODES,
+  PUBLICATION_REVIEW_WORKSPACE_V2_SECTION_IDS,
+  PublicationReviewWorkspaceV2Error,
+  createPublicationReviewWorkspaceV2,
+  renderPublicationReviewWorkspaceHtmlV2,
+  validatePublicationReviewWorkspaceV2,
+} from './publication-review-workspace-v2.ts';
+export type {
+  PublicationReviewAuditEntryV2,
+  PublicationReviewCommandV2,
+  PublicationReviewDiffRowV2,
+  PublicationReviewDiffV2,
+  PublicationReviewFinalApprovalV2,
+  PublicationReviewPreviewBlockV2,
+  PublicationReviewPreviewV2,
+  PublicationReviewRecordedFixtureV2,
+  PublicationReviewRecordedReviewV2,
+  PublicationReviewSnapshotV2,
+  PublicationReviewWorkspaceV2ErrorCode,
+  PublicationReviewWorkspaceV2Input,
+  PublicationReviewWorkspaceV2Model,
+} from './publication-review-workspace-v2.ts';
+
+export {
   PUBLIC_SHELL_COMPONENT_IDS,
   PUBLIC_SHELL_COMPONENTS,
   PUBLIC_SHELL_CONTENT,
