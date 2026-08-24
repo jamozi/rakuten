@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import hashlib
 import os
 from pathlib import Path
+import shutil
 import sqlite3
 from threading import Barrier, Thread
 from typing import Callable
@@ -231,7 +232,7 @@ class _FailingAuthorizationUnitOfWork:
         step_up_receipt_fingerprint: str | None,
     ) -> AuthorizationCommandResult:
         self._fail_if("record_decision")
-        return self._delegate.record_decision(
+        result = self._delegate.record_decision(
             command_id=command_id,
             request_digest=request_digest,
             session_fingerprint=session_fingerprint,
@@ -239,6 +240,9 @@ class _FailingAuthorizationUnitOfWork:
             occurred_at=occurred_at,
             step_up_receipt_fingerprint=step_up_receipt_fingerprint,
         )
+        if self._phase == "mutate_result":
+            object.__setattr__(result, "request_digest", "f" * 64)
+        return result
 
     def commit(self) -> None:
         self._fail_if("commit")
@@ -282,6 +286,35 @@ class _FailingAuthorizationRepository:
     def recover(self, command_id: AuthorizationCommandId) -> AuthorizationCommandResult:
         if self._phase == "recover":
             raise RuntimeError("secret-private-collaborator-canary") from None
+        return self._delegate.recover(command_id)
+
+
+class _MutatingCallerRepository:
+    def __init__(
+        self,
+        *,
+        delegate: RecordedSqliteAuthorizationRepository,
+        caller_command: AuthorizationEvaluationCommand,
+    ) -> None:
+        self._delegate = delegate
+        self._caller_command = caller_command
+
+    def begin(self) -> AuthorizationUnitOfWork:
+        object.__setattr__(
+            self._caller_command,
+            "target",
+            AuthorizationTarget(
+                scope=ResourceScope(
+                    kind=ResourceScopeKind.ARTICLE_VERSION,
+                    site_id=SITE_B,
+                    resource_id=ARTICLE_A,
+                ),
+                state=ResourceState("DRAFT"),
+            ),
+        )
+        return self._delegate.begin()
+
+    def recover(self, command_id: AuthorizationCommandId) -> AuthorizationCommandResult:
         return self._delegate.recover(command_id)
 
 
@@ -1073,6 +1106,12 @@ def test_tamper_and_cross_session_recovery_fail_closed(tmp_path: Path) -> None:
         session_id=session().session_id, command=command
     )
     with sqlite3.connect(root / "st0403-recorded-authorization.sqlite3") as connection:
+        with pytest.raises(sqlite3.IntegrityError, match="ST0403_APPEND_ONLY"):
+            connection.execute(
+                "UPDATE recorded_authorization_audit SET digest=? WHERE sequence=1",
+                ("f" * 64,),
+            )
+        connection.execute("DROP TRIGGER recorded_authorization_audit_no_update")
         connection.execute(
             "UPDATE recorded_authorization_audit SET digest=? WHERE sequence=1",
             ("f" * 64,),
@@ -1111,9 +1150,20 @@ def test_active_snapshot_pointer_tamper_fails_closed(tmp_path: Path) -> None:
     _repository(policy_root, rule=_rule(), entitlements=_entitlements())
     policy_database = policy_root / "st0403-recorded-authorization.sqlite3"
     with sqlite3.connect(policy_database) as connection:
+        with pytest.raises(sqlite3.IntegrityError, match="ST0403_APPEND_ONLY"):
+            connection.execute(
+                "UPDATE recorded_authorization_active_policy SET revision=? "
+                "WHERE activation_sequence=(SELECT MAX(activation_sequence) "
+                "FROM recorded_authorization_active_policy)",
+                ("TEST_ONLY:DISABLED",),
+            )
+        connection.execute(
+            "DROP TRIGGER recorded_authorization_active_policy_no_update"
+        )
         connection.execute(
             "UPDATE recorded_authorization_active_policy SET revision=? "
-            "WHERE singleton=1",
+            "WHERE activation_sequence=(SELECT MAX(activation_sequence) "
+            "FROM recorded_authorization_active_policy)",
             ("TEST_ONLY:DISABLED",),
         )
     _repository_failure(
@@ -1129,6 +1179,14 @@ def test_active_snapshot_pointer_tamper_fails_closed(tmp_path: Path) -> None:
     _repository(entitlement_root, rule=_rule(), entitlements=_entitlements())
     entitlement_database = entitlement_root / "st0403-recorded-authorization.sqlite3"
     with sqlite3.connect(entitlement_database) as connection:
+        with pytest.raises(sqlite3.IntegrityError, match="ST0403_APPEND_ONLY"):
+            connection.execute(
+                "UPDATE recorded_authorization_active_entitlement SET record_sha256=?",
+                ("f" * 64,),
+            )
+        connection.execute(
+            "DROP TRIGGER recorded_authorization_active_entitlement_no_update"
+        )
         connection.execute(
             "UPDATE recorded_authorization_active_entitlement SET record_sha256=?",
             ("f" * 64,),
@@ -1160,6 +1218,163 @@ def test_weakened_sqlite_constraint_schema_is_rejected_before_use(
             private_root=root,
         ),
     )
+
+
+def test_preexisting_empty_partial_and_foreign_databases_are_never_initialized(
+    tmp_path: Path,
+) -> None:
+    roots = tuple(tmp_path / name for name in ("empty", "partial", "foreign"))
+    for root in roots:
+        root.mkdir(mode=0o700)
+
+    empty_database = roots[0] / "st0403-recorded-authorization.sqlite3"
+    empty_database.touch(mode=0o600)
+    empty_database.chmod(0o600)
+
+    partial_database = roots[1] / "st0403-recorded-authorization.sqlite3"
+    with sqlite3.connect(partial_database) as connection:
+        connection.execute("CREATE TABLE partial_owner_table (value TEXT)")
+    partial_database.chmod(0o600)
+
+    foreign_database = roots[2] / "st0403-recorded-authorization.sqlite3"
+    with sqlite3.connect(foreign_database) as connection:
+        connection.execute("PRAGMA application_id = 20260825")
+        connection.execute("PRAGMA user_version = 77")
+        connection.execute("CREATE TABLE foreign_owner_table (value TEXT) STRICT")
+    foreign_database.chmod(0o600)
+
+    for root in roots:
+        _repository_failure(
+            AuthorizationRepositoryFailureCode.TAMPER_DETECTED,
+            lambda: RecordedSqliteAuthorizationRepository(
+                environment=RuntimeEnvironment.ENV_DEV,
+                private_root=root,
+            ),
+        )
+        with sqlite3.connect(
+            root / "st0403-recorded-authorization.sqlite3"
+        ) as connection:
+            names = {
+                str(row[0])
+                for row in connection.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table'"
+                ).fetchall()
+            }
+        assert not any(name.startswith("recorded_authorization_") for name in names)
+
+
+def test_schema_v2_is_strict_append_only_and_has_zero_external_actions(
+    tmp_path: Path,
+) -> None:
+    root = _private(tmp_path)
+    repository = _repository(root, rule=_rule(), entitlements=_entitlements())
+    assert type(repository.external_action_count) is int
+    assert repository.external_action_count == 0
+    with sqlite3.connect(repository.database_path) as connection:
+        assert connection.execute("PRAGMA application_id").fetchone() == (1380400302,)
+        assert connection.execute("PRAGMA user_version").fetchone() == (2,)
+        assert connection.execute("PRAGMA integrity_check").fetchone() == ("ok",)
+        assert connection.execute("PRAGMA foreign_key_check").fetchall() == []
+        strict = {
+            str(row[1]): int(row[5])
+            for row in connection.execute("PRAGMA table_list").fetchall()
+            if str(row[1]).startswith("recorded_authorization_")
+        }
+        assert strict and set(strict.values()) == {1}
+        append_only = {
+            str(row[0])
+            for row in connection.execute(
+                "SELECT tbl_name FROM sqlite_master WHERE type='trigger' "
+                "AND name LIKE '%_no_update'"
+            ).fetchall()
+        }
+        assert append_only == set(strict) - {"recorded_authorization_metadata"}
+
+
+def test_process_anchor_rejects_valid_prefix_rollback_and_file_replacement(
+    tmp_path: Path,
+) -> None:
+    rollback_root = tmp_path / "rollback"
+    rollback_root.mkdir(mode=0o700)
+    rollback_repository = _repository(
+        rollback_root, rule=_rule(), entitlements=_entitlements()
+    )
+    database = rollback_repository.database_path
+    prefix = rollback_root / "valid-prefix.sqlite3"
+    shutil.copyfile(database, prefix)
+    _service(rollback_repository).evaluate_admin(
+        session_id=session().session_id,
+        command=_command(label="ROLLBACK-ANCHOR"),
+    )
+    assert len(rollback_repository.audit_snapshot()) == 1
+    shutil.copyfile(prefix, database)
+    _repository_failure(
+        AuthorizationRepositoryFailureCode.TAMPER_DETECTED,
+        rollback_repository.audit_snapshot,
+    )
+
+    replacement_root = tmp_path / "replacement"
+    replacement_root.mkdir(mode=0o700)
+    replacement_repository = _repository(
+        replacement_root, rule=_rule(), entitlements=_entitlements()
+    )
+    replacement = replacement_root / "replacement.sqlite3"
+    shutil.copyfile(replacement_repository.database_path, replacement)
+    replacement.chmod(0o600)
+    os.replace(replacement, replacement_repository.database_path)
+    _repository_failure(
+        AuthorizationRepositoryFailureCode.STORAGE_FAILURE,
+        replacement_repository.audit_snapshot,
+    )
+
+
+def test_hostile_caller_and_result_mutation_are_detached_or_rejected(
+    tmp_path: Path,
+) -> None:
+    caller_root = tmp_path / "caller"
+    caller_root.mkdir(mode=0o700)
+    caller_repository = _repository(
+        caller_root, rule=_rule(), entitlements=_entitlements()
+    )
+    caller_command = _command(label="CALLER-MUTATION")
+    caller_service = DurableAuthorizationService(
+        session_service=authentication_service(session()),
+        repository=_MutatingCallerRepository(
+            delegate=caller_repository,
+            caller_command=caller_command,
+        ),
+        registry=CANONICAL_AUTHORIZATION_REGISTRY,
+        step_up_consumer=None,
+    )
+    caller_result = caller_service.evaluate_admin(
+        session_id=session().session_id,
+        command=caller_command,
+    )
+    assert caller_result.decision.effect is DecisionEffect.ALLOW
+    assert caller_result.decision.target.scope.site_id == SITE_A
+    assert caller_command.target.scope.site_id == SITE_B
+
+    result_root = tmp_path / "result"
+    result_root.mkdir(mode=0o700)
+    result_repository = _repository(
+        result_root, rule=_rule(), entitlements=_entitlements()
+    )
+    hostile_repository = _FailingAuthorizationRepository(
+        delegate=result_repository,
+        phase="mutate_result",
+    )
+    with pytest.raises(AuthorizationRepositoryFailure) as caught:
+        DurableAuthorizationService(
+            session_service=authentication_service(session()),
+            repository=hostile_repository,
+            registry=CANONICAL_AUTHORIZATION_REGISTRY,
+            step_up_consumer=None,
+        ).evaluate_admin(
+            session_id=session().session_id,
+            command=_command(label="HOSTILE-RESULT"),
+        )
+    assert caught.value.code is AuthorizationRepositoryFailureCode.TAMPER_DETECTED
+    assert result_repository.audit_snapshot() == ()
 
 
 def test_private_root_rejects_symlinked_ancestor_component(tmp_path: Path) -> None:

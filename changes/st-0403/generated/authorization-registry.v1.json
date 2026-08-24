@@ -557,7 +557,7 @@
   },
   "source_sha256": {
     "changes/st-0306/contracts/database-roles-grants.v1.yaml": "b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3",
-    "changes/st-0401/contracts/local-auth-runtime.v2.json": "f3f9c08ce612f930833a0ca575d4c4f00e1e3a850316b4ad14a7f994ca0a7d4b",
+    "changes/st-0401/contracts/local-auth-runtime.v2.json": "6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad",
     "changes/st-0402/contracts/local-step-up-runtime.v2.json": "62c057afde754c2aa74226cc3ae6e896e0cfaa5aaf54bdc0b21a54301a462b8e",
     "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml": "450ed0f299bcd1f1f99a242d8a6661a9ab2a886ce8f67818def79618c2163567",
     "contracts/raos-v0.4/contracts/catalogs/state-transition-catalog.v0.4.yaml": "203eb10d9b6fc6ba4fb0e9f0491f713c313a6a5627dcaf60b7ce53665ecec8a5",

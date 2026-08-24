@@ -28,17 +28,32 @@ always denies.
 
 ## Durable recorded boundary
 
-The `ENV-DEV`/`ENV-CI` adapter owns a fixed owner-private SQLite database. Its
-default policy is immutable and empty. Non-empty policy and entitlement
-snapshots are recorded fixtures only and use revision compare-and-set. Active
-snapshot pointers and immutable rows carry verified SHA-256 records. Decision
-commands are idempotent, audit rows form an append-only verified hash chain,
-and explicit units of work distinguish before-commit failure from
-after-commit ambiguity. Recovery revalidates the active ST-0401 session and
-its fingerprint before returning an existing result. The adapter rejects any
-symlinked private-root ancestor and verifies an exact digest of all owned
-`sqlite_master` table constraints, indexes, foreign keys, and checks on every
-transaction; a same-column weakened schema cannot become authoritative.
+The `ENV-DEV`/`ENV-CI` adapter owns a fixed owner-private SQLite database. Only
+a file created with the adapter's exclusive `O_EXCL` path may be initialized;
+every pre-existing empty, partial, foreign, or schema-V1 database is rejected.
+Schema V2 fixes `application_id`, `user_version`, `STRICT` tables, foreign
+keys, secure PRAGMAs, exact `sqlite_master` tables/indexes/triggers, and
+append-only policy, entitlement, separation-of-duty, audit, command, and
+full-mutation records.
+
+Every mutation carries canonical intent/result bytes and one SHA-256 chain
+with a metadata count/head. Redundant row/document/relationship bindings are
+recomputed on every transaction. Policy and entitlement activation is retained
+as append-only history with revision compare-and-set; command recovery returns
+only the exact stored intent/result and never retries a write. SQLite commit
+errors are `COMMIT_UNKNOWN` only when the transaction is no longer open;
+otherwise they are a known rollback. The active ST-0401 session and its
+fingerprint are revalidated before an existing result is returned.
+
+The private-root and database device/inode identities are pinned. A
+process-lifetime count/head/prefix anchor detects a valid historical database
+rollback even when all stored hashes remain internally consistent. Detecting
+that same valid-prefix rollback across process restart requires an independent
+external anchor, which this recorded Story does not claim. All caller,
+collaborator, repository-result, and HTTP-result values are detached at their
+in-process boundary. The repository and disabled HTTP harness expose the exact
+local external-action count `0`; neither performs network, provider,
+credential, or business-action work.
 
 The framework-neutral decorator stores operation metadata only. The disabled
 HTTP adapter registers no route, ignores every external request with an
@@ -65,8 +80,9 @@ PYTHONPATH=python:. .venv/bin/python scripts/build_st0403_authorization_runtime.
 ```
 
 The manifest binds the Canonical/design/API/ST-0402/ST-0306 sources, the owner
-contract, generated artifacts, implementation sources, and verification
-files. All authority flags remain `false`.
+registry contract, the durable schema-V2 contract, generated artifacts,
+implementation sources, and verification files. All authority flags remain
+`false`.
 
 Formal TST-011/TST-012/TST-026, real OIDC/MFA/DB/provider integration, hosted
 CI, staging, release, publication, and Production are `NOT_EXECUTED`. Local

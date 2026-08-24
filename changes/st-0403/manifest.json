@@ -1,7 +1,8 @@
 {
   "artifacts_sha256": {
     "changes/st-0403/contracts/authorization-registry.v1.json": "a2ef5f7df66492164128ba8ffffcceb254b58bedc5cac7d03716d20700bc1093",
-    "changes/st-0403/generated/authorization-registry.v1.json": "f81da85eed9d625d85c8a96f51fb0e6a4ee85af41b1398f9e9e2c8239b4eee16",
+    "changes/st-0403/contracts/durable-authorization-runtime.v2.json": "478626abf1649682c173ecb45dd6abdf56932bd013cbee88f7c2d4753dab27f0",
+    "changes/st-0403/generated/authorization-registry.v1.json": "c3f3efb589a028c7d8139b514dcb28f124a42913da3c06ce20cc4da6e11a3867",
     "python/raos/adapters/generated_st0403_authorization_registry.py": "1618f3b2fce03fab6b06fc46227f33223d72eeb522b0ce24d731e67b684958a2"
   },
   "authority": {
@@ -14,26 +15,26 @@
   },
   "generator": "scripts/build_st0403_authorization_runtime.py",
   "implementation_sha256": {
-    "changes/st-0403/README.md": "f7403256daf7e95659867f0e9e01f9cc472427e293b7ff1b8fab9e714ddefec5",
-    "python/raos/adapters/disabled_admin_authorization_http.py": "a74550048a89b647de1d654f3c1120a78da556d7f42e75c2c47d98fa156a72da",
+    "changes/st-0403/README.md": "d21f1ddefd4f201a6618e9baa8889d6c77302b141070d89d03b4e2199746d5cc",
+    "python/raos/adapters/disabled_admin_authorization_http.py": "dc21dd493cfcb962c8215b61d0574f5d82709b54ea609b7524ec2529b4cc18a5",
     "python/raos/adapters/disabled_service_authorization.py": "704a5e5d583301693bd55cd658b5c6b61e00eca9742d11b581d20ffc5f5c78b0",
-    "python/raos/adapters/recorded_authorization.py": "a750c4d372acd9b9ee7896dd872bab13eaea23c322143a5cee765ed73d25af3b",
-    "python/raos/application/iam/authorization.py": "a48282ec090784e1fca4eb7d64705ee7f06cfe92c9832f218efae6b3895d9ea1",
-    "python/raos/domain/iam/authorization.py": "ff0b96d34824ac16a278367a9e8d638ab6266964a0c8972651882c7e0a5b128b",
+    "python/raos/adapters/recorded_authorization.py": "b25242c24053c5b22e1f42ecb0ec6f5ce5a5323f819a2394aa6204af7553508f",
+    "python/raos/application/iam/authorization.py": "8c1133b948fc935b62d8e2ed964a795a7f9e24c9943c9aa1b44bcf898dba3814",
+    "python/raos/domain/iam/authorization.py": "18b21b95dd3dc154b40f11f605b6289e0e27576f3401bb294606d871e78185f7",
     "python/raos/ports/authorization.py": "9f008f67337f1ceac44f94979f2741a96900c41408ee17fa3d887015a24ea9de",
-    "scripts/build_st0403_authorization_runtime.py": "f10d5d59510f9889dfec40df88850b7263cd9b8b8926eb35a0049444347252b1",
+    "scripts/build_st0403_authorization_runtime.py": "15de07a9a390d44acaef97fd4685a8b068fb367c4035db1d0e095d0b1e5f1964",
     "scripts/secure_generated_publication.py": "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e",
     "tests/st0403/conftest.py": "9811af4233700ac6ad4de6209d37d08ac442b7f3946f6e074e6a9839ed339459",
     "tests/st0403/test_authorization.py": "5df2d5a51188f9ed0de2252695b7ccdb980b1ffd6e7a4132486d404c28277995",
     "tests/st0403/test_authorization_http_and_enforcement.py": "be8a030b458fb99989796b30d062e78ccc65bbab32bee2a66225c807167449d8",
     "tests/st0403/test_boundaries.py": "dcf612fe47ae9987457c61d5d7a23a2a71c957b8226a105195f20d1807228240",
-    "tests/st0403/test_durable_authorization.py": "84671f986f1863533051023dadeb372791afa36285ca8899bcf4b6a5e7b806bf",
+    "tests/st0403/test_durable_authorization.py": "15a1480a2837a5e08326f6c2a0bf53cec72d29afe43dbdb83a3f4e84adf1357c",
     "tests/st0403/test_generation.py": "5075656154e41d3ac762a96e7b0032422c2e89efe6e0f33a2ffb3b8b7a6fa3d7"
   },
   "schema_version": 1,
   "source_sha256": {
     "changes/st-0306/contracts/database-roles-grants.v1.yaml": "b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3",
-    "changes/st-0401/contracts/local-auth-runtime.v2.json": "f3f9c08ce612f930833a0ca575d4c4f00e1e3a850316b4ad14a7f994ca0a7d4b",
+    "changes/st-0401/contracts/local-auth-runtime.v2.json": "6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad",
     "changes/st-0402/contracts/local-step-up-runtime.v2.json": "62c057afde754c2aa74226cc3ae6e896e0cfaa5aaf54bdc0b21a54301a462b8e",
     "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml": "450ed0f299bcd1f1f99a242d8a6661a9ab2a886ce8f67818def79618c2163567",
     "contracts/raos-v0.4/contracts/catalogs/state-transition-catalog.v0.4.yaml": "203eb10d9b6fc6ba4fb0e9f0491f713c313a6a5627dcaf60b7ce53665ecec8a5",

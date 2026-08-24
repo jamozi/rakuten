@@ -23,6 +23,9 @@ from scripts import secure_generated_publication  # noqa: E402
 
 
 CONTRACT = ROOT / "changes/st-0403/contracts/authorization-registry.v1.json"
+DURABLE_CONTRACT = (
+    ROOT / "changes/st-0403/contracts/durable-authorization-runtime.v2.json"
+)
 GENERATED_JSON = ROOT / "changes/st-0403/generated/authorization-registry.v1.json"
 GENERATED_PYTHON = (
     ROOT / "python/raos/adapters/generated_st0403_authorization_registry.py"
@@ -32,6 +35,9 @@ _MAX_SOURCE_BYTES = 8 * 1024 * 1024
 _MAX_GENERATED_BYTES = 2 * 1024 * 1024
 _EXPECTED_CONTRACT_SHA256 = (
     "a2ef5f7df66492164128ba8ffffcceb254b58bedc5cac7d03716d20700bc1093"
+)
+_EXPECTED_DURABLE_CONTRACT_SHA256 = (
+    "478626abf1649682c173ecb45dd6abdf56932bd013cbee88f7c2d4753dab27f0"
 )
 _EXPECTED_SECURE_HELPER_SHA256 = (
     "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e"
@@ -59,7 +65,7 @@ _EXPECTED_SOURCE_BINDINGS: dict[str, tuple[str, str]] = {
     ),
     "authentication_contract": (
         "changes/st-0401/contracts/local-auth-runtime.v2.json",
-        "f3f9c08ce612f930833a0ca575d4c4f00e1e3a850316b4ad14a7f994ca0a7d4b",
+        "6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad",
     ),
     "step_up_contract": (
         "changes/st-0402/contracts/local-step-up-runtime.v2.json",
@@ -810,6 +816,7 @@ def _outputs(contract: RegistryContract, sources: dict[str, Path]) -> dict[Path,
     generated_python = _python(contract)
     artifact_hashes = {
         str(CONTRACT.relative_to(ROOT)): _sha(CONTRACT),
+        str(DURABLE_CONTRACT.relative_to(ROOT)): _sha(DURABLE_CONTRACT),
         str(GENERATED_JSON.relative_to(ROOT)): hashlib.sha256(
             generated_json
         ).hexdigest(),
@@ -872,6 +879,36 @@ def main() -> None:
     arguments = parser.parse_args()
     if _sha(CONTRACT) != _EXPECTED_CONTRACT_SHA256:
         _stop("contract hash drift")
+    if _sha(DURABLE_CONTRACT) != _EXPECTED_DURABLE_CONTRACT_SHA256:
+        _stop("durable contract hash drift")
+    durable_contract = _json(DURABLE_CONTRACT)
+    if (
+        durable_contract.get("schema_version") != 2
+        or durable_contract.get("story_id") != "ST-0403"
+        or durable_contract.get("status") != "LOCAL_CODE_COMPLETE_CANDIDATE"
+    ):
+        _stop("durable contract identity mismatch")
+    durable_runtime = _mapping(
+        durable_contract.get("runtime"), "durable contract runtime"
+    )
+    durable_authority = _mapping(
+        durable_contract.get("authority"), "durable contract authority"
+    )
+    if (
+        type(durable_runtime.get("external_action_count")) is not int
+        or durable_runtime.get("external_action_count") != 0
+        or durable_runtime.get("business_action_execution") is not False
+        or set(
+            _string_values(
+                durable_runtime.get("environments"),
+                "durable contract environments",
+            )
+        )
+        != {"CI", "ENV-DEV"}
+        or not durable_authority
+        or any(value is not False for value in durable_authority.values())
+    ):
+        _stop("durable contract authority boundary mismatch")
     if (
         _sha(ROOT / "scripts/secure_generated_publication.py")
         != _EXPECTED_SECURE_HELPER_SHA256

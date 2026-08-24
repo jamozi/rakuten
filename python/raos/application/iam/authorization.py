@@ -14,6 +14,8 @@ from raos.domain.iam.authentication import (
     PrincipalIdentity as AuthenticatedPrincipalIdentity,
     Session,
     SessionId,
+    snapshot_session,
+    snapshot_session_id,
 )
 from raos.domain.iam.authorization import (
     ActionCode,
@@ -46,6 +48,12 @@ from raos.domain.iam.authorization import (
     ScopedBusinessRole,
     ScopedPermission,
     deny_authorization,
+    snapshot_authorization_evaluation_command,
+    snapshot_authorization_result,
+    snapshot_authorization_target,
+    snapshot_entitlement_snapshot,
+    snapshot_independent_actor_evidence,
+    snapshot_policy_snapshot,
 )
 from raos.ports.authorization import (
     AuthorizationDecisionSink,
@@ -193,6 +201,14 @@ class AuthorizationGuard:
         ):
             _deny()
 
+        try:
+            session = snapshot_session(session)
+            target = snapshot_authorization_target(target)
+            action = ActionCode(action.value)
+            correlation_id = CorrelationId(correlation_id.value)
+        except Exception:
+            _deny()
+
         principal: PrincipalIdentity | None = None
         principal_failed = False
         try:
@@ -212,7 +228,7 @@ class AuthorizationGuard:
             if type(policy) is not PolicySnapshot:
                 policy_failed = True
             else:
-                policy.require_valid()
+                policy = snapshot_policy_snapshot(policy)
         except Exception:
             policy_failed = True
         if policy_failed or type(policy) is not PolicySnapshot:
@@ -254,7 +270,7 @@ class AuthorizationGuard:
             if type(entitlements) is not EntitlementSnapshot:
                 entitlement_failed = True
             else:
-                entitlements.require_valid()
+                entitlements = snapshot_entitlement_snapshot(entitlements)
                 if entitlements.principal != principal:
                     entitlement_failed = True
         except Exception:
@@ -474,8 +490,8 @@ def _evaluate_durable(
         or type(entitlements) is not EntitlementSnapshot
     ):
         _deny()
-    policy.require_valid()
-    entitlements.require_valid()
+    policy = snapshot_policy_snapshot(policy)
+    entitlements = snapshot_entitlement_snapshot(entitlements)
     if entitlements.principal != principal:
         _deny()
     resolution = registry.resolve(command.operation_id)
@@ -544,6 +560,8 @@ def _evaluate_durable(
                 command.independent_actor_evidence_id
             )
         )
+        if evidence is not None:
+            evidence = snapshot_independent_actor_evidence(evidence)
         reason = _independent_actor_reason(
             evidence=evidence,
             principal=principal,
@@ -651,7 +669,10 @@ class DurableAuthorizationService:
             _deny()
         if type(session) is not Session:
             _deny()
-        return session
+        try:
+            return snapshot_session(session)
+        except Exception:
+            _deny()
 
     @staticmethod
     def _principal(session: Session) -> PrincipalIdentity:
@@ -695,6 +716,19 @@ class DurableAuthorizationService:
             if type(result) is not AuthorizationCommandResult:
                 _safe_rollback(uow)
                 _deny()
+            result = snapshot_authorization_result(result)
+            if (
+                result.command_id != command.command_id
+                or not hmac.compare_digest(result.request_digest, request_digest)
+                or not hmac.compare_digest(
+                    result.session_fingerprint, session_fingerprint
+                )
+                or result.decision != evaluation.decision
+                or result.audit.occurred_at != command.observed_at
+                or result.step_up_receipt_fingerprint != step_up_receipt_fingerprint
+            ):
+                _safe_rollback(uow)
+                _deny()
             uow.commit()
             return result
         except AuthorizationFailure, AuthorizationRepositoryFailure:
@@ -725,8 +759,14 @@ class DurableAuthorizationService:
             _deny()
         if result is None:
             return None
-        if type(result) is not AuthorizationCommandResult or not hmac.compare_digest(
-            result.session_fingerprint, session_fingerprint
+        if type(result) is not AuthorizationCommandResult:
+            _safe_rollback(uow)
+            _deny()
+        result = snapshot_authorization_result(result)
+        if (
+            result.command_id != command.command_id
+            or not hmac.compare_digest(result.request_digest, request_digest)
+            or not hmac.compare_digest(result.session_fingerprint, session_fingerprint)
         ):
             _safe_rollback(uow)
             _deny()
@@ -745,6 +785,11 @@ class DurableAuthorizationService:
             type(session_id) is not SessionId
             or type(command) is not AuthorizationEvaluationCommand
         ):
+            _deny()
+        try:
+            session_id = snapshot_session_id(session_id)
+            command = snapshot_authorization_evaluation_command(command)
+        except Exception:
             _deny()
         session = self._session(session_id=session_id, observed_at=command.observed_at)
         principal = self._principal(session)
@@ -914,6 +959,11 @@ class DurableAuthorizationService:
             or type(session_id) is not SessionId
         ):
             _deny()
+        try:
+            command_id = AuthorizationCommandId(command_id.value)
+            session_id = snapshot_session_id(session_id)
+        except Exception:
+            _deny()
         session = self._session(session_id=session_id, observed_at=now)
         try:
             result = self._repository.recover(command_id)
@@ -921,7 +971,10 @@ class DurableAuthorizationService:
             raise
         except Exception:
             _deny()
-        if type(result) is not AuthorizationCommandResult or not hmac.compare_digest(
+        if type(result) is not AuthorizationCommandResult:
+            _deny()
+        result = snapshot_authorization_result(result)
+        if result.command_id != command_id or not hmac.compare_digest(
             result.session_fingerprint, session.session_id.fingerprint()
         ):
             _deny()

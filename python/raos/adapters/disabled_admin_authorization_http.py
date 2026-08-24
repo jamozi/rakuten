@@ -39,6 +39,7 @@ from raos.domain.iam.authorization import (
     ResourceState,
     deny_authorization,
     require_authorization_utc,
+    snapshot_authorization_result,
 )
 from raos.domain.iam.step_up import BoundStepUpGrantId, StepUpCommandId
 
@@ -434,6 +435,13 @@ class DisabledAdminAuthorizationHttpAdapter:
             _deny()
         self._service = service
 
+    @property
+    def external_action_count(self) -> int:
+        """No external route, provider, or business action is dispatched."""
+
+        _require_recorded(self._environment)
+        return 0
+
     def dispatch_external(self, document: object) -> RecordedAdminAuthorizationDispatch:
         del document
         return RecordedAdminAuthorizationDispatch(
@@ -462,6 +470,7 @@ class DisabledAdminAuthorizationHttpAdapter:
                     session_id=request.session_id,
                     command=request.command,
                 )
+            result = snapshot_authorization_result(result)
             return RecordedAdminAuthorizationDispatch(
                 response=_success(result), result=result
             )

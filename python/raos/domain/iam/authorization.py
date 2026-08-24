@@ -898,7 +898,7 @@ def disabled_policy_snapshot() -> PolicySnapshot:
     )
 
 
-def _recorded_test_policy_snapshot(  # pyright: ignore[reportUnusedFunction]
+def _recorded_test_policy_snapshot(
     *, revision: PolicyRevision, rules: tuple[AuthorizationRule, ...]
 ) -> PolicySnapshot:
     """Construct a recorded policy for the exact ENV-DEV adapter only."""
@@ -1843,6 +1843,206 @@ class AuthorizationCommandResult:
         raise TypeError("authorization command result serialization is not supported")
 
 
+def snapshot_authorization_principal(value: object) -> PrincipalIdentity:
+    """Detach one exact principal from an untrusted in-process collaborator."""
+
+    if type(value) is not PrincipalIdentity:
+        deny_authorization()
+    if value.kind is PrincipalKind.USER:
+        if type(value.issuer) is not Issuer or type(value.subject) is not Subject:
+            deny_authorization()
+        return PrincipalIdentity.admin_user(
+            issuer=Issuer(value.issuer.reveal()),
+            subject=Subject(value.subject.reveal()),
+        )
+    if type(value.service_name) is not ServicePrincipalName:
+        deny_authorization()
+    return PrincipalIdentity(
+        kind=PrincipalKind.SERVICE,
+        surface=AuthorizationSurface.INTERNAL,
+        service_name=ServicePrincipalName(value.service_name.value),
+    )
+
+
+def snapshot_authorization_scope(value: object) -> ResourceScope:
+    if type(value) is not ResourceScope:
+        deny_authorization()
+    return ResourceScope(
+        kind=value.kind,
+        site_id=UUID(str(value.site_id)),
+        resource_id=UUID(str(value.resource_id)),
+    )
+
+
+def snapshot_authorization_target(value: object) -> AuthorizationTarget:
+    if type(value) is not AuthorizationTarget:
+        deny_authorization()
+    return AuthorizationTarget(
+        scope=snapshot_authorization_scope(value.scope),
+        state=None if value.state is None else ResourceState(value.state.value),
+    )
+
+
+def snapshot_authorization_rule(value: object) -> AuthorizationRule:
+    if type(value) is not AuthorizationRule:
+        deny_authorization()
+    return AuthorizationRule(
+        rule_id=RuleId(value.rule_id.value),
+        role=value.role,
+        permission_scope=PermissionScope(value.permission_scope.value),
+        action=ActionCode(value.action.value),
+        resource_kind=value.resource_kind,
+        resource_state=(
+            None
+            if value.resource_state is None
+            else ResourceState(value.resource_state.value)
+        ),
+    )
+
+
+def snapshot_policy_snapshot(value: object) -> PolicySnapshot:
+    if type(value) is not PolicySnapshot:
+        deny_authorization()
+    value.require_valid()
+    revision = PolicyRevision(value.revision.value)
+    rules = tuple(snapshot_authorization_rule(rule) for rule in value.rules)
+    if value.mode is PolicyMode.DISABLED:
+        return PolicySnapshot(revision=revision, mode=PolicyMode.DISABLED, rules=rules)
+    if value.mode is PolicyMode.RECORDED_TEST:
+        return _recorded_test_policy_snapshot(revision=revision, rules=rules)
+    deny_authorization()
+
+
+def snapshot_entitlement_snapshot(value: object) -> EntitlementSnapshot:
+    if type(value) is not EntitlementSnapshot:
+        deny_authorization()
+    value.require_valid()
+    principal = snapshot_authorization_principal(value.principal)
+    return EntitlementSnapshot(
+        revision=EntitlementRevision(value.revision.value),
+        principal=principal,
+        roles=tuple(
+            ScopedBusinessRole(
+                role=role.role,
+                scope=snapshot_authorization_scope(role.scope),
+            )
+            for role in value.roles
+        ),
+        permission_scopes=tuple(
+            ScopedPermission(
+                permission_scope=PermissionScope(permission.permission_scope.value),
+                scope=snapshot_authorization_scope(permission.scope),
+            )
+            for permission in value.permission_scopes
+        ),
+    )
+
+
+def snapshot_authorization_decision(value: object) -> AuthorizationDecision:
+    if type(value) is not AuthorizationDecision:
+        deny_authorization()
+    return AuthorizationDecision(
+        correlation_id=CorrelationId(value.correlation_id.value),
+        effect=value.effect,
+        reason=value.reason,
+        policy_revision=PolicyRevision(value.policy_revision.value),
+        policy_fingerprint=str(value.policy_fingerprint),
+        entitlement_revision=EntitlementRevision(value.entitlement_revision.value),
+        matched_rule_id=(
+            None
+            if value.matched_rule_id is None
+            else RuleId(value.matched_rule_id.value)
+        ),
+        action=ActionCode(value.action.value),
+        target=snapshot_authorization_target(value.target),
+    )
+
+
+def snapshot_independent_actor_evidence(
+    value: object,
+) -> IndependentActorEvidence:
+    if type(value) is not IndependentActorEvidence:
+        deny_authorization()
+    return IndependentActorEvidence(
+        evidence_id=UUID(str(value.evidence_id)),
+        actor_fingerprint=str(value.actor_fingerprint),
+        action=value.action,
+        operation_id=OperationId(value.operation_id.value),
+        site_id=UUID(str(value.site_id)),
+        resource_id=UUID(str(value.resource_id)),
+        evidence_snapshot_sha256=str(value.evidence_snapshot_sha256),
+        recorded_at=value.recorded_at.replace(),
+    )
+
+
+def snapshot_authorization_evaluation_command(
+    value: object,
+) -> AuthorizationEvaluationCommand:
+    if type(value) is not AuthorizationEvaluationCommand:
+        deny_authorization()
+    return AuthorizationEvaluationCommand(
+        command_id=AuthorizationCommandId(value.command_id.value),
+        operation_id=OperationId(value.operation_id.value),
+        target=snapshot_authorization_target(value.target),
+        correlation_id=CorrelationId(value.correlation_id.value),
+        expected_policy_revision=PolicyRevision(value.expected_policy_revision.value),
+        expected_entitlement_revision=EntitlementRevision(
+            value.expected_entitlement_revision.value
+        ),
+        observed_at=value.observed_at.replace(),
+        step_up_command_id=(
+            None
+            if value.step_up_command_id is None
+            else StepUpCommandId(value.step_up_command_id.reveal())
+        ),
+        step_up_grant_id=(
+            None
+            if value.step_up_grant_id is None
+            else BoundStepUpGrantId(value.step_up_grant_id.reveal())
+        ),
+        independent_actor_evidence_id=(
+            None
+            if value.independent_actor_evidence_id is None
+            else UUID(str(value.independent_actor_evidence_id))
+        ),
+    )
+
+
+def snapshot_authorization_audit(value: object) -> AuthorizationAuditRecord:
+    if type(value) is not AuthorizationAuditRecord:
+        fail_authorization_repository(
+            AuthorizationRepositoryFailureCode.TAMPER_DETECTED
+        )
+    return AuthorizationAuditRecord(
+        sequence=value.sequence,
+        command_fingerprint=str(value.command_fingerprint),
+        request_digest=str(value.request_digest),
+        effect=value.effect,
+        occurred_at=value.occurred_at.replace(),
+        previous_digest=str(value.previous_digest),
+        digest=str(value.digest),
+    )
+
+
+def snapshot_authorization_result(value: object) -> AuthorizationCommandResult:
+    if type(value) is not AuthorizationCommandResult:
+        fail_authorization_repository(
+            AuthorizationRepositoryFailureCode.TAMPER_DETECTED
+        )
+    return AuthorizationCommandResult(
+        command_id=AuthorizationCommandId(value.command_id.value),
+        request_digest=str(value.request_digest),
+        session_fingerprint=str(value.session_fingerprint),
+        decision=snapshot_authorization_decision(value.decision),
+        audit=snapshot_authorization_audit(value.audit),
+        step_up_receipt_fingerprint=(
+            None
+            if value.step_up_receipt_fingerprint is None
+            else str(value.step_up_receipt_fingerprint)
+        ),
+    )
+
+
 class ServicePrincipalAuthorizationStatus(str, Enum):
     DISABLED_MAPPING_UNRESOLVED = "DISABLED_MAPPING_UNRESOLVED"
 
@@ -1896,4 +2096,15 @@ __all__ = [
     "disabled_policy_snapshot",
     "fail_authorization_repository",
     "require_authorization_utc",
+    "snapshot_authorization_audit",
+    "snapshot_authorization_decision",
+    "snapshot_authorization_evaluation_command",
+    "snapshot_authorization_principal",
+    "snapshot_authorization_result",
+    "snapshot_authorization_rule",
+    "snapshot_authorization_scope",
+    "snapshot_authorization_target",
+    "snapshot_entitlement_snapshot",
+    "snapshot_independent_actor_evidence",
+    "snapshot_policy_snapshot",
 ]
