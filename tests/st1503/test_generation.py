@@ -39,7 +39,7 @@ def test_check_is_read_only() -> None:
 
 def test_manifest_inventory_hashes_and_provenance_are_complete() -> None:
     manifest = yaml.safe_load((REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes())
-    assert manifest["document"]["version"] == "1.1.0"
+    assert manifest["document"]["version"] == "1.2.0"
     assert manifest["source_artifact_count"] == len(generator.SOURCE_ARTIFACT_PATHS)
     assert [row["uri"] for row in manifest["source_artifacts"]] == [
         f"repo://{path.as_posix()}" for path in generator.SOURCE_ARTIFACT_PATHS
@@ -51,12 +51,11 @@ def test_manifest_inventory_hashes_and_provenance_are_complete() -> None:
         assert row["sha256"] == generator.sha256_bytes(content)
     assert manifest["generated_artifacts"] == [
         {
-            "uri": f"repo://{generator.REFERENCE_PLAN_PATH.as_posix()}",
-            "bytes": (REPOSITORY_ROOT / generator.REFERENCE_PLAN_PATH).stat().st_size,
-            "sha256": generator.sha256_file(
-                REPOSITORY_ROOT / generator.REFERENCE_PLAN_PATH
-            ),
+            "uri": f"repo://{relative.as_posix()}",
+            "bytes": (REPOSITORY_ROOT / relative).stat().st_size,
+            "sha256": generator.sha256_file(REPOSITORY_ROOT / relative),
         }
+        for relative in generator.GENERATED_ARTIFACT_PATHS
     ]
     assert manifest["provenance"]["authority_inputs"] == [
         {"uri": f"repo://{path}", "sha256": digest}
@@ -72,7 +71,7 @@ def test_generated_plan_carries_all_provider_neutral_gates(
     compute_edge_model: generator.ComputeEdgeModel,
 ) -> None:
     plan = generator.reference_plan_document(compute_edge_model)
-    assert plan["document"]["version"] == "1.1.0"
+    assert plan["document"]["version"] == "1.2.0"
     assert plan["document"]["executable"] is False
     assert (
         plan["provider_neutral_compute_edge_admission"]
@@ -88,6 +87,13 @@ def test_generated_plan_carries_all_provider_neutral_gates(
         "edge_routing": compute_edge_model.contract["edge_routing_intent"],
         "health": compute_edge_model.contract["health_intent"],
     }
+    assert (
+        plan["logical_hcl_module"] == compute_edge_model.contract["logical_hcl_module"]
+    )
+    assert (
+        plan["successor_activation_port"]
+        == compute_edge_model.contract["successor_activation_port"]
+    )
 
 
 def test_check_rejects_drift_without_echoing_bytes(tmp_path: Path) -> None:
@@ -164,7 +170,7 @@ def test_atomic_writer_rejects_symlink_target_without_touching_outside(
     assert outside.read_bytes() == marker
 
 
-def test_builder_has_no_provider_network_env_or_subprocess_surface() -> None:
+def test_builder_has_no_provider_network_or_ambient_env_surface() -> None:
     path = REPOSITORY_ROOT / "scripts/build_st1503_compute_edge.py"
     tree = ast.parse(path.read_text(encoding="utf-8"))
     imported_roots: set[str] = set()
@@ -187,7 +193,6 @@ def test_builder_has_no_provider_network_env_or_subprocess_surface() -> None:
             "http",
             "requests",
             "socket",
-            "subprocess",
             "urllib",
         }
     )
@@ -199,16 +204,20 @@ def test_builder_has_no_provider_network_env_or_subprocess_surface() -> None:
             "environ",
             "getenv",
             "popen",
-            "run",
             "spawn",
             "system",
         }
     )
 
 
-def test_builder_cli_exposes_only_read_only_check_switch() -> None:
+def test_builder_cli_exposes_only_generation_and_validation_switches() -> None:
     assert generator.parse_args([]).check is False
     assert generator.parse_args(["--check"]).check is True
+    native = generator.parse_args(
+        ["--native-check", "--terraform", "/absolute/terraform"]
+    )
+    assert native.native_check is True
+    assert native.terraform == Path("/absolute/terraform")
     source = (REPOSITORY_ROOT / "scripts/build_st1503_compute_edge.py").read_text(
         encoding="utf-8"
     )
