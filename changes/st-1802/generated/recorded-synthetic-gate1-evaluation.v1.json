@@ -1,0 +1,365 @@
+{
+  "schema_version": "1.0.0",
+  "story_id": "ST-1802",
+  "classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+  "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+  "fixture": {
+    "uri": "repo://changes/st-1802/fixtures/recorded-synthetic-gate1-evaluation.v1.json",
+    "sha256": "30327d0a85580e10b5114e36076f545c7c81efd4917fa7e42f42719fc56bfa10",
+    "schema_uri": "repo://changes/st-1802/contracts/recorded-synthetic-gate1-evaluation.v1.schema.json",
+    "schema_sha256": "b671401b5859690052217c1caefb6001828a841c0f57064658ecd1d158148c52"
+  },
+  "dependency_context": {
+    "story_id": "ST-1801",
+    "uri": "repo://changes/st-1801/generated/portfolio-expansion.local-blocked.v1.json",
+    "sha256": "f1d222a2739140478c628a2efe9b7f267f13f703de29665954a13b688fe9c4d5",
+    "decision": "BLOCKED",
+    "dependency_eligibility": "NOT_ELIGIBLE",
+    "planned_synthetic_placeholder_count": 30,
+    "actual_article_count": "UNAVAILABLE",
+    "placeholders_are_actual_articles": false
+  },
+  "results": [
+    {
+      "case_id": "synthetic-exact-threshold-pass",
+      "classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "overall_status": "PASS",
+      "criterion_results": [
+        {
+          "criterion_id": "SYN-G1-C01-SINGLE-CATEGORY",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C02-INTENT-CLUSTERS",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C03-ARTICLE-COUNT",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C04-ARTICLE-TYPES",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C05-ALL-QUALITY-85",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C06-CRITICAL-FACTUAL-ERRORS",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C07-ALL-CLAIM-COVERAGE",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C08-MAJOR-CLAIM-COVERAGE",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C09-FABRICATED-EXPERIENCE",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C10-PRODUCT-IDENTITY",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C11-LINK-ERRORS",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C12-FIRST-PASS-HUMAN-APPROVAL",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C13-FRESHNESS-TIMESTAMPS",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C14-MEASUREMENT-CONNECTED",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C15-PER-ARTICLE-COST",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C16-HUMAN-TIME",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C17-CHANGE-HISTORY-AUDIT",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C18-ROLLBACK",
+          "status": "PASS"
+        }
+      ],
+      "formal_evidence_eligible": false,
+      "gate_evidence_eligible": false,
+      "story_acceptance_eligible": false,
+      "article_approval_eligible": false,
+      "publication_eligible": false
+    },
+    {
+      "case_id": "synthetic-known-category-failure",
+      "classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "overall_status": "FAIL",
+      "criterion_results": [
+        {
+          "criterion_id": "SYN-G1-C01-SINGLE-CATEGORY",
+          "status": "FAIL"
+        },
+        {
+          "criterion_id": "SYN-G1-C02-INTENT-CLUSTERS",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C03-ARTICLE-COUNT",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C04-ARTICLE-TYPES",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C05-ALL-QUALITY-85",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C06-CRITICAL-FACTUAL-ERRORS",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C07-ALL-CLAIM-COVERAGE",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C08-MAJOR-CLAIM-COVERAGE",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C09-FABRICATED-EXPERIENCE",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C10-PRODUCT-IDENTITY",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C11-LINK-ERRORS",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C12-FIRST-PASS-HUMAN-APPROVAL",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C13-FRESHNESS-TIMESTAMPS",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C14-MEASUREMENT-CONNECTED",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C15-PER-ARTICLE-COST",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C16-HUMAN-TIME",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C17-CHANGE-HISTORY-AUDIT",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C18-ROLLBACK",
+          "status": "PASS"
+        }
+      ],
+      "formal_evidence_eligible": false,
+      "gate_evidence_eligible": false,
+      "story_acceptance_eligible": false,
+      "article_approval_eligible": false,
+      "publication_eligible": false
+    },
+    {
+      "case_id": "synthetic-all-input-unavailable",
+      "classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "overall_status": "UNAVAILABLE",
+      "criterion_results": [
+        {
+          "criterion_id": "SYN-G1-C01-SINGLE-CATEGORY",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C02-INTENT-CLUSTERS",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C03-ARTICLE-COUNT",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C04-ARTICLE-TYPES",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C05-ALL-QUALITY-85",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C06-CRITICAL-FACTUAL-ERRORS",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C07-ALL-CLAIM-COVERAGE",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C08-MAJOR-CLAIM-COVERAGE",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C09-FABRICATED-EXPERIENCE",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C10-PRODUCT-IDENTITY",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C11-LINK-ERRORS",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C12-FIRST-PASS-HUMAN-APPROVAL",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C13-FRESHNESS-TIMESTAMPS",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C14-MEASUREMENT-CONNECTED",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C15-PER-ARTICLE-COST",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C16-HUMAN-TIME",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C17-CHANGE-HISTORY-AUDIT",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C18-ROLLBACK",
+          "status": "UNAVAILABLE"
+        }
+      ],
+      "formal_evidence_eligible": false,
+      "gate_evidence_eligible": false,
+      "story_acceptance_eligible": false,
+      "article_approval_eligible": false,
+      "publication_eligible": false
+    },
+    {
+      "case_id": "synthetic-zero-denominators-unavailable",
+      "classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "overall_status": "UNAVAILABLE",
+      "criterion_results": [
+        {
+          "criterion_id": "SYN-G1-C01-SINGLE-CATEGORY",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C02-INTENT-CLUSTERS",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C03-ARTICLE-COUNT",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C04-ARTICLE-TYPES",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C05-ALL-QUALITY-85",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C06-CRITICAL-FACTUAL-ERRORS",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C07-ALL-CLAIM-COVERAGE",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C08-MAJOR-CLAIM-COVERAGE",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C09-FABRICATED-EXPERIENCE",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C10-PRODUCT-IDENTITY",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C11-LINK-ERRORS",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C12-FIRST-PASS-HUMAN-APPROVAL",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C13-FRESHNESS-TIMESTAMPS",
+          "status": "UNAVAILABLE"
+        },
+        {
+          "criterion_id": "SYN-G1-C14-MEASUREMENT-CONNECTED",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C15-PER-ARTICLE-COST",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C16-HUMAN-TIME",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C17-CHANGE-HISTORY-AUDIT",
+          "status": "PASS"
+        },
+        {
+          "criterion_id": "SYN-G1-C18-ROLLBACK",
+          "status": "PASS"
+        }
+      ],
+      "formal_evidence_eligible": false,
+      "gate_evidence_eligible": false,
+      "story_acceptance_eligible": false,
+      "article_approval_eligible": false,
+      "publication_eligible": false
+    }
+  ],
+  "qualifying_evidence_references": [],
+  "formal_evidence_eligible": false,
+  "gate_evidence_eligible": false,
+  "story_acceptance_eligible": false,
+  "authority": "NONE"
+}

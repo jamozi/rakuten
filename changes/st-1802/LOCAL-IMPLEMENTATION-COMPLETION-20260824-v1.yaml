@@ -1,0 +1,42 @@
+schema_version: 1
+story_id: ST-1802
+record_type: LOCAL_IMPLEMENTATION_COMPLETION_CANDIDATE
+scope: LOCAL_BLOCKED_GATE_1_DECISION_ONLY
+implementation_status_claim: LOCAL_CODE_COMPLETE
+canonical_status_mutated: false
+acceptance_criteria_satisfied: false
+decision:
+  overall: BLOCKED
+  eligibility: NOT_ELIGIBLE
+  gate_pass_claim: false
+implementation:
+  contract: repo://changes/st-1802/contracts/gate1-decision.v1.yaml
+  fixture_schema: repo://changes/st-1802/contracts/recorded-synthetic-gate1-evaluation.v1.schema.json
+  fixture: repo://changes/st-1802/fixtures/recorded-synthetic-gate1-evaluation.v1.json
+  generator: repo://scripts/build_st1802_gate1_decision.py
+  generated_decision: repo://changes/st-1802/generated/gate1-decision.local-blocked.v1.json
+  generated_evaluation: repo://changes/st-1802/generated/recorded-synthetic-gate1-evaluation.v1.json
+  generated_manifest: repo://changes/st-1802/generated/runtime-manifest.v1.yaml
+  tests: repo://tests/st1802
+introduced_local_debt: []
+authority:
+  formal_evidence_acceptance: NONE
+  gate_approval: NONE
+  status_propose: NONE
+  status_apply: NONE
+  publication: NONE
+  staging: NONE
+  release: NONE
+  deployment: NONE
+  production: NONE
+not_executed:
+  formal_tst_020: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  actual_30_45_article_portfolio: NOT_EXECUTED
+  human_gate_approval: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  deployment: NOT_EXECUTED
+  production: NOT_EXECUTED
