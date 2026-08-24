@@ -79,7 +79,7 @@
     "source_artifacts": [
       {
         "bytes": 8101,
-        "sha256": "a0f77c098004f951219eed29814e354639165829b534266b49d48d4d9eb63a98",
+        "sha256": "0e8fbcc25ee67bb5b13992832a660e22b91592833d7d6be27ce7b740def3fc1a",
         "uri": "repo://changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml"
       },
       {
@@ -174,7 +174,7 @@
       },
       "st1205_runtime": {
         "path": "changes/st-1205/contracts/kpi-read-model.v2.yaml",
-        "sha256": "2777cf19d0482f84172ac581ed72f27bc6e93b51b5bd45ea4b23e14cf0f95665"
+        "sha256": "4cb71bbecec12342aca564309a860c686a8126fdd3238b79ba14ccbdb260b973"
       },
       "st1303_fixture": {
         "path": "changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json",

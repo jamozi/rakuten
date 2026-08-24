@@ -71,8 +71,8 @@ dependencies:
       changes/st-1205/README.md: 4722c69a67112898a1d070021d6262f64442d95f9296c956287d2fb829c10b72
       changes/st-1205/contracts/kpi-read-model-reference-plan.v1.yaml: 83335492346ccf1f830d859eb9930290f3bdd469f642db38eeb874995ddc8de7
       changes/st-1205/generated/kpi-read-model-reference-plan.v1.json: 5c6d41670a7da68490abc3b9bd7e97c849322e2dd176f1637375b6729e4c130b
-      changes/st-1205/manifest.yaml: 4f9ac1ec5dc0a8588788b98c972bd44f5db6f21925238ece6c62a2bb9f38032d
-      scripts/build_st1205_kpi_read_model_reference_plan.py: 613033f689228f6c3c722086e20f00e7e898d2108f82daa2b7d5a6b90454c458
+      changes/st-1205/manifest.yaml: 391ef69e2d1d46734b5fe4784c4447f1d83d52535438a17b83b23121a3b27d80
+      scripts/build_st1205_kpi_read_model_reference_plan.py: f00bb2af54ba12e72b23afb224c63d24fb0072ff6788e06e1f1443a153d5ec56
       tests/st1205/conftest.py: 5658caf178b330bc77d38af1077aff78de7729c312baddcf7d5f2311f2b142f8
       tests/st1205/test_contract.py: 59b0280f951557eb4979edc07864c8d0f445da07b087d8f85d09b25a51479ba6
       tests/st1205/test_generation.py: d9bee72fbc33353d9f993c7fa80a96aa0c00938e14b16e9021076414b60c22b2

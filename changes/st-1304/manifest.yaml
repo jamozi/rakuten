@@ -11,13 +11,13 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-1304/contracts/cost-unit-economics-reference-plan.v1.yaml
   bytes: 16549
-  sha256: 6c32b0caa4d94b7d9591c15481f346f1f24b4baf210535a091ca83e99b1606d6
+  sha256: 57d9f1d8c755ab5802fa621d6076513c01fe7691de06f96fdeb381f1e6a204bd
 - uri: repo://changes/st-1304/README.md
   bytes: 2591
   sha256: 6528d7d60c8686cdd4d85a8db7d78fad5440e7d19fd293881c28fda0b407a3f2
 - uri: repo://scripts/build_st1304_cost_unit_economics_reference_plan.py
   bytes: 31972
-  sha256: 6b11e439874b1dd6fdfc6ff5d920d9111da2738f131efdd26f26e9050921367c
+  sha256: e5fe1ed258c71b9d7349170f1f5967b6d12ccd6af4a274e98b1787af058f3096
 - uri: repo://tests/st1304/conftest.py
   bytes: 1001
   sha256: 913f94bbc4018b868679bdf3477a5c480ce8e9662ddffd43aff14c3cee670f4f
@@ -33,7 +33,7 @@ source_artifacts:
 generated_artifacts:
 - uri: repo://changes/st-1304/generated/cost-unit-economics-reference-plan.v1.json
   bytes: 24066
-  sha256: 50fd1b044ade7ed94d8b7de53e191b96cbc89beaae8bfdde6da46a1322a1588c
+  sha256: 95de8fefb4651de952b20a92d6e9cca92b36bdcfc8319ee8efa3b4baa6c8a3ea
 provenance:
   generated_by: repo://scripts/build_st1304_cost_unit_economics_reference_plan.py
   generation_command: /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --frozen
@@ -88,9 +88,9 @@ provenance:
   - uri: repo://changes/st-1205/generated/kpi-read-model-reference-plan.v1.json
     sha256: 5c6d41670a7da68490abc3b9bd7e97c849322e2dd176f1637375b6729e4c130b
   - uri: repo://changes/st-1205/manifest.yaml
-    sha256: 4f9ac1ec5dc0a8588788b98c972bd44f5db6f21925238ece6c62a2bb9f38032d
+    sha256: 391ef69e2d1d46734b5fe4784c4447f1d83d52535438a17b83b23121a3b27d80
   - uri: repo://scripts/build_st1205_kpi_read_model_reference_plan.py
-    sha256: 613033f689228f6c3c722086e20f00e7e898d2108f82daa2b7d5a6b90454c458
+    sha256: f00bb2af54ba12e72b23afb224c63d24fb0072ff6788e06e1f1443a153d5ec56
   - uri: repo://tests/st1205/conftest.py
     sha256: 5658caf178b330bc77d38af1077aff78de7729c312baddcf7d5f2311f2b142f8
   - uri: repo://tests/st1205/test_contract.py
