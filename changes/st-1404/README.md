@@ -1,12 +1,14 @@
 # ST-1404 recorded one-step Job runtime seam
 
-Status: `LOCAL_IMPLEMENTATION_CANDIDATE`
+Status: `LOCAL_CODE_COMPLETE` (formal/live verification remains `NOT_EXECUTED`)
 
 This Story implements the maximum reversible local portion of the approved
-ST-1404 boundary: one synchronous dispatcher observation or one synchronous
-worker observation per call, backed by an exact-development/CI in-memory store
-and the existing provider-neutral QueuePort. It makes no database, broker,
-crash-recovery, multi-process, staging, or Production claim.
+ST-1404 boundary. The V2 seam adds an ST-0308-compatible explicit outer Unit of
+Work, revision CAS, durable-shaped lease fences, process-restart snapshots,
+commit-ambiguity recovery, orphan takeover, atomic handler-effect completion,
+quarantine replay, and cancellation/deadline handling. It remains a recorded
+DEV/CI adapter over the provider-neutral QueuePort: no live database, broker,
+provider, worker activation, staging, or Production claim is made.
 
 The older full-runtime preflight in this directory remains authoritative for
 durable PostgreSQL/broker design and unresolved recovery semantics. The later
@@ -42,6 +44,24 @@ interface/fake slice while preserving those hard boundaries.
   `RuntimeEnvironment.ENV_DEV` or `.CI` and uses a process-local lock for its
   explicitly limited atomicity. It retains no raw payload, result, exception,
   SQL, provider response, credential, or worker identity.
+- `RecordedDurableJobRuntimeStore` is the V2 clone-on-write UoW fake. Every
+  transaction starts from one immutable revision, commits with CAS, and can
+  inject known-before, unknown-before, or unknown-after commit outcomes.
+- Dispatcher queue I/O occurs only after an Outbox lease/fence commit and is
+  finalized in a second UoW. Stable Event identity makes an ambiguous send an
+  at-least-once duplicate, never a second logical message.
+- Worker claim commits before handler execution. Job, Attempt, Inbox, handler
+  effects, transition history, and terminal/retry outcome commit atomically;
+  broker acknowledge/retry happens only afterward. Unknown completion is
+  resolved by the durable Inbox on redelivery.
+- Expired Outbox/Work leases are selected deterministically and recovered with
+  fencing. Retry exhaustion and quarantine emit metadata-only local DLQ
+  records. Quarantine replay is two-phase and requires a hash-only approval
+  record; `QUARANTINED -> QUEUED` clears the current completion timestamp while
+  immutable Attempt/transition history remains.
+- Cancellation is immediate for REQUESTED/QUEUED and recorded for RUNNING or
+  retry states. Deadline/cancellation in RETRY_SCHEDULED is explicitly held;
+  no non-canonical expiry edge is invented.
 
 There is no loop, spawned task/thread, sleep, filesystem, ambient environment,
 network, provider/broker SDK, database, SQLAlchemy/Alembic, migration,
@@ -61,22 +81,26 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python "$UV" --config-file uv.toml \
   --no-python-downloads pytest -p no:cacheprovider -q tests/st1404
 ```
 
-Focused Ruff lint/format and strict mypy use the same uv prefix over the six
-owned source modules and `tests/st1404`. Shared exports, worker entrypoints,
-Make routing, manifests, generated evidence, and status application are
-deferred to Wave integration.
+Focused Ruff lint/format, strict mypy/Pyright, and the owner generator cover
+the Story-owned V2 source and tests. Regenerate/check the contract projection:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python "$UV" --config-file uv.toml \
+  run --locked --offline --no-cache --no-sync --no-env-file \
+  --no-python-downloads python scripts/build_st1404_durable_job_runtime.py --check
+```
 
 ## Evidence and deferred boundaries
 
-This local candidate does not implement a PostgreSQL Repository/UoW, atomic
-database Outbox/Inbox transaction, real queue topology, broker adapter,
-multi-worker fence, crash/orphan recovery, process lifecycle, provider retry
-policy, quarantine release, or retry-state expiry transition. A failed recorded
-Inbox identity is reopened only for the provisional local case where its Job is
-explicitly due in `RETRY_SCHEDULED`; this is not a durable design decision.
+`DEBT-W1-016` and `DEBT-W1-017` are closed for local implementation by the V2
+transaction/fence/commit-ambiguity and orphan/quarantine/retry-state behavior.
+This does not close live-runtime evidence: PostgreSQL mapping/migration,
+provider broker topology, multi-process execution, formal failure injection,
+and operational thresholds remain external or deferred. Synthetic fixture
+durations are versioned test inputs and are not operational defaults.
 
 Local pytest/static results are not formal `TST-013` or `TST-028` evidence and
 do not represent hosted CI, PostgreSQL/broker runtime, staging, deployment,
-release, or Production readiness. Current ST-0203 manifest drift and the
-remaining durable/recovery boundaries are tracked as `DEBT-W1-016` through
-`DEBT-W1-019` in the implementation-first ledger.
+release, or Production readiness. `DEBT-W1-018` (ST-0203 owner drift) remains
+outside this Story's ownership. `DEBT-W1-019` remains `NOT_EXECUTED` for live
+database/broker, staging, provider, and Production evidence.
