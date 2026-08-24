@@ -1,0 +1,93 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-0503",
+  "classification": "MAXIMUM_SAFE_LOCAL_DURABLE_CATALOG_NORMALIZATION_RUNTIME",
+  "local_implementation_status": "LOCAL_CODE_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "dependencies": {
+    "ST-0308": "READ_ONLY_OWNER_PRIVATE_UOW_PATTERN",
+    "ST-0502": "EXACT_PERSISTED_ITEM_SEARCH_V2_PAGES_RECEIPTS_AND_RAW_HASHES"
+  },
+  "source_boundary": {
+    "accepted_mode": "RECORDED_PERSISTED",
+    "default_mode": "DISABLED",
+    "persisted_success_page_required": true,
+    "receipt_request_raw_page_reparse_required": true,
+    "source_snapshot_required": true,
+    "full_provenance_required": true,
+    "collaborator_exceptions_sanitized": true,
+    "collaborator_returns_revalidated": true,
+    "http_or_network_capability": false,
+    "credential_capability": false,
+    "provider_call_capability": false,
+    "worker_activation": false,
+    "external_actions": 0
+  },
+  "normalization_boundary": {
+    "normalizer_version": "ST0503_RECORDED_STRUCTURAL_V2",
+    "stable_ids_bind_provider_item_shop_receipt_snapshot_and_version": true,
+    "provider_text_and_urls_are_untrusted_data": true,
+    "price_availability_postage_and_link_are_observations": true,
+    "observation_is_recommendation": false,
+    "ranking_surface": false,
+    "source_confidence": null,
+    "source_confidence_status": "SOURCE_ABSENT"
+  },
+  "identity_boundary": {
+    "open_decision": "OD-006",
+    "identity_status": "HUMAN_REVIEW",
+    "readiness": "NOT_READY",
+    "automatic_merge": false,
+    "automatic_split": false,
+    "canonical_product_identity": false,
+    "provider_confidence_shortcut": false,
+    "model_or_jan_extraction": false
+  },
+  "recommendation_boundary": {
+    "provider_derived_recommendation_inputs": [],
+    "excluded_inputs": [
+      "EPC",
+      "RPM",
+      "affiliateRate",
+      "affiliate_rate",
+      "commission",
+      "epc",
+      "profit",
+      "recommendation_score",
+      "reviewAverage",
+      "reviewCount",
+      "review_aggregate",
+      "review_body",
+      "reward",
+      "rpm"
+    ]
+  },
+  "durability_boundary": {
+    "backend": "OWNER_PRIVATE_SQLITE",
+    "atomic_snapshot_batch_records_outbox_journal_and_cas": true,
+    "exact_schema_sql_bound": true,
+    "exact_autoindex_and_column_inventory_bound": true,
+    "strict_directory_mode": "0700",
+    "strict_database_mode": "0600",
+    "symlink_rejected": true,
+    "hardlink_rejected": true,
+    "path_traversal_rejected": true,
+    "restart_and_commit_ambiguity_recovery": true,
+    "command_idempotency": true,
+    "source_receipt_idempotency": true,
+    "catalog_compare_and_swap": true,
+    "hash_chain": true,
+    "outbox": true,
+    "tamper_and_schema_drift_fail_closed": true
+  },
+  "formal_evidence": {
+    "TST-005": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-007": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-008_postgresql": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  }
+}

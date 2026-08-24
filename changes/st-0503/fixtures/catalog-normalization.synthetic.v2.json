@@ -1,0 +1,48 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-0503",
+  "synthetic": true,
+  "operational_default": false,
+  "activation": false,
+  "contains_credential_or_sample_value": false,
+  "external_actions": 0,
+  "source": {
+    "story_id": "ST-0502",
+    "runtime_version": "V2",
+    "mode": "RECORDED_PERSISTED",
+    "page_count": 1,
+    "item_count": 2,
+    "receipt_and_raw_hash_required": true
+  },
+  "expected": {
+    "candidate_count": 2,
+    "offer_count": 2,
+    "observation_count": 8,
+    "observation_kinds_per_offer": [
+      "PRICE_JPY",
+      "AVAILABILITY_PROVIDER_FLAG",
+      "POSTAGE_INCLUDED_PROVIDER_FLAG",
+      "AFFILIATE_LINK"
+    ],
+    "identity_status": "HUMAN_REVIEW",
+    "readiness": "NOT_READY",
+    "open_decision": "OD-006",
+    "external_actions": 0
+  },
+  "commit_faults": [
+    "NONE",
+    "KNOWN_BEFORE_COMMIT",
+    "UNKNOWN_BEFORE_COMMIT",
+    "UNKNOWN_AFTER_COMMIT"
+  ],
+  "hostile_cases": [
+    "ARBITRARY_COLLABORATOR_EXCEPTION",
+    "FORGED_EXACT_CLASS_SOURCE_PAGE",
+    "FORGED_EXACT_CLASS_STORE_RESULT",
+    "RECEIPT_PAGE_HASH_DRIFT",
+    "PAYLOAD_TAMPER",
+    "SCHEMA_DRIFT",
+    "CONCURRENT_CAS",
+    "DENIED_NETWORK"
+  ]
+}

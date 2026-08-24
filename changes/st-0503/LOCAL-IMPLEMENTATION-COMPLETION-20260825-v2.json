@@ -1,0 +1,140 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-0503",
+  "classification": "MAXIMUM_SAFE_LOCAL_DURABLE_CATALOG_NORMALIZATION_RUNTIME",
+  "recorded_at": "2026-08-24T18:35:07Z",
+  "base_commit": "61565261b6bee147e71aa068a46076088e8b3df7",
+  "branch": "agent/st0503-catalog-normalization-local-complete",
+  "local_status": "LOCAL_CODE_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "status_registry_updated": false,
+  "formal_validation_claimed": false,
+  "completed_local_scope": [
+    "additive V2 consumption of exact successful ST-0502 V2 persisted page receipt request and raw hash only",
+    "raw archive byte hash and exact parser round-trip revalidation before direct commit or idempotent replay",
+    "deterministic provider item shop receipt snapshot artifact and normalizer-version-bound internal IDs",
+    "untrusted provider text and HTTPS URL preservation without instruction or identity semantics",
+    "candidate offer price availability postage and affiliate-link observation records with full source snapshot provenance",
+    "OD-006 fail-closed HUMAN_REVIEW and NOT_READY with no merge split grouping canonical identity model or JAN inference",
+    "no ranking surface and explicit exclusion of affiliate rate commission EPC RPM profit reward and review inputs",
+    "owner-private SQLite atomic snapshot batch records outbox journal CAS and hash-chain UoW",
+    "exact SQLite schema SQL autoindex column STRICT and foreign-key binding",
+    "0700 directory 0600 database symlink hardlink path traversal and permission fail-closed boundary",
+    "command and source idempotency restart recovery concurrency CAS and known or unknown commit handling",
+    "payload schema partial-row journal event and chain tamper detection",
+    "arbitrary collaborator exception sanitization and forged exact-class return reconstruction and source revalidation",
+    "regular slotted closed runtime exception with assignable traceback and context-manager regression",
+    "recorded and disabled source modes only with no HTTP network credential provider worker or external action capability",
+    "deterministic closed contract synthetic fixture owner generator manifest and no-write check",
+    "unchanged 59-test process-local V1 compatibility seam"
+  ],
+  "local_checks": [
+    {
+      "name": "ST-0503_V1_compatibility_suite",
+      "result": "PASS",
+      "detail": "59 passed"
+    },
+    {
+      "name": "ST-0503_V2_focused_suite",
+      "result": "PASS",
+      "detail": "27 passed"
+    },
+    {
+      "name": "ST-0503_combined_suite",
+      "result": "PASS",
+      "detail": "86 passed"
+    },
+    {
+      "name": "ST-0503_denied_network_suite",
+      "result": "PASS",
+      "detail": "Linux user and network namespace isolated; external network denied; socket API denied; 86 passed"
+    },
+    {
+      "name": "ST-0502_regression",
+      "result": "PASS",
+      "detail": "263 passed"
+    },
+    {
+      "name": "ST-0308_regression",
+      "result": "PASS",
+      "detail": "165 passed"
+    },
+    {
+      "name": "owner_generator_no_write",
+      "result": "PASS",
+      "detail": "generated projection 9dd934c8efb8037ea507e488f18ef02e7c43a5fcf2bcc8173f138194c4022940; manifest ffba021718a6fb550cd1a5baed2f9eccb552f088f3165b3caa631d73b19277bf"
+    },
+    {
+      "name": "ruff_format_and_lint",
+      "result": "PASS",
+      "detail": "11 owned V2 Python files"
+    },
+    {
+      "name": "strict_mypy",
+      "result": "PASS",
+      "detail": "11 owned V2 Python files"
+    },
+    {
+      "name": "pinned_pyright_1_1_411",
+      "result": "PASS",
+      "detail": "0 errors, 0 warnings, 0 informations across 11 owned V2 Python files"
+    },
+    {
+      "name": "compile_and_import",
+      "result": "PASS",
+      "detail": "5 runtime modules, 1 owner generator, and 5 focused test or fixture modules"
+    },
+    {
+      "name": "focused_secret_scan",
+      "result": "PASS",
+      "detail": "repository scanner rules; exact owned payloads only; zero findings"
+    },
+    {
+      "name": "static_authority_boundary",
+      "result": "PASS",
+      "detail": "AST check rejects HTTP network credential worker publication send and ranking definitions or imports"
+    },
+    {
+      "name": "git_diff_check",
+      "result": "PASS",
+      "detail": "owned patch"
+    }
+  ],
+  "debt_disposition": [
+    {
+      "debt_id": "ST0503-LOCAL-IMPLEMENTATION",
+      "status": "CLOSED_LOCAL_MAXIMUM_SAFE",
+      "detail": "The durable recorded normalization source snapshot repositories UoW outbox recovery and hostile-input boundaries are locally implemented."
+    },
+    {
+      "debt_id": "ST0503-OD006-IDENTITY",
+      "status": "EXTERNAL_DECISION_DEFERRED_SAFE_DEFAULT",
+      "detail": "OD-006 remains unresolved; all identity state is HUMAN_REVIEW and NOT_READY and no identity decision is implemented in ST-0503."
+    },
+    {
+      "debt_id": "INHERITED-LINKED-WORKTREE-SCANNER",
+      "status": "INHERITED_UNCHANGED",
+      "detail": "The canonical full-worktree scanner refuses Git-file indirection with unsafe-git-metadata; the exact payload scanner is clean for every owned file."
+    },
+    {
+      "debt_id": "FORMAL-AND-LIVE-GATES",
+      "status": "EXTERNAL_NOT_EXECUTED",
+      "detail": "Formal suites, PostgreSQL, live provider, hosted CI, staging, release, and Production remain separately gated."
+    }
+  ],
+  "introduced_local_debt": [],
+  "deferred_external_gates": {
+    "TST-005": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-007": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-008_postgresql": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "credentials": "NOT_EXECUTED",
+    "event_delivery_worker": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  },
+  "external_actions": [],
+  "production_authority": "NONE"
+}
