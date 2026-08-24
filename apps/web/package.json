@@ -6,8 +6,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "next build --webpack",
-    "lint": "eslint --max-warnings=0 --no-warn-ignored . ../../tests/st1001_v2 ../../scripts/check_st1001_public_shell_browser.mjs",
-    "typecheck": "tsc --noEmit --project tsconfig.json"
+    "lint": "eslint --max-warnings=0 --no-warn-ignored app src next.config.ts next-env.d.ts ../../tests/st1001_v2 ../../scripts/check_st1001_public_shell_browser.mjs",
+    "typecheck": "next typegen && tsc --noEmit --project tsconfig.json"
   },
   "engines": {
     "node": "24.18.1",

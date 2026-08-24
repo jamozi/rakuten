@@ -16,6 +16,20 @@ function source(relative: string): string {
 }
 
 describe('ST-1001 V2 route and security surface', () => {
+  it('generates Next route declarations before a clean-checkout typecheck', () => {
+    const manifest = JSON.parse(source('apps/web/package.json')) as {
+      scripts?: Record<string, unknown>;
+    };
+    assert.equal(
+      manifest.scripts?.typecheck,
+      'next typegen && tsc --noEmit --project tsconfig.json',
+    );
+    assert.equal(
+      manifest.scripts?.lint,
+      'eslint --max-warnings=0 --no-warn-ignored app src next.config.ts next-env.d.ts ../../tests/st1001_v2 ../../scripts/check_st1001_public_shell_browser.mjs',
+    );
+  });
+
   it('registers every policy route as a force-dynamic server component', () => {
     const pages = [
       ['editorial-policy', 'PUB-004'],

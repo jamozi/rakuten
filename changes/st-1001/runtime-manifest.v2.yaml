@@ -21,8 +21,8 @@ source_artifacts:
     sha256: 08704939b3719c41c74660343f203349ced63fb1533a1fac832f2542d0c17287
     role: OWNER_SOURCE
   - uri: repo://apps/web/package.json
-    bytes: 521
-    sha256: f110e7d956628ebc9e45f86cd0517474d6764ebd658c74d95e45eadfdcf84c81
+    bytes: 572
+    sha256: 8d0773c33fd0aea745ee0516cd25d15693a5f2adbafbef8c1b4537ac01a872f9
     role: OWNER_SOURCE
   - uri: repo://apps/web/next-env.d.ts
     bytes: 247
@@ -77,8 +77,8 @@ source_artifacts:
     sha256: fbfc190ba1fbafbc2ec5e586c973d07a332b819da9f2a356ae5fd24275cc6085
     role: OWNER_SOURCE
   - uri: repo://tests/st1001_v2/public-shell-static.test.ts
-    bytes: 4109
-    sha256: 2c9357a8597071d9f708f3cf056aca3319deb7d3522c30cda5ddcd5c7e8d7dc8
+    bytes: 4657
+    sha256: 1e366c3a95940a76d4fe0beb6886cab3e76ac1a60fce29dfc372a9316309d36c
     role: OWNER_SOURCE
   - uri: repo://tests/st1001_v2/public-shell-accessibility.test.ts
     bytes: 2133
