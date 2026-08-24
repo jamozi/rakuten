@@ -1,0 +1,58 @@
+document:
+  schema_version: 1
+  story_id: ST-1904
+  implementation_mode: STRICT_STORY
+  status: LOCAL_CODE_COMPLETE_MAX_SAFE_DISABLED
+  canonical_status: DEFERRED_POST_MVP
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+
+base:
+  commit: 0aef05373e4ecc45aee2a4fc4f2ca6f4a0dd19cb
+  branch: agent/st1904-local-complete-max-safe
+
+local_boundary:
+  provider_neutral: true
+  default_enabled: false
+  caller_bytes_recorded_synthetic_only: true
+  real_category_selected: false
+  identity_decision: HUMAN_DECISION_REQUIRED
+  freshness_sla: HUMAN_DECISION_REQUIRED
+  template_activation: DISABLED
+  live_enabled_state_exists: false
+  release_interface_exists: false
+  network: FORBIDDEN
+  credentials: NOT_USED
+  persistence: NOT_EXECUTED
+  editorial_mutation: FORBIDDEN
+  recommendation_order_mutation: FORBIDDEN
+  publication_snapshot_mutation: FORBIDDEN
+  publication: FORBIDDEN
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+
+verification:
+  focused_behavior_negative_security_tests: PASSED_61
+  capability_boundary_tests: PASSED_4_INCLUDED_IN_FOCUSED_61
+  owner_generate_and_check: PASSED
+  dependency_ST-1805_regression: PASSED_46
+  dependency_ST-1702_regression: PASSED_362_SPLIT_276_PLUS_86
+  ruff_format_and_check: PASSED_13_FILES
+  strict_mypy: PASSED_13_FILES
+  strict_pyright_owned_production: PASSED_4_FILES
+  python_compile: PASSED_13_FILES
+  focused_secret_scan: PASSED_21_FILES_ZERO_FINDINGS
+  git_diff_check: PASSED
+  formal_TST-032: NOT_EXECUTED
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - Product Owner real-category selection under OD-001
+    - category-specific identity evidence and rules under OD-006
+    - category freshness SLA under OD-007
+    - approved category-to-template activation policy
+    - provider evidence and live integration design
+    - separate human release decision and formal TST-032
+    - staging, release, and Production evidence

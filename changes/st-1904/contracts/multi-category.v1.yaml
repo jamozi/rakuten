@@ -1,0 +1,280 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1904
+  classification: MAXIMUM_SAFE_LOCAL_DISABLED_RECORDED_MULTI_CATEGORY_CONTRACT_V1
+  status: LOCAL_CODE_COMPLETE_MAX_SAFE_DISABLED
+  mvp: false
+  canonical_implementation_status: DEFERRED_POST_MVP
+  canonical_status_changed: false
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+
+authority:
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  canonical_decisions:
+    path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    category_selection:
+      id: OD-001
+      status: HUMAN_DECISION_REQUIRED
+      resolved_by_this_story: false
+    product_identity:
+      id: OD-006
+      status: EXTERNAL_EVIDENCE_REQUIRED
+      resolved_by_this_story: false
+    freshness_sla:
+      id: OD-007
+      status: HUMAN_DECISION_REQUIRED
+      resolved_by_this_story: false
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1904
+    depends_on: ST-1805
+    effective_status: DEFERRED_POST_MVP
+  test_acceptance_design:
+    path: docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    required_suite: TST-032
+    formal_status: NOT_EXECUTED
+  security_design:
+    path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  data_classification:
+    path: docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    controls:
+      - SEC-GOV-004
+      - SEC-GOV-006
+      - SEC-GOV-008
+      - SEC-APP-001
+      - SEC-DATA-003
+      - SEC-DATA-004
+      - SEC-DATA-007
+      - SEC-SDLC-006
+      - SEC-SDLC-009
+  threat_register:
+    path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+    threats:
+      - THR-009
+      - THR-010
+      - THR-020
+      - THR-025
+      - THR-030
+
+predecessor:
+  story_id: ST-1805
+  binding: EXACT_BASE_COMMIT_BYTES
+  base_commit: 0aef05373e4ecc45aee2a4fc4f2ca6f4a0dd19cb
+  artifacts:
+    changes/st-1805/contracts/portfolio-decision.v1.yaml: dd6c742d295f5bc7baa036aa6cca0a42e84b7a3168f0302aec8e40e46a87f4b9
+    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: 1288a29454435293fc47ff556215c5afee6e58fad8b995b13e4aca81d2535e22
+  required_semantics:
+    overall: BLOCKED
+    outcome: NO_DECISION
+    category_change_authority: NONE
+    acceptance_criteria_satisfied: false
+    actual_observation_count: 0
+    product_owner_decision_present: false
+
+dependency_contracts:
+  st1702_runtime_contract:
+    path: changes/st-1702/contracts/category-fixture-runtime.v2.json
+    sha256: 85cc1693ec4f842aaf9e156658c5fa7f95edfd32aef688f162565e40943dd914
+  st1702_recorded_fixture:
+    path: changes/st-1702/generated/category-fixture-runtime-recorded.v2.json
+    sha256: 24ec5547c1e55380c3ec5d7d62d201bc63408232d6d7af8b5e21510a0ddfc1b9
+    required_semantics:
+      synthetic_only: true
+      candidate_applied: false
+      real_category_activation: DISABLED_UNRESOLVED_OD_001
+      automatic_merge_enabled: false
+      automatic_split_enabled: false
+      identity_human_review_required: true
+      category_overrides: []
+      provider_overrides: []
+      recommendation_auto_reorder: FORBIDDEN
+      runtime_enabled: false
+      publication_authorized: false
+      release_authorized: false
+      production_authorized: false
+  st1702_runtime_manifest:
+    path: changes/st-1702/runtime-manifest.v2.yaml
+    sha256: 4310c1f09710d597ba2a77bcd2b4a8263c427d6fd8ae30f4912fe57184f32ab6
+  identity_reference_plan:
+    path: changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json
+    sha256: 8c30308b4f18e250f2117b78d37a72059c9a36646c31e9906d565bee80d4ef90
+    required_semantics:
+      decision: NOT_READY
+      safe_default: NO_AUTOMATIC_MERGE_HUMAN_REVIEW_REQUIRED
+      automatic_merge_enabled: false
+      automatic_split_enabled: false
+      human_review_required: true
+  freshness_policy:
+    path: contracts/raos-v0.4/contracts/content/RAOS_06_freshness_update_policy_v0.1.yaml
+    sha256: a4d490d2a54b3def63c9c240b09d34a759ebd3924e60cfcca438ee979334cea2
+    required_semantics:
+      policy_id: RAOS-CONTENT-FRESH-001
+      policy_version: 1.0.0
+      threshold_status: PROVISIONAL
+      never_auto_reorder_recommendations: true
+  article_template_schema:
+    path: contracts/raos-v0.4/contracts/schemas/content-revision/article-template-version.v1.schema.json
+    sha256: cfde646855dd855b3e79b5b76e2737836d01fe3690969d800ce2d70c64469608
+  template_selection_guide:
+    path: contracts/raos-v0.4/contracts/content/templates/selection_guide.template.yaml
+    sha256: 9254ab52e7936f234416e6ae7a284bf24a6fd006b71accb79d8514063e496d9a
+    template_id: TPL-AT-001
+  template_product_comparison:
+    path: contracts/raos-v0.4/contracts/content/templates/product_comparison.template.yaml
+    sha256: 19afdfd376df8de3f4eeae21de826ae0d1b6577b93426fdeaa714abbe2ef6cff
+    template_id: TPL-AT-003
+  atomic_publication_owner:
+    path: scripts/secure_generated_publication.py
+    sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+
+feature_scope:
+  default: DISABLED
+  closed_states:
+    - DISABLED
+    - RECORDED_SYNTHETIC_CONTRACT_EVALUATION_ONLY
+  executable_environments:
+    - ENV-DEV
+    - ENV-CI
+  live_enabled_state_exists: false
+  category_activation_state_exists: false
+  template_activation_state_exists: false
+  release_interface_exists: false
+  provider_neutral: true
+  caller_bytes_only: true
+  disabled_fails_before_port_call: true
+
+multi_category_contract:
+  real_category_selected: false
+  synthetic_category_count: 2
+  identity_rule_state: NOT_DEFINED_UNRESOLVED_OD_006
+  identity_disposition: HUMAN_REVIEW_REQUIRED
+  automatic_merge_enabled: false
+  automatic_split_enabled: false
+  freshness_rule_state: PROVISIONAL_SAFE_DEFAULT_UNMODIFIED
+  category_override: null
+  provider_override: null
+  stale_never_fresh: true
+  recommendation_auto_reorder: FORBIDDEN
+  template_state: SYNTHETIC_CANDIDATE_NOT_APPLIED
+  template_active: false
+  candidate_templates:
+    synthetic_category_alpha: TPL-AT-001
+    synthetic_category_beta: TPL-AT-003
+
+recorded_fixture:
+  path: changes/st-1904/fixtures/recorded/multi-category.synthetic.v1.json
+  bytes: 2992
+  sha256: 4d33f8be3fb7bf692c11cc9857ebafe60196a3c8c2106b50f105d97ad6edea27
+  binding_set_sha256: 1b78ddbc50889e6bae3f7fc846001eee302cb2b2496178de7da245345aec99ea
+  synthetic: true
+  real_category_present: false
+  provider_evidence_present: false
+  publication_eligible: false
+  release_eligible: false
+
+result_contract:
+  outcome: INTERFACE_COMPATIBLE_RECORDED_SYNTHETIC_ONLY
+  authority: NONE
+  category_selection: HUMAN_DECISION_REQUIRED
+  identity_rules: HUMAN_DECISION_REQUIRED
+  freshness_sla: HUMAN_DECISION_REQUIRED
+  category_activation: DISABLED
+  template_activation: DISABLED
+  release_decision: RELEASE_DECISION_REQUIRED
+  canonical_status: DEFERRED_POST_MVP
+  formal_TST-032: NOT_EXECUTED
+
+mutation_boundary:
+  provider_call: FORBIDDEN
+  network: FORBIDDEN
+  credentials: NOT_USED
+  persistence: NOT_EXECUTED
+  category_selection: FORBIDDEN
+  category_activation: FORBIDDEN
+  identity_decision: FORBIDDEN
+  freshness_override: FORBIDDEN
+  template_activation: FORBIDDEN
+  editorial_mutation: FORBIDDEN
+  article_html_mutation: FORBIDDEN
+  cta_mutation: FORBIDDEN
+  product_selection_mutation: FORBIDDEN
+  recommendation_order_mutation: FORBIDDEN
+  publication_snapshot_mutation: FORBIDDEN
+  publication: FORBIDDEN
+  status_apply: FORBIDDEN
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  recommendation_inputs_excluded:
+    - AFFILIATE_COMMISSION_RATE
+    - CONFIRMED_REWARD
+    - UNATTRIBUTED_REWARD
+    - COMMISSION
+    - EPC
+    - RPM
+    - PROFIT
+
+verification_boundary:
+  focused_local_behavior_security_negative: LOCAL_CANDIDATE
+  owner_generator_check: LOCAL_CANDIDATE
+  dependency_ST-1805_regression: LOCAL_CANDIDATE
+  dependency_ST-1702_regression: LOCAL_CANDIDATE
+  formal_TST-032: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  database: NOT_EXECUTED
+  network: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - Product Owner real-category selection under OD-001
+    - category-specific product identity evidence and Domain Editor rules under OD-006
+    - Managing Editor category freshness SLA under OD-007
+    - approved category-to-template policy and activation decision
+    - provider evidence and live integration design
+    - separate human release decision and formal TST-032
+    - staging, release, and Production evidence
+
+owned_sources:
+  - changes/st-1904/contracts/multi-category.v1.yaml
+  - changes/st-1904/fixtures/recorded/multi-category.synthetic.v1.json
+  - changes/st-1904/PREFLIGHT.md
+  - changes/st-1904/README.md
+  - changes/st-1904/completion/completion.v1.yaml
+  - docs/worklogs/ST-1904.md
+  - python/raos/domain/catalog/multi_category.py
+  - python/raos/ports/multi_category.py
+  - python/raos/application/catalog/multi_category.py
+  - python/raos/adapters/recorded_multi_category.py
+  - scripts/build_st1904_multi_category.py
+  - tests/st1904/__init__.py
+  - tests/st1904/conftest.py
+  - tests/st1904/support.py
+  - tests/st1904/test_contract.py
+  - tests/st1904/test_service.py
+  - tests/st1904/test_negative_cases.py
+  - tests/st1904/test_generation.py
+  - tests/st1904/test_security_boundaries.py
