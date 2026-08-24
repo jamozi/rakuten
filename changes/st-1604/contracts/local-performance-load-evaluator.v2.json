@@ -5,6 +5,8 @@
     "story_id": "ST-1604",
     "classification": "DETERMINISTIC_RECORDED_LOCAL_ONLY_NOT_TST027_EVIDENCE",
     "local_evaluator_enabled": true,
+    "recorded_capture_binding": "NOT_IMPLEMENTED_DISABLED",
+    "recorded_capture_enabled": false,
     "workload_execution_enabled": false,
     "production_eligible": false
   },

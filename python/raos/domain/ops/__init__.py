@@ -69,6 +69,8 @@ from raos.domain.ops.performance_load import (
     SurfaceObservation,
     evaluate_performance_load,
     nearest_rank,
+    performance_load_record_sha256,
+    performance_load_report_sha256,
 )
 from raos.domain.ops.telemetry import (
     LogLevel,
@@ -162,4 +164,6 @@ __all__ = [
     "WorkStepResult",
     "evaluate_performance_load",
     "nearest_rank",
+    "performance_load_record_sha256",
+    "performance_load_report_sha256",
 ]

@@ -10,14 +10,18 @@ from pathlib import Path
 import sqlite3
 import stat
 from threading import Lock
-from typing import Final, NoReturn, final
+from typing import Final, NoReturn, TypeVar, final
 from uuid import UUID
 
 from raos.domain.ops.performance_load import (
+    LoadEvidenceSource,
+    LoadReportStatus,
     PerformanceLoadFailure,
     PerformanceLoadFailureCode,
     PerformanceLoadReport,
     fail_performance_load,
+    performance_load_record_sha256,
+    performance_load_report_sha256,
 )
 from raos.ports.performance_load import (
     PerformanceLoadReceipt,
@@ -29,6 +33,7 @@ _DATABASE_NAME: Final = "st1604-local-performance-load.sqlite3"
 _SCHEMA_VERSION: Final = "ST1604_LOCAL_PERFORMANCE_LOAD_V2"
 _USER_VERSION: Final = 160402
 _GENESIS: Final = "0" * 64
+_EnumT = TypeVar("_EnumT", bound=StrEnum)
 
 _CREATE_METADATA: Final = """CREATE TABLE st1604_metadata_v2 (
     singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
@@ -89,6 +94,10 @@ class _InjectedCommitFault(RuntimeError):
     pass
 
 
+class _CommitRecoveryRequired(RuntimeError):
+    pass
+
+
 def _fail(code: PerformanceLoadFailureCode) -> NoReturn:
     fail_performance_load(code)
 
@@ -113,41 +122,75 @@ def _metadata_digest(count: int, head: str) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
-def _record_digest(
-    *,
-    sequence: int,
-    run_id: str,
-    report_sha256: str,
-    request_sha256: str,
-    observed_at: str,
-    report_status: str,
-    evidence_source: str,
-    previous_record_sha256: str,
-) -> str:
-    payload = json.dumps(
-        {
-            "evidence_source": evidence_source,
-            "observed_at": observed_at,
-            "previous_record_sha256": previous_record_sha256,
-            "report_sha256": report_sha256,
-            "report_status": report_status,
-            "request_sha256": request_sha256,
-            "run_id": run_id,
-            "sequence": sequence,
-        },
-        ensure_ascii=True,
-        allow_nan=False,
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode("ascii")
-    return hashlib.sha256(payload).hexdigest()
+def _canonical_stored_uuid(value: object) -> UUID:
+    if type(value) is not str:
+        _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+    try:
+        value.encode("ascii")
+        parsed = UUID(value)
+    except UnicodeError, ValueError, AttributeError:
+        _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+    if str(parsed) != value:
+        _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+    return parsed
+
+
+def _stored_enum(value: object, expected: type[_EnumT]) -> _EnumT:
+    if type(value) is not str:
+        _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+    try:
+        parsed = expected(value)
+    except ValueError:
+        _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+    if parsed.value != value:
+        _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+    return parsed
+
+
+def _stored_record_digest(row: sqlite3.Row) -> str:
+    try:
+        sequence = row["sequence"]
+        run_id = _canonical_stored_uuid(row["run_id"])
+        report_sha256 = row["report_sha256"]
+        request_sha256 = row["request_sha256"]
+        observed_at = row["observed_at"]
+        report_status = _stored_enum(row["report_status"], LoadReportStatus)
+        evidence_source = _stored_enum(row["evidence_source"], LoadEvidenceSource)
+        if evidence_source is LoadEvidenceSource.RECORDED_CAPTURE:
+            _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+        previous_record_sha256 = row["previous_record_sha256"]
+        if type(sequence) is not int:
+            _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+        return performance_load_record_sha256(
+            sequence=sequence,
+            run_id=run_id,
+            report_sha256=report_sha256,
+            request_sha256=request_sha256,
+            observed_at=observed_at,
+            report_status=report_status,
+            evidence_source=evidence_source,
+            previous_record_sha256=previous_record_sha256,
+        )
+    except PerformanceLoadFailure:
+        _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+    except KeyError, IndexError, TypeError, ValueError:
+        _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
 
 
 @final
 class RecordedPerformanceLoadJournal:
     """Durable local report sink with no read/export/delete surface."""
 
-    __slots__ = ("_commit_fault", "_database_path", "_fault_lock", "_fault_used")
+    __slots__ = (
+        "_commit_fault",
+        "_database_identity",
+        "_database_path",
+        "_fault_lock",
+        "_fault_used",
+        "_last_report_count",
+        "_last_report_head",
+        "_state_lock",
+    )
 
     def __init__(
         self,
@@ -162,8 +205,12 @@ class RecordedPerformanceLoadJournal:
         self._commit_fault = commit_fault_once
         self._fault_lock = Lock()
         self._fault_used = False
-        self._create_or_validate_database_file()
-        self._initialize_or_validate_schema()
+        self._state_lock = Lock()
+        self._last_report_count = 0
+        self._last_report_head = _GENESIS
+        created, identity = self._open_database_file(allow_create=True)
+        self._database_identity = identity
+        self._initialize_or_validate_schema(created=created)
 
     @property
     def mode(self) -> str:
@@ -196,24 +243,39 @@ class RecordedPerformanceLoadJournal:
             _fail(PerformanceLoadFailureCode.PRIVATE_PATH_INVALID)
         return root
 
-    def _create_or_validate_database_file(self) -> None:
+    def _open_database_file(
+        self, *, allow_create: bool
+    ) -> tuple[bool, tuple[int, int]]:
         root = self._database_path.parent
         self._prepare_private_root(root)
         root_descriptor = -1
         descriptor = -1
+        created = False
         try:
             root_descriptor = os.open(
                 root,
                 os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW,
             )
-            try:
-                descriptor = os.open(
-                    _DATABASE_NAME,
-                    os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
-                    0o600,
-                    dir_fd=root_descriptor,
-                )
-            except FileExistsError:
+            if allow_create:
+                try:
+                    descriptor = os.open(
+                        _DATABASE_NAME,
+                        os.O_RDWR
+                        | os.O_CREAT
+                        | os.O_EXCL
+                        | os.O_CLOEXEC
+                        | os.O_NOFOLLOW,
+                        0o600,
+                        dir_fd=root_descriptor,
+                    )
+                    created = True
+                except FileExistsError:
+                    descriptor = os.open(
+                        _DATABASE_NAME,
+                        os.O_RDWR | os.O_CLOEXEC | os.O_NOFOLLOW,
+                        dir_fd=root_descriptor,
+                    )
+            else:
                 descriptor = os.open(
                     _DATABASE_NAME,
                     os.O_RDWR | os.O_CLOEXEC | os.O_NOFOLLOW,
@@ -227,6 +289,17 @@ class RecordedPerformanceLoadJournal:
                 or metadata.st_nlink != 1
             ):
                 _fail(PerformanceLoadFailureCode.PRIVATE_PATH_INVALID)
+            path_metadata = os.stat(
+                _DATABASE_NAME,
+                dir_fd=root_descriptor,
+                follow_symlinks=False,
+            )
+            if (
+                path_metadata.st_dev != metadata.st_dev
+                or path_metadata.st_ino != metadata.st_ino
+            ):
+                _fail(PerformanceLoadFailureCode.PRIVATE_PATH_INVALID)
+            identity = (metadata.st_dev, metadata.st_ino)
         except PerformanceLoadFailure:
             raise
         except OSError:
@@ -236,16 +309,25 @@ class RecordedPerformanceLoadJournal:
                 os.close(descriptor)
             if root_descriptor >= 0:
                 os.close(root_descriptor)
+        return created, identity
+
+    def _validate_database_identity(self) -> None:
+        _, identity = self._open_database_file(allow_create=False)
+        if identity != self._database_identity:
+            _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
 
     def _connect(self) -> sqlite3.Connection:
-        self._create_or_validate_database_file()
+        self._validate_database_identity()
+        connection: sqlite3.Connection | None = None
         try:
             connection = sqlite3.connect(
-                self._database_path,
+                f"{self._database_path.as_uri()}?mode=rw",
+                uri=True,
                 isolation_level=None,
                 timeout=10.0,
                 check_same_thread=False,
             )
+            self._validate_database_identity()
             connection.row_factory = sqlite3.Row
             connection.execute("PRAGMA foreign_keys=ON")
             connection.execute("PRAGMA trusted_schema=OFF")
@@ -253,20 +335,23 @@ class RecordedPerformanceLoadJournal:
             connection.execute("PRAGMA journal_mode=DELETE")
             connection.execute("PRAGMA synchronous=FULL")
             connection.execute("PRAGMA secure_delete=ON")
-            self._create_or_validate_database_file()
+            self._validate_database_identity()
             return connection
+        except PerformanceLoadFailure:
+            if connection is not None:
+                self._close_safely(connection)
+            raise
         except sqlite3.Error:
+            if connection is not None:
+                self._close_safely(connection)
             _fail(PerformanceLoadFailureCode.STORAGE_FAILED)
 
-    def _initialize_or_validate_schema(self) -> None:
+    def _initialize_or_validate_schema(self, *, created: bool) -> None:
         connection = self._connect()
         try:
             connection.execute("BEGIN IMMEDIATE")
-            existing = connection.execute(
-                "SELECT name FROM sqlite_master WHERE type='table' "
-                "AND name NOT LIKE 'sqlite_%'"
-            ).fetchall()
-            if not existing:
+            self._validate_database_identity()
+            if created:
                 connection.execute(_CREATE_METADATA)
                 connection.execute(_CREATE_REPORT)
                 connection.execute(
@@ -278,16 +363,20 @@ class RecordedPerformanceLoadJournal:
                 connection.execute(_CREATE_METADATA_NO_DELETE)
                 connection.execute(_CREATE_METADATA_NO_INSERT)
                 connection.execute(f"PRAGMA user_version={_USER_VERSION}")
-            self._validate_all(connection)
+            count, head = self._validate_all(connection)
+            self._validate_database_identity()
             connection.commit()
+            self._validate_database_identity()
+            self._last_report_count = count
+            self._last_report_head = head
         except PerformanceLoadFailure:
-            connection.rollback()
+            self._rollback_safely(connection)
             raise
         except sqlite3.Error:
-            connection.rollback()
+            self._rollback_safely(connection)
             _fail(PerformanceLoadFailureCode.STORAGE_FAILED)
         finally:
-            connection.close()
+            self._close_safely(connection)
 
     @staticmethod
     def _validate_schema(connection: sqlite3.Connection) -> None:
@@ -313,7 +402,7 @@ class RecordedPerformanceLoadJournal:
                 _fail(PerformanceLoadFailureCode.SCHEMA_DRIFT)
 
     @classmethod
-    def _validate_all(cls, connection: sqlite3.Connection) -> None:
+    def _validate_all(cls, connection: sqlite3.Connection) -> tuple[int, str]:
         cls._validate_schema(connection)
         integrity = connection.execute("PRAGMA integrity_check").fetchone()
         if integrity is None or tuple(integrity) != ("ok",):
@@ -352,22 +441,41 @@ class RecordedPerformanceLoadJournal:
                 or not canonical_report
                 or hashlib.sha256(canonical_report).hexdigest() != values[2]
                 or values[8] != previous
-                or _record_digest(
-                    sequence=values[0],
-                    run_id=values[1],
-                    report_sha256=values[2],
-                    request_sha256=values[3],
-                    observed_at=values[4],
-                    report_status=values[5],
-                    evidence_source=values[6],
-                    previous_record_sha256=values[8],
-                )
-                != values[9]
+                or _stored_record_digest(row) != values[9]
             ):
                 _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
             previous = values[9]
         if head != previous:
             _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+        return count, head
+
+    def _require_monotonic_state(
+        self,
+        connection: sqlite3.Connection,
+        *,
+        count: int,
+        head: str,
+    ) -> None:
+        if count < self._last_report_count:
+            _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+        if self._last_report_count == 0:
+            if self._last_report_head != _GENESIS:
+                _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+        else:
+            pinned = connection.execute(
+                "SELECT record_sha256 FROM st1604_report_v2 WHERE sequence=?",
+                (self._last_report_count,),
+            ).fetchone()
+            if pinned is None or pinned["record_sha256"] != self._last_report_head:
+                _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+        if count == self._last_report_count and head != self._last_report_head:
+            _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+
+    def _pin_state(self, *, count: int, head: str) -> None:
+        if count < self._last_report_count:
+            _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+        self._last_report_count = count
+        self._last_report_head = head
 
     def _take_fault(self) -> PerformanceLoadCommitFault:
         with self._fault_lock:
@@ -377,36 +485,65 @@ class RecordedPerformanceLoadJournal:
             return self._commit_fault
 
     @staticmethod
-    def _receipt(row: sqlite3.Row, *, replayed: bool) -> PerformanceLoadReceipt:
+    def _receipt(
+        row: sqlite3.Row, *, disposition: PerformanceLoadWriteDisposition
+    ) -> PerformanceLoadReceipt:
+        if type(disposition) is not PerformanceLoadWriteDisposition:
+            _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
         try:
+            run_id = _canonical_stored_uuid(row["run_id"])
+            sequence = row["sequence"]
+            report_sha256 = row["report_sha256"]
+            previous_record_sha256 = row["previous_record_sha256"]
+            record_sha256 = row["record_sha256"]
+            if type(sequence) is not int or record_sha256 != _stored_record_digest(row):
+                _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
             return PerformanceLoadReceipt(
-                run_id=UUID(str(row["run_id"])),
-                report_sha256=str(row["report_sha256"]),
-                sequence=int(row["sequence"]),
-                previous_record_sha256=str(row["previous_record_sha256"]),
-                record_sha256=str(row["record_sha256"]),
-                disposition=(
-                    PerformanceLoadWriteDisposition.REPLAYED
-                    if replayed
-                    else PerformanceLoadWriteDisposition.APPENDED
-                ),
+                run_id=run_id,
+                report_sha256=report_sha256,
+                sequence=sequence,
+                previous_record_sha256=previous_record_sha256,
+                record_sha256=record_sha256,
+                disposition=disposition,
             )
+        except PerformanceLoadFailure:
+            raise
         except TypeError, ValueError, KeyError, IndexError:
             _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
 
     def append(self, report: PerformanceLoadReport) -> PerformanceLoadReceipt:
         if type(report) is not PerformanceLoadReport:
             _fail(PerformanceLoadFailureCode.INVALID_ARGUMENT)
+        if report.evidence_source is LoadEvidenceSource.RECORDED_CAPTURE:
+            _fail(PerformanceLoadFailureCode.RECORDED_CAPTURE_DISABLED)
         canonical = report.canonical_bytes()
-        report_sha = hashlib.sha256(canonical).hexdigest()
-        if report_sha != report.report_sha256:
+        report_sha = performance_load_report_sha256(report)
+        if hashlib.sha256(canonical).hexdigest() != report_sha:
             _fail(PerformanceLoadFailureCode.INVALID_ARGUMENT)
+        with self._state_lock:
+            return self._append_locked(
+                report=report,
+                canonical=canonical,
+                report_sha256=report_sha,
+            )
+
+    def _append_locked(
+        self,
+        *,
+        report: PerformanceLoadReport,
+        canonical: bytes,
+        report_sha256: str,
+    ) -> PerformanceLoadReceipt:
         run_id = str(report.run_id)
         connection = self._connect()
         committed = False
+        recovery_disposition: PerformanceLoadWriteDisposition | None = None
         try:
             connection.execute("BEGIN IMMEDIATE")
-            self._validate_all(connection)
+            self._validate_database_identity()
+            count, head = self._validate_all(connection)
+            self._require_monotonic_state(connection, count=count, head=head)
+            self._validate_database_identity()
             existing = connection.execute(
                 "SELECT sequence,run_id,report_sha256,request_sha256,observed_at,"
                 "report_status,evidence_source,canonical_report,"
@@ -416,34 +553,49 @@ class RecordedPerformanceLoadJournal:
             ).fetchone()
             if existing is not None:
                 if (
-                    existing["report_sha256"] != report_sha
+                    existing["report_sha256"] != report_sha256
                     or existing["request_sha256"] != report.request_sha256
                     or existing["observed_at"] != report.observed_at
                     or existing["report_status"] != report.report_status.value
                     or existing["evidence_source"] != report.evidence_source.value
                     or existing["canonical_report"] != canonical
                 ):
-                    connection.rollback()
                     _fail(PerformanceLoadFailureCode.RUN_ID_CONFLICT)
-                receipt = self._receipt(existing, replayed=True)
-                connection.commit()
+                receipt = self._receipt(
+                    existing,
+                    disposition=PerformanceLoadWriteDisposition.REPLAYED,
+                )
+                self._validate_database_identity()
+                try:
+                    connection.commit()
+                except sqlite3.Error:
+                    recovery_disposition = PerformanceLoadWriteDisposition.REPLAYED
+                    raise _CommitRecoveryRequired from None
+                self._validate_database_identity()
+                self._pin_state(count=count, head=head)
                 return receipt
             metadata = connection.execute(
                 "SELECT report_count,report_head_sha256 FROM st1604_metadata_v2 "
                 "WHERE singleton=1"
             ).fetchone()
-            if metadata is None:
+            if (
+                metadata is None
+                or type(metadata["report_count"]) is not int
+                or type(metadata["report_head_sha256"]) is not str
+                or metadata["report_count"] != count
+                or metadata["report_head_sha256"] != head
+            ):
                 _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
-            sequence = int(metadata["report_count"]) + 1
-            previous = str(metadata["report_head_sha256"])
-            record_sha = _record_digest(
+            sequence = count + 1
+            previous = head
+            record_sha = performance_load_record_sha256(
                 sequence=sequence,
-                run_id=run_id,
-                report_sha256=report_sha,
+                run_id=report.run_id,
+                report_sha256=report_sha256,
                 request_sha256=report.request_sha256,
                 observed_at=report.observed_at,
-                report_status=report.report_status.value,
-                evidence_source=report.evidence_source.value,
+                report_status=report.report_status,
+                evidence_source=report.evidence_source,
                 previous_record_sha256=previous,
             )
             connection.execute(
@@ -451,7 +603,7 @@ class RecordedPerformanceLoadJournal:
                 (
                     sequence,
                     run_id,
-                    report_sha,
+                    report_sha256,
                     report.request_sha256,
                     report.observed_at,
                     report.report_status.value,
@@ -466,17 +618,32 @@ class RecordedPerformanceLoadJournal:
                 "record_sha256=? WHERE singleton=1",
                 (sequence, record_sha, _metadata_digest(sequence, record_sha)),
             )
-            self._validate_all(connection)
+            self._validate_database_identity()
+            appended_count, appended_head = self._validate_all(connection)
+            if appended_count != sequence or appended_head != record_sha:
+                _fail(PerformanceLoadFailureCode.TAMPER_DETECTED)
+            self._require_monotonic_state(
+                connection,
+                count=appended_count,
+                head=appended_head,
+            )
+            self._validate_database_identity()
             fault = self._take_fault()
             if fault is PerformanceLoadCommitFault.BEFORE_COMMIT:
                 raise _InjectedCommitFault("BEFORE_COMMIT")
-            connection.commit()
+            try:
+                connection.commit()
+            except sqlite3.Error:
+                recovery_disposition = PerformanceLoadWriteDisposition.APPENDED
+                raise _CommitRecoveryRequired from None
             committed = True
+            self._validate_database_identity()
             if fault is PerformanceLoadCommitFault.AFTER_COMMIT:
                 raise _InjectedCommitFault("AFTER_COMMIT")
+            self._pin_state(count=appended_count, head=appended_head)
             return PerformanceLoadReceipt(
                 run_id=report.run_id,
-                report_sha256=report_sha,
+                report_sha256=report_sha256,
                 sequence=sequence,
                 previous_record_sha256=previous,
                 record_sha256=record_sha,
@@ -484,47 +651,92 @@ class RecordedPerformanceLoadJournal:
             )
         except _InjectedCommitFault:
             if not committed:
-                connection.rollback()
+                self._rollback_safely(connection)
                 _fail(PerformanceLoadFailureCode.STORAGE_FAILED)
+            recovery_disposition = PerformanceLoadWriteDisposition.APPENDED
+        except _CommitRecoveryRequired:
+            self._rollback_safely(connection)
         except PerformanceLoadFailure:
-            if connection.in_transaction:
-                connection.rollback()
+            self._rollback_safely(connection)
             raise
         except sqlite3.Error:
-            if connection.in_transaction:
-                connection.rollback()
+            self._rollback_safely(connection)
             _fail(PerformanceLoadFailureCode.STORAGE_FAILED)
         finally:
+            self._close_safely(connection)
+        if recovery_disposition is None:
+            _fail(PerformanceLoadFailureCode.COMMIT_UNKNOWN)
+        return self._recover_after_commit(
+            report=report,
+            canonical=canonical,
+            report_sha256=report_sha256,
+            disposition=recovery_disposition,
+        )
+
+    @staticmethod
+    def _rollback_safely(connection: sqlite3.Connection) -> None:
+        try:
+            if connection.in_transaction:
+                connection.rollback()
+        except sqlite3.Error:
+            pass
+
+    @staticmethod
+    def _close_safely(connection: sqlite3.Connection) -> None:
+        try:
             connection.close()
-        return self._recover_after_commit(run_id=run_id, report_sha256=report_sha)
+        except sqlite3.Error:
+            pass
 
     def _recover_after_commit(
-        self, *, run_id: str, report_sha256: str
+        self,
+        *,
+        report: PerformanceLoadReport,
+        canonical: bytes,
+        report_sha256: str,
+        disposition: PerformanceLoadWriteDisposition,
     ) -> PerformanceLoadReceipt:
+        run_id = str(report.run_id)
         connection = self._connect()
         try:
             connection.execute("BEGIN")
-            self._validate_all(connection)
+            self._validate_database_identity()
+            count, head = self._validate_all(connection)
+            self._require_monotonic_state(connection, count=count, head=head)
             row = connection.execute(
-                "SELECT sequence,run_id,report_sha256,previous_record_sha256,"
-                "record_sha256 FROM st1604_report_v2 WHERE run_id=?",
+                "SELECT sequence,run_id,report_sha256,request_sha256,observed_at,"
+                "report_status,evidence_source,canonical_report,"
+                "previous_record_sha256,record_sha256 FROM st1604_report_v2 "
+                "WHERE run_id=?",
                 (run_id,),
             ).fetchone()
-            if row is None or row["report_sha256"] != report_sha256:
+            if (
+                row is None
+                or row["report_sha256"] != report_sha256
+                or row["request_sha256"] != report.request_sha256
+                or row["observed_at"] != report.observed_at
+                or row["report_status"] != report.report_status.value
+                or row["evidence_source"] != report.evidence_source.value
+                or row["canonical_report"] != canonical
+            ):
                 _fail(PerformanceLoadFailureCode.COMMIT_UNKNOWN)
-            receipt = self._receipt(row, replayed=False)
-            connection.commit()
+            receipt = self._receipt(row, disposition=disposition)
+            self._validate_database_identity()
+            try:
+                connection.commit()
+            except sqlite3.Error:
+                _fail(PerformanceLoadFailureCode.COMMIT_UNKNOWN)
+            self._validate_database_identity()
+            self._pin_state(count=count, head=head)
             return receipt
         except PerformanceLoadFailure:
-            if connection.in_transaction:
-                connection.rollback()
+            self._rollback_safely(connection)
             raise
         except sqlite3.Error:
-            if connection.in_transaction:
-                connection.rollback()
+            self._rollback_safely(connection)
             _fail(PerformanceLoadFailureCode.COMMIT_UNKNOWN)
         finally:
-            connection.close()
+            self._close_safely(connection)
 
 
 __all__ = [

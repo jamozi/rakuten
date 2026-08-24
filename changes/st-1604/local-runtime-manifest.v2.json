@@ -48,7 +48,7 @@
     },
     {
       "bytes": 3729,
-      "sha256": "482878a95a64a8d3d1fe2bf0d85ac3f76ac884a8467cd78b2d2bb12d580429f0",
+      "sha256": "ce96f099e8874d0b270ca2b11f04b648551cf19cfaf6c6dcdc23cef132a9c0c0",
       "uri": "repo://changes/st-1604/manifest.yaml"
     },
     {
@@ -79,33 +79,40 @@
     "formal_tst_027": "NOT_EXECUTED",
     "production_capacity_claim": null,
     "production_eligible": false,
+    "recorded_capture_enabled": false,
+    "rollback_detection_scope": "LIVE_JOURNAL_INSTANCE_ONLY_NO_EXTERNAL_DURABLE_ANCHOR",
     "staging": "NOT_EXECUTED"
   },
   "source_artifacts": [
     {
-      "bytes": 3825,
-      "sha256": "c3e12064fb59dd0ea3e31cf9c5113ab41908bfa1f9f1ba75c60b86557bee8193",
+      "bytes": 3924,
+      "sha256": "b248c96d7d89c36eb100960f31ec72b277771c3a09e1df1774f86a34f8513770",
       "uri": "repo://changes/st-1604/contracts/local-performance-load-evaluator.v2.json"
     },
     {
-      "bytes": 5497,
-      "sha256": "e07369fc4462cd98c774ba20bba6f2efd451c87fdf96404b2480022929e7d2c5",
+      "bytes": 6160,
+      "sha256": "d4ea71b8e8459f2c1e13eea0dee8122bb82ac9328537cdc0db3b496a57e3ed66",
       "uri": "repo://changes/st-1604/README.md"
     },
     {
-      "bytes": 2273,
-      "sha256": "db12c33a5ebb86a2d029bdbc06beeda7b581cbbf547da2de131e915f62ad93e8",
+      "bytes": 2904,
+      "sha256": "ebcc1bc6fc9806b61d2bbb35041ee767c4c1d95015954562a31b2adfad43030e",
       "uri": "repo://changes/st-1604/LOCAL_COMPLETION_EVIDENCE_V2.md"
     },
     {
-      "bytes": 16795,
-      "sha256": "c6309d2416add1a29f4dca8ed197c88fe1743455801659ec1d7ebdef7d749bd1",
+      "bytes": 17631,
+      "sha256": "6362d2713ed321219a59cbee16b3e6a0633c0a797d76176027167b0666449d37",
       "uri": "repo://scripts/build_st1604_local_performance_load.py"
     },
     {
-      "bytes": 25405,
-      "sha256": "872a6380a23a7c00aa31ed9cf83959da0e0dacfaf8a3c5c60c24938ca7fde880",
+      "bytes": 27178,
+      "sha256": "9359a932cae7e7a7e1144818060ecd8dceb4afcbd86e6f0948da23d9563c6bdc",
       "uri": "repo://python/raos/domain/ops/performance_load.py"
+    },
+    {
+      "bytes": 3895,
+      "sha256": "eb48df29f692c8742bd35a391b50e6286d6c2f326e0b9e5b9d8880d95b16a3bc",
+      "uri": "repo://python/raos/domain/ops/__init__.py"
     },
     {
       "bytes": 998,
@@ -113,13 +120,18 @@
       "uri": "repo://python/raos/ports/performance_load.py"
     },
     {
-      "bytes": 2243,
-      "sha256": "a282f3ec412bc9b39a92c691cb0045db3ec19bd7fbeadc306b8bafeb23ac5c5a",
+      "bytes": 3874,
+      "sha256": "0154a335b4db296b33a7b81528f1138424d8e9db8fa649838b7817252840a2ba",
       "uri": "repo://python/raos/application/ops/performance_load.py"
     },
     {
-      "bytes": 21205,
-      "sha256": "c54bfa404ffd0f45d6d58ca1dd7dd640a38486c53eaff42946895dfcf4d32058",
+      "bytes": 471,
+      "sha256": "e71818cc45864ae1342bdc0aab2675c0db5a9c2a5f09c2b75b247d679b169ab5",
+      "uri": "repo://python/raos/application/ops/__init__.py"
+    },
+    {
+      "bytes": 29943,
+      "sha256": "4c396a8dc737581cd9a323ff13ab9effa60f803b5a12b8a7dc52b9a141c86fd0",
       "uri": "repo://python/raos/adapters/recorded_performance_load.py"
     },
     {
@@ -133,18 +145,18 @@
       "uri": "repo://tests/st1604_runtime/test_boundaries.py"
     },
     {
-      "bytes": 5953,
-      "sha256": "4bf9cc79628188003cc4623af34007b711fa8cb24c28b34872b5f77accb2f26d",
+      "bytes": 6382,
+      "sha256": "25e5561cf97441c75f6f3e459c1ca2850e7d83725d935992e1a8210017fa1709",
       "uri": "repo://tests/st1604_runtime/test_evaluator.py"
     },
     {
-      "bytes": 4884,
-      "sha256": "4360b8b0aa4a42258750c7205eea7f15c4a1e9dc3b173a1477f088238031ee36",
-      "uri": "repo://tests/st1604_runtime/test_generation.py"
+      "bytes": 5877,
+      "sha256": "d1b4387347b3229f56b0041d316aa0a6f57cbec2d8ba089fe2124a905c86ffa4",
+      "uri": "repo://tests/st1604_runtime/test_runtime_generation.py"
     },
     {
-      "bytes": 8549,
-      "sha256": "2e2d9948ef64e5ff59e59d660bb611609da2489a916cbd8e0b3963810ded9072",
+      "bytes": 19920,
+      "sha256": "2bae242f7f13137fd63027072c18183b650ad43e51dd47d70bd985a1b6b5e560",
       "uri": "repo://tests/st1604_runtime/test_service_and_journal.py"
     }
   ]

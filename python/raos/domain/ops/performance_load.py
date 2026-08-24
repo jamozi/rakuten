@@ -21,6 +21,7 @@ _MAX_MEASUREMENT_MS: Final = 86_400_000
 
 class PerformanceLoadFailureCode(StrEnum):
     INVALID_ARGUMENT = "INVALID_ARGUMENT"
+    RECORDED_CAPTURE_DISABLED = "RECORDED_CAPTURE_DISABLED"
     DUPLICATE_SURFACE = "DUPLICATE_SURFACE"
     SURFACE_MISMATCH = "SURFACE_MISMATCH"
     JOURNAL_MISMATCH = "JOURNAL_MISMATCH"
@@ -44,8 +45,10 @@ class PerformanceLoadFailure(RuntimeError):
 
 def fail_performance_load(code: PerformanceLoadFailureCode) -> NoReturn:
     if type(code) is not PerformanceLoadFailureCode:
-        raise PerformanceLoadFailure(PerformanceLoadFailureCode.INVALID_ARGUMENT)
-    raise PerformanceLoadFailure(code)
+        raise PerformanceLoadFailure(
+            PerformanceLoadFailureCode.INVALID_ARGUMENT
+        ) from None
+    raise PerformanceLoadFailure(code) from None
 
 
 def _invalid() -> NoReturn:
@@ -150,6 +153,45 @@ class MetricAvailability(StrEnum):
     AVAILABLE = "AVAILABLE"
     UNAVAILABLE = "UNAVAILABLE"
     NOT_APPLICABLE = "NOT_APPLICABLE"
+
+
+def performance_load_record_sha256(
+    *,
+    sequence: int,
+    run_id: UUID,
+    report_sha256: str,
+    request_sha256: str,
+    observed_at: str,
+    report_status: LoadReportStatus,
+    evidence_source: LoadEvidenceSource,
+    previous_record_sha256: str,
+) -> str:
+    """Hash one journal record from closed, validated domain values."""
+
+    _positive_int(sequence, maximum=10**12)
+    _exact_uuid(run_id)
+    _sha256(report_sha256)
+    _sha256(request_sha256)
+    _canonical_utc(observed_at)
+    if (
+        type(report_status) is not LoadReportStatus
+        or type(evidence_source) is not LoadEvidenceSource
+    ):
+        _invalid()
+    _sha256(previous_record_sha256)
+    payload = _canonical_json_bytes(
+        {
+            "evidence_source": evidence_source.value,
+            "observed_at": observed_at,
+            "previous_record_sha256": previous_record_sha256,
+            "report_sha256": report_sha256,
+            "report_status": report_status.value,
+            "request_sha256": request_sha256,
+            "run_id": str(run_id),
+            "sequence": sequence,
+        }
+    )
+    return hashlib.sha256(payload).hexdigest()
 
 
 @dataclass(frozen=True, slots=True)
@@ -288,6 +330,8 @@ class PerformanceLoadRequest:
         _canonical_utc(self.observed_at)
         if type(self.evidence_source) is not LoadEvidenceSource:
             _invalid()
+        if self.evidence_source is LoadEvidenceSource.RECORDED_CAPTURE:
+            fail_performance_load(PerformanceLoadFailureCode.RECORDED_CAPTURE_DISABLED)
         _sha256(self.source_artifact_sha256)
         _safe_id(self.dataset_id)
         _unique_by_surface(self.budgets, SurfaceBudget)
@@ -527,7 +571,15 @@ class PerformanceLoadReport:
 
     @property
     def report_sha256(self) -> str:
-        return hashlib.sha256(self.canonical_bytes()).hexdigest()
+        return performance_load_report_sha256(self)
+
+
+def performance_load_report_sha256(report: PerformanceLoadReport) -> str:
+    """Recompute a report digest without trusting a caller-provided receipt."""
+
+    if type(report) is not PerformanceLoadReport:
+        _invalid()
+    return hashlib.sha256(report.canonical_bytes()).hexdigest()
 
 
 def nearest_rank(values: tuple[int, ...], percentile: int) -> int:
@@ -692,4 +744,6 @@ __all__ = [
     "evaluate_performance_load",
     "fail_performance_load",
     "nearest_rank",
+    "performance_load_record_sha256",
+    "performance_load_report_sha256",
 ]

@@ -38,8 +38,8 @@ source_artifacts:
   bytes: 5131
   sha256: e57866b0a952d9c6056b36a2cdba4744186e4e76578c202998c743a3d331bcba
 - uri: repo://changes/st-1604/README.md
-  bytes: 5497
-  sha256: e07369fc4462cd98c774ba20bba6f2efd451c87fdf96404b2480022929e7d2c5
+  bytes: 6160
+  sha256: d4ea71b8e8459f2c1e13eea0dee8122bb82ac9328537cdc0db3b496a57e3ed66
 - uri: repo://scripts/build_st1604_performance_load_reference_plan.py
   bytes: 33855
   sha256: db714571949f341c185310b0f78392ea403095dbaf402d0289521d410d0aa5c6

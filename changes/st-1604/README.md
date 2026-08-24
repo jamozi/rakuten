@@ -62,9 +62,11 @@ integration, staging, provider access, release, and Production remain
 
 The additive V2 slice implements the Story's reversible local computation and
 durability boundary without weakening the V1 non-execution plan. It accepts
-only caller-supplied `SYNTHETIC_RECORDED_FIXTURE` or `RECORDED_CAPTURE`
-samples. It has no workload runner, endpoint, browser, process, network,
-credential, provider, staging, release, or Production capability.
+only caller-supplied `SYNTHETIC_RECORDED_FIXTURE` samples. The
+`RECORDED_CAPTURE` vocabulary is reserved but fails closed until an exact
+artifact-byte/readback binding is implemented. It has no workload runner,
+endpoint, browser, process, network, credential, provider, staging, release,
+or Production capability.
 
 - `PUBLIC`, `ADMIN`, `API`, and `WORKER` each have one explicit versioned local
   budget. Those values are classified as
@@ -83,9 +85,17 @@ credential, provider, staging, release, or Production capability.
   formal TST-027 remain `NOT_EXECUTED`.
 - The application service makes one append attempt to an inward journal port.
   The owner-private SQLite adapter is 0700/0600, append-only, exact-schema,
-  hash-chained, idempotent by `run_id`, conflict rejecting, restart safe,
-  concurrent-writer safe, and recoverable after an ambiguous committed write.
-  It exposes no query, export, delete, retention, or lifecycle method.
+  hash-chained, idempotent by `run_id`, conflict rejecting, concurrent-writer
+  safe, and recoverable after an ambiguous committed write only when the exact
+  report is durably present. Schema initialization is allowed only for the
+  file created by that journal instance with `O_EXCL`; a pre-existing empty or
+  partial file is rejected. Each live journal instance pins the database
+  device/inode and monotonic count/head. That detects replacement and rollback
+  during that instance's lifetime. It is not cross-process or restart rollback
+  detection: that requires an external durable anchor, which this local slice
+  does not implement or claim. Startup validates current structural integrity
+  only. The port exposes no query, export, delete, retention, or lifecycle
+  method.
 - Every external action count is the built-in integer zero. Financial values,
   affiliate reward, commission rate, EPC, RPM, or profit do not enter a
   budget, evaluation, capacity, or ordering decision.

@@ -8,6 +8,7 @@ import pytest
 
 from raos.domain.ops.performance_load import (
     CapacityClassification,
+    LoadEvidenceSource,
     LoadReportStatus,
     LoadSurface,
     MetricAvailability,
@@ -159,3 +160,14 @@ def test_forged_report_or_evaluation_consistency_is_rejected(
     with pytest.raises(PerformanceLoadFailure) as evaluation_failure:
         replace(report.evaluations[0], breached_budgets=("P95_DURATION",))
     assert evaluation_failure.value.code is PerformanceLoadFailureCode.INVALID_ARGUMENT
+
+
+def test_recorded_capture_is_disabled_without_exact_artifact_readback_binding(
+    perf_request: object,
+) -> None:
+    with pytest.raises(PerformanceLoadFailure) as caught:
+        replace(
+            perf_request,  # type: ignore[arg-type]
+            evidence_source=LoadEvidenceSource.RECORDED_CAPTURE,
+        )
+    assert caught.value.code is PerformanceLoadFailureCode.RECORDED_CAPTURE_DISABLED

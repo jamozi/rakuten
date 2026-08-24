@@ -46,14 +46,16 @@ GENERATOR_PATH: Final = Path("scripts/build_st1604_local_performance_load.py")
 README_PATH: Final = Path("changes/st-1604/README.md")
 EVIDENCE_PATH: Final = Path("changes/st-1604/LOCAL_COMPLETION_EVIDENCE_V2.md")
 DOMAIN_PATH: Final = Path("python/raos/domain/ops/performance_load.py")
+DOMAIN_INIT_PATH: Final = Path("python/raos/domain/ops/__init__.py")
 PORT_PATH: Final = Path("python/raos/ports/performance_load.py")
 APPLICATION_PATH: Final = Path("python/raos/application/ops/performance_load.py")
+APPLICATION_INIT_PATH: Final = Path("python/raos/application/ops/__init__.py")
 ADAPTER_PATH: Final = Path("python/raos/adapters/recorded_performance_load.py")
 TEST_PATHS: Final = (
     Path("tests/st1604_runtime/conftest.py"),
     Path("tests/st1604_runtime/test_boundaries.py"),
     Path("tests/st1604_runtime/test_evaluator.py"),
-    Path("tests/st1604_runtime/test_generation.py"),
+    Path("tests/st1604_runtime/test_runtime_generation.py"),
     Path("tests/st1604_runtime/test_service_and_journal.py"),
 )
 AUTHORITY_PATHS: Final = (
@@ -75,8 +77,10 @@ SOURCE_PATHS: Final = (
     EVIDENCE_PATH,
     GENERATOR_PATH,
     DOMAIN_PATH,
+    DOMAIN_INIT_PATH,
     PORT_PATH,
     APPLICATION_PATH,
+    APPLICATION_INIT_PATH,
     ADAPTER_PATH,
     *TEST_PATHS,
 )
@@ -117,6 +121,8 @@ _EXPECTED_DOCUMENT: Final = {
     "story_id": "ST-1604",
     "classification": "DETERMINISTIC_RECORDED_LOCAL_ONLY_NOT_TST027_EVIDENCE",
     "local_evaluator_enabled": True,
+    "recorded_capture_binding": "NOT_IMPLEMENTED_DISABLED",
+    "recorded_capture_enabled": False,
     "workload_execution_enabled": False,
     "production_eligible": False,
 }
@@ -147,7 +153,7 @@ class LocalPerformanceLoadBuildError(RuntimeError):
 
 
 def _fail(code: str) -> NoReturn:
-    raise LocalPerformanceLoadBuildError(f"ST1604_LOCAL_BUILD_{code}")
+    raise LocalPerformanceLoadBuildError(f"ST1604_LOCAL_BUILD_{code}") from None
 
 
 def _sha256(content: bytes) -> str:
@@ -260,6 +266,19 @@ def _canonical_json_bytes(value: object) -> bytes:
         _fail("SERIALIZATION_FAILED")
 
 
+def _canonical_uuid(value: object) -> UUID:
+    if type(value) is not str:
+        _fail("UUID_INVALID")
+    try:
+        value.encode("ascii")
+        parsed = UUID(value)
+    except UnicodeError, ValueError, AttributeError:
+        _fail("UUID_INVALID")
+    if str(parsed) != value:
+        _fail("UUID_INVALID")
+    return parsed
+
+
 def _compact_json_bytes(value: object) -> bytes:
     try:
         return json.dumps(
@@ -338,7 +357,7 @@ def _request_from_contract(contract: dict[str, Any]) -> PerformanceLoadRequest:
         if source_digest != request["source_artifact_sha256"]:
             _fail("FIXTURE_DIGEST_INVALID")
         result = PerformanceLoadRequest(
-            run_id=UUID(request["run_id"]),
+            run_id=_canonical_uuid(request["run_id"]),
             observed_at=request["observed_at"],
             evidence_source=LoadEvidenceSource(request["evidence_source"]),
             source_artifact_sha256=request["source_artifact_sha256"],
@@ -412,6 +431,10 @@ def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
             "formal_tst_027": "NOT_EXECUTED",
             "production_capacity_claim": None,
             "production_eligible": False,
+            "recorded_capture_enabled": False,
+            "rollback_detection_scope": (
+                "LIVE_JOURNAL_INSTANCE_ONLY_NO_EXTERNAL_DURABLE_ANCHOR"
+            ),
             "staging": "NOT_EXECUTED",
         },
     }

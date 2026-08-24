@@ -1,4 +1,4 @@
-"""Reproducibility and closed-contract tests for ST-1604 V2 artifacts."""
+"""Reproducibility and closed-contract tests for ST-1604 V2 runtime artifacts."""
 
 from __future__ import annotations
 
@@ -63,10 +63,16 @@ def test_manifest_binds_sources_predecessors_authority_and_report() -> None:
     assert [row["uri"] for row in manifest["source_artifacts"]] == [
         f"repo://{path.as_posix()}" for path in generator.SOURCE_PATHS
     ]
+    assert generator.DOMAIN_INIT_PATH in generator.SOURCE_PATHS
+    assert generator.APPLICATION_INIT_PATH in generator.SOURCE_PATHS
     assert [row["uri"] for row in manifest["predecessor_inputs"]] == [
         f"repo://{path.as_posix()}" for path in generator.PREDECESSOR_PATHS
     ]
     assert len(manifest["authority_inputs"]) == 5
+    assert manifest["safety_boundary"]["recorded_capture_enabled"] is False
+    assert manifest["safety_boundary"]["rollback_detection_scope"] == (
+        "LIVE_JOURNAL_INSTANCE_ONLY_NO_EXTERNAL_DURABLE_ANCHOR"
+    )
     report = (generator.REPO_ROOT / generator.REPORT_PATH).read_bytes()
     assert manifest["generated_artifacts"] == [
         {
@@ -101,6 +107,24 @@ def test_contract_unknown_field_and_fixture_digest_drift_fail_closed() -> None:
     with pytest.raises(generator.LocalPerformanceLoadBuildError) as caught:
         generator._request_from_contract(contract)
     assert str(caught.value) == "ST1604_LOCAL_BUILD_FIXTURE_DIGEST_INVALID"
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "{16040000-0000-4000-8000-000000000001}",
+        "SECRET-UUID-MATERIAL",
+    ],
+)
+def test_contract_uuid_must_be_exact_canonical_text(value: str) -> None:
+    contract = deepcopy(generator.load_contract())
+    contract["request"]["run_id"] = value
+    with pytest.raises(generator.LocalPerformanceLoadBuildError) as caught:
+        generator._request_from_contract(contract)
+    assert str(caught.value) == "ST1604_LOCAL_BUILD_UUID_INVALID"
+    assert value not in str(caught.value)
+    assert caught.value.__cause__ is None
+    assert caught.value.__suppress_context__ is True
 
 
 def test_manifest_and_report_are_canonical_ascii_json() -> None:
