@@ -1,5 +1,8 @@
 # ST-1003 — disabled headless comparison/product semantic candidate
 
+This file documents the preserved V1 boundary. The additive renderable local
+component fixture is documented in `README-v2.md`.
+
 ## Result and authority
 
 This Story slice adds one dependency-free strict TypeScript candidate named
