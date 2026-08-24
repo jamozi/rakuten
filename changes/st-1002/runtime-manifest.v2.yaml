@@ -17,20 +17,20 @@ source_artifacts:
     sha256: d97c459fc695cc4c5f0ef0c79e7efd61172a4317cfac46fdeb2866b101a44a21
     role: OWNER_SOURCE
   - uri: repo://packages/web-ui/src/index.ts
-    bytes: 15504
-    sha256: b82264c2d0f1ecedf2b5b14aa686d9f67d38df8164ed1de3f4f471f660118dcb
+    bytes: 16649
+    sha256: 414a441c55ae3f16a0c508bf02e545271a331d6f75111746d260c15984dbade1
     role: OWNER_SOURCE
   - uri: repo://apps/web/app/articles/[slug]/page.tsx
     bytes: 1333
     sha256: 71659f4dffcb1b7910dde06f8314dc4d1a8bb25519ffe99d092f3c8597256b2f
     role: OWNER_SOURCE
   - uri: repo://apps/web/app/articles/[slug]/article.module.css
-    bytes: 6448
-    sha256: 8c0436dc5d3573b42e43af78f499c49611236b09e3b94c5d277d3440810f8513
+    bytes: 7535
+    sha256: 077a789fdb8cb7efc204a7ff43e45b5a0422ded611d60bcba00b80df4c346937
     role: OWNER_SOURCE
   - uri: repo://apps/web/src/public-article-page.tsx
-    bytes: 5200
-    sha256: be17baf47194ca6a2dc81a72cc4299487c87bc7fa0820075320d0d1099c36cc0
+    bytes: 7452
+    sha256: a3e9b65b168a3f4e97c63ae76855ee79aebf0cd85e5b17e92efece8514c4de44
     role: OWNER_SOURCE
   - uri: repo://apps/web/proxy.ts
     bytes: 1282
