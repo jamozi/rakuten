@@ -1,0 +1,47 @@
+schema_version: 1
+story_id: ST-1803
+record_type: LOCAL_IMPLEMENTATION_COMPLETION_CANDIDATE
+scope: RECORDED_SYNTHETIC_GATE2_OBSERVATION_ONLY
+implementation_status_claim: LOCAL_CODE_COMPLETE
+canonical_status_mutated: false
+acceptance_criteria_satisfied: false
+decision:
+  overall: BLOCKED
+  gate_pass_claim: false
+  actual_observations: []
+implementation:
+  domain: repo://python/raos/domain/analytics/gate2_observation.py
+  port: repo://python/raos/ports/gate2_observation.py
+  application: repo://python/raos/application/analytics/gate2_observation.py
+  recorded_adapter: repo://python/raos/adapters/recorded_gate2_observation.py
+  contract: repo://changes/st-1803/contracts/gate2-observation.v1.yaml
+  fixture: repo://changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json
+  generator: repo://scripts/build_st1803_gate2_observation.py
+  generated_pack: repo://changes/st-1803/generated/gate2-observation.local-blocked.v1.json
+  tests: repo://tests/st1803
+introduced_local_debt: []
+authority:
+  formal_evidence_acceptance: NONE
+  gate_approval: NONE
+  status_propose: NONE
+  status_apply: NONE
+  article_mutation: NONE
+  recommendation_mutation: NONE
+  publication: NONE
+  staging: NONE
+  release: NONE
+  deployment: NONE
+  production: NONE
+not_executed:
+  formal_tst_030: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  actual_30_45_article_observation: NOT_EXECUTED
+  live_search_console: NOT_EXECUTED
+  live_analytics: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  human_gate_approval: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  deployment: NOT_EXECUTED
+  production: NOT_EXECUTED
