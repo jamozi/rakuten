@@ -34,6 +34,9 @@ V2_REVIEWED_FINDINGS_RELATIVE_PATH = (
     "changes/st-0106/contracts/reviewed-secret-findings.v2.yaml"
 )
 V2_REVIEWED_FINDINGS_PATH = REPOSITORY_ROOT / V2_REVIEWED_FINDINGS_RELATIVE_PATH
+V3_REVIEWED_FINDINGS_RELATIVE_PATH = (
+    "changes/st-0106/contracts/reviewed-secret-findings.v3.yaml"
+)
 V2_RECONCILIATION_RELATIVE_PATH = (
     "changes/st-0106/REVIEWED-SECRET-FINDINGS-RECONCILIATION-v2.yaml"
 )
@@ -81,6 +84,10 @@ EXPECTED_PRE_ACTIVATION_WORKFLOW_SHA256 = (
 EXPECTED_POST_ACTIVATION_WORKFLOW_BYTES = 20122
 EXPECTED_POST_ACTIVATION_WORKFLOW_SHA256 = (
     "790af484fea8aaa38f040de7bd51dbb729bd643d255847a23310aaa37462510f"
+)
+EXPECTED_POST_REBIND_WORKFLOW_BYTES = 20122
+EXPECTED_POST_REBIND_WORKFLOW_SHA256 = (
+    "8fb768a883432d15a1f86390cd16bfd23092030c6483cf283a64a41e21dfb3fb"
 )
 EXPECTED_FROZEN_SECURITY_IMPLEMENTATION = {
     "scripts/scan_secrets.py": (
@@ -1094,28 +1101,45 @@ def test_activation_origin_inventory_and_replay_boundary_are_exact() -> None:
         assert hashlib.sha256(content).hexdigest() == expected_sha256
 
 
-def test_secret_job_runs_the_exact_approved_local_history_command() -> None:
+def test_secret_job_runs_the_exact_owner_generated_v3_history_command() -> None:
     job = WORKFLOW["jobs"]["secrets"]
     expected_command = (
         'scripts/run_network_denied.sh --home "$HOME" -- '
         "/usr/bin/python3 -I scripts/scan_secrets.py "
         "--worktree --git-history --reviewed-findings "
-        f"{V2_REVIEWED_FINDINGS_RELATIVE_PATH}"
+        f"{V3_REVIEWED_FINDINGS_RELATIVE_PATH}"
+    )
+    historical_v2_command = expected_command.replace(
+        V3_REVIEWED_FINDINGS_RELATIVE_PATH,
+        V2_REVIEWED_FINDINGS_RELATIVE_PATH,
     )
     assert WORKFLOW_TEXT.count("--reviewed-findings") == 1
     assert WORKFLOW_TEXT.count(REVIEWED_FINDINGS_RELATIVE_PATH) == 0
-    assert WORKFLOW_TEXT.count(V2_REVIEWED_FINDINGS_RELATIVE_PATH) == 1
+    assert WORKFLOW_TEXT.count(V2_REVIEWED_FINDINGS_RELATIVE_PATH) == 0
+    assert WORKFLOW_TEXT.count(V3_REVIEWED_FINDINGS_RELATIVE_PATH) == 1
     workflow_bytes = WORKFLOW_TEXT.encode("utf-8")
-    assert len(workflow_bytes) == EXPECTED_POST_ACTIVATION_WORKFLOW_BYTES
+    assert len(workflow_bytes) == EXPECTED_POST_REBIND_WORKFLOW_BYTES
     assert hashlib.sha256(workflow_bytes).hexdigest() == (
+        EXPECTED_POST_REBIND_WORKFLOW_SHA256
+    )
+    reconstructed_v2 = WORKFLOW_TEXT.replace(
+        V3_REVIEWED_FINDINGS_RELATIVE_PATH,
+        V2_REVIEWED_FINDINGS_RELATIVE_PATH,
+    ).encode("utf-8")
+    assert len(reconstructed_v2) == EXPECTED_POST_ACTIVATION_WORKFLOW_BYTES
+    assert hashlib.sha256(reconstructed_v2).hexdigest() == (
         EXPECTED_POST_ACTIVATION_WORKFLOW_SHA256
     )
-    reconstructed = WORKFLOW_TEXT.replace(
-        V2_REVIEWED_FINDINGS_RELATIVE_PATH,
-        REVIEWED_FINDINGS_RELATIVE_PATH,
-    ).encode("utf-8")
-    assert len(reconstructed) == EXPECTED_PRE_ACTIVATION_WORKFLOW_BYTES
-    assert hashlib.sha256(reconstructed).hexdigest() == (
+    reconstructed_v1 = (
+        reconstructed_v2.decode("utf-8")
+        .replace(
+            V2_REVIEWED_FINDINGS_RELATIVE_PATH,
+            REVIEWED_FINDINGS_RELATIVE_PATH,
+        )
+        .encode("utf-8")
+    )
+    assert len(reconstructed_v1) == EXPECTED_PRE_ACTIVATION_WORKFLOW_BYTES
+    assert hashlib.sha256(reconstructed_v1).hexdigest() == (
         EXPECTED_PRE_ACTIVATION_WORKFLOW_SHA256
     )
     assert len(action_steps(job)) == 1
@@ -1133,7 +1157,7 @@ def test_secret_job_runs_the_exact_approved_local_history_command() -> None:
         "job_id": "secrets",
         "step_name": "Reproduce secret scan",
         "exact_argument": (f"--reviewed-findings {V2_REVIEWED_FINDINGS_RELATIVE_PATH}"),
-        "exact_command": expected_command,
+        "exact_command": historical_v2_command,
         "semantic_delta": "REPLACE_EXACT_LEDGER_PATH_V1_WITH_V2_ONCE",
         "pre_activation_workflow_bytes": EXPECTED_PRE_ACTIVATION_WORKFLOW_BYTES,
         "pre_activation_workflow_sha256": EXPECTED_PRE_ACTIVATION_WORKFLOW_SHA256,
@@ -1281,7 +1305,7 @@ def test_contract_database_and_storage_make_recipes_keep_distinct_boundaries() -
         makefile.split("\nci-database:", 1)[1].split("\nci-storage:", 1)[0].splitlines()
     )
     storage_block = makefile.split("\nci-storage:", 1)[1].splitlines()
-    database_recipe = []
+    database_recipe: list[str] = []
     for line in database_block[1:]:
         if not line.startswith("\t"):
             break
