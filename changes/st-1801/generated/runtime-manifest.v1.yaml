@@ -1,0 +1,103 @@
+story_id: ST-1801
+schema_version: 1
+generated_by: repo://scripts/build_st1801_portfolio_expansion.py
+generation_command: /home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1801_portfolio_expansion.py
+source_artifact_count: 12
+source_artifacts:
+- uri: repo://changes/st-1801/contracts/portfolio-expansion-plan.v1.yaml
+  bytes: 6051
+  sha256: 9afe6070f57a824f46488be9b029e0a5cca6fc1eba62eec106f6070b846a9d19
+- uri: repo://changes/st-1801/contracts/recorded-synthetic-quality-evaluation.v1.schema.json
+  bytes: 2121
+  sha256: 65ad1ecd3acd4995f5f591620cd29449c4aafb271083a29096fdd5e327387bd8
+- uri: repo://changes/st-1801/fixtures/recorded-synthetic-quality-evaluation.v1.json
+  bytes: 2075
+  sha256: d48628804b66007258daeca4a31ff416f87f190cddcdd23c8b35b1de58fbde46
+- uri: repo://changes/st-1801/README.md
+  bytes: 2849
+  sha256: e5e0fc3e000ba4622af54e38aa4449667910076d962da14d240eb45554670445
+- uri: repo://changes/st-1801/PREFLIGHT.md
+  bytes: 1945
+  sha256: 65cef5efa0e4f9d03151a319c4d773a43232487c4a7638f2c1252e9037f836cd
+- uri: repo://scripts/build_st1801_portfolio_expansion.py
+  bytes: 65433
+  sha256: 9f370b435b4dc713a1e04ffe3eef9e0efef70eaefc6910f6db83ffb1314cf284
+- uri: repo://tests/st1801/conftest.py
+  bytes: 871
+  sha256: 2cc1ce332a61d84e85afcc6f6034aa7742ec35c60ec74cddbc8880bbae1b93fd
+- uri: repo://tests/st1801/test_contract.py
+  bytes: 2737
+  sha256: 23e4aa4b5ffa527d11fae237b1a251a8881de2172e4e5c84e7978102536bc0c2
+- uri: repo://tests/st1801/test_evaluation.py
+  bytes: 2791
+  sha256: 75da75345a20c8142512a2dad632ac3b881cbc2ca39ab840c2fcbe91f996f049
+- uri: repo://tests/st1801/test_generation.py
+  bytes: 4581
+  sha256: 8b8f327d5ba2ffbe018c935f82f74420b0fefc7ebdfbd49863a58cc097b02d4b
+- uri: repo://tests/st1801/test_negative_cases.py
+  bytes: 4429
+  sha256: 40922cf05f6c9c57607be8f556f4de05e0a433a7969e12611b1768f01404fc06
+- uri: repo://tests/st1801/test_plan.py
+  bytes: 4795
+  sha256: b9836def0d8bcf7cda065405af70e3495e0c896f9b39327e2a6a336a099a37ac
+bound_input_count: 13
+bound_inputs:
+- uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  classification: CANONICAL_OR_QUALITY_AUTHORITY
+- uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+  sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  classification: CANONICAL_OR_QUALITY_AUTHORITY
+- uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  classification: CANONICAL_OR_QUALITY_AUTHORITY
+- uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  classification: CANONICAL_OR_QUALITY_AUTHORITY
+- uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+  sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  classification: CANONICAL_OR_QUALITY_AUTHORITY
+- uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_quality_gate_catalog_v0.1.yaml
+  sha256: 90ab554aa55dda335ba69bbb306772306494e2e4ba899c3d22af4a9d9a030efb
+  classification: CANONICAL_OR_QUALITY_AUTHORITY
+- uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_claim_evidence_policy_v0.1.yaml
+  sha256: fbf2d0ad6e7821a0059f9ceeb53d57268031e2e42b4aad988af9a42378aec5ba
+  classification: CANONICAL_OR_QUALITY_AUTHORITY
+- uri: repo://changes/st-0605/contracts/claim-evidence-runtime.v1.yaml
+  sha256: 7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb
+  classification: CANONICAL_OR_QUALITY_AUTHORITY
+- uri: repo://changes/st-1705/generated/pilot-security-recovery-signoff.local-blocked.v1.json
+  sha256: 7a3310d1ec909055f92c2584bf98313ab71962124b31dc05dbe089436c50af20
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1705/manifest.yaml
+  sha256: c39bed5c565d3e50e1cc38c69374a2bc1e943d5427f113cda6a9d539338e040c
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json
+  sha256: cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/operations/publication-plan.v1.json
+  sha256: 53db8c8277da9dbd3b5b98a107327845307f58a9e3b767042ea9e64757f0e163
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
+  sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-1801/generated/portfolio-expansion.local-blocked.v1.json
+  bytes: 34761
+  sha256: f1d222a2739140478c628a2efe9b7f267f13f703de29665954a13b688fe9c4d5
+transaction:
+  model: TWO_OUTPUT_RECOVERABLE_ALL_OR_NOTHING
+  writer_lock: GENERATED_DIRECTORY_FLOCK
+  check_pending_recovery: READ_ONLY_REJECT
+boundary:
+  classification: LOCAL_BLOCKED_SYNTHETIC_PORTFOLIO_PLAN_NON_ATTESTING
+  decision: BLOCKED
+  planned_placeholder_slots: 30
+  actual_articles: UNAVAILABLE
+  downstream_gate_1_eligible: false
+  formal_tst_020: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  publication_authority: NONE
+  release_authority: NONE
+  production_authority: NONE

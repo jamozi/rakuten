@@ -1,0 +1,142 @@
+document:
+  id: RAOS-ST1801-PORTFOLIO-EXPANSION-001
+  version: 1.0.0
+  story_id: ST-1801
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  classification: LOCAL_BLOCKED_SYNTHETIC_PORTFOLIO_PLAN_NON_ATTESTING
+  acceptance_criteria_satisfied: false
+  formal_verification: NOT_EXECUTED
+source_bindings:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_quality_gate_catalog_v0.1.yaml
+    sha256: 90ab554aa55dda335ba69bbb306772306494e2e4ba899c3d22af4a9d9a030efb
+  - uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_claim_evidence_policy_v0.1.yaml
+    sha256: fbf2d0ad6e7821a0059f9ceeb53d57268031e2e42b4aad988af9a42378aec5ba
+  - uri: repo://changes/st-0605/contracts/claim-evidence-runtime.v1.yaml
+    sha256: 7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb
+dependency_bindings:
+  st_1705:
+    story_id: ST-1705
+    role: BLOCKED_PILOT_SIGNOFF_PREDECESSOR
+    artifacts:
+      - kind: GENERATED_BLOCKED_SIGNOFF
+        uri: repo://changes/st-1705/generated/pilot-security-recovery-signoff.local-blocked.v1.json
+        sha256: 7a3310d1ec909055f92c2584bf98313ab71962124b31dc05dbe089436c50af20
+      - kind: MANIFEST
+        uri: repo://changes/st-1705/manifest.yaml
+        sha256: c39bed5c565d3e50e1cc38c69374a2bc1e943d5427f113cda6a9d539338e040c
+  st_1704:
+    story_id: ST-1704
+    role: FIVE_ARTICLE_LOCAL_NON_ATTESTING_INPUT
+    artifacts:
+      - kind: ARTICLE_COLLECTION
+        uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json
+        sha256: cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88
+      - kind: PUBLICATION_PLAN
+        uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/operations/publication-plan.v1.json
+        sha256: 53db8c8277da9dbd3b5b98a107327845307f58a9e3b767042ea9e64757f0e163
+      - kind: MEASUREMENT_CONTRACT
+        uri: repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
+        sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+portfolio_policy:
+  category:
+    decision_id: OD-001
+    decision_status: HUMAN_DECISION_REQUIRED
+    actual_category: UNAVAILABLE
+    planning_category_ref: SYNTHETIC_CATEGORY_PLACEHOLDER_OD001_UNRESOLVED
+    placeholder_only: true
+  program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
+  same_category_required: true
+  same_program_required: true
+  minimum_slot_count: 30
+  maximum_slot_count: 45
+  selected_placeholder_slot_count: 30
+  placeholder_id_prefix: synthetic-st1801-slot-
+  slot_identity_classification: SYNTHETIC_PLACEHOLDER_NOT_AN_ARTICLE
+  slot_states:
+    creation: NOT_CREATED
+    approval: NOT_APPROVED
+    publication: NOT_PUBLIC
+  actual_article_fields: UNAVAILABLE
+  selection_inputs_excluded:
+    - AFFILIATE_COMMISSION_RATE
+    - EPC
+    - RPM
+    - REWARD
+    - COST
+    - PROFIT
+quality_policy:
+  evaluation_mode: RECORDED_SYNTHETIC_ONLY
+  aggregate_quality_threshold: '85'
+  aggregate_quality_minimum: '0'
+  aggregate_quality_maximum: '100'
+  major_claim_coverage_numerator: 1
+  major_claim_coverage_denominator: 1
+  arithmetic: DECIMAL_AND_INTEGER_CROSS_MULTIPLICATION
+  missing_input: UNAVAILABLE
+  zero_denominator: UNAVAILABLE
+  synthetic_pass_is_formal_evidence: false
+  synthetic_pass_can_approve_article: false
+  synthetic_pass_can_satisfy_story: false
+recorded_synthetic_harness:
+  schema_uri: repo://changes/st-1801/contracts/recorded-synthetic-quality-evaluation.v1.schema.json
+  schema_sha256: 65ad1ecd3acd4995f5f591620cd29449c4aafb271083a29096fdd5e327387bd8
+  schema_behavior: CLOSED_ADDITIONAL_PROPERTIES_FALSE
+  fixture_uri: repo://changes/st-1801/fixtures/recorded-synthetic-quality-evaluation.v1.json
+  fixture_sha256: d48628804b66007258daeca4a31ff416f87f190cddcdd23c8b35b1de58fbde46
+  fixed_path_only: true
+  dynamic_input_path: FORBIDDEN
+  network: FORBIDDEN
+  provider: FORBIDDEN
+  repository_result_write: FORBIDDEN
+decision:
+  overall: BLOCKED
+  dependency_eligibility: NOT_ELIGIBLE
+  downstream_gate_1_eligible: false
+  acceptance_criteria_satisfied: false
+  qualifying_evidence_references: []
+  actual_observations: []
+authority_boundary:
+  external_authority: NONE
+  article_creation_authority: NONE
+  approval_authority: NONE
+  publication_authority: NONE
+  gate_authority: NONE
+  status_propose_authority: NONE
+  status_apply_authority: NONE
+  staging_authority: NONE
+  release_authority: NONE
+  production_authority: NONE
+execution_boundary:
+  local_generation_only: true
+  input_size_limit_bytes: 2097152
+  input_read_model: ROOT_FD_DESCRIPTOR_RELATIVE_CAPTURED_LEAF
+  writer_model: SINGLE_PROCESS_DIRECTORY_LOCK
+  output_transaction: TWO_OUTPUT_RECOVERABLE_ALL_OR_NOTHING
+  check_pending_recovery_behavior: READ_ONLY_REJECT
+  environment_access: FORBIDDEN
+  subprocess_execution: FORBIDDEN
+  external_action_count: 0
+evidence_boundary:
+  classification: RECORDED_SYNTHETIC_ONLY_NON_ATTESTING
+  actual_materialized_article_count: UNAVAILABLE
+  actual_approved_article_count: UNAVAILABLE
+  actual_published_article_count: UNAVAILABLE
+  actual_quality_observations: UNAVAILABLE
+  actual_major_claim_coverage_observations: UNAVAILABLE
+  formal_tst_020: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  actual_portfolio_execution: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
