@@ -57,3 +57,48 @@ Local generation and tests are deterministic implementation evidence only.
 Actual load execution, browser/RUM work, formal TST-027, telemetry/backend
 integration, staging, provider access, release, and Production remain
 `NOT_EXECUTED`.
+
+## V2 maximum-safe local evaluator
+
+The additive V2 slice implements the Story's reversible local computation and
+durability boundary without weakening the V1 non-execution plan. It accepts
+only caller-supplied `SYNTHETIC_RECORDED_FIXTURE` or `RECORDED_CAPTURE`
+samples. It has no workload runner, endpoint, browser, process, network,
+credential, provider, staging, release, or Production capability.
+
+- `PUBLIC`, `ADMIN`, `API`, and `WORKER` each have one explicit versioned local
+  budget. Those values are classified as
+  `LOCAL_RECORDED_BUDGET_NOT_CANONICAL_SLO`; they do not select or satisfy any
+  of the 14 provisional Canonical SLOs.
+- The evaluator calculates integer nearest-rank P95/P99, exact error
+  numerator/denominator, integer throughput, peak DB connections, and worker
+  queue-age P95. It uses neither float arithmetic nor ambient telemetry.
+- A missing surface is `UNAVAILABLE` and makes the report `DATA_BLOCKED`; it is
+  never converted to zero or PASS. Cost is always `UNAVAILABLE` because no
+  cost budget or measurement authority is selected.
+- A complete passing fixture produces only
+  `LOCAL_CAPACITY_DOCUMENTED`, with each capacity explicitly labeled
+  `SYNTHETIC_LOCAL_ONLY_NOT_PRODUCTION_CAPACITY` or
+  `RECORDED_LOCAL_ONLY_NOT_PRODUCTION_CAPACITY`. Canonical SLO evaluation and
+  formal TST-027 remain `NOT_EXECUTED`.
+- The application service makes one append attempt to an inward journal port.
+  The owner-private SQLite adapter is 0700/0600, append-only, exact-schema,
+  hash-chained, idempotent by `run_id`, conflict rejecting, restart safe,
+  concurrent-writer safe, and recoverable after an ambiguous committed write.
+  It exposes no query, export, delete, retention, or lifecycle method.
+- Every external action count is the built-in integer zero. Financial values,
+  affiliate reward, commission rate, EPC, RPM, or profit do not enter a
+  budget, evaluation, capacity, or ordering decision.
+
+The committed synthetic fixture and its deterministic local report are owned
+by:
+
+```text
+python scripts/build_st1604_local_performance_load.py
+python scripts/build_st1604_local_performance_load.py --check
+```
+
+This is local implementation evidence, not formal TST-027, staging evidence,
+an observed SLO, a real capacity test, release eligibility, or Production
+readiness. Actual load/RUM execution remains behind the existing human and
+environment gates.
