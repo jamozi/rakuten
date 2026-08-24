@@ -1,0 +1,833 @@
+{
+  "completion_boundary": {
+    "canonical_status_changed": false,
+    "formal_or_live_evidence_claimed": false,
+    "local_code_complete": true,
+    "local_integration_complete": false
+  },
+  "document": {
+    "authority": "RECORDED_SYNTHETIC_ONLY",
+    "canonical_status": "UNCHANGED",
+    "classification": "MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_FINANCE_RECONCILIATION",
+    "executable_environments": [
+      "ENV-DEV",
+      "ENV-CI"
+    ],
+    "formal_validation_claimed": false,
+    "production_eligible": false,
+    "schema_version": "2.0.0",
+    "status": "LOCAL_CODE_COMPLETE",
+    "story_id": "ST-1305"
+  },
+  "measurement_boundary": {
+    "article_slots": [
+      {
+        "article_id": "st1703-first-suitcase-comparison",
+        "intent_classification": "CONDITION_COMPARISON",
+        "packet_sha256": "9d0e7032fab6200566639555dce6ebdd29113e3ea87982f0c80fc048d6b9b537",
+        "slot": 1,
+        "slug": "carry-on-suitcase-comparison"
+      },
+      {
+        "article_id": "st1704-portable-power-station-guide",
+        "intent_classification": "SELECTION_GUIDE",
+        "packet_sha256": "4d670e37a45d96c775a6f42132fc8d9e8e6ac6d97e67cb26a1ecea8e6acfd9c1",
+        "slot": 2,
+        "slug": "portable-power-station-guide"
+      },
+      {
+        "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+        "intent_classification": "MODEL_DIFFERENCES",
+        "packet_sha256": "edea36dcc82f9ba1705d1cde8916b2c8da70eab2e41892d94dc9bfb35547c7b3",
+        "slot": 3,
+        "slug": "anker-solix-c300-c800-c1000-differences"
+      },
+      {
+        "article_id": "st1704-countertop-dishwasher-for-small-households",
+        "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
+        "packet_sha256": "b1a0c447cd07d6d3d65bbe5b842110a246351c3e6ddfb8dae9bf8363f12b7adb",
+        "slot": 4,
+        "slug": "countertop-dishwasher-for-small-households"
+      },
+      {
+        "article_id": "st1704-compact-robot-vacuum-shortlist",
+        "intent_classification": "CONDITION_SHORTLIST",
+        "packet_sha256": "229da594e299fab8d869b6e38e73011bc449e6716500017cc2e42766e3f643b2",
+        "slot": 5,
+        "slug": "compact-robot-vacuum-shortlist"
+      }
+    ],
+    "contract_sha256": "34adb2a67246888ec0773a20ab4ed4c71912fc3a3df653bca559d04f48dda78c",
+    "period": {
+      "duration_days": 14,
+      "end_exclusive_date": "2026-09-08",
+      "start_date": "2026-08-25"
+    },
+    "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE"
+  },
+  "open_decision_boundary": {
+    "budget": {
+      "id": "OD-009",
+      "resolved": false,
+      "safe_default": "LOW_DEVELOPMENT_ONLY_PRODUCTION_DISABLED",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "labor": {
+      "id": "OD-005",
+      "resolved": false,
+      "safe_default": "UNKNOWN_NOT_ZERO",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "report_sample": {
+      "id": "OD-003",
+      "resolved": false,
+      "safe_default": "SYNTHETIC_FIXTURE_ONLY_REAL_REPORT_UNVERIFIED",
+      "status": "EXTERNAL_EVIDENCE_REQUIRED"
+    },
+    "retention": {
+      "id": "OD-014",
+      "resolved": false,
+      "safe_default": "AUTOMATIC_DELETION_DISABLED",
+      "status": "HUMAN_DECISION_REQUIRED"
+    }
+  },
+  "provenance": {
+    "fixture_sha256": "59b666012081afc238b331dc481a48bf9ba91c54ee00756f0a0a7687b98deb09",
+    "generated_by": "repo://scripts/build_st1305_finance_reconciliation.py",
+    "generation_command": ".venv/bin/python scripts/build_st1305_finance_reconciliation.py",
+    "source_artifacts": [
+      {
+        "bytes": 8041,
+        "sha256": "d874641327ccfbe59f9453306282e0ddfba7e92450fbd59b9bcf09f677701dab",
+        "uri": "repo://changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml"
+      },
+      {
+        "bytes": 786,
+        "sha256": "59b666012081afc238b331dc481a48bf9ba91c54ee00756f0a0a7687b98deb09",
+        "uri": "repo://changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json"
+      },
+      {
+        "bytes": 2500,
+        "sha256": "cd7c3c3c823980e52d10c3790e7d387c544a7eb17c45c371a6a82656d3d8055b",
+        "uri": "repo://changes/st-1305/PREFLIGHT-v2.md"
+      },
+      {
+        "bytes": 2456,
+        "sha256": "97e52d5c7a2120bb4c1bc862fa22f0661845375a050a548241ccfe6aa92b5cd8",
+        "uri": "repo://changes/st-1305/README-v2.md"
+      },
+      {
+        "bytes": 56789,
+        "sha256": "ca6d890e4926925bad5e395ca23931aaf18e8cc237651fd3590a29e5256d354e",
+        "uri": "repo://python/raos/domain/finance/reconciliation.py"
+      },
+      {
+        "bytes": 572,
+        "sha256": "d0271241ebfdf04a0024d38540a657bea1e3f620899528772622c872c95d4371",
+        "uri": "repo://python/raos/ports/finance_reconciliation.py"
+      },
+      {
+        "bytes": 2415,
+        "sha256": "2db23688c2fbcc3f7daf1526acaeed1584bab9c67a7f68a18e15d8d55bffba68",
+        "uri": "repo://python/raos/application/finance/reconciliation.py"
+      },
+      {
+        "bytes": 11229,
+        "sha256": "ef21f8476021a166bbda4d6f36522f750c61a8ad3c15ffea03058c4bbf3ae473",
+        "uri": "repo://python/raos/adapters/recorded_finance_reconciliation.py"
+      },
+      {
+        "bytes": 25318,
+        "sha256": "215f8aac3529ce713a08af2195de8295fa62b884d3003245a89b818189df5502",
+        "uri": "repo://scripts/build_st1305_finance_reconciliation.py"
+      }
+    ],
+    "source_bindings": {
+      "analytics_design": {
+        "path": "docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md",
+        "sha256": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460"
+      },
+      "attribution_policy": {
+        "path": "docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml",
+        "sha256": "29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c"
+      },
+      "canonical_story": {
+        "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+      },
+      "data_classification": {
+        "path": "docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml",
+        "sha256": "59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0"
+      },
+      "five_slot_measurement": {
+        "path": "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json",
+        "sha256": "9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8"
+      },
+      "integration_precedence": {
+        "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+      },
+      "kpi_catalog": {
+        "path": "docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml",
+        "sha256": "f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2"
+      },
+      "open_decisions": {
+        "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+        "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+      },
+      "security_controls": {
+        "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+        "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+      },
+      "security_design": {
+        "path": "docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+        "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+      },
+      "st1303_fixture": {
+        "path": "changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json",
+        "sha256": "3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b"
+      },
+      "st1303_projection": {
+        "path": "changes/st-1303/generated/attribution-engine-recorded.v2.json",
+        "sha256": "f6711833620948acf144aacdc1329f470203e893292570d8f1374f75306d4f32"
+      },
+      "st1303_runtime": {
+        "path": "changes/st-1303/contracts/attribution-engine-runtime.v2.yaml",
+        "sha256": "417919e2c4552b8e1e6e3fef18f4daccfa0cf44d13803db62d474fe154fb574b"
+      },
+      "st1304_fixture": {
+        "path": "changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json",
+        "sha256": "90b3ccaecc1345b26054f563365936f4fd06b5def3259c5786adeea0327a8942"
+      },
+      "st1304_projection": {
+        "path": "changes/st-1304/generated/cost-unit-economics-recorded.v2.json",
+        "sha256": "d2e515d6c6d69d78f484ceffdde72a186496c51eab197dd11859b5fee55ed693"
+      },
+      "st1304_runtime": {
+        "path": "changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml",
+        "sha256": "3bd4dec7e3993fd7148abf173057b43a784c2ccb10f51dd911913c864bbaf997"
+      },
+      "test_catalog": {
+        "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+        "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+      },
+      "threat_register": {
+        "path": "docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
+        "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
+      }
+    },
+    "unit_economics_fixture_sha256": "90b3ccaecc1345b26054f563365936f4fd06b5def3259c5786adeea0327a8942"
+  },
+  "recorded_report": {
+    "authority": {
+      "approval": false,
+      "article_html_mutation": false,
+      "credential_access": false,
+      "cta_mutation": false,
+      "database": false,
+      "editorial_mutation": false,
+      "network": false,
+      "persistence": false,
+      "product_selection_mutation": false,
+      "production": false,
+      "provider_call": false,
+      "public_projection": false,
+      "publication": false,
+      "publication_snapshot_mutation": false,
+      "recommendation_order_mutation": false,
+      "release": false,
+      "staging": false
+    },
+    "availability": "PARTIAL",
+    "comparisons": [
+      {
+        "dimension": "file_hash_uniqueness",
+        "left_value": null,
+        "right_value": null,
+        "source_sha256s": [],
+        "status": "UNAVAILABLE",
+        "unavailable_reason": "PROVIDER_REPORT_UNAVAILABLE",
+        "unit": "IDENTITY"
+      },
+      {
+        "dimension": "row_count",
+        "left_value": null,
+        "right_value": null,
+        "source_sha256s": [],
+        "status": "UNAVAILABLE",
+        "unavailable_reason": "PROVIDER_REPORT_UNAVAILABLE",
+        "unit": "COUNT"
+      },
+      {
+        "dimension": "generated_confirmed_cancelled_amount_totals",
+        "left_value": null,
+        "right_value": null,
+        "source_sha256s": [],
+        "status": "UNAVAILABLE",
+        "unavailable_reason": "GENERATED_CANCELLED_TOTALS_UNAVAILABLE",
+        "unit": "JPY"
+      },
+      {
+        "dimension": "currency",
+        "left_value": "JPY",
+        "right_value": "JPY",
+        "source_sha256s": [
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+          "6756429c32484b34a1beb8d628b8823b49570bcd9dc504fc268d9aa6d1bfa141"
+        ],
+        "status": "MATCHED",
+        "unavailable_reason": null,
+        "unit": "IDENTITY"
+      },
+      {
+        "dimension": "period",
+        "left_value": "{\"duration_days\": 14, \"end_exclusive_date\": \"2026-09-08\", \"start_date\": \"2026-08-25\"}",
+        "right_value": "{\"duration_days\": 14, \"end_exclusive_date\": \"2026-09-08\", \"start_date\": \"2026-08-25\"}",
+        "source_sha256s": [
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+          "6756429c32484b34a1beb8d628b8823b49570bcd9dc504fc268d9aa6d1bfa141"
+        ],
+        "status": "MATCHED",
+        "unavailable_reason": null,
+        "unit": "IDENTITY"
+      },
+      {
+        "dimension": "duplicate_provider_row",
+        "left_value": 3,
+        "right_value": 3,
+        "source_sha256s": [
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448"
+        ],
+        "status": "MATCHED",
+        "unavailable_reason": null,
+        "unit": "COUNT"
+      },
+      {
+        "dimension": "dry_run_to_commit_hash_equality",
+        "left_value": null,
+        "right_value": null,
+        "source_sha256s": [],
+        "status": "UNAVAILABLE",
+        "unavailable_reason": "DRY_RUN_COMMIT_HASH_UNAVAILABLE",
+        "unit": "IDENTITY"
+      },
+      {
+        "dimension": "provider_to_attribution_confirmed_total",
+        "left_value": "300",
+        "right_value": "300",
+        "source_sha256s": [
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448"
+        ],
+        "status": "MATCHED",
+        "unavailable_reason": null,
+        "unit": "JPY"
+      },
+      {
+        "dimension": "attribution_to_unit_economics_confirmed_total",
+        "left_value": "300",
+        "right_value": "300",
+        "source_sha256s": [
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+          "6756429c32484b34a1beb8d628b8823b49570bcd9dc504fc268d9aa6d1bfa141"
+        ],
+        "status": "MATCHED",
+        "unavailable_reason": null,
+        "unit": "JPY"
+      },
+      {
+        "dimension": "direct_measurement_to_attribution_total",
+        "left_value": 120,
+        "right_value": 120,
+        "source_sha256s": [
+          "1111111111111111111111111111111111111111111111111111111111111111",
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448"
+        ],
+        "status": "MATCHED",
+        "unavailable_reason": null,
+        "unit": "JPY"
+      },
+      {
+        "dimension": "unattributed_measurement_to_attribution_total",
+        "left_value": 79,
+        "right_value": 79,
+        "source_sha256s": [
+          "4444444444444444444444444444444444444444444444444444444444444444",
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448"
+        ],
+        "status": "MATCHED",
+        "unavailable_reason": null,
+        "unit": "JPY"
+      },
+      {
+        "dimension": "work_minutes_measurement_to_cost_total",
+        "left_value": 300,
+        "right_value": 300,
+        "source_sha256s": [
+          "1111111111111111111111111111111111111111111111111111111111111111"
+        ],
+        "status": "MATCHED",
+        "unavailable_reason": null,
+        "unit": "MINUTES"
+      },
+      {
+        "dimension": "incremental_cost_measurement_to_cost_total",
+        "left_value": 0,
+        "right_value": 0,
+        "source_sha256s": [
+          "1111111111111111111111111111111111111111111111111111111111111111"
+        ],
+        "status": "MATCHED",
+        "unavailable_reason": null,
+        "unit": "JPY"
+      },
+      {
+        "dimension": "measurement_readiness",
+        "left_value": "VERIFIED_SAME_PROGRAM_PERIOD_MATURE_FIVE_SLOTS",
+        "right_value": "VERIFIED_SAME_PROGRAM_PERIOD_MATURE_FIVE_SLOTS",
+        "source_sha256s": [
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+          "6756429c32484b34a1beb8d628b8823b49570bcd9dc504fc268d9aa6d1bfa141"
+        ],
+        "status": "MATCHED",
+        "unavailable_reason": null,
+        "unit": "IDENTITY"
+      }
+    ],
+    "exceptions": [
+      {
+        "article": null,
+        "code": "EXTERNAL_PROVIDER_REPORT_REQUIRED",
+        "dimension": "file_hash_uniqueness",
+        "raw_detail_included": false,
+        "severity": "EXTERNAL_BLOCKER"
+      },
+      {
+        "article": null,
+        "code": "GENERATED_CANCELLED_TOTALS_REQUIRED",
+        "dimension": "generated_confirmed_cancelled_amount_totals",
+        "raw_detail_included": false,
+        "severity": "EXTERNAL_BLOCKER"
+      },
+      {
+        "article": null,
+        "code": "DRY_RUN_COMMIT_EVIDENCE_REQUIRED",
+        "dimension": "dry_run_to_commit_hash_equality",
+        "raw_detail_included": false,
+        "severity": "EXTERNAL_BLOCKER"
+      }
+    ],
+    "input_sha256": "d8d39faa1c8ab1e151a4d2bb957065c7fd2cb61092657e7f99804df6edd98ee2",
+    "learning_report": {
+      "availability": "AVAILABLE",
+      "candidates": [
+        {
+          "article": {
+            "article_id": "st1704-countertop-dishwasher-for-small-households",
+            "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
+            "packet_sha256": "b1a0c447cd07d6d3d65bbe5b842110a246351c3e6ddfb8dae9bf8363f12b7adb",
+            "slot": 4,
+            "slug": "countertop-dishwasher-for-small-households"
+          },
+          "candidate_id": "ST1305-CANDIDATE-04-PURCHASE_DECISION_BRIDGE_REVIEW",
+          "candidate_type": "PURCHASE_DECISION_BRIDGE_REVIEW",
+          "evidence_metric_names": [
+            "article_views",
+            "affiliate_clicks"
+          ],
+          "evidence_source_sha256s": [
+            "1111111111111111111111111111111111111111111111111111111111111111"
+          ],
+          "finance_signal_used": false,
+          "mutation_authority": {
+            "article_html": false,
+            "cta": false,
+            "product_selection": false,
+            "publication_snapshot": false,
+            "recommendation_order": false
+          },
+          "priority": "EDITORIAL_REVIEW",
+          "review_scope": "CONDITION_CONCLUSION_AND_PRODUCT_CONTEXT",
+          "selection_basis": "NON_FINANCE_MEASUREMENT_ALLOWLIST_ONLY"
+        }
+      ],
+      "finance_signals_excluded": [
+        "pending_outcomes",
+        "confirmed_outcomes",
+        "rejected_outcomes",
+        "direct_confirmed_reward_jpy",
+        "unattributed_confirmed_reward_jpy",
+        "affiliate_commission_rate",
+        "incremental_cost_jpy",
+        "work_minutes",
+        "epc",
+        "rpm",
+        "profit"
+      ],
+      "output_kind": "REVIEW_CANDIDATES_ONLY",
+      "unavailable_reason": null
+    },
+    "method_version": "RAOS_ST1305_FINANCE_RECONCILIATION_V2",
+    "metric_snapshot": {
+      "measurement_metrics": [
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_UNATTRIBUTED_EXCLUDED",
+          "denominator": 3000,
+          "name": "search_ctr",
+          "numerator": 300,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "value_decimal": "0.100000"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_UNATTRIBUTED_EXCLUDED",
+          "denominator": 1500,
+          "name": "affiliate_click_rate",
+          "numerator": 50,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "value_decimal": "0.033333"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_UNATTRIBUTED_EXCLUDED",
+          "denominator": 50,
+          "name": "confirmed_reward_per_click_jpy",
+          "numerator": 120,
+          "unavailable_reason": null,
+          "unit": "JPY_PER_CLICK",
+          "value_decimal": "2.400000"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_UNATTRIBUTED_EXCLUDED",
+          "denominator": 8,
+          "name": "confirmation_rate",
+          "numerator": 5,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "value_decimal": "0.625000"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_UNATTRIBUTED_EXCLUDED",
+          "denominator": 300,
+          "name": "confirmed_reward_per_content_hour_jpy",
+          "numerator": 7200,
+          "unavailable_reason": null,
+          "unit": "JPY_PER_CONTENT_HOUR",
+          "value_decimal": "24.000000"
+        }
+      ],
+      "unit_economics_metrics": [
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_PROVIDER_FACT_TOTAL",
+          "denominator": null,
+          "metric_id": "KPI-001",
+          "name": "confirmed_provider_reward_jpy",
+          "numerator": "300",
+          "period": {
+            "duration_days": 14,
+            "end_exclusive_date": "2026-09-08",
+            "start_date": "2026-08-25"
+          },
+          "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+          "source_sha256s": [
+            "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448"
+          ],
+          "unavailable_reason": null,
+          "unit": "JPY",
+          "value_decimal": "300.00"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "denominator": null,
+          "metric_id": "SUPPLEMENTAL-DIRECT-REWARD",
+          "name": "direct_confirmed_reward_jpy",
+          "numerator": "120",
+          "period": {
+            "duration_days": 14,
+            "end_exclusive_date": "2026-09-08",
+            "start_date": "2026-08-25"
+          },
+          "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+          "source_sha256s": [
+            "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448"
+          ],
+          "unavailable_reason": null,
+          "unit": "JPY",
+          "value_decimal": "120.00"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "denominator": null,
+          "metric_id": "KPI-002-DIRECT-VIEW",
+          "name": "direct_confirmed_contribution_profit_jpy",
+          "numerator": "120",
+          "period": {
+            "duration_days": 14,
+            "end_exclusive_date": "2026-09-08",
+            "start_date": "2026-08-25"
+          },
+          "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+          "source_sha256s": [
+            "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+            "1111111111111111111111111111111111111111111111111111111111111111",
+            "6666666666666666666666666666666666666666666666666666666666666666",
+            "7777777777777777777777777777777777777777777777777777777777777777",
+            "8888888888888888888888888888888888888888888888888888888888888888",
+            "9999999999999999999999999999999999999999999999999999999999999999",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ],
+          "unavailable_reason": null,
+          "unit": "JPY",
+          "value_decimal": "-5880.00"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "denominator": "50",
+          "metric_id": "KPI-003",
+          "name": "confirmed_epc_jpy",
+          "numerator": "120",
+          "period": {
+            "duration_days": 14,
+            "end_exclusive_date": "2026-09-08",
+            "start_date": "2026-08-25"
+          },
+          "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+          "source_sha256s": [
+            "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+            "1111111111111111111111111111111111111111111111111111111111111111"
+          ],
+          "unavailable_reason": null,
+          "unit": "JPY_PER_CLICK",
+          "value_decimal": "2.40"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "denominator": "1500",
+          "metric_id": "KPI-004",
+          "name": "confirmed_rpm_jpy",
+          "numerator": "120",
+          "period": {
+            "duration_days": 14,
+            "end_exclusive_date": "2026-09-08",
+            "start_date": "2026-08-25"
+          },
+          "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+          "source_sha256s": [
+            "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+            "6666666666666666666666666666666666666666666666666666666666666666",
+            "7777777777777777777777777777777777777777777777777777777777777777",
+            "8888888888888888888888888888888888888888888888888888888888888888",
+            "9999999999999999999999999999999999999999999999999999999999999999",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ],
+          "unavailable_reason": null,
+          "unit": "JPY_PER_1000_SESSIONS",
+          "value_decimal": "80.00"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "denominator": "120",
+          "metric_id": "KPI-022",
+          "name": "article_update_cost_ratio",
+          "numerator": "100",
+          "period": {
+            "duration_days": 14,
+            "end_exclusive_date": "2026-09-08",
+            "start_date": "2026-08-25"
+          },
+          "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+          "source_sha256s": [
+            "6666666666666666666666666666666666666666666666666666666666666666",
+            "7777777777777777777777777777777777777777777777777777777777777777",
+            "8888888888888888888888888888888888888888888888888888888888888888",
+            "9999999999999999999999999999999999999999999999999999999999999999",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448"
+          ],
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "value_decimal": "0.833333"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "denominator": "20",
+          "metric_id": "KPI-023",
+          "name": "content_payback_months",
+          "numerator": "525",
+          "period": {
+            "duration_days": 14,
+            "end_exclusive_date": "2026-09-08",
+            "start_date": "2026-08-25"
+          },
+          "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+          "source_sha256s": [
+            "6666666666666666666666666666666666666666666666666666666666666666",
+            "7777777777777777777777777777777777777777777777777777777777777777",
+            "8888888888888888888888888888888888888888888888888888888888888888",
+            "9999999999999999999999999999999999999999999999999999999999999999",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ],
+          "unavailable_reason": null,
+          "unit": "MONTHS",
+          "value_decimal": "26.25"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "denominator": "5",
+          "metric_id": "KPI-025",
+          "name": "ai_cost_per_approved_article_jpy",
+          "numerator": "0",
+          "period": {
+            "duration_days": 14,
+            "end_exclusive_date": "2026-09-08",
+            "start_date": "2026-08-25"
+          },
+          "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+          "source_sha256s": [
+            "6666666666666666666666666666666666666666666666666666666666666666",
+            "7777777777777777777777777777777777777777777777777777777777777777",
+            "8888888888888888888888888888888888888888888888888888888888888888",
+            "9999999999999999999999999999999999999999999999999999999999999999",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ],
+          "unavailable_reason": null,
+          "unit": "JPY_PER_APPROVED_ARTICLE",
+          "value_decimal": "0.00"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "denominator": "300",
+          "metric_id": "SUPPLEMENTAL-CONTENT-HOUR",
+          "name": "confirmed_reward_per_content_hour_jpy",
+          "numerator": "120",
+          "period": {
+            "duration_days": 14,
+            "end_exclusive_date": "2026-09-08",
+            "start_date": "2026-08-25"
+          },
+          "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+          "source_sha256s": [
+            "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+            "1111111111111111111111111111111111111111111111111111111111111111"
+          ],
+          "unavailable_reason": null,
+          "unit": "JPY_PER_CONTENT_HOUR",
+          "value_decimal": "24.00"
+        }
+      ]
+    },
+    "profile": "RAOS_ST1305_RECORDED_SYNTHETIC_V2",
+    "recommendation_input_policy": {
+      "all_finance_values_excluded": true,
+      "excluded": [
+        "AFFILIATE_COMMISSION_RATE",
+        "CONFIRMED_REWARD",
+        "UNATTRIBUTED_REWARD",
+        "ESTIMATED_REWARD",
+        "COMMISSION",
+        "INCREMENTAL_COST",
+        "LABOR_COST",
+        "EPC",
+        "RPM",
+        "PROFIT"
+      ],
+      "finance_may_change_article_html": false,
+      "finance_may_change_cta": false,
+      "finance_may_change_product_selection": false,
+      "finance_may_change_publication_snapshot": false,
+      "finance_may_change_recommendation_order": false
+    },
+    "result_sha256": "d8ebf595e96ef8f063fef0e0f2242534e4eb040a0a2e1a39fa50427b17c1467e",
+    "run_id": "018f3e90-7b00-7000-8000-000000001305",
+    "totals": {
+      "amount_totals": {
+        "canonical": {
+          "cancelled_jpy": {
+            "availability": "UNAVAILABLE",
+            "unavailable_reason": "GENERATED_CANCELLED_TOTALS_UNAVAILABLE",
+            "value": null
+          },
+          "confirmed_jpy": {
+            "availability": "AVAILABLE",
+            "unavailable_reason": null,
+            "value": "300"
+          },
+          "generated_jpy": {
+            "availability": "UNAVAILABLE",
+            "unavailable_reason": "GENERATED_CANCELLED_TOTALS_UNAVAILABLE",
+            "value": null
+          }
+        },
+        "provider": {
+          "cancelled_jpy": {
+            "availability": "UNAVAILABLE",
+            "unavailable_reason": "GENERATED_CANCELLED_TOTALS_UNAVAILABLE",
+            "value": null
+          },
+          "confirmed_jpy": {
+            "availability": "AVAILABLE",
+            "unavailable_reason": null,
+            "value": "300"
+          },
+          "generated_jpy": {
+            "availability": "UNAVAILABLE",
+            "unavailable_reason": "GENERATED_CANCELLED_TOTALS_UNAVAILABLE",
+            "value": null
+          }
+        }
+      },
+      "attribution_totals": {
+        "direct_confirmed_reward_jpy": "120",
+        "estimated_confirmed_reward_jpy": "101",
+        "unattributed_confirmed_reward_jpy": "79",
+        "unattributed_reward_allocated_to_articles": false
+      },
+      "comparison_count": 14,
+      "cost_totals": {
+        "human_labor_cost_jpy": "6000.00",
+        "incremental_external_cost_jpy": "0",
+        "work_minutes": 300
+      },
+      "exception_count": 3,
+      "learning_candidate_count": 1,
+      "row_counts": {
+        "attribution_allocation_count": 6,
+        "cost_observation_count": 5,
+        "direct_allocation_count": 1,
+        "estimated_allocation_count": 4,
+        "provider_fact_count": 3,
+        "provider_report_row_count": {
+          "availability": "UNAVAILABLE",
+          "unavailable_reason": "PROVIDER_REPORT_UNAVAILABLE",
+          "value": null
+        },
+        "unattributed_allocation_count": 1
+      }
+    }
+  },
+  "verification_boundary": {
+    "TST-030": "NOT_EXECUTED",
+    "database": "NOT_EXECUTED",
+    "dependency_regression": "CANDIDATE",
+    "live": "NOT_EXECUTED",
+    "local_unit_property_adversarial": "CANDIDATE",
+    "owner_generator_check": "CANDIDATE",
+    "production": "NOT_EXECUTED",
+    "real_provider_report": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  }
+}

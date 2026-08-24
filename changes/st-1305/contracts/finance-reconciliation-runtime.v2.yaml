@@ -1,0 +1,220 @@
+document:
+  schema_version: 2.0.0
+  story_id: ST-1305
+  classification: MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_FINANCE_RECONCILIATION
+  status: LOCAL_CODE_COMPLETE
+  executable_environments: [ENV-DEV, ENV-CI]
+  authority: RECORDED_SYNTHETIC_ONLY
+  canonical_status: UNCHANGED
+  formal_validation_claimed: false
+  production_eligible: false
+
+source_bindings:
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  analytics_design:
+    path: docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  attribution_policy:
+    path: docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml
+    sha256: 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c
+  kpi_catalog:
+    path: docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml
+    sha256: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  security_design:
+    path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  data_classification:
+    path: docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  threat_register:
+    path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  st1303_runtime:
+    path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
+    sha256: 417919e2c4552b8e1e6e3fef18f4daccfa0cf44d13803db62d474fe154fb574b
+  st1303_projection:
+    path: changes/st-1303/generated/attribution-engine-recorded.v2.json
+    sha256: f6711833620948acf144aacdc1329f470203e893292570d8f1374f75306d4f32
+  st1303_fixture:
+    path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
+    sha256: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b
+  st1304_runtime:
+    path: changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
+    sha256: 3bd4dec7e3993fd7148abf173057b43a784c2ccb10f51dd911913c864bbaf997
+  st1304_projection:
+    path: changes/st-1304/generated/cost-unit-economics-recorded.v2.json
+    sha256: d2e515d6c6d69d78f484ceffdde72a186496c51eab197dd11859b5fee55ed693
+  st1304_fixture:
+    path: changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
+    sha256: 90b3ccaecc1345b26054f563365936f4fd06b5def3259c5786adeea0327a8942
+  five_slot_measurement:
+    path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
+    sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+
+open_decision_boundary:
+  report_sample:
+    id: OD-003
+    status: EXTERNAL_EVIDENCE_REQUIRED
+    resolved: false
+    safe_default: SYNTHETIC_FIXTURE_ONLY_REAL_REPORT_UNVERIFIED
+  labor:
+    id: OD-005
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    safe_default: UNKNOWN_NOT_ZERO
+  budget:
+    id: OD-009
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    safe_default: LOW_DEVELOPMENT_ONLY_PRODUCTION_DISABLED
+  retention:
+    id: OD-014
+    status: HUMAN_DECISION_REQUIRED
+    resolved: false
+    safe_default: AUTOMATIC_DELETION_DISABLED
+
+report_contract:
+  profile: RAOS_ST1305_RECORDED_SYNTHETIC_V2
+  method_version: RAOS_ST1305_FINANCE_RECONCILIATION_V2
+  program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
+  period_duration_days: 14
+  article_slots: [1, 2, 3, 4, 5]
+  exact_dependency_recalculation_required: true
+  same_program_required: true
+  same_period_required: true
+  verified_input_required: true
+  mature_cohort_required: true
+  arbitrary_total_allocation: false
+  missing_as_zero: false
+  synthetic_provider_report_claimed: false
+  canonical_dimensions:
+    - file_hash_uniqueness
+    - row_count
+    - generated_confirmed_cancelled_amount_totals
+    - currency
+    - period
+    - duplicate_provider_row
+    - dry_run_to_commit_hash_equality
+  unavailable_without_real_report:
+    - file_hash_uniqueness
+    - row_count
+    - generated_confirmed_cancelled_amount_totals
+    - dry_run_to_commit_hash_equality
+  batch_totals_required: true
+  typed_exceptions_required: true
+  raw_provider_rows_in_report: false
+
+metric_contract:
+  metrics:
+    - search_ctr
+    - affiliate_click_rate
+    - confirmed_reward_per_click_jpy
+    - confirmation_rate
+    - confirmed_reward_per_content_hour_jpy
+  source: EXACT_ST1303_RECALCULATION
+  same_program_period_verified_mature_only: true
+  explicit_observed_zero_is_zero: true
+  missing_unverified_zero_denominator_immature_mismatch: UNAVAILABLE
+  unavailable_value: null
+  provider_direct_estimated_unattributed_separate: true
+  unattributed_reward_article_allocation: false
+
+learning_contract:
+  output_kind: REVIEW_CANDIDATES_ONLY
+  allowed_signals:
+    - search_impressions
+    - search_clicks
+    - article_views
+    - affiliate_clicks
+    - broken_links
+    - intent_classification
+  excluded_finance_signals:
+    - pending_outcomes
+    - confirmed_outcomes
+    - rejected_outcomes
+    - direct_confirmed_reward_jpy
+    - unattributed_confirmed_reward_jpy
+    - affiliate_commission_rate
+    - incremental_cost_jpy
+    - work_minutes
+    - epc
+    - rpm
+    - profit
+  rules:
+    - BROKEN_LINK_REPAIR_REVIEW
+    - SEARCH_INTENT_ALIGNMENT_REVIEW
+    - PURCHASE_DECISION_BRIDGE_REVIEW
+  rule_order_then_slot_order: true
+  reward_or_profit_priority: false
+  article_html_mutation: false
+  cta_mutation: false
+  product_selection_mutation: false
+  recommendation_order_mutation: false
+  publication_snapshot_mutation: false
+
+authority_boundary:
+  provider_call: false
+  network: false
+  credential_access: false
+  persistence: false
+  database: false
+  public_projection: false
+  publication: false
+  editorial_mutation: false
+  article_html_mutation: false
+  cta_mutation: false
+  product_selection_mutation: false
+  recommendation_order_mutation: false
+  publication_snapshot_mutation: false
+  approval: false
+  staging: false
+  release: false
+  production: false
+  recommendation_inputs_excluded:
+    - AFFILIATE_COMMISSION_RATE
+    - CONFIRMED_REWARD
+    - UNATTRIBUTED_REWARD
+    - ESTIMATED_REWARD
+    - COMMISSION
+    - INCREMENTAL_COST
+    - LABOR_COST
+    - EPC
+    - RPM
+    - PROFIT
+
+recorded_fixture:
+  path: changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json
+  sha256: 59b666012081afc238b331dc481a48bf9ba91c54ee00756f0a0a7687b98deb09
+  synthetic: true
+  unit_economics_fixture_sha256: 90b3ccaecc1345b26054f563365936f4fd06b5def3259c5786adeea0327a8942
+  unit_economics_input_sha256: 6756429c32484b34a1beb8d628b8823b49570bcd9dc504fc268d9aa6d1bfa141
+  unit_economics_result_sha256: e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3
+  reconciliation_input_sha256: d8d39faa1c8ab1e151a4d2bb957065c7fd2cb61092657e7f99804df6edd98ee2
+  reconciliation_result_sha256: d8ebf595e96ef8f063fef0e0f2242534e4eb040a0a2e1a39fa50427b17c1467e
+  provider_execution: NOT_EXECUTED
+
+verification_boundary:
+  local_unit_property_adversarial: CANDIDATE
+  dependency_regression: CANDIDATE
+  owner_generator_check: CANDIDATE
+  TST-030: NOT_EXECUTED
+  real_provider_report: NOT_EXECUTED
+  database: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
