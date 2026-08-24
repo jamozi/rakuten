@@ -1,6 +1,6 @@
 # ST-1405 recorded kill-switch runtime seam
 
-Status: `LOCAL_IMPLEMENTATION_CANDIDATE`
+Local code status: `LOCAL_CODE_COMPLETE_MAX_SAFE`
 
 Canonical Story status remains `NOT_STARTED`; formal `TST-012`, `TST-022`, and
 `TST-028` remain `NOT_EXECUTED`. This Story slice implements only the
@@ -73,9 +73,11 @@ or Production authority.
 ## Dependency boundary
 
 - ST-0402 supplies the provider-neutral step-up guard used before a command.
-- ST-0905 remains a non-executable publication-command reference plan. This
-  slice only answers whether those future commands must be denied; it never
-  accepts, enqueues, or executes one.
+- ST-0905 now supplies a DEV/CI-only, process-local publication-command
+  runtime. This slice remains its independent guard: every ST-0905 command
+  must still pass the applicable publication kill-switch decision before any
+  future integration may invoke it. ST-1405 does not accept, enqueue, invoke,
+  or execute an ST-0905 command and grants no public-write authority.
 - ST-1404 remains a recorded one-step Job runtime without durable outbox or
   broker authority. ST-1405 therefore retains an event intent in memory and
   does not import or invoke the Job runtime.
