@@ -100,7 +100,7 @@ PREDECESSOR_INPUTS = (
     ),
     (
         "scripts/build_st1504_github_oidc.py",
-        "996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f",
+        "f8f8716f9f5ac8e68f0f1e586dfe3f693fd517393c5bfd21cfe4507af7d335a5",
     ),
 )
 ACTION_COUNT_NAMES = (

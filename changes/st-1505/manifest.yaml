@@ -7,7 +7,7 @@ document:
   generation_command: uv run --locked --no-sync python scripts/build_st1505_staging_deployment.py
 provenance:
   contract_uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
-  contract_sha256: b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b
+  contract_sha256: d7cddea6d006f620835c4facf1e76e62ce7f69d9ac0ae8d824b7ff67237764e5
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -83,12 +83,12 @@ provenance:
   - uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
     sha256: 1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4
   - uri: repo://scripts/build_st1504_github_oidc.py
-    sha256: 996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f
+    sha256: f8f8716f9f5ac8e68f0f1e586dfe3f693fd517393c5bfd21cfe4507af7d335a5
 source_artifact_count: 8
 source_artifacts:
 - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
   bytes: 35578
-  sha256: b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b
+  sha256: d7cddea6d006f620835c4facf1e76e62ce7f69d9ac0ae8d824b7ff67237764e5
 - uri: repo://changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml
   bytes: 12096
   sha256: 5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5
@@ -96,17 +96,17 @@ source_artifacts:
   bytes: 6909
   sha256: 77fd0919baed14be00bc782cfde89e13e50cca7bcb883826bad5679e75073008
 - uri: repo://scripts/build_st1505_staging_deployment.py
-  bytes: 96883
-  sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+  bytes: 97203
+  sha256: cd22f5fcf16cfd135b1ecac64ea65c0f8b9d86b60d812d0ab987ff6bc3a4f42d
 - uri: repo://tests/st1505/conftest.py
   bytes: 641
   sha256: dc3ec707e3c0500c0be0e804e5e657640b67d29d9e1a42ccd31f5c87cb4c2040
 - uri: repo://tests/st1505/test_contract.py
   bytes: 32486
-  sha256: 012f8c2812e2accf4ef5f9c5482c019263c4cc313d9ff6e8cca5610aae2478c5
+  sha256: cc93122005a0b817fd78fa98ba35290097b8de806d07a17dbfcf3c38dc4e2c89
 - uri: repo://tests/st1505/test_generation.py
   bytes: 18374
-  sha256: d694746423a07690d44cfeb00f8ebdba78600c8d2ce415f1dfef424d32fc56a1
+  sha256: ceb28f6f16f64832896d659ffbe8765395f17c707462db53ee98f254f44a1120
 - uri: repo://tests/st1505/test_negative_cases.py
   bytes: 41319
   sha256: 54c32e77ca63385b18c6a801d5d33fd69781448852c3a837fb3dc463830f479f
@@ -114,7 +114,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
   bytes: 35455
-  sha256: 8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4
+  sha256: 7dc30e3f703c2e3f6a4e40729ae122d033f4a84b75646b1c1609e4da6c95d968
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check

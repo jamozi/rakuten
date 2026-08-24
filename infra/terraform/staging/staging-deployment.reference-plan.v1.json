@@ -408,7 +408,7 @@
       "design_handoff_semantic_sha256": "e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282",
       "design_handoff_sha256": "36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04",
       "design_handoff_uri": "repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml",
-      "owner_generator_sha256": "996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f",
+      "owner_generator_sha256": "f8f8716f9f5ac8e68f0f1e586dfe3f693fd517393c5bfd21cfe4507af7d335a5",
       "owner_generator_uri": "repo://scripts/build_st1504_github_oidc.py",
       "reference_plan_semantic_sha256": "9fac1776d4b7cd2a89999559036e4c465979d5de0f80ccaff26004e56ade5951",
       "reference_plan_sha256": "1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4",

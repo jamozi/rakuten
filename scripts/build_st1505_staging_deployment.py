@@ -154,7 +154,7 @@ PREDECESSOR_SOURCES: Final = {
         "1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4"
     ),
     "scripts/build_st1504_github_oidc.py": (
-        "996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f"
+        "f8f8716f9f5ac8e68f0f1e586dfe3f693fd517393c5bfd21cfe4507af7d335a5"
     ),
 }
 PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
@@ -766,7 +766,7 @@ EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
     "d4f680a468ab1246734595394d7e2b1edefa6a590e33c418f7c0c9b487e30448"
 )
 EXPECTED_CONTRACT_SEMANTIC_SHA256: Final = (
-    "9c5e6c5a8c52e40cb43e7405f95492d75bf0096430566425e0b47b550ade1215"
+    "63437d39243176dac021e37fbcb5b2980cb1ac4b8f24bdebb02f67dc38c8b7ef"
 )
 PREDECESSOR_SEMANTIC_SHA256: Final = {
     "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml": (
@@ -1541,25 +1541,33 @@ def _render_predecessor_plan(
 ) -> bytes:
     try:
         if story_id == "ST-1501":
-            from scripts import build_st1501_terraform_foundation as owner
+            from scripts import build_st1501_terraform_foundation as owner_st1501
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            foundation_model = owner_st1501.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1501.render_reference_plan(foundation_model)
         if story_id == "ST-1502":
-            from scripts import build_st1502_data_services as owner
+            from scripts import build_st1502_data_services as owner_st1502
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            data_services_model = owner_st1502.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1502.render_reference_plan(data_services_model)
         if story_id == "ST-1503":
-            from scripts import build_st1503_compute_edge as owner
+            from scripts import build_st1503_compute_edge as owner_st1503
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            compute_edge_model = owner_st1503.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1503.render_reference_plan(compute_edge_model)
         if story_id == "ST-1504":
-            from scripts import build_st1504_github_oidc as owner
+            from scripts import build_st1504_github_oidc as owner_st1504
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            deployment_identity_model = owner_st1504.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1504.render_reference_plan(deployment_identity_model)
     except Exception:  # noqa: BLE001
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor")
     _fail("PREDECESSOR_STORY_UNKNOWN", "predecessor")
