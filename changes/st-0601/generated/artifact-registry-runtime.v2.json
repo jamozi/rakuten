@@ -9,7 +9,7 @@
     "repository_local_development": "STANDING_OWNER_AUTHORIZATION",
     "staging": "NOT_GRANTED"
   },
-  "contract_sha256": "18a09881ef7fcba4296997c83ecc54bc2d935fc281cfea4a9d75a6acbac4473a",
+  "contract_sha256": "1102f4e92b8a6a7ede8daa7647c6ba3a63fe88dc2d2ac8f7a43a6aa5a8a1c48b",
   "document": {
     "formal_tst_014": "NOT_EXECUTED",
     "id": "RAOS-LOCAL-ARTIFACT-REGISTRY-RUNTIME-002",
@@ -191,11 +191,11 @@
     },
     {
       "path": "python/raos/domain/catalog/rakuten_item_search_runtime_v2.py",
-      "sha256": "edf7a80ec563eccfb3539d285363c1a1500aa5977a5422186a1412fe11711570"
+      "sha256": "76ec60dfdd36f09376bf2fe94f596ffbc15bd3c5d59b20628a89eea6bf261b67"
     },
     {
       "path": "python/raos/ports/rakuten_item_search_runtime_v2.py",
-      "sha256": "61e918135b3be77b2b386399078f1c6ef1e7b307a52530eef740528a815a757c"
+      "sha256": "fd7f385825fb80c1ee8966923fa19828b2916cb9a78a66b154c7736a70598628"
     }
   ],
   "story": {

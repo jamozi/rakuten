@@ -29,9 +29,9 @@ sources:
   - path: changes/st-0308/contracts/persistence-runtime.v2.yaml
     sha256: 8ee74a13fd1232f86887e988cbeb475421f2ed17c6a73257968e62ecc0dc54c7
   - path: python/raos/domain/catalog/rakuten_item_search_runtime_v2.py
-    sha256: edf7a80ec563eccfb3539d285363c1a1500aa5977a5422186a1412fe11711570
+    sha256: 76ec60dfdd36f09376bf2fe94f596ffbc15bd3c5d59b20628a89eea6bf261b67
   - path: python/raos/ports/rakuten_item_search_runtime_v2.py
-    sha256: 61e918135b3be77b2b386399078f1c6ef1e7b307a52530eef740528a815a757c
+    sha256: fd7f385825fb80c1ee8966923fa19828b2916cb9a78a66b154c7736a70598628
 runtime:
   mode: RECORDED_LOCAL
   environments: [ENV-DEV, CI]
