@@ -622,7 +622,7 @@ EXPECTED_ST1602_HASHES: Final = {
 }
 EXPECTED_ST1405_HASHES: Final = {
     "changes/st-1405/README.md": (
-        "e2a3852a020a2b64aa0f300cea5dcc7a99dacbf07337f9b511536ccb48b0c041"
+        "032b2d3bd517aa4f6069e5e4d46f05e6032f4cd04d1660c3ce6f621032ef7cec"
     ),
     "python/raos/domain/ops/kill_switch.py": (
         "6b4c014b89cb8b330885e5deae0849b9b0e2089272f7c8371627cd7f4eb353d3"

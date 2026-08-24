@@ -110,7 +110,7 @@
       "inputs": [
         {
           "uri": "repo://changes/st-1405/README.md",
-          "sha256": "e2a3852a020a2b64aa0f300cea5dcc7a99dacbf07337f9b511536ccb48b0c041"
+          "sha256": "032b2d3bd517aa4f6069e5e4d46f05e6032f4cd04d1660c3ce6f621032ef7cec"
         },
         {
           "uri": "repo://python/raos/domain/ops/kill_switch.py",

@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st1605_failure_injection_drill.py
   generation_command: uv run --locked --no-sync python -I -B scripts/build_st1605_failure_injection_drill.py
 provenance:
-  contract_sha256: e99058f7b008313fa761f4d509c8486fd1c4b23027cdfdac704168446ce880e5
+  contract_sha256: 38a2510ee368938227fe3b20b25671e6f0df42b105314650badcbe374e04d706
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -54,7 +54,7 @@ provenance:
   - uri: repo://changes/st-1602/manifest.yaml
     sha256: 94a620384cb74bddc06bb17bb5517fd5fb7cca782af13b97c3c76b49b61d999a
   - uri: repo://changes/st-1405/README.md
-    sha256: e2a3852a020a2b64aa0f300cea5dcc7a99dacbf07337f9b511536ccb48b0c041
+    sha256: 032b2d3bd517aa4f6069e5e4d46f05e6032f4cd04d1660c3ce6f621032ef7cec
   - uri: repo://python/raos/domain/ops/kill_switch.py
     sha256: 6b4c014b89cb8b330885e5deae0849b9b0e2089272f7c8371627cd7f4eb353d3
   - uri: repo://python/raos/application/ops/kill_switch.py
@@ -166,7 +166,7 @@ source_artifact_count: 9
 source_artifacts:
 - uri: repo://changes/st-1605/contracts/failure-injection-drill.v1.yaml
   bytes: 10769
-  sha256: e99058f7b008313fa761f4d509c8486fd1c4b23027cdfdac704168446ce880e5
+  sha256: 38a2510ee368938227fe3b20b25671e6f0df42b105314650badcbe374e04d706
 - uri: repo://changes/st-1605/README.md
   bytes: 6713
   sha256: 237fb2c609ced29e20ae99889d7159011074b344bd37d62f2718509e0f05a993
@@ -175,7 +175,7 @@ source_artifacts:
   sha256: 575f01263d97e9959873c049757dd9fe3229d80dadfaf64e6c9b9053ba640bcb
 - uri: repo://scripts/build_st1605_failure_injection_drill.py
   bytes: 81461
-  sha256: b484a102a7ce717ab55c7e215bcd81ec326159639768f281d0b3724e735f6661
+  sha256: 695be05c3fdfa872edaef1134cfb5da85fcc3bcb6bab8f1d2b068156fd2ae887
 - uri: repo://tests/st1605/conftest.py
   bytes: 2102
   sha256: fb05aa343357bf21c0483b8b0e92909ea019646815fa2464d9acdbb9f8dc68af
@@ -195,7 +195,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1605/generated/failure-injection-drill.local-synthetic-evidence.v1.json
   bytes: 21314
-  sha256: 6f15fec141acadf2744340050d9801514f1a784598f9fde0aa8a08239eeb364a
+  sha256: 898df290a5bcfc738e4c7e12405b5478bb4dd659a58a68c77f1a542e48aa722d
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
