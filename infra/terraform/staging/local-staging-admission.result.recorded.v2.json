@@ -1,0 +1,103 @@
+{
+  "action_counts": {
+    "alert": 0,
+    "approve": 0,
+    "browser": 0,
+    "build": 0,
+    "credential": 0,
+    "deploy": 0,
+    "migrate": 0,
+    "network": 0,
+    "production": 0,
+    "promote": 0,
+    "provider": 0,
+    "release": 0,
+    "restore": 0,
+    "rollback": 0,
+    "smoke": 0,
+    "staging": 0,
+    "telemetry": 0
+  },
+  "artifact": {
+    "critical_high_findings": 0,
+    "cryptographic_signature_verification": "NOT_PERFORMED",
+    "formal_attestation": "NOT_EXECUTED",
+    "immutable_digest_verified": true,
+    "recorded_provenance_binding_verified": true,
+    "sbom_binding_verified": true
+  },
+  "classification": "DETERMINISTIC_RECORDED_LOCAL_ONLY_NOT_STAGING_EVIDENCE",
+  "contract_sha256": "509bfd0102d54c035e4c514b30389936695f8779c39adf02340fa66706c314fd",
+  "external_evidence": {
+    "formal_tst_009": "NOT_EXECUTED",
+    "formal_tst_022": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  },
+  "fixture_id": "st1505-fixture-local-admission-v2",
+  "health": {
+    "formal_browser": "NOT_EXECUTED",
+    "formal_smoke": "NOT_EXECUTED",
+    "network_requests": 0,
+    "surfaces": [
+      "PUBLIC",
+      "ADMIN",
+      "INTERNAL"
+    ]
+  },
+  "identity": {
+    "actions_executed": 0,
+    "activation": "DISABLED",
+    "authentication": "NOT_AUTHENTICATED",
+    "credentials_issued": false,
+    "deployment_authorized": false
+  },
+  "migration": {
+    "database_execution": "NOT_EXECUTED",
+    "destructive_contract_current_release": false,
+    "dry_run": "PASS_RECORDED_IN_MEMORY",
+    "independent_review": "NOT_EXECUTED",
+    "strategy": "EXPAND_MIGRATE_CONTRACT"
+  },
+  "pipeline_id": "st1505-pipeline-local-admission-v2",
+  "result_sha256": "696668a3f9dc74e6de614cad18c4185b30cd2658c39f547d8070cbf733a342e9",
+  "rollback_restore": {
+    "external_actions": 0,
+    "formal_restore": "NOT_EXECUTED",
+    "integrity_simulation": "PASS_RECORDED_IN_MEMORY"
+  },
+  "schema": "RAOS_LOCAL_STAGING_ADMISSION_RESULT_V2",
+  "stage_evidence": [
+    {
+      "evidence_sha256": "faf580a640c5803d3f9972ef0b8eec2ec7a79a6eec8459eee711510b89a221ff",
+      "phase": "SAFETY_BOUNDARY"
+    },
+    {
+      "evidence_sha256": "756feb173b6efc976226e3c60c714bac33d11ccfa20a61f52b08de02050ecb86",
+      "phase": "ARTIFACT_ADMISSION"
+    },
+    {
+      "evidence_sha256": "334f90e5ef1508344c1984aed7dd6c194cd18dcebbe7abd0cfd81f7ac46f8c18",
+      "phase": "MIGRATION_PLAN"
+    },
+    {
+      "evidence_sha256": "2f1f0bdd1aed4fbaaecfe39b5ebf36274d8b7ea2622bf24aff792d08c0b18c1a",
+      "phase": "MIGRATION_DRY_RUN"
+    },
+    {
+      "evidence_sha256": "b5e7a58edb660340aa717ffa005dda5ee453f5f9587fb6dcf79c89342ffa4c82",
+      "phase": "LOOPBACK_HEALTH"
+    },
+    {
+      "evidence_sha256": "6968d2413c765e94147d5869baf10253dd5311bb5d0ab12b703ba29111d6dbea",
+      "phase": "ROLLBACK_RESTORE_SIMULATION"
+    },
+    {
+      "evidence_sha256": "2fff372c4912e3b3f4158c703278471895fde3c565cd1b1b4049755cbd9bc02c",
+      "phase": "LOCAL_ADMISSION_COMPLETE"
+    }
+  ],
+  "status": "LOCAL_ADMISSION_SIMULATION_COMPLETE",
+  "version": 2
+}

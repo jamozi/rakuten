@@ -1,0 +1,67 @@
+document:
+  schema: RAOS_LOCAL_STAGING_PIPELINE_FIXTURE_V2
+  version: 2
+  story_id: ST-1505
+  source_contract: repo://changes/st-1505/contracts/local-staging-admission-runtime.v2.yaml
+  generated_by: repo://scripts/build_st1505_staging_deployment.py
+  classification: REPOSITORY_INERT_LOCAL_SIMULATION_FIXTURE_ONLY
+activation:
+  enabled: false
+  default_enabled: false
+  active_workflow_path: null
+  trigger: NONE
+  selected_target: null
+  credentials: ABSENT
+  provider_sdk: ABSENT
+  network_client: ABSENT
+  commands: []
+pipeline:
+  fixture_id: st1505-fixture-local-admission-v2
+  pipeline_id: st1505-pipeline-local-admission-v2
+  contract_sha256: 509bfd0102d54c035e4c514b30389936695f8779c39adf02340fa66706c314fd
+  phases:
+  - SAFETY_BOUNDARY
+  - ARTIFACT_ADMISSION
+  - MIGRATION_PLAN
+  - MIGRATION_DRY_RUN
+  - LOOPBACK_HEALTH
+  - ROLLBACK_RESTORE_SIMULATION
+  - LOCAL_ADMISSION_COMPLETE
+  action_counts:
+    network: 0
+    credential: 0
+    provider: 0
+    build: 0
+    promote: 0
+    approve: 0
+    deploy: 0
+    migrate: 0
+    smoke: 0
+    browser: 0
+    telemetry: 0
+    alert: 0
+    rollback: 0
+    restore: 0
+    staging: 0
+    release: 0
+    production: 0
+local_phase_modes:
+  SAFETY_BOUNDARY: ST1504_DISABLED_RECEIPT_VALIDATION
+  ARTIFACT_ADMISSION: SYNTHETIC_DIGEST_SBOM_SCAN_PROVENANCE_VALIDATION
+  MIGRATION_PLAN: IN_MEMORY_EXPAND_MIGRATE_CONTRACT_PLAN
+  MIGRATION_DRY_RUN: IN_MEMORY_NO_DATABASE_CONNECTION
+  LOOPBACK_HEALTH: RECORDED_RESPONSES_NO_NETWORK_REQUEST
+  ROLLBACK_RESTORE_SIMULATION: IN_MEMORY_INTEGRITY_ONLY
+  LOCAL_ADMISSION_COMPLETE: HASH_ONLY_LOCAL_EVIDENCE
+external_evidence:
+  local_runtime: IMPLEMENTED_LOCAL_NOT_FORMAL
+  artifact_admission: IMPLEMENTED_LOCAL_NOT_FORMAL
+  migration_simulation: IMPLEMENTED_LOCAL_NOT_FORMAL
+  loopback_health: IMPLEMENTED_LOCAL_NOT_FORMAL
+  rollback_restore_simulation: IMPLEMENTED_LOCAL_NOT_FORMAL
+  formal_tst_009: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  canonical_status_effect: NONE

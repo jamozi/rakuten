@@ -104,7 +104,7 @@ PREDECESSORS = {
         "story_id": "ST-1501",
         "owner_generator_uri": "repo://scripts/build_st1501_terraform_foundation.py",
         "owner_generator_sha256": (
-            "8c24545a0b992db2116e956b8ff0948066ca86b78026aa546417a6be025a9ec8"
+            "ca5bf43cb45578207678f7afcce77cab01a9e54b34f45a3f1c9a5f4f417aa7cb"
         ),
         "handoff_uri": (
             "repo://changes/st-1501/"
@@ -120,20 +120,20 @@ PREDECESSORS = {
             "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml"
         ),
         "contract_sha256": (
-            "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9"
+            "5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e"
         ),
         "contract_semantic_sha256": (
-            "dcf15e5dd721b504a6bac04b71a0c6d26c7ba72bf86e074459babc59f2e3f080"
+            "9e88addbfe93c6d6754111d508ba1d7461a703c2aa6b329fa319b6566d9a55e1"
         ),
         "plan_uri": (
             "repo://infra/terraform/foundation/"
             "terraform-foundation.reference-plan.v1.json"
         ),
         "plan_sha256": (
-            "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70"
+            "bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72"
         ),
         "plan_semantic_sha256": (
-            "8679ac98b14f1bd33572679d7fa1fcd1d64e65d3f94b0a973d35637c176567d7"
+            "1deb0efe9ff2d99ccc27ad6f50d1a07c6ed13b6c45cdd6914a7fdcd1a0edbf20"
         ),
         "action_counts": {"create": 0, "update": 0, "delete": 0},
     },
@@ -141,35 +141,35 @@ PREDECESSORS = {
         "story_id": "ST-1502",
         "owner_generator_uri": "repo://scripts/build_st1502_data_services.py",
         "owner_generator_sha256": (
-            "ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf"
+            "73876b415aba2f7160d94dbe8df113087d4bf5be27b4830b82425b34f6ea6abe"
         ),
         "handoff_uri": (
             "repo://changes/st-1502/"
             "DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml"
         ),
         "handoff_sha256": (
-            "ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5"
+            "2826ec76994e6fb1d4e1c41bc0ce7affecc96351d1fcf527e45c2909bb89f97c"
         ),
         "handoff_semantic_sha256": (
-            "fda0d363d17ca4d8197179b74ad0fac23d252fc3a4e7ef0dc66c2c10a7fc3500"
+            "0d1069b18729a8997e81cdbe1edc40f770348adea10cb12349d9b915547d5845"
         ),
         "contract_uri": (
             "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml"
         ),
         "contract_sha256": (
-            "bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041"
+            "89a0f1e7babfceffd2b270bc3a16f5d74fbeb6b62699e03156c860c9ae16c7e1"
         ),
         "contract_semantic_sha256": (
-            "733d4b6f8c057f3b6d73b413c9ca63b642087005e6f159ae0104a95bf1ff374c"
+            "6339ecf8ba6846efb3efdea69ecba3ef74cb5280a70838c735f3778c3bb0079b"
         ),
         "plan_uri": (
             "repo://infra/terraform/data-services/data-services.reference-plan.v1.json"
         ),
         "plan_sha256": (
-            "84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699"
+            "2d52d7b99a4edda75814af603e48016f06fa34507bc221e3f573379c066f35c5"
         ),
         "plan_semantic_sha256": (
-            "8af68f20679a97fc45c20ed9db15edb704edfa7ce63b03b389437cb3eee91329"
+            "abce483dc017145c1511bbe82f3a5fb055f99ff12636e1fddfffa6bd19f6efdc"
         ),
         "action_counts": {
             "create": 0,
@@ -186,7 +186,7 @@ PREDECESSORS = {
         "story_id": "ST-1503",
         "owner_generator_uri": "repo://scripts/build_st1503_compute_edge.py",
         "owner_generator_sha256": (
-            "9c322273a8c9a1106ee777bc7747d519d059e719fb40a91d4333209e06e8361d"
+            "a19e6eec9dac3c5f46b34538189bc2cac95836e57762925d53823f9948497d27"
         ),
         "handoff_uri": (
             "repo://changes/st-1503/"
@@ -202,19 +202,19 @@ PREDECESSORS = {
             "repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml"
         ),
         "contract_sha256": (
-            "07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60"
+            "682ab350c5036bf8697a99f08269d5d6db1aaff7387ca8401db07b9d811b1c08"
         ),
         "contract_semantic_sha256": (
-            "3d802aa46e08af8241e0feca42ffa7a3d3397a49d4f839cbfef28321cdd52852"
+            "344fc69777a14c50fef91fff3fa4c3d724136ae414039b4a1659383ea7f4acc1"
         ),
         "plan_uri": (
             "repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json"
         ),
         "plan_sha256": (
-            "62d0d2975ebc28951340488eed2da3138b29729b56d7638290deda886651d4d8"
+            "1ac46b4ac6a779f41776c10f69416c05e770f2119fb1ce3b6898c11d7e1295ee"
         ),
         "plan_semantic_sha256": (
-            "8e483d3448213f8fd328241c39029e4ed443a3ffc0df7a358ed0de6870eb074a"
+            "a0100d4256e39d6aed035010534a00c8373c2f916b182eb7d6cd13265d8287a4"
         ),
         "action_counts": {"create": 0, "update": 0, "delete": 0},
     },
@@ -222,7 +222,7 @@ PREDECESSORS = {
         "story_id": "ST-1504",
         "owner_generator_uri": "repo://scripts/build_st1504_github_oidc.py",
         "owner_generator_sha256": (
-            "f8f8716f9f5ac8e68f0f1e586dfe3f693fd517393c5bfd21cfe4507af7d335a5"
+            "24268932c010afe9ff1b6e003d06cb402b637fa9cfb07e4ff8f712761205938c"
         ),
         "handoff_uri": (
             "repo://changes/st-1504/"
@@ -238,20 +238,20 @@ PREDECESSORS = {
             "repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml"
         ),
         "contract_sha256": (
-            "c9b01688f58be30dd561b9845aef2d8725c35af3ea9ce50e187c1a0866da011b"
+            "3cb7faf3a5c2515bf76150ed8cc9e5dc109bb5a519c5b15c0727b1bfe20bc4c8"
         ),
         "contract_semantic_sha256": (
-            "86c418b07701b4cf47f478b13f7665911ece7c4a46d39edd07f7b6944019a4b7"
+            "f0a8a5ca57f34f8b983aa547f8b5f036ee91e0cc9acb63813da64e62a317d2db"
         ),
         "plan_uri": (
             "repo://infra/terraform/deployment-identity/"
             "github-oidc.reference-plan.v1.json"
         ),
         "plan_sha256": (
-            "1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4"
+            "2bbdc8579473be7df47167be57e0c0ec7d3c1f800ffc9afea1b3270adfa9aff8"
         ),
         "plan_semantic_sha256": (
-            "9fac1776d4b7cd2a89999559036e4c465979d5de0f80ccaff26004e56ade5951"
+            "20f3e810ce17aa546b88a7510f8d5fa4dd249593ca233e7bcd8fb37211310f51"
         ),
         "action_counts": {"create": 0, "update": 0, "delete": 0},
     },
@@ -410,7 +410,9 @@ def test_all_four_predecessors_are_exact_hash_semantic_and_safety_bound(
         assert row["required_credential_access"] == "FORBIDDEN"
         assert row["required_live_provider_calls"] == "FORBIDDEN"
         assert row["required_external_writes"] == "FORBIDDEN"
-        assert row["required_reference_plan_executable"] is False
+        assert row["required_reference_plan_executable"] is (
+            story_id in {"ST-1501", "ST-1502"}
+        )
         assert row["required_action_counts"] == expected["action_counts"]
     assert bindings["deployment_identity"]["required_credential_issuance"] == (
         "FORBIDDEN"

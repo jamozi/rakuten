@@ -16,17 +16,30 @@ from scripts import build_st1505_staging_deployment as generator
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 GENERATED_PATHS = (
     Path("infra/terraform/staging/staging-deployment.reference-plan.v1.json"),
+    Path("infra/terraform/staging/local-staging-admission.pipeline.disabled.v2.yaml"),
+    Path("infra/terraform/staging/local-staging-admission.result.recorded.v2.json"),
     Path("changes/st-1505/manifest.yaml"),
 )
 SOURCE_ARTIFACT_PATHS = (
     Path("changes/st-1505/contracts/staging-deployment.v1.yaml"),
+    Path("changes/st-1505/contracts/local-staging-admission-runtime.v2.yaml"),
     Path("changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml"),
+    Path("changes/st-1505/IMPLEMENTATION_RECORD_V2_ST1505_LOCAL_ADMISSION.yaml"),
+    Path("changes/st-1505/LOCAL_COMPLETION_EVIDENCE_V2.md"),
     Path("changes/st-1505/README.md"),
     Path("scripts/build_st1505_staging_deployment.py"),
+    Path("python/raos/domain/ops/staging_admission.py"),
+    Path("python/raos/ports/staging_admission.py"),
+    Path("python/raos/application/ops/staging_admission.py"),
+    Path("python/raos/adapters/recorded_staging_admission.py"),
+    Path("python/raos/staging_admission_runner.py"),
     Path("tests/st1505/conftest.py"),
     Path("tests/st1505/test_contract.py"),
     Path("tests/st1505/test_generation.py"),
     Path("tests/st1505/test_negative_cases.py"),
+    Path("tests/st1505/test_local_runtime.py"),
+    Path("tests/st1505/test_local_runtime_negative.py"),
+    Path("tests/st1505/test_local_journal.py"),
 )
 PREDECESSOR_INPUTS = (
     (
@@ -35,31 +48,31 @@ PREDECESSOR_INPUTS = (
     ),
     (
         "changes/st-1501/contracts/terraform-foundation.v1.yaml",
-        "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9",
+        "5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e",
     ),
     (
         "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
-        "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70",
+        "bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72",
     ),
     (
         "scripts/build_st1501_terraform_foundation.py",
-        "8c24545a0b992db2116e956b8ff0948066ca86b78026aa546417a6be025a9ec8",
+        "ca5bf43cb45578207678f7afcce77cab01a9e54b34f45a3f1c9a5f4f417aa7cb",
     ),
     (
         "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml",
-        "ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5",
+        "2826ec76994e6fb1d4e1c41bc0ce7affecc96351d1fcf527e45c2909bb89f97c",
     ),
     (
         "changes/st-1502/contracts/data-services-foundation.v1.yaml",
-        "bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041",
+        "89a0f1e7babfceffd2b270bc3a16f5d74fbeb6b62699e03156c860c9ae16c7e1",
     ),
     (
         "infra/terraform/data-services/data-services.reference-plan.v1.json",
-        "84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699",
+        "2d52d7b99a4edda75814af603e48016f06fa34507bc221e3f573379c066f35c5",
     ),
     (
         "scripts/build_st1502_data_services.py",
-        "ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf",
+        "73876b415aba2f7160d94dbe8df113087d4bf5be27b4830b82425b34f6ea6abe",
     ),
     (
         "changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml",
@@ -67,15 +80,15 @@ PREDECESSOR_INPUTS = (
     ),
     (
         "changes/st-1503/contracts/compute-edge-foundation.v1.yaml",
-        "07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60",
+        "682ab350c5036bf8697a99f08269d5d6db1aaff7387ca8401db07b9d811b1c08",
     ),
     (
         "infra/terraform/compute-edge/compute-edge.reference-plan.v1.json",
-        "62d0d2975ebc28951340488eed2da3138b29729b56d7638290deda886651d4d8",
+        "1ac46b4ac6a779f41776c10f69416c05e770f2119fb1ce3b6898c11d7e1295ee",
     ),
     (
         "scripts/build_st1503_compute_edge.py",
-        "9c322273a8c9a1106ee777bc7747d519d059e719fb40a91d4333209e06e8361d",
+        "a19e6eec9dac3c5f46b34538189bc2cac95836e57762925d53823f9948497d27",
     ),
     (
         "changes/st-0107/contracts/pr-governance.v1.yaml",
@@ -92,15 +105,35 @@ PREDECESSOR_INPUTS = (
     ),
     (
         "changes/st-1504/contracts/github-oidc-deployment.v1.yaml",
-        "c9b01688f58be30dd561b9845aef2d8725c35af3ea9ce50e187c1a0866da011b",
+        "3cb7faf3a5c2515bf76150ed8cc9e5dc109bb5a519c5b15c0727b1bfe20bc4c8",
     ),
     (
         "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json",
-        "1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4",
+        "2bbdc8579473be7df47167be57e0c0ec7d3c1f800ffc9afea1b3270adfa9aff8",
     ),
     (
         "scripts/build_st1504_github_oidc.py",
-        "f8f8716f9f5ac8e68f0f1e586dfe3f693fd517393c5bfd21cfe4507af7d335a5",
+        "24268932c010afe9ff1b6e003d06cb402b637fa9cfb07e4ff8f712761205938c",
+    ),
+    (
+        "changes/st-1504/manifest.yaml",
+        "f75cecdea748d6bd174753be87c35d681daf0ff3b8e45d671f3cea0573c8765e",
+    ),
+    (
+        "python/raos/domain/deployment_identity.py",
+        "7808bbe1ced665f0e7c184574eeb760c80278966e5c61d832f63d734efc52f13",
+    ),
+    (
+        "python/raos/ports/deployment_identity.py",
+        "34659b7fbcc113221e9890f14ab7cb8435af58b9e3722fc094beeec1a0d5de45",
+    ),
+    (
+        "python/raos/adapters/disabled_deployment_identity.py",
+        "930b4f17198b1ea946de4fefaee5c53d49ac35e350d7276f1d756570a6256956",
+    ),
+    (
+        "infra/terraform/deployment-identity/github-oidc.evaluation.recorded.v1.json",
+        "8fe2ae11254670d9b78c1df2e495da88ccf6687b0f31fb7db035fb3e339dd73e",
     ),
 )
 ACTION_COUNT_NAMES = (
@@ -173,7 +206,7 @@ def test_manifest_source_inventory_and_hashes_are_complete() -> None:
     manifest = _rendered_manifest()
     assert manifest["document"] == {
         "id": "RAOS-STAGING-DEPLOYMENT-MANIFEST-001",
-        "version": "1.1.0",
+        "version": "2.0.0",
         "story_id": "ST-1505",
         "source_contract": (
             "repo://changes/st-1505/contracts/staging-deployment.v1.yaml"
@@ -193,14 +226,15 @@ def test_manifest_source_inventory_and_hashes_are_complete() -> None:
         content = path.read_bytes()
         assert row["bytes"] == len(content)
         assert row["sha256"] == generator.sha256_bytes(content)
-    reference = generator.render_outputs(REPOSITORY_ROOT)[GENERATED_PATHS[0]]
-    assert manifest["generated_artifact_count"] == 1
+    outputs = generator.render_outputs(REPOSITORY_ROOT)
+    assert manifest["generated_artifact_count"] == 3
     assert manifest["generated_artifacts"] == [
         {
-            "uri": f"repo://{GENERATED_PATHS[0].as_posix()}",
-            "bytes": len(reference),
-            "sha256": generator.sha256_bytes(reference),
+            "uri": f"repo://{path.as_posix()}",
+            "bytes": len(outputs[path]),
+            "sha256": generator.sha256_bytes(outputs[path]),
         }
+        for path in GENERATED_PATHS[:-1]
     ]
     assert manifest["manifest_self_integrity"] == {
         "included_in_generated_artifacts": False,
@@ -216,6 +250,16 @@ def test_manifest_pins_direct_handoff_and_all_predecessor_inputs() -> None:
         "repo://changes/st-1505/contracts/staging-deployment.v1.yaml"
     )
     assert provenance["contract_sha256"] == generator.sha256_file(contract_path)
+    runtime_contract = REPOSITORY_ROOT / generator.RUNTIME_CONTRACT_PATH
+    assert provenance["local_runtime_contract_uri"] == (
+        f"repo://{generator.RUNTIME_CONTRACT_PATH.as_posix()}"
+    )
+    assert provenance["local_runtime_contract_sha256"] == generator.sha256_file(
+        runtime_contract
+    )
+    assert provenance["local_runtime_contract_semantic_sha256"] == (
+        generator.EXPECTED_RUNTIME_CONTRACT_SEMANTIC_SHA256
+    )
     assert provenance["authority_inputs"][-1] == {
         "uri": (
             "repo://changes/st-1505/"
@@ -307,6 +351,17 @@ def test_manifest_boundary_preserves_provider_neutral_fail_closed_status() -> No
     ):
         assert boundary[field] == "NOT_EXECUTED"
     assert boundary["effective_canonical_status"] == "UNCHANGED"
+    assert boundary["local_runtime_classification"] == (
+        "DETERMINISTIC_RECORDED_LOCAL_ONLY_NOT_STAGING_EVIDENCE"
+    )
+    assert boundary["local_runtime_status"] == (
+        "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE_PROPOSAL"
+    )
+    assert boundary["local_pipeline_enabled"] is False
+    assert boundary["local_pipeline_default_enabled"] is False
+    assert boundary["local_pipeline_active_workflow_path"] is None
+    assert boundary["local_external_actions"] == 0
+    assert boundary["formal_local_runtime_evidence"] == "NOT_EXECUTED"
 
 
 def test_check_rejects_drift_without_echoing_bytes(tmp_path: Path) -> None:
@@ -398,11 +453,13 @@ def test_output_path_escape_and_symlinked_repository_root_are_rejected(
     assert captured.value.code == "UNSAFE_ROOT_TYPE"
 
 
-def test_owned_artifacts_have_no_workflow_or_executable_deployment_surface() -> None:
+def test_owned_artifacts_have_only_inert_local_execution_surface() -> None:
     staging = REPOSITORY_ROOT / "infra/terraform/staging"
     story = REPOSITORY_ROOT / "changes/st-1505"
     assert sorted(path.name for path in staging.iterdir()) == [
-        "staging-deployment.reference-plan.v1.json"
+        "local-staging-admission.pipeline.disabled.v2.yaml",
+        "local-staging-admission.result.recorded.v2.json",
+        "staging-deployment.reference-plan.v1.json",
     ]
     assert sorted(
         path.relative_to(REPOSITORY_ROOT).as_posix()
@@ -410,7 +467,10 @@ def test_owned_artifacts_have_no_workflow_or_executable_deployment_surface() -> 
         if path.is_file()
     ) == [
         "changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml",
+        "changes/st-1505/IMPLEMENTATION_RECORD_V2_ST1505_LOCAL_ADMISSION.yaml",
+        "changes/st-1505/LOCAL_COMPLETION_EVIDENCE_V2.md",
         "changes/st-1505/README.md",
+        "changes/st-1505/contracts/local-staging-admission-runtime.v2.yaml",
         "changes/st-1505/contracts/staging-deployment.v1.yaml",
         "changes/st-1505/manifest.yaml",
     ]
@@ -430,6 +490,12 @@ def test_owned_artifacts_have_no_workflow_or_executable_deployment_surface() -> 
         for path in workflows.iterdir()
         if path.is_file()
     )
+    pipeline = yaml.safe_load(
+        (REPOSITORY_ROOT / generator.LOCAL_PIPELINE_PATH).read_bytes()
+    )
+    assert pipeline["activation"]["enabled"] is False
+    assert pipeline["activation"]["active_workflow_path"] is None
+    assert pipeline["activation"]["commands"] == []
 
 
 def test_builder_has_no_external_runtime_or_ambient_configuration_surface() -> None:

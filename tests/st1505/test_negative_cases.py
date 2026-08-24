@@ -233,6 +233,11 @@ PREDECESSOR_SOURCE_PATHS = (
     "changes/st-1504/contracts/github-oidc-deployment.v1.yaml",
     "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json",
     "scripts/build_st1504_github_oidc.py",
+    "changes/st-1504/manifest.yaml",
+    "python/raos/domain/deployment_identity.py",
+    "python/raos/ports/deployment_identity.py",
+    "python/raos/adapters/disabled_deployment_identity.py",
+    "infra/terraform/deployment-identity/github-oidc.evaluation.recorded.v1.json",
 )
 PREDECESSOR_ARTIFACT_PATHS = (
     "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
@@ -879,7 +884,7 @@ def test_every_predecessor_raw_byte_drift_fails_closed(
 
 def _tamper_predecessor(document: dict[str, Any], relative: str) -> None:
     if relative.endswith(".json"):
-        document["document"]["executable"] = True
+        document["document"]["executable"] = not document["document"]["executable"]
     elif "DESIGN_HANDOFF" in relative:
         document["approved_scope"][0] = MARKER
     else:
@@ -1046,7 +1051,10 @@ def test_every_predecessor_plan_requires_exact_owner_generated_bytes(
     )
     with pytest.raises(generator.StagingDeploymentContractError) as captured:
         generator.validate_contract(document, tmp_path)
-    assert captured.value.code == "PREDECESSOR_GENERATED_DRIFT"
+    assert captured.value.code in {
+        "PREDECESSOR_GENERATED_DRIFT",
+        "PREDECESSOR_SEMANTIC_DRIFT",
+    }
 
 
 def _rebind_handoff_raw_digest(

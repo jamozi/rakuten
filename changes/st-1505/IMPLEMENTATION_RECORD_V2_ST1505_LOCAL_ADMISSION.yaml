@@ -1,0 +1,128 @@
+document:
+  id: RAOS-ST1505-LOCAL-ADMISSION-IMPLEMENTATION-RECORD-002
+  version: 2.0.0
+  story_id: ST-1505
+  record_kind: REPOSITORY_LOCAL_IMPLEMENTATION_DETAIL
+  status: LOCAL_CODE_COMPLETE_PROPOSAL
+  canonical_status_effect: NONE
+implementation_input:
+  mode: STRICT_STORY
+  base_integration_commit: 77470e14b544bd4ed6e3f185306eb8bc3285b8e4
+  design_handoff: repo://changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml
+  source_contract: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
+  predecessor_stories:
+    - ST-1502
+    - ST-1503
+    - ST-1504
+preflight:
+  objective: >-
+    Close the repository-local portion of DEBT-W1-033 with a deterministic,
+    executable, offline-only admission simulation while preserving every live
+    staging, migration, browser, release, and Production gate.
+  files_and_contracts_read:
+    - repo://AGENTS.md
+    - repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
+    - repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    - repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    - repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    - repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    - repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    - repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    - repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+    - repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1505
+    - repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+    - repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
+    - repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
+    - repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
+    - repo://changes/st-1505/contracts/staging-deployment.v1.yaml
+  ambiguities_and_open_decisions:
+    - OD-002, OD-009, OD-010, OD-011, OD-013, OD-014, and OD-015 remain unresolved and blocking for live staging.
+    - No provider, account, region, credential, environment, endpoint, migration, notification, budget, retention, or release target is selected.
+    - Formal TST-009 requires PostgreSQL 18 migration execution and TST-022 requires browser execution; neither can be promoted from a recorded local simulation.
+  planned_files:
+    - repo://changes/st-1505/contracts/local-staging-admission-runtime.v2.yaml
+    - repo://python/raos/domain/ops/staging_admission.py
+    - repo://python/raos/ports/staging_admission.py
+    - repo://python/raos/application/ops/staging_admission.py
+    - repo://python/raos/adapters/recorded_staging_admission.py
+    - repo://python/raos/staging_admission_runner.py
+    - repo://infra/terraform/staging/local-staging-admission.pipeline.disabled.v2.yaml
+    - repo://infra/terraform/staging/local-staging-admission.result.recorded.v2.json
+    - repo://tests/st1505/
+  migrations:
+    database_migration: NONE
+    recorded_expand_migrate_contract_simulator: IMPLEMENTED_LOCAL_NOT_FORMAL
+    destructive_operation: FORBIDDEN
+  tests_to_add_or_run:
+    - deterministic artifact, SBOM, vulnerability, and provenance admission
+    - Expand-Migrate-Contract order, dry-run, lock, compatibility, and destructive-operation rejection
+    - recorded Public/Admin/Internal loopback health and isolation
+    - rollback/restore integrity simulator
+    - durable idempotency, commit ambiguity, restart, tamper, path, and concurrency
+    - hostile activation and journal collaborators, forged receipts, sanitized errors, and single-attempt behavior
+    - exact SQLite DDL, auto-index, and foreign-key structure with weakened-constraint drift refusal
+    - fixed-contract, descendant, repository-root, and repository-ancestor symlink refusal
+    - ST-1504 disabled activation binding and exact zero external actions
+    - owner regeneration/no-write, Ruff, mypy, Pyright, compile/import, secret scan, and git diff check
+  out_of_scope:
+    - active GitHub workflow changes
+    - provider SDK or API calls
+    - credentials or token exchange
+    - network requests, cloud plan/apply, real database migration, or browser execution
+    - staging deployment, publication, release, rollback of live state, or Production writes
+provisional_local_assumptions:
+  - A closed synthetic artifact and recorded loopback response can exercise admission logic but can never satisfy formal supply-chain, database, browser, transport, staging, or release evidence.
+  - A repository-inert pipeline fixture outside .github/workflows may describe local phases only when enabled remains false and every external action count remains zero.
+  - SQLite is used only as an owner-private local journal for deterministic recovery tests and carries no credential, provider, personal, publication, or Production data.
+completion_boundary:
+  local_runtime: IMPLEMENTED_LOCAL_NOT_FORMAL
+  deterministic_generation: REPRODUCIBLE_NO_WRITE_CHECK_PASS
+  focused_local_checks: PASS_REPOSITORY_LOCAL
+  formal_tst_009: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_staging_release_production: NOT_EXECUTED
+  canonical_status_transition: NOT_PROPOSED_BY_THIS_RECORD
+verification_results:
+  focused_runtime_and_critical_negative_paths:
+    command: >-
+      pytest -p no:cacheprovider -q tests/st1505/test_local_runtime.py
+      tests/st1505/test_local_runtime_negative.py tests/st1505/test_local_journal.py
+    result: PASS_62_TESTS
+  complete_story_suite:
+    command: pytest -p no:cacheprovider -q tests/st1505
+    result: PASS_471_TESTS
+  predecessor_owner_no_write:
+    stories:
+      - ST-1501
+      - ST-1502
+      - ST-1503
+      - ST-1504
+    result: PASS
+  st1505_owner_regeneration_and_no_write:
+    result: PASS
+  ruff_format_and_lint:
+    files: 13
+    result: PASS
+  strict_mypy:
+    source_files: 6
+    result: PASS
+  strict_pyright:
+    source_files: 6
+    diagnostics: 0
+    result: PASS
+  python_compile_and_import:
+    bytecode_location: OUTSIDE_REPOSITORY
+    result: PASS
+  active_workflows:
+    comparison_base: 77470e14b544bd4ed6e3f185306eb8bc3285b8e4
+    changed_files: 0
+    result: PASS_UNCHANGED
+  denied_network_physical_snapshot_secret_scan:
+    story_owned_files: 23
+    findings: 0
+    network_namespace: DENIED
+    result: PASS
+  git_diff_check:
+    result: PASS

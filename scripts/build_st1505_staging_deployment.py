@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the disabled, non-executable ST-1505 staging reference artifacts."""
+"""Build ST-1505 disabled staging interfaces and inert local evidence."""
 
 from __future__ import annotations
 
@@ -12,10 +12,10 @@ import re
 import stat
 import sys
 import tempfile
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
-from typing import Any, Final, NoReturn
+from typing import Any, Final, NoReturn, TypeGuard, cast
 
 import yaml
 from yaml.constructor import ConstructorError
@@ -24,17 +24,46 @@ from yaml.tokens import AliasToken, AnchorToken, TagToken
 
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
-if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+PYTHON_ROOT: Final = REPO_ROOT / "python"
+for import_root in (REPO_ROOT, PYTHON_ROOT):
+    if str(import_root) not in sys.path:
+        sys.path.insert(0, str(import_root))
+
+from raos.adapters.disabled_deployment_identity import (  # noqa: E402
+    DisabledDeploymentIdentityActivation,
+)
+from raos.domain.ops.staging_admission import (  # noqa: E402
+    PIPELINE_PHASES,
+    LocalStagingAdmissionSpec,
+    evaluate_local_admission,
+)
+from raos.ports.deployment_identity import (  # noqa: E402
+    DeploymentIdentityActivationCommand,
+)
+
 CONTRACT_PATH: Final = Path("changes/st-1505/contracts/staging-deployment.v1.yaml")
+RUNTIME_CONTRACT_PATH: Final = Path(
+    "changes/st-1505/contracts/local-staging-admission-runtime.v2.yaml"
+)
 DESIGN_HANDOFF_PATH: Final = Path(
     "changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml"
 )
 REFERENCE_PLAN_PATH: Final = Path(
     "infra/terraform/staging/staging-deployment.reference-plan.v1.json"
 )
+LOCAL_PIPELINE_PATH: Final = Path(
+    "infra/terraform/staging/local-staging-admission.pipeline.disabled.v2.yaml"
+)
+LOCAL_RESULT_PATH: Final = Path(
+    "infra/terraform/staging/local-staging-admission.result.recorded.v2.json"
+)
 MANIFEST_PATH: Final = Path("changes/st-1505/manifest.yaml")
-GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
+GENERATED_PATHS: Final = (
+    REFERENCE_PLAN_PATH,
+    LOCAL_PIPELINE_PATH,
+    LOCAL_RESULT_PATH,
+    MANIFEST_PATH,
+)
 
 SOURCE_CONTRACT_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = "repo://scripts/build_st1505_staging_deployment.py"
@@ -105,37 +134,37 @@ PREDECESSOR_SOURCES: Final = {
         "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f"
     ),
     "changes/st-1501/contracts/terraform-foundation.v1.yaml": (
-        "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9"
+        "5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e"
     ),
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json": (
-        "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70"
+        "bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72"
     ),
     "scripts/build_st1501_terraform_foundation.py": (
-        "8c24545a0b992db2116e956b8ff0948066ca86b78026aa546417a6be025a9ec8"
+        "ca5bf43cb45578207678f7afcce77cab01a9e54b34f45a3f1c9a5f4f417aa7cb"
     ),
     "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml": (
-        "ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5"
+        "2826ec76994e6fb1d4e1c41bc0ce7affecc96351d1fcf527e45c2909bb89f97c"
     ),
     "changes/st-1502/contracts/data-services-foundation.v1.yaml": (
-        "bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041"
+        "89a0f1e7babfceffd2b270bc3a16f5d74fbeb6b62699e03156c860c9ae16c7e1"
     ),
     "infra/terraform/data-services/data-services.reference-plan.v1.json": (
-        "84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699"
+        "2d52d7b99a4edda75814af603e48016f06fa34507bc221e3f573379c066f35c5"
     ),
     "scripts/build_st1502_data_services.py": (
-        "ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf"
+        "73876b415aba2f7160d94dbe8df113087d4bf5be27b4830b82425b34f6ea6abe"
     ),
     "changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml": (
         "2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d"
     ),
     "changes/st-1503/contracts/compute-edge-foundation.v1.yaml": (
-        "07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60"
+        "682ab350c5036bf8697a99f08269d5d6db1aaff7387ca8401db07b9d811b1c08"
     ),
     "infra/terraform/compute-edge/compute-edge.reference-plan.v1.json": (
-        "62d0d2975ebc28951340488eed2da3138b29729b56d7638290deda886651d4d8"
+        "1ac46b4ac6a779f41776c10f69416c05e770f2119fb1ce3b6898c11d7e1295ee"
     ),
     "scripts/build_st1503_compute_edge.py": (
-        "9c322273a8c9a1106ee777bc7747d519d059e719fb40a91d4333209e06e8361d"
+        "a19e6eec9dac3c5f46b34538189bc2cac95836e57762925d53823f9948497d27"
     ),
     "changes/st-0107/contracts/pr-governance.v1.yaml": (
         "b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92"
@@ -148,26 +177,52 @@ PREDECESSOR_SOURCES: Final = {
         "36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04"
     ),
     "changes/st-1504/contracts/github-oidc-deployment.v1.yaml": (
-        "c9b01688f58be30dd561b9845aef2d8725c35af3ea9ce50e187c1a0866da011b"
+        "3cb7faf3a5c2515bf76150ed8cc9e5dc109bb5a519c5b15c0727b1bfe20bc4c8"
     ),
     "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json": (
-        "1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4"
+        "2bbdc8579473be7df47167be57e0c0ec7d3c1f800ffc9afea1b3270adfa9aff8"
     ),
     "scripts/build_st1504_github_oidc.py": (
-        "f8f8716f9f5ac8e68f0f1e586dfe3f693fd517393c5bfd21cfe4507af7d335a5"
+        "24268932c010afe9ff1b6e003d06cb402b637fa9cfb07e4ff8f712761205938c"
+    ),
+    "changes/st-1504/manifest.yaml": (
+        "f75cecdea748d6bd174753be87c35d681daf0ff3b8e45d671f3cea0573c8765e"
+    ),
+    "python/raos/domain/deployment_identity.py": (
+        "7808bbe1ced665f0e7c184574eeb760c80278966e5c61d832f63d734efc52f13"
+    ),
+    "python/raos/ports/deployment_identity.py": (
+        "34659b7fbcc113221e9890f14ab7cb8435af58b9e3722fc094beeec1a0d5de45"
+    ),
+    "python/raos/adapters/disabled_deployment_identity.py": (
+        "930b4f17198b1ea946de4fefaee5c53d49ac35e350d7276f1d756570a6256956"
+    ),
+    "infra/terraform/deployment-identity/github-oidc.evaluation.recorded.v1.json": (
+        "8fe2ae11254670d9b78c1df2e495da88ccf6687b0f31fb7db035fb3e339dd73e"
     ),
 }
 PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
 
 SOURCE_ARTIFACT_PATHS: Final = (
     CONTRACT_PATH,
+    RUNTIME_CONTRACT_PATH,
     DESIGN_HANDOFF_PATH,
+    Path("changes/st-1505/IMPLEMENTATION_RECORD_V2_ST1505_LOCAL_ADMISSION.yaml"),
+    Path("changes/st-1505/LOCAL_COMPLETION_EVIDENCE_V2.md"),
     Path("changes/st-1505/README.md"),
     Path("scripts/build_st1505_staging_deployment.py"),
+    Path("python/raos/domain/ops/staging_admission.py"),
+    Path("python/raos/ports/staging_admission.py"),
+    Path("python/raos/application/ops/staging_admission.py"),
+    Path("python/raos/adapters/recorded_staging_admission.py"),
+    Path("python/raos/staging_admission_runner.py"),
     Path("tests/st1505/conftest.py"),
     Path("tests/st1505/test_contract.py"),
     Path("tests/st1505/test_generation.py"),
     Path("tests/st1505/test_negative_cases.py"),
+    Path("tests/st1505/test_local_runtime.py"),
+    Path("tests/st1505/test_local_runtime_negative.py"),
+    Path("tests/st1505/test_local_journal.py"),
 )
 
 EXPECTED_STORY: Final = {
@@ -766,45 +821,48 @@ EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
     "d4f680a468ab1246734595394d7e2b1edefa6a590e33c418f7c0c9b487e30448"
 )
 EXPECTED_CONTRACT_SEMANTIC_SHA256: Final = (
-    "63437d39243176dac021e37fbcb5b2980cb1ac4b8f24bdebb02f67dc38c8b7ef"
+    "187e1d2ec5f36f91d78163004a821a4d257e40fc8e039adc07d4ad05e549a308"
+)
+EXPECTED_RUNTIME_CONTRACT_SEMANTIC_SHA256: Final = (
+    "509bfd0102d54c035e4c514b30389936695f8779c39adf02340fa66706c314fd"
 )
 PREDECESSOR_SEMANTIC_SHA256: Final = {
     "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml": (
         "e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722"
     ),
     "changes/st-1501/contracts/terraform-foundation.v1.yaml": (
-        "dcf15e5dd721b504a6bac04b71a0c6d26c7ba72bf86e074459babc59f2e3f080"
+        "9e88addbfe93c6d6754111d508ba1d7461a703c2aa6b329fa319b6566d9a55e1"
     ),
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json": (
-        "8679ac98b14f1bd33572679d7fa1fcd1d64e65d3f94b0a973d35637c176567d7"
+        "1deb0efe9ff2d99ccc27ad6f50d1a07c6ed13b6c45cdd6914a7fdcd1a0edbf20"
     ),
     "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml": (
-        "fda0d363d17ca4d8197179b74ad0fac23d252fc3a4e7ef0dc66c2c10a7fc3500"
+        "0d1069b18729a8997e81cdbe1edc40f770348adea10cb12349d9b915547d5845"
     ),
     "changes/st-1502/contracts/data-services-foundation.v1.yaml": (
-        "733d4b6f8c057f3b6d73b413c9ca63b642087005e6f159ae0104a95bf1ff374c"
+        "6339ecf8ba6846efb3efdea69ecba3ef74cb5280a70838c735f3778c3bb0079b"
     ),
     "infra/terraform/data-services/data-services.reference-plan.v1.json": (
-        "8af68f20679a97fc45c20ed9db15edb704edfa7ce63b03b389437cb3eee91329"
+        "abce483dc017145c1511bbe82f3a5fb055f99ff12636e1fddfffa6bd19f6efdc"
     ),
     "changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml": (
         "ad5e207a8f201d0ccdff72670a0f1cd7d90ba76f3e52ad7e51db2eb96d0dd707"
     ),
     "changes/st-1503/contracts/compute-edge-foundation.v1.yaml": (
-        "3d802aa46e08af8241e0feca42ffa7a3d3397a49d4f839cbfef28321cdd52852"
+        "344fc69777a14c50fef91fff3fa4c3d724136ae414039b4a1659383ea7f4acc1"
     ),
     "infra/terraform/compute-edge/compute-edge.reference-plan.v1.json": (
-        "8e483d3448213f8fd328241c39029e4ed443a3ffc0df7a358ed0de6870eb074a"
+        "a0100d4256e39d6aed035010534a00c8373c2f916b182eb7d6cd13265d8287a4"
     ),
     "changes/st-1504/"
     "DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml": (
         "e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282"
     ),
     "changes/st-1504/contracts/github-oidc-deployment.v1.yaml": (
-        "86c418b07701b4cf47f478b13f7665911ece7c4a46d39edd07f7b6944019a4b7"
+        "f0a8a5ca57f34f8b983aa547f8b5f036ee91e0cc9acb63813da64e62a317d2db"
     ),
     "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json": (
-        "9fac1776d4b7cd2a89999559036e4c465979d5de0f80ccaff26004e56ade5951"
+        "20f3e810ce17aa546b88a7510f8d5fa4dd249593ca233e7bcd8fb37211310f51"
     ),
 }
 PREDECESSOR_SPECIFICATIONS: Final = (
@@ -861,6 +919,18 @@ PREDECESSOR_SPECIFICATIONS: Final = (
         {"create": 0, "update": 0, "delete": 0},
     ),
 )
+PREDECESSOR_DOCUMENT_BOUNDARIES: Final = {
+    "ST-1501": ("1.2.0", "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE"),
+    "ST-1502": ("1.2.0", "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE"),
+    "ST-1503": ("1.2.0", "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE"),
+    "ST-1504": ("2.0.0", "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE"),
+}
+PREDECESSOR_LOCAL_REFERENCE_EXECUTABLE: Final = {
+    "ST-1501": True,
+    "ST-1502": True,
+    "ST-1503": False,
+    "ST-1504": False,
+}
 EXPECTED_OPEN_DECISION_BOUNDARY: Final = {
     "OD-002": {
         "status": "HUMAN_DECISION_REQUIRED",
@@ -938,11 +1008,14 @@ class NoAliasDumper(yaml.SafeDumper):
 
 def _construct_unique_mapping(
     loader: UniqueKeyLoader, node: MappingNode, deep: bool = False
-) -> dict[Any, Any]:
+) -> dict[object, object]:
     loader.flatten_mapping(node)
-    result: dict[Any, Any] = {}
+    result: dict[object, object] = {}
+    construct = cast(
+        Callable[[object, bool], object], getattr(loader, "construct_object")
+    )
     for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+        key = construct(cast(object, key_node), deep)
         try:
             duplicate = key in result
         except TypeError as exc:
@@ -959,7 +1032,7 @@ def _construct_unique_mapping(
                 "found duplicate key",
                 key_node.start_mark,
             )
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = construct(cast(object, value_node), deep)
     return result
 
 
@@ -1003,15 +1076,20 @@ def _fail(code: str, field: str) -> NoReturn:
 
 
 def _mapping(value: object, field: str) -> Mapping[str, Any]:
-    if not isinstance(value, Mapping) or not all(
-        type(key) is str for key in value.keys()
-    ):
+    if type(value) is not dict:
         _fail("TYPE_MISMATCH", field)
-    return value
+    raw = cast(dict[object, object], value)
+    if not all(type(key) is str for key in raw):
+        _fail("TYPE_MISMATCH", field)
+    return cast(Mapping[str, Any], value)
+
+
+def _is_any_list(value: object) -> TypeGuard[list[Any]]:
+    return type(value) is list
 
 
 def _list(value: object, field: str) -> list[Any]:
-    if type(value) is not list:
+    if not _is_any_list(value):
         _fail("TYPE_MISMATCH", field)
     return value
 
@@ -1022,16 +1100,16 @@ def _exact_keys(value: Mapping[str, Any], expected: set[str], field: str) -> Non
 
 
 def _strict_match(actual: object, expected: object, field: str) -> None:
-    if isinstance(expected, Mapping):
+    if type(expected) is dict:
         value = _mapping(actual, field)
-        expected_mapping = _mapping(expected, field)
+        expected_mapping = _mapping(cast(object, expected), field)
         _exact_keys(value, set(expected_mapping), field)
         for key, expected_value in expected_mapping.items():
             _strict_match(value[key], expected_value, f"{field}.{key}")
         return
     if type(expected) is list:
         value_list = _list(actual, field)
-        expected_list = _list(expected, field)
+        expected_list = _list(cast(object, expected), field)
         if not expected_list and value_list:
             _fail("SELECTION_MUST_REMAIN_UNSET", field)
         if len(value_list) != len(expected_list):
@@ -1054,8 +1132,8 @@ def _strict_match(actual: object, expected: object, field: str) -> None:
 def _assert_unset_tree(value: object, field: str) -> None:
     if value is None:
         return
-    if isinstance(value, Mapping):
-        mapping = _mapping(value, field)
+    if type(value) is dict:
+        mapping = _mapping(cast(object, value), field)
         for nested in mapping.values():
             _assert_unset_tree(nested, f"{field}.item")
         return
@@ -1109,7 +1187,7 @@ def _repository_regular_file(root: Path, relative: Path, field: str) -> Path:
     return target
 
 
-def load_yaml(path: Path) -> Any:
+def load_yaml(path: Path) -> object:
     _regular_file(path, "yaml")
     try:
         content = path.read_bytes()
@@ -1119,19 +1197,20 @@ def load_yaml(path: Path) -> Any:
         _fail("YAML_SIZE_LIMIT", "yaml")
     try:
         text = content.decode("utf-8")
-        for token in yaml.scan(text):
+        scan = cast(Callable[[str], Sequence[object]], getattr(yaml, "scan"))
+        for token in scan(text):
             if isinstance(token, (AliasToken, AnchorToken)):
                 _fail("YAML_ALIAS_FORBIDDEN", "yaml")
             if isinstance(token, TagToken):
                 _fail("YAML_TAG_FORBIDDEN", "yaml")
-        return yaml.load(text, Loader=UniqueKeyLoader)
+        return cast(object, yaml.load(text, Loader=UniqueKeyLoader))
     except StagingDeploymentContractError:
         raise
     except UnicodeError, yaml.YAMLError:
         _fail("YAML_INVALID", "yaml")
 
 
-def load_json(path: Path) -> Any:
+def load_json(path: Path) -> object:
     _regular_file(path, "json")
     try:
         content = path.read_bytes()
@@ -1149,10 +1228,13 @@ def load_json(path: Path) -> Any:
         return result
 
     try:
-        return json.loads(
-            content.decode("utf-8"),
-            object_pairs_hook=unique_pairs,
-            parse_constant=lambda _value: _fail("JSON_INVALID", "json"),
+        return cast(
+            object,
+            json.loads(
+                content.decode("utf-8"),
+                object_pairs_hook=unique_pairs,
+                parse_constant=lambda _value: _fail("JSON_INVALID", "json"),
+            ),
         )
     except StagingDeploymentContractError:
         raise
@@ -1200,11 +1282,13 @@ def _find_exact_record(
     document: Mapping[str, Any], collection: str, record_id: str, field: str
 ) -> Mapping[str, Any]:
     rows = _list(document.get(collection), field)
-    matches = [
-        _mapping(row, field)
-        for row in rows
-        if isinstance(row, Mapping) and row.get("id") == record_id
-    ]
+    matches: list[Mapping[str, Any]] = []
+    for row in rows:
+        if type(row) is not dict:
+            continue
+        candidate = _mapping(cast(object, row), field)
+        if candidate.get("id") == record_id:
+            matches.append(candidate)
     if len(matches) != 1:
         _fail("AUTHORITY_RECORD_MISSING", field)
     return matches[0]
@@ -1213,12 +1297,6 @@ def _find_exact_record(
 def _load_repo_yaml(root: Path, relative: str, field: str) -> Mapping[str, Any]:
     return _mapping(
         load_yaml(_repository_regular_file(root, Path(relative), field)), field
-    )
-
-
-def _load_repo_json(root: Path, relative: str, field: str) -> Mapping[str, Any]:
-    return _mapping(
-        load_json(_repository_regular_file(root, Path(relative), field)), field
     )
 
 
@@ -1490,7 +1568,9 @@ def _expected_predecessor_binding(
     }
     if story_id == "ST-1504":
         expected["required_credential_issuance"] = "FORBIDDEN"
-    expected["required_reference_plan_executable"] = False
+    expected["required_reference_plan_executable"] = (
+        PREDECESSOR_LOCAL_REFERENCE_EXECUTABLE[story_id]
+    )
     expected["required_action_counts"] = copy.deepcopy(dict(action_counts))
     return expected
 
@@ -1581,10 +1661,11 @@ def _validate_predecessor_contract_boundary(
 ) -> None:
     document = _mapping(contract.get("document"), "predecessor.document")
     _strict_match(document.get("story_id"), story_id, "predecessor.story")
-    _strict_match(document.get("version"), "1.1.0", "predecessor.version")
+    expected_version, expected_status = PREDECESSOR_DOCUMENT_BOUNDARIES[story_id]
+    _strict_match(document.get("version"), expected_version, "predecessor.version")
     _strict_match(
         document.get("status"),
-        "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        expected_status,
         "predecessor.status",
     )
     _strict_match(
@@ -1755,8 +1836,22 @@ def _validate_predecessor_semantics(root: Path) -> None:
         plan_document = _mapping(plan.get("document"), "predecessor.plan.document")
         _strict_match(plan_document.get("story_id"), story_id, "predecessor.plan.story")
         _strict_match(
-            plan_document.get("executable"), False, "predecessor.plan.executable"
+            plan_document.get("executable"),
+            PREDECESSOR_LOCAL_REFERENCE_EXECUTABLE[story_id],
+            "predecessor.plan.executable",
         )
+        if story_id == "ST-1501":
+            _strict_match(
+                plan_document.get("infrastructure_actions"),
+                False,
+                "predecessor.plan.infrastructure_actions",
+            )
+        if story_id == "ST-1502":
+            _strict_match(
+                plan_document.get("execution_kind"),
+                "PROVIDER_FREE_VALIDATION_ONLY_LOGICAL_HCL",
+                "predecessor.plan.execution_kind",
+            )
         expected_bytes = _render_predecessor_plan(story_id, contract, root)
         try:
             actual_bytes = plan_file.read_bytes()
@@ -2101,6 +2196,131 @@ def load_and_validate_contract(root: Path = REPO_ROOT) -> StagingDeploymentModel
     return validate_contract(load_yaml(contract_path), root)
 
 
+def load_and_validate_runtime_contract(
+    root: Path = REPO_ROOT,
+) -> tuple[Mapping[str, Any], LocalStagingAdmissionSpec]:
+    """Validate the closed local-only runtime and its frozen predecessors."""
+
+    runtime_path = _repository_regular_file(
+        root, RUNTIME_CONTRACT_PATH, "runtime_contract"
+    )
+    runtime = _mapping(load_yaml(runtime_path), "runtime_contract")
+    try:
+        specification = LocalStagingAdmissionSpec.from_document(
+            copy.deepcopy(dict(runtime))
+        )
+    except Exception:
+        _fail("LOCAL_RUNTIME_CONTRACT_INVALID", "runtime_contract")
+    if specification.semantic_sha256 != EXPECTED_RUNTIME_CONTRACT_SEMANTIC_SHA256:
+        _fail("LOCAL_RUNTIME_SEMANTIC_DRIFT", "runtime_contract")
+
+    expected_predecessors = {
+        "ST-1502": {
+            "contract_uri": (
+                "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml"
+            ),
+            "contract_sha256": PREDECESSOR_SOURCES[
+                "changes/st-1502/contracts/data-services-foundation.v1.yaml"
+            ],
+            "reference_plan_uri": (
+                "repo://infra/terraform/data-services/"
+                "data-services.reference-plan.v1.json"
+            ),
+            "reference_plan_sha256": PREDECESSOR_SOURCES[
+                "infra/terraform/data-services/data-services.reference-plan.v1.json"
+            ],
+        },
+        "ST-1503": {
+            "contract_uri": (
+                "repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml"
+            ),
+            "contract_sha256": PREDECESSOR_SOURCES[
+                "changes/st-1503/contracts/compute-edge-foundation.v1.yaml"
+            ],
+            "reference_plan_uri": (
+                "repo://infra/terraform/compute-edge/"
+                "compute-edge.reference-plan.v1.json"
+            ),
+            "reference_plan_sha256": PREDECESSOR_SOURCES[
+                "infra/terraform/compute-edge/compute-edge.reference-plan.v1.json"
+            ],
+        },
+        "ST-1504": {
+            "contract_uri": (
+                "repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml"
+            ),
+            "contract_sha256": PREDECESSOR_SOURCES[
+                "changes/st-1504/contracts/github-oidc-deployment.v1.yaml"
+            ],
+            "reference_plan_uri": (
+                "repo://infra/terraform/deployment-identity/"
+                "github-oidc.reference-plan.v1.json"
+            ),
+            "reference_plan_sha256": PREDECESSOR_SOURCES[
+                "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json"
+            ],
+        },
+    }
+    predecessors = _mapping(runtime["predecessor_bindings"], "runtime.predecessors")
+    if tuple(predecessors) != tuple(expected_predecessors):
+        _fail("LOCAL_RUNTIME_PREDECESSOR_DRIFT", "runtime.predecessors")
+    for story_id, expected in expected_predecessors.items():
+        row = _mapping(predecessors[story_id], "runtime.predecessor")
+        for field, expected_value in expected.items():
+            _strict_match(row.get(field), expected_value, f"runtime.{story_id}.{field}")
+
+    identity = _mapping(runtime["identity_boundary"], "runtime.identity")
+    expected_identity = {
+        "source_manifest_uri": "repo://changes/st-1504/manifest.yaml",
+        "source_manifest_sha256": PREDECESSOR_SOURCES["changes/st-1504/manifest.yaml"],
+        "source_activation_port_uri": (
+            "repo://python/raos/ports/deployment_identity.py"
+        ),
+        "source_activation_port_sha256": PREDECESSOR_SOURCES[
+            "python/raos/ports/deployment_identity.py"
+        ],
+        "evaluation_fixture_uri": (
+            "repo://infra/terraform/deployment-identity/"
+            "github-oidc.evaluation.recorded.v1.json"
+        ),
+        "evaluation_fixture_sha256": PREDECESSOR_SOURCES[
+            "infra/terraform/deployment-identity/"
+            "github-oidc.evaluation.recorded.v1.json"
+        ],
+        "policy_id": "st1504-policy-repository-inert-v1",
+        "fixture_id": "st1504-fixture-repository-inert-v1",
+        "evaluation_digest": (
+            "baa01625e3c4dca3ecd6aaf94f458f1003a8a3ff079ff14683c21fa8e95235a5"
+        ),
+    }
+    for field, expected_value in expected_identity.items():
+        _strict_match(identity.get(field), expected_value, f"runtime.identity.{field}")
+
+    evaluation_relative = Path(
+        "infra/terraform/deployment-identity/github-oidc.evaluation.recorded.v1.json"
+    )
+    evaluation = _mapping(
+        load_json(_repository_regular_file(root, evaluation_relative, "evaluation")),
+        "runtime.identity.evaluation",
+    )
+    for field, expected_evaluation_value in {
+        "policy_id": specification.identity_policy_id,
+        "fixture_id": specification.identity_fixture_id,
+        "evidence_digest": specification.identity_evaluation_digest,
+        "activation_authorized": False,
+        "credential_issuance_authorized": False,
+        "deployment_authorized": False,
+        "action_count": 0,
+        "formal_evidence": "NOT_EXECUTED",
+    }.items():
+        _strict_match(
+            evaluation.get(field),
+            expected_evaluation_value,
+            f"runtime.evaluation.{field}",
+        )
+    return copy.deepcopy(dict(runtime)), specification
+
+
 def _section(model: StagingDeploymentModel, name: str) -> Any:
     return copy.deepcopy(model.contract[name])
 
@@ -2189,8 +2409,95 @@ def _artifact_row(root: Path, relative: Path) -> dict[str, object]:
     }
 
 
+def render_local_pipeline(
+    runtime: Mapping[str, Any], specification: LocalStagingAdmissionSpec
+) -> bytes:
+    """Render a repository-inert description, never an active workflow."""
+
+    document: dict[str, object] = {
+        "document": {
+            "schema": "RAOS_LOCAL_STAGING_PIPELINE_FIXTURE_V2",
+            "version": 2,
+            "story_id": "ST-1505",
+            "source_contract": f"repo://{RUNTIME_CONTRACT_PATH.as_posix()}",
+            "generated_by": GENERATOR_URI,
+            "classification": "REPOSITORY_INERT_LOCAL_SIMULATION_FIXTURE_ONLY",
+        },
+        "activation": {
+            "enabled": False,
+            "default_enabled": False,
+            "active_workflow_path": None,
+            "trigger": "NONE",
+            "selected_target": None,
+            "credentials": "ABSENT",
+            "provider_sdk": "ABSENT",
+            "network_client": "ABSENT",
+            "commands": [],
+        },
+        "pipeline": {
+            "fixture_id": specification.fixture_id,
+            "pipeline_id": specification.pipeline_id,
+            "contract_sha256": specification.semantic_sha256,
+            "phases": list(PIPELINE_PHASES),
+            "action_counts": dict(specification.action_counts),
+        },
+        "local_phase_modes": {
+            "SAFETY_BOUNDARY": "ST1504_DISABLED_RECEIPT_VALIDATION",
+            "ARTIFACT_ADMISSION": "SYNTHETIC_DIGEST_SBOM_SCAN_PROVENANCE_VALIDATION",
+            "MIGRATION_PLAN": "IN_MEMORY_EXPAND_MIGRATE_CONTRACT_PLAN",
+            "MIGRATION_DRY_RUN": "IN_MEMORY_NO_DATABASE_CONNECTION",
+            "LOOPBACK_HEALTH": "RECORDED_RESPONSES_NO_NETWORK_REQUEST",
+            "ROLLBACK_RESTORE_SIMULATION": "IN_MEMORY_INTEGRITY_ONLY",
+            "LOCAL_ADMISSION_COMPLETE": "HASH_ONLY_LOCAL_EVIDENCE",
+        },
+        "external_evidence": copy.deepcopy(runtime["evidence_boundary"]),
+    }
+    return yaml.dump(
+        document,
+        Dumper=NoAliasDumper,
+        allow_unicode=True,
+        default_flow_style=False,
+        sort_keys=False,
+    ).encode("utf-8")
+
+
+def render_local_result(specification: LocalStagingAdmissionSpec) -> bytes:
+    """Evaluate the pure fixture with ST-1504's exact disabled adapter."""
+
+    command = DeploymentIdentityActivationCommand(
+        policy_id=specification.identity_policy_id,
+        fixture_id=specification.identity_fixture_id,
+        evaluation_digest=specification.identity_evaluation_digest,
+        enable_requested=False,
+        requested_action_count=0,
+        credential_material=None,
+    )
+    receipt = DisabledDeploymentIdentityActivation().activate(command)
+    evaluation = evaluate_local_admission(
+        specification,
+        identity_activation_status=receipt.status,
+        identity_activation_allowed=receipt.activation_allowed,
+        identity_credentials_issued=receipt.credentials_issued,
+        identity_actions_executed=receipt.actions_executed,
+    )
+    return (
+        json.dumps(
+            evaluation.to_document(),
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    ).encode("utf-8")
+
+
 def render_manifest(
-    model: StagingDeploymentModel, reference_plan: bytes, root: Path = REPO_ROOT
+    model: StagingDeploymentModel,
+    reference_plan: bytes,
+    local_pipeline: bytes,
+    local_result: bytes,
+    runtime_specification: LocalStagingAdmissionSpec,
+    root: Path = REPO_ROOT,
 ) -> bytes:
     source_artifacts = [
         _artifact_row(root, relative) for relative in SOURCE_ARTIFACT_PATHS
@@ -2206,7 +2513,7 @@ def render_manifest(
     document: dict[str, object] = {
         "document": {
             "id": "RAOS-STAGING-DEPLOYMENT-MANIFEST-001",
-            "version": "1.1.0",
+            "version": "2.0.0",
             "story_id": "ST-1505",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -2216,6 +2523,17 @@ def render_manifest(
             "contract_uri": SOURCE_CONTRACT_URI,
             "contract_sha256": sha256_file(
                 _repository_regular_file(root, CONTRACT_PATH, "contract")
+            ),
+            "local_runtime_contract_uri": (
+                f"repo://{RUNTIME_CONTRACT_PATH.as_posix()}"
+            ),
+            "local_runtime_contract_sha256": sha256_file(
+                _repository_regular_file(
+                    root, RUNTIME_CONTRACT_PATH, "runtime_contract"
+                )
+            ),
+            "local_runtime_contract_semantic_sha256": (
+                runtime_specification.semantic_sha256
             ),
             "authority_inputs": [
                 {"uri": f"repo://{relative}", "sha256": digest}
@@ -2228,13 +2546,23 @@ def render_manifest(
         },
         "source_artifact_count": len(source_artifacts),
         "source_artifacts": source_artifacts,
-        "generated_artifact_count": 1,
+        "generated_artifact_count": 3,
         "generated_artifacts": [
             {
                 "uri": f"repo://{REFERENCE_PLAN_PATH.as_posix()}",
                 "bytes": len(reference_plan),
                 "sha256": sha256_bytes(reference_plan),
-            }
+            },
+            {
+                "uri": f"repo://{LOCAL_PIPELINE_PATH.as_posix()}",
+                "bytes": len(local_pipeline),
+                "sha256": sha256_bytes(local_pipeline),
+            },
+            {
+                "uri": f"repo://{LOCAL_RESULT_PATH.as_posix()}",
+                "bytes": len(local_result),
+                "sha256": sha256_bytes(local_result),
+            },
         ],
         "manifest_self_integrity": {
             "included_in_generated_artifacts": False,
@@ -2309,6 +2637,23 @@ def render_manifest(
             "release": evidence["release"],
             "production": evidence["production"],
             "effective_canonical_status": evidence["effective_canonical_status"],
+            "local_runtime_classification": (
+                "DETERMINISTIC_RECORDED_LOCAL_ONLY_NOT_STAGING_EVIDENCE"
+            ),
+            "local_runtime_status": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE_PROPOSAL",
+            "local_pipeline_enabled": False,
+            "local_pipeline_default_enabled": False,
+            "local_pipeline_active_workflow_path": None,
+            "local_pipeline_contract_sha256": (runtime_specification.semantic_sha256),
+            "local_pipeline_action_counts": dict(runtime_specification.action_counts),
+            "local_identity_activation": "DISABLED_ZERO_ACTIONS",
+            "local_artifact_admission": "IMPLEMENTED_LOCAL_NOT_FORMAL",
+            "local_migration_simulation": "IMPLEMENTED_LOCAL_NOT_FORMAL",
+            "local_loopback_health": "IMPLEMENTED_LOCAL_NOT_FORMAL",
+            "local_rollback_restore_simulation": "IMPLEMENTED_LOCAL_NOT_FORMAL",
+            "local_durable_journal": "IMPLEMENTED_OWNER_PRIVATE_LOCAL_ONLY",
+            "local_external_actions": 0,
+            "formal_local_runtime_evidence": "NOT_EXECUTED",
         },
     }
     return yaml.dump(
@@ -2322,10 +2667,22 @@ def render_manifest(
 
 def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
     model = load_and_validate_contract(root)
+    runtime, runtime_specification = load_and_validate_runtime_contract(root)
     reference_plan = render_reference_plan(model)
+    local_pipeline = render_local_pipeline(runtime, runtime_specification)
+    local_result = render_local_result(runtime_specification)
     return {
         REFERENCE_PLAN_PATH: reference_plan,
-        MANIFEST_PATH: render_manifest(model, reference_plan, root),
+        LOCAL_PIPELINE_PATH: local_pipeline,
+        LOCAL_RESULT_PATH: local_result,
+        MANIFEST_PATH: render_manifest(
+            model,
+            reference_plan,
+            local_pipeline,
+            local_result,
+            runtime_specification,
+            root,
+        ),
     }
 
 
