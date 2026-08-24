@@ -32,7 +32,7 @@ def test_predecessors_bind_exact_commits_bytes_and_safe_semantics() -> None:
     predecessors = _plan()["predecessor_bindings"]
     assert predecessors == generator.EXPECTED_PREDECESSORS
     assert predecessors["st0604"]["feature_commit"] == (
-        "24e9640f7fa2b681ea40bb539837e40403928ec8"
+        "ced9029f767c63b82690b13cb8d90d1b8eb4b882"
     )
     assert predecessors["st0701"]["base_commit"] == (
         "679ccdc4a49fca8e1bee8827177be7130d6d45b6"

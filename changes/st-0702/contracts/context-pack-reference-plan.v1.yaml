@@ -26,14 +26,14 @@ authority:
 predecessors:
   st0604:
     story_id: ST-0604
-    feature_commit: 24e9640f7fa2b681ea40bb539837e40403928ec8
+    feature_commit: ced9029f767c63b82690b13cb8d90d1b8eb4b882
     binding: EXACT_COMMITTED_OWNED_BYTES
     artifacts:
       changes/st-0604/README.md: 5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8
-      changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml: a80c41890e6bae7077728d1456f5a3b5d99b1877e047f581beff8ed41e0c2cec
-      changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json: 00e6e974f9003ee92cb0a9b4a0ca5a975286e7fd41a6e32cf1224e312cd78cec
-      changes/st-0604/manifest.yaml: 56144e0b9ab315a647d92c665f7502129d3576fac2d9524ca647dc29bfeabdc0
-      scripts/build_st0604_source_packet_lifecycle_reference_plan.py: 74e2260b2e647129de96d38a8dff0477a8b43947539640dccbcbc35e2072267c
+      changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml: b7144670eab5f12eb79c2f49380d152a4ef5700a030b799878aa147ca563ec2c
+      changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json: f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb
+      changes/st-0604/manifest.yaml: cb3313f3fb5e3460cbc39e2b9a3c64b8e3859c975c58b54e7ca45f59636a2795
+      scripts/build_st0604_source_packet_lifecycle_reference_plan.py: 745704cb20a54e2073e487b706112fcce00d022cf01ec26da8d52776932d10e1
       tests/st0604/conftest.py: d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a
       tests/st0604/test_contract.py: 68c3fad0196b6fc353dd354c172d32dcc64106474754a54665f362a51b415462
       tests/st0604/test_generation.py: 5ed32f62c06924f3f6931fb827a6c68dc4ffcbd415ddc6b8ece54c66e93a9cca

@@ -7,7 +7,7 @@ document:
   generation_command: uv run --locked --offline --no-cache --no-sync --no-env-file
     python scripts/build_st0702_context_pack_reference_plan.py
 provenance:
-  contract_sha256: b684e534268de79e4b118713f07932cfa71d10bda2e092003f00985f76811eaf
+  contract_sha256: 961923e4047ac0928220d62d4b32ddff28f15487cd2d9f176cd555a033110cab
   canonical_story:
     uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
@@ -17,19 +17,19 @@ provenance:
   inventory_derivation: FIXED_OWNER_INVENTORY_AT_ST0702_BASE
   predecessors:
   - story_id: ST-0604
-    feature_commit: 24e9640f7fa2b681ea40bb539837e40403928ec8
+    feature_commit: ced9029f767c63b82690b13cb8d90d1b8eb4b882
     binding: EXACT_COMMITTED_OWNED_BYTES
     inputs:
     - uri: repo://changes/st-0604/README.md
       sha256: 5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8
     - uri: repo://changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml
-      sha256: a80c41890e6bae7077728d1456f5a3b5d99b1877e047f581beff8ed41e0c2cec
+      sha256: b7144670eab5f12eb79c2f49380d152a4ef5700a030b799878aa147ca563ec2c
     - uri: repo://changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json
-      sha256: 00e6e974f9003ee92cb0a9b4a0ca5a975286e7fd41a6e32cf1224e312cd78cec
+      sha256: f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb
     - uri: repo://changes/st-0604/manifest.yaml
-      sha256: 56144e0b9ab315a647d92c665f7502129d3576fac2d9524ca647dc29bfeabdc0
+      sha256: cb3313f3fb5e3460cbc39e2b9a3c64b8e3859c975c58b54e7ca45f59636a2795
     - uri: repo://scripts/build_st0604_source_packet_lifecycle_reference_plan.py
-      sha256: 74e2260b2e647129de96d38a8dff0477a8b43947539640dccbcbc35e2072267c
+      sha256: 745704cb20a54e2073e487b706112fcce00d022cf01ec26da8d52776932d10e1
     - uri: repo://tests/st0604/conftest.py
       sha256: d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a
     - uri: repo://tests/st0604/test_contract.py
@@ -62,35 +62,35 @@ provenance:
       sha256: 09fa81e4a46d8652c18b1993c200d508ff87e7970fc8f0222b8c6bbc387bf34e
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    sha256: ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0702/contracts/context-pack-reference-plan.v1.yaml
   bytes: 8079
-  sha256: b684e534268de79e4b118713f07932cfa71d10bda2e092003f00985f76811eaf
+  sha256: 961923e4047ac0928220d62d4b32ddff28f15487cd2d9f176cd555a033110cab
 - uri: repo://changes/st-0702/README.md
-  bytes: 3455
-  sha256: b74b5f6a5cf783be0efcc2a13e84e8f870e1c994d81e30d56568b8a2bd8599c7
+  bytes: 4297
+  sha256: 457ddad700764543fbdbdae23da67bf1cd2f38fb54fd118bf89e6281f22282b9
 - uri: repo://scripts/build_st0702_context_pack_reference_plan.py
-  bytes: 38563
-  sha256: 8891efbb099ee56740d47150d5cf9d8dd127208959b0ecfde32bce32f423a655
+  bytes: 39123
+  sha256: 9e618e138e8346a0c689e75b17c1d0e95abde8a1a06c8bec2a158829075b0287
 - uri: repo://tests/st0702/conftest.py
   bytes: 985
   sha256: 264e9473e46515d4992542f38ea329887a316e9e9216a4db399727679df7f6ab
 - uri: repo://tests/st0702/test_contract.py
   bytes: 5180
-  sha256: 0903cd0a657f9f552d58b0b1bbd547c7c91bd9daed534fe83b8f22be534329b3
+  sha256: dd1241e525ebb84a6ba4cce3ac5434a3b6260322a250061ac525be50aaebbb9f
 - uri: repo://tests/st0702/test_generation.py
   bytes: 3503
   sha256: f13d528f54216dfcba9b415acba7075bc28fb5263a4fa17ba0cbdafdda97c979
 - uri: repo://tests/st0702/test_negative_cases.py
-  bytes: 5192
-  sha256: 7d9e991e00ab1d8b4794f12c9a361eac5005f70c1a0b4635c128d7308e520ece
+  bytes: 5223
+  sha256: 0b7b55e4a81da89e7760302dfba789d1db92eba45645b1ab9d0362bd9254a941
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0702/generated/context-pack.reference-plan.v1.json
   bytes: 94168
-  sha256: 0ec2d61cffeb9490b821c6cca0e43d1ba331f76ad7ca75ef53bfcd168ff102dd
+  sha256: 5b87d4bdcb1ad3260a258d81396b5a22662a3a091c40cc889bd40930b056dc05
 boundary:
   classification: SOURCE_DERIVED_NON_EXECUTABLE_CONTEXT_PACK_REFERENCE_PLAN
   executable: false

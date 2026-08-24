@@ -64,3 +64,19 @@ for a provider, live runtime, staging, release, or Production action.
   workspace/diff checks.
 - Out of scope: runtime Facts or packing, provider calls, credentials, formal
   TST-005/TST-019 evidence, staging, release, publication, and Production writes.
+
+## 2026-08-25 provenance reconciliation
+
+- Rebound ST-0604 to the exact owner commit
+  `ced9029f767c63b82690b13cb8d90d1b8eb4b882` and its current reference-plan
+  bytes. The durable ST-0604 runtime does not create an approved packet for
+  this recorded projection, so packet, Fact, mapping, approval, and generation
+  inputs remain unavailable.
+- Rebound the shared filesystem/YAML helper to its current exact bytes and
+  added hostile coverage proving helper drift fails closed.
+- ST-0605 is not a Canonical dependency or an ST-0702 pinned input and is not
+  added to the owner inventory. ST-0701 bytes and historical base binding are
+  unchanged.
+- This reconciliation performs no packing, runtime, provider, network,
+  credential, publication, staging, release, or Production action and does not
+  elevate formal TST or Canonical status.

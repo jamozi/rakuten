@@ -96,6 +96,7 @@ def test_rebound_st0701_registry_still_rejects_unsafe_semantic_drift(
     [
         generator.STORY_PATH,
         generator.INTEGRATION_PATH,
+        generator.HELPER_PATH,
         *(path for path, _digest in generator.ST0604_ARTIFACTS),
         *(path for path, _digest in generator.ST0701_ARTIFACTS),
     ],
