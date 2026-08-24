@@ -160,19 +160,19 @@ PREDECESSOR_SOURCES: Final = {
         "1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4"
     ),
     "scripts/build_st1504_github_oidc.py": (
-        "996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f"
+        "f8f8716f9f5ac8e68f0f1e586dfe3f693fd517393c5bfd21cfe4507af7d335a5"
     ),
     "changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml": (
         "5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5"
     ),
     "changes/st-1505/contracts/staging-deployment.v1.yaml": (
-        "b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b"
+        "d7cddea6d006f620835c4facf1e76e62ce7f69d9ac0ae8d824b7ff67237764e5"
     ),
     "infra/terraform/staging/staging-deployment.reference-plan.v1.json": (
-        "8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4"
+        "7dc30e3f703c2e3f6a4e40729ae122d033f4a84b75646b1c1609e4da6c95d968"
     ),
     "scripts/build_st1505_staging_deployment.py": (
-        "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+        "cd22f5fcf16cfd135b1ecac64ea65c0f8b9d86b60d812d0ab987ff6bc3a4f42d"
     ),
 }
 PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
@@ -217,10 +217,10 @@ PREDECESSOR_SEMANTIC_SHA256: Final = {
         "d4f680a468ab1246734595394d7e2b1edefa6a590e33c418f7c0c9b487e30448"
     ),
     "changes/st-1505/contracts/staging-deployment.v1.yaml": (
-        "9c5e6c5a8c52e40cb43e7405f95492d75bf0096430566425e0b47b550ade1215"
+        "63437d39243176dac021e37fbcb5b2980cb1ac4b8f24bdebb02f67dc38c8b7ef"
     ),
     "infra/terraform/staging/staging-deployment.reference-plan.v1.json": (
-        "f01f3e7618e5ea66419225a5fc8c1d0866d1b09e284b923b04a3f0b279930414"
+        "f14a1aa5d08809e626e680cc79f9e5418de8be8597faa7b4c372601ef243fdd8"
     ),
 }
 DEPENDENCY_POLICIES: Final = {
@@ -500,7 +500,7 @@ APPROVAL_ARTIFACT_NAMES: Final = (
     "operations_approval",
 )
 EXPECTED_CONTRACT_FINGERPRINT: Final = (
-    "1f09e61baed0164bee155de33068a90f0a993880e55738f90e3ca5771cd9dbd3"
+    "3c12821d5e2b9d72a46bd22eb606096f9b078f562f912a96e47703d9c857565e"
 )
 EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
     "ab5e93f86fc2d78f4775c1d73af3766df679bd01b5aa5a62d5c4edca906ad130"
@@ -1092,30 +1092,40 @@ def _render_predecessor_plan(
 ) -> bytes:
     try:
         if story_id == "ST-1501":
-            from scripts import build_st1501_terraform_foundation as owner
+            from scripts import build_st1501_terraform_foundation as owner_st1501
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            foundation_model = owner_st1501.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1501.render_reference_plan(foundation_model)
         if story_id == "ST-1502":
-            from scripts import build_st1502_data_services as owner
+            from scripts import build_st1502_data_services as owner_st1502
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            data_services_model = owner_st1502.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1502.render_reference_plan(data_services_model)
         if story_id == "ST-1503":
-            from scripts import build_st1503_compute_edge as owner
+            from scripts import build_st1503_compute_edge as owner_st1503
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            compute_edge_model = owner_st1503.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1503.render_reference_plan(compute_edge_model)
         if story_id == "ST-1504":
-            from scripts import build_st1504_github_oidc as owner
+            from scripts import build_st1504_github_oidc as owner_st1504
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            deployment_identity_model = owner_st1504.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1504.render_reference_plan(deployment_identity_model)
         if story_id == "ST-1505":
-            from scripts import build_st1505_staging_deployment as owner
+            from scripts import build_st1505_staging_deployment as owner_st1505
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            staging_model = owner_st1505.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1505.render_reference_plan(staging_model)
     except Exception:  # noqa: BLE001
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor")
     _fail("PREDECESSOR_STORY_UNKNOWN", "predecessor")

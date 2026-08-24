@@ -7,7 +7,7 @@ document:
   generation_command: uv run --locked --no-sync python scripts/build_st1506_production_deployment.py
 provenance:
   contract_uri: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
-  contract_sha256: 4e9b8bd3726c86b709552cd5814db8f7c4fa1c18995809e639c3d2e3c917ffd1
+  contract_sha256: 5543dc6b6f3c2c0ca4d12d3e2b7154351a9e0e732baeccbdec82082c4648179a
   authority_inputs:
   - uri: repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
     sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
@@ -85,20 +85,20 @@ provenance:
   - uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
     sha256: 1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4
   - uri: repo://scripts/build_st1504_github_oidc.py
-    sha256: 996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f
+    sha256: f8f8716f9f5ac8e68f0f1e586dfe3f693fd517393c5bfd21cfe4507af7d335a5
   - uri: repo://changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml
     sha256: 5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5
   - uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
-    sha256: b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b
+    sha256: d7cddea6d006f620835c4facf1e76e62ce7f69d9ac0ae8d824b7ff67237764e5
   - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
-    sha256: 8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4
+    sha256: 7dc30e3f703c2e3f6a4e40729ae122d033f4a84b75646b1c1609e4da6c95d968
   - uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    sha256: cd22f5fcf16cfd135b1ecac64ea65c0f8b9d86b60d812d0ab987ff6bc3a4f42d
 source_artifact_count: 8
 source_artifacts:
 - uri: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
   bytes: 34190
-  sha256: 4e9b8bd3726c86b709552cd5814db8f7c4fa1c18995809e639c3d2e3c917ffd1
+  sha256: 5543dc6b6f3c2c0ca4d12d3e2b7154351a9e0e732baeccbdec82082c4648179a
 - uri: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml
   bytes: 11679
   sha256: 5dc4ccfaa954b65aaae39a5d899c1c4e7f7d106787780d502514a48c7c13ad5e
@@ -106,8 +106,8 @@ source_artifacts:
   bytes: 9249
   sha256: 6c6af3972a75a6f9c3d7af8952332cf84c8f811cc893bc8f5cf742f120846270
 - uri: repo://scripts/build_st1506_production_deployment.py
-  bytes: 76341
-  sha256: f58b1ed91bcfcc4376262a3e3aa3653154dcbb0672e8508daac874e0042f1176
+  bytes: 76728
+  sha256: a55385ccdd8fb3f9740eb2cbb2c24c3ba67006a46e1612dd27cd9e0973b6cc7e
 - uri: repo://tests/st1506/conftest.py
   bytes: 650
   sha256: 6e1d73217032d1b903701e6c589d89df06201adafa2185053a4a3500ef187eee
@@ -124,7 +124,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://infra/terraform/deployment-production/production-deployment.reference-plan.v1.json
   bytes: 32725
-  sha256: d3cc3524483974145683ab87b841475b4c65e784214d7b8fb19773c985cf69ba
+  sha256: 4520b8e3dddc46efdbb66f37dc93d05bed8af69e596f6f83b68b0f32c47abb01
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
