@@ -9,7 +9,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .conftest import (
     ARTICLE_ID,
     CATEGORY_ID,
     CONTEXT,

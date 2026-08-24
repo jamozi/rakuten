@@ -9,7 +9,7 @@ from uuid import UUID, uuid5
 
 import pytest
 
-from conftest import (
+from .conftest import (
     ACTOR_ID,
     ARTIFACT_ID,
     COMMANDER_ID,

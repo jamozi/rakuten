@@ -10,7 +10,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .conftest import (
     CHANGE_REASON,
     CONTEXT,
     EVENT_NAMESPACE,

@@ -11,7 +11,7 @@ from uuid import UUID
 import pytest
 from pydantic import ValidationError
 
-from conftest import (
+from .conftest import (
     ACTOR_ID,
     ARTIFACT_ID,
     CORRELATION_ID,
