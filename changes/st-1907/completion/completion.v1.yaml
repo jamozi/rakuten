@@ -1,0 +1,54 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1907
+  implementation_mode: STRICT_STORY
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  canonical_status: DEFERRED_POST_MVP
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+
+base:
+  commit: 3d454db83f59e2854c0680a26dd0a7351cfe47ab
+  branch: agent/st1907-local-complete
+
+local_boundary:
+  provider_neutral: true
+  default_enabled: false
+  caller_bytes_recorded_synthetic_only: true
+  one_shot: true
+  current_dependency: BLOCKED_NO_DECISION
+  current_availability: UNAVAILABLE
+  current_proposal_count: 0
+  human_proposal_only: true
+  automatic_apply: false
+  live_enabled_state_exists: false
+  activation_interface_exists: false
+  network: FORBIDDEN
+  credentials: NOT_USED
+  persistence: NOT_EXECUTED
+  finance_recommendation_input: FORBIDDEN
+  editorial_mutation: FORBIDDEN
+  recommendation_order_mutation: FORBIDDEN
+  publication: FORBIDDEN
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+
+verification:
+  focused_behavior_hostile_security_tests: PASSED
+  owner_generate_and_check: PASSED
+  ruff_format_and_check: PASSED
+  strict_mypy_owned_production: PASSED
+  configured_pyright_owned_production: PASSED
+  python_compile_owned: PASSED
+  focused_sensitive_data_and_capability_scan: PASSED_ZERO_FINDINGS
+  git_diff_check: PASSED
+  formal_TST-032: NOT_EXECUTED
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - verified same-period same-program mature real observations with positive denominators
+    - Product Owner portfolio decision and policy calibration
+    - formal TST-032 and separate release decision
+    - persistence, monitoring, rollback, staging, release, and Production evidence

@@ -1,0 +1,196 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1907
+  classification: MAXIMUM_SAFE_LOCAL_DISABLED_RECORDED_SYNTHETIC_HUMAN_PROPOSAL_OPTIMIZER_V1
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  implementation_mode: STRICT_STORY
+  mvp: false
+  canonical_implementation_status: DEFERRED_POST_MVP
+  canonical_status_changed: false
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+  base_commit: 3d454db83f59e2854c0680a26dd0a7351cfe47ab
+
+authority:
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  canonical_decisions:
+    path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    resolved_by_this_story: false
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1907
+    depends_on: ST-1805
+    required_suite: TST-032
+    effective_status: DEFERRED_POST_MVP
+  backlog_design:
+    path: docs/canonical/07_backlog/RAOS_13_implementation_backlog_design_v1.0.md
+    sha256: 0814ef66ae76bda7721c86ffc43095f125ecbee02ea9f270a926da7ae41a15b6
+  upstream_requirements:
+    path: docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md
+    sha256: 5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea
+  upstream_architecture:
+    path: docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  analytics_design:
+    path: docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  kpi_catalog:
+    path: docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml
+    sha256: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+  test_acceptance_design:
+    path: docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    required_suite: TST-032
+    formal_status: NOT_EXECUTED
+  security_design:
+    path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  data_classification:
+    path: docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  roles:
+    path: docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    controls: [SEC-GOV-005, SEC-GOV-006, SEC-APP-001, SEC-DATA-003, SEC-DATA-004, SEC-DATA-005, SEC-DATA-006, SEC-DATA-007, SEC-SDLC-006, SEC-SDLC-009, SEC-SDLC-011, SEC-SDLC-012]
+  threat_register:
+    path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+    threats: [THR-010, THR-014, THR-015, THR-017, THR-018, THR-019, THR-020, THR-024, THR-025]
+
+dependency:
+  story_id: ST-1805
+  current_readiness: BLOCKED_NO_DECISION
+  current_pack:
+    path: changes/st-1805/generated/portfolio-decision.local-blocked.v1.json
+    sha256: 1288a29454435293fc47ff556215c5afee6e58fad8b995b13e4aca81d2535e22
+    overall: BLOCKED
+    outcome: NO_DECISION
+    authorized: false
+    acceptance_criteria_satisfied: false
+    actual_observation_count: 0
+    human_decision_present: false
+    local_integration_complete: false
+  exact_sources:
+    changes/st-1805/contracts/portfolio-decision.v1.yaml: dd6c742d295f5bc7baa036aa6cca0a42e84b7a3168f0302aec8e40e46a87f4b9
+    changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json: c2b06e525c3d5c8e86997cbd67285eedad85c9b90fd12f95f162d6a6c6fc910e
+    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: 1288a29454435293fc47ff556215c5afee6e58fad8b995b13e4aca81d2535e22
+    scripts/build_st1805_portfolio_decision.py: 79ed861e82efd80b10e884028fd99b122ac3b1713b66d63203c671162fdbb23e
+  blocked_or_no_decision_result: UNAVAILABLE
+  blocked_or_no_decision_proposals: []
+  dependency_status_changed_by_this_story: false
+
+measurement_and_signal_policy:
+  measurement_contract:
+    path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
+    sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+  signal_policy:
+    path: changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml
+    sha256: b21ffd229a771cb10fea9084afea33c2ad1de780112a69b2d6a1eadfe84fcab7
+  program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
+  period_duration_days: 14
+  same_program_required: true
+  same_period_required: true
+  verified_input_required: true
+  mature_cohort_required: true
+  positive_denominator_required: true
+  missing_as_zero: false
+  unavailable_conditions: [MISSING_OBSERVATIONS, PROGRAM_MISMATCH, PERIOD_MISMATCH, UNVERIFIED_INPUT, COHORT_IMMATURE, DENOMINATOR_UNAVAILABLE, ZERO_DENOMINATOR]
+  finance_signal_allowed: false
+  personal_data_allowed: false
+
+feature_scope:
+  default: DISABLED
+  closed_states: [DISABLED, RECORDED_SYNTHETIC_PROPOSAL_EVALUATION_ONLY]
+  executable_environments: [ENV-DEV, ENV-CI]
+  live_enabled_state_exists: false
+  activation_interface_exists: false
+  disabled_fails_before_port_call: true
+  provider_neutral: true
+  caller_bytes_only: true
+  one_shot: true
+  recorded_synthetic_only: true
+
+proposal_contract:
+  output_kind: HUMAN_REVIEW_METADATA_ONLY
+  actions: [STRENGTHEN, CONSOLIDATE, WITHDRAW]
+  bases:
+    STRENGTHEN: MEASURED_VALUE_GAP_REVIEW
+    CONSOLIDATE: VERIFIED_DUPLICATE_INTENT_REVIEW
+    WITHDRAW: VERIFIED_UNSUPPORTED_VALUE_REVIEW
+  input_is_preclassified: true
+  thresholds_selected_by_this_story: false
+  deterministic_order: ACTION_THEN_ARTICLE_IDS_THEN_SIGNAL_ID
+  proposal_order_is_recommendation_order: false
+  actionable: false
+  human_review_required: true
+  automatic_apply: false
+  status_APPLY_exists: false
+  mutations_applied: []
+
+recorded_fixture:
+  path: changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json
+  sha256: 8467769743d1027d6e12e594d367fb00cb9299b7276ce701b7e48da07beb17c2
+  bytes: 986
+  synthetic: true
+  current_availability: UNAVAILABLE
+  current_reason: DEPENDENCY_BLOCKED_NO_DECISION
+  current_proposals: []
+
+mutation_boundary:
+  authority: NONE
+  activation: false
+  approval: false
+  proposal_apply: false
+  status_apply: false
+  provider_call: false
+  network: false
+  credential_access: false
+  persistence: false
+  editorial_mutation: false
+  article_html_mutation: false
+  cta_mutation: false
+  product_selection_mutation: false
+  recommendation_order_mutation: false
+  publication_snapshot_mutation: false
+  public_projection: false
+  publication: false
+  staging: false
+  release: false
+  production: false
+  recommendation_inputs_excluded: [AFFILIATE_COMMISSION_RATE, CONFIRMED_REWARD, UNATTRIBUTED_REWARD, ESTIMATED_REWARD, COMMISSION, INCREMENTAL_COST, LABOR_COST, EPC, RPM, PROFIT]
+  finance_values_represented: false
+
+verification_boundary:
+  focused_behavior_hostile_security: LOCAL_CANDIDATE
+  owner_generator_check: LOCAL_CANDIDATE
+  formal_TST-032: NOT_EXECUTED
+  real_observations: NOT_EXECUTED
+  human_portfolio_decision: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  network: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - verified same-period same-program mature real observations with positive denominators
+    - Product Owner portfolio decision and policy calibration
+    - formal TST-032 and separate release decision
+    - persistence, monitoring, rollback, staging, release, and Production evidence
