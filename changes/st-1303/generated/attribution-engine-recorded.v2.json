@@ -1,0 +1,477 @@
+{
+  "document": {
+    "schema_version": "2.0.0",
+    "story_id": "ST-1303",
+    "classification": "MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_ATTRIBUTION_ENGINE",
+    "status": "LOCAL_CODE_COMPLETE",
+    "executable_environments": [
+      "ENV-DEV",
+      "ENV-CI"
+    ],
+    "authority": "RECORDED_SYNTHETIC_ONLY",
+    "canonical_status": "UNCHANGED",
+    "formal_validation_claimed": false,
+    "production_eligible": false
+  },
+  "provenance": {
+    "generated_by": "repo://scripts/build_st1303_attribution_engine.py",
+    "generation_command": "uv run --locked --offline --no-cache --no-sync --no-env-file python scripts/build_st1303_attribution_engine.py",
+    "source_artifacts": [
+      {
+        "bytes": 5727,
+        "sha256": "84c8f1e982c9cd48950419834c238f7372c8a0c6007d5cb288c64245c82d497c",
+        "uri": "repo://changes/st-1303/contracts/attribution-engine-runtime.v2.yaml"
+      },
+      {
+        "bytes": 15672,
+        "sha256": "3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b",
+        "uri": "repo://changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json"
+      },
+      {
+        "bytes": 2502,
+        "sha256": "ad5c678d84b078526e262374dd4214af6c8f9ebddb4bdb02651ed8ab1403d6cf",
+        "uri": "repo://changes/st-1303/README-v2.md"
+      },
+      {
+        "bytes": 1657,
+        "sha256": "2c375e7b8403c7246a24538bfea10da2ffb26e2babbedfd54b38d99f1abea797",
+        "uri": "repo://changes/st-1303/PREFLIGHT-v2.md"
+      },
+      {
+        "bytes": 3895,
+        "sha256": "ed507b9fa3bd668eb6b32e680ff4c1b4e72bd202a9c7f62f23bf4bc87017794b",
+        "uri": "repo://changes/st-1303/LOCAL_COMPLETION-v2.md"
+      },
+      {
+        "bytes": 24396,
+        "sha256": "cbbd729d41f91f77807f03b1f64d34361eec9eb4d57e9d25423741c3ab12e9ea",
+        "uri": "repo://scripts/build_st1303_attribution_engine.py"
+      },
+      {
+        "bytes": 55008,
+        "sha256": "20d7fa4e365d80a000564279f138e7e544fbb8d0cf4158cbe503b56b6be24749",
+        "uri": "repo://python/raos/domain/finance/attribution.py"
+      },
+      {
+        "bytes": 488,
+        "sha256": "3d56b802a2898be2c14b45f03e7747400ec1a060b78db4fd1e139174bed73a42",
+        "uri": "repo://python/raos/ports/attribution.py"
+      },
+      {
+        "bytes": 2033,
+        "sha256": "9943325951342a3d21d23bcecc0e17b98082a4466d0a21643057997b0e254b4f",
+        "uri": "repo://python/raos/application/finance/attribution.py"
+      },
+      {
+        "bytes": 15638,
+        "sha256": "a9d10fd9137264cd890f81acb10152dd8dbf8b296caae48ed44aea97e504d0d0",
+        "uri": "repo://python/raos/adapters/recorded_attribution.py"
+      },
+      {
+        "bytes": 65,
+        "sha256": "435a5abc0b54fa9cbf9363a5f5f0ea8f3df0215346b614294b80cb3cd03e0c50",
+        "uri": "repo://tests/st1303_v2/__init__.py"
+      },
+      {
+        "bytes": 1239,
+        "sha256": "a729debba3d2ee2de550be9b510fc048eebbc0b62e9b8b1debeca3471baf6c93",
+        "uri": "repo://tests/st1303_v2/conftest.py"
+      },
+      {
+        "bytes": 7707,
+        "sha256": "69f87827f350e2d2f9738425f06c089b1f91f63b5e5b4f1c546e42678f4ccfae",
+        "uri": "repo://tests/st1303_v2/test_attribution_runtime.py"
+      },
+      {
+        "bytes": 14234,
+        "sha256": "d5cdffc1217541f65189516ae81cc4fac411d4b97e15b928a178a1315475f1ee",
+        "uri": "repo://tests/st1303_v2/test_attribution_negative.py"
+      },
+      {
+        "bytes": 4295,
+        "sha256": "f043fa41c66653fb97088268a8df6c8713186d61dcfa307225fb120b275fb522",
+        "uri": "repo://tests/st1303_v2/test_generation.py"
+      }
+    ],
+    "source_bindings": [
+      {
+        "name": "canonical_story",
+        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+        "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
+      },
+      {
+        "name": "analytics_design",
+        "sha256": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460",
+        "uri": "repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md"
+      },
+      {
+        "name": "attribution_policy",
+        "sha256": "29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c",
+        "uri": "repo://docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml"
+      },
+      {
+        "name": "open_decisions",
+        "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml"
+      },
+      {
+        "name": "test_catalog",
+        "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
+        "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml"
+      },
+      {
+        "name": "security_design",
+        "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md"
+      },
+      {
+        "name": "threat_register",
+        "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml"
+      },
+      {
+        "name": "st1202_runtime",
+        "sha256": "a561ba3ec7e7851d0cbdbfb357bf388801b36ae8a28e7f46969ba201079b761f",
+        "uri": "repo://changes/st-1202/runtime-manifest.v2.yaml"
+      },
+      {
+        "name": "st1302_runtime",
+        "sha256": "1c1ee418d69bf199730e9354f9197f166de96d2629dd22298dd058d1bf7b2790",
+        "uri": "repo://changes/st-1302/manifest.v2.yaml"
+      },
+      {
+        "name": "five_slot_measurement",
+        "sha256": "9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8",
+        "uri": "repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json"
+      }
+    ]
+  },
+  "open_decision_boundary": {
+    "id": "OD-003",
+    "status": "EXTERNAL_EVIDENCE_REQUIRED",
+    "blocking": true,
+    "safe_default": "SYNTHETIC_FIXTURE_ONLY_REAL_ATTRIBUTION_UNVERIFIED",
+    "resolved": false
+  },
+  "measurement_contract": {
+    "contract_sha256": "34adb2a67246888ec0773a20ab4ed4c71912fc3a3df653bca559d04f48dda78c",
+    "period_duration_days": 14,
+    "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+    "slot_count": 5,
+    "slots": [
+      {
+        "article_id": "st1703-first-suitcase-comparison",
+        "intent_classification": "CONDITION_COMPARISON",
+        "packet_sha256": "9d0e7032fab6200566639555dce6ebdd29113e3ea87982f0c80fc048d6b9b537",
+        "slot": 1,
+        "slug": "carry-on-suitcase-comparison"
+      },
+      {
+        "article_id": "st1704-portable-power-station-guide",
+        "intent_classification": "SELECTION_GUIDE",
+        "packet_sha256": "4d670e37a45d96c775a6f42132fc8d9e8e6ac6d97e67cb26a1ecea8e6acfd9c1",
+        "slot": 2,
+        "slug": "portable-power-station-guide"
+      },
+      {
+        "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+        "intent_classification": "MODEL_DIFFERENCES",
+        "packet_sha256": "edea36dcc82f9ba1705d1cde8916b2c8da70eab2e41892d94dc9bfb35547c7b3",
+        "slot": 3,
+        "slug": "anker-solix-c300-c800-c1000-differences"
+      },
+      {
+        "article_id": "st1704-countertop-dishwasher-for-small-households",
+        "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
+        "packet_sha256": "b1a0c447cd07d6d3d65bbe5b842110a246351c3e6ddfb8dae9bf8363f12b7adb",
+        "slot": 4,
+        "slug": "countertop-dishwasher-for-small-households"
+      },
+      {
+        "article_id": "st1704-compact-robot-vacuum-shortlist",
+        "intent_classification": "CONDITION_SHORTLIST",
+        "packet_sha256": "229da594e299fab8d869b6e38e73011bc449e6716500017cc2e42766e3f643b2",
+        "slot": 5,
+        "slug": "compact-robot-vacuum-shortlist"
+      }
+    ]
+  },
+  "method_boundary": {
+    "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
+    "direct": "VERIFIED_HASHED_PROVIDER_KEY_AND_EXACT_ARTICLE_BINDING_ONLY",
+    "estimated": "SAME_PROGRAM_PERIOD_VERIFIED_MATURE_ELIGIBLE_CLICK_WEIGHT",
+    "integer_allocation": "LARGEST_REMAINDER_SLOT_ASCENDING_TIE_BREAK",
+    "direct_confidence_bps": 10000,
+    "estimated_confidence_bps": 6000,
+    "unattributed_confidence_bps": 0,
+    "input_hash_required": true,
+    "closed_reason_required": true,
+    "exact_total_conservation": true,
+    "arbitrary_provider_total_allocation": false,
+    "unattributed_reward_article_allocation": false,
+    "measurement_fact_consistency_required": true
+  },
+  "recorded_result": {
+    "allocations": [
+      {
+        "allocation_sha256": "25fdbd346ca8f54df29323a873b336f341e1fc87fde5b600f5d0df690c8aa7a1",
+        "article": {
+          "article_id": "st1703-first-suitcase-comparison",
+          "intent_classification": "CONDITION_COMPARISON",
+          "packet_sha256": "9d0e7032fab6200566639555dce6ebdd29113e3ea87982f0c80fc048d6b9b537",
+          "slot": 1,
+          "slug": "carry-on-suitcase-comparison"
+        },
+        "attribution_class": "DIRECT",
+        "confidence_bps": 10000,
+        "confirmed_reward_jpy": "120",
+        "fact_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "input_sha256": "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+        "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
+        "reason": "DIRECT_PROVIDER_KEY_VERIFIED",
+        "weight_denominator": 1,
+        "weight_numerator": 1
+      },
+      {
+        "allocation_sha256": "3c50a95747b25971b8d7e32fc1fd98e76edf4029e57d5df6df44cb63bc7d7d9f",
+        "article": {
+          "article_id": "st1703-first-suitcase-comparison",
+          "intent_classification": "CONDITION_COMPARISON",
+          "packet_sha256": "9d0e7032fab6200566639555dce6ebdd29113e3ea87982f0c80fc048d6b9b537",
+          "slot": 1,
+          "slug": "carry-on-suitcase-comparison"
+        },
+        "attribution_class": "ESTIMATED",
+        "confidence_bps": 6000,
+        "confirmed_reward_jpy": "20",
+        "fact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "input_sha256": "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+        "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
+        "reason": "ESTIMATED_PROPORTIONAL_ELIGIBLE_CLICKS",
+        "weight_denominator": 50,
+        "weight_numerator": 10
+      },
+      {
+        "allocation_sha256": "431a438c969851d63d087869fb7d3bf91f0e6791a9ac60a957957f9b5f608819",
+        "article": {
+          "article_id": "st1704-portable-power-station-guide",
+          "intent_classification": "SELECTION_GUIDE",
+          "packet_sha256": "4d670e37a45d96c775a6f42132fc8d9e8e6ac6d97e67cb26a1ecea8e6acfd9c1",
+          "slot": 2,
+          "slug": "portable-power-station-guide"
+        },
+        "attribution_class": "ESTIMATED",
+        "confidence_bps": 6000,
+        "confirmed_reward_jpy": "41",
+        "fact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "input_sha256": "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+        "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
+        "reason": "ESTIMATED_PROPORTIONAL_ELIGIBLE_CLICKS",
+        "weight_denominator": 50,
+        "weight_numerator": 20
+      },
+      {
+        "allocation_sha256": "879c4851fd22187d3d432f10c88b52abaa38b7b7578f6324a5eabe6e0fe55f38",
+        "article": {
+          "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+          "intent_classification": "MODEL_DIFFERENCES",
+          "packet_sha256": "edea36dcc82f9ba1705d1cde8916b2c8da70eab2e41892d94dc9bfb35547c7b3",
+          "slot": 3,
+          "slug": "anker-solix-c300-c800-c1000-differences"
+        },
+        "attribution_class": "ESTIMATED",
+        "confidence_bps": 6000,
+        "confirmed_reward_jpy": "10",
+        "fact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "input_sha256": "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+        "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
+        "reason": "ESTIMATED_PROPORTIONAL_ELIGIBLE_CLICKS",
+        "weight_denominator": 50,
+        "weight_numerator": 5
+      },
+      {
+        "allocation_sha256": "eda32fa578e93a9b557f9a421fd91723825a9a900e4f54a194168b801654a717",
+        "article": {
+          "article_id": "st1704-compact-robot-vacuum-shortlist",
+          "intent_classification": "CONDITION_SHORTLIST",
+          "packet_sha256": "229da594e299fab8d869b6e38e73011bc449e6716500017cc2e42766e3f643b2",
+          "slot": 5,
+          "slug": "compact-robot-vacuum-shortlist"
+        },
+        "attribution_class": "ESTIMATED",
+        "confidence_bps": 6000,
+        "confirmed_reward_jpy": "30",
+        "fact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "input_sha256": "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+        "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
+        "reason": "ESTIMATED_PROPORTIONAL_ELIGIBLE_CLICKS",
+        "weight_denominator": 50,
+        "weight_numerator": 15
+      },
+      {
+        "allocation_sha256": "660c6b3437761f5f696833ce3bb0c44e0275c3bb028e8c3e78258dce498de6f0",
+        "article": null,
+        "attribution_class": "UNATTRIBUTED",
+        "confidence_bps": 0,
+        "confirmed_reward_jpy": "79",
+        "fact_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "input_sha256": "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+        "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
+        "reason": "UNATTRIBUTED_INSUFFICIENT_SIGNAL",
+        "weight_denominator": null,
+        "weight_numerator": null
+      }
+    ],
+    "authority": {
+      "provider_call": false,
+      "network": false,
+      "persistence": false,
+      "publication": false,
+      "editorial_mutation": false,
+      "article_html_mutation": false,
+      "cta_mutation": false,
+      "product_selection_mutation": false,
+      "recommendation_order_mutation": false,
+      "publication_snapshot_mutation": false,
+      "staging": false,
+      "release": false,
+      "production": false
+    },
+    "availability": "AVAILABLE",
+    "fixture_sha256": "3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b",
+    "idempotent_replay": true,
+    "input_sha256": "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+    "measurement_evaluation": {
+      "metrics": {
+        "search_ctr": {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_UNATTRIBUTED_EXCLUDED",
+          "denominator": 3000,
+          "name": "search_ctr",
+          "numerator": 300,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "value_decimal": "0.100000"
+        },
+        "affiliate_click_rate": {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_UNATTRIBUTED_EXCLUDED",
+          "denominator": 1500,
+          "name": "affiliate_click_rate",
+          "numerator": 50,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "value_decimal": "0.033333"
+        },
+        "confirmed_reward_per_click_jpy": {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_UNATTRIBUTED_EXCLUDED",
+          "denominator": 50,
+          "name": "confirmed_reward_per_click_jpy",
+          "numerator": 120,
+          "unavailable_reason": null,
+          "unit": "JPY_PER_CLICK",
+          "value_decimal": "2.400000"
+        },
+        "confirmation_rate": {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_UNATTRIBUTED_EXCLUDED",
+          "denominator": 8,
+          "name": "confirmation_rate",
+          "numerator": 5,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "value_decimal": "0.625000"
+        },
+        "confirmed_reward_per_content_hour_jpy": {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_UNATTRIBUTED_EXCLUDED",
+          "denominator": 300,
+          "name": "confirmed_reward_per_content_hour_jpy",
+          "numerator": 7200,
+          "unavailable_reason": null,
+          "unit": "JPY_PER_CONTENT_HOUR",
+          "value_decimal": "24.000000"
+        }
+      },
+      "program_unattributed_reward": {
+        "allocation_to_articles": "FORBIDDEN",
+        "cohort": {
+          "input_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+          "state": "MATURE"
+        },
+        "metric": {
+          "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+          "state": "OBSERVED_VALUE",
+          "value": 79
+        },
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "verification": {
+          "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+          "state": "VERIFIED"
+        }
+      }
+    },
+    "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
+    "replay_count": 1,
+    "result_sha256": "1f7a657452e18a978c496be6a15f133eaa8132c8f9ff990825ed3545a1523054",
+    "run_count": 1,
+    "scenario_id": "ST1303.RECORDED.SYNTHETIC.0001",
+    "totals": {
+      "difference_jpy": "0",
+      "direct_confirmed_reward_jpy": "120",
+      "estimated_confirmed_reward_jpy": "101",
+      "provider_confirmed_reward_jpy": "300",
+      "unattributed_confirmed_reward_jpy": "79"
+    }
+  },
+  "authority_boundary": {
+    "provider_call": false,
+    "network": false,
+    "persistence": false,
+    "publication": false,
+    "editorial_mutation": false,
+    "article_html_mutation": false,
+    "cta_mutation": false,
+    "product_selection_mutation": false,
+    "recommendation_order_mutation": false,
+    "publication_snapshot_mutation": false,
+    "staging": false,
+    "release": false,
+    "production": false,
+    "recommendation_inputs_excluded": [
+      "AFFILIATE_COMMISSION_RATE",
+      "CONFIRMED_REWARD",
+      "UNATTRIBUTED_REWARD",
+      "COMMISSION",
+      "INCREMENTAL_COST",
+      "EPC",
+      "RPM",
+      "PROFIT"
+    ],
+    "all_finance_values_excluded_from_improvement_candidates": true
+  },
+  "verification_boundary": {
+    "local_unit_property_adversarial": "CANDIDATE",
+    "owner_generator_check": "CANDIDATE",
+    "TST-007": "NOT_EXECUTED",
+    "TST-030": "NOT_EXECUTED",
+    "real_provider_mapping": "NOT_EXECUTED",
+    "database": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  },
+  "completion_boundary": {
+    "local_code_complete": true,
+    "local_integration_complete": false,
+    "canonical_status_changed": false,
+    "formal_or_live_evidence_claimed": false
+  }
+}
