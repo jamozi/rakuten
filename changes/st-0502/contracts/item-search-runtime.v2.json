@@ -1,0 +1,116 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-0502",
+  "classification": "MAXIMUM_SAFE_LOCAL_ITEM_SEARCH_RUNTIME",
+  "local_implementation_status": "LOCAL_CODE_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "dependencies": {
+    "ST-0202": "READ_ONLY_OBJECT_BOUNDARY",
+    "ST-0308": "READ_ONLY_PERSISTENCE_AND_UOW_PATTERN",
+    "ST-1404": "READ_ONLY_DURABLE_RUNTIME_PATTERN_NO_WORKER_ACTIVATION"
+  },
+  "provider_boundary": {
+    "modes": [
+      "RECORDED_SYNTHETIC",
+      "DISABLED"
+    ],
+    "live_http_mode_representable": false,
+    "ambient_environment_read": false,
+    "credential_value_read": false,
+    "external_actions": 0,
+    "one_provider_observation_per_step": true,
+    "collaborator_exceptions_sanitized": true,
+    "collaborator_returns_revalidated": true,
+    "commit_unknown_recovery_preserved": true,
+    "loop": false,
+    "sleep": false,
+    "worker_activation": false
+  },
+  "wire_boundary": {
+    "source_bound": true,
+    "canonical_utf8_query": true,
+    "rfc3986_percent_encoding": true,
+    "exact_parameter_allowlist": true,
+    "exact_element_allowlist": true,
+    "format_version": 2,
+    "application_id_value_rendered": false,
+    "access_key_value_rendered": false,
+    "affiliate_id_value_rendered": false,
+    "access_key_transport": "HEADER_SECRET_NAME_ONLY",
+    "url_contains_secret_value": false,
+    "log_contains_secret_value": false,
+    "archive_contains_secret_value": false
+  },
+  "parser_boundary": {
+    "duplicate_json_keys_rejected": true,
+    "malformed_utf8_rejected": true,
+    "nonfinite_numbers_rejected": true,
+    "oversized_response_rejected": true,
+    "depth_and_node_limits": true,
+    "exact_root_and_item_keys": true,
+    "https_output_urls_only": true,
+    "provider_text_trust": "UNTRUSTED_DATA",
+    "provider_text_in_failure_or_repr": false
+  },
+  "ingestion_boundary": {
+    "one_page_per_command": true,
+    "explicit_cursor": true,
+    "maximum_pages": 100,
+    "request_loop_detection": true,
+    "response_hash_loop_detection": true,
+    "item_identity_loop_detection": true,
+    "persisted_cross_field_consistency_revalidated": true,
+    "typed_http_failure_classification": true,
+    "typed_rate_limit_decision": true,
+    "typed_retry_backoff_decision": true,
+    "typed_circuit_open_decision": true,
+    "automatic_wait_or_retry": false
+  },
+  "durability_boundary": {
+    "backend": "OWNER_PRIVATE_SQLITE_BLOB",
+    "content_addressed_raw_response": true,
+    "raw_bytes_and_sha256_round_trip": true,
+    "immutable_artifact_version": true,
+    "hash_bound_receipt": true,
+    "session_compare_and_swap": true,
+    "command_idempotency_journal": true,
+    "atomic_artifact_metadata_session_and_journal": true,
+    "exact_schema_sql_bound": true,
+    "exact_autoindex_inventory_bound": true,
+    "exact_foreign_key_inventory_bound": true,
+    "same_column_weakened_constraint_rejected": true,
+    "strict_directory_mode": "0700",
+    "strict_database_mode": "0600",
+    "symlink_rejected": true,
+    "hardlink_rejected": true,
+    "path_traversal_rejected": true,
+    "restart_recovery": true,
+    "known_rollback": true,
+    "unknown_before_commit": true,
+    "unknown_after_commit": true,
+    "object_cloud_storage": "NOT_EXECUTED"
+  },
+  "recommendation_boundary": {
+    "provider_derived_recommendation_inputs": [],
+    "excluded_inputs": [
+      "affiliateRate",
+      "commission",
+      "EPC",
+      "profit",
+      "reviewAverage",
+      "reviewCount",
+      "RPM"
+    ]
+  },
+  "formal_evidence": {
+    "TST-014": "NOT_EXECUTED",
+    "TST-015": "NOT_EXECUTED",
+    "real_rakuten_credential": "NOT_EXECUTED",
+    "live_rakuten_call": "NOT_EXECUTED",
+    "object_cloud_storage": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  }
+}

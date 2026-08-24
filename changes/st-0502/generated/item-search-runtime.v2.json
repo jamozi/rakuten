@@ -1,0 +1,306 @@
+{
+  "api": {
+    "endpoint_path": "/ichibams/api/IchibaItem/Search/20260701",
+    "format_version": 2,
+    "origin": "https://openapi.rakuten.co.jp",
+    "safe_elements": [
+      "affiliateUrl",
+      "availability",
+      "catchcopy",
+      "count",
+      "first",
+      "genreId",
+      "hits",
+      "itemCaption",
+      "itemCode",
+      "itemName",
+      "itemPrice",
+      "itemUrl",
+      "last",
+      "mediumImageUrls",
+      "page",
+      "pageCount",
+      "postageFlag",
+      "shopCode",
+      "shopName",
+      "smallImageUrls"
+    ],
+    "safe_query_parameters": [
+      "appointDeliveryDateFlag",
+      "attributeFlag",
+      "availability",
+      "elements",
+      "format",
+      "formatVersion",
+      "genreId",
+      "genreInformationFlag",
+      "hits",
+      "itemCode",
+      "keyword",
+      "maxPrice",
+      "minPrice",
+      "orFlag",
+      "page",
+      "postageFlag",
+      "shopCode",
+      "sort"
+    ],
+    "secret_name_bindings": [
+      {
+        "provider_name": "accessKey",
+        "required": true,
+        "secret_name": "rakuten_web_service_access_key",
+        "transport": "HEADER_SECRET_NAME_ONLY"
+      },
+      {
+        "provider_name": "affiliateId",
+        "required": false,
+        "secret_name": "rakuten_affiliate_id",
+        "transport": "QUERY_SECRET_NAME_ONLY"
+      },
+      {
+        "provider_name": "applicationId",
+        "required": true,
+        "secret_name": "rakuten_web_service_application_id",
+        "transport": "QUERY_SECRET_NAME_ONLY"
+      }
+    ],
+    "version": "2026-07-01"
+  },
+  "canonical_status": "UNCHANGED",
+  "classification": "MAXIMUM_SAFE_LOCAL_ITEM_SEARCH_RUNTIME",
+  "durability_boundary": {
+    "atomic_artifact_metadata_session_and_journal": true,
+    "backend": "OWNER_PRIVATE_SQLITE_BLOB",
+    "command_idempotency_journal": true,
+    "content_addressed_raw_response": true,
+    "exact_autoindex_inventory_bound": true,
+    "exact_foreign_key_inventory_bound": true,
+    "exact_schema_sql_bound": true,
+    "hardlink_rejected": true,
+    "hash_bound_receipt": true,
+    "immutable_artifact_version": true,
+    "known_rollback": true,
+    "object_cloud_storage": "NOT_EXECUTED",
+    "path_traversal_rejected": true,
+    "raw_bytes_and_sha256_round_trip": true,
+    "restart_recovery": true,
+    "same_column_weakened_constraint_rejected": true,
+    "session_compare_and_swap": true,
+    "strict_database_mode": "0600",
+    "strict_directory_mode": "0700",
+    "symlink_rejected": true,
+    "unknown_after_commit": true,
+    "unknown_before_commit": true
+  },
+  "external_actions": [],
+  "formal_evidence": {
+    "TST-014": "NOT_EXECUTED",
+    "TST-015": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "live_rakuten_call": "NOT_EXECUTED",
+    "object_cloud_storage": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "real_rakuten_credential": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  },
+  "ingestion_boundary": {
+    "automatic_wait_or_retry": false,
+    "explicit_cursor": true,
+    "item_identity_loop_detection": true,
+    "maximum_pages": 100,
+    "one_page_per_command": true,
+    "persisted_cross_field_consistency_revalidated": true,
+    "request_loop_detection": true,
+    "response_hash_loop_detection": true,
+    "typed_circuit_open_decision": true,
+    "typed_http_failure_classification": true,
+    "typed_rate_limit_decision": true,
+    "typed_retry_backoff_decision": true
+  },
+  "local_implementation_status": "LOCAL_CODE_COMPLETE",
+  "official_source": {
+    "fetched_at": "2026-08-24T16:43:55Z",
+    "raw_response_committed": false,
+    "raw_response_sha256": "063d5a861f2f8677efca7e772256a980a45eb931bcba403f287025847e42e4cb",
+    "url": "https://webservice.rakuten.co.jp/index.php/documentation/ichiba-item-search"
+  },
+  "parser_boundary": {
+    "depth_and_node_limits": true,
+    "duplicate_json_keys_rejected": true,
+    "exact_root_and_item_keys": true,
+    "https_output_urls_only": true,
+    "malformed_utf8_rejected": true,
+    "nonfinite_numbers_rejected": true,
+    "oversized_response_rejected": true,
+    "provider_text_in_failure_or_repr": false,
+    "provider_text_trust": "UNTRUSTED_DATA"
+  },
+  "provider_boundary": {
+    "ambient_environment_read": false,
+    "collaborator_exceptions_sanitized": true,
+    "collaborator_returns_revalidated": true,
+    "commit_unknown_recovery_preserved": true,
+    "credential_value_read": false,
+    "external_actions": 0,
+    "live_http_mode_representable": false,
+    "loop": false,
+    "modes": [
+      "RECORDED_SYNTHETIC",
+      "DISABLED"
+    ],
+    "one_provider_observation_per_step": true,
+    "sleep": false,
+    "worker_activation": false
+  },
+  "recommendation_boundary": {
+    "excluded_inputs": [
+      "affiliateRate",
+      "commission",
+      "EPC",
+      "profit",
+      "reviewAverage",
+      "reviewCount",
+      "RPM"
+    ],
+    "provider_derived_recommendation_inputs": []
+  },
+  "schema_version": "2.0.0",
+  "state_contract": {
+    "commit_faults": [
+      "NONE",
+      "KNOWN_BEFORE_COMMIT",
+      "UNKNOWN_BEFORE_COMMIT",
+      "UNKNOWN_AFTER_COMMIT"
+    ],
+    "ingestion_states": [
+      "READY",
+      "RETRY_WAIT",
+      "RATE_LIMITED",
+      "CIRCUIT_OPEN",
+      "COMPLETED",
+      "COMPLETED_BOUNDED",
+      "FAILED",
+      "QUARANTINED"
+    ],
+    "provider_failure_classes": [
+      "AUTH",
+      "CONTRACT",
+      "INTEGRITY",
+      "PERMANENT",
+      "RATE_LIMITED",
+      "TRANSIENT",
+      "UNAVAILABLE"
+    ],
+    "provider_modes": [
+      "RECORDED_SYNTHETIC",
+      "DISABLED"
+    ],
+    "step_outcomes": [
+      "PAGE_ARCHIVED",
+      "COMPLETED",
+      "COMPLETED_BOUNDED",
+      "WAIT_RETRY",
+      "WAIT_RATE_LIMIT",
+      "WAIT_CIRCUIT",
+      "FAILED",
+      "QUARANTINED",
+      "PROVIDER_DISABLED",
+      "COMMIT_KNOWN_ROLLBACK",
+      "COMMIT_UNKNOWN"
+    ]
+  },
+  "story_id": "ST-0502",
+  "synthetic_fixture": {
+    "activation": false,
+    "commit_faults": [
+      "NONE",
+      "KNOWN_BEFORE_COMMIT",
+      "UNKNOWN_BEFORE_COMMIT",
+      "UNKNOWN_AFTER_COMMIT"
+    ],
+    "contains_credential_or_sample_value": false,
+    "external_actions": 0,
+    "fixture_id": "ST0502-ITEM-SEARCH-RUNTIME-SYNTHETIC-V2",
+    "hostile_cases": [
+      "duplicate_json_key",
+      "malformed_utf8",
+      "nonfinite_number",
+      "oversized_response",
+      "untrusted_text",
+      "wrong_page_cursor",
+      "duplicate_item_identity",
+      "cross_request_fingerprint",
+      "archive_body_tamper",
+      "session_state_tamper",
+      "journal_result_tamper",
+      "path_traversal",
+      "symlink",
+      "hardlink",
+      "commit_ambiguity"
+    ],
+    "operational_default": false,
+    "plan": {
+      "hits": 2,
+      "keyword": "synthetic compact cleaner",
+      "max_pages": 2,
+      "sort": "standard"
+    },
+    "provider_decisions": {
+      "400": "FAILED",
+      "401": "FAILED",
+      "403": "FAILED",
+      "404": "FAILED",
+      "429": "WAIT_RATE_LIMIT",
+      "500": "WAIT_RETRY_OR_CIRCUIT",
+      "503": "WAIT_RETRY_OR_CIRCUIT",
+      "disabled": "PROVIDER_DISABLED"
+    },
+    "schema_version": "2.0.0",
+    "success_pages": [
+      {
+        "count": 4,
+        "expected_outcome": "PAGE_ARCHIVED",
+        "expected_state": "READY",
+        "first": 1,
+        "hits": 2,
+        "item_codes": [
+          "synthetic-shop:item-1"
+        ],
+        "last": 1,
+        "page": 1,
+        "pageCount": 2
+      },
+      {
+        "count": 4,
+        "expected_outcome": "COMPLETED",
+        "expected_state": "COMPLETED",
+        "first": 3,
+        "hits": 2,
+        "item_codes": [
+          "synthetic-shop:item-2"
+        ],
+        "last": 3,
+        "page": 2,
+        "pageCount": 2
+      }
+    ],
+    "synthetic": true
+  },
+  "wire_boundary": {
+    "access_key_transport": "HEADER_SECRET_NAME_ONLY",
+    "access_key_value_rendered": false,
+    "affiliate_id_value_rendered": false,
+    "application_id_value_rendered": false,
+    "archive_contains_secret_value": false,
+    "canonical_utf8_query": true,
+    "exact_element_allowlist": true,
+    "exact_parameter_allowlist": true,
+    "format_version": 2,
+    "log_contains_secret_value": false,
+    "rfc3986_percent_encoding": true,
+    "source_bound": true,
+    "url_contains_secret_value": false
+  }
+}
