@@ -58,7 +58,7 @@ def test_exact_durable_success_creates_one_effect_free_human_proposal() -> None:
         >= proposal.coverage.all_verifiable_total * 95
     )
     assert proposal.durable.st0706_contract_sha256 == (
-        "eef608f77d99a37716541873cd91ecf18257ee4c7532848046aa3bdb1640ae7c"
+        "27c6e326c2b4485d97fa0179eb01a9f01f904ab45b2361de648fec02bd307e20"
     )
     assert proposal.durable.st0706_policy_sha256 == (
         "f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8"

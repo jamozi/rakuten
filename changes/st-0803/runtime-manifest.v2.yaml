@@ -66,8 +66,8 @@ source_artifacts:
 - uri: repo://docs/worklogs/RAOS-IMPLEMENTATION-DEBT.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
-  bytes: 244001
-  sha256: 5280a540590fd293c5c68303ab855a8f77e43d2149b64346778c253c1461d9e3
+  bytes: 245556
+  sha256: 5766197ae7df6239e924adbe82e964e16b3722d33557c8dd74c0c2a11288e270
 - uri: repo://tests/st0803_runtime/__init__.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python

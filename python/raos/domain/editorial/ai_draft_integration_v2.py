@@ -57,7 +57,7 @@ from raos.domain.evidence.claim_evidence import (
 
 
 AI_ARTICLE_DRAFT_TASK_V2 = "ai.article_draft.v1"
-CONTRACT_SHA256 = "4ca2dfb59f60a4c65bb6c0c31595cac1281d6b62b3900bfe5204770f5cc8c6e7"
+CONTRACT_SHA256 = "c08c4b9cbf1c35d0c8e3177d0929d0fc9a0fbd2187d0fc4c08683ac636eef18e"
 POLICY_ID = "st-0806.ai-draft-integration.v2"
 POLICY_SHA256 = "443b5ea91544ea1e8d5f9c7c2e71ebe331fda6f81397f0b51e25aa70da5c77f2"
 FIXTURE_DOCUMENT_ID = "RAOS-ST0806-AI-DRAFT-FIXTURE-002"

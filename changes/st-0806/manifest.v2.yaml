@@ -5,16 +5,16 @@ document:
   status: LOCAL_IMPLEMENTATION_COMPLETE
   authority: NONE
   production_eligible: false
-contract_sha256: 4ca2dfb59f60a4c65bb6c0c31595cac1281d6b62b3900bfe5204770f5cc8c6e7
+contract_sha256: c08c4b9cbf1c35d0c8e3177d0929d0fc9a0fbd2187d0fc4c08683ac636eef18e
 policy_sha256: 443b5ea91544ea1e8d5f9c7c2e71ebe331fda6f81397f0b51e25aa70da5c77f2
 hardened_writer_sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
 source_sha256:
-  changes/st-0806/contracts/ai-draft-integration.v2.yaml: 4ca2dfb59f60a4c65bb6c0c31595cac1281d6b62b3900bfe5204770f5cc8c6e7
+  changes/st-0806/contracts/ai-draft-integration.v2.yaml: c08c4b9cbf1c35d0c8e3177d0929d0fc9a0fbd2187d0fc4c08683ac636eef18e
   changes/st-0806/README.md: 413acc384c612591434874ecdf13b1a776302ace15833e6b555ace14e6e74b87
   changes/st-0806/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: 277e6376107a5b3a9237cf47f69f4e128a51fc4400e2438b88f0e8ed82f9517d
   docs/execplans/ST-0806.md: 2792c31707951197e3a572356a9df64df3faddbcba0bd3d8f8a9bf5bcff15896
   docs/worklogs/ST-0806.md: 73283188df3fb646c51c0b6fb5b0aefbeda72b0a6c6585e90eb2d476c16cdbf0
-  scripts/build_st0806_ai_draft_integration_v2.py: 013ecc23e455d1b0f145c9bd26450e5d477fe0317bc2913b131ecfad05173462
+  scripts/build_st0806_ai_draft_integration_v2.py: 9c5536c06b40937815b73cb0dc8db1d01b6c0261fd823b7ce0ba42954bb8729f
   scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
   contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json: 8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489
   changes/st-0605/generated/claim-evidence-runtime-pass.v1.json: eb1c36bd1f70ea27e57e1720b937211286578136e701664b5fb4c8c823395226
@@ -22,18 +22,18 @@ source_sha256:
   python/raos/ports/ai_draft_integration.py: 22a427745833771f788e1cc98b7b6bc3ae62870241376e7fb638fb97cfce9510
   python/raos/application/editorial/ai_draft_integration.py: 64f1d8e7623e6946f64ad90bc37a085846c8e83a7725a8805b4db1f7a0427102
   python/raos/adapters/recorded_ai_draft_integration.py: e24d80774703cd5904833ba43bbf891b01cab0c1afd8e5f10002eabc2fcaea09
-  python/raos/domain/editorial/ai_draft_integration_v2.py: fa04d6c194f84741e4f8d94cfa55d76babd516c9132c648cde7c2eb98cb75ad1
+  python/raos/domain/editorial/ai_draft_integration_v2.py: a3a2f625ad392c6f52d5dea805192801375d7836cd763c3ffbe5f5b481451e7c
   python/raos/ports/ai_draft_integration_v2.py: e797a8b8edb5baa83b80e7fb078cebf529897e6b4f8f84eaae6e458c66347797
   python/raos/application/editorial/ai_draft_integration_v2.py: 72ddb13f422b09b288ed06fc05242e0b20decab07458f2a23f122717260f4de6
   python/raos/adapters/recorded_ai_draft_integration_v2.py: 716ed3f59abb63bda6291549c61a079c08272db6ff58fa807592e1ec0604bcbd
   tests/st0806/v2_support.py: 8f5eeaa3520a6c6a242e20944304009a41ab202e443d373a168c2421bbd768be
-  tests/st0806/test_ai_draft_integration_v2.py: dcd36847443594d67ca118de04b6658f5e70cb4715be32358d5fe748a1fc58b1
+  tests/st0806/test_ai_draft_integration_v2.py: 142c82279d8f20ed38050f30c111a6038044a9fed6c0450ad99188f487c76958
   tests/st0806/test_ai_draft_integration_v2_negative.py: 8e43d766f9e9a165a87a6ed9f8dad1e2816a1f18f57df7029b984f7243162f02
-  tests/st0806/test_ai_draft_integration_v2_boundaries.py: 19548b8f36cc0740070c608888713932eeaa64fb783b25b324194e96b4ed53c6
+  tests/st0806/test_ai_draft_integration_v2_boundaries.py: b9cca8ce0631bd68e8c8cead7cb551159a2b1998025679655c107350077bfcc4
   tests/st0806/test_ai_draft_integration_v2_generation.py: 584b4ea8eb2c5b98b5c69864444ec4508a4d9a52d7ac92a1e542d5edf9ad05af
 generated_sha256:
-  changes/st-0806/generated/ai-draft-integration.v2.json: 9b52b5d4070d8dc5f8efe62a84ba9e8113c5f6bd2e24221c3714a1c6a14d9c33
-  changes/st-0806/generated/ai-draft-integration-fixture.v2.json: a890cfa8a5c371f8f79b83bbe846fff2076eebad567613c772956ebfb5b8d78b
+  changes/st-0806/generated/ai-draft-integration.v2.json: b81b3630b2ac39e853b65fe4d12211962b94f8130991652d7c460ffccbf6ea90
+  changes/st-0806/generated/ai-draft-integration-fixture.v2.json: 06f03861743fef7bea937b87463fa85b165ec28fbd431b395d75244d68b36aa9
 generation:
   command: uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads
     python scripts/build_st0806_ai_draft_integration_v2.py
