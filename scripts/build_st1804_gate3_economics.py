@@ -83,10 +83,10 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st1804_gate3_economics.py"
 )
 CONTRACT_SHA256: Final = (
-    "bea92556ba62562c673ea3898eabc1c02198b91578ba4402db094f4bbc86599f"
+    "41387e716a71c93ae288da70469eb8ca2d1a07b28a1a5fcd63b8dbb2d5acd32a"
 )
 FIXTURE_SHA256: Final = (
-    "72ab8f4b77138bb611d0904dc2e8f3d8d762798e4567e45d907ef984ff84627a"
+    "ab603a329a5c7e2d44576be31119f6702ba353882b3f1e798bd3367db0bae5a4"
 )
 INPUT_SHA256: Final = "a532e84c3be3d656978a8168047a8e4df94c872fd78d703137f399c77e0199b2"
 SOURCE_HEAD_SHA256: Final = (
@@ -128,16 +128,16 @@ EXPECTED_BINDINGS: Final = {
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
     ),
     "changes/st-1803/contracts/gate2-observation.v1.yaml": (
-        "e85bfb0886be3f51ab99f81c6654efcdb88397cdfc43cc627ac984db2ee84e72"
+        "4e494e2e974f2aa7b6e0d623f0bc038d7be3a65d8108e3edaf86c2c5b30e8714"
     ),
     "changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json": (
-        "1a8fa35229d8f12bca5dc94de396175b5e97c359c775c50dd5b07671018f6c2e"
+        "3e61f2cd73c6fcb46010a5573bfa6c0ed770b3e47964112f8e430bc2b43d28ce"
     ),
     "changes/st-1803/generated/gate2-observation.local-blocked.v1.json": (
-        "9a83909dfb9618457e23ccd2796530b3c1208b4aed7bb8e49d8bf5e167ac0ae8"
+        "9b4574559aafb7fa5db85a8ba86122bcd20c2eff798be935717382b54223d1c3"
     ),
     "scripts/build_st1803_gate2_observation.py": (
-        "420c3eca1dc40de71169ee2fda7c8880f4445f1a0e6a29c32a84ef4ee59e2737"
+        "afcd368a4e4cf4badce2bb05cecc02b801b6b0606dbdaff5bf0cde64b5cd42dc"
     ),
     "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml": (
         "b21ffd229a771cb10fea9084afea33c2ad1de780112a69b2d6a1eadfe84fcab7"

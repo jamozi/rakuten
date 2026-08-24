@@ -22,10 +22,10 @@ source_bindings:
 
 dependency_bindings:
   ST-1803:
-    changes/st-1803/contracts/gate2-observation.v1.yaml: e85bfb0886be3f51ab99f81c6654efcdb88397cdfc43cc627ac984db2ee84e72
-    changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json: 1a8fa35229d8f12bca5dc94de396175b5e97c359c775c50dd5b07671018f6c2e
-    changes/st-1803/generated/gate2-observation.local-blocked.v1.json: 9a83909dfb9618457e23ccd2796530b3c1208b4aed7bb8e49d8bf5e167ac0ae8
-    scripts/build_st1803_gate2_observation.py: 420c3eca1dc40de71169ee2fda7c8880f4445f1a0e6a29c32a84ef4ee59e2737
+    changes/st-1803/contracts/gate2-observation.v1.yaml: 4e494e2e974f2aa7b6e0d623f0bc038d7be3a65d8108e3edaf86c2c5b30e8714
+    changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json: 3e61f2cd73c6fcb46010a5573bfa6c0ed770b3e47964112f8e430bc2b43d28ce
+    changes/st-1803/generated/gate2-observation.local-blocked.v1.json: 9b4574559aafb7fa5db85a8ba86122bcd20c2eff798be935717382b54223d1c3
+    scripts/build_st1803_gate2_observation.py: afcd368a4e4cf4badce2bb05cecc02b801b6b0606dbdaff5bf0cde64b5cd42dc
   ST-1305:
     changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml: b21ffd229a771cb10fea9084afea33c2ad1de780112a69b2d6a1eadfe84fcab7
     changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json: 59b666012081afc238b331dc481a48bf9ba91c54ee00756f0a0a7687b98deb09

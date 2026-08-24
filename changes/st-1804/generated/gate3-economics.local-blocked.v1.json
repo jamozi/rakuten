@@ -74,7 +74,7 @@
   "gate_pass_claim": false,
   "generated_by": {
     "command": "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1804_gate3_economics.py",
-    "generator_sha256": "4f66f3f35925bb70b82168038b80b310b284474b255c435d2d5c97726f238441",
+    "generator_sha256": "f65dee559a3105fe81a1996d2bad8b9498906fff441539745fc620a5a2926771",
     "uri": "repo://scripts/build_st1804_gate3_economics.py"
   },
   "learning_boundary": {
@@ -267,9 +267,9 @@
       "changes/st-1305/generated/finance-reconciliation-recorded.v2.json": "5093173b07d3b9466b17c19a6ea9056b3765da02f8ee751b6dbfa36da92601c5",
       "changes/st-1305/manifest.yaml": "fcdb16dc600c02ef740675aba442f11721a550ded0d2a162e9ed3b42eabfda21",
       "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json": "9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8",
-      "changes/st-1803/contracts/gate2-observation.v1.yaml": "e85bfb0886be3f51ab99f81c6654efcdb88397cdfc43cc627ac984db2ee84e72",
-      "changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json": "1a8fa35229d8f12bca5dc94de396175b5e97c359c775c50dd5b07671018f6c2e",
-      "changes/st-1803/generated/gate2-observation.local-blocked.v1.json": "9a83909dfb9618457e23ccd2796530b3c1208b4aed7bb8e49d8bf5e167ac0ae8",
+      "changes/st-1803/contracts/gate2-observation.v1.yaml": "4e494e2e974f2aa7b6e0d623f0bc038d7be3a65d8108e3edaf86c2c5b30e8714",
+      "changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json": "3e61f2cd73c6fcb46010a5573bfa6c0ed770b3e47964112f8e430bc2b43d28ce",
+      "changes/st-1803/generated/gate2-observation.local-blocked.v1.json": "9b4574559aafb7fa5db85a8ba86122bcd20c2eff798be935717382b54223d1c3",
       "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
       "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
       "docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460",
@@ -282,18 +282,18 @@
       "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
       "docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md": "5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea",
       "scripts/build_st1305_finance_reconciliation.py": "215f8aac3529ce713a08af2195de8295fa62b884d3003245a89b818189df5502",
-      "scripts/build_st1803_gate2_observation.py": "420c3eca1dc40de71169ee2fda7c8880f4445f1a0e6a29c32a84ef4ee59e2737"
+      "scripts/build_st1803_gate2_observation.py": "afcd368a4e4cf4badce2bb05cecc02b801b6b0606dbdaff5bf0cde64b5cd42dc"
     },
-    "fixture_sha256": "72ab8f4b77138bb611d0904dc2e8f3d8d762798e4567e45d907ef984ff84627a",
+    "fixture_sha256": "ab603a329a5c7e2d44576be31119f6702ba353882b3f1e798bd3367db0bae5a4",
     "source_artifacts": [
       {
         "bytes": 6953,
-        "sha256": "bea92556ba62562c673ea3898eabc1c02198b91578ba4402db094f4bbc86599f",
+        "sha256": "41387e716a71c93ae288da70469eb8ca2d1a07b28a1a5fcd63b8dbb2d5acd32a",
         "uri": "repo://changes/st-1804/contracts/gate3-economics.v1.yaml"
       },
       {
         "bytes": 6397,
-        "sha256": "72ab8f4b77138bb611d0904dc2e8f3d8d762798e4567e45d907ef984ff84627a",
+        "sha256": "ab603a329a5c7e2d44576be31119f6702ba353882b3f1e798bd3367db0bae5a4",
         "uri": "repo://changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json"
       },
       {
@@ -328,7 +328,7 @@
       },
       {
         "bytes": 25571,
-        "sha256": "4f66f3f35925bb70b82168038b80b310b284474b255c435d2d5c97726f238441",
+        "sha256": "f65dee559a3105fe81a1996d2bad8b9498906fff441539745fc620a5a2926771",
         "uri": "repo://scripts/build_st1804_gate3_economics.py"
       }
     ]
@@ -508,7 +508,7 @@
       ],
       "recorded_at": "2026-04-01T00:00:00Z"
     },
-    "evaluation_sha256": "e47741fda46e4138e757bec9a56d349ab03b13dd180705a7eb3d2371495a0708",
+    "evaluation_sha256": "76bfce9c1d43c3b9a7bdec5e53d78e63097e02fa7bd751427694d8f08a8964b1",
     "evidence_classification": "RECORDED_SYNTHETIC_TEST_VECTOR_NON_ATTESTING",
     "finance_editorial_separation": {
       "article_html_mutation": false,
@@ -530,7 +530,7 @@
       "recommendation_order_mutation": false
     },
     "gate_pass_claim": false,
-    "input_contract_sha256": "bea92556ba62562c673ea3898eabc1c02198b91578ba4402db094f4bbc86599f",
+    "input_contract_sha256": "41387e716a71c93ae288da70469eb8ca2d1a07b28a1a5fcd63b8dbb2d5acd32a",
     "input_sha256": "a532e84c3be3d656978a8168047a8e4df94c872fd78d703137f399c77e0199b2",
     "method_version": "RAOS_ST1804_GATE3_ECONOMICS_V1",
     "metrics": [
@@ -740,7 +740,7 @@
     "modifications_applied": [],
     "overall": "BLOCKED",
     "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-    "recorded_fixture_sha256": "72ab8f4b77138bb611d0904dc2e8f3d8d762798e4567e45d907ef984ff84627a",
+    "recorded_fixture_sha256": "ab603a329a5c7e2d44576be31119f6702ba353882b3f1e798bd3367db0bae5a4",
     "reward_basis": {
       "direct_estimated_unattributed_separate": true,
       "provider_total_is_article_attribution": false,
