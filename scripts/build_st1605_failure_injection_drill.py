@@ -48,7 +48,7 @@ PYTHON_ROOT: Final = REPO_ROOT / "python"
 SECURE_IO_PATH: Final = Path("scripts/build_st1506_production_deployment.py")
 SECURE_IO_MODULE_NAME: Final = "scripts.build_st1506_production_deployment"
 SECURE_IO_SHA256: Final = (
-    "f58b1ed91bcfcc4376262a3e3aa3653154dcbb0672e8508daac874e0042f1176"
+    "a55385ccdd8fb3f9740eb2cbb2c24c3ba67006a46e1612dd27cd9e0973b6cc7e"
 )
 SECURE_IO_MAX_BYTES: Final = 256 * 1024
 _BOOTSTRAP_READ_BYTES: Final = 64 * 1024
