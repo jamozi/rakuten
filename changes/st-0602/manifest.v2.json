@@ -40,7 +40,7 @@
     "python/raos/application/ops/artifact_registry_runtime_v2.py": "bd21edd7dc3be8bb6f4dde184e6ad5d6cd7f0304c16e9b8e30431d3d05b4aab6",
     "python/raos/domain/catalog/catalog_normalization_runtime_v2.py": "b59239221d9106923b517fdb8bb2f386686dda1a1503ad5bd4263016b152b370",
     "python/raos/domain/evidence/fact_extraction_runtime_v2.py": "9e80ec5c06bf8afe94e99a1b4a0805d249126a0d7a064a93d3ee641a1a91f770",
-    "python/raos/domain/ops/artifact_registry_runtime_v2.py": "fbcdf503f160444103cdc104472022cf79a7f98871cd071893b1818e5d288da3",
+    "python/raos/domain/ops/artifact_registry_runtime_v2.py": "0dbf42ba77d8cca346e4c87dbc8cce752c48509ad8b9b769553894fed82d0152",
     "python/raos/ports/artifact_registry_runtime_v2.py": "aa3916820f3b270b8389791dd940a87f23c4cfbcd8c314eaf399e941459f89c6",
     "python/raos/ports/catalog_normalization_runtime_v2.py": "f96410974702fffaa5cc0ceb6fc9b9985b55a5a359d41fd652648694529c875a",
     "python/raos/ports/fact_extraction_runtime_v2.py": "dfcb76f5f838a29fede41f028a78916f7b9e2e9cfbda25ffab8a549860e6dc15",
