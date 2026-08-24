@@ -30,7 +30,7 @@
   "scripts": {
     "format:check": "prettier --check --ignore-unknown package.json apps/web packages/web-contracts/package.json packages/web-contracts/tsconfig.json packages/web-ui tsconfig.base.json tsconfig.json eslint.config.mjs prettier.config.mjs vitest.config.ts pyrightconfig.json scripts/node_inventory.mjs tests/st0103",
     "lint": "eslint --max-warnings=0 --no-warn-ignored eslint.config.mjs prettier.config.mjs vitest.config.ts scripts/node_inventory.mjs tests/st0103",
-    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "typecheck": "tsc --noEmit --project tsconfig.json && tsc --noEmit --project packages/web-ui/tsconfig.json",
     "pyright": "pyright --project pyrightconfig.json",
     "test:unit": "vitest run --config vitest.config.ts --configLoader native",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm run pyright && npm run test:unit"
