@@ -1,0 +1,55 @@
+document:
+  authority: NONE
+  canonical_implementation_status: DEFERRED_POST_MVP
+  id: RAOS-ST1901-RUNTIME-MANIFEST-001
+  production_eligible: false
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  story_id: ST-1901
+  version: 1.0.0
+evaluation:
+  case_count: 200
+  decision_outcome: REFUSED_UNVERIFIABLE_CALIBRATION
+  local_metric_criteria_met: true
+  report_sha256: a0b3b4a917f9655a3aa37844d35de822664d2e8e9004a89cbd05028cfc7e0c30
+  separate_release_decision_required: true
+formal_status:
+  actual_human_labeling: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  live: NOT_EXECUTED
+  production: NOT_EXECUTED
+  release: NOT_EXECUTED
+  staging: NOT_EXECUTED
+generated_sha256:
+  changes/st-1901/fixtures/recorded/model-judge-human-labels.synthetic.v1.json: be92b734b715db7948ec3e64d87226dc65ab42aeabb0b70b4e93ed678ef794cb
+  changes/st-1901/generated/model-judge-calibration-evaluation.v1.json: 23c206f394525adddc8648d3f4758959bff8685ac3dddaa3797a3bf92cd4ddfb
+source_sha256:
+  changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml: f1c0e37bd4b12b83c76ea3a40c77c94ac3b852733ece71f1352cf5263fade963
+  changes/st-0707/generated/evaluation-suite-registry.v1.json: 701c9dcff604a1c82262077bb317aaad0f4ec055968f1ef357d3ba6b205ae7e9
+  changes/st-0707/runtime-manifest.v1.json: 3f812e194c8eaadbf9fb42d1861a1a791927e4041b744eb79ff446df60db137e
+  changes/st-1901/README.md: 342d498c48ed8573d26f3414f8c68fdf6f5c35146f0f985614832947c0721c96
+  changes/st-1901/contracts/model-judge-calibration.v1.yaml: b7a9b308ee5c67664500b1629077bec43796d112f71406d8cdcb40db0f525400
+  contracts/raos-v0.4/contracts/ai/RAOS_05_evaluation_catalog_v0.1.yaml: a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3
+  contracts/raos-v0.4/contracts/ai/RAOS_05_human_review_rubric_v0.1.yaml: a346b6c046cdcc384aeb5993fcd09ca61da62cb9b19e3b229572e8251b5010d9
+  contracts/raos-v0.4/contracts/ai/schemas/eval/judge_output.v1.schema.json: 8d832fe5c58a7cfeb8bafa8dab18c64aa45bdb56c3282bd3d7d6e14cad6e87d4
+  contracts/raos-v0.4/contracts/schemas/ai-governance/judge-calibration-create-request.v1.schema.json: 2ae3d1711f269ded555cec983adce2a0aa601d908bfc2c192b954594c574837a
+  contracts/raos-v0.4/contracts/schemas/ai-governance/judge-calibration.v1.schema.json: 014393354a47070c69a83b204b73703bea2b4267468e3584387b65b11b077a7e
+  docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  docs/execplans/ST-1901.md: 766d22cd17853f2685c948f7efdc7649603c585078f7c5f8f9c26b8a8228c3d4
+  docs/worklogs/ST-1901.md: e5738b26de0c8b6e52ca36d852cfa25b7c162b8827169fd20433e10996cd4fbb
+  python/raos/adapters/recorded_model_judge_calibration.py: 51fa311bbe4520a25a0272d714f8ea1212ba8d77819d8164c14a302a0fe181cb
+  python/raos/application/ai/model_judge_calibration.py: 2bdedb9d589e7244c3b3f9103389fd1ba957c7b8bc8ab8acde09d5f8be239386
+  python/raos/domain/ai/model_judge_calibration.py: ef40de8c1e5d1a51b79da47c932e27f10e8b38ca94f935b51a3d869d42058882
+  python/raos/ports/model_judge_calibration.py: 8be13dda30dd55b1e14ab84e61b0a1f40b03a861271745c29a9a3770812ab6b3
+  scripts/build_st1901_model_judge_calibration.py: 9cd090d8b49601df9ce3d390fc70d1855ab916b5615e1d294b58bfc6a3e8ad41
+  scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+  tests/st1901/conftest.py: 57a2faf2287d36351ba7f40d0ca9123efb2d8e29d99ef56da726b18ad98d4c51
+  tests/st1901/test_calibration.py: 2c7e8bb3985972dc292419a30f5ab96510beef58815f56dee5844b4423b438ba
+  tests/st1901/test_contract.py: b6610d3268f84a27bf0253e09a49b6a896b2f88f49bf220e8e576975d6b482de
+  tests/st1901/test_generation.py: ee7878ddc88c9884dc4ed649777907a28a0c5343fbcfb19222b2188ff906d67d
+  tests/st1901/test_negative_cases.py: 08b3351669f9a1453d40df5ea4dd8e04e245fdacdee48a3cc2256fb8c2f6471a
+  tests/st1901/test_security_boundaries.py: 32672fb6e44a98729736b2035975dad22771944bf3abf014a73c89f3bb70e202
