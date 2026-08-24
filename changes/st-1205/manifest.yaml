@@ -7,7 +7,7 @@ document:
   generation_command: uv run --frozen --offline --no-cache --no-sync --no-env-file
     python scripts/build_st1205_kpi_read_model_reference_plan.py
 provenance:
-  contract_sha256: 2777cf19d0482f84172ac581ed72f27bc6e93b51b5bd45ea4b23e14cf0f95665
+  contract_sha256: 4cb71bbecec12342aca564309a860c686a8126fdd3238b79ba14ccbdb260b973
   authority:
     canonical_story:
       path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
@@ -31,8 +31,8 @@ provenance:
   - story_id: ST-1201
     binding: EXACT_CURRENT_COMMITTED_BYTES
     artifacts:
-      changes/st-1201/README.md: f7264bda2e0e6c4fcfbd6d7050552170974f85ae014106d10ad36e03b94b2e09
-      python/raos/domain/analytics/event_collector.py: e7350bac934fc3d190d9c041915a7ea708092519e4ddccb2c70e0c850bde50ff
+      changes/st-1201/README.md: 1d48cdd47187f00833737eade4b6f9ec7ee9cf4dc4f9000e6413b3d401a89b10
+      python/raos/domain/analytics/event_collector.py: c152f57cf7f95ae924a8510ff4b153c4dd4b78c17fbe5f579019fb30a759fa6b
     required_semantics:
       tracking: DISABLED
       persistence: NOT_EXECUTED
@@ -70,7 +70,7 @@ source_artifact_count: 14
 source_artifacts:
 - uri: repo://changes/st-1205/contracts/kpi-read-model.v2.yaml
   bytes: 7702
-  sha256: 2777cf19d0482f84172ac581ed72f27bc6e93b51b5bd45ea4b23e14cf0f95665
+  sha256: 4cb71bbecec12342aca564309a860c686a8126fdd3238b79ba14ccbdb260b973
 - uri: repo://changes/st-1205/fixtures/recorded/kpi-calculation-complete.v2.json
   bytes: 11343
   sha256: da6d51ccd7ba56411ec81e316994659849e4ea7fa11e5458982a99a6f2317676
@@ -79,7 +79,7 @@ source_artifacts:
   sha256: 4722c69a67112898a1d070021d6262f64442d95f9296c956287d2fb829c10b72
 - uri: repo://scripts/build_st1205_kpi_read_model_reference_plan.py
   bytes: 24509
-  sha256: 613033f689228f6c3c722086e20f00e7e898d2108f82daa2b7d5a6b90454c458
+  sha256: f00bb2af54ba12e72b23afb224c63d24fb0072ff6788e06e1f1443a153d5ec56
 - uri: repo://python/raos/domain/analytics/kpi_read_model.py
   bytes: 51846
   sha256: 7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac

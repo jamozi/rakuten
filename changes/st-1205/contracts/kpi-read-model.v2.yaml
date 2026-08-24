@@ -36,8 +36,8 @@ predecessors:
   - story_id: ST-1201
     binding: EXACT_CURRENT_COMMITTED_BYTES
     artifacts:
-      changes/st-1201/README.md: f7264bda2e0e6c4fcfbd6d7050552170974f85ae014106d10ad36e03b94b2e09
-      python/raos/domain/analytics/event_collector.py: e7350bac934fc3d190d9c041915a7ea708092519e4ddccb2c70e0c850bde50ff
+      changes/st-1201/README.md: 1d48cdd47187f00833737eade4b6f9ec7ee9cf4dc4f9000e6413b3d401a89b10
+      python/raos/domain/analytics/event_collector.py: c152f57cf7f95ae924a8510ff4b153c4dd4b78c17fbe5f579019fb30a759fa6b
     required_semantics:
       tracking: DISABLED
       persistence: NOT_EXECUTED

@@ -107,7 +107,7 @@ INTEGRATION_PATH: Final = Path(
 )
 
 EXPECTED_CONTRACT_SHA256: Final = (
-    "2777cf19d0482f84172ac581ed72f27bc6e93b51b5bd45ea4b23e14cf0f95665"
+    "4cb71bbecec12342aca564309a860c686a8126fdd3238b79ba14ccbdb260b973"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 GENERATION_COMMAND: Final = (
@@ -125,10 +125,10 @@ AUTHORITY_HASHES: Final = {
 PREDECESSOR_HASHES: Final = {
     Path(
         "changes/st-1201/README.md"
-    ): "f7264bda2e0e6c4fcfbd6d7050552170974f85ae014106d10ad36e03b94b2e09",
+    ): "1d48cdd47187f00833737eade4b6f9ec7ee9cf4dc4f9000e6413b3d401a89b10",
     Path(
         "python/raos/domain/analytics/event_collector.py"
-    ): "e7350bac934fc3d190d9c041915a7ea708092519e4ddccb2c70e0c850bde50ff",
+    ): "c152f57cf7f95ae924a8510ff4b153c4dd4b78c17fbe5f579019fb30a759fa6b",
     Path(
         "changes/st-1203/README.md"
     ): "c333b3400b8f0f13ce18be7e04d43345caa812b4d818dae8222cb8b498099c3e",
