@@ -48,19 +48,19 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
 STORY_PATH: Final = Path("docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml")
 STORY_SHA256: Final = "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
-ST0601_COMMIT: Final = "2653f1a3f78172576818b032b0bd34b54360d9fb"
-ST0503_COMMIT: Final = "b61d4dd83b87495dfd672bdf8960dc3b1ff29d79"
+ST0601_COMMIT: Final = "38ac757b814c24c913031485a78bbf7d2206f2a5"
+ST0503_COMMIT: Final = "80162f932738f9c3854ff012ae8e488275f7e1f5"
 
 ST0601_ARTIFACTS: Final = (
     (
         Path("changes/st-0601/README.md"),
-        "93759bfea0e51fbbd6b5fe8858fa27f3ed6e5677b0bde3f5a198997ada003766",
+        "67e1476c7f8104d3d99802c745b74a0f605b07e28619b2b7da66ec836bd7c355",
     ),
     (
         Path("python/raos/domain/ops/artifact_registry.py"),
@@ -98,7 +98,7 @@ ST0601_ARTIFACTS: Final = (
 ST0503_ARTIFACTS: Final = (
     (
         Path("changes/st-0503/README.md"),
-        "aa956454a96c0c88dedd52982264fdf5ad66f181ee3c3717a1aea8204bfbf138",
+        "e372c00533e7ddddb71e10308fb703e8c31261351c61d593c520371c505b2f0b",
     ),
     (
         Path("python/raos/domain/catalog/catalog_normalization.py"),
@@ -192,13 +192,13 @@ def _fail(code: str, field: str) -> NoReturn:
 def _mapping(value: object, field: str) -> Mapping[str, Any]:
     if type(value) is not dict:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(dict[str, Any], value)
 
 
-def _list(value: object, field: str) -> list[Any]:
+def _list(value: object, field: str) -> list[object]:
     if type(value) is not list:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(list[object], value)
 
 
 def _same_exact(left: object, right: object) -> bool:
@@ -229,7 +229,9 @@ def _sha256(content: bytes) -> str:
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
-    physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    physical = base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        root, relative, field
+    )
     try:
         content = physical.read_bytes()
     except OSError:
@@ -247,15 +249,17 @@ def _text(root: Path, relative: Path, field: str) -> str:
 
 
 def _load_yaml(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
-    base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        root, relative, field
+    )
     return _mapping(base.load_yaml(root / relative), field)
 
 
 def _find(items: object, identity: str, field: str) -> Mapping[str, Any]:
     matches = [
-        _mapping(item, field)
+        _mapping(cast(object, item), field)
         for item in _list(items, field)
-        if type(item) is dict and item.get("id") == identity
+        if type(item) is dict and cast(dict[str, object], item).get("id") == identity
     ]
     if len(matches) != 1:
         _fail("CANONICAL_RECORD_MISSING", field)
@@ -768,7 +772,9 @@ def check_outputs(root: Path, expected: Mapping[Path, bytes]) -> None:
     if set(expected) != set(GENERATED_PATHS):
         _fail("GENERATED_INVENTORY_DRIFT", "output")
     for relative in GENERATED_PATHS:
-        path = base._output_file(root, relative)  # noqa: SLF001
+        path = base._output_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative
+        )
         try:
             actual = path.read_bytes()
         except OSError:
@@ -783,7 +789,9 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
         check_outputs(root, outputs)
         return
     for relative, content in outputs.items():
-        base._atomic_write(root, relative, content)  # noqa: SLF001
+        base._atomic_write(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative, content
+        )
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

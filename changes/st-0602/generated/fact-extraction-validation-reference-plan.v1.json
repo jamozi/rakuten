@@ -36,18 +36,18 @@
     "generation_command": "uv run --locked --no-sync python scripts/build_st0602_fact_extraction_validation_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+      "sha256": "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
     }
   },
   "predecessor_bindings": [
     {
       "story_id": "ST-0601",
-      "commit": "2653f1a3f78172576818b032b0bd34b54360d9fb",
+      "commit": "38ac757b814c24c913031485a78bbf7d2206f2a5",
       "relationship": "SOURCE_BOUND_RECORDED_NON_ATTESTING_INPUT_ONLY",
       "files": [
         {
           "path": "changes/st-0601/README.md",
-          "sha256": "93759bfea0e51fbbd6b5fe8858fa27f3ed6e5677b0bde3f5a198997ada003766"
+          "sha256": "67e1476c7f8104d3d99802c745b74a0f605b07e28619b2b7da66ec836bd7c355"
         },
         {
           "path": "python/raos/domain/ops/artifact_registry.py",
@@ -99,12 +99,12 @@
     },
     {
       "story_id": "ST-0503",
-      "commit": "b61d4dd83b87495dfd672bdf8960dc3b1ff29d79",
+      "commit": "80162f932738f9c3854ff012ae8e488275f7e1f5",
       "relationship": "LOSSLESS_NORMALIZATION_CONTEXT_ONLY",
       "files": [
         {
           "path": "changes/st-0503/README.md",
-          "sha256": "aa956454a96c0c88dedd52982264fdf5ad66f181ee3c3717a1aea8204bfbf138"
+          "sha256": "e372c00533e7ddddb71e10308fb703e8c31261351c61d593c520371c505b2f0b"
         },
         {
           "path": "python/raos/domain/catalog/catalog_normalization.py",

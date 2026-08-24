@@ -1,0 +1,215 @@
+{
+  "authority_boundary": {
+    "ai_action_count": 0,
+    "external_action_count": 0,
+    "live_provider": false,
+    "production": false,
+    "production_authority": "NONE",
+    "provider_action_count": 0,
+    "publication": false,
+    "publication_action_count": 0,
+    "ranking": false,
+    "recommendation": false,
+    "release": false,
+    "revenue": false,
+    "staging": false
+  },
+  "canonical_status": "UNCHANGED",
+  "classification": "MAXIMUM_SAFE_RECORDED_LOCAL_DURABLE_FACT_EXTRACTION_RUNTIME",
+  "confidence_boundary": {
+    "basis": "EXACT_STRUCTURAL_EXTRACTION_NOT_TRUTH_ATTESTATION",
+    "copies_provider_truth_confidence": false,
+    "manual_review_required": true,
+    "meaning": "EXTRACTION_FIDELITY_ONLY",
+    "publication_readiness": "NOT_READY",
+    "truth_attestation": "NOT_ATTESTED",
+    "value": "1.0000"
+  },
+  "dependency_contract": {
+    "ST-0503": "EXACT_PERSISTED_CATALOG_NORMALIZATION_V2",
+    "ST-0601": "EXACT_ARTIFACT_READBACK_V2_WITH_RAW_BYTES"
+  },
+  "durability_boundary": {
+    "atomic_batch_validation_outbox_journal_and_cas": true,
+    "backend": "OWNER_PRIVATE_SQLITE",
+    "commit_ambiguity_recovery": true,
+    "cross_restart_rollback_anchor": false,
+    "delete_update_export_retention_capability": false,
+    "exact_schema_and_inventory": true,
+    "exclusive_create_distinguishes_new_from_preexisting_empty_or_partial": true,
+    "foreign_keys": true,
+    "hardlink_rejected": true,
+    "hash_chain": true,
+    "idempotency_key": "source_snapshot_id+extractor_version",
+    "live_inode_pinned": true,
+    "payload_hash_conflict_detection": true,
+    "process_lifetime_monotonic_head_and_count": true,
+    "restart_recovery": true,
+    "strict_database_mode": "0600",
+    "strict_directory_mode": "0700",
+    "strict_tables": true,
+    "symlink_rejected": true
+  },
+  "event_contract": {
+    "channel": "quality.events",
+    "delivery_status": "RECORDED_LOCAL_NOT_DELIVERED",
+    "delivery_worker": "NOT_IMPLEMENTED_NOT_ACTIVATED",
+    "event_type": "jp.raos.evidence.facts_extracted.v1"
+  },
+  "excluded_inputs": [
+    "affiliate_url",
+    "canonical_product_id",
+    "commission",
+    "EPC",
+    "profit",
+    "ranking",
+    "recommendation",
+    "review_aggregate",
+    "review_body",
+    "reward",
+    "RPM"
+  ],
+  "external_actions": [],
+  "extractor_contract": {
+    "accepted_observations": [
+      "PRICE_JPY",
+      "AVAILABILITY_PROVIDER_FLAG",
+      "POSTAGE_INCLUDED_PROVIDER_FLAG"
+    ],
+    "confidence": "1.0000",
+    "confidence_basis": "EXACT_STRUCTURAL_EXTRACTION_NOT_TRUTH_ATTESTATION",
+    "extractor_version": "ST0602_EXACT_STRUCTURAL_OFFER_FACTS_V2",
+    "fact_kinds": [
+      "ASSERTED"
+    ],
+    "publication_readiness": "NOT_READY",
+    "subject_types": [
+      "OFFER"
+    ],
+    "truth_attestation": "NOT_ATTESTED",
+    "value_kinds": [
+      "NUMERIC",
+      "BOOLEAN"
+    ]
+  },
+  "fact_boundary": {
+    "accepted_observations": [
+      "PRICE_JPY",
+      "AVAILABILITY_PROVIDER_FLAG",
+      "POSTAGE_INCLUDED_PROVIDER_FLAG"
+    ],
+    "affiliate_url_fact": false,
+    "boolean_locale": null,
+    "boolean_unit": null,
+    "canonical_product_id": false,
+    "deterministic_fact_id_and_display_id": true,
+    "fact_kind": "ASSERTED",
+    "identity_open_decision": "OD-006",
+    "identity_status": "HUMAN_REVIEW",
+    "json_pointer_locator_to_normalized_observation": true,
+    "numeric_price_locale": "ja-JP",
+    "numeric_price_unit": "JPY",
+    "one_typed_value": true,
+    "product_fact": false,
+    "readiness": "NOT_READY",
+    "subject_type": "OFFER"
+  },
+  "formal_evidence": {
+    "TST-005": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-007": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-008_postgresql": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  },
+  "job_contract": {
+    "enqueue_capability": false,
+    "idempotency_key": "source_snapshot_id+extractor_version",
+    "job_type": "evidence.extract_facts.v1",
+    "queue": "quality",
+    "subject_hints": []
+  },
+  "local_implementation_status": "LOCAL_CODE_COMPLETE",
+  "production_authority": "NONE",
+  "recorded_synthetic_fixture_report": {
+    "activation": false,
+    "commit_faults": [
+      "NONE",
+      "KNOWN_BEFORE_COMMIT",
+      "UNKNOWN_BEFORE_COMMIT",
+      "UNKNOWN_AFTER_COMMIT"
+    ],
+    "contains_credentials": false,
+    "contains_provider_text": false,
+    "contains_raw_or_affiliate_url": false,
+    "expected_report": {
+      "ai_action_count": 0,
+      "confidence": "1.0000",
+      "confidence_basis": "EXACT_STRUCTURAL_EXTRACTION_NOT_TRUTH_ATTESTATION",
+      "event_count": 1,
+      "external_action_count": 0,
+      "fact_count": 6,
+      "fact_kind": "ASSERTED",
+      "fact_predicates": [
+        "PRICE_JPY",
+        "AVAILABILITY_PROVIDER_FLAG",
+        "POSTAGE_INCLUDED_PROVIDER_FLAG"
+      ],
+      "identity_status": "HUMAN_REVIEW",
+      "provider_action_count": 0,
+      "publication_action_count": 0,
+      "publication_authority": "NONE",
+      "readiness": "NOT_READY",
+      "subject_type": "OFFER",
+      "truth_attestation": "NOT_ATTESTED",
+      "validation_count": 6
+    },
+    "metamorphic_cases": [
+      "PERMUTATION",
+      "DUPLICATE",
+      "OUT_OF_ORDER",
+      "UNICODE_PROVIDER_TEXT",
+      "TIME_MISMATCH",
+      "UNIT_MISMATCH",
+      "LARGE_VALUE",
+      "IDEMPOTENT_REPLAY",
+      "RESTART",
+      "CONCURRENCY",
+      "TAMPER",
+      "MALFORMED_SCHEMA",
+      "COMMIT_AMBIGUITY",
+      "DEPENDENCY_SPOOFING",
+      "ACTION_COUNT_TYPE_SPOOFING",
+      "DENIED_NETWORK"
+    ],
+    "operational_default": false,
+    "recorded_synthetic": true,
+    "schema_version": "2.0.0",
+    "source": {
+      "artifact_story": "ST-0601",
+      "ignored_observations_per_offer": 1,
+      "normalization_story": "ST-0503",
+      "offer_count": 2,
+      "source_confidence": null,
+      "source_confidence_status": "SOURCE_ABSENT",
+      "structural_observations_per_offer": 3
+    },
+    "story_id": "ST-0602"
+  },
+  "schema_version": "2.0.0",
+  "source_boundary": {
+    "ai_or_model_capability": false,
+    "artifact_readback_exact_type_required": true,
+    "artifact_record_receipt_request_page_version_logical_key_time_and_raw_hash_revalidated": true,
+    "browser_or_tool_capability": false,
+    "external_actions": 0,
+    "manual_review_decision_capability": false,
+    "normalization_exact_type_required": true,
+    "provider_or_network_capability": false,
+    "recorded_local_only": true,
+    "snapshot_batch_event_version_chain_and_time_revalidated": true
+  },
+  "story_id": "ST-0602"
+}
