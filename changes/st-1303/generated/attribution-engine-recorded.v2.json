@@ -19,7 +19,7 @@
     "source_artifacts": [
       {
         "bytes": 5727,
-        "sha256": "84c8f1e982c9cd48950419834c238f7372c8a0c6007d5cb288c64245c82d497c",
+        "sha256": "417919e2c4552b8e1e6e3fef18f4daccfa0cf44d13803db62d474fe154fb574b",
         "uri": "repo://changes/st-1303/contracts/attribution-engine-runtime.v2.yaml"
       },
       {
@@ -44,7 +44,7 @@
       },
       {
         "bytes": 24396,
-        "sha256": "cbbd729d41f91f77807f03b1f64d34361eec9eb4d57e9d25423741c3ab12e9ea",
+        "sha256": "508bd593b24fd9dca3d0e1119ae26f0d7e6d49d85c36a7c6818adaf8a9612f14",
         "uri": "repo://scripts/build_st1303_attribution_engine.py"
       },
       {
@@ -131,7 +131,7 @@
       },
       {
         "name": "st1202_runtime",
-        "sha256": "a561ba3ec7e7851d0cbdbfb357bf388801b36ae8a28e7f46969ba201079b761f",
+        "sha256": "409472d46de8df3b30d6de13dcde49bfb13149c1dd6b208c10ad40741f441a25",
         "uri": "repo://changes/st-1202/runtime-manifest.v2.yaml"
       },
       {

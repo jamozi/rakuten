@@ -49,8 +49,8 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-1303/contracts/attribution-engine-reference-plan.v1.yaml",
-    "source_contract_sha256": "71cc3c93bedae7d73fa6a81009644f6bc18e2886e15b99c474f1dbfc15c7875e",
-    "source_contract_model_sha256": "f9f7eb06596da150cb0f34ea189261bdf95e608c6883881c8b6088978e1eec45",
+    "source_contract_sha256": "f57848109939eb1a1df191b031ea12cb91bd3c029f97472af53dd923bfbc4488",
+    "source_contract_model_sha256": "0c429d4afdc2e33e27e28398614893f2f701cfe477096071b71e22c107a56a66",
     "generated_by": "repo://scripts/build_st1303_attribution_engine_reference_plan.py",
     "generation_command": "/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --frozen --offline --no-cache --no-sync --no-env-file python scripts/build_st1303_attribution_engine_reference_plan.py",
     "implementation_helper": {
@@ -61,13 +61,13 @@
   "dependency_bindings": {
     "st1202": {
       "story_id": "ST-1202",
-      "feature_commit": "9b67e60482ce6ab597559927ffbe5bbecacff902",
-      "artifact_binding_commit": "9b67e60482ce6ab597559927ffbe5bbecacff902",
+      "feature_commit": "af7c63685fdfb5042fc0e5cfa9de22b08262fba8",
+      "artifact_binding_commit": "54a6d21169f70a0093d8b10a3c9508d9a332c234",
       "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
       "artifacts": {
         "changes/st-1202/README.md": "5ba96d4dd41115e3af0bc37703eb011defaff9eb681422093d126bf1338a8bba",
-        "packages/web-ui/src/public-event-instrumentation.ts": "3d5e96e34383349dbc106d370e18c21a7c31c2a4fe795446a8932e981da0ff39",
-        "packages/web-ui/src/index.ts": "5298f70c3697e713f73eeb31ac4972b01e854ee34002700c4509e96d9b20cd79",
+        "packages/web-ui/src/public-event-instrumentation.ts": "9a8f6e1e73bf1711c179d130bb1d3f8efbd766a4c0252bc1d9143617aa89944e",
+        "packages/web-ui/src/index.ts": "527efe6b033da86de0b6dd05d6e74eb1711bee83e34fe3d5d6477f125aa8f22d",
         "tests/st1202/public-event-instrumentation-contract.test.ts": "f19a47768d62e0cef8da208f6f20e8ac2806a1f1c6d3552e311ff721c982df6b",
         "tests/st1202/public-event-instrumentation-model.test.ts": "be590bbb18e0af6012b440fc9a25e1d208f0f00fb875a5a08141330c4f674d9c",
         "tests/st1202/public-event-instrumentation-boundaries.test.ts": "2c20d25c12bf61d52768fd176ea5f27206e6e9d1d3099bdd037f02b09abde922",
@@ -100,15 +100,15 @@
     },
     "st1302": {
       "story_id": "ST-1302",
-      "feature_commit": "8bee74745841c7ccd80fd0c3ad86232ab6bdddf0",
-      "artifact_binding_commit": "dd03226a768c1367da7d7203a59c3d8cd82c74f2",
+      "feature_commit": "96d388761f4e933f06760f3a7e3d3b0f2c12b65c",
+      "artifact_binding_commit": "54a6d21169f70a0093d8b10a3c9508d9a332c234",
       "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
       "artifacts": {
-        "changes/st-1302/README.md": "849012183858a454ee20b504b695202e798d38dfde95704e077abf5709d14218",
-        "changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml": "ed66ab9f24c4a14681710635b2059eac8b315dd684c9e05a87bef223cb844d6e",
-        "changes/st-1302/generated/provider-fact-commit-reference-plan.v1.json": "3e959b5ad35c05df9f5cb9b8a8a4fae9713603ad73d3e89e2d33a7b407478258",
-        "changes/st-1302/manifest.yaml": "5c4e3ece9c4fc111f80d29f3bfd7216fc7695544af8aec8a7b4fcf4f4bfa1b3a",
-        "scripts/build_st1302_provider_fact_commit_reference_plan.py": "d35452eaa715b442ee5921732695675b92be9dc16cd317e060c7198958dafb1a",
+        "changes/st-1302/README.md": "985ea23a3c06ca354f2e2852d24b1d2a037396c7d5472ff501227212c3f5f207",
+        "changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml": "6f4848b121ecdd31b63fda9b41488b2e690d839bb7d4806de1e09039a7418a10",
+        "changes/st-1302/generated/provider-fact-commit-reference-plan.v1.json": "3696e25dc436e669734449ded67699eaf9493ed5275a5fb4032fc17c9b64f4fc",
+        "changes/st-1302/manifest.yaml": "a6c73192f5b3b419ac8e0fffec46e8dfc1978c240a3fb1843949097dc71003ec",
+        "scripts/build_st1302_provider_fact_commit_reference_plan.py": "bc335568dbc774682001fd01cb4057acf3e8444a0dc21fb05bf8614fe987678a",
         "tests/st1302/conftest.py": "2ee8fd7b038097a4457c6886343e0908b88a0b406186bd7f806c1755011875ab",
         "tests/st1302/test_contract.py": "ca2c055f6e155a8bf8ccb8a199a7b4e84daee5f73ef57680d1fdf0196563a955",
         "tests/st1302/test_generation.py": "3eb59e0e5f4a297867b6505e41a92abfdece837812f88437fcdd38055d4c9055",
@@ -188,7 +188,7 @@
     {
       "name": "st0308_persistence_plan",
       "uri": "repo://changes/st-0308/generated/persistence-boundary.reference-plan.v1.json",
-      "sha256": "290a0475fbf9e1996eba989e15344bd9974bb08053ab8def0fd35246b3636305"
+      "sha256": "84a7068faf73ecb134145b31f1646e0af778bae9fd3263efec0498469d869dcc"
     },
     {
       "name": "revenue_row_schema",
