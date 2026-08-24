@@ -1,0 +1,95 @@
+document:
+  id: RAOS-ST1607-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V1
+  schema_version: 1
+  story_id: ST-1607
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  recorded_at: '2026-08-24T00:00:00Z'
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  generated: false
+base:
+  integration_commit_sha: a3ea6d1a1e8621d9ff198c9dea31b0c6f7a768d5
+  integration_commit_sha_type: GIT_SHA1_LOWER_HEX_40
+  isolated_branch: codex/st1607-local-complete-20260824
+  implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
+local_deliverables:
+  classification: LOCAL_BLOCKED_GATE_EVIDENCE_PACK_NON_ATTESTING
+  gate_inventory: 5
+  blocked_gates: 5
+  qualifying_gate_evidence_rows: 0
+  active_blocking_open_decisions: 14
+  formal_tst_032: NOT_EXECUTED
+  external_actions: 0
+snapshot_identity_boundary:
+  local_base_commit_status: RECORDED_PREDECESSOR_CHECKOUT_ONLY
+  local_base_commit_qualifying_evidence: false
+  source_freeze_identifier_type: OPTIONAL_SHA256_LOWER_HEX_64
+  source_freeze_status: ABSENT
+  source_freeze_identifier: null
+  source_freeze_qualifying_evidence: false
+  reviewed_implementation_tree_commit_type: OPTIONAL_GIT_SHA1_LOWER_HEX_40
+  reviewed_implementation_tree_commit_status: ABSENT
+  reviewed_implementation_tree_commit: null
+  reviewed_implementation_tree_commit_qualifying_evidence: false
+authority_boundary:
+  gate_approval_authorized: false
+  status_apply_authorized: false
+  staging_authorized: false
+  publication_authorized: false
+  release_authorized: false
+  production_authorized: false
+canonical_boundary:
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  effective_status_changed: false
+  status_registry_propose_or_apply: NOT_EXECUTED
+verification:
+  focused_st1607: PASS_73_OF_73
+  affected_st0005: PASS_141_OF_141
+  affected_st0006: PASS_50_OF_50
+  affected_st1603: PASS_75_OF_75
+  affected_st1605: PASS_162_OF_162
+  affected_st1606: PASS_143_OF_143
+  affected_predecessor_total: PASS_571_OF_571
+  focused_and_affected_total: PASS_644_OF_644
+  owner_generation: PASS
+  owner_no_write_check: PASS
+  dependency_owner_checks: PASS_ST0005_ST0006_ST1603_ST1605_ST1606
+  parse_and_import: PASS_6_PYTHON_FILES
+  ruff_check_and_format: PASS_6_PYTHON_FILES
+  strict_mypy: PASS_OWNER_GENERATOR_1_FILE
+  focused_secret_scan: PASS_11_FILES_ZERO_FINDINGS
+  canonical_import_verify: PASS_105_IMPORTS_104_CHECKSUMS_103_MANIFEST_ENTRIES
+  workspace_check: PASS_42_DIRECTORIES_ZERO_CHANGED_PATHS
+  git_diff_check: PASS
+debt:
+  introduced_local_debt: []
+  inherited_formal_or_external_limitations:
+    - id: ST1607-LIM-TARGET-SNAPSHOT
+      state: MISSING
+      safe_default: ALL_GATES_BLOCKED
+    - id: ST1607-LIM-OPEN-DECISIONS
+      state: BLOCKED_14_ACTIVE
+      safe_default: ALL_GATES_AND_PRODUCTION_RELEASE_BLOCKED
+    - id: ST1607-LIM-TST-032
+      state: NOT_EXECUTED
+      reason: formal acceptance requires a separately authorized staging snapshot
+    - id: ST1607-LIM-HUMAN-APPROVALS
+      state: MISSING
+      safe_default: NO_GATE_APPROVAL
+formal_and_external_boundaries:
+  formal_tst_026: NOT_EXECUTED
+  formal_tst_028: NOT_EXECUTED
+  formal_tst_029: NOT_EXECUTED
+  formal_tst_031: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  target_source_freeze: NOT_EXECUTED
+  reviewed_implementation_tree: NOT_EXECUTED
+  human_gate_approvals: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  registry_apply: NOT_EXECUTED
+  validated_claim: FORBIDDEN
