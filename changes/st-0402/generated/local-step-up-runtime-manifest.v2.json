@@ -1,0 +1,127 @@
+{
+  "boundary": {
+    "authority": {
+      "browser_mfa": false,
+      "credential_access": false,
+      "critical_command_execution": false,
+      "external_http_activation": false,
+      "live_provider": false,
+      "production": false,
+      "publication": false,
+      "release": false,
+      "role_authorization": false,
+      "staging": false
+    },
+    "open_decision": {
+      "browser_delivery": "UNSELECTED_NOT_DELIVERED",
+      "factor_and_claim_mapping": "UNSELECTED",
+      "id": "OD-010",
+      "production_freshness": "UNSELECTED",
+      "provider_selection": "UNSELECTED",
+      "safe_default": "RECORDED_FACTOR_NEUTRAL_DEVELOPMENT_ONLY_EXTERNAL_MFA_DISABLED",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "verification": {
+      "browser": "NOT_EXECUTED",
+      "formal_tst_012": "NOT_EXECUTED",
+      "formal_tst_022": "NOT_EXECUTED",
+      "formal_tst_026": "NOT_EXECUTED",
+      "hosted_ci": "NOT_EXECUTED",
+      "local_focused": "EXECUTABLE",
+      "production": "NOT_EXECUTED",
+      "release": "NOT_EXECUTED",
+      "staging": "NOT_EXECUTED"
+    }
+  },
+  "generated_artifacts": [
+    {
+      "path": "changes/st-0402/generated/local-step-up-runtime.v2.json",
+      "sha256": "05cfbb0f51c4f88a60e06ab7439e74026c165a010bccfb5978fc84bd1edb36b1"
+    }
+  ],
+  "generation": {
+    "owner": "scripts/build_st0402_local_step_up_runtime.py",
+    "publication": "ATOMIC_FOREIGN_PRESERVING_MULTI_OUTPUT_WITH_ROLLBACK",
+    "python": "CPython 3.14.6"
+  },
+  "source_artifact_count": 19,
+  "source_artifacts": [
+    {
+      "path": "changes/st-0402/contracts/local-step-up-runtime.v2.json",
+      "sha256": "62c057afde754c2aa74226cc3ae6e896e0cfaa5aaf54bdc0b21a54301a462b8e"
+    },
+    {
+      "path": "scripts/build_st0402_local_step_up_runtime.py",
+      "sha256": "cede84f65bc5e2b4dd0352c8abefad4ccee692e5a27366ca565452ae8e933fe9"
+    },
+    {
+      "path": "scripts/secure_generated_publication.py",
+      "sha256": "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e"
+    },
+    {
+      "path": "python/raos/domain/iam/step_up.py",
+      "sha256": "85f8a5a2b0dded9011c54187be7b275620b80a999d9458b3fd1b06c4da8cfad5"
+    },
+    {
+      "path": "python/raos/ports/step_up.py",
+      "sha256": "437cd5ea9d70f90733005fb7eb42048addf2cec33fb37dbff0592c520e9a82f2"
+    },
+    {
+      "path": "python/raos/application/iam/step_up.py",
+      "sha256": "7005bf755d475129e1be1515bfb77d43b9e40e9cc7e7e4b89cb27b0c0b610cd4"
+    },
+    {
+      "path": "python/raos/adapters/development_step_up.py",
+      "sha256": "bfc55e2b952db59972591816c0d85f0fab3d0c8c40e8c6860a54483a59923d5d"
+    },
+    {
+      "path": "python/raos/adapters/recorded_step_up.py",
+      "sha256": "45ea13e6fc5839e5a86d054f371f247ba4631a6d6dacdde9c2dbbd1710da8c75"
+    },
+    {
+      "path": "python/raos/adapters/disabled_admin_mfa_http.py",
+      "sha256": "24b573c4fad4974df6b59af31fec69915ccc3823ccd0b18e74e70871c0362012"
+    },
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "path": "docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml",
+      "sha256": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984"
+    },
+    {
+      "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "path": "docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
+      "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
+    },
+    {
+      "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "path": "changes/st-0308/contracts/persistence-runtime.v2.yaml",
+      "sha256": "8ee74a13fd1232f86887e988cbeb475421f2ed17c6a73257968e62ecc0dc54c7"
+    },
+    {
+      "path": "changes/st-0401/generated/local-auth-runtime.v2.json",
+      "sha256": "a73d66e88779f67f0fdda1e42e76831e6d11c314be336933a0fddb10a89ebbbc"
+    },
+    {
+      "path": "changes/st-0401/generated/local-auth-runtime-manifest.v2.json",
+      "sha256": "8ac73e91ff684d356144c320c36b7c6a0eb69e67d9028fe5bc48d1863e1683cb"
+    }
+  ],
+  "story_id": "ST-0402"
+}

@@ -1,60 +1,79 @@
-# ST-0402 provider-neutral MFA step-up seam
+# ST-0402 durable step-up boundary
 
-Status: `LOCAL_IMPLEMENTATION_CANDIDATE`
+Status: `LOCAL_CODE_COMPLETE`
 
-This Story implements the reversible local portion of the approved ST-0402
-design. It adds an immutable, factor-neutral `StepUpGrant`, an inward verifier
-port, an application guard, and an exact-`ENV-DEV` deterministic source of
-synthetic already-verified grants.
+ST-0402 now has a maximum-safe local challenge-to-grant runtime while the
+real-provider and browser-delivery decisions remain unresolved. The original
+provider-neutral `StepUpGrant` and `StepUpGuard` remain API-compatible.
+The new path adds a closed critical-action registry, exact session/principal/
+action/resource binding, explicit challenge and verification receipt stages,
+and a durable single-use grant lifecycle.
 
-## Implemented safe boundary
+## Implemented local boundary
 
-- A grant is bound to the exact ST-0401 `SessionId` and to the stable issuer
-  and subject of that session's principal.
-- `authenticated_at` and `expires_at` are explicit inputs with strict UTC
-  validation. The guard accepts only `authenticated_at <= now < expires_at`;
-  there is no implicit or production-default freshness lifetime.
-- The guard requires the ST-0401 session first. Unknown, revoked, rotated,
-  idle-expired, and absolute-expired sessions fail before assurance lookup.
-- Missing, rejected, malformed, future, expired, session-mismatched,
-  principal-mismatched, and non-MFA assurance fail with stable sanitized typed
-  errors. Verifier exceptions and rejected values are not retained.
-- The development adapter accepts only exact `RuntimeEnvironment.ENV_DEV`,
-  rechecks that guard on every verification operation, and exposes only
-  explicitly supplied synthetic grants. It performs no I/O.
-- Grant and failure rendering is redacted; generic serialization of a grant is
-  rejected. No provider, factor, credential, challenge, or action-policy data
-  enters the domain object.
+- Every state-changing operation first requires the exact active ST-0401
+  session. A grant is bound to that session, stable issuer and subject,
+  one closed critical action, one required resource type, and one resource ID.
+  ST-0402 never grants role or resource authorization; ST-0403 remains the
+  authorization owner.
+- The action registry is non-configurable and fail-closed. It covers final
+  approval, publication, rollback, both publication and affiliate kill-switch
+  directions, revenue import commit, AI release, Secret management, and
+  break-glass. `final_approve` follows the higher-precedence Security design's
+  stricter step-up requirement.
+- Challenge, synthetic multi-factor verification receipt, and bound grant
+  lifetimes are explicit UTC inputs. Challenge verification, receipt-to-grant
+  conversion, and grant consumption are each single-use. Exact expiry,
+  mismatch, replay, revocation, and unknown-command failures are sanitized.
+- `RecordedSqliteStepUpRepository` is exact-`ENV-DEV` and accepts one
+  absolute owner-private directory. Its fixed SQLite database applies
+  compare-and-set transitions, per-row integrity hashes, relationship
+  validation, a command journal, and a SHA-256-linked append-only audit. Each
+  lifecycle mutation, command record, and audit event commits atomically.
+- Before-commit failure proves rollback; after-commit failure returns
+  `STORAGE_COMMIT_UNKNOWN`. Read-only command recovery resolves the latter
+  without blind retry. Restart, tamper, concurrency, and duplicate-command
+  behavior are covered locally.
+- `DisabledAdminMfaHttpAdapter.dispatch_external` always returns the same
+  sanitized RFC 9457 503 refusal without inspecting input. No framework route
+  is registered. The separate recorded harness accepts exact POST JSON only at
+  `http://127.0.0.1:<unprivileged-port>` and the fixed internal target.
+  Handles remain in a non-serializable in-process result; Cookie, Bearer,
+  browser storage, and response delivery are unselected and absent.
 
-## Local commands
-
-After the locked Python environment has already been hydrated, run ST-0401
-and ST-0402 in separate processes. The direct ST-0402 commands use the pinned
-uv offline, no-cache, and no-sync:
+The deterministic owner contract is
+`changes/st-0402/contracts/local-step-up-runtime.v2.json`. Generate and verify
+its runtime and provenance manifest with:
 
 ```bash
-make oidc-test UV=/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv
-
-/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv --config-file uv.toml \
-  run --locked --offline --no-cache --no-sync --no-env-file \
-  --no-python-downloads pytest -p no:cacheprovider -q tests/st0402
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. \
+  .venv/bin/python scripts/build_st0402_local_step_up_runtime.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. \
+  .venv/bin/python scripts/build_st0402_local_step_up_runtime.py --check
 ```
 
-Focused Ruff lint/format and strict mypy use the same uv prefix and only these
-four source modules plus `tests/st0402`. Direct imports are intentional; shared
-package exports and Make routing are deferred to Wave integration.
+Run the isolated Story suite with:
 
-## Evidence boundary and deferred work
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. \
+  .venv/bin/pytest -p no:cacheprovider -q tests/st0402
+```
 
-This local candidate does not implement an MFA challenge, OTP, TOTP,
-WebAuthn, one-time proof, provider claim mapping, a production freshness TTL,
-HTTP/cookie/bearer/browser transport, middleware, Problem Details,
-`/admin/mfa`, critical-action mapping, persistence, migration, durable audit,
-real provider, Secret resolution, or public/live activation. It does not read
-or modify the optional generated/OpenAPI `mfa_satisfied` property.
+## Debt and authority boundary
 
-Local pytest/static results are not formal `TST-012`, `TST-022`, or `TST-026`
-evidence and do not represent hosted CI, browser/provider runtime, staging,
-publication, release, deployment, or Production readiness. Those boundaries
-are recorded as `DEBT-W1-003` through `DEBT-W1-006` in the implementation-first
-ledger.
+The maximum-safe local portions of `DEBT-W1-004` and `DEBT-W1-005` are
+closed: a disabled external RFC 9457 projection, strict recorded loopback
+integration, durable lifecycle, atomic audit, recovery, CAS, and closed action
+mapping are implemented. Cookie/Bearer and browser delivery, middleware
+registration, OpenAPI/client generation, and any external activation remain
+outside this local boundary.
+
+`DEBT-W1-003` remains externally blocked by `OD-010`: no real MFA factor,
+provider claim mapping (`amr`/`acr`/`auth_time`), credential lifecycle, or
+Production freshness value was inferred. `DEBT-W1-006` also remains external:
+formal TST-012/TST-022/TST-026, browser, hosted CI, staging, release, and
+Production evidence are not executed.
+
+This Story grants no credential, provider, external HTTP, browser, critical
+command, staging, publication, release, or Production authority. Local tests
+must not be promoted to formal or operational evidence.

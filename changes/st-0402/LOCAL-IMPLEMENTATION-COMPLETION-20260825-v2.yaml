@@ -1,0 +1,157 @@
+document:
+  id: RAOS-ST0402-LOCAL-IMPLEMENTATION-COMPLETION-002
+  story_id: ST-0402
+  evidence_class: LOCAL_IMPLEMENTATION_ONLY
+  proposed_status: LOCAL_CODE_COMPLETE
+  base_sha: 90658a84319cc2ca42785693d45218adfd2e4648
+  branch: codex/st0402-local-complete-20260825
+  recorded_at: '2026-08-25T01:21:47+09:00'
+
+scope:
+  - provider-neutral step-up Domain, inward ports, and active-session application lifecycle
+  - closed critical-action and resource registry without role authorization
+  - exact session, principal, action, resource, expiry, replay, and revocation binding
+  - owner-private durable challenge, receipt, grant, command journal, CAS, and append-only audit
+  - disabled external Admin MFA projection with strict loopback-only recorded harness
+  - deterministic owner contract, runtime artifact, and provenance manifest
+
+local_completion:
+  legacy_guard_compatibility: PRESERVED
+  critical_action_registry: IMPLEMENTED_CLOSED_NONCONFIGURABLE
+  final_approval_policy_resolution: SAFER_HIGHER_PRECEDENCE_SECURITY_DESIGN_UNION
+  role_authorization: NOT_GRANTED_OWNED_BY_ST0403
+  lifecycle: IMPLEMENTED_CHALLENGE_VERIFICATION_RECEIPT_SINGLE_USE_GRANT
+  exact_binding: IMPLEMENTED_SESSION_ISSUER_SUBJECT_ACTION_RESOURCE_TYPE_RESOURCE_ID
+  expiry_replay_revocation: IMPLEMENTED_FAIL_CLOSED
+  durable_repository: IMPLEMENTED_RECORDED_ENV_DEV_ONLY
+  transaction_atomicity: IMPLEMENTED_LIFECYCLE_COMMAND_AND_AUDIT_ONE_TRANSACTION
+  compare_and_set: IMPLEMENTED
+  audit: IMPLEMENTED_APPEND_ONLY_SHA256_HASH_CHAIN
+  crash_recovery:
+    before_commit: KNOWN_ROLLBACK_NO_STATE_OR_AUDIT_CHANGE
+    after_commit: STORAGE_COMMIT_UNKNOWN_READ_ONLY_COMMAND_RECOVERY_NO_RETRY
+  external_http: UNCONDITIONAL_RFC9457_503_DISABLED
+  recorded_http: EXACT_IPV4_LOOPBACK_FIXED_INTERNAL_TARGET_ONLY
+  token_delivery: UNSELECTED_NOT_DELIVERED
+  network_provider_credentials: ABSENT
+
+debt:
+  - id: DEBT-W1-003
+    status: EXTERNAL_BLOCKED_UNCHANGED
+    reason: OD-010 does not select a real factor/provider, claim mapping, credential lifecycle, or Production freshness
+  - id: DEBT-W1-004
+    status: LOCAL_IMPLEMENTATION_GAP_CLOSED
+    closed_components:
+      - disabled external /admin/mfa projection
+      - sanitized RFC 9457 Problem Details
+      - exact loopback-only recorded request and response boundary
+      - no lifecycle handle, Cookie, Bearer, Location, or browser-storage delivery
+    external_tail:
+      - browser and middleware registration
+      - Cookie versus Bearer decision
+      - OpenAPI and generated-client integration
+      - external route activation
+  - id: DEBT-W1-005
+    status: LOCAL_IMPLEMENTATION_GAP_CLOSED
+    closed_components:
+      - durable challenge, verification receipt, and grant lifecycle
+      - exact action and resource mapping
+      - command idempotency and conflict rejection
+      - compare-and-set replay fence
+      - transactional append-only audit and relationship integrity
+      - before-commit rollback and after-commit ambiguity recovery
+    migration_tail: NO_PRODUCTION_MIGRATION_AUTHORITY_REQUESTED_OR_GRANTED
+  - id: DEBT-W1-006
+    status: EXTERNAL_BLOCKED_UNCHANGED
+    reason: formal, browser, hosted, staging, release, and Production evidence remain outside local authority
+  - id: ST0402-V2-INTRODUCED-DEBT
+    status: NONE
+
+checks:
+  import:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python -c import_ST0402_modules
+    result: PASS
+    observed: ST0402_IMPORT_OK
+  owner_generation:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python scripts/build_st0402_local_step_up_runtime.py
+    result: PASS
+  owner_no_write_check:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python scripts/build_st0402_local_step_up_runtime.py --check
+    result: PASS
+  focused_pytest:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/pytest -p no:cacheprovider -q tests/st0402
+    result: PASS
+    observed: 61 passed
+  predecessor_regression:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/pytest -p no:cacheprovider -q tests/st0401
+    result: PASS
+    observed: 64 passed
+  affected_regression_st1405:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/pytest -p no:cacheprovider -q tests/st1405
+    result: PASS
+    observed: 82 passed
+  affected_regression_st0902:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/pytest -p no:cacheprovider -q tests/st0902
+    result: INHERITED_OWNER_HASH_FAILURE
+    observed: 28 passed and 61 failed at HELPER_HASH_MISMATCH before ST-0402 behavior
+    exact_mismatch:
+      helper: scripts/build_st1505_staging_deployment.py
+      expected_sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+      base_and_current_sha256: cd22f5fcf16cfd135b1ecac64ea65c0f8b9d86b60d812d0ab987ff6bc3a4f42d
+    owner_artifact: scripts/build_st0902_final_approval_reference_plan.py
+    introduced_by: INHERITED_AT_EXACT_BASE_SHA_NOT_ST0402
+    closure_owner: ST0902_ST1505_INTEGRATION_OWNER
+    safe_impact: ST0402 source does not modify either mismatched file; ST1405 direct guard compatibility is green
+  network_syscalls:
+    method: strace network-only and signal-free trace over the complete ST0402 suite
+    result: PASS
+    observed: 0 network syscalls across 61 tests
+  ruff_check:
+    result: PASS
+  ruff_format_check:
+    result: PASS
+  strict_mypy:
+    result: PASS
+    observed: Success; no issues found in 12 source files
+  strict_pyright:
+    runtime: Node 24.18.1 with repository-locked Pyright
+    result: PASS
+    observed: 0 errors, 0 warnings, 0 informations over six runtime modules and owner generator
+  focused_secret_scan:
+    result: PASS
+    observed: 0 findings across all ST0402 changed files
+  full_worktree_secret_scan:
+    command: python3 -I scripts/scan_secrets.py --worktree
+    result: OPERATIONAL_ERROR_INHERITED
+    observed: unsafe-git-metadata for isolated worktree indirection
+    impact: does not weaken or replace the focused descriptor-relative scan
+  git_diff_check:
+    result: PASS
+  owned_path_review:
+    result: PASS
+    observed: no shared Makefile, root README, status registry, other Story, or .playwright-cli changes
+
+generated_artifacts:
+  contract:
+    path: changes/st-0402/contracts/local-step-up-runtime.v2.json
+    sha256: 62c057afde754c2aa74226cc3ae6e896e0cfaa5aaf54bdc0b21a54301a462b8e
+  runtime:
+    path: changes/st-0402/generated/local-step-up-runtime.v2.json
+    sha256: 05cfbb0f51c4f88a60e06ab7439e74026c165a010bccfb5978fc84bd1edb36b1
+  manifest:
+    path: changes/st-0402/generated/local-step-up-runtime-manifest.v2.json
+    sha256: 9c009dad4777d5f15399fe883f5bf32335af36c34a63172213a5c1a43d25e42d
+
+authority:
+  canonical_apply: NOT_EXECUTED
+  formal_tst_012: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  credential_access: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
