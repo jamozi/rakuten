@@ -31,13 +31,22 @@ elevated by this completion.
 - The absolute owner-private root is checked through no-follow directory file
   descriptors, must be owned by the process and mode `0700`, and contains one
   regular, owner-owned, single-link SQLite database at mode `0600`.
+- A database is initialized only when this repository creates it with
+  `O_CREAT|O_EXCL`. Pre-existing empty, partial, foreign-schema, symlinked,
+  hard-linked, and special files are never adopted or initialized.
+- The root and database device/inode pairs are fixed for the repository
+  lifetime. A process-shared monotonic prefix anchor detects same-inode
+  snapshot rollback and path replacement before a later operation can proceed.
 - Each command runs in `BEGIN IMMEDIATE`, stores bounded bytes as a SQLite BLOB,
   and binds exact descriptor and authorization digests. Versioned projection
   updates use compare-and-set.
-- Command idempotency, intake-id collision rejection, exact SHA-256 duplicate
-  indexing, append-only result rows, and an append-only global event hash chain
-  survive restart. Schema shape, row hashes, result projections, the hash chain,
-  and SQLite integrity are checked on every transaction.
+- All application tables are `STRICT`; the application ID, schema version,
+  foreign keys, tables, indexes, and triggers are an exact closed inventory.
+  Command idempotency, intake-id collision rejection, exact SHA-256 duplicate
+  indexing, append-only result rows, and separate append-only lifecycle,
+  command, and audit hash chains survive restart. Canonical ASCII JSON, every
+  row hash, every complete chain and its lifecycle semantics, result projection,
+  foreign keys, and SQLite integrity are checked on every transaction.
 - Before-commit and after-commit ambiguity are closed and recoverable without a
   blind retry. Recovered requests must match their exact request digest.
 - The public port exposes begin/recover/append/seal/accept/reject transaction

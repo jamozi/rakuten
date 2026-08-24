@@ -1,0 +1,110 @@
+document:
+  id: RAOS-ST0406-LOCAL-IMPLEMENTATION-COMPLETION-003
+  story_id: ST-0406
+  evidence_class: LOCAL_IMPLEMENTATION_ONLY
+  proposed_status: LOCAL_CODE_COMPLETE
+  canonical_status: UNCHANGED
+  base_sha: a5803a44dd3d7259b2bf6c98635681020ed7e17f
+  branch: codex/st0406-sqlite-hardening-20260825
+  recorded_at: '2026-08-25T08:24:36+09:00'
+
+scope:
+  - created-only O_EXCL owner-private SQLite quarantine with no pre-existing file adoption
+  - exact STRICT schema, application identity, foreign keys, indexes and triggers
+  - root and database inode identity plus process-monotonic history prefix anchors
+  - append-only canonical lifecycle, command and audit chains with full semantic verification
+  - deterministic rollback, replacement, idempotency and commit-ambiguity recovery refusal
+  - recorded-only collaborator isolation with zero external authority
+
+local_completion:
+  runtime_v2: LOCAL_CODE_COMPLETE_MAXIMUM_SAFE_RECORDED
+  storage:
+    database_creation: CREATED_ONLY_O_EXCL_NO_EMPTY_ADOPTION
+    rejected_preexisting_files:
+      - EMPTY
+      - PARTIAL
+      - FOREIGN_SCHEMA
+      - SYMLINK
+      - HARDLINK
+      - SPECIAL
+    root_mode: '0700'
+    database_mode: '0600'
+    database_link_count: 1
+    application_id: 1380400602
+    schema_version: 2
+    strict_tables: true
+    foreign_keys: EXACT_AND_ENFORCED
+    schema_index_trigger_inventory: EXACT
+    root_and_database_inode_anchor: IMPLEMENTED
+    process_monotonic_prefix_anchor: IMPLEMENTED
+    same_inode_snapshot_rollback: FAIL_CLOSED
+    path_file_replacement: FAIL_CLOSED
+  integrity:
+    lifecycle_chain: APPEND_ONLY_CANONICAL_SHA256
+    command_chain: APPEND_ONLY_CANONICAL_SHA256
+    audit_chain: APPEND_ONLY_CANONICAL_SHA256
+    canonical_encoding: ASCII_JSON_SORTED_KEYS_NO_WHITESPACE
+    full_chain_semantic_reconstruction: IMPLEMENTED
+    row_projection_result_duplicate_binding: IMPLEMENTED
+    compare_and_set: IMPLEMENTED
+  authority:
+    external_action_count: 0
+    provider: false
+    credential: false
+    retention_or_deletion: false
+    upload_or_export_api: false
+    publication: false
+    staging: false
+    release: false
+    production: false
+
+checks:
+  focused_pytest:
+    result: PASS
+    observed: 92 passed
+  predecessor_and_downstream_regressions:
+    result: PASS_WITH_INHERITED_PREDECESSOR_PROVENANCE_DRIFT
+    observed:
+      ST-0202: 329 passed
+      ST-0403: 96 passed and 3 inherited owner-generation failures
+      ST-0808: 33 passed
+      ST-1301: 58 passed
+    inherited_st0403_failure: source hash drift for newly changed ST-0402 step_up_contract at exact base
+    st0406_behavior_regression: NONE
+  owner_generation_and_no_write_check:
+    result: PASS
+  denied_network:
+    result: PASS
+    observed: 92 passed in an isolated network and process namespace
+  static_type_format_compile_secret_scope:
+    result: PASS
+    observed:
+      ruff: PASS
+      ruff_format: PASS
+      strict_mypy_runtime_and_tests: 10 source files, no issues
+      strict_mypy_generator: 1 source file, no issues
+      pinned_pyright: 0 errors, 0 warnings, 0 informations
+      compile_import: ST0406_HARDENED_IMPORT_OK
+      focused_secret_scan: 9 files, 0 findings
+      git_diff_check: PASS
+
+debt:
+  introduced: NONE
+  external_blocked_unchanged:
+    - OD-014 retention decision
+    - real object storage and native malware scanner
+    - hosted CI and Security/Privacy owner review
+    - formal TST-014, TST-026 and TST-031 evidence
+    - staging, publication, release and Production evidence
+
+authority:
+  canonical_apply: NOT_EXECUTED
+  formal_tst_014: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  formal_tst_031: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  credential_access: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

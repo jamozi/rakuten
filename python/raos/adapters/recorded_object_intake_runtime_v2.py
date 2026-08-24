@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+from dataclasses import dataclass
 import gzip
 import hashlib
 import io
@@ -13,7 +14,7 @@ import re
 import sqlite3
 import stat
 import tarfile
-from threading import Lock
+from threading import Lock, RLock
 from typing import Mapping, NoReturn, cast, final
 from uuid import UUID
 import zipfile
@@ -47,6 +48,7 @@ from raos.domain.ops.object_intake_runtime_v2 import (
 
 
 _DATABASE_NAME = "secure-object-intake-runtime-v2.sqlite3"
+_APPLICATION_ID = 1_380_400_602
 _SCHEMA_VERSION = 2
 _GENESIS = "0" * 64
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
@@ -59,22 +61,73 @@ _FINAL_STATES = frozenset(
 )
 
 
+_SCHEMA_TABLE_NAMES = frozenset(
+    {
+        "st0406_runtime_metadata",
+        "st0406_quarantine",
+        "st0406_quarantine_event",
+        "st0406_intake_command",
+        "st0406_intake_audit",
+        "st0406_duplicate_index",
+        "st0406_intake_result",
+    }
+)
+_SCHEMA_INDEX_TABLES: Mapping[str, str] = {
+    "st0406_event_command_version": "st0406_quarantine_event",
+    "st0406_command_command_version": "st0406_intake_command",
+    "st0406_audit_command_sequence": "st0406_intake_audit",
+}
+_SCHEMA_IMPLICIT_INDEX_TABLES: Mapping[str, str] = {
+    "sqlite_autoindex_st0406_duplicate_index_1": "st0406_duplicate_index",
+    "sqlite_autoindex_st0406_duplicate_index_2": "st0406_duplicate_index",
+    "sqlite_autoindex_st0406_duplicate_index_3": "st0406_duplicate_index",
+    "sqlite_autoindex_st0406_intake_audit_1": "st0406_intake_audit",
+    "sqlite_autoindex_st0406_intake_audit_2": "st0406_intake_audit",
+    "sqlite_autoindex_st0406_intake_command_1": "st0406_intake_command",
+    "sqlite_autoindex_st0406_intake_command_2": "st0406_intake_command",
+    "sqlite_autoindex_st0406_intake_result_1": "st0406_intake_result",
+    "sqlite_autoindex_st0406_quarantine_1": "st0406_quarantine",
+    "sqlite_autoindex_st0406_quarantine_2": "st0406_quarantine",
+    "sqlite_autoindex_st0406_quarantine_3": "st0406_quarantine",
+    "sqlite_autoindex_st0406_quarantine_event_1": "st0406_quarantine_event",
+}
+_SCHEMA_TRIGGER_TABLES: Mapping[str, str] = {
+    "st0406_metadata_no_delete": "st0406_runtime_metadata",
+    "st0406_metadata_guard_update": "st0406_runtime_metadata",
+    "st0406_quarantine_no_delete": "st0406_quarantine",
+    "st0406_event_no_update": "st0406_quarantine_event",
+    "st0406_event_no_delete": "st0406_quarantine_event",
+    "st0406_command_no_update": "st0406_intake_command",
+    "st0406_command_no_delete": "st0406_intake_command",
+    "st0406_audit_no_update": "st0406_intake_audit",
+    "st0406_audit_no_delete": "st0406_intake_audit",
+    "st0406_duplicate_no_update": "st0406_duplicate_index",
+    "st0406_duplicate_no_delete": "st0406_duplicate_index",
+    "st0406_result_no_update": "st0406_intake_result",
+    "st0406_result_no_delete": "st0406_intake_result",
+}
+
 _SCHEMA_OBJECTS: Mapping[str, str] = {
     "st0406_runtime_metadata": """
         CREATE TABLE st0406_runtime_metadata(
           singleton INTEGER PRIMARY KEY CHECK(singleton=1),
-          schema_version INTEGER NOT NULL,
+          schema_version INTEGER NOT NULL CHECK(schema_version=2),
+          schema_binding TEXT NOT NULL CHECK(length(schema_binding)=64 AND schema_binding NOT GLOB '*[^0-9a-f]*'),
           event_count INTEGER NOT NULL CHECK(event_count>=0),
-          event_head TEXT NOT NULL,
-          record_sha256 TEXT NOT NULL
-        )
+          event_head TEXT NOT NULL CHECK(length(event_head)=64 AND event_head NOT GLOB '*[^0-9a-f]*'),
+          command_count INTEGER NOT NULL CHECK(command_count>=0),
+          command_head TEXT NOT NULL CHECK(length(command_head)=64 AND command_head NOT GLOB '*[^0-9a-f]*'),
+          audit_count INTEGER NOT NULL CHECK(audit_count>=0),
+          audit_head TEXT NOT NULL CHECK(length(audit_head)=64 AND audit_head NOT GLOB '*[^0-9a-f]*'),
+          record_sha256 TEXT NOT NULL CHECK(length(record_sha256)=64 AND record_sha256 NOT GLOB '*[^0-9a-f]*')
+        ) STRICT
     """,
     "st0406_quarantine": """
         CREATE TABLE st0406_quarantine(
-          command_id TEXT PRIMARY KEY,
-          request_digest TEXT NOT NULL,
-          descriptor_digest TEXT NOT NULL,
-          authorization_digest TEXT NOT NULL,
+          command_id TEXT PRIMARY KEY CHECK(length(command_id) BETWEEN 1 AND 128),
+          request_digest TEXT NOT NULL CHECK(length(request_digest)=64 AND request_digest NOT GLOB '*[^0-9a-f]*'),
+          descriptor_digest TEXT NOT NULL CHECK(length(descriptor_digest)=64 AND descriptor_digest NOT GLOB '*[^0-9a-f]*'),
+          authorization_digest TEXT NOT NULL CHECK(length(authorization_digest)=64 AND authorization_digest NOT GLOB '*[^0-9a-f]*'),
           intake_id TEXT NOT NULL UNIQUE,
           quarantine_id TEXT NOT NULL UNIQUE,
           site_id TEXT NOT NULL,
@@ -83,50 +136,114 @@ _SCHEMA_OBJECTS: Mapping[str, str] = {
           leaf_name TEXT NOT NULL,
           media_type TEXT NOT NULL,
           declared_size INTEGER NOT NULL CHECK(declared_size>0),
-          declared_sha256 TEXT NOT NULL,
-          privacy_class TEXT NOT NULL,
-          state TEXT NOT NULL,
+          declared_sha256 TEXT NOT NULL CHECK(length(declared_sha256)=64 AND declared_sha256 NOT GLOB '*[^0-9a-f]*'),
+          privacy_class TEXT NOT NULL CHECK(privacy_class IN ('SYNTHETIC','APPROVED_ANONYMIZED')),
+          state TEXT NOT NULL CHECK(state IN ('OPEN','SEALED','CLEAN_QUARANTINED','REJECTED')),
           version INTEGER NOT NULL CHECK(version>0),
           received_bytes INTEGER NOT NULL CHECK(received_bytes>=0),
           chunk_count INTEGER NOT NULL CHECK(chunk_count>=0),
           content BLOB NOT NULL,
-          sealed_sha256 TEXT,
+          sealed_sha256 TEXT CHECK(sealed_sha256 IS NULL OR (length(sealed_sha256)=64 AND sealed_sha256 NOT GLOB '*[^0-9a-f]*')),
           failure_code TEXT,
           result_document TEXT,
-          record_sha256 TEXT NOT NULL
-        )
+          record_sha256 TEXT NOT NULL CHECK(length(record_sha256)=64 AND record_sha256 NOT GLOB '*[^0-9a-f]*')
+        ) STRICT
     """,
     "st0406_quarantine_event": """
         CREATE TABLE st0406_quarantine_event(
           sequence INTEGER PRIMARY KEY,
-          command_id TEXT NOT NULL REFERENCES st0406_quarantine(command_id),
+          command_id TEXT NOT NULL REFERENCES st0406_quarantine(command_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
           version INTEGER NOT NULL CHECK(version>0),
-          event_kind TEXT NOT NULL,
+          event_kind TEXT NOT NULL CHECK(event_kind IN ('OPEN','APPEND','SEAL','ACCEPT','REJECT')),
           event_document TEXT NOT NULL,
-          previous_digest TEXT NOT NULL,
-          digest TEXT NOT NULL UNIQUE,
-          record_sha256 TEXT NOT NULL
-        )
+          previous_digest TEXT NOT NULL CHECK(length(previous_digest)=64 AND previous_digest NOT GLOB '*[^0-9a-f]*'),
+          digest TEXT NOT NULL UNIQUE CHECK(length(digest)=64 AND digest NOT GLOB '*[^0-9a-f]*'),
+          record_sha256 TEXT NOT NULL CHECK(length(record_sha256)=64 AND record_sha256 NOT GLOB '*[^0-9a-f]*')
+        ) STRICT
+    """,
+    "st0406_intake_command": """
+        CREATE TABLE st0406_intake_command(
+          sequence INTEGER PRIMARY KEY CHECK(sequence>0),
+          lifecycle_sequence INTEGER NOT NULL UNIQUE REFERENCES st0406_quarantine_event(sequence) ON UPDATE RESTRICT ON DELETE RESTRICT,
+          command_id TEXT NOT NULL REFERENCES st0406_quarantine(command_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+          version INTEGER NOT NULL CHECK(version>0),
+          operation TEXT NOT NULL CHECK(operation IN ('OPEN','APPEND','SEAL','ACCEPT','REJECT')),
+          intent_document TEXT NOT NULL,
+          result_document TEXT NOT NULL,
+          previous_digest TEXT NOT NULL CHECK(length(previous_digest)=64 AND previous_digest NOT GLOB '*[^0-9a-f]*'),
+          digest TEXT NOT NULL UNIQUE CHECK(length(digest)=64 AND digest NOT GLOB '*[^0-9a-f]*'),
+          record_sha256 TEXT NOT NULL CHECK(length(record_sha256)=64 AND record_sha256 NOT GLOB '*[^0-9a-f]*')
+        ) STRICT
+    """,
+    "st0406_intake_audit": """
+        CREATE TABLE st0406_intake_audit(
+          sequence INTEGER PRIMARY KEY CHECK(sequence>0),
+          command_sequence INTEGER NOT NULL UNIQUE REFERENCES st0406_intake_command(sequence) ON UPDATE RESTRICT ON DELETE RESTRICT,
+          command_id TEXT NOT NULL REFERENCES st0406_quarantine(command_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+          action TEXT NOT NULL,
+          outcome TEXT NOT NULL CHECK(outcome='RECORDED'),
+          binding_digest TEXT NOT NULL CHECK(length(binding_digest)=64 AND binding_digest NOT GLOB '*[^0-9a-f]*'),
+          previous_digest TEXT NOT NULL CHECK(length(previous_digest)=64 AND previous_digest NOT GLOB '*[^0-9a-f]*'),
+          digest TEXT NOT NULL UNIQUE CHECK(length(digest)=64 AND digest NOT GLOB '*[^0-9a-f]*'),
+          record_sha256 TEXT NOT NULL CHECK(length(record_sha256)=64 AND record_sha256 NOT GLOB '*[^0-9a-f]*')
+        ) STRICT
     """,
     "st0406_duplicate_index": """
         CREATE TABLE st0406_duplicate_index(
           sha256 TEXT PRIMARY KEY,
           intake_id TEXT NOT NULL UNIQUE,
-          command_id TEXT NOT NULL UNIQUE REFERENCES st0406_quarantine(command_id),
-          record_sha256 TEXT NOT NULL
-        )
+          command_id TEXT NOT NULL UNIQUE REFERENCES st0406_quarantine(command_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+          record_sha256 TEXT NOT NULL CHECK(length(record_sha256)=64 AND record_sha256 NOT GLOB '*[^0-9a-f]*')
+        ) STRICT
     """,
     "st0406_intake_result": """
         CREATE TABLE st0406_intake_result(
-          command_id TEXT PRIMARY KEY REFERENCES st0406_quarantine(command_id),
-          request_digest TEXT NOT NULL,
-          descriptor_digest TEXT NOT NULL,
-          authorization_digest TEXT NOT NULL,
-          outcome TEXT NOT NULL,
+          command_id TEXT PRIMARY KEY REFERENCES st0406_quarantine(command_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+          request_digest TEXT NOT NULL CHECK(length(request_digest)=64 AND request_digest NOT GLOB '*[^0-9a-f]*'),
+          descriptor_digest TEXT NOT NULL CHECK(length(descriptor_digest)=64 AND descriptor_digest NOT GLOB '*[^0-9a-f]*'),
+          authorization_digest TEXT NOT NULL CHECK(length(authorization_digest)=64 AND authorization_digest NOT GLOB '*[^0-9a-f]*'),
+          outcome TEXT NOT NULL CHECK(outcome IN ('CLEAN_QUARANTINED','REJECTED')),
           document TEXT NOT NULL,
-          digest TEXT NOT NULL,
-          record_sha256 TEXT NOT NULL
-        )
+          digest TEXT NOT NULL CHECK(length(digest)=64 AND digest NOT GLOB '*[^0-9a-f]*'),
+          record_sha256 TEXT NOT NULL CHECK(length(record_sha256)=64 AND record_sha256 NOT GLOB '*[^0-9a-f]*')
+        ) STRICT
+    """,
+    "st0406_event_command_version": """
+        CREATE UNIQUE INDEX st0406_event_command_version
+        ON st0406_quarantine_event(command_id,version)
+    """,
+    "st0406_command_command_version": """
+        CREATE UNIQUE INDEX st0406_command_command_version
+        ON st0406_intake_command(command_id,version)
+    """,
+    "st0406_audit_command_sequence": """
+        CREATE UNIQUE INDEX st0406_audit_command_sequence
+        ON st0406_intake_audit(command_id,command_sequence)
+    """,
+    "st0406_metadata_no_delete": """
+        CREATE TRIGGER st0406_metadata_no_delete
+        BEFORE DELETE ON st0406_runtime_metadata
+        BEGIN SELECT RAISE(ABORT,'ST0406_METADATA_REQUIRED'); END
+    """,
+    "st0406_metadata_guard_update": """
+        CREATE TRIGGER st0406_metadata_guard_update
+        BEFORE UPDATE ON st0406_runtime_metadata
+        WHEN NEW.singleton!=OLD.singleton
+          OR NEW.schema_version!=OLD.schema_version
+          OR NEW.schema_binding!=OLD.schema_binding
+          OR NEW.event_count!=OLD.event_count+1
+          OR NEW.command_count!=OLD.command_count+1
+          OR NEW.audit_count!=OLD.audit_count+1
+          OR NEW.event_head=OLD.event_head
+          OR NEW.command_head=OLD.command_head
+          OR NEW.audit_head=OLD.audit_head
+          OR NEW.record_sha256=OLD.record_sha256
+        BEGIN SELECT RAISE(ABORT,'ST0406_METADATA_TRANSITION_INVALID'); END
+    """,
+    "st0406_quarantine_no_delete": """
+        CREATE TRIGGER st0406_quarantine_no_delete
+        BEFORE DELETE ON st0406_quarantine
+        BEGIN SELECT RAISE(ABORT,'ST0406_APPEND_ONLY'); END
     """,
     "st0406_event_no_update": """
         CREATE TRIGGER st0406_event_no_update
@@ -136,6 +253,26 @@ _SCHEMA_OBJECTS: Mapping[str, str] = {
     "st0406_event_no_delete": """
         CREATE TRIGGER st0406_event_no_delete
         BEFORE DELETE ON st0406_quarantine_event
+        BEGIN SELECT RAISE(ABORT,'ST0406_APPEND_ONLY'); END
+    """,
+    "st0406_command_no_update": """
+        CREATE TRIGGER st0406_command_no_update
+        BEFORE UPDATE ON st0406_intake_command
+        BEGIN SELECT RAISE(ABORT,'ST0406_APPEND_ONLY'); END
+    """,
+    "st0406_command_no_delete": """
+        CREATE TRIGGER st0406_command_no_delete
+        BEFORE DELETE ON st0406_intake_command
+        BEGIN SELECT RAISE(ABORT,'ST0406_APPEND_ONLY'); END
+    """,
+    "st0406_audit_no_update": """
+        CREATE TRIGGER st0406_audit_no_update
+        BEFORE UPDATE ON st0406_intake_audit
+        BEGIN SELECT RAISE(ABORT,'ST0406_APPEND_ONLY'); END
+    """,
+    "st0406_audit_no_delete": """
+        CREATE TRIGGER st0406_audit_no_delete
+        BEFORE DELETE ON st0406_intake_audit
         BEGIN SELECT RAISE(ABORT,'ST0406_APPEND_ONLY'); END
     """,
     "st0406_duplicate_no_update": """
@@ -159,6 +296,46 @@ _SCHEMA_OBJECTS: Mapping[str, str] = {
         BEGIN SELECT RAISE(ABORT,'ST0406_APPEND_ONLY'); END
     """,
 }
+
+_SCHEMA_BINDING = hashlib.sha256(
+    json.dumps(
+        dict(sorted(_SCHEMA_OBJECTS.items())),
+        ensure_ascii=True,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("ascii")
+).hexdigest()
+_SCHEMA_INITIALIZATION_LOCK = Lock()
+
+
+@dataclass(frozen=True, slots=True)
+class _IntegrityState:
+    count: int
+    event_head: str
+    command_head: str
+    audit_head: str
+
+
+@dataclass(slots=True)
+class _ProcessAnchor:
+    database_identity: tuple[int, int]
+    root_identity: tuple[int, int]
+    state: _IntegrityState
+    lock: RLock
+
+
+@dataclass(frozen=True, slots=True)
+class _LifecycleRecord:
+    sequence: int
+    version: int
+    kind: str
+    document: dict[str, object]
+    digest: str
+
+
+_PROCESS_REGISTRY_LOCK = RLock()
+_PROCESS_ANCHORS: dict[str, _ProcessAnchor] = {}
 
 
 def _fail(code: ObjectIntakeRuntimeFailureCode) -> NoReturn:
@@ -229,7 +406,10 @@ def _document(value: object) -> dict[str, object]:
     raw = cast(dict[object, object], parsed)
     if any(type(key) is not str for key in raw):
         _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
-    return {cast(str, key): item for key, item in raw.items()}
+    document = {cast(str, key): item for key, item in raw.items()}
+    if _json_bytes(document).decode("ascii") != value:
+        _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+    return document
 
 
 def _exact_mapping(value: object, keys: frozenset[str]) -> dict[str, object]:
@@ -252,23 +432,69 @@ def _sql_normalized(value: str) -> str:
 
 def _schema_is_exact(connection: sqlite3.Connection) -> bool:
     rows = connection.execute(
-        "SELECT name,sql FROM sqlite_master "
-        "WHERE type IN ('table','trigger') AND name NOT LIKE 'sqlite_%' ORDER BY name"
+        "SELECT type,name,tbl_name,sql FROM sqlite_schema "
+        "WHERE type IN ('table','index','trigger') AND name NOT LIKE 'sqlite_%' "
+        "AND sql IS NOT NULL ORDER BY type,name"
     ).fetchall()
-    observed = {str(name): _sql_normalized(str(sql)) for name, sql in rows}
-    expected = {
-        name: _sql_normalized(sql) for name, sql in sorted(_SCHEMA_OBJECTS.items())
+    observed = {
+        str(name): (str(kind), str(table), _sql_normalized(str(sql)))
+        for kind, name, table, sql in rows
     }
+    expected: dict[str, tuple[str, str, str]] = {}
+    for name in _SCHEMA_TABLE_NAMES:
+        expected[name] = ("table", name, _sql_normalized(_SCHEMA_OBJECTS[name]))
+    for name, table in _SCHEMA_INDEX_TABLES.items():
+        expected[name] = ("index", table, _sql_normalized(_SCHEMA_OBJECTS[name]))
+    for name, table in _SCHEMA_TRIGGER_TABLES.items():
+        expected[name] = ("trigger", table, _sql_normalized(_SCHEMA_OBJECTS[name]))
     version = connection.execute("PRAGMA user_version").fetchone()
+    application = connection.execute("PRAGMA application_id").fetchone()
+    strict_rows = connection.execute(
+        "SELECT name,strict FROM pragma_table_list "
+        "WHERE schema='main' AND name NOT LIKE 'sqlite_%' ORDER BY name"
+    ).fetchall()
+    implicit_indexes = connection.execute(
+        "SELECT name,tbl_name FROM sqlite_schema "
+        "WHERE type='index' AND sql IS NULL ORDER BY name"
+    ).fetchall()
     return (
         observed == expected
         and version is not None
         and tuple(version) == (_SCHEMA_VERSION,)
+        and application is not None
+        and tuple(application) == (_APPLICATION_ID,)
+        and tuple((str(name), strict) for name, strict in strict_rows)
+        == tuple((name, 1) for name in sorted(_SCHEMA_TABLE_NAMES))
+        and tuple((str(name), str(table)) for name, table in implicit_indexes)
+        == tuple(sorted(_SCHEMA_IMPLICIT_INDEX_TABLES.items()))
+        and tuple(connection.execute("PRAGMA foreign_keys").fetchone()) == (1,)
+        and tuple(connection.execute("PRAGMA trusted_schema").fetchone()) == (0,)
+        and tuple(connection.execute("PRAGMA journal_mode").fetchone()) == ("delete",)
+        and tuple(connection.execute("PRAGMA synchronous").fetchone()) == (2,)
+        and tuple(connection.execute("PRAGMA secure_delete").fetchone()) == (1,)
     )
 
 
-def _metadata_values(event_count: int, event_head: str) -> tuple[object, ...]:
-    return (1, _SCHEMA_VERSION, event_count, event_head)
+def _metadata_values(
+    *,
+    event_count: int,
+    event_head: str,
+    command_count: int,
+    command_head: str,
+    audit_count: int,
+    audit_head: str,
+) -> tuple[object, ...]:
+    return (
+        1,
+        _SCHEMA_VERSION,
+        _SCHEMA_BINDING,
+        event_count,
+        event_head,
+        command_count,
+        command_head,
+        audit_count,
+        audit_head,
+    )
 
 
 def _event_digest(
@@ -290,6 +516,69 @@ def _event_digest(
             "event_document_sha256": hashlib.sha256(
                 event_document.encode("ascii")
             ).hexdigest(),
+            "previous_digest": previous_digest,
+        }
+    )
+
+
+def _command_result_document(event_digest: str) -> str:
+    return _json_bytes(
+        {
+            "schema": "ST0406_COMMAND_RESULT_V2",
+            "lifecycle_digest": event_digest,
+        }
+    ).decode("ascii")
+
+
+def _command_digest(
+    *,
+    sequence: int,
+    lifecycle_sequence: int,
+    command_id: str,
+    version: int,
+    operation: str,
+    intent_document: str,
+    result_document: str,
+    previous_digest: str,
+) -> str:
+    return _digest_document(
+        {
+            "schema": "ST0406_COMMAND_V2",
+            "sequence": sequence,
+            "lifecycle_sequence": lifecycle_sequence,
+            "command_id": command_id,
+            "version": version,
+            "operation": operation,
+            "intent_sha256": hashlib.sha256(
+                intent_document.encode("ascii")
+            ).hexdigest(),
+            "result_sha256": hashlib.sha256(
+                result_document.encode("ascii")
+            ).hexdigest(),
+            "previous_digest": previous_digest,
+        }
+    )
+
+
+def _audit_digest(
+    *,
+    sequence: int,
+    command_sequence: int,
+    command_id: str,
+    action: str,
+    outcome: str,
+    binding_digest: str,
+    previous_digest: str,
+) -> str:
+    return _digest_document(
+        {
+            "schema": "ST0406_AUDIT_V2",
+            "sequence": sequence,
+            "command_sequence": command_sequence,
+            "command_id": command_id,
+            "action": action,
+            "outcome": outcome,
+            "binding_digest": binding_digest,
             "previous_digest": previous_digest,
         }
     )
@@ -618,6 +907,148 @@ def _quarantine_values(row: sqlite3.Row) -> tuple[object, ...]:
         row["failure_code"],
         row["result_document"],
     )
+
+
+def _validate_lifecycle_semantics(
+    *,
+    command_id: str,
+    projection: sqlite3.Row,
+    records: tuple[_LifecycleRecord, ...],
+    result: RecoveredIntakeOutcomeV2 | None,
+    allow_in_progress: bool,
+) -> None:
+    if not records or records[0].kind != "OPEN":
+        _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+    content = projection["content"]
+    if type(content) is not bytes:
+        _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+    received = 0
+    chunk_count = 0
+    sealed = False
+    final_kind: str | None = None
+    for record in records:
+        if record.kind == "OPEN":
+            document = _exact_mapping(
+                record.document,
+                frozenset({"schema", "descriptor_digest", "authorization_digest"}),
+            )
+            if (
+                record.version != 1
+                or document["schema"] != "ST0406_OPEN_V2"
+                or _sha(document["descriptor_digest"])
+                != projection["descriptor_digest"]
+                or _sha(document["authorization_digest"])
+                != projection["authorization_digest"]
+            ):
+                _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+            continue
+        if final_kind is not None:
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+        if record.kind == "APPEND":
+            document = _exact_mapping(
+                record.document,
+                frozenset({"schema", "chunk_bytes", "chunk_sha256", "received_bytes"}),
+            )
+            chunk_bytes = _integer(document["chunk_bytes"], minimum=1)
+            next_received = received + chunk_bytes
+            if (
+                sealed
+                or document["schema"] != "ST0406_APPEND_V2"
+                or next_received > len(content)
+                or _sha(document["chunk_sha256"])
+                != hashlib.sha256(content[received:next_received]).hexdigest()
+                or _integer(document["received_bytes"], minimum=1) != next_received
+            ):
+                _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+            received = next_received
+            chunk_count += 1
+            continue
+        if record.kind == "SEAL":
+            document = _exact_mapping(
+                record.document,
+                frozenset({"schema", "received_bytes", "chunk_count", "sha256"}),
+            )
+            if (
+                sealed
+                or document["schema"] != "ST0406_SEAL_V2"
+                or _integer(document["received_bytes"], minimum=1) != received
+                or _integer(document["chunk_count"], minimum=1) != chunk_count
+                or _sha(document["sha256"]) != hashlib.sha256(content).hexdigest()
+                or received != len(content)
+            ):
+                _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+            sealed = True
+            continue
+        if record.kind == "ACCEPT":
+            document = _exact_mapping(
+                record.document,
+                frozenset(
+                    {
+                        "schema",
+                        "inspection_sha256",
+                        "privacy_sha256",
+                        "malware_sha256",
+                        "duplicate_status",
+                    }
+                ),
+            )
+            accepted = None if result is None else result.accepted
+            if (
+                not sealed
+                or accepted is None
+                or document["schema"] != "ST0406_ACCEPT_V2"
+                or _sha(document["inspection_sha256"])
+                != _digest_document(_inspection_document(accepted.inspection))
+                or _sha(document["privacy_sha256"])
+                != _digest_document(_privacy_document(accepted.privacy))
+                or _sha(document["malware_sha256"])
+                != _digest_document(_malware_document(accepted.malware))
+                or _text(document["duplicate_status"], maximum=32)
+                != accepted.duplicate_status.value
+            ):
+                _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+            final_kind = "ACCEPT"
+            continue
+        if record.kind == "REJECT":
+            document = _exact_mapping(
+                record.document,
+                frozenset({"schema", "failure_code", "received_bytes"}),
+            )
+            rejected = None if result is None else result.rejected
+            if (
+                rejected is None
+                or document["schema"] != "ST0406_REJECT_V2"
+                or _text(document["failure_code"], maximum=32)
+                != rejected.failure_code.value
+                or _integer(document["received_bytes"]) != received
+            ):
+                _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+            final_kind = "REJECT"
+            continue
+        _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+    if (
+        received != projection["received_bytes"]
+        or chunk_count != projection["chunk_count"]
+        or records[-1].version != projection["version"]
+    ):
+        _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+    state = DurableIntakeState(_text(projection["state"], maximum=32))
+    if state is DurableIntakeState.CLEAN_QUARANTINED:
+        if final_kind != "ACCEPT" or result is None or result.accepted is None:
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+    elif state is DurableIntakeState.REJECTED:
+        if final_kind != "REJECT" or result is None or result.rejected is None:
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+    elif not allow_in_progress or final_kind is not None:
+        _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+    if result is not None:
+        receipt = result.accepted or result.rejected
+        if (
+            receipt is None
+            or receipt.command_id.value != command_id
+            or receipt.journal_head_sha256 != records[-1].digest
+        ):
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
 
 
 @final
@@ -1006,19 +1437,33 @@ class RecordedSqliteObjectIntakeRepositoryV2:
             RecordedIntakeCommitFault.AFTER_COMMIT,
         }:
             _fail(ObjectIntakeRuntimeFailureCode.INVALID_ARGUMENT)
-        self._private_root = self._prepare_private_root(private_root)
+        self._private_root, self._root_identity = self._prepare_private_root(
+            private_root
+        )
         self._database_path = self._private_root / _DATABASE_NAME
+        self._database_identity: tuple[int, int] = (-1, -1)
         self._fault_once_at = fault_once_at
         self._fault_lock = Lock()
-        self._create_or_validate_database_file()
-        self._initialize_or_validate_schema()
+        self._state_lock = RLock()
+        self._process_anchor: _ProcessAnchor | None = None
+        with _SCHEMA_INITIALIZATION_LOCK:
+            created, identity = self._open_database_file(allow_create=True)
+            self._database_identity = identity
+            connection = self._connect(allow_empty=created)
+            try:
+                if created:
+                    self._initialize_new(connection)
+                state = self._validate_all(connection, allow_in_progress=False)
+                self._bind_process_anchor(connection, state=state)
+            finally:
+                self._close_safely(connection)
 
     @property
     def action_count(self) -> int:
         return 0
 
     @staticmethod
-    def _prepare_private_root(value: object) -> Path:
+    def _prepare_private_root(value: object) -> tuple[Path, tuple[int, int]]:
         if not isinstance(value, Path) or not value.is_absolute():
             _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
         root = Path(os.path.abspath(value))
@@ -1036,11 +1481,11 @@ class RecordedSqliteObjectIntakeRepositoryV2:
         if (
             not stat.S_ISDIR(metadata.st_mode)
             or stat.S_ISLNK(metadata.st_mode)
-            or metadata.st_uid != os.getuid()
+            or metadata.st_uid != os.geteuid()
             or stat.S_IMODE(metadata.st_mode) != 0o700
         ):
             _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
-        return root
+        return root, (metadata.st_dev, metadata.st_ino)
 
     @staticmethod
     def _validate_ancestor_chain(path: Path) -> None:
@@ -1078,24 +1523,42 @@ class RecordedSqliteObjectIntakeRepositoryV2:
                 except OSError:
                     pass
 
-    def _create_or_validate_database_file(self) -> None:
-        self._prepare_private_root(self._private_root)
-        root_fd = os.open(
-            self._private_root,
-            os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW,
-        )
+    def _open_database_file(
+        self, *, allow_create: bool, allow_empty: bool = False
+    ) -> tuple[bool, tuple[int, int]]:
+        root_fd = -1
+        descriptor = -1
+        created = False
         try:
-            try:
+            root_fd = os.open(
+                self._private_root,
+                os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW,
+            )
+            root_metadata = os.fstat(root_fd)
+            if (
+                (root_metadata.st_dev, root_metadata.st_ino) != self._root_identity
+                or root_metadata.st_uid != os.geteuid()
+                or stat.S_IMODE(root_metadata.st_mode) != 0o700
+            ):
+                _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
+            flags = os.O_RDWR | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK
+            if allow_create:
+                try:
+                    descriptor = os.open(
+                        _DATABASE_NAME,
+                        flags | os.O_CREAT | os.O_EXCL,
+                        0o600,
+                        dir_fd=root_fd,
+                    )
+                    created = True
+                    os.fsync(descriptor)
+                    os.fsync(root_fd)
+                except FileExistsError:
+                    descriptor = os.open(_DATABASE_NAME, flags, dir_fd=root_fd)
+            else:
                 descriptor = os.open(
                     _DATABASE_NAME,
-                    os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
-                    0o600,
-                    dir_fd=root_fd,
-                )
-            except FileExistsError:
-                descriptor = os.open(
-                    _DATABASE_NAME,
-                    os.O_RDWR | os.O_CLOEXEC | os.O_NOFOLLOW,
+                    flags,
                     dir_fd=root_fd,
                 )
             metadata = os.fstat(descriptor)
@@ -1104,18 +1567,48 @@ class RecordedSqliteObjectIntakeRepositoryV2:
                 or metadata.st_uid != os.getuid()
                 or stat.S_IMODE(metadata.st_mode) != 0o600
                 or metadata.st_nlink != 1
+                or (not created and not allow_empty and metadata.st_size == 0)
             ):
                 _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
-            os.close(descriptor)
+            return created, (metadata.st_dev, metadata.st_ino)
         except ObjectIntakeRuntimeFailure:
             raise
         except OSError:
             _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
         finally:
-            os.close(root_fd)
+            if descriptor >= 0:
+                os.close(descriptor)
+            if root_fd >= 0:
+                os.close(root_fd)
 
-    def _connect(self) -> sqlite3.Connection:
-        self._create_or_validate_database_file()
+    def _validate_database_identity(self) -> None:
+        try:
+            root = self._private_root.lstat()
+            database = self._database_path.lstat()
+        except OSError:
+            _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
+        if (
+            (root.st_dev, root.st_ino) != self._root_identity
+            or stat.S_ISLNK(root.st_mode)
+            or not stat.S_ISDIR(root.st_mode)
+            or root.st_uid != os.geteuid()
+            or stat.S_IMODE(root.st_mode) != 0o700
+            or (database.st_dev, database.st_ino) != self._database_identity
+            or stat.S_ISLNK(database.st_mode)
+            or not stat.S_ISREG(database.st_mode)
+            or database.st_uid != os.geteuid()
+            or database.st_nlink != 1
+            or stat.S_IMODE(database.st_mode) != 0o600
+        ):
+            _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
+
+    def _connect(self, *, allow_empty: bool = False) -> sqlite3.Connection:
+        _created, identity = self._open_database_file(
+            allow_create=False, allow_empty=allow_empty
+        )
+        if identity != self._database_identity:
+            _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
+        connection: sqlite3.Connection | None = None
         try:
             connection = sqlite3.connect(
                 self._database_path,
@@ -1127,34 +1620,54 @@ class RecordedSqliteObjectIntakeRepositoryV2:
             connection.execute("PRAGMA foreign_keys=ON")
             connection.execute("PRAGMA trusted_schema=OFF")
             connection.execute("PRAGMA busy_timeout=10000")
-            connection.execute("PRAGMA journal_mode=DELETE")
             connection.execute("PRAGMA synchronous=FULL")
             connection.execute("PRAGMA secure_delete=ON")
-            self._create_or_validate_database_file()
+            if tuple(connection.execute("PRAGMA journal_mode=DELETE").fetchone()) != (
+                "delete",
+            ):
+                _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
+            self._validate_database_identity()
             return connection
-        except sqlite3.Error:
+        except ObjectIntakeRuntimeFailure:
+            if connection is not None:
+                self._close_safely(connection)
+            raise
+        except sqlite3.Error, OSError:
+            if connection is not None:
+                self._close_safely(connection)
             _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
 
-    def _initialize_or_validate_schema(self) -> None:
-        connection = self._connect()
+    def _initialize_new(self, connection: sqlite3.Connection) -> None:
         try:
-            connection.execute("BEGIN IMMEDIATE")
-            present = connection.execute(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
-            ).fetchall()
-            if not present:
-                for sql in _SCHEMA_OBJECTS.values():
-                    connection.execute(sql)
-                connection.execute(f"PRAGMA user_version={_SCHEMA_VERSION}")
-                values = _metadata_values(0, _GENESIS)
-                connection.execute(
-                    "INSERT INTO st0406_runtime_metadata VALUES (?,?,?,?,?)",
-                    (*values, _row_digest(values)),
-                )
+            connection.execute("BEGIN EXCLUSIVE")
+            if tuple(
+                connection.execute("SELECT COUNT(*) FROM sqlite_schema").fetchone()
+            ) != (0,):
+                _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
+            connection.execute(f"PRAGMA application_id={_APPLICATION_ID}")
+            connection.execute(f"PRAGMA user_version={_SCHEMA_VERSION}")
+            for name in _SCHEMA_TABLE_NAMES:
+                connection.execute(_SCHEMA_OBJECTS[name])
+            for name in _SCHEMA_INDEX_TABLES:
+                connection.execute(_SCHEMA_OBJECTS[name])
+            values = _metadata_values(
+                event_count=0,
+                event_head=_GENESIS,
+                command_count=0,
+                command_head=_GENESIS,
+                audit_count=0,
+                audit_head=_GENESIS,
+            )
+            connection.execute(
+                "INSERT INTO st0406_runtime_metadata VALUES (?,?,?,?,?,?,?,?,?,?)",
+                (*values, _row_digest(values)),
+            )
+            for name in _SCHEMA_TRIGGER_TABLES:
+                connection.execute(_SCHEMA_OBJECTS[name])
             if not _schema_is_exact(connection):
                 _fail(ObjectIntakeRuntimeFailureCode.SCHEMA_DRIFT)
-            self._validate_all(connection, allow_in_progress=False)
             connection.commit()
+            self._validate_database_identity()
         except ObjectIntakeRuntimeFailure:
             connection.rollback()
             raise
@@ -1164,35 +1677,45 @@ class RecordedSqliteObjectIntakeRepositoryV2:
         except Exception:
             connection.rollback()
             _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
-        finally:
-            connection.close()
 
     def _validate_all(
         self, connection: sqlite3.Connection, *, allow_in_progress: bool
-    ) -> None:
+    ) -> _IntegrityState:
+        self._validate_database_identity()
         if not _schema_is_exact(connection):
             _fail(ObjectIntakeRuntimeFailureCode.SCHEMA_DRIFT)
         integrity = connection.execute("PRAGMA integrity_check").fetchone()
         if integrity is None or tuple(integrity) != ("ok",):
             _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+        if connection.execute("PRAGMA foreign_key_check").fetchall():
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
         metadata = connection.execute(
-            "SELECT singleton,schema_version,event_count,event_head,record_sha256 "
+            "SELECT singleton,schema_version,schema_binding,event_count,event_head,"
+            "command_count,command_head,audit_count,audit_head,record_sha256 "
             "FROM st0406_runtime_metadata"
         ).fetchall()
         if len(metadata) != 1:
             _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
         meta = tuple(metadata[0])
         if (
-            len(meta) != 5
+            len(meta) != 10
             or meta[0] != 1
             or meta[1] != _SCHEMA_VERSION
-            or _integer(meta[2]) < 0
-            or _sha(meta[3]) != meta[3]
-            or _sha(meta[4]) != _row_digest(meta[:-1])
+            or meta[2] != _SCHEMA_BINDING
+            or _integer(meta[3]) < 0
+            or _sha(meta[4]) != meta[4]
+            or _integer(meta[5]) < 0
+            or _sha(meta[6]) != meta[6]
+            or _integer(meta[7]) < 0
+            or _sha(meta[8]) != meta[8]
+            or not meta[3] == meta[5] == meta[7]
+            or _sha(meta[9]) != _row_digest(meta[:-1])
         ):
             _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
-        event_count = cast(int, meta[2])
-        event_head = cast(str, meta[3])
+        event_count = cast(int, meta[3])
+        event_head = cast(str, meta[4])
+        command_head = cast(str, meta[6])
+        audit_head = cast(str, meta[8])
 
         quarantine_rows = connection.execute(
             "SELECT * FROM st0406_quarantine ORDER BY command_id"
@@ -1255,6 +1778,8 @@ class RecordedSqliteObjectIntakeRepositoryV2:
         last_version: dict[str, int] = {}
         final_head: dict[str, str] = {}
         first_kind: set[str] = set()
+        lifecycle_by_command: dict[str, list[_LifecycleRecord]] = {}
+        lifecycle_by_sequence: dict[int, tuple[str, int, str, str, str]] = {}
         event_rows = connection.execute(
             "SELECT sequence,command_id,version,event_kind,event_document,"
             "previous_digest,digest,record_sha256 "
@@ -1292,16 +1817,134 @@ class RecordedSqliteObjectIntakeRepositoryV2:
                 or version > quarantine[command]["version"]
             ):
                 _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
-            _document(event_document)
+            document = _document(event_document)
             first_kind.add(command)
             last_version[command] = version
             final_head[command] = digest
+            lifecycle_by_command.setdefault(command, []).append(
+                _LifecycleRecord(
+                    sequence=expected_sequence,
+                    version=version,
+                    kind=kind,
+                    document=document,
+                    digest=digest,
+                )
+            )
+            lifecycle_by_sequence[expected_sequence] = (
+                command,
+                version,
+                kind,
+                event_document,
+                digest,
+            )
             previous = digest
         if previous != event_head or event_count != len(event_rows):
             _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
         for command, row in quarantine.items():
             if last_version.get(command) != row["version"]:
                 _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+
+        previous_command = _GENESIS
+        command_rows = connection.execute(
+            "SELECT sequence,lifecycle_sequence,command_id,version,operation,"
+            "intent_document,result_document,previous_digest,digest,record_sha256 "
+            "FROM st0406_intake_command ORDER BY sequence"
+        ).fetchall()
+        if len(command_rows) != event_count:
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+        command_by_sequence: dict[int, tuple[str, str, str]] = {}
+        for expected_sequence, raw in enumerate(command_rows, start=1):
+            row = tuple(raw)
+            values = row[:-1]
+            lifecycle = lifecycle_by_sequence.get(expected_sequence)
+            intent_document = _text(row[5], maximum=_MAX_DOCUMENT_BYTES)
+            result_document = _text(row[6], maximum=_MAX_DOCUMENT_BYTES)
+            prior = _sha(row[7])
+            digest = _sha(row[8])
+            if (
+                row[0] != expected_sequence
+                or row[1] != expected_sequence
+                or lifecycle is None
+                or row[2] != lifecycle[0]
+                or row[3] != lifecycle[1]
+                or row[4] != lifecycle[2]
+                or intent_document != lifecycle[3]
+                or result_document != _command_result_document(lifecycle[4])
+                or _document(intent_document)
+                != lifecycle_by_command[cast(str, row[2])][
+                    cast(int, row[3]) - 1
+                ].document
+                or _document(result_document)
+                != {
+                    "schema": "ST0406_COMMAND_RESULT_V2",
+                    "lifecycle_digest": lifecycle[4],
+                }
+                or prior != previous_command
+                or digest
+                != _command_digest(
+                    sequence=expected_sequence,
+                    lifecycle_sequence=expected_sequence,
+                    command_id=_text(row[2]),
+                    version=_integer(row[3], minimum=1),
+                    operation=_text(row[4], maximum=16),
+                    intent_document=intent_document,
+                    result_document=result_document,
+                    previous_digest=prior,
+                )
+                or _sha(row[9]) != _row_digest(values)
+            ):
+                _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+            command_by_sequence[expected_sequence] = (
+                _text(row[2]),
+                _text(row[4], maximum=16),
+                digest,
+            )
+            previous_command = digest
+        if previous_command != command_head:
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+
+        previous_audit = _GENESIS
+        audit_rows = connection.execute(
+            "SELECT sequence,command_sequence,command_id,action,outcome,"
+            "binding_digest,previous_digest,digest,record_sha256 "
+            "FROM st0406_intake_audit ORDER BY sequence"
+        ).fetchall()
+        if len(audit_rows) != event_count:
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+        for expected_sequence, raw in enumerate(audit_rows, start=1):
+            row = tuple(raw)
+            values = row[:-1]
+            command_record = command_by_sequence.get(expected_sequence)
+            action = _text(row[3], maximum=32)
+            audit_outcome = _text(row[4], maximum=16)
+            binding = _sha(row[5])
+            prior = _sha(row[6])
+            digest = _sha(row[7])
+            if (
+                row[0] != expected_sequence
+                or row[1] != expected_sequence
+                or command_record is None
+                or row[2] != command_record[0]
+                or action != f"INTAKE_{command_record[1]}"
+                or audit_outcome != "RECORDED"
+                or binding != command_record[2]
+                or prior != previous_audit
+                or digest
+                != _audit_digest(
+                    sequence=expected_sequence,
+                    command_sequence=expected_sequence,
+                    command_id=_text(row[2]),
+                    action=action,
+                    outcome=audit_outcome,
+                    binding_digest=binding,
+                    previous_digest=prior,
+                )
+                or _sha(row[8]) != _row_digest(values)
+            ):
+                _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+            previous_audit = digest
+        if previous_audit != audit_head:
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
 
         result_rows = connection.execute(
             "SELECT command_id,request_digest,descriptor_digest,authorization_digest,"
@@ -1348,6 +1991,119 @@ class RecordedSqliteObjectIntakeRepositoryV2:
                 or quarantine[_text(command_id)]["sealed_sha256"] != sha256
             ):
                 _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+        for command, projection in quarantine.items():
+            _validate_lifecycle_semantics(
+                command_id=command,
+                projection=projection,
+                records=tuple(lifecycle_by_command.get(command, ())),
+                result=results.get(command),
+                allow_in_progress=allow_in_progress,
+            )
+        return _IntegrityState(
+            count=event_count,
+            event_head=event_head,
+            command_head=command_head,
+            audit_head=audit_head,
+        )
+
+    def _bind_process_anchor(
+        self, connection: sqlite3.Connection, *, state: _IntegrityState
+    ) -> None:
+        key = str(self._database_path)
+        with _PROCESS_REGISTRY_LOCK:
+            anchor = _PROCESS_ANCHORS.get(key)
+            if anchor is None:
+                anchor = _ProcessAnchor(
+                    database_identity=self._database_identity,
+                    root_identity=self._root_identity,
+                    state=state,
+                    lock=RLock(),
+                )
+                _PROCESS_ANCHORS[key] = anchor
+            elif (
+                anchor.database_identity != self._database_identity
+                or anchor.root_identity != self._root_identity
+            ):
+                _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
+            self._process_anchor = anchor
+        with anchor.lock:
+            self._require_process_monotonic(connection, state=state)
+            if state.count > anchor.state.count:
+                anchor.state = state
+
+    def _require_process_monotonic(
+        self, connection: sqlite3.Connection, *, state: _IntegrityState
+    ) -> None:
+        anchor = self._process_anchor
+        if anchor is None:
+            return
+        if (
+            anchor.database_identity != self._database_identity
+            or anchor.root_identity != self._root_identity
+            or state.count < anchor.state.count
+        ):
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+        if anchor.state.count == 0:
+            observed = _IntegrityState(
+                count=0,
+                event_head=_GENESIS,
+                command_head=_GENESIS,
+                audit_head=_GENESIS,
+            )
+        else:
+            sequence = anchor.state.count
+            event = connection.execute(
+                "SELECT digest FROM st0406_quarantine_event WHERE sequence=?",
+                (sequence,),
+            ).fetchone()
+            command = connection.execute(
+                "SELECT digest FROM st0406_intake_command WHERE sequence=?",
+                (sequence,),
+            ).fetchone()
+            audit = connection.execute(
+                "SELECT digest FROM st0406_intake_audit WHERE sequence=?",
+                (sequence,),
+            ).fetchone()
+            if event is None or command is None or audit is None:
+                _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+            observed = _IntegrityState(
+                count=sequence,
+                event_head=_sha(event[0]),
+                command_head=_sha(command[0]),
+                audit_head=_sha(audit[0]),
+            )
+        if observed != anchor.state or (
+            state.count == anchor.state.count and state != anchor.state
+        ):
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+
+    def _pin_process_state(self, *, state: _IntegrityState) -> None:
+        anchor = self._process_anchor
+        if anchor is None or state.count < anchor.state.count:
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+        if state.count == anchor.state.count and state != anchor.state:
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+        anchor.state = state
+
+    def _acquire_state(self) -> _ProcessAnchor:
+        self._state_lock.acquire()
+        anchor = self._process_anchor
+        if anchor is None:
+            self._state_lock.release()
+            _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
+        anchor.lock.acquire()
+        return anchor
+
+    def _release_state(self, anchor: _ProcessAnchor) -> None:
+        anchor.lock.release()
+        self._state_lock.release()
+
+    @staticmethod
+    def _close_safely(connection: sqlite3.Connection) -> None:
+        try:
+            connection.close()
+        except sqlite3.Error:
+            pass
 
     def _append_event(
         self,
@@ -1359,7 +2115,8 @@ class RecordedSqliteObjectIntakeRepositoryV2:
         event: dict[str, object],
     ) -> str:
         meta = connection.execute(
-            "SELECT singleton,schema_version,event_count,event_head,record_sha256 "
+            "SELECT singleton,schema_version,schema_binding,event_count,event_head,"
+            "command_count,command_head,audit_count,audit_head,record_sha256 "
             "FROM st0406_runtime_metadata WHERE singleton=1"
         ).fetchone()
         if meta is None:
@@ -1367,8 +2124,12 @@ class RecordedSqliteObjectIntakeRepositoryV2:
         values = tuple(meta)
         if _sha(values[-1]) != _row_digest(values[:-1]):
             _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
-        sequence = _integer(values[2]) + 1
-        previous = _sha(values[3])
+        sequence = _integer(values[3]) + 1
+        if sequence != _integer(values[5]) + 1 or sequence != _integer(values[7]) + 1:
+            _fail(ObjectIntakeRuntimeFailureCode.TAMPER_DETECTED)
+        previous = _sha(values[4])
+        previous_command = _sha(values[6])
+        previous_audit = _sha(values[8])
         document = _json_bytes(event).decode("ascii")
         digest = _event_digest(
             sequence=sequence,
@@ -1391,16 +2152,84 @@ class RecordedSqliteObjectIntakeRepositoryV2:
             "INSERT INTO st0406_quarantine_event VALUES (?,?,?,?,?,?,?,?)",
             (*event_values, _row_digest(event_values)),
         )
-        metadata_values = _metadata_values(sequence, digest)
+        command_result = _command_result_document(digest)
+        command_digest = _command_digest(
+            sequence=sequence,
+            lifecycle_sequence=sequence,
+            command_id=command_id,
+            version=version,
+            operation=event_kind,
+            intent_document=document,
+            result_document=command_result,
+            previous_digest=previous_command,
+        )
+        command_values = (
+            sequence,
+            sequence,
+            command_id,
+            version,
+            event_kind,
+            document,
+            command_result,
+            previous_command,
+            command_digest,
+        )
+        connection.execute(
+            "INSERT INTO st0406_intake_command VALUES (?,?,?,?,?,?,?,?,?,?)",
+            (*command_values, _row_digest(command_values)),
+        )
+        audit_action = f"INTAKE_{event_kind}"
+        audit_digest = _audit_digest(
+            sequence=sequence,
+            command_sequence=sequence,
+            command_id=command_id,
+            action=audit_action,
+            outcome="RECORDED",
+            binding_digest=command_digest,
+            previous_digest=previous_audit,
+        )
+        audit_values = (
+            sequence,
+            sequence,
+            command_id,
+            audit_action,
+            "RECORDED",
+            command_digest,
+            previous_audit,
+            audit_digest,
+        )
+        connection.execute(
+            "INSERT INTO st0406_intake_audit VALUES (?,?,?,?,?,?,?,?,?)",
+            (*audit_values, _row_digest(audit_values)),
+        )
+        metadata_values = _metadata_values(
+            event_count=sequence,
+            event_head=digest,
+            command_count=sequence,
+            command_head=command_digest,
+            audit_count=sequence,
+            audit_head=audit_digest,
+        )
         cursor = connection.execute(
-            "UPDATE st0406_runtime_metadata SET event_count=?,event_head=?,record_sha256=? "
-            "WHERE singleton=1 AND event_count=? AND event_head=? AND record_sha256=?",
+            "UPDATE st0406_runtime_metadata SET event_count=?,event_head=?,"
+            "command_count=?,command_head=?,audit_count=?,audit_head=?,record_sha256=? "
+            "WHERE singleton=1 AND event_count=? AND event_head=? "
+            "AND command_count=? AND command_head=? AND audit_count=? AND audit_head=? "
+            "AND record_sha256=?",
             (
                 sequence,
                 digest,
+                sequence,
+                command_digest,
+                sequence,
+                audit_digest,
                 _row_digest(metadata_values),
-                values[2],
+                values[3],
                 previous,
+                values[5],
+                previous_command,
+                values[7],
+                previous_audit,
                 values[-1],
             ),
         )
@@ -1428,10 +2257,14 @@ class RecordedSqliteObjectIntakeRepositoryV2:
         if _digest_document(_descriptor_document(descriptor)) != descriptor_digest:
             _fail(ObjectIntakeRuntimeFailureCode.INVALID_ARGUMENT)
         base = descriptor.descriptor
-        connection = self._connect()
+        anchor = self._acquire_state()
+        connection: sqlite3.Connection | None = None
         try:
+            connection = self._connect()
             connection.execute("BEGIN IMMEDIATE")
-            self._validate_all(connection, allow_in_progress=False)
+            state = self._validate_all(connection, allow_in_progress=False)
+            self._require_process_monotonic(connection, state=state)
+            self._pin_process_state(state=state)
             existing = connection.execute(
                 "SELECT request_digest,descriptor_digest,authorization_digest "
                 "FROM st0406_quarantine WHERE command_id=?",
@@ -1457,6 +2290,7 @@ class RecordedSqliteObjectIntakeRepositoryV2:
                     connection=connection,
                     command_id=command_id,
                     existing=_outcome_from_result_row(tuple(outcome_row)),
+                    anchor=anchor,
                 )
             collision = connection.execute(
                 "SELECT command_id FROM st0406_quarantine WHERE intake_id=?",
@@ -1514,18 +2348,25 @@ class RecordedSqliteObjectIntakeRepositoryV2:
                 connection=connection,
                 command_id=command_id,
                 existing=None,
+                anchor=anchor,
             )
         except ObjectIntakeRuntimeFailure:
-            connection.rollback()
-            connection.close()
+            if connection is not None:
+                connection.rollback()
+                self._close_safely(connection)
+            self._release_state(anchor)
             raise
         except sqlite3.Error:
-            connection.rollback()
-            connection.close()
+            if connection is not None:
+                connection.rollback()
+                self._close_safely(connection)
+            self._release_state(anchor)
             _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
         except Exception:
-            connection.rollback()
-            connection.close()
+            if connection is not None:
+                connection.rollback()
+                self._close_safely(connection)
+            self._release_state(anchor)
             _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
 
     def begin(
@@ -1554,10 +2395,14 @@ class RecordedSqliteObjectIntakeRepositoryV2:
             or _SHA256.fullmatch(request_digest) is None
         ):
             _fail(ObjectIntakeRuntimeFailureCode.RECOVERY_NOT_FOUND)
-        connection = self._connect()
+        anchor = self._acquire_state()
+        connection: sqlite3.Connection | None = None
         try:
+            connection = self._connect()
             connection.execute("BEGIN")
-            self._validate_all(connection, allow_in_progress=False)
+            state = self._validate_all(connection, allow_in_progress=False)
+            self._require_process_monotonic(connection, state=state)
+            self._pin_process_state(state=state)
             row = connection.execute(
                 "SELECT command_id,request_digest,descriptor_digest,authorization_digest,"
                 "outcome,document,digest,record_sha256 FROM st0406_intake_result "
@@ -1572,31 +2417,44 @@ class RecordedSqliteObjectIntakeRepositoryV2:
             connection.rollback()
             return outcome
         except ObjectIntakeRuntimeFailure:
-            connection.rollback()
+            if connection is not None:
+                connection.rollback()
             raise
         except sqlite3.Error:
-            connection.rollback()
+            if connection is not None:
+                connection.rollback()
             _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
         except Exception:
-            connection.rollback()
+            if connection is not None:
+                connection.rollback()
             _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
         finally:
-            connection.close()
+            if connection is not None:
+                self._close_safely(connection)
+            self._release_state(anchor)
 
     def verify_integrity(self) -> None:
-        connection = self._connect()
+        anchor = self._acquire_state()
+        connection: sqlite3.Connection | None = None
         try:
+            connection = self._connect()
             connection.execute("BEGIN")
-            self._validate_all(connection, allow_in_progress=False)
+            state = self._validate_all(connection, allow_in_progress=False)
+            self._require_process_monotonic(connection, state=state)
+            self._pin_process_state(state=state)
             connection.rollback()
         except ObjectIntakeRuntimeFailure:
-            connection.rollback()
+            if connection is not None:
+                connection.rollback()
             raise
         except Exception:
-            connection.rollback()
+            if connection is not None:
+                connection.rollback()
             _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
         finally:
-            connection.close()
+            if connection is not None:
+                self._close_safely(connection)
+            self._release_state(anchor)
 
     def _inject_fault(self, point: str) -> None:
         with self._fault_lock:
@@ -1614,11 +2472,13 @@ class RecordedObjectIntakeUnitOfWorkV2:
         connection: sqlite3.Connection,
         command_id: IntakeCommandId,
         existing: RecoveredIntakeOutcomeV2 | None,
+        anchor: _ProcessAnchor,
     ) -> None:
         self._repository = repository
         self._connection = connection
         self._command_id = command_id
         self._existing = existing
+        self._anchor = anchor
         self._closed = False
         self._finalized = existing is not None
 
@@ -1979,17 +2839,24 @@ class RecordedObjectIntakeUnitOfWorkV2:
             _fail(ObjectIntakeRuntimeFailureCode.STORAGE_FAILED)
         committed = False
         commit_started = False
+        pending_state = self._anchor.state
         try:
-            if self._existing is None:
-                self._repository._validate_all(  # pyright: ignore[reportPrivateUsage]
-                    self._connection, allow_in_progress=False
-                )
+            pending_state = self._repository._validate_all(  # pyright: ignore[reportPrivateUsage]
+                self._connection, allow_in_progress=False
+            )
+            self._repository._require_process_monotonic(  # pyright: ignore[reportPrivateUsage]
+                self._connection, state=pending_state
+            )
             self._repository._inject_fault(  # pyright: ignore[reportPrivateUsage]
                 RecordedIntakeCommitFault.BEFORE_COMMIT
             )
             commit_started = True
             self._connection.commit()
             committed = True
+            self._repository._validate_database_identity()  # pyright: ignore[reportPrivateUsage]
+            self._repository._pin_process_state(  # pyright: ignore[reportPrivateUsage]
+                state=pending_state
+            )
             self._repository._inject_fault(  # pyright: ignore[reportPrivateUsage]
                 RecordedIntakeCommitFault.AFTER_COMMIT
             )
@@ -2026,7 +2893,12 @@ class RecordedObjectIntakeUnitOfWorkV2:
             )
         finally:
             self._closed = True
-            self._connection.close()
+            self._repository._close_safely(  # pyright: ignore[reportPrivateUsage]
+                self._connection
+            )
+            self._repository._release_state(  # pyright: ignore[reportPrivateUsage]
+                self._anchor
+            )
 
     def rollback(self) -> None:
         if self._closed:
@@ -2037,7 +2909,12 @@ class RecordedObjectIntakeUnitOfWorkV2:
             pass
         finally:
             self._closed = True
-            self._connection.close()
+            self._repository._close_safely(  # pyright: ignore[reportPrivateUsage]
+                self._connection
+            )
+            self._repository._release_state(  # pyright: ignore[reportPrivateUsage]
+                self._anchor
+            )
 
 
 __all__ = [

@@ -49,6 +49,10 @@ TEST_SOURCE: Final = (
     Path("tests/st0406/test_generation_v2.py"),
 )
 README: Final = Path("changes/st-0406/README.md")
+PREFLIGHT: Final = Path("changes/st-0406/PREFLIGHT-20260825-v3.md")
+COMPLETION: Final = Path(
+    "changes/st-0406/LOCAL-IMPLEMENTATION-COMPLETION-20260825-v3.yaml"
+)
 MAX_BYTES: Final = 8 * 1024 * 1024
 GENERATION_COMMAND: Final = (
     "python scripts/build_st0406_secure_object_intake_runtime.py"
@@ -163,7 +167,19 @@ def _validate_contract(contract: dict[str, object]) -> None:
         storage.get("mode") != "RECORDED_LOCAL"
         or storage.get("owner_private_root_mode") != "0700"
         or storage.get("database_mode") != "0600"
+        or storage.get("database_creation") != "CREATED_ONLY_O_EXCL_NO_EMPTY_ADOPTION"
+        or storage.get("application_id") != 1_380_400_602
+        or storage.get("strict_tables") is not True
+        or storage.get("foreign_keys_exact_and_enforced") is not True
+        or storage.get("schema_index_trigger_inventory_exact") is not True
+        or storage.get("root_and_database_inode_anchored") is not True
+        or storage.get("process_monotonic_prefix_anchor") is not True
+        or storage.get("snapshot_rollback_detected_in_process") is not True
+        or storage.get("database_replacement_detected") is not True
         or storage.get("journal") != "APPEND_ONLY_SHA256_HASH_CHAIN"
+        or storage.get("journals") != ["LIFECYCLE", "COMMAND", "AUDIT"]
+        or storage.get("journal_encoding") != "CANONICAL_ASCII_JSON"
+        or storage.get("full_chain_semantic_verification") is not True
         or storage.get("public_byte_read_surface") is not False
     ):
         _fail("STORAGE_CONTRACT_INVALID")
@@ -274,7 +290,7 @@ def _render() -> tuple[bytes, bytes]:
     contract = _json(CONTRACT)
     _validate_contract(contract)
     story = _validate_sources()
-    projection = {
+    projection: dict[str, object] = {
         "schema_version": "2.0.0",
         "story_id": "ST-0406",
         "local_implementation_status": "LOCAL_CODE_COMPLETE",
@@ -298,6 +314,8 @@ def _render() -> tuple[bytes, bytes]:
         ST0403_CONTRACT,
         CONTRACT,
         README,
+        PREFLIGHT,
+        COMPLETION,
         GENERATOR,
         *RUNTIME_SOURCE,
         *TEST_SOURCE,

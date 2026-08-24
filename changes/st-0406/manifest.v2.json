@@ -2,7 +2,7 @@
   "external_action_count": 0,
   "formal_evidence": "NOT_EXECUTED",
   "generated_sha256": {
-    "changes/st-0406/generated/secure-object-intake-runtime.v2.json": "cf76d13328104f5bec497eca3b426bb1b6f556ebd6c87c2aecd5dbce5823b3c3"
+    "changes/st-0406/generated/secure-object-intake-runtime.v2.json": "b8798bfd94c231591bdc9597c35f937d8e7e530d6518ac2d035fc19118974929"
   },
   "generation_command": "python scripts/build_st0406_secure_object_intake_runtime.py",
   "live_provider": "NOT_EXECUTED",
@@ -11,24 +11,26 @@
   "source_sha256": {
     "changes/st-0202/contracts/local-object-storage.v1.yaml": "5a5ca7e3847c730e97172646638088070dfaa96776485910cb967a67ab552a9f",
     "changes/st-0403/contracts/authorization-registry.v1.json": "a2ef5f7df66492164128ba8ffffcceb254b58bedc5cac7d03716d20700bc1093",
-    "changes/st-0406/README.md": "9b7eaaa6b65fe9ceb0b29aa8338cc8e511755995344d4050e6329a0c9dcb816d",
-    "changes/st-0406/contracts/secure-object-intake-runtime.v2.json": "8430132e2c71bec305a891848e2e2c208e18a6441588f13f55693cf0318aa49f",
+    "changes/st-0406/LOCAL-IMPLEMENTATION-COMPLETION-20260825-v3.yaml": "da2ab93547128cbf3f634f7e2e2fd3cfe8d271a96d2a162f2c15bdc4f4a1b2ac",
+    "changes/st-0406/PREFLIGHT-20260825-v3.md": "06b7ed3a97594609963ffaddff1a88bc10a3bedf89dc73e05007d09c423e4a47",
+    "changes/st-0406/README.md": "b64f3a7c2e6f28f51b722cb8930b97ce74572543b92f9ea81d23d62f697edc43",
+    "changes/st-0406/contracts/secure-object-intake-runtime.v2.json": "afb1f467d7401602658465516291858ffd7c7900ecaf17c60ee901a4a77818f9",
     "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
     "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
     "docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b",
     "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
     "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
-    "python/raos/adapters/recorded_object_intake_runtime_v2.py": "e0f60b2705bfe49c16dc9299f338cd4ab19afce8d056236da932479f635a8b57",
+    "python/raos/adapters/recorded_object_intake_runtime_v2.py": "55f2268b2c2c84975e9b4f4768156134edd87fb0678234ba9b909e933d2881c9",
     "python/raos/application/ops/object_intake_runtime_v2.py": "11f668f30d0c940d6b734453401a70553186ccf907372377588dda7cb6f6e5c8",
     "python/raos/domain/ops/object_intake_runtime_v2.py": "804a82729febb0d6a218b4fb8efa59601134e38bd49508e757df06829ac54a67",
     "python/raos/ports/object_intake_runtime_v2.py": "5991db85a98f2265dac84faf35052f9ab15f9945ece977941ebd56738d2ca6c6",
-    "scripts/build_st0406_secure_object_intake_runtime.py": "ba4c883419df28143ae0e4ffe06c490c78dfae1e1dbcaae5bcf3d98682d5f994",
+    "scripts/build_st0406_secure_object_intake_runtime.py": "4f262875753f9cf4264e8fa353bea8cc28e2766ec96b210a5d9baabe1e49c0e1",
     "tests/st0406/conftest.py": "a4aea24265c60469d54923566924cabf4897c1e537bd6b30b474f0440755acdf",
     "tests/st0406/test_archive_csv_v2.py": "7704a42a2d372e4cdafa458c2576cf598173b449b0f1ab46eddcdd1c2f7db547",
     "tests/st0406/test_authorization_first_v2.py": "349ec8a2d4409b4a71fded43777e68d895e65e84fc82914860f9c7223b55d572",
     "tests/st0406/test_generation_v2.py": "85a4e55fb9e5c80b28798d015434c4ec415d4858a77c2ec9662ffda95dd1f410",
     "tests/st0406/test_runtime_v2.py": "fc5d441a511ab9df7de03bfe41ae549a216f5f4e76a60b21ae127102d3fa24fe",
-    "tests/st0406/test_storage_security_v2.py": "1c09b735db7752ddef7c3acdb3fb607e5f7bd5e35786449cc584c92cf8606304"
+    "tests/st0406/test_storage_security_v2.py": "167331c2defda3da8a7129f3e58871a287873b03c2de3e4ed80fee28c3032343"
   },
   "staging": "NOT_EXECUTED",
   "story_id": "ST-0406"
