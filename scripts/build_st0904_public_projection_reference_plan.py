@@ -56,7 +56,7 @@ HELPER_SHA256: Final = (
     "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
 )
 CONTRACT_SHA256: Final = (
-    "f078865e762f3fa8f5aaf7227409558de5fed706a509cbd67a92365a61da3d36"
+    "b88ddf693dbbed7b4165a72087cd60a282592b3f9e77de9c5db7f86115e8ecac"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -242,12 +242,12 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0903",
         "changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-        "e38e644ace8ad86f8c16e178221fa461360518abf5a080ea572c475d7d273c82",
+        "29a986318f337443c2810df6a40f085dc565ba0e324e0ddc90164fff96f9004f",
     ),
     (
         "ST-0306",
         "changes/st-0306/contracts/database-roles-grants.v1.yaml",
-        "6b8710a79729bde75e96e1df3698a0928d4924e4bd10afaff5631fc00f70a0d4",
+        "b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3",
     ),
 )
 

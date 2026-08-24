@@ -1,0 +1,100 @@
+schema_version: 2
+story_id: ST-0904
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_EXECUTABLE_PUBLIC_READ_SHAPE_CANDIDATE_V2
+profile: ST0904_PUBLIC_PROJECTION_RECORDED_LOCAL_V2
+runtime:
+  executable: true
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  process_local_candidate_only: true
+  repository_write: false
+  persistence: false
+  database_write: false
+  event_emit: false
+  route_activation: false
+  public_read_served: false
+  public_projection_authorized: false
+  publication_authorized: false
+  release_authorized: false
+  production_authorized: false
+bindings:
+  st0903_fixture_uri: repo://changes/st-0903/generated/publication-snapshot-pass.v2.json
+  st0903_fixture_sha256: 6f18ed11cbed99c57dac757875ce4ab3e1fab09cc24710c1fd7bce7e5823cd99
+  st0903_runtime_manifest_uri: repo://changes/st-0903/runtime-manifest.v2.yaml
+  st0903_runtime_manifest_sha256: f7a95693cb8cb3fbd50f3438d0e4494ea82cdc6337b9c1bb0bd7728de08a2c33
+  st0902_final_approval_fixture_uri: repo://changes/st-0902/generated/final-approval-pass.v2.json
+  st0902_final_approval_fixture_sha256: 93c44f4d303fef41304962bf4235e19491bcb45c555aecb66a87dcd34e6bca07
+  st0805_policy_fixture_uri: repo://changes/st-0805/generated/policy-pass.v2.json
+  st0805_policy_fixture_sha256: 7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849
+  st0901_review_fixture_uri: repo://changes/st-0901/generated/review-completion-pass.v2.json
+  st0901_review_fixture_sha256: 57587322562eae4a2b58bebfc6b917e39fb05f077cf7268deb4056563950a361
+  st0807_seo_fixture_uri: repo://changes/st-0807/generated/seo-render-recorded.v2.json
+  st0807_seo_fixture_sha256: ab0ad1cf37368834cb4a9e3856938dce73e0525f26c45acc2255372cb0f593ef
+  st0306_role_contract_uri: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
+  st0306_role_contract_sha256: b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3
+  st0306_role_projection_uri: repo://changes/st-0306/generated/database-roles-grants.v1.json
+  st0306_role_projection_sha256: b992f9de31fa41185222b6aa505d0ab72e714866aacc96085b95c4b22fd038ec
+  public_openapi_uri: repo://contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml
+  public_openapi_sha256: 8122958e80e04096ba3b254b4a8d843138bb757c8fc4e71bd8406914dba80797
+  legacy_snapshot_schema_uri: repo://contracts/raos-v0.4/contracts/schemas/common/publication-snapshot.schema.json
+  legacy_snapshot_schema_sha256: 2b1aa3d1035cd997d3262786fdfd80aa5c25df62e2c758ac481179c5d6803c38
+projection_boundary:
+  exact_st0903_request_result_pair_required: true
+  exact_dependency_hashes_required: true
+  public_article_allowlist_closed: true
+  public_block_allowlist_closed: true
+  public_route_allowlist_closed: true
+  prohibited_internal_fields_rejected: true
+  raw_html_emitted: false
+  structured_data_emitted: false
+  product_cards_emitted: false
+  offers_emitted: false
+  noindex_route_only: true
+  deterministic_projection_generation: 1
+  projection_persisted: false
+  route_activated: false
+  public_read_served: false
+  disclosure_text_mode: RECORDED_SYNTHETIC_LOCAL_ONLY_NOT_PRODUCTION_COPY
+  published_at_mode: ST0903_CREATED_AT_LOCAL_ONLY_NOT_PUBLICATION_FACT
+  freshness_mode: UNKNOWN_SAFE_DEFAULT
+compatibility_boundary:
+  legacy_publication_snapshot_schema_validated: false
+  legacy_schema_reconciliation_required: true
+  heading_level_resolution: NULL_COMMON_SUBSET_NO_HEADING_ROWS
+  badges_resolution: NO_PRODUCT_ROWS_SOURCE_UNAVAILABLE
+  destination_host_resolution: NO_OFFER_ROWS_SOURCE_UNAVAILABLE
+  projection_generation_resolution: ONE_COMMON_VALID_SUBSET_LOCAL_ONLY
+  unresolved_production_values_invented: false
+security_boundary:
+  public_role: raos_public_ro
+  public_role_schema_usage: [readmodel]
+  public_role_table_privileges: [SELECT]
+  public_role_other_domain_privileges: NONE
+  projection_role: raos_projection_rw
+  finance_evidence_ai_raw_fields_forbidden: true
+  controls: [SEC-DATA-004, SEC-DATA-006]
+execution_boundary:
+  network: FORBIDDEN
+  credential: FORBIDDEN
+  provider: FORBIDDEN
+  browser: FORBIDDEN
+  database_write: FORBIDDEN
+  job: FORBIDDEN
+  event_emit: FORBIDDEN
+  api_activation: FORBIDDEN
+  public_serve: FORBIDDEN
+  cms: FORBIDDEN
+  publication: FORBIDDEN
+  staging: FORBIDDEN
+  release: FORBIDDEN
+  production: FORBIDDEN
+verification_boundary:
+  TST-011: NOT_EXECUTED
+  TST-021: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

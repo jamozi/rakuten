@@ -1,0 +1,48 @@
+schema_version: 2
+story_id: ST-0904
+status: LOCAL_CODE_COMPLETE
+classification: LOCAL_PUBLIC_READ_SHAPE_CANDIDATE_V2
+base_commit: 4afd021e36b61e226156f666e67147a4991bdc26
+scope:
+  exact_st0903_snapshot_candidate: true
+  deterministic_public_projection: true
+  closed_public_field_allowlist: true
+  recorded_synthetic_adapter: true
+  process_local_only: true
+  database_write_authority: false
+  route_activation_authority: false
+  public_serving_authority: false
+  publication_authority: false
+  disclosure_copy_authority: RECORDED_SYNTHETIC_ONLY
+  timestamp_authority: LOCAL_BUILD_INSTANT_NOT_PUBLICATION_FACT
+compatibility:
+  common_public_shape_subset: true
+  product_and_offer_source_available: false
+  legacy_publication_snapshot_schema_validated: false
+  reconciliation_required: true
+verification:
+  focused_local_checks: PASS_V1_34_V2_27
+  affected_local_checks: PASS_ST0903_V2_37_ST0306_STATIC_6
+  owner_generation_check: PASS_V1_AND_V2
+  exact_postgresql_18_4_checks: NOT_EXECUTED_RAOS_PG_BIN_UNAVAILABLE_13_SKIPPED
+  ruff_and_format: PASS
+  strict_mypy: PASS_12_SOURCE_FILES
+  workspace_check: PASS
+  canonical_import_verify: PASS
+  secret_scan: PENDING_FULL_INTEGRATION_SCAN_WORKTREE_PHYSICAL_CHECKOUT_PASS
+  formal_TST_011: NOT_EXECUTED
+  formal_TST_021: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+authority:
+  database_write_authorized: false
+  public_projection_authorized: false
+  route_activation_authorized: false
+  public_read_authorized: false
+  publication_authorized: false
+  release_authorized: false
+  production_authorized: false
