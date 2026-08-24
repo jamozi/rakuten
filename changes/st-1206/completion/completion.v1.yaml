@@ -1,0 +1,53 @@
+schema_version: 1
+story_id: ST-1206
+base_commit: 681318fe3a625819459aea89519731776d744b08
+local_status: LOCAL_CODE_COMPLETE_MAX_SAFE_DISABLED
+classification: MAXIMUM_SAFE_LOCAL_DISABLED_RECORDED_KEYWORD_RANK_EVALUATION_V1
+canonical_status_transition: NONE
+canonical_implementation_status: DEFERRED_POST_MVP
+implementation:
+  provider_neutral_inward_port: COMPLETE
+  caller_bytes_recorded_csv_adapter: COMPLETE
+  deterministic_evaluation_harness: COMPLETE
+  synthetic_fixture_rows: 6
+  runtime_feature_default: DISABLED
+  live_enabled_state_exists: false
+  import_or_persistence: NOT_EXECUTED
+  serp_scrape: FORBIDDEN
+local_checks:
+  owner_generate: PASS
+  owner_no_write_check: PASS
+  st1206_tests: 61_PASS
+  direct_dependency_st1205_tests: 57_PASS
+  ruff: PASS
+  ruff_format: PASS
+  mypy_strict: 412_SOURCE_FILES_PASS
+  focused_secret_scan: 16_FILES_0_FINDINGS
+  git_diff_check: PASS
+authority:
+  provider_selection_authorized: false
+  tracking_activation_authorized: false
+  external_network_authorized: false
+  external_write_authorized: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+verification:
+  local_recorded_evaluation: EXECUTED
+  formal_TST-030: NOT_EXECUTED
+  approved_manual_import: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  database: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+story_acceptance: false
+debt:
+  introduced: []
+  inherited_or_external:
+    - OD-004 provider/manual operational choice remains HUMAN_DECISION_REQUIRED
+    - formal TST-030 requires designated CI/staging reconciliation evidence
+    - approved operational file intake, durable persistence, and KPI materialization remain NOT_EXECUTED
+    - provider selection, credentials, live validation, staging, release, and Production remain NOT_EXECUTED

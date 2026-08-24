@@ -1,0 +1,193 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1206
+  classification: MAXIMUM_SAFE_LOCAL_DISABLED_RECORDED_KEYWORD_RANK_EVALUATION_V1
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  mvp: false
+  canonical_implementation_status: DEFERRED_POST_MVP
+  canonical_status_changed: false
+  formal_validation: NOT_EXECUTED
+  production_eligible: false
+  approval: null
+
+authority:
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1206
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    decision_id: OD-004
+    status: HUMAN_DECISION_REQUIRED
+    default_behavior: Search Consoleと手動CSVのみ
+    resolved_by_this_story: false
+  analytics_design:
+    path: docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  security_privacy_design:
+    path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    controls:
+      - SEC-APP-005
+      - SEC-APP-008
+  threat_register:
+    path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+    threats:
+      - THR-005
+      - THR-006
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    required_suite: TST-030
+
+predecessor:
+  story_id: ST-1205
+  binding: EXACT_CURRENT_COMMITTED_BYTES
+  artifacts:
+    changes/st-1205/contracts/kpi-read-model.v2.yaml: bfc6ca7722e8cafdaee558881227531e8e74e3630f3cc13455f2e3e05ff2137f
+    changes/st-1205/manifest.yaml: a1ee3011f7253787fe2b447572ba27a02c080d22d7d6b865a0cdf0c0f6167ebf
+    python/raos/domain/analytics/kpi_read_model.py: 7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac
+    python/raos/application/analytics/kpi_read_model.py: 7485112a452eec41c93578863030893f5758c310430f7db5e899f6ec53c8adbf
+  required_semantics:
+    recorded_synthetic_only: true
+    live_provider_rows: false
+    persistence: NOT_EXECUTED
+    recommendation_input: DISABLED
+    formal_TST-030: NOT_EXECUTED
+
+canonical_contracts:
+  keyword_rank_row:
+    path: contracts/raos-v0.4/contracts/schemas/imports/keyword-rank-row.schema.json
+    sha256: d1c311cf0afabf6c83c5acb0154ca8f89d023165683a08adff28f09e607bec4c
+  keyword_rank_csv_job:
+    path: contracts/raos-v0.4/contracts/schemas/jobs/analytics-import-keyword-rank-csv-v1.schema.json
+    sha256: 1b4328b6eba2bb1a3e9e34e91049f0cec2bc4080310690f50971656df2bb5cc1
+  provider_dispatch_job:
+    path: contracts/raos-v0.4/contracts/schemas/jobs/analytics-import-provider-data-v1.schema.json
+    sha256: 7610a9b4927ffddd191409b597497eac39f49712c34115a3f27fb254694c16ab
+
+feature_scope:
+  default: DISABLED
+  closed_states:
+    - DISABLED
+    - RECORDED_SYNTHETIC_EVALUATION_ONLY
+  live_enabled_state_exists: false
+  activation_interface_exists: false
+  disabled_fails_before_port_call: true
+  evaluation_imports_rows: false
+  canonical_deferred_status_preserved: true
+
+port_contract:
+  direction: INWARD_PROVIDER_NEUTRAL
+  method: read(command) -> immutable normalized batch
+  provider_sdk_types: false
+  url_field: false
+  credential_field: false
+  filesystem_path_field: false
+  raw_query_field: false
+  implementation: CALLER_BYTES_RECORDED_MANUAL_CSV
+  calls_per_instance: 1
+  retry: false
+  replay: false
+  fallback: false
+
+recorded_fixture_contract:
+  path: changes/st-1206/fixtures/recorded/keyword-rank-synthetic.v1.csv
+  sha256: e06d21cf450a75250e096d3528ac45839fa3fb7d08d9988a58d0e0b9ecd59611
+  bytes: 874
+  normalized_sha256: b2767fb7b6d59537d918ba95e3082c1b3380c9b51fb1eeabfa65fb85d96d6c64
+  synthetic: true
+  profile: RAOS_ST1206_SYNTHETIC_V1
+  provider_code: RAOS_ST1206_SYNTHETIC
+  raw_keyword_text_present: false
+  rows: 6
+  unique_keyword_ids: 2
+  metric_counts:
+    POSITION: 2
+    SEARCH_VOLUME: 2
+    DIFFICULTY: 2
+  observation_from: '2026-08-01'
+  observation_to: '2026-08-02'
+
+csv_security_contract:
+  encoding: ASCII_SUBSET_OF_UTF_8
+  bom_allowed: false
+  newline: LF_ONLY_ONE_TERMINAL
+  exact_header: true
+  quoting_allowed: false
+  blank_rows_allowed: false
+  maximum_source_bytes: 1048576
+  maximum_rows: 10000
+  exact_columns: 10
+  maximum_cell_bytes: 256
+  formula_prefixes_rejected:
+    - '='
+    - '+'
+    - '-'
+    - '@'
+  unexpected_fields_rejected: true
+  duplicate_observation_identity_rejected: true
+  out_of_period_rejected: true
+  partial_result_on_failure: false
+  raw_rows_in_result_or_error: false
+
+evaluation_contract:
+  process_local: true
+  deterministic: true
+  output_fields:
+    - command and source hashes
+    - normalized observation hash
+    - row and unique keyword counts
+    - fixed-order metric counts
+    - observation date bounds
+    - closed safety statuses
+  observation_rows_returned: false
+  raw_keyword_text_returned: false
+  provider_facts_claimed: false
+  kpi_values_calculated: false
+  recommendation_order_modified: false
+
+execution_boundary:
+  runtime_feature_default: DISABLED
+  evaluation: RECORDED_SYNTHETIC_EVALUATION_ONLY
+  import_state: EVALUATED_NOT_IMPORTED
+  provider_selection: UNRESOLVED_OD-004
+  provider: NOT_EXECUTED
+  provider_sdk: NOT_USED
+  credentials: NOT_USED
+  network: NOT_EXECUTED
+  serp_scrape: FORBIDDEN
+  filesystem_runtime: NOT_USED
+  persistence: NOT_EXECUTED
+  queue: NOT_EXECUTED
+  event: NOT_EXECUTED
+  tracking_activation: DISABLED
+  kpi_read_model_write: NOT_EXECUTED
+  recommendation_input: DISABLED
+  public_projection: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  formal_TST-030: NOT_EXECUTED
+  story_acceptance: false
+
+debt:
+  introduced: []
+  remaining:
+    - id: OD-004
+      reason: provider or approved operational manual-import choice remains a human decision
+    - id: FORMAL-TST-030
+      reason: formal CI/staging analytics reconciliation has not executed
+    - id: LIVE-PROVIDER
+      reason: no provider has been selected, connected, or validated
+    - id: PERSISTENCE
+      reason: database and KPI materialization remain unexecuted
