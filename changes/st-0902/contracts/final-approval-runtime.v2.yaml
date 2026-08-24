@@ -1,0 +1,122 @@
+schema_version: 2
+story_id: ST-0902
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_EXECUTABLE_RECORDED_HUMAN_FINAL_APPROVAL_V2
+profile: ST0902_FINAL_APPROVAL_RECORDED_LOCAL_V2
+runtime:
+  executable: true
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  repository_write: false
+  process_local_recording_only: true
+  local_human_final_approval_record_supported: true
+  real_final_approval_authorized: false
+  publication_snapshot_authorized: false
+  publication_authorized: false
+  release_authorized: false
+  production_authorized: false
+bindings:
+  st0805_policy_fixture_uri: repo://changes/st-0805/generated/policy-pass.v2.json
+  st0805_policy_fixture_sha256: 7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849
+  st0805_policy_report_sha256: 4222b076411f165967b5802f5b2057fc8635c0f0e94aadf6bcd7462e9ffa4fec
+  st0805_policy_receipt_sequence: 1
+  st0805_policy_receipt_sha256: 817606e457060934c69a31b4c53ea6a007a6b94e60632203ecd753257e2849a9
+  st0605_coverage_report_sha256: 957b65b1d0bff604ce0422f804ba90c6195fd5bf409c46ce4fcc5a7fe6418147
+  st0605_coverage_receipt_sha256: 4141b353c89e0a6daf5ef44ac1b6e7a9e326c1b01d108c78397469d6b0544a20
+  st0901_review_fixture_uri: repo://changes/st-0901/generated/review-completion-pass.v2.json
+  st0901_review_fixture_sha256: 57587322562eae4a2b58bebfc6b917e39fb05f077cf7268deb4056563950a361
+  st0901_review_result_sha256: 7dd988a08c03515708d40c4640caf6c6a8b6ea79722e80b4dd5cd79ab89e3f94
+  st0901_review_record_sha256: 1daf8cccd4782f3720400df584fe75092e4836b95cc796b5f8684d2e72a6c128
+  st0901_review_decision_sha256: 0c8a8ae131409d642b1e075f6f86483d1460836fc8db70891048bf5cde2ba201
+  policy_finding_snapshot_sha256: fb27894da7a6bc68b65b383cd3af03029bbb0688d3b553a7d36f2286c9976967
+  finding_clearance_sha256: 116dd0aa284750e18711d5a366c13f4df482ee44e99b9e5abc13b81c60c8b382
+  article_version_id: 018f3e90-7b00-7000-8000-000000000806
+  article_version_no: 1
+  article_body_sha256: 4c9bf36fac581e746126668ef8b36a27ea8e1acc0dc18bf9fc76c3af274311b9
+  canonical_ast_sha256: 4c9bf36fac581e746126668ef8b36a27ea8e1acc0dc18bf9fc76c3af274311b9
+fixture:
+  fixture_id: 018f3e90-7b00-7000-8000-000000000920
+  approval:
+    approval_id: 018f3e90-7b00-7000-8000-000000000921
+    audit_event_id: 018f3e90-7b00-7000-8000-000000000922
+    approved_at: '2026-08-24T01:35:00Z'
+    reason: Recorded synthetic human final approval after every bound gate passed.
+    idempotency_key: st0902-v2-final-approval-0001
+    article_author_id: 018f3e90-7b00-7000-8000-000000000923
+    last_editor_id: 018f3e90-7b00-7000-8000-000000000924
+    site_id: 018f3e90-7b00-7000-8000-000000000925
+    finding_snapshot_captured_at: '2026-08-24T01:33:00Z'
+    open_blocking_finding_ids: []
+  actor:
+    principal_id: 018f3e90-7b00-7000-8000-000000000926
+    site_id: 018f3e90-7b00-7000-8000-000000000925
+    subject_kind: HUMAN
+    subject_status: ACTIVE
+    role: MANAGING_EDITOR
+    mfa_state: SATISFIED_RECORDED_SYNTHETIC
+    step_up_state: SATISFIED_RECORDED_SYNTHETIC
+    reauthenticated_at: '2026-08-24T01:34:00Z'
+approval_gate:
+  exact_article_version_and_hashes_required: true
+  exact_st0605_coverage_report_receipt_required: true
+  coverage_status_required: PASS
+  major_claim_coverage_required: true
+  all_verifiable_claim_coverage_required: true
+  exact_st0805_policy_report_receipt_required: true
+  policy_status_required: LOCAL_EVALUATED
+  policy_findings_required: []
+  legacy_policy_findings_required: []
+  waiver_evaluations_required: []
+  local_eligibility_required: true
+  quality_threshold_required: true
+  quality_floors_required: true
+  policy_rules_required: true
+  zero_tolerance_clear_required: true
+  quality_gates_required: true
+  predecessors_available_required: true
+  exact_st0901_completed_approve_required: true
+  complete_finding_snapshot_required: true
+  open_blocking_findings_required: []
+  blocking_waiver_supported: false
+  active_human_required: true
+  managing_editor_required: true
+  site_scope_required: true
+  mfa_required: true
+  recorded_step_up_required: true
+  recorded_step_up_max_age_seconds: 300
+  author_approver_separation_required: true
+  editor_approver_separation_required: true
+  reviewer_approver_separation_required: true
+completion_boundary:
+  immutable_gate_bundle: true
+  immutable_local_final_approval_record: true
+  immutable_local_audit_artifact: true
+  local_idempotency_receipt: true
+  durable_transaction: false
+  public_api: false
+  database: false
+  event_bus: false
+  outbox: false
+  publication_snapshot_effect: false
+execution_boundary:
+  network: FORBIDDEN
+  credential: FORBIDDEN
+  provider: FORBIDDEN
+  external_identity_lookup: FORBIDDEN
+  public_api_write: FORBIDDEN
+  database_write: FORBIDDEN
+  event_emit: FORBIDDEN
+  publication_snapshot_mutation: FORBIDDEN
+  publication: FORBIDDEN
+  staging: FORBIDDEN
+  release: FORBIDDEN
+  production: FORBIDDEN
+verification_boundary:
+  TST-012: NOT_EXECUTED
+  TST-021: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  production: NOT_EXECUTED
