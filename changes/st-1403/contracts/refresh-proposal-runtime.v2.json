@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 2,
+  "storyId": "ST-1403",
+  "classification": "RECORDED_SYNTHETIC_REFRESH_PROPOSAL_V2",
+  "environment": "CI",
+  "recordedAt": "2026-08-24T03:00:00Z",
+  "bindings": {
+    "canonicalIntegration": {
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    "canonicalDecisions": {
+      "path": "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+      "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+    },
+    "canonicalOpenDecisions": {
+      "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    "storyBacklog": {
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    "testCatalog": {
+      "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    "securityCatalog": {
+      "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    "st1401Completion": {
+      "path": "changes/st-1401/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v1.yaml",
+      "sha256": "37be7ef769384885aafb802f6c69bb15dc8d7cb0aeaf15dff013144526b6f866"
+    },
+    "st1401Domain": {
+      "path": "python/raos/domain/freshness/freshness.py",
+      "sha256": "3a33b44d99f92fce6417257de8c170d4622dd900fe7cc7cbac0b67494469dd95"
+    },
+    "st0805Completion": {
+      "path": "changes/st-0805/completion/completion.v2.yaml",
+      "sha256": "386ca6db278facc89e8a6438116473749ef9224d1648ea398c9d2a294735bf84"
+    },
+    "st0805Contract": {
+      "path": "changes/st-0805/contracts/policy-runtime.v2.yaml",
+      "sha256": "ec64cd6e0be75987ef1f99e4f3f04574650c19670f3d08839875afa0bfcf52e4"
+    },
+    "st0805Fixture": {
+      "path": "changes/st-0805/generated/policy-pass.v2.json",
+      "sha256": "7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849"
+    },
+    "st0805Domain": {
+      "path": "python/raos/domain/editorial/policy_engine_v2.py",
+      "sha256": "86e0af8ff6b651b50a7959a0a8c0f85864c230a57144b51e190041d658ee7d93"
+    },
+    "securePublication": {
+      "path": "scripts/secure_generated_publication.py",
+      "sha256": "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e"
+    }
+  },
+  "candidate": {
+    "articleVersionId": "018f3e90-7b00-7000-8000-000000000806",
+    "baselinePublicationSnapshotSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "candidateSnapshotSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "freshness": {
+    "freshnessClassId": "FRESH-007",
+    "observationStatus": "VALIDATED",
+    "observedAt": "2026-08-24T01:00:00Z",
+    "evaluatedAt": "2026-08-24T02:00:00Z",
+    "recommendationBasisAffected": true
+  },
+  "diffs": [
+    {
+      "diffId": "DIFF-1403-RECORDED-001",
+      "kind": "CHANGED",
+      "changeType": "PRODUCT_ATTRIBUTE",
+      "changedEntityType": "FACT",
+      "changedEntityId": "FACT-1403-RECORDED-001",
+      "beforeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "afterSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "affectedClaimIds": ["CLAIM-1403-RECORDED-001"],
+      "impactLevel": "HIGH",
+      "requiredAction": "REVIEW",
+      "impactSurfaces": ["RECOMMENDATION", "MAJOR_SPECIFICATION"],
+      "actionType": "UPDATE",
+      "deterministicPriorityRank": 1,
+      "recommendationRankChange": true
+    }
+  ],
+  "authority": {
+    "humanApprovalRequired": true,
+    "proposalOnly": true,
+    "automaticReorderingAuthorized": false,
+    "canChangeState": false,
+    "persistenceAuthorized": false,
+    "publicationAuthorized": false,
+    "releaseAuthorized": false,
+    "productionEligible": false
+  }
+}
