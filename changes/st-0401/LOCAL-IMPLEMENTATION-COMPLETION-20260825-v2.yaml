@@ -1,0 +1,118 @@
+document:
+  id: RAOS-ST0401-LOCAL-IMPLEMENTATION-COMPLETION-002
+  story_id: ST-0401
+  evidence_class: LOCAL_IMPLEMENTATION_ONLY
+  proposed_status: LOCAL_CODE_COMPLETE
+  base_sha: 3e93372902962ff01393a22a604949a835791841
+  recorded_at: '2026-08-25T00:42:45+09:00'
+
+scope:
+  - provider-neutral authentication Domain, ports, and application lifecycle
+  - deterministic ENV-DEV provider and in-memory repository recovery seam
+  - disabled external Admin HTTP projection with exact recorded loopback harness
+  - owner-private durable authorization/session repository and transaction boundary
+  - deterministic owner contract, runtime artifact, and manifest
+
+local_completion:
+  state_nonce_pkce: IMPLEMENTED_S256_ONLY_256_BIT_SINGLE_USE
+  session_expiry_rotation_replay: IMPLEMENTED_FAIL_CLOSED
+  durable_repository: IMPLEMENTED_RECORDED_LOCAL_ONLY
+  transaction_atomicity: IMPLEMENTED_EXPLICIT_OUTER_TRANSACTION_PER_MUTATION
+  crash_recovery:
+    before_commit: KNOWN_ROLLBACK_PREDECESSOR_ACTIVE
+    after_commit: STORAGE_COMMIT_UNKNOWN_READ_ONLY_RESOLUTION_NO_RETRY
+  external_http: UNCONDITIONAL_RFC9457_503_DISABLED
+  recorded_http: EXACT_IPV4_LOOPBACK_FIXED_INTERNAL_TARGET_ONLY
+  token_delivery: UNSELECTED_NOT_DELIVERED
+  network_provider_credentials: ABSENT
+
+debt:
+  - id: DEBT-W1-001
+    local_implementation_gap: CLOSED
+    closed_components:
+      - disabled transport and strict request/response/problem shapes
+      - recorded loopback-only integration
+      - durable transaction/session repository seam
+      - crash, recovery, atomicity, expiry, rotation, and replay negatives
+    external_tail: EXTERNAL_BLOCKED_BY_OD-010_NOT_INFERRED
+    external_tail_includes:
+      - real OIDC provider and issuer/client/credential lifecycle
+      - cookie versus bearer and browser storage policy
+      - external route/callback activation and validation
+  - id: DEBT-W1-002
+    status: INHERITED_NOT_MODIFIED
+    reason: ST-0204 provenance and shared Makefile are outside this Story-owned slice
+  - id: ST0401-V2-INTRODUCED-DEBT
+    status: NONE
+
+checks:
+  import:
+    result: PASS
+    observed: ST0401_IMPORT_OK
+  owner_generation:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python scripts/build_st0401_local_auth_runtime.py
+    result: PASS
+  owner_no_write_check:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python scripts/build_st0401_local_auth_runtime.py --check
+    result: PASS
+  focused_pytest:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/pytest -p no:cacheprovider -q tests/st0401
+    result: PASS
+    observed: 64 passed
+  affected_regression:
+    result: PASS_WHEN_RUN_AS_ISOLATED_STORY_SUITES
+    observed:
+      - 'tests/st0402: 27 passed'
+      - 'tests/st0403: 37 passed'
+      - 'tests/st1405: 82 passed'
+    resolved_harness_note: one combined pytest collection reused the duplicate test_boundaries module name; separate isolated invocations passed
+  network_syscalls:
+    method: strace network-only trace over the 58 behavior/generation tests
+    result: PASS
+    observed: 0 network syscalls
+  ruff_check:
+    result: PASS
+    observed: All checks passed
+  ruff_format_check:
+    result: PASS
+    observed: 13 files already formatted
+  strict_mypy:
+    result: PASS
+    observed: Success; no issues found in 13 source files
+  strict_pyright:
+    runtime: Node 24.18.1 with repository-locked Pyright
+    result: PASS
+    observed: 0 errors, 0 warnings, 0 informations
+  focused_secret_scan:
+    result: PASS
+    observed: 0 findings across 16 changed files
+  full_worktree_secret_scan:
+    command: python3 -I scripts/scan_secrets.py --worktree
+    result: OPERATIONAL_ERROR_INHERITED
+    observed: unsafe-git-metadata for isolated worktree indirection
+    impact: does not weaken or replace the focused descriptor-relative scan
+
+generated_artifacts:
+  contract:
+    path: changes/st-0401/contracts/local-auth-runtime.v2.json
+    sha256: f3f9c08ce612f930833a0ca575d4c4f00e1e3a850316b4ad14a7f994ca0a7d4b
+  runtime:
+    path: changes/st-0401/generated/local-auth-runtime.v2.json
+    sha256: a73d66e88779f67f0fdda1e42e76831e6d11c314be336933a0fddb10a89ebbbc
+  manifest:
+    path: changes/st-0401/generated/local-auth-runtime-manifest.v2.json
+    sha256: 8ac73e91ff684d356144c320c36b7c6a0eb69e67d9028fe5bc48d1863e1683cb
+
+authority:
+  canonical_apply: NOT_EXECUTED
+  formal_tst_012: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  credential_access: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

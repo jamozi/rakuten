@@ -295,6 +295,28 @@ class InMemoryAuthenticationRepository:
             self._sessions[old_key] = revoked_predecessor
             self._sessions[new_key] = successor
 
+    def recover_session_rotation(self, predecessor_id: SessionId) -> Session:
+        self._guard()
+        if type(predecessor_id) is not SessionId:
+            _raise(AuthenticationFailureCode.MALFORMED_INPUT)
+        predecessor_key = predecessor_id.fingerprint()
+        with self._lock:
+            predecessor = self._sessions.get(predecessor_key)
+            if predecessor is None:
+                _raise(AuthenticationFailureCode.SESSION_UNKNOWN)
+            successors = tuple(
+                session
+                for session in self._sessions.values()
+                if session.rotated_from == predecessor_id
+            )
+            if not successors:
+                if predecessor.revoked_at is not None:
+                    _raise(AuthenticationFailureCode.STORAGE_FAILURE)
+                return predecessor
+            if len(successors) != 1 or predecessor.revoked_at is None:
+                _raise(AuthenticationFailureCode.STORAGE_FAILURE)
+            return successors[0]
+
     def _guard(self) -> None:
         _require_development(self._environment)
 

@@ -1,0 +1,119 @@
+{
+  "schema_version": 2,
+  "story_id": "ST-0401",
+  "status": "LOCAL_CODE_COMPLETE",
+  "dependencies": [
+    "ST-0103",
+    "ST-0204"
+  ],
+  "open_decision": {
+    "id": "OD-010",
+    "status": "HUMAN_DECISION_REQUIRED",
+    "safe_default": "LOCAL_FAKE_DEVELOPMENT_ONLY_EXTERNAL_PUBLICATION_FORBIDDEN",
+    "provider_selection": "UNSELECTED"
+  },
+  "runtime": {
+    "environment": "ENV-DEV",
+    "provider_adapter": "RECORDED_FAKE_NO_NETWORK",
+    "provider_sdk": "ABSENT",
+    "credential_resolution": "ABSENT",
+    "external_provider_calls": false,
+    "transport": {
+      "route_registration": false,
+      "external_dispatch": "UNCONDITIONAL_RFC9457_503_REFUSAL",
+      "recorded_origin": "HTTP_EXACT_IPV4_LOOPBACK_WITH_UNPRIVILEGED_PORT",
+      "recorded_target": "/__recorded__/st-0401/admin-auth",
+      "recorded_method": "POST",
+      "recorded_content_type": "application/json",
+      "actions": [
+        "BEGIN",
+        "CALLBACK",
+        "REQUIRE",
+        "ROTATE",
+        "RECOVER_ROTATION",
+        "REVOKE"
+      ],
+      "cookie_delivery": "UNSELECTED_NOT_DELIVERED",
+      "bearer_delivery": "UNSELECTED_NOT_DELIVERED",
+      "browser_storage": "UNSELECTED_NOT_DELIVERED",
+      "success_body_keys": [
+        "delivery",
+        "external_activation",
+        "outcome"
+      ],
+      "problem_body_keys": [
+        "code",
+        "detail",
+        "instance",
+        "status",
+        "title",
+        "type"
+      ],
+      "delivery_headers_forbidden": [
+        "Authorization",
+        "Location",
+        "Set-Cookie"
+      ]
+    },
+    "authorization": {
+      "state_bits": 256,
+      "nonce_bits": 256,
+      "pkce_verifier_bits": 256,
+      "pkce_method": "S256_ONLY",
+      "consume_semantics": "ATOMIC_ONE_TIME_EVEN_ON_VALIDATION_FAILURE"
+    },
+    "session": {
+      "idle_expiry": "BOUNDED",
+      "absolute_expiry": "BOUNDED_NON_EXTENDABLE",
+      "replace": "COMPARE_AND_SET",
+      "rotation": "ATOMIC_REVOKE_PREDECESSOR_AND_CREATE_SUCCESSOR",
+      "rotation_recovery": "RESOLVE_ONLY_NO_BLIND_RETRY",
+      "replay": "FAIL_CLOSED"
+    },
+    "persistence": {
+      "classification": "OWNER_PRIVATE_RECORDED_LOCAL_ADAPTER_ONLY",
+      "database": "SQLITE_FIXED_FILENAME_NO_CALLER_SQL",
+      "transaction_owner": "ADAPTER_OUTER_TRANSACTION_PER_MUTATION",
+      "external_io_inside_transaction": false,
+      "authorization_and_session_atomicity": true,
+      "session_rotation_atomicity": true,
+      "commit_fault_points": [
+        "BEFORE_COMMIT",
+        "AFTER_COMMIT"
+      ],
+      "known_rollback": "PREDECESSOR_REMAINS_ACTIVE",
+      "unknown_commit": "STORAGE_COMMIT_UNKNOWN_THEN_READ_ONLY_RESOLUTION",
+      "record_integrity": "CANONICAL_SHA256_PER_RECORD",
+      "migration_or_production_schema_authority": false,
+      "st0308_alignment": "EXPLICIT_OUTER_TRANSACTION_NO_EXTERNAL_IO_NO_BLIND_COMMIT_RETRY"
+    }
+  },
+  "debt_resolution": {
+    "id": "DEBT-W1-001",
+    "local_implementation_gap": "CLOSED",
+    "disabled_transport_and_recorded_http_shape": "IMPLEMENTED",
+    "durable_transaction_and_session_seam": "IMPLEMENTED",
+    "real_provider_and_browser_delivery_tail": "EXTERNAL_BLOCKED_BY_OD-010_NOT_INFERRED"
+  },
+  "authority": {
+    "external_http_activation": false,
+    "browser_authentication": false,
+    "credential_access": false,
+    "live_provider": false,
+    "staging": false,
+    "publication": false,
+    "release": false,
+    "production": false
+  },
+  "verification": {
+    "local_focused": "EXECUTABLE",
+    "formal_tst_012": "NOT_EXECUTED",
+    "formal_tst_022": "NOT_EXECUTED",
+    "formal_tst_026": "NOT_EXECUTED",
+    "browser": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  }
+}

@@ -1,66 +1,71 @@
 # ST-0401 provider-neutral authentication boundary
 
-Status: `LOCAL_IMPLEMENTATION_CANDIDATE`
+Status: `LOCAL_CODE_COMPLETE`
 
-This Story implements the reversible local portion of the approved ST-0401
-authentication design. It provides inward OIDC and persistence ports, strict
-authorization/session domain values, an application service, and an exact
-`ENV-DEV` deterministic fake. It does not select or activate a browser-to-API
-session transport.
+ST-0401 now has a complete maximum-safe local authentication path while
+`OD-010` remains unresolved. The existing provider-neutral Domain, inward
+ports, application service, deterministic `ENV-DEV` provider, and ephemeral
+repository remain available. V2 adds a strict disabled Admin HTTP projection
+and an owner-private durable recorded repository without selecting a real OIDC
+provider or browser delivery policy.
 
-## Safe default and implemented scope
+## Implemented local boundary
 
-- Authorization requests use independent 256-bit state, nonce, and verifier
-  values. Their wire forms are canonical unpadded base64url values.
-- PKCE is S256-only. Unsupported methods, malformed values, mismatches,
-  unknown codes, expiry, and reuse all fail closed with sanitized typed errors.
-- Authorization transactions and fake authorization codes are consumed once,
-  including when a subsequent validation step fails.
-- Application sessions have bounded idle and absolute lifetimes. Rotation
-  atomically revokes the predecessor, revocation is idempotent, and revoked or
-  expired sessions cannot be used.
-- The fake adapter and its ephemeral in-memory repository reject every runtime
-  environment except the exact `RuntimeEnvironment.ENV_DEV` enum member. The
-  fake performs no network exchange and exposes no local-password flow.
-- Provider SDK types, HTTP framework types, database models, credentials, and
-  Secret resolution do not cross the inward ports.
+- Authorization requests use independent canonical 256-bit state, nonce, and
+  verifier values with S256-only PKCE. State, code, and authorization records
+  are consumed once; mismatch, expiry, replay, and malformed input fail closed.
+- Sessions have bounded idle and absolute expiry, compare-and-set refresh and
+  revocation, atomic predecessor revocation/successor creation, and read-only
+  recovery after an unknown rotation commit. Recovery never retries rotation.
+- `RecordedSqliteAuthenticationRepository` accepts only the exact
+  `RuntimeEnvironment.ENV_DEV` enum member and one absolute owner-private
+  directory. It uses a fixed local filename, explicit transactions, full
+  synchronization, canonical record hashes, and no caller SQL, provider SDK,
+  network, credential, migration, role, or Production configuration surface.
+- Before-commit and after-commit fault seams prove known rollback and unknown
+  commit resolution. Restart, concurrency, corruption, atomicity, replay, and
+  expiry behavior are covered by isolated local tests.
+- `DisabledAdminAuthHttpAdapter.dispatch_external` refuses every input with a
+  static RFC 9457 `503 AUTH_TRANSPORT_DISABLED` response without inspecting or
+  reflecting the input. No framework route is registered.
+- The separate recorded harness accepts only exact `POST` JSON documents at
+  `http://127.0.0.1:<unprivileged-port>` and the fixed internal test target.
+  Request and response keys are closed. Callback/session handles stay in a
+  non-serializable in-process test result; response bodies contain no token,
+  and `Set-Cookie`, `Authorization`, and `Location` delivery are forbidden.
 
-The implementation intentionally adds no HTTP route, cookie, bearer token,
-provider configuration, SDK, persistence migration, generated client, or
-public surface. It does not implement MFA, an authorization policy engine,
-broad HTTP hardening, a secret manager, or the admin shell.
-
-## Local commands
-
-After the exact locked Python environment has already been hydrated, these
-targets are offline, no-cache, no-sync, and read-only:
+The deterministic owner contract is
+`changes/st-0401/contracts/local-auth-runtime.v2.json`. Generate or verify the
+two provenance-bound artifacts with:
 
 ```bash
-make oidc-check UV=/absolute/path/to/reviewed/uv-0.12.1
-make oidc-static UV=/absolute/path/to/reviewed/uv-0.12.1
-make oidc-test UV=/absolute/path/to/reviewed/uv-0.12.1
-make oidc-gate UV=/absolute/path/to/reviewed/uv-0.12.1
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. \
+  .venv/bin/python scripts/build_st0401_local_auth_runtime.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. \
+  .venv/bin/python scripts/build_st0401_local_auth_runtime.py --check
 ```
 
-`oidc-check` imports the neutral seam. `oidc-static` runs pinned Ruff
-lint/format and strict mypy only over the Story-owned Python surface and
-isolated tests. `oidc-test` never invokes repository-root pytest. The ST-0204
-predecessor check remains a separate owner check because adding these Make
-targets changes one of its provenance inputs; implementation-first defers that
-manifest regeneration to the Wave freeze instead of hand-editing generated
-output.
+Run the isolated Story suite with:
 
-## Evidence boundary and remaining blockers
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. \
+  .venv/bin/pytest -p no:cacheprovider -q tests/st0401
+```
 
-A local gate pass is implementation-first candidate evidence only. It is not
-formal TST-012/TST-022/TST-026 evidence, hosted CI, runtime-provider
-validation, staging, release, publication, deployment, or Production
-readiness. No generated status or canonical artifact is changed by this Story.
+## Debt and authority boundary
 
-OD-010 still requires a human-selected real OIDC provider and approved issuer,
-audience, client registration, redirect, and credential lifecycle before any
-external adapter may be enabled. The cookie-session versus bearer-token
-browser transport remains a cross-module decision recorded as `DEBT-W1-001`.
-Real-provider network exchange, Secret resolution, durable session persistence,
-HTTP delivery, admin UI integration, formal evidence, and every external
-environment remain disabled and unexecuted.
+The repository-local implementation gap recorded in `DEBT-W1-001` is closed:
+the disabled transport shape, recorded loopback integration, durable
+transaction/session seam, commit ambiguity recovery, and negative-path tests
+are present and owner-generated. The rest of that historical entry is an
+external Human Gate, not an inferred local implementation choice. `OD-010`
+still requires a Security Owner to select a real provider, issuer/client and
+credential lifecycle. Cookie versus bearer delivery, browser storage,
+Production callback/route activation, and external validation remain
+unselected and blocked.
+
+This Story grants no credential, live-provider, browser, external HTTP,
+staging, publication, deployment, release, or Production authority. Formal
+TST-012/TST-022/TST-026, browser/runtime verification, hosted CI, staging,
+release, and Production are `NOT_EXECUTED`; local checks are not promoted to
+those evidence classes.

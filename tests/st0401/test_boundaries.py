@@ -23,6 +23,11 @@ OWNED_SOURCE = (
     Path("python/raos/adapters/development_oidc.py"),
 )
 
+V2_ADAPTER_SOURCE = (
+    Path("python/raos/adapters/recorded_authentication.py"),
+    Path("python/raos/adapters/disabled_admin_auth_http.py"),
+)
+
 
 def _imports(path: Path) -> set[str]:
     tree = ast.parse((REPOSITORY_ROOT / path).read_text(encoding="utf-8"))
@@ -87,6 +92,39 @@ def test_adapter_has_no_process_environment_file_network_or_password_surface() -
     assert attributes.isdisjoint({"connect", "request", "urlopen"})
     assert "password" not in identifiers
     assert "password" not in attributes
+
+
+def test_v2_adapters_keep_framework_provider_and_delivery_dependencies_absent() -> None:
+    imports = set().union(*(_imports(path) for path in V2_ADAPTER_SOURCE))
+    forbidden_roots = {
+        "boto3",
+        "fastapi",
+        "httpx",
+        "requests",
+        "sqlalchemy",
+        "starlette",
+    }
+    assert not {name for name in imports if name.partition(".")[0] in forbidden_roots}
+    assert "socket" not in imports
+
+    http_source = (REPOSITORY_ROOT / V2_ADAPTER_SOURCE[1]).read_text(encoding="utf-8")
+    for forbidden in ("Set-Cookie", "Bearer ", "add_route", "include_router"):
+        assert forbidden not in http_source
+    assert "dispatch_external" in http_source
+    assert "AUTH_TRANSPORT_DISABLED" in http_source
+
+
+def test_durable_adapter_owns_explicit_transactions_and_unknown_commit_recovery() -> (
+    None
+):
+    source = (REPOSITORY_ROOT / V2_ADAPTER_SOURCE[0]).read_text(encoding="utf-8")
+    assert 'connection.execute("BEGIN IMMEDIATE")' in source
+    assert "connection.commit()" in source
+    assert "connection.rollback()" in source
+    assert "STORAGE_COMMIT_UNKNOWN" in source
+    assert "recover_session_rotation" in source
+    assert "requests" not in source
+    assert "urlopen" not in source
 
 
 def test_sensitive_values_reject_generic_pickle_serialization() -> None:

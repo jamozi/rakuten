@@ -254,6 +254,28 @@ class AuthenticationService:
         self._replace_session(expected=session, replacement=revoked)
         return revoked
 
+    def recover_session_rotation(
+        self, *, predecessor_id: SessionId, now: datetime
+    ) -> Session:
+        """Resolve a repository commit ambiguity without retrying rotation."""
+
+        if type(predecessor_id) is not SessionId:
+            _raise(AuthenticationFailureCode.MALFORMED_INPUT)
+        observed_at = require_utc(now)
+        recovered: Session | None = None
+        failure: AuthenticationFailureCode | None = None
+        try:
+            recovered = self._repository.recover_session_rotation(predecessor_id)
+        except AuthenticationFailure as error:
+            failure = _failure_code(error, AuthenticationFailureCode.STORAGE_FAILURE)
+        except Exception:
+            failure = AuthenticationFailureCode.STORAGE_FAILURE
+        if failure is not None or recovered is None or type(recovered) is not Session:
+            _raise(failure or AuthenticationFailureCode.STORAGE_FAILURE)
+        self._require_monotonic_session_time(recovered, observed_at)
+        recovered.require_active(observed_at)
+        return recovered
+
     def _token_bytes(self) -> bytes:
         value: object = None
         failed = False
