@@ -122,7 +122,7 @@ def test_helper_hash_is_verified_before_import(monkeypatch: pytest.MonkeyPatch) 
         imported = True
         raise AssertionError
 
-    monkeypatch.setattr(generator, "_HELPER_MODULE", None)
+    monkeypatch.setattr(generator, "_helper_module", None)
     monkeypatch.setattr(generator, "HELPER_SHA256", "0" * 64)
     monkeypatch.setattr(importlib, "import_module", forbidden)
     with pytest.raises(

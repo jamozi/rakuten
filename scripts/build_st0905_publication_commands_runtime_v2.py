@@ -4,13 +4,13 @@
 from __future__ import annotations
 
 import argparse
-from collections.abc import Mapping
+from collections.abc import Callable, Iterable
 import hashlib
 import os
 from pathlib import Path
 import stat
 import sys
-from typing import Final, NoReturn, cast
+from typing import Any, Final, NoReturn, cast
 
 import yaml
 from yaml.tokens import AliasToken, AnchorToken, TagToken
@@ -230,11 +230,15 @@ def _construct_mapping(
     deep: bool = False,
 ) -> dict[object, object]:
     result: dict[object, object] = {}
-    for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+    node_pairs = cast(list[tuple[yaml.Node, yaml.Node]], node.value)
+    loader_api = cast(Any, loader)
+    construct = cast(Callable[[yaml.Node, bool], object], loader_api.construct_object)
+    for key_node, value_node in node_pairs:
+        key = construct(key_node, deep)
         if key in result:
             _fail("DUPLICATE_YAML_KEY")
-        result[key] = loader.construct_object(value_node, deep=deep)
+        value = construct(value_node, deep)
+        result[key] = value
     return result
 
 
@@ -244,7 +248,7 @@ _UniqueLoader.add_constructor(
 )
 
 
-def _safe_path(root: Path, relative: Path) -> Path:
+def _safe_path(root: Path, relative: object) -> Path:
     if (
         not isinstance(relative, Path)
         or relative.is_absolute()
@@ -285,16 +289,21 @@ def _read_regular(path: Path) -> bytes:
 
 
 def _mapping(value: object) -> dict[str, object]:
-    if not isinstance(value, Mapping) or any(type(key) is not str for key in value):
+    if type(value) is not dict:
         _fail("CONTRACT_SHAPE_INVALID")
-    return {cast(str, key): item for key, item in value.items()}
+    candidate = cast(dict[object, object], value)
+    if any(type(key) is not str for key in candidate):
+        _fail("CONTRACT_SHAPE_INVALID")
+    return {cast(str, key): item for key, item in candidate.items()}
 
 
 def load_contract(root: Path = REPO_ROOT) -> dict[str, object]:
     root = Path(os.path.abspath(root))
     payload = _read_regular(_safe_path(root, CONTRACT_PATH))
     try:
-        tokens = tuple(yaml.scan(payload))
+        yaml_api = cast(Any, yaml)
+        scan = cast(Callable[[bytes], Iterable[object]], yaml_api.scan)
+        tokens = tuple(scan(payload))
         if any(
             isinstance(token, (AliasToken, AnchorToken, TagToken)) for token in tokens
         ):
