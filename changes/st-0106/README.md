@@ -233,13 +233,17 @@ It resolves the exact prior and current Git blobs, verifies both complete
 source hashes, accepts only the hash-bound one-line replacement at line 967,
 requires the reviewed line to be byte-identical, and requires the complete
 sanitized finding set to remain exactly one `GENERIC_CREDENTIAL` at line 961
-with zero specific-rule finding. It then copies V2 and changes only that one
-entry's whole-source byte count and SHA-256. Any other hunk, reviewed-line
-change, new generic finding, specific finding, predecessor drift, scanner
-drift, or generated-output drift is rejected.
+with zero specific-rule finding. It then copies V2, changes only that worktree
+entry's whole-source byte count and SHA-256, and projects one `git_history`
+entry for the exact current blob. That projection inherits the reviewed line,
+line hash, classification, and rationale from the exact prior-blob history
+entry. This is required because a full-history scan sees both source blobs.
+Any other hunk, reviewed-line change, new generic finding, specific finding,
+predecessor/history-entry drift, scanner drift, or generated-output drift is
+rejected.
 
-The generated ledger is 59,769 bytes at SHA-256
-`d89b24ce08871fb92c126bf02662c6174448abd5a70a0d804ee531b78a4765a0`.
+The generated 116-entry ledger is 60,287 bytes at SHA-256
+`09277639d9db84371e8e3882ad2379ee4e15a13ff35a74b003201bde2f681f40`.
 Its manifest is regenerated from the exact input, owner, scanner, predecessor,
 prior blob, current source, and output. The Secrets job changes only the final
 ledger-path suffix from V2 to V3; replacing V3 with V2 reconstructs the exact

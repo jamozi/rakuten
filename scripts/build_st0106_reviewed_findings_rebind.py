@@ -96,6 +96,7 @@ class RebindPolicy:
     reviewed_line_sha256: str
     prior: SourceVersion
     current: SourceVersion
+    project_current_blob_to_history: bool
     expected_findings: frozenset[tuple[int, str]]
     allowed_hunks: tuple[ChangedHunk, ...]
 
@@ -191,6 +192,7 @@ def parse_rebind_policy(document: Mapping[str, object]) -> RebindPolicy:
                 "current_blob_oid",
                 "current_bytes",
                 "current_sha256",
+                "project_current_blob_to_history",
                 "expected_findings",
                 "allowed_hunks",
             }
@@ -199,6 +201,8 @@ def parse_rebind_policy(document: Mapping[str, object]) -> RebindPolicy:
     )
     if source["scope"] != "worktree":
         raise OwnerError("INVALID_REBIND_SCOPE")
+    if source["project_current_blob_to_history"] is not True:
+        raise OwnerError("HISTORY_PROJECTION_REQUIRED")
 
     raw_findings = _sequence(
         source["expected_findings"], code="INVALID_EXPECTED_FINDINGS"
@@ -281,6 +285,7 @@ def parse_rebind_policy(document: Mapping[str, object]) -> RebindPolicy:
                 source["current_blob_oid"], code="INVALID_CURRENT_SOURCE"
             ),
         ),
+        project_current_blob_to_history=True,
         expected_findings=frozenset(expected_findings),
         allowed_hunks=tuple(hunks),
     )
@@ -365,6 +370,19 @@ def _sanitized_findings(data: bytes, source: str) -> frozenset[tuple[int, str]]:
     )
 
 
+def _ledger_entry_sort_key(entry: Mapping[str, object]) -> tuple[int, str, int]:
+    scope = _text(entry.get("scope"), code="INVALID_PREDECESSOR_LEDGER")
+    if scope not in {"worktree", "git_history"}:
+        raise OwnerError("INVALID_PREDECESSOR_LEDGER")
+    identifier = _text(
+        entry.get("exact_source_identifier"), code="INVALID_PREDECESSOR_LEDGER"
+    )
+    line = _positive_int(
+        entry.get("exact_line_number"), code="INVALID_PREDECESSOR_LEDGER"
+    )
+    return (0 if scope == "worktree" else 1, identifier, line)
+
+
 def reconcile_ledger(
     predecessor_data: bytes,
     prior_data: bytes,
@@ -401,31 +419,59 @@ def reconcile_ledger(
     raw_entries = predecessor.get("entries")
     if type(raw_entries) is not list:
         raise OwnerError("INVALID_PREDECESSOR_LEDGER")
-    entries = cast(list[object], raw_entries)
-    matches: list[dict[str, object]] = []
-    for raw_entry in entries:
+    untyped_entries = cast(list[object], raw_entries)
+    entries: list[dict[str, object]] = []
+    worktree_matches: list[dict[str, object]] = []
+    prior_history_matches: list[dict[str, object]] = []
+    current_history_matches: list[dict[str, object]] = []
+    for raw_entry in untyped_entries:
         if type(raw_entry) is not dict:
             raise OwnerError("INVALID_PREDECESSOR_LEDGER")
         candidate_entry = cast(dict[str, object], raw_entry)
+        entries.append(candidate_entry)
         if (
             candidate_entry.get("scope") == "worktree"
             and candidate_entry.get("exact_source_identifier") == policy.path
             and candidate_entry.get("exact_line_number") == policy.reviewed_line
         ):
-            matches.append(candidate_entry)
-    if len(matches) != 1:
+            worktree_matches.append(candidate_entry)
+        if (
+            candidate_entry.get("scope") == "git_history"
+            and candidate_entry.get("exact_source_identifier") == policy.prior.blob_oid
+            and candidate_entry.get("exact_line_number") == policy.reviewed_line
+        ):
+            prior_history_matches.append(candidate_entry)
+        if (
+            candidate_entry.get("scope") == "git_history"
+            and candidate_entry.get("exact_source_identifier")
+            == policy.current.blob_oid
+            and candidate_entry.get("exact_line_number") == policy.reviewed_line
+        ):
+            current_history_matches.append(candidate_entry)
+    if len(worktree_matches) != 1:
         raise OwnerError("REVIEWED_ENTRY_NOT_UNIQUE")
-    entry = matches[0]
-    if (
-        entry.get("exact_source_bytes") != policy.prior.size
-        or entry.get("exact_source_sha256") != policy.prior.sha256
-        or entry.get("exact_line_sha256") != policy.reviewed_line_sha256
-        or entry.get("classification") != "REVIEWED_FALSE_POSITIVE"
-        or entry.get("rationale") != RATIONALE
-    ):
-        raise OwnerError("PREDECESSOR_ENTRY_DRIFT")
-    entry["exact_source_bytes"] = policy.current.size
-    entry["exact_source_sha256"] = policy.current.sha256
+    if len(prior_history_matches) != 1 or current_history_matches:
+        raise OwnerError("HISTORY_PROJECTION_BOUNDARY_DRIFT")
+    worktree_entry = worktree_matches[0]
+    prior_history_entry = prior_history_matches[0]
+    for entry in (worktree_entry, prior_history_entry):
+        if (
+            entry.get("exact_source_bytes") != policy.prior.size
+            or entry.get("exact_source_sha256") != policy.prior.sha256
+            or entry.get("exact_line_sha256") != policy.reviewed_line_sha256
+            or entry.get("classification") != "REVIEWED_FALSE_POSITIVE"
+            or entry.get("rationale") != RATIONALE
+        ):
+            raise OwnerError("PREDECESSOR_ENTRY_DRIFT")
+    worktree_entry["exact_source_bytes"] = policy.current.size
+    worktree_entry["exact_source_sha256"] = policy.current.sha256
+    projected_history_entry = dict(prior_history_entry)
+    projected_history_entry["exact_source_identifier"] = policy.current.blob_oid
+    projected_history_entry["exact_source_bytes"] = policy.current.size
+    projected_history_entry["exact_source_sha256"] = policy.current.sha256
+    entries.append(projected_history_entry)
+    entries.sort(key=_ledger_entry_sort_key)
+    predecessor["entries"] = entries
     rendered = (json.dumps(predecessor, ensure_ascii=True, indent=2) + "\n").encode(
         "utf-8"
     )
@@ -528,6 +574,7 @@ def _render_manifest(
             "changed_hunks": [hunk.__dict__ for hunk in policy.allowed_hunks],
             "sanitized_finding_set_unchanged": True,
             "specific_rule_findings": 0,
+            "current_blob_history_projection_added": True,
             "classification_change": "NONE",
             "rationale_change": "NONE",
         },
@@ -535,8 +582,9 @@ def _render_manifest(
             "path": output_path,
             "bytes": len(ledger_data),
             "sha256": hashlib.sha256(ledger_data).hexdigest(),
-            "entry_count": 115,
+            "entry_count": 116,
             "changed_entry_count": 1,
+            "added_entry_count": 1,
             "specific_rule_suppression": "FORBIDDEN",
         },
         "boundaries": {

@@ -4,15 +4,15 @@
   "status": "LOCAL_RECONCILIATION_COMPLETE_NOT_FORMAL_EVIDENCE",
   "owner": {
     "path": "scripts/build_st0106_reviewed_findings_rebind.py",
-    "bytes": 24552,
-    "sha256": "70fe7cd992925b63e33d4b4166e64a4548399807a773b95312dbd9a56f7cf333",
+    "bytes": 27030,
+    "sha256": "fcdb773402079d9ca603ecc69fca68cc210cba08a7aff0ae552de9a8464fc973",
     "check_command": "/home/minami/rakuten/.venv/bin/python scripts/build_st0106_reviewed_findings_rebind.py --check"
   },
   "inputs": [
     {
       "path": "changes/st-0106/reviewed-finding-source-rebind.v3.json",
-      "bytes": 2226,
-      "sha256": "a6232e31965d9509915f636577c54d57eded1b189eabbc90b0e67837f1dc7aa9"
+      "bytes": 2271,
+      "sha256": "1ff412d4bf8829e25240a0ea3cfee41e1afa3cc53eea4eaa4a22b1338dbd79c7"
     },
     {
       "path": "changes/st-0106/contracts/reviewed-secret-findings.v2.yaml",
@@ -48,15 +48,17 @@
     ],
     "sanitized_finding_set_unchanged": true,
     "specific_rule_findings": 0,
+    "current_blob_history_projection_added": true,
     "classification_change": "NONE",
     "rationale_change": "NONE"
   },
   "generated_ledger": {
     "path": "changes/st-0106/contracts/reviewed-secret-findings.v3.yaml",
-    "bytes": 59769,
-    "sha256": "d89b24ce08871fb92c126bf02662c6174448abd5a70a0d804ee531b78a4765a0",
-    "entry_count": 115,
+    "bytes": 60287,
+    "sha256": "09277639d9db84371e8e3882ad2379ee4e15a13ff35a74b003201bde2f681f40",
+    "entry_count": 116,
     "changed_entry_count": 1,
+    "added_entry_count": 1,
     "specific_rule_suppression": "FORBIDDEN"
   },
   "boundaries": {

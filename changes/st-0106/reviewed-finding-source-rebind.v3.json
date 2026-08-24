@@ -24,6 +24,7 @@
     "current_blob_oid": "8dcd2ab01f276a6dac924b42e733a827574c13ed",
     "current_bytes": 33667,
     "current_sha256": "40aebe8fc975dda5c4742e3f587d4656373e2f6cb56699f818b7ef0408db5e9f",
+    "project_current_blob_to_history": true,
     "expected_findings": [
       {
         "line": 961,

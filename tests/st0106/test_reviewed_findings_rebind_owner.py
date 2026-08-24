@@ -29,7 +29,7 @@ SCANNER_PATH = REPOSITORY_ROOT / "scripts/scan_secrets.py"
 SOURCE_PATH = REPOSITORY_ROOT / "tests/st1703/test_wordpresscom_review_draft_https.py"
 TARGET_RELATIVE = "tests/st1703/test_wordpresscom_review_draft_https.py"
 EXPECTED_V2_SHA256 = "667fee6720dad2e25e71220b2ec2fc8918a845ee30309c581f687ca87f51ca1b"
-EXPECTED_V3_SHA256 = "d89b24ce08871fb92c126bf02662c6174448abd5a70a0d804ee531b78a4765a0"
+EXPECTED_V3_SHA256 = "09277639d9db84371e8e3882ad2379ee4e15a13ff35a74b003201bde2f681f40"
 EXPECTED_REVIEWED_LINE_SHA256 = (
     "e7ce26448515f4510b0f6165edeeb2cd464b8db7309504eb969193824b726293"
 )
@@ -88,6 +88,16 @@ def _entry(document: dict[str, object]) -> dict[str, object]:
             matches.append(candidate)
     assert len(matches) == 1
     return matches[0]
+
+
+def _entry_key(entry: dict[str, object]) -> tuple[str, str, int]:
+    scope = entry["scope"]
+    identifier = entry["exact_source_identifier"]
+    line = entry["exact_line_number"]
+    assert type(scope) is str
+    assert type(identifier) is str
+    assert type(line) is int
+    return scope, identifier, line
 
 
 def _replace_line(data: bytes, line: int, replacement: bytes) -> bytes:
@@ -188,10 +198,11 @@ def test_owner_check_is_read_only_and_generated_outputs_are_exact() -> None:
     assert (V3_PATH.read_bytes(), MANIFEST_PATH.read_bytes()) == before
 
 
-def test_v3_changes_only_the_source_envelope_of_one_reviewed_entry() -> None:
+def test_v3_rebinds_worktree_and_projects_only_the_current_history_blob() -> None:
     v2_data = V2_PATH.read_bytes()
     v3_data = V3_PATH.read_bytes()
-    assert len(v2_data) == len(v3_data) == 59769
+    assert len(v2_data) == 59769
+    assert len(v3_data) == 60287
     assert hashlib.sha256(v2_data).hexdigest() == EXPECTED_V2_SHA256
     assert hashlib.sha256(v3_data).hexdigest() == EXPECTED_V3_SHA256
     v2 = cast(dict[str, object], json.loads(v2_data))
@@ -202,15 +213,21 @@ def test_v3_changes_only_the_source_envelope_of_one_reviewed_entry() -> None:
     assert v2["rule_id"] == v3["rule_id"] == "GENERIC_CREDENTIAL"
     v2_entries = cast(list[dict[str, object]], v2["entries"])
     v3_entries = cast(list[dict[str, object]], v3["entries"])
-    assert len(v2_entries) == len(v3_entries) == 115
-
-    changed = [
-        (before, after)
-        for before, after in zip(v2_entries, v3_entries, strict=True)
-        if before != after
-    ]
-    assert len(changed) == 1
-    before, after = changed[0]
+    assert len(v2_entries) == 115
+    assert len(v3_entries) == 116
+    v2_by_key = {_entry_key(entry): entry for entry in v2_entries}
+    v3_by_key = {_entry_key(entry): entry for entry in v3_entries}
+    assert not (set(v2_by_key) - set(v3_by_key))
+    added_keys = set(v3_by_key) - set(v2_by_key)
+    assert added_keys == {
+        ("git_history", "8dcd2ab01f276a6dac924b42e733a827574c13ed", 961)
+    }
+    changed_keys_by_entry = {
+        key for key in v2_by_key if v2_by_key[key] != v3_by_key[key]
+    }
+    assert changed_keys_by_entry == {("worktree", TARGET_RELATIVE, 961)}
+    before = v2_by_key[("worktree", TARGET_RELATIVE, 961)]
+    after = v3_by_key[("worktree", TARGET_RELATIVE, 961)]
     assert before == _entry(v2)
     assert after == _entry(v3)
     changed_keys = {key for key in before if before[key] != after[key]}
@@ -221,6 +238,13 @@ def test_v3_changes_only_the_source_envelope_of_one_reviewed_entry() -> None:
     assert after["exact_line_sha256"] == EXPECTED_REVIEWED_LINE_SHA256
     assert before["classification"] == after["classification"]
     assert before["rationale"] == after["rationale"]
+
+    projected = v3_by_key[added_keys.pop()]
+    assert projected["exact_source_bytes"] == after["exact_source_bytes"]
+    assert projected["exact_source_sha256"] == after["exact_source_sha256"]
+    assert projected["exact_line_sha256"] == after["exact_line_sha256"]
+    assert projected["classification"] == after["classification"]
+    assert projected["rationale"] == after["rationale"]
 
 
 def test_manifest_binds_owner_inputs_and_keeps_formal_boundaries() -> None:
@@ -244,13 +268,16 @@ def test_manifest_binds_owner_inputs_and_keeps_formal_boundaries() -> None:
     assert generated["path"] == V3_PATH.relative_to(REPOSITORY_ROOT).as_posix()
     assert generated["bytes"] == len(V3_PATH.read_bytes())
     assert generated["sha256"] == EXPECTED_V3_SHA256
+    assert generated["entry_count"] == 116
     assert generated["changed_entry_count"] == 1
+    assert generated["added_entry_count"] == 1
     assert generated["specific_rule_suppression"] == "FORBIDDEN"
     source = cast(dict[str, object], manifest["source_rebind"])
     assert source["reviewed_line"] == 961
     assert source["reviewed_line_sha256"] == EXPECTED_REVIEWED_LINE_SHA256
     assert source["sanitized_finding_set_unchanged"] is True
     assert source["specific_rule_findings"] == 0
+    assert source["current_blob_history_projection_added"] is True
     assert source["classification_change"] == "NONE"
     assert source["rationale_change"] == "NONE"
     boundaries = cast(dict[str, object], manifest["boundaries"])

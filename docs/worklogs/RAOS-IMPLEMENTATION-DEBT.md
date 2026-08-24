@@ -3692,3 +3692,30 @@ original result.
   TST-030, hosted CI, live GA4/account/credential validation, persistence,
   staging, release, publication, Production and canonical `VALIDATED` remain
   `NOT_EXECUTED` or unchanged.
+
+### 2026-08-25 W2 / ST-0106 reviewed current-blob history closure
+
+- `DEBT-W2-061` status: `CLOSED_LOCAL_IMPLEMENTATION`. The ST-0106 owner now
+  projects exactly one content-addressed history entry for current blob
+  `8dcd2ab01f276a6dac924b42e733a827574c13ed`; its reviewed physical line 961,
+  line SHA-256, classification, and rationale are inherited unchanged from the
+  exact prior-blob history entry. V3 contains 116 entries, is 60,287 bytes, and
+  has SHA-256
+  `09277639d9db84371e8e3882ad2379ee4e15a13ff35a74b003201bde2f681f40`.
+  The preliminary target-ref-only replay failed closed on that current blob
+  and was not treated as a pass; no unrelated local branch was added to the
+  ledger and no scanner rule was weakened.
+- Closure replay uses a physical, non-shallow clone with no alternates, fetched
+  by `git clone --no-local --single-branch --no-tags --branch
+  codex/st0106-scan-candidate file:///home/minami/rakuten/.git CLONE`. Its ref
+  universe contains only the checked-out candidate and its same-object origin
+  tracking ref. From that clone, with a fresh mode-0700 HOME, the exact scan is
+  `scripts/run_network_denied.sh --home HOME -- /usr/bin/python3 -I
+  scripts/scan_secrets.py --worktree --git-history --reviewed-findings
+  changes/st-0106/contracts/reviewed-secret-findings.v3.yaml`. The post-commit
+  exact SHA, ref inventory, exit status, isolation report, and absence of
+  scanner findings are reported outside this tracked self-referential record.
+- This closes only the environment-induced local scan debt. Hosted Secrets CI,
+  formal TST-001/TST-002, status application, downstream provenance, external
+  writes, staging, publication, release, Production, and canonical `VALIDATED`
+  remain `NOT_EXECUTED` or unchanged.
