@@ -28,16 +28,19 @@ override CLEAN_PYTHON := /usr/bin/env -i PATH=/usr/bin:/bin \
 	$(MANAGED_PYTHON) -B -I -S -X pycache_prefix=/dev/null
 
 .PHONY: help check manifest-generate manifest-check theme-source-check \
-	theme-check theme-package tests cli-help source-cli-help
+	theme-check theme-package tests cli-help source-cli-help \
+	rakuten-capture-manifest-generate rakuten-capture-manifest-check \
+	rakuten-capture-cli-help
 
 help:
-	@echo 'Offline: check manifest-check theme-source-check theme-check tests cli-help source-cli-help'
-	@echo 'Local artifacts: manifest-generate theme-package'
+	@echo 'Offline: check manifest-check rakuten-capture-manifest-check theme-source-check theme-check tests cli-help source-cli-help rakuten-capture-cli-help'
+	@echo 'Local artifacts: manifest-generate rakuten-capture-manifest-generate theme-package'
 	@echo 'Article operations: use the four closed subcommands shown by cli-help'
 	@echo 'Read-only source capture: use the two closed subcommands shown by source-cli-help'
+	@echo 'Owner-authorized Rakuten capture: use the one closed subcommand shown by rakuten-capture-cli-help'
 	@echo 'Operational process: repository-root CLEAN_PYTHON only (-B -I -S; ambient environment removed)'
 
-check: manifest-check theme-source-check theme-check tests
+check: manifest-check rakuten-capture-manifest-check theme-source-check theme-check tests
 
 manifest-generate:
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
@@ -46,6 +49,14 @@ manifest-generate:
 manifest-check:
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
 		scripts/build_st1704_self_hosted_editorial_manifest.py --check
+
+rakuten-capture-manifest-generate:
+	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
+		scripts/build_st1704_rakuten_capture_manifest.py
+
+rakuten-capture-manifest-check:
+	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
+		scripts/build_st1704_rakuten_capture_manifest.py --check
 
 theme-source-check:
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
@@ -70,3 +81,7 @@ cli-help:
 source-cli-help:
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
 		scripts/st1704_official_source_capture.py --help
+
+rakuten-capture-cli-help:
+	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
+		scripts/st1704_rakuten_product_capture.py --help

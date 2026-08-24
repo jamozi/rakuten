@@ -30,8 +30,10 @@ from raos.domain.editorial.self_hosted_editorial_pilot import (
     ReviewDraftRequest,
     article_identity,
     bytes_sha256,
+    canonical_rakuten_provider_item_url,
     canonical_json_bytes,
     canonical_sha256,
+    decoded_baseline_jpeg_dimensions,
     fail_editorial_pilot,
     require_sha256,
 )
@@ -570,60 +572,310 @@ def _decode_rakuten_response(raw: bytes) -> object:
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
 
 
+def _png_scanline_layout(
+    width: int, height: int, bit_depth: int, color_type: int, interlace: int
+) -> tuple[tuple[int, int, int], ...]:
+    channels = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}[color_type]
+    bits_per_pixel = channels * bit_depth
+    if interlace == 0:
+        return ((width, height, (width * bits_per_pixel + 7) // 8),)
+    passes = (
+        (0, 0, 8, 8),
+        (4, 0, 8, 8),
+        (0, 4, 4, 8),
+        (2, 0, 4, 4),
+        (0, 2, 2, 4),
+        (1, 0, 2, 2),
+        (0, 1, 1, 2),
+    )
+    layout: list[tuple[int, int, int]] = []
+    for start_x, start_y, step_x, step_y in passes:
+        pass_width = 0 if width <= start_x else (width - start_x + step_x - 1) // step_x
+        pass_height = (
+            0 if height <= start_y else (height - start_y + step_y - 1) // step_y
+        )
+        if pass_width and pass_height:
+            layout.append(
+                (
+                    pass_width,
+                    pass_height,
+                    (pass_width * bits_per_pixel + 7) // 8,
+                )
+            )
+    return tuple(layout)
+
+
+def _validate_png_pixels(
+    compressed: bytes,
+    *,
+    width: int,
+    height: int,
+    bit_depth: int,
+    color_type: int,
+    interlace: int,
+    palette_entries: int | None,
+) -> None:
+    layout = _png_scanline_layout(width, height, bit_depth, color_type, interlace)
+    expected = sum(rows * (row_bytes + 1) for _width, rows, row_bytes in layout)
+    if (
+        not compressed
+        or not 1 <= expected <= MAX_RAKUTEN_IMAGE_BYTES
+        or (
+            color_type == 3
+            and (
+                type(palette_entries) is not int
+                or not 1 <= palette_entries <= 1 << bit_depth
+            )
+        )
+    ):
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    try:
+        decompressor = zlib.decompressobj()
+        decoded = decompressor.decompress(compressed, expected + 1)
+    except zlib.error:
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    if (
+        len(decoded) != expected
+        or not decompressor.eof
+        or decompressor.unused_data
+        or decompressor.unconsumed_tail
+    ):
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    decoded_offset = 0
+    channels = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}[color_type]
+    filter_bytes_per_pixel = max(1, (channels * bit_depth + 7) // 8)
+    for pass_width, rows, row_bytes in layout:
+        previous = bytes(row_bytes)
+        for _row in range(rows):
+            filter_type = decoded[decoded_offset]
+            if filter_type > 4:
+                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            encoded = decoded[decoded_offset + 1 : decoded_offset + 1 + row_bytes]
+            decoded_offset += row_bytes + 1
+            if color_type != 3:
+                continue
+            reconstructed = bytearray(row_bytes)
+            for index, value in enumerate(encoded):
+                left = (
+                    reconstructed[index - filter_bytes_per_pixel]
+                    if index >= filter_bytes_per_pixel
+                    else 0
+                )
+                up = previous[index]
+                upper_left = (
+                    previous[index - filter_bytes_per_pixel]
+                    if index >= filter_bytes_per_pixel
+                    else 0
+                )
+                if filter_type == 0:
+                    predictor = 0
+                elif filter_type == 1:
+                    predictor = left
+                elif filter_type == 2:
+                    predictor = up
+                elif filter_type == 3:
+                    predictor = (left + up) // 2
+                else:
+                    estimate = left + up - upper_left
+                    distances = (
+                        abs(estimate - left),
+                        abs(estimate - up),
+                        abs(estimate - upper_left),
+                    )
+                    predictor = (left, up, upper_left)[distances.index(min(distances))]
+                reconstructed[index] = (value + predictor) & 0xFF
+            entries = cast(int, palette_entries)
+            mask = (1 << bit_depth) - 1
+            for pixel in range(pass_width):
+                bit_offset = pixel * bit_depth
+                shift = 8 - bit_depth - (bit_offset % 8)
+                palette_index = (reconstructed[bit_offset // 8] >> shift) & mask
+                if palette_index >= entries:
+                    _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            previous = bytes(reconstructed)
+    if decoded_offset != len(decoded):
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+
+
 def _png_dimensions(raw: bytes) -> tuple[int, int]:
     if not raw.startswith(b"\x89PNG\r\n\x1a\n"):
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     offset = 8
-    dimensions: tuple[int, int] | None = None
+    image_header: tuple[int, int, int, int, int] | None = None
+    compressed = bytearray()
+    idat_closed = False
     saw_idat = False
+    palette_entries: int | None = None
     while offset + 12 <= len(raw):
         length = int.from_bytes(raw[offset : offset + 4], "big")
         chunk_type = raw[offset + 4 : offset + 8]
         end = offset + 12 + length
-        if length > MAX_RAKUTEN_IMAGE_BYTES or end > len(raw):
+        if (
+            length > MAX_RAKUTEN_IMAGE_BYTES
+            or end > len(raw)
+            or any(
+                not (65 <= value <= 90 or 97 <= value <= 122) for value in chunk_type
+            )
+            or chunk_type[2] & 0x20
+        ):
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         data = raw[offset + 8 : offset + 8 + length]
         expected_crc = int.from_bytes(raw[offset + 8 + length : end], "big")
         if zlib.crc32(chunk_type + data) & 0xFFFFFFFF != expected_crc:
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         if chunk_type == b"IHDR":
-            if offset != 8 or length != 13 or dimensions is not None:
+            if offset != 8 or length != 13 or image_header is not None:
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
             width = int.from_bytes(data[0:4], "big")
             height = int.from_bytes(data[4:8], "big")
+            bit_depth = data[8]
+            color_type = data[9]
+            valid_depths = {
+                0: {1, 2, 4, 8, 16},
+                2: {8, 16},
+                3: {1, 2, 4, 8},
+                4: {8, 16},
+                6: {8, 16},
+            }
             if (
-                width < 1
-                or height < 1
-                or data[8] not in {1, 2, 4, 8, 16}
-                or data[9] not in {0, 2, 3, 4, 6}
+                (width, height) != (128, 128)
+                or color_type not in valid_depths
+                or bit_depth not in valid_depths[color_type]
                 or data[10:12] != b"\x00\x00"
                 or data[12] not in {0, 1}
             ):
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-            dimensions = (width, height)
+            image_header = (width, height, bit_depth, color_type, data[12])
+        elif chunk_type == b"PLTE":
+            if (
+                image_header is None
+                or saw_idat
+                or palette_entries is not None
+                or image_header[3] in {0, 4}
+                or not 3 <= length <= 768
+                or length % 3 != 0
+                or (image_header[3] == 3 and length > 3 * (1 << image_header[2]))
+            ):
+                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            palette_entries = length // 3
         elif chunk_type == b"IDAT":
-            if dimensions is None:
+            if (
+                image_header is None
+                or idat_closed
+                or (image_header[3] == 3 and palette_entries is None)
+            ):
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
             saw_idat = True
-        elif chunk_type == b"IEND":
-            if length != 0 or dimensions is None or not saw_idat or end != len(raw):
+            if len(compressed) + len(data) > MAX_RAKUTEN_IMAGE_BYTES:
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-            return dimensions
-        elif dimensions is None:
+            compressed.extend(data)
+        elif chunk_type == b"IEND":
+            if length != 0 or image_header is None or not compressed or end != len(raw):
+                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            width, height, bit_depth, color_type, interlace = image_header
+            _validate_png_pixels(
+                bytes(compressed),
+                width=width,
+                height=height,
+                bit_depth=bit_depth,
+                color_type=color_type,
+                interlace=interlace,
+                palette_entries=palette_entries,
+            )
+            return width, height
+        elif image_header is None:
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        elif not chunk_type[0] & 0x20:
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        elif saw_idat:
+            idat_closed = True
         offset = end
     _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
 
 
-def _skip_gif_sub_blocks(raw: bytes, offset: int) -> int:
+def _gif_sub_blocks(raw: bytes, offset: int) -> tuple[bytes, int]:
+    chunks: list[bytes] = []
     while offset < len(raw):
         length = raw[offset]
         offset += 1
         if length == 0:
-            return offset
+            return b"".join(chunks), offset
         if offset + length > len(raw):
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        chunks.append(raw[offset : offset + length])
         offset += length
+    _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+
+
+def _validate_gif_lzw(
+    data: bytes,
+    *,
+    minimum_code_size: int,
+    expected_pixels: int,
+    palette_entries: int,
+) -> None:
+    if (
+        not data
+        or not 2 <= minimum_code_size <= 8
+        or not 1 <= expected_pixels <= MAX_RAKUTEN_IMAGE_BYTES
+        or not 2 <= palette_entries <= 256
+    ):
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    clear_code = 1 << minimum_code_size
+    end_code = clear_code + 1
+    table: dict[int, bytes] = {}
+    code_size = minimum_code_size + 1
+    next_code = end_code + 1
+    previous: bytes | None = None
+    bit_offset = 0
+    decoded_pixels = 0
+    saw_clear = False
+
+    def reset() -> None:
+        nonlocal table, code_size, next_code, previous
+        table = {index: bytes((index,)) for index in range(clear_code)}
+        code_size = minimum_code_size + 1
+        next_code = end_code + 1
+        previous = None
+
+    reset()
+    while bit_offset + code_size <= len(data) * 8:
+        byte_offset = bit_offset // 8
+        shift = bit_offset % 8
+        window = int.from_bytes(data[byte_offset : byte_offset + 3], "little")
+        code = (window >> shift) & ((1 << code_size) - 1)
+        bit_offset += code_size
+        if code == clear_code:
+            reset()
+            saw_clear = True
+            continue
+        if not saw_clear:
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        if code == end_code:
+            if decoded_pixels != expected_pixels:
+                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            return
+        if previous is None:
+            entry = table.get(code)
+            if entry is None:
+                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        else:
+            entry = table.get(code)
+            if entry is None:
+                if code != next_code:
+                    _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+                entry = previous + previous[:1]
+            if next_code < 4096:
+                table[next_code] = previous + entry[:1]
+                next_code += 1
+                if next_code == 1 << code_size and code_size < 12:
+                    code_size += 1
+        if any(index >= palette_entries for index in entry):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        decoded_pixels += len(entry)
+        if decoded_pixels > expected_pixels:
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        previous = entry
     _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
 
 
@@ -632,10 +884,13 @@ def _gif_dimensions(raw: bytes) -> tuple[int, int]:
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     width = int.from_bytes(raw[6:8], "little")
     height = int.from_bytes(raw[8:10], "little")
-    if width < 1 or height < 1:
+    if (width, height) != (128, 128):
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     packed = raw[10]
-    offset = 13 + (3 * (1 << ((packed & 0x07) + 1)) if packed & 0x80 else 0)
+    global_entries = 1 << ((packed & 0x07) + 1) if packed & 0x80 else 0
+    offset = 13 + (3 * global_entries)
+    if offset > len(raw):
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     saw_image = False
     while offset < len(raw):
         introducer = raw[offset]
@@ -648,91 +903,53 @@ def _gif_dimensions(raw: bytes) -> tuple[int, int]:
             if offset >= len(raw):
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
             offset += 1
-            offset = _skip_gif_sub_blocks(raw, offset)
+            _extension, offset = _gif_sub_blocks(raw, offset)
             continue
         if introducer != 0x2C or offset + 9 > len(raw):
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         descriptor = raw[offset : offset + 9]
         offset += 9
+        left = int.from_bytes(descriptor[0:2], "little")
+        top = int.from_bytes(descriptor[2:4], "little")
+        image_width = int.from_bytes(descriptor[4:6], "little")
+        image_height = int.from_bytes(descriptor[6:8], "little")
         local_packed = descriptor[8]
-        if local_packed & 0x80:
-            offset += 3 * (1 << ((local_packed & 0x07) + 1))
-        if offset >= len(raw) or not 2 <= raw[offset] <= 12:
+        if (
+            image_width < 1
+            or image_height < 1
+            or left + image_width > width
+            or top + image_height > height
+            or local_packed & 0x18
+        ):
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        local_entries = 0
+        if local_packed & 0x80:
+            local_entries = 1 << ((local_packed & 0x07) + 1)
+            offset += 3 * local_entries
+        if offset >= len(raw) or not 2 <= raw[offset] <= 8:
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        minimum_code_size = raw[offset]
         offset += 1
-        offset = _skip_gif_sub_blocks(raw, offset)
+        image_data, offset = _gif_sub_blocks(raw, offset)
+        _validate_gif_lzw(
+            image_data,
+            minimum_code_size=minimum_code_size,
+            expected_pixels=image_width * image_height,
+            palette_entries=local_entries or global_entries,
+        )
         saw_image = True
     _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
 
 
 def _jpeg_dimensions(raw: bytes) -> tuple[int, int]:
-    if not raw.startswith(b"\xff\xd8") or len(raw) < 16:
+    try:
+        return decoded_baseline_jpeg_dimensions(
+            raw,
+            maximum=MAX_RAKUTEN_IMAGE_BYTES,
+            required_dimensions=(128, 128),
+        )
+    except ValueError:
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-    offset = 2
-    dimensions: tuple[int, int] | None = None
-    saw_scan = False
-    in_scan = False
-    sof_markers = {
-        0xC0,
-        0xC1,
-        0xC2,
-        0xC3,
-        0xC5,
-        0xC6,
-        0xC7,
-        0xC9,
-        0xCA,
-        0xCB,
-        0xCD,
-        0xCE,
-        0xCF,
-    }
-    while offset < len(raw):
-        if in_scan:
-            marker_start = raw.find(b"\xff", offset)
-            if marker_start < 0 or marker_start + 1 >= len(raw):
-                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-            offset = marker_start
-        if raw[offset] != 0xFF:
-            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-        marker_start = offset
-        while offset < len(raw) and raw[offset] == 0xFF:
-            offset += 1
-        if offset >= len(raw):
-            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-        marker = raw[offset]
-        offset += 1
-        if in_scan and (marker == 0x00 or 0xD0 <= marker <= 0xD7):
-            continue
-        in_scan = False
-        if marker == 0xD9:
-            if dimensions is None or not saw_scan or offset != len(raw):
-                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-            return dimensions
-        if marker in {0xD8, 0x01} or 0xD0 <= marker <= 0xD7:
-            if marker_start != 0:
-                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-            continue
-        if offset + 2 > len(raw):
-            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-        length = int.from_bytes(raw[offset : offset + 2], "big")
-        if length < 2 or offset + length > len(raw):
-            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-        if marker in sof_markers:
-            if length < 8 or dimensions is not None:
-                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-            height = int.from_bytes(raw[offset + 3 : offset + 5], "big")
-            width = int.from_bytes(raw[offset + 5 : offset + 7], "big")
-            if width < 1 or height < 1:
-                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-            dimensions = (width, height)
-        if marker == 0xDA:
-            if dimensions is None:
-                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-            saw_scan = True
-            in_scan = True
-        offset += length
-    _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
 
 
 def _image_dimensions(raw: bytes) -> tuple[int, int]:
@@ -784,11 +1001,56 @@ def _validate_rakuten_response(
     if bytes_sha256(raw) != expected_response_sha256:
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     response = _mapping(_decode_rakuten_response(raw))
-    rows = response.get("items")
+    aliases = {"items", "Items"} & set(response)
+    summary_fields = frozenset({"count", "page", "first", "last", "hits", "pageCount"})
+    if set(response) == {"Items"}:
+        rows = response["Items"]
+    elif len(aliases) == 1:
+        alias = aliases.pop()
+        expected_root = summary_fields | {alias}
+        if "carrier" in response:
+            expected_root = expected_root | {"carrier"}
+        if frozenset(response) != expected_root or (
+            "carrier" in response
+            and (type(response["carrier"]) is not int or response["carrier"] != 0)
+        ):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        rows = response[alias]
+    else:
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     if type(rows) is not list:
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    provider_rows = cast(list[object], rows)
+    if len(provider_rows) > 1:
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    if set(response) != {"Items"}:
+        summary = tuple(response[field] for field in summary_fields)
+        if any(type(value) is not int for value in summary):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        count = cast(int, response["count"])
+        page = cast(int, response["page"])
+        first = cast(int, response["first"])
+        last = cast(int, response["last"])
+        hits = cast(int, response["hits"])
+        page_count = cast(int, response["pageCount"])
+        returned = len(provider_rows)
+        if (
+            page != 1
+            or hits != 1
+            or (returned == 0 and (count, first, last, page_count) != (0, 0, 0, 0))
+            or (
+                returned > 0
+                and (
+                    count < returned
+                    or first != 1
+                    or last != returned
+                    or page_count != min((count + hits - 1) // hits, 100)
+                )
+            )
+        ):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     matches: list[Mapping[str, object]] = []
-    for raw_row in cast(list[object], rows):
+    for raw_row in provider_rows:
         item = _mapping(raw_row)
         required = {
             "itemCode",
@@ -798,7 +1060,7 @@ def _validate_rakuten_response(
         }
         if affiliate_id_supplied:
             required.add("affiliateUrl")
-        if not required <= set(item):
+        if set(item) != required:
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         if item["itemCode"] == evidence.item_code:
             matches.append(item)
@@ -826,9 +1088,9 @@ def _validate_rakuten_response(
             != canonical_sha256(evidence.affiliate_identity_material())
         ):
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-    elif selected[
-        "itemUrl"
-    ] != evidence.source_url or evidence.selected_result_sha256 != canonical_sha256(
+    elif canonical_rakuten_provider_item_url(
+        selected["itemUrl"]
+    ) != evidence.source_url or evidence.selected_result_sha256 != canonical_sha256(
         evidence.identity_material()
     ):
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)

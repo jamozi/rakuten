@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from enum import StrEnum
 import hashlib
 import json
+import math
 import re
 from typing import Final, NoReturn, SupportsIndex
 from urllib.parse import SplitResult, parse_qsl, urlsplit
@@ -54,6 +55,451 @@ PILOT_PUBLIC_VERIFICATION_CHECKS: Final = (
     "YOAST_PAGE_SITEMAP_VALID",
     "WORDPRESS_CORE_SITEMAP_DISABLED",
 )
+
+_JPEG_ZIGZAG_TO_NATURAL: Final = (
+    0,
+    1,
+    8,
+    16,
+    9,
+    2,
+    3,
+    10,
+    17,
+    24,
+    32,
+    25,
+    18,
+    11,
+    4,
+    5,
+    12,
+    19,
+    26,
+    33,
+    40,
+    48,
+    41,
+    34,
+    27,
+    20,
+    13,
+    6,
+    7,
+    14,
+    21,
+    28,
+    35,
+    42,
+    49,
+    56,
+    57,
+    50,
+    43,
+    36,
+    29,
+    22,
+    15,
+    23,
+    30,
+    37,
+    44,
+    51,
+    58,
+    59,
+    52,
+    45,
+    38,
+    31,
+    39,
+    46,
+    53,
+    60,
+    61,
+    54,
+    47,
+    55,
+    62,
+    63,
+)
+_JPEG_IDCT_COS: Final = tuple(
+    tuple(
+        math.cos(((2 * coordinate + 1) * frequency * math.pi) / 16)
+        for frequency in range(8)
+    )
+    for coordinate in range(8)
+)
+
+
+def decoded_baseline_jpeg_dimensions(
+    raw: bytes,
+    *,
+    maximum: int,
+    required_dimensions: tuple[int, int] | None = None,
+) -> tuple[int, int]:
+    """Fully entropy-decode one closed baseline JPEG scan and return its dimensions."""
+
+    def invalid() -> NoReturn:
+        raise ValueError("invalid baseline JPEG") from None
+
+    if (
+        type(raw) is not bytes
+        or type(maximum) is not int
+        or not 16 <= len(raw) <= maximum
+        or not raw.startswith(b"\xff\xd8")
+        or (
+            required_dimensions is not None
+            and (
+                type(required_dimensions) is not tuple
+                or len(required_dimensions) != 2
+                or any(
+                    type(value) is not int or value < 1 for value in required_dimensions
+                )
+            )
+        )
+    ):
+        invalid()
+
+    quantization: dict[int, tuple[int, ...]] = {}
+    huffman: dict[tuple[int, int], dict[tuple[int, int], int]] = {}
+    components: dict[int, tuple[int, int, int]] = {}
+    width = 0
+    height = 0
+    restart_interval = 0
+    scan_components: list[tuple[int, int, int]] = []
+    scan_start = -1
+    offset = 2
+    while offset < len(raw):
+        if raw[offset] != 0xFF:
+            invalid()
+        while offset < len(raw) and raw[offset] == 0xFF:
+            offset += 1
+        if offset >= len(raw):
+            invalid()
+        marker = raw[offset]
+        offset += 1
+        if marker in {0x00, 0x01, 0xD8, 0xD9} or 0xD0 <= marker <= 0xD7:
+            invalid()
+        if offset + 2 > len(raw):
+            invalid()
+        length = int.from_bytes(raw[offset : offset + 2], "big")
+        end = offset + length
+        if length < 2 or end > len(raw):
+            invalid()
+        payload = raw[offset + 2 : end]
+        offset = end
+
+        if marker == 0xDB:
+            position = 0
+            while position < len(payload):
+                information = payload[position]
+                position += 1
+                precision = information >> 4
+                table_id = information & 0x0F
+                if (
+                    precision != 0
+                    or table_id > 3
+                    or table_id in quantization
+                    or position + 64 > len(payload)
+                ):
+                    invalid()
+                values = tuple(payload[position : position + 64])
+                if any(value == 0 for value in values):
+                    invalid()
+                quantization[table_id] = values
+                position += 64
+            if position != len(payload):
+                invalid()
+            continue
+
+        if marker == 0xC4:
+            position = 0
+            while position < len(payload):
+                information = payload[position]
+                position += 1
+                table_class = information >> 4
+                table_id = information & 0x0F
+                if (
+                    table_class not in {0, 1}
+                    or table_id > 3
+                    or (table_class, table_id) in huffman
+                    or position + 16 > len(payload)
+                ):
+                    invalid()
+                counts = payload[position : position + 16]
+                position += 16
+                symbol_count = sum(counts)
+                if symbol_count < 1 or position + symbol_count > len(payload):
+                    invalid()
+                symbols = payload[position : position + symbol_count]
+                position += symbol_count
+                table: dict[tuple[int, int], int] = {}
+                code = 0
+                symbol_offset = 0
+                for bit_length, count in enumerate(counts, start=1):
+                    # T.81 reserves the all-ones Huffman code so marker padding
+                    # cannot be decoded as a symbol.  Equality would assign that
+                    # forbidden final code even though the tree is not oversubscribed.
+                    if code + count >= 1 << bit_length:
+                        invalid()
+                    for _index in range(count):
+                        table[(bit_length, code)] = symbols[symbol_offset]
+                        symbol_offset += 1
+                        code += 1
+                    code <<= 1
+                if symbol_offset != symbol_count:
+                    invalid()
+                huffman[(table_class, table_id)] = table
+            if position != len(payload):
+                invalid()
+            continue
+
+        if marker == 0xC0:
+            if components or len(payload) < 9 or payload[0] != 8:
+                invalid()
+            height = int.from_bytes(payload[1:3], "big")
+            width = int.from_bytes(payload[3:5], "big")
+            component_count = payload[5]
+            if (
+                width < 1
+                or height < 1
+                or (
+                    required_dimensions is not None
+                    and (width, height) != required_dimensions
+                )
+                or component_count not in {1, 3}
+                or len(payload) != 6 + (3 * component_count)
+                or width * height > maximum
+            ):
+                invalid()
+            for position in range(6, len(payload), 3):
+                component_id = payload[position]
+                sampling = payload[position + 1]
+                horizontal = sampling >> 4
+                vertical = sampling & 0x0F
+                quantization_id = payload[position + 2]
+                if (
+                    component_id in components
+                    or not 1 <= horizontal <= 4
+                    or not 1 <= vertical <= 4
+                    or quantization_id > 3
+                ):
+                    invalid()
+                components[component_id] = (horizontal, vertical, quantization_id)
+            if sum(value[0] * value[1] for value in components.values()) > 10:
+                invalid()
+            continue
+
+        if marker == 0xDD:
+            if len(payload) != 2 or restart_interval:
+                invalid()
+            restart_interval = int.from_bytes(payload, "big")
+            if restart_interval < 1:
+                invalid()
+            continue
+
+        if marker == 0xDA:
+            if not components or scan_start >= 0 or len(payload) < 6:
+                invalid()
+            component_count = payload[0]
+            if (
+                component_count != len(components)
+                or len(payload) != 4 + (2 * component_count)
+                or payload[-3:] != b"\x00\x3f\x00"
+            ):
+                invalid()
+            seen: set[int] = set()
+            for position in range(1, 1 + (2 * component_count), 2):
+                component_id = payload[position]
+                selector = payload[position + 1]
+                dc_table = selector >> 4
+                ac_table = selector & 0x0F
+                if (
+                    component_id not in components
+                    or component_id in seen
+                    or (0, dc_table) not in huffman
+                    or (1, ac_table) not in huffman
+                ):
+                    invalid()
+                seen.add(component_id)
+                scan_components.append((component_id, dc_table, ac_table))
+            if seen != set(components):
+                invalid()
+            if any(value[2] not in quantization for value in components.values()):
+                invalid()
+            scan_start = offset
+            break
+
+        if marker == 0xFE or 0xE0 <= marker <= 0xEF:
+            continue
+        invalid()
+
+    if scan_start < 0:
+        invalid()
+
+    segments: list[bytes] = []
+    restart_markers: list[int] = []
+    current = bytearray()
+    offset = scan_start
+    saw_end = False
+    while offset < len(raw):
+        value = raw[offset]
+        offset += 1
+        if value != 0xFF:
+            current.append(value)
+            continue
+        fill_count = 1
+        while offset < len(raw) and raw[offset] == 0xFF:
+            fill_count += 1
+            offset += 1
+        if offset >= len(raw):
+            invalid()
+        marker = raw[offset]
+        offset += 1
+        if marker == 0x00:
+            if fill_count != 1:
+                invalid()
+            current.append(0xFF)
+            continue
+        if 0xD0 <= marker <= 0xD7:
+            if not current:
+                invalid()
+            segments.append(bytes(current))
+            current.clear()
+            restart_markers.append(marker)
+            continue
+        if marker == 0xD9:
+            if not current or offset != len(raw):
+                invalid()
+            segments.append(bytes(current))
+            saw_end = True
+            break
+        invalid()
+    if not saw_end:
+        invalid()
+
+    maximum_horizontal = max(value[0] for value in components.values())
+    maximum_vertical = max(value[1] for value in components.values())
+    mcu_columns = (width + (8 * maximum_horizontal) - 1) // (8 * maximum_horizontal)
+    mcu_rows = (height + (8 * maximum_vertical) - 1) // (8 * maximum_vertical)
+    total_mcus = mcu_columns * mcu_rows
+    if not 1 <= total_mcus <= maximum:
+        invalid()
+    if restart_interval:
+        segment_mcus = [
+            min(restart_interval, total_mcus - start)
+            for start in range(0, total_mcus, restart_interval)
+        ]
+        if len(segments) != len(segment_mcus) or restart_markers != [
+            0xD0 + (index % 8) for index in range(len(segment_mcus) - 1)
+        ]:
+            invalid()
+    else:
+        segment_mcus = [total_mcus]
+        if len(segments) != 1 or restart_markers:
+            invalid()
+
+    def receive(bits: bytes, bit_offset: int, size: int) -> tuple[int, int]:
+        if size < 0 or bit_offset + size > len(bits) * 8:
+            invalid()
+        value = 0
+        for _index in range(size):
+            byte = bits[bit_offset // 8]
+            value = (value << 1) | ((byte >> (7 - (bit_offset % 8))) & 1)
+            bit_offset += 1
+        if size and value < 1 << (size - 1):
+            value -= (1 << size) - 1
+        return value, bit_offset
+
+    def symbol(
+        bits: bytes,
+        bit_offset: int,
+        table: dict[tuple[int, int], int],
+    ) -> tuple[int, int]:
+        code = 0
+        for bit_length in range(1, 17):
+            if bit_offset >= len(bits) * 8:
+                invalid()
+            byte = bits[bit_offset // 8]
+            code = (code << 1) | ((byte >> (7 - (bit_offset % 8))) & 1)
+            bit_offset += 1
+            value = table.get((bit_length, code))
+            if value is not None:
+                return value, bit_offset
+        invalid()
+
+    def validate_samples(coefficients: list[int], table: tuple[int, ...]) -> None:
+        natural = [0] * 64
+        for zigzag, natural_index in enumerate(_JPEG_ZIGZAG_TO_NATURAL):
+            natural[natural_index] = coefficients[zigzag] * table[zigzag]
+        if all(value == 0 for value in natural[1:]):
+            if not math.isfinite((natural[0] / 8) + 128):
+                invalid()
+            return
+        for y in range(8):
+            for x in range(8):
+                total = 0.0
+                for vertical in range(8):
+                    vertical_scale = math.sqrt(0.5) if vertical == 0 else 1.0
+                    for horizontal in range(8):
+                        horizontal_scale = math.sqrt(0.5) if horizontal == 0 else 1.0
+                        total += (
+                            horizontal_scale
+                            * vertical_scale
+                            * natural[(vertical * 8) + horizontal]
+                            * _JPEG_IDCT_COS[x][horizontal]
+                            * _JPEG_IDCT_COS[y][vertical]
+                        )
+                if not math.isfinite((total / 4) + 128):
+                    invalid()
+
+    for bits, mcu_count in zip(segments, segment_mcus, strict=True):
+        bit_offset = 0
+        predictors = {component_id: 0 for component_id in components}
+        for _mcu in range(mcu_count):
+            for component_id, dc_table_id, ac_table_id in scan_components:
+                horizontal, vertical, quantization_id = components[component_id]
+                for _block in range(horizontal * vertical):
+                    coefficients = [0] * 64
+                    dc_size, bit_offset = symbol(
+                        bits, bit_offset, huffman[(0, dc_table_id)]
+                    )
+                    if dc_size > 11:
+                        invalid()
+                    difference, bit_offset = receive(bits, bit_offset, dc_size)
+                    predictors[component_id] += difference
+                    coefficients[0] = predictors[component_id]
+                    position = 1
+                    while position < 64:
+                        ac_value, bit_offset = symbol(
+                            bits, bit_offset, huffman[(1, ac_table_id)]
+                        )
+                        if ac_value == 0:
+                            break
+                        if ac_value == 0xF0:
+                            position += 16
+                            if position > 64:
+                                invalid()
+                            continue
+                        run = ac_value >> 4
+                        size = ac_value & 0x0F
+                        if size < 1 or size > 10:
+                            invalid()
+                        position += run
+                        if position >= 64:
+                            invalid()
+                        coefficient, bit_offset = receive(bits, bit_offset, size)
+                        coefficients[position] = coefficient
+                        position += 1
+                    validate_samples(coefficients, quantization[quantization_id])
+        remaining = (len(bits) * 8) - bit_offset
+        if remaining > 7:
+            invalid()
+        for position in range(bit_offset, len(bits) * 8):
+            if not ((bits[position // 8] >> (7 - (position % 8))) & 1):
+                invalid()
+    return width, height
+
 
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 _RFC3339_UTC_SECONDS = re.compile(
@@ -314,6 +760,31 @@ def require_rakuten_item_url(value: object) -> str:
     return raw
 
 
+def canonical_rakuten_provider_item_url(value: object) -> str:
+    """Return the canonical item URL from Rakuten's direct provider field."""
+
+    raw, parsed = _url_parts(value)
+    if not parsed.query:
+        return require_rakuten_item_url(raw)
+    try:
+        pairs = parse_qsl(
+            parsed.query,
+            keep_blank_values=True,
+            strict_parsing=True,
+            max_num_fields=1,
+        )
+    except ValueError:
+        fail_editorial_pilot(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    if (
+        len(pairs) != 1
+        or pairs[0][0] != "rafcid"
+        or not 1 <= len(pairs[0][1]) <= 512
+        or not pairs[0][1].isascii()
+    ):
+        fail_editorial_pilot(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    return require_rakuten_item_url(parsed._replace(query="").geturl())
+
+
 def require_rakuten_affiliate_url(value: object, *, item_url: str) -> str:
     raw, parsed = _url_parts(value)
     if (
@@ -435,6 +906,8 @@ class RakutenProductEvidence:
         ):
             fail_editorial_pilot(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         item_url = require_rakuten_item_url(self.source_url)
+        if urlsplit(item_url).path.split("/")[1] != self.item_code.split(":", 1)[0]:
+            fail_editorial_pilot(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         require_rakuten_affiliate_url(self.destination_url, item_url=item_url)
         require_rakuten_image_url(self.image_url)
         _require_text(self.item_name, maximum=1000)
@@ -1052,8 +1525,10 @@ __all__ = [
     "ReviewDraftRequest",
     "article_identity",
     "bytes_sha256",
+    "canonical_rakuten_provider_item_url",
     "canonical_json_bytes",
     "canonical_sha256",
+    "decoded_baseline_jpeg_dimensions",
     "fail_editorial_pilot",
     "review_draft_slug",
     "require_sha256",

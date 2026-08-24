@@ -1,0 +1,83 @@
+{
+  "approved_base_commit": "f6af738a9a46625fe75cc4ba8642f7b0dc7179bb",
+  "article_ids": [
+    "st1703-first-suitcase-comparison",
+    "st1704-portable-power-station-guide",
+    "st1704-anker-solix-c300-c800-c1000-differences",
+    "st1704-countertop-dishwasher-for-small-households",
+    "st1704-compact-robot-vacuum-shortlist"
+  ],
+  "external_action_authority": "HUMAN_OWNER_BOUNDED_RAKUTEN_READ",
+  "generated_by": "scripts/build_st1704_rakuten_capture_manifest.py",
+  "paths": [
+    {
+      "bytes": 7518,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
+      "sha256": "49902bbbbfe791f313c68c7d450c47271972bbf94f7486d2837040fdbceb0371"
+    },
+    {
+      "bytes": 3612,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
+      "sha256": "c57a5f563d39adf03172f921133647bf92be40e62c59d7d8086440f21545f50b"
+    },
+    {
+      "bytes": 21938,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
+      "sha256": "6115f831d5f2fd5dba72c023b113aaf13efc8523f7e892c4a32f1e00cb6d3d2c"
+    },
+    {
+      "bytes": 2429,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/PREFLIGHT.md",
+      "sha256": "b9b562c335a6c86a1f61c5bd2eb7df12c7cf37a624f91f094eed850b81c6d6df"
+    },
+    {
+      "bytes": 1588,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/RAKUTEN_CAPTURE_WORKLOG.md",
+      "sha256": "ab88b54c667588554a0e8d683983f3b56fd543be5c775114057ece6e5cd4690c"
+    },
+    {
+      "bytes": 8193,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
+      "sha256": "47b49d7554f2399761780f2c5c4c378d583aedbed39b6afb82798115f7dd6a45"
+    },
+    {
+      "bytes": 111502,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
+      "sha256": "cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88"
+    },
+    {
+      "bytes": 23896,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/product-media-registry.v1.json",
+      "sha256": "30aa0443bbe6fd50818fdcc62ad4d91e51667e3adeb8332d26b555df4da4c670"
+    },
+    {
+      "bytes": 41446,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
+      "sha256": "ee78241d683b345a55a022eb9bb5214b5a362e6dfab1e645ed68fceab8f23917"
+    },
+    {
+      "bytes": 86789,
+      "path": "python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
+      "sha256": "ff5f27ff8f9a5c056ce09ea4b87e08c7c3c3b5c32bfe2f7d904a32e5130e69d1"
+    },
+    {
+      "bytes": 54968,
+      "path": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
+      "sha256": "bd9fac2d684db686c901575835d49f721b395ca13f66c378e83d1ed760ecf804"
+    },
+    {
+      "bytes": 3255,
+      "path": "scripts/build_st1704_rakuten_capture_manifest.py",
+      "sha256": "379b183ae6f0af9b431944d0e94d9ee57868e596614f4699745f792df8d3f6f2"
+    },
+    {
+      "bytes": 24700,
+      "path": "scripts/st1704_rakuten_product_capture.py",
+      "sha256": "9c2409a62df73cf96f35e65e7923864447e2934bf699a786c46f960d2b312796"
+    }
+  ],
+  "publication_authority": "NONE",
+  "schema": "ST1704_BOUNDED_RAKUTEN_CAPTURE_MANIFEST_V1",
+  "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
+  "story_id": "ST-1704"
+}

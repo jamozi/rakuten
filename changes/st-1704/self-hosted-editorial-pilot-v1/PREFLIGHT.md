@@ -7,6 +7,8 @@
 - Editorial frame: one umbrella category, `暮らしの道具`, with the intent clusters
   `移動`, `家事`, and `備え`.
 - Product evidence: official manufacturer facts plus exact Rakuten provider link/image
+- Rakuten capture: one allowlisted article, fixed Item Search 2026-07-01 endpoint,
+  installed owner credential, exact 128x128 image, and fail-closed identity
   evidence. No first-hand review claim and no competitor page as product evidence.
 - Revenue boundary: topic, UX, SEO, internal-link, and CTA optimization are allowed;
   affiliate economics never change product recommendation or order.
