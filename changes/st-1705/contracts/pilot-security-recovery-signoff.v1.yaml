@@ -1,0 +1,235 @@
+document:
+  id: RAOS-ST1705-PILOT-SECURITY-RECOVERY-SIGNOFF-001
+  version: 1.0.0
+  story_id: ST-1705
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  classification: LOCAL_BLOCKED_PILOT_SIGNOFF_NON_ATTESTING
+  acceptance_criteria_satisfied: false
+  formal_verification: NOT_EXECUTED
+source_bindings:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/05_test/RAOS_11_release_evidence_template_v1.0.yaml
+    sha256: 3354001be5fc0f7f7ef6a265fdd3112618ee943092755745d8cd62986487e95a
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+    sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+  - uri: repo://docs/canonical/06_ops/RAOS_12_backup_restore_matrix_v1.0.yaml
+    sha256: 60ab681822e1aa7c63584bb1b1f4cb6202f4f0dcbea572462dd3a3e7fa8c15f6
+dependency_bindings:
+  st_1607:
+    story_id: ST-1607
+    role: BLOCKED_GATE_PACK_INPUT
+    artifacts:
+      - kind: GENERATED_LOCAL_BLOCKED_GATE_PACK
+        uri: repo://changes/st-1607/generated/gate-evidence-pack.local-blocked.v1.json
+        sha256: b22dc4587a80cd2e679af7f0c038194812573c77a9e635ce074c40665a147261
+      - kind: MANIFEST
+        uri: repo://changes/st-1607/manifest.yaml
+        sha256: 5ffad284b6c97d404f10ba5d1708550d5c511d54c67749d66fd565500c5b8a40
+  st_1704_self_hosted:
+    story_id: ST-1704
+    role: LOCAL_ARTICLE_ARTIFACT_INPUT
+    artifacts:
+      - kind: DESIGN_RECORD
+        uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml
+        sha256: 49902bbbbfe791f313c68c7d450c47271972bbf94f7486d2837040fdbceb0371
+      - kind: RUNTIME_MANIFEST
+        uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json
+        sha256: e5a9b3d8dcc16204594c7906dd232f6cadfb32a3e2def70cfe1f901773f4d022
+      - kind: ARTICLE_COLLECTION
+        uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json
+        sha256: cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88
+      - kind: PUBLICATION_PLAN
+        uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/operations/publication-plan.v1.json
+        sha256: 53db8c8277da9dbd3b5b98a107327845307f58a9e3b767042ea9e64757f0e163
+      - kind: IMMUTABLE_MEASUREMENT_TEMPLATE
+        uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json
+        sha256: 1a1827f0296f1bdd7c983d141b2c2eae87a4ad9f327e68062e036adde289c73c
+  st_1704_measurement:
+    story_id: ST-1704
+    role: LOCAL_MEASUREMENT_INTERFACE_INPUT
+    artifacts:
+      - kind: DESIGN_RECORD
+        uri: repo://changes/st-1704/affiliate-learning-v2/DESIGN_HANDOFF_V1.yaml
+        sha256: c99f444a7ed4e1c5ee4d27f74e930b8e874cb5a79d4c81f0b8509371c353d247
+      - kind: MEASUREMENT_CONTRACT
+        uri: repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
+        sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+      - kind: RUNTIME_MANIFEST
+        uri: repo://changes/st-1704/affiliate-learning-v2/runtime-manifest.v2.json
+        sha256: d4583a62fd4db0cc7845b80bc9375d401861541afd5ae225abe33f628d76c5e9
+formal_evidence_port:
+  schema_uri: repo://changes/st-1705/contracts/pilot-signoff-evidence-input.v1.schema.json
+  schema_sha256: 3a38ab7c4f57db962b07c5cb78782f5fa42a2d787eb78da3f954772352a684c1
+  schema_behavior: CLOSED_ADDITIONAL_PROPERTIES_FALSE
+  activation: DISABLED
+  current_input_uri: null
+  current_input_sha256: null
+  current_input_status: ABSENT
+  dynamic_input_path: FORBIDDEN
+  authenticity_policy: INDEPENDENT_FORMAL_OWNER_PIPELINE_REQUIRED
+  default_decision: BLOCKED
+  evidence_cannot_self_authorize: true
+decision_inputs:
+  st_1607_gate_pack:
+    classification: LOCAL_BLOCKED_GATE_EVIDENCE_PACK_NON_ATTESTING
+    gate_0_status: BLOCKED
+    all_gate_status: BLOCKED
+    active_blocking_open_decisions: 14
+    qualifying_gate_evidence_count: 0
+    source_freeze_status: ABSENT
+    reviewed_implementation_tree_status: ABSENT
+    human_gate_approval_status: NONE
+    formal_tst_032: NOT_EXECUTED
+  st_1704_local_artifacts:
+    tracked_article_packet_count: 5
+    tracked_article_artifact_status: PRESENT_LOCAL_ONLY
+    immutable_publication_snapshot_count: 0
+    public_verification_count: 0
+    real_pilot_observation_status: UNAVAILABLE
+    revenue_observation_status: UNAVAILABLE
+    owner_private_measurement_ledger_read: false
+    qualifies_as_runtime_pilot_evidence: false
+  required_formal_evidence:
+    formal_tst_026: NOT_EXECUTED
+    formal_tst_029: NOT_EXECUTED
+    formal_tst_032: NOT_EXECUTED
+    security_runtime_evidence: UNAVAILABLE
+    backup_restore_runtime_evidence: UNAVAILABLE
+    source_freeze: UNAVAILABLE
+    reviewed_implementation_tree: UNAVAILABLE
+    human_security_approval: MISSING
+    human_operations_approval: MISSING
+    human_product_owner_approval: MISSING
+article_artifact_boundary:
+  exact_article_ids:
+    - st1703-first-suitcase-comparison
+    - st1704-portable-power-station-guide
+    - st1704-anker-solix-c300-c800-c1000-differences
+    - st1704-countertop-dishwasher-for-small-households
+    - st1704-compact-robot-vacuum-shortlist
+  local_artifacts_exist: true
+  local_artifacts_are_pilot_observations: false
+  local_artifacts_are_publication_evidence: false
+  local_artifacts_are_revenue_evidence: false
+  local_artifacts_are_gate_evidence: false
+  missing_observations_must_not_be_inferred: true
+runtime_evidence:
+  - suite_id: TST-026
+    required_environment:
+      - CI
+      - STAGING
+    execution_status: NOT_EXECUTED
+    artifact_uri: null
+    artifact_sha256: null
+    eligible: false
+  - suite_id: TST-029
+    required_environment:
+      - STAGING_RECOVERY
+    execution_status: NOT_EXECUTED
+    artifact_uri: null
+    artifact_sha256: null
+    eligible: false
+  - suite_id: TST-032
+    required_environment:
+      - STAGING
+    execution_status: NOT_EXECUTED
+    artifact_uri: null
+    artifact_sha256: null
+    eligible: false
+blockers:
+  - ACTIVE_BLOCKING_OPEN_DECISIONS_14
+  - ST1607_GATE_0_BLOCKED
+  - FORMAL_TST_026_NOT_EXECUTED
+  - FORMAL_TST_029_NOT_EXECUTED
+  - FORMAL_TST_032_NOT_EXECUTED
+  - SECURITY_RUNTIME_EVIDENCE_UNAVAILABLE
+  - BACKUP_RESTORE_RUNTIME_EVIDENCE_UNAVAILABLE
+  - SOURCE_FREEZE_UNAVAILABLE
+  - REVIEWED_IMPLEMENTATION_TREE_UNAVAILABLE
+  - HUMAN_SIGNOFF_MISSING
+  - REAL_PILOT_OBSERVATIONS_UNAVAILABLE
+  - PUBLICATION_SNAPSHOTS_UNAVAILABLE
+decision:
+  overall: BLOCKED
+  gate_0: BLOCKED
+  technical_pilot: BLOCKED
+  security_sign_off: NOT_SIGNED_OFF
+  recovery_sign_off: NOT_SIGNED_OFF
+  pilot_eligibility: NOT_ELIGIBLE
+  downstream_st_1801_eligibility: NOT_ELIGIBLE
+  qualifying_evidence_references: []
+  approval_artifacts: []
+  accepted_exceptions: []
+authority_boundary:
+  external_authority: NONE
+  formal_evidence_acceptance_authority: NONE
+  gate_approval_authority: NONE
+  status_propose_authority: NONE
+  status_apply_authority: NONE
+  publication_authority: NONE
+  staging_authority: NONE
+  release_authority: NONE
+  deployment_authority: NONE
+  production_authority: NONE
+execution_boundary:
+  local_generation_only: true
+  input_size_limit_bytes: 2097152
+  input_read_model: ROOT_FD_DESCRIPTOR_RELATIVE_CAPTURED_LEAF
+  writer_model: SINGLE_PROCESS_DIRECTORY_LOCK
+  output_transaction: TWO_OUTPUT_RECOVERABLE_ALL_OR_NOTHING
+  check_pending_recovery_behavior: READ_ONLY_REJECT
+  network_access: FORBIDDEN
+  environment_access: FORBIDDEN
+  credential_access: FORBIDDEN
+  provider_calls: FORBIDDEN
+  subprocess_execution: FORBIDDEN
+  status_registry_mutation: FORBIDDEN
+  publication_actions: FORBIDDEN
+  staging_actions: FORBIDDEN
+  release_actions: FORBIDDEN
+  deployment_actions: FORBIDDEN
+  production_actions: FORBIDDEN
+  external_action_count: 0
+evidence_boundary:
+  classification: LOCAL_BLOCKED_PILOT_SIGNOFF_NON_ATTESTING
+  local_base_commit: 9894d87a19b0ad407d070ea9dbe43ea39f36e935
+  local_base_commit_status: RECORDED_IMPLEMENTATION_BASE_ONLY
+  local_base_commit_qualifying_evidence: false
+  source_freeze_status: UNAVAILABLE
+  source_freeze_identifier: null
+  reviewed_implementation_tree_status: UNAVAILABLE
+  reviewed_implementation_tree_commit: null
+  canonical_status: UNCHANGED
+  registry_propose_or_apply: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  formal_tst_029: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  live_pilot: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  deployment: NOT_EXECUTED
+  production: NOT_EXECUTED
+  validated_claim: false
+  gate_pass_claim: false
+  sign_off_claim: false
+  story_acceptance: false
+  release_eligible: false
+  production_ready: false
