@@ -25,9 +25,9 @@ from raos.domain.ai.model_judge_calibration import (
 _MAX_ARTIFACT_BYTES = 4 * 1024 * 1024
 _MAX_CASES = 1_000
 _EXPECTED_SOURCES = {
-    "predecessor_contract": "f1c0e37bd4b12b83c76ea3a40c77c94ac3b852733ece71f1352cf5263fade963",
-    "predecessor_manifest": "3f812e194c8eaadbf9fb42d1861a1a791927e4041b744eb79ff446df60db137e",
-    "predecessor_suite": "701c9dcff604a1c82262077bb317aaad0f4ec055968f1ef357d3ba6b205ae7e9",
+    "predecessor_contract": "fda479ad619144e22c8b41cb734ef741baa95152dd16e37ff54ee08a4afac6eb",
+    "predecessor_manifest": "77a3871007c115699418c6d0243daeac8c6cbc04f9d9ca12866d0e142026e7c9",
+    "predecessor_suite": "37ec0ca48b794a691bc9b643b1ee28a88208116f77536dd5e8df5d6edab3010d",
     "evaluation_catalog": "a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3",
     "human_review_rubric": "a346b6c046cdcc384aeb5993fcd09ca61da62cb9b19e3b229572e8251b5010d9",
     "judge_output_schema": "8d832fe5c58a7cfeb8bafa8dab18c64aa45bdb56c3282bd3d7d6e14cad6e87d4",
