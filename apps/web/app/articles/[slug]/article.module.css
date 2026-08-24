@@ -185,7 +185,7 @@
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 1rem;
-  margin-bottom: 1.25rem;
+  margin: 1.5rem 0 0;
   padding: clamp(1.25rem, 4vw, 1.75rem);
   border: 0.0625rem solid #c98a13;
   border-radius: 1rem;
@@ -221,6 +221,69 @@
 .statusGrid div > p {
   margin-top: 0.25rem;
   color: #3f4852;
+}
+
+.ctaUnavailable {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem;
+  border: 0.0625rem dashed #9ba8b5;
+  border-radius: 1rem;
+  background: #f0f3f6;
+}
+
+.ctaUnavailableMark {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  border-radius: 50%;
+  background: #1b1f23;
+  color: #ffffff;
+  font-weight: 850;
+}
+
+.ctaUnavailable h2,
+.ctaUnavailable p {
+  margin: 0;
+}
+
+.ctaUnavailable h2 {
+  font-size: 1rem;
+}
+
+.ctaUnavailable p {
+  margin-top: 0.25rem;
+  color: #1b1f23;
+}
+
+.affiliateCta {
+  display: inline-flex;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.75rem 1rem;
+  border: 0.125rem solid #734800;
+  border-radius: 0.75rem;
+  background: #fff8e8;
+  color: #3d2900;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.affiliateCta:focus-visible {
+  outline: 0.2rem solid #0b63ce;
+  outline-offset: 0.2rem;
+}
+
+.affiliateCtaDestination {
+  color: #59636e;
+  font-size: 0.75rem;
+  font-weight: 650;
 }
 
 .statusGrid {
@@ -372,6 +435,7 @@
   }
 
   .disclosure,
+  .ctaUnavailable,
   .statusGrid section {
     grid-template-columns: 1fr;
   }

@@ -1,4 +1,13 @@
 import type { PublicArticleViewModelV2 } from '../../../packages/web-ui/src/public-article-renderer.ts';
+import {
+  PUBLIC_DISCLOSURE_COPY_V2,
+  createPublicDisclosureAffiliateArticleViewV2,
+  validatePublicAffiliateCtaSyntheticViewV2,
+  validatePublicDisclosureAffiliateArticleViewV2,
+  type PublicAffiliateCtaSyntheticViewV2,
+  type PublicAffiliateCtaUnavailableViewV2,
+  type PublicDisclosureAffiliateArticleViewV2,
+} from '../../../packages/web-ui/src/disclosure-affiliate-cta.ts';
 
 import { PUBLIC_POLICY_PAGES } from './public-policy.ts';
 
@@ -79,7 +88,75 @@ function ArticleSection({
   );
 }
 
+export function DisclosureBanner({
+  view,
+}: {
+  readonly view: PublicDisclosureAffiliateArticleViewV2;
+}) {
+  const safeBanner = validatePublicDisclosureAffiliateArticleViewV2(view).disclosure;
+  return (
+    <aside className={styles['disclosure']} aria-labelledby="article-disclosure-heading">
+      <p className={styles['disclosureMark']} aria-hidden="true">
+        {safeBanner.badge}
+      </p>
+      <div>
+        <h2 id={safeBanner.headingId}>{safeBanner.heading}</h2>
+        <p>{safeBanner.copy}</p>
+      </div>
+    </aside>
+  );
+}
+
+function AffiliateCtaUnavailableNotice({
+  cta,
+}: {
+  readonly cta: PublicAffiliateCtaUnavailableViewV2;
+}) {
+  return (
+    <section className={styles['ctaUnavailable']} aria-labelledby={cta.notice.headingId}>
+      <span className={styles['ctaUnavailableMark']} aria-hidden="true">
+        未
+      </span>
+      <div>
+        <h2 id={cta.notice.headingId}>{cta.notice.heading}</h2>
+        <p>{cta.notice.text}</p>
+      </div>
+    </section>
+  );
+}
+
+export function AffiliateCTA({ cta }: { readonly cta: PublicAffiliateCtaSyntheticViewV2 }) {
+  const safeCta = validatePublicAffiliateCtaSyntheticViewV2(cta);
+  return (
+    <a className={styles['affiliateCta']} href={safeCta.href} rel={safeCta.rel}>
+      <span>{safeCta.copy}</span>
+      <span className={styles['affiliateCtaDestination']}>{safeCta.destinationText}</span>
+    </a>
+  );
+}
+
+function disclosureAffiliateView(
+  model: PublicArticleViewModelV2,
+): PublicDisclosureAffiliateArticleViewV2 {
+  if (model.article.disclosureText !== PUBLIC_DISCLOSURE_COPY_V2) {
+    throw new TypeError('PUBLIC_DISCLOSURE_V2_SOURCE_MISMATCH');
+  }
+  return createPublicDisclosureAffiliateArticleViewV2({
+    schemaVersion: 2,
+    screenId: model.screen.id,
+    routePath: model.route.path,
+    sourceProfile: 'EXACT_ST1002_RECORDED_PUBLIC_ARTICLE_V2',
+    disclosureCopy: model.article.disclosureText,
+    affiliateSource: {
+      profile: 'ST0503_RECORDED_LOSSLESS_STRUCTURAL_V1',
+      state: 'UNAVAILABLE_SOURCE',
+      affiliateUrl: null,
+    },
+  });
+}
+
 export function PublicArticlePage({ model }: { readonly model: PublicArticleViewModelV2 }) {
+  const disclosureAffiliate = disclosureAffiliateView(model);
   return (
     <div className={styles['siteFrame']}>
       <a className={styles['skipLink']} href="#public-article-main">
@@ -101,22 +178,13 @@ export function PublicArticlePage({ model }: { readonly model: PublicArticleView
             <p className={styles['eyebrow']}>{model.article.eyebrow}</p>
             <p className={styles['previewPill']}>{model.article.previewLabel}</p>
             <h1 id="public-article-heading">{model.article.title}</h1>
+            <DisclosureBanner view={disclosureAffiliate} />
             <div className={styles['lead']}>
               {model.article.lead.map((paragraph, index) => (
                 <p key={`lead-${String(index)}`}>{paragraph}</p>
               ))}
             </div>
           </header>
-
-          <aside className={styles['disclosure']} aria-labelledby="article-disclosure-heading">
-            <p className={styles['disclosureMark']} aria-hidden="true">
-              広告
-            </p>
-            <div>
-              <h2 id="article-disclosure-heading">広告について</h2>
-              <p>{model.article.disclosureText}</p>
-            </div>
-          </aside>
 
           <div className={styles['statusGrid']}>
             <section aria-labelledby="article-preview-heading">
@@ -138,6 +206,8 @@ export function PublicArticlePage({ model }: { readonly model: PublicArticleView
               </div>
             </section>
           </div>
+
+          <AffiliateCtaUnavailableNotice cta={disclosureAffiliate.affiliateCta} />
 
           <div className={styles['articleSections']}>
             {model.article.sections.map((section) => (

@@ -734,3 +734,504 @@ export function createPublicDisclosureAffiliateCandidate(
 ): PublicDisclosureAffiliateCandidate {
   return validatePublicDisclosureAffiliateCandidate(buildCandidate(validatedInput(input)));
 }
+
+/*
+ * Additive V2 local runtime. V1 above remains the disabled hostile-input
+ * boundary. V2 binds the one exact ST-1002 recorded article disclosure to the
+ * exact ST-0503 `affiliate_url = None` dependency state. The public route can
+ * therefore render the disclosure and an unavailable-source notice, but it
+ * cannot construct an affiliate destination.
+ */
+
+export const PUBLIC_DISCLOSURE_AFFILIATE_V2_CLASSIFICATION =
+  'LOCAL_RECORDED_DISCLOSURE_WITH_UNAVAILABLE_AFFILIATE_SOURCE_V2' as const;
+
+export const PUBLIC_DISCLOSURE_COPY_V2 = 'この記事にはアフィリエイト広告が含まれます。' as const;
+export const PUBLIC_AFFILIATE_CTA_COPY_V2 = '楽天市場で写真・価格・在庫を見る' as const;
+export const PUBLIC_AFFILIATE_REL_V2 = 'sponsored nofollow' as const;
+export const PUBLIC_AFFILIATE_DESTINATION_LABEL_V2 = '楽天市場' as const;
+export const PUBLIC_AFFILIATE_UNAVAILABLE_NOTICE_V2 =
+  '確認済みのリンクを利用できないため、楽天市場へのボタンは表示していません。' as const;
+
+const PUBLIC_ARTICLE_RECORDED_PATH_V2 = '/articles/synthetic-recorded-policy-seo' as const;
+const PUBLIC_AFFILIATE_SYNTHETIC_HREF_V2 =
+  'https://example.invalid/rakuten-marketplace/item' as const;
+
+export const PUBLIC_DISCLOSURE_AFFILIATE_V2_ERROR_CODES = Object.freeze([
+  'PUBLIC_DISCLOSURE_V2_INPUT_INVALID',
+  'PUBLIC_DISCLOSURE_V2_SOURCE_MISMATCH',
+  'PUBLIC_DISCLOSURE_V2_VIEW_INVALID',
+  'PUBLIC_AFFILIATE_CTA_V2_RECEIPT_INVALID',
+  'PUBLIC_AFFILIATE_CTA_V2_DESTINATION_INVALID',
+  'PUBLIC_AFFILIATE_CTA_V2_VERIFICATION_INCOMPLETE',
+  'PUBLIC_AFFILIATE_CTA_V2_VIEW_INVALID',
+] as const);
+
+export type PublicDisclosureAffiliateV2ErrorCode =
+  (typeof PUBLIC_DISCLOSURE_AFFILIATE_V2_ERROR_CODES)[number];
+
+export class PublicDisclosureAffiliateV2Error extends TypeError {
+  readonly code: PublicDisclosureAffiliateV2ErrorCode;
+
+  constructor(code: PublicDisclosureAffiliateV2ErrorCode) {
+    super(code);
+    this.name = 'PublicDisclosureAffiliateV2Error';
+    this.code = code;
+    Object.freeze(this);
+  }
+}
+
+export interface PublicDisclosureAffiliateArticleInputV2 {
+  readonly schemaVersion: 2;
+  readonly screenId: 'PUB-003';
+  readonly routePath: typeof PUBLIC_ARTICLE_RECORDED_PATH_V2;
+  readonly sourceProfile: 'EXACT_ST1002_RECORDED_PUBLIC_ARTICLE_V2';
+  readonly disclosureCopy: typeof PUBLIC_DISCLOSURE_COPY_V2;
+  readonly affiliateSource: {
+    readonly profile: 'ST0503_RECORDED_LOSSLESS_STRUCTURAL_V1';
+    readonly state: 'UNAVAILABLE_SOURCE';
+    readonly affiliateUrl: null;
+  };
+}
+
+export interface PublicDisclosureBannerViewV2 {
+  readonly componentId: 'UI-C031';
+  readonly name: 'DisclosureBanner';
+  readonly rendered: true;
+  readonly required: true;
+  readonly rendererOwned: true;
+  readonly editorRemovable: false;
+  readonly interactive: false;
+  readonly landmark: 'aside';
+  readonly headingId: 'article-disclosure-heading';
+  readonly ariaLabelledBy: 'article-disclosure-heading';
+  readonly heading: '広告について';
+  readonly headingCount: 1;
+  readonly badge: '広告';
+  readonly copy: typeof PUBLIC_DISCLOSURE_COPY_V2;
+  readonly placement: 'AFTER_H1_BEFORE_LEAD_AND_ARTICLE_BODY';
+  readonly precedesArticleBody: true;
+  readonly firstViewRequired: true;
+  readonly policyCurrentness: 'RECORDED_COPY_ONLY_NOT_LIVE_VERIFIED';
+}
+
+export interface PublicAffiliateCtaUnavailableViewV2 {
+  readonly componentId: 'UI-C034';
+  readonly name: 'AffiliateCTA';
+  readonly state: 'UNAVAILABLE_SOURCE';
+  readonly rendered: false;
+  readonly enabled: false;
+  readonly interactive: false;
+  readonly focusable: false;
+  readonly anchor: null;
+  readonly source: {
+    readonly profile: 'ST0503_RECORDED_LOSSLESS_STRUCTURAL_V1';
+    readonly affiliateUrl: null;
+  };
+  readonly fixedCopy: typeof PUBLIC_AFFILIATE_CTA_COPY_V2;
+  readonly requiredRel: typeof PUBLIC_AFFILIATE_REL_V2;
+  readonly requiredDestinationLabel: typeof PUBLIC_AFFILIATE_DESTINATION_LABEL_V2;
+  readonly notice: {
+    readonly rendered: true;
+    readonly headingId: 'article-affiliate-source-heading';
+    readonly heading: '楽天市場へのリンク';
+    readonly text: typeof PUBLIC_AFFILIATE_UNAVAILABLE_NOTICE_V2;
+  };
+  readonly gates: {
+    readonly exactDestinationReceipt: 'UNAVAILABLE_SOURCE';
+    readonly urlIntegrity: 'NOT_EVALUATED';
+    readonly hostAllowlist: 'NOT_EVALUATED';
+    readonly reachability: 'NOT_EVALUATED';
+    readonly linkHealth: 'NOT_EVALUATED';
+    readonly freshness: 'NOT_EVALUATED';
+    readonly killSwitch: 'NOT_EVALUATED';
+    readonly apiCredit: 'NOT_EVALUATED';
+  };
+}
+
+export interface PublicAffiliateNavigationBoundaryV2 {
+  readonly nativeAnchorRequired: true;
+  readonly directDestinationRequired: true;
+  readonly beaconRequiredForNavigation: false;
+  readonly instrumentationFailureBlocksNavigation: false;
+  readonly raosRedirectAllowed: false;
+  readonly cloakingAllowed: false;
+  readonly urlMutationAllowed: false;
+  readonly returnUrlAllowed: false;
+  readonly clientHandlerAllowed: false;
+}
+
+export interface PublicDisclosureAffiliateArticleViewV2 {
+  readonly componentOrder: readonly ['UI-C031', 'UI-C034'];
+  readonly disclosure: PublicDisclosureBannerViewV2;
+  readonly affiliateCta: PublicAffiliateCtaUnavailableViewV2;
+  readonly navigationBoundary: PublicAffiliateNavigationBoundaryV2;
+}
+
+export interface PublicAffiliateSyntheticReceiptV2 {
+  readonly schemaVersion: 2;
+  readonly kind: 'SYNTHETIC_ST1004_VERIFIED_DESTINATION_RECEIPT';
+  readonly href: typeof PUBLIC_AFFILIATE_SYNTHETIC_HREF_V2;
+  readonly destinationLabel: typeof PUBLIC_AFFILIATE_DESTINATION_LABEL_V2;
+  readonly directDestinationVerified: true;
+  readonly urlIntegrityVerified: true;
+  readonly hostAllowlistVerified: true;
+  readonly reachabilityVerified: true;
+  readonly linkHealthVerified: true;
+  readonly freshnessVerified: true;
+  readonly killSwitchAllows: true;
+  readonly apiCreditApplicability: 'NOT_APPLICABLE_SYNTHETIC_ONLY';
+}
+
+export interface PublicAffiliateCtaSyntheticViewV2 {
+  readonly componentId: 'UI-C034';
+  readonly name: 'AffiliateCTA';
+  readonly state: 'SYNTHETIC_RENDER_TEST_ONLY';
+  readonly rendered: true;
+  readonly enabled: true;
+  readonly interactive: true;
+  readonly focusable: true;
+  readonly receiptKind: 'SYNTHETIC_ST1004_VERIFIED_DESTINATION_RECEIPT';
+  readonly href: typeof PUBLIC_AFFILIATE_SYNTHETIC_HREF_V2;
+  readonly rel: typeof PUBLIC_AFFILIATE_REL_V2;
+  readonly copy: typeof PUBLIC_AFFILIATE_CTA_COPY_V2;
+  readonly destinationLabel: typeof PUBLIC_AFFILIATE_DESTINATION_LABEL_V2;
+  readonly destinationText: '移動先：楽天市場（合成テスト）';
+  readonly target: null;
+  readonly keyboardInteraction: 'NATIVE_ANCHOR';
+  readonly focusIndicatorRequired: true;
+  readonly minimumTargetBlockSizePx: 44;
+  readonly minimumTargetInlineSizePx: 44;
+  readonly directDestination: true;
+  readonly beaconConfigured: false;
+  readonly beaconRequiredForNavigation: false;
+  readonly instrumentationFailureBlocksNavigation: false;
+  readonly raosRedirect: false;
+  readonly cloaking: false;
+  readonly urlMutation: false;
+  readonly apiCreditApplicability: 'NOT_APPLICABLE_SYNTHETIC_ONLY';
+  readonly routeRendered: false;
+}
+
+export interface PublicAffiliateDestinationReceiptPortBoundaryV2 {
+  readonly profile: 'CLOSED_VERIFIED_AFFILIATE_DESTINATION_RECEIPT_PORT_V1';
+  readonly connected: false;
+  readonly acceptsArbitraryUrl: false;
+  readonly acceptsReturnUrl: false;
+  readonly liveReceiptAcceptedByThisSlice: false;
+  readonly reason: 'URL_HOST_AND_LINK_HEALTH_AUTHORITY_UNAVAILABLE';
+}
+
+export interface PublicDisclosureAffiliateRecordedRuntimeV2 {
+  readonly schemaVersion: 2;
+  readonly storyId: 'ST-1004';
+  readonly classification: typeof PUBLIC_DISCLOSURE_AFFILIATE_V2_CLASSIFICATION;
+  readonly articleView: PublicDisclosureAffiliateArticleViewV2;
+  readonly syntheticCtaFixture: PublicAffiliateCtaSyntheticViewV2;
+  readonly receiptPort: PublicAffiliateDestinationReceiptPortBoundaryV2;
+}
+
+const V2_INPUT_KEYS = [
+  'affiliateSource',
+  'disclosureCopy',
+  'routePath',
+  'schemaVersion',
+  'screenId',
+  'sourceProfile',
+] as const;
+const V2_AFFILIATE_SOURCE_KEYS = ['affiliateUrl', 'profile', 'state'] as const;
+const V2_RECEIPT_KEYS = [
+  'apiCreditApplicability',
+  'destinationLabel',
+  'directDestinationVerified',
+  'freshnessVerified',
+  'hostAllowlistVerified',
+  'href',
+  'killSwitchAllows',
+  'kind',
+  'linkHealthVerified',
+  'reachabilityVerified',
+  'schemaVersion',
+  'urlIntegrityVerified',
+] as const;
+
+function rejectV2(code: PublicDisclosureAffiliateV2ErrorCode): never {
+  throw new PublicDisclosureAffiliateV2Error(code);
+}
+
+function clonePlainObjectV2(
+  value: unknown,
+  code:
+    | 'PUBLIC_DISCLOSURE_V2_INPUT_INVALID'
+    | 'PUBLIC_DISCLOSURE_V2_VIEW_INVALID'
+    | 'PUBLIC_AFFILIATE_CTA_V2_RECEIPT_INVALID'
+    | 'PUBLIC_AFFILIATE_CTA_V2_VIEW_INVALID',
+): JsonObject {
+  if (!isStrictPlainTree(value)) {
+    return rejectV2(code);
+  }
+  let clone: JsonValue;
+  try {
+    clone = createJsonValue(value);
+  } catch {
+    return rejectV2(code);
+  }
+  if (!isJsonObject(clone)) {
+    return rejectV2(code);
+  }
+  return clone;
+}
+
+function exactArticleInputV2(value: unknown): PublicDisclosureAffiliateArticleInputV2 {
+  const clone = clonePlainObjectV2(value, 'PUBLIC_DISCLOSURE_V2_INPUT_INVALID');
+  if (!hasExactKeys(clone, V2_INPUT_KEYS)) {
+    return rejectV2('PUBLIC_DISCLOSURE_V2_INPUT_INVALID');
+  }
+  const affiliateSource = clone['affiliateSource'];
+  if (!isJsonObject(affiliateSource) || !hasExactKeys(affiliateSource, V2_AFFILIATE_SOURCE_KEYS)) {
+    return rejectV2('PUBLIC_DISCLOSURE_V2_INPUT_INVALID');
+  }
+  if (
+    clone['schemaVersion'] !== 2 ||
+    clone['screenId'] !== 'PUB-003' ||
+    clone['routePath'] !== PUBLIC_ARTICLE_RECORDED_PATH_V2 ||
+    clone['sourceProfile'] !== 'EXACT_ST1002_RECORDED_PUBLIC_ARTICLE_V2' ||
+    clone['disclosureCopy'] !== PUBLIC_DISCLOSURE_COPY_V2 ||
+    affiliateSource['profile'] !== 'ST0503_RECORDED_LOSSLESS_STRUCTURAL_V1' ||
+    affiliateSource['state'] !== 'UNAVAILABLE_SOURCE' ||
+    affiliateSource['affiliateUrl'] !== null
+  ) {
+    return rejectV2('PUBLIC_DISCLOSURE_V2_SOURCE_MISMATCH');
+  }
+  return clone as unknown as PublicDisclosureAffiliateArticleInputV2;
+}
+
+function buildArticleViewV2(
+  input: PublicDisclosureAffiliateArticleInputV2,
+): PublicDisclosureAffiliateArticleViewV2 {
+  return createJsonValue({
+    componentOrder: ['UI-C031', 'UI-C034'],
+    disclosure: {
+      componentId: 'UI-C031',
+      name: 'DisclosureBanner',
+      rendered: true,
+      required: true,
+      rendererOwned: true,
+      editorRemovable: false,
+      interactive: false,
+      landmark: 'aside',
+      headingId: 'article-disclosure-heading',
+      ariaLabelledBy: 'article-disclosure-heading',
+      heading: '広告について',
+      headingCount: 1,
+      badge: '広告',
+      copy: input.disclosureCopy,
+      placement: 'AFTER_H1_BEFORE_LEAD_AND_ARTICLE_BODY',
+      precedesArticleBody: true,
+      firstViewRequired: true,
+      policyCurrentness: 'RECORDED_COPY_ONLY_NOT_LIVE_VERIFIED',
+    },
+    affiliateCta: {
+      componentId: 'UI-C034',
+      name: 'AffiliateCTA',
+      state: 'UNAVAILABLE_SOURCE',
+      rendered: false,
+      enabled: false,
+      interactive: false,
+      focusable: false,
+      anchor: null,
+      source: {
+        profile: input.affiliateSource.profile,
+        affiliateUrl: input.affiliateSource.affiliateUrl,
+      },
+      fixedCopy: PUBLIC_AFFILIATE_CTA_COPY_V2,
+      requiredRel: PUBLIC_AFFILIATE_REL_V2,
+      requiredDestinationLabel: PUBLIC_AFFILIATE_DESTINATION_LABEL_V2,
+      notice: {
+        rendered: true,
+        headingId: 'article-affiliate-source-heading',
+        heading: '楽天市場へのリンク',
+        text: PUBLIC_AFFILIATE_UNAVAILABLE_NOTICE_V2,
+      },
+      gates: {
+        exactDestinationReceipt: 'UNAVAILABLE_SOURCE',
+        urlIntegrity: 'NOT_EVALUATED',
+        hostAllowlist: 'NOT_EVALUATED',
+        reachability: 'NOT_EVALUATED',
+        linkHealth: 'NOT_EVALUATED',
+        freshness: 'NOT_EVALUATED',
+        killSwitch: 'NOT_EVALUATED',
+        apiCredit: 'NOT_EVALUATED',
+      },
+    },
+    navigationBoundary: {
+      nativeAnchorRequired: true,
+      directDestinationRequired: true,
+      beaconRequiredForNavigation: false,
+      instrumentationFailureBlocksNavigation: false,
+      raosRedirectAllowed: false,
+      cloakingAllowed: false,
+      urlMutationAllowed: false,
+      returnUrlAllowed: false,
+      clientHandlerAllowed: false,
+    },
+  }) as unknown as PublicDisclosureAffiliateArticleViewV2;
+}
+
+export const PUBLIC_DISCLOSURE_AFFILIATE_RECORDED_INPUT_V2 = createJsonValue({
+  schemaVersion: 2,
+  screenId: 'PUB-003',
+  routePath: PUBLIC_ARTICLE_RECORDED_PATH_V2,
+  sourceProfile: 'EXACT_ST1002_RECORDED_PUBLIC_ARTICLE_V2',
+  disclosureCopy: PUBLIC_DISCLOSURE_COPY_V2,
+  affiliateSource: {
+    profile: 'ST0503_RECORDED_LOSSLESS_STRUCTURAL_V1',
+    state: 'UNAVAILABLE_SOURCE',
+    affiliateUrl: null,
+  },
+}) as unknown as PublicDisclosureAffiliateArticleInputV2;
+
+const EXPECTED_ARTICLE_VIEW_V2 = buildArticleViewV2(
+  exactArticleInputV2(PUBLIC_DISCLOSURE_AFFILIATE_RECORDED_INPUT_V2),
+);
+
+export function createPublicDisclosureAffiliateArticleViewV2(
+  input: PublicDisclosureAffiliateArticleInputV2,
+): PublicDisclosureAffiliateArticleViewV2 {
+  return buildArticleViewV2(exactArticleInputV2(input));
+}
+
+export function createRecordedPublicDisclosureAffiliateArticleViewV2(): PublicDisclosureAffiliateArticleViewV2 {
+  return buildArticleViewV2(PUBLIC_DISCLOSURE_AFFILIATE_RECORDED_INPUT_V2);
+}
+
+export function validatePublicDisclosureAffiliateArticleViewV2(
+  value: unknown,
+): PublicDisclosureAffiliateArticleViewV2 {
+  const clone = clonePlainObjectV2(value, 'PUBLIC_DISCLOSURE_V2_VIEW_INVALID');
+  if (!jsonEqual(clone, EXPECTED_ARTICLE_VIEW_V2)) {
+    return rejectV2('PUBLIC_DISCLOSURE_V2_VIEW_INVALID');
+  }
+  return clone as unknown as PublicDisclosureAffiliateArticleViewV2;
+}
+
+export const PUBLIC_AFFILIATE_SYNTHETIC_RECEIPT_V2 = createJsonValue({
+  schemaVersion: 2,
+  kind: 'SYNTHETIC_ST1004_VERIFIED_DESTINATION_RECEIPT',
+  href: PUBLIC_AFFILIATE_SYNTHETIC_HREF_V2,
+  destinationLabel: PUBLIC_AFFILIATE_DESTINATION_LABEL_V2,
+  directDestinationVerified: true,
+  urlIntegrityVerified: true,
+  hostAllowlistVerified: true,
+  reachabilityVerified: true,
+  linkHealthVerified: true,
+  freshnessVerified: true,
+  killSwitchAllows: true,
+  apiCreditApplicability: 'NOT_APPLICABLE_SYNTHETIC_ONLY',
+}) as unknown as PublicAffiliateSyntheticReceiptV2;
+
+function exactSyntheticReceiptV2(value: unknown): PublicAffiliateSyntheticReceiptV2 {
+  const clone = clonePlainObjectV2(value, 'PUBLIC_AFFILIATE_CTA_V2_RECEIPT_INVALID');
+  if (!hasExactKeys(clone, V2_RECEIPT_KEYS)) {
+    return rejectV2('PUBLIC_AFFILIATE_CTA_V2_RECEIPT_INVALID');
+  }
+  if (
+    clone['schemaVersion'] !== 2 ||
+    clone['kind'] !== 'SYNTHETIC_ST1004_VERIFIED_DESTINATION_RECEIPT' ||
+    clone['href'] !== PUBLIC_AFFILIATE_SYNTHETIC_HREF_V2 ||
+    clone['destinationLabel'] !== PUBLIC_AFFILIATE_DESTINATION_LABEL_V2
+  ) {
+    return rejectV2('PUBLIC_AFFILIATE_CTA_V2_DESTINATION_INVALID');
+  }
+  for (const key of [
+    'directDestinationVerified',
+    'urlIntegrityVerified',
+    'hostAllowlistVerified',
+    'reachabilityVerified',
+    'linkHealthVerified',
+    'freshnessVerified',
+    'killSwitchAllows',
+  ] as const) {
+    if (clone[key] !== true) {
+      return rejectV2('PUBLIC_AFFILIATE_CTA_V2_VERIFICATION_INCOMPLETE');
+    }
+  }
+  if (clone['apiCreditApplicability'] !== 'NOT_APPLICABLE_SYNTHETIC_ONLY') {
+    return rejectV2('PUBLIC_AFFILIATE_CTA_V2_VERIFICATION_INCOMPLETE');
+  }
+  return clone as unknown as PublicAffiliateSyntheticReceiptV2;
+}
+
+function buildSyntheticCtaV2(
+  receipt: PublicAffiliateSyntheticReceiptV2,
+): PublicAffiliateCtaSyntheticViewV2 {
+  return createJsonValue({
+    componentId: 'UI-C034',
+    name: 'AffiliateCTA',
+    state: 'SYNTHETIC_RENDER_TEST_ONLY',
+    rendered: true,
+    enabled: true,
+    interactive: true,
+    focusable: true,
+    receiptKind: receipt.kind,
+    href: receipt.href,
+    rel: PUBLIC_AFFILIATE_REL_V2,
+    copy: PUBLIC_AFFILIATE_CTA_COPY_V2,
+    destinationLabel: receipt.destinationLabel,
+    destinationText: '移動先：楽天市場（合成テスト）',
+    target: null,
+    keyboardInteraction: 'NATIVE_ANCHOR',
+    focusIndicatorRequired: true,
+    minimumTargetBlockSizePx: 44,
+    minimumTargetInlineSizePx: 44,
+    directDestination: receipt.directDestinationVerified,
+    beaconConfigured: false,
+    beaconRequiredForNavigation: false,
+    instrumentationFailureBlocksNavigation: false,
+    raosRedirect: false,
+    cloaking: false,
+    urlMutation: false,
+    apiCreditApplicability: receipt.apiCreditApplicability,
+    routeRendered: false,
+  }) as unknown as PublicAffiliateCtaSyntheticViewV2;
+}
+
+const EXPECTED_SYNTHETIC_CTA_V2 = buildSyntheticCtaV2(
+  exactSyntheticReceiptV2(PUBLIC_AFFILIATE_SYNTHETIC_RECEIPT_V2),
+);
+
+export function createSyntheticPublicAffiliateCtaV2(
+  receipt: PublicAffiliateSyntheticReceiptV2,
+): PublicAffiliateCtaSyntheticViewV2 {
+  return buildSyntheticCtaV2(exactSyntheticReceiptV2(receipt));
+}
+
+export function validatePublicAffiliateCtaSyntheticViewV2(
+  value: unknown,
+): PublicAffiliateCtaSyntheticViewV2 {
+  const clone = clonePlainObjectV2(value, 'PUBLIC_AFFILIATE_CTA_V2_VIEW_INVALID');
+  if (!jsonEqual(clone, EXPECTED_SYNTHETIC_CTA_V2)) {
+    return rejectV2('PUBLIC_AFFILIATE_CTA_V2_VIEW_INVALID');
+  }
+  return clone as unknown as PublicAffiliateCtaSyntheticViewV2;
+}
+
+export const PUBLIC_AFFILIATE_DESTINATION_RECEIPT_PORT_BOUNDARY_V2 = createJsonValue({
+  profile: 'CLOSED_VERIFIED_AFFILIATE_DESTINATION_RECEIPT_PORT_V1',
+  connected: false,
+  acceptsArbitraryUrl: false,
+  acceptsReturnUrl: false,
+  liveReceiptAcceptedByThisSlice: false,
+  reason: 'URL_HOST_AND_LINK_HEALTH_AUTHORITY_UNAVAILABLE',
+}) as unknown as PublicAffiliateDestinationReceiptPortBoundaryV2;
+
+export function createRecordedPublicDisclosureAffiliateRuntimeV2(): PublicDisclosureAffiliateRecordedRuntimeV2 {
+  return createJsonValue({
+    schemaVersion: 2,
+    storyId: 'ST-1004',
+    classification: PUBLIC_DISCLOSURE_AFFILIATE_V2_CLASSIFICATION,
+    articleView: createRecordedPublicDisclosureAffiliateArticleViewV2(),
+    syntheticCtaFixture: createSyntheticPublicAffiliateCtaV2(PUBLIC_AFFILIATE_SYNTHETIC_RECEIPT_V2),
+    receiptPort: PUBLIC_AFFILIATE_DESTINATION_RECEIPT_PORT_BOUNDARY_V2,
+  }) as unknown as PublicDisclosureAffiliateRecordedRuntimeV2;
+}
