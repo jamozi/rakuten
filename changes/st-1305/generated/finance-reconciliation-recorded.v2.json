@@ -98,7 +98,7 @@
     "source_artifacts": [
       {
         "bytes": 8041,
-        "sha256": "3a654c9ebd8184a8f23d563dbed789cd1743a1a34437dcd0423963d58ba7242d",
+        "sha256": "afc540e9cc866e4ef48cb276eb56f2aec636e614c6c2b863c3865b8be873a922",
         "uri": "repo://changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml"
       },
       {
@@ -201,11 +201,11 @@
       },
       "st1304_projection": {
         "path": "changes/st-1304/generated/cost-unit-economics-recorded.v2.json",
-        "sha256": "2e027b3794f1d78618eb5e18f53ded994db408730f397422d4253e6918d02c08"
+        "sha256": "329d169994499b411f77d1d457e35f37d7b0970e664bcd4ffd665b41131ea00f"
       },
       "st1304_runtime": {
         "path": "changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml",
-        "sha256": "a0f77c098004f951219eed29814e354639165829b534266b49d48d4d9eb63a98"
+        "sha256": "0e8fbcc25ee67bb5b13992832a660e22b91592833d7d6be27ce7b740def3fc1a"
       },
       "test_catalog": {
         "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",

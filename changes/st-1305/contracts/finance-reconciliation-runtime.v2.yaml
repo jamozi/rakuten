@@ -54,10 +54,10 @@ source_bindings:
     sha256: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b
   st1304_runtime:
     path: changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
-    sha256: a0f77c098004f951219eed29814e354639165829b534266b49d48d4d9eb63a98
+    sha256: 0e8fbcc25ee67bb5b13992832a660e22b91592833d7d6be27ce7b740def3fc1a
   st1304_projection:
     path: changes/st-1304/generated/cost-unit-economics-recorded.v2.json
-    sha256: 2e027b3794f1d78618eb5e18f53ded994db408730f397422d4253e6918d02c08
+    sha256: 329d169994499b411f77d1d457e35f37d7b0970e664bcd4ffd665b41131ea00f
   st1304_fixture:
     path: changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
     sha256: 90b3ccaecc1345b26054f563365936f4fd06b5def3259c5786adeea0327a8942
