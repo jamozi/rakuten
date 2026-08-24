@@ -1,0 +1,126 @@
+document:
+  id: RAOS-ST0401-LOCAL-IMPLEMENTATION-COMPLETION-003
+  story_id: ST-0401
+  evidence_class: LOCAL_IMPLEMENTATION_ONLY
+  proposed_status: LOCAL_CODE_COMPLETE
+  base_sha: 1829e1ba31addce6579b445da51be5b604732278
+  recorded_at: '2026-08-25T07:12:14+09:00'
+
+scope:
+  - provider-neutral authentication collaborator detachment and validation
+  - exact integer-zero recorded-provider external-action boundary
+  - owner-private exact-schema V2 SQLite recorded repository
+  - append-only authorization/session revisions and durable command journal
+  - inode identity and process-lifetime rollback/prefix detection
+  - deterministic contract, owner generator, runtime artifact, and manifest
+
+local_completion:
+  database_creation: EXCLUSIVE_CREATE_RESULT_BOUND_PREEXISTING_FILES_REJECTED
+  schema: EXACT_V2_STRICT_FOREIGN_KEYS_APPEND_ONLY_TRIGGERS
+  canonical_encoding: COMPACT_UTF8_SORTED_JSON_AND_RFC3339_UTC_Z
+  history_integrity: FULL_REVISION_AND_LINEAR_COMMAND_SHA256_CHAIN
+  rotation_recovery: EXACT_DURABLE_COMMAND_INTENT_RESULT_READ_ONLY_NO_RETRY
+  commit_classification: PRECOMMIT_FAILURE_KNOWN_AFTER_COMMIT_AMBIGUITY_ONLY
+  file_identity: OWNER_PRIVATE_MODE_0600_DEVICE_INODE_PINNED
+  rollback_detection: PROCESS_LIFETIME_COUNT_HEAD_PREFIX_ANCHOR
+  collaborator_values: DEEP_EXACT_DETACHED_AND_REVALIDATED
+  recorded_external_action_count: EXACT_INTEGER_ZERO
+  external_provider_http_credentials: ABSENT
+
+documented_limitation:
+  cross_restart_trusted_anchor: ABSENT_NOT_CLAIMED
+  statement: >-
+    Without an external trusted anchor, a fresh process cannot distinguish a
+    fully valid older snapshot from current state. Replacement and rollback
+    detection claims are therefore limited to one process lifetime.
+
+debt:
+  - id: ST0401-V3-INTRODUCED-RUNTIME-DEBT
+    status: NONE
+  - id: ST0401-DOWNSTREAM-OWNER-REBIND
+    status: DEFERRED_TO_DEPENDENCY_OWNERS
+    introduced_by: ST-0401 contract and implementation source hash changes
+    closure_owner:
+      - ST-0402 owner generator
+      - ST-0403 owner generator
+    observed:
+      - 'tests/st0402: 59 passed, 2 dependency-binding drift failures'
+      - 'tests/st0403: 92 passed, 3 ST-0401 source/contract binding drift failures'
+    safe_impact: >-
+      Runtime behavior checks passed; only downstream deterministic owner pins
+      and their generated provenance require Story-owner regeneration.
+
+checks:
+  compile:
+    result: PASS
+    scope: owned implementation, owner generator, and tests/st0401
+  owner_generation:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python scripts/build_st0401_local_auth_runtime.py
+    result: PASS
+  owner_no_write_check:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python scripts/build_st0401_local_auth_runtime.py --check
+    result: PASS
+  focused_hostile_pytest:
+    result: PASS
+    observed: 63 passed
+  full_story_pytest:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/pytest -p no:cacheprovider tests/st0401 -q
+    result: PASS
+    observed: 78 passed
+  affected_regression:
+    st1405: 'PASS: 82 passed'
+    st0402: 'OWNER_BINDING_DRIFT_ONLY: 59 passed, 2 failed'
+    st0403: 'OWNER_BINDING_DRIFT_ONLY: 92 passed, 3 failed'
+  network_syscalls:
+    method: strace network-only trace over full Story suite
+    result: PASS
+    observed: 0 network syscalls
+  ruff_check:
+    result: PASS
+    observed: All checks passed
+  ruff_format_check:
+    result: PASS
+    observed: 14 files already formatted
+  strict_mypy:
+    result: PASS
+    observed: Success; no issues found in 7 source files
+  focused_strict_pyright:
+    runtime: Node 24.18.1 and repository-locked Pyright 1.1.411
+    result: PASS
+    observed: 0 errors, 0 warnings, 0 informations across 6 owned implementation files
+  focused_secret_scan:
+    result: PASS
+    observed: 0 findings across 16 implementation/contract/test/evidence files
+  full_worktree_secret_scan:
+    command: python3 -I scripts/scan_secrets.py --worktree
+    result: OPERATIONAL_ERROR_INHERITED
+    observed: unsafe-git-metadata for isolated worktree indirection
+    impact: does not weaken or replace the focused file scan
+  diff_check:
+    result: PASS
+
+generated_artifacts:
+  contract:
+    path: changes/st-0401/contracts/local-auth-runtime.v2.json
+    sha256: 6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad
+  runtime:
+    path: changes/st-0401/generated/local-auth-runtime.v2.json
+    sha256: 3a13c251f5cea13583696b04ae5131c81030abec75805d6773a118ce7902db6d
+  manifest:
+    path: changes/st-0401/generated/local-auth-runtime-manifest.v2.json
+    sha256: b95e37fccc9ebe7fe2fa9d002eaa9a20b075ebeca7c2d6f9624900e936407581
+
+authority:
+  canonical_apply: NOT_EXECUTED
+  formal_tst_012: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  credential_access: NOT_EXECUTED
+  external_http: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

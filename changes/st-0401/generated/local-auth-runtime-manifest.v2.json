@@ -31,7 +31,7 @@
   "generated_artifacts": [
     {
       "path": "changes/st-0401/generated/local-auth-runtime.v2.json",
-      "sha256": "a73d66e88779f67f0fdda1e42e76831e6d11c314be336933a0fddb10a89ebbbc"
+      "sha256": "3a13c251f5cea13583696b04ae5131c81030abec75805d6773a118ce7902db6d"
     }
   ],
   "generation": {
@@ -43,11 +43,11 @@
   "source_artifacts": [
     {
       "path": "changes/st-0401/contracts/local-auth-runtime.v2.json",
-      "sha256": "f3f9c08ce612f930833a0ca575d4c4f00e1e3a850316b4ad14a7f994ca0a7d4b"
+      "sha256": "6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad"
     },
     {
       "path": "scripts/build_st0401_local_auth_runtime.py",
-      "sha256": "61e4c5c63e7b5fcdf731aece8e1880401df9be06d22671eb5ad823ff153022ec"
+      "sha256": "fe7823e04f0449debc442244286767c9bce9022bf5c1deab64f1a4cf626daac6"
     },
     {
       "path": "scripts/secure_generated_publication.py",
@@ -55,7 +55,7 @@
     },
     {
       "path": "python/raos/domain/iam/authentication.py",
-      "sha256": "62e2ce2b06e8b9974082b81d11f45775cebaec807ab687a673b21f19df0a1038"
+      "sha256": "a7a06f72244318696dc37c76dfd4b6ac030db8a9fb3872ed69747201f6fc690d"
     },
     {
       "path": "python/raos/ports/oidc.py",
@@ -63,19 +63,19 @@
     },
     {
       "path": "python/raos/application/iam/authentication.py",
-      "sha256": "8005b15ed46ddb93be7ee36913dd70d2b63d0d427f9cf4afbc9504dd5ba267e1"
+      "sha256": "49b692c66ac7deeb5b3ff4285b92c9de22e810172799671240692f92c858af30"
     },
     {
       "path": "python/raos/adapters/development_oidc.py",
-      "sha256": "4c7353cdf15f478f90bdef3da9ea1d5c2a739caefa18cc2a1c0df51cad728daf"
+      "sha256": "f962b13a62890dea606ed8c07a80c44f177365abce8d180661e80c828409b135"
     },
     {
       "path": "python/raos/adapters/recorded_authentication.py",
-      "sha256": "8ecc50b4eb4253fc6ce12d78240a315205911729c03435cbc60c68c7e9302045"
+      "sha256": "29d178a3e13a1a6cff4896702a4e424d23daa9a5564664e2a1ad8cf2537f5125"
     },
     {
       "path": "python/raos/adapters/disabled_admin_auth_http.py",
-      "sha256": "d9421e8a015621aafbd73940cfd4d67cbc1a759f6deebf775c3f4fedecd716f2"
+      "sha256": "5114e8fd0074456fcc22114a2c84351be17ce7b5ec35d5869a47dced6c39ed11"
     },
     {
       "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",

@@ -42,7 +42,7 @@ SECURE_HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
 GENERATED_PATHS: Final = (RUNTIME_PATH, MANIFEST_PATH)
 
 EXPECTED_CONTRACT_SHA256: Final = (
-    "f3f9c08ce612f930833a0ca575d4c4f00e1e3a850316b4ad14a7f994ca0a7d4b"
+    "6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad"
 )
 EXPECTED_SECURE_HELPER_SHA256: Final = (
     "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e"
@@ -319,11 +319,26 @@ def _validate_contract(contract: dict[str, Any]) -> None:
         or transport["cookie_delivery"] != "UNSELECTED_NOT_DELIVERED"
         or transport["bearer_delivery"] != "UNSELECTED_NOT_DELIVERED"
         or transport["browser_storage"] != "UNSELECTED_NOT_DELIVERED"
+        or type(transport["recorded_external_action_count"]) is not int
+        or transport["recorded_external_action_count"] != 0
         or type(persistence) is not dict
         or persistence["external_io_inside_transaction"] is not False
         or persistence["migration_or_production_schema_authority"] is not False
         or persistence["unknown_commit"]
         != "STORAGE_COMMIT_UNKNOWN_THEN_READ_ONLY_RESOLUTION"
+        or persistence["database"] != "SQLITE_FIXED_FILENAME_CREATED_ONLY_NO_CALLER_SQL"
+        or persistence["schema"] != "EXACT_V2_STRICT_FOREIGN_KEYS_APPEND_ONLY_TRIGGERS"
+        or persistence["file_identity"]
+        != "OWNER_PRIVATE_MODE_0600_PINNED_DEVICE_AND_INODE"
+        or persistence["record_integrity"]
+        != "FULL_REVISION_HISTORY_AND_LINEAR_COMMAND_SHA256_CHAIN"
+        or persistence["canonical_encoding"]
+        != "COMPACT_UTF8_SORTED_JSON_AND_RFC3339_UTC_Z"
+        or persistence["rotation_recovery_source"]
+        != "EXACT_DURABLE_COMMAND_INTENT_AND_RESULT_ONLY"
+        or persistence["rollback_detection"]
+        != "PROCESS_LIFETIME_COUNT_HEAD_PREFIX_ANCHOR"
+        or persistence["cross_restart_trusted_anchor"] != "ABSENT_NOT_CLAIMED"
     ):
         _fail("RUNTIME_BOUNDARY_INVALID")
     authority = contract["authority"]

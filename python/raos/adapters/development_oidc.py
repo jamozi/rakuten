@@ -18,6 +18,7 @@ from raos.domain.iam.authentication import (
     AuthorizationCallback,
     AuthorizationCode,
     AuthorizationRequest,
+    AuthorizationState,
     AuthorizationTransaction,
     OidcNonce,
     PkceMethod,
@@ -26,6 +27,12 @@ from raos.domain.iam.authentication import (
     Session,
     SessionId,
     require_utc,
+    snapshot_authorization_callback,
+    snapshot_authorization_request,
+    snapshot_authorization_transaction,
+    snapshot_principal_identity,
+    snapshot_session,
+    snapshot_session_id,
 )
 
 
@@ -85,14 +92,16 @@ class DevelopmentOidcAdapter:
         code_lifetime: timedelta = timedelta(minutes=2),
     ) -> None:
         self._environment = _require_development(environment)
-        if type(principal) is not PrincipalIdentity:
+        try:
+            detached_principal = snapshot_principal_identity(principal)
+        except Exception:
             _raise(AuthenticationFailureCode.MALFORMED_INPUT)
         if (
             type(code_lifetime) is not timedelta
             or not _MIN_CODE_LIFETIME <= code_lifetime <= _MAX_CODE_LIFETIME
         ):
             _raise(AuthenticationFailureCode.MALFORMED_INPUT)
-        self._principal = principal
+        self._principal = detached_principal
         self._code_lifetime = code_lifetime
         self._issued: dict[str, _IssuedAuthorization] = {}
         self._lock = Lock()
@@ -103,33 +112,36 @@ class DevelopmentOidcAdapter:
         """Simulate the provider interaction without network or local password."""
 
         self._guard()
+        try:
+            received_request = snapshot_authorization_request(request)
+        except Exception:
+            _raise(AuthenticationFailureCode.MALFORMED_INPUT)
         if (
-            type(request) is not AuthorizationRequest
-            or type(request.pkce_method) is not PkceMethod
-            or request.pkce_method is not PkceMethod.S256
+            type(received_request.pkce_method) is not PkceMethod
+            or received_request.pkce_method is not PkceMethod.S256
         ):
             _raise(AuthenticationFailureCode.PKCE_UNSUPPORTED)
         observed_at = require_utc(now)
-        if observed_at < request.created_at:
+        if observed_at < received_request.created_at:
             _raise(AuthenticationFailureCode.MALFORMED_INPUT)
-        if observed_at >= request.expires_at:
+        if observed_at >= received_request.expires_at:
             _raise(AuthenticationFailureCode.AUTHORIZATION_EXPIRED)
         code_digest = hashlib.sha256(
             _CODE_DOMAIN_SEPARATOR
-            + request.state.reveal().encode("ascii")
+            + received_request.state.reveal().encode("ascii")
             + b"\x00"
-            + request.nonce.reveal().encode("ascii")
+            + received_request.nonce.reveal().encode("ascii")
             + b"\x00"
-            + request.pkce_challenge.reveal().encode("ascii")
+            + received_request.pkce_challenge.reveal().encode("ascii")
         ).digest()
         code = AuthorizationCode.from_bytes(code_digest)
         issued = _IssuedAuthorization(
-            state_fingerprint=request.state.fingerprint(),
-            nonce=request.nonce,
-            challenge=request.pkce_challenge.reveal(),
+            state_fingerprint=received_request.state.fingerprint(),
+            nonce=OidcNonce(received_request.nonce.reveal()),
+            challenge=received_request.pkce_challenge.reveal(),
             issued_at=observed_at,
             expires_at=min(
-                request.expires_at,
+                received_request.expires_at,
                 observed_at + self._code_lifetime,
             ),
         )
@@ -140,7 +152,10 @@ class DevelopmentOidcAdapter:
                 self._issued[key] = issued
             elif existing != issued:
                 _raise(AuthenticationFailureCode.AUTHORIZATION_COLLISION)
-        return AuthorizationCallback(state=request.state, code=code)
+        return AuthorizationCallback(
+            state=AuthorizationState(received_request.state.reveal()),
+            code=code,
+        )
 
     def exchange(
         self,
@@ -153,14 +168,14 @@ class DevelopmentOidcAdapter:
         """Perform a strict, single-use local code exchange without I/O."""
 
         self._guard()
-        if (
-            type(callback) is not AuthorizationCallback
-            or type(verifier) is not PkceVerifier
-            or type(expected_nonce) is not OidcNonce
-        ):
+        try:
+            received_callback = snapshot_authorization_callback(callback)
+            received_verifier = PkceVerifier(verifier.reveal())
+            received_nonce = OidcNonce(expected_nonce.reveal())
+        except Exception:
             _raise(AuthenticationFailureCode.MALFORMED_INPUT)
         observed_at = require_utc(now)
-        key = callback.code.fingerprint()
+        key = received_callback.code.fingerprint()
         with self._lock:
             issued = self._issued.get(key)
             if issued is None:
@@ -174,16 +189,22 @@ class DevelopmentOidcAdapter:
         if observed_at >= issued.expires_at:
             _raise(AuthenticationFailureCode.CODE_EXPIRED)
         if not hmac.compare_digest(
-            callback.state.fingerprint(), issued.state_fingerprint
+            received_callback.state.fingerprint(), issued.state_fingerprint
         ):
             _raise(AuthenticationFailureCode.STATE_MISMATCH)
         if not hmac.compare_digest(
-            verifier.s256_challenge().reveal(), issued.challenge
+            received_verifier.s256_challenge().reveal(), issued.challenge
         ):
             _raise(AuthenticationFailureCode.PKCE_MISMATCH)
-        if not hmac.compare_digest(expected_nonce.reveal(), issued.nonce.reveal()):
+        if not hmac.compare_digest(received_nonce.reveal(), issued.nonce.reveal()):
             _raise(AuthenticationFailureCode.NONCE_MISMATCH)
-        return self._principal
+        return snapshot_principal_identity(self._principal)
+
+    @property
+    def external_action_count(self) -> int:
+        """Recorded fake performs no external action."""
+
+        return 0
 
     def _guard(self) -> None:
         _require_development(self._environment)
@@ -204,15 +225,16 @@ class InMemoryAuthenticationRepository:
 
     def add_authorization(self, transaction: AuthorizationTransaction) -> None:
         self._guard()
-        if (
-            type(transaction) is not AuthorizationTransaction
-            or transaction.consumed_at is not None
-        ):
+        try:
+            received = snapshot_authorization_transaction(transaction)
+        except Exception:
+            _raise(AuthenticationFailureCode.MALFORMED_INPUT)
+        if received.consumed_at is not None:
             _raise(AuthenticationFailureCode.MALFORMED_INPUT)
         with self._lock:
-            if transaction.state_fingerprint in self._authorizations:
+            if received.state_fingerprint in self._authorizations:
                 _raise(AuthenticationFailureCode.AUTHORIZATION_COLLISION)
-            self._authorizations[transaction.state_fingerprint] = transaction
+            self._authorizations[received.state_fingerprint] = received
 
     def consume_authorization(
         self, *, state_fingerprint: str, now: datetime
@@ -236,39 +258,46 @@ class InMemoryAuthenticationRepository:
             _raise(AuthenticationFailureCode.MALFORMED_INPUT)
         if observed_at >= transaction.expires_at:
             _raise(AuthenticationFailureCode.AUTHORIZATION_EXPIRED)
-        return consumed
+        return snapshot_authorization_transaction(consumed)
 
     def create_session(self, session: Session) -> None:
         self._guard()
-        if type(session) is not Session:
+        try:
+            received = snapshot_session(session)
+        except Exception:
             _raise(AuthenticationFailureCode.MALFORMED_INPUT)
-        key = session.session_id.fingerprint()
+        key = received.session_id.fingerprint()
         with self._lock:
             if key in self._sessions:
                 _raise(AuthenticationFailureCode.SESSION_COLLISION)
-            self._sessions[key] = session
+            self._sessions[key] = received
 
     def load_session(self, session_id: SessionId) -> Session:
         self._guard()
-        if type(session_id) is not SessionId:
+        try:
+            received_id = snapshot_session_id(session_id)
+        except Exception:
             _raise(AuthenticationFailureCode.MALFORMED_INPUT)
         with self._lock:
-            session = self._sessions.get(session_id.fingerprint())
+            session = self._sessions.get(received_id.fingerprint())
             if session is None:
                 _raise(AuthenticationFailureCode.SESSION_UNKNOWN)
-            return session
+            return snapshot_session(session)
 
     def replace_session(self, *, expected: Session, replacement: Session) -> None:
         self._guard()
-        if type(expected) is not Session or type(replacement) is not Session:
+        try:
+            received_expected = snapshot_session(expected)
+            received_replacement = snapshot_session(replacement)
+        except Exception:
             _raise(AuthenticationFailureCode.MALFORMED_INPUT)
-        if replacement.session_id != expected.session_id:
+        if received_replacement.session_id != received_expected.session_id:
             _raise(AuthenticationFailureCode.SESSION_CONFLICT)
-        key = expected.session_id.fingerprint()
+        key = received_expected.session_id.fingerprint()
         with self._lock:
-            if self._sessions.get(key) != expected:
+            if self._sessions.get(key) != received_expected:
                 _raise(AuthenticationFailureCode.SESSION_CONFLICT)
-            self._sessions[key] = replacement
+            self._sessions[key] = received_replacement
 
     def rotate_session(
         self,
@@ -278,28 +307,36 @@ class InMemoryAuthenticationRepository:
         successor: Session,
     ) -> None:
         self._guard()
+        try:
+            received_expected = snapshot_session(expected)
+            received_revoked = snapshot_session(revoked_predecessor)
+            received_successor = snapshot_session(successor)
+        except Exception:
+            _raise(AuthenticationFailureCode.SESSION_CONFLICT)
         if (
-            type(expected) is not Session
-            or type(revoked_predecessor) is not Session
-            or type(successor) is not Session
-            or revoked_predecessor.session_id != expected.session_id
-            or revoked_predecessor.revoked_at is None
-            or successor.rotated_from != expected.session_id
+            received_revoked.session_id != received_expected.session_id
+            or received_revoked.revoked_at is None
+            or received_successor.rotated_from != received_expected.session_id
         ):
             _raise(AuthenticationFailureCode.SESSION_CONFLICT)
-        old_key = expected.session_id.fingerprint()
-        new_key = successor.session_id.fingerprint()
+        old_key = received_expected.session_id.fingerprint()
+        new_key = received_successor.session_id.fingerprint()
         with self._lock:
-            if self._sessions.get(old_key) != expected or new_key in self._sessions:
+            if (
+                self._sessions.get(old_key) != received_expected
+                or new_key in self._sessions
+            ):
                 _raise(AuthenticationFailureCode.SESSION_CONFLICT)
-            self._sessions[old_key] = revoked_predecessor
-            self._sessions[new_key] = successor
+            self._sessions[old_key] = received_revoked
+            self._sessions[new_key] = received_successor
 
     def recover_session_rotation(self, predecessor_id: SessionId) -> Session:
         self._guard()
-        if type(predecessor_id) is not SessionId:
+        try:
+            received_id = snapshot_session_id(predecessor_id)
+        except Exception:
             _raise(AuthenticationFailureCode.MALFORMED_INPUT)
-        predecessor_key = predecessor_id.fingerprint()
+        predecessor_key = received_id.fingerprint()
         with self._lock:
             predecessor = self._sessions.get(predecessor_key)
             if predecessor is None:
@@ -307,15 +344,15 @@ class InMemoryAuthenticationRepository:
             successors = tuple(
                 session
                 for session in self._sessions.values()
-                if session.rotated_from == predecessor_id
+                if session.rotated_from == received_id
             )
             if not successors:
                 if predecessor.revoked_at is not None:
                     _raise(AuthenticationFailureCode.STORAGE_FAILURE)
-                return predecessor
+                return snapshot_session(predecessor)
             if len(successors) != 1 or predecessor.revoked_at is None:
                 _raise(AuthenticationFailureCode.STORAGE_FAILURE)
-            return successors[0]
+            return snapshot_session(successors[0])
 
     def _guard(self) -> None:
         _require_development(self._environment)

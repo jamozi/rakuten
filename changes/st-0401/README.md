@@ -16,12 +16,20 @@ provider or browser delivery policy.
   are consumed once; mismatch, expiry, replay, and malformed input fail closed.
 - Sessions have bounded idle and absolute expiry, compare-and-set refresh and
   revocation, atomic predecessor revocation/successor creation, and read-only
-  recovery after an unknown rotation commit. Recovery never retries rotation.
+  recovery from the exact durable rotation command intent/result after an
+  unknown commit. Recovery never retries or infers a result from mutable rows.
 - `RecordedSqliteAuthenticationRepository` accepts only the exact
   `RuntimeEnvironment.ENV_DEV` enum member and one absolute owner-private
-  directory. It uses a fixed local filename, explicit transactions, full
-  synchronization, canonical record hashes, and no caller SQL, provider SDK,
-  network, credential, migration, role, or Production configuration surface.
+  directory. It initializes only a file created by its own exclusive create,
+  rejects pre-existing empty/partial/foreign files, pins file identity, and
+  validates an exact V2 `STRICT`/foreign-key/append-only schema. Every revision
+  is bound to a canonical command intent/result and one linear SHA-256 history.
+  It has no caller SQL, provider SDK, network, credential, migration, role, or
+  Production configuration surface.
+- A process-lifetime count/head/prefix anchor rejects detected valid-snapshot
+  rollback and inode replacement. No external trusted anchor exists, so a new
+  process cannot distinguish a fully valid older snapshot from current state;
+  no cross-restart rollback-detection claim is made.
 - Before-commit and after-commit fault seams prove known rollback and unknown
   commit resolution. Restart, concurrency, corruption, atomicity, replay, and
   expiry behavior are covered by isolated local tests.
@@ -33,6 +41,8 @@ provider or browser delivery policy.
   Request and response keys are closed. Callback/session handles stay in a
   non-serializable in-process test result; response bodies contain no token,
   and `Set-Cookie`, `Authorization`, and `Location` delivery are forbidden.
+  Its driver must attest an exact external-action count of integer zero before
+  and after authorization; collaborator values are detached and revalidated.
 
 The deterministic owner contract is
 `changes/st-0401/contracts/local-auth-runtime.v2.json`. Generate or verify the

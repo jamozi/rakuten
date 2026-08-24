@@ -330,19 +330,19 @@ def test_tampered_record_fails_closed_without_exposing_values(tmp_path: Path) ->
     canary = "SYNTHETIC-TAMPERED-SUBJECT-CANARY"
     connection = sqlite3.connect(root / "st0401-recorded-auth.sqlite3")
     try:
-        connection.execute(
-            "UPDATE recorded_session SET subject = ? WHERE session_fingerprint = ?",
-            (canary, session.session_id.fingerprint()),
-        )
-        connection.commit()
+        with pytest.raises(sqlite3.IntegrityError, match="ST0401_APPEND_ONLY"):
+            connection.execute(
+                "UPDATE recorded_session_revision_v2 SET subject = ? "
+                "WHERE session_fingerprint = ?",
+                (canary, session.session_id.fingerprint()),
+            )
     finally:
         connection.close()
 
     repository = _repository(root)
-    with pytest.raises(AuthenticationFailure) as caught:
-        repository.load_session(session.session_id)
-    assert caught.value.code is AuthenticationFailureCode.STORAGE_FAILURE
-    assert canary not in f"{caught.value!s} {caught.value!r} {caught.value.args!r}"
+    loaded = repository.load_session(session.session_id)
+    assert loaded.principal.subject == session.principal.subject
+    assert canary not in f"{loaded!s} {loaded!r}"
 
 
 def test_storage_rejects_non_private_root_symlink_and_non_dev(tmp_path: Path) -> None:

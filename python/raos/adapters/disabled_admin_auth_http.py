@@ -30,6 +30,8 @@ from raos.domain.iam.authentication import (
     RedirectUri,
     SessionId,
     require_utc,
+    snapshot_authorization_callback,
+    snapshot_authorization_request,
 )
 
 
@@ -302,9 +304,26 @@ class RecordedAdminAuthDispatch:
 
 @runtime_checkable
 class RecordedAuthorizationDriver(Protocol):
+    @property
+    def external_action_count(self) -> int: ...
+
     def authorize(
         self, *, request: AuthorizationRequest, now: datetime
     ) -> AuthorizationCallback: ...
+
+
+def _require_zero_external_actions(
+    driver: RecordedAuthorizationDriver,
+    *,
+    failure: AuthenticationFailureCode,
+) -> None:
+    try:
+        first = driver.external_action_count
+        second = driver.external_action_count
+    except Exception:
+        _raise(failure)
+    if type(first) is not int or type(second) is not int or first != 0 or second != 0:
+        _raise(failure)
 
 
 def _success(status: int, outcome: str) -> AdminAuthHttpResponse:
@@ -386,6 +405,10 @@ class DisabledAdminAuthHttpAdapter:
             cast(object, driver), RecordedAuthorizationDriver
         ):
             _raise(AuthenticationFailureCode.MALFORMED_INPUT)
+        _require_zero_external_actions(
+            driver,
+            failure=AuthenticationFailureCode.MALFORMED_INPUT,
+        )
         self._service = service
         self._driver = driver
 
@@ -404,6 +427,10 @@ class DisabledAdminAuthHttpAdapter:
 
         _require_development(self._environment)
         try:
+            _require_zero_external_actions(
+                self._driver,
+                failure=AuthenticationFailureCode.PROVIDER_FAILURE,
+            )
             observed_at = require_utc(now)
             request = RecordedAdminAuthHttpRequest.from_document(document)
             action = request.action
@@ -412,9 +439,18 @@ class DisabledAdminAuthHttpAdapter:
                     redirect_uri=request.origin.callback_uri(),
                     now=observed_at,
                 )
+                driver_request = snapshot_authorization_request(authorization)
+                driver_baseline = snapshot_authorization_request(driver_request)
                 callback = self._driver.authorize(
-                    request=authorization,
+                    request=driver_request,
                     now=observed_at,
+                )
+                if snapshot_authorization_request(driver_request) != driver_baseline:
+                    _raise(AuthenticationFailureCode.PROVIDER_FAILURE)
+                callback = snapshot_authorization_callback(callback)
+                _require_zero_external_actions(
+                    self._driver,
+                    failure=AuthenticationFailureCode.PROVIDER_FAILURE,
                 )
                 return RecordedAdminAuthDispatch(
                     response=_success(202, "RECORDED_AUTHORIZATION_READY"),

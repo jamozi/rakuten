@@ -18,7 +18,15 @@ from raos.adapters.development_oidc import (
 from raos.adapters.disabled_admin_auth_http import DisabledAdminAuthHttpAdapter
 from raos.application.iam.authentication import AuthenticationService
 from raos.config.runtime import RuntimeEnvironment
-from raos.domain.iam.authentication import Issuer, PrincipalIdentity, Subject
+from raos.domain.iam.authentication import (
+    AuthenticationFailure,
+    AuthenticationFailureCode,
+    AuthorizationCallback,
+    AuthorizationRequest,
+    Issuer,
+    PrincipalIdentity,
+    Subject,
+)
 
 
 NOW = datetime(2026, 8, 25, 1, 0, tzinfo=timezone.utc)
@@ -64,6 +72,34 @@ def _adapter() -> DisabledAdminAuthHttpAdapter:
     )
 
 
+class _ActionCountingDriver:
+    def __init__(self, delegate: DevelopmentOidcAdapter) -> None:
+        self._delegate = delegate
+        self._count = 0
+
+    @property
+    def external_action_count(self) -> int:
+        return self._count
+
+    def authorize(
+        self, *, request: AuthorizationRequest, now: datetime
+    ) -> AuthorizationCallback:
+        self._count = 1
+        return self._delegate.authorize(request=request, now=now)
+
+
+class _BooleanActionCountDriver:
+    @property
+    def external_action_count(self) -> int:
+        return True
+
+    def authorize(
+        self, *, request: AuthorizationRequest, now: datetime
+    ) -> AuthorizationCallback:
+        del request, now
+        raise AssertionError("unreachable")
+
+
 def _document(body: dict[str, object]) -> dict[str, object]:
     return {
         "method": "POST",
@@ -96,6 +132,42 @@ def test_external_dispatch_is_permanently_disabled_and_non_reflecting() -> None:
     assert canary not in _render_response(result)
     assert result.callback is None
     assert result.session_id is None
+
+
+def test_recorded_driver_action_count_is_exact_zero_and_rechecked() -> None:
+    principal = PrincipalIdentity(
+        issuer=Issuer("https://recorded.oidc.invalid"),
+        subject=Subject("recorded-admin"),
+        display_name="Recorded administrator",
+    )
+    provider = DevelopmentOidcAdapter(
+        environment=RuntimeEnvironment.ENV_DEV,
+        principal=principal,
+    )
+    service = AuthenticationService(
+        provider=provider,
+        repository=InMemoryAuthenticationRepository(
+            environment=RuntimeEnvironment.ENV_DEV
+        ),
+        entropy=_Entropy(),
+    )
+    with pytest.raises(AuthenticationFailure) as malformed:
+        DisabledAdminAuthHttpAdapter(
+            environment=RuntimeEnvironment.ENV_DEV,
+            service=service,
+            driver=_BooleanActionCountDriver(),
+        )
+    assert malformed.value.code is AuthenticationFailureCode.MALFORMED_INPUT
+
+    adapter = DisabledAdminAuthHttpAdapter(
+        environment=RuntimeEnvironment.ENV_DEV,
+        service=service,
+        driver=_ActionCountingDriver(provider),
+    )
+    result = adapter.dispatch_recorded(_document({"action": "BEGIN"}), now=NOW)
+    assert result.response.status == 503
+    assert result.response.body["code"] == "PROVIDER_FAILURE"
+    assert result.callback is None
 
 
 def test_recorded_loopback_flow_rotates_revokes_and_never_delivers_a_token() -> None:

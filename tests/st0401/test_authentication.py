@@ -23,6 +23,7 @@ from raos.domain.iam.authentication import (
     AuthorizationCode,
     AuthorizationRequest,
     AuthorizationState,
+    AuthorizationTransaction,
     Issuer,
     OidcNonce,
     PkceMethod,
@@ -30,6 +31,7 @@ from raos.domain.iam.authentication import (
     PrincipalIdentity,
     RedirectUri,
     Session,
+    SessionId,
     Subject,
 )
 
@@ -514,6 +516,124 @@ class _ExplodingProvider:
     ) -> PrincipalIdentity:
         del callback, verifier, expected_nonce, now
         raise RuntimeError(self._canary)
+
+
+class _MutatingProvider:
+    def exchange(
+        self,
+        *,
+        callback: AuthorizationCallback,
+        verifier: PkceVerifier,
+        expected_nonce: OidcNonce,
+        now: datetime,
+    ) -> PrincipalIdentity:
+        del now
+        object.__setattr__(
+            callback.state,
+            "_value",
+            AuthorizationState.from_bytes(_bytes(120)).reveal(),
+        )
+        object.__setattr__(
+            verifier,
+            "_value",
+            PkceVerifier.from_bytes(_bytes(121)).reveal(),
+        )
+        object.__setattr__(
+            expected_nonce,
+            "_value",
+            OidcNonce.from_bytes(_bytes(122)).reveal(),
+        )
+        return _principal()
+
+
+class _MutatingRepository:
+    def __init__(self) -> None:
+        self._delegate = InMemoryAuthenticationRepository(
+            environment=RuntimeEnvironment.ENV_DEV
+        )
+
+    def add_authorization(self, transaction: AuthorizationTransaction) -> None:
+        self._delegate.add_authorization(transaction)
+        object.__setattr__(transaction, "state_fingerprint", "f" * 64)
+
+    def consume_authorization(
+        self, *, state_fingerprint: str, now: datetime
+    ) -> AuthorizationTransaction:
+        return self._delegate.consume_authorization(
+            state_fingerprint=state_fingerprint,
+            now=now,
+        )
+
+    def create_session(self, session: Session) -> None:
+        self._delegate.create_session(session)
+
+    def load_session(self, session_id: SessionId) -> Session:
+        return self._delegate.load_session(session_id)
+
+    def replace_session(self, *, expected: Session, replacement: Session) -> None:
+        self._delegate.replace_session(expected=expected, replacement=replacement)
+
+    def rotate_session(
+        self,
+        *,
+        expected: Session,
+        revoked_predecessor: Session,
+        successor: Session,
+    ) -> None:
+        self._delegate.rotate_session(
+            expected=expected,
+            revoked_predecessor=revoked_predecessor,
+            successor=successor,
+        )
+
+    def recover_session_rotation(self, predecessor_id: SessionId) -> Session:
+        return self._delegate.recover_session_rotation(predecessor_id)
+
+
+def test_repository_cannot_mutate_detached_authorization_input_in_place() -> None:
+    service = AuthenticationService(
+        provider=DevelopmentOidcAdapter(
+            environment=RuntimeEnvironment.ENV_DEV,
+            principal=_principal(),
+        ),
+        repository=_MutatingRepository(),
+        entropy=_ScriptedEntropy(130, 131, 132),
+    )
+    _assert_failure(
+        AuthenticationFailureCode.STORAGE_FAILURE,
+        lambda: service.begin_authorization(
+            redirect_uri=RedirectUri("https://admin.dev.invalid/auth/callback"),
+            now=NOW,
+        ),
+    )
+
+
+def test_provider_cannot_mutate_detached_exchange_inputs_in_place() -> None:
+    repository = InMemoryAuthenticationRepository(
+        environment=RuntimeEnvironment.ENV_DEV
+    )
+    service = AuthenticationService(
+        provider=_MutatingProvider(),
+        repository=repository,
+        entropy=_ScriptedEntropy(110, 111, 112, 113),
+    )
+    issuer = DevelopmentOidcAdapter(
+        environment=RuntimeEnvironment.ENV_DEV,
+        principal=_principal(),
+    )
+    request = service.begin_authorization(
+        redirect_uri=RedirectUri("https://admin.dev.invalid/auth/callback"),
+        now=NOW,
+    )
+    callback = issuer.authorize(request=request, now=NOW)
+    original_state = callback.state.reveal()
+
+    _assert_failure(
+        AuthenticationFailureCode.PROVIDER_FAILURE,
+        lambda: service.complete_authorization(callback=callback, now=NOW),
+    )
+
+    assert callback.state.reveal() == original_state
 
 
 def test_provider_diagnostics_are_sanitized_at_the_application_boundary() -> None:
