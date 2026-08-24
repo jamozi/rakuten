@@ -1,0 +1,212 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1902
+  classification: MAXIMUM_SAFE_LOCAL_DISABLED_RECORDED_CHAMPION_CHALLENGER_SHADOW_V1
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  mvp: false
+  canonical_implementation_status: DEFERRED_POST_MVP
+  canonical_status_changed: false
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+
+authority:
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  canonical_decisions:
+    path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    values_selected: false
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1902
+    depends_on: ST-0708
+    effective_status: DEFERRED_POST_MVP
+  ai_design:
+    path: docs/upstream/key_documents/RAOS_05_ai_agent_prompt_routing_evaluation_design_v0.1.md
+    sha256: 475e4b6b4490110fd9f94a07aaf4cf979bea99d59b7ef8b95ba0fdbe61219476
+    decisions:
+      - AI-ADR-028
+      - AI-ADR-029
+      - AI-ADR-033
+  test_acceptance_design:
+    path: docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    required_suite: TST-032
+    formal_status: NOT_EXECUTED
+  security_design:
+    path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    controls:
+      - SEC-APP-001
+      - SEC-DATA-003
+      - SEC-DATA-004
+      - SEC-AI-001
+      - SEC-AI-002
+      - SEC-AI-003
+      - SEC-AI-004
+      - SEC-AI-005
+      - SEC-AI-006
+      - SEC-AI-007
+      - SEC-AI-008
+      - SEC-SDLC-006
+      - SEC-SDLC-009
+  threat_register:
+    path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+    threats:
+      - THR-009
+      - THR-010
+      - THR-017
+      - THR-020
+      - THR-022
+      - THR-030
+
+predecessor:
+  story_id: ST-0708
+  binding: EXACT_BASE_COMMIT_BYTES
+  base_commit: acdcc3719670c110bf6ec94af1762d87ac7fcb74
+  artifacts:
+    changes/st-0708/contracts/recorded-live-evaluation-runtime.v2.yaml: dc7733254fa3549ef5f30922ae5e02e252cc7378158a55535d90e979d9d2289f
+    changes/st-0708/generated/recorded-live-evaluation-request.v2.json: 3d440efa6d6a7a5b807de2180cac6c063741797effc1c213746deb1abb205463
+    changes/st-0708/generated/recorded-live-evaluation-report.v2.json: 08059f2de2ca59c3712735be63c450ef0dc12b71df8632fc243ef34f7bbfb053
+    changes/st-0708/runtime-manifest.v2.json: e24ca761f4a3f0e12348014ea675274e4ea3f342db338efef9504435f0c701c6
+    python/raos/domain/ai/live_evaluation.py: e065961563f1ed8daf42aa89cc9436016997314b99bd815d0b1d8f4e58a18a7c
+    python/raos/application/ai/live_evaluation.py: 9fe29acc16ff0e5a6f540c45d0f9db2930ccdfb9e563fea8307dc55f9359e88a
+    python/raos/ports/live_evaluation.py: 4fb29af21dd1efb9f46867041f5772dacf9d57a5f3ab5e75de2f4e7eec0a64d6
+    python/raos/adapters/recorded_live_evaluation.py: b364589fb9645d06213f3e315552691797bcf748061826dee2334b1c95beb8d2
+  required_semantics:
+    report_outcome: REFUSED_INCOMPLETE_EVIDENCE
+    decision_kind: PROPOSAL
+    authority: NONE
+    route_mutated: false
+    activated: false
+    released: false
+    production_written: false
+    formal_TST-018: NOT_EXECUTED
+
+route_binding:
+  catalog:
+    path: contracts/raos-v0.4/contracts/ai/RAOS_05_model_routing_catalog_v0.1.yaml
+    sha256: dc76ed6d2586eec9bf18b8ac2e95eb76971179fe87fa1ee07b1ba8702f8faa96
+  task_code: ai.article_draft.v1
+  route_code: route.editorial_balanced.v1
+  risk: CRITICAL
+  route_catalog_canary_max_percent: 5
+  critical_effective_canary_max_percent: 1
+  configured_canary_allocation_percent: 0
+  release_decision: ABSENT
+  activation_interface_exists: false
+
+feature_scope:
+  default: DISABLED
+  closed_states:
+    - DISABLED
+    - RECORDED_SYNTHETIC_SHADOW_ONLY
+  live_enabled_state_exists: false
+  canary_state_exists: false
+  activation_interface_exists: false
+  disabled_fails_before_port_call: true
+  canary_allocation_nonzero_rejected: true
+  release_decision_input_rejected: true
+  canonical_deferred_status_preserved: true
+
+port_contract:
+  direction: INWARD_PROVIDER_NEUTRAL
+  method: read(command) -> immutable recorded shadow batch
+  provider_sdk_types: false
+  url_field: false
+  credential_field: false
+  model_provider_field: false
+  raw_prompt_field: false
+  content_field: false
+  filesystem_path_field: false
+  implementation: CALLER_BYTES_RECORDED_SYNTHETIC_JSON
+  calls_per_instance: 1
+  retry: false
+  replay: false
+  fallback: false
+
+recorded_fixture:
+  path: changes/st-1902/fixtures/recorded/champion-challenger-shadow.v1.json
+  sha256: 6c6ca5f5657fd0506ef930d35a3593cc8d06d7b25be83d10b7307507a535a7c9
+  bytes: 2611
+  profile: RAOS_ST1902_SYNTHETIC_SHADOW_V1
+  observations: 4
+  human_labels: false
+  raw_content: false
+  prompts: false
+  provider_responses: false
+  personal_data: false
+  review_bodies: false
+  finance_fields: false
+
+deterministic_evaluation:
+  expected:
+    cohort_size: 4
+    champion_wins: 1
+    challenger_wins: 2
+    ties: 1
+    champion_mean_score_micros: 895000
+    challenger_mean_score_micros: 897500
+    challenger_delta_micros: 2500
+    outcome: KEEP_CHAMPION_INCOMPLETE_EVIDENCE
+    challenger_state: SHADOW_NONAUTHORITATIVE
+  immutable_blockers:
+    - CANARY_RELEASE_DECISION_ABSENT
+    - CANARY_UNREACHABLE
+    - FORMAL_TST_032_NOT_EXECUTED
+    - RECORDED_SYNTHETIC_ONLY
+    - ST0708_RELEASE_EVIDENCE_INCOMPLETE
+  zero_tolerance_precedence: KEEP_CHAMPION_ZERO_TOLERANCE
+  schema_failure_precedence: KEEP_CHAMPION_SCHEMA_FAILURE
+  challenger_promotion_possible: false
+
+mutation_boundary:
+  report_fields: IDS_HASHES_COUNTS_CLOSED_STATUSES_ONLY
+  authority: NONE
+  route_mutation: FORBIDDEN
+  editorial_selection: FORBIDDEN
+  recommendation_order: FORBIDDEN
+  cta_mutation: FORBIDDEN
+  article_mutation: FORBIDDEN
+  publication_snapshot_mutation: FORBIDDEN
+  public_projection: NOT_EXECUTED
+  publication: FORBIDDEN
+
+execution_boundary:
+  provider: NOT_EXECUTED
+  provider_sdk: NOT_USED
+  credentials: NOT_USED
+  network: FORBIDDEN
+  filesystem_runtime: NOT_USED
+  persistence: NOT_EXECUTED
+  queue: NOT_EXECUTED
+  event: NOT_EXECUTED
+  shadow_traffic: NOT_EXECUTED
+  canary: RELEASE_DECISION_REQUIRED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  formal_TST-032: NOT_EXECUTED
+  story_acceptance: false
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - separate external release decision
+    - formal TST-032 gate acceptance
+    - licensed locked holdout and human labels
+    - live provider/account/credential validation
+    - staging canary, monitoring, rollback, and manual re-enable drill
