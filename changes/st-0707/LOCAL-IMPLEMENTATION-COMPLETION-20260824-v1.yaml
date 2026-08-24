@@ -1,0 +1,181 @@
+document:
+  id: RAOS-ST0707-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V1
+  schema_version: 1
+  story_id: ST-0707
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  recorded_at: '2026-08-24T03:43:10Z'
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+base:
+  integration_commit_sha: 5e431434ea3891824f2bb861bf809b0011e91850
+  isolated_branch: codex/st-0707-evaluation-harness-20260824
+  implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
+runtime:
+  contract:
+    path: changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml
+    sha256: 5edccc09f52bf3c697331a951a98c67b79a2d60faeba7bfe7f07dc69b6165299
+    status: LOCAL_IMPLEMENTATION_COMPLETE
+  owner_generator:
+    path: scripts/build_st0707_evaluation_harness_runtime.py
+    sha256: f53ac7888e6829573e18dab31d69f20dd557dd1c86aab66c9a25fc2da4389dbe
+  atomic_publication_owner:
+    path: scripts/secure_generated_publication.py
+    sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+    existing_target_commit: DESCRIPTOR_RELATIVE_RENAMEAT2_EXCHANGE
+    missing_target_commit: DESCRIPTOR_RELATIVE_HARDLINK_NOCLOBBER
+    foreign_preserving: true
+  runtime_manifest:
+    path: changes/st-0707/runtime-manifest.v1.json
+    sha256: 8e41f06229399fa18d4b85f540f72eda7d35d505dcce8cf4ba84753c0b70f41b
+    status: LOCAL_IMPLEMENTATION_COMPLETE
+    source_artifact_count: 28
+    generated_artifact_count: 2
+  suite_registry:
+    path: changes/st-0707/generated/evaluation-suite-registry.v1.json
+    sha256: 7f0b9d940bf013afff3573bbd2c87df99fe69736d66ff1844f604772c00a2114
+    suite_count: 1
+    metric_threshold_count: 8
+    zero_tolerance_failure_class_count: 8
+  locked_synthetic_holdout:
+    path: changes/st-0707/generated/locked-synthetic-holdout.v1.json
+    sha256: 9b61796e201917e672380cfc4340f798113fee15b45ab9e5e51f69a905b754b5
+    dataset_sha256: 6dd45b8758b36a85825915817d4397e77c39918e0e4e43bd5f2b393e195f7280
+    holdout_sha256: a2c1fd0a83e0ba7bae7712f453eadf3fd373ec766e39425b19c09e7f1529dd13
+    case_sha256: a34b676e5d73d1b00f3d75fc5b92cfe20f2dfcb63cf1e8fc0e26102ca4e00609
+    evaluation_case_sha256: eedc069a89399b87a9d120e91958723076b1d543a802a03f1b2d8ecc7b17dbb3
+    case_count: 1
+    split: HOLDOUT
+    status: LOCKED_SYNTHETIC_NON_RELEASE
+    provenance: SYNTHETIC_PLUMBING_ONLY
+    source_kind: GENERATED_RECORDED_SYNTHETIC
+    canonical_dataset: false
+    representative_dataset: false
+    human_labeled: false
+    release_eligible: false
+st0705_exact_bindings:
+  runtime_contract_sha256: 82a157b6973db54bece7ee67a05b7321bc85f1e6ca5270039077c3cd20873bfb
+  profile_registry_sha256: 5034379d1c8800f6cacf33bc7b2022e0e471189490c28c1c8d03eac429dd5e27
+  recorded_fixture_sha256: ce3ac4a0680cad45f60951a873d408789b24d66683b523695484219552102f4f
+  runtime_manifest_sha256: 51ea6c318a58e549397826ab7a12a377d59213767a2f34960ebcc7fe7d672d64
+  task_schema_sha256: 504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123
+  profile_sha256: e3dd4f27fec1af3273906537975ee0956a5e881810e0a906a85a49a255f92f8b
+  validation_manifest_sha256: ee9743297185b874aca4a68363bab8baacae9473205142b79f7eeb8462ddb0a5
+  output_sha256: e59813caeafb3375ca931e4f1c7bc9bab53d2c3f84916ac8942ff78c182ea03f
+  provider_exchange_sha256: e6d5b8cbbed495404ba4d560dbd6a073fbe1ace516dc2e239203b3d72b91d02e
+  validation_report_sha256: 303147524d777da6f5271c16cf86a4bc62f9426d3791889ed6eb8d76a837425a
+evaluation_boundary:
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  evaluation_case_schema: DRAFT_2020_12_EXACT_PINNED
+  dataset_identity: IMMUTABLE_CONTENT_ADDRESSED
+  holdout_identity: IMMUTABLE_CONTENT_ADDRESSED
+  human_label_status: UNAVAILABLE
+  label_provenance: []
+  unavailable_numeric_coercion: FORBIDDEN
+  ratio_scale: INTEGER_MILLIONTHS
+  confidence_bound: ONE_SIDED_95_PERCENT_WILSON_LOWER
+  higher_is_better_comparison: WILSON_LOWER_BOUND
+  negative_rate_comparison: EXACT_POINT_ESTIMATE
+  zero_tolerance_waiver: FORBIDDEN
+  unavailable_zero_tolerance_outcome: REFUSED_INCOMPLETE_EVIDENCE
+  insufficient_sample_outcome: REFUSED_INCOMPLETE_EVIDENCE
+  insufficient_denominator_outcome: REFUSED_INCOMPLETE_EVIDENCE
+  proposal_outcomes:
+    - REFUSED_ZERO_TOLERANCE
+    - REFUSED_INCOMPLETE_EVIDENCE
+  accepted_outcome: NONE
+deterministic_local_report:
+  bundle_sha256: 95279655c5e1dec9ab5c63333bb08fad3da82637a8ab5087f83d19f3d30f42fb
+  report_sha256: 34f4fd238d209b11173afe8df8031a8931a63c6cbe143c19029e8f938331db86
+  proposal_outcome: REFUSED_INCOMPLETE_EVIDENCE
+  case_count: 1
+  metric_count: 8
+  zero_tolerance_count: 8
+  human_label_status: UNAVAILABLE
+  minimum_adjudicated_cases_gate: FAIL
+  required_metrics_gate: UNAVAILABLE
+  required_splits_gate: FAIL
+  release_authorized: false
+authority_boundary:
+  default_enabled: false
+  provider_call: false
+  network: false
+  credentials: false
+  persistence: false
+  route_or_model_mutation: false
+  activation_authority: NONE
+  approval_authority: NONE
+  publication_authority: NONE
+  release_authority: NONE
+  production_eligible: false
+toolchain:
+  python: 3.14.6
+  uv: 0.12.1
+  pytest: 9.1.1
+  ruff: 0.16.1
+  mypy: 2.3.0
+verification:
+  results:
+    - check: runtime_owner_build_and_no_write_check
+      result: PASS
+    - check: focused_st0707_historical_and_runtime_tests
+      result: PASS
+      passed: 62
+    - check: affected_st0705_and_shared_publication_tests
+      result: PASS
+      passed: 127
+      included_shared_publication_st0803_tests: 12
+    - check: repository_strict_mypy
+      result: PASS
+      source_files: 339
+    - check: owned_source_generator_and_test_strict_mypy
+      result: PASS
+      source_files: 11
+    - check: ruff_format_and_lint
+      result: PASS
+      files: 12
+    - check: py_compile
+      result: PASS
+    - check: fresh_import_and_deterministic_report
+      result: PASS
+    - check: focused_changed_file_secret_scan
+      result: PASS
+      scanned_files: 21
+      findings: 0
+    - check: official_linked_worktree_secret_scan
+      result: OPERATIONAL_ERROR
+      exit_code: 2
+      reason_code: unsafe-git-metadata
+      safe_impact: scanner rejects the linked-worktree .git file before scanning
+    - check: git_diff_check
+      result: PASS
+formal_and_external_boundaries:
+  formal_tst_018: NOT_EXECUTED
+  formal_tst_019: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  credential_activity: NOT_EXECUTED
+  human_labeling: NOT_EXECUTED
+  judge_calibration: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  canonical_registry_change: NOT_EXECUTED
+  formal_validated_claim: FORBIDDEN
+debt:
+  introduced_local_debt: []
+  deferred_canonical_limitations:
+    - id: ST0707-LIM-REPRESENTATIVE-DATASET
+      canonical_dependency: AI-OD-006
+      state: UNAVAILABLE
+      reason: a licensed sanitized representative release dataset is not available in this local Story
+    - id: ST0707-LIM-HUMAN-LABELS
+      canonical_dependency: AI-OD-002
+      state: UNAVAILABLE
+      reason: verified human labels, adjudication, and labeler provenance are not available and were not invented
+    - id: ST0707-LIM-RESOLVED-RUN-BINDING
+      state: UNAVAILABLE
+      reason: resolved model, route, policy, and complete release-run identity are not present in recorded local evidence
+    - id: ST0707-LIM-FORMAL-EVALUATION
+      state: NOT_EXECUTED
+      reason: formal TST-018 and TST-019 require separately authorized complete evidence
+  local_runtime_gap_closed: true

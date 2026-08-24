@@ -1,54 +1,49 @@
-# ST-0707 bootstrap smoke evaluation runner
+# ST-0707 evaluation harness — LOCAL_IMPLEMENTATION_COMPLETE
 
-This Story adds a pure, inward, metadata-only Python smoke evaluator for
-caller-constructed immutable bootstrap cases and caller-supplied immutable
-measured observations. It performs no provider, network, filesystem,
-environment, database, repository, unit-of-work, queue, job, event, thread,
-task, subprocess, logging, telemetry, generated-model, runtime, or release
-action. No port or adapter is required.
+ST-0707 provides a deterministic, recorded/synthetic-only evaluation harness
+that consumes the exact ST-0705 output-validation fixture and report. The
+historical `BootstrapEvaluationRunner` remains available as a non-authoritative
+smoke surface; it is not treated as release evidence.
 
-The approved ST-0707 Story depends only on ST-0705 and has
-`open_decisions: []`. The current committed ST-0705 source contract, generated
-plan, and manifest are bound by these exact SHA-256 values:
+The runtime owner contract and generator produce two immutable inputs:
 
-- contract: `ea935831a1bb667229ae5a5495a27a801b9c21ab3c3ddbe53e266b8f7c311c42`
-- generated plan: `768874cba862bd434b4d0233873f849b0aa103121d1ba02f9581921e3357f2c5`
-- manifest: `fb9ed36cf987884aa25534776699f2ca63e1f55bd91651bc25e3c944d935920e`
+- a suite registry copied from the pinned Canonical evaluation catalog with
+  exact metric kinds, directions, units, threshold operators and values, eight
+  zero-tolerance failure classes, minimum sample size, and required splits;
+- one locked `HOLDOUT` plumbing case with provenance exactly
+  `SYNTHETIC_PLUMBING_ONLY` and explicit `false` values for canonical,
+  representative, human-labeled, release-eligible, and Production-eligible
+  claims.
 
-ST-0705 remains non-executable, `UNEVALUABLE`, `NOT_READY`, event-free, and
-action-free. This Story does not import or depend on ST-0706.
+The artifact loader validates canonical JSON bytes, schemas, sizes, duplicate
+keys, all declared hashes, dataset/case/holdout identities, the current ST-0705
+contract/profile/runtime/fixture/schema bindings, and the re-evaluated ST-0705
+report. It never repairs an artifact or coerces missing evidence into a value.
 
-The canonical design documents `bootstrap_cases_v0.1.jsonl` as 12 tasks by 10
-scenarios, or 120 cases, for harness smoke testing only. That committed payload
-is absent. This implementation never invents, reconstructs, creates, or claims
-binding to those cases. The runner accepts only exact `bootstrap-v0.1` /
-`BOOTSTRAP` caller metadata, from 1 through 120 cases, and every report states:
+The pure runner reports exact integer-millionth point estimates and a one-sided
+95% Wilson lower bound for every available ratio metric. Higher-is-better
+thresholds use that lower bound. Canonical zero-tolerance thresholds use exact
+observed counts with no waiver. Human-label metrics, resolved-model identity,
+and any other missing evidence remain `UNAVAILABLE`, never numeric zero.
 
-- `BOOTSTRAP_SMOKE_ONLY` and `NON_AUTHORITATIVE`;
-- documented bootstrap count 120, with canonical payload binding `false`;
-- locked holdout `NOT_LOADED`;
-- human labels and Judge calibration `NOT_OBTAINED`;
-- threshold, Wilson/statistical evaluation `NOT_PERFORMED`;
-- formal TST-018 and TST-019 `NOT_EXECUTED`;
-- Story acceptance `false`, release decision `NOT_READY`, and release and
-  production eligibility `false`;
-- external and action counts exactly zero.
+This synthetic fixture has one case, only the `HOLDOUT` split, no human labels,
+and no resolved-model binding. Its deterministic outcome is therefore always a
+release-decision `PROPOSAL` with `REFUSED_INCOMPLETE_EVIDENCE`, even when every
+locally observable zero-tolerance count is zero. An observed zero-tolerance
+finding takes precedence as `REFUSED_ZERO_TOLERANCE`; unavailable zero-tolerance
+evidence also refuses as incomplete. There is no accepted or release-ready
+outcome in this local runtime.
 
-Even an exact 120-case all-pass report is only `SMOKE_PASSED_NON_RELEASE`.
-Any deterministic failure or disposition mismatch is `SMOKE_FAILED`; any of
-the exact eight canonical zero-tolerance classes takes precedence and yields
-`BLOCKED_ZERO_TOLERANCE`. The report contains integer counts and integer
-per-check tallies only; it makes no threshold, Wilson, confidence, or other
-statistical claim. There is no approve, release, activate, export, persist,
-delete, or clear method.
+The application and adapter accept only `ENV-DEV` or `ENV-CI`. They expose no
+provider, credential, network, persistence, route/model mutation, activation,
+approval, publication, release, staging, or Production method. Every report
+keeps formal TST-018/TST-019, live, staging, release, and Production at
+`NOT_EXECUTED` and all authority booleans false.
 
-The ordinary advisory run `20260811T140317Z-04e01212c6b2` is recorded only as
-the sanitized verified fallback `PRO_UNAVAILABLE_FALLBACK` /
-`RESPONSE_NOT_IDENTIFIABLE`, with `submission_attempted: true` and disposition
-`CONTINUE_CANONICAL_LOCAL_ONLY`. It supplied no Pro advice or authority and was
-not resent, recovered, or imported.
+Local owner commands:
 
-Local checks use pinned uv 0.12.1 with locked, offline, no-cache, no-sync, and
-no-env-file options. They are local implementation evidence only. Formal
-TST-018/TST-019, real locked or adjudicated datasets, live provider or staging,
-human/Judge approval, release, and production remain `NOT_EXECUTED`.
+```text
+PYTHONPATH=python:. .venv/bin/python scripts/build_st0707_evaluation_harness_runtime.py
+PYTHONPATH=python:. .venv/bin/python scripts/build_st0707_evaluation_harness_runtime.py --check
+PYTHONPATH=python:. .venv/bin/pytest -q tests/st0707 tests/st0707_runtime
+```

@@ -64,8 +64,8 @@ MISSING_BOOTSTRAP_PAYLOADS = (
 
 EXPECTED_HASHES = {
     ST0705_CONTRACT: "ea935831a1bb667229ae5a5495a27a801b9c21ab3c3ddbe53e266b8f7c311c42",
-    ST0705_GENERATED: "768874cba862bd434b4d0233873f849b0aa103121d1ba02f9581921e3357f2c5",
-    ST0705_MANIFEST: "fb9ed36cf987884aa25534776699f2ca63e1f55bd91651bc25e3c944d935920e",
+    ST0705_GENERATED: "3689c75cba6032f96a3efcfb0e98fa2363a0aebb98846d72f9dcfabc4f25ca88",
+    ST0705_MANIFEST: "25191a2aff14f18fbf61303559b21a08d483d00e3dbd5de4eb69ba92261514ac",
     CATALOG: "a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3",
     CASE_SCHEMA: "363094954df80ab4bd8c28804d27e4634f79210fcd28fa82062ea49729549b7a",
     DATASET_TEMPLATE: "3215018516a010a93b14d0e90f2b944532892c626ea9db7ea54cb578796b2c51",
@@ -85,7 +85,7 @@ def test_exact_predecessor_and_canonical_source_bytes_are_pinned() -> None:
     assert not tuple(REPOSITORY_ROOT.rglob("bootstrap_cases_v0.1.jsonl"))
 
 
-def test_st0705_remains_non_executable_unevaluable_and_action_free() -> None:
+def test_historical_st0705_reference_remains_unevaluable_and_action_free() -> None:
     contract = yaml.safe_load(ST0705_CONTRACT.read_bytes())
     generated = json.loads(ST0705_GENERATED.read_bytes())
     assert contract["document"]["executable"] is False
