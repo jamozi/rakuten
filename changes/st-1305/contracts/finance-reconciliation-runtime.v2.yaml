@@ -45,19 +45,19 @@ source_bindings:
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
   st1303_runtime:
     path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: 417919e2c4552b8e1e6e3fef18f4daccfa0cf44d13803db62d474fe154fb574b
+    sha256: fb6eb68a838f08ef8e52002da198424230cdf77f7bb4e4f9db21a94cd2c4d9b6
   st1303_projection:
     path: changes/st-1303/generated/attribution-engine-recorded.v2.json
-    sha256: f6711833620948acf144aacdc1329f470203e893292570d8f1374f75306d4f32
+    sha256: 424e7aec5cb798416c23ad2613d2e8e9700c33e3a835d47ec73acafaaa5cfaeb
   st1303_fixture:
     path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
     sha256: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b
   st1304_runtime:
     path: changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
-    sha256: 28fb4b6d0d198c1ccaca56124f133a8c9045577b61f01029ed5d6f338beda60f
+    sha256: a0f77c098004f951219eed29814e354639165829b534266b49d48d4d9eb63a98
   st1304_projection:
     path: changes/st-1304/generated/cost-unit-economics-recorded.v2.json
-    sha256: 23f468589e408555e5506f873a74df89b806d809855d5c1b53e8237b6edb4ddc
+    sha256: 2e027b3794f1d78618eb5e18f53ded994db408730f397422d4253e6918d02c08
   st1304_fixture:
     path: changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
     sha256: 90b3ccaecc1345b26054f563365936f4fd06b5def3259c5786adeea0327a8942
