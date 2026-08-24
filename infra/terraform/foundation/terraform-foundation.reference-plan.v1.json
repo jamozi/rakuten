@@ -17,27 +17,39 @@
     "network_access": "FORBIDDEN",
     "production_action": "FORBIDDEN",
     "release_action": "FORBIDDEN",
-    "status": "DISABLED"
+    "status": "DISABLED",
+    "validation_commands": {
+      "format": "OFFLINE_READ_ONLY",
+      "validate": "OFFLINE_READ_ONLY",
+      "version": "OFFLINE_READ_ONLY"
+    }
   },
   "document": {
-    "artifact_kind": "SOURCE_DERIVED_REFERENCE_STATE_PLAN",
-    "executable": false,
+    "artifact_kind": "SOURCE_DERIVED_PROVIDER_NEUTRAL_HCL_FOUNDATION",
+    "executable": true,
+    "executable_for": [
+      "fmt",
+      "validate"
+    ],
     "generated_by": "repo://scripts/build_st1501_terraform_foundation.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st1501_terraform_foundation.py",
     "id": "RAOS-TERRAFORM-FOUNDATION-REFERENCE-PLAN-001",
-    "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+    "implementation_scope": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
+    "infrastructure_actions": false,
     "source_contract": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
     "story_id": "ST-1501",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "extension_contract": {
     "current_resource_payloads": "FORBIDDEN",
     "native_toolchain_pin_required_before_hcl": true,
     "successor_contract_revision_required": true,
+    "successor_resource_module_required": true,
     "successors": {
       "ST-1502": "DATA_SERVICES",
       "ST-1503": "COMPUTE_CDN_WAF"
-    }
+    },
+    "validation_only_hcl_module_available": true
   },
   "future_requirements": {
     "account_separation": {
@@ -60,6 +72,90 @@
       "locking": "REQUIRED_NOT_CONFIGURED",
       "selected_backend": null
     }
+  },
+  "hcl_foundation_module": {
+    "allowed_top_level_blocks": [
+      "terraform",
+      "variable",
+      "locals",
+      "check",
+      "output"
+    ],
+    "backend_blocks": [],
+    "capability_mappings": [],
+    "classification": "PROVIDER_NEUTRAL_VALIDATION_ONLY_FOUNDATION_ADMISSION_MODULE",
+    "cloud_blocks": [],
+    "data_blocks": [],
+    "default_disabled": true,
+    "generated": true,
+    "generated_files": [
+      "versions.tf",
+      "variables.tf",
+      "locals.tf",
+      "checks.tf",
+      "outputs.tf"
+    ],
+    "module_blocks": [],
+    "module_path": "infra/terraform/foundation",
+    "planned_actions": {
+      "create": 0,
+      "delete": 0,
+      "update": 0
+    },
+    "policy_validation": "EXACT_CLOSED_BUNDLE_AND_FORBIDDEN_BLOCK_SCAN",
+    "provider_blocks": [],
+    "provider_requirements": [],
+    "provisioners": [],
+    "resource_blocks": [],
+    "selected_bindings": [],
+    "semantic_validation": "TERRAFORM_VALIDATE_JSON_INIT_FREE",
+    "terraform_required_version": "= 1.15.9"
+  },
+  "iac_validation_toolchain": {
+    "classification": "PINNED_VALIDATION_ONLY_NO_INFRASTRUCTURE_AUTHORITY",
+    "official_release": {
+      "archive_filename": "terraform_1.15.9_linux_amd64.zip",
+      "archive_sha256": "76edd0b22d2f27d3d2e097cd793209646f719cf60f02ff3af626b07361137da1",
+      "archive_url": "https://releases.hashicorp.com/terraform/1.15.9/terraform_1.15.9_linux_amd64.zip",
+      "checksum_manifest_url": "https://releases.hashicorp.com/terraform/1.15.9/terraform_1.15.9_SHA256SUMS",
+      "checksum_signature_url": "https://releases.hashicorp.com/terraform/1.15.9/terraform_1.15.9_SHA256SUMS.72D7468F.sig",
+      "extracted_binary_sha256": "c39d41adb17963bac5dd610ad47815dd81e945371a7cabc344a45d63b1b093bd",
+      "release_index_url": "https://releases.hashicorp.com/terraform/1.15.9/",
+      "signing_key_fingerprint": "C874011F0AB405110D02105534365D9472D7468F",
+      "signing_key_url": "https://www.hashicorp.com/.well-known/pgp-key.txt"
+    },
+    "platform": "linux_amd64",
+    "product": "Terraform",
+    "queried_at": "2026-08-25",
+    "required_version_constraint": "= 1.15.9",
+    "validation_boundary": {
+      "allowed_commands": [
+        "version -json",
+        "fmt -check -recursive",
+        "validate -json"
+      ],
+      "backend_access": "FORBIDDEN",
+      "binary_acquisition": "EXPLICIT_ONLINE_MAINTENANCE_ONLY",
+      "credential_inheritance": "FORBIDDEN",
+      "forbidden_commands": [
+        "init",
+        "plan",
+        "apply",
+        "destroy",
+        "import",
+        "refresh",
+        "test",
+        "console"
+      ],
+      "initialization": "FORBIDDEN",
+      "module_downloads": "FORBIDDEN",
+      "network_namespace": "REQUIRED",
+      "normal_check_network_access": "FORBIDDEN",
+      "provider_installation": "FORBIDDEN",
+      "provider_plugins": [],
+      "repository_writes": "FORBIDDEN"
+    },
+    "version": "1.15.9"
   },
   "planned_actions": {
     "create": 0,
@@ -249,12 +345,14 @@
   "verification_boundary": {
     "credentials": "ABSENT",
     "effective_canonical_status": "UNCHANGED",
-    "executable_terraform": "ABSENT",
+    "executable_terraform": "VALIDATABLE_NO_RESOURCE_NO_PROVIDER_HCL_MODULE",
     "formal_tst_026": "NOT_EXECUTED",
     "live_staging_release_production": "NOT_EXECUTED",
+    "local_native_validation": "EXECUTED_NOT_FORMAL",
+    "offline_native_validation_path": "IMPLEMENTED",
     "provider_account_or_project": "UNSET",
-    "provider_plugins": "UNPINNED_NOT_INVOKED",
+    "provider_plugins": "NONE_REQUIRED_NOT_SELECTED",
     "remote_state": "NOT_CONFIGURED",
-    "terraform_cli": "UNPINNED_NOT_INVOKED"
+    "terraform_cli": "PINNED_VALIDATION_ONLY_1_15_9"
   }
 }

@@ -1,0 +1,84 @@
+document:
+  id: RAOS-ST1501-HCL-FOUNDATION-IMPLEMENTATION-RECORD-002
+  version: 2.0.0
+  story_id: ST-1501
+  record_kind: REPOSITORY_LOCAL_IMPLEMENTATION_DETAIL
+  status: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE_PROPOSAL
+  canonical_status_effect: NONE
+implementation_input:
+  mode: STRICT_STORY
+  predecessor_design_handoff: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
+  source_contract: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
+  open_decision:
+    id: OD-013
+    status: HUMAN_DECISION_REQUIRED
+    safe_default: AWS_TOKYO_REFERENCE_METADATA_ONLY_AND_PRODUCTION_APPLY_FORBIDDEN
+implementation:
+  classification: PROVIDER_NEUTRAL_VALIDATION_ONLY_FOUNDATION_ADMISSION
+  generated_hcl:
+    - repo://infra/terraform/foundation/versions.tf
+    - repo://infra/terraform/foundation/variables.tf
+    - repo://infra/terraform/foundation/locals.tf
+    - repo://infra/terraform/foundation/checks.tf
+    - repo://infra/terraform/foundation/outputs.tf
+  deterministic_owner: repo://scripts/build_st1501_terraform_foundation.py
+  default_disabled: true
+  infrastructure_action_count:
+    create: 0
+    update: 0
+    delete: 0
+  selected_provider: null
+  selected_account_or_project: null
+  selected_primary_region: null
+  selected_backup_region: null
+  selected_provider_plugin: null
+  selected_state_backend: null
+  credential_source: null
+  resources: []
+validation_toolchain:
+  product: Terraform
+  version: 1.15.9
+  required_version: "= 1.15.9"
+  platform: linux_amd64
+  official_archive_sha256: 76edd0b22d2f27d3d2e097cd793209646f719cf60f02ff3af626b07361137da1
+  extracted_binary_sha256: c39d41adb17963bac5dd610ad47815dd81e945371a7cabc344a45d63b1b093bd
+  signing_key_fingerprint: C874011F0AB405110D02105534365D9472D7468F
+  normal_check_network: FORBIDDEN
+  native_check_network_namespace: REQUIRED
+  initialization: FORBIDDEN
+  provider_installation: FORBIDDEN
+  allowed_commands:
+    - version -json
+    - fmt -check -recursive
+    - validate -json
+  forbidden_commands:
+    - init
+    - plan
+    - apply
+    - destroy
+    - import
+    - refresh
+    - test
+    - console
+provisional_local_assumptions:
+  - Linux amd64 is the validation host platform only and does not select a runtime,
+    cloud, account, region, backend, or provider.
+  - The exact Terraform CLI is a validation parser and formatter only; a successor
+    resource contract must separately pin every provider plugin it introduces.
+security_and_authority_boundary:
+  publication: NOT_AUTHORIZED
+  live_provider_call: NOT_AUTHORIZED
+  staging: NOT_AUTHORIZED
+  release: NOT_AUTHORIZED
+  production_write: NOT_AUTHORIZED
+  production_apply: FORBIDDEN
+  credential_access: FORBIDDEN
+  external_write: FORBIDDEN
+  formal_tst_026: NOT_EXECUTED
+completion_boundary:
+  local_hcl_generation: IMPLEMENTED
+  local_closed_policy_validation: IMPLEMENTED
+  local_offline_native_validation: EXECUTED_NOT_FORMAL
+  provider_account_backend_and_resource_selection: EXTERNAL_DECISION_BLOCKED
+  staging_release_and_production: NOT_EXECUTED
+  canonical_status_transition: NOT_PROPOSED_BY_THIS_RECORD
