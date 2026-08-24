@@ -7,9 +7,9 @@ document:
   authority: NONE
   production_eligible: false
 provenance:
-  base_commit: 6b89b412ea061af36544cce817ecede4cce7d457
+  base_commit: e757ddd27f534d85a25383de1d438eb550fed8a6
   contract_uri: repo://changes/st-1906/contracts/advanced-causal-attribution.v1.yaml
-  contract_sha256: 0ecb8c11d762edc641d128cad6ffe87523ed103dcb9f615ebd83ddcabed676d0
+  contract_sha256: 51de00e63a1b39207de86431d2a0ec45d4055bad58464d3eb177005a356b5827
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -37,11 +37,11 @@ provenance:
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
   predecessor_inputs:
   - uri: repo://changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: 417919e2c4552b8e1e6e3fef18f4daccfa0cf44d13803db62d474fe154fb574b
+    sha256: fb6eb68a838f08ef8e52002da198424230cdf77f7bb4e4f9db21a94cd2c4d9b6
   - uri: repo://changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
     sha256: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b
   - uri: repo://changes/st-1303/generated/attribution-engine-recorded.v2.json
-    sha256: f6711833620948acf144aacdc1329f470203e893292570d8f1374f75306d4f32
+    sha256: 424e7aec5cb798416c23ad2613d2e8e9700c33e3a835d47ec73acafaaa5cfaeb
   - uri: repo://python/raos/domain/finance/attribution.py
     sha256: 20d7fa4e365d80a000564279f138e7e544fbb8d0cf4158cbe503b56b6be24749
   - uri: repo://python/raos/ports/attribution.py
@@ -56,7 +56,7 @@ source_artifact_count: 19
 source_artifacts:
 - uri: repo://changes/st-1906/contracts/advanced-causal-attribution.v1.yaml
   bytes: 8751
-  sha256: 0ecb8c11d762edc641d128cad6ffe87523ed103dcb9f615ebd83ddcabed676d0
+  sha256: 51de00e63a1b39207de86431d2a0ec45d4055bad58464d3eb177005a356b5827
 - uri: repo://changes/st-1906/fixtures/recorded/causal-attribution.synthetic.v1.json
   bytes: 5542
   sha256: 667c42e8f6dd217d68df54b122ec4ee6315a8aca22e2011299dfcd9726708d2e
@@ -83,7 +83,7 @@ source_artifacts:
   sha256: 8120ed6c1b12e44cb6d21a809c08230822199a06a2b5aa426fcd378ffd9419f6
 - uri: repo://scripts/build_st1906_advanced_causal_attribution.py
   bytes: 29664
-  sha256: 1f501ff504e87a49ea13b327ab09eea9ef6abba25bcdfe16dc5147b0f9096684
+  sha256: 8dfcb3c04b6195d96c615afd143137f75ee7dec7f3916aec880a6012da18dfd3
 - uri: repo://scripts/secure_generated_publication.py
   bytes: 22651
   sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
