@@ -1,0 +1,181 @@
+document:
+  id: RAOS-ST0708-RECORDED-LIVE-EVALUATION-RUNTIME-002
+  version: 2.0.0
+  story_id: ST-0708
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  authority: NONE
+  default_enabled: false
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  live_provider_allowed: false
+  credentials_allowed: false
+  network_allowed: false
+  route_mutation_allowed: false
+  activation_allowed: false
+  approval_allowed: false
+  publication_allowed: false
+  release_authorized: false
+  production_eligible: false
+
+canonical_sources:
+  integration_design:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  story_catalog:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  ai_design:
+    path: docs/upstream/key_documents/RAOS_05_ai_agent_prompt_routing_evaluation_design_v0.1.md
+    sha256: 475e4b6b4490110fd9f94a07aaf4cf979bea99d59b7ef8b95ba0fdbe61219476
+  task_catalog:
+    path: contracts/raos-v0.4/contracts/ai/RAOS_05_ai_task_catalog_v0.1.yaml
+    sha256: 8b5a0d820f0a6180dd0bbbd050553114c22efe499a553d72bbdb24ffc8483c04
+  routing_catalog:
+    path: contracts/raos-v0.4/contracts/ai/RAOS_05_model_routing_catalog_v0.1.yaml
+    sha256: dc76ed6d2586eec9bf18b8ac2e95eb76971179fe87fa1ee07b1ba8702f8faa96
+  evaluation_catalog:
+    path: contracts/raos-v0.4/contracts/ai/RAOS_05_evaluation_catalog_v0.1.yaml
+    sha256: a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3
+
+st0703_recorded_binding:
+  adapter_contract:
+    path: changes/st-0703/contracts/openai-responses-adapter.v1.yaml
+    sha256: 1f4ee219a93fb12bdd4d2d66ab2a87a33e9f608d24654aceb50e28b6efa96349
+  fixture_registry:
+    path: changes/st-0703/generated/recorded-fixture-registry.v1.json
+    sha256: a604bfbaf4744a78eb9c556a4b27a57a40926d3a89829b32c10d216d91f3666f
+  success_fixture:
+    path: changes/st-0703/fixtures/recorded/success-structured.json
+    sha256: a6a7506c8201a979cdba2cf1e41c9c9d7288d801cf6f2f72aa5e6684e6da168c
+  binding_source:
+    path: tests/st0703/test_adapter.py
+    sha256: 3912a42b5a3417901c555db9fabdc2c96cfa29d8f1812f8939ff6b360861203b
+  recorded_task_id: AIT-004
+  target_task_code: ai.article_draft.v1
+  route_version: route.synthetic.recorded.v1
+  prompt_version: PRM-004-v1
+  model_id: raos-synthetic-model-v1
+  provenance: ST0703_RECORDED_SYNTHETIC_TEST_FIXTURE
+  canonical_route_selected: false
+  canonical_model_selected: false
+  canonical_prompt_selected: false
+  live_binding: false
+
+st0707_report_binding:
+  runtime_contract:
+    path: changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml
+    sha256: 5edccc09f52bf3c697331a951a98c67b79a2d60faeba7bfe7f07dc69b6165299
+  runtime_manifest:
+    path: changes/st-0707/runtime-manifest.v1.json
+    sha256: 8e41f06229399fa18d4b85f540f72eda7d35d505dcce8cf4ba84753c0b70f41b
+  suite_registry:
+    path: changes/st-0707/generated/evaluation-suite-registry.v1.json
+    sha256: 7f0b9d940bf013afff3573bbd2c87df99fe69736d66ff1844f604772c00a2114
+  locked_dataset:
+    path: changes/st-0707/generated/locked-synthetic-holdout.v1.json
+    sha256: 9b61796e201917e672380cfc4340f798113fee15b45ab9e5e51f69a905b754b5
+  st0705_runtime_contract:
+    path: changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml
+    sha256: 82a157b6973db54bece7ee67a05b7321bc85f1e6ca5270039077c3cd20873bfb
+  st0705_profile_registry:
+    path: changes/st-0705/generated/ai-output-validation-profiles.v1.json
+    sha256: 5034379d1c8800f6cacf33bc7b2022e0e471189490c28c1c8d03eac429dd5e27
+  st0705_fixture:
+    path: changes/st-0705/generated/ai-output-validation-pass.v1.json
+    sha256: ce3ac4a0680cad45f60951a873d408789b24d66683b523695484219552102f4f
+  st0705_runtime_manifest:
+    path: changes/st-0705/runtime-manifest.v1.yaml
+    sha256: 51ea6c318a58e549397826ab7a12a377d59213767a2f34960ebcc7fe7d672d64
+  task_schema:
+    path: contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.opportunity_assessment.v1.output.schema.json
+    sha256: 504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123
+  evaluation_case_schema:
+    path: contracts/raos-v0.4/contracts/ai/schemas/eval/evaluation_case.v1.schema.json
+    sha256: 363094954df80ab4bd8c28804d27e4634f79210fcd28fa82062ea49729549b7a
+  source_task_code: ai.opportunity_assessment.v1
+  suite_code: suite.ai.opportunity_assessment.v1.release.v1
+  bundle_sha256: 95279655c5e1dec9ab5c63333bb08fad3da82637a8ab5087f83d19f3d30f42fb
+  report_sha256: 34f4fd238d209b11173afe8df8031a8931a63c6cbe143c19029e8f938331db86
+  report_outcome: REFUSED_INCOMPLETE_EVIDENCE
+  dataset_sha256: 6dd45b8758b36a85825915817d4397e77c39918e0e4e43bd5f2b393e195f7280
+  holdout_sha256: a2c1fd0a83e0ba7bae7712f453eadf3fd373ec766e39425b19c09e7f1529dd13
+  observed_case_count: 1
+  observed_splits:
+    - HOLDOUT
+  dataset_provenance: SYNTHETIC_PLUMBING_ONLY
+  human_label_status: UNAVAILABLE
+  release_eligible: false
+
+target_suite:
+  task_id: AIT-004
+  task_code: ai.article_draft.v1
+  suite_code: suite.ai.article_draft.v1.release.v1
+  risk_level: CRITICAL
+  minimum_adjudicated_cases: 200
+  required_splits:
+    - DEV
+    - CALIBRATION
+    - HOLDOUT
+    - ADVERSARIAL
+    - REGRESSION
+  expected_promotion_policy: critical_two_person_approval
+
+runtime_policy:
+  evaluation_id: st0708-recorded-synthetic-ait004-v2
+  maximum_artifact_bytes: 4194304
+  maximum_metrics: 32
+  maximum_zero_tolerance_classes: 8
+  metric_scale: 1000000
+  proportion_gate_statistic: POINT_ESTIMATE
+  proportion_reporting: POINT_ESTIMATE_AND_ONE_SIDED_95_PERCENT_WILSON_LOWER_BOUND
+  decision_kind: PROPOSAL
+  unavailable_is_pass: false
+  unknown_is_zero: false
+  insufficient_is_pass: false
+  zero_tolerance_waiver_allowed: false
+  synthetic_release_eligible: false
+  external_actions: false
+  formal_tst_018: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  od_015: EXTERNAL_EVIDENCE_REQUIRED
+
+outputs:
+  historical_reference_plan: changes/st-0708/generated/openai-live-bounded-evaluation-reference-plan.v1.json
+  evaluation_request: changes/st-0708/generated/recorded-live-evaluation-request.v2.json
+  evaluation_report: changes/st-0708/generated/recorded-live-evaluation-report.v2.json
+  runtime_manifest: changes/st-0708/runtime-manifest.v2.json
+  owner_manifest: changes/st-0708/manifest.yaml
+
+owned_sources:
+  - changes/st-0708/README.md
+  - changes/st-0708/RUNTIME.md
+  - changes/st-0708/contracts/openai-live-bounded-evaluation-reference-plan.v1.yaml
+  - docs/execplans/ST-0708.md
+  - docs/worklogs/ST-0708.md
+  - python/raos/domain/ai/live_evaluation.py
+  - python/raos/ports/live_evaluation.py
+  - python/raos/application/ai/live_evaluation.py
+  - python/raos/adapters/recorded_live_evaluation.py
+  - scripts/build_st0708_openai_live_bounded_evaluation_reference_plan.py
+  - scripts/secure_generated_publication.py
+  - tests/st0708/conftest.py
+  - tests/st0708/test_contract.py
+  - tests/st0708/test_generation.py
+  - tests/st0708/test_negative_cases.py
+  - tests/st0708_v2/__init__.py
+  - tests/st0708_v2/conftest.py
+  - tests/st0708_v2/support.py
+  - tests/st0708_v2/test_application.py
+  - tests/st0708_v2/test_generation_and_bindings.py
+  - tests/st0708_v2/test_security_boundaries.py

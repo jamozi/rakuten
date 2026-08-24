@@ -1,4 +1,4 @@
-"""Shared fixtures for the isolated ST-0708 reference-plan suite."""
+"""Shared fixtures for ST-0708 historical compatibility and generation tests."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import shutil
 import sys
 
 import pytest
+import yaml
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -21,11 +22,23 @@ from scripts import (  # noqa: E402
 @pytest.fixture()
 def isolated_repository(tmp_path: Path) -> Path:
     root = tmp_path / "repository"
+    contract = yaml.safe_load(
+        (REPOSITORY_ROOT / generator.RUNTIME_CONTRACT_PATH).read_bytes()
+    )
     required = {
-        *generator.SOURCE_PATHS,
+        generator.CONTRACT_PATH,
+        generator.RUNTIME_CONTRACT_PATH,
         generator.HELPER_PATH,
-        *generator.PINNED_INPUTS,
     }
+    for section in (
+        "canonical_sources",
+        "st0703_recorded_binding",
+        "st0707_report_binding",
+    ):
+        for value in contract[section].values():
+            if type(value) is dict and set(value) == {"path", "sha256"}:
+                required.add(Path(value["path"]))
+    required.update(Path(value) for value in contract["owned_sources"])
     for relative in required:
         target = root / relative
         target.parent.mkdir(parents=True, exist_ok=True)
