@@ -15,7 +15,7 @@
   "source_sha256": {
     "changes/st-0503/contracts/catalog-normalization-runtime.v2.json": "a39f42e320b9dd3eb5e1d13012c31fe19023abb624d06f35ce257a7be438d82a",
     "changes/st-0503/generated/catalog-normalization-runtime.v2.json": "a44b77d6bea2c1f34c6f68484b4c2be672c0f961d07fe6cd07c24100546ada71",
-    "changes/st-0503/manifest.v2.json": "6b7a67645b61a0f97d2650010b1daddf82deef3c557c93559367eb9432a61e88",
+    "changes/st-0503/manifest.v2.json": "667eb914364d57daa509271695798748b89acf26092bbf9f277123474e1829f1",
     "changes/st-0504/README-v2.md": "4506467a92213208d47946757499c91fc86249c3676e9d12a24fd1db36bf2659",
     "changes/st-0504/contracts/product-identity-runtime.v2.json": "493b7fdfa1b2c701cae8d4691f04a0450344ab15d901488eb10ff1c60a25cb5e",
     "changes/st-0504/fixtures/product-identity-recorded.synthetic.v2.json": "14d4b1d42920a3ba11075001e20ef5c956cf45cab660142d1733f42f975a98f9",
