@@ -1,0 +1,79 @@
+authority:
+  TST-027: NOT_EXECUTED
+  approval_authorized: false
+  browser_lab: NOT_EXECUTED
+  external_write: false
+  field_rum: NOT_EXECUTED
+  live: NOT_EXECUTED
+  network: false
+  persistence: false
+  production: NOT_EXECUTED
+  production_authorized: false
+  publication: NOT_EXECUTED
+  publication_authorized: false
+  release: NOT_EXECUTED
+  release_authorized: false
+  staging: NOT_EXECUTED
+  staging_authorized: false
+  tracking_authorized: false
+canonical_bindings:
+- path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+- path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+  sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+- path: docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+  sha256: 0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e
+- path: docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml
+  sha256: dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050
+- path: docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml
+  sha256: b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa
+- path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+- path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+- path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+classification: LOCAL_RECORDED_PERFORMANCE_IMAGE_SAFETY_V2
+dependency_bindings:
+  ST-1002:
+  - path: changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
+    sha256: f31be78d65a6207f2e2cef215070f78074b69ca7f907f4e695142afb51952341
+  - path: changes/st-1002/generated/public-article-renderer-recorded.v2.json
+    sha256: 866c7348e6a08806ed16fa14cbed4cbdc80f39c22d1982e1c56c16921f8ecc99
+  - path: changes/st-1002/runtime-manifest.v2.yaml
+    sha256: ab22ff4f70063698ae31d17e84da283772c02f400b8abb26444e6b711e9d319f
+document:
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  id: RAOS-ST1006-PUBLIC-PERFORMANCE-RUNTIME-MANIFEST-002
+  status: LOCAL_CODE_COMPLETE
+  story_id: ST-1006
+  version: 2.0.0
+generated_by: scripts/build_st1006_public_performance_runtime.py
+generated_outputs:
+- path: changes/st-1006/generated/public-performance-recorded.v2.json
+  sha256: c21a2a2e9fe305c290a21b08d61ee440186515698d56e88072cc0327fd9cfa38
+source_bindings:
+- path: changes/st-1006/contracts/public-performance-runtime.v2.yaml
+  sha256: a62e4c55746f53159b1e21dc8098265df6024d9558c35ee8be4ff875ebe8bf33
+- path: scripts/build_st1006_public_performance_runtime.py
+  sha256: f255905a2cf731d17132b524340c0055948b25d43c9386004cf479c97b3e1f8d
+- path: packages/web-ui/src/public-performance-runtime-v2.ts
+  sha256: 9fe4974d1f832d62e5a42b778d725fbec26166e785f3c0d005e90e1249afcd68
+- path: packages/web-ui/src/index.ts
+  sha256: ea3dedbe09dcbbfbdbee86af0177761be7ae632d054471804e032a17ac7a59c5
+- path: changes/st-1006/PREFLIGHT-v2.md
+  sha256: 6bb0a3cfdabead8b796737c3b078ee76c5c86bc5d431741341ae2432a66416bb
+- path: changes/st-1006/README-v2.md
+  sha256: 78a4b55c6280e4024258952ce0bd4b3af65cf39b299aba096060bbd834102ff2
+- path: changes/st-1006/completion/completion.v2.yaml
+  sha256: 75bba74d9253543da40125738184dad1a66ea272bb5eb8af2896ce64399aa24c
+- path: tests/st1006_v2/public-performance-runtime.test.ts
+  sha256: 171caaa9fb00558d8b7cb7547ae522ec6b98351bba911376ca344d36419ece85
+- path: tests/st1006_v2/public-performance-image.test.ts
+  sha256: adf1e83fcf31438c312cb6e3177cc7bce99d98beb1500930811991d49a23da5f
+- path: tests/st1006_v2/public-performance-rum-negative.test.ts
+  sha256: 129aabe0f856305393b183b2bab9f1e1c24feca36b680d7a4b96c85cdbd2b6cc
+- path: tests/st1006_v2/public-performance-static.test.ts
+  sha256: 105b46991c5d2c9ef3956520557794fe960a245b0d7d0c2edbc67ef2337cddf4
+- path: tests/st1006_v2/test_generation.py
+  sha256: d6b2e50e13ff3cefb757b0ee0da175aa39b56d3ea09c9a8e3c93dac234054740

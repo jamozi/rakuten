@@ -423,6 +423,37 @@ export type {
 } from './public-performance-rum.ts';
 
 export {
+  PUBLIC_PERFORMANCE_METRICS_V2,
+  PUBLIC_PERFORMANCE_RECORDED_BUDGET_INPUT_V2,
+  PUBLIC_PERFORMANCE_RECORDED_CTA_LAYOUT_INPUT_V2,
+  PUBLIC_PERFORMANCE_RECORDED_IMAGE_INPUT_V2,
+  PUBLIC_PERFORMANCE_RUNTIME_V2_CLASSIFICATION,
+  PUBLIC_PERFORMANCE_V2_ERROR_CODES,
+  PublicPerformanceV2Error,
+  assessPublicCtaLayoutReservationV2,
+  createDefaultDisabledPublicRumHookV2,
+  createPublicImagePresentationV2,
+  createRecordedPublicPerformanceRuntimeV2,
+  evaluatePublicPerformanceBudgetV2,
+  validatePublicPerformanceRuntimeV2,
+} from './public-performance-runtime-v2.ts';
+export type {
+  PublicCtaLayoutAssessmentV2,
+  PublicCtaLayoutInputV2,
+  PublicImagePolicyInputV2,
+  PublicImagePresentationV2,
+  PublicLayoutRectV2,
+  PublicPerformanceBudgetAssessmentV2,
+  PublicPerformanceBudgetInputV2,
+  PublicPerformanceBudgetResultV2,
+  PublicPerformanceMetricV2,
+  PublicPerformanceRuntimeV2,
+  PublicPerformanceV2ErrorCode,
+  PublicRumDisabledCaptureReceiptV2,
+  PublicRumDisabledHookV2,
+} from './public-performance-runtime-v2.ts';
+
+export {
   PUBLIC_EVENT_INSTRUMENTATION_CLASSIFICATION,
   PUBLIC_EVENT_INSTRUMENTATION_CLASSIFICATION_V2,
   PUBLIC_EVENT_INSTRUMENTATION_ERROR_CODES,

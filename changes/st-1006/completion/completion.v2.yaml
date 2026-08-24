@@ -1,0 +1,57 @@
+story_id: ST-1006
+implementation_version: 2.0.0
+local_status: LOCAL_CODE_COMPLETE
+completion_boundary: MAXIMUM_SAFE_LOCAL_RECORDED_RUNTIME
+canonical_status_mutated: false
+summary:
+  deterministic_cwv_budget_evaluator: IMPLEMENTED
+  explicit_image_dimensions: IMPLEMENTED
+  responsive_image_sizing_policy: IMPLEMENTED
+  below_fold_lazy_loading_policy: IMPLEMENTED
+  cta_layout_reservation_evaluator: IMPLEMENTED
+  public_rum_hook: DEFAULT_DISABLED_DROP_WITHOUT_INSPECTION
+  current_recorded_route_image_count: 0
+  current_recorded_route_affiliate_cta_rendered: false
+  current_recorded_route_cache_control: no-store
+evidence_scope:
+  recorded_synthetic_only: true
+  real_measurements_claimed: false
+  browser_observed: false
+  tracking_enabled: false
+  external_write: false
+authority:
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+  tracking_authorized: false
+not_executed:
+  - browser PerformanceObserver / real RUM
+  - field 28-day Core Web Vitals observation
+  - staging performance and load run
+  - formal TST-027
+  - consent/privacy approval
+  - live verified image-source integration
+  - publication
+  - release
+  - Production
+introduced_debt:
+  - id: ST1006-DEBT-001
+    kind: TRANSITIVE_OWNER_MANIFEST_HASH_DRIFT
+    affected_owner: ST-1002
+    affected_artifact: changes/st-1002/runtime-manifest.v2.yaml
+    introduced_by: ST-1006 minimal packages/web-ui/src/index.ts export
+    failing_command: >-
+      PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:.
+      .venv/bin/python -B scripts/build_st1002_public_article_renderer.py --check
+    observed_result: ST-1002 public article renderer generation failed (exit 1)
+    runtime_impact: NONE; only the ST-1002 owner source inventory hash is stale
+    closure_wave: W4 integration-owner provenance rebind after cherry-pick
+preexisting_deferred_verification:
+  - id: ST1006-DEFERRED-001
+    kind: PREEXISTING_FULL_HISTORY_SECRET_SCAN_FINDINGS
+    introduced_by_st1006: false
+    exact_commit_worktree_scan: PASS
+    full_history_scan: FINDINGS_EXIT_1
+    finding_scope: historical git-blob sources only; no worktree finding
+    closure_wave: final repository audit/reviewed-findings reconciliation
