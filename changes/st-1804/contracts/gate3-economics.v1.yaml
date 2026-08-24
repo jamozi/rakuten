@@ -1,0 +1,149 @@
+document:
+  id: RAOS-ST1804-GATE3-ECONOMICS-001
+  version: 1.0.0
+  story_id: ST-1804
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  classification: RECORDED_SYNTHETIC_GATE3_ECONOMICS_NON_ATTESTING
+  acceptance_criteria_satisfied: false
+  formal_verification: NOT_EXECUTED
+
+source_bindings:
+  docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md: 5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea
+  docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml: 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c
+  docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+  docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+
+dependency_bindings:
+  ST-1803:
+    changes/st-1803/contracts/gate2-observation.v1.yaml: e85bfb0886be3f51ab99f81c6654efcdb88397cdfc43cc627ac984db2ee84e72
+    changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json: 1a8fa35229d8f12bca5dc94de396175b5e97c359c775c50dd5b07671018f6c2e
+    changes/st-1803/generated/gate2-observation.local-blocked.v1.json: 9a83909dfb9618457e23ccd2796530b3c1208b4aed7bb8e49d8bf5e167ac0ae8
+    scripts/build_st1803_gate2_observation.py: 420c3eca1dc40de71169ee2fda7c8880f4445f1a0e6a29c32a84ef4ee59e2737
+  ST-1305:
+    changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml: b21ffd229a771cb10fea9084afea33c2ad1de780112a69b2d6a1eadfe84fcab7
+    changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json: 59b666012081afc238b331dc481a48bf9ba91c54ee00756f0a0a7687b98deb09
+    changes/st-1305/generated/finance-reconciliation-recorded.v2.json: 5093173b07d3b9466b17c19a6ea9056b3765da02f8ee751b6dbfa36da92601c5
+    changes/st-1305/manifest.yaml: fcdb16dc600c02ef740675aba442f11721a550ded0d2a162e9ed3b42eabfda21
+    scripts/build_st1305_finance_reconciliation.py: 215f8aac3529ce713a08af2195de8295fa62b884d3003245a89b818189df5502
+  AFFILIATE_LEARNING:
+    changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+
+gate_3_definition:
+  objective: REVENUE_AND_UNIT_ECONOMICS_VALIDATION
+  actual_observation_conditions:
+    cumulative_qualified_article_sessions_min: 10000
+    provider_confirmation_cycles_min: 2
+    article_costs_calculable: true
+  provisional_thresholds:
+    confirmed_rpm_jpy_min: '500'
+    confirmed_epc_positive: true
+    confirmed_epc_stability: HUMAN_JUDGMENT_REQUIRED
+    contribution_profit_i_positive_consecutive_months_min: 2
+    contribution_profit_ii_three_month_total_positive_or_reasonable_trend: true
+    content_payback_months_max: '12'
+    forecast_error_manageable: HUMAN_JUDGMENT_REQUIRED
+    reward_concentration_top10_strict_max: '0.70'
+    update_cost_ratio_strict_max: '0.30'
+    serious_compliance_incidents_max: 0
+  gate_pass_automation: false
+  actual_observation_required: true
+  recorded_synthetic_fixture_is_actual_observation: false
+
+input_contract:
+  schema: ST1804_RECORDED_SYNTHETIC_GATE3_ECONOMICS_V1
+  program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
+  periods: THREE_CONTIGUOUS_CALENDAR_MONTHS
+  transport: CALLER_SUPPLIED_EXACT_BYTES
+  history: APPEND_ONLY_SHA256_CHAIN
+  synthetic: true
+  actual_observation: false
+  numeric_type: NONNEGATIVE_INTEGER_INPUT_DECIMAL_OUTPUT
+  decimal_places: 6
+  rounding: ROUND_HALF_EVEN
+  missing_is_zero: false
+  unverified_is_zero: false
+  zero_denominator: UNAVAILABLE
+  immature_cohort: UNAVAILABLE
+  mixed_period: UNAVAILABLE
+  mixed_program: UNAVAILABLE
+  attribution_unverified: UNAVAILABLE
+  cost_unverified: UNAVAILABLE
+  conservation_mismatch: UNAVAILABLE
+  article_group_basis_missing: UNAVAILABLE
+  provider_direct_estimated_unattributed_separate: true
+  unattributed_article_allocation: false
+
+basis_contract:
+  provider_total:
+    basis: SYNTHETIC_PROVIDER_FACT_PROGRAM_TOTAL_NOT_ARTICLE_ATTRIBUTION
+  direct_metrics:
+    basis: VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED
+  estimated:
+    basis: ESTIMATED_SEPARATE_NOT_PROVIDER_FACT
+  unattributed:
+    basis: UNATTRIBUTED_PROGRAM_TOTAL_NOT_ALLOCATED_TO_ARTICLES
+  real_provider_report_sample: UNAVAILABLE_OD_003
+  approved_human_labor_basis: UNAVAILABLE_OD_005
+  promising_article_group_payback_basis: UNAVAILABLE_PROGRAM_GRAIN_FIXTURE_ONLY
+  actual_confirmed_profit_claim: false
+  arbitrary_total_article_allocation: false
+
+learning_and_editorial_boundary:
+  st1305_learning_report: READ_ONLY_REVIEW_CANDIDATES
+  finance_or_reward_used_for_product_ranking: false
+  affiliate_rate_used_for_product_ranking: false
+  epc_used_for_product_ranking: false
+  rpm_used_for_product_ranking: false
+  profit_used_for_product_ranking: false
+  article_html_mutation: false
+  cta_mutation: false
+  product_selection_mutation: false
+  recommendation_order_mutation: false
+  publication_snapshot_mutation: false
+
+open_decision_boundary:
+  OD-003: SYNTHETIC_FIXTURE_ONLY_REAL_REPORT_UNVERIFIED
+  OD-005: HUMAN_LABOR_COST_UNKNOWN_NOT_ZERO
+  OD-009: LOW_DEVELOPMENT_ONLY_PRODUCTION_DISABLED
+  OD-012: NONESSENTIAL_TRACKING_DISABLED
+  OD-014: AUTOMATIC_DELETION_DISABLED
+  OD-015: RECORDED_FIXTURE_ONLY
+
+execution_boundary:
+  actual_30_45_article_pilot: NOT_EXECUTED
+  actual_gate2_observation: NOT_EXECUTED
+  actual_gate3_observation: NOT_EXECUTED
+  owner_private_ledger_read: false
+  provider: NOT_EXECUTED
+  network: NOT_EXECUTED
+  credential: NOT_USED
+  persistence: NOT_EXECUTED
+  database: NOT_EXECUTED
+  public_projection: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  gate_approval: NONE
+  scale_authority: NONE
+  status_apply: NONE
+  formal_TST-030: NOT_EXECUTED
+  formal_TST-032: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+
+debt:
+  introduced_local: []
+  external_remaining:
+    - ACTUAL_30_45_ARTICLE_PILOT
+    - ACTUAL_GATE2_AND_GATE3_OBSERVATION
+    - REAL_PROVIDER_REPORT_OD_003
+    - APPROVED_LABOR_BASIS_OD_005
+    - FORMAL_TST_030
+    - FORMAL_TST_032
+    - HUMAN_GATE_APPROVAL

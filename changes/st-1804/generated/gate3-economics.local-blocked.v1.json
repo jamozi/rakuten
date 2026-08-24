@@ -1,0 +1,769 @@
+{
+  "acceptance_criteria_satisfied": false,
+  "actual_observations": [],
+  "authority": {
+    "editorial_mutation": "NONE",
+    "formal_evidence_acceptance": "NONE",
+    "gate_approval": "NONE",
+    "publication": "NONE",
+    "scale": "NONE",
+    "status_apply": "NONE"
+  },
+  "classification": "LOCAL_BLOCKED_RECORDED_SYNTHETIC_GATE3_NON_ATTESTING",
+  "completion_boundary": {
+    "canonical_status_changed": false,
+    "formal_or_live_evidence_claimed": false,
+    "local_code_complete": true,
+    "local_integration_complete": false
+  },
+  "confirmed_basis": {
+    "actual_confirmed_profit_eligible": false,
+    "direct_estimated_unattributed_separate": true,
+    "provider_report_status": "SYNTHETIC_ONLY_REAL_REPORT_UNAVAILABLE_OD_003",
+    "reconciliation_availability": "PARTIAL",
+    "unattributed_reward_allocated_to_articles": false
+  },
+  "dependency_alignment": {
+    "ST-1305": {
+      "period": {
+        "duration_days": 14,
+        "end_exclusive_date": "2026-09-08",
+        "start_date": "2026-08-25"
+      },
+      "reconciliation_availability": "PARTIAL",
+      "result_sha256": "d8ebf595e96ef8f063fef0e0f2242534e4eb040a0a2e1a39fa50427b17c1467e",
+      "synthetic": true
+    },
+    "ST-1803": {
+      "overall": "BLOCKED",
+      "period": {
+        "as_of_date": "2026-04-01",
+        "elapsed_days": 90,
+        "end_exclusive_date": "2026-04-01",
+        "start_date": "2026-01-01"
+      },
+      "synthetic": true
+    },
+    "actual_gate_input_eligible": false,
+    "period_alignment": "MISMATCH_RECORDED_SYNTHETIC_DEPENDENCIES",
+    "program_alignment": "MATCHED_FIXED_PROGRAM"
+  },
+  "gate_definition": {
+    "actual_observation_conditions": {
+      "article_costs_calculable": true,
+      "cumulative_qualified_article_sessions_min": 10000,
+      "provider_confirmation_cycles_min": 2
+    },
+    "actual_observation_required": true,
+    "gate_pass_automation": false,
+    "objective": "REVENUE_AND_UNIT_ECONOMICS_VALIDATION",
+    "provisional_thresholds": {
+      "confirmed_epc_positive": true,
+      "confirmed_epc_stability": "HUMAN_JUDGMENT_REQUIRED",
+      "confirmed_rpm_jpy_min": "500",
+      "content_payback_months_max": "12",
+      "contribution_profit_i_positive_consecutive_months_min": 2,
+      "contribution_profit_ii_three_month_total_positive_or_reasonable_trend": true,
+      "forecast_error_manageable": "HUMAN_JUDGMENT_REQUIRED",
+      "reward_concentration_top10_strict_max": "0.70",
+      "serious_compliance_incidents_max": 0,
+      "update_cost_ratio_strict_max": "0.30"
+    },
+    "recorded_synthetic_fixture_is_actual_observation": false
+  },
+  "gate_pass_claim": false,
+  "generated_by": {
+    "command": "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1804_gate3_economics.py",
+    "generator_sha256": "4f66f3f35925bb70b82168038b80b310b284474b255c435d2d5c97726f238441",
+    "uri": "repo://scripts/build_st1804_gate3_economics.py"
+  },
+  "learning_boundary": {
+    "candidate_count": 1,
+    "candidate_output_kind": "REVIEW_CANDIDATES_ONLY",
+    "finance_signals_excluded": [
+      "pending_outcomes",
+      "confirmed_outcomes",
+      "rejected_outcomes",
+      "direct_confirmed_reward_jpy",
+      "unattributed_confirmed_reward_jpy",
+      "affiliate_commission_rate",
+      "incremental_cost_jpy",
+      "work_minutes",
+      "epc",
+      "rpm",
+      "profit"
+    ],
+    "finance_used_for_product_or_recommendation_ranking": false,
+    "modifications_applied": [],
+    "source_result_sha256": "d8ebf595e96ef8f063fef0e0f2242534e4eb040a0a2e1a39fa50427b17c1467e"
+  },
+  "mandatory_criteria": [
+    {
+      "comparison": ">=",
+      "criterion_id": "G3-OBS-001",
+      "description": "cumulative qualified article sessions at least 10000",
+      "metric_id": "cumulative_qualified_article_sessions",
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "threshold": "10000",
+      "unavailable_reason": null,
+      "would_meet_numeric_threshold": true
+    },
+    {
+      "comparison": ">=",
+      "criterion_id": "G3-OBS-002",
+      "description": "at least two confirmation cycles completed",
+      "metric_id": "confirmation_cycles_completed",
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "threshold": "2",
+      "unavailable_reason": null,
+      "would_meet_numeric_threshold": true
+    },
+    {
+      "comparison": "==",
+      "criterion_id": "G3-OBS-003",
+      "description": "article costs calculable for all three months",
+      "metric_id": "months_with_calculable_article_costs",
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "threshold": "3",
+      "unavailable_reason": null,
+      "would_meet_numeric_threshold": true
+    },
+    {
+      "comparison": ">=",
+      "criterion_id": "G3-C01",
+      "description": "direct-basis confirmed RPM at least 500 JPY",
+      "metric_id": "confirmed_rpm_direct_jpy",
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "threshold": "500",
+      "unavailable_reason": null,
+      "would_meet_numeric_threshold": true
+    },
+    {
+      "comparison": ">",
+      "criterion_id": "G3-C02",
+      "description": "direct-basis confirmed EPC is positive",
+      "metric_id": "confirmed_epc_direct_jpy",
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "threshold": "0",
+      "unavailable_reason": null,
+      "would_meet_numeric_threshold": true
+    },
+    {
+      "comparison": null,
+      "criterion_id": "G3-C03",
+      "description": "confirmed EPC stability requires human judgment",
+      "metric_id": null,
+      "status": "UNAVAILABLE",
+      "threshold": null,
+      "unavailable_reason": "HUMAN_JUDGMENT_REQUIRED",
+      "would_meet_numeric_threshold": null
+    },
+    {
+      "comparison": ">=",
+      "criterion_id": "G3-C04",
+      "description": "direct-basis contribution profit I positive for two consecutive months",
+      "metric_id": "profit_i_max_consecutive_positive_months",
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "threshold": "2",
+      "unavailable_reason": null,
+      "would_meet_numeric_threshold": true
+    },
+    {
+      "comparison": ">",
+      "criterion_id": "G3-C05",
+      "description": "direct-basis contribution profit II is positive over three months or has a reasonable improvement trend",
+      "metric_id": "contribution_profit_ii_direct_jpy_3m",
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "threshold": "0",
+      "unavailable_reason": null,
+      "would_meet_numeric_threshold": true
+    },
+    {
+      "comparison": "<=",
+      "criterion_id": "G3-C06",
+      "description": "promising article-group direct-basis content payback at most 12 months",
+      "metric_id": "content_payback_months_direct",
+      "status": "UNAVAILABLE",
+      "threshold": "12",
+      "unavailable_reason": "ARTICLE_GROUP_BASIS_UNAVAILABLE",
+      "would_meet_numeric_threshold": null
+    },
+    {
+      "comparison": null,
+      "criterion_id": "G3-C07",
+      "description": "forecast error manageability requires human judgment",
+      "metric_id": null,
+      "status": "UNAVAILABLE",
+      "threshold": null,
+      "unavailable_reason": "HUMAN_JUDGMENT_REQUIRED",
+      "would_meet_numeric_threshold": null
+    },
+    {
+      "comparison": "<",
+      "criterion_id": "G3-C08",
+      "description": "direct-basis top-ten reward concentration below 70 percent",
+      "metric_id": "direct_reward_concentration_top10",
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "threshold": "0.70",
+      "unavailable_reason": null,
+      "would_meet_numeric_threshold": true
+    },
+    {
+      "comparison": "<",
+      "criterion_id": "G3-C09",
+      "description": "update cost below 30 percent of direct confirmed reward",
+      "metric_id": "update_cost_ratio_direct",
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "threshold": "0.30",
+      "unavailable_reason": null,
+      "would_meet_numeric_threshold": true
+    },
+    {
+      "comparison": "==",
+      "criterion_id": "G3-C10",
+      "description": "serious compliance incidents equal zero",
+      "metric_id": "serious_compliance_incidents",
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "threshold": "0",
+      "unavailable_reason": null,
+      "would_meet_numeric_threshold": true
+    },
+    {
+      "criterion_id": "G3-X01",
+      "description": "actual 30-45 article observation present",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "criterion_id": "G3-X02",
+      "description": "real provider report reconciled",
+      "status": "NOT_EXECUTED_OD_003"
+    },
+    {
+      "criterion_id": "G3-X03",
+      "description": "approved labor basis present",
+      "status": "UNAVAILABLE_OD_005"
+    },
+    {
+      "criterion_id": "G3-X04",
+      "description": "formal TST-030 complete",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "criterion_id": "G3-X05",
+      "description": "formal TST-032 staging pack complete",
+      "status": "NOT_EXECUTED"
+    },
+    {
+      "criterion_id": "G3-X06",
+      "description": "Product Owner Gate approval present",
+      "status": "UNAVAILABLE"
+    }
+  ],
+  "overall": "BLOCKED",
+  "provenance": {
+    "dependency_bindings": {
+      "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml": "b21ffd229a771cb10fea9084afea33c2ad1de780112a69b2d6a1eadfe84fcab7",
+      "changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json": "59b666012081afc238b331dc481a48bf9ba91c54ee00756f0a0a7687b98deb09",
+      "changes/st-1305/generated/finance-reconciliation-recorded.v2.json": "5093173b07d3b9466b17c19a6ea9056b3765da02f8ee751b6dbfa36da92601c5",
+      "changes/st-1305/manifest.yaml": "fcdb16dc600c02ef740675aba442f11721a550ded0d2a162e9ed3b42eabfda21",
+      "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json": "9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8",
+      "changes/st-1803/contracts/gate2-observation.v1.yaml": "e85bfb0886be3f51ab99f81c6654efcdb88397cdfc43cc627ac984db2ee84e72",
+      "changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json": "1a8fa35229d8f12bca5dc94de396175b5e97c359c775c50dd5b07671018f6c2e",
+      "changes/st-1803/generated/gate2-observation.local-blocked.v1.json": "9a83909dfb9618457e23ccd2796530b3c1208b4aed7bb8e49d8bf5e167ac0ae8",
+      "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
+      "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
+      "docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460",
+      "docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml": "29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c",
+      "docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml": "f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2",
+      "docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984",
+      "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8",
+      "docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd",
+      "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
+      "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+      "docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md": "5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea",
+      "scripts/build_st1305_finance_reconciliation.py": "215f8aac3529ce713a08af2195de8295fa62b884d3003245a89b818189df5502",
+      "scripts/build_st1803_gate2_observation.py": "420c3eca1dc40de71169ee2fda7c8880f4445f1a0e6a29c32a84ef4ee59e2737"
+    },
+    "fixture_sha256": "72ab8f4b77138bb611d0904dc2e8f3d8d762798e4567e45d907ef984ff84627a",
+    "source_artifacts": [
+      {
+        "bytes": 6953,
+        "sha256": "bea92556ba62562c673ea3898eabc1c02198b91578ba4402db094f4bbc86599f",
+        "uri": "repo://changes/st-1804/contracts/gate3-economics.v1.yaml"
+      },
+      {
+        "bytes": 6397,
+        "sha256": "72ab8f4b77138bb611d0904dc2e8f3d8d762798e4567e45d907ef984ff84627a",
+        "uri": "repo://changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json"
+      },
+      {
+        "bytes": 1485,
+        "sha256": "9f90a773113931076f1b808ad24afa8ca4115569547fc0e87212cc02d7b216f9",
+        "uri": "repo://changes/st-1804/PREFLIGHT.md"
+      },
+      {
+        "bytes": 3653,
+        "sha256": "140a5cad8b7c7ab850773dca98ae8e9f4c964c10fdfb1689186dcafd77cc0501",
+        "uri": "repo://changes/st-1804/README.md"
+      },
+      {
+        "bytes": 44772,
+        "sha256": "91bbb8b347b7bef49f83ecb06b446f35b072814863aca9c0e252184fabbda63c",
+        "uri": "repo://python/raos/domain/analytics/gate3_economics.py"
+      },
+      {
+        "bytes": 412,
+        "sha256": "b54ce935448ba4b34808e33eebc83a4f02488b2aadc69978c0907416e101fa30",
+        "uri": "repo://python/raos/ports/gate3_economics.py"
+      },
+      {
+        "bytes": 1882,
+        "sha256": "58fd5aeb0eef735a32d1fd05b83e7cfc6f2f00d5d689807610987f304cdf9ff0",
+        "uri": "repo://python/raos/application/analytics/gate3_economics.py"
+      },
+      {
+        "bytes": 8964,
+        "sha256": "9003cb02112b8386525fa7537d3628136cbdd3f998e59e1304d809a57ba90da8",
+        "uri": "repo://python/raos/adapters/recorded_gate3_economics.py"
+      },
+      {
+        "bytes": 25571,
+        "sha256": "4f66f3f35925bb70b82168038b80b310b284474b255c435d2d5c97726f238441",
+        "uri": "repo://scripts/build_st1804_gate3_economics.py"
+      }
+    ]
+  },
+  "recorded_synthetic_evaluation": {
+    "actual_observations": [],
+    "authority": {
+      "editorial_mutation": "NONE",
+      "gate_approval": "NONE",
+      "product_ranking": "NONE",
+      "publication": "NONE",
+      "scale": "NONE",
+      "status_apply": "NONE"
+    },
+    "criteria": [
+      {
+        "comparison": ">=",
+        "criterion_id": "G3-OBS-001",
+        "description": "cumulative qualified article sessions at least 10000",
+        "metric_id": "cumulative_qualified_article_sessions",
+        "status": "INELIGIBLE_NON_ATTESTING",
+        "threshold": "10000",
+        "unavailable_reason": null,
+        "would_meet_numeric_threshold": true
+      },
+      {
+        "comparison": ">=",
+        "criterion_id": "G3-OBS-002",
+        "description": "at least two confirmation cycles completed",
+        "metric_id": "confirmation_cycles_completed",
+        "status": "INELIGIBLE_NON_ATTESTING",
+        "threshold": "2",
+        "unavailable_reason": null,
+        "would_meet_numeric_threshold": true
+      },
+      {
+        "comparison": "==",
+        "criterion_id": "G3-OBS-003",
+        "description": "article costs calculable for all three months",
+        "metric_id": "months_with_calculable_article_costs",
+        "status": "INELIGIBLE_NON_ATTESTING",
+        "threshold": "3",
+        "unavailable_reason": null,
+        "would_meet_numeric_threshold": true
+      },
+      {
+        "comparison": ">=",
+        "criterion_id": "G3-C01",
+        "description": "direct-basis confirmed RPM at least 500 JPY",
+        "metric_id": "confirmed_rpm_direct_jpy",
+        "status": "INELIGIBLE_NON_ATTESTING",
+        "threshold": "500",
+        "unavailable_reason": null,
+        "would_meet_numeric_threshold": true
+      },
+      {
+        "comparison": ">",
+        "criterion_id": "G3-C02",
+        "description": "direct-basis confirmed EPC is positive",
+        "metric_id": "confirmed_epc_direct_jpy",
+        "status": "INELIGIBLE_NON_ATTESTING",
+        "threshold": "0",
+        "unavailable_reason": null,
+        "would_meet_numeric_threshold": true
+      },
+      {
+        "comparison": null,
+        "criterion_id": "G3-C03",
+        "description": "confirmed EPC stability requires human judgment",
+        "metric_id": null,
+        "status": "UNAVAILABLE",
+        "threshold": null,
+        "unavailable_reason": "HUMAN_JUDGMENT_REQUIRED",
+        "would_meet_numeric_threshold": null
+      },
+      {
+        "comparison": ">=",
+        "criterion_id": "G3-C04",
+        "description": "direct-basis contribution profit I positive for two consecutive months",
+        "metric_id": "profit_i_max_consecutive_positive_months",
+        "status": "INELIGIBLE_NON_ATTESTING",
+        "threshold": "2",
+        "unavailable_reason": null,
+        "would_meet_numeric_threshold": true
+      },
+      {
+        "comparison": ">",
+        "criterion_id": "G3-C05",
+        "description": "direct-basis contribution profit II is positive over three months or has a reasonable improvement trend",
+        "metric_id": "contribution_profit_ii_direct_jpy_3m",
+        "status": "INELIGIBLE_NON_ATTESTING",
+        "threshold": "0",
+        "unavailable_reason": null,
+        "would_meet_numeric_threshold": true
+      },
+      {
+        "comparison": "<=",
+        "criterion_id": "G3-C06",
+        "description": "promising article-group direct-basis content payback at most 12 months",
+        "metric_id": "content_payback_months_direct",
+        "status": "UNAVAILABLE",
+        "threshold": "12",
+        "unavailable_reason": "ARTICLE_GROUP_BASIS_UNAVAILABLE",
+        "would_meet_numeric_threshold": null
+      },
+      {
+        "comparison": null,
+        "criterion_id": "G3-C07",
+        "description": "forecast error manageability requires human judgment",
+        "metric_id": null,
+        "status": "UNAVAILABLE",
+        "threshold": null,
+        "unavailable_reason": "HUMAN_JUDGMENT_REQUIRED",
+        "would_meet_numeric_threshold": null
+      },
+      {
+        "comparison": "<",
+        "criterion_id": "G3-C08",
+        "description": "direct-basis top-ten reward concentration below 70 percent",
+        "metric_id": "direct_reward_concentration_top10",
+        "status": "INELIGIBLE_NON_ATTESTING",
+        "threshold": "0.70",
+        "unavailable_reason": null,
+        "would_meet_numeric_threshold": true
+      },
+      {
+        "comparison": "<",
+        "criterion_id": "G3-C09",
+        "description": "update cost below 30 percent of direct confirmed reward",
+        "metric_id": "update_cost_ratio_direct",
+        "status": "INELIGIBLE_NON_ATTESTING",
+        "threshold": "0.30",
+        "unavailable_reason": null,
+        "would_meet_numeric_threshold": true
+      },
+      {
+        "comparison": "==",
+        "criterion_id": "G3-C10",
+        "description": "serious compliance incidents equal zero",
+        "metric_id": "serious_compliance_incidents",
+        "status": "INELIGIBLE_NON_ATTESTING",
+        "threshold": "0",
+        "unavailable_reason": null,
+        "would_meet_numeric_threshold": true
+      }
+    ],
+    "evaluation_context": {
+      "freshness": "RECORDED_SYNTHETIC_STATIC_FIXTURE_NON_LIVE",
+      "months": [
+        {
+          "cohort_maturity": "MATURE",
+          "period": {
+            "end_exclusive_date": "2026-02-01",
+            "start_date": "2026-01-01"
+          },
+          "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+          "source_bundle_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        {
+          "cohort_maturity": "MATURE",
+          "period": {
+            "end_exclusive_date": "2026-03-01",
+            "start_date": "2026-02-01"
+          },
+          "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+          "source_bundle_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        {
+          "cohort_maturity": "MATURE",
+          "period": {
+            "end_exclusive_date": "2026-04-01",
+            "start_date": "2026-03-01"
+          },
+          "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+          "source_bundle_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+        }
+      ],
+      "recorded_at": "2026-04-01T00:00:00Z"
+    },
+    "evaluation_sha256": "e47741fda46e4138e757bec9a56d349ab03b13dd180705a7eb3d2371495a0708",
+    "evidence_classification": "RECORDED_SYNTHETIC_TEST_VECTOR_NON_ATTESTING",
+    "finance_editorial_separation": {
+      "article_html_mutation": false,
+      "cta_mutation": false,
+      "finance_signals_excluded_from_article_logic": [
+        "AFFILIATE_COMMISSION_RATE",
+        "CONFIRMED_REWARD",
+        "UNATTRIBUTED_REWARD",
+        "ESTIMATED_REWARD",
+        "COMMISSION",
+        "INCREMENTAL_COST",
+        "LABOR_COST",
+        "EPC",
+        "RPM",
+        "PROFIT"
+      ],
+      "product_selection_mutation": false,
+      "publication_snapshot_mutation": false,
+      "recommendation_order_mutation": false
+    },
+    "gate_pass_claim": false,
+    "input_contract_sha256": "bea92556ba62562c673ea3898eabc1c02198b91578ba4402db094f4bbc86599f",
+    "input_sha256": "a532e84c3be3d656978a8168047a8e4df94c872fd78d703137f399c77e0199b2",
+    "method_version": "RAOS_ST1804_GATE3_ECONOMICS_V1",
+    "metrics": [
+      {
+        "availability": "AVAILABLE",
+        "basis": "RECORDED_SYNTHETIC_FIRST_PARTY_AGGREGATE",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "qualified_article_sessions"
+        ],
+        "metric_id": "cumulative_qualified_article_sessions",
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value_decimal": "39000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "RECORDED_SYNTHETIC_PROVIDER_CYCLE",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "confirmation_cycles_completed"
+        ],
+        "metric_id": "confirmation_cycles_completed",
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value_decimal": "3"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "RECORDED_SYNTHETIC_COST_LEDGER",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "article_costs_calculable"
+        ],
+        "metric_id": "months_with_calculable_article_costs",
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value_decimal": "3"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "SYNTHETIC_PROVIDER_FACT_PROGRAM_TOTAL_NOT_ARTICLE_ATTRIBUTION",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "provider_confirmed_reward_jpy"
+        ],
+        "metric_id": "confirmed_provider_reward_jpy",
+        "unavailable_reason": null,
+        "unit": "JPY",
+        "value_decimal": "51000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "direct_confirmed_reward_jpy"
+        ],
+        "metric_id": "direct_confirmed_reward_jpy",
+        "unavailable_reason": null,
+        "unit": "JPY",
+        "value_decimal": "33000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "ESTIMATED_SEPARATE_NOT_PROVIDER_FACT",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "estimated_confirmed_reward_jpy"
+        ],
+        "metric_id": "estimated_confirmed_reward_jpy",
+        "unavailable_reason": null,
+        "unit": "JPY",
+        "value_decimal": "7500"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "UNATTRIBUTED_PROGRAM_TOTAL_NOT_ALLOCATED_TO_ARTICLES",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "unattributed_confirmed_reward_jpy"
+        ],
+        "metric_id": "unattributed_confirmed_reward_jpy",
+        "unavailable_reason": null,
+        "unit": "JPY",
+        "value_decimal": "10500"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "direct_confirmed_reward_jpy",
+          "qualified_article_sessions"
+        ],
+        "metric_id": "confirmed_rpm_direct_jpy",
+        "unavailable_reason": null,
+        "unit": "JPY_PER_1000_SESSIONS",
+        "value_decimal": "846.153846"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "direct_confirmed_reward_jpy",
+          "eligible_affiliate_clicks"
+        ],
+        "metric_id": "confirmed_epc_direct_jpy",
+        "unavailable_reason": null,
+        "unit": "JPY_PER_CLICK",
+        "value_decimal": "104.761905"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "direct_confirmed_reward_jpy",
+          "variable_external_cost_jpy"
+        ],
+        "metric_id": "contribution_profit_i_direct_jpy_3m",
+        "unavailable_reason": null,
+        "unit": "JPY",
+        "value_decimal": "30000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "direct_confirmed_reward_jpy",
+          "variable_external_cost_jpy"
+        ],
+        "metric_id": "profit_i_max_consecutive_positive_months",
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value_decimal": "3"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "direct_confirmed_reward_jpy",
+          "variable_external_cost_jpy",
+          "labor_cost_jpy",
+          "update_cost_jpy"
+        ],
+        "metric_id": "contribution_profit_ii_direct_jpy_3m",
+        "unavailable_reason": null,
+        "unit": "JPY",
+        "value_decimal": "19500"
+      },
+      {
+        "availability": "UNAVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "promising_article_group_initial_content_cost_jpy",
+          "promising_article_group_trailing_monthly_contribution_jpy"
+        ],
+        "metric_id": "content_payback_months_direct",
+        "unavailable_reason": "ARTICLE_GROUP_BASIS_UNAVAILABLE",
+        "unit": "MONTHS",
+        "value_decimal": null
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "top10_direct_confirmed_reward_jpy",
+          "direct_confirmed_reward_jpy"
+        ],
+        "metric_id": "direct_reward_concentration_top10",
+        "unavailable_reason": null,
+        "unit": "RATIO",
+        "value_decimal": "0.500000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "update_cost_jpy",
+          "direct_confirmed_reward_jpy"
+        ],
+        "metric_id": "update_cost_ratio_direct",
+        "unavailable_reason": null,
+        "unit": "RATIO",
+        "value_decimal": "0.045455"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "RECORDED_SYNTHETIC_COMPLIANCE_LEDGER",
+        "evaluation_context_ref": "#/evaluation_context",
+        "input_keys": [
+          "serious_compliance_incidents"
+        ],
+        "metric_id": "serious_compliance_incidents",
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value_decimal": "0"
+      }
+    ],
+    "modifications_applied": [],
+    "overall": "BLOCKED",
+    "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+    "recorded_fixture_sha256": "72ab8f4b77138bb611d0904dc2e8f3d8d762798e4567e45d907ef984ff84627a",
+    "reward_basis": {
+      "direct_estimated_unattributed_separate": true,
+      "provider_total_is_article_attribution": false,
+      "reward_conservation": "AVAILABLE",
+      "reward_conservation_reason": null,
+      "unattributed_reward_allocated_to_articles": false
+    },
+    "schema": "ST1804_GATE3_ECONOMICS_REPORT_V1",
+    "source_head_sha256": "cf99243c2652e523afe8664ce0608d19260e8d218557f641768a6a769862ca17",
+    "synthetic": true
+  },
+  "scale_authority": "NONE",
+  "schema": "ST1804_GATE3_PACK_V1",
+  "story_id": "ST-1804",
+  "verification": {
+    "actual_30_45_article_pilot": "NOT_EXECUTED",
+    "actual_gate2_observation": "NOT_EXECUTED",
+    "actual_gate3_observation": "NOT_EXECUTED",
+    "formal_TST-030": "NOT_EXECUTED",
+    "formal_TST-032": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  }
+}
