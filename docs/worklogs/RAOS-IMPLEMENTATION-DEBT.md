@@ -3597,3 +3597,23 @@ original result.
   publication, and Production remain `NOT_EXECUTED`. Reports and receipts are
   permanently non-authoritative (`publication_authorized=false`,
   `production_eligible=false`).
+
+### 2026-08-24 W2 / ST-0803 local comparison receipt consumer V2
+
+- `DEBT-W2-066` ST-0803 owner slice status: `CLOSED_LOCAL_IMPLEMENTATION`.
+  The additive V2 runtime consumes ST-0605's exact precomputed `COMPARISON`
+  kind/subject/input tuples without requiring a circular prior ST-0605 PASS.
+  It requires all non-comparison receipts already present, verifies exact
+  ST-0504 identity owner/contract/subject/input/decision/time bindings, and
+  emits only matching recorded-synthetic ST-0803 receipts after a finding-free
+  Product-by-axis evaluation. Article/version/body, approved Packet
+  Version/content, complete Claim set, versioned candidate universe and axis
+  catalog, Fact set, temporal scope and full input hashes are jointly bound.
+  V1 remains unchanged for ST-0804 compatibility and is not promoted into this
+  receipt boundary.
+- `DEBT-W2-066` overall remains `OPEN` until the independently owned ST-0606,
+  ST-0805 and ST-0806 slices consume their exact attestation tuples. This
+  closure grants no identity, provider, recommendation, ranking, publication,
+  formal-test, staging, release or Production authority. Formal TST-007/
+  TST-020, hosted CI, live validation and all external operations remain
+  `NOT_EXECUTED`.
