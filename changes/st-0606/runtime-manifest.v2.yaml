@@ -28,8 +28,8 @@ source_artifacts:
   bytes: 32591
   sha256: 637ecebd53ccea52115fe2bc03a7e8e40575392fd8008b5a9d02f1d14521cc91
 - uri: repo://scripts/build_st0606_evidence_workspace_v2.py
-  bytes: 48667
-  sha256: 96e91f57837a3c6596e457056a48b8612dbb1ebf594b703f35ca108ec3d4c0c4
+  bytes: 48906
+  sha256: 1a70e78afd86f1398f2e42e5815387414acb0e59faf5e2a9175014364ec50126
 - uri: repo://tests/st0606_v2/evidence-workspace-v2-generation.test.ts
   bytes: 3672
   sha256: 39cf71abc5714bd088f6f92d5e3b67f800f79399c42f77c2e4e90f815b1a095c
@@ -50,8 +50,8 @@ generated_artifacts:
   bytes: 33620
   sha256: 5befa3a4a851539a5a85a8497679d7b1ec511f8eb62283a856f97e1d99556071
 - uri: repo://packages/web-ui/src/evidence-workspace-recorded.v2.ts
-  bytes: 37463
-  sha256: c8ebec08c15f66f322884185dde47e73c06afd54726ae2c1c11874100aff3ba7
+  bytes: 35099
+  sha256: 2142ad1ae5f175e1e7cd051ad931ea149dfd6ae920f613788530cfb647759ff5
 generation:
   owner: repo://scripts/build_st0606_evidence_workspace_v2.py
   command: .venv/bin/python scripts/build_st0606_evidence_workspace_v2.py
