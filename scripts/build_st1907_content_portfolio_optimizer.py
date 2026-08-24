@@ -138,16 +138,16 @@ _EXPECTED_THREATS: Final = (
 )
 _EXPECTED_DEPENDENCY_HASHES: Final = {
     "changes/st-1805/contracts/portfolio-decision.v1.yaml": (
-        "dd6c742d295f5bc7baa036aa6cca0a42e84b7a3168f0302aec8e40e46a87f4b9"
+        "08074aa61ca253e32a485192be6b2903cc2f086e52e4437b030d937ca2b3f3cc"
     ),
     "changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json": (
-        "c2b06e525c3d5c8e86997cbd67285eedad85c9b90fd12f95f162d6a6c6fc910e"
+        "939bbbc756b02af031ac55e8ba775cfe72d265c02fd2d6eae22ecb3556fc9168"
     ),
     "changes/st-1805/generated/portfolio-decision.local-blocked.v1.json": (
-        "1288a29454435293fc47ff556215c5afee6e58fad8b995b13e4aca81d2535e22"
+        "1e653fde08183745063de7d6362de8d890e7dc9f540a4a71eb30cb9def60a72a"
     ),
     "scripts/build_st1805_portfolio_decision.py": (
-        "79ed861e82efd80b10e884028fd99b122ac3b1713b66d63203c671162fdbb23e"
+        "70789a7d394dd2da056253b930e88f87f6317c32af950911f9fcfd524be6ed8b"
     ),
 }
 _ST1805_REPORT_PATH: Final = Path(
@@ -163,7 +163,7 @@ _SIGNAL_POLICY_PATH: Final = Path(
     "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml"
 )
 _SIGNAL_POLICY_SHA256: Final = (
-    "b21ffd229a771cb10fea9084afea33c2ad1de780112a69b2d6a1eadfe84fcab7"
+    "3a654c9ebd8184a8f23d563dbed789cd1743a1a34437dcd0423963d58ba7242d"
 )
 
 
