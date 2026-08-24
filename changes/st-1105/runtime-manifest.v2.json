@@ -1,0 +1,452 @@
+{
+  "schema_version": 2,
+  "story_id": "ST-1105",
+  "classification": "ST1105_EXACT_LOCAL_PROVENANCE_MANIFEST_V2",
+  "local_status": "LOCAL_IMPLEMENTATION_COMPLETE",
+  "integration_provenance": {
+    "requested_base_sha": "378748e344249190136939dcd8c7e22f62620836",
+    "required_st0606_patch_sha": "020bfbdb91b081929340aa12eb1e655e9160d810",
+    "local_dependency_base_sha": "82225f48357d55846adfa4f8ee4ac1e9e063be1d"
+  },
+  "artifact_count": 68,
+  "artifacts": [
+    {
+      "uri": "repo://changes/st-1105/contracts/admin-visual-accessibility-acceptance.v2.json",
+      "role": "OWNER_SOURCE",
+      "bytes": 16368,
+      "sha256": "e1176e4cc97e0d61b40559242d4e8162ff2a78879890a11c6b87215bfb4cd71f"
+    },
+    {
+      "uri": "repo://changes/st-1105/contracts/admin-visual-browser-evidence.v2.json",
+      "role": "OWNER_SOURCE",
+      "bytes": 4342,
+      "sha256": "4862fc2f5d8c93ab6a487fc751b8cb9eb108362a7a749314ca75f6480a232f10"
+    },
+    {
+      "uri": "repo://changes/st-1105/fixtures/admin-visual-accessibility.synthetic.v2.json",
+      "role": "OWNER_SOURCE",
+      "bytes": 1788,
+      "sha256": "055be8d7901e0b7a609d58f2be0289ca796770ad445cf94ddfdc0ab2d555a7ad"
+    },
+    {
+      "uri": "repo://changes/st-1105/EXECPLAN-20260824-v2.md",
+      "role": "OWNER_SOURCE",
+      "bytes": 2235,
+      "sha256": "b2eb6aea95f417d59c4dd58acbc6fa910528d9635c7eee68f9f42cb4291a0955"
+    },
+    {
+      "uri": "repo://changes/st-1105/DEFERRED-VERIFICATION-v2.yaml",
+      "role": "OWNER_SOURCE",
+      "bytes": 1261,
+      "sha256": "0b0f8d229df64155efde7f2c70806e17d2c966200d5e1143d2457933f986989e"
+    },
+    {
+      "uri": "repo://changes/st-1105/README.md",
+      "role": "OWNER_SOURCE",
+      "bytes": 3333,
+      "sha256": "1184bd38de6a608bae2b49049b46392702edaf97c7e8900714e47415af5c8869"
+    },
+    {
+      "uri": "repo://changes/st-1105/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml",
+      "role": "OWNER_SOURCE",
+      "bytes": 2251,
+      "sha256": "d4c2976070fa3b26b9f9e7b28f8c627115108c1a62d1fc31e43e12c2300817cd"
+    },
+    {
+      "uri": "repo://docs/worklogs/ST-1105.md",
+      "role": "OWNER_SOURCE",
+      "bytes": 2470,
+      "sha256": "66e8eba746fe96ff0f93dbab124afcc88b463a7925567df44a5f1c242af1fcf6"
+    },
+    {
+      "uri": "repo://packages/web-ui/src/admin-visual-accessibility-acceptance-v2.ts",
+      "role": "OWNER_SOURCE",
+      "bytes": 10045,
+      "sha256": "aff0160fa92e95e8ba9dfe3d3c2315a247f8e0f3e7f5e1b97944bda53a44d1c0"
+    },
+    {
+      "uri": "repo://packages/web-ui/src/index.ts",
+      "role": "OWNER_SOURCE",
+      "bytes": 21657,
+      "sha256": "ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c"
+    },
+    {
+      "uri": "repo://scripts/build_st1105_admin_visual_accessibility.py",
+      "role": "OWNER_SOURCE",
+      "bytes": 27275,
+      "sha256": "00a94f49785f155ec3f4474200604d0efab5795cbec92e382462757516021248"
+    },
+    {
+      "uri": "repo://scripts/check_st1105_admin_acceptance_browser.mjs",
+      "role": "OWNER_SOURCE",
+      "bytes": 41898,
+      "sha256": "5f90c108937fc85dfa7c94c881acc44b9b5a8f08844fc1ba809b93cf294081ac"
+    },
+    {
+      "uri": "repo://tests/st1105_v2/__init__.py",
+      "role": "OWNER_SOURCE",
+      "bytes": 40,
+      "sha256": "3e5b88e8d4bcc07b1e5c92b8cb1ab98efe8b99addd4f29bb9d5a3242d8194ab5"
+    },
+    {
+      "uri": "repo://tests/st1105_v2/conftest.py",
+      "role": "OWNER_SOURCE",
+      "bytes": 901,
+      "sha256": "dc03fd09f5ab0eeb5c955fe511d5423505ca602c493200e7d46c8c29fdf74b65"
+    },
+    {
+      "uri": "repo://tests/st1105_v2/test_generation.py",
+      "role": "OWNER_SOURCE",
+      "bytes": 1182,
+      "sha256": "cc9f2c2aa8ad8d0076cc153eeb4faa744ad1f9d5135e746741e29af1892bf84b"
+    },
+    {
+      "uri": "repo://tests/st1105_v2/test_negative.py",
+      "role": "OWNER_SOURCE",
+      "bytes": 2124,
+      "sha256": "79ccb9edfb2ca29d4b61e3a1db76c837f4917cba93cf0e83bfed45af4663794c"
+    },
+    {
+      "uri": "repo://tests/st1105/admin-visual-accessibility-v2.test.ts",
+      "role": "OWNER_SOURCE",
+      "bytes": 7285,
+      "sha256": "75d288012d779982644189741a03234bf14a8cf4a33d3b2db3e58a34225ab15e"
+    },
+    {
+      "uri": "repo://tests/st1105/admin-visual-accessibility-v2-negative.test.ts",
+      "role": "OWNER_SOURCE",
+      "bytes": 4065,
+      "sha256": "dbc6443fb8bae70b7acaeb071d34adf165fc4b6a8efa045aac03408c8d80b2e0"
+    },
+    {
+      "uri": "repo://pyproject.toml",
+      "role": "LOCKED_TOOLCHAIN",
+      "bytes": 1334,
+      "sha256": "0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6"
+    },
+    {
+      "uri": "repo://uv.lock",
+      "role": "LOCKED_TOOLCHAIN",
+      "bytes": 128286,
+      "sha256": "90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729"
+    },
+    {
+      "uri": "repo://package.json",
+      "role": "LOCKED_TOOLCHAIN",
+      "bytes": 1850,
+      "sha256": "3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828"
+    },
+    {
+      "uri": "repo://package-lock.json",
+      "role": "LOCKED_TOOLCHAIN",
+      "bytes": 271352,
+      "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b"
+    },
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "role": "BOUND_INPUT",
+      "bytes": 7943,
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 3955,
+      "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+    },
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 4956,
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "uri": "repo://docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md",
+      "role": "BOUND_INPUT",
+      "bytes": 8046,
+      "sha256": "0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e"
+    },
+    {
+      "uri": "repo://docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 23487,
+      "sha256": "dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050"
+    },
+    {
+      "uri": "repo://docs/canonical/02_ui/RAOS_08_component_catalog_v1.0.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 12504,
+      "sha256": "986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2"
+    },
+    {
+      "uri": "repo://docs/canonical/02_ui/RAOS_08_workflow_catalog_v1.0.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 3613,
+      "sha256": "59983683ec920cf450d0d887ee43f0b9871e500c2025562f9bec5c6bbc6fe87e"
+    },
+    {
+      "uri": "repo://docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv",
+      "role": "BOUND_INPUT",
+      "bytes": 4051,
+      "sha256": "690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e"
+    },
+    {
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+      "role": "BOUND_INPUT",
+      "bytes": 7929,
+      "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+    },
+    {
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 24993,
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "uri": "repo://docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 1063,
+      "sha256": "59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0"
+    },
+    {
+      "uri": "repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 5175,
+      "sha256": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984"
+    },
+    {
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md",
+      "role": "BOUND_INPUT",
+      "bytes": 6609,
+      "sha256": "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
+    },
+    {
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 11395,
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_environment_matrix_v1.0.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 1106,
+      "sha256": "3dc59c8c951a39d2079eb82e6a3e5adde3ce1910296abf8e1a3a539107a96b68"
+    },
+    {
+      "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 71458,
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "uri": "repo://packages/web-ui/src/admin-visual-accessibility-acceptance.ts",
+      "role": "BOUND_INPUT",
+      "bytes": 16056,
+      "sha256": "68baca66f7dd34de1107a6b7b00d8d97db30bc287d73719d27722471c092fd0c"
+    },
+    {
+      "uri": "repo://packages/web-ui/src/portfolio-catalog-workspace.ts",
+      "role": "BOUND_INPUT",
+      "bytes": 20744,
+      "sha256": "48715e6e10af1ad134839ac7fe87dee19924507a3d8ab8d627def65dc444ca79"
+    },
+    {
+      "uri": "repo://changes/st-0606/contracts/evidence-workspace.v2.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 7476,
+      "sha256": "9957c2320b346f07ccb77a916701ce336ab11e7ecf65c4d6cf3c0b3c4804530b"
+    },
+    {
+      "uri": "repo://changes/st-0606/generated/evidence-workspace-recorded.v2.json",
+      "role": "BOUND_INPUT",
+      "bytes": 33620,
+      "sha256": "5befa3a4a851539a5a85a8497679d7b1ec511f8eb62283a856f97e1d99556071"
+    },
+    {
+      "uri": "repo://changes/st-0606/runtime-manifest.v2.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 3543,
+      "sha256": "2055c7a6522add4964f2c94dcabea93e055718bbc86d81d42f94679a8a615479"
+    },
+    {
+      "uri": "repo://changes/st-0709/contracts/ai-governance-workspace.v2.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 8535,
+      "sha256": "93bc1cb241304cb0d9876bb15f7bbe7d4d576bc40fab55ae7951348cd3c84997"
+    },
+    {
+      "uri": "repo://changes/st-0709/generated/ai-governance-workspace.v2.json",
+      "role": "BOUND_INPUT",
+      "bytes": 31547,
+      "sha256": "0f09e60199419c1ce4f15e2c2a3f63f60fa4866d90b79a113676f05d4368b7d5"
+    },
+    {
+      "uri": "repo://changes/st-0709/runtime-manifest.v2.json",
+      "role": "BOUND_INPUT",
+      "bytes": 7913,
+      "sha256": "f9343622c8f617a79b1055cd5cf6dcdf7bcbed77f17d9291dcb780428fabc0aa"
+    },
+    {
+      "uri": "repo://changes/st-0906/contracts/publication-review-workspace.v2.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 3005,
+      "sha256": "653e93d6af6077c399906542e56c5643441dd703b5dc77bc64f60fc01e239bc0"
+    },
+    {
+      "uri": "repo://changes/st-0906/generated/publication-review-workspace-recorded.v2.json",
+      "role": "BOUND_INPUT",
+      "bytes": 16222,
+      "sha256": "2844fa84443debf27531640b1802d9504bbdfb56029f411a68dcc4a67b96c5e8"
+    },
+    {
+      "uri": "repo://changes/st-0906/runtime-manifest.v2.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 12124,
+      "sha256": "abbacd6916957d792e26da484ea3b092f23b8eb2e5333e1976e8b94cda9632f0"
+    },
+    {
+      "uri": "repo://packages/web-ui/src/publication-review-workspace-v2.ts",
+      "role": "BOUND_INPUT",
+      "bytes": 37543,
+      "sha256": "ba557f91577ecc48ef552263a70d403f16d806b2357dad309f48f9c360ecb5b9"
+    },
+    {
+      "uri": "repo://changes/st-1102/contracts/article-workspace.v2.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 4421,
+      "sha256": "ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52f"
+    },
+    {
+      "uri": "repo://changes/st-1102/article-workspace-recorded.v2.json",
+      "role": "BOUND_INPUT",
+      "bytes": 25661,
+      "sha256": "35cbe2d3817c375d30bece98518e3ac598475f6218851ac3a33805091d350030"
+    },
+    {
+      "uri": "repo://changes/st-1102/runtime-manifest.v2.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 6913,
+      "sha256": "c3658350b840637f942dc198173b9b52e278fa0b7bad2e84db9628d0f0a9565b"
+    },
+    {
+      "uri": "repo://packages/web-ui/src/article-workspace-v2.ts",
+      "role": "BOUND_INPUT",
+      "bytes": 29429,
+      "sha256": "d696e713b00239c2b4089a360ca95109720218b2a66071c8106105ae24583bae"
+    },
+    {
+      "uri": "repo://changes/st-1103/contracts/freshness-operations-workspace.v2.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 1704,
+      "sha256": "d5434f5fcd4a2de7a436e88ea9c02d3d97228dc032494d90ee1b2f52fcbe9965"
+    },
+    {
+      "uri": "repo://changes/st-1103/freshness-operations-recorded.v2.json",
+      "role": "BOUND_INPUT",
+      "bytes": 19470,
+      "sha256": "e0b72934b9d478dc132583691f30a5f46f97ec523a2b9e8a8bfef8c5c7512298"
+    },
+    {
+      "uri": "repo://changes/st-1103/runtime-manifest.v2.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 9372,
+      "sha256": "0f45f2935f0aa5f688698ed9d590c0028b23df31ccb377bdfe9c21ff9e2f5c42"
+    },
+    {
+      "uri": "repo://packages/web-ui/src/freshness-operations-workspace-v2.ts",
+      "role": "BOUND_INPUT",
+      "bytes": 30935,
+      "sha256": "2d58a8c280bd3cc04333ace3b5e619b2f60844af4aec1b0b79d7a5c3acc4490d"
+    },
+    {
+      "uri": "repo://changes/st-1104/contracts/analytics-finance-dashboard.v2.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 9624,
+      "sha256": "4684d43409032a83bbd4c19ad599bd0c46c27888a6ba4c0fdbf2bac45ede0221"
+    },
+    {
+      "uri": "repo://changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json",
+      "role": "BOUND_INPUT",
+      "bytes": 30334,
+      "sha256": "f31ace8268a5540fd4c5488f4e927eb891c215d90bcf13ddd152cc4d59f771bf"
+    },
+    {
+      "uri": "repo://changes/st-1104/runtime-manifest.v2.yaml",
+      "role": "BOUND_INPUT",
+      "bytes": 11819,
+      "sha256": "e034f39bd44d4526684b3b4a7045811b23dcf3090720e98f9702cd8968199caa"
+    },
+    {
+      "uri": "repo://packages/web-ui/src/analytics-finance-recorded.v2.ts",
+      "role": "BOUND_INPUT",
+      "bytes": 31473,
+      "sha256": "be3f48ce8b1b2727c204156248c9e6e1e7ea58cf5bc2d8a6061b701f3762b81d"
+    },
+    {
+      "uri": "repo://package.json",
+      "role": "BOUND_INPUT",
+      "bytes": 1850,
+      "sha256": "3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828"
+    },
+    {
+      "uri": "repo://package-lock.json",
+      "role": "BOUND_INPUT",
+      "bytes": 271352,
+      "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b"
+    },
+    {
+      "uri": "repo://changes/st-1105/generated/admin-visual-accessibility-recorded.v2.json",
+      "role": "GENERATED_OWNER_OUTPUT",
+      "bytes": 94305,
+      "sha256": "b154124d2e2f99cbd8bed0e04689d071a06c3ed3fb930f1ab76f1ab9df1312cc"
+    },
+    {
+      "uri": "repo://packages/web-ui/src/admin-visual-accessibility-recorded.v2.ts",
+      "role": "GENERATED_OWNER_OUTPUT",
+      "bytes": 97833,
+      "sha256": "f28375e7a46186ae7ca5f7c80b860ce7304a9b7ec26c09eac4bfa9307462e1e6"
+    },
+    {
+      "uri": "repo://changes/st-1105/baselines/admin-visual.synthetic.v2.json",
+      "role": "LOCAL_SYNTHETIC_VISUAL_BASELINE",
+      "bytes": 7078,
+      "sha256": "9086828e2210ab749d565aa7942159d3bbb174de4b9712912bcf0e6b77a74702"
+    },
+    {
+      "uri": "repo://changes/st-1105/evidence/local-browser-automated.v2.json",
+      "role": "LOCAL_BROWSER_AUTOMATED_EVIDENCE",
+      "bytes": 60032,
+      "sha256": "31629246bdc6bfb5397bc9724b882f04a4ff1ae6815c6c3d451559fd80186520"
+    }
+  ],
+  "generated_outputs": [
+    "changes/st-1105/generated/admin-visual-accessibility-recorded.v2.json",
+    "packages/web-ui/src/admin-visual-accessibility-recorded.v2.ts"
+  ],
+  "browser_outputs": [
+    "changes/st-1105/baselines/admin-visual.synthetic.v2.json",
+    "changes/st-1105/evidence/local-browser-automated.v2.json"
+  ],
+  "formal_boundary": {
+    "TST-023": "NOT_EXECUTED",
+    "TST-024": "NOT_EXECUTED",
+    "TST-025": "NOT_EXECUTED",
+    "manual_keyboard": "NOT_EXECUTED",
+    "manual_200_percent_zoom": "NOT_EXECUTED",
+    "screen_reader": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "wcag_conformance": "NOT_CLAIMED"
+  },
+  "authority": {
+    "route_registration": false,
+    "authentication_established": false,
+    "authorization_granted": false,
+    "business_action_dispatch": false,
+    "provider_or_external_network": false,
+    "publication": false,
+    "staging": false,
+    "release": false,
+    "production": false
+  }
+}

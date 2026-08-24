@@ -1,78 +1,65 @@
-# ST-1105 — incomplete admin visual/accessibility acceptance candidate
+# ST-1105 — local admin visual/accessibility acceptance V2
 
-Status: `LOCAL_IMPLEMENTATION_CANDIDATE` / headless, metadata-only partial safe slice
+Status: `LOCAL_IMPLEMENTATION_COMPLETE` for a reversible ENV-DEV/CI-only
+recorded/synthetic V2. Canonical status is unchanged.
 
-This reversible slice adds a deterministic, detached, deeply frozen JSON
-candidate for the approved ST-1105 Story. It is an explicitly incomplete
-acceptance register over only the 44 admin screen IDs already exposed by the
-seven named dependency Stories. It does not implement or complete the Story.
+The historical V1 remains byte-for-byte compatible and explicitly incomplete.
+The additive V2 supplies the strongest evidence current dependency truth
+supports:
 
-## Exact implemented boundary
+- the exact 44 screens exposed by the seven named dependency Stories;
+- 29 explicitly exposed components, preserving per-screen, story-level, and
+  `NOT_EXPOSED_BY_DEPENDENCY` distinctions;
+- all ten canonical critical workflows and all 30 accessibility rows;
+- exact TST-023/024/025 metadata without changing execution status;
+- versioned fixture, acceptance, baseline, and browser-evidence contracts; and
+- strict owner generation, hostile tests, 44 screenshot digests, and hash-bound
+  local browser evidence.
 
-The input is exactly `{screenId}` and accepts one of these dependency-exposed
-groups, in fixed order:
+No component relationship is inferred where its dependency does not publish
+one. Catalog routes remain display-only and unregistered.
 
-- ST-0506: `PORT-001..006` and `CAT-001..006`;
-- ST-0606: `EVD-001..004`;
-- ST-0709: `GOV-001`;
-- ST-0906: `REV-001..003` and `PUBA-001..004`;
-- ST-1102: `EDT-002`, `EDT-003`, `EDT-005`, `EDT-006`, `EDT-007`, `EDT-009`;
-- ST-1103: `FRESH-001..003` and `OPS-001..005`; and
-- ST-1104: `ANA-001..003` and `FIN-001..003`.
+## Local browser harness
 
-This is `INCOMPLETE_DEPENDENCY_EXPOSED_SCREEN_SCOPE`, not the complete canonical
-admin catalog and not an applicability decision. The component list is empty
-with ownership `NOT_INFERRED`. `criticalWorkflowIds` is empty and workflow
-selection remains `NOT_EVALUATED`; no component or workflow inventory is
-invented.
+`scripts/check_st1105_admin_acceptance_browser.mjs` starts only an ephemeral
+loopback server and exact Chrome for Testing. Every synthetic screen is checked
+at 320 and 1280 CSS px for semantics, zero axe violations/incomplete results,
+document reflow, all-control tab reachability, skip-link activation, visible
+focus, status/form/table relationships, and exact desktop PNG digests. Every
+canonical critical-action screen also exercises an inert dialog's focus entry,
+forward/reverse trap, Escape, and return focus.
 
-The candidate copies all exact canonical accessibility rows `A11Y-001..030`
-and the exact metadata for `TST-023`, `TST-024`, and `TST-025`. Every checklist
-row remains `NOT_EVALUATED`, `NOT_EXECUTED`, and `NOT_VERIFIED`. Every suite
-remains `NOT_STARTED` and `NOT_EXECUTED` as specified by the canonical catalog.
+The 320 profile is an automated reflow proxy for a 640-device-pixel layout at
+200%; it is not manual browser zoom. Dialogs never dispatch business actions.
 
-The visual baseline is unavailable. References, results, and screenshots are
-empty; profile and tolerance are null; approval is false. No comparison or
-visual result is produced.
+The seven ST-0906 screens also use the dependency's real detached renderer.
+That observation is separately `REVIEW_REQUIRED`: each has 326 CSS px of
+document overflow at 320 and one axe `aria-prohibited-attr` incomplete result.
+ST-1105 neither rewrites ST-0906-owned code nor calls this a pass.
 
-## Safety and authority boundary
+## Generation and verification
 
-The module is headless and data-only. It imports only the existing JSON cloning
-utility and uses no DOM, HTML, CSS, React, Next, Playwright, axe, filesystem,
-network, environment, clock, or randomness. It creates no route, component,
-workflow, action, effect, authentication or authorization decision, runtime,
-CI/staging execution, evidence, baseline approval, PASS/N/A result, WCAG
-conformance, publication, release, Production authority, or Story-completion
-claim.
+Use the exact pinned runtimes. Generated JSON, TypeScript, baseline, evidence,
+and manifest must not be edited manually.
 
-Input and complete-candidate validators accept only strict ordinary JSON-shaped
-data, reject unknown fields and hostile object shapes, and expose only closed
-non-echoing error codes. Successful outputs are deterministic, detached,
-JSON-safe, and deeply frozen.
-
-## Owned paths and local verification boundary
-
-The slice owns only:
-
-```text
-packages/web-ui/src/admin-visual-accessibility-acceptance.ts
-packages/web-ui/src/index.ts
-tests/st1105/admin-visual-accessibility-contract.test.ts
-tests/st1105/admin-visual-accessibility-model.test.ts
-tests/st1105/admin-visual-accessibility-accessibility.test.ts
-tests/st1105/admin-visual-accessibility-boundaries.test.ts
-tests/st1105/admin-visual-accessibility-negative.test.ts
-changes/st-1105/README.md
+```bash
+/home/minami/rakuten/.worktrees/raos-local-integration-complete/.venv/bin/python \
+  scripts/build_st1105_admin_visual_accessibility.py --check
+/home/minami/.local/share/raos-toolchains/node/24.18.1-npm11.16.0/bin/node \
+  --no-warnings --experimental-strip-types \
+  scripts/check_st1105_admin_acceptance_browser.mjs --check \
+  --browser-executable /home/minami/.cache/ms-playwright/chromium-1217/chrome-linux64/chrome \
+  --node-modules /home/minami/rakuten/.worktrees/raos-local-integration-complete/node_modules
 ```
 
-Focused static tests cover the exact catalogs, incomplete scope, immutability,
-strict validation, unavailable baseline, and critical negative paths. Local
-tests and static checks are implementation evidence only. They are not formal
-TST-023/024/025 execution and do not provide DOM, browser, assistive-technology,
-CI, staging, live, release, or Production evidence.
+## Evidence and authority boundary
 
-Actual screen and component inventories, checklist applicability, critical
-workflow selection, DOM/rendering, route registration, keyboard/focus/zoom/
-screen-reader behavior, screenshots, baseline capture or approval, visual
-comparison, accessibility remediation, formal suite execution, conformance,
-publication, release, and Production work remain unimplemented and unverified.
+`LOCAL_AUTOMATED_PASS_SYNTHETIC_FIXTURE_ONLY` is not formal, hosted-CI,
+staging, manual, screen-reader, real-route, or conformance evidence. TST-023,
+TST-024, and TST-025 remain `NOT_EXECUTED`. Manual keyboard/200% zoom,
+NVDA/VoiceOver or equivalent, cognitive review, hosted CI, authentication,
+authorization, staging, live provider, publication, release, and Production
+remain `NOT_EXECUTED` or unavailable. The baseline is not human-approved. No
+WCAG conformance or formal Story acceptance is claimed. No route, credential,
+external write, provider access, business dispatcher, or operational authority
+is added.

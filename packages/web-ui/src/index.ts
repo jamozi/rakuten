@@ -643,3 +643,27 @@ export type {
   AdminVisualAccessibilityScreenId,
   AdminVisualAccessibilityVerificationMethod,
 } from './admin-visual-accessibility-acceptance.ts';
+
+export {
+  ADMIN_VISUAL_ACCESSIBILITY_V2_CHECKLIST,
+  ADMIN_VISUAL_ACCESSIBILITY_V2_CLASSIFICATION,
+  ADMIN_VISUAL_ACCESSIBILITY_V2_COMPONENT_INVENTORY,
+  ADMIN_VISUAL_ACCESSIBILITY_V2_CRITICAL_WORKFLOWS,
+  ADMIN_VISUAL_ACCESSIBILITY_V2_ERROR_CODES,
+  ADMIN_VISUAL_ACCESSIBILITY_V2_FORMAL_SUITES,
+  ADMIN_VISUAL_ACCESSIBILITY_V2_SCREEN_IDS,
+  AdminVisualAccessibilityV2Error,
+  createAdminVisualAccessibilityV2Candidate,
+  validateAdminVisualAccessibilityV2Candidate,
+} from './admin-visual-accessibility-acceptance-v2.ts';
+export type {
+  AdminVisualAccessibilityV2Candidate,
+  AdminVisualAccessibilityV2ErrorCode,
+  AdminVisualAccessibilityV2Input,
+} from './admin-visual-accessibility-acceptance-v2.ts';
+
+export {
+  ST1105_ADMIN_VISUAL_ACCESSIBILITY_RECORDED_V2,
+  ST1105_ADMIN_VISUAL_ACCESSIBILITY_RECORDED_V2_JSON,
+  ST1105_ADMIN_VISUAL_ACCESSIBILITY_RECORDED_V2_SHA256,
+} from './admin-visual-accessibility-recorded.v2.ts';

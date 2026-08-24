@@ -1,0 +1,494 @@
+{
+  "schema_version": 2,
+  "story_id": "ST-1105",
+  "classification": "MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_ADMIN_VISUAL_ACCESSIBILITY_ACCEPTANCE_V2",
+  "local_status": "LOCAL_IMPLEMENTATION_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "compatibility": {
+    "historical_v1_preserved": true,
+    "v2_additive": true
+  },
+  "integration_provenance": {
+    "requested_base_sha": "378748e344249190136939dcd8c7e22f62620836",
+    "required_st0606_patch_sha": "020bfbdb91b081929340aa12eb1e655e9160d810",
+    "local_dependency_base_sha": "82225f48357d55846adfa4f8ee4ac1e9e063be1d"
+  },
+  "screen_groups": [
+    {
+      "story_id": "ST-0506",
+      "screen_ids": [
+        "PORT-001",
+        "PORT-002",
+        "PORT-003",
+        "PORT-004",
+        "PORT-005",
+        "PORT-006",
+        "CAT-001",
+        "CAT-002",
+        "CAT-003",
+        "CAT-004",
+        "CAT-005",
+        "CAT-006"
+      ]
+    },
+    {
+      "story_id": "ST-0606",
+      "screen_ids": ["EVD-001", "EVD-002", "EVD-003", "EVD-004"]
+    },
+    { "story_id": "ST-0709", "screen_ids": ["GOV-001"] },
+    {
+      "story_id": "ST-0906",
+      "screen_ids": [
+        "REV-001",
+        "REV-002",
+        "REV-003",
+        "PUBA-001",
+        "PUBA-002",
+        "PUBA-003",
+        "PUBA-004"
+      ]
+    },
+    {
+      "story_id": "ST-1102",
+      "screen_ids": ["EDT-002", "EDT-003", "EDT-005", "EDT-006", "EDT-007", "EDT-009"]
+    },
+    {
+      "story_id": "ST-1103",
+      "screen_ids": [
+        "FRESH-001",
+        "FRESH-002",
+        "FRESH-003",
+        "OPS-001",
+        "OPS-002",
+        "OPS-003",
+        "OPS-004",
+        "OPS-005"
+      ]
+    },
+    {
+      "story_id": "ST-1104",
+      "screen_ids": ["ANA-001", "ANA-002", "ANA-003", "FIN-001", "FIN-002", "FIN-003"]
+    }
+  ],
+  "component_exposure": {
+    "ST-0506": {
+      "kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "source": "packages/web-ui/src/portfolio-catalog-workspace.ts",
+      "per_screen": {},
+      "story_component_ids": []
+    },
+    "ST-0606": {
+      "kind": "DEPENDENCY_PER_SCREEN_CONTRACT",
+      "source": "changes/st-0606/contracts/evidence-workspace.v2.yaml",
+      "per_screen": {
+        "EVD-001": ["UI-C001", "UI-C005", "UI-C007", "UI-C010", "UI-C035", "UI-C036"],
+        "EVD-002": [
+          "UI-C001",
+          "UI-C005",
+          "UI-C018",
+          "UI-C019",
+          "UI-C020",
+          "UI-C021",
+          "UI-C035",
+          "UI-C036"
+        ],
+        "EVD-003": ["UI-C001", "UI-C005", "UI-C007", "UI-C019", "UI-C035", "UI-C036"],
+        "EVD-004": ["UI-C001", "UI-C005", "UI-C007", "UI-C010", "UI-C035", "UI-C036"]
+      },
+      "story_component_ids": []
+    },
+    "ST-0709": {
+      "kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "source": "changes/st-0709/contracts/ai-governance-workspace.v2.yaml",
+      "per_screen": {},
+      "story_component_ids": []
+    },
+    "ST-0906": {
+      "kind": "DEPENDENCY_STORY_LEVEL_INVENTORY",
+      "source": "packages/web-ui/src/publication-review-workspace.ts",
+      "per_screen": {},
+      "story_component_ids": [
+        "UI-C005",
+        "UI-C006",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010",
+        "UI-C011",
+        "UI-C012",
+        "UI-C013",
+        "UI-C015",
+        "UI-C016",
+        "UI-C025",
+        "UI-C026",
+        "UI-C027",
+        "UI-C028",
+        "UI-C041"
+      ]
+    },
+    "ST-1102": {
+      "kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "source": "packages/web-ui/src/article-workspace-v2.ts",
+      "per_screen": {
+        "EDT-002": ["UI-C014", "UI-C015", "UI-C021", "UI-C022", "UI-C023", "UI-C036"],
+        "EDT-003": ["UI-C014", "UI-C022"],
+        "EDT-005": ["UI-C014", "UI-C015"],
+        "EDT-006": ["UI-C014", "UI-C021"],
+        "EDT-007": ["UI-C014", "UI-C023", "UI-C036"],
+        "EDT-009": ["UI-C014"]
+      },
+      "story_component_ids": []
+    },
+    "ST-1103": {
+      "kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "source": "packages/web-ui/src/freshness-operations-workspace-v2.ts",
+      "per_screen": {
+        "FRESH-001": ["UI-C001", "UI-C004", "UI-C005", "UI-C007", "UI-C008", "UI-C010", "UI-C035"],
+        "FRESH-002": ["UI-C001", "UI-C004", "UI-C005", "UI-C007", "UI-C008", "UI-C010"],
+        "FRESH-003": ["UI-C001", "UI-C004", "UI-C005", "UI-C010", "UI-C015", "UI-C035"],
+        "OPS-001": ["UI-C001", "UI-C004", "UI-C005", "UI-C007", "UI-C008", "UI-C010", "UI-C017"],
+        "OPS-002": [
+          "UI-C001",
+          "UI-C004",
+          "UI-C005",
+          "UI-C006",
+          "UI-C007",
+          "UI-C008",
+          "UI-C010",
+          "UI-C012",
+          "UI-C017"
+        ],
+        "OPS-003": ["UI-C001", "UI-C004", "UI-C005", "UI-C006", "UI-C010", "UI-C016", "UI-C030"],
+        "OPS-004": ["UI-C001", "UI-C004", "UI-C005", "UI-C010", "UI-C012", "UI-C013", "UI-C029"],
+        "OPS-005": ["UI-C001", "UI-C004", "UI-C005", "UI-C007", "UI-C008", "UI-C010", "UI-C016"]
+      },
+      "story_component_ids": []
+    },
+    "ST-1104": {
+      "kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "source": "changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json",
+      "per_screen": {},
+      "story_component_ids": []
+    }
+  },
+  "critical_workflow_mappings": [
+    {
+      "workflow_id": "UI-WF-001",
+      "screen_ids": ["PORT-001", "PORT-002", "PORT-003", "PORT-004", "PORT-005", "PORT-006"],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE"
+    },
+    {
+      "workflow_id": "UI-WF-002",
+      "screen_ids": ["CAT-001", "CAT-002", "CAT-003", "CAT-004", "CAT-005", "CAT-006"],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE"
+    },
+    {
+      "workflow_id": "UI-WF-003",
+      "screen_ids": ["EVD-001", "EVD-002", "EVD-003", "EVD-004"],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE"
+    },
+    {
+      "workflow_id": "UI-WF-004",
+      "screen_ids": ["EDT-002", "EDT-003", "EDT-005"],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE"
+    },
+    {
+      "workflow_id": "UI-WF-005",
+      "screen_ids": ["REV-001", "REV-002", "REV-003"],
+      "mapping_basis": "DEPENDENCY_EXPLICIT_WORKFLOW_INVENTORY"
+    },
+    {
+      "workflow_id": "UI-WF-006",
+      "screen_ids": ["PUBA-001", "PUBA-002", "PUBA-003", "PUBA-004"],
+      "mapping_basis": "DEPENDENCY_EXPLICIT_WORKFLOW_INVENTORY"
+    },
+    {
+      "workflow_id": "UI-WF-007",
+      "screen_ids": ["PUBA-004"],
+      "mapping_basis": "DEPENDENCY_EXPLICIT_WORKFLOW_INVENTORY"
+    },
+    {
+      "workflow_id": "UI-WF-008",
+      "screen_ids": ["FIN-001", "FIN-002", "FIN-003"],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE"
+    },
+    {
+      "workflow_id": "UI-WF-009",
+      "screen_ids": ["OPS-004"],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE"
+    },
+    {
+      "workflow_id": "UI-WF-010",
+      "screen_ids": ["FRESH-001", "FRESH-002", "FRESH-003"],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE"
+    }
+  ],
+  "local_acceptance_boundary": {
+    "fixture_kind": "RECORDED_SYNTHETIC_DEV_CI_ONLY",
+    "locally_automated_check_ids": [
+      "A11Y-001",
+      "A11Y-002",
+      "A11Y-003",
+      "A11Y-004",
+      "A11Y-005",
+      "A11Y-006",
+      "A11Y-007",
+      "A11Y-008",
+      "A11Y-009",
+      "A11Y-010",
+      "A11Y-011",
+      "A11Y-012",
+      "A11Y-013",
+      "A11Y-015"
+    ],
+    "not_locally_automated_check_ids": [
+      "A11Y-014",
+      "A11Y-016",
+      "A11Y-017",
+      "A11Y-018",
+      "A11Y-019",
+      "A11Y-020",
+      "A11Y-021",
+      "A11Y-022",
+      "A11Y-023",
+      "A11Y-024",
+      "A11Y-025",
+      "A11Y-026",
+      "A11Y-027",
+      "A11Y-028",
+      "A11Y-029",
+      "A11Y-030"
+    ],
+    "actual_dependency_renderer_screen_ids": [
+      "REV-001",
+      "REV-002",
+      "REV-003",
+      "PUBA-001",
+      "PUBA-002",
+      "PUBA-003",
+      "PUBA-004"
+    ],
+    "other_screen_runtime_kind": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+    "local_result_vocabulary": [
+      "LOCAL_AUTOMATED_PASS_SYNTHETIC_FIXTURE_ONLY",
+      "LOCAL_AUTOMATED_PASS_DEPENDENCY_RENDERER_ONLY",
+      "LOCAL_AUTOMATED_FINDINGS_PRESENT",
+      "NOT_EXECUTED",
+      "UNAVAILABLE"
+    ],
+    "manual_evidence_may_be_inferred": false,
+    "formal_evidence_may_be_inferred": false
+  },
+  "formal_suite_boundary": {
+    "TST-023": "NOT_EXECUTED",
+    "TST-024": "NOT_EXECUTED",
+    "TST-025": "NOT_EXECUTED",
+    "manual_keyboard": "NOT_EXECUTED",
+    "manual_200_percent_zoom": "NOT_EXECUTED",
+    "screen_reader": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "wcag_conformance": "NOT_CLAIMED"
+  },
+  "security_controls": [
+    "SEC-IAM-003",
+    "SEC-IAM-004",
+    "SEC-IAM-005",
+    "SEC-IAM-006",
+    "SEC-APP-001",
+    "SEC-APP-002",
+    "SEC-APP-003",
+    "SEC-APP-004",
+    "SEC-APP-010",
+    "SEC-APP-014",
+    "SEC-APP-015",
+    "SEC-DATA-003",
+    "SEC-DATA-007",
+    "SEC-SDLC-003",
+    "SEC-SDLC-005",
+    "SEC-SDLC-006",
+    "SEC-SDLC-008",
+    "SEC-SDLC-009",
+    "SEC-SDLC-011"
+  ],
+  "authority": {
+    "route_registration": false,
+    "authentication_established": false,
+    "authorization_granted": false,
+    "business_action_dispatch": false,
+    "provider_or_external_network": false,
+    "publication": false,
+    "staging": false,
+    "release": false,
+    "production": false
+  },
+  "source_bindings": [
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+      "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+    },
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "path": "docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md",
+      "sha256": "0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e"
+    },
+    {
+      "path": "docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml",
+      "sha256": "dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050"
+    },
+    {
+      "path": "docs/canonical/02_ui/RAOS_08_component_catalog_v1.0.yaml",
+      "sha256": "986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2"
+    },
+    {
+      "path": "docs/canonical/02_ui/RAOS_08_workflow_catalog_v1.0.yaml",
+      "sha256": "59983683ec920cf450d0d887ee43f0b9871e500c2025562f9bec5c6bbc6fe87e"
+    },
+    {
+      "path": "docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv",
+      "sha256": "690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e"
+    },
+    {
+      "path": "docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+      "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+    },
+    {
+      "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "path": "docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml",
+      "sha256": "59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0"
+    },
+    {
+      "path": "docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml",
+      "sha256": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984"
+    },
+    {
+      "path": "docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md",
+      "sha256": "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
+    },
+    {
+      "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "path": "docs/canonical/05_test/RAOS_11_test_environment_matrix_v1.0.yaml",
+      "sha256": "3dc59c8c951a39d2079eb82e6a3e5adde3ce1910296abf8e1a3a539107a96b68"
+    },
+    {
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "path": "packages/web-ui/src/admin-visual-accessibility-acceptance.ts",
+      "sha256": "68baca66f7dd34de1107a6b7b00d8d97db30bc287d73719d27722471c092fd0c"
+    },
+    {
+      "path": "packages/web-ui/src/portfolio-catalog-workspace.ts",
+      "sha256": "48715e6e10af1ad134839ac7fe87dee19924507a3d8ab8d627def65dc444ca79"
+    },
+    {
+      "path": "changes/st-0606/contracts/evidence-workspace.v2.yaml",
+      "sha256": "9957c2320b346f07ccb77a916701ce336ab11e7ecf65c4d6cf3c0b3c4804530b"
+    },
+    {
+      "path": "changes/st-0606/generated/evidence-workspace-recorded.v2.json",
+      "sha256": "5befa3a4a851539a5a85a8497679d7b1ec511f8eb62283a856f97e1d99556071"
+    },
+    {
+      "path": "changes/st-0606/runtime-manifest.v2.yaml",
+      "sha256": "2055c7a6522add4964f2c94dcabea93e055718bbc86d81d42f94679a8a615479"
+    },
+    {
+      "path": "changes/st-0709/contracts/ai-governance-workspace.v2.yaml",
+      "sha256": "93bc1cb241304cb0d9876bb15f7bbe7d4d576bc40fab55ae7951348cd3c84997"
+    },
+    {
+      "path": "changes/st-0709/generated/ai-governance-workspace.v2.json",
+      "sha256": "0f09e60199419c1ce4f15e2c2a3f63f60fa4866d90b79a113676f05d4368b7d5"
+    },
+    {
+      "path": "changes/st-0709/runtime-manifest.v2.json",
+      "sha256": "f9343622c8f617a79b1055cd5cf6dcdf7bcbed77f17d9291dcb780428fabc0aa"
+    },
+    {
+      "path": "changes/st-0906/contracts/publication-review-workspace.v2.yaml",
+      "sha256": "653e93d6af6077c399906542e56c5643441dd703b5dc77bc64f60fc01e239bc0"
+    },
+    {
+      "path": "changes/st-0906/generated/publication-review-workspace-recorded.v2.json",
+      "sha256": "2844fa84443debf27531640b1802d9504bbdfb56029f411a68dcc4a67b96c5e8"
+    },
+    {
+      "path": "changes/st-0906/runtime-manifest.v2.yaml",
+      "sha256": "abbacd6916957d792e26da484ea3b092f23b8eb2e5333e1976e8b94cda9632f0"
+    },
+    {
+      "path": "packages/web-ui/src/publication-review-workspace-v2.ts",
+      "sha256": "ba557f91577ecc48ef552263a70d403f16d806b2357dad309f48f9c360ecb5b9"
+    },
+    {
+      "path": "changes/st-1102/contracts/article-workspace.v2.yaml",
+      "sha256": "ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52f"
+    },
+    {
+      "path": "changes/st-1102/article-workspace-recorded.v2.json",
+      "sha256": "35cbe2d3817c375d30bece98518e3ac598475f6218851ac3a33805091d350030"
+    },
+    {
+      "path": "changes/st-1102/runtime-manifest.v2.yaml",
+      "sha256": "c3658350b840637f942dc198173b9b52e278fa0b7bad2e84db9628d0f0a9565b"
+    },
+    {
+      "path": "packages/web-ui/src/article-workspace-v2.ts",
+      "sha256": "d696e713b00239c2b4089a360ca95109720218b2a66071c8106105ae24583bae"
+    },
+    {
+      "path": "changes/st-1103/contracts/freshness-operations-workspace.v2.yaml",
+      "sha256": "d5434f5fcd4a2de7a436e88ea9c02d3d97228dc032494d90ee1b2f52fcbe9965"
+    },
+    {
+      "path": "changes/st-1103/freshness-operations-recorded.v2.json",
+      "sha256": "e0b72934b9d478dc132583691f30a5f46f97ec523a2b9e8a8bfef8c5c7512298"
+    },
+    {
+      "path": "changes/st-1103/runtime-manifest.v2.yaml",
+      "sha256": "0f45f2935f0aa5f688698ed9d590c0028b23df31ccb377bdfe9c21ff9e2f5c42"
+    },
+    {
+      "path": "packages/web-ui/src/freshness-operations-workspace-v2.ts",
+      "sha256": "2d58a8c280bd3cc04333ace3b5e619b2f60844af4aec1b0b79d7a5c3acc4490d"
+    },
+    {
+      "path": "changes/st-1104/contracts/analytics-finance-dashboard.v2.yaml",
+      "sha256": "4684d43409032a83bbd4c19ad599bd0c46c27888a6ba4c0fdbf2bac45ede0221"
+    },
+    {
+      "path": "changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json",
+      "sha256": "f31ace8268a5540fd4c5488f4e927eb891c215d90bcf13ddd152cc4d59f771bf"
+    },
+    {
+      "path": "changes/st-1104/runtime-manifest.v2.yaml",
+      "sha256": "e034f39bd44d4526684b3b4a7045811b23dcf3090720e98f9702cd8968199caa"
+    },
+    {
+      "path": "packages/web-ui/src/analytics-finance-recorded.v2.ts",
+      "sha256": "be3f48ce8b1b2727c204156248c9e6e1e7ea58cf5bc2d8a6061b701f3762b81d"
+    },
+    {
+      "path": "package.json",
+      "sha256": "3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b"
+    }
+  ]
+}

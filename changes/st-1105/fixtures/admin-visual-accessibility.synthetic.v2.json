@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "story_id": "ST-1105",
+  "classification": "RECORDED_SYNTHETIC_ADMIN_ACCESSIBILITY_FIXTURE_V2",
+  "synthetic": true,
+  "environments": ["ENV-DEV", "CI"],
+  "locale": "ja-JP",
+  "template": {
+    "skip_link_text": "本文へ移動",
+    "status_text": "Recorded synthetic local fixture — external action disabled",
+    "filter_label": "表示項目を絞り込む",
+    "filter_instruction": "合成 fixture の表示だけを変更します。外部送信はありません。",
+    "table_caption": "Recorded synthetic accessibility acceptance rows",
+    "table_columns": ["項目", "状態", "根拠"],
+    "table_rows": [
+      ["Screen contract", "AVAILABLE_RECORDED", "Canonical catalog binding"],
+      ["Runtime authority", "DISABLED", "Local fixture only"]
+    ],
+    "dialog_open_label": "ローカル確認ダイアログを開く",
+    "dialog_title": "ローカル確認",
+    "dialog_description": "このダイアログは focus lifecycle の検査専用です。業務 Action は実行しません。",
+    "dialog_cancel_label": "閉じる",
+    "dialog_disabled_action_label": "実行不可",
+    "dialog_disabled_reason": "認証、認可、実 route、業務 command がないため無効です。"
+  },
+  "security": {
+    "raw_source": false,
+    "raw_prompt": false,
+    "review_body": false,
+    "personal_data": false,
+    "credential": false,
+    "finance_or_affiliate_economics": false,
+    "arbitrary_url": false,
+    "external_network": false,
+    "callback_or_business_dispatch": false
+  },
+  "authority": {
+    "route_registered": false,
+    "authentication_established": false,
+    "authorization_granted": false,
+    "business_action_enabled": false,
+    "publication_authorized": false,
+    "production_eligible": false
+  }
+}

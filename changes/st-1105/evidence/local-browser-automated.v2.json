@@ -1,0 +1,2030 @@
+{
+  "authority": {
+    "authentication": false,
+    "authorization": false,
+    "business_action": false,
+    "production": false,
+    "publication": false,
+    "release": false,
+    "route_registration": false,
+    "staging": false
+  },
+  "classification": "LOCAL_BROWSER_AUTOMATED_ADMIN_ACCESSIBILITY_VISUAL_EVIDENCE_NON_FORMAL_V2",
+  "dependency_renderer": {
+    "result": "LOCAL_AUTOMATED_REVIEW_REQUIRED_DEPENDENCY_RENDERER_ONLY",
+    "screens": [
+      {
+        "axe": {
+          "incomplete": [
+            {
+              "id": "aria-prohibited-attr",
+              "node_count": 1
+            }
+          ],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "ST0906_DEPENDENCY_RENDERER_ROUTE_UNREGISTERED",
+        "keyboard": {
+          "enabled_focusable_count": 9,
+          "tab_reached_count": 9
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 326,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "Review Queue — ST-0906 local recorded review"
+        },
+        "screen_id": "REV-001",
+        "skip_link": {
+          "first_focus_id": "publication-review-v2-skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [
+            {
+              "id": "aria-prohibited-attr",
+              "node_count": 1
+            }
+          ],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "ST0906_DEPENDENCY_RENDERER_ROUTE_UNREGISTERED",
+        "keyboard": {
+          "enabled_focusable_count": 9,
+          "tab_reached_count": 9
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 326,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "Editorial Review — ST-0906 local recorded review"
+        },
+        "screen_id": "REV-002",
+        "skip_link": {
+          "first_focus_id": "publication-review-v2-skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [
+            {
+              "id": "aria-prohibited-attr",
+              "node_count": 1
+            }
+          ],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "ST0906_DEPENDENCY_RENDERER_ROUTE_UNREGISTERED",
+        "keyboard": {
+          "enabled_focusable_count": 9,
+          "tab_reached_count": 9
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 326,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "Final Approval — ST-0906 local recorded review"
+        },
+        "screen_id": "REV-003",
+        "skip_link": {
+          "first_focus_id": "publication-review-v2-skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [
+            {
+              "id": "aria-prohibited-attr",
+              "node_count": 1
+            }
+          ],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "ST0906_DEPENDENCY_RENDERER_ROUTE_UNREGISTERED",
+        "keyboard": {
+          "enabled_focusable_count": 9,
+          "tab_reached_count": 9
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 326,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "Publication Queue — ST-0906 local recorded review"
+        },
+        "screen_id": "PUBA-001",
+        "skip_link": {
+          "first_focus_id": "publication-review-v2-skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [
+            {
+              "id": "aria-prohibited-attr",
+              "node_count": 1
+            }
+          ],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "ST0906_DEPENDENCY_RENDERER_ROUTE_UNREGISTERED",
+        "keyboard": {
+          "enabled_focusable_count": 9,
+          "tab_reached_count": 9
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 326,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "Snapshot Preview — ST-0906 local recorded review"
+        },
+        "screen_id": "PUBA-002",
+        "skip_link": {
+          "first_focus_id": "publication-review-v2-skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [
+            {
+              "id": "aria-prohibited-attr",
+              "node_count": 1
+            }
+          ],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "ST0906_DEPENDENCY_RENDERER_ROUTE_UNREGISTERED",
+        "keyboard": {
+          "enabled_focusable_count": 9,
+          "tab_reached_count": 9
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 326,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "Publish Command — ST-0906 local recorded review"
+        },
+        "screen_id": "PUBA-003",
+        "skip_link": {
+          "first_focus_id": "publication-review-v2-skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [
+            {
+              "id": "aria-prohibited-attr",
+              "node_count": 1
+            }
+          ],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "ST0906_DEPENDENCY_RENDERER_ROUTE_UNREGISTERED",
+        "keyboard": {
+          "enabled_focusable_count": 9,
+          "tab_reached_count": 9
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 326,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "Rollback — ST-0906 local recorded review"
+        },
+        "screen_id": "PUBA-004",
+        "skip_link": {
+          "first_focus_id": "publication-review-v2-skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      }
+    ]
+  },
+  "formal_boundary": {
+    "hosted_ci": "NOT_EXECUTED",
+    "manual_keyboard": "NOT_EXECUTED",
+    "manual_zoom": "NOT_EXECUTED",
+    "screen_reader": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "TST-023": "NOT_EXECUTED",
+    "TST-024": "NOT_EXECUTED",
+    "TST-025": "NOT_EXECUTED",
+    "wcag_conformance": "NOT_CLAIMED"
+  },
+  "local_zoom_check": {
+    "automated_browser_zoom_claimed": false,
+    "kind": "AUTOMATED_320_CSS_PIXEL_REFLOW_PROXY_FOR_640_DEVICE_PIXELS_AT_200_PERCENT",
+    "manual_200_percent_zoom": "NOT_EXECUTED"
+  },
+  "runtime": {
+    "axe": {
+      "script_path_from_node_modules": "axe-core/axe.min.js",
+      "script_sha256": "66a8aaa95a8b044a7fd74a5435873bf04ff65a1ca75567c921b7509742085a14",
+      "tags": [
+        "wcag2a",
+        "wcag2aa",
+        "wcag21a",
+        "wcag21aa",
+        "wcag22aa"
+      ],
+      "version": "4.12.1"
+    },
+    "browser": {
+      "executable_sha256": "696170a79640ec5b50c7518140ace06c69a49cfb295bf527d4a85e26a12b89a7",
+      "product": "Chrome for Testing",
+      "version": "147.0.7727.15"
+    },
+    "environment": "LOCAL_ENV_DEV_NON_FORMAL",
+    "network": "LOOPBACK_ONLY",
+    "node": {
+      "version": "24.18.1"
+    }
+  },
+  "schema_version": 2,
+  "source_artifacts": [
+    {
+      "bytes": 16368,
+      "path": "changes/st-1105/contracts/admin-visual-accessibility-acceptance.v2.json",
+      "sha256": "e1176e4cc97e0d61b40559242d4e8162ff2a78879890a11c6b87215bfb4cd71f"
+    },
+    {
+      "bytes": 4342,
+      "path": "changes/st-1105/contracts/admin-visual-browser-evidence.v2.json",
+      "sha256": "4862fc2f5d8c93ab6a487fc751b8cb9eb108362a7a749314ca75f6480a232f10"
+    },
+    {
+      "bytes": 1788,
+      "path": "changes/st-1105/fixtures/admin-visual-accessibility.synthetic.v2.json",
+      "sha256": "055be8d7901e0b7a609d58f2be0289ca796770ad445cf94ddfdc0ab2d555a7ad"
+    },
+    {
+      "bytes": 94305,
+      "path": "changes/st-1105/generated/admin-visual-accessibility-recorded.v2.json",
+      "sha256": "b154124d2e2f99cbd8bed0e04689d071a06c3ed3fb930f1ab76f1ab9df1312cc"
+    },
+    {
+      "bytes": 37543,
+      "path": "packages/web-ui/src/publication-review-workspace-v2.ts",
+      "sha256": "ba557f91577ecc48ef552263a70d403f16d806b2357dad309f48f9c360ecb5b9"
+    },
+    {
+      "bytes": 41898,
+      "path": "scripts/check_st1105_admin_acceptance_browser.mjs",
+      "sha256": "5f90c108937fc85dfa7c94c881acc44b9b5a8f08844fc1ba809b93cf294081ac"
+    },
+    {
+      "bytes": 1850,
+      "path": "package.json",
+      "sha256": "3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828"
+    },
+    {
+      "bytes": 271352,
+      "path": "package-lock.json",
+      "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b"
+    }
+  ],
+  "source_bundle_sha256": "30bba91a056cb448ef4aa1784c02fa77db4dc87bc96164e5c4b6364d6ab6abf3",
+  "story_id": "ST-1105",
+  "synthetic_fixture": {
+    "result": "LOCAL_AUTOMATED_PASS_SYNTHETIC_FIXTURE_ONLY",
+    "screen_count": 44,
+    "screens": [
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PORT-001 カテゴリ一覧 — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PORT-001 カテゴリ一覧 — ST-1105 local fixture"
+        },
+        "screen_id": "PORT-001",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PORT-002 カテゴリ詳細 — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PORT-002 カテゴリ詳細 — ST-1105 local fixture"
+        },
+        "screen_id": "PORT-002",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PORT-003 Keyword一覧 — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PORT-003 Keyword一覧 — ST-1105 local fixture"
+        },
+        "screen_id": "PORT-003",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PORT-004 Intent Cluster — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PORT-004 Intent Cluster — ST-1105 local fixture"
+        },
+        "screen_id": "PORT-004",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PORT-005 Opportunity Queue — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PORT-005 Opportunity Queue — ST-1105 local fixture"
+        },
+        "screen_id": "PORT-005",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PORT-006 Article Plan — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PORT-006 Article Plan — ST-1105 local fixture"
+        },
+        "screen_id": "PORT-006",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "CAT-001 楽天取込Run — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "CAT-001 楽天取込Run — ST-1105 local fixture"
+        },
+        "screen_id": "CAT-001",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "CAT-002 商品候補一覧 — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "CAT-002 商品候補一覧 — ST-1105 local fixture"
+        },
+        "screen_id": "CAT-002",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": {
+          "escape_closes": true,
+          "focus_returned": true,
+          "focus_trapped": true
+        },
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "CAT-003 商品同一性Workbench — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "CAT-003 商品同一性Workbench — ST-1105 local fixture"
+        },
+        "screen_id": "CAT-003",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "CAT-004 Canonical Product — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "CAT-004 Canonical Product — ST-1105 local fixture"
+        },
+        "screen_id": "CAT-004",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "CAT-005 Offer詳細 — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "CAT-005 Offer詳細 — ST-1105 local fixture"
+        },
+        "screen_id": "CAT-005",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "CAT-006 Raw Artifact Viewer — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "CAT-006 Raw Artifact Viewer — ST-1105 local fixture"
+        },
+        "screen_id": "CAT-006",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EVD-001 Source Packet一覧 — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EVD-001 Source Packet一覧 — ST-1105 local fixture"
+        },
+        "screen_id": "EVD-001",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": {
+          "escape_closes": true,
+          "focus_returned": true,
+          "focus_trapped": true
+        },
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EVD-002 Source Packet詳細 — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EVD-002 Source Packet詳細 — ST-1105 local fixture"
+        },
+        "screen_id": "EVD-002",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EVD-003 Fact Explorer — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EVD-003 Fact Explorer — ST-1105 local fixture"
+        },
+        "screen_id": "EVD-003",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EVD-004 Evidence Conflict Queue — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EVD-004 Evidence Conflict Queue — ST-1105 local fixture"
+        },
+        "screen_id": "EVD-004",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "GOV-001 AI Governance — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "GOV-001 AI Governance — ST-1105 local fixture"
+        },
+        "screen_id": "GOV-001",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "REV-001 Review Queue — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "REV-001 Review Queue — ST-1105 local fixture"
+        },
+        "screen_id": "REV-001",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": {
+          "escape_closes": true,
+          "focus_returned": true,
+          "focus_trapped": true
+        },
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "REV-002 Editorial Review — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "REV-002 Editorial Review — ST-1105 local fixture"
+        },
+        "screen_id": "REV-002",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": {
+          "escape_closes": true,
+          "focus_returned": true,
+          "focus_trapped": true
+        },
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "REV-003 Final Approval — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "REV-003 Final Approval — ST-1105 local fixture"
+        },
+        "screen_id": "REV-003",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PUBA-001 Publication Queue — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PUBA-001 Publication Queue — ST-1105 local fixture"
+        },
+        "screen_id": "PUBA-001",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PUBA-002 Snapshot Preview — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PUBA-002 Snapshot Preview — ST-1105 local fixture"
+        },
+        "screen_id": "PUBA-002",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": {
+          "escape_closes": true,
+          "focus_returned": true,
+          "focus_trapped": true
+        },
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PUBA-003 Publish Command — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PUBA-003 Publish Command — ST-1105 local fixture"
+        },
+        "screen_id": "PUBA-003",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": {
+          "escape_closes": true,
+          "focus_returned": true,
+          "focus_trapped": true
+        },
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PUBA-004 Rollback — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 7,
+          "tab_reached_count": 7
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "PUBA-004 Rollback — ST-1105 local fixture"
+        },
+        "screen_id": "PUBA-004",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EDT-002 Article Workspace — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EDT-002 Article Workspace — ST-1105 local fixture"
+        },
+        "screen_id": "EDT-002",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EDT-003 Content AST Editor — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EDT-003 Content AST Editor — ST-1105 local fixture"
+        },
+        "screen_id": "EDT-003",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EDT-005 AI Diff Review — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EDT-005 AI Diff Review — ST-1105 local fixture"
+        },
+        "screen_id": "EDT-005",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": {
+          "escape_closes": true,
+          "focus_returned": true,
+          "focus_trapped": true
+        },
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EDT-006 Claim–Evidence Matrix — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EDT-006 Claim–Evidence Matrix — ST-1105 local fixture"
+        },
+        "screen_id": "EDT-006",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EDT-007 Comparison Preview — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EDT-007 Comparison Preview — ST-1105 local fixture"
+        },
+        "screen_id": "EDT-007",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EDT-009 SEO Preview — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "EDT-009 SEO Preview — ST-1105 local fixture"
+        },
+        "screen_id": "EDT-009",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "FRESH-001 Freshness Queue — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "FRESH-001 Freshness Queue — ST-1105 local fixture"
+        },
+        "screen_id": "FRESH-001",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "FRESH-002 Link Health — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "FRESH-002 Link Health — ST-1105 local fixture"
+        },
+        "screen_id": "FRESH-002",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "FRESH-003 Refresh Proposal — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "FRESH-003 Refresh Proposal — ST-1105 local fixture"
+        },
+        "screen_id": "FRESH-003",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "OPS-001 Job Monitor — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "OPS-001 Job Monitor — ST-1105 local fixture"
+        },
+        "screen_id": "OPS-001",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "OPS-002 DLQ / Quarantine — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "OPS-002 DLQ / Quarantine — ST-1105 local fixture"
+        },
+        "screen_id": "OPS-002",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "OPS-003 Incident — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "OPS-003 Incident — ST-1105 local fixture"
+        },
+        "screen_id": "OPS-003",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": {
+          "escape_closes": true,
+          "focus_returned": true,
+          "focus_trapped": true
+        },
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "OPS-004 Kill Switches — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "OPS-004 Kill Switches — ST-1105 local fixture"
+        },
+        "screen_id": "OPS-004",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "OPS-005 Audit Log — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "OPS-005 Audit Log — ST-1105 local fixture"
+        },
+        "screen_id": "OPS-005",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "ANA-001 Content Performance — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "ANA-001 Content Performance — ST-1105 local fixture"
+        },
+        "screen_id": "ANA-001",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "ANA-002 Search Performance — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "ANA-002 Search Performance — ST-1105 local fixture"
+        },
+        "screen_id": "ANA-002",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "ANA-003 Affiliate Clicks — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "ANA-003 Affiliate Clicks — ST-1105 local fixture"
+        },
+        "screen_id": "ANA-003",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "FIN-001 成果Import — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "FIN-001 成果Import — ST-1105 local fixture"
+        },
+        "screen_id": "FIN-001",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "FIN-002 Reconciliation — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "FIN-002 Reconciliation — ST-1105 local fixture"
+        },
+        "screen_id": "FIN-002",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      },
+      {
+        "axe": {
+          "incomplete": [],
+          "pass_rule_count": 27,
+          "violations": []
+        },
+        "browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+        "critical_dialog": null,
+        "desktop": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "FIN-003 Unit Economics — ST-1105 local fixture"
+        },
+        "keyboard": {
+          "enabled_focusable_count": 6,
+          "tab_reached_count": 6
+        },
+        "reflow_320": {
+          "document_overflow_css_px": 0,
+          "h1_count": 1,
+          "language": "ja-JP",
+          "main_count": 1,
+          "title": "FIN-003 Unit Economics — ST-1105 local fixture"
+        },
+        "screen_id": "FIN-003",
+        "semantics": {
+          "form_associations": true,
+          "status_not_color_only": true,
+          "table_semantics": true
+        },
+        "skip_link": {
+          "first_focus_id": "skip-link",
+          "focus_indicator_visible": true,
+          "target_reached": true
+        }
+      }
+    ]
+  },
+  "visual_baseline": {
+    "approved": false,
+    "formal_TST_025": "NOT_EXECUTED",
+    "path": "changes/st-1105/baselines/admin-visual.synthetic.v2.json",
+    "sha256": "9086828e2210ab749d565aa7942159d3bbb174de4b9712912bcf0e6b77a74702"
+  },
+  "wcag_conformance": "NOT_CLAIMED"
+}
