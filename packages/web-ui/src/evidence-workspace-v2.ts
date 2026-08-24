@@ -225,6 +225,7 @@ export interface EvidenceSourceAccessPathV2 {
 export interface EvidenceCoverageFractionV2 {
   readonly evidenced: number;
   readonly total: number;
+  readonly [key: string]: JsonValue;
 }
 
 export interface EvidenceCoverageReportV2 {
@@ -448,7 +449,7 @@ function record(value: JsonValue, code: EvidenceWorkspaceV2ErrorCode): JsonObjec
   if (value === null || Array.isArray(value) || typeof value !== 'object') {
     return reject(code);
   }
-  return value;
+  return value as JsonObject;
 }
 
 function array(value: JsonValue, code: EvidenceWorkspaceV2ErrorCode): readonly JsonValue[] {

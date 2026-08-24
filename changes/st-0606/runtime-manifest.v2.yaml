@@ -25,8 +25,8 @@ source_artifacts:
   bytes: 3014
   sha256: 36898af717259394403db452bb4cd945dcf3f47ad918b15c5b6aeea7a5ff9e4d
 - uri: repo://packages/web-ui/src/evidence-workspace-v2.ts
-  bytes: 32591
-  sha256: 637ecebd53ccea52115fe2bc03a7e8e40575392fd8008b5a9d02f1d14521cc91
+  bytes: 32642
+  sha256: 100736dd771d0c86d71d15c612d09dd57d5ec455c557e6f5eafd0d797d763c07
 - uri: repo://scripts/build_st0606_evidence_workspace_v2.py
   bytes: 48906
   sha256: 1a70e78afd86f1398f2e42e5815387414acb0e59faf5e2a9175014364ec50126
