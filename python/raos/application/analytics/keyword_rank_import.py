@@ -105,8 +105,9 @@ class KeywordRankEvaluationService:
     """Evaluate a caller-bound synthetic CSV without importing any observation."""
 
     __slots__ = ("_source",)
+    _source: KeywordRankSource
 
-    def __init__(self, *, source: KeywordRankSource) -> None:
+    def __init__(self, *, source: object) -> None:
         if not isinstance(source, KeywordRankSource):
             fail_keyword_rank()
         self._source = source

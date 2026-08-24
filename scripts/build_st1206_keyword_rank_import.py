@@ -113,7 +113,7 @@ DISPATCH_JOB_SCHEMA_PATH: Final = Path(
 )
 
 EXPECTED_CONTRACT_SHA256: Final = (
-    "7a378d8344562cc729bae88feb89b93b5fd372f7c54f20b0f2850edccfe59c46"
+    "2f891e361224bbca3b6b284fd8b49cd76ba134b804e255ad1c515ff2318b8246"
 )
 EXPECTED_FIXTURE_SHA256: Final = (
     "e06d21cf450a75250e096d3528ac45839fa3fb7d08d9988a58d0e0b9ecd59611"
@@ -139,10 +139,10 @@ AUTHORITY_HASHES: Final = {
 PREDECESSOR_HASHES: Final = {
     Path(
         "changes/st-1205/contracts/kpi-read-model.v2.yaml"
-    ): "bfc6ca7722e8cafdaee558881227531e8e74e3630f3cc13455f2e3e05ff2137f",
+    ): "4cb71bbecec12342aca564309a860c686a8126fdd3238b79ba14ccbdb260b973",
     Path(
         "changes/st-1205/manifest.yaml"
-    ): "a1ee3011f7253787fe2b447572ba27a02c080d22d7d6b865a0cdf0c0f6167ebf",
+    ): "391ef69e2d1d46734b5fe4784c4447f1d83d52535438a17b83b23121a3b27d80",
     Path(
         "python/raos/domain/analytics/kpi_read_model.py"
     ): "7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac",
@@ -175,15 +175,18 @@ def _sha256(content: bytes) -> str:
 
 
 def _mapping(value: object, field: str) -> Mapping[str, Any]:
-    if type(value) is not dict or not all(type(key) is str for key in value):
+    if type(value) is not dict:
         _fail("TYPE_MISMATCH", field)
-    return cast(Mapping[str, Any], value)
+    candidate = cast(dict[object, object], value)
+    if not all(type(key) is str for key in candidate):
+        _fail("TYPE_MISMATCH", field)
+    return cast(Mapping[str, Any], candidate)
 
 
-def _list(value: object, field: str) -> list[Any]:
+def _list(value: object, field: str) -> list[object]:
     if type(value) is not list:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(list[object], value)
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
@@ -210,11 +213,13 @@ def _load_json(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
 def _find_row(
     rows: object, *, identity: str, expected_id: str, field: str
 ) -> Mapping[str, Any]:
-    matches = [
-        _mapping(row, field)
-        for row in _list(rows, field)
-        if type(row) is dict and row.get(identity) == expected_id
-    ]
+    matches: list[Mapping[str, Any]] = []
+    for candidate in _list(rows, field):
+        if type(candidate) is not dict:
+            continue
+        row = _mapping(cast(object, candidate), field)
+        if row.get(identity) == expected_id:
+            matches.append(row)
     if len(matches) != 1:
         _fail("CANONICAL_RECORD_MISSING", field)
     return matches[0]
@@ -510,7 +515,7 @@ def _artifact_row(root: Path, relative: Path) -> dict[str, object]:
 
 def _manifest_bytes(root: Path, evidence_bytes: bytes) -> bytes:
     contract = load_contract(root)
-    manifest = {
+    manifest: dict[str, object] = {
         "document": {
             "id": "RAOS-ST1206-KEYWORD-RANK-LOCAL-MANIFEST-001",
             "version": "1.0.0",

@@ -23,8 +23,8 @@ BOUND_HASHES = {
     "contracts/raos-v0.4/contracts/schemas/imports/keyword-rank-row.schema.json": "d1c311cf0afabf6c83c5acb0154ca8f89d023165683a08adff28f09e607bec4c",
     "contracts/raos-v0.4/contracts/schemas/jobs/analytics-import-keyword-rank-csv-v1.schema.json": "1b4328b6eba2bb1a3e9e34e91049f0cec2bc4080310690f50971656df2bb5cc1",
     "contracts/raos-v0.4/contracts/schemas/jobs/analytics-import-provider-data-v1.schema.json": "7610a9b4927ffddd191409b597497eac39f49712c34115a3f27fb254694c16ab",
-    "changes/st-1205/contracts/kpi-read-model.v2.yaml": "bfc6ca7722e8cafdaee558881227531e8e74e3630f3cc13455f2e3e05ff2137f",
-    "changes/st-1205/manifest.yaml": "a1ee3011f7253787fe2b447572ba27a02c080d22d7d6b865a0cdf0c0f6167ebf",
+    "changes/st-1205/contracts/kpi-read-model.v2.yaml": "4cb71bbecec12342aca564309a860c686a8126fdd3238b79ba14ccbdb260b973",
+    "changes/st-1205/manifest.yaml": "391ef69e2d1d46734b5fe4784c4447f1d83d52535438a17b83b23121a3b27d80",
 }
 
 
