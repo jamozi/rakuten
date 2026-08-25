@@ -25,6 +25,14 @@ describe('ST-1003 safety boundaries', () => {
       assert.equal(boundary.value, false);
       assert.equal(boundary.status, 'NOT_EXECUTED');
     }
+    assert.equal(
+      value.boundaries.st1002ContentMapping.reason,
+      'ST_1002_COMPARISON_MAPPING_UNAVAILABLE',
+    );
+    assert.equal(
+      value.boundaries.st0803ValueMapping.reason,
+      'ST_0803_TEST_ONLY_VALUES_NOT_PUBLIC_INPUT',
+    );
     assert.deepEqual(value.actions, []);
   });
 

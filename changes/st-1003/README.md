@@ -49,19 +49,23 @@ mismatched hashes, and semantic or authority escalation. Errors expose only
 closed codes and never echo hostile values. Successful candidates are detached,
 deterministic, JSON-safe, and deeply frozen.
 
-## Why real rendering remains closed
+## Why non-synthetic value binding remains closed
 
-Merged ST-1002 supplies no renderable copy, HTML, payload, DOM, route, or
-authoritative projection. ST-0803 is a TEST_ONLY Python validator that supplies
-no public matrix, identity, display name, coverage, recommendation, or
-publication authority. The Public OpenAPI retains open payload/attribute shapes,
+Current ST-1002 V2 supplies a hash-bound, noindex local SSR article, but its
+recorded projection has an empty comparison block and ST-1002 explicitly renders
+no comparison data, product cards, images, offers, or CTA. It therefore supplies
+no ST-1003 comparison mapping or value-bearing public input. Current ST-0803 is a
+TEST_ONLY Python validator whose synthetic receipt supplies no public matrix,
+identity, display name, recommendation, image metadata, or publication
+authority. The Public OpenAPI retains open payload/attribute shapes,
 identity-like fields, freshness/offer/CTA data, and no Trade-off block enum.
 
-A value-bearing renderer therefore still requires a canonically reconciled,
-owner-approved `DESIGN_HANDOFF_V1` covering the closed public input, ST-0803 to
-public mapping, product identity/display/fact authority, Unknown reason/copy,
-Trade-off mapping, and exact responsive DOM strategy. Price/freshness,
-recommendation, disclosure, and CTA remain separate gated/downstream concerns.
+A non-synthetic value-bearing renderer therefore remains fail closed until a
+versioned public projection defines the closed ST-0803-to-public mapping,
+product identity/display/fact authority, Unknown reason/copy, Trade-off mapping,
+approved Asset-ID/provenance/alt metadata, and responsive DOM strategy.
+Price/freshness, recommendation, disclosure, and CTA remain separate
+gated/downstream concerns. The recorded V2 fixture does not create that mapping.
 
 ## Owned files and checks
 

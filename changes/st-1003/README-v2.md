@@ -13,15 +13,17 @@ fixture. It contains no real product, recommendation, identity, price, stock,
 image, link, CTA, provider, measurement, or finance data. Unknown remains
 visible as `不明（一次情報未確認）`; it is never converted to zero, an empty
 string, or an inferred value. The fixture is not mounted on the recorded public
-article because ST-0904 supplies no comparison rows or product cards.
+article because the current ST-1002/ST-0904 projection supplies no comparison
+rows or product cards. The preserved V1 metadata keeps image availability false
+and both source and alternative text null; V2 emits no image element or source.
 
 ## Dependency and authority boundary
 
 ST-0803 remains the validator for future value-bearing comparison input. This
 Story does not invent an ST-0803-to-public mapping or promote its synthetic
-receipt to publication evidence. A future owner-approved public projection can
-replace the fixture through a new version without weakening this component
-semantics.
+receipt to publication evidence. A future versioned, allowlisted public
+projection can replace the fixture without weakening component semantics or the
+Asset-ID/provenance/alt boundary.
 
 No route, client component, click handler, raw HTML, network, database,
 analytics, publication, staging, release, or Production action is added. Local
