@@ -10,7 +10,7 @@ source_artifacts:
     role: OWNER_SOURCE
   - uri: repo://scripts/build_st1001_public_app_shell.py
     bytes: 33907
-    sha256: 8e245d49d8e64d2a8fa1ad759c8578400c65e05475e5d19f4951abf42eab4486
+    sha256: fb73d799ef5f658c77d8faf6e9f0f77a58ee1a4a70ebfe8d7dbf5c6f3fb05576
     role: OWNER_SOURCE
   - uri: repo://.prettierignore
     bytes: 108
@@ -150,7 +150,7 @@ source_artifacts:
     role: CANONICAL_INPUT
   - uri: repo://changes/st-0807/contracts/seo-render-runtime.v2.yaml
     bytes: 6893
-    sha256: 9336feeddbc0d095708d60e9718c1636c9c16068db36fffab651222fdd279b5c
+    sha256: 52214c70766473ecf7c09b2df98c8830c2506c09e442e03c835a5c0e7d9b39fc
     role: DEPENDENCY_CONTRACT
   - uri: repo://changes/st-0807/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml
     bytes: 2536
@@ -165,8 +165,8 @@ source_artifacts:
     sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
     role: DEPENDENCY_CONTRACT
   - uri: repo://package.json
-    bytes: 1850
-    sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+    bytes: 1906
+    sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
     role: LOCKED_TOOLCHAIN
   - uri: repo://package-lock.json
     bytes: 271352

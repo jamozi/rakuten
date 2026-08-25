@@ -76,7 +76,7 @@ CANONICAL_HASHES: Final = {
 DEPENDENCY_HASHES: Final = {
     Path(
         "changes/st-0807/contracts/seo-render-runtime.v2.yaml"
-    ): "9336feeddbc0d095708d60e9718c1636c9c16068db36fffab651222fdd279b5c",
+    ): "52214c70766473ecf7c09b2df98c8830c2506c09e442e03c835a5c0e7d9b39fc",
     Path(
         "changes/st-0807/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml"
     ): "3e0ee50841acb2e485269f1805c15c6eab82faf04e23e40209b59372a77e0c07",
