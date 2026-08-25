@@ -7,11 +7,11 @@ source_artifacts:
 - uri: repo://changes/st-1407/contracts/external-policy-registry-runtime.v2.yaml
   role: OWNER_SOURCE
   bytes: 4877
-  sha256: 19ce14a8fb9937f61f7e7466ee9c5fb7002a3e93e3245fdc24451182f99c0db4
+  sha256: d69e338d3f4a01735b5fea383da5007315d66645e582ce85db65b82820fc4e34
 - uri: repo://scripts/build_st1407_external_policy_registry_runtime.py
   role: OWNER_SOURCE
   bytes: 34115
-  sha256: cd12d4045aedc7c3a1e852fe4f6b51d6365b8c09c6e2d3b1885b858206a4c8de
+  sha256: a52e04848e3deeb0057eba605bf4cb41f26628fa23a692049d2191603693c367
 - uri: repo://python/raos/domain/ops/external_policy_registry.py
   role: OWNER_SOURCE
   bytes: 42683
@@ -107,23 +107,23 @@ source_artifacts:
 - uri: repo://python/raos/domain/editorial/policy_engine_v2.py
   role: PINNED_AUTHORITY_OR_DEPENDENCY
   bytes: 45997
-  sha256: 86e0af8ff6b651b50a7959a0a8c0f85864c230a57144b51e190041d658ee7d93
+  sha256: ef690e73cf657d3963572428785b2e777f7485ba15c30a53a978ad8919e31e24
 - uri: repo://changes/st-0805/runtime-manifest.v2.yaml
   role: PINNED_AUTHORITY_OR_DEPENDENCY
   bytes: 11572
-  sha256: 19dd52b254b648f88c6cda0ea3d9d5b6167b184a0a4ce735431ebb09056d6367
+  sha256: f10516b1d26e6dc448ade04873880211244e82d1c0f7175b5c57ce2c95f411ce
 - uri: repo://python/raos/domain/shared/persistence.py
   role: PINNED_RUNTIME_DEPENDENCY
-  bytes: 8063
-  sha256: 2a3d5cdc7d2e93ecd6883c3cdd37a0f27eb36638bd569399fcd95be7a06dfc20
+  bytes: 8701
+  sha256: 7d97e3316b4b451f575309dd641a2ee568b7e80b9429ef264f5114b1ac5dcc1a
 - uri: repo://python/raos/domain/shared/identity.py
   role: PINNED_RUNTIME_DEPENDENCY
   bytes: 3278
   sha256: d650f46f95fd116ed13f630b9ff84b254c0a8aa6659ef8d52907733a6a49a8e2
 - uri: repo://python/raos/domain/shared/json_values.py
   role: PINNED_RUNTIME_DEPENDENCY
-  bytes: 5675
-  sha256: c995c2ba5f3dcd9f4302328d423192ae9f8c3b1415f294bf791c92baf07d4644
+  bytes: 5971
+  sha256: 5c86fbaab887100e09a94c947511bc4f0ad850c6163bad10f5e965ad3d56514e
 - uri: repo://python/raos/config/runtime.py
   role: PINNED_RUNTIME_DEPENDENCY
   bytes: 35671
@@ -144,7 +144,7 @@ generated_artifacts:
 - uri: repo://changes/st-1407/generated/external-policy-registry-recorded.v2.json
   role: RECORDED_SYNTHETIC_REGISTRY_FIXTURE
   bytes: 17524
-  sha256: 9f0b16d1775d586a0443f4f2c2f844eaeb27c112de420d381584cf076a43aa3f
+  sha256: 0a85b2d9952391c6890adf320a40f1ac1fc1fe563d70d637eb2fbe3c45a5f243
 generation:
   owner: repo://scripts/build_st1407_external_policy_registry_runtime.py
   check: .venv/bin/python scripts/build_st1407_external_policy_registry_runtime.py

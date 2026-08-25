@@ -22,7 +22,7 @@
   },
   "classification": "RECORDED_SYNTHETIC_DEV_CI_ONLY",
   "contract_id": "RAOS-ST1407-EXTERNAL-POLICY-REGISTRY-RUNTIME-002",
-  "contract_sha256": "19ce14a8fb9937f61f7e7466ee9c5fb7002a3e93e3245fdc24451182f99c0db4",
+  "contract_sha256": "d69e338d3f4a01735b5fea383da5007315d66645e582ce85db65b82820fc4e34",
   "contract_version": "2.0.0",
   "external_rule_policy_links": [
     {
@@ -448,12 +448,12 @@
     },
     {
       "role": "ST-0805:policy_engine_v2",
-      "sha256": "86e0af8ff6b651b50a7959a0a8c0f85864c230a57144b51e190041d658ee7d93",
+      "sha256": "ef690e73cf657d3963572428785b2e777f7485ba15c30a53a978ad8919e31e24",
       "uri": "repo://python/raos/domain/editorial/policy_engine_v2.py"
     },
     {
       "role": "ST-0805:runtime_manifest_v2",
-      "sha256": "19dd52b254b648f88c6cda0ea3d9d5b6167b184a0a4ce735431ebb09056d6367",
+      "sha256": "f10516b1d26e6dc448ade04873880211244e82d1c0f7175b5c57ce2c95f411ce",
       "uri": "repo://changes/st-0805/runtime-manifest.v2.yaml"
     }
   ],
