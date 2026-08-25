@@ -4,7 +4,7 @@
   "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
   "publication_authority": "NONE",
   "generated_on": "2026-08-26",
-  "source_registry_sha256": "1df3743e5cb76977d92193950aaddfcc941bf4850f6c04ba225d32571cae459d",
+  "source_registry_sha256": "9216a5e58d5dccbb6aef2cc1237a78cb8ded8ec5c30e96facb83fc587afda84f",
   "locator_policy": {
     "claim_statement_source": "TRACKED_SOURCE_PACKET_EXACT",
     "fragment_source": "TRACKED_REVIEWED_EXACT_UTF8_FRAGMENT",
