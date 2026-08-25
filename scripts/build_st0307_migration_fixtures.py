@@ -57,7 +57,7 @@ GENERATED_PATHS: Final = (
 
 EXPECTED_SERVER_VERSION_NUM: Final = 180004
 EXPECTED_CONTRACT_SHA256: Final = (
-    "33bc260ab7cf494ae0fc139e1fea8cdfb66b122f036c0963cb338dd2e3c9827a"
+    "eb67e2bce8980c9d723be0cc08c5a00ef13843655b635a6139f8377a742d38e6"
 )
 EXPECTED_ARCHIVE_SHA256: Final = (
     "82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357"
@@ -124,22 +124,22 @@ EXPECTED_ALIGNMENT_MANIFESTS: Final = {
 }
 EXPECTED_MIGRATION_MANIFESTS: Final = {
     "changes/st-0301/manifest.yaml": (
-        "287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff"
+        "f571c11aea5eb221f34fcae96f3a4f8e9a7ff28ee098a04352e3afdf54476a59"
     ),
     "changes/st-0302/manifest.yaml": (
-        "d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0"
+        "db893574684fbd356263fb3cc86c9757bc227743afc0ca78aa2675991beb856c"
     ),
     "changes/st-0303/manifest.yaml": (
-        "f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b"
+        "e698c9464ce6fb26b4d431e50ca102e68ed147db0db69ffe48802fb4e28bcfdf"
     ),
     "changes/st-0304/manifest.yaml": (
-        "d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51"
+        "bdee063ed935e168c31be5c2aecaf58aac427ee4301ee397feaf5e6d2a6f4c0a"
     ),
     "changes/st-0305/manifest.yaml": (
-        "0efddf30798426a5322606328941e77e8a36fd2d274910f06224437fb5861d3f"
+        "fc5d172bb46cd0b5d482e7c5d3c416d00a69e9c6666d7c6f58181376288ae41a"
     ),
     "changes/st-0306/manifest.yaml": (
-        "25b451a247192d0db2cdbc434151bef71d9a9d822e07d5c56f450c98f167595d"
+        "0d977261bae1e98b9c5e12c069ede38121dbe388e23ae227eb37638dd4a31ac0"
     ),
 }
 EXPECTED_CHECKPOINT_PREREQUISITE_ROLES: Final = (
