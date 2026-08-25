@@ -350,12 +350,14 @@ def test_repository_imports_are_lazy_and_match_the_closed_inventory() -> None:
     assert builder.RUNTIME_NAMESPACE_PACKAGES == (
         "raos.adapters",
         "raos.application",
+        "raos.application.ops",
         "raos.domain",
+        "raos.domain.ops",
         "raos.ports",
     )
     assert "raos.adapters" not in builder.EXPECTED_RUNTIME_MODULES
     assert "raos.ports" not in builder.EXPECTED_RUNTIME_MODULES
-    assert len(builder.EXPECTED_RUNTIME_MODULES) == 30
+    assert len(builder.EXPECTED_RUNTIME_MODULES) == 17
     assert {
         "raos.adapters.ai_contract_registry",
         "raos.adapters.openai_responses",

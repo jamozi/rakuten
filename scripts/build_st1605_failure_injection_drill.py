@@ -48,7 +48,7 @@ PYTHON_ROOT: Final = REPO_ROOT / "python"
 SECURE_IO_PATH: Final = Path("scripts/build_st1506_production_deployment.py")
 SECURE_IO_MODULE_NAME: Final = "scripts.build_st1506_production_deployment"
 SECURE_IO_SHA256: Final = (
-    "a55385ccdd8fb3f9740eb2cbb2c24c3ba67006a46e1612dd27cd9e0973b6cc7e"
+    "cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be"
 )
 SECURE_IO_MAX_BYTES: Final = 256 * 1024
 _BOOTSTRAP_READ_BYTES: Final = 64 * 1024
@@ -614,10 +614,10 @@ EXPECTED_ST1602_HASHES: Final = {
         "31c8d3c57501e351bd9bcde3c796abe70eb80277b4cb7a1c738cf93817ba65b1"
     ),
     "changes/st-1602/generated/slo-alert-reference-plan.v1.json": (
-        "5191a56d42154982bbfefc09c7686df751a4b08eb1e5ea84865bf74a487767e9"
+        "b4a8723c3fa4b70d30bf8ac8b145daaa4d7e41c993d53de3364d1c0a6a8ad4b3"
     ),
     "changes/st-1602/manifest.yaml": (
-        "94a620384cb74bddc06bb17bb5517fd5fb7cca782af13b97c3c76b49b61d999a"
+        "89b37ab9fc483573aa9743a7e36edc9963f4865126a26e1b0c1ae938b0a79809"
     ),
 }
 EXPECTED_ST1405_HASHES: Final = {
@@ -656,7 +656,9 @@ DIRECT_RUNTIME_IMPORTS: Final = (
 RUNTIME_NAMESPACE_PACKAGES: Final = (
     "raos.adapters",
     "raos.application",
+    "raos.application.ops",
     "raos.domain",
+    "raos.domain.ops",
     "raos.ports",
 )
 
@@ -667,7 +669,7 @@ EXPECTED_RUNTIME_MODULES: Final = {
     ),
     "raos.adapters.development_oidc": (
         "python/raos/adapters/development_oidc.py",
-        "5ec698d48ca310e141baacde3db23f2b038a6aa715832e053a615aa1cdb73fd9",
+        "f962b13a62890dea606ed8c07a80c44f177365abce8d180661e80c828409b135",
     ),
     "raos.adapters.development_step_up": (
         "python/raos/adapters/development_step_up.py",
@@ -683,31 +685,15 @@ EXPECTED_RUNTIME_MODULES: Final = {
     ),
     "raos.application.iam.authentication": (
         "python/raos/application/iam/authentication.py",
-        "12f7685aed8f0f6526726355bc7863ae57118f1cf9d01465bb4659078badcb04",
+        "edb92df10bf68bcb1fc76f9c5635f6dd87340a562e24d58c44fcc136df2aa32a",
     ),
     "raos.application.iam.step_up": (
         "python/raos/application/iam/step_up.py",
-        "7b427e6c9e24a48776019731a25bb87673d6d9161f744aca56857e2e7312338f",
-    ),
-    "raos.application.ops": (
-        "python/raos/application/ops/__init__.py",
-        "79f1d1c2feee171acf8051ac621686dfcc8f68793f7c8dda2f0fbf7cf50f21c2",
-    ),
-    "raos.application.ops.job_runtime": (
-        "python/raos/application/ops/job_runtime.py",
-        "b1ea28fcc6b0e051b5f4a7ba0ae09d1628b4ed9f0400fd747fa7c2f032dc0403",
+        "a1bf4216013e6cbe878f8964c936c95a9bc41c31a87b9a2272c0b26a6e70181b",
     ),
     "raos.application.ops.kill_switch": (
         "python/raos/application/ops/kill_switch.py",
         "15f4deef25bd60d07a69dab81c5427677c184be9b67a8c4b2cfe6eb96937f0de",
-    ),
-    "raos.application.ops.object_intake": (
-        "python/raos/application/ops/object_intake.py",
-        "b75c86c003254436640ebecbf6f3c6aa399dbda334ca89cd4404102b800ca927",
-    ),
-    "raos.application.ops.telemetry": (
-        "python/raos/application/ops/telemetry.py",
-        "ae9f2c2bede2d4b4f251f6b28f1a474096870de30b1818fe81a5153d308cf016",
     ),
     "raos.config": (
         "python/raos/config/__init__.py",
@@ -723,63 +709,27 @@ EXPECTED_RUNTIME_MODULES: Final = {
     ),
     "raos.domain.iam.authentication": (
         "python/raos/domain/iam/authentication.py",
-        "b8273a2116cde06134ebe1d27005c0a85549e5d0674e027bf91effe947d4486f",
-    ),
-    "raos.domain.iam.authorization": (
-        "python/raos/domain/iam/authorization.py",
-        "dd08de5f2330fd322571230f0634413665360b2c362968f2ee46647bd48b55ce",
+        "a7a06f72244318696dc37c76dfd4b6ac030db8a9fb3872ed69747201f6fc690d",
     ),
     "raos.domain.iam.step_up": (
         "python/raos/domain/iam/step_up.py",
-        "d208f35bf42711229c743b41eacad84dc43c040ff5cc614d29e16e653e39ddb7",
-    ),
-    "raos.domain.ops": (
-        "python/raos/domain/ops/__init__.py",
-        "74a1ab664703a1856e640b11bdd9e934f14f05e3776bd6b1d2f5ab0f698732a1",
-    ),
-    "raos.domain.ops.job_runtime": (
-        "python/raos/domain/ops/job_runtime.py",
-        "e3623bdef2c6bdce9a3ed49c2d76929e7e590189af9ae65418cee565120162e6",
+        "ae17d9db24acf4133c41e2aef8c8f035a12ec063b77da3d9c3a182605052f4a9",
     ),
     "raos.domain.ops.kill_switch": (
         "python/raos/domain/ops/kill_switch.py",
         "6b4c014b89cb8b330885e5deae0849b9b0e2089272f7c8371627cd7f4eb353d3",
     ),
-    "raos.domain.ops.object_intake": (
-        "python/raos/domain/ops/object_intake.py",
-        "7ba9fce9e91be4f4a76fe47c65b9582699b841743048a83629a12c8b54f916c7",
-    ),
-    "raos.domain.ops.telemetry": (
-        "python/raos/domain/ops/telemetry.py",
-        "6639598c0d7019297a9843b72a06cac35a2eb4a6fd76cfc24d64cbd8dbd64e93",
-    ),
-    "raos.ports.job_runtime": (
-        "python/raos/ports/job_runtime.py",
-        "4e42943c5ca04d2da63d00b80c7a23c9ac6222096f0a1edbd1b0fd72e6155cd3",
-    ),
     "raos.ports.kill_switch": (
         "python/raos/ports/kill_switch.py",
         "857f53d3e6f1efd41a31858d9c31241aef554f8322809276d6e435584a6c2880",
     ),
-    "raos.ports.object_intake": (
-        "python/raos/ports/object_intake.py",
-        "a173ddbac56a20ff4f10f7bc62dd0d441b6c0d4a956de8697f351ea8fe214d59",
-    ),
     "raos.ports.oidc": (
         "python/raos/ports/oidc.py",
-        "2cde4026ca3c983a637445ddc2101f59a9f55598566f900caafbf5575fdfac74",
-    ),
-    "raos.ports.queue": (
-        "python/raos/ports/queue.py",
-        "97bf4cc18221a21949dd62273008067ea9a631c188a9ba5dcbf15a83679020df",
+        "57fcca6de54cae9c206018a264ea34632f4c3adcc94b2a5d4e4063d635a96269",
     ),
     "raos.ports.step_up": (
         "python/raos/ports/step_up.py",
-        "50a676339aebf9b101c22ce2ee0524c99300a913320ce00250ef718775208e0a",
-    ),
-    "raos.ports.telemetry": (
-        "python/raos/ports/telemetry.py",
-        "7892fc09f5913b96be84b35e1da118cd0a031669cca133bdcb58af8cc8fb2db9",
+        "756822270b9c71b2600ec2d631c6696d004eb1ebd51e2d3fac9d8212d7de92e9",
     ),
 }
 

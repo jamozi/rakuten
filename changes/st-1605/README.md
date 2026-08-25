@@ -44,11 +44,11 @@ The owner generator preserves these exact scenarios from fixed inputs:
 
 Every scenario uses a fixed timestamp and UUID inventory. Before importing the
 FI-005 runtime, the generator descriptor-reads and checksum-validates the exact
-closed FI-005 transitive repository module inventory. At the `raos.adapters`
-and `raos.ports` package boundaries it creates explicitly allowlisted
-source-free namespace packages, so unrelated package exports, provider SDKs,
-and downstream dependencies are not imported. A temporary
-closed RAOS finder/loader then compiles and executes the captured module bytes
+closed FI-005 transitive repository module inventory. At the `raos.adapters`,
+`raos.ports`, `raos.application.ops`, and `raos.domain.ops` package boundaries
+it creates explicitly allowlisted source-free namespace packages, so unrelated
+package exports, provider SDKs, and downstream dependencies are not imported.
+A temporary closed RAOS finder/loader then compiles and executes the captured module bytes
 in memory; it never reopens a source path, rejects every preloaded RAOS module
 and unlisted RAOS dependency, and removes only the exact module objects created
 by its own loaders afterward. A foreign RAOS module inserted during the scope,
