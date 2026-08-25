@@ -54,7 +54,7 @@ DESIGN_HANDOFF_V1:
       etag: SAME_AS_PROPOSAL_ID
       if_match_required: true
       mutable_after_creation: false
-      replay: FORBIDDEN_AFTER_TERMINAL_STATE
+      replay: EXACT_TERMINAL_RECEIPT_THEN_NEW_REQUEST_TOKEN_REQUIRED
       create_response_loss_recovery: OWNER_PRIVATE_WRITE_AHEAD_INTENT_REUSE
       canonical_golden_vector: PYTHON_AND_PHP_REQUIRED
     independent_human_approval:

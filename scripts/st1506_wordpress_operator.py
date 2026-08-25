@@ -791,11 +791,12 @@ def _proposal_result(
         or receipt.operation is not proposal.operation
     ):
         _fail(WordPressOperatorFailureCode.RESPONSE_INVALID)
-    expired = receipt.is_expired()
+    requires_new_proposal = receipt.requires_new_proposal()
     value["human_approval_required"] = (
-        receipt.state is WordPressOperatorProposalState.PROPOSED and not expired
+        receipt.state is WordPressOperatorProposalState.PROPOSED
+        and not requires_new_proposal
     )
-    if expired:
+    if requires_new_proposal:
         value["approval_surface"] = "NOT_APPLICABLE"
         value["next_action"] = "NEW_PROPOSAL_REQUIRED"
     elif receipt.state is WordPressOperatorProposalState.PROPOSED:
@@ -807,7 +808,7 @@ def _proposal_result(
     else:
         value["approval_surface"] = "NOT_APPLICABLE"
         value["next_action"] = "VERIFY_STATUS_BEFORE_ANY_RETRY"
-    return value, expired
+    return value, requires_new_proposal
 
 
 def _proposal_from_intent(

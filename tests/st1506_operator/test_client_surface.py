@@ -67,6 +67,25 @@ def test_domain_has_only_two_mutations_and_exact_fixed_versions() -> None:
     assert domain.WORDPRESS_OPERATOR_YOAST_VERSION == "28.3"
 
 
+@pytest.mark.parametrize(
+    "code",
+    (
+        "YOAST_CHECKSUM_CACHE_WRITE_FAILED",
+        "YOAST_CHECKSUM_LOCK_LOST",
+        "YOAST_CHECKSUM_LOCK_RELEASE_UNCERTAIN",
+        "YOAST_CHECKSUM_LOCK_UNAVAILABLE",
+    ),
+)
+def test_checksum_mutex_failures_are_closed_unavailable_results(code: str) -> None:
+    result = domain.YoastChecksumResult(
+        status=domain.WordPressOperatorChecksumStatus.UNAVAILABLE,
+        code=code,
+        checked_file_count=0,
+        mismatch_count=0,
+    )
+    assert result.public_payload()["code"] == code
+
+
 def test_yoast_proposal_bytes_bind_every_fixed_semantic_input() -> None:
     request_token = "1" * 64
     proposal = domain.OperatorProposal.yoast(request_token)
@@ -153,7 +172,7 @@ def test_theme_proposal_is_ascii_bounded_sorted_and_upgrade_only() -> None:
         )
 
 
-def test_create_receipts_have_exact_nonterminal_state_and_ttl_rules() -> None:
+def test_create_receipts_have_exact_initial_replay_state_and_ttl_rules() -> None:
     now = datetime.now(timezone.utc).replace(microsecond=0)
     created = now - timedelta(seconds=100)
     expires = created + timedelta(seconds=900)
@@ -179,6 +198,24 @@ def test_create_receipts_have_exact_nonterminal_state_and_ttl_rules() -> None:
         replayed=True,
     )
     assert replay.is_expired(now)
+    terminal = domain.ProposalReceipt(
+        proposal_id="a" * 64,
+        operation=domain.WordPressOperatorOperation.APPLY_YOAST_PROFILE,
+        state=domain.WordPressOperatorProposalState.APPLIED,
+        created_at=stamp(created),
+        expires_at=stamp(expires),
+        replayed=True,
+    )
+    assert terminal.requires_new_proposal(now)
+    with pytest.raises(domain.WordPressOperatorFailure):
+        domain.ProposalReceipt(
+            proposal_id="b" * 64,
+            operation=domain.WordPressOperatorOperation.APPLY_YOAST_PROFILE,
+            state=domain.WordPressOperatorProposalState.FAILED,
+            created_at=stamp(created),
+            expires_at=stamp(expires),
+            replayed=False,
+        )
     with pytest.raises(domain.WordPressOperatorFailure):
         domain.ProposalReceipt(
             proposal_id="6" * 64,
@@ -306,6 +343,47 @@ def test_fresh_intent_rejects_replayed_receipt_and_remains_pending(
     with journal.exclusive(proposal.operation):
         pending = journal.load(proposal.operation)
     assert pending is not None and pending.proposal_id == proposal.proposal_id
+
+
+def test_terminal_replay_clears_recovered_intent_and_requires_new_token(
+    private_repository: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(cli, "REPOSITORY_ROOT", private_repository)
+    operation = domain.WordPressOperatorOperation.APPLY_YOAST_PROFILE
+    proposal = domain.OperatorProposal.yoast("c" * 64)
+    journal = credentials.OwnerPrivateWordPressOperatorProposalIntentJournal(
+        private_repository
+    )
+    with journal.exclusive(operation):
+        journal.record(proposal)
+    now = datetime.now(timezone.utc).replace(microsecond=0)
+
+    class TerminalReplay:
+        def propose(self, recovered: domain.OperatorProposal) -> domain.ProposalReceipt:
+            assert recovered.proposal_id == proposal.proposal_id
+            return domain.ProposalReceipt(
+                proposal_id=recovered.proposal_id,
+                operation=recovered.operation,
+                state=domain.WordPressOperatorProposalState.APPLIED,
+                created_at=(now - timedelta(seconds=100))
+                .isoformat()
+                .replace("+00:00", "Z"),
+                expires_at=(now + timedelta(seconds=800))
+                .isoformat()
+                .replace("+00:00", "Z"),
+                replayed=True,
+            )
+
+    result, requires_new = cli._proposal_from_intent(
+        adapter=TerminalReplay(),  # type: ignore[arg-type]
+        operation=operation,
+    )
+    assert requires_new
+    assert result["state"] == "APPLIED"
+    assert result["next_action"] == "NEW_PROPOSAL_REQUIRED"
+    assert result["human_approval_required"] is False
+    with journal.exclusive(operation):
+        assert journal.load(operation) is None
 
 
 def test_validated_applied_receipt_clears_only_matching_create_intent(
@@ -751,6 +829,33 @@ def test_malformed_post_write_receipts_are_always_outcome_ambiguous(
     with pytest.raises(domain.WordPressOperatorFailure) as captured:
         adapter.propose(proposal)
     assert captured.value.code is domain.WordPressOperatorFailureCode.OUTCOME_AMBIGUOUS
+
+
+def test_adapter_accepts_only_hash_bound_terminal_create_replay(
+    private_repository: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    proposal = domain.OperatorProposal.yoast("d" * 64)
+    now = datetime.now(timezone.utc).replace(microsecond=0)
+    response: dict[str, object] = {
+        "created_at": (now - timedelta(seconds=100)).isoformat().replace("+00:00", "Z"),
+        "expires_at": (now + timedelta(seconds=800)).isoformat().replace("+00:00", "Z"),
+        "operation": proposal.operation.value,
+        "proposal_id": proposal.proposal_id,
+        "replayed": True,
+        "schema": "RAOS_OPERATOR_PROPOSAL_V1",
+        "state": "NEEDS_RECOVERY",
+    }
+    monkeypatch.setattr(
+        https.OfficialSelfHostedWordPressOperatorAdapter,
+        "_execute",
+        lambda self, **kwargs: response,
+    )
+    receipt = https.OfficialSelfHostedWordPressOperatorAdapter(
+        private_repository
+    ).propose(proposal)
+    assert receipt.state is domain.WordPressOperatorProposalState.NEEDS_RECOVERY
+    assert receipt.replayed
+    assert receipt.requires_new_proposal(now)
 
 
 @pytest.mark.parametrize(

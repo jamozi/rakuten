@@ -9,6 +9,9 @@ Activation creates the dedicated `raos_operator_executor` role and the
 proposal/audit tables. It never deletes data on deactivation or uninstall.
 Assign the dedicated role to a service account and authenticate it using a
 WordPress Application Password over HTTPS. Do not assign any additional role.
+Activation verifies that both operator tables are InnoDB, then appends the
+activation audit event inside one explicit transaction. Audit append or commit
+uncertainty rolls the audit transaction back and fails activation.
 
 The first valid Application Password authentication observed for a user whose
 only role is `raos_operator_executor` atomically creates the non-autoloaded,
@@ -62,6 +65,14 @@ Uncertain ownership or release fails closed, and a proposal already in
 `APPLYING` becomes `NEEDS_RECOVERY`. This also serializes use of WordPress
 core's shared theme temporary-backup directory.
 
+Proposal creation and checksum computation use separate fixed-purpose MySQL
+named locks with the same database/site scoping. These locks are owned by the
+database connection, automatically reclaimed when an interrupted worker's
+connection closes, and released only after exact ownership is rechecked. A
+release failure never returns a successful create or checksum result. Checksum
+cache state is checked again after lock acquisition so a delayed cache-miss
+request cannot repeat a completed fresh computation.
+
 Yoast's `wpseo` and `wpseo_social` rows are selected `FOR UPDATE`, compared to
 the proposal's exact raw before-state, changed with byte-exact `BINARY`
 row-level compare-and-swap, verified while locked, and committed together.
@@ -79,3 +90,36 @@ backup APIs. The backup tree must byte-match that capture before any restore.
 If the live tree already matches the old capture no restore occurs. After
 backup deletion begins, restore is forbidden: a cleanup failure keeps the
 verified new theme and becomes `NEEDS_RECOVERY`.
+
+The server does not accept caller-selected theme hashes. The plugin contains a
+canonical, hash-anchored capture of the reviewed ST-1704 package and its full
+13-file manifest, and normalizes a proposal only when every theme field exactly
+matches that server-owned capture. The current capture is the already-installed
+`1.1.1` package, so its state is deliberately `NO_REVIEWED_UPGRADE`; theme
+proposal creation remains fail-closed until a separately reviewed `1.1.2` or
+later package is rebound in a new plugin release. A future bound package is
+written to a random 0700 staging directory as one 0600, single-link regular
+file. Device/inode, directory identity, size, and SHA-256 are captured after ZIP
+validation and rechecked immediately before the upgrader is called. The exact
+upgrader instance receives a private random marker and the fixed temporary
+backup specification. At WordPress core's last `upgrader_source_selection`
+filter, the plugin rechecks the staged ZIP and captures the complete extracted
+theme tree against the server-owned manifest before core creates the backup.
+At `upgrader_clear_destination`, after core clears the old destination and
+immediately before its `move_dir()` or `copy_dir()`, the plugin recaptures the
+same extracted root and requires byte-for-byte manifest and filesystem-identity
+equality. Either hook rejects a symlink, non-regular node, extra path, changed
+file, changed root, wrong destination, wrong upgrader, or wrong marker; a
+post-clear refusal uses the already-verified backup restore path.
+
+This boundary assumes the WordPress/PHP operating-system account itself is not
+compromised. A malicious process already running as that same filesystem user
+can rewrite an installed theme independently of this credential/API bridge and
+must be handled as a host compromise.
+
+An exact create retry returns the same 201 receipt and ETag for any of the seven
+closed proposal states, including terminal states. Before replay, the plugin
+revalidates the stored canonical request bytes, proposal hash, operation,
+proposer, timestamps, and exact 900-second lifetime. Replay never inserts,
+audits, or changes proposal state; it only lets a client resolve a lost response
+and rotate to a new request token when required.

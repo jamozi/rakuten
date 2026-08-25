@@ -153,14 +153,14 @@ the SHA-256 of those canonical bytes, including origin, contract/profile version
 request token, operation, TTL, and operation payload. It is the sole ETag. Save the
 sanitized proposal receipt; do not modify the proposal.
 The receipt is accepted only when its operation and proposal ID match, its state is
-`PROPOSED`, `APPROVED`, or `APPLYING`, its strict UTC timestamps differ by exactly
+one of the seven closed proposal states, its strict UTC timestamps differ by exactly
 900 seconds, and its ETag is the quoted proposal ID. A first receipt must be an
 unexpired `PROPOSED` result. A validated replay may report `APPROVED` and direct the
 matching apply command, or report `APPLYING` and require status verification before
 any retry. The WordPress approval surface is shown only for a live `PROPOSED`
-receipt. A validated expired replay
-still resolves the response-loss ambiguity, so the client clears the journal and
-returns non-success `NEW_PROPOSAL_REQUIRED` instead of retaining a permanent block.
+receipt. A validated expired or terminal replay still resolves the response-loss
+ambiguity, so the client clears the journal and returns non-success
+`NEW_PROPOSAL_REQUIRED` instead of retaining a permanent block.
 
 ## 5. Independent human approval
 

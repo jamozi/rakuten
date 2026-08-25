@@ -255,6 +255,15 @@ def test_proposal_identity_and_independent_approval_are_fail_closed(
         "public_proposal_hash_field": "ABSENT",
         "etag": "SAME_VALUE",
     }
+    assert proposal["replay_policy"] == {
+        "proposal_create_same_nonterminal_request": "IDEMPOTENT_RECEIPT",
+        "proposal_create_same_terminal_request": (
+            "HASH_BOUND_TERMINAL_RECEIPT_THEN_NEW_REQUEST_TOKEN_REQUIRED"
+        ),
+        "apply_applied_proposal": "IDEMPOTENT_RECEIPT_NO_SECOND_WRITE",
+        "terminal_record_for_new_intent": "NEW_REQUEST_TOKEN_REQUIRED",
+        "approval_reuse_for_different_id": "FORBIDDEN",
+    }
     apply_route = operator_contract["routes"][-1]
     assert apply_route["required_header"] == {
         "If-Match": "QUOTED_PROPOSAL_ID",
@@ -357,7 +366,8 @@ def test_write_ahead_intent_and_create_receipt_recovery_are_closed(
         "transport_or_response_failure": "RETAIN_UNCHANGED",
         "clear_conditions": {
             "create": (
-                "VALIDATED_MATCHING_CREATE_RECEIPT_INCLUDING_EXPIRED_EXACT_REPLAY"
+                "VALIDATED_MATCHING_CREATE_RECEIPT_INCLUDING_EXPIRED_OR_TERMINAL_"
+                "EXACT_REPLAY"
             ),
             "apply": (
                 "VALIDATED_APPLIED_RECEIPT_WITH_MATCHING_OPERATION_AND_PROPOSAL_ID"
@@ -377,7 +387,15 @@ def test_write_ahead_intent_and_create_receipt_recovery_are_closed(
         "exact_schema": "RAOS_OPERATOR_PROPOSAL_V1",
         "proposal_id": "EXACT_REQUEST_PROPOSAL_ID",
         "operation": "EXACT_REQUEST_OPERATION",
-        "state_closed_values": ["PROPOSED", "APPROVED", "APPLYING"],
+        "state_closed_values": [
+            "PROPOSED",
+            "APPROVED",
+            "APPLYING",
+            "APPLIED",
+            "FAILED",
+            "NEEDS_RECOVERY",
+            "EXPIRED",
+        ],
         "created_at_and_expires_at": "STRICT_UTC_RFC3339",
         "ttl_seconds_exact": 900,
         "replayed": "BOOLEAN",
@@ -393,8 +411,20 @@ def test_write_ahead_intent_and_create_receipt_recovery_are_closed(
         },
         "replay_receipt_rules": {
             "replayed": True,
-            "states": ["PROPOSED", "APPROVED", "APPLYING"],
+            "states": [
+                "PROPOSED",
+                "APPROVED",
+                "APPLYING",
+                "APPLIED",
+                "FAILED",
+                "NEEDS_RECOVERY",
+                "EXPIRED",
+            ],
             "expired_exact_receipt": {
+                "journal": "CLEAR_AS_COMMUNICATION_OUTCOME_RESOLVED",
+                "command_result": "NON_SUCCESS_NEW_PROPOSAL_REQUIRED",
+            },
+            "terminal_exact_receipt": {
                 "journal": "CLEAR_AS_COMMUNICATION_OUTCOME_RESOLVED",
                 "command_result": "NON_SUCCESS_NEW_PROPOSAL_REQUIRED",
             },
@@ -403,6 +433,10 @@ def test_write_ahead_intent_and_create_receipt_recovery_are_closed(
             "PROPOSED": "HUMAN_APPROVAL_REQUIRED_BEFORE_MATCHING_APPLY_COMMAND",
             "APPROVED": "RUN_MATCHING_APPLY_COMMAND",
             "APPLYING": "VERIFY_STATUS_BEFORE_ANY_RETRY",
+            "APPLIED": "NEW_PROPOSAL_REQUIRED",
+            "FAILED": "NEW_PROPOSAL_REQUIRED",
+            "NEEDS_RECOVERY": "NEW_PROPOSAL_REQUIRED",
+            "EXPIRED": "NEW_PROPOSAL_REQUIRED",
             "expired_exact_replay": "NEW_PROPOSAL_REQUIRED",
         },
         "approval_surface_by_state": {

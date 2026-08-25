@@ -2,8 +2,13 @@
 
 from __future__ import annotations
 
+import hashlib
+import io
+import json
 from pathlib import Path
 import re
+import stat
+import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -214,7 +219,9 @@ def test_proposals_require_exact_raw_canonical_bytes_and_are_bounded() -> None:
     assert "self::canonical_json($input['yoast_profile'])" in normalize
     assert "self::canonical_json($this->fixed_yoast_profile_payload())" in normalize
     for token in (
-        "raos_operator_proposal_create_lock_v1",
+        "PROPOSAL_CREATE_MUTEX_PURPOSE",
+        "acquire_auxiliary_mutex",
+        "release_auxiliary_mutex",
         "proposal_capacity_available",
         "strict_count",
         "$wpdb->last_error !== ''",
@@ -263,6 +270,16 @@ def test_checksum_is_exact_pinned_cached_and_never_unknown_pass() -> None:
     assert "UNAVAILABLE" in checksum
     assert "checksum" in checksum.lower() and "lock" in checksum.lower()
     assert "set_transient" in checksum or "wp_cache_set" in checksum
+    assert checksum.count("get_transient('raos_operator_yoast_checksum_v1')") == 2
+    assert checksum.index("acquire_auxiliary_mutex") < checksum.index(
+        "$locked_cached = get_transient"
+    )
+    assert checksum.count("auxiliary_mutex_is_owned($mutex_name)") >= 3
+    assert (
+        "$result = $this->auxiliary_mutex_is_owned($mutex_name)\n"
+        "                    ? $this->compute_yoast_checksum()"
+    ) in checksum
+    assert checksum.index("set_transient") < checksum.index("release_auxiliary_mutex")
 
 
 def test_approval_is_admin_only_reauthenticated_hash_bound_and_audited() -> None:
@@ -488,7 +505,9 @@ def test_theme_update_has_exact_backup_restore_and_tree_readback() -> None:
         "verify_installed_theme",
     ):
         assert token.lower() in theme.lower()
-    assert "version_compare($theme['to_version'], $theme['from_version'], '<=')" in php
+    assert "version_compare(" in php
+    assert "$reviewed['to_version']" in php
+    assert "$reviewed['from_version']" in php
     assert "ZipArchive::CHECKCONS" in theme
     assert "(int) $stat['comp_method'] !== 0" in theme
     assert "preg_match('/\\A[A-Za-z0-9._\\/-]+\\z/', $name)" in theme
@@ -528,6 +547,348 @@ def test_theme_update_has_exact_backup_restore_and_tree_readback() -> None:
         "is_link(",
     ):
         assert token in helpers
+
+
+def test_theme_proposals_are_bound_to_the_exact_stage_captured_release() -> None:
+    php = _php()
+    release_match = re.search(
+        r"const REVIEWED_THEME_RELEASE_JSON = '([^']+)';",
+        php,
+    )
+    release_hash_match = re.search(
+        r"const REVIEWED_THEME_RELEASE_JSON_SHA256 = '([a-f0-9]{64})';",
+        php,
+    )
+    runtime_hash_match = re.search(
+        r"const REVIEWED_THEME_RUNTIME_MANIFEST_SHA256 = '([a-f0-9]{64})';",
+        php,
+    )
+    assert release_match is not None
+    assert release_hash_match is not None
+    assert runtime_hash_match is not None
+    release_bytes = release_match.group(1).encode()
+    assert hashlib.sha256(release_bytes).hexdigest() == release_hash_match.group(1)
+    release = json.loads(release_bytes)
+    assert release["slug"] == "kurashinoshirube-child"
+    assert release["from_version"] == release["to_version"] == "1.1.1"
+    assert "const REVIEWED_THEME_RELEASE_STATE = 'NO_REVIEWED_UPGRADE';" in php
+
+    runtime_manifest = (
+        ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
+    ).read_bytes()
+    assert hashlib.sha256(runtime_manifest).hexdigest() == runtime_hash_match.group(1)
+    theme_root = (
+        ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+        "kurashinoshirube-child"
+    )
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_STORED) as archive:
+        for entry in release["file_manifest"]:
+            source = (theme_root / entry["path"]).read_bytes()
+            assert len(source) == entry["size"]
+            assert hashlib.sha256(source).hexdigest() == entry["sha256"]
+            info = zipfile.ZipInfo(
+                f"kurashinoshirube-child/{entry['path']}",
+                (2026, 8, 23, 0, 0, 0),
+            )
+            info.create_system = 3
+            info.external_attr = (stat.S_IFREG | 0o644) << 16
+            info.compress_type = zipfile.ZIP_STORED
+            archive.writestr(info, source)
+    package = output.getvalue()
+    assert len(package) == release["package_size"]
+    assert hashlib.sha256(package).hexdigest() == release["package_sha256"]
+
+    normalize = php[php.index("private function normalize_theme_spec") :]
+    normalize = normalize[: normalize.index("private function has_only_keys")]
+    for token in (
+        "reviewed_theme_release_binding()",
+        "self::canonical_json($normalized) !== self::REVIEWED_THEME_RELEASE_JSON",
+        "raos_theme_release_not_reviewed",
+        "self::REVIEWED_THEME_RELEASE_STATE !== 'AVAILABLE'",
+        "raos_theme_release_not_available",
+        "return $reviewed;",
+    ):
+        assert token in normalize
+
+
+def test_auxiliary_mutexes_are_connection_owned_reclaimable_and_fail_closed() -> None:
+    php = _php()
+    mutex = php[php.index("private function auxiliary_mutex_name") :]
+    mutex = mutex[: mutex.index("private function compute_yoast_checksum")]
+    for token in (
+        "DB_NAME",
+        "$wpdb->prefix",
+        "self::SITE_ORIGIN",
+        "self::CHECKSUM_MUTEX_PURPOSE",
+        "self::PROPOSAL_CREATE_MUTEX_PURPOSE",
+        "SELECT IS_USED_LOCK(%s)",
+        "SELECT GET_LOCK(%s, 0)",
+        "SELECT (IS_USED_LOCK(%s) = CONNECTION_ID())",
+        "SELECT RELEASE_LOCK(%s)",
+        "(string) $released === '1'",
+    ):
+        assert token in mutex
+    assert "add_option(" not in mutex
+    assert "delete_option(" not in mutex
+
+    checksum = php[php.index("public function rest_yoast_checksum") :]
+    checksum = checksum[: checksum.index("private function auxiliary_mutex_name")]
+    assert checksum.count("get_transient('raos_operator_yoast_checksum_v1')") == 2
+    assert "YOAST_CHECKSUM_LOCK_LOST" in checksum
+    assert "YOAST_CHECKSUM_LOCK_RELEASE_UNCERTAIN" in checksum
+    assert ": $locked_result;" in checksum
+    assert "$from_cache = true;" in checksum
+    assert checksum.index("set_transient") < checksum.index("release_auxiliary_mutex")
+    post_release = checksum[checksum.index("if (! $released)") :]
+    assert "YOAST_CHECKSUM_INTERNAL_INVALID" not in post_release
+
+    create = php[php.index("public function rest_create_proposal") :]
+    create = create[: create.index("private function proposal_capacity_available")]
+    for token in (
+        "acquire_auxiliary_mutex($mutex_name)",
+        "create_proposal_under_mutex(",
+        "auxiliary_mutex_is_owned($mutex_name)",
+        "release_auxiliary_mutex($mutex_name)",
+        "raos_proposal_creation_lock_release_uncertain",
+    ):
+        assert token in create
+    assert "raos_operator_proposal_create_lock_v1" not in create
+    assert "add_option(" not in create
+    assert "delete_option(" not in create
+    create_under_lock = create[
+        create.index("private function create_proposal_under_mutex") :
+    ]
+    assert create_under_lock.index(
+        "auxiliary_mutex_is_owned"
+    ) < create_under_lock.index("START TRANSACTION")
+    assert create_under_lock.index("append_audit") < create_under_lock.index("COMMIT")
+
+
+def test_activation_audit_is_innodb_serialized_and_rolls_back_on_failure() -> None:
+    php = _php()
+    activation = php[php.index("public static function activate") :]
+    activation = activation[: activation.index("private static function install_role")]
+    assert activation.index("self::install_tables()") < activation.index(
+        "self::append_activation_audit()"
+    )
+    audit = activation[
+        activation.index("private static function append_activation_audit") :
+    ]
+    assert "operator_tables_are_innodb()" in audit
+    assert audit.index("START TRANSACTION") < audit.index("append_audit(")
+    assert audit.index("append_audit(") < audit.index("COMMIT")
+    assert audit.count("ROLLBACK") >= 3
+    for token in (
+        "self::proposal_table()",
+        "self::audit_table()",
+        "SELECT ENGINE FROM information_schema.TABLES",
+        "WHERE BINARY TABLE_SCHEMA = BINARY DATABASE()",
+        "$rows[0]['ENGINE'] === 'InnoDB'",
+    ):
+        assert token in audit
+
+
+def test_all_exact_proposal_states_replay_without_mutation_or_terminal_409() -> None:
+    php = _php()
+    create = php[php.index("public function rest_create_proposal") :]
+    create = create[: create.index("private function proposal_capacity_available")]
+    assert "raos_terminal_proposal_requires_new_token" not in create
+    replay = create[
+        create.index("private function validated_proposal_replay_response") :
+    ]
+    for state in (
+        "PROPOSED",
+        "APPROVED",
+        "APPLYING",
+        "APPLIED",
+        "FAILED",
+        "NEEDS_RECOVERY",
+        "EXPIRED",
+    ):
+        assert f"'{state}'" in replay
+    for token in (
+        "request_json",
+        "hash('sha256', $row['request_json'])",
+        "$normalized['operation'] !== $row['operation']",
+        "proposer_user_id",
+        "strict_mysql_utc_epoch",
+        "$expires_epoch - $created_epoch !== self::DEFAULT_TTL",
+        "proposal_response($row, true)",
+    ):
+        assert token in replay
+    create_under_lock = create[
+        create.index("private function create_proposal_under_mutex") :
+    ]
+    assert "$created_epoch = time();" in create_under_lock
+    assert "$created_epoch + $normalized['ttl_seconds']" in create_under_lock
+
+
+def test_theme_stage_is_private_identity_bound_and_rechecked_before_upgrader() -> None:
+    php = _php()
+    stage = php[php.index("private function write_private_theme_stage") :]
+    stage = stage[: stage.index("private function apply_theme_package")]
+    for token in (
+        "random_bytes(24)",
+        "mkdir($directory, 0700)",
+        "chmod($directory, 0700)",
+        "fopen($path, 'x+b')",
+        "chmod($path, 0600)",
+        "lstat($directory)",
+        "lstat($path)",
+        "(int) $before['nlink'] !== 1",
+        "(int) $after['dev'] !== (int) $before['dev']",
+        "(int) $after['ino'] !== (int) $before['ino']",
+        "hash_file('sha256', $path)",
+        "realpath($directory) !== $directory",
+        "realpath($path) !== $path",
+        "staged_theme_package_matches_capture",
+    ):
+        assert token in stage
+    apply_theme = php[php.index("private function apply_theme_package") :]
+    apply_theme = apply_theme[
+        : apply_theme.index("private function theme_restore_result")
+    ]
+    assert "wp_tempnam(" not in apply_theme
+    assert apply_theme.index("validate_theme_zip") < apply_theme.index(
+        "capture_staged_theme_package"
+    )
+    assert apply_theme.index(
+        "staged_theme_package_matches_capture"
+    ) < apply_theme.index("$upgrader->install(")
+    mismatch = apply_theme[
+        apply_theme.index("if (! $this->staged_theme_package_matches_capture") :
+    ]
+    mismatch = mismatch[: mismatch.index("try {")]
+    assert "THEME_STAGED_PACKAGE_CHANGED" in mismatch
+    assert "$upgrader->install(" not in mismatch
+
+
+def test_theme_extracted_tree_is_bound_at_both_core_mutation_boundaries() -> None:
+    php = _php()
+    capture = php[php.index("private function capture_extracted_theme_source") :]
+    capture = capture[
+        : capture.index("private function theme_clear_destination_is_exact")
+    ]
+    for token in (
+        "RecursiveIteratorIterator::SELF_FIRST",
+        "FilesystemIterator::SKIP_DOTS",
+        "$file_info->isLink()",
+        "! isset($expected_directories[$relative])",
+        "! $file_info->isFile()",
+        "! isset($expected_files[$relative])",
+        "(($before['mode'] & 0170000) !== 0040000)",
+        "(($before['mode'] & 0170000) !== 0100000)",
+        "(int) $before['nlink'] !== 1",
+        "hash_file('sha256', $absolute)",
+        "(int) $after['dev'] !== (int) $before['dev']",
+        "(int) $after['ino'] !== (int) $before['ino']",
+        "$files !== $spec['file_manifest']",
+        "$directories !== $expected_directories",
+        "realpath($source_path) !== $source_real",
+        "realpath($remote_path) !== $remote_real",
+        "(int) $root_after['dev'] !== (int) $root_before['dev']",
+        "(int) $remote_after['dev'] !== (int) $remote_before['dev']",
+        "'remote_mode' => (int) $remote_after['mode']",
+        "'root_mode' => (int) $root_after['mode']",
+    ):
+        assert token in capture
+    assert "FilesystemIterator::FOLLOW_SYMLINKS" not in capture
+
+    destination = php[php.index("private function theme_clear_destination_is_exact") :]
+    destination = destination[
+        : destination.index("private function delete_private_theme_stage")
+    ]
+    for token in (
+        "array $theme_root",
+        "array('dev', 'ino', 'mode', 'path')",
+        "clearstatcache(true, $remote)",
+        "realpath($local) === $theme_root['path']",
+        "(int) $local_stat['dev'] === $theme_root['dev']",
+        "(int) $local_stat['ino'] === $theme_root['ino']",
+        "$remote === $theme_root['path'] . DIRECTORY_SEPARATOR . self::THEME_SLUG",
+        "! file_exists($remote)",
+        "! is_link($remote)",
+    ):
+        assert token in destination
+
+    hook_context = php[
+        php.index("private function theme_upgrader_hook_extra_is_exact") :
+    ]
+    hook_context = hook_context[
+        : hook_context.index("private function capture_extracted_theme_source")
+    ]
+    for token in (
+        "'action',",
+        "'raos_operator_theme_apply_marker',",
+        "'temp_backup',",
+        "'type',",
+        "$hook_extra['action'] === 'install'",
+        "$hook_extra['type'] === 'theme'",
+        "hash_equals(",
+        "$hook_extra['temp_backup'] === $backup",
+    ):
+        assert token in hook_context
+
+    apply_theme = php[php.index("private function apply_theme_package") :]
+    apply_theme = apply_theme[
+        : apply_theme.index("private function theme_restore_result")
+    ]
+    for token in (
+        "bin2hex(random_bytes(32))",
+        "raos_operator_theme_apply_marker",
+        "$filter_upgrader !== $upgrader",
+        "theme_upgrader_hook_extra_is_exact(",
+        "staged_theme_package_matches_capture(",
+        "capture_extracted_theme_source(",
+        "theme_clear_destination_is_exact(",
+        "$recaptured !== $extracted_source_capture",
+        "THEME_EXTRACTED_SOURCE_REJECTED",
+        "THEME_EXTRACTED_SOURCE_CHANGED_ROLLED_BACK",
+        "THEME_UPGRADER_GUARD_BYPASSED_ROLLED_BACK",
+    ):
+        assert token in apply_theme
+    assert (
+        "add_filter('upgrader_source_selection', $source_filter, PHP_INT_MAX, 4);"
+        in apply_theme
+    )
+    assert (
+        "add_filter('upgrader_clear_destination', $clear_filter, PHP_INT_MAX, 4);"
+        in apply_theme
+    )
+    install = apply_theme.index("$upgrade_result = $upgrader->install(")
+    assert apply_theme.index("add_filter('upgrader_source_selection'") < install
+    assert apply_theme.index("add_filter('upgrader_clear_destination'") < install
+    finally_block = apply_theme[apply_theme.index("} finally {") :]
+    assert (
+        "remove_filter('upgrader_source_selection', $source_filter, PHP_INT_MAX);"
+        in finally_block
+    )
+    assert (
+        "remove_filter('upgrader_clear_destination', $clear_filter, PHP_INT_MAX);"
+        in finally_block
+    )
+
+    source_filter = apply_theme[apply_theme.index("$source_filter = function (") :]
+    source_filter = source_filter[
+        : source_filter.index("$clear_destination_count = 0;")
+    ]
+    assert source_filter.index(
+        "staged_theme_package_matches_capture("
+    ) < source_filter.index("capture_extracted_theme_source(")
+    clear_filter = apply_theme[apply_theme.index("$clear_filter = function (") :]
+    clear_filter = clear_filter[
+        : clear_filter.index("add_filter('upgrader_package_options'")
+    ]
+    assert clear_filter.index("theme_clear_destination_is_exact(") < clear_filter.index(
+        "$recaptured = $this->capture_extracted_theme_source("
+    )
+    assert clear_filter.index(
+        "$recaptured !== $extracted_source_capture"
+    ) < clear_filter.index("$clear_destination_verified = true;")
+    assert clear_filter.index(
+        "$clear_destination_verified = true;"
+    ) < clear_filter.rindex("return true;")
 
 
 def test_plugin_contains_no_forbidden_generic_wordpress_surface() -> None:

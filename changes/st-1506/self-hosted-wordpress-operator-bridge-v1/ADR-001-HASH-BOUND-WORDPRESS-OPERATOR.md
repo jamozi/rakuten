@@ -61,8 +61,8 @@ precede transport. A retry for the
 same operation reuses that exact unresolved intent; it cannot silently mint a
 second proposal after a response is lost. Transport failure, response ambiguity,
 input drift, or an invalid receipt leaves the intent unchanged. A validated matching
-receipt with the exact 900-second TTL clears it. An exact expired replay also clears
-the now-resolved communication intent but returns non-success
+receipt with the exact 900-second TTL clears it. An exact expired or terminal replay
+also clears the now-resolved communication intent but returns non-success
 `NEW_PROPOSAL_REQUIRED`; it cannot permanently block a fresh intent. Python and PHP
 canonicalization are both bound to the committed golden proposal vector.
 

@@ -29,7 +29,9 @@ Proposal creation uses an owner-private per-operation write-ahead intent so a lo
 response cannot silently mint a second proposal. The intent explicitly binds its
 canonical-request hash to `proposal_id` and is fsynced before atomic hard-link
 publication. A fresh intent rejects replay-shaped or malformed receipts without
-clearing the journal, and apply success codes are operation-specific. Credential
+clearing the journal. An exact expired or terminal replay clears only that matching
+intent and requires a fresh request token on the next invocation. Apply success
+codes are operation-specific. Credential
 and journal ownership is captured from the effective UID. Proxy environment
 variables are inert; ambient TLS overrides fail closed and HTTP debug logging is
 forced off before transport. The committed golden vector binds the Python and PHP

@@ -64,7 +64,11 @@ _YOAST_CHECKSUM_UNAVAILABLE_CODES: Final = frozenset(
     {
         "YOAST_CHECKSUM_BUSY",
         "YOAST_CHECKSUM_CACHE_INVALID",
+        "YOAST_CHECKSUM_CACHE_WRITE_FAILED",
         "YOAST_CHECKSUM_INTERNAL_INVALID",
+        "YOAST_CHECKSUM_LOCK_LOST",
+        "YOAST_CHECKSUM_LOCK_RELEASE_UNCERTAIN",
+        "YOAST_CHECKSUM_LOCK_UNAVAILABLE",
         "YOAST_OFFICIAL_CHECKSUM_INVALID",
         "YOAST_OFFICIAL_CHECKSUM_UNAVAILABLE",
     }
@@ -600,24 +604,24 @@ class ProposalReceipt(_RedactedValue):
             expires = datetime.fromisoformat(self.expires_at.replace("Z", "+00:00"))
         except ValueError:
             fail_wordpress_operator(WordPressOperatorFailureCode.RESPONSE_INVALID)
-        if (
-            expires - created
-            != timedelta(seconds=WORDPRESS_OPERATOR_PROPOSAL_TTL_SECONDS)
-            or self.state
-            not in {
-                WordPressOperatorProposalState.PROPOSED,
-                WordPressOperatorProposalState.APPROVED,
-                WordPressOperatorProposalState.APPLYING,
-            }
-            or (
-                not self.replayed
-                and (
-                    self.state is not WordPressOperatorProposalState.PROPOSED
-                    or expires <= datetime.now(timezone.utc)
-                )
+        if expires - created != timedelta(
+            seconds=WORDPRESS_OPERATOR_PROPOSAL_TTL_SECONDS
+        ) or (
+            not self.replayed
+            and (
+                self.state is not WordPressOperatorProposalState.PROPOSED
+                or expires <= datetime.now(timezone.utc)
             )
         ):
             fail_wordpress_operator(WordPressOperatorFailureCode.RESPONSE_INVALID)
+
+    def requires_new_proposal(self, now: datetime | None = None) -> bool:
+        return self.state in {
+            WordPressOperatorProposalState.APPLIED,
+            WordPressOperatorProposalState.FAILED,
+            WordPressOperatorProposalState.NEEDS_RECOVERY,
+            WordPressOperatorProposalState.EXPIRED,
+        } or self.is_expired(now)
 
     def is_expired(self, now: datetime | None = None) -> bool:
         if now is None:

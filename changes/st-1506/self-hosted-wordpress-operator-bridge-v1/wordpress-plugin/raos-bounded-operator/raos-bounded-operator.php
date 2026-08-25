@@ -33,6 +33,8 @@ final class RAOS_Bounded_Operator
     const YOAST_CHECKSUM_MANIFEST_BYTES = 343370;
     const YOAST_CHECKSUM_FILE_COUNT = 1952;
     const CHECKSUM_CACHE_TTL = 300;
+    const CHECKSUM_MUTEX_PURPOSE = 'YOAST_CHECKSUM';
+    const PROPOSAL_CREATE_MUTEX_PURPOSE = 'PROPOSAL_CREATE';
     const YOAST_ARCHIVE_SHA256 = '381edc1603147bd76af81341f21c9155ff3e9f6ce29ed20886d889fb9d6744fb';
     const YOAST_ARCHIVE_BYTES = 5151735;
     const SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
@@ -49,6 +51,10 @@ final class RAOS_Bounded_Operator
     const MAX_PROPOSAL_ROWS = 1000;
     const CANONICAL_VECTOR_BYTES = 870;
     const CANONICAL_VECTOR_SHA256 = '699a1c5a40786449e3f0241958a594f436e03504472a592d2abc1e3eae2b7d90';
+    const REVIEWED_THEME_RELEASE_STATE = 'NO_REVIEWED_UPGRADE';
+    const REVIEWED_THEME_RUNTIME_MANIFEST_SHA256 = 'dcec77cd8fd15eb1eff6ea5f2661cfd34f62a0799f2decdd31602e24c683670c';
+    const REVIEWED_THEME_RELEASE_JSON_SHA256 = '47326724a60c84102c3a38b548fab152c2044457f2c7b8b0b6712a80f0a04272';
+    const REVIEWED_THEME_RELEASE_JSON = '{"file_manifest":[{"path":"assets/images/article-suitcase-guide.webp","sha256":"23c585a03598a8521fd797c036d2caad4350139ad709ca9b0cfc3ab18ad993ad","size":70148},{"path":"assets/images/brand-mark.svg","sha256":"bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3","size":331},{"path":"assets/images/home-hero.webp","sha256":"df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea","size":133648},{"path":"assets/theme.css","sha256":"63b55476a03f822b6723d3df141b9f3e4215c09e99e7dd366999fa12f29db8f2","size":10345},{"path":"functions.php","sha256":"aa38573d0b050a87a8dd48f5c8d71d78a0605b16fe04798d39c46bbcc81479ae","size":83520},{"path":"parts/footer.html","sha256":"ed8d2c2242575b08ad442752786b15b2184e649e4e7839fe22ae5a4609425aa0","size":581},{"path":"parts/header.html","sha256":"e3a125c165aa3f59e719ea9f78989fbc8a1ccb125db7f7ab69a0df28f1303e46","size":403},{"path":"raos-assets.v1.json","sha256":"df12cf49489faf0f9bb74b6fdda25d6a414b05a51a90142e799f0816f8317b95","size":1694},{"path":"style.css","sha256":"4d81df712a9895b1579e99bd19510f9c7c9977b815b0dba360f7bea3d29f8492","size":265},{"path":"templates/front-page.html","sha256":"86972888a39444adfb2882755850693d07e6bed5738b76119741f8fe669e7ae0","size":3625},{"path":"templates/single.html","sha256":"5dd6acd3d1aed444322d85f72bfcc9de1dd1aaf266334febe8d13c36e35f14bb","size":944},{"path":"theme-contract.v1.json","sha256":"173b7832dd96ef0dbdb695ce35ca0261a8a92575fcc676b9eb2a4a32c1ccdfc8","size":12410},{"path":"theme.json","sha256":"af7ed75442b05192c4185a7bbe8ba8a95ee8e757d0f006aacf804e5801c03d7c","size":1933}],"from_version":"1.1.1","package_sha256":"072ba1f5864af0b7f5b5b3c9deaf04ce6c162a13132762b7ffda0b0823de35a7","package_size":321987,"slug":"kurashinoshirube-child","to_version":"1.1.1"}';
 
     private static $instance = null;
     private static $application_password_user_id = 0;
@@ -426,14 +432,70 @@ final class RAOS_Bounded_Operator
         }
         self::install_role();
         self::install_tables();
-        if (self::append_audit(
-            'PLUGIN_ACTIVATED',
-            str_repeat('0', 64),
-            'ROLE_AND_TABLES_READY',
-            get_current_user_id()
-        ) === false) {
+        if (! self::append_activation_audit()) {
             wp_die(esc_html('RAOS operator audit initialization failed.'));
         }
+    }
+
+    private static function append_activation_audit()
+    {
+        global $wpdb;
+        if (! self::operator_tables_are_innodb()
+            || $wpdb->query('START TRANSACTION') === false) {
+            return false;
+        }
+        try {
+            if (self::append_audit(
+                'PLUGIN_ACTIVATED',
+                str_repeat('0', 64),
+                'ROLE_AND_TABLES_READY',
+                get_current_user_id()
+            ) === false) {
+                $wpdb->query('ROLLBACK');
+                return false;
+            }
+            if ($wpdb->query('COMMIT') === false) {
+                $wpdb->query('ROLLBACK');
+                return false;
+            }
+        } catch (Throwable $exception) {
+            $wpdb->query('ROLLBACK');
+            return false;
+        }
+        return true;
+    }
+
+    private static function operator_tables_are_innodb()
+    {
+        return self::operator_table_is_innodb(self::proposal_table())
+            && self::operator_table_is_innodb(self::audit_table());
+    }
+
+    private static function operator_table_is_innodb($table)
+    {
+        global $wpdb;
+        if (! is_string($table)
+            || ! in_array(
+                $table,
+                array(self::proposal_table(), self::audit_table()),
+                true
+            )) {
+            return false;
+        }
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT ENGINE FROM information_schema.TABLES '
+                . 'WHERE BINARY TABLE_SCHEMA = BINARY DATABASE() '
+                . 'AND BINARY TABLE_NAME = BINARY %s',
+                $table
+            ),
+            ARRAY_A
+        );
+        return $wpdb->last_error === ''
+            && is_array($rows)
+            && count($rows) === 1
+            && isset($rows[0]['ENGINE'])
+            && $rows[0]['ENGINE'] === 'InnoDB';
     }
 
     private static function install_role()
@@ -768,30 +830,149 @@ final class RAOS_Bounded_Operator
             }
             return rest_ensure_response($this->checksum_response($cached_result));
         }
-        $lock_key = 'raos_operator_checksum_lock_v1';
-        if (! add_option($lock_key, (string) time(), '', false)) {
+        $mutex_name = $this->auxiliary_mutex_name(self::CHECKSUM_MUTEX_PURPOSE);
+        $mutex_state = $this->acquire_auxiliary_mutex($mutex_name);
+        if ($mutex_state === 'BUSY') {
             return rest_ensure_response($this->checksum_unavailable('YOAST_CHECKSUM_BUSY'));
         }
-        try {
-            $result = $this->compute_yoast_checksum();
-        } finally {
-            delete_option($lock_key);
-        }
-        if ($this->valid_checksum_result($result)) {
-            set_transient(
-                'raos_operator_yoast_checksum_v1',
-                $this->checksum_cache_record($result),
-                self::CHECKSUM_CACHE_TTL
+        if ($mutex_state !== 'ACQUIRED') {
+            return rest_ensure_response(
+                $this->checksum_unavailable('YOAST_CHECKSUM_LOCK_UNAVAILABLE')
             );
-        } else {
-            $result = array(
-                'status' => 'UNAVAILABLE',
-                'code' => 'YOAST_CHECKSUM_INTERNAL_INVALID',
-                'checked_file_count' => 0,
-                'mismatch_count' => 0,
+        }
+        $released = false;
+        $from_cache = false;
+        try {
+            $locked_cached = get_transient('raos_operator_yoast_checksum_v1');
+            if ($locked_cached !== false) {
+                $locked_result = $this->validated_checksum_cache($locked_cached);
+                $result = is_wp_error($locked_result)
+                    ? $this->checksum_unavailable_result(
+                        'YOAST_CHECKSUM_CACHE_INVALID'
+                    )
+                    : $locked_result;
+                $from_cache = true;
+            } else {
+                $result = $this->auxiliary_mutex_is_owned($mutex_name)
+                    ? $this->compute_yoast_checksum()
+                    : $this->checksum_unavailable_result(
+                        'YOAST_CHECKSUM_LOCK_LOST'
+                    );
+            }
+            if (! $this->auxiliary_mutex_is_owned($mutex_name)) {
+                $result = $this->checksum_unavailable_result(
+                    'YOAST_CHECKSUM_LOCK_LOST'
+                );
+            } elseif (! $this->valid_checksum_result($result)) {
+                $result = $this->checksum_unavailable_result(
+                    'YOAST_CHECKSUM_INTERNAL_INVALID'
+                );
+            } elseif (! $from_cache) {
+                if (! set_transient(
+                    'raos_operator_yoast_checksum_v1',
+                    $this->checksum_cache_record($result),
+                    self::CHECKSUM_CACHE_TTL
+                )) {
+                    $result = $this->checksum_unavailable_result(
+                        'YOAST_CHECKSUM_CACHE_WRITE_FAILED'
+                    );
+                }
+                if (! $this->auxiliary_mutex_is_owned($mutex_name)) {
+                    $result = $this->checksum_unavailable_result(
+                        'YOAST_CHECKSUM_LOCK_LOST'
+                    );
+                }
+            }
+        } catch (Throwable $exception) {
+            $result = $this->checksum_unavailable_result(
+                'YOAST_CHECKSUM_INTERNAL_INVALID'
+            );
+        } finally {
+            $released = $this->release_auxiliary_mutex($mutex_name);
+        }
+        if (! $released) {
+            return rest_ensure_response(
+                $this->checksum_unavailable('YOAST_CHECKSUM_LOCK_RELEASE_UNCERTAIN')
             );
         }
         return rest_ensure_response($this->checksum_response($result));
+    }
+
+    private function auxiliary_mutex_name($purpose)
+    {
+        global $wpdb;
+        $prefixes = array(
+            self::CHECKSUM_MUTEX_PURPOSE => 'raos_ck_v1_',
+            self::PROPOSAL_CREATE_MUTEX_PURPOSE => 'raos_pc_v1_',
+        );
+        if (! is_string($purpose)
+            || ! isset($prefixes[$purpose])
+            || ! defined('DB_NAME')
+            || ! is_string(DB_NAME)
+            || DB_NAME === ''
+            || ! is_string($wpdb->prefix)
+            || $wpdb->prefix === '') {
+            return null;
+        }
+        $scope = DB_NAME . "\n" . $wpdb->prefix . "\n"
+            . self::SITE_ORIGIN . "\n" . $purpose;
+        return $prefixes[$purpose] . substr(hash('sha256', $scope), 0, 48);
+    }
+
+    private function acquire_auxiliary_mutex($mutex_name)
+    {
+        global $wpdb;
+        if (! is_string($mutex_name)
+            || strlen($mutex_name) > 64
+            || ! preg_match('/\A[A-Za-z0-9_]+\z/', $mutex_name)) {
+            return 'UNAVAILABLE';
+        }
+        $existing_owner = $wpdb->get_var(
+            $wpdb->prepare('SELECT IS_USED_LOCK(%s)', $mutex_name)
+        );
+        if ($wpdb->last_error !== '') {
+            return 'UNAVAILABLE';
+        }
+        if ($existing_owner !== null) {
+            return 'BUSY';
+        }
+        $acquired = $wpdb->get_var(
+            $wpdb->prepare('SELECT GET_LOCK(%s, 0)', $mutex_name)
+        );
+        if ($wpdb->last_error !== '') {
+            return 'UNAVAILABLE';
+        }
+        if ((string) $acquired === '1') {
+            return 'ACQUIRED';
+        }
+        return (string) $acquired === '0' ? 'BUSY' : 'UNAVAILABLE';
+    }
+
+    private function auxiliary_mutex_is_owned($mutex_name)
+    {
+        global $wpdb;
+        if (! is_string($mutex_name)) {
+            return false;
+        }
+        $owned = $wpdb->get_var(
+            $wpdb->prepare(
+                'SELECT (IS_USED_LOCK(%s) = CONNECTION_ID())',
+                $mutex_name
+            )
+        );
+        return $wpdb->last_error === '' && (string) $owned === '1';
+    }
+
+    private function release_auxiliary_mutex($mutex_name)
+    {
+        global $wpdb;
+        if (! $this->auxiliary_mutex_is_owned($mutex_name)) {
+            return false;
+        }
+        $released = $wpdb->get_var(
+            $wpdb->prepare('SELECT RELEASE_LOCK(%s)', $mutex_name)
+        );
+        return $wpdb->last_error === '' && (string) $released === '1';
     }
 
     private function compute_yoast_checksum()
@@ -884,7 +1065,11 @@ final class RAOS_Bounded_Operator
                 array(
                     'YOAST_CHECKSUM_BUSY',
                     'YOAST_CHECKSUM_CACHE_INVALID',
+                    'YOAST_CHECKSUM_CACHE_WRITE_FAILED',
                     'YOAST_CHECKSUM_INTERNAL_INVALID',
+                    'YOAST_CHECKSUM_LOCK_LOST',
+                    'YOAST_CHECKSUM_LOCK_RELEASE_UNCERTAIN',
+                    'YOAST_CHECKSUM_LOCK_UNAVAILABLE',
                     'YOAST_OFFICIAL_CHECKSUM_INVALID',
                     'YOAST_OFFICIAL_CHECKSUM_UNAVAILABLE',
                 ),
@@ -941,13 +1126,16 @@ final class RAOS_Bounded_Operator
 
     private function checksum_unavailable($code)
     {
-        return $this->checksum_response(
-            array(
-                'status' => 'UNAVAILABLE',
-                'code' => $code,
-                'checked_file_count' => 0,
-                'mismatch_count' => 0,
-            )
+        return $this->checksum_response($this->checksum_unavailable_result($code));
+    }
+
+    private function checksum_unavailable_result($code)
+    {
+        return array(
+            'status' => 'UNAVAILABLE',
+            'code' => $code,
+            'checked_file_count' => 0,
+            'mismatch_count' => 0,
         );
     }
 
@@ -1073,98 +1261,133 @@ final class RAOS_Bounded_Operator
             return self::error('raos_proposal_invalid', 400);
         }
         $proposal_id = hash('sha256', $canonical);
-        global $wpdb;
-        $table = self::proposal_table();
-        $existing = $wpdb->get_row(
-            $wpdb->prepare(
-                "SELECT proposal_id, operation, state, created_at, expires_at
-                 FROM {$table} WHERE proposal_id = %s LIMIT 1",
-                $proposal_id
-            ),
-            ARRAY_A
-        );
+        $existing = $this->proposal_replay_row($proposal_id);
+        if (is_wp_error($existing)) {
+            return $existing;
+        }
         if (is_array($existing)) {
-            if (! in_array($existing['state'], array('PROPOSED', 'APPROVED', 'APPLYING'), true)) {
-                return self::error('raos_terminal_proposal_requires_new_token', 409);
-            }
-            return $this->proposal_response($existing, true);
+            return $this->validated_proposal_replay_response(
+                $existing,
+                $proposal_id,
+                $canonical
+            );
         }
 
-        $creation_lock = 'raos_operator_proposal_create_lock_v1';
-        if (! add_option($creation_lock, (string) time(), '', false)) {
+        $mutex_name = $this->auxiliary_mutex_name(
+            self::PROPOSAL_CREATE_MUTEX_PURPOSE
+        );
+        $mutex_state = $this->acquire_auxiliary_mutex($mutex_name);
+        if ($mutex_state === 'BUSY') {
             return self::error('raos_proposal_creation_busy', 429);
         }
+        if ($mutex_state !== 'ACQUIRED') {
+            return self::error('raos_proposal_creation_lock_unavailable', 500);
+        }
+        $released = false;
         try {
-            $locked_existing = $wpdb->get_row(
-                $wpdb->prepare(
-                    "SELECT proposal_id, operation, state, created_at, expires_at
-                     FROM {$table} WHERE proposal_id = %s LIMIT 1",
-                    $proposal_id
-                ),
-                ARRAY_A
-            );
-            if (is_array($locked_existing)) {
-                if (! in_array(
-                    $locked_existing['state'],
-                    array('PROPOSED', 'APPROVED', 'APPLYING'),
-                    true
-                )) {
-                    return self::error('raos_terminal_proposal_requires_new_token', 409);
-                }
-                return $this->proposal_response($locked_existing, true);
-            }
-            $capacity = $this->proposal_capacity_available(get_current_user_id());
-            if (is_wp_error($capacity)) {
-                return $capacity;
-            }
-            $before_state_hash = $this->capture_before_state_hash($normalized);
-            if (is_wp_error($before_state_hash)) {
-                return $before_state_hash;
-            }
-
-            $created_at = gmdate('Y-m-d H:i:s');
-            $expires_at = gmdate('Y-m-d H:i:s', time() + $normalized['ttl_seconds']);
-            if ($wpdb->query('START TRANSACTION') === false) {
-                return self::error('raos_transaction_unavailable', 500);
-            }
-            $inserted = $wpdb->insert(
-                $table,
-                array(
-                    'proposal_id' => $proposal_id,
-                    'operation' => $normalized['operation'],
-                    'request_json' => $canonical,
-                    'state' => 'PROPOSED',
-                    'created_at' => $created_at,
-                    'expires_at' => $expires_at,
-                    'proposer_user_id' => get_current_user_id(),
-                    'before_state_hash' => $before_state_hash,
-                    'state_version' => 1,
-                ),
-                array('%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d')
-            );
-            if ($inserted !== 1) {
-                $wpdb->query('ROLLBACK');
-                return self::error('raos_proposal_store_failed', 500);
-            }
-            $audit_hash = self::append_audit(
-                'PROPOSAL_CREATED',
+            $response = $this->create_proposal_under_mutex(
+                $normalized,
+                $canonical,
                 $proposal_id,
-                'PROPOSED',
-                get_current_user_id()
+                $mutex_name
             );
-            if (! is_string($audit_hash)) {
-                $wpdb->query('ROLLBACK');
-                return self::error('raos_audit_write_failed', 500);
-            }
-            if ($wpdb->query('COMMIT') === false) {
-                $wpdb->query('ROLLBACK');
-                return self::error('raos_transaction_commit_failed', 500);
-            }
         } catch (Throwable $exception) {
+            global $wpdb;
+            $wpdb->query('ROLLBACK');
+            $response = self::error('raos_proposal_store_failed', 500);
+        } finally {
+            $released = $this->release_auxiliary_mutex($mutex_name);
+        }
+        if (! $released) {
+            return self::error(
+                'raos_proposal_creation_lock_release_uncertain',
+                500
+            );
+        }
+        return $response;
+    }
+
+    private function create_proposal_under_mutex(
+        array $normalized,
+        $canonical,
+        $proposal_id,
+        $mutex_name
+    ) {
+        global $wpdb;
+        if (! $this->auxiliary_mutex_is_owned($mutex_name)) {
+            return self::error('raos_proposal_creation_lock_lost', 500);
+        }
+        $locked_existing = $this->proposal_replay_row($proposal_id);
+        if (is_wp_error($locked_existing)) {
+            return $locked_existing;
+        }
+        if (is_array($locked_existing)) {
+            return $this->validated_proposal_replay_response(
+                $locked_existing,
+                $proposal_id,
+                $canonical
+            );
+        }
+        $capacity = $this->proposal_capacity_available(get_current_user_id());
+        if (is_wp_error($capacity)) {
+            return $capacity;
+        }
+        $before_state_hash = $this->capture_before_state_hash($normalized);
+        if (is_wp_error($before_state_hash)) {
+            return $before_state_hash;
+        }
+        if (! $this->auxiliary_mutex_is_owned($mutex_name)) {
+            return self::error('raos_proposal_creation_lock_lost', 500);
+        }
+
+        $created_epoch = time();
+        $created_at = gmdate('Y-m-d H:i:s', $created_epoch);
+        $expires_at = gmdate(
+            'Y-m-d H:i:s',
+            $created_epoch + $normalized['ttl_seconds']
+        );
+        if ($wpdb->query('START TRANSACTION') === false) {
+            return self::error('raos_transaction_unavailable', 500);
+        }
+        $table = self::proposal_table();
+        $inserted = $wpdb->insert(
+            $table,
+            array(
+                'proposal_id' => $proposal_id,
+                'operation' => $normalized['operation'],
+                'request_json' => $canonical,
+                'state' => 'PROPOSED',
+                'created_at' => $created_at,
+                'expires_at' => $expires_at,
+                'proposer_user_id' => get_current_user_id(),
+                'before_state_hash' => $before_state_hash,
+                'state_version' => 1,
+            ),
+            array('%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d')
+        );
+        if ($inserted !== 1) {
             $wpdb->query('ROLLBACK');
             return self::error('raos_proposal_store_failed', 500);
-        } finally {
-            delete_option($creation_lock);
+        }
+        $audit_hash = self::append_audit(
+            'PROPOSAL_CREATED',
+            $proposal_id,
+            'PROPOSED',
+            get_current_user_id()
+        );
+        if (! is_string($audit_hash)
+            || ! $this->auxiliary_mutex_is_owned($mutex_name)) {
+            $wpdb->query('ROLLBACK');
+            return self::error(
+                is_string($audit_hash)
+                    ? 'raos_proposal_creation_lock_lost'
+                    : 'raos_audit_write_failed',
+                500
+            );
+        }
+        if ($wpdb->query('COMMIT') === false) {
+            $wpdb->query('ROLLBACK');
+            return self::error('raos_transaction_commit_failed', 500);
         }
         return $this->proposal_response(
             array(
@@ -1176,6 +1399,103 @@ final class RAOS_Bounded_Operator
             ),
             false
         );
+    }
+
+    private function proposal_replay_row($proposal_id)
+    {
+        global $wpdb;
+        $table = self::proposal_table();
+        $row = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT proposal_id, operation, request_json, state, created_at,
+                        expires_at, proposer_user_id
+                 FROM {$table} WHERE proposal_id = %s LIMIT 1",
+                $proposal_id
+            ),
+            ARRAY_A
+        );
+        if ($wpdb->last_error !== '') {
+            return self::error('raos_proposal_lookup_failed', 500);
+        }
+        return is_array($row) ? $row : null;
+    }
+
+    private function validated_proposal_replay_response(
+        array $row,
+        $proposal_id,
+        $canonical
+    ) {
+        $states = array(
+            'PROPOSED',
+            'APPROVED',
+            'APPLYING',
+            'APPLIED',
+            'FAILED',
+            'NEEDS_RECOVERY',
+            'EXPIRED',
+        );
+        if (! $this->has_exact_keys(
+            $row,
+            array(
+                'proposal_id',
+                'operation',
+                'request_json',
+                'state',
+                'created_at',
+                'expires_at',
+                'proposer_user_id',
+            )
+        )
+            || ! is_string($row['proposal_id'])
+            || ! hash_equals($proposal_id, $row['proposal_id'])
+            || ! is_string($row['request_json'])
+            || ! hash_equals($canonical, $row['request_json'])
+            || ! hash_equals($proposal_id, hash('sha256', $row['request_json']))
+            || ! is_string($row['operation'])
+            || ! is_string($row['state'])
+            || ! in_array($row['state'], $states, true)
+            || ! is_string($row['created_at'])
+            || ! is_string($row['expires_at'])
+            || (! is_int($row['proposer_user_id'])
+                && (! is_string($row['proposer_user_id'])
+                    || ! preg_match('/\A[1-9][0-9]*\z/', $row['proposer_user_id'])))
+            || (int) $row['proposer_user_id'] !== get_current_user_id()) {
+            return self::error('raos_proposal_record_invalid', 409);
+        }
+        $created_epoch = self::strict_mysql_utc_epoch($row['created_at']);
+        $expires_epoch = self::strict_mysql_utc_epoch($row['expires_at']);
+        if (! is_int($created_epoch)
+            || ! is_int($expires_epoch)
+            || $expires_epoch - $created_epoch !== self::DEFAULT_TTL) {
+            return self::error('raos_proposal_record_invalid', 409);
+        }
+        $decoded = json_decode($row['request_json'], true);
+        $normalized = is_array($decoded)
+            ? $this->normalize_proposal_request($decoded)
+            : self::error('raos_proposal_record_invalid', 409);
+        if (is_wp_error($normalized)
+            || $normalized['operation'] !== $row['operation']
+            || self::canonical_json($normalized) !== $row['request_json']) {
+            return self::error('raos_proposal_record_invalid', 409);
+        }
+        return $this->proposal_response($row, true);
+    }
+
+    private static function strict_mysql_utc_epoch($value)
+    {
+        if (! is_string($value)
+            || ! preg_match(
+                '/\A[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01]) '
+                . '(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\z/',
+                $value
+            )) {
+            return null;
+        }
+        $epoch = strtotime($value . ' UTC');
+        if ($epoch === false || gmdate('Y-m-d H:i:s', $epoch) !== $value) {
+            return null;
+        }
+        return $epoch;
     }
 
     private function proposal_capacity_available($user_id)
@@ -1418,7 +1738,6 @@ final class RAOS_Bounded_Operator
             || $theme['from_version'] !== self::THEME_FROM_VERSION
             || ! preg_match('/\A(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\z/', $theme['from_version'])
             || ! preg_match('/\A(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\z/', $theme['to_version'])
-            || version_compare($theme['to_version'], $theme['from_version'], '<=')
             || ! is_int($theme['package_size'])
             || $theme['package_size'] < 1
             || $theme['package_size'] > self::MAX_PACKAGE_BYTES
@@ -1471,7 +1790,7 @@ final class RAOS_Bounded_Operator
                 return strcmp($left['path'], $right['path']);
             }
         );
-        return array(
+        $normalized = array(
             'slug' => self::THEME_SLUG,
             'from_version' => $theme['from_version'],
             'to_version' => $theme['to_version'],
@@ -1479,6 +1798,49 @@ final class RAOS_Bounded_Operator
             'package_sha256' => $theme['package_sha256'],
             'file_manifest' => $manifest,
         );
+        $reviewed = $this->reviewed_theme_release_binding();
+        if (is_wp_error($reviewed)) {
+            return $reviewed;
+        }
+        if (self::canonical_json($normalized) !== self::REVIEWED_THEME_RELEASE_JSON) {
+            return self::error('raos_theme_release_not_reviewed', 409);
+        }
+        if (self::REVIEWED_THEME_RELEASE_STATE !== 'AVAILABLE'
+            || version_compare(
+                $reviewed['to_version'],
+                $reviewed['from_version'],
+                '<='
+            )) {
+            return self::error('raos_theme_release_not_available', 409);
+        }
+        return $reviewed;
+    }
+
+    private function reviewed_theme_release_binding()
+    {
+        if (! hash_equals(
+            self::REVIEWED_THEME_RELEASE_JSON_SHA256,
+            hash('sha256', self::REVIEWED_THEME_RELEASE_JSON)
+        )) {
+            return self::error('raos_theme_release_binding_invalid', 500);
+        }
+        $reviewed = json_decode(self::REVIEWED_THEME_RELEASE_JSON, true);
+        if (! is_array($reviewed)
+            || ! $this->has_exact_keys(
+                $reviewed,
+                array(
+                    'slug',
+                    'from_version',
+                    'to_version',
+                    'package_size',
+                    'package_sha256',
+                    'file_manifest',
+                )
+            )
+            || self::canonical_json($reviewed) !== self::REVIEWED_THEME_RELEASE_JSON) {
+            return self::error('raos_theme_release_binding_invalid', 500);
+        }
+        return $reviewed;
     }
 
     private function has_only_keys(array $value, array $allowed)
@@ -2594,6 +2956,414 @@ final class RAOS_Bounded_Operator
         return true;
     }
 
+    private function write_private_theme_stage($bytes, array $spec)
+    {
+        if (! is_string($bytes)
+            || strlen($bytes) !== $spec['package_size']
+            || ! hash_equals($spec['package_sha256'], hash('sha256', $bytes))) {
+            return null;
+        }
+        $base = realpath(get_temp_dir());
+        if (! is_string($base) || ! is_dir($base)) {
+            return null;
+        }
+        try {
+            $stage_suffix = bin2hex(random_bytes(24));
+        } catch (Throwable $exception) {
+            return null;
+        }
+        $directory = $base . DIRECTORY_SEPARATOR . 'raos-theme-stage-' . $stage_suffix;
+        if (file_exists($directory) || ! @mkdir($directory, 0700)) {
+            return null;
+        }
+        if (! @chmod($directory, 0700)) {
+            @rmdir($directory);
+            return null;
+        }
+        clearstatcache(true, $directory);
+        $directory_stat = lstat($directory);
+        if (! is_array($directory_stat)
+            || (($directory_stat['mode'] & 0170000) !== 0040000)
+            || (($directory_stat['mode'] & 0777) !== 0700)
+            || realpath($directory) !== $directory) {
+            @rmdir($directory);
+            return null;
+        }
+        $path = $directory . DIRECTORY_SEPARATOR . 'package.zip';
+        $handle = @fopen($path, 'x+b');
+        if ($handle === false || ! flock($handle, LOCK_EX)) {
+            if (is_resource($handle)) {
+                fclose($handle);
+            }
+            $this->delete_private_theme_stage($directory, $path);
+            return null;
+        }
+        $offset = 0;
+        $length = strlen($bytes);
+        $written = true;
+        while ($offset < $length) {
+            $chunk = fwrite($handle, substr($bytes, $offset));
+            if (! is_int($chunk) || $chunk < 1) {
+                $written = false;
+                break;
+            }
+            $offset += $chunk;
+        }
+        $flushed = fflush($handle);
+        $permissioned = chmod($path, 0600);
+        $unlocked = flock($handle, LOCK_UN);
+        $closed = fclose($handle);
+        if (! $written
+            || $offset !== $length
+            || ! $flushed
+            || ! $permissioned
+            || ! $unlocked
+            || ! $closed) {
+            $this->delete_private_theme_stage($directory, $path);
+            return null;
+        }
+        return array('directory' => $directory, 'path' => $path);
+    }
+
+    private function capture_staged_theme_package($directory, $path, array $spec)
+    {
+        if (! is_string($directory)
+            || ! is_string($path)
+            || dirname($path) !== $directory
+            || basename($path) !== 'package.zip') {
+            return null;
+        }
+        clearstatcache(true, $directory);
+        clearstatcache(true, $path);
+        $directory_stat = lstat($directory);
+        $before = lstat($path);
+        if (! is_array($directory_stat)
+            || ! is_array($before)
+            || (($directory_stat['mode'] & 0170000) !== 0040000)
+            || (($directory_stat['mode'] & 0777) !== 0700)
+            || (($before['mode'] & 0170000) !== 0100000)
+            || (($before['mode'] & 0777) !== 0600)
+            || (int) $before['nlink'] !== 1
+            || (int) $before['size'] !== $spec['package_size']
+            || is_link($directory)
+            || is_link($path)
+            || realpath($directory) !== $directory
+            || realpath($path) !== $path) {
+            return null;
+        }
+        $digest = hash_file('sha256', $path);
+        clearstatcache(true, $path);
+        $after = lstat($path);
+        if (! is_string($digest)
+            || ! hash_equals($spec['package_sha256'], $digest)
+            || ! is_array($after)
+            || (int) $after['dev'] !== (int) $before['dev']
+            || (int) $after['ino'] !== (int) $before['ino']
+            || (int) $after['mode'] !== (int) $before['mode']
+            || (int) $after['nlink'] !== 1
+            || (int) $after['size'] !== (int) $before['size']) {
+            return null;
+        }
+        return array(
+            'directory_dev' => (int) $directory_stat['dev'],
+            'directory_ino' => (int) $directory_stat['ino'],
+            'file_dev' => (int) $after['dev'],
+            'file_ino' => (int) $after['ino'],
+            'package_sha256' => $digest,
+            'package_size' => (int) $after['size'],
+        );
+    }
+
+    private function staged_theme_package_matches_capture(
+        array $expected,
+        $directory,
+        $path,
+        array $spec
+    ) {
+        $actual = $this->capture_staged_theme_package($directory, $path, $spec);
+        return is_array($actual) && $actual === $expected;
+    }
+
+    private function theme_upgrader_hook_extra_is_exact(
+        $hook_extra,
+        $marker,
+        array $backup
+    ) {
+        return is_array($hook_extra)
+            && $this->has_exact_keys(
+                $hook_extra,
+                array(
+                    'action',
+                    'raos_operator_theme_apply_marker',
+                    'temp_backup',
+                    'type',
+                )
+            )
+            && isset(
+                $hook_extra['action'],
+                $hook_extra['raos_operator_theme_apply_marker'],
+                $hook_extra['temp_backup'],
+                $hook_extra['type']
+            )
+            && $hook_extra['action'] === 'install'
+            && $hook_extra['type'] === 'theme'
+            && is_string($hook_extra['raos_operator_theme_apply_marker'])
+            && hash_equals(
+                $marker,
+                $hook_extra['raos_operator_theme_apply_marker']
+            )
+            && is_array($hook_extra['temp_backup'])
+            && $hook_extra['temp_backup'] === $backup;
+    }
+
+    private function capture_extracted_theme_source(
+        $source,
+        $remote_source,
+        array $spec
+    ) {
+        if (! is_string($source)
+            || ! is_string($remote_source)
+            || $source === ''
+            || $remote_source === ''
+            || strpos($source, "\0") !== false
+            || strpos($remote_source, "\0") !== false) {
+            return null;
+        }
+        $source_path = rtrim($source, '/\\');
+        $remote_path = rtrim($remote_source, '/\\');
+        $source_real = realpath($source_path);
+        $remote_real = realpath($remote_path);
+        clearstatcache(true, $source_path);
+        clearstatcache(true, $remote_path);
+        $root_before = @lstat($source_path);
+        $remote_before = @lstat($remote_path);
+        if (! is_string($source_real)
+            || ! is_string($remote_real)
+            || $source_real !== $source_path
+            || $remote_real !== $remote_path
+            || dirname($source_real) !== $remote_real
+            || basename($source_real) !== self::THEME_SLUG
+            || ! is_array($root_before)
+            || ! is_array($remote_before)
+            || (($root_before['mode'] & 0170000) !== 0040000)
+            || (($remote_before['mode'] & 0170000) !== 0040000)
+            || is_link($source_path)
+            || is_link($remote_path)) {
+            return null;
+        }
+
+        $expected_files = array();
+        $expected_directories = array();
+        foreach ($spec['file_manifest'] as $entry) {
+            $expected_files[$entry['path']] = $entry;
+            $segments = explode('/', $entry['path']);
+            array_pop($segments);
+            $relative_directory = '';
+            foreach ($segments as $segment) {
+                $relative_directory = $relative_directory === ''
+                    ? $segment
+                    : $relative_directory . '/' . $segment;
+                $expected_directories[$relative_directory] = true;
+            }
+        }
+
+        $files = array();
+        $directories = array();
+        $identities = array();
+        try {
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator(
+                    $source_real,
+                    FilesystemIterator::SKIP_DOTS
+                ),
+                RecursiveIteratorIterator::SELF_FIRST
+            );
+            foreach ($iterator as $file_info) {
+                $absolute = $file_info->getPathname();
+                $relative = substr($absolute, strlen($source_real) + 1);
+                $relative = str_replace(DIRECTORY_SEPARATOR, '/', $relative);
+                if (! is_string($relative)
+                    || ! preg_match('/\A[A-Za-z0-9._\/-]+\z/', $relative)
+                    || ! $this->safe_relative_path($relative)
+                    || $file_info->isLink()) {
+                    return null;
+                }
+                clearstatcache(true, $absolute);
+                $before = @lstat($absolute);
+                $real = realpath($absolute);
+                if (! is_array($before)
+                    || ! is_string($real)
+                    || $real !== $absolute
+                    || strpos($real, $source_real . DIRECTORY_SEPARATOR) !== 0) {
+                    return null;
+                }
+                if ($file_info->isDir()) {
+                    if (! isset($expected_directories[$relative])
+                        || (($before['mode'] & 0170000) !== 0040000)) {
+                        return null;
+                    }
+                    clearstatcache(true, $absolute);
+                    $after = @lstat($absolute);
+                    if (! is_array($after)
+                        || (int) $after['dev'] !== (int) $before['dev']
+                        || (int) $after['ino'] !== (int) $before['ino']
+                        || (int) $after['mode'] !== (int) $before['mode']
+                        || (int) $after['nlink'] !== (int) $before['nlink']) {
+                        return null;
+                    }
+                    $directories[$relative] = true;
+                    $identities['directory:' . $relative] = array(
+                        'dev' => (int) $after['dev'],
+                        'ino' => (int) $after['ino'],
+                        'mode' => (int) $after['mode'],
+                        'nlink' => (int) $after['nlink'],
+                    );
+                    continue;
+                }
+                if (! $file_info->isFile()
+                    || ! isset($expected_files[$relative])
+                    || (($before['mode'] & 0170000) !== 0100000)
+                    || (int) $before['nlink'] !== 1
+                    || (int) $before['size'] !== $expected_files[$relative]['size']) {
+                    return null;
+                }
+                $digest = @hash_file('sha256', $absolute);
+                clearstatcache(true, $absolute);
+                $after = @lstat($absolute);
+                if (! is_string($digest)
+                    || ! hash_equals($expected_files[$relative]['sha256'], $digest)
+                    || ! is_array($after)
+                    || (int) $after['dev'] !== (int) $before['dev']
+                    || (int) $after['ino'] !== (int) $before['ino']
+                    || (int) $after['mode'] !== (int) $before['mode']
+                    || (int) $after['nlink'] !== 1
+                    || (int) $after['size'] !== (int) $before['size']) {
+                    return null;
+                }
+                $files[] = array(
+                    'path' => $relative,
+                    'size' => (int) $after['size'],
+                    'sha256' => $digest,
+                );
+                $identities['file:' . $relative] = array(
+                    'dev' => (int) $after['dev'],
+                    'ino' => (int) $after['ino'],
+                    'mode' => (int) $after['mode'],
+                    'nlink' => (int) $after['nlink'],
+                    'size' => (int) $after['size'],
+                );
+            }
+        } catch (Throwable $exception) {
+            return null;
+        }
+        usort(
+            $files,
+            function ($left, $right) {
+                return strcmp($left['path'], $right['path']);
+            }
+        );
+        ksort($directories, SORT_STRING);
+        ksort($expected_directories, SORT_STRING);
+        ksort($identities, SORT_STRING);
+        clearstatcache(true, $source_path);
+        clearstatcache(true, $remote_path);
+        $root_after = @lstat($source_path);
+        $remote_after = @lstat($remote_path);
+        if ($files !== $spec['file_manifest']
+            || $directories !== $expected_directories
+            || ! is_array($root_after)
+            || ! is_array($remote_after)
+            || (int) $root_after['dev'] !== (int) $root_before['dev']
+            || (int) $root_after['ino'] !== (int) $root_before['ino']
+            || (int) $root_after['mode'] !== (int) $root_before['mode']
+            || (int) $root_after['nlink'] !== (int) $root_before['nlink']
+            || (int) $remote_after['dev'] !== (int) $remote_before['dev']
+            || (int) $remote_after['ino'] !== (int) $remote_before['ino']
+            || (int) $remote_after['mode'] !== (int) $remote_before['mode']
+            || (int) $remote_after['nlink'] !== (int) $remote_before['nlink']
+            || realpath($source_path) !== $source_real
+            || realpath($remote_path) !== $remote_real) {
+            return null;
+        }
+        return array(
+            'file_manifest' => $files,
+            'identities' => $identities,
+            'remote_dev' => (int) $remote_after['dev'],
+            'remote_ino' => (int) $remote_after['ino'],
+            'remote_mode' => (int) $remote_after['mode'],
+            'remote_nlink' => (int) $remote_after['nlink'],
+            'root_dev' => (int) $root_after['dev'],
+            'root_ino' => (int) $root_after['ino'],
+            'root_mode' => (int) $root_after['mode'],
+            'root_nlink' => (int) $root_after['nlink'],
+        );
+    }
+
+    private function theme_clear_destination_is_exact(
+        $local_destination,
+        $remote_destination,
+        array $theme_root
+    ) {
+        if (! is_string($local_destination)
+            || ! is_string($remote_destination)
+            || ! $this->has_exact_keys(
+                $theme_root,
+                array('dev', 'ino', 'mode', 'path')
+            )) {
+            return false;
+        }
+        $local = rtrim($local_destination, '/\\');
+        $remote = rtrim($remote_destination, '/\\');
+        clearstatcache(true, $local);
+        clearstatcache(true, $remote);
+        $local_stat = @lstat($local);
+        // Core moved the theme child to backup, so the parent nlink may change.
+        return is_array($local_stat)
+            && realpath($local) === $theme_root['path']
+            && ! is_link($local)
+            && (int) $local_stat['dev'] === $theme_root['dev']
+            && (int) $local_stat['ino'] === $theme_root['ino']
+            && (int) $local_stat['mode'] === $theme_root['mode']
+            && $remote === $theme_root['path'] . DIRECTORY_SEPARATOR . self::THEME_SLUG
+            && ! file_exists($remote)
+            && ! is_link($remote);
+    }
+
+    private function delete_private_theme_stage($directory, $path)
+    {
+        if (! is_string($directory)
+            || ! is_string($path)
+            || dirname($path) !== $directory
+            || basename($path) !== 'package.zip') {
+            return false;
+        }
+        clearstatcache(true, $directory);
+        clearstatcache(true, $path);
+        $directory_stat = lstat($directory);
+        if (! is_array($directory_stat)
+            || (($directory_stat['mode'] & 0170000) !== 0040000)
+            || is_link($directory)
+            || realpath($directory) !== $directory) {
+            return false;
+        }
+        if (file_exists($path) || is_link($path)) {
+            $file_stat = lstat($path);
+            if (! is_array($file_stat)
+                || (($file_stat['mode'] & 0170000) !== 0100000)
+                || (int) $file_stat['nlink'] !== 1
+                || is_link($path)
+                || realpath($path) !== $path
+                || ! @unlink($path)) {
+                return false;
+            }
+        }
+        clearstatcache(true, $path);
+        return ! file_exists($path)
+            && ! is_link($path)
+            && @rmdir($directory)
+            && ! file_exists($directory);
+    }
+
     private function apply_theme_package(array $spec, $bytes, $before_state_hash)
     {
         if (! is_string($bytes)
@@ -2615,26 +3385,30 @@ final class RAOS_Bounded_Operator
         if (! class_exists('ZipArchive')) {
             return array('ok' => false, 'state' => 'FAILED', 'code' => 'THEME_ZIP_UNAVAILABLE');
         }
-        $temporary = wp_tempnam('raos-theme.zip');
-        if (! is_string($temporary) || $temporary === '') {
+        $stage = $this->write_private_theme_stage($bytes, $spec);
+        unset($bytes);
+        if (! is_array($stage)) {
             return array('ok' => false, 'state' => 'FAILED', 'code' => 'THEME_TEMPORARY_UNAVAILABLE');
         }
-        $written = file_put_contents($temporary, $bytes, LOCK_EX);
-        unset($bytes);
-        if ($written !== $spec['package_size']) {
-            if (is_file($temporary)) {
-                wp_delete_file($temporary);
-            }
-            return array('ok' => false, 'state' => 'FAILED', 'code' => 'THEME_TEMPORARY_WRITE_FAILED');
-        }
-        if (! chmod($temporary, 0600)) {
-            wp_delete_file($temporary);
-            return array('ok' => false, 'state' => 'FAILED', 'code' => 'THEME_TEMPORARY_PERMISSION_FAILED');
-        }
+        $staging_directory = $stage['directory'];
+        $temporary = $stage['path'];
         $validation = $this->validate_theme_zip($temporary, $spec);
         if (! $validation['ok']) {
-            wp_delete_file($temporary);
+            $this->delete_private_theme_stage($staging_directory, $temporary);
             return $validation;
+        }
+        $stage_capture = $this->capture_staged_theme_package(
+            $staging_directory,
+            $temporary,
+            $spec
+        );
+        if (! is_array($stage_capture)) {
+            $this->delete_private_theme_stage($staging_directory, $temporary);
+            return array(
+                'ok' => false,
+                'state' => 'FAILED',
+                'code' => 'THEME_STAGED_PACKAGE_INVALID',
+            );
         }
 
         require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -2643,15 +3417,46 @@ final class RAOS_Bounded_Operator
         if (get_filesystem_method() !== 'direct'
             || ! WP_Filesystem()
             || ! $wp_filesystem instanceof WP_Filesystem_Direct) {
-            wp_delete_file($temporary);
+            $this->delete_private_theme_stage($staging_directory, $temporary);
             return array(
                 'ok' => false,
                 'state' => 'FAILED',
                 'code' => 'THEME_FILESYSTEM_METHOD_UNSUPPORTED',
             );
         }
+        $theme_root_input = get_theme_root(self::THEME_SLUG);
+        if (! is_string($theme_root_input) || $theme_root_input === '') {
+            $this->delete_private_theme_stage($staging_directory, $temporary);
+            return array(
+                'ok' => false,
+                'state' => 'FAILED',
+                'code' => 'THEME_ROOT_INVALID',
+            );
+        }
+        $theme_root_path = rtrim($theme_root_input, '/\\');
+        $theme_root_real = realpath($theme_root_path);
+        clearstatcache(true, $theme_root_path);
+        $theme_root_stat = @lstat($theme_root_path);
+        if (! is_string($theme_root_real)
+            || $theme_root_real !== $theme_root_path
+            || ! is_array($theme_root_stat)
+            || (($theme_root_stat['mode'] & 0170000) !== 0040000)
+            || is_link($theme_root_path)) {
+            $this->delete_private_theme_stage($staging_directory, $temporary);
+            return array(
+                'ok' => false,
+                'state' => 'FAILED',
+                'code' => 'THEME_ROOT_INVALID',
+            );
+        }
+        $theme_root_capture = array(
+            'dev' => (int) $theme_root_stat['dev'],
+            'ino' => (int) $theme_root_stat['ino'],
+            'mode' => (int) $theme_root_stat['mode'],
+            'path' => $theme_root_real,
+        );
         if (! $this->theme_backup_is_absent()) {
-            wp_delete_file($temporary);
+            $this->delete_private_theme_stage($staging_directory, $temporary);
             return array(
                 'ok' => false,
                 'state' => 'NEEDS_RECOVERY',
@@ -2662,17 +3467,176 @@ final class RAOS_Bounded_Operator
         $upgrader = new Theme_Upgrader($skin);
         $backup = array(
             'slug' => self::THEME_SLUG,
-            'src' => get_theme_root(self::THEME_SLUG),
+            'src' => $theme_root_real,
             'dir' => 'themes',
         );
-        $backup_filter = function ($options) use ($backup) {
-            if (! isset($options['hook_extra']) || ! is_array($options['hook_extra'])) {
-                $options['hook_extra'] = array();
+        try {
+            $apply_marker = bin2hex(random_bytes(32));
+        } catch (Throwable $exception) {
+            $this->delete_private_theme_stage($staging_directory, $temporary);
+            return array(
+                'ok' => false,
+                'state' => 'FAILED',
+                'code' => 'THEME_UPGRADER_GUARD_UNAVAILABLE',
+            );
+        }
+        $backup_filter = function ($options) use ($backup, $apply_marker) {
+            if (! is_array($options)
+                || ! isset($options['hook_extra'])
+                || ! is_array($options['hook_extra'])
+                || ! $this->has_exact_keys(
+                    $options['hook_extra'],
+                    array('action', 'type')
+                )
+                || ! isset(
+                    $options['hook_extra']['action'],
+                    $options['hook_extra']['type']
+                )
+                || $options['hook_extra']['action'] !== 'install'
+                || $options['hook_extra']['type'] !== 'theme') {
+                return $options;
             }
             $options['hook_extra']['temp_backup'] = $backup;
+            $options['hook_extra']['raos_operator_theme_apply_marker'] = $apply_marker;
             return $options;
         };
+        if (! $this->staged_theme_package_matches_capture(
+            $stage_capture,
+            $staging_directory,
+            $temporary,
+            $spec
+        )) {
+            $this->delete_private_theme_stage($staging_directory, $temporary);
+            return array(
+                'ok' => false,
+                'state' => 'FAILED',
+                'code' => 'THEME_STAGED_PACKAGE_CHANGED',
+            );
+        }
+
+        $source_selection_count = 0;
+        $source_selection_rejected = false;
+        $source_selection_verified = false;
+        $selected_source = null;
+        $selected_remote_source = null;
+        $extracted_source_capture = null;
+        $source_filter = function (
+            $source,
+            $remote_source,
+            $filter_upgrader,
+            $hook_extra
+        ) use (
+            &$source_selection_count,
+            &$source_selection_rejected,
+            &$source_selection_verified,
+            &$selected_source,
+            &$selected_remote_source,
+            &$extracted_source_capture,
+            $upgrader,
+            $backup,
+            $apply_marker,
+            $stage_capture,
+            $staging_directory,
+            $temporary,
+            $spec
+        ) {
+            ++$source_selection_count;
+            if (is_wp_error($source)) {
+                return $source;
+            }
+            if ($source_selection_count !== 1
+                || $filter_upgrader !== $upgrader
+                || ! $this->theme_upgrader_hook_extra_is_exact(
+                    $hook_extra,
+                    $apply_marker,
+                    $backup
+                )
+                || ! $this->staged_theme_package_matches_capture(
+                    $stage_capture,
+                    $staging_directory,
+                    $temporary,
+                    $spec
+                )) {
+                $source_selection_rejected = true;
+                return self::error('raos_theme_upgrader_source_context_invalid', 409);
+            }
+            $capture = $this->capture_extracted_theme_source(
+                $source,
+                $remote_source,
+                $spec
+            );
+            if (! is_array($capture)) {
+                $source_selection_rejected = true;
+                return self::error('raos_theme_extracted_source_invalid', 409);
+            }
+            $selected_source = $source;
+            $selected_remote_source = $remote_source;
+            $extracted_source_capture = $capture;
+            $source_selection_verified = true;
+            return $source;
+        };
+
+        $clear_destination_count = 0;
+        $clear_destination_rejected = false;
+        $clear_destination_verified = false;
+        $clear_filter = function (
+            $removed,
+            $local_destination,
+            $remote_destination,
+            $hook_extra
+        ) use (
+            &$clear_destination_count,
+            &$clear_destination_rejected,
+            &$clear_destination_verified,
+            &$source_selection_verified,
+            &$selected_source,
+            &$selected_remote_source,
+            &$extracted_source_capture,
+            $backup,
+            $apply_marker,
+            $theme_root_capture,
+            $spec
+        ) {
+            if (is_wp_error($removed)) {
+                return $removed;
+            }
+            ++$clear_destination_count;
+            if ($clear_destination_count !== 1
+                || $removed !== true
+                || ! $source_selection_verified
+                || ! is_string($selected_source)
+                || ! is_string($selected_remote_source)
+                || ! is_array($extracted_source_capture)
+                || ! $this->theme_upgrader_hook_extra_is_exact(
+                    $hook_extra,
+                    $apply_marker,
+                    $backup
+                )
+                || ! $this->theme_clear_destination_is_exact(
+                    $local_destination,
+                    $remote_destination,
+                    $theme_root_capture
+                )) {
+                $clear_destination_rejected = true;
+                return self::error('raos_theme_upgrader_destination_context_invalid', 409);
+            }
+            $recaptured = $this->capture_extracted_theme_source(
+                $selected_source,
+                $selected_remote_source,
+                $spec
+            );
+            if (! is_array($recaptured)
+                || $recaptured !== $extracted_source_capture) {
+                $clear_destination_rejected = true;
+                return self::error('raos_theme_extracted_source_changed', 409);
+            }
+            $clear_destination_verified = true;
+            return true;
+        };
+
         add_filter('upgrader_package_options', $backup_filter, 999, 1);
+        add_filter('upgrader_source_selection', $source_filter, PHP_INT_MAX, 4);
+        add_filter('upgrader_clear_destination', $clear_filter, PHP_INT_MAX, 4);
         try {
             $upgrade_result = $upgrader->install(
                 $temporary,
@@ -2682,17 +3646,48 @@ final class RAOS_Bounded_Operator
             $upgrade_result = false;
         } finally {
             remove_filter('upgrader_package_options', $backup_filter, 999);
+            remove_filter('upgrader_source_selection', $source_filter, PHP_INT_MAX);
+            remove_filter('upgrader_clear_destination', $clear_filter, PHP_INT_MAX);
         }
-        wp_delete_file($temporary);
-        $temporary_deleted = ! file_exists($temporary);
+        $temporary_deleted = $this->delete_private_theme_stage(
+            $staging_directory,
+            $temporary
+        );
         remove_action('shutdown', array($upgrader, 'restore_temp_backup'), 10);
         remove_action('shutdown', array($upgrader, 'delete_temp_backup'), 100);
+        if ($source_selection_rejected) {
+            return $this->theme_restore_result(
+                $upgrader,
+                $backup,
+                $old_state,
+                'THEME_EXTRACTED_SOURCE_REJECTED'
+            );
+        }
+        if ($clear_destination_rejected) {
+            return $this->theme_restore_result(
+                $upgrader,
+                $backup,
+                $old_state,
+                'THEME_EXTRACTED_SOURCE_CHANGED_ROLLED_BACK'
+            );
+        }
         if (is_wp_error($upgrade_result) || $upgrade_result !== true) {
             return $this->theme_restore_result(
                 $upgrader,
                 $backup,
                 $old_state,
                 'THEME_UPDATE_FAILED_ROLLED_BACK'
+            );
+        }
+        if ($source_selection_count !== 1
+            || ! $source_selection_verified
+            || $clear_destination_count !== 1
+            || ! $clear_destination_verified) {
+            return $this->theme_restore_result(
+                $upgrader,
+                $backup,
+                $old_state,
+                'THEME_UPGRADER_GUARD_BYPASSED_ROLLED_BACK'
             );
         }
         if (! $temporary_deleted) {

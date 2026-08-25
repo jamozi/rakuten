@@ -18,23 +18,23 @@
   "generated_by": "scripts/build_st1506_wordpress_operator.py",
   "operator_contract_version": 1,
   "package": {
-    "bytes": 134448,
+    "bytes": 176440,
     "compression": "ZIP_STORED",
     "file_count": 2,
     "root": "raos-bounded-operator/",
-    "sha256": "1a07fada64dcd2866192e0624ec63eebae180f433a65f3ea251e80ebe851b9b8",
+    "sha256": "6eea427caf59ee163f673333fe5ceec52df934082b853f8e72619dcd513e65f2",
     "version": "1.0.0"
   },
   "paths": [
     {
-      "bytes": 8612,
+      "bytes": 8624,
       "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/ADR-001-HASH-BOUND-WORDPRESS-OPERATOR.md",
-      "sha256": "2624ebb0d289fe5b8db0ebfe0aba5696fd30afc04776edca9f62eded1fbd5580"
+      "sha256": "ee909fbdc997d198d41129e499298206071224a72e271ed72d9a1af836eab3cf"
     },
     {
-      "bytes": 10521,
+      "bytes": 10545,
       "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "c3d08e5cdf83adbd27de8f9acff0d81be22008d2a86f027ceab826324ecde87d"
+      "sha256": "2a8f605a1b81294874adff2da2c49cdb1de92d5892d6ea6481a35d581aa06696"
     },
     {
       "bytes": 2905,
@@ -42,9 +42,9 @@
       "sha256": "0fbc2b9f15f850c3a8ff4b2ceab668e931b50fdac01fc20550bbd51407bb7a1a"
     },
     {
-      "bytes": 15080,
+      "bytes": 15094,
       "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "9426d7337d1caf1fcd697f2af7f251ebc178a8f5b419f3b2de8bb3b3277601fc"
+      "sha256": "447f9966ce59425c5fe4da545b9768633e5e53fac9e7db1c840e64ccbe471366"
     },
     {
       "bytes": 2689,
@@ -52,9 +52,9 @@
       "sha256": "73ea2da2a910a8aea380de3c9364bfcd94c66f51f0a0d03bed4221a7888c3019"
     },
     {
-      "bytes": 3808,
+      "bytes": 3932,
       "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/README.md",
-      "sha256": "daf4670e52c1264a72e9e4189e549b6e88c47e68bf8788bf211fa613673009e3"
+      "sha256": "6d00bcbdd56bb6a7d58afadce8dd9d9f57323771ac0245956184ab062f24c276"
     },
     {
       "bytes": 1238,
@@ -62,19 +62,19 @@
       "sha256": "65dd77c345a1936596b96c80c91d2ff71f9074454437d469ea002f5ec9af9b1f"
     },
     {
-      "bytes": 23629,
+      "bytes": 24145,
       "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/contracts/self-hosted-wordpress-operator.v1.yaml",
-      "sha256": "06d0c5e4b42b74b89d26623720ca844c74add7ac82c4c4a761b261abcafe2fd1"
+      "sha256": "408e455e1c65ebe2352097aa08264de00a936c73ca9ca95468fd2f65d4bca009"
     },
     {
-      "bytes": 4485,
+      "bytes": 7471,
       "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/README.md",
-      "sha256": "3ff461eca0c27a3d7fc5d53592254572110c75f0d85c84a964d6ee976c8505c6"
+      "sha256": "d25627bcf692659e73ccdc129b629cc09cf0aff76ab97e7a54704969638f252a"
     },
     {
-      "bytes": 129633,
+      "bytes": 168639,
       "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/raos-bounded-operator.php",
-      "sha256": "eb028ba70bbc287cefb785131320c61438377dcc9806f8f09a5baec0b0d1f32c"
+      "sha256": "ac8dcd52579cddd1a798ff326bb7394fca80249e4b6c2766fe04d40b5d181036"
     },
     {
       "bytes": 69856,
@@ -92,9 +92,9 @@
       "sha256": "6f6ede5e08b6050430852e856234a157475c0977005dfd6a533f49d1863e1029"
     },
     {
-      "bytes": 26928,
+      "bytes": 27173,
       "path": "python/raos/domain/operations/self_hosted_wordpress_operator.py",
-      "sha256": "9fa92cf6363ba66342e7009ff6f62c2a7f567e5a993bb723f8d121b54d5e1ec4"
+      "sha256": "058fcdfde54695d32223e1d4cab6843c88b2e98b8247699c4a27fff19f87bb6a"
     },
     {
       "bytes": 3031,
@@ -127,9 +127,9 @@
       "sha256": "ea4c96f32e4bc5e62dbe78a5c26edf5b570544f75514fd1699ecb2d2146cbe12"
     },
     {
-      "bytes": 33422,
+      "bytes": 33497,
       "path": "scripts/st1506_wordpress_operator.py",
-      "sha256": "40b9d88aa6231b653dcd3c1860f58450d33f772f5ac1a2aabcb7200c037dd2b0"
+      "sha256": "95f4a5be34649ea47ecec7ad4ede4ceb728b6a782f0a7bab55f0550cb7906368"
     },
     {
       "bytes": 5028,

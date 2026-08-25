@@ -258,7 +258,7 @@ proposal_intent_journal:
   current_input_drift: REFUSE_AND_RETAIN_EXISTING_INTENT
   transport_or_response_failure: RETAIN_UNCHANGED
   clear_conditions:
-    create: VALIDATED_MATCHING_CREATE_RECEIPT_INCLUDING_EXPIRED_EXACT_REPLAY
+    create: VALIDATED_MATCHING_CREATE_RECEIPT_INCLUDING_EXPIRED_OR_TERMINAL_EXACT_REPLAY
     apply: VALIDATED_APPLIED_RECEIPT_WITH_MATCHING_OPERATION_AND_PROPOSAL_ID
   apply_clear_matching_semantics:
     absent_intent: NO_OP
@@ -276,6 +276,10 @@ proposal_create_receipt:
   - PROPOSED
   - APPROVED
   - APPLYING
+  - APPLIED
+  - FAILED
+  - NEEDS_RECOVERY
+  - EXPIRED
   created_at_and_expires_at: STRICT_UTC_RFC3339
   ttl_seconds_exact: 900
   replayed: BOOLEAN
@@ -292,13 +296,24 @@ proposal_create_receipt:
     - PROPOSED
     - APPROVED
     - APPLYING
+    - APPLIED
+    - FAILED
+    - NEEDS_RECOVERY
+    - EXPIRED
     expired_exact_receipt:
+      journal: CLEAR_AS_COMMUNICATION_OUTCOME_RESOLVED
+      command_result: NON_SUCCESS_NEW_PROPOSAL_REQUIRED
+    terminal_exact_receipt:
       journal: CLEAR_AS_COMMUNICATION_OUTCOME_RESOLVED
       command_result: NON_SUCCESS_NEW_PROPOSAL_REQUIRED
   next_action_by_state:
     PROPOSED: HUMAN_APPROVAL_REQUIRED_BEFORE_MATCHING_APPLY_COMMAND
     APPROVED: RUN_MATCHING_APPLY_COMMAND
     APPLYING: VERIFY_STATUS_BEFORE_ANY_RETRY
+    APPLIED: NEW_PROPOSAL_REQUIRED
+    FAILED: NEW_PROPOSAL_REQUIRED
+    NEEDS_RECOVERY: NEW_PROPOSAL_REQUIRED
+    EXPIRED: NEW_PROPOSAL_REQUIRED
     expired_exact_replay: NEW_PROPOSAL_REQUIRED
   approval_surface_by_state:
     live_PROPOSED: WORDPRESS_ADMIN_TOOLS_ONLY
@@ -372,6 +387,7 @@ proposal:
     - EXPIRED
   replay_policy:
     proposal_create_same_nonterminal_request: IDEMPOTENT_RECEIPT
+    proposal_create_same_terminal_request: HASH_BOUND_TERMINAL_RECEIPT_THEN_NEW_REQUEST_TOKEN_REQUIRED
     apply_applied_proposal: IDEMPOTENT_RECEIPT_NO_SECOND_WRITE
     terminal_record_for_new_intent: NEW_REQUEST_TOKEN_REQUIRED
     approval_reuse_for_different_id: FORBIDDEN
