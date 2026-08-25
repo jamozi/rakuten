@@ -145,12 +145,12 @@
     },
     "predecessors": [
       {
-        "sha256": "976d023f476f471867be7f0d04a6260414b2b5c4c9e42ce24d20800a9edc33fd",
+        "sha256": "9c526d6987bbe4f4f44e778a4779d06fdf7dbc9a96e65701ea8d89d95b5e2745",
         "story_id": "ST-0204",
         "uri": "repo://changes/st-0204/manifest.yaml"
       },
       {
-        "sha256": "4d2233a321e9e2576911182f4d38092e61ca47b2800d2730b40ecce84dd71a5d",
+        "sha256": "1de981e51f57d24e77480309149d4b7e9863a0fff5c926f211aee8f77751784d",
         "story_id": "ST-0305",
         "uri": "repo://changes/st-0305/manifest.yaml"
       }
@@ -166,12 +166,12 @@
   "source_artifacts": [
     {
       "bytes": 8970,
-      "sha256": "6a8461c6fa4e55c31222cd550eb1556bafa885d96a9f6843c54bd5131a12f421",
+      "sha256": "0fe3977a3e6745f72576427d80f919f2274934a003a49f88daed96c5abc8ca51",
       "uri": "repo://changes/st-1203/contracts/search-console-recorded-fixtures.v1.yaml"
     },
     {
       "bytes": 49369,
-      "sha256": "098eb8070d4f9e203e440e70f6d0c9a2d30d433b5a62ee1aea9940a7c7dd1b86",
+      "sha256": "1e654a3da0f8042c5943698a6911abb1ed5ba0a059ce257e0051411c8c60f920",
       "uri": "repo://scripts/build_st1203_search_console_recorded_adapter.py"
     }
   ]
