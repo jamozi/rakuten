@@ -143,8 +143,8 @@ source_artifacts:
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
 - uri: repo://tests/postgresql18.py
-  bytes: 8049
-  sha256: 14c31a7daf223f3db4df21da21521cc92756c97d51dfe53e032f2fb2369a9b32
+  bytes: 8178
+  sha256: 14d81fbbb7b35fd2672a11ccd162d8683905fe7216be6fb45b46d73d2b4d6085
 - uri: repo://tests/st0106/test_workflow_contract.py
   bytes: 66604
   sha256: 3993db51b4783f33bc993720a45a44e908e8f007aad611317d4d3042eb6c71f0
