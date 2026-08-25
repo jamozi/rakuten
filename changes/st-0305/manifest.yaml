@@ -40,7 +40,7 @@ provenance:
   predecessor_manifest:
     story_id: ST-0304
     uri: repo://changes/st-0304/manifest.yaml
-    sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+    sha256: bdee063ed935e168c31be5c2aecaf58aac427ee4301ee397feaf5e6d2a6f4c0a
   translation:
     source: PINNED_MACHINE_CATALOG_SELECTED_SCHEMAS
     physical_mode: ORDINARY_UNPARTITIONED_MVP_TABLES
@@ -123,13 +123,13 @@ source_artifacts:
   sha256: be00d5ed300b851f6a1baad74d95e39e7de0e378280985f2bbef487422953eab
 - uri: repo://scripts/build_st0305_publication_analytics_finance.py
   bytes: 69650
-  sha256: 6275ad1f451b16ff7a51fbaf7337917c262c668dca70257949c15ba015bb1435
+  sha256: 36415b1142e0acb71dc7fa889980b4e4c6fdd55e19f482d42b679c8f4fe34873
 - uri: repo://scripts/build_st0304_domain_schemas.py
   bytes: 79921
-  sha256: 17fa798043481c2174abc4b697708f89891dc30079592392390db2002a331f6c
+  sha256: 8850b6fa49cc6d6630d94144d43dbb879bb612048b7f9cba682a9a9df9dd660b
 - uri: repo://changes/st-0304/manifest.yaml
   bytes: 11667
-  sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
+  sha256: bdee063ed935e168c31be5c2aecaf58aac427ee4301ee397feaf5e6d2a6f4c0a
 - uri: repo://migrations/versions/202608030004_domain_schemas.py
   bytes: 106632
   sha256: 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407
