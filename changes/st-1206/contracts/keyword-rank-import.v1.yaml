@@ -52,8 +52,8 @@ predecessor:
   story_id: ST-1205
   binding: EXACT_CURRENT_COMMITTED_BYTES
   artifacts:
-    changes/st-1205/contracts/kpi-read-model.v2.yaml: 4cb71bbecec12342aca564309a860c686a8126fdd3238b79ba14ccbdb260b973
-    changes/st-1205/manifest.yaml: 391ef69e2d1d46734b5fe4784c4447f1d83d52535438a17b83b23121a3b27d80
+    changes/st-1205/contracts/kpi-read-model.v2.yaml: 8f7e0664c844615a291c926520fff14af399daa5fd21bac8d002bfc7857218ed
+    changes/st-1205/manifest.yaml: 9b25af0167a195de99d57e7d4e2eb54c4832a9051ec2b42de666bf6e32eb7548
     python/raos/domain/analytics/kpi_read_model.py: 7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac
     python/raos/application/analytics/kpi_read_model.py: 7485112a452eec41c93578863030893f5758c310430f7db5e899f6ec53c8adbf
   required_semantics:

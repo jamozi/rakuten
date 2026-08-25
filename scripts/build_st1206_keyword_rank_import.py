@@ -113,7 +113,7 @@ DISPATCH_JOB_SCHEMA_PATH: Final = Path(
 )
 
 EXPECTED_CONTRACT_SHA256: Final = (
-    "2f891e361224bbca3b6b284fd8b49cd76ba134b804e255ad1c515ff2318b8246"
+    "b02328d88ba7b9b4481e81e15eb58c413204fa412a14587fda5770a8e34ca723"
 )
 EXPECTED_FIXTURE_SHA256: Final = (
     "e06d21cf450a75250e096d3528ac45839fa3fb7d08d9988a58d0e0b9ecd59611"
@@ -139,10 +139,10 @@ AUTHORITY_HASHES: Final = {
 PREDECESSOR_HASHES: Final = {
     Path(
         "changes/st-1205/contracts/kpi-read-model.v2.yaml"
-    ): "4cb71bbecec12342aca564309a860c686a8126fdd3238b79ba14ccbdb260b973",
+    ): "8f7e0664c844615a291c926520fff14af399daa5fd21bac8d002bfc7857218ed",
     Path(
         "changes/st-1205/manifest.yaml"
-    ): "391ef69e2d1d46734b5fe4784c4447f1d83d52535438a17b83b23121a3b27d80",
+    ): "9b25af0167a195de99d57e7d4e2eb54c4832a9051ec2b42de666bf6e32eb7548",
     Path(
         "python/raos/domain/analytics/kpi_read_model.py"
     ): "7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac",
