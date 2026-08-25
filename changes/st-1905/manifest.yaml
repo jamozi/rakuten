@@ -7,9 +7,9 @@ document:
   story_id: ST-1905
   version: 1.0.0
 provenance:
-  base_commit: 6739246fa6f13a490d4dbd6333d9721c62f7c413
+  base_commit: ec3aa667a2c4d7b72b1778295ff16f5512ff1b13
   contract_uri: repo://changes/st-1905/contracts/advanced-rank-provider.v1.yaml
-  contract_sha256: 3b0f8f50644016df3ed659e1a1f30cfdcbda89d525151bed33f526557aacd9d3
+  contract_sha256: b60a58d4b3a6824456d6ad53a2c5a95416b3e43e7674755049ba5272d087d7d7
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -33,26 +33,26 @@ provenance:
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
   predecessor_inputs:
   - uri: repo://changes/st-1206/contracts/keyword-rank-import.v1.yaml
-    sha256: 7a378d8344562cc729bae88feb89b93b5fd372f7c54f20b0f2850edccfe59c46
+    sha256: 2f891e361224bbca3b6b284fd8b49cd76ba134b804e255ad1c515ff2318b8246
   - uri: repo://changes/st-1206/fixtures/recorded/keyword-rank-synthetic.v1.csv
     sha256: e06d21cf450a75250e096d3528ac45839fa3fb7d08d9988a58d0e0b9ecd59611
   - uri: repo://changes/st-1206/generated/keyword-rank-evaluation.v1.json
-    sha256: 4eb66b74c34f2dffaccfde948ef87844c8e01639aa0cb1c41544c09ebfd944f3
+    sha256: 80b745e7b92b2b14babbd05bf684b440e4ee17e602ecdee12bc1cb22ac663ebc
   - uri: repo://changes/st-1206/manifest.yaml
-    sha256: e1ec3fed5f91b49d4c1de4a3ccb4e4115c67418cfe8f15eb85241c5eb374cef4
+    sha256: b9cc790396b82bae909e5c3c6d7f3a2b48d4b21569cd533ef9b626024341571d
   - uri: repo://python/raos/domain/analytics/keyword_rank.py
     sha256: 9d73e103487598762d914c036a79c933c2d4f3b4d309637851f3985369c903e7
   - uri: repo://python/raos/ports/keyword_rank.py
     sha256: 132af0eb97addf17ea3e8de5ca3cee045c87d17f34ff1f4a0f29e45f1e0af2e8
   - uri: repo://python/raos/application/analytics/keyword_rank_import.py
-    sha256: 56738068ce8dbe705f5ed8b0a31e19ec252b9e6a2f0035ece3dda93a07914b00
+    sha256: 94c511e0b183223c905adf31f03e3bb8a2f6616acb52203febae63c4e70c4cee
   - uri: repo://python/raos/adapters/recorded_keyword_rank.py
     sha256: cd598c7a8846875c32963a32fa1bbcebabec0e08ac458ee338f9375e8e48661c
 source_artifact_count: 18
 source_artifacts:
 - uri: repo://changes/st-1905/contracts/advanced-rank-provider.v1.yaml
   bytes: 8083
-  sha256: 3b0f8f50644016df3ed659e1a1f30cfdcbda89d525151bed33f526557aacd9d3
+  sha256: b60a58d4b3a6824456d6ad53a2c5a95416b3e43e7674755049ba5272d087d7d7
 - uri: repo://changes/st-1905/fixtures/recorded/advanced-rank-provider.v1.json
   bytes: 1976
   sha256: 0f11d433f1fad9bfc2509087fdb99f7714e03a9cb3287dd65ffb746ed2f1b404
@@ -75,11 +75,11 @@ source_artifacts:
   bytes: 6584
   sha256: 83df7562793f600470fa3df3ba1206589a70e79ef7588bb8441e77472700fde5
 - uri: repo://python/raos/adapters/recorded_advanced_rank_provider.py
-  bytes: 8613
-  sha256: 6c263499bfa035b2aa1d0359ae86db55c205bc03b4a1926c6ed57efbe14a01f9
+  bytes: 8755
+  sha256: 3bcebca5eee8b1dfbe7745e49648bc0f595821e41b7691ddd798db09ef249702
 - uri: repo://scripts/build_st1905_advanced_rank_provider.py
   bytes: 25970
-  sha256: 9599536b83e32feaa41870c9910f0021eb4c332be110ea5c193c2f6226f11032
+  sha256: 8a88fffb99fe389814e07bf919817599d1806511198b2da54c70e7278fc03bd6
 - uri: repo://scripts/secure_generated_publication.py
   bytes: 22651
   sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
