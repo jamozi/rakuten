@@ -55,10 +55,10 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 CONTRACT_SHA256: Final = (
-    "e16d7e31755d3956e21f458625df3dcdb8a7038d03247bc91d1fdd2b70a6e8f3"
+    "66e680fe1c8dec0fe4a83a080f70c31040b41503b81cfcb6b1ea1a808012d9d0"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -249,17 +249,17 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0903",
         "changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-        "e38e644ace8ad86f8c16e178221fa461360518abf5a080ea572c475d7d273c82",
+        "43c4d87836ca5bed6887bb5db6de35189f1d263c3f3669ae3986f8b7b2b4b88a",
     ),
     (
         "ST-0904",
         "changes/st-0904/contracts/public-projection-reference-plan.v1.yaml",
-        "f078865e762f3fa8f5aaf7227409558de5fed706a509cbd67a92365a61da3d36",
+        "f07294fd61a59b5127dfaa6c35583f92612d5be5bbf35f9b0c77a4c28eeaea83",
     ),
     (
         "ST-0402",
         "changes/st-0402/README.md",
-        "6a3d5b2a1836d683b2dc96ecb73e4a02943a9a6fd8068496e6d550492514534b",
+        "80f0d3dd6dd7845d726b3fdf07fc3828b4e25c9eea55d48e3296940350b9e0e5",
     ),
 )
 
@@ -453,7 +453,7 @@ class PublicationCommandsReferenceError(RuntimeError):
     """Stable sanitized contract or generation failure."""
 
 
-_HELPER_MODULE: ModuleType | None = None
+_helper_module: ModuleType | None = None
 
 
 def _fail(code: str, field: str) -> NoReturn:
@@ -468,10 +468,10 @@ def _mapping(value: object, field: str) -> Mapping[str, Any]:
     return cast(Mapping[str, Any], value)
 
 
-def _list(value: object, field: str) -> list[Any]:
+def _list(value: object, field: str) -> list[object]:
     if type(value) is not list:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(list[object], value)
 
 
 def _same_exact(left: object, right: object) -> bool:
@@ -504,9 +504,9 @@ def _sha256(content: bytes) -> str:
 def _helper() -> ModuleType:
     """Verify the pinned helper bytes before its first import or execution."""
 
-    global _HELPER_MODULE
-    if _HELPER_MODULE is not None:
-        return _HELPER_MODULE
+    global _helper_module
+    if _helper_module is not None:
+        return _helper_module
     current = REPO_ROOT
     try:
         for part in HELPER_PATH.parts[:-1]:
@@ -531,7 +531,7 @@ def _helper() -> ModuleType:
         module = importlib.import_module("scripts.build_st1505_staging_deployment")
     except Exception:
         _fail("HELPER_IMPORT_FAILED", "helper")
-    _HELPER_MODULE = module
+    _helper_module = module
     return module
 
 
@@ -754,10 +754,10 @@ def _validate_st0905_semantics(root: Path, projection: Mapping[str, Any]) -> Non
     )
     step_up = _text(root, dependencies["ST-0402"], "dependency.ST-0402")
     for fragment in (
-        "exact-`ENV-DEV` deterministic source",
-        "synthetic already-verified grants",
-        "does not implement an MFA challenge",
-        "public/live activation",
+        "maximum-safe local challenge-to-grant runtime",
+        "synthetic multi-factor verification receipt",
+        "no real MFA factor",
+        "grants no credential, provider, external HTTP, browser, critical",
     ):
         if fragment not in step_up:
             _fail("SOURCE_SEMANTIC_DRIFT", "dependency.ST-0402")

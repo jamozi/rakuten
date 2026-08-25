@@ -1,4 +1,31 @@
-# ST-0308 handoff preflight
+# ST-0308 persistence runtime
+
+## Current local implementation
+
+The current entry point is
+`changes/st-0308/contracts/persistence-runtime.v2.yaml`, owned by
+`scripts/build_st0308_persistence.py`. It materializes the eight approved local
+runtime matrices into strict Domain/Port/SQLAlchemy repository and Unit of Work
+surfaces for all eight modules. The generated inventory covers the complete
+103-table/one-view physical cut, and all 519 physical CHECK constraints are
+enforced in both directions across 205 mapper callables.
+
+Run the deterministic owner with:
+
+    PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python \
+      .venv/bin/python scripts/build_st0308_persistence.py --check
+
+Run the local exact-PostgreSQL integration suite with the PostgreSQL 18.4
+binary and library paths documented in `docs/execplans/ST-0308.md`. The latest
+local completion record is
+`changes/st-0308/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml`.
+
+This is local implementation evidence only. Formal TST-005/TST-008, hosted CI,
+human governance, canonical status `APPLY`, staging, release, and Production
+remain `NOT_EXECUTED`. The runtime exposes no publication, provider-live,
+credential, migration, role/grant, or Production write authority.
+
+## Historical handoff preflight
 
 scripts/validate_st0308_design_handoff.py is a deterministic, read-only
 AUTOMATED PREFLIGHT for a proposed DESIGN_HANDOFF_V1. It proves bounded
@@ -110,12 +137,10 @@ For a candidate, calculate its exact bytes first:
     python3 scripts/validate_st0308_design_handoff.py --handoff /path/to/DESIGN_HANDOFF_V1.yaml --expected-sha256 "$HANDOFF_SHA256"
 
 The current tooling-only contract digest is
-`dbb63249a173e11e52504a6af03a87dc18991afba60b227867801a096f5cff7a`, pinned
+`0a1e9e1dba1f6af870d76289344a74e78938eafd50d1aee914f3f7cb0d9c71b7`, pinned
 by the validator. The isolated Story suite passed 165 tests; Ruff check and
 Ruff format check passed for the validator and four Python test files.
 
-These are local automated-preflight checks only. Exact-byte owner approval,
-fresh conflict-free canonical reconciliation, ST-0308 implementation, formal
-TST-005/TST-008 evidence, runtime/database behavior, staging, production,
-browser, network, MCP, and security review remain NOT_EXECUTED or otherwise
-unverified and out of scope.
+These checks remain local automated-preflight evidence for the historical
+handoff boundary. The current runtime implementation above does not convert
+them into formal TST-005/TST-008, staging, release, or Production evidence.

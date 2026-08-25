@@ -1,0 +1,150 @@
+document:
+  id: RAOS-ST1803-GATE2-OBSERVATION-001
+  version: 1.0.0
+  story_id: ST-1803
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  classification: RECORDED_SYNTHETIC_GATE2_OBSERVATION_NON_ATTESTING
+  acceptance_criteria_satisfied: false
+  formal_verification: NOT_EXECUTED
+
+source_bindings:
+  docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md: 5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea
+  docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+  docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+
+dependency_bindings:
+  ST-1802:
+    changes/st-1802/generated/gate1-decision.local-blocked.v1.json: 6a89918131e9072ed8550e1efe2cdec5e2dc08b0115e45f34941285aeb05ab25
+    changes/st-1802/generated/runtime-manifest.v1.yaml: 3a1672f7a299bd0308b5b1df72c16d9cbc554594342c0fb978bd486d69d546dc
+    scripts/build_st1802_gate1_decision.py: cf9de30e12ffea2202dcff0c0ef1377ab0a6546d185cc9129c402584567024bf
+  ST-1205:
+    changes/st-1205/generated/kpi-read-model.v2.json: 295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb
+    changes/st-1205/manifest.yaml: 9b25af0167a195de99d57e7d4e2eb54c4832a9051ec2b42de666bf6e32eb7548
+    python/raos/domain/analytics/kpi_read_model.py: 7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac
+
+observation_contract:
+  program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
+  article_slots: [1, 2, 3, 4, 5]
+  period_policy: ONE_EXACT_PERIOD_FOR_EVERY_REQUIRED_INPUT
+  program_policy: ONE_EXACT_PROGRAM_FOR_EVERY_REQUIRED_INPUT
+  source_policy: EXACT_TYPED_SOURCE_PER_METRIC
+  verification_policy: EXPLICIT_OBSERVED_ZERO_OR_VALUE_ONLY
+  cohort_policy: MATURE_ONLY_OTHERWISE_UNAVAILABLE
+  attribution_policy: OWNER_VERIFIED_DIRECT_AGGREGATE_FOR_DIRECT_REWARD_METRICS
+  input_transport: CALLER_SUPPLIED_RECORDED_SYNTHETIC_BYTES
+  input_history: APPEND_ONLY_HASH_CHAIN
+  input_mutability: IMMUTABLE
+  numeric_type: NONNEGATIVE_INTEGER_INPUT_AND_DECIMAL_OUTPUT
+  rounding: ROUND_HALF_EVEN
+  decimal_places: 6
+  missing_is_zero: false
+  zero_denominator: UNAVAILABLE
+  mixed_period: UNAVAILABLE
+  mixed_program: UNAVAILABLE
+  immature_cohort: UNAVAILABLE
+  unverified_attribution: UNAVAILABLE
+
+metric_contract:
+  article_metrics:
+    - search_impressions
+    - search_clicks
+    - qualified_organic_sessions
+    - article_views
+    - affiliate_clicks
+    - pending_outcomes
+    - confirmed_outcomes
+    - rejected_outcomes
+    - direct_confirmed_reward_jpy
+    - work_minutes
+    - incremental_cost_jpy
+    - broken_links
+    - affiliate_link_checks
+    - published_eligible
+    - indexed_valid
+    - eligible_major_query
+    - top20_major_query
+    - critical_user_complaints
+    - stale_exposure_views
+  program_metrics:
+    - unattributed_confirmed_reward_jpy
+    - provider_confirmed_reward_jpy
+  learning_metrics:
+    search_ctr: sum(search_clicks)/sum(search_impressions)
+    affiliate_click_rate: sum(affiliate_clicks)/sum(article_views)
+    confirmed_reward_per_click: sum(direct_confirmed_reward_jpy)/sum(affiliate_clicks)
+    confirmation_rate: sum(confirmed_outcomes)/sum(confirmed_outcomes+rejected_outcomes)
+    confirmed_reward_per_content_hour: sum(direct_confirmed_reward_jpy)*60/sum(work_minutes)
+  allocation_policy: DIRECT_PLUS_UNATTRIBUTED_MUST_EQUAL_PROVIDER_TOTAL_WITHOUT_ARTICLE_ALLOCATION
+
+gate_2_definition:
+  objective: SEARCH_AND_USER_VALUE_VALIDATION
+  observation_conditions:
+    minimum_days: 90
+    qualified_organic_sessions_reference: 5000
+    major_pages_recognized_required: true
+    sufficiency_requires_human_judgment: true
+  provisional_thresholds:
+    indexed_article_rate_min: '0.70'
+    impression_coverage_rate_min: '0.60'
+    top20_article_rate_min: '0.20'
+    affiliate_click_rate_min: '0.05'
+    critical_user_complaints_max: 0
+    stale_exposure_rate_strict_max: '0.02'
+    broken_affiliate_link_rate_strict_max: '0.005'
+    low_value_consolidation_operational: true
+    direct_visit_quality_acceptable: true
+  gate_pass_automation: false
+  actual_observation_required: true
+  recorded_synthetic_fixture_is_actual_observation: false
+
+improvement_contract:
+  output_only: true
+  candidate_codes:
+    - REVIEW_SEARCH_SNIPPET_HYPOTHESIS
+    - REVIEW_QUERY_INTENT_AND_DISCOVERY
+    - REVIEW_LINK_HEALTH
+    - REVIEW_FRESHNESS_EXPOSURE
+  finance_or_reward_used_for_candidate_selection: false
+  affiliate_rate_used_for_candidate_selection: false
+  epc_used_for_candidate_selection: false
+  rpm_used_for_candidate_selection: false
+  profit_used_for_candidate_selection: false
+  article_html_mutation: false
+  cta_mutation: false
+  product_selection_mutation: false
+  recommendation_order_mutation: false
+  publication_snapshot_mutation: false
+  automatic_publication: false
+
+execution_boundary:
+  actual_30_45_article_observation: NOT_EXECUTED
+  owner_private_ledger_read: false
+  tracking_activation: DISABLED_OD_012
+  live_rank_provider: NOT_EXECUTED_OD_004
+  provider: NOT_EXECUTED
+  network: NOT_EXECUTED
+  credential: NOT_USED
+  persistence: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  gate_approval: NONE
+  status_apply: NONE
+  formal_TST-030: NOT_EXECUTED
+  formal_TST-032: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+
+debt:
+  introduced_local: []
+  external_remaining:
+    - ACTUAL_GATE2_OBSERVATION_PERIOD
+    - FORMAL_TST_030
+    - FORMAL_TST_032
+    - OD_004_LIVE_RANK_SOURCE
+    - OD_007_CATEGORY_FRESHNESS_SLA
+    - OD_012_CONSENT
+    - OD_015_CREDENTIALS
+    - HUMAN_GATE_APPROVAL

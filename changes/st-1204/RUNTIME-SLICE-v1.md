@@ -12,8 +12,11 @@ runtime-ineligible.
 
 ## Frozen source bindings
 
-The existing contract, generated fixtures, manifest, and owner builder remain
-unchanged and authoritative for the recorded bytes.
+The semantic contract and the three recorded fixture payloads remain
+authoritative for the recorded bytes. The owner publication layout is hardened
+without changing any fixture payload: `changes/st-1204/generated` is the sole
+authoritative generated tree and contains `manifest.json` plus
+`fixtures/recorded/*.json`.
 
 | Recording | Whole-document SHA-256 | Bytes | Outcome |
 | --- | --- | ---: | --- |
@@ -82,8 +85,30 @@ disabled and OD-015 remains recorded-fixture-only.
 The ST-1204 owner contract binds the exact current committed ST-0204 and ST-0305
 manifest bytes. Those predecessor artifacts remain unchanged; ST-1204 is
 regenerated through its owner after a mechanical downstream pin rebind. The
-existing atomic-publication audit's `FAIL`/`MEDIUM` finding remains inherited
-and outside this read-only adapter boundary, which contains no publisher.
+former atomic-publication `FAIL`/`MEDIUM` finding is locally remediated by the
+owner generator's captured-Story-directory lock, single-tree namespace
+publication, durable recovery journal, reverse rollback, and hostile tests.
+The active journal root and every committed state carry an invocation-local
+full-signature inventory from creation or recovery capture through terminal
+cleanup; same-invocation automatic recovery carries that inventory forward and
+never recaptures an active journal after a failure. Later byte equality cannot
+re-own a replaced inode. A partial stage is
+deleted only when the same invocation captured every directory identity and
+file signature before the relevant checkpoint. A nonempty stage surviving a
+process boundary is preserved and refused. Bundle reads revalidate both nested
+`fixtures` and `recorded` names against their already-open descriptors before
+acceptance. Destructive cleanup also carries an invocation-local post-quarantine
+full-signature baseline through the final pre-`unlinkat` or pre-`rmdirat`
+observation. Mode, size, link-count, mtime, or identity drift immediately before
+quarantine or deletion is therefore retained and refused; only the already
+documented in-kernel race after the last validated observation remains outside
+the POSIX guarantee.
+
+Owner `--check` preserves bytes, namespace, device/inode, size, mode, mtime and
+ctime. Access time is explicitly outside that guarantee because portable
+read-only opens may update it; the implementation does not claim `O_NOATIME`.
+Independent read-only re-audit remains separate. The runtime adapter boundary
+still contains no publisher and still receives bytes only from its caller.
 
 Local tests, lint, and type checks are implementation evidence only. They do
 not satisfy OD-012 or OD-015, live Google/provider or credential validation,

@@ -1,0 +1,54 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1906
+  implementation_mode: STRICT_STORY
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  canonical_status: DEFERRED_POST_MVP
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+
+base:
+  commit: 6b89b412ea061af36544cce817ecede4cce7d457
+  branch: codex/raos-local-integration-complete
+
+local_boundary:
+  provider_neutral: true
+  default_enabled: false
+  caller_bytes_recorded_synthetic_only: true
+  personal_rows: false
+  privacy_review_required: true
+  sufficient_signal_required: true
+  live_enabled_state_exists: false
+  activation_interface_exists: false
+  network: FORBIDDEN
+  credentials: NOT_USED
+  persistence: NOT_EXECUTED
+  tracking_activation: DISABLED
+  provider_total_allocation: FORBIDDEN
+  finance_recommendation_input: FORBIDDEN
+  editorial_mutation: FORBIDDEN
+  recommendation_order_mutation: FORBIDDEN
+  publication: FORBIDDEN
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+
+verification:
+  focused_behavior_negative_privacy_security_tests: PASSED_44
+  owner_generate_and_check: PASSED
+  dependency_ST-1303_regression: PASSED_74
+  ruff_format_and_check: PASSED
+  strict_mypy: PASSED_11_FILES
+  python_compile: PASSED_13_FILES
+  focused_secret_scan: PASSED_20_FILES_ZERO_FINDINGS
+  git_diff_check: PASSED
+  formal_TST-032: NOT_EXECUTED
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - Privacy Owner review and consent/purpose/retention approval
+    - real randomized design, power analysis, aggregate signal, and statistical review
+    - real-signal calibration and independent causal-method review
+    - formal TST-032 and separate release decision
+    - persistence, monitoring, rollback, staging, release, and Production evidence

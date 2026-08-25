@@ -1,0 +1,55 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-1404",
+  "status": "LOCAL_CODE_COMPLETE",
+  "completed_scope": [
+    "provider-neutral durable runtime ports",
+    "recorded clone-on-write outer Unit of Work",
+    "Job Attempt Outbox Inbox atomic state",
+    "lease fencing and optimistic CAS",
+    "known and unknown commit ambiguity",
+    "stable at-least-once delivery identity and Inbox deduplication",
+    "retry backoff quarantine and metadata-only dead letter",
+    "cancellation deadline orphan takeover and restart recovery"
+  ],
+  "debt": {
+    "DEBT-W1-016": "CLOSED_LOCAL_IMPLEMENTATION",
+    "DEBT-W1-017": "CLOSED_LOCAL_IMPLEMENTATION",
+    "DEBT-W1-018": "DEFERRED_UNRELATED_OWNER_ARTIFACT",
+    "DEBT-W1-019": "NOT_EXECUTED_EXTERNAL"
+  },
+  "not_executed": [
+    "formal TST-013",
+    "formal TST-028",
+    "live database",
+    "live broker or provider",
+    "multi-process deployment",
+    "staging",
+    "release",
+    "production"
+  ],
+  "deferred_verification": [
+    {
+      "command": "pytest -q tests/st0203 tests/st0308_persistence",
+      "result": "322 passed, 20 skipped, 3 failed",
+      "base_result": "same 3 failures at 8252db919ee87e946961955cd0e45c5ae5e936c9",
+      "affected_owner_artifact": "changes/st-0203/manifest.yaml",
+      "failure": "2 pre-existing ST-0203 owner-generator drift checks",
+      "introduced_by": "not ST-1404",
+      "closure_owner": "ST-0203 owner freeze"
+    },
+    {
+      "command": "pytest -q tests/st0203 tests/st0308_persistence",
+      "result": "ST-0308 inventory expected 210 observed 235",
+      "base_result": "expected 210 observed 234 at 8252db919ee87e946961955cd0e45c5ae5e936c9",
+      "affected_owner_artifact": "changes/st-0308/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml",
+      "failure": "pre-existing inventory drift plus one ST-1404 domain source fanout",
+      "introduced_by": "ST-1404 adds python/raos/domain/ops/durable_job_runtime.py",
+      "safe_impact": "provenance-only; no generated artifact is used by runtime",
+      "closure_owner": "integration owner dependency-ordered provenance freeze"
+    }
+  ],
+  "canonical_status": "UNCHANGED",
+  "status_registry_apply": false,
+  "external_actions": []
+}

@@ -109,7 +109,9 @@ def test_all_five_current_provider_neutral_predecessor_bindings_are_exact(
         assert binding["required_credential_access"] == "FORBIDDEN"
         assert binding["required_live_provider_calls"] == "FORBIDDEN"
         assert binding["required_external_writes"] == "FORBIDDEN"
-        assert binding["required_reference_plan_executable"] is False
+        assert binding["required_reference_plan_executable"] is (
+            story_id in {"ST-1501", "ST-1502"}
+        )
         assert binding["required_action_counts"] == action_counts
         if story_id == "ST-1504":
             assert binding["required_credential_issuance"] == "FORBIDDEN"
@@ -504,7 +506,11 @@ def test_generated_json_matches_renderer_and_no_hcl_or_workflow_exists(
         production_model
     )
     production_dir = plan_path.parent
-    assert sorted(path.name for path in production_dir.iterdir()) == [plan_path.name]
+    assert sorted(path.name for path in production_dir.iterdir()) == [
+        "local-production-canary.pipeline.disabled.v2.yaml",
+        "local-production-canary.result.recorded.v2.json",
+        plan_path.name,
+    ]
     assert not list(production_dir.rglob("*.tf"))
     assert not list(production_dir.rglob("*.hcl"))
     assert not (REPOSITORY_ROOT / ".github/workflows/st-1506.yml").exists()

@@ -1,0 +1,170 @@
+document:
+  id: RAOS-ST1907-CONTENT-PORTFOLIO-OPTIMIZER-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-1907
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  canonical_status: DEFERRED_POST_MVP
+  authority: NONE
+  production_eligible: false
+provenance:
+  base_commit: 3d454db83f59e2854c0680a26dd0a7351cfe47ab
+  contract_uri: repo://changes/st-1907/contracts/content-portfolio-optimizer.v1.yaml
+  contract_sha256: 4243cf7f4e8adf1a5e39c0b49e1a5702946a925e1f9a1c4cec6304c50143d2ff
+  authority_inputs:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_implementation_backlog_design_v1.0.md
+    sha256: 0814ef66ae76bda7721c86ffc43095f125ecbee02ea9f270a926da7ae41a15b6
+  - uri: repo://docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md
+    sha256: 5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea
+  - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml
+    sha256: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  - uri: repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  dependency_inputs:
+  - uri: repo://changes/st-1805/contracts/portfolio-decision.v1.yaml
+    sha256: ec398cf427a41b0760e6b99108004d317883c8139796b768d1e122c6ea7648e7
+  - uri: repo://changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json
+    sha256: 47adc5544779c1e697a4ca1dc3ada9a251cb40fdfa9dd8e593596b34a082c793
+  - uri: repo://changes/st-1805/generated/portfolio-decision.local-blocked.v1.json
+    sha256: bf9899509a376ab6a9abd1613cfe5f12ab207629a6c94b2ba3bf2106a992098e
+  - uri: repo://scripts/build_st1805_portfolio_decision.py
+    sha256: f0bd5722bc066178f49434de0fe2ac97d677445d6ec29a212b172ba0233d03eb
+  measurement_input:
+    uri: repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
+    sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+  signal_policy_input:
+    uri: repo://changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml
+    sha256: 10871f65afe59fb6e44c6ac5401ce5e4b1b5cb0024497ae19fc43d6f6b997256
+source_artifact_count: 22
+source_artifacts:
+- uri: repo://changes/st-1907/contracts/content-portfolio-optimizer.v1.yaml
+  bytes: 8403
+  sha256: 4243cf7f4e8adf1a5e39c0b49e1a5702946a925e1f9a1c4cec6304c50143d2ff
+- uri: repo://changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json
+  bytes: 986
+  sha256: 175dbcc7337f902a0b7c5078e4db0894b5c56cf8157c1ad68ed52842698199c8
+- uri: repo://changes/st-1907/PREFLIGHT.md
+  bytes: 2244
+  sha256: 25ee3b7e2c6ccad71f8934f5a5f1b20e197c488577d94a622f1a020970cae9b6
+- uri: repo://changes/st-1907/README.md
+  bytes: 3052
+  sha256: ae63a83eb3bcb8e355c7d7197525c596ea6c1787a1655370080f869986b50168
+- uri: repo://changes/st-1907/completion/completion.v1.yaml
+  bytes: 1686
+  sha256: 43c1875b2172aa834c92a37ff5b321b87521ca76fc6e4c2aa1fd2a46dec33397
+- uri: repo://docs/execplans/ST-1907.md
+  bytes: 2688
+  sha256: 48886c52479d0534bfb0c0701a2ab47e46d4ff6ffe6d62da63d206f5e6491250
+- uri: repo://docs/worklogs/ST-1907.md
+  bytes: 1747
+  sha256: c75b7b1684a16c62971020a6c65588e78b0dabec6d95fe4a6427e90df7cb6605
+- uri: repo://python/raos/domain/portfolio/content_optimizer.py
+  bytes: 32569
+  sha256: d91c26452182d37a7e85517822f9290b92c65443bfb6517593cfc0d8749a01df
+- uri: repo://python/raos/ports/content_portfolio_optimizer.py
+  bytes: 602
+  sha256: fe6ec40d31cfa8e3e898dd5a7b87912d51f6aa912c6d302db31e01296e1917e6
+- uri: repo://python/raos/application/portfolio/content_optimizer.py
+  bytes: 3859
+  sha256: 90df96ae0a87ce1208a38a0cae9f01b2b7a86569f3d5fb5ddac477939a0100aa
+- uri: repo://python/raos/adapters/recorded_content_portfolio_optimizer.py
+  bytes: 10921
+  sha256: 8f66c9604fd23c78b4d30cb828e0f6a7ec99db3ac6d0c6684adab54869723eed
+- uri: repo://scripts/build_st1907_content_portfolio_optimizer.py
+  bytes: 36461
+  sha256: 71d831471d13527215568b4ae153f7472f34bee069e68ce233395bba7180d731
+- uri: repo://scripts/secure_generated_publication.py
+  bytes: 22651
+  sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+- uri: repo://tests/st1907/__init__.py
+  bytes: 29
+  sha256: 70178242af7ada8617293782a3566ea9641f1b171df685665c3c6220fa7f84cc
+- uri: repo://tests/st1907/conftest.py
+  bytes: 318
+  sha256: 708ceede753398884e0fc1199d91d06be77a9c5fbb3b35d5f9ee144b24047365
+- uri: repo://tests/st1907/support.py
+  bytes: 4985
+  sha256: fb06a3791e353d5bfedb6c7c2fb2cd62ed0577070323718e37727aae6116e705
+- uri: repo://tests/st1907/test_contract.py
+  bytes: 3760
+  sha256: 0bb7df2de62c828b8f553ad89b64412d38899cfd37faca2d6af16a0877595277
+- uri: repo://tests/st1907/test_generation.py
+  bytes: 5961
+  sha256: 7fd870d7b891c4eb73cb78a6eb873be68dafb47ebc92cd74f296528096028361
+- uri: repo://tests/st1907/test_optimizer_service.py
+  bytes: 3635
+  sha256: 08bb00ecdaf7fc7c381d6867bd7a91f1a619e549d4c43ca53082111e59cbb5b1
+- uri: repo://tests/st1907/test_security_boundaries.py
+  bytes: 5899
+  sha256: d72835291cee1f99c44b9ab8a0134d648ed2059e1d991d3e79caf7dd451dfae7
+- uri: repo://tests/st1907/test_unavailable_cases.py
+  bytes: 2146
+  sha256: 6b17037b1102885843c85988861c483ef489a822c95ea73560084b22cfa0d1ef
+- uri: repo://tests/st1907/test_hostile_boundaries.py
+  bytes: 6521
+  sha256: d1059c0e025fc59b507e4e0891f69d690a7f2cb5e28cb302bfd360ba913de942
+generated_artifacts:
+- uri: repo://changes/st-1907/generated/content-portfolio-optimizer-report.v1.json
+  bytes: 3342
+  sha256: 1f2b26ca99315d2ac39577b3f91879e4f7f6948cd4c7417e7bf3acb87c831795
+boundary:
+  default_scope: DISABLED
+  executable_environments:
+  - ENV-DEV
+  - ENV-CI
+  current_dependency: BLOCKED_NO_DECISION
+  current_availability: UNAVAILABLE
+  current_proposals: 0
+  human_proposal_only: true
+  automatic_apply: false
+  finance_values_represented: false
+  personal_data: false
+  provider_call: false
+  network: false
+  credential_access: false
+  persistence: false
+  editorial_mutation: false
+  recommendation_order_mutation: false
+  publication: false
+  staging: false
+  release: false
+  production: false
+verification:
+  focused_local: CANDIDATE
+  formal_TST-032: NOT_EXECUTED
+  real_observations: NOT_EXECUTED
+  human_portfolio_decision: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+debt:
+  introduced: []
+  external_or_formal_remaining:
+  - verified same-period same-program mature real observations with positive denominators
+  - Product Owner portfolio decision and policy calibration
+  - formal TST-032 and separate release decision
+  - persistence, monitoring, rollback, staging, release, and Production evidence

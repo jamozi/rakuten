@@ -43,13 +43,13 @@ SOURCE_PATHS: Final = (CONTRACT_PATH, README_PATH, GENERATOR_PATH, *TEST_PATHS)
 GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 CONTRACT_SHA256: Final = (
-    "98dfd57507c9254de7b1fac0a1bfb13e45f270acbb77b7eb31eab46e64a131ac"
+    "279f965e5786d6cc9cb3a2f91db0e314fcf96ac27fadc1cc98b6de9cfce7b731"
 )
 CONTRACT_MODEL_SHA256: Final = (
-    "df65771a13b638ac11089975c0001a7f6e0aaf88617be4cd65f137285aff4396"
+    "5c8b0a2f0f85d3dc3948f33b7724a35d478a9ab21b3b4008544fc58248bfb666"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 SOURCE_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
@@ -370,7 +370,9 @@ def _sha256(content: bytes) -> str:
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
-    physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    physical: Path = base._repository_regular_file(  # noqa: SLF001
+        root, relative, field
+    )
     try:
         content = physical.read_bytes()
     except OSError:

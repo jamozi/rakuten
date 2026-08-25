@@ -1,0 +1,200 @@
+schema_version: 2
+story_id: ST-1002
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_RECORDED_PUBLIC_ARTICLE_RENDERER_MANIFEST_V2
+source_artifact_count: 40
+source_artifacts:
+  - uri: repo://changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
+    bytes: 6462
+    sha256: e248d4dab10c7c98aa08b45ddeb2295851f84713ad9fed2dfd40d0250cadf258
+    role: OWNER_SOURCE
+  - uri: repo://scripts/build_st1002_public_article_renderer.py
+    bytes: 41606
+    sha256: 3c5468c1259a6a552db7a7ab6ea3827d73e854d31214e2aaf7b737c8673893b8
+    role: OWNER_SOURCE
+  - uri: repo://packages/web-ui/src/public-article-renderer.ts
+    bytes: 32612
+    sha256: d97c459fc695cc4c5f0ef0c79e7efd61172a4317cfac46fdeb2866b101a44a21
+    role: OWNER_SOURCE
+  - uri: repo://packages/web-ui/src/index.ts
+    bytes: 21657
+    sha256: ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/app/articles/[slug]/page.tsx
+    bytes: 1333
+    sha256: 71659f4dffcb1b7910dde06f8314dc4d1a8bb25519ffe99d092f3c8597256b2f
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/app/articles/[slug]/article.module.css
+    bytes: 7535
+    sha256: 077a789fdb8cb7efc204a7ff43e45b5a0422ded611d60bcba00b80df4c346937
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/src/public-article-page.tsx
+    bytes: 8041
+    sha256: 664a1c35c483848d57e78a2dfda315e918d4bac1f9d4ecea6b2265411b8c2777
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/proxy.ts
+    bytes: 1282
+    sha256: 07b1fc0f923a411cd19e9299228d9a1f680c2db2b2c0d84a8e4d233053346b08
+    role: OWNER_SOURCE
+  - uri: repo://scripts/check_st1002_public_article_browser.mjs
+    bytes: 13446
+    sha256: 04dbced8ace79978eda721c2f40329507b2c95e1c7c74337b42d61ad3307c6cd
+    role: OWNER_SOURCE
+  - uri: repo://tests/st1002/public-article-renderer-boundaries.test.ts
+    bytes: 4072
+    sha256: 9629bac92b84fea75e28564fbb36af234c772cf7aafd36254c6460680e7f929f
+    role: OWNER_SOURCE
+  - uri: repo://tests/st1002_v2/public-article-model.test.ts
+    bytes: 5020
+    sha256: 989c0cbffe7195619068d0769081f1327b31e7e9b6422312639e299d1fed7fd9
+    role: OWNER_SOURCE
+  - uri: repo://tests/st1002_v2/public-article-negative.test.ts
+    bytes: 4652
+    sha256: ce6a0dcc1902e5581a83ddf7da0f2a4c42365d5ba39d9d26f3d227977ebdaf99
+    role: OWNER_SOURCE
+  - uri: repo://tests/st1002_v2/public-article-static.test.ts
+    bytes: 3540
+    sha256: 1710861500f2fa5e60a4a90a3f008bb88ff4a7a8b087b74e5c88dff270013bf7
+    role: OWNER_SOURCE
+  - uri: repo://tests/st1002_v2/public-article-generated-contract.test.ts
+    bytes: 2389
+    sha256: 4bbd9bb70afea98b6e4b3276a007e768ed0b66b09f3b418b622075c2b626df12
+    role: OWNER_SOURCE
+  - uri: repo://tests/st1002_v2/public-article-accessibility.test.ts
+    bytes: 2241
+    sha256: dede641a1627d8aab70e82ca0fea10db20dcedb5e1d115e1367ae9b3da83e7b5
+    role: OWNER_SOURCE
+  - uri: repo://tests/st1002_v2/test_generation.py
+    bytes: 3696
+    sha256: 07035fadb3b07d835d1a5d23dd83b2f48a7953f322a38591f349b8b85610b049
+    role: OWNER_SOURCE
+  - uri: repo://changes/st-1002/README-v2.md
+    bytes: 2346
+    sha256: e558c672716a50360e111a40c378d2703ba430d0d07e16c56483fc48578a3c75
+    role: OWNER_SOURCE
+  - uri: repo://changes/st-1002/completion/completion.v2.yaml
+    bytes: 2202
+    sha256: c756b0a090a6b1b17094733e2c3eb50f62db03c5e5bfc3e2aac9e6b8d397817e
+    role: OWNER_SOURCE
+  - uri: repo://docs/execplans/ST-1002.md
+    bytes: 2350
+    sha256: 808217eda9593226a17226b64c57a9b24e5d529c4b7b230b8572ead2b159d267
+    role: OWNER_SOURCE
+  - uri: repo://docs/worklogs/ST-1002.md
+    bytes: 3005
+    sha256: 0f44cc77dd22dd43c1c59971b13ccfa75e79e1aa43ade42083433084efa81c9c
+    role: OWNER_SOURCE
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    bytes: 7943
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    bytes: 4956
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+    bytes: 8046
+    sha256: 0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml
+    bytes: 23487
+    sha256: dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/02_ui/RAOS_08_component_catalog_v1.0.yaml
+    bytes: 12504
+    sha256: 986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv
+    bytes: 4051
+    sha256: 690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    bytes: 24993
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    bytes: 10487
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    bytes: 11395
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    bytes: 71458
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    role: CANONICAL_INPUT
+  - uri: repo://changes/st-0904/generated/public-projection-recorded.v2.json
+    bytes: 7764
+    sha256: a15edb77dcebb3f4b18c9f40737ebc949ab7564191a88052c5b8c54b3ddab7ce
+    role: DEPENDENCY_ARTIFACT
+  - uri: repo://changes/st-0904/runtime-manifest.v2.yaml
+    bytes: 12199
+    sha256: b1a9523c784c3a53c33c65f5774aa260fcc10396348cae01b96739c47101af10
+    role: DEPENDENCY_ARTIFACT
+  - uri: repo://changes/st-0904/contracts/public-projection-runtime.v2.yaml
+    bytes: 4503
+    sha256: 62b4caad968901be8f9d5aa0fff33bb43c7e0fa0580669f0409ed52acb8d65fc
+    role: DEPENDENCY_ARTIFACT
+  - uri: repo://changes/st-1001/contracts/public-app-shell-runtime.v2.yaml
+    bytes: 11431
+    sha256: e916db42258a52ab30139349fd13f0d64742f21464882ef10bc282276201f459
+    role: DEPENDENCY_ARTIFACT
+  - uri: repo://changes/st-1001/generated/public-app-shell-recorded.v2.json
+    bytes: 10714
+    sha256: b773e2d507d47df856bb8e72c25811c83dd44bcdfcec004ee9b659446cda823e
+    role: DEPENDENCY_ARTIFACT
+  - uri: repo://contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml
+    bytes: 27679
+    sha256: 8122958e80e04096ba3b254b4a8d843138bb757c8fc4e71bd8406914dba80797
+    role: DEPENDENCY_ARTIFACT
+  - uri: repo://scripts/secure_generated_publication.py
+    bytes: 22651
+    sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+    role: DEPENDENCY_ARTIFACT
+  - uri: repo://package.json
+    bytes: 1906
+    sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
+    role: LOCKED_TOOLCHAIN
+  - uri: repo://package-lock.json
+    bytes: 271352
+    sha256: d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b
+    role: LOCKED_TOOLCHAIN
+  - uri: repo://apps/web/package.json
+    bytes: 572
+    sha256: 8d0773c33fd0aea745ee0516cd25d15693a5f2adbafbef8c1b4537ac01a872f9
+    role: LOCKED_TOOLCHAIN
+generated_artifacts:
+  - uri: repo://packages/web-ui/src/public-article-recorded.v2.ts
+    artifact_role: EXACT_RECORDED_TYPESCRIPT_SOURCE
+    media_type: text/typescript
+    bytes: 5066
+    sha256: 0e18d34b79b48ceca8678ca54639fbab40e2e74fb8b1ee4004186920f2b377f8
+  - uri: repo://changes/st-1002/generated/public-article-renderer-recorded.v2.json
+    artifact_role: DETERMINISTIC_RENDERER_VIEW_FIXTURE
+    media_type: application/json
+    bytes: 5229
+    sha256: b19b67f6530b66004d50754f015f394cd033d07451106d5b3a6db9a5a648bc3b
+generation:
+  owner: repo://scripts/build_st1002_public_article_renderer.py
+  command: .venv/bin/python scripts/build_st1002_public_article_renderer.py
+  check_command: .venv/bin/python scripts/build_st1002_public_article_renderer.py --check
+  transaction: ATOMIC_FOREIGN_PRESERVING_MULTI_OUTPUT_WITH_ROLLBACK
+  python_implementation: CPython
+  python_version: 3.14.6
+  pyyaml_version: 6.0.3
+authority:
+  source_route_activated: false
+  public_read_served: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+  TST-021: NOT_EXECUTED
+  TST-022: NOT_EXECUTED
+  TST-023: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

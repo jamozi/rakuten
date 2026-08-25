@@ -1,0 +1,172 @@
+schema_version: 2
+story_id: ST-1102
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_EXECUTABLE_RECORDED_ARTICLE_WORKSPACE_V2
+enabled_by_default: false
+authority: NONE
+production_eligible: false
+publication_authorized: false
+
+screen_order:
+  - EDT-002
+  - EDT-003
+  - EDT-005
+  - EDT-006
+  - EDT-007
+  - EDT-009
+
+dependency_boundary:
+  st0806:
+    mode: EXACT_RECORDED_SYNTHETIC_OUTPUT
+    proposal_disposition: HUMAN_EDITABLE_PROPOSAL_ONLY
+    adoption: NOT_EXECUTED
+    persistence: NOT_EXECUTED
+    publication: NOT_AUTHORIZED
+  st1101:
+    mode: DISABLED_HEADLESS_FOUNDATION
+    route_registration: DISABLED_AUTH_TRANSPORT_UNRESOLVED
+    role_metadata_authority: DISPLAY_ONLY_NOT_AUTHORIZATION
+  seo_owner:
+    status: UNAVAILABLE_UNDECLARED_DEPENDENCY
+    canonical_metadata: UNAVAILABLE
+    robots: UNAVAILABLE
+    json_ld: UNAVAILABLE
+  recorded_fixture_only: true
+  synthetic_only: true
+  allowed_environments:
+    - ENV-DEV
+    - ENV-CI
+  unknown_as_zero_allowed: false
+
+projection_boundary:
+  ast:
+    status: AVAILABLE_RECORDED
+    source_story: ST-0806
+    active_and_proposed_hashes_distinct: true
+    raw_html_allowed: false
+  ai_diff:
+    status: AVAILABLE_RECORDED
+    source_story: ST-0806
+    values_exposed: false
+    adoption_authorized: false
+  claims:
+    status: AVAILABLE_RECORDED
+    source_story: ST-0806
+    claim_text_exposed: false
+    evidence_identifiers_and_freshness_only: true
+  comparison:
+    status: AVAILABLE_RECORDED
+    source_story: ST-0806
+    unknown_visible: true
+    finance_or_affiliate_economics_allowed: false
+    recommendation_order_mutation: false
+  seo:
+    status: PARTIAL_RECORDED
+    title_source: TYPED_AST
+    seo_metadata_reference_source: TYPED_AST
+    resolved_metadata: UNAVAILABLE_DEPENDENCY
+
+concurrency_boundary:
+  source_contract: ADMIN_OPENAPI_STRONG_ETAG
+  if_match_required: true
+  absent_precondition_code: PRECONDITION_REQUIRED
+  absent_precondition_http_status: 428
+  stale_precondition_code: PRECONDITION_FAILED
+  stale_precondition_http_status: 412
+  matched_code: MATCHED_NO_COMMAND
+  overwrite_allowed: false
+  automatic_merge_allowed: false
+  conflict_resolution_required_on_stale: true
+  dispatch: NOT_EXECUTED
+  persistence: NOT_EXECUTED
+
+unsaved_guard_boundary:
+  component_id: UI-C014
+  dirty_source: BASELINE_AND_CURRENT_AST_SHA256_COMPARISON
+  clean_decision: ALLOW_CLEAN
+  dirty_decision: BLOCK_UNSAVED_CHANGES
+  navigation_performed: false
+  browser_interception: NOT_IMPLEMENTED
+  confirmation_dialog_required_when_dirty: true
+  discard_or_save_authorized: false
+
+accessibility_boundary:
+  one_h1_required: true
+  skip_link_required: true
+  landmarks_required: true
+  stable_unique_ids_required: true
+  status_text_required: true
+  status_code_required: true
+  status_icon_required: true
+  color_only_allowed: false
+  table_caption_required: true
+  column_headers_required: true
+  row_headers_required: true
+  keyboard_model_required: true
+  zoom_target_percent: 200
+  rendered: false
+  browser_verified: false
+  screen_reader_verified: false
+
+security_controls:
+  - SEC-IAM-004
+  - SEC-IAM-005
+  - SEC-APP-001
+  - SEC-APP-004
+  - SEC-APP-010
+  - SEC-APP-012
+  - SEC-APP-015
+  - SEC-DATA-003
+  - SEC-DATA-007
+  - SEC-AI-001
+  - SEC-AI-003
+  - SEC-AI-004
+  - SEC-AI-007
+  - SEC-SDLC-006
+  - SEC-SDLC-009
+
+prohibited_surfaces:
+  - RAW_PROMPT
+  - RAW_SOURCE_BODY
+  - REVIEW_BODY
+  - RAW_HTML
+  - SCRIPT_OR_EVENT_HANDLER
+  - ARBITRARY_URL
+  - FINANCE_OR_AFFILIATE_ECONOMICS
+  - SECRET_OR_CREDENTIAL
+  - PERSONAL_DATA
+  - CALLBACK_OR_EXECUTABLE_VALUE
+  - PUBLIC_PROJECTION
+
+authority_boundary:
+  authentication_established: false
+  authorization_granted: false
+  step_up_established: false
+  route_registered: false
+  render_enabled: false
+  mutation_enabled: false
+  navigation_effect_enabled: false
+  dispatch_enabled: false
+  persistence_enabled: false
+  provider_enabled: false
+  network_enabled: false
+  approval_authorized: false
+  publication_authorized: false
+  release_authorized: false
+  production_authorized: false
+
+verification_boundary:
+  local_model: IMPLEMENTED_BY_THIS_STORY
+  TST-022: NOT_EXECUTED
+  TST-024: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  keyboard: NOT_EXECUTED
+  zoom: NOT_EXECUTED
+  screen_reader: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  production: NOT_EXECUTED

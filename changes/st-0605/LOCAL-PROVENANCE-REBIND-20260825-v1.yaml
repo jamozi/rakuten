@@ -1,0 +1,129 @@
+document:
+  id: RAOS-ST0605-LOCAL-PROVENANCE-REBIND-20260825-V1
+  schema_version: 1
+  story_id: ST-0605
+  evidence_kind: LOCAL_PROVENANCE_REBIND
+  recorded_at: '2026-08-24T23:36:22Z'
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  canonical_status: UNCHANGED
+  formal_validation_claimed: false
+base:
+  branch: codex/st0605-provenance-audit-20260825
+  base_commit_sha: ced9029f767c63b82690b13cb8d90d1b8eb4b882
+  implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
+scope:
+  selected_story: ST-0605
+  change_kind: PROVENANCE_REBIND_AND_TARGET_LOCAL_STATIC_REPAIR
+  coverage_algorithm_changed: false
+  publication_or_live_authority_changed: false
+  external_action_performed: false
+bindings:
+  historical_reference_v1:
+    classification: NON_EXECUTABLE_INTERFACE_ONLY
+    predecessors:
+      ST-0602: d95d90ccbf314ca66db61711021d924faa90173d
+      ST-0603: df02920d3da3eb37d39e1e8b088264fc8accb72a
+      ST-0604: ced9029f767c63b82690b13cb8d90d1b8eb4b882
+    contract:
+      path: changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml
+      sha256: b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49
+    generated_plan:
+      path: changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json
+      sha256: 015938473428cea3e028f0bc969a8fc290cfe8c87cb0a700383f492821c86142
+    manifest:
+      path: changes/st-0605/manifest.yaml
+      sha256: 888808d5992dae9da65db7e095157495138b3c612e48336fe163c35b1ff46de8
+  current_recorded_runtime:
+    source_packet_contract:
+      version: SOURCE-PACKET-LIFECYCLE-RUNTIME@2.0.0
+      path: changes/st-0604/contracts/source-packet-lifecycle-runtime.v2.json
+      sha256: 719f5366eced10c19a16dc11355d92680fb66dfe08bebce5be5251618e79cfbe
+    claim_evidence_contract:
+      path: changes/st-0605/contracts/claim-evidence-runtime.v1.yaml
+      sha256: 7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb
+    runtime_fixture:
+      path: changes/st-0605/generated/claim-evidence-runtime-pass.v1.json
+      sha256: 9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106
+    runtime_manifest:
+      path: changes/st-0605/runtime-manifest.v1.yaml
+      sha256: b8e76e4013eb097ba514b7d2cb39f5861c2694acb7cc19919149011ccdc44c41
+      source_artifact_count: 52
+runtime_invariants:
+  source_packet_generation_input: APPROVED_LOCKED_CURRENT_VERSION_ONLY
+  approval_binding:
+    content_hash: EXACT
+    validated_fact_membership: EXACT
+    conflict_scan: NO_OPEN_CONFLICT
+    authorization: DENY_DEFAULT_RECORDED_HUMAN
+  unapproved_packet: STRUCTURALLY_REJECTED
+  unlocked_packet: STRUCTURALLY_REJECTED
+  non_current_version: STRUCTURALLY_REJECTED
+  open_conflict_or_queue: STRUCTURALLY_REJECTED
+  live_or_provider_input: FORBIDDEN
+  publication_authorized: false
+  production_eligible: false
+static_repair:
+  classification: TARGET_LOCAL_TYPE_NARROWING_ONLY
+  prior_pyright_error_count: 31
+  final_pyright_error_count: 0
+  behavior_or_authority_change: false
+verification:
+  owner_checks:
+    historical_reference_owner_build_and_no_write: PASS
+    current_runtime_owner_build_and_no_write: PASS
+    ST-0602_v1_and_v2: PASS
+    ST-0603_v1_and_v2: PASS
+    ST-0604_v1_and_v2: PASS
+  tests:
+    historical_ST-0605:
+      result: PASS
+      passed: 61
+    runtime_ST-0605:
+      result: PASS
+      passed: 92
+    combined_ST-0605:
+      result: PASS
+      passed: 153
+    ST-0604_regression:
+      result: PASS
+      passed: 255
+  static_and_boundary:
+    ruff_check_and_format: PASS
+    strict_mypy: PASS
+    strict_pyright: PASS
+    compile_and_import: PASS
+    denied_network: PASS
+    secret_scan: PASS
+    scope_check: PASS
+    git_diff_check: PASS
+downstream_observations:
+  introduced_rebinds:
+    - story_id: ST-0606
+      observation: PINS_OLD_ST0604_AND_ST0605_ARTIFACTS
+    - story_id: ST-0705
+      observation: PINS_OLD_ST0605_HISTORICAL_REFERENCE_INVENTORY
+    - story_id: ST-0803
+      observation: PINS_OLD_ST0605_RUNTIME_FIXTURE
+    - story_id: ST-0806
+      observation: PINS_OLD_ST0605_RUNTIME_SOURCE_INVENTORY
+    - story_id: ST-0902
+      observation: V2_DEPENDENCY_INVENTORY_INCLUDES_CHANGED_ST0605_RUNTIME_MANIFEST
+  pre_existing_drift:
+    - story_id: ST-0702
+      observation: SOURCE_HASH_DRIFT_AT_IMPLEMENTATION_HELPER_ON_BASE
+    - story_id: ST-0902
+      observation: REFERENCE_OWNER_FIRST_FAILS_PRE_EXISTING_ST0402_DEPENDENCY_HASH
+  unchanged_direct_contract_consumer:
+    - story_id: ST-1801
+      observation: PINS_UNCHANGED_ST0605_RUNTIME_CONTRACT_ONLY
+formal_and_external_boundaries:
+  formal_tst_020: NOT_EXECUTED
+  formal_tst_021: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_source_packet_or_provider: NOT_EXECUTED
+  credential_activity: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  validated_claim: FORBIDDEN

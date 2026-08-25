@@ -1,0 +1,76 @@
+document:
+  id: RAOS-ST1104-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V2
+  schema_version: 2
+  story_id: ST-1104
+  status: LOCAL_CODE_COMPLETE
+  canonical_status_changed: false
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+implementation:
+  additive_v2: true
+  historical_v1_compatible: true
+  environment: RECORDED_SYNTHETIC_ENV_DEV_CI_ONLY
+  exact_screen_count: 6
+  st1205_recorded_projection: true
+  st1304_recorded_projection: true
+  source_period_merge_allowed: false
+  explicit_period_mismatch: true
+  basis_visible: true
+  freshness_visible: true
+  verification_visible: true
+  missing_unverified_zero_denominator_as_zero: false
+  verified_zero_remains_zero: true
+  owner_generated_projection_manifest: true
+authority:
+  authentication_established: false
+  authorization_granted: false
+  route_registered: false
+  render_enabled: false
+  file_intake_enabled: false
+  import_commit_enabled: false
+  reconciliation_commit_enabled: false
+  financial_allocation_enabled: false
+  ranking_or_editorial_mutation_enabled: false
+  public_projection_enabled: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+verification:
+  focused_python_suite: PASS_16_OF_16_ORDINARY_AND_NETWORK_DENIED
+  focused_node_suite: PASS_21_OF_21_ORDINARY_AND_NETWORK_DENIED_HISTORICAL_V1_PLUS_ADDITIVE_V2
+  owner_generator_check: PASS_NO_WRITE_ORDINARY_AND_NETWORK_DENIED
+  st1101_regression: PASS_34_OF_34_ORDINARY_AND_NETWORK_DENIED
+  st1205_regression: PASS_57_OF_57_AND_OWNER_NO_WRITE_ORDINARY_AND_NETWORK_DENIED
+  st1304_regression: PASS_492_OF_492_V1_AND_51_OF_51_V2_AND_BOTH_OWNER_NO_WRITE_ORDINARY_AND_NETWORK_DENIED
+  ruff: PASS_OWNED_CHECK_AND_FORMAT
+  strict_mypy: PASS_OWNED_RUNTIME_GENERATOR_AND_TESTS
+  pyright: PASS_REPOSITORY_CONFIG_ZERO_ERRORS_ZERO_WARNINGS
+  python_compile: PASS_10_OWNED_PYTHON_FILES
+  typescript: PASS_FULL_STRICT_TSC
+  eslint_prettier: PASS_OWNED_TYPESCRIPT
+  git_diff_check: PASS
+operational_observations:
+  linked_worktree_repository_scan:
+    result: REFUSED_BEFORE_CONTENT_SCAN
+    reason_code: unsafe-git-metadata
+    introduced_by_ST-1104: false
+  exact_sha_physical_clone_worktree_and_history_scan:
+    result: REQUIRED_POST_COMMIT_REPORTED_WITH_EXACT_SHA
+    reviewed_findings: changes/st-0106/contracts/reviewed-secret-findings.v3.yaml
+    self_referential_result_embedded: false
+debt:
+  introduced_local_debt: NONE
+not_executed:
+  canonical_registry_apply: NOT_EXECUTED
+  formal_TST-022: NOT_EXECUTED
+  formal_TST-024: NOT_EXECUTED
+  formal_TST-030: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  keyboard: NOT_EXECUTED
+  zoom: NOT_EXECUTED
+  screen_reader: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  production: NOT_EXECUTED

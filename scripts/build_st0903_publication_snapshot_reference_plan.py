@@ -55,10 +55,10 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 CONTRACT_SHA256: Final = (
-    "e38e644ace8ad86f8c16e178221fa461360518abf5a080ea572c475d7d273c82"
+    "43c4d87836ca5bed6887bb5db6de35189f1d263c3f3669ae3986f8b7b2b4b88a"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -225,7 +225,7 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0902",
         "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml",
-        "450ed0f299bcd1f1f99a242d8a6661a9ab2a886ce8f67818def79618c2163567",
+        "a98ac40e5e5e4271c297e87c99e003708e08e459715aef86b5111048d9e2ded6",
     ),
     (
         "ST-0807",
@@ -250,17 +250,17 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0306",
         "changes/st-0306/contracts/database-roles-grants.v1.yaml",
-        "6b8710a79729bde75e96e1df3698a0928d4924e4bd10afaff5631fc00f70a0d4",
+        "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206",
     ),
     (
         "ST-0307",
         "changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml",
-        "bda9ec7371799053c30326b63a3e5dc045e784c8b0cec1e59b083b80d2b8dd23",
+        "33bc260ab7cf494ae0fc139e1fea8cdfb66b122f036c0963cb338dd2e3c9827a",
     ),
     (
         "ST-0601",
         "changes/st-0601/README.md",
-        "93759bfea0e51fbbd6b5fe8858fa27f3ed6e5677b0bde3f5a198997ada003766",
+        "67e1476c7f8104d3d99802c745b74a0f605b07e28619b2b7da66ec836bd7c355",
     ),
 )
 

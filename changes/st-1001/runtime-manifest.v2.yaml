@@ -1,0 +1,209 @@
+schema_version: 2
+story_id: ST-1001
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_RECORDED_PUBLIC_APP_SHELL_MANIFEST_V2
+source_artifact_count: 42
+source_artifacts:
+  - uri: repo://changes/st-1001/contracts/public-app-shell-runtime.v2.yaml
+    bytes: 11431
+    sha256: e916db42258a52ab30139349fd13f0d64742f21464882ef10bc282276201f459
+    role: OWNER_SOURCE
+  - uri: repo://scripts/build_st1001_public_app_shell.py
+    bytes: 33907
+    sha256: fb73d799ef5f658c77d8faf6e9f0f77a58ee1a4a70ebfe8d7dbf5c6f3fb05576
+    role: OWNER_SOURCE
+  - uri: repo://.prettierignore
+    bytes: 108
+    sha256: 367583b5214bdd1c7cbd5981e84935a8d74d236126a724392324de7afcac6590
+    role: OWNER_SOURCE
+  - uri: repo://eslint.config.mjs
+    bytes: 757
+    sha256: 08704939b3719c41c74660343f203349ced63fb1533a1fac832f2542d0c17287
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/package.json
+    bytes: 572
+    sha256: 8d0773c33fd0aea745ee0516cd25d15693a5f2adbafbef8c1b4537ac01a872f9
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/next-env.d.ts
+    bytes: 247
+    sha256: 7b550dda9686c16f36a17bf9051d5dbf31e98555b30d114ac49fc49a1e712651
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/next.config.ts
+    bytes: 1731
+    sha256: bfc4a2ac05d1da6eb8ce5fb9f04a7c13ef55cc2caea69c82f2ab4fff360d48f7
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/tsconfig.json
+    bytes: 426
+    sha256: 8c0416b5e864f1ec602ec56cc012072ed879ca38ecb1861fa157292e2b85f074
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/app/globals.css
+    bytes: 7327
+    sha256: 784cbc8f3a206223ddc11c1076254e15c68f5a0c4ac722f1a86207ea2fcebc7d
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/app/layout.tsx
+    bytes: 871
+    sha256: 75f4517936e15cea4c4f424bf1cf548c2f30862a79cd158a8b8021532617cf06
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/app/editorial-policy/page.tsx
+    bytes: 334
+    sha256: 7f559b64bd48b0ea08eaf671760cb9cd2305c22d87a5ab1047753c921d26e86c
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/app/affiliate-disclosure/page.tsx
+    bytes: 338
+    sha256: 1512426f8207b439ca5f723bf04fe5a7cadd3b77610ec01919a565ada4fb933e
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/app/privacy/page.tsx
+    bytes: 332
+    sha256: e26f31f6eed681bc5dccd5272634d393efcee03ece08863cf61c14e50524f21a
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/app/about/page.tsx
+    bytes: 324
+    sha256: bf70c3d4a837668683fccfd14e61e00a75426afba58c44a48f69e26fe1f845ed
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/src/public-policy.ts
+    bytes: 4391
+    sha256: 8d9808570f8e2c303ce9d17b25c57e592c5d2402adb2b51d1b37075824e877d0
+    role: OWNER_SOURCE
+  - uri: repo://apps/web/src/public-shell.tsx
+    bytes: 4461
+    sha256: dc08e0af69a7d444a085bba9a80e64873d46ab7dc7b7fed56d3bf2322d10c6d7
+    role: OWNER_SOURCE
+  - uri: repo://scripts/check_st1001_public_shell_browser.mjs
+    bytes: 13209
+    sha256: 8c9e73265e60e4ec6a041124e25e0b0ed4d38160c2e00c3db1076c13ba9e2d63
+    role: OWNER_SOURCE
+  - uri: repo://tests/st1001_v2/public-policy-model.test.ts
+    bytes: 4180
+    sha256: fbfc190ba1fbafbc2ec5e586c973d07a332b819da9f2a356ae5fd24275cc6085
+    role: OWNER_SOURCE
+  - uri: repo://tests/st1001_v2/public-shell-static.test.ts
+    bytes: 4657
+    sha256: 1e366c3a95940a76d4fe0beb6886cab3e76ac1a60fce29dfc372a9316309d36c
+    role: OWNER_SOURCE
+  - uri: repo://tests/st1001_v2/public-shell-accessibility.test.ts
+    bytes: 2133
+    sha256: 8c20321ba0d40e19c6304c447746a9951fb4a191f63f40bf5d175cd655d0fc73
+    role: OWNER_SOURCE
+  - uri: repo://tests/st1001_v2/public-shell-generated-contract.test.ts
+    bytes: 2240
+    sha256: ef94701b498a45d322a0d32477f8e48932da83fff4d2931d64e89e2eb0540f8b
+    role: OWNER_SOURCE
+  - uri: repo://tests/st1001_v2/test_generation.py
+    bytes: 3875
+    sha256: d88aeeb6e2d957c7fb04299fd2c8b45b34f5f09d25cd43bd6de46e5609d1b17a
+    role: OWNER_SOURCE
+  - uri: repo://changes/st-1001/README-v2.md
+    bytes: 2163
+    sha256: 60a4159a56975ab1d5852589902f085444fc49414eca3fdfdab768c478713191
+    role: OWNER_SOURCE
+  - uri: repo://changes/st-1001/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml
+    bytes: 4408
+    sha256: 1f59cc28bd4ed99c4a36049f355f7f963ffedbfcc661f9714f63ed0c1f6d07e9
+    role: OWNER_SOURCE
+  - uri: repo://docs/execplans/ST-1001.md
+    bytes: 4975
+    sha256: ef6b5680f17d06d687254fb510866f5484ca38825e192b6d81172fe79191e311
+    role: OWNER_SOURCE
+  - uri: repo://docs/worklogs/ST-1001.md
+    bytes: 2922
+    sha256: 03c3cc9ad3f4331d8d1d9514e5e49febb603a46302cdb0f40160d6c2bf806711
+    role: OWNER_SOURCE
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    bytes: 7943
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    bytes: 4956
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+    bytes: 8046
+    sha256: 0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml
+    bytes: 23487
+    sha256: dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/02_ui/RAOS_08_component_catalog_v1.0.yaml
+    bytes: 12504
+    sha256: 986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv
+    bytes: 4051
+    sha256: 690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    bytes: 24993
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    bytes: 10487
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    bytes: 11395
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    role: CANONICAL_INPUT
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    bytes: 71458
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    role: CANONICAL_INPUT
+  - uri: repo://changes/st-0807/contracts/seo-render-runtime.v2.yaml
+    bytes: 6893
+    sha256: 52214c70766473ecf7c09b2df98c8830c2506c09e442e03c835a5c0e7d9b39fc
+    role: DEPENDENCY_CONTRACT
+  - uri: repo://changes/st-0807/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml
+    bytes: 2536
+    sha256: 3e0ee50841acb2e485269f1805c15c6eab82faf04e23e40209b59372a77e0c07
+    role: DEPENDENCY_CONTRACT
+  - uri: repo://packages/web-ui/src/public-shell.ts
+    bytes: 26755
+    sha256: 33020159073f230088849066e14cf26ae1e283c976f4ff4506abc987885b8333
+    role: DEPENDENCY_CONTRACT
+  - uri: repo://scripts/secure_generated_publication.py
+    bytes: 22651
+    sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+    role: DEPENDENCY_CONTRACT
+  - uri: repo://package.json
+    bytes: 1906
+    sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
+    role: LOCKED_TOOLCHAIN
+  - uri: repo://package-lock.json
+    bytes: 271352
+    sha256: d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b
+    role: LOCKED_TOOLCHAIN
+generated_artifacts:
+  - uri: repo://changes/st-1001/generated/public-app-shell-recorded.v2.json
+    artifact_role: RECORDED_LOCAL_POLICY_PROJECTION
+    media_type: application/json
+    bytes: 10714
+    sha256: b773e2d507d47df856bb8e72c25811c83dd44bcdfcec004ee9b659446cda823e
+  - uri: repo://apps/web/src/public-policy-content.generated.ts
+    artifact_role: IMMUTABLE_TYPESCRIPT_CONTENT_SOURCE
+    media_type: text/typescript
+    bytes: 8986
+    sha256: 8bcec647eabd742766c48557659829e10dbd1ede598e7d5f4c40ee4e7cc5c404
+generation:
+  owner: repo://scripts/build_st1001_public_app_shell.py
+  command: .venv/bin/python scripts/build_st1001_public_app_shell.py
+  check_command: .venv/bin/python scripts/build_st1001_public_app_shell.py --check
+  transaction: ATOMIC_FOREIGN_PRESERVING_MULTI_OUTPUT_WITH_ROLLBACK
+  python_implementation: CPython
+  python_version: 3.14.6
+  pyyaml_version: 6.0.3
+authority:
+  domain_approved: false
+  operator_approved: false
+  consent_approved: false
+  legal_copy_approved: false
+  external_publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+  TST-022: NOT_EXECUTED
+  TST-023: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

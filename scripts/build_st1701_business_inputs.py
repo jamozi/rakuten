@@ -386,7 +386,7 @@ EXPECTED_GOLD_SOURCE_ROWS: Final = (
 )
 IMPLEMENTATION_DEPENDENCIES: Final = {
     "scripts/build_st1506_production_deployment.py": (
-        "f58b1ed91bcfcc4376262a3e3aa3653154dcbb0672e8508daac874e0042f1176"
+        "cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be"
     )
 }
 STANDING_DEVELOPMENT_AUTHORITY_PATH: Final = Path("AGENTS.md")
@@ -897,7 +897,7 @@ def _valid_synthetic_jan(value: str) -> bool:
 def _read(root: Path, relative: Path, field: str) -> bytes:
     path = base._repository_regular_file(root, relative, field)  # noqa: SLF001
     try:
-        return path.read_bytes()
+        return bytes(path.read_bytes())
     except OSError:
         _fail("FILE_UNAVAILABLE", field)
 

@@ -1,151 +1,91 @@
-# ST-0804 — deterministic local recommendation engine
+# ST-0804 — deterministic recommendation engine V2
 
-Classification:
-`PURE_DETERMINISTIC_LOCAL_RECOMMENDATION_ENGINE`.
+Local status: `LOCAL_IMPLEMENTATION_COMPLETE`.
 
-This Story implements the approved recommendation calculation downstream of
-the ST-0803 comparison validator. It accepts one already validated comparison
-matrix plus strict pre-resolved inputs; it does not resolve identity, normalize
-raw product facts, invent penalty policy, persist state, expose an API, call a
-provider, approve content, render public content, or publish.
+ST-0804 now has an additive, locally executable V2 runtime downstream of the
+integrated ST-0803 V2 comparison validator. The historical pure V1 module is
+kept byte-compatible for existing consumers; it is not silently promoted into
+the new receipt boundary.
 
-## Closed calculation boundary
+## Exact input boundary
 
-- The exact canonical methodology ID, version, and source SHA-256 are pinned.
-  Every hard-constraint, weighting, normalization, coverage, conflict,
-  staleness, and tie rule is supplied as a version/hash-bound reference.
-- Candidate-universe, article/version, reader/use-case/budget context, and
-  dimension definitions are explicit immutable version/hash-bound records.
-  The candidate universe and every dimension must exactly match the validated
-  ST-0803 product/axis sets.
-- Every product/dimension assessment binds its comparison coordinate and exact
-  evidence ID. Duplicate, missing, foreign, or mismatched coordinates block.
-- Dimension weights are exact finite positive `Decimal` values no greater than
-  1. Their total need not equal 1; coverage and score calculations normalize
-  deterministically by the applicable total.
-- Normalized scores are pre-resolved exact finite `Decimal` values in `[0, 1]`.
-  This Story does not select or implement a normalization algorithm.
-- Conflict and staleness components are explicit finite nonnegative `Decimal`
-  values capped at 20 and bound to the methodology rule references. A
-  `CONFLICTING`, `NEAR_EXPIRY`, or `STALE` state requires a positive component;
-  `NONE` and `CURRENT` require zero. This Story does not author their magnitude.
-- A failed or unknown hard constraint is ineligible before score calculation.
-  A stale critical fact is `INELIGIBLE` until refresh. Unknown or conflicting
-  critical evidence remains eligible-but-unranked within the canonical
-  alternative boundary. A noncritical unknown contributes no score or
-  current-evidence coverage and is disclosed.
-- Weighted current-evidence coverage gates ranking at 0.80 and primary
-  recommendation eligibility at 0.90. `NEAR_EXPIRY` remains current but carries
-  its explicit penalty; conflicting or stale evidence is not current.
-- Base score, uncertainty penalty, and clamped final score follow
-  `RAOS-CONTENT-RECO-001`. Internal values use four decimals with
-  `ROUND_HALF_EVEN`; the public integer projection is present only in the
-  explanation-bearing local result.
-- Ranked candidates are sorted by score and grouped against each group's
-  highest-score anchor. A difference at or below 2.0 co-recommends without a
-  manufactured winner; members use stable product-ID order. A difference of
-  2.01 begins a new ordered group.
+The V2 envelope binds all of the following as one immutable recommendation
+input:
 
-## Explanation and finance separation
+- exact article ID/version/body, approved Packet version/content and complete
+  Claim-set hashes projected by ST-0803;
+- exact candidate-universe, axis-catalog, Fact-set and temporal-scope hashes;
+- the independently recomputed ST-0803 request/report bytes and a matching
+  process-local record receipt;
+- a versioned decision context and its article binding;
+- the canonical `RAOS-CONTENT-RECO-001@1.0.0` source hash and every named rule;
+- every axis definition, Decimal weight, normalization basis, product/axis
+  Fact binding, normalization input/decision hash and evidence state.
 
-The engine emits deterministic canonical JSON and its SHA-256. The artifact
-binds the validated comparison hash, article and decision context, candidate
-universe, methodology and rules, dimension definitions and weights, all
-coordinate assessments, eligibility reasons, coverage, score and penalty
-components, tie groups, rank order, precision, and disabled authority states.
-Input collection order is intentionally canonicalized, so all permutations of
-the same semantic input produce byte-identical output.
+The runtime reruns ST-0803 and compares canonical report bytes. A structural,
+untrusted or missing input is `UNEVALUABLE`; a trusted semantic mismatch is
+`BLOCK`; a finding-free input is `LOCAL_CALCULATED`. No prior ST-0605 PASS is
+required: ST-0803's own exact COMPARISON attestation tuple remains inside the
+bound report and the separate record receipt can only refer to that report.
 
-Canonical forbidden recommendation vocabulary and the established safety
-equivalents are independently rejected across ST-0804 references and every
-ST-0803 axis field. This includes `affiliate_rate`, `commission`, `epc`, `rpm`,
-`revenue`, `confirmed_commission`, `contribution_profit`, `sponsor_benefit`, and
-the finance/cost/profit/rate/sponsorship token families. Mutable collections,
-runtime subclasses, booleans used as numbers, non-finite or out-of-range
-decimals, malformed exact values, and structural-injection shapes fail closed.
-Findings and construction errors contain closed codes only and never echo input.
+## Deterministic calculation
 
-## Canonical test-matrix coverage
+Only validated specifications, explicit use conditions, or their intersection
+may provide pre-resolved finite Decimal scores in `[0, 1]`. ST-0804 does not
+invent a category normalization algorithm. Unknown, missing, conflicting or
+unsupported cells retain an explicit state and no score; they are never
+converted to zero, average, pass or a winner.
 
-The isolated local suite covers the implementation-safe behavior in
-CT-0887 through CT-0906: hard pass/fail, critical unknown, exact coverage
-thresholds, deterministic weight normalization, missing noncritical evidence,
-conflict and near-expiry penalty paths, penalty cap and score clamp, 2.0/2.01
-tie boundaries, finance-field rejection, identical recalculation, four-decimal
-internal/public-integer rounding, and cross-article/context hash separation.
-It also exercises all input permutations and negative type, subclass,
-coordinate, rule-binding, comparison-report, redaction, and side-effect paths.
+Hard constraints run before scoring. Coverage, base score, uncertainty penalty
+and clamped final score follow the pinned methodology. Internal projection is
+four-decimal `ROUND_HALF_EVEN`; the public projection is an integer only in the
+local explanation. Ranking begins at 0.80 coverage and primary eligibility at
+0.90. Penalties cap at 20. A score difference at or below 2.0 creates a
+co-recommendation group whose members use stable product-ID order; 2.01 starts
+a new group. Collection permutations produce byte-identical reports and
+explanations.
 
-CT-0901 through CT-0903 human override/reason/evidence review are deliberately
-not implemented or claimed as PASS. Human override and approval, public
-explanation rendering, persistence, API/provider integration, and OD-006
-identity-resolution policy remain outside this Story.
+## Editorial/finance separation
 
-## Local verification
+Affiliate, commission, reward, rate, EPC, RPM, finance, revenue, profit and
+sponsorship aliases cannot be model fields. The recorded adapter recursively
+checks every key and string value before structural resolution, including
+nested maps/lists, camel case, NFKC/fullwidth forms, Japanese terms and common
+leet variants. This detector is also applied at the domain context/axis
+boundary. Validated specification/use-condition bindings are the only values
+that can affect order.
 
-Environment: Linux worktree, CPython 3.14.6, pinned uv 0.12.1, pytest 9.1.1,
-Ruff 0.16.1, and mypy 2.3.0. The environment was synchronized only through:
+There is no override, approval, persistence, provider, mutation, public
+ranking, activation, publication or external-write surface. The only appender
+stores process-local report digest/canonical-byte metadata and re-resolves the
+fixture before every append. All authority flags remain false.
+
+## Generated owner artifacts
+
+`recommendation-runtime.v2.yaml` owns the recorded seed. Run:
 
 ```bash
-scripts/python_toolchain.sh \
-  --uv /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv sync
+.venv/bin/python scripts/build_st0804_recommendation_runtime.py
+.venv/bin/python scripts/build_st0804_recommendation_runtime.py --check
 ```
 
-Local checks executed in separate processes from exact working directory
-`/home/minami/rakuten/.worktrees/st-0804`:
+The owner publishes the fixture and runtime manifest together through the
+hash-bound `secure_generated_publication.py` helper. Existing targets use
+descriptor-relative `renameat2(RENAME_EXCHANGE)` with displaced/reverse
+identity verification; missing targets use a no-clobber hard link. Symlinks,
+hardlinks, parent/target swaps, foreign material, partial failures and
+`BaseException` interruption fail closed with foreign-preserving rollback.
+`--check` performs no write transaction.
 
-```text
-pytest -p no:cacheprovider -q tests/st0804
-  PASS — 75 passed
-pytest -p no:cacheprovider -q tests/st0803
-  PASS — 31 passed
-ruff check --no-cache <ST-0804 source and exact test files>
-  PASS
-ruff format --check --no-cache <ST-0804 source and exact test files>
-  PASS — 5 files already formatted
-PYTHONDONTWRITEBYTECODE=1 MYPYPATH=python:tests/st0804 \
-  /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv \
-  run --locked --no-sync --no-env-file \
-  mypy --strict --explicit-package-bases --cache-dir=/dev/null \
-  python/raos/domain/editorial/recommendation.py \
-  tests/st0804/conftest.py \
-  tests/st0804/test_recommendation.py \
-  tests/st0804/test_boundaries.py \
-  tests/st0804/test_negative_cases.py
-  PASS — no issues in 5 source files
-make --no-builtin-rules --no-builtin-variables check-workspace
-  PASS — no workspace drift
-scripts/python_toolchain.sh --uv <pinned-uv> contract-gate
-  PASS on final unopposed rerun — reconstruction 306 artifacts; verifier PASS;
-  isolated ST-0104 166 passed in 222.12s
-python3 scripts/scan_secrets.py --worktree
-  OPERATIONAL ERROR in linked worktree — exit 2,
-  ERROR code=unsafe-git-metadata source="."
-same scanner --worktree on non-git fallback snapshot from git archive HEAD
-overlaid with the exact six ST-0804 files
-  PASS — exit 0, no findings or output
-git diff --check
-  PASS — unstaged and staged exact-six-file checks emitted no output
-```
+## Verification boundary
 
-The scanner intentionally requires `.git` to be a directory before using Git
-enumeration, so the linked-worktree `.git` file is rejected before any file is
-read. The documented non-git fallback was therefore exercised against a full
-temporary repository snapshot with the exact ST-0804 files overlaid. This is a
-linked-worktree tooling limitation, not a secret finding; no scanner rule or
-repository file was changed.
+The focused V2 suite covers exact upstream/request/report/receipt bindings,
+Decimal/property determinism, 0.79/0.80/0.90 thresholds, explicit unavailable
+evidence, hard failures, penalty/cap/clamp and 2.0/2.01 ties, hostile aliases,
+all bounds, adapter re-resolution, generator tamper/TOCTOU/rollback and
+manifest identity. Historical ST-0804 and integrated ST-0803 suites remain
+regressions.
 
-One preceding composite contract-gate attempt returned `1 failed, 165 passed`
-because the AsyncAPI half of
-`test_openapi_and_asyncapi_structure_drift_fails` received the existing
-secure-capture refusal `contract repository root changed during secure capture`
-instead of its expected structure-validation refusal. The unchanged failing
-test passed alone (`1 passed in 9.99s`), and the complete unopposed composite
-rerun then passed all 166 tests. No contract, verifier, or ST-0104 file was
-changed to obtain that result.
-
-These are local implementation checks only. Formal TST-007/TST-020, hosted CI,
-live validation, runtime/persistence, staging, release, publication, and
-Production work remain `NOT_EXECUTED`. The result always retains
-`publication_authorized=false` and `production_eligible=false`; no local result
-constitutes formal validation or release authority.
+This is local implementation evidence only. Canonical registry changes,
+formal TST-007/TST-020, hosted CI, live validation, staging, release,
+publication and Production remain `NOT_EXECUTED`.

@@ -1,37 +1,72 @@
-# ST-1205 KPI read-model reference plan
+# ST-1205 recorded KPI read model V2
 
 Classification:
-`SOURCE_DERIVED_NON_EXECUTABLE_NON_ATTESTING_KPI_READ_MODEL_REFERENCE_PLAN`.
+`MAXIMUM_SAFE_LOCAL_EXECUTABLE_RECORDED_KPI_READ_MODEL_V2`.
 
-This directory contains an authored boundary contract and its deterministic owner
-projection. The projection reproduces the exact ordered canonical KPI-001 through
-KPI-030 definitions and all nine source fields. Formula strings remain inert source
-text. They are not parsed, evaluated, translated to SQL, or used to calculate a
-metric.
+This Story now has a deterministic process-local formula engine, inward port,
+caller-bytes recorded adapter, calculation job, immutable read-model snapshot,
+versioned contract, and a synthetic golden fixture. All canonical KPI-001 through
+KPI-030 definitions are executable and the golden fixture reproduces 30/30 values.
+The former V1 0/30 projection is preserved as a superseded historical reference;
+it is no longer the current implementation boundary.
 
-The slice binds the current committed bytes and closed semantics of:
+## Preflight and authority
 
-- ST-1201 at `db19e538ed5a8c7e208ded7c3319a15c5e809492`: tracking disabled,
-  recorded-only/nonpersistent behavior, no measurement evidence;
-- ST-1203 at `bdb97355eb27100d92787b6bbd3b5608b729250e`: top-row-only Search
-  Console fixtures, incomplete-row caveats, an empty page that is not proof of zero,
-  and undefined supersession;
-- ST-1204 at `73b7782502f249f91eafd3d0bc9d229fb770d7c6`: two returned rows
-  while provider `rowCount` is three, no pagination or numeric aggregation, metric
-  values preserved as strings, and undefined supersession.
+- Story: ST-1205, “30 KPIを定義Version付きで計算”.
+- Read: Canonical ST-1205 and ST-1201/ST-1203/ST-1204 dependencies, analytics and
+  attribution design, the 30-KPI catalog, TST-030, integration precedence, data
+  classification, OD-012, and OD-015.
+- Open decisions: OD-012 and OD-015 remain unresolved. Their safe defaults are
+  preserved: tracking is disabled and only caller-supplied recorded synthetic bytes
+  are accepted.
+- Scope: domain/application/port/recorded adapter, V2 contract and fixture, owner
+  generator, local tests, and documentation. No migration, database, provider, or
+  public UI is introduced.
 
-The result is an inventory/reference projection, not a KPI engine or read model.
-Calculation versions, source mappings, watermarks, periods, inputs, SQL, tables, job
-payloads, persisted rows, results, and evidence remain null or empty.
-Empty means unavailable or not executed; it never asserts a zero-valued KPI.
+## Calculation boundary
 
-No formula engine, job, database, repository, tracking activation, public
-projection, recommendation input, provider, network, live, staging, release, or
-Production action is present. Definitions are projected 30/30, while calculations
-remain 0/30 and verified calculations remain 0/30. The decision is `NOT_READY`,
-Story acceptance is false, approval is null, and formal TST-030 is `NOT_EXECUTED`.
+Each definition carries typed input source and role, canonical formula, time grain,
+cohort semantics, included/excluded traffic, attribution display basis, result unit,
+Decimal quantization, `ROUND_HALF_EVEN`, verified-zero semantics, and an explicit
+division-by-zero policy. Values are `decimal.Decimal` created from canonical decimal
+strings; floats and non-finite values are rejected.
 
-Generate and check only with the pinned repository environment:
+A KPI becomes `UNAVAILABLE`, never an implicit zero, when a required input is
+missing, unverified, from the wrong source, from a different period or program, in
+an immature cohort, attribution-unverified, attribution-basis mismatched, invalid,
+or has a zero denominator. A verified numerator of zero with a positive verified
+denominator remains a real zero.
+
+All calculations bind one exact program,
+`WORDPRESS_BLOG_RAKUTEN_AFFILIATE`, and one exact period. Provider totals,
+direct/estimated attributed amounts, and unattributed amounts are distinct bases.
+Unattributed or provider totals are never silently allocated to an article.
+
+## Affiliate learning seam
+
+The internal learning projection maps search CTR, affiliate click rate, confirmed
+reward per click, and confirmation rate to KPI-014, KPI-006, KPI-003, and KPI-008.
+Confirmed reward per content hour applies the same period, program, maturity, and
+verified-attribution gates. Every learning row sets
+`recommendation_order_effect=false`; the job cannot change article HTML, CTA,
+product selection, publication snapshots, or recommendation order.
+
+## Explicitly absent
+
+There is no filesystem discovery in runtime code, provider SDK, credential or
+environment lookup, HTTP/network call, database, SQL execution, repository, queue,
+tracking activation, public projection, publication, staging, release, or
+Production action. Results exist only in an immutable process-local snapshot. The
+recorded adapter consumes one exact caller-supplied fixture once and returns stable
+redacted failures.
+
+DEBT-W2-054 is closed by the 30 executable definitions and formula reproduction.
+DEBT-W2-062 is closed by current hash/semantic bindings for ST-1201, ST-1203, and
+ST-1204. Formal TST-030, live-provider reconciliation, database materialization,
+hosted CI, staging, release, and Production evidence remain explicitly unexecuted;
+local results do not constitute Canonical Story acceptance or `VALIDATED` status.
+
+Generate and check with the pinned repository environment:
 
 ```text
 /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run \
@@ -43,5 +78,4 @@ Generate and check only with the pinned repository environment:
   python scripts/build_st1205_kpi_read_model_reference_plan.py --check
 ```
 
-Only that builder owns the generated JSON and manifest. Local generation and tests
-do not constitute formal, runtime, staging, release, or Production evidence.
+Only that builder owns `generated/kpi-read-model.v2.json` and `manifest.yaml`.

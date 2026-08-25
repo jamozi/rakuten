@@ -40,30 +40,30 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-1305/contracts/finance-reconciliation-reference-plan.v1.yaml",
-    "source_contract_sha256": "98dfd57507c9254de7b1fac0a1bfb13e45f270acbb77b7eb31eab46e64a131ac",
-    "source_contract_model_sha256": "df65771a13b638ac11089975c0001a7f6e0aaf88617be4cd65f137285aff4396",
+    "source_contract_sha256": "279f965e5786d6cc9cb3a2f91db0e314fcf96ac27fadc1cc98b6de9cfce7b731",
+    "source_contract_model_sha256": "5c8b0a2f0f85d3dc3948f33b7724a35d478a9ab21b3b4008544fc58248bfb666",
     "generated_by": "repo://scripts/build_st1305_finance_reconciliation_reference_plan.py",
     "generation_command": "/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --frozen --offline --no-cache --no-sync --no-env-file python scripts/build_st1305_finance_reconciliation_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+      "sha256": "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     }
   },
   "dependency_bindings": {
     "st1304": {
       "story_id": "ST-1304",
-      "feature_commit": "3c1b8ace2d0b82480cd144256d6fa1c758a2ae90",
-      "artifact_binding_commit": "47797de8d2a44ebf10c301d32d1bb854ce39000b",
+      "feature_commit": "6c73e41d630657138d8f51752d8cd1541026a0f1",
+      "artifact_binding_commit": "09f1935982f8dd41085224fde9dfeb47a390795d",
       "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
       "artifacts": {
         "changes/st-1304/README.md": "6528d7d60c8686cdd4d85a8db7d78fad5440e7d19fd293881c28fda0b407a3f2",
-        "changes/st-1304/contracts/cost-unit-economics-reference-plan.v1.yaml": "49d3d8050ca63e177c95657b17791c0090176f64948a3e21420b96e9d9e00326",
-        "changes/st-1304/generated/cost-unit-economics-reference-plan.v1.json": "82da6bb12954101aa60cd73a33da4d2f11956c2b923852583ef94a7d497c0f43",
-        "changes/st-1304/manifest.yaml": "0902f60812e220d5fc1e9d6393f2e898e4f778a573435c611fdbc58aa3c84dbd",
-        "scripts/build_st1304_cost_unit_economics_reference_plan.py": "795a818a637f0992b3a9bf130310d03c20a7fabda11a8e9520bd3989ff7fc768",
+        "changes/st-1304/contracts/cost-unit-economics-reference-plan.v1.yaml": "6e57a2dbb95c11e52da273578894175a90f4d0da29c82e54e6fa3fbb0fb3d167",
+        "changes/st-1304/generated/cost-unit-economics-reference-plan.v1.json": "ff8992248fe0b5638911f3d1c43f0bffa7a6f7b842d7499950bfc7e939ad2a1c",
+        "changes/st-1304/manifest.yaml": "53118c078084c22e7e44d55434d65091a4a1e442977fbab8f9648aa1b2f08ad2",
+        "scripts/build_st1304_cost_unit_economics_reference_plan.py": "a2f9bb2dafb11bcb6455c606b80afe8ca7a3a816c67feeba5d71c274fafe1362",
         "tests/st1304/conftest.py": "913f94bbc4018b868679bdf3477a5c480ce8e9662ddffd43aff14c3cee670f4f",
-        "tests/st1304/test_contract.py": "7a277e2eea252900825be77cecdb5df78d54a219d276fbd848e6d6fc9c9c1741",
-        "tests/st1304/test_generation.py": "b199d26391b0296ef054141aebb989c5b8417534a09e857a5c71578ea586dc8a",
+        "tests/st1304/test_contract.py": "7d4073aca12d8d5ba92d9fde84e1e15457a28da01434bba962afde410f0ccc0f",
+        "tests/st1304/test_generation.py": "f51f44bfe7b63d9dce4b511453fad21574395e857543b5098383966c8f6c75c5",
         "tests/st1304/test_negative_cases.py": "50224c09d38959dfaf36ba1fc4125016920e709494eb71a47d1525d286a562dd"
       },
       "required_semantics": {

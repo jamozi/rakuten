@@ -1,0 +1,84 @@
+document:
+  id: RAOS-ST0803-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V2
+  schema_version: 2
+  story_id: ST-0803
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+base:
+  branch: codex/st0803-comparison-v2
+  base_commit_sha: 55a16be823e98b28113dd598076de848ff021950
+  implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
+runtime:
+  compatibility: ADDITIVE_V2_V1_UNCHANGED
+  contract: changes/st-0803/contracts/comparison-validation-runtime.v2.yaml
+  owner_generator: scripts/build_st0803_comparison_validation_runtime.py
+  fixture: changes/st-0803/generated/comparison-validation-pass.v2.json
+  manifest: changes/st-0803/runtime-manifest.v2.yaml
+invariants:
+  exact_article_body_packet_claim_set_binding: true
+  exact_candidate_axis_time_fact_input_binding: true
+  exact_st0504_identity_receipts: true
+  exact_st0605_comparison_tuple_receipts: true
+  prior_st0605_pass_required: false
+  unknown_missing_conflict_unsupported_explicit: true
+  finance_affiliate_axis_aliases_rejected: true
+  rank_authority: NONE
+  recommendation_authority: NONE
+  publication_authority: NONE
+  production_eligibility: false
+verification:
+  owner_build: PASS
+  owner_no_write_check: PASS
+  focused_v2_tests:
+    result: PASS
+    passed: 52
+  historical_v1_tests:
+    result: PASS
+    passed: 31
+  dependency_st0605_runtime_tests:
+    result: PASS
+    passed: 153
+  dependency_st0504_tests:
+    result: PASS
+    passed: 214
+  dependency_st0802_tests:
+    result: PASS
+    passed: 59
+  combined_affected_tests:
+    result: PASS
+    passed: 509
+    local_tmpfs: /tmp
+  network_denied_combined_affected_tests:
+    result: PASS
+    passed: 509
+    external_network: DENIED
+  compile_import: PASS
+  ruff_format_and_lint: PASS
+  strict_mypy: PASS
+  project_pyright: PASS
+  sensitive_data_scan: PASS
+  git_diff_check: PASS
+toolchain:
+  python: 3.14.6
+  pyyaml: 6.0.3
+  pydantic: 2.13.4
+  pydantic_core: 2.46.4
+  pytest: 9.1.1
+  ruff: 0.16.1
+  mypy: 2.3.0
+debt:
+  DEBT-W2-066_ST0803_RECEIPT_CONSUMER_SLICE: CLOSED_LOCAL_IMPLEMENTATION
+  remaining_other_owner_slices:
+    - ST-0606
+    - ST-0805
+    - ST-0806
+formal_and_external:
+  TST-007: NOT_EXECUTED
+  TST-020: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_identity_or_provider: NOT_EXECUTED
+  credential_activity: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

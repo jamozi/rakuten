@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "story_id": "ST-0403",
+  "sources": {
+    "role_matrix": "docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml",
+    "security_design": "docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+    "admin_openapi": "contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml",
+    "internal_openapi": "contracts/raos-v0.4/contracts/openapi-internal.v0.4.yaml",
+    "state_catalog": "contracts/raos-v0.4/contracts/catalogs/state-transition-catalog.v0.4.yaml",
+    "authentication_contract": "changes/st-0401/contracts/local-auth-runtime.v2.json",
+    "step_up_contract": "changes/st-0402/contracts/local-step-up-runtime.v2.json",
+    "database_role_contract": "changes/st-0306/contracts/database-roles-grants.v1.yaml",
+    "final_approval_reference": "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml"
+  },
+  "value_trust_boundary": {
+    "status": "TRUSTED_IN_PROCESS_TCB_ONLY",
+    "constructor_scope": "INTERNAL_VALUE_NORMALIZATION_NOT_SERVICE_PROVENANCE",
+    "external_input_construction": "FORBIDDEN",
+    "unforgeable_capability": false,
+    "runtime_enforcement_entrypoints": ["AuthorizationGuard.require","DurableAuthorizationService.evaluate_admin","DurableAuthorizationService.require_admin"],
+    "business_action_execution": false
+  },
+  "matrix": [
+    {"action":"activate_affiliate_kill_switch","data_class":"CONFIDENTIAL","allowed_roles":["OPERATOR","PRODUCT_OWNER"],"mfa_required":true,"step_up_required":true,"separation_of_duties":false,"blocked_reason":"OPERATION_VARIANT_UNRESOLVED","required_evidence":["trusted_switch_type_and_engage_discriminator"]},
+    {"action":"activate_publication_kill_switch","data_class":"CONFIDENTIAL","allowed_roles":["OPERATOR","PRODUCT_OWNER"],"mfa_required":true,"step_up_required":true,"separation_of_duties":false,"blocked_reason":"OPERATION_VARIANT_UNRESOLVED","required_evidence":["trusted_switch_type_and_engage_discriminator"]},
+    {"action":"break_glass","data_class":"RESTRICTED","allowed_roles":["PRODUCT_OWNER","SECURITY_AUDITOR"],"mfa_required":true,"step_up_required":true,"separation_of_duties":false,"blocked_reason":"UNMAPPED_OPERATION","required_evidence":["exact_admin_operation_and_resource_mapping"]},
+    {"action":"commit_revenue_import","data_class":"CONFIDENTIAL","allowed_roles":["ANALYST","PRODUCT_OWNER"],"mfa_required":true,"step_up_required":true,"separation_of_duties":false},
+    {"action":"deactivate_affiliate_kill_switch","data_class":"CONFIDENTIAL","allowed_roles":["OPERATOR","PRODUCT_OWNER"],"mfa_required":true,"step_up_required":true,"separation_of_duties":true,"blocked_reason":"OPERATION_VARIANT_UNRESOLVED","required_evidence":["trusted_switch_type_engage_and_independent_actor_mapping"]},
+    {"action":"deactivate_publication_kill_switch","data_class":"CONFIDENTIAL","allowed_roles":["OPERATOR","PRODUCT_OWNER"],"mfa_required":true,"step_up_required":true,"separation_of_duties":true,"blocked_reason":"OPERATION_VARIANT_UNRESOLVED","required_evidence":["trusted_switch_type_engage_and_independent_actor_mapping"]},
+    {"action":"edit_article_draft","data_class":"CONFIDENTIAL","allowed_roles":["EDITOR","MANAGING_EDITOR"],"mfa_required":false,"step_up_required":false,"separation_of_duties":false},
+    {"action":"final_approve","data_class":"CONFIDENTIAL","allowed_roles":["MANAGING_EDITOR"],"mfa_required":true,"step_up_required":true,"separation_of_duties":true,"blocked_reason":"RESOURCE_SCOPE_UNRESOLVED","required_evidence":["ST0902_GATE_002_role_and_resource_scope","ST0902_GATE_005_independent_actor_comparator"]},
+    {"action":"manage_ai_release","data_class":"CONFIDENTIAL","allowed_roles":["MANAGING_EDITOR","PRODUCT_OWNER"],"mfa_required":true,"step_up_required":true,"separation_of_duties":false},
+    {"action":"manage_policy","data_class":"CONFIDENTIAL","allowed_roles":["MANAGING_EDITOR","PRODUCT_OWNER","SECURITY_AUDITOR"],"mfa_required":true,"step_up_required":false,"separation_of_duties":false,"blocked_reason":"STEP_UP_RESOURCE_UNMAPPED","required_evidence":["exact_ST0402_policy_bundle_resource_mapping"]},
+    {"action":"manage_product_identity","data_class":"CONFIDENTIAL","allowed_roles":["EDITOR","MANAGING_EDITOR","REVIEWER"],"mfa_required":true,"step_up_required":false,"separation_of_duties":false,"blocked_reason":"STEP_UP_RESOURCE_UNMAPPED","required_evidence":["exact_ST0402_product_identity_resource_mapping"]},
+    {"action":"manage_secrets","data_class":"RESTRICTED","allowed_roles":["OPERATOR"],"mfa_required":true,"step_up_required":true,"separation_of_duties":false,"blocked_reason":"UNMAPPED_OPERATION","required_evidence":["exact_admin_secret_operation_mapping"]},
+    {"action":"publish","data_class":"CONFIDENTIAL","allowed_roles":["MANAGING_EDITOR","OPERATOR"],"mfa_required":true,"step_up_required":true,"separation_of_duties":true,"blocked_reason":"CROSS_RESOURCE_BINDING_UNRESOLVED","required_evidence":["publication_candidate_to_snapshot_step_up_resource_binding","publisher_independent_actor_mapping"]},
+    {"action":"review_article","data_class":"CONFIDENTIAL","allowed_roles":["MANAGING_EDITOR","REVIEWER"],"mfa_required":false,"step_up_required":false,"separation_of_duties":false},
+    {"action":"rollback","data_class":"CONFIDENTIAL","allowed_roles":["MANAGING_EDITOR","OPERATOR"],"mfa_required":true,"step_up_required":true,"separation_of_duties":false},
+    {"action":"view_audit","data_class":"CONFIDENTIAL","allowed_roles":["READ_ONLY_AUDITOR","SECURITY_AUDITOR"],"mfa_required":false,"step_up_required":false,"separation_of_duties":false,"blocked_reason":"SITE_SCOPE_CONFLICT","required_evidence":["site_mandatory_matrix_to_global_audit_context_resolution"]},
+    {"action":"view_finance","data_class":"CONFIDENTIAL","allowed_roles":["ANALYST","PRODUCT_OWNER"],"mfa_required":false,"step_up_required":false,"separation_of_duties":false,"blocked_reason":"AMBIGUOUS_OPERATION","required_evidence":["exact_finance_query_action_operation_set"]},
+    {"action":"view_public","data_class":"PUBLIC","allowed_roles":["ANALYST","EDITOR","MANAGING_EDITOR","OPERATOR","PRODUCT_OWNER","READ_ONLY_AUDITOR","REVIEWER","SECURITY_AUDITOR"],"mfa_required":false,"step_up_required":false,"separation_of_duties":false,"blocked_reason":"PUBLIC_SURFACE_NOT_ADMIN_AUTHORIZATION","required_evidence":["separate_public_anonymous_access_contract"]},
+    {"action":"view_raw_artifact","data_class":"CONFIDENTIAL","allowed_roles":["EDITOR","OPERATOR","REVIEWER","SECURITY_AUDITOR"],"mfa_required":true,"step_up_required":false,"separation_of_duties":false,"blocked_reason":"UNMAPPED_OPERATION","required_evidence":["exact_raw_artifact_operation_and_ST0402_resource_mapping"]}
+  ],
+  "bindings": [
+    {"operation_id":"AI-112","action":"manage_ai_release","permission_scope":"ai:release:write","resource_kind":"AI_RELEASE","allowed_states":[],"status":"BLOCKED","block_reason":"CROSS_RESOURCE_BINDING_UNRESOLVED","required_evidence":["pre_create_release_resource_id_binding"],"step_up_action":"manage_ai_release","step_up_resource_type":"AI_RELEASE"},
+    {"operation_id":"AI-113","action":"manage_ai_release","permission_scope":"ai:release:approve","resource_kind":"AI_RELEASE","allowed_states":["READY_FOR_REVIEW"],"status":"ACTIVE_RECORDED","step_up_action":"manage_ai_release","step_up_resource_type":"AI_RELEASE"},
+    {"operation_id":"AI-114","action":"manage_ai_release","permission_scope":"ai:release:approve","resource_kind":"AI_RELEASE","allowed_states":["APPROVED_CANARY"],"status":"ACTIVE_RECORDED","step_up_action":"manage_ai_release","step_up_resource_type":"AI_RELEASE"},
+    {"operation_id":"AI-115","action":"manage_ai_release","permission_scope":"ai:release:revoke","resource_kind":"AI_RELEASE","allowed_states":["APPROVED_ACTIVE","APPROVED_CANARY"],"status":"ACTIVE_RECORDED","step_up_action":"manage_ai_release","step_up_resource_type":"AI_RELEASE"},
+    {"operation_id":"CAT-006","action":"manage_product_identity","permission_scope":"catalog:grouping:decide","resource_kind":"PRODUCT","allowed_states":[],"status":"BLOCKED","block_reason":"STEP_UP_RESOURCE_UNMAPPED","required_evidence":["exact_ST0402_product_identity_resource_mapping"]},
+    {"operation_id":"CAT-008","action":"manage_product_identity","permission_scope":"catalog:product:write","resource_kind":"PRODUCT","allowed_states":[],"status":"BLOCKED","block_reason":"CROSS_RESOURCE_BINDING_UNRESOLVED","required_evidence":["exact_ST0402_product_identity_resource_mapping","pre_create_product_resource_id_binding"]},
+    {"operation_id":"CAT-010","action":"manage_product_identity","permission_scope":"catalog:product:write","resource_kind":"PRODUCT","allowed_states":[],"status":"BLOCKED","block_reason":"STEP_UP_RESOURCE_UNMAPPED","required_evidence":["exact_ST0402_product_identity_resource_mapping"]},
+    {"operation_id":"ED-011","action":"edit_article_draft","permission_scope":"editorial:version:write","resource_kind":"ARTICLE_VERSION","allowed_states":["DRAFT"],"status":"ACTIVE_RECORDED"},
+    {"operation_id":"FIN-006","action":"commit_revenue_import","permission_scope":"finance:revenue:confirm","resource_kind":"REVENUE_IMPORT","allowed_states":["DRY_RUN_READY"],"status":"ACTIVE_RECORDED","step_up_action":"commit_revenue_import","step_up_resource_type":"REVENUE_IMPORT"},
+    {"operation_id":"OPS-006","action":"activate_affiliate_kill_switch","permission_scope":"ops:kill_switch:write","resource_kind":"AFFILIATE_SCOPE","allowed_states":[],"status":"BLOCKED","block_reason":"OPERATION_VARIANT_UNRESOLVED","required_evidence":["trusted_switch_type_and_engage_discriminator"],"step_up_action":"activate_affiliate_kill_switch","step_up_resource_type":"AFFILIATE_SCOPE"},
+    {"operation_id":"OPS-006","action":"activate_publication_kill_switch","permission_scope":"ops:kill_switch:write","resource_kind":"PUBLICATION_SCOPE","allowed_states":[],"status":"BLOCKED","block_reason":"OPERATION_VARIANT_UNRESOLVED","required_evidence":["trusted_switch_type_and_engage_discriminator"],"step_up_action":"activate_publication_kill_switch","step_up_resource_type":"PUBLICATION_SCOPE"},
+    {"operation_id":"OPS-006","action":"deactivate_affiliate_kill_switch","permission_scope":"ops:kill_switch:write","resource_kind":"AFFILIATE_SCOPE","allowed_states":[],"status":"BLOCKED","block_reason":"OPERATION_VARIANT_UNRESOLVED","required_evidence":["trusted_switch_type_engage_and_independent_actor_mapping"],"step_up_action":"deactivate_affiliate_kill_switch","step_up_resource_type":"AFFILIATE_SCOPE"},
+    {"operation_id":"OPS-006","action":"deactivate_publication_kill_switch","permission_scope":"ops:kill_switch:write","resource_kind":"PUBLICATION_SCOPE","allowed_states":[],"status":"BLOCKED","block_reason":"OPERATION_VARIANT_UNRESOLVED","required_evidence":["trusted_switch_type_engage_and_independent_actor_mapping"],"step_up_action":"deactivate_publication_kill_switch","step_up_resource_type":"PUBLICATION_SCOPE"},
+    {"operation_id":"OPS-012","action":"view_audit","permission_scope":"ops:audit:read","resource_kind":"AUDIT","allowed_states":[],"status":"BLOCKED","block_reason":"SITE_SCOPE_CONFLICT","required_evidence":["site_mandatory_matrix_to_global_audit_context_resolution"]},
+    {"operation_id":"POL-002","action":"manage_policy","permission_scope":"policy:bundle:write","resource_kind":"POLICY_BUNDLE","allowed_states":["DRAFT"],"status":"BLOCKED","block_reason":"STEP_UP_RESOURCE_UNMAPPED","required_evidence":["exact_ST0402_policy_bundle_resource_mapping"]},
+    {"operation_id":"POL-003","action":"manage_policy","permission_scope":"policy:bundle:activate","resource_kind":"POLICY_BUNDLE","allowed_states":["DRAFT"],"status":"BLOCKED","block_reason":"STEP_UP_RESOURCE_UNMAPPED","required_evidence":["exact_ST0402_policy_bundle_resource_mapping"]},
+    {"operation_id":"PUBADM-004","action":"review_article","permission_scope":"publishing:review:decide","resource_kind":"REVIEW_ASSIGNMENT","allowed_states":["IN_PROGRESS"],"status":"ACTIVE_RECORDED"},
+    {"operation_id":"PUBADM-005","action":"final_approve","permission_scope":"publishing:approval:decide","resource_kind":"ARTICLE_VERSION","allowed_states":["HUMAN_REVIEW"],"status":"BLOCKED","block_reason":"RESOURCE_SCOPE_UNRESOLVED","required_evidence":["ST0902_GATE_002_role_and_resource_scope","ST0902_GATE_005_independent_actor_comparator"],"step_up_action":"final_approve","step_up_resource_type":"ARTICLE_VERSION"},
+    {"operation_id":"PUBADM-009","action":"publish","permission_scope":"publishing:publish","resource_kind":"PUBLICATION_CANDIDATE","allowed_states":["SNAPSHOT_READY"],"status":"BLOCKED","block_reason":"CROSS_RESOURCE_BINDING_UNRESOLVED","required_evidence":["publication_candidate_to_snapshot_step_up_resource_binding","publisher_independent_actor_mapping"],"step_up_action":"publish","step_up_resource_type":"PUBLICATION_SNAPSHOT"},
+    {"operation_id":"PUBADM-012","action":"rollback","permission_scope":"publishing:rollback","resource_kind":"PUBLICATION","allowed_states":["PUBLISHED"],"status":"ACTIVE_RECORDED","step_up_action":"rollback","step_up_resource_type":"PUBLICATION"}
+  ],
+  "service_principal": {
+    "status": "DISABLED_MAPPING_UNRESOLVED",
+    "database_workload_roles": ["raos_api_rw","raos_auditor_ro","raos_dispatcher_rw","raos_migrator","raos_projection_rw","raos_public_ro","raos_reporting_ro","raos_worker_rw"],
+    "required_evidence": "exact_internal_service_principal_to_workload_role_and_operation_mapping"
+  }
+}

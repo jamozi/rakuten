@@ -1,0 +1,65 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-0602",
+  "recorded_synthetic": true,
+  "operational_default": false,
+  "activation": false,
+  "contains_credentials": false,
+  "contains_provider_text": false,
+  "contains_raw_or_affiliate_url": false,
+  "source": {
+    "artifact_story": "ST-0601",
+    "normalization_story": "ST-0503",
+    "offer_count": 2,
+    "structural_observations_per_offer": 3,
+    "ignored_observations_per_offer": 1,
+    "source_confidence": null,
+    "source_confidence_status": "SOURCE_ABSENT"
+  },
+  "expected_report": {
+    "fact_count": 6,
+    "validation_count": 6,
+    "event_count": 1,
+    "fact_predicates": [
+      "PRICE_JPY",
+      "AVAILABILITY_PROVIDER_FLAG",
+      "POSTAGE_INCLUDED_PROVIDER_FLAG"
+    ],
+    "subject_type": "OFFER",
+    "fact_kind": "ASSERTED",
+    "confidence": "1.0000",
+    "confidence_basis": "EXACT_STRUCTURAL_EXTRACTION_NOT_TRUTH_ATTESTATION",
+    "truth_attestation": "NOT_ATTESTED",
+    "identity_status": "HUMAN_REVIEW",
+    "readiness": "NOT_READY",
+    "publication_authority": "NONE",
+    "external_action_count": 0,
+    "provider_action_count": 0,
+    "publication_action_count": 0,
+    "ai_action_count": 0
+  },
+  "commit_faults": [
+    "NONE",
+    "KNOWN_BEFORE_COMMIT",
+    "UNKNOWN_BEFORE_COMMIT",
+    "UNKNOWN_AFTER_COMMIT"
+  ],
+  "metamorphic_cases": [
+    "PERMUTATION",
+    "DUPLICATE",
+    "OUT_OF_ORDER",
+    "UNICODE_PROVIDER_TEXT",
+    "TIME_MISMATCH",
+    "UNIT_MISMATCH",
+    "LARGE_VALUE",
+    "IDEMPOTENT_REPLAY",
+    "RESTART",
+    "CONCURRENCY",
+    "TAMPER",
+    "MALFORMED_SCHEMA",
+    "COMMIT_AMBIGUITY",
+    "DEPENDENCY_SPOOFING",
+    "ACTION_COUNT_TYPE_SPOOFING",
+    "DENIED_NETWORK"
+  ]
+}

@@ -1,0 +1,1621 @@
+document:
+  id: ST0308-REPOSITORY-SURFACE-MATRIX-001
+  version: 1.0.0
+  story_id: ST-0308
+canonical_serialization: UTF8_LF_YAML_CANONICALIZED_TO_SORTED_COMPACT_JSON_FOR_HASH
+rules:
+- protocols are inward aggregate-specific and expose no table name, raw Mapping, raw SQL, filter dictionary, Session, Connection, or Engine
+- every writable relation has one module/property owner; shared audit/outbox/idempotency are adapter-owned OPS infrastructure capabilities
+- child and association rows are reachable only through their named owner below
+- no repository commits, rolls back, retries, opens a Session, performs external I/O, updates append-only rows, or deletes rows
+modules:
+  ops:
+    jobs:
+      protocol: JobRepository
+      aggregate: Job
+      relations:
+      - ops.job
+      - ops.job_attempt
+      methods:
+      - get(job_id)->Job|None
+      - add(job)->PersistedVersion
+      note: job_attempt is mapper metadata only here; orchestration mutation is not exposed
+      aggregate_composition: Job
+    object_artifacts:
+      protocol: ObjectArtifactRepository
+      aggregate: ObjectArtifact
+      relations:
+      - ops.object_artifact
+      methods:
+      - get(artifact_id)->ObjectArtifact|None
+      - add(artifact)->None
+      aggregate_composition: ObjectArtifact
+    runtime_settings:
+      protocol: RuntimeSettingRepository
+      aggregate: RuntimeSettingVersion
+      relations:
+      - ops.runtime_setting_version
+      methods:
+      - get_current(setting_key,scope)->RuntimeSettingVersion|None
+      - append_version(version,expected_latest_version)->PersistedVersion
+      - transition(version_id,transition,expected_status)->RuntimeSettingVersion
+      aggregate_composition: RuntimeSettingVersion
+  iam:
+    principals:
+      protocol: PrincipalRepository
+      aggregate: Principal
+      relations:
+      - iam.principal
+      - iam.user_account
+      - iam.service_principal
+      methods:
+      - get(principal_id)->Principal|None
+      - add(principal)->PersistedVersion
+      - save(principal,expected_version)->PersistedVersion
+      aggregate_composition: Principal
+    role_catalog:
+      protocol: RoleCatalogRepository
+      aggregate: RoleCatalog
+      relations:
+      - iam.role
+      - iam.permission
+      - iam.role_permission
+      methods:
+      - get_role(role_id)->Role|None
+      - get_role_by_code(role_code)->Role|None
+      - get_permission(permission_id)->Permission|None
+      - get_permission_by_code(permission_code)->Permission|None
+      - list_permissions_for_role(role_id)->tuple[Permission,...]
+      aggregate_composition: RoleCatalog
+    role_assignments:
+      protocol: PrincipalRoleAssignmentRepository
+      aggregate: PrincipalRoleAssignment
+      relations:
+      - iam.principal_role_assignment
+      methods:
+      - get(assignment_id)->PrincipalRoleAssignment|None
+      - append(assignment)->None
+      - revoke(assignment_id,revocation,expected_state)->PrincipalRoleAssignment
+      aggregate_composition: PrincipalRoleAssignment
+    session_revocations:
+      protocol: SessionRevocationRepository
+      aggregate: SessionRevocation
+      relations:
+      - iam.session_revocation
+      methods:
+      - get(revocation_id)->SessionRevocation|None
+      - append(revocation)->None
+      aggregate_composition: SessionRevocation
+    break_glass_records:
+      protocol: BreakGlassRecordRepository
+      aggregate: BreakGlassRecord
+      relations:
+      - iam.break_glass_record
+      methods:
+      - get(record_id)->BreakGlassRecord|None
+      - append(record)->None
+      aggregate_composition: BreakGlassRecord
+  portfolio:
+    sites:
+      protocol: SiteRepository
+      aggregate: Site
+      relations:
+      - portfolio.site
+      methods:
+      - get(site_id)->Site|None
+      - add(site)->PersistedVersion
+      - save(site,expected_version)->PersistedVersion
+      aggregate_composition: Site
+    categories:
+      protocol: CategoryRepository
+      aggregate: Category
+      relations:
+      - portfolio.category
+      methods:
+      - get(category_id)->Category|None
+      - add(category)->PersistedVersion
+      - save(category,expected_version)->PersistedVersion
+      aggregate_composition: Category
+    intent_clusters:
+      protocol: IntentClusterRepository
+      aggregate: IntentCluster
+      relations:
+      - portfolio.intent_cluster
+      - portfolio.intent_cluster_keyword
+      methods:
+      - get(cluster_id)->IntentCluster|None
+      - add(cluster)->PersistedVersion
+      - save(cluster,expected_version)->PersistedVersion
+      aggregate_composition: IntentCluster
+    keywords:
+      protocol: KeywordRepository
+      aggregate: Keyword
+      relations:
+      - portfolio.keyword
+      - portfolio.keyword_metric_observation
+      methods:
+      - get(keyword_id)->Keyword|None
+      - add(keyword)->PersistedVersion
+      - save(keyword,expected_version)->PersistedVersion
+      - append_metric_observations(keyword_id,observations,expected_version)->PersistedVersion
+      aggregate_composition: Keyword
+    opportunity_assessments:
+      protocol: OpportunityAssessmentRepository
+      aggregate: OpportunityAssessment
+      relations:
+      - portfolio.opportunity_assessment
+      methods:
+      - get(assessment_id)->OpportunityAssessment|None
+      - append(assessment)->None
+      aggregate_composition: OpportunityAssessment
+    action_candidates:
+      protocol: ActionCandidateRepository
+      aggregate: ActionCandidate
+      relations:
+      - portfolio.action_candidate
+      methods:
+      - get(candidate_id)->ActionCandidate|None
+      - add(candidate)->PersistedVersion
+      - save(candidate,expected_version)->PersistedVersion
+      aggregate_composition: ActionCandidate
+  catalog:
+    provider_endpoints:
+      protocol: ProviderEndpointRepository
+      aggregate: ProviderEndpoint
+      relations:
+      - catalog.provider_endpoint
+      methods:
+      - get(endpoint_id)->ProviderEndpoint|None
+      - get_active(provider_code,api_name)->ProviderEndpoint|None
+      - add(endpoint)->None
+      - transition(endpoint_id,transition,expected_status)->ProviderEndpoint
+      aggregate_composition: ProviderEndpoint
+    ingestion_requests:
+      protocol: IngestionRequestRepository
+      aggregate: IngestionRequest
+      relations:
+      - catalog.ingestion_request
+      methods:
+      - get(request_id)->IngestionRequest|None
+      - add(request)->None
+      - complete(request_id,outcome,expected_status)->IngestionRequest
+      aggregate_composition: IngestionRequest
+    rakuten_genres:
+      protocol: RakutenGenreRepository
+      aggregate: RakutenGenre
+      relations:
+      - catalog.rakuten_genre
+      - catalog.category_genre_mapping
+      methods:
+      - get(genre_id)->RakutenGenre|None
+      - add(genre)->PersistedVersion
+      - save(genre,expected_version)->PersistedVersion
+      - get_mapping(mapping_id)->CategoryGenreMapping|None
+      - append_mapping(mapping)->None
+      aggregate_composition: RakutenGenre
+    shops:
+      protocol: ShopRepository
+      aggregate: Shop
+      relations:
+      - catalog.shop
+      methods:
+      - get(shop_id)->Shop|None
+      - add(shop)->PersistedVersion
+      - save(shop,expected_version)->PersistedVersion
+      aggregate_composition: Shop
+    canonical_products:
+      protocol: CanonicalProductRepository
+      aggregate: CanonicalProduct
+      relations:
+      - catalog.canonical_product
+      - catalog.product_group_membership
+      - catalog.product_relation
+      methods:
+      - get(product_id)->CanonicalProduct|None
+      - add(product)->PersistedVersion
+      - save(product,expected_version)->PersistedVersion
+      - append_memberships(product_id,memberships,expected_version)->PersistedVersion
+      - append_relations(product_id,relations,expected_version)->PersistedVersion
+      aggregate_composition: CanonicalProduct
+    product_candidates:
+      protocol: ProductCandidateRepository
+      aggregate: ProductCandidate
+      relations:
+      - catalog.product_candidate
+      methods:
+      - get(candidate_id)->ProductCandidate|None
+      - add(candidate)->PersistedVersion
+      - save(candidate,expected_version)->PersistedVersion
+      aggregate_composition: ProductCandidate
+    grouping_decisions:
+      protocol: GroupingDecisionRepository
+      aggregate: GroupingDecision
+      relations:
+      - catalog.grouping_decision
+      methods:
+      - get(decision_id)->GroupingDecision|None
+      - append(decision)->None
+      aggregate_composition: GroupingDecision
+    attribute_definitions:
+      protocol: AttributeDefinitionRepository
+      aggregate: AttributeDefinition
+      relations:
+      - catalog.attribute_definition
+      - catalog.product_attribute_value
+      methods:
+      - get(definition_id)->AttributeDefinition|None
+      - add(definition)->PersistedVersion
+      - save(definition,expected_version)->PersistedVersion
+      - append_values(definition_id,values,expected_version)->PersistedVersion
+      aggregate_composition: AttributeDefinition
+    offers:
+      protocol: OfferRepository
+      aggregate: Offer
+      relations:
+      - catalog.offer
+      - catalog.price_observation
+      - catalog.availability_observation
+      - catalog.review_aggregate_observation
+      - catalog.affiliate_link_observation
+      - catalog.offer_current_projection
+      methods:
+      - get(offer_id)->Offer|None
+      - add(offer)->PersistedVersion
+      - save(offer,expected_version)->PersistedVersion
+      - append_observations(offer_id,batch,expected_version)->PersistedVersion
+      - get_current_projection(offer_id)->OfferCurrentProjection|None
+      aggregate_composition: Offer
+    safe_offer_current:
+      protocol: SafeOfferCurrentReader
+      aggregate: SafeOfferCurrent
+      relations:
+      - catalog.v_safe_offer_current
+      methods:
+      - get_by_offer(offer_id)->SafeOfferCurrent|None
+      - list_by_product(product_id)->tuple[SafeOfferCurrent,...]
+      write: FORBIDDEN
+      aggregate_composition: SafeOfferCurrent
+  evidence:
+    sources:
+      protocol: SourceRepository
+      aggregate: Source
+      relations:
+      - evidence.source
+      methods:
+      - get(source_id)->Source|None
+      - add(source)->PersistedVersion
+      - save(source,expected_version)->PersistedVersion
+      aggregate_composition: Source
+    source_snapshots:
+      protocol: SourceSnapshotRepository
+      aggregate: SourceSnapshot
+      relations:
+      - evidence.source_snapshot
+      root: evidence.source
+      methods:
+      - get(snapshot_id)->SourceSnapshot|None
+      - append(source_id,snapshot,expected_source_version)->PersistedVersion
+      aggregate_composition: SourceSnapshot
+    facts:
+      protocol: FactRepository
+      aggregate: Fact
+      relations:
+      - evidence.fact
+      - evidence.fact_derivation
+      methods:
+      - get(fact_id)->Fact|None
+      - append(fact,derivations)->None
+      aggregate_composition: Fact
+    source_packets:
+      protocol: SourcePacketRepository
+      aggregate: SourcePacket
+      relations:
+      - evidence.source_packet
+      - evidence.source_packet_version
+      - evidence.source_packet_fact
+      - evidence.source_packet_product
+      methods:
+      - get(packet_id)->SourcePacket|None
+      - add(packet)->PersistedVersion
+      - save(packet,expected_version)->PersistedVersion
+      - append_version(packet_id,version,expected_version,expected_latest_version)->PersistedVersion
+      - transition_version(version_id,transition,expected_status)->SourcePacketVersion
+      aggregate_composition: SourcePacket
+    claims:
+      protocol: ClaimRepository
+      aggregate: Claim
+      relations:
+      - evidence.claim
+      - evidence.claim_evidence_link
+      methods:
+      - get(claim_id)->Claim|None
+      - append(claim,links)->None
+      aggregate_composition: Claim
+    first_hand_experiences:
+      protocol: FirstHandExperienceRepository
+      aggregate: FirstHandExperienceRecord
+      relations:
+      - evidence.first_hand_experience_record
+      - evidence.first_hand_experience_asset
+      methods:
+      - get(record_id)->FirstHandExperienceRecord|None
+      - add(record)->None
+      - transition(record_id,transition,expected_status)->FirstHandExperienceRecord
+      - append_assets(record_id,assets,expected_status)->None
+      aggregate_composition: FirstHandExperienceRecord
+  editorial:
+    article_plans:
+      protocol: ArticlePlanRepository
+      aggregate: ArticlePlan
+      relations:
+      - editorial.article_plan
+      methods:
+      - get(plan_id)->ArticlePlan|None
+      - add(plan)->PersistedVersion
+      - save(plan,expected_version)->PersistedVersion
+      aggregate_composition: ArticlePlan
+    articles:
+      protocol: ArticleRepository
+      aggregate: Article
+      relations:
+      - editorial.article
+      - editorial.article_slug
+      - editorial.article_version
+      - editorial.article_block
+      - editorial.article_block_product
+      - editorial.comparison_axis
+      - editorial.comparison_value
+      - editorial.recommendation_set
+      - editorial.recommendation
+      - editorial.recommendation_rationale
+      - editorial.article_link
+      methods:
+      - get(article_id)->Article|None
+      - add(article)->PersistedVersion
+      - save(article,expected_version)->PersistedVersion
+      - get_version(version_id)->ArticleVersion|None
+      - add_version(version)->PersistedVersion
+      - save_version(version,expected_version)->PersistedVersion
+      - assign_slug(slug)->None
+      - transition_slug(slug_id,transition,expected_status)->ArticleSlug
+      - add_link(link)->PersistedVersion
+      - save_link(link,expected_version)->PersistedVersion
+      aggregate_composition: Article
+    review_comments:
+      protocol: ReviewCommentRepository
+      aggregate: ReviewComment
+      relations:
+      - editorial.review_comment
+      methods:
+      - get(comment_id)->ReviewComment|None
+      - append(comment)->None
+      - close(comment_id,resolution,expected_status)->ReviewComment
+      aggregate_composition: ReviewComment
+    editorial_contracts:
+      protocol: EditorialContractRepository
+      aggregate: EditorialContract
+      relations:
+      - editorial.article_disclosure_context
+      - editorial.article_methodology_binding
+      - editorial.article_template_version
+      - editorial.article_type_version
+      - editorial.content_schema_version
+      - editorial.editorial_methodology_version
+      - editorial.seo_metadata_version
+      - editorial.structured_data_manifest
+      methods:
+      - get_disclosure_context(article_version_id)->ArticleDisclosureContext|None
+      - add_disclosure_context(context,expected_version)->PersistedVersion
+      - record_disclosure_review(article_version_id,review,expected_version)->ArticleDisclosureContext
+      - append_methodology_binding(binding,expected_version)->PersistedVersion
+      - get_current_article_type(code)->ArticleTypeVersion|None
+      - append_article_type_version(version,expected_latest_version)->PersistedVersion
+      - transition_article_type_version(id,transition,expected_status)->ArticleTypeVersion
+      - get_current_content_schema(code)->ContentSchemaVersion|None
+      - append_content_schema_version(version,expected_latest_version)->PersistedVersion
+      - transition_content_schema_version(id,transition,expected_status)->ContentSchemaVersion
+      - get_current_template(article_type_id)->ArticleTemplateVersion|None
+      - append_template_version(version,expected_latest_version)->PersistedVersion
+      - transition_template_version(id,transition,expected_status)->ArticleTemplateVersion
+      - get_current_methodology(code)->EditorialMethodologyVersion|None
+      - append_methodology_version(version,expected_latest_version)->PersistedVersion
+      - transition_methodology_version(id,transition,expected_status)->EditorialMethodologyVersion
+      - append_seo_metadata_version(metadata,expected_latest_version)->PersistedVersion
+      - transition_seo_metadata_version(id,transition,expected_status)->SeoMetadataVersion
+      - append_structured_data_manifest(manifest,expected_version)->PersistedVersion
+      aggregate_composition: EditorialContract
+    media_assets:
+      protocol: MediaAssetRepository
+      aggregate: MediaAsset
+      relations:
+      - editorial.media_asset
+      methods:
+      - get(asset_id)->MediaAsset|None
+      - add(asset)->None
+      - transition(asset_id,transition,expected_status)->MediaAsset
+      aggregate_composition: MediaAsset
+  ai:
+    task_definitions:
+      protocol: AiTaskDefinitionRepository
+      aggregate: AiTaskDefinition
+      relations:
+      - ai.task_definition
+      methods:
+      - get(task_id)->AiTaskDefinition|None
+      - get_by_code(task_code)->AiTaskDefinition|None
+      - add(task)->None
+      - transition(task_id,transition,expected_status)->AiTaskDefinition
+      aggregate_composition: AiTaskDefinition
+    output_schemas:
+      protocol: OutputSchemaVersionRepository
+      aggregate: OutputSchemaVersion
+      relations:
+      - ai.output_schema_version
+      methods:
+      - get(version_id)->OutputSchemaVersion|None
+      - get_active(schema_code)->OutputSchemaVersion|None
+      - append_version(version,expected_latest_version)->PersistedVersion
+      - transition(version_id,transition,expected_status)->OutputSchemaVersion
+      aggregate_composition: OutputSchemaVersion
+    model_definitions:
+      protocol: ModelDefinitionRepository
+      aggregate: ModelDefinition
+      relations:
+      - ai.model_definition
+      methods:
+      - get(model_id)->ModelDefinition|None
+      - add(model)->None
+      - transition(model_id,transition,expected_status)->ModelDefinition
+      aggregate_composition: ModelDefinition
+    model_routes:
+      protocol: ModelRouteVersionRepository
+      aggregate: ModelRouteVersion
+      relations:
+      - ai.model_route_version
+      methods:
+      - get(version_id)->ModelRouteVersion|None
+      - get_active(route_code)->ModelRouteVersion|None
+      - append_version(version,expected_latest_version)->PersistedVersion
+      - transition(version_id,transition,expected_version)->ModelRouteVersion
+      aggregate_composition: ModelRouteVersion
+    prompt_versions:
+      protocol: PromptVersionRepository
+      aggregate: PromptVersion
+      relations:
+      - ai.prompt_version
+      methods:
+      - get(version_id)->PromptVersion|None
+      - get_active(prompt_code)->PromptVersion|None
+      - append_version(version,expected_latest_version)->PersistedVersion
+      - transition(version_id,transition,expected_version)->PromptVersion
+      aggregate_composition: PromptVersion
+    ai_jobs:
+      protocol: AiJobRepository
+      aggregate: AiJob
+      relations:
+      - ai.ai_job
+      - ai.ai_attempt
+      - ai.usage_cost
+      methods:
+      - get(job_id)->AiJob|None
+      - add(job)->PersistedVersion
+      - transition(job_id,transition,expected_version)->AiJob
+      - add_attempt(job_id,attempt,expected_version)->PersistedVersion
+      - complete_attempt(attempt_id,completion,expected_status)->AiAttempt
+      - append_usage_cost(attempt_id,usage)->None
+      aggregate_composition: AiJob
+    evaluation_results:
+      protocol: EvaluationResultRepository
+      aggregate: EvaluationResult
+      relations:
+      - ai.evaluation_result
+      methods:
+      - get(result_id)->EvaluationResult|None
+      - append(result)->None
+      aggregate_composition: EvaluationResult
+    evaluation_suites:
+      protocol: EvaluationSuiteRepository
+      aggregate: EvaluationSuite
+      relations:
+      - ai.evaluation_suite
+      methods:
+      - get(suite_id)->EvaluationSuite|None
+      - get_active(task_id,suite_code)->EvaluationSuite|None
+      - append_version(suite,expected_latest_version)->PersistedVersion
+      - transition(suite_id,transition,expected_version)->EvaluationSuite
+      aggregate_composition: EvaluationSuite
+    evaluation_datasets:
+      protocol: EvaluationDatasetRepository
+      aggregate: EvaluationDatasetVersion
+      relations:
+      - ai.evaluation_dataset_version
+      - ai.evaluation_case
+      methods:
+      - get(dataset_id)->EvaluationDatasetVersion|None
+      - append_version(dataset,expected_latest_version)->PersistedVersion
+      - append_cases(dataset_id,cases,expected_version)->PersistedVersion
+      - transition(dataset_id,transition,expected_version)->EvaluationDatasetVersion
+      aggregate_composition: EvaluationDatasetVersion
+    evaluation_runs:
+      protocol: EvaluationRunRepository
+      aggregate: EvaluationRun
+      relations:
+      - ai.evaluation_run
+      child_relations:
+      - ai.evaluation_case_result
+      - ai.human_evaluation
+      methods:
+      - get(run_id)->EvaluationRun|None
+      - add(run)->PersistedVersion
+      - transition(run_id,transition,expected_version)->EvaluationRun
+      - append_case_results(run_id,results,expected_version)->PersistedVersion
+      - append_human_evaluations(run_id,evaluations,expected_version)->PersistedVersion
+      aggregate_composition: EvaluationRun
+    judge_calibrations:
+      protocol: JudgeCalibrationRepository
+      aggregate: JudgeCalibration
+      relations:
+      - ai.judge_calibration
+      methods:
+      - get(calibration_id)->JudgeCalibration|None
+      - add(calibration)->PersistedVersion
+      - transition(calibration_id,transition,expected_version)->JudgeCalibration
+      aggregate_composition: JudgeCalibration
+    release_decisions:
+      protocol: ReleaseDecisionRepository
+      aggregate: ReleaseDecision
+      relations:
+      - ai.release_decision
+      - ai.release_approval
+      methods:
+      - get(decision_id)->ReleaseDecision|None
+      - add(decision)->PersistedVersion
+      - append_approval(decision_id,approval,expected_version)->PersistedVersion
+      - transition(decision_id,transition,expected_version)->ReleaseDecision
+      aggregate_composition: ReleaseDecision
+  policy:
+    policy_bundles:
+      protocol: PolicyBundleRepository
+      aggregate: PolicyBundle
+      relations:
+      - policy.policy_bundle
+      - policy.bundle_rule
+      methods:
+      - get(bundle_id)->PolicyBundle|None
+      - get_active(bundle_code)->PolicyBundle|None
+      - append_version(bundle,expected_latest_version)->PersistedVersion
+      - bind_rules(bundle_id,bindings,expected_status)->None
+      - transition(bundle_id,transition,expected_status)->PolicyBundle
+      aggregate_composition: PolicyBundle
+    rule_versions:
+      protocol: RuleVersionRepository
+      aggregate: RuleVersion
+      relations:
+      - policy.rule_version
+      methods:
+      - get(rule_id)->RuleVersion|None
+      - get_current(rule_code)->RuleVersion|None
+      - append_version(rule,expected_latest_version)->PersistedVersion
+      - transition(rule_id,transition,expected_status)->RuleVersion
+      aggregate_composition: RuleVersion
+    quality_check_runs:
+      protocol: QualityCheckRunRepository
+      aggregate: QualityCheckRun
+      relations:
+      - policy.quality_check_run
+      - policy.quality_score
+      methods:
+      - get(run_id)->QualityCheckRun|None
+      - add(run)->None
+      - transition(run_id,transition,expected_status)->QualityCheckRun
+      - append_score(run_id,score,expected_status)->None
+      aggregate_composition: QualityCheckRun
+    findings:
+      protocol: FindingRepository
+      aggregate: Finding
+      relations:
+      - policy.finding
+      methods:
+      - get(finding_id)->Finding|None
+      - append(finding)->None
+      - resolve(finding_id,resolution,expected_status)->Finding
+      aggregate_composition: Finding
+    waivers:
+      protocol: WaiverRepository
+      aggregate: Waiver
+      relations:
+      - policy.waiver
+      methods:
+      - get(waiver_id)->Waiver|None
+      - append_request(waiver)->None
+      - decide(waiver_id,decision,expected_status)->Waiver
+      - revoke(waiver_id,revocation,expected_status)->Waiver
+      - mark_expired(waiver_id,evaluated_at,expected_status)->Waiver
+      aggregate_composition: Waiver
+    gate_decisions:
+      protocol: GateDecisionRepository
+      aggregate: GateDecision
+      relations:
+      - policy.gate_decision
+      methods:
+      - get(decision_id)->GateDecision|None
+      - append(decision)->None
+      aggregate_composition: GateDecision
+shared:
+  audit:
+    relation: ops.audit_event
+    methods:
+    - append_many(intents)->None
+    caller_fields:
+    - action
+    - target_type
+    - target_id
+    - outcome
+    - reason
+    - sanitized_details
+    adapter_defaults:
+      severity: INFO
+  outbox:
+    relation: ops.outbox_event
+    methods:
+    - append_many(validated_events)->None
+    adapter_defaults:
+      status: PENDING
+      publish_attempts: 0
+      published_at: null
+      last_error: null
+  idempotency:
+    relation: ops.idempotency_record
+    methods:
+    - claim(claim)->IdempotencyClaimDecision
+    - lookup(identity,request_hash)->IdempotencyLookupDecision
+    - complete_success(handle,outcome)->None
+    - complete_failure(handle,outcome)->None
+excluded:
+  ops.inbox_receipt: GENERATED_METADATA_ONLY_NO_RUNTIME_MAPPER_OR_WRITE_PORT
+two_way_gate:
+- every UoW property resolves to exactly one repository row here
+- every relation except shared/excluded/view belongs to exactly one module repository row
+- generated Protocol methods and concrete adapter methods equal the string signatures exactly
+- generated adapters expose no additional public method
+aggregate_compositions:
+  ops:
+    Job:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ops.job
+        domain_type: JobState
+      members:
+      - field: job_attempt_rows
+        relation: ops.job_attempt
+        domain_type: JobAttempt
+        cardinality: MANY
+        order_by:
+        - id
+      pending_events: true
+    ObjectArtifact:
+      kind: DIRECT_ENTITY
+      domain_type: ObjectArtifact
+      relation: ops.object_artifact
+    RuntimeSettingVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ops.runtime_setting_version
+        domain_type: RuntimeSettingVersionState
+      members: []
+      pending_events: false
+  iam:
+    BreakGlassRecord:
+      kind: DIRECT_ENTITY
+      domain_type: BreakGlassRecord
+      relation: iam.break_glass_record
+    Permission:
+      kind: DIRECT_ENTITY
+      domain_type: Permission
+      relation: iam.permission
+    Principal:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: iam.principal
+        domain_type: PrincipalState
+      members:
+      - field: user_account
+        relation: iam.user_account
+        domain_type: UserAccount
+        cardinality: ZERO_OR_ONE
+        order_by:
+        - principal_id
+      - field: service_principal
+        relation: iam.service_principal
+        domain_type: ServicePrincipal
+        cardinality: ZERO_OR_ONE
+        order_by:
+        - principal_id
+      pending_events: false
+    PrincipalRoleAssignment:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: iam.principal_role_assignment
+        domain_type: PrincipalRoleAssignmentRecord
+      members: []
+      pending_events: false
+    Role:
+      kind: DIRECT_ENTITY
+      domain_type: Role
+      relation: iam.role
+    RoleCatalog:
+      kind: REPOSITORY_CATALOG
+      members:
+      - field: role_rows
+        relation: iam.role
+        domain_type: Role
+        cardinality: MANY
+        order_by:
+        - id
+      - field: permission_rows
+        relation: iam.permission
+        domain_type: Permission
+        cardinality: MANY
+        order_by:
+        - id
+      - field: role_permission_rows
+        relation: iam.role_permission
+        domain_type: RolePermissionBinding
+        cardinality: MANY
+        order_by:
+        - role_id
+        - permission_id
+      pending_events: false
+    SessionRevocation:
+      kind: DIRECT_ENTITY
+      domain_type: SessionRevocation
+      relation: iam.session_revocation
+  portfolio:
+    ActionCandidate:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: portfolio.action_candidate
+        domain_type: ActionCandidateState
+      members: []
+      pending_events: true
+    Category:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: portfolio.category
+        domain_type: CategoryState
+      members: []
+      pending_events: false
+    IntentCluster:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: portfolio.intent_cluster
+        domain_type: IntentClusterState
+      members:
+      - field: intent_cluster_keyword_rows
+        relation: portfolio.intent_cluster_keyword
+        domain_type: IntentClusterKeywordBinding
+        cardinality: MANY
+        order_by:
+        - intent_cluster_id
+        - keyword_id
+      pending_events: false
+    Keyword:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: portfolio.keyword
+        domain_type: KeywordState
+      members:
+      - field: keyword_metric_observation_rows
+        relation: portfolio.keyword_metric_observation
+        domain_type: KeywordMetricObservation
+        cardinality: MANY
+        order_by:
+        - id
+      pending_events: false
+    OpportunityAssessment:
+      kind: DIRECT_ENTITY
+      domain_type: OpportunityAssessment
+      relation: portfolio.opportunity_assessment
+    Site:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: portfolio.site
+        domain_type: SiteState
+      members: []
+      pending_events: false
+  catalog:
+    AttributeDefinition:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: catalog.attribute_definition
+        domain_type: AttributeDefinitionState
+      members:
+      - field: product_attribute_value_rows
+        relation: catalog.product_attribute_value
+        domain_type: ProductAttributeValue
+        cardinality: MANY
+        order_by:
+        - id
+      pending_events: false
+    CanonicalProduct:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: catalog.canonical_product
+        domain_type: CanonicalProductState
+      members:
+      - field: product_group_membership_rows
+        relation: catalog.product_group_membership
+        domain_type: ProductGroupMembership
+        cardinality: MANY
+        order_by:
+        - id
+      - field: product_relation_rows
+        relation: catalog.product_relation
+        domain_type: ProductRelation
+        cardinality: MANY
+        order_by:
+        - id
+      pending_events: false
+    CategoryGenreMapping:
+      kind: DIRECT_ENTITY
+      domain_type: CategoryGenreMapping
+      relation: catalog.category_genre_mapping
+    GroupingDecision:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: catalog.grouping_decision
+        domain_type: GroupingDecisionState
+      members: []
+      pending_events: false
+    IngestionRequest:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: catalog.ingestion_request
+        domain_type: IngestionRequestState
+      members: []
+      pending_events: false
+    Offer:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: catalog.offer
+        domain_type: OfferState
+      members:
+      - field: price_observation_rows
+        relation: catalog.price_observation
+        domain_type: PriceObservation
+        cardinality: MANY
+        order_by:
+        - id
+      - field: availability_observation_rows
+        relation: catalog.availability_observation
+        domain_type: AvailabilityObservation
+        cardinality: MANY
+        order_by:
+        - id
+      - field: review_aggregate_observation_rows
+        relation: catalog.review_aggregate_observation
+        domain_type: ReviewAggregateObservation
+        cardinality: MANY
+        order_by:
+        - id
+      - field: affiliate_link_observation_rows
+        relation: catalog.affiliate_link_observation
+        domain_type: AffiliateLinkObservation
+        cardinality: MANY
+        order_by:
+        - id
+      - field: offer_current_projection
+        relation: catalog.offer_current_projection
+        domain_type: OfferCurrentProjection
+        cardinality: ZERO_OR_ONE
+        order_by:
+        - offer_id
+      pending_events: true
+    OfferCurrentProjection:
+      kind: DIRECT_ENTITY
+      domain_type: OfferCurrentProjection
+      relation: catalog.offer_current_projection
+    ProductCandidate:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: catalog.product_candidate
+        domain_type: ProductCandidateState
+      members: []
+      pending_events: false
+    ProviderEndpoint:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: catalog.provider_endpoint
+        domain_type: ProviderEndpointState
+      members: []
+      pending_events: false
+    RakutenGenre:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: catalog.rakuten_genre
+        domain_type: RakutenGenreState
+      members:
+      - field: category_genre_mapping_rows
+        relation: catalog.category_genre_mapping
+        domain_type: CategoryGenreMapping
+        cardinality: MANY
+        order_by:
+        - id
+      pending_events: false
+    SafeOfferCurrent:
+      kind: DIRECT_ENTITY
+      domain_type: SafeOfferCurrent
+      relation: catalog.v_safe_offer_current
+    Shop:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: catalog.shop
+        domain_type: ShopState
+      members: []
+      pending_events: false
+  evidence:
+    Claim:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: evidence.claim
+        domain_type: ClaimState
+      members:
+      - field: claim_evidence_link_rows
+        relation: evidence.claim_evidence_link
+        domain_type: ClaimEvidenceLink
+        cardinality: MANY
+        order_by:
+        - claim_id
+        - fact_id
+        - support_type
+      pending_events: false
+    Fact:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: evidence.fact
+        domain_type: FactState
+      members:
+      - field: fact_derivation_rows
+        relation: evidence.fact_derivation
+        domain_type: FactDerivation
+        cardinality: MANY
+        order_by:
+        - derived_fact_id
+        - input_fact_id
+        - derivation_role
+      pending_events: false
+    FirstHandExperienceRecord:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: evidence.first_hand_experience_record
+        domain_type: FirstHandExperienceRecordState
+      members:
+      - field: first_hand_experience_asset_rows
+        relation: evidence.first_hand_experience_asset
+        domain_type: FirstHandExperienceAsset
+        cardinality: MANY
+        order_by:
+        - experience_record_id
+        - artifact_id
+        - role
+      pending_events: false
+    Source:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: evidence.source
+        domain_type: SourceState
+      members: []
+      pending_events: true
+    SourcePacket:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: evidence.source_packet
+        domain_type: SourcePacketState
+      members:
+      - field: source_packet_version_rows
+        relation: evidence.source_packet_version
+        domain_type: SourcePacketVersionState
+        cardinality: MANY
+        order_by:
+        - id
+      - field: source_packet_fact_rows
+        relation: evidence.source_packet_fact
+        domain_type: SourcePacketFact
+        cardinality: MANY
+        order_by: &id001
+        - source_packet_version_id
+        - fact_id
+      - field: source_packet_product_rows
+        relation: evidence.source_packet_product
+        domain_type: SourcePacketProduct
+        cardinality: MANY
+        order_by: &id002
+        - source_packet_version_id
+        - product_id
+        - product_role
+      pending_events: false
+    SourcePacketVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: evidence.source_packet_version
+        domain_type: SourcePacketVersionState
+      members:
+      - field: source_packet_fact_rows
+        relation: evidence.source_packet_fact
+        domain_type: SourcePacketFact
+        cardinality: MANY
+        order_by: *id001
+      - field: source_packet_product_rows
+        relation: evidence.source_packet_product
+        domain_type: SourcePacketProduct
+        cardinality: MANY
+        order_by: *id002
+      pending_events: false
+    SourceSnapshot:
+      kind: DIRECT_ENTITY
+      domain_type: SourceSnapshot
+      relation: evidence.source_snapshot
+  editorial:
+    Article:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: editorial.article
+        domain_type: ArticleState
+      members:
+      - field: article_slug_rows
+        relation: editorial.article_slug
+        domain_type: ArticleSlugState
+        cardinality: MANY
+        order_by:
+        - id
+      - field: article_version_rows
+        relation: editorial.article_version
+        domain_type: ArticleVersionState
+        cardinality: MANY
+        order_by: &id003
+        - id
+      - field: article_block_rows
+        relation: editorial.article_block
+        domain_type: ArticleBlock
+        cardinality: MANY
+        order_by: &id004
+        - id
+      - field: article_block_product_rows
+        relation: editorial.article_block_product
+        domain_type: ArticleBlockProduct
+        cardinality: MANY
+        order_by:
+        - article_block_id
+        - product_id
+        - placement_role
+      - field: comparison_axis_rows
+        relation: editorial.comparison_axis
+        domain_type: ComparisonAxis
+        cardinality: MANY
+        order_by: &id005
+        - id
+      - field: comparison_value_rows
+        relation: editorial.comparison_value
+        domain_type: ComparisonValue
+        cardinality: MANY
+        order_by:
+        - id
+      - field: recommendation_set_rows
+        relation: editorial.recommendation_set
+        domain_type: RecommendationSet
+        cardinality: MANY
+        order_by: &id006
+        - id
+      - field: recommendation_rows
+        relation: editorial.recommendation
+        domain_type: Recommendation
+        cardinality: MANY
+        order_by:
+        - id
+      - field: recommendation_rationale_rows
+        relation: editorial.recommendation_rationale
+        domain_type: RecommendationRationale
+        cardinality: MANY
+        order_by:
+        - id
+      - field: article_link_rows
+        relation: editorial.article_link
+        domain_type: ArticleLinkState
+        cardinality: MANY
+        order_by:
+        - id
+      pending_events: true
+    ArticleDisclosureContext:
+      kind: DIRECT_ENTITY
+      domain_type: ArticleDisclosureContext
+      relation: editorial.article_disclosure_context
+    ArticlePlan:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: editorial.article_plan
+        domain_type: ArticlePlanState
+      members: []
+      pending_events: true
+    ArticleSlug:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: editorial.article_slug
+        domain_type: ArticleSlugState
+      members: []
+      pending_events: false
+    ArticleTemplateVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: editorial.article_template_version
+        domain_type: ArticleTemplateVersionState
+      members:
+      - field: article_version_rows
+        relation: editorial.article_version
+        domain_type: ArticleVersionState
+        cardinality: MANY
+        order_by: *id003
+      pending_events: false
+    ArticleTypeVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: editorial.article_type_version
+        domain_type: ArticleTypeVersionState
+      members:
+      - field: article_template_version_rows
+        relation: editorial.article_template_version
+        domain_type: ArticleTemplateVersionState
+        cardinality: MANY
+        order_by: &id009
+        - id
+      - field: article_version_rows
+        relation: editorial.article_version
+        domain_type: ArticleVersionState
+        cardinality: MANY
+        order_by: *id003
+      - field: editorial_methodology_version_rows
+        relation: editorial.editorial_methodology_version
+        domain_type: EditorialMethodologyVersionState
+        cardinality: MANY
+        order_by: &id010
+        - id
+      pending_events: false
+    ArticleVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: editorial.article_version
+        domain_type: ArticleVersionState
+      members:
+      - field: article_rows
+        relation: editorial.article
+        domain_type: ArticleState
+        cardinality: MANY
+        order_by:
+        - id
+      - field: article_block_rows
+        relation: editorial.article_block
+        domain_type: ArticleBlock
+        cardinality: MANY
+        order_by: *id004
+      - field: article_block_product_rows
+        relation: editorial.article_block_product
+        domain_type: ArticleBlockProduct
+        cardinality: MANY
+        order_by:
+        - article_block_id
+        - product_id
+        - placement_role
+      - field: article_disclosure_context_rows
+        relation: editorial.article_disclosure_context
+        domain_type: ArticleDisclosureContext
+        cardinality: MANY
+        order_by: &id007
+        - article_version_id
+      - field: article_methodology_binding_rows
+        relation: editorial.article_methodology_binding
+        domain_type: ArticleMethodologyBinding
+        cardinality: MANY
+        order_by: &id008
+        - article_version_id
+      - field: comparison_axis_rows
+        relation: editorial.comparison_axis
+        domain_type: ComparisonAxis
+        cardinality: MANY
+        order_by: *id005
+      - field: comparison_value_rows
+        relation: editorial.comparison_value
+        domain_type: ComparisonValue
+        cardinality: MANY
+        order_by:
+        - id
+      - field: recommendation_set_rows
+        relation: editorial.recommendation_set
+        domain_type: RecommendationSet
+        cardinality: MANY
+        order_by: *id006
+      - field: recommendation_rows
+        relation: editorial.recommendation
+        domain_type: Recommendation
+        cardinality: MANY
+        order_by:
+        - id
+      - field: recommendation_rationale_rows
+        relation: editorial.recommendation_rationale
+        domain_type: RecommendationRationale
+        cardinality: MANY
+        order_by:
+        - id
+      - field: review_comment_rows
+        relation: editorial.review_comment
+        domain_type: ReviewCommentState
+        cardinality: MANY
+        order_by:
+        - id
+      - field: seo_metadata_version_rows
+        relation: editorial.seo_metadata_version
+        domain_type: SeoMetadataVersionState
+        cardinality: MANY
+        order_by: &id011
+        - id
+      - field: structured_data_manifest_rows
+        relation: editorial.structured_data_manifest
+        domain_type: StructuredDataManifest
+        cardinality: MANY
+        order_by: &id012
+        - id
+      pending_events: true
+    ContentSchemaVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: editorial.content_schema_version
+        domain_type: ContentSchemaVersionState
+      members:
+      - field: article_version_rows
+        relation: editorial.article_version
+        domain_type: ArticleVersionState
+        cardinality: MANY
+        order_by: *id003
+      pending_events: false
+    EditorialContract:
+      kind: REPOSITORY_CATALOG
+      members:
+      - field: article_disclosure_context_rows
+        relation: editorial.article_disclosure_context
+        domain_type: ArticleDisclosureContext
+        cardinality: MANY
+        order_by: *id007
+      - field: article_methodology_binding_rows
+        relation: editorial.article_methodology_binding
+        domain_type: ArticleMethodologyBinding
+        cardinality: MANY
+        order_by: *id008
+      - field: article_template_version_rows
+        relation: editorial.article_template_version
+        domain_type: ArticleTemplateVersionState
+        cardinality: MANY
+        order_by: *id009
+      - field: article_type_version_rows
+        relation: editorial.article_type_version
+        domain_type: ArticleTypeVersionState
+        cardinality: MANY
+        order_by:
+        - id
+      - field: content_schema_version_rows
+        relation: editorial.content_schema_version
+        domain_type: ContentSchemaVersionState
+        cardinality: MANY
+        order_by:
+        - id
+      - field: editorial_methodology_version_rows
+        relation: editorial.editorial_methodology_version
+        domain_type: EditorialMethodologyVersionState
+        cardinality: MANY
+        order_by: *id010
+      - field: seo_metadata_version_rows
+        relation: editorial.seo_metadata_version
+        domain_type: SeoMetadataVersionState
+        cardinality: MANY
+        order_by: *id011
+      - field: structured_data_manifest_rows
+        relation: editorial.structured_data_manifest
+        domain_type: StructuredDataManifest
+        cardinality: MANY
+        order_by: *id012
+      pending_events: false
+    EditorialMethodologyVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: editorial.editorial_methodology_version
+        domain_type: EditorialMethodologyVersionState
+      members:
+      - field: article_methodology_binding_rows
+        relation: editorial.article_methodology_binding
+        domain_type: ArticleMethodologyBinding
+        cardinality: MANY
+        order_by: *id008
+      pending_events: false
+    MediaAsset:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: editorial.media_asset
+        domain_type: MediaAssetState
+      members: []
+      pending_events: false
+    ReviewComment:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: editorial.review_comment
+        domain_type: ReviewCommentState
+      members: []
+      pending_events: false
+    SeoMetadataVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: editorial.seo_metadata_version
+        domain_type: SeoMetadataVersionState
+      members:
+      - field: article_version_rows
+        relation: editorial.article_version
+        domain_type: ArticleVersionState
+        cardinality: MANY
+        order_by: *id003
+      - field: structured_data_manifest_rows
+        relation: editorial.structured_data_manifest
+        domain_type: StructuredDataManifest
+        cardinality: MANY
+        order_by: *id012
+      pending_events: false
+  ai:
+    AiAttempt:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.ai_attempt
+        domain_type: AiAttemptState
+      members:
+      - field: evaluation_case_result_rows
+        relation: ai.evaluation_case_result
+        domain_type: EvaluationCaseResult
+        cardinality: MANY
+        order_by: &id014
+        - id
+      - field: usage_cost_rows
+        relation: ai.usage_cost
+        domain_type: UsageCost
+        cardinality: MANY
+        order_by: &id013
+        - id
+      pending_events: false
+    AiJob:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.ai_job
+        domain_type: AiJobState
+      members:
+      - field: ai_attempt_rows
+        relation: ai.ai_attempt
+        domain_type: AiAttemptState
+        cardinality: MANY
+        order_by:
+        - id
+      - field: usage_cost_rows
+        relation: ai.usage_cost
+        domain_type: UsageCost
+        cardinality: MANY
+        order_by: *id013
+      pending_events: true
+    AiTaskDefinition:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.task_definition
+        domain_type: AiTaskDefinitionState
+      members: []
+      pending_events: false
+    EvaluationDatasetVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.evaluation_dataset_version
+        domain_type: EvaluationDatasetVersionState
+      members:
+      - field: evaluation_case_rows
+        relation: ai.evaluation_case
+        domain_type: EvaluationCase
+        cardinality: MANY
+        order_by:
+        - id
+      pending_events: false
+    EvaluationResult:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.evaluation_result
+        domain_type: EvaluationResultState
+      members: []
+      pending_events: false
+    EvaluationRun:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.evaluation_run
+        domain_type: EvaluationRunState
+      members:
+      - field: evaluation_case_result_rows
+        relation: ai.evaluation_case_result
+        domain_type: EvaluationCaseResult
+        cardinality: MANY
+        order_by: *id014
+      - field: human_evaluation_rows
+        relation: ai.human_evaluation
+        domain_type: HumanEvaluation
+        cardinality: MANY
+        order_by:
+        - id
+      pending_events: true
+    EvaluationSuite:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.evaluation_suite
+        domain_type: EvaluationSuiteState
+      members: []
+      pending_events: false
+    JudgeCalibration:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.judge_calibration
+        domain_type: JudgeCalibrationState
+      members: []
+      pending_events: false
+    ModelDefinition:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.model_definition
+        domain_type: ModelDefinitionState
+      members: []
+      pending_events: false
+    ModelRouteVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.model_route_version
+        domain_type: ModelRouteVersionState
+      members: []
+      pending_events: false
+    OutputSchemaVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.output_schema_version
+        domain_type: OutputSchemaVersionState
+      members: []
+      pending_events: false
+    PromptVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.prompt_version
+        domain_type: PromptVersionState
+      members: []
+      pending_events: false
+    ReleaseDecision:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: ai.release_decision
+        domain_type: ReleaseDecisionState
+      members:
+      - field: release_approval_rows
+        relation: ai.release_approval
+        domain_type: ReleaseApproval
+        cardinality: MANY
+        order_by:
+        - id
+      pending_events: true
+  policy:
+    Finding:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: policy.finding
+        domain_type: FindingState
+      members: []
+      pending_events: false
+    GateDecision:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: policy.gate_decision
+        domain_type: GateDecisionState
+      members: []
+      pending_events: false
+    PolicyBundle:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: policy.policy_bundle
+        domain_type: PolicyBundleState
+      members:
+      - field: bundle_rule_rows
+        relation: policy.bundle_rule
+        domain_type: BundleRuleBinding
+        cardinality: MANY
+        order_by:
+        - policy_bundle_id
+        - rule_version_id
+      pending_events: true
+    QualityCheckRun:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: policy.quality_check_run
+        domain_type: QualityCheckRunState
+      members:
+      - field: quality_score_rows
+        relation: policy.quality_score
+        domain_type: QualityScore
+        cardinality: MANY
+        order_by:
+        - id
+      pending_events: false
+    RuleVersion:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: policy.rule_version
+        domain_type: RuleVersionState
+      members: []
+      pending_events: false
+    Waiver:
+      kind: AGGREGATE_WRAPPER
+      state:
+        field: state
+        relation: policy.waiver
+        domain_type: WaiverState
+      members: []
+      pending_events: false
+composition_rules:
+- every non-direct Protocol type resolves to one exact wrapper or repository catalog below
+- aggregate wrapper state and member order are constructor order and deterministic mapper assembly order
+- MANY members are ordered by the listed physical primary-key tuple; ZERO_OR_ONE rejects duplicates
+- only wrappers marked pending_events expose the immutable pending-event lifecycle
+- repository catalogs are capability groupings and are never persisted as synthetic rows
+- no adapter may infer, alias, add, omit, or reorder aggregate members

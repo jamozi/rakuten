@@ -45,11 +45,11 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st0702_context_pack_reference_plan.py"
 )
 EXPECTED_CONTRACT_SHA256: Final = (
-    "4b916ccea6906ecd6795260adbd34e0e4657dcaf7104ab84cfee60aa5c672d33"
+    "bac32da9b2e026ad36abb0b622fecbca56e4e9d3fdc0e4cccc807a4e4392837b"
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -61,33 +61,33 @@ INTEGRATION_PATH: Final = Path(
 INTEGRATION_SHA256: Final = (
     "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
 )
-ST0604_FEATURE_COMMIT: Final = "24e9640f7fa2b681ea40bb539837e40403928ec8"
-ST0701_BASE_COMMIT: Final = "d56da0c85035a85507636c025132550c0b1a7cd2"
+ST0604_FEATURE_COMMIT: Final = "89d8074951ce73a5c76ca55f0ea3b2c129559d81"
+ST0701_BASE_COMMIT: Final = "679ccdc4a49fca8e1bee8827177be7130d6d45b6"
 
 ST0604_ARTIFACTS: Final = (
     (
         Path("changes/st-0604/README.md"),
-        "5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8",
+        "b3d71908781fcdd2d442b3f16ed7fade49780d18bcca688c4b88ee0204c089ff",
     ),
     (
         Path(
             "changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml"
         ),
-        "a80c41890e6bae7077728d1456f5a3b5d99b1877e047f581beff8ed41e0c2cec",
+        "5f0fc1d75207535a89e5e50d6b33bc3f710d17e60183e63ab39e394b5e8d049c",
     ),
     (
         Path(
             "changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json"
         ),
-        "00e6e974f9003ee92cb0a9b4a0ca5a975286e7fd41a6e32cf1224e312cd78cec",
+        "3c7a7cc6a296c96162847f2bb452bba2ff7048bc8f277dbe720bf19a97fafaee",
     ),
     (
         Path("changes/st-0604/manifest.yaml"),
-        "56144e0b9ab315a647d92c665f7502129d3576fac2d9524ca647dc29bfeabdc0",
+        "df78078b95d6042a08651cdef6923c01009362655393ab47af39eba2f3e420b6",
     ),
     (
         Path("scripts/build_st0604_source_packet_lifecycle_reference_plan.py"),
-        "74e2260b2e647129de96d38a8dff0477a8b43947539640dccbcbc35e2072267c",
+        "7e6e1dcb1ea4ddec72b71e246769de940032b97dc86976fa8cc91f47e46ed97f",
     ),
     (
         Path("tests/st0604/conftest.py"),
@@ -121,7 +121,7 @@ ST0701_ARTIFACTS: Final = (
     ),
     (
         Path("changes/st-0701/manifest.yaml"),
-        "6d73ea4b5fa5fdaeec8b6e115ca75ab8b246fe6aba5024d789734a19151e5f04",
+        "01653bf5968c08a5ce186cfa06a9c25f33fc7a945808b6b2a622118025b2cbce",
     ),
     (
         Path("scripts/build_st0701_ai_registry.py"),
@@ -277,11 +277,20 @@ EXPECTED_ST0604_SEMANTICS: Final = {
 EXPECTED_ST0701_SEMANTICS: Final = {
     "task_count": 12,
     "complete_binding_metadata": True,
+    "source_packet_required_task_count": 9,
+    "source_packet_not_required_task_count": 3,
+    "typed_manifest_only": True,
+    "tools_allowed": False,
     "task_activation": False,
     "selected_provider": None,
     "provider_call": "NOT_EXECUTED",
     "route_execution": "NOT_EXECUTED",
     "network_access": False,
+    "state_change_allowed": False,
+    "provider_storage_allowed": False,
+    "strict_structured_output": True,
+    "forbidden_inputs_excluded": True,
+    "required_input_checks_complete": True,
     "formal_validation": "NOT_EXECUTED",
 }
 EXPECTED_PREDECESSORS: Final = {
@@ -296,7 +305,6 @@ EXPECTED_PREDECESSORS: Final = {
         "story_id": "ST-0701",
         "base_commit": ST0701_BASE_COMMIT,
         "binding": "CURRENT_COMMITTED_OWNED_BYTES_AT_ST0702_BASE",
-        "known_owner_debt": "EXPECTED_MANIFEST_ONLY_DRIFT",
         "artifacts": _artifact_rows(ST0701_ARTIFACTS),
         "required_semantics": EXPECTED_ST0701_SEMANTICS,
     },
@@ -356,7 +364,7 @@ EXPECTED_SELECTIONS: Final = {
     "environment": None,
     "credential_reference": None,
 }
-EXPECTED_COLLECTIONS: Final = {
+EXPECTED_COLLECTIONS: Final[dict[str, object]] = {
     "source_packets": [],
     "facts": [],
     "claims": [],
@@ -406,7 +414,7 @@ EXPECTED_BUILD_BOUNDARY: Final = {
     ],
 }
 EXPECTED_ACTION_COUNTS: Final = {key: 0 for key in ACTION_COUNT_KEYS}
-EXPECTED_EXECUTION: Final = {
+EXPECTED_EXECUTION: Final[dict[str, object]] = {
     "build": "NOT_EXECUTED",
     "selection": "NOT_EXECUTED",
     "recursive_scan": "NOT_EXECUTED",
@@ -467,6 +475,48 @@ EXPECTED_TOKEN_LIMITS: Final = (
     (100000, 14000, None),
     (50000, 10000, None),
 )
+EXPECTED_SOURCE_PACKET_REQUIRED_TASK_CODES: Final = (
+    "ai.article_draft.v1",
+    "ai.article_outline.v1",
+    "ai.claim_extraction.v1",
+    "ai.comparison_axis_suggestion.v1",
+    "ai.opportunity_assessment.v1",
+    "ai.policy_assist.v1",
+    "ai.quality_remediation.v1",
+    "ai.search_intent_classification.v1",
+    "ai.source_packet_gap_analysis.v1",
+)
+EXPECTED_SOURCE_PACKET_NOT_REQUIRED_TASK_CODES: Final = (
+    "ai.internal_link_suggestion.v1",
+    "ai.refresh_diff_summary.v1",
+    "ai.update_priority_explanation.v1",
+)
+EXPECTED_PROMPT_RUNTIME_CHECKS: Final = (
+    "typed_arguments",
+    "manifest_signature",
+    "schema_hash_match",
+    "policy_bundle_active",
+    "no_forbidden_input_fields",
+)
+FORBIDDEN_INPUT_FIELDS: Final = frozenset(
+    {
+        "affiliate_rate",
+        "commission_amount",
+        "revenue_by_product",
+        "rakuten_review_body",
+        "unapproved_web_content",
+    }
+)
+NON_FALLBACK_FAILURES: Final = frozenset(
+    {
+        "POLICY",
+        "CONTRACT",
+        "INVALID_EVIDENCE",
+        "BUDGET",
+        "REFUSAL",
+        "CONTENT_FILTER",
+    }
+)
 
 
 class ContextPackReferenceError(RuntimeError):
@@ -485,15 +535,25 @@ def _fail(code: str, field: str) -> NoReturn:
 
 
 def _mapping(value: object, field: str) -> Mapping[str, Any]:
-    if type(value) is not dict or not all(type(key) is str for key in value):
+    if type(value) is not dict:
         _fail("TYPE_MISMATCH", field)
-    return cast(Mapping[str, Any], value)
+    raw = cast(dict[object, object], value)
+    if not all(type(key) is str for key in raw):
+        _fail("TYPE_MISMATCH", field)
+    return cast(dict[str, Any], raw)
 
 
 def _list(value: object, field: str) -> list[Any]:
     if type(value) is not list:
         _fail("TYPE_MISMATCH", field)
-    return cast(list[Any], value)
+    return cast(list[Any], value)  # type: ignore[redundant-cast]
+
+
+def _string_list(value: object, field: str) -> list[str]:
+    items = _list(value, field)
+    if not all(type(item) is str for item in items) or len(items) != len(set(items)):
+        _fail("TYPE_MISMATCH", field)
+    return cast(list[str], items)
 
 
 def _same_exact(left: object, right: object) -> bool:
@@ -525,7 +585,12 @@ def _sha256(content: bytes) -> str:
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
-    physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    physical = cast(
+        Path,
+        base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative, field
+        ),
+    )
     try:
         content = physical.read_bytes()
     except OSError:
@@ -543,21 +608,27 @@ def _text(root: Path, relative: Path, field: str) -> str:
 
 
 def _load_yaml(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
-    base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        root, relative, field
+    )
     return _mapping(base.load_yaml(root / relative), field)
 
 
 def _load_json(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
-    base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        root, relative, field
+    )
     return _mapping(base.load_json(root / relative), field)
 
 
 def _find(items: object, identity: str, field: str) -> Mapping[str, Any]:
-    matches = [
-        _mapping(item, field)
-        for item in _list(items, field)
-        if type(item) is dict and item.get("id") == identity
-    ]
+    matches: list[Mapping[str, Any]] = []
+    for item in _list(items, field):
+        if type(item) is not dict:
+            continue
+        row = cast(dict[str, Any], item)
+        if row.get("id") == identity:
+            matches.append(row)
     if len(matches) != 1:
         _fail("CANONICAL_RECORD_MISSING", field)
     return matches[0]
@@ -603,14 +674,14 @@ def _validate_st0604(root: Path) -> None:
     predecessor_rows = _list(
         contract.get("predecessors"), "predecessor.st0604.predecessors"
     )
-    st0602 = next(
-        (
-            _mapping(row, "predecessor.st0604.st0602")
-            for row in predecessor_rows
-            if type(row) is dict and row.get("story_id") == "ST-0602"
-        ),
-        None,
-    )
+    st0602: Mapping[str, Any] | None = None
+    for item in predecessor_rows:
+        if type(item) is not dict:
+            continue
+        row = cast(dict[str, Any], item)
+        if row.get("story_id") == "ST-0602":
+            st0602 = row
+            break
     if st0602 is None:
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.st0604.fact_count")
     semantics = _mapping(
@@ -652,6 +723,8 @@ def _registry(root: Path) -> Mapping[str, Any]:
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.st0701.tasks")
     task_codes: list[str] = []
     token_limits: list[tuple[object, object, object]] = []
+    source_packet_required_codes: list[str] = []
+    source_packet_not_required_codes: list[str] = []
     for index, raw_row in enumerate(tasks):
         row = _mapping(raw_row, "predecessor.st0701.task")
         if tuple(row) != TASK_ROW_KEYS:
@@ -669,12 +742,118 @@ def _registry(root: Path) -> Mapping[str, Any]:
             )
         )
         if (
-            task.get("network_access") is not False
+            task.get("tools_allowed") is not False
+            or task.get("network_access") is not False
             or task.get("can_change_state") is not False
         ):
             _fail("PREDECESSOR_SEMANTIC_DRIFT", f"predecessor.st0701.task.{index}")
+        input_contract = _mapping(
+            task.get("input_contract"),
+            f"predecessor.st0701.task.{index}.input_contract",
+        )
+        _exact(
+            input_contract.get("kind"),
+            "typed_manifest",
+            f"predecessor.st0701.task.{index}.input_contract.kind",
+        )
+        source_packet_required = input_contract.get("source_packet_required")
+        if type(source_packet_required) is not bool:
+            _fail(
+                "PREDECESSOR_SEMANTIC_DRIFT",
+                f"predecessor.st0701.task.{index}.source_packet_required",
+            )
+        (
+            source_packet_required_codes
+            if source_packet_required
+            else source_packet_not_required_codes
+        ).append(code)
+        allowlist = _string_list(
+            task.get("input_allowlist"),
+            f"predecessor.st0701.task.{index}.input_allowlist",
+        )
+        denylist = _string_list(
+            task.get("input_denylist"),
+            f"predecessor.st0701.task.{index}.input_denylist",
+        )
+        prohibited = _string_list(
+            task.get("prohibited"),
+            f"predecessor.st0701.task.{index}.prohibited",
+        )
+        if (
+            FORBIDDEN_INPUT_FIELDS.intersection(allowlist)
+            or not FORBIDDEN_INPUT_FIELDS.issubset(denylist)
+            or not FORBIDDEN_INPUT_FIELDS.issubset(prohibited)
+        ):
+            _fail(
+                "PREDECESSOR_SEMANTIC_DRIFT",
+                f"predecessor.st0701.task.{index}.forbidden_inputs",
+            )
+        prompt = _mapping(row.get("prompt"), f"predecessor.st0701.task.{index}.prompt")
+        prompt_metadata = _mapping(
+            prompt.get("metadata"),
+            f"predecessor.st0701.task.{index}.prompt.metadata",
+        )
+        prompt_frontmatter = _mapping(
+            prompt_metadata.get("frontmatter"),
+            f"predecessor.st0701.task.{index}.prompt.frontmatter",
+        )
+        if (
+            prompt_frontmatter.get("tools_allowed") is not False
+            or prompt_frontmatter.get("network_access") is not False
+        ):
+            _fail(
+                "PREDECESSOR_SEMANTIC_DRIFT",
+                f"predecessor.st0701.task.{index}.prompt",
+            )
+        _exact(
+            _string_list(
+                prompt_metadata.get("required_runtime_checks"),
+                f"predecessor.st0701.task.{index}.prompt.runtime_checks",
+            ),
+            list(EXPECTED_PROMPT_RUNTIME_CHECKS),
+            f"predecessor.st0701.task.{index}.prompt.runtime_checks",
+        )
+        route = _mapping(row.get("route"), f"predecessor.st0701.task.{index}.route")
+        route_metadata = _mapping(
+            route.get("metadata"),
+            f"predecessor.st0701.task.{index}.route.metadata",
+        )
+        never_fallback_on = _string_list(
+            route_metadata.get("never_fallback_on"),
+            f"predecessor.st0701.task.{index}.route.never_fallback_on",
+        )
+        fallback_on = _string_list(
+            route_metadata.get("fallback_on"),
+            f"predecessor.st0701.task.{index}.route.fallback_on",
+        )
+        if (
+            route_metadata.get("store") is not False
+            or route_metadata.get("strict_structured_output") is not True
+            or not NON_FALLBACK_FAILURES.issubset(never_fallback_on)
+            or NON_FALLBACK_FAILURES.intersection(fallback_on)
+        ):
+            _fail(
+                "PREDECESSOR_SEMANTIC_DRIFT",
+                f"predecessor.st0701.task.{index}.route",
+            )
     _exact(task_codes, list(EXPECTED_TASK_CODES), "predecessor.st0701.task_order")
     _exact(token_limits, list(EXPECTED_TOKEN_LIMITS), "predecessor.st0701.tokens")
+    if not _same_exact(
+        source_packet_required_codes,
+        list(EXPECTED_SOURCE_PACKET_REQUIRED_TASK_CODES),
+    ):
+        _fail(
+            "PREDECESSOR_SEMANTIC_DRIFT",
+            "predecessor.st0701.source_packet_required_tasks",
+        )
+    if not _same_exact(
+        source_packet_not_required_codes,
+        list(EXPECTED_SOURCE_PACKET_NOT_REQUIRED_TASK_CODES),
+    ):
+        _fail(
+            "PREDECESSOR_SEMANTIC_DRIFT",
+            "predecessor.st0701.source_packet_not_required_tasks",
+        )
     return registry
 
 
@@ -822,7 +1001,6 @@ def _predecessor_manifest_rows() -> list[dict[str, object]]:
             "story_id": "ST-0701",
             "base_commit": ST0701_BASE_COMMIT,
             "binding": "CURRENT_COMMITTED_OWNED_BYTES_AT_ST0702_BASE",
-            "known_owner_debt": "EXPECTED_MANIFEST_ONLY_DRIFT",
             "inputs": _artifact_uri_rows(ST0701_ARTIFACTS),
         },
     ]
@@ -894,7 +1072,6 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
             "story_acceptance": False,
             "production_eligible": False,
             "effective_canonical_status": "UNCHANGED",
-            "known_predecessor_debt": "EXPECTED_MANIFEST_ONLY_DRIFT",
         },
     }
     return yaml.dump(
@@ -919,7 +1096,9 @@ def check_outputs(root: Path, expected: Mapping[Path, bytes]) -> None:
     if set(expected) != set(GENERATED_PATHS):
         _fail("GENERATED_INVENTORY_DRIFT", "output")
     for relative in GENERATED_PATHS:
-        path = base._output_file(root, relative)  # noqa: SLF001
+        path = base._output_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative
+        )
         try:
             actual = path.read_bytes()
         except OSError:
@@ -934,7 +1113,9 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
         check_outputs(root, outputs)
         return
     for relative, content in outputs.items():
-        base._atomic_write(root, relative, content)  # noqa: SLF001
+        base._atomic_write(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative, content
+        )
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

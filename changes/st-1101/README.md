@@ -1,6 +1,6 @@
 # ST-1101 headless admin UI foundation
 
-Status: `LOCAL_IMPLEMENTATION_CANDIDATE` / partial maximum-safe slice
+Status: `LOCAL_CODE_COMPLETE` / maximum-safe disabled implementation
 
 This Story slice provides dependency-free, headless, JSON-serializable
 TypeScript models for the approved `ST-1101` design-system boundary. It is a
@@ -16,6 +16,9 @@ status remains unchanged.
 - headless AppShell, DataTable, form/error-summary, and ConfirmDialog models;
 - deterministic focus, keyboard-state, validation-reference, sorting, and
   pagination logic suitable for focused TypeScript unit tests.
+- an explicit ESM workspace package export and owner-local strict TypeScript
+  project, wired into the repository typecheck without registering a route or
+  adding a renderer/effect surface.
 
 Every model is data-only. The package contains no React, Next.js, JSX, DOM or
 browser API, generated client, route handler, fetch, storage, cookie, bearer
@@ -41,7 +44,7 @@ simulate the `UI-C013` step-up effect.
 
 ## Evidence boundary
 
-Focused Node-native strip-types tests and opportunistic strict compilation are
+Focused Node-native strip-types tests and owner-routed strict compilation are
 local implementation evidence only. Formal `TST-006`, browser functional
 `TST-022`, automated accessibility `TST-023`, manual keyboard/screen-reader
 review, hosted CI, staging, release, deployment, and Production are

@@ -1,0 +1,216 @@
+{
+  "schema_version": "1.0.0",
+  "profile": "RAOS_ST1302_RECORDED_SYNTHETIC_V1",
+  "local_status": "RECORDED_SYNTHETIC_ONLY",
+  "scenario_id": "ST1302-RECORDED-SYNTHETIC-0001",
+  "dry_run": {
+    "source": {
+      "intake_id": "018f3e90-7b00-7000-8000-000000001302",
+      "site_id": "018f3e90-7b00-7000-8000-000000001301",
+      "source_sha256": "368f6df678d38618b25abb0ff316d35f6489707b0b3bdecbde54e0c94724d1d7",
+      "source_size": 548,
+      "profile": "RAOS_ST1301_SYNTHETIC_V1",
+      "command_fingerprint": "79c542f1a7f988b98610113c1b8313eafbfc44b1f585f480db35285b0d7effcc",
+      "csv_row_count": 5,
+      "csv_column_count": 8,
+      "csv_max_cell_bytes": 24,
+      "is_dry_run": true
+    },
+    "state": "SYNTHETIC_DRY_RUN_READY",
+    "previews": [
+      {
+        "row_no": 2,
+        "row_sha256": "f1754d22ab2f870df2664c6dd1c348e2b8e1659dc84f55a0be5f8475a1900b26",
+        "status": "ACCEPTED",
+        "code": "ACCEPTED",
+        "event_type": "GENERATED",
+        "event_at": "2026-08-01T00:00:00Z",
+        "generated_commission_jpy": 100,
+        "confirmed_commission_jpy": null
+      },
+      {
+        "row_no": 3,
+        "row_sha256": "b7dea9328f9d8c0d3be6fb41fa19a49b7b6c6141bc722c42c623645137a97162",
+        "status": "ACCEPTED",
+        "code": "ACCEPTED",
+        "event_type": "CONFIRMED",
+        "event_at": "2026-08-02T00:00:00Z",
+        "generated_commission_jpy": 100,
+        "confirmed_commission_jpy": 80
+      },
+      {
+        "row_no": 4,
+        "row_sha256": "f1754d22ab2f870df2664c6dd1c348e2b8e1659dc84f55a0be5f8475a1900b26",
+        "status": "DUPLICATE",
+        "code": "EXACT_ROW_DUPLICATE",
+        "event_type": null,
+        "event_at": null,
+        "generated_commission_jpy": null,
+        "confirmed_commission_jpy": null
+      },
+      {
+        "row_no": 5,
+        "row_sha256": "af66d7b9afeb7539250ce55884fe49ce730edc8ed20f31aef51851fa5c4ff1f6",
+        "status": "REJECTED",
+        "code": "EVENT_KEY_CONFLICT",
+        "event_type": null,
+        "event_at": null,
+        "generated_commission_jpy": null,
+        "confirmed_commission_jpy": null
+      }
+    ],
+    "row_count": 4,
+    "accepted_count": 2,
+    "rejected_count": 1,
+    "duplicate_count": 1,
+    "ignored_count": 0,
+    "observed_sums": [
+      {
+        "event_type": "GENERATED",
+        "row_count": 1,
+        "generated_commission_jpy": 100,
+        "confirmed_commission_jpy": null,
+        "confirmed_missing_count": 1
+      },
+      {
+        "event_type": "CONFIRMED",
+        "row_count": 1,
+        "generated_commission_jpy": 100,
+        "confirmed_commission_jpy": 80,
+        "confirmed_missing_count": 0
+      },
+      {
+        "event_type": "CANCELLED",
+        "row_count": 0,
+        "generated_commission_jpy": 0,
+        "confirmed_commission_jpy": null,
+        "confirmed_missing_count": 0
+      },
+      {
+        "event_type": "ADJUSTED",
+        "row_count": 0,
+        "generated_commission_jpy": 0,
+        "confirmed_commission_jpy": null,
+        "confirmed_missing_count": 0
+      }
+    ],
+    "period": {
+      "label": "SYNTHETIC_OBSERVED_RANGE",
+      "period_from": "2026-08-01",
+      "period_to": "2026-08-02"
+    },
+    "formula_detection": "NOT_DETECTED",
+    "source_status": "NEW",
+    "execution": "SYNTHETIC_FIXTURE_ONLY",
+    "mapping": "UNVERIFIED",
+    "reconciliation": "NOT_EXECUTED",
+    "persistence": "NOT_EXECUTED",
+    "audit": "NOT_EXECUTED",
+    "outbox": "NOT_EXECUTED",
+    "events": "NOT_EXECUTED",
+    "facts": "NOT_CREATED",
+    "tst026": "NOT_EXECUTED",
+    "tst030": "NOT_EXECUTED",
+    "decision": "NOT_READY",
+    "provider_total_jpy": null,
+    "revenue_import_id": null,
+    "source_artifact_id": null,
+    "approval_id": null
+  },
+  "accepted_rows": [
+    {
+      "row_no": 2,
+      "row_sha256": "f1754d22ab2f870df2664c6dd1c348e2b8e1659dc84f55a0be5f8475a1900b26",
+      "provider_event_key": "synthetic-event-0001",
+      "event_type": "GENERATED",
+      "event_at": "2026-08-01T00:00:00Z",
+      "generated_commission_jpy": "100",
+      "confirmed_commission_jpy": null
+    },
+    {
+      "row_no": 3,
+      "row_sha256": "b7dea9328f9d8c0d3be6fb41fa19a49b7b6c6141bc722c42c623645137a97162",
+      "provider_event_key": "synthetic-event-0002",
+      "event_type": "CONFIRMED",
+      "event_at": "2026-08-02T00:00:00Z",
+      "generated_commission_jpy": "100",
+      "confirmed_commission_jpy": "80"
+    }
+  ],
+  "commit": {
+    "revenue_import_id": "018f3e90-7b00-7000-8000-000000001322",
+    "expected_site_id": "018f3e90-7b00-7000-8000-000000001301",
+    "expected_source_sha256": "368f6df678d38618b25abb0ff316d35f6489707b0b3bdecbde54e0c94724d1d7",
+    "expected_local_preview_binding_sha256": "4ca67982a8faf600be644e950cd2cdd8826df069f9d6c3d4633550e0d6f6b5ac",
+    "expected_accepted_count": 2,
+    "expected_generated_commission_jpy": "200",
+    "expected_confirmed_commission_jpy": "80",
+    "expected_confirmed_missing_count": 1,
+    "expected_currency": "JPY",
+    "expected_period_from": "2026-08-01",
+    "expected_period_to": "2026-08-02",
+    "expected_status_summaries": [
+      {
+        "event_type": "GENERATED",
+        "row_count": 1,
+        "generated_commission_jpy": "100",
+        "confirmed_commission_jpy": null,
+        "confirmed_missing_count": 1
+      },
+      {
+        "event_type": "CONFIRMED",
+        "row_count": 1,
+        "generated_commission_jpy": "100",
+        "confirmed_commission_jpy": "80",
+        "confirmed_missing_count": 0
+      },
+      {
+        "event_type": "CANCELLED",
+        "row_count": 0,
+        "generated_commission_jpy": "0",
+        "confirmed_commission_jpy": null,
+        "confirmed_missing_count": 0
+      },
+      {
+        "event_type": "ADJUSTED",
+        "row_count": 0,
+        "generated_commission_jpy": "0",
+        "confirmed_commission_jpy": null,
+        "confirmed_missing_count": 0
+      }
+    ],
+    "idempotency_key": "st1302-recorded-synthetic-0001",
+    "reason": "Confirm the exact recorded synthetic preview for local verification.",
+    "requested_at": "2026-08-04T12:00:00Z"
+  },
+  "authorization": {
+    "principal_id": "018f3e90-7b00-7000-8000-000000001321",
+    "site_id": "018f3e90-7b00-7000-8000-000000001301",
+    "role": "ANALYST",
+    "subject_state": "ACTIVE_HUMAN_RECORDED_SYNTHETIC",
+    "mfa_state": "SATISFIED_RECORDED_SYNTHETIC",
+    "step_up_state": "SATISFIED_RECORDED_SYNTHETIC",
+    "step_up_authenticated_at": "2026-08-04T11:57:00Z",
+    "authorized_at": "2026-08-04T12:00:00Z",
+    "prepared_by_principal_id": "018f3e90-7b00-7000-8000-000000001320"
+  },
+  "authority": {
+    "recorded_synthetic_only": true,
+    "database_write_authorized": false,
+    "provider_call_authorized": false,
+    "network_authorized": false,
+    "publication_authorized": false,
+    "live_authorized": false,
+    "staging_authorized": false,
+    "release_authorized": false,
+    "production_authorized": false,
+    "database": "NOT_EXECUTED",
+    "provider": "NOT_EXECUTED",
+    "network": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  }
+}

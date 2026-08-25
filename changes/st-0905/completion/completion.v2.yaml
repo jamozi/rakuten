@@ -1,0 +1,35 @@
+schema_version: 2
+story_id: ST-0905
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_RECORDED_PUBLICATION_COMMAND_RUNTIME_V2
+implementation:
+  publish_process_local: true
+  rollback_process_local: true
+  unpublish_default_denied: true
+  immutable_st0903_st0904_inputs: true
+  atomic_copy_stage_swap: true
+  external_writers: false
+verification:
+  focused_local: REQUIRED_GREEN_BEFORE_COMMIT
+  dependency_local: REQUIRED_GREEN_BEFORE_COMMIT
+  formal_tst_012: NOT_EXECUTED
+  formal_tst_013: NOT_EXECUTED
+  formal_tst_021: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+authority:
+  database_write: false
+  event_emission: false
+  http_route: false
+  cms_write: false
+  provider_write: false
+  public_state_change: false
+  publication: false
+  staging_write: false
+  release: false
+  production_write: false
+deferred_debt: []

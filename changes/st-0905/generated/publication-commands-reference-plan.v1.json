@@ -151,12 +151,12 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-0905/contracts/publication-commands-reference-plan.v1.yaml",
-    "source_contract_sha256": "e16d7e31755d3956e21f458625df3dcdb8a7038d03247bc91d1fdd2b70a6e8f3",
+    "source_contract_sha256": "66e680fe1c8dec0fe4a83a080f70c31040b41503b81cfcb6b1ea1a808012d9d0",
     "generated_by": "repo://scripts/build_st0905_publication_commands_reference_plan.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st0905_publication_commands_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+      "sha256": "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     },
     "digest_classification": "LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT"
   },
@@ -164,21 +164,21 @@
     {
       "story_id": "ST-0903",
       "artifact": "repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-      "sha256": "e38e644ace8ad86f8c16e178221fa461360518abf5a080ea572c475d7d273c82",
+      "sha256": "43c4d87836ca5bed6887bb5db6de35189f1d263c3f3669ae3986f8b7b2b4b88a",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "NONEXECUTABLE_REFERENCE_PLAN_NO_AUTHORITATIVE_SNAPSHOT"
     },
     {
       "story_id": "ST-0904",
       "artifact": "repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml",
-      "sha256": "f078865e762f3fa8f5aaf7227409558de5fed706a509cbd67a92365a61da3d36",
+      "sha256": "f07294fd61a59b5127dfaa6c35583f92612d5be5bbf35f9b0c77a4c28eeaea83",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "NONEXECUTABLE_REFERENCE_PLAN_NO_PROJECTOR_OR_PUBLIC_ROW"
     },
     {
       "story_id": "ST-0402",
       "artifact": "repo://changes/st-0402/README.md",
-      "sha256": "6a3d5b2a1836d683b2dc96ecb73e4a02943a9a6fd8068496e6d550492514534b",
+      "sha256": "80f0d3dd6dd7845d726b3fdf07fc3828b4e25c9eea55d48e3296940350b9e0e5",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "DEVELOPMENT_SYNTHETIC_STEP_UP_ONLY_NO_PUBLIC_AUTHORITY"
     }

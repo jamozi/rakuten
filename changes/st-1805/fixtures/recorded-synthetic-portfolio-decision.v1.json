@@ -1,0 +1,25 @@
+{
+  "actual_observation": false,
+  "contract_sha256": "ec398cf427a41b0760e6b99108004d317883c8139796b768d1e122c6ea7648e7",
+  "evidence": {
+    "dependency_acceptance_criteria_satisfied": false,
+    "dependency_actual_observation_count": 0,
+    "dependency_gate_pass_claim": false,
+    "dependency_overall": "BLOCKED",
+    "dependency_scale_authority": "NONE",
+    "dependency_schema": "ST1804_GATE3_PACK_V1",
+    "economics_state": "RECORDED_SYNTHETIC_NON_ATTESTING",
+    "formal_tst032_state": "NOT_EXECUTED",
+    "human_decision_present": false,
+    "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+    "quality_state": "NOT_EXECUTED",
+    "risk_state": "NOT_EXECUTED",
+    "source_pack_sha256": "f39934be295442f3109185324d3c96e5c2d5401a320f01fd60f75c4fe5414cb4"
+  },
+  "immutable": true,
+  "input_sha256": "f0adb4eb0e3becf8439e8dd76b9bf6d6641f412dc1348ae04cfc1b0beb47914e",
+  "recorded_at": "2026-04-01T00:00:00Z",
+  "recording_id": "blocked-synthetic-no-decision",
+  "schema": "ST1805_RECORDED_SYNTHETIC_PORTFOLIO_DECISION_V1",
+  "synthetic": true
+}

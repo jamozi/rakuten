@@ -1,0 +1,23 @@
+{
+  "schema_version": "2.0.0",
+  "fixture_id": "ST1404-SYNTHETIC-DURABILITY-V2",
+  "synthetic": true,
+  "operational_default": false,
+  "activation": false,
+  "durations_seconds": {
+    "queue_lease": 30,
+    "job_lease": 30,
+    "outbox_lease": 20,
+    "quarantine_replay_lease": 20
+  },
+  "retry_seconds": {
+    "outbox": [1],
+    "job": [5]
+  },
+  "commit_faults": [
+    "NONE",
+    "KNOWN_BEFORE_COMMIT",
+    "UNKNOWN_BEFORE_COMMIT",
+    "UNKNOWN_AFTER_COMMIT"
+  ]
+}

@@ -38,38 +38,38 @@
     "inventory_derivation": "COMMIT_DIFF_TREE_FIXED_AT_AUTHORING",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+      "sha256": "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     }
   },
   "predecessor_bindings": [
     {
       "story_id": "ST-0602",
-      "commit": "f281d02c489d4d9f74ec351a57a4a476fa77eab3",
+      "commit": "806b978803cbc78392117cbc31015db19ea09a74",
       "relationship": "EMPTY_FACT_INPUT_REFERENCE_ONLY",
       "files": [
         {
           "path": "changes/st-0602/README.md",
-          "sha256": "c08e9d2f2145d1c3e4018a39e5e8373b60131d7e7b3c0ba72ca9d3bc09a7aaa5"
+          "sha256": "f3590fb864de262eb1d31769ffe892010f41f98084c27634f099dfca9573f2f8"
         },
         {
           "path": "changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml",
-          "sha256": "ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e"
+          "sha256": "c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073"
         },
         {
           "path": "changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json",
-          "sha256": "2d68d32281ee909bba05eaa8fdb42b545e194af12a450585601e19f670e15944"
+          "sha256": "c515af3410be014a714be4d9f9cd133bd320f4c19e5da5820bb3cd6b1a39abb5"
         },
         {
           "path": "changes/st-0602/manifest.yaml",
-          "sha256": "b977fd764ea83c5e44087bef5c62d93e579e39aebd110082cf01b7790b915c42"
+          "sha256": "e4ac2cbe7458035e53356ab0647bcd8439cec4c352297538ef7b595edf5bd18e"
         },
         {
           "path": "scripts/build_st0602_fact_extraction_validation_reference_plan.py",
-          "sha256": "fc31b9594da3d0a11bd80044bdb753a5950f023d4150f97cc52779ac12603daf"
+          "sha256": "94947fcde0e2f5d9c972c38dbe9d1fea287659c5a0e7ab329a485eaf61b1e753"
         },
         {
           "path": "tests/st0602/conftest.py",
-          "sha256": "8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9"
+          "sha256": "a687a2fee7033a83b82caa305712a1885a3c66d11d0efc7b761397447746d1c8"
         },
         {
           "path": "tests/st0602/test_contract.py",
@@ -95,28 +95,28 @@
     },
     {
       "story_id": "ST-0603",
-      "commit": "a64799570606aa4cb5e3ce79930e156fa500d644",
+      "commit": "4f4285f0385a14b83e027e9c4527c17b8966bb70",
       "relationship": "EMPTY_CONFLICT_INPUT_REFERENCE_ONLY",
       "files": [
         {
           "path": "changes/st-0603/README.md",
-          "sha256": "87398b8122d9ef365a073159dd65258488cc1482163ea7449504dccdb11887fb"
+          "sha256": "22ba200315f8cd36198930842c12f0e17008b979b6f38f850cc534c13af7e071"
         },
         {
           "path": "changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml",
-          "sha256": "51df56b9475e9a635a0e33ed39109fa4b1d91e7c5a9be08996007eea3698ae07"
+          "sha256": "74d58a889c0e20cb74e699196c267b270a86db80667459c9178b04aefe66c093"
         },
         {
           "path": "changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json",
-          "sha256": "755f88f9084717f85b644f6b4f9904a3ac3d71b36dfeae9cf34de2104e0518a5"
+          "sha256": "16a934d5a84b0a76e291026be708f6ae15a68523c5c2bdc1d816196eb58ed148"
         },
         {
           "path": "changes/st-0603/manifest.yaml",
-          "sha256": "a418addb612aec85c79213dda71b82ae8e3a40285d48399683d0e40cc5586ad7"
+          "sha256": "f7aadcf22785f96360be081c3754021dc72f4f6ade9570c39a8a53e80afb8a86"
         },
         {
           "path": "scripts/build_st0603_fact_conflict_review_reference_plan.py",
-          "sha256": "5b52c2790b48a39e04853144f34f48edac2775edfc118bc19586b7887943f341"
+          "sha256": "c18ec5df96bfbaa1a18d86cba3fd468221ae1b8fffdf2a5d38dd3a2e9af9b589"
         },
         {
           "path": "tests/st0603/conftest.py",
@@ -154,12 +154,12 @@
     },
     {
       "story_id": "ST-0403",
-      "commit": "095046c752595bea3235caf2e3a653fd9383882e",
+      "commit": "16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517",
       "relationship": "DENY_DEFAULT_RECORDED_AUTHORIZATION_CONTEXT_ONLY",
       "files": [
         {
           "path": "changes/st-0403/README.md",
-          "sha256": "e7c0e10e44abf6f5db2fbbd94c6a14ecbc9d6bc0ff77fcb312d652204165b6e9"
+          "sha256": "d21f1ddefd4f201a6618e9baa8889d6c77302b141070d89d03b4e2199746d5cc"
         },
         {
           "path": "python/raos/adapters/development_authorization.py",
@@ -167,15 +167,15 @@
         },
         {
           "path": "python/raos/application/iam/authorization.py",
-          "sha256": "19e3d35a982234a612885d8390ba9fed3bca8e5dabeec326641e173124686b57"
+          "sha256": "8c1133b948fc935b62d8e2ed964a795a7f9e24c9943c9aa1b44bcf898dba3814"
         },
         {
           "path": "python/raos/domain/iam/authorization.py",
-          "sha256": "dd08de5f2330fd322571230f0634413665360b2c362968f2ee46647bd48b55ce"
+          "sha256": "18b21b95dd3dc154b40f11f605b6289e0e27576f3401bb294606d871e78185f7"
         },
         {
           "path": "python/raos/ports/authorization.py",
-          "sha256": "191b9b1fc0a2e0898beaf65b0e821d7030536218abc26fd262eb7dfde47d5157"
+          "sha256": "9f008f67337f1ceac44f94979f2741a96900c41408ee17fa3d887015a24ea9de"
         },
         {
           "path": "tests/st0403/conftest.py",
@@ -183,11 +183,11 @@
         },
         {
           "path": "tests/st0403/test_authorization.py",
-          "sha256": "8a17049ecf7f66bf45020c868ec8cb0c2c7e943ebea4a1a2e4c01fe0832fc2ba"
+          "sha256": "5df2d5a51188f9ed0de2252695b7ccdb980b1ffd6e7a4132486d404c28277995"
         },
         {
           "path": "tests/st0403/test_boundaries.py",
-          "sha256": "bd05a349cb9bbfadbfed805fb05f99cca845cac40c58c557fc3affc3f02a856d"
+          "sha256": "dcf612fe47ae9987457c61d5d7a23a2a71c957b8226a105195f20d1807228240"
         }
       ],
       "required_semantics": {

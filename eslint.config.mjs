@@ -11,8 +11,7 @@ export default defineConfig([
       reportUnusedDisableDirectives: 'error',
     },
     rules: {
-      // The web workspace is intentionally package-only in ST-0103. Routes are
-      // introduced by their own Stories, so a pages-directory probe is noise.
+      // ST-1001 uses the App Router; the legacy pages-directory probe is noise.
       '@next/next/no-html-link-for-pages': 'off',
     },
   },

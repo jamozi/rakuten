@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
+from typing import cast
 
 import pytest
 import yaml
@@ -21,6 +23,14 @@ def test_contract_safe_boundary_mutations_are_rejected(
         ("build_boundary", "build_permitted", True),
         ("build_boundary", "manifest_creation_permitted", True),
         ("execution_boundary", "provider_call", "EXECUTED"),
+        (
+            "packing_rules",
+            "available",
+            {
+                **cast(dict[str, bool], generator.EXPECTED_PACKING_RULES["available"]),
+                "silent_required_fact_truncation_forbidden": False,
+            },
+        ),
     )
     original = path.read_bytes()
     for section, key, value in mutations:
@@ -33,10 +43,60 @@ def test_contract_safe_boundary_mutations_are_rejected(
 
 
 @pytest.mark.parametrize(
+    "mutation",
+    [
+        "task_tools",
+        "forbidden_allowlist",
+        "source_packet_requirement",
+        "prompt_network",
+        "provider_storage",
+        "unsafe_fallback",
+    ],
+)
+def test_rebound_st0701_registry_still_rejects_unsafe_semantic_drift(
+    isolated_repository: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+) -> None:
+    path = isolated_repository / generator.ST0701_REGISTRY_PATH
+    registry = json.loads(path.read_bytes())
+    row = registry["tasks"][0]
+    if mutation == "task_tools":
+        row["task"]["tools_allowed"] = True
+    elif mutation == "forbidden_allowlist":
+        row["task"]["input_allowlist"].append("affiliate_rate")
+    elif mutation == "source_packet_requirement":
+        row["task"]["input_contract"]["source_packet_required"] = False
+    elif mutation == "prompt_network":
+        row["prompt"]["metadata"]["frontmatter"]["network_access"] = True
+    elif mutation == "provider_storage":
+        row["route"]["metadata"]["store"] = True
+    else:
+        row["route"]["metadata"]["fallback_on"].append("POLICY")
+    content = generator._json_bytes(registry)
+    path.write_bytes(content)
+    rebound = tuple(
+        (
+            relative,
+            generator._sha256(content)
+            if relative == path.relative_to(isolated_repository)
+            else digest,
+        )
+        for relative, digest in generator.ST0701_ARTIFACTS
+    )
+    monkeypatch.setattr(generator, "ST0701_ARTIFACTS", rebound)
+    with pytest.raises(
+        generator.ContextPackReferenceError, match="PREDECESSOR_SEMANTIC_DRIFT"
+    ):
+        generator.load_contract(isolated_repository)
+
+
+@pytest.mark.parametrize(
     "relative",
     [
         generator.STORY_PATH,
         generator.INTEGRATION_PATH,
+        generator.HELPER_PATH,
         *(path for path, _digest in generator.ST0604_ARTIFACTS),
         *(path for path, _digest in generator.ST0701_ARTIFACTS),
     ],

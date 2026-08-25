@@ -1,0 +1,128 @@
+{
+  "schema_version": 2,
+  "story_id": "ST-1105",
+  "classification": "LOCAL_BROWSER_AUTOMATED_ADMIN_ACCESSIBILITY_VISUAL_EVIDENCE_NON_FORMAL_V2",
+  "allowed_environments": ["ENV-DEV", "CI"],
+  "runtime": {
+    "node": { "version": "24.18.1" },
+    "browser": {
+      "product": "Chrome for Testing",
+      "version": "147.0.7727.15",
+      "executable_sha256": "696170a79640ec5b50c7518140ace06c69a49cfb295bf527d4a85e26a12b89a7"
+    },
+    "axe": {
+      "version": "4.12.1",
+      "script_path_from_node_modules": "axe-core/axe.min.js",
+      "script_sha256": "66a8aaa95a8b044a7fd74a5435873bf04ff65a1ca75567c921b7509742085a14",
+      "tags": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]
+    }
+  },
+  "transport": {
+    "origin": "LOOPBACK_EPHEMERAL_ONLY",
+    "network": "LOOPBACK_DOCUMENT_ONLY",
+    "unexpected_outbound_request": "FAIL_CLOSED",
+    "external_write": false
+  },
+  "surfaces": {
+    "synthetic_screen_count": 44,
+    "dependency_renderer": {
+      "story_id": "ST-0906",
+      "screen_ids": [
+        "REV-001",
+        "REV-002",
+        "REV-003",
+        "PUBA-001",
+        "PUBA-002",
+        "PUBA-003",
+        "PUBA-004"
+      ],
+      "route_registered": false,
+      "render_source": "packages/web-ui/src/publication-review-workspace-v2.ts"
+    }
+  },
+  "viewport_profiles": [
+    {
+      "id": "REFLOW_320",
+      "width": 320,
+      "height": 800,
+      "checks": ["semantics", "axe", "keyboard", "reflow"]
+    },
+    {
+      "id": "VISUAL_DESKTOP_1280",
+      "width": 1280,
+      "height": 900,
+      "checks": ["semantics", "screenshot"]
+    }
+  ],
+  "zoom_proxy": {
+    "kind": "AUTOMATED_320_CSS_PIXEL_REFLOW_PROXY_FOR_640_DEVICE_PIXELS_AT_200_PERCENT",
+    "automated_browser_zoom_claimed": false,
+    "manual_200_percent_zoom": "NOT_EXECUTED"
+  },
+  "local_checks": {
+    "unique_nonempty_title": true,
+    "exactly_one_h1": true,
+    "main_landmark": true,
+    "skip_link_first_focus_and_activation": true,
+    "visible_focus_indicator": true,
+    "all_enabled_interactive_controls_tab_reachable": true,
+    "critical_dialog_focus_trap_escape_and_return": true,
+    "status_not_color_only": true,
+    "form_label_instruction_and_error_association": true,
+    "table_caption_headers_and_scope": true,
+    "document_horizontal_overflow_forbidden": true,
+    "axe_zero_violations_and_incomplete": true,
+    "console_and_page_errors_forbidden": true
+  },
+  "visual_baseline": {
+    "schema_version": 2,
+    "profile": "ST1105_LOCAL_SYNTHETIC_CHROME_147_DESKTOP_1280_EXACT_PNG_SHA256",
+    "algorithm": "PNG_SHA256_EXACT",
+    "tolerance": "ZERO_BYTE_DIGEST_DIFFERENCE",
+    "screenshot_storage": "DIGEST_ONLY_NO_BROWSER_MATERIAL",
+    "baseline_path": "changes/st-1105/baselines/admin-visual.synthetic.v2.json",
+    "approved": false,
+    "formal_TST-025": "NOT_EXECUTED"
+  },
+  "evidence": {
+    "path": "changes/st-1105/evidence/local-browser-automated.v2.json",
+    "classification": "LOCAL_AUTOMATED_NON_FORMAL_RECORDED_SYNTHETIC_EVIDENCE",
+    "synthetic_fixture_result": "LOCAL_AUTOMATED_PASS_SYNTHETIC_FIXTURE_ONLY",
+    "dependency_renderer_result_vocabulary": [
+      "LOCAL_AUTOMATED_PASS_DEPENDENCY_RENDERER_ONLY",
+      "LOCAL_AUTOMATED_REVIEW_REQUIRED_DEPENDENCY_RENDERER_ONLY"
+    ],
+    "formal_result": "NOT_EXECUTED"
+  },
+  "formal_boundary": {
+    "TST-023": "NOT_EXECUTED",
+    "TST-024": "NOT_EXECUTED",
+    "TST-025": "NOT_EXECUTED",
+    "manual_keyboard": "NOT_EXECUTED",
+    "manual_zoom": "NOT_EXECUTED",
+    "screen_reader": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "wcag_conformance": "NOT_CLAIMED"
+  },
+  "authority": {
+    "route_registration": false,
+    "authentication": false,
+    "authorization": false,
+    "business_action": false,
+    "publication": false,
+    "staging": false,
+    "release": false,
+    "production": false
+  },
+  "inputs": [
+    "changes/st-1105/contracts/admin-visual-accessibility-acceptance.v2.json",
+    "changes/st-1105/contracts/admin-visual-browser-evidence.v2.json",
+    "changes/st-1105/fixtures/admin-visual-accessibility.synthetic.v2.json",
+    "changes/st-1105/generated/admin-visual-accessibility-recorded.v2.json",
+    "packages/web-ui/src/publication-review-workspace-v2.ts",
+    "scripts/check_st1105_admin_acceptance_browser.mjs",
+    "package.json",
+    "package-lock.json"
+  ]
+}

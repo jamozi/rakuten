@@ -1,13 +1,13 @@
 document:
   id: RAOS-TERRAFORM-FOUNDATION-MANIFEST-001
-  version: 1.1.0
+  version: 1.2.0
   story_id: ST-1501
   source_contract: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
   generated_by: repo://scripts/build_st1501_terraform_foundation.py
   generation_command: uv run --locked --no-sync python scripts/build_st1501_terraform_foundation.py
 provenance:
   contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-  contract_sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
+  contract_sha256: 5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -35,42 +35,72 @@ provenance:
     sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
     sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
-source_artifact_count: 8
+source_artifact_count: 12
 source_artifacts:
 - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-  bytes: 9313
-  sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
+  bytes: 12139
+  sha256: 5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e
 - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
   bytes: 9124
   sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
+- uri: repo://changes/st-1501/PREFLIGHT_LOCAL_CODE_COMPLETE_V2.md
+  bytes: 1672
+  sha256: 1fe82567b40f751d7269986388326b2db86f9dd0440595d0ce1c5de3580f516c
+- uri: repo://changes/st-1501/IMPLEMENTATION_RECORD_V2_ST1501_HCL_FOUNDATION.yaml
+  bytes: 3089
+  sha256: 8ab9c8ee9e2be7f9c883aaebe3cf8248c1a435d5e3f5c7dd29d66cf3ea339146
+- uri: repo://changes/st-1501/LOCAL_COMPLETION_EVIDENCE_V2.md
+  bytes: 5587
+  sha256: e9d81f1722b57ca3ebc43f39f5b396322003232bc3542dedeafc4f6df10ee656
 - uri: repo://changes/st-1501/README.md
-  bytes: 6786
-  sha256: 9b651467bdc85133cd14befad23dd9b20791aec17e5b46b64a8c87f02317dde9
+  bytes: 5792
+  sha256: a15afd69b4b9dc33bbfd3999553196f22eb182c48ab89ae0fb003f73cce5cad4
 - uri: repo://scripts/build_st1501_terraform_foundation.py
-  bytes: 73384
-  sha256: 8c24545a0b992db2116e956b8ff0948066ca86b78026aa546417a6be025a9ec8
+  bytes: 102578
+  sha256: ca5bf43cb45578207678f7afcce77cab01a9e54b34f45a3f1c9a5f4f417aa7cb
 - uri: repo://tests/st1501/conftest.py
   bytes: 639
   sha256: 0901bcd2fb399aff95835b44782bce3d163d61f465d8668723369da9a2f99e18
 - uri: repo://tests/st1501/test_contract.py
-  bytes: 12002
-  sha256: c43d7610c648ff3550351a480be9af74ee8e15120f44ee0f8b3d34bfaba55a6d
+  bytes: 13133
+  sha256: 0cc63cdf8d6bc93ab520e19f9d8060da5bffcdc29da8c1bbaa76c87a12d7f500
 - uri: repo://tests/st1501/test_generation.py
-  bytes: 8999
-  sha256: 72fba030816bf632c3d088b2d77ee0ecd5a13405ef10534d68d58ec94e14bb1a
+  bytes: 9395
+  sha256: 57b5ab675b91af471625e663852f1224b11f6f962ec176e4e66715ea91edfc70
+- uri: repo://tests/st1501/test_hcl_foundation.py
+  bytes: 11336
+  sha256: 27bdb1a8b1e2914aac3ac9a56d86a926ac7166503ea4e219d9434c598bac38c5
 - uri: repo://tests/st1501/test_negative_cases.py
   bytes: 20018
   sha256: d5e214f813405e091703470ec0e15e77a4c31d04788428306615412489d3706e
-generated_artifact_count: 1
+generated_artifact_count: 7
 generated_artifacts:
 - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-  bytes: 9100
-  sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
+  bytes: 12526
+  sha256: bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72
+- uri: repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json
+  bytes: 2919
+  sha256: 696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44
+- uri: repo://infra/terraform/foundation/versions.tf
+  bytes: 127
+  sha256: 87d23505f127e84430a32ac458b67b46b6614f3d2f976c2539fe3163b4eecab7
+- uri: repo://infra/terraform/foundation/variables.tf
+  bytes: 4238
+  sha256: ce13d5d7eb4ed483c5afd170e1ec74738aa73455e5b4036e861cf5786ff6e76e
+- uri: repo://infra/terraform/foundation/locals.tf
+  bytes: 2108
+  sha256: a113d24697b1f00c6f3fe32459280672d271dd5a1757364e8e2aac97db1c3b3c
+- uri: repo://infra/terraform/foundation/checks.tf
+  bytes: 1095
+  sha256: e4d826ee2881a74f2cc1c49f80ef817d090fb9c0f86040a30f37c231af663787
+- uri: repo://infra/terraform/foundation/outputs.tf
+  bytes: 712
+  sha256: dac1835d490dc50355a9d4510d6ee8991f2a945ad1bfc1ee395e8c2134431d72
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
 boundary:
-  classification: SOURCE_DERIVED_REFERENCE_STATE_PLAN
+  classification: SOURCE_DERIVED_PROVIDER_NEUTRAL_HCL_FOUNDATION
   provider_policy: STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION
   admission_status: NOT_EVALUATED
   eligible: false
@@ -100,6 +130,13 @@ boundary:
   credentials: ABSENT
   provider_account_or_project: UNSET
   resource_definitions: []
-  native_iac_validation: NOT_EXECUTED
+  hcl_module: PROVIDER_NEUTRAL_VALIDATION_ONLY
+  hcl_file_count: 5
+  terraform_cli_version: 1.15.9
+  terraform_binary_sha256: c39d41adb17963bac5dd610ad47815dd81e945371a7cabc344a45d63b1b093bd
+  provider_plugins: []
+  native_iac_validation: EXECUTED_NOT_FORMAL
+  normal_check_network: FORBIDDEN
+  initialization: FORBIDDEN
   formal_tst_026: NOT_EXECUTED
   effective_canonical_status: UNCHANGED

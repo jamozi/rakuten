@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raos.example.invalid/contracts/st1801/recorded-synthetic-quality-evaluation.v1.schema.json",
+  "title": "ST-1801 recorded-synthetic quality and major-Claim evaluation fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "classification", "cases"],
+  "properties": {
+    "schema": {"const": "ST1801_RECORDED_SYNTHETIC_QUALITY_EVALUATION_V1"},
+    "classification": {"const": "RECORDED_SYNTHETIC_ONLY_NOT_ARTICLE_EVIDENCE"},
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {"$ref": "#/$defs/case"}
+    }
+  },
+  "$defs": {
+    "nullableScore": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^(0|[1-9][0-9]?|100)(\\.[0-9]{1,6})?$"}
+      ]
+    },
+    "nullableCount": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "integer", "minimum": 0, "maximum": 1000000}
+      ]
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "input", "expected"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^synthetic-[a-z0-9-]{1,64}$"},
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["quality_score", "major_claim_count", "evidenced_major_claim_count"],
+          "properties": {
+            "quality_score": {"$ref": "#/$defs/nullableScore"},
+            "major_claim_count": {"$ref": "#/$defs/nullableCount"},
+            "evidenced_major_claim_count": {"$ref": "#/$defs/nullableCount"}
+          }
+        },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "quality_status", "major_claim_coverage_status"],
+          "properties": {
+            "status": {"enum": ["PASS", "FAIL", "UNAVAILABLE"]},
+            "quality_status": {"enum": ["PASS", "FAIL", "UNAVAILABLE"]},
+            "major_claim_coverage_status": {"enum": ["PASS", "FAIL", "UNAVAILABLE"]}
+          }
+        }
+      }
+    }
+  }
+}

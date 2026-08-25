@@ -1,0 +1,280 @@
+document:
+  id: RAOS-LOCAL-STAGING-ADMISSION-002
+  version: 2.0.0
+  story_id: ST-1505
+  status: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE_PROPOSAL
+  canonical_status_effect: NONE
+  formal_verification: NOT_EXECUTED
+
+predecessor_bindings:
+  ST-1502:
+    story_id: ST-1502
+    contract_uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
+    contract_sha256: 89a0f1e7babfceffd2b270bc3a16f5d74fbeb6b62699e03156c860c9ae16c7e1
+    reference_plan_uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
+    reference_plan_sha256: 2d52d7b99a4edda75814af603e48016f06fa34507bc221e3f573379c066f35c5
+    required_status: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE
+    required_activation: DISABLED
+    required_external_actions: 0
+  ST-1503:
+    story_id: ST-1503
+    contract_uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
+    contract_sha256: 682ab350c5036bf8697a99f08269d5d6db1aaff7387ca8401db07b9d811b1c08
+    reference_plan_uri: repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json
+    reference_plan_sha256: 1ac46b4ac6a779f41776c10f69416c05e770f2119fb1ce3b6898c11d7e1295ee
+    required_status: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE
+    required_activation: DISABLED
+    required_external_actions: 0
+  ST-1504:
+    story_id: ST-1504
+    contract_uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
+    contract_sha256: 20558e50a78c5d8be62a553858445578cc3fdd39fd285de3a92fe5cd5b5d9257
+    reference_plan_uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
+    reference_plan_sha256: 7316a9f71cfea72edf071757ead8b44403362d106eb986d146193a27d658d6e6
+    required_status: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE
+    required_activation: DISABLED
+    required_external_actions: 0
+
+pipeline:
+  schema: RAOS_LOCAL_STAGING_PIPELINE_V2
+  fixture_id: st1505-fixture-local-admission-v2
+  pipeline_id: st1505-pipeline-local-admission-v2
+  classification: REPOSITORY_INERT_EXPLICIT_LOCAL_SIMULATION_ONLY
+  repository_inert: true
+  default_enabled: false
+  local_execution_mode: EXPLICIT_CALL_RECORDED_FIXTURE_ONLY
+  phases:
+    - SAFETY_BOUNDARY
+    - ARTIFACT_ADMISSION
+    - MIGRATION_PLAN
+    - MIGRATION_DRY_RUN
+    - LOOPBACK_HEALTH
+    - ROLLBACK_RESTORE_SIMULATION
+    - LOCAL_ADMISSION_COMPLETE
+
+identity_boundary:
+  source_story: ST-1504
+  source_manifest_uri: repo://changes/st-1504/manifest.yaml
+  source_manifest_sha256: ad2da9ab4738e5c78144cdb039a35a36a74fbed796724814495e2f279112f7c9
+  source_activation_port_uri: repo://python/raos/ports/deployment_identity.py
+  source_activation_port_sha256: 34659b7fbcc113221e9890f14ab7cb8435af58b9e3722fc094beeec1a0d5de45
+  policy_id: st1504-policy-repository-inert-v1
+  fixture_id: st1504-fixture-repository-inert-v1
+  evaluation_fixture_uri: repo://infra/terraform/deployment-identity/github-oidc.evaluation.recorded.v1.json
+  evaluation_fixture_sha256: 8fe2ae11254670d9b78c1df2e495da88ccf6687b0f31fb7db035fb3e339dd73e
+  evaluation_digest: baa01625e3c4dca3ecd6aaf94f458f1003a8a3ff079ff14683c21fa8e95235a5
+  policy_match_only: true
+  authentication: NOT_AUTHENTICATED
+  signature_verification: NOT_PERFORMED
+  activation: DISABLED
+  credential_issuance: FORBIDDEN
+  deployment_authority: NONE
+  action_count: 0
+
+artifact:
+  classification: SYNTHETIC_IMMUTABLE_ARTIFACT_ADMISSION_ONLY
+  fixture_id: st1505-artifact-local-v2
+  media_type: application/octet-stream
+  payload_utf8: |
+    RAOS ST-1505 synthetic immutable artifact fixture v2
+  payload_sha256: d615727014ef5fd32023e7d1ce745cc89c08cbfde37d2838ace4acf3956cc345
+  immutable: true
+  sbom:
+    schema: RAOS_RECORDED_SBOM_V1
+    document_id: st1505-sbom-local-v2
+    classification: SYNTHETIC_RECORDED_LOCAL_ONLY
+    packages:
+      - name: raos-st1505-synthetic-fixture
+        version: 2.0.0-local
+        supplier: NOASSERTION
+        artifact_sha256: d615727014ef5fd32023e7d1ce745cc89c08cbfde37d2838ace4acf3956cc345
+    external_references: []
+  vulnerability_report:
+    classification: SYNTHETIC_RECORDED_RULE_EVALUATION_ONLY
+    scanner: RAOS_CLOSED_FIXTURE_VALIDATOR
+    database_version: SYNTHETIC-NO-CVE-DATABASE
+    critical_count: 0
+    high_count: 0
+    findings: []
+    result: PASS
+    formal_scan: NOT_EXECUTED
+  provenance:
+    schema: RAOS_RECORDED_PROVENANCE_V1
+    statement_id: st1505-provenance-local-v2
+    classification: SYNTHETIC_DIGEST_BINDING_ONLY_NOT_SIGNED_ATTESTATION
+    builder_id: https://st1505.local.invalid/builder
+    build_type: RAOS_ST1505_RECORDED_LOCAL_BUILD_V1
+    subject_name: raos-st1505-synthetic-fixture.bin
+    subject_sha256: d615727014ef5fd32023e7d1ce745cc89c08cbfde37d2838ace4acf3956cc345
+    sbom_sha256: 171cd38d63d5e37c8ec352a1a5fe8e735524d8fcf5bd909342e1536ce4a1a3df
+    signature_kind: SYNTHETIC_CANONICAL_DIGEST_BINDING
+    cryptographic_signature_verification: NOT_PERFORMED
+    formal_attestation: NOT_EXECUTED
+
+migration:
+  classification: IN_MEMORY_EXPAND_MIGRATE_CONTRACT_SIMULATION_ONLY
+  plan_id: st1505-migration-local-v2
+  strategy: EXPAND_MIGRATE_CONTRACT
+  source_revision: fixture-v1
+  target_revision: fixture-v2
+  steps:
+    - sequence: 1
+      phase: EXPAND
+      operation: ADD_OPTIONAL_SYNTHETIC_FIELD
+      destructive: false
+      database_write: false
+      status: SIMULATED_PASS
+    - sequence: 2
+      phase: MIGRATE
+      operation: BACKFILL_SYNTHETIC_RECORD
+      destructive: false
+      database_write: false
+      status: SIMULATED_PASS
+    - sequence: 3
+      phase: CONTRACT
+      operation: DEFER_DESTRUCTIVE_CONTRACT
+      destructive: false
+      database_write: false
+      status: DEFERRED_LATER_RELEASE
+  dry_run:
+    execution_mode: IN_MEMORY_RECORDED_ONLY
+    database_connection: ABSENT
+    statement_execution_count: 0
+    external_action_count: 0
+    lock_budget_milliseconds: 50
+    observed_lock_milliseconds: 0
+    backward_compatible_before: true
+    backward_compatible_after: true
+    forward_fix_ready: true
+    result: PASS
+  independent_review: NOT_EXECUTED
+  database_execution: NOT_EXECUTED
+
+health:
+  classification: RECORDED_LOOPBACK_RESPONSE_VALIDATION_ONLY
+  network_requests: 0
+  generic_http_200_inference: FORBIDDEN
+  surfaces:
+    - surface: PUBLIC
+      trust_boundary: PUBLIC
+      url: http://127.0.0.1:38101/health/readiness
+      request_execution: NOT_PERFORMED_RECORDED_RESPONSE_ONLY
+      status_code: 200
+      body:
+        schema: RAOS_RECORDED_HEALTH_V1
+        surface: PUBLIC
+        liveness: PASS_PROCESS_ONLY_RECORDED
+        readiness: PASS_DEPENDENCY_AND_MIGRATION_RECORDED
+        dependencies: PASS_SYNTHETIC_RECORDED
+        migration_compatibility: PASS_SYNTHETIC_RECORDED
+        data_scope: PUBLIC_PROJECTION_ONLY
+        identity_state: NOT_APPLICABLE
+        direct_data_plane_access: FORBIDDEN
+        synthetic: true
+    - surface: ADMIN
+      trust_boundary: ADMIN
+      url: http://127.0.0.1:38102/admin/health/readiness
+      request_execution: NOT_PERFORMED_RECORDED_RESPONSE_ONLY
+      status_code: 200
+      body:
+        schema: RAOS_RECORDED_HEALTH_V1
+        surface: ADMIN
+        liveness: PASS_PROCESS_ONLY_RECORDED
+        readiness: PASS_DEPENDENCY_AND_MIGRATION_RECORDED
+        dependencies: PASS_SYNTHETIC_RECORDED
+        migration_compatibility: PASS_SYNTHETIC_RECORDED
+        data_scope: OPERATIONS_METADATA_ONLY
+        identity_state: NOT_AUTHENTICATED_RECORDED_ONLY
+        direct_data_plane_access: PRIVATE_CORE_API_ONLY_NOT_CONFIGURED
+        synthetic: true
+    - surface: INTERNAL
+      trust_boundary: INTERNAL
+      url: http://127.0.0.1:38103/internal/health/readiness
+      request_execution: NOT_PERFORMED_RECORDED_RESPONSE_ONLY
+      status_code: 200
+      body:
+        schema: RAOS_RECORDED_HEALTH_V1
+        surface: INTERNAL
+        liveness: PASS_PROCESS_ONLY_RECORDED
+        readiness: PASS_DEPENDENCY_AND_MIGRATION_RECORDED
+        dependencies: PASS_SYNTHETIC_RECORDED
+        migration_compatibility: PASS_SYNTHETIC_RECORDED
+        data_scope: CONTROL_METADATA_ONLY
+        identity_state: SERVICE_IDENTITY_NOT_CONFIGURED
+        direct_data_plane_access: LEAST_PRIVILEGE_NOT_CONFIGURED
+        synthetic: true
+  formal_smoke: NOT_EXECUTED
+  formal_browser: NOT_EXECUTED
+
+rollback_restore:
+  classification: IN_MEMORY_ROLLBACK_RESTORE_INTEGRITY_SIMULATION_ONLY
+  simulation_id: st1505-rollback-local-v2
+  execution_mode: IN_MEMORY_RECORDED_ONLY
+  current_artifact_sha256: d615727014ef5fd32023e7d1ce745cc89c08cbfde37d2838ace4acf3956cc345
+  prior_artifact_payload_utf8: |
+    RAOS ST-1505 synthetic prior immutable artifact fixture v1
+  prior_artifact_sha256: 65a35ba4bf75c936c97a2647fb57504488409daf834adf7c055a8438e90757f0
+  configuration_snapshot_sha256: 5177ff412ad653e1ef61e19e27add16c81b617c7aba416d4ef9c5c79e616e1ff
+  migration_compatible: true
+  role_and_isolation_verified: true
+  destructive_reversal: false
+  external_action_count: 0
+  restored_integrity_sha256: 4cbc74b9e4e409154ea6869545f5765ec30f9d58a11505d09b40dbe02a49cd3b
+  formal_restore: NOT_EXECUTED
+
+durable_journal:
+  classification: OWNER_PRIVATE_LOCAL_SQLITE_JOURNAL_ONLY
+  persistence: LOCAL_ONLY
+  owner_private: true
+  initialization: CREATED_ONLY_FAIL_CLOSED
+  preexisting_empty_storage_adoption: FORBIDDEN
+  schema_inventory: EXACT_STRICT_APPLICATION_ID_USER_VERSION
+  filesystem_identity_binding: ROOT_AND_DATABASE_DEVICE_INODE_REQUIRED
+  process_monotonic_anchor: REQUIRED
+  append_only_lifecycle_audit_guards: REQUIRED
+  replacement_and_rollback_detection: REQUIRED
+  idempotency: REQUIRED
+  commit_ambiguity_recovery: REQUIRED
+  restart_recovery: REQUIRED
+  hash_chain_tamper_detection: REQUIRED
+  concurrency_control: REQUIRED
+  credential_or_production_data: FORBIDDEN
+
+execution_boundary:
+  local_simulation: IMPLEMENTED_EXPLICIT_ONLY
+  external_activation: DISABLED
+  credentials: ABSENT
+  provider_sdk: ABSENT
+  network_client: ABSENT
+  selected_target: null
+  action_counts:
+    network: 0
+    credential: 0
+    provider: 0
+    build: 0
+    promote: 0
+    approve: 0
+    deploy: 0
+    migrate: 0
+    smoke: 0
+    browser: 0
+    telemetry: 0
+    alert: 0
+    rollback: 0
+    restore: 0
+    staging: 0
+    release: 0
+    production: 0
+
+evidence_boundary:
+  local_runtime: IMPLEMENTED_LOCAL_NOT_FORMAL
+  artifact_admission: IMPLEMENTED_LOCAL_NOT_FORMAL
+  migration_simulation: IMPLEMENTED_LOCAL_NOT_FORMAL
+  loopback_health: IMPLEMENTED_LOCAL_NOT_FORMAL
+  rollback_restore_simulation: IMPLEMENTED_LOCAL_NOT_FORMAL
+  formal_tst_009: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  canonical_status_effect: NONE

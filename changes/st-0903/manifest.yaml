@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0903_publication_snapshot_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0903_publication_snapshot_reference_plan.py
 provenance:
-  contract_sha256: e38e644ace8ad86f8c16e178221fa461360518abf5a080ea572c475d7d273c82
+  contract_sha256: 43c4d87836ca5bed6887bb5db6de35189f1d263c3f3669ae3986f8b7b2b4b88a
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -80,7 +80,7 @@ provenance:
   dependency_inputs:
   - story_id: ST-0902
     uri: repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
-    sha256: 450ed0f299bcd1f1f99a242d8a6661a9ab2a886ce8f67818def79618c2163567
+    sha256: a98ac40e5e5e4271c297e87c99e003708e08e459715aef86b5111048d9e2ded6
   - story_id: ST-0807
     uri: repo://changes/st-0807/README.md
     sha256: 841f8bc9a6cd15310d19f3be25121ef8875d51bbb0861745735b8a3b5d5caf2a
@@ -95,29 +95,29 @@ provenance:
     sha256: b45c333996c723ab1978c8b474420de86c563277a3c4a0d2e2a7d76cdbaed4bb
   - story_id: ST-0306
     uri: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
-    sha256: 6b8710a79729bde75e96e1df3698a0928d4924e4bd10afaff5631fc00f70a0d4
+    sha256: 93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206
   - story_id: ST-0307
     uri: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
-    sha256: bda9ec7371799053c30326b63a3e5dc045e784c8b0cec1e59b083b80d2b8dd23
+    sha256: 33bc260ab7cf494ae0fc139e1fea8cdfb66b122f036c0963cb338dd2e3c9827a
   - story_id: ST-0601
     uri: repo://changes/st-0601/README.md
-    sha256: 93759bfea0e51fbbd6b5fe8858fa27f3ed6e5677b0bde3f5a198997ada003766
+    sha256: 67e1476c7f8104d3d99802c745b74a0f605b07e28619b2b7da66ec836bd7c355
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    sha256: 478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5
   pro_assistance: PRO_UNAVAILABLE_NONE_NO_PROPOSAL_NO_CONTENT
   digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml
   bytes: 17189
-  sha256: e38e644ace8ad86f8c16e178221fa461360518abf5a080ea572c475d7d273c82
+  sha256: 43c4d87836ca5bed6887bb5db6de35189f1d263c3f3669ae3986f8b7b2b4b88a
 - uri: repo://changes/st-0903/README.md
   bytes: 6430
   sha256: e43d6e187acf7cae41fa3b57c429eef6bd846678ae22d42e2a128a3139e503d3
 - uri: repo://scripts/build_st0903_publication_snapshot_reference_plan.py
   bytes: 44545
-  sha256: c52bb96fd8ca32111397201dfbb6e2e1e353edc8dd7e967254ca073693cdff7a
+  sha256: 1f3eaf903286cd7ad5c1b7e7801c0a8d01c4cd0fcfae56202c56be9d90538c0b
 - uri: repo://tests/st0903/conftest.py
   bytes: 958
   sha256: 91fa3b32765bfe157516ddbb80eb9076732f5cce47a42e12875c26d8524e1c76
@@ -134,7 +134,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0903/generated/publication-snapshot-reference-plan.v1.json
   bytes: 23194
-  sha256: 169fa90fbeaecdffb0ebb3500cf674394d3010fe7d3b950daaea6c262255a897
+  sha256: 0a067f5430aa294a832c85c9a1bd8e85cc681a29726de59168beb3595c5fe18c
   digest_classification: LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_PUBLICATION_SNAPSHOT_REFERENCE_PLAN

@@ -1,0 +1,77 @@
+{
+  "activation": {
+    "enabled": false,
+    "planned_actions": {
+      "create": 0,
+      "delete": 0,
+      "update": 0
+    },
+    "status": "DISABLED"
+  },
+  "approval": {
+    "approval_record_status": "NOT_EXECUTED",
+    "bypass_allowed": false,
+    "distinct_human_approval_required": true,
+    "protected_environment_required": true,
+    "self_approval_allowed": false
+  },
+  "authentication_authority": "NONE",
+  "classification": "RECORDED_SYNTHETIC_PROVIDER_NEUTRAL_OFFLINE_FIXTURE",
+  "credential_issuance_authority": "NONE",
+  "expected_claims": {
+    "actor_id": "100000003",
+    "aud": "raos-deployment-fixture.invalid",
+    "base_ref": "",
+    "environment": "production-fixture-disabled",
+    "event_name": "workflow_dispatch",
+    "head_ref": "",
+    "iss": "https://token.actions.githubusercontent.invalid",
+    "job_workflow_ref": "",
+    "ref": "refs/heads/fixture-deploy",
+    "ref_type": "branch",
+    "repository": "raos-fixture/not-a-real-repository",
+    "repository_id": "100000001",
+    "repository_owner_id": "100000002",
+    "repository_visibility": "private",
+    "run_attempt": "1",
+    "run_id": "100000004",
+    "sub": "repo:raos-fixture/not-a-real-repository:environment:production-fixture-disabled",
+    "workflow": "ST-1504 disabled deployment fixture",
+    "workflow_ref": "raos-fixture/not-a-real-repository/infra/terraform/deployment-identity/github-oidc-deploy.disabled.workflow.yml@refs/heads/fixture-deploy",
+    "workflow_sha": "1111111111111111111111111111111111111111"
+  },
+  "fixture_id": "st1504-fixture-repository-inert-v1",
+  "lifecycle": {
+    "evidence_retention_required": true,
+    "evidence_status": "RECORDED_FIXTURE_ONLY_NOT_FORMAL",
+    "immutable_audit_required": true,
+    "revocation_required": true,
+    "rollback_required": true,
+    "signed_provenance_required": true
+  },
+  "policy_id": "st1504-policy-repository-inert-v1",
+  "schema": "RAOS_OFFLINE_GITHUB_OIDC_TRUST_POLICY_V1",
+  "session": {
+    "cross_environment_reuse_allowed": false,
+    "human_credentials_allowed": false,
+    "least_privilege_required": true,
+    "maximum_duration_seconds": 900,
+    "permission_scopes": [
+      "deployment-fixture:evaluate"
+    ],
+    "privilege_escalation_allowed": false,
+    "requested_duration_seconds": 600,
+    "role_chaining_allowed": false,
+    "static_credentials_allowed": false
+  },
+  "source_system": "GITHUB_ACTIONS_OIDC",
+  "trust": {
+    "exact_match_required": true,
+    "fork_pull_request_allowed": false,
+    "pull_request_allowed": false,
+    "pull_request_target_allowed": false,
+    "reusable_workflow_callers": [],
+    "wildcards_allowed": false
+  },
+  "version": 1
+}

@@ -1,0 +1,90 @@
+document:
+  id: RAOS-ST1506-LOCAL-CANARY-IMPLEMENTATION-RECORD-002
+  version: 2.0.0
+  story_id: ST-1506
+  record_kind: REPOSITORY_LOCAL_IMPLEMENTATION_DETAIL
+  status: LOCAL_CODE_COMPLETE_PROPOSAL
+  canonical_status_effect: NONE
+implementation_input:
+  mode: STRICT_STORY
+  base_integration_commit: 1882647ff55354c6611b52d4552f86bf7e932626
+  design_handoff: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml
+  v1_contract: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
+  v2_contract: repo://changes/st-1506/contracts/local-production-canary-runtime.v2.yaml
+  predecessor_stories:
+    - ST-1501
+    - ST-1502
+    - ST-1503
+    - ST-1504
+    - ST-1505
+preflight:
+  objective: >-
+    Add the maximum-safe repository-local Production canary simulation while
+    preserving every human, live-provider, staging, release, and Production
+    gate and keeping all external actions exactly zero.
+  canonical_suites:
+    TST-009: NOT_EXECUTED
+    TST-022: NOT_EXECUTED
+    TST-032: NOT_EXECUTED
+  open_decisions:
+    OD-009: UNRESOLVED_PRODUCTION_DISABLED
+    OD-011: UNRESOLVED_LOCAL_LOG_ONLY_PRODUCTION_UNAVAILABLE
+    OD-013: UNRESOLVED_REFERENCE_METADATA_ONLY_NO_APPLY_TARGET
+    OD-015: UNRESOLVED_RECORDED_FIXTURES_ONLY
+  selected_live_values: NONE
+  selected_provider_account_region_target_credential: NONE
+implementation:
+  v1_compatibility: REBOUND_CURRENT_PREDECESSOR_PROVENANCE_NO_EXECUTION_AUTHORITY
+  v1_owner_check_inherited_state: CLOSED_BY_CURRENT_PREDECESSOR_REBIND
+  predecessor_owner_artifact_bindings: >-
+    FIVE_HANDOFFS_FIVE_CONTRACTS_FIVE_GENERATORS_FIVE_REFERENCE_PLANS_FIVE_MANIFESTS_RAW_AND_SEMANTIC_AS_APPLICABLE
+  v1_contract_binding: RAW_AND_SEMANTIC_CURRENT_PREDECESSOR_BOUND_NOT_ADMITTED
+  capability_inventory: CLOSED_TEN_CAPABILITIES_ALL_UNCONFIGURED
+  runtime: DETERMINISTIC_EXPLICIT_ONE_STEP_SYNTHETIC_LOCAL_ONLY
+  activation: DISABLED
+  activation_authority: NONE
+  public_write_authority: NONE
+  auto_advance: FORBIDDEN
+  kill_switch_deactivation: FORBIDDEN
+  approvals:
+    release_decision: ABSENT
+    gate_report: ABSENT
+    security_approval: ABSENT
+    operations_approval: ABSENT
+  durable_journal: >-
+    OWNER_PRIVATE_CREATED_ONLY_EXACT_STRICT_SCHEMA_TRIGGERED_SQLITE_CAS_HASH_CHAIN_INODE_AND_PROCESS_MONOTONIC_BOUND
+  external_actions: 0
+  active_workflow_changes: 0
+completion_boundary:
+  local_runtime: IMPLEMENTED_LOCAL_NOT_FORMAL
+  local_state_machine: IMPLEMENTED_LOCAL_NOT_FORMAL
+  local_durable_recovery: IMPLEMENTED_LOCAL_NOT_FORMAL
+  deterministic_generation: REPRODUCIBLE_NO_WRITE_CHECK
+  formal_tst_009: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_staging_release_production: NOT_EXECUTED
+  canonical_status_transition: NONE
+verification_results:
+  complete_story_suite: PASS_505
+  focused_hostile_paths: PASS_27
+  focused_journal_and_recovery_paths: PASS_31
+  focused_runtime_paths: PASS_22
+  complete_v1_negative_paths: PASS_390
+  v1_contract_generation_and_v2_generation_paths: PASS_35
+  owner_no_write_checks: PASS_ST1501_TO_ST1506_SEVEN_OWNERS
+  ruff_format_and_lint: PASS_8_SOURCE_8_TEST
+  strict_mypy: PASS_8_SOURCE_8_TEST
+  strict_pyright: PASS_8_STORY_SOURCE_ZERO_DIAGNOSTICS
+  compile_and_import: PASS_8_SOURCE_8_TEST
+  denied_network_runtime: PASS_TWO_STEP_ZERO_EXTERNAL_ACTIONS
+  denied_network_complete_story_suite: PASS_505_EXTERNAL_NETWORK_DENIED
+  physical_clone_full_history_secret_scan: PASS_ST0106_V3_EXACT_REVIEWED_LEDGER
+  active_workflows: PASS_BYTE_UNCHANGED_FROM_EXACT_BASE
+  git_diff_check: PASS
+inherited_provenance_drift:
+  introduced_by_st1506_v2: false
+  owner: ST1506_V1_PROVIDER_NEUTRAL_REFERENCE
+  result: CLOSED_BY_CURRENT_PREDECESSOR_REBIND
+  safe_impact: NO_EXECUTION_OR_EXTERNAL_AUTHORITY_CREATED

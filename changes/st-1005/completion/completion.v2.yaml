@@ -1,0 +1,19 @@
+story_id: ST-1005
+status: LOCAL_CODE_COMPLETE
+classification: ST1005_LOCAL_PREVIEW_FAIL_CLOSED_RUNTIME_V2
+canonical_status_transition: NONE
+runtime:
+  environment_scope: [ENV-DEV, ENV-CI]
+  origin_authority: NONE
+  canonical_url: UNAVAILABLE
+  robots: DISALLOW_ALL
+  sitemap: EMPTY_NO_ELIGIBLE_ENTRIES
+  publication_authority: NONE
+external_actions: 0
+formal_verification:
+  TST-020: NOT_EXECUTED
+  TST-022: NOT_EXECUTED
+  live_http: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

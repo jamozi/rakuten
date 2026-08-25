@@ -7,6 +7,8 @@ from pathlib import Path
 
 import pytest
 
+from scripts import build_st1204_ga4_recorded_adapter as generator
+
 from raos.adapters.recorded_ga4 import RecordedGa4Adapter
 from raos.application.analytics.ga4_import import RecordedGa4Import
 from raos.domain.analytics.ga4 import (
@@ -62,7 +64,7 @@ def _command(recording_id: str) -> Ga4RecordedImportCommand:
 
 def _bytes(recording_id: str) -> bytes:
     return (
-        REPOSITORY_ROOT / "changes/st-1204/fixtures/recorded" / f"{recording_id}.json"
+        REPOSITORY_ROOT / generator.FIXTURE_ROOT / f"{recording_id}.json"
     ).read_bytes()
 
 

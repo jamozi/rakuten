@@ -94,7 +94,7 @@ authority:
 dependencies:
 - story_id: ST-0902
   artifact: repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
-  sha256: 450ed0f299bcd1f1f99a242d8a6661a9ab2a886ce8f67818def79618c2163567
+  sha256: a98ac40e5e5e4271c297e87c99e003708e08e459715aef86b5111048d9e2ded6
   connection_status: NOT_EXECUTED
   authority_status: NONEXECUTABLE_REFERENCE_PLAN_INSUFFICIENT_FOR_APPROVAL
 - story_id: ST-0807
@@ -119,17 +119,17 @@ dependencies:
   authority_status: DATABASE_SCHEMA_CANDIDATE_ONLY
 - story_id: ST-0306
   artifact: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
-  sha256: 6b8710a79729bde75e96e1df3698a0928d4924e4bd10afaff5631fc00f70a0d4
+  sha256: 93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206
   connection_status: NOT_EXECUTED
   authority_status: PUBLIC_READMODEL_ROLE_CANDIDATE_ONLY
 - story_id: ST-0307
   artifact: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
-  sha256: bda9ec7371799053c30326b63a3e5dc045e784c8b0cec1e59b083b80d2b8dd23
+  sha256: 33bc260ab7cf494ae0fc139e1fea8cdfb66b122f036c0963cb338dd2e3c9827a
   connection_status: NOT_EXECUTED
   authority_status: SYNTHETIC_FIXTURE_ONLY
 - story_id: ST-0601
   artifact: repo://changes/st-0601/README.md
-  sha256: 93759bfea0e51fbbd6b5fe8858fa27f3ed6e5677b0bde3f5a198997ada003766
+  sha256: 67e1476c7f8104d3d99802c745b74a0f605b07e28619b2b7da66ec836bd7c355
   connection_status: NOT_EXECUTED
   authority_status: NONATTESTING_REFERENCE_PLAN_NO_ARTIFACT_REGISTRY
 hard_gates:

@@ -1,0 +1,74 @@
+schema_version: 2
+story_id: ST-0606
+classification: LOCAL_IMPLEMENTATION_COMPLETION_RECORD_V2
+status: LOCAL_CODE_COMPLETE
+canonical_status: UNCHANGED
+historical_v1_replaced: false
+scope:
+  mode: RECORDED_SYNTHETIC_DEV_CI_ONLY
+  routes_registered: 0
+  auth_transport_decided: false
+  live_data_used: false
+  external_write_performed: false
+artifacts:
+  contract: repo://changes/st-0606/contracts/evidence-workspace.v2.yaml
+  fixture: repo://changes/st-0606/fixtures/evidence-workspace-recorded.synthetic.v2.json
+  projection: repo://changes/st-0606/generated/evidence-workspace-recorded.v2.json
+  typescript_model: repo://packages/web-ui/src/evidence-workspace-v2.ts
+  generated_typescript: repo://packages/web-ui/src/evidence-workspace-recorded.v2.ts
+  manifest: repo://changes/st-0606/runtime-manifest.v2.yaml
+  owner: repo://scripts/build_st0606_evidence_workspace_v2.py
+local_checks:
+  - check: owner_generation_and_no_write
+    result: PASS
+  - check: focused_python_v2
+    result: PASS_6_OF_6
+  - check: focused_node_v2
+    result: PASS_11_OF_11
+  - check: historical_st0606_and_st1101_node
+    result: PASS_47_OF_47
+  - check: st0605_runtime_owner
+    result: PASS
+  - check: st0605_runtime_tests
+    result: PASS_90_OF_90
+  - check: typescript_eslint_prettier
+    result: PASS
+  - check: python_compile_ruff_mypy
+    result: PASS
+  - check: focused_sensitive_data_scan
+    result: PASS_18_CHANGED_PATHS_ZERO_FINDINGS
+  - check: git_diff_check
+    result: PASS
+preexisting_dependency_debt:
+  - owner_story_id: ST-0604
+    command: PYTHONPATH=python .venv/bin/python scripts/build_st0604_source_packet_lifecycle_reference_plan.py --check
+    observed: IMPLEMENTATION_HELPER_DRIFT field=implementation.helper
+    introduced_by_st0606: false
+    safe_impact: ST-0606 binds and validates the current committed lifecycle contract and generated artifact; predecessor owner regeneration requires integration-owner reconciliation.
+  - owner_story_id: ST-0605
+    command: PYTHONPATH=python .venv/bin/python scripts/build_st0605_claim_evidence_coverage_reference_plan.py --check
+    observed: IMPLEMENTATION_HELPER_DRIFT field=implementation.helper
+    introduced_by_st0606: false
+    safe_impact: ST-0605 executable runtime and ST-0606 consumer checks pass; predecessor reference owner regeneration requires integration-owner reconciliation.
+authority:
+  authentication: false
+  authorization: false
+  backend: false
+  network: false
+  actions: false
+  persistence: false
+  publication: false
+  staging: false
+  release: false
+  production: false
+verification:
+  local_code_complete: true
+  local_integration_complete: false
+  formal_validation: NOT_EXECUTED
+  TST-022: NOT_EXECUTED
+  TST-024: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

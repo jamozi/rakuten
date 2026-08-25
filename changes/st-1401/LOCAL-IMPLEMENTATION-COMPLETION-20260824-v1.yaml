@@ -1,0 +1,87 @@
+document:
+  id: RAOS-ST1401-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V1
+  schema_version: 1
+  story_id: ST-1401
+  status: LOCAL_IMPLEMENTATION_COMPLETE_FOR_UNRESOLVED_BOUNDARY
+  recorded_at: '2026-08-24T02:44:29Z'
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  generated: false
+base:
+  branch: codex/raos-local-integration-complete
+  base_commit_sha: 55a16be823e98b28113dd598076de848ff021950
+  implementation_commit_sha: 6ee875b7d14e35db9cc4b5d3ea8a6fb8c3cd7cd5
+canonical_boundary:
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  canonical_implementation_status: NOT_STARTED
+  canonical_verification_status: NOT_EXECUTED
+  open_decision:
+    id: OD-007
+    status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    default_behavior: CONSERVATIVE_PROVISIONAL_VALUES_AND_HIDE_STALE
+  policy_activation: DISABLED_UNRESOLVED_OD_007
+  category_override_applied: false
+  provider_override_applied: false
+source_bindings:
+  policy:
+    path: contracts/raos-v0.4/contracts/content/RAOS_06_freshness_update_policy_v0.1.yaml
+    sha256: a4d490d2a54b3def63c9c240b09d34a759ebd3924e60cfcca438ee979334cea2
+  matrix:
+    path: contracts/raos-v0.4/contracts/content/RAOS_06_content_test_matrix_v0.1.csv
+    sha256: 9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564
+  runtime_sources:
+    - path: python/raos/domain/freshness/freshness.py
+      sha256: 3a33b44d99f92fce6417257de8c170d4622dd900fe7cc7cbac0b67494469dd95
+    - path: python/raos/ports/freshness.py
+      sha256: 8b72de55a697bee06b4d43f3cda3b9dc12b1532091755876b6cab891aaa07d91
+    - path: python/raos/application/freshness/freshness.py
+      sha256: f716a703af1581d6bb0ed2cde8db4a82848dd6d143bc5bb27ae4ad4353302c43
+    - path: python/raos/adapters/recorded_freshness.py
+      sha256: 83ad91d3301c48d3db3efa40c5835ae97dddaf22ebae4c5aa466bed8a0261ff5
+local_deliverables:
+  provisional_policy_class_count: 12
+  state_evaluator: DETERMINISTIC_EXPLICIT_TIME_ONLY
+  scheduler: DETERMINISTIC_EXPLICIT_DUE_SELECTOR
+  stale_is_fresh: false
+  automatic_recommendation_reorder: FORBIDDEN
+  persistence: NOT_EXECUTED
+  attestation: NOT_ATTESTED
+  publication_authorized: false
+  production_eligible: false
+verification:
+  results:
+    - check: tests_st1401
+      result: PASS
+      passed: 166
+    - check: dependency_tests_st0503
+      result: PASS
+      passed: 59
+    - check: dependency_tests_st0605_historical_and_runtime
+      result: PASS
+      passed: 151
+    - check: ruff_lint
+      result: PASS
+    - check: ruff_format
+      result: PASS
+      files: 8
+    - check: strict_mypy
+      result: PASS
+      production_files: 4
+    - check: git_diff_check
+      result: PASS
+formal_and_external_boundaries:
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_028: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  canonical_status_propose_or_apply: NOT_EXECUTED
+  human_category_sla_decision: NOT_EXECUTED
+  live_provider_or_credential_activity: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  validated_claim: FORBIDDEN
+downstream_boundary:
+  safe_degradation_renderer: ST-1402_NOT_ATTESTED_BY_THIS_RECORD
+  refresh_proposal_workflow: ST-1403_NOT_ATTESTED_BY_THIS_RECORD
+  category_fixture_activation: ST-1702_DISABLED_UNTIL_HUMAN_DECISIONS

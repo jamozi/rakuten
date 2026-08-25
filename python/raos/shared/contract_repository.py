@@ -259,6 +259,20 @@ def _stat_signature(metadata: os.stat_result) -> tuple[int, ...]:
     )
 
 
+def _directory_identity_signature(metadata: os.stat_result) -> tuple[int, ...]:
+    """Bind a directory path without treating unrelated child churn as a swap.
+
+    Directory size, link count, mtime, and ctime can change when an unrelated
+    sibling is created below an ancestor such as ``/tmp``.  Those fields are
+    useful for directories *inside* the repository, whose exact inventory is
+    owned here, but they are not stable identity material for the filesystem
+    root or parents above the repository.  Device, inode, and file type still
+    fail closed on path replacement or a symlink/directory type change.
+    """
+
+    return (metadata.st_dev, metadata.st_ino, stat.S_IFMT(metadata.st_mode))
+
+
 def _required_filesystem_flag(name: str) -> int:
     value = getattr(os, name, None)
     if type(value) is not int or value == 0:
@@ -382,7 +396,9 @@ class ContractRepository:
                     )
 
                 filesystem_root_path_before = filesystem_root.lstat()
-                filesystem_root_signature = _stat_signature(filesystem_root_path_before)
+                filesystem_root_signature = _directory_identity_signature(
+                    filesystem_root_path_before
+                )
                 if stat.S_ISLNK(
                     filesystem_root_path_before.st_mode
                 ) or not stat.S_ISDIR(filesystem_root_path_before.st_mode):
@@ -394,7 +410,7 @@ class ContractRepository:
                 filesystem_root_opened_before = os.fstat(filesystem_root_descriptor)
                 if not stat.S_ISDIR(
                     filesystem_root_opened_before.st_mode
-                ) or filesystem_root_signature != _stat_signature(
+                ) or filesystem_root_signature != _directory_identity_signature(
                     filesystem_root_opened_before
                 ):
                     raise ContractRepositoryError(
@@ -415,7 +431,7 @@ class ContractRepository:
                             "contract repository root and its ancestors must be "
                             "real directories"
                         )
-                    component_signature = _stat_signature(path_before)
+                    component_signature = _directory_identity_signature(path_before)
                     directory_descriptor = os.open(
                         part,
                         directory_flags,
@@ -425,7 +441,9 @@ class ContractRepository:
                     opened_before = os.fstat(directory_descriptor)
                     if not stat.S_ISDIR(
                         opened_before.st_mode
-                    ) or component_signature != _stat_signature(opened_before):
+                    ) or component_signature != _directory_identity_signature(
+                        opened_before
+                    ):
                         raise ContractRepositoryError(
                             "contract repository root changed before secure capture"
                         )
@@ -603,9 +621,9 @@ class ContractRepository:
                         or stat.S_ISLNK(root_component_path_after.st_mode)
                         or not stat.S_ISDIR(root_component_path_after.st_mode)
                         or root_component_signature
-                        != _stat_signature(root_component_opened_after)
+                        != _directory_identity_signature(root_component_opened_after)
                         or root_component_signature
-                        != _stat_signature(root_component_path_after)
+                        != _directory_identity_signature(root_component_path_after)
                     ):
                         raise ContractRepositoryError(
                             "contract repository root changed during secure capture"
@@ -618,9 +636,9 @@ class ContractRepository:
                     or stat.S_ISLNK(filesystem_root_path_after.st_mode)
                     or not stat.S_ISDIR(filesystem_root_path_after.st_mode)
                     or filesystem_root_signature
-                    != _stat_signature(filesystem_root_opened_after)
+                    != _directory_identity_signature(filesystem_root_opened_after)
                     or filesystem_root_signature
-                    != _stat_signature(filesystem_root_path_after)
+                    != _directory_identity_signature(filesystem_root_path_after)
                 ):
                     raise ContractRepositoryError(
                         "contract repository root changed during secure capture"
@@ -784,7 +802,9 @@ class ContractRepository:
                     )
 
                 filesystem_root_path_before = filesystem_root.lstat()
-                filesystem_root_signature = _stat_signature(filesystem_root_path_before)
+                filesystem_root_signature = _directory_identity_signature(
+                    filesystem_root_path_before
+                )
                 if stat.S_ISLNK(
                     filesystem_root_path_before.st_mode
                 ) or not stat.S_ISDIR(filesystem_root_path_before.st_mode):
@@ -796,7 +816,7 @@ class ContractRepository:
                 filesystem_root_opened_before = os.fstat(filesystem_root_descriptor)
                 if not stat.S_ISDIR(
                     filesystem_root_opened_before.st_mode
-                ) or filesystem_root_signature != _stat_signature(
+                ) or filesystem_root_signature != _directory_identity_signature(
                     filesystem_root_opened_before
                 ):
                     raise ContractRepositoryError(
@@ -817,7 +837,7 @@ class ContractRepository:
                             "contract repository root and its ancestors must be "
                             "real directories"
                         )
-                    component_signature = _stat_signature(path_before)
+                    component_signature = _directory_identity_signature(path_before)
                     directory_descriptor = os.open(
                         part,
                         directory_flags,
@@ -827,7 +847,9 @@ class ContractRepository:
                     opened_before = os.fstat(directory_descriptor)
                     if not stat.S_ISDIR(
                         opened_before.st_mode
-                    ) or component_signature != _stat_signature(opened_before):
+                    ) or component_signature != _directory_identity_signature(
+                        opened_before
+                    ):
                         raise ContractRepositoryError(
                             "contract repository root changed before inventory capture"
                         )
@@ -1056,8 +1078,10 @@ class ContractRepository:
                         not stat.S_ISDIR(opened_after.st_mode)
                         or stat.S_ISLNK(path_after.st_mode)
                         or not stat.S_ISDIR(path_after.st_mode)
-                        or root_component_signature != _stat_signature(opened_after)
-                        or root_component_signature != _stat_signature(path_after)
+                        or root_component_signature
+                        != _directory_identity_signature(opened_after)
+                        or root_component_signature
+                        != _directory_identity_signature(path_after)
                     ):
                         raise ContractRepositoryError(
                             "contract repository root changed during inventory"
@@ -1070,9 +1094,9 @@ class ContractRepository:
                     or stat.S_ISLNK(filesystem_root_path_after.st_mode)
                     or not stat.S_ISDIR(filesystem_root_path_after.st_mode)
                     or filesystem_root_signature
-                    != _stat_signature(filesystem_root_opened_after)
+                    != _directory_identity_signature(filesystem_root_opened_after)
                     or filesystem_root_signature
-                    != _stat_signature(filesystem_root_path_after)
+                    != _directory_identity_signature(filesystem_root_path_after)
                 ):
                     raise ContractRepositoryError(
                         "contract repository root changed during inventory"

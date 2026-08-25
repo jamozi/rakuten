@@ -17,14 +17,14 @@ def _mapping(value: object) -> dict[str, Any]:
     return cast(dict[str, Any], value)
 
 
-def test_contract_loads_as_closed_interface_only_model(
+def test_contract_loads_as_closed_repository_inert_offline_model(
     github_oidc_model: generator.GithubOidcModel,
 ) -> None:
     assert github_oidc_model.contract["document"] == {
         "id": "RAOS-GITHUB-OIDC-DEPLOYMENT-001",
-        "version": "1.1.0",
+        "version": "2.0.0",
         "story_id": "ST-1504",
-        "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        "status": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
         "formal_verification": "NOT_EXECUTED",
     }
     assert set(github_oidc_model.contract) == generator.TOP_LEVEL_KEYS
@@ -74,7 +74,7 @@ def test_pr_governance_predecessor_has_closed_semantic_and_byte_bindings() -> No
     contract_path = REPOSITORY_ROOT / "changes/st-0107/contracts/pr-governance.v1.yaml"
     desired_state_path = REPOSITORY_ROOT / "changes/st-0107/ruleset-policy.v1.json"
     assert generator.semantic_sha256(generator.load_yaml(contract_path)) == (
-        "141dce557ae5b16c1ef54490ed1c41ce083c33cf27c5e9b66a38de4827dd6dfb"
+        "774a8ffe8b53bef1e76d851c3da1bd53f6837473537f3d7f14f6d88c16548cc0"
     )
     desired_state = generator.load_json(desired_state_path)
     assert generator.semantic_sha256(desired_state) == (
@@ -299,18 +299,19 @@ def test_open_decisions_execution_and_evidence_remain_unexecuted(
     assert verification["production"] == "NOT_EXECUTED"
 
 
-def test_generated_document_is_non_executable(
+def test_generated_reference_document_and_harness_authority_are_non_executable(
     github_oidc_model: generator.GithubOidcModel,
 ) -> None:
     document = _mapping(
         generator.reference_plan_document(github_oidc_model)["document"]
     )
-    assert document["version"] == "1.1.0"
+    assert document["version"] == "2.0.0"
     assert document["artifact_kind"] == (
-        "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_"
-        "DEPLOYMENT_IDENTITY_REFERENCE_PLAN"
+        "SOURCE_DERIVED_REPOSITORY_INERT_PROVIDER_NEUTRAL_OFFLINE_"
+        "DEPLOYMENT_IDENTITY_HARNESS"
     )
     assert document["executable"] is False
+    assert document["harness_execution"] == "OFFLINE_RECORDED_FIXTURE_ONLY"
 
 
 def test_source_pins_match_regular_files() -> None:
@@ -332,15 +333,21 @@ def test_generated_json_matches_strict_renderer(
     )
 
 
-def test_deployment_identity_directory_contains_only_reference_json() -> None:
+def test_deployment_identity_directory_contains_only_owned_inert_fixture_set() -> None:
     directory = REPOSITORY_ROOT / "infra/terraform/deployment-identity"
     assert sorted(path.name for path in directory.iterdir()) == [
-        generator.REFERENCE_PLAN_PATH.name
+        path.name for path in sorted(generator.GENERATED_NON_MANIFEST_PATHS)
     ]
-    forbidden_suffixes = {".tf", ".tfvars", ".hcl", ".lock", ".yml", ".yaml"}
+    forbidden_suffixes = {".tf", ".tfvars", ".hcl", ".lock"}
     assert not any(
         path.is_file() and path.suffix in forbidden_suffixes
         for path in directory.rglob("*")
+    )
+    assert not (REPOSITORY_ROOT / ".github/workflows/st1504.yml").exists()
+    assert generator.WORKFLOW_FIXTURE_PATH.parts[:3] == (
+        "infra",
+        "terraform",
+        "deployment-identity",
     )
 
 
@@ -350,5 +357,18 @@ def test_contract_and_generated_inventory_are_closed(
     assert set(contract_document) == generator.TOP_LEVEL_KEYS
     assert generator.GENERATED_PATHS == (
         Path("infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json"),
+        Path("infra/terraform/deployment-identity/github-oidc.claims.recorded.v1.json"),
+        Path(
+            "infra/terraform/deployment-identity/"
+            "github-oidc.trust-policy.recorded.v1.json"
+        ),
+        Path(
+            "infra/terraform/deployment-identity/"
+            "github-oidc.evaluation.recorded.v1.json"
+        ),
+        Path(
+            "infra/terraform/deployment-identity/"
+            "github-oidc-deploy.disabled.workflow.yml"
+        ),
         Path("changes/st-1504/manifest.yaml"),
     )

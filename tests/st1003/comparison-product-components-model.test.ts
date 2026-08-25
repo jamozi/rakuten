@@ -68,7 +68,11 @@ describe('ST-1003 headless semantic model', () => {
     assert.equal(semantics.productCard.productIdentityRef, null);
     assert.equal(semantics.productCard.productName.value, null);
     assert.equal(semantics.productCard.verifiedFacts.value, null);
-    assert.equal(semantics.productCard.image.source, null);
+    assert.deepEqual(semantics.productCard.image, {
+      available: false,
+      source: null,
+      alternativeText: null,
+    });
     assert.equal(semantics.productCard.price.value, null);
     assert.equal(semantics.productCard.offers.value, null);
     assert.equal(semantics.productCard.affiliateCta.value, null);

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the disabled, reference-only ST-1501 foundation artifacts."""
+"""Build and validate the disabled ST-1501 provider-neutral HCL foundation."""
 
 from __future__ import annotations
 
@@ -10,12 +10,13 @@ import json
 import os
 import re
 import stat
+import subprocess
 import sys
 import tempfile
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
-from typing import Any, Final, NoReturn
+from typing import Any, Callable, Final, NoReturn, cast
 
 import yaml
 from yaml.constructor import ConstructorError
@@ -31,8 +32,19 @@ DESIGN_HANDOFF_PATH: Final = Path(
 REFERENCE_PLAN_PATH: Final = Path(
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"
 )
+TOOLCHAIN_LOCK_PATH: Final = Path(
+    "infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"
+)
+HCL_PATHS: Final = (
+    Path("infra/terraform/foundation/versions.tf"),
+    Path("infra/terraform/foundation/variables.tf"),
+    Path("infra/terraform/foundation/locals.tf"),
+    Path("infra/terraform/foundation/checks.tf"),
+    Path("infra/terraform/foundation/outputs.tf"),
+)
 MANIFEST_PATH: Final = Path("changes/st-1501/manifest.yaml")
-GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
+GENERATED_ARTIFACT_PATHS: Final = (REFERENCE_PLAN_PATH, TOOLCHAIN_LOCK_PATH, *HCL_PATHS)
+GENERATED_PATHS: Final = (*GENERATED_ARTIFACT_PATHS, MANIFEST_PATH)
 
 SOURCE_CONTRACT_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = "repo://scripts/build_st1501_terraform_foundation.py"
@@ -40,6 +52,41 @@ GENERATION_COMMAND: Final = (
     "uv run --locked --no-sync python scripts/build_st1501_terraform_foundation.py"
 )
 CHECK_COMMAND: Final = f"{GENERATION_COMMAND} --check"
+NATIVE_CHECK_COMMAND: Final = (
+    f"{GENERATION_COMMAND} --native-check --terraform /absolute/path/to/terraform"
+)
+
+TERRAFORM_VERSION: Final = "1.15.9"
+TERRAFORM_PLATFORM: Final = "linux_amd64"
+TERRAFORM_REQUIRED_VERSION: Final = f"= {TERRAFORM_VERSION}"
+TERRAFORM_ARCHIVE_FILENAME: Final = "terraform_1.15.9_linux_amd64.zip"
+TERRAFORM_ARCHIVE_SHA256: Final = (
+    "76edd0b22d2f27d3d2e097cd793209646f719cf60f02ff3af626b07361137da1"
+)
+TERRAFORM_BINARY_SHA256: Final = (
+    "c39d41adb17963bac5dd610ad47815dd81e945371a7cabc344a45d63b1b093bd"
+)
+HASHICORP_SIGNING_KEY_FINGERPRINT: Final = "C874011F0AB405110D02105534365D9472D7468F"
+VALIDATION_COMMANDS: Final = (
+    "version -json",
+    "fmt -check -recursive",
+    "validate -json",
+)
+ALLOWED_NATIVE_ARGUMENTS: Final = (
+    ("version", "-json"),
+    ("fmt", "-check", "-recursive"),
+    ("validate", "-json"),
+)
+FORBIDDEN_TOOL_COMMANDS: Final = (
+    "init",
+    "plan",
+    "apply",
+    "destroy",
+    "import",
+    "refresh",
+    "test",
+    "console",
+)
 
 PINNED_SOURCES: Final = {
     "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": (
@@ -218,19 +265,23 @@ EXPECTED_HANDOFF_LIST_SECTIONS: Final[dict[str, tuple[str, ...]]] = {
 SOURCE_ARTIFACT_PATHS: Final = (
     CONTRACT_PATH,
     DESIGN_HANDOFF_PATH,
+    Path("changes/st-1501/PREFLIGHT_LOCAL_CODE_COMPLETE_V2.md"),
+    Path("changes/st-1501/IMPLEMENTATION_RECORD_V2_ST1501_HCL_FOUNDATION.yaml"),
+    Path("changes/st-1501/LOCAL_COMPLETION_EVIDENCE_V2.md"),
     Path("changes/st-1501/README.md"),
     Path("scripts/build_st1501_terraform_foundation.py"),
     Path("tests/st1501/conftest.py"),
     Path("tests/st1501/test_contract.py"),
     Path("tests/st1501/test_generation.py"),
+    Path("tests/st1501/test_hcl_foundation.py"),
     Path("tests/st1501/test_negative_cases.py"),
 )
 
 EXPECTED_DOCUMENT: Final = {
     "id": "RAOS-TERRAFORM-FOUNDATION-001",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "story_id": "ST-1501",
-    "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+    "status": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
     "formal_verification": "NOT_EXECUTED",
 }
 EXPECTED_STORY: Final = {
@@ -300,6 +351,8 @@ TOP_LEVEL_KEYS: Final = {
     "sources",
     "reference_architecture",
     "provider_neutral_foundation_admission",
+    "iac_validation_toolchain",
+    "hcl_foundation_module",
     "selected_configuration",
     "execution_boundary",
     "state_requirements",
@@ -401,8 +454,105 @@ FOUNDATION_CAPABILITY_OUTCOMES: Final = (
 REQUIRED_FOUNDATION_CAPABILITY_IDS: Final = tuple(
     capability_id for capability_id, _outcome in FOUNDATION_CAPABILITY_OUTCOMES
 )
+EXPECTED_VALIDATION_TOOLCHAIN: Final = {
+    "classification": "PINNED_VALIDATION_ONLY_NO_INFRASTRUCTURE_AUTHORITY",
+    "product": "Terraform",
+    "version": TERRAFORM_VERSION,
+    "required_version_constraint": TERRAFORM_REQUIRED_VERSION,
+    "platform": TERRAFORM_PLATFORM,
+    "queried_at": "2026-08-25",
+    "official_release": {
+        "release_index_url": "https://releases.hashicorp.com/terraform/1.15.9/",
+        "archive_filename": TERRAFORM_ARCHIVE_FILENAME,
+        "archive_url": (
+            "https://releases.hashicorp.com/terraform/1.15.9/"
+            "terraform_1.15.9_linux_amd64.zip"
+        ),
+        "archive_sha256": TERRAFORM_ARCHIVE_SHA256,
+        "checksum_manifest_url": (
+            "https://releases.hashicorp.com/terraform/1.15.9/"
+            "terraform_1.15.9_SHA256SUMS"
+        ),
+        "checksum_signature_url": (
+            "https://releases.hashicorp.com/terraform/1.15.9/"
+            "terraform_1.15.9_SHA256SUMS.72D7468F.sig"
+        ),
+        "signing_key_url": "https://www.hashicorp.com/.well-known/pgp-key.txt",
+        "signing_key_fingerprint": HASHICORP_SIGNING_KEY_FINGERPRINT,
+        "extracted_binary_sha256": TERRAFORM_BINARY_SHA256,
+    },
+    "validation_boundary": {
+        "binary_acquisition": "EXPLICIT_ONLINE_MAINTENANCE_ONLY",
+        "normal_check_network_access": "FORBIDDEN",
+        "network_namespace": "REQUIRED",
+        "initialization": "FORBIDDEN",
+        "provider_installation": "FORBIDDEN",
+        "provider_plugins": [],
+        "module_downloads": "FORBIDDEN",
+        "backend_access": "FORBIDDEN",
+        "credential_inheritance": "FORBIDDEN",
+        "repository_writes": "FORBIDDEN",
+        "allowed_commands": list(VALIDATION_COMMANDS),
+        "forbidden_commands": list(FORBIDDEN_TOOL_COMMANDS),
+    },
+}
+EXPECTED_HCL_MODULE: Final = {
+    "classification": "PROVIDER_NEUTRAL_VALIDATION_ONLY_FOUNDATION_ADMISSION_MODULE",
+    "module_path": "infra/terraform/foundation",
+    "terraform_required_version": TERRAFORM_REQUIRED_VERSION,
+    "generated": True,
+    "default_disabled": True,
+    "provider_requirements": [],
+    "provider_blocks": [],
+    "backend_blocks": [],
+    "cloud_blocks": [],
+    "module_blocks": [],
+    "data_blocks": [],
+    "resource_blocks": [],
+    "provisioners": [],
+    "selected_bindings": [],
+    "capability_mappings": [],
+    "planned_actions": {"create": 0, "update": 0, "delete": 0},
+    "generated_files": [path.name for path in HCL_PATHS],
+    "allowed_top_level_blocks": [
+        "terraform",
+        "variable",
+        "locals",
+        "check",
+        "output",
+    ],
+    "policy_validation": "EXACT_CLOSED_BUNDLE_AND_FORBIDDEN_BLOCK_SCAN",
+    "semantic_validation": "TERRAFORM_VALIDATE_JSON_INIT_FREE",
+}
+HCL_ALLOWED_BLOCKS_BY_FILE: Final = {
+    "versions.tf": ("terraform",),
+    "variables.tf": ("variable",) * 12,
+    "locals.tf": ("locals",),
+    "checks.tf": ("check",) * 4,
+    "outputs.tf": ("output",) * 4,
+}
+HCL_FORBIDDEN_TOP_LEVEL_BLOCKS: Final = frozenset(
+    {
+        "backend",
+        "cloud",
+        "data",
+        "ephemeral",
+        "import",
+        "module",
+        "moved",
+        "provider",
+        "removed",
+        "resource",
+        "run",
+        "terraform_remote_state",
+    }
+)
 MAX_YAML_BYTES: Final = 2 * 1024 * 1024
+MAX_HCL_BYTES: Final = 512 * 1024
 SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
+HCL_TOP_LEVEL_BLOCK_PATTERN: Final = re.compile(
+    r'(?m)^([A-Za-z_][A-Za-z0-9_-]*)(?:\s+"[^"\n]+")*\s*\{(?:\s*\})?\s*$'
+)
 
 
 class FoundationContractError(RuntimeError):
@@ -429,9 +579,12 @@ def _construct_unique_mapping(
     loader: UniqueKeyLoader, node: MappingNode, deep: bool = False
 ) -> dict[Any, Any]:
     loader.flatten_mapping(node)
+    construct_object = cast(
+        Callable[[object, bool], Any], getattr(loader, "construct_object")
+    )
     result: dict[Any, Any] = {}
     for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+        key = construct_object(key_node, deep)
         try:
             duplicate = key in result
         except TypeError as exc:
@@ -448,7 +601,7 @@ def _construct_unique_mapping(
                 "found duplicate key",
                 key_node.start_mark,
             )
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = construct_object(value_node, deep)
     return result
 
 
@@ -475,6 +628,16 @@ class ReferenceArchitecture:
 
 @dataclass(frozen=True, slots=True)
 class ProviderNeutralFoundationAdmission:
+    definition: dict[str, Any]
+
+
+@dataclass(frozen=True, slots=True)
+class IacValidationToolchain:
+    definition: dict[str, Any]
+
+
+@dataclass(frozen=True, slots=True)
+class HclFoundationModule:
     definition: dict[str, Any]
 
 
@@ -509,6 +672,7 @@ class ExecutionBoundary:
     release_action: str
     production_action: str
     commands: tuple[tuple[str, str], ...]
+    validation_commands: tuple[tuple[str, str], ...]
     planned_actions: tuple[tuple[str, int], ...]
 
 
@@ -543,6 +707,8 @@ class ExtensionContract:
     current_resource_payloads: str
     successor_contract_revision_required: bool
     native_toolchain_pin_required_before_hcl: bool
+    validation_only_hcl_module_available: bool
+    successor_resource_module_required: bool
     successors: tuple[tuple[str, str], ...]
 
 
@@ -552,6 +718,8 @@ class EvidenceBoundary:
     executable_terraform: str
     terraform_cli: str
     provider_plugins: str
+    offline_native_validation_path: str
+    local_native_validation: str
     remote_state: str
     provider_account_or_project: str
     credentials: str
@@ -564,6 +732,8 @@ class EvidenceBoundary:
 class FoundationModel:
     reference: ReferenceArchitecture
     admission: ProviderNeutralFoundationAdmission
+    toolchain: IacValidationToolchain
+    hcl_module: HclFoundationModule
     selection: SelectedConfiguration
     execution: ExecutionBoundary
     state: StateRequirements
@@ -571,6 +741,17 @@ class FoundationModel:
     production: ProductionChangeRequirements
     extension: ExtensionContract
     evidence: EvidenceBoundary
+
+
+@dataclass(frozen=True, slots=True)
+class NativeValidationResult:
+    terraform_version: str
+    platform: str
+    provider_selections: tuple[tuple[str, str], ...]
+    format_valid: bool
+    semantic_valid: bool
+    network_namespace: bool
+    repository_unchanged: bool
 
 
 def sha256_bytes(content: bytes) -> str:
@@ -585,18 +766,24 @@ def _fail(code: str, field: str) -> NoReturn:
     raise FoundationContractError(code, field)
 
 
-def _mapping(value: object, field: str) -> Mapping[str, Any]:
-    if not isinstance(value, Mapping) or not all(
-        type(key) is str for key in value.keys()
-    ):
-        _fail("TYPE_MISMATCH", field)
+def _as_object(value: Any) -> object:
+    """Erase incomplete third-party generic types at a checked boundary."""
     return value
 
 
-def _list(value: object, field: str) -> list[Any]:
+def _mapping(value: object, field: str) -> Mapping[str, Any]:
+    if not isinstance(value, Mapping):
+        _fail("TYPE_MISMATCH", field)
+    untyped_mapping = cast(Mapping[object, object], value)
+    if not all(type(key) is str for key in untyped_mapping):
+        _fail("TYPE_MISMATCH", field)
+    return cast(Mapping[str, Any], value)
+
+
+def _list(value: object, field: str) -> list[object]:
     if type(value) is not list:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(list[object], value)
 
 
 def _exact_keys(value: Mapping[str, Any], expected: set[str], field: str) -> None:
@@ -607,14 +794,14 @@ def _exact_keys(value: Mapping[str, Any], expected: set[str], field: str) -> Non
 def _strict_match(actual: object, expected: object, field: str) -> None:
     if isinstance(expected, Mapping):
         value = _mapping(actual, field)
-        expected_mapping = _mapping(expected, field)
+        expected_mapping = _mapping(_as_object(expected), field)
         _exact_keys(value, set(expected_mapping), field)
         for key, expected_value in expected_mapping.items():
             _strict_match(value[key], expected_value, f"{field}.{key}")
         return
     if type(expected) is list:
         value_list = _list(actual, field)
-        expected_list = _list(expected, field)
+        expected_list = _list(_as_object(expected), field)
         if len(value_list) != len(expected_list):
             _fail("FIXED_VALUE_VIOLATION", field)
         for index, expected_value in enumerate(expected_list):
@@ -725,7 +912,8 @@ def load_yaml(path: Path) -> Any:
         _fail("YAML_SIZE_LIMIT", "yaml")
     try:
         text = content.decode("utf-8")
-        for token in yaml.scan(text):
+        scan_yaml = cast(Callable[[str], Iterable[object]], getattr(yaml, "scan"))
+        for token in scan_yaml(text):
             if isinstance(token, (AliasToken, AnchorToken)):
                 _fail("YAML_ALIAS_FORBIDDEN", "yaml")
             if isinstance(token, TagToken):
@@ -777,11 +965,11 @@ def _find_exact_record(
     document: Mapping[str, Any], collection: str, record_id: str, field: str
 ) -> Mapping[str, Any]:
     rows = _list(document.get(collection), field)
-    matches = [
-        _mapping(row, field)
-        for row in rows
-        if isinstance(row, Mapping) and row.get("id") == record_id
-    ]
+    matches: list[Mapping[str, Any]] = []
+    for raw_row in rows:
+        row = _mapping(raw_row, field)
+        if row.get("id") == record_id:
+            matches.append(row)
     if len(matches) != 1:
         _fail("AUTHORITY_RECORD_MISSING", field)
     return matches[0]
@@ -1324,6 +1512,22 @@ def _parse_provider_neutral_admission(
     return ProviderNeutralFoundationAdmission(definition=copy.deepcopy(dict(value)))
 
 
+def _parse_validation_toolchain(
+    contract: Mapping[str, Any],
+) -> IacValidationToolchain:
+    value = _mapping(contract["iac_validation_toolchain"], "iac_validation_toolchain")
+    _strict_match(value, EXPECTED_VALIDATION_TOOLCHAIN, "iac_validation_toolchain")
+    return IacValidationToolchain(definition=copy.deepcopy(dict(value)))
+
+
+def _parse_hcl_foundation_module(
+    contract: Mapping[str, Any],
+) -> HclFoundationModule:
+    value = _mapping(contract["hcl_foundation_module"], "hcl_foundation_module")
+    _strict_match(value, EXPECTED_HCL_MODULE, "hcl_foundation_module")
+    return HclFoundationModule(definition=copy.deepcopy(dict(value)))
+
+
 def _parse_selection(contract: Mapping[str, Any]) -> SelectedConfiguration:
     value = _mapping(contract["selected_configuration"], "selected_configuration")
     _exact_keys(value, SELECTION_KEYS, "selected_configuration")
@@ -1367,6 +1571,7 @@ def _parse_execution(contract: Mapping[str, Any]) -> ExecutionBoundary:
             "release_action",
             "production_action",
             "commands",
+            "validation_commands",
             "planned_actions",
         },
         "execution_boundary",
@@ -1383,6 +1588,30 @@ def _parse_execution(contract: Mapping[str, Any]) -> ExecutionBoundary:
             ),
         )
         for command in NATIVE_COMMANDS
+    )
+    validation_commands = _mapping(
+        value["validation_commands"], "execution_boundary.validation_commands"
+    )
+    expected_validation_commands = {
+        "version": "OFFLINE_READ_ONLY",
+        "format": "OFFLINE_READ_ONLY",
+        "validate": "OFFLINE_READ_ONLY",
+    }
+    _exact_keys(
+        validation_commands,
+        set(expected_validation_commands),
+        "execution_boundary.validation_commands",
+    )
+    parsed_validation_commands = tuple(
+        (
+            command,
+            _string(
+                validation_commands[command],
+                expected,
+                f"execution_boundary.validation_commands.{command}",
+            ),
+        )
+        for command, expected in expected_validation_commands.items()
     )
     actions = _mapping(value["planned_actions"], "execution_boundary.planned_actions")
     _exact_keys(actions, set(ACTION_NAMES), "execution_boundary.planned_actions")
@@ -1447,6 +1676,7 @@ def _parse_execution(contract: Mapping[str, Any]) -> ExecutionBoundary:
             "execution_boundary.production_action",
         ),
         commands=parsed_commands,
+        validation_commands=parsed_validation_commands,
         planned_actions=parsed_actions,
     )
 
@@ -1547,6 +1777,8 @@ def _parse_extension(contract: Mapping[str, Any]) -> ExtensionContract:
             "current_resource_payloads",
             "successor_contract_revision_required",
             "native_toolchain_pin_required_before_hcl",
+            "validation_only_hcl_module_available",
+            "successor_resource_module_required",
             "successors",
         },
         "extension_contract",
@@ -1577,6 +1809,16 @@ def _parse_extension(contract: Mapping[str, Any]) -> ExtensionContract:
             True,
             "extension_contract.native_toolchain_pin_required_before_hcl",
         ),
+        validation_only_hcl_module_available=_boolean(
+            value["validation_only_hcl_module_available"],
+            True,
+            "extension_contract.validation_only_hcl_module_available",
+        ),
+        successor_resource_module_required=_boolean(
+            value["successor_resource_module_required"],
+            True,
+            "extension_contract.successor_resource_module_required",
+        ),
         successors=parsed_successors,
     )
 
@@ -1584,10 +1826,14 @@ def _parse_extension(contract: Mapping[str, Any]) -> ExtensionContract:
 def _parse_evidence(contract: Mapping[str, Any]) -> EvidenceBoundary:
     value = _mapping(contract["evidence_boundary"], "evidence_boundary")
     expected = {
-        "deliverable_classification": "SOURCE_DERIVED_REFERENCE_STATE_PLAN",
-        "executable_terraform": "ABSENT",
-        "terraform_cli": "UNPINNED_NOT_INVOKED",
-        "provider_plugins": "UNPINNED_NOT_INVOKED",
+        "deliverable_classification": (
+            "SOURCE_DERIVED_PROVIDER_NEUTRAL_HCL_FOUNDATION"
+        ),
+        "executable_terraform": "VALIDATABLE_NO_RESOURCE_NO_PROVIDER_HCL_MODULE",
+        "terraform_cli": "PINNED_VALIDATION_ONLY_1_15_9",
+        "provider_plugins": "NONE_REQUIRED_NOT_SELECTED",
+        "offline_native_validation_path": "IMPLEMENTED",
+        "local_native_validation": "EXECUTED_NOT_FORMAL",
         "remote_state": "NOT_CONFIGURED",
         "provider_account_or_project": "UNSET",
         "credentials": "ABSENT",
@@ -1616,6 +1862,8 @@ def validate_contract(contract: object, root: Path = REPO_ROOT) -> FoundationMod
     return FoundationModel(
         reference=_parse_reference(value),
         admission=_parse_provider_neutral_admission(value),
+        toolchain=_parse_validation_toolchain(value),
+        hcl_module=_parse_hcl_foundation_module(value),
         selection=_parse_selection(value),
         execution=_parse_execution(value),
         state=_parse_state(value),
@@ -1654,14 +1902,16 @@ def reference_plan_document(model: FoundationModel) -> dict[str, object]:
     return {
         "document": {
             "id": "RAOS-TERRAFORM-FOUNDATION-REFERENCE-PLAN-001",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "story_id": "ST-1501",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
             "generation_command": GENERATION_COMMAND,
             "artifact_kind": model.evidence.deliverable_classification,
-            "executable": False,
-            "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+            "executable": True,
+            "executable_for": ["fmt", "validate"],
+            "infrastructure_actions": False,
+            "implementation_scope": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
         },
         "reference_architecture": {
             "cloud": model.reference.cloud,
@@ -1679,6 +1929,8 @@ def reference_plan_document(model: FoundationModel) -> dict[str, object]:
         "provider_neutral_foundation_admission": copy.deepcopy(
             model.admission.definition
         ),
+        "iac_validation_toolchain": copy.deepcopy(model.toolchain.definition),
+        "hcl_foundation_module": copy.deepcopy(model.hcl_module.definition),
         "selected_configuration": _selection_document(model.selection),
         "planned_actions": dict(model.execution.planned_actions),
         "activation": {
@@ -1693,6 +1945,7 @@ def reference_plan_document(model: FoundationModel) -> dict[str, object]:
             "release_action": model.execution.release_action,
             "production_action": model.execution.production_action,
             "native_commands": dict(model.execution.commands),
+            "validation_commands": dict(model.execution.validation_commands),
         },
         "future_requirements": {
             "remote_state": {
@@ -1724,12 +1977,22 @@ def reference_plan_document(model: FoundationModel) -> dict[str, object]:
             "native_toolchain_pin_required_before_hcl": (
                 model.extension.native_toolchain_pin_required_before_hcl
             ),
+            "validation_only_hcl_module_available": (
+                model.extension.validation_only_hcl_module_available
+            ),
+            "successor_resource_module_required": (
+                model.extension.successor_resource_module_required
+            ),
             "successors": dict(model.extension.successors),
         },
         "verification_boundary": {
             "executable_terraform": model.evidence.executable_terraform,
             "terraform_cli": model.evidence.terraform_cli,
             "provider_plugins": model.evidence.provider_plugins,
+            "offline_native_validation_path": (
+                model.evidence.offline_native_validation_path
+            ),
+            "local_native_validation": model.evidence.local_native_validation,
             "remote_state": model.evidence.remote_state,
             "provider_account_or_project": (model.evidence.provider_account_or_project),
             "credentials": model.evidence.credentials,
@@ -1754,6 +2017,361 @@ def render_reference_plan(model: FoundationModel) -> bytes:
     ).encode("utf-8")
 
 
+def render_toolchain_lock(model: FoundationModel) -> bytes:
+    document: dict[str, object] = {
+        "document": {
+            "id": "RAOS-TERRAFORM-VALIDATION-TOOLCHAIN-LOCK-001",
+            "version": "1.0.0",
+            "story_id": "ST-1501",
+            "classification": (
+                "VALIDATION_ONLY_NOT_PROVIDER_OR_INFRASTRUCTURE_AUTHORITY"
+            ),
+            "generated_by": GENERATOR_URI,
+            "generation_command": GENERATION_COMMAND,
+        },
+        "toolchain": copy.deepcopy(model.toolchain.definition),
+        "module": {
+            "path": model.hcl_module.definition["module_path"],
+            "required_version": model.hcl_module.definition[
+                "terraform_required_version"
+            ],
+            "provider_requirements": [],
+            "provider_lock": "ABSENT_BY_DESIGN_NO_PROVIDER_REQUIRED_OR_SELECTED",
+            "backend": "ABSENT",
+            "resources": [],
+        },
+        "authority_boundary": {
+            "provider_selection": "FORBIDDEN",
+            "account_or_project_selection": "FORBIDDEN",
+            "region_selection": "FORBIDDEN",
+            "backend_selection": "FORBIDDEN",
+            "credential_access": "FORBIDDEN",
+            "provider_calls": "FORBIDDEN",
+            "network_during_normal_checks": "FORBIDDEN",
+            "infrastructure_actions": "FORBIDDEN",
+            "formal_tst_026": "NOT_EXECUTED",
+        },
+    }
+    return (
+        json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+
+
+def render_hcl_bundle(model: FoundationModel) -> dict[Path, bytes]:
+    reference = model.reference
+    capability_rows = "\n".join(
+        f'    "{capability_id}",'
+        for capability_id in REQUIRED_FOUNDATION_CAPABILITY_IDS
+    )
+    versions = f'''# Generated by {GENERATOR_URI}; do not edit.
+terraform {{
+  required_version = "{TERRAFORM_REQUIRED_VERSION}"
+}}
+'''
+    variables = """# Generated by repo://scripts/build_st1501_terraform_foundation.py; do not edit.
+variable "activation_enabled" {
+  description = "Must remain false while OD-013 and Production approval are unresolved."
+  type        = bool
+  default     = false
+
+  validation {
+    condition     = var.activation_enabled == false
+    error_message = "ST-1501 activation must remain disabled."
+  }
+}
+
+variable "selected_profile_id" {
+  description = "No foundation profile may be selected by this module revision."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.selected_profile_id == null
+    error_message = "A selected profile requires a successor contract and approval."
+  }
+}
+
+variable "selected_profile_kind" {
+  description = "No provider kind may be selected by this module revision."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.selected_profile_kind == null
+    error_message = "A selected profile kind requires a successor contract and approval."
+  }
+}
+
+variable "selected_provider_name" {
+  description = "No infrastructure provider may be selected by this module revision."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.selected_provider_name == null
+    error_message = "A provider selection requires a successor contract and approval."
+  }
+}
+
+variable "selected_account_or_project" {
+  description = "No account, project, or tenant may be selected by this module revision."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.selected_account_or_project == null
+    error_message = "An account, project, or tenant requires distinct approval."
+  }
+}
+
+variable "selected_primary_region" {
+  description = "The AWS Tokyo reference is metadata and is never a selected region."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.selected_primary_region == null
+    error_message = "A primary region requires OD-013 approval."
+  }
+}
+
+variable "selected_backup_region" {
+  description = "No backup region may be selected while OD-013 is unresolved."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.selected_backup_region == null
+    error_message = "A backup region requires OD-013 approval."
+  }
+}
+
+variable "selected_provider_plugin" {
+  description = "The validation-only module requires and selects no provider plugin."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.selected_provider_plugin == null
+    error_message = "A provider plugin requires a successor resource module."
+  }
+}
+
+variable "selected_state_backend" {
+  description = "No local or remote state backend is selected by this module revision."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.selected_state_backend == null
+    error_message = "A state backend requires separate security and recovery evidence."
+  }
+}
+
+variable "credential_source" {
+  description = "Validation never accepts or inherits an infrastructure credential source."
+  type        = string
+  default     = null
+  nullable    = true
+
+  validation {
+    condition     = var.credential_source == null
+    error_message = "Credential access is forbidden in the validation-only module."
+  }
+}
+
+variable "capability_mappings" {
+  description = "Mappings remain empty until a successor contract supplies complete evidence."
+  type = map(object({
+    implementation_ref = string
+    evidence_refs      = set(string)
+  }))
+  default = {}
+
+  validation {
+    condition     = length(var.capability_mappings) == 0
+    error_message = "Capability mappings require a successor contract and equivalent evidence."
+  }
+}
+
+variable "production_apply_authorized" {
+  description = "Repository-local validation can never grant Production apply authority."
+  type        = bool
+  default     = false
+
+  validation {
+    condition     = var.production_apply_authorized == false
+    error_message = "Production apply requires a separate human-gated release action."
+  }
+}
+"""
+    locals = f'''# Generated by {GENERATOR_URI}; do not edit.
+locals {{
+  reference_architecture = {{
+    cloud               = "{reference.cloud}"
+    region              = "{reference.region}"
+    classification      = "{reference.classification}"
+    inherited_from      = "{reference.inherited_from}"
+    reference_only      = true
+    selected_binding    = false
+    admission_shortcut  = false
+    evidence_substitute = false
+  }}
+
+  required_capability_ids = [
+{capability_rows}
+  ]
+
+  selected_configuration = {{
+    profile_id         = var.selected_profile_id
+    profile_kind       = var.selected_profile_kind
+    provider_name      = var.selected_provider_name
+    account_or_project = var.selected_account_or_project
+    primary_region     = var.selected_primary_region
+    backup_region      = var.selected_backup_region
+    provider_plugin    = var.selected_provider_plugin
+    state_backend      = var.selected_state_backend
+    credential_source  = var.credential_source
+  }}
+
+  admission_boundary = {{
+    status                     = "NOT_EVALUATED"
+    eligible                   = false
+    required_capability_ids    = local.required_capability_ids
+    configured_mapping_count   = length(var.capability_mappings)
+    complete_mapping           = false
+    implicit_binding           = "FORBIDDEN"
+    provider_label_as_evidence = "FORBIDDEN"
+  }}
+
+  execution_boundary = {{
+    activation_enabled          = var.activation_enabled
+    production_apply_authorized = var.production_apply_authorized
+    provider_calls              = "FORBIDDEN"
+    external_writes             = "FORBIDDEN"
+    planned_actions = {{
+      create = 0
+      update = 0
+      delete = 0
+    }}
+  }}
+}}
+'''
+    checks = """# Generated by repo://scripts/build_st1501_terraform_foundation.py; do not edit.
+check "execution_is_disabled" {
+  assert {
+    condition     = var.activation_enabled == false && var.production_apply_authorized == false
+    error_message = "Activation and Production apply authority must remain disabled."
+  }
+}
+
+check "all_infrastructure_bindings_are_unset" {
+  assert {
+    condition = alltrue([
+      for value in values(local.selected_configuration) : value == null
+    ])
+    error_message = "All provider, account, region, plugin, backend, and credential bindings must remain unset."
+  }
+}
+
+check "capability_admission_is_closed" {
+  assert {
+    condition     = length(var.capability_mappings) == 0 && local.admission_boundary.eligible == false
+    error_message = "Capability mappings require complete successor evidence and approval."
+  }
+}
+
+check "planned_actions_are_zero" {
+  assert {
+    condition = alltrue([
+      for count in values(local.execution_boundary.planned_actions) : count == 0
+    ])
+    error_message = "Validation-only HCL cannot plan infrastructure actions."
+  }
+}
+"""
+    outputs = """# Generated by repo://scripts/build_st1501_terraform_foundation.py; do not edit.
+output "reference_architecture" {
+  description = "Canonical AWS Tokyo reference metadata; never a selected binding."
+  value       = local.reference_architecture
+}
+
+output "foundation_admission" {
+  description = "Fail-closed provider-neutral capability admission state."
+  value       = local.admission_boundary
+}
+
+output "selected_configuration" {
+  description = "All fields remain null in this validation-only module revision."
+  value       = local.selected_configuration
+}
+
+output "execution_boundary" {
+  description = "Disabled execution authority and exact zero action counts."
+  value       = local.execution_boundary
+}
+"""
+    rendered = {
+        HCL_PATHS[0]: versions.encode("utf-8"),
+        HCL_PATHS[1]: variables.encode("utf-8"),
+        HCL_PATHS[2]: locals.encode("utf-8"),
+        HCL_PATHS[3]: checks.encode("utf-8"),
+        HCL_PATHS[4]: outputs.encode("utf-8"),
+    }
+    validate_hcl_bundle(rendered)
+    return rendered
+
+
+def validate_hcl_file_policy(relative: Path, content: bytes) -> None:
+    if relative not in HCL_PATHS:
+        _fail("HCL_FILE_INVENTORY_DRIFT", "hcl")
+    if not content or len(content) > MAX_HCL_BYTES or not content.endswith(b"\n"):
+        _fail("HCL_FILE_SHAPE_INVALID", "hcl")
+    try:
+        text = content.decode("utf-8")
+    except UnicodeError:
+        _fail("HCL_FILE_ENCODING_INVALID", "hcl")
+    if "\x00" in text or "\r" in text:
+        _fail("HCL_FILE_ENCODING_INVALID", "hcl")
+    observed_blocks = tuple(HCL_TOP_LEVEL_BLOCK_PATTERN.findall(text))
+    expected_blocks = HCL_ALLOWED_BLOCKS_BY_FILE[relative.name]
+    if any(block in HCL_FORBIDDEN_TOP_LEVEL_BLOCKS for block in observed_blocks):
+        _fail("HCL_FORBIDDEN_BLOCK", "hcl")
+    if observed_blocks != expected_blocks:
+        _fail("HCL_BLOCK_INVENTORY_DRIFT", "hcl")
+    forbidden_fragments = (
+        'provisioner "',
+        "connection {",
+        "terraform_remote_state",
+        "local-exec",
+        "remote-exec",
+        "registry.terraform.io/",
+        "hashicorp/aws",
+        "http://",
+    )
+    if any(fragment in text for fragment in forbidden_fragments):
+        _fail("HCL_FORBIDDEN_OPERATION", "hcl")
+    if relative.name == "versions.tf":
+        expected = f'required_version = "{TERRAFORM_REQUIRED_VERSION}"'
+        if text.count(expected) != 1:
+            _fail("HCL_TOOL_VERSION_DRIFT", "hcl")
+
+
+def validate_hcl_bundle(bundle: Mapping[Path, bytes]) -> None:
+    if set(bundle) != set(HCL_PATHS):
+        _fail("HCL_FILE_INVENTORY_DRIFT", "hcl")
+    for relative in HCL_PATHS:
+        validate_hcl_file_policy(relative, bundle[relative])
+
+
 def _artifact_row(root: Path, relative: Path) -> dict[str, object]:
     path = _repository_regular_file(root, relative, "source_artifact")
     content = path.read_bytes()
@@ -1765,15 +2383,19 @@ def _artifact_row(root: Path, relative: Path) -> dict[str, object]:
 
 
 def render_manifest(
-    model: FoundationModel, reference_plan: bytes, root: Path = REPO_ROOT
+    model: FoundationModel,
+    generated_artifacts: Mapping[Path, bytes],
+    root: Path = REPO_ROOT,
 ) -> bytes:
+    if set(generated_artifacts) != set(GENERATED_ARTIFACT_PATHS):
+        _fail("GENERATED_INVENTORY_DRIFT", "manifest")
     source_artifacts = [
         _artifact_row(root, relative) for relative in SOURCE_ARTIFACT_PATHS
     ]
     document: dict[str, object] = {
         "document": {
             "id": "RAOS-TERRAFORM-FOUNDATION-MANIFEST-001",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "story_id": "ST-1501",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -1791,13 +2413,14 @@ def render_manifest(
         },
         "source_artifact_count": len(source_artifacts),
         "source_artifacts": source_artifacts,
-        "generated_artifact_count": 1,
+        "generated_artifact_count": len(GENERATED_ARTIFACT_PATHS),
         "generated_artifacts": [
             {
-                "uri": f"repo://{REFERENCE_PLAN_PATH.as_posix()}",
-                "bytes": len(reference_plan),
-                "sha256": sha256_bytes(reference_plan),
+                "uri": f"repo://{relative.as_posix()}",
+                "bytes": len(generated_artifacts[relative]),
+                "sha256": sha256_bytes(generated_artifacts[relative]),
             }
+            for relative in GENERATED_ARTIFACT_PATHS
         ],
         "manifest_self_integrity": {
             "included_in_generated_artifacts": False,
@@ -1837,7 +2460,14 @@ def render_manifest(
             "credentials": model.evidence.credentials,
             "provider_account_or_project": (model.evidence.provider_account_or_project),
             "resource_definitions": list(model.selection.resource_definitions),
-            "native_iac_validation": "NOT_EXECUTED",
+            "hcl_module": "PROVIDER_NEUTRAL_VALIDATION_ONLY",
+            "hcl_file_count": len(HCL_PATHS),
+            "terraform_cli_version": TERRAFORM_VERSION,
+            "terraform_binary_sha256": TERRAFORM_BINARY_SHA256,
+            "provider_plugins": [],
+            "native_iac_validation": model.evidence.local_native_validation,
+            "normal_check_network": "FORBIDDEN",
+            "initialization": "FORBIDDEN",
             "formal_tst_026": model.evidence.formal_tst_026,
             "effective_canonical_status": model.evidence.effective_canonical_status,
         },
@@ -1853,10 +2483,14 @@ def render_manifest(
 
 def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
     model = load_and_validate_contract(root)
-    reference_plan = render_reference_plan(model)
+    generated_artifacts: dict[Path, bytes] = {
+        REFERENCE_PLAN_PATH: render_reference_plan(model),
+        TOOLCHAIN_LOCK_PATH: render_toolchain_lock(model),
+        **render_hcl_bundle(model),
+    }
     return {
-        REFERENCE_PLAN_PATH: reference_plan,
-        MANIFEST_PATH: render_manifest(model, reference_plan, root),
+        **generated_artifacts,
+        MANIFEST_PATH: render_manifest(model, generated_artifacts, root),
     }
 
 
@@ -1952,14 +2586,198 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
         _atomic_write(root, relative, outputs[relative])
 
 
+def _native_command(
+    unshare_path: Path,
+    terraform_path: Path,
+    arguments: tuple[str, ...],
+    *,
+    working_directory: Path,
+    data_directory: Path,
+) -> bytes:
+    if arguments not in ALLOWED_NATIVE_ARGUMENTS:
+        _fail("NATIVE_VALIDATOR_COMMAND_FORBIDDEN", "native_validator")
+    if unshare_path != Path("/usr/bin/unshare"):
+        _fail("NETWORK_NAMESPACE_RUNNER_FORBIDDEN", "native_validator")
+    command = (
+        str(unshare_path),
+        "--user",
+        "--map-root-user",
+        "--net",
+        "--",
+        str(terraform_path),
+        *arguments,
+    )
+    environment = {
+        "CHECKPOINT_DISABLE": "1",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "TF_DATA_DIR": str(data_directory),
+        "TF_IN_AUTOMATION": "1",
+        "TF_INPUT": "0",
+        "TF_REGISTRY_CLIENT_TIMEOUT": "1",
+        "TF_REGISTRY_DISCOVERY_RETRY": "0",
+    }
+    try:
+        result = subprocess.run(
+            command,
+            cwd=working_directory,
+            env=environment,
+            check=False,
+            capture_output=True,
+            timeout=30,
+        )
+    except OSError, subprocess.SubprocessError:
+        _fail("NATIVE_VALIDATOR_EXECUTION_FAILED", "native_validator")
+    if result.returncode != 0:
+        _fail("NATIVE_VALIDATOR_REJECTED", "native_validator")
+    if len(result.stdout) > MAX_HCL_BYTES or len(result.stderr) > MAX_HCL_BYTES:
+        _fail("NATIVE_VALIDATOR_OUTPUT_LIMIT", "native_validator")
+    return result.stdout
+
+
+def _json_object(content: bytes, field: str) -> Mapping[str, Any]:
+    try:
+        decoded = json.loads(content)
+    except UnicodeError, json.JSONDecodeError:
+        _fail("NATIVE_VALIDATOR_OUTPUT_INVALID", field)
+    return _mapping(decoded, field)
+
+
+def verify_native_hcl(
+    root: Path,
+    terraform_path: Path,
+    *,
+    unshare_path: Path = Path("/usr/bin/unshare"),
+) -> NativeValidationResult:
+    if not terraform_path.is_absolute() or not unshare_path.is_absolute():
+        _fail("NATIVE_VALIDATOR_PATH_INVALID", "native_validator")
+    _regular_file(terraform_path, "terraform_binary")
+    _regular_file(unshare_path, "network_namespace_runner")
+    if sha256_file(terraform_path) != TERRAFORM_BINARY_SHA256:
+        _fail("NATIVE_VALIDATOR_DIGEST_MISMATCH", "terraform_binary")
+
+    expected = render_outputs(root)
+    check_outputs(root, expected)
+    repository_snapshot = {
+        relative: (
+            _output_file(root, relative).read_bytes(),
+            _output_file(root, relative).stat().st_mtime_ns,
+            _output_file(root, relative).stat().st_mode,
+        )
+        for relative in GENERATED_PATHS
+    }
+    hcl_bundle = {relative: expected[relative] for relative in HCL_PATHS}
+    validate_hcl_bundle(hcl_bundle)
+
+    with tempfile.TemporaryDirectory(prefix="raos-st1501-native-") as directory:
+        validation_root = Path(directory)
+        module_directory = validation_root / "module"
+        data_directory = validation_root / "terraform-data"
+        module_directory.mkdir(mode=0o700)
+        data_directory.mkdir(mode=0o700)
+        for relative in HCL_PATHS:
+            target = module_directory / relative.name
+            target.write_bytes(hcl_bundle[relative])
+            target.chmod(0o400)
+        module_before = {
+            path.name: (path.read_bytes(), path.stat().st_mode)
+            for path in sorted(module_directory.iterdir())
+        }
+
+        version_document = _json_object(
+            _native_command(
+                unshare_path,
+                terraform_path,
+                ("version", "-json"),
+                working_directory=module_directory,
+                data_directory=data_directory,
+            ),
+            "native_validator.version",
+        )
+        _strict_match(
+            version_document,
+            {
+                "terraform_version": TERRAFORM_VERSION,
+                "platform": TERRAFORM_PLATFORM,
+                "provider_selections": {},
+                "terraform_outdated": False,
+            },
+            "native_validator.version",
+        )
+        _native_command(
+            unshare_path,
+            terraform_path,
+            ("fmt", "-check", "-recursive"),
+            working_directory=module_directory,
+            data_directory=data_directory,
+        )
+        validation_document = _json_object(
+            _native_command(
+                unshare_path,
+                terraform_path,
+                ("validate", "-json"),
+                working_directory=module_directory,
+                data_directory=data_directory,
+            ),
+            "native_validator.validate",
+        )
+        if (
+            validation_document.get("valid") is not True
+            or validation_document.get("error_count") != 0
+        ):
+            _fail("NATIVE_HCL_SEMANTIC_VALIDATION_FAILED", "native_validator")
+        module_after = {
+            path.name: (path.read_bytes(), path.stat().st_mode)
+            for path in sorted(module_directory.iterdir())
+        }
+        if module_after != module_before:
+            _fail("NATIVE_VALIDATOR_MODULE_WRITE", "native_validator")
+
+    repository_after = {
+        relative: (
+            _output_file(root, relative).read_bytes(),
+            _output_file(root, relative).stat().st_mtime_ns,
+            _output_file(root, relative).stat().st_mode,
+        )
+        for relative in GENERATED_PATHS
+    }
+    if repository_after != repository_snapshot:
+        _fail("NATIVE_VALIDATOR_REPOSITORY_WRITE", "native_validator")
+    return NativeValidationResult(
+        terraform_version=TERRAFORM_VERSION,
+        platform=TERRAFORM_PLATFORM,
+        provider_selections=(),
+        format_valid=True,
+        semantic_valid=True,
+        network_namespace=True,
+        repository_unchanged=True,
+    )
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build the disabled ST-1501 reference-only foundation artifacts."
+        description="Build and validate the disabled ST-1501 HCL foundation."
     )
     parser.add_argument(
         "--check",
         action="store_true",
         help="verify committed generated bytes without writing",
+    )
+    parser.add_argument(
+        "--native-check",
+        action="store_true",
+        help="run pinned offline fmt and semantic validation in a network namespace",
+    )
+    parser.add_argument(
+        "--terraform",
+        type=Path,
+        help="absolute path to the checksum-verified Terraform 1.15.9 binary",
+    )
+    parser.add_argument(
+        "--unshare",
+        type=Path,
+        default=Path("/usr/bin/unshare"),
+        help="absolute path to the Linux network namespace runner",
     )
     return parser.parse_args(argv)
 
@@ -1967,14 +2785,29 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     try:
-        build(REPO_ROOT, check=bool(args.check))
+        native_check = bool(args.native_check)
+        terraform_path = cast(Path | None, args.terraform)
+        unshare_path = cast(Path, args.unshare)
+        if native_check and terraform_path is None:
+            _fail("NATIVE_VALIDATOR_PATH_REQUIRED", "terraform_binary")
+        if not native_check and terraform_path is not None:
+            _fail("NATIVE_VALIDATOR_MODE_REQUIRED", "terraform_binary")
+        build(REPO_ROOT, check=bool(args.check) or native_check)
+        if native_check and terraform_path is not None:
+            verify_native_hcl(
+                REPO_ROOT,
+                terraform_path,
+                unshare_path=unshare_path,
+            )
     except FoundationContractError as exc:
         print(f"ERROR code={exc.code} field={exc.field}", file=sys.stderr)
         return 1
     except Exception:
         print("ERROR code=UNEXPECTED_FAILURE field=builder", file=sys.stderr)
         return 1
-    if args.check:
+    if args.native_check:
+        print("ST-1501 native HCL validation passed")
+    elif args.check:
         print("ST-1501 foundation check passed")
     else:
         print("ST-1501 foundation artifacts generated")

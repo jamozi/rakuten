@@ -1,0 +1,49 @@
+schema_version: 2
+story_id: ST-0804
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
+base_integration_sha: 5e431434ea3891824f2bb861bf809b0011e91850
+historical_candidate_sha: c24ab82af37030ccc0bf78d65806effff1b95f74
+implementation:
+  additive_v2: true
+  legacy_v1_compatible: true
+  exact_st0803_request_report_receipt_binding: true
+  deterministic_decimal_calculation: true
+  explicit_unavailable_states: true
+  recursive_finance_alias_rejection: true
+  process_local_recording_only: true
+  owner_generated_fixture_manifest: true
+  foreign_preserving_atomic_generation: true
+authority:
+  override_supported: false
+  approval_authorized: false
+  recommendation_authorized: false
+  ranking_authorized: false
+  publication_authorized: false
+  activation_authorized: false
+  production_eligible: false
+local_checks:
+  focused_runtime_suite: PASS
+  historical_st0804_suite: PASS
+  st0803_v2_regression: PASS
+  st0803_v1_regression: PASS
+  owner_generator_check: PASS
+  compile_import: PASS
+  ruff_check: PASS
+  ruff_format_check: PASS
+  strict_mypy: PASS
+  secret_scan: PASS
+  git_diff_check: PASS
+debt:
+  introduced_local_debt: NONE
+  debt_w2_066_st0804_consumer_slice: CLOSED_LOCAL_IMPLEMENTATION
+not_executed:
+  canonical_registry_apply: NOT_EXECUTED
+  formal_tst_007: NOT_EXECUTED
+  formal_tst_020: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_validation: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  production: NOT_EXECUTED

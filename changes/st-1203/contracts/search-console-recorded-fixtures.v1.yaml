@@ -37,10 +37,10 @@ provenance:
   predecessors:
     - story_id: ST-0204
       uri: repo://changes/st-0204/manifest.yaml
-      sha256: 064cc7a686cc785fe0981e5f68bac3fac48624cf850c38c8ea03244473d5a5f2
+      sha256: 2c26f24dce1a1eda9a79bd0d339478b208dde77ecc76e9dfd71c918ad9fab3be
     - story_id: ST-0305
       uri: repo://changes/st-0305/manifest.yaml
-      sha256: ee7ef9a8fac40dc11ed90f4fe90e3cd78560ecdff8e4f8f84202a4b0609b681d
+      sha256: af6034f99374b427aee444a6048531a174f0d78ae58974b2456c2be97f3d33b9
   installed_contract_repository:
     uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
     sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef

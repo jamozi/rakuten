@@ -62,9 +62,16 @@ describe('ST-1003 strict negative boundary', () => {
   it('rejects values, references, internal fields, and active surfaces without echo', () => {
     const cases: readonly [string, string, unknown][] = [
       ['productName', 'PUBLIC_COMPONENT_CONTENT_PROHIBITED', 'secret-product'],
+      [
+        'imageMetadata',
+        'PUBLIC_COMPONENT_CONTENT_PROHIBITED',
+        { source: 'unbound-image', alternativeText: 'unbound-alt' },
+      ],
       ['subjectRef', 'PUBLIC_COMPONENT_REFERENCE_PROHIBITED', 'secret-ref'],
       ['financeRate', 'PUBLIC_COMPONENT_INTERNAL_FIELD_PROHIBITED', 4],
       ['affiliateUrl', 'PUBLIC_COMPONENT_PROHIBITED_SURFACE', 'https://example.invalid'],
+      ['note', 'PUBLIC_COMPONENT_PROHIBITED_SURFACE', '<script>active</script>'],
+      ['note', 'PUBLIC_COMPONENT_PROHIBITED_SURFACE', 'http://example.invalid'],
     ];
     for (const [key, code, value] of cases) {
       const hostile = { ...input(), [key]: value };

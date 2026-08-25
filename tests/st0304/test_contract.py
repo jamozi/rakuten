@@ -13,6 +13,11 @@ from conftest import REPOSITORY_ROOT
 from scripts import build_st0304_domain_schemas as generator
 
 
+FROZEN_CONTRACT_PREDECESSOR_SHA256 = (
+    "f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b"
+)
+
+
 def test_contract_binds_the_exact_approved_story_and_formal_boundary(
     domain_contract: dict[str, Any],
 ) -> None:
@@ -142,7 +147,7 @@ def test_every_provenance_input_and_fragment_is_live_hash_bound(
     assert predecessor == {
         "story_id": "ST-0303",
         "path": "changes/st-0303/manifest.yaml",
-        "sha256": generator.EXPECTED_PREDECESSOR_MANIFEST_SHA256,
+        "sha256": FROZEN_CONTRACT_PREDECESSOR_SHA256,
     }
 
 

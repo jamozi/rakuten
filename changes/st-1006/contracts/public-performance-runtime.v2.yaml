@@ -1,0 +1,134 @@
+document:
+  id: RAOS-ST1006-PUBLIC-PERFORMANCE-RUNTIME-002
+  version: 2.0.0
+  story_id: ST-1006
+  status: LOCAL_CODE_COMPLETE
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  enabled_environments: [DEV, CI]
+  enabled_by_default_outside_local: false
+classification: LOCAL_RECORDED_PERFORMANCE_IMAGE_SAFETY_V2
+canonical_sources:
+  - docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  - docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+  - docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+  - docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml
+  - docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml
+  - docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  - docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  - docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+dependency_sources:
+  ST-1002:
+    - changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
+    - changes/st-1002/generated/public-article-renderer-recorded.v2.json
+    - changes/st-1002/runtime-manifest.v2.yaml
+route_boundary:
+  screen_id: PUB-003
+  route_template: /articles/{slug}
+  exact_local_path: /articles/synthetic-recorded-policy-seo
+  local_route_registered: true
+  source_projection_route_activated: false
+  public_read_served: false
+  current_route_image_count: 0
+  current_route_affiliate_cta_rendered: false
+  current_cache_control: no-store
+performance_policy:
+  percentile_method: NEAREST_RANK
+  percentile: 75
+  field_window: ROLLING_28_DAYS
+  targets:
+    - metric: LCP
+      threshold: 2500
+      unit: MILLISECONDS
+    - metric: INP
+      threshold: 200
+      unit: MILLISECONDS
+    - metric: CLS
+      threshold: 0.1
+      unit: SCORE
+  recorded_fixture:
+    provenance: RECORDED_SYNTHETIC_ONLY
+    formal_evidence: false
+    browser_observed: false
+    samples:
+      LCP: [1600, 1800, 2100, 2400]
+      INP: [80, 120, 160, 190]
+      CLS: [0, 0.02, 0.05, 0.08]
+    expected_percentile_values:
+      LCP: 2100
+      INP: 160
+      CLS: 0.05
+    expected_state: RECORDED_SYNTHETIC_PASS
+  field_assessment: NOT_EXECUTED
+  browser_lab_assessment: NOT_EXECUTED
+  formal_tst_027: NOT_EXECUTED
+image_policy:
+  profile: VERIFIED_SOURCE_REQUIRED_RESERVED_RESPONSIVE_IMAGE_V1
+  dimensions_required: true
+  responsive_widths_required: true
+  sizes_required: true
+  reserve_layout_space: true
+  upscale_allowed: false
+  cropping_allowed: false
+  decoding: async
+  above_fold_loading: eager
+  above_fold_fetch_priority: high
+  below_fold_loading: lazy
+  below_fold_fetch_priority: auto
+  maximum_dimension_px: 8192
+  maximum_responsive_candidates: 8
+  recorded_fixture:
+    asset_id: st1006-synthetic-image-001
+    source_state: RECORDED_SYNTHETIC_ONLY
+    placement: BELOW_FOLD
+    intrinsic_width: 640
+    intrinsic_height: 360
+    responsive_widths: [320, 640]
+    expected_sizes: '(max-width: 640px) 100vw, 640px'
+    expected_loading: lazy
+    expected_fetch_priority: auto
+    expected_state: RECORDED_SYNTHETIC_PASS
+cta_layout_policy:
+  layout_shift_allowed: false
+  reservation_required: true
+  recorded_fixture:
+    provenance: RECORDED_SYNTHETIC_ONLY
+    before: { x: 0, y: 100, width: 320, height: 48 }
+    after: { x: 0, y: 100, width: 320, height: 48 }
+    expected_layout_shift_score: 0
+    expected_state: RECORDED_SYNTHETIC_PASS
+rum_hook_policy:
+  event_catalog_id: EVT-012
+  event_name: web_vital
+  source: public_web
+  privacy_decision_id: OD-012
+  privacy_decision_status: HUMAN_DECISION_REQUIRED
+  safe_default: NONESSENTIAL_TRACKING_DISABLED
+  mode: DISABLED_OD_012
+  enabled: false
+  capture_behavior: DROP_WITHOUT_INSPECTION
+  buffer_capacity: 0
+  transport: null
+  provider: null
+  collector_connected: false
+  cookies_used: false
+  storage_used: false
+  consent_inferred: false
+  captured_events: []
+authority:
+  approval_authorized: false
+  tracking_authorized: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+  external_write: false
+  network: false
+  persistence: false
+  live: NOT_EXECUTED
+  browser_lab: NOT_EXECUTED
+  field_rum: NOT_EXECUTED
+  TST-027: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

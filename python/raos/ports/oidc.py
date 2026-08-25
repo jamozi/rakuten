@@ -85,6 +85,16 @@ class AuthenticationRepository(Protocol):
 
         ...
 
+    def recover_session_rotation(self, predecessor_id: SessionId) -> Session:
+        """Resolve an unknown rotation commit to one active session.
+
+        A committed rotation returns its sole successor.  A transaction that
+        rolled back returns the still-active predecessor.  Any partial,
+        ambiguous, or corrupt state fails closed at the adapter boundary.
+        """
+
+        ...
+
 
 __all__ = [
     "AuthenticationRepository",

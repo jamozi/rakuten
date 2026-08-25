@@ -1,70 +1,84 @@
-# ST-0406 secure object-intake seam
+# ST-0406 secure object/file intake
 
-Status: `LOCAL_IMPLEMENTATION_CANDIDATE` (partial, TEST_ONLY)
+Status: `LOCAL_CODE_COMPLETE` (maximum-safe recorded implementation)
 
-This Story implements the maximum-safe process-local portion of the approved
-ST-0406 secure object/file-intake boundary. It accepts only an exact committed
-ST-0403 `AuthorizationGrant` for `artifact:upload` at the descriptor's exact
-site, streams bounded synthetic bytes into an append-only quarantine, seals the
-declared size and SHA-256, and returns only after all closed inspection results
-are safe. The sole success outcome is `CLEAN_QUARANTINED`; it is not a release,
-promotion, publication, import, or proof of durable storage.
+ST-0406 V2 implements a durable, owner-private quarantine and journal for
+recorded/synthetic local intake. It does not provide upload HTTP, object export,
+promotion, publication, retention, deletion, provider, credential, staging,
+release, or Production authority. Formal `TST-014`, `TST-026`, and `TST-031`
+remain `NOT_EXECUTED`.
 
-## Implemented local boundary
+## Authorization-first boundary
 
-- Descriptors require nonzero exact UUIDs, a closed object kind and privacy
-  class, a portable leaf name, lowercase parameter-free MIME, a positive exact
-  byte count, and lowercase SHA-256. Booleans cannot pass integer checks.
-- `IntakePolicy` is immutable, has no defaults, is explicitly `TEST_ONLY`, and
-  requires positive stream, archive expansion, CSV row/column/cell, media-type,
-  and privacy allowlist bounds.
-- Authorization, matching site, MIME/privacy admission, declared size, and the
-  bounded reader shape are checked before any source or quarantine I/O.
-- Each source chunk is exact `bytes`, bounded, read once, appended once, and
-  included in the size/hash calculation. Exceptions and malformed values fail
-  closed without retry, exception chaining, or rejected-value echo.
-- Quarantine is sealed before duplicate, magic/MIME/extension, archive, CSV
-  encoding/formula/shape, privacy, and malware results can be accepted.
-  `UNKNOWN`, `UNAVAILABLE`, `MALFORMED`, rejected inspection, and every
-  non-clean malware state fail closed. An exact duplicate is still inspected
-  and malware-scanned.
-- Domain and result records are closed, immutable, redacted, and non-pickleable;
-  no arbitrary mapping or raw-byte field exists on a public record.
-- The recorded adapter is limited to exact `ENV-DEV` or `ENV-CI`, uses explicit
-  positive capacities and digest-scripted inspection results, and stores an
-  append-only tuple under `RLock` with no eviction. Public snapshots contain
-  metadata only; synthetic/quarantined bytes have no read or export surface.
+Every V2 command carries the exact ST-0403 `AuthorizationEvaluationCommand`,
+returned `AuthorizationCommandResult`, and ST-0401 `SessionId`. Before source or
+quarantine I/O, the runtime calls
+`DurableAuthorizationService.recover_admin`, which rechecks the active session
+and recovers the durable result. V2 then requires exact result equality,
+recomputes the request digest with the recovered session fingerprint, and binds
+the operation, action, target, site, resource, state, and descriptor.
 
-The inward ports deliberately expose no quarantine read, download, export,
-release, promotion, deletion, purge, lifecycle, restore, or cleanup operation.
-There is no file, object-store, database, network, provider SDK, credential,
-subprocess, native scanner, HTTP endpoint, or framework integration in this
-slice.
+The only successful recorded binding is canonical `ED-011` /
+`edit_article_draft` / `ARTICLE_VERSION` / `DRAFT`, for `SOURCE_DOCUMENT` or
+`MEDIA_ASSET`. `REVENUE_REPORT` remains denied because no non-ambiguous active
+intake binding has been proven. A directly constructed decision/result/grant is
+not service provenance, and the removed `artifact:upload` fiction is not V2
+authority. The original process-local V1 remains compatibility-only and is not
+elevated by this completion.
 
-## Local verification boundary
+## Durable quarantine
 
-The owned isolated tests include success, pre-I/O authorization denial,
-malicious and indeterminate scanner results, digest/size/stream tamper, archive
-and CSV limits, formula injection, privacy mismatch, duplicate scanning,
-capacity exhaustion, redaction/non-pickle behavior, and static architecture and
-forbidden-capability checks. Ruff, strict mypy, compile/import, focused
-sensitive-data scanning, ST-0403 regression, and read-only predecessor checks
-are local implementation-candidate gates, run with the pinned uv 0.12.1
-toolchain in locked, offline, no-cache, no-sync, and no-env-file mode.
+- The absolute owner-private root is checked through no-follow directory file
+  descriptors, must be owned by the process and mode `0700`, and contains one
+  regular, owner-owned, single-link SQLite database at mode `0600`.
+- A database is initialized only when this repository creates it with
+  `O_CREAT|O_EXCL`. Pre-existing empty, partial, foreign-schema, symlinked,
+  hard-linked, and special files are never adopted or initialized.
+- The root and database device/inode pairs are fixed for the repository
+  lifetime. A process-shared monotonic prefix anchor detects same-inode
+  snapshot rollback and path replacement before a later operation can proceed.
+- Each command runs in `BEGIN IMMEDIATE`, stores bounded bytes as a SQLite BLOB,
+  and binds exact descriptor and authorization digests. Versioned projection
+  updates use compare-and-set.
+- All application tables are `STRICT`; the application ID, schema version,
+  foreign keys, tables, indexes, and triggers are an exact closed inventory.
+  Command idempotency, intake-id collision rejection, exact SHA-256 duplicate
+  indexing, append-only result rows, and separate append-only lifecycle,
+  command, and audit hash chains survive restart. Canonical ASCII JSON, every
+  row hash, every complete chain and its lifecycle semantics, result projection,
+  foreign keys, and SQLite integrity are checked on every transaction.
+- Before-commit and after-commit ambiguity are closed and recoverable without a
+  blind retry. Recovered requests must match their exact request digest.
+- The public port exposes begin/recover/append/seal/accept/reject transaction
+  mechanics only. It has no raw-byte read, export, promote, release, delete,
+  purge, restore, retention, or lifecycle operation.
 
-## Deferred and unexecuted
+## Bounded inspection
 
-ST-0202 object storage is not called or reconfigured. OD-014 remains unresolved:
-this slice chooses no retention period, lifecycle policy, default retention, or
-automatic deletion behavior, and exposes no deletion operation. It also does
-not choose or activate a real file source, quarantine bucket, object key,
-malware engine, magic/archive/CSV parser, credential, account, region, endpoint,
-database record, asynchronous worker, HTTP upload endpoint, or Production
-policy.
+Streams enforce exact `bytes`, per-chunk, chunk-count, total-size, declared-size,
+and declared SHA-256 bounds. ZIP, TAR, and TAR.GZ are inspected in memory without
+extraction; traversal, absolute/drive paths, links, special files, encryption,
+duplicates, nested archives, and entry/count/size/ratio bombs are rejected.
+CSV requires strict UTF-8 without BOM, a closed rectangular shape, bounded
+rows/columns/cells, unique trimmed headers, and formula-prefix protection. Image
+and PDF inputs require an exact extension/MIME/magic combination.
 
-Real object-storage integrity/version behavior, durable quarantine isolation,
-native malware and file-format inspection, operational failure recovery,
-Security/Privacy owner review, hosted CI, staging, release, deployment, and
-Production remain separately unexecuted. Formal `TST-014`, `TST-026`, and
-`TST-031` remain `NOT_EXECUTED`; local passes do not establish `VALIDATED`,
-recoverability, release eligibility, or Production readiness.
+Privacy and malware decisions are digest-scripted recorded fixtures. The only
+accepting malware verdict is `CLEAN`; the disabled scanner returns
+`UNAVAILABLE` and fails closed. All collaborators expose an exact
+`action_count == 0`, and arbitrary collaborator exceptions are collapsed to a
+closed failure code without persisting or returning exception text or secret
+canaries.
+
+## Generation and evidence boundary
+
+`scripts/build_st0406_secure_object_intake_runtime.py` validates the canonical
+Story row, ST-0202 dependency, exact ST-0403 trust/binding semantics, OD-014,
+and test-suite identities, then deterministically owns the generated runtime
+projection and manifest. Run it with `--check` for a no-write drift check.
+
+OD-014 remains unresolved, so this implementation chooses no retention period
+or automatic deletion behavior. Live object storage, native scanner, public
+upload, real identity/provider, hosted CI, staging, publication, release,
+Production, Security/Privacy owner review, and Canonical status `APPLY` remain
+outside this local evidence and are not claimed.

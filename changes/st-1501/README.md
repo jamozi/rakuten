@@ -1,136 +1,127 @@
-# ST-1501 provider-neutral Terraform foundation interface-only candidate
+# ST-1501 provider-neutral Terraform foundation
 
-This Story-owned slice defines a strict, source-derived foundation boundary
-that later ST-1502 and ST-1503 work can extend. It is deliberately not a
-Terraform module, native Terraform plan, provider account or project
-configuration, remote state backend, or Production deployment.
+ST-1501 now has a maximum-safe local implementation: a deterministic Terraform
+module that is executable only for formatting and semantic validation. It
+contains no provider requirement, provider block, backend, cloud block, module,
+data source, resource, provisioner, state operation, or infrastructure action.
 
 ## Status boundary
 
-- Canonical design: `APPROVED_FOR_IMPLEMENTATION`
-- Local deliverable: `INTERFACE_ONLY_PARTIAL_LOCAL_CODE`
-- Effective canonical implementation status: unchanged (`NOT_STARTED`)
-- Required formal TST-026: `NOT_EXECUTED`
-- Terraform/OpenTofu validation: `NOT_EXECUTED`
-- Provider/runtime validation: `NOT_EXECUTED`
-- Staging, release, infrastructure apply, and Production: `NOT_EXECUTED`
+- Local implementation: `MAXIMUM_SAFE_LOCAL_CODE_COMPLETE`
+- Canonical Story state: unchanged until the append-only governance workflow
+- Formal `TST-026`: `NOT_EXECUTED`
+- Live provider/account/backend/credential validation: `NOT_EXECUTED`
+- Staging, release, deployment, infrastructure apply, and Production:
+  `NOT_EXECUTED`
 
-ST-0106 is present as a local dependency, but its formal CI evidence and this
-Story's full definition-of-ready boundary remain unmet. Local contract and
-pytest results therefore cannot make ST-1501 Done or `VALIDATED`.
+Local pytest, deterministic generation, and native Terraform validation are not
+formal Security verification and do not make this Story `VALIDATED` or
+Production-ready.
 
-## Safe default
+## OD-013 and reference metadata
 
-The direct-owner
-`DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml` records the durable
-ST-1501 decision governing this revision. `INT-DEC-007` and RAOS-ARCH-001 keep
-AWS `ap-northeast-1` as the current Canonical Reference Architecture and
-require a portable core. This overlay does not erase, replace, or complete the
-Canonical AWS-specific ST-1501 backlog objective or Terraform modules/state-plan
-deliverable. Non-AWS and owner-managed profiles are additional portable
-implementation paths only. The AWS reference is never a default, implicit
-fallback, selected binding, eligibility shortcut, admission requirement, or
-evidence substitute. `OD-013` remains
-`HUMAN_DECISION_REQUIRED`; its safe default forbids Production apply.
+`OD-013` remains `HUMAN_DECISION_REQUIRED`. AWS and `ap-northeast-1` remain the
+Canonical reference architecture inherited from `INT-DEC-007`; neither is a
+selected, default, fallback, or admitted provider/region binding. The module
+requires every selected infrastructure field to remain null, every capability
+mapping to remain empty, activation and Production-apply authority to remain
+false, and create/update/delete counts to remain zero.
 
-The contract consequently keeps every real selection unset:
+No real provider, account/project/tenant, primary or backup region, provider
+plugin, state backend, credential source, CIDR, availability zone, KMS key,
+budget, or resource is configured. Successor resource modules require their own
+contract revision and complete security, operations, release, recovery, cost,
+and residency evidence.
 
-- cloud provider and Production/backup regions;
-- Development and Production account identifiers;
-- Terraform/OpenTofu and provider-plugin versions;
-- remote-state backend and credential source;
-- network CIDRs, availability zones, KMS reference, and budget;
-- every resource definition.
+## Generated HCL
 
-Activation is disabled; network and credential access, provider calls,
-external writes, deploy, release, Production action, and every native operation
-are forbidden. The reference-only action counts are exactly zero for create,
-update, and delete.
-Rejected contract values are reported only by stable error code and fixed
-field name; values are never included in diagnostics.
+The owner builder generates a closed module under
+`infra/terraform/foundation/`:
 
-## Provider-neutral foundation admission
+| File | Role |
+| --- | --- |
+| `versions.tf` | Exact Terraform CLI constraint; no providers or backend |
+| `variables.tf` | Null/false/empty admission inputs with fail-closed validation |
+| `locals.tf` | Reference metadata, capability inventory, and zero-action boundary |
+| `checks.tf` | Disabled execution, null binding, empty mapping, and zero-action assertions |
+| `outputs.tf` | Deterministic non-secret admission and safety projection |
 
-No provider is currently selected or eligible. A future AWS, other-cloud, or
-owner-managed profile must explicitly map exactly one implementation to every
-closed capability below:
+The HCL permits only `terraform`, `variable`, `locals`, `check`, and `output`
+top-level blocks. The Story policy validator rejects provider, backend, cloud,
+module, data, resource, import, run, provisioner, remote-state, external
+execution, or provider-source material before native validation.
 
-- IaC toolchain and provider-plugin provenance;
-- remote-state integrity, locking, audit, backup, restore, and recovery;
-- Development and Production account, project, tenant, or equivalent isolation;
-- public/admin/internal/data-plane network and traffic controls;
-- workload identity and secret boundaries;
-- telemetry, control-plane audit, alerts, and drift detection;
-- infrastructure configuration backup, restore drill, and recovery;
-- attributable cost, budget alert, and bounded stop controls;
-- approved primary/backup region, cross-border, and residency evidence;
-- human-approved IaC change, promotion, rollback, and recovery.
+## Validation-only toolchain
 
-Missing, unknown, duplicate, reordered, partial, implicit, defaulted, fallback,
-provider-label-only, or reference-only mappings fail closed. Provider,
-account/project, region, plugin, and state-backend bindings remain selected,
-default, and fallback `null`. Every provider kind must supply identical
-security, operations, release, backup/restore, and residency evidence.
+The contract and generated toolchain lock pin Terraform `1.15.9` for
+`linux_amd64`. The official release archive SHA-256 is
+`76edd0b22d2f27d3d2e097cd793209646f719cf60f02ff3af626b07361137da1`;
+the extracted binary SHA-256 is
+`c39d41adb17963bac5dd610ad47815dd81e945371a7cabc344a45d63b1b093bd`.
+The checksum manifest is signed by the current HashiCorp key fingerprint
+`C874011F0AB405110D02105534365D9472D7468F`.
 
-This contract is an admission boundary, not a concrete alternate-provider
-implementation. No AWS or non-AWS Terraform payload, account, project, network,
-plugin, backend, credential, provider call, deployment, or Production action is
-created by this slice.
+Binary acquisition is an explicit online maintenance action. Normal generation
+and checks never download a tool, provider, or module. Native verification
+requires an already checksum-verified absolute binary path and executes only:
 
-## Source and generated artifacts
+- `terraform version -json`
+- `terraform fmt -check -recursive`
+- `terraform validate -json`
 
-Do not hand-edit generated artifacts. Change the source contract or builder,
-then regenerate.
+The owner wrapper verifies the extracted binary digest, removes ambient
+credentials by constructing a closed environment, creates an isolated temporary
+module and data directory, and launches every command inside a fresh Linux user
+and network namespace. It never runs `init`, `plan`, `apply`, `destroy`,
+`import`, `refresh`, `test`, or `console`; it verifies that neither the temporary
+module nor committed generated files changed.
 
-| Classification | Path | Role |
-| --- | --- | --- |
-| Durable Story decision | `changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml` | Provider-neutral admission decision and retained gates |
-| Story source | `changes/st-1501/contracts/terraform-foundation.v1.yaml` | Closed desired-state and safety boundary |
-| Implementation source | `scripts/build_st1501_terraform_foundation.py` | Strict loader, validator, domain model, and deterministic owner builder |
-| Test source | `tests/st1501/*.py` | Positive, hostile, exact-type, generation, and no-write checks |
-| Generated reference plan | `infra/terraform/foundation/terraform-foundation.reference-plan.v1.json` | Non-executable successor input with no selected provider, account, backend, credential, or resources |
-| Generated inventory | `changes/st-1501/manifest.yaml` | Source and generated-output hashes |
+## Owner-generated artifacts
 
-The generated plan carries its source and generation command and is classified
-`SOURCE_DERIVED_REFERENCE_STATE_PLAN`. It is not a `terraform plan` payload
-and contains no HCL, provider lock, provider cache, backend value, or resource.
-
-## Local commands
-
-Generate the two ST-1501-owned outputs:
+Do not hand-edit the manifest, reference plan, toolchain lock, or HCL files.
+Change the Story contract or owner builder, then regenerate:
 
 ```bash
 uv run --locked --no-sync python scripts/build_st1501_terraform_foundation.py
 ```
 
-Verify source pins, strict semantics, and committed output bytes without
-writing:
+Read-only deterministic check:
 
 ```bash
 uv run --locked --no-sync python scripts/build_st1501_terraform_foundation.py --check
 ```
 
-The builder exposes no provider, backend, account, credential, resource,
-activation, or operation argument. It does not invoke Terraform/OpenTofu,
-download plugins, access the network, read ambient credentials, run a provider
-discovery, or execute init/plan/apply/destroy/import/refresh.
+Read-only native validation after separately verifying the official archive,
+checksum manifest, signature, signing fingerprint, and extracted binary:
 
-## Future-state requirements
+```bash
+uv run --locked --no-sync python scripts/build_st1501_terraform_foundation.py \
+  --native-check \
+  --terraform /absolute/path/to/terraform
+```
 
-A later approved revision must keep remote state encrypted, locked, audited,
-and recoverable; isolate Development and Production through accounts, projects,
-tenants, or an equivalent reviewed boundary; detect drift; and make Production
-changes through reviewed IaC with explicit human approval. Those requirements
-are recorded, but none is claimed configured.
+The native command is init-free, provider-free, module-download-free,
+backend-free, credential-free, and network-isolated. It does not produce a
+Terraform plan or state file.
 
-ST-1502 and ST-1503 may consume the generated reference-plan document as a
-read-only predecessor. Resource payloads require their own approved Story
-contract and generator revision; this ST-1501 loader rejects them.
+## Artifact ownership
 
-## Completion boundary
+| Classification | Path |
+| --- | --- |
+| Durable provider-neutral decision | `changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml` |
+| Local implementation record | `changes/st-1501/IMPLEMENTATION_RECORD_V2_ST1501_HCL_FOUNDATION.yaml` |
+| Local completion evidence | `changes/st-1501/LOCAL_COMPLETION_EVIDENCE_V2.md` |
+| Story source contract | `changes/st-1501/contracts/terraform-foundation.v1.yaml` |
+| Owner builder and offline/native validator | `scripts/build_st1501_terraform_foundation.py` |
+| Generated HCL and locks | `infra/terraform/foundation/**` |
+| Generated inventory | `changes/st-1501/manifest.yaml` |
+| Hostile and positive tests | `tests/st1501/**` |
 
-This commit may support only a local partial implementation checkpoint.
-Native Terraform validation, provider/version provenance, remote-state tests,
-provider account/project/network/security review, formal TST-026, hosted CI,
-live provider, staging, release, deployment, and Production remain separately
-unexecuted.
+## Remaining external/formal work
+
+Production and backup region/residency approval, accounts, provider/resource
+modules, provider locks/cache, remote-state encryption/locking/audit/recovery,
+credential and workload identity, live network topology, drift against a live
+environment, budget/stop controls, Security review, formal `TST-026`, hosted CI,
+staging, release, deployment, and Production remain outside this local Story
+completion and remain `NOT_EXECUTED`.

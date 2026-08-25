@@ -1,0 +1,223 @@
+document:
+  schema_version: 2.0.0
+  story_id: ST-1205
+  classification: MAXIMUM_SAFE_LOCAL_EXECUTABLE_RECORDED_KPI_READ_MODEL_V2
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  local_formula_engine: true
+  local_read_model: true
+  recorded_synthetic_only: true
+  non_attesting: true
+  formal_validation: NOT_EXECUTED
+  production_eligible: false
+  approval: null
+  canonical_status: UNCHANGED
+
+authority:
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1205
+  kpi_catalog:
+    path: docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml
+    sha256: f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2
+    version: '1.0'
+  analytics_design:
+    path: docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  attribution_policy:
+    path: docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml
+    sha256: 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  changes_canonical_status: false
+
+predecessors:
+  - story_id: ST-1201
+    binding: EXACT_CURRENT_COMMITTED_BYTES
+    artifacts:
+      changes/st-1201/README.md: 1d48cdd47187f00833737eade4b6f9ec7ee9cf4dc4f9000e6413b3d401a89b10
+      python/raos/domain/analytics/event_collector.py: c152f57cf7f95ae924a8510ff4b153c4dd4b78c17fbe5f579019fb30a759fa6b
+    required_semantics:
+      tracking: DISABLED
+      persistence: NOT_EXECUTED
+      measurement_observed: false
+  - story_id: ST-1203
+    binding: EXACT_CURRENT_COMMITTED_BYTES
+    artifacts:
+      changes/st-1203/README.md: c333b3400b8f0f13ce18be7e04d43345caa812b4d818dae8222cb8b498099c3e
+      changes/st-1203/manifest.json: 5e72a75fc5908fb32697673977332c296674c6a00bf6ab35bdff992b746b2c1e
+      python/raos/domain/analytics/search_console.py: e49396e6dfac336b05488ae4ba80100c106fc4bf64c2ed476d16f459c16759ce
+    required_semantics:
+      rows_not_guaranteed_complete: true
+      empty_page_proves_zero: false
+      provider: NOT_EXECUTED
+      persistence: NOT_EXECUTED
+  - story_id: ST-1204
+    binding: EXACT_CURRENT_COMMITTED_BYTES
+    artifacts:
+      changes/st-1204/RUNTIME-SLICE-v1.md: 021e21ca20d8fa82c3b0a9134de6cf989daf4fd80f1dc8d4a5ddbfc9a2579b69
+      changes/st-1204/generated/manifest.json: e74b5463d9aca244e330f2dd8e5f454418f5834a29133de6b475f02c93aa172f
+      python/raos/domain/analytics/ga4.py: 785dd16788fffabd5ab6c05c6f43f535bc6521630a246c93a54d23d257de124f
+    required_semantics:
+      returned_rows_incomplete: true
+      numeric_aggregation_performed: false
+      tracking: DISABLED_OD_012
+      provider: NOT_EXECUTED
+      persistence: NOT_EXECUTED
+
+input_contract:
+  port: provider-neutral caller-supplied immutable observations
+  program_id: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
+  program_policy: ONE_EXACT_PROGRAM_PER_CALCULATION
+  period_policy: EVERY_REQUIRED_INPUT_MUST_EQUAL_COMMAND_PERIOD
+  source_policy: EVERY_INPUT_SOURCE_MUST_MATCH_ITS_VERSIONED_DEFINITION
+  verification_policy: EVERY_REQUIRED_INPUT_MUST_BE_EXPLICITLY_VERIFIED
+  cohort_policy: IMMATURE_IS_UNAVAILABLE_NEVER_ZERO
+  attribution_policy: BASIS_MUST_MATCH_AND_BE_VERIFIED
+  allocation_policy: PROVIDER_TOTAL_AND_UNATTRIBUTED_MUST_NEVER_BE_ALLOCATED_TO_ARTICLES
+  numeric_type: decimal.Decimal from canonical decimal strings only
+  float_allowed: false
+  missing_allowed_as_zero: false
+  live_provider_rows: false
+
+definition_contract:
+  definition_version: 2.0.0
+  calculation_version: 2.0.0
+  canonical_definition_count: 30
+  calculation_count: 30
+  ordered_ids: KPI-001_THROUGH_KPI-030
+  required_definition_fields:
+    - id
+    - name
+    - canonical_formula
+    - formula_kind
+    - typed_sources_and_roles
+    - time_grain
+    - cohort
+    - included_traffic
+    - excluded_traffic
+    - attribution_display
+    - result_unit
+    - decimal_quantization
+    - rounding
+    - zero_semantics
+    - division_by_zero
+    - owner
+    - decision_use
+  formula_kinds:
+    - IDENTITY
+    - SUBTRACT
+    - RATIO
+    - RATIO_X_1000
+  rounding: ROUND_HALF_EVEN
+  verified_zero_semantics: VERIFIED_ZERO_IS_ZERO
+  zero_denominator: UNAVAILABLE
+  negative_denominator: UNAVAILABLE
+  definition_source: python/raos/domain/analytics/kpi_read_model.py
+
+availability_contract:
+  available_requires:
+    - every required input is present
+    - exact period and exact program match
+    - exact declared source match
+    - verified source fact
+    - mature or not-applicable cohort
+    - exact and verified attribution basis when applicable
+    - nonzero positive denominator for division
+  closed_unavailable_reasons:
+    - MISSING_INPUT
+    - PERIOD_MISMATCH
+    - PROGRAM_MISMATCH
+    - SOURCE_MISMATCH
+    - UNVERIFIED_INPUT
+    - IMMATURE_COHORT
+    - ATTRIBUTION_BASIS_MISMATCH
+    - ATTRIBUTION_UNVERIFIED
+    - INVALID_NUMERIC_INPUT
+    - ZERO_DENOMINATOR
+  unavailable_value: null
+  unavailable_is_zero: false
+
+read_model_contract:
+  materialization: IMMUTABLE_PROCESS_LOCAL_SNAPSHOT
+  rows: 30
+  row_order: KPI-001_THROUGH_KPI-030
+  includes:
+    - definition_version
+    - calculation_version
+    - period
+    - fixed_program
+    - attribution_basis
+    - input_keys
+    - freshness
+    - last_successful_import
+    - availability_or_typed_unavailable_reason
+  persistence: NOT_EXECUTED
+  database: NOT_EXECUTED
+  sql: NOT_EXECUTED
+  public_projection: NOT_EXECUTED
+
+learning_contract:
+  metrics:
+    search_ctr: KPI-014
+    affiliate_click_rate: KPI-006
+    confirmed_reward_per_click: KPI-003
+    confirmation_rate: KPI-008
+    confirmed_reward_per_content_hour: SUPPLEMENTAL_SAME_GATES
+  confirmed_reward_per_content_hour_formula: confirmed attributed commission / content work minutes * 60
+  same_period_required: true
+  same_program_required: true
+  verified_attribution_required: true
+  missing_or_immature: UNAVAILABLE
+  modifies_article_html: false
+  modifies_cta: false
+  modifies_product_selection: false
+  modifies_recommendation_order: false
+  recommendation_inputs_forbidden:
+    - affiliate rate
+    - EPC
+    - RPM
+    - commission
+    - profit
+
+recorded_fixture_contract:
+  path: changes/st-1205/fixtures/recorded/kpi-calculation-complete.v2.json
+  sha256: da6d51ccd7ba56411ec81e316994659849e4ea7fa11e5458982a99a6f2317676
+  bytes: 11343
+  normalized_input_sha256: 5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92
+  synthetic: true
+  expected_kpi_results: 30
+  expected_learning_results: 5
+  provider_execution: NOT_EXECUTED
+
+execution_boundary:
+  formula_engine: LOCAL_RECORDED_FIXTURE_ONLY
+  calculation_job: PROCESS_LOCAL_ONLY
+  read_model: PROCESS_LOCAL_IMMUTABLE
+  repository: NOT_EXECUTED
+  database: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  credential: NOT_USED
+  network: NOT_EXECUTED
+  tracking_activation: DISABLED
+  public_projection: NOT_EXECUTED
+  recommendation_input: DISABLED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  formal_TST-030: NOT_EXECUTED
+  story_acceptance: false
+
+debt:
+  closed:
+    - id: DEBT-W2-054
+      reason: all 30 formulas now have executable versioned local definitions and recorded reproduction fixtures
+    - id: DEBT-W2-062
+      reason: current ST-1201/ST-1203/ST-1204 bytes and safe semantics are hash-bound
+  remaining:
+    - id: EXTERNAL-TST-030
+      reason: formal CI/staging provider reconciliation has not executed
+    - id: LIVE-PROVIDERS
+      reason: OD-012 and OD-015 remain unresolved; only recorded fixtures are accepted

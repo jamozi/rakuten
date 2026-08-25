@@ -1,0 +1,28 @@
+schema_version: 2
+story_id: ST-1105
+classification: ST1105_LOCAL_DEFERRED_VERIFICATION_LEDGER_V2
+entries:
+  - id: ST1105-DEFER-001
+    command: >-
+      node --experimental-strip-types
+      scripts/check_st1105_admin_acceptance_browser.mjs --check
+    observed_result: >-
+      Seven ST-0906 detached renderer screens each expose 326 CSS px document
+      overflow at REFLOW_320 and one axe aria-prohibited-attr incomplete node.
+    affected_owner_artifact: packages/web-ui/src/publication-review-workspace-v2.ts
+    introduced_by_story: ST-0906
+    closure_owner: ST-0906 follow-up
+    closure_wave: UNASSIGNED
+    safe_impact: >-
+      Finding is restricted to a route-unregistered dependency renderer;
+      ST-1105 synthetic surfaces remain zero-finding.
+  - id: ST1105-DEFER-002
+    command: formal TST-023/TST-024/TST-025 execution
+    observed_result: NOT_EXECUTED
+    affected_owner_artifact: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    introduced_by_story: NOT_APPLICABLE_EXTERNAL_VERIFICATION
+    closure_owner: Engineering and QA/Accessibility
+    closure_wave: FORMAL_CI_AND_STAGING
+    safe_impact: >-
+      Local evidence cannot become formal, manual, screen-reader, hosted-CI,
+      staging, release, or Production evidence.

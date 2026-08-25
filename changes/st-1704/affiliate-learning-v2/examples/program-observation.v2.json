@@ -1,0 +1,28 @@
+{
+  "cohort": {
+    "input_sha256": null,
+    "state": "UNAVAILABLE",
+    "verified_at_utc": null
+  },
+  "metrics": {
+    "unattributed_confirmed_reward_jpy": {
+      "input_sha256": null,
+      "state": "UNAVAILABLE",
+      "value": null
+    }
+  },
+  "observation_id": "EXAMPLE.UNAVAILABLE.PROGRAM.001",
+  "observed_at_utc": "2026-09-08T00:00:00Z",
+  "period": {
+    "duration_days": 14,
+    "end_exclusive_date": "2026-09-08",
+    "start_date": "2026-08-25"
+  },
+  "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+  "schema": "ST1704_AFFILIATE_LEARNING_PROGRAM_OBSERVATION_V2",
+  "verification": {
+    "attribution_basis": "UNAVAILABLE",
+    "input_sha256": null,
+    "state": "UNAVAILABLE"
+  }
+}

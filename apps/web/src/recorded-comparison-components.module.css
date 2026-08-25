@@ -1,0 +1,159 @@
+.section {
+  display: grid;
+  gap: 1.25rem;
+  color: #1b1f23;
+}
+
+.sectionHeading {
+  max-width: 48rem;
+}
+
+.sectionHeading h2,
+.sectionHeading p {
+  margin: 0;
+}
+
+.sectionHeading h2 {
+  margin-top: 0.4rem;
+}
+
+.sectionHeading h2 + p {
+  margin-top: 0.75rem;
+  color: #46505a;
+  line-height: 1.7;
+}
+
+.eyebrow,
+.syntheticLabel {
+  color: #075dbd;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+}
+
+.tableRegion {
+  overflow-x: auto;
+  border: 0.0625rem solid #c6cdd5;
+  border-radius: 1rem;
+  background: #ffffff;
+  overscroll-behavior-inline: contain;
+}
+
+.tableRegion:focus-visible {
+  outline: 0.2rem solid #0b63ce;
+  outline-offset: 0.2rem;
+}
+
+.comparisonTable {
+  width: 100%;
+  min-width: 42rem;
+  border-collapse: collapse;
+}
+
+.comparisonTable caption {
+  padding: 1rem;
+  color: #46505a;
+  font-weight: 750;
+  text-align: left;
+}
+
+.comparisonTable th,
+.comparisonTable td {
+  padding: 1rem;
+  border-top: 0.0625rem solid #d8dde3;
+  text-align: left;
+  vertical-align: top;
+}
+
+.comparisonTable thead th {
+  background: #eef2f6;
+}
+
+.comparisonTable tbody th {
+  width: 30%;
+  background: #f8fafc;
+}
+
+.unknownValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #6b4300;
+  font-weight: 750;
+}
+
+.unknownMark {
+  display: inline-grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  border: 0.0625rem solid #b57608;
+  border-radius: 50%;
+  background: #fff4d6;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.productCard {
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 0.0625rem solid #c6cdd5;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 0.6rem 1.8rem rgb(36 46 56 / 8%);
+}
+
+.productCard h3,
+.productCard h4,
+.productCard p,
+.productCard dl,
+.productCard dd {
+  margin: 0;
+}
+
+.productCard h3 {
+  margin-top: 0.4rem;
+  font-size: 1.35rem;
+}
+
+.factList,
+.tradeOff dl {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.factList {
+  margin-top: 1.25rem;
+}
+
+.factList div,
+.tradeOff dl div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.factList dt,
+.tradeOff dt {
+  color: #59636e;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.tradeOff {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 0.0625rem solid #d8dde3;
+}
+
+.tradeOff dl {
+  margin-top: 0.9rem;
+}
+
+@media (max-width: 36rem) {
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+}

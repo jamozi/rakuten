@@ -1,0 +1,295 @@
+{
+  "actualRouteBoundary": {
+    "affiliateCtaAvailable": false,
+    "authority": {
+      "TST022": "NOT_EXECUTED",
+      "TST030": "NOT_EXECUTED",
+      "production": false,
+      "publication": false,
+      "release": false,
+      "staging": false
+    },
+    "beaconUsed": false,
+    "blockedEventIds": [
+      "EVT-001",
+      "EVT-002",
+      "EVT-003",
+      "EVT-004",
+      "EVT-006",
+      "EVT-012"
+    ],
+    "browserStorageUsed": false,
+    "classification": "LOCAL_DEFAULT_DISABLED_PROCESS_LOCAL_RECORDED_PUBLIC_EVENT_INSTRUMENTATION_V2",
+    "clientComponentCount": 0,
+    "clientInstrumentationInstalled": false,
+    "consentAuthority": "UNRESOLVED_OD_012",
+    "cookiesUsed": false,
+    "effects": [],
+    "eligibleEventIds": [],
+    "events": [],
+    "fetchUsed": false,
+    "fingerprintingUsed": false,
+    "identityAvailable": false,
+    "measurementObserved": false,
+    "mode": "DISABLED_OD_012",
+    "networkUsed": false,
+    "providerUsed": false,
+    "reason": "OD_012_UNRESOLVED_AND_PUBLIC_IDENTITIES_OR_VERIFIED_CTA_UNAVAILABLE",
+    "routePath": "/articles/synthetic-recorded-policy-seo",
+    "safeDefault": "NONESSENTIAL_TRACKING_DISABLED_FIRST_PARTY_MINIMAL_ONLY",
+    "schemaVersion": 2,
+    "screenId": "PUB-003",
+    "serverBoundaryEvaluated": true,
+    "sourceProfile": "EXACT_ST1002_RECORDED_PUBLIC_ARTICLE_V2",
+    "storyId": "ST-1202",
+    "trackingEnabled": false
+  },
+  "classification": "LOCAL_DEFAULT_DISABLED_PROCESS_LOCAL_RECORDED_PUBLIC_EVENT_INSTRUMENTATION_V2",
+  "processLocalEvidence": {
+    "bodyHistoryExposed": false,
+    "conflictingReplay": "EVENT_ID_CONFLICT",
+    "eventIdentity": "CALLER_SUPPLIED_UUID7_ONLY",
+    "eventOrder": [
+      "EVT-001",
+      "EVT-002",
+      "EVT-003",
+      "EVT-004",
+      "EVT-006",
+      "EVT-012"
+    ],
+    "failureHandling": "SWALLOWED_NON_BLOCKING",
+    "idempotency": "PROCESS_LOCAL_EVENT_ID_AND_CANONICAL_BYTES",
+    "identicalReplay": "RECORDED_DUPLICATE",
+    "measurementObserved": false,
+    "navigationBoundary": "NATIVE_DIRECT_DESTINATION_INDEPENDENT",
+    "persistence": "NOT_EXECUTED",
+    "timestampSource": "CALLER_SUPPLIED_RECORDED_UTC_ONLY",
+    "trackingActivation": "DISABLED"
+  },
+  "recordedFixture": {
+    "consent": {
+      "authority": "UNRESOLVED_OD_012",
+      "consentState": "GRANTED",
+      "fixtureKind": "SYNTHETIC_ST1202_RECORDED_FULL_CONSENT_FIXTURE",
+      "privacyMode": "FULL_CONSENT",
+      "trackingActivation": "DISABLED"
+    },
+    "events": [
+      {
+        "catalogId": "EVT-001",
+        "correlationId": "018f3e90-7b00-7000-8000-000000001299",
+        "eventId": "018f3e90-7b00-7000-8000-000000001201",
+        "eventName": "article_view",
+        "occurredAt": "2026-08-24T00:00:01.000Z",
+        "parameters": [
+          {
+            "name": "anonymous_session_id",
+            "value": "synthetic-session-st1202"
+          },
+          {
+            "name": "article_id",
+            "value": "018f3e90-7b00-7000-8000-000000001220"
+          },
+          {
+            "name": "snapshot_id",
+            "value": "018f3e90-7b00-7000-8000-000000001221"
+          },
+          {
+            "name": "category_id",
+            "value": "018f3e90-7b00-7000-8000-000000001222"
+          },
+          {
+            "name": "referrer_class",
+            "value": "synthetic_direct"
+          },
+          {
+            "name": "consent_state",
+            "value": "GRANTED"
+          }
+        ],
+        "receivedAt": "2026-08-24T00:00:01.100Z",
+        "schemaVersion": "1.0",
+        "siteId": "018f3e90-7b00-7000-8000-000000001200",
+        "source": "public_web"
+      },
+      {
+        "catalogId": "EVT-002",
+        "correlationId": "018f3e90-7b00-7000-8000-000000001299",
+        "eventId": "018f3e90-7b00-7000-8000-000000001202",
+        "eventName": "qualified_decision_engagement",
+        "occurredAt": "2026-08-24T00:00:02.000Z",
+        "parameters": [
+          {
+            "name": "article_id",
+            "value": "018f3e90-7b00-7000-8000-000000001220"
+          },
+          {
+            "name": "snapshot_id",
+            "value": "018f3e90-7b00-7000-8000-000000001221"
+          },
+          {
+            "name": "component_type",
+            "value": "comparison_table"
+          },
+          {
+            "name": "engagement_kind",
+            "value": "synthetic_expand"
+          }
+        ],
+        "receivedAt": "2026-08-24T00:00:02.100Z",
+        "schemaVersion": "1.0",
+        "siteId": "018f3e90-7b00-7000-8000-000000001200",
+        "source": "public_web"
+      },
+      {
+        "catalogId": "EVT-003",
+        "correlationId": "018f3e90-7b00-7000-8000-000000001299",
+        "eventId": "018f3e90-7b00-7000-8000-000000001203",
+        "eventName": "affiliate_cta_impression",
+        "occurredAt": "2026-08-24T00:00:03.000Z",
+        "parameters": [
+          {
+            "name": "article_id",
+            "value": "018f3e90-7b00-7000-8000-000000001220"
+          },
+          {
+            "name": "snapshot_id",
+            "value": "018f3e90-7b00-7000-8000-000000001221"
+          },
+          {
+            "name": "cta_id",
+            "value": "018f3e90-7b00-7000-8000-000000001223"
+          },
+          {
+            "name": "offer_id",
+            "value": "018f3e90-7b00-7000-8000-000000001224"
+          },
+          {
+            "name": "placement",
+            "value": "synthetic_product_card"
+          },
+          {
+            "name": "visibility_threshold",
+            "value": 0.5
+          }
+        ],
+        "receivedAt": "2026-08-24T00:00:03.100Z",
+        "schemaVersion": "1.0",
+        "siteId": "018f3e90-7b00-7000-8000-000000001200",
+        "source": "public_web"
+      },
+      {
+        "catalogId": "EVT-004",
+        "correlationId": "018f3e90-7b00-7000-8000-000000001299",
+        "eventId": "018f3e90-7b00-7000-8000-000000001204",
+        "eventName": "affiliate_click",
+        "occurredAt": "2026-08-24T00:00:04.000Z",
+        "parameters": [
+          {
+            "name": "article_id",
+            "value": "018f3e90-7b00-7000-8000-000000001220"
+          },
+          {
+            "name": "snapshot_id",
+            "value": "018f3e90-7b00-7000-8000-000000001221"
+          },
+          {
+            "name": "cta_id",
+            "value": "018f3e90-7b00-7000-8000-000000001223"
+          },
+          {
+            "name": "offer_id",
+            "value": "018f3e90-7b00-7000-8000-000000001224"
+          },
+          {
+            "name": "placement",
+            "value": "synthetic_product_card"
+          },
+          {
+            "name": "beacon_transport",
+            "value": "RECORDED_NOT_EXECUTED"
+          },
+          {
+            "name": "consent_state",
+            "value": "GRANTED"
+          }
+        ],
+        "receivedAt": "2026-08-24T00:00:04.100Z",
+        "schemaVersion": "1.0",
+        "siteId": "018f3e90-7b00-7000-8000-000000001200",
+        "source": "public_web"
+      },
+      {
+        "catalogId": "EVT-006",
+        "correlationId": "018f3e90-7b00-7000-8000-000000001299",
+        "eventId": "018f3e90-7b00-7000-8000-000000001206",
+        "eventName": "comparison_interaction",
+        "occurredAt": "2026-08-24T00:00:05.000Z",
+        "parameters": [
+          {
+            "name": "article_id",
+            "value": "018f3e90-7b00-7000-8000-000000001220"
+          },
+          {
+            "name": "snapshot_id",
+            "value": "018f3e90-7b00-7000-8000-000000001221"
+          },
+          {
+            "name": "interaction",
+            "value": "synthetic_expand"
+          },
+          {
+            "name": "axis_code",
+            "value": "weight"
+          }
+        ],
+        "receivedAt": "2026-08-24T00:00:05.100Z",
+        "schemaVersion": "1.0",
+        "siteId": "018f3e90-7b00-7000-8000-000000001200",
+        "source": "public_web"
+      },
+      {
+        "catalogId": "EVT-012",
+        "correlationId": "018f3e90-7b00-7000-8000-000000001299",
+        "eventId": "018f3e90-7b00-7000-8000-000000001212",
+        "eventName": "web_vital",
+        "occurredAt": "2026-08-24T00:00:06.000Z",
+        "parameters": [
+          {
+            "name": "article_id",
+            "value": "018f3e90-7b00-7000-8000-000000001220"
+          },
+          {
+            "name": "snapshot_id",
+            "value": "018f3e90-7b00-7000-8000-000000001221"
+          },
+          {
+            "name": "metric_name",
+            "value": "LCP"
+          },
+          {
+            "name": "metric_value",
+            "value": 1250.5
+          },
+          {
+            "name": "rating",
+            "value": "good"
+          },
+          {
+            "name": "navigation_type",
+            "value": "navigate"
+          }
+        ],
+        "receivedAt": "2026-08-24T00:00:06.100Z",
+        "schemaVersion": "1.0",
+        "siteId": "018f3e90-7b00-7000-8000-000000001200",
+        "source": "public_web"
+      }
+    ],
+    "faultEventIds": [],
+    "kind": "SYNTHETIC_ST1202_RECORDED_INSTRUMENTATION_FIXTURE",
+    "mode": "RECORDED_TEST_ONLY"
+  },
+  "schemaVersion": 2,
+  "storyId": "ST-1202"
+}

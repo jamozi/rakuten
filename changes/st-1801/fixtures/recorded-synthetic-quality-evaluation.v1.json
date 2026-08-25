@@ -1,0 +1,41 @@
+{
+  "schema": "ST1801_RECORDED_SYNTHETIC_QUALITY_EVALUATION_V1",
+  "classification": "RECORDED_SYNTHETIC_ONLY_NOT_ARTICLE_EVIDENCE",
+  "cases": [
+    {
+      "case_id": "synthetic-exact-boundary-pass",
+      "input": {"quality_score": "85", "major_claim_count": 4, "evidenced_major_claim_count": 4},
+      "expected": {"status": "PASS", "quality_status": "PASS", "major_claim_coverage_status": "PASS"}
+    },
+    {
+      "case_id": "synthetic-quality-below-boundary",
+      "input": {"quality_score": "84.999999", "major_claim_count": 4, "evidenced_major_claim_count": 4},
+      "expected": {"status": "FAIL", "quality_status": "FAIL", "major_claim_coverage_status": "PASS"}
+    },
+    {
+      "case_id": "synthetic-major-coverage-below-boundary",
+      "input": {"quality_score": "100", "major_claim_count": 4, "evidenced_major_claim_count": 3},
+      "expected": {"status": "FAIL", "quality_status": "PASS", "major_claim_coverage_status": "FAIL"}
+    },
+    {
+      "case_id": "synthetic-quality-missing",
+      "input": {"quality_score": null, "major_claim_count": 1, "evidenced_major_claim_count": 1},
+      "expected": {"status": "UNAVAILABLE", "quality_status": "UNAVAILABLE", "major_claim_coverage_status": "PASS"}
+    },
+    {
+      "case_id": "synthetic-claim-count-missing",
+      "input": {"quality_score": "85", "major_claim_count": null, "evidenced_major_claim_count": null},
+      "expected": {"status": "UNAVAILABLE", "quality_status": "PASS", "major_claim_coverage_status": "UNAVAILABLE"}
+    },
+    {
+      "case_id": "synthetic-zero-denominator",
+      "input": {"quality_score": "85", "major_claim_count": 0, "evidenced_major_claim_count": 0},
+      "expected": {"status": "UNAVAILABLE", "quality_status": "PASS", "major_claim_coverage_status": "UNAVAILABLE"}
+    },
+    {
+      "case_id": "synthetic-evidenced-count-missing",
+      "input": {"quality_score": "85", "major_claim_count": 2, "evidenced_major_claim_count": null},
+      "expected": {"status": "UNAVAILABLE", "quality_status": "PASS", "major_claim_coverage_status": "UNAVAILABLE"}
+    }
+  ]
+}

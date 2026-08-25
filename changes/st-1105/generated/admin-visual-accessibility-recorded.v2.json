@@ -1,0 +1,2976 @@
+{
+  "schema_version": 2,
+  "story_id": "ST-1105",
+  "classification": "MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_ADMIN_VISUAL_ACCESSIBILITY_ACCEPTANCE_V2",
+  "local_status": "LOCAL_IMPLEMENTATION_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "source_mode": "RECORDED_SYNTHETIC_DEV_CI_ONLY",
+  "screen_count": 44,
+  "screen_order": [
+    "PORT-001",
+    "PORT-002",
+    "PORT-003",
+    "PORT-004",
+    "PORT-005",
+    "PORT-006",
+    "CAT-001",
+    "CAT-002",
+    "CAT-003",
+    "CAT-004",
+    "CAT-005",
+    "CAT-006",
+    "EVD-001",
+    "EVD-002",
+    "EVD-003",
+    "EVD-004",
+    "GOV-001",
+    "REV-001",
+    "REV-002",
+    "REV-003",
+    "PUBA-001",
+    "PUBA-002",
+    "PUBA-003",
+    "PUBA-004",
+    "EDT-002",
+    "EDT-003",
+    "EDT-005",
+    "EDT-006",
+    "EDT-007",
+    "EDT-009",
+    "FRESH-001",
+    "FRESH-002",
+    "FRESH-003",
+    "OPS-001",
+    "OPS-002",
+    "OPS-003",
+    "OPS-004",
+    "OPS-005",
+    "ANA-001",
+    "ANA-002",
+    "ANA-003",
+    "FIN-001",
+    "FIN-002",
+    "FIN-003"
+  ],
+  "screens": [
+    {
+      "screen_id": "PORT-001",
+      "source_story_id": "ST-0506",
+      "name": "カテゴリ一覧",
+      "catalog_route": "/admin/portfolio/categories",
+      "area": "portfolio",
+      "roles": [
+        "PRODUCT_OWNER",
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "ANALYST"
+      ],
+      "purpose": "カテゴリとMVP Scope管理",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-001"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "PORT-002",
+      "source_story_id": "ST-0506",
+      "name": "カテゴリ詳細",
+      "catalog_route": "/admin/portfolio/categories/{id}",
+      "area": "portfolio",
+      "roles": [
+        "PRODUCT_OWNER",
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "ANALYST"
+      ],
+      "purpose": "カテゴリ設定、Freshness、Identity Rule参照",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-001"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "PORT-003",
+      "source_story_id": "ST-0506",
+      "name": "Keyword一覧",
+      "catalog_route": "/admin/portfolio/keywords",
+      "area": "portfolio",
+      "roles": [
+        "PRODUCT_OWNER",
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "ANALYST"
+      ],
+      "purpose": "Keyword、意図、Source、優先度を管理",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-001"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "PORT-004",
+      "source_story_id": "ST-0506",
+      "name": "Intent Cluster",
+      "catalog_route": "/admin/portfolio/intents",
+      "area": "portfolio",
+      "roles": [
+        "PRODUCT_OWNER",
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "ANALYST"
+      ],
+      "purpose": "同一意思決定のKeywordをCluster化",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-001"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "PORT-005",
+      "source_story_id": "ST-0506",
+      "name": "Opportunity Queue",
+      "catalog_route": "/admin/portfolio/opportunities",
+      "area": "portfolio",
+      "roles": [
+        "PRODUCT_OWNER",
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "ANALYST"
+      ],
+      "purpose": "AI/Ruleによる候補を人間が評価",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-001"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "PORT-006",
+      "source_story_id": "ST-0506",
+      "name": "Article Plan",
+      "catalog_route": "/admin/portfolio/article-plans/{id}",
+      "area": "portfolio",
+      "roles": [
+        "PRODUCT_OWNER",
+        "MANAGING_EDITOR",
+        "EDITOR"
+      ],
+      "purpose": "記事目的、候補Universe、記事型を確定",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [
+        "ArticlePlan",
+        "IntentCluster"
+      ],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-001"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "CAT-001",
+      "source_story_id": "ST-0506",
+      "name": "楽天取込Run",
+      "catalog_route": "/admin/catalog/ingestion-runs",
+      "area": "catalog",
+      "roles": [
+        "EDITOR",
+        "OPERATOR",
+        "ANALYST"
+      ],
+      "purpose": "取得状況、Rate Limit、Raw Artifactを確認",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-002"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "CAT-002",
+      "source_story_id": "ST-0506",
+      "name": "商品候補一覧",
+      "catalog_route": "/admin/catalog/candidates",
+      "area": "catalog",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "purpose": "未統合候補を検索・絞込",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-002"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "CAT-003",
+      "source_story_id": "ST-0506",
+      "name": "商品同一性Workbench",
+      "catalog_route": "/admin/catalog/identity-workbench",
+      "area": "catalog",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "purpose": "型番・Variant・Bundleを根拠付きで統合/分離",
+      "mvp": true,
+      "critical_action": true,
+      "api_dependencies": [
+        "ProductCandidate",
+        "GroupingDecision"
+      ],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-002"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "CAT-004",
+      "source_story_id": "ST-0506",
+      "name": "Canonical Product",
+      "catalog_route": "/admin/catalog/products/{id}",
+      "area": "catalog",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "REVIEWER",
+        "ANALYST"
+      ],
+      "purpose": "商品属性、Variant、Evidence、履歴を表示",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-002"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "CAT-005",
+      "source_story_id": "ST-0506",
+      "name": "Offer詳細",
+      "catalog_route": "/admin/catalog/offers/{id}",
+      "area": "catalog",
+      "roles": [
+        "EDITOR",
+        "REVIEWER",
+        "ANALYST"
+      ],
+      "purpose": "ショップ別Offer、価格、在庫、送料、鮮度を表示",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-002"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "CAT-006",
+      "source_story_id": "ST-0506",
+      "name": "Raw Artifact Viewer",
+      "catalog_route": "/admin/artifacts/{id}",
+      "area": "catalog",
+      "roles": [
+        "EDITOR",
+        "REVIEWER",
+        "OPERATOR",
+        "SECURITY_AUDITOR"
+      ],
+      "purpose": "原本Hash、取得情報、許可された表示を確認",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-002"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "EVD-001",
+      "source_story_id": "ST-0606",
+      "name": "Source Packet一覧",
+      "catalog_route": "/admin/evidence/source-packets",
+      "area": "evidence",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "purpose": "生成に使う承認済み情報束を管理",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_CONTRACT",
+      "component_ids": [
+        "UI-C001",
+        "UI-C005",
+        "UI-C007",
+        "UI-C010",
+        "UI-C035",
+        "UI-C036"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-003"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "EVD-002",
+      "source_story_id": "ST-0606",
+      "name": "Source Packet詳細",
+      "catalog_route": "/admin/evidence/source-packets/{id}",
+      "area": "evidence",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "purpose": "Fact、Conflict、Freshness、Coverageを確認",
+      "mvp": true,
+      "critical_action": true,
+      "api_dependencies": [
+        "SourcePacket",
+        "Fact"
+      ],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_CONTRACT",
+      "component_ids": [
+        "UI-C001",
+        "UI-C005",
+        "UI-C018",
+        "UI-C019",
+        "UI-C020",
+        "UI-C021",
+        "UI-C035",
+        "UI-C036"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-003"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "EVD-003",
+      "source_story_id": "ST-0606",
+      "name": "Fact Explorer",
+      "catalog_route": "/admin/evidence/facts",
+      "area": "evidence",
+      "roles": [
+        "EDITOR",
+        "REVIEWER",
+        "ANALYST"
+      ],
+      "purpose": "FactをSource/対象/日時で検索",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_CONTRACT",
+      "component_ids": [
+        "UI-C001",
+        "UI-C005",
+        "UI-C007",
+        "UI-C019",
+        "UI-C035",
+        "UI-C036"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-003"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "EVD-004",
+      "source_story_id": "ST-0606",
+      "name": "Evidence Conflict Queue",
+      "catalog_route": "/admin/evidence/conflicts",
+      "area": "evidence",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "purpose": "矛盾Factを解決またはUnknown化",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_CONTRACT",
+      "component_ids": [
+        "UI-C001",
+        "UI-C005",
+        "UI-C007",
+        "UI-C010",
+        "UI-C035",
+        "UI-C036"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-003"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "GOV-001",
+      "source_story_id": "ST-0709",
+      "name": "AI Governance",
+      "catalog_route": "/admin/governance/ai",
+      "area": "governance",
+      "roles": [
+        "PRODUCT_OWNER",
+        "MANAGING_EDITOR",
+        "SECURITY_AUDITOR"
+      ],
+      "purpose": "Task/Prompt/Route/Evaluation/Releaseを表示",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "REV-001",
+      "source_story_id": "ST-0906",
+      "name": "Review Queue",
+      "catalog_route": "/admin/reviews",
+      "area": "review",
+      "roles": [
+        "MANAGING_EDITOR",
+        "REVIEWER"
+      ],
+      "purpose": "レビュー対象をRisk/期限で優先表示",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_STORY_LEVEL_INVENTORY",
+      "component_ids": [],
+      "story_component_ids": [
+        "UI-C005",
+        "UI-C006",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010",
+        "UI-C011",
+        "UI-C012",
+        "UI-C013",
+        "UI-C015",
+        "UI-C016",
+        "UI-C025",
+        "UI-C026",
+        "UI-C027",
+        "UI-C028",
+        "UI-C041"
+      ],
+      "workflow_ids": [
+        "UI-WF-005"
+      ],
+      "local_browser_surface": "DEPENDENCY_RENDERER_AND_SYNTHETIC_FIXTURE",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "REV-002",
+      "source_story_id": "ST-0906",
+      "name": "Editorial Review",
+      "catalog_route": "/admin/reviews/{versionId}",
+      "area": "review",
+      "roles": [
+        "REVIEWER",
+        "MANAGING_EDITOR"
+      ],
+      "purpose": "75項目ChecklistとFindingを記録",
+      "mvp": true,
+      "critical_action": true,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_STORY_LEVEL_INVENTORY",
+      "component_ids": [],
+      "story_component_ids": [
+        "UI-C005",
+        "UI-C006",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010",
+        "UI-C011",
+        "UI-C012",
+        "UI-C013",
+        "UI-C015",
+        "UI-C016",
+        "UI-C025",
+        "UI-C026",
+        "UI-C027",
+        "UI-C028",
+        "UI-C041"
+      ],
+      "workflow_ids": [
+        "UI-WF-005"
+      ],
+      "local_browser_surface": "DEPENDENCY_RENDERER_AND_SYNTHETIC_FIXTURE",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "REV-003",
+      "source_story_id": "ST-0906",
+      "name": "Final Approval",
+      "catalog_route": "/admin/approvals/{versionId}",
+      "area": "review",
+      "roles": [
+        "MANAGING_EDITOR"
+      ],
+      "purpose": "全Gateと差分を確認し承認/差戻し",
+      "mvp": true,
+      "critical_action": true,
+      "api_dependencies": [
+        "FinalApproval"
+      ],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_STORY_LEVEL_INVENTORY",
+      "component_ids": [],
+      "story_component_ids": [
+        "UI-C005",
+        "UI-C006",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010",
+        "UI-C011",
+        "UI-C012",
+        "UI-C013",
+        "UI-C015",
+        "UI-C016",
+        "UI-C025",
+        "UI-C026",
+        "UI-C027",
+        "UI-C028",
+        "UI-C041"
+      ],
+      "workflow_ids": [
+        "UI-WF-005"
+      ],
+      "local_browser_surface": "DEPENDENCY_RENDERER_AND_SYNTHETIC_FIXTURE",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "PUBA-001",
+      "source_story_id": "ST-0906",
+      "name": "Publication Queue",
+      "catalog_route": "/admin/publications",
+      "area": "publishing",
+      "roles": [
+        "MANAGING_EDITOR",
+        "OPERATOR"
+      ],
+      "purpose": "公開候補とBlockerを表示",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_STORY_LEVEL_INVENTORY",
+      "component_ids": [],
+      "story_component_ids": [
+        "UI-C005",
+        "UI-C006",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010",
+        "UI-C011",
+        "UI-C012",
+        "UI-C013",
+        "UI-C015",
+        "UI-C016",
+        "UI-C025",
+        "UI-C026",
+        "UI-C027",
+        "UI-C028",
+        "UI-C041"
+      ],
+      "workflow_ids": [
+        "UI-WF-006"
+      ],
+      "local_browser_surface": "DEPENDENCY_RENDERER_AND_SYNTHETIC_FIXTURE",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "PUBA-002",
+      "source_story_id": "ST-0906",
+      "name": "Snapshot Preview",
+      "catalog_route": "/admin/publications/{id}/preview",
+      "area": "publishing",
+      "roles": [
+        "MANAGING_EDITOR",
+        "REVIEWER",
+        "OPERATOR"
+      ],
+      "purpose": "実際の公開Snapshotを隔離Preview",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_STORY_LEVEL_INVENTORY",
+      "component_ids": [],
+      "story_component_ids": [
+        "UI-C005",
+        "UI-C006",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010",
+        "UI-C011",
+        "UI-C012",
+        "UI-C013",
+        "UI-C015",
+        "UI-C016",
+        "UI-C025",
+        "UI-C026",
+        "UI-C027",
+        "UI-C028",
+        "UI-C041"
+      ],
+      "workflow_ids": [
+        "UI-WF-006"
+      ],
+      "local_browser_surface": "DEPENDENCY_RENDERER_AND_SYNTHETIC_FIXTURE",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "PUBA-003",
+      "source_story_id": "ST-0906",
+      "name": "Publish Command",
+      "catalog_route": "/admin/publications/{id}/publish",
+      "area": "publishing",
+      "roles": [
+        "MANAGING_EDITOR",
+        "OPERATOR"
+      ],
+      "purpose": "step-up後に冪等公開Commandを送る",
+      "mvp": true,
+      "critical_action": true,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_STORY_LEVEL_INVENTORY",
+      "component_ids": [],
+      "story_component_ids": [
+        "UI-C005",
+        "UI-C006",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010",
+        "UI-C011",
+        "UI-C012",
+        "UI-C013",
+        "UI-C015",
+        "UI-C016",
+        "UI-C025",
+        "UI-C026",
+        "UI-C027",
+        "UI-C028",
+        "UI-C041"
+      ],
+      "workflow_ids": [
+        "UI-WF-006"
+      ],
+      "local_browser_surface": "DEPENDENCY_RENDERER_AND_SYNTHETIC_FIXTURE",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "PUBA-004",
+      "source_story_id": "ST-0906",
+      "name": "Rollback",
+      "catalog_route": "/admin/publications/{id}/rollback",
+      "area": "publishing",
+      "roles": [
+        "MANAGING_EDITOR",
+        "OPERATOR"
+      ],
+      "purpose": "旧Snapshotへ戻し理由を監査記録",
+      "mvp": true,
+      "critical_action": true,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_STORY_LEVEL_INVENTORY",
+      "component_ids": [],
+      "story_component_ids": [
+        "UI-C005",
+        "UI-C006",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010",
+        "UI-C011",
+        "UI-C012",
+        "UI-C013",
+        "UI-C015",
+        "UI-C016",
+        "UI-C025",
+        "UI-C026",
+        "UI-C027",
+        "UI-C028",
+        "UI-C041"
+      ],
+      "workflow_ids": [
+        "UI-WF-006",
+        "UI-WF-007"
+      ],
+      "local_browser_surface": "DEPENDENCY_RENDERER_AND_SYNTHETIC_FIXTURE",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "EDT-002",
+      "source_story_id": "ST-1102",
+      "name": "Article Workspace",
+      "catalog_route": "/admin/articles/{id}",
+      "area": "editorial",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "purpose": "企画から公開までの統合Workspace",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [
+        "Article",
+        "ArticleVersion",
+        "Findings"
+      ],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C014",
+        "UI-C015",
+        "UI-C021",
+        "UI-C022",
+        "UI-C023",
+        "UI-C036"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-004"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "EDT-003",
+      "source_story_id": "ST-1102",
+      "name": "Content AST Editor",
+      "catalog_route": "/admin/articles/{id}/versions/{versionId}/content",
+      "area": "editorial",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR"
+      ],
+      "purpose": "型付きBlockを編集し未知Fieldを拒否",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C014",
+        "UI-C022"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-004"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "EDT-005",
+      "source_story_id": "ST-1102",
+      "name": "AI Diff Review",
+      "catalog_route": "/admin/articles/{id}/ai-diff",
+      "area": "editorial",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "purpose": "AI提案と人間編集差分を比較",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C014",
+        "UI-C015"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-004"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "EDT-006",
+      "source_story_id": "ST-1102",
+      "name": "Claim–Evidence Matrix",
+      "catalog_route": "/admin/articles/{id}/claims",
+      "area": "editorial",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "purpose": "ClaimごとのEvidence、時刻、Conflictを確認",
+      "mvp": true,
+      "critical_action": true,
+      "api_dependencies": [
+        "Claim",
+        "ClaimEvidenceLink"
+      ],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C014",
+        "UI-C021"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "EDT-007",
+      "source_story_id": "ST-1102",
+      "name": "Comparison Preview",
+      "catalog_route": "/admin/articles/{id}/comparison",
+      "area": "editorial",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "purpose": "比較軸・単位・Unknown・Variantを検査",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C014",
+        "UI-C023",
+        "UI-C036"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "EDT-009",
+      "source_story_id": "ST-1102",
+      "name": "SEO Preview",
+      "catalog_route": "/admin/articles/{id}/seo",
+      "area": "editorial",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "purpose": "Title、Canonical、Robots、JSON-LD Preview",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C014"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "FRESH-001",
+      "source_story_id": "ST-1103",
+      "name": "Freshness Queue",
+      "catalog_route": "/admin/freshness",
+      "area": "freshness",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "OPERATOR"
+      ],
+      "purpose": "Stale/Expired Factと影響記事を管理",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C001",
+        "UI-C004",
+        "UI-C005",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010",
+        "UI-C035"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-010"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "FRESH-002",
+      "source_story_id": "ST-1103",
+      "name": "Link Health",
+      "catalog_route": "/admin/freshness/link-health",
+      "area": "freshness",
+      "roles": [
+        "EDITOR",
+        "OPERATOR"
+      ],
+      "purpose": "Affiliate LinkとDestination異常を確認",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C001",
+        "UI-C004",
+        "UI-C005",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-010"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "FRESH-003",
+      "source_story_id": "ST-1103",
+      "name": "Refresh Proposal",
+      "catalog_route": "/admin/freshness/proposals/{id}",
+      "area": "freshness",
+      "roles": [
+        "MANAGING_EDITOR",
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "purpose": "更新差分と再承認範囲を確認",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C001",
+        "UI-C004",
+        "UI-C005",
+        "UI-C010",
+        "UI-C015",
+        "UI-C035"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-010"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "OPS-001",
+      "source_story_id": "ST-1103",
+      "name": "Job Monitor",
+      "catalog_route": "/admin/ops/jobs",
+      "area": "operations",
+      "roles": [
+        "OPERATOR",
+        "SECURITY_AUDITOR"
+      ],
+      "purpose": "Job、Attempt、Lease、Retryを監視",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C001",
+        "UI-C004",
+        "UI-C005",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010",
+        "UI-C017"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "OPS-002",
+      "source_story_id": "ST-1103",
+      "name": "DLQ / Quarantine",
+      "catalog_route": "/admin/ops/dlq",
+      "area": "operations",
+      "roles": [
+        "OPERATOR",
+        "SECURITY_AUDITOR"
+      ],
+      "purpose": "隔離Payloadを安全に調査・再実行",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C001",
+        "UI-C004",
+        "UI-C005",
+        "UI-C006",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010",
+        "UI-C012",
+        "UI-C017"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "OPS-003",
+      "source_story_id": "ST-1103",
+      "name": "Incident",
+      "catalog_route": "/admin/ops/incidents/{id}",
+      "area": "operations",
+      "roles": [
+        "PRODUCT_OWNER",
+        "OPERATOR",
+        "SECURITY_AUDITOR"
+      ],
+      "purpose": "Incident、Timeline、Action、Evidenceを管理",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C001",
+        "UI-C004",
+        "UI-C005",
+        "UI-C006",
+        "UI-C010",
+        "UI-C016",
+        "UI-C030"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "OPS-004",
+      "source_story_id": "ST-1103",
+      "name": "Kill Switches",
+      "catalog_route": "/admin/ops/kill-switches",
+      "area": "operations",
+      "roles": [
+        "PRODUCT_OWNER",
+        "MANAGING_EDITOR",
+        "OPERATOR"
+      ],
+      "purpose": "Publication/Affiliate停止をstep-upで操作",
+      "mvp": true,
+      "critical_action": true,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C001",
+        "UI-C004",
+        "UI-C005",
+        "UI-C010",
+        "UI-C012",
+        "UI-C013",
+        "UI-C029"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-009"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "OPS-005",
+      "source_story_id": "ST-1103",
+      "name": "Audit Log",
+      "catalog_route": "/admin/ops/audit",
+      "area": "operations",
+      "roles": [
+        "SECURITY_AUDITOR",
+        "READ_ONLY_AUDITOR"
+      ],
+      "purpose": "不変Audit Eventを検索",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "DEPENDENCY_PER_SCREEN_PROJECTION",
+      "component_ids": [
+        "UI-C001",
+        "UI-C004",
+        "UI-C005",
+        "UI-C007",
+        "UI-C008",
+        "UI-C010",
+        "UI-C016"
+      ],
+      "story_component_ids": [],
+      "workflow_ids": [],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "ANA-001",
+      "source_story_id": "ST-1104",
+      "name": "Content Performance",
+      "catalog_route": "/admin/analytics/content",
+      "area": "analytics",
+      "roles": [
+        "PRODUCT_OWNER",
+        "MANAGING_EDITOR",
+        "ANALYST"
+      ],
+      "purpose": "検索、行動、クリック、品質を記事別に表示",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "ANA-002",
+      "source_story_id": "ST-1104",
+      "name": "Search Performance",
+      "catalog_route": "/admin/analytics/search",
+      "area": "analytics",
+      "roles": [
+        "PRODUCT_OWNER",
+        "MANAGING_EDITOR",
+        "ANALYST"
+      ],
+      "purpose": "Search Console指標とIntentを表示",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "ANA-003",
+      "source_story_id": "ST-1104",
+      "name": "Affiliate Clicks",
+      "catalog_route": "/admin/analytics/clicks",
+      "area": "analytics",
+      "roles": [
+        "PRODUCT_OWNER",
+        "ANALYST"
+      ],
+      "purpose": "CTA別クリックと計測品質を表示",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "FIN-001",
+      "source_story_id": "ST-1104",
+      "name": "成果Import",
+      "catalog_route": "/admin/finance/imports",
+      "area": "finance",
+      "roles": [
+        "PRODUCT_OWNER",
+        "ANALYST",
+        "OPERATOR"
+      ],
+      "purpose": "CSV Upload、検査、Dry Run、Commit",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-008"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "FIN-002",
+      "source_story_id": "ST-1104",
+      "name": "Reconciliation",
+      "catalog_route": "/admin/finance/reconciliation/{id}",
+      "area": "finance",
+      "roles": [
+        "PRODUCT_OWNER",
+        "ANALYST"
+      ],
+      "purpose": "Provider合計とCanonical取込を照合",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-008"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    },
+    {
+      "screen_id": "FIN-003",
+      "source_story_id": "ST-1104",
+      "name": "Unit Economics",
+      "catalog_route": "/admin/finance/unit-economics",
+      "area": "finance",
+      "roles": [
+        "PRODUCT_OWNER",
+        "ANALYST"
+      ],
+      "purpose": "確定EPC/RPM/貢献利益と帰属Basisを表示",
+      "mvp": true,
+      "critical_action": false,
+      "api_dependencies": [],
+      "catalog_design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "catalog_implementation_status": "NOT_STARTED",
+      "catalog_runtime_verification": "NOT_EXECUTED",
+      "component_exposure_kind": "NOT_EXPOSED_BY_DEPENDENCY",
+      "component_ids": [],
+      "story_component_ids": [],
+      "workflow_ids": [
+        "UI-WF-008"
+      ],
+      "local_browser_surface": "SYNTHETIC_ACCEPTANCE_FIXTURE_ONLY",
+      "catalog_route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false
+    }
+  ],
+  "component_inventory": [
+    {
+      "component_id": "UI-C001",
+      "name": "AppShell",
+      "area": "admin",
+      "purpose": "Sidebar、Header、Main landmark、Skip link",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0606",
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C004",
+      "name": "Breadcrumbs",
+      "area": "shared",
+      "purpose": "階層と現在位置",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C005",
+      "name": "StatusBadge",
+      "area": "shared",
+      "purpose": "Text＋Iconで状態を表現",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0606",
+        "ST-0906",
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C006",
+      "name": "SeverityBadge",
+      "area": "admin",
+      "purpose": "Finding/Incident severity",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0906",
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C007",
+      "name": "DataTable",
+      "area": "admin",
+      "purpose": "列選択、Sort、Pagination、Keyboard操作",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0606",
+        "ST-0906",
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C008",
+      "name": "FilterBar",
+      "area": "admin",
+      "purpose": "URL同期Filter",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0906",
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C010",
+      "name": "EmptyState",
+      "area": "shared",
+      "purpose": "理由と次Action",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0606",
+        "ST-0906",
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C011",
+      "name": "ErrorSummary",
+      "area": "shared",
+      "purpose": "Form errorを先頭へ集約",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0906"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C012",
+      "name": "ConfirmDialog",
+      "area": "admin",
+      "purpose": "破壊的Actionの対象・影響・取消可能性を表示",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0906",
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C013",
+      "name": "StepUpDialog",
+      "area": "admin",
+      "purpose": "再認証が必要なCritical Action",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0906",
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C014",
+      "name": "UnsavedChangesGuard",
+      "area": "admin",
+      "purpose": "離脱防止",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-1102"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C015",
+      "name": "VersionDiff",
+      "area": "admin",
+      "purpose": "追加/削除/変更と出所を比較",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0906",
+        "ST-1102",
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C016",
+      "name": "AuditTimeline",
+      "area": "admin",
+      "purpose": "Actor、時刻、Correlation ID",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0906",
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C017",
+      "name": "JobStatusPanel",
+      "area": "admin",
+      "purpose": "状態、Attempt、Deadline、Failure",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C018",
+      "name": "SourceViewer",
+      "area": "admin",
+      "purpose": "原本と抽出Factを並列表示",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0606"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C019",
+      "name": "FactCard",
+      "area": "admin",
+      "purpose": "Value、Unit、Source、Observed at、Confidence",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0606"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C020",
+      "name": "ClaimCard",
+      "area": "admin",
+      "purpose": "Claim type、Importance、Evidence coverage",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0606"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C021",
+      "name": "ClaimEvidenceMatrix",
+      "area": "admin",
+      "purpose": "Claim×Evidence、Conflict、Freshness",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0606",
+        "ST-1102"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C022",
+      "name": "ContentBlockEditor",
+      "area": "admin",
+      "purpose": "Typed AST Block編集",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-1102"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C023",
+      "name": "ComparisonTableEditor",
+      "area": "admin",
+      "purpose": "商品×軸、Unit、Unknown",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-1102"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C025",
+      "name": "QualityGatePanel",
+      "area": "admin",
+      "purpose": "Gate結果とBlocking Finding",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0906"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C026",
+      "name": "ReviewChecklist",
+      "area": "admin",
+      "purpose": "必須項目、Evidence、判定",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0906"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C027",
+      "name": "ApprovalPanel",
+      "area": "admin",
+      "purpose": "承認対象Hashと差分",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0906"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C028",
+      "name": "PublicationPreview",
+      "area": "admin",
+      "purpose": "Public Snapshot Preview",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0906"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C029",
+      "name": "KillSwitchPanel",
+      "area": "admin",
+      "purpose": "Scope、Generation、Reason、Actor",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C030",
+      "name": "IncidentBanner",
+      "area": "shared",
+      "purpose": "影響と状態",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C035",
+      "name": "FreshnessNotice",
+      "area": "public",
+      "purpose": "更新時刻、Stale/Unknown表示",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0606",
+        "ST-1103"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C036",
+      "name": "UnknownValue",
+      "area": "shared",
+      "purpose": "欠損を推測せず表示",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0606",
+        "ST-1102"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    },
+    {
+      "component_id": "UI-C041",
+      "name": "ToastRegion",
+      "area": "shared",
+      "purpose": "ARIA liveを乱用しない通知",
+      "keyboard_required": true,
+      "screen_reader_required": true,
+      "source_story_ids": [
+        "ST-0906"
+      ],
+      "formal_runtime_verification": "NOT_EXECUTED"
+    }
+  ],
+  "component_count": 29,
+  "critical_workflows": [
+    {
+      "workflow_id": "UI-WF-001",
+      "name": "OpportunityからArticle Plan",
+      "actors": [
+        "EDITOR",
+        "MANAGING_EDITOR"
+      ],
+      "steps": [
+        "Opportunity候補表示",
+        "Source確認",
+        "Intent Cluster選択",
+        "記事型選択",
+        "Candidate Universe固定",
+        "Plan作成"
+      ],
+      "critical_guards": [
+        "Finance情報を表示しない",
+        "同一Intent重複警告"
+      ],
+      "screen_ids": [
+        "PORT-001",
+        "PORT-002",
+        "PORT-003",
+        "PORT-004",
+        "PORT-005",
+        "PORT-006"
+      ],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE",
+      "business_action_executed": false,
+      "formal_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "workflow_id": "UI-WF-002",
+      "name": "商品同一性解決",
+      "actors": [
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "steps": [
+        "候補選択",
+        "型番/Variant比較",
+        "原本確認",
+        "統合/分離Decision",
+        "理由入力",
+        "監査保存"
+      ],
+      "critical_guards": [
+        "曖昧時は統合禁止",
+        "Rollback可能な追記Decision"
+      ],
+      "screen_ids": [
+        "CAT-001",
+        "CAT-002",
+        "CAT-003",
+        "CAT-004",
+        "CAT-005",
+        "CAT-006"
+      ],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE",
+      "business_action_executed": false,
+      "formal_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "workflow_id": "UI-WF-003",
+      "name": "Source Packet承認",
+      "actors": [
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "steps": [
+        "Fact確認",
+        "Conflict解決",
+        "Freshness確認",
+        "Coverage確認",
+        "承認"
+      ],
+      "critical_guards": [
+        "Rakuten review body禁止",
+        "未解決Critical conflictでBlock"
+      ],
+      "screen_ids": [
+        "EVD-001",
+        "EVD-002",
+        "EVD-003",
+        "EVD-004"
+      ],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE",
+      "business_action_executed": false,
+      "formal_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "workflow_id": "UI-WF-004",
+      "name": "AI Draft生成と差分確認",
+      "actors": [
+        "EDITOR"
+      ],
+      "steps": [
+        "Input Manifest Preview",
+        "Cost/Route確認",
+        "Job開始",
+        "Structured Output検証",
+        "Diff表示",
+        "採用/棄却"
+      ],
+      "critical_guards": [
+        "AIは自動保存しない",
+        "Raw sourceを命令として扱わない"
+      ],
+      "screen_ids": [
+        "EDT-002",
+        "EDT-003",
+        "EDT-005"
+      ],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE",
+      "business_action_executed": false,
+      "formal_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "workflow_id": "UI-WF-005",
+      "name": "Editorial Review",
+      "actors": [
+        "REVIEWER"
+      ],
+      "steps": [
+        "Claim matrix",
+        "Comparison",
+        "Recommendation",
+        "Disclosure",
+        "SEO",
+        "Checklist",
+        "Decision"
+      ],
+      "critical_guards": [
+        "Blocking軸4/4",
+        "Score85以上",
+        "Zero tolerance 0"
+      ],
+      "screen_ids": [
+        "REV-001",
+        "REV-002",
+        "REV-003"
+      ],
+      "mapping_basis": "DEPENDENCY_EXPLICIT_WORKFLOW_INVENTORY",
+      "business_action_executed": false,
+      "formal_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "workflow_id": "UI-WF-006",
+      "name": "公開",
+      "actors": [
+        "MANAGING_EDITOR",
+        "OPERATOR"
+      ],
+      "steps": [
+        "Approval確認",
+        "Snapshot Preview",
+        "Step-up",
+        "Idempotent publish",
+        "Public smoke test"
+      ],
+      "critical_guards": [
+        "Kill switch",
+        "Freshness",
+        "Snapshot hash",
+        "同一Command二重実行防止"
+      ],
+      "screen_ids": [
+        "PUBA-001",
+        "PUBA-002",
+        "PUBA-003",
+        "PUBA-004"
+      ],
+      "mapping_basis": "DEPENDENCY_EXPLICIT_WORKFLOW_INVENTORY",
+      "business_action_executed": false,
+      "formal_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "workflow_id": "UI-WF-007",
+      "name": "Rollback",
+      "actors": [
+        "MANAGING_EDITOR",
+        "OPERATOR"
+      ],
+      "steps": [
+        "影響確認",
+        "旧Snapshot選択",
+        "理由入力",
+        "Step-up",
+        "Rollback",
+        "検証"
+      ],
+      "critical_guards": [
+        "監査記録必須",
+        "Affiliate link状態を再評価"
+      ],
+      "screen_ids": [
+        "PUBA-004"
+      ],
+      "mapping_basis": "DEPENDENCY_EXPLICIT_WORKFLOW_INVENTORY",
+      "business_action_executed": false,
+      "formal_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "workflow_id": "UI-WF-008",
+      "name": "成果CSV取込",
+      "actors": [
+        "ANALYST",
+        "OPERATOR"
+      ],
+      "steps": [
+        "Upload",
+        "Security scan",
+        "Schema detect",
+        "Dry run",
+        "Reconciliation",
+        "Human confirm",
+        "Commit"
+      ],
+      "critical_guards": [
+        "Formula injection無効化",
+        "重複取込防止",
+        "推定帰属を公式化しない"
+      ],
+      "screen_ids": [
+        "FIN-001",
+        "FIN-002",
+        "FIN-003"
+      ],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE",
+      "business_action_executed": false,
+      "formal_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "workflow_id": "UI-WF-009",
+      "name": "Kill Switch",
+      "actors": [
+        "PRODUCT_OWNER",
+        "OPERATOR"
+      ],
+      "steps": [
+        "Scope選択",
+        "影響Preview",
+        "Step-up",
+        "理由入力",
+        "Activate",
+        "監視"
+      ],
+      "critical_guards": [
+        "解除は別Action",
+        "古いGenerationで上書き禁止"
+      ],
+      "screen_ids": [
+        "OPS-004"
+      ],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE",
+      "business_action_executed": false,
+      "formal_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "workflow_id": "UI-WF-010",
+      "name": "Freshness更新",
+      "actors": [
+        "EDITOR",
+        "REVIEWER"
+      ],
+      "steps": [
+        "Stale影響表示",
+        "再取得",
+        "差分",
+        "再評価範囲",
+        "承認または安全な縮退"
+      ],
+      "critical_guards": [
+        "順位変更は再承認",
+        "取得失敗時に旧値を最新表示しない"
+      ],
+      "screen_ids": [
+        "FRESH-001",
+        "FRESH-002",
+        "FRESH-003"
+      ],
+      "mapping_basis": "CANONICAL_NAME_STEPS_AND_SCREEN_PURPOSE",
+      "business_action_executed": false,
+      "formal_execution_status": "NOT_EXECUTED"
+    }
+  ],
+  "critical_workflow_count": 10,
+  "accessibility_checklist": [
+    {
+      "id": "A11Y-001",
+      "requirement": "全Pageに一意で説明的なtitleとH1",
+      "reference": "WCAG 2.4.2/2.4.6",
+      "verification": "automated+manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-002",
+      "requirement": "Skip linkとlandmarkを提供",
+      "reference": "WCAG 2.4.1/1.3.1",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-003",
+      "requirement": "全操作をKeyboardのみで実行可能",
+      "reference": "WCAG 2.1.1",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-004",
+      "requirement": "Focus順が視覚順と一致",
+      "reference": "WCAG 2.4.3",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-005",
+      "requirement": "Focus indicatorを隠さない",
+      "reference": "WCAG 2.4.7/2.4.11",
+      "verification": "automated+manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-006",
+      "requirement": "DialogはFocus trap、Escape、return focusを実装",
+      "reference": "ARIA APG Dialog",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-007",
+      "requirement": "Statusを色だけで表現しない",
+      "reference": "WCAG 1.4.1",
+      "verification": "automated+manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-008",
+      "requirement": "通常文字Contrast 4.5:1以上を目標",
+      "reference": "WCAG 1.4.3",
+      "verification": "automated",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-009",
+      "requirement": "UI Component/Focus Contrast 3:1以上を目標",
+      "reference": "WCAG 1.4.11",
+      "verification": "automated",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-010",
+      "requirement": "200% Zoomで情報・操作を失わない",
+      "reference": "WCAG 1.4.4",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-011",
+      "requirement": "320 CSS px幅で2次元Scrollを避ける（比較表等の例外は説明）",
+      "reference": "WCAG 1.4.10",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-012",
+      "requirement": "Form label、instruction、requiredを明示",
+      "reference": "WCAG 1.3.1/3.3.2",
+      "verification": "automated+manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-013",
+      "requirement": "Validation errorをFieldとSummaryへ関連付け",
+      "reference": "WCAG 3.3.1/3.3.3",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-014",
+      "requirement": "破壊的/財務Actionは確認・取消または訂正機会",
+      "reference": "WCAG 3.3.4",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-015",
+      "requirement": "Tableにcaption/headers/scopeを使用",
+      "reference": "WCAG 1.3.1",
+      "verification": "automated+manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "SYNTHETIC_PATTERN_AUTOMATED",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-016",
+      "requirement": "Responsive比較表でも商品名と軸の関係を保持",
+      "reference": "WCAG 1.3.1",
+      "verification": "screen-reader",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-017",
+      "requirement": "Image altは目的を記述し装飾画像は空alt",
+      "reference": "WCAG 1.1.1",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-018",
+      "requirement": "Link textだけで目的が分かる",
+      "reference": "WCAG 2.4.4",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-019",
+      "requirement": "楽天へ移動するCTAを事前明示",
+      "reference": "RAOS policy",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-020",
+      "requirement": "Motionはprefers-reduced-motionを尊重",
+      "reference": "WCAG 2.3.3",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-021",
+      "requirement": "自動更新はFocusを奪わず必要時のみlive region",
+      "reference": "WCAG 4.1.3",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-022",
+      "requirement": "Timeout前に警告し可能なら延長",
+      "reference": "WCAG 2.2.1",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-023",
+      "requirement": "DragだけでなくButton/Keyboard代替を提供",
+      "reference": "WCAG 2.5.7",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-024",
+      "requirement": "Target sizeを確保し密集操作を避ける",
+      "reference": "WCAG 2.5.8",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-025",
+      "requirement": "認証で記憶・Puzzleだけを要求しない",
+      "reference": "WCAG 3.3.8",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-026",
+      "requirement": "Screen readerでLoading/Success/Failureが分かる",
+      "reference": "WCAG 4.1.3",
+      "verification": "screen-reader",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-027",
+      "requirement": "Markdown/AST Previewと公開RendererのHeading構造一致",
+      "reference": "RAOS policy",
+      "verification": "automated+manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-028",
+      "requirement": "ChartはTableまたはText summaryを併設",
+      "reference": "WCAG 1.1.1/1.3.1",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-029",
+      "requirement": "PDF等をMVPの唯一情報経路にしない",
+      "reference": "RAOS policy",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "A11Y-030",
+      "requirement": "主要FlowをNVDAまたは同等Screen readerで確認",
+      "reference": "acceptance",
+      "verification": "manual",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "test_status": "NOT_EXECUTED",
+      "local_automation_capability": "UNAVAILABLE",
+      "formal_execution_status": "NOT_EXECUTED",
+      "manual_execution_status": "NOT_EXECUTED"
+    }
+  ],
+  "formal_suites": [
+    {
+      "id": "TST-023",
+      "name": "Accessibility automated",
+      "layer": "ui",
+      "purpose": "axe等による機械検査",
+      "candidate_tools": [
+        "axe-core",
+        "Playwright"
+      ],
+      "release_blocking": true,
+      "environments": [
+        "CI"
+      ],
+      "owner": "Engineering",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "TST-024",
+      "name": "Accessibility manual",
+      "layer": "ui",
+      "purpose": "Keyboard、Zoom、Screen reader、cognitive checks",
+      "candidate_tools": [
+        "NVDA/VoiceOver",
+        "manual checklist"
+      ],
+      "release_blocking": true,
+      "environments": [
+        "staging"
+      ],
+      "owner": "QA/Accessibility",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "execution_status": "NOT_EXECUTED"
+    },
+    {
+      "id": "TST-025",
+      "name": "Visual regression",
+      "layer": "ui",
+      "purpose": "主要Template/Component差分",
+      "candidate_tools": [
+        "Playwright screenshots"
+      ],
+      "release_blocking": false,
+      "environments": [
+        "CI"
+      ],
+      "owner": "Engineering",
+      "design_status": "APPROVED_FOR_IMPLEMENTATION",
+      "implementation_status": "NOT_STARTED",
+      "execution_status": "NOT_EXECUTED"
+    }
+  ],
+  "browser_contract": {
+    "classification": "LOCAL_BROWSER_AUTOMATED_ADMIN_ACCESSIBILITY_VISUAL_EVIDENCE_NON_FORMAL_V2",
+    "baseline": {
+      "schema_version": 2,
+      "profile": "ST1105_LOCAL_SYNTHETIC_CHROME_147_DESKTOP_1280_EXACT_PNG_SHA256",
+      "algorithm": "PNG_SHA256_EXACT",
+      "tolerance": "ZERO_BYTE_DIGEST_DIFFERENCE",
+      "screenshot_storage": "DIGEST_ONLY_NO_BROWSER_MATERIAL",
+      "baseline_path": "changes/st-1105/baselines/admin-visual.synthetic.v2.json",
+      "approved": false,
+      "formal_TST-025": "NOT_EXECUTED"
+    },
+    "evidence": {
+      "path": "changes/st-1105/evidence/local-browser-automated.v2.json",
+      "classification": "LOCAL_AUTOMATED_NON_FORMAL_RECORDED_SYNTHETIC_EVIDENCE",
+      "synthetic_fixture_result": "LOCAL_AUTOMATED_PASS_SYNTHETIC_FIXTURE_ONLY",
+      "dependency_renderer_result_vocabulary": [
+        "LOCAL_AUTOMATED_PASS_DEPENDENCY_RENDERER_ONLY",
+        "LOCAL_AUTOMATED_REVIEW_REQUIRED_DEPENDENCY_RENDERER_ONLY"
+      ],
+      "formal_result": "NOT_EXECUTED"
+    },
+    "zoom_proxy": {
+      "kind": "AUTOMATED_320_CSS_PIXEL_REFLOW_PROXY_FOR_640_DEVICE_PIXELS_AT_200_PERCENT",
+      "automated_browser_zoom_claimed": false,
+      "manual_200_percent_zoom": "NOT_EXECUTED"
+    }
+  },
+  "fixture": {
+    "path": "changes/st-1105/fixtures/admin-visual-accessibility.synthetic.v2.json",
+    "sha256": "055be8d7901e0b7a609d58f2be0289ca796770ad445cf94ddfdc0ab2d555a7ad",
+    "bytes": 1788,
+    "synthetic": true,
+    "template": {
+      "skip_link_text": "本文へ移動",
+      "status_text": "Recorded synthetic local fixture — external action disabled",
+      "filter_label": "表示項目を絞り込む",
+      "filter_instruction": "合成 fixture の表示だけを変更します。外部送信はありません。",
+      "table_caption": "Recorded synthetic accessibility acceptance rows",
+      "table_columns": [
+        "項目",
+        "状態",
+        "根拠"
+      ],
+      "table_rows": [
+        [
+          "Screen contract",
+          "AVAILABLE_RECORDED",
+          "Canonical catalog binding"
+        ],
+        [
+          "Runtime authority",
+          "DISABLED",
+          "Local fixture only"
+        ]
+      ],
+      "dialog_open_label": "ローカル確認ダイアログを開く",
+      "dialog_title": "ローカル確認",
+      "dialog_description": "このダイアログは focus lifecycle の検査専用です。業務 Action は実行しません。",
+      "dialog_cancel_label": "閉じる",
+      "dialog_disabled_action_label": "実行不可",
+      "dialog_disabled_reason": "認証、認可、実 route、業務 command がないため無効です。"
+    },
+    "security": {
+      "raw_source": false,
+      "raw_prompt": false,
+      "review_body": false,
+      "personal_data": false,
+      "credential": false,
+      "finance_or_affiliate_economics": false,
+      "arbitrary_url": false,
+      "external_network": false,
+      "callback_or_business_dispatch": false
+    },
+    "authority": {
+      "route_registered": false,
+      "authentication_established": false,
+      "authorization_granted": false,
+      "business_action_enabled": false,
+      "publication_authorized": false,
+      "production_eligible": false
+    }
+  },
+  "formal_boundary": {
+    "TST-023": "NOT_EXECUTED",
+    "TST-024": "NOT_EXECUTED",
+    "TST-025": "NOT_EXECUTED",
+    "manual_keyboard": "NOT_EXECUTED",
+    "manual_200_percent_zoom": "NOT_EXECUTED",
+    "screen_reader": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "wcag_conformance": "NOT_CLAIMED"
+  },
+  "security_controls": [
+    "SEC-IAM-003",
+    "SEC-IAM-004",
+    "SEC-IAM-005",
+    "SEC-IAM-006",
+    "SEC-APP-001",
+    "SEC-APP-002",
+    "SEC-APP-003",
+    "SEC-APP-004",
+    "SEC-APP-010",
+    "SEC-APP-014",
+    "SEC-APP-015",
+    "SEC-DATA-003",
+    "SEC-DATA-007",
+    "SEC-SDLC-003",
+    "SEC-SDLC-005",
+    "SEC-SDLC-006",
+    "SEC-SDLC-008",
+    "SEC-SDLC-009",
+    "SEC-SDLC-011"
+  ],
+  "authority": {
+    "route_registration": false,
+    "authentication_established": false,
+    "authorization_granted": false,
+    "business_action_dispatch": false,
+    "provider_or_external_network": false,
+    "publication": false,
+    "staging": false,
+    "release": false,
+    "production": false
+  },
+  "provenance": {
+    "integration": {
+      "requested_base_sha": "378748e344249190136939dcd8c7e22f62620836",
+      "required_st0606_patch_sha": "020bfbdb91b081929340aa12eb1e655e9160d810",
+      "local_dependency_base_sha": "82225f48357d55846adfa4f8ee4ac1e9e063be1d"
+    },
+    "acceptance_contract_sha256": "b8640f160cd11fe2697dc6f5c2972c8a7bdab3831f9ed0e8d3cc8893173f8216",
+    "browser_contract_sha256": "4862fc2f5d8c93ab6a487fc751b8cb9eb108362a7a749314ca75f6480a232f10",
+    "fixture_sha256": "055be8d7901e0b7a609d58f2be0289ca796770ad445cf94ddfdc0ab2d555a7ad",
+    "source_bindings": [
+      {
+        "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+      },
+      {
+        "path": "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+        "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+      },
+      {
+        "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+        "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+      },
+      {
+        "path": "docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md",
+        "sha256": "0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e"
+      },
+      {
+        "path": "docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml",
+        "sha256": "dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050"
+      },
+      {
+        "path": "docs/canonical/02_ui/RAOS_08_component_catalog_v1.0.yaml",
+        "sha256": "986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2"
+      },
+      {
+        "path": "docs/canonical/02_ui/RAOS_08_workflow_catalog_v1.0.yaml",
+        "sha256": "59983683ec920cf450d0d887ee43f0b9871e500c2025562f9bec5c6bbc6fe87e"
+      },
+      {
+        "path": "docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv",
+        "sha256": "690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e"
+      },
+      {
+        "path": "docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+        "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+      },
+      {
+        "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+        "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+      },
+      {
+        "path": "docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml",
+        "sha256": "59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0"
+      },
+      {
+        "path": "docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml",
+        "sha256": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984"
+      },
+      {
+        "path": "docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md",
+        "sha256": "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
+      },
+      {
+        "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+        "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+      },
+      {
+        "path": "docs/canonical/05_test/RAOS_11_test_environment_matrix_v1.0.yaml",
+        "sha256": "3dc59c8c951a39d2079eb82e6a3e5adde3ce1910296abf8e1a3a539107a96b68"
+      },
+      {
+        "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+      },
+      {
+        "path": "packages/web-ui/src/admin-visual-accessibility-acceptance.ts",
+        "sha256": "68baca66f7dd34de1107a6b7b00d8d97db30bc287d73719d27722471c092fd0c"
+      },
+      {
+        "path": "packages/web-ui/src/portfolio-catalog-workspace.ts",
+        "sha256": "48715e6e10af1ad134839ac7fe87dee19924507a3d8ab8d627def65dc444ca79"
+      },
+      {
+        "path": "changes/st-0606/contracts/evidence-workspace.v2.yaml",
+        "sha256": "6317e8f2643ecda6ad0f1cc0c56f39df45c3ca3e5c91281d11ad8d84d58114cf"
+      },
+      {
+        "path": "changes/st-0606/generated/evidence-workspace-recorded.v2.json",
+        "sha256": "7788c3eeae45bd1dd63930d904eb08c45bab4e6e266801b7af77a9afd8e0a54e"
+      },
+      {
+        "path": "changes/st-0606/runtime-manifest.v2.yaml",
+        "sha256": "d892896c1984536508f189dbb55aa3ad7c95bfcf2d4a0da4211e276843f9dd12"
+      },
+      {
+        "path": "changes/st-0709/contracts/ai-governance-workspace.v2.yaml",
+        "sha256": "86a07297a74aca32dba4ec34eea955f86adfb09635c376a6fa1289b4f089c26e"
+      },
+      {
+        "path": "changes/st-0709/generated/ai-governance-workspace.v2.json",
+        "sha256": "2801dbb307f2d29f5f99dda17c78f724842eeaf3942af1f2480074dac3658f0b"
+      },
+      {
+        "path": "changes/st-0709/runtime-manifest.v2.json",
+        "sha256": "2d69c6c6574617e59e22a64d4b8267c627ac0e0c48595c991969a7ead7475b45"
+      },
+      {
+        "path": "changes/st-0906/contracts/publication-review-workspace.v2.yaml",
+        "sha256": "653e93d6af6077c399906542e56c5643441dd703b5dc77bc64f60fc01e239bc0"
+      },
+      {
+        "path": "changes/st-0906/generated/publication-review-workspace-recorded.v2.json",
+        "sha256": "386605bed81778252e2543cbeb7d2ba91c496d9dfbd85d8c1b4625ba11f28b68"
+      },
+      {
+        "path": "changes/st-0906/runtime-manifest.v2.yaml",
+        "sha256": "79dbfee4813895aef86d1967be17fb86e2a84626c9a3618001d99c33046dc429"
+      },
+      {
+        "path": "packages/web-ui/src/publication-review-workspace-v2.ts",
+        "sha256": "ba557f91577ecc48ef552263a70d403f16d806b2357dad309f48f9c360ecb5b9"
+      },
+      {
+        "path": "changes/st-1102/contracts/article-workspace.v2.yaml",
+        "sha256": "ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52f"
+      },
+      {
+        "path": "changes/st-1102/article-workspace-recorded.v2.json",
+        "sha256": "e28bdabb017c070383fcf373ccdef5315a93238715033e14c12d5a467f7e32ea"
+      },
+      {
+        "path": "changes/st-1102/runtime-manifest.v2.yaml",
+        "sha256": "327a19c10195792b3fa8f961571fc110d63ca659a1c1693c01c48693589e1f87"
+      },
+      {
+        "path": "packages/web-ui/src/article-workspace-v2.ts",
+        "sha256": "269bca8158dd34086544df18f02c7397ae8f4ad8f117f0e04a3a28a610e895ab"
+      },
+      {
+        "path": "changes/st-1103/contracts/freshness-operations-workspace.v2.yaml",
+        "sha256": "d5434f5fcd4a2de7a436e88ea9c02d3d97228dc032494d90ee1b2f52fcbe9965"
+      },
+      {
+        "path": "changes/st-1103/freshness-operations-recorded.v2.json",
+        "sha256": "d33b9f9d185350dfef9f6fab3bd9a7ea9351874dbb4ec6729b2c18b43cc6317c"
+      },
+      {
+        "path": "changes/st-1103/runtime-manifest.v2.yaml",
+        "sha256": "4c03c7102f0a47cc97220e9f89cdd5ecd8af7ef2f6d77234a7134e6f9c86d09b"
+      },
+      {
+        "path": "packages/web-ui/src/freshness-operations-workspace-v2.ts",
+        "sha256": "b8e2546bcc44aad6c9675ba3424948811843be36f0ebfc99cd315a18667aea10"
+      },
+      {
+        "path": "changes/st-1104/contracts/analytics-finance-dashboard.v2.yaml",
+        "sha256": "1ccf6e2caa98149dbb21315a5c1e788dc23cd6b2b4154331a0f7c6620e81bfb1"
+      },
+      {
+        "path": "changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json",
+        "sha256": "f31ace8268a5540fd4c5488f4e927eb891c215d90bcf13ddd152cc4d59f771bf"
+      },
+      {
+        "path": "changes/st-1104/runtime-manifest.v2.yaml",
+        "sha256": "470bdedbe9aa2d6b96a913053c6167f75b603fa3dde06193352673ab134c8e14"
+      },
+      {
+        "path": "packages/web-ui/src/analytics-finance-recorded.v2.ts",
+        "sha256": "be3f48ce8b1b2727c204156248c9e6e1e7ea58cf5bc2d8a6061b701f3762b81d"
+      },
+      {
+        "path": "package.json",
+        "sha256": "a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b"
+      }
+    ]
+  },
+  "formal_acceptance_achieved": false,
+  "production_eligible": false,
+  "payload_sha256": "60e836c31447307ddc4bc529f28d1475c32d50fef6f987eb52ae77e107a4fced"
+}

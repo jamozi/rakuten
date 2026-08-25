@@ -436,7 +436,7 @@ def test_runtime_identity_preserves_base_ancestry_and_binds_current_manifest() -
     assert len(content) == 5776
     assert (
         hashlib.sha256(content).hexdigest()
-        == "2d9c599c03bcd479137729ae2cd570ff7b60337511f543821aa5df959873a5d1"
+        == "9157821fabe365e492c391ad1b3d9ca3828972d4fbebb94c00d16896105bbafb"
     )
     manifest = json.loads(content)
     assert manifest["approved_base_commit"] == target

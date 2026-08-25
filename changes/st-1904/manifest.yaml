@@ -1,0 +1,121 @@
+document:
+  id: RAOS-ST1904-MULTI-CATEGORY-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-1904
+  status: LOCAL_CODE_COMPLETE_MAX_SAFE_DISABLED
+  canonical_status: DEFERRED_POST_MVP
+  authority: NONE
+  production_eligible: false
+provenance:
+  base_commit: 0aaaa69d7776c6e6c4d131246c57c06d2ec996a5
+  contract_uri: repo://changes/st-1904/contracts/multi-category.v1.yaml
+  contract_sha256: 39ebd7cfba3879a0e3dc60b608d78ce302db39624cdf5d9727a0380b0577ea16
+  fixture_uri: repo://changes/st-1904/fixtures/recorded/multi-category.synthetic.v1.json
+  fixture_sha256: f9979344c980f1c3e2045a446c8170902d54d16cd849b5b8b44a35d89815bbe5
+  binding_set_sha256: 498defa989d3368651b8e1625393e88d358aedca0b541284fe7000efa83106ea
+  evaluation_report_sha256: 4f67d65998da5de48ba53d1f9c7ba04b893c4311252e01d4cdadaf172fe282a7
+  report_artifact_sha256: 6011ee75a0dfefb24b047508d5ac136a091258a59d2386be500b8a4be1ef935c
+source_artifact_count: 20
+source_artifacts:
+- uri: repo://changes/st-1904/contracts/multi-category.v1.yaml
+  bytes: 10442
+  sha256: 39ebd7cfba3879a0e3dc60b608d78ce302db39624cdf5d9727a0380b0577ea16
+- uri: repo://changes/st-1904/fixtures/recorded/multi-category.synthetic.v1.json
+  bytes: 2992
+  sha256: f9979344c980f1c3e2045a446c8170902d54d16cd849b5b8b44a35d89815bbe5
+- uri: repo://changes/st-1904/PREFLIGHT.md
+  bytes: 1257
+  sha256: 5baee43eaade6c328979d564099fac3389d7c193ce9e30eb227fae4ff9a39355
+- uri: repo://changes/st-1904/README.md
+  bytes: 1990
+  sha256: 7f36cf14d19de77c25921062c8ea5514f2a2f7f40066de77b1b6ced14746d33c
+- uri: repo://changes/st-1904/completion/completion.v1.yaml
+  bytes: 1922
+  sha256: be652864db8a8219f0d9e24498d1b2c9bd215853569f372f849f9f8e5e6efd14
+- uri: repo://docs/worklogs/ST-1904.md
+  bytes: 2803
+  sha256: 91ee7e910e5fda22b48285023fab01e8c682cb13ea4562c568a3d2ce5bf7e75e
+- uri: repo://python/raos/domain/catalog/multi_category.py
+  bytes: 28444
+  sha256: f7826fe3525792f6102166df68aa2f473744059df2d37efa85ee0e8cbce69e8c
+- uri: repo://python/raos/ports/multi_category.py
+  bytes: 572
+  sha256: 9477c78cafd73dc2940371a2c404f2794266ad64fce7979491581ab84f178f07
+- uri: repo://python/raos/application/catalog/multi_category.py
+  bytes: 5386
+  sha256: f0af422c92af9c9a5a3d3ca139821c746d4e31d66656d05044ba3580efb56827
+- uri: repo://python/raos/adapters/recorded_multi_category.py
+  bytes: 12428
+  sha256: 3b4c5c1ceb7df61c9099d754b89d13bbb38c82da13b2a877f2ef00d0135eaa66
+- uri: repo://scripts/build_st1904_multi_category.py
+  bytes: 31452
+  sha256: 55b4f8dd087175ccfd17221bdef9c88302d19c82a2e21df30089be5ab0247e58
+- uri: repo://tests/st1904/__init__.py
+  bytes: 49
+  sha256: 8ad32383ce689b06e486edf004fc62685a90a4ec3f542be2218c307e2f6e651c
+- uri: repo://tests/st1904/conftest.py
+  bytes: 252
+  sha256: dcbb637bd9601a295da2512cb9578e8c2707ee638cf86f9897b210c449babc76
+- uri: repo://tests/st1904/support.py
+  bytes: 2502
+  sha256: 3fcc78f395526a559639fe572e0343bb991f86230e535963128cb85eeb4e6bab
+- uri: repo://tests/st1904/test_contract.py
+  bytes: 7628
+  sha256: 6d84d528135d6ce4f3a6e82cbeb65660a49d0b1a15fa1f856f17daa53e4e2aec
+- uri: repo://tests/st1904/test_service.py
+  bytes: 7171
+  sha256: 4b913789c99a6487e6a9afbe75bfac18948beb983aaaa5026923d3aeef375682
+- uri: repo://tests/st1904/test_negative_cases.py
+  bytes: 7605
+  sha256: 0a30f73a74a050fa63a5e1f1257e698cf6f5000f149661980bca69aa108244c7
+- uri: repo://tests/st1904/test_generation.py
+  bytes: 7115
+  sha256: b912e20f073d1cdbcf6385b952847f4f84ff63c39be2ef29d88e8657830b4552
+- uri: repo://tests/st1904/test_security_boundaries.py
+  bytes: 4032
+  sha256: 18931f92f7d431864418c818c29c681d780e05fc81321275f711f4076b720735
+- uri: repo://scripts/secure_generated_publication.py
+  bytes: 22651
+  sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+generated_artifacts:
+- uri: repo://changes/st-1904/generated/multi-category-evaluation.v1.json
+  bytes: 2045
+  sha256: 6011ee75a0dfefb24b047508d5ac136a091258a59d2386be500b8a4be1ef935c
+boundary:
+  default_enabled: false
+  recorded_synthetic_only: true
+  real_category_selected: false
+  category_identity_resolved: false
+  freshness_sla_resolved: false
+  templates_activated: false
+  live_enabled_state_exists: false
+  provider_called: false
+  network_used: false
+  credential_read: false
+  persistence_used: false
+  editorial_mutated: false
+  recommendation_mutated: false
+  publication_snapshot_mutated: false
+  publication_allowed: false
+  release_authorized: false
+  production_eligible: false
+formal_status:
+  formal_TST-032: NOT_EXECUTED
+  category_selection: HUMAN_DECISION_REQUIRED
+  identity_rules: EXTERNAL_EVIDENCE_REQUIRED
+  freshness_sla: HUMAN_DECISION_REQUIRED
+  live_provider: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+debt:
+  introduced: []
+  external_or_formal_remaining:
+  - Product Owner real-category selection under OD-001
+  - category-specific product identity evidence and Domain Editor rules under OD-006
+  - Managing Editor category freshness SLA under OD-007
+  - approved category-to-template policy and activation decision
+  - provider evidence and live integration design
+  - separate human release decision and formal TST-032
+  - staging, release, and Production evidence

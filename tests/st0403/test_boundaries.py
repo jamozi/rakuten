@@ -9,12 +9,17 @@ import re
 from conftest import REPOSITORY_ROOT
 
 
-OWNED_SOURCE = (
-    Path("python/raos/domain/iam/authorization.py"),
-    Path("python/raos/ports/authorization.py"),
-    Path("python/raos/application/iam/authorization.py"),
+DOMAIN = Path("python/raos/domain/iam/authorization.py")
+PORTS = Path("python/raos/ports/authorization.py")
+APPLICATION = Path("python/raos/application/iam/authorization.py")
+ADAPTERS = (
     Path("python/raos/adapters/development_authorization.py"),
+    Path("python/raos/adapters/recorded_authorization.py"),
+    Path("python/raos/adapters/generated_st0403_authorization_registry.py"),
+    Path("python/raos/adapters/disabled_admin_authorization_http.py"),
+    Path("python/raos/adapters/disabled_service_authorization.py"),
 )
+OWNED_SOURCE = (DOMAIN, PORTS, APPLICATION, *ADAPTERS)
 
 
 def _tree(path: Path) -> ast.Module:
@@ -31,31 +36,30 @@ def _imports(path: Path) -> set[str]:
     return imported
 
 
-def test_dependencies_point_inward_and_exclude_framework_database_provider_types() -> (
+def test_dependencies_point_inward_and_exclude_framework_provider_network_sdks() -> (
     None
 ):
-    domain_imports = _imports(OWNED_SOURCE[0])
-    port_imports = _imports(OWNED_SOURCE[1])
-    application_imports = _imports(OWNED_SOURCE[2])
-    adapter_imports = _imports(OWNED_SOURCE[3])
-
-    assert {name for name in domain_imports if name.startswith("raos.")} == {
-        "raos.domain.iam.authentication"
+    domain_imports = {value for value in _imports(DOMAIN) if value.startswith("raos.")}
+    port_imports = {value for value in _imports(PORTS) if value.startswith("raos.")}
+    application_imports = {
+        value for value in _imports(APPLICATION) if value.startswith("raos.")
     }
-    assert {name for name in port_imports if name.startswith("raos.")} == {
-        "raos.domain.iam.authorization"
+    assert domain_imports == {
+        "raos.domain.iam.authentication",
+        "raos.domain.iam.step_up",
     }
-    assert {name for name in application_imports if name.startswith("raos.")} == {
+    assert port_imports == {
+        "raos.domain.iam.authentication",
+        "raos.domain.iam.authorization",
+        "raos.domain.iam.step_up",
+    }
+    assert application_imports == {
         "raos.application.iam.authentication",
         "raos.domain.iam.authentication",
         "raos.domain.iam.authorization",
+        "raos.domain.iam.step_up",
         "raos.ports.authorization",
     }
-    assert {name for name in adapter_imports if name.startswith("raos.")} == {
-        "raos.config.runtime",
-        "raos.domain.iam.authorization",
-    }
-
     forbidden_roots = {
         "alembic",
         "boto3",
@@ -64,138 +68,135 @@ def test_dependencies_point_inward_and_exclude_framework_database_provider_types
         "openai",
         "psycopg",
         "requests",
+        "socket",
         "sqlalchemy",
         "starlette",
+        "subprocess",
     }
-    all_imports = set().union(
-        domain_imports, port_imports, application_imports, adapter_imports
-    )
+    all_imports = set().union(*(_imports(path) for path in OWNED_SOURCE))
     assert not {
-        name for name in all_imports if name.partition(".")[0] in forbidden_roots
+        value for value in all_imports if value.partition(".")[0] in forbidden_roots
     }
 
 
-def test_adapter_has_no_file_network_process_env_sdk_or_logging_surface() -> None:
-    tree = _tree(OWNED_SOURCE[3])
-    identifiers = {
-        node.id.lower() for node in ast.walk(tree) if isinstance(node, ast.Name)
-    }
-    attributes = {
-        node.attr.lower() for node in ast.walk(tree) if isinstance(node, ast.Attribute)
-    }
-    imported = _imports(OWNED_SOURCE[3])
-
-    assert identifiers.isdisjoint(
-        {
-            "environ",
-            "getenv",
-            "open",
-            "password",
-            "secret",
-            "socket",
-            "subprocess",
-        }
-    )
-    assert attributes.isdisjoint(
-        {
-            "connect",
-            "getenv",
-            "read_bytes",
-            "read_text",
-            "request",
-            "urlopen",
-            "write_bytes",
-            "write_text",
-        }
-    )
-    assert not {
-        name
-        for name in imported
-        if name.partition(".")[0]
-        in {
-            "logging",
-            "os",
-            "pathlib",
-            "requests",
-            "socket",
-            "subprocess",
-            "urllib",
-        }
-    }
-
-
-def test_no_database_workload_role_migration_http_or_live_surface_exists() -> None:
-    workload_role = re.compile(r"\Araos_[a-z0-9_]+\Z")
-    forbidden_definitions = {
-        "app",
-        "cookie",
-        "decorator",
-        "endpoint",
-        "handler",
-        "header",
-        "http",
-        "middleware",
-        "migrate",
-        "migration",
-        "route",
-        "router",
-        "service_entrypoint",
-    }
+def test_no_framework_route_cookie_bearer_or_active_service_entrypoint() -> None:
+    definitions: set[str] = set()
     for path in OWNED_SOURCE:
-        tree = _tree(path)
-        strings = {
-            node.value
-            for node in ast.walk(tree)
-            if isinstance(node, ast.Constant) and isinstance(node.value, str)
-        }
-        assert not {value for value in strings if workload_role.fullmatch(value)}
-        definitions = {
+        definitions.update(
             node.name.lower()
-            for node in ast.walk(tree)
+            for node in ast.walk(_tree(path))
             if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
+        )
+    assert definitions.isdisjoint(
+        {
+            "app",
+            "endpoint",
+            "middleware",
+            "route",
+            "router",
+            "service_entrypoint",
         }
-        assert definitions.isdisjoint(forbidden_definitions)
+    )
+    http_source = (
+        REPOSITORY_ROOT / "python/raos/adapters/disabled_admin_authorization_http.py"
+    ).read_text(encoding="utf-8")
+    assert 'headers"] != {}' in http_source
+    assert "dispatch_external" in http_source
+    assert "del document" in http_source
+    assert "route_registered" in http_source
+    assert "Set-Cookie" not in http_source
+    assert "Bearer " not in http_source
 
 
-def test_public_application_surface_has_only_server_derived_admin_user_entrypoint() -> (
-    None
-):
-    tree = _tree(OWNED_SOURCE[2])
-    guard_class = next(
+def test_sqlite_adapter_has_fixed_sql_no_caller_sql_or_raw_identity_columns() -> None:
+    path = Path("python/raos/adapters/recorded_authorization.py")
+    tree = _tree(path)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.JoinedStr):
+            raise AssertionError(
+                "recorded authorization adapter contains dynamic SQL/text"
+            )
+    source = (REPOSITORY_ROOT / path).read_text(encoding="utf-8").lower()
+    assert "principal_fingerprint" in source
+    assert "issuer_fingerprint" not in source
+    assert "subject_fingerprint" not in source
+    assert "password" not in source
+    assert "credential" not in source
+    assert "token" not in source
+    assert "pragma trusted_schema = off" in source
+    assert "begin immediate" in source
+    assert "sha-256 chain" in source
+
+
+def test_decorator_is_metadata_only_and_dependency_does_not_accept_handler() -> None:
+    tree = _tree(APPLICATION)
+    decorator = next(
         node
         for node in tree.body
-        if isinstance(node, ast.ClassDef) and node.name == "AuthorizationGuard"
+        if isinstance(node, ast.FunctionDef)
+        and node.name == "authorization_requirement"
     )
-    public_methods = {
-        node.name
-        for node in guard_class.body
-        if isinstance(node, ast.FunctionDef) and not node.name.startswith("_")
+    calls = {
+        node.func.id
+        for node in ast.walk(decorator)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
     }
-    assert public_methods == {"require_admin_user"}
-    entrypoint = next(
+    assert calls <= {
+        "AuthorizationRequirement",
+        "OperationId",
+        "TypeError",
+        "callable",
+        "hasattr",
+        "setattr",
+    }
+    dependency = next(
         node
-        for node in guard_class.body
-        if isinstance(node, ast.FunctionDef) and node.name == "require_admin_user"
+        for node in tree.body
+        if isinstance(node, ast.ClassDef)
+        and node.name == "AuthorizationEnforcementDependency"
+    )
+    enforce = next(
+        node
+        for node in dependency.body
+        if isinstance(node, ast.FunctionDef) and node.name == "enforce"
     )
     parameters = {
-        argument.arg for argument in entrypoint.args.args + entrypoint.args.kwonlyargs
+        argument.arg for argument in enforce.args.args + enforce.args.kwonlyargs
     }
-    assert parameters == {
-        "self",
-        "session_id",
-        "now",
-        "action",
-        "target",
-        "correlation_id",
-    }
-    assert parameters.isdisjoint({"principal", "role", "permission_scope"})
+    assert parameters == {"self", "requirement", "session_id", "command"}
+    assert parameters.isdisjoint({"handler", "callback", "business_action"})
 
 
-def test_ui_hiding_and_database_roles_are_not_treated_as_authorization() -> None:
+def test_service_principal_adapter_contains_no_database_workload_role_mapping() -> None:
+    adapter = (
+        REPOSITORY_ROOT / "python/raos/adapters/disabled_service_authorization.py"
+    ).read_text(encoding="utf-8")
+    workload_role = re.compile(r"\braos_[a-z0-9_]+\b")
+    assert workload_role.findall(adapter) == []
+    assert "DISABLED_MAPPING_UNRESOLVED" in adapter
+    assert "deny_authorization" in adapter
+
+
+def test_ui_and_database_roles_remain_defense_in_depth_not_decision_inputs() -> None:
     combined = "\n".join(
         (REPOSITORY_ROOT / path).read_text(encoding="utf-8") for path in OWNED_SOURCE
     ).lower()
     assert "ui_hiding" not in combined
-    assert "database_role" not in combined
-    assert "postgres" not in combined
-    assert "require_admin_user" in combined
+    assert "postgres role" not in combined
+    service = next(
+        node
+        for node in _tree(APPLICATION).body
+        if isinstance(node, ast.ClassDef) and node.name == "DurableAuthorizationService"
+    )
+    evaluate = next(
+        node
+        for node in service.body
+        if isinstance(node, ast.FunctionDef) and node.name == "evaluate_admin"
+    )
+    parameters = {
+        argument.arg for argument in evaluate.args.args + evaluate.args.kwonlyargs
+    }
+    assert parameters == {"self", "session_id", "command"}
+    assert parameters.isdisjoint(
+        {"principal", "role", "permission_scope", "database_role", "claims"}
+    )

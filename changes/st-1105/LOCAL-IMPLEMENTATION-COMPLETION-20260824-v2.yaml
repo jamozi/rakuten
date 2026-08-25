@@ -1,0 +1,64 @@
+document:
+  id: RAOS-ST1105-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V2
+  schema_version: 2
+  story_id: ST-1105
+  status: LOCAL_CODE_COMPLETE
+  canonical_status_changed: false
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+implementation:
+  additive_v2: true
+  historical_v1_compatible: true
+  exact_screen_count: 44
+  dependency_exposed_component_count: 29
+  canonical_critical_workflow_count: 10
+  canonical_accessibility_row_count: 30
+  recorded_synthetic_fixture: true
+  exact_visual_screenshot_digest_count: 44
+  dependency_renderer_screen_count: 7
+local_browser_observation:
+  synthetic_fixture_result: LOCAL_AUTOMATED_PASS_SYNTHETIC_FIXTURE_ONLY
+  dependency_renderer_result: LOCAL_AUTOMATED_REVIEW_REQUIRED_DEPENDENCY_RENDERER_ONLY
+  dependency_renderer_overflow_css_px_each: 326
+  dependency_renderer_axe_incomplete_rule: aria-prohibited-attr
+  baseline_approved: false
+verification:
+  focused_python_suite: PASS_6_OF_6
+  focused_node_suite: PASS_26_OF_26
+  historical_v1_regression: PASS_INCLUDED_IN_FOCUSED_NODE_SUITE
+  dependency_regressions: PASS_201_OF_201
+  owner_generator_check: PASS_NO_WRITE
+  browser_baseline_evidence_check: PASS_EXACT_LOCAL_CHROMIUM_NO_WRITE
+  ruff: PASS
+  strict_mypy: PASS_5_SOURCE_FILES
+  typescript: PASS_FULL_TSC_NO_EMIT
+  eslint_prettier: PASS_AUTHORED_AND_GENERATED_TYPESCRIPT
+  sensitive_data_scan: PASS_23_CHANGED_PATHS_ZERO_FINDINGS
+  static_capability_check: PASS_LOCAL_ONLY_BOUNDARY
+  git_diff_check: PASS
+authority:
+  route_registered: false
+  authentication_established: false
+  authorization_granted: false
+  business_action_dispatch: false
+  external_network: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+debt:
+  introduced_local_debt: NONE
+  dependency_findings_ledger: changes/st-1105/DEFERRED-VERIFICATION-v2.yaml
+not_executed:
+  formal_TST-023: NOT_EXECUTED
+  formal_TST-024: NOT_EXECUTED
+  formal_TST-025: NOT_EXECUTED
+  manual_keyboard: NOT_EXECUTED
+  manual_200_percent_zoom: NOT_EXECUTED
+  screen_reader: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  wcag_conformance: NOT_CLAIMED

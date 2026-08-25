@@ -1,0 +1,89 @@
+schema_version: 2
+story_id: ST-0606
+classification: LOCAL_RECORDED_SYNTHETIC_EVIDENCE_WORKSPACE_RUNTIME_MANIFEST_V2
+source_artifact_count: 14
+source_artifacts:
+- uri: repo://changes/st-0606/contracts/evidence-workspace.v2.yaml
+  bytes: 7476
+  sha256: 6317e8f2643ecda6ad0f1cc0c56f39df45c3ca3e5c91281d11ad8d84d58114cf
+- uri: repo://changes/st-0606/fixtures/evidence-workspace-recorded.synthetic.v2.json
+  bytes: 1765
+  sha256: a74ea9877ef625ad71c11ecffe6b6b8cf03c06be153f5b156e059e7db412d029
+- uri: repo://changes/st-0606/PREFLIGHT-v2.md
+  bytes: 4762
+  sha256: f77f9b99b368825a1414f0e3f550f1f0bf5c085a91d36db26c85f6a350911c82
+- uri: repo://changes/st-0606/README.md
+  bytes: 4975
+  sha256: 600f66faafe413c81a10663b5a79c12f9a9de28ffd141528de46aef87ef77975
+- uri: repo://changes/st-0606/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml
+  bytes: 2825
+  sha256: 5e59ff0b3270a57802ad6729370fe7e571a7b4d36755b6eb3c15cf4f08acc9f7
+- uri: repo://docs/execplans/ST-0606.md
+  bytes: 2905
+  sha256: 0f019ad0f97bb2cd6dbeeac48959c3d6ecda5c1e847265758a4f36678cac10e9
+- uri: repo://docs/worklogs/ST-0606.md
+  bytes: 3014
+  sha256: 36898af717259394403db452bb4cd945dcf3f47ad918b15c5b6aeea7a5ff9e4d
+- uri: repo://packages/web-ui/src/evidence-workspace-v2.ts
+  bytes: 32639
+  sha256: aec4a3cabed705470cd71a306b41815f1760a08a4cfc8fa0aae9537a0b24a67a
+- uri: repo://scripts/build_st0606_evidence_workspace_v2.py
+  bytes: 49000
+  sha256: b6a722a51d24a64e3ecd55591f7ac0e6c3f9040991cd149765b4bf6f94e8a9ed
+- uri: repo://tests/st0606_v2/evidence-workspace-v2-generation.test.ts
+  bytes: 3672
+  sha256: 755dee1bb0e86114d2829e3cf989bf9a2c1471e6c9664c899121c57051459cc0
+- uri: repo://tests/st0606_v2/evidence-workspace-v2-model.test.ts
+  bytes: 5245
+  sha256: 32c6a2124da91ac37f10289496d695a0be20830c5cfb8993f8f5d1ca511d82ca
+- uri: repo://tests/st0606_v2/evidence-workspace-v2-negative.test.ts
+  bytes: 5508
+  sha256: 3180896eed28dc144c1c0ffaf4ddde3de330a7cd2e20e0ea4842faa19f3bd7d0
+- uri: repo://tests/st0606_v2/test_generation.py
+  bytes: 1238
+  sha256: d71a7cff6b372e767b0282ec1cd0d15b0fc2e40b5a6b266134ff5731528d998a
+- uri: repo://tests/st0606_v2/test_negative.py
+  bytes: 2994
+  sha256: 8329e0dcda5cbde31a7eaf3ad2645e63c3274a8aa812e7fcb2ed69daa36d33a9
+generated_artifacts:
+- uri: repo://changes/st-0606/generated/evidence-workspace-recorded.v2.json
+  bytes: 33617
+  sha256: 7788c3eeae45bd1dd63930d904eb08c45bab4e6e266801b7af77a9afd8e0a54e
+- uri: repo://packages/web-ui/src/evidence-workspace-recorded.v2.ts
+  bytes: 35096
+  sha256: 10d19f49ef1f25164909389fe3ccf3c350c8b08d16ea3de67d74a7bcf3157474
+generation:
+  owner: repo://scripts/build_st0606_evidence_workspace_v2.py
+  command: .venv/bin/python scripts/build_st0606_evidence_workspace_v2.py
+  check_command: .venv/bin/python scripts/build_st0606_evidence_workspace_v2.py --check
+  toolchain:
+    python_implementation: CPython
+    python_version: 3.14.6
+    pyyaml_version: 6.0.3
+    node_version: 24.18.1
+    npm_version: 11.16.0
+route_boundary:
+  status: UNREGISTERED_AUTH_TRANSPORT_UNRESOLVED
+  registered_route_count: 0
+  auth_transport_decision: OD-010_UNRESOLVED
+authority:
+  authentication: false
+  authorization: false
+  network: false
+  backend: false
+  actions: false
+  persistence: false
+  publication: false
+  staging: false
+  release: false
+  production: false
+verification:
+  local_owner_check: EXECUTED
+  local_model_tests: EXECUTED
+  TST-022: NOT_EXECUTED
+  TST-024: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

@@ -1,0 +1,170 @@
+document:
+  id: RAOS-ST1002-PUBLIC-ARTICLE-RENDERER-RUNTIME-002
+  version: 2.0.0
+  story_id: ST-1002
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  enabled_environments:
+    - DEV
+    - CI
+  enabled_by_default_outside_local: false
+classification: LOCAL_RECORDED_NOINDEX_SSR_ARTICLE_PREVIEW_V2
+canonical_bindings:
+  - path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - path: docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+    sha256: 0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e
+  - path: docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml
+    sha256: dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050
+  - path: docs/canonical/02_ui/RAOS_08_component_catalog_v1.0.yaml
+    sha256: 986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2
+  - path: docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv
+    sha256: 690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e
+  - path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+dependency_bindings:
+  ST-0904:
+    fixture: changes/st-0904/generated/public-projection-recorded.v2.json
+    fixture_sha256: a15edb77dcebb3f4b18c9f40737ebc949ab7564191a88052c5b8c54b3ddab7ce
+    runtime_manifest: changes/st-0904/runtime-manifest.v2.yaml
+    runtime_manifest_sha256: b1a9523c784c3a53c33c65f5774aa260fcc10396348cae01b96739c47101af10
+    runtime_contract: changes/st-0904/contracts/public-projection-runtime.v2.yaml
+    runtime_contract_sha256: 62b4caad968901be8f9d5aa0fff33bb43c7e0fa0580669f0409ed52acb8d65fc
+    profile: ST0904_PUBLIC_PROJECTION_RECORDED_LOCAL_V2
+    projection_sha256: 4c5d4c8e2f2465d53d2ead84cd20e9ea9328b353854d0b365bcde63211ef1980
+    source_route_path: /synthetic-recorded-policy-seo/
+    source_route_activated: false
+    public_read_served: false
+  ST-1001:
+    runtime_contract: changes/st-1001/contracts/public-app-shell-runtime.v2.yaml
+    runtime_contract_sha256: e916db42258a52ab30139349fd13f0d64742f21464882ef10bc282276201f459
+    recorded_shell: changes/st-1001/generated/public-app-shell-recorded.v2.json
+    recorded_shell_sha256: b773e2d507d47df856bb8e72c25811c83dd44bcdfcec004ee9b659446cda823e
+  public_openapi:
+    path: contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml
+    sha256: 8122958e80e04096ba3b254b4a8d843138bb757c8fc4e71bd8406914dba80797
+route:
+  screen_id: PUB-003
+  template: /articles/{slug}
+  slug: synthetic-recorded-policy-seo
+  local_path: /articles/synthetic-recorded-policy-seo
+  exact_slug_only: true
+  unknown_or_malformed_status: 404
+  unknown_value_reflected: false
+  local_route_registered: true
+  source_projection_route_activated: false
+render_mapping:
+  raw_html_allowed: false
+  client_component_count: 0
+  javascript_required_for_reading: false
+  product_cards_rendered: false
+  offers_rendered: false
+  affiliate_cta_rendered: false
+  comparison_rendered: false
+  structured_data_rendered: false
+  canonical_url_rendered: false
+  internal_identifiers_rendered: false
+  empty_blocks_omitted: true
+  source_types:
+    lead:
+      view_kind: LEAD
+      heading: null
+    decision_summary:
+      view_kind: SUMMARY
+      heading: 要点
+    intended_reader:
+      view_kind: CONDITIONS
+      heading: 想定する条件
+    methodology:
+      view_kind: METHODOLOGY
+      heading: 選定方法
+    selection_criteria:
+      view_kind: CRITERIA
+      heading: 選ぶ基準
+    comparison_table:
+      view_kind: OMITTED_DOWNSTREAM_EMPTY_ONLY
+      heading: null
+    recommendation_group:
+      view_kind: DECISION
+      heading: 条件別の考え方
+    caution:
+      view_kind: WARNING
+      heading: 確認しておきたいこと
+    source_summary:
+      view_kind: OMITTED_EMPTY_SOURCE
+      heading: null
+preview_copy:
+  eyebrow: ARTICLE / RECORDED LOCAL PREVIEW
+  label: 記録済み合成Fixtureのローカル表示
+  message: このページは公開経路を有効にせず、記録済み合成Fixtureだけをサーバー描画しています。外部公開には使用できません。
+  freshness_unknown: 情報の鮮度は未確認です
+  breadcrumb_root: 記事詳細
+  skip_link: 本文へ移動
+metadata_policy:
+  source_title_only: true
+  source_description_only: true
+  canonical_url: null
+  open_graph: null
+  twitter: null
+  robots:
+    index: false
+    follow: false
+    noarchive: true
+    nosnippet: true
+    noimageindex: true
+    nocache: true
+  response_header: noindex, nofollow, noarchive, nosnippet, noimageindex
+runtime_boundary:
+  framework: NEXT_APP_ROUTER_SERVER_COMPONENTS
+  rendering: FORCE_DYNAMIC_SERVER_RENDERING
+  data_source: EXACT_OWNER_GENERATED_ST0904_V2_RECORDED_FIXTURE
+  remote_public_read_model: DISCONNECTED
+  api: NONE
+  database: NONE
+  provider: NONE
+  outbound_io: NONE
+  browser_storage: NONE
+  cookie_write: NONE
+  tracking: NONE
+  analytics: NONE
+  arbitrary_url_allowed: false
+  local_preview_route_count: 1
+security_boundary:
+  controls:
+    - SEC-DATA-004
+    - SEC-DATA-006
+  threats:
+    - THR-004
+    - THR-018
+    - THR-019
+  exact_fixture_hash_required: true
+  exact_projection_hash_required: true
+  react_text_escaping_only: true
+  prohibited_internal_fields_rejected: true
+  response_csp_script_none: true
+authority:
+  approval_authorized: false
+  public_projection_authorized: false
+  source_route_activated: false
+  public_read_served: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+  external_write: false
+  TST-021: NOT_EXECUTED
+  TST-022: NOT_EXECUTED
+  TST-023: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

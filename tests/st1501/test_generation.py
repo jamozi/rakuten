@@ -50,15 +50,16 @@ def test_manifest_inventory_matches_owned_source_and_generated_bytes() -> None:
         assert row["bytes"] == len(content)
         assert row["sha256"] == generator.sha256_bytes(content)
 
-    assert manifest["generated_artifact_count"] == 1
+    assert manifest["generated_artifact_count"] == len(
+        generator.GENERATED_ARTIFACT_PATHS
+    )
     assert manifest["generated_artifacts"] == [
         {
-            "uri": f"repo://{generator.REFERENCE_PLAN_PATH.as_posix()}",
-            "bytes": (REPOSITORY_ROOT / generator.REFERENCE_PLAN_PATH).stat().st_size,
-            "sha256": generator.sha256_file(
-                REPOSITORY_ROOT / generator.REFERENCE_PLAN_PATH
-            ),
+            "uri": f"repo://{relative.as_posix()}",
+            "bytes": (REPOSITORY_ROOT / relative).stat().st_size,
+            "sha256": generator.sha256_file(REPOSITORY_ROOT / relative),
         }
+        for relative in generator.GENERATED_ARTIFACT_PATHS
     ]
 
 
@@ -66,7 +67,7 @@ def test_manifest_pins_contract_authority_and_status_boundary() -> None:
     manifest = yaml.safe_load((REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes())
     assert manifest["document"] == {
         "id": "RAOS-TERRAFORM-FOUNDATION-MANIFEST-001",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "story_id": "ST-1501",
         "source_contract": generator.SOURCE_CONTRACT_URI,
         "generated_by": generator.GENERATOR_URI,
@@ -80,7 +81,7 @@ def test_manifest_pins_contract_authority_and_status_boundary() -> None:
         for path, digest in generator.PINNED_SOURCES.items()
     ]
     assert manifest["boundary"] == {
-        "classification": "SOURCE_DERIVED_REFERENCE_STATE_PLAN",
+        "classification": "SOURCE_DERIVED_PROVIDER_NEUTRAL_HCL_FOUNDATION",
         "provider_policy": "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
         "admission_status": "NOT_EVALUATED",
         "eligible": False,
@@ -109,7 +110,14 @@ def test_manifest_pins_contract_authority_and_status_boundary() -> None:
         "credentials": "ABSENT",
         "provider_account_or_project": "UNSET",
         "resource_definitions": [],
-        "native_iac_validation": "NOT_EXECUTED",
+        "hcl_module": "PROVIDER_NEUTRAL_VALIDATION_ONLY",
+        "hcl_file_count": 5,
+        "terraform_cli_version": "1.15.9",
+        "terraform_binary_sha256": generator.TERRAFORM_BINARY_SHA256,
+        "provider_plugins": [],
+        "native_iac_validation": "EXECUTED_NOT_FORMAL",
+        "normal_check_network": "FORBIDDEN",
+        "initialization": "FORBIDDEN",
         "formal_tst_026": "NOT_EXECUTED",
         "effective_canonical_status": "UNCHANGED",
     }
@@ -188,7 +196,7 @@ def test_atomic_writer_replaces_only_fixed_regular_output(tmp_path: Path) -> Non
     assert not list(target.parent.glob(f".{target.name}.*.tmp"))
 
 
-def test_builder_has_no_native_iac_provider_or_network_execution_surface() -> None:
+def test_builder_has_no_provider_or_network_library_execution_surface() -> None:
     path = REPOSITORY_ROOT / "scripts/build_st1501_terraform_foundation.py"
     tree = ast.parse(path.read_text(encoding="utf-8"))
     imported_roots: set[str] = set()
@@ -206,8 +214,9 @@ def test_builder_has_no_native_iac_provider_or_network_execution_surface() -> No
                 called_attributes.add(node.func.attr)
 
     assert imported_roots.isdisjoint(
-        {"boto3", "botocore", "http", "requests", "socket", "subprocess", "urllib"}
+        {"boto3", "botocore", "http", "requests", "socket", "urllib"}
     )
+    assert "subprocess" in imported_roots
     assert called_names.isdisjoint({"eval", "exec", "compile"})
     assert called_attributes.isdisjoint(
         {
@@ -216,8 +225,8 @@ def test_builder_has_no_native_iac_provider_or_network_execution_surface() -> No
             "environ",
             "getenv",
             "popen",
-            "run",
             "spawn",
             "system",
         }
     )
+    assert "run" in called_attributes

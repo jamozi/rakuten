@@ -1,0 +1,103 @@
+DESIGN_HANDOFF_V1:
+  record_status: REPOSITORY_LOCAL_DESIGN_RECORD
+  authority: DESIGN_IMPLEMENTATION_AND_LOCAL_EVIDENCE_ONLY
+  approved_story: ST-1704
+  approved_scope: AFFILIATE_LEARNING_MEASUREMENT_V2
+  source_design_refs:
+    - docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
+    - docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    - docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    - docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    - docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    - docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml
+    - docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml
+    - docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    - docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    - docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    - docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1704
+    - changes/st-1704/owner-local-pilot-v1/DESIGN_HANDOFF_V1.yaml
+    - changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml
+  decision:
+    classification: AFFILIATE_LEARNING_MEASUREMENT_V2
+    program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
+    slots: 5
+    period_duration_days: 14
+    observation_store: OWNER_PRIVATE_HASH_CHAIN_V2_IN_EXISTING_ST1704_DIRECTORY
+    compatibility_template: TRACKED_IMMUTABLE_MEASUREMENT_LEDGER_V1
+    output: SANITIZED_AGGREGATES_AND_IMPROVEMENT_PROPOSALS_ONLY
+    recommendation_finance_inputs: FORBIDDEN
+    publication_authority: NONE
+  rationale:
+    - 5記事の購買意図、検索、送客、確定成果、工数を同じ不変packetへ結合する
+    - missing、未検証、0分母、未成熟、期間不一致を0へ変換しない
+    - 未帰属報酬をprogram単位に隔離し、記事への恣意的配賦を型で禁止する
+    - V1 ledgerとtracked compatibility templateを変更せず、additiveなV2を同じowner-private境界へ置く
+  research_input_treatment:
+    user_supplied_brief_date: 2026-08-23
+    useful_findings:
+      - confirmed outcomesをpending outcomesから分離する
+      - 量産数ではなく購買意図、商品理解、確定成果、改善学習を優先する
+      - learning outputはhuman-reviewed proposalに限定する
+    non_authoritative_material:
+      - turn形式の引用token
+      - 動画タイトル内の収益主張
+      - 第三者検証のない自動化収益主張
+    official_source_capture_added: false
+  constraints:
+    - contractはexact five slots、article_id、slug、tracked article packet SHA-256、intentを固定する
+    - observationsはowner-private fixed pathだけへ保存する
+    - tracked operations/measurement-ledger.v1.jsonへ観測値を書かない
+    - search impressions/clicks、article views、affiliate clicksを別metricとして保持する
+    - pending、confirmed、rejected outcomesを別metricとして保持する
+    - direct confirmed rewardとunattributed confirmed rewardを別scopeで保持する
+    - unattributed rewardをarticleへ配賦しない
+    - same period、same program、verified direct attribution、mature cohortのときだけderived metricを計算する
+    - zero denominator、missing、unverified、immature、period/program mismatchはUNAVAILABLEとする
+    - recommendationへcommission rate、EPC、RPM、profitを入力しない
+    - reportはarticle HTML、CTA、product selection、recommendation order、publication snapshotを変更しない
+    - credential、raw provider row、PII、raw URL query、cookie、search query、article body、promptを保存しない
+    - network、provider、tracking、WordPress、publication、release、staging、Production capabilityを持たない
+  security_and_approval_gates:
+    local_repository_implementation: AUTHORIZED_REVERSIBLE
+    owner_private_ledger_write: OWNER_LOCAL_COMMAND_ONLY
+    analytics_activation: HUMAN_PRIVACY_OPERATOR_REQUIRED
+    provider_live_call: NOT_AUTHORIZED
+    wordpress_write: NOT_AUTHORIZED
+    publication: HUMAN_OWNER_REQUIRED
+    release: NOT_AUTHORIZED
+    production_claim: FORBIDDEN
+  acceptance_criteria:
+    - strict contract rejects unknown fields and packet/intent/article drift
+    - logical events form a deterministic append-only SHA-256 chain
+    - owner-only fixed-path adapter rejects symlink, hardlink, mode, identity, duplicate-key, stage, and replay conflicts
+    - all five requested derived metrics use only verified same-period direct observations
+    - observed numerator zero remains a valid zero while zero denominator remains UNAVAILABLE
+    - program unattributed reward is visible without any article allocation
+    - report emits proposal codes only and every mutation/publication authority remains false
+    - V1 tracked template bytes remain hash-bound and unchanged
+  required_test_evidence:
+    - positive calculations and deterministic report
+    - missing/unverified/zero denominator/immature/period mismatch adversarial tests
+    - article/slug/packet/intent/program/unknown-field tamper tests
+    - hash-chain/replay/conflict/owner-private filesystem tests
+    - generator check, Ruff format/lint, strict mypy, affected ST-1704 tests, secret/workspace/diff checks
+  open_decision_state:
+    canonical_registry_mutated: false
+    formal_resolution_claimed: false
+    remain_unresolved:
+      - OD-003
+      - OD-006
+      - OD-007
+      - OD-008
+      - OD-009
+      - OD-012
+      - OD-014
+      - OD-015
+  evidence_status:
+    formal_story_ST_1704: NOT_STARTED
+    TST_018: NOT_EXECUTED
+    TST_020: NOT_EXECUTED
+    TST_032: NOT_EXECUTED
+    live_provider: NOT_EXECUTED
+    staging: NOT_CONFIGURED
+    production: NOT_READY

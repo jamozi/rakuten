@@ -1,5 +1,10 @@
 # ST-0308 source-bound persistence boundary reference
 
+> Historical pre-runtime artifact. The current local implementation entry
+> point is `changes/st-0308/contracts/persistence-runtime.v2.yaml`; this
+> document remains immutable in meaning and does not describe current runtime
+> readiness or grant formal/external authority.
+
 Status: `MAXIMUM_SAFE_REFERENCE_ONLY_LOCAL_SLICE`
 
 Authority: `NON_AUTHORITATIVE`

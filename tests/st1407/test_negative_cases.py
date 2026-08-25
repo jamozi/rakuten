@@ -258,9 +258,17 @@ def test_raw_content_or_snapshot_instance_selection_is_rejected_and_sanitized() 
     assert caught.value.__cause__ is None
 
 
-def test_builder_has_no_runtime_module_or_unowned_story_files() -> None:
+def test_builder_has_no_legacy_runtime_module_or_unowned_story_files() -> None:
     root = generator.REPO_ROOT
     assert not (root / "python/raos/domain/policy/external_policy_registry.py").exists()
+    additive_v2_story_files = {
+        Path("changes/st-1407/EXECPLAN.md"),
+        Path("changes/st-1407/README-v2.md"),
+        Path("changes/st-1407/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml"),
+        Path("changes/st-1407/contracts/external-policy-registry-runtime.v2.yaml"),
+        Path("changes/st-1407/generated/external-policy-registry-recorded.v2.json"),
+        Path("changes/st-1407/runtime-manifest.v2.yaml"),
+    }
     expected = {
         generator.CONTRACT_PATH,
         generator.REFERENCE_PLAN_PATH,
@@ -268,6 +276,7 @@ def test_builder_has_no_runtime_module_or_unowned_story_files() -> None:
         generator.README_PATH,
         generator.GENERATOR_PATH,
         *generator.TEST_PATHS,
+        *additive_v2_story_files,
     }
     actual = {
         path.relative_to(root)

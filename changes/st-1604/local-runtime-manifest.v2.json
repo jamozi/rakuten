@@ -1,0 +1,163 @@
+{
+  "authority_inputs": [
+    {
+      "bytes": 7943,
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md"
+    },
+    {
+      "bytes": 11395,
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml"
+    },
+    {
+      "bytes": 4189,
+      "sha256": "320a880073e3c9d87c361fa8620e1202898ffa719e2b8e94872d185415abcdf2",
+      "uri": "repo://docs/canonical/06_ops/RAOS_12_slo_catalog_v1.0.yaml"
+    },
+    {
+      "bytes": 7217,
+      "sha256": "894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8",
+      "uri": "repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md"
+    },
+    {
+      "bytes": 71458,
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+      "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
+    }
+  ],
+  "document": {
+    "classification": "LOCAL_ONLY_REPRODUCIBLE_IMPLEMENTATION_EVIDENCE",
+    "generated_by": "repo://scripts/build_st1604_local_performance_load.py",
+    "id": "RAOS-ST1604-LOCAL-RUNTIME-MANIFEST-001",
+    "story_id": "ST-1604",
+    "version": "2.0.0"
+  },
+  "generated_artifacts": [
+    {
+      "bytes": 4850,
+      "sha256": "d475edd676e93c93873d10cc2afd3a4b1c61dacb6e7c13746d91b6ea6fb97e80",
+      "uri": "repo://changes/st-1604/generated/local-performance-load-report.fixture.v2.json"
+    }
+  ],
+  "predecessor_inputs": [
+    {
+      "bytes": 14013,
+      "sha256": "dfa3707ca1fcfd64c6b09c0d8042b782c54a9d01001776f3d057208aa2f27210",
+      "uri": "repo://changes/st-1604/generated/performance-load-reference-plan.v1.json"
+    },
+    {
+      "bytes": 3729,
+      "sha256": "03abafd467a3b6e0fab0555b22003b27bc2a0446beaa308ebcd03559fb2f5ffd",
+      "uri": "repo://changes/st-1604/manifest.yaml"
+    },
+    {
+      "bytes": 14174,
+      "sha256": "0e970c5749a8bd94fcc8ae5e695d11a4b927028fcc168838618998ac48075aeb",
+      "uri": "repo://changes/st-1505/manifest.yaml"
+    },
+    {
+      "bytes": 5960,
+      "sha256": "9eade86a2f3f7cae147d0ca26db1be0828be09250b068ac8f78832cf36ca65ef",
+      "uri": "repo://changes/st-1601/README.md"
+    }
+  ],
+  "safety_boundary": {
+    "action_counts": {
+      "browser": 0,
+      "credential": 0,
+      "external": 0,
+      "load": 0,
+      "network": 0,
+      "production": 0,
+      "provider": 0,
+      "release": 0,
+      "staging": 0
+    },
+    "actual_load": "NOT_EXECUTED",
+    "canonical_slo_evaluation": "NOT_EVALUATED",
+    "formal_tst_027": "NOT_EXECUTED",
+    "production_capacity_claim": null,
+    "production_eligible": false,
+    "recorded_capture_enabled": false,
+    "rollback_detection_scope": "LIVE_JOURNAL_INSTANCE_ONLY_NO_EXTERNAL_DURABLE_ANCHOR",
+    "staging": "NOT_EXECUTED"
+  },
+  "source_artifacts": [
+    {
+      "bytes": 3924,
+      "sha256": "b248c96d7d89c36eb100960f31ec72b277771c3a09e1df1774f86a34f8513770",
+      "uri": "repo://changes/st-1604/contracts/local-performance-load-evaluator.v2.json"
+    },
+    {
+      "bytes": 6160,
+      "sha256": "d4ea71b8e8459f2c1e13eea0dee8122bb82ac9328537cdc0db3b496a57e3ed66",
+      "uri": "repo://changes/st-1604/README.md"
+    },
+    {
+      "bytes": 2904,
+      "sha256": "ebcc1bc6fc9806b61d2bbb35041ee767c4c1d95015954562a31b2adfad43030e",
+      "uri": "repo://changes/st-1604/LOCAL_COMPLETION_EVIDENCE_V2.md"
+    },
+    {
+      "bytes": 17631,
+      "sha256": "6362d2713ed321219a59cbee16b3e6a0633c0a797d76176027167b0666449d37",
+      "uri": "repo://scripts/build_st1604_local_performance_load.py"
+    },
+    {
+      "bytes": 27178,
+      "sha256": "9359a932cae7e7a7e1144818060ecd8dceb4afcbd86e6f0948da23d9563c6bdc",
+      "uri": "repo://python/raos/domain/ops/performance_load.py"
+    },
+    {
+      "bytes": 3895,
+      "sha256": "eb48df29f692c8742bd35a391b50e6286d6c2f326e0b9e5b9d8880d95b16a3bc",
+      "uri": "repo://python/raos/domain/ops/__init__.py"
+    },
+    {
+      "bytes": 998,
+      "sha256": "aaa69de84089733ef7618cda189cd2fe1c7aa430e7d68608be002477d48cfe01",
+      "uri": "repo://python/raos/ports/performance_load.py"
+    },
+    {
+      "bytes": 3874,
+      "sha256": "0154a335b4db296b33a7b81528f1138424d8e9db8fa649838b7817252840a2ba",
+      "uri": "repo://python/raos/application/ops/performance_load.py"
+    },
+    {
+      "bytes": 471,
+      "sha256": "e71818cc45864ae1342bdc0aab2675c0db5a9c2a5f09c2b75b247d679b169ab5",
+      "uri": "repo://python/raos/application/ops/__init__.py"
+    },
+    {
+      "bytes": 29943,
+      "sha256": "4c396a8dc737581cd9a323ff13ab9effa60f803b5a12b8a7dc52b9a141c86fd0",
+      "uri": "repo://python/raos/adapters/recorded_performance_load.py"
+    },
+    {
+      "bytes": 2378,
+      "sha256": "b096c5b69f7869ea6bbc0577cd94e35520f4787c0e4dd261d41512ca3cf5b5ed",
+      "uri": "repo://tests/st1604_runtime/conftest.py"
+    },
+    {
+      "bytes": 2116,
+      "sha256": "02901e2f407f40e7fabdf10af5c186eac9064b74f8ce0fbb816075b986f0811e",
+      "uri": "repo://tests/st1604_runtime/test_boundaries.py"
+    },
+    {
+      "bytes": 6382,
+      "sha256": "25e5561cf97441c75f6f3e459c1ca2850e7d83725d935992e1a8210017fa1709",
+      "uri": "repo://tests/st1604_runtime/test_evaluator.py"
+    },
+    {
+      "bytes": 5877,
+      "sha256": "d1b4387347b3229f56b0041d316aa0a6f57cbec2d8ba089fe2124a905c86ffa4",
+      "uri": "repo://tests/st1604_runtime/test_runtime_generation.py"
+    },
+    {
+      "bytes": 19920,
+      "sha256": "2bae242f7f13137fd63027072c18183b650ad43e51dd47d70bd985a1b6b5e560",
+      "uri": "repo://tests/st1604_runtime/test_service_and_journal.py"
+    }
+  ]
+}

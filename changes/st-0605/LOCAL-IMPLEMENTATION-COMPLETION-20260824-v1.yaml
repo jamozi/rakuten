@@ -1,0 +1,147 @@
+document:
+  id: RAOS-ST0605-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V1
+  schema_version: 1
+  story_id: ST-0605
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  recorded_at: '2026-08-24T01:27:02Z'
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+base:
+  branch: codex/raos-local-integration-complete
+  base_commit_sha: 7be32ac9e2e16ffc974c9221716f8fad1fd92145
+  implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
+runtime:
+  contract:
+    path: changes/st-0605/contracts/claim-evidence-runtime.v1.yaml
+    sha256: 7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb
+  owner_generator:
+    path: scripts/build_st0605_claim_evidence_runtime.py
+    sha256: 4f666d87e25924884aeabbc8def4fd40baa63b57bb431b4d1e98d7d98b07f145
+  runtime_manifest:
+    path: changes/st-0605/runtime-manifest.v1.yaml
+    sha256: 1bdc789e2faed53a66c3d6605a7fe0d4d842a21799c3a6202b02e3231eac3efb
+    source_artifact_count: 52
+  recorded_fixture:
+    path: changes/st-0605/generated/claim-evidence-runtime-pass.v1.json
+    sha256: eb1c36bd1f70ea27e57e1720b937211286578136e701664b5fb4c8c823395226
+  preserved_historical_reference:
+    manifest_path: changes/st-0605/manifest.yaml
+    manifest_sha256: c6d79d4d566ec1bc2a3268cf3394ec5c9f4bb27a335466f12be0a87cef9e1573
+    generated_plan_path: changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json
+    generated_plan_sha256: 820ca8cb8e302adc862be95ad9e6ca59f30ca8795ba0191018b99407aae08d74
+policy_invariants:
+  policy_sha256: fbf2d0ad6e7821a0059f9ceeb53d57268031e2e42b4aad988af9a42378aec5ba
+  vocabulary_mapping: EXPLICITLY_NONE
+  policy_claim_type_count: 9
+  all_policy_claim_types_verifiable: true
+  predictive_default: BLOCKED_IN_MVP
+  major_coverage: EXACT_100_PERCENT_INTEGER_EQUALITY
+  all_verifiable_coverage: AT_LEAST_95_PERCENT_INTEGER_CROSS_MULTIPLICATION
+  zero_denominator: UNEVALUABLE
+  numerator: VALID_SUPPORTS_ONLY
+  supplied_relation_sets: EXACT_CLOSED_HASH_BOUND
+trust_boundaries:
+  pure_evaluator_authority: NONE
+  trusted_snapshot_resolution: PRELOADED_EXACT_INPUT
+  constructor_time_input_anchor: IMMUTABLE_SHA256_STRING
+  append_history_anchor: IMMUTABLE_REPORT_SHA256_AND_CANONICAL_BYTES
+  append_re_evaluation: REQUIRED
+  recorded_attestation_decision: DETERMINISTIC_CORRUPTION_CHECK_NOT_AUTHENTICATION
+  post_commit_cleanup_failure: CLOSED_DIAGNOSTIC_COMPLETE_PAIR_RETAINED
+runtime_boundaries:
+  snapshot_query: READ_ONLY
+  result_recording: PROCESS_LOCAL_APPEND_ONLY
+  persistence_repository_change: NONE
+  article_or_cta_mutation: FORBIDDEN
+  recommendation_or_publication_snapshot_mutation: FORBIDDEN
+  network_provider_or_credential_surface: FORBIDDEN
+  publication_authorized: false
+  production_eligible: false
+toolchain:
+  python: 3.14.6
+  pyyaml: 6.0.3
+  pydantic: 2.13.4
+  pydantic_core: 2.46.4
+  pytest: 9.1.1
+  ruff: 0.16.1
+  mypy: 2.3.0
+  lock_inputs:
+    - pyproject.toml
+    - uv.lock
+verification:
+  results:
+    - check: runtime_owner_build_and_no_write_check
+      result: PASS
+    - check: historical_reference_owner_no_write_check
+      result: PASS
+    - check: tests_st0605_runtime
+      result: PASS
+      passed: 90
+    - check: historical_tests_st0605
+      result: PASS
+      passed: 61
+    - check: combined_st0605_tests
+      result: PASS
+      passed: 151
+    - check: fresh_import_closure
+      result: PASS
+      repository_backed_modules: 19
+      unbound_repository_modules: 0
+      forbidden_provider_roots: 0
+    - check: ruff_format_and_lint
+      result: PASS
+      files: 18
+    - check: strict_mypy_follow_imports_silent
+      result: PASS
+      files: 8
+    - check: compile_import
+      result: PASS
+    - check: focused_changed_file_secret_scan
+      result: PASS
+      files: 36
+      findings: 0
+    - check: canonical_import
+      result: PASS
+      passed: 18
+    - check: workspace_no_write
+      result: PASS
+    - check: git_diff_check
+      result: PASS
+mechanical_provenance_chain:
+  semantics_changed: false
+  authority_changed: false
+  fixture_payloads_changed: false
+  owner_checks: PASS
+  endpoints:
+    ST-0203: 860a7f1cec566c136b906ff87579a4e97ce92e1c67b69b540811e8b403844b6f
+    ST-0204: 976d023f476f471867be7f0d04a6260414b2b5c4c9e42ce24d20800a9edc33fd
+    ST-0701: cb7dd9723c9b4fcd8584ff790d154499f603b5cf1904cc7a9971313d32fdcb49
+    ST-0703: d2e69915658b61840e7b806240694420984e072a648cb93ff765b89fc38c9430
+    ST-0801: 84efc5a379e8fab8c03e94843645a68d4aa4f302dc13e7029426ee6cb3ec2ca7
+    ST-1204: 39183d824e165ef48088e7dd08f1c866b24348f730157828e737f69645a2c902
+  suites:
+    ST-0203: 55
+    ST-0204: 178
+    ST-0701: 117
+    ST-0703: 363
+    ST-0801: 283
+    ST-1204: 202
+formal_and_external_boundaries:
+  formal_tst_020: NOT_EXECUTED
+  formal_tst_021: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  human_editorial_data_security_review: NOT_EXECUTED
+  canonical_status_apply: NOT_EXECUTED
+  live_source_packet_or_provider: NOT_EXECUTED
+  credential_activity: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  validated_claim: FORBIDDEN
+debt:
+  closed_local_runtime_gap: DEBT-W2-063
+  open_semantic_rebinds:
+    - DEBT-W2-064
+    - DEBT-W2-065
+    - DEBT-W2-066
+  next_owner: ST-0705

@@ -1,0 +1,231 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1906
+  classification: MAXIMUM_SAFE_LOCAL_DISABLED_RECORDED_AGGREGATE_CAUSAL_ATTRIBUTION_V1
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  mvp: false
+  canonical_implementation_status: DEFERRED_POST_MVP
+  canonical_status_changed: false
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+
+authority:
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  canonical_decisions:
+    path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  open_decisions:
+    path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    privacy_decision_id: OD-012
+    privacy_status: HUMAN_DECISION_REQUIRED
+    privacy_default: 非必須Trackingを無効化しFirst-party最小Eventのみ
+    retention_decision_id: OD-014
+    retention_status: HUMAN_DECISION_REQUIRED
+    retention_default: 自動削除Jobは無効、最小収集
+    resolved_by_this_story: false
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1906
+    depends_on: ST-1303
+    effective_status: DEFERRED_POST_MVP
+  analytics_design:
+    path: docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  attribution_policy:
+    path: docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml
+    sha256: 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c
+  test_acceptance_design:
+    path: docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    required_suite: TST-032
+    formal_status: NOT_EXECUTED
+  security_design:
+    path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  data_classification:
+    path: docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml
+    sha256: 59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    controls:
+      - SEC-GOV-006
+      - SEC-APP-001
+      - SEC-DATA-003
+      - SEC-DATA-004
+      - SEC-DATA-007
+      - SEC-DATA-008
+      - SEC-SDLC-006
+      - SEC-SDLC-009
+  threat_register:
+    path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+    threats:
+      - THR-010
+      - THR-014
+      - THR-019
+      - THR-020
+      - THR-025
+
+predecessor:
+  story_id: ST-1303
+  binding: EXACT_BASE_COMMIT_BYTES
+  base_commit: 54132aff878d3ef4fe879ca6abd575b267b8bbf5
+  artifacts:
+    changes/st-1303/contracts/attribution-engine-runtime.v2.yaml: f8fc2b3113387d419e675e9a286e008c806728a056281a3376ca367356b1d758
+    changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b
+    changes/st-1303/generated/attribution-engine-recorded.v2.json: a45dd5a69bc97a8983c1c30f60588a3c366cfbc97a677257295f6d4f78804277
+    python/raos/domain/finance/attribution.py: b1fadc7d2446e943bd4e34a63016b883121566f3cb8c8f7b6fa04533b8d38b7c
+    python/raos/ports/attribution.py: 3d56b802a2898be2c14b45f03e7747400ec1a060b78db4fd1e139174bed73a42
+    python/raos/application/finance/attribution.py: 9943325951342a3d21d23bcecc0e17b98082a4466d0a21643057997b0e254b4f
+    python/raos/adapters/recorded_attribution.py: 8fc4912697e613b1fcedb2f66f9d19dea19351f5c02cc95f518ef673064e2dad
+    changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+  required_semantics:
+    five_slot_contract: true
+    fixed_program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
+    period_duration_days: 14
+    provider_fact_immutable: true
+    direct_estimated_unattributed_separate: true
+    unavailable_not_zero: true
+    arbitrary_total_allocation: false
+    finance_to_recommendation: false
+
+feature_scope:
+  default: DISABLED
+  closed_states:
+    - DISABLED
+    - RECORDED_SYNTHETIC_AGGREGATE_EVALUATION_ONLY
+  live_enabled_state_exists: false
+  activation_interface_exists: false
+  disabled_fails_before_port_call: true
+  executable_environments:
+    - ENV-DEV
+    - ENV-CI
+  provider_neutral: true
+  caller_bytes_only: true
+
+privacy_gate:
+  required_for_available_result: true
+  accepted_status: RECORDED_SYNTHETIC_SCOPE_REVIEWED
+  accepted_scope: AGGREGATE_NON_PERSONAL_RECORDED_SYNTHETIC_ONLY
+  personal_data: false
+  persistent_identifier: false
+  raw_ip: false
+  full_user_agent: false
+  free_text: false
+  tracking_activation: false
+  live_privacy_approval_claimed: false
+  retention_policy_activated: false
+  not_reviewed_result: UNAVAILABLE
+
+signal_contract:
+  design: RANDOMIZED_AGGREGATE_TWO_ARM
+  outcome: AFFILIATE_CLICK
+  exact_article_cells: 5
+  minimum_exposures_per_arm_per_cell: 500
+  minimum_outcomes_per_arm_per_cell: 20
+  assignment_verification_required: true
+  equal_arm_exposures_required: true
+  measurement_verification_required: true
+  mature_cohort_required: true
+  same_program_required: true
+  same_period_required: true
+  exact_packet_binding_required: true
+  preregistration_hash_required: true
+  personal_unit_rows: false
+  observational_identity_linkage: false
+
+method:
+  version: RAOS_ST1906_RANDOMIZED_AGGREGATE_RISK_DIFFERENCE_V1
+  estimand: POOLED_RISK_DIFFERENCE
+  scale: MICROS
+  confidence_interval: WALD_95_PERCENT_RECORDED_EVALUATION_ONLY
+  confidence_bps: 9500
+  zero_crossing_result: UNAVAILABLE
+  claim: ANALYSIS_CANDIDATE_ONLY
+  provider_fact: false
+  provider_reward_allocation: false
+  arbitrary_attribution: false
+
+unavailable_or_refused:
+  missing_input: UNAVAILABLE
+  privacy_not_reviewed: UNAVAILABLE
+  article_binding_mismatch: UNAVAILABLE
+  program_mismatch: UNAVAILABLE
+  period_mismatch: UNAVAILABLE
+  unverified_input: UNAVAILABLE
+  immature_cohort: UNAVAILABLE
+  assignment_unverified: UNAVAILABLE
+  arm_balance_mismatch: UNAVAILABLE
+  zero_denominator: UNAVAILABLE
+  low_sample: UNAVAILABLE
+  low_outcome_count: UNAVAILABLE
+  confidence_interval_crosses_zero: UNAVAILABLE
+  unknown_field: REFUSED
+  personal_or_tracking_field: REFUSED
+  finance_field: REFUSED
+  release_decision_input: REFUSED
+  source_hash_or_byte_mismatch: REFUSED
+
+mutation_boundary:
+  output_fields: IDS_HASHES_AGGREGATE_COUNTS_EFFECT_CLOSED_STATUS_ONLY
+  authority: NONE
+  provider_call: NOT_EXECUTED
+  network: FORBIDDEN
+  persistence: NOT_EXECUTED
+  tracking_activation: DISABLED
+  editorial_mutation: FORBIDDEN
+  article_html_mutation: FORBIDDEN
+  cta_mutation: FORBIDDEN
+  product_selection_mutation: FORBIDDEN
+  recommendation_order_mutation: FORBIDDEN
+  publication_snapshot_mutation: FORBIDDEN
+  public_projection: NOT_EXECUTED
+  publication: FORBIDDEN
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  recommendation_inputs_excluded:
+    - AFFILIATE_COMMISSION_RATE
+    - CONFIRMED_REWARD
+    - UNATTRIBUTED_REWARD
+    - COMMISSION
+    - INCREMENTAL_COST
+    - EPC
+    - RPM
+    - PROFIT
+  finance_values_represented: false
+  causal_result_automatic_editorial_use: false
+  causal_result_automatic_recommendation_use: false
+
+verification_boundary:
+  focused_unit_negative_privacy_security: LOCAL_CANDIDATE
+  owner_generator_check: LOCAL_CANDIDATE
+  dependency_ST-1303_regression: LOCAL_CANDIDATE
+  formal_TST-032: NOT_EXECUTED
+  live_privacy_review: NOT_EXECUTED
+  real_signal_calibration: NOT_EXECUTED
+  database: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  network: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - Privacy Owner review, consent/purpose/retention approval, and data inventory
+    - real randomized design, pre-registration, power analysis, and sanitized aggregate signal
+    - independent statistical review and real-signal calibration
+    - separate release decision and formal TST-032 gate acceptance
+    - persistence, monitoring, rollback, staging, release, and Production evidence

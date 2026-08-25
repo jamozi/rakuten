@@ -1,0 +1,55 @@
+document:
+  schema_version: 1
+  story_id: ST-1908
+  implementation_mode: STRICT_STORY
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  canonical_status: DEFERRED_POST_MVP
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+
+base:
+  commit: 0fab69e92d0896f58f0efc633aa350bbf3561f73
+  branch: codex/raos-local-integration-complete
+
+local_boundary:
+  provider_neutral: true
+  default_enabled: false
+  caller_bytes_recorded_synthetic_only: true
+  raw_training_examples: false
+  actual_training: NOT_EXECUTED
+  live_enabled_state_exists: false
+  activation_interface_exists: false
+  network: FORBIDDEN
+  credentials: NOT_USED
+  persistence: NOT_EXECUTED
+  editorial_mutation: FORBIDDEN
+  recommendation_order_mutation: FORBIDDEN
+  publication_snapshot_mutation: FORBIDDEN
+  publication: FORBIDDEN
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+
+verification:
+  focused_behavior_negative_security_tests: PASSED_37
+  owner_generate_and_check: PASSED
+  dependency_ST-0707_regression: PASSED_62
+  dependency_ST-0707_owner_check: PASSED
+  ruff_format_and_check: PASSED
+  strict_mypy: PASSED_11_FILES
+  python_compile: PASSED_13_FILES
+  focused_secret_scan: PASSED_22_FILES_ZERO_FINDINGS
+  git_diff_check: PASSED
+  formal_TST-032: NOT_EXECUTED
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - licensed representative dataset and legal rights evidence
+    - approved sanitization, retention, and deletion workflow
+    - verified prompt/route exhaustion and recurring-error evidence
+    - actual trained candidate and independent holdout evaluation
+    - verified provider pricing, workload, labor, and lifecycle cost evidence
+    - independent AI/security/privacy/legal review
+    - separate release decision and formal TST-032
+    - staging, release, and Production evidence

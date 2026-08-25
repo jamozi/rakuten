@@ -87,7 +87,16 @@ dependencies:
   artifacts:
   - role: readme
     uri: repo://changes/st-0402/README.md
-    sha256: 6a3d5b2a1836d683b2dc96ecb73e4a02943a9a6fd8068496e6d550492514534b
+    sha256: 80f0d3dd6dd7845d726b3fdf07fc3828b4e25c9eea55d48e3296940350b9e0e5
+  - role: contract
+    uri: repo://changes/st-0402/contracts/local-step-up-runtime.v2.json
+    sha256: c42931a148e4852aac9be2c1bab5012ed9c588e568daef2fe6a5c61cbd157bfa
+  - role: runtime
+    uri: repo://changes/st-0402/generated/local-step-up-runtime.v2.json
+    sha256: dd582c4f4e42dc7f4682cb4e2349047f880298cc7fe6ba5da5be8ae953bf472f
+  - role: manifest
+    uri: repo://changes/st-0402/generated/local-step-up-runtime-manifest.v2.json
+    sha256: d55b4da53849aae53d2ec5e40934568185f5bb3008c345bf47ad741214fe94cf
   connection_status: NOT_EXECUTED
   authority_status: ABSENT
 - story_id: ST-0403
@@ -95,7 +104,7 @@ dependencies:
   artifacts:
   - role: readme
     uri: repo://changes/st-0403/README.md
-    sha256: e7c0e10e44abf6f5db2fbbd94c6a14ecbc9d6bc0ff77fcb312d652204165b6e9
+    sha256: d21f1ddefd4f201a6618e9baa8889d6c77302b141070d89d03b4e2199746d5cc
   connection_status: NOT_EXECUTED
   authority_status: ABSENT
 - story_id: ST-0405
@@ -103,7 +112,7 @@ dependencies:
   artifacts:
   - role: readme
     uri: repo://changes/st-0405/README.md
-    sha256: 8b046d65492947a458306c308f5515bb6496e0371bdc9695226d52328a04a657
+    sha256: d815e3f71728ff43c3c7301cdf973534f723c505bffba1f6d97b82e8d76c588f
   connection_status: NOT_EXECUTED
   authority_status: ABSENT
 - story_id: ST-0605
@@ -111,10 +120,10 @@ dependencies:
   artifacts:
   - role: readme
     uri: repo://changes/st-0605/README.md
-    sha256: f5a59ab0542a95987720c5d9ec43ef4355d92cea2b7bafcf8851e510fb98cf4b
+    sha256: 116c86877e397e1804e6edff2189b14ea756566b8fe27e2b64a3b8be91abc2fb
   - role: contract
     uri: repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml
-    sha256: 3eb1bccf5e6b2599690e2c9cdd2490dc0a2177e41689f8955c0bc1dfb8e068f2
+    sha256: b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49
   connection_status: NOT_EXECUTED
   authority_status: ABSENT
 - story_id: ST-0805

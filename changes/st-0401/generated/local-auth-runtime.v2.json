@@ -1,0 +1,198 @@
+{
+  "contract": {
+    "authority": {
+      "browser_authentication": false,
+      "credential_access": false,
+      "external_http_activation": false,
+      "live_provider": false,
+      "production": false,
+      "publication": false,
+      "release": false,
+      "staging": false
+    },
+    "debt_resolution": {
+      "disabled_transport_and_recorded_http_shape": "IMPLEMENTED",
+      "durable_transaction_and_session_seam": "IMPLEMENTED",
+      "id": "DEBT-W1-001",
+      "local_implementation_gap": "CLOSED",
+      "real_provider_and_browser_delivery_tail": "EXTERNAL_BLOCKED_BY_OD-010_NOT_INFERRED"
+    },
+    "dependencies": [
+      "ST-0103",
+      "ST-0204"
+    ],
+    "open_decision": {
+      "id": "OD-010",
+      "provider_selection": "UNSELECTED",
+      "safe_default": "LOCAL_FAKE_DEVELOPMENT_ONLY_EXTERNAL_PUBLICATION_FORBIDDEN",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "runtime": {
+      "authorization": {
+        "consume_semantics": "ATOMIC_ONE_TIME_EVEN_ON_VALIDATION_FAILURE",
+        "nonce_bits": 256,
+        "pkce_method": "S256_ONLY",
+        "pkce_verifier_bits": 256,
+        "state_bits": 256
+      },
+      "credential_resolution": "ABSENT",
+      "environment": "ENV-DEV",
+      "external_provider_calls": false,
+      "persistence": {
+        "authorization_and_session_atomicity": true,
+        "canonical_encoding": "COMPACT_UTF8_SORTED_JSON_AND_RFC3339_UTC_Z",
+        "classification": "OWNER_PRIVATE_RECORDED_LOCAL_ADAPTER_ONLY",
+        "commit_fault_points": [
+          "BEFORE_COMMIT",
+          "AFTER_COMMIT"
+        ],
+        "cross_restart_trusted_anchor": "ABSENT_NOT_CLAIMED",
+        "database": "SQLITE_FIXED_FILENAME_CREATED_ONLY_NO_CALLER_SQL",
+        "external_io_inside_transaction": false,
+        "file_identity": "OWNER_PRIVATE_MODE_0600_PINNED_DEVICE_AND_INODE",
+        "known_rollback": "PREDECESSOR_REMAINS_ACTIVE",
+        "migration_or_production_schema_authority": false,
+        "record_integrity": "FULL_REVISION_HISTORY_AND_LINEAR_COMMAND_SHA256_CHAIN",
+        "rollback_detection": "PROCESS_LIFETIME_COUNT_HEAD_PREFIX_ANCHOR",
+        "rotation_recovery_source": "EXACT_DURABLE_COMMAND_INTENT_AND_RESULT_ONLY",
+        "schema": "EXACT_V2_STRICT_FOREIGN_KEYS_APPEND_ONLY_TRIGGERS",
+        "session_rotation_atomicity": true,
+        "st0308_alignment": "EXPLICIT_OUTER_TRANSACTION_NO_EXTERNAL_IO_NO_BLIND_COMMIT_RETRY",
+        "transaction_owner": "ADAPTER_OUTER_TRANSACTION_PER_MUTATION",
+        "unknown_commit": "STORAGE_COMMIT_UNKNOWN_THEN_READ_ONLY_RESOLUTION"
+      },
+      "provider_adapter": "RECORDED_FAKE_NO_NETWORK",
+      "provider_sdk": "ABSENT",
+      "session": {
+        "absolute_expiry": "BOUNDED_NON_EXTENDABLE",
+        "idle_expiry": "BOUNDED",
+        "replace": "COMPARE_AND_SET",
+        "replay": "FAIL_CLOSED",
+        "rotation": "ATOMIC_REVOKE_PREDECESSOR_AND_CREATE_SUCCESSOR",
+        "rotation_recovery": "EXACT_DURABLE_COMMAND_INTENT_RESULT_RESOLVE_ONLY_NO_BLIND_RETRY"
+      },
+      "transport": {
+        "actions": [
+          "BEGIN",
+          "CALLBACK",
+          "REQUIRE",
+          "ROTATE",
+          "RECOVER_ROTATION",
+          "REVOKE"
+        ],
+        "bearer_delivery": "UNSELECTED_NOT_DELIVERED",
+        "browser_storage": "UNSELECTED_NOT_DELIVERED",
+        "cookie_delivery": "UNSELECTED_NOT_DELIVERED",
+        "delivery_headers_forbidden": [
+          "Authorization",
+          "Location",
+          "Set-Cookie"
+        ],
+        "external_dispatch": "UNCONDITIONAL_RFC9457_503_REFUSAL",
+        "problem_body_keys": [
+          "code",
+          "detail",
+          "instance",
+          "status",
+          "title",
+          "type"
+        ],
+        "recorded_content_type": "application/json",
+        "recorded_external_action_count": 0,
+        "recorded_method": "POST",
+        "recorded_origin": "HTTP_EXACT_IPV4_LOOPBACK_WITH_UNPRIVILEGED_PORT",
+        "recorded_target": "/__recorded__/st-0401/admin-auth",
+        "route_registration": false,
+        "success_body_keys": [
+          "delivery",
+          "external_activation",
+          "outcome"
+        ]
+      }
+    },
+    "schema_version": 2,
+    "status": "LOCAL_CODE_COMPLETE",
+    "story_id": "ST-0401",
+    "verification": {
+      "browser": "NOT_EXECUTED",
+      "formal_tst_012": "NOT_EXECUTED",
+      "formal_tst_022": "NOT_EXECUTED",
+      "formal_tst_026": "NOT_EXECUTED",
+      "hosted_ci": "NOT_EXECUTED",
+      "local_focused": "EXECUTABLE",
+      "production": "NOT_EXECUTED",
+      "release": "NOT_EXECUTED",
+      "staging": "NOT_EXECUTED"
+    }
+  },
+  "contract_sha256": "6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad",
+  "document": "RAOS_ST0401_LOCAL_AUTH_RUNTIME_V2",
+  "generation_authority": "REPOSITORY_LOCAL_ONLY",
+  "source_artifacts": [
+    {
+      "path": "changes/st-0401/contracts/local-auth-runtime.v2.json",
+      "sha256": "6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad"
+    },
+    {
+      "path": "scripts/build_st0401_local_auth_runtime.py",
+      "sha256": "fa5cfa50f9dfdf6d8081fd2819d90d3e3431d89ad4f30ba0a0bc67fd3d7f6864"
+    },
+    {
+      "path": "scripts/secure_generated_publication.py",
+      "sha256": "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e"
+    },
+    {
+      "path": "python/raos/domain/iam/authentication.py",
+      "sha256": "a7a06f72244318696dc37c76dfd4b6ac030db8a9fb3872ed69747201f6fc690d"
+    },
+    {
+      "path": "python/raos/ports/oidc.py",
+      "sha256": "57fcca6de54cae9c206018a264ea34632f4c3adcc94b2a5d4e4063d635a96269"
+    },
+    {
+      "path": "python/raos/application/iam/authentication.py",
+      "sha256": "edb92df10bf68bcb1fc76f9c5635f6dd87340a562e24d58c44fcc136df2aa32a"
+    },
+    {
+      "path": "python/raos/adapters/development_oidc.py",
+      "sha256": "f962b13a62890dea606ed8c07a80c44f177365abce8d180661e80c828409b135"
+    },
+    {
+      "path": "python/raos/adapters/recorded_authentication.py",
+      "sha256": "29d178a3e13a1a6cff4896702a4e424d23daa9a5564664e2a1ad8cf2537f5125"
+    },
+    {
+      "path": "python/raos/adapters/disabled_admin_auth_http.py",
+      "sha256": "5114e8fd0074456fcc22114a2c84351be17ce7b5ec35d5869a47dced6c39ed11"
+    },
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "path": "docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml",
+      "sha256": "dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050"
+    },
+    {
+      "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "path": "changes/st-0308/contracts/persistence-runtime.v2.yaml",
+      "sha256": "0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4"
+    }
+  ],
+  "story_id": "ST-0401"
+}

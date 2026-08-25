@@ -1,13 +1,13 @@
 document:
   id: RAOS-COMPUTE-EDGE-MANIFEST-001
-  version: 1.1.0
+  version: 1.2.0
   story_id: ST-1503
   source_contract: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
   generated_by: repo://scripts/build_st1503_compute_edge.py
   generation_command: uv run --locked --no-sync python scripts/build_st1503_compute_edge.py
 provenance:
   contract_uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
-  contract_sha256: 07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60
+  contract_sha256: 682ab350c5036bf8697a99f08269d5d6db1aaff7387ca8401db07b9d811b1c08
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -39,50 +39,170 @@ provenance:
   - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
     sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
   - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-    sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
+    sha256: 5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e
   - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-    sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
-source_artifact_count: 8
+    sha256: bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72
+  - uri: repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json
+    sha256: 696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44
+source_artifact_count: 12
 source_artifacts:
 - uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
-  bytes: 21236
-  sha256: 07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60
+  bytes: 24946
+  sha256: 682ab350c5036bf8697a99f08269d5d6db1aaff7387ca8401db07b9d811b1c08
 - uri: repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
   bytes: 13910
   sha256: 2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d
+- uri: repo://changes/st-1503/IMPLEMENTATION_RECORD_V2_ST1503_LOGICAL_HCL.yaml
+  bytes: 4970
+  sha256: 77fcbc54a281eef02a66a59d685de9e1a17241c9f660af9d50cd6d014839c807
+- uri: repo://changes/st-1503/LOCAL_COMPLETION_EVIDENCE_V2.md
+  bytes: 4330
+  sha256: 950cc634d27e978f2f12a5bff7ce96e6a2d50ae7c7f6bd61ce87df198868a758
+- uri: repo://changes/st-1503/PREFLIGHT_LOCAL_CODE_COMPLETE_V2.md
+  bytes: 2428
+  sha256: a189a1b69acdf5e81f6b9952621eb89a8c7df8bdd36e51a4787e417a4620b978
 - uri: repo://changes/st-1503/README.md
-  bytes: 6895
-  sha256: 742615102c737a999892f7743c76aa6fd4fed079aaf026fbd2db31acac09f2bd
+  bytes: 8922
+  sha256: e7cea25a1d31744b83655b76d01e9a1a39946e490d6b2f24eb991d1db9996e70
 - uri: repo://scripts/build_st1503_compute_edge.py
-  bytes: 78430
-  sha256: 9c322273a8c9a1106ee777bc7747d519d059e719fb40a91d4333209e06e8361d
+  bytes: 145694
+  sha256: a19e6eec9dac3c5f46b34538189bc2cac95836e57762925d53823f9948497d27
 - uri: repo://tests/st1503/conftest.py
   bytes: 634
   sha256: 37224046c0eeac5b366183b2a7d91a5a7c7abfe168b6b308fec938caa49fdfc0
 - uri: repo://tests/st1503/test_contract.py
-  bytes: 12266
-  sha256: 1c1dcf202dab582b0411cda04cfa042773bc1e1c3dfeaf8acffb872661f8066e
+  bytes: 12491
+  sha256: 062445003d8554815b46581c9e2a82d5bfaa82f3147b86ef6f99c8cb636c1a48
 - uri: repo://tests/st1503/test_generation.py
-  bytes: 8601
-  sha256: 8a14342be825ca74d6747c81046eeb26c498a813fc9ffd514070d89114563fee
+  bytes: 8971
+  sha256: 742a923f97d03a5e94180e5cd156690822e88fdff702d1f2fae4d422c06fa08c
+- uri: repo://tests/st1503/test_logical_hcl.py
+  bytes: 20889
+  sha256: 70c9a09fba370026fd819f263b492d11dfbd8db9c26088635ab5983cbb637a0a
 - uri: repo://tests/st1503/test_negative_cases.py
   bytes: 27641
   sha256: 0088984d4d0602992225adc7762cfcec19459c4188a3e0c81300522d20e7b7ba
-generated_artifact_count: 1
+generated_artifact_count: 8
 generated_artifacts:
 - uri: repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json
-  bytes: 23505
-  sha256: 62d0d2975ebc28951340488eed2da3138b29729b56d7638290deda886651d4d8
+  bytes: 27583
+  sha256: 1ac46b4ac6a779f41776c10f69416c05e770f2119fb1ce3b6898c11d7e1295ee
+- uri: repo://infra/terraform/compute-edge/compute-edge.logical-plan.v1.json
+  bytes: 58235
+  sha256: 8535331c0a43fcc1f9309c855b51d814d8165fa05eaed9edf5f520e56eb408ff
+- uri: repo://infra/terraform/compute-edge/terraform-validation-toolchain.lock.v1.json
+  bytes: 3444
+  sha256: 620a9afd1a8e7ad82bf13071fb8c432854bbd5f9ea56a4781e39fb70c9ba67fe
+- uri: repo://infra/terraform/compute-edge/versions.tf
+  bytes: 119
+  sha256: 2465fb6351fcc5bb21e46b5bc475545dc32f57029f8aa61df5260bdf0b582fc3
+- uri: repo://infra/terraform/compute-edge/variables.tf
+  bytes: 6979
+  sha256: 33154bdf030744804990411aad79098c4f6a818d12b5bf634cfa88186e778d63
+- uri: repo://infra/terraform/compute-edge/locals.tf
+  bytes: 66288
+  sha256: 33ba079231501abed9d87197794dc2086a0a6c75c4bcf2f364b1a4fe5d53c455
+- uri: repo://infra/terraform/compute-edge/checks.tf
+  bytes: 6432
+  sha256: 64c11a5c30f11e286681371d3777553eebc80f879832fe5ba1d9e9510076fb9e
+- uri: repo://infra/terraform/compute-edge/outputs.tf
+  bytes: 1232
+  sha256: cf52165e70468c57e4b422b68ccbd818a858751eae4ec667d3720fa82c5d7c96
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
 boundary:
-  classification: SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_COMPUTE_EDGE_REFERENCE_PLAN
+  classification: PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_COMPUTE_EDGE_MODULE
+  logical_hcl_module:
+    classification: PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_COMPUTE_EDGE_GRAPH
+    module_path: infra/terraform/compute-edge
+    terraform_required_version: = 1.15.9
+    toolchain_lock_source: ST-1501_PINNED_VALIDATION_ONLY_TOOLCHAIN
+    generated: true
+    default_disabled: true
+    provider_schema_binding: null
+    provider_requirements: []
+    provider_blocks: []
+    backend_blocks: []
+    cloud_blocks: []
+    module_blocks: []
+    data_blocks: []
+    resource_blocks: []
+    provisioners: []
+    physical_resource_materialization: FORBIDDEN_IN_CURRENT_REVISION
+    logical_component_count: 37
+    logical_edge_count: 53
+    logical_workload_count: 4
+    logical_identity_count: 4
+    logical_health_contract_count: 4
+    deterministic_no_apply_plan_fixture: infra/terraform/compute-edge/compute-edge.logical-plan.v1.json
+    generated_files:
+    - versions.tf
+    - variables.tf
+    - locals.tf
+    - checks.tf
+    - outputs.tf
+    allowed_top_level_blocks:
+    - terraform
+    - variable
+    - locals
+    - check
+    - output
+    policy_validation: EXACT_CLOSED_BUNDLE_FORBIDDEN_BLOCK_AND_SAFETY_SCAN
+    semantic_validation: TERRAFORM_VALIDATE_JSON_INIT_FREE_PROVIDER_FREE
+  successor_activation_port:
+    classification: CLOSED_PHYSICAL_COMPUTE_EDGE_ACTIVATION_PORT
+    current_revision_activation: FORBIDDEN
+    successor_contract_revision_required: true
+    selected_provider_schema: null
+    selected_provider_plugin: null
+    selected_account_or_project: null
+    selected_region: null
+    selected_state_backend: null
+    selected_credential_source: null
+    selected_network_segments: []
+    selected_domain_names: []
+    selected_host_names: []
+    selected_dns_certificate_references: []
+    selected_image_digests: []
+    selected_workload_identity_references: []
+    selected_secret_references: []
+    selected_waf_rule_definitions: []
+    selected_rate_limit_thresholds: []
+    selected_health_endpoint_bindings: []
+    required_gate_evidence:
+    - OD-002_SITE_DOMAIN_RESOLVED
+    - OD-009_BUDGET_AND_CAP_RESOLVED
+    - OD-010_ADMIN_IDENTITY_PROVIDER_RESOLVED
+    - OD-011_ALERT_CHANNEL_AND_ESCALATION_RESOLVED
+    - OD-013_REGION_RESIDENCY_RESOLVED
+    - OD-015_ACCOUNT_CREDENTIAL_EVIDENCE
+    - TST-026_FORMAL_SECURITY_EVIDENCE
+    - TST-027_FORMAL_STAGING_PERFORMANCE_LOAD_EVIDENCE
+    - PROVIDER_SCHEMA_PLUGIN_AND_DISTRIBUTION_PROVENANCE
+    - PRIVATE_NETWORK_ACCOUNT_AND_ORIGIN_ISOLATION_EVIDENCE
+    - IMMUTABLE_IMAGE_DIGEST_SIGNATURE_SBOM_AND_SCAN_EVIDENCE
+    - LEAST_PRIVILEGE_WORKLOAD_IDENTITY_SECRET_AND_EGRESS_REVIEW
+    - DNS_TLS_WAF_RATE_LIMIT_AND_ORIGIN_AUTHENTICATION_EVIDENCE
+    - DISTINCT_LIVENESS_READINESS_AND_MIGRATION_FAILURE_EVIDENCE
+    - OBSERVABILITY_ALERT_OWNER_RUNBOOK_AND_CAPACITY_EVIDENCE
+    - HUMAN_APPROVED_CANARY_PROMOTION_ROLLBACK_AND_RELEASE_EVIDENCE
+    supplied_gate_evidence: []
+    complete_gate_evidence: false
+    provider_binding: FORBIDDEN_IN_CURRENT_REVISION
+    physical_resource_materialization: FORBIDDEN_IN_CURRENT_REVISION
+    infrastructure_plan: FORBIDDEN
+    infrastructure_apply: FORBIDDEN
   activation: DISABLED
   planned_actions:
     create: 0
     update: 0
     delete: 0
+    deploy: 0
+    promote: 0
+    rollback: 0
+    route: 0
+    scale: 0
   admission_status: NOT_EVALUATED
   eligible: false
   selected_profile_id: null
@@ -111,7 +231,7 @@ boundary:
   selected_waf_abuse_control: null
   credentials: ABSENT
   physical_resource_definitions: []
-  native_iac_validation: NOT_EXECUTED
+  native_iac_validation: EXECUTED_LOCAL_NOT_FORMAL
   formal_tst_026: NOT_EXECUTED
   formal_tst_027: NOT_EXECUTED
   performance_load_validation: NOT_EXECUTED

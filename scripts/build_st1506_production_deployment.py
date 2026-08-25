@@ -12,10 +12,10 @@ import re
 import stat
 import sys
 import tempfile
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
-from typing import Any, Final, NoReturn
+from typing import Any, Final, NoReturn, TypeGuard, cast
 
 import yaml
 from yaml.constructor import ConstructorError
@@ -112,40 +112,40 @@ PREDECESSOR_SOURCES: Final = {
         "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f"
     ),
     "changes/st-1501/contracts/terraform-foundation.v1.yaml": (
-        "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9"
+        "5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e"
     ),
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json": (
-        "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70"
+        "bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72"
     ),
     "scripts/build_st1501_terraform_foundation.py": (
-        "8c24545a0b992db2116e956b8ff0948066ca86b78026aa546417a6be025a9ec8"
+        "ca5bf43cb45578207678f7afcce77cab01a9e54b34f45a3f1c9a5f4f417aa7cb"
     ),
     "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml": (
-        "ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5"
+        "2826ec76994e6fb1d4e1c41bc0ce7affecc96351d1fcf527e45c2909bb89f97c"
     ),
     "changes/st-1502/contracts/data-services-foundation.v1.yaml": (
-        "bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041"
+        "89a0f1e7babfceffd2b270bc3a16f5d74fbeb6b62699e03156c860c9ae16c7e1"
     ),
     "infra/terraform/data-services/data-services.reference-plan.v1.json": (
-        "84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699"
+        "2d52d7b99a4edda75814af603e48016f06fa34507bc221e3f573379c066f35c5"
     ),
     "scripts/build_st1502_data_services.py": (
-        "ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf"
+        "73876b415aba2f7160d94dbe8df113087d4bf5be27b4830b82425b34f6ea6abe"
     ),
     "changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml": (
         "2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d"
     ),
     "changes/st-1503/contracts/compute-edge-foundation.v1.yaml": (
-        "07e78229b21b181c951fa6c7f7fa9cf601b9118149f8162691189b3739d8dd60"
+        "682ab350c5036bf8697a99f08269d5d6db1aaff7387ca8401db07b9d811b1c08"
     ),
     "infra/terraform/compute-edge/compute-edge.reference-plan.v1.json": (
-        "62d0d2975ebc28951340488eed2da3138b29729b56d7638290deda886651d4d8"
+        "1ac46b4ac6a779f41776c10f69416c05e770f2119fb1ce3b6898c11d7e1295ee"
     ),
     "scripts/build_st1503_compute_edge.py": (
-        "9c322273a8c9a1106ee777bc7747d519d059e719fb40a91d4333209e06e8361d"
+        "a19e6eec9dac3c5f46b34538189bc2cac95836e57762925d53823f9948497d27"
     ),
     "changes/st-0107/contracts/pr-governance.v1.yaml": (
-        "b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92"
+        "a573506749efd1bfed3c11a021ad56d10fbea901566cc1483547df60d364bf45"
     ),
     "changes/st-0107/ruleset-policy.v1.json": (
         "e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5"
@@ -154,25 +154,25 @@ PREDECESSOR_SOURCES: Final = {
         "36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04"
     ),
     "changes/st-1504/contracts/github-oidc-deployment.v1.yaml": (
-        "c9b01688f58be30dd561b9845aef2d8725c35af3ea9ce50e187c1a0866da011b"
+        "20558e50a78c5d8be62a553858445578cc3fdd39fd285de3a92fe5cd5b5d9257"
     ),
     "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json": (
-        "1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4"
+        "7316a9f71cfea72edf071757ead8b44403362d106eb986d146193a27d658d6e6"
     ),
     "scripts/build_st1504_github_oidc.py": (
-        "996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f"
+        "4e7ff7664326a754b89039bb4c5fcd399e629c3197814da5b79260a54d01bdb0"
     ),
     "changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml": (
         "5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5"
     ),
     "changes/st-1505/contracts/staging-deployment.v1.yaml": (
-        "b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b"
+        "be104a13490d4c39139047e101092e1b2f3541d45c9277e2d9937915a731e2f0"
     ),
     "infra/terraform/staging/staging-deployment.reference-plan.v1.json": (
-        "8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4"
+        "0c607b4c207068432477db1aa2a2e9598092964dbdce470d8b537c7022eaf105"
     ),
     "scripts/build_st1505_staging_deployment.py": (
-        "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+        "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     ),
 }
 PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
@@ -181,46 +181,46 @@ PREDECESSOR_SEMANTIC_SHA256: Final = {
         "e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722"
     ),
     "changes/st-1501/contracts/terraform-foundation.v1.yaml": (
-        "dcf15e5dd721b504a6bac04b71a0c6d26c7ba72bf86e074459babc59f2e3f080"
+        "9e88addbfe93c6d6754111d508ba1d7461a703c2aa6b329fa319b6566d9a55e1"
     ),
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json": (
-        "8679ac98b14f1bd33572679d7fa1fcd1d64e65d3f94b0a973d35637c176567d7"
+        "1deb0efe9ff2d99ccc27ad6f50d1a07c6ed13b6c45cdd6914a7fdcd1a0edbf20"
     ),
     "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml": (
-        "fda0d363d17ca4d8197179b74ad0fac23d252fc3a4e7ef0dc66c2c10a7fc3500"
+        "0d1069b18729a8997e81cdbe1edc40f770348adea10cb12349d9b915547d5845"
     ),
     "changes/st-1502/contracts/data-services-foundation.v1.yaml": (
-        "733d4b6f8c057f3b6d73b413c9ca63b642087005e6f159ae0104a95bf1ff374c"
+        "6339ecf8ba6846efb3efdea69ecba3ef74cb5280a70838c735f3778c3bb0079b"
     ),
     "infra/terraform/data-services/data-services.reference-plan.v1.json": (
-        "8af68f20679a97fc45c20ed9db15edb704edfa7ce63b03b389437cb3eee91329"
+        "abce483dc017145c1511bbe82f3a5fb055f99ff12636e1fddfffa6bd19f6efdc"
     ),
     "changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml": (
         "ad5e207a8f201d0ccdff72670a0f1cd7d90ba76f3e52ad7e51db2eb96d0dd707"
     ),
     "changes/st-1503/contracts/compute-edge-foundation.v1.yaml": (
-        "3d802aa46e08af8241e0feca42ffa7a3d3397a49d4f839cbfef28321cdd52852"
+        "344fc69777a14c50fef91fff3fa4c3d724136ae414039b4a1659383ea7f4acc1"
     ),
     "infra/terraform/compute-edge/compute-edge.reference-plan.v1.json": (
-        "8e483d3448213f8fd328241c39029e4ed443a3ffc0df7a358ed0de6870eb074a"
+        "a0100d4256e39d6aed035010534a00c8373c2f916b182eb7d6cd13265d8287a4"
     ),
     "changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml": (
         "e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282"
     ),
     "changes/st-1504/contracts/github-oidc-deployment.v1.yaml": (
-        "86c418b07701b4cf47f478b13f7665911ece7c4a46d39edd07f7b6944019a4b7"
+        "0eac1cba01ca2218f4f9adf734f58e748bf8c355425427516aab1d79d17bc91f"
     ),
     "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json": (
-        "9fac1776d4b7cd2a89999559036e4c465979d5de0f80ccaff26004e56ade5951"
+        "38e1e8bc7a500ca9961c78949c6697fbadf099d3378822731b3fc72a24b35e3e"
     ),
     "changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml": (
         "d4f680a468ab1246734595394d7e2b1edefa6a590e33c418f7c0c9b487e30448"
     ),
     "changes/st-1505/contracts/staging-deployment.v1.yaml": (
-        "9c5e6c5a8c52e40cb43e7405f95492d75bf0096430566425e0b47b550ade1215"
+        "05a6e65104522354273b54493faa004675d4010e742af67996a1ce074adad416"
     ),
     "infra/terraform/staging/staging-deployment.reference-plan.v1.json": (
-        "f01f3e7618e5ea66419225a5fc8c1d0866d1b09e284b923b04a3f0b279930414"
+        "b986581663bb884a53fed33a63047681499f64a671d4fe65b9185d0950e081ce"
     ),
 }
 DEPENDENCY_POLICIES: Final = {
@@ -500,7 +500,7 @@ APPROVAL_ARTIFACT_NAMES: Final = (
     "operations_approval",
 )
 EXPECTED_CONTRACT_FINGERPRINT: Final = (
-    "1f09e61baed0164bee155de33068a90f0a993880e55738f90e3ca5771cd9dbd3"
+    "b3497f9245a9548fe06567bcc39b8b128f634797d14af3a0da1219d835414bed"
 )
 EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
     "ab5e93f86fc2d78f4775c1d73af3766df679bd01b5aa5a62d5c4edca906ad130"
@@ -531,11 +531,14 @@ class NoAliasDumper(yaml.SafeDumper):
 
 def _construct_unique_mapping(
     loader: UniqueKeyLoader, node: MappingNode, deep: bool = False
-) -> dict[Any, Any]:
+) -> dict[object, object]:
     loader.flatten_mapping(node)
-    result: dict[Any, Any] = {}
+    result: dict[object, object] = {}
+    construct = cast(
+        Callable[[object, bool], object], getattr(loader, "construct_object")
+    )
     for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+        key = construct(cast(object, key_node), deep)
         try:
             duplicate = key in result
         except TypeError as exc:
@@ -552,7 +555,7 @@ def _construct_unique_mapping(
                 "found duplicate key",
                 key_node.start_mark,
             )
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = construct(cast(object, value_node), deep)
     return result
 
 
@@ -596,15 +599,20 @@ def _fail(code: str, field: str) -> NoReturn:
 
 
 def _mapping(value: object, field: str) -> Mapping[str, Any]:
-    if not isinstance(value, Mapping) or not all(
-        type(key) is str for key in value.keys()
-    ):
+    if not isinstance(value, Mapping):
         _fail("TYPE_MISMATCH", field)
-    return value
+    raw = cast(Mapping[object, object], value)
+    if not all(type(key) is str for key in raw):
+        _fail("TYPE_MISMATCH", field)
+    return cast(Mapping[str, Any], value)
+
+
+def _is_any_list(value: object) -> TypeGuard[list[Any]]:
+    return type(value) is list
 
 
 def _list(value: object, field: str) -> list[Any]:
-    if type(value) is not list:
+    if not _is_any_list(value):
         _fail("TYPE_MISMATCH", field)
     return value
 
@@ -612,7 +620,7 @@ def _list(value: object, field: str) -> list[Any]:
 def _strict_match(actual: object, expected: object, field: str) -> None:
     if isinstance(expected, Mapping):
         value = _mapping(actual, field)
-        expected_mapping = _mapping(expected, field)
+        expected_mapping = _mapping(cast(object, expected), field)
         if set(value) != set(expected_mapping):
             _fail("CLOSED_SCHEMA_VIOLATION", field)
         for key, expected_value in expected_mapping.items():
@@ -620,7 +628,7 @@ def _strict_match(actual: object, expected: object, field: str) -> None:
         return
     if type(expected) is list:
         value_list = _list(actual, field)
-        expected_list = _list(expected, field)
+        expected_list = _list(cast(object, expected), field)
         if len(value_list) != len(expected_list):
             _fail("FIXED_VALUE_VIOLATION", field)
         for index, expected_value in enumerate(expected_list):
@@ -642,7 +650,7 @@ def _assert_unset_tree(value: object, field: str) -> None:
     if value is None:
         return
     if isinstance(value, Mapping):
-        for key, nested in _mapping(value, field).items():
+        for key, nested in _mapping(cast(object, value), field).items():
             _assert_unset_tree(nested, f"{field}.{key}")
         return
     if type(value) is list:
@@ -695,7 +703,7 @@ def _repository_regular_file(root: Path, relative: Path, field: str) -> Path:
     return target
 
 
-def load_yaml(path: Path) -> Any:
+def load_yaml(path: Path) -> object:
     _regular_file(path, "yaml")
     try:
         content = path.read_bytes()
@@ -705,12 +713,13 @@ def load_yaml(path: Path) -> Any:
         _fail("YAML_SIZE_LIMIT", "yaml")
     try:
         text = content.decode("utf-8")
-        for token in yaml.scan(text):
+        scan = cast(Callable[[str], Sequence[object]], getattr(yaml, "scan"))
+        for token in scan(text):
             if isinstance(token, (AliasToken, AnchorToken)):
                 _fail("YAML_ALIAS_FORBIDDEN", "yaml")
             if isinstance(token, TagToken):
                 _fail("YAML_TAG_FORBIDDEN", "yaml")
-        return yaml.load(text, Loader=UniqueKeyLoader)
+        return cast(object, yaml.load(text, Loader=UniqueKeyLoader))
     except ProductionDeploymentContractError:
         raise
     except UnicodeError, yaml.YAMLError:
@@ -787,11 +796,13 @@ def _find_exact_record(
     document: Mapping[str, Any], collection: str, record_id: str, field: str
 ) -> Mapping[str, Any]:
     rows = _list(document.get(collection), field)
-    matches = [
-        _mapping(row, field)
-        for row in rows
-        if isinstance(row, Mapping) and row.get("id") == record_id
-    ]
+    matches: list[Mapping[str, Any]] = []
+    for raw_row in rows:
+        if not isinstance(raw_row, Mapping):
+            continue
+        row = _mapping(cast(object, raw_row), field)
+        if row.get("id") == record_id:
+            matches.append(row)
     if len(matches) != 1:
         _fail("AUTHORITY_RECORD_MISSING", field)
     return matches[0]
@@ -846,11 +857,13 @@ def _validate_authority_semantics(root: Path) -> None:
     evidence_rows = _list(
         release.get("test_evidence"), "release_evidence.test_evidence"
     )
-    evidence_matches = [
-        _mapping(row, "release_evidence.test_evidence")
-        for row in evidence_rows
-        if isinstance(row, Mapping) and row.get("suite_id") == "TST-032"
-    ]
+    evidence_matches: list[Mapping[str, Any]] = []
+    for raw_row in evidence_rows:
+        if not isinstance(raw_row, Mapping):
+            continue
+        row = _mapping(cast(object, raw_row), "release_evidence.test_evidence")
+        if row.get("suite_id") == "TST-032":
+            evidence_matches.append(row)
     if len(evidence_matches) != 1:
         _fail("AUTHORITY_RECORD_MISSING", "release_evidence.test_evidence")
     evidence = evidence_matches[0]
@@ -1041,7 +1054,7 @@ def _expected_predecessor_binding(
     }
     if story_id == "ST-1504":
         expected["required_credential_issuance"] = "FORBIDDEN"
-    expected["required_reference_plan_executable"] = False
+    expected["required_reference_plan_executable"] = story_id in {"ST-1501", "ST-1502"}
     expected["required_action_counts"] = copy.deepcopy(dict(action_counts))
     return expected
 
@@ -1092,30 +1105,40 @@ def _render_predecessor_plan(
 ) -> bytes:
     try:
         if story_id == "ST-1501":
-            from scripts import build_st1501_terraform_foundation as owner
+            from scripts import build_st1501_terraform_foundation as owner_st1501
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            foundation_model = owner_st1501.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1501.render_reference_plan(foundation_model)
         if story_id == "ST-1502":
-            from scripts import build_st1502_data_services as owner
+            from scripts import build_st1502_data_services as owner_st1502
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            data_services_model = owner_st1502.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1502.render_reference_plan(data_services_model)
         if story_id == "ST-1503":
-            from scripts import build_st1503_compute_edge as owner
+            from scripts import build_st1503_compute_edge as owner_st1503
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            compute_edge_model = owner_st1503.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1503.render_reference_plan(compute_edge_model)
         if story_id == "ST-1504":
-            from scripts import build_st1504_github_oidc as owner
+            from scripts import build_st1504_github_oidc as owner_st1504
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            deployment_identity_model = owner_st1504.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1504.render_reference_plan(deployment_identity_model)
         if story_id == "ST-1505":
-            from scripts import build_st1505_staging_deployment as owner
+            from scripts import build_st1505_staging_deployment as owner_st1505
 
-            model = owner.validate_contract(copy.deepcopy(dict(contract)), root)
-            return owner.render_reference_plan(model)
+            staging_model = owner_st1505.validate_contract(
+                copy.deepcopy(dict(contract)), root
+            )
+            return owner_st1505.render_reference_plan(staging_model)
     except Exception:  # noqa: BLE001
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor")
     _fail("PREDECESSOR_STORY_UNKNOWN", "predecessor")
@@ -1144,8 +1167,27 @@ def _validate_predecessor_semantics(root: Path) -> None:
         plan_document = _mapping(plan.get("document"), "predecessor.plan.document")
         _strict_match(plan_document.get("story_id"), story_id, "predecessor.plan.story")
         _strict_match(
-            plan_document.get("executable"), False, "predecessor.plan.executable"
+            plan_document.get("executable"),
+            story_id in {"ST-1501", "ST-1502"},
+            "predecessor.plan.executable",
         )
+        if story_id == "ST-1501":
+            _strict_match(
+                plan_document.get("executable_for"),
+                ["fmt", "validate"],
+                "predecessor.plan.executable_for",
+            )
+            _strict_match(
+                plan_document.get("infrastructure_actions"),
+                False,
+                "predecessor.plan.infrastructure_actions",
+            )
+        elif story_id == "ST-1502":
+            _strict_match(
+                plan_document.get("execution_kind"),
+                "PROVIDER_FREE_VALIDATION_ONLY_LOGICAL_HCL",
+                "predecessor.plan.execution_kind",
+            )
         expected_bytes = _render_predecessor_plan(story_id, contract, root)
         try:
             actual_bytes = plan_path_value.read_bytes()

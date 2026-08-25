@@ -1,0 +1,97 @@
+schema_version: 2.0.0
+story_id: ST-1302
+classification: MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_PROVIDER_FACT_COMMIT
+status: LOCAL_IMPLEMENTATION_CANDIDATE
+local_executable: true
+external_authority: false
+source_contract: repo://changes/st-1302/contracts/provider-fact-commit-recorded.v2.yaml
+source_artifacts:
+- uri: repo://changes/st-1302/contracts/provider-fact-commit-recorded.v2.yaml
+  bytes: 5524
+  sha256: 9d0b30c7ac9afdd032bc8e5e5fb0881a8659eb6a77dd4ab5b7a60b3379041a61
+- uri: repo://changes/st-1302/fixtures/provider-fact-commit-recorded.synthetic.v1.json
+  bytes: 7155
+  sha256: 1839d9bdc4a5dfae3008e0f285bc36f45e48ef6b95b2dfd15ad7c4984cba3cb2
+- uri: repo://changes/st-1302/README.md
+  bytes: 5355
+  sha256: 985ea23a3c06ca354f2e2852d24b1d2a037396c7d5472ff501227212c3f5f207
+- uri: repo://changes/st-1302/LOCAL_COMPLETION.md
+  bytes: 3661
+  sha256: 610c6984cda4cbd8fbeaec18c9c769fa24e9f8d57b85c7660ab906e998504607
+- uri: repo://scripts/build_st1302_provider_fact_commit_recorded.py
+  bytes: 24374
+  sha256: fc7c6a1a3edfca78dc26a8cf5c1211772e9f19102fce5f572ca546dba16354d9
+- uri: repo://python/raos/domain/finance/provider_fact_commit.py
+  bytes: 49832
+  sha256: 738968dc4e9bc1446dd28a920ba76ce894eddd1d3e8d671377131d14dc37b386
+- uri: repo://python/raos/ports/provider_fact_commit.py
+  bytes: 999
+  sha256: 12dc63f0bf5953c9b795924a168b1837940d67edced746400e2cbf21c4427ec5
+- uri: repo://python/raos/application/finance/provider_fact_commit.py
+  bytes: 3698
+  sha256: 92306501da9b01d954f9c1ed1042cf15be4fbc2d25b928e49e25b3b2e049f582
+- uri: repo://python/raos/adapters/recorded_provider_fact_commit.py
+  bytes: 31332
+  sha256: 9a5716f1c7531c38b5d80d5c1ce1bfad60215fe688ab3143dc816d33a31596d3
+- uri: repo://tests/st1302/test_provider_fact_commit.py
+  bytes: 8020
+  sha256: 49baf44510a5bfa93801f6e4ae0bdcdeedc9f34c78c3ece3b7d80cc0aeab40d8
+- uri: repo://tests/st1302/test_provider_fact_commit_negative.py
+  bytes: 14724
+  sha256: d762d68ddfba36fb898b83f09fdb4fbc2b3d69eca77e62068e73ea53477508f9
+- uri: repo://tests/st1302/test_recorded_generation.py
+  bytes: 6848
+  sha256: c37edc81f0a57bbbca7714e96ba98be8a30072db7729da7bdc864a401ed0de9d
+generated_artifacts:
+- uri: repo://changes/st-1302/generated/provider-fact-commit-recorded.v2.json
+  bytes: 9371
+  sha256: 3763ee2b4cca76a994c6490538a3910f3edd52eb04b2f4648a23b24e2ae7750a
+provenance:
+  generated_by: repo://scripts/build_st1302_provider_fact_commit_recorded.py
+  generation_command: uv run --locked --offline --no-cache --no-sync --no-env-file
+    python scripts/build_st1302_provider_fact_commit_recorded.py
+  implementation_helper:
+    uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: 478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5
+  source_bindings:
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml
+    sha256: 29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+    sha256: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  - uri: repo://changes/st-0305/contracts/publication-analytics-finance.v1.yaml
+    sha256: 2947fe100633a2611b9287c6530856b9679365bb10d4af4728a5148ed970377f
+  - uri: repo://contracts/raos-v0.4/contracts/schemas/imports/revenue-canonical-row.schema.json
+    sha256: 02bc3d854a7420a74a8b302342a9ad0e23cfe4529565716a185c333b43ebbff8
+  - uri: repo://contracts/raos-v0.4/contracts/schemas/jobs/finance-commit-revenue-import-v1.schema.json
+    sha256: 9e0b860aacd151888e67e76a64ad94e8c3dd33072de42f570b8b233e1a9dce0d
+  - uri: repo://contracts/raos-v0.4/contracts/catalogs/job-catalog.v0.4.yaml
+    sha256: 70a9926f1ac64bd47ce084c28ebb08792d63b07feb5ced85e40377815ba3aeb1
+  - uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-finance-revenue-import-committed-v1.schema.json
+    sha256: b5c6ad9f2ca522b87e7c630a941817a84a2c8e2ce2604bb9767e976079d71f21
+  - uri: repo://contracts/raos-v0.4/contracts/schemas/events/jp-raos-finance-commission-status-changed-v1.schema.json
+    sha256: 7fc5e7c5949b5e4588ad7970bfc54d42fd27f898e035a56116b3726a0602865b
+  - uri: repo://python/raos/domain/finance/revenue_import.py
+    sha256: 9698846ff18dfa7fb81b338f126fe70e28f96151ed8283eac8cb5da7132265eb
+  - uri: repo://changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml
+    sha256: b306ef823ed7e0bad404b63551c8015b09fed6f59dfba011ac6dd9b58d78adec
+  - uri: repo://changes/st-1302/fixtures/provider-fact-commit-recorded.synthetic.v1.json
+    sha256: 1839d9bdc4a5dfae3008e0f285bc36f45e48ef6b95b2dfd15ad7c4984cba3cb2
+boundary:
+  OD-003: EXTERNAL_EVIDENCE_REQUIRED
+  canonical_preview_hash_equivalence: NOT_ASSERTED
+  canonical_mapping_defined: false
+  TST-008: NOT_EXECUTED
+  TST-030: NOT_EXECUTED
+  database: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  network: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

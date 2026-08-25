@@ -1,0 +1,329 @@
+document:
+  id: RAOS-ST1802-GATE1-DECISION-001
+  version: 1.0.0
+  story_id: ST-1802
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  classification: LOCAL_BLOCKED_GATE1_DECISION_NON_ATTESTING
+  acceptance_criteria_satisfied: false
+  formal_verification: NOT_EXECUTED
+source_bindings:
+  - uri: repo://docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md
+    sha256: 5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea
+  - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
+    sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/05_test/RAOS_11_release_evidence_template_v1.0.yaml
+    sha256: 3354001be5fc0f7f7ef6a265fdd3112618ee943092755745d8cd62986487e95a
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+dependency_bindings:
+  st_1801:
+    story_id: ST-1801
+    role: BLOCKED_SYNTHETIC_PORTFOLIO_PREDECESSOR
+    artifacts:
+      - kind: GENERATED_BLOCKED_PORTFOLIO
+        uri: repo://changes/st-1801/generated/portfolio-expansion.local-blocked.v1.json
+        sha256: 09817fb25db034d3146338d9b026debde04e5ea2931250909206606e7ccb9f21
+      - kind: RUNTIME_MANIFEST
+        uri: repo://changes/st-1801/generated/runtime-manifest.v1.yaml
+        sha256: c375aa9525b77f864e72c75d3c7560d6d57d8ba4a46d74cdaed07832de8ed83a
+      - kind: OWNER_GENERATOR
+        uri: repo://scripts/build_st1801_portfolio_expansion.py
+        sha256: be72c4a4e801bc787bcc592d9fb309ab8215a692273e961e9f1cb26d5b94f6c7
+  st_1705:
+    story_id: ST-1705
+    role: BLOCKED_SECURITY_RECOVERY_SIGNOFF_INPUT
+    artifacts:
+      - kind: GENERATED_BLOCKED_SIGNOFF
+        uri: repo://changes/st-1705/generated/pilot-security-recovery-signoff.local-blocked.v1.json
+        sha256: c6f6e85237c3aa19684e6ed3913ddb23913efb02574fb08b91709ee1f157d192
+      - kind: MANIFEST
+        uri: repo://changes/st-1705/manifest.yaml
+        sha256: e1de0a8fde0a2ab6a172e126e0fe52db296e5d175a61216c4010f4451f1d9a49
+  st_1704:
+    story_id: ST-1704
+    role: FIVE_ARTICLE_AND_MEASUREMENT_NON_ATTESTING_INPUT
+    artifacts:
+      - kind: ARTICLE_COLLECTION
+        uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json
+        sha256: cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88
+      - kind: MEASUREMENT_CONTRACT
+        uri: repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
+        sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+gate_definition:
+  gate_id: GATE-1
+  objective: EDITORIAL_AND_TECHNICAL_PILOT
+  revenue_required: false
+  category_count: 1
+  intent_cluster_count: 3
+  minimum_article_count: 30
+  maximum_article_count: 45
+  minimum_article_type_count: 3
+  maximum_article_type_count: 5
+  minimum_quality_score: '85'
+  minimum_all_claim_coverage_numerator: 95
+  minimum_all_claim_coverage_denominator: 100
+  major_claim_coverage_numerator: 1
+  major_claim_coverage_denominator: 1
+  minimum_first_pass_approval_numerator: 80
+  minimum_first_pass_approval_denominator: 100
+  freshness_timestamp_coverage_numerator: 1
+  freshness_timestamp_coverage_denominator: 1
+  zero_denominator: UNAVAILABLE
+  missing_input: UNAVAILABLE
+  arithmetic: INTEGER_CROSS_MULTIPLICATION_AND_BOUNDED_DECIMAL
+  excluded_decision_inputs:
+    - AFFILIATE_COMMISSION_RATE
+    - EPC
+    - RPM
+    - REWARD
+    - PROFIT
+status_vocabulary:
+  - PASS
+  - FAIL
+  - UNAVAILABLE
+  - NOT_EXECUTED
+  - BLOCKED
+  - INELIGIBLE_NON_ATTESTING
+mandatory_criteria:
+  - criterion_id: G1-C01-SINGLE-CATEGORY
+    rule: ACTUAL_CATEGORY_COUNT_EQUALS_1
+    status: INELIGIBLE_NON_ATTESTING
+    observed_value: SYNTHETIC_PLACEHOLDER_CATEGORY_ONLY
+    evidence_classification: NON_ATTESTING_SYNTHETIC_DEPENDENCY
+    source_references:
+      - repo://changes/st-1801/generated/portfolio-expansion.local-blocked.v1.json
+  - criterion_id: G1-C02-INTENT-CLUSTERS
+    rule: ACTUAL_INTENT_CLUSTER_COUNT_EQUALS_3
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: ACTUAL_OBSERVATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C03-ARTICLE-COUNT
+    rule: ACTUAL_ARTICLE_COUNT_BETWEEN_30_AND_45
+    status: INELIGIBLE_NON_ATTESTING
+    observed_value: 30_SYNTHETIC_NOT_CREATED_PLACEHOLDERS
+    evidence_classification: NON_ATTESTING_SYNTHETIC_DEPENDENCY
+    source_references:
+      - repo://changes/st-1801/generated/portfolio-expansion.local-blocked.v1.json
+  - criterion_id: G1-C04-ARTICLE-TYPES
+    rule: ACTUAL_ARTICLE_TYPE_COUNT_BETWEEN_3_AND_5
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: ACTUAL_OBSERVATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C05-ALL-QUALITY-85
+    rule: EVERY_ACTUAL_ARTICLE_QUALITY_SCORE_AT_LEAST_85
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: ACTUAL_OBSERVATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C06-CRITICAL-FACTUAL-ERRORS
+    rule: CRITICAL_FACTUAL_ERROR_COUNT_EQUALS_0
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: ACTUAL_OBSERVATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C07-ALL-CLAIM-COVERAGE
+    rule: EVIDENCED_VERIFIABLE_CLAIMS_AT_LEAST_95_PERCENT
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: ACTUAL_OBSERVATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C08-MAJOR-CLAIM-COVERAGE
+    rule: EVIDENCED_MAJOR_CLAIMS_EQUALS_100_PERCENT
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: ACTUAL_OBSERVATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C09-FABRICATED-EXPERIENCE
+    rule: FABRICATED_EXPERIENCE_COUNT_EQUALS_0
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: ACTUAL_OBSERVATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C10-PRODUCT-IDENTITY
+    rule: PRODUCT_IDENTITY_ERRORS_EQUAL_0_AND_ALL_ITEMS_VERIFIED
+    status: NOT_EXECUTED
+    observed_value: NOT_EXECUTED
+    evidence_classification: FORMAL_VERIFICATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C11-LINK-ERRORS
+    rule: LINK_ERROR_COUNT_EQUALS_0
+    status: NOT_EXECUTED
+    observed_value: NOT_EXECUTED
+    evidence_classification: FORMAL_VERIFICATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C12-FIRST-PASS-HUMAN-APPROVAL
+    rule: FIRST_PASS_HUMAN_APPROVAL_RATE_AT_LEAST_80_PERCENT
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: ACTUAL_OBSERVATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C13-FRESHNESS-TIMESTAMPS
+    rule: PRICE_AND_STOCK_FINAL_CHECK_TIMESTAMP_DISPLAYED_100_PERCENT
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: ACTUAL_OBSERVATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C14-MEASUREMENT-CONNECTED
+    rule: ARTICLE_PRODUCT_AND_CLICK_MEASUREMENT_CONNECTED
+    status: NOT_EXECUTED
+    observed_value: NOT_EXECUTED
+    evidence_classification: INTERFACE_ONLY_NO_OBSERVATION
+    source_references:
+      - repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
+  - criterion_id: G1-C15-PER-ARTICLE-COST
+    rule: COST_PER_ARTICLE_MEASURABLE
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: OWNER_PRIVATE_OBSERVATION_NOT_READ
+    source_references: []
+  - criterion_id: G1-C16-HUMAN-TIME
+    rule: HUMAN_TIME_PER_ARTICLE_MEASURABLE
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: OWNER_PRIVATE_OBSERVATION_NOT_READ
+    source_references: []
+  - criterion_id: G1-C17-CHANGE-HISTORY-AUDIT
+    rule: CHANGE_HISTORY_AND_AUDIT_VERIFIED
+    status: NOT_EXECUTED
+    observed_value: NOT_EXECUTED
+    evidence_classification: FORMAL_VERIFICATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C18-ROLLBACK
+    rule: PUBLICATION_ROLLBACK_VERIFIED
+    status: NOT_EXECUTED
+    observed_value: NOT_EXECUTED
+    evidence_classification: FORMAL_VERIFICATION_ABSENT
+    source_references: []
+  - criterion_id: G1-C19-SECURITY-RECOVERY-SIGNOFF
+    rule: ST1705_SECURITY_AND_RECOVERY_SIGNOFF_ELIGIBLE
+    status: BLOCKED
+    observed_value: NOT_SIGNED_OFF
+    evidence_classification: BLOCKED_NON_ATTESTING_DEPENDENCY
+    source_references:
+      - repo://changes/st-1705/generated/pilot-security-recovery-signoff.local-blocked.v1.json
+  - criterion_id: G1-C20-FORMAL-TST020
+    rule: FORMAL_TST020_COMPLETED_FOR_ACTUAL_PORTFOLIO
+    status: NOT_EXECUTED
+    observed_value: NOT_EXECUTED
+    evidence_classification: FORMAL_SUITE_ABSENT
+    source_references:
+      - repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  - criterion_id: G1-C21-FORMAL-TST032-STAGING
+    rule: FORMAL_TST032_EXECUTED_IN_STAGING
+    status: NOT_EXECUTED
+    observed_value: NOT_EXECUTED
+    evidence_classification: FORMAL_SUITE_ABSENT
+    source_references:
+      - repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  - criterion_id: G1-C22-BLOCKING-DECISIONS
+    rule: ALL_APPLICABLE_BLOCKING_OPEN_DECISIONS_CLEARED
+    status: BLOCKED
+    observed_value: ACTIVE_BLOCKING_DECISIONS_PRESENT
+    evidence_classification: CANONICAL_BLOCKER
+    source_references:
+      - repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+  - criterion_id: G1-C23-HUMAN-GATE-APPROVAL
+    rule: PRODUCT_OWNER_GATE_APPROVAL_PRESENT
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: HUMAN_APPROVAL_ABSENT
+    source_references: []
+  - criterion_id: G1-C24-TARGET-SNAPSHOT-CONTEXT
+    rule: TARGET_VERSION_ENVIRONMENT_TIME_DATA_AND_ARTIFACT_HASH_BOUND
+    status: UNAVAILABLE
+    observed_value: UNAVAILABLE
+    evidence_classification: TARGET_SNAPSHOT_CONTEXT_ABSENT
+    source_references: []
+  - criterion_id: G1-C25-GATE0-PREREQUISITE
+    rule: GATE0_AND_TECHNICAL_PILOT_PREREQUISITES_SIGNED_OFF
+    status: BLOCKED
+    observed_value: BLOCKED
+    evidence_classification: BLOCKED_NON_ATTESTING_DEPENDENCY
+    source_references:
+      - repo://changes/st-1705/generated/pilot-security-recovery-signoff.local-blocked.v1.json
+recorded_synthetic_harness:
+  dependency_uri: repo://changes/st-1801/generated/portfolio-expansion.local-blocked.v1.json
+  dependency_sha256: 09817fb25db034d3146338d9b026debde04e5ea2931250909206606e7ccb9f21
+  dependency_decision: BLOCKED
+  dependency_eligibility: NOT_ELIGIBLE
+  planned_synthetic_placeholder_count: 30
+  actual_article_count: UNAVAILABLE
+  placeholders_are_actual_articles: false
+  schema_uri: repo://changes/st-1802/contracts/recorded-synthetic-gate1-evaluation.v1.schema.json
+  schema_sha256: b671401b5859690052217c1caefb6001828a841c0f57064658ecd1d158148c52
+  fixture_uri: repo://changes/st-1802/fixtures/recorded-synthetic-gate1-evaluation.v1.json
+  fixture_sha256: 30327d0a85580e10b5114e36076f545c7c81efd4917fa7e42f42719fc56bfa10
+  schema_behavior: CLOSED_ADDITIONAL_PROPERTIES_FALSE
+  classification: RECORDED_SYNTHETIC_ONLY_NON_ATTESTING
+  fixed_path_only: true
+  dynamic_input_path: FORBIDDEN
+  formal_evidence_eligible: false
+  gate_evidence_eligible: false
+  story_acceptance_eligible: false
+decision:
+  overall: BLOCKED
+  eligibility: NOT_ELIGIBLE
+  mandatory_criteria_satisfied: false
+  next_gate_eligible: false
+  qualifying_evidence_references: []
+  approval_artifacts: []
+authority_boundary:
+  external_authority: NONE
+  formal_evidence_acceptance_authority: NONE
+  gate_approval_authority: NONE
+  status_propose_authority: NONE
+  status_apply_authority: NONE
+  article_creation_authority: NONE
+  article_approval_authority: NONE
+  publication_authority: NONE
+  staging_authority: NONE
+  release_authority: NONE
+  deployment_authority: NONE
+  production_authority: NONE
+execution_boundary:
+  local_generation_only: true
+  input_size_limit_bytes: 2097152
+  input_read_model: ROOT_FD_DESCRIPTOR_RELATIVE_CAPTURED_LEAF
+  writer_model: SINGLE_PROCESS_DIRECTORY_LOCK
+  output_transaction: THREE_OUTPUT_RECOVERABLE_ALL_OR_NOTHING
+  check_pending_recovery_behavior: READ_ONLY_REJECT
+  environment_access: FORBIDDEN
+  subprocess_execution: FORBIDDEN
+  network_access: FORBIDDEN
+  credential_access: FORBIDDEN
+  provider_calls: FORBIDDEN
+  external_action_count: 0
+evidence_boundary:
+  classification: LOCAL_BLOCKED_GATE1_DECISION_NON_ATTESTING
+  st_1801_actual_portfolio: UNAVAILABLE
+  actual_quality_observations: UNAVAILABLE
+  actual_claim_coverage_observations: UNAVAILABLE
+  actual_first_pass_approval_observations: UNAVAILABLE
+  actual_measurement_observations: UNAVAILABLE
+  formal_tst_020: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  gate_approval: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  deployment: NOT_EXECUTED
+  production: NOT_EXECUTED
+  gate_pass_claim: false
+  story_acceptance: false
+  canonical_status: UNCHANGED

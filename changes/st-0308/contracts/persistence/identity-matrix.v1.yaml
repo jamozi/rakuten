@@ -1,0 +1,49 @@
+document: {id: ST0308-IDENTITY-MATRIX-001, version: 1.0.0, story_id: ST-0308}
+canonical_serialization: UTF8_LF_YAML_CANONICALIZED_TO_SORTED_COMPACT_JSON_FOR_HASH
+expected_profile_source: PRIVATE_FACTORY_OR_COMPOSITION_CONFIGURATION
+actual_identity_source: CHECKED_OUT_POSTGRESQL_CONNECTION
+validation_stage: BEFORE_SESSION_TRANSACTION_REPOSITORY_OR_UOW_EXPOSURE
+profiles:
+  API_COMMAND: {required_group: raos_api_rw, st0308_allowed: true}
+  WORKER_COMMAND: {required_group: raos_worker_rw, st0308_allowed: true}
+  DISPATCHER: {required_group: raos_dispatcher_rw, st0308_allowed: false}
+  PROJECTION: {required_group: raos_projection_rw, st0308_allowed: false}
+  PUBLIC: {required_group: raos_public_ro, st0308_allowed: false}
+  REPORTING: {required_group: raos_reporting_ro, st0308_allowed: false}
+  AUDITOR: {required_group: raos_auditor_ro, st0308_allowed: false}
+  MIGRATOR: {required_group: raos_migrator, st0308_allowed: false}
+actual_identity_fields:
+  - login_role
+  - inherited_groups
+  - is_superuser
+  - bypass_rls
+  - create_role
+  - create_database
+  - owns_selected_relation
+reject_if:
+  - EXPECTED_GROUP_ABSENT
+  - SUPERUSER
+  - BYPASSRLS
+  - SELECTED_RELATION_OWNER
+  - CREATEROLE
+  - CREATEDB
+  - MIGRATOR_MEMBERSHIP
+  - UNEXPECTED_DISPATCHER_PROJECTION_PUBLIC_REPORTING_OR_AUDITOR_MEMBERSHIP
+  - SIMULTANEOUS_API_AND_WORKER_MEMBERSHIP
+rules:
+  - PersistenceContext contains no workload/profile/role field
+  - no request actor site route header or command field controls database role
+  - no SET ROLE or transaction-local elevation
+  - one pool per workload identity and process profile
+  - API and worker never share a connection
+  - failed identity-validation checkout is invalidated before Session construction
+  - no owner API public or migrator fallback
+spi:
+  adapter_only: EffectiveRoleVerifier.verify(connection, expected_profile) -> VerifiedDatabaseIdentity
+  application_visibility: MODULE_UOW_FACTORY_ONLY
+  credential_or_secret_ownership: FORBIDDEN
+two_way_gate:
+  - every allowed UoW composition profile has one exact required group
+  - every role name occurs in both this matrix and the hash-bound ST-0306 candidate
+  - every dangerous attribute is queried and rejected before begin
+  - context and generated Ports expose no workload selection

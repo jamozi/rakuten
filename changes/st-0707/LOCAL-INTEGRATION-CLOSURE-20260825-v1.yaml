@@ -1,0 +1,78 @@
+document:
+  id: RAOS-ST0707-LOCAL-INTEGRATION-CLOSURE-20260825-V1
+  story_id: ST-0707
+  status: LOCAL_INTEGRATION_COMPLETE
+  recorded_at: '2026-08-25'
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+
+dependency_binding:
+  story_id: ST-0705
+  integration_commit_sha: cce803bc2c44fe5c4b050bc5a9d3ac0ec23db6aa
+  runtime_contract_sha256: 0bdc3319b4f4c3c3a0363b17afdb9cd302e9bea49c128f37819331bb434baddb
+  profile_registry_sha256: 8bd37a680ea67df1ff97463fda8b418680614acf709bcd6f61cad3ef15624cf3
+  recorded_fixture_sha256: 828bb8b1c456a07fb0883cd98284bdc779ae44159da433909f06a32f1e104601
+  runtime_manifest_sha256: e61d36f77224e9b707c230c6b2c9b5d92f578096c87abf284330358b5b168b32
+  profile_sha256: 02c2c55e3ef230389119b3b1f91b232574d563f666d3b1fe5c055accca9b6682
+  validation_manifest_sha256: a12d60d17168de06f4490ee8a3c3c0f1f8dce8aabfe7588ef77c3b1dcc9e041e
+  validation_report_sha256: 536b269b440fab9a5fb82ce0d7680250fa9f2a72557855e65bd6cd713f0f8bdc
+
+owned_artifacts:
+  runtime_contract_sha256: 96c26aae5067b9f240ee0da18cb3ff9eac83e17f03c8a02b99fc3a0b4736eeb1
+  suite_registry_sha256: 11c58dfd3b26a587f4c8ad84eebea3448ff2bd0dac3f0afdb9a3bef6951e589e
+  locked_dataset_sha256: 37a2de0c31ad7047cfda3bfb593d5286bfd80f29d41f72a35117b4ce2a3be639
+  runtime_manifest_sha256: b458d4382a51f7af30299ebc72244a8138af0f30aa8f8495748c9c43449a7b77
+
+deterministic_local_report:
+  bundle_sha256: a363cbcbdc243c0de72e3bea7c44bf542c32ed66bcfc8c5e5f93f8f3bece4493
+  report_sha256: e583af1ef694facb6441fa9d9bbd06be4e4238b8aaa3636c6e642bc379b13566
+  proposal_outcome: REFUSED_INCOMPLETE_EVIDENCE
+  case_count: 1
+  metric_count: 8
+  zero_tolerance_count: 8
+  release_authorized: false
+
+verification:
+  owner_generate: PASS
+  owner_no_write_check: PASS
+  focused_st0707_tests:
+    normal: 62
+    network_denied: 62
+  affected_st0705_tests:
+    normal: 118
+    network_denied: 118
+  ruff_lint: PASS
+  ruff_format: PASS
+  strict_mypy: PASS
+  canonical_pyright: PASS
+  py_compile: PASS
+  git_diff_check: PASS
+
+authority_boundary:
+  default_enabled: false
+  provider_call: false
+  credential_read: false
+  network: false
+  persistence: false
+  route_or_model_mutation: false
+  approval_authority: NONE
+  publication_authority: NONE
+  release_authority: NONE
+  production_eligible: false
+
+downstream_rebind_required:
+  - ST-0708
+  - ST-0709
+  - ST-1901
+  - ST-1908
+
+formal_and_external_debt:
+  introduced_local_debt: []
+  formal_tst_018: NOT_EXECUTED
+  formal_tst_019: NOT_EXECUTED
+  human_labeling: NOT_EXECUTED
+  judge_calibration: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

@@ -1,0 +1,128 @@
+document:
+  id: ST0601-LOCAL-IMPLEMENTATION-COMPLETION-20260825-V2
+  story_id: ST-0601
+  status: LOCAL_CODE_COMPLETE
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  formal_validation: NOT_CLAIMED
+base:
+  exact_sha: c2671f8cf95ec1d6debbc3d6722efe3c6485ea92
+  branch: codex/st0601-artifact-registry-local-complete-20260825
+implementation:
+  runtime: OWNER_PRIVATE_RECORDED_LOCAL_DURABLE_ARTIFACT_REGISTRY_V2
+  v1_reference_plan: PRESERVED
+  source_binding: EXACT_ST0502_RAW_ARCHIVE_RECEIPT_AND_BYTES
+  persistence:
+    adapter: SQLITE_RECORDED_LOCAL_OBJECT_BYTE_STORE
+    exact_schema: true
+    append_only: true
+    immutable_triggers: true
+    row_hash: true
+    global_hash_chain: true
+    expected_latest_version_cas: true
+    operation_idempotency: true
+    restart: true
+    known_rollback: true
+    ambiguous_commit_recovery: true
+  identity:
+    artifact_id: DETERMINISTIC_ST0308_NOMINAL_OBJECT_ARTIFACT_ID
+    object_ref: DETERMINISTIC_HASH_BOUND_RECORDED_LOCAL_REF
+  retention:
+    od_014: UNRESOLVED
+    retention_class: null
+    retention_period: null
+    lifecycle: ABSENT
+    delete: ABSENT
+    purge: ABSENT
+  action_counts:
+    external: 0
+    provider: 0
+    publication: 0
+    retention: 0
+    delete: 0
+    export: 0
+verification:
+  focused_st0601:
+    command: TMPDIR/TEMP/TMP=<owner-private local temp> pytest -p no:cacheprovider -q tests/st0601
+    result: PASS
+    observed: 102 passed
+  preserved_v1:
+    command: pytest -p no:cacheprovider -q tests/st0601/test_artifact_registry.py tests/st0601/test_boundaries.py tests/st0601/test_failure_isolation.py
+    result: PASS
+    observed: 51 passed
+  st0202_dependency:
+    command: pytest -p no:cacheprovider -q tests/st0202
+    result: PASS
+    observed: 329 passed
+  st0308_relevant_dependency:
+    command: pytest -p no:cacheprovider -q tests/st0308_persistence/test_w2a_repository_contracts.py tests/st0308_persistence/test_w2a_repository_behavior.py tests/st0308_persistence/test_security_boundaries.py tests/st0308_persistence/test_generator_and_mappers.py
+    result: PASS
+    observed: 61 passed
+  st0502_raw_archive_dependency:
+    command: pytest -p no:cacheprovider -q tests/st0502/test_item_search_runtime_v2_storage.py tests/st0502/test_item_search_runtime_v2_collaborators.py tests/st0502/test_item_search_runtime_v2.py
+    result: PASS
+    observed: 48 passed
+  full_st0308_persistence_observation:
+    command: pytest -p no:cacheprovider -q tests/st0308_persistence
+    result: DEFERRED_PROVENANCE_REGENERATION
+    observed: 269 passed, 20 skipped, 1 failed
+    failing_test: tests/st0308_persistence/test_completion_record.py::test_completion_record_binds_exact_runtime_sources_and_outputs
+    observed_detail: completion inventory expected 210 files and observed 240 files in this Story worktree
+    inherited_at_base: true
+    introduced_effect: one additive ST0601 domain OPS source is also inside the ST0308 owner inventory
+    affected_owner_artifact: changes/st-0308/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml
+    closure_wave: FEATURE_FREEZE_OWNER_GENERATION
+    safe_impact: relevant ObjectArtifact repository, mapper, and security regressions pass; the stale completion inventory is provenance-only and does not change runtime behavior
+  owner_generator:
+    command: python scripts/build_st0601_artifact_registry_runtime.py --check
+    result: PASS
+    write_count: 0
+  ruff:
+    result: PASS
+    check: 13 owned V2 Python files
+    format_check: 13 owned V2 Python files
+  strict_mypy:
+    result: PASS
+    observed: 13 source and V2 test files, no issues
+  pinned_pyright:
+    runtime: Node 24.18.1 and Pyright 1.1.411
+    result: PASS
+    observed: 0 errors, 0 warnings, 0 informations
+  compile_import:
+    result: PASS
+  denied_network:
+    method: strace network-only over complete tests/st0601 suite
+    result: PASS
+    observed: 0 network syscall lines
+  focused_secret_scan:
+    method: repository scanner scan_payload over explicit ST0601 maintained inventory
+    result: PASS
+    observed: 0 findings
+  git_diff_check:
+    result: PASS
+debt:
+  introduced_runtime_debt: NONE
+  deferred_mechanical_provenance:
+    owner: ST-0308
+    reason: additive Domain OPS source changes its historical whole-tree inventory
+    closure_wave: FEATURE_FREEZE_OWNER_GENERATION
+  external_tail:
+    - OD-014 retention policy decision
+    - authenticated ST-0202 object-storage fixture
+    - real S3 or SeaweedFS version and Object Lock evidence
+    - formal TST-014
+    - credential and live provider
+    - staging, publication, release, and Production
+formal_and_external_boundaries:
+  canonical_status_apply: NOT_EXECUTED
+  formal_tst_014: NOT_EXECUTED
+  authenticated_st0202_fixture: NOT_EXECUTED
+  live_object_storage: NOT_EXECUTED
+  object_lock: NOT_EXECUTED
+  credential_access: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  security_owner_review: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

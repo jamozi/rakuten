@@ -1,0 +1,71 @@
+schema_version: 1
+story_id: ST-1804
+record_type: LOCAL_IMPLEMENTATION_COMPLETION_CANDIDATE
+scope: RECORDED_SYNTHETIC_GATE3_ECONOMICS_ONLY
+integration_base_sha: 378dee49aacf27fd1d6c4d7ec370f3505115edcf
+implementation_status_claim: LOCAL_CODE_COMPLETE
+classification: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE_RECORDED_SYNTHETIC_GATE3_NON_ATTESTING
+canonical_status_mutated: false
+acceptance_criteria_satisfied: false
+decision:
+  overall: BLOCKED
+  gate_pass_claim: false
+  actual_observations: []
+  scale_authority: NONE
+dependency_truth:
+  ST-1803: RECORDED_SYNTHETIC_90_DAY_NON_ATTESTING
+  ST-1305: RECORDED_SYNTHETIC_14_DAY_PARTIAL_RECONCILIATION
+  period_alignment: MISMATCH
+dependency_verification_at_integration_base:
+  ST-1305:
+    focused_tests: 628_PASSED
+    owner_check: PASSED
+  ST-1803:
+    focused_tests: 47_PASSED_4_FAILED_PREEXISTING_ST1205_MANIFEST_HASH_DRIFT
+    owner_check: FAILED_PREEXISTING_ST1205_MANIFEST_HASH_DRIFT
+    expected_st1205_manifest_sha256: a1ee3011f7253787fe2b447572ba27a02c080d22d7d6b865a0cdf0c0f6167ebf
+    observed_st1205_manifest_sha256: 4f9ac1ec5dc0a8588788b98c972bd44f5db6f21925238ece6c62a2bb9f38032d
+    introduced_by_ST-1804: false
+implementation:
+  domain: repo://python/raos/domain/analytics/gate3_economics.py
+  port: repo://python/raos/ports/gate3_economics.py
+  application: repo://python/raos/application/analytics/gate3_economics.py
+  recorded_adapter: repo://python/raos/adapters/recorded_gate3_economics.py
+  contract: repo://changes/st-1804/contracts/gate3-economics.v1.yaml
+  fixture: repo://changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json
+  generator: repo://scripts/build_st1804_gate3_economics.py
+  generated_pack: repo://changes/st-1804/generated/gate3-economics.local-blocked.v1.json
+  tests: repo://tests/st1804
+authority:
+  provider: NONE
+  credential: NONE
+  database: NONE
+  public_projection: NONE
+  editorial_mutation: NONE
+  publication: NONE
+  gate_approval: NONE
+  scale: NONE
+  status_propose: NONE
+  status_apply: NONE
+  staging: NONE
+  release: NONE
+  production: NONE
+not_executed:
+  actual_30_45_article_pilot: NOT_EXECUTED
+  actual_gate2_observation: NOT_EXECUTED
+  actual_gate3_observation: NOT_EXECUTED
+  real_provider_report: NOT_EXECUTED
+  formal_TST-030: NOT_EXECUTED
+  formal_TST-032: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+introduced_local_debt: []
+external_remaining:
+  - ACTUAL_30_45_ARTICLE_PILOT
+  - ACTUAL_GATE2_AND_GATE3_OBSERVATION
+  - REAL_PROVIDER_REPORT_OD_003
+  - APPROVED_LABOR_BASIS_OD_005
+  - FORMAL_TST_030
+  - FORMAL_TST_032
+  - HUMAN_GATE_APPROVAL

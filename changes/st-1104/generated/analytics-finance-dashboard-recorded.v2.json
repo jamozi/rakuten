@@ -1,0 +1,846 @@
+{
+  "accessibility": {
+    "browser_verified": false,
+    "color_only": false,
+    "landmarks_required": true,
+    "one_h1_required": true,
+    "screen_reader_verified": false,
+    "skip_link_required": true,
+    "zoom_target_percent": 200
+  },
+  "authority": {
+    "authentication": false,
+    "authorization": false,
+    "database": false,
+    "file_intake": false,
+    "financial_allocation": false,
+    "import_commit": false,
+    "mfa": false,
+    "mutation": false,
+    "network": false,
+    "persistence": false,
+    "production": false,
+    "provider": false,
+    "publication": false,
+    "ranking_or_editorial_mutation": false,
+    "reconciliation_commit": false,
+    "release": false,
+    "render": false,
+    "route_registration": false,
+    "staging": false,
+    "step_up": false,
+    "telemetry": false
+  },
+  "canonical_dashboard_references": [
+    {
+      "dashboard_id": "DASH-002",
+      "mapping_authority": "REFERENCE_ONLY_NOT_SCREEN_OWNERSHIP",
+      "runtime_verification": "NOT_EXECUTED",
+      "tile_ids": [
+        "KPI-012",
+        "KPI-014",
+        "KPI-006",
+        "KPI-018",
+        "KPI-020"
+      ]
+    },
+    {
+      "dashboard_id": "DASH-003",
+      "mapping_authority": "REFERENCE_ONLY_NOT_SCREEN_OWNERSHIP",
+      "runtime_verification": "NOT_EXECUTED",
+      "tile_ids": [
+        "KPI-001",
+        "KPI-002",
+        "KPI-003",
+        "KPI-004",
+        "KPI-010",
+        "KPI-011"
+      ]
+    }
+  ],
+  "classification": "LOCAL_RECORDED_SYNTHETIC_ANALYTICS_FINANCE_DASHBOARD_V2",
+  "cross_source_comparison": "UNAVAILABLE_PERIOD_MISMATCH",
+  "data_classification": "CONFIDENTIAL",
+  "evaluated_at": "2026-09-08T00:00:00Z",
+  "fixture_sha256": "8fc81882b1b6b169f38ceb155b8b511c1d5f4e22cecdde1a7676fae369077b0d",
+  "freshness_policy": "SHOW_SOURCE_TIMESTAMPS_NO_INFERRED_CURRENT_OR_STALE",
+  "kpi_input_sha256": "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92",
+  "live_verification": "NOT_EXECUTED",
+  "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+  "recording_id": "st1104-six-screen-recorded-v2",
+  "result_sha256": "e35f05a36854b6f83ba78652eda0c4c1413ec7401136e07da2dc720792e26161",
+  "schema_version": "2.0.0",
+  "screens": [
+    {
+      "accessibility": {
+        "chart_alternative": "TABLE_OR_TEXT_REQUIRED",
+        "color_only": false,
+        "column_headers_required": true,
+        "keyboard_model_required": true,
+        "row_headers_required": true,
+        "status_code": "AVAILABLE_RECORDED",
+        "status_icon": "STATUS_INFO",
+        "status_text": "Recorded synthetic data is available.",
+        "table_caption_required": true
+      },
+      "availability": "AVAILABLE_RECORDED",
+      "canonical_metric_ids": [
+        "KPI-012",
+        "KPI-014",
+        "KPI-006",
+        "KPI-018",
+        "KPI-020"
+      ],
+      "component_mapping_authority": "LOCAL_HEADLESS_CANDIDATE_ONLY",
+      "metric_rows": [
+        {
+          "availability": "AVAILABLE",
+          "basis": "NOT_APPLICABLE",
+          "freshness": "RECORDED_SYNTHETIC_NO_LIVE_ATTESTATION",
+          "live_verified": false,
+          "metric_id": "KPI-012",
+          "name": "organic_clicks",
+          "period": {
+            "end": "2026-07-31",
+            "end_inclusive": true,
+            "start": "2026-07-01"
+          },
+          "source_sha256s": [
+            "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92"
+          ],
+          "source_story_id": "ST-1205",
+          "source_timestamp": "2026-08-01T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "COUNT",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": "RECORDED_SYNTHETIC",
+          "value_decimal": "200",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "NOT_APPLICABLE",
+          "freshness": "RECORDED_SYNTHETIC_NO_LIVE_ATTESTATION",
+          "live_verified": false,
+          "metric_id": "KPI-014",
+          "name": "organic_ctr",
+          "period": {
+            "end": "2026-07-31",
+            "end_inclusive": true,
+            "start": "2026-07-01"
+          },
+          "source_sha256s": [
+            "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92"
+          ],
+          "source_story_id": "ST-1205",
+          "source_timestamp": "2026-08-01T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": "RECORDED_SYNTHETIC",
+          "value_decimal": "0.040000",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "NOT_APPLICABLE",
+          "freshness": "RECORDED_SYNTHETIC_NO_LIVE_ATTESTATION",
+          "live_verified": false,
+          "metric_id": "KPI-006",
+          "name": "affiliate_click_through_rate",
+          "period": {
+            "end": "2026-07-31",
+            "end_inclusive": true,
+            "start": "2026-07-01"
+          },
+          "source_sha256s": [
+            "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92"
+          ],
+          "source_story_id": "ST-1205",
+          "source_timestamp": "2026-08-01T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": "RECORDED_SYNTHETIC",
+          "value_decimal": "0.250000",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "NOT_APPLICABLE",
+          "freshness": "RECORDED_SYNTHETIC_NO_LIVE_ATTESTATION",
+          "live_verified": false,
+          "metric_id": "KPI-018",
+          "name": "claim_evidence_coverage",
+          "period": {
+            "end": "2026-07-31",
+            "end_inclusive": true,
+            "start": "2026-07-01"
+          },
+          "source_sha256s": [
+            "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92"
+          ],
+          "source_story_id": "ST-1205",
+          "source_timestamp": "2026-08-01T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": "RECORDED_SYNTHETIC",
+          "value_decimal": "0.950000",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "NOT_APPLICABLE",
+          "freshness": "RECORDED_SYNTHETIC_NO_LIVE_ATTESTATION",
+          "live_verified": false,
+          "metric_id": "KPI-020",
+          "name": "stale_exposure_rate",
+          "period": {
+            "end": "2026-07-31",
+            "end_inclusive": true,
+            "start": "2026-07-01"
+          },
+          "source_sha256s": [
+            "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92"
+          ],
+          "source_story_id": "ST-1205",
+          "source_timestamp": "2026-08-01T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": "RECORDED_SYNTHETIC",
+          "value_decimal": "0.020000",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        }
+      ],
+      "name": "Content Performance",
+      "route": "/admin/analytics/content",
+      "route_registered": false,
+      "screen_id": "ANA-001"
+    },
+    {
+      "accessibility": {
+        "chart_alternative": "TABLE_OR_TEXT_REQUIRED",
+        "color_only": false,
+        "column_headers_required": true,
+        "keyboard_model_required": true,
+        "row_headers_required": true,
+        "status_code": "AVAILABLE_RECORDED",
+        "status_icon": "STATUS_INFO",
+        "status_text": "Recorded synthetic data is available.",
+        "table_caption_required": true
+      },
+      "availability": "AVAILABLE_RECORDED",
+      "canonical_metric_ids": [
+        "KPI-012",
+        "KPI-014"
+      ],
+      "component_mapping_authority": "LOCAL_HEADLESS_CANDIDATE_ONLY",
+      "metric_rows": [
+        {
+          "availability": "AVAILABLE",
+          "basis": "NOT_APPLICABLE",
+          "freshness": "RECORDED_SYNTHETIC_NO_LIVE_ATTESTATION",
+          "live_verified": false,
+          "metric_id": "KPI-012",
+          "name": "organic_clicks",
+          "period": {
+            "end": "2026-07-31",
+            "end_inclusive": true,
+            "start": "2026-07-01"
+          },
+          "source_sha256s": [
+            "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92"
+          ],
+          "source_story_id": "ST-1205",
+          "source_timestamp": "2026-08-01T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "COUNT",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": "RECORDED_SYNTHETIC",
+          "value_decimal": "200",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "NOT_APPLICABLE",
+          "freshness": "RECORDED_SYNTHETIC_NO_LIVE_ATTESTATION",
+          "live_verified": false,
+          "metric_id": "KPI-014",
+          "name": "organic_ctr",
+          "period": {
+            "end": "2026-07-31",
+            "end_inclusive": true,
+            "start": "2026-07-01"
+          },
+          "source_sha256s": [
+            "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92"
+          ],
+          "source_story_id": "ST-1205",
+          "source_timestamp": "2026-08-01T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": "RECORDED_SYNTHETIC",
+          "value_decimal": "0.040000",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        }
+      ],
+      "name": "Search Performance",
+      "route": "/admin/analytics/search",
+      "route_registered": false,
+      "screen_id": "ANA-002"
+    },
+    {
+      "accessibility": {
+        "chart_alternative": "TABLE_OR_TEXT_REQUIRED",
+        "color_only": false,
+        "column_headers_required": true,
+        "keyboard_model_required": true,
+        "row_headers_required": true,
+        "status_code": "AVAILABLE_RECORDED",
+        "status_icon": "STATUS_INFO",
+        "status_text": "Recorded synthetic data is available.",
+        "table_caption_required": true
+      },
+      "availability": "AVAILABLE_RECORDED",
+      "canonical_metric_ids": [
+        "KPI-006",
+        "KPI-007"
+      ],
+      "component_mapping_authority": "LOCAL_HEADLESS_CANDIDATE_ONLY",
+      "metric_rows": [
+        {
+          "availability": "AVAILABLE",
+          "basis": "NOT_APPLICABLE",
+          "freshness": "RECORDED_SYNTHETIC_NO_LIVE_ATTESTATION",
+          "live_verified": false,
+          "metric_id": "KPI-006",
+          "name": "affiliate_click_through_rate",
+          "period": {
+            "end": "2026-07-31",
+            "end_inclusive": true,
+            "start": "2026-07-01"
+          },
+          "source_sha256s": [
+            "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92"
+          ],
+          "source_story_id": "ST-1205",
+          "source_timestamp": "2026-08-01T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": "RECORDED_SYNTHETIC",
+          "value_decimal": "0.250000",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "NOT_APPLICABLE",
+          "freshness": "RECORDED_SYNTHETIC_NO_LIVE_ATTESTATION",
+          "live_verified": false,
+          "metric_id": "KPI-007",
+          "name": "cta_impression_to_click_rate",
+          "period": {
+            "end": "2026-07-31",
+            "end_inclusive": true,
+            "start": "2026-07-01"
+          },
+          "source_sha256s": [
+            "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92"
+          ],
+          "source_story_id": "ST-1205",
+          "source_timestamp": "2026-08-01T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": "RECORDED_SYNTHETIC",
+          "value_decimal": "0.150000",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        }
+      ],
+      "name": "Affiliate Clicks",
+      "route": "/admin/analytics/clicks",
+      "route_registered": false,
+      "screen_id": "ANA-003"
+    },
+    {
+      "accessibility": {
+        "chart_alternative": "TABLE_OR_TEXT_REQUIRED",
+        "color_only": false,
+        "column_headers_required": true,
+        "keyboard_model_required": true,
+        "row_headers_required": true,
+        "status_code": "UNAVAILABLE_DEPENDENCY",
+        "status_icon": "STATUS_UNKNOWN",
+        "status_text": "The required data source is unavailable.",
+        "table_caption_required": true
+      },
+      "availability": "UNAVAILABLE_DEPENDENCY",
+      "canonical_metric_ids": [
+        "REVENUE_IMPORT_STATUS"
+      ],
+      "component_mapping_authority": "LOCAL_HEADLESS_CANDIDATE_ONLY",
+      "metric_rows": [
+        {
+          "availability": "UNAVAILABLE",
+          "basis": "UNAVAILABLE_DEPENDENCY",
+          "freshness": "UNAVAILABLE",
+          "live_verified": false,
+          "metric_id": "REVENUE_IMPORT_STATUS",
+          "name": "revenue_import_status",
+          "period": null,
+          "source_sha256s": [],
+          "source_story_id": "ST-1301",
+          "source_timestamp": null,
+          "synthetic": true,
+          "unavailable_reason": "UNAVAILABLE_UNDECLARED_DEPENDENCY",
+          "unit": "STATUS",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": null,
+          "verification": "LIVE_NOT_EXECUTED"
+        }
+      ],
+      "name": "\u6210\u679cImport",
+      "route": "/admin/finance/imports",
+      "route_registered": false,
+      "screen_id": "FIN-001"
+    },
+    {
+      "accessibility": {
+        "chart_alternative": "TABLE_OR_TEXT_REQUIRED",
+        "color_only": false,
+        "column_headers_required": true,
+        "keyboard_model_required": true,
+        "row_headers_required": true,
+        "status_code": "AVAILABLE_RECORDED",
+        "status_icon": "STATUS_INFO",
+        "status_text": "Recorded synthetic data is available.",
+        "table_caption_required": true
+      },
+      "availability": "AVAILABLE_RECORDED",
+      "canonical_metric_ids": [
+        "PROVIDER_CONFIRMED_REWARD",
+        "DIRECT_CONFIRMED_REWARD",
+        "ESTIMATED_CONFIRMED_REWARD",
+        "UNATTRIBUTED_CONFIRMED_REWARD",
+        "REWARD_CONSERVATION_DIFFERENCE"
+      ],
+      "component_mapping_authority": "LOCAL_HEADLESS_CANDIDATE_ONLY",
+      "metric_rows": [
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_PROVIDER_FACT_TOTAL",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "PROVIDER_CONFIRMED_REWARD",
+          "name": "provider_confirmed_reward_jpy",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "JPY",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "300",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "DIRECT_CONFIRMED_REWARD",
+          "name": "direct_confirmed_reward_jpy",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "JPY",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "120",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "ESTIMATED_SEPARATE_NOT_PROVIDER_ATTRIBUTION",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "ESTIMATED_CONFIRMED_REWARD",
+          "name": "estimated_confirmed_reward_jpy",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "JPY",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "101",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "UNATTRIBUTED_SEPARATE_NOT_ALLOCATED",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "UNATTRIBUTED_CONFIRMED_REWARD",
+          "name": "unattributed_confirmed_reward_jpy",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "JPY",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "79",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "RECORDED_SYNTHETIC_CONSERVATION",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "REWARD_CONSERVATION_DIFFERENCE",
+          "name": "reward_conservation_difference_jpy",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "JPY",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "0",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        }
+      ],
+      "name": "Reconciliation",
+      "route": "/admin/finance/reconciliation/{id}",
+      "route_registered": false,
+      "screen_id": "FIN-002"
+    },
+    {
+      "accessibility": {
+        "chart_alternative": "TABLE_OR_TEXT_REQUIRED",
+        "color_only": false,
+        "column_headers_required": true,
+        "keyboard_model_required": true,
+        "row_headers_required": true,
+        "status_code": "AVAILABLE_RECORDED",
+        "status_icon": "STATUS_INFO",
+        "status_text": "Recorded synthetic data is available.",
+        "table_caption_required": true
+      },
+      "availability": "AVAILABLE_RECORDED",
+      "canonical_metric_ids": [
+        "KPI-001",
+        "SUPPLEMENTAL-DIRECT-REWARD",
+        "KPI-002-DIRECT-VIEW",
+        "KPI-003",
+        "KPI-004",
+        "KPI-022",
+        "KPI-023",
+        "KPI-025",
+        "SUPPLEMENTAL-CONTENT-HOUR"
+      ],
+      "component_mapping_authority": "LOCAL_HEADLESS_CANDIDATE_ONLY",
+      "metric_rows": [
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_PROVIDER_FACT_TOTAL",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "KPI-001",
+          "name": "confirmed_provider_reward_jpy",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "JPY",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "300.00",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "SUPPLEMENTAL-DIRECT-REWARD",
+          "name": "direct_confirmed_reward_jpy",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "JPY",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "120.00",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "KPI-002-DIRECT-VIEW",
+          "name": "direct_confirmed_contribution_profit_jpy",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "JPY",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "-5880.00",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "KPI-003",
+          "name": "confirmed_epc_jpy",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "JPY_PER_CLICK",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "2.40",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "KPI-004",
+          "name": "confirmed_rpm_jpy",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "JPY_PER_1000_SESSIONS",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "80.00",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "KPI-022",
+          "name": "article_update_cost_ratio",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "RATIO",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "0.833333",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "KPI-023",
+          "name": "content_payback_months",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "MONTHS",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "26.25",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "KPI-025",
+          "name": "ai_cost_per_approved_article_jpy",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "JPY_PER_APPROVED_ARTICLE",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "0.00",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        },
+        {
+          "availability": "AVAILABLE",
+          "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+          "freshness": "UNKNOWN_SOURCE_HAS_NO_APPROVED_FRESHNESS_POLICY",
+          "live_verified": false,
+          "metric_id": "SUPPLEMENTAL-CONTENT-HOUR",
+          "name": "confirmed_reward_per_content_hour_jpy",
+          "period": {
+            "end": "2026-09-08",
+            "end_inclusive": false,
+            "start": "2026-08-25"
+          },
+          "source_sha256s": [
+            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+          ],
+          "source_story_id": "ST-1304",
+          "source_timestamp": "2026-09-08T00:00:00Z",
+          "synthetic": true,
+          "unavailable_reason": null,
+          "unit": "JPY_PER_CONTENT_HOUR",
+          "unknown_as_zero_allowed": false,
+          "upstream_freshness": null,
+          "value_decimal": "24.00",
+          "verification": "RECORDED_SYNTHETIC_INPUTS_VERIFIED"
+        }
+      ],
+      "name": "Unit Economics",
+      "route": "/admin/finance/unit-economics",
+      "route_registered": false,
+      "screen_id": "FIN-003"
+    }
+  ],
+  "story_id": "ST-1104",
+  "synthetic": true,
+  "unit_input_sha256": "6756429c32484b34a1beb8d628b8823b49570bcd9dc504fc268d9aa6d1bfa141",
+  "unit_result_sha256": "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3",
+  "verification": {
+    "TST-022": "NOT_EXECUTED",
+    "TST-024": "NOT_EXECUTED",
+    "TST-030": "NOT_EXECUTED",
+    "browser": "NOT_EXECUTED",
+    "formal": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  }
+}

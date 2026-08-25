@@ -1,118 +1,92 @@
-# ST-1102 article workspace static disabled metadata
+# ST-1102 Article Workspace local implementation
 
-Status: `LOCAL_IMPLEMENTATION_CANDIDATE` / metadata-only partial safe-interface slice
+Status: `LOCAL_IMPLEMENTATION_COMPLETE` (recorded synthetic V2 only)
 
-This reversible implementation-first Wave 3 slice adds a dependency-free,
-headless, deterministic, deeply frozen, JSON-safe candidate for the approved
-`ST-1102` Article workspace objective. Canonical Story, implementation, and
-verification status remains unchanged.
+ST-1102 now has an additive, deterministic Article Workspace V2 model for its
+declared dependency boundary. It projects the exact recorded/synthetic ST-0806
+Content AST proposal into AST, typed AI diff, Claim/Evidence, Comparison, and
+partial SEO panes. It also provides effect-free evaluators for strong ETag
+preconditions and unsaved-change navigation decisions.
 
-## Preflight and authority
+The historical V1 metadata implementation remains byte-identical. V2 does not
+replace it, register a route, render a browser view, load editorial data, adopt
+the proposal, save an article, navigate, publish, or call a provider.
 
-- Story: `ST-1102` — integrate AST, AI diff, Claim, Comparison, and SEO in the
-  Article workspace.
-- Approved local authority: the owner-approved
-  `docs/execplans/RAOS-IMPLEMENTATION-FIRST.md` Wave 3 safe-interface boundary,
-  the approved canonical Story, screen/component catalogs, UI design, UI slice,
-  and test-suite catalog.
-- Dependencies inspected: committed `ST-0806` recorded AI draft integration and
-  committed `ST-1101` disabled headless admin UI foundation.
-- Pro advisory run `20260812T135228Z-d0a9cb8e5260` was submitted once and
-  terminated `REFUSED` with `RESPONSE_NOT_IDENTIFIABLE` /
-  `ADVANCED_RESPONSE_BOUNDED_CONTENT_INVALID`. The result is `PRO_UNAVAILABLE`;
-  it was not retried and supplies no authority.
-- Gated ambiguity: cross-module article input, state loading, authorization,
-  mutation, persistence, ETag behavior, and runtime composition semantics are
-  unavailable. This slice stops at static disabled metadata and does not infer
-  them.
-- No migration, generated artifact, provider, credential, browser, database,
-  network, external action, or Open Decision value is used.
+## Dependency and data boundary
 
-## Implemented maximum-safe boundary
+- ST-0806 is bound by exact hashes and loaded through its production recorded
+  fixture adapter. The owner generator recomputes the typed AST diff and Claim
+  coverage; it does not trust copied summary values.
+- ST-1101 remains a disabled headless UI foundation. Catalog roles are display
+  metadata and do not establish authentication or authorization.
+- The declared dependencies contain no resolved ST-0807 SEO metadata. The SEO
+  pane therefore exposes the AST title and SEO reference while canonical,
+  robots, and JSON-LD values remain `UNAVAILABLE_DEPENDENCY`.
+- Fixture content is synthetic, minimized, DEV/CI-only, and ineligible for
+  Production. Raw prompts, raw source/review bodies, Claim text, raw HTML,
+  arbitrary URLs, credentials, personal data, and finance/affiliate economics
+  are excluded.
 
-- exact canonical metadata for objective-mapped screens `EDT-002`, `EDT-003`,
-  `EDT-005`, `EDT-006`, `EDT-007`, and `EDT-009`;
-- explicit exclusion of adjacent `EDT-001`, `EDT-004`, `EDT-008`, and
-  `EDT-010`;
-- the conservative directly wording- or acceptance-aligned component metadata
-  set `UI-C014`, `UI-C015`, `UI-C021`, `UI-C022`, `UI-C023`, and `UI-C036`;
-- strict exact plain `{screenId}` input and exact-candidate validation with
-  closed redacted error codes, deep detachment, and deep freezing;
-- article/version/state/ETag coordinates and blocker/unknown/stale/evidence-gap
-  signals fixed to `NOT_LOADED` with `null` values;
-- AST, AI diff, Claim, Comparison, and SEO projections fixed to `NOT_LOADED`
-  with closed reasons and no payload;
-- ETag conflict and unsaved-change behavior fixed to `NOT_EVALUATED`, with no
-  overwrite or navigation interception;
-- static accessibility candidate metadata for skip/header/navigation/main/
-  error-summary/pane-region/footer, one H1, stable IDs and focus order,
-  keyboard/screen-reader/visible-focus requirements, text+code+icon status
-  cues, no color-only state, and no motion;
-- all actions empty, including catalog-critical `EDT-006`;
-- `EDT-009` carries no computed canonical, robots, or JSON-LD output.
+## Concurrency and unsaved decisions
 
-There is no canonical screen-to-component association table. The component
-set is a conservative source-derived projection, not a claim of canonical
-ownership. In particular, no SEO-specific component is inferred.
+`evaluateArticleWorkspaceEtagV2` implements only a pure decision:
 
-The model accepts no role input. Catalog roles are display-only metadata and
-never authentication or authorization evidence. Route registration, rendering,
-authentication, authorization, mutation, persistence, provider invocation,
-external action, and publication authority all remain false or disabled.
+- missing `If-Match` -> `PRECONDITION_REQUIRED` / 428;
+- stale `If-Match` -> `PRECONDITION_FAILED` / 412 with conflict resolution
+  required and no overwrite;
+- exact match -> `MATCHED_NO_COMMAND`, never save authority.
 
-## Validation and hostile-data boundary
+`evaluateArticleWorkspaceUnsavedV2` compares exact AST SHA-256 values. A dirty
+model returns `BLOCK_UNSAVED_CHANGES` and the dialog focus target; a clean model
+returns `ALLOW_CLEAN`. Neither path performs or intercepts navigation, saves,
+or discards.
 
-Input and candidate validation rejects unknown/extra fields, subclass and
-null-prototype objects, accessors, hidden properties, symbols, cycles,
-dangerous keys, duplicate IDs/routes, raw HTML/script/iframe or event-handler
-surfaces, raw prompts/source/article text, finance/revenue/public fields,
-callbacks, URLs/origins, and authority escalation. Errors expose only closed
-codes and never echo rejected material.
+## Owned generation
 
-Focused Node-native tests cover exact catalog/component/source tuples,
-determinism, detach/freeze behavior, objective exclusions, disabled authority,
-unloaded/unevaluated state, accessibility metadata, hostile input, candidate
-tampering, forbidden surfaces, duplicate identifiers, and duplicate routes.
+Owner source:
 
-## Explicitly not achieved or executed
+- `contracts/article-workspace.v2.yaml`
+- `../../scripts/build_st1102_article_workspace_v2.py`
 
-This metadata-only partial slice does **not** achieve the `ST-1102` acceptance
-criterion. It does not implement or test runtime ETag conflict handling or an
-operational unsaved-changes guard. It is not Story completion.
+Generated outputs (never edit manually):
 
-Formal `TST-022`, formal `TST-024`, browser rendering, automated accessibility,
-manual keyboard, screen-reader, live, staging, release, publication, and
-Production work remain `NOT_EXECUTED`. No completion evidence, status overlay,
-or deferred-verification debt entry is added by this slice.
+- `article-workspace-recorded.v2.json`
+- `../../packages/web-ui/src/article-workspace-recorded.v2.ts`
+- `runtime-manifest.v2.yaml`
 
-## Local checks
+Generation and no-write verification use the repository's pinned Python
+toolchain:
 
-The following checks use the already-hydrated pinned root tools without syncing
-or mutating this dedicated worktree:
+```text
+uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads python scripts/build_st1102_article_workspace_v2.py
+uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads python scripts/build_st1102_article_workspace_v2.py --check
+```
 
-- `/home/minami/.nvm/versions/node/v24.18.1/bin/node --experimental-strip-types --input-type=module -e "const m = await import('./packages/web-ui/src/article-workspace.ts'); const x = m.createArticleWorkspaceCandidate({screenId:'EDT-006'}); if (x.actions.length || x.projections.some((p) => p.status !== 'NOT_LOADED')) process.exit(1)"` — PASS.
-- `/home/minami/.nvm/versions/node/v24.18.1/bin/node /home/minami/rakuten/node_modules/typescript/bin/tsc -p packages/web-ui/tsconfig.json --noEmit` — PASS.
-- `/home/minami/.nvm/versions/node/v24.18.1/bin/node /home/minami/rakuten/node_modules/typescript/bin/tsc --ignoreConfig --noEmit --allowImportingTsExtensions --target ES2024 --module NodeNext --moduleResolution NodeNext --strict --exactOptionalPropertyTypes --noUncheckedIndexedAccess --useUnknownInCatchVariables --forceConsistentCasingInFileNames --types node tests/st1102/article-workspace-contract.test.ts tests/st1102/article-workspace-model.test.ts tests/st1102/article-workspace-boundaries.test.ts tests/st1102/article-workspace-accessibility.test.ts tests/st1102/article-workspace-negative.test.ts` — PASS.
-- `/home/minami/.nvm/versions/node/v24.18.1/bin/node --experimental-strip-types --test tests/st1102/*.test.ts` — PASS, 23/23 tests.
-- `/home/minami/.nvm/versions/node/v24.18.1/bin/node --experimental-strip-types --test tests/st1101/*.test.ts tests/st0506/*.test.ts tests/st0606/*.test.ts tests/st0709/*.test.ts` — PASS, 78/78 affected tests.
-- `/home/minami/.nvm/versions/node/v24.18.1/bin/node /home/minami/rakuten/node_modules/eslint/bin/eslint.js --config eslint.config.mjs --max-warnings=0 --no-warn-ignored packages/web-ui/src/article-workspace.ts packages/web-ui/src/index.ts tests/st1102/article-workspace-contract.test.ts tests/st1102/article-workspace-model.test.ts tests/st1102/article-workspace-boundaries.test.ts tests/st1102/article-workspace-accessibility.test.ts tests/st1102/article-workspace-negative.test.ts` — PASS.
-- `/home/minami/.nvm/versions/node/v24.18.1/bin/node /home/minami/rakuten/node_modules/prettier/bin/prettier.cjs --check packages/web-ui/src/article-workspace.ts packages/web-ui/src/index.ts tests/st1102/article-workspace-contract.test.ts tests/st1102/article-workspace-model.test.ts tests/st1102/article-workspace-boundaries.test.ts tests/st1102/article-workspace-accessibility.test.ts tests/st1102/article-workspace-negative.test.ts changes/st-1102/README.md` — PASS.
-- `make check-workspace` — PASS with zero changed workspace paths.
-- `python3 scripts/import_raos_design.py verify` — PASS for 105 imported files,
-  canonical read order, and package checksums.
-- `git diff --check` — PASS.
+The manifest binds all owner sources, exact canonical/dependency inputs, locked
+toolchain files, the hardened atomic writer, and generated artifact bytes.
 
-`python3 scripts/scan_secrets.py --worktree` cannot safely resolve linked
-worktree Git metadata and returned the redacted operational error
-`ERROR code=unsafe-git-metadata source="."` with exit 2. The unchanged scanner
-was therefore run against a complete non-Git `git archive --format=tar HEAD`
-snapshot overlaid by `cp --parents` with the exact eight owned files after
-`cmp --silent` confirmed every overlay byte. `python3
-<snapshot>/scripts/scan_secrets.py --worktree` returned exit 0 with no findings.
-This closes the sensitive-data check through the scanner's own complete
-fallback traversal and is not introduced Story debt.
+## Accessibility candidate
 
-`make contract-gate` was not run because this dedicated worktree has neither
-`.venv` nor `node_modules`; the approved boundary permits that optional
-no-network check only when the worktree is hydrated. Contract artifacts are not
-owned or changed by this slice.
+The headless model records stable unique semantic IDs, one H1, landmark/focus
+order, keyboard tab-model keys, text+code+icon status cues, non-color-only
+state, and table caption/header/row-header requirements. These are local model
+checks only; there is no DOM, browser, keyboard, zoom, or screen-reader claim.
+
+## Authority and completion boundary
+
+All authentication, authorization, route, rendering, mutation, navigation
+effect, dispatch, persistence, network, provider, approval, publication,
+release, and Production authority fields are false. Canonical Story/registry
+state is unchanged.
+
+The exact local check inventory and counts are recorded in
+`LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml` and
+`../../docs/worklogs/ST-1102.md`. Formal TST-022/TST-024, hosted CI, browser,
+live, staging, release, publication, and Production remain `NOT_EXECUTED`.
+
+## Historical V1 compatibility
+
+`packages/web-ui/src/article-workspace.ts` remains the original disabled,
+metadata-only V1 candidate. Its SHA-256 is fixed as
+`01d2f680ddfb5a64fa9d84db1c10e1ae9cd3de490520e67f135f3be63260db89`.
+Existing V1 tests remain part of the affected ST-1102 suite.

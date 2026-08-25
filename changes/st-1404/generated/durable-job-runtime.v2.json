@@ -1,0 +1,184 @@
+{
+  "canonical_status": "UNCHANGED",
+  "classification": "MAXIMUM_SAFE_LOCAL_DURABLE_RUNTIME_SEAM",
+  "commit_fault_contract": [
+    "NONE",
+    "KNOWN_BEFORE_COMMIT",
+    "UNKNOWN_BEFORE_COMMIT",
+    "UNKNOWN_AFTER_COMMIT"
+  ],
+  "data_boundary": {
+    "credential": false,
+    "exception_text": false,
+    "fingerprints_only": true,
+    "provider_response": false,
+    "raw_handler_result": false,
+    "raw_payload": false
+  },
+  "external_actions": [],
+  "formal_evidence": {
+    "TST-013": "NOT_EXECUTED",
+    "TST-028": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "production_readiness": false
+  },
+  "local_implementation_status": "LOCAL_CODE_COMPLETE",
+  "recovery_boundary": {
+    "inbox_deduplication": true,
+    "lease_fence": true,
+    "orphan_takeover": true,
+    "quarantine_release_requires_approval_record": true,
+    "retry_and_dead_letter": true,
+    "retry_state_expiry_transition_invented": false,
+    "snapshot_restart": true,
+    "stable_message_identity": true
+  },
+  "runtime_boundary": {
+    "activation": false,
+    "background_worker": false,
+    "external_write_authority": false,
+    "live_broker": "NOT_EXECUTED",
+    "live_database": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "provider": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  },
+  "schema_version": "2.0.0",
+  "state_contract": {
+    "attempt": [
+      "RUNNING",
+      "SUCCEEDED",
+      "FAILED",
+      "CANCELLED",
+      "TIMED_OUT"
+    ],
+    "inbox": [
+      "PROCESSING",
+      "PROCESSED",
+      "FAILED",
+      "IGNORED"
+    ],
+    "job": [
+      "REQUESTED",
+      "QUEUED",
+      "RUNNING",
+      "SUCCEEDED",
+      "FAILED_RETRYABLE",
+      "RETRY_SCHEDULED",
+      "FAILED_TERMINAL",
+      "QUARANTINED",
+      "CANCELLED",
+      "EXPIRED"
+    ],
+    "job_transitions": [
+      [
+        "FAILED_RETRYABLE",
+        "FAILED_TERMINAL"
+      ],
+      [
+        "FAILED_RETRYABLE",
+        "RETRY_SCHEDULED"
+      ],
+      [
+        "QUARANTINED",
+        "QUEUED"
+      ],
+      [
+        "QUEUED",
+        "CANCELLED"
+      ],
+      [
+        "QUEUED",
+        "EXPIRED"
+      ],
+      [
+        "QUEUED",
+        "RUNNING"
+      ],
+      [
+        "REQUESTED",
+        "CANCELLED"
+      ],
+      [
+        "REQUESTED",
+        "EXPIRED"
+      ],
+      [
+        "REQUESTED",
+        "QUEUED"
+      ],
+      [
+        "RETRY_SCHEDULED",
+        "QUEUED"
+      ],
+      [
+        "RUNNING",
+        "CANCELLED"
+      ],
+      [
+        "RUNNING",
+        "EXPIRED"
+      ],
+      [
+        "RUNNING",
+        "FAILED_RETRYABLE"
+      ],
+      [
+        "RUNNING",
+        "FAILED_TERMINAL"
+      ],
+      [
+        "RUNNING",
+        "QUARANTINED"
+      ],
+      [
+        "RUNNING",
+        "SUCCEEDED"
+      ]
+    ],
+    "outbox": [
+      "PENDING",
+      "DISPATCHING",
+      "PUBLISHED",
+      "FAILED",
+      "DEAD"
+    ]
+  },
+  "story_id": "ST-1404",
+  "synthetic_fixture": {
+    "activation": false,
+    "commit_faults": [
+      "NONE",
+      "KNOWN_BEFORE_COMMIT",
+      "UNKNOWN_BEFORE_COMMIT",
+      "UNKNOWN_AFTER_COMMIT"
+    ],
+    "durations_seconds": {
+      "job_lease": 30,
+      "outbox_lease": 20,
+      "quarantine_replay_lease": 20,
+      "queue_lease": 30
+    },
+    "fixture_id": "ST1404-SYNTHETIC-DURABILITY-V2",
+    "operational_default": false,
+    "retry_seconds": {
+      "job": [
+        5
+      ],
+      "outbox": [
+        1
+      ]
+    },
+    "schema_version": "2.0.0",
+    "synthetic": true
+  },
+  "transaction_boundary": {
+    "clone_on_write_recorded_adapter": true,
+    "compare_and_swap_revision": true,
+    "handler_effects_atomic_with_completion": true,
+    "job_attempt_outbox_inbox_atomic": true,
+    "known_and_unknown_commit_outcomes": true,
+    "outer_uow": true,
+    "queue_io_outside_uow": true
+  }
+}

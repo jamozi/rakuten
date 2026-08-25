@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st1407_external_policy_registry_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st1407_external_policy_registry_reference_plan.py
 provenance:
-  contract_sha256: 080fe7fae6ed8d91d9e9d5c7a1188721cd436d2f6a38ccc0514fe2c5f41c56c6
+  contract_sha256: 56f081255614ab02fddd8c080788ecb36f3b3abd6892f62f10511486a19a3f8b
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -75,7 +75,7 @@ provenance:
   - story_id: ST-0405
     role: readme
     uri: repo://changes/st-0405/README.md
-    sha256: 8b046d65492947a458306c308f5515bb6496e0371bdc9695226d52328a04a657
+    sha256: d815e3f71728ff43c3c7301cdf973534f723c505bffba1f6d97b82e8d76c588f
   - story_id: ST-0405
     role: audit_port
     uri: repo://python/raos/ports/audit.py
@@ -90,19 +90,19 @@ provenance:
     sha256: d858a9b010253cf411083bd5eb9da995ff3f9a172c7626ca9e499a6256559e51
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    sha256: 478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5
   pro_assistance: PRO_UNAVAILABLE_NO_CONTENT_USED
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-1407/contracts/external-policy-registry-reference-plan.v1.yaml
   bytes: 8321
-  sha256: 080fe7fae6ed8d91d9e9d5c7a1188721cd436d2f6a38ccc0514fe2c5f41c56c6
+  sha256: 56f081255614ab02fddd8c080788ecb36f3b3abd6892f62f10511486a19a3f8b
 - uri: repo://changes/st-1407/README.md
   bytes: 5331
   sha256: cdf072c7d212cc72555e82512f13f2940d21379e3622b20b9e4df9e3f92d9d96
 - uri: repo://scripts/build_st1407_external_policy_registry_reference_plan.py
-  bytes: 47491
-  sha256: 6cf1d96cadd2b32d3377c8c42813c50146d6091e69028d8ed127725af7022637
+  bytes: 47496
+  sha256: 9c1c2c3f4b90dce8ec5b519a121fe991065db774a777da11ff4d1e8899dae43b
 - uri: repo://tests/st1407/conftest.py
   bytes: 1012
   sha256: ee0eb9124eca66cac5fa035d396a4e1c50c62a8bfa8f7e06bd25efceff87cf32
@@ -113,13 +113,13 @@ source_artifacts:
   bytes: 4758
   sha256: 7adf9c9c897f1d287ec2ebeac9419ac477f86b77115a8ff63fed6551116fccf4
 - uri: repo://tests/st1407/test_negative_cases.py
-  bytes: 11917
-  sha256: b7c5043589429f67d563c670b6968291ce6413914c2df11c2bc0327352e97e73
+  bytes: 12396
+  sha256: 957b6d5269a1cd4e1468fa4a78c70e890292f3105f1447f7381aba630614984c
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1407/generated/external-policy-registry-reference-plan.v1.json
   bytes: 26054
-  sha256: c3a387568ccda0054b5d1c91cd5adb17df18fdcee3801a8ac006ddcb99b4c34e
+  sha256: 7e0c8e6bf81564d79cd0316b713c14a61bf182637f6280903aa2381f77d7bfc3
 boundary:
   classification: SOURCE_DERIVED_NON_ATTESTING_EXTERNAL_POLICY_REFERENCE_PLAN
   executable: false

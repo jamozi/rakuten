@@ -1,0 +1,386 @@
+{
+  "schema_version": 2,
+  "comparison": {
+    "contract": {
+      "contract_id": "RAOS-ST0803-COMPARISON-VALIDATION-RUNTIME-002",
+      "contract_version": "2.0.0",
+      "evaluator_version": "ST0803_COMPARISON_VALIDATOR_V2",
+      "comparison_schema_sha256": "6da40ea538bd467a759613e0dca62f2e822ac4a9609adb71959d8bb624037c89",
+      "identity_contract_sha256": "246c21aa1d79489ed8c8a02fe0b7d1a50ffe1b2f7e85fcc4ba210369477512b8",
+      "claim_evidence_contract_sha256": "7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb",
+      "article_lifecycle_source_sha256": "c44cb8c5d26f4862e7527bcb179c20f1f60d3a069d9ba67fad3b0109ef0c6edd"
+    },
+    "article": {
+      "article_id": "10101010-1010-4010-8010-101010101010",
+      "article_version_id": "11111111-1111-4111-8111-111111111111",
+      "article_version_no": 1,
+      "article_body_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "source_packet_version_id": "33333333-3333-4333-8333-333333333333",
+      "source_packet_content_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "complete_claim_set_sha256": "4f27c5a142b6b3fc242efa9d7570e6d8d2268284014fde39ebc479e241dd6da3",
+      "binding_sha256": "34a0c8c899499d0a30c8027c5ea2cf7562d2966e154c565b73590076f88ff404"
+    },
+    "evaluated_at": "2026-08-24T00:00:00Z",
+    "candidate_universe": {
+      "universe_id": "20202020-2020-4020-8020-202020202020",
+      "version_no": 1,
+      "products": [
+        {
+          "product_id": "50505050-5050-4050-8050-505050505050",
+          "variant_identity_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "subject_identity_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "inclusion_reason_code": "RECORDED_CANDIDATE"
+        },
+        {
+          "product_id": "60606060-6060-4060-8060-606060606060",
+          "variant_identity_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "subject_identity_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "inclusion_reason_code": "RECORDED_CANDIDATE"
+        }
+      ],
+      "candidate_universe_sha256": "109171316aed2ccd2e615f452807295ea34bcc4761142cfd86b700eda3169193"
+    },
+    "axis_catalog": {
+      "catalog_id": "30303030-3030-4030-8030-303030303030",
+      "version_no": 1,
+      "source_sha256": "187bd1c24ce2a3229d22cfea8f300db840046b5c147d3018a4096625c415933d",
+      "axes": [
+        {
+          "axis_id": "40404040-4040-4040-8040-404040404040",
+          "axis_code": "CAPACITY_WH",
+          "label": "\u5b9a\u683c\u5bb9\u91cf",
+          "description": "\u4e00\u6b21\u60c5\u5831\u3067\u78ba\u8a8d\u3057\u305f\u5b9a\u683c\u5bb9\u91cf\u3092Wh\u5358\u4f4d\u3067\u6bd4\u8f03\u3059\u308b\u3002",
+          "data_type": "DECIMAL",
+          "unit_family_code": "ENERGY",
+          "unit_code": "WH",
+          "position": 0,
+          "required": true
+        }
+      ],
+      "axis_catalog_sha256": "21f97f66832175c0cb41d986b9ade61d6482e302e0c44193397b2c93aab97a22"
+    },
+    "facts": [
+      {
+        "fact_id": "66666666-6666-4666-8666-666666666666",
+        "fact_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "product_id": "50505050-5050-4050-8050-505050505050",
+        "variant_identity_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "subject_identity_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "axis_id": "40404040-4040-4040-8040-404040404040",
+        "value": {
+          "data_type": "DECIMAL",
+          "value": "300"
+        },
+        "unit_code": "WH",
+        "observed_at": "2026-08-23T12:00:00Z",
+        "valid_from": "2026-08-23T00:00:00Z",
+        "valid_until": "2026-09-01T00:00:00Z"
+      },
+      {
+        "fact_id": "77777777-7777-4777-8777-777777777777",
+        "fact_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+        "product_id": "60606060-6060-4060-8060-606060606060",
+        "variant_identity_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "subject_identity_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "axis_id": "40404040-4040-4040-8040-404040404040",
+        "value": {
+          "data_type": "DECIMAL",
+          "value": "500"
+        },
+        "unit_code": "WH",
+        "observed_at": "2026-08-23T12:00:00Z",
+        "valid_from": "2026-08-23T00:00:00Z",
+        "valid_until": "2026-09-01T00:00:00Z"
+      }
+    ],
+    "cells": [
+      {
+        "product_id": "50505050-5050-4050-8050-505050505050",
+        "axis_id": "40404040-4040-4040-8040-404040404040",
+        "status": "VALID",
+        "value": {
+          "data_type": "DECIMAL",
+          "value": "300"
+        },
+        "unit_code": "WH",
+        "fact_ids": [
+          "66666666-6666-4666-8666-666666666666"
+        ],
+        "reason_code": null,
+        "imputed": false
+      },
+      {
+        "product_id": "60606060-6060-4060-8060-606060606060",
+        "axis_id": "40404040-4040-4040-8040-404040404040",
+        "status": "VALID",
+        "value": {
+          "data_type": "DECIMAL",
+          "value": "500"
+        },
+        "unit_code": "WH",
+        "fact_ids": [
+          "77777777-7777-4777-8777-777777777777"
+        ],
+        "reason_code": null,
+        "imputed": false
+      }
+    ],
+    "show_unknown_values": true,
+    "fact_set_sha256": "5b5c4795ad7f3663c55b51dbde680e92787506d514a66733b90ef40b583fbcbd",
+    "temporal_scope_sha256": "30932713b338dd0b6a297d76c08a7d5942f9a35e773e6e184709552c5b7a2ebf",
+    "evaluation_input_sha256": "4c4030ea6288c461b4a555b832cd56f35cd961da8043b3b05fdf2ebbc9c2dc84"
+  },
+  "claim_evidence": {
+    "schema_version": 1,
+    "contract": {
+      "policy_document_id": "RAOS-CONTENT-EVIDENCE-001",
+      "policy_version": "1.0.0",
+      "policy_sha256": "fbf2d0ad6e7821a0059f9ceeb53d57268031e2e42b4aad988af9a42378aec5ba",
+      "evaluator_version": "ST0605_CLAIM_EVIDENCE_COVERAGE_V1",
+      "claim_set_profile": "ST0605_COMPLETE_CLAIM_SET_V1"
+    },
+    "article": {
+      "article_version_id": "11111111-1111-4111-8111-111111111111",
+      "article_body_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "source_packet_version_id": "33333333-3333-4333-8333-333333333333",
+      "source_packet_content_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "complete_claim_ids": [
+        "44444444-4444-4444-8444-444444444444"
+      ],
+      "complete_claim_set_sha256": "4f27c5a142b6b3fc242efa9d7570e6d8d2268284014fde39ebc479e241dd6da3"
+    },
+    "approved_packet": {
+      "source_packet_id": "22222222-2222-4222-8222-222222222222",
+      "source_packet_version_id": "33333333-3333-4333-8333-333333333333",
+      "version_no": 1,
+      "status": "APPROVED",
+      "content_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "fact_ids": [
+        "66666666-6666-4666-8666-666666666666",
+        "77777777-7777-4777-8777-777777777777"
+      ],
+      "approval_decision_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "approved_at": "2026-08-23T10:00:00Z"
+    },
+    "evaluated_at": "2026-08-24T00:00:00Z",
+    "claims": [
+      {
+        "claim_id": "44444444-4444-4444-8444-444444444444",
+        "article_version_id": "11111111-1111-4111-8111-111111111111",
+        "claim_text_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "claim_type": "comparative",
+        "criticality": 5,
+        "affects_purchase_decision": true,
+        "affects_ranking": false,
+        "affects_price": false,
+        "affects_safety": false,
+        "affects_legal": false,
+        "temporal_scope_required": true,
+        "allowed_subject_identity_sha256s": [
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        ]
+      }
+    ],
+    "requirement_proofs": [
+      {
+        "claim_id": "44444444-4444-4444-8444-444444444444",
+        "temporal_scope_sha256": "30932713b338dd0b6a297d76c08a7d5942f9a35e773e6e184709552c5b7a2ebf",
+        "derivation_formula_sha256": null,
+        "comparison_population_sha256": "109171316aed2ccd2e615f452807295ea34bcc4761142cfd86b700eda3169193",
+        "recommendation_methodology_sha256": null,
+        "experience_record_sha256": null,
+        "experience_approved": false,
+        "safety_compliance_review_sha256": null,
+        "unknown_value_handling": "NOT_APPLICABLE"
+      }
+    ],
+    "facts": [
+      {
+        "fact_id": "66666666-6666-4666-8666-666666666666",
+        "source_snapshot_id": "99999999-9999-4999-8999-999999999999",
+        "fact_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "subject_identity_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      {
+        "fact_id": "77777777-7777-4777-8777-777777777777",
+        "source_snapshot_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "fact_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+        "subject_identity_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "links": [
+      {
+        "claim_id": "44444444-4444-4444-8444-444444444444",
+        "fact_id": "66666666-6666-4666-8666-666666666666",
+        "support_type": "SUPPORTS"
+      },
+      {
+        "claim_id": "44444444-4444-4444-8444-444444444444",
+        "fact_id": "77777777-7777-4777-8777-777777777777",
+        "support_type": "SUPPORTS"
+      }
+    ],
+    "sources": [
+      {
+        "source_id": "88888888-8888-4888-8888-888888888888",
+        "tier": "SRC-TIER-A",
+        "origin": "AUTHORITATIVE",
+        "active": true
+      }
+    ],
+    "snapshots": [
+      {
+        "source_snapshot_id": "99999999-9999-4999-8999-999999999999",
+        "source_id": "88888888-8888-4888-8888-888888888888",
+        "content_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+        "validation_status": "VALID",
+        "acquired_at": "2026-08-23T00:00:00Z",
+        "expires_at": "2026-09-01T00:00:00Z"
+      },
+      {
+        "source_snapshot_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "source_id": "88888888-8888-4888-8888-888888888888",
+        "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "validation_status": "VALID",
+        "acquired_at": "2026-08-23T00:00:00Z",
+        "expires_at": "2026-09-01T00:00:00Z"
+      }
+    ],
+    "identities": [
+      {
+        "fact_id": "66666666-6666-4666-8666-666666666666",
+        "status": "MATCHED",
+        "expected_subject_identity_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "observed_subject_identity_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "decision_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "decided_at": "2026-08-23T12:00:00Z"
+      },
+      {
+        "fact_id": "77777777-7777-4777-8777-777777777777",
+        "status": "MATCHED",
+        "expected_subject_identity_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "observed_subject_identity_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "decision_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "decided_at": "2026-08-23T12:00:00Z"
+      }
+    ],
+    "conflicts": [],
+    "citations": [
+      {
+        "citation_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+        "claim_id": "44444444-4444-4444-8444-444444444444",
+        "fact_id": "66666666-6666-4666-8666-666666666666",
+        "support_type": "SUPPORTS",
+        "source_id": "88888888-8888-4888-8888-888888888888",
+        "source_snapshot_id": "99999999-9999-4999-8999-999999999999"
+      },
+      {
+        "citation_id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+        "claim_id": "44444444-4444-4444-8444-444444444444",
+        "fact_id": "77777777-7777-4777-8777-777777777777",
+        "support_type": "SUPPORTS",
+        "source_id": "88888888-8888-4888-8888-888888888888",
+        "source_snapshot_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+      }
+    ],
+    "attestations": [
+      {
+        "kind": "CLAIM_INVENTORY",
+        "owner_story_id": "ST-0605",
+        "contract_version": "RAOS-CONTENT-EVIDENCE-001@1.0.0",
+        "contract_sha256": "fbf2d0ad6e7821a0059f9ceeb53d57268031e2e42b4aad988af9a42378aec5ba",
+        "origin": "RECORDED_SYNTHETIC_ONLY",
+        "subject_sha256": "3c943f8500bfc18bda0ef93614ca426789fadc9bd361cd1ad64a35b7ccd8b723",
+        "input_sha256": "78078c675eb0972df15f45375adf5cf980da74b5bf75509a094225b68fb044c3",
+        "decision_sha256": "b900b4971ef06e82753be7a62acd6a15664050ec5e3add86405b8be59f7c6a77",
+        "validated_at": "2026-08-23T23:00:00Z",
+        "valid": true
+      },
+      {
+        "kind": "ARTICLE_PACKET_BINDING",
+        "owner_story_id": "ST-0802",
+        "contract_version": "RESOURCE-CONTRACTS@0.4",
+        "contract_sha256": "aa53bf68b125821a46c093e653464e7f80e5710e31f6f860251aa8ebc30480c0",
+        "origin": "RECORDED_SYNTHETIC_ONLY",
+        "subject_sha256": "dcef9107ebf5a77435bdf63659bd036e7ae4929e4931f8c98ebfa39b131eeb16",
+        "input_sha256": "fed4d38eb106510407202fb9d59d8811adb7884595f77f2807147070486736fd",
+        "decision_sha256": "c60df1eb90be3cc8f07caa517281494b35270e87366fc49dc54ec7077f6cb0e8",
+        "validated_at": "2026-08-23T23:00:00Z",
+        "valid": true
+      },
+      {
+        "kind": "PACKET_APPROVAL_MEMBERSHIP",
+        "owner_story_id": "ST-0604",
+        "contract_version": "SOURCE-PACKET-LIFECYCLE-RUNTIME@2.0.0",
+        "contract_sha256": "8fc6a6bc7a9b016ed70ec099da005f430f472702b0e422d227c32e45f8623f93",
+        "origin": "RECORDED_SYNTHETIC_ONLY",
+        "subject_sha256": "5113c184044507308f41d4d80036ca3b352345767aa7297d00d809e50515fef5",
+        "input_sha256": "d4d0010908959e4f5c26c60db299dccb4ba93f81eaf36f525f61b80c6901c8b2",
+        "decision_sha256": "8326756287464cef30c873bc8be27016688efb65d1fe2df9bae806dc3d6dc67b",
+        "validated_at": "2026-08-23T23:00:00Z",
+        "valid": true
+      },
+      {
+        "kind": "FACT_VALIDATION",
+        "owner_story_id": "ST-0602",
+        "contract_version": "FACT-EXTRACTION-VALIDATION-REFERENCE-PLAN@1",
+        "contract_sha256": "c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073",
+        "origin": "RECORDED_SYNTHETIC_ONLY",
+        "subject_sha256": "e01f09009e0c7fe19d739bb88c935e2c0b3420145cc7a899b7b4acdc39e38431",
+        "input_sha256": "7a0fe30ffff752e5fc310847d4204d3a0217c3a1f75613adff6439f637f3485e",
+        "decision_sha256": "0de8dd90721173899272d2da2a7a3db3fc4c61d9cc567ff38e0e42341fe960f8",
+        "validated_at": "2026-08-23T23:00:00Z",
+        "valid": true
+      },
+      {
+        "kind": "FACT_VALIDATION",
+        "owner_story_id": "ST-0602",
+        "contract_version": "FACT-EXTRACTION-VALIDATION-REFERENCE-PLAN@1",
+        "contract_sha256": "c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073",
+        "origin": "RECORDED_SYNTHETIC_ONLY",
+        "subject_sha256": "b4848396d48d75f702d574a6afdfa1d9a2a4272b4a543e2519ebbc7c1343dd4a",
+        "input_sha256": "7109d90c64699f4cb749ca784e6d225930742bcaa8bf31bd8b3090defc54f70f",
+        "decision_sha256": "63ffdb62e89c393e33d7395c69fcb1d92625822d8c4d1c5b75e9fc99bafb3b61",
+        "validated_at": "2026-08-23T23:00:00Z",
+        "valid": true
+      },
+      {
+        "kind": "IDENTITY_DECISION",
+        "owner_story_id": "ST-0504",
+        "contract_version": "PRODUCT-IDENTITY-HUMAN-REVIEW-REFERENCE-PLAN@1",
+        "contract_sha256": "f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab",
+        "origin": "RECORDED_SYNTHETIC_ONLY",
+        "subject_sha256": "3fabe1af282ff9ef5159eb671a0f8f8b3cde53527663bf3ae20ffac5c154bd5c",
+        "input_sha256": "673dc0b4ce458b85d2cdf058938c23b3f4a511e141501c8d2375c7ba6eb975a2",
+        "decision_sha256": "ab31f7adc5e232fcaf512d54e65279cefdf3cfc23604da443219eebf207671c0",
+        "validated_at": "2026-08-23T23:00:00Z",
+        "valid": true
+      },
+      {
+        "kind": "IDENTITY_DECISION",
+        "owner_story_id": "ST-0504",
+        "contract_version": "PRODUCT-IDENTITY-HUMAN-REVIEW-REFERENCE-PLAN@1",
+        "contract_sha256": "f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab",
+        "origin": "RECORDED_SYNTHETIC_ONLY",
+        "subject_sha256": "52d959ad30001c3f52d4095114d94360c31613b21d3ecaf6a9ba27929bbe6325",
+        "input_sha256": "a956e3b2b9c7c55da2e87b69867b55ecce6db8ae174f042145398200502c2c05",
+        "decision_sha256": "f2b708a33c1a452dcc8cd348b9028d78f549767da502d82668db1e0155b80459",
+        "validated_at": "2026-08-23T23:00:00Z",
+        "valid": true
+      },
+      {
+        "kind": "CONFLICT_CLOSURE",
+        "owner_story_id": "ST-0603",
+        "contract_version": "FACT-CONFLICT-REVIEW-REFERENCE-PLAN@1",
+        "contract_sha256": "74d58a889c0e20cb74e699196c267b270a86db80667459c9178b04aefe66c093",
+        "origin": "RECORDED_SYNTHETIC_ONLY",
+        "subject_sha256": "3eae35b6d938eba8d185c1c37666fcddf58e6532cac3dfec95e7378d94e24f93",
+        "input_sha256": "55fbbf8f5dc3a9fdb3d6e20d7dd5bb43c82a323775e819509c50208295f8e59f",
+        "decision_sha256": "b7de61db11e13694b8513a7a490350a5b2cf556fdd30923eb979a41b6d299b55",
+        "validated_at": "2026-08-23T23:00:00Z",
+        "valid": true
+      }
+    ]
+  }
+}

@@ -86,6 +86,41 @@ export type {
 } from './evidence-workspace.ts';
 
 export {
+  EVIDENCE_WORKSPACE_V2_CLASSIFICATION,
+  EVIDENCE_WORKSPACE_V2_ERROR_CODES,
+  EVIDENCE_WORKSPACE_V2_SCREEN_IDS,
+  EvidenceWorkspaceV2Error,
+  ST0606_EVIDENCE_WORKSPACE_RECORDED_V2,
+  createEvidenceWorkspaceModelV2,
+  validateEvidenceWorkspaceProjectionV2,
+} from './evidence-workspace-v2.ts';
+export type {
+  EvidenceAttestationV2,
+  EvidenceCoverageFractionV2,
+  EvidenceCoverageReportV2,
+  EvidenceFactV2,
+  EvidenceMatrixRowV2,
+  EvidenceSemanticViewV2,
+  EvidenceSourceAccessPathV2,
+  EvidenceSourceAccessStepV2,
+  EvidenceSourceSnapshotV2,
+  EvidenceSourceV2,
+  EvidenceStatusCueV2,
+  EvidenceTableColumnV2,
+  EvidenceTableV2,
+  EvidenceWorkspaceModelV2,
+  EvidenceWorkspaceProjectionV2,
+  EvidenceWorkspaceScreenIdV2,
+  EvidenceWorkspaceScreenV2,
+  EvidenceWorkspaceV2ErrorCode,
+  EvidenceWorkspaceV2Input,
+} from './evidence-workspace-v2.ts';
+export {
+  ST0606_RECORDED_PROJECTION_V2_JSON,
+  ST0606_RECORDED_PROJECTION_V2_SHA256,
+} from './evidence-workspace-recorded.v2.ts';
+
+export {
   AI_GOVERNANCE_MODEL_ERROR_CODES,
   AI_GOVERNANCE_SCREEN,
   AI_GOVERNANCE_SECTION_IDS,
@@ -105,6 +140,27 @@ export type {
   AiGovernanceWorkspaceInput,
   AiGovernanceWorkspaceModel,
 } from './ai-governance-workspace.ts';
+
+export {
+  AI_GOVERNANCE_RECORDED_FIXTURE_V2,
+  AI_GOVERNANCE_V2_ERROR_CODES,
+  AI_GOVERNANCE_V2_SECTION_IDS,
+  AiGovernanceWorkspaceErrorV2,
+  createAiGovernanceWorkspaceModelV2,
+  validateAiGovernanceWorkspaceCandidateV2,
+} from './ai-governance-workspace-v2.ts';
+export type {
+  AiGovernanceScreenV2,
+  AiGovernanceSectionIdV2,
+  AiGovernanceSectionV2,
+  AiGovernanceSourceBindingV2,
+  AiGovernanceStatusV2,
+  AiGovernanceTableColumnV2,
+  AiGovernanceTableV2,
+  AiGovernanceWorkspaceErrorCodeV2,
+  AiGovernanceWorkspaceInputV2,
+  AiGovernanceWorkspaceModelV2,
+} from './ai-governance-workspace-v2.ts';
 
 export {
   ARTICLE_WORKSPACE_COMPONENT_IDS,
@@ -138,6 +194,29 @@ export type {
 } from './article-workspace.ts';
 
 export {
+  ARTICLE_WORKSPACE_V2_CLASSIFICATION,
+  ARTICLE_WORKSPACE_V2_ERROR_CODES,
+  ARTICLE_WORKSPACE_V2_PROJECTION_IDS,
+  ArticleWorkspaceV2Error,
+  createArticleWorkspaceV2,
+  evaluateArticleWorkspaceEtagV2,
+  evaluateArticleWorkspaceUnsavedGuardV2,
+  validateArticleWorkspaceV2Model,
+} from './article-workspace-v2.ts';
+export type {
+  ArticleWorkspaceEtagDecisionV2,
+  ArticleWorkspaceEtagInputV2,
+  ArticleWorkspaceUnsavedDecisionV2,
+  ArticleWorkspaceUnsavedInputV2,
+  ArticleWorkspaceV2ErrorCode,
+  ArticleWorkspaceV2Input,
+  ArticleWorkspaceV2Model,
+  ArticleWorkspaceV2Projection,
+  ArticleWorkspaceV2ProjectionId,
+  ArticleWorkspaceV2StatusCue,
+} from './article-workspace-v2.ts';
+
+export {
   PUBLICATION_REVIEW_COMPONENT_IDS,
   PUBLICATION_REVIEW_COMPONENTS,
   PUBLICATION_REVIEW_ERROR_CODES,
@@ -166,6 +245,31 @@ export type {
   PublicationReviewWorkspaceInput,
   PublicationReviewWorkspaceModel,
 } from './publication-review-workspace.ts';
+
+export {
+  PUBLICATION_REVIEW_WORKSPACE_V2_CLASSIFICATION,
+  PUBLICATION_REVIEW_WORKSPACE_V2_ERROR_CODES,
+  PUBLICATION_REVIEW_WORKSPACE_V2_SECTION_IDS,
+  PublicationReviewWorkspaceV2Error,
+  createPublicationReviewWorkspaceV2,
+  renderPublicationReviewWorkspaceHtmlV2,
+  validatePublicationReviewWorkspaceV2,
+} from './publication-review-workspace-v2.ts';
+export type {
+  PublicationReviewAuditEntryV2,
+  PublicationReviewCommandV2,
+  PublicationReviewDiffRowV2,
+  PublicationReviewDiffV2,
+  PublicationReviewFinalApprovalV2,
+  PublicationReviewPreviewBlockV2,
+  PublicationReviewPreviewV2,
+  PublicationReviewRecordedFixtureV2,
+  PublicationReviewRecordedReviewV2,
+  PublicationReviewSnapshotV2,
+  PublicationReviewWorkspaceV2ErrorCode,
+  PublicationReviewWorkspaceV2Input,
+  PublicationReviewWorkspaceV2Model,
+} from './publication-review-workspace-v2.ts';
 
 export {
   PUBLIC_SHELL_COMPONENT_IDS,
@@ -200,9 +304,19 @@ export {
   PUBLIC_ARTICLE_RENDERER_CLASSIFICATION,
   PUBLIC_ARTICLE_RENDERER_ERROR_CODES,
   PUBLIC_ARTICLE_RENDERER_SCREEN,
+  PUBLIC_ARTICLE_RECORDED_PATH_V2,
+  PUBLIC_ARTICLE_RECORDED_SLUG_V2,
+  PUBLIC_ARTICLE_V2_ERROR_CODES,
+  PUBLIC_ARTICLE_VIEW_CLASSIFICATION_V2,
   PublicArticleRendererError,
+  PublicArticleV2Error,
   createPublicArticleRendererCandidate,
+  createPublicArticleViewModelV2,
+  createRecordedPublicArticleViewModelV2,
+  requireRecordedPublicArticleV2,
+  resolveRecordedPublicArticleV2,
   validatePublicArticleRendererCandidate,
+  validatePublicArticleViewModelV2,
 } from './public-article-renderer.ts';
 export type {
   PublicArticleBoundaryResult,
@@ -213,6 +327,11 @@ export type {
   PublicArticleRendererCandidate,
   PublicArticleRendererErrorCode,
   PublicArticleRendererInput,
+  PublicArticleOmittedBlockV2,
+  PublicArticleV2ErrorCode,
+  PublicArticleViewKindV2,
+  PublicArticleViewModelV2,
+  PublicArticleViewSectionV2,
 } from './public-article-renderer.ts';
 
 export {
@@ -241,19 +360,43 @@ export type {
 } from './comparison-product-components.ts';
 
 export {
+  PUBLIC_AFFILIATE_CTA_COPY_V2,
+  PUBLIC_AFFILIATE_DESTINATION_LABEL_V2,
+  PUBLIC_AFFILIATE_DESTINATION_RECEIPT_PORT_BOUNDARY_V2,
+  PUBLIC_AFFILIATE_REL_V2,
+  PUBLIC_AFFILIATE_SYNTHETIC_RECEIPT_V2,
+  PUBLIC_AFFILIATE_UNAVAILABLE_NOTICE_V2,
   PUBLIC_DISCLOSURE_AFFILIATE_CLASSIFICATION,
   PUBLIC_DISCLOSURE_AFFILIATE_COMPONENT_IDS,
   PUBLIC_DISCLOSURE_AFFILIATE_COMPONENTS,
   PUBLIC_DISCLOSURE_AFFILIATE_ERROR_CODES,
+  PUBLIC_DISCLOSURE_AFFILIATE_RECORDED_INPUT_V2,
   PUBLIC_DISCLOSURE_AFFILIATE_SCREEN,
+  PUBLIC_DISCLOSURE_AFFILIATE_V2_CLASSIFICATION,
+  PUBLIC_DISCLOSURE_AFFILIATE_V2_ERROR_CODES,
+  PUBLIC_DISCLOSURE_COPY_V2,
   PublicDisclosureAffiliateError,
+  PublicDisclosureAffiliateV2Error,
   createPublicDisclosureAffiliateCandidate,
+  createPublicDisclosureAffiliateArticleViewV2,
+  createRecordedPublicDisclosureAffiliateArticleViewV2,
+  createRecordedPublicDisclosureAffiliateRuntimeV2,
+  createSyntheticPublicAffiliateCtaV2,
+  validatePublicAffiliateCtaSyntheticViewV2,
   validatePublicDisclosureAffiliateCandidate,
+  validatePublicDisclosureAffiliateArticleViewV2,
 } from './disclosure-affiliate-cta.ts';
 export type {
+  PublicAffiliateCtaSyntheticViewV2,
   PublicAffiliateCtaSemanticMetadata,
+  PublicAffiliateCtaUnavailableViewV2,
+  PublicAffiliateDestinationReceiptPortBoundaryV2,
+  PublicAffiliateNavigationBoundaryV2,
+  PublicAffiliateSyntheticReceiptV2,
   PublicApiCreditSemanticMetadata,
   PublicBeaconIndependenceSemanticMetadata,
+  PublicDisclosureAffiliateArticleInputV2,
+  PublicDisclosureAffiliateArticleViewV2,
   PublicDisclosureAffiliateBoundaries,
   PublicDisclosureAffiliateBoundaryResult,
   PublicDisclosureAffiliateCandidate,
@@ -261,7 +404,10 @@ export type {
   PublicDisclosureAffiliateComponentMetadata,
   PublicDisclosureAffiliateErrorCode,
   PublicDisclosureAffiliateInput,
+  PublicDisclosureAffiliateRecordedRuntimeV2,
   PublicDisclosureAffiliateSyntheticCoordinateInput,
+  PublicDisclosureAffiliateV2ErrorCode,
+  PublicDisclosureBannerViewV2,
   PublicDisclosureSemanticMetadata,
 } from './disclosure-affiliate-cta.ts';
 
@@ -312,14 +458,55 @@ export type {
 } from './public-performance-rum.ts';
 
 export {
+  PUBLIC_PERFORMANCE_METRICS_V2,
+  PUBLIC_PERFORMANCE_RECORDED_BUDGET_INPUT_V2,
+  PUBLIC_PERFORMANCE_RECORDED_CTA_LAYOUT_INPUT_V2,
+  PUBLIC_PERFORMANCE_RECORDED_IMAGE_INPUT_V2,
+  PUBLIC_PERFORMANCE_RUNTIME_V2_CLASSIFICATION,
+  PUBLIC_PERFORMANCE_V2_ERROR_CODES,
+  PublicPerformanceV2Error,
+  assessPublicCtaLayoutReservationV2,
+  createDefaultDisabledPublicRumHookV2,
+  createPublicImagePresentationV2,
+  createRecordedPublicPerformanceRuntimeV2,
+  evaluatePublicPerformanceBudgetV2,
+  validatePublicPerformanceRuntimeV2,
+} from './public-performance-runtime-v2.ts';
+export type {
+  PublicCtaLayoutAssessmentV2,
+  PublicCtaLayoutInputV2,
+  PublicImagePolicyInputV2,
+  PublicImagePresentationV2,
+  PublicLayoutRectV2,
+  PublicPerformanceBudgetAssessmentV2,
+  PublicPerformanceBudgetInputV2,
+  PublicPerformanceBudgetResultV2,
+  PublicPerformanceMetricV2,
+  PublicPerformanceRuntimeV2,
+  PublicPerformanceV2ErrorCode,
+  PublicRumDisabledCaptureReceiptV2,
+  PublicRumDisabledHookV2,
+} from './public-performance-runtime-v2.ts';
+
+export {
   PUBLIC_EVENT_INSTRUMENTATION_CLASSIFICATION,
+  PUBLIC_EVENT_INSTRUMENTATION_CLASSIFICATION_V2,
   PUBLIC_EVENT_INSTRUMENTATION_ERROR_CODES,
+  PUBLIC_EVENT_INSTRUMENTATION_ERROR_CODES_V2,
   PUBLIC_EVENT_INSTRUMENTATION_EVENT_IDS,
+  PUBLIC_EVENT_INSTRUMENTATION_EVENT_IDS_V2,
+  PUBLIC_EVENT_INSTRUMENTATION_EVENT_NAMES_V2,
   PUBLIC_EVENT_INSTRUMENTATION_PROHIBITED_PARAMETERS,
   PUBLIC_EVENT_INSTRUMENTATION_SCREEN,
   PublicEventInstrumentationError,
+  PublicEventInstrumentationErrorV2,
+  RecordedPublicEventInstrumentationV2,
+  createDisabledPublicEventInstrumentationRouteBoundaryV2,
   createPublicEventInstrumentationCandidate,
+  createRecordedPublicEventInstrumentationV2,
+  validatePublicEventInstrumentationEnvelopeV2,
   validatePublicEventInstrumentationCandidate,
+  validatePublicEventInstrumentationRecordedFixtureV2,
 } from './public-event-instrumentation.ts';
 export type {
   PublicEventInstrumentationBoundaries,
@@ -327,8 +514,21 @@ export type {
   PublicEventInstrumentationCandidate,
   PublicEventInstrumentationErrorCode,
   PublicEventInstrumentationEventId,
+  PublicEventInstrumentationEventIdV2,
+  PublicEventInstrumentationEventNameV2,
+  PublicEventInstrumentationEnvelopeV2,
   PublicEventInstrumentationEventRequirement,
+  PublicEventInstrumentationErrorCodeV2,
   PublicEventInstrumentationInput,
+  PublicEventInstrumentationParameterScalarV2,
+  PublicEventInstrumentationParameterV2,
+  PublicEventInstrumentationRecordedConsentV2,
+  PublicEventInstrumentationRecordedDispositionV2,
+  PublicEventInstrumentationRecordedFixtureV2,
+  PublicEventInstrumentationRecordedResultV2,
+  PublicEventInstrumentationRecorderSnapshotV2,
+  PublicEventInstrumentationRouteBoundaryV2,
+  PublicEventInstrumentationRouteContextInputV2,
   PublicEventInstrumentationSyntheticCoordinateInput,
   PublicEventInstrumentationUnknownValue,
 } from './public-event-instrumentation.ts';
@@ -376,6 +576,29 @@ export type {
 } from './freshness-operations-workspace.ts';
 
 export {
+  FRESHNESS_OPERATIONS_WORKSPACE_V2_CLASSIFICATION,
+  FRESHNESS_OPERATIONS_WORKSPACE_V2_ERROR_CODES,
+  FreshnessOperationsWorkspaceV2Error,
+  createFreshnessOperationsReviewIntentV2,
+  createFreshnessOperationsWorkspaceV2,
+  validateFreshnessOperationsReviewIntentV2,
+  validateFreshnessOperationsWorkspaceV2,
+} from './freshness-operations-workspace-v2.ts';
+export type {
+  FreshnessOperationsActionDescriptorV2,
+  FreshnessOperationsDependencyV2,
+  FreshnessOperationsReviewIntentInputV2,
+  FreshnessOperationsReviewIntentV2,
+  FreshnessOperationsScreenProjectionV2,
+  FreshnessOperationsStatusCueV2,
+  FreshnessOperationsTableColumnV2,
+  FreshnessOperationsTableV2,
+  FreshnessOperationsWorkspaceV2ErrorCode,
+  FreshnessOperationsWorkspaceV2Input,
+  FreshnessOperationsWorkspaceV2Model,
+} from './freshness-operations-workspace-v2.ts';
+
+export {
   ANALYTICS_FINANCE_SCREEN_IDS,
   ANALYTICS_FINANCE_SCREENS,
   ANALYTICS_FINANCE_WORKSPACE_CLASSIFICATION,
@@ -397,6 +620,11 @@ export type {
 } from './analytics-finance-workspace.ts';
 
 export {
+  ST1104_RECORDED_DASHBOARD_V2_JSON,
+  ST1104_RECORDED_DASHBOARD_V2_SHA256,
+} from './analytics-finance-recorded.v2.ts';
+
+export {
   ADMIN_VISUAL_ACCESSIBILITY_ACCEPTANCE_CLASSIFICATION,
   ADMIN_VISUAL_ACCESSIBILITY_CHECKLIST,
   ADMIN_VISUAL_ACCESSIBILITY_ERROR_CODES,
@@ -415,3 +643,27 @@ export type {
   AdminVisualAccessibilityScreenId,
   AdminVisualAccessibilityVerificationMethod,
 } from './admin-visual-accessibility-acceptance.ts';
+
+export {
+  ADMIN_VISUAL_ACCESSIBILITY_V2_CHECKLIST,
+  ADMIN_VISUAL_ACCESSIBILITY_V2_CLASSIFICATION,
+  ADMIN_VISUAL_ACCESSIBILITY_V2_COMPONENT_INVENTORY,
+  ADMIN_VISUAL_ACCESSIBILITY_V2_CRITICAL_WORKFLOWS,
+  ADMIN_VISUAL_ACCESSIBILITY_V2_ERROR_CODES,
+  ADMIN_VISUAL_ACCESSIBILITY_V2_FORMAL_SUITES,
+  ADMIN_VISUAL_ACCESSIBILITY_V2_SCREEN_IDS,
+  AdminVisualAccessibilityV2Error,
+  createAdminVisualAccessibilityV2Candidate,
+  validateAdminVisualAccessibilityV2Candidate,
+} from './admin-visual-accessibility-acceptance-v2.ts';
+export type {
+  AdminVisualAccessibilityV2Candidate,
+  AdminVisualAccessibilityV2ErrorCode,
+  AdminVisualAccessibilityV2Input,
+} from './admin-visual-accessibility-acceptance-v2.ts';
+
+export {
+  ST1105_ADMIN_VISUAL_ACCESSIBILITY_RECORDED_V2,
+  ST1105_ADMIN_VISUAL_ACCESSIBILITY_RECORDED_V2_JSON,
+  ST1105_ADMIN_VISUAL_ACCESSIBILITY_RECORDED_V2_SHA256,
+} from './admin-visual-accessibility-recorded.v2.ts';

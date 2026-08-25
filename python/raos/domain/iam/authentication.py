@@ -45,6 +45,7 @@ class AuthenticationFailureCode(str, Enum):
     DEVELOPMENT_ONLY = "DEVELOPMENT_ONLY"
     PROVIDER_FAILURE = "PROVIDER_FAILURE"
     STORAGE_FAILURE = "STORAGE_FAILURE"
+    STORAGE_COMMIT_UNKNOWN = "STORAGE_COMMIT_UNKNOWN"
 
 
 @final
@@ -473,6 +474,122 @@ class Session(_RedactedValue):
             _fail(AuthenticationFailureCode.SESSION_EXPIRED)
 
 
+def snapshot_principal_identity(value: object) -> PrincipalIdentity:
+    """Return an exact detached principal or reject collaborator mutation."""
+
+    if type(value) is not PrincipalIdentity:
+        _fail(AuthenticationFailureCode.MALFORMED_INPUT)
+    try:
+        return PrincipalIdentity(
+            issuer=Issuer(value.issuer.reveal()),
+            subject=Subject(value.subject.reveal()),
+            display_name=value.display_name,
+        )
+    except AuthenticationFailure:
+        raise
+    except Exception:
+        _fail(AuthenticationFailureCode.MALFORMED_INPUT)
+
+
+def snapshot_authorization_request(value: object) -> AuthorizationRequest:
+    """Detach a request before it crosses a mutable collaborator boundary."""
+
+    if type(value) is not AuthorizationRequest:
+        _fail(AuthenticationFailureCode.MALFORMED_INPUT)
+    try:
+        return AuthorizationRequest(
+            state=AuthorizationState(value.state.reveal()),
+            nonce=OidcNonce(value.nonce.reveal()),
+            pkce_challenge=PkceChallenge(value.pkce_challenge.reveal()),
+            pkce_method=value.pkce_method,
+            redirect_uri=RedirectUri(value.redirect_uri.reveal()),
+            created_at=value.created_at,
+            expires_at=value.expires_at,
+        )
+    except AuthenticationFailure:
+        raise
+    except Exception:
+        _fail(AuthenticationFailureCode.MALFORMED_INPUT)
+
+
+def snapshot_authorization_callback(value: object) -> AuthorizationCallback:
+    """Detach callback state and code from caller-owned object identity."""
+
+    if type(value) is not AuthorizationCallback:
+        _fail(AuthenticationFailureCode.MALFORMED_INPUT)
+    try:
+        return AuthorizationCallback(
+            state=AuthorizationState(value.state.reveal()),
+            code=AuthorizationCode(value.code.reveal()),
+        )
+    except AuthenticationFailure:
+        raise
+    except Exception:
+        _fail(AuthenticationFailureCode.MALFORMED_INPUT)
+
+
+def snapshot_authorization_transaction(
+    value: object,
+) -> AuthorizationTransaction:
+    """Detach one persisted authorization revision from collaborator state."""
+
+    if type(value) is not AuthorizationTransaction:
+        _fail(AuthenticationFailureCode.MALFORMED_INPUT)
+    try:
+        return AuthorizationTransaction(
+            state_fingerprint=value.state_fingerprint,
+            nonce=OidcNonce(value.nonce.reveal()),
+            verifier=PkceVerifier(value.verifier.reveal()),
+            redirect_uri=RedirectUri(value.redirect_uri.reveal()),
+            created_at=value.created_at,
+            expires_at=value.expires_at,
+            consumed_at=value.consumed_at,
+        )
+    except AuthenticationFailure:
+        raise
+    except Exception:
+        _fail(AuthenticationFailureCode.MALFORMED_INPUT)
+
+
+def snapshot_session_id(value: object) -> SessionId:
+    """Detach an opaque identifier before handing it to a collaborator."""
+
+    if type(value) is not SessionId:
+        _fail(AuthenticationFailureCode.MALFORMED_INPUT)
+    try:
+        return SessionId(value.reveal())
+    except AuthenticationFailure:
+        raise
+    except Exception:
+        _fail(AuthenticationFailureCode.MALFORMED_INPUT)
+
+
+def snapshot_session(value: object) -> Session:
+    """Return a deep, exact session value with no shared nested identity."""
+
+    if type(value) is not Session:
+        _fail(AuthenticationFailureCode.MALFORMED_INPUT)
+    try:
+        return Session(
+            session_id=snapshot_session_id(value.session_id),
+            principal=snapshot_principal_identity(value.principal),
+            created_at=value.created_at,
+            last_seen_at=value.last_seen_at,
+            idle_expires_at=value.idle_expires_at,
+            absolute_expires_at=value.absolute_expires_at,
+            rotated_from=(
+                None
+                if value.rotated_from is None
+                else snapshot_session_id(value.rotated_from)
+            ),
+            revoked_at=value.revoked_at,
+        )
+    except AuthenticationFailure:
+        raise
+    except Exception:
+        _fail(AuthenticationFailureCode.MALFORMED_INPUT)
+
+
 __all__ = [
     "AuthenticationFailure",
     "AuthenticationFailureCode",
@@ -492,4 +609,10 @@ __all__ = [
     "SessionId",
     "Subject",
     "require_utc",
+    "snapshot_authorization_callback",
+    "snapshot_authorization_request",
+    "snapshot_authorization_transaction",
+    "snapshot_principal_identity",
+    "snapshot_session",
+    "snapshot_session_id",
 ]

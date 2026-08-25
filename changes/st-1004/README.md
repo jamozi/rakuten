@@ -1,101 +1,78 @@
-# ST-1004 — disabled headless disclosure and affiliate semantic candidate
+# ST-1004 — disclosure and affiliate CTA local runtime V2
 
-## Result and authority
+## Local result
 
-This Story slice adds one dependency-free strict TypeScript candidate named
-`UNREGISTERED_DISABLED_HEADLESS_ST1004_DISCLOSURE_AFFILIATE_CANDIDATE`. It
-records only the safe semantic boundary for canonical public components
-`UI-C031` DisclosureBanner and `UI-C034` AffiliateCTA on `PUB-003`.
+This additive V2 implementation turns canonical `UI-C031` into a required
+server-rendered `DisclosureBanner` on the one exact ST-1002 local article. The
+banner is renderer-owned, non-removable, contains one labelled heading, appears
+immediately after the article H1 and before lead/body copy, and uses the exact
+recorded disclosure: `この記事にはアフィリエイト広告が含まれます。`
 
-The candidate is unregistered, disabled, headless, noninteractive, and
-nonfocusable. It creates no disclosure copy, link, DOM, React/Next component,
-route, SSR path, API/read-model request, database/network access, navigation,
-redirect, click beacon, tracking event, publication action, or external effect.
-Canonical Story status remains `NOT_STARTED`; verification remains
-`NOT_EXECUTED`. Local evidence grants no policy, security, accessibility,
-approval, publication, staging, release, or Production authority.
+The historical V1
+`UNREGISTERED_DISABLED_HEADLESS_ST1004_DISCLOSURE_AFFILIATE_CANDIDATE` and all
+of its hostile-input and authority protections remain unchanged and exported.
 
-## Safe input and semantic boundary
+## Affiliate source and safe omission
 
-Input contains only exact `PUB-003`/`/articles/{slug}` metadata and one
-explicitly synthetic coordinate whose two caller-supplied lowercase SHA-256
-strings must be equal. The hashes are opaque coordinates: they are not
-recomputed, canonicalized, attested, or treated as a verified projection,
-disclosure, or affiliate link.
+The exact ST-0503 normalization dependency intentionally projects
+`affiliate_url = None`. V2 preserves that truth as `UNAVAILABLE_SOURCE`:
 
-The fixed candidate declares future requirements without executing or proving
-them:
+- the article route contains no CTA anchor, `href`, affiliate destination,
+  arbitrary link, redirect, or URL mutation;
+- a restrained text notice says that the button is not displayed because a
+  confirmed link is unavailable; and
+- URL integrity, host allowlist, reachability, link health, freshness, kill
+  switch and API-credit gates remain `NOT_EVALUATED`, never coerced to pass.
 
-- `UI-C031` remains renderer-owned, non-removable, and required at the article
-  top in the first viewport, while policy/context references and rendered copy
-  remain unavailable;
-- `UI-C034` remains disabled and valueless while declaring destination clarity,
-  the `sponsored nofollow` token contract, direct-provider navigation, and the
-  prohibition on RAOS redirects, cloaking, and URL modification;
-- URL integrity, allowlist, reachability, link health, freshness, and affiliate
-  kill-switch evidence remain `NOT_EVALUATED`;
-- API-credit applicability and copy remain unavailable; and
-- future navigation must not depend on a click beacon, while neither navigation
-  nor beacon execution exists in this slice.
+The fixed future CTA copy is `楽天市場で写真・価格・在庫を見る`; the exact
+relation contract is `sponsored nofollow`; and the visible destination label is
+`楽天市場`. A value-bearing component model exists only for the exact
+`https://example.invalid/rakuten-marketplace/item` synthetic receipt. It uses a
+native same-context anchor, has no client handler or beacon dependency, reserves
+a 44 CSS-pixel target in both dimensions, is never rendered by the article
+route, and cannot accept another URL or a return URL.
 
-Disclosure precedes the inert CTA semantically, both remain separate, and the
-CTA must not dominate editorial evidence. No layout, visual treatment, copy, or
-motion is selected because no DOM exists.
+No live receipt is accepted. The future
+`CLOSED_VERIFIED_AFFILIATE_DESTINATION_RECEIPT_PORT_V1` boundary is explicitly
+disconnected until exact URL/host/link-health/freshness/kill-switch/API-credit
+authority exists.
 
-Inputs and candidates reject unknown shapes, subclasses, accessors, symbols,
-cycles, unreadable or throwing proxy surfaces, copy, URLs/hosts/hrefs,
-references, internal fields, effects, malformed or mismatched hashes, and
-semantic or authority escalation. JavaScript forwarding proxies are not claimed
-as a distinguishable input class; callers must provide already materialized
-plain data rather than use proxy behavior as a trust boundary. Errors expose
-only closed codes and never echo hostile values. Successful candidates are
-detached, deterministic, JSON-safe, and deeply frozen.
+## Security and accessibility boundary
 
-## Why actual rendering and navigation remain closed
+The implementation keeps `FR-011`, `SEC-APP-006` and `THR-029` fail-closed:
+RAOS has no affiliate redirect endpoint, no cloaking, no required redirect for
+measurement, and no caller-controlled destination. Synthetic component input
+rejects unknown fields, alternate destinations, queries/fragments, incomplete
+verification, subclasses, accessors, symbols, cycles and throwing proxies with
+closed, non-reflecting errors.
 
-Merged ST-1002 supplies no renderable content, DOM, route, public-read-model
-input, or authoritative projection. Merged ST-0503 deliberately leaves
-`affiliate_url` unset and does not read the recorded provider affiliate URL.
-The installed PublicOffer surface contains affiliate URL, destination host,
-freshness, and CTA state, but no implemented authoritative projection binds it
-to these predecessor slices.
+The route remains a Next server component with one H1, no client component, no
+raw HTML and the existing `script-src 'none'`, `connect-src 'none'`, noindex and
+no-store headers. Disclosure and unavailability use text as well as visual
+cues. The synthetic native anchor has visible focus and target-size rules, but
+its browser rendering is local component evidence only.
 
-A value-bearing renderer therefore still requires canonically reconciled,
-owner-approved authority for the affiliate-link resolver and exact safe public
-input, official URL integrity/hash and destination allowlist, link-health and
-reachability evidence, disclosure-policy currentness and payload, article
-disclosure context, API-credit applicability/source, freshness, kill-switch
-generation, and beacon/navigation behavior. No such value or truth is inferred
-here.
+## Owner artifacts
 
-## Owned files and checks
-
-The exact owned paths are:
+Owner source is
+`changes/st-1004/contracts/disclosure-affiliate-runtime.v2.yaml`. Generate and
+check deterministic artifacts with:
 
 ```text
-packages/web-ui/src/disclosure-affiliate-cta.ts
-packages/web-ui/src/index.ts
-tests/st1004/disclosure-affiliate-contract.test.ts
-tests/st1004/disclosure-affiliate-model.test.ts
-tests/st1004/disclosure-affiliate-negative.test.ts
-tests/st1004/disclosure-affiliate-boundaries.test.ts
-changes/st-1004/README.md
+.venv/bin/python scripts/build_st1004_disclosure_affiliate_runtime.py
+.venv/bin/python scripts/build_st1004_disclosure_affiliate_runtime.py --check
 ```
 
-Focused local tests cover the strict contract and critical negative paths.
-Affected ST-1001/ST-1002/ST-1003 and pinned ST-0503 suites, TypeScript, ESLint,
-Prettier, workspace and canonical no-write checks, sensitive-data scanning, and
-`git diff --check` are the local implementation checks. They do not satisfy
-formal `TST-020`, `TST-022`, or `TST-026`.
+The owner writes only:
 
-## Explicitly out of scope
+- `changes/st-1004/generated/disclosure-affiliate-recorded.v2.json`; and
+- `changes/st-1004/runtime-manifest.v2.yaml`.
 
-Disclosure or API-credit copy, policy activation/currentness, PR-benefit
-wording, ArticleDisclosureContext data, affiliate/offer/link identities,
-URLs/hosts/hrefs, URL resolution or modification, allowlist/DNS/IP/reachability
-or link-health verification, freshness, CTA enablement, kill-switch evaluation,
-HTML/DOM/React/Next/CSS, route registration, SSR, API/read model, redirect,
-navigation, beacon/tracking/events, browser and assistive-technology execution,
-formal content/browser/security suites, approval, publication, live, staging,
-release, and Production remain unimplemented, unavailable, unauthorized, or
-`NOT_EXECUTED`.
+## Authority and remaining work
+
+This is local reversible implementation evidence. It performs no product,
+offer, card, image, provider, API, network, DB, analytics, beacon, publication,
+staging, release or Production action. It grants no real affiliate destination
+or host allowlist authority. Formal TST-020, TST-022 and TST-026, live URL/link
+verification, manual screen-reader/200% zoom review, publication, staging,
+release and Production remain `NOT_EXECUTED` or unauthorized.

@@ -112,7 +112,7 @@ provenance:
   fixture_license_authority:
     path: package.json
     json_pointer: /license
-    sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+    sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
   per_fixture_sha256: REQUIRED
   catalog_sha256: REQUIRED
   predecessor_manifests:
@@ -121,7 +121,7 @@ provenance:
       sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
     - story_id: ST-0202
       path: changes/st-0202/manifest.yaml
-      sha256: f3a0d98c67389b4b5de977f935103acd4383884ee0c9ef375d189bae5e3e3ae6
+      sha256: 1aa87d0c3e372cd23a44320584a6fdefb18381c2329caaed3219540c4181cc1e
 security:
   control_mappings:
     - {id: SEC-APP-001, relationship: EXACT_UNKNOWN_DOMAIN_FIELD_AND_SCENARIO_REJECTION}

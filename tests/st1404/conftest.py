@@ -17,6 +17,13 @@ from raos.adapters.queue_fake import QueueFake  # noqa: E402
 from raos.adapters.recorded_job_runtime import (  # noqa: E402
     RecordedJobRuntimeAdapter,
 )
+from raos.adapters.recorded_durable_job_runtime import (  # noqa: E402
+    RecordedDurableJobHandler,
+    RecordedDurableJobRuntimeStore,
+)
+from raos.application.ops.durable_job_runtime import (  # noqa: E402
+    DurableRecordedJobRuntimeService,
+)
 from raos.application.ops.job_runtime import (  # noqa: E402
     RecordedJobRuntimeService,
 )
@@ -32,8 +39,15 @@ from raos.domain.ops.job_runtime import (  # noqa: E402
     RecordedJobMessage,
     RuntimeFailureCode,
 )
+from raos.domain.ops.durable_job_runtime import (  # noqa: E402
+    CommitFault,
+    DurableHandlerOutcome,
+    DurableHandlerResult,
+)
+from raos.domain.shared.identity import Actor, ActorType  # noqa: E402
 from raos.ports.job_runtime import RecordedJobHandler  # noqa: E402
 from raos.ports.queue import QueuePort  # noqa: E402
+from raos.ports.persistence.context import PersistenceContext  # noqa: E402
 
 
 NOW = datetime(2026, 8, 10, 12, 0, tzinfo=UTC)
@@ -45,6 +59,7 @@ RESULT_FINGERPRINT = Fingerprint("b" * 64)
 QUEUE_NAME = "recorded-jobs"
 CONSUMER_NAME = "recorded-worker"
 HANDLER_VERSION = "handler-v1"
+OWNER = "recorded-worker-owner"
 
 
 def make_job(
@@ -156,4 +171,99 @@ def make_service(
             job_retry_schedule=job_retry_schedule,
         ),
         selected_queue,
+    )
+
+
+def durable_result(
+    outcome: DurableHandlerOutcome = DurableHandlerOutcome.SUCCEEDED,
+    *,
+    completed_at: datetime = NOW,
+    failure_code: RuntimeFailureCode = RuntimeFailureCode.HANDLER_FAILED,
+) -> DurableHandlerResult:
+    if outcome is DurableHandlerOutcome.SUCCEEDED:
+        return DurableHandlerResult(
+            outcome=outcome,
+            completed_at=completed_at,
+            result_fingerprint=RESULT_FINGERPRINT,
+        )
+    return DurableHandlerResult(
+        outcome=outcome,
+        completed_at=completed_at,
+        failure_code=failure_code,
+    )
+
+
+def durable_context(now: datetime = NOW, *, suffix: int = 0) -> PersistenceContext:
+    offset = suffix + 1
+    return PersistenceContext(
+        command_id=UUID(f"00000000-0000-4000-8001-{offset:012x}"),
+        correlation_id=UUID(f"00000000-0000-4000-8002-{offset:012x}"),
+        causation_id=UUID(f"00000000-0000-4000-8003-{offset:012x}"),
+        actor=Actor(
+            ActorType.SERVICE,
+            UUID(f"00000000-0000-4000-8004-{offset:012x}"),
+        ),
+        source="tests.st1404.durable",
+        occurred_at=now,
+    )
+
+
+def durable_store(
+    *,
+    jobs: tuple[JobRecord, ...] | None = None,
+    outboxes: tuple[OutboxRecord, ...] | None = None,
+    commit_faults: tuple[CommitFault, ...] = (),
+    environment: RuntimeEnvironment = RuntimeEnvironment.ENV_DEV,
+) -> RecordedDurableJobRuntimeStore:
+    return RecordedDurableJobRuntimeStore(
+        environment=environment,
+        identity_namespace=IDENTITY_NAMESPACE,
+        jobs=(make_job(),) if jobs is None else jobs,
+        outboxes=(make_outbox(),) if outboxes is None else outboxes,
+        commit_faults=commit_faults,
+    )
+
+
+def durable_service(
+    *,
+    store: RecordedDurableJobRuntimeStore,
+    queue: QueuePort[RecordedJobMessage] | None = None,
+    handler_results: tuple[DurableHandlerResult, ...] | None = None,
+    outbox_retry_schedule: tuple[timedelta, ...] = (timedelta(seconds=1),),
+    job_retry_schedule: tuple[timedelta, ...] = (timedelta(seconds=5),),
+    queue_lease: timedelta = timedelta(seconds=30),
+    job_lease: timedelta = timedelta(seconds=30),
+    outbox_lease: timedelta = timedelta(seconds=20),
+    quarantine_lease: timedelta = timedelta(seconds=20),
+) -> tuple[
+    DurableRecordedJobRuntimeService,
+    QueuePort[RecordedJobMessage],
+    RecordedDurableJobHandler,
+]:
+    selected_queue: QueuePort[RecordedJobMessage]
+    if queue is None:
+        selected_queue = QueueFake(start_at=NOW)
+    else:
+        selected_queue = queue
+    handler = RecordedDurableJobHandler(
+        environment=RuntimeEnvironment.ENV_DEV,
+        results=(durable_result(),) if handler_results is None else handler_results,
+    )
+    return (
+        DurableRecordedJobRuntimeService(
+            factory=store,
+            queue=selected_queue,
+            handler=handler,
+            consumer_name=CONSUMER_NAME,
+            handler_version=HANDLER_VERSION,
+            owner=OWNER,
+            queue_lease=queue_lease,
+            job_lease=job_lease,
+            outbox_lease=outbox_lease,
+            quarantine_lease=quarantine_lease,
+            outbox_retry_schedule=outbox_retry_schedule,
+            job_retry_schedule=job_retry_schedule,
+        ),
+        selected_queue,
+        handler,
     )

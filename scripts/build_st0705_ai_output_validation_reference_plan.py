@@ -43,7 +43,7 @@ GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
 
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = base.MAX_DOCUMENT_BYTES
 
@@ -112,26 +112,26 @@ ST0605_PATHS: Final = (
     Path("tests/st0605/test_negative_cases.py"),
 )
 PREDECESSOR_SHA256: Final[dict[Path, str]] = {
-    ST0702_PATHS[0]: "c0e31aec0c41ccd61d91c0f3fba464a06464686eb961e3b855cef703051184d9",
-    ST0702_PATHS[1]: "4b916ccea6906ecd6795260adbd34e0e4657dcaf7104ab84cfee60aa5c672d33",
-    ST0702_PATHS[2]: "e183a8bdce38d86ed3319131c715b29be3fb63b0d1e130230f243f0c92bb31dd",
-    ST0702_PATHS[3]: "5544813bd36df7becca7d3eb63fc3afe95c5fbed0e90a9255842a829f0c32e7e",
-    ST0702_PATHS[4]: "da627461d0264e5cfaf91236fa9dd0c2dd72166096b3a1832bab6df2022a3ac9",
+    ST0702_PATHS[0]: "b735d366592c5060c9c3b80cc6b7cc023e2fb9567234362843b251c386d9243b",
+    ST0702_PATHS[1]: "bac32da9b2e026ad36abb0b622fecbca56e4e9d3fdc0e4cccc807a4e4392837b",
+    ST0702_PATHS[2]: "0250a2d7f2fa961198891d556a603bdb2cc3b01884fa5f7377e6114d64e359f8",
+    ST0702_PATHS[3]: "e564e0f7c54cd4169c62bb3ffced0a447a7789b6cf045a50f6707dbd00ed8118",
+    ST0702_PATHS[4]: "ae67717bbacc6d02eb7d536f9f67c4d7dc54a66cb9d3d49d73f63bf062be65e2",
     ST0702_PATHS[5]: "264e9473e46515d4992542f38ea329887a316e9e9216a4db399727679df7f6ab",
-    ST0702_PATHS[6]: "876b66542dd6f2ad338ed96aa7a2a793c3118e38329ee2da439cff8d48bc72df",
+    ST0702_PATHS[6]: "a8946eed66df1cfcb7ff04b7b1e517e3605020ad1d78e8435d314df7cf7de8e1",
     ST0702_PATHS[7]: "f13d528f54216dfcba9b415acba7075bc28fb5263a4fa17ba0cbdafdda97c979",
-    ST0702_PATHS[8]: "c2e116fb803a013b80ed52cde46f0f8f7bb5dd210436f89ce98f9bd1d8272808",
+    ST0702_PATHS[8]: "0b7b55e4a81da89e7760302dfba789d1db92eba45645b1ab9d0362bd9254a941",
     ST0703_PATHS[0]: "18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c",
-    ST0703_PATHS[1]: "d4fdab9d4babfaf8110ad83798cec68f7bc0038116d4bb25cf655e924325d04d",
-    ST0703_PATHS[2]: "ef92ef6bb6899629a78a3903fa17c8398b0970c3adbd9ec89331009c78a0654b",
+    ST0703_PATHS[1]: "1fdd6247f93cb173c1f9d5e803fc09883aed82f455b1fba05f44fb7fc78f598c",
+    ST0703_PATHS[2]: "4bb7c33daff8720da390fbdc055bdb780699509966ffa17ade64be5dc22c7f6a",
     ST0703_PATHS[3]: "179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991",
     ST0703_PATHS[4]: "3b4ccb19ba26793251b938954c736fdc8be871d618312d3eea2d6a4eff1a5c62",
     ST0703_PATHS[5]: "d1ca262711e73af59923d852fdc299ecc9ba67ae29675fd8e2512ea357d26017",
-    ST0605_PATHS[0]: "f5a59ab0542a95987720c5d9ec43ef4355d92cea2b7bafcf8851e510fb98cf4b",
-    ST0605_PATHS[1]: "3eb1bccf5e6b2599690e2c9cdd2490dc0a2177e41689f8955c0bc1dfb8e068f2",
-    ST0605_PATHS[2]: "820ca8cb8e302adc862be95ad9e6ca59f30ca8795ba0191018b99407aae08d74",
-    ST0605_PATHS[3]: "c6d79d4d566ec1bc2a3268cf3394ec5c9f4bb27a335466f12be0a87cef9e1573",
-    ST0605_PATHS[4]: "cb0bbdeef95d816ba17dddf04a5277e707a02afa0a24b6cff5b5aa01fe513791",
+    ST0605_PATHS[0]: "a28dde8ebcc1fc241ae3e37ad458ed1fd6222d967948d44cbb35c080fbbaa060",
+    ST0605_PATHS[1]: "16b964f73e0f23041676eb6a0db7e74590fdfa3e80781fd7b9d1758e13809120",
+    ST0605_PATHS[2]: "ef271dcaddaba9a72b7853b4b04ad487ce3630dfbf60a56f996c4c66251acb9d",
+    ST0605_PATHS[3]: "bdcc53843f40514cd402663a578353055731ceff676319c8e79b6c745e4fbd33",
+    ST0605_PATHS[4]: "e4fc9f5d5568473519ffedb434c594bb4c621dc3028b522d42fde698173be1fb",
     ST0605_PATHS[5]: "089d70a4d95bda6c984646153129cd091126199806136a71e2b8621a01cd1219",
     ST0605_PATHS[6]: "4dbfe43f08382899de0bd65901f91dda0831f64298ae3dafedb06fe6f20cff86",
     ST0605_PATHS[7]: "fd305593ae296ec6e763c5b88aa6ee89ff5aa25feb6b4296b3730d3b21f2e9e1",
@@ -209,7 +209,7 @@ ACTION_KEYS: Final = (
     "formal",
     "live",
 )
-EXPECTED_EXECUTION_STATE: Final = {
+EXPECTED_EXECUTION_STATE: Final[dict[str, object]] = {
     **{key: "NOT_EXECUTED" for key in ACTION_KEYS},
     "action_counts": {key: 0 for key in ACTION_KEYS},
     "external_actions": [],
@@ -237,7 +237,7 @@ EXPECTED_ACCEPTANCE_BOUNDARY: Final = {
     "release_candidate_created": False,
     "story_acceptance": False,
 }
-EXPECTED_CONTRACT: Final = {
+EXPECTED_CONTRACT: Final[dict[str, object]] = {
     "document": EXPECTED_DOCUMENT,
     "authority": EXPECTED_AUTHORITY,
     "predecessor_boundary": EXPECTED_PREDECESSOR_BOUNDARY,
@@ -287,9 +287,59 @@ SECURITY_IDS: Final = tuple(f"SEC-AI-{number:03d}" for number in range(1, 9))
 TEST_IDS: Final = ("TST-019", "TST-020")
 
 FEATURE_COMMITS: Final = {
-    "ST-0702": "8d57e38b622285a4de1aeb2beeafcb3596b66d0b",
-    "ST-0703": "aff94a21ac9f03886b19e32fef6e1c8b16de5b95",
-    "ST-0605": "72541b0e855954005231368e48a7811abe4b3ea4",
+    "ST-0702": "fe379dd30fd16112111142920b3e1da5b30aa83a",
+    "ST-0703": "bb7402549fe65a94032120401903d4d933a5bfc6",
+    "ST-0605": "160e5d4e210a35b216395c1bdf16b9c664ecc8e7",
+}
+
+EXPECTED_ST0702_ST0701_SEMANTICS: Final = {
+    "task_count": 12,
+    "complete_binding_metadata": True,
+    "source_packet_required_task_count": 9,
+    "source_packet_not_required_task_count": 3,
+    "typed_manifest_only": True,
+    "tools_allowed": False,
+    "task_activation": False,
+    "selected_provider": None,
+    "provider_call": "NOT_EXECUTED",
+    "route_execution": "NOT_EXECUTED",
+    "network_access": False,
+    "state_change_allowed": False,
+    "provider_storage_allowed": False,
+    "strict_structured_output": True,
+    "forbidden_inputs_excluded": True,
+    "required_input_checks_complete": True,
+    "formal_validation": "NOT_EXECUTED",
+}
+EXPECTED_ST0702_PACKING_RULES: Final = {
+    "typed_manifest_required": True,
+    "input_manifest_check_required": True,
+    "audit_manifest_check_required": True,
+    "source_packet_requirement_is_task_scoped": True,
+    "deterministic_repack_on_context_overflow_required": True,
+    "silent_required_fact_truncation_forbidden": True,
+    "only_allowlisted_inputs_may_be_considered": True,
+    "denied_inputs_must_be_excluded": True,
+    "task_input_and_output_bounds_are_descriptive_only": True,
+}
+EXPECTED_ST0702_ACTION_COUNTS: Final = {
+    "build": 0,
+    "select": 0,
+    "scan": 0,
+    "pack": 0,
+    "serialize": 0,
+    "hash": 0,
+    "estimate": 0,
+    "reduce_scope": 0,
+    "drop_item": 0,
+    "create_manifest": 0,
+    "provider_call": 0,
+    "network": 0,
+    "repository_write": 0,
+    "database_write": 0,
+    "job": 0,
+    "event": 0,
+    "external": 0,
 }
 
 
@@ -311,7 +361,9 @@ def _sha256(content: bytes) -> str:
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
     try:
-        path = base._repository_regular_file(root, relative, field)
+        path: Path = base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]
+            root, relative, field
+        )
         content = path.read_bytes()
     except base.StagingDeploymentContractError:
         _fail("FILE_BOUNDARY_VIOLATION")
@@ -323,9 +375,12 @@ def _read(root: Path, relative: Path, field: str) -> bytes:
 
 
 def _mapping(value: object, code: str) -> Mapping[str, Any]:
-    if not isinstance(value, Mapping) or not all(type(key) is str for key in value):
+    if not isinstance(value, Mapping):
         _fail(code)
-    return cast(Mapping[str, Any], value)
+    raw = cast(Mapping[object, object], value)
+    if not all(type(key) is str for key in raw):
+        _fail(code)
+    return cast(Mapping[str, Any], raw)
 
 
 def _rows(value: object, code: str) -> list[Mapping[str, Any]]:
@@ -340,7 +395,9 @@ def _rows(value: object, code: str) -> list[Mapping[str, Any]]:
 def _strict_match(actual: object, expected: object) -> None:
     boundary_failed = False
     try:
-        base._strict_match(actual, expected, "contract")
+        base._strict_match(  # pyright: ignore[reportPrivateUsage]
+            actual, expected, "contract"
+        )
     except base.StagingDeploymentContractError:
         boundary_failed = True
     if boundary_failed:
@@ -355,7 +412,9 @@ def validate_contract(contract: Mapping[str, Any]) -> None:
 
 def load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     try:
-        path = base._repository_regular_file(root, CONTRACT_PATH, "contract")
+        path = base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]
+            root, CONTRACT_PATH, "contract"
+        )
         loaded = base.load_yaml(path)
     except base.StagingDeploymentContractError:
         _fail("CONTRACT_READ_FAILED")
@@ -374,7 +433,9 @@ def _verify_pinned_inputs(root: Path) -> None:
 
 def _load_yaml_mapping(root: Path, relative: Path) -> Mapping[str, Any]:
     try:
-        path = base._repository_regular_file(root, relative, "source")
+        path = base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]
+            root, relative, "source"
+        )
         loaded = base.load_yaml(path)
     except base.StagingDeploymentContractError:
         _fail("SOURCE_PARSE_FAILED")
@@ -383,7 +444,9 @@ def _load_yaml_mapping(root: Path, relative: Path) -> Mapping[str, Any]:
 
 def _load_json_mapping(root: Path, relative: Path) -> Mapping[str, Any]:
     try:
-        path = base._repository_regular_file(root, relative, "source")
+        path = base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]
+            root, relative, "source"
+        )
         loaded = base.load_json(path)
     except base.StagingDeploymentContractError:
         _fail("SOURCE_PARSE_FAILED")
@@ -458,8 +521,66 @@ def _validate_authority(
     return gates, failures, controls, suites
 
 
+def _require_st0702_safe_semantics(
+    source: Mapping[str, Any], *, predecessor_key: str
+) -> None:
+    document = _mapping(source.get("document"), "ST0702_DRIFT")
+    if (
+        document.get("story_id") != "ST-0702"
+        or document.get("executable") is not False
+        or document.get("interface_only") is not True
+        or document.get("decision") != "NOT_READY"
+        or document.get("story_acceptance") is not False
+        or document.get("production_eligible") is not False
+    ):
+        _fail("ST0702_SEMANTIC_DRIFT")
+
+    predecessors = _mapping(source.get(predecessor_key), "ST0702_DRIFT")
+    st0701 = _mapping(predecessors.get("st0701"), "ST0702_DRIFT")
+    semantics = _mapping(st0701.get("required_semantics"), "ST0702_DRIFT")
+    packing = _mapping(source.get("packing_rules"), "ST0702_DRIFT")
+    available = _mapping(packing.get("available"), "ST0702_DRIFT")
+    execution = _mapping(source.get("execution_boundary"), "ST0702_DRIFT")
+    action_counts = _mapping(execution.get("action_counts"), "ST0702_DRIFT")
+    try:
+        base._strict_match(  # pyright: ignore[reportPrivateUsage]
+            semantics,
+            EXPECTED_ST0702_ST0701_SEMANTICS,
+            "st0702.predecessors.st0701.required_semantics",
+        )
+        base._strict_match(  # pyright: ignore[reportPrivateUsage]
+            available,
+            EXPECTED_ST0702_PACKING_RULES,
+            "st0702.packing_rules.available",
+        )
+        base._strict_match(  # pyright: ignore[reportPrivateUsage]
+            action_counts,
+            EXPECTED_ST0702_ACTION_COUNTS,
+            "st0702.execution_boundary.action_counts",
+        )
+    except base.StagingDeploymentContractError:
+        _fail("ST0702_SEMANTIC_DRIFT")
+
+    build = _mapping(source.get("build_boundary"), "ST0702_DRIFT")
+    if (
+        build.get("build_permitted") is not False
+        or build.get("provider_call_permitted") is not False
+        or build.get("manifest_creation_permitted") is not False
+        or build.get("decision") != "NOT_READY"
+        or execution.get("provider_call") != "NOT_EXECUTED"
+        or execution.get("network_access") != "NOT_EXECUTED"
+        or execution.get("repository_write") != "NOT_EXECUTED"
+        or execution.get("database_write") != "NOT_EXECUTED"
+        or execution.get("event_emission") != "NOT_EXECUTED"
+        or execution.get("external_action") != "NOT_EXECUTED"
+        or execution.get("external_actions") != []
+    ):
+        _fail("ST0702_SEMANTIC_DRIFT")
+
+
 def _validate_predecessors(root: Path) -> None:
     st0702 = _load_yaml_mapping(root, ST0702_PATHS[1])
+    _require_st0702_safe_semantics(st0702, predecessor_key="predecessors")
     st0702_document = _mapping(st0702.get("document"), "ST0702_DRIFT")
     if (
         st0702_document.get("executable") is not False
@@ -468,6 +589,7 @@ def _validate_predecessors(root: Path) -> None:
     ):
         _fail("ST0702_SEMANTIC_DRIFT")
     st0702_plan = _load_json_mapping(root, ST0702_PATHS[2])
+    _require_st0702_safe_semantics(st0702_plan, predecessor_key="predecessor_bindings")
     st0702_execution = _mapping(st0702_plan.get("execution_boundary"), "ST0702_DRIFT")
     if (
         st0702_execution.get("provider_call") != "NOT_EXECUTED"
@@ -675,7 +797,9 @@ def _check_outputs(root: Path, expected: Mapping[Path, bytes]) -> None:
         _fail("GENERATED_INVENTORY_DRIFT")
     for relative in GENERATED_PATHS:
         try:
-            path = base._output_file(root, relative)
+            path = base._output_file(  # pyright: ignore[reportPrivateUsage]
+                root, relative
+            )
             actual = path.read_bytes()
         except base.StagingDeploymentContractError:
             _fail("GENERATED_OUTPUT_UNAVAILABLE")
@@ -692,7 +816,9 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
         return
     for relative in GENERATED_PATHS:
         try:
-            base._atomic_write(root, relative, outputs[relative])
+            base._atomic_write(  # pyright: ignore[reportPrivateUsage]
+                root, relative, outputs[relative]
+            )
         except base.StagingDeploymentContractError:
             _fail("OUTPUT_WRITE_FAILED")
 

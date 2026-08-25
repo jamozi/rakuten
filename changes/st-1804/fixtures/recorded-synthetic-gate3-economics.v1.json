@@ -1,0 +1,106 @@
+{
+  "actual_observation": false,
+  "append_only": true,
+  "context": {
+    "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE"
+  },
+  "contract_sha256": "c1a5408eba861aaf4b6bc1dd407e84e1bfc6eb045a6b45dac28954aa086acf11",
+  "entries": [
+    {
+      "entry_sha256": "36b4babc7ee2466bfde930ac36625ae94cd7362c7ed1ed2dede2a23226715e84",
+      "payload": {
+        "attribution_verified": true,
+        "cohort_maturity": "MATURE",
+        "cost_basis_verified": true,
+        "metrics": {
+          "article_costs_calculable": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 1},
+          "confirmation_cycles_completed": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 1},
+          "direct_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 10000},
+          "eligible_affiliate_clicks": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 100},
+          "estimated_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 2000},
+          "initial_content_cost_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 12000},
+          "labor_cost_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 3000},
+          "provider_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 15000},
+          "qualified_article_sessions": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 12000},
+          "serious_compliance_incidents": {"state": "RECORDED_SYNTHETIC_ZERO", "value": 0},
+          "top10_direct_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 5000},
+          "unattributed_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 3000},
+          "update_cost_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 500},
+          "variable_external_cost_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 1000}
+        },
+        "period": {"end_exclusive_date": "2026-02-01", "start_date": "2026-01-01"},
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "source_bundle_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "previous_entry_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sequence": 1,
+      "type": "MONTH"
+    },
+    {
+      "entry_sha256": "c6a17b3c452a3d6d1360cbfd238be966ace92c074355925eb8e45be782f18e84",
+      "payload": {
+        "attribution_verified": true,
+        "cohort_maturity": "MATURE",
+        "cost_basis_verified": true,
+        "metrics": {
+          "article_costs_calculable": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 1},
+          "confirmation_cycles_completed": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 1},
+          "direct_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 11000},
+          "eligible_affiliate_clicks": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 105},
+          "estimated_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 2500},
+          "initial_content_cost_jpy": {"state": "RECORDED_SYNTHETIC_ZERO", "value": 0},
+          "labor_cost_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 3000},
+          "provider_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 17000},
+          "qualified_article_sessions": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 13000},
+          "serious_compliance_incidents": {"state": "RECORDED_SYNTHETIC_ZERO", "value": 0},
+          "top10_direct_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 5500},
+          "unattributed_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 3500},
+          "update_cost_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 500},
+          "variable_external_cost_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 1000}
+        },
+        "period": {"end_exclusive_date": "2026-03-01", "start_date": "2026-02-01"},
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "source_bundle_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "previous_entry_sha256": "36b4babc7ee2466bfde930ac36625ae94cd7362c7ed1ed2dede2a23226715e84",
+      "sequence": 2,
+      "type": "MONTH"
+    },
+    {
+      "entry_sha256": "cf99243c2652e523afe8664ce0608d19260e8d218557f641768a6a769862ca17",
+      "payload": {
+        "attribution_verified": true,
+        "cohort_maturity": "MATURE",
+        "cost_basis_verified": true,
+        "metrics": {
+          "article_costs_calculable": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 1},
+          "confirmation_cycles_completed": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 1},
+          "direct_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 12000},
+          "eligible_affiliate_clicks": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 110},
+          "estimated_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 3000},
+          "initial_content_cost_jpy": {"state": "RECORDED_SYNTHETIC_ZERO", "value": 0},
+          "labor_cost_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 3000},
+          "provider_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 19000},
+          "qualified_article_sessions": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 14000},
+          "serious_compliance_incidents": {"state": "RECORDED_SYNTHETIC_ZERO", "value": 0},
+          "top10_direct_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 6000},
+          "unattributed_confirmed_reward_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 4000},
+          "update_cost_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 500},
+          "variable_external_cost_jpy": {"state": "RECORDED_SYNTHETIC_VALUE", "value": 1000}
+        },
+        "period": {"end_exclusive_date": "2026-04-01", "start_date": "2026-03-01"},
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "source_bundle_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+      },
+      "previous_entry_sha256": "c6a17b3c452a3d6d1360cbfd238be966ace92c074355925eb8e45be782f18e84",
+      "sequence": 3,
+      "type": "MONTH"
+    }
+  ],
+  "immutable": true,
+  "input_sha256": "a532e84c3be3d656978a8168047a8e4df94c872fd78d703137f399c77e0199b2",
+  "recorded_at": "2026-04-01T00:00:00Z",
+  "recording_id": "three-month-synthetic-threshold-vector",
+  "schema": "ST1804_RECORDED_SYNTHETIC_GATE3_ECONOMICS_V1",
+  "synthetic": true
+}

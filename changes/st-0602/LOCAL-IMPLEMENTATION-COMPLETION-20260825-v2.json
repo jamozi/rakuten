@@ -1,0 +1,77 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-0602",
+  "classification": "MAXIMUM_SAFE_RECORDED_LOCAL_DURABLE_FACT_EXTRACTION_RUNTIME",
+  "recorded_at": "2026-08-25T12:00:00Z",
+  "local_status": "LOCAL_CODE_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "status_registry_updated": false,
+  "formal_validation_claimed": false,
+  "completed_local_scope": [
+    "exact ST-0601 ArtifactReadbackV2 and ST-0503 PersistedCatalogNormalizationV2 consumption with full dependency rebinding",
+    "closed exact OFFER Fact extraction for price availability and postage structural observations only",
+    "affiliate-link observation ignored as a Fact and raw URLs or provider text absent from ST-0602 persistence",
+    "deterministic Fact identifiers display identifiers typed values units locale time and normalized-observation JSON-pointer locators",
+    "fixed 1.0000 exact-structural-extraction fidelity separated from truth attestation confidence",
+    "OD-006 preserved as HUMAN_REVIEW and NOT_READY with no PRODUCT Fact or canonical product identity",
+    "exact undelivered jp.raos.evidence.facts_extracted.v1 outbox record atomically committed with Fact batch and validations",
+    "owner-private SQLite O_EXCL new-database distinction exact schema immutable records CAS journal hash chain and tamper checks",
+    "restart concurrency idempotency payload-conflict and commit-before-or-after ambiguity handling",
+    "0700 directory 0600 database symlink hardlink inode and pre-existing empty-or-partial database fail-closed controls",
+    "process-lifetime monotonic head and count with no cross-restart rollback-anchor claim",
+    "no provider network browser AI model tool review-decision publication recommendation ranking revenue release staging or Production capability",
+    "deterministic closed contract recorded synthetic fixture report manifest and no-write generator check",
+    "V1 non-executable reference-plan semantics preserved with current predecessor pin repair"
+  ],
+  "local_checks": [
+    "V1 ST-0602 reference-plan suite: 160 passed",
+    "V2 ST-0602 durable-runtime suite: 46 passed",
+    "affected ST-0601 suite: 102 passed",
+    "affected ST-0503 suite: 102 passed",
+    "V1 and V2 owner generators regenerated and no-write checks passed",
+    "Ruff format and check passed for all owned Python files",
+    "strict mypy passed for both owner generators and all V2 runtime source files",
+    "target Pyright passed with 0 errors and 0 warnings for all V2 runtime source files and its owner generator",
+    "Python compileall passed for all owned Python files",
+    "denied-network recorded pipeline passed with exact zero action counts",
+    "owned-path secret-pattern scan passed",
+    "Story-owned scope and git diff checks passed"
+  ],
+  "debt_disposition": [
+    {
+      "debt_id": "ST0602-LOCAL-IMPLEMENTATION",
+      "status": "CLOSED_LOCAL_MAXIMUM_SAFE",
+      "detail": "The exact structural Fact runtime, validation records, durable local UoW, recovery, and hostile-input boundaries are locally implemented."
+    },
+    {
+      "debt_id": "ST0602-OD006-IDENTITY",
+      "status": "EXTERNAL_DECISION_DEFERRED_SAFE_DEFAULT",
+      "detail": "OD-006 remains unresolved; only exact OFFER subjects are emitted and all output remains HUMAN_REVIEW and NOT_READY."
+    },
+    {
+      "debt_id": "ST0602-CROSS-RESTART-ROLLBACK-ANCHOR",
+      "status": "EXTERNAL_ANCHOR_NOT_IMPLEMENTED_NO_CLAIM",
+      "detail": "Hash-chain rollback detection is process-lifetime monotonic; no durable external anchor or cross-restart rollback claim is made."
+    },
+    {
+      "debt_id": "FORMAL-AND-LIVE-GATES",
+      "status": "EXTERNAL_NOT_EXECUTED",
+      "detail": "Formal suites, PostgreSQL, live provider, hosted CI, staging, release, and Production remain separately gated."
+    }
+  ],
+  "introduced_local_debt": [],
+  "deferred_external_gates": {
+    "TST-005": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-007": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-008_postgresql": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "credentials": "NOT_EXECUTED",
+    "event_delivery_worker": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  },
+  "external_actions": [],
+  "production_authority": "NONE"
+}

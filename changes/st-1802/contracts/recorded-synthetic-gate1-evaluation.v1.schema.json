@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raos.example.invalid/contracts/st1802/recorded-synthetic-gate1-evaluation.v1.schema.json",
+  "title": "ST-1802 recorded-synthetic GATE-1 evaluator fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "classification", "program", "cases"],
+  "properties": {
+    "schema": {"const": "ST1802_RECORDED_SYNTHETIC_GATE1_EVALUATION_V1"},
+    "classification": {"const": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING"},
+    "program": {"const": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE"},
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {"$ref": "#/$defs/case"}
+    }
+  },
+  "$defs": {
+    "nullableCount": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "integer", "minimum": 0, "maximum": 1000000}
+      ]
+    },
+    "nullableScore": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^(0|[1-9][0-9]?|100)(\\.[0-9]{1,6})?$"}
+      ]
+    },
+    "nullableBoolean": {"type": ["boolean", "null"]},
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "category_count",
+        "intent_cluster_count",
+        "article_count",
+        "article_type_count",
+        "quality_evaluated_article_count",
+        "quality_passing_article_count",
+        "minimum_quality_score",
+        "critical_factual_error_count",
+        "evidenced_claim_count",
+        "verifiable_claim_count",
+        "evidenced_major_claim_count",
+        "major_claim_count",
+        "fabricated_experience_count",
+        "product_identity_error_count",
+        "link_error_count",
+        "first_pass_approved_count",
+        "human_reviewed_count",
+        "freshness_displayed_count",
+        "freshness_eligible_article_count",
+        "measurement_connected",
+        "per_article_cost_measurable",
+        "human_time_measurable",
+        "change_history_audit_verified",
+        "rollback_verified"
+      ],
+      "properties": {
+        "category_count": {"$ref": "#/$defs/nullableCount"},
+        "intent_cluster_count": {"$ref": "#/$defs/nullableCount"},
+        "article_count": {"$ref": "#/$defs/nullableCount"},
+        "article_type_count": {"$ref": "#/$defs/nullableCount"},
+        "quality_evaluated_article_count": {"$ref": "#/$defs/nullableCount"},
+        "quality_passing_article_count": {"$ref": "#/$defs/nullableCount"},
+        "minimum_quality_score": {"$ref": "#/$defs/nullableScore"},
+        "critical_factual_error_count": {"$ref": "#/$defs/nullableCount"},
+        "evidenced_claim_count": {"$ref": "#/$defs/nullableCount"},
+        "verifiable_claim_count": {"$ref": "#/$defs/nullableCount"},
+        "evidenced_major_claim_count": {"$ref": "#/$defs/nullableCount"},
+        "major_claim_count": {"$ref": "#/$defs/nullableCount"},
+        "fabricated_experience_count": {"$ref": "#/$defs/nullableCount"},
+        "product_identity_error_count": {"$ref": "#/$defs/nullableCount"},
+        "link_error_count": {"$ref": "#/$defs/nullableCount"},
+        "first_pass_approved_count": {"$ref": "#/$defs/nullableCount"},
+        "human_reviewed_count": {"$ref": "#/$defs/nullableCount"},
+        "freshness_displayed_count": {"$ref": "#/$defs/nullableCount"},
+        "freshness_eligible_article_count": {"$ref": "#/$defs/nullableCount"},
+        "measurement_connected": {"$ref": "#/$defs/nullableBoolean"},
+        "per_article_cost_measurable": {"$ref": "#/$defs/nullableBoolean"},
+        "human_time_measurable": {"$ref": "#/$defs/nullableBoolean"},
+        "change_history_audit_verified": {"$ref": "#/$defs/nullableBoolean"},
+        "rollback_verified": {"$ref": "#/$defs/nullableBoolean"}
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "input", "expected_overall_status"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^synthetic-[a-z0-9-]{1,64}$"},
+        "input": {"$ref": "#/$defs/input"},
+        "expected_overall_status": {"enum": ["PASS", "FAIL", "UNAVAILABLE"]}
+      }
+    }
+  }
+}

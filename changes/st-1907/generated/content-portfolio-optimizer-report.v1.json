@@ -1,0 +1,95 @@
+{
+  "document": {
+    "authority": "NONE",
+    "canonical_status": "DEFERRED_POST_MVP",
+    "classification": "RECORDED_SYNTHETIC_BLOCKED_HUMAN_PROPOSAL_OPTIMIZER_REPORT",
+    "formal_TST-032": "NOT_EXECUTED",
+    "production_eligible": false,
+    "schema_version": "1.0.0",
+    "story_id": "ST-1907"
+  },
+  "evaluation": {
+    "authority": {
+      "activation": false,
+      "approval": false,
+      "article_html_mutation": false,
+      "credential_access": false,
+      "cta_mutation": false,
+      "editorial_mutation": false,
+      "network": false,
+      "persistence": false,
+      "product_selection_mutation": false,
+      "production": false,
+      "proposal_apply": false,
+      "provider_call": false,
+      "public_projection": false,
+      "publication": false,
+      "publication_snapshot_mutation": false,
+      "recommendation_order_mutation": false,
+      "release": false,
+      "staging": false,
+      "status_apply": false
+    },
+    "availability": "UNAVAILABLE",
+    "blockers": [
+      "DEPENDENCY_BLOCKED_NO_DECISION",
+      "FORMAL_TST_032_NOT_EXECUTED",
+      "RECORDED_SYNTHETIC_ONLY",
+      "SEPARATE_RELEASE_DECISION_REQUIRED"
+    ],
+    "command_sha256": "f3269dcf1ae2a023e0e6b7a470ff6364d7f6d09e01d24721af8b2b87750e36e2",
+    "contract_sha256": "4243cf7f4e8adf1a5e39c0b49e1a5702946a925e1f9a1c4cec6304c50143d2ff",
+    "dependency": {
+      "acceptance_criteria_satisfied": false,
+      "actual_observation_count": 0,
+      "human_decision_present": false,
+      "local_integration_complete": false,
+      "pack_sha256": "bf9899509a376ab6a9abd1613cfe5f12ab207629a6c94b2ba3bf2106a992098e",
+      "readiness": "BLOCKED_NO_DECISION",
+      "source_authorized": false,
+      "source_outcome": "NO_DECISION",
+      "source_overall": "BLOCKED",
+      "story_id": "ST-1805"
+    },
+    "measurement_contract_sha256": "9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8",
+    "method_version": "RAOS_ST1907_HUMAN_PROPOSAL_PORTFOLIO_OPTIMIZER_V1",
+    "policy": {
+      "action_vocabulary": [
+        "STRENGTHEN",
+        "CONSOLIDATE",
+        "WITHDRAW"
+      ],
+      "automatic_apply": false,
+      "finance_values_represented": false,
+      "human_proposal_only": true,
+      "proposal_order_is_recommendation_order": false,
+      "recommendation_inputs_excluded": [
+        "AFFILIATE_COMMISSION_RATE",
+        "CONFIRMED_REWARD",
+        "UNATTRIBUTED_REWARD",
+        "ESTIMATED_REWARD",
+        "COMMISSION",
+        "INCREMENTAL_COST",
+        "LABOR_COST",
+        "EPC",
+        "RPM",
+        "PROFIT"
+      ],
+      "thresholds_selected_by_this_story": false
+    },
+    "proposal_count": 0,
+    "proposal_state": "NO_PROPOSALS",
+    "proposals": [],
+    "report_sha256": "16f60eaeabd363f947352a6ce96734ed05097047ec90298fd05e1e11e7dc87b1",
+    "signal_policy_sha256": "10871f65afe59fb6e44c6ac5401ce5e4b1b5cb0024497ae19fc43d6f6b997256",
+    "source_sha256": "175dbcc7337f902a0b7c5078e4db0894b5c56cf8157c1ad68ed52842698199c8",
+    "unavailable_reason": "DEPENDENCY_BLOCKED_NO_DECISION"
+  },
+  "source": {
+    "bytes": 986,
+    "fixture_profile": "RAOS_ST1907_RECORDED_SYNTHETIC_V1",
+    "path": "changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json",
+    "sha256": "175dbcc7337f902a0b7c5078e4db0894b5c56cf8157c1ad68ed52842698199c8",
+    "synthetic": true
+  }
+}

@@ -1,0 +1,21 @@
+name: ST-1504 repository-inert deployment identity fixture
+'on':
+  workflow_dispatch: {}
+permissions: {}
+jobs:
+  recorded_deployment_identity_fixture:
+    if: ${{ false }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    environment: production-fixture-disabled
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+    - name: Fail-closed repository-inert fixture sentinel
+      shell: bash
+      run: 'set -euo pipefail
+
+        exit 1
+
+        '

@@ -1,0 +1,150 @@
+document:
+  id: RAOS-LOCAL-ARTIFACT-REGISTRY-RUNTIME-002
+  version: 2.0.0
+  story_id: ST-0601
+  status: LOCAL_CODE_COMPLETE
+  formal_tst_014: NOT_EXECUTED
+  live_object_storage: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  production: NOT_EXECUTED
+story:
+  dependencies: [ST-0202, ST-0308]
+  requirement_ids: [FR-002, FR-004]
+  deliverable: artifact_service
+  acceptance: [immutable, tamper_detection]
+  open_decisions: [OD-014]
+sources:
+  - path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - path: changes/st-0202/contracts/local-object-storage.v1.yaml
+    sha256: 5a5ca7e3847c730e97172646638088070dfaa96776485910cb967a67ab552a9f
+  - path: changes/st-0308/contracts/persistence-runtime.v2.yaml
+    sha256: 0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4
+  - path: python/raos/domain/catalog/rakuten_item_search_runtime_v2.py
+    sha256: 76ec60dfdd36f09376bf2fe94f596ffbc15bd3c5d59b20628a89eea6bf261b67
+  - path: python/raos/ports/rakuten_item_search_runtime_v2.py
+    sha256: fd7f385825fb80c1ee8966923fa19828b2916cb9a78a66b154c7736a70598628
+runtime:
+  mode: RECORDED_LOCAL
+  environments: [ENV-DEV, CI]
+  classification: CONFIDENTIAL
+  storage:
+    provider: RECORDED_LOCAL_SQLITE
+    remote_provider: ABSENT
+    s3_or_seaweedfs_attestation: NOT_CLAIMED
+    database_name: st0601-recorded-artifact-registry-v2.sqlite3
+    owner_private_root_mode: '0700'
+    database_mode: '0600'
+    symlink: FORBIDDEN
+    hardlink: FORBIDDEN
+    sqlite_journal: DELETE
+    sqlite_synchronous: FULL
+  object:
+    bucket_label: raos-raw
+    content_type: application/json
+    maximum_bytes: 2097152
+    body_location: RECORDED_LOCAL_SQLITE_BLOB_ONLY
+    exact_version_read: REQUIRED
+    latest_only_read: ABSENT
+    deterministic_artifact_id: ST0308_OBJECT_ARTIFACT_ID_FROM_CANONICAL_MATERIAL
+    deterministic_object_ref: HASH_BOUND_STRUCTURED_LOCAL_REF
+  source_binding:
+    receipt_type: RawArchiveReceiptV2
+    reader_port: ItemSearchRawArchiveSourceV2.read_raw
+    fields:
+      - receipt_id
+      - artifact_sha256
+      - byte_size
+      - artifact_version
+      - logical_key
+      - request_fingerprint
+      - page
+      - observed_at
+    body_hash_and_size_recheck: REQUIRED_BEFORE_STORE
+    provider_types_in_core_domain: ABSENT
+  registry:
+    exact_tables:
+      - artifact_registry_metadata_v2
+      - artifact_object_v2
+      - artifact_operation_v2
+    immutable_triggers: UPDATE_AND_DELETE_REJECTED
+    versioning: EXPECTED_LATEST_VERSION_CAS_THEN_APPEND
+    idempotency: OPERATION_ID_PLUS_REQUEST_SHA256
+    semantic_replay: EXACT_SOURCE_RECEIPT_ONLY
+    hash_chain: GLOBAL_SEQUENCE_SHA256_CHAIN
+    row_hash: REQUIRED
+    schema_hash: REQUIRED
+    transaction: OBJECT_AND_OPERATION_ONE_SQLITE_TRANSACTION
+    known_rollback: NO_PARTIAL_ROWS
+    ambiguous_commit: EXACT_OPERATION_RECOVERY_NO_RETRY
+  st0308_boundary:
+    reused: [ObjectArtifactId, ObjectArtifactArtifactKind]
+    object_artifact_repository_write: ABSENT
+    reason: OD_014_RETENTION_CLASS_UNRESOLVED
+    cross_module_write: ABSENT
+  retention:
+    decision: OD_014_UNRESOLVED
+    retention_class: null
+    retention_period: null
+    default: null
+    lifecycle: ABSENT
+    delete: ABSENT
+    purge: ABSENT
+  forbidden_surfaces:
+    - credential
+    - network
+    - provider_call
+    - live_object_storage
+    - upload
+    - download
+    - list
+    - export
+    - update
+    - delete
+    - purge
+    - lifecycle
+    - publication
+    - staging
+    - release
+    - production
+  action_counts:
+    external: 0
+    provider: 0
+    publication: 0
+    retention: 0
+    delete: 0
+    export: 0
+security_controls:
+  SEC-DATA-003: NO_SECRET_OR_CREDENTIAL_SURFACE
+  SEC-DATA-004: SHA256_VERSION_EXACT_READBACK_AND_TAMPER_TEST
+  SEC-DATA-005: APPEND_ONLY_PORT_TRIGGER_AND_HASH_CHAIN
+  SEC-DATA-008: OD_014_UNRESOLVED_NO_RETENTION_ACTION
+  SEC-INFRA-006: LOCAL_BUCKET_LABEL_ONLY_NO_PUBLIC_OR_REMOTE_SURFACE
+evidence:
+  local_focused_pytest: REQUIRED
+  owner_generator_check: REQUIRED
+  dependency_regression: REQUIRED
+  denied_network: REQUIRED
+  focused_secret_scan: REQUIRED
+  formal_tst_014: NOT_EXECUTED
+  authenticated_st0202_fixture: NOT_EXECUTED
+  s3_version_object_lock: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+generation:
+  owner: scripts/build_st0601_artifact_registry_runtime.py
+  source: changes/st-0601/contracts/local-artifact-registry-runtime.v2.yaml
+  output: changes/st-0601/generated/artifact-registry-runtime.v2.json
+  deterministic: true
+  network: FORBIDDEN
+  write_on_check: FORBIDDEN

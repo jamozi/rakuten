@@ -1,0 +1,220 @@
+document:
+  id: RAOS-ST0806-AI-DRAFT-INTEGRATION-002
+  version: 2.0.0
+  story_id: ST-0806
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  classification: RECORDED_SYNTHETIC_DURABLE_RECEIPT_BOUND_DRAFT_PROPOSAL
+  enabled_by_default: false
+  authority: NONE
+  production_eligible: false
+  publication_authorized: false
+
+authority:
+  depends_on: [ST-0706, ST-0802, ST-0605]
+  requirement_ids: [FR-006, FR-007]
+  test_suites: [TST-018, TST-020]
+  open_decisions: []
+  durable_queue_owner: ST-0706
+  generic_runtime_owner: ST-1404
+  canonical_status_changes: false
+
+source_bindings:
+  - path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    owner: CANONICAL
+    role: PRECEDENCE_AND_SAFE_DEFAULTS
+  - path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+    owner: CANONICAL
+    role: CANONICAL_DECISIONS
+  - path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    owner: CANONICAL
+    role: OPEN_DECISION_SAFE_DEFAULTS
+  - path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    owner: CANONICAL
+    role: SECURITY_CONTROLS
+  - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    owner: CANONICAL
+    role: TST_018_AND_TST_020
+  - path: docs/canonical/05_test/RAOS_11_acceptance_traceability_v1.0.csv
+    sha256: 253293a34e91b81d88dee103da8ee77ed5ff604689c3eb434f0c0ae231d50341
+    owner: CANONICAL
+    role: FR_006_AND_FR_007_TRACEABILITY
+  - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    owner: CANONICAL
+    role: APPROVED_STORY
+  - path: docs/upstream/key_documents/RAOS_01_requirements_catalog_v0.1.yaml
+    sha256: bd4398da2aa73008b7332d2403e7a2e290b7bf1dd77df7bd7e7fd44bb3620827
+    owner: RAOS-RD-001
+    role: FR_006_AND_FR_007
+  - path: docs/upstream/key_documents/RAOS_05_ai_agent_prompt_routing_evaluation_design_v0.1.md
+    sha256: 475e4b6b4490110fd9f94a07aaf4cf979bea99d59b7ef8b95ba0fdbe61219476
+    owner: RAOS-AI-001
+    role: PROPOSAL_ONLY_AI_TASK_BOUNDARY
+  - path: docs/upstream/key_documents/RAOS_05_ai_task_catalog_v0.1.yaml
+    sha256: 8b5a0d820f0a6180dd0bbbd050553114c22efe499a553d72bbdb24ffc8483c04
+    owner: RAOS-AI-001
+    role: AIT_004_AND_AIT_005_CONTRACTS
+  - path: docs/upstream/key_documents/RAOS_06_content_editorial_evidence_design_v0.1.md
+    sha256: a40b9859122b330f9db7246f58e7e45f8024f64fde8b07a41ab234ed11cae682
+    owner: RAOS-CONTENT-001
+    role: CONTENT_AST_CLAIM_AND_HUMAN_GATE_DESIGN
+  - path: docs/upstream/key_documents/RAOS_06_article_type_catalog_v0.1.yaml
+    sha256: 6094ff56d365fef3c08a7f95e3ea4bff1f54a7bbab0b42ec390a78bbbbb7aa11
+    owner: RAOS-CONTENT-001
+    role: ARTICLE_TYPE_CONTRACT
+  - path: docs/upstream/key_documents/RAOS_06_editorial_policy_catalog_v0.1.yaml
+    sha256: d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a
+    owner: RAOS-CONTENT-001
+    role: EDITORIAL_POLICY_CONTRACT
+  - path: docs/upstream/key_documents/RAOS_06_review_checklist_v0.1.yaml
+    sha256: 8373dbd354c751c699d02bc8c49b18074ae2e10a2ed0573ebd77d99103d3ea63
+    owner: RAOS-CONTENT-001
+    role: HUMAN_REVIEW_CONTRACT
+  - path: docs/upstream/patches/RAOS_06_003_ai_alignment_patch_v0.1.yaml
+    sha256: 89fe29c6182dc38b40d96379a65715fada43b74e93b5715eb3320b6a50285c1e
+    owner: RAOS-CONTENT-001
+    role: AI_CONTENT_ALIGNMENT
+  - path: changes/st-0706/contracts/durable-ai-job-queue.v2.yaml
+    sha256: 54338981006281c8c2c683e6ba2b2415f6d6cadb981360c08907a00bdda9dee1
+    owner: ST-0706
+    role: EXACT_DURABLE_SUCCEEDED_RECEIPT
+  - path: changes/st-0605/contracts/claim-evidence-runtime.v1.yaml
+    sha256: 7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb
+    owner: ST-0605
+    role: EXACT_CLAIM_COVERAGE_REPORT_AND_RECEIPT
+  - path: contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json
+    sha256: a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac
+    owner: ST-0801
+    role: TYPED_CONTENT_AST
+
+recorded_policy:
+  policy_id: st-0806.ai-draft-integration.v2
+  policy_sha256: 443b5ea91544ea1e8d5f9c7c2e71ebe331fda6f81397f0b51e25aa70da5c77f2
+  fixture_schema_version: 2
+  allowed_environments: [ENV-DEV, ENV-CI]
+  allowed_task_code: ai.article_draft.v1
+  maximum_fixture_bytes: 1048576
+  maximum_diff_operations: 4096
+  maximum_json_pointer_bytes: 512
+  maximum_complete_claims: 10000
+  adapter_script_capacity: 1
+  clock_source: NONE
+  random_source: NONE
+  retry: false
+  fallback: false
+  sleep: false
+  provider: false
+  network: false
+  default_activation: DISABLED
+
+durable_receipt_consumer:
+  contract_sha256: 54338981006281c8c2c683e6ba2b2415f6d6cadb981360c08907a00bdda9dee1
+  policy_sha256: f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8
+  required_job_status: SUCCEEDED
+  required_decision_code: SUCCEEDED
+  required_attempt_kind: SUCCEEDED
+  required_validation_status: PASS
+  required_event_type: jp.raos.ai.job_succeeded.v1
+  state_input: EXACT_CANONICAL_BYTES_AND_REVISION
+  command_binding:
+    - command_fingerprint_sha256
+    - source_packet_version_id
+    - article_version_id
+    - input_artifact_id
+    - input_artifact_sha256
+    - validation_plan_id
+    - validation_plan_sha256
+  completion_binding:
+    - claim_sha256
+    - outcome_sha256
+    - output_artifact_id
+    - output_artifact_sha256
+    - succeeded_outbox_intent_sha256
+  owns_queue_state_or_cas: false
+  owns_worker_dispatch_or_redrive: false
+
+draft_proposal:
+  article_version_count: 1
+  lifecycle_state: DRAFT
+  before_after_ast: EXACT_CANONICAL_TYPED_CONTENT_AST_BYTES
+  diff: ORDERED_CANONICAL_JSON_POINTER_HASH_OPERATIONS
+  claim_inventory: COMPLETE_EXACT_SET
+  coverage_report: RECOMPUTE_EXACT_ST0605_RESULT
+  coverage_receipt: REQUIRE_EXACT_REPORT_SHA256
+  passing_major_coverage: EXACT_100_PERCENT
+  passing_all_verifiable_coverage: AT_LEAST_95_PERCENT
+  zero_denominator: UNAVAILABLE
+  missing_or_structural_coverage: UNAVAILABLE
+  policy_or_evidence_failure: BLOCKED
+  ai_output_authority: PROPOSAL_ONLY
+  human_editable: true
+  adoption_intent: EFFECT_FREE_PROPOSAL_ONLY
+  approval: false
+  apply: false
+  merge: false
+  persistence: false
+  publication: false
+  recommendation_order_mutation: false
+
+prohibited_inputs:
+  - RAW_HTML
+  - ARBITRARY_URL
+  - REVIEW_BODY
+  - RAW_PROMPT
+  - FINANCE_OR_AFFILIATE_ECONOMICS
+  - SECRET_OR_CREDENTIAL
+  - UNKNOWN_FIELDS
+
+security_controls:
+  - SEC-APP-001
+  - SEC-APP-004
+  - SEC-APP-010
+  - SEC-APP-011
+  - SEC-DATA-003
+  - SEC-DATA-004
+  - SEC-DATA-007
+  - SEC-AI-001
+  - SEC-AI-002
+  - SEC-AI-003
+  - SEC-AI-004
+  - SEC-AI-005
+  - SEC-AI-006
+  - SEC-AI-007
+  - SEC-SDLC-006
+  - SEC-SDLC-009
+  - SEC-SDLC-011
+
+safe_defaults:
+  activation: DISABLED
+  recorded_fixture_only: true
+  synthetic_only: true
+  provider: false
+  credentials: false
+  database: false
+  broker: false
+  network: false
+  filesystem_runtime: false
+  worker_loop: false
+  redrive: false
+  lifecycle_persistence: false
+  event_dispatch: false
+  approval: false
+  publication: false
+  staging: false
+  release: false
+  production: false
+
+verification_boundary:
+  local_focused_tests: IMPLEMENTED_BY_THIS_STORY
+  formal_TST_018: NOT_EXECUTED
+  formal_TST_020: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

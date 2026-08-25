@@ -1,0 +1,47 @@
+document: {id: ST0308-EVENT-EMISSION-MATRIX-001, version: 1.0.0, story_id: ST-0308}
+canonical_serialization: UTF8_LF_YAML_CANONICALIZED_TO_SORTED_COMPACT_JSON_FOR_HASH
+allowlist:
+  - [jp.raos.ops.job_requested.v1, c10f9773b621000705684bec152bdc8f037c46b688f390216effa2872ab8e671, ops.job, POST_INSERT_LOCK_VERSION_0, JobRepository.add]
+  - [jp.raos.portfolio.action_candidate_decided.v1, 3ae2f73207c27bd019d9fd55e0d24c794e4a0d711265af902c4d38ec63bf2528, portfolio.action_candidate, POST_CAS_LOCK_VERSION, ActionCandidateRepository.save]
+  - [jp.raos.catalog.offer_observed.v1, c3e38d1c0cf17c475ca5d70a922b4ddcdfcdc8b2e381750a2b32c21fe1622f04, catalog.offer, POST_CAS_LOCK_VERSION, OfferRepository.append_observations]
+  - [jp.raos.catalog.offer_unavailable.v1, d8a2df0bfcdb0056a3056d95350a77697a6f8659daea5e264ca9ad13487175b7, catalog.offer, POST_CAS_LOCK_VERSION, OfferRepository.append_observations]
+  - [jp.raos.catalog.affiliate_link_invalid.v1, 0787d7d44ef70f0a002be9c8ed4768ee19f6f833e5dd81e3399436593f72940a, catalog.offer, POST_CAS_LOCK_VERSION, OfferRepository.append_observations]
+  - [jp.raos.editorial.article_plan_approved.v1, 831be3d8bc7713a9fada02b9d06792dbdf4b1def00f360aebe7d8a0307260d2b, editorial.article_plan, POST_CAS_LOCK_VERSION, ArticlePlanRepository.save]
+  - [jp.raos.editorial.article_created.v1, b257eed50005023f07ad252b6676e41f8b1deb41090014a405285947a8e1fbde, editorial.article, POST_INSERT_LOCK_VERSION_0, ArticleRepository.add]
+  - [jp.raos.editorial.draft_generated.v1, 6128ccaac3fabca2bfc4cfa4c1047c424124e353f5115495431b087b9e9a7012, editorial.article_version, POST_INSERT_LOCK_VERSION_0, ArticleRepository.add_version]
+  - [jp.raos.editorial.article_version_submitted.v1, c1cd3bcc629575880f98091c721416c98cf24062858f3750ed426058b324808d, editorial.article_version, POST_CAS_LOCK_VERSION, ArticleRepository.save_version]
+  - [jp.raos.evidence.source_snapshot_captured.v1, f00bb94cea83ca3aede34fb6fe4531121ad356896414f3dddaa435dc8b104e93, evidence.source, POST_CAS_LOCK_VERSION, SourceSnapshotRepository.append]
+  - [jp.raos.ai.job_requested.v1, 9937ac30df245d120ccf06aaaf406a8b29cdc9773307e9c9c61d9fc025abd42c, ai.ai_job, POST_INSERT_LOCK_VERSION_0, AiJobRepository.add]
+  - [jp.raos.ai.job_succeeded.v1, 670dbd4036129bb41284eafa6fb8809b260593f9aab4bc270384509d41d2057a, ai.ai_job, POST_CAS_LOCK_VERSION, AiJobRepository.transition]
+  - [jp.raos.ai.job_failed.v1, 5cb07491fe735a9e1724b7539f50763928a32befb96627d642c1ad30e39fa2c7, ai.ai_job, POST_CAS_LOCK_VERSION, AiJobRepository.transition]
+  - [jp.raos.ai.policy_assist_completed.v1, 689bd2b267e83d0b9b46acc884526ea87a051bf7bde57221d14893ea13d27033, ai.ai_job, POST_CAS_LOCK_VERSION, AiJobRepository.transition]
+  - [jp.raos.ai.evaluation_completed.v2, 49d495fd47a2638cd6c008fa04823617af784b7991dad65d27f2c724c0725f39, ai.evaluation_run, POST_CAS_LOCK_VERSION, EvaluationRunRepository.transition]
+  - [jp.raos.ai.release_decision_approved.v1, 947685c9cf295997629fe0acd27df88e0f78a581ca146dea445948d9f3632fa4, ai.release_decision, POST_CAS_LOCK_VERSION, ReleaseDecisionRepository.transition]
+  - [jp.raos.ai.release_decision_revoked.v1, c1a671dd2849a92c4078f726aa82f720be6349e67f123df1dd35d5455f77b7a3, ai.release_decision, POST_CAS_LOCK_VERSION, ReleaseDecisionRepository.transition]
+  - [jp.raos.policy.policy_bundle_activated.v1, cb6c7233454a08ab0eea46e12fd4ff353205763393853f16d812bfe0cadbd461, policy.policy_bundle, PERSISTED_VERSION_NO, PolicyBundleRepository.transition]
+explicit_exclusions:
+  policy.finding: [jp.raos.policy.blocking_finding_raised.v1, jp.raos.policy.finding_resolved.v1, NO_AUTHORITATIVE_PERSISTED_AGGREGATE_VERSION]
+  policy.waiver: [ALL_UNSELECTED, NO_APPROVED_SCHEMA_OR_PERSISTED_VERSION]
+  policy.quality_check_run: [ALL_UNSELECTED, NO_SELECTED_SCHEMA_OR_PERSISTED_VERSION]
+  policy.gate_decision: [ALL_UNSELECTED, NO_SELECTED_SCHEMA_OR_PERSISTED_VERSION]
+  evidence.source_packet_version: [ALL_UNSELECTED, NO_APPROVED_AGGREGATE_VERSION_SOURCE]
+  catalog.ingestion_request: [ALL_UNSELECTED, NO_PERSISTED_ROOT_VERSION]
+  catalog.grouping_decision: [ALL_UNSELECTED, NO_PERSISTED_ROOT_VERSION]
+  portfolio.opportunity_assessment: [ALL_UNSELECTED, NO_PERSISTED_ROOT_VERSION]
+  evidence.fact_or_claim: [ALL_UNSELECTED, NO_PERSISTED_ROOT_VERSION]
+specialization:
+  offer_precedence: [jp.raos.catalog.affiliate_link_invalid.v1, jp.raos.catalog.offer_unavailable.v1, jp.raos.catalog.offer_observed.v1]
+  ai_job: {policy_assist_success: jp.raos.ai.policy_assist_completed.v1, ordinary_success: jp.raos.ai.job_succeeded.v1, terminal_failure: jp.raos.ai.job_failed.v1}
+  max_events_per_root_version: 1
+lifecycle:
+  aggregate_api: [pending_events(), acknowledge_events(event_ids)]
+  stage: snapshot exact pending IDs, bind persisted version, validate registry/schema, append Outbox, then acknowledge once
+  known_rollback: restore acknowledged snapshot in original order
+  unknown_commit: discard UoW and aggregate objects; fresh idempotency lookup and reload
+  unlisted_event: REJECT
+version_prohibitions: [synthetic_constant, state_ordinal, timestamp_epoch, event_count, in_memory_counter, transaction_id, outbox_order, unpersisted_revision]
+two_way_gate:
+  - event registry class/type/schema/version/root/source/method exactly equals every allowlist row
+  - schema bytes hash to the listed digest
+  - every event class has one allowlist row and every row has one exact class
+  - excluded roots expose no event recording API

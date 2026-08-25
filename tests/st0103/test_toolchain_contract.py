@@ -103,7 +103,7 @@ def test_root_is_a_private_exactly_scoped_workspace(
     )
 
 
-def test_only_the_owned_web_boundaries_are_activated_as_workspaces(
+def test_only_the_owned_web_boundaries_are_scoped_as_private_workspaces(
     web_manifest: dict[str, Any],
     web_contracts_manifest: dict[str, Any],
     web_ui_manifest: dict[str, Any],
@@ -125,17 +125,23 @@ def test_only_the_owned_web_boundaries_are_activated_as_workspaces(
         "./public": "./src/generated/clients/public/index.ts",
         "./schemas": "./src/generated/schema-models/index.ts",
     }
-    assert set(web_ui_manifest).isdisjoint(
-        {*DEPENDENCY_SECTIONS, "scripts", "exports", "main", "types"}
+    assert set(web_ui_manifest).isdisjoint({*DEPENDENCY_SECTIONS, "main", "types"})
+    assert web_ui_manifest.get("exports") in (
+        None,
+        {".": "./src/index.ts"},
     )
-    for relative in (
-        "apps/web/app",
-        "apps/web/pages",
-        "apps/web/next.config.js",
-        "apps/web/next.config.mjs",
-        "apps/web/next.config.ts",
-    ):
-        assert not (REPOSITORY_ROOT / relative).exists()
+    assert web_ui_manifest.get("scripts") in (
+        None,
+        {"typecheck": "tsc --noEmit --project tsconfig.json"},
+    )
+    # ST-0103 owns the pinned toolchain and private workspace boundary, not the
+    # lifetime of a downstream application runtime.  In particular, ST-1001 is
+    # allowed to activate the App Router and a typed Next.js configuration;
+    # ST-1101 may likewise expose the reviewed source entry point and its
+    # owner-local typecheck.  Neither successor may add dependency pins or a
+    # publishable entry point here.  Keeping this contract independent of
+    # downstream runtime files makes the ST-0103 suite valid before and after
+    # those Stories are integrated.
 
 
 def test_every_direct_external_dependency_is_an_exact_approved_pin(

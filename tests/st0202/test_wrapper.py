@@ -46,6 +46,12 @@ networks:
 EXPECTED_EPHEMERAL_OVERRIDE_DIGEST = (
     "92e141f0c1b96ef47cf79855951d6cadaec509b9796cc03067186ff44dd27239"
 )
+SIGNAL_RESET_LAUNCHER = (
+    "import os,signal,sys;"
+    "signal.signal(signal.SIGINT,signal.SIG_DFL);"
+    "signal.signal(signal.SIGTERM,signal.SIG_DFL);"
+    "os.execv(sys.argv[1],sys.argv[1:])"
+)
 
 
 def _fake_docker(tmp_path: Path, mode: str = "ok") -> tuple[Path, Path]:
@@ -466,6 +472,7 @@ def _run(
     *,
     config_path: Path | None = None,
     port: str = "58333",
+    reset_ignored_signals: bool = False,
 ) -> subprocess.CompletedProcess[str]:
     environment = {
         **os.environ,
@@ -479,8 +486,13 @@ def _run(
         "DOCKER_CONTEXT": "remote-context",
         "DOCKER_HOST": "tcp://example.invalid:2375",
     }
+    argv = [str(wrapper), "--docker", str(docker), command]
+    if reset_ignored_signals:
+        # The outer network-denied PID 1 ignores INT/TERM. Reset only this
+        # test subprocess before exec so Bash can install the production traps.
+        argv = ["/usr/bin/python3", "-I", "-c", SIGNAL_RESET_LAUNCHER, *argv]
     return subprocess.run(
-        [str(wrapper), "--docker", str(docker), command],
+        argv,
         cwd=wrapper.parents[1],
         env=environment,
         check=False,
@@ -1322,6 +1334,12 @@ def test_ephemeral_override_cleanup_runs_after_success_failure_and_signal(
 ) -> None:
     wrapper, _fixture_log = _isolated_repository(tmp_path)
     docker, _log = _fake_docker(tmp_path, mode)
-    result = _run(wrapper, docker, "test", tmp_path)
+    result = _run(
+        wrapper,
+        docker,
+        "test",
+        tmp_path,
+        reset_ignored_signals=True,
+    )
     assert result.returncode == expected_status
     assert _test_directories(tmp_path) == []

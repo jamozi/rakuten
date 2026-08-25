@@ -1,0 +1,494 @@
+{
+  "schema_version": "1.0.0",
+  "generator": {
+    "uri": "repo://scripts/build_st1607_gate_evidence_pack.py",
+    "command": "/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --locked --offline --no-cache --no-sync --no-env-file python -I -B scripts/build_st1607_gate_evidence_pack.py",
+    "source_contract": "repo://changes/st-1607/contracts/gate-evidence-pack.v1.yaml"
+  },
+  "story": {
+    "id": "ST-1607",
+    "scope": "LOCAL_BLOCKED_REPORT_ONLY",
+    "effective_canonical_status": "UNCHANGED",
+    "acceptance_criteria_satisfied": false
+  },
+  "document": {
+    "id": "RAOS-GATE-EVIDENCE-PACK-001",
+    "version": "1.0.0",
+    "story_id": "ST-1607",
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "classification": "LOCAL_BLOCKED_GATE_EVIDENCE_PACK_NON_ATTESTING",
+    "acceptance_criteria_satisfied": false,
+    "formal_verification": "NOT_EXECUTED"
+  },
+  "classification": "LOCAL_BLOCKED_GATE_EVIDENCE_PACK_NON_ATTESTING",
+  "source_bindings": [
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+      "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+    },
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_status_taxonomy_v1.0.yaml",
+      "sha256": "e3261a8a6102c1b93e6cc9006c52f01389ec31510e24ca37bc400437aebbf68b"
+    },
+    {
+      "uri": "repo://docs/canonical/00_master/RAOS_implementation_status_registry_v1.0.yaml",
+      "sha256": "1411f55ce60f6316e83567110fb2847e0db49239cb63dcabf9e81612c3b72ab8"
+    },
+    {
+      "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md",
+      "sha256": "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
+    },
+    {
+      "uri": "repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md",
+      "sha256": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460"
+    },
+    {
+      "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    }
+  ],
+  "dependency_bindings": {
+    "st_0005": {
+      "story_id": "ST-0005",
+      "role": "STATUS_SOURCE",
+      "artifacts": [
+        {
+          "kind": "CONTRACT",
+          "uri": "repo://changes/st-0005/contracts/status-policy.v1.yaml",
+          "sha256": "15969f4d5db3aee48059ece1fb572786f25bc0807eb34458b36f97f63f8ccfaf"
+        },
+        {
+          "kind": "GENERATED_STATUS_OVERLAY",
+          "uri": "repo://changes/st-0005/status-overlay.v1.yaml",
+          "sha256": "d8f432c8fe79d6e4066a33c55d00527f23f93c2a810f88b0d8555bd317b77b90"
+        },
+        {
+          "kind": "MANIFEST",
+          "uri": "repo://changes/st-0005/manifest.yaml",
+          "sha256": "10bcbe759f9c1aa89d064748136b88a6694500956f049a6679041fe44e0785ce"
+        }
+      ]
+    },
+    "st_1603": {
+      "story_id": "ST-1603",
+      "role": "SECURITY_VERIFICATION_INPUT",
+      "artifacts": [
+        {
+          "kind": "CONTRACT",
+          "uri": "repo://changes/st-1603/contracts/security-verification-pack.v1.yaml",
+          "sha256": "9dee0475108d905d31e2ec3c832ce721cf7970966f35988e38cefc9b1cf64f1e"
+        },
+        {
+          "kind": "GENERATED_REFERENCE_PLAN",
+          "uri": "repo://changes/st-1603/generated/security-verification-pack.reference-plan.v1.json",
+          "sha256": "4a354954044c38c527598e6e58f5b5fff46d579262224c833ddffab4cf1bec42"
+        },
+        {
+          "kind": "MANIFEST",
+          "uri": "repo://changes/st-1603/manifest.yaml",
+          "sha256": "945531f9a0a203ba235d713f5ac283cb2741fb0cf589c8cadee21ad43473e2f6"
+        }
+      ]
+    },
+    "st_1605": {
+      "story_id": "ST-1605",
+      "role": "FAILURE_INJECTION_INPUT",
+      "artifacts": [
+        {
+          "kind": "CONTRACT",
+          "uri": "repo://changes/st-1605/contracts/failure-injection-drill.v1.yaml",
+          "sha256": "27be70b911bf3d71b47dc13f47c3df122b42c79cd7df1b9f2b1c2cdca75c28ab"
+        },
+        {
+          "kind": "GENERATED_LOCAL_SYNTHETIC_EVIDENCE",
+          "uri": "repo://changes/st-1605/generated/failure-injection-drill.local-synthetic-evidence.v1.json",
+          "sha256": "4a3cac40464c3494ed74e66f4c5790e3318f94369baf8954f9b3626108484ddf"
+        },
+        {
+          "kind": "MANIFEST",
+          "uri": "repo://changes/st-1605/manifest.yaml",
+          "sha256": "7720c4064de09a164bc20e8efeccdbf7f300cd0049171e3b4a6bcbfc822d7c1a"
+        }
+      ]
+    },
+    "st_1606": {
+      "story_id": "ST-1606",
+      "role": "BACKUP_RESTORE_INPUT",
+      "artifacts": [
+        {
+          "kind": "CONTRACT",
+          "uri": "repo://changes/st-1606/contracts/backup-restore-drill.v1.yaml",
+          "sha256": "4898aace08155c06e05a3654d6a2854ad05492c1697da85a7965c68d6b353202"
+        },
+        {
+          "kind": "GENERATED_REFERENCE_PLAN",
+          "uri": "repo://changes/st-1606/generated/backup-restore-drill.reference-plan.v1.json",
+          "sha256": "1eba3b4b622eb77517848ca77d101427311918866735342e2e827f3bb6de26fb"
+        },
+        {
+          "kind": "MANIFEST",
+          "uri": "repo://changes/st-1606/manifest.yaml",
+          "sha256": "d4d3b5df9cdcf56ede791d1512614302e0e77887c9e417dcc918ff9d477a27e8"
+        }
+      ]
+    }
+  },
+  "decision_gate_binding": {
+    "story_id": "ST-0006",
+    "role": "OPEN_DECISION_BLOCKER_INPUT",
+    "artifacts": [
+      {
+        "kind": "POLICY",
+        "uri": "repo://changes/st-0006/contracts/decision-gate-policy.v1.yaml",
+        "sha256": "127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989"
+      },
+      {
+        "kind": "GENERATED_BLOCKER_REPORT",
+        "uri": "repo://changes/st-0006/gate-blocker-report.v1.yaml",
+        "sha256": "92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15"
+      },
+      {
+        "kind": "MANIFEST",
+        "uri": "repo://changes/st-0006/manifest.yaml",
+        "sha256": "bbff3aee2fb89a4ecf45bfb92550d06b3936cceb7f3bce247f45daf5b9ca82be"
+      }
+    ],
+    "required_by_interpretation": "OPAQUE_CONTEXT_ONLY",
+    "target_policy": "ALL_ACTIVE_BLOCKERS_TO_ALL_TARGETS",
+    "clear_means_gate_pass": false
+  },
+  "status_input": {
+    "source_story": "ST-0005",
+    "applied_transition_count": 0,
+    "effective_story_statuses": [
+      {
+        "story_id": "ST-1603",
+        "implementation_status": "NOT_STARTED",
+        "verification_status": "NOT_EXECUTED",
+        "required_suites": [
+          "TST-026",
+          "TST-031"
+        ]
+      },
+      {
+        "story_id": "ST-1605",
+        "implementation_status": "NOT_STARTED",
+        "verification_status": "NOT_EXECUTED",
+        "required_suites": [
+          "TST-028"
+        ]
+      },
+      {
+        "story_id": "ST-1606",
+        "implementation_status": "NOT_STARTED",
+        "verification_status": "NOT_EXECUTED",
+        "required_suites": [
+          "TST-029"
+        ]
+      },
+      {
+        "story_id": "ST-1607",
+        "implementation_status": "NOT_STARTED",
+        "verification_status": "NOT_EXECUTED",
+        "required_suites": [
+          "TST-032"
+        ]
+      }
+    ],
+    "formal_suite": {
+      "suite_id": "TST-032",
+      "required_environment": "STAGING",
+      "implementation_status": "NOT_STARTED",
+      "execution_status": "NOT_EXECUTED"
+    },
+    "effective_canonical_status": "UNCHANGED"
+  },
+  "decision_input": {
+    "overall_open_decision_check": "BLOCKED",
+    "unresolved_blocking_count": 14,
+    "active_blocker_ids": [
+      "OD-001",
+      "OD-002",
+      "OD-003",
+      "OD-005",
+      "OD-006",
+      "OD-007",
+      "OD-008",
+      "OD-009",
+      "OD-010",
+      "OD-011",
+      "OD-012",
+      "OD-013",
+      "OD-014",
+      "OD-015"
+    ],
+    "blocker_targets": [
+      "GATE-0",
+      "GATE-1",
+      "GATE-2",
+      "GATE-3",
+      "GATE-4",
+      "PRODUCTION_RELEASE"
+    ],
+    "decision_clearance": "NOT_AVAILABLE"
+  },
+  "snapshot_boundary": {
+    "pack_scope": [
+      "GATE-0",
+      "GATE-1",
+      "GATE-2",
+      "GATE-3",
+      "GATE-4"
+    ],
+    "local_base_commit": "a3ea6d1a1e8621d9ff198c9dea31b0c6f7a768d5",
+    "local_base_commit_type": "GIT_SHA1_LOWER_HEX_40",
+    "local_base_commit_status": "RECORDED_PREDECESSOR_CHECKOUT_ONLY",
+    "local_base_commit_scope": "PREDECESSOR_CHECKOUT_PROVENANCE_ONLY",
+    "local_base_commit_qualifying_evidence": false,
+    "source_freeze_identifier_type": "OPTIONAL_SHA256_LOWER_HEX_64",
+    "source_freeze_status": "ABSENT",
+    "source_freeze_identifier": null,
+    "source_freeze_qualifying_evidence": false,
+    "reviewed_implementation_tree_commit_type": "OPTIONAL_GIT_SHA1_LOWER_HEX_40",
+    "reviewed_implementation_tree_commit_status": "ABSENT",
+    "reviewed_implementation_tree_commit": null,
+    "reviewed_implementation_tree_commit_qualifying_evidence": false,
+    "target_release_version": null,
+    "target_environment": "STAGING",
+    "staging_execution_identifier": null,
+    "snapshot_observed_at": null,
+    "data_snapshot_identifier": null,
+    "release_identifier": null,
+    "approved_exceptions": [],
+    "human_approval_artifacts": []
+  },
+  "required_evidence": [
+    {
+      "evidence_id": "TARGET_SNAPSHOT_CONTEXT",
+      "status": "MISSING",
+      "source_references": [],
+      "qualifying_evidence_references": []
+    },
+    {
+      "evidence_id": "ST_1603_SECURITY_VERIFICATION",
+      "status": "INELIGIBLE_NON_ATTESTING_REFERENCE_PLAN",
+      "source_references": [
+        "repo://changes/st-1603/generated/security-verification-pack.reference-plan.v1.json"
+      ],
+      "qualifying_evidence_references": []
+    },
+    {
+      "evidence_id": "ST_1605_FAILURE_INJECTION",
+      "status": "INELIGIBLE_LOCAL_SYNTHETIC_NON_ATTESTING",
+      "source_references": [
+        "repo://changes/st-1605/generated/failure-injection-drill.local-synthetic-evidence.v1.json"
+      ],
+      "qualifying_evidence_references": []
+    },
+    {
+      "evidence_id": "ST_1606_BACKUP_RESTORE",
+      "status": "INELIGIBLE_NON_ATTESTING_REFERENCE_PLAN",
+      "source_references": [
+        "repo://changes/st-1606/generated/backup-restore-drill.reference-plan.v1.json"
+      ],
+      "qualifying_evidence_references": []
+    },
+    {
+      "evidence_id": "OPEN_DECISION_CLEARANCE",
+      "status": "BLOCKED",
+      "source_references": [
+        "repo://changes/st-0006/gate-blocker-report.v1.yaml"
+      ],
+      "qualifying_evidence_references": []
+    },
+    {
+      "evidence_id": "FORMAL_TST_032_STAGING",
+      "status": "NOT_EXECUTED",
+      "source_references": [
+        "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml"
+      ],
+      "qualifying_evidence_references": []
+    },
+    {
+      "evidence_id": "HUMAN_GATE_APPROVALS",
+      "status": "MISSING",
+      "source_references": [],
+      "qualifying_evidence_references": []
+    }
+  ],
+  "global_blockers": [
+    "TARGET_SNAPSHOT_CONTEXT_MISSING",
+    "ST_1603_SECURITY_EVIDENCE_INELIGIBLE",
+    "ST_1605_FAILURE_INJECTION_EVIDENCE_INELIGIBLE",
+    "ST_1606_BACKUP_RESTORE_EVIDENCE_INELIGIBLE",
+    "ACTIVE_BLOCKING_OPEN_DECISIONS",
+    "FORMAL_TST_032_NOT_EXECUTED",
+    "HUMAN_GATE_APPROVALS_MISSING"
+  ],
+  "gate_report": {
+    "mapping_policy": {
+      "suite_to_gate_mapping": "NOT_DEFINED_BY_CANONICAL",
+      "inferred_suite_to_gate_mapping": "FORBIDDEN",
+      "blocker_application": "GLOBAL_BLOCKERS_APPLY_TO_EVERY_GATE"
+    },
+    "gates": [
+      {
+        "gate_id": "GATE-0",
+        "status": "BLOCKED",
+        "blocker_scope": "GLOBAL_ONLY",
+        "blocker_codes": [
+          "TARGET_SNAPSHOT_CONTEXT_MISSING",
+          "ST_1603_SECURITY_EVIDENCE_INELIGIBLE",
+          "ST_1605_FAILURE_INJECTION_EVIDENCE_INELIGIBLE",
+          "ST_1606_BACKUP_RESTORE_EVIDENCE_INELIGIBLE",
+          "ACTIVE_BLOCKING_OPEN_DECISIONS",
+          "FORMAL_TST_032_NOT_EXECUTED",
+          "HUMAN_GATE_APPROVALS_MISSING"
+        ],
+        "qualifying_evidence_references": [],
+        "approval_status": "NOT_REQUESTED"
+      },
+      {
+        "gate_id": "GATE-1",
+        "status": "BLOCKED",
+        "blocker_scope": "GLOBAL_ONLY",
+        "blocker_codes": [
+          "TARGET_SNAPSHOT_CONTEXT_MISSING",
+          "ST_1603_SECURITY_EVIDENCE_INELIGIBLE",
+          "ST_1605_FAILURE_INJECTION_EVIDENCE_INELIGIBLE",
+          "ST_1606_BACKUP_RESTORE_EVIDENCE_INELIGIBLE",
+          "ACTIVE_BLOCKING_OPEN_DECISIONS",
+          "FORMAL_TST_032_NOT_EXECUTED",
+          "HUMAN_GATE_APPROVALS_MISSING"
+        ],
+        "qualifying_evidence_references": [],
+        "approval_status": "NOT_REQUESTED"
+      },
+      {
+        "gate_id": "GATE-2",
+        "status": "BLOCKED",
+        "blocker_scope": "GLOBAL_ONLY",
+        "blocker_codes": [
+          "TARGET_SNAPSHOT_CONTEXT_MISSING",
+          "ST_1603_SECURITY_EVIDENCE_INELIGIBLE",
+          "ST_1605_FAILURE_INJECTION_EVIDENCE_INELIGIBLE",
+          "ST_1606_BACKUP_RESTORE_EVIDENCE_INELIGIBLE",
+          "ACTIVE_BLOCKING_OPEN_DECISIONS",
+          "FORMAL_TST_032_NOT_EXECUTED",
+          "HUMAN_GATE_APPROVALS_MISSING"
+        ],
+        "qualifying_evidence_references": [],
+        "approval_status": "NOT_REQUESTED"
+      },
+      {
+        "gate_id": "GATE-3",
+        "status": "BLOCKED",
+        "blocker_scope": "GLOBAL_ONLY",
+        "blocker_codes": [
+          "TARGET_SNAPSHOT_CONTEXT_MISSING",
+          "ST_1603_SECURITY_EVIDENCE_INELIGIBLE",
+          "ST_1605_FAILURE_INJECTION_EVIDENCE_INELIGIBLE",
+          "ST_1606_BACKUP_RESTORE_EVIDENCE_INELIGIBLE",
+          "ACTIVE_BLOCKING_OPEN_DECISIONS",
+          "FORMAL_TST_032_NOT_EXECUTED",
+          "HUMAN_GATE_APPROVALS_MISSING"
+        ],
+        "qualifying_evidence_references": [],
+        "approval_status": "NOT_REQUESTED"
+      },
+      {
+        "gate_id": "GATE-4",
+        "status": "BLOCKED",
+        "blocker_scope": "GLOBAL_ONLY",
+        "blocker_codes": [
+          "TARGET_SNAPSHOT_CONTEXT_MISSING",
+          "ST_1603_SECURITY_EVIDENCE_INELIGIBLE",
+          "ST_1605_FAILURE_INJECTION_EVIDENCE_INELIGIBLE",
+          "ST_1606_BACKUP_RESTORE_EVIDENCE_INELIGIBLE",
+          "ACTIVE_BLOCKING_OPEN_DECISIONS",
+          "FORMAL_TST_032_NOT_EXECUTED",
+          "HUMAN_GATE_APPROVALS_MISSING"
+        ],
+        "qualifying_evidence_references": [],
+        "approval_status": "NOT_REQUESTED"
+      }
+    ]
+  },
+  "authority_boundary": {
+    "external_authority": "NONE",
+    "owner_gate_approval_authority": "NONE",
+    "status_apply_authority": "NONE",
+    "staging_authority": "NONE",
+    "publication_authority": "NONE",
+    "release_authority": "NONE",
+    "production_authority": "NONE",
+    "approval_artifacts": []
+  },
+  "execution_boundary": {
+    "executable": false,
+    "local_report_generation_only": true,
+    "input_size_limit_bytes": 2097152,
+    "input_read_model": "ROOT_FD_DESCRIPTOR_RELATIVE_CAPTURED_LEAF",
+    "implementation_input_behavior": "HASH_VERIFY_ONLY_NEVER_IMPORT_OR_EXECUTE",
+    "writer_model": "SINGLE_PROCESS_SAME_UID_EXCLUSIVE_LOCK",
+    "concurrent_writer_behavior": "FAIL_CLOSED",
+    "output_transaction": "TWO_OUTPUT_RECOVERABLE_ALL_OR_NOTHING",
+    "pending_recovery_before_source_validation": true,
+    "check_pending_recovery_behavior": "READ_ONLY_REJECT",
+    "network_access": "FORBIDDEN",
+    "environment_access": "FORBIDDEN",
+    "credential_access": "FORBIDDEN",
+    "provider_calls": "FORBIDDEN",
+    "subprocess_execution": "FORBIDDEN",
+    "external_writes": "FORBIDDEN",
+    "staging_actions": "FORBIDDEN",
+    "status_actions": "FORBIDDEN",
+    "publication_actions": "FORBIDDEN",
+    "release_actions": "FORBIDDEN",
+    "production_actions": "FORBIDDEN",
+    "external_action_count": 0
+  },
+  "evidence_boundary": {
+    "classification": "LOCAL_BLOCKED_GATE_EVIDENCE_PACK_NON_ATTESTING",
+    "formal_tst_032": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "owner_gate_approvals": "NONE",
+    "approved_exceptions": "NONE",
+    "release": "NOT_AUTHORIZED",
+    "production": "NOT_AUTHORIZED",
+    "validated_claim": false,
+    "gate_pass_claim": false,
+    "story_acceptance": false,
+    "release_eligible": false,
+    "production_ready": false,
+    "effective_canonical_status": "UNCHANGED"
+  },
+  "prohibited_interpretations": [
+    "LOCAL_GENERATION_IS_NOT_FORMAL_TST_032",
+    "NON_ATTESTING_DEPENDENCY_ARTIFACT_IS_NOT_QUALIFYING_GATE_EVIDENCE",
+    "NO_SUITE_TO_GATE_MAPPING_MAY_BE_INFERRED",
+    "BLOCKED_REPORT_IS_NOT_GATE_OWNER_APPROVAL",
+    "LOCAL_BASE_COMMIT_IS_NOT_REVIEWED_IMPLEMENTATION_TREE_EVIDENCE",
+    "RECORDED_BASE_COMMIT_IS_NOT_A_SOURCE_FREEZE_OR_QUALIFYING_GATE_EVIDENCE",
+    "ABSENT_SOURCE_FREEZE_OR_REVIEWED_TREE_IDENTITY_CANNOT_BE_PROMOTED",
+    "NO_STATUS_APPLY_STAGING_RELEASE_OR_PRODUCTION_AUTHORITY_MAY_BE_INFERRED"
+  ]
+}

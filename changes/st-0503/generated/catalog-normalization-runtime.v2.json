@@ -1,0 +1,192 @@
+{
+  "canonical_status": "UNCHANGED",
+  "classification": "MAXIMUM_SAFE_LOCAL_DURABLE_CATALOG_NORMALIZATION_RUNTIME",
+  "dependency": {
+    "api_version": "2026-07-01",
+    "source": "EXACT_PERSISTED_V2_ARCHIVE_ONLY",
+    "story_id": "ST-0502"
+  },
+  "durability_boundary": {
+    "append_only_record_triggers_bound": true,
+    "atomic_snapshot_batch_records_outbox_journal_and_cas": true,
+    "backend": "OWNER_PRIVATE_SQLITE",
+    "canonical_json_uuid_and_rfc3339_required": true,
+    "catalog_compare_and_swap": true,
+    "command_idempotency": true,
+    "commit_ambiguity_exact_recovery_only": true,
+    "cross_process_or_restart_rollback_detection": "NOT_CLAIMED_WITHOUT_EXTERNAL_ANCHOR",
+    "exact_autoindex_and_column_inventory_bound": true,
+    "exact_foreign_key_inventory_bound": true,
+    "exact_schema_sql_bound": true,
+    "exact_trigger_inventory_bound": true,
+    "exclusive_create_initialization": true,
+    "hardlink_rejected": true,
+    "hash_chain": true,
+    "identity_verified_before_and_after_connections_and_transactions": true,
+    "live_inode_pinned": true,
+    "open_process_monotonic_committed_count_head_and_chain_prefix_pinned": true,
+    "outbox": true,
+    "partial_missing_or_ambiguous_commit_recovery": "COMMIT_UNKNOWN",
+    "path_traversal_rejected": true,
+    "preexisting_uninitialized_or_foreign_database_rejected_without_repair": true,
+    "restart_reopens_current_valid_snapshot": true,
+    "source_receipt_idempotency": true,
+    "strict_database_mode": "0600",
+    "strict_directory_mode": "0700",
+    "strict_table_inventory_bound": true,
+    "symlink_rejected": true,
+    "tamper_and_schema_drift_fail_closed": true
+  },
+  "event_contract": {
+    "channel": "ingestion.events",
+    "delivery_worker": "NOT_IMPLEMENTED_NOT_ACTIVATED",
+    "event_type": "jp.raos.catalog.candidates_normalized.v1"
+  },
+  "external_actions": [],
+  "formal_evidence": {
+    "TST-005": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-007": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-008_postgresql": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  },
+  "identity_boundary": {
+    "automatic_merge": false,
+    "automatic_split": false,
+    "canonical_product_identity": false,
+    "identity_status": "HUMAN_REVIEW",
+    "model_or_jan_extraction": false,
+    "open_decision": "OD-006",
+    "provider_confidence_shortcut": false,
+    "readiness": "NOT_READY"
+  },
+  "local_implementation_status": "LOCAL_CODE_COMPLETE",
+  "normalization_boundary": {
+    "normalizer_version": "ST0503_RECORDED_STRUCTURAL_V2",
+    "observation_is_recommendation": false,
+    "price_availability_postage_and_link_are_observations": true,
+    "provider_text_and_urls_are_untrusted_data": true,
+    "ranking_surface": false,
+    "source_confidence": null,
+    "source_confidence_status": "SOURCE_ABSENT",
+    "stable_ids_bind_provider_item_shop_receipt_snapshot_and_version": true
+  },
+  "production_authority": "NONE",
+  "recommendation_boundary": {
+    "excluded_inputs": [
+      "EPC",
+      "RPM",
+      "affiliateRate",
+      "affiliate_rate",
+      "commission",
+      "epc",
+      "profit",
+      "recommendation_score",
+      "reviewAverage",
+      "reviewCount",
+      "review_aggregate",
+      "review_body",
+      "reward",
+      "rpm"
+    ],
+    "provider_derived_recommendation_inputs": []
+  },
+  "schema_version": "2.0.0",
+  "source_boundary": {
+    "accepted_mode": "RECORDED_PERSISTED",
+    "collaborator_arguments_recomputed_after_call": true,
+    "collaborator_exceptions_sanitized": true,
+    "collaborator_external_action_count_recomputed": true,
+    "collaborator_returns_revalidated": true,
+    "credential_capability": false,
+    "default_mode": "DISABLED",
+    "external_actions": 0,
+    "full_provenance_required": true,
+    "http_or_network_capability": false,
+    "persisted_success_page_required": true,
+    "provider_call_capability": false,
+    "receipt_request_raw_page_reparse_required": true,
+    "source_snapshot_required": true,
+    "worker_activation": false
+  },
+  "state_contract": {
+    "commit_faults": [
+      "NONE",
+      "KNOWN_BEFORE_COMMIT",
+      "UNKNOWN_BEFORE_COMMIT",
+      "UNKNOWN_AFTER_COMMIT"
+    ],
+    "confidence_status": "SOURCE_ABSENT",
+    "identity_status": "HUMAN_REVIEW",
+    "observation_kinds": [
+      "PRICE_JPY",
+      "AVAILABILITY_PROVIDER_FLAG",
+      "POSTAGE_INCLUDED_PROVIDER_FLAG",
+      "AFFILIATE_LINK"
+    ],
+    "readiness": "NOT_READY",
+    "source_modes": [
+      "RECORDED_PERSISTED",
+      "DISABLED"
+    ]
+  },
+  "story_id": "ST-0503",
+  "synthetic_fixture": {
+    "activation": false,
+    "commit_faults": [
+      "NONE",
+      "KNOWN_BEFORE_COMMIT",
+      "UNKNOWN_BEFORE_COMMIT",
+      "UNKNOWN_AFTER_COMMIT"
+    ],
+    "contains_credential_or_sample_value": false,
+    "expected": {
+      "candidate_count": 2,
+      "external_actions": 0,
+      "identity_status": "HUMAN_REVIEW",
+      "observation_count": 8,
+      "observation_kinds_per_offer": [
+        "PRICE_JPY",
+        "AVAILABILITY_PROVIDER_FLAG",
+        "POSTAGE_INCLUDED_PROVIDER_FLAG",
+        "AFFILIATE_LINK"
+      ],
+      "offer_count": 2,
+      "open_decision": "OD-006",
+      "readiness": "NOT_READY"
+    },
+    "external_actions": 0,
+    "hostile_cases": [
+      "ARBITRARY_COLLABORATOR_EXCEPTION",
+      "FORGED_EXACT_CLASS_SOURCE_PAGE",
+      "FORGED_EXACT_CLASS_STORE_RESULT",
+      "COLLABORATOR_ARGUMENT_MUTATION",
+      "COLLABORATOR_ACTION_COUNT_SPOOF",
+      "RECEIPT_PAGE_HASH_DRIFT",
+      "PREEXISTING_EMPTY_OR_FOREIGN_DATABASE",
+      "PATH_REPLACEMENT",
+      "SAME_INODE_VALID_SNAPSHOT_ROLLBACK",
+      "NONCANONICAL_JSON_UUID_OR_RFC3339",
+      "APPEND_ONLY_TRIGGER_VIOLATION",
+      "PAYLOAD_TAMPER",
+      "SCHEMA_DRIFT",
+      "CONCURRENT_CAS",
+      "DENIED_NETWORK"
+    ],
+    "operational_default": false,
+    "schema_version": "2.0.0",
+    "source": {
+      "item_count": 2,
+      "mode": "RECORDED_PERSISTED",
+      "page_count": 1,
+      "receipt_and_raw_hash_required": true,
+      "runtime_version": "V2",
+      "story_id": "ST-0502"
+    },
+    "story_id": "ST-0503",
+    "synthetic": true
+  }
+}

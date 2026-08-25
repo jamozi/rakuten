@@ -1,0 +1,81 @@
+{
+  "schema_version": 2,
+  "story_id": "ST-0403",
+  "status": "LOCAL_CODE_COMPLETE_CANDIDATE",
+  "runtime": {
+    "environments": [
+      "CI",
+      "ENV-DEV"
+    ],
+    "external_action_count": 0,
+    "network_provider_credentials": "ABSENT",
+    "business_action_execution": false
+  },
+  "database": {
+    "application_id": 1380400302,
+    "user_version": 2,
+    "filename": "st0403-recorded-authorization.sqlite3",
+    "creation": "OWNER_PRIVATE_O_EXCL_CREATED_ONLY",
+    "preexisting_empty_partial_or_foreign": "REJECT",
+    "journal_mode": "DELETE",
+    "synchronous": "FULL",
+    "secure_delete": true,
+    "trusted_schema": false,
+    "foreign_keys": true,
+    "strict_tables": true,
+    "exact_sqlite_master": true
+  },
+  "integrity": {
+    "mutation_operations": [
+      "APPEND_SOD_EVIDENCE",
+      "INITIALIZE",
+      "INSTALL_ENTITLEMENTS",
+      "INSTALL_POLICY",
+      "RECORD_DECISION"
+    ],
+    "append_only_records": [
+      "AUDIT",
+      "COMMAND",
+      "ENTITLEMENT_ACTIVATION",
+      "ENTITLEMENT_SNAPSHOT",
+      "MUTATION",
+      "POLICY_ACTIVATION",
+      "POLICY_SNAPSHOT",
+      "SOD_EVIDENCE"
+    ],
+    "canonical_json": "ASCII_SORTED_COMPACT_DUPLICATE_KEY_REJECTING",
+    "redundant_relational_bindings": "RECOMPUTED_AND_EXACT",
+    "full_chain": "SHA256_GENESIS_COUNT_HEAD_PREFIX",
+    "revision_compare_and_set": true,
+    "command_intent_result_recovery": "EXACT_IDEMPOTENT_READ_ONLY_NO_BLIND_RETRY",
+    "commit_classification": {
+      "before_commit": "KNOWN_ROLLBACK",
+      "commit_error_transaction_open": "KNOWN_ROLLBACK",
+      "commit_error_transaction_closed": "COMMIT_UNKNOWN",
+      "after_commit_fault": "COMMIT_UNKNOWN"
+    }
+  },
+  "identity_and_rollback": {
+    "owner_root_identity": "DEVICE_AND_INODE_PINNED",
+    "database_file_identity": "DEVICE_AND_INODE_PINNED",
+    "process_lifetime_valid_prefix": "ENFORCED",
+    "cross_restart_valid_prefix": "REQUIRES_INDEPENDENT_EXTERNAL_ANCHOR_NOT_CLAIMED"
+  },
+  "authorization": {
+    "deny_by_default": true,
+    "horizontal_and_vertical_denial": true,
+    "site_state_scope_exact": true,
+    "separation_of_duties_exact": true,
+    "detached_in_process_boundaries": true
+  },
+  "authority": {
+    "canonical_apply": false,
+    "credential_access": false,
+    "live_provider": false,
+    "external_http": false,
+    "staging": false,
+    "publication": false,
+    "release": false,
+    "production": false
+  }
+}

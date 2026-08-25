@@ -95,7 +95,7 @@ DEPENDENCY_MANIFESTS: Final = {
     ),
 }
 EXPECTED_PREDECESSOR_SHA256: Final = (
-    "8e11f1113eee49c3440149a4afaa57c3012866a3ae74c60094defca1131c1d53"
+    "2c26f24dce1a1eda9a79bd0d339478b208dde77ecc76e9dfd71c918ad9fab3be"
 )
 SUCCESSOR_CONTRACT_PATH: Final = Path(
     "changes/st-0302/contracts/foundation-schema.v1.yaml"

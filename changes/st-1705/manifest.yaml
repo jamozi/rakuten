@@ -1,0 +1,127 @@
+story_id: ST-1705
+schema_version: 1
+generated_by: repo://scripts/build_st1705_pilot_signoff.py
+generation_command: /home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1705_pilot_signoff.py
+source_artifact_count: 11
+source_artifacts:
+- uri: repo://changes/st-1705/contracts/pilot-security-recovery-signoff.v1.yaml
+  bytes: 9964
+  sha256: 4f1d7c0fe89a1492ea8352ae513e8e374170d01d7562073a635c743db3654257
+- uri: repo://changes/st-1705/contracts/pilot-signoff-evidence-input.v1.schema.json
+  bytes: 8422
+  sha256: 3a38ab7c4f57db962b07c5cb78782f5fa42a2d787eb78da3f954772352a684c1
+- uri: repo://changes/st-1705/README.md
+  bytes: 3195
+  sha256: 045b27e346dca1d405d2671a80a70dbfcd0c8023500bf67625de197a13df2c8f
+- uri: repo://changes/st-1705/PREFLIGHT.md
+  bytes: 1721
+  sha256: 066ee7ebfb7b24a3d8f594dca428d41ec47758270e4bcab4f939373a9b0683d7
+- uri: repo://changes/st-1705/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v1.yaml
+  bytes: 3121
+  sha256: 4caa4c15565a3310fc1037bc349cd042bc02996b183b32ec858fbd7db1896ca3
+- uri: repo://scripts/build_st1705_pilot_signoff.py
+  bytes: 69227
+  sha256: 2efac6ccaff38d8e6fb95d464dcb4349f0bfb6bbb0f35237c81b339cc16187c2
+- uri: repo://tests/st1705/conftest.py
+  bytes: 821
+  sha256: 51afac507c58d9871ab79f5df3a5f2d6bb639fd1c86cc6135fc3375cb2999b86
+- uri: repo://tests/st1705/test_contract.py
+  bytes: 3705
+  sha256: ddde68cdd2c89db91202f97a83fa650625d126aa41680f69aad96d3b539a41f3
+- uri: repo://tests/st1705/test_decision.py
+  bytes: 4572
+  sha256: 15ede1aa5194180ca932d098329d435923ae965538b4988676193bd2dbf9477d
+- uri: repo://tests/st1705/test_generation.py
+  bytes: 9925
+  sha256: 22eafd503f0c947a9471fb93ce5d7541436522a6449cbdeba55a561af4051682
+- uri: repo://tests/st1705/test_negative_cases.py
+  bytes: 14315
+  sha256: 06f9b81dceac5d115ed1f38693074097a95e995719b3beae094e242ed24d32dc
+bound_input_count: 21
+bound_inputs:
+- uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  classification: CANONICAL_AUTHORITY
+- uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+  sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  classification: CANONICAL_AUTHORITY
+- uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+  sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  classification: CANONICAL_AUTHORITY
+- uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  classification: CANONICAL_AUTHORITY
+- uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  classification: CANONICAL_AUTHORITY
+- uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+  sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  classification: CANONICAL_AUTHORITY
+- uri: repo://docs/canonical/05_test/RAOS_11_release_evidence_template_v1.0.yaml
+  sha256: 3354001be5fc0f7f7ef6a265fdd3112618ee943092755745d8cd62986487e95a
+  classification: CANONICAL_AUTHORITY
+- uri: repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+  sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  classification: CANONICAL_AUTHORITY
+- uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  classification: CANONICAL_AUTHORITY
+- uri: repo://docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md
+  sha256: 894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8
+  classification: CANONICAL_AUTHORITY
+- uri: repo://docs/canonical/06_ops/RAOS_12_backup_restore_matrix_v1.0.yaml
+  sha256: 60ab681822e1aa7c63584bb1b1f4cb6202f4f0dcbea572462dd3a3e7fa8c15f6
+  classification: CANONICAL_AUTHORITY
+- uri: repo://changes/st-1607/generated/gate-evidence-pack.local-blocked.v1.json
+  sha256: 9fb64e6ea6e6c38869f02422fe45960fa72b0cca3e05af0f1d57f57a05ab8ec5
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1607/manifest.yaml
+  sha256: 7efd7d57e6d1599461bca7903fe76c58cbd9a4969f3036b1a74ae26e7df415be
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml
+  sha256: 49902bbbbfe791f313c68c7d450c47271972bbf94f7486d2837040fdbceb0371
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json
+  sha256: e5a9b3d8dcc16204594c7906dd232f6cadfb32a3e2def70cfe1f901773f4d022
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json
+  sha256: cc9c0057a1f42546988596ad02891d638471370997eadf50d55bbe61fe884c88
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/operations/publication-plan.v1.json
+  sha256: 53db8c8277da9dbd3b5b98a107327845307f58a9e3b767042ea9e64757f0e163
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json
+  sha256: 1a1827f0296f1bdd7c983d141b2c2eae87a4ad9f327e68062e036adde289c73c
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1704/affiliate-learning-v2/DESIGN_HANDOFF_V1.yaml
+  sha256: c99f444a7ed4e1c5ee4d27f74e930b8e874cb5a79d4c81f0b8509371c353d247
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
+  sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+- uri: repo://changes/st-1704/affiliate-learning-v2/runtime-manifest.v2.json
+  sha256: d4583a62fd4db0cc7845b80bc9375d401861541afd5ae225abe33f628d76c5e9
+  classification: NON_ATTESTING_DEPENDENCY_INPUT
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-1705/generated/pilot-security-recovery-signoff.local-blocked.v1.json
+  bytes: 12742
+  sha256: c6f6e85237c3aa19684e6ed3913ddb23913efb02574fb08b91709ee1f157d192
+transaction:
+  model: TWO_OUTPUT_RECOVERABLE_ALL_OR_NOTHING
+  writer_lock: STORY_DIRECTORY_FLOCK
+  check_pending_recovery: READ_ONLY_REJECT
+boundary:
+  classification: LOCAL_BLOCKED_PILOT_SIGNOFF_NON_ATTESTING
+  decision: BLOCKED
+  sign_off: NOT_SIGNED_OFF
+  pilot_eligibility: NOT_ELIGIBLE
+  active_blocking_open_decisions: 14
+  formal_tst_026: NOT_EXECUTED
+  formal_tst_029: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  source_freeze: UNAVAILABLE
+  reviewed_implementation_tree: UNAVAILABLE
+  publication_authority: NONE
+  release_authority: NONE
+  production_authority: NONE

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any
+from typing import Any, cast
 
 from scripts import (
     build_st0504_product_identity_human_review_reference_plan as generator,
@@ -30,7 +30,7 @@ def test_predecessor_binds_exact_commit_artifacts_and_safe_semantics() -> None:
     predecessor = _plan()["predecessor_binding"]
     assert predecessor["story_id"] == "ST-0503"
     assert predecessor["commit"] == generator.PREDECESSOR_COMMIT
-    assert predecessor["artifacts"] == generator._expected_predecessor_artifacts()
+    assert predecessor["artifacts"] == generator._expected_predecessor_artifacts()  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
     assert predecessor["semantics"] == generator.EXPECTED_PREDECESSOR_SEMANTICS
     assert predecessor["semantics"]["identity_status"] == "REVIEW_REQUIRED"
     assert predecessor["semantics"]["confidence_status"] == "SOURCE_ABSENT"
@@ -172,9 +172,11 @@ def test_installed_plan_contains_no_false_completion_claim_values() -> None:
         if type(value) is str:
             return [value]
         if type(value) is list:
-            return [item for child in value for item in strings(child)]
+            list_values = cast(list[object], value)
+            return [item for child in list_values for item in strings(child)]
         if type(value) is dict:
-            return [item for child in value.values() for item in strings(child)]
+            map_values = cast(dict[object, object], value)
+            return [item for child in map_values.values() for item in strings(child)]
         return []
 
     assert {

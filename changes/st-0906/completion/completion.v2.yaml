@@ -1,0 +1,31 @@
+schema_version: 2
+story_id: ST-0906
+proposal_status: LOCAL_IMPLEMENTATION_COMPLETE
+canonical_status_preserved: true
+implementation:
+  recorded_fixture_projection: COMPLETE
+  strict_view_model: COMPLETE
+  deterministic_html_renderer: COMPLETE
+  route_registration: DISABLED
+  command_dispatch: DISABLED
+authority:
+  final_approval_authorized: false
+  publication_authorized: false
+  rollback_authorized: false
+  external_write_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+verification:
+  local_owner_generation: EXECUTED
+  local_typescript_model_and_render_harness: EXECUTED
+  TST-022: NOT_EXECUTED
+  TST-024: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  screen_reader: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+deferred_debt: []

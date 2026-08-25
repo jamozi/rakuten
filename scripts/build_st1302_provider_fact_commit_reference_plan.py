@@ -43,7 +43,7 @@ SOURCE_PATHS: Final = (CONTRACT_PATH, README_PATH, GENERATOR_PATH, *TEST_PATHS)
 GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 SOURCE_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
@@ -148,15 +148,15 @@ AUTHORITY_ARTIFACTS: Final = (
 REFERENCE_INPUT_ARTIFACTS: Final = (
     (
         ST0308_CONTRACT_PATH,
-        "98a5b51b8098dcdd2993fb6eb2a5bdae98087f5a46da696fd79a41bd33d9f4a9",
+        "f523622b96fe7ad1b26f16b2a2ac4bc26b1a910d93fe8f10385f4e174f399f8b",
     ),
     (
         ST0308_PLAN_PATH,
-        "290a0475fbf9e1996eba989e15344bd9974bb08053ab8def0fd35246b3636305",
+        "c9562f65899e41fc086eedf6b7173ed99949e01769d7c72634bdb56ffd7040b8",
     ),
     (
         ST0308_MANIFEST_PATH,
-        "b38e8de274b95edd2950850e3eea8f4a3d2e51e8624fa5626dcf16ea5638425d",
+        "11173c50e8b4f4415bf8dbbc9959a9e581324df05c825b838974514819303750",
     ),
     (
         ST0305_CONTRACT_PATH,
@@ -576,7 +576,7 @@ def _sha256(content: bytes) -> str:
 def _read(root: Path, relative: Path, field: str) -> bytes:
     physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
     try:
-        content = physical.read_bytes()
+        content = cast(bytes, physical.read_bytes())
     except OSError:
         _fail("FILE_UNAVAILABLE", field)
     if len(content) > MAX_SOURCE_BYTES:

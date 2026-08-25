@@ -1,4 +1,4 @@
-"""Shared fixtures for the isolated ST-0602 reference-plan suite."""
+"""Shared fixtures for the isolated ST-0602 suites."""
 
 from __future__ import annotations
 
@@ -10,8 +10,10 @@ import pytest
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-if str(REPOSITORY_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPOSITORY_ROOT))
+PYTHON_ROOT = REPOSITORY_ROOT / "python"
+for path in (REPOSITORY_ROOT, PYTHON_ROOT):
+    if str(path) not in sys.path:
+        sys.path.insert(0, str(path))
 
 from scripts import (  # noqa: E402
     build_st0602_fact_extraction_validation_reference_plan as generator,

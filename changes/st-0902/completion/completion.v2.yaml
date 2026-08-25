@@ -1,0 +1,56 @@
+schema_version: 2
+story_id: ST-0902
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
+base_integration_sha: d96614da45f7676b622df20164de28cc8d12c2d8
+prerequisite_source_commit_sha: 118c8525a9a9b731a2c969936e72d5c5cea0f372
+prerequisite_local_commit_sha: bb18a87ca1c9c2deba4a579bcfc63fb455afceb7
+implementation:
+  additive_v2: true
+  legacy_v1_compatible: true
+  exact_st0605_report_receipt_binding: true
+  exact_st0805_report_receipt_finding_binding: true
+  exact_st0901_completed_approve_binding: true
+  complete_zero_blocker_snapshot_required: true
+  active_human_managing_editor_required: true
+  site_mfa_fresh_step_up_required: true
+  author_editor_reviewer_separation_required: true
+  process_local_record_audit_idempotency_only: true
+  foreign_preserving_atomic_generation: true
+authority:
+  real_final_approval_authorized: false
+  publication_snapshot_authorized: false
+  publication_authorized: false
+  release_authorized: false
+  production_authorized: false
+local_checks:
+  focused_v2_suite: PASS_35
+  historical_st0902_v1: PASS_89
+  predecessor_st0901_v2: PASS_31
+  predecessor_st0605: PASS_61
+  predecessor_st0605_runtime: PASS_90
+  predecessor_st0805: PASS_361
+  predecessor_st0805_runtime: PASS_57
+  owner_generator_check: PASS_V1_AND_V2
+  compile_import: PASS
+  ruff_check: PASS
+  ruff_format_check: PASS
+  strict_mypy: PASS_12_SOURCE_FILES
+  configured_pyright: PASS_11_SOURCE_FILES
+  secret_scan: PASS_OWNED_21_FILES_ZERO_FINDINGS
+  native_linked_worktree_secret_scan: OPERATIONAL_ERROR_UNSAFE_GIT_METADATA
+  canonical_import_verify: PASS_105_FILES_104_CHECKSUMS_103_MANIFEST_ENTRIES
+  workspace_no_write_check: PASS_42_DIRECTORIES
+  git_diff_check: PASS
+debt:
+  introduced_local_debt: NONE
+not_executed:
+  canonical_registry_apply: NOT_EXECUTED
+  formal_tst_012: NOT_EXECUTED
+  formal_tst_021: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_validation: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  production: NOT_EXECUTED

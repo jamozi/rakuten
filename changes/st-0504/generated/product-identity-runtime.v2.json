@@ -1,0 +1,213 @@
+{
+  "authorization_boundary": {
+    "action": "manage_product_identity",
+    "active_session_recheck_required": true,
+    "ambiguous_mapping_outcome": "QUEUE_ONLY_NO_DECISION_WRITE",
+    "collaborator_material_pre_post_recomputation": true,
+    "current_block_reason": "STEP_UP_RESOURCE_UNMAPPED",
+    "current_canonical_binding": "BLOCKED",
+    "exact_audit_digest_recomputation": true,
+    "exact_result_and_request_digest_revalidation": true,
+    "new_authorization_issuance": false,
+    "operation_id": "CAT-006",
+    "recorded_durable_allow_recovery_only": true,
+    "resource_id_inference": false,
+    "resource_kind": "PRODUCT",
+    "resource_state": null,
+    "service": "DurableAuthorizationService.recover_admin",
+    "site_binding_required": true,
+    "store_action_count_exact_zero": true
+  },
+  "canonical_status": "UNCHANGED",
+  "classification": "RECORDED_LOCAL_HUMAN_REVIEW_PRODUCT_IDENTITY_RUNTIME",
+  "dependency": {
+    "accepted_type": "PersistedCatalogNormalizationV2",
+    "binding": "SNAPSHOT_BATCH_CANDIDATE_RECEIPT_RAW_CHAIN_AND_RECORD_HASHES",
+    "story_id": "ST-0503"
+  },
+  "durability_boundary": {
+    "ambiguous_commit_recovery": true,
+    "append_only_decisions": true,
+    "append_only_schema_triggers": true,
+    "atomic_decision_state_outbox_journal": true,
+    "atomic_queue_pairs_state_outbox_journal": true,
+    "backend": "OWNER_PRIVATE_SQLITE",
+    "canonical_stored_json_required": true,
+    "canonical_uuid_and_rfc3339_required": true,
+    "compare_and_swap": true,
+    "concurrency_fail_closed": true,
+    "cross_process_restart_rollback_detection": false,
+    "database_mode": "0600",
+    "directory_mode": "0700",
+    "exact_foreign_keys": true,
+    "exact_schema_binding": true,
+    "exclusive_created_initialization": true,
+    "external_rollback_anchor": false,
+    "hardlink_rejected": true,
+    "idempotency_journal": true,
+    "live_device_inode_pinned": true,
+    "per_queue_hash_chain": true,
+    "preexisting_uninitialized_database_rejected": true,
+    "process_local_monotonic_prefix_pin": true,
+    "restart_recovery": true,
+    "rollback_detection_scope": "SAME_STORE_PROCESS_ONLY",
+    "same_process_rollback_detection": true,
+    "schema_drift_fail_closed": true,
+    "sqlite_commit_exception_exact_recovery": true,
+    "strict_tables": true,
+    "symlink_rejected": true,
+    "tamper_fail_closed": true,
+    "unsafe_path_rejected": true
+  },
+  "event_contract": {
+    "channel": "ingestion.events",
+    "decision_event_type": "jp.raos.catalog.grouping_decision_recorded.v1",
+    "delivery_worker": "NOT_IMPLEMENTED_NOT_ACTIVATED",
+    "queue_event_type": "jp.raos.catalog.identity_review_queued.v2"
+  },
+  "execution_boundary": {
+    "credential": false,
+    "default_enabled": false,
+    "external_actions": 0,
+    "http": false,
+    "live_write": false,
+    "network": false,
+    "production_authority": "NONE",
+    "provider": false,
+    "publication": false,
+    "worker": false
+  },
+  "external_actions": [],
+  "formal_evidence": {
+    "TST-005": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-007": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-008_postgresql": "NOT_EXECUTED",
+    "TST-020": "LOCAL_POLICY_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  },
+  "human_decision_boundary": {
+    "actor_session_fingerprint_required": true,
+    "append_only_history": true,
+    "authorization_provenance_required": true,
+    "decision_changes_ranking": false,
+    "decision_changes_readiness": false,
+    "decision_is_grouping_execution": false,
+    "decision_types": [
+      "MERGE",
+      "SPLIT"
+    ],
+    "past_decision_mutation": false,
+    "reason_required": true,
+    "supersede_by_new_decision": true
+  },
+  "identity_boundary": {
+    "all_candidate_pairs_queued": true,
+    "automatic_merge": false,
+    "automatic_split": false,
+    "canonical_product_creation": false,
+    "category_rules": [],
+    "grouping_application": false,
+    "grouping_inference": false,
+    "identity_inference": false,
+    "open_decision": "OD-006",
+    "open_decision_resolved": false,
+    "ranking_surface": false,
+    "readiness": "NOT_READY",
+    "review_status": "HUMAN_REVIEW",
+    "scores": [],
+    "thresholds": []
+  },
+  "local_implementation_status": "LOCAL_CODE_COMPLETE",
+  "production_authority": "NONE",
+  "recommendation_boundary": {
+    "excluded_inputs": [
+      "EPC",
+      "RPM",
+      "affiliateRate",
+      "affiliate_rate",
+      "commission",
+      "epc",
+      "profit",
+      "ranking_score",
+      "recommendation_score",
+      "reviewAverage",
+      "reviewCount",
+      "review_aggregate",
+      "review_body",
+      "reward",
+      "rpm"
+    ],
+    "ranking_surface": false,
+    "recommendation_mutation": false
+  },
+  "runtime_version": "ST0504_RECORDED_HUMAN_DECISION_V2",
+  "schema_version": "2.0.0",
+  "source_boundary": {
+    "accepted_type": "PersistedCatalogNormalizationV2",
+    "dependency_story": "ST-0503",
+    "exact_type_required": true,
+    "external_actions": 0,
+    "provider_or_network_capability": false,
+    "source_batch_hash_required": true,
+    "source_candidate_record_hash_required": true,
+    "source_chain_and_persisted_record_hash_required": true,
+    "source_receipt_and_raw_hash_required": true,
+    "source_snapshot_hash_required": true
+  },
+  "state_contract": {
+    "commit_faults": [
+      "NONE",
+      "KNOWN_BEFORE_COMMIT",
+      "UNKNOWN_BEFORE_COMMIT",
+      "UNKNOWN_AFTER_COMMIT",
+      "SQLITE_ERROR_BEFORE_COMMIT",
+      "SQLITE_ERROR_AFTER_COMMIT"
+    ],
+    "decision_types": [
+      "MERGE",
+      "SPLIT"
+    ],
+    "readiness": "NOT_READY",
+    "review_status": "HUMAN_REVIEW"
+  },
+  "story_id": "ST-0504",
+  "synthetic_fixture": {
+    "activation": false,
+    "commit_faults": [
+      "NONE",
+      "KNOWN_BEFORE_COMMIT",
+      "UNKNOWN_BEFORE_COMMIT",
+      "UNKNOWN_AFTER_COMMIT",
+      "SQLITE_ERROR_BEFORE_COMMIT",
+      "SQLITE_ERROR_AFTER_COMMIT"
+    ],
+    "contains_credential_or_production_data": false,
+    "expected": {
+      "decision_types": [
+        "MERGE",
+        "SPLIT"
+      ],
+      "external_actions": 0,
+      "first_history_version": 2,
+      "grouping_applied": false,
+      "ranking_impact": false,
+      "readiness": "NOT_READY",
+      "review_status": "HUMAN_REVIEW",
+      "supersession_is_append_only": true
+    },
+    "operational_default": false,
+    "schema_version": "2.0.0",
+    "source": {
+      "candidate_count": 2,
+      "exact_persisted_hash_binding": true,
+      "expected_pair_count": 1,
+      "runtime_version": "V2",
+      "story_id": "ST-0503"
+    },
+    "story_id": "ST-0504",
+    "synthetic": true
+  }
+}

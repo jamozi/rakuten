@@ -1,0 +1,234 @@
+document:
+  id: RAOS-ST0705-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V1
+  schema_version: 1
+  story_id: ST-0705
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  recorded_at: '2026-08-24T07:42:22Z'
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+base:
+  branch: codex/st0705-local-complete-20260824
+  base_commit_sha: 3fc1bd8b3135ecefaa05989b90906ecab8380119
+  implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
+runtime:
+  contract:
+    path: changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml
+    sha256: 892369944ee610c53c0ac61cac8c4bb2c6d3d10488493ce516c97fd609966f28
+  owner_generator:
+    path: scripts/build_st0705_ai_output_validation_runtime.py
+    sha256: 9e7b6e081ea516e28bdf664207234a43002ee1874b63816bd24f934d5119ae4f
+  runtime_manifest:
+    path: changes/st-0705/runtime-manifest.v1.yaml
+    sha256: 1e8da112bdcd3413565433c368994777d94c636e0955f8cc1c525ec206ba17f4
+    source_artifact_count: 40
+    generated_artifact_count: 2
+  profile_registry:
+    path: changes/st-0705/generated/ai-output-validation-profiles.v1.json
+    sha256: bc102480a6eb56f030e27d92e4dc239851ea482474e747ab408dfa23f962971a
+    exact_profile_count: 12
+    exact_schema_count: 12
+  recorded_fixture:
+    path: changes/st-0705/generated/ai-output-validation-pass.v1.json
+    sha256: afc22bd0c54169a19401b4156c4f66887888d86de2311143bd949b8ede2c008d
+  preserved_historical_reference:
+    manifest_path: changes/st-0705/manifest.yaml
+    manifest_sha256: 642e38afc998b14af9374850600318f14de625c9276947d8e8b90d5696169d86
+    generated_plan_path: changes/st-0705/generated/ai-output-validation-reference-plan.v1.json
+    generated_plan_sha256: 9a50aae95b4b6233f82a1671dd87882512d500ffa56b7eca11afc6c19543e5bd
+predecessor_reconciliation:
+  story_id: ST-0702
+  exact_commit_sha: 3fc1bd8b3135ecefaa05989b90906ecab8380119
+  context_contract_sha256: b684e534268de79e4b118713f07932cfa71d10bda2e092003f00985f76811eaf
+  exact_runtime_receipt_count: 2
+  historical_pinned_artifact_count: 9
+  semantic_revalidation: PASS
+  unsafe_hash_only_rebind: FORBIDDEN
+validation_boundary:
+  evaluator: PURE_DETERMINISTIC
+  ordered_gates:
+    - AIOV-000
+    - AIOV-001
+    - AIOV-002
+    - AIOV-003
+    - AIOV-004
+    - AIOV-005
+    - AIOV-006
+    - AIOV-007
+    - AIOV-008
+    - AIOV-009
+    - AIOV-010
+  profile_locator_mapping: EXPLICIT_GENERATOR_OWNED_ONLY
+  heuristic_field_mapping: FORBIDDEN
+  local_status_vocabulary:
+    - LOCAL_VALIDATED
+    - BLOCKED
+    - UNEVALUABLE
+  status_precedence: BLOCKED_OVER_UNEVALUABLE_OVER_LOCAL_VALIDATED
+  schema_dialect: DRAFT_2020_12_WITH_FORMAT_CHECKER
+  output_json: STRICT_CANONICAL_OBJECT_BYTES
+  maximum_output_bytes: 4194304
+  maximum_output_character_business_threshold: NONE
+  provider_exchange_sha_is_output_sha: false
+  ai_output_ast_is_content_ast: false
+  repair_execution: NONE
+  one_repair_eligible_failure_codes:
+    - AI-OUT-001
+    - AI-OUT-002
+coverage_boundary:
+  owner_story: ST-0605
+  exact_bindings:
+    - canonical_output_sha256
+    - article_version_id
+    - article_body_sha256
+    - source_packet_version_id
+    - source_packet_content_sha256
+    - complete_claim_set_sha256
+    - evaluation_input_sha256
+    - report_sha256
+  valid_blocked_report: BLOCKED
+  corrupt_or_mismatched_report: UNEVALUABLE
+authority_boundary:
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  provider_call: false
+  network: false
+  credentials: false
+  persistence: false
+  approval_authority: NONE
+  publication_authority: NONE
+  production_eligible: false
+toolchain:
+  python: 3.14.6
+  pyyaml: 6.0.3
+  jsonschema: 4.26.0
+  attrs: 26.1.0
+  referencing: 0.37.0
+  rpds_py: 2026.6.3
+  pytest: 9.1.1
+  ruff: 0.16.1
+  mypy: 2.3.0
+verification:
+  results:
+    - check: runtime_owner_build_and_no_write_check
+      result: PASS
+    - check: historical_reference_owner_build_and_no_write_check
+      result: PASS
+    - check: tests_st0705_runtime
+      result: PASS
+      passed: 44
+    - check: historical_tests_st0705
+      result: PASS
+      passed: 74
+      environment_note: TMPDIR=/tmp avoids non-POSIX mode semantics on the Windows-mounted default temp directory
+    - check: combined_focused_tests
+      result: PASS
+      passed: 118
+    - check: predecessor_tests_st0702
+      result: PASS
+      passed: 38
+    - check: affected_tests_st0706
+      result: EXPECTED_OWNER_REBIND_REQUIRED
+      passed: 75
+      failed: 3
+      error_class: PINNED_SOURCE_HASH_MISMATCH
+    - check: affected_tests_st0707
+      result: EXPECTED_OWNER_REBIND_REQUIRED
+      passed: 50
+      failed: 3
+      errors: 9
+      error_class: ST0705_ARTIFACT_HASH_DRIFT
+    - check: affected_tests_st0708
+      result: EXPECTED_TRANSITIVE_OWNER_REBIND_REQUIRED
+      passed: 141
+      failed: 5
+      errors: 12
+      error_class: PINNED_INPUT_DRIFT
+    - check: affected_tests_st0709
+      result: EXPECTED_TRANSITIVE_OWNER_REBIND_REQUIRED
+      passed: 5
+      failed: 1
+      error_class: ST0709_AI_GOVERNANCE_BUILD_FAILED
+    - check: ruff_format_and_lint
+      result: PASS
+      files: 7
+    - check: strict_mypy
+      result: PASS
+      files: 6
+    - check: ast_parse
+      result: PASS
+      files: 7
+    - check: fresh_import
+      result: PASS
+    - check: focused_changed_file_secret_scan
+      result: PASS
+      scanned_files: 18
+      findings: 0
+    - check: workspace_layout_no_write_check
+      result: PASS
+      directories: 42
+    - check: canonical_import_verification
+      result: PASS
+      imported_files: 105
+      verified_package_checksums: 104
+      verified_package_manifest_entries: 103
+      read_order: PASS
+    - check: git_diff_check
+      result: PASS
+formal_and_external_boundaries:
+  formal_tst_019: NOT_EXECUTED
+  formal_tst_020: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  credential_activity: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  canonical_status_apply: NOT_EXECUTED
+  formal_validated_claim: FORBIDDEN
+debt:
+  introduced_local_debt: []
+  deferred_integration_rebinds:
+    - id: ST0705-DOWNSTREAM-OWNER-REBIND
+      state: OPEN
+      closure_owner_stories:
+        - ST-0706
+        - ST-0707
+        - ST-0708
+        - ST-0709
+      reason: >-
+        Those owner contracts and generated artifacts intentionally fail closed
+        on the repaired ST-0705 byte identities until regenerated in dependency
+        order by their owning Stories.
+      safe_impact: >-
+        Only local exact-pin verification and recorded-fixture loading are
+        refused; no provider, publication, release, staging, or Production
+        authority is enabled.
+      observed_checks:
+        - command: >-
+            pytest -p no:cacheprovider -q tests/st0706
+          result: 3 failed, 75 passed
+        - command: >-
+            pytest -p no:cacheprovider -q tests/st0707 tests/st0707_runtime
+          result: 3 failed, 50 passed, 9 errors
+        - command: >-
+            pytest -p no:cacheprovider -q tests/st0708 tests/st0708_v2
+          result: 5 failed, 141 passed, 12 errors
+        - command: >-
+            pytest -p no:cacheprovider -q tests/st0709 tests/st0709_v2
+          result: 1 failed, 5 passed
+  deferred_canonical_limitations:
+    - id: ST0705-LIM-AIT004-CONTENT-AST
+      state: UNEVALUABLE
+      reason: frozen block content is not Content AST and requires ST-0806 binding
+      severity: HIGH
+    - id: ST0705-LIM-AIT005-ALIGNMENT-SCHEMA
+      state: UNEVALUABLE
+      reason: frozen schema omits alignment-required subject, evidence-requirement, and temporal fields
+      severity: MEDIUM
+    - id: ST0705-LIM-AIT009-ALIGNMENT-SCHEMA
+      state: UNEVALUABLE
+      reason: frozen schema omits alignment-required decision, intent-cluster, and merge-reference fields
+      severity: MEDIUM
+  disabled_profiles:
+    - AIT-011
+    - AIT-012
+  local_runtime_gap_closed: true

@@ -1,0 +1,186 @@
+schema_version: 2
+story_id: ST-1004
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_DISCLOSURE_AFFILIATE_RUNTIME_MANIFEST_V2
+source_artifact_count: 29
+source_artifacts:
+- uri: repo://changes/st-1004/contracts/disclosure-affiliate-runtime.v2.yaml
+  bytes: 7905
+  sha256: b11d96045c0ce49bf27c0fddb4c142e1d53301356d9e760be7c32c330f0b9231
+  role: OWNER_SOURCE
+- uri: repo://scripts/build_st1004_disclosure_affiliate_runtime.py
+  bytes: 22370
+  sha256: 4a13f7c855f70ad3a0d113eb0ff8bae7746dea97b01e6b9adde95b03873a409d
+  role: OWNER_SOURCE
+- uri: repo://packages/web-ui/src/disclosure-affiliate-cta.ts
+  bytes: 43176
+  sha256: 4e53048e1c59030dfabc882b868d7e6ccafd57adf715707b1fe2bc80091c47be
+  role: OWNER_SOURCE
+- uri: repo://packages/web-ui/src/index.ts
+  bytes: 21657
+  sha256: ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c
+  role: OWNER_SOURCE
+- uri: repo://apps/web/src/public-article-page.tsx
+  bytes: 8041
+  sha256: 664a1c35c483848d57e78a2dfda315e918d4bac1f9d4ecea6b2265411b8c2777
+  role: OWNER_SOURCE
+- uri: repo://apps/web/app/articles/[slug]/article.module.css
+  bytes: 7535
+  sha256: 077a789fdb8cb7efc204a7ff43e45b5a0422ded611d60bcba00b80df4c346937
+  role: OWNER_SOURCE
+- uri: repo://changes/st-1004/PREFLIGHT.md
+  bytes: 1984
+  sha256: 9f3c7d98607c19d9164d12fefd6fbf1e4f40ba9652a7493816817c1f16ecac7a
+  role: OWNER_SOURCE
+- uri: repo://changes/st-1004/README.md
+  bytes: 3747
+  sha256: a2ccb81c8b38c5d7b6eceab7b58397dbc3dc0035ae689c9f7f815f30bf4646a0
+  role: OWNER_SOURCE
+- uri: repo://tests/st1004_v2/disclosure-affiliate-runtime.test.ts
+  bytes: 4774
+  sha256: 007c7c5981825b9fcbe2e9cfb7e13e8d7127c3bdbb891cf4bea51ce29eb74a79
+  role: OWNER_SOURCE
+- uri: repo://tests/st1004_v2/disclosure-affiliate-negative.test.ts
+  bytes: 5700
+  sha256: 8e24b8428dc3712ed4c27c21d4eba2d61f5c78ac150e915575d3def786f1292c
+  role: OWNER_SOURCE
+- uri: repo://tests/st1004_v2/disclosure-affiliate-static.test.ts
+  bytes: 4451
+  sha256: c66aa4fb562695bb8d4ab78d5a24809442881f4b20537875933ad4441afa6849
+  role: OWNER_SOURCE
+- uri: repo://tests/st1004_v2/check-browser.mjs
+  bytes: 3684
+  sha256: 92ac572d83e63e462b583ab7629471504c1649d2b368029a9f9da458d9f4d8d1
+  role: OWNER_SOURCE
+- uri: repo://tests/st1004_v2/test_generation.py
+  bytes: 3559
+  sha256: 5897a0e61515c21953ccafb5e6cadd13368c89156b098115bf6406700405f076
+  role: OWNER_SOURCE
+- uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  bytes: 7943
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  role: CANONICAL_INPUT
+- uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+  bytes: 4956
+  sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  role: CANONICAL_INPUT
+- uri: repo://docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+  bytes: 8046
+  sha256: 0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e
+  role: CANONICAL_INPUT
+- uri: repo://docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml
+  bytes: 23487
+  sha256: dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050
+  role: CANONICAL_INPUT
+- uri: repo://docs/canonical/02_ui/RAOS_08_component_catalog_v1.0.yaml
+  bytes: 12504
+  sha256: 986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2
+  role: CANONICAL_INPUT
+- uri: repo://docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv
+  bytes: 4051
+  sha256: 690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e
+  role: CANONICAL_INPUT
+- uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  bytes: 24993
+  sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  role: CANONICAL_INPUT
+- uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+  bytes: 10487
+  sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  role: CANONICAL_INPUT
+- uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  bytes: 11395
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  role: CANONICAL_INPUT
+- uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  bytes: 71458
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  role: CANONICAL_INPUT
+- uri: repo://changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
+  bytes: 6462
+  sha256: e248d4dab10c7c98aa08b45ddeb2295851f84713ad9fed2dfd40d0250cadf258
+  role: DEPENDENCY_ARTIFACT
+- uri: repo://changes/st-1002/generated/public-article-renderer-recorded.v2.json
+  bytes: 5229
+  sha256: b19b67f6530b66004d50754f015f394cd033d07451106d5b3a6db9a5a648bc3b
+  role: DEPENDENCY_ARTIFACT
+- uri: repo://changes/st-1002/runtime-manifest.v2.yaml
+  bytes: 8759
+  sha256: 6da3cb69a3eef23594fb868e5cf0adcc84eadd4412990aafc26770d3dd0db300
+  role: DEPENDENCY_ARTIFACT
+- uri: repo://changes/st-0503/README.md
+  bytes: 6403
+  sha256: e372c00533e7ddddb71e10308fb703e8c31261351c61d593c520371c505b2f0b
+  role: DEPENDENCY_ARTIFACT
+- uri: repo://python/raos/domain/catalog/catalog_normalization.py
+  bytes: 29866
+  sha256: 6fa0adbd3ade25c5e6880e5aaec70f2c010173873b3cd3d11987d317f81642d9
+  role: DEPENDENCY_ARTIFACT
+- uri: repo://tests/st0503/test_normalization.py
+  bytes: 13144
+  sha256: 1bd442a1160be528e677a7f026e449f65a9bb937b91e29f78daa1d231c2feb1f
+  role: DEPENDENCY_ARTIFACT
+generated_artifacts:
+- uri: repo://changes/st-1004/generated/disclosure-affiliate-recorded.v2.json
+  artifact_role: DETERMINISTIC_RECORDED_DISCLOSURE_AFFILIATE_VIEW
+  media_type: application/json
+  bytes: 3869
+  sha256: 4dcec2348f41b1533ed944a6d6ab63f14b6dd9900bab8cfcbab0fa11f46e7167
+generation:
+  owner: repo://scripts/build_st1004_disclosure_affiliate_runtime.py
+  command: .venv/bin/python scripts/build_st1004_disclosure_affiliate_runtime.py
+  check_command: .venv/bin/python scripts/build_st1004_disclosure_affiliate_runtime.py --check
+  network: NONE
+runtime_boundary:
+  framework: NEXT_APP_ROUTER_SERVER_COMPONENTS
+  rendering: FORCE_DYNAMIC_SERVER_RENDERING
+  exact_recorded_slug_count: 1
+  client_component_count: 0
+  javascript_required_for_reading: false
+  raw_html_allowed: false
+  product_cards_rendered: false
+  offers_rendered: false
+  affiliate_cta_rendered_on_route: false
+  synthetic_value_bearing_fixture_route_exposed: false
+  provider: NONE
+  api: NONE
+  database: NONE
+  network: NONE
+  tracking: NONE
+  beacon: NONE
+  arbitrary_url_allowed: false
+security_boundary:
+  requirements:
+  - FR-011
+  controls:
+  - SEC-APP-006
+  threats:
+  - THR-029
+  direct_destination_only: true
+  open_redirect_surface: NONE
+  actual_destination_state: UNAVAILABLE_SOURCE
+accessibility_boundary:
+  components:
+  - UI-C031
+  - UI-C034
+  disclosure_heading_count: 1
+  link_destination_clear_before_activation: true
+  native_keyboard_semantics: true
+  focus_indicator_required: true
+  minimum_target_size_px: 44
+authority:
+  approval_authorized: false
+  public_projection_authorized: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+  external_write: false
+  TST-020: NOT_EXECUTED
+  TST-022: NOT_EXECUTED
+  TST-026: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

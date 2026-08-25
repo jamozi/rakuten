@@ -1,0 +1,198 @@
+{
+  "authority": "NONE",
+  "contract_sha256": "42715fc526bcb4eddccbd836084769f7ef8886b7767ad806f33accdff4843bdd",
+  "document_id": "RAOS-ST0806-AI-DRAFT-INTEGRATION-PLAN-002",
+  "enabled": false,
+  "formal_and_external": {
+    "formal_TST_018": "NOT_EXECUTED",
+    "formal_TST_020": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "local_focused_tests": "IMPLEMENTED_BY_THIS_STORY",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  },
+  "generated_fixture_sha256": "656e434ab1b8c6b7af3a0c4bc75dcd880ef487744a50bc870ca0ab70ad9361c6",
+  "owner_source_sha256": {
+    "changes/st-0605/generated/claim-evidence-runtime-pass.v1.json": "b805ee491f7388ab39d99bd61dbc0a29d3b1659a9a44b44ebdeb73063e8356a1",
+    "changes/st-0806/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml": "55347f6ce7d85dfc2b92ebeb41e8c51bfbb4ee83398a490e7022946b634d1556",
+    "changes/st-0806/README.md": "413acc384c612591434874ecdf13b1a776302ace15833e6b555ace14e6e74b87",
+    "changes/st-0806/contracts/ai-draft-integration.v2.yaml": "42715fc526bcb4eddccbd836084769f7ef8886b7767ad806f33accdff4843bdd",
+    "contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json": "8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489",
+    "docs/execplans/ST-0806.md": "93f64c78a230baa17b22327e4ee93c39214172fef981dd0b30e6c82ffff825c9",
+    "docs/worklogs/ST-0806.md": "eb616f2223012b2ba9cc373d1b340f1626b577ecf70ade27665df010d6be6a3c",
+    "python/raos/adapters/recorded_ai_draft_integration.py": "e24d80774703cd5904833ba43bbf891b01cab0c1afd8e5f10002eabc2fcaea09",
+    "python/raos/adapters/recorded_ai_draft_integration_v2.py": "5f43a7e69eb6430ba2fa190635d0e4d1bc16e01f66e3b3043625277ffedda85c",
+    "python/raos/application/editorial/ai_draft_integration.py": "64f1d8e7623e6946f64ad90bc37a085846c8e83a7725a8805b4db1f7a0427102",
+    "python/raos/application/editorial/ai_draft_integration_v2.py": "72ddb13f422b09b288ed06fc05242e0b20decab07458f2a23f122717260f4de6",
+    "python/raos/domain/editorial/ai_draft_integration.py": "1ae4f54822862b9ffc29ca18b7a071d369404144ac1b03d8ea16f3cca8d6d889",
+    "python/raos/domain/editorial/ai_draft_integration_v2.py": "a033b7baac023179ea5cd245f399986e9969f2f1c611d6f4faf7cf98363e81b7",
+    "python/raos/ports/ai_draft_integration.py": "22a427745833771f788e1cc98b7b6bc3ae62870241376e7fb638fb97cfce9510",
+    "python/raos/ports/ai_draft_integration_v2.py": "e797a8b8edb5baa83b80e7fb078cebf529897e6b4f8f84eaae6e458c66347797",
+    "scripts/build_st0806_ai_draft_integration_v2.py": "28b44392ae226ae423241146569d16ee9fd66389413a0f2e3c170a9ec83725e6",
+    "scripts/secure_generated_publication.py": "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e",
+    "tests/st0806/test_ai_draft_integration_v2.py": "6d096a8b325c817768665c5a772e65a53d4ef33cfb977f5b4b06894459156400",
+    "tests/st0806/test_ai_draft_integration_v2_boundaries.py": "ec9714eeb5cbf00ed5ba47f9366c66586a8836296c7baecf48da706ebeec30f5",
+    "tests/st0806/test_ai_draft_integration_v2_generation.py": "584b4ea8eb2c5b98b5c69864444ec4508a4d9a52d7ac92a1e542d5edf9ad05af",
+    "tests/st0806/test_ai_draft_integration_v2_negative.py": "8e43d766f9e9a165a87a6ed9f8dad1e2816a1f18f57df7029b984f7243162f02",
+    "tests/st0806/v2_support.py": "8f5eeaa3520a6c6a242e20944304009a41ab202e443d373a168c2421bbd768be"
+  },
+  "policy_sha256": "443b5ea91544ea1e8d5f9c7c2e71ebe331fda6f81397f0b51e25aa70da5c77f2",
+  "proposal_boundary": {
+    "adoption_intent": "EFFECT_FREE_PROPOSAL_ONLY",
+    "ai_output_authority": "PROPOSAL_ONLY",
+    "apply": false,
+    "approval": false,
+    "article_version_count": 1,
+    "before_after_ast": "EXACT_CANONICAL_TYPED_CONTENT_AST_BYTES",
+    "claim_inventory": "COMPLETE_EXACT_SET",
+    "coverage_receipt": "REQUIRE_EXACT_REPORT_SHA256",
+    "coverage_report": "RECOMPUTE_EXACT_ST0605_RESULT",
+    "diff": "ORDERED_CANONICAL_JSON_POINTER_HASH_OPERATIONS",
+    "human_editable": true,
+    "lifecycle_state": "DRAFT",
+    "merge": false,
+    "missing_or_structural_coverage": "UNAVAILABLE",
+    "passing_all_verifiable_coverage": "AT_LEAST_95_PERCENT",
+    "passing_major_coverage": "EXACT_100_PERCENT",
+    "persistence": false,
+    "policy_or_evidence_failure": "BLOCKED",
+    "publication": false,
+    "recommendation_order_mutation": false,
+    "zero_denominator": "UNAVAILABLE"
+  },
+  "safe_defaults": {
+    "activation": "DISABLED",
+    "approval": false,
+    "broker": false,
+    "credentials": false,
+    "database": false,
+    "event_dispatch": false,
+    "filesystem_runtime": false,
+    "lifecycle_persistence": false,
+    "network": false,
+    "production": false,
+    "provider": false,
+    "publication": false,
+    "recorded_fixture_only": true,
+    "redrive": false,
+    "release": false,
+    "staging": false,
+    "synthetic_only": true,
+    "worker_loop": false
+  },
+  "source_bindings": [
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "role": "PRECEDENCE_AND_SAFE_DEFAULTS",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+      "role": "CANONICAL_DECISIONS",
+      "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+    },
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "role": "OPEN_DECISION_SAFE_DEFAULTS",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "role": "SECURITY_CONTROLS",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "role": "TST_018_AND_TST_020",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/05_test/RAOS_11_acceptance_traceability_v1.0.csv",
+      "role": "FR_006_AND_FR_007_TRACEABILITY",
+      "sha256": "253293a34e91b81d88dee103da8ee77ed5ff604689c3eb434f0c0ae231d50341"
+    },
+    {
+      "owner": "CANONICAL",
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "role": "APPROVED_STORY",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "owner": "RAOS-RD-001",
+      "path": "docs/upstream/key_documents/RAOS_01_requirements_catalog_v0.1.yaml",
+      "role": "FR_006_AND_FR_007",
+      "sha256": "bd4398da2aa73008b7332d2403e7a2e290b7bf1dd77df7bd7e7fd44bb3620827"
+    },
+    {
+      "owner": "RAOS-AI-001",
+      "path": "docs/upstream/key_documents/RAOS_05_ai_agent_prompt_routing_evaluation_design_v0.1.md",
+      "role": "PROPOSAL_ONLY_AI_TASK_BOUNDARY",
+      "sha256": "475e4b6b4490110fd9f94a07aaf4cf979bea99d59b7ef8b95ba0fdbe61219476"
+    },
+    {
+      "owner": "RAOS-AI-001",
+      "path": "docs/upstream/key_documents/RAOS_05_ai_task_catalog_v0.1.yaml",
+      "role": "AIT_004_AND_AIT_005_CONTRACTS",
+      "sha256": "8b5a0d820f0a6180dd0bbbd050553114c22efe499a553d72bbdb24ffc8483c04"
+    },
+    {
+      "owner": "RAOS-CONTENT-001",
+      "path": "docs/upstream/key_documents/RAOS_06_content_editorial_evidence_design_v0.1.md",
+      "role": "CONTENT_AST_CLAIM_AND_HUMAN_GATE_DESIGN",
+      "sha256": "a40b9859122b330f9db7246f58e7e45f8024f64fde8b07a41ab234ed11cae682"
+    },
+    {
+      "owner": "RAOS-CONTENT-001",
+      "path": "docs/upstream/key_documents/RAOS_06_article_type_catalog_v0.1.yaml",
+      "role": "ARTICLE_TYPE_CONTRACT",
+      "sha256": "6094ff56d365fef3c08a7f95e3ea4bff1f54a7bbab0b42ec390a78bbbbb7aa11"
+    },
+    {
+      "owner": "RAOS-CONTENT-001",
+      "path": "docs/upstream/key_documents/RAOS_06_editorial_policy_catalog_v0.1.yaml",
+      "role": "EDITORIAL_POLICY_CONTRACT",
+      "sha256": "d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a"
+    },
+    {
+      "owner": "RAOS-CONTENT-001",
+      "path": "docs/upstream/key_documents/RAOS_06_review_checklist_v0.1.yaml",
+      "role": "HUMAN_REVIEW_CONTRACT",
+      "sha256": "8373dbd354c751c699d02bc8c49b18074ae2e10a2ed0573ebd77d99103d3ea63"
+    },
+    {
+      "owner": "RAOS-CONTENT-001",
+      "path": "docs/upstream/patches/RAOS_06_003_ai_alignment_patch_v0.1.yaml",
+      "role": "AI_CONTENT_ALIGNMENT",
+      "sha256": "89fe29c6182dc38b40d96379a65715fada43b74e93b5715eb3320b6a50285c1e"
+    },
+    {
+      "owner": "ST-0706",
+      "path": "changes/st-0706/contracts/durable-ai-job-queue.v2.yaml",
+      "role": "EXACT_DURABLE_SUCCEEDED_RECEIPT",
+      "sha256": "54338981006281c8c2c683e6ba2b2415f6d6cadb981360c08907a00bdda9dee1"
+    },
+    {
+      "owner": "ST-0605",
+      "path": "changes/st-0605/contracts/claim-evidence-runtime.v1.yaml",
+      "role": "EXACT_CLAIM_COVERAGE_REPORT_AND_RECEIPT",
+      "sha256": "7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb"
+    },
+    {
+      "owner": "ST-0801",
+      "path": "contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json",
+      "role": "TYPED_CONTENT_AST",
+      "sha256": "a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac"
+    }
+  ],
+  "status": "LOCAL_IMPLEMENTATION_COMPLETE",
+  "story_id": "ST-0806",
+  "version": "2.0.0"
+}

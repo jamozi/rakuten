@@ -26,6 +26,10 @@ def isolated_repository(tmp_path: Path) -> Path:
         *generator.SOURCE_PATHS,
         generator.HELPER_PATH,
         *staging_generator.SOURCE_ARTIFACT_PATHS,
+        Path(
+            "infra/terraform/deployment-identity/"
+            "github-oidc.evaluation.recorded.v1.json"
+        ),
         *(Path(path) for _role, path, _digest in generator.EXPECTED_SOURCES),
         *(path for path, _digest in generator.EXPECTED_PREDECESSORS),
     }

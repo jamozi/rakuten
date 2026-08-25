@@ -1,0 +1,127 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-0602",
+  "classification": "MAXIMUM_SAFE_RECORDED_LOCAL_DURABLE_FACT_EXTRACTION_RUNTIME",
+  "local_implementation_status": "LOCAL_CODE_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "dependencies": {
+    "ST-0601": "EXACT_ARTIFACT_READBACK_V2_WITH_RAW_BYTES",
+    "ST-0503": "EXACT_PERSISTED_CATALOG_NORMALIZATION_V2"
+  },
+  "source_boundary": {
+    "artifact_readback_exact_type_required": true,
+    "artifact_record_receipt_request_page_version_logical_key_time_and_raw_hash_revalidated": true,
+    "normalization_exact_type_required": true,
+    "snapshot_batch_event_version_chain_and_time_revalidated": true,
+    "recorded_local_only": true,
+    "provider_or_network_capability": false,
+    "browser_or_tool_capability": false,
+    "ai_or_model_capability": false,
+    "manual_review_decision_capability": false,
+    "external_actions": 0
+  },
+  "fact_boundary": {
+    "subject_type": "OFFER",
+    "fact_kind": "ASSERTED",
+    "accepted_observations": [
+      "PRICE_JPY",
+      "AVAILABILITY_PROVIDER_FLAG",
+      "POSTAGE_INCLUDED_PROVIDER_FLAG"
+    ],
+    "affiliate_url_fact": false,
+    "product_fact": false,
+    "canonical_product_id": false,
+    "identity_open_decision": "OD-006",
+    "identity_status": "HUMAN_REVIEW",
+    "readiness": "NOT_READY",
+    "deterministic_fact_id_and_display_id": true,
+    "json_pointer_locator_to_normalized_observation": true,
+    "one_typed_value": true,
+    "numeric_price_unit": "JPY",
+    "numeric_price_locale": "ja-JP",
+    "boolean_unit": null,
+    "boolean_locale": null
+  },
+  "confidence_boundary": {
+    "value": "1.0000",
+    "basis": "EXACT_STRUCTURAL_EXTRACTION_NOT_TRUTH_ATTESTATION",
+    "meaning": "EXTRACTION_FIDELITY_ONLY",
+    "copies_provider_truth_confidence": false,
+    "truth_attestation": "NOT_ATTESTED",
+    "publication_readiness": "NOT_READY",
+    "manual_review_required": true
+  },
+  "excluded_inputs": [
+    "affiliate_url",
+    "canonical_product_id",
+    "commission",
+    "EPC",
+    "profit",
+    "ranking",
+    "recommendation",
+    "review_aggregate",
+    "review_body",
+    "reward",
+    "RPM"
+  ],
+  "job_boundary": {
+    "job_type": "evidence.extract_facts.v1",
+    "queue": "quality",
+    "idempotency_key": "source_snapshot_id+extractor_version",
+    "subject_hints": [],
+    "enqueue_capability": false
+  },
+  "event_boundary": {
+    "event_type": "jp.raos.evidence.facts_extracted.v1",
+    "channel": "quality.events",
+    "delivery_status": "RECORDED_LOCAL_NOT_DELIVERED",
+    "atomic_with_fact_batch_and_validation_records": true,
+    "delivery_worker": false
+  },
+  "durability_boundary": {
+    "backend": "OWNER_PRIVATE_SQLITE",
+    "strict_directory_mode": "0700",
+    "strict_database_mode": "0600",
+    "exclusive_create_distinguishes_new_from_preexisting_empty_or_partial": true,
+    "exact_schema_and_inventory": true,
+    "strict_tables": true,
+    "foreign_keys": true,
+    "symlink_rejected": true,
+    "hardlink_rejected": true,
+    "live_inode_pinned": true,
+    "atomic_batch_validation_outbox_journal_and_cas": true,
+    "idempotency_key": "source_snapshot_id+extractor_version",
+    "payload_hash_conflict_detection": true,
+    "restart_recovery": true,
+    "commit_ambiguity_recovery": true,
+    "hash_chain": true,
+    "process_lifetime_monotonic_head_and_count": true,
+    "cross_restart_rollback_anchor": false,
+    "delete_update_export_retention_capability": false
+  },
+  "authority_boundary": {
+    "publication": false,
+    "recommendation": false,
+    "ranking": false,
+    "revenue": false,
+    "live_provider": false,
+    "staging": false,
+    "release": false,
+    "production": false,
+    "external_action_count": 0,
+    "provider_action_count": 0,
+    "publication_action_count": 0,
+    "ai_action_count": 0,
+    "production_authority": "NONE"
+  },
+  "formal_evidence": {
+    "TST-005": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-007": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-008_postgresql": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "classification": "LOCAL_EVIDENCE_PROPOSAL",
+  "external_actions": [],
+  "formal_evidence": {
+    "TST-005": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-007": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-008_postgresql": "NOT_EXECUTED",
+    "TST-020": "LOCAL_POLICY_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  },
+  "live_actions": "NOT_EXECUTED",
+  "local_check_commands": [
+    "pytest -q tests/st0504",
+    "pytest -q tests/st0503 tests/st0504",
+    "ruff check <owned ST-0504 Python>",
+    "mypy --strict <owned ST-0504 Python>",
+    "pyright <owned ST-0504 Python>",
+    "unshare -Urn pytest -q tests/st0504/test_product_identity_runtime_v2.py tests/st0504/test_product_identity_runtime_v2_storage.py"
+  ],
+  "production": "NOT_EXECUTED",
+  "production_authority": "NONE",
+  "release": "NOT_EXECUTED",
+  "schema_version": "2.0.0",
+  "source_and_test_artifacts_hash_bound": true,
+  "staging": "NOT_EXECUTED",
+  "status_transition_authority": "NONE",
+  "story_id": "ST-0504"
+}

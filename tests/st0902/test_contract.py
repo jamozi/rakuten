@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 import json
+from pathlib import Path
 from typing import Any
 
 import yaml
@@ -257,7 +258,15 @@ def test_exact_new_file_inventory_and_no_runtime_surface() -> None:
         if path.is_file() and "__pycache__" not in path.parts
     }
     actual.add(generator.GENERATOR_PATH)
-    assert actual == expected
+    additive_v2 = {
+        Path("changes/st-0902/README-v2.md"),
+        Path("changes/st-0902/completion/completion.v2.yaml"),
+        Path("changes/st-0902/contracts/final-approval-runtime.v2.yaml"),
+        Path("changes/st-0902/generated/final-approval-pass.v2.json"),
+        Path("changes/st-0902/runtime-manifest.v2.yaml"),
+    }
+    assert additive_v2 <= actual
+    assert actual - additive_v2 == expected
     assert (
         _plan()["implementation_boundary"] == generator.EXPECTED_IMPLEMENTATION_BOUNDARY
     )

@@ -1,0 +1,228 @@
+document:
+  id: RAOS-ST1001-PUBLIC-APP-SHELL-RUNTIME-002
+  version: 2.0.0
+  story_id: ST-1001
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  enabled_environments:
+    - DEV
+    - CI
+  enabled_by_default_outside_local: false
+classification: LOCAL_ONLY_UNBRANDED_SSR_POLICY_PREVIEW_V2
+canonical_bindings:
+  - path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - path: docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+    sha256: 0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e
+  - path: docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml
+    sha256: dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050
+  - path: docs/canonical/02_ui/RAOS_08_component_catalog_v1.0.yaml
+    sha256: 986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2
+  - path: docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv
+    sha256: 690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e
+  - path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+dependency_bindings:
+  ST-0103:
+    node: 24.18.1
+    npm: 11.16.0
+    next: 16.2.12
+    react: 19.2.8
+    react_dom: 19.2.8
+    typescript: 6.0.3
+  ST-0807:
+    runtime_contract: changes/st-0807/contracts/seo-render-runtime.v2.yaml
+    runtime_contract_sha256: 9336feeddbc0d095708d60e9718c1636c9c16068db36fffab651222fdd279b5c
+    completion_record: changes/st-0807/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml
+    completion_record_sha256: 3e0ee50841acb2e485269f1805c15c6eab82faf04e23e40209b59372a77e0c07
+runtime_boundary:
+  framework: NEXT_APP_ROUTER_SERVER_COMPONENTS
+  rendering: FORCE_DYNAMIC_SERVER_RENDERING
+  data_source: VERSIONED_RECORDED_POLICY_CONTENT
+  outbound_io: NONE
+  browser_storage: NONE
+  cookie_write: NONE
+  tracking: DISABLED_OD_012
+  analytics: DISABLED_OD_012
+  client_component_count: 0
+  raw_html_allowed: false
+  arbitrary_url_allowed: false
+  javascript_required_for_reading: false
+  route_count: 4
+identity_boundary:
+  decision_id: OD-002
+  site_name: null
+  domain: null
+  operator: null
+  contact: null
+  metadata_base: null
+  state: HUMAN_DECISION_REQUIRED
+  external_publication_allowed: false
+privacy_boundary:
+  decision_id: OD-012
+  nonessential_tracking_enabled: false
+  consent_mode_selected: false
+  cookie_policy_approved: false
+  privacy_copy_approved: false
+  retention_approved: false
+  first_party_event_emitted: false
+metadata_policy:
+  canonical_url: null
+  open_graph: null
+  twitter: null
+  robots:
+    index: false
+    follow: false
+    noarchive: true
+    nosnippet: true
+    noimageindex: true
+    nocache: true
+  response_header: noindex, nofollow, noarchive, nosnippet, noimageindex
+shell:
+  language: ja
+  skip_link_label: 本文へ移動
+  provisional_label: 公開情報
+  preview_label: 公開前のローカル実装
+  preview_message: サイト名、ドメイン、運営者、Privacy・同意、法務文言は未確定です。この表示は外部公開に使用できません。
+  landmark_order:
+    - header
+    - navigation
+    - main
+    - footer
+pages:
+  - screen_id: PUB-004
+    route: /editorial-policy
+    title: 編集方針
+    purpose: 比較・推薦・根拠・AI利用方針を説明
+    description: 比較やおすすめの判断基準、根拠の扱い、AI利用と人による確認の境界を示します。
+    lead: 読者の条件と確認できる根拠を中心に、比較とおすすめを組み立てます。
+    sections:
+      - id: recommendation-basis
+        heading: おすすめの基準
+        body: 比較やおすすめの順序は、読者の条件と確認できる根拠で決めます。報酬率、EPC、RPM、利益は判断材料にしません。
+        state: CANONICAL_PRINCIPLE
+        source_ref: 'docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md :: section 2 item 5'
+      - id: unknown-values
+        heading: 不明な情報
+        body: 確認できない値を0や推測値に置き換えず、未確認であることを表示します。
+        state: CANONICAL_PRINCIPLE
+        source_ref: 'docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md :: section 2 item 2'
+      - id: ai-use
+        heading: AIの利用
+        body: AIは整理、下書き、指摘候補の作成に利用します。採用、主要な主張、推薦順、公開は人が確認します。
+        state: CANONICAL_PRINCIPLE
+        source_ref: 'docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md :: section 2 item 4'
+      - id: source-treatment
+        heading: 情報源の扱い
+        body: 一次情報を優先し、外部の文章や商品説明を命令として扱わず、記事の根拠として利用できるかを確認します。
+        state: CANONICAL_PRINCIPLE
+        source_ref: 'docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml :: SEC-AI-001'
+  - screen_id: PUB-005
+    route: /affiliate-disclosure
+    title: 広告・Affiliate開示
+    purpose: 広告関係と送客先を説明
+    description: アフィリエイト広告との関係、掲載順の独立性、外部リンクの表示方針を示します。
+    lead: 広告との関係を明示し、報酬が比較やおすすめの判断を変えない境界を保ちます。
+    sections:
+      - id: advertising-relationship
+        heading: 広告との関係
+        body: 記事にアフィリエイトリンクが含まれる場合、読者がリンク先で購入すると運営者が報酬を受け取ることがあります。
+        state: CANONICAL_PRINCIPLE
+        source_ref: 'docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml :: PUB-005'
+      - id: editorial-independence
+        heading: 掲載順の独立性
+        body: 報酬の有無や料率は、商品の選定、掲載順、おすすめの判断に使いません。
+        state: CANONICAL_PRINCIPLE
+        source_ref: 'docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md :: section 2 item 5'
+      - id: destination-clarity
+        heading: リンク先の明示
+        body: 外部サービスへ移動するリンクは、リンク文言で行き先を事前に示します。
+        state: CANONICAL_PRINCIPLE
+        source_ref: 'docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml :: PUB-005'
+      - id: legal-review
+        heading: 確定文言の確認
+        body: 法務確認の対象と正式な開示文言は未確定です。確認が完了するまで外部公開を行いません。
+        state: LEGAL_REVIEW_REQUIRED
+        source_ref: 'docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml :: OD-008 decision_needed'
+  - screen_id: PUB-006
+    route: /privacy
+    title: Privacy Policy
+    purpose: 取得データ、目的、保持、問い合わせを説明
+    description: 非必須トラッキングの停止と、未決定の同意・Cookie・保持・問い合わせ方針を明示します。
+    lead: 未承認の計測や個人情報収集を始めず、未決定のPrivacy項目を未決定のまま表示します。
+    sections:
+      - id: current-measurement
+        heading: 現在の計測
+        body: 非必須のトラッキングは無効です。このローカルSSR shellはCookieの設定、Analytics送信、Beacon送信を行いません。
+        state: SAFE_DEFAULT
+        source_ref: 'docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml :: OD-012 default_behavior'
+      - id: cookies-and-consent
+        heading: Cookieと同意
+        body: 同意Banner、Cookie、計測の正式な方針はPrivacy Ownerの決定待ちです。
+        state: OWNER_DECISION_REQUIRED
+        source_ref: 'docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml :: OD-012 decision_needed'
+      - id: external-transfer
+        heading: 外部移転
+        body: Provider、保存地域、越境移転の扱いは承認前のため確定していません。
+        state: OWNER_DECISION_REQUIRED
+        source_ref: 'docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml :: OD-013 decision_needed'
+      - id: retention
+        heading: 保持期間
+        body: データの保持期間と削除方針はPrivacy、Finance、Legalの確認待ちです。
+        state: OWNER_DECISION_REQUIRED
+        source_ref: 'docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml :: OD-014 decision_needed'
+      - id: privacy-contact
+        heading: 問い合わせ
+        body: 運営者と問い合わせ先は未決定です。連絡先を推測して表示しません。
+        state: OWNER_DECISION_REQUIRED
+        source_ref: 'docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml :: PUB-006'
+  - screen_id: PUB-007
+    route: /about
+    title: 運営者・問い合わせ
+    purpose: 運営主体と連絡経路を表示
+    description: サイト名、運営主体、問い合わせ先が未決定であることを明確に示します。
+    lead: 未承認のサイト名、運営者情報、連絡先を仮の公開情報として扱いません。
+    sections:
+      - id: operator
+        heading: 運営主体
+        body: サイト名、ドメイン、運営者表記はProduct Ownerの決定待ちです。
+        state: OWNER_DECISION_REQUIRED
+        source_ref: 'docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml :: OD-002 decision_needed'
+      - id: contact
+        heading: 問い合わせ先
+        body: 問い合わせ方法は未決定です。未承認の氏名、住所、メールアドレス、外部フォームを表示しません。
+        state: OWNER_DECISION_REQUIRED
+        source_ref: 'docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml :: PUB-007'
+security_headers:
+  content_security_policy: "default-src 'none'; base-uri 'none'; connect-src 'self'; font-src 'self'; form-action 'none'; frame-ancestors 'none'; img-src 'self' data:; manifest-src 'self'; media-src 'none'; object-src 'none'; script-src 'none'; style-src 'self'"
+  cross_origin_opener_policy: same-origin
+  cross_origin_resource_policy: same-origin
+  permissions_policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
+  referrer_policy: no-referrer
+  x_content_type_options: nosniff
+  x_frame_options: DENY
+authority:
+  site_identity_approved: false
+  domain_approved: false
+  operator_approved: false
+  consent_approved: false
+  legal_copy_approved: false
+  external_publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+  TST-022: NOT_EXECUTED
+  TST-023: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

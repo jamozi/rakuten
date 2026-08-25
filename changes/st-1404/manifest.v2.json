@@ -1,0 +1,26 @@
+{
+  "formal_evidence": "NOT_EXECUTED",
+  "generated_sha256": {
+    "changes/st-1404/generated/durable-job-runtime.v2.json": "0793c159fc16d33195c0a444bebe634dcfa4509e09bc99a218a188c96960e7b0"
+  },
+  "generation_command": "python scripts/build_st1404_durable_job_runtime.py",
+  "live_provider": "NOT_EXECUTED",
+  "production": "NOT_EXECUTED",
+  "schema_version": "2.0.0",
+  "source_sha256": {
+    "changes/st-1404/contracts/durable-job-runtime.v2.json": "e76f7610f5492fe1208c99eb4f0693cdeb99c4235f43936ec1389dd0e9a56234",
+    "changes/st-1404/fixtures/durable-job-runtime.synthetic.v2.json": "33efe751ac78613ebdfbe5265eaaae7d720fce5d0e24556904421b0902e22086",
+    "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
+    "docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b",
+    "docs/canonical/06_ops/RAOS_12_operations_reliability_design_v1.0.md": "894a4520a54fe1a5391f5bdd7ebfd3fdacf745604d1245e20b139315eabad9c8",
+    "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+    "python/raos/adapters/recorded_durable_job_runtime.py": "25feaa86ba81627c8b7a97ae12d36e73d0b9a182d1bd37fccb5c5d29247c734f",
+    "python/raos/application/ops/durable_job_runtime.py": "11265d6467cf668acc6b660b58fac56edd8e35502c50734a12ee15b63fbd75c6",
+    "python/raos/domain/ops/durable_job_runtime.py": "4aaef036772fc627cf809029fc5419e849ceb1320f8f8a53c41084cdeaa7006a",
+    "python/raos/domain/ops/job_runtime.py": "3c9e4266aa2ad76acb0d87d64e0989f974dfceac611bec23a409c9cf027d515b",
+    "python/raos/ports/durable_job_runtime.py": "cf0e90fc91bfae1a5523695c37e457800796b917221fbc44c2b1f0faa0de857b",
+    "scripts/build_st1404_durable_job_runtime.py": "80ec2075007b8f8741bf3af915052ce26bc83d0f5e8b75aa305e591ee3fcc5ff"
+  },
+  "staging": "NOT_EXECUTED",
+  "story_id": "ST-1404"
+}

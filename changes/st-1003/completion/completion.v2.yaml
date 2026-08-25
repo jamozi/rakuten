@@ -1,0 +1,17 @@
+story_id: ST-1003
+status: LOCAL_CODE_COMPLETE
+classification: RECORDED_SYNTHETIC_ST1003_COMPONENT_FIXTURE_V2
+canonical_status_transition: NONE
+runtime:
+  renderable_components: [ProductCard, ComparisonTable, UnknownValue, TradeOff]
+  source: RECORDED_SYNTHETIC_ONLY
+  mounted_on_public_article: false
+  publication_authority: NONE
+external_actions: 0
+formal_verification:
+  TST-022: NOT_EXECUTED
+  TST-024: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  assistive_technology: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  production: NOT_EXECUTED

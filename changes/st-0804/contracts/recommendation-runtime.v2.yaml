@@ -1,0 +1,72 @@
+schema_version: 2
+story_id: ST-0804
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_EXECUTABLE_RECORDED_RECOMMENDATION_RUNTIME_V2
+runtime:
+  executable: true
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  repository_write: false
+  approval_authorized: false
+  override_supported: false
+  recommendation_authorized: false
+  ranking_authorized: false
+  publication_authorized: false
+  activation_authorized: false
+  production_eligible: false
+bindings:
+  methodology_id: RAOS-CONTENT-RECO-001
+  methodology_version: 1.0.0
+  methodology_source_sha256: fb71ad7900c7f688f305e10256b49563281893408e54d8668aac02efa7e57862
+  st0803_contract_sha256: ca198b81bf9a3886712efd660fa4b9700c4f24a67cd8a92f580e38ff135f591f
+  st0803_domain_sha256: 010f445797704e72a5c5cdaf2355e36ed9bf70f536dc1574fe23fb802e91d552
+  st0803_recorded_fixture_sha256: e252ba7f10382b1f04fd327cc3a5af0594e1003a23a8da81763fc6373186b67c
+  st0803_runtime_manifest_sha256: 8789ea33ee1c059a0f7f3679e5047a8b681cd3ae01cca714cbfb5eb358d2598d
+  secure_publication_helper_sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+comparison_boundary:
+  request_source: changes/st-0803/generated/comparison-validation-pass.v2.json
+  require_local_validated_report: true
+  require_exact_report_bytes: true
+  require_exact_record_receipt: true
+  receipt_sequence: 1
+  prior_st0605_pass_required: false
+decision_context:
+  decision_context_id: 80808080-8080-4080-8080-808080808080
+  decision_context_version_no: 1
+  target_reader_code: SMALL_HOUSEHOLD
+  use_case_code: EMERGENCY_BACKUP
+  budget_context_code: MID_RANGE
+  context_source_sha256: '9999999999999999999999999999999999999999999999999999999999999999'
+dimension_defaults:
+  weight: '1'
+  critical: true
+  hard_constraint: false
+  normalization_basis: VALIDATED_SPECIFICATION
+fixture_scores:
+  50505050-5050-4050-8050-505050505050: '0.6'
+  60606060-6060-4060-8060-606060606060: '1'
+fixture_states:
+  hard_constraint_state: NOT_APPLICABLE
+  conflict_state: NONE
+  conflict_penalty: '0'
+  staleness_state: CURRENT
+  staleness_penalty: '0'
+execution_boundary:
+  repository_read: GENERATED_RECORDED_FIXTURE_ONLY
+  result_append: PROCESS_LOCAL_METADATA_ONLY
+  network: FORBIDDEN
+  credential: FORBIDDEN
+  provider: FORBIDDEN
+  approval: FORBIDDEN
+  override: FORBIDDEN
+  article_mutation: FORBIDDEN
+  recommendation_mutation: FORBIDDEN
+  ranking_mutation: FORBIDDEN
+  publication_snapshot_mutation: FORBIDDEN
+verification_boundary:
+  TST-007: NOT_EXECUTED
+  TST-020: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

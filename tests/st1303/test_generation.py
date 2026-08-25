@@ -64,13 +64,13 @@ def test_manifest_binds_every_source_input_dependency_and_generated_plan() -> No
     ]
     assert manifest["provenance"]["dependency_provenance"] == {
         "st1202": {
-            "feature_commit": "9b67e60482ce6ab597559927ffbe5bbecacff902",
-            "artifact_binding_commit": ("9b67e60482ce6ab597559927ffbe5bbecacff902"),
+            "feature_commit": "af7c63685fdfb5042fc0e5cfa9de22b08262fba8",
+            "artifact_binding_commit": ("c54507bb95763790ac4a8c48e225b76b105be14d"),
             "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
         },
         "st1302": {
-            "feature_commit": "8bee74745841c7ccd80fd0c3ad86232ab6bdddf0",
-            "artifact_binding_commit": ("dd03226a768c1367da7d7203a59c3d8cd82c74f2"),
+            "feature_commit": "96d388761f4e933f06760f3a7e3d3b0f2c12b65c",
+            "artifact_binding_commit": ("02b7441f216e0ed01b3e8c6808db4ab7ec19be8d"),
             "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
         },
     }

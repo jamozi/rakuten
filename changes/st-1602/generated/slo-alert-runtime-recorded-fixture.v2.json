@@ -1,0 +1,593 @@
+{
+  "document": {
+    "id": "RAOS-ST1602-SLO-ALERT-RECORDED-FIXTURE-002",
+    "version": "2.0.0",
+    "story_id": "ST-1602",
+    "classification": "LOCAL_SYNTHETIC_NON_ATTESTING",
+    "catalog_sha256": "3ebed06ee07c0dbf685f4ee2604387939214c1f008324c20c733fc3e92d47b60"
+  },
+  "slo_windows": [
+    {
+      "slo_id": "SLO-001",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "numerator",
+          "value": 995000
+        },
+        {
+          "name": "denominator",
+          "value": 1000000
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-002",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "numerator",
+          "value": 990000
+        },
+        {
+          "name": "denominator",
+          "value": 1000000
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-003",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "p95_milliseconds",
+          "value": 500
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-004",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "p95_milliseconds",
+          "value": 1000
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-005",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "numerator",
+          "value": 990000
+        },
+        {
+          "name": "denominator",
+          "value": 1000000
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-006",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "numerator",
+          "value": 999000
+        },
+        {
+          "name": "denominator",
+          "value": 1000000
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-007",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "numerator",
+          "value": 990000
+        },
+        {
+          "name": "denominator",
+          "value": 1000000
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-008",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "p95_seconds",
+          "value": 600
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-009",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "numerator",
+          "value": 990000
+        },
+        {
+          "name": "denominator",
+          "value": 1000000
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-010",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "age_seconds",
+          "value": 259200
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-011",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "numerator",
+          "value": 1000000
+        },
+        {
+          "name": "denominator",
+          "value": 1000000
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-012",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "lcp_milliseconds",
+          "value": 2500
+        },
+        {
+          "name": "inp_milliseconds",
+          "value": 200
+        },
+        {
+          "name": "cls_ppm",
+          "value": 100000
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-013",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "data_loss_seconds",
+          "value": 900
+        }
+      ]
+    },
+    {
+      "slo_id": "SLO-014",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "window_start_epoch_seconds": 1000,
+      "window_end_epoch_seconds": 10000,
+      "sample_count": 1000,
+      "mature": true,
+      "values": [
+        {
+          "name": "recovery_seconds",
+          "value": 14400
+        }
+      ]
+    }
+  ],
+  "alert_observations": [
+    {
+      "alert_id": "ALT-001",
+      "instance_id": "recorded-alt-001",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DEFAULT",
+      "condition_started_at_epoch_seconds": 0,
+      "cycle_complete": false,
+      "observation_sha256": "311ac4293ab983d26568635d71fb3bcc9b04a34d9df519dbb80e548b4c66c3fa"
+    },
+    {
+      "alert_id": "ALT-002",
+      "instance_id": "recorded-alt-002",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DEFAULT",
+      "condition_started_at_epoch_seconds": 0,
+      "cycle_complete": false,
+      "observation_sha256": "7bd832686de6ad3bcf771d4db8a53690ec0b092a9303bd54e7838b2c86ea897f"
+    },
+    {
+      "alert_id": "ALT-003",
+      "instance_id": "recorded-alt-003",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DEFAULT",
+      "condition_started_at_epoch_seconds": 0,
+      "cycle_complete": false,
+      "observation_sha256": "66fd910b339a415340043b0609835010122d4ff18a78ad13f9416c8105e90408"
+    },
+    {
+      "alert_id": "ALT-004",
+      "instance_id": "recorded-alt-004",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DEFAULT",
+      "condition_started_at_epoch_seconds": 0,
+      "cycle_complete": false,
+      "observation_sha256": "eebd26e9e238f476efbb9018bf9e08912bec929c34d6e2d45480d75a25dff718"
+    },
+    {
+      "alert_id": "ALT-005",
+      "instance_id": "recorded-alt-005",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DEFAULT",
+      "condition_started_at_epoch_seconds": 0,
+      "cycle_complete": false,
+      "observation_sha256": "387db3fe84c595a08a1a8cb475a78440bec9f63c38046a0aa9cc090ab4bda694"
+    },
+    {
+      "alert_id": "ALT-006",
+      "instance_id": "recorded-alt-006",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DEFAULT",
+      "condition_started_at_epoch_seconds": 0,
+      "cycle_complete": false,
+      "observation_sha256": "940e5dfe6e5d2f04db793ac927bf0acc7a8a8f9ac719e3b96a8cb9f36dbd0bf5"
+    },
+    {
+      "alert_id": "ALT-007",
+      "instance_id": "recorded-alt-007",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DEFAULT",
+      "condition_started_at_epoch_seconds": 0,
+      "cycle_complete": false,
+      "observation_sha256": "fe42d76eb68e8087d6be27dceed64306a8d63dc677daa89229c623d26201ad81"
+    },
+    {
+      "alert_id": "ALT-008",
+      "instance_id": "recorded-alt-008",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DEFAULT",
+      "condition_started_at_epoch_seconds": 0,
+      "cycle_complete": false,
+      "observation_sha256": "6fd7324618f5206853295d02ecda79a811d827b5cf8f2baf65d1acdb7d8ee9ad"
+    },
+    {
+      "alert_id": "ALT-009",
+      "instance_id": "recorded-alt-009",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "PER_BATCH",
+      "condition_started_at_epoch_seconds": null,
+      "cycle_complete": true,
+      "observation_sha256": "1e1775e79c1877b92ef5d36130e59791a82d3deebeaf84854cc77cb26f2b174e"
+    },
+    {
+      "alert_id": "ALT-010",
+      "instance_id": "recorded-alt-010",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DEFAULT",
+      "condition_started_at_epoch_seconds": 0,
+      "cycle_complete": false,
+      "observation_sha256": "f48e8fd174eb2d0f8e50d85caeafd803954f754e38c2e5e9e0eb17d2f7411a24"
+    },
+    {
+      "alert_id": "ALT-011",
+      "instance_id": "recorded-alt-011",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DEFAULT",
+      "condition_started_at_epoch_seconds": 0,
+      "cycle_complete": false,
+      "observation_sha256": "c3bb41778ca1d913b92ee6129f547f927e21d6f643bafa22f5eff9de1d80bc41"
+    },
+    {
+      "alert_id": "ALT-012",
+      "instance_id": "recorded-alt-012",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DAILY",
+      "condition_started_at_epoch_seconds": null,
+      "cycle_complete": true,
+      "observation_sha256": "f799d2e50c4f5e1259ff45925f84c566e76da977e8967163324ae71be517a5c2"
+    },
+    {
+      "alert_id": "ALT-013",
+      "instance_id": "recorded-alt-013",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DEFAULT",
+      "condition_started_at_epoch_seconds": 0,
+      "cycle_complete": false,
+      "observation_sha256": "7bfc73193285a84b04e0e42b63d5c0a95ea8c5ce518c3616da6ae4a464575fea"
+    },
+    {
+      "alert_id": "ALT-014",
+      "instance_id": "recorded-alt-014",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DAILY",
+      "condition_started_at_epoch_seconds": null,
+      "cycle_complete": true,
+      "observation_sha256": "1ac2562dd61a4445958e70c3a279c0fe7cd85d2dec4eb8ca3d4bbe17da3e8db6"
+    },
+    {
+      "alert_id": "ALT-015",
+      "instance_id": "recorded-alt-015",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "HOURLY",
+      "condition_started_at_epoch_seconds": null,
+      "cycle_complete": true,
+      "observation_sha256": "7a166b20127adaeb7dc79b7ed8cfe59d68c1c37f6a76e793624f801b7441c9c6"
+    },
+    {
+      "alert_id": "ALT-016",
+      "instance_id": "recorded-alt-016",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "FAST",
+      "condition_started_at_epoch_seconds": 0,
+      "cycle_complete": false,
+      "observation_sha256": "842c6ba513cf3c99d2aaba626d572263953843f1f340469df54365a281f9abed"
+    },
+    {
+      "alert_id": "ALT-017",
+      "instance_id": "recorded-alt-017",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "DAILY",
+      "condition_started_at_epoch_seconds": null,
+      "cycle_complete": true,
+      "observation_sha256": "47040d1bebb3fcfbfe60973a7650061edbc0e5b2c704c99540873f6942cb1a1f"
+    },
+    {
+      "alert_id": "ALT-018",
+      "instance_id": "recorded-alt-018",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "HOURLY",
+      "condition_started_at_epoch_seconds": null,
+      "cycle_complete": true,
+      "observation_sha256": "699d3a8ae5fb9da85c84d6fb52787a0acdc1063a21905fce062e54007c1a5c7d"
+    },
+    {
+      "alert_id": "ALT-019",
+      "instance_id": "recorded-alt-019",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "WEEKLY",
+      "condition_started_at_epoch_seconds": null,
+      "cycle_complete": true,
+      "observation_sha256": "90a8c8f4fcf7dcd5a6fea57b3b82786d13588b9dcee9f177d232b9bbff274722"
+    },
+    {
+      "alert_id": "ALT-020",
+      "instance_id": "recorded-alt-020",
+      "source": "SYNTHETIC_RECORDED_FIXTURE_ONLY",
+      "observed_at_epoch_seconds": 10000,
+      "evaluated_at_epoch_seconds": 10010,
+      "fresh_until_epoch_seconds": 20000,
+      "sample_count": 100,
+      "mature": true,
+      "condition_state": "BREACH",
+      "hold_variant": "MONTHLY",
+      "condition_started_at_epoch_seconds": null,
+      "cycle_complete": true,
+      "observation_sha256": "92f33c7cdaf0f2446017a605077f6cb7287a2982bcfea1cb822de0cb2ef4bebf"
+    }
+  ],
+  "boundary": {
+    "actual_measurement": false,
+    "notification_delivery": false,
+    "external_action_count": 0,
+    "production": "NOT_AUTHORIZED"
+  }
+}

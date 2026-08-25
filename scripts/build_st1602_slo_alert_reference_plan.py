@@ -45,7 +45,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -160,13 +160,13 @@ def _fail(code: str, field: str) -> NoReturn:
 def _mapping(value: object, field: str) -> Mapping[str, Any]:
     if type(value) is not dict:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(Mapping[str, Any], value)
 
 
 def _list(value: object, field: str) -> list[Any]:
     if type(value) is not list:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(list[Any], value)  # type: ignore[redundant-cast]
 
 
 def _same_exact(left: object, right: object) -> bool:
@@ -197,7 +197,9 @@ def _sha256(content: bytes) -> str:
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
-    physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    physical = base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]
+        root, relative, field
+    )
     try:
         content = physical.read_bytes()
     except OSError:
@@ -208,7 +210,9 @@ def _read(root: Path, relative: Path, field: str) -> bytes:
 
 
 def _load_yaml(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
-    base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]
+        root, relative, field
+    )
     return _mapping(base.load_yaml(root / relative), field)
 
 
@@ -230,11 +234,13 @@ def _validate_source_hashes(root: Path) -> None:
 
 
 def _find(items: object, identity: str, field: str) -> Mapping[str, Any]:
-    matches = [
-        _mapping(item, field)
-        for item in _list(items, field)
-        if type(item) is dict and item.get("id") == identity
-    ]
+    matches: list[Mapping[str, Any]] = []
+    for item in _list(items, field):
+        if type(item) is not dict:
+            continue
+        candidate = _mapping(cast(object, item), field)
+        if candidate.get("id") == identity:
+            matches.append(candidate)
     if len(matches) != 1:
         _fail("CANONICAL_RECORD_MISSING", field)
     return matches[0]
@@ -398,7 +404,7 @@ EXPECTED_RULES: Final = {
     "minimum_steps_are_inert_text": True,
     "empty_arrays_mean_no_configuration_or_evidence": True,
 }
-EXPECTED_ROUTING: Final = {
+EXPECTED_ROUTING: Final[dict[str, object]] = {
     "mode": "LOCAL_LOG_ONLY",
     "route_status": "NOT_CONFIGURED",
     "notifications_enabled": False,
@@ -618,7 +624,9 @@ def check_outputs(root: Path, expected: Mapping[Path, bytes]) -> None:
     if set(expected) != set(GENERATED_PATHS):
         _fail("GENERATED_INVENTORY_DRIFT", "output")
     for relative in GENERATED_PATHS:
-        path = base._output_file(root, relative)  # noqa: SLF001
+        path = base._output_file(  # pyright: ignore[reportPrivateUsage]
+            root, relative
+        )
         try:
             actual = path.read_bytes()
         except OSError:
@@ -633,7 +641,9 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
         check_outputs(root, outputs)
         return
     for relative, content in outputs.items():
-        base._atomic_write(root, relative, content)  # noqa: SLF001
+        base._atomic_write(  # pyright: ignore[reportPrivateUsage]
+            root, relative, content
+        )
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

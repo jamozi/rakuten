@@ -1,0 +1,640 @@
+{
+  "acceptance_criteria_satisfied": false,
+  "actual_observations": [],
+  "authority": {
+    "formal_evidence_acceptance": "NONE",
+    "gate_approval": "NONE",
+    "publication": "NONE",
+    "status_apply": "NONE"
+  },
+  "classification": "LOCAL_BLOCKED_RECORDED_SYNTHETIC_GATE2_NON_ATTESTING",
+  "data_quality": {
+    "actual_provider_reconciliation": "NOT_EXECUTED",
+    "append_only_hash_chain": "LOCAL_SYNTHETIC_PASS",
+    "exact_five_slots": "LOCAL_SYNTHETIC_PASS",
+    "exact_program": "LOCAL_SYNTHETIC_PASS",
+    "one_exact_period": "LOCAL_SYNTHETIC_PASS",
+    "reward_conservation": "AVAILABLE",
+    "source_and_verification_contract": "LOCAL_SYNTHETIC_PASS",
+    "synthetic_is_actual_observation": false
+  },
+  "dependency_state": {
+    "ST-1205": "LOCAL_RECORDED_KPI_RUNTIME_BOUND",
+    "ST-1802": "BLOCKED_NOT_ELIGIBLE"
+  },
+  "gate_definition": {
+    "actual_observation_required": true,
+    "gate_pass_automation": false,
+    "objective": "SEARCH_AND_USER_VALUE_VALIDATION",
+    "observation_conditions": {
+      "major_pages_recognized_required": true,
+      "minimum_days": 90,
+      "qualified_organic_sessions_reference": 5000,
+      "sufficiency_requires_human_judgment": true
+    },
+    "provisional_thresholds": {
+      "affiliate_click_rate_min": "0.05",
+      "broken_affiliate_link_rate_strict_max": "0.005",
+      "critical_user_complaints_max": 0,
+      "direct_visit_quality_acceptable": true,
+      "impression_coverage_rate_min": "0.60",
+      "indexed_article_rate_min": "0.70",
+      "low_value_consolidation_operational": true,
+      "stale_exposure_rate_strict_max": "0.02",
+      "top20_article_rate_min": "0.20"
+    },
+    "recorded_synthetic_fixture_is_actual_observation": false
+  },
+  "gate_pass_claim": false,
+  "generated_by": {
+    "command": "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1803_gate2_observation.py",
+    "generator_sha256": "fe7c178087d113e287e95a02d6bcd68e93bd2f2e82817442800cede768b79cd4",
+    "uri": "repo://scripts/build_st1803_gate2_observation.py"
+  },
+  "mandatory_criteria": [
+    {
+      "criterion_id": "G2-C01-OBSERVATION-DAYS",
+      "evidence_classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "observed_value": "90",
+      "rule": "OBSERVATION_DAYS_AT_LEAST_90",
+      "source_references": [
+        "repo://changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json"
+      ],
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "synthetic_threshold_relation": "MEETS_PROVISIONAL_THRESHOLD"
+    },
+    {
+      "criterion_id": "G2-C02-QUALIFIED-SESSIONS",
+      "evidence_classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "observed_value": "2250",
+      "rule": "QUALIFIED_ORGANIC_SESSIONS_REFERENCE_5000",
+      "source_references": [
+        "repo://changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json"
+      ],
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "synthetic_threshold_relation": "DOES_NOT_MEET_PROVISIONAL_THRESHOLD"
+    },
+    {
+      "criterion_id": "G2-C03-VALID-INDEX",
+      "evidence_classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "observed_value": "0.800000",
+      "rule": "VALID_INDEX_RATE_AT_LEAST_70_PERCENT",
+      "source_references": [
+        "repo://changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json"
+      ],
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "synthetic_threshold_relation": "MEETS_PROVISIONAL_THRESHOLD"
+    },
+    {
+      "criterion_id": "G2-C04-IMPRESSION-COVERAGE",
+      "evidence_classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "observed_value": "0.750000",
+      "rule": "INDEXED_ARTICLES_WITH_IMPRESSIONS_AT_LEAST_60_PERCENT",
+      "source_references": [
+        "repo://changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json"
+      ],
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "synthetic_threshold_relation": "MEETS_PROVISIONAL_THRESHOLD"
+    },
+    {
+      "criterion_id": "G2-C05-TOP20",
+      "evidence_classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "observed_value": "0.200000",
+      "rule": "TOP20_ARTICLE_RATE_AT_LEAST_20_PERCENT",
+      "source_references": [
+        "repo://changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json"
+      ],
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "synthetic_threshold_relation": "MEETS_PROVISIONAL_THRESHOLD"
+    },
+    {
+      "criterion_id": "G2-C06-AFFILIATE-CTR",
+      "evidence_classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "observed_value": "0.062000",
+      "rule": "AFFILIATE_OUTBOUND_CTR_AT_LEAST_5_PERCENT",
+      "source_references": [
+        "repo://changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json"
+      ],
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "synthetic_threshold_relation": "MEETS_PROVISIONAL_THRESHOLD"
+    },
+    {
+      "criterion_id": "G2-C07-STALE-EXPOSURE",
+      "evidence_classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "observed_value": "0.010000",
+      "rule": "STALE_EXPOSURE_RATE_STRICTLY_BELOW_2_PERCENT",
+      "source_references": [
+        "repo://changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json"
+      ],
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "synthetic_threshold_relation": "MEETS_PROVISIONAL_THRESHOLD"
+    },
+    {
+      "criterion_id": "G2-C08-BROKEN-LINK",
+      "evidence_classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "observed_value": "0.002000",
+      "rule": "BROKEN_AFFILIATE_LINK_RATE_STRICTLY_BELOW_0_5_PERCENT",
+      "source_references": [
+        "repo://changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json"
+      ],
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "synthetic_threshold_relation": "MEETS_PROVISIONAL_THRESHOLD"
+    },
+    {
+      "criterion_id": "G2-C09-MAJOR-PAGES-RECOGNIZED",
+      "evidence_classification": "REQUIRED_EVIDENCE_ABSENT",
+      "observed_value": "UNAVAILABLE",
+      "rule": "MAJOR_PAGE_GROUP_RECOGNIZED_WITH_SUFFICIENT_HUMAN_JUDGMENT",
+      "source_references": [],
+      "status": "UNAVAILABLE",
+      "synthetic_threshold_relation": "NOT_APPLICABLE"
+    },
+    {
+      "criterion_id": "G2-C10-CRITICAL-COMPLAINTS",
+      "evidence_classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+      "observed_value": "0",
+      "rule": "CRITICAL_USER_COMPLAINTS_EQUAL_0",
+      "source_references": [
+        "repo://changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json"
+      ],
+      "status": "INELIGIBLE_NON_ATTESTING",
+      "synthetic_threshold_relation": "MEETS_PROVISIONAL_THRESHOLD"
+    },
+    {
+      "criterion_id": "G2-C11-LOW-VALUE-CONSOLIDATION",
+      "evidence_classification": "REQUIRED_EVIDENCE_ABSENT",
+      "observed_value": "UNAVAILABLE",
+      "rule": "LOW_VALUE_AND_CANNIBALIZATION_CONSOLIDATION_OPERATIONAL",
+      "source_references": [],
+      "status": "UNAVAILABLE",
+      "synthetic_threshold_relation": "NOT_APPLICABLE"
+    },
+    {
+      "criterion_id": "G2-C12-DIRECT-VISIT-QUALITY",
+      "evidence_classification": "REQUIRED_EVIDENCE_ABSENT",
+      "observed_value": "UNAVAILABLE",
+      "rule": "CONTENT_QUALITY_SUPPORTS_DIRECT_VISITS",
+      "source_references": [],
+      "status": "UNAVAILABLE",
+      "synthetic_threshold_relation": "NOT_APPLICABLE"
+    },
+    {
+      "criterion_id": "G2-C13-GATE1-PREREQUISITE",
+      "evidence_classification": "REQUIRED_EVIDENCE_ABSENT",
+      "observed_value": "ST1802_BLOCKED_NOT_ELIGIBLE",
+      "rule": "GATE1_ACTUALLY_PASSED",
+      "source_references": [
+        "repo://changes/st-1802/generated/gate1-decision.local-blocked.v1.json"
+      ],
+      "status": "BLOCKED",
+      "synthetic_threshold_relation": "NOT_APPLICABLE"
+    },
+    {
+      "criterion_id": "G2-C14-ACTUAL-OBSERVATION",
+      "evidence_classification": "REQUIRED_EVIDENCE_ABSENT",
+      "observed_value": "NOT_EXECUTED",
+      "rule": "ACTUAL_30_TO_45_ARTICLE_OBSERVATION_PERIOD_PRESENT",
+      "source_references": [],
+      "status": "NOT_EXECUTED",
+      "synthetic_threshold_relation": "NOT_APPLICABLE"
+    },
+    {
+      "criterion_id": "G2-C15-FORMAL-TST030",
+      "evidence_classification": "REQUIRED_EVIDENCE_ABSENT",
+      "observed_value": "NOT_EXECUTED",
+      "rule": "FORMAL_TST030_RECONCILIATION_COMPLETE",
+      "source_references": [],
+      "status": "NOT_EXECUTED",
+      "synthetic_threshold_relation": "NOT_APPLICABLE"
+    },
+    {
+      "criterion_id": "G2-C16-FORMAL-TST032",
+      "evidence_classification": "REQUIRED_EVIDENCE_ABSENT",
+      "observed_value": "NOT_EXECUTED",
+      "rule": "FORMAL_TST032_GATE_PACK_EXECUTED_IN_STAGING",
+      "source_references": [],
+      "status": "NOT_EXECUTED",
+      "synthetic_threshold_relation": "NOT_APPLICABLE"
+    },
+    {
+      "criterion_id": "G2-C17-HUMAN-APPROVAL",
+      "evidence_classification": "REQUIRED_EVIDENCE_ABSENT",
+      "observed_value": "UNAVAILABLE",
+      "rule": "PRODUCT_OWNER_GATE_APPROVAL_PRESENT",
+      "source_references": [],
+      "status": "UNAVAILABLE",
+      "synthetic_threshold_relation": "NOT_APPLICABLE"
+    }
+  ],
+  "overall": "BLOCKED",
+  "recorded_synthetic_harness": {
+    "actual_observations": [],
+    "authority": {
+      "article_html_mutation": "NONE",
+      "cta_mutation": "NONE",
+      "gate_approval": "NONE",
+      "product_selection_mutation": "NONE",
+      "publication_snapshot_mutation": "NONE",
+      "recommendation_order_mutation": "NONE"
+    },
+    "boundary": {
+      "actual_observation": "NOT_EXECUTED",
+      "execution": "RECORDED_SYNTHETIC_ONLY",
+      "formal_tst_030": "NOT_EXECUTED",
+      "formal_tst_032": "NOT_EXECUTED",
+      "input_storage": "IMMUTABLE_PROCESS_LOCAL",
+      "live_provider": "NOT_EXECUTED",
+      "network": "NOT_EXECUTED",
+      "publication": "NOT_EXECUTED",
+      "recommendation_input": "DISABLED",
+      "staging": "NOT_EXECUTED"
+    },
+    "calculation_version": "ST1803-1.0.0+ST1205-2.0.0",
+    "candidates": [
+      {
+        "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+        "authority": "NONE",
+        "code": "REVIEW_LINK_HEALTH",
+        "evidence_metrics": [
+          "broken_links",
+          "affiliate_link_checks"
+        ],
+        "mutations": [],
+        "slot": 3
+      },
+      {
+        "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+        "authority": "NONE",
+        "code": "REVIEW_QUERY_INTENT_AND_DISCOVERY",
+        "evidence_metrics": [
+          "indexed_valid",
+          "search_impressions"
+        ],
+        "mutations": [],
+        "slot": 3
+      },
+      {
+        "article_id": "st1704-compact-robot-vacuum-shortlist",
+        "authority": "NONE",
+        "code": "REVIEW_FRESHNESS_EXPOSURE",
+        "evidence_metrics": [
+          "stale_exposure_views",
+          "article_views"
+        ],
+        "mutations": [],
+        "slot": 5
+      }
+    ],
+    "definition_version": "ST1803-1.0.0+ST1205-2.0.0",
+    "evidence_classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
+    "finance_separation": {
+      "direct_confirmed_reward_jpy": 15000,
+      "provider_confirmed_reward_jpy": 17500,
+      "reward_conservation": "AVAILABLE",
+      "reward_conservation_reason": null,
+      "unattributed_confirmed_reward_jpy": 2500,
+      "unattributed_reward_allocated_to_articles": false
+    },
+    "input_contract_sha256": "327e8bb5b97044953a18d8e76101750fc420109b4dc0661e8d8ca4ac0a657800",
+    "input_sha256": "5dd59db906b6c3fbb234ec725fef375280f2b8234ceb94e339270b5abddb4e62",
+    "input_totals": [
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "search_impressions"
+        ],
+        "metric_id": "total_search_impressions",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value": "45000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "search_clicks"
+        ],
+        "metric_id": "total_search_clicks",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value": "2250"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "article_views"
+        ],
+        "metric_id": "total_article_views",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value": "10000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "affiliate_clicks"
+        ],
+        "metric_id": "total_affiliate_clicks",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value": "620"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "pending_outcomes"
+        ],
+        "metric_id": "total_pending_outcomes",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value": "29"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "confirmed_outcomes"
+        ],
+        "metric_id": "total_confirmed_outcomes",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value": "15"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "rejected_outcomes"
+        ],
+        "metric_id": "total_rejected_outcomes",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value": "6"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "direct_confirmed_reward_jpy"
+        ],
+        "metric_id": "total_direct_confirmed_reward_jpy",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "JPY",
+        "value": "15000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "work_minutes"
+        ],
+        "metric_id": "total_work_minutes",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value": "450"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "incremental_cost_jpy"
+        ],
+        "metric_id": "total_incremental_cost_jpy",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "JPY",
+        "value": "1125"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "broken_links"
+        ],
+        "metric_id": "total_broken_links",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value": "1"
+      }
+    ],
+    "metrics": [
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "period"
+        ],
+        "metric_id": "observation_days",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "DAYS",
+        "value": "90"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "qualified_organic_sessions"
+        ],
+        "metric_id": "qualified_organic_sessions",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "COUNT",
+        "value": "2250"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "indexed_valid",
+          "published_eligible"
+        ],
+        "metric_id": "indexed_article_rate",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "RATIO",
+        "value": "0.800000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "indexed_articles_with_impressions",
+          "indexed_valid"
+        ],
+        "metric_id": "impression_coverage_rate",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "RATIO",
+        "value": "0.750000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "top20_major_query",
+          "eligible_major_query"
+        ],
+        "metric_id": "top20_article_rate",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "RATIO",
+        "value": "0.200000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "search_clicks",
+          "search_impressions"
+        ],
+        "metric_id": "search_ctr",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "RATIO",
+        "value": "0.050000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "affiliate_clicks",
+          "article_views"
+        ],
+        "metric_id": "affiliate_click_rate",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "RATIO",
+        "value": "0.062000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "stale_exposure_views",
+          "article_views"
+        ],
+        "metric_id": "stale_exposure_rate",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "RATIO",
+        "value": "0.010000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "broken_links",
+          "affiliate_link_checks"
+        ],
+        "metric_id": "broken_affiliate_link_rate",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "RATIO",
+        "value": "0.002000"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "direct_confirmed_reward_jpy",
+          "affiliate_clicks"
+        ],
+        "metric_id": "confirmed_reward_per_click",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "JPY_PER_CLICK",
+        "value": "24.193548"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "confirmed_outcomes",
+          "confirmed_plus_rejected_outcomes"
+        ],
+        "metric_id": "confirmation_rate",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "RATIO",
+        "value": "0.714286"
+      },
+      {
+        "availability": "AVAILABLE",
+        "input_keys": [
+          "direct_confirmed_reward_jpy",
+          "work_minutes"
+        ],
+        "metric_id": "confirmed_reward_per_content_hour",
+        "recommendation_order_effect": false,
+        "unavailable_reason": null,
+        "unit": "JPY_PER_HOUR",
+        "value": "2000.000000"
+      }
+    ],
+    "modifications_applied": [],
+    "overall": "BLOCKED",
+    "period": {
+      "as_of_date": "2026-04-01",
+      "elapsed_days": 90,
+      "end_exclusive_date": "2026-04-01",
+      "start_date": "2026-01-01"
+    },
+    "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+    "recorded_fixture_sha256": "0c43a21e2c8839a8e3af6e779a8eb698684a67572aa90dd88c1017697ef6fafe",
+    "schema": "ST1803_GATE2_OBSERVATION_REPORT_V1",
+    "source_head_sha256": "df9466fc8a3cca55fcd5c1a7b91ac1183663171c9100e350af9a46f59aa407c0",
+    "synthetic": true
+  },
+  "schema": "ST1803_GATE2_PACK_V1",
+  "source_bindings": [
+    {
+      "sha256": "5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea",
+      "uri": "repo://docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md"
+    },
+    {
+      "sha256": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460",
+      "uri": "repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md"
+    },
+    {
+      "sha256": "f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2",
+      "uri": "repo://docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml"
+    },
+    {
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
+      "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml"
+    },
+    {
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+      "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
+    },
+    {
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
+      "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml"
+    },
+    {
+      "sha256": "6a89918131e9072ed8550e1efe2cdec5e2dc08b0115e45f34941285aeb05ab25",
+      "uri": "repo://changes/st-1802/generated/gate1-decision.local-blocked.v1.json"
+    },
+    {
+      "sha256": "3a1672f7a299bd0308b5b1df72c16d9cbc554594342c0fb978bd486d69d546dc",
+      "uri": "repo://changes/st-1802/generated/runtime-manifest.v1.yaml"
+    },
+    {
+      "sha256": "cf9de30e12ffea2202dcff0c0ef1377ab0a6546d185cc9129c402584567024bf",
+      "uri": "repo://scripts/build_st1802_gate1_decision.py"
+    },
+    {
+      "sha256": "295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb",
+      "uri": "repo://changes/st-1205/generated/kpi-read-model.v2.json"
+    },
+    {
+      "sha256": "9b25af0167a195de99d57e7d4e2eb54c4832a9051ec2b42de666bf6e32eb7548",
+      "uri": "repo://changes/st-1205/manifest.yaml"
+    },
+    {
+      "sha256": "7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac",
+      "uri": "repo://python/raos/domain/analytics/kpi_read_model.py"
+    }
+  ],
+  "story_id": "ST-1803",
+  "verification": {
+    "actual_30_45_article_observation": "NOT_EXECUTED",
+    "formal_TST-030": "NOT_EXECUTED",
+    "formal_TST-032": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  }
+}

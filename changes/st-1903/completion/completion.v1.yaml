@@ -1,0 +1,30 @@
+story_id: ST-1903
+classification: LOCAL_CODE_COMPLETE_MAX_SAFE_DISABLED
+canonical_implementation_status: DEFERRED_POST_MVP
+canonical_status_changed: false
+formal_validation: NOT_EXECUTED
+local_boundary:
+  domain: IMPLEMENTED
+  provider_neutral_port: IMPLEMENTED
+  recorded_synthetic_adapter: IMPLEMENTED
+  default_disabled_application: IMPLEMENTED
+  deterministic_owner_generator: IMPLEMENTED
+  hostile_negative_tests: IMPLEMENTED
+authority:
+  approval: NONE
+  activation: NONE
+  publication: NONE
+  public_write: NONE
+  release: NONE
+  status_apply: NONE
+  staging: NONE
+  production: NONE
+debt:
+  introduced: []
+  formal_or_external_remaining:
+    - ST-1805 human portfolio decision
+    - formal TST-032 staging evidence
+    - Security and Operations approval
+    - kill-switch, idempotency, recovery, rollback and monitoring evidence
+    - separate human release decision
+    - bounded staging validation

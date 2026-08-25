@@ -1,0 +1,583 @@
+{
+  "bindings": [
+    {
+      "action": "manage_ai_release",
+      "allowed_states": [],
+      "block_reason": "CROSS_RESOURCE_BINDING_UNRESOLVED",
+      "operation_id": "AI-112",
+      "permission_scope": "ai:release:write",
+      "required_evidence": [
+        "pre_create_release_resource_id_binding"
+      ],
+      "resource_kind": "AI_RELEASE",
+      "status": "BLOCKED",
+      "step_up_action": "manage_ai_release",
+      "step_up_resource_type": "AI_RELEASE"
+    },
+    {
+      "action": "manage_ai_release",
+      "allowed_states": [
+        "READY_FOR_REVIEW"
+      ],
+      "operation_id": "AI-113",
+      "permission_scope": "ai:release:approve",
+      "resource_kind": "AI_RELEASE",
+      "status": "ACTIVE_RECORDED",
+      "step_up_action": "manage_ai_release",
+      "step_up_resource_type": "AI_RELEASE"
+    },
+    {
+      "action": "manage_ai_release",
+      "allowed_states": [
+        "APPROVED_CANARY"
+      ],
+      "operation_id": "AI-114",
+      "permission_scope": "ai:release:approve",
+      "resource_kind": "AI_RELEASE",
+      "status": "ACTIVE_RECORDED",
+      "step_up_action": "manage_ai_release",
+      "step_up_resource_type": "AI_RELEASE"
+    },
+    {
+      "action": "manage_ai_release",
+      "allowed_states": [
+        "APPROVED_ACTIVE",
+        "APPROVED_CANARY"
+      ],
+      "operation_id": "AI-115",
+      "permission_scope": "ai:release:revoke",
+      "resource_kind": "AI_RELEASE",
+      "status": "ACTIVE_RECORDED",
+      "step_up_action": "manage_ai_release",
+      "step_up_resource_type": "AI_RELEASE"
+    },
+    {
+      "action": "manage_product_identity",
+      "allowed_states": [],
+      "block_reason": "STEP_UP_RESOURCE_UNMAPPED",
+      "operation_id": "CAT-006",
+      "permission_scope": "catalog:grouping:decide",
+      "required_evidence": [
+        "exact_ST0402_product_identity_resource_mapping"
+      ],
+      "resource_kind": "PRODUCT",
+      "status": "BLOCKED"
+    },
+    {
+      "action": "manage_product_identity",
+      "allowed_states": [],
+      "block_reason": "CROSS_RESOURCE_BINDING_UNRESOLVED",
+      "operation_id": "CAT-008",
+      "permission_scope": "catalog:product:write",
+      "required_evidence": [
+        "exact_ST0402_product_identity_resource_mapping",
+        "pre_create_product_resource_id_binding"
+      ],
+      "resource_kind": "PRODUCT",
+      "status": "BLOCKED"
+    },
+    {
+      "action": "manage_product_identity",
+      "allowed_states": [],
+      "block_reason": "STEP_UP_RESOURCE_UNMAPPED",
+      "operation_id": "CAT-010",
+      "permission_scope": "catalog:product:write",
+      "required_evidence": [
+        "exact_ST0402_product_identity_resource_mapping"
+      ],
+      "resource_kind": "PRODUCT",
+      "status": "BLOCKED"
+    },
+    {
+      "action": "edit_article_draft",
+      "allowed_states": [
+        "DRAFT"
+      ],
+      "operation_id": "ED-011",
+      "permission_scope": "editorial:version:write",
+      "resource_kind": "ARTICLE_VERSION",
+      "status": "ACTIVE_RECORDED"
+    },
+    {
+      "action": "commit_revenue_import",
+      "allowed_states": [
+        "DRY_RUN_READY"
+      ],
+      "operation_id": "FIN-006",
+      "permission_scope": "finance:revenue:confirm",
+      "resource_kind": "REVENUE_IMPORT",
+      "status": "ACTIVE_RECORDED",
+      "step_up_action": "commit_revenue_import",
+      "step_up_resource_type": "REVENUE_IMPORT"
+    },
+    {
+      "action": "activate_affiliate_kill_switch",
+      "allowed_states": [],
+      "block_reason": "OPERATION_VARIANT_UNRESOLVED",
+      "operation_id": "OPS-006",
+      "permission_scope": "ops:kill_switch:write",
+      "required_evidence": [
+        "trusted_switch_type_and_engage_discriminator"
+      ],
+      "resource_kind": "AFFILIATE_SCOPE",
+      "status": "BLOCKED",
+      "step_up_action": "activate_affiliate_kill_switch",
+      "step_up_resource_type": "AFFILIATE_SCOPE"
+    },
+    {
+      "action": "activate_publication_kill_switch",
+      "allowed_states": [],
+      "block_reason": "OPERATION_VARIANT_UNRESOLVED",
+      "operation_id": "OPS-006",
+      "permission_scope": "ops:kill_switch:write",
+      "required_evidence": [
+        "trusted_switch_type_and_engage_discriminator"
+      ],
+      "resource_kind": "PUBLICATION_SCOPE",
+      "status": "BLOCKED",
+      "step_up_action": "activate_publication_kill_switch",
+      "step_up_resource_type": "PUBLICATION_SCOPE"
+    },
+    {
+      "action": "deactivate_affiliate_kill_switch",
+      "allowed_states": [],
+      "block_reason": "OPERATION_VARIANT_UNRESOLVED",
+      "operation_id": "OPS-006",
+      "permission_scope": "ops:kill_switch:write",
+      "required_evidence": [
+        "trusted_switch_type_engage_and_independent_actor_mapping"
+      ],
+      "resource_kind": "AFFILIATE_SCOPE",
+      "status": "BLOCKED",
+      "step_up_action": "deactivate_affiliate_kill_switch",
+      "step_up_resource_type": "AFFILIATE_SCOPE"
+    },
+    {
+      "action": "deactivate_publication_kill_switch",
+      "allowed_states": [],
+      "block_reason": "OPERATION_VARIANT_UNRESOLVED",
+      "operation_id": "OPS-006",
+      "permission_scope": "ops:kill_switch:write",
+      "required_evidence": [
+        "trusted_switch_type_engage_and_independent_actor_mapping"
+      ],
+      "resource_kind": "PUBLICATION_SCOPE",
+      "status": "BLOCKED",
+      "step_up_action": "deactivate_publication_kill_switch",
+      "step_up_resource_type": "PUBLICATION_SCOPE"
+    },
+    {
+      "action": "view_audit",
+      "allowed_states": [],
+      "block_reason": "SITE_SCOPE_CONFLICT",
+      "operation_id": "OPS-012",
+      "permission_scope": "ops:audit:read",
+      "required_evidence": [
+        "site_mandatory_matrix_to_global_audit_context_resolution"
+      ],
+      "resource_kind": "AUDIT",
+      "status": "BLOCKED"
+    },
+    {
+      "action": "manage_policy",
+      "allowed_states": [
+        "DRAFT"
+      ],
+      "block_reason": "STEP_UP_RESOURCE_UNMAPPED",
+      "operation_id": "POL-002",
+      "permission_scope": "policy:bundle:write",
+      "required_evidence": [
+        "exact_ST0402_policy_bundle_resource_mapping"
+      ],
+      "resource_kind": "POLICY_BUNDLE",
+      "status": "BLOCKED"
+    },
+    {
+      "action": "manage_policy",
+      "allowed_states": [
+        "DRAFT"
+      ],
+      "block_reason": "STEP_UP_RESOURCE_UNMAPPED",
+      "operation_id": "POL-003",
+      "permission_scope": "policy:bundle:activate",
+      "required_evidence": [
+        "exact_ST0402_policy_bundle_resource_mapping"
+      ],
+      "resource_kind": "POLICY_BUNDLE",
+      "status": "BLOCKED"
+    },
+    {
+      "action": "review_article",
+      "allowed_states": [
+        "IN_PROGRESS"
+      ],
+      "operation_id": "PUBADM-004",
+      "permission_scope": "publishing:review:decide",
+      "resource_kind": "REVIEW_ASSIGNMENT",
+      "status": "ACTIVE_RECORDED"
+    },
+    {
+      "action": "final_approve",
+      "allowed_states": [
+        "HUMAN_REVIEW"
+      ],
+      "block_reason": "RESOURCE_SCOPE_UNRESOLVED",
+      "operation_id": "PUBADM-005",
+      "permission_scope": "publishing:approval:decide",
+      "required_evidence": [
+        "ST0902_GATE_002_role_and_resource_scope",
+        "ST0902_GATE_005_independent_actor_comparator"
+      ],
+      "resource_kind": "ARTICLE_VERSION",
+      "status": "BLOCKED",
+      "step_up_action": "final_approve",
+      "step_up_resource_type": "ARTICLE_VERSION"
+    },
+    {
+      "action": "publish",
+      "allowed_states": [
+        "SNAPSHOT_READY"
+      ],
+      "block_reason": "CROSS_RESOURCE_BINDING_UNRESOLVED",
+      "operation_id": "PUBADM-009",
+      "permission_scope": "publishing:publish",
+      "required_evidence": [
+        "publication_candidate_to_snapshot_step_up_resource_binding",
+        "publisher_independent_actor_mapping"
+      ],
+      "resource_kind": "PUBLICATION_CANDIDATE",
+      "status": "BLOCKED",
+      "step_up_action": "publish",
+      "step_up_resource_type": "PUBLICATION_SNAPSHOT"
+    },
+    {
+      "action": "rollback",
+      "allowed_states": [
+        "PUBLISHED"
+      ],
+      "operation_id": "PUBADM-012",
+      "permission_scope": "publishing:rollback",
+      "resource_kind": "PUBLICATION",
+      "status": "ACTIVE_RECORDED",
+      "step_up_action": "rollback",
+      "step_up_resource_type": "PUBLICATION"
+    }
+  ],
+  "matrix": [
+    {
+      "action": "activate_affiliate_kill_switch",
+      "allowed_roles": [
+        "OPERATOR",
+        "PRODUCT_OWNER"
+      ],
+      "blocked_reason": "OPERATION_VARIANT_UNRESOLVED",
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": true,
+      "required_evidence": [
+        "trusted_switch_type_and_engage_discriminator"
+      ],
+      "separation_of_duties": false,
+      "step_up_required": true
+    },
+    {
+      "action": "activate_publication_kill_switch",
+      "allowed_roles": [
+        "OPERATOR",
+        "PRODUCT_OWNER"
+      ],
+      "blocked_reason": "OPERATION_VARIANT_UNRESOLVED",
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": true,
+      "required_evidence": [
+        "trusted_switch_type_and_engage_discriminator"
+      ],
+      "separation_of_duties": false,
+      "step_up_required": true
+    },
+    {
+      "action": "break_glass",
+      "allowed_roles": [
+        "PRODUCT_OWNER",
+        "SECURITY_AUDITOR"
+      ],
+      "blocked_reason": "UNMAPPED_OPERATION",
+      "data_class": "RESTRICTED",
+      "mfa_required": true,
+      "required_evidence": [
+        "exact_admin_operation_and_resource_mapping"
+      ],
+      "separation_of_duties": false,
+      "step_up_required": true
+    },
+    {
+      "action": "commit_revenue_import",
+      "allowed_roles": [
+        "ANALYST",
+        "PRODUCT_OWNER"
+      ],
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": true,
+      "separation_of_duties": false,
+      "step_up_required": true
+    },
+    {
+      "action": "deactivate_affiliate_kill_switch",
+      "allowed_roles": [
+        "OPERATOR",
+        "PRODUCT_OWNER"
+      ],
+      "blocked_reason": "OPERATION_VARIANT_UNRESOLVED",
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": true,
+      "required_evidence": [
+        "trusted_switch_type_engage_and_independent_actor_mapping"
+      ],
+      "separation_of_duties": true,
+      "step_up_required": true
+    },
+    {
+      "action": "deactivate_publication_kill_switch",
+      "allowed_roles": [
+        "OPERATOR",
+        "PRODUCT_OWNER"
+      ],
+      "blocked_reason": "OPERATION_VARIANT_UNRESOLVED",
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": true,
+      "required_evidence": [
+        "trusted_switch_type_engage_and_independent_actor_mapping"
+      ],
+      "separation_of_duties": true,
+      "step_up_required": true
+    },
+    {
+      "action": "edit_article_draft",
+      "allowed_roles": [
+        "EDITOR",
+        "MANAGING_EDITOR"
+      ],
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": false,
+      "separation_of_duties": false,
+      "step_up_required": false
+    },
+    {
+      "action": "final_approve",
+      "allowed_roles": [
+        "MANAGING_EDITOR"
+      ],
+      "blocked_reason": "RESOURCE_SCOPE_UNRESOLVED",
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": true,
+      "required_evidence": [
+        "ST0902_GATE_002_role_and_resource_scope",
+        "ST0902_GATE_005_independent_actor_comparator"
+      ],
+      "separation_of_duties": true,
+      "step_up_required": true
+    },
+    {
+      "action": "manage_ai_release",
+      "allowed_roles": [
+        "MANAGING_EDITOR",
+        "PRODUCT_OWNER"
+      ],
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": true,
+      "separation_of_duties": false,
+      "step_up_required": true
+    },
+    {
+      "action": "manage_policy",
+      "allowed_roles": [
+        "MANAGING_EDITOR",
+        "PRODUCT_OWNER",
+        "SECURITY_AUDITOR"
+      ],
+      "blocked_reason": "STEP_UP_RESOURCE_UNMAPPED",
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": true,
+      "required_evidence": [
+        "exact_ST0402_policy_bundle_resource_mapping"
+      ],
+      "separation_of_duties": false,
+      "step_up_required": false
+    },
+    {
+      "action": "manage_product_identity",
+      "allowed_roles": [
+        "EDITOR",
+        "MANAGING_EDITOR",
+        "REVIEWER"
+      ],
+      "blocked_reason": "STEP_UP_RESOURCE_UNMAPPED",
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": true,
+      "required_evidence": [
+        "exact_ST0402_product_identity_resource_mapping"
+      ],
+      "separation_of_duties": false,
+      "step_up_required": false
+    },
+    {
+      "action": "manage_secrets",
+      "allowed_roles": [
+        "OPERATOR"
+      ],
+      "blocked_reason": "UNMAPPED_OPERATION",
+      "data_class": "RESTRICTED",
+      "mfa_required": true,
+      "required_evidence": [
+        "exact_admin_secret_operation_mapping"
+      ],
+      "separation_of_duties": false,
+      "step_up_required": true
+    },
+    {
+      "action": "publish",
+      "allowed_roles": [
+        "MANAGING_EDITOR",
+        "OPERATOR"
+      ],
+      "blocked_reason": "CROSS_RESOURCE_BINDING_UNRESOLVED",
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": true,
+      "required_evidence": [
+        "publication_candidate_to_snapshot_step_up_resource_binding",
+        "publisher_independent_actor_mapping"
+      ],
+      "separation_of_duties": true,
+      "step_up_required": true
+    },
+    {
+      "action": "review_article",
+      "allowed_roles": [
+        "MANAGING_EDITOR",
+        "REVIEWER"
+      ],
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": false,
+      "separation_of_duties": false,
+      "step_up_required": false
+    },
+    {
+      "action": "rollback",
+      "allowed_roles": [
+        "MANAGING_EDITOR",
+        "OPERATOR"
+      ],
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": true,
+      "separation_of_duties": false,
+      "step_up_required": true
+    },
+    {
+      "action": "view_audit",
+      "allowed_roles": [
+        "READ_ONLY_AUDITOR",
+        "SECURITY_AUDITOR"
+      ],
+      "blocked_reason": "SITE_SCOPE_CONFLICT",
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": false,
+      "required_evidence": [
+        "site_mandatory_matrix_to_global_audit_context_resolution"
+      ],
+      "separation_of_duties": false,
+      "step_up_required": false
+    },
+    {
+      "action": "view_finance",
+      "allowed_roles": [
+        "ANALYST",
+        "PRODUCT_OWNER"
+      ],
+      "blocked_reason": "AMBIGUOUS_OPERATION",
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": false,
+      "required_evidence": [
+        "exact_finance_query_action_operation_set"
+      ],
+      "separation_of_duties": false,
+      "step_up_required": false
+    },
+    {
+      "action": "view_public",
+      "allowed_roles": [
+        "ANALYST",
+        "EDITOR",
+        "MANAGING_EDITOR",
+        "OPERATOR",
+        "PRODUCT_OWNER",
+        "READ_ONLY_AUDITOR",
+        "REVIEWER",
+        "SECURITY_AUDITOR"
+      ],
+      "blocked_reason": "PUBLIC_SURFACE_NOT_ADMIN_AUTHORIZATION",
+      "data_class": "PUBLIC",
+      "mfa_required": false,
+      "required_evidence": [
+        "separate_public_anonymous_access_contract"
+      ],
+      "separation_of_duties": false,
+      "step_up_required": false
+    },
+    {
+      "action": "view_raw_artifact",
+      "allowed_roles": [
+        "EDITOR",
+        "OPERATOR",
+        "REVIEWER",
+        "SECURITY_AUDITOR"
+      ],
+      "blocked_reason": "UNMAPPED_OPERATION",
+      "data_class": "CONFIDENTIAL",
+      "mfa_required": true,
+      "required_evidence": [
+        "exact_raw_artifact_operation_and_ST0402_resource_mapping"
+      ],
+      "separation_of_duties": false,
+      "step_up_required": false
+    }
+  ],
+  "schema_version": 1,
+  "service_principal": {
+    "database_workload_roles": [
+      "raos_api_rw",
+      "raos_auditor_ro",
+      "raos_dispatcher_rw",
+      "raos_migrator",
+      "raos_projection_rw",
+      "raos_public_ro",
+      "raos_reporting_ro",
+      "raos_worker_rw"
+    ],
+    "required_evidence": "exact_internal_service_principal_to_workload_role_and_operation_mapping",
+    "status": "DISABLED_MAPPING_UNRESOLVED"
+  },
+  "source_sha256": {
+    "changes/st-0306/contracts/database-roles-grants.v1.yaml": "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206",
+    "changes/st-0401/contracts/local-auth-runtime.v2.json": "6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad",
+    "changes/st-0402/contracts/local-step-up-runtime.v2.json": "c42931a148e4852aac9be2c1bab5012ed9c588e568daef2fe6a5c61cbd157bfa",
+    "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml": "a98ac40e5e5e4271c297e87c99e003708e08e459715aef86b5111048d9e2ded6",
+    "contracts/raos-v0.4/contracts/catalogs/state-transition-catalog.v0.4.yaml": "203eb10d9b6fc6ba4fb0e9f0491f713c313a6a5627dcaf60b7ce53665ecec8a5",
+    "contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml": "6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70",
+    "contracts/raos-v0.4/contracts/openapi-internal.v0.4.yaml": "616ea270aec830a987679853869c0d22e1114a95bcf0279d6e635a5f359a6f21",
+    "docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984",
+    "docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+  },
+  "status": "LOCAL_CODE_COMPLETE",
+  "story_id": "ST-0403",
+  "value_trust_boundary": {
+    "business_action_execution": false,
+    "constructor_scope": "INTERNAL_VALUE_NORMALIZATION_NOT_SERVICE_PROVENANCE",
+    "external_input_construction": "FORBIDDEN",
+    "runtime_enforcement_entrypoints": [
+      "AuthorizationGuard.require",
+      "DurableAuthorizationService.evaluate_admin",
+      "DurableAuthorizationService.require_admin"
+    ],
+    "status": "TRUSTED_IN_PROCESS_TCB_ONLY",
+    "unforgeable_capability": false
+  }
+}

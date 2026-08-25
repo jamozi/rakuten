@@ -1,0 +1,76 @@
+{
+  "schema_version": "2.0.0",
+  "fixture_id": "ST0502-ITEM-SEARCH-RUNTIME-SYNTHETIC-V2",
+  "synthetic": true,
+  "operational_default": false,
+  "activation": false,
+  "external_actions": 0,
+  "contains_credential_or_sample_value": false,
+  "plan": {
+    "keyword": "synthetic compact cleaner",
+    "hits": 2,
+    "max_pages": 2,
+    "sort": "standard"
+  },
+  "success_pages": [
+    {
+      "page": 1,
+      "pageCount": 2,
+      "count": 4,
+      "first": 1,
+      "last": 1,
+      "hits": 2,
+      "item_codes": [
+        "synthetic-shop:item-1"
+      ],
+      "expected_state": "READY",
+      "expected_outcome": "PAGE_ARCHIVED"
+    },
+    {
+      "page": 2,
+      "pageCount": 2,
+      "count": 4,
+      "first": 3,
+      "last": 3,
+      "hits": 2,
+      "item_codes": [
+        "synthetic-shop:item-2"
+      ],
+      "expected_state": "COMPLETED",
+      "expected_outcome": "COMPLETED"
+    }
+  ],
+  "provider_decisions": {
+    "429": "WAIT_RATE_LIMIT",
+    "500": "WAIT_RETRY_OR_CIRCUIT",
+    "503": "WAIT_RETRY_OR_CIRCUIT",
+    "400": "FAILED",
+    "401": "FAILED",
+    "403": "FAILED",
+    "404": "FAILED",
+    "disabled": "PROVIDER_DISABLED"
+  },
+  "commit_faults": [
+    "NONE",
+    "KNOWN_BEFORE_COMMIT",
+    "UNKNOWN_BEFORE_COMMIT",
+    "UNKNOWN_AFTER_COMMIT"
+  ],
+  "hostile_cases": [
+    "duplicate_json_key",
+    "malformed_utf8",
+    "nonfinite_number",
+    "oversized_response",
+    "untrusted_text",
+    "wrong_page_cursor",
+    "duplicate_item_identity",
+    "cross_request_fingerprint",
+    "archive_body_tamper",
+    "session_state_tamper",
+    "journal_result_tamper",
+    "path_traversal",
+    "symlink",
+    "hardlink",
+    "commit_ambiguity"
+  ]
+}

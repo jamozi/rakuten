@@ -235,7 +235,7 @@ def test_execution_and_evidence_are_inert_not_executed(
     compute_edge_model: generator.ComputeEdgeModel,
 ) -> None:
     plan = generator.reference_plan_document(compute_edge_model)
-    assert plan["planned_actions"] == {"create": 0, "update": 0, "delete": 0}
+    assert plan["planned_actions"] == {action: 0 for action in generator.ACTION_NAMES}
     activation = plan["activation"]
     assert activation["enabled"] is False
     assert activation["status"] == "DISABLED"
@@ -252,10 +252,12 @@ def test_execution_and_evidence_are_inert_not_executed(
     assert set(activation["native_commands"].values()) == {"FORBIDDEN"}
     evidence = plan["verification_boundary"]
     assert evidence["credentials"] == "ABSENT"
+    assert evidence["native_iac_validation"] == "EXECUTED_LOCAL_NOT_FORMAL"
     assert all(
         value == "NOT_EXECUTED"
         for key, value in evidence.items()
-        if key.startswith("formal_") or key.endswith("_validation")
+        if key.startswith("formal_")
+        or (key.endswith("_validation") and key != "native_iac_validation")
     )
 
 
@@ -304,12 +306,12 @@ def test_manifest_contains_handoff_and_provider_neutral_boundary() -> None:
     )
 
 
-def test_compute_edge_directory_contains_no_native_iac() -> None:
+def test_compute_edge_directory_contains_only_owned_provider_free_outputs() -> None:
     directory = REPOSITORY_ROOT / "infra/terraform/compute-edge"
-    assert sorted(path.name for path in directory.iterdir()) == [
-        generator.REFERENCE_PLAN_PATH.name
-    ]
-    assert not any(
-        path.is_file() and path.suffix in {".tf", ".tfvars", ".hcl", ".lock"}
-        for path in directory.rglob("*")
+    assert sorted(path.name for path in directory.iterdir()) == sorted(
+        path.name for path in generator.GENERATED_ARTIFACT_PATHS
     )
+    hcl = "\n".join((directory / path.name).read_text() for path in generator.HCL_PATHS)
+    assert 'provider "' not in hcl
+    assert 'resource "' not in hcl
+    assert "backend {" not in hcl

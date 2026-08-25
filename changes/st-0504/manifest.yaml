@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0504_product_identity_human_review_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0504_product_identity_human_review_reference_plan.py
 provenance:
-  contract_sha256: 246c21aa1d79489ed8c8a02fe0b7d1a50ffe1b2f7e85fcc4ba210369477512b8
+  contract_sha256: f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -20,10 +20,10 @@ provenance:
   - role: story
     uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
-  predecessor_commit: b61d4dd83b87495dfd672bdf8960dc3b1ff29d79
+  predecessor_commit: 1829e1ba31addce6579b445da51be5b604732278
   predecessor_inputs:
   - uri: repo://changes/st-0503/README.md
-    sha256: aa956454a96c0c88dedd52982264fdf5ad66f181ee3c3717a1aea8204bfbf138
+    sha256: e372c00533e7ddddb71e10308fb703e8c31261351c61d593c520371c505b2f0b
   - uri: repo://python/raos/domain/catalog/catalog_normalization.py
     sha256: 6fa0adbd3ade25c5e6880e5aaec70f2c010173873b3cd3d11987d317f81642d9
   - uri: repo://python/raos/ports/catalog_normalization.py
@@ -42,27 +42,27 @@ provenance:
     sha256: f1ebe757961349fe8deac3ed2e3c4217181a9bef423f0091803a0459a655356a
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    sha256: 478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0504/contracts/product-identity-human-review-reference-plan.v1.yaml
   bytes: 5361
-  sha256: 246c21aa1d79489ed8c8a02fe0b7d1a50ffe1b2f7e85fcc4ba210369477512b8
+  sha256: f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab
 - uri: repo://changes/st-0504/README.md
-  bytes: 2896
-  sha256: f53d62f70eddc08820a2f7c4b854fd8f3e05a86b148d107307ca3baf32bab958
+  bytes: 2893
+  sha256: de3a67a0bac23b5710a280d970e99ad055dcaa443b7eed0b5a088d405e82a637
 - uri: repo://scripts/build_st0504_product_identity_human_review_reference_plan.py
-  bytes: 25694
-  sha256: db0ad81f85305177da0e81d17ec5e544752a53f2c0580abd930837288cb53e84
+  bytes: 26043
+  sha256: 1a6097fff382c7ee7ed41ecb52807d9f4f9f236aa889e7ebefeece4f8380dad5
 - uri: repo://tests/st0504/conftest.py
   bytes: 972
   sha256: e76a58c45929decedbbcc268bf0b56f8aadfe8c44332de3674523812ab5bc530
 - uri: repo://tests/st0504/test_contract.py
-  bytes: 6776
-  sha256: 53d0a82d3441c6dba1845658175d699d3919180bd76abad238ca7b037572aa75
+  bytes: 6959
+  sha256: d2fb7938fb7d8378d7b0299123161a68bbb7b8752a79ef2bba04aa42ce9fcbb1
 - uri: repo://tests/st0504/test_generation.py
-  bytes: 3806
-  sha256: 5e86d5f8c8662f290890c8eaf9ac78a62060c6013d420eb8974ec1a77d82f9a8
+  bytes: 3971
+  sha256: 8cfca5e1f09a4bcc119e16eaf527e2befc7f44f2ac534cf7d34cd1d5c30b1c64
 - uri: repo://tests/st0504/test_negative_cases.py
   bytes: 13803
   sha256: 9e74abaa1be9d514edb6be64d07613b42d75db578cb5e8c31a3c430f26bc9764
@@ -70,7 +70,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json
   bytes: 8598
-  sha256: 8c30308b4f18e250f2117b78d37a72059c9a36646c31e9906d565bee80d4ef90
+  sha256: f3ce4f99f5309fdc0349bd7b5a9d930ae18006d72aeb0fd480165b870d8e3f1b
 boundary:
   classification: SOURCE_DERIVED_NON_EXECUTABLE_PRODUCT_IDENTITY_HUMAN_REVIEW_REFERENCE_PLAN
   executable: false

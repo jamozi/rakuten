@@ -217,3 +217,47 @@ unrelated workflow semantics remain unchanged.
 This local activation is not hosted CI or formal TST-001/TST-002 evidence. It
 does not mutate ST-0107/downstream provenance and grants no external, staging,
 release, publication, or Production authority.
+
+## Owner-generated V3 source-envelope reconciliation
+
+The later ST-1703 test-only commit
+`9d23e105b29c11132bd6e76597668dd1cdbc3417` shortened physical line 967 by
+four bytes. The reviewed finding remains on physical line 961, and its exact
+line SHA-256 remains
+`e7ce26448515f4510b0f6165edeeb2cd464b8db7309504eb969193824b726293`.
+The active V2 ledger therefore failed closed on its whole-source size binding;
+the V2 ledger and both historical activation records remain byte-identical.
+
+`scripts/build_st0106_reviewed_findings_rebind.py` owns the additive V3 ledger.
+It resolves the exact prior and current Git blobs, verifies both complete
+source hashes, accepts only the hash-bound one-line replacement at line 967,
+requires the reviewed line to be byte-identical, and requires the complete
+sanitized finding set to remain exactly one `GENERIC_CREDENTIAL` at line 961
+with zero specific-rule finding. It then copies V2, changes only that worktree
+entry's whole-source byte count and SHA-256, and projects one `git_history`
+entry for the exact current blob. That projection inherits the reviewed line,
+line hash, classification, and rationale from the exact prior-blob history
+entry. This is required because a full-history scan sees both source blobs.
+Any other hunk, reviewed-line change, new generic finding, specific finding,
+predecessor/history-entry drift, scanner drift, or generated-output drift is
+rejected.
+
+The generated 116-entry ledger is 60,287 bytes at SHA-256
+`09277639d9db84371e8e3882ad2379ee4e15a13ff35a74b003201bde2f681f40`.
+Its manifest is regenerated from the exact input, owner, scanner, predecessor,
+prior blob, current source, and output. The Secrets job changes only the final
+ledger-path suffix from V2 to V3; replacing V3 with V2 reconstructs the exact
+historical post-V2 workflow bytes and hash. This V3 name is a ledger revision,
+not the rejected global classifier from PR #49; scanner semantics are
+unchanged.
+
+The local owner command is:
+
+```text
+/home/minami/rakuten/.venv/bin/python scripts/build_st0106_reviewed_findings_rebind.py --check
+```
+
+A physical, non-shallow, non-shared clone and the denied-network worktree plus
+Git-history command remain the required clean-scan boundary. Hosted CI and
+formal TST-001/TST-002 remain `NOT_EXECUTED`; no external, staging, release,
+publication, or Production authority is created.

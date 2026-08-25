@@ -1,0 +1,110 @@
+{
+  "boundary": {
+    "authority": {
+      "browser_authentication": false,
+      "credential_access": false,
+      "external_http_activation": false,
+      "live_provider": false,
+      "production": false,
+      "publication": false,
+      "release": false,
+      "staging": false
+    },
+    "open_decision": {
+      "id": "OD-010",
+      "provider_selection": "UNSELECTED",
+      "safe_default": "LOCAL_FAKE_DEVELOPMENT_ONLY_EXTERNAL_PUBLICATION_FORBIDDEN",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "verification": {
+      "browser": "NOT_EXECUTED",
+      "formal_tst_012": "NOT_EXECUTED",
+      "formal_tst_022": "NOT_EXECUTED",
+      "formal_tst_026": "NOT_EXECUTED",
+      "hosted_ci": "NOT_EXECUTED",
+      "local_focused": "EXECUTABLE",
+      "production": "NOT_EXECUTED",
+      "release": "NOT_EXECUTED",
+      "staging": "NOT_EXECUTED"
+    }
+  },
+  "generated_artifacts": [
+    {
+      "path": "changes/st-0401/generated/local-auth-runtime.v2.json",
+      "sha256": "42d7133f717fb315da0fe5688c8e86cc73ca03e8c232b0ac8b9c20e34d407ad7"
+    }
+  ],
+  "generation": {
+    "owner": "scripts/build_st0401_local_auth_runtime.py",
+    "publication": "ATOMIC_FOREIGN_PRESERVING_MULTI_OUTPUT_WITH_ROLLBACK",
+    "python": "CPython 3.14.6"
+  },
+  "source_artifact_count": 16,
+  "source_artifacts": [
+    {
+      "path": "changes/st-0401/contracts/local-auth-runtime.v2.json",
+      "sha256": "6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad"
+    },
+    {
+      "path": "scripts/build_st0401_local_auth_runtime.py",
+      "sha256": "fa5cfa50f9dfdf6d8081fd2819d90d3e3431d89ad4f30ba0a0bc67fd3d7f6864"
+    },
+    {
+      "path": "scripts/secure_generated_publication.py",
+      "sha256": "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e"
+    },
+    {
+      "path": "python/raos/domain/iam/authentication.py",
+      "sha256": "a7a06f72244318696dc37c76dfd4b6ac030db8a9fb3872ed69747201f6fc690d"
+    },
+    {
+      "path": "python/raos/ports/oidc.py",
+      "sha256": "57fcca6de54cae9c206018a264ea34632f4c3adcc94b2a5d4e4063d635a96269"
+    },
+    {
+      "path": "python/raos/application/iam/authentication.py",
+      "sha256": "edb92df10bf68bcb1fc76f9c5635f6dd87340a562e24d58c44fcc136df2aa32a"
+    },
+    {
+      "path": "python/raos/adapters/development_oidc.py",
+      "sha256": "f962b13a62890dea606ed8c07a80c44f177365abce8d180661e80c828409b135"
+    },
+    {
+      "path": "python/raos/adapters/recorded_authentication.py",
+      "sha256": "29d178a3e13a1a6cff4896702a4e424d23daa9a5564664e2a1ad8cf2537f5125"
+    },
+    {
+      "path": "python/raos/adapters/disabled_admin_auth_http.py",
+      "sha256": "5114e8fd0074456fcc22114a2c84351be17ce7b5ec35d5869a47dced6c39ed11"
+    },
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "path": "docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml",
+      "sha256": "dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050"
+    },
+    {
+      "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "path": "changes/st-0308/contracts/persistence-runtime.v2.yaml",
+      "sha256": "0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4"
+    }
+  ],
+  "story_id": "ST-0401"
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the disabled, non-executable ST-1502 data-services artifacts."""
+"""Build the disabled, provider-free ST-1502 logical data-services module."""
 
 from __future__ import annotations
 
@@ -10,12 +10,13 @@ import json
 import os
 import re
 import stat
+import subprocess
 import sys
 import tempfile
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
-from typing import Any, Final, NoReturn
+from typing import Any, Final, NoReturn, cast
 
 import yaml
 from yaml.constructor import ConstructorError
@@ -33,8 +34,24 @@ DESIGN_HANDOFF_PATH: Final = Path(
 REFERENCE_PLAN_PATH: Final = Path(
     "infra/terraform/data-services/data-services.reference-plan.v1.json"
 )
+LOGICAL_PLAN_PATH: Final = Path(
+    "infra/terraform/data-services/data-services.logical-plan.v1.json"
+)
+TOOLCHAIN_LOCK_PATH: Final = Path(
+    "infra/terraform/data-services/terraform-validation-toolchain.lock.v1.json"
+)
+HCL_PATHS: Final = tuple(
+    Path("infra/terraform/data-services") / name
+    for name in ("versions.tf", "variables.tf", "locals.tf", "checks.tf", "outputs.tf")
+)
 MANIFEST_PATH: Final = Path("changes/st-1502/manifest.yaml")
-GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
+GENERATED_ARTIFACT_PATHS: Final = (
+    REFERENCE_PLAN_PATH,
+    LOGICAL_PLAN_PATH,
+    TOOLCHAIN_LOCK_PATH,
+    *HCL_PATHS,
+)
+GENERATED_PATHS: Final = (*GENERATED_ARTIFACT_PATHS, MANIFEST_PATH)
 
 SOURCE_CONTRACT_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = "repo://scripts/build_st1502_data_services.py"
@@ -42,6 +59,21 @@ GENERATION_COMMAND: Final = (
     "uv run --locked --no-sync python scripts/build_st1502_data_services.py"
 )
 CHECK_COMMAND: Final = f"{GENERATION_COMMAND} --check"
+NATIVE_CHECK_COMMAND: Final = (
+    f"{GENERATION_COMMAND} --native-check --terraform /absolute/path/to/terraform"
+)
+
+TERRAFORM_VERSION: Final = "1.15.9"
+TERRAFORM_PLATFORM: Final = "linux_amd64"
+TERRAFORM_REQUIRED_VERSION: Final = f"= {TERRAFORM_VERSION}"
+TERRAFORM_BINARY_SHA256: Final = (
+    "c39d41adb17963bac5dd610ad47815dd81e945371a7cabc344a45d63b1b093bd"
+)
+ALLOWED_NATIVE_ARGUMENTS: Final = (
+    ("version", "-json"),
+    ("fmt", "-check", "-recursive"),
+    ("validate", "-json"),
+)
 
 AUTHORITY_SOURCES: Final = {
     "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": (
@@ -81,7 +113,7 @@ AUTHORITY_SOURCES: Final = {
         "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
     ),
     "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml": (
-        "ee41e5d240322e084b0a9a945ac8a06347267e55dd6552a5669772925c9497e5"
+        "2826ec76994e6fb1d4e1c41bc0ce7affecc96351d1fcf527e45c2909bb89f97c"
     ),
 }
 PREDECESSOR_SOURCES: Final = {
@@ -89,10 +121,13 @@ PREDECESSOR_SOURCES: Final = {
         "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f"
     ),
     "changes/st-1501/contracts/terraform-foundation.v1.yaml": (
-        "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9"
+        "5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e"
     ),
     "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json": (
-        "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70"
+        "bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72"
+    ),
+    "infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json": (
+        "696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44"
     ),
 }
 PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
@@ -100,25 +135,31 @@ PINNED_SOURCES: Final = {**AUTHORITY_SOURCES, **PREDECESSOR_SOURCES}
 SOURCE_ARTIFACT_PATHS: Final = (
     CONTRACT_PATH,
     DESIGN_HANDOFF_PATH,
+    Path("changes/st-1502/IMPLEMENTATION_RECORD_V2_ST1502_LOGICAL_HCL.yaml"),
+    Path("changes/st-1502/LOCAL_COMPLETION_EVIDENCE_V2.md"),
     Path("changes/st-1502/README.md"),
     Path("scripts/build_st1502_data_services.py"),
     Path("tests/st1502/conftest.py"),
     Path("tests/st1502/test_contract.py"),
     Path("tests/st1502/test_generation.py"),
+    Path("tests/st1502/test_logical_hcl.py"),
     Path("tests/st1502/test_negative_cases.py"),
 )
 
 EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
-    "fda0d363d17ca4d8197179b74ad0fac23d252fc3a4e7ef0dc66c2c10a7fc3500"
+    "0d1069b18729a8997e81cdbe1edc40f770348adea10cb12349d9b915547d5845"
 )
 EXPECTED_PREDECESSOR_HANDOFF_SEMANTIC_SHA256: Final = (
     "e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722"
 )
 EXPECTED_PREDECESSOR_CONTRACT_SEMANTIC_SHA256: Final = (
-    "dcf15e5dd721b504a6bac04b71a0c6d26c7ba72bf86e074459babc59f2e3f080"
+    "9e88addbfe93c6d6754111d508ba1d7461a703c2aa6b329fa319b6566d9a55e1"
 )
 EXPECTED_PREDECESSOR_PLAN_SEMANTIC_SHA256: Final = (
-    "8679ac98b14f1bd33572679d7fa1fcd1d64e65d3f94b0a973d35637c176567d7"
+    "1deb0efe9ff2d99ccc27ad6f50d1a07c6ed13b6c45cdd6914a7fdcd1a0edbf20"
+)
+EXPECTED_PREDECESSOR_TOOLCHAIN_SEMANTIC_SHA256: Final = (
+    "db631e5421d5eea0534737b1df03425ccb873cfe981ad96409d3c90aeef4de1a"
 )
 EXPECTED_HANDOFF_SOURCE_DESIGN_REFS: Final = (
     "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
@@ -338,8 +379,263 @@ ACTION_NAMES: Final = (
     "redrive",
     "rotate",
 )
+OBJECT_NODE_IDS: Final = tuple(f"object_{role}" for role in BUCKET_ROLES)
+PRIMARY_QUEUE_NODE_IDS: Final = tuple(
+    f"queue_{queue_class}" for queue_class in QUEUE_CLASSES
+)
+DLQ_NODE_IDS: Final = tuple(f"queue_{queue_class}_dlq" for queue_class in QUEUE_CLASSES)
+KMS_NODE_IDS: Final = (
+    "kms_relational",
+    "kms_object_storage",
+    "kms_queue",
+    "kms_secret_metadata",
+)
+BACKUP_NODE_IDS: Final = (
+    "backup_relational_pitr",
+    "backup_object_versions",
+    "backup_configuration",
+)
+IAM_ROLE_IDS: Final = (
+    "iam_db_workload",
+    "iam_object_writer",
+    "iam_object_reader",
+    "iam_queue_producer",
+    "iam_queue_consumer",
+    "iam_queue_redrive_operator",
+    "iam_secret_reader",
+    "iam_backup_operator",
+    "iam_restore_operator",
+)
+SUCCESSOR_GATE_EVIDENCE: Final = (
+    "OD-013_RESOLVED_REGION_RESIDENCY",
+    "OD-014_RESOLVED_RETENTION_DELETION",
+    "OD-015_PROVIDER_CREDENTIAL_EVIDENCE",
+    "TST-026_FORMAL_SECURITY_EVIDENCE",
+    "TST-029_ISOLATED_RESTORE_EVIDENCE",
+    "PROVIDER_SCHEMA_AND_PLUGIN_PROVENANCE",
+    "PRIVATE_NETWORK_AND_ACCOUNT_ISOLATION",
+    "LEAST_PRIVILEGE_POLICY_REVIEW",
+    "BACKUP_RESTORE_AND_KEY_RECOVERY",
+    "HUMAN_APPROVED_RELEASE_AND_ROLLBACK",
+)
+IAM_PERMISSIONS: Final = {
+    "iam_db_workload": ("database.connect", "database.read", "database.write"),
+    "iam_object_writer": ("object.create", "object.version.read"),
+    "iam_object_reader": ("object.read", "object.version.read"),
+    "iam_queue_producer": ("queue.send",),
+    "iam_queue_consumer": (
+        "queue.receive",
+        "queue.delete",
+        "queue.visibility.change",
+    ),
+    "iam_queue_redrive_operator": ("queue.redrive",),
+    "iam_secret_reader": ("secret.metadata.read", "secret.value.resolve_by_workload"),
+    "iam_backup_operator": ("backup.create", "backup.verify"),
+    "iam_restore_operator": ("restore.isolated", "restore.verify"),
+}
+HCL_ALLOWED_BLOCKS_BY_FILE: Final = {
+    "versions.tf": ("terraform",),
+    "variables.tf": ("variable",) * 13,
+    "locals.tf": ("locals",),
+    "checks.tf": ("check",) * 8,
+    "outputs.tf": ("output",) * 5,
+}
+HCL_FORBIDDEN_TOP_LEVEL_BLOCKS: Final = {
+    "provider",
+    "backend",
+    "cloud",
+    "module",
+    "data",
+    "resource",
+    "import",
+    "run",
+    "provisioner",
+}
+HCL_TOP_LEVEL_BLOCK_PATTERN: Final = re.compile(
+    r'(?m)^(terraform|variable|locals|check|output|provider|backend|cloud|module|data|resource|import|run|provisioner)(?:\s+"[^"]+")?(?:\s+"[^"]+")?\s*\{'
+)
 MAX_DOCUMENT_BYTES: Final = 2 * 1024 * 1024
+MAX_HCL_BYTES: Final = 512 * 1024
 SHA256_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
+
+
+def _logical_node(
+    node_id: str,
+    kind: str,
+    reference_service: str,
+    *,
+    persisted_data: bool = False,
+    network_interaction: bool = False,
+    backup_required: bool = False,
+    backup_declared: bool = False,
+    immutable_required: bool = False,
+    immutable_declared: bool = False,
+    dlq_required: bool = False,
+    dlq_declared: bool = False,
+    key_rotation_required: bool = False,
+) -> dict[str, object]:
+    return {
+        "node_id": node_id,
+        "kind": kind,
+        "reference_service": reference_service,
+        "persisted_data": persisted_data,
+        "network_interaction": network_interaction,
+        "public_access": False,
+        "encryption_at_rest": persisted_data,
+        "transport_encryption": network_interaction,
+        "backup_required": backup_required,
+        "backup_declared": backup_declared,
+        "immutable_required": immutable_required,
+        "immutable_declared": immutable_declared,
+        "dlq_required": dlq_required,
+        "dlq_declared": dlq_declared,
+        "contains_secret_material": False,
+        "key_rotation_required": key_rotation_required,
+        "key_rotation_declared": key_rotation_required,
+        "least_privilege": True,
+        "wildcard_iam": False,
+    }
+
+
+def logical_resource_nodes() -> list[dict[str, object]]:
+    nodes = [
+        _logical_node(
+            "relational_database",
+            "RELATIONAL_DATABASE",
+            "RDS",
+            persisted_data=True,
+            network_interaction=True,
+            backup_required=True,
+            backup_declared=True,
+        )
+    ]
+    nodes.extend(
+        _logical_node(
+            node_id,
+            "OBJECT_STORAGE",
+            "S3",
+            persisted_data=True,
+            network_interaction=True,
+            backup_required=True,
+            backup_declared=True,
+            immutable_required=True,
+            immutable_declared=True,
+        )
+        for node_id in OBJECT_NODE_IDS
+    )
+    nodes.extend(
+        _logical_node(
+            node_id,
+            "PRIMARY_QUEUE",
+            "SQS",
+            persisted_data=True,
+            network_interaction=True,
+            dlq_required=True,
+            dlq_declared=True,
+        )
+        for node_id in PRIMARY_QUEUE_NODE_IDS
+    )
+    nodes.extend(
+        _logical_node(
+            node_id,
+            "DEAD_LETTER_QUEUE",
+            "SQS",
+            persisted_data=True,
+            network_interaction=True,
+        )
+        for node_id in DLQ_NODE_IDS
+    )
+    nodes.append(
+        _logical_node(
+            "secret_metadata",
+            "SECRET_METADATA_BOUNDARY",
+            "Secrets Manager",
+            persisted_data=True,
+            network_interaction=True,
+            backup_required=True,
+            backup_declared=True,
+        )
+    )
+    nodes.extend(
+        _logical_node(
+            node_id,
+            "ENCRYPTION_KEY",
+            "KMS",
+            network_interaction=True,
+            key_rotation_required=True,
+        )
+        for node_id in KMS_NODE_IDS
+    )
+    nodes.extend(
+        _logical_node(node_id, "RECOVERY_DECLARATION", "LOGICAL")
+        for node_id in BACKUP_NODE_IDS
+    )
+    nodes.extend(
+        _logical_node(node_id, "IAM_PERMISSION_SET", "LOGICAL")
+        for node_id in IAM_ROLE_IDS
+    )
+    return nodes
+
+
+def logical_resource_edges() -> list[dict[str, str]]:
+    edges: list[dict[str, str]] = [
+        {
+            "from": "relational_database",
+            "to": "kms_relational",
+            "relationship": "ENCRYPTED_BY",
+        }
+    ]
+    edges.extend(
+        {"from": node_id, "to": "kms_object_storage", "relationship": "ENCRYPTED_BY"}
+        for node_id in OBJECT_NODE_IDS
+    )
+    edges.extend(
+        {"from": node_id, "to": "kms_queue", "relationship": "ENCRYPTED_BY"}
+        for node_id in (*PRIMARY_QUEUE_NODE_IDS, *DLQ_NODE_IDS)
+    )
+    edges.append(
+        {
+            "from": "secret_metadata",
+            "to": "kms_secret_metadata",
+            "relationship": "ENCRYPTED_BY",
+        }
+    )
+    edges.extend(
+        {"from": primary, "to": dlq, "relationship": "REDRIVES_TO"}
+        for primary, dlq in zip(PRIMARY_QUEUE_NODE_IDS, DLQ_NODE_IDS, strict=True)
+    )
+    edges.append(
+        {
+            "from": "backup_relational_pitr",
+            "to": "relational_database",
+            "relationship": "PROTECTS",
+        }
+    )
+    edges.extend(
+        {"from": "backup_object_versions", "to": node_id, "relationship": "PROTECTS"}
+        for node_id in OBJECT_NODE_IDS
+    )
+    edges.extend(
+        {"from": "backup_configuration", "to": node_id, "relationship": "RECONSTRUCTS"}
+        for node_id in ("secret_metadata", *KMS_NODE_IDS)
+    )
+    role_targets = {
+        "iam_db_workload": ("relational_database",),
+        "iam_object_writer": OBJECT_NODE_IDS,
+        "iam_object_reader": OBJECT_NODE_IDS,
+        "iam_queue_producer": PRIMARY_QUEUE_NODE_IDS,
+        "iam_queue_consumer": PRIMARY_QUEUE_NODE_IDS,
+        "iam_queue_redrive_operator": (*PRIMARY_QUEUE_NODE_IDS, *DLQ_NODE_IDS),
+        "iam_secret_reader": ("secret_metadata",),
+        "iam_backup_operator": BACKUP_NODE_IDS,
+        "iam_restore_operator": BACKUP_NODE_IDS,
+    }
+    for role_id, targets in role_targets.items():
+        edges.extend(
+            {"from": role_id, "to": target, "relationship": "AUTHORIZES"}
+            for target in targets
+        )
+    return edges
 
 
 def _queue_selection() -> dict[str, object]:
@@ -472,12 +768,64 @@ def _provider_neutral_admission() -> dict[str, object]:
     }
 
 
+EXPECTED_LOGICAL_HCL_MODULE: Final = {
+    "classification": "PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_RESOURCE_GRAPH",
+    "module_path": "infra/terraform/data-services",
+    "terraform_required_version": TERRAFORM_REQUIRED_VERSION,
+    "toolchain_lock_source": "ST-1501_PINNED_VALIDATION_ONLY_TOOLCHAIN",
+    "generated": True,
+    "default_disabled": True,
+    "provider_schema_binding": None,
+    "provider_requirements": [],
+    "provider_blocks": [],
+    "backend_blocks": [],
+    "cloud_blocks": [],
+    "module_blocks": [],
+    "data_blocks": [],
+    "resource_blocks": [],
+    "provisioners": [],
+    "physical_resource_materialization": "FORBIDDEN_IN_CURRENT_REVISION",
+    "logical_resource_node_count": len(logical_resource_nodes()),
+    "logical_iam_role_count": len(IAM_ROLE_IDS),
+    "logical_primary_queue_count": len(PRIMARY_QUEUE_NODE_IDS),
+    "logical_dlq_count": len(DLQ_NODE_IDS),
+    "logical_object_storage_role_count": len(OBJECT_NODE_IDS),
+    "deterministic_no_apply_plan_fixture": LOGICAL_PLAN_PATH.as_posix(),
+    "generated_files": [path.name for path in HCL_PATHS],
+    "allowed_top_level_blocks": ["terraform", "variable", "locals", "check", "output"],
+    "policy_validation": "EXACT_CLOSED_BUNDLE_FORBIDDEN_BLOCK_AND_SAFETY_SCAN",
+    "semantic_validation": "TERRAFORM_VALIDATE_JSON_INIT_FREE_PROVIDER_FREE",
+}
+EXPECTED_SUCCESSOR_ACTIVATION_PORT: Final = {
+    "classification": "CLOSED_PHYSICAL_RESOURCE_ACTIVATION_PORT",
+    "current_revision_activation": "FORBIDDEN",
+    "successor_contract_revision_required": True,
+    "selected_provider_schema": None,
+    "selected_provider_plugin": None,
+    "selected_account_or_project": None,
+    "selected_primary_region": None,
+    "selected_backup_region": None,
+    "selected_state_backend": None,
+    "selected_credential_source": None,
+    "selected_network_segments": [],
+    "selected_security_policy_bindings": [],
+    "selected_retention_policy_id": None,
+    "required_gate_evidence": list(SUCCESSOR_GATE_EVIDENCE),
+    "supplied_gate_evidence": [],
+    "complete_gate_evidence": False,
+    "provider_binding": "FORBIDDEN_IN_CURRENT_REVISION",
+    "resource_materialization": "FORBIDDEN_IN_CURRENT_REVISION",
+    "infrastructure_plan": "FORBIDDEN",
+    "infrastructure_apply": "FORBIDDEN",
+}
+
+
 EXPECTED_SECTIONS: Final[dict[str, Any]] = {
     "document": {
         "id": "RAOS-DATA-SERVICES-FOUNDATION-001",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "story_id": "ST-1502",
-        "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        "status": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
         "formal_verification": "NOT_EXECUTED",
     },
     "predecessor_binding": {
@@ -503,6 +851,15 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
         "reference_plan_sha256": PREDECESSOR_SOURCES[
             "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"
         ],
+        "toolchain_lock_uri": (
+            "repo://infra/terraform/foundation/"
+            "terraform-validation-toolchain.lock.v1.json"
+        ),
+        "toolchain_lock_sha256": PREDECESSOR_SOURCES[
+            "infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"
+        ],
+        "required_terraform_version": TERRAFORM_VERSION,
+        "required_terraform_binary_sha256": TERRAFORM_BINARY_SHA256,
         "required_provider_policy": (
             "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION"
         ),
@@ -527,6 +884,8 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
         "evidence_substitute": False,
     },
     "provider_neutral_data_services_admission": _provider_neutral_admission(),
+    "logical_hcl_module": EXPECTED_LOGICAL_HCL_MODULE,
+    "successor_activation_port": EXPECTED_SUCCESSOR_ACTIVATION_PORT,
     "selected_configuration": {
         "provider_name": None,
         "provider_account_or_project": None,
@@ -699,15 +1058,17 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
     },
     "evidence_boundary": {
         "deliverable_classification": (
-            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_REFERENCE_PLAN"
+            "SOURCE_DERIVED_PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_DATA_SERVICES_HCL"
         ),
-        "executable_iac": "ABSENT",
-        "iac_toolchain": "UNPINNED_NOT_INVOKED",
-        "provider_plugins_or_adapters": "UNPINNED_NOT_INVOKED",
+        "executable_iac": "VALIDATABLE_NO_PROVIDER_NO_RESOURCE_HCL_LOGICAL_GRAPH",
+        "iac_toolchain": "PINNED_FROM_ST1501_VALIDATION_ONLY_1_15_9",
+        "provider_plugins_or_adapters": "NONE_REQUIRED_NOT_SELECTED",
         "provider_account_or_project": "UNSET",
         "provider_profile": "UNSET",
         "credentials": "ABSENT",
-        "native_iac_validation": "NOT_EXECUTED",
+        "offline_native_validation_path": "IMPLEMENTED",
+        "local_native_validation": "EXECUTED_LOCAL_NOT_FORMAL",
+        "logical_plan_validation": "EXECUTED_LOCAL_NOT_FORMAL",
         "transport_encryption_validation": "NOT_EXECUTED",
         "relational_migration_validation": "NOT_EXECUTED",
         "queue_delivery_validation": "NOT_EXECUTED",
@@ -746,9 +1107,12 @@ def _construct_unique_mapping(
     loader: UniqueKeyLoader, node: MappingNode, deep: bool = False
 ) -> dict[Any, Any]:
     loader.flatten_mapping(node)
+    construct_object = cast(
+        Callable[[object, bool], Any], getattr(loader, "construct_object")
+    )
     result: dict[Any, Any] = {}
     for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+        key = construct_object(key_node, deep)
         try:
             duplicate = key in result
         except TypeError as exc:
@@ -765,7 +1129,7 @@ def _construct_unique_mapping(
                 "found duplicate key",
                 key_node.start_mark,
             )
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = construct_object(value_node, deep)
     return result
 
 
@@ -780,6 +1144,19 @@ class DataServicesModel:
     """A fully validated, closed ST-1502 contract."""
 
     contract: Mapping[str, Any]
+
+
+@dataclass(frozen=True, slots=True)
+class NativeValidationResult:
+    """Sanitized result from the pinned, network-isolated validator."""
+
+    terraform_version: str
+    platform: str
+    provider_selections: tuple[tuple[str, str], ...]
+    format_valid: bool
+    semantic_valid: bool
+    network_namespace: bool
+    repository_unchanged: bool
 
 
 def sha256_bytes(content: bytes) -> str:
@@ -808,18 +1185,24 @@ def _fail(code: str, field: str) -> NoReturn:
     raise DataServicesContractError(code, field)
 
 
-def _mapping(value: object, field: str) -> Mapping[str, Any]:
-    if not isinstance(value, Mapping) or not all(
-        type(key) is str for key in value.keys()
-    ):
-        _fail("TYPE_MISMATCH", field)
+def _as_object(value: Any) -> object:
+    """Erase incomplete third-party generic types at a checked boundary."""
     return value
 
 
-def _list(value: object, field: str) -> list[Any]:
+def _mapping(value: object, field: str) -> Mapping[str, Any]:
+    if not isinstance(value, Mapping):
+        _fail("TYPE_MISMATCH", field)
+    untyped_mapping = cast(Mapping[object, object], value)
+    if not all(type(key) is str for key in untyped_mapping):
+        _fail("TYPE_MISMATCH", field)
+    return cast(Mapping[str, Any], value)
+
+
+def _list(value: object, field: str) -> list[object]:
     if type(value) is not list:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(list[object], value)
 
 
 def _exact_keys(value: Mapping[str, Any], expected: set[str], field: str) -> None:
@@ -830,14 +1213,14 @@ def _exact_keys(value: Mapping[str, Any], expected: set[str], field: str) -> Non
 def _strict_match(actual: object, expected: object, field: str) -> None:
     if isinstance(expected, Mapping):
         value = _mapping(actual, field)
-        expected_mapping = _mapping(expected, field)
+        expected_mapping = _mapping(_as_object(expected), field)
         _exact_keys(value, set(expected_mapping), field)
         for key, expected_value in expected_mapping.items():
             _strict_match(value[key], expected_value, f"{field}.{key}")
         return
     if type(expected) is list:
         value_list = _list(actual, field)
-        expected_list = _list(expected, field)
+        expected_list = _list(_as_object(expected), field)
         if not expected_list and value_list:
             _fail("SELECTION_MUST_REMAIN_UNSET", field)
         if len(value_list) != len(expected_list):
@@ -910,7 +1293,8 @@ def load_yaml(path: Path) -> Any:
         _fail("YAML_SIZE_LIMIT", "yaml")
     try:
         text = content.decode("utf-8")
-        for token in yaml.scan(text):
+        scan_yaml = cast(Callable[[str], Iterable[object]], getattr(yaml, "scan"))
+        for token in scan_yaml(text):
             if isinstance(token, (AliasToken, AnchorToken)):
                 _fail("YAML_ALIAS_FORBIDDEN", "yaml")
             if isinstance(token, TagToken):
@@ -991,11 +1375,11 @@ def _find_exact_record(
     document: Mapping[str, Any], collection: str, record_id: str, field: str
 ) -> Mapping[str, Any]:
     rows = _list(document.get(collection), field)
-    matches = [
-        _mapping(row, field)
-        for row in rows
-        if isinstance(row, Mapping) and row.get("id") == record_id
-    ]
+    matches: list[Mapping[str, Any]] = []
+    for raw_row in rows:
+        row = _mapping(raw_row, field)
+        if row.get("id") == record_id:
+            matches.append(row)
     if len(matches) != 1:
         _fail("AUTHORITY_RECORD_MISSING", field)
     return matches[0]
@@ -1081,6 +1465,26 @@ def _validate_design_handoff(root: Path) -> None:
                 capability_id
                 for capability_id, _required_outcome in DATA_SERVICE_CAPABILITY_OUTCOMES
             ],
+            "local_hcl_implementation": {
+                "classification": (
+                    "PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_RESOURCE_GRAPH"
+                ),
+                "terraform_version_source": (
+                    "ST-1501_PINNED_VALIDATION_ONLY_TOOLCHAIN"
+                ),
+                "provider_requirements": [],
+                "provider_blocks": [],
+                "backend_blocks": [],
+                "module_blocks": [],
+                "data_blocks": [],
+                "resource_blocks": [],
+                "provisioners": [],
+                "default_disabled": True,
+                "planned_actions": {action: 0 for action in ACTION_NAMES},
+                "successor_contract_revision_required": True,
+                "physical_resource_materialization": ("FORBIDDEN_IN_CURRENT_REVISION"),
+                "production_apply": "FORBIDDEN",
+            },
         },
         "handoff.decision",
     )
@@ -1283,45 +1687,33 @@ def _validate_predecessor_semantics(root: Path) -> None:
         contract.get("document"),
         {
             "id": "RAOS-TERRAFORM-FOUNDATION-001",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "story_id": "ST-1501",
-            "status": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+            "status": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
             "formal_verification": "NOT_EXECUTED",
         },
         "predecessor.document",
     )
-    _strict_match(
-        contract.get("reference_architecture"),
-        {
-            "cloud": "AWS",
-            "region": "ap-northeast-1",
-            "classification": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
-            "inherited_from": "INT-DEC-007",
-            "portable_core_required": True,
-            "default": False,
-            "implicit_fallback": False,
-            "selected_binding": False,
-            "eligibility_shortcut": False,
-            "admission_requirement": False,
-            "evidence_substitute": False,
-        },
-        "predecessor.reference_architecture",
+    reference = _mapping(
+        contract.get("reference_architecture"), "predecessor.reference"
     )
+    for field in (
+        "default",
+        "implicit_fallback",
+        "selected_binding",
+        "eligibility_shortcut",
+        "admission_requirement",
+        "evidence_substitute",
+    ):
+        _strict_match(reference.get(field), False, f"predecessor.reference.{field}")
     admission = _mapping(
         contract.get("provider_neutral_foundation_admission"),
         "predecessor.admission",
     )
     _strict_match(
-        admission.get("classification"),
-        "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
-        "predecessor.admission.classification",
+        admission.get("admission_status"), "NOT_EVALUATED", "predecessor.admission"
     )
-    _strict_match(
-        admission.get("admission_status"),
-        "NOT_EVALUATED",
-        "predecessor.admission.status",
-    )
-    _strict_match(admission.get("eligible"), False, "predecessor.admission.eligible")
+    _strict_match(admission.get("eligible"), False, "predecessor.admission")
     for field in (
         "selected_profile_id",
         "selected_profile_kind",
@@ -1330,103 +1722,65 @@ def _validate_predecessor_semantics(root: Path) -> None:
         "fallback_profile_id",
     ):
         _strict_match(admission.get(field), None, f"predecessor.admission.{field}")
+    mapping_policy = _mapping(admission.get("mapping_policy"), "predecessor.mapping")
     _strict_match(
-        admission.get("concrete_alternate_provider_selected"),
-        False,
-        "predecessor.admission.concrete_alternate_provider_selected",
+        mapping_policy.get("configured_mapping_count"), 0, "predecessor.mapping"
     )
-    predecessor_aws_boundary = _mapping(
-        admission.get("aws_reference_boundary"),
-        "predecessor.admission.aws_reference_boundary",
-    )
-    _strict_match(
-        predecessor_aws_boundary,
-        {
-            "role": "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY",
-            "canonical_story_deliverables": (
-                "CANONICAL_STORY_DELIVERABLES_PRESERVED_NOT_ERASED_REPLACED_OR_COMPLETED"
-            ),
-            "non_aws_owner_managed_profiles": (
-                "ADDITIONAL_PORTABLE_IMPLEMENTATION_PATHS"
-            ),
-            "default": False,
-            "implicit_fallback": False,
-            "selected_binding": False,
-            "eligibility_shortcut": False,
-            "admission_requirement": False,
-            "evidence_substitute": False,
-        },
-        "predecessor.admission.aws_reference_boundary",
-    )
-    _strict_match(
-        contract.get("selected_configuration"),
-        {
-            "cloud_provider": None,
-            "production_region": None,
-            "backup_region": None,
-            "development_account_id": None,
-            "production_account_id": None,
-            "terraform_cli_version": None,
-            "provider_plugins": [],
-            "state_backend": None,
-            "credential_source": None,
-            "network_cidrs": [],
-            "availability_zones": [],
-            "kms_key_reference": None,
-            "monthly_budget_jpy": None,
-            "resource_definitions": [],
-        },
-        "predecessor.selected_configuration",
-    )
+    _strict_match(mapping_policy.get("complete_mapping"), False, "predecessor.mapping")
+    selected = _mapping(contract.get("selected_configuration"), "predecessor.selection")
+    if any(value not in (None, []) for value in selected.values()):
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor.selection")
     execution = _mapping(contract.get("execution_boundary"), "predecessor.execution")
+    _strict_match(execution.get("activation_enabled"), False, "predecessor.execution")
     _strict_match(
-        execution,
-        {
-            "activation_enabled": False,
-            "activation_status": "DISABLED",
-            "native_plan_status": "NOT_EXECUTED",
-            "network_access": "FORBIDDEN",
-            "credential_access": "FORBIDDEN",
-            "live_provider_calls": "FORBIDDEN",
-            "external_writes": "FORBIDDEN",
-            "deploy_action": "FORBIDDEN",
-            "release_action": "FORBIDDEN",
-            "production_action": "FORBIDDEN",
-            "commands": {command: "FORBIDDEN" for command in NATIVE_COMMANDS},
-            "planned_actions": {action: 0 for action in PREDECESSOR_ACTION_NAMES},
-        },
+        execution.get("activation_status"), "DISABLED", "predecessor.execution"
+    )
+    _strict_match(
+        execution.get("planned_actions"),
+        {action: 0 for action in PREDECESSOR_ACTION_NAMES},
         "predecessor.execution",
     )
-    extension = _mapping(contract.get("extension_contract"), "predecessor.extension")
-    _strict_match(
-        extension,
-        {
-            "current_resource_payloads": "FORBIDDEN",
-            "successor_contract_revision_required": True,
-            "native_toolchain_pin_required_before_hcl": True,
-            "successors": {
-                "ST-1502": "DATA_SERVICES",
-                "ST-1503": "COMPUTE_CDN_WAF",
-            },
-        },
-        "predecessor.extension",
+    for field in (
+        "network_access",
+        "credential_access",
+        "live_provider_calls",
+        "external_writes",
+        "deploy_action",
+        "release_action",
+        "production_action",
+    ):
+        _strict_match(execution.get(field), "FORBIDDEN", f"predecessor.{field}")
+    hcl_module = _mapping(contract.get("hcl_foundation_module"), "predecessor.hcl")
+    _strict_match(hcl_module.get("default_disabled"), True, "predecessor.hcl")
+    for field in (
+        "provider_requirements",
+        "provider_blocks",
+        "backend_blocks",
+        "cloud_blocks",
+        "module_blocks",
+        "data_blocks",
+        "resource_blocks",
+        "provisioners",
+        "selected_bindings",
+        "capability_mappings",
+    ):
+        _strict_match(hcl_module.get(field), [], f"predecessor.hcl.{field}")
+    toolchain = _mapping(
+        contract.get("iac_validation_toolchain"), "predecessor.toolchain"
     )
-    evidence = _mapping(contract.get("evidence_boundary"), "predecessor.evidence")
+    _strict_match(toolchain.get("version"), TERRAFORM_VERSION, "predecessor.toolchain")
+    boundary = _mapping(toolchain.get("validation_boundary"), "predecessor.toolchain")
+    _strict_match(boundary.get("provider_plugins"), [], "predecessor.toolchain")
+    _strict_match(boundary.get("initialization"), "FORBIDDEN", "predecessor.toolchain")
     _strict_match(
-        evidence,
-        {
-            "deliverable_classification": "SOURCE_DERIVED_REFERENCE_STATE_PLAN",
-            "executable_terraform": "ABSENT",
-            "terraform_cli": "UNPINNED_NOT_INVOKED",
-            "provider_plugins": "UNPINNED_NOT_INVOKED",
-            "remote_state": "NOT_CONFIGURED",
-            "provider_account_or_project": "UNSET",
-            "credentials": "ABSENT",
-            "formal_tst_026": "NOT_EXECUTED",
-            "live_staging_release_production": "NOT_EXECUTED",
-            "effective_canonical_status": "UNCHANGED",
-        },
-        "predecessor.evidence",
+        boundary.get("allowed_commands"),
+        ["version -json", "fmt -check -recursive", "validate -json"],
+        "predecessor.toolchain",
+    )
+    _strict_match(
+        boundary.get("forbidden_commands"),
+        ["init", "plan", "apply", "destroy", "import", "refresh", "test", "console"],
+        "predecessor.toolchain",
     )
 
     plan_path = _repository_regular_file(
@@ -1437,80 +1791,36 @@ def _validate_predecessor_semantics(root: Path) -> None:
     plan = _mapping(load_json(plan_path), "predecessor_plan")
     if semantic_sha256(plan) != EXPECTED_PREDECESSOR_PLAN_SEMANTIC_SHA256:
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor_plan")
-    expected_plan = {
-        "document": {
-            "id": "RAOS-TERRAFORM-FOUNDATION-REFERENCE-PLAN-001",
-            "version": "1.1.0",
-            "story_id": "ST-1501",
-            "source_contract": (
-                "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml"
-            ),
-            "generated_by": "repo://scripts/build_st1501_terraform_foundation.py",
-            "generation_command": (
-                "uv run --locked --no-sync python "
-                "scripts/build_st1501_terraform_foundation.py"
-            ),
-            "artifact_kind": evidence["deliverable_classification"],
-            "executable": False,
-            "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
-        },
-        "reference_architecture": copy.deepcopy(contract["reference_architecture"]),
-        "provider_neutral_foundation_admission": copy.deepcopy(admission),
-        "selected_configuration": copy.deepcopy(contract["selected_configuration"]),
-        "planned_actions": copy.deepcopy(execution["planned_actions"]),
-        "activation": {
-            "enabled": execution["activation_enabled"],
-            "status": execution["activation_status"],
-            "native_plan_status": execution["native_plan_status"],
-            "network_access": execution["network_access"],
-            "credential_access": execution["credential_access"],
-            "live_provider_calls": execution["live_provider_calls"],
-            "external_writes": execution["external_writes"],
-            "deploy_action": execution["deploy_action"],
-            "release_action": execution["release_action"],
-            "production_action": execution["production_action"],
-            "native_commands": copy.deepcopy(execution["commands"]),
-        },
-        "future_requirements": {
-            "remote_state": copy.deepcopy(contract["state_requirements"]),
-            "account_separation": {
-                "requirement": contract["account_requirements"][
-                    "separate_development_and_production"
-                ],
-                "development_account_id": contract["account_requirements"][
-                    "development_account_id"
-                ],
-                "production_account_id": contract["account_requirements"][
-                    "production_account_id"
-                ],
-            },
-            "production_change_control": copy.deepcopy(
-                contract["production_change_requirements"]
-            ),
-        },
-        "extension_contract": copy.deepcopy(extension),
-        "verification_boundary": {
-            key: copy.deepcopy(value)
-            for key, value in evidence.items()
-            if key != "deliverable_classification"
-        },
-    }
-    _strict_match(plan, expected_plan, "predecessor_plan")
-    expected_plan_bytes = (
-        json.dumps(
-            expected_plan,
-            ensure_ascii=False,
-            indent=2,
-            sort_keys=True,
-        )
-        + "\n"
+    canonical_plan = (
+        json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     ).encode("utf-8")
-    try:
-        actual_plan_bytes = plan_path.read_bytes()
-    except OSError:
-        _fail("FILE_UNAVAILABLE", "predecessor_plan")
-    if actual_plan_bytes != expected_plan_bytes:
+    if plan_path.read_bytes() != canonical_plan:
         _fail("PREDECESSOR_GENERATED_DRIFT", "predecessor_plan")
+
+    lock_path = _repository_regular_file(
+        root,
+        Path("infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"),
+        "predecessor_toolchain_lock",
+    )
+    lock = _mapping(load_json(lock_path), "predecessor_toolchain_lock")
+    if semantic_sha256(lock) != EXPECTED_PREDECESSOR_TOOLCHAIN_SEMANTIC_SHA256:
+        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor_toolchain_lock")
+    lock_toolchain = _mapping(lock.get("toolchain"), "predecessor_toolchain_lock")
+    _strict_match(
+        lock_toolchain.get("version"), TERRAFORM_VERSION, "predecessor_toolchain_lock"
+    )
+    _strict_match(
+        _mapping(
+            lock_toolchain.get("official_release"), "predecessor_toolchain_lock"
+        ).get("extracted_binary_sha256"),
+        TERRAFORM_BINARY_SHA256,
+        "predecessor_toolchain_lock",
+    )
+    canonical_lock = (
+        json.dumps(lock, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+    if lock_path.read_bytes() != canonical_lock:
+        _fail("PREDECESSOR_GENERATED_DRIFT", "predecessor_toolchain_lock")
 
 
 def _validate_capability_inventory(contract: Mapping[str, Any]) -> None:
@@ -1573,20 +1883,23 @@ def reference_plan_document(model: DataServicesModel) -> dict[str, object]:
     return {
         "document": {
             "id": "RAOS-DATA-SERVICES-REFERENCE-PLAN-001",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "story_id": "ST-1502",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
             "generation_command": GENERATION_COMMAND,
             "artifact_kind": evidence["deliverable_classification"],
-            "executable": False,
-            "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+            "executable": True,
+            "implementation_scope": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
+            "execution_kind": "PROVIDER_FREE_VALIDATION_ONLY_LOGICAL_HCL",
         },
         "predecessor_binding": _section(model, "predecessor_binding"),
         "reference_architecture": _section(model, "reference_architecture"),
         "provider_neutral_data_services_admission": _section(
             model, "provider_neutral_data_services_admission"
         ),
+        "logical_hcl_module": _section(model, "logical_hcl_module"),
+        "successor_activation_port": _section(model, "successor_activation_port"),
         "selected_configuration": _section(model, "selected_configuration"),
         "logical_data_services": {
             "relational_persistence": _section(model, "relational_persistence_intent"),
@@ -1637,6 +1950,670 @@ def render_reference_plan(model: DataServicesModel) -> bytes:
     ).encode("utf-8")
 
 
+def logical_plan_document(model: DataServicesModel) -> dict[str, object]:
+    execution = _mapping(model.contract["execution_boundary"], "execution_boundary")
+    return {
+        "document": {
+            "id": "RAOS-DATA-SERVICES-LOGICAL-PLAN-001",
+            "version": "1.0.0",
+            "story_id": "ST-1502",
+            "classification": "DETERMINISTIC_NO_APPLY_LOGICAL_RESOURCE_GRAPH",
+            "source_contract": SOURCE_CONTRACT_URI,
+            "generated_by": GENERATOR_URI,
+            "generation_command": GENERATION_COMMAND,
+            "terraform_version": TERRAFORM_VERSION,
+            "provider_schema_bound": False,
+            "provider_plugin_required": False,
+            "physical_resources": False,
+            "terraform_state": False,
+        },
+        "reference_architecture": _section(model, "reference_architecture"),
+        "module": _section(model, "logical_hcl_module"),
+        "nodes": logical_resource_nodes(),
+        "edges": logical_resource_edges(),
+        "iam_permissions": {
+            role_id: list(permissions)
+            for role_id, permissions in IAM_PERMISSIONS.items()
+        },
+        "successor_activation_port": _section(model, "successor_activation_port"),
+        "planned_actions": copy.deepcopy(execution["planned_actions"]),
+        "execution_boundary": {
+            "activation_enabled": False,
+            "network_access": "FORBIDDEN",
+            "credential_access": "FORBIDDEN",
+            "provider_calls": "FORBIDDEN",
+            "external_writes": "FORBIDDEN",
+            "init": "FORBIDDEN",
+            "plan": "FORBIDDEN",
+            "apply": "FORBIDDEN",
+        },
+    }
+
+
+def validate_logical_plan_document(document: object) -> None:
+    plan = _mapping(document, "logical_plan")
+    _exact_keys(
+        plan,
+        {
+            "document",
+            "reference_architecture",
+            "module",
+            "nodes",
+            "edges",
+            "iam_permissions",
+            "successor_activation_port",
+            "planned_actions",
+            "execution_boundary",
+        },
+        "logical_plan",
+    )
+    metadata = _mapping(plan["document"], "logical_plan.document")
+    for field in (
+        "provider_schema_bound",
+        "provider_plugin_required",
+        "physical_resources",
+        "terraform_state",
+    ):
+        if metadata.get(field) is not False:
+            _fail("LOGICAL_PLAN_PHYSICAL_BINDING_FORBIDDEN", "logical_plan")
+    nodes = [
+        _mapping(row, "logical_plan.node") for row in _list(plan["nodes"], "nodes")
+    ]
+    expected_nodes = logical_resource_nodes()
+    node_ids = [node.get("node_id") for node in nodes]
+    expected_ids = [node["node_id"] for node in expected_nodes]
+    if node_ids != expected_ids or len(node_ids) != len(set(node_ids)):
+        _fail("LOGICAL_PLAN_NODE_INVENTORY_DRIFT", "logical_plan")
+    for node in nodes:
+        if node.get("public_access") is not False:
+            _fail("LOGICAL_PLAN_PUBLIC_EXPOSURE", "logical_plan")
+        if (
+            node.get("persisted_data") is True
+            and node.get("encryption_at_rest") is not True
+        ):
+            _fail("LOGICAL_PLAN_ENCRYPTION_DISABLED", "logical_plan")
+        if (
+            node.get("network_interaction") is True
+            and node.get("transport_encryption") is not True
+        ):
+            _fail("LOGICAL_PLAN_TRANSPORT_ENCRYPTION_DISABLED", "logical_plan")
+        if (
+            node.get("backup_required") is True
+            and node.get("backup_declared") is not True
+        ):
+            _fail("LOGICAL_PLAN_BACKUP_MISSING", "logical_plan")
+        if (
+            node.get("immutable_required") is True
+            and node.get("immutable_declared") is not True
+        ):
+            _fail("LOGICAL_PLAN_IMMUTABILITY_MISSING", "logical_plan")
+        if node.get("dlq_required") is True and node.get("dlq_declared") is not True:
+            _fail("LOGICAL_PLAN_DLQ_MISSING", "logical_plan")
+        if node.get("contains_secret_material") is not False:
+            _fail("LOGICAL_PLAN_SECRET_MATERIAL_FORBIDDEN", "logical_plan")
+        if (
+            node.get("least_privilege") is not True
+            or node.get("wildcard_iam") is not False
+        ):
+            _fail("LOGICAL_PLAN_WILDCARD_IAM", "logical_plan")
+        if (
+            node.get("key_rotation_required") is True
+            and node.get("key_rotation_declared") is not True
+        ):
+            _fail("LOGICAL_PLAN_KEY_ROTATION_MISSING", "logical_plan")
+    edges = [
+        _mapping(row, "logical_plan.edge") for row in _list(plan["edges"], "edges")
+    ]
+    edge_triples = {
+        (edge.get("from"), edge.get("to"), edge.get("relationship")) for edge in edges
+    }
+    for primary, dlq in zip(PRIMARY_QUEUE_NODE_IDS, DLQ_NODE_IDS, strict=True):
+        if (primary, dlq, "REDRIVES_TO") not in edge_triples:
+            _fail("LOGICAL_PLAN_DLQ_MISSING", "logical_plan")
+    _strict_match(edges, logical_resource_edges(), "logical_plan.edges")
+    permissions = _mapping(plan["iam_permissions"], "logical_plan.iam_permissions")
+    _exact_keys(permissions, set(IAM_PERMISSIONS), "logical_plan.iam_permissions")
+    for role_id, expected_permissions in IAM_PERMISSIONS.items():
+        actual = _list(permissions[role_id], "logical_plan.iam_permissions")
+        if any(
+            type(permission) is not str
+            or permission == "*"
+            or permission.endswith(":*")
+            or permission.endswith(".*")
+            for permission in actual
+        ):
+            _fail("LOGICAL_PLAN_WILDCARD_IAM", "logical_plan")
+        if actual != list(expected_permissions):
+            _fail("LOGICAL_PLAN_IAM_POLICY_DRIFT", "logical_plan")
+    _strict_match(
+        plan["successor_activation_port"],
+        EXPECTED_SUCCESSOR_ACTIVATION_PORT,
+        "logical_plan.successor_activation_port",
+    )
+    _strict_match(
+        plan["planned_actions"],
+        {action: 0 for action in ACTION_NAMES},
+        "logical_plan.planned_actions",
+    )
+    _strict_match(
+        plan["execution_boundary"],
+        {
+            "activation_enabled": False,
+            "network_access": "FORBIDDEN",
+            "credential_access": "FORBIDDEN",
+            "provider_calls": "FORBIDDEN",
+            "external_writes": "FORBIDDEN",
+            "init": "FORBIDDEN",
+            "plan": "FORBIDDEN",
+            "apply": "FORBIDDEN",
+        },
+        "logical_plan.execution_boundary",
+    )
+    expected_contract: dict[str, Any] = {"sources": []}
+    expected_contract.update(copy.deepcopy(EXPECTED_SECTIONS))
+    expected = logical_plan_document(DataServicesModel(contract=expected_contract))
+    if dict(plan) != expected:
+        _fail("LOGICAL_PLAN_SEMANTIC_DRIFT", "logical_plan")
+
+
+def render_logical_plan(model: DataServicesModel) -> bytes:
+    document = logical_plan_document(model)
+    validate_logical_plan_document(document)
+    return (
+        json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+
+
+def render_toolchain_lock(model: DataServicesModel, root: Path) -> bytes:
+    predecessor_path = _repository_regular_file(
+        root,
+        Path("infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"),
+        "predecessor_toolchain_lock",
+    )
+    predecessor = _mapping(load_json(predecessor_path), "predecessor_toolchain_lock")
+    document = {
+        "document": {
+            "id": "RAOS-DATA-SERVICES-TERRAFORM-VALIDATION-LOCK-001",
+            "version": "1.0.0",
+            "story_id": "ST-1502",
+            "classification": "INHERITED_PINNED_VALIDATION_ONLY_NO_INFRASTRUCTURE_AUTHORITY",
+            "source_contract": SOURCE_CONTRACT_URI,
+            "generated_by": GENERATOR_URI,
+            "generation_command": GENERATION_COMMAND,
+        },
+        "predecessor": {
+            "story_id": "ST-1501",
+            "uri": "repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json",
+            "sha256": PREDECESSOR_SOURCES[
+                "infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"
+            ],
+        },
+        "toolchain": copy.deepcopy(predecessor["toolchain"]),
+        "module": {
+            "path": EXPECTED_LOGICAL_HCL_MODULE["module_path"],
+            "required_version": TERRAFORM_REQUIRED_VERSION,
+            "provider_schema": "ABSENT_UNTIL_SUCCESSOR_CONTRACT",
+            "provider_lock": "ABSENT_BY_DESIGN_NO_PROVIDER_REQUIRED_OR_SELECTED",
+            "provider_requirements": [],
+            "backend": "ABSENT",
+            "physical_resources": [],
+            "logical_resource_node_count": len(logical_resource_nodes()),
+        },
+        "authority_boundary": {
+            "activation": "DISABLED",
+            "provider_selection": "FORBIDDEN",
+            "account_or_project_selection": "FORBIDDEN",
+            "region_selection": "FORBIDDEN",
+            "backend_selection": "FORBIDDEN",
+            "credential_access": "FORBIDDEN",
+            "network_during_normal_checks": "FORBIDDEN",
+            "provider_calls": "FORBIDDEN",
+            "infrastructure_actions": "FORBIDDEN",
+            "formal_tst_026": "NOT_EXECUTED",
+            "formal_tst_029": "NOT_EXECUTED",
+        },
+    }
+    return (
+        json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+
+
+def _hcl_string(value: str) -> str:
+    return json.dumps(value, ensure_ascii=False)
+
+
+def _render_hcl_node(node: Mapping[str, object]) -> str:
+    lines = [f"    {node['node_id']} = {{"]
+    keys = (
+        "kind",
+        "reference_service",
+        "persisted_data",
+        "network_interaction",
+        "public_access",
+        "encryption_at_rest",
+        "transport_encryption",
+        "backup_required",
+        "backup_declared",
+        "immutable_required",
+        "immutable_declared",
+        "dlq_required",
+        "dlq_declared",
+        "contains_secret_material",
+        "key_rotation_required",
+        "key_rotation_declared",
+        "least_privilege",
+        "wildcard_iam",
+    )
+    width = max(len(key) for key in keys)
+    for key in keys:
+        value = node[key]
+        rendered = _hcl_string(value) if type(value) is str else str(value).lower()
+        lines.append(f"      {key:<{width}} = {rendered}")
+    lines.append("    }")
+    return "\n".join(lines)
+
+
+def render_hcl_bundle(model: DataServicesModel) -> dict[Path, bytes]:
+    del model
+    header = (
+        "# Generated by repo://scripts/build_st1502_data_services.py; do not edit.\n"
+    )
+    versions = (
+        header
+        + f'''terraform {{
+  required_version = "{TERRAFORM_REQUIRED_VERSION}"
+}}
+'''
+    )
+    variable_specs = (
+        ("activation_enabled", "bool", "false", "var.activation_enabled == false"),
+        (
+            "production_apply_authorized",
+            "bool",
+            "false",
+            "var.production_apply_authorized == false",
+        ),
+        (
+            "selected_provider_schema",
+            "string",
+            "null",
+            "var.selected_provider_schema == null",
+        ),
+        (
+            "selected_provider_plugin",
+            "string",
+            "null",
+            "var.selected_provider_plugin == null",
+        ),
+        (
+            "selected_account_or_project",
+            "string",
+            "null",
+            "var.selected_account_or_project == null",
+        ),
+        (
+            "selected_primary_region",
+            "string",
+            "null",
+            "var.selected_primary_region == null",
+        ),
+        (
+            "selected_backup_region",
+            "string",
+            "null",
+            "var.selected_backup_region == null",
+        ),
+        (
+            "selected_state_backend",
+            "string",
+            "null",
+            "var.selected_state_backend == null",
+        ),
+        ("credential_source", "string", "null", "var.credential_source == null"),
+        (
+            "network_segment_ids",
+            "list(string)",
+            "[]",
+            "length(var.network_segment_ids) == 0",
+        ),
+        (
+            "security_policy_bindings",
+            "list(string)",
+            "[]",
+            "length(var.security_policy_bindings) == 0",
+        ),
+        (
+            "selected_retention_policy_id",
+            "string",
+            "null",
+            "var.selected_retention_policy_id == null",
+        ),
+        (
+            "supplied_gate_evidence",
+            "set(string)",
+            "[]",
+            "length(var.supplied_gate_evidence) == 0",
+        ),
+    )
+    variable_blocks: list[str] = []
+    for name, type_name, default, condition in variable_specs:
+        nullable = "\n  nullable    = true" if default == "null" else ""
+        variable_blocks.append(
+            f'''variable "{name}" {{
+  description = "Current ST-1502 revision keeps this successor binding unset."
+  type        = {type_name}
+  default     = {default}{nullable}
+
+  validation {{
+    condition     = {condition}
+    error_message = "Physical activation requires a successor contract and external evidence."
+  }}
+}}
+'''
+        )
+    variables = header + "\n".join(variable_blocks)
+    node_text = "\n".join(_render_hcl_node(node) for node in logical_resource_nodes())
+    edge_text = "\n".join(
+        "    { from = %s, to = %s, relationship = %s },"
+        % (
+            _hcl_string(edge["from"]),
+            _hcl_string(edge["to"]),
+            _hcl_string(edge["relationship"]),
+        )
+        for edge in logical_resource_edges()
+    )
+    permission_width = max(len(role_id) for role_id in IAM_PERMISSIONS)
+    permission_text = "\n".join(
+        f"    {role_id:<{permission_width}} = toset([{', '.join(_hcl_string(permission) for permission in permissions)}])"
+        for role_id, permissions in IAM_PERMISSIONS.items()
+    )
+    required_evidence_text = ",\n      ".join(
+        _hcl_string(value) for value in SUCCESSOR_GATE_EVIDENCE
+    )
+    locals_content = (
+        header
+        + f"""locals {{
+  reference_architecture = {{
+    cloud               = "AWS"
+    region              = "ap-northeast-1"
+    classification      = "CURRENT_CANONICAL_REFERENCE_ARCHITECTURE_ONLY"
+    selected_binding    = false
+    evidence_substitute = false
+  }}
+
+  logical_resources = {{
+{node_text}
+  }}
+
+  logical_edges = [
+{edge_text}
+  ]
+
+  iam_permissions = {{
+{permission_text}
+  }}
+
+  selected_configuration = {{
+    provider_schema          = var.selected_provider_schema
+    provider_plugin          = var.selected_provider_plugin
+    account_or_project       = var.selected_account_or_project
+    primary_region           = var.selected_primary_region
+    backup_region            = var.selected_backup_region
+    state_backend            = var.selected_state_backend
+    credential_source        = var.credential_source
+    network_segments         = var.network_segment_ids
+    security_policy_bindings = var.security_policy_bindings
+    retention_policy_id      = var.selected_retention_policy_id
+  }}
+
+  successor_activation_port = {{
+    classification                       = "CLOSED_PHYSICAL_RESOURCE_ACTIVATION_PORT"
+    current_revision_activation          = "FORBIDDEN"
+    successor_contract_revision_required = true
+    required_gate_evidence = toset([
+      {required_evidence_text}
+    ])
+    supplied_gate_evidence   = var.supplied_gate_evidence
+    complete_gate_evidence   = false
+    provider_binding         = "FORBIDDEN_IN_CURRENT_REVISION"
+    resource_materialization = "FORBIDDEN_IN_CURRENT_REVISION"
+    infrastructure_plan      = "FORBIDDEN"
+    infrastructure_apply     = "FORBIDDEN"
+  }}
+
+  execution_boundary = {{
+    activation_enabled          = var.activation_enabled
+    production_apply_authorized = var.production_apply_authorized
+    provider_calls              = "FORBIDDEN"
+    external_writes             = "FORBIDDEN"
+    planned_actions = {{
+      create  = 0
+      update  = 0
+      delete  = 0
+      migrate = 0
+      backup  = 0
+      restore = 0
+      redrive = 0
+      rotate  = 0
+    }}
+  }}
+}}
+"""
+    )
+    checks = (
+        header
+        + f"""check "execution_is_disabled" {{
+  assert {{
+    condition     = var.activation_enabled == false && var.production_apply_authorized == false
+    error_message = "Activation and Production apply authority must remain disabled."
+  }}
+}}
+
+check "bindings_and_gate_evidence_are_unset" {{
+  assert {{
+    condition = alltrue([
+      var.selected_provider_schema == null,
+      var.selected_provider_plugin == null,
+      var.selected_account_or_project == null,
+      var.selected_primary_region == null,
+      var.selected_backup_region == null,
+      var.selected_state_backend == null,
+      var.credential_source == null,
+      length(var.network_segment_ids) == 0,
+      length(var.security_policy_bindings) == 0,
+      var.selected_retention_policy_id == null,
+      length(var.supplied_gate_evidence) == 0,
+    ])
+    error_message = "Provider, account, region, backend, credential, network, policy, retention, and evidence bindings remain unset."
+  }}
+}}
+
+check "private_and_encrypted_data_services" {{
+  assert {{
+    condition = alltrue([
+      for node in values(local.logical_resources) :
+      node.public_access == false &&
+      (node.persisted_data == false || node.encryption_at_rest == true) &&
+      (node.network_interaction == false || node.transport_encryption == true)
+    ])
+    error_message = "Every persisted or interacting data service must remain private and encrypted."
+  }}
+}}
+
+check "backup_and_immutability_declarations" {{
+  assert {{
+    condition = alltrue([
+      for node in values(local.logical_resources) :
+      (node.backup_required == false || node.backup_declared == true) &&
+      (node.immutable_required == false || node.immutable_declared == true)
+    ])
+    error_message = "Required backup, PITR, version, and immutability declarations cannot be omitted."
+  }}
+}}
+
+check "primary_queues_have_dlqs" {{
+  assert {{
+    condition = alltrue([
+      for node_id in {json.dumps(list(PRIMARY_QUEUE_NODE_IDS))} :
+      local.logical_resources[node_id].dlq_required == true &&
+      local.logical_resources[node_id].dlq_declared == true &&
+      length([for edge in local.logical_edges : edge if edge.from == node_id && edge.relationship == "REDRIVES_TO"]) == 1
+    ])
+    error_message = "Every primary queue requires exactly one declared DLQ relationship."
+  }}
+}}
+
+check "secrets_and_keys_are_material_free_and_rotatable" {{
+  assert {{
+    condition = alltrue([
+      for node in values(local.logical_resources) :
+      node.contains_secret_material == false &&
+      (node.key_rotation_required == false || node.key_rotation_declared == true)
+    ])
+    error_message = "Generated configuration cannot contain secret material or an unrotatable required key."
+  }}
+}}
+
+check "iam_is_least_privilege_and_wildcard_free" {{
+  assert {{
+    condition = alltrue([
+      for node in values(local.logical_resources) : node.least_privilege == true && node.wildcard_iam == false
+      ]) && alltrue(flatten([
+        for permissions in values(local.iam_permissions) : [
+          for permission in permissions : permission != "*" && !endswith(permission, ":*") && !endswith(permission, ".*")
+        ]
+    ]))
+    error_message = "Logical IAM permission sets must remain explicit and wildcard-free."
+  }}
+}}
+
+check "logical_plan_has_zero_actions" {{
+  assert {{
+    condition = length(local.logical_resources) == {len(logical_resource_nodes())} && alltrue([
+      for count in values(local.execution_boundary.planned_actions) : count == 0
+    ]) && local.successor_activation_port.complete_gate_evidence == false
+    error_message = "The logical graph cannot plan or authorize physical infrastructure actions."
+  }}
+}}
+"""
+    )
+    outputs = (
+        header
+        + """output "reference_architecture" {
+  description = "Canonical AWS reference metadata; never a selected provider binding."
+  value       = local.reference_architecture
+}
+
+output "logical_resources" {
+  description = "Provider-schema-free logical resource declarations."
+  value       = local.logical_resources
+}
+
+output "logical_edges" {
+  description = "Deterministic dependency, recovery, redrive, encryption, and authorization edges."
+  value       = local.logical_edges
+}
+
+output "iam_permissions" {
+  description = "Wildcard-free logical permission sets."
+  value       = local.iam_permissions
+}
+
+output "activation_boundary" {
+  description = "Closed successor activation port and zero-action execution boundary."
+  value = {
+    successor = local.successor_activation_port
+    execution = local.execution_boundary
+  }
+}
+"""
+    )
+    bundle = {
+        HCL_PATHS[0]: versions.encode("utf-8"),
+        HCL_PATHS[1]: variables.encode("utf-8"),
+        HCL_PATHS[2]: locals_content.encode("utf-8"),
+        HCL_PATHS[3]: checks.encode("utf-8"),
+        HCL_PATHS[4]: outputs.encode("utf-8"),
+    }
+    validate_hcl_bundle(bundle)
+    return bundle
+
+
+def validate_hcl_file_policy(relative: Path, content: bytes) -> None:
+    if relative not in HCL_PATHS:
+        _fail("HCL_FILE_INVENTORY_DRIFT", "hcl")
+    if not content or len(content) > MAX_HCL_BYTES or not content.endswith(b"\n"):
+        _fail("HCL_FILE_SHAPE_INVALID", "hcl")
+    try:
+        text = content.decode("utf-8")
+    except UnicodeError:
+        _fail("HCL_FILE_ENCODING_INVALID", "hcl")
+    if "\x00" in text or "\r" in text:
+        _fail("HCL_FILE_ENCODING_INVALID", "hcl")
+    blocks = tuple(HCL_TOP_LEVEL_BLOCK_PATTERN.findall(text))
+    if any(block in HCL_FORBIDDEN_TOP_LEVEL_BLOCKS for block in blocks):
+        _fail("HCL_FORBIDDEN_BLOCK", "hcl")
+    if blocks != HCL_ALLOWED_BLOCKS_BY_FILE[relative.name]:
+        _fail("HCL_BLOCK_INVENTORY_DRIFT", "hcl")
+    forbidden_fragments = (
+        'provider "',
+        "backend {",
+        'module "',
+        'data "',
+        'resource "',
+        'provisioner "',
+        "terraform_remote_state",
+        "local-exec",
+        "remote-exec",
+        "registry.terraform.io/",
+        "hashicorp/aws",
+        "http://",
+        "https://",
+        "file(",
+        "templatefile(",
+        "external(",
+    )
+    if any(fragment in text for fragment in forbidden_fragments):
+        _fail("HCL_FORBIDDEN_OPERATION", "hcl")
+    if (
+        relative.name == "versions.tf"
+        and text.count(f'required_version = "{TERRAFORM_REQUIRED_VERSION}"') != 1
+    ):
+        _fail("HCL_TOOL_VERSION_DRIFT", "hcl")
+    if relative.name == "locals.tf":
+        required_counts = {
+            ("public_access", "false"): len(logical_resource_nodes()),
+            ("wildcard_iam", "false"): len(logical_resource_nodes()),
+            ("contains_secret_material", "false"): len(logical_resource_nodes()),
+            ("backup_required", "true"): 7,
+            ("backup_declared", "true"): 7,
+            ("dlq_required", "true"): len(PRIMARY_QUEUE_NODE_IDS),
+            ("dlq_declared", "true"): len(PRIMARY_QUEUE_NODE_IDS),
+            ("key_rotation_required", "true"): len(KMS_NODE_IDS),
+            ("key_rotation_declared", "true"): len(KMS_NODE_IDS),
+            ("encryption_at_rest", "true"): sum(
+                node["persisted_data"] is True for node in logical_resource_nodes()
+            ),
+            ("transport_encryption", "true"): sum(
+                node["network_interaction"] is True for node in logical_resource_nodes()
+            ),
+        }
+        if any(
+            len(re.findall(rf"(?m)^\s+{field}\s+=\s+{value}$", text)) != count
+            for (field, value), count in required_counts.items()
+        ):
+            _fail("HCL_SAFETY_DECLARATION_DRIFT", "hcl")
+        if '"*"' in text or '":*"' in text or '".*"' in text:
+            _fail("HCL_WILDCARD_IAM", "hcl")
+
+
+def validate_hcl_bundle(bundle: Mapping[Path, bytes]) -> None:
+    if set(bundle) != set(HCL_PATHS):
+        _fail("HCL_FILE_INVENTORY_DRIFT", "hcl")
+    for relative in HCL_PATHS:
+        validate_hcl_file_policy(relative, bundle[relative])
+
+
 def _artifact_row(root: Path, relative: Path) -> dict[str, object]:
     path = _repository_regular_file(root, relative, "source_artifact")
     content = path.read_bytes()
@@ -1648,8 +2625,12 @@ def _artifact_row(root: Path, relative: Path) -> dict[str, object]:
 
 
 def render_manifest(
-    model: DataServicesModel, reference_plan: bytes, root: Path = REPO_ROOT
+    model: DataServicesModel,
+    generated_artifacts: Mapping[Path, bytes],
+    root: Path = REPO_ROOT,
 ) -> bytes:
+    if set(generated_artifacts) != set(GENERATED_ARTIFACT_PATHS):
+        _fail("GENERATED_INVENTORY_DRIFT", "manifest")
     source_artifacts = [
         _artifact_row(root, relative) for relative in SOURCE_ARTIFACT_PATHS
     ]
@@ -1659,7 +2640,7 @@ def render_manifest(
     document: dict[str, object] = {
         "document": {
             "id": "RAOS-DATA-SERVICES-MANIFEST-001",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "story_id": "ST-1502",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
@@ -1681,13 +2662,14 @@ def render_manifest(
         },
         "source_artifact_count": len(source_artifacts),
         "source_artifacts": source_artifacts,
-        "generated_artifact_count": 1,
+        "generated_artifact_count": len(GENERATED_ARTIFACT_PATHS),
         "generated_artifacts": [
             {
-                "uri": f"repo://{REFERENCE_PLAN_PATH.as_posix()}",
-                "bytes": len(reference_plan),
-                "sha256": sha256_bytes(reference_plan),
+                "uri": f"repo://{relative.as_posix()}",
+                "bytes": len(generated_artifacts[relative]),
+                "sha256": sha256_bytes(generated_artifacts[relative]),
             }
+            for relative in GENERATED_ARTIFACT_PATHS
         ],
         "manifest_self_integrity": {
             "included_in_generated_artifacts": False,
@@ -1766,7 +2748,22 @@ def render_manifest(
             "physical_resource_definitions": copy.deepcopy(
                 selection["physical_resource_definitions"]
             ),
-            "native_iac_validation": evidence["native_iac_validation"],
+            "hcl_module": "PROVIDER_SCHEMA_FREE_VALIDATION_ONLY_LOGICAL_GRAPH",
+            "hcl_file_count": len(HCL_PATHS),
+            "logical_resource_node_count": len(logical_resource_nodes()),
+            "logical_edge_count": len(logical_resource_edges()),
+            "logical_iam_role_count": len(IAM_ROLE_IDS),
+            "terraform_cli_version": TERRAFORM_VERSION,
+            "terraform_binary_sha256": TERRAFORM_BINARY_SHA256,
+            "provider_schema": None,
+            "provider_plugins": [],
+            "backend": None,
+            "physical_resources": [],
+            "offline_native_validation_path": evidence[
+                "offline_native_validation_path"
+            ],
+            "local_native_validation": evidence["local_native_validation"],
+            "logical_plan_validation": evidence["logical_plan_validation"],
             "transport_encryption_validation": evidence[
                 "transport_encryption_validation"
             ],
@@ -1795,10 +2792,15 @@ def render_manifest(
 
 def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
     model = load_and_validate_contract(root)
-    reference_plan = render_reference_plan(model)
+    generated_artifacts: dict[Path, bytes] = {
+        REFERENCE_PLAN_PATH: render_reference_plan(model),
+        LOGICAL_PLAN_PATH: render_logical_plan(model),
+        TOOLCHAIN_LOCK_PATH: render_toolchain_lock(model, root),
+        **render_hcl_bundle(model),
+    }
     return {
-        REFERENCE_PLAN_PATH: reference_plan,
-        MANIFEST_PATH: render_manifest(model, reference_plan, root),
+        **generated_artifacts,
+        MANIFEST_PATH: render_manifest(model, generated_artifacts, root),
     }
 
 
@@ -1894,14 +2896,195 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
         _atomic_write(root, relative, outputs[relative])
 
 
+def _native_command(
+    unshare_path: Path,
+    terraform_path: Path,
+    arguments: tuple[str, ...],
+    *,
+    working_directory: Path,
+    data_directory: Path,
+) -> bytes:
+    if arguments not in ALLOWED_NATIVE_ARGUMENTS:
+        _fail("NATIVE_VALIDATOR_COMMAND_FORBIDDEN", "native_validator")
+    if unshare_path != Path("/usr/bin/unshare"):
+        _fail("NETWORK_NAMESPACE_RUNNER_FORBIDDEN", "native_validator")
+    command = (
+        str(unshare_path),
+        "--user",
+        "--map-root-user",
+        "--net",
+        "--",
+        str(terraform_path),
+        *arguments,
+    )
+    environment = {
+        "CHECKPOINT_DISABLE": "1",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "TF_DATA_DIR": str(data_directory),
+        "TF_IN_AUTOMATION": "1",
+        "TF_INPUT": "0",
+        "TF_REGISTRY_CLIENT_TIMEOUT": "1",
+        "TF_REGISTRY_DISCOVERY_RETRY": "0",
+    }
+    try:
+        result = subprocess.run(
+            command,
+            cwd=working_directory,
+            env=environment,
+            check=False,
+            capture_output=True,
+            timeout=30,
+        )
+    except OSError, subprocess.SubprocessError:
+        _fail("NATIVE_VALIDATOR_EXECUTION_FAILED", "native_validator")
+    if result.returncode != 0:
+        _fail("NATIVE_VALIDATOR_REJECTED", "native_validator")
+    if len(result.stdout) > MAX_HCL_BYTES or len(result.stderr) > MAX_HCL_BYTES:
+        _fail("NATIVE_VALIDATOR_OUTPUT_LIMIT", "native_validator")
+    return result.stdout
+
+
+def _json_object(content: bytes, field: str) -> Mapping[str, Any]:
+    try:
+        decoded = json.loads(content)
+    except UnicodeError, json.JSONDecodeError:
+        _fail("NATIVE_VALIDATOR_OUTPUT_INVALID", field)
+    return _mapping(decoded, field)
+
+
+def verify_native_hcl(
+    root: Path,
+    terraform_path: Path,
+    *,
+    unshare_path: Path = Path("/usr/bin/unshare"),
+) -> NativeValidationResult:
+    if not terraform_path.is_absolute() or not unshare_path.is_absolute():
+        _fail("NATIVE_VALIDATOR_PATH_INVALID", "native_validator")
+    _regular_file(terraform_path, "terraform_binary")
+    _regular_file(unshare_path, "network_namespace_runner")
+    if sha256_file(terraform_path) != TERRAFORM_BINARY_SHA256:
+        _fail("NATIVE_VALIDATOR_DIGEST_MISMATCH", "terraform_binary")
+    expected = render_outputs(root)
+    check_outputs(root, expected)
+    repository_snapshot = {
+        relative: (
+            _output_file(root, relative).read_bytes(),
+            _output_file(root, relative).stat().st_mtime_ns,
+            _output_file(root, relative).stat().st_mode,
+        )
+        for relative in GENERATED_PATHS
+    }
+    hcl_bundle = {relative: expected[relative] for relative in HCL_PATHS}
+    validate_hcl_bundle(hcl_bundle)
+    with tempfile.TemporaryDirectory(prefix="raos-st1502-native-") as directory:
+        validation_root = Path(directory)
+        module_directory = validation_root / "module"
+        data_directory = validation_root / "terraform-data"
+        module_directory.mkdir(mode=0o700)
+        data_directory.mkdir(mode=0o700)
+        for relative in HCL_PATHS:
+            target = module_directory / relative.name
+            target.write_bytes(hcl_bundle[relative])
+            target.chmod(0o400)
+        module_before = {
+            path.name: (path.read_bytes(), path.stat().st_mode)
+            for path in sorted(module_directory.iterdir())
+        }
+        version_document = _json_object(
+            _native_command(
+                unshare_path,
+                terraform_path,
+                ("version", "-json"),
+                working_directory=module_directory,
+                data_directory=data_directory,
+            ),
+            "native_validator.version",
+        )
+        _strict_match(
+            version_document,
+            {
+                "terraform_version": TERRAFORM_VERSION,
+                "platform": TERRAFORM_PLATFORM,
+                "provider_selections": {},
+                "terraform_outdated": False,
+            },
+            "native_validator.version",
+        )
+        _native_command(
+            unshare_path,
+            terraform_path,
+            ("fmt", "-check", "-recursive"),
+            working_directory=module_directory,
+            data_directory=data_directory,
+        )
+        validation_document = _json_object(
+            _native_command(
+                unshare_path,
+                terraform_path,
+                ("validate", "-json"),
+                working_directory=module_directory,
+                data_directory=data_directory,
+            ),
+            "native_validator.validate",
+        )
+        if (
+            validation_document.get("valid") is not True
+            or validation_document.get("error_count") != 0
+            or validation_document.get("warning_count") != 0
+        ):
+            _fail("NATIVE_HCL_SEMANTIC_VALIDATION_FAILED", "native_validator")
+        module_after = {
+            path.name: (path.read_bytes(), path.stat().st_mode)
+            for path in sorted(module_directory.iterdir())
+        }
+        if module_after != module_before:
+            _fail("NATIVE_VALIDATOR_MODULE_WRITE", "native_validator")
+    repository_after = {
+        relative: (
+            _output_file(root, relative).read_bytes(),
+            _output_file(root, relative).stat().st_mtime_ns,
+            _output_file(root, relative).stat().st_mode,
+        )
+        for relative in GENERATED_PATHS
+    }
+    if repository_after != repository_snapshot:
+        _fail("NATIVE_VALIDATOR_REPOSITORY_WRITE", "native_validator")
+    return NativeValidationResult(
+        terraform_version=TERRAFORM_VERSION,
+        platform=TERRAFORM_PLATFORM,
+        provider_selections=(),
+        format_valid=True,
+        semantic_valid=True,
+        network_namespace=True,
+        repository_unchanged=True,
+    )
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build the disabled ST-1502 data-services reference artifacts."
+        description="Build and validate the disabled ST-1502 logical HCL module."
     )
     parser.add_argument(
         "--check",
         action="store_true",
         help="verify committed generated bytes without writing",
+    )
+    parser.add_argument(
+        "--native-check",
+        action="store_true",
+        help="run pinned offline fmt and semantic validation in a network namespace",
+    )
+    parser.add_argument(
+        "--terraform",
+        type=Path,
+        help="absolute path to the checksum-verified Terraform 1.15.9 binary",
+    )
+    parser.add_argument(
+        "--unshare",
+        type=Path,
+        default=Path("/usr/bin/unshare"),
+        help="absolute path to the Linux network namespace runner",
     )
     return parser.parse_args(argv)
 
@@ -1909,14 +3092,25 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     try:
-        build(REPO_ROOT, check=bool(args.check))
+        native_check = bool(args.native_check)
+        terraform_path = cast(Path | None, args.terraform)
+        unshare_path = cast(Path, args.unshare)
+        if native_check and terraform_path is None:
+            _fail("NATIVE_VALIDATOR_PATH_REQUIRED", "terraform_binary")
+        if not native_check and terraform_path is not None:
+            _fail("NATIVE_VALIDATOR_MODE_REQUIRED", "terraform_binary")
+        build(REPO_ROOT, check=bool(args.check) or native_check)
+        if native_check and terraform_path is not None:
+            verify_native_hcl(REPO_ROOT, terraform_path, unshare_path=unshare_path)
     except DataServicesContractError as exc:
         print(f"ERROR code={exc.code} field={exc.field}", file=sys.stderr)
         return 1
     except Exception:
         print("ERROR code=UNEXPECTED_FAILURE field=builder", file=sys.stderr)
         return 1
-    if args.check:
+    if args.native_check:
+        print("ST-1502 native HCL validation passed")
+    elif args.check:
         print("ST-1502 data-services check passed")
     else:
         print("ST-1502 data-services artifacts generated")

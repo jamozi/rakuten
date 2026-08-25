@@ -1,0 +1,52 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1905
+  implementation_mode: STRICT_STORY
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  canonical_status: DEFERRED_POST_MVP
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+
+base:
+  commit: 6739246fa6f13a490d4dbd6333d9721c62f7c413
+  branch: codex/raos-local-integration-complete
+
+local_boundary:
+  provider_neutral: true
+  default_enabled: false
+  selected_provider_state_exists: false
+  live_enabled_state_exists: false
+  activation_interface_exists: false
+  provider_approval_accepted: false
+  release_decision_accepted: false
+  network: FORBIDDEN
+  credentials: NOT_USED
+  serp_scrape: FORBIDDEN
+  persistence: NOT_EXECUTED
+  kpi_write: NOT_EXECUTED
+  tracking_activation: DISABLED
+  recommendation_input: DISABLED
+  publication: FORBIDDEN
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+
+verification:
+  focused_behavior_negative_security_tests: PASSED_41
+  owner_generate_and_check: PASSED
+  dependency_ST-1206_regression: PASSED_61
+  ruff_format_and_check: PASSED
+  strict_mypy: PASSED_13_FILES
+  python_compile: PASSED_13_FILES
+  focused_secret_scan: PASSED_20_FILES_ZERO_FINDINGS
+  git_diff_check: PASSED
+  formal_TST-032: NOT_EXECUTED
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - OD-004 provider selection and terms review
+    - approved provider account, credential reference, endpoint allowlist, and quota
+    - sanitized real recorded fixtures and bounded staging-only live validation
+    - formal TST-032 and separate release decision
+    - persistence, monitoring, rollback, staging, release, and Production evidence

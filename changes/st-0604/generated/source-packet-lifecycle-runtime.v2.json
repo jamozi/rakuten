@@ -1,0 +1,245 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-0604",
+  "classification": "MAXIMUM_SAFE_RECORDED_LOCAL_DURABLE_SOURCE_PACKET_LIFECYCLE",
+  "local_implementation_status": "LOCAL_CODE_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "integration_commit": "16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517",
+  "dependency_bindings": {
+    "ST-0602": {
+      "git_commit": "806b978803cbc78392117cbc31015db19ea09a74",
+      "exact_type": "PersistedFactExtractionV2",
+      "artifacts": {
+        "changes/st-0602/contracts/fact-extraction-runtime.v2.json": "50a8e2a8dc32f0dc93696466d02aba9688dd985db5918fe05abb70eeba18ef78",
+        "changes/st-0602/generated/fact-extraction-runtime.v2.json": "1793b4928c6d473e35e843ae76840b2a4c2c588e56daa4a2b6526957bf1ffa51",
+        "changes/st-0602/manifest.v2.json": "8416ef914a1a3f550a43ad5799f03e5c0701a60f423c6d59ec343a822e9330af",
+        "python/raos/adapters/sqlite_fact_extraction_runtime_v2.py": "baeff9c5c7eb819a96d5d2f73ea57d618b18d2bba2a6dac39dde5edf97a23f3e",
+        "python/raos/application/evidence/fact_extraction_runtime_v2.py": "2b3a668c4ac334537e5793a2e1051db767a82892f3de2a113314f0b08b7915ce",
+        "python/raos/domain/evidence/fact_extraction_runtime_v2.py": "9e80ec5c06bf8afe94e99a1b4a0805d249126a0d7a064a93d3ee641a1a91f770",
+        "python/raos/ports/fact_extraction_runtime_v2.py": "dfcb76f5f838a29fede41f028a78916f7b9e2e9cfbda25ffab8a549860e6dc15"
+      }
+    },
+    "ST-0603": {
+      "git_commit": "4f4285f0385a14b83e027e9c4527c17b8966bb70",
+      "exact_type": "PersistedFactConflictDetectionV2",
+      "artifacts": {
+        "changes/st-0603/contracts/fact-conflict-runtime.v2.json": "595cb7ff6035adad50ee9edc2a55187ca829bce9ca59efb0e2dc10579fb8cbd9",
+        "changes/st-0603/generated/fact-conflict-runtime.v2.json": "6e8ad9f6673d70639d2a84851c32694c163f38a7cb7c7c22a5979a2925c337e3",
+        "changes/st-0603/manifest.v2.json": "f79feb5978b1ceebf5974e417d02723df5cc6bf3fab4762f14d08036d78e472f",
+        "python/raos/adapters/sqlite_fact_conflict_runtime_v2.py": "e35635c025ccf4ef68f2753e0215b022ac6ae54a4b3a0e1fa39f9106405d2064",
+        "python/raos/application/evidence/fact_conflict_runtime_v2.py": "ed865e43955802f146b116a1c5050dbe15501ab26d26ebd9f126198a62be717b",
+        "python/raos/domain/evidence/fact_conflict_runtime_v2.py": "1e90e9471183faf89f970842844ad9093fa49774c58906b49fc2d5e9a7ca9f13",
+        "python/raos/ports/fact_conflict_runtime_v2.py": "6971030b5210a1e9149ca910429c0984dd0e47dce45aa8f55de45746fa687acd"
+      }
+    },
+    "ST-0403": {
+      "git_commit": "16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517",
+      "operation_id": "PUBADM-004",
+      "action": "review_article",
+      "resource_kind": "REVIEW_ASSIGNMENT",
+      "resource_state": "IN_PROGRESS",
+      "artifacts": {
+        "changes/st-0403/contracts/authorization-registry.v1.json": "a2ef5f7df66492164128ba8ffffcceb254b58bedc5cac7d03716d20700bc1093",
+        "changes/st-0403/contracts/durable-authorization-runtime.v2.json": "478626abf1649682c173ecb45dd6abdf56932bd013cbee88f7c2d4753dab27f0",
+        "changes/st-0403/generated/authorization-registry.v1.json": "d6776ed935d136eaff4908d5ca712b3a4fc274e93ecbca353639327b9ef69b0e",
+        "changes/st-0403/manifest.json": "855b17606e51cfc720a2ac371f83d8052d4a505cd77acb524ab4ebb2a1ab9e0d",
+        "python/raos/adapters/generated_st0403_authorization_registry.py": "1618f3b2fce03fab6b06fc46227f33223d72eeb522b0ce24d731e67b684958a2",
+        "python/raos/adapters/recorded_authorization.py": "b25242c24053c5b22e1f42ecb0ec6f5ce5a5323f819a2394aa6204af7553508f",
+        "python/raos/application/iam/authorization.py": "8c1133b948fc935b62d8e2ed964a795a7f9e24c9943c9aa1b44bcf898dba3814",
+        "python/raos/domain/iam/authorization.py": "18b21b95dd3dc154b40f11f605b6289e0e27576f3401bb294606d871e78185f7",
+        "python/raos/ports/authorization.py": "9f008f67337f1ceac44f94979f2741a96900c41408ee17fa3d887015a24ea9de"
+      }
+    }
+  },
+  "lifecycle_boundary": {
+    "commands": [
+      "CREATE_PACKET",
+      "CREATE_VERSION",
+      "SUBMIT_REVIEW",
+      "RECORD_REVIEW",
+      "LOCK_VERSION",
+      "READ_GENERATION_INPUT"
+    ],
+    "statuses": [
+      "BUILDING",
+      "IN_REVIEW",
+      "APPROVED",
+      "REJECTED",
+      "SUPERSEDED"
+    ],
+    "content_immutable_per_version": true,
+    "edit_creates_new_version": true,
+    "prior_current_version_superseded": true,
+    "approved_locked_history_preserved": true,
+    "cas_required": true,
+    "idempotency_key": "command_id+request_sha256"
+  },
+  "approval_binding": {
+    "human_recorded_authorization_required": true,
+    "active_session_recovery_required": true,
+    "exact_packet_version_content_sha256": true,
+    "exact_ST0602_fact_membership_sha256": true,
+    "exact_ST0603_no_open_conflict_scan_sha256": true,
+    "exact_ST0403_authorization_audit_digest": true,
+    "reviewer_session_fingerprint_bound": true,
+    "deny_default": true,
+    "synthetic_or_recorded_local_only": true
+  },
+  "generation_gate": {
+    "required_current": true,
+    "required_status": "APPROVED",
+    "required_lock": true,
+    "required_open_conflict_count": 0,
+    "required_conflict_queue_count": 0,
+    "unapproved_cannot_generate": true,
+    "noncurrent_cannot_generate": true,
+    "unlocked_cannot_generate": true,
+    "rejected_cannot_generate": true,
+    "dedicated_output_type": "ApprovedLockedGenerationInputV2"
+  },
+  "durability_boundary": {
+    "backend": "OWNER_PRIVATE_SQLITE",
+    "environments": [
+      "ENV-DEV",
+      "ENV-CI"
+    ],
+    "directory_mode": "0700",
+    "database_mode": "0600",
+    "exclusive_create_only": true,
+    "existing_ancestor_symlink_rejected": true,
+    "owner_uid_required": true,
+    "database_single_link_required": true,
+    "file_inode_pinned_per_process": true,
+    "directory_fsync_after_create": true,
+    "strict_tables": true,
+    "exact_sqlite_master_inventory": true,
+    "exact_pragmas_and_user_version": true,
+    "foreign_keys": true,
+    "foreign_key_check_required": true,
+    "append_only_lifecycle_review_lock_command_and_audit_journals": true,
+    "canonical_decode_and_hash_revalidation": true,
+    "exact_commit_recovery_without_blind_retry": true,
+    "process_local_identity_count_head_prefix_anchor": true,
+    "cross_restart_external_rollback_anchor": false
+  },
+  "authority_boundary": {
+    "ai": false,
+    "network": false,
+    "provider": false,
+    "publication": false,
+    "ranking": false,
+    "recommendation": false,
+    "revenue": false,
+    "credential_read": false,
+    "staging": false,
+    "release": false,
+    "production": false,
+    "external_action_count": 0,
+    "provider_action_count": 0,
+    "publication_action_count": 0,
+    "ai_action_count": 0,
+    "production_authority": "NONE"
+  },
+  "formal_evidence": {
+    "TST-012": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "TST-020": "LOCAL_ANALOG_ONLY_FORMAL_NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  },
+  "external_actions": [],
+  "production_authority": "NONE",
+  "recorded_synthetic_fixture_report": {
+    "schema_version": "2.0.0",
+    "story_id": "ST-0604",
+    "recorded_synthetic": true,
+    "operational_default": false,
+    "activation": false,
+    "contains_credentials": false,
+    "contains_provider_text": false,
+    "contains_raw_source_body": false,
+    "contains_url": false,
+    "input_summary": {
+      "fact_batch_count": 1,
+      "fact_count": 3,
+      "open_conflict_count": 0,
+      "conflict_queue_count": 0,
+      "authorization_mode": "RECORDED_LOCAL_PUBADM_004",
+      "packet_purpose": "ARTICLE_DRAFT"
+    },
+    "expected_transition_sequence": [
+      "CREATE_PACKET",
+      "CREATE_VERSION",
+      "SUBMIT_REVIEW",
+      "RECORD_REVIEW:APPROVE",
+      "LOCK_VERSION",
+      "READ_GENERATION_INPUT",
+      "CREATE_VERSION:SUPERSEDE_PRIOR"
+    ],
+    "expected_generation_boundary": {
+      "before_approval": "DENIED",
+      "approved_unlocked": "DENIED",
+      "approved_locked_current": "ALLOWED_TYPED_INPUT",
+      "superseded_approved_locked": "DENIED",
+      "new_building_current": "DENIED",
+      "rejected": "DENIED",
+      "unresolved_conflict": "DENIED"
+    },
+    "expected_action_counts": {
+      "external": 0,
+      "provider": 0,
+      "publication": 0,
+      "ai": 0
+    },
+    "metamorphic_cases": [
+      "CANONICAL_ROUND_TRIP",
+      "UNKNOWN_FIELD",
+      "FACT_MEMBERSHIP_MISMATCH",
+      "CONFLICT_SCAN_MISMATCH",
+      "UNRESOLVED_CONFLICT",
+      "AUTHORIZATION_OPERATION_MISMATCH",
+      "AUTHORIZATION_TARGET_MISMATCH",
+      "AUTHORIZATION_RESULT_MISMATCH",
+      "EXPIRED_SESSION",
+      "COMMAND_REPLAY",
+      "COMMAND_CONFLICT",
+      "CAS_CONCURRENCY",
+      "COMMIT_UNKNOWN_BEFORE",
+      "COMMIT_UNKNOWN_AFTER",
+      "RESTART",
+      "PROCESS_LOCAL_ROLLBACK",
+      "OBSERVED_PEER_PREFIX_ROLLBACK",
+      "JOURNAL_TAMPER",
+      "DENIED_NETWORK",
+      "BACKDATED_LIFECYCLE",
+      "SAME_COLUMN_SCHEMA_WEAKENING",
+      "UNSAFE_SYMLINK_PATH",
+      "DATABASE_HARDLINK",
+      "OVERDEEP_CANONICAL_JSON"
+    ]
+  },
+  "runtime_contract": {
+    "approved_generation_input_type": "ApprovedLockedGenerationInputV2",
+    "database_name": "source-packet-runtime-v2.sqlite3",
+    "failure_codes": [
+      "INVALID_ARGUMENT",
+      "DEPENDENCY_MISMATCH",
+      "UNRESOLVED_CONFLICT",
+      "AUTHORIZATION_REQUIRED",
+      "STATE_CONFLICT",
+      "VERSION_CONFLICT",
+      "IMMUTABLE_VERSION",
+      "NOT_GENERATION_READY",
+      "COMMAND_UNKNOWN",
+      "COMMAND_CONFLICT",
+      "STORAGE_FAILED",
+      "STORAGE_COMMIT_UNKNOWN",
+      "TAMPER_DETECTED"
+    ],
+    "replay_statuses": [
+      "COMMITTED",
+      "REPLAYED"
+    ]
+  }
+}

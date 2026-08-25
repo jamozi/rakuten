@@ -1,0 +1,105 @@
+document:
+  id: RAOS-ST1503-LOGICAL-HCL-IMPLEMENTATION-RECORD-002
+  version: 2.0.0
+  story_id: ST-1503
+  record_kind: REPOSITORY_LOCAL_IMPLEMENTATION_DETAIL
+  status: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE_PROPOSAL
+  canonical_status_effect: NONE
+implementation_input:
+  mode: STRICT_STORY
+  base_commit: 9da44e9fabc6f34e619bc51c8f02bdf8e43419f8
+  design_handoff: repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
+  source_contract: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
+  predecessor_story: ST-1501
+  pattern_reference_story: ST-1502
+  open_decisions:
+    - {id: OD-002, status: HUMAN_DECISION_REQUIRED, safe_default: EXAMPLE_INVALID_EXTERNAL_PUBLICATION_FORBIDDEN}
+    - {id: OD-009, status: HUMAN_DECISION_REQUIRED, safe_default: LOW_DEVELOPMENT_CAP_PRODUCTION_DISABLED}
+    - {id: OD-010, status: HUMAN_DECISION_REQUIRED, safe_default: LOCAL_FAKE_AUTH_EXTERNAL_PUBLICATION_FORBIDDEN}
+    - {id: OD-011, status: HUMAN_DECISION_REQUIRED, safe_default: LOCAL_LOG_ONLY_PRODUCTION_UNAVAILABLE}
+    - {id: OD-013, status: HUMAN_DECISION_REQUIRED, safe_default: REFERENCE_REGION_ONLY_PRODUCTION_APPLY_FORBIDDEN}
+    - {id: OD-015, status: EXTERNAL_EVIDENCE_REQUIRED, safe_default: RECORDED_FIXTURE_ONLY_NO_CREDENTIAL_OR_PROVIDER_CALL}
+implementation:
+  classification: PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_COMPUTE_EDGE_GRAPH
+  deterministic_owner: repo://scripts/build_st1503_compute_edge.py
+  generated_hcl:
+    - repo://infra/terraform/compute-edge/versions.tf
+    - repo://infra/terraform/compute-edge/variables.tf
+    - repo://infra/terraform/compute-edge/locals.tf
+    - repo://infra/terraform/compute-edge/checks.tf
+    - repo://infra/terraform/compute-edge/outputs.tf
+  deterministic_no_apply_fixture: repo://infra/terraform/compute-edge/compute-edge.logical-plan.v1.json
+  default_disabled: true
+  logical_component_count: 37
+  logical_edge_count: 53
+  logical_workload_count: 4
+  logical_identity_count: 4
+  logical_health_contract_count: 4
+  infrastructure_action_count: {create: 0, update: 0, delete: 0, deploy: 0, promote: 0, rollback: 0, route: 0, scale: 0}
+  selected_provider_schema: null
+  selected_provider_plugin: null
+  selected_account_or_project: null
+  selected_region: null
+  selected_state_backend: null
+  selected_credential_source: null
+  selected_network_segments: []
+  selected_domains_and_hosts: []
+  selected_image_digests: []
+  selected_workload_identities: []
+  selected_secret_references: []
+  selected_waf_rules_and_rates: []
+  selected_health_endpoints: []
+  physical_resources: []
+validation_toolchain:
+  source: ST-1501_PINNED_VALIDATION_ONLY_TOOLCHAIN
+  product: Terraform
+  version: 1.15.9
+  required_version: '= 1.15.9'
+  platform: linux_amd64
+  extracted_binary_sha256: c39d41adb17963bac5dd610ad47815dd81e945371a7cabc344a45d63b1b093bd
+  network_namespace: REQUIRED
+  initialization: FORBIDDEN
+  provider_installation: FORBIDDEN
+  provider_plugins: []
+  allowed_commands: [version -json, fmt -check -recursive, validate -json]
+  forbidden_commands: [init, plan, apply, destroy, import, refresh, test, console]
+provider_schema_distinction:
+  current_revision: PROVIDER_SCHEMA_FREE_LOGICAL_GRAPH
+  canonical_aws_reference: PRESERVED_AS_NON_BINDING_METADATA
+  physical_aws_or_alternate_provider_graph: NOT_IMPLEMENTED_WITHOUT_EXTERNAL_DECISIONS_AND_PROVENANCE
+  successor_contract_revision: REQUIRED
+  provider_binding: FORBIDDEN_IN_CURRENT_REVISION
+  resource_materialization: FORBIDDEN_IN_CURRENT_REVISION
+  infrastructure_plan: FORBIDDEN
+  infrastructure_apply: FORBIDDEN
+security_and_authority_boundary:
+  public_entry: MANAGED_EDGE_ONLY
+  public_origin: PRIVATE_AND_EDGE_MEDIATED
+  public_data: PUBLIC_PROJECTION_ONLY
+  admin_cache: SHARED_CACHE_FORBIDDEN
+  workload_images: DIGEST_PROVENANCE_SBOM_SCAN_REQUIRED
+  workload_identity: LEAST_PRIVILEGE_NON_AMBIENT_REQUIRED
+  secret_material_in_artifacts: FORBIDDEN
+  controlled_egress: REQUIRED_PER_WORKLOAD
+  liveness: PROCESS_ONLY_EXTERNAL_DEPENDENCIES_FORBIDDEN
+  readiness: DEPENDENCY_AND_MIGRATION_COMPATIBILITY_REQUIRED
+  waf_and_rate_limit: DISTINCT_PUBLIC_AND_ADMIN_POLICIES_REQUIRED
+  canary_promotion_rollback: HUMAN_APPROVAL_REQUIRED
+  publication: NOT_AUTHORIZED
+  live_provider_call: NOT_AUTHORIZED
+  staging: NOT_AUTHORIZED
+  release: NOT_AUTHORIZED
+  production_write: NOT_AUTHORIZED
+  production_apply: FORBIDDEN
+completion_boundary:
+  local_hcl_generation: IMPLEMENTED
+  deterministic_logical_compute_edge_graph: IMPLEMENTED
+  closed_policy_and_hostile_validation: IMPLEMENTED
+  local_offline_native_validation: EXECUTED_NOT_FORMAL
+  provider_account_region_domain_network_image_identity_health_and_waf_selection: EXTERNAL_DECISION_BLOCKED
+  formal_tst_026: NOT_EXECUTED
+  formal_tst_027: NOT_EXECUTED
+  provider_and_aws_validation: NOT_EXECUTED
+  actual_health_load_and_failure_validation: NOT_EXECUTED
+  staging_release_and_production: NOT_EXECUTED
+  canonical_status_transition: NOT_PROPOSED_BY_THIS_RECORD

@@ -964,4 +964,4 @@ def test_token_and_adapter_representations_are_redacted() -> None:
     assert reader.value.decode("ascii") not in rendered
     assert candidate.rendered_content not in rendered
     proxy = os.environ.get("HTTPS_PROXY")
-    assert proxy is None or proxy not in rendered
+    assert not proxy or proxy not in rendered

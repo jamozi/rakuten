@@ -1,0 +1,25 @@
+story_id: ST-1007
+status: LOCAL_CODE_COMPLETE_MAX_SAFE
+classification: LOCAL_BROWSER_AUTOMATED_ACCESSIBILITY_EVIDENCE_NON_FORMAL_V2
+canonical_status_transition: NONE
+local_runtime:
+  implemented_route_count: 5
+  default_404_observed: true
+  unavailable_canonical_screen_count: 4
+  browser_runner: EXECUTABLE
+  network: LOOPBACK_ONLY
+formal_verification:
+  TST-023: NOT_EXECUTED
+  TST-024: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  screen_reader: NOT_EXECUTED
+  manual_keyboard: NOT_EXECUTED
+  manual_200_percent_zoom: NOT_EXECUTED
+  wcag_conformance: NOT_CLAIMED
+story_acceptance: BLOCKED_INCOMPLETE_CANONICAL_SCREEN_AND_MANUAL_EVIDENCE
+authority:
+  publication: NONE
+  staging: NONE
+  release: NONE
+  production: NONE
+introduced_debt: []

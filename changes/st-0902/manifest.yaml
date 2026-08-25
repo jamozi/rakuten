@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0902_final_approval_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0902_final_approval_reference_plan.py
 provenance:
-  contract_sha256: 450ed0f299bcd1f1f99a242d8a6661a9ab2a886ce8f67818def79618c2163567
+  contract_sha256: a98ac40e5e5e4271c297e87c99e003708e08e459715aef86b5111048d9e2ded6
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -67,23 +67,35 @@ provenance:
   - story_id: ST-0402
     role: readme
     uri: repo://changes/st-0402/README.md
-    sha256: 6a3d5b2a1836d683b2dc96ecb73e4a02943a9a6fd8068496e6d550492514534b
+    sha256: 80f0d3dd6dd7845d726b3fdf07fc3828b4e25c9eea55d48e3296940350b9e0e5
+  - story_id: ST-0402
+    role: contract
+    uri: repo://changes/st-0402/contracts/local-step-up-runtime.v2.json
+    sha256: c42931a148e4852aac9be2c1bab5012ed9c588e568daef2fe6a5c61cbd157bfa
+  - story_id: ST-0402
+    role: runtime
+    uri: repo://changes/st-0402/generated/local-step-up-runtime.v2.json
+    sha256: dd582c4f4e42dc7f4682cb4e2349047f880298cc7fe6ba5da5be8ae953bf472f
+  - story_id: ST-0402
+    role: manifest
+    uri: repo://changes/st-0402/generated/local-step-up-runtime-manifest.v2.json
+    sha256: d55b4da53849aae53d2ec5e40934568185f5bb3008c345bf47ad741214fe94cf
   - story_id: ST-0403
     role: readme
     uri: repo://changes/st-0403/README.md
-    sha256: e7c0e10e44abf6f5db2fbbd94c6a14ecbc9d6bc0ff77fcb312d652204165b6e9
+    sha256: d21f1ddefd4f201a6618e9baa8889d6c77302b141070d89d03b4e2199746d5cc
   - story_id: ST-0405
     role: readme
     uri: repo://changes/st-0405/README.md
-    sha256: 8b046d65492947a458306c308f5515bb6496e0371bdc9695226d52328a04a657
+    sha256: d815e3f71728ff43c3c7301cdf973534f723c505bffba1f6d97b82e8d76c588f
   - story_id: ST-0605
     role: readme
     uri: repo://changes/st-0605/README.md
-    sha256: f5a59ab0542a95987720c5d9ec43ef4355d92cea2b7bafcf8851e510fb98cf4b
+    sha256: 116c86877e397e1804e6edff2189b14ea756566b8fe27e2b64a3b8be91abc2fb
   - story_id: ST-0605
     role: contract
     uri: repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml
-    sha256: 3eb1bccf5e6b2599690e2c9cdd2490dc0a2177e41689f8955c0bc1dfb8e068f2
+    sha256: b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49
   - story_id: ST-0805
     role: readme
     uri: repo://changes/st-0805/README.md
@@ -110,25 +122,25 @@ provenance:
     sha256: f267f2af141d1269bceb175095dc4a397cafb78a120516bb3fb82a8c0706bc71
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    sha256: 478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5
   pro_assistance: PRO_UNAVAILABLE_NONE_NO_PROPOSAL_NO_CONTENT
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
-  bytes: 16320
-  sha256: 450ed0f299bcd1f1f99a242d8a6661a9ab2a886ce8f67818def79618c2163567
+  bytes: 16832
+  sha256: a98ac40e5e5e4271c297e87c99e003708e08e459715aef86b5111048d9e2ded6
 - uri: repo://changes/st-0902/README.md
   bytes: 5240
   sha256: 2f7a746f806f18f47acff531a73f2617e601b09fdaad555cbe17f934e586c7ca
 - uri: repo://scripts/build_st0902_final_approval_reference_plan.py
-  bytes: 50464
-  sha256: 8ea851cd0daddac06b54184265bb8b6b9c663eafcfaa2855e50dbe3759e0398b
+  bytes: 51500
+  sha256: 1535cd77502996ce4e3a5fd1953b44b49f95c74c817506b032a92f3515ef91a7
 - uri: repo://tests/st0902/conftest.py
   bytes: 993
   sha256: 00ea54ee7928734d9ec998bb9db5399e9596624a9a1a89707a699f8eb4406576
 - uri: repo://tests/st0902/test_contract.py
-  bytes: 11184
-  sha256: f0b88d5881659f55ac2ce8d8aaa7bbb7951c7aa73ef6ff801f1e7125f42dbdad
+  bytes: 11594
+  sha256: a5ad0ae4222eb2e7f82734352eaa9900c125e768245358bdb259a2ae28716122
 - uri: repo://tests/st0902/test_generation.py
   bytes: 4997
   sha256: 4394a32aa211d5df29e34b6b17dc49d9bb7e3ab80acea9a9a755e52d7c5d239d
@@ -138,8 +150,8 @@ source_artifacts:
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0902/generated/final-approval-reference-plan.v1.json
-  bytes: 21890
-  sha256: dffd4c4d431d60494b10b21f98c3f4a31751acdcac9a5a939386af3a1e883b20
+  bytes: 22561
+  sha256: b411939ebb5b42a3eb1f34e1b73eeab48f599def18ffc7eef86d319129a81f9e
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_FINAL_APPROVAL_REFERENCE_PLAN
   executable: false

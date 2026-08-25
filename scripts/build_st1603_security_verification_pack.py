@@ -267,21 +267,21 @@ EXPECTED_PREDECESSOR_HASHES: Final = {
         "42164321018c35f61d71c215d2a0c764d8e04c973dff56194db79e96926046e0"
     ),
     STAGING_CONTRACT_PATH.as_posix(): (
-        "b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b"
+        "be104a13490d4c39139047e101092e1b2f3541d45c9277e2d9937915a731e2f0"
     ),
     STAGING_PLAN_PATH.as_posix(): (
-        "8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4"
+        "0c607b4c207068432477db1aa2a2e9598092964dbdce470d8b537c7022eaf105"
     ),
     STAGING_MANIFEST_PATH.as_posix(): (
-        "c27f4df8316621933f5d2d1e5d510dff6b8f65fe6a812ea036c70ba0c9334aa9"
+        "0e970c5749a8bd94fcc8ae5e695d11a4b927028fcc168838618998ac48075aeb"
     ),
 }
 EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES: Final = {
     "scripts/build_st1505_staging_deployment.py": (
-        "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+        "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     ),
     "scripts/build_st1506_production_deployment.py": (
-        "f58b1ed91bcfcc4376262a3e3aa3653154dcbb0672e8508daac874e0042f1176"
+        "cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be"
     ),
 }
 
@@ -388,7 +388,23 @@ def _render_staging_owner_outputs(root: Path) -> tuple[bytes, bytes]:
             contract=dict(owner_contract)
         )
         owner_plan = staging_owner.render_reference_plan(owner_model)
-        owner_manifest = staging_owner.render_manifest(owner_model, owner_plan, root)
+        owner_runtime, owner_runtime_specification = (
+            staging_owner.load_and_validate_runtime_contract(root)
+        )
+        owner_local_pipeline = staging_owner.render_local_pipeline(
+            owner_runtime, owner_runtime_specification
+        )
+        owner_local_result = staging_owner.render_local_result(
+            owner_runtime_specification
+        )
+        owner_manifest = staging_owner.render_manifest(
+            owner_model,
+            owner_plan,
+            owner_local_pipeline,
+            owner_local_result,
+            owner_runtime_specification,
+            root,
+        )
     except (
         staging_owner.StagingDeploymentContractError,
         base.ProductionDeploymentContractError,
@@ -467,11 +483,11 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
             _fail("PREDECESSOR_HASH_DRIFT", "predecessor_bindings")
 
     owner_plan, owner_manifest = _render_staging_owner_outputs(root)
-    for relative, rendered in (
+    for owner_path, rendered in (
         (STAGING_PLAN_PATH, owner_plan),
         (STAGING_MANIFEST_PATH, owner_manifest),
     ):
-        if _read(root, relative, "predecessor.owner_output") != rendered:
+        if _read(root, owner_path, "predecessor.owner_output") != rendered:
             _fail("PREDECESSOR_OWNER_OUTPUT_DRIFT", "staging.owner")
 
     plan = _load_json(root, STAGING_PLAN_PATH, "staging.plan")

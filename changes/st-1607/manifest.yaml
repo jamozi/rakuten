@@ -1,0 +1,128 @@
+document:
+  id: RAOS-GATE-EVIDENCE-PACK-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-1607
+  source_contract: repo://changes/st-1607/contracts/gate-evidence-pack.v1.yaml
+  generated_by: repo://scripts/build_st1607_gate_evidence_pack.py
+  generation_command: /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --locked
+    --offline --no-cache --no-sync --no-env-file python -I -B scripts/build_st1607_gate_evidence_pack.py
+provenance:
+  local_base_commit: a3ea6d1a1e8621d9ff198c9dea31b0c6f7a768d5
+  local_base_commit_type: GIT_SHA1_LOWER_HEX_40
+  local_base_commit_status: RECORDED_PREDECESSOR_CHECKOUT_ONLY
+  local_base_commit_scope: PREDECESSOR_CHECKOUT_PROVENANCE_ONLY
+  local_base_commit_qualifying_evidence: false
+  source_freeze_identifier_type: OPTIONAL_SHA256_LOWER_HEX_64
+  source_freeze_status: ABSENT
+  source_freeze_identifier: null
+  source_freeze_qualifying_evidence: false
+  reviewed_implementation_tree_commit_type: OPTIONAL_GIT_SHA1_LOWER_HEX_40
+  reviewed_implementation_tree_commit_status: ABSENT
+  reviewed_implementation_tree_commit: null
+  reviewed_implementation_tree_commit_qualifying_evidence: false
+  contract_sha256: 0c63f4e1c7ea871e5b6242da4d02e919ea89d3ad6cf7d0c07fe8c09bb7f82646
+  authority_inputs:
+  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - uri: repo://docs/canonical/01_integration/RAOS_07_status_taxonomy_v1.0.yaml
+    sha256: e3261a8a6102c1b93e6cc9006c52f01389ec31510e24ca37bc400437aebbf68b
+  - uri: repo://docs/canonical/00_master/RAOS_implementation_status_registry_v1.0.yaml
+    sha256: 1411f55ce60f6316e83567110fb2847e0db49239cb63dcabf9e81612c3b72ab8
+  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
+    sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  - uri: repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  dependency_inputs:
+  - uri: repo://changes/st-0005/contracts/status-policy.v1.yaml
+    sha256: 15969f4d5db3aee48059ece1fb572786f25bc0807eb34458b36f97f63f8ccfaf
+  - uri: repo://changes/st-0005/status-overlay.v1.yaml
+    sha256: d8f432c8fe79d6e4066a33c55d00527f23f93c2a810f88b0d8555bd317b77b90
+  - uri: repo://changes/st-0005/manifest.yaml
+    sha256: 10bcbe759f9c1aa89d064748136b88a6694500956f049a6679041fe44e0785ce
+  - uri: repo://changes/st-1603/contracts/security-verification-pack.v1.yaml
+    sha256: 9dee0475108d905d31e2ec3c832ce721cf7970966f35988e38cefc9b1cf64f1e
+  - uri: repo://changes/st-1603/generated/security-verification-pack.reference-plan.v1.json
+    sha256: 4a354954044c38c527598e6e58f5b5fff46d579262224c833ddffab4cf1bec42
+  - uri: repo://changes/st-1603/manifest.yaml
+    sha256: 945531f9a0a203ba235d713f5ac283cb2741fb0cf589c8cadee21ad43473e2f6
+  - uri: repo://changes/st-1605/contracts/failure-injection-drill.v1.yaml
+    sha256: 27be70b911bf3d71b47dc13f47c3df122b42c79cd7df1b9f2b1c2cdca75c28ab
+  - uri: repo://changes/st-1605/generated/failure-injection-drill.local-synthetic-evidence.v1.json
+    sha256: 4a3cac40464c3494ed74e66f4c5790e3318f94369baf8954f9b3626108484ddf
+  - uri: repo://changes/st-1605/manifest.yaml
+    sha256: 7720c4064de09a164bc20e8efeccdbf7f300cd0049171e3b4a6bcbfc822d7c1a
+  - uri: repo://changes/st-1606/contracts/backup-restore-drill.v1.yaml
+    sha256: 4898aace08155c06e05a3654d6a2854ad05492c1697da85a7965c68d6b353202
+  - uri: repo://changes/st-1606/generated/backup-restore-drill.reference-plan.v1.json
+    sha256: 1eba3b4b622eb77517848ca77d101427311918866735342e2e827f3bb6de26fb
+  - uri: repo://changes/st-1606/manifest.yaml
+    sha256: d4d3b5df9cdcf56ede791d1512614302e0e77887c9e417dcc918ff9d477a27e8
+  decision_gate_inputs:
+  - uri: repo://changes/st-0006/contracts/decision-gate-policy.v1.yaml
+    sha256: 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
+  - uri: repo://changes/st-0006/gate-blocker-report.v1.yaml
+    sha256: 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
+  - uri: repo://changes/st-0006/manifest.yaml
+    sha256: bbff3aee2fb89a4ecf45bfb92550d06b3936cceb7f3bce247f45daf5b9ca82be
+  implementation_inputs:
+  - uri: repo://scripts/build_st1505_staging_deployment.py
+    sha256: 478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5
+source_artifact_count: 9
+source_artifacts:
+- uri: repo://changes/st-1607/contracts/gate-evidence-pack.v1.yaml
+  bytes: 12861
+  sha256: 0c63f4e1c7ea871e5b6242da4d02e919ea89d3ad6cf7d0c07fe8c09bb7f82646
+- uri: repo://changes/st-1607/README.md
+  bytes: 5828
+  sha256: eaabe1e6537f6a33be23885f0bd93535936a6ff962553ebd58628c3acb5395f2
+- uri: repo://changes/st-1607/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v1.yaml
+  bytes: 3515
+  sha256: 9a0d784fe8b00c7c4b79a8e28ffa8194be9376355bcbffe527f732fd43ee2c15
+- uri: repo://scripts/build_st1607_gate_evidence_pack.py
+  bytes: 93189
+  sha256: c8803eada1a7affb66bb468f4486f9d337c7a4fbaa03e91b88bb363ba8704aa3
+- uri: repo://tests/st1607/conftest.py
+  bytes: 864
+  sha256: c53e57a5d7d5b84fe5c69213672348911db1ae1d37d4dc0842359a6b57506c07
+- uri: repo://tests/st1607/test_contract.py
+  bytes: 6003
+  sha256: cca66324ebc124d58705c8194f9a0ded574ac7b45c841945295594b9e1b9de51
+- uri: repo://tests/st1607/test_generation.py
+  bytes: 36276
+  sha256: 379bf9888bb332ecaf70e569f2e68b9942e42b4ce142be6d9e977720a5cb0ac1
+- uri: repo://tests/st1607/test_negative_cases.py
+  bytes: 10458
+  sha256: 755225e222666feea17af7f3a8f476ce56af340eb212a67d2fcfcc8828f6a9a1
+- uri: repo://tests/st1607/test_gate_report.py
+  bytes: 2907
+  sha256: 648b9e83adf0ee1f7eeb62b0e9b55c1b9759f6e6aec6d5221167af29e2acf15a
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-1607/generated/gate-evidence-pack.local-blocked.v1.json
+  bytes: 17474
+  sha256: 9fb64e6ea6e6c38869f02422fe45960fa72b0cca3e05af0f1d57f57a05ab8ec5
+manifest_self_integrity:
+  included_in_generated_artifacts: false
+  verification: deterministic byte-for-byte regeneration via --check
+boundary:
+  classification: LOCAL_BLOCKED_GATE_EVIDENCE_PACK_NON_ATTESTING
+  input_size_limit_bytes: 2097152
+  gate_status: BLOCKED
+  formal_tst_032: NOT_EXECUTED
+  active_blocking_open_decisions: 14
+  owner_gate_approvals: NONE
+  release_authority: NONE
+  production_authority: NONE
+  acceptance_criteria_satisfied: false
+  release_eligible: false
+  effective_canonical_status: UNCHANGED

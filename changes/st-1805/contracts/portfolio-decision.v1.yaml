@@ -1,0 +1,85 @@
+document:
+  id: RAOS-ST1805-PORTFOLIO-DECISION-001
+  version: 1.0.0
+  story_id: ST-1805
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  classification: RECORDED_SYNTHETIC_PORTFOLIO_DECISION_NON_ATTESTING
+  acceptance_criteria_satisfied: false
+  formal_verification: NOT_EXECUTED
+
+source_bindings:
+  docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md: 5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea
+  docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml: dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984
+  docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
+  docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+
+dependency_bindings:
+  ST-1804:
+    changes/st-1804/contracts/gate3-economics.v1.yaml: c1a5408eba861aaf4b6bc1dd407e84e1bfc6eb045a6b45dac28954aa086acf11
+    changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json: c31f339748cef32084285101d1c434216d3763398b633992ab84b086a02505e5
+    changes/st-1804/generated/gate3-economics.local-blocked.v1.json: f39934be295442f3109185324d3c96e5c2d5401a320f01fd60f75c4fe5414cb4
+    scripts/build_st1804_gate3_economics.py: 095b0a681e0653d0690e475c68f558e431d462a9d5da8522526f16abc499b8d8
+
+decision_contract:
+  objective: QUALITY_ECONOMICS_RISK_EVIDENCE_FOR_HUMAN_PORTFOLIO_DECISION
+  outputs:
+    overall: BLOCKED
+    outcome: NO_DECISION
+    authorized: false
+  actual_evidence_required: true
+  recorded_synthetic_evidence_is_actual: false
+  product_owner_decision_required: true
+  automation_may_choose_scale_hold_pivot: false
+  automation_may_change_category_limit: false
+  automation_may_apply_mutation: false
+
+evidence_contract:
+  quality: ACTUAL_30_45_ARTICLE_QUALITY_EVIDENCE_REQUIRED
+  economics: ACTUAL_CONFIRMED_BASIS_REQUIRED
+  risk: FORMAL_SECURITY_AND_COMPLIANCE_EVIDENCE_REQUIRED
+  formal_gate_pack: TST-032_STAGING_REQUIRED
+  missing_is_zero: false
+  synthetic_is_qualifying: false
+  unverified_is_qualifying: false
+
+finance_editorial_boundary:
+  reward_used_for_product_ranking: false
+  affiliate_rate_used_for_product_ranking: false
+  epc_used_for_product_ranking: false
+  rpm_used_for_product_ranking: false
+  profit_used_for_product_ranking: false
+  recommendation_order_mutation: false
+  publication_snapshot_mutation: false
+
+execution_boundary:
+  actual_30_45_article_pilot: NOT_EXECUTED
+  actual_gate3_observation: NOT_EXECUTED
+  formal_risk_evidence: NOT_EXECUTED
+  formal_TST-032: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  network: NOT_EXECUTED
+  credential: NOT_USED
+  persistence: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  decision_authority: NONE
+  scale_hold_pivot_authority: NONE
+  status_apply: NONE
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+
+debt:
+  introduced_local: []
+  external_remaining:
+    - ACTUAL_30_45_ARTICLE_PILOT
+    - ACTUAL_GATE3_ECONOMICS
+    - FORMAL_SECURITY_AND_COMPLIANCE_RISK_EVIDENCE
+    - FORMAL_TST_032
+    - PRODUCT_OWNER_SCALE_HOLD_PIVOT_DECISION

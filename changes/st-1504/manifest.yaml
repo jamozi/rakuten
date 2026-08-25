@@ -1,13 +1,13 @@
 document:
   id: RAOS-GITHUB-OIDC-MANIFEST-001
-  version: 1.1.0
+  version: 2.0.0
   story_id: ST-1504
   source_contract: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
   generated_by: repo://scripts/build_st1504_github_oidc.py
   generation_command: uv run --locked --no-sync python scripts/build_st1504_github_oidc.py
 provenance:
   contract_uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
-  contract_sha256: c9b01688f58be30dd561b9845aef2d8725c35af3ea9ce50e187c1a0866da011b
+  contract_sha256: 20558e50a78c5d8be62a553858445578cc3fdd39fd285de3a92fe5cd5b5d9257
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -43,51 +43,96 @@ provenance:
     sha256: 36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04
   predecessor_inputs:
   - uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
-    sha256: b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92
+    sha256: a573506749efd1bfed3c11a021ad56d10fbea901566cc1483547df60d364bf45
   - uri: repo://changes/st-0107/ruleset-policy.v1.json
     sha256: e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
   - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
     sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
   - uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-    sha256: 488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9
+    sha256: 5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e
   - uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-    sha256: a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70
-source_artifact_count: 8
+    sha256: bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72
+  - uri: repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json
+    sha256: 696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44
+  - uri: repo://infra/terraform/foundation/versions.tf
+    sha256: 87d23505f127e84430a32ac458b67b46b6614f3d2f976c2539fe3163b4eecab7
+  - uri: repo://infra/terraform/foundation/variables.tf
+    sha256: ce13d5d7eb4ed483c5afd170e1ec74738aa73455e5b4036e861cf5786ff6e76e
+  - uri: repo://infra/terraform/foundation/locals.tf
+    sha256: a113d24697b1f00c6f3fe32459280672d271dd5a1757364e8e2aac97db1c3b3c
+  - uri: repo://infra/terraform/foundation/checks.tf
+    sha256: e4d826ee2881a74f2cc1c49f80ef817d090fb9c0f86040a30f37c231af663787
+  - uri: repo://infra/terraform/foundation/outputs.tf
+    sha256: dac1835d490dc50355a9d4510d6ee8991f2a945ad1bfc1ee395e8c2134431d72
+source_artifact_count: 15
 source_artifacts:
 - uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
-  bytes: 18642
-  sha256: c9b01688f58be30dd561b9845aef2d8725c35af3ea9ce50e187c1a0866da011b
+  bytes: 22669
+  sha256: 20558e50a78c5d8be62a553858445578cc3fdd39fd285de3a92fe5cd5b5d9257
 - uri: repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml
   bytes: 13676
   sha256: 36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04
+- uri: repo://changes/st-1504/IMPLEMENTATION_RECORD_V2_ST1504_OFFLINE_OIDC.yaml
+  bytes: 3392
+  sha256: 72d32f8ae0553a9376a18d901bf1f73312e25c79112e5acced78f9f1e75c7efb
+- uri: repo://changes/st-1504/LOCAL_COMPLETION_EVIDENCE_V2.md
+  bytes: 5475
+  sha256: 048a02555ba2f0f4b335ea024539e3d1d9e1111aa6263f565b7eb6a31027aa14
 - uri: repo://changes/st-1504/README.md
-  bytes: 6751
-  sha256: 6569dd51283864ec1ee29f5b9e6c86ff9c063ef97f144af64cd03ad03e804fd5
+  bytes: 9018
+  sha256: eadeee62d5d6233dc306c3201f8d4368d995c9c9922dc50e4e4c85fb6169859a
 - uri: repo://scripts/build_st1504_github_oidc.py
-  bytes: 82465
-  sha256: 996176c1f977d39dd1dbb36fa7b1159c35f5fa1e5adacf7c21f1dc93919e248f
+  bytes: 101457
+  sha256: 4e7ff7664326a754b89039bb4c5fcd399e629c3197814da5b79260a54d01bdb0
+- uri: repo://python/raos/domain/deployment_identity.py
+  bytes: 17972
+  sha256: 7808bbe1ced665f0e7c184574eeb760c80278966e5c61d832f63d734efc52f13
+- uri: repo://python/raos/ports/deployment_identity.py
+  bytes: 4016
+  sha256: 34659b7fbcc113221e9890f14ab7cb8435af58b9e3722fc094beeec1a0d5de45
+- uri: repo://python/raos/adapters/disabled_deployment_identity.py
+  bytes: 826
+  sha256: 930b4f17198b1ea946de4fefaee5c53d49ac35e350d7276f1d756570a6256956
 - uri: repo://tests/st1504/conftest.py
   bytes: 631
   sha256: e7ea76882f2d42aa0928fe519d9bf38449f33cf118c42cfdaa86b336bcbc9bf3
 - uri: repo://tests/st1504/test_contract.py
-  bytes: 13448
-  sha256: e60d4fc0aa192bec864127bf7a7a811eff1fa02ee9eb7c06e3f7ea4184d521c7
+  bytes: 14285
+  sha256: d9477fe76ee175fd55cb054f7f731a62d933854fe768d544090d7e22db030b67
 - uri: repo://tests/st1504/test_generation.py
-  bytes: 10849
-  sha256: ad0b5e8e27dc7ecbb5547a06fd9565a96c5da3c11584ee1acaa7f25c2801ccf5
+  bytes: 12028
+  sha256: 3dbca427e188695cf1fd8d8df789a05df15a22b99eb5a09f965acf10bf4f0890
 - uri: repo://tests/st1504/test_negative_cases.py
   bytes: 36536
   sha256: 10c440a80d30332cf6cd5fb623a87bc45be297df3840df97848f6608e58db609
-generated_artifact_count: 1
+- uri: repo://tests/st1504/test_offline_runtime.py
+  bytes: 6804
+  sha256: 19d0dbf7f7a6d01cc9ae86b77982e4d6e08f0b9a513920b7c2cfe20d9b9361fd
+- uri: repo://tests/st1504/test_offline_runtime_negative.py
+  bytes: 11585
+  sha256: 1e815c9605af20865d417a2b2860b41eeef772073beba64a211e8835e113968d
+generated_artifact_count: 5
 generated_artifacts:
 - uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
-  bytes: 18764
-  sha256: 1a929da93ef2610db8a0d8a147fe52e32b01ddb6f8989b06dc6cb8abd41003d4
+  bytes: 22515
+  sha256: 7316a9f71cfea72edf071757ead8b44403362d106eb986d146193a27d658d6e6
+- uri: repo://infra/terraform/deployment-identity/github-oidc.claims.recorded.v1.json
+  bytes: 1285
+  sha256: 26f648c750b80e2af2b36dc60d3e12d66c8acc16e5ba909a6013a30843505764
+- uri: repo://infra/terraform/deployment-identity/github-oidc.trust-policy.recorded.v1.json
+  bytes: 2649
+  sha256: 2f523c0bd274247c62f43a0a0f60ece7acd998637ba36e196dc58cd6ee522875
+- uri: repo://infra/terraform/deployment-identity/github-oidc.evaluation.recorded.v1.json
+  bytes: 842
+  sha256: 8fe2ae11254670d9b78c1df2e495da88ccf6687b0f31fb7db035fb3e339dd73e
+- uri: repo://infra/terraform/deployment-identity/github-oidc-deploy.disabled.workflow.yml
+  bytes: 470
+  sha256: cadc782476354b69edfae82aab89545eb33629530671a45608a51b655168b5bb
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
 boundary:
-  classification: SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_REFERENCE_PLAN
+  classification: SOURCE_DERIVED_REPOSITORY_INERT_PROVIDER_NEUTRAL_OFFLINE_DEPLOYMENT_IDENTITY_HARNESS
   activation: DISABLED
   planned_actions:
     create: 0
@@ -121,9 +166,20 @@ boundary:
   selected_target_identity_role: null
   federation_trust_material: null
   workflow_file_path: null
+  recorded_fixture_id: st1504-fixture-repository-inert-v1
+  recorded_claims_sha256: 26f648c750b80e2af2b36dc60d3e12d66c8acc16e5ba909a6013a30843505764
+  recorded_trust_policy_sha256: 2f523c0bd274247c62f43a0a0f60ece7acd998637ba36e196dc58cd6ee522875
+  recorded_evaluation_sha256: 8fe2ae11254670d9b78c1df2e495da88ccf6687b0f31fb7db035fb3e339dd73e
+  inert_workflow_sha256: cadc782476354b69edfae82aab89545eb33629530671a45608a51b655168b5bb
+  offline_evaluation_digest: baa01625e3c4dca3ecd6aaf94f458f1003a8a3ff079ff14683c21fa8e95235a5
+  offline_trust_evaluator: IMPLEMENTED
+  local_recorded_evaluation: EXECUTED_NOT_FORMAL
+  jwt_authentication: NOT_IMPLEMENTED_NOT_CLAIMED
+  signature_verification: NOT_IMPLEMENTED_NOT_CLAIMED
+  activation_port: DISABLED_ZERO_ACTIONS
   credentials: ABSENT
   credential_issuance: NOT_EXECUTED
-  workflow_inspection: NOT_EXECUTED
+  workflow_inspection: LOCAL_INERT_FIXTURE_ONLY_NOT_FORMAL
   formal_tst_026: NOT_EXECUTED
   hosted_github_target_provider: NOT_EXECUTED
   live_oidc_federation: NOT_EXECUTED

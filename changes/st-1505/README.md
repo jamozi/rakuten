@@ -1,16 +1,20 @@
 # ST-1505 provider-neutral staging admission boundary
 
-This Story-owned slice records the maximum-safe local reference for a future
-staging deployment and its admission pipeline. The direct owner
+This Story-owned slice records both the fail-closed reference for a future
+staging deployment and the maximum-safe executable local admission simulator.
+The direct owner
 `DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml`, the Canonical Story,
 and the current provider-neutral ST-1501 through ST-1504 inputs govern this
 decision. Earlier Pro-derived advisory artifacts remain predecessor context,
 not the sole authority for this staging policy. This overlay does not demote or
 supersede the current Canonical AWS Reference Architecture.
 
-The generated plan is closed, deterministic, and non-executable. It creates no
-workflow, infrastructure, credential, migration task, deployment, request,
-browser run, rollback, release, or external state.
+The future-live generated plan remains closed, deterministic, and
+non-executable. The separate local runtime validates only synthetic and
+recorded fixtures. It creates no active workflow, infrastructure, credential,
+database migration, deployment, network request, browser run, rollback,
+release, or external state. Its sole durable effect is an explicit
+owner-private local SQLite journal containing canonical synthetic result bytes.
 
 ## Provider-neutral admission
 
@@ -56,7 +60,8 @@ No concrete alternate provider is selected by this slice.
 ## Current safe state
 
 - Canonical design: `APPROVED_FOR_IMPLEMENTATION`
-- Local deliverable: `INTERFACE_ONLY_PARTIAL_LOCAL_CODE`
+- Future-live interface deliverable: `INTERFACE_ONLY_PARTIAL_LOCAL_CODE`
+- Local simulator proposal: `MAXIMUM_SAFE_LOCAL_CODE_COMPLETE_PROPOSAL`
 - Admission: `NOT_EVALUATED`; eligible: `false`
 - Selected/default/fallback profile: `null`
 - Provider, account/project/tenant, region, backend, identity, adapter, plugin,
@@ -66,6 +71,25 @@ No concrete alternate provider is selected by this slice.
 - Credential, provider, network, write, deployment, migration, staging,
   rollback, release, and Production actions: `FORBIDDEN`
 - Every action count: `0`
+- Local fixture pipeline: repository-inert, default-disabled, no trigger,
+  command, active workflow path, selected target, provider client, or network
+  client
+- Local admission: immutable synthetic digest, recorded SBOM/vulnerability/
+  provenance binding, in-memory Expand-Migrate-Contract plan and dry-run,
+  recorded loopback Public/Admin/Internal health, in-memory rollback/restore
+  integrity, and owner-private durable recovery
+- Local journal initialization: created-only `O_CREAT|O_EXCL`; a pre-existing
+  zero-byte or valid-empty SQLite file is never adopted or initialized
+- Local journal schema: exact application ID/user version, three `STRICT`
+  tables, exact implicit indexes and composite foreign key, and nine exact
+  lifecycle/append-only triggers
+- Local journal identity: original owner-private root and database
+  device/inode are pinned, shared by all same-process instances, and checked
+  around every connection and operation; unexpected SQLite sidecars fail
+  closed
+- Local journal continuity: a process-local monotonic count/tail anchor detects
+  whole-file rollback even when an internally consistent older snapshot is
+  restored to the same inode; root or database replacement is also refused
 - Runtime, hosted, formal, live-provider, staging, release, and Production
   evidence: `NOT_EXECUTED`
 
@@ -84,9 +108,12 @@ committed plan bytes must match full semantic validation plus deterministic
 owner regeneration. Rebinding raw and semantic digests cannot make a weakened
 or formatting-only divergent predecessor acceptable.
 
-The predecessor plans are themselves disabled interface-only references. They
-do not provide a selected target, credential, identity, infrastructure, or
-deployment authority.
+ST-1501 and ST-1502 now expose provider-free local validation, while ST-1503
+and ST-1504 remain disabled for activation. None provides a selected target,
+credential, infrastructure deployment, or staging authority. ST-1505 also
+pins the hardened ST-1504 manifest, deployment-identity domain/port/disabled
+adapter, and recorded evaluation fixture before trusting the exact disabled
+receipt.
 
 ## Owned source and generated artifacts
 
@@ -97,12 +124,16 @@ builder.
 | --- | --- | --- |
 | Design authority | `changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml` | Durable provider-neutral staging decision and gates |
 | Story contract | `changes/st-1505/contracts/staging-deployment.v1.yaml` | Closed dependency, capability, intent, selection, execution, and evidence boundary |
+| Local runtime contract | `changes/st-1505/contracts/local-staging-admission-runtime.v2.yaml` | Closed synthetic artifact, migration, health, rollback, journal, zero-action, and evidence boundary |
 | Owner builder | `scripts/build_st1505_staging_deployment.py` | Strict validator and deterministic renderer |
+| Local runtime | `python/raos/domain/ops/staging_admission.py`, `python/raos/application/ops/staging_admission.py`, `python/raos/ports/staging_admission.py`, `python/raos/adapters/recorded_staging_admission.py`, `python/raos/staging_admission_runner.py` | Pure admission, disabled identity coordination, owner-private persistence, and explicit runner |
 | Test source | `tests/st1505/*.py` | Positive, hostile, provenance, path-safety, and no-write evidence |
 | Generated reference | `infra/terraform/staging/staging-deployment.reference-plan.v1.json` | Non-executable source-derived reference plan |
+| Generated inert fixture | `infra/terraform/staging/local-staging-admission.pipeline.disabled.v2.yaml` | Default-disabled local phase description outside active workflows |
+| Generated recorded result | `infra/terraform/staging/local-staging-admission.result.recorded.v2.json` | Deterministic local result; explicitly not staging evidence |
 | Generated inventory | `changes/st-1505/manifest.yaml` | Exact authority, predecessor, source, output, semantic, and status provenance |
 
-Generate both declared outputs:
+Generate all declared outputs:
 
 ```bash
 uv run --locked --no-sync python scripts/build_st1505_staging_deployment.py
@@ -116,13 +147,32 @@ uv run --locked --no-sync python scripts/build_st1505_staging_deployment.py --ch
 
 The CLI accepts only `--check`. It reads no ambient credential or provider
 configuration, calls no provider or browser, performs no network request, and
-invokes no deployment tool. No ST-1505 deployment workflow exists or is added
-by this interface-only slice.
+invokes no deployment tool. No active ST-1505 deployment workflow exists or is
+added by this slice.
+
+The explicit local runner requires a caller-created absolute directory with
+mode `0700`, a closed `st1505-run-*` identifier, and a non-secret
+`st1505-key-*` replay key. It hashes the replay key before persistence and
+writes only a newly created fixed `st1505-local-admission.sqlite3` file with
+mode `0600`. It never overwrites, initializes, or adopts a pre-existing empty
+file:
+
+```bash
+PYTHONPATH=python:. python -m raos.staging_admission_runner \
+  --private-root /absolute/owner-private-local-directory \
+  --run-id st1505-run-local-001 \
+  --idempotency-key st1505-key-local-001
+```
+
+This command still performs zero provider, credential, network, database
+migration, smoke-request, browser, staging, deployment, release, rollback, or
+Production action.
 
 ## Explicitly unexecuted work
 
-Formal TST-009 and TST-022, migration database and runner, HTTP/Playwright
-execution, protected-environment approval, hosted CI, target adapter runtime,
+Formal TST-009 and TST-022, real migration database execution and independent
+review, HTTP/Playwright execution, protected-environment approval, hosted CI,
+target adapter runtime,
 provider/account/credential use, staging configuration and deployment, smoke,
 rollback/restore exercise, release, and Production remain `NOT_EXECUTED` and
 require their separately authorized owners, environments, approvals, and

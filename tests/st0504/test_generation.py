@@ -65,13 +65,13 @@ def test_manifest_binds_sources_predecessor_generated_plan_and_helper() -> None:
         generator.PREDECESSOR_COMMIT
     )
     assert manifest["provenance"]["predecessor_inputs"] == (
-        generator._expected_predecessor_artifacts()
+        generator._expected_predecessor_artifacts()  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
     )
     assert manifest["generated_artifacts"] == [
         {
             "uri": f"repo://{generator.REFERENCE_PLAN_PATH.as_posix()}",
             "bytes": len(reference),
-            "sha256": generator._sha256(reference),
+            "sha256": generator._sha256(reference),  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
         }
     ]
     assert manifest["provenance"]["implementation_helper"] == {
@@ -98,7 +98,7 @@ def test_reference_plan_bytes_are_canonical_utf8_json() -> None:
     assert content.endswith(b"\n")
     assert b"\r" not in content
     parsed = json.loads(content)
-    assert content == generator._json_bytes(parsed)
+    assert content == generator._json_bytes(parsed)  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
 
 
 def test_cli_rejects_every_argument_except_exact_check() -> None:

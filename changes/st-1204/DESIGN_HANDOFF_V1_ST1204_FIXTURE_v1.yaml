@@ -1,0 +1,210 @@
+DESIGN_HANDOFF_V1:
+  document_id: RAOS-ST1204-ATOMIC-FIXTURE-PUBLICATION-001
+  version: 1.4.0
+  status: LOCAL_IMPLEMENTATION_DECISION_RECORDED
+  canonical_reconciliation: LOCAL_CANDIDATE_PENDING_HUMAN_APPLY
+  implementation_authority: REPOSITORY_STANDING_DEVELOPMENT_AUTHORITY
+  human_approval: NOT_REQUIRED_FOR_REVERSIBLE_LOCAL_DEVELOPMENT
+  formal_tst_030: NOT_EXECUTED
+  live_provider_validation: NOT_EXECUTED
+  staging_readiness: NOT_READY
+  production_readiness: NOT_READY
+
+  approved_story: ST-1204
+  approved_scope:
+    - Harden only the owner-generated synthetic recorded-fixture publication boundary.
+    - Close ST1204-FIXTURE-D1 through ST1204-FIXTURE-D3 and local finding ST1204-AUDIT-001.
+    - Preserve the existing GA4 recording semantics and caller-supplied read-only runtime seam.
+
+  source_design_refs:
+    - path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    - path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    - path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    - path: changes/st-1204/DESIGN-DECISION-REQUEST-v1.md
+      sha256: 74208c4b3bff960f6c47c5f94cb04625d6bb93ea17b39106582b1d51cac3c716
+    - path: changes/st-1204/ATOMIC-PUBLICATION-AUDIT-v1.md
+      sha256: ee2d2986a2d44ab07ea3e83fe5a320ace771d93d57300ee98716b9c65138b87b
+    - path: changes/st-1204/RUNTIME-SLICE-v1.md
+      sha256: 021e21ca20d8fa82c3b0a9134de6cf989daf4fd80f1dc8d4a5ddbfc9a2579b69
+
+  decision:
+    ST1204-FIXTURE-D1:
+      selected_layout: SINGLE_GENERATED_DIRECTORY
+      authoritative_root: changes/st-1204/generated
+      authoritative_paths:
+        - changes/st-1204/generated/manifest.json
+        - changes/st-1204/generated/fixtures/recorded/baseline.json
+        - changes/st-1204/generated/fixtures/recorded/late-revised.json
+        - changes/st-1204/generated/fixtures/recorded/provider-error-429.json
+      closed_inventory: EXACT_PATHS_ONLY_NO_SYMLINK_SPECIAL_OR_MULTILINK_ENTRIES
+      hidden_owner_entries:
+        stage: .generated.st1204.stage
+        journal_preparing: .generated.st1204.transaction.preparing
+        journal: .generated.st1204.transaction
+        journal_cleanup: .generated.st1204.transaction.cleanup.<transaction_id>.<dev>.<ino>
+        bundle_cleanup: .generated.st1204.bundle-cleanup.<transaction_id>
+        legacy_cleanup: .generated.st1204.legacy-cleanup.<transaction_id>.*
+      legacy_paths:
+        - changes/st-1204/manifest.json
+        - changes/st-1204/fixtures/recorded
+      legacy_disposition: NON_AUTHORITATIVE_AFTER_COMMIT_THEN_DESCRIPTOR_RELATIVE_REMOVAL
+
+    ST1204-FIXTURE-D2:
+      root_and_ancestor_rule: PHYSICAL_ROOT_LSTAT_OPEN_IDENTITY_MATCH_AND_COMPONENT_O_NOFOLLOW
+      story_directory_rule: CAPTURE_ONCE_AND_USE_ONLY_DIR_FD_RELATIVE_MUTATIONS
+      locking:
+        owner: CAPTURED_STORY_DIRECTORY_INODE
+        check: NONBLOCKING_SHARED_FLOCK
+        generate_and_recovery: NONBLOCKING_EXCLUSIVE_FLOCK
+        contention: FAIL_CLOSED_WITHOUT_RETRY
+      durable_stage_order:
+        - Create the fixed hidden stage under the captured Story directory and fsync the Story directory.
+        - Create exact directories and files with mkdirat/openat O_NOFOLLOW and O_EXCL.
+        - fsync every file, then recorded, fixtures, and stage directories from leaf to root.
+        - Reopen and byte-verify the exact staged tree before publishing the journal.
+      journal:
+        schema: ST1204_ATOMIC_PUBLICATION_V2
+        publication_states: [PREPARED, COMMITTED, ROLLED_BACK, DRIFT_REFUSAL]
+        cleanup_states: [NONE, BUNDLE_QUARANTINING, BUNDLE_DELETING, BUNDLE_REMOVED, LEGACY_QUARANTINING, LEGACY_DELETING, CLEANUP_COMPLETE]
+        binds: [transaction_id, mode, had_previous, previous_manifest_sha256, next_manifest_sha256, previous_root_identity, next_root_identity, cleanup_tree_identities, cleanup_file_hashes]
+        publication: PREPARING_DIRECTORY_FSYNC_THEN_SAME_PARENT_RENAME_AND_PARENT_FSYNC
+        update: APPEND_ONLY_PREPARING_FILE_FSYNC_RENAME_NOREPLACE_JOURNAL_FSYNC
+        interrupted_update: VALID_NEXT_STATE_PROMOTED_OR_MALFORMED_PARTIAL_PREPARING_FILE_REMOVED
+        active_invocation_identity_capture: ROOT_AND_EVERY_COMMITTED_STATE_FULL_SIGNATURE_CAPTURED_BEFORE_EACH_CHECKPOINT_AND_REVALIDATED_ACROSS_EVERY_APPEND
+        terminal_state_identity_capture: EXACT_DEV_INO_MODE_NLINK_SIZE_MTIME_NS_CTIME_NS_CONTINUOUS_FROM_ACTIVE_JOURNAL_THROUGH_TERMINAL_MOVE
+      namespace_operation:
+        fresh_install: LINUX_RENAMEAT2_RENAME_NOREPLACE_STAGE_TO_GENERATED
+        replacement: LINUX_RENAMEAT2_RENAME_EXCHANGE
+        unsupported_exchange: FAIL_CLOSED_BEFORE_DESTINATION_CHANGE
+        durability: STORY_DIRECTORY_FSYNC_IMMEDIATELY_AFTER_NAMESPACE_CHANGE
+      rollback:
+        boundary: BEFORE_DURABLE_COMMITTED_JOURNAL_STATE
+        existing_bundle: REVERSE_RENAME_EXCHANGE_AND_VERIFY_EXACT_PREVIOUS_TREE
+        fresh_install: RENAME_GENERATED_BACK_TO_STAGE_AND_VERIFY_GENERATED_ABSENT
+        primary_error: PRESERVED_WITH_ROLLBACK_FAILURE_AS_NOTE
+        rollback_failure: DURABLE_JOURNAL_AND_TREES_RETAINED_RECOVERY_REQUIRED
+      committed_cleanup:
+        authoritative_state: EXACT_NEW_GENERATED_TREE_REMAINS_COMMITTED
+        old_stage: JOURNAL_BIND_EXACT_TREE_THEN_NOREPLACE_QUARANTINE_BEFORE_DESTRUCTIVE_CLEANUP
+        legacy_outputs: FULL_TREE_VALIDATE_AND_JOURNAL_BIND_THEN_NOREPLACE_QUARANTINE_AFTER_COMMIT
+        journal: RENAME_TO_TRANSACTION_AND_INODE_BOUND_TERMINAL_TOMBSTONE_FSYNC_THEN_REMOVE_WITH_SAME_INVOCATION_STATE_IDENTITY_INVENTORY
+        deletion_progress: BUNDLE_AND_LEGACY_TOMBSTONES_RESTARTABLE;TERMINAL_JOURNAL_STATE_DELETION_REQUIRES_THE_TRUSTED_IN_MEMORY_FULL_IDENTITY_INVENTORY;EVERY_QUARANTINED_FILE_AND_DIRECTORY_CARRIES_A_POST_RENAME_FULL_SIGNATURE_TO_THE_FINAL_PRE_DELETE_OBSERVATION
+        quarantine_transition: PRE_RENAME_AND_POST_RENAME_SIGNATURES_MUST_PRESERVE_DEV_INO_MODE_NLINK_SIZE_MTIME_NS;CTIME_MAY_CHANGE_ONLY_BECAUSE_OF_RENAME
+        final_inventory: REVERIFY_AUTHORITATIVE_TREE_AND_REQUIRE_ALL_BOUND_CLEANUP_NAMES_ABSENT_BEFORE_COMPLETE
+        cleanup_failure: NEW_TREE_REMAINS_AUTHORITATIVE;BUNDLE_AND_LEGACY_RECOVER;INTERRUPTED_TERMINAL_JOURNAL_ROOT_IS_RETAINED_AND_REFUSED_WITHOUT_A_DURABLE_NONRECURSIVE_STATE_IDENTITY_SOURCE
+      crash_recovery:
+        stage_without_journal: EMPTY_STAGE_REMOVED;SAME_INVOCATION_PARTIAL_STAGE_REMOVED_ONLY_WITH_PRECAPTURED_COMPLETE_IDENTITY_INVENTORY;SURVIVING_NONEMPTY_STAGE_REFUSED
+        preparing_without_journal: REMOVE_ONLY_STRUCTURALLY_OWNED_PREPARING_TREE
+        prepared_before_exchange: RESTORE_PREVIOUS_OR_ABSENT_STATE
+        prepared_after_exchange: REVERSE_NAMESPACE_OPERATION_AND_RESTORE_PREVIOUS_OR_ABSENT_STATE
+        committed: VERIFY_NEW_TREE_AND_FINISH_CLEANUP_WITHOUT_ROLLBACK
+        rolled_back: VERIFY_PREVIOUS_OR_ABSENT_STATE_AND_FINISH_CLEANUP
+        terminal_journal_after_root_move: CONSERVATIVELY_RETAIN_AND_REFUSE_BECAUSE_THE_PRIOR_IN_MEMORY_STATE_IDENTITY_INVENTORY_IS_NOT_DURABLE
+        ambiguous_or_malformed: FAIL_CLOSED_AND_RETAIN_EVIDENCE
+      filesystem_adversary_boundary:
+        covered: CAPTURED_ANCESTOR_AND_ENTRY_IDENTITIES_NOREPLACE_COLLISIONS_OBSERVED_PRE_AND_POST_RENAME_SWAPS_MODE_OR_MTIME_DRIFT_BEFORE_QUARANTINE_OR_DELETE_AND_RESTARTABLE_OWNER_CHECKPOINTS
+        posix_limit: UNLINKAT_AND_RMDIRAT_HAVE_NO_CONDITIONAL_INODE_FORM_SO_AN_ACTIVELY_MALICIOUS_SAME_UID_SWAP_INSIDE_THE_FINAL_KERNEL_SYSCALL_WINDOW_IS_NOT_CLAIMED_PREVENTED
+        response: EVERY_OBSERVED_IDENTITY_MISMATCH_IS_RESTORED_WHEN_NOREPLACE_SAFE_OR_RETAINED_AND_REFUSED_WITHOUT_DELETION
+      nested_bundle_read:
+        fixtures: REVALIDATE_NAME_AGAINST_OPEN_DESCRIPTOR_BEFORE_ACCEPTANCE
+        recorded: REVALIDATE_NAME_AGAINST_OPEN_DESCRIPTOR_BEFORE_ACCEPTANCE
+
+    ST1204-FIXTURE-D3:
+      local_acceptance: ALL_REQUIRED_HOSTILE_AND_DETERMINISTIC_TESTS_PASS
+      check_semantics: SHARED_LOCK_BYTE_AND_NAMESPACE_EXACT;PRESERVE_DEV_INO_SIZE_MODE_MTIME_NS_CTIME_NS;ACCESS_TIME_EXCLUDED_WITHOUT_O_NOATIME_CLAIM
+      publication_semantics: ONE_NAMESPACE_OLD_OR_NEW_NEVER_CHECK_ACCEPTED_MIXED
+      audit_claim: LOCAL_FINDING_REMEDIATED_PENDING_INDEPENDENT_READ_ONLY_REAUDIT
+
+  rationale:
+    - A single generated directory is the smallest layout that gives one atomic observation point for all four outputs.
+    - Descriptor-relative mutation confines writes to the captured Story directory even if a same-UID process swaps path ancestors.
+    - A durable journal distinguishes pre-publication, post-exchange, committed, and terminal-cleanup crashes without guessing.
+    - Reverse exchange preserves the old exact bundle for every failure before the durable commit marker; cleanup failures cannot invalidate a committed exact new bundle.
+
+  rejected_alternatives:
+    - alternative: FOUR_LEGACY_FILES_WITH_JOURNAL_AND_READER_LOCKING
+      reason: Uncooperative readers can still observe mixed generations across four namespace operations.
+    - alternative: SINGLE_JSON_FILE_WITH_EMBEDDED_FIXTURES
+      reason: It changes the fixture consumer contract and runtime test interface more than required.
+    - alternative: SYMLINK_POINTER_SWAP
+      reason: It introduces a symlink trust boundary forbidden by the existing audit and repository patterns.
+    - alternative: FULL_PATH_TEMPFILES_OR_NONATOMIC_DIRECTORY_REPLACE
+      reason: It retains the ancestor-swap TOCTOU or cannot replace a nonempty directory atomically.
+
+  allowed_system_capabilities:
+    imports:
+      - argparse
+      - ctypes
+      - fcntl
+      - hashlib
+      - json
+      - math
+      - os
+      - pathlib
+      - re
+      - stat
+      - sys
+      - standard typing and immutable-data helpers already used by the owner
+      - urllib.parse URL parsing only
+      - uuid
+      - jsonschema
+      - yaml
+    filesystem:
+      - descriptor-relative open/read/write/mkdir/unlink/rmdir/replace/stat/scandir
+      - O_NOFOLLOW, O_DIRECTORY, O_CLOEXEC, O_CREAT, O_EXCL
+      - file and directory fsync
+      - nonblocking flock
+      - minimal ctypes call to libc renameat2 with RENAME_EXCHANGE and RENAME_NOREPLACE only
+    forbidden:
+      - network, subprocess, dynamic imports, environment or credential access
+      - Google SDK/API, database, object storage, queue, job, event, or runtime persistence
+
+  constraints:
+    - No dependency, canonical source, database, runtime Domain/Port/Application/adapter, provider, or status overlay change.
+    - Generated bytes are changed only through the ST-1204 owner generator.
+    - Every source and generated artifact remains strict UTF-8/LF and content-addressed.
+    - A reader accepts outputs only after capturing the authoritative generated directory once under the shared Story lock.
+
+  security_and_approval_gates:
+    - OD-012 remains unresolved; optional tracking stays disabled.
+    - OD-015 remains unresolved; provider execution stays recorded-fixture-only and credential-free.
+    - SEC-DATA-003 secret exclusion, SEC-DATA-004 object integrity, and SEC-SDLC-006 secret scanning remain applicable.
+    - Formal TST-030, independent audit, hosted CI, staging, release, and Production remain unexecuted and cannot be inferred from local tests.
+
+  acceptance_criteria:
+    - Fresh install and replacement publish exactly one complete generated tree.
+    - Missing, extra, symlink, special, multiply-linked, or malformed outputs fail closed.
+    - Ancestor swaps cannot redirect a write outside the captured Story directory; every observed final-entry identity swap is restored when no-replace-safe or retained and refused without deletion.
+    - Mid-stage and pre-publication failures leave the installed bundle exact and unchanged; cleanup deletes only entries whose identities were captured by the same invocation before the failure checkpoint.
+    - A detected partial-stage root, directory, or byte-identical file replacement is preserved and refused rather than re-owned or deleted.
+    - A cleanup file or directory whose full signature drifts immediately before quarantine, unlink, or rmdir is preserved and refused; quarantine ctime changes are not treated as authority for other metadata drift.
+    - Post-exchange pre-commit failures restore the exact old bundle or exact absence atomically.
+    - Committed bundle and legacy cleanup failures leave the exact new bundle authoritative and recoverable.
+    - A crash after the terminal journal root move preserves the exact authoritative bundle and retains/refuses the cleanup tree rather than inferring state-file ownership from bytes or self-attestation.
+    - Concurrent check/generate operations obey shared/exclusive nonblocking locks.
+    - Stale stage, preparing, journal, cleanup tombstone, and rollback-failure states have deterministic recovery or refusal tests.
+    - No check-accepted mixed generation exists and check mode changes no bytes, namespace, device/inode, size, mode, mtime, or ctime; access time is explicitly excluded because portable read-only opens may update it.
+
+  required_test_evidence:
+    - isolated tests/st1204 pytest including fault injection, real crash recovery, concurrency, ancestor swap, and mixed-generation rejection
+    - deterministic owner generation and owner --check
+    - Ruff lint and format, Python parse/import, strict mypy, and available Pyright over owned source
+    - focused capability/static and maintained-file secret checks
+    - canonical import verification, workspace check, and git diff --check
+    - independent read-only publication-security re-audit before formal audit PASS
+
+  deferred_external_decisions:
+    - id: OD-012
+      status: HUMAN_DECISION_REQUIRED
+      safe_default: OPTIONAL_TRACKING_DISABLED
+    - id: OD-015
+      status: EXTERNAL_EVIDENCE_REQUIRED
+      safe_default: RECORDED_FIXTURE_ONLY
+  open_decisions: []

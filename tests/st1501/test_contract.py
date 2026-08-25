@@ -185,6 +185,11 @@ def test_activation_native_operations_and_action_counts_are_fail_closed(
             "import": "FORBIDDEN",
             "refresh": "FORBIDDEN",
         },
+        "validation_commands": {
+            "version": "OFFLINE_READ_ONLY",
+            "format": "OFFLINE_READ_ONLY",
+            "validate": "OFFLINE_READ_ONLY",
+        },
     }
 
 
@@ -228,6 +233,8 @@ def test_successors_require_separate_contract_revision_before_resources(
         "current_resource_payloads": "FORBIDDEN",
         "successor_contract_revision_required": True,
         "native_toolchain_pin_required_before_hcl": True,
+        "validation_only_hcl_module_available": True,
+        "successor_resource_module_required": True,
         "successors": {
             "ST-1502": "DATA_SERVICES",
             "ST-1503": "COMPUTE_CDN_WAF",
@@ -235,33 +242,37 @@ def test_successors_require_separate_contract_revision_before_resources(
     }
 
 
-def test_generated_document_is_non_executable_partial_local_code(
+def test_generated_document_is_executable_only_for_local_validation(
     foundation_model: generator.FoundationModel,
 ) -> None:
     document = generator.reference_plan_document(foundation_model)["document"]
     assert document == {
         "id": "RAOS-TERRAFORM-FOUNDATION-REFERENCE-PLAN-001",
-        "version": "1.1.0",
+        "version": "1.2.0",
         "story_id": "ST-1501",
         "source_contract": generator.SOURCE_CONTRACT_URI,
         "generated_by": generator.GENERATOR_URI,
         "generation_command": generator.GENERATION_COMMAND,
-        "artifact_kind": "SOURCE_DERIVED_REFERENCE_STATE_PLAN",
-        "executable": False,
-        "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+        "artifact_kind": "SOURCE_DERIVED_PROVIDER_NEUTRAL_HCL_FOUNDATION",
+        "executable": True,
+        "executable_for": ["fmt", "validate"],
+        "infrastructure_actions": False,
+        "implementation_scope": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
     }
 
 
-def test_verification_boundary_keeps_native_formal_and_live_work_unexecuted(
+def test_verification_boundary_separates_local_native_from_formal_and_live_work(
     foundation_model: generator.FoundationModel,
 ) -> None:
     boundary = generator.reference_plan_document(foundation_model)[
         "verification_boundary"
     ]
     assert boundary == {
-        "executable_terraform": "ABSENT",
-        "terraform_cli": "UNPINNED_NOT_INVOKED",
-        "provider_plugins": "UNPINNED_NOT_INVOKED",
+        "executable_terraform": "VALIDATABLE_NO_RESOURCE_NO_PROVIDER_HCL_MODULE",
+        "terraform_cli": "PINNED_VALIDATION_ONLY_1_15_9",
+        "provider_plugins": "NONE_REQUIRED_NOT_SELECTED",
+        "offline_native_validation_path": "IMPLEMENTED",
+        "local_native_validation": "EXECUTED_NOT_FORMAL",
         "remote_state": "NOT_CONFIGURED",
         "provider_account_or_project": "UNSET",
         "credentials": "ABSENT",
@@ -297,16 +308,24 @@ def test_generated_json_is_strictly_parseable_and_matches_renderer(
     assert parsed == generator.reference_plan_document(foundation_model)
 
 
-def test_foundation_directory_contains_no_native_iac_payload() -> None:
+def test_foundation_directory_contains_only_closed_generated_validation_payload() -> (
+    None
+):
     foundation = REPOSITORY_ROOT / "infra/terraform/foundation"
     assert foundation.is_dir()
-    assert sorted(path.name for path in foundation.iterdir()) == [
-        generator.REFERENCE_PLAN_PATH.name
-    ]
-    forbidden_suffixes = {".tf", ".tfvars", ".hcl", ".lock"}
+    assert sorted(path.name for path in foundation.iterdir()) == sorted(
+        path.name for path in generator.GENERATED_ARTIFACT_PATHS
+    )
+    forbidden_suffixes = {".tfvars", ".hcl", ".lock"}
     assert not any(
         path.is_file() and path.suffix in forbidden_suffixes
         for path in foundation.rglob("*")
+    )
+    assert (
+        tuple(
+            path for path in generator.GENERATED_ARTIFACT_PATHS if path.suffix == ".tf"
+        )
+        == generator.HCL_PATHS
     )
 
 
@@ -319,5 +338,11 @@ def test_contract_top_level_schema_is_closed(
     )
     assert generator.GENERATED_PATHS == (
         Path("infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"),
+        Path("infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"),
+        Path("infra/terraform/foundation/versions.tf"),
+        Path("infra/terraform/foundation/variables.tf"),
+        Path("infra/terraform/foundation/locals.tf"),
+        Path("infra/terraform/foundation/checks.tf"),
+        Path("infra/terraform/foundation/outputs.tf"),
         Path("changes/st-1501/manifest.yaml"),
     )

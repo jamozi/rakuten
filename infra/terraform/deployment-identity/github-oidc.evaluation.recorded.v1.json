@@ -1,0 +1,24 @@
+{
+  "action_count": 0,
+  "activation_authorized": false,
+  "authentication_status": "NOT_AUTHENTICATED",
+  "classification": "OFFLINE_POLICY_MATCH_ONLY_NOT_AUTHENTICATION",
+  "credential_issuance_authorized": false,
+  "deployment_authorized": false,
+  "evidence_digest": "baa01625e3c4dca3ecd6aaf94f458f1003a8a3ff079ff14683c21fa8e95235a5",
+  "fixture_id": "st1504-fixture-repository-inert-v1",
+  "formal_evidence": "NOT_EXECUTED",
+  "policy_id": "st1504-policy-repository-inert-v1",
+  "policy_match": true,
+  "reason_codes": [
+    "RECORDED_EXACT_CLAIMS_MATCHED",
+    "SIGNATURE_NOT_VERIFIED",
+    "AUTHENTICATION_NOT_PERFORMED",
+    "ACTIVATION_DISABLED",
+    "CREDENTIAL_ISSUANCE_FORBIDDEN",
+    "DEPLOYMENT_FORBIDDEN"
+  ],
+  "schema": "RAOS_OFFLINE_TRUST_EVALUATION_V1",
+  "signature_verification_status": "NOT_PERFORMED",
+  "version": 1
+}

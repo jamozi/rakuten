@@ -1,0 +1,135 @@
+document:
+  id: RAOS-ST0308-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V2
+  schema_version: 1
+  story_id: ST-0308
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  recorded_at: '2026-08-23T23:39:48Z'
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+base:
+  branch: codex/raos-local-integration-complete
+  base_commit_sha: aac3a2643d868d296b5ebbd5741945cb422d3580
+  implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
+runtime:
+  handoff:
+    path: changes/st-0308/DESIGN_HANDOFF_V1_ST0308_LOCAL_PERSISTENCE_RUNTIME_V2.yaml
+    sha256: 7ce27915b7d848dfd4ad1a38a8df094fa3955847a2d9a28159ea61cbd428e882
+  contract:
+    path: changes/st-0308/contracts/persistence-runtime.v2.yaml
+    sha256: 0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4
+  owner_generator:
+    path: scripts/build_st0308_persistence.py
+    sha256: a52c4a0ac971ef1239e7301d84f8f09dc8cda718872e1d2d09e01aebcbbec979
+  source_inventory:
+    file_count: 248
+    algorithm: >-
+      SHA256 of sorted lines emitted by sha256sum for every regular runtime,
+      matrix, generated, Domain, Port, adapter, owner, and Story-test file;
+      __pycache__ excluded
+    sha256: 736a299dbaab2038a586567487791ce1cbebf751be29f9a52936b298f79b035c
+matrices:
+  repository_surface: 0dcd8edabe662bb94dc38960b372dfabf1afc8e83f74e3acc4757049fda6f1f0
+  concurrency: 66cb474d428703e83b7b84744c4f843463b0a040714b907e00137438f5ba08ab
+  state_cas: f865a30c2c000dfd9ca6f2f43d0be7c5cc3883077cfd41f3dcc4c340d03c94d1
+  uow_surface: 2e298605a9679b593244d78b49a6e4f331d8927363d3513d8f7aa6527c10bdc0
+  domain_mapper: 8b2499f99faa223fbc5b6329bd0f0e441441e89b45d507b6bbb0ffbce470e872
+  event_emission: 3c4f8e429824849b9219faefb2867dd8444828562d0d0a1d9c79bfa2cc511ad0
+  idempotency: 1645b6b67d8ab6ae01520094cbc7f14405f2545c41d019ecb98ea48412c39e1b
+  identity: aa009ab2423069f782621d6f7e4cb4c4fa57185d03ad3195ad5df29c75360d0b
+generated_outputs:
+  catalog_ir:
+    path: changes/st-0308/generated/persistence-catalog-ir.v1.json
+    sha256: 83cef4815f24939f98cf2e77958f1fd45a42bd52185bbbdabbb4e5961d24f1e2
+  ops_reference:
+    path: changes/st-0308/generated/persistence-runtime.ops-reference.v1.json
+    sha256: 28a3411f72cd18c8bbc32a1004b28324d2f3249c1e9b3d9f1e9d7bda4e99df26
+  generated_package:
+    inventory:
+      - __init__.py
+      - catalog.py
+      - identity_contract.py
+      - ops_reference.py
+      - physical_constraints.py
+    physical_constraint_count: 519
+    guarded_mapper_callable_count: 205
+    table_count: 103
+    read_only_view_count: 1
+    bidirectional_table_mapper_count: 102
+    metadata_only_table_count: 1
+runtime_invariants:
+  module_count: 8
+  repository_class_count: 53
+  transaction_owner: OUTER_SYNCHRONOUS_UOW_ONLY
+  joined_commit_or_rollback: FORBIDDEN
+  audit_outbox_idempotency_atomicity: ONE_TRANSACTION
+  direct_and_textual_dml_poisoning: ENFORCED
+  known_commit_rollback_unknown_cleanup: IMMEDIATE_REFERENCE_DISCARD
+  arbitrary_provider_config: FORBIDDEN
+  provider_live_activation: FORBIDDEN
+verification:
+  environment:
+    python: 3.14.6
+    postgresql: 18.4
+    postgresql_distribution: Ubuntu 18.4-1.pgdg22.04+1
+    ruff: 0.16.1
+    mypy: 2.3.0
+    network: DENIED
+    database: EPHEMERAL_LOCAL_ONLY
+  results:
+    - check: runtime_owner_build_and_no_write_check
+      result: PASS
+    - check: exact_postgresql_18_4_tests_st0308_persistence
+      result: PASS
+      passed: 290
+    - check: historical_handoff_preflight_tests_st0308
+      result: PASS
+      passed: 165
+    - check: historical_reference_tests_st0308_reference
+      result: PASS
+      passed: 134
+    - check: independent_integration_audit
+      result: PASS
+      passed: 61
+      remaining_high_findings: 0
+      remaining_medium_findings: 0
+    - check: ruff_format_and_lint
+      result: PASS
+      file_count: 207
+    - check: strict_mypy_follow_imports_silent
+      result: PASS
+      source_file_count: 167
+    - check: focused_story_secret_scan
+      result: PASS
+      file_count: 210
+      findings: 0
+    - check: canonical_import_verification
+      result: PASS
+      verified_package_checksums: 104
+    - check: status_registry_baseline_no_write_check
+      result: PASS
+    - check: git_diff_check
+      result: PASS
+  inherited_operational_observation:
+    check: linked_worktree_wide_secret_scan
+    result: OPERATIONAL_ERROR
+    sanitized_code: unsafe-git-metadata
+    effect: >-
+      No Story finding is waived. The exact 210-file ST-0308 focused scan is
+      clean; normal-checkout global scanning remains a separate integration gate.
+formal_and_external_boundaries:
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_008: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  human_security_data_review: NOT_EXECUTED
+  canonical_status_apply: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  live_provider_or_credential_activity: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  validated_claim: FORBIDDEN
+status_evidence_handoff:
+  required_branch: STATUS_ONLY_AFTER_IMPLEMENTATION_MERGE
+  reason: >-
+    The status workflow rejects a pull request that combines append-only status
+    history with scripts changes. Proposal 002 must bind the final implementation
+    commit in a separate status-only branch and must not APPLY canonical state.

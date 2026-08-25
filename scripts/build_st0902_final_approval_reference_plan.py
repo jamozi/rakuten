@@ -49,7 +49,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -199,31 +199,49 @@ DEPENDENCY_INPUTS: Final = (
         "ST-0402",
         "readme",
         "changes/st-0402/README.md",
-        "6a3d5b2a1836d683b2dc96ecb73e4a02943a9a6fd8068496e6d550492514534b",
+        "80f0d3dd6dd7845d726b3fdf07fc3828b4e25c9eea55d48e3296940350b9e0e5",
+    ),
+    (
+        "ST-0402",
+        "contract",
+        "changes/st-0402/contracts/local-step-up-runtime.v2.json",
+        "c42931a148e4852aac9be2c1bab5012ed9c588e568daef2fe6a5c61cbd157bfa",
+    ),
+    (
+        "ST-0402",
+        "runtime",
+        "changes/st-0402/generated/local-step-up-runtime.v2.json",
+        "dd582c4f4e42dc7f4682cb4e2349047f880298cc7fe6ba5da5be8ae953bf472f",
+    ),
+    (
+        "ST-0402",
+        "manifest",
+        "changes/st-0402/generated/local-step-up-runtime-manifest.v2.json",
+        "d55b4da53849aae53d2ec5e40934568185f5bb3008c345bf47ad741214fe94cf",
     ),
     (
         "ST-0403",
         "readme",
         "changes/st-0403/README.md",
-        "e7c0e10e44abf6f5db2fbbd94c6a14ecbc9d6bc0ff77fcb312d652204165b6e9",
+        "d21f1ddefd4f201a6618e9baa8889d6c77302b141070d89d03b4e2199746d5cc",
     ),
     (
         "ST-0405",
         "readme",
         "changes/st-0405/README.md",
-        "8b046d65492947a458306c308f5515bb6496e0371bdc9695226d52328a04a657",
+        "d815e3f71728ff43c3c7301cdf973534f723c505bffba1f6d97b82e8d76c588f",
     ),
     (
         "ST-0605",
         "readme",
         "changes/st-0605/README.md",
-        "f5a59ab0542a95987720c5d9ec43ef4355d92cea2b7bafcf8851e510fb98cf4b",
+        "116c86877e397e1804e6edff2189b14ea756566b8fe27e2b64a3b8be91abc2fb",
     ),
     (
         "ST-0605",
         "contract",
         "changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml",
-        "3eb1bccf5e6b2599690e2c9cdd2490dc0a2177e41689f8955c0bc1dfb8e068f2",
+        "b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49",
     ),
     (
         "ST-0805",
@@ -431,7 +449,7 @@ EXPECTED_HARD_GATES: Final = [
     },
 ]
 
-EXPECTED_RECORD_DEFAULTS: Final = {
+EXPECTED_RECORD_DEFAULTS: Final[dict[str, object]] = {
     "approval": {
         "command_status": "NOT_EXECUTED",
         "evaluation_status": "NOT_EVALUATED",
@@ -466,7 +484,7 @@ EXPECTED_RECORD_DEFAULTS: Final = {
     "audits": {"execution_status": "NOT_EXECUTED", "records": []},
     "idempotency": {"execution_status": "NOT_EXECUTED", "entries": []},
 }
-EXPECTED_EXECUTION_DEFAULTS: Final = {
+EXPECTED_EXECUTION_DEFAULTS: Final[dict[str, object]] = {
     "runtime_reader": "NOT_IMPLEMENTED",
     "network": "NOT_EXECUTED",
     "filesystem_runtime": "NOT_EXECUTED",
@@ -531,7 +549,7 @@ def _mapping(value: object, field: str) -> Mapping[str, Any]:
 def _list(value: object, field: str) -> list[Any]:
     if type(value) is not list:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(list[Any], cast(Any, value))
 
 
 def _same_exact(left: object, right: object) -> bool:
@@ -562,7 +580,9 @@ def _sha256(content: bytes) -> str:
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
-    physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    physical = base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]
+        root, relative, field
+    )
     try:
         content = physical.read_bytes()
     except OSError:
@@ -573,7 +593,9 @@ def _read(root: Path, relative: Path, field: str) -> bytes:
 
 
 def _load_yaml(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
-    base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]
+        root, relative, field
+    )
     return _mapping(base.load_yaml(root / relative), field)
 
 
@@ -1144,16 +1166,18 @@ def _validate_context_semantics(root: Path) -> None:
     )
     dependency_fragments = {
         "changes/st-0402/README.md": (
-            "provider-neutral MFA step-up seam",
-            "critical-action mapping",
+            "maximum-safe local challenge-to-grant runtime",
+            "ST-0402 never grants role or resource authorization",
+            "This Story grants no credential, provider, external HTTP, browser, critical",
         ),
         "changes/st-0403/README.md": (
-            "TEST_ONLY:*",
-            "action-to-OAuth-scope-to-operation/resource/state map",
+            "authorization boundary without",
+            "Unknown operations, wildcards, hierarchy inference",
+            "it never invokes a business handler.",
         ),
         "changes/st-0405/README.md": (
-            "process-local only",
-            "It does **not** make a",
+            "This Story remains local/recorded only.",
+            "It does **not**",
             "business mutation and audit event atomic.",
         ),
         "changes/st-0605/README.md": (
@@ -1391,7 +1415,9 @@ def check_outputs(root: Path, expected: Mapping[Path, bytes]) -> None:
     if set(expected) != set(GENERATED_PATHS):
         _fail("GENERATED_INVENTORY_DRIFT", "output")
     for relative in GENERATED_PATHS:
-        path = base._output_file(root, relative)  # noqa: SLF001
+        path = base._output_file(  # pyright: ignore[reportPrivateUsage]
+            root, relative
+        )
         try:
             actual = path.read_bytes()
         except OSError:
@@ -1406,7 +1432,9 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
         check_outputs(root, outputs)
         return
     for relative, content in outputs.items():
-        base._atomic_write(root, relative, content)  # noqa: SLF001
+        base._atomic_write(  # pyright: ignore[reportPrivateUsage]
+            root, relative, content
+        )
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

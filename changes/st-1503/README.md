@@ -1,31 +1,51 @@
-# ST-1503 provider-neutral compute and edge interface candidate
+# ST-1503 provider-schema-free compute and edge module
 
-This Story-owned slice records a strict provider-neutral compute and
-public-edge admission boundary. The direct owner
+This Story-owned slice implements the maximum-safe local part of the strict
+provider-neutral compute and public-edge admission boundary. The direct owner
 `DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml` governs this new
 decision together with the Canonical Story and design sources; the older
 Pro-derived implementation-first slice alone does not govern it. No provider,
 account or project, region, runtime, scheduler, registry, network, domain,
 route, certificate, WAF or abuse policy, workload size, image, identity,
-secret, credential, or health matcher is selected. This is not executable
-Terraform, a provider configuration, a native plan, or a deployment.
+secret, credential, or health matcher is selected. The generated HCL is
+executable only as a provider-free validation module; it is not a provider
+configuration, physical plan, apply path, or deployment.
 
 ## Status boundary
 
 - Canonical design: `APPROVED_FOR_IMPLEMENTATION`
-- Local deliverable: `INTERFACE_ONLY_PARTIAL_LOCAL_CODE`
+- Local deliverable: `MAXIMUM_SAFE_LOCAL_CODE_COMPLETE`
 - Effective canonical implementation status: unchanged (`NOT_STARTED`)
 - Required formal TST-026 and TST-027: `NOT_EXECUTED`
-- Native IaC and provider validation: `NOT_EXECUTED`
+- Local provider-free native format/semantic validation:
+  `EXECUTED_LOCAL_NOT_FORMAL`
+- Provider-backed/native infrastructure validation: `NOT_EXECUTED`
 - Health, performance, hosted CI, staging, release, apply, and Production:
   `NOT_EXECUTED`
 
-ST-1501 exists only as a disabled provider-neutral reference/interface
-predecessor. The ST-1503 builder hash-binds and fully validates its direct
-handoff, contract, deterministic reference-plan bytes, admission boundary,
-forbidden operations, and zero-action semantics. That predecessor does not
-select a provider or establish a native IaC toolchain, and it does not make
-this Story Done or `VALIDATED`.
+ST-1501 remains a disabled provider-neutral predecessor. ST-1503 hash-binds its
+direct handoff, contract, reference-plan bytes, and exact Terraform 1.15.9
+validation-only toolchain. ST-1502 is used only as the integrated implementation
+pattern and dependency regression target; it is not a Story dependency and no
+ST-1502 artifact is owned or changed here. Neither predecessor nor local native
+validation selects a provider or makes this Story formally `VALIDATED`.
+
+## Logical HCL graph
+
+The owner generates a five-file HCL module and a deterministic no-apply JSON
+fixture. The graph has 37 logical components and 53 exact edges for:
+
+- four isolated workload roles and an immutable image supply chain;
+- distinct public/admin managed edges, private origins, and internal ingress;
+- DNS/TLS lifecycle, WAF, rate-limit, cache/cookie/CSP boundaries;
+- per-workload identity, controlled egress, liveness, and readiness;
+- observability, bounded canary, and immutable rollback requirements.
+
+The module contains only `terraform`, `variable`, `locals`, `check`, and
+`output` blocks. It contains no provider requirement, provider, backend,
+module, data, resource, provisioner, remote-state, credential, or physical
+binding. Closed variables accept only the disabled/unset state. All
+create/update/delete/deploy/promote/rollback/route/scale action counts are zero.
 
 ## Capability admission and safe defaults
 
@@ -93,12 +113,17 @@ builder and regenerate.
 | --- | --- | --- |
 | Story decision source | `changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml` | Durable provider-neutral decision and gates |
 | Story source | `changes/st-1503/contracts/compute-edge-foundation.v1.yaml` | Closed logical intent and safety boundary |
+| Implementation record | `changes/st-1503/IMPLEMENTATION_RECORD_V2_ST1503_LOGICAL_HCL.yaml` | Local implementation and authority boundary |
+| Local evidence | `changes/st-1503/LOCAL_COMPLETION_EVIDENCE_V2.md` | Verification and debt reconciliation |
 | Implementation source | `scripts/build_st1503_compute_edge.py` | Strict validator and deterministic owner builder |
 | Test source | `tests/st1503/*.py` | Positive, hostile, exact-type, provenance, and no-write checks |
-| Generated reference plan | `infra/terraform/compute-edge/compute-edge.reference-plan.v1.json` | Non-executable logical compute/edge successor plan |
+| Generated reference plan | `infra/terraform/compute-edge/compute-edge.reference-plan.v1.json` | Safe-boundary summary |
+| Generated logical plan | `infra/terraform/compute-edge/compute-edge.logical-plan.v1.json` | Deterministic no-apply graph fixture |
+| Toolchain lock | `infra/terraform/compute-edge/terraform-validation-toolchain.lock.v1.json` | Exact inherited ST-1501 validation boundary |
+| HCL module | `infra/terraform/compute-edge/{versions,variables,locals,checks,outputs}.tf` | Provider-free executable logical module |
 | Generated inventory | `changes/st-1503/manifest.yaml` | Source, predecessor, authority, and generated-output hashes |
 
-Generate the two ST-1503-owned outputs:
+Generate all ST-1503-owned outputs:
 
 ```bash
 uv run --locked --no-sync python scripts/build_st1503_compute_edge.py
@@ -110,16 +135,24 @@ Verify all source/predecessor bindings and committed bytes without writing:
 uv run --locked --no-sync python scripts/build_st1503_compute_edge.py --check
 ```
 
-The builder exposes no provider, profile, resource, domain, route, health,
-credential, network, sizing, activation, or native-operation argument. It
-imports no provider SDK, reads no ambient credential or environment selection,
-invokes no subprocess or native IaC, accesses no network, and performs no
-external write.
+An explicit native check is available only with the exact Terraform 1.15.9
+Linux amd64 binary pinned by ST-1501:
+
+```bash
+uv run --locked --no-sync python scripts/build_st1503_compute_edge.py \
+  --native-check --terraform /absolute/path/to/terraform
+```
+
+That path verifies the binary digest, enters a new user/network namespace,
+uses a closed environment, and permits only `version -json`,
+`fmt -check -recursive`, and `validate -json`. It never runs `init`, discovers
+or installs providers, reads credentials, calls a provider, or invokes plan,
+apply, destroy, import, or refresh.
 
 ## Completion boundary
 
-This slice supports only a local partial implementation checkpoint. Native-IaC
-and provider-plugin provenance, resource payloads, physical
+This slice supports maximum-safe local code completion only. Provider schema
+and plugin provenance, resource payloads, physical
 network/identity/edge/compute configuration, runtime health and load tests,
 formal TST-026/TST-027, hosted CI, any live provider, staging, release,
 deployment, and Production remain separately unexecuted.

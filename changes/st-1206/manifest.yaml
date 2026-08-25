@@ -1,0 +1,137 @@
+document:
+  id: RAOS-ST1206-KEYWORD-RANK-LOCAL-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-1206
+  source_contract: repo://changes/st-1206/contracts/keyword-rank-import.v1.yaml
+  generated_by: repo://scripts/build_st1206_keyword_rank_import.py
+  generation_command: python scripts/build_st1206_keyword_rank_import.py
+provenance:
+  contract_sha256: b02328d88ba7b9b4481e81e15eb58c413204fa412a14587fda5770a8e34ca723
+  authority:
+    canonical_story:
+      path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+      sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+      story_id: ST-1206
+    integration_precedence:
+      path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+      sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    open_decisions:
+      path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+      sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+      decision_id: OD-004
+      status: HUMAN_DECISION_REQUIRED
+      default_behavior: Search Consoleと手動CSVのみ
+      resolved_by_this_story: false
+    analytics_design:
+      path: docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+      sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+    security_privacy_design:
+      path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+      sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+    security_controls:
+      path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+      sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+      controls:
+      - SEC-APP-005
+      - SEC-APP-008
+    threat_register:
+      path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+      sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+      threats:
+      - THR-005
+      - THR-006
+    test_catalog:
+      path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+      sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+      required_suite: TST-030
+  predecessor:
+    story_id: ST-1205
+    binding: EXACT_CURRENT_COMMITTED_BYTES
+    artifacts:
+      changes/st-1205/contracts/kpi-read-model.v2.yaml: 8f7e0664c844615a291c926520fff14af399daa5fd21bac8d002bfc7857218ed
+      changes/st-1205/manifest.yaml: 9b25af0167a195de99d57e7d4e2eb54c4832a9051ec2b42de666bf6e32eb7548
+      python/raos/domain/analytics/kpi_read_model.py: 7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac
+      python/raos/application/analytics/kpi_read_model.py: 7485112a452eec41c93578863030893f5758c310430f7db5e899f6ec53c8adbf
+    required_semantics:
+      recorded_synthetic_only: true
+      live_provider_rows: false
+      persistence: NOT_EXECUTED
+      recommendation_input: DISABLED
+      formal_TST-030: NOT_EXECUTED
+  canonical_contracts:
+    keyword_rank_row:
+      path: contracts/raos-v0.4/contracts/schemas/imports/keyword-rank-row.schema.json
+      sha256: d1c311cf0afabf6c83c5acb0154ca8f89d023165683a08adff28f09e607bec4c
+    keyword_rank_csv_job:
+      path: contracts/raos-v0.4/contracts/schemas/jobs/analytics-import-keyword-rank-csv-v1.schema.json
+      sha256: 1b4328b6eba2bb1a3e9e34e91049f0cec2bc4080310690f50971656df2bb5cc1
+    provider_dispatch_job:
+      path: contracts/raos-v0.4/contracts/schemas/jobs/analytics-import-provider-data-v1.schema.json
+      sha256: 7610a9b4927ffddd191409b597497eac39f49712c34115a3f27fb254694c16ab
+source_artifact_count: 14
+source_artifacts:
+- uri: repo://changes/st-1206/contracts/keyword-rank-import.v1.yaml
+  bytes: 6727
+  sha256: b02328d88ba7b9b4481e81e15eb58c413204fa412a14587fda5770a8e34ca723
+- uri: repo://changes/st-1206/fixtures/recorded/keyword-rank-synthetic.v1.csv
+  bytes: 874
+  sha256: e06d21cf450a75250e096d3528ac45839fa3fb7d08d9988a58d0e0b9ecd59611
+- uri: repo://changes/st-1206/README.md
+  bytes: 4086
+  sha256: 7972363cc2fcdc9415729a31eaff2d7161c86eb720f65fefa818e1058ce8c65d
+- uri: repo://changes/st-1206/completion/completion.v1.yaml
+  bytes: 1886
+  sha256: 703d618efd290c7c681a70b156c75a0615bef68f55d3680bf17b0f8be82b8416
+- uri: repo://python/raos/domain/analytics/keyword_rank.py
+  bytes: 16417
+  sha256: 9d73e103487598762d914c036a79c933c2d4f3b4d309637851f3985369c903e7
+- uri: repo://python/raos/ports/keyword_rank.py
+  bytes: 607
+  sha256: 132af0eb97addf17ea3e8de5ca3cee045c87d17f34ff1f4a0f29e45f1e0af2e8
+- uri: repo://python/raos/application/analytics/keyword_rank_import.py
+  bytes: 7226
+  sha256: 94c511e0b183223c905adf31f03e3bb8a2f6616acb52203febae63c4e70c4cee
+- uri: repo://python/raos/adapters/recorded_keyword_rank.py
+  bytes: 6896
+  sha256: cd598c7a8846875c32963a32fa1bbcebabec0e08ac458ee338f9375e8e48661c
+- uri: repo://scripts/build_st1206_keyword_rank_import.py
+  bytes: 24980
+  sha256: 4ed438bd4db3d28b58be32f3631cac6537462a616c66d696f3f2e0fa2455dee5
+- uri: repo://tests/st1206/conftest.py
+  bytes: 2568
+  sha256: 799692f39bfb8651816fe6b3f709dbb465553ade24296cef51327697de405e12
+- uri: repo://tests/st1206/test_evaluation.py
+  bytes: 4835
+  sha256: a7f1c50dcf8c64a395f8698135e5f6728fa498d0f8e3cc8233c81e7bc0b4e60f
+- uri: repo://tests/st1206/test_negative_cases.py
+  bytes: 6588
+  sha256: 45e415c6d4e2eb9a8bd2665b73bd156e4b7ce514f7c5dfa57e5154736b744277
+- uri: repo://tests/st1206/test_contract.py
+  bytes: 6719
+  sha256: 30a8bd8c95b71a18ca29488abf642250c79e5b33da5a2fe37ea5b05f30a6ee5b
+- uri: repo://tests/st1206/test_generation.py
+  bytes: 7669
+  sha256: 98cefa8d823d0e32dabe8f1569f0e887bff54f7b915ee26e797846a87baa4a61
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-1206/generated/keyword-rank-evaluation.v1.json
+  bytes: 8533
+  sha256: be68afe97b8e94966293d5307de5ae2efb9583ee6e8398654464afecbb305b29
+local_completion:
+  local_code_status: LOCAL_CODE_COMPLETE
+  implementation_boundary: MAXIMUM_SAFE_DISABLED
+  recorded_fixture_rows: 6
+  deterministic_evaluation: PASS
+  default_feature_scope: DISABLED
+  serp_scrape: FORBIDDEN
+  introduced_debt: []
+  OD-004: HUMAN_DECISION_REQUIRED
+  formal_TST-030: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  database: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  story_acceptance: false
+  production_eligible: false
+  effective_canonical_status: DEFERRED_POST_MVP

@@ -572,3 +572,789 @@ export function createPublicEventInstrumentationCandidate(
 ): PublicEventInstrumentationCandidate {
   return buildCandidate(validateInput(input));
 }
+
+// V2 is additive. The V1 disabled requirements candidate above remains byte-for-byte
+// compatible; this local runtime adds only a deterministic, process-local recorded seam.
+export const PUBLIC_EVENT_INSTRUMENTATION_CLASSIFICATION_V2 =
+  'LOCAL_DEFAULT_DISABLED_PROCESS_LOCAL_RECORDED_PUBLIC_EVENT_INSTRUMENTATION_V2' as const;
+
+export const PUBLIC_EVENT_INSTRUMENTATION_EVENT_IDS_V2 = Object.freeze([
+  'EVT-001',
+  'EVT-002',
+  'EVT-003',
+  'EVT-004',
+  'EVT-006',
+  'EVT-012',
+] as const);
+
+export type PublicEventInstrumentationEventIdV2 =
+  (typeof PUBLIC_EVENT_INSTRUMENTATION_EVENT_IDS_V2)[number];
+
+export const PUBLIC_EVENT_INSTRUMENTATION_EVENT_NAMES_V2 = Object.freeze([
+  'article_view',
+  'qualified_decision_engagement',
+  'affiliate_cta_impression',
+  'affiliate_click',
+  'comparison_interaction',
+  'web_vital',
+] as const);
+
+export type PublicEventInstrumentationEventNameV2 =
+  (typeof PUBLIC_EVENT_INSTRUMENTATION_EVENT_NAMES_V2)[number];
+
+export const PUBLIC_EVENT_INSTRUMENTATION_ERROR_CODES_V2 = Object.freeze([
+  'PUBLIC_INSTRUMENTATION_V2_INPUT_INVALID',
+  'PUBLIC_INSTRUMENTATION_V2_ROUTE_CONTEXT_INVALID',
+  'PUBLIC_INSTRUMENTATION_V2_MODE_INVALID',
+  'PUBLIC_INSTRUMENTATION_V2_CONSENT_INVALID',
+  'PUBLIC_INSTRUMENTATION_V2_EVENT_SCHEMA_INVALID',
+  'PUBLIC_INSTRUMENTATION_V2_EVENT_IDENTITY_INVALID',
+  'PUBLIC_INSTRUMENTATION_V2_EVENT_PARAMETER_INVALID',
+  'PUBLIC_INSTRUMENTATION_V2_PII_FORBIDDEN',
+  'PUBLIC_INSTRUMENTATION_V2_EVENT_NOT_ALLOWED',
+  'PUBLIC_INSTRUMENTATION_V2_EVENT_ID_CONFLICT',
+  'PUBLIC_INSTRUMENTATION_V2_RECORDED_SCRIPT_MISMATCH',
+  'PUBLIC_INSTRUMENTATION_V2_RECORDED_SCRIPT_EXHAUSTED',
+  'PUBLIC_INSTRUMENTATION_V2_RECORDED_FAILURE',
+  'PUBLIC_INSTRUMENTATION_V2_RECORDER_INVALID',
+] as const);
+
+export type PublicEventInstrumentationErrorCodeV2 =
+  (typeof PUBLIC_EVENT_INSTRUMENTATION_ERROR_CODES_V2)[number];
+
+export class PublicEventInstrumentationErrorV2 extends TypeError {
+  readonly code: PublicEventInstrumentationErrorCodeV2;
+
+  constructor(code: PublicEventInstrumentationErrorCodeV2) {
+    super(code);
+    this.name = 'PublicEventInstrumentationErrorV2';
+    this.code = code;
+    Object.freeze(this);
+  }
+}
+
+export interface PublicEventInstrumentationRouteContextInputV2 {
+  readonly schemaVersion: 2;
+  readonly screenId: 'PUB-003';
+  readonly routePath: '/articles/synthetic-recorded-policy-seo';
+  readonly sourceProfile: 'EXACT_ST1002_RECORDED_PUBLIC_ARTICLE_V2';
+  readonly identities: {
+    readonly articleId: null;
+    readonly snapshotId: null;
+    readonly categoryId: null;
+  };
+  readonly affiliateCta: {
+    readonly state: 'UNAVAILABLE_SOURCE';
+    readonly ctaId: null;
+    readonly offerId: null;
+    readonly rendered: false;
+  };
+}
+
+export interface PublicEventInstrumentationRouteBoundaryV2 {
+  readonly schemaVersion: 2;
+  readonly storyId: 'ST-1202';
+  readonly classification: typeof PUBLIC_EVENT_INSTRUMENTATION_CLASSIFICATION_V2;
+  readonly screenId: 'PUB-003';
+  readonly routePath: '/articles/synthetic-recorded-policy-seo';
+  readonly sourceProfile: 'EXACT_ST1002_RECORDED_PUBLIC_ARTICLE_V2';
+  readonly mode: 'DISABLED_OD_012';
+  readonly consentAuthority: 'UNRESOLVED_OD_012';
+  readonly safeDefault: 'NONESSENTIAL_TRACKING_DISABLED_FIRST_PARTY_MINIMAL_ONLY';
+  readonly serverBoundaryEvaluated: true;
+  readonly clientInstrumentationInstalled: false;
+  readonly clientComponentCount: 0;
+  readonly identityAvailable: false;
+  readonly affiliateCtaAvailable: false;
+  readonly eligibleEventIds: readonly [];
+  readonly blockedEventIds: typeof PUBLIC_EVENT_INSTRUMENTATION_EVENT_IDS_V2;
+  readonly events: readonly [];
+  readonly effects: readonly [];
+  readonly browserStorageUsed: false;
+  readonly cookiesUsed: false;
+  readonly fingerprintingUsed: false;
+  readonly networkUsed: false;
+  readonly beaconUsed: false;
+  readonly fetchUsed: false;
+  readonly providerUsed: false;
+  readonly trackingEnabled: false;
+  readonly measurementObserved: false;
+  readonly reason: 'OD_012_UNRESOLVED_AND_PUBLIC_IDENTITIES_OR_VERIFIED_CTA_UNAVAILABLE';
+  readonly authority: {
+    readonly publication: false;
+    readonly staging: false;
+    readonly release: false;
+    readonly production: false;
+    readonly TST022: 'NOT_EXECUTED';
+    readonly TST030: 'NOT_EXECUTED';
+  };
+}
+
+export type PublicEventInstrumentationParameterScalarV2 = string | number | boolean;
+
+export interface PublicEventInstrumentationParameterV2 {
+  readonly name: string;
+  readonly value: PublicEventInstrumentationParameterScalarV2;
+}
+
+export interface PublicEventInstrumentationEnvelopeV2 {
+  readonly catalogId: PublicEventInstrumentationEventIdV2;
+  readonly eventId: string;
+  readonly eventName: PublicEventInstrumentationEventNameV2;
+  readonly schemaVersion: '1.0';
+  readonly occurredAt: string;
+  readonly receivedAt: string;
+  readonly source: 'public_web';
+  readonly siteId: string;
+  readonly correlationId: string;
+  readonly parameters: readonly PublicEventInstrumentationParameterV2[];
+}
+
+export interface PublicEventInstrumentationRecordedConsentV2 {
+  readonly fixtureKind: 'SYNTHETIC_ST1202_RECORDED_FULL_CONSENT_FIXTURE';
+  readonly consentState: 'GRANTED';
+  readonly privacyMode: 'FULL_CONSENT';
+  readonly authority: 'UNRESOLVED_OD_012';
+  readonly trackingActivation: 'DISABLED';
+}
+
+export interface PublicEventInstrumentationRecordedFixtureV2 {
+  readonly kind: 'SYNTHETIC_ST1202_RECORDED_INSTRUMENTATION_FIXTURE';
+  readonly mode: 'RECORDED_TEST_ONLY';
+  readonly consent: PublicEventInstrumentationRecordedConsentV2;
+  readonly events: readonly PublicEventInstrumentationEnvelopeV2[];
+  readonly faultEventIds: readonly string[];
+}
+
+export type PublicEventInstrumentationRecordedDispositionV2 =
+  'RECORDED_ACCEPTED' | 'RECORDED_DUPLICATE' | 'DROPPED_LOCAL_FAILURE';
+
+export interface PublicEventInstrumentationRecordedResultV2 {
+  readonly eventIdentity: null | {
+    readonly catalogId: PublicEventInstrumentationEventIdV2;
+    readonly eventId: string;
+    readonly eventName: PublicEventInstrumentationEventNameV2;
+  };
+  readonly disposition: PublicEventInstrumentationRecordedDispositionV2;
+  readonly execution: 'RECORDED_TEST_ONLY';
+  readonly trackingActivation: 'DISABLED';
+  readonly persistence: 'NOT_EXECUTED';
+  readonly consentAuthority: 'UNRESOLVED_OD_012';
+  readonly measurementObserved: false;
+  readonly navigationBlocked: false;
+  readonly navigationAwaitedInstrumentation: false;
+  readonly networkUsed: false;
+  readonly browserStorageUsed: false;
+  readonly TST022: 'NOT_EXECUTED';
+  readonly TST030: 'NOT_EXECUTED';
+  readonly failureReason: null | 'RECORDED_FAILURE_SWALLOWED';
+}
+
+export interface PublicEventInstrumentationRecorderSnapshotV2 {
+  readonly mode: 'RECORDED_TEST_ONLY';
+  readonly scriptLength: 6;
+  readonly nextIndex: number;
+  readonly remaining: number;
+  readonly acceptedCount: number;
+  readonly duplicateCount: number;
+  readonly swallowedFailureCount: number;
+  readonly complete: boolean;
+  readonly trackingActivation: 'DISABLED';
+  readonly persistence: 'NOT_EXECUTED';
+  readonly measurementObserved: false;
+}
+
+const V2_UUID7 = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+const V2_UTC_TIMESTAMP = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})Z$/;
+const V2_SAFE_TEXT = /^[ -~]+$/;
+const V2_EMAIL = /[^@\s]+@[^@\s]+\.[^@\s]+/;
+const V2_PHONE = /^\+?[0-9][0-9 ()-]{8,}[0-9]$/;
+const V2_IPV4 = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
+const V2_IPV6 = /^(?:[0-9a-f]*:){2,}[0-9a-f:]*$/i;
+const V2_ACTIVE_OR_SENSITIVE_TEXT =
+  /^(?:(?:https?|ftp|file|mailto|tel|javascript|data|vbscript):|\/\/)|(?:api[_-]?key|apikey|password|secret|token)=|mozilla\//i;
+const V2_ID_PARAMETER_NAMES = new Set([
+  'article_id',
+  'snapshot_id',
+  'category_id',
+  'cta_id',
+  'offer_id',
+]);
+
+const V2_EVENT_DEFINITIONS = [
+  {
+    catalogId: 'EVT-001',
+    eventName: 'article_view',
+    parameters: [
+      'anonymous_session_id',
+      'article_id',
+      'snapshot_id',
+      'category_id',
+      'referrer_class',
+      'consent_state',
+    ],
+  },
+  {
+    catalogId: 'EVT-002',
+    eventName: 'qualified_decision_engagement',
+    parameters: ['article_id', 'snapshot_id', 'component_type', 'engagement_kind'],
+  },
+  {
+    catalogId: 'EVT-003',
+    eventName: 'affiliate_cta_impression',
+    parameters: [
+      'article_id',
+      'snapshot_id',
+      'cta_id',
+      'offer_id',
+      'placement',
+      'visibility_threshold',
+    ],
+  },
+  {
+    catalogId: 'EVT-004',
+    eventName: 'affiliate_click',
+    parameters: [
+      'article_id',
+      'snapshot_id',
+      'cta_id',
+      'offer_id',
+      'placement',
+      'beacon_transport',
+      'consent_state',
+    ],
+  },
+  {
+    catalogId: 'EVT-006',
+    eventName: 'comparison_interaction',
+    parameters: ['article_id', 'snapshot_id', 'interaction', 'axis_code'],
+  },
+  {
+    catalogId: 'EVT-012',
+    eventName: 'web_vital',
+    parameters: [
+      'article_id',
+      'snapshot_id',
+      'metric_name',
+      'metric_value',
+      'rating',
+      'navigation_type',
+    ],
+  },
+] as const;
+
+function rejectV2(code: PublicEventInstrumentationErrorCodeV2): never {
+  throw new PublicEventInstrumentationErrorV2(code);
+}
+
+function cloneObjectV2(value: unknown, code: PublicEventInstrumentationErrorCodeV2): JsonObject {
+  try {
+    const clone = createJsonValue(value);
+    if (!isJsonObject(clone)) return rejectV2(code);
+    return clone;
+  } catch (error) {
+    if (error instanceof PublicEventInstrumentationErrorV2) throw error;
+    return rejectV2(code);
+  }
+}
+
+function requireExactKeysV2(
+  value: JsonObject,
+  keys: readonly string[],
+  code: PublicEventInstrumentationErrorCodeV2,
+): void {
+  if (!hasExactKeys(value, keys)) rejectV2(code);
+}
+
+function isLeapYearV2(year: number): boolean {
+  return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+}
+
+function requireUtcTimestampV2(value: unknown): string {
+  if (typeof value !== 'string') {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_IDENTITY_INVALID');
+  }
+  const match = V2_UTC_TIMESTAMP.exec(value);
+  if (match === null) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_IDENTITY_INVALID');
+  }
+  const parts = match.slice(1).map(Number);
+  const [year, month, day, hour, minute, second] = parts;
+  if (
+    year === undefined ||
+    month === undefined ||
+    day === undefined ||
+    hour === undefined ||
+    minute === undefined ||
+    second === undefined
+  ) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_IDENTITY_INVALID');
+  }
+  const days = [31, isLeapYearV2(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (
+    year < 2000 ||
+    year > 9999 ||
+    month < 1 ||
+    month > 12 ||
+    day < 1 ||
+    day > (days[month - 1] ?? 0) ||
+    hour > 23 ||
+    minute > 59 ||
+    second > 59
+  ) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_IDENTITY_INVALID');
+  }
+  return value;
+}
+
+function requireUuid7V2(value: unknown): string {
+  if (typeof value !== 'string' || !V2_UUID7.test(value)) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_IDENTITY_INVALID');
+  }
+  return value;
+}
+
+function looksSensitiveV2(value: string): boolean {
+  const digits = [...value].filter((character) => /[0-9]/.test(character)).length;
+  return (
+    V2_EMAIL.test(value) ||
+    (V2_PHONE.test(value) && digits >= 10) ||
+    V2_IPV4.test(value) ||
+    V2_IPV6.test(value) ||
+    V2_ACTIVE_OR_SENSITIVE_TEXT.test(value) ||
+    value.includes('?') ||
+    value.includes('#')
+  );
+}
+
+function requireSafeParameterValueV2(
+  name: string,
+  value: unknown,
+): PublicEventInstrumentationParameterScalarV2 {
+  if (PUBLIC_EVENT_INSTRUMENTATION_PROHIBITED_PARAMETERS.includes(name as never)) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_PII_FORBIDDEN');
+  }
+  if (name === 'visibility_threshold' || name === 'metric_value') {
+    if (
+      typeof value !== 'number' ||
+      !Number.isFinite(value) ||
+      value < 0 ||
+      (name === 'visibility_threshold' && value > 1)
+    ) {
+      return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_PARAMETER_INVALID');
+    }
+    return Object.is(value, -0) ? 0 : value;
+  }
+  if (typeof value !== 'string') {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_PARAMETER_INVALID');
+  }
+  if (
+    value.length < 1 ||
+    value.length > 512 ||
+    value !== value.trim() ||
+    !V2_SAFE_TEXT.test(value) ||
+    looksSensitiveV2(value)
+  ) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_PII_FORBIDDEN');
+  }
+  if (V2_ID_PARAMETER_NAMES.has(name)) requireUuid7V2(value);
+  if (name === 'consent_state' && value !== 'GRANTED') {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_CONSENT_INVALID');
+  }
+  if (name === 'beacon_transport' && value !== 'RECORDED_NOT_EXECUTED') {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_PARAMETER_INVALID');
+  }
+  return value;
+}
+
+function definitionForV2(
+  catalogId: unknown,
+  eventName: unknown,
+): (typeof V2_EVENT_DEFINITIONS)[number] {
+  const matches = V2_EVENT_DEFINITIONS.filter(
+    (definition) => definition.catalogId === catalogId && definition.eventName === eventName,
+  );
+  if (matches.length !== 1) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_NOT_ALLOWED');
+  }
+  return matches[0] as (typeof V2_EVENT_DEFINITIONS)[number];
+}
+
+export function validatePublicEventInstrumentationEnvelopeV2(
+  value: unknown,
+): PublicEventInstrumentationEnvelopeV2 {
+  const input = cloneObjectV2(value, 'PUBLIC_INSTRUMENTATION_V2_EVENT_SCHEMA_INVALID');
+  requireExactKeysV2(
+    input,
+    [
+      'catalogId',
+      'eventId',
+      'eventName',
+      'schemaVersion',
+      'occurredAt',
+      'receivedAt',
+      'source',
+      'siteId',
+      'correlationId',
+      'parameters',
+    ],
+    'PUBLIC_INSTRUMENTATION_V2_EVENT_SCHEMA_INVALID',
+  );
+  if (input['schemaVersion'] !== '1.0' || input['source'] !== 'public_web') {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_SCHEMA_INVALID');
+  }
+  const definition = definitionForV2(input['catalogId'], input['eventName']);
+  const eventId = requireUuid7V2(input['eventId']);
+  const siteId = requireUuid7V2(input['siteId']);
+  const correlationId = requireUuid7V2(input['correlationId']);
+  const occurredAt = requireUtcTimestampV2(input['occurredAt']);
+  const receivedAt = requireUtcTimestampV2(input['receivedAt']);
+  if (receivedAt < occurredAt) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_IDENTITY_INVALID');
+  }
+  const parameters = input['parameters'];
+  if (!Array.isArray(parameters) || parameters.length !== definition.parameters.length) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_PARAMETER_INVALID');
+  }
+  const normalizedParameters = parameters.map((parameter, index) => {
+    if (!isJsonObject(parameter)) {
+      return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_PARAMETER_INVALID');
+    }
+    requireExactKeysV2(
+      parameter,
+      ['name', 'value'],
+      'PUBLIC_INSTRUMENTATION_V2_EVENT_PARAMETER_INVALID',
+    );
+    const expectedName = definition.parameters[index];
+    const observedName = parameter['name'];
+    if (
+      typeof observedName === 'string' &&
+      PUBLIC_EVENT_INSTRUMENTATION_PROHIBITED_PARAMETERS.includes(observedName as never)
+    ) {
+      return rejectV2('PUBLIC_INSTRUMENTATION_V2_PII_FORBIDDEN');
+    }
+    if (observedName !== expectedName || typeof expectedName !== 'string') {
+      return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_PARAMETER_INVALID');
+    }
+    return {
+      name: expectedName,
+      value: requireSafeParameterValueV2(expectedName, parameter['value']),
+    };
+  });
+  const normalized = {
+    catalogId: definition.catalogId,
+    eventId,
+    eventName: definition.eventName,
+    schemaVersion: '1.0' as const,
+    occurredAt,
+    receivedAt,
+    source: 'public_web' as const,
+    siteId,
+    correlationId,
+    parameters: normalizedParameters,
+  };
+  return createJsonValue(normalized) as unknown as PublicEventInstrumentationEnvelopeV2;
+}
+
+function validateRecordedConsentV2(value: unknown): PublicEventInstrumentationRecordedConsentV2 {
+  const consent = cloneObjectV2(value, 'PUBLIC_INSTRUMENTATION_V2_CONSENT_INVALID');
+  requireExactKeysV2(
+    consent,
+    ['fixtureKind', 'consentState', 'privacyMode', 'authority', 'trackingActivation'],
+    'PUBLIC_INSTRUMENTATION_V2_CONSENT_INVALID',
+  );
+  if (
+    consent['fixtureKind'] !== 'SYNTHETIC_ST1202_RECORDED_FULL_CONSENT_FIXTURE' ||
+    consent['consentState'] !== 'GRANTED' ||
+    consent['privacyMode'] !== 'FULL_CONSENT' ||
+    consent['authority'] !== 'UNRESOLVED_OD_012' ||
+    consent['trackingActivation'] !== 'DISABLED'
+  ) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_CONSENT_INVALID');
+  }
+  return consent as unknown as PublicEventInstrumentationRecordedConsentV2;
+}
+
+export function validatePublicEventInstrumentationRecordedFixtureV2(
+  value: unknown,
+): PublicEventInstrumentationRecordedFixtureV2 {
+  const input = cloneObjectV2(value, 'PUBLIC_INSTRUMENTATION_V2_INPUT_INVALID');
+  requireExactKeysV2(
+    input,
+    ['kind', 'mode', 'consent', 'events', 'faultEventIds'],
+    'PUBLIC_INSTRUMENTATION_V2_INPUT_INVALID',
+  );
+  if (
+    input['kind'] !== 'SYNTHETIC_ST1202_RECORDED_INSTRUMENTATION_FIXTURE' ||
+    input['mode'] !== 'RECORDED_TEST_ONLY'
+  ) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_MODE_INVALID');
+  }
+  const consent = validateRecordedConsentV2(input['consent']);
+  if (!Array.isArray(input['events']) || input['events'].length !== 6) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_RECORDED_SCRIPT_MISMATCH');
+  }
+  const events = input['events'].map((event) =>
+    validatePublicEventInstrumentationEnvelopeV2(event),
+  );
+  if (
+    events.some(
+      (event, index) =>
+        event.catalogId !== PUBLIC_EVENT_INSTRUMENTATION_EVENT_IDS_V2[index] ||
+        event.eventName !== PUBLIC_EVENT_INSTRUMENTATION_EVENT_NAMES_V2[index],
+    ) ||
+    new Set(events.map((event) => event.eventId)).size !== events.length
+  ) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_RECORDED_SCRIPT_MISMATCH');
+  }
+  const faultEventIds = input['faultEventIds'];
+  if (!Array.isArray(faultEventIds)) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_RECORDED_SCRIPT_MISMATCH');
+  }
+  const scriptIds = events.map((event) => event.eventId);
+  if (
+    faultEventIds.some(
+      (eventId, index) =>
+        typeof eventId !== 'string' ||
+        !scriptIds.includes(eventId) ||
+        faultEventIds.indexOf(eventId) !== index,
+    ) ||
+    scriptIds.filter((eventId) => faultEventIds.includes(eventId)).join('|') !==
+      faultEventIds.join('|')
+  ) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_RECORDED_SCRIPT_MISMATCH');
+  }
+  return createJsonValue({
+    kind: 'SYNTHETIC_ST1202_RECORDED_INSTRUMENTATION_FIXTURE',
+    mode: 'RECORDED_TEST_ONLY',
+    consent,
+    events,
+    faultEventIds,
+  }) as unknown as PublicEventInstrumentationRecordedFixtureV2;
+}
+
+export function createDisabledPublicEventInstrumentationRouteBoundaryV2(
+  value: PublicEventInstrumentationRouteContextInputV2,
+): PublicEventInstrumentationRouteBoundaryV2 {
+  const input = cloneObjectV2(value, 'PUBLIC_INSTRUMENTATION_V2_ROUTE_CONTEXT_INVALID');
+  requireExactKeysV2(
+    input,
+    ['schemaVersion', 'screenId', 'routePath', 'sourceProfile', 'identities', 'affiliateCta'],
+    'PUBLIC_INSTRUMENTATION_V2_ROUTE_CONTEXT_INVALID',
+  );
+  const identities = input['identities'];
+  const affiliateCta = input['affiliateCta'];
+  if (!isJsonObject(identities) || !isJsonObject(affiliateCta)) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_ROUTE_CONTEXT_INVALID');
+  }
+  requireExactKeysV2(
+    identities,
+    ['articleId', 'snapshotId', 'categoryId'],
+    'PUBLIC_INSTRUMENTATION_V2_ROUTE_CONTEXT_INVALID',
+  );
+  requireExactKeysV2(
+    affiliateCta,
+    ['state', 'ctaId', 'offerId', 'rendered'],
+    'PUBLIC_INSTRUMENTATION_V2_ROUTE_CONTEXT_INVALID',
+  );
+  if (
+    input['schemaVersion'] !== 2 ||
+    input['screenId'] !== 'PUB-003' ||
+    input['routePath'] !== '/articles/synthetic-recorded-policy-seo' ||
+    input['sourceProfile'] !== 'EXACT_ST1002_RECORDED_PUBLIC_ARTICLE_V2' ||
+    identities['articleId'] !== null ||
+    identities['snapshotId'] !== null ||
+    identities['categoryId'] !== null ||
+    affiliateCta['state'] !== 'UNAVAILABLE_SOURCE' ||
+    affiliateCta['ctaId'] !== null ||
+    affiliateCta['offerId'] !== null ||
+    affiliateCta['rendered'] !== false
+  ) {
+    return rejectV2('PUBLIC_INSTRUMENTATION_V2_ROUTE_CONTEXT_INVALID');
+  }
+  const boundary = {
+    schemaVersion: 2,
+    storyId: 'ST-1202',
+    classification: PUBLIC_EVENT_INSTRUMENTATION_CLASSIFICATION_V2,
+    screenId: 'PUB-003',
+    routePath: '/articles/synthetic-recorded-policy-seo',
+    sourceProfile: 'EXACT_ST1002_RECORDED_PUBLIC_ARTICLE_V2',
+    mode: 'DISABLED_OD_012',
+    consentAuthority: 'UNRESOLVED_OD_012',
+    safeDefault: 'NONESSENTIAL_TRACKING_DISABLED_FIRST_PARTY_MINIMAL_ONLY',
+    serverBoundaryEvaluated: true,
+    clientInstrumentationInstalled: false,
+    clientComponentCount: 0,
+    identityAvailable: false,
+    affiliateCtaAvailable: false,
+    eligibleEventIds: [],
+    blockedEventIds: [...PUBLIC_EVENT_INSTRUMENTATION_EVENT_IDS_V2],
+    events: [],
+    effects: [],
+    browserStorageUsed: false,
+    cookiesUsed: false,
+    fingerprintingUsed: false,
+    networkUsed: false,
+    beaconUsed: false,
+    fetchUsed: false,
+    providerUsed: false,
+    trackingEnabled: false,
+    measurementObserved: false,
+    reason: 'OD_012_UNRESOLVED_AND_PUBLIC_IDENTITIES_OR_VERIFIED_CTA_UNAVAILABLE',
+    authority: {
+      publication: false,
+      staging: false,
+      release: false,
+      production: false,
+      TST022: 'NOT_EXECUTED',
+      TST030: 'NOT_EXECUTED',
+    },
+  } as const;
+  return createJsonValue(boundary) as unknown as PublicEventInstrumentationRouteBoundaryV2;
+}
+
+function canonicalEventV2(event: PublicEventInstrumentationEnvelopeV2): string {
+  return JSON.stringify(event);
+}
+
+function recordedResultV2(
+  event: PublicEventInstrumentationEnvelopeV2,
+  disposition: PublicEventInstrumentationRecordedDispositionV2,
+): PublicEventInstrumentationRecordedResultV2 {
+  const dropped = disposition === 'DROPPED_LOCAL_FAILURE';
+  return createJsonValue({
+    eventIdentity: {
+      catalogId: event.catalogId,
+      eventId: event.eventId,
+      eventName: event.eventName,
+    },
+    disposition,
+    execution: 'RECORDED_TEST_ONLY',
+    trackingActivation: 'DISABLED',
+    persistence: 'NOT_EXECUTED',
+    consentAuthority: 'UNRESOLVED_OD_012',
+    measurementObserved: false,
+    navigationBlocked: false,
+    navigationAwaitedInstrumentation: false,
+    networkUsed: false,
+    browserStorageUsed: false,
+    TST022: 'NOT_EXECUTED',
+    TST030: 'NOT_EXECUTED',
+    failureReason: dropped ? 'RECORDED_FAILURE_SWALLOWED' : null,
+  }) as unknown as PublicEventInstrumentationRecordedResultV2;
+}
+
+const RECORDER_V2_TOKEN = Object.freeze({ storyId: 'ST-1202' });
+
+export class RecordedPublicEventInstrumentationV2 {
+  readonly #events: readonly PublicEventInstrumentationEnvelopeV2[];
+  readonly #faultEventIds: ReadonlySet<string>;
+  readonly #seen = new Map<string, string>();
+  #nextIndex = 0;
+  #acceptedCount = 0;
+  #duplicateCount = 0;
+  #swallowedFailureCount = 0;
+
+  private constructor(
+    token: typeof RECORDER_V2_TOKEN,
+    fixture: PublicEventInstrumentationRecordedFixtureV2,
+  ) {
+    if (token !== RECORDER_V2_TOKEN) {
+      rejectV2('PUBLIC_INSTRUMENTATION_V2_RECORDER_INVALID');
+    }
+    this.#events = fixture.events;
+    this.#faultEventIds = new Set(fixture.faultEventIds);
+    Object.freeze(this);
+  }
+
+  static create(
+    value: PublicEventInstrumentationRecordedFixtureV2,
+  ): RecordedPublicEventInstrumentationV2 {
+    return new RecordedPublicEventInstrumentationV2(
+      RECORDER_V2_TOKEN,
+      validatePublicEventInstrumentationRecordedFixtureV2(value),
+    );
+  }
+
+  record(value: PublicEventInstrumentationEnvelopeV2): PublicEventInstrumentationRecordedResultV2 {
+    const event = validatePublicEventInstrumentationEnvelopeV2(value);
+    const canonical = canonicalEventV2(event);
+    const prior = this.#seen.get(event.eventId);
+    if (prior !== undefined) {
+      if (prior !== canonical) {
+        return rejectV2('PUBLIC_INSTRUMENTATION_V2_EVENT_ID_CONFLICT');
+      }
+      this.#duplicateCount += 1;
+      return recordedResultV2(event, 'RECORDED_DUPLICATE');
+    }
+    const expected = this.#events[this.#nextIndex];
+    if (expected === undefined) {
+      return rejectV2('PUBLIC_INSTRUMENTATION_V2_RECORDED_SCRIPT_EXHAUSTED');
+    }
+    if (canonicalEventV2(expected) !== canonical) {
+      return rejectV2('PUBLIC_INSTRUMENTATION_V2_RECORDED_SCRIPT_MISMATCH');
+    }
+    if (this.#faultEventIds.has(event.eventId)) {
+      return rejectV2('PUBLIC_INSTRUMENTATION_V2_RECORDED_FAILURE');
+    }
+    this.#seen.set(event.eventId, canonical);
+    this.#nextIndex += 1;
+    this.#acceptedCount += 1;
+    return recordedResultV2(event, 'RECORDED_ACCEPTED');
+  }
+
+  recordSafely(
+    value: PublicEventInstrumentationEnvelopeV2,
+  ): PublicEventInstrumentationRecordedResultV2 {
+    let event: PublicEventInstrumentationEnvelopeV2;
+    try {
+      event = validatePublicEventInstrumentationEnvelopeV2(value);
+      return this.record(event);
+    } catch {
+      this.#swallowedFailureCount += 1;
+      try {
+        event = validatePublicEventInstrumentationEnvelopeV2(value);
+      } catch {
+        return createJsonValue({
+          eventIdentity: null,
+          disposition: 'DROPPED_LOCAL_FAILURE',
+          execution: 'RECORDED_TEST_ONLY',
+          trackingActivation: 'DISABLED',
+          persistence: 'NOT_EXECUTED',
+          consentAuthority: 'UNRESOLVED_OD_012',
+          measurementObserved: false,
+          navigationBlocked: false,
+          navigationAwaitedInstrumentation: false,
+          networkUsed: false,
+          browserStorageUsed: false,
+          TST022: 'NOT_EXECUTED',
+          TST030: 'NOT_EXECUTED',
+          failureReason: 'RECORDED_FAILURE_SWALLOWED',
+        }) as unknown as PublicEventInstrumentationRecordedResultV2;
+      }
+      return recordedResultV2(event, 'DROPPED_LOCAL_FAILURE');
+    }
+  }
+
+  snapshot(): PublicEventInstrumentationRecorderSnapshotV2 {
+    return createJsonValue({
+      mode: 'RECORDED_TEST_ONLY',
+      scriptLength: 6,
+      nextIndex: this.#nextIndex,
+      remaining: this.#events.length - this.#nextIndex,
+      acceptedCount: this.#acceptedCount,
+      duplicateCount: this.#duplicateCount,
+      swallowedFailureCount: this.#swallowedFailureCount,
+      complete: this.#nextIndex === this.#events.length,
+      trackingActivation: 'DISABLED',
+      persistence: 'NOT_EXECUTED',
+      measurementObserved: false,
+    }) as unknown as PublicEventInstrumentationRecorderSnapshotV2;
+  }
+}
+
+export function createRecordedPublicEventInstrumentationV2(
+  value: PublicEventInstrumentationRecordedFixtureV2,
+): RecordedPublicEventInstrumentationV2 {
+  return RecordedPublicEventInstrumentationV2.create(value);
+}

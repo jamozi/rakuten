@@ -1,0 +1,150 @@
+document:
+  id: RAOS-ST0706-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V2
+  schema_version: 1
+  story_id: ST-0706
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  recorded_at: '2026-08-24T03:55:10Z'
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+base:
+  branch: codex/st-0706-durable-queue-v2
+  base_commit_sha: 5e431434ea3891824f2bb861bf809b0011e91850
+  local_commit_count: 2
+  base_story_commit_sha: 7d630ff3f4dbf6baebfb1c67712945885b6fa49e
+  integrated_base_story_commit_sha: 2211f21103616b1e5f6c079b745145aa2c0fac6d
+  policy_hash_hardening_commit_sha: TO_BE_BOUND_BY_SEPARATE_INTEGRATION_EVIDENCE
+compatibility:
+  v1_interface: PRESERVED_UNCHANGED
+  v1_runtime: PROCESS_LOCAL_RECORDED_ONE_ATTEMPT
+  v2_interface: VERSIONED_ADDITIVE
+contract:
+  path: changes/st-0706/contracts/durable-ai-job-queue.v2.yaml
+  sha256: 35caa750dc7edf230d6d18c066348f400294c98daf15c8744f56a997d95e1458
+  exact_dependency_bindings: 17
+local_deliverables:
+  state_document: STRICT_CANONICAL_JSON_WITH_EMBEDDED_REVISION
+  maximum_state_bytes: 1048576
+  maximum_jobs: 32
+  maximum_outbox_intents: 128
+  maximum_attempts: 3
+  persistence_port: CALLER_OWNED_REVISION_AND_HASH_CAS
+  recorded_adapter: BYTES_AND_REVISION_REHYDRATION
+  uncertain_commit_fixture: COMMIT_THEN_CLOSED_FAILURE
+  idempotency: EXACT_COMMAND_FINGERPRINT_AND_THREE_IDENTITY_BINDINGS
+  lease_fence: TOKEN_SHA256_AND_MONOTONIC_JOB_EPOCH
+  retry: PURE_DECISION_WITH_PERSISTED_7_AND_31_SECOND_TIMESTAMPS
+  retry_policy_sha256: f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8
+  retry_cumulative_time_horizon_seconds: 38
+  clock_source: CALLER_SUPPLIED_EXPLICIT_UTC_ONLY
+  dead_letter: NON_REDRIVABLE_TERMINAL_STATE
+  quarantine:
+    - UNKNOWN_COST
+    - COST_OVERRUN
+    - INDETERMINATE_OUTCOME
+    - LEASE_EXPIRED_AMBIGUOUS
+  outbox: TRANSACTIONAL_METADATA_HASH_ONLY_RECORDED_PENDING_INTENTS
+  event_dispatch: NOT_IMPLEMENTED
+owner_generation:
+  generator: scripts/build_st0706_durable_ai_job_queue.py
+  hardened_publication_helper: scripts/secure_generated_publication.py
+  hardened_publication_helper_sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+  generated_artifacts:
+    - changes/st-0706/generated/durable-ai-job-queue.v2.json
+    - changes/st-0706/manifest.yaml
+  build: PASS
+  no_write_check: PASS
+verification:
+  results:
+    - check: explicit_retry_policy_hash_binding
+      result: PASS
+      policy_sha256: f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8
+      persisted_state_tamper: REJECTED
+    - check: focused_v2_runtime_tests
+      result: PASS
+      passed: 41
+    - check: focused_v2_generator_and_publication_tests
+      result: PASS
+      passed: 8
+    - check: full_tests_st0706
+      result: PASS
+      passed: 78
+    - check: dependency_tests_st0303
+      result: PASS_WITH_DECLARED_ENVIRONMENT_SKIPS
+      passed: 26
+      skipped: 50
+      skip_reason: exact PostgreSQL 18.4 tests require RAOS_PG_BIN
+    - check: dependency_tests_st0704
+      result: PASS
+      passed: 45
+    - check: dependency_tests_st0705_historical
+      result: PASS
+      passed: 73
+    - check: dependency_tests_st0705_runtime
+      result: PASS
+      passed: 42
+    - check: affected_tests_st1404
+      result: PASS
+      passed: 42
+    - check: affected_suite_process_isolation
+      result: REQUIRED_AND_USED
+      reason: historical suites use top-level conftest imports and duplicate test module basenames
+    - check: ruff_format_and_lint
+      result: PASS
+      files: 17
+    - check: strict_mypy
+      result: PASS
+      files: 16
+    - check: py_compile_and_fresh_import
+      result: PASS
+      files: 9
+    - check: v1_interface_source_diff
+      result: PASS_UNCHANGED
+      files: 4
+    - check: changed_file_secret_scan
+      result: PASS
+      findings: 0
+    - check: git_diff_check
+      result: PASS
+authority_boundary:
+  canonical_effective_implementation_status: NOT_STARTED_UNCHANGED
+  canonical_effective_verification_status: NOT_EXECUTED_UNCHANGED
+  generic_dispatcher_lease_retry_dlq_runtime_owner: ST-1404
+  generic_queue: NOT_IMPLEMENTED
+  database: NOT_IMPLEMENTED
+  broker: NOT_IMPLEMENTED
+  filesystem_persistence: NOT_IMPLEMENTED
+  provider_call: false
+  credentials: false
+  network: false
+  approval_authority: NONE
+  publication_authority: NONE
+  production_eligible: false
+formal_and_external_boundaries:
+  formal_tst_013: NOT_EXECUTED
+  formal_tst_017: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  credential_activity: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  canonical_status_apply: NOT_EXECUTED
+  formal_validated_claim: FORBIDDEN
+deferred_canonical_limits:
+  - id: ST0706-LIM-GENERIC-RUNTIME
+    owner: ST-1404
+    state: NOT_IMPLEMENTED_BY_ST0706
+    reason: generic dispatcher, worker loop, lease renewal, scheduler, and DLQ persistence remain outside this Story
+  - id: ST0706-LIM-PERSISTENCE
+    owner: CALLER_AND_FUTURE_STORAGE_STORY
+    state: PORT_ONLY
+    reason: no Canonical database or broker adapter is selected for this boundary
+  - id: ST0706-LIM-BUDGET-SETTLEMENT
+    owner: ST-0704_AND_FUTURE_DURABLE_CONTROL_ADAPTER
+    state: RECORDED_DECISION_ONLY
+    reason: V2 persists exact cost decisions but does not mutate the V1 process-local reservation handle after restart
+  - id: ST0706-LIM-OD009
+    owner: BUSINESS_OWNER
+    state: HUMAN_DECISION_REQUIRED
+    reason: recorded backoff and fixture bounds do not resolve live budget or acceptable-loss policy
+introduced_local_debt: []

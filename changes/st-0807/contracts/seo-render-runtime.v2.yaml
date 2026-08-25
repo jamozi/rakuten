@@ -1,0 +1,192 @@
+document:
+  id: RAOS-ST0807-SEO-RENDER-RUNTIME-002
+  version: 2.0.0
+  story_id: ST-0807
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  authority: NONE
+  enabled_by_default: false
+  production_eligible: false
+classification: LOCAL_EXECUTABLE_RECORDED_SYNTHETIC_SEO_RENDER_V2
+source_bindings:
+  - path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+    owner: CANONICAL
+    role: INTEGRATION_PRECEDENCE_AND_EXECUTION_BOUNDARY
+  - path: docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+    owner: CANONICAL
+    role: CLOSED_DECISIONS
+  - path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+    owner: CANONICAL
+    role: UNRESOLVED_DECISION_BOUNDARIES
+  - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    owner: CANONICAL
+    role: STORY_AND_DEPENDENCY_GRAPH
+  - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    owner: CANONICAL
+    role: TST_020_AND_TST_022
+  - path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    owner: CANONICAL
+    role: SECURITY_CONTROLS
+  - path: contracts/raos-v0.4/contracts/content/RAOS_06_seo_metadata_structured_data_policy_v0.1.yaml
+    sha256: 2fa67e012c67f8a6a90b39cfd64f27da9fb76534e57ebbff60ccd78ba51bb98a
+    owner: ST-0004
+    role: SEO_POLICY
+  - path: contracts/raos-v0.4/contracts/content/schemas/seo-metadata.schema.json
+    sha256: 347820081caec76faea9d44d379b86bfacb539c69e048a55c658f3a78b2263ad
+    owner: ST-0004
+    role: SEO_METADATA_SCHEMA
+  - path: contracts/raos-v0.4/contracts/content/schemas/structured-data-manifest.schema.json
+    sha256: 6a564e994b9ccfbefca62e3ef2245a56b96514ba35608ae3a1919bf27c7d312e
+    owner: ST-0004
+    role: STRUCTURED_DATA_SCHEMA
+  - path: contracts/raos-v0.4/contracts/content/RAOS_06_content_test_matrix_v0.1.csv
+    sha256: 9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564
+    owner: ST-0004
+    role: CONTENT_TEST_MATRIX
+  - path: python/raos/domain/editorial/seo_renderer.py
+    sha256: 8dd849cbb3c99f7c9302c908fe1efdd9567799010ae97b10c3d9bfe57d1287de
+    owner: ST-0807
+    role: V1_RENDERER
+  - path: python/raos/domain/editorial/article_lifecycle.py
+    sha256: c44cb8c5d26f4862e7527bcb179c20f1f60d3a069d9ba67fad3b0109ef0c6edd
+    owner: ST-0802
+    role: RECORDED_DRAFT_MODEL
+  - path: python/raos/domain/editorial/content_ast.py
+    sha256: 7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68
+    owner: ST-0801
+    role: CONTENT_AST_CANONICALIZATION
+  - path: python/raos/domain/editorial/policy_engine_v2.py
+    sha256: ef690e73cf657d3963572428785b2e777f7485ba15c30a53a978ad8919e31e24
+    owner: ST-0805
+    role: POLICY_REPORT_VALIDATOR
+  - path: python/raos/adapters/recorded_policy_engine.py
+    sha256: 2d094fc94fb28eb03c157f42dfea3632da53ae0bfba4bb411fb4f81c2dc0d793
+    owner: ST-0805
+    role: RECORDED_POLICY_FIXTURE_DECODER
+  - path: changes/st-0805/generated/policy-pass.v2.json
+    sha256: 75797ab838b37b482ecfd30312101e4103dc7301a4ee57e0f6ce544a845300b9
+    owner: ST-0805
+    role: RECORDED_SYNTHETIC_POLICY_INPUT
+  - path: changes/st-0805/runtime-manifest.v2.yaml
+    sha256: f10516b1d26e6dc448ade04873880211244e82d1c0f7175b5c57ce2c95f411ce
+    owner: ST-0805
+    role: DEPENDENCY_PROVENANCE
+dependency_boundary:
+  ST-0802:
+    required_article_version_id: 018f3e90-7b00-7000-8000-000000000806
+    required_state: DRAFT
+    source_packet_verification: NOT_VERIFIED
+    persistence_claimed: false
+    publication_claimed: false
+  ST-0805:
+    required_status: LOCAL_EVALUATED
+    required_local_eligibility: true
+    report_recomputed: true
+    receipt_required: false
+    waiver_or_finding_applied: false
+recorded_render:
+  profile: ST0807_LOCAL_RENDER_V1
+  renderer_article_version_ref: 018F3E90-7B00-7000-8000-000000000806
+  seo_metadata_ref: SEO-METADATA-ST0807-V2
+  structured_data_manifest_ref: STRUCTURED-DATA-ST0807-V2
+  slug: synthetic-recorded-policy-seo
+  title: ST-0805 recorded policy draft
+  meta_description: 合成済みの編集候補から、公開権限を持たないSEO情報を決定的に生成します。
+  author_kind: Organization
+  author_name: RAOS 合成編集部
+  current_route_ref: ROUTE-ST0807-V2
+  current_route: /guides/synthetic-recorded-policy-seo
+  home_route_ref: ROUTE-HOME-ST0807-V2
+  created_at: '2026-08-24T00:00:00Z'
+  validated_at: '2026-08-24T00:00:00Z'
+  date_semantics: SYNTHETIC_PREVIEW_INPUT_NOT_PUBLICATION_FACT
+  article_schema_type: Article
+  mode: PREVIEW
+  origin_mode: ROUTE_ONLY
+  caller_origin: null
+  site_projection: null
+external_assessments:
+  evaluated:
+    - ST_0805_POLICY_ELIGIBILITY
+  not_evaluated:
+    - TITLE_UNIQUENESS
+    - CANONICAL_GRAPH
+    - BROWSER_VISIBLE_EQUALITY
+    - SUBSTANTIVE_CHANGE_CLASSIFICATION
+    - ROUTE_EXISTENCE
+    - HTTP_200
+    - RUNTIME_INDEXABILITY
+    - PAUSE_OR_REDIRECT_SOURCE_STATE
+    - PUBLICATION_SNAPSHOT_CURRENCY
+    - IMAGE_PUBLICABILITY
+    - AUTH_CACHE_CTA_BEHAVIOR
+    - AFFILIATE_REL
+    - AFFILIATE_REDIRECT_BEHAVIOR
+  missing_or_unverified_to_pass: false
+  browser_or_live_execution_claimed: false
+structured_data_boundary:
+  allowed_top_level_types:
+    - Article
+    - BlogPosting
+    - BreadcrumbList
+    - Organization
+    - WebSite
+  prohibited_recursive_types:
+    - Product
+    - Offer
+    - Review
+    - AggregateRating
+    - FAQPage
+  visible_content_match_required: true
+  arbitrary_html: false
+  llm_generated_jsonld: false
+security_controls:
+  - SEC-APP-001
+  - SEC-APP-002
+  - SEC-APP-004
+  - SEC-APP-006
+  - SEC-DATA-003
+  - SEC-DATA-004
+  - SEC-DATA-006
+  - SEC-SDLC-002
+  - SEC-SDLC-006
+  - SEC-SDLC-009
+  - SEC-SDLC-012
+authority:
+  approval_authorized: false
+  article_mutation_authorized: false
+  policy_apply_authorized: false
+  domain_approved: false
+  publication_authorized: false
+  release_authorized: false
+  production_authorized: false
+  production_eligible: false
+execution_boundary:
+  activation: DISABLED
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  repository_runtime_read: false
+  filesystem_runtime_read: false
+  network: false
+  credentials: false
+  database: false
+  browser: false
+  staging: false
+  publication: false
+  release: false
+  production: false
+verification_boundary:
+  TST-020: NOT_EXECUTED
+  TST-022: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  browser: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  production: NOT_EXECUTED

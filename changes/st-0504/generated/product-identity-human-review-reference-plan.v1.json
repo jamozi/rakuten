@@ -44,18 +44,18 @@
     "generation_command": "uv run --locked --no-sync python scripts/build_st0504_product_identity_human_review_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+      "sha256": "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     }
   },
   "predecessor_binding": {
     "story_id": "ST-0503",
-    "commit": "b61d4dd83b87495dfd672bdf8960dc3b1ff29d79",
+    "commit": "1829e1ba31addce6579b445da51be5b604732278",
     "status": "NORMALIZED_PROVENANCE_PRESERVING_CANDIDATES_ONLY",
     "connection_status": "INTERFACE_AVAILABLE_NOT_CONNECTED",
     "artifacts": [
       {
         "uri": "repo://changes/st-0503/README.md",
-        "sha256": "aa956454a96c0c88dedd52982264fdf5ad66f181ee3c3717a1aea8204bfbf138"
+        "sha256": "e372c00533e7ddddb71e10308fb703e8c31261351c61d593c520371c505b2f0b"
       },
       {
         "uri": "repo://python/raos/domain/catalog/catalog_normalization.py",

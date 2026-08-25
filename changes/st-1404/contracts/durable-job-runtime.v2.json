@@ -1,0 +1,50 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-1404",
+  "classification": "MAXIMUM_SAFE_LOCAL_DURABLE_RUNTIME_SEAM",
+  "local_implementation_status": "LOCAL_CODE_COMPLETE",
+  "canonical_status": "UNCHANGED",
+  "runtime": {
+    "activation": false,
+    "background_worker": false,
+    "external_write_authority": false,
+    "live_database": "NOT_EXECUTED",
+    "live_broker": "NOT_EXECUTED",
+    "provider": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED"
+  },
+  "transaction_boundary": {
+    "outer_uow": true,
+    "clone_on_write_recorded_adapter": true,
+    "compare_and_swap_revision": true,
+    "job_attempt_outbox_inbox_atomic": true,
+    "handler_effects_atomic_with_completion": true,
+    "queue_io_outside_uow": true,
+    "known_and_unknown_commit_outcomes": true
+  },
+  "recovery_boundary": {
+    "lease_fence": true,
+    "stable_message_identity": true,
+    "inbox_deduplication": true,
+    "orphan_takeover": true,
+    "snapshot_restart": true,
+    "retry_and_dead_letter": true,
+    "quarantine_release_requires_approval_record": true,
+    "retry_state_expiry_transition_invented": false
+  },
+  "data_boundary": {
+    "raw_payload": false,
+    "raw_handler_result": false,
+    "exception_text": false,
+    "credential": false,
+    "provider_response": false,
+    "fingerprints_only": true
+  },
+  "formal_evidence": {
+    "TST-013": "NOT_EXECUTED",
+    "TST-028": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "production_readiness": false
+  }
+}

@@ -6,7 +6,8 @@ import copy
 import json
 import shutil
 from pathlib import Path
-from typing import Any
+from types import ModuleType
+from typing import Any, cast
 
 import pytest
 import yaml
@@ -770,7 +771,7 @@ def test_json_duplicate_keys_and_nonregular_inputs_fail_sanitized(
     assert captured.value.code == "UNSAFE_FILE_TYPE"
 
 
-def _owner_modules() -> tuple[object, ...]:
+def _owner_modules() -> tuple[ModuleType, ...]:
     from scripts import build_st1501_terraform_foundation as st1501
     from scripts import build_st1502_data_services as st1502
     from scripts import build_st1503_compute_edge as st1503
@@ -794,7 +795,7 @@ def _copy_pinned_sources(target_root: Path) -> None:
 def _source_row(document: dict[str, Any], relative: str) -> dict[str, Any]:
     matches = [row for row in document["sources"] if row["uri"] == f"repo://{relative}"]
     assert len(matches) == 1
-    return matches[0]
+    return cast(dict[str, Any], matches[0])
 
 
 def _predecessor_binding(
@@ -885,7 +886,7 @@ def test_every_predecessor_raw_byte_drift_fails_closed(
 
 def _tamper_predecessor(value: dict[str, Any], relative: str) -> None:
     if relative.endswith(".json"):
-        value["document"]["executable"] = True
+        value["document"]["executable"] = not value["document"]["executable"]
     elif "DESIGN_HANDOFF" in relative:
         value["approved_scope"][0] = MARKER
     else:
@@ -949,7 +950,7 @@ def _render_without_owner_validation(story_id: str, contract: dict[str, Any]) ->
             json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
         ).encode("utf-8")
     model = getattr(owner, model_names[story_id])(contract=contract)
-    return owner.render_reference_plan(model)
+    return cast(bytes, owner.render_reference_plan(model))
 
 
 def _add_normative_section_downgrade(contract: dict[str, Any], section: str) -> None:

@@ -86,7 +86,7 @@ dependencies:
   artifacts:
   - role: readme
     uri: repo://changes/st-0405/README.md
-    sha256: 8b046d65492947a458306c308f5515bb6496e0371bdc9695226d52328a04a657
+    sha256: d815e3f71728ff43c3c7301cdf973534f723c505bffba1f6d97b82e8d76c588f
   - role: audit_port
     uri: repo://python/raos/ports/audit.py
     sha256: d358f8349ebeb70c3b8f046b82c109a80f162fe88432d1e0d4e11e4ff21592ec

@@ -1,0 +1,219 @@
+{
+  "authority": {
+    "credential": "NOT_GRANTED",
+    "external_operation": "NOT_GRANTED",
+    "formal_validation": "NOT_GRANTED",
+    "production": "NOT_GRANTED",
+    "publication": "NOT_GRANTED",
+    "release": "NOT_GRANTED",
+    "repository_local_development": "STANDING_OWNER_AUTHORIZATION",
+    "staging": "NOT_GRANTED"
+  },
+  "contract_sha256": "ad1ee6e206017c0a20979aceb09f038f1bcc07c2a8eda64577593784884b2923",
+  "document": {
+    "formal_tst_014": "NOT_EXECUTED",
+    "id": "RAOS-LOCAL-ARTIFACT-REGISTRY-RUNTIME-002",
+    "live_object_storage": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "status": "LOCAL_CODE_COMPLETE",
+    "story_id": "ST-0601",
+    "version": "2.0.0"
+  },
+  "evidence": {
+    "authenticated_st0202_fixture": "NOT_EXECUTED",
+    "denied_network": "REQUIRED",
+    "dependency_regression": "REQUIRED",
+    "focused_secret_scan": "REQUIRED",
+    "formal_tst_014": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "local_focused_pytest": "REQUIRED",
+    "owner_generator_check": "REQUIRED",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "s3_version_object_lock": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  },
+  "generation": {
+    "deterministic": true,
+    "network": "FORBIDDEN",
+    "output": "changes/st-0601/generated/artifact-registry-runtime.v2.json",
+    "owner": "scripts/build_st0601_artifact_registry_runtime.py",
+    "source": "changes/st-0601/contracts/local-artifact-registry-runtime.v2.yaml",
+    "write_on_check": "FORBIDDEN"
+  },
+  "owner_generator": {
+    "path": "scripts/build_st0601_artifact_registry_runtime.py",
+    "sha256": "c219cc7edf7d585ce24d38fe8bc0b16bf45716f02e53a26d6f4d2a96bc832972"
+  },
+  "runtime": {
+    "action_counts": {
+      "delete": 0,
+      "export": 0,
+      "external": 0,
+      "provider": 0,
+      "publication": 0,
+      "retention": 0
+    },
+    "classification": "CONFIDENTIAL",
+    "environments": [
+      "ENV-DEV",
+      "CI"
+    ],
+    "forbidden_surfaces": [
+      "credential",
+      "network",
+      "provider_call",
+      "live_object_storage",
+      "upload",
+      "download",
+      "list",
+      "export",
+      "update",
+      "delete",
+      "purge",
+      "lifecycle",
+      "publication",
+      "staging",
+      "release",
+      "production"
+    ],
+    "mode": "RECORDED_LOCAL",
+    "object": {
+      "body_location": "RECORDED_LOCAL_SQLITE_BLOB_ONLY",
+      "bucket_label": "raos-raw",
+      "content_type": "application/json",
+      "deterministic_artifact_id": "ST0308_OBJECT_ARTIFACT_ID_FROM_CANONICAL_MATERIAL",
+      "deterministic_object_ref": "HASH_BOUND_STRUCTURED_LOCAL_REF",
+      "exact_version_read": "REQUIRED",
+      "latest_only_read": "ABSENT",
+      "maximum_bytes": 2097152
+    },
+    "registry": {
+      "ambiguous_commit": "EXACT_OPERATION_RECOVERY_NO_RETRY",
+      "exact_tables": [
+        "artifact_registry_metadata_v2",
+        "artifact_object_v2",
+        "artifact_operation_v2"
+      ],
+      "hash_chain": "GLOBAL_SEQUENCE_SHA256_CHAIN",
+      "idempotency": "OPERATION_ID_PLUS_REQUEST_SHA256",
+      "immutable_triggers": "UPDATE_AND_DELETE_REJECTED",
+      "known_rollback": "NO_PARTIAL_ROWS",
+      "row_hash": "REQUIRED",
+      "schema_hash": "REQUIRED",
+      "semantic_replay": "EXACT_SOURCE_RECEIPT_ONLY",
+      "transaction": "OBJECT_AND_OPERATION_ONE_SQLITE_TRANSACTION",
+      "versioning": "EXPECTED_LATEST_VERSION_CAS_THEN_APPEND"
+    },
+    "retention": {
+      "decision": "OD_014_UNRESOLVED",
+      "default": null,
+      "delete": "ABSENT",
+      "lifecycle": "ABSENT",
+      "purge": "ABSENT",
+      "retention_class": null,
+      "retention_period": null
+    },
+    "source_binding": {
+      "body_hash_and_size_recheck": "REQUIRED_BEFORE_STORE",
+      "fields": [
+        "receipt_id",
+        "artifact_sha256",
+        "byte_size",
+        "artifact_version",
+        "logical_key",
+        "request_fingerprint",
+        "page",
+        "observed_at"
+      ],
+      "provider_types_in_core_domain": "ABSENT",
+      "reader_port": "ItemSearchRawArchiveSourceV2.read_raw",
+      "receipt_type": "RawArchiveReceiptV2"
+    },
+    "st0308_boundary": {
+      "cross_module_write": "ABSENT",
+      "object_artifact_repository_write": "ABSENT",
+      "reason": "OD_014_RETENTION_CLASS_UNRESOLVED",
+      "reused": [
+        "ObjectArtifactId",
+        "ObjectArtifactArtifactKind"
+      ]
+    },
+    "storage": {
+      "database_mode": "0600",
+      "database_name": "st0601-recorded-artifact-registry-v2.sqlite3",
+      "hardlink": "FORBIDDEN",
+      "owner_private_root_mode": "0700",
+      "provider": "RECORDED_LOCAL_SQLITE",
+      "remote_provider": "ABSENT",
+      "s3_or_seaweedfs_attestation": "NOT_CLAIMED",
+      "sqlite_journal": "DELETE",
+      "sqlite_synchronous": "FULL",
+      "symlink": "FORBIDDEN"
+    }
+  },
+  "security_controls": {
+    "SEC-DATA-003": "NO_SECRET_OR_CREDENTIAL_SURFACE",
+    "SEC-DATA-004": "SHA256_VERSION_EXACT_READBACK_AND_TAMPER_TEST",
+    "SEC-DATA-005": "APPEND_ONLY_PORT_TRIGGER_AND_HASH_CHAIN",
+    "SEC-DATA-008": "OD_014_UNRESOLVED_NO_RETENTION_ACTION",
+    "SEC-INFRA-006": "LOCAL_BUCKET_LABEL_ONLY_NO_PUBLIC_OR_REMOTE_SURFACE"
+  },
+  "sources": [
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+      "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+    },
+    {
+      "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+      "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+    },
+    {
+      "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+      "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+    },
+    {
+      "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+      "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+    },
+    {
+      "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+      "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+    },
+    {
+      "path": "changes/st-0202/contracts/local-object-storage.v1.yaml",
+      "sha256": "5a5ca7e3847c730e97172646638088070dfaa96776485910cb967a67ab552a9f"
+    },
+    {
+      "path": "changes/st-0308/contracts/persistence-runtime.v2.yaml",
+      "sha256": "0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4"
+    },
+    {
+      "path": "python/raos/domain/catalog/rakuten_item_search_runtime_v2.py",
+      "sha256": "76ec60dfdd36f09376bf2fe94f596ffbc15bd3c5d59b20628a89eea6bf261b67"
+    },
+    {
+      "path": "python/raos/ports/rakuten_item_search_runtime_v2.py",
+      "sha256": "fd7f385825fb80c1ee8966923fa19828b2916cb9a78a66b154c7736a70598628"
+    }
+  ],
+  "story": {
+    "acceptance": [
+      "immutable",
+      "tamper_detection"
+    ],
+    "deliverable": "artifact_service",
+    "dependencies": [
+      "ST-0202",
+      "ST-0308"
+    ],
+    "open_decisions": [
+      "OD-014"
+    ],
+    "requirement_ids": [
+      "FR-002",
+      "FR-004"
+    ]
+  }
+}

@@ -20,15 +20,15 @@
     "status": "DISABLED"
   },
   "document": {
-    "artifact_kind": "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_COMPUTE_EDGE_REFERENCE_PLAN",
+    "artifact_kind": "PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_COMPUTE_EDGE_MODULE",
     "executable": false,
     "generated_by": "repo://scripts/build_st1503_compute_edge.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st1503_compute_edge.py",
     "id": "RAOS-COMPUTE-EDGE-REFERENCE-PLAN-001",
-    "implementation_scope": "INTERFACE_ONLY_PARTIAL_LOCAL_CODE",
+    "implementation_scope": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
     "source_contract": "repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml",
     "story_id": "ST-1503",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "logical_compute_edge": {
     "edge_routing": {
@@ -301,6 +301,46 @@
       "signed_provenance": "REQUIRED_NOT_CONFIGURED"
     }
   },
+  "logical_hcl_module": {
+    "allowed_top_level_blocks": [
+      "terraform",
+      "variable",
+      "locals",
+      "check",
+      "output"
+    ],
+    "backend_blocks": [],
+    "classification": "PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_COMPUTE_EDGE_GRAPH",
+    "cloud_blocks": [],
+    "data_blocks": [],
+    "default_disabled": true,
+    "deterministic_no_apply_plan_fixture": "infra/terraform/compute-edge/compute-edge.logical-plan.v1.json",
+    "generated": true,
+    "generated_files": [
+      "versions.tf",
+      "variables.tf",
+      "locals.tf",
+      "checks.tf",
+      "outputs.tf"
+    ],
+    "logical_component_count": 37,
+    "logical_edge_count": 53,
+    "logical_health_contract_count": 4,
+    "logical_identity_count": 4,
+    "logical_workload_count": 4,
+    "module_blocks": [],
+    "module_path": "infra/terraform/compute-edge",
+    "physical_resource_materialization": "FORBIDDEN_IN_CURRENT_REVISION",
+    "policy_validation": "EXACT_CLOSED_BUNDLE_FORBIDDEN_BLOCK_AND_SAFETY_SCAN",
+    "provider_blocks": [],
+    "provider_requirements": [],
+    "provider_schema_binding": null,
+    "provisioners": [],
+    "resource_blocks": [],
+    "semantic_validation": "TERRAFORM_VALIDATE_JSON_INIT_FREE_PROVIDER_FREE",
+    "terraform_required_version": "= 1.15.9",
+    "toolchain_lock_source": "ST-1501_PINNED_VALIDATION_ONLY_TOOLCHAIN"
+  },
   "open_decision_boundary": {
     "OD-002": {
       "blocking": true,
@@ -342,15 +382,20 @@
   "planned_actions": {
     "create": 0,
     "delete": 0,
+    "deploy": 0,
+    "promote": 0,
+    "rollback": 0,
+    "route": 0,
+    "scale": 0,
     "update": 0
   },
   "predecessor_binding": {
-    "contract_sha256": "488281f5178250ce90d0f01548ffbc390fc023eae3e27ea04291a44f263399f9",
+    "contract_sha256": "5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e",
     "contract_uri": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
     "design_handoff_sha256": "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f",
     "design_handoff_uri": "repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
     "extension_kind": "COMPUTE_CDN_WAF",
-    "reference_plan_sha256": "a933f47a6c06c6b1d8d57dae84a815018bd00b3bc0d576a8e68fc11621c7ac70",
+    "reference_plan_sha256": "bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72",
     "reference_plan_uri": "repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
     "required_activation_status": "DISABLED",
     "required_admission_status": "NOT_EVALUATED",
@@ -362,7 +407,14 @@
     },
     "required_provider_policy": "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION",
     "required_resource_payloads": "FORBIDDEN",
-    "story_id": "ST-1501"
+    "required_validation_binary_sha256": "c39d41adb17963bac5dd610ad47815dd81e945371a7cabc344a45d63b1b093bd",
+    "required_validation_mode": "PINNED_VALIDATION_ONLY_NO_INFRASTRUCTURE_AUTHORITY",
+    "required_validation_platform": "linux_amd64",
+    "required_validation_tool": "Terraform",
+    "required_validation_version": "1.15.9",
+    "story_id": "ST-1501",
+    "toolchain_lock_sha256": "696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44",
+    "toolchain_lock_uri": "repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"
   },
   "provider_neutral_compute_edge_admission": {
     "admission_status": "NOT_EVALUATED",
@@ -603,22 +655,67 @@
     "workload_identity_references": [],
     "workload_runtime_binding": null
   },
+  "successor_activation_port": {
+    "classification": "CLOSED_PHYSICAL_COMPUTE_EDGE_ACTIVATION_PORT",
+    "complete_gate_evidence": false,
+    "current_revision_activation": "FORBIDDEN",
+    "infrastructure_apply": "FORBIDDEN",
+    "infrastructure_plan": "FORBIDDEN",
+    "physical_resource_materialization": "FORBIDDEN_IN_CURRENT_REVISION",
+    "provider_binding": "FORBIDDEN_IN_CURRENT_REVISION",
+    "required_gate_evidence": [
+      "OD-002_SITE_DOMAIN_RESOLVED",
+      "OD-009_BUDGET_AND_CAP_RESOLVED",
+      "OD-010_ADMIN_IDENTITY_PROVIDER_RESOLVED",
+      "OD-011_ALERT_CHANNEL_AND_ESCALATION_RESOLVED",
+      "OD-013_REGION_RESIDENCY_RESOLVED",
+      "OD-015_ACCOUNT_CREDENTIAL_EVIDENCE",
+      "TST-026_FORMAL_SECURITY_EVIDENCE",
+      "TST-027_FORMAL_STAGING_PERFORMANCE_LOAD_EVIDENCE",
+      "PROVIDER_SCHEMA_PLUGIN_AND_DISTRIBUTION_PROVENANCE",
+      "PRIVATE_NETWORK_ACCOUNT_AND_ORIGIN_ISOLATION_EVIDENCE",
+      "IMMUTABLE_IMAGE_DIGEST_SIGNATURE_SBOM_AND_SCAN_EVIDENCE",
+      "LEAST_PRIVILEGE_WORKLOAD_IDENTITY_SECRET_AND_EGRESS_REVIEW",
+      "DNS_TLS_WAF_RATE_LIMIT_AND_ORIGIN_AUTHENTICATION_EVIDENCE",
+      "DISTINCT_LIVENESS_READINESS_AND_MIGRATION_FAILURE_EVIDENCE",
+      "OBSERVABILITY_ALERT_OWNER_RUNBOOK_AND_CAPACITY_EVIDENCE",
+      "HUMAN_APPROVED_CANARY_PROMOTION_ROLLBACK_AND_RELEASE_EVIDENCE"
+    ],
+    "selected_account_or_project": null,
+    "selected_credential_source": null,
+    "selected_dns_certificate_references": [],
+    "selected_domain_names": [],
+    "selected_health_endpoint_bindings": [],
+    "selected_host_names": [],
+    "selected_image_digests": [],
+    "selected_network_segments": [],
+    "selected_provider_plugin": null,
+    "selected_provider_schema": null,
+    "selected_rate_limit_thresholds": [],
+    "selected_region": null,
+    "selected_secret_references": [],
+    "selected_state_backend": null,
+    "selected_waf_rule_definitions": [],
+    "selected_workload_identity_references": [],
+    "successor_contract_revision_required": true,
+    "supplied_gate_evidence": []
+  },
   "verification_boundary": {
     "canary_rollback_validation": "NOT_EXECUTED",
     "credentials": "ABSENT",
     "effective_canonical_status": "UNCHANGED",
-    "executable_terraform": "ABSENT",
+    "executable_terraform": "VALIDATION_ONLY_PROVIDER_FREE_LOGICAL_MODULE",
     "formal_tst_026": "NOT_EXECUTED",
     "formal_tst_027": "NOT_EXECUTED",
     "health_slo_alert_validation": "NOT_EXECUTED",
     "identity_secret_egress_validation": "NOT_EXECUTED",
     "live_staging_release_production": "NOT_EXECUTED",
-    "native_iac_validation": "NOT_EXECUTED",
+    "native_iac_validation": "EXECUTED_LOCAL_NOT_FORMAL",
     "performance_load_validation": "NOT_EXECUTED",
     "provider_account_or_project": "UNSET",
-    "provider_plugins": "UNPINNED_NOT_INVOKED",
+    "provider_plugins": "ABSENT_NO_PROVIDER_REQUIRED_OR_SELECTED",
     "region_residency_validation": "NOT_EXECUTED",
-    "terraform_cli": "UNPINNED_NOT_INVOKED",
+    "terraform_cli": "PINNED_1_15_9_VALIDATION_ONLY",
     "transport_security_validation": "NOT_EXECUTED"
   }
 }

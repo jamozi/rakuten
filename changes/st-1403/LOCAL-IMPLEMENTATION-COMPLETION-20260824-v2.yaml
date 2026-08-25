@@ -1,0 +1,108 @@
+schema_version: 2
+story_id: ST-1403
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+recorded_at: '2026-08-24T05:45:24Z'
+authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+base:
+  branch: codex/st-1403-local-complete-20260824
+  integration_base_sha: d96614da45f7676b622df20164de28cc8d12c2d8
+  implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
+canonical_boundary:
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  requirement: FR-016
+  required_suites:
+    TST-020: NOT_EXECUTED
+    TST-021: NOT_EXECUTED
+  open_decision:
+    id: OD-007
+    status: HUMAN_DECISION_REQUIRED
+    policy_activation: DISABLED_UNRESOLVED_OD_007
+    recommendation_order_action: FORBIDDEN
+implementation:
+  immutable_diff_and_impact_model: true
+  deterministic_caller_rank_preserved: true
+  recommendation_rank_change_human_approval_required: true
+  automatic_reordering_authorized: false
+  current_st1401_request_result_re_evaluated: true
+  current_st0805_v2_envelope_report_re_evaluated: true
+  exact_policy_canonical_bytes_required: true
+  recorded_fingerprint_loader: true
+  dev_ci_only: true
+  can_change_state: false
+  persistence_authorized: false
+  publication_authorized: false
+  release_authorized: false
+  production_eligible: false
+source_bindings:
+  contract:
+    path: changes/st-1403/contracts/refresh-proposal-runtime.v2.json
+    sha256: 7e246408d3d1967b046c767247fa1a30e594dcbab2732341f2e8e02d683f28e8
+  generated_record:
+    path: changes/st-1403/generated/refresh-proposal-recorded.v2.json
+    sha256: ad499700d478b746386afb79ef0ea84d938b8855d1b3a9e2c41096d88270599d
+  runtime_manifest:
+    path: changes/st-1403/runtime-manifest.v2.json
+    sha256: f4e7a487c02869426ffe1bc77bc883448ad7991464b19abe3b06f756f2c15261
+  runtime_sources:
+    - path: python/raos/domain/freshness/refresh_proposal.py
+      sha256: aadb9640c2a23af42122362222c2b4612d0ee61b08e74c8217142925f4867252
+    - path: python/raos/application/freshness/refresh_proposal.py
+      sha256: ce241a49a0ebf036d91042316dc560f5c702946403fc7e361b2ea7b980d4c2c9
+    - path: python/raos/ports/refresh_proposal.py
+      sha256: eb0fadf878487c948807269ccbeddd0c0f93866909b240485625b9924a49c9ff
+    - path: python/raos/adapters/recorded_refresh_proposal.py
+      sha256: 21118a039ffdb89b318e3781ce40e0c1af6a9e543f8d844c88d9ff9dcda95fc0
+    - path: scripts/build_st1403_refresh_proposal_runtime.py
+      sha256: 3c471eb7b809598f64e8f492eb9acbf89f2a856e3fdaf33e519b8db93db5c796
+verification:
+  focused_st1403:
+    result: PASS
+    passed: 85
+  affected_st1401:
+    result: PASS
+    passed: 166
+  affected_st0805_v2:
+    result: PASS
+    passed: 57
+  affected_st0805_v1:
+    result: PASS
+    passed: 361
+  downstream_st1103:
+    result: PASS
+    passed: 3
+  owner_generation: PASS
+  owner_no_write_check: PASS
+  compile_import: PASS
+  ruff_check: PASS
+  ruff_format_check: PASS
+  strict_mypy: PASS
+  canonical_import_verify: PASS
+  workspace_drift_check: PASS
+  scoped_secret_scan:
+    result: PASS
+    files: 17
+    findings: 0
+  linked_worktree_secret_scan:
+    result: OPERATIONAL_ERROR
+    code: unsafe-git-metadata
+    promoted_to_pass: false
+  git_diff_check: PASS
+debt:
+  introduced_local_debt: NONE
+  inherited_linked_worktree_secret_scan_limitation: UNCHANGED
+not_executed:
+  canonical_registry_propose_or_apply: NOT_EXECUTED
+  formal_tst_020: NOT_EXECUTED
+  formal_tst_021: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider_or_credential_activity: NOT_EXECUTED
+  persistence: NOT_EXECUTED
+  human_review_workflow: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  validated_claim: FORBIDDEN
+advisory:
+  pro_status: PRO_NOT_INVOKED

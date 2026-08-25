@@ -5,14 +5,14 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from conftest import REPOSITORY_ROOT
-
-
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 OWNED_SOURCE = (
     Path("python/raos/domain/iam/step_up.py"),
     Path("python/raos/ports/step_up.py"),
     Path("python/raos/application/iam/step_up.py"),
     Path("python/raos/adapters/development_step_up.py"),
+    Path("python/raos/adapters/recorded_step_up.py"),
+    Path("python/raos/adapters/disabled_admin_mfa_http.py"),
 )
 
 
@@ -36,7 +36,9 @@ def test_source_dependencies_point_inward_and_exclude_delivery_provider_db_types
     domain_imports = _imports(OWNED_SOURCE[0])
     port_imports = _imports(OWNED_SOURCE[1])
     application_imports = _imports(OWNED_SOURCE[2])
-    adapter_imports = _imports(OWNED_SOURCE[3])
+    development_adapter_imports = _imports(OWNED_SOURCE[3])
+    recorded_adapter_imports = _imports(OWNED_SOURCE[4])
+    http_adapter_imports = _imports(OWNED_SOURCE[5])
 
     assert {name for name in domain_imports if name.startswith("raos.")} == {
         "raos.domain.iam.authentication"
@@ -51,7 +53,20 @@ def test_source_dependencies_point_inward_and_exclude_delivery_provider_db_types
         "raos.domain.iam.step_up",
         "raos.ports.step_up",
     }
-    assert {name for name in adapter_imports if name.startswith("raos.")} == {
+    assert {
+        name for name in development_adapter_imports if name.startswith("raos.")
+    } == {
+        "raos.config.runtime",
+        "raos.domain.iam.authentication",
+        "raos.domain.iam.step_up",
+    }
+    assert {name for name in recorded_adapter_imports if name.startswith("raos.")} == {
+        "raos.config.runtime",
+        "raos.domain.iam.authentication",
+        "raos.domain.iam.step_up",
+    }
+    assert {name for name in http_adapter_imports if name.startswith("raos.")} == {
+        "raos.application.iam.step_up",
         "raos.config.runtime",
         "raos.domain.iam.authentication",
         "raos.domain.iam.step_up",
@@ -61,7 +76,9 @@ def test_source_dependencies_point_inward_and_exclude_delivery_provider_db_types
         domain_imports,
         port_imports,
         application_imports,
-        adapter_imports,
+        development_adapter_imports,
+        recorded_adapter_imports,
+        http_adapter_imports,
     )
     forbidden_roots = {
         "boto3",
@@ -116,17 +133,17 @@ def test_development_adapter_has_no_file_network_process_env_or_factor_surface()
     }
 
 
-def test_no_owned_source_defines_transport_challenge_or_action_policy_surface() -> None:
+def test_new_runtime_selects_no_provider_factor_or_credential_mechanism() -> None:
     prohibited = {
         "acr",
         "amr",
         "auth_time",
-        "challenge",
+        "bearer",
         "cookie",
-        "critical_action",
-        "http",
         "middleware",
         "otp",
+        "password",
+        "secret",
         "totp",
         "webauthn",
     }
@@ -138,3 +155,72 @@ def test_no_owned_source_defines_transport_challenge_or_action_policy_surface() 
             elif isinstance(node, ast.arg):
                 defined_names.add(node.arg.lower())
     assert defined_names.isdisjoint(prohibited)
+
+
+def test_recorded_adapter_has_no_network_provider_process_or_environment_input() -> (
+    None
+):
+    tree = _tree(OWNED_SOURCE[4])
+    identifiers = {
+        node.id.lower() for node in ast.walk(tree) if isinstance(node, ast.Name)
+    }
+    attributes = {
+        node.attr.lower() for node in ast.walk(tree) if isinstance(node, ast.Attribute)
+    }
+    imported = _imports(OWNED_SOURCE[4])
+
+    assert identifiers.isdisjoint(
+        {
+            "cookie",
+            "bearer",
+            "environ",
+            "getenv",
+            "password",
+            "secret",
+            "socket",
+            "subprocess",
+            "totp",
+            "webauthn",
+        }
+    )
+    assert attributes.isdisjoint({"getenv", "request", "urlopen", "popen", "system"})
+    assert not {
+        name
+        for name in imported
+        if name.partition(".")[0]
+        in {"boto3", "httpx", "requests", "socket", "subprocess", "urllib"}
+    }
+
+
+def test_admin_mfa_projection_registers_no_route_server_or_token_delivery() -> None:
+    path = OWNED_SOURCE[5]
+    tree = _tree(path)
+    imported = _imports(path)
+    identifiers = {
+        node.id.lower() for node in ast.walk(tree) if isinstance(node, ast.Name)
+    }
+    attributes = {
+        node.attr.lower() for node in ast.walk(tree) if isinstance(node, ast.Attribute)
+    }
+
+    assert not {
+        name
+        for name in imported
+        if name.partition(".")[0]
+        in {
+            "aiohttp",
+            "boto3",
+            "fastapi",
+            "flask",
+            "httpx",
+            "requests",
+            "socket",
+            "starlette",
+        }
+    }
+    assert identifiers.isdisjoint(
+        {"app", "bearer", "cookie", "middleware", "router", "server", "socket"}
+    )
+    assert attributes.isdisjoint(
+        {"add_api_route", "add_route", "listen", "route", "run", "serve"}
+    )

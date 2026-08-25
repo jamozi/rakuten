@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "story_id": "ST-0606",
+  "classification": "SANITIZED_RECORDED_SYNTHETIC_EVIDENCE_WORKSPACE_INPUT_V2",
+  "source_mode": "RECORDED_SYNTHETIC_DEV_CI_ONLY",
+  "recorded_at": "2026-08-24T00:00:00Z",
+  "upstream": {
+    "st0604_lifecycle_sha256": "3c7a7cc6a296c96162847f2bb452bba2ff7048bc8f277dbe720bf19a97fafaee",
+    "st0605_fixture_sha256": "b805ee491f7388ab39d99bd61dbc0a29d3b1659a9a44b44ebdeb73063e8356a1",
+    "st0605_evaluation_input_sha256": "5c77d14388a7ac2d102ee6c92605bf8d9e38d8c4cffc839f92c4933c8cd8cb13",
+    "st0605_report_sha256": "001763e392a3068c6de1000815e655ddc24f703217c62dbda3e72b937b804d11",
+    "st0605_attestation_count": 8
+  },
+  "presentation": {
+    "source_label": "記録済み合成一次情報",
+    "fact_label_prefix": "記録済み合成Fact",
+    "conflict_empty_label": "記録済み合成fixtureにConflictはありません",
+    "lifecycle_unavailable_label": "現行ST-0604 lifecycleには表示可能なPacketがありません",
+    "live_freshness_unknown_label": "現在の鮮度は未確認です",
+    "coverage_non_authority_label": "記録済み合成評価の結果であり、公開を許可しません"
+  },
+  "sanitization": {
+    "contains_source_body": false,
+    "contains_source_url": false,
+    "contains_personal_data": false,
+    "contains_credentials": false,
+    "contains_finance_values": false,
+    "contains_recommendation_ranking_inputs": false
+  },
+  "authority": {
+    "route_registered": false,
+    "authentication_established": false,
+    "authorization_granted": false,
+    "network_enabled": false,
+    "backend_enabled": false,
+    "actions_enabled": false,
+    "persistence_enabled": false,
+    "publication_authorized": false,
+    "production_authorized": false
+  }
+}

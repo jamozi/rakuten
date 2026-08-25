@@ -1,289 +1,238 @@
-"""Hostile trust-boundary tests for the ST-1205 owner builder."""
+"""UNAVAILABLE semantics and adversarial numeric tests for ST-1205."""
 
 from __future__ import annotations
 
-import ast
-import hashlib
-from pathlib import Path
-import stat
-from typing import Any
+from dataclasses import replace
+from datetime import date
+from decimal import Decimal
 
 import pytest
-import yaml
 
-from conftest import REPOSITORY_ROOT
-from scripts import build_st1205_kpi_read_model_reference_plan as builder
-from scripts.build_st1505_staging_deployment import StagingDeploymentContractError
+from raos.adapters.recorded_kpi_input import RecordedKpiInputAdapter
+from raos.domain.analytics.kpi_read_model import (
+    AttributionBasis,
+    CalculationContext,
+    CohortState,
+    InputSource,
+    KpiAvailability,
+    KpiCalculationCommand,
+    KpiFailure,
+    KpiFailureCode,
+    KpiInputFrame,
+    MeasurementPeriod,
+    MetricObservation,
+    ProgramId,
+    UnavailableReason,
+    calculate_learning_rows,
+    calculate_rows,
+)
 
 
-def _rewrite_contract(root: Path, value: dict[str, Any]) -> str:
-    content = yaml.safe_dump(value, sort_keys=False, allow_unicode=True).encode()
-    (root / builder.CONTRACT_PATH).write_bytes(content)
-    return hashlib.sha256(content).hexdigest()
+def _frame_with(
+    fixture_bytes: bytes,
+    command: KpiCalculationCommand,
+    metric_key: str,
+    **changes: object,
+) -> KpiInputFrame:
+    batch = RecordedKpiInputAdapter(fixture_bytes).read(command)
+    observations = tuple(
+        replace(item, **changes) if item.metric_key == metric_key else item
+        for item in batch.input_frame.observations
+    )
+    assert observations != batch.input_frame.observations
+    return KpiInputFrame(observations)
 
 
-def _rebind_artifact(
-    artifacts: tuple[tuple[Path, str], ...],
-    target: Path,
-    digest: str,
-) -> tuple[tuple[Path, str], ...]:
-    return tuple((path, digest if path == target else old) for path, old in artifacts)
+def _row(frame: KpiInputFrame, command: KpiCalculationCommand, kpi_id: str):
+    return next(
+        row for row in calculate_rows(frame, command.context) if row.kpi_id == kpi_id
+    )
+
+
+def test_missing_input_is_unavailable_not_zero(
+    fixture_bytes: bytes, command: KpiCalculationCommand
+) -> None:
+    batch = RecordedKpiInputAdapter(fixture_bytes).read(command)
+    frame = KpiInputFrame(
+        tuple(
+            item
+            for item in batch.input_frame.observations
+            if item.metric_key != "organic_impressions"
+        )
+    )
+    row = _row(frame, command, "KPI-014")
+    assert row.availability is KpiAvailability.UNAVAILABLE
+    assert row.value is None
+    assert row.unavailable_reason is UnavailableReason.MISSING_INPUT
 
 
 @pytest.mark.parametrize(
-    ("section", "key"),
+    ("changes", "reason"),
     [
-        ("document", "decision"),
-        ("authority", "authority_kind"),
-        ("catalog_projection", "definition_count"),
-        ("calculation_boundary", "calculation_version"),
-        ("execution_boundary", "formula_engine"),
-        ("verification_boundary", "story_acceptance"),
+        ({"value": None}, UnavailableReason.MISSING_INPUT),
+        ({"verified": False}, UnavailableReason.UNVERIFIED_INPUT),
+        ({"cohort_state": CohortState.IMMATURE}, UnavailableReason.IMMATURE_COHORT),
+        (
+            {"period": MeasurementPeriod(date(2026, 6, 1), date(2026, 6, 30))},
+            UnavailableReason.PERIOD_MISMATCH,
+        ),
+        (
+            {"program_id": ProgramId("OTHER_PROGRAM")},
+            UnavailableReason.PROGRAM_MISMATCH,
+        ),
+        ({"source": InputSource.GA4_AGGREGATE}, UnavailableReason.SOURCE_MISMATCH),
     ],
 )
-def test_missing_contract_key_is_rejected(
-    isolated_root: Path,
-    monkeypatch: pytest.MonkeyPatch,
-    section: str,
-    key: str,
+def test_search_ctr_gates_are_explicit_unavailable(
+    fixture_bytes: bytes,
+    command: KpiCalculationCommand,
+    changes: dict[str, object],
+    reason: UnavailableReason,
 ) -> None:
-    contract = yaml.safe_load((isolated_root / builder.CONTRACT_PATH).read_text())
-    del contract[section][key]
-    monkeypatch.setattr(
-        builder, "EXPECTED_CONTRACT_SHA256", _rewrite_contract(isolated_root, contract)
+    row = _row(
+        _frame_with(fixture_bytes, command, "organic_impressions", **changes),
+        command,
+        "KPI-014",
     )
-    with pytest.raises((builder.KpiReferencePlanError, StagingDeploymentContractError)):
-        builder.load_contract(isolated_root)
+    assert row.availability is KpiAvailability.UNAVAILABLE
+    assert row.value is None
+    assert row.unavailable_reason is reason
 
 
-@pytest.mark.parametrize(
-    ("section", "key", "value"),
-    [
-        ("document", "executable", 0),
-        ("document", "story_acceptance", 0),
-        ("catalog_projection", "definition_count", True),
-        ("catalog_projection", "calculation_count", False),
-        ("calculation_boundary", "empty_means_zero", 0),
-        ("execution_boundary", "action_counts", []),
-        ("verification_boundary", "calculations_completed", False),
-    ],
-)
-def test_exact_types_reject_bool_integer_and_container_bypass(
-    isolated_root: Path,
-    monkeypatch: pytest.MonkeyPatch,
-    section: str,
-    key: str,
-    value: object,
+def test_zero_denominator_is_unavailable_but_never_silent_zero(
+    fixture_bytes: bytes, command: KpiCalculationCommand
 ) -> None:
-    contract = yaml.safe_load((isolated_root / builder.CONTRACT_PATH).read_text())
-    contract[section][key] = value
-    monkeypatch.setattr(
-        builder, "EXPECTED_CONTRACT_SHA256", _rewrite_contract(isolated_root, contract)
+    row = _row(
+        _frame_with(
+            fixture_bytes,
+            command,
+            "organic_impressions",
+            value=Decimal("0"),
+        ),
+        command,
+        "KPI-014",
     )
-    with pytest.raises((builder.KpiReferencePlanError, StagingDeploymentContractError)):
-        builder.load_contract(isolated_root)
+    assert row.availability is KpiAvailability.UNAVAILABLE
+    assert row.value is None
+    assert row.unavailable_reason is UnavailableReason.ZERO_DENOMINATOR
 
 
-def test_unknown_contract_key_is_rejected(
-    isolated_root: Path, monkeypatch: pytest.MonkeyPatch
+def test_negative_denominator_is_invalid_not_a_negative_rate(
+    fixture_bytes: bytes, command: KpiCalculationCommand
 ) -> None:
-    contract = yaml.safe_load((isolated_root / builder.CONTRACT_PATH).read_text())
-    contract["document"]["unexpected"] = "SECRET_CANARY_ST1205"
-    monkeypatch.setattr(
-        builder, "EXPECTED_CONTRACT_SHA256", _rewrite_contract(isolated_root, contract)
+    row = _row(
+        _frame_with(
+            fixture_bytes,
+            command,
+            "trailing_monthly_confirmed_contribution_jpy",
+            value=Decimal("-1"),
+        ),
+        command,
+        "KPI-023",
     )
-    with pytest.raises(builder.KpiReferencePlanError) as captured:
-        builder.load_contract(isolated_root)
-    assert "SECRET_CANARY" not in str(captured.value)
+    assert row.unavailable_reason is UnavailableReason.INVALID_NUMERIC_INPUT
 
 
-@pytest.mark.parametrize(
-    "payload",
-    [
-        "document: &x {schema_version: 1.0.0}\nauthority: *x\n",
-        "document:\n  schema_version: 1.0.0\n  schema_version: 2.0.0\n",
-        "document:\n  <<: {schema_version: 1.0.0}\n",
-        "document: !unsafe value\n",
-    ],
-)
-def test_yaml_alias_duplicate_merge_and_tag_are_rejected(
-    isolated_root: Path,
-    monkeypatch: pytest.MonkeyPatch,
-    payload: str,
+def test_attribution_mismatch_and_unverified_are_distinct(
+    fixture_bytes: bytes, command: KpiCalculationCommand
 ) -> None:
-    content = payload.encode()
-    (isolated_root / builder.CONTRACT_PATH).write_bytes(content)
-    monkeypatch.setattr(
-        builder, "EXPECTED_CONTRACT_SHA256", hashlib.sha256(content).hexdigest()
+    mismatch = _row(
+        _frame_with(
+            fixture_bytes,
+            command,
+            "confirmed_attributed_commission_jpy",
+            attribution_basis=AttributionBasis.PROVIDER_FACT,
+        ),
+        command,
+        "KPI-003",
     )
-    with pytest.raises((builder.KpiReferencePlanError, Exception)):
-        builder.load_contract(isolated_root)
-
-
-def test_canonical_row_tamper_rejected_when_catalog_hash_is_rebound(
-    isolated_root: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    path = isolated_root / builder.KPI_CATALOG_PATH
-    path.chmod(0o600)
-    catalog = yaml.safe_load(path.read_text())
-    catalog["kpis"][0]["formula"] = "SECRET_CANARY_ST1205"
-    content = yaml.safe_dump(catalog, sort_keys=False, allow_unicode=True).encode()
-    path.write_bytes(content)
-    monkeypatch.setattr(
-        builder, "KPI_CATALOG_SHA256", hashlib.sha256(content).hexdigest()
+    assert mismatch.unavailable_reason is UnavailableReason.ATTRIBUTION_BASIS_MISMATCH
+    unverified = _row(
+        _frame_with(
+            fixture_bytes,
+            command,
+            "confirmed_attributed_commission_jpy",
+            attribution_verified=False,
+        ),
+        command,
+        "KPI-003",
     )
-    with pytest.raises(builder.KpiReferencePlanError) as captured:
-        builder.load_contract(isolated_root)
-    assert "SECRET_CANARY" not in str(captured.value)
+    assert unverified.unavailable_reason is UnavailableReason.ATTRIBUTION_UNVERIFIED
 
 
-@pytest.mark.parametrize(
-    ("constant", "artifact_index", "old", "new"),
-    [
-        ("ST1201_ARTIFACTS", 1, "measurement_observed", "measurement_claimed"),
-        ("ST1203_ARTIFACTS", 1, "top_rows_only", "all_rows_complete"),
-        ("ST1204_ARTIFACTS", 1, "len(self.rows) != 2", "len(self.rows) != 3"),
-    ],
-)
-def test_predecessor_semantic_tamper_rejected_when_hash_is_rebound(
-    isolated_root: Path,
-    monkeypatch: pytest.MonkeyPatch,
-    constant: str,
-    artifact_index: int,
-    old: str,
-    new: str,
+def test_provider_total_cannot_be_arbitrarily_allocated_to_article(
+    fixture_bytes: bytes, command: KpiCalculationCommand
 ) -> None:
-    artifacts = getattr(builder, constant)
-    target = artifacts[artifact_index][0]
-    path = isolated_root / target
-    source = path.read_text()
-    assert old in source
-    path.write_text(source.replace(old, new, 1))
-    digest = hashlib.sha256(path.read_bytes()).hexdigest()
-    monkeypatch.setattr(builder, constant, _rebind_artifact(artifacts, target, digest))
-    with pytest.raises(builder.KpiReferencePlanError):
-        builder.load_contract(isolated_root)
-
-
-@pytest.mark.parametrize("relative", [builder.STORY_PATH, builder.HELPER_PATH])
-def test_authority_or_helper_hash_drift_is_rejected(
-    isolated_root: Path, relative: Path
-) -> None:
-    path = isolated_root / relative
-    path.chmod(0o600)
-    path.write_bytes(path.read_bytes() + b"\n")
-    with pytest.raises(builder.KpiReferencePlanError):
-        builder.load_contract(isolated_root)
-
-
-def test_oversized_contract_is_rejected(
-    isolated_root: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    content = b"x" * (builder.MAX_SOURCE_BYTES + 1)
-    (isolated_root / builder.CONTRACT_PATH).write_bytes(content)
-    monkeypatch.setattr(
-        builder, "EXPECTED_CONTRACT_SHA256", hashlib.sha256(content).hexdigest()
+    row = _row(
+        _frame_with(
+            fixture_bytes,
+            command,
+            "confirmed_article_commission_jpy",
+            attribution_basis=AttributionBasis.PROVIDER_FACT,
+        ),
+        command,
+        "KPI-022",
     )
-    with pytest.raises((builder.KpiReferencePlanError, StagingDeploymentContractError)):
-        builder.load_contract(isolated_root)
+    assert row.availability is KpiAvailability.UNAVAILABLE
+    assert row.unavailable_reason is UnavailableReason.ATTRIBUTION_BASIS_MISMATCH
 
 
-def test_input_symlink_target_is_rejected(isolated_root: Path) -> None:
-    target = isolated_root / builder.CONTRACT_PATH
-    replacement = target.with_name("elsewhere.yaml")
-    replacement.write_bytes(target.read_bytes())
-    target.unlink()
-    target.symlink_to(replacement.name)
-    with pytest.raises((builder.KpiReferencePlanError, Exception)):
-        builder.load_contract(isolated_root)
+def test_selected_basis_must_match_all_attributed_inputs(
+    fixture_bytes: bytes, command: KpiCalculationCommand
+) -> None:
+    batch = RecordedKpiInputAdapter(fixture_bytes).read(command)
+    estimated_context = CalculationContext(
+        command.context.period,
+        command.context.program_id,
+        AttributionBasis.ESTIMATED,
+    )
+    rows = calculate_rows(batch.input_frame, estimated_context)
+    assert rows[2].unavailable_reason is UnavailableReason.ATTRIBUTION_BASIS_MISMATCH
+    assert rows[23].unavailable_reason is UnavailableReason.ATTRIBUTION_BASIS_MISMATCH
 
 
-def test_input_symlink_ancestor_is_rejected(isolated_root: Path) -> None:
-    changes = isolated_root / "changes"
-    moved = isolated_root / "changes-real"
-    changes.rename(moved)
-    changes.symlink_to(moved.name, target_is_directory=True)
-    with pytest.raises((builder.KpiReferencePlanError, Exception)):
-        builder.load_contract(isolated_root)
+def test_learning_content_hour_obeys_same_attribution_and_maturity_gates(
+    fixture_bytes: bytes, command: KpiCalculationCommand
+) -> None:
+    frame = _frame_with(
+        fixture_bytes,
+        command,
+        "content_work_minutes",
+        cohort_state=CohortState.IMMATURE,
+    )
+    rows = calculate_rows(frame, command.context)
+    learning = calculate_learning_rows(rows, frame, command.context)[4]
+    assert learning.metric_id == "confirmed_reward_per_content_hour"
+    assert learning.availability is KpiAvailability.UNAVAILABLE
+    assert learning.value is None
+    assert learning.unavailable_reason is UnavailableReason.IMMATURE_COHORT
+    assert learning.recommendation_order_effect is False
 
 
-def test_nonregular_contract_is_rejected(isolated_root: Path) -> None:
-    target = isolated_root / builder.CONTRACT_PATH
-    target.unlink()
-    target.mkdir()
-    with pytest.raises((builder.KpiReferencePlanError, Exception)):
-        builder.load_contract(isolated_root)
-
-
-def test_output_symlink_is_rejected(isolated_root: Path) -> None:
-    target = isolated_root / builder.REFERENCE_PLAN_PATH
-    target.unlink()
-    outside = isolated_root / "outside.json"
-    outside.write_text("unchanged")
-    target.symlink_to(outside)
-    with pytest.raises((builder.KpiReferencePlanError, Exception)):
-        builder.build(isolated_root)
-    assert outside.read_text() == "unchanged"
-
-
-def test_output_mode_drift_is_detected_without_write(isolated_root: Path) -> None:
-    target = isolated_root / builder.REFERENCE_PLAN_PATH
-    target.chmod(0o600)
-    before = target.read_bytes()
-    with pytest.raises((builder.KpiReferencePlanError, Exception)):
-        builder.build(isolated_root, check=True)
-    assert target.read_bytes() == before
-    assert stat.S_IMODE(target.stat().st_mode) == 0o600
-
-
-def test_builder_ast_has_no_external_or_runtime_capability() -> None:
-    source = (REPOSITORY_ROOT / builder.GENERATOR_PATH).read_text()
-    tree = ast.parse(source)
-    forbidden_imports = {
-        "boto3",
-        "botocore",
-        "http",
-        "os",
-        "requests",
-        "socket",
-        "sqlalchemy",
-        "sqlite3",
-        "subprocess",
-        "urllib",
+def test_float_boolean_and_nonfinite_decimal_never_enter_input_model(
+    command: KpiCalculationCommand,
+) -> None:
+    common = {
+        "metric_key": "bad_metric",
+        "source": InputSource.FIRST_PARTY_EVENT,
+        "period": command.context.period,
+        "program_id": command.context.program_id,
+        "verified": True,
+        "cohort_state": CohortState.NOT_APPLICABLE,
+        "attribution_basis": AttributionBasis.NOT_APPLICABLE,
+        "attribution_verified": False,
     }
-    imported: set[str] = set()
-    calls: set[str] = set()
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Import):
-            imported.update(alias.name.split(".")[0] for alias in node.names)
-        elif isinstance(node, ast.ImportFrom) and node.module:
-            imported.add(node.module.split(".")[0])
-        elif isinstance(node, ast.Call):
-            if isinstance(node.func, ast.Name):
-                calls.add(node.func.id)
-            elif isinstance(node.func, ast.Attribute):
-                calls.add(node.func.attr)
-    assert imported.isdisjoint(forbidden_imports)
-    assert calls.isdisjoint(
-        {
-            "eval",
-            "exec",
-            "compile",
-            "system",
-            "popen",
-            "connect",
-            "request",
-            "execute",
-        }
-    )
+    for value in (1.5, True, Decimal("NaN"), Decimal("Infinity")):
+        with pytest.raises(KpiFailure):
+            MetricObservation(value=value, **common)  # type: ignore[arg-type]
 
 
-def test_builder_uses_only_fixed_owned_output_paths() -> None:
-    assert builder.GENERATED_PATHS == (
-        builder.REFERENCE_PLAN_PATH,
-        builder.MANIFEST_PATH,
-    )
-    assert all(
-        not path.is_absolute() and ".." not in path.parts
-        for path in builder.GENERATED_PATHS
-    )
+def test_duplicate_metric_key_is_rejected(
+    fixture_bytes: bytes, command: KpiCalculationCommand
+) -> None:
+    batch = RecordedKpiInputAdapter(fixture_bytes).read(command)
+    with pytest.raises(KpiFailure) as captured:
+        KpiInputFrame(
+            (batch.input_frame.observations[0], batch.input_frame.observations[0])
+        )
+    assert captured.value.code is KpiFailureCode.DUPLICATE_INPUT

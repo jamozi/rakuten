@@ -54,8 +54,8 @@ SOURCE_ARTIFACT_PATHS: Final = (
 
 SECURE_HELPER_ROW: Final = (
     "scripts/build_st1506_production_deployment.py",
-    76341,
-    "f58b1ed91bcfcc4376262a3e3aa3653154dcbb0672e8508daac874e0042f1176",
+    78141,
+    "cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be",
 )
 
 SOURCE_ROWS: Final = (
@@ -132,12 +132,12 @@ SOURCE_ROWS: Final = (
     (
         "changes/st-0308/contracts/design-handoff-validation.v1.yaml",
         18293,
-        "dbb63249a173e11e52504a6af03a87dc18991afba60b227867801a096f5cff7a",
+        "0a1e9e1dba1f6af870d76289344a74e78938eafd50d1aee914f3f7cb0d9c71b7",
     ),
     (
         "scripts/validate_st0308_design_handoff.py",
         104164,
-        "b3c5db0d3760a2973e8f8d07ee42b544a6b6bce5c34a4bd6e02f139a1ab30d36",
+        "2a44ee2af628d2d634efd08fda48f846698b63a7b653dbd4a36c495d13475b61",
     ),
 )
 

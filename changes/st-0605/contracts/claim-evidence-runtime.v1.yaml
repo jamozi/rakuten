@@ -1,0 +1,218 @@
+schema_version: 1
+story_id: ST-0605
+classification: LOCAL_EXECUTABLE_RECORDED_CLAIM_EVIDENCE_RUNTIME_V1
+runtime:
+  executable: true
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  repository_write: false
+  publication_authorized: false
+  production_eligible: false
+policy_binding:
+  policy_document_id: RAOS-CONTENT-EVIDENCE-001
+  policy_version: 1.0.0
+  policy_sha256: fbf2d0ad6e7821a0059f9ceeb53d57268031e2e42b4aad988af9a42378aec5ba
+  evaluator_version: ST0605_CLAIM_EVIDENCE_COVERAGE_V1
+  claim_set_profile: ST0605_COMPLETE_CLAIM_SET_V1
+thresholds:
+  major:
+    evidenced_numerator: 1
+    total_denominator: 1
+  all_verifiable:
+    evidenced_numerator: 95
+    total_denominator: 100
+  arithmetic: INTEGER_CROSS_MULTIPLICATION
+  zero_denominator: UNEVALUABLE
+vocabulary_boundary:
+  policy_claim_types:
+    - direct_fact
+    - derived_fact
+    - comparative
+    - recommendation
+    - experience
+    - price_availability
+    - superlative
+    - safety_legal_regulatory
+    - predictive
+  policy_source_tiers:
+    - SRC-TIER-A
+    - SRC-TIER-B
+    - SRC-TIER-C
+    - SRC-TIER-D
+    - SRC-DISCOVERY
+    - SRC-EXCLUDED
+  policy_link_support_types:
+    - SUPPORTS
+    - QUALIFIES
+    - CONTRADICTS
+  inferred_persistence_mapping: false
+  inferred_ai_mapping: false
+precedence:
+  predictive_default: BLOCKED_IN_MVP
+  note: The explicit Claim-Evidence policy blocking condition overrides the generic repeated matrix PASS label.
+source_bindings:
+  - path: contracts/raos-v0.4/contracts/content/RAOS_06_claim_evidence_policy_v0.1.yaml
+    sha256: fbf2d0ad6e7821a0059f9ceeb53d57268031e2e42b4aad988af9a42378aec5ba
+  - path: contracts/raos-v0.4/contracts/content/RAOS_06_content_test_matrix_v0.1.csv
+    sha256: 9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564
+  - path: contracts/raos-v0.4/contracts/content/schemas/claim.schema.json
+    sha256: db1004163eaf42eb88ba1c7336b6da43e6e2f90ceb390d396003d5b0c58ccde3
+  - path: changes/st-0304/generated/domain-catalog.v1.json
+    sha256: 41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208
+  - path: contracts/raos-v0.4/contracts/schemas/ai/claim-extraction-output.schema.json
+    sha256: 0b82454a43c2c5aed37f2fe72f74d1e124dfb1f7fe1ee2fb9c996827d1c2bd75
+fixture:
+  schema_version: 1
+  contract:
+    policy_document_id: RAOS-CONTENT-EVIDENCE-001
+    policy_version: 1.0.0
+    policy_sha256: fbf2d0ad6e7821a0059f9ceeb53d57268031e2e42b4aad988af9a42378aec5ba
+    evaluator_version: ST0605_CLAIM_EVIDENCE_COVERAGE_V1
+    claim_set_profile: ST0605_COMPLETE_CLAIM_SET_V1
+  article:
+    article_version_id: 11111111-1111-4111-8111-111111111111
+    article_body_sha256: '1111111111111111111111111111111111111111111111111111111111111111'
+    source_packet_version_id: 33333333-3333-4333-8333-333333333333
+    source_packet_content_sha256: '2222222222222222222222222222222222222222222222222222222222222222'
+    complete_claim_ids:
+      - 44444444-4444-4444-8444-444444444444
+      - 55555555-5555-4555-8555-555555555555
+  approved_packet:
+    source_packet_id: 22222222-2222-4222-8222-222222222222
+    source_packet_version_id: 33333333-3333-4333-8333-333333333333
+    version_no: 1
+    status: APPROVED
+    content_sha256: '2222222222222222222222222222222222222222222222222222222222222222'
+    fact_ids:
+      - 66666666-6666-4666-8666-666666666666
+      - 77777777-7777-4777-8777-777777777777
+    approval_decision_sha256: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+    approved_at: '2026-08-23T10:00:00Z'
+  evaluated_at: '2026-08-24T00:00:00Z'
+  claims:
+    - claim_id: 44444444-4444-4444-8444-444444444444
+      article_version_id: 11111111-1111-4111-8111-111111111111
+      claim_text_sha256: '3333333333333333333333333333333333333333333333333333333333333333'
+      claim_type: direct_fact
+      criticality: 5
+      affects_purchase_decision: true
+      affects_ranking: false
+      affects_price: false
+      affects_safety: false
+      affects_legal: false
+      temporal_scope_required: true
+      allowed_subject_identity_sha256s:
+        - 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+    - claim_id: 55555555-5555-4555-8555-555555555555
+      article_version_id: 11111111-1111-4111-8111-111111111111
+      claim_text_sha256: '4444444444444444444444444444444444444444444444444444444444444444'
+      claim_type: direct_fact
+      criticality: 2
+      affects_purchase_decision: false
+      affects_ranking: false
+      affects_price: false
+      affects_safety: false
+      affects_legal: false
+      temporal_scope_required: true
+      allowed_subject_identity_sha256s:
+        - 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
+  requirement_proofs:
+    - claim_id: 44444444-4444-4444-8444-444444444444
+      temporal_scope_sha256: '5555555555555555555555555555555555555555555555555555555555555555'
+      derivation_formula_sha256: null
+      comparison_population_sha256: null
+      recommendation_methodology_sha256: null
+      experience_record_sha256: null
+      experience_approved: false
+      safety_compliance_review_sha256: null
+      unknown_value_handling: NOT_APPLICABLE
+    - claim_id: 55555555-5555-4555-8555-555555555555
+      temporal_scope_sha256: '6666666666666666666666666666666666666666666666666666666666666666'
+      derivation_formula_sha256: null
+      comparison_population_sha256: null
+      recommendation_methodology_sha256: null
+      experience_record_sha256: null
+      experience_approved: false
+      safety_compliance_review_sha256: null
+      unknown_value_handling: EXPLICIT_UNKNOWN
+  facts:
+    - fact_id: 66666666-6666-4666-8666-666666666666
+      source_snapshot_id: 99999999-9999-4999-8999-999999999999
+      fact_sha256: '7777777777777777777777777777777777777777777777777777777777777777'
+      subject_identity_sha256: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+    - fact_id: 77777777-7777-4777-8777-777777777777
+      source_snapshot_id: aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa
+      fact_sha256: '8888888888888888888888888888888888888888888888888888888888888888'
+      subject_identity_sha256: 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
+  links:
+    - claim_id: 44444444-4444-4444-8444-444444444444
+      fact_id: 66666666-6666-4666-8666-666666666666
+      support_type: SUPPORTS
+    - claim_id: 55555555-5555-4555-8555-555555555555
+      fact_id: 77777777-7777-4777-8777-777777777777
+      support_type: SUPPORTS
+  sources:
+    - source_id: 88888888-8888-4888-8888-888888888888
+      tier: SRC-TIER-A
+      origin: AUTHORITATIVE
+      active: true
+  snapshots:
+    - source_snapshot_id: 99999999-9999-4999-8999-999999999999
+      source_id: 88888888-8888-4888-8888-888888888888
+      content_sha256: '9999999999999999999999999999999999999999999999999999999999999999'
+      validation_status: VALID
+      acquired_at: '2026-08-23T00:00:00Z'
+      expires_at: '2026-09-01T00:00:00Z'
+    - source_snapshot_id: aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa
+      source_id: 88888888-8888-4888-8888-888888888888
+      content_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      validation_status: VALID
+      acquired_at: '2026-08-23T00:00:00Z'
+      expires_at: '2026-09-01T00:00:00Z'
+  identities:
+    - fact_id: 66666666-6666-4666-8666-666666666666
+      status: MATCHED
+      expected_subject_identity_sha256: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+      observed_subject_identity_sha256: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+      decision_sha256: 'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd'
+      decided_at: '2026-08-23T12:00:00Z'
+    - fact_id: 77777777-7777-4777-8777-777777777777
+      status: MATCHED
+      expected_subject_identity_sha256: 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
+      observed_subject_identity_sha256: 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
+      decision_sha256: 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+      decided_at: '2026-08-23T12:00:00Z'
+  conflicts: []
+  citations:
+    - citation_id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      claim_id: 44444444-4444-4444-8444-444444444444
+      fact_id: 66666666-6666-4666-8666-666666666666
+      support_type: SUPPORTS
+      source_id: 88888888-8888-4888-8888-888888888888
+      source_snapshot_id: 99999999-9999-4999-8999-999999999999
+    - citation_id: cccccccc-cccc-4ccc-8ccc-cccccccccccc
+      claim_id: 55555555-5555-4555-8555-555555555555
+      fact_id: 77777777-7777-4777-8777-777777777777
+      support_type: SUPPORTS
+      source_id: 88888888-8888-4888-8888-888888888888
+      source_snapshot_id: aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa
+  attestations: []
+execution_boundary:
+  repository_read: RECORDED_SYNTHETIC_ONLY
+  result_append: PROCESS_LOCAL_ONLY
+  pure_evaluator_authority: NONE
+  trusted_snapshot_resolution: PRELOADED_EXACT_INPUT
+  recorded_attestation_decision: DETERMINISTIC_CORRUPTION_CHECK_NOT_AUTHENTICATION
+  article_mutation: FORBIDDEN
+  recommendation_mutation: FORBIDDEN
+  publication_snapshot_mutation: FORBIDDEN
+  network: FORBIDDEN
+  credential: FORBIDDEN
+  provider: FORBIDDEN
+verification_boundary:
+  TST-020: NOT_EXECUTED
+  TST-021: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

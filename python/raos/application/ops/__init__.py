@@ -2,6 +2,12 @@
 
 from raos.application.ops.job_runtime import RecordedJobRuntimeService
 from raos.application.ops.object_intake import ObjectIntakeService
+from raos.application.ops.performance_load import PerformanceLoadEvaluationService
 from raos.application.ops.telemetry import TelemetryRecorder
 
-__all__ = ["ObjectIntakeService", "RecordedJobRuntimeService", "TelemetryRecorder"]
+__all__ = [
+    "ObjectIntakeService",
+    "PerformanceLoadEvaluationService",
+    "RecordedJobRuntimeService",
+    "TelemetryRecorder",
+]

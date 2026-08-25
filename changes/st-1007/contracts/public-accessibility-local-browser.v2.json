@@ -1,0 +1,131 @@
+{
+  "schema_version": 2,
+  "story_id": "ST-1007",
+  "classification": "LOCAL_BROWSER_AUTOMATED_ACCESSIBILITY_EVIDENCE_NON_FORMAL_V2",
+  "runtime": {
+    "allowed_environments": ["ENV-DEV", "CI"],
+    "origin_mode": "LOOPBACK_EPHEMERAL_ONLY",
+    "network_policy": "LOOPBACK_DOCUMENT_AND_ASSETS_ONLY",
+    "browser": {
+      "product": "Chrome for Testing",
+      "version": "147.0.7727.15",
+      "executable_sha256": "696170a79640ec5b50c7518140ace06c69a49cfb295bf527d4a85e26a12b89a7"
+    },
+    "axe": {
+      "version": "4.12.1",
+      "script_path": "node_modules/axe-core/axe.min.js",
+      "script_sha256": "66a8aaa95a8b044a7fd74a5435873bf04ff65a1ca75567c921b7509742085a14",
+      "tags": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]
+    },
+    "next_version": "16.2.12"
+  },
+  "observed_routes": [
+    {
+      "screen_id": "PUB-003",
+      "path": "/articles/synthetic-recorded-policy-seo",
+      "expected_status": 200,
+      "runtime_kind": "RECORDED_SYNTHETIC_ARTICLE"
+    },
+    {
+      "screen_id": "PUB-004",
+      "path": "/editorial-policy",
+      "expected_status": 200,
+      "runtime_kind": "LOCAL_POLICY_PAGE"
+    },
+    {
+      "screen_id": "PUB-005",
+      "path": "/affiliate-disclosure",
+      "expected_status": 200,
+      "runtime_kind": "LOCAL_POLICY_PAGE"
+    },
+    {
+      "screen_id": "PUB-006",
+      "path": "/privacy",
+      "expected_status": 200,
+      "runtime_kind": "LOCAL_POLICY_PAGE"
+    },
+    {
+      "screen_id": "PUB-007",
+      "path": "/about",
+      "expected_status": 200,
+      "runtime_kind": "LOCAL_POLICY_PAGE"
+    },
+    {
+      "screen_id": "PUB-008",
+      "path": "/st-1007-recorded-missing-route",
+      "expected_status": 404,
+      "runtime_kind": "NEXT_DEFAULT_NOT_FOUND_OBSERVATION"
+    }
+  ],
+  "unavailable_canonical_screens": [
+    { "screen_id": "PUB-001", "reason": "ROUTE_NOT_IMPLEMENTED" },
+    { "screen_id": "PUB-002", "reason": "ROUTE_NOT_IMPLEMENTED" },
+    { "screen_id": "PUB-009", "reason": "ROUTE_NOT_IMPLEMENTED" },
+    { "screen_id": "PUB-010", "reason": "ROUTE_NOT_IMPLEMENTED" }
+  ],
+  "viewport_profiles": [
+    { "id": "MOBILE_360", "width": 360, "height": 800 },
+    { "id": "TABLET_768", "width": 768, "height": 1024 },
+    { "id": "DESKTOP_1440", "width": 1440, "height": 1000 },
+    { "id": "REFLOW_320", "width": 320, "height": 800 }
+  ],
+  "local_checks": {
+    "axe_zero_violations": true,
+    "unique_nonempty_title": true,
+    "exactly_one_h1": true,
+    "japanese_document_language": true,
+    "main_landmark_required_for_200": true,
+    "skip_link_keyboard_flow_required_for_200": true,
+    "visible_focus_required": true,
+    "document_horizontal_overflow_forbidden": true,
+    "unexpected_outbound_request_forbidden": true,
+    "uncaught_page_error_forbidden": true,
+    "console_error_forbidden": true
+  },
+  "formal_boundary": {
+    "TST-023": "NOT_EXECUTED",
+    "TST-024": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED",
+    "screen_reader": "NOT_EXECUTED",
+    "manual_keyboard": "NOT_EXECUTED",
+    "manual_200_percent_zoom": "NOT_EXECUTED",
+    "wcag_conformance": "NOT_CLAIMED",
+    "story_acceptance": "BLOCKED_INCOMPLETE_CANONICAL_SCREEN_AND_MANUAL_EVIDENCE"
+  },
+  "authority": {
+    "publication": "NONE",
+    "staging": "NONE",
+    "release": "NONE",
+    "production": "NONE",
+    "external_write": false,
+    "network": "LOOPBACK_ONLY"
+  },
+  "output_path": "changes/st-1007/generated/public-accessibility-local-browser.v2.json",
+  "source_paths": [
+    "changes/st-1007/contracts/public-accessibility-local-browser.v2.json",
+    "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+    "docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md",
+    "docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv",
+    "docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+    "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+    "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+    "package.json",
+    "package-lock.json",
+    "apps/web/package.json",
+    "apps/web/app/layout.tsx",
+    "apps/web/app/globals.css",
+    "apps/web/app/articles/[slug]/page.tsx",
+    "apps/web/app/articles/[slug]/article.module.css",
+    "apps/web/src/public-shell.tsx",
+    "apps/web/src/public-policy.ts",
+    "apps/web/src/public-article-page.tsx",
+    "packages/web-ui/src/public-event-instrumentation.ts",
+    "apps/web/src/local-seo-runtime.ts",
+    "packages/web-ui/src/public-article-renderer.ts",
+    "packages/web-ui/src/public-accessibility-acceptance.ts",
+    "apps/web/src/recorded-comparison-components.tsx",
+    "apps/web/src/recorded-comparison-components.module.css",
+    "changes/st-1004/contracts/disclosure-affiliate-runtime.v2.yaml",
+    "scripts/check_st1007_public_accessibility_browser.mjs"
+  ]
+}

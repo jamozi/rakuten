@@ -1,0 +1,160 @@
+document:
+  id: RAOS-ST0406-LOCAL-IMPLEMENTATION-COMPLETION-002
+  story_id: ST-0406
+  evidence_class: LOCAL_IMPLEMENTATION_ONLY
+  proposed_status: LOCAL_CODE_COMPLETE
+  canonical_status: UNCHANGED
+  base_sha: 7620234b7f1af2d52dd35b9a0ec12a705c23cda2
+  branch: codex/st0406-secure-intake-local-complete-20260825
+  recorded_at: '2026-08-25T03:26:30+09:00'
+
+scope:
+  - exact ST-0403 durable authorization recovery with active ST-0401 session recheck before all intake I/O
+  - owner-private durable SQLite BLOB quarantine and append-only journal
+  - bounded streaming, descriptor and authorization binding, idempotency, duplicate indexing, CAS and commit recovery
+  - in-memory no-extraction archive and strict CSV validation
+  - recorded privacy classification and recorded or disabled malware scan boundary
+  - deterministic owner contract, generated runtime projection and provenance manifest
+
+local_completion:
+  legacy_v1: PRESERVED_COMPATIBILITY_ONLY_NOT_AUTHORITY
+  runtime_v2: LOCAL_CODE_COMPLETE_MAXIMUM_SAFE_RECORDED
+  authorization:
+    service: DurableAuthorizationService.recover_admin
+    active_session_rechecked: true
+    recovered_result_exact_equality: true
+    request_digest_recomputed: true
+    exact_binding: ED-011/edit_article_draft/ARTICLE_VERSION/DRAFT
+    descriptor_site_resource_binding: EXACT
+    source_and_quarantine_io_before_authorization: 0
+    allowed_kinds:
+      - MEDIA_ASSET
+      - SOURCE_DOCUMENT
+    revenue_report: DENIED_NO_PROVEN_ACTIVE_BINDING
+    direct_value_constructor_provenance: NOT_ACCEPTED
+  storage:
+    root_mode: '0700'
+    database_mode: '0600'
+    database_link_count: 1
+    symlink_safe_ancestor_walk: IMPLEMENTED
+    quarantine: SQLITE_BLOB_OWNER_PRIVATE
+    transaction: BEGIN_IMMEDIATE_UNIT_OF_WORK
+    schema: EXACT_AND_VERSIONED
+    integrity: SQLITE_PLUS_ROW_HASHES_PLUS_EVENT_HASH_CHAIN
+    append_only: EVENTS_RESULTS_DUPLICATE_INDEX
+    compare_and_set: IMPLEMENTED
+    idempotency: EXACT_CONFLICT_REJECTING
+    duplicate_index: EXACT_SHA256
+    restart_recovery: IMPLEMENTED
+    concurrent_same_command: EXACT_ONE_DURABLE_OUTCOME
+    commit_ambiguity:
+      before_commit: KNOWN_ROLLBACK
+      after_commit: EXACT_READ_ONLY_RECOVERY
+  inspection:
+    archive_extraction_calls: 0
+    zip_tar_tar_gzip: CLOSED_IN_MEMORY_VALIDATION
+    traversal_absolute_link_encrypted_nested_bomb: REJECTED
+    csv: STRICT_UTF8_CLOSED_SHAPE_FORMULA_PREFIX_PROTECTED
+    magic_mime_extension: EXACT
+    privacy: RECORDED_DIGEST_SCRIPT
+    malware: RECORDED_DIGEST_SCRIPT_OR_DISABLED_FAIL_CLOSED
+  exception_isolation: CLOSED_CODES_NO_COLLABORATOR_TEXT
+  public_byte_read_export_promote_delete_lifecycle_surface: ABSENT
+  external_action_count: 0
+  socket_subprocess_provider_credential: ABSENT
+
+open_decision_boundary:
+  decision_id: OD-014
+  status: UNRESOLVED_UNCHANGED
+  retention_period: NOT_CHOSEN
+  automatic_deletion: DISABLED_ABSENT
+  lifecycle_surface: ABSENT
+
+checks:
+  owner_generation:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python scripts/build_st0406_secure_object_intake_runtime.py
+    result: PASS
+  owner_no_write_check:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python scripts/build_st0406_secure_object_intake_runtime.py --check
+    result: PASS
+  focused_pytest:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/pytest -p no:cacheprovider tests/st0406 -q
+    result: PASS
+    observed: 89 passed
+  predecessor_regression_st0403:
+    result: PASS
+    observed: 95 passed
+  predecessor_regression_st0202:
+    result: PASS
+    observed: 329 passed
+  ruff_check:
+    result: PASS
+  ruff_format_check:
+    result: PASS
+  strict_mypy_runtime_and_tests:
+    result: PASS
+    observed: Success no issues found in 10 source files
+  strict_mypy_generator:
+    result: PASS
+    observed: Success no issues found in 1 source file
+  pinned_pyright_owned_runtime:
+    runtime: Node 24.18.1 and Pyright 1.1.411
+    result: PASS
+    observed: 0 errors and 0 warnings and 0 informations
+  full_repository_pyright:
+    result: INHERITED_DRIFT
+    observed: 660 errors and 0 warnings and 0 informations
+    owned_runtime_findings: 0
+    introduced_by: INHERITED_AT_EXACT_BASE_NOT_ST0406
+    safe_impact: ST0406 focused strict mypy and pinned Pyright are green and no unrelated file was changed
+  compile_import:
+    result: PASS
+    observed: ST0406_V2_IMPORT_OK with 17 closed failure codes
+  network_syscalls:
+    method: strace network-only over complete tests/st0406 suite
+    result: PASS
+    observed: 0 network syscall lines across 89 tests
+  focused_secret_scan:
+    result: PASS
+    observed: 0 findings across explicit ST0406 maintained source inventory
+  full_worktree_secret_scan:
+    result: OPERATIONAL_ERROR_INHERITED
+    observed: unsafe-git-metadata for isolated worktree indirection with exit 2
+    safe_impact: focused scan uses the repository scanner over every ST0406 maintained file
+  git_diff_check:
+    result: PASS
+  owned_path_review:
+    result: PASS
+
+debt:
+  - id: ST0406-V2-INTRODUCED-DEBT
+    status: NONE
+  - id: ST0406-EXTERNAL-TAIL
+    status: EXTERNAL_BLOCKED_UNCHANGED
+    items:
+      - real object-storage provider and credential
+      - native malware scanner
+      - public upload and read or lifecycle API
+      - retention decision OD-014
+      - hosted CI, Security and Privacy review, staging, release and Production evidence
+  - id: ST0406-INHERITED-STATIC-DRIFT
+    status: INHERITED_UNCHANGED
+    items:
+      - full repository Pyright has 660 findings outside ST0406 owned runtime
+      - full worktree secret scan refuses isolated worktree git metadata
+
+authority:
+  canonical_apply: NOT_EXECUTED
+  formal_tst_014: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  formal_tst_031: NOT_EXECUTED
+  real_object_storage: NOT_EXECUTED
+  real_malware_scanner: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  credential_access: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  security_privacy_owner_review: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

@@ -341,7 +341,7 @@ const sourceReferenceSource = [
     scope: 'DEPENDENCY',
     path: 'changes/st-1101/README.md',
     locator: 'disabled headless admin shell',
-    sha256: 'b2bb91e89d5948f8081853e39596951adcee16974ce2a6ffa159892310ead08c',
+    sha256: 'a2c2cebdf12493b52af1ed70ad148eafef3828249082eda5b8683043f417f936',
     consumption: 'REFERENCE_ONLY_NO_RUNTIME_IMPORT',
   },
 ] as const;

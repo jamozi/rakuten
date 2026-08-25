@@ -1,0 +1,988 @@
+{
+  "completion_boundary": {
+    "canonical_status_changed": false,
+    "formal_or_live_evidence_claimed": false,
+    "local_code_complete": true,
+    "local_integration_complete": false
+  },
+  "document": {
+    "authority": "RECORDED_SYNTHETIC_ONLY",
+    "canonical_status": "UNCHANGED",
+    "classification": "MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_UNIT_ECONOMICS",
+    "executable_environments": [
+      "ENV-DEV",
+      "ENV-CI"
+    ],
+    "formal_validation_claimed": false,
+    "production_eligible": false,
+    "schema_version": "2.0.0",
+    "status": "LOCAL_CODE_COMPLETE",
+    "story_id": "ST-1304"
+  },
+  "measurement_boundary": {
+    "article_slots": [
+      {
+        "article_id": "st1703-first-suitcase-comparison",
+        "packet_sha256": "9d0e7032fab6200566639555dce6ebdd29113e3ea87982f0c80fc048d6b9b537",
+        "slot": 1
+      },
+      {
+        "article_id": "st1704-portable-power-station-guide",
+        "packet_sha256": "4d670e37a45d96c775a6f42132fc8d9e8e6ac6d97e67cb26a1ecea8e6acfd9c1",
+        "slot": 2
+      },
+      {
+        "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+        "packet_sha256": "edea36dcc82f9ba1705d1cde8916b2c8da70eab2e41892d94dc9bfb35547c7b3",
+        "slot": 3
+      },
+      {
+        "article_id": "st1704-countertop-dishwasher-for-small-households",
+        "packet_sha256": "b1a0c447cd07d6d3d65bbe5b842110a246351c3e6ddfb8dae9bf8363f12b7adb",
+        "slot": 4
+      },
+      {
+        "article_id": "st1704-compact-robot-vacuum-shortlist",
+        "packet_sha256": "229da594e299fab8d869b6e38e73011bc449e6716500017cc2e42766e3f643b2",
+        "slot": 5
+      }
+    ],
+    "contract_sha256": "34adb2a67246888ec0773a20ab4ed4c71912fc3a3df653bca559d04f48dda78c",
+    "period": {
+      "duration_days": 14,
+      "end_exclusive_date": "2026-09-08",
+      "start_date": "2026-08-25"
+    },
+    "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE"
+  },
+  "open_decision_boundary": {
+    "budget": {
+      "fixture_cost_authority": "SYNTHETIC_TEST_DATA_ONLY",
+      "id": "OD-009",
+      "resolved": false,
+      "safe_default": "LOW_DEVELOPMENT_ONLY_PRODUCTION_DISABLED",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "labor": {
+      "fixture_rate_authority": "SYNTHETIC_TEST_DATA_ONLY",
+      "id": "OD-005",
+      "resolved": false,
+      "safe_default": "UNKNOWN_NOT_ZERO",
+      "status": "HUMAN_DECISION_REQUIRED"
+    }
+  },
+  "provenance": {
+    "attribution_fixture_sha256": "3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b",
+    "fixture_sha256": "90b3ccaecc1345b26054f563365936f4fd06b5def3259c5786adeea0327a8942",
+    "generated_by": "repo://scripts/build_st1304_cost_unit_economics.py",
+    "generation_command": ".venv/bin/python scripts/build_st1304_cost_unit_economics.py",
+    "source_artifacts": [
+      {
+        "bytes": 8101,
+        "sha256": "5ee2782af4e47cdf0f7e787e34191b656277d515ad09c590013cc8ed8e42402b",
+        "uri": "repo://changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml"
+      },
+      {
+        "bytes": 15482,
+        "sha256": "90b3ccaecc1345b26054f563365936f4fd06b5def3259c5786adeea0327a8942",
+        "uri": "repo://changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json"
+      },
+      {
+        "bytes": 2199,
+        "sha256": "5b6140c42f22e5cabc5484a1ce95d7d3d548cd1269694766ba0fce7d52cc4f20",
+        "uri": "repo://changes/st-1304/PREFLIGHT-v2.md"
+      },
+      {
+        "bytes": 2241,
+        "sha256": "345aeccf5ea86b5cadce5a293b3818fb5418aae98555067b11732e58752bf1e9",
+        "uri": "repo://changes/st-1304/README-v2.md"
+      },
+      {
+        "bytes": 47437,
+        "sha256": "5f21551473f0c3ac3a56d7b385c43b77f554ea45c1c55b28f1d0f3aee4e9a575",
+        "uri": "repo://python/raos/domain/finance/unit_economics.py"
+      },
+      {
+        "bytes": 521,
+        "sha256": "e9ed53b135a98c625cc110b94e844ba6f7c58dd232b3db34fe47b7b2f53d6137",
+        "uri": "repo://python/raos/ports/unit_economics.py"
+      },
+      {
+        "bytes": 2086,
+        "sha256": "429ae3d7be1de6375df42f80412c046c0e6fccd3691b1c520b85796abd5f2b85",
+        "uri": "repo://python/raos/application/finance/unit_economics.py"
+      },
+      {
+        "bytes": 14626,
+        "sha256": "0956071070accd9752cc0e404b685f9d4d2ceeb6da70fafd0b1bb187efde7841",
+        "uri": "repo://python/raos/adapters/recorded_unit_economics.py"
+      },
+      {
+        "bytes": 25672,
+        "sha256": "b1d5611f5fb6e2ea1b8279d959d82d2563ed2a40cf5d5d79299a86d3e470be4d",
+        "uri": "repo://scripts/build_st1304_cost_unit_economics.py"
+      }
+    ],
+    "source_bindings": {
+      "analytics_design": {
+        "path": "docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md",
+        "sha256": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460"
+      },
+      "attribution_policy": {
+        "path": "docs/canonical/03_analytics/RAOS_09_attribution_policy_v1.0.yaml",
+        "sha256": "29624996381ff0709c6499edcdca1109eb713ce56ad8b981df02153e11fc8b0c"
+      },
+      "canonical_story": {
+        "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+      },
+      "data_classification": {
+        "path": "docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml",
+        "sha256": "59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0"
+      },
+      "five_slot_measurement": {
+        "path": "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json",
+        "sha256": "9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8"
+      },
+      "integration_precedence": {
+        "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+      },
+      "kpi_catalog": {
+        "path": "docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml",
+        "sha256": "f1cad721ade082f588461ff58c415fa21786e30b85c8281e651476514e2560a2"
+      },
+      "open_decisions": {
+        "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+        "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+      },
+      "security_controls": {
+        "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+        "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+      },
+      "security_design": {
+        "path": "docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
+        "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
+      },
+      "st0706_cost_boundary": {
+        "path": "changes/st-0706/generated/durable-ai-job-queue.v2.json",
+        "sha256": "3de4738acf15bee81ba94120c613d9070b0027c2d24039b660dfb056fe7625d1"
+      },
+      "st1205_projection": {
+        "path": "changes/st-1205/generated/kpi-read-model.v2.json",
+        "sha256": "295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb"
+      },
+      "st1205_runtime": {
+        "path": "changes/st-1205/contracts/kpi-read-model.v2.yaml",
+        "sha256": "8f7e0664c844615a291c926520fff14af399daa5fd21bac8d002bfc7857218ed"
+      },
+      "st1303_fixture": {
+        "path": "changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json",
+        "sha256": "3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b"
+      },
+      "st1303_projection": {
+        "path": "changes/st-1303/generated/attribution-engine-recorded.v2.json",
+        "sha256": "a45dd5a69bc97a8983c1c30f60588a3c366cfbc97a677257295f6d4f78804277"
+      },
+      "st1303_runtime": {
+        "path": "changes/st-1303/contracts/attribution-engine-runtime.v2.yaml",
+        "sha256": "f8fc2b3113387d419e675e9a286e008c806728a056281a3376ca367356b1d758"
+      },
+      "test_catalog": {
+        "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+        "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+      },
+      "threat_register": {
+        "path": "docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
+        "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
+      }
+    }
+  },
+  "recorded_result": {
+    "authority": {
+      "article_html_mutation": false,
+      "budget_selection": false,
+      "cta_mutation": false,
+      "editorial_mutation": false,
+      "labor_rate_selection": false,
+      "network": false,
+      "persistence": false,
+      "product_selection_mutation": false,
+      "production": false,
+      "provider_call": false,
+      "public_projection": false,
+      "publication": false,
+      "publication_snapshot_mutation": false,
+      "recommendation_order_mutation": false,
+      "release": false,
+      "staging": false
+    },
+    "availability": "AVAILABLE",
+    "cost_provenance": [
+      {
+        "article": {
+          "article_id": "st1703-first-suitcase-comparison",
+          "intent_classification": "CONDITION_COMPARISON",
+          "packet_sha256": "9d0e7032fab6200566639555dce6ebdd29113e3ea87982f0c80fc048d6b9b537",
+          "slot": 1,
+          "slug": "carry-on-suitcase-comparison"
+        },
+        "cohort": {
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+          "state": "MATURE"
+        },
+        "metrics": {
+          "ai_actual_cost_jpy": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "analytics_actual_cost_jpy": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "api_actual_cost_jpy": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "approved_article_versions": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_VALUE",
+            "value": 1
+          },
+          "article_update_cost_jpy": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_VALUE",
+            "value": 20
+          },
+          "content_tool_actual_cost_jpy": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "hosting_actual_cost_jpy": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "incremental_cost_jpy": {
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "initial_content_cost_jpy": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_VALUE",
+            "value": 100
+          },
+          "labor_hourly_cost_jpy": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_VALUE",
+            "value": 1200
+          },
+          "observability_actual_cost_jpy": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "other_actual_cost_jpy": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "qualified_sessions": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_VALUE",
+            "value": 300
+          },
+          "trailing_monthly_confirmed_contribution_jpy": {
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+            "state": "OBSERVED_VALUE",
+            "value": 20
+          },
+          "work_minutes": {
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "state": "OBSERVED_VALUE",
+            "value": 60
+          }
+        },
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "verification": {
+          "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+          "state": "VERIFIED"
+        }
+      },
+      {
+        "article": {
+          "article_id": "st1704-portable-power-station-guide",
+          "intent_classification": "SELECTION_GUIDE",
+          "packet_sha256": "4d670e37a45d96c775a6f42132fc8d9e8e6ac6d97e67cb26a1ecea8e6acfd9c1",
+          "slot": 2,
+          "slug": "portable-power-station-guide"
+        },
+        "cohort": {
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+          "state": "MATURE"
+        },
+        "metrics": {
+          "ai_actual_cost_jpy": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "analytics_actual_cost_jpy": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "api_actual_cost_jpy": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "approved_article_versions": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_VALUE",
+            "value": 1
+          },
+          "article_update_cost_jpy": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_VALUE",
+            "value": 30
+          },
+          "content_tool_actual_cost_jpy": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "hosting_actual_cost_jpy": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "incremental_cost_jpy": {
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "initial_content_cost_jpy": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_VALUE",
+            "value": 150
+          },
+          "labor_hourly_cost_jpy": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_VALUE",
+            "value": 1200
+          },
+          "observability_actual_cost_jpy": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "other_actual_cost_jpy": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "qualified_sessions": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_VALUE",
+            "value": 400
+          },
+          "trailing_monthly_confirmed_contribution_jpy": {
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "work_minutes": {
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "state": "OBSERVED_VALUE",
+            "value": 90
+          }
+        },
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "verification": {
+          "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+          "state": "VERIFIED"
+        }
+      },
+      {
+        "article": {
+          "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+          "intent_classification": "MODEL_DIFFERENCES",
+          "packet_sha256": "edea36dcc82f9ba1705d1cde8916b2c8da70eab2e41892d94dc9bfb35547c7b3",
+          "slot": 3,
+          "slug": "anker-solix-c300-c800-c1000-differences"
+        },
+        "cohort": {
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+          "state": "MATURE"
+        },
+        "metrics": {
+          "ai_actual_cost_jpy": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "analytics_actual_cost_jpy": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "api_actual_cost_jpy": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "approved_article_versions": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_VALUE",
+            "value": 1
+          },
+          "article_update_cost_jpy": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_VALUE",
+            "value": 10
+          },
+          "content_tool_actual_cost_jpy": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "hosting_actual_cost_jpy": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "incremental_cost_jpy": {
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "initial_content_cost_jpy": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_VALUE",
+            "value": 75
+          },
+          "labor_hourly_cost_jpy": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_VALUE",
+            "value": 1200
+          },
+          "observability_actual_cost_jpy": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "other_actual_cost_jpy": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "qualified_sessions": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_VALUE",
+            "value": 200
+          },
+          "trailing_monthly_confirmed_contribution_jpy": {
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "work_minutes": {
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "state": "OBSERVED_VALUE",
+            "value": 30
+          }
+        },
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "verification": {
+          "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+          "state": "VERIFIED"
+        }
+      },
+      {
+        "article": {
+          "article_id": "st1704-countertop-dishwasher-for-small-households",
+          "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
+          "packet_sha256": "b1a0c447cd07d6d3d65bbe5b842110a246351c3e6ddfb8dae9bf8363f12b7adb",
+          "slot": 4,
+          "slug": "countertop-dishwasher-for-small-households"
+        },
+        "cohort": {
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+          "state": "MATURE"
+        },
+        "metrics": {
+          "ai_actual_cost_jpy": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "analytics_actual_cost_jpy": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "api_actual_cost_jpy": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "approved_article_versions": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_VALUE",
+            "value": 1
+          },
+          "article_update_cost_jpy": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_VALUE",
+            "value": 20
+          },
+          "content_tool_actual_cost_jpy": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "hosting_actual_cost_jpy": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "incremental_cost_jpy": {
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "initial_content_cost_jpy": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_VALUE",
+            "value": 100
+          },
+          "labor_hourly_cost_jpy": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_VALUE",
+            "value": 1200
+          },
+          "observability_actual_cost_jpy": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "other_actual_cost_jpy": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "qualified_sessions": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_VALUE",
+            "value": 300
+          },
+          "trailing_monthly_confirmed_contribution_jpy": {
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "work_minutes": {
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "state": "OBSERVED_VALUE",
+            "value": 60
+          }
+        },
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "verification": {
+          "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+          "state": "VERIFIED"
+        }
+      },
+      {
+        "article": {
+          "article_id": "st1704-compact-robot-vacuum-shortlist",
+          "intent_classification": "CONDITION_SHORTLIST",
+          "packet_sha256": "229da594e299fab8d869b6e38e73011bc449e6716500017cc2e42766e3f643b2",
+          "slot": 5,
+          "slug": "compact-robot-vacuum-shortlist"
+        },
+        "cohort": {
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+          "state": "MATURE"
+        },
+        "metrics": {
+          "ai_actual_cost_jpy": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "analytics_actual_cost_jpy": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "api_actual_cost_jpy": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "approved_article_versions": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_VALUE",
+            "value": 1
+          },
+          "article_update_cost_jpy": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_VALUE",
+            "value": 20
+          },
+          "content_tool_actual_cost_jpy": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "hosting_actual_cost_jpy": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "incremental_cost_jpy": {
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "initial_content_cost_jpy": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_VALUE",
+            "value": 100
+          },
+          "labor_hourly_cost_jpy": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_VALUE",
+            "value": 1200
+          },
+          "observability_actual_cost_jpy": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "other_actual_cost_jpy": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "qualified_sessions": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_VALUE",
+            "value": 300
+          },
+          "trailing_monthly_confirmed_contribution_jpy": {
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "state": "OBSERVED_ZERO",
+            "value": 0
+          },
+          "work_minutes": {
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "state": "OBSERVED_VALUE",
+            "value": 60
+          }
+        },
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "verification": {
+          "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+          "state": "VERIFIED"
+        }
+      }
+    ],
+    "input_sha256": "6756429c32484b34a1beb8d628b8823b49570bcd9dc504fc268d9aa6d1bfa141",
+    "method_version": "RAOS_ST1304_DIRECT_UNIT_ECONOMICS_V2",
+    "metrics": [
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_PROVIDER_FACT_TOTAL",
+        "denominator": null,
+        "metric_id": "KPI-001",
+        "name": "confirmed_provider_reward_jpy",
+        "numerator": "300",
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "source_sha256s": [
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448"
+        ],
+        "unavailable_reason": null,
+        "unit": "JPY",
+        "value_decimal": "300.00"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "denominator": null,
+        "metric_id": "SUPPLEMENTAL-DIRECT-REWARD",
+        "name": "direct_confirmed_reward_jpy",
+        "numerator": "120",
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "source_sha256s": [
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448"
+        ],
+        "unavailable_reason": null,
+        "unit": "JPY",
+        "value_decimal": "120.00"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "denominator": null,
+        "metric_id": "KPI-002-DIRECT-VIEW",
+        "name": "direct_confirmed_contribution_profit_jpy",
+        "numerator": "120",
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "source_sha256s": [
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+          "1111111111111111111111111111111111111111111111111111111111111111",
+          "6666666666666666666666666666666666666666666666666666666666666666",
+          "7777777777777777777777777777777777777777777777777777777777777777",
+          "8888888888888888888888888888888888888888888888888888888888888888",
+          "9999999999999999999999999999999999999999999999999999999999999999",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "unavailable_reason": null,
+        "unit": "JPY",
+        "value_decimal": "-5880.00"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "denominator": "50",
+        "metric_id": "KPI-003",
+        "name": "confirmed_epc_jpy",
+        "numerator": "120",
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "source_sha256s": [
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+          "1111111111111111111111111111111111111111111111111111111111111111"
+        ],
+        "unavailable_reason": null,
+        "unit": "JPY_PER_CLICK",
+        "value_decimal": "2.40"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "denominator": "1500",
+        "metric_id": "KPI-004",
+        "name": "confirmed_rpm_jpy",
+        "numerator": "120",
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "source_sha256s": [
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+          "6666666666666666666666666666666666666666666666666666666666666666",
+          "7777777777777777777777777777777777777777777777777777777777777777",
+          "8888888888888888888888888888888888888888888888888888888888888888",
+          "9999999999999999999999999999999999999999999999999999999999999999",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "unavailable_reason": null,
+        "unit": "JPY_PER_1000_SESSIONS",
+        "value_decimal": "80.00"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "denominator": "120",
+        "metric_id": "KPI-022",
+        "name": "article_update_cost_ratio",
+        "numerator": "100",
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "source_sha256s": [
+          "6666666666666666666666666666666666666666666666666666666666666666",
+          "7777777777777777777777777777777777777777777777777777777777777777",
+          "8888888888888888888888888888888888888888888888888888888888888888",
+          "9999999999999999999999999999999999999999999999999999999999999999",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448"
+        ],
+        "unavailable_reason": null,
+        "unit": "RATIO",
+        "value_decimal": "0.833333"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "denominator": "20",
+        "metric_id": "KPI-023",
+        "name": "content_payback_months",
+        "numerator": "525",
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "source_sha256s": [
+          "6666666666666666666666666666666666666666666666666666666666666666",
+          "7777777777777777777777777777777777777777777777777777777777777777",
+          "8888888888888888888888888888888888888888888888888888888888888888",
+          "9999999999999999999999999999999999999999999999999999999999999999",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "unavailable_reason": null,
+        "unit": "MONTHS",
+        "value_decimal": "26.25"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "denominator": "5",
+        "metric_id": "KPI-025",
+        "name": "ai_cost_per_approved_article_jpy",
+        "numerator": "0",
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "source_sha256s": [
+          "6666666666666666666666666666666666666666666666666666666666666666",
+          "7777777777777777777777777777777777777777777777777777777777777777",
+          "8888888888888888888888888888888888888888888888888888888888888888",
+          "9999999999999999999999999999999999999999999999999999999999999999",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "unavailable_reason": null,
+        "unit": "JPY_PER_APPROVED_ARTICLE",
+        "value_decimal": "0.00"
+      },
+      {
+        "availability": "AVAILABLE",
+        "basis": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+        "denominator": "300",
+        "metric_id": "SUPPLEMENTAL-CONTENT-HOUR",
+        "name": "confirmed_reward_per_content_hour_jpy",
+        "numerator": "120",
+        "period": {
+          "duration_days": 14,
+          "end_exclusive_date": "2026-09-08",
+          "start_date": "2026-08-25"
+        },
+        "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+        "source_sha256s": [
+          "2fabd6f400c973ef7c7ba20482363b05af1c29bdfd960ad65620a9c5d1052448",
+          "1111111111111111111111111111111111111111111111111111111111111111"
+        ],
+        "unavailable_reason": null,
+        "unit": "JPY_PER_CONTENT_HOUR",
+        "value_decimal": "24.00"
+      }
+    ],
+    "profile": "RAOS_ST1304_RECORDED_SYNTHETIC_V2",
+    "recommendation_input_policy": {
+      "all_finance_values_excluded": true,
+      "excluded": [
+        "AFFILIATE_COMMISSION_RATE",
+        "CONFIRMED_REWARD",
+        "UNATTRIBUTED_REWARD",
+        "ESTIMATED_REWARD",
+        "COMMISSION",
+        "INCREMENTAL_COST",
+        "LABOR_COST",
+        "EPC",
+        "RPM",
+        "PROFIT"
+      ],
+      "finance_may_change_article_html": false,
+      "finance_may_change_cta": false,
+      "finance_may_change_product_selection": false,
+      "finance_may_change_publication_snapshot": false,
+      "finance_may_change_recommendation_order": false
+    },
+    "result_sha256": "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3",
+    "reward_basis_policy": {
+      "article_economics": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
+      "estimated_reward_in_article_metrics": false,
+      "provider_total_visible_separately": true,
+      "unattributed_allocation_to_articles": false,
+      "unattributed_reward_visible_separately": true
+    },
+    "run_id": "018f3e90-7b00-7000-8000-000000001304",
+    "totals": {
+      "direct_confirmed_reward_jpy": "120",
+      "estimated_confirmed_reward_jpy": "101",
+      "human_labor_cost_jpy": "6000.00",
+      "incremental_external_cost_jpy": "0",
+      "provider_confirmed_reward_jpy": "300",
+      "qualified_sessions": 1500,
+      "reward_conservation_difference_jpy": "0",
+      "unattributed_confirmed_reward_jpy": "79",
+      "work_minutes": 300
+    },
+    "unavailable_reason": null
+  },
+  "verification_boundary": {
+    "TST-030": "NOT_EXECUTED",
+    "database": "NOT_EXECUTED",
+    "dependency_regression": "CANDIDATE",
+    "live": "NOT_EXECUTED",
+    "local_unit_property_adversarial": "CANDIDATE",
+    "owner_generator_check": "CANDIDATE",
+    "production": "NOT_EXECUTED",
+    "real_cost_and_labor_sources": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  }
+}

@@ -1,0 +1,183 @@
+document:
+  id: RAOS-ST0403-LOCAL-IMPLEMENTATION-COMPLETION-001
+  story_id: ST-0403
+  evidence_class: LOCAL_IMPLEMENTATION_ONLY
+  proposed_status: LOCAL_CODE_COMPLETE
+  base_sha: 249096d4030288dc6bab2583e7c4b74b9482741d
+  branch: codex/st0403-local-complete-20260825
+  recorded_at: '2026-08-25T02:29:50+09:00'
+
+scope:
+  - closed Canonical action-to-operation, permission, resource, state, role, MFA, step-up, and separation-of-duty registry
+  - active ST-0401 session and exact ST-0402 single-use grant composition
+  - owner-private ENV-DEV and ENV-CI SQLite policy, entitlement, command, independent-actor, and decision storage
+  - immutable snapshots, revision compare-and-set, append-only hash-chain audit, and commit-ambiguity recovery
+  - framework-neutral enforcement metadata and disabled external Admin HTTP projection
+  - disabled service-principal boundary with evidence-only ST-0306 workload-role inventory
+  - deterministic owner generation and provenance manifest
+
+local_completion:
+  generic_guard_compatibility: PRESERVED
+  canonical_matrix_actions: 19
+  matrix_actions_typed_blocked: 14
+  operation_bindings: 20
+  active_recorded_operation_bindings: 7
+  typed_blocked_operation_bindings: 13
+  unknown_ambiguous_or_wildcard_operation: DENY
+  direct_record_construction: EXACT_FAIL_CLOSED_VALIDATION
+  value_constructor_trust:
+    scope: TRUSTED_IN_PROCESS_TCB_ONLY
+    service_provenance: NOT_CLAIMED
+    unforgeable_capability: false
+    external_input_construction: FORBIDDEN
+    business_action_execution: false
+  default_policy: IMMUTABLE_EMPTY_DENY
+  fixture_allow_policy: EXACT_ENV_DEV_OR_ENV_CI_RECORDED_ONLY
+  active_session: EXACT_ST0401_RECHECKED_AFTER_STEP_UP_BEFORE_COMMIT
+  step_up: EXACT_ST0402_SINGLE_USE_FOR_EVERY_MFA_OR_STEP_UP_ACTION
+  separation_of_duties: EXACT_INDEPENDENT_ACTOR_EVIDENCE_REQUIRED_WHEN_ACTIVE
+  service_principal: DISABLED_MAPPING_UNRESOLVED
+  durable_repository: OWNER_PRIVATE_SQLITE_RECORDED_ENV_ONLY
+  snapshots: IMMUTABLE_HASHED_ACTIVE_POINTERS
+  sqlite_schema: EXACT_SQLITE_MASTER_DIGEST_VERIFIED_EVERY_TRANSACTION
+  private_root: OWNER_ONLY_NO_SYMLINK_ANCESTORS
+  compare_and_set: IMPLEMENTED
+  command_journal: IDEMPOTENT_CONFLICT_REJECTING
+  decision_audit: APPEND_ONLY_SHA256_HASH_CHAIN
+  crash_recovery:
+    before_commit: KNOWN_ROLLBACK_NO_COMMAND_OR_AUDIT_CHANGE
+    after_commit: STORAGE_COMMIT_UNKNOWN_READ_ONLY_RECOVERY_NO_BLIND_RETRY
+  external_http: UNCONDITIONAL_RFC9457_503_DISABLED_NO_ROUTE
+  recorded_http: EXACT_IPV4_LOOPBACK_IN_PROCESS_ONLY
+  business_action_execution: ABSENT
+  network_provider_credentials: ABSENT
+
+debt:
+  - id: DEBT-W2-001
+    central_status: OPEN_UNCHANGED_NOT_EDITED_BY_ST0403_WORKER
+    local_assessment: REPOSITORY_LOCAL_GAPS_CLOSED_TO_MAXIMUM_SAFE_BOUNDARY
+    closed_components:
+      - typed total 19-action registry with exact active and blocked operation evidence
+      - owner-private durable policy and entitlement fixtures
+      - explicit unit of work and durable command recovery
+      - append-only decision audit and integrity validation
+      - framework-neutral enforcement metadata
+      - disabled external RFC 9457 Admin projection
+      - exact ST-0402 step-up composition and independent-actor evidence boundary
+    external_tail:
+      - unresolved service-principal-to-workload-role and operation mapping
+      - real identity and MFA provider mapping
+      - Production policy and entitlement source
+      - active HTTP and database enforcement integration
+      - formal and staging evidence
+  - id: DEBT-W2-002
+    status: INHERITED_OWNER_GENERATION_DRIFT_UNCHANGED
+    exact_failure: tests/st0306/test_generation.py::test_committed_generated_outputs_match_fresh_render
+    observed: 1 failed and 5 passed and 13 skipped
+    owner_artifact: changes/st-0306 generated outputs
+    introduced_by: INHERITED_AT_EXACT_BASE_SHA_NOT_ST0403
+    closure_owner: ST0306_PROVENANCE_FREEZE_OWNER
+  - id: DEBT-W2-003
+    status: EXTERNAL_BLOCKED_UNCHANGED
+    reason: formal, real provider, database, hosted, staging, release, and Production evidence remain outside local authority
+  - id: ST0403-V1-INTRODUCED-DEBT
+    status: NONE
+
+checks:
+  owner_generation:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python scripts/build_st0403_authorization_runtime.py
+    result: PASS
+  owner_no_write_check:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python scripts/build_st0403_authorization_runtime.py --check
+    result: PASS
+  focused_pytest:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python -m pytest -q -p no:cacheprovider tests/st0403
+    result: PASS
+    observed: 95 passed
+  predecessor_regression_st0401:
+    result: PASS
+    observed: 64 passed
+  predecessor_regression_st0402:
+    result: PASS
+    observed: 61 passed
+  predecessor_regression_st0306:
+    result: INHERITED_GENERATED_OUTPUT_DRIFT
+    observed: 1 failed and 5 passed and 13 skipped
+    exact_failure: tests/st0306/test_generation.py::test_committed_generated_outputs_match_fresh_render
+    safe_impact: no ST0306-owned file changed and the ST0403 registry pins the exact installed ST0306 role contract
+  downstream_regression_st0501:
+    result: PASS
+    observed: 48 passed
+  downstream_regression_st1405:
+    result: PASS
+    observed: 82 passed
+  downstream_regression_st0902:
+    result: INHERITED_DEPENDENCY_HASH_FAILURE
+    observed: 61 failed and 28 passed
+    exact_failure: ST-0902 build failed DEPENDENCY_HASH_MISMATCH field=dependency.ST-0402.readme
+    introduced_by: INHERITED_AT_EXACT_BASE_SHA_NOT_ST0403
+    safe_impact: ST0403 does not modify the ST0402 README or the ST0902 owner artifacts
+  network_syscalls:
+    method: strace network-only over the complete ST0403 suite
+    result: PASS
+    observed: 0 network syscalls across 95 tests
+  ruff_check:
+    result: PASS
+  ruff_format_check:
+    result: PASS
+  strict_mypy_runtime:
+    result: PASS
+    observed: Success no issues found in 8 source files
+  strict_mypy_tests:
+    result: PASS
+    observed: Success no issues found in 6 source files
+  pinned_pyright:
+    runtime: Node 24.18.1 with repository-locked Pyright
+    result: PASS
+    observed: 0 errors and 0 warnings and 0 informations
+  compile_import:
+    result: PASS
+    observed: ST0403_IMPORT_OK with 19 definitions and 20 bindings
+  focused_secret_scan:
+    result: PASS
+    observed: 0 findings across the explicit ST0403 maintained source inventory
+  full_worktree_secret_scan:
+    command: python3 -I scripts/scan_secrets.py --worktree
+    result: OPERATIONAL_ERROR_INHERITED
+    observed: unsafe-git-metadata for isolated worktree indirection with exit 2
+    impact: does not weaken or replace the focused descriptor-relative scan
+  git_diff_check:
+    result: PASS
+  owned_path_review:
+    result: PASS
+    observed: no central debt or status registry, other Story, shared runtime manifest, or .playwright-cli change
+
+generated_artifacts:
+  contract:
+    path: changes/st-0403/contracts/authorization-registry.v1.json
+    sha256: a2ef5f7df66492164128ba8ffffcceb254b58bedc5cac7d03716d20700bc1093
+  registry:
+    path: changes/st-0403/generated/authorization-registry.v1.json
+    sha256: f81da85eed9d625d85c8a96f51fb0e6a4ee85af41b1398f9e9e2c8239b4eee16
+  python_registry:
+    path: python/raos/adapters/generated_st0403_authorization_registry.py
+    sha256: 1618f3b2fce03fab6b06fc46227f33223d72eeb522b0ce24d731e67b684958a2
+  manifest:
+    path: changes/st-0403/manifest.json
+    sha256: 90788390011b1e4b7c8b82127ddc71622d35403f57a688d2af0d6b6e528505ae
+
+authority:
+  canonical_apply: NOT_EXECUTED
+  formal_tst_011: NOT_EXECUTED
+  formal_tst_012: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  real_oidc: NOT_EXECUTED
+  real_mfa: NOT_EXECUTED
+  real_database: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  credential_access: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

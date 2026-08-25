@@ -24,11 +24,11 @@ authority:
   - TST-007
 predecessors:
 - story_id: ST-0601
-  commit: 2653f1a3f78172576818b032b0bd34b54360d9fb
+  commit: 38ac757b814c24c913031485a78bbf7d2206f2a5
   relationship: SOURCE_BOUND_RECORDED_NON_ATTESTING_INPUT_ONLY
   files:
   - path: changes/st-0601/README.md
-    sha256: 93759bfea0e51fbbd6b5fe8858fa27f3ed6e5677b0bde3f5a198997ada003766
+    sha256: 67e1476c7f8104d3d99802c745b74a0f605b07e28619b2b7da66ec836bd7c355
   - path: python/raos/domain/ops/artifact_registry.py
     sha256: 114da597e5a2350a3b5412a94c98f964397c86264009737183f225ad30f81af4
   - path: python/raos/ports/artifact_registry.py
@@ -59,11 +59,11 @@ predecessors:
     artifact_id: null
     artifact_ref: null
 - story_id: ST-0503
-  commit: b61d4dd83b87495dfd672bdf8960dc3b1ff29d79
+  commit: 80162f932738f9c3854ff012ae8e488275f7e1f5
   relationship: LOSSLESS_NORMALIZATION_CONTEXT_ONLY
   files:
   - path: changes/st-0503/README.md
-    sha256: aa956454a96c0c88dedd52982264fdf5ad66f181ee3c3717a1aea8204bfbf138
+    sha256: e372c00533e7ddddb71e10308fb703e8c31261351c61d593c520371c505b2f0b
   - path: python/raos/domain/catalog/catalog_normalization.py
     sha256: 6fa0adbd3ade25c5e6880e5aaec70f2c010173873b3cd3d11987d317f81642d9
   - path: python/raos/ports/catalog_normalization.py

@@ -1,0 +1,73 @@
+schema_version: 2
+story_id: ST-0807
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+implementation_commit_sha: TO_BE_BOUND_BY_SEPARATE_STATUS_ONLY_EVIDENCE
+base_integration_sha: d96614da45f7676b622df20164de28cc8d12c2d8
+implementation:
+  existing_v1_renderer_preserved: true
+  additive_recorded_v2: true
+  exact_st0802_draft_binding: true
+  draft_publication_timestamp_absent: true
+  preview_dates_explicitly_not_publication_facts: true
+  exact_st0805_policy_report_recomputation: true
+  only_verified_external_assessment_passes: true
+  unexecuted_external_assessments_remain_not_evaluated: true
+  route_only_preview_noindex: true
+  visible_content_jsonld_binding: true
+  prohibited_schema_types_absent: true
+  deterministic_owner_generation: true
+  foreign_preserving_atomic_generation: true
+authority:
+  approval_authorized: false
+  article_mutation_authorized: false
+  policy_apply_authorized: false
+  domain_approved: false
+  publication_authorized: false
+  release_authorized: false
+  production_authorized: false
+  production_eligible: false
+local_checks:
+  focused_v2_suite: PASS_25
+  historical_st0807_suite: PASS_145
+  st0802_regression: PASS_59
+  st0805_historical_regression: PASS_361
+  st0805_v2_regression: PASS_57
+  st0905_affected_consumer_regression: PASS_43
+  st0903_affected_consumer_regression: PREEXISTING_ST0306_HASH_DRIFT_23_PASS_36_FAIL
+  st0904_affected_consumer_regression: PREEXISTING_ST0306_HASH_DRIFT_13_PASS_21_FAIL
+  owner_generator_check: PASS
+  compile_import: PASS
+  ruff_check: PASS
+  ruff_format_check: PASS
+  strict_mypy: PASS
+  pyright: PASS_0_ERRORS
+  scoped_secret_scan: PASS
+  linked_worktree_full_secret_scan: OPERATIONAL_REFUSAL_UNSAFE_GIT_METADATA
+  canonical_workspace_drift: PASS
+  git_diff_check: PASS
+debt:
+  introduced_local_debt: NONE
+  observed_preexisting_debt:
+    - owner: ST-0903
+      command: pytest tests/st0903
+      result: 23_PASS_36_FAIL
+      cause: DEPENDENCY_HASH_MISMATCH_ST0306
+      base_files_unchanged: true
+    - owner: ST-0904
+      command: pytest tests/st0904
+      result: 13_PASS_21_FAIL
+      cause: DEPENDENCY_HASH_MISMATCH_ST0306
+      base_files_unchanged: true
+not_executed:
+  canonical_registry_apply: NOT_EXECUTED
+  formal_tst_020: NOT_EXECUTED
+  formal_tst_022: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  git_history_secret_scan: NOT_EXECUTED
+  browser_dom_http_validation: NOT_EXECUTED
+  live_validation: NOT_EXECUTED
+  site_domain_selection: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

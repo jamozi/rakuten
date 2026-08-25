@@ -1,0 +1,100 @@
+{
+  "action_counts": {
+    "alert": 0,
+    "approve": 0,
+    "build": 0,
+    "credential": 0,
+    "deploy": 0,
+    "migrate": 0,
+    "network": 0,
+    "production": 0,
+    "promote": 0,
+    "provider": 0,
+    "public_write": 0,
+    "release": 0,
+    "restore": 0,
+    "rollback": 0,
+    "smoke": 0,
+    "staging": 0,
+    "telemetry": 0,
+    "traffic": 0
+  },
+  "activation": {
+    "authority": "NONE",
+    "auto_advance": "FORBIDDEN",
+    "enabled": false,
+    "public_write_authority": "NONE"
+  },
+  "capability_boundary": {
+    "eligibility": "BLOCKED_NOT_CONFIGURED",
+    "required_capability_ids": [
+      "workload_runtime",
+      "relational_persistence",
+      "immutable_object_storage",
+      "asynchronous_queue",
+      "public_edge",
+      "workload_identity_and_secrets",
+      "telemetry_and_alerting",
+      "backup_and_restore",
+      "deployment_and_release",
+      "region_and_data_residency"
+    ],
+    "selected_mapping_count": 0
+  },
+  "classification": "DETERMINISTIC_SYNTHETIC_LOCAL_ONLY_NOT_PRODUCTION_EVIDENCE",
+  "contract_sha256": "3a5cd58608eedc0d5d1315f42089d8ac86f3a43c78feee75be9fc4b8bc1683e0",
+  "external_evidence": {
+    "formal_tst_009": "NOT_EXECUTED",
+    "formal_tst_022": "NOT_EXECUTED",
+    "formal_tst_032": "NOT_EXECUTED",
+    "hosted_ci": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  },
+  "fixture_id": "st1506-fixture-local-canary-v2",
+  "human_approval_artifacts": {
+    "gate_report": "ABSENT",
+    "operations_approval": "ABSENT",
+    "populated_count": 0,
+    "release_decision": "ABSENT",
+    "security_approval": "ABSENT"
+  },
+  "kill_switch": {
+    "deactivation_allowed": false,
+    "external_action_count": 0,
+    "safeguard_enabled": true
+  },
+  "pipeline_id": "st1506-pipeline-local-canary-v2",
+  "result_sha256": "468c04d9df7933698ab048aade009fd1590b965f12f45f5946f530d60f7204f1",
+  "scenarios": [
+    {
+      "decision_outcome": "HUMAN_APPROVALS_REQUIRED",
+      "external_actions": 0,
+      "observation_sha256": "a662b9b09536a9d4ea2986c390303a6ae2974bc56cde56778aac7582a61b1a8d",
+      "scenario_id": "st1506-healthy-mature-v2",
+      "start_outcome": "OBSERVE_REQUIRED",
+      "terminal_state": "HOLD_FOR_HUMAN_APPROVAL"
+    },
+    {
+      "decision_outcome": "ABORT_REQUIRED",
+      "external_actions": 0,
+      "observation_sha256": "17ca29d72db57a360416e0cf53a9572d2d9235433e08c87a0710df5a79097b9c",
+      "scenario_id": "st1506-canary-regression-v2",
+      "start_outcome": "OBSERVE_REQUIRED",
+      "terminal_state": "ABORT_REQUIRED"
+    },
+    {
+      "decision_outcome": "ROLLBACK_REQUIRED",
+      "external_actions": 0,
+      "observation_sha256": "756ad900eb6ff998ce9fdc1e8b17b2f6690d086d16214e6976e0a51790b6c1d3",
+      "scenario_id": "st1506-post-canary-regression-v2",
+      "start_outcome": "OBSERVE_REQUIRED",
+      "terminal_state": "ROLLBACK_REQUIRED"
+    }
+  ],
+  "schema": "RAOS_LOCAL_PRODUCTION_CANARY_RESULT_V2",
+  "status": "LOCAL_CANARY_SIMULATION_COMPLETE",
+  "version": 2
+}

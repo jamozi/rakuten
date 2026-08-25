@@ -1,5 +1,8 @@
 # ST-1005 — disabled headless SEO route-policy candidate
 
+This file documents the preserved V1 headless boundary. The additive,
+locally executable fail-closed runtime is documented in `README-v2.md`.
+
 ## Result and authority
 
 This Story slice adds one strict, dependency-free TypeScript candidate named

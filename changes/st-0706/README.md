@@ -1,107 +1,131 @@
-# ST-0706 recorded AI job orchestration seam
+# ST-0706 recorded AI job orchestration
 
-Status: `LOCAL_IMPLEMENTATION_CANDIDATE`
+Status: `LOCAL_IMPLEMENTATION_COMPLETE`
 
-This Story implements the maximum reversible local portion of approved
-ST-0706 for exact `RuntimeEnvironment.ENV_DEV` only. It accepts an already
-authorized ST-0704 route reservation and performs at most one metadata-only,
-pre-scripted provider observation. It is not a durable worker, queue consumer,
-provider integration, validator runtime, or release artifact.
+ST-0706 now contains two versioned, compatible local seams. The original V1
+one-attempt process-local orchestration interface is preserved byte-for-byte.
+V2 closes the Story-local durability gap with an AI-specific canonical state
+document and transition service backed by a caller-owned atomic CAS port. It
+does not implement the generic dispatcher, lease runner, retry scheduler, or
+DLQ runtime owned by ST-1404.
 
-The ordinary advisory Pro run `20260811T123818Z-1c2c93ad11ff` ended as
-`PRO_UNAVAILABLE_FALLBACK` with sanitized reason
-`RESPONSE_NOT_IDENTIFIABLE`. No response was resent and no Pro approval or new
-design authority is claimed. Implementation proceeds only from the approved
-canonical Story, the owner-approved implementation-first ExecPlan, installed
-contracts, and committed predecessor semantics.
+Both versions are recorded/synthetic development artifacts. They grant no
+provider, credential, publication, staging, release, or Production authority.
+V2 activation defaults to disabled and accepts explicit `ENV-DEV` or `ENV-CI`
+fixture activation only.
 
-## Implemented local boundary
+## Preserved V1 interface
 
-- Closed immutable domain values bind operation/idempotency identity, exact AI
-  and operations job UUIDs, task and target identity, source packet, ST-0704
-  authorization, input artifact UUID/SHA-256, explicit deadline, attempt
-  counts, coherent cancellation state, and the exact ST-0705 plan identity and
-  hash. Their canonical fingerprint contains metadata only.
-- Domain values require exact built-in types, exact UUID objects, the explicit
-  UTC singleton, bounded safe tokens, lowercase SHA-256, bounded integers, and
-  exact enum members. Displays are redacted and generic pickling is denied.
-- Provider request/outcome records retain only identifiers, hashes, token
-  counts, stable closed classifications, an optional opaque provider request
-  identifier, and cost. They contain no raw input or output.
-- A success requires one well-formed provider success, one exact recorded
-  ST-0705 `PASS`, exact actual-cost budget commit not exceeding the reservation,
-  and append of the succeeded observation. Every other terminal/deferred path
-  emits only the requested and failed metadata observations when the sink is
-  available.
-- Idempotent replay returns the exact stored result without another provider,
-  validation, budget, or event side effect. A changed fingerprint or conflicting
-  AI/operations job binding fails closed before those collaborators.
-- Deadline and cancellation are checked before provider execution and release
-  the exact active fixture reservation when possible. Provider invocation is
-  never retried or rerouted. A retryable recorded failure can return only
-  `RETRY_DEFERRED` when the explicit attempt remains below the explicit maximum;
-  no retry is scheduled or performed.
-- Known incurred cost is committed even when validation fails. Unknown cost
-  after a malformed or throwing provider burns the full reservation and trips
-  the exact route circuit. Refusal, timeout, validation failure/unavailability,
-  budget mismatch, and event failure remain explicit fail-closed results.
-- The recorded adapter is process-local, guarded by an `RLock`, constructed
-  with an explicit positive capacity, consumes provider and validation scripts
-  in exact order, and retains append-only metadata snapshots. It has no
-  eviction, delete, clear, export, flush, retry, replay, release-from-quarantine,
-  or background behavior.
+The existing modules remain unchanged:
 
-The ST-0705 reference plan remains non-executable. A scripted `PASS` is
-`TEST_ONLY` observation data and cannot establish content validity, Story
-acceptance, release eligibility, or formal test evidence. Quarantined or
-blocked output has no approval or release method in this slice.
+- `raos.domain.ai.job_orchestration`
+- `raos.ports.ai_job_orchestration`
+- `raos.application.ai.job_orchestration`
+- `raos.adapters.recorded_ai_job_orchestration`
 
-## Explicit exclusions
+V1 still executes at most one pre-scripted metadata-only provider observation,
+performs the existing recorded ST-0705 validation and ST-0704 budget-control
+exchange, and retains process-local state. Existing callers and historical
+tests therefore keep their original behavior.
 
-The owned implementation contains no provider SDK or OpenAI call, queue or
-broker, worker loop, ST-1404 dependency, repository/database/UoW/SQL, migration,
-artifact bytes, filesystem access, environment or credential lookup, HTTP or
-socket access, logging or telemetry, clock/random/UUID generation, subprocess,
-thread/task creation, deployment, staging, live operation, release, or
-Production configuration. It does not choose or authorize a task, route,
-provider, model, prompt, output schema, price, budget, retry policy, fallback,
-or business decision.
+## V2 durable-state boundary
+
+The V2 domain encodes one strict canonical JSON state document. The bytes bind
+the exact queue ID, schema version, recorded policy ID, canonical policy
+SHA-256, and storage revision.
+Unknown fields, alternate JSON bytes, oversized state, mismatched revision,
+duplicate identities, invalid nested commands, and broken hashes fail closed.
+The document is bounded to 32 AI jobs, 128 outbox intents, 1 MiB, three attempts,
+and three completion receipts per job.
+
+The persistence port exposes only:
+
+1. `load(queue_id) -> bytes + revision + derived SHA-256`
+2. `compare_and_swap(queue_id, expected revision, expected state SHA-256,
+   replacement canonical bytes)`
+
+The caller owns the actual atomic persistence implementation. ST-0706 chooses
+no database, broker, filesystem format, migration, or transaction runtime. The
+recorded adapter executes this contract under an `RLock`, can export exact
+bytes/revision, can rehydrate them into a separate adapter/service instance,
+and can simulate a commit whose result becomes uncertain after the state was
+atomically applied.
+
+## Deterministic transitions
+
+- Enqueue binds the V1 command fingerprint, idempotency key, AI job UUID, and
+  operations job UUID. An exact replay performs no write and creates no second
+  event intent. A changed binding fails closed.
+- Claim selects one due AI job deterministically and records an explicit lease
+  token hash plus monotonically increasing job-local epoch. Completion requires
+  the exact worker, token, epoch, attempt, job, and command fingerprint.
+- Completion receipts make a post-commit crash/reload replay idempotent. The
+  same lease with a changed outcome is rejected, as are stale writers and stale
+  or expired leases.
+- Retry eligibility is a pure decision. The exact recorded delays after
+  attempts one and two are 7 and 31 seconds. They are persisted timestamps;
+  there is no sleep, loop, jitter selection, automatic scheduling, fallback,
+  or redrive. The strictly increasing two-delay schedule, three-attempt cap,
+  and 38-second cumulative horizon are bound by the exact policy SHA-256.
+- Retry is permitted only for the contract allowlist, within the command and
+  policy attempt cap, before the deadline, and with remaining reserved cost.
+  Exhaustion enters non-redrivable `DEAD_LETTERED` state.
+- Unknown cost, cost overrun, indeterminate outcome, and ambiguous expired
+  lease enter `QUARANTINED`. A known total never exceeds the exact ST-0704 job
+  reservation. Deadline and cancellation enter closed terminal states.
+- Requested/succeeded/failed event records are transactionally stored as
+  metadata-hash-only `RECORDED_PENDING` outbox intents. No payload or dispatch,
+  publication, delete, acknowledgement, or approval method exists.
+
+The delay values and fixture cost boundary are implementation data for local
+tests only. They do not resolve OD-009 or define a live retry/cost policy.
+
+## Owner contract and generator
+
+`contracts/durable-ai-job-queue.v2.yaml` pins every Canonical, dependency,
+schema, failure-taxonomy, and V1 compatibility source by exact SHA-256. The V2
+domain pins that owner contract hash. The owner generator validates the closed
+contract and bindings, then writes only:
+
+- `generated/durable-ai-job-queue.v2.json`
+- `manifest.yaml`
+
+Its writer is exactly hash-bound to the shared hardened publication primitive:
+existing targets use descriptor-relative `renameat2(RENAME_EXCHANGE)` with
+displaced identity and reverse verification; missing targets use hardlink
+no-clobber installation. Foreign files are preserved across target/parent
+swaps and rollback. `--check` is no-write and verifies exact bytes and mode.
 
 ## Local verification
 
-Use the pinned repository Python toolchain in locked, offline, no-cache,
-no-sync, no-env-file, and no-python-download mode:
+Use the pinned repository toolchain:
 
 ```bash
 UV=/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv
 
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python "$UV" run \
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python TMPDIR=/tmp "$UV" run \
+  --locked --offline --no-cache --no-sync --no-env-file \
+  --no-python-downloads python scripts/build_st0706_durable_ai_job_queue.py
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python TMPDIR=/tmp "$UV" run \
+  --locked --offline --no-cache --no-sync --no-env-file \
+  --no-python-downloads python scripts/build_st0706_durable_ai_job_queue.py --check
+
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python TMPDIR=/tmp "$UV" run \
   --locked --offline --no-cache --no-sync --no-env-file \
   --no-python-downloads pytest -p no:cacheprovider -q tests/st0706
-
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python "$UV" run \
-  --locked --offline --no-cache --no-sync --no-env-file \
-  --no-python-downloads ruff check \
-  python/raos/domain/ai/job_orchestration.py \
-  python/raos/ports/ai_job_orchestration.py \
-  python/raos/application/ai/job_orchestration.py \
-  python/raos/adapters/recorded_ai_job_orchestration.py tests/st0706
-
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python "$UV" run \
-  --locked --offline --no-cache --no-sync --no-env-file \
-  --no-python-downloads mypy --strict \
-  python/raos/domain/ai/job_orchestration.py \
-  python/raos/ports/ai_job_orchestration.py \
-  python/raos/application/ai/job_orchestration.py \
-  python/raos/adapters/recorded_ai_job_orchestration.py tests/st0706
 ```
+
+Ruff format/check, strict mypy for the V1/V2 runtime, dependency/historical
+suites, changed-file secret scanning, generator no-write evidence, and
+`git diff --check` are recorded in the local completion evidence.
 
 ## Remaining governed work
 
-Formal `TST-013` and `TST-017`, hosted CI, durable idempotency/inbox/outbox and
-lease semantics, queue/DLQ/retry scheduling, persistent job/artifact/event
-storage, executable output validation, real provider/account/credential and
-cost verification, operational telemetry and runbooks, integration review,
-staging, release, deployment, and Production remain `NOT_EXECUTED`. Canonical
-Story status, generated status/evidence artifacts, shared exports, owner
-manifests, and the implementation-first debt ledger remain unchanged.
+Generic queue polling, dispatcher ownership, database/broker adapters, lease
+renewal, operational retry scheduling, DLQ storage/redrive, executable
+ST-0705 content validation, budget settlement across a crash, live provider and
+account cost verification, telemetry/runbooks, formal `TST-013`/`TST-017`,
+hosted CI, integration status application, staging, publication, release,
+deployment, and Production remain `NOT_EXECUTED`. The recorded adapter is crash
+and restart evidence, not production persistence evidence.

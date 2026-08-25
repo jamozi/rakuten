@@ -1,8 +1,10 @@
 # ST-1504 provider-neutral deployment identity boundary
 
-This Story-owned slice records the maximum safe local interface for a future
-GitHub Actions OIDC deployment identity. GitHub Actions and GitHub remain the
-approved CI/OIDC source and initial external review connector. They do not
+This Story-owned slice implements the maximum safe repository-local boundary
+for a future GitHub Actions OIDC deployment identity: a deterministic offline
+trust evaluator, exact synthetic recorded fixtures, a repository-inert workflow
+fixture, and a strict disabled activation port. GitHub Actions and GitHub remain
+the approved CI/OIDC source and initial external review connector. They do not
 select a target cloud. AWS, another cloud, or owner-managed infrastructure can
 become a future target only after the same closed capability admission and
 evidence requirements are satisfied.
@@ -26,7 +28,9 @@ selected.
 
 ## Status boundary
 
-- Local artifact: `INTERFACE_ONLY_PARTIAL_LOCAL_CODE`
+- Local artifact: `MAXIMUM_SAFE_LOCAL_CODE_COMPLETE`
+- Offline recorded policy evaluation: `EXECUTED_LOCAL_RECORDED_NOT_FORMAL`
+- Authentication and signature verification: `NOT_PERFORMED`
 - Admission: `NOT_EVALUATED`; eligible: `false`
 - Selected/default/fallback target profile and every target binding: unset
 - Activation: `DISABLED`
@@ -40,6 +44,23 @@ selected.
 
 This is not Story Done, `VALIDATED`, deployed, released, or Production-ready
 evidence.
+
+## Offline evaluator and inert workflow
+
+The evaluator under `python/raos/domain/deployment_identity.py` accepts only a
+closed recorded claim envelope and a closed recorded trust policy. It evaluates
+exact policy matching without parsing a JWT, verifying a signature,
+authenticating a workload, issuing a credential, contacting a provider, or
+granting deploy authority. The fixtures use only explicit synthetic identifiers
+and `.invalid` issuer/audience values.
+
+The workflow fixture is stored under `infra/terraform/deployment-identity/`,
+outside GitHub's active `.github/workflows/` path. Its sole job has an
+always-false condition, zero deployment actions, no reusable action, and a fail
+sentinel. The port in `python/raos/ports/deployment_identity.py` and adapter in
+`python/raos/adapters/disabled_deployment_identity.py` reject enablement,
+nonzero actions, credential material, and forged permissive receipts and always
+remain disabled.
 
 ## Closed target-profile admission
 
@@ -100,7 +121,13 @@ tests, then run the owner command.
 | Story source | `changes/st-1504/contracts/github-oidc-deployment.v1.yaml` | Closed source, admission, trust, credential, approval, lifecycle, and execution contract |
 | Owner builder | `scripts/build_st1504_github_oidc.py` | Strict deterministic validator and renderer without environment, network, subprocess, provider SDK, or credential surface |
 | Test source | `tests/st1504/*.py` | Positive, hostile, provenance, predecessor, filesystem, atomic-write, no-write, and sanitized-diagnostic coverage |
+| Runtime source | `python/raos/domain/deployment_identity.py` | Closed offline policy-match evaluator with no authentication or provider authority |
+| Activation source | `python/raos/ports/deployment_identity.py`, `python/raos/adapters/disabled_deployment_identity.py` | Strict zero-action activation port and disabled adapter |
 | Generated reference | `infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json` | Non-executable source-derived reference plan |
+| Generated fixtures | `infra/terraform/deployment-identity/github-oidc.{claims,trust-policy,evaluation}.recorded.v1.json` | Exact synthetic claims, trust policy, and policy-match-only evidence |
+| Inert workflow fixture | `infra/terraform/deployment-identity/github-oidc-deploy.disabled.workflow.yml` | Syntactically valid, always-disabled fixture outside the active GitHub workflow path |
+| Local implementation record | `changes/st-1504/IMPLEMENTATION_RECORD_V2_ST1504_OFFLINE_OIDC.yaml` | Reversible repository-local detail and authority boundary |
+| Local completion evidence | `changes/st-1504/LOCAL_COMPLETION_EVIDENCE_V2.md` | Check results and explicit residual external/formal debt |
 | Generated inventory | `changes/st-1504/manifest.yaml` | Exact authority, predecessor, source, output, and fail-closed boundary hashes |
 
 The builder raw-hash and semantically binds the direct handoff, Canonical
@@ -110,7 +137,7 @@ its exact committed bytes.
 
 ## Local commands
 
-Generate both declared outputs:
+Generate all declared outputs:
 
 ```bash
 uv run --locked --no-sync python scripts/build_st1504_github_oidc.py

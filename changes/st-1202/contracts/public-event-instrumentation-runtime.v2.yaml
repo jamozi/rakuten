@@ -1,0 +1,298 @@
+document:
+  id: RAOS-ST1202-PUBLIC-EVENT-INSTRUMENTATION-RUNTIME-002
+  version: 2.0.0
+  story_id: ST-1202
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  enabled_environments: [DEV, CI]
+  enabled_by_default_outside_local: false
+classification: LOCAL_DEFAULT_DISABLED_PROCESS_LOCAL_RECORDED_PUBLIC_EVENT_INSTRUMENTATION_V2
+canonical_bindings:
+  - path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - path: docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
+    sha256: 6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460
+  - path: docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml
+    sha256: b33049dc60814109b3a68c166c473f474789dd401a72116fe0a700aeeffb05fa
+  - path: docs/canonical/03_analytics/RAOS_09_implementation_slices_v1.0.yaml
+    sha256: 2435c82eaaf7a43183b89b793e0b9ab1c7b4963cfcae5a240e5749a24bd7c13d
+  - path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  - path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  - path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+  - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+dependency_bindings:
+  ST-1002:
+    contract:
+      path: changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
+      sha256: e248d4dab10c7c98aa08b45ddeb2295851f84713ad9fed2dfd40d0250cadf258
+    recorded_view:
+      path: changes/st-1002/generated/public-article-renderer-recorded.v2.json
+      sha256: b19b67f6530b66004d50754f015f394cd033d07451106d5b3a6db9a5a648bc3b
+    manifest:
+      path: changes/st-1002/runtime-manifest.v2.yaml
+      sha256: 6da3cb69a3eef23594fb868e5cf0adcc84eadd4412990aafc26770d3dd0db300
+    route_path: /articles/synthetic-recorded-policy-seo
+    screen_id: PUB-003
+    public_identity_fields_available: false
+  ST-1004:
+    contract:
+      path: changes/st-1004/contracts/disclosure-affiliate-runtime.v2.yaml
+      sha256: b11d96045c0ce49bf27c0fddb4c142e1d53301356d9e760be7c32c330f0b9231
+    recorded_view:
+      path: changes/st-1004/generated/disclosure-affiliate-recorded.v2.json
+      sha256: 4dcec2348f41b1533ed944a6d6ab63f14b6dd9900bab8cfcbab0fa11f46e7167
+    manifest:
+      path: changes/st-1004/runtime-manifest.v2.yaml
+      sha256: 2f6fb6fb8a1d7b832037af1b4fedcf4b96c1962cba9d7173989af50a6c9a5e80
+    affiliate_cta_state: UNAVAILABLE_SOURCE
+    affiliate_cta_rendered: false
+    direct_native_navigation_independent: true
+  ST-1201:
+    readme:
+      path: changes/st-1201/README.md
+      sha256: 1d48cdd47187f00833737eade4b6f9ec7ee9cf4dc4f9000e6413b3d401a89b10
+    domain:
+      path: python/raos/domain/analytics/event_collector.py
+      sha256: c152f57cf7f95ae924a8510ff4b153c4dd4b78c17fbe5f579019fb30a759fa6b
+    application:
+      path: python/raos/application/analytics/event_collector.py
+      sha256: 8d35153ee3bc801e9653d4773358b31746fce195fd651b9caeaddfa8b1ebea85
+    adapter:
+      path: python/raos/adapters/recorded_event_store.py
+      sha256: 1e80a17f648138c7cff885e06eae452c8c89f93e441c4efedbd3f65a9c6d6c30
+    mode: RECORDED_TEST_ONLY
+    tracking_activation: DISABLED
+    persistence: NOT_EXECUTED
+    public_endpoint_connected: false
+  public_click_contract:
+    contract:
+      path: contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml
+      sha256: 8122958e80e04096ba3b254b4a8d843138bb757c8fc4e71bd8406914dba80797
+    operation_id: PUB-004
+    connected: false
+    mapping_state: NON_ISOMORPHIC_UNRESOLVED_NO_MAPPING
+recorded_runtime:
+  schemaVersion: 2
+  storyId: ST-1202
+  classification: LOCAL_DEFAULT_DISABLED_PROCESS_LOCAL_RECORDED_PUBLIC_EVENT_INSTRUMENTATION_V2
+  actualRouteBoundary:
+    schemaVersion: 2
+    storyId: ST-1202
+    classification: LOCAL_DEFAULT_DISABLED_PROCESS_LOCAL_RECORDED_PUBLIC_EVENT_INSTRUMENTATION_V2
+    screenId: PUB-003
+    routePath: /articles/synthetic-recorded-policy-seo
+    sourceProfile: EXACT_ST1002_RECORDED_PUBLIC_ARTICLE_V2
+    mode: DISABLED_OD_012
+    consentAuthority: UNRESOLVED_OD_012
+    safeDefault: NONESSENTIAL_TRACKING_DISABLED_FIRST_PARTY_MINIMAL_ONLY
+    serverBoundaryEvaluated: true
+    clientInstrumentationInstalled: false
+    clientComponentCount: 0
+    identityAvailable: false
+    affiliateCtaAvailable: false
+    eligibleEventIds: []
+    blockedEventIds: [EVT-001, EVT-002, EVT-003, EVT-004, EVT-006, EVT-012]
+    events: []
+    effects: []
+    browserStorageUsed: false
+    cookiesUsed: false
+    fingerprintingUsed: false
+    networkUsed: false
+    beaconUsed: false
+    fetchUsed: false
+    providerUsed: false
+    trackingEnabled: false
+    measurementObserved: false
+    reason: OD_012_UNRESOLVED_AND_PUBLIC_IDENTITIES_OR_VERIFIED_CTA_UNAVAILABLE
+    authority:
+      publication: false
+      staging: false
+      release: false
+      production: false
+      TST022: NOT_EXECUTED
+      TST030: NOT_EXECUTED
+  recordedFixture:
+    kind: SYNTHETIC_ST1202_RECORDED_INSTRUMENTATION_FIXTURE
+    mode: RECORDED_TEST_ONLY
+    consent:
+      fixtureKind: SYNTHETIC_ST1202_RECORDED_FULL_CONSENT_FIXTURE
+      consentState: GRANTED
+      privacyMode: FULL_CONSENT
+      authority: UNRESOLVED_OD_012
+      trackingActivation: DISABLED
+    events:
+      - catalogId: EVT-001
+        eventId: 018f3e90-7b00-7000-8000-000000001201
+        eventName: article_view
+        schemaVersion: '1.0'
+        occurredAt: '2026-08-24T00:00:01.000Z'
+        receivedAt: '2026-08-24T00:00:01.100Z'
+        source: public_web
+        siteId: 018f3e90-7b00-7000-8000-000000001200
+        correlationId: 018f3e90-7b00-7000-8000-000000001299
+        parameters:
+          - {name: anonymous_session_id, value: synthetic-session-st1202}
+          - {name: article_id, value: 018f3e90-7b00-7000-8000-000000001220}
+          - {name: snapshot_id, value: 018f3e90-7b00-7000-8000-000000001221}
+          - {name: category_id, value: 018f3e90-7b00-7000-8000-000000001222}
+          - {name: referrer_class, value: synthetic_direct}
+          - {name: consent_state, value: GRANTED}
+      - catalogId: EVT-002
+        eventId: 018f3e90-7b00-7000-8000-000000001202
+        eventName: qualified_decision_engagement
+        schemaVersion: '1.0'
+        occurredAt: '2026-08-24T00:00:02.000Z'
+        receivedAt: '2026-08-24T00:00:02.100Z'
+        source: public_web
+        siteId: 018f3e90-7b00-7000-8000-000000001200
+        correlationId: 018f3e90-7b00-7000-8000-000000001299
+        parameters:
+          - {name: article_id, value: 018f3e90-7b00-7000-8000-000000001220}
+          - {name: snapshot_id, value: 018f3e90-7b00-7000-8000-000000001221}
+          - {name: component_type, value: comparison_table}
+          - {name: engagement_kind, value: synthetic_expand}
+      - catalogId: EVT-003
+        eventId: 018f3e90-7b00-7000-8000-000000001203
+        eventName: affiliate_cta_impression
+        schemaVersion: '1.0'
+        occurredAt: '2026-08-24T00:00:03.000Z'
+        receivedAt: '2026-08-24T00:00:03.100Z'
+        source: public_web
+        siteId: 018f3e90-7b00-7000-8000-000000001200
+        correlationId: 018f3e90-7b00-7000-8000-000000001299
+        parameters:
+          - {name: article_id, value: 018f3e90-7b00-7000-8000-000000001220}
+          - {name: snapshot_id, value: 018f3e90-7b00-7000-8000-000000001221}
+          - {name: cta_id, value: 018f3e90-7b00-7000-8000-000000001223}
+          - {name: offer_id, value: 018f3e90-7b00-7000-8000-000000001224}
+          - {name: placement, value: synthetic_product_card}
+          - {name: visibility_threshold, value: 0.5}
+      - catalogId: EVT-004
+        eventId: 018f3e90-7b00-7000-8000-000000001204
+        eventName: affiliate_click
+        schemaVersion: '1.0'
+        occurredAt: '2026-08-24T00:00:04.000Z'
+        receivedAt: '2026-08-24T00:00:04.100Z'
+        source: public_web
+        siteId: 018f3e90-7b00-7000-8000-000000001200
+        correlationId: 018f3e90-7b00-7000-8000-000000001299
+        parameters:
+          - {name: article_id, value: 018f3e90-7b00-7000-8000-000000001220}
+          - {name: snapshot_id, value: 018f3e90-7b00-7000-8000-000000001221}
+          - {name: cta_id, value: 018f3e90-7b00-7000-8000-000000001223}
+          - {name: offer_id, value: 018f3e90-7b00-7000-8000-000000001224}
+          - {name: placement, value: synthetic_product_card}
+          - {name: beacon_transport, value: RECORDED_NOT_EXECUTED}
+          - {name: consent_state, value: GRANTED}
+      - catalogId: EVT-006
+        eventId: 018f3e90-7b00-7000-8000-000000001206
+        eventName: comparison_interaction
+        schemaVersion: '1.0'
+        occurredAt: '2026-08-24T00:00:05.000Z'
+        receivedAt: '2026-08-24T00:00:05.100Z'
+        source: public_web
+        siteId: 018f3e90-7b00-7000-8000-000000001200
+        correlationId: 018f3e90-7b00-7000-8000-000000001299
+        parameters:
+          - {name: article_id, value: 018f3e90-7b00-7000-8000-000000001220}
+          - {name: snapshot_id, value: 018f3e90-7b00-7000-8000-000000001221}
+          - {name: interaction, value: synthetic_expand}
+          - {name: axis_code, value: weight}
+      - catalogId: EVT-012
+        eventId: 018f3e90-7b00-7000-8000-000000001212
+        eventName: web_vital
+        schemaVersion: '1.0'
+        occurredAt: '2026-08-24T00:00:06.000Z'
+        receivedAt: '2026-08-24T00:00:06.100Z'
+        source: public_web
+        siteId: 018f3e90-7b00-7000-8000-000000001200
+        correlationId: 018f3e90-7b00-7000-8000-000000001299
+        parameters:
+          - {name: article_id, value: 018f3e90-7b00-7000-8000-000000001220}
+          - {name: snapshot_id, value: 018f3e90-7b00-7000-8000-000000001221}
+          - {name: metric_name, value: LCP}
+          - {name: metric_value, value: 1250.5}
+          - {name: rating, value: good}
+          - {name: navigation_type, value: navigate}
+    faultEventIds: []
+  processLocalEvidence:
+    eventOrder: [EVT-001, EVT-002, EVT-003, EVT-004, EVT-006, EVT-012]
+    eventIdentity: CALLER_SUPPLIED_UUID7_ONLY
+    timestampSource: CALLER_SUPPLIED_RECORDED_UTC_ONLY
+    idempotency: PROCESS_LOCAL_EVENT_ID_AND_CANONICAL_BYTES
+    identicalReplay: RECORDED_DUPLICATE
+    conflictingReplay: EVENT_ID_CONFLICT
+    failureHandling: SWALLOWED_NON_BLOCKING
+    navigationBoundary: NATIVE_DIRECT_DESTINATION_INDEPENDENT
+    bodyHistoryExposed: false
+    trackingActivation: DISABLED
+    persistence: NOT_EXECUTED
+    measurementObserved: false
+runtime_boundary:
+  actual_route_server_boundary: EXECUTED_DISABLED_NO_EFFECT
+  actual_route_client_component_count: 0
+  actual_route_event_count: 0
+  actual_route_cta_available: false
+  recorded_harness: PROCESS_LOCAL_SYNTHETIC_ONLY
+  identifier_generation: NONE
+  clock: NONE
+  randomness: NONE
+  cookie: NONE
+  browser_storage: NONE
+  fingerprinting: NONE
+  send_beacon: NONE
+  fetch: NONE
+  endpoint: NONE
+  provider: NONE
+  network: NONE
+  database: NONE
+  filesystem_persistence: NONE
+  durable_dedupe: NONE
+privacy_boundary:
+  decision_id: OD-012
+  decision_status: HUMAN_DECISION_REQUIRED
+  blocking: true
+  safe_default: NONESSENTIAL_TRACKING_DISABLED_FIRST_PARTY_MINIMAL_ONLY
+  actual_route_tracking: DISABLED
+  synthetic_full_consent_authority: UNRESOLVED_OD_012
+  pii_or_sensitive_parameter_values: REJECT
+  raw_event_logging: NONE
+navigation_boundary:
+  native_anchor_required: true
+  direct_destination_required: true
+  collector_awaited: false
+  instrumentation_failure_blocks_navigation: false
+  raos_redirect_allowed: false
+  return_url_allowed: false
+  actual_route_cta_rendered: false
+security_boundary:
+  requirements: [FR-013]
+  controls: [SEC-DATA-007]
+  threats: [THR-025]
+  unknown_fields: REJECT
+  prohibited_parameters: [email, phone, raw_ip, full_user_agent, raw_search_query, article_body, source_packet_text, affiliate_url_query_secret]
+  errors_reflect_input: false
+authority:
+  tracking_activation_authorized: false
+  public_endpoint_authorized: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+  external_write: false
+  TST-022: NOT_EXECUTED
+  TST-030: NOT_EXECUTED
+  privacy_review: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

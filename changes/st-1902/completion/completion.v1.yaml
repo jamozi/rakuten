@@ -1,0 +1,48 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1902
+  implementation_mode: STRICT_STORY
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  canonical_status: DEFERRED_POST_MVP
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  production_eligible: false
+
+base:
+  commit: acdcc3719670c110bf6ec94af1762d87ac7fcb74
+  branch: codex/st1902-local-complete-20260824
+
+local_boundary:
+  provider_neutral: true
+  default_enabled: false
+  canary_allocation_percent: 0
+  canary_reachable: false
+  activation_interface_exists: false
+  network: FORBIDDEN
+  credentials: NOT_USED
+  persistence: NOT_EXECUTED
+  route_mutation: FORBIDDEN
+  editorial_mutation: FORBIDDEN
+  publication: FORBIDDEN
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+
+verification:
+  focused_behavior_and_negative_tests: PASSED_37
+  owner_generate_and_check: PASSED
+  dependency_ST-0708_regression: PASSED_105
+  ruff_format_and_check: PASSED
+  strict_mypy: PASSED_12_FILES
+  python_compile: PASSED_12_FILES
+  focused_secret_scan: PASSED_20_FILES_ZERO_FINDINGS
+  git_diff_check: PASSED
+  formal_TST-032: NOT_EXECUTED
+
+debt:
+  introduced: []
+  external_or_formal_remaining:
+    - separate external release decision
+    - formal TST-032 gate acceptance
+    - licensed locked holdout and human labels
+    - live provider/account/credential validation
+    - staging canary, monitoring, rollback, and manual re-enable drill

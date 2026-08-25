@@ -1,0 +1,380 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raos.example.invalid/contracts/st1705/pilot-signoff-evidence-input.v1.schema.json",
+  "title": "ST-1705 formal pilot sign-off evidence input",
+  "description": "Closed future input shape. This schema grants no trust or authority; an independently authorized formal pipeline must bind and verify every artifact before activation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "target",
+    "source_freeze",
+    "reviewed_implementation_tree",
+    "suite_evidence",
+    "open_decision_clearance",
+    "security_findings",
+    "backup_restore",
+    "human_approvals"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ST1705_PILOT_SIGNOFF_EVIDENCE_INPUT_V1"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release_version",
+        "environment",
+        "snapshot_observed_at",
+        "data_snapshot_sha256"
+      ],
+      "properties": {
+        "release_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9._-]+$"
+        },
+        "environment": {
+          "const": "STAGING"
+        },
+        "snapshot_observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data_snapshot_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "source_freeze": {
+      "$ref": "#/$defs/immutable_artifact"
+    },
+    "reviewed_implementation_tree": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commit_sha",
+        "review_artifact_uri",
+        "review_artifact_sha256"
+      ],
+      "properties": {
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "review_artifact_uri": {
+          "$ref": "#/$defs/evidence_uri"
+        },
+        "review_artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "suite_evidence": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/tst026"
+        },
+        {
+          "$ref": "#/$defs/tst029"
+        },
+        {
+          "$ref": "#/$defs/tst032"
+        }
+      ],
+      "items": false
+    },
+    "open_decision_clearance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "active_blocking_count",
+        "clearance_artifact_uri",
+        "clearance_artifact_sha256"
+      ],
+      "properties": {
+        "active_blocking_count": {
+          "const": 0
+        },
+        "clearance_artifact_uri": {
+          "$ref": "#/$defs/evidence_uri"
+        },
+        "clearance_artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "security_findings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "open_critical",
+        "open_high",
+        "approved_exception_count",
+        "evidence_uri",
+        "evidence_sha256"
+      ],
+      "properties": {
+        "open_critical": {
+          "const": 0
+        },
+        "open_high": {
+          "const": 0
+        },
+        "approved_exception_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_uri": {
+          "$ref": "#/$defs/evidence_uri"
+        },
+        "evidence_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "backup_restore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current",
+        "isolated_environment",
+        "integrity_verified",
+        "measured_rpo_seconds",
+        "measured_rto_seconds",
+        "evidence_uri",
+        "evidence_sha256"
+      ],
+      "properties": {
+        "current": {
+          "const": true
+        },
+        "isolated_environment": {
+          "const": true
+        },
+        "integrity_verified": {
+          "const": true
+        },
+        "measured_rpo_seconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "measured_rto_seconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_uri": {
+          "$ref": "#/$defs/evidence_uri"
+        },
+        "evidence_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "human_approvals": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/security_approval"
+        },
+        {
+          "$ref": "#/$defs/operations_approval"
+        },
+        {
+          "$ref": "#/$defs/product_owner_approval"
+        }
+      ],
+      "items": false
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "evidence_uri": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 512,
+      "pattern": "^(repo|artifact)://[A-Za-z0-9._/@:-]+$"
+    },
+    "immutable_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_uri",
+        "artifact_sha256"
+      ],
+      "properties": {
+        "artifact_uri": {
+          "$ref": "#/$defs/evidence_uri"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "suite_row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite_id",
+        "status",
+        "environment",
+        "executed_at",
+        "artifact_uri",
+        "artifact_sha256"
+      ],
+      "properties": {
+        "suite_id": {
+          "type": "string"
+        },
+        "status": {
+          "const": "PASS"
+        },
+        "environment": {
+          "type": "string"
+        },
+        "executed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "artifact_uri": {
+          "$ref": "#/$defs/evidence_uri"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "tst026": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/suite_row"
+        },
+        {
+          "properties": {
+            "suite_id": {
+              "const": "TST-026"
+            },
+            "environment": {
+              "const": "STAGING"
+            }
+          }
+        }
+      ]
+    },
+    "tst029": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/suite_row"
+        },
+        {
+          "properties": {
+            "suite_id": {
+              "const": "TST-029"
+            },
+            "environment": {
+              "const": "STAGING_RECOVERY"
+            }
+          }
+        }
+      ]
+    },
+    "tst032": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/suite_row"
+        },
+        {
+          "properties": {
+            "suite_id": {
+              "const": "TST-032"
+            },
+            "environment": {
+              "const": "STAGING"
+            }
+          }
+        }
+      ]
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "decision",
+        "approved_at",
+        "artifact_uri",
+        "artifact_sha256"
+      ],
+      "properties": {
+        "role": {
+          "type": "string"
+        },
+        "decision": {
+          "const": "APPROVED"
+        },
+        "approved_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "artifact_uri": {
+          "$ref": "#/$defs/evidence_uri"
+        },
+        "artifact_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "security_approval": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/approval"
+        },
+        {
+          "properties": {
+            "role": {
+              "const": "SECURITY_OWNER"
+            }
+          }
+        }
+      ]
+    },
+    "operations_approval": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/approval"
+        },
+        {
+          "properties": {
+            "role": {
+              "const": "OPERATIONS_OWNER"
+            }
+          }
+        }
+      ]
+    },
+    "product_owner_approval": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/approval"
+        },
+        {
+          "properties": {
+            "role": {
+              "const": "PRODUCT_OWNER"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

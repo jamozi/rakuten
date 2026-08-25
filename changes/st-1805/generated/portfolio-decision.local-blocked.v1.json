@@ -1,0 +1,278 @@
+{
+  "acceptance_criteria_satisfied": false,
+  "actual_observations": [],
+  "authority": {
+    "category_change": "NONE",
+    "decision": "NONE",
+    "editorial_mutation": "NONE",
+    "gate_approval": "NONE",
+    "publication": "NONE",
+    "scale_hold_pivot": "NONE",
+    "status_apply": "NONE"
+  },
+  "classification": "LOCAL_BLOCKED_RECORDED_SYNTHETIC_PORTFOLIO_NO_DECISION",
+  "completion_boundary": {
+    "canonical_status_changed": false,
+    "formal_or_live_evidence_claimed": false,
+    "local_code_complete": true,
+    "local_integration_complete": false
+  },
+  "decision": {
+    "authorized": false,
+    "category_limit_change": null,
+    "human_decision_required": true,
+    "mutations_applied": [],
+    "outcome": "NO_DECISION",
+    "scale_limit_change": null
+  },
+  "dependency_state": {
+    "ST-1804": {
+      "acceptance_criteria_satisfied": false,
+      "actual_observation_count": 0,
+      "gate_pass_claim": false,
+      "overall": "BLOCKED",
+      "pack_sha256": "f39934be295442f3109185324d3c96e5c2d5401a320f01fd60f75c4fe5414cb4",
+      "scale_authority": "NONE",
+      "schema": "ST1804_GATE3_PACK_V1",
+      "synthetic": true
+    },
+    "qualifies_for_business_decision": false
+  },
+  "evidence": {
+    "economics": {
+      "availability": "UNAVAILABLE",
+      "reason": "RECORDED_SYNTHETIC_NON_ATTESTING_NOT_ACTUAL_ECONOMICS",
+      "source_state": "RECORDED_SYNTHETIC_NON_ATTESTING"
+    },
+    "formal_tst032": {
+      "availability": "UNAVAILABLE",
+      "reason": "FORMAL_TST_032_NOT_EXECUTED",
+      "source_state": "NOT_EXECUTED"
+    },
+    "quality": {
+      "availability": "UNAVAILABLE",
+      "reason": "ACTUAL_30_45_ARTICLE_QUALITY_EVIDENCE_NOT_EXECUTED",
+      "source_state": "NOT_EXECUTED"
+    },
+    "risk": {
+      "availability": "UNAVAILABLE",
+      "reason": "FORMAL_SECURITY_COMPLIANCE_RISK_EVIDENCE_NOT_EXECUTED",
+      "source_state": "NOT_EXECUTED"
+    }
+  },
+  "finance_editorial_boundary": {
+    "affiliate_rate_used_for_product_ranking": false,
+    "epc_used_for_product_ranking": false,
+    "finance_used_for_product_or_recommendation_ranking": false,
+    "profit_used_for_product_ranking": false,
+    "recommendation_order_changed": false,
+    "reward_used_for_product_ranking": false
+  },
+  "generated_by": {
+    "command": "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1805_portfolio_decision.py",
+    "generator_sha256": "f0bd5722bc066178f49434de0fe2ac97d677445d6ec29a212b172ba0233d03eb",
+    "uri": "repo://scripts/build_st1805_portfolio_decision.py"
+  },
+  "mandatory_criteria": [
+    {
+      "criterion_id": "ST1805-QUALITY",
+      "evidence_class": "QUALITY",
+      "reason": "ACTUAL_30_45_ARTICLE_QUALITY_EVIDENCE_NOT_EXECUTED",
+      "status": "NOT_ELIGIBLE"
+    },
+    {
+      "criterion_id": "ST1805-ECONOMICS",
+      "evidence_class": "ECONOMICS",
+      "reason": "RECORDED_SYNTHETIC_GATE3_IS_NON_ATTESTING",
+      "status": "NOT_ELIGIBLE"
+    },
+    {
+      "criterion_id": "ST1805-RISK",
+      "evidence_class": "RISK",
+      "reason": "FORMAL_SECURITY_COMPLIANCE_RISK_EVIDENCE_NOT_EXECUTED",
+      "status": "NOT_ELIGIBLE"
+    },
+    {
+      "criterion_id": "ST1805-TST032",
+      "evidence_class": "FORMAL_GATE_PACK",
+      "reason": "FORMAL_TST_032_NOT_EXECUTED",
+      "status": "NOT_ELIGIBLE"
+    },
+    {
+      "criterion_id": "ST1805-HUMAN-DECISION",
+      "evidence_class": "HUMAN_AUTHORITY",
+      "reason": "PRODUCT_OWNER_DECISION_NOT_PRESENT",
+      "status": "NOT_ELIGIBLE"
+    }
+  ],
+  "overall": "BLOCKED",
+  "provenance": {
+    "dependency_bindings": {
+      "changes/st-1804/contracts/gate3-economics.v1.yaml": "c1a5408eba861aaf4b6bc1dd407e84e1bfc6eb045a6b45dac28954aa086acf11",
+      "changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json": "c31f339748cef32084285101d1c434216d3763398b633992ab84b086a02505e5",
+      "changes/st-1804/generated/gate3-economics.local-blocked.v1.json": "f39934be295442f3109185324d3c96e5c2d5401a320f01fd60f75c4fe5414cb4",
+      "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626",
+      "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
+      "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
+      "docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md": "6f23dc1b68382f848ab41f4c7abc8f25e9cd5f4ba2732c30c53fdf5f0fe3a460",
+      "docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984",
+      "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8",
+      "docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd",
+      "docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md": "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac",
+      "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
+      "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+      "docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md": "5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea",
+      "scripts/build_st1804_gate3_economics.py": "095b0a681e0653d0690e475c68f558e431d462a9d5da8522526f16abc499b8d8"
+    },
+    "fixture_sha256": "47adc5544779c1e697a4ca1dc3ada9a251cb40fdfa9dd8e593596b34a082c793",
+    "input_sha256": "f0adb4eb0e3becf8439e8dd76b9bf6d6641f412dc1348ae04cfc1b0beb47914e",
+    "source_artifacts": [
+      {
+        "bytes": 4044,
+        "sha256": "ec398cf427a41b0760e6b99108004d317883c8139796b768d1e122c6ea7648e7",
+        "uri": "repo://changes/st-1805/contracts/portfolio-decision.v1.yaml"
+      },
+      {
+        "bytes": 1051,
+        "sha256": "47adc5544779c1e697a4ca1dc3ada9a251cb40fdfa9dd8e593596b34a082c793",
+        "uri": "repo://changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json"
+      },
+      {
+        "bytes": 1300,
+        "sha256": "a58d9de50210b7af7de74d6d7e23fa1231711ba2e2f144e5a0c43f1ade7e9bd5",
+        "uri": "repo://changes/st-1805/PREFLIGHT.md"
+      },
+      {
+        "bytes": 1559,
+        "sha256": "f4de8d15a3a318f91b4bf29289b520520fbadcf07f8805de9599b3e59c3dce0d",
+        "uri": "repo://changes/st-1805/README.md"
+      },
+      {
+        "bytes": 14464,
+        "sha256": "40b2f943bd19ea24d5df9a6ad8c6fce20681b2a07620b91693697b6bcf3458cd",
+        "uri": "repo://python/raos/domain/portfolio/scale_decision.py"
+      },
+      {
+        "bytes": 446,
+        "sha256": "10e1728ad94a911c137b0d361adba3cd4b464e0691978c2afb13cbeaaf6834a7",
+        "uri": "repo://python/raos/ports/scale_decision.py"
+      },
+      {
+        "bytes": 2247,
+        "sha256": "9dc9cfb21eaeec106fc51a76db032ed4ba74abc5f4ba930483a7581377ffb30e",
+        "uri": "repo://python/raos/application/portfolio/scale_decision.py"
+      },
+      {
+        "bytes": 7224,
+        "sha256": "9a73d36b2998f5fb41ee6cbf21927c3b7ef31a046f0398b617f3a97edb532c60",
+        "uri": "repo://python/raos/adapters/recorded_scale_decision.py"
+      },
+      {
+        "bytes": 23265,
+        "sha256": "f0bd5722bc066178f49434de0fe2ac97d677445d6ec29a212b172ba0233d03eb",
+        "uri": "repo://scripts/build_st1805_portfolio_decision.py"
+      }
+    ]
+  },
+  "recorded_synthetic_evaluation": {
+    "authority": {
+      "category_change": "NONE",
+      "decision": "NONE",
+      "editorial_mutation": "NONE",
+      "gate_approval": "NONE",
+      "publication": "NONE",
+      "scale_hold_pivot": "NONE",
+      "status_apply": "NONE"
+    },
+    "criteria": [
+      {
+        "criterion_id": "ST1805-QUALITY",
+        "evidence_class": "QUALITY",
+        "reason": "ACTUAL_30_45_ARTICLE_QUALITY_EVIDENCE_NOT_EXECUTED",
+        "status": "NOT_ELIGIBLE"
+      },
+      {
+        "criterion_id": "ST1805-ECONOMICS",
+        "evidence_class": "ECONOMICS",
+        "reason": "RECORDED_SYNTHETIC_GATE3_IS_NON_ATTESTING",
+        "status": "NOT_ELIGIBLE"
+      },
+      {
+        "criterion_id": "ST1805-RISK",
+        "evidence_class": "RISK",
+        "reason": "FORMAL_SECURITY_COMPLIANCE_RISK_EVIDENCE_NOT_EXECUTED",
+        "status": "NOT_ELIGIBLE"
+      },
+      {
+        "criterion_id": "ST1805-TST032",
+        "evidence_class": "FORMAL_GATE_PACK",
+        "reason": "FORMAL_TST_032_NOT_EXECUTED",
+        "status": "NOT_ELIGIBLE"
+      },
+      {
+        "criterion_id": "ST1805-HUMAN-DECISION",
+        "evidence_class": "HUMAN_AUTHORITY",
+        "reason": "PRODUCT_OWNER_DECISION_NOT_PRESENT",
+        "status": "NOT_ELIGIBLE"
+      }
+    ],
+    "decision": {
+      "authorized": false,
+      "category_limit_change": null,
+      "human_decision_required": true,
+      "mutations_applied": [],
+      "outcome": "NO_DECISION",
+      "scale_limit_change": null
+    },
+    "evidence": {
+      "economics": {
+        "availability": "UNAVAILABLE",
+        "reason": "RECORDED_SYNTHETIC_NON_ATTESTING_NOT_ACTUAL_ECONOMICS",
+        "source_state": "RECORDED_SYNTHETIC_NON_ATTESTING"
+      },
+      "formal_tst032": {
+        "availability": "UNAVAILABLE",
+        "reason": "FORMAL_TST_032_NOT_EXECUTED",
+        "source_state": "NOT_EXECUTED"
+      },
+      "quality": {
+        "availability": "UNAVAILABLE",
+        "reason": "ACTUAL_30_45_ARTICLE_QUALITY_EVIDENCE_NOT_EXECUTED",
+        "source_state": "NOT_EXECUTED"
+      },
+      "risk": {
+        "availability": "UNAVAILABLE",
+        "reason": "FORMAL_SECURITY_COMPLIANCE_RISK_EVIDENCE_NOT_EXECUTED",
+        "source_state": "NOT_EXECUTED"
+      }
+    },
+    "finance_editorial_boundary": {
+      "affiliate_rate_used_for_product_ranking": false,
+      "epc_used_for_product_ranking": false,
+      "finance_used_for_product_or_recommendation_ranking": false,
+      "profit_used_for_product_ranking": false,
+      "recommendation_order_changed": false,
+      "reward_used_for_product_ranking": false
+    },
+    "input_sha256": "f0adb4eb0e3becf8439e8dd76b9bf6d6641f412dc1348ae04cfc1b0beb47914e",
+    "method_version": "RAOS_ST1805_PORTFOLIO_DECISION_V1",
+    "overall": "BLOCKED",
+    "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
+    "recording_id": "blocked-synthetic-no-decision",
+    "schema": "ST1805_PORTFOLIO_DECISION_REPORT_V1",
+    "source_pack_sha256": "f39934be295442f3109185324d3c96e5c2d5401a320f01fd60f75c4fe5414cb4"
+  },
+  "schema": "ST1805_PORTFOLIO_DECISION_PACK_V1",
+  "story_id": "ST-1805",
+  "verification": {
+    "actual_30_45_article_pilot": "NOT_EXECUTED",
+    "actual_gate3_economics": "NOT_EXECUTED",
+    "formal_TST-032": "NOT_EXECUTED",
+    "formal_risk_evidence": "NOT_EXECUTED",
+    "human_portfolio_decision": "NOT_EXECUTED",
+    "live_provider": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  }
+}

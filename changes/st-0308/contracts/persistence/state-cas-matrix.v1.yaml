@@ -1,0 +1,1044 @@
+document:
+  id: ST0308-STATE-CAS-MATRIX-001
+  version: 1.1.0
+  story_id: ST-0308
+canonical_serialization: UTF8_LF_YAML_CANONICALIZED_TO_SORTED_COMPACT_JSON_FOR_HASH
+rules:
+- every UPDATE is schema-qualified and uses one exact edge row below
+- every caller expected_status or expected_state is bound in WHERE and constrained to the edge from-state
+- SET contains only the literal assignment list for that edge; no placeholder, conditional column name, or generic transition SQL is allowed
+- every unlisted physical column is preserved byte-for-byte
+- zero rows use the concurrency-matrix classification and never trigger a retry
+- actor, time, reason, and outcome bindings are prevalidated values from immutable PersistenceContext or the named closed Domain variant
+- INSERT_ONLY_CHILDREN means one root-state existence predicate followed by immutable child INSERTs in the same transaction and no root UPDATE
+edge_shape:
+  required:
+  - method
+  - from
+  - to
+  - where
+  - set
+  method_argument_bindings:
+    expected_status: exact from literal
+    transition_target: exact to literal
+  set_empty_marker: INSERT_ONLY_CHILDREN
+relations:
+  ops.runtime_setting_version:
+    edges:
+    - method: RuntimeSettingRepository.transition
+      from: DRAFT
+      to: ACTIVE
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approval_reason
+        IS NULL AND effective_to IS NULL
+      set:
+      - status='ACTIVE'
+      - approved_by_principal_id=:context_actor_id
+      - approval_reason=:nonempty_reason
+      - effective_from=:activation_at
+      - effective_to=NULL
+    - method: RuntimeSettingRepository.transition
+      from: DRAFT
+      to: REJECTED
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approval_reason
+        IS NULL
+      set:
+      - status='REJECTED'
+    - method: RuntimeSettingRepository.transition
+      from: DRAFT
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approval_reason
+        IS NULL
+      set:
+      - status='RETIRED'
+    - method: RuntimeSettingRepository.transition
+      from: ACTIVE
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='ACTIVE' AND approved_by_principal_id IS NOT NULL AND length(btrim(approval_reason))>0
+        AND effective_from IS NOT NULL AND effective_to IS NULL
+      set:
+      - status='RETIRED'
+      - effective_to=:retired_at
+    preserved_columns:
+    - setting_key
+    - scope_type
+    - scope_id
+    - version_no
+    - setting_class
+    - value
+    - value_sha256
+    - created_by_principal_id
+    - created_at
+    forbidden_columns:
+    - approved_at
+  iam.principal_role_assignment:
+    edges:
+    - method: PrincipalRoleAssignmentRepository.revoke
+      from: ACTIVE
+      to: REVOKED
+      where: id=:assignment_id AND :expected_state='ACTIVE' AND revoked_at IS NULL AND revoked_by_principal_id IS NULL AND revocation_reason IS
+        NULL AND valid_from<=:revoked_at AND (valid_to IS NULL OR valid_to>:revoked_at)
+      set:
+      - revoked_at=:revoked_at
+      - revoked_by_principal_id=:context_actor_id
+      - revocation_reason=:nonempty_reason
+  catalog.provider_endpoint:
+    edges:
+    - method: ProviderEndpointRepository.transition
+      from: DRAFT
+      to: ACTIVE
+      where: id=:endpoint_id AND status=:expected_status AND :expected_status='DRAFT'
+      set:
+      - status='ACTIVE'
+      - effective_from=COALESCE(effective_from,:at)
+      - effective_to=NULL
+    - method: ProviderEndpointRepository.transition
+      from: DRAFT
+      to: BLOCKED
+      where: id=:endpoint_id AND status=:expected_status AND :expected_status='DRAFT'
+      set:
+      - status='BLOCKED'
+    - method: ProviderEndpointRepository.transition
+      from: DRAFT
+      to: RETIRED
+      where: id=:endpoint_id AND status=:expected_status AND :expected_status='DRAFT'
+      set:
+      - status='RETIRED'
+    - method: ProviderEndpointRepository.transition
+      from: ACTIVE
+      to: DEPRECATED
+      where: id=:endpoint_id AND status=:expected_status AND :expected_status='ACTIVE' AND effective_to IS NULL
+      set:
+      - status='DEPRECATED'
+      - effective_to=:at
+    - method: ProviderEndpointRepository.transition
+      from: ACTIVE
+      to: BLOCKED
+      where: id=:endpoint_id AND status=:expected_status AND :expected_status='ACTIVE'
+      set:
+      - status='BLOCKED'
+    - method: ProviderEndpointRepository.transition
+      from: ACTIVE
+      to: RETIRED
+      where: id=:endpoint_id AND status=:expected_status AND :expected_status='ACTIVE' AND effective_to IS NULL
+      set:
+      - status='RETIRED'
+      - effective_to=:at
+    - method: ProviderEndpointRepository.transition
+      from: DEPRECATED
+      to: ACTIVE
+      where: id=:endpoint_id AND status=:expected_status AND :expected_status='DEPRECATED'
+      set:
+      - status='ACTIVE'
+      - effective_from=COALESCE(effective_from,:at)
+      - effective_to=NULL
+    - method: ProviderEndpointRepository.transition
+      from: DEPRECATED
+      to: BLOCKED
+      where: id=:endpoint_id AND status=:expected_status AND :expected_status='DEPRECATED'
+      set:
+      - status='BLOCKED'
+    - method: ProviderEndpointRepository.transition
+      from: DEPRECATED
+      to: RETIRED
+      where: id=:endpoint_id AND status=:expected_status AND :expected_status='DEPRECATED'
+      set:
+      - status='RETIRED'
+    - method: ProviderEndpointRepository.transition
+      from: BLOCKED
+      to: DRAFT
+      where: id=:endpoint_id AND status=:expected_status AND :expected_status='BLOCKED'
+      set:
+      - status='DRAFT'
+    - method: ProviderEndpointRepository.transition
+      from: BLOCKED
+      to: DEPRECATED
+      where: id=:endpoint_id AND status=:expected_status AND :expected_status='BLOCKED'
+      set:
+      - status='DEPRECATED'
+    - method: ProviderEndpointRepository.transition
+      from: BLOCKED
+      to: RETIRED
+      where: id=:endpoint_id AND status=:expected_status AND :expected_status='BLOCKED'
+      set:
+      - status='RETIRED'
+    guards:
+    - base_host and contract_sha256 remain unchanged
+    - non_secret_config remains secret-free
+  catalog.ingestion_request:
+    edges:
+    - method: IngestionRequestRepository.complete
+      from: REQUESTED
+      to: SUCCEEDED
+      where: id=:request_id AND status=:expected_status AND :expected_status='REQUESTED' AND responded_at IS NULL AND http_status IS NULL AND
+        raw_response_artifact_id IS NULL AND item_count IS NULL AND error_class IS NULL AND error_code IS NULL AND error_message IS NULL
+      set:
+      - status='SUCCEEDED'
+      - responded_at=:outcome_responded_at
+      - http_status=:outcome_http_status
+      - raw_response_artifact_id=:outcome_raw_response_artifact_id
+      - item_count=:outcome_item_count
+      - rate_limit_observation=:outcome_rate_limit_observation
+      - error_class=NULL
+      - error_code=NULL
+      - error_message=NULL
+    - method: IngestionRequestRepository.complete
+      from: REQUESTED
+      to: FAILED
+      where: id=:request_id AND status=:expected_status AND :expected_status='REQUESTED' AND responded_at IS NULL AND http_status IS NULL AND
+        raw_response_artifact_id IS NULL AND item_count IS NULL AND error_class IS NULL AND error_code IS NULL AND error_message IS NULL
+      set:
+      - status='FAILED'
+      - responded_at=:outcome_responded_at
+      - http_status=:outcome_http_status
+      - raw_response_artifact_id=:outcome_raw_response_artifact_id
+      - item_count=:outcome_item_count
+      - rate_limit_observation=:outcome_rate_limit_observation
+      - error_class=:outcome_error_class
+      - error_code=:outcome_error_code
+      - error_message=:outcome_error_message
+    - method: IngestionRequestRepository.complete
+      from: REQUESTED
+      to: QUARANTINED
+      where: id=:request_id AND status=:expected_status AND :expected_status='REQUESTED' AND responded_at IS NULL AND http_status IS NULL AND
+        raw_response_artifact_id IS NULL AND item_count IS NULL AND error_class IS NULL AND error_code IS NULL AND error_message IS NULL
+      set:
+      - status='QUARANTINED'
+      - responded_at=:outcome_responded_at
+      - http_status=:outcome_http_status
+      - raw_response_artifact_id=:outcome_raw_response_artifact_id
+      - item_count=:outcome_item_count
+      - rate_limit_observation=:outcome_rate_limit_observation
+      - error_class=:outcome_error_class
+      - error_code=:outcome_error_code
+      - error_message=:outcome_error_message
+    variant_guards:
+      SUCCEEDED:
+      - responded_at non-null
+      - raw_response_artifact_id non-null
+      - error fields null
+      FAILED:
+      - closed failure variant
+      QUARANTINED:
+      - closed quarantine variant
+  evidence.source_packet_version:
+    edges:
+    - method: SourcePacketRepository.transition_version
+      from: BUILDING
+      to: READY
+      where: id=:version_id AND status=:expected_status AND :expected_status='BUILDING'
+      set:
+      - status='READY'
+    - method: SourcePacketRepository.transition_version
+      from: BUILDING
+      to: INVALID
+      where: id=:version_id AND status=:expected_status AND :expected_status='BUILDING'
+      set:
+      - status='INVALID'
+    - method: SourcePacketRepository.transition_version
+      from: READY
+      to: IN_REVIEW
+      where: id=:version_id AND status=:expected_status AND :expected_status='READY'
+      set:
+      - status='IN_REVIEW'
+    - method: SourcePacketRepository.transition_version
+      from: READY
+      to: INVALID
+      where: id=:version_id AND status=:expected_status AND :expected_status='READY'
+      set:
+      - status='INVALID'
+    - method: SourcePacketRepository.transition_version
+      from: IN_REVIEW
+      to: APPROVED
+      where: id=:version_id AND status=:expected_status AND :expected_status='IN_REVIEW' AND reviewed_by_principal_id IS NULL AND reviewed_at
+        IS NULL
+      set:
+      - status='APPROVED'
+      - reviewed_by_principal_id=:context_actor_id
+      - reviewed_at=:at
+    - method: SourcePacketRepository.transition_version
+      from: IN_REVIEW
+      to: REJECTED
+      where: id=:version_id AND status=:expected_status AND :expected_status='IN_REVIEW' AND reviewed_by_principal_id IS NULL AND reviewed_at
+        IS NULL
+      set:
+      - status='REJECTED'
+      - reviewed_by_principal_id=:context_actor_id
+      - reviewed_at=:at
+    - method: SourcePacketRepository.transition_version
+      from: IN_REVIEW
+      to: INVALID
+      where: id=:version_id AND status=:expected_status AND :expected_status='IN_REVIEW'
+      set:
+      - status='INVALID'
+    - method: SourcePacketRepository.transition_version
+      from: APPROVED
+      to: SUPERSEDED
+      where: id=:version_id AND status=:expected_status AND :expected_status='APPROVED'
+      set:
+      - status='SUPERSEDED'
+    - method: SourcePacketRepository.transition_version
+      from: APPROVED
+      to: INVALID
+      where: id=:version_id AND status=:expected_status AND :expected_status='APPROVED'
+      set:
+      - status='INVALID'
+    - method: SourcePacketRepository.transition_version
+      from: REJECTED
+      to: INVALID
+      where: id=:version_id AND status=:expected_status AND :expected_status='REJECTED'
+      set:
+      - status='INVALID'
+  evidence.first_hand_experience_record:
+    edges:
+    - method: FirstHandExperienceRepository.transition
+      from: DRAFT
+      to: REVIEWED
+      where: id=:record_id AND review_status=:expected_status AND :expected_status='DRAFT' AND reviewed_by_principal_id IS NULL AND reviewed_at
+        IS NULL
+      set:
+      - review_status='REVIEWED'
+      - reviewed_by_principal_id=:context_actor_id
+      - reviewed_at=:at
+    - method: FirstHandExperienceRepository.transition
+      from: DRAFT
+      to: REJECTED
+      where: id=:record_id AND review_status=:expected_status AND :expected_status='DRAFT' AND reviewed_by_principal_id IS NULL AND reviewed_at
+        IS NULL
+      set:
+      - review_status='REJECTED'
+      - reviewed_by_principal_id=:context_actor_id
+      - reviewed_at=:at
+    - method: FirstHandExperienceRepository.transition
+      from: REVIEWED
+      to: APPROVED
+      where: id=:record_id AND review_status=:expected_status AND :expected_status='REVIEWED' AND reviewed_by_principal_id IS NOT NULL AND reviewed_at
+        IS NOT NULL
+      set:
+      - review_status='APPROVED'
+      - reviewed_by_principal_id=:context_actor_id
+      - reviewed_at=:at
+    - method: FirstHandExperienceRepository.transition
+      from: REVIEWED
+      to: REJECTED
+      where: id=:record_id AND review_status=:expected_status AND :expected_status='REVIEWED' AND reviewed_by_principal_id IS NOT NULL AND reviewed_at
+        IS NOT NULL
+      set:
+      - review_status='REJECTED'
+      - reviewed_by_principal_id=:context_actor_id
+      - reviewed_at=:at
+    - method: FirstHandExperienceRepository.append_assets
+      from: DRAFT
+      to: DRAFT
+      where: EXISTS (SELECT 1 FROM evidence.first_hand_experience_record WHERE id=:record_id AND review_status=:expected_status AND :expected_status='DRAFT')
+      set: INSERT_ONLY_CHILDREN
+    - method: FirstHandExperienceRepository.append_assets
+      from: REVIEWED
+      to: REVIEWED
+      where: EXISTS (SELECT 1 FROM evidence.first_hand_experience_record WHERE id=:record_id AND review_status=:expected_status AND :expected_status='REVIEWED')
+      set: INSERT_ONLY_CHILDREN
+    guards:
+    - review actor is an authorized active human
+    - review actor differs from tester_principal_id
+  editorial.article_slug:
+    edges:
+    - method: ArticleRepository.transition_slug
+      from: ACTIVE
+      to: REDIRECTED
+      where: id=:slug_id AND status=:expected_status AND :expected_status='ACTIVE' AND valid_to IS NULL
+      set:
+      - status='REDIRECTED'
+      - valid_to=:at
+    - method: ArticleRepository.transition_slug
+      from: ACTIVE
+      to: RETIRED
+      where: id=:slug_id AND status=:expected_status AND :expected_status='ACTIVE' AND valid_to IS NULL
+      set:
+      - status='RETIRED'
+      - valid_to=:at
+    - method: ArticleRepository.transition_slug
+      from: REDIRECTED
+      to: RETIRED
+      where: id=:slug_id AND status=:expected_status AND :expected_status='REDIRECTED'
+      set:
+      - status='RETIRED'
+  editorial.article_disclosure_context:
+    edges:
+    - method: EditorialContractRepository.record_disclosure_review
+      from: UNREVIEWED
+      to: REVIEWED
+      where: article_version_id=:article_version_id AND :expected_state='UNREVIEWED' AND reviewed_by_principal_id IS NULL AND reviewed_at IS NULL
+      root_cas:
+        relation: editorial.article_version
+        where: id=:article_version_id AND lock_version=:expected_version
+        set: lock_version=:expected_version+1
+        ordering: AFTER_PRECONDITION_VALIDATION_BEFORE_CHILD_STATE_CAS
+      set:
+      - reviewed_by_principal_id=:context_actor_id
+      - reviewed_at=:reviewed_at
+  editorial.review_comment:
+    edges:
+    - method: ReviewCommentRepository.close
+      from: OPEN
+      to: RESOLVED
+      where: id=:comment_id AND status=:expected_status AND :expected_status='OPEN' AND resolved_at IS NULL AND resolved_by_principal_id IS NULL
+      set:
+      - status='RESOLVED'
+      - resolved_at=:resolution_resolved_at
+      - resolved_by_principal_id=:context_actor_id
+    - method: ReviewCommentRepository.close
+      from: OPEN
+      to: WONT_FIX
+      where: id=:comment_id AND status=:expected_status AND :expected_status='OPEN' AND resolved_at IS NULL AND resolved_by_principal_id IS NULL
+      set:
+      - status='WONT_FIX'
+      - resolved_at=:resolution_resolved_at
+      - resolved_by_principal_id=:context_actor_id
+  editorial.article_type_version:
+    edges:
+    - method: EditorialContractRepository.transition_article_type_version
+      from: DRAFT
+      to: ACTIVE
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at IS NULL
+      set:
+      - status='ACTIVE'
+      - approved_by_principal_id=:context_actor_id
+      - approved_at=:at
+    - method: EditorialContractRepository.transition_article_type_version
+      from: DRAFT
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at IS NULL
+      set:
+      - status='RETIRED'
+    - method: EditorialContractRepository.transition_article_type_version
+      from: ACTIVE
+      to: DEPRECATED
+      where: id=:version_id AND status=:expected_status AND :expected_status='ACTIVE' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL
+      set:
+      - status='DEPRECATED'
+    - method: EditorialContractRepository.transition_article_type_version
+      from: ACTIVE
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='ACTIVE' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL
+      set:
+      - status='RETIRED'
+    - method: EditorialContractRepository.transition_article_type_version
+      from: DEPRECATED
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='DEPRECATED' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL
+      set:
+      - status='RETIRED'
+    forbidden_columns:
+    - effective_from
+    - effective_to
+  editorial.article_template_version:
+    edges:
+    - method: EditorialContractRepository.transition_template_version
+      from: DRAFT
+      to: ACTIVE
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at IS NULL
+      set:
+      - status='ACTIVE'
+      - approved_by_principal_id=:context_actor_id
+      - approved_at=:at
+    - method: EditorialContractRepository.transition_template_version
+      from: DRAFT
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at IS NULL
+      set:
+      - status='RETIRED'
+    - method: EditorialContractRepository.transition_template_version
+      from: ACTIVE
+      to: DEPRECATED
+      where: id=:version_id AND status=:expected_status AND :expected_status='ACTIVE' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL
+      set:
+      - status='DEPRECATED'
+    - method: EditorialContractRepository.transition_template_version
+      from: ACTIVE
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='ACTIVE' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL
+      set:
+      - status='RETIRED'
+    - method: EditorialContractRepository.transition_template_version
+      from: DEPRECATED
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='DEPRECATED' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL
+      set:
+      - status='RETIRED'
+    forbidden_columns:
+    - effective_from
+    - effective_to
+  editorial.editorial_methodology_version:
+    edges:
+    - method: EditorialContractRepository.transition_methodology_version
+      from: DRAFT
+      to: ACTIVE
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at IS NULL
+      set:
+      - status='ACTIVE'
+      - approved_by_principal_id=:context_actor_id
+      - approved_at=:at
+    - method: EditorialContractRepository.transition_methodology_version
+      from: DRAFT
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at IS NULL
+      set:
+      - status='RETIRED'
+    - method: EditorialContractRepository.transition_methodology_version
+      from: ACTIVE
+      to: DEPRECATED
+      where: id=:version_id AND status=:expected_status AND :expected_status='ACTIVE' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL
+      set:
+      - status='DEPRECATED'
+    - method: EditorialContractRepository.transition_methodology_version
+      from: ACTIVE
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='ACTIVE' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL
+      set:
+      - status='RETIRED'
+    - method: EditorialContractRepository.transition_methodology_version
+      from: DEPRECATED
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='DEPRECATED' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL
+      set:
+      - status='RETIRED'
+    forbidden_columns:
+    - effective_from
+    - effective_to
+  editorial.content_schema_version:
+    edges:
+    - method: EditorialContractRepository.transition_content_schema_version
+      from: DRAFT
+      to: ACTIVE
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at IS NULL
+        AND effective_to IS NULL
+      set:
+      - status='ACTIVE'
+      - approved_by_principal_id=:context_actor_id
+      - approved_at=:at
+      - effective_to=NULL
+    - method: EditorialContractRepository.transition_content_schema_version
+      from: DRAFT
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at IS NULL
+      set:
+      - status='RETIRED'
+    - method: EditorialContractRepository.transition_content_schema_version
+      from: ACTIVE
+      to: DEPRECATED
+      where: id=:version_id AND status=:expected_status AND :expected_status='ACTIVE' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL AND effective_to IS NULL AND :transition_at>effective_from
+      set:
+      - status='DEPRECATED'
+      - effective_to=:transition_at
+    - method: EditorialContractRepository.transition_content_schema_version
+      from: ACTIVE
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='ACTIVE' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL AND effective_to IS NULL AND :transition_at>effective_from
+      set:
+      - status='RETIRED'
+      - effective_to=:transition_at
+    - method: EditorialContractRepository.transition_content_schema_version
+      from: DEPRECATED
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='DEPRECATED' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL AND effective_to IS NOT NULL
+      set:
+      - status='RETIRED'
+    preserved_columns:
+    - effective_from
+  editorial.media_asset:
+    edges:
+    - method: MediaAssetRepository.transition
+      from: DRAFT
+      to: APPROVED
+      where: id=:media_asset_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at
+        IS NULL
+      set:
+      - status='APPROVED'
+      - approved_by_principal_id=:context_actor_id
+      - approved_at=:at
+    - method: MediaAssetRepository.transition
+      from: DRAFT
+      to: BLOCKED
+      where: id=:media_asset_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at
+        IS NULL
+      set:
+      - status='BLOCKED'
+    - method: MediaAssetRepository.transition
+      from: DRAFT
+      to: RETIRED
+      where: id=:media_asset_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at
+        IS NULL
+      set:
+      - status='RETIRED'
+    - method: MediaAssetRepository.transition
+      from: APPROVED
+      to: BLOCKED
+      where: id=:media_asset_id AND status=:expected_status AND :expected_status='APPROVED'
+      set:
+      - status='BLOCKED'
+    - method: MediaAssetRepository.transition
+      from: APPROVED
+      to: RETIRED
+      where: id=:media_asset_id AND status=:expected_status AND :expected_status='APPROVED'
+      set:
+      - status='RETIRED'
+    - method: MediaAssetRepository.transition
+      from: BLOCKED
+      to: RETIRED
+      where: id=:media_asset_id AND status=:expected_status AND :expected_status='BLOCKED'
+      set:
+      - status='RETIRED'
+  editorial.seo_metadata_version:
+    edges:
+    - method: EditorialContractRepository.transition_seo_metadata_version
+      from: DRAFT
+      to: VALIDATED
+      where: id=:metadata_id AND status=:expected_status AND :expected_status='DRAFT' AND validated_at IS NULL AND approved_by_principal_id IS
+        NULL AND approved_at IS NULL
+      set:
+      - status='VALIDATED'
+      - validated_at=:at
+    - method: EditorialContractRepository.transition_seo_metadata_version
+      from: DRAFT
+      to: REJECTED
+      where: id=:metadata_id AND status=:expected_status AND :expected_status='DRAFT' AND validated_at IS NULL AND approved_by_principal_id IS
+        NULL AND approved_at IS NULL
+      set:
+      - status='REJECTED'
+      - validated_at=COALESCE(validated_at,:at)
+    - method: EditorialContractRepository.transition_seo_metadata_version
+      from: VALIDATED
+      to: APPROVED
+      where: id=:metadata_id AND status=:expected_status AND :expected_status='VALIDATED' AND validated_at IS NOT NULL AND approved_by_principal_id
+        IS NULL AND approved_at IS NULL
+      set:
+      - status='APPROVED'
+      - approved_by_principal_id=:context_actor_id
+      - approved_at=:at
+    - method: EditorialContractRepository.transition_seo_metadata_version
+      from: VALIDATED
+      to: REJECTED
+      where: id=:metadata_id AND status=:expected_status AND :expected_status='VALIDATED' AND validated_at IS NOT NULL AND approved_by_principal_id
+        IS NULL AND approved_at IS NULL
+      set:
+      - status='REJECTED'
+      - validated_at=COALESCE(validated_at,:at)
+  ai.task_definition:
+    edges:
+    - method: AiTaskDefinitionRepository.transition
+      from: ACTIVE
+      to: PAUSED
+      where: id=:task_id AND status=:expected_status AND :expected_status='ACTIVE'
+      set:
+      - status='PAUSED'
+    - method: AiTaskDefinitionRepository.transition
+      from: ACTIVE
+      to: RETIRED
+      where: id=:task_id AND status=:expected_status AND :expected_status='ACTIVE'
+      set:
+      - status='RETIRED'
+    - method: AiTaskDefinitionRepository.transition
+      from: PAUSED
+      to: ACTIVE
+      where: id=:task_id AND status=:expected_status AND :expected_status='PAUSED'
+      set:
+      - status='ACTIVE'
+    - method: AiTaskDefinitionRepository.transition
+      from: PAUSED
+      to: RETIRED
+      where: id=:task_id AND status=:expected_status AND :expected_status='PAUSED'
+      set:
+      - status='RETIRED'
+  ai.output_schema_version:
+    edges:
+    - method: OutputSchemaVersionRepository.transition
+      from: DRAFT
+      to: ACTIVE
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT' AND effective_to IS NULL
+      set:
+      - status='ACTIVE'
+      - effective_from=COALESCE(effective_from,:at)
+      - effective_to=NULL
+    - method: OutputSchemaVersionRepository.transition
+      from: DRAFT
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='DRAFT'
+      set:
+      - status='RETIRED'
+      - effective_to=:retired_at
+    - method: OutputSchemaVersionRepository.transition
+      from: ACTIVE
+      to: RETIRED
+      where: id=:version_id AND status=:expected_status AND :expected_status='ACTIVE'
+      set:
+      - status='RETIRED'
+      - effective_to=:retired_at
+  ai.model_definition:
+    edges:
+    - method: ModelDefinitionRepository.transition
+      from: EVALUATION
+      to: ACTIVE
+      where: id=:model_id AND status=:expected_status AND :expected_status='EVALUATION'
+      set:
+      - status='ACTIVE'
+    - method: ModelDefinitionRepository.transition
+      from: EVALUATION
+      to: PAUSED
+      where: id=:model_id AND status=:expected_status AND :expected_status='EVALUATION'
+      set:
+      - status='PAUSED'
+    - method: ModelDefinitionRepository.transition
+      from: EVALUATION
+      to: BLOCKED
+      where: id=:model_id AND status=:expected_status AND :expected_status='EVALUATION'
+      set:
+      - status='BLOCKED'
+    - method: ModelDefinitionRepository.transition
+      from: EVALUATION
+      to: RETIRED
+      where: id=:model_id AND status=:expected_status AND :expected_status='EVALUATION'
+      set:
+      - status='RETIRED'
+    - method: ModelDefinitionRepository.transition
+      from: ACTIVE
+      to: PAUSED
+      where: id=:model_id AND status=:expected_status AND :expected_status='ACTIVE'
+      set:
+      - status='PAUSED'
+    - method: ModelDefinitionRepository.transition
+      from: ACTIVE
+      to: BLOCKED
+      where: id=:model_id AND status=:expected_status AND :expected_status='ACTIVE'
+      set:
+      - status='BLOCKED'
+    - method: ModelDefinitionRepository.transition
+      from: ACTIVE
+      to: RETIRED
+      where: id=:model_id AND status=:expected_status AND :expected_status='ACTIVE'
+      set:
+      - status='RETIRED'
+    - method: ModelDefinitionRepository.transition
+      from: PAUSED
+      to: ACTIVE
+      where: id=:model_id AND status=:expected_status AND :expected_status='PAUSED'
+      set:
+      - status='ACTIVE'
+    - method: ModelDefinitionRepository.transition
+      from: PAUSED
+      to: BLOCKED
+      where: id=:model_id AND status=:expected_status AND :expected_status='PAUSED'
+      set:
+      - status='BLOCKED'
+    - method: ModelDefinitionRepository.transition
+      from: PAUSED
+      to: RETIRED
+      where: id=:model_id AND status=:expected_status AND :expected_status='PAUSED'
+      set:
+      - status='RETIRED'
+    - method: ModelDefinitionRepository.transition
+      from: BLOCKED
+      to: EVALUATION
+      where: id=:model_id AND status=:expected_status AND :expected_status='BLOCKED'
+      set:
+      - status='EVALUATION'
+    - method: ModelDefinitionRepository.transition
+      from: BLOCKED
+      to: RETIRED
+      where: id=:model_id AND status=:expected_status AND :expected_status='BLOCKED'
+      set:
+      - status='RETIRED'
+  ai.ai_attempt:
+    edges:
+    - method: AiJobRepository.complete_attempt
+      from: RUNNING
+      to: SUCCEEDED
+      where: id=:attempt_id AND status=:expected_status AND :expected_status='RUNNING' AND completed_at IS NULL
+      set:
+      - status='SUCCEEDED'
+      - completed_at=:completion_completed_at
+      - output_artifact_id=:completion_output_artifact_id
+      - output_sha256=:completion_output_sha256
+      - latency_ms=:completion_latency_ms
+      - validation_status=:completion_validation_status
+      - response_fingerprint=:completion_response_fingerprint
+      - resolved_model_id=:completion_resolved_model_id
+      - provider_region=:completion_provider_region
+      - error_class=NULL
+      - error_code=NULL
+      - error_message=NULL
+    - method: AiJobRepository.complete_attempt
+      from: RUNNING
+      to: FAILED
+      where: id=:attempt_id AND status=:expected_status AND :expected_status='RUNNING' AND completed_at IS NULL
+      set:
+      - status='FAILED'
+      - completed_at=:completion_completed_at
+      - output_artifact_id=:completion_output_artifact_id
+      - output_sha256=:completion_output_sha256
+      - latency_ms=:completion_latency_ms
+      - validation_status=:completion_validation_status
+      - response_fingerprint=:completion_response_fingerprint
+      - resolved_model_id=:completion_resolved_model_id
+      - provider_region=:completion_provider_region
+      - error_class=:completion_error_class
+      - error_code=:completion_error_code
+      - error_message=:completion_error_message
+    - method: AiJobRepository.complete_attempt
+      from: RUNNING
+      to: REFUSED
+      where: id=:attempt_id AND status=:expected_status AND :expected_status='RUNNING' AND completed_at IS NULL
+      set:
+      - status='REFUSED'
+      - completed_at=:completion_completed_at
+      - output_artifact_id=:completion_output_artifact_id
+      - output_sha256=:completion_output_sha256
+      - latency_ms=:completion_latency_ms
+      - validation_status=:completion_validation_status
+      - response_fingerprint=:completion_response_fingerprint
+      - resolved_model_id=:completion_resolved_model_id
+      - provider_region=:completion_provider_region
+      - error_class=:completion_error_class
+      - error_code=:completion_error_code
+      - error_message=:completion_error_message
+    - method: AiJobRepository.complete_attempt
+      from: RUNNING
+      to: TIMED_OUT
+      where: id=:attempt_id AND status=:expected_status AND :expected_status='RUNNING' AND completed_at IS NULL
+      set:
+      - status='TIMED_OUT'
+      - completed_at=:completion_completed_at
+      - output_artifact_id=:completion_output_artifact_id
+      - output_sha256=:completion_output_sha256
+      - latency_ms=:completion_latency_ms
+      - validation_status=:completion_validation_status
+      - response_fingerprint=:completion_response_fingerprint
+      - resolved_model_id=:completion_resolved_model_id
+      - provider_region=:completion_provider_region
+      - error_class=:completion_error_class
+      - error_code=:completion_error_code
+      - error_message=:completion_error_message
+    - method: AiJobRepository.complete_attempt
+      from: RUNNING
+      to: CANCELLED
+      where: id=:attempt_id AND status=:expected_status AND :expected_status='RUNNING' AND completed_at IS NULL
+      set:
+      - status='CANCELLED'
+      - completed_at=:completion_completed_at
+      - output_artifact_id=:completion_output_artifact_id
+      - output_sha256=:completion_output_sha256
+      - latency_ms=:completion_latency_ms
+      - validation_status=:completion_validation_status
+      - response_fingerprint=:completion_response_fingerprint
+      - resolved_model_id=:completion_resolved_model_id
+      - provider_region=:completion_provider_region
+      - error_class=:completion_error_class
+      - error_code=:completion_error_code
+      - error_message=:completion_error_message
+  policy.policy_bundle:
+    edges:
+    - method: PolicyBundleRepository.bind_rules
+      from: DRAFT
+      to: DRAFT
+      where: EXISTS (SELECT 1 FROM policy.policy_bundle WHERE id=:bundle_id AND status=:expected_status AND :expected_status='DRAFT')
+      set: INSERT_ONLY_CHILDREN
+    - method: PolicyBundleRepository.transition
+      from: DRAFT
+      to: ACTIVE
+      where: id=:bundle_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at IS NULL
+        AND effective_to IS NULL
+      set:
+      - status='ACTIVE'
+      - approved_by_principal_id=:context_actor_id
+      - approved_at=:at
+      - effective_from=COALESCE(effective_from,:at)
+      - effective_to=NULL
+    - method: PolicyBundleRepository.transition
+      from: DRAFT
+      to: REJECTED
+      where: id=:bundle_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at IS NULL
+        AND effective_to IS NULL
+      set:
+      - status='REJECTED'
+    - method: PolicyBundleRepository.transition
+      from: DRAFT
+      to: RETIRED
+      where: id=:bundle_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL AND approved_at IS NULL
+        AND effective_to IS NULL
+      set:
+      - status='RETIRED'
+    - method: PolicyBundleRepository.transition
+      from: ACTIVE
+      to: RETIRED
+      where: id=:bundle_id AND status=:expected_status AND :expected_status='ACTIVE' AND approved_by_principal_id IS NOT NULL AND approved_at
+        IS NOT NULL AND effective_to IS NULL
+      set:
+      - status='RETIRED'
+      - effective_to=:retired_at
+  policy.rule_version:
+    edges:
+    - method: RuleVersionRepository.transition
+      from: DRAFT
+      to: ACTIVE
+      where: id=:rule_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL
+      set:
+      - status='ACTIVE'
+      - approved_by_principal_id=:context_actor_id
+    - method: RuleVersionRepository.transition
+      from: DRAFT
+      to: REJECTED
+      where: id=:rule_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL
+      set:
+      - status='REJECTED'
+    - method: RuleVersionRepository.transition
+      from: DRAFT
+      to: RETIRED
+      where: id=:rule_id AND status=:expected_status AND :expected_status='DRAFT' AND approved_by_principal_id IS NULL
+      set:
+      - status='RETIRED'
+    - method: RuleVersionRepository.transition
+      from: ACTIVE
+      to: RETIRED
+      where: id=:rule_id AND status=:expected_status AND :expected_status='ACTIVE' AND approved_by_principal_id IS NOT NULL
+      set:
+      - status='RETIRED'
+  policy.quality_check_run:
+    edges:
+    - method: QualityCheckRunRepository.append_score
+      from: RUNNING
+      to: RUNNING
+      where: EXISTS (SELECT 1 FROM policy.quality_check_run WHERE id=:run_id AND status=:expected_status AND :expected_status='RUNNING')
+      set: INSERT_ONLY_CHILDREN
+    - method: QualityCheckRunRepository.transition
+      from: RUNNING
+      to: PASSED
+      where: id=:run_id AND status=:expected_status AND :expected_status='RUNNING' AND completed_at IS NULL
+      set:
+      - status='PASSED'
+      - completed_at=:at
+      - total_score=:total_score
+      - blocking_finding_count=:blocking_finding_count
+    - method: QualityCheckRunRepository.transition
+      from: RUNNING
+      to: FAILED
+      where: id=:run_id AND status=:expected_status AND :expected_status='RUNNING' AND completed_at IS NULL
+      set:
+      - status='FAILED'
+      - completed_at=:at
+      - total_score=:total_score
+      - blocking_finding_count=:blocking_finding_count
+    - method: QualityCheckRunRepository.transition
+      from: RUNNING
+      to: ERROR
+      where: id=:run_id AND status=:expected_status AND :expected_status='RUNNING' AND completed_at IS NULL
+      set:
+      - status='ERROR'
+      - completed_at=:at
+      - total_score=:total_score
+      - blocking_finding_count=:blocking_finding_count
+    - method: QualityCheckRunRepository.transition
+      from: RUNNING
+      to: CANCELLED
+      where: id=:run_id AND status=:expected_status AND :expected_status='RUNNING' AND completed_at IS NULL
+      set:
+      - status='CANCELLED'
+      - completed_at=:at
+      - total_score=:total_score
+      - blocking_finding_count=:blocking_finding_count
+  policy.finding:
+    edges:
+    - method: FindingRepository.resolve
+      from: OPEN
+      to: FIXED
+      where: id=:finding_id AND status=:expected_status AND :expected_status='OPEN' AND resolved_at IS NULL AND resolved_by_principal_id IS NULL
+      set:
+      - status='FIXED'
+      - resolved_at=:resolution_resolved_at
+      - resolved_by_principal_id=:context_actor_id
+    - method: FindingRepository.resolve
+      from: OPEN
+      to: WAIVED
+      where: id=:finding_id AND status=:expected_status AND :expected_status='OPEN' AND resolved_at IS NULL AND resolved_by_principal_id IS NULL
+      set:
+      - status='WAIVED'
+      - resolved_at=:resolution_resolved_at
+      - resolved_by_principal_id=:context_actor_id
+    - method: FindingRepository.resolve
+      from: OPEN
+      to: FALSE_POSITIVE
+      where: id=:finding_id AND status=:expected_status AND :expected_status='OPEN' AND resolved_at IS NULL AND resolved_by_principal_id IS NULL
+      set:
+      - status='FALSE_POSITIVE'
+      - resolved_at=:resolution_resolved_at
+      - resolved_by_principal_id=:context_actor_id
+    - method: FindingRepository.resolve
+      from: OPEN
+      to: ACCEPTED_RISK
+      where: id=:finding_id AND status=:expected_status AND :expected_status='OPEN' AND resolved_at IS NULL AND resolved_by_principal_id IS NULL
+      set:
+      - status='ACCEPTED_RISK'
+      - resolved_at=:resolution_resolved_at
+      - resolved_by_principal_id=:context_actor_id
+  policy.waiver:
+    edges:
+    - method: WaiverRepository.decide
+      from: REQUESTED
+      to: APPROVED
+      where: id=:waiver_id AND status=:expected_status AND :expected_status='REQUESTED' AND decided_by_principal_id IS NULL AND decided_at IS
+        NULL AND decision_reason IS NULL AND expires_at IS NULL AND revoked_at IS NULL
+      set:
+      - status='APPROVED'
+      - decided_by_principal_id=:context_actor_id
+      - decided_at=:decision_decided_at
+      - decision_reason=:nonempty_reason
+      - expires_at=:decision_expires_at
+    - method: WaiverRepository.decide
+      from: REQUESTED
+      to: REJECTED
+      where: id=:waiver_id AND status=:expected_status AND :expected_status='REQUESTED' AND decided_by_principal_id IS NULL AND decided_at IS
+        NULL AND decision_reason IS NULL AND expires_at IS NULL AND revoked_at IS NULL
+      set:
+      - status='REJECTED'
+      - decided_by_principal_id=:context_actor_id
+      - decided_at=:decision_decided_at
+      - decision_reason=:nonempty_reason
+      - expires_at=NULL
+    - method: WaiverRepository.revoke
+      from: APPROVED
+      to: REVOKED
+      where: id=:waiver_id AND status=:expected_status AND :expected_status='APPROVED' AND decided_by_principal_id IS NOT NULL AND decided_at
+        IS NOT NULL AND decision_reason IS NOT NULL AND expires_at IS NOT NULL AND expires_at>:revocation_revoked_at AND revoked_at IS NULL
+      set:
+      - status='REVOKED'
+      - revoked_at=:revocation_revoked_at
+    - method: WaiverRepository.mark_expired
+      from: APPROVED
+      to: EXPIRED
+      where: id=:waiver_id AND status=:expected_status AND :expected_status='APPROVED' AND decided_by_principal_id IS NOT NULL AND decided_at
+        IS NOT NULL AND decision_reason IS NOT NULL AND expires_at IS NOT NULL AND expires_at<=:evaluated_at AND revoked_at IS NULL
+      set:
+      - status='EXPIRED'
+    guards:
+    - APPROVED expiry is later than requested_at and decision_decided_at
+    - REJECTED expiry is null
+    - revoker and revocation reason are Audit-only
+matrix_cardinality:
+  relations: 24
+  edges: 118
+two_way_gate:
+- relation keys exactly equal concurrency-matrix state_cas_without_lock_version
+- every repository state mutation resolves to one or more exact edge rows and every edge resolves to one repository method
+- every WHERE and SET column exists in the hash-pinned physical relation
+- generated PostgreSQL statements equal the predicates and assignments byte-for-byte after schema qualification
+- each caller expected_status or expected_state appears in the corresponding WHERE predicate
+- every from/to pair is unique per method and no unlisted edge is constructible

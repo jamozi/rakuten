@@ -1,0 +1,165 @@
+document:
+  id: RAOS-ST0403-LOCAL-IMPLEMENTATION-COMPLETION-002
+  story_id: ST-0403
+  evidence_class: LOCAL_IMPLEMENTATION_ONLY
+  proposed_status: LOCAL_CODE_COMPLETE
+  base_sha: 1aee080876e7204ae8a1a5ba5ecfe4b8eb317528
+  branch: codex/st0403-sqlite-hardening-20260825
+  recorded_at: '2026-08-25T07:52:02+09:00'
+
+scope:
+  - exact ST-0401 provenance rebind before ST-0403 generation
+  - created-only owner-private SQLite authorization runtime for recorded ENV-DEV and CI
+  - exact schema V2 with STRICT tables, foreign keys, closed PRAGMAs, indexes, and append-only triggers
+  - canonical policy, entitlement, separation-of-duty, audit, command, and full-mutation records
+  - root and database identity pinning with a process-local valid-prefix rollback anchor
+  - canonical decoding, redundant bindings, full-chain integrity, compare-and-set, concurrency, and exact command recovery
+  - detached caller, collaborator, repository-result, and HTTP-result boundaries
+  - exact local external-action count zero and disabled live/provider/publication paths
+
+local_completion:
+  predecessor_st0401_contract_sha256: 6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad
+  database_initialization: O_EXCL_CREATED_FILE_ONLY
+  preexisting_empty_partial_foreign_or_v1_database: REJECTED
+  schema_version: 2
+  sqlite_application_id: 1380400302
+  tables: STRICT_EXACT_SQLITE_MASTER_VALIDATED
+  foreign_keys: ENABLED_AND_CHECKED_EVERY_TRANSACTION
+  mutation_policy: APPEND_ONLY_TRIGGER_GUARDED
+  canonical_documents: ASCII_SORTED_COMPACT_JSON_WITH_DUPLICATE_AND_NONFINITE_REJECTION
+  redundant_bindings: RECOMPUTED_ON_EVERY_INTEGRITY_CHECK
+  full_chain: ALL_BOOTSTRAP_POLICY_ENTITLEMENT_SOD_AUDIT_AND_COMMAND_MUTATIONS
+  compare_and_set: EXACT_REVISION_CAS
+  concurrency: PROCESS_LOCK_AND_SQLITE_IMMEDIATE_TRANSACTION
+  commit_classification:
+    transaction_open_after_error: KNOWN_ROLLBACK
+    transaction_closed_or_post_commit_fault: COMMIT_UNKNOWN_READ_ONLY_RECOVERY
+  command_recovery: EXACT_INTENT_AND_RESULT_IDEMPOTENT_NO_BLIND_RETRY
+  identity_pin: OWNER_ROOT_AND_DATABASE_DEVICE_INODE
+  rollback_detection: PROCESS_LOCAL_COUNT_HEAD_AND_VALID_PREFIX
+  caller_and_collaborator_values: DETACHED_AND_REVALIDATED
+  deny_by_default: PRESERVED
+  horizontal_vertical_site_state_scope_and_sod_denial: PRESERVED
+  external_action_count: 0
+  business_action_execution: false
+  live_provider_credential_or_publication_authority: false
+
+limitations:
+  - id: ST0403-EXTERNAL-ANCHOR
+    status: EXPLICIT_EXTERNAL_CAPABILITY_NOT_IMPLEMENTED
+    detail: a valid-prefix rollback across process restart requires an independent external anchor
+    safe_local_boundary: file identity and process-lifetime prefix rollback are fail-closed
+    authority_not_claimed: live durable anchor or production operation
+
+checks:
+  owner_generation:
+    result: PASS
+  owner_no_write_check:
+    result: PASS
+  focused_pytest:
+    command: TMPDIR=/tmp TEMP=/tmp TMP=/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=python:. .venv/bin/python -m pytest -q -p no:cacheprovider tests/st0403
+    result: PASS
+    observed: 99 passed
+  downstream_read_only_st0405:
+    result: PASS
+    observed: 93 passed
+  downstream_read_only_st0604:
+    result: EXPECTED_PREDECESSOR_HASH_DRIFT
+    observed: 162 failed and 44 passed
+    exact_failure: ST-0604 build failed PREDECESSOR_HASH_DRIFT field=predecessor.artifact
+    closure_owner: ST0604_SOURCE_PACKET_RUNTIME_OWNER_AFTER_EXACT_ST0403_COMMIT
+    safe_impact: ST0604 is intentionally paused for the final ST0403 artifact hashes and no ST0604 file was changed
+  denied_network:
+    method: strace over explicit socket and endpoint syscalls for the complete ST0403 suite
+    result: PASS
+    observed: 99 passed and zero enumerated network syscalls; signal records only
+  ruff_check:
+    result: PASS
+  ruff_format_check:
+    result: PASS
+    observed: 14 files already formatted
+  strict_mypy_runtime:
+    result: PASS
+    observed: Success no issues found in 8 source files
+  strict_mypy_tests:
+    result: PASS
+    observed: Success no issues found in 6 source files
+  focused_pyright:
+    runtime: Node 24.18.1 with repository-locked Pyright
+    result: PASS
+    observed: 0 errors and 0 warnings and 0 informations across 8 runtime and owner files
+  aggregate_pyright:
+    result: INHERITED_UNRELATED_FAILURES
+    observed: 666 errors and 0 warnings and 0 informations across the repository project
+    safe_impact: the exact ST0403 target set passes with zero diagnostics
+  compile:
+    result: PASS
+  focused_secret_scan:
+    method: repository scanner over descriptor-relative reads of 22 exact ST0403 maintained paths
+    result: PASS
+    observed: zero findings
+  full_worktree_secret_scan:
+    command: python3 -I scripts/scan_secrets.py --worktree
+    result: OPERATIONAL_ERROR_INHERITED
+    observed: unsafe-git-metadata for isolated worktree indirection with exit 2
+    safe_impact: does not weaken or replace the focused descriptor-relative scan
+  git_diff_check:
+    result: PASS
+  owned_path_review:
+    result: PASS
+    observed: only ST0403-owned runtime, generator, tests, contract, generated evidence, and documentation changed
+
+debt:
+  introduced_by_st0403_v2: NONE
+  downstream_exact_hash_rebind:
+    owner: ST0604
+    status: WAITING_FOR_THIS_COMMIT_NOT_AN_ST0403_RUNTIME_DEBT
+  external_anchor_across_restart:
+    status: NOT_CLAIMED_REQUIRES_SEPARATE_OPERATIONAL_AUTHORITY
+  formal_and_live_tail:
+    status: NOT_EXECUTED
+
+artifacts:
+  registry_contract:
+    path: changes/st-0403/contracts/authorization-registry.v1.json
+    sha256: a2ef5f7df66492164128ba8ffffcceb254b58bedc5cac7d03716d20700bc1093
+  durable_runtime_contract:
+    path: changes/st-0403/contracts/durable-authorization-runtime.v2.json
+    sha256: 478626abf1649682c173ecb45dd6abdf56932bd013cbee88f7c2d4753dab27f0
+  generated_registry:
+    path: changes/st-0403/generated/authorization-registry.v1.json
+    sha256: c3f3efb589a028c7d8139b514dcb28f124a42913da3c06ce20cc4da6e11a3867
+  manifest:
+    path: changes/st-0403/manifest.json
+    sha256: d3f862d4d34c8ce576b2b6885d8f37f8a3f301ca225a71bfdca980f7bea9fc8c
+  generated_registry_adapter:
+    path: python/raos/adapters/generated_st0403_authorization_registry.py
+    sha256: 1618f3b2fce03fab6b06fc46227f33223d72eeb522b0ce24d731e67b684958a2
+  recorded_adapter:
+    path: python/raos/adapters/recorded_authorization.py
+    sha256: b25242c24053c5b22e1f42ecb0ec6f5ce5a5323f819a2394aa6204af7553508f
+  application:
+    path: python/raos/application/iam/authorization.py
+    sha256: 8c1133b948fc935b62d8e2ed964a795a7f9e24c9943c9aa1b44bcf898dba3814
+  domain:
+    path: python/raos/domain/iam/authorization.py
+    sha256: 18b21b95dd3dc154b40f11f605b6289e0e27576f3401bb294606d871e78185f7
+  port:
+    path: python/raos/ports/authorization.py
+    sha256: 9f008f67337f1ceac44f94979f2741a96900c41408ee17fa3d887015a24ea9de
+
+authority:
+  canonical_apply: NOT_EXECUTED
+  formal_tst_011: NOT_EXECUTED
+  formal_tst_012: NOT_EXECUTED
+  formal_tst_026: NOT_EXECUTED
+  real_oidc: NOT_EXECUTED
+  real_mfa: NOT_EXECUTED
+  real_database: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  credential_access: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED

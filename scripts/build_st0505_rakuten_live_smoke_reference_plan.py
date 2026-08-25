@@ -10,7 +10,7 @@ import json
 import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any, Final, NoReturn, cast
+from typing import Any, Final, NoReturn, TypeGuard, cast
 
 import yaml
 
@@ -80,7 +80,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 EXPECTED_INSTALLED_BUNDLE_SHA256: Final = (
@@ -507,11 +507,11 @@ EXPECTED_SOURCES: Final = (
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
     ),
 )
-PREDECESSOR_COMMIT: Final = "3b63ea8b35b25f1c38c53a7fb5e8c0b596ddd0ab"
+PREDECESSOR_COMMIT: Final = "325fdc52dc8280b1b65a2b3b6508bfca916a9df9"
 EXPECTED_PREDECESSOR_ARTIFACTS: Final = (
     (
         Path("changes/st-0502/README.md"),
-        "d242024ecb824c36fe45d63709a34af7138f6101deb5c36782f78f8836c7b731",
+        "07a75c2bccb15cf25e5abbc64a1df5f884f1c257e8f73e6829caf9b1f15cd877",
     ),
     (
         Path("python/raos/domain/catalog/rakuten_item_search.py"),
@@ -802,11 +802,18 @@ def _fail(code: str, field: str) -> NoReturn:
 def _mapping(value: object, field: str) -> Mapping[str, Any]:
     if type(value) is not dict:
         _fail("TYPE_MISMATCH", field)
-    return value
+    raw = cast(dict[object, object], value)
+    if any(type(key) is not str for key in raw):
+        _fail("TYPE_MISMATCH", field)
+    return cast(Mapping[str, Any], raw)
+
+
+def _is_any_list(value: object) -> TypeGuard[list[Any]]:
+    return type(value) is list
 
 
 def _list(value: object, field: str) -> list[Any]:
-    if type(value) is not list:
+    if not _is_any_list(value):
         _fail("TYPE_MISMATCH", field)
     return value
 
@@ -848,7 +855,9 @@ def _ast_sha256(node: ast.AST) -> str:
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
-    physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    physical = base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        root, relative, field
+    )
     try:
         content = physical.read_bytes()
     except OSError:
@@ -859,16 +868,20 @@ def _read(root: Path, relative: Path, field: str) -> bytes:
 
 
 def _load_yaml(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
-    base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        root, relative, field
+    )
     return _mapping(base.load_yaml(root / relative), field)
 
 
 def _find(items: object, identity: str, field: str) -> Mapping[str, Any]:
-    matches = [
-        _mapping(item, field)
-        for item in _list(items, field)
-        if type(item) is dict and item.get("id") == identity
-    ]
+    matches: list[Mapping[str, Any]] = []
+    for item in _list(items, field):
+        if type(item) is not dict:
+            continue
+        candidate = _mapping(cast(object, item), field)
+        if candidate.get("id") == identity:
+            matches.append(candidate)
     if len(matches) != 1:
         _fail("CANONICAL_RECORD_MISSING", field)
     return matches[0]
@@ -1148,7 +1161,7 @@ def _validate_predecessor_semantics(root: Path) -> None:
             string_values.add(node.value)
     if (
         not imports.issubset(LIVE_POLICY_ALLOWED_IMPORTS)
-        or import_bindings != LIVE_POLICY_ALLOWED_IMPORT_BINDINGS
+        or frozenset(import_bindings) != LIVE_POLICY_ALLOWED_IMPORT_BINDINGS
         or not imports.isdisjoint(LIVE_POLICY_FORBIDDEN_IMPORTS)
         or not name_calls.issubset(LIVE_POLICY_ALLOWED_NAME_CALLS)
         or not attribute_calls.issubset(LIVE_POLICY_ALLOWED_ATTRIBUTE_CALLS)
@@ -2989,7 +3002,9 @@ def check_outputs(root: Path, expected: Mapping[Path, bytes]) -> None:
     if set(expected) != set(GENERATED_PATHS):
         _fail("GENERATED_INVENTORY_DRIFT", "output")
     for relative in GENERATED_PATHS:
-        path = base._output_file(root, relative)  # noqa: SLF001
+        path = base._output_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative
+        )
         try:
             actual = path.read_bytes()
         except OSError:
@@ -3004,7 +3019,9 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
         check_outputs(root, outputs)
         return
     for relative, content in outputs.items():
-        base._atomic_write(root, relative, content)  # noqa: SLF001
+        base._atomic_write(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative, content
+        )
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

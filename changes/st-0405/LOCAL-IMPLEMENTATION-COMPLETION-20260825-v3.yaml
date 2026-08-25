@@ -1,0 +1,155 @@
+schema: RAOS_LOCAL_IMPLEMENTATION_COMPLETION_V3
+story_id: ST-0405
+mode: STRICT_STORY
+base_commit: 5f4ded379fb7b75cc632df53833ae3e2f7f892f8
+branch: codex/st0405-sqlite-hardening-20260825
+status: LOCAL_IMPLEMENTATION_COMPLETE
+contract_sha256: 3a9d10115c6f4544b4a030b77fb46a81db8a6a5e47a6690f4ee2041ec4fc9ff7
+scope:
+  implementation: OWNER_PRIVATE_RECORDED_SQLITE_AUDIT_HARDENING
+  generated_outputs: []
+  owned_generator: NONE
+  legacy_database_migration: FORBIDDEN_REJECT_UNCHANGED
+  outward_query: DISABLED_ST0403_OPS012_SITE_SCOPE_CONFLICT
+  retention_deletion_export: ABSENT_OD014_UNRESOLVED
+authority:
+  repository_local_development_only: true
+  external_action_count: 0
+  network_provider_credential: NONE
+  business_mutation: NONE
+  publication: NONE
+  staging: NONE
+  release: NONE
+  production: NONE
+implementation:
+  initialization: CREATED_ONLY_OWNER_ROOT_DIRFD_O_EXCL
+  schema: EXACT_APPLICATION_USER_STRICT_TABLE_XINFO_INDEX_TRIGGER_FK
+  append_only: EVENT_MARKER_METADATA_TRIGGERS_AND_NO_MUTATION_PORT
+  durability: FULL_SYNC_METADATA_CAS_READBACK_EXACT_UNKNOWN_RECOVERY
+  validation: FULL_CANONICAL_REDUNDANT_ROW_MARKER_METADATA_HASH_CHAIN
+  identity: ROOT_AND_DATABASE_INODE_PLUS_PROCESS_PREFIX_ANCHOR
+  collaborator_boundary: RECONSTRUCTED_VALUES_EXACT_INTEGER_ZERO_ACTION_COUNT
+changed_files:
+  - changes/st-0405/LOCAL-IMPLEMENTATION-COMPLETION-20260825-v3.yaml
+  - changes/st-0405/PREFLIGHT-20260825-v3.md
+  - changes/st-0405/README.md
+  - changes/st-0405/contracts/local-audit-runtime.v2.yaml
+  - python/raos/adapters/recorded_audit.py
+  - python/raos/adapters/recorded_audit_runtime_v2.py
+  - python/raos/application/ops/audit_runtime_v2.py
+  - python/raos/domain/ops/audit_runtime_v2.py
+  - python/raos/ports/audit_runtime_v2.py
+  - tests/st0405/test_contract_v2.py
+  - tests/st0405/test_durable_runtime_v2.py
+  - tests/st0405/test_sqlite_hardening_v3.py
+checks:
+  story_suite:
+    command: pytest -q tests/st0405
+    result: PASS_109
+  repeated_concurrency_recovery:
+    command: pytest -q FOUR_FOCUSED_CASES repeated five times
+    result: PASS_20
+  denied_network:
+    command: strace -f -qq -e trace=%network pytest -q tests/st0405
+    result: PASS_109_ZERO_NETWORK_SYSCALLS_TWO_SIGCHLD_RECORDS_ONLY
+  ruff_format:
+    command: ruff format --check EIGHT_OWNED_PYTHON_FILES
+    result: PASS
+  ruff_lint:
+    command: ruff check EIGHT_OWNED_PYTHON_FILES
+    result: PASS
+  strict_mypy:
+    command: mypy --strict --warn-unreachable FIVE_OWNED_SOURCE_FILES
+    result: PASS
+  targeted_pyright:
+    command: NODE_24_18_1 pyright FIVE_OWNED_SOURCE_FILES
+    result: PASS_ZERO_ERRORS_ZERO_WARNINGS
+  compile_import:
+    command: python -m py_compile EIGHT_OWNED_PYTHON_FILES and exact imports
+    result: PASS
+  focused_secret_scan:
+    command: scan_secrets.scan_bytes TWELVE_OWNED_FILES
+    result: PASS_ZERO_FINDINGS
+  canonical_import:
+    command: python scripts/import_raos_design.py verify
+    result: PASS_105_FILES_104_CHECKSUMS_103_MANIFEST_ENTRIES
+  workspace:
+    command: python scripts/bootstrap_workspace.py --check
+    result: PASS_42_DIRECTORIES_ZERO_CHANGES
+  authorization_dependency:
+    command: pytest -q --tb=no tests/st0403
+    result: PASS_99
+  downstream_st1406:
+    command: pytest -q --tb=no tests/st1406
+    result: PASS_128
+  scope_and_diff:
+    command: exact twelve-path review and git diff --check
+    result: PASS
+deferred_verification:
+  - debt_id: ST0405-DV-001
+    command: pytest -q --tb=no tests/st0902
+    observed_result: >-
+      FAIL_61_PASS_28; the first fail-closed error is
+      DEPENDENCY_HASH_MISMATCH dependency.ST-0402.readme. The installed
+      ST-0902 binding is 6a3d5b2a1836d683b2dc96ecb73e4a02943a9a6fd8068496e6d550492514534b
+      while the unchanged base/current source is
+      b005e4a330d6ad2a6eaf85f40c17684d5506e3b3de6b82328a3b9592e438e1ca.
+    affected_owner_artifacts:
+      - changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
+      - changes/st-0902/generated/final-approval-reference-plan.v1.json
+      - changes/st-0902/manifest.yaml
+    introduced_by_story: ST-0402
+    closure_wave: DOWNSTREAM_PROVENANCE_REBIND_AFTER_INTEGRATION
+    safe_impact: FAIL_CLOSED_REFERENCE_GENERATION_ONLY_NO_RUNTIME_AUTHORITY
+  - debt_id: ST0405-DV-002
+    command: pytest -q --tb=no tests/st0902
+    observed_result: >-
+      The earlier ST-0402 mismatch masks the ST-0405 README binding. ST-0902
+      expects 8b046d65492947a458306c308f5515bb6496e0371bdc9695226d52328a04a657;
+      the exact integration base was already stale at
+      90ee091eb17c97fdf49173e96b5c80a5e34ace39a1f908e98d2ff2a739d7db8e;
+      this completed owner source is
+      d815e3f71728ff43c3c7301cdf973534f723c505bffba1f6d97b82e8d76c588f.
+    affected_owner_artifacts:
+      - changes/st-0902/contracts/final-approval-reference-plan.v1.yaml
+      - changes/st-0902/generated/final-approval-reference-plan.v1.json
+      - changes/st-0902/manifest.yaml
+    introduced_by_story: ST-0405
+    closure_wave: ST0902_DOWNSTREAM_PROVENANCE_REGENERATION
+    safe_impact: FAIL_CLOSED_REFERENCE_GENERATION_ONLY_NO_RUNTIME_AUTHORITY
+  - debt_id: ST0405-DV-003
+    command: pytest -q --tb=no tests/st1407
+    observed_result: >-
+      FAIL_47_PASS_23 with DEPENDENCY_HASH_DRIFT dependency.source. ST-1407
+      expects the same 8b046d65492947a458306c308f5515bb6496e0371bdc9695226d52328a04a657
+      README binding; base was already stale at 90ee091e..., and the completed
+      ST-0405 owner source is d815e3f7....
+    affected_owner_artifacts:
+      - changes/st-1407/contracts/external-policy-registry-reference-plan.v1.yaml
+      - changes/st-1407/generated/external-policy-registry-reference-plan.v1.json
+      - changes/st-1407/manifest.yaml
+    introduced_by_story: ST-0405
+    closure_wave: ST1407_DOWNSTREAM_PROVENANCE_REGENERATION
+    safe_impact: FAIL_CLOSED_REFERENCE_GENERATION_ONLY_NO_POLICY_OR_WRITE_AUTHORITY
+  - debt_id: ST0405-DV-004
+    command: >-
+      python3 -I scripts/scan_secrets.py --worktree --reviewed-findings
+      changes/st-0106/contracts/reviewed-secret-findings.v3.yaml in a physical clone
+    observed_result: >-
+      ONE_INHERITED_SANITIZED_GENERIC_FINDING at
+      tests/st1506/test_local_canary_hostile.py line 193; no ST-0405-owned file
+      produced a focused finding.
+    affected_owner_artifacts:
+      - tests/st1506/test_local_canary_hostile.py
+      - changes/st-0106/contracts/reviewed-secret-findings.v3.yaml
+    introduced_by_story: ST-1506
+    closure_wave: SECURITY_SCANNER_LEDGER_RECONCILIATION
+    safe_impact: ST0405_FOCUSED_ZERO_FINDINGS_FULL_REPOSITORY_SCAN_REMAINS_RED
+formal_live_remaining:
+  tst_011_postgresql: NOT_EXECUTED
+  tst_012_hosted_http: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_AUTHORIZED
+  production: NOT_AUTHORIZED

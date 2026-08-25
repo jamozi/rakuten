@@ -46,7 +46,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -92,15 +92,15 @@ EXPECTED_SOURCES: Final = (
 EXPECTED_PREDECESSORS: Final = (
     (
         ST1505_CONTRACT_PATH,
-        "b87eca244cd103c41f16712a8eaaf92f24890ee8e24f964c2603e5b51518846b",
+        "be104a13490d4c39139047e101092e1b2f3541d45c9277e2d9937915a731e2f0",
     ),
     (
         ST1505_PLAN_PATH,
-        "8666bf121633f6116acad236399e3b6ebe57a0358ed2bbb7fdd3b7b038da94e4",
+        "0c607b4c207068432477db1aa2a2e9598092964dbdce470d8b537c7022eaf105",
     ),
     (
         ST1505_MANIFEST_PATH,
-        "c27f4df8316621933f5d2d1e5d510dff6b8f65fe6a812ea036c70ba0c9334aa9",
+        "0e970c5749a8bd94fcc8ae5e695d11a4b927028fcc168838618998ac48075aeb",
     ),
     (
         ST1601_PATH,
@@ -384,7 +384,17 @@ def _validate_predecessor_semantics(root: Path) -> None:
         base._validate_local_safety_invariants(owner_contract)  # noqa: SLF001
         owner_model = base.StagingDeploymentModel(contract=dict(owner_contract))
         owner_plan = base.render_reference_plan(owner_model)
-        owner_manifest = base.render_manifest(owner_model, owner_plan, root)
+        _runtime, runtime_specification = base.load_and_validate_runtime_contract(root)
+        local_pipeline = base.render_local_pipeline(_runtime, runtime_specification)
+        local_result = base.render_local_result(runtime_specification)
+        owner_manifest = base.render_manifest(
+            owner_model,
+            owner_plan,
+            local_pipeline,
+            local_result,
+            runtime_specification,
+            root,
+        )
     except base.StagingDeploymentContractError:
         raise PerformanceLoadReferenceError(
             "ST-1604 build failed: PREDECESSOR_OWNER_VALIDATION_FAILED "

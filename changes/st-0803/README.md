@@ -1,40 +1,64 @@
-# ST-0803 — local TEST_ONLY comparison validator
+# ST-0803 — additive local comparison validation runtime V2
 
-Classification:
-`PURE_DETERMINISTIC_LOCAL_TEST_ONLY_COMPARISON_VALIDATOR`.
+V2 adds an executable, recorded-synthetic comparison validation boundary while
+preserving the historical V1 pure validator for ST-0804 compatibility. Neither
+runtime ranks products, produces recommendations, changes an Article, or grants
+publication or Production authority.
 
-This slice validates one already assembled synthetic comparison matrix. It is
-local, non-persistent, non-authoritative, and ineligible for publication or
-Production. It does not resolve product identity, merge or split products,
-convert units, impute values, rank products, calculate recommendations or
-coverage, or call any external system.
+## Exact input boundary
 
-## Closed validation boundary
+One V2 envelope binds the exact Article ID/version/body, approved Source Packet
+Version/content, complete Claim set, versioned candidate universe, versioned
+axis catalog, product-by-axis Fact set, evaluation time and complete comparison
+input. Products bind separate subject and variant identity hashes. Decimal,
+date, Boolean, code and text values are typed and serialized deterministically;
+decimal values use an exact `NUMERIC(30,10)`-compatible representation.
 
-- Inputs contain 2 through 20 unique products, 1 through 30 unique axes, and
-  exactly one cell for every product/axis pair.
-- Product identity and variant bindings are supplied pre-resolved for the
-  synthetic fixture. Unresolved, conflicting, or mismatched bindings block.
-- A known cell has an explicit finite scalar and exact unit, evidence,
-  identity, and variant bindings. An unknown cell has no invented value or
-  unit, and unknown values must remain visible.
-- Imputation, incompatible units, finance or affiliate fields, mutable
-  collections, subclasses, booleans used as scalar values, non-finite numbers,
-  and malformed runtime types fail closed with stable redacted findings.
-- Findings expose closed codes only. They never echo product, axis, evidence,
-  identity, variant, value, or field-name input.
+Every product/axis coordinate is explicit. `VALID`, `UNKNOWN`, `MISSING`,
+`CONFLICT`, and `UNSUPPORTED` are separate states. Unknown values remain
+visible and cannot be imputed. Required missing values, conflicts, unsupported
+values, identity/variant/unit mismatches, stale or future Facts, and finance or
+affiliate axis aliases block. Missing, malformed, oversized, untrusted or
+hash-incoherent input is `UNEVALUABLE`.
 
-OD-006 remains `EXTERNAL_EVIDENCE_REQUIRED` and blocking. This validator does
-not turn a synthetic pre-resolved binding into a category identity rule or an
-ST-0504 identity decision. ST-0605 claim/evidence coverage remains
-`UNEVALUABLE`; its vocabulary mapping remains `UNAVAILABLE` and no coverage
-calculation occurs.
+## ST-0605 receipt handshake
 
-## Completion boundary
+V2 consumes the exact precomputed ST-0605 Claim/Evidence snapshot. It calls the
+ST-0605 public requirement function to validate the required `COMPARISON`
+kind/subject/input tuples without requiring an earlier ST-0605 `PASS`. All
+other required receipts, including exact ST-0504 identity receipts, must
+already be present and valid. A finding-free result emits matching
+recorded-synthetic ST-0803 receipts. The input is not mutated; a caller may
+assemble a new ST-0605 snapshot with those receipts and rerun ST-0605.
 
-A finding-free local fixture returns `PASS`, but
-`publication_authorized=false` and `production_eligible=false` remain exact.
-Identity resolution, coverage calculation, formal TST-007/TST-020 execution,
-and live validation remain `NOT_EXECUTED`. Local unit, lint, and type checks are
-implementation evidence only; they do not establish formal CI, runtime,
-staging, release, live-provider, or Production readiness.
+The receipt decision digest is a deterministic corruption check, not owner
+authentication. Live identity resolution remains outside this runtime.
+
+## Runtime and authority boundary
+
+- Pure evaluator: no I/O and no authority.
+- Inward port: one read-only envelope lookup.
+- Result seam: process-local metadata-only append; no update/delete surface.
+- Adapter: generated fixture bytes only, ENV-DEV/CI only, reparsed and
+  hash-checked on every read.
+- Generator: exact locked toolchain and source hashes, bounded YAML/JSON,
+  symlink/hardlink rejection, descriptor-relative
+  `renameat2(RENAME_EXCHANGE)`/no-clobber publication, foreign-target
+  restoration and multi-output rollback.
+- Network, credential, provider, persistence, Article, recommendation,
+  ranking and publication operations: forbidden.
+
+A finding-free recorded fixture returns `LOCAL_VALIDATED`, while all
+publication/recommendation/ranking/Production authority flags remain false.
+Formal TST-007/TST-020, live validation, hosted CI, staging, release and
+Production remain `NOT_EXECUTED`.
+
+## 2026-08-25 provenance reconciliation
+
+- Rebound the recorded Claim/Evidence fixture to the exact ST-0605 owner
+  commit `160e5d4e210a35b216395c1bdf16b9c664ecc8e7` and its current fixture
+  bytes. The Claim/Evidence contract and the V2 receipt semantics are
+  unchanged.
+- Rebound the ST-0504 identity-review reference plan to its current exact
+  bytes. This is a provenance-only dependency update; live identity resolution
+  and category-specific merge rules remain outside this runtime.

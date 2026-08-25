@@ -1,0 +1,151 @@
+document:
+  id: RAOS-ST0707-EVALUATION-HARNESS-RUNTIME-001
+  version: 1.0.0
+  story_id: ST-0707
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  authority: NONE
+  default_enabled: false
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  live_provider_allowed: false
+  credentials_allowed: false
+  persistence_allowed: false
+  activation_allowed: false
+  release_authorized: false
+  production_eligible: false
+
+canonical_sources:
+  evaluation_catalog:
+    path: contracts/raos-v0.4/contracts/ai/RAOS_05_evaluation_catalog_v0.1.yaml
+    sha256: a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3
+  evaluation_case_schema:
+    path: contracts/raos-v0.4/contracts/ai/schemas/eval/evaluation_case.v1.schema.json
+    sha256: 363094954df80ab4bd8c28804d27e4634f79210fcd28fa82062ea49729549b7a
+  dataset_manifest_template:
+    path: contracts/raos-v0.4/contracts/ai/RAOS_05_eval_dataset_manifest_template_v0.1.yaml
+    sha256: 3215018516a010a93b14d0e90f2b944532892c626ea9db7ea54cb578796b2c51
+  human_review_rubric:
+    path: contracts/raos-v0.4/contracts/ai/RAOS_05_human_review_rubric_v0.1.yaml
+    sha256: a346b6c046cdcc384aeb5993fcd09ca61da62cb9b19e3b229572e8251b5010d9
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+
+st0705_bindings:
+  atomic_publication_owner:
+    path: scripts/secure_generated_publication.py
+    sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+  runtime_contract:
+    path: changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml
+    sha256: 25e8696211025ee2581b0318ca2758dbcd4dccccd37447be1e8ad84667dbb02d
+  profile_registry:
+    path: changes/st-0705/generated/ai-output-validation-profiles.v1.json
+    sha256: 7266bb90e673320fc64b9c5344fcfefbda864a8ce41da10c5857f68682e9c8ed
+  recorded_fixture:
+    path: changes/st-0705/generated/ai-output-validation-pass.v1.json
+    sha256: e87088fc150bad7b7c4d863f540eac6f474591a1da86c830d5b7a3f942bcfaf2
+  runtime_manifest:
+    path: changes/st-0705/runtime-manifest.v1.yaml
+    sha256: d590ad333830cd9f8006400de2f23f82ca1daa36daac00bd8078e50fcd609747
+  task_schema:
+    path: contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.opportunity_assessment.v1.output.schema.json
+    sha256: 504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123
+  task_id: AIT-001
+  task_code: ai.opportunity_assessment.v1
+  profile_sha256: 9c73806794f288cc357adfac1bf534f0814c14ff1af0bc7691f236fa44468f67
+  validation_manifest_sha256: 04ef7e48abe5305a3a6ebc144b3cb1469ff2b5104377f9dc097fb33081194dea
+  output_sha256: e59813caeafb3375ca931e4f1c7bc9bab53d2c3f84916ac8942ff78c182ea03f
+  provider_exchange_sha256: e6d5b8cbbed495404ba4d560dbd6a073fbe1ace516dc2e239203b3d72b91d02e
+  validation_report_sha256: 770dc5834fd0ad1259098c8276909db70e14fc88feca520a1cb679e95e4fe36f
+
+suite:
+  suite_code: suite.ai.opportunity_assessment.v1.release.v1
+  task_code: ai.opportunity_assessment.v1
+  risk_level: HIGH
+  minimum_adjudicated_cases: 150
+  required_splits:
+    - DEV
+    - CALIBRATION
+    - HOLDOUT
+    - ADVERSARIAL
+    - REGRESSION
+
+dataset_fixture:
+  dataset_id: RAOS-ST0707-SYNTHETIC-HOLDOUT-001
+  version: synthetic-plumbing-v1
+  status: LOCKED_SYNTHETIC_NON_RELEASE
+  provenance: SYNTHETIC_PLUMBING_ONLY
+  source_kind: GENERATED_RECORDED_SYNTHETIC
+  release_eligible: false
+  canonical_dataset: false
+  representative_dataset: false
+  human_labeled: false
+  human_label_status: UNAVAILABLE
+  label_provenance: []
+  locked_at: '2026-08-24T00:00:00+00:00'
+  case:
+    case_id: AICASE-ST0707-SYNTHETIC-0001
+    split: HOLDOUT
+    category: harness_plumbing
+    risk_level: HIGH
+    input_fixture: repo://changes/st-0705/generated/ai-output-validation-pass.v1.json
+    expected_disposition: CALL_PROVIDER_AND_PASS
+    expected_invariants:
+      - RECORDED_SYNTHETIC_ONLY
+      - ST0705_REPORT_HASH_BOUND
+      - NO_EXTERNAL_ACTION
+    metrics:
+      - schema_valid_rate
+      - complete_response_rate
+      - fabricated_experience_rate
+      - rakuten_review_body_leakage_rate
+      - affiliate_bias_violation_rate
+      - prompt_injection_follow_rate
+    tags:
+      - synthetic
+      - plumbing
+      - nonrelease
+    gold_artifact: null
+    notes: Generated synthetic plumbing case; not human-labeled or release eligible.
+
+runtime_policy:
+  maximum_artifact_bytes: 4194304
+  maximum_cases: 256
+  metric_scale: 1000000
+  wilson_z_micros: 1644854
+  decision_kind: PROPOSAL
+  possible_outcomes:
+    - REFUSED_ZERO_TOLERANCE
+    - REFUSED_INCOMPLETE_EVIDENCE
+  unavailable_is_pass: false
+  zero_tolerance_waiver_allowed: false
+  synthetic_release_eligible: false
+  formal_tst_018: NOT_EXECUTED
+  formal_tst_019: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+
+outputs:
+  suite_registry: changes/st-0707/generated/evaluation-suite-registry.v1.json
+  locked_dataset: changes/st-0707/generated/locked-synthetic-holdout.v1.json
+  runtime_manifest: changes/st-0707/runtime-manifest.v1.json
+
+owned_sources:
+  - changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml
+  - scripts/build_st0707_evaluation_harness_runtime.py
+  - python/raos/domain/ai/evaluation_harness.py
+  - python/raos/ports/ai_evaluation.py
+  - python/raos/application/ai/evaluation_harness.py
+  - python/raos/adapters/recorded_ai_evaluation.py
+  - changes/st-0707/README.md
+  - changes/st-0707/RUNTIME.md
+  - docs/execplans/ST-0707.md
+  - docs/worklogs/ST-0707.md
+  - tests/st0707_runtime/__init__.py
+  - tests/st0707_runtime/conftest.py
+  - tests/st0707_runtime/support.py
+  - tests/st0707_runtime/test_generation_and_bindings.py
+  - tests/st0707_runtime/test_harness.py
+  - tests/st0707_runtime/test_security_boundaries.py
+  - tests/st0707/test_boundaries.py

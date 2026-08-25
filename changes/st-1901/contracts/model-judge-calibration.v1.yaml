@@ -1,0 +1,235 @@
+document:
+  schema_version: 1.0.0
+  story_id: ST-1901
+  classification: MAXIMUM_SAFE_LOCAL_DISABLED_RECORDED_MODEL_JUDGE_CALIBRATION_V1
+  status: LOCAL_IMPLEMENTATION_CANDIDATE
+  mvp: false
+  canonical_implementation_status: DEFERRED_POST_MVP
+  canonical_status_changed: false
+  formal_validation: NOT_EXECUTED
+  authority: NONE
+  default_enabled: false
+  production_eligible: false
+  approval: null
+
+authority:
+  canonical_story:
+    path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+    story_id: ST-1901
+  integration_precedence:
+    path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  security_privacy_design:
+    path: docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    sha256: 6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b
+  security_controls:
+    path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+    controls:
+      - SEC-AI-001
+      - SEC-AI-002
+      - SEC-AI-003
+      - SEC-AI-005
+      - SEC-AI-006
+      - SEC-AI-007
+  threat_register:
+    path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
+    sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
+    threats:
+      - THR-009
+      - THR-010
+  test_catalog:
+    path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+    required_suite: TST-032
+
+predecessor:
+  story_id: ST-0707
+  binding: EXACT_CURRENT_COMMITTED_BYTES
+  artifacts:
+    changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml: 55044e7b2f030298d5ee61932122e5c0821491b23189bb57b9affc8c47bc043d
+    changes/st-0707/runtime-manifest.v1.json: 3547a1d0df3e33c7f793e5d6f520596e1e48a4121b238dc185f642b294976930
+    changes/st-0707/generated/evaluation-suite-registry.v1.json: 7eb7edb3bf0139b89fb903d852eca9e49edb0c87f2b16ae281213ba677cdd427
+  required_semantics:
+    recorded_synthetic_only: true
+    human_label_status: UNAVAILABLE
+    judge_calibration: NOT_EXECUTED
+    release_authority: NONE
+
+canonical_contracts:
+  evaluation_catalog:
+    path: contracts/raos-v0.4/contracts/ai/RAOS_05_evaluation_catalog_v0.1.yaml
+    sha256: a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3
+  human_review_rubric:
+    path: contracts/raos-v0.4/contracts/ai/RAOS_05_human_review_rubric_v0.1.yaml
+    sha256: a346b6c046cdcc384aeb5993fcd09ca61da62cb9b19e3b229572e8251b5010d9
+  judge_output_schema:
+    path: contracts/raos-v0.4/contracts/ai/schemas/eval/judge_output.v1.schema.json
+    sha256: 8d832fe5c58a7cfeb8bafa8dab18c64aa45bdb56c3282bd3d7d6e14cad6e87d4
+  judge_calibration_schema:
+    path: contracts/raos-v0.4/contracts/schemas/ai-governance/judge-calibration.v1.schema.json
+    sha256: 014393354a47070c69a83b204b73703bea2b4267468e3584387b65b11b077a7e
+  judge_calibration_create_schema:
+    path: contracts/raos-v0.4/contracts/schemas/ai-governance/judge-calibration-create-request.v1.schema.json
+    sha256: 2ae3d1711f269ded555cec983adce2a0aa601d908bfc2c192b954594c574837a
+  atomic_publication_owner:
+    path: scripts/secure_generated_publication.py
+    sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+
+feature_scope:
+  default: DISABLED
+  closed_states:
+    - DISABLED
+    - RECORDED_SYNTHETIC_CALIBRATION_ONLY
+  live_enabled_state_exists: false
+  activation_interface_exists: false
+  disabled_fails_before_port_call: true
+  canonical_deferred_status_preserved: true
+
+port_contract:
+  direction: INWARD_PROVIDER_AND_MODEL_NEUTRAL
+  method: read(command) -> immutable recorded label batch
+  provider_sdk_types: false
+  provider_name_field: false
+  model_name_field: false
+  url_field: false
+  credential_field: false
+  filesystem_path_field: false
+  raw_content_field: false
+  implementation: CALLER_BYTES_RECORDED_SYNTHETIC_LABEL_FIXTURE
+  persistence: false
+  retry: false
+  fallback: false
+
+calibration_contract:
+  evaluated_task_code: ai.opportunity_assessment.v1
+  grader_version: grader.model_judge.v1
+  dataset_id: RAOS-ST1901-SYNTHETIC-CALIBRATION-001
+  dataset_version: synthetic-calibration-v1
+  fixture_id: RAOS-ST1901-RECORDED-HUMAN-JUDGE-LABELS-001
+  provenance: RECORDED_SYNTHETIC_HUMAN_LABEL_FIXTURE
+  split: CALIBRATION
+  label_scale:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+  weighting: QUADRATIC
+  metric_scale: 1000000
+  minimum_double_labeled_cases: 200
+  required_weighted_kappa_micros: 700000
+  maximum_critical_false_pass_rate_micros: 10000
+  maximum_critical_false_fail_rate_micros: 50000
+  local_fixture_balance_guard:
+    minimum_cases_per_score: 20
+    minimum_critical_positive_cases: 20
+    minimum_critical_negative_cases: 20
+    policy_authority: LOCAL_FIXTURE_INTEGRITY_ONLY
+  recalibration_triggers:
+    - JUDGE_MODEL_CHANGE
+    - JUDGE_PROMPT_CHANGE
+    - RUBRIC_CHANGE
+    - DOMAIN_OR_CATEGORY_EXPANSION
+    - QUARTERLY_REVIEW
+
+recorded_fixture_profile:
+  case_count: 200
+  distribution:
+    ROUTINE: 100
+    EDGE: 40
+    ADVERSARIAL: 40
+    REGRESSION: 20
+  human_score_counts:
+    '0': 40
+    '1': 40
+    '2': 40
+    '3': 40
+    '4': 40
+  critical_positive_cases: 40
+  critical_negative_cases: 160
+  human_reviewer_disagreement_cases: 25
+  judge_human_score_disagreement_cases: 20
+  human_label_authority: RECORDED_GOLD_SIDE_WITHIN_SYNTHETIC_FIXTURE
+  actual_human_activity: false
+  representative_dataset: false
+  release_eligible: false
+  raw_prompt_present: false
+  raw_source_present: false
+  raw_output_present: false
+  raw_review_body_present: false
+  personal_data_present: false
+  affiliate_economics_present: false
+
+evaluation_contract:
+  deterministic: true
+  idempotent_by_content_hash: true
+  human_labels_overrideable_by_judge: false
+  deterministic_checks_before_judge: true
+  ambiguous_human_labels_rejected: true
+  insufficient_or_unbalanced_labels_refused: true
+  unknown_fields_rejected: true
+  label_records_returned: false
+  raw_content_returned: false
+  possible_outcomes:
+    - REFUSED_INSUFFICIENT_EVIDENCE
+    - REFUSED_CALIBRATION_THRESHOLDS
+    - REFUSED_UNVERIFIABLE_CALIBRATION
+  accepted_or_release_ready_outcome_exists: false
+  separate_release_decision_required: true
+
+execution_boundary:
+  runtime_feature_default: DISABLED
+  evaluation: RECORDED_SYNTHETIC_CALIBRATION_ONLY
+  resolved_model_binding: UNAVAILABLE
+  actual_human_labeling: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  provider_sdk: NOT_USED
+  credentials: NOT_USED
+  network: NOT_EXECUTED
+  filesystem_runtime: NOT_USED
+  persistence: NOT_EXECUTED
+  queue: NOT_EXECUTED
+  event: NOT_EXECUTED
+  route_or_model_mutation: FORBIDDEN
+  approval: NOT_AUTHORIZED
+  publication: NOT_AUTHORIZED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  formal_TST-032: NOT_EXECUTED
+  story_acceptance: false
+
+outputs:
+  recorded_fixture: changes/st-1901/fixtures/recorded/model-judge-human-labels.synthetic.v1.json
+  evaluation_report: changes/st-1901/generated/model-judge-calibration-evaluation.v1.json
+  runtime_manifest: changes/st-1901/manifest.yaml
+
+owned_sources:
+  - changes/st-1901/contracts/model-judge-calibration.v1.yaml
+  - changes/st-1901/README.md
+  - docs/execplans/ST-1901.md
+  - docs/worklogs/ST-1901.md
+  - python/raos/domain/ai/model_judge_calibration.py
+  - python/raos/ports/model_judge_calibration.py
+  - python/raos/application/ai/model_judge_calibration.py
+  - python/raos/adapters/recorded_model_judge_calibration.py
+  - scripts/build_st1901_model_judge_calibration.py
+  - tests/st1901/conftest.py
+  - tests/st1901/test_calibration.py
+  - tests/st1901/test_contract.py
+  - tests/st1901/test_generation.py
+  - tests/st1901/test_negative_cases.py
+  - tests/st1901/test_security_boundaries.py
+
+debt:
+  introduced: []
+  remaining_external_or_formal:
+    - actual licensed and sanitized representative labels
+    - verified human reviewer and adjudicator provenance
+    - exact judge model, route, prompt, rubric, and dataset scope binding
+    - formal TST-032 in designated staging acceptance environment
+    - separate human release decision
+    - live provider, staging, release, and Production validation

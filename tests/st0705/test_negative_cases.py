@@ -146,6 +146,29 @@ def test_predecessor_semantic_tamper_is_rejected_after_hash_rebind(
         generator.render_outputs(isolated_repository)
 
 
+def test_rebound_st0702_context_contract_still_rejects_unsafe_semantics(
+    isolated_repository: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = isolated_repository / generator.ST0702_PATHS[1]
+    document = yaml.safe_load(path.read_bytes())
+    document["packing_rules"]["available"][
+        "silent_required_fact_truncation_forbidden"
+    ] = False
+    path.write_text(yaml.safe_dump(document, sort_keys=False), encoding="utf-8")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    generator.rebind_predecessor_hash_for_test(
+        root=isolated_repository,
+        relative=generator.ST0702_PATHS[1],
+        digest=digest,
+        monkeypatch=monkeypatch,
+    )
+    with pytest.raises(
+        generator.AiOutputValidationReferenceError, match="ST0702_SEMANTIC_DRIFT"
+    ):
+        generator.render_outputs(isolated_repository)
+
+
 def test_contract_and_output_symlinks_are_rejected(
     isolated_repository: Path,
     tmp_path: Path,

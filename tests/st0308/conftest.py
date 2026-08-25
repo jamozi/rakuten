@@ -26,7 +26,7 @@ CONTRACT_PATH = (
 
 EXPECTED_HANDOFF_BYTES = 8 * 1024 * 1024
 EXPECTED_VALIDATOR_CONTRACT_SHA256 = (
-    "dbb63249a173e11e52504a6af03a87dc18991afba60b227867801a096f5cff7a"
+    "0a1e9e1dba1f6af870d76289344a74e78938eafd50d1aee914f3f7cb0d9c71b7"
 )
 EXPECTED_REPOSITORY_TEXT_BYTES = 16 * 1024 * 1024
 EXPECTED_SQL_FRAGMENT_BYTES = 131072
@@ -472,7 +472,7 @@ CANDIDATE_REQUIRED_SOURCE_REFERENCE_TUPLES = (
     ),
     (
         "changes/st-0306/contracts/database-roles-grants.v1.yaml",
-        "6b8710a79729bde75e96e1df3698a0928d4924e4bd10afaff5631fc00f70a0d4",
+        "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206",
     ),
     (
         "changes/st-0304/contracts/physical/01-domain-physical.sql",

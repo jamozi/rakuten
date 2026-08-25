@@ -176,8 +176,8 @@ source_artifacts:
   bytes: 60811
   sha256: 2876b4e3bdc678cd97c11452a0a48e2786279933cbf27c0320307d0eccc1d360
 - uri: repo://python/raos/adapters/__init__.py
-  bytes: 889
-  sha256: e534922ed314f5c234fb32ab625c3b030277d9261b570616d8488f54fbdec7fa
+  bytes: 3033
+  sha256: 6f6ede5e08b6050430852e856234a157475c0977005dfd6a533f49d1863e1029
 - uri: repo://python/raos/adapters/ai_contract_registry.py
   bytes: 28933
   sha256: 3bc0142bc29d644c4b5bc0fe4eac19b804ba06133d0e6bbaa96dc95b29e89fa2
@@ -188,14 +188,14 @@ source_artifacts:
   bytes: 7247
   sha256: d916a4a2ed9afd44fe0a4c01938a5b8aacbfc7323fd4d3cfcb0fa33d399a0e0e
 - uri: repo://python/raos/ports/__init__.py
-  bytes: 885
-  sha256: 3e3494de5cabf28a3857383e6a3c4833465cc442af4c75ae1a37c5d8104d3363
+  bytes: 3031
+  sha256: 512efd7c0063720f4181881455af518e3e72365edc4637ccda05c2bd9d2ebf4e
 - uri: repo://python/raos/ports/task_registry.py
   bytes: 917
   sha256: c3053d28c056fcc412e3852816528da92f301e369f5af45f9a1212cc920468ce
 - uri: repo://python/raos/shared/contract_repository.py
-  bytes: 58599
-  sha256: 056cf9e5243e1b84598daada2864766aaad73151bc81128160ae6e64352038b2
+  bytes: 59746
+  sha256: 59b5a7b8b05900483a4e9c3f1d068c365a35f00243a9b4ac8c5991b3b2c3ad26
 - uri: repo://tests/st0701/conftest.py
   bytes: 247
   sha256: a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b
@@ -212,8 +212,8 @@ source_artifacts:
   bytes: 11741
   sha256: 26d34e90521dc2970d81582dcd7d269460c22f0f9272899d6c81b3656e4ff167
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 65686
-  sha256: c2a2cb14e7bd80ea514443890843108e47762afc207e54b31b4d21e895a6ce01
+  bytes: 66604
+  sha256: 3993db51b4783f33bc993720a45a44e908e8f007aad611317d4d3042eb6c71f0
 - uri: repo://Makefile
   bytes: 34422
   sha256: 8d4030bfcffaa5bde56842b6a2475bbe2b845e074722c787b9d712bc22d2a40f

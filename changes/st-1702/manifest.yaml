@@ -1,0 +1,130 @@
+document:
+  id: RAOS-ST1702-CATEGORY-FIXTURES-RULES-MANIFEST-001
+  version: 1.0.0
+  story_id: ST-1702
+  source_contract: repo://changes/st-1702/contracts/category-fixtures-rules-reference-plan.v1.yaml
+  generated_by: repo://scripts/build_st1702_category_fixtures_rules_reference_plan.py
+  generation_command: /home/minami/rakuten/.venv/bin/python scripts/build_st1702_category_fixtures_rules_reference_plan.py
+provenance:
+  contract_sha256: 24eeb2a5c0d76652cf2ee9ce7449da793608a0c05d4982efd32e08ea13c54f60
+  integration_base_commit: 53d23dd8f6782c9a68ed27234f9c0719916d5707
+  authority_inputs:
+  - role: integration
+    uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+  - role: canonical_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+  - role: open_decisions
+    uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+  - role: test_catalog
+    uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+  - role: story
+    uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+  - role: security_controls
+    uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+  dependency_inputs:
+  - story_id: ST-1701
+    artifacts:
+    - uri: repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml
+      sha256: 7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f
+    - uri: repo://changes/st-1701/MVP-BUSINESS-DECISION-PACKAGE-APPROVAL-v1.yaml
+      sha256: 749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34
+    - uri: repo://changes/st-1701/generated/gold-evidence-validation.v1.json
+      sha256: cbf7b267ccd1d51b9d2ab0a0d379529a2b2dc237cf65921468999968d677e4da
+  - story_id: ST-0504
+    artifacts:
+    - uri: repo://changes/st-0504/contracts/product-identity-human-review-reference-plan.v1.yaml
+      sha256: f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab
+    - uri: repo://changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json
+      sha256: f3ce4f99f5309fdc0349bd7b5a9d930ae18006d72aeb0fd480165b870d8e3f1b
+    - uri: repo://changes/st-0504/manifest.yaml
+      sha256: 1edbbd3cef50f79af8bc1169f64195097be787c3c57e7c65aa31c399735d9e7a
+  - story_id: ST-1401
+    artifacts:
+    - uri: repo://changes/st-1401/README.md
+      sha256: b5a54f7dc2344503d8baaf4f18d417f021f839baea78e712f5bed26c2e6e6caf
+    - uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_freshness_update_policy_v0.1.yaml
+      sha256: a4d490d2a54b3def63c9c240b09d34a759ebd3924e60cfcca438ee979334cea2
+    - uri: repo://python/raos/domain/freshness/freshness.py
+      sha256: 3a33b44d99f92fce6417257de8c170d4622dd900fe7cc7cbac0b67494469dd95
+    - uri: repo://python/raos/ports/freshness.py
+      sha256: 8b72de55a697bee06b4d43f3cda3b9dc12b1532091755876b6cab891aaa07d91
+    - uri: repo://python/raos/application/freshness/freshness.py
+      sha256: f716a703af1581d6bb0ed2cde8db4a82848dd6d143bc5bb27ae4ad4353302c43
+    - uri: repo://python/raos/adapters/recorded_freshness.py
+      sha256: 0b4cff4e9c0d22311604abb4c756d63a72d63269073bf1dea1e4cec032639de6
+  implementation_io: SELF_CONTAINED_DESCRIPTOR_CAPTURED_BOUNDED_INPUTS_AND_RECOVERABLE_PAIRED_OUTPUT_TRANSACTION
+source_artifact_count: 7
+source_artifacts:
+- uri: repo://changes/st-1702/contracts/category-fixtures-rules-reference-plan.v1.yaml
+  bytes: 10862
+  sha256: 24eeb2a5c0d76652cf2ee9ce7449da793608a0c05d4982efd32e08ea13c54f60
+- uri: repo://changes/st-1702/README.md
+  bytes: 9894
+  sha256: 4936bb1c0b19caaa2046f6dc51cde8d1ee2569cd566ef607b512bfe12e5314f4
+- uri: repo://scripts/build_st1702_category_fixtures_rules_reference_plan.py
+  bytes: 125401
+  sha256: ce1e772fffcf1c57a3d3d8da11946e9afaa6e58273fdda2640e01fd54f0858cc
+- uri: repo://tests/st1702/conftest.py
+  bytes: 735
+  sha256: 4dd49db51012e3975cc29682241685c48fae49174796678003288d18618847f4
+- uri: repo://tests/st1702/test_contract.py
+  bytes: 10862
+  sha256: 8ec6bcc2b8db94b50de6209fbf66eec32b71a3d27faaff828eeb9c2258b99b49
+- uri: repo://tests/st1702/test_generation.py
+  bytes: 24909
+  sha256: 9fa470c93e697352e39e3678ecfc3a7c0c90811a5872617c9b57e2f1701e5759
+- uri: repo://tests/st1702/test_negative_cases.py
+  bytes: 30189
+  sha256: ff09257586319cca3e32d6a66ae4ce4e36cf88368ec863dee56e09153203ab7a
+generated_artifact_count: 1
+generated_artifacts:
+- uri: repo://changes/st-1702/generated/category-fixtures-rules-reference-plan.v1.json
+  bytes: 20722
+  sha256: 07f2ea06d3d28fafd7a895dfc4c6be0f66a8185a6e032a27c997e5709c3f73fc
+boundary:
+  classification: SOURCE_DERIVED_NON_EXECUTABLE_CATEGORY_FIXTURES_RULES_REFERENCE_PLAN
+  input_capture: DESCRIPTOR_CAPTURED_SINGLE_PASS_SAME_BYTES
+  repository_root_capture: COMPONENT_DESCRIPTOR_WALK_O_NOFOLLOW
+  input_size_limit_bytes: 4194304
+  output_pair_transaction: RECOVERABLE_ALL_OR_NOTHING
+  transaction_inventory_binding: ORDERED_PATH_PARENT_IDENTITY_ORIGINAL_AND_STAGED
+  commit_revalidation: TARGET_NEXT_PARENT_AND_LOCK_IDENTITY
+  recovery_parent_drift: FAIL_CLOSED_STATE_RETAINED
+  pending_check_behavior: READ_ONLY_REFUSAL
+  executable: false
+  interface_only: true
+  canonical_mutation_authority: NONE
+  od_001: HUMAN_DECISION_REQUIRED
+  od_006: EXTERNAL_EVIDENCE_REQUIRED
+  od_007: HUMAN_DECISION_REQUIRED
+  category_candidate_authority: NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE
+  runtime_category_config: NOT_CREATED
+  golden_products: NOT_CREATED
+  automatic_merge_enabled: false
+  automatic_split_enabled: false
+  human_review_required: true
+  domain_reviewer_approval: NOT_OBTAINED
+  freshness_policy_activation: DISABLED_UNRESOLVED_OD_007
+  category_override_applied: false
+  provider_override_applied: false
+  repository: ABSENT
+  database: NOT_EXECUTED
+  job: NOT_EXECUTED
+  event: NOT_EXECUTED
+  provider: NOT_EXECUTED
+  live: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  formal_tst_020: NOT_EXECUTED
+  story_acceptance: false
+  st1702_ready: false
+  production_eligible: false
+  effective_canonical_status: UNCHANGED

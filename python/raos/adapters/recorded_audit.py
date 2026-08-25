@@ -80,6 +80,12 @@ class RecordedAuditAdapter:
     def capacity(self) -> int:
         return self._capacity
 
+    @property
+    def external_action_count(self) -> int:
+        """The recorded collaborator performs no external action."""
+
+        return 0
+
     def issue(self, grant: AuthorizationGrant) -> AuditContext:
         """Consume one exact scripted context already bound to ``grant``."""
 

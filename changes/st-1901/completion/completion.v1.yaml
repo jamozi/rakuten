@@ -1,0 +1,67 @@
+schema_version: 1
+story_id: ST-1901
+base_commit: acdcc3719670c110bf6ec94af1762d87ac7fcb74
+local_status: LOCAL_CODE_COMPLETE_MAX_SAFE_DISABLED
+classification: MAXIMUM_SAFE_LOCAL_DISABLED_RECORDED_MODEL_JUDGE_CALIBRATION_V1
+canonical_status_transition: NONE
+canonical_implementation_status: DEFERRED_POST_MVP
+implementation:
+  provider_and_model_neutral_inward_port: COMPLETE
+  caller_bytes_recorded_fixture_adapter: COMPLETE
+  deterministic_calibration_harness: COMPLETE
+  synthetic_double_labeled_cases: 200
+  human_labels_authoritative: true
+  runtime_feature_default: DISABLED
+  live_enabled_state_exists: false
+  activation_interface_exists: false
+  actual_human_activity: NOT_EXECUTED
+  provider_or_model_call: NOT_EXECUTED
+  credential_or_network_use: NOT_EXECUTED
+  persistence: NOT_EXECUTED
+local_checks:
+  owner_generate: PASS
+  owner_no_write_check: PASS
+  st1901_tests: 35_PASS
+  direct_dependency_st0707_tests: 33_PASS
+  direct_dependency_st0707_runtime_tests: 29_PASS
+  ruff: PASS
+  ruff_format: PASS
+  mypy_strict_focused: 11_FILES_PASS
+  mypy_strict: 424_PRODUCTION_SOURCE_FILES_PASS
+  compile: PASS
+  focused_secret_scan: 19_FILES_0_FINDINGS
+  git_diff_check: PASS
+authority:
+  provider_selection_authorized: false
+  model_selection_authorized: false
+  route_or_model_mutation_authorized: false
+  calibration_activation_authorized: false
+  persistence_authorized: false
+  external_network_authorized: false
+  external_write_authorized: false
+  approval_authorized: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  production_authorized: false
+verification:
+  local_recorded_synthetic_evaluation: EXECUTED
+  actual_human_labeling: NOT_EXECUTED
+  representative_licensed_dataset: NOT_EXECUTED
+  exact_model_route_prompt_binding: NOT_EXECUTED
+  formal_TST-032: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+story_acceptance: false
+debt:
+  introduced: []
+  inherited_or_external:
+    - actual licensed and sanitized representative labels remain unavailable
+    - verified human reviewer and adjudicator provenance remains unavailable
+    - exact judge model, route, prompt, rubric, and dataset scope binding remains unavailable
+    - formal TST-032 requires its designated staging acceptance environment
+    - a separate human Release Decision remains required
+    - live provider, staging, Release, and Production validation remain NOT_EXECUTED

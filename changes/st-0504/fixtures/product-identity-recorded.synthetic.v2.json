@@ -1,0 +1,36 @@
+{
+  "schema_version": "2.0.0",
+  "story_id": "ST-0504",
+  "synthetic": true,
+  "operational_default": false,
+  "activation": false,
+  "contains_credential_or_production_data": false,
+  "source": {
+    "story_id": "ST-0503",
+    "runtime_version": "V2",
+    "candidate_count": 2,
+    "expected_pair_count": 1,
+    "exact_persisted_hash_binding": true
+  },
+  "expected": {
+    "review_status": "HUMAN_REVIEW",
+    "readiness": "NOT_READY",
+    "decision_types": [
+      "MERGE",
+      "SPLIT"
+    ],
+    "first_history_version": 2,
+    "supersession_is_append_only": true,
+    "grouping_applied": false,
+    "ranking_impact": false,
+    "external_actions": 0
+  },
+  "commit_faults": [
+    "NONE",
+    "KNOWN_BEFORE_COMMIT",
+    "UNKNOWN_BEFORE_COMMIT",
+    "UNKNOWN_AFTER_COMMIT",
+    "SQLITE_ERROR_BEFORE_COMMIT",
+    "SQLITE_ERROR_AFTER_COMMIT"
+  ]
+}

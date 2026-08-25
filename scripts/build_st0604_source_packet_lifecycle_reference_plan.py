@@ -48,46 +48,46 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
 STORY_PATH: Final = Path("docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml")
 STORY_SHA256: Final = "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
-ST0602_COMMIT: Final = "f281d02c489d4d9f74ec351a57a4a476fa77eab3"
-ST0603_COMMIT: Final = "a64799570606aa4cb5e3ce79930e156fa500d644"
-ST0403_COMMIT: Final = "095046c752595bea3235caf2e3a653fd9383882e"
+ST0602_COMMIT: Final = "806b978803cbc78392117cbc31015db19ea09a74"
+ST0603_COMMIT: Final = "4f4285f0385a14b83e027e9c4527c17b8966bb70"
+ST0403_COMMIT: Final = "16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517"
 
 ST0602_ARTIFACTS: Final = (
     (
         Path("changes/st-0602/README.md"),
-        "c08e9d2f2145d1c3e4018a39e5e8373b60131d7e7b3c0ba72ca9d3bc09a7aaa5",
+        "f3590fb864de262eb1d31769ffe892010f41f98084c27634f099dfca9573f2f8",
     ),
     (
         Path(
             "changes/st-0602/contracts/"
             "fact-extraction-validation-reference-plan.v1.yaml"
         ),
-        "ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e",
+        "c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073",
     ),
     (
         Path(
             "changes/st-0602/generated/"
             "fact-extraction-validation-reference-plan.v1.json"
         ),
-        "2d68d32281ee909bba05eaa8fdb42b545e194af12a450585601e19f670e15944",
+        "c515af3410be014a714be4d9f9cd133bd320f4c19e5da5820bb3cd6b1a39abb5",
     ),
     (
         Path("changes/st-0602/manifest.yaml"),
-        "b977fd764ea83c5e44087bef5c62d93e579e39aebd110082cf01b7790b915c42",
+        "e4ac2cbe7458035e53356ab0647bcd8439cec4c352297538ef7b595edf5bd18e",
     ),
     (
         Path("scripts/build_st0602_fact_extraction_validation_reference_plan.py"),
-        "fc31b9594da3d0a11bd80044bdb753a5950f023d4150f97cc52779ac12603daf",
+        "94947fcde0e2f5d9c972c38dbe9d1fea287659c5a0e7ab329a485eaf61b1e753",
     ),
     (
         Path("tests/st0602/conftest.py"),
-        "8a9cd9504b213db0fed081ba4843cd40da2141d5b81575de625907145e682cc9",
+        "a687a2fee7033a83b82caa305712a1885a3c66d11d0efc7b761397447746d1c8",
     ),
     (
         Path("tests/st0602/test_contract.py"),
@@ -105,23 +105,23 @@ ST0602_ARTIFACTS: Final = (
 ST0603_ARTIFACTS: Final = (
     (
         Path("changes/st-0603/README.md"),
-        "87398b8122d9ef365a073159dd65258488cc1482163ea7449504dccdb11887fb",
+        "22ba200315f8cd36198930842c12f0e17008b979b6f38f850cc534c13af7e071",
     ),
     (
         Path("changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml"),
-        "51df56b9475e9a635a0e33ed39109fa4b1d91e7c5a9be08996007eea3698ae07",
+        "74d58a889c0e20cb74e699196c267b270a86db80667459c9178b04aefe66c093",
     ),
     (
         Path("changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json"),
-        "755f88f9084717f85b644f6b4f9904a3ac3d71b36dfeae9cf34de2104e0518a5",
+        "16a934d5a84b0a76e291026be708f6ae15a68523c5c2bdc1d816196eb58ed148",
     ),
     (
         Path("changes/st-0603/manifest.yaml"),
-        "a418addb612aec85c79213dda71b82ae8e3a40285d48399683d0e40cc5586ad7",
+        "f7aadcf22785f96360be081c3754021dc72f4f6ade9570c39a8a53e80afb8a86",
     ),
     (
         Path("scripts/build_st0603_fact_conflict_review_reference_plan.py"),
-        "5b52c2790b48a39e04853144f34f48edac2775edfc118bc19586b7887943f341",
+        "c18ec5df96bfbaa1a18d86cba3fd468221ae1b8fffdf2a5d38dd3a2e9af9b589",
     ),
     (
         Path("tests/st0603/conftest.py"),
@@ -143,7 +143,7 @@ ST0603_ARTIFACTS: Final = (
 ST0403_ARTIFACTS: Final = (
     (
         Path("changes/st-0403/README.md"),
-        "e7c0e10e44abf6f5db2fbbd94c6a14ecbc9d6bc0ff77fcb312d652204165b6e9",
+        "d21f1ddefd4f201a6618e9baa8889d6c77302b141070d89d03b4e2199746d5cc",
     ),
     (
         Path("python/raos/adapters/development_authorization.py"),
@@ -151,15 +151,15 @@ ST0403_ARTIFACTS: Final = (
     ),
     (
         Path("python/raos/application/iam/authorization.py"),
-        "19e3d35a982234a612885d8390ba9fed3bca8e5dabeec326641e173124686b57",
+        "8c1133b948fc935b62d8e2ed964a795a7f9e24c9943c9aa1b44bcf898dba3814",
     ),
     (
         Path("python/raos/domain/iam/authorization.py"),
-        "dd08de5f2330fd322571230f0634413665360b2c362968f2ee46647bd48b55ce",
+        "18b21b95dd3dc154b40f11f605b6289e0e27576f3401bb294606d871e78185f7",
     ),
     (
         Path("python/raos/ports/authorization.py"),
-        "191b9b1fc0a2e0898beaf65b0e821d7030536218abc26fd262eb7dfde47d5157",
+        "9f008f67337f1ceac44f94979f2741a96900c41408ee17fa3d887015a24ea9de",
     ),
     (
         Path("tests/st0403/conftest.py"),
@@ -167,11 +167,11 @@ ST0403_ARTIFACTS: Final = (
     ),
     (
         Path("tests/st0403/test_authorization.py"),
-        "8a17049ecf7f66bf45020c868ec8cb0c2c7e943ebea4a1a2e4c01fe0832fc2ba",
+        "5df2d5a51188f9ed0de2252695b7ccdb980b1ffd6e7a4132486d404c28277995",
     ),
     (
         Path("tests/st0403/test_boundaries.py"),
-        "bd05a349cb9bbfadbfed805fb05f99cca845cac40c58c557fc3affc3f02a856d",
+        "dcf612fe47ae9987457c61d5d7a23a2a71c957b8226a105195f20d1807228240",
     ),
 )
 
@@ -238,13 +238,13 @@ def _fail(code: str, field: str) -> NoReturn:
 def _mapping(value: object, field: str) -> Mapping[str, Any]:
     if type(value) is not dict:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(dict[str, Any], value)
 
 
-def _list(value: object, field: str) -> list[Any]:
+def _list(value: object, field: str) -> list[object]:
     if type(value) is not list:
         _fail("TYPE_MISMATCH", field)
-    return value
+    return cast(list[object], value)
 
 
 def _same_exact(left: object, right: object) -> bool:
@@ -275,7 +275,9 @@ def _sha256(content: bytes) -> str:
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
-    physical = base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    physical = base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        root, relative, field
+    )
     try:
         content = physical.read_bytes()
     except OSError:
@@ -293,7 +295,9 @@ def _text(root: Path, relative: Path, field: str) -> str:
 
 
 def _load_yaml(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
-    base._repository_regular_file(root, relative, field)  # noqa: SLF001
+    base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+        root, relative, field
+    )
     return _mapping(base.load_yaml(root / relative), field)
 
 
@@ -307,9 +311,9 @@ def _load_json(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
 
 def _find(items: object, identity: str, field: str) -> Mapping[str, Any]:
     matches = [
-        _mapping(item, field)
+        _mapping(cast(object, item), field)
         for item in _list(items, field)
-        if type(item) is dict and item.get("id") == identity
+        if type(item) is dict and cast(dict[str, object], item).get("id") == identity
     ]
     if len(matches) != 1:
         _fail("CANONICAL_RECORD_MISSING", field)
@@ -417,7 +421,7 @@ def _expected_predecessors() -> list[dict[str, object]]:
     ]
 
 
-EXPECTED_VOCABULARY_CONTEXT: Final = {
+EXPECTED_VOCABULARY_CONTEXT: Final[dict[str, object]] = {
     "authority": "DESCRIPTIVE_ONLY",
     "creates_runtime_contract": False,
     "packet_namespace": {
@@ -627,11 +631,12 @@ def _validate_st0403_semantics(root: Path) -> None:
     _require_fragments(
         _text(root, ST0403_ARTIFACTS[0][0], "predecessor.st0403.readme"),
         (
-            "allowlist-only and deny-default",
-            "stable default is an empty\n  `DISABLED` policy",
-            "exact `ENV-DEV`, in-memory,\n  `TEST_ONLY:*` recorded adapter",
-            "no real assignments",
-            "live identity/provider configuration",
+            "without\ngranting live, provider, publication, service-principal, or Production\nauthority",
+            "Unknown operations",
+            "deny",
+            "exclusive `O_EXCL` path",
+            "process-lifetime count/head/prefix anchor",
+            "service-principal port\nalways denies",
         ),
         "predecessor.st0403.readme",
     )
@@ -885,7 +890,9 @@ def check_outputs(root: Path, expected: Mapping[Path, bytes]) -> None:
     if set(expected) != set(GENERATED_PATHS):
         _fail("GENERATED_INVENTORY_DRIFT", "output")
     for relative in GENERATED_PATHS:
-        path = base._output_file(root, relative)  # noqa: SLF001
+        path = base._output_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative
+        )
         try:
             actual = path.read_bytes()
         except OSError:
@@ -900,7 +907,9 @@ def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
         check_outputs(root, outputs)
         return
     for relative, content in outputs.items():
-        base._atomic_write(root, relative, content)  # noqa: SLF001
+        base._atomic_write(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative, content
+        )
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

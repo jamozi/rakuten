@@ -1,0 +1,91 @@
+document:
+  id: RAOS-ST1705-LOCAL-IMPLEMENTATION-COMPLETION-20260824-V1
+  schema_version: 1
+  story_id: ST-1705
+  status: LOCAL_IMPLEMENTATION_COMPLETE
+  recorded_at: '2026-08-24T00:00:00Z'
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  generated: false
+base:
+  integration_commit_sha: 94a1ecc75f148149dae4e825a9bd90727bd85dbb
+  integration_commit_sha_type: GIT_SHA1_LOWER_HEX_40
+  isolated_branch: codex/st1705-local-complete-20260824
+  implementation_commit_sha: TO_BE_REPORTED_BY_GIT_ONLY
+local_deliverables:
+  classification: LOCAL_BLOCKED_PILOT_SIGNOFF_NON_ATTESTING
+  decision: BLOCKED
+  security_sign_off: NOT_SIGNED_OFF
+  recovery_sign_off: NOT_SIGNED_OFF
+  pilot_eligibility: NOT_ELIGIBLE
+  tracked_article_artifacts: 5
+  real_pilot_observations: UNAVAILABLE
+  revenue_observations: UNAVAILABLE
+  active_blocking_open_decisions: 14
+  external_actions: 0
+authority_boundary:
+  formal_evidence_acceptance_authorized: false
+  gate_approval_authorized: false
+  status_propose_authorized: false
+  status_apply_authorized: false
+  publication_authorized: false
+  staging_authorized: false
+  release_authorized: false
+  deployment_authorized: false
+  production_authorized: false
+canonical_boundary:
+  implementation_status: NOT_STARTED
+  verification_status: NOT_EXECUTED
+  effective_status_changed: false
+  status_registry_propose_or_apply: NOT_EXECUTED
+verification:
+  focused_st1705: PASS_62_OF_62
+  affected_st1607: PASS_73_OF_73
+  affected_st1704: PASS_373_OF_373
+  owner_generation: PASS
+  owner_no_write_check: PASS
+  python_compile: PASS_6_OF_6
+  ruff_check_and_format: PASS
+  strict_mypy: PASS_1_OWNER_GENERATOR
+  focused_secret_scan: PASS_OWNED_FILES
+  canonical_import_verify: PASS
+  workspace_check: PASS
+  git_diff_check: PASS
+debt:
+  introduced_local_debt: []
+  closed_local_debt:
+    - id: ST1705-DEBT-PREBACKUP-TARGET-IDENTITY
+      state: CLOSED
+      closure: EXACT_CAPTURED_SNAPSHOT_REVALIDATION_BEFORE_BACKUP
+    - id: ST1705-DEBT-COMMITTED-COMPANION-BINDING
+      state: CLOSED
+      closure: ORIGINAL_PRESENCE_AND_SHA256_REQUIRED_BEFORE_CLEANUP
+  inherited_formal_or_external_limitations:
+    - id: ST1705-LIM-OPEN-DECISIONS
+      state: BLOCKED_14_ACTIVE
+      safe_default: BLOCKED_NOT_SIGNED_OFF_NOT_ELIGIBLE
+    - id: ST1705-LIM-FORMAL-SUITES
+      state: TST_026_TST_029_TST_032_NOT_EXECUTED
+      safe_default: NO_SIGN_OFF
+    - id: ST1705-LIM-PILOT-OBSERVATIONS
+      state: UNAVAILABLE
+      safe_default: DO_NOT_INFER_FROM_LOCAL_ARTIFACTS
+    - id: ST1705-LIM-SNAPSHOT-IDENTITY
+      state: SOURCE_FREEZE_AND_REVIEWED_TREE_UNAVAILABLE
+      safe_default: NO_ELIGIBILITY
+formal_and_external_boundaries:
+  formal_tst_026: NOT_EXECUTED
+  formal_tst_029: NOT_EXECUTED
+  formal_tst_032: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  source_freeze: NOT_EXECUTED
+  reviewed_implementation_tree: NOT_EXECUTED
+  human_sign_off: NOT_EXECUTED
+  live_provider: NOT_EXECUTED
+  live_pilot: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  deployment: NOT_EXECUTED
+  production: NOT_EXECUTED
+  registry_propose_or_apply: NOT_EXECUTED
+  validated_claim: FORBIDDEN

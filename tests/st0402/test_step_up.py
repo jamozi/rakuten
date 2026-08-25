@@ -182,6 +182,22 @@ class _ExplodingVerifier:
         )
 
 
+class _MutatingSessionVerifier:
+    def __init__(self, outcome: StepUpGrant) -> None:
+        self._outcome = outcome
+
+    def verify(
+        self, *, session: Session, now: datetime
+    ) -> StepUpGrant | StepUpVerificationOutcome | None:
+        del now
+        object.__setattr__(
+            session,
+            "last_seen_at",
+            session.last_seen_at + timedelta(seconds=1),
+        )
+        return self._outcome
+
+
 def test_active_matching_session_and_current_multi_factor_grant_pass() -> None:
     session = _session()
     grant = _grant(session)
@@ -244,6 +260,19 @@ def test_malformed_verifier_output_and_exception_are_sanitized() -> None:
     assert session.session_id.reveal() not in diagnostics
     assert failure.__cause__ is None
     assert failure.__context__ is None
+
+
+def test_verifier_cannot_mutate_detached_session_input() -> None:
+    session = _session()
+    original_last_seen = session.last_seen_at
+    _assert_step_up_failure(
+        StepUpFailureCode.VERIFIER_FAILURE,
+        lambda: _guard(
+            session,
+            _MutatingSessionVerifier(_grant(session)),
+        ).require(session_id=session.session_id, now=NOW),
+    )
+    assert session.last_seen_at == original_last_seen
 
 
 @pytest.mark.parametrize(

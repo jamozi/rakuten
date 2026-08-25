@@ -1,0 +1,85 @@
+schema_version: 2
+story_id: ST-0805
+local_status: LOCAL_IMPLEMENTATION_COMPLETE
+classification: LOCAL_EXECUTABLE_RECORDED_EDITORIAL_POLICY_RUNTIME_V2
+runtime:
+  executable: true
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  repository_write: false
+  finding_proposal_only: true
+  waiver_proposal_only: true
+  approval_authorized: false
+  waiver_apply_authorized: false
+  merge_authorized: false
+  recommendation_override_authorized: false
+  ranking_override_authorized: false
+  publication_authorized: false
+  activation_authorized: false
+  production_eligible: false
+bindings:
+  policy_catalog_id: RAOS-CONTENT-POLICY-001
+  policy_catalog_version: '0.1'
+  policy_catalog_sha256: d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a
+  quality_catalog_id: RAOS-CONTENT-QG-001
+  quality_catalog_version: '0.1'
+  quality_catalog_sha256: 90ab554aa55dda335ba69bbb306772306494e2e4ba899c3d22af4a9d9a030efb
+  claim_evidence_policy_sha256: fbf2d0ad6e7821a0059f9ceeb53d57268031e2e42b4aad988af9a42378aec5ba
+  recommendation_methodology_sha256: fb71ad7900c7f688f305e10256b49563281893408e54d8668aac02efa7e57862
+  legacy_policy_engine_sha256: d858a9b010253cf411083bd5eb9da995ff3f9a172c7626ca9e499a6256559e51
+  article_lifecycle_sha256: c44cb8c5d26f4862e7527bcb179c20f1f60d3a069d9ba67fad3b0109ef0c6edd
+  content_ast_source_sha256: 7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68
+  st0804_domain_sha256: 990228a1a883cf8c93ca16ac3a83e687947b9357ba59eaabdfaa7934cf4b0a01
+  st0804_recorded_fixture_sha256: d5270a098496ecb8d2dbdac2884464a8c992d060c1aa1f23dcee11a8b483b660
+  st0804_runtime_manifest_sha256: c6862ed8679cd6c926ac72d1d5b584fd18a06bb71f7be9ab2c3f5560859e2f8f
+  content_ast_seed_sha256: 8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489
+  secure_publication_helper_sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+draft_seed:
+  article_id: 018f3e90-7b00-7000-8000-000000000805
+  article_version_id: 018f3e90-7b00-7000-8000-000000000806
+  source_packet_version_id: 018f3e90-7b00-7000-8000-000000000807
+  display_id: ARV-RECORDED-0805
+  article_type: SELECTION_GUIDE
+  title: ST-0805 recorded policy draft
+  created_at: '2026-08-24T00:00:00Z'
+  version_no: 1
+policy_defaults:
+  evaluated_at: '2026-08-24T00:00:00Z'
+  policy_count: 40
+  policy_result: PASS
+  quality_axis_count: 8
+  quality_axis_state: EVALUATED
+  quality_axis_score: CATALOG_WEIGHT
+  zero_tolerance_count: 13
+  zero_tolerance_state: CLEAR
+  quality_gate_count: 12
+  quality_gate_state: PASS
+  waiver_policy_ids: []
+dependency_boundary:
+  st0605_coverage_report_required: PASS
+  st0605_exact_report_receipt: true
+  st0802_exact_draft_ast: true
+  st0804_recommendation_report_required: LOCAL_CALCULATED
+  st0804_exact_report_receipt: true
+  common_article_body_packet_claim_core: true
+  unknown_missing_conflict_unevaluated_to_pass: false
+execution_boundary:
+  repository_read: GENERATED_RECORDED_FIXTURE_ONLY
+  result_append: PROCESS_LOCAL_METADATA_ONLY
+  network: FORBIDDEN
+  credential: FORBIDDEN
+  provider: FORBIDDEN
+  approval: FORBIDDEN
+  waiver_apply: FORBIDDEN
+  article_mutation: FORBIDDEN
+  recommendation_mutation: FORBIDDEN
+  ranking_mutation: FORBIDDEN
+  publication_snapshot_mutation: FORBIDDEN
+verification_boundary:
+  TST-019: NOT_EXECUTED
+  TST-020: NOT_EXECUTED
+  formal_validation: NOT_EXECUTED
+  live: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  release: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  production: NOT_EXECUTED

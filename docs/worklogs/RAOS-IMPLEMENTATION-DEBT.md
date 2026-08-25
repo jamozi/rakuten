@@ -3318,3 +3318,404 @@ original result.
   TST-016 and live auth/schema/rate evidence remain `NOT_EXECUTED`; this is
   local provenance closure only, not `VALIDATED`, live, formal, staging,
   release, or Production evidence.
+
+### 2026-08-23 W2 / ST-1204 atomic recorded-fixture publication preflight
+
+- Story and objective: close local finding `ST1204-AUDIT-001` for canonical
+  `ST-1204` by replacing its four sequential full-path writes with one
+  descriptor-confined atomic generated-tree publication unit. The semantic
+  GA4 recordings, caller-supplied runtime bytes, and recorded-only boundary
+  remain unchanged.
+- Authority and inputs read: root and canonical implementation rules,
+  canonical integration precedence, ST-1204 and dependencies ST-0204/ST-0305,
+  FR-013, TST-030, OD-012/OD-015, the analytics/security catalogs, the current
+  source contract, runtime slice, design-decision request, publication audit,
+  owner generator, and isolated ST-1204 tests. Repository standing development
+  authority permits this reversible Story-local design and implementation;
+  it does not grant external operational authority.
+- Local decision: `changes/st-1204/generated` becomes the only authoritative
+  generated bundle. A descriptor-opened physical Story directory owns a
+  nonblocking shared/exclusive `flock`, fixed hidden stage and durable journal
+  entries, Linux `renameat2(RENAME_EXCHANGE)` replacement, reverse-exchange
+  rollback before commit, terminal cleanup recovery after commit, and exact
+  closed-tree verification. Unsupported atomic exchange, symlink/special/
+  multiply-linked material, ambiguous recovery state, or ownership drift fails
+  closed.
+- Owned paths: `scripts/build_st1204_ga4_recorded_adapter.py`,
+  `changes/st-1204/**`, `tests/st1204/**`, and ST-1204-only append records in
+  this ledger. Downstream Story owners, status/evidence overlays, canonical or
+  imported sources, runtime Domain/Application/adapter modules, provider code,
+  databases, and shared ST-1704 work remain outside this commit.
+- Planned checks: deterministic owner generation and no-write `--check`, fresh
+  install/replacement/fault/crash/recovery/concurrency/ancestor-swap hostile
+  tests, the full isolated ST-1204 suite, Python parse/import, Ruff lint/format,
+  strict mypy and available Pyright over owned source, canonical/workspace
+  verification, focused static capability and maintained-file secret checks,
+  downstream provenance drift inventory, and `git diff --check`.
+- Formal/live boundary: OD-012 optional tracking remains disabled and OD-015
+  remains recorded-fixture-only. No credential, environment secret, Google
+  SDK/API, network, database, queue, analytics persistence, job/event,
+  publication, staging, release, or Production action is authorized or run.
+  Formal TST-030 and independent audit/status application remain separate.
+
+### 2026-08-24 W2 / ST-1204 atomic recorded-fixture publication checkpoint
+
+- Implementation boundary: the containing single ST-1204 commit replaces the
+  former four sequential full-path output replacements with one exact
+  `changes/st-1204/generated` namespace unit. It captures and locks the physical
+  Story directory once, uses descriptor-relative staging and cleanup, a durable
+  three-state journal, same-parent rename or Linux
+  `renameat2(RENAME_EXCHANGE)`, reverse rollback before durable commit, and
+  deterministic committed cleanup/recovery. Unsupported exchange, identity
+  drift, malformed recovery state, symlink/special/multiply-linked material,
+  and lock contention fail closed.
+- Safe semantics: fixture payload hashes remain unchanged. Runtime consumers
+  still receive caller-supplied bytes only; optional tracking remains
+  `DISABLED_OD_012`, provider mode remains `RECORDED_FIXTURE_ONLY`, and no
+  network, credential, environment-secret, Google SDK/API, database, queue,
+  job/event, analytics persistence, or public write surface was added.
+- Local evidence: owner generation and no-write `--check` passed at manifest
+  SHA-256
+  `76a2d81d36b43333d4bed1ae82fe017f6d2c186b2737aca5180261154eaf4328`;
+  isolated ST-1204 passed `159` tests, including `24` dedicated fault/crash/
+  recovery/concurrency/confinement tests. Python 3.14.6 compile/import, Ruff
+  0.16.1 lint/format, strict mypy 2.3.0 over the generator and all ST-1204
+  tests, configured Pyright 1.1.411, canonical import, workspace drift,
+  focused capability/static, focused maintained-file secret, and
+  `git diff --check` checks passed. The configured Pyright gate excludes
+  scripts/tests; a forced direct strict run retains existing out-of-config
+  untyped-data/private-test-helper diagnostics and is not claimed green.
+- `DEBT-W2-028` status update: `OPEN_PENDING_INDEPENDENT_REAUDIT`. Its local
+  implementation subcondition is `CLOSED`: the exact closure record is
+  `changes/st-1204/ATOMIC-PUBLICATION-CLOSURE-v1.md`, and the hostile local
+  evidence above remediates the writer defect without a waiver. The original
+  audit's required fresh independent read-only re-audit remains unexecuted, so
+  this worker does not rewrite its `FAIL` disposition or claim audit `PASS`.
+- `DEBT-W2-062` status: `OPEN`, introduced-by `ST-1204`, closure owner: ST-1205
+  owner and final provenance integration. Exact read-only command
+  `/home/minami/rakuten/.venv/bin/python scripts/build_st1205_kpi_read_model_reference_plan.py --check`
+  exits one with
+  `ST-1205 build failed: SOURCE_HASH_DRIFT field=predecessor.st1204`.
+  The changed direct predecessor artifacts are the ST-1204 runtime slice,
+  application test, and recorded-adapter test; affected owner outputs are the
+  ST-1205 source contract, generated reference plan, and manifest. ST-1205 is
+  a disabled reference-plan boundary, so this drift has no provider, runtime,
+  persistence, publication, or Production impact. No downstream file was
+  edited or regenerated in this Story.
+- Remaining debt: `DEBT-W2-027` remains `OPEN` and `DEBT-W2-029` remains
+  `EXTERNAL_BLOCKED`. The linked-worktree-wide secret scan retains sanitized
+  `ERROR code=unsafe-git-metadata source="."`; the exact focused ST-1204
+  maintained-file scan is green and does not reopen or weaken the prior normal-
+  checkout scanner closure. Formal TST-030, independent audit, OD-012/OD-015
+  external evidence, live GA4/property/account/credentials, persistence,
+  hosted CI, staging, release, and Production remain `NOT_EXECUTED`. This is
+  local implementation evidence only, not `VALIDATED` or formal/live evidence.
+
+### 2026-08-24 W2 / ST-1204 V2 atomic-cleanup correction
+
+- Correction: independent follow-up review reproduced three material defects
+  after commit `3a616957cac905618da3dc3e30aeddfac4b42ae6`: a final-entry and
+  pre-exchange identity race, an unrecoverable destructive-cleanup crash, and
+  non-idempotent legacy cleanup. The preceding V1 local-closure conclusion is
+  therefore historical evidence only and is superseded by this V2 correction;
+  it is not deleted or rewritten.
+- V2 local implementation: publication now uses a hash-chained append-only
+  journal whose states are durably prepared then published no-replace. Fresh
+  installation is no-replace; replacement binds and re-verifies the exchanged
+  old bundle before commit. Complete old-stage and legacy trees are validated,
+  identity/hash bound, and moved no-replace into transaction-specific
+  quarantines before destructive cleanup. File, directory, journal and root
+  tombstone progress is restartable at every owner checkpoint. A final
+  authoritative-bundle and closed-inventory recheck precedes cleanup
+  completion. Nonempty orphan stages and unbound cleanup names are never
+  accepted from matching bytes alone.
+- Explicit trust boundary: POSIX provides no inode-conditional `unlinkat` or
+  `rmdirat`. This implementation does not claim to prevent an actively
+  malicious same-UID process from winning the final in-kernel name race after
+  the last identity check. Every observable identity mismatch in the covered
+  pre/post-rename and checkpoint windows is restored when no-replace-safe or
+  retained and refused without deletion. This boundary is recorded in the V2
+  design handoff and does not waive a representable race.
+- Local evidence: deterministic generation and no-write `--check` pass at
+  manifest SHA-256
+  `22e002adcc6c043701f9e050cf3f64ffb37bccbe56ef5dad3f155fd478a201b7`;
+  fixture payload bytes are unchanged; isolated ST-1204 passes `195` tests,
+  including `60` atomic fault/crash/concurrency/same-UID-swap tests. Python
+  3.10/3.14 compile, Ruff lint/format, strict mypy over the generator and all
+  ST-1204 tests, configured Pyright, canonical import, workspace no-write,
+  focused capability/static, focused maintained-file secret scanning, and
+  `git diff --check` pass. The configured Pyright gate excludes scripts/tests;
+  forced direct analysis retains pre-existing out-of-config untyped-data and
+  private-test-helper diagnostics and is not claimed green. The full
+  linked-worktree scanner remains inherited sanitized
+  `ERROR code=unsafe-git-metadata source="."`.
+- `DEBT-W2-028` status remains `OPEN_PENDING_INDEPENDENT_REAUDIT`. Its V2 local
+  implementation subcondition is `CLOSED_PENDING_INDEPENDENT_REAUDIT`, with
+  exact record `changes/st-1204/ATOMIC-PUBLICATION-CLOSURE-v1.md`; no audit
+  `PASS`, formal TST-030, or `VALIDATED` state is claimed.
+- `DEBT-W2-062` remains `OPEN` for the ST-1205 owner and final provenance
+  integration. The exact read-only owner command still exits one with
+  `SOURCE_HASH_DRIFT field=predecessor.st1204`. The exact changed direct pins
+  are `changes/st-1204/RUNTIME-SLICE-v1.md`
+  (`ac85f07ee2325aa5e1f63ffd0323cc499417b2c85d4ac36b31d07fcbe58e0d0e`),
+  `tests/st1204/test_ga4_application.py`
+  (`6631568a32d3a510a1b35f349f4cddc365af1105af978fa5048b9079a5a1e7ff`),
+  and `tests/st1204/test_recorded_ga4.py`
+  (`723d4a85d0e84784a207fcf61b23a59d9a944acb42c2f2c9f2d2f6f66fc90355`).
+  No ST-1205 owner, contract, manifest or generated plan is edited here; its
+  disabled reference-plan drift has no provider, runtime, persistence,
+  publication or Production impact.
+- OD-012 remains disabled and OD-015 remains recorded-fixture-only. No network,
+  credential, Google SDK/API, database, queue, analytics persistence, provider,
+  publication, staging, release or Production action was added or executed.
+
+### 2026-08-24 W2 / ST-1204 V3 journal-state identity correction
+
+- Correction: independent V2 re-audit reproduced a byte-identical,
+  different-inode replacement of terminal `state.000.json` at
+  `after-journal-cleanup-tombstone`. V2 bound the moved journal root but
+  re-inferred individual state ownership from bytes, allowing the foreign
+  state inode to be deleted. The V2 local evidence remains historical and its
+  every-checkpoint restartability claim is superseded by this entry.
+- V3 implementation: the already trusted active chain read now captures exact
+  `(dev, ino, mode, nlink, size, mtime_ns, ctime_ns)` signatures for every
+  state. The inventory is carried in memory across the terminal root move.
+  Every state must match the captured full signature and exact bytes before
+  quarantine; the quarantined descriptor must retain the captured inode and
+  bytes before unlink. Observable source, tombstone, preparing and last-state
+  mismatches are retained and refused without deleting the replacement.
+- Conservative recovery boundary: there is no durable nonrecursive anchor for
+  that per-state identity inventory after process death. A later invocation
+  encountering an interrupted terminal journal root preserves and refuses it;
+  it never derives ownership from valid bytes, an identity-bearing name, root
+  self-attestation, or a recursively trusted companion record. Bundle and
+  legacy cleanup remain restartable. A crash after the terminal root was
+  already removed proceeds normally. The existing unavoidable final POSIX
+  `unlinkat`/`rmdirat` kernel-window limitation is unchanged.
+- Local evidence: owner generation and no-write `--check` pass at manifest
+  SHA-256
+  `b0adffaa89c5ffdd931a46b319e19ace04246d19820e394c29795fbd9b3c47ce`;
+  fixture payloads are unchanged; isolated ST-1204 passes `202` tests,
+  including `67` atomic tests and the exact reproduced swap plus adjacent
+  post-quarantine, preparing, last-state and crash-retention cases. The common
+  success assertion now invokes the complete managed pending-state check.
+  Python 3.10/3.14 compile, Ruff lint/format, strict mypy, configured Pyright,
+  canonical import, workspace no-write, focused capability/static, focused
+  maintained-file secret scanning, and `git diff --check` pass. The inherited
+  linked-worktree-wide `unsafe-git-metadata` result and out-of-config direct
+  Pyright diagnostics remain non-green and explicitly reported.
+- `DEBT-W2-028` remains `OPEN_PENDING_INDEPENDENT_REAUDIT`; its current local
+  subcondition is `CLOSED_PENDING_V3_INDEPENDENT_REAUDIT`. Terminal-journal
+  post-crash automatic cleanup is deliberately not claimed complete without a
+  future nonrecursive durable ownership design. `DEBT-W2-062` remains `OPEN`
+  with the same ST-1205 predecessor drift; no downstream owner is edited.
+- Independent V3 re-audit, formal TST-030, hosted CI, live provider/account/
+  credential evidence, persistence, staging, release and Production remain
+  `NOT_EXECUTED`. OD-012 remains disabled and OD-015 remains
+  recorded-fixture-only.
+
+### 2026-08-24 W2 / ST-0308 local persistence runtime completion
+
+- `DEBT-W1-054` status update: `CLOSED`. The repository owner's continuous
+  reversible-development authority, the V2 local runtime handoff, eight exact
+  executable matrices, and fresh conflict-free implementation audit close the
+  former local design/authority blocker. This closure authorizes and records
+  repository-local implementation only; it grants no credential, provider,
+  publication, staging, release, Production, or canonical status authority.
+- `DEBT-W1-055` remains `CLOSED` by its earlier recorded closure. This entry
+  does not duplicate or reopen that predecessor/toolchain identity.
+- `DEBT-W1-056` remains `EXTERNAL_BLOCKED`; its local implementation and
+  PostgreSQL subcondition is `CLOSED`. The deterministic owner check passes,
+  the exact ephemeral PostgreSQL 18.4 integration suite passes `288` tests,
+  the historical preflight/reference suites pass `165`/`134` tests, and a
+  fresh independent integration audit has no remaining HIGH or MEDIUM finding.
+  Formal TST-005/TST-008, hosted CI, human security/data governance, canonical
+  `APPLY`, staging, publication, release, live provider/credential activity,
+  and Production remain `NOT_EXECUTED`; local PostgreSQL evidence is not
+  promoted to formal TST-008.
+- Exact local completion record:
+  `changes/st-0308/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml`. The
+  append-only ST-0005 proposal is intentionally deferred to a status-only
+  branch because its workflow forbids combining status history with the
+  implementation's `scripts/**` changes.
+
+### 2026-08-24 W2 / ST-0605 local Claim--Evidence runtime
+
+- `DEBT-W2-063` status: `CLOSED`, introduced-by `ST-0605`. The historical
+  interface-only plan had no executable Claim/evidence or coverage behavior.
+  The additive recorded-synthetic runtime now hash-binds Article body to its
+  exact approved Packet Version/content and requires separately owned,
+  version/hash-bound receipts for Claim inventory, Packet membership, Fact
+  validation, conflict closure, Product/Variant identity, and type-specific
+  validation. It closes all supplied relations, binds the full evaluation
+  input/report, and evaluates the 100%/95% thresholds with integer arithmetic.
+  Missing or mismatched receipts are `UNEVALUABLE`; no upstream or ST-0803/
+  ST-0804 owner algorithm is inferred. Pure evaluation has no authority; the
+  recorder resolves a trusted preloaded Article snapshot, checks an immutable
+  constructor-time full-input anchor, re-evaluates it, and stores report
+  history as immutable digest/canonical-byte values. Smaller self-declared
+  denominators, coherent forged reports, and alias mutation cannot enter the
+  record. The owner generator, nested-contract mutation and rollback tests,
+  combined historical/runtime suite,
+  compile/import, Ruff, strict mypy, focused secret scan, and diff check are the
+  local closure evidence. This is local implementation closure only, not
+  formal TST-020/TST-021 or canonical status evidence.
+- Mechanical provenance closure: the provider-free import boundary required
+  lazy public facades in `raos.adapters`, `raos.ports`, and
+  `raos.domain.editorial`. Their only downstream deltas are owner-generated
+  byte/hash metadata in ST-0203, ST-0701, and ST-0801, followed by exact
+  predecessor pin propagation through ST-0204, ST-0703, and ST-1204. No
+  non-hash semantic, executable fixture/output, policy, authority, or status
+  changes occurred in that chain; the owner-named semantic projection digest
+  changed only because it retains the predecessor provenance hash. Older
+  ST-0301/ST-0702/ST-0705/ST-0708/ST-1203 branch
+  bindings remain their pre-existing Story-owned integration debt and were not
+  silently rebased here.
+- `DEBT-W2-064` status: `OPEN`, introduced-by `ST-0605`, closure owner:
+  `ST-0705` implementation/integration owner. The current ST-0705 reference
+  predates this executable runtime and still binds the historical
+  non-executable ST-0605 surface. Rebind it semantically when ST-0705 is
+  implemented; do not infer policy/persistence/AI vocabulary mappings. Safe
+  impact: the current ST-0705 artifact is non-executable and grants no
+  publication, provider, persistence, or Production authority.
+- `DEBT-W2-065` status: `OPEN`, introduced-by `ST-0605`, closure owner:
+  `ST-0902` implementation/integration owner. The current final-approval
+  reference pins the historical ST-0605 README and explicitly treats Claim
+  coverage as unavailable. Rebind it to the new report evaluator version,
+  evaluation-input hash, status, coverage fractions, and immutable report hash
+  when ST-0902 is implemented. It remains non-executable and cannot grant
+  approval or publication authority meanwhile.
+- `DEBT-W2-066` status: `OPEN`, introduced-by `ST-0605`, closure owners:
+  `ST-0606`, `ST-0803`, `ST-0805`, and `ST-0806`. Their current reference or
+  candidate context predates the executable receipt boundary. Each owner must
+  consume only its exact attestation kind/subject/input/contract binding and
+  must not infer policy/persistence/AI vocabulary mappings. The current
+  artifacts are non-authoritative; this debt records semantic integration work
+  rather than formal/live evidence.
+- Formal TST-020/TST-021, hosted CI, human editorial/data/security review,
+  live Source Packet approval, database integration, staging, release,
+  publication, and Production remain `NOT_EXECUTED`. Reports and receipts are
+  permanently non-authoritative (`publication_authorized=false`,
+  `production_eligible=false`).
+
+### 2026-08-24 W2 / ST-0803 local comparison receipt consumer V2
+
+- `DEBT-W2-066` ST-0803 owner slice status: `CLOSED_LOCAL_IMPLEMENTATION`.
+  The additive V2 runtime consumes ST-0605's exact precomputed `COMPARISON`
+  kind/subject/input tuples without requiring a circular prior ST-0605 PASS.
+  It requires all non-comparison receipts already present, verifies exact
+  ST-0504 identity owner/contract/subject/input/decision/time bindings, and
+  emits only matching recorded-synthetic ST-0803 receipts after a finding-free
+  Product-by-axis evaluation. Article/version/body, approved Packet
+  Version/content, complete Claim set, versioned candidate universe and axis
+  catalog, Fact set, temporal scope and full input hashes are jointly bound.
+  V1 remains unchanged for ST-0804 compatibility and is not promoted into this
+  receipt boundary.
+- `DEBT-W2-066` overall remains `OPEN` until the independently owned ST-0606,
+  ST-0805 and ST-0806 slices consume their exact attestation tuples. This
+  closure grants no identity, provider, recommendation, ranking, publication,
+  formal-test, staging, release or Production authority. Formal TST-007/
+  TST-020, hosted CI, live validation and all external operations remain
+  `NOT_EXECUTED`.
+- Integration audit found and closed the owner-generator target race that
+  existed between destination validation and clobbering replacement. Existing
+  outputs now use descriptor-relative `renameat2(RENAME_EXCHANGE)` with
+  displaced-identity and reverse verification; missing outputs use a
+  no-clobber hard-link install. Target swaps before and after exchange, fresh
+  target races, parent-directory swaps, rollback and cleanup preserve foreign
+  material and fail closed. No generator race debt remains open for ST-0803.
+
+### 2026-08-24 W2 / ST-0805 local policy receipt consumer V2
+
+- `DEBT-W2-066` ST-0805 owner slice status: `CLOSED_LOCAL_IMPLEMENTATION`.
+  The additive V2 runtime independently re-evaluates and binds the exact
+  ST-0605 coverage report/receipt, the exact ST-0802 UUIDv7 DRAFT and canonical
+  Content AST, and the exact ST-0804 recommendation report/receipt. The
+  complete ST-0605 COMPARISON receipt and ST-0803's precomputed COMPARISON
+  tuple view are derived from one article/version/body/Packet/Claim-set core,
+  preserving both predecessor contracts without circular validation.
+  Candidate-universe, axis-catalog, Fact-set, temporal-scope, decision-context,
+  methodology, legacy policy-result, and aggregate input hashes are fixed.
+- The canonical 40 policies, 8 quality axes, 13 zero-tolerance blockers, and 12
+  gates remain evaluated by the unchanged V1 calculator. V2 adds bounds,
+  recursive Unicode/leet finance-key rejection, explicit UNEVALUABLE/BLOCK
+  separation, immutable receipts, and a race-safe owner generator. Unknown,
+  missing, conflict, and unevaluated material cannot become zero or PASS.
+  Findings and waivers remain proposals only; all approval, apply, merge,
+  override, ranking, publication, activation, and Production authority is
+  false.
+- `DEBT-W2-066` overall remains `OPEN` for its independently owned ST-0606 and
+  ST-0806 consumer slices. ST-0805 introduced no local implementation debt.
+  Formal TST-019/TST-020, hosted CI, live validation, staging, release,
+  publication, and Production remain `NOT_EXECUTED`.
+
+### 2026-08-24 W2 / ST-1204 V5 destructive-cleanup signature correction
+
+- `DEBT-W2-028` status remains `OPEN_PENDING_INDEPENDENT_REAUDIT`; the current
+  local implementation subcondition is
+  `CLOSED_PENDING_V5_INDEPENDENT_REAUDIT`. The independent V4 review reproduced
+  same-inode mode drift immediately before file unlink and directory removal.
+  V4 retained identity and content/emptiness at the last observation but not
+  the full post-quarantine signature, so its pending conclusion is superseded
+  rather than erased.
+- V5 binds each cleanup entry's full signature after its no-replace quarantine,
+  preserves all non-ctime signature fields across the rename, and requires the
+  exact post-quarantine signature immediately before `unlinkat` or `rmdirat`.
+  Four new hostile tests cover file and directory drift immediately before both
+  quarantine and deletion. The isolated ST-1204 suite passes `214` tests
+  (`79` atomic-publication tests), and owner generation/check passes at
+  manifest SHA-256
+  `e4744fd4cc1242509cb1dfb061b1063f0bcef668f707a6706cb3955f0cca96e9`.
+- `DEBT-W2-062` status: `CLOSED_LOCAL_IMPLEMENTATION`. ST-1205 now pins the
+  exact V5 runtime slice and generated manifest, its V2 owner generation and
+  no-write check pass, and ST-1304 has been regenerated against the resulting
+  current ST-1205 V2 contract. No provider, persistence, publication, ranking,
+  staging, release, or Production authority is introduced by this provenance
+  chain.
+- A fresh independent V5 read-only re-audit remains required before
+  `DEBT-W2-028` can close or any audit `PASS` can be recorded. Formal TST-030,
+  hosted CI, live GA4/account/credential evidence, persistence, staging,
+  release, publication and Production remain `NOT_EXECUTED`.
+
+### 2026-08-24 W2 / ST-1204 V5 independent local re-audit closure
+
+- `DEBT-W2-028` status: `CLOSED_LOCAL_IMPLEMENTATION`. A fresh detached
+  physical clone at exact commit
+  `5660b842f1a73a885915171e19b9072aee44a1f8` received an independent read-only
+  review with zero HIGH, MEDIUM, or LOW finding. The owner no-write check, all
+  four V5 metadata-drift regressions, all `79` atomic-publication tests, and all
+  `214` isolated ST-1204 tests passed; the clone remained clean. Exact record:
+  `changes/st-1204/ATOMIC-PUBLICATION-REAUDIT-v5.md`.
+- The close applies only to the local implementation and independent local
+  re-audit subconditions. The documented POSIX final-syscall interval remains
+  an explicit platform boundary, not a waived representable defect. Formal
+  TST-030, hosted CI, live GA4/account/credential validation, persistence,
+  staging, release, publication, Production and canonical `VALIDATED` remain
+  `NOT_EXECUTED` or unchanged.
+
+### 2026-08-25 W2 / ST-0106 reviewed current-blob history closure
+
+- `DEBT-W2-061` status: `CLOSED_LOCAL_IMPLEMENTATION`. The ST-0106 owner now
+  projects exactly one content-addressed history entry for current blob
+  `8dcd2ab01f276a6dac924b42e733a827574c13ed`; its reviewed physical line 961,
+  line SHA-256, classification, and rationale are inherited unchanged from the
+  exact prior-blob history entry. V3 contains 116 entries, is 60,287 bytes, and
+  has SHA-256
+  `09277639d9db84371e8e3882ad2379ee4e15a13ff35a74b003201bde2f681f40`.
+  The preliminary target-ref-only replay failed closed on that current blob
+  and was not treated as a pass; no unrelated local branch was added to the
+  ledger and no scanner rule was weakened.
+- Closure replay uses a physical, non-shallow clone with no alternates, fetched
+  by `git clone --no-local --single-branch --no-tags --branch
+  codex/st0106-scan-candidate file:///home/minami/rakuten/.git CLONE`. Its ref
+  universe contains only the checked-out candidate and its same-object origin
+  tracking ref. From that clone, with a fresh mode-0700 HOME, the exact scan is
+  `scripts/run_network_denied.sh --home HOME -- /usr/bin/python3 -I
+  scripts/scan_secrets.py --worktree --git-history --reviewed-findings
+  changes/st-0106/contracts/reviewed-secret-findings.v3.yaml`. The post-commit
+  exact SHA, ref inventory, exit status, isolation report, and absence of
+  scanner findings are reported outside this tracked self-referential record.
+- This closes only the environment-induced local scan debt. Hosted Secrets CI,
+  formal TST-001/TST-002, status application, downstream provenance, external
+  writes, staging, publication, release, Production, and canonical `VALIDATED`
+  remain `NOT_EXECUTED` or unchanged.

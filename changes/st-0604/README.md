@@ -18,14 +18,14 @@ the canonical Story remains `NOT_STARTED` / `NOT_EXECUTED`.
 The plan binds exact path inventories derived from the committed feature
 commits themselves:
 
-- ST-0602 `f281d02c489d4d9f74ec351a57a4a476fa77eab3` contributes only an
+- ST-0602 `806b978803cbc78392117cbc31015db19ea09a74` contributes only an
   interface-only Fact extraction reference plan with no Facts and a
   `NOT_READY` decision.
-- ST-0603 `a64799570606aa4cb5e3ce79930e156fa500d644` contributes only a
+- ST-0603 `4f4285f0385a14b83e027e9c4527c17b8966bb70` contributes only a
   non-executable conflict-review reference plan with no Facts, comparisons,
   conflicts, findings, queue records, or resolutions and a `NOT_READY`
   decision.
-- ST-0403 `095046c752595bea3235caf2e3a653fd9383882e` contributes only its
+- ST-0403 `16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517` contributes only its
   recorded development authorization seam. It is deny-default and supplies no
   live or Production approval.
 
