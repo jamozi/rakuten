@@ -7,7 +7,7 @@ from enum import Enum
 import hashlib
 import json
 import re
-from typing import NoReturn, SupportsIndex, final
+from typing import NoReturn, SupportsIndex, cast, final
 from uuid import RFC_4122, UUID
 
 from raos.domain.editorial.policy_engine import LocalEvaluationStatus
@@ -239,26 +239,29 @@ def _require_article_version_id(value: object) -> str:
 
 
 def _reference_tuple(value: object) -> tuple[str, ...]:
-    if (
-        type(value) is not tuple
-        or len(value) > MAX_REFRESH_PROPOSAL_DIFFS
-        or any(type(item) is not str for item in value)
-    ):
+    if type(value) is not tuple:
         fail_refresh_proposal()
-    validated = tuple(_require_reference(item) for item in value)
+    items = cast(tuple[object, ...], value)
+    if len(items) > MAX_REFRESH_PROPOSAL_DIFFS:
+        fail_refresh_proposal()
+    validated = tuple(_require_reference(item) for item in items)
     if len(set(validated)) != len(validated) or validated != tuple(sorted(validated)):
         fail_refresh_proposal()
     return validated
 
 
 def _surface_tuple(value: object) -> tuple[RefreshImpactSurface, ...]:
-    if (
-        type(value) is not tuple
-        or not value
-        or any(type(item) is not RefreshImpactSurface for item in value)
-    ):
+    if type(value) is not tuple:
         fail_refresh_proposal()
-    validated = value
+    items = cast(tuple[object, ...], value)
+    if not items:
+        fail_refresh_proposal()
+    validated_items: list[RefreshImpactSurface] = []
+    for item in items:
+        if type(item) is not RefreshImpactSurface:
+            fail_refresh_proposal()
+        validated_items.append(item)
+    validated = tuple(validated_items)
     expected = tuple(sorted(set(validated), key=_SURFACE_ORDER.__getitem__))
     if validated != expected:
         fail_refresh_proposal()
@@ -266,11 +269,15 @@ def _surface_tuple(value: object) -> tuple[RefreshImpactSurface, ...]:
 
 
 def _reapproval_tuple(value: object) -> tuple[RefreshReapprovalArea, ...]:
-    if type(value) is not tuple or any(
-        type(item) is not RefreshReapprovalArea for item in value
-    ):
+    if type(value) is not tuple:
         fail_refresh_proposal()
-    validated = value
+    items = cast(tuple[object, ...], value)
+    validated_items: list[RefreshReapprovalArea] = []
+    for item in items:
+        if type(item) is not RefreshReapprovalArea:
+            fail_refresh_proposal()
+        validated_items.append(item)
+    validated = tuple(validated_items)
     expected = tuple(sorted(set(validated), key=_REAPPROVAL_ORDER.__getitem__))
     if validated != expected:
         fail_refresh_proposal()

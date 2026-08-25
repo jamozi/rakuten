@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import json
 import re
-from typing import NoReturn, SupportsIndex, final
+from typing import NoReturn, SupportsIndex, cast, final
 
 from raos.config.runtime import RuntimeEnvironment
 from raos.domain.freshness.refresh_proposal import (
@@ -48,9 +48,12 @@ def _sha256(value: object) -> str:
 
 
 def _object(value: object, keys: tuple[str, ...]) -> dict[str, object]:
-    if type(value) is not dict or set(value) != set(keys):
+    if type(value) is not dict:
         fail_refresh_proposal()
-    return value
+    validated = cast(dict[str, object], value)
+    if set(validated) != set(keys):
+        fail_refresh_proposal()
+    return validated
 
 
 def _pairs(pairs: list[tuple[str, object]]) -> dict[str, object]:
@@ -292,7 +295,10 @@ def load_recorded_refresh_proposal_bindings(
             "production",
         ),
     )
-    fixtures = root["fixtureBindings"]
+    fixtures_value = root["fixtureBindings"]
+    if type(fixtures_value) is not list:
+        fail_refresh_proposal()
+    fixtures = cast(list[object], fixtures_value)
     _sha256(root["contractSha256"])
     for dependency_sha256 in dependencies.values():
         _sha256(dependency_sha256)
@@ -314,7 +320,6 @@ def load_recorded_refresh_proposal_bindings(
             "productionEligible": False,
         }
         or set(formal.values()) != {"NOT_EXECUTED"}
-        or type(fixtures) is not list
         or not 1 <= len(fixtures) <= MAX_RECORDED_REFRESH_PROPOSALS
     ):
         fail_refresh_proposal()
