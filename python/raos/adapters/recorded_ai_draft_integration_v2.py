@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from threading import RLock
-from typing import Any, NoReturn, SupportsIndex, final
+from typing import NoReturn, SupportsIndex, cast, final
 
 from raos.adapters.recorded_claim_evidence import (
     load_recorded_claim_evidence_fixture,
@@ -48,8 +48,8 @@ def _fail() -> NoReturn:
     fail_ai_draft_v2(AiDraftV2FailureCode.FIXTURE_INVALID)
 
 
-def _pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
-    result: dict[str, Any] = {}
+def _pairs(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    result: dict[str, object] = {}
     for key, value in pairs:
         if type(key) is not str or key in result:
             _fail()
@@ -110,41 +110,44 @@ def load_recorded_ai_draft_fixture_v2(payload: bytes) -> RecordedDraftMaterialV2
         _fail()
     copied = bytes(payload)
     try:
-        loaded = json.loads(copied, object_pairs_hook=_pairs)
+        loaded: object = json.loads(copied, object_pairs_hook=_pairs)
     except Exception:
         _fail()
-    if type(loaded) is not dict or tuple(loaded) != _ROOT_KEYS:
+    if type(loaded) is not dict:
         _fail()
-    if copied != _canonical_fixture_bytes(loaded):
+    document = cast(dict[str, object], loaded)
+    if tuple(document) != _ROOT_KEYS:
+        _fail()
+    if copied != _canonical_fixture_bytes(document):
         _fail()
     if (
-        loaded["document_id"] != FIXTURE_DOCUMENT_ID
-        or loaded["schema_version"] != FIXTURE_SCHEMA_VERSION
-        or type(loaded["schema_version"]) is not int
-        or loaded["contract_sha256"] != CONTRACT_SHA256
-        or loaded["policy_sha256"] != POLICY_SHA256
+        document["document_id"] != FIXTURE_DOCUMENT_ID
+        or document["schema_version"] != FIXTURE_SCHEMA_VERSION
+        or type(document["schema_version"]) is not int
+        or document["contract_sha256"] != CONTRACT_SHA256
+        or document["policy_sha256"] != POLICY_SHA256
     ):
         _fail()
 
     try:
-        after_bytes = _document_string(loaded["after_content_ast_utf8"]).encode(
+        after_bytes = _document_string(document["after_content_ast_utf8"]).encode(
             "utf-8", errors="strict"
         )
         snapshot_bytes = _document_string(
-            loaded["claim_evidence_snapshot_utf8"]
+            document["claim_evidence_snapshot_utf8"]
         ).encode("utf-8", errors="strict")
-        report_bytes = _document_string(loaded["coverage_report_utf8"]).encode(
+        report_bytes = _document_string(document["coverage_report_utf8"]).encode(
             "utf-8", errors="strict"
         )
     except Exception:
         _fail()
     if (
         hashlib.sha256(after_bytes).hexdigest()
-        != _sha256(loaded["after_content_ast_sha256"])
+        != _sha256(document["after_content_ast_sha256"])
         or hashlib.sha256(snapshot_bytes).hexdigest()
-        != _sha256(loaded["claim_evidence_snapshot_sha256"])
+        != _sha256(document["claim_evidence_snapshot_sha256"])
         or hashlib.sha256(report_bytes).hexdigest()
-        != _sha256(loaded["coverage_report_sha256"])
+        != _sha256(document["coverage_report_sha256"])
     ):
         _fail()
     try:
@@ -156,17 +159,23 @@ def load_recorded_ai_draft_fixture_v2(payload: bytes) -> RecordedDraftMaterialV2
         _fail()
     if report.canonical_bytes() != report_bytes:
         _fail()
-    receipt_row = loaded["coverage_receipt"]
-    if (
-        type(receipt_row) is not dict
-        or tuple(receipt_row) != ("publication_authorized", "report_sha256", "sequence")
-        or receipt_row["publication_authorized"] is not False
-        or type(receipt_row["sequence"]) is not int
+    receipt_value = document["coverage_receipt"]
+    if type(receipt_value) is not dict:
+        _fail()
+    receipt_row = cast(dict[str, object], receipt_value)
+    if tuple(receipt_row) != (
+        "publication_authorized",
+        "report_sha256",
+        "sequence",
     ):
+        _fail()
+    publication_authorized = receipt_row["publication_authorized"]
+    sequence = receipt_row["sequence"]
+    if publication_authorized is not False or type(sequence) is not int:
         _fail()
     try:
         receipt = CoverageRecordReceipt(
-            sequence=receipt_row["sequence"],
+            sequence=sequence,
             report_sha256=Sha256Digest(_sha256(receipt_row["report_sha256"])),
             publication_authorized=False,
         )

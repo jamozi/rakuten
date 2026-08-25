@@ -12,7 +12,7 @@ from enum import Enum
 import hashlib
 import json
 import re
-from typing import NoReturn, SupportsIndex, final
+from typing import NoReturn, SupportsIndex, cast, final
 from uuid import UUID
 
 from raos.config.runtime import RuntimeEnvironment
@@ -57,7 +57,7 @@ from raos.domain.evidence.claim_evidence import (
 
 
 AI_ARTICLE_DRAFT_TASK_V2 = "ai.article_draft.v1"
-CONTRACT_SHA256 = "c08c4b9cbf1c35d0c8e3177d0929d0fc9a0fbd2187d0fc4c08683ac636eef18e"
+CONTRACT_SHA256 = "67d505f445c912b7987180ccc7caeeeee04c1148a5a467a01dd3c2b835aeb966"
 POLICY_ID = "st-0806.ai-draft-integration.v2"
 POLICY_SHA256 = "443b5ea91544ea1e8d5f9c7c2e71ebe331fda6f81397f0b51e25aa70da5c77f2"
 FIXTURE_DOCUMENT_ID = "RAOS-ST0806-AI-DRAFT-FIXTURE-002"
@@ -248,12 +248,12 @@ def _reject_prohibited_material(value: object) -> None:
         if visited > 100_000:
             fail_ai_draft_v2(AiDraftV2FailureCode.CONTENT_AST_INVALID)
         if type(current) is dict:
-            for key, child in current.items():
+            for key, child in cast(dict[object, object], current).items():
                 if type(key) is not str or key.casefold() in _BANNED_KEYS:
                     fail_ai_draft_v2(AiDraftV2FailureCode.CONTENT_AST_INVALID)
                 stack.append(child)
         elif type(current) is list:
-            stack.extend(current)
+            stack.extend(cast(list[object], current))
         elif type(current) is str:
             lowered = current.casefold()
             if _RAW_HTML.search(current) is not None or any(
@@ -405,6 +405,18 @@ def _value_sha256(value: object) -> str:
     return hashlib.sha256(_canonical_json_bytes(value)).hexdigest()
 
 
+def _is_exact_dict(value: object) -> bool:
+    return type(value) is dict
+
+
+def _is_exact_list(value: object) -> bool:
+    return type(value) is list
+
+
+def _same_exact_type(left: object, right: object) -> bool:
+    return type(left) is type(right)
+
+
 def _walk_diff(
     before: object,
     after: object,
@@ -413,12 +425,13 @@ def _walk_diff(
 ) -> None:
     if len(output) > MAXIMUM_DIFF_OPERATIONS:
         fail_ai_draft_v2(AiDraftV2FailureCode.DIFF_INVALID)
-    if type(before) is dict and type(after) is dict:
-        before_map = before
-        after_map = after
-        for key in sorted(set(before_map) | set(after_map)):
-            if type(key) is not str:
-                fail_ai_draft_v2(AiDraftV2FailureCode.DIFF_INVALID)
+    if _is_exact_dict(before) and _is_exact_dict(after):
+        before_map = cast(dict[object, object], before)
+        after_map = cast(dict[object, object], after)
+        raw_keys = set(before_map) | set(after_map)
+        if any(type(key) is not str for key in raw_keys):
+            fail_ai_draft_v2(AiDraftV2FailureCode.DIFF_INVALID)
+        for key in sorted(cast(set[str], raw_keys)):
             child = f"{pointer}/{_pointer_component(key)}"
             if key not in before_map:
                 output.append(
@@ -441,30 +454,34 @@ def _walk_diff(
             else:
                 _walk_diff(before_map[key], after_map[key], child, output)
         return
-    if type(before) is list and type(after) is list:
-        shared = min(len(before), len(after))
+    if _is_exact_list(before) and _is_exact_list(after):
+        before_list = cast(list[object], before)
+        after_list = cast(list[object], after)
+        shared = min(len(before_list), len(after_list))
         for index in range(shared):
-            _walk_diff(before[index], after[index], f"{pointer}/{index}", output)
-        for index in range(shared, len(before)):
+            _walk_diff(
+                before_list[index], after_list[index], f"{pointer}/{index}", output
+            )
+        for index in range(shared, len(before_list)):
             output.append(
                 (
                     DiffOperationKindV2.REMOVE,
                     f"{pointer}/{index}",
-                    _value_sha256(before[index]),
+                    _value_sha256(before_list[index]),
                     None,
                 )
             )
-        for index in range(shared, len(after)):
+        for index in range(shared, len(after_list)):
             output.append(
                 (
                     DiffOperationKindV2.ADD,
                     f"{pointer}/{index}",
                     None,
-                    _value_sha256(after[index]),
+                    _value_sha256(after_list[index]),
                 )
             )
         return
-    if before != after or type(before) is not type(after):
+    if before != after or not _same_exact_type(before, after):
         output.append(
             (
                 DiffOperationKindV2.REPLACE,
@@ -481,8 +498,8 @@ def build_content_ast_diff_v2(
     if type(before) is not BoundContentAstV2 or type(after) is not BoundContentAstV2:
         fail_ai_draft_v2(AiDraftV2FailureCode.DIFF_INVALID)
     try:
-        before_value = json.loads(before.canonical_bytes)
-        after_value = json.loads(after.canonical_bytes)
+        before_value: object = json.loads(before.canonical_bytes)
+        after_value: object = json.loads(after.canonical_bytes)
     except Exception:
         fail_ai_draft_v2(AiDraftV2FailureCode.DIFF_INVALID)
     raw: list[tuple[DiffOperationKindV2, str, str | None, str | None]] = []
@@ -728,11 +745,13 @@ def bind_durable_succeeded_completion_v2(
         fail_ai_draft_v2(AiDraftV2FailureCode.DURABLE_RECEIPT_INVALID)
     job = jobs[0]
     command = job.command
+    article_version_id = command.article_version_id
     if (
         command.operation_id != request.operation_id
         or command.task_code != AI_ARTICLE_DRAFT_TASK_V2
         or command.article_plan_id is not None
-        or command.article_version_id != request.source_version.version_id
+        or article_version_id is None
+        or article_version_id != request.source_version.version_id
         or command.source_packet_version_id
         != request.source_version.source_packet_version_id
         or job.status is not DurableJobStatus.SUCCEEDED
@@ -778,7 +797,7 @@ def bind_durable_succeeded_completion_v2(
         ai_job_id=command.ai_job_id,
         command_fingerprint_sha256=command.fingerprint_sha256,
         source_packet_version_id=command.source_packet_version_id,
-        article_version_id=command.article_version_id,
+        article_version_id=article_version_id,
         input_artifact_id=command.input_artifact_id,
         input_artifact_sha256=command.input_artifact_sha256,
         validation_plan_id=command.validation_plan.plan_id,
@@ -829,17 +848,18 @@ def _claim_references(value: object) -> tuple[str, ...]:
     while stack:
         current = stack.pop()
         if type(current) is dict:
-            for key, child in current.items():
+            for key, child in cast(dict[object, object], current).items():
                 if key in {"claim_ids", "rationale_claim_ids"}:
-                    if type(child) is not list or any(
-                        type(item) is not str for item in child
-                    ):
+                    if type(child) is not list:
                         fail_ai_draft_v2(AiDraftV2FailureCode.COVERAGE_BINDING_MISMATCH)
-                    references.update(child)
+                    claim_values = cast(list[object], child)
+                    if any(type(item) is not str for item in claim_values):
+                        fail_ai_draft_v2(AiDraftV2FailureCode.COVERAGE_BINDING_MISMATCH)
+                    references.update(cast(list[str], claim_values))
                 else:
                     stack.append(child)
         elif type(current) is list:
-            stack.extend(current)
+            stack.extend(cast(list[object], current))
     return tuple(sorted(references))
 
 

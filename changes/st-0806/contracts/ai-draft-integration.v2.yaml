@@ -80,7 +80,7 @@ source_bindings:
     owner: RAOS-CONTENT-001
     role: AI_CONTENT_ALIGNMENT
   - path: changes/st-0706/contracts/durable-ai-job-queue.v2.yaml
-    sha256: 27c6e326c2b4485d97fa0179eb01a9f01f904ab45b2361de648fec02bd307e20
+    sha256: 3d881d352a1a9d253055930d4e6487154cc03a7e2e9489fd52ff81bb9b74bc7a
     owner: ST-0706
     role: EXACT_DURABLE_SUCCEEDED_RECEIPT
   - path: changes/st-0605/contracts/claim-evidence-runtime.v1.yaml
@@ -113,7 +113,7 @@ recorded_policy:
   default_activation: DISABLED
 
 durable_receipt_consumer:
-  contract_sha256: 27c6e326c2b4485d97fa0179eb01a9f01f904ab45b2361de648fec02bd307e20
+  contract_sha256: 3d881d352a1a9d253055930d4e6487154cc03a7e2e9489fd52ff81bb9b74bc7a
   policy_sha256: f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8
   required_job_status: SUCCEEDED
   required_decision_code: SUCCEEDED

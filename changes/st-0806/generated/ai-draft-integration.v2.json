@@ -1,6 +1,6 @@
 {
   "authority": "NONE",
-  "contract_sha256": "c08c4b9cbf1c35d0c8e3177d0929d0fc9a0fbd2187d0fc4c08683ac636eef18e",
+  "contract_sha256": "67d505f445c912b7987180ccc7caeeeee04c1148a5a467a01dd3c2b835aeb966",
   "document_id": "RAOS-ST0806-AI-DRAFT-INTEGRATION-PLAN-002",
   "enabled": false,
   "formal_and_external": {
@@ -13,27 +13,27 @@
     "release": "NOT_EXECUTED",
     "staging": "NOT_EXECUTED"
   },
-  "generated_fixture_sha256": "95cead14bea7899c4a1b0aa6eafc29363f2878a8d2c89c9ffe2bfc25ba28696b",
+  "generated_fixture_sha256": "00baf1ae61b5269a6ffa2bc28db2abba8f45d6930081de4121f57acc4280501b",
   "owner_source_sha256": {
     "changes/st-0605/generated/claim-evidence-runtime-pass.v1.json": "9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106",
     "changes/st-0806/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml": "277e6376107a5b3a9237cf47f69f4e128a51fc4400e2438b88f0e8ed82f9517d",
     "changes/st-0806/README.md": "413acc384c612591434874ecdf13b1a776302ace15833e6b555ace14e6e74b87",
-    "changes/st-0806/contracts/ai-draft-integration.v2.yaml": "c08c4b9cbf1c35d0c8e3177d0929d0fc9a0fbd2187d0fc4c08683ac636eef18e",
+    "changes/st-0806/contracts/ai-draft-integration.v2.yaml": "67d505f445c912b7987180ccc7caeeeee04c1148a5a467a01dd3c2b835aeb966",
     "contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json": "8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489",
     "docs/execplans/ST-0806.md": "2792c31707951197e3a572356a9df64df3faddbcba0bd3d8f8a9bf5bcff15896",
     "docs/worklogs/ST-0806.md": "73283188df3fb646c51c0b6fb5b0aefbeda72b0a6c6585e90eb2d476c16cdbf0",
     "python/raos/adapters/recorded_ai_draft_integration.py": "e24d80774703cd5904833ba43bbf891b01cab0c1afd8e5f10002eabc2fcaea09",
-    "python/raos/adapters/recorded_ai_draft_integration_v2.py": "716ed3f59abb63bda6291549c61a079c08272db6ff58fa807592e1ec0604bcbd",
+    "python/raos/adapters/recorded_ai_draft_integration_v2.py": "5f43a7e69eb6430ba2fa190635d0e4d1bc16e01f66e3b3043625277ffedda85c",
     "python/raos/application/editorial/ai_draft_integration.py": "64f1d8e7623e6946f64ad90bc37a085846c8e83a7725a8805b4db1f7a0427102",
     "python/raos/application/editorial/ai_draft_integration_v2.py": "72ddb13f422b09b288ed06fc05242e0b20decab07458f2a23f122717260f4de6",
     "python/raos/domain/editorial/ai_draft_integration.py": "1ae4f54822862b9ffc29ca18b7a071d369404144ac1b03d8ea16f3cca8d6d889",
-    "python/raos/domain/editorial/ai_draft_integration_v2.py": "a3a2f625ad392c6f52d5dea805192801375d7836cd763c3ffbe5f5b481451e7c",
+    "python/raos/domain/editorial/ai_draft_integration_v2.py": "66b02378907680d4b1961d98b1c30627ed565a4c40c907415c5f3f8baf1b879b",
     "python/raos/ports/ai_draft_integration.py": "22a427745833771f788e1cc98b7b6bc3ae62870241376e7fb638fb97cfce9510",
     "python/raos/ports/ai_draft_integration_v2.py": "e797a8b8edb5baa83b80e7fb078cebf529897e6b4f8f84eaae6e458c66347797",
-    "scripts/build_st0806_ai_draft_integration_v2.py": "9c5536c06b40937815b73cb0dc8db1d01b6c0261fd823b7ce0ba42954bb8729f",
+    "scripts/build_st0806_ai_draft_integration_v2.py": "eff32100c8089b26f7709616d897f507f08976583f190c50bc2cdb8ef6a8d72e",
     "scripts/secure_generated_publication.py": "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e",
-    "tests/st0806/test_ai_draft_integration_v2.py": "142c82279d8f20ed38050f30c111a6038044a9fed6c0450ad99188f487c76958",
-    "tests/st0806/test_ai_draft_integration_v2_boundaries.py": "b9cca8ce0631bd68e8c8cead7cb551159a2b1998025679655c107350077bfcc4",
+    "tests/st0806/test_ai_draft_integration_v2.py": "492573c9c38b5b3b7cc8725daaf29902dcc251a1b3e5d24c29bec83036b4c5be",
+    "tests/st0806/test_ai_draft_integration_v2_boundaries.py": "61f827668fb31acf22a83ee6f7e469d749ac61f73994401f5f64101988a43b20",
     "tests/st0806/test_ai_draft_integration_v2_generation.py": "584b4ea8eb2c5b98b5c69864444ec4508a4d9a52d7ac92a1e542d5edf9ad05af",
     "tests/st0806/test_ai_draft_integration_v2_negative.py": "8e43d766f9e9a165a87a6ed9f8dad1e2816a1f18f57df7029b984f7243162f02",
     "tests/st0806/v2_support.py": "8f5eeaa3520a6c6a242e20944304009a41ab202e443d373a168c2421bbd768be"
@@ -177,7 +177,7 @@
       "owner": "ST-0706",
       "path": "changes/st-0706/contracts/durable-ai-job-queue.v2.yaml",
       "role": "EXACT_DURABLE_SUCCEEDED_RECEIPT",
-      "sha256": "27c6e326c2b4485d97fa0179eb01a9f01f904ab45b2361de648fec02bd307e20"
+      "sha256": "3d881d352a1a9d253055930d4e6487154cc03a7e2e9489fd52ff81bb9b74bc7a"
     },
     {
       "owner": "ST-0605",

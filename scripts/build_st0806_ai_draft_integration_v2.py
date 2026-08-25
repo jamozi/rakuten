@@ -10,13 +10,13 @@ import json
 import re
 import stat
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
-from typing import Any, Final, NoReturn, cast
+from typing import Any, Callable, Final, NoReturn, Protocol, cast
 
 import yaml
 from yaml.constructor import ConstructorError
-from yaml.nodes import MappingNode
+from yaml.nodes import MappingNode, Node
 from yaml.tokens import AliasToken, AnchorToken, TagToken
 
 
@@ -59,7 +59,7 @@ FIXTURE_PATH: Final = Path(
 MANIFEST_PATH: Final = Path("changes/st-0806/manifest.v2.yaml")
 GENERATED_PATHS: Final = (PLAN_PATH, FIXTURE_PATH, MANIFEST_PATH)
 EXPECTED_CONTRACT_SHA256: Final = (
-    "c08c4b9cbf1c35d0c8e3177d0929d0fc9a0fbd2187d0fc4c08683ac636eef18e"
+    "67d505f445c912b7987180ccc7caeeeee04c1148a5a467a01dd3c2b835aeb966"
 )
 EXPECTED_POLICY_SHA256: Final = (
     "443b5ea91544ea1e8d5f9c7c2e71ebe331fda6f81397f0b51e25aa70da5c77f2"
@@ -133,12 +133,18 @@ class _UniqueLoader(yaml.SafeLoader):
     pass
 
 
+class _YamlConstructor(Protocol):
+    def construct_object(self, node: Node, deep: bool = False) -> object: ...
+
+
 def _construct_mapping(
     loader: _UniqueLoader, node: MappingNode, deep: bool = False
-) -> dict[Any, Any]:
-    result: dict[Any, Any] = {}
-    for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+) -> dict[object, object]:
+    result: dict[object, object] = {}
+    pairs = cast(list[tuple[Node, Node]], node.value)
+    constructor = cast(_YamlConstructor, loader)
+    for key_node, value_node in pairs:
+        key = constructor.construct_object(key_node, deep=deep)
         try:
             duplicate = key in result
         except TypeError:
@@ -155,7 +161,7 @@ def _construct_mapping(
                 "duplicate key",
                 key_node.start_mark,
             ) from None
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = constructor.construct_object(value_node, deep=deep)
     return result
 
 
@@ -182,7 +188,19 @@ def _read(root: Path, relative: Path, field: str) -> bytes:
     return value
 
 
-def _load_contract(root: Path) -> dict[str, Any]:
+def _mapping(value: object, code: str, field: str) -> dict[str, object]:
+    if type(value) is not dict:
+        _fail(code, field)
+    return cast(dict[str, object], value)
+
+
+def _list(value: object, code: str, field: str) -> list[object]:
+    if type(value) is not list:
+        _fail(code, field)
+    return cast(list[object], value)
+
+
+def _load_contract(root: Path) -> dict[str, object]:
     raw = _read(root, CONTRACT_PATH, "contract")
     if (
         not raw
@@ -192,12 +210,16 @@ def _load_contract(root: Path) -> dict[str, Any]:
         _fail("CONTRACT_HASH_DRIFT", "contract")
     try:
         text = raw.decode("utf-8", errors="strict")
+        scan_value = cast(object, getattr(yaml, "scan"))
+        if not callable(scan_value):
+            _fail("CONTRACT_PARSE_FAILED", "contract")
+        scan = cast(Callable[[str], Iterable[object]], scan_value)
         if any(
             isinstance(token, (AliasToken, AnchorToken, TagToken))
-            for token in yaml.scan(text)
+            for token in scan(text)
         ):
             _fail("CONTRACT_YAML_FEATURE_FORBIDDEN", "contract")
-        loaded = yaml.load(text, Loader=_UniqueLoader)
+        loaded: object = yaml.load(text, Loader=_UniqueLoader)
     except AiDraftBuildError:
         raise
     except Exception:
@@ -214,13 +236,17 @@ def _load_contract(root: Path) -> dict[str, Any]:
         "safe_defaults",
         "verification_boundary",
     }
-    if type(loaded) is not dict or set(loaded) != expected_keys:
+    if type(loaded) is not dict:
         _fail("CONTRACT_SHAPE_INVALID", "contract")
-    contract = cast(dict[str, Any], loaded)
-    document = contract["document"]
+    contract = cast(dict[str, object], loaded)
+    if set(contract) != expected_keys:
+        _fail("CONTRACT_SHAPE_INVALID", "contract")
+    document_value = contract["document"]
+    if type(document_value) is not dict:
+        _fail("CONTRACT_DOCUMENT_INVALID", "document")
+    document = cast(dict[str, object], document_value)
     if (
-        type(document) is not dict
-        or document.get("id") != "RAOS-ST0806-AI-DRAFT-INTEGRATION-002"
+        document.get("id") != "RAOS-ST0806-AI-DRAFT-INTEGRATION-002"
         or document.get("story_id") != "ST-0806"
         or document.get("status") != "LOCAL_IMPLEMENTATION_COMPLETE"
         or document.get("enabled_by_default") is not False
@@ -229,9 +255,10 @@ def _load_contract(root: Path) -> dict[str, Any]:
         or document.get("publication_authorized") is not False
     ):
         _fail("CONTRACT_DOCUMENT_INVALID", "document")
-    policy = contract["recorded_policy"]
-    if type(policy) is not dict:
+    policy_value = contract["recorded_policy"]
+    if type(policy_value) is not dict:
         _fail("CONTRACT_POLICY_INVALID", "recorded_policy")
+    policy = cast(dict[str, object], policy_value)
     policy_material = dict(policy)
     observed_policy_sha = policy_material.pop("policy_sha256", None)
     canonical_policy = json.dumps(
@@ -248,26 +275,37 @@ def _load_contract(root: Path) -> dict[str, Any]:
         or POLICY_SHA256 != EXPECTED_POLICY_SHA256
     ):
         _fail("CONTRACT_POLICY_INVALID", "recorded_policy")
-    consumer = contract["durable_receipt_consumer"]
+    consumer_value = contract["durable_receipt_consumer"]
+    if type(consumer_value) is not dict:
+        _fail("DURABLE_BOUNDARY_INVALID", "durable_receipt_consumer")
+    consumer = cast(dict[str, object], consumer_value)
     if (
-        type(consumer) is not dict
-        or consumer.get("contract_sha256")
-        != "27c6e326c2b4485d97fa0179eb01a9f01f904ab45b2361de648fec02bd307e20"
+        consumer.get("contract_sha256")
+        != "3d881d352a1a9d253055930d4e6487154cc03a7e2e9489fd52ff81bb9b74bc7a"
         or consumer.get("policy_sha256")
         != "f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8"
         or consumer.get("owns_queue_state_or_cas") is not False
         or consumer.get("owns_worker_dispatch_or_redrive") is not False
     ):
         _fail("DURABLE_BOUNDARY_INVALID", "durable_receipt_consumer")
-    defaults = contract["safe_defaults"]
-    if type(defaults) is not dict or defaults.get("activation") != "DISABLED":
+    defaults_value = contract["safe_defaults"]
+    if type(defaults_value) is not dict:
         _fail("SAFE_DEFAULT_INVALID", "safe_defaults")
-    bindings = contract["source_bindings"]
-    if type(bindings) is not list or not bindings:
+    defaults = cast(dict[str, object], defaults_value)
+    if defaults.get("activation") != "DISABLED":
+        _fail("SAFE_DEFAULT_INVALID", "safe_defaults")
+    bindings_value = contract["source_bindings"]
+    if type(bindings_value) is not list:
+        _fail("SOURCE_BINDING_INVALID", "source_bindings")
+    bindings = cast(list[object], bindings_value)
+    if not bindings:
         _fail("SOURCE_BINDING_INVALID", "source_bindings")
     seen: set[str] = set()
-    for index, row in enumerate(bindings):
-        if type(row) is not dict or set(row) != {"path", "sha256", "owner", "role"}:
+    for index, row_value in enumerate(bindings):
+        if type(row_value) is not dict:
+            _fail("SOURCE_BINDING_INVALID", f"source_bindings[{index}]")
+        row = cast(dict[str, object], row_value)
+        if set(row) != {"path", "sha256", "owner", "role"}:
             _fail("SOURCE_BINDING_INVALID", f"source_bindings[{index}]")
         path = row["path"]
         digest = row["sha256"]
@@ -285,22 +323,20 @@ def _load_contract(root: Path) -> dict[str, Any]:
 
 def _after_ast_bytes(root: Path) -> bytes:
     try:
-        payload = json.loads(_read(root, CONTENT_FIXTURE_PATH, "content_fixture"))
-        if type(payload) is not dict:
-            _fail("CONTENT_FIXTURE_INVALID", "content_fixture")
+        loaded: object = json.loads(
+            _read(root, CONTENT_FIXTURE_PATH, "content_fixture")
+        )
+        payload = _mapping(loaded, "CONTENT_FIXTURE_INVALID", "content_fixture")
         payload["article_id"] = ARTICLE_ID
         payload["article_version_id"] = ARTICLE_VERSION_ID
         payload["source_packet_version_ref"] = SOURCE_PACKET_VERSION_ID
         payload["title"] = TITLE
-        blocks = payload["blocks"]
-        if type(blocks) is not list:
-            _fail("CONTENT_FIXTURE_INVALID", "content_fixture")
-        lead = blocks[1]
-        if type(lead) is not dict or type(lead.get("content")) is not list:
-            _fail("CONTENT_FIXTURE_INVALID", "content_fixture")
-        first_text = lead["content"][0]
-        if type(first_text) is not dict:
-            _fail("CONTENT_FIXTURE_INVALID", "content_fixture")
+        blocks = _list(payload["blocks"], "CONTENT_FIXTURE_INVALID", "content_fixture")
+        lead = _mapping(blocks[1], "CONTENT_FIXTURE_INVALID", "content_fixture")
+        content = _list(
+            lead.get("content"), "CONTENT_FIXTURE_INVALID", "content_fixture"
+        )
+        first_text = _mapping(content[0], "CONTENT_FIXTURE_INVALID", "content_fixture")
         first_text["text"] = (
             "この合成V2候補は、人間が編集する提案であり自動適用されません。"
         )
@@ -309,19 +345,23 @@ def _after_ast_bytes(root: Path) -> bytes:
         while stack:
             current = stack.pop()
             if type(current) is dict:
-                for key, child in current.items():
+                mapping = cast(dict[str, object], current)
+                for key, child in mapping.items():
                     if key in {"claim_ids", "rationale_claim_ids"}:
-                        if type(child) is not list or not child:
+                        if type(child) is not list:
+                            _fail("CONTENT_FIXTURE_INVALID", "claim_ids")
+                        claim_values = cast(list[object], child)
+                        if not claim_values:
                             _fail("CONTENT_FIXTURE_INVALID", "claim_ids")
                         replacement: list[str] = []
-                        for _value in child:
+                        for _value in claim_values:
                             replacement.append(CLAIM_IDS[claim_index % len(CLAIM_IDS)])
                             claim_index += 1
-                        current[key] = replacement
+                        mapping[key] = replacement
                     else:
                         stack.append(child)
             elif type(current) is list:
-                stack.extend(current)
+                stack.extend(cast(list[object], current))
         if claim_index == 0:
             _fail("CONTENT_FIXTURE_INVALID", "claim_ids")
         ast = load_content_ast(
@@ -336,25 +376,27 @@ def _after_ast_bytes(root: Path) -> bytes:
 
 def _evidence_snapshot_bytes(root: Path, *, after_sha256: str) -> bytes:
     try:
-        fixture = json.loads(_read(root, EVIDENCE_FIXTURE_PATH, "evidence_fixture"))
-        if type(fixture) is not dict:
-            _fail("EVIDENCE_FIXTURE_INVALID", "evidence_fixture")
-        article = fixture["article"]
-        packet = fixture["approved_packet"]
-        claims = fixture["claims"]
-        if (
-            type(article) is not dict
-            or type(packet) is not dict
-            or type(claims) is not list
-        ):
-            _fail("EVIDENCE_FIXTURE_INVALID", "evidence_fixture")
+        loaded: object = json.loads(
+            _read(root, EVIDENCE_FIXTURE_PATH, "evidence_fixture")
+        )
+        fixture = _mapping(loaded, "EVIDENCE_FIXTURE_INVALID", "evidence_fixture")
+        article = _mapping(
+            fixture["article"], "EVIDENCE_FIXTURE_INVALID", "evidence_fixture"
+        )
+        packet = _mapping(
+            fixture["approved_packet"],
+            "EVIDENCE_FIXTURE_INVALID",
+            "evidence_fixture",
+        )
+        claims = _list(
+            fixture["claims"], "EVIDENCE_FIXTURE_INVALID", "evidence_fixture"
+        )
         article["article_version_id"] = ARTICLE_VERSION_ID
         article["article_body_sha256"] = after_sha256
         article["source_packet_version_id"] = SOURCE_PACKET_VERSION_ID
         packet["source_packet_version_id"] = SOURCE_PACKET_VERSION_ID
-        for claim in claims:
-            if type(claim) is not dict:
-                _fail("EVIDENCE_FIXTURE_INVALID", "claims")
+        for claim_value in claims:
+            claim = _mapping(claim_value, "EVIDENCE_FIXTURE_INVALID", "claims")
             claim["article_version_id"] = ARTICLE_VERSION_ID
         article["complete_claim_set_sha256"] = "0" * 64
         provisional = json.dumps(
