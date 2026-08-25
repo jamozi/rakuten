@@ -731,19 +731,38 @@ def _install_source_overlay(
 def test_all_five_packets_render_deterministically_with_closed_draft_payload() -> None:
     total_cards = 0
     for identity in PILOT_ARTICLE_IDENTITIES:
+        is_replacement_article = (
+            identity.article_id
+            == "st1704-countertop-dishwasher-for-small-households"
+        )
+        clock = (
+            (lambda: datetime(2026, 8, 26, 11, 0, tzinfo=timezone.utc))
+            if is_replacement_article
+            else _fixed_clock
+        )
+        evidence_reader = (
+            (
+                lambda repository_root, *, product_id: replace(
+                    _reader(repository_root, product_id=product_id),
+                    retrieved_at="2026-08-26T11:00:00Z",
+                )
+            )
+            if is_replacement_article
+            else _reader
+        )
         first = prepare_editorial_article(
             REPOSITORY_ROOT,
             identity.article_id,
-            evidence_reader=_reader,
+            evidence_reader=evidence_reader,
             source_evidence_reader=_source_reader,
-            clock=_fixed_clock,
+            clock=clock,
         )
         second = prepare_editorial_article(
             REPOSITORY_ROOT,
             identity.article_id,
-            evidence_reader=_reader,
+            evidence_reader=evidence_reader,
             source_evidence_reader=_source_reader,
-            clock=_fixed_clock,
+            clock=clock,
         )
         assert first.packet_sha256 == second.packet_sha256
         assert first.request.request_sha256 == second.request.request_sha256

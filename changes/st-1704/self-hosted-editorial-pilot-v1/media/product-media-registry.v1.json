@@ -184,9 +184,9 @@
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
-      "media_asset_ref": "MEDIA-THANKO-RAKUA-MINI-PLUS",
-      "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
-      "product_name": "THANKO ラクアmini Plus",
+      "media_asset_ref": "MEDIA-THANKO-RAKUA-MINI-COLOR",
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "product_name": "THANKO ラクアmini color",
       "asset_class": "rakuten_api_product_image",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "provider": "RAKUTEN_ICHIBA_ITEM_SEARCH",
@@ -196,11 +196,11 @@
       "height": null,
       "required_width": 128,
       "required_height": 128,
-      "alt": "THANKO ラクアmini Plusの商品画像",
+      "alt": "THANKO ラクアmini colorの商品画像",
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["TK-MDW22B", "TK-STTDPSWH"], "required_title_tokens": ["ラクア", "mini Plus"], "product_kind_tokens": ["食器洗い乾燥機", "食洗機", "Dishwasher"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
+      "identity": {"item_code": null, "jan": null, "allowed_variants": ["TDWS25SBL", "TDWS25SRD"], "required_title_tokens": ["ラクア", "mini", "color"], "product_kind_tokens": ["食器洗い乾燥機", "食洗機", "Dishwasher"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー", "スチールラックセット", "RSET"], "status": "PENDING_EXACT_MATCH"},
       "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },

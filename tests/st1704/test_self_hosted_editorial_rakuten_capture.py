@@ -536,7 +536,7 @@ def test_capture_plan_binds_five_articles_and_eighteen_unique_products() -> None
     ]
     assert [target.fixed_item_code for target in rows[3]] == [
         "panasonic-store:10000735",
-        "thanko:000000004055",
+        "thanko:000000004715",
         "siroca:10000024",
         "jyupro:10136298",
     ]
@@ -1045,7 +1045,7 @@ def test_discovery_aggregates_identity_across_every_allowed_variant(
 ) -> None:
     repository = _private_root(private_root_path)
     fixed_codes = dict(capture_module._FIXED_PRODUCT_ITEM_CODES)
-    del fixed_codes["PRD-THANKO-RAKUA-MINI-PLUS"]
+    del fixed_codes["PRD-THANKO-RAKUA-MINI-COLOR"]
     monkeypatch.setattr(capture_module, "_FIXED_PRODUCT_ITEM_CODES", fixed_codes)
     targets = load_product_capture_plan(repository).for_article(DISHWASHER_ARTICLE_ID)
     factory = _Factory(targets)

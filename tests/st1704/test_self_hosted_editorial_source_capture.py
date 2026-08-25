@@ -176,23 +176,24 @@ EXPECTED_LOCATOR_ATOMIC_FACTS: Final[dict[tuple[str, str], tuple[str, ...]]] = {
         "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
     ): ("6点", "2.5L", "幅310×高さ435×奥行225", "送風乾燥"),
     (
-        "SRC-THANKO-RAKUA-MINI-PLUS",
+        "SRC-THANKO-RAKUA-MINI-COLOR",
         "CLM-ST1704-DISH-RAKUA-SPECS",
     ): (
         "11〜12点",
         "3.2L",
-        "幅308×高さ415×奥行315",
+        "幅308×奥行315×高さ415",
         "開扉時奥行:594mm",
         "8kg",
         "タンク式",
+        "温風乾燥",
     ),
     (
-        "SRC-THANKO-RAKUA-MINI-PLUS",
+        "SRC-THANKO-RAKUA-MINI-COLOR",
         "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
     ): (
         "11〜12点",
         "3.2L",
-        "幅308×高さ415×奥行315",
+        "幅308×奥行315×高さ415",
         "開扉時奥行:594mm",
     ),
     (
