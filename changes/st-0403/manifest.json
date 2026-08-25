@@ -2,7 +2,7 @@
   "artifacts_sha256": {
     "changes/st-0403/contracts/authorization-registry.v1.json": "a2ef5f7df66492164128ba8ffffcceb254b58bedc5cac7d03716d20700bc1093",
     "changes/st-0403/contracts/durable-authorization-runtime.v2.json": "478626abf1649682c173ecb45dd6abdf56932bd013cbee88f7c2d4753dab27f0",
-    "changes/st-0403/generated/authorization-registry.v1.json": "d27aa5ef7e6d6029eef88640ba38a3de72139bf99f8564eb4c47ac15b2053229",
+    "changes/st-0403/generated/authorization-registry.v1.json": "d6776ed935d136eaff4908d5ca712b3a4fc274e93ecbca353639327b9ef69b0e",
     "python/raos/adapters/generated_st0403_authorization_registry.py": "1618f3b2fce03fab6b06fc46227f33223d72eeb522b0ce24d731e67b684958a2"
   },
   "authority": {
@@ -22,7 +22,7 @@
     "python/raos/application/iam/authorization.py": "8c1133b948fc935b62d8e2ed964a795a7f9e24c9943c9aa1b44bcf898dba3814",
     "python/raos/domain/iam/authorization.py": "18b21b95dd3dc154b40f11f605b6289e0e27576f3401bb294606d871e78185f7",
     "python/raos/ports/authorization.py": "9f008f67337f1ceac44f94979f2741a96900c41408ee17fa3d887015a24ea9de",
-    "scripts/build_st0403_authorization_runtime.py": "91213936144f493e05e18097f74c548eb71fddf432b5c3a21032a0092536eea0",
+    "scripts/build_st0403_authorization_runtime.py": "179b9ffe6145e2647708cbe9ea57dd1145950dab95cbad6c34ea73eea8a3203b",
     "scripts/secure_generated_publication.py": "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e",
     "tests/st0403/conftest.py": "9811af4233700ac6ad4de6209d37d08ac442b7f3946f6e074e6a9839ed339459",
     "tests/st0403/test_authorization.py": "5df2d5a51188f9ed0de2252695b7ccdb980b1ffd6e7a4132486d404c28277995",
@@ -33,10 +33,10 @@
   },
   "schema_version": 1,
   "source_sha256": {
-    "changes/st-0306/contracts/database-roles-grants.v1.yaml": "b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3",
+    "changes/st-0306/contracts/database-roles-grants.v1.yaml": "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206",
     "changes/st-0401/contracts/local-auth-runtime.v2.json": "6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad",
     "changes/st-0402/contracts/local-step-up-runtime.v2.json": "c42931a148e4852aac9be2c1bab5012ed9c588e568daef2fe6a5c61cbd157bfa",
-    "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml": "450ed0f299bcd1f1f99a242d8a6661a9ab2a886ce8f67818def79618c2163567",
+    "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml": "a98ac40e5e5e4271c297e87c99e003708e08e459715aef86b5111048d9e2ded6",
     "contracts/raos-v0.4/contracts/catalogs/state-transition-catalog.v0.4.yaml": "203eb10d9b6fc6ba4fb0e9f0491f713c313a6a5627dcaf60b7ce53665ecec8a5",
     "contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml": "6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70",
     "contracts/raos-v0.4/contracts/openapi-internal.v0.4.yaml": "616ea270aec830a987679853869c0d22e1114a95bcf0279d6e635a5f359a6f21",

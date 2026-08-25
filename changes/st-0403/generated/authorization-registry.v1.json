@@ -556,10 +556,10 @@
     "status": "DISABLED_MAPPING_UNRESOLVED"
   },
   "source_sha256": {
-    "changes/st-0306/contracts/database-roles-grants.v1.yaml": "b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3",
+    "changes/st-0306/contracts/database-roles-grants.v1.yaml": "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206",
     "changes/st-0401/contracts/local-auth-runtime.v2.json": "6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad",
     "changes/st-0402/contracts/local-step-up-runtime.v2.json": "c42931a148e4852aac9be2c1bab5012ed9c588e568daef2fe6a5c61cbd157bfa",
-    "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml": "450ed0f299bcd1f1f99a242d8a6661a9ab2a886ce8f67818def79618c2163567",
+    "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml": "a98ac40e5e5e4271c297e87c99e003708e08e459715aef86b5111048d9e2ded6",
     "contracts/raos-v0.4/contracts/catalogs/state-transition-catalog.v0.4.yaml": "203eb10d9b6fc6ba4fb0e9f0491f713c313a6a5627dcaf60b7ce53665ecec8a5",
     "contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml": "6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70",
     "contracts/raos-v0.4/contracts/openapi-internal.v0.4.yaml": "616ea270aec830a987679853869c0d22e1114a95bcf0279d6e635a5f359a6f21",

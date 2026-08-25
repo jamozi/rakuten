@@ -73,11 +73,11 @@ _EXPECTED_SOURCE_BINDINGS: dict[str, tuple[str, str]] = {
     ),
     "database_role_contract": (
         "changes/st-0306/contracts/database-roles-grants.v1.yaml",
-        "b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3",
+        "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206",
     ),
     "final_approval_reference": (
         "changes/st-0902/contracts/final-approval-reference-plan.v1.yaml",
-        "450ed0f299bcd1f1f99a242d8a6661a9ab2a886ce8f67818def79618c2163567",
+        "a98ac40e5e5e4271c297e87c99e003708e08e459715aef86b5111048d9e2ded6",
     ),
 }
 _IMPLEMENTATION_PATHS = (
