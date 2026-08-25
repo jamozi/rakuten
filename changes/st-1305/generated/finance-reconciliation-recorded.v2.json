@@ -98,7 +98,7 @@
     "source_artifacts": [
       {
         "bytes": 8041,
-        "sha256": "afc540e9cc866e4ef48cb276eb56f2aec636e614c6c2b863c3865b8be873a922",
+        "sha256": "10871f65afe59fb6e44c6ac5401ce5e4b1b5cb0024497ae19fc43d6f6b997256",
         "uri": "repo://changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml"
       },
       {
@@ -117,8 +117,8 @@
         "uri": "repo://changes/st-1305/README-v2.md"
       },
       {
-        "bytes": 56789,
-        "sha256": "ca6d890e4926925bad5e395ca23931aaf18e8cc237651fd3590a29e5256d354e",
+        "bytes": 56953,
+        "sha256": "f0e818fb036c176b0084a0e0c2048902b45dc4d9698b53ef1e48813c0b0cab3f",
         "uri": "repo://python/raos/domain/finance/reconciliation.py"
       },
       {
@@ -132,8 +132,8 @@
         "uri": "repo://python/raos/application/finance/reconciliation.py"
       },
       {
-        "bytes": 11229,
-        "sha256": "ef21f8476021a166bbda4d6f36522f750c61a8ad3c15ffea03058c4bbf3ae473",
+        "bytes": 11235,
+        "sha256": "83ed058aa7a7330a4b58f7643890cc5079ec0c9be348e070ca3bcd2459a27297",
         "uri": "repo://python/raos/adapters/recorded_finance_reconciliation.py"
       },
       {
@@ -189,11 +189,11 @@
       },
       "st1303_projection": {
         "path": "changes/st-1303/generated/attribution-engine-recorded.v2.json",
-        "sha256": "424e7aec5cb798416c23ad2613d2e8e9700c33e3a835d47ec73acafaaa5cfaeb"
+        "sha256": "a45dd5a69bc97a8983c1c30f60588a3c366cfbc97a677257295f6d4f78804277"
       },
       "st1303_runtime": {
         "path": "changes/st-1303/contracts/attribution-engine-runtime.v2.yaml",
-        "sha256": "fb6eb68a838f08ef8e52002da198424230cdf77f7bb4e4f9db21a94cd2c4d9b6"
+        "sha256": "f8fc2b3113387d419e675e9a286e008c806728a056281a3376ca367356b1d758"
       },
       "st1304_fixture": {
         "path": "changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json",
@@ -201,11 +201,11 @@
       },
       "st1304_projection": {
         "path": "changes/st-1304/generated/cost-unit-economics-recorded.v2.json",
-        "sha256": "329d169994499b411f77d1d457e35f37d7b0970e664bcd4ffd665b41131ea00f"
+        "sha256": "1e0e5b4c1e4bd44fd0c55dceeeb6f16e22de8db65f23233b167500ea1ddf0c53"
       },
       "st1304_runtime": {
         "path": "changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml",
-        "sha256": "0e8fbcc25ee67bb5b13992832a660e22b91592833d7d6be27ce7b740def3fc1a"
+        "sha256": "db28dd7d53e3098e940a2a8497e4f7ea631482cf54f14f40509d30680634d6b3"
       },
       "test_catalog": {
         "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",

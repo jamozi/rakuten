@@ -11,40 +11,40 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-1305/contracts/finance-reconciliation-reference-plan.v1.yaml
   bytes: 14775
-  sha256: 041934ca96783fce10da6f0da38ee24f943f22610a665621a60e29194337e87f
+  sha256: 279f965e5786d6cc9cb3a2f91db0e314fcf96ac27fadc1cc98b6de9cfce7b731
 - uri: repo://changes/st-1305/README.md
   bytes: 2586
   sha256: 33bf45f28e25443370b8d5f0ffc517853147c8a674ea40bdb111408ea7365b68
 - uri: repo://scripts/build_st1305_finance_reconciliation_reference_plan.py
-  bytes: 29301
-  sha256: 48305844548a574bdfd69c1aad0992031efa17ad06440c603ce9a02dec725de7
+  bytes: 29308
+  sha256: 2f374d22e31378d09f68c136e235620311d390f1fb71d2e25ac78d2c43596a11
 - uri: repo://tests/st1305/conftest.py
   bytes: 1004
   sha256: 1e3ccf3c2ff2c4f5100cc11013ecb18f23feb9c38e31eb85871999368d876621
 - uri: repo://tests/st1305/test_contract.py
   bytes: 8397
-  sha256: 07ba7105e57c4240eff99f12bac9f7a355a63b6fcd5ac640630d66afcb0fcd89
+  sha256: c907ed19dbf4adf93030b8b5d21c232dde3cd8cfbcf13a5eb02154872246e7a8
 - uri: repo://tests/st1305/test_generation.py
   bytes: 4737
-  sha256: 91bd3031d959ff60c6e07fd8194e034512be9b2b0eb029b9c1e6dae481c34bb4
+  sha256: 61f838ac79fc5a772ddf2a040c9fba98757771570e0ea167081d65dccea6f3ca
 - uri: repo://tests/st1305/test_negative_cases.py
   bytes: 9976
   sha256: 44e603c6c94f3315bb770652446712564c9d71ae24c4e9892058a16bce1283e8
 generated_artifacts:
 - uri: repo://changes/st-1305/generated/finance-reconciliation-reference-plan.v1.json
   bytes: 19159
-  sha256: 8a19c8dcfb7c65175ed3251673f5ee076ea8f4b60b6bb330785bee62a40c20ab
+  sha256: fa1ef5087bed4554631cc583a342f4aacf877b095290df79a2dd5312a719b716
 provenance:
   generated_by: repo://scripts/build_st1305_finance_reconciliation_reference_plan.py
   generation_command: /home/minami/.local/share/raos-toolchains/uv/0.12.1/uv run --frozen
     --offline --no-cache --no-sync --no-env-file python scripts/build_st1305_finance_reconciliation_reference_plan.py
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5
+    sha256: 478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5
   dependency_provenance:
     st1304:
       feature_commit: 6c73e41d630657138d8f51752d8cd1541026a0f1
-      artifact_binding_commit: 742615485480c9fb2885ecd33d5635852f469e03
+      artifact_binding_commit: 09f1935982f8dd41085224fde9dfeb47a390795d
       binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
   bound_inputs:
   - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
@@ -56,19 +56,19 @@ provenance:
   - uri: repo://changes/st-1304/README.md
     sha256: 6528d7d60c8686cdd4d85a8db7d78fad5440e7d19fd293881c28fda0b407a3f2
   - uri: repo://changes/st-1304/contracts/cost-unit-economics-reference-plan.v1.yaml
-    sha256: 57d9f1d8c755ab5802fa621d6076513c01fe7691de06f96fdeb381f1e6a204bd
+    sha256: 6e57a2dbb95c11e52da273578894175a90f4d0da29c82e54e6fa3fbb0fb3d167
   - uri: repo://changes/st-1304/generated/cost-unit-economics-reference-plan.v1.json
-    sha256: 95de8fefb4651de952b20a92d6e9cca92b36bdcfc8319ee8efa3b4baa6c8a3ea
+    sha256: ff8992248fe0b5638911f3d1c43f0bffa7a6f7b842d7499950bfc7e939ad2a1c
   - uri: repo://changes/st-1304/manifest.yaml
-    sha256: 8a7f615368757afc72b02a906ab0fead34d0c6ca043c364f14b897508fe36721
+    sha256: 53118c078084c22e7e44d55434d65091a4a1e442977fbab8f9648aa1b2f08ad2
   - uri: repo://scripts/build_st1304_cost_unit_economics_reference_plan.py
-    sha256: e5fe1ed258c71b9d7349170f1f5967b6d12ccd6af4a274e98b1787af058f3096
+    sha256: a2f9bb2dafb11bcb6455c606b80afe8ca7a3a816c67feeba5d71c274fafe1362
   - uri: repo://tests/st1304/conftest.py
     sha256: 913f94bbc4018b868679bdf3477a5c480ce8e9662ddffd43aff14c3cee670f4f
   - uri: repo://tests/st1304/test_contract.py
-    sha256: bd2eef69d738f8000b30b3c19d3c69866e96c8c0ee5907f523a22f80f37bc0da
+    sha256: 7d4073aca12d8d5ba92d9fde84e1e15457a28da01434bba962afde410f0ccc0f
   - uri: repo://tests/st1304/test_generation.py
-    sha256: 1291a5099b79eefdbb5bcb8c26811923467e5bc3769c1d1abeda4c91cf36b072
+    sha256: f51f44bfe7b63d9dce4b511453fad21574395e857543b5098383966c8f6c75c5
   - uri: repo://tests/st1304/test_negative_cases.py
     sha256: 50224c09d38959dfaf36ba1fc4125016920e709494eb71a47d1525d286a562dd
   - uri: repo://docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md
