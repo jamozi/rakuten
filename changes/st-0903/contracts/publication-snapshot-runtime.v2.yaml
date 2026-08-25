@@ -16,17 +16,17 @@ runtime:
   production_authorized: false
 bindings:
   st0902_final_approval_fixture_uri: repo://changes/st-0902/generated/final-approval-pass.v2.json
-  st0902_final_approval_fixture_sha256: 93c44f4d303fef41304962bf4235e19491bcb45c555aecb66a87dcd34e6bca07
+  st0902_final_approval_fixture_sha256: ca2c057e5afd61b13edbaac340f3d0b6013c0781b3fd5c64c4202bf9d1ee6412
   st0902_runtime_manifest_uri: repo://changes/st-0902/runtime-manifest.v2.yaml
-  st0902_runtime_manifest_sha256: b21b2ece37b206f38f4e0fd96a7985085a643f0d7f2104c54be5347043e67627
+  st0902_runtime_manifest_sha256: 4056b09f9fa69d502b8d1a2725cf2fcf0d57d0b2f87e80cdf50582cc2e1edd93
   st0805_policy_fixture_uri: repo://changes/st-0805/generated/policy-pass.v2.json
-  st0805_policy_fixture_sha256: 7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849
+  st0805_policy_fixture_sha256: 75797ab838b37b482ecfd30312101e4103dc7301a4ee57e0f6ce544a845300b9
   st0901_review_fixture_uri: repo://changes/st-0901/generated/review-completion-pass.v2.json
-  st0901_review_fixture_sha256: 57587322562eae4a2b58bebfc6b917e39fb05f077cf7268deb4056563950a361
+  st0901_review_fixture_sha256: 84778adfb038bbd8665dbcf3fcf9bce9e23e0afe248f11a2f8bd10846cde32ec
   st0807_seo_fixture_uri: repo://changes/st-0807/generated/seo-render-recorded.v2.json
-  st0807_seo_fixture_sha256: ab0ad1cf37368834cb4a9e3856938dce73e0525f26c45acc2255372cb0f593ef
+  st0807_seo_fixture_sha256: 1d11c5cac089881f439a66fa4ae955effd14ed8a6ab97b7bd66e9b5c252c734c
   st0807_runtime_manifest_uri: repo://changes/st-0807/runtime-manifest.v2.yaml
-  st0807_runtime_manifest_sha256: a57e4d9d83d744382fa34b58643a77b8ceb0e361ac040eeae9f0d9de70f8e9c4
+  st0807_runtime_manifest_sha256: ae6e6b96e67662d24c85d88228f3b924679aa8cc1ecae60fbd5718639add18fc
   st0808_domain_uri: repo://python/raos/domain/editorial/media_asset.py
   st0808_domain_sha256: a1acf566f2d7d93b7ec7210b8d1819b30c1e50d798c0a9e8995d2e8b23b87d0a
   st0808_application_uri: repo://python/raos/application/editorial/media_asset.py
