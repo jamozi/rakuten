@@ -80,9 +80,12 @@ def _reject_float(value: str) -> NoReturn:
 
 
 def _mapping(value: object, keys: frozenset[str]) -> dict[str, object]:
-    if type(value) is not dict or frozenset(value) != keys:
+    if type(value) is not dict:
         _invalid()
-    return cast(dict[str, object], value)
+    candidate = cast(dict[object, object], value)
+    if frozenset(candidate) != keys:
+        _invalid()
+    return cast(dict[str, object], candidate)
 
 
 def _string(value: object, maximum: int = 160) -> str:
@@ -147,10 +150,10 @@ def _parse(payload: bytes, command: ShadowRoutingCommand) -> RecordedShadowBatch
     ):
         fail_shadow_routing(ShadowRoutingFailureCode.DEPENDENCY_EVIDENCE_DRIFT)
     raw_observations = root["observations"]
-    if (
-        type(raw_observations) is not list
-        or not 1 <= len(raw_observations) <= MAX_SHADOW_OBSERVATIONS
-    ):
+    if type(raw_observations) is not list:
+        _invalid()
+    observation_values = cast(list[object], raw_observations)
+    if not 1 <= len(observation_values) <= MAX_SHADOW_OBSERVATIONS:
         _invalid()
     observations = tuple(
         RecordedShadowObservation(
@@ -176,7 +179,7 @@ def _parse(payload: bytes, command: ShadowRoutingCommand) -> RecordedShadowBatch
             ),
             human_label_available=_boolean(item["human_label_available"]),
         )
-        for raw in raw_observations
+        for raw in observation_values
         for item in (_mapping(raw, _OBSERVATION_KEYS),)
     )
     return RecordedShadowBatch(
