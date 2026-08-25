@@ -153,7 +153,7 @@ _ATTESTATION_OWNER_BINDING: dict[ValidationAttestationKind, tuple[str, str, str]
     ValidationAttestationKind.PACKET_APPROVAL_MEMBERSHIP: (
         "ST-0604",
         "SOURCE-PACKET-LIFECYCLE-RUNTIME@2.0.0",
-        "719f5366eced10c19a16dc11355d92680fb66dfe08bebce5be5251618e79cfbe",
+        "8fc6a6bc7a9b016ed70ec099da005f430f472702b0e422d227c32e45f8623f93",
     ),
     ValidationAttestationKind.FACT_VALIDATION: (
         "ST-0602",
@@ -163,12 +163,12 @@ _ATTESTATION_OWNER_BINDING: dict[ValidationAttestationKind, tuple[str, str, str]
     ValidationAttestationKind.CONFLICT_CLOSURE: (
         "ST-0603",
         "FACT-CONFLICT-REVIEW-REFERENCE-PLAN@1",
-        "bca7c63e49be113d7e2b7d15017d22ad6a9b27c59509325b2bbca407081246ef",
+        "74d58a889c0e20cb74e699196c267b270a86db80667459c9178b04aefe66c093",
     ),
     ValidationAttestationKind.IDENTITY_DECISION: (
         "ST-0504",
         "PRODUCT-IDENTITY-HUMAN-REVIEW-REFERENCE-PLAN@1",
-        "9e73f7e436ab14df75394b2337e853f1dcbf553c16e0f950a8bdb604da685304",
+        "f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab",
     ),
     ValidationAttestationKind.DERIVATION: (
         "ST-0602",

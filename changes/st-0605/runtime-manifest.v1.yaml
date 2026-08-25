@@ -8,7 +8,7 @@ source_artifacts:
   sha256: 7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb
 - uri: repo://scripts/build_st0605_claim_evidence_runtime.py
   bytes: 35913
-  sha256: 6402256cf0303614bbf42410322bf850d7bc4f33e8990f117a455ab2191777c4
+  sha256: 5df087819e0937c65aa62d44891570fdb53c07be5d11525d65704342e7ed7db7
 - uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_claim_evidence_policy_v0.1.yaml
   bytes: 7172
   sha256: fbf2d0ad6e7821a0059f9ceeb53d57268031e2e42b4aad988af9a42378aec5ba
@@ -44,16 +44,16 @@ source_artifacts:
   sha256: aa53bf68b125821a46c093e653464e7f80e5710e31f6f860251aa8ebc30480c0
 - uri: repo://changes/st-0604/contracts/source-packet-lifecycle-runtime.v2.json
   bytes: 6997
-  sha256: 719f5366eced10c19a16dc11355d92680fb66dfe08bebce5be5251618e79cfbe
+  sha256: 8fc6a6bc7a9b016ed70ec099da005f430f472702b0e422d227c32e45f8623f93
 - uri: repo://changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml
   bytes: 5691
   sha256: c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073
 - uri: repo://changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml
   bytes: 4302
-  sha256: bca7c63e49be113d7e2b7d15017d22ad6a9b27c59509325b2bbca407081246ef
+  sha256: 74d58a889c0e20cb74e699196c267b270a86db80667459c9178b04aefe66c093
 - uri: repo://changes/st-0504/contracts/product-identity-human-review-reference-plan.v1.yaml
   bytes: 5361
-  sha256: 9e73f7e436ab14df75394b2337e853f1dcbf553c16e0f950a8bdb604da685304
+  sha256: f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab
 - uri: repo://contracts/raos-v0.4/contracts/content/schemas/blocks/comparison_table.schema.json
   bytes: 5284
   sha256: 6da40ea538bd467a759613e0dca62f2e822ac4a9609adb71959d8bb624037c89
@@ -71,7 +71,7 @@ source_artifacts:
   sha256: d68a584c9ef23de379fdad3f28a087b55e604d33d8d88756e32aeab04ef3220a
 - uri: repo://python/raos/domain/evidence/claim_evidence.py
   bytes: 84553
-  sha256: 5e292cc4a257ec3be2dc1cc0e2e66c68afc51e2e216c5610bd563f642022ca2b
+  sha256: 865d8f5f97befaa4c8b7c655035ca1f2ff9ffb441d08577775030aa5c8d350d4
 - uri: repo://python/raos/ports/evidence/claim_evidence.py
   bytes: 1007
   sha256: 15f7d23e7fd462d9dbf9cb6cac2c719d1fc28ef2db3612ff2b06830a36942099
@@ -100,11 +100,11 @@ source_artifacts:
   bytes: 3278
   sha256: d650f46f95fd116ed13f630b9ff84b254c0a8aa6659ef8d52907733a6a49a8e2
 - uri: repo://python/raos/domain/shared/json_values.py
-  bytes: 5675
-  sha256: c995c2ba5f3dcd9f4302328d423192ae9f8c3b1415f294bf791c92baf07d4644
+  bytes: 5971
+  sha256: 5c86fbaab887100e09a94c947511bc4f0ad850c6163bad10f5e965ad3d56514e
 - uri: repo://python/raos/domain/shared/persistence.py
-  bytes: 8063
-  sha256: 2a3d5cdc7d2e93ecd6883c3cdd37a0f27eb36638bd569399fcd95be7a06dfc20
+  bytes: 8701
+  sha256: 7d97e3316b4b451f575309dd641a2ee568b7e80b9429ef264f5114b1ac5dcc1a
 - uri: repo://python/raos/__init__.py
   bytes: 77
   sha256: 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
@@ -162,7 +162,7 @@ source_artifacts:
 generated_artifacts:
 - uri: repo://changes/st-0605/generated/claim-evidence-runtime-pass.v1.json
   bytes: 12411
-  sha256: 9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106
+  sha256: b805ee491f7388ab39d99bd61dbc0a29d3b1659a9a44b44ebdeb73063e8356a1
 generation:
   owner: repo://scripts/build_st0605_claim_evidence_runtime.py
   command: .venv/bin/python scripts/build_st0605_claim_evidence_runtime.py

@@ -18,13 +18,13 @@ publication is forbidden, and the canonical Story remains `NOT_STARTED` /
 The plan binds exact path inventories and bytes derived from the committed
 feature commits themselves:
 
-- ST-0602 `d95d90ccbf314ca66db61711021d924faa90173d` contributes an
+- ST-0602 `806b978803cbc78392117cbc31015db19ea09a74` contributes an
   interface-only Fact extraction reference with no Facts or derivations and a
   `NOT_READY` decision.
-- ST-0603 `df02920d3da3eb37d39e1e8b088264fc8accb72a` contributes a
+- ST-0603 `4f4285f0385a14b83e027e9c4527c17b8966bb70` contributes a
   non-executable conflict-review reference with no comparisons, conflicts,
   findings, queue records, or resolutions and a `NOT_READY` decision.
-- ST-0604 `ced9029f767c63b82690b13cb8d90d1b8eb4b882` contributes a
+- ST-0604 `89d8074951ce73a5c76ca55f0ea3b2c129559d81` contributes a
   non-executable lifecycle reference with no packets, versions, jobs,
   transitions, mappings, reviews, approvals, or artifacts. Approval and
   generation permission are false.

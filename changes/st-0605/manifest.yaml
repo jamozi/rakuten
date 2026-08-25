@@ -6,25 +6,25 @@ document:
   generated_by: repo://scripts/build_st0605_claim_evidence_coverage_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0605_claim_evidence_coverage_reference_plan.py
 provenance:
-  contract_sha256: b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49
+  contract_sha256: 16b964f73e0f23041676eb6a0db7e74590fdfa3e80781fd7b9d1758e13809120
   canonical_story:
     uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
   inventory_derivation: COMMIT_DIFF_TREE_FIXED_AT_AUTHORING
   predecessors:
   - story_id: ST-0602
-    commit: d95d90ccbf314ca66db61711021d924faa90173d
+    commit: 806b978803cbc78392117cbc31015db19ea09a74
     inputs:
     - uri: repo://changes/st-0602/README.md
       sha256: f3590fb864de262eb1d31769ffe892010f41f98084c27634f099dfca9573f2f8
     - uri: repo://changes/st-0602/contracts/fact-extraction-validation-reference-plan.v1.yaml
       sha256: c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073
     - uri: repo://changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json
-      sha256: c6b725cb8a52d6bbe4a085803587a1ad0679b0ad4f1ffe77c302891d7f66c23d
+      sha256: c515af3410be014a714be4d9f9cd133bd320f4c19e5da5820bb3cd6b1a39abb5
     - uri: repo://changes/st-0602/manifest.yaml
-      sha256: b31af1f0425c158dd5df32abcadc23dd4f663c2cc0f01d117a65c6eef9d02839
+      sha256: e4ac2cbe7458035e53356ab0647bcd8439cec4c352297538ef7b595edf5bd18e
     - uri: repo://scripts/build_st0602_fact_extraction_validation_reference_plan.py
-      sha256: b4726b0b59761ad716599373084bdc56917566e4acba45e0ec0692f6de2a893b
+      sha256: 94947fcde0e2f5d9c972c38dbe9d1fea287659c5a0e7ab329a485eaf61b1e753
     - uri: repo://tests/st0602/conftest.py
       sha256: a687a2fee7033a83b82caa305712a1885a3c66d11d0efc7b761397447746d1c8
     - uri: repo://tests/st0602/test_contract.py
@@ -34,18 +34,18 @@ provenance:
     - uri: repo://tests/st0602/test_negative_cases.py
       sha256: 46b65c0b3954da438425f734c7898dccdf39c9dd7445d4b4e15ac682b15c78c9
   - story_id: ST-0603
-    commit: df02920d3da3eb37d39e1e8b088264fc8accb72a
+    commit: 4f4285f0385a14b83e027e9c4527c17b8966bb70
     inputs:
     - uri: repo://changes/st-0603/README.md
-      sha256: 91b91669033257dd6011fd1eac1a27fac9c31a19fad9594d77c815bfd8d0a54a
+      sha256: 22ba200315f8cd36198930842c12f0e17008b979b6f38f850cc534c13af7e071
     - uri: repo://changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml
-      sha256: bca7c63e49be113d7e2b7d15017d22ad6a9b27c59509325b2bbca407081246ef
+      sha256: 74d58a889c0e20cb74e699196c267b270a86db80667459c9178b04aefe66c093
     - uri: repo://changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json
-      sha256: 46610808af7a16cace0bab9329d01361573388adc926103b253ba8aa26f67ad3
+      sha256: 16a934d5a84b0a76e291026be708f6ae15a68523c5c2bdc1d816196eb58ed148
     - uri: repo://changes/st-0603/manifest.yaml
-      sha256: ba9b020e5d26dc4db2d9069288458cb8246692c1522ed607ed0a5bb8e7f6f0d9
+      sha256: f7aadcf22785f96360be081c3754021dc72f4f6ade9570c39a8a53e80afb8a86
     - uri: repo://scripts/build_st0603_fact_conflict_review_reference_plan.py
-      sha256: b70c114019c73cb2d20433dc70f3a1865119bbf1b4a9ffaa48a634666acae308
+      sha256: c18ec5df96bfbaa1a18d86cba3fd468221ae1b8fffdf2a5d38dd3a2e9af9b589
     - uri: repo://tests/st0603/conftest.py
       sha256: b0041b91eac50acd6ba109e7218b24886197619130b2ddf5e803e84a5311f977
     - uri: repo://tests/st0603/test_contract.py
@@ -55,18 +55,18 @@ provenance:
     - uri: repo://tests/st0603/test_negative_cases.py
       sha256: 1aa9580ccfe4a61fc9ad52899f09ca2366a8683a7d45454e92a00c26e6d9504e
   - story_id: ST-0604
-    commit: ced9029f767c63b82690b13cb8d90d1b8eb4b882
+    commit: 89d8074951ce73a5c76ca55f0ea3b2c129559d81
     inputs:
     - uri: repo://changes/st-0604/README.md
-      sha256: 5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8
+      sha256: b3d71908781fcdd2d442b3f16ed7fade49780d18bcca688c4b88ee0204c089ff
     - uri: repo://changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml
-      sha256: b7144670eab5f12eb79c2f49380d152a4ef5700a030b799878aa147ca563ec2c
+      sha256: 5f0fc1d75207535a89e5e50d6b33bc3f710d17e60183e63ab39e394b5e8d049c
     - uri: repo://changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json
-      sha256: f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb
+      sha256: 3c7a7cc6a296c96162847f2bb452bba2ff7048bc8f277dbe720bf19a97fafaee
     - uri: repo://changes/st-0604/manifest.yaml
-      sha256: cb3313f3fb5e3460cbc39e2b9a3c64b8e3859c975c58b54e7ca45f59636a2795
+      sha256: df78078b95d6042a08651cdef6923c01009362655393ab47af39eba2f3e420b6
     - uri: repo://scripts/build_st0604_source_packet_lifecycle_reference_plan.py
-      sha256: 745704cb20a54e2073e487b706112fcce00d022cf01ec26da8d52776932d10e1
+      sha256: 7e6e1dcb1ea4ddec72b71e246769de940032b97dc86976fa8cc91f47e46ed97f
     - uri: repo://tests/st0604/conftest.py
       sha256: d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a
     - uri: repo://tests/st0604/test_contract.py
@@ -93,18 +93,18 @@ provenance:
     sha256: 0b82454a43c2c5aed37f2fe72f74d1e124dfb1f7fe1ee2fb9c996827d1c2bd75
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5
+    sha256: 478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml
   bytes: 11114
-  sha256: b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49
+  sha256: 16b964f73e0f23041676eb6a0db7e74590fdfa3e80781fd7b9d1758e13809120
 - uri: repo://changes/st-0605/README.md
   bytes: 4016
-  sha256: 116c86877e397e1804e6edff2189b14ea756566b8fe27e2b64a3b8be91abc2fb
+  sha256: a28dde8ebcc1fc241ae3e37ad458ed1fd6222d967948d44cbb35c080fbbaa060
 - uri: repo://scripts/build_st0605_claim_evidence_coverage_reference_plan.py
   bytes: 45152
-  sha256: 9b7cfc7ec76d6dabec0e11af2e9a09333c89b9a4155c2f8331f900801338d890
+  sha256: e4fc9f5d5568473519ffedb434c594bb4c621dc3028b522d42fde698173be1fb
 - uri: repo://tests/st0605/conftest.py
   bytes: 2071
   sha256: 089d70a4d95bda6c984646153129cd091126199806136a71e2b8621a01cd1219
@@ -121,7 +121,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json
   bytes: 78849
-  sha256: 015938473428cea3e028f0bc969a8fc290cfe8c87cb0a700383f492821c86142
+  sha256: ef271dcaddaba9a72b7853b4b04ad487ce3630dfbf60a56f996c4c66251acb9d
 boundary:
   classification: SOURCE_DERIVED_NONEXECUTABLE_CLAIM_EVIDENCE_COVERAGE_REFERENCE_PLAN
   executable: false

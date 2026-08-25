@@ -50,15 +50,15 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
 STORY_PATH: Final = Path("docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml")
 STORY_SHA256: Final = "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
-ST0602_COMMIT: Final = "d95d90ccbf314ca66db61711021d924faa90173d"
-ST0603_COMMIT: Final = "df02920d3da3eb37d39e1e8b088264fc8accb72a"
-ST0604_COMMIT: Final = "ced9029f767c63b82690b13cb8d90d1b8eb4b882"
+ST0602_COMMIT: Final = "806b978803cbc78392117cbc31015db19ea09a74"
+ST0603_COMMIT: Final = "4f4285f0385a14b83e027e9c4527c17b8966bb70"
+ST0604_COMMIT: Final = "89d8074951ce73a5c76ca55f0ea3b2c129559d81"
 
 POLICY_PATH: Final = Path(
     "contracts/raos-v0.4/contracts/content/RAOS_06_claim_evidence_policy_v0.1.yaml"
@@ -121,15 +121,15 @@ ST0602_ARTIFACTS: Final = (
             "changes/st-0602/generated/"
             "fact-extraction-validation-reference-plan.v1.json"
         ),
-        "c6b725cb8a52d6bbe4a085803587a1ad0679b0ad4f1ffe77c302891d7f66c23d",
+        "c515af3410be014a714be4d9f9cd133bd320f4c19e5da5820bb3cd6b1a39abb5",
     ),
     (
         Path("changes/st-0602/manifest.yaml"),
-        "b31af1f0425c158dd5df32abcadc23dd4f663c2cc0f01d117a65c6eef9d02839",
+        "e4ac2cbe7458035e53356ab0647bcd8439cec4c352297538ef7b595edf5bd18e",
     ),
     (
         Path("scripts/build_st0602_fact_extraction_validation_reference_plan.py"),
-        "b4726b0b59761ad716599373084bdc56917566e4acba45e0ec0692f6de2a893b",
+        "94947fcde0e2f5d9c972c38dbe9d1fea287659c5a0e7ab329a485eaf61b1e753",
     ),
     (
         Path("tests/st0602/conftest.py"),
@@ -151,23 +151,23 @@ ST0602_ARTIFACTS: Final = (
 ST0603_ARTIFACTS: Final = (
     (
         Path("changes/st-0603/README.md"),
-        "91b91669033257dd6011fd1eac1a27fac9c31a19fad9594d77c815bfd8d0a54a",
+        "22ba200315f8cd36198930842c12f0e17008b979b6f38f850cc534c13af7e071",
     ),
     (
         Path("changes/st-0603/contracts/fact-conflict-review-reference-plan.v1.yaml"),
-        "bca7c63e49be113d7e2b7d15017d22ad6a9b27c59509325b2bbca407081246ef",
+        "74d58a889c0e20cb74e699196c267b270a86db80667459c9178b04aefe66c093",
     ),
     (
         Path("changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json"),
-        "46610808af7a16cace0bab9329d01361573388adc926103b253ba8aa26f67ad3",
+        "16a934d5a84b0a76e291026be708f6ae15a68523c5c2bdc1d816196eb58ed148",
     ),
     (
         Path("changes/st-0603/manifest.yaml"),
-        "ba9b020e5d26dc4db2d9069288458cb8246692c1522ed607ed0a5bb8e7f6f0d9",
+        "f7aadcf22785f96360be081c3754021dc72f4f6ade9570c39a8a53e80afb8a86",
     ),
     (
         Path("scripts/build_st0603_fact_conflict_review_reference_plan.py"),
-        "b70c114019c73cb2d20433dc70f3a1865119bbf1b4a9ffaa48a634666acae308",
+        "c18ec5df96bfbaa1a18d86cba3fd468221ae1b8fffdf2a5d38dd3a2e9af9b589",
     ),
     (
         Path("tests/st0603/conftest.py"),
@@ -189,27 +189,27 @@ ST0603_ARTIFACTS: Final = (
 ST0604_ARTIFACTS: Final = (
     (
         Path("changes/st-0604/README.md"),
-        "5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8",
+        "b3d71908781fcdd2d442b3f16ed7fade49780d18bcca688c4b88ee0204c089ff",
     ),
     (
         Path(
             "changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml"
         ),
-        "b7144670eab5f12eb79c2f49380d152a4ef5700a030b799878aa147ca563ec2c",
+        "5f0fc1d75207535a89e5e50d6b33bc3f710d17e60183e63ab39e394b5e8d049c",
     ),
     (
         Path(
             "changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json"
         ),
-        "f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb",
+        "3c7a7cc6a296c96162847f2bb452bba2ff7048bc8f277dbe720bf19a97fafaee",
     ),
     (
         Path("changes/st-0604/manifest.yaml"),
-        "cb3313f3fb5e3460cbc39e2b9a3c64b8e3859c975c58b54e7ca45f59636a2795",
+        "df78078b95d6042a08651cdef6923c01009362655393ab47af39eba2f3e420b6",
     ),
     (
         Path("scripts/build_st0604_source_packet_lifecycle_reference_plan.py"),
-        "745704cb20a54e2073e487b706112fcce00d022cf01ec26da8d52776932d10e1",
+        "7e6e1dcb1ea4ddec72b71e246769de940032b97dc86976fa8cc91f47e46ed97f",
     ),
     (
         Path("tests/st0604/conftest.py"),
