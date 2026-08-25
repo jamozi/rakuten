@@ -36,12 +36,12 @@ authority:
 
 predecessor:
   story_id: ST-0502
-  commit: 3b63ea8b35b25f1c38c53a7fb5e8c0b596ddd0ab
+  commit: 325fdc52dc8280b1b65a2b3b6508bfca916a9df9
   status: RECORDED_ONE_PAGE_CONTRACT_TEST_ONLY
   connection_status: INTERFACE_AVAILABLE_NOT_CONNECTED
   artifacts:
     - uri: repo://changes/st-0502/README.md
-      sha256: d242024ecb824c36fe45d63709a34af7138f6101deb5c36782f78f8836c7b731
+      sha256: 07a75c2bccb15cf25e5abbc64a1df5f884f1c257e8f73e6829caf9b1f15cd877
     - uri: repo://python/raos/domain/catalog/rakuten_item_search.py
       sha256: 4ea7f33ecee122f7e1e57590c2a972ffe7fb9aa493575a547e3354d0f01570c2
     - uri: repo://python/raos/ports/rakuten_item_search.py

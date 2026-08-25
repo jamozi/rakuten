@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0505_rakuten_live_smoke_reference_plan.py
   generation_command: python3 scripts/build_st0505_rakuten_live_smoke_reference_plan.py
 provenance:
-  contract_sha256: 3d1362ac7769d0ca6b869f9981d28beec2d0c15527e5a30e0b73c68afb77dc4c
+  contract_sha256: 761e7b8bdadf3ac80dd1dd3a9c39573f7ea433c63fc71f4f78af51f9a05057f8
   authority_inputs:
   - role: integration
     uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -26,10 +26,10 @@ provenance:
   - role: story
     uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
-  predecessor_commit: 3b63ea8b35b25f1c38c53a7fb5e8c0b596ddd0ab
+  predecessor_commit: 325fdc52dc8280b1b65a2b3b6508bfca916a9df9
   predecessor_inputs:
   - uri: repo://changes/st-0502/README.md
-    sha256: d242024ecb824c36fe45d63709a34af7138f6101deb5c36782f78f8836c7b731
+    sha256: 07a75c2bccb15cf25e5abbc64a1df5f884f1c257e8f73e6829caf9b1f15cd877
   - uri: repo://python/raos/domain/catalog/rakuten_item_search.py
     sha256: 4ea7f33ecee122f7e1e57590c2a972ffe7fb9aa493575a547e3354d0f01570c2
   - uri: repo://python/raos/ports/rakuten_item_search.py
@@ -52,12 +52,12 @@ provenance:
     sha256: 710ee36b2cc88d2f14c5a3e726b2fe50d1bd9fbc2bdd9bdb1a05c099bbf4c696
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9
+    sha256: 478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5
 source_artifact_count: 30
 source_artifacts:
 - uri: repo://changes/st-0505/contracts/rakuten-live-smoke-reference-plan.v1.yaml
   bytes: 34119
-  sha256: 3d1362ac7769d0ca6b869f9981d28beec2d0c15527e5a30e0b73c68afb77dc4c
+  sha256: 761e7b8bdadf3ac80dd1dd3a9c39573f7ea433c63fc71f4f78af51f9a05057f8
 - uri: repo://changes/st-0505/DESIGN_HANDOFF_V1.yaml
   bytes: 34199
   sha256: 52acf007794c34393c3c817c8b794e8299ecf32f2e22b5abd8875d0aa50403c9
@@ -65,8 +65,8 @@ source_artifacts:
   bytes: 34239
   sha256: 1316e649fe3b5b77d63954f6d20d703ecee42bd57d4afe899060ce72b7adb8c4
 - uri: repo://scripts/build_st0505_rakuten_live_smoke_reference_plan.py
-  bytes: 120717
-  sha256: eec0a351be154a7e1971014bc11f0e77ac78490716081fe46380ea4961e4e423
+  bytes: 121331
+  sha256: a9eee31bc287de69c1dcb1a450da88693346ecf9927e5af496a94bb9c8855664
 - uri: repo://python/raos/__init__.py
   bytes: 77
   sha256: 700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596
@@ -149,7 +149,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0505/generated/rakuten-live-smoke-reference-plan.v1.json
   bytes: 49934
-  sha256: d0a4f0ef430fc6e072e862ec14073ca7fe6a057b5c2b0c44cd322780f4199876
+  sha256: 134703053a9af1729267d1a028d21eaf3ac2941fdd640808e27d57f0c78cd884
 boundary:
   classification: SOURCE_DERIVED_EXPLICIT_LOCAL_RAKUTEN_LIVE_SMOKE_PLAN
   executable: true
