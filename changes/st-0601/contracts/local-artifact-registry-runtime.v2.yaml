@@ -27,7 +27,7 @@ sources:
   - path: changes/st-0202/contracts/local-object-storage.v1.yaml
     sha256: 5a5ca7e3847c730e97172646638088070dfaa96776485910cb967a67ab552a9f
   - path: changes/st-0308/contracts/persistence-runtime.v2.yaml
-    sha256: 8ee74a13fd1232f86887e988cbeb475421f2ed17c6a73257968e62ecc0dc54c7
+    sha256: 0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4
   - path: python/raos/domain/catalog/rakuten_item_search_runtime_v2.py
     sha256: 76ec60dfdd36f09376bf2fe94f596ffbc15bd3c5d59b20628a89eea6bf261b67
   - path: python/raos/ports/rakuten_item_search_runtime_v2.py

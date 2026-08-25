@@ -9,7 +9,7 @@
     "repository_local_development": "STANDING_OWNER_AUTHORIZATION",
     "staging": "NOT_GRANTED"
   },
-  "contract_sha256": "1102f4e92b8a6a7ede8daa7647c6ba3a63fe88dc2d2ac8f7a43a6aa5a8a1c48b",
+  "contract_sha256": "ad1ee6e206017c0a20979aceb09f038f1bcc07c2a8eda64577593784884b2923",
   "document": {
     "formal_tst_014": "NOT_EXECUTED",
     "id": "RAOS-LOCAL-ARTIFACT-REGISTRY-RUNTIME-002",
@@ -187,7 +187,7 @@
     },
     {
       "path": "changes/st-0308/contracts/persistence-runtime.v2.yaml",
-      "sha256": "8ee74a13fd1232f86887e988cbeb475421f2ed17c6a73257968e62ecc0dc54c7"
+      "sha256": "0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4"
     },
     {
       "path": "python/raos/domain/catalog/rakuten_item_search_runtime_v2.py",
