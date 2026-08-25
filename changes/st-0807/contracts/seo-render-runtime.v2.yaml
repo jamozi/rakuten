@@ -61,19 +61,19 @@ source_bindings:
     owner: ST-0801
     role: CONTENT_AST_CANONICALIZATION
   - path: python/raos/domain/editorial/policy_engine_v2.py
-    sha256: 86e0af8ff6b651b50a7959a0a8c0f85864c230a57144b51e190041d658ee7d93
+    sha256: ef690e73cf657d3963572428785b2e777f7485ba15c30a53a978ad8919e31e24
     owner: ST-0805
     role: POLICY_REPORT_VALIDATOR
   - path: python/raos/adapters/recorded_policy_engine.py
-    sha256: d6355547e2b90aa2c21aa61ca76d14203e05559c614dcb0336e565c1fddb67c3
+    sha256: 2d094fc94fb28eb03c157f42dfea3632da53ae0bfba4bb411fb4f81c2dc0d793
     owner: ST-0805
     role: RECORDED_POLICY_FIXTURE_DECODER
   - path: changes/st-0805/generated/policy-pass.v2.json
-    sha256: 7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849
+    sha256: 75797ab838b37b482ecfd30312101e4103dc7301a4ee57e0f6ce544a845300b9
     owner: ST-0805
     role: RECORDED_SYNTHETIC_POLICY_INPUT
   - path: changes/st-0805/runtime-manifest.v2.yaml
-    sha256: 19dd52b254b648f88c6cda0ea3d9d5b6167b184a0a4ce735431ebb09056d6367
+    sha256: f10516b1d26e6dc448ade04873880211244e82d1c0f7175b5c57ce2c95f411ce
     owner: ST-0805
     role: DEPENDENCY_PROVENANCE
 dependency_boundary:

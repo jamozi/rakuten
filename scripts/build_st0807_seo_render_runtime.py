@@ -88,7 +88,7 @@ GENERATOR_PATH: Final = Path("scripts/build_st0807_seo_render_runtime.py")
 GENERATED_PATHS: Final = (RESULT_PATH, MANIFEST_PATH)
 POLICY_FIXTURE_PATH: Final = Path("changes/st-0805/generated/policy-pass.v2.json")
 EXPECTED_CONTRACT_SHA256: Final = (
-    "9336feeddbc0d095708d60e9718c1636c9c16068db36fffab651222fdd279b5c"
+    "52214c70766473ecf7c09b2df98c8830c2506c09e442e03c835a5c0e7d9b39fc"
 )
 HARDENED_WRITER_PATH: Final = Path("scripts/secure_generated_publication.py")
 HARDENED_WRITER_SHA256: Final = (
@@ -98,10 +98,10 @@ V1_RENDERER_SHA256: Final = (
     "8dd849cbb3c99f7c9302c908fe1efdd9567799010ae97b10c3d9bfe57d1287de"
 )
 ST0805_FIXTURE_SHA256: Final = (
-    "7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849"
+    "75797ab838b37b482ecfd30312101e4103dc7301a4ee57e0f6ce544a845300b9"
 )
 ST0805_MANIFEST_SHA256: Final = (
-    "19dd52b254b648f88c6cda0ea3d9d5b6167b184a0a4ce735431ebb09056d6367"
+    "f10516b1d26e6dc448ade04873880211244e82d1c0f7175b5c57ce2c95f411ce"
 )
 EXPECTED_UV_VERSION: Final = "0.12.1"
 PINNED_UV_PATH: Final = Path("/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv")

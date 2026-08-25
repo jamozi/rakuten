@@ -15,10 +15,10 @@
     "st0802_body_sha256": "4c9bf36fac581e746126668ef8b36a27ea8e1acc0dc18bf9fc76c3af274311b9",
     "st0802_published_at": null,
     "st0802_state": "DRAFT",
-    "st0805_evaluation_input_sha256": "d4376e4554da70e821a575344ee8a25262178b749e4c243feb88c2d12ec041f5",
-    "st0805_fixture_sha256": "7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849",
+    "st0805_evaluation_input_sha256": "56402da13dff79f20716ecc66f7d71fcfe9684b241a7c193ea2d8bbc8735510a",
+    "st0805_fixture_sha256": "75797ab838b37b482ecfd30312101e4103dc7301a4ee57e0f6ce544a845300b9",
     "st0805_local_eligibility": true,
-    "st0805_report_sha256": "4222b076411f165967b5802f5b2057fc8635c0f0e94aadf6bcd7462e9ffa4fec",
+    "st0805_report_sha256": "c878a107d845aa9df4c30ce1b990fb3c814dc10d1a21ea6ac3074e6885c007c7",
     "st0805_status": "LOCAL_EVALUATED"
   },
   "document_id": "RAOS-ST0807-SEO-RENDER-RECORDED-002",
@@ -181,7 +181,7 @@
         "check": "ST_0805_POLICY_ELIGIBILITY",
         "evidence": {
           "ref": "EVIDENCE-ST0805-POLICY-REPORT-V2",
-          "sha256": "4222b076411f165967b5802f5b2057fc8635c0f0e94aadf6bcd7462e9ffa4fec"
+          "sha256": "c878a107d845aa9df4c30ce1b990fb3c814dc10d1a21ea6ac3074e6885c007c7"
         },
         "state": "PASS"
       },
@@ -353,7 +353,7 @@
     }
   },
   "render_date_semantics": "SYNTHETIC_PREVIEW_INPUT_NOT_PUBLICATION_FACT",
-  "render_local_result_sha256": "14eff94659aa66ddda8ebb398159fbad9461ef27c213abaf13b94af11e9c63b1",
+  "render_local_result_sha256": "74702e4f1709903f937dba560d97c8a5c5b774f261739a5377087322cc77b90a",
   "schema_version": 2,
   "story_id": "ST-0807",
   "verification": {
