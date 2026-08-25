@@ -46,7 +46,7 @@ predecessors:
     binding: EXACT_CURRENT_COMMITTED_BYTES
     artifacts:
       changes/st-1203/README.md: c333b3400b8f0f13ce18be7e04d43345caa812b4d818dae8222cb8b498099c3e
-      changes/st-1203/manifest.json: d9f40d3fa26bdaeea2d84fb9f28550a84981edeef8a93aa6e1e44494a0de441f
+      changes/st-1203/manifest.json: 6fdcaa8c41819eb6167b6c1f317ed1024a8ce54ae494c75e4a60b05b34bd9845
       python/raos/domain/analytics/search_console.py: e49396e6dfac336b05488ae4ba80100c106fc4bf64c2ed476d16f459c16759ce
     required_semantics:
       rows_not_guaranteed_complete: true
@@ -57,7 +57,7 @@ predecessors:
     binding: EXACT_CURRENT_COMMITTED_BYTES
     artifacts:
       changes/st-1204/RUNTIME-SLICE-v1.md: 021e21ca20d8fa82c3b0a9134de6cf989daf4fd80f1dc8d4a5ddbfc9a2579b69
-      changes/st-1204/generated/manifest.json: e4744fd4cc1242509cb1dfb061b1063f0bcef668f707a6706cb3955f0cca96e9
+      changes/st-1204/generated/manifest.json: 242f7a4f726577488fdb29be95b0d1eb4c977e176809ea4d38e7f2b9b397498b
       python/raos/domain/analytics/ga4.py: 785dd16788fffabd5ab6c05c6f43f535bc6521630a246c93a54d23d257de124f
     required_semantics:
       returned_rows_incomplete: true
