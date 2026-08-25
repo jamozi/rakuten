@@ -4,7 +4,7 @@
   "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
   "target_origin": "https://kurashinoshirube.com",
   "publication_authority": "NONE",
-  "generated_on": "2026-08-23",
+  "generated_on": "2026-08-26",
   "source_policy": {
     "allowed_authority": "OFFICIAL_PRIMARY_SOURCE_ONLY",
     "competitor_sources_as_evidence": false,
@@ -114,18 +114,18 @@
       "url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
       "retrieved_on": "2026-08-23",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "eb29aa275959bdd22f2ec6e3bd4ea3fb59338bd03c49360610d57f6b5c48a44b",
+      "immutable_capture_sha256": "416d1f93037007812842496a3c866fb24e7855adecfe70573a7db3a40f924510",
       "review_body_excluded_from_claim_evidence": true
     },
     {
-      "source_ref": "SRC-THANKO-RAKUA-MINI-PLUS",
+      "source_ref": "SRC-THANKO-RAKUA-MINI-COLOR",
       "authority": "MANUFACTURER_OFFICIAL",
       "source_type": "PRODUCT_PAGE",
-      "title": "THANKO ラクアmini Plus",
-      "url": "https://www.thanko.jp/view/item/000000004055",
-      "retrieved_on": "2026-08-23",
+      "title": "THANKO ラクアmini color",
+      "url": "https://www.thanko.jp/view/item/000000004715",
+      "retrieved_on": "2026-08-26",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "bd7135615bdf99ba0bf1ad745db7dfd7a26a8cc11c673f4a3f36320dba73b0f7",
+      "immutable_capture_sha256": "d8be48c07ef57e629df5bdc5eb0be19c1cbc8deafa1cad3989cabb92f2f4a418",
       "review_body_excluded_from_claim_evidence": true
     },
     {
@@ -136,7 +136,7 @@
       "url": "https://www.siroca.co.jp/product/dishwasher_advance/",
       "retrieved_on": "2026-08-23",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "b0de1eb45472b9f2219755e49d98ee45003140834e0cc240649743bfe168e135",
+      "immutable_capture_sha256": "ef9aca5c6291c29ba8b276d9ab9e651aece9547dd8c2704f257510b43b48d533",
       "review_body_excluded_from_claim_evidence": true
     },
     {
@@ -147,7 +147,7 @@
       "url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
       "retrieved_on": "2026-08-23",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "a402cc31c6be63d50e7478f79f968bf65742d0363ccc91cc4f115031cdd22c27",
+      "immutable_capture_sha256": "565503ec3ddf75c4633b7421d2e5e84777740db664105a7f5473afa20e543c77",
       "review_body_excluded_from_claim_evidence": true
     },
     {
@@ -406,10 +406,10 @@
       "article_id": "st1704-countertop-dishwasher-for-small-households",
       "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "fact_packet_sha256": "f1d30dd87cd954c87e8168d00a08afe0291600c36223f1fca4ae83bb88d84658",
+      "fact_packet_sha256": "aa82402be01c7eb00932b0e481db8988f4d843a61b2f260da0ea422970a5a76e",
       "source_refs": [
         "SRC-PANASONIC-NP-TMLK1",
-        "SRC-THANKO-RAKUA-MINI-PLUS",
+        "SRC-THANKO-RAKUA-MINI-COLOR",
         "SRC-SIROCA-SS-MA251",
         "SRC-PANASONIC-NP-TSP1"
       ],
@@ -426,9 +426,9 @@
         {
           "claim_id": "CLM-ST1704-DISH-RAKUA-SPECS",
           "classification": "MAJOR_VERIFIABLE",
-          "statement": "THANKO ラクアmini Plusは食器11〜12点、3.2L、幅308×高さ415×奥行315mm、扉開放時奥行594mm、約8kgのタンク式と案内されている。",
+          "statement": "THANKO ラクアmini colorは食器11〜12点、3.2L、幅308×高さ415×奥行315mm、扉開放時奥行594mm、約8kgのタンク式で、温風乾燥に対応すると案内されている。",
           "evidence_refs": [
-            "SRC-THANKO-RAKUA-MINI-PLUS"
+            "SRC-THANKO-RAKUA-MINI-COLOR"
           ],
           "status": "BOUND_TO_OFFICIAL_SOURCE"
         },
@@ -453,10 +453,10 @@
         {
           "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
           "classification": "EDITORIAL_INFERENCE",
-          "statement": "公表値ではNP-TMLK1が奥行225mm・約2.5L・食器6点、ラクアmini Plusが奥行315mm・3.2L・食器11〜12点、SS-MA251が奥行44cm・約6L・食器16点、NP-TSP1が奥行341mm・約9L・食器24点である。この4モデルではNP-TMLK1が奥行と標準使用水量で最小、NP-TSP1が標準食器点数で最大であり、SS-MA251はオートオープン対応のため、設置寸法、食器点数、水量、乾燥・扉方式で候補が変わる。",
+          "statement": "公表値ではNP-TMLK1が奥行225mm・約2.5L・食器6点、ラクアmini colorが奥行315mm・3.2L・食器11〜12点、SS-MA251が奥行44cm・約6L・食器16点、NP-TSP1が奥行341mm・約9L・食器24点である。この4モデルではNP-TMLK1が奥行と標準使用水量で最小、NP-TSP1が標準食器点数で最大であり、SS-MA251はオートオープン対応のため、設置寸法、食器点数、水量、乾燥・扉方式で候補が変わる。",
           "evidence_refs": [
             "SRC-PANASONIC-NP-TMLK1",
-            "SRC-THANKO-RAKUA-MINI-PLUS",
+            "SRC-THANKO-RAKUA-MINI-COLOR",
             "SRC-SIROCA-SS-MA251",
             "SRC-PANASONIC-NP-TSP1"
           ],
@@ -735,9 +735,9 @@
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
     {
-      "affiliate_ref": "AFF-THANKO-RAKUA-MINI-PLUS",
-      "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
-      "product_name": "THANKO ラクアmini Plus",
+      "affiliate_ref": "AFF-THANKO-RAKUA-MINI-COLOR",
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "product_name": "THANKO ラクアmini color",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,

@@ -571,9 +571,9 @@ def test_unknown_cells_and_k11_sheet_fact_remain_fail_closed() -> None:
         "AXIS-DISH-DRY",
     ) == {
         "axis_ref": "AXIS-DISH-DRY",
-        "value": "未確定",
-        "claim_ids": [],
-        "state": "UNKNOWN",
+        "value": "温風乾燥",
+        "claim_ids": ["CLM-ST1704-DISH-RAKUA-SPECS"],
+        "state": "KNOWN",
     }
     assert cell(
         "st1704-compact-robot-vacuum-shortlist",

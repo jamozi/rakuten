@@ -3,8 +3,8 @@
   "story_id": "ST-1704",
   "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
   "publication_authority": "NONE",
-  "generated_on": "2026-08-23",
-  "source_registry_sha256": "20bc5f2fdff5cab14e9f14095184aefd4b4663ef8b5d608b0c13ebcd5a6f531c",
+  "generated_on": "2026-08-26",
+  "source_registry_sha256": "1df3743e5cb76977d92193950aaddfcc941bf4850f6c04ba225d32571cae459d",
   "locator_policy": {
     "claim_statement_source": "TRACKED_SOURCE_PACKET_EXACT",
     "fragment_source": "TRACKED_REVIEWED_EXACT_UTF8_FRAGMENT",
@@ -238,27 +238,21 @@
       ]
     },
     {
-      "source_ref": "SRC-THANKO-RAKUA-MINI-PLUS",
+      "source_ref": "SRC-THANKO-RAKUA-MINI-COLOR",
       "charset": "utf-8",
       "locator_status": "READY",
       "locators": [
         {
           "claim_id": "CLM-ST1704-DISH-RAKUA-SPECS",
           "exact_utf8_fragments": [
-            "<div class=\"item-spec-container none-sp\">\r\n                    <h3 class=\"item-section-title spec-header\">仕様</h3>\r\n                    <div class=\"spec-scroll-box\">\r\n                        <section class=\"section item\">\r\n                            <div class=\"add-image\">\r\n                                                                <div class=\"add-image-list\">\r\n                                    <div class=\"add-description\"><table class=\"new-table\">\n<tr>\n<th>サイズ</th>\n<td>幅 308× 高さ 415× 奥行 315(mm) 開扉時奥行：594mm</td>\n</tr>\n\n<tr>\n<th>重量</th>\n<td>約 8kg</td>\n</tr>",
-            "<tr>\n<th>製品名</th>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-Familywide.jpg\"></td>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-Familyslim.jpg\"></td>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-rakua\"></td>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-miniPlus\"></td>",
-            "<tr>\n<th>標準収納容量</th>\n<td>食器28点<br>\n(4&#12316;5人分)</td>\n<td>食器21点<br>\n(3&#12316;4人分)</td>\n<td>食器16点<br>\n(2&#12316;3人分)</td>\n<td>食器11&#12316;12点<br>\n(1&#12316;2人分)</td>\n<td>食器11&#12316;12点<br>\n(1&#12316;2人分)</td>\n</tr>",
-            "<tr>\n<th>使用水量</th>\n<td>5.2L</td>\n<td>4.5L</td>\n<td>5L</td>\n<td>3.2L</td>\n<td>3.2L</td>\n</tr>",
-            "<h1 class=\"item-name\">工事不要でシンク横に置けるタンク式食洗機「ラクアmini Plus」</h1>"
+            "<div class=\"item-spec-container none-sp\">\r\n                    <h3 class=\"item-section-title spec-header\">仕様</h3>\r\n                    <div class=\"spec-scroll-box\">\r\n                        <section class=\"section item\">\r\n                            <div class=\"add-image\">\r\n                                                                <div class=\"add-image-list\">\r\n                                    <div class=\"add-description\"><table class=\"new-table\">\n<tr>\n<th>サイズ</th>\n<td>幅308×奥行315×高さ415(mm) 開扉時奥行：594mm</td>\n</tr>\n\n<tr>\n<th>重量</th>\n<td>約8kg</td>\n</tr>\n\n<tr>\n<th>定格電圧</th>\n<td>AC100V</td>\n</tr>\n\n<tr>\n<th>定格周波数</th>\n<td>50/60Hz</td>\n</tr>\n\n<tr>\n<th>定格消費電力</th>\n<td>900W</td>\n</tr>\n\n<tr>\n<th>使用水量</th>\n<td>3.2L</td>\n</tr>\n\n<tr>\n<th>洗浄方式</th>\n<td>ダブルノズル噴射式</td>\n</tr>\n\n<tr>\n<th>すすぎ方式</th>\n<td>ためすすぎ</td>\n</tr>\n\n<tr>\n<th>乾燥方式</th>\n<td>温風乾燥</td>\n</tr>\n\n<tr>\n<th>標準収納容量</th>\n<td>11～12 点（大皿…2 点　中皿またはコップ…2 点　小皿…2～3 点　小鉢…3 点　茶わん…2 点　小物類（はし、スプーン、フォーク、レンゲなど））</td>\n</tr>",
+            "<h1 class=\"item-name\">タンク式食洗機「ラクアmini color」</h1>"
           ]
         },
         {
           "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "<div class=\"item-spec-container none-sp\">\r\n                    <h3 class=\"item-section-title spec-header\">仕様</h3>\r\n                    <div class=\"spec-scroll-box\">\r\n                        <section class=\"section item\">\r\n                            <div class=\"add-image\">\r\n                                                                <div class=\"add-image-list\">\r\n                                    <div class=\"add-description\"><table class=\"new-table\">\n<tr>\n<th>サイズ</th>\n<td>幅 308× 高さ 415× 奥行 315(mm) 開扉時奥行：594mm</td>\n</tr>\n\n<tr>\n<th>重量</th>\n<td>約 8kg</td>\n</tr>",
-            "<tr>\n<th>製品名</th>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-Familywide.jpg\"></td>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-Familyslim.jpg\"></td>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-rakua\"></td>\n<td><img src=\"//data.thanko.jp/product/img-product/hikaku-miniPlus\"></td>",
-            "<tr>\n<th>標準収納容量</th>\n<td>食器28点<br>\n(4&#12316;5人分)</td>\n<td>食器21点<br>\n(3&#12316;4人分)</td>\n<td>食器16点<br>\n(2&#12316;3人分)</td>\n<td>食器11&#12316;12点<br>\n(1&#12316;2人分)</td>\n<td>食器11&#12316;12点<br>\n(1&#12316;2人分)</td>\n</tr>",
-            "<tr>\n<th>使用水量</th>\n<td>5.2L</td>\n<td>4.5L</td>\n<td>5L</td>\n<td>3.2L</td>\n<td>3.2L</td>\n</tr>"
+            "<div class=\"item-spec-container none-sp\">\r\n                    <h3 class=\"item-section-title spec-header\">仕様</h3>\r\n                    <div class=\"spec-scroll-box\">\r\n                        <section class=\"section item\">\r\n                            <div class=\"add-image\">\r\n                                                                <div class=\"add-image-list\">\r\n                                    <div class=\"add-description\"><table class=\"new-table\">\n<tr>\n<th>サイズ</th>\n<td>幅308×奥行315×高さ415(mm) 開扉時奥行：594mm</td>\n</tr>\n\n<tr>\n<th>重量</th>\n<td>約8kg</td>\n</tr>\n\n<tr>\n<th>定格電圧</th>\n<td>AC100V</td>\n</tr>\n\n<tr>\n<th>定格周波数</th>\n<td>50/60Hz</td>\n</tr>\n\n<tr>\n<th>定格消費電力</th>\n<td>900W</td>\n</tr>\n\n<tr>\n<th>使用水量</th>\n<td>3.2L</td>\n</tr>\n\n<tr>\n<th>洗浄方式</th>\n<td>ダブルノズル噴射式</td>\n</tr>\n\n<tr>\n<th>すすぎ方式</th>\n<td>ためすすぎ</td>\n</tr>\n\n<tr>\n<th>乾燥方式</th>\n<td>温風乾燥</td>\n</tr>\n\n<tr>\n<th>標準収納容量</th>\n<td>11～12 点（大皿…2 点　中皿またはコップ…2 点　小皿…2～3 点　小鉢…3 点　茶わん…2 点　小物類（はし、スプーン、フォーク、レンゲなど））</td>\n</tr>"
           ]
         }
       ]
