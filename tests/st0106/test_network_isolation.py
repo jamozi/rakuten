@@ -52,6 +52,44 @@ def run_guard(
     )
 
 
+def rebind_copied_wrapper_system_owner(content: str) -> str:
+    """Keep hostile fallback fixtures reachable inside the outer user namespace."""
+    fixed_helpers = (
+        Path("/usr/bin/false"),
+        Path("/usr/bin/setpriv"),
+        Path("/usr/bin/sudo"),
+        Path("/usr/bin/true"),
+        Path("/usr/bin/unshare"),
+    )
+    helper_owners = {helper.stat().st_uid for helper in fixed_helpers}
+    assert len(helper_owners) == 1
+    helper_owner = helper_owners.pop()
+    if helper_owner == 0:
+        return content
+
+    # The outer current-user namespace maps only the caller UID. Host-root
+    # files therefore appear under the overflow UID while caller-owned hostile
+    # fixtures retain the caller UID. Rebind only the mutation-only wrapper
+    # copy so the later owner/mode/setuid checks remain distinguishable.
+    uid_map_fields = Path("/proc/self/uid_map").read_text(encoding="utf-8").split()
+    assert len(uid_map_fields) == 3
+    assert int(uid_map_fields[0]) == os.geteuid()
+    assert int(uid_map_fields[2]) == 1
+    overflow_uid = int(
+        Path("/proc/sys/kernel/overflowuid").read_text(encoding="utf-8").strip()
+    )
+    assert helper_owner == overflow_uid
+    assert helper_owner != os.geteuid()
+    replacements = {
+        "[[ $unshare_owner != 0 ]]": f"[[ $unshare_owner != {helper_owner} ]]",
+        "[[ $owner != 0 ]]": f"[[ $owner != {helper_owner} ]]",
+    }
+    for expected, replacement in replacements.items():
+        assert content.count(expected) == 1
+        content = content.replace(expected, replacement)
+    return content
+
+
 def test_network_wrapper_is_hardened_and_has_valid_shell() -> None:
     assert WRAPPER.is_file() and not WRAPPER.is_symlink()
     assert ASSERTION.is_file() and not ASSERTION.is_symlink()
@@ -657,7 +695,7 @@ def test_wrapper_rejects_an_untrusted_setpriv_helper(tmp_path: Path) -> None:
     fake_setpriv.write_text("#!/bin/sh\nexit 1\n", encoding="utf-8")
     fake_setpriv.chmod(0o755)
     copied_wrapper.write_text(
-        copied_wrapper.read_text(encoding="utf-8")
+        rebind_copied_wrapper_system_owner(copied_wrapper.read_text(encoding="utf-8"))
         .replace(
             "unshare_executable=/usr/bin/unshare", "unshare_executable=/usr/bin/false"
         )
@@ -715,7 +753,7 @@ def test_wrapper_rejects_an_unavailable_or_non_setuid_sudo_helper(
         str(tmp_path / "missing-sudo") if sudo_path == "MISSING" else sudo_path
     )
     copied_wrapper.write_text(
-        copied_wrapper.read_text(encoding="utf-8")
+        rebind_copied_wrapper_system_owner(copied_wrapper.read_text(encoding="utf-8"))
         .replace(
             "unshare_executable=/usr/bin/unshare", "unshare_executable=/usr/bin/false"
         )
@@ -759,7 +797,7 @@ def test_wrapper_rejects_a_failed_passwordless_sudo_preflight(tmp_path: Path) ->
     shutil.copy2(WRAPPER, copied_wrapper)
     shutil.copy2(ASSERTION, copied_assertion)
     copied_wrapper.write_text(
-        copied_wrapper.read_text(encoding="utf-8")
+        rebind_copied_wrapper_system_owner(copied_wrapper.read_text(encoding="utf-8"))
         .replace(
             "unshare_executable=/usr/bin/unshare", "unshare_executable=/usr/bin/false"
         )
