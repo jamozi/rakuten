@@ -228,9 +228,12 @@ def _mapping(value: object, keys: tuple[str, ...]) -> dict[str, object]:
 
 
 def _list(value: object, *, maximum: int = 10_000) -> list[object]:
-    if type(value) is not list or len(value) > maximum:
+    if type(value) is not list:
         fail_provider_fact_commit(ProviderFactCommitFailureCode.FIXTURE_INVALID)
-    return cast(list[object], value)
+    result = cast(list[object], value)
+    if len(result) > maximum:
+        fail_provider_fact_commit(ProviderFactCommitFailureCode.FIXTURE_INVALID)
+    return result
 
 
 def _bounded_tree(value: object) -> None:
@@ -537,7 +540,7 @@ class RecordedProviderFactCommitScenario(_Redacted):
         )
 
 
-def _read_fixture(path: Path) -> bytes:
+def _read_fixture(path: object) -> bytes:
     if not isinstance(path, Path) or not path.is_absolute():
         fail_provider_fact_commit(ProviderFactCommitFailureCode.FIXTURE_INVALID)
     try:
@@ -553,7 +556,7 @@ def _read_fixture(path: Path) -> bytes:
 
 
 def load_recorded_provider_fact_commit_fixture(
-    path: Path,
+    path: object,
 ) -> RecordedProviderFactCommitScenario:
     """Load one bounded tracked synthetic scenario without paths or provider I/O."""
 

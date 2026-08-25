@@ -217,12 +217,6 @@ def _instant_text(value: datetime) -> str:
     return _utc_second(value).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
-def _nonnegative_int(value: object) -> int:
-    if type(value) is not int or not 0 <= value <= _MAX_AMOUNT:
-        fail_provider_fact_commit()
-    return value
-
-
 @dataclass(frozen=True, slots=True, repr=False)
 class JpyAmount(_Redacted):
     """Exact integral Decimal JPY; floats and implicit coercion are forbidden."""
