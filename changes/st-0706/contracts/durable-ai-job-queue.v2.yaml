@@ -55,7 +55,7 @@ source_bindings:
     owner: RAOS-AI-001
     role: TASK_AND_COST_BOUNDARIES
   - path: changes/st-0303/contracts/iam-ops-schema.v1.yaml
-    sha256: af80127539a9c2c27fb0c63b7ef09c477380f90e94fedc408c5cd9a83036271b
+    sha256: 6f04e1f773c4234587d3ace990d16ece8314e3186ce4338547f8684fdd225f01
     owner: ST-0303
     role: JOB_ATTEMPT_OUTBOX_INBOX_AND_IDEMPOTENCY_SCHEMA
   - path: python/raos/domain/ai/routing.py
@@ -63,7 +63,7 @@ source_bindings:
     owner: ST-0704
     role: AUTHORIZATION_AND_BUDGET_RESERVATION_VALUES
   - path: changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml
-    sha256: 0bdc3319b4f4c3c3a0363b17afdb9cd302e9bea49c128f37819331bb434baddb
+    sha256: 25e8696211025ee2581b0318ca2758dbcd4dccccd37447be1e8ad84667dbb02d
     owner: ST-0705
     role: OUTPUT_VALIDATION_RUNTIME_CONTRACT
   - path: changes/st-0004/contracts/ai/RAOS_05_failure_taxonomy_v0.1.yaml
