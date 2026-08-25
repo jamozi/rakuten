@@ -1,0 +1,113 @@
+document:
+  id: RAOS-ST1401-LOCAL-INTEGRATION-CLOSURE-20260825-V1
+  schema_version: 1
+  story_id: ST-1401
+  evidence_kind: LOCAL_INTEGRATION_CLOSURE
+  recorded_at: '2026-08-25T03:27:44Z'
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  generated: false
+  canonical_status: UNCHANGED
+  formal_validation_claimed: false
+base:
+  branch: codex/raos-local-integration-complete
+  audited_head_sha: 87ad8c38b750bf069d0c0c8b9291d526296cb6b2
+  original_implementation_commit_sha: 6ee875b7d14e35db9cc4b5d3ea8a6fb8c3cd7cd5
+  shared_type_stabilization_commit_sha: 64c661e3ace133784a96de9870447c480ee4ee3a
+scope:
+  classification: PROVISIONAL_CANONICAL_SAFE_DEFAULT_DISABLED_RECORDED_FRESHNESS_INTERFACE
+  semantic_behavior_changed: false
+  test_type_surface_repaired: true
+  publication_or_live_authority_changed: false
+  external_action_performed: false
+canonical_boundary:
+  design_status: APPROVED_FOR_IMPLEMENTATION
+  canonical_implementation_status: NOT_STARTED
+  canonical_verification_status: NOT_EXECUTED
+  open_decision:
+    id: OD-007
+    status: HUMAN_DECISION_REQUIRED
+    blocking: true
+    default_behavior: CONSERVATIVE_PROVISIONAL_VALUES_AND_HIDE_STALE
+  policy_activation: DISABLED_UNRESOLVED_OD_007
+  category_override_applied: false
+  provider_override_applied: false
+dependency_bindings:
+  ST-0503:
+    commit_sha: 1829e1ba31addce6579b445da51be5b604732278
+    manifest:
+      path: changes/st-0503/manifest.v2.json
+      sha256: 667eb914364d57daa509271695798748b89acf26092bbf9f277123474e1829f1
+    runtime_contract:
+      path: changes/st-0503/contracts/catalog-normalization-runtime.v2.json
+      sha256: a39f42e320b9dd3eb5e1d13012c31fe19023abb624d06f35ce257a7be438d82a
+  ST-0605:
+    commit_sha: 160e5d4e210a35b216395c1bdf16b9c664ecc8e7
+    reference_manifest:
+      path: changes/st-0605/manifest.yaml
+      sha256: bdcc53843f40514cd402663a578353055731ceff676319c8e79b6c745e4fbd33
+    runtime_manifest:
+      path: changes/st-0605/runtime-manifest.v1.yaml
+      sha256: f21f1e2c589a018fe17ced53b309fcaa1443df3793f57f743c5084a1314e1267
+source_bindings:
+  policy:
+    path: contracts/raos-v0.4/contracts/content/RAOS_06_freshness_update_policy_v0.1.yaml
+    sha256: a4d490d2a54b3def63c9c240b09d34a759ebd3924e60cfcca438ee979334cea2
+  matrix:
+    path: contracts/raos-v0.4/contracts/content/RAOS_06_content_test_matrix_v0.1.csv
+    sha256: 9be140d6f7015bf8c464993a34d127b2e8c118fd0ed49d20d113fb399ed8a564
+  runtime_sources:
+    - path: python/raos/domain/freshness/freshness.py
+      sha256: 3a33b44d99f92fce6417257de8c170d4622dd900fe7cc7cbac0b67494469dd95
+    - path: python/raos/ports/freshness.py
+      sha256: 8b72de55a697bee06b4d43f3cda3b9dc12b1532091755876b6cab891aaa07d91
+    - path: python/raos/application/freshness/freshness.py
+      sha256: f716a703af1581d6bb0ed2cde8db4a82848dd6d143bc5bb27ae4ad4353302c43
+    - path: python/raos/adapters/recorded_freshness.py
+      sha256: 0b4cff4e9c0d22311604abb4c756d63a72d63269073bf1dea1e4cec032639de6
+local_deliverables:
+  provisional_policy_class_count: 12
+  state_evaluator: DETERMINISTIC_EXPLICIT_TIME_ONLY
+  scheduler: DETERMINISTIC_EXPLICIT_DUE_SELECTOR
+  stale_is_fresh: false
+  automatic_recommendation_reorder: FORBIDDEN
+  persistence: NOT_EXECUTED
+  attestation: NOT_ATTESTED
+  publication_authorized: false
+  production_eligible: false
+verification:
+  owner_checks:
+    ST-0503: PASS
+    ST-0605_reference: PASS
+    ST-0605_runtime: PASS
+  tests:
+    ST-1401:
+      normal: {result: PASS, passed: 166}
+      network_denied: {result: PASS, passed: 166}
+    ST-0503:
+      normal: {result: PASS, passed: 102}
+      network_denied: {result: PASS, passed: 102}
+    ST-0605_reference:
+      normal: {result: PASS, passed: 61}
+      network_denied: {result: PASS, passed: 61}
+    ST-0605_runtime:
+      normal: {result: PASS, passed: 92}
+      network_denied: {result: PASS, passed: 92}
+  static_and_boundary:
+    ruff_check_and_format: PASS
+    strict_mypy_production: PASS
+    strict_mypy_tests: PASS
+    project_pyright: PASS_ZERO_ERRORS_ZERO_WARNINGS
+    compile: PASS
+    git_diff_check: PASS
+formal_and_external_boundaries:
+  formal_tst_005: NOT_EXECUTED
+  formal_tst_028: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  canonical_status_propose_or_apply: NOT_EXECUTED
+  human_category_sla_decision: NOT_EXECUTED
+  live_provider_or_credential_activity: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  validated_claim: FORBIDDEN

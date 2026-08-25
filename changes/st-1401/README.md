@@ -8,8 +8,10 @@ implementation of the maximum safe ST-1401 interface boundary while OD-007 is
 unresolved. It satisfies the local scheduler/state deliverables with the
 installed conservative provisional policy, but it does not change the
 Canonical Story status, activate a freshness policy, resolve a category SLA,
-or provide formal TST-005/TST-028 evidence. The exact local completion record
-is `LOCAL-IMPLEMENTATION-COMPLETION-20260824-v1.yaml`.
+or provide formal TST-005/TST-028 evidence. The current integration audit is
+`LOCAL-INTEGRATION-CLOSURE-20260825-v1.yaml`; the earlier
+`LOCAL-IMPLEMENTATION-COMPLETION-20260824-v1.yaml` remains immutable historical
+local evidence.
 
 ## Authority and source binding
 

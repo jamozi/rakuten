@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import fields, replace
 from datetime import datetime, timedelta, timezone
 from typing import cast
@@ -286,9 +287,11 @@ def test_limit_rejects_values_outside_exact_one_to_ten_thousand(
         ),
     ),
 )
-def test_schedule_entries_reject_ambiguous_or_unbounded_values(factory: object) -> None:
+def test_schedule_entries_reject_ambiguous_or_unbounded_values(
+    factory: Callable[[], object],
+) -> None:
     with pytest.raises(FreshnessFailure):
-        cast(object, factory)()  # type: ignore[operator]
+        factory()
 
 
 def test_schedule_rejects_duplicate_ids_targets_and_capacity_overflow() -> None:
@@ -318,7 +321,7 @@ def test_schedule_request_rejects_non_tuple_and_naive_evaluation_time() -> None:
         )
     with pytest.raises(FreshnessFailure):
         FreshnessScheduleRequest(
-            evaluated_at=cast(datetime, EVALUATED_AT.replace(tzinfo=None)),
+            evaluated_at=EVALUATED_AT.replace(tzinfo=None),
             limit=1,
             schedules=(),
         )

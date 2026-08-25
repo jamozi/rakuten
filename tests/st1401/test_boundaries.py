@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+from collections.abc import Callable
 from dataclasses import fields, replace
 from datetime import datetime, timedelta, timezone, tzinfo
 from pathlib import Path
@@ -610,11 +611,12 @@ def test_revalidation_rejects_corruption_without_repairing_caller_inputs() -> No
     object.__setattr__(evaluation, "observed_at", raw_fold)
     service = freshness_service()
     adapter = recorded_adapter()
-    for operation in (
+    evaluation_operations: tuple[Callable[[], object], ...] = (
         lambda: evaluate_freshness(evaluation),
         lambda: service.evaluate(evaluation),
         lambda: adapter.evaluate(evaluation),
-    ):
+    )
+    for operation in evaluation_operations:
         with pytest.raises(FreshnessFailure):
             operation()
         assert evaluation.observed_at is raw_fold
@@ -625,11 +627,12 @@ def test_revalidation_rejects_corruption_without_repairing_caller_inputs() -> No
     corrupted_uuid = corrupted_entry.schedule_id
     object.__setattr__(corrupted_uuid, "int", 0)
     object.__setattr__(corrupted_entry, "next_due_at", raw_fold)
-    for operation in (
+    schedule_operations: tuple[Callable[[], object], ...] = (
         lambda: select_due_freshness(schedule),
         lambda: service.select_due(schedule),
         lambda: adapter.select_due(schedule),
-    ):
+    )
+    for operation in schedule_operations:
         with pytest.raises(FreshnessFailure):
             operation()
         assert corrupted_entry.schedule_id is corrupted_uuid

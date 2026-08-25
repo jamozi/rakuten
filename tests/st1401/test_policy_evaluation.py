@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+from collections.abc import Callable
 from datetime import datetime, timedelta, timezone
 import hashlib
 from io import StringIO
@@ -27,6 +28,7 @@ from raos.domain.freshness.freshness import (
     FreshnessObservationStatus,
     FreshnessPolicyActivation,
     FreshnessPolicyAuthority,
+    FreshnessPolicyClass,
     FreshnessProjectionAction,
     FreshnessReviewAction,
     FreshnessState,
@@ -173,9 +175,9 @@ def test_exact_ct0791_through_ct0886_matrix_is_twelve_by_eight_parity() -> None:
     "policy_class", freshness_policy_classes(), ids=lambda value: value.class_id
 )
 def test_warning_and_blocking_edges_are_inclusive_and_exact(
-    policy_class: object,
+    policy_class: FreshnessPolicyClass,
 ) -> None:
-    policy = cast(type(freshness_policy_classes()[0]), policy_class)
+    policy = policy_class
     if policy.warning_after_hours > 0:
         before_warning = evaluate_freshness(
             evaluation_request(
@@ -262,11 +264,11 @@ def test_fresh010_zero_zero_is_immediately_critical_and_never_warning() -> None:
     ),
 )
 def test_missing_failure_and_unvalidated_recovery_are_unknown_not_latest(
-    policy_class: object,
+    policy_class: FreshnessPolicyClass,
     status: FreshnessObservationStatus,
     reason: FreshnessUnknownReason,
 ) -> None:
-    policy = cast(type(freshness_policy_classes()[0]), policy_class)
+    policy = policy_class
     request = evaluation_request(
         freshness_class_id=policy.class_id,
         observation_status=status,
@@ -287,9 +289,9 @@ def test_missing_failure_and_unvalidated_recovery_are_unknown_not_latest(
     "policy_class", freshness_policy_classes(), ids=lambda value: value.class_id
 )
 def test_future_validated_observation_is_unknown_not_latest(
-    policy_class: object,
+    policy_class: FreshnessPolicyClass,
 ) -> None:
-    policy = cast(type(freshness_policy_classes()[0]), policy_class)
+    policy = policy_class
     result = evaluate_freshness(
         evaluation_request(
             freshness_class_id=policy.class_id,
@@ -306,9 +308,9 @@ def test_future_validated_observation_is_unknown_not_latest(
     "policy_class", freshness_policy_classes(), ids=lambda value: value.class_id
 )
 def test_timezone_offsets_compare_by_instant_at_warning_edge(
-    policy_class: object,
+    policy_class: FreshnessPolicyClass,
 ) -> None:
-    policy = cast(type(freshness_policy_classes()[0]), policy_class)
+    policy = policy_class
     observed_utc = EVALUATED_AT - timedelta(hours=policy.warning_after_hours)
     request = evaluation_request(
         freshness_class_id=policy.class_id,
@@ -328,8 +330,10 @@ def test_timezone_offsets_compare_by_instant_at_warning_edge(
 @pytest.mark.parametrize(
     "policy_class", freshness_policy_classes(), ids=lambda value: value.class_id
 )
-def test_only_validated_noncritical_recovery_restores(policy_class: object) -> None:
-    policy = cast(type(freshness_policy_classes()[0]), policy_class)
+def test_only_validated_noncritical_recovery_restores(
+    policy_class: FreshnessPolicyClass,
+) -> None:
+    policy = policy_class
     recovered = evaluate_freshness(
         evaluation_request(
             freshness_class_id=policy.class_id,
@@ -351,9 +355,9 @@ def test_only_validated_noncritical_recovery_restores(policy_class: object) -> N
     "policy_class", freshness_policy_classes(), ids=lambda value: value.class_id
 )
 def test_recommendation_impact_emits_review_candidate_never_reorder(
-    policy_class: object,
+    policy_class: FreshnessPolicyClass,
 ) -> None:
-    policy = cast(type(freshness_policy_classes()[0]), policy_class)
+    policy = policy_class
     result = evaluate_freshness(
         evaluation_request(
             freshness_class_id=policy.class_id,
@@ -449,7 +453,7 @@ def test_fold_one_observation_is_owned_as_exact_utc_before_evaluation() -> None:
     ),
 )
 def test_evaluation_request_rejects_unknown_naive_and_wrong_exact_types(
-    factory: object,
+    factory: Callable[[], object],
 ) -> None:
     with pytest.raises(FreshnessFailure):
-        cast(object, factory)()  # type: ignore[operator]
+        factory()
