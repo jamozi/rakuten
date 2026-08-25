@@ -5,7 +5,6 @@ from __future__ import annotations
 import os
 import re
 import secrets
-import socket
 import subprocess
 from collections.abc import Iterator
 from dataclasses import dataclass, field
@@ -57,9 +56,9 @@ def _tools() -> tuple[dict[str, Path], dict[str, str]]:
 
 
 def _available_port() -> int:
-    with socket.socket() as candidate:
-        candidate.bind(("127.0.0.1", 0))
-        return int(candidate.getsockname()[1])
+    # Every cluster owns a unique Unix-socket directory and disables TCP.
+    # A random high port therefore names its socket without requiring AF_INET.
+    return 20_000 + secrets.randbelow(30_000)
 
 
 @dataclass(slots=True)
@@ -123,7 +122,9 @@ class PostgreSQLCluster:
         )
         return database
 
-    def connect(self, database: str, *, autocommit: bool = True):
+    def connect(
+        self, database: str, *, autocommit: bool = True
+    ) -> psycopg.Connection[tuple[object, ...]]:
         return psycopg.connect(
             host=os.fspath(self.socket_directory),
             port=self.port,
@@ -261,4 +262,5 @@ def empty_database(
 ) -> str:
     """Create an isolated empty database owned by the migration role."""
 
-    return postgresql_cluster.create_database(request.node.name)
+    del request
+    return postgresql_cluster.create_database("empty_database")

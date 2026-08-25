@@ -18,14 +18,14 @@ runtime:
     sha256: 0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4
   owner_generator:
     path: scripts/build_st0308_persistence.py
-    sha256: 679c2ee572c78868a31c43329d6ea49ba52c3a162e9a07dcaf0fa938c94e30e2
+    sha256: a52c4a0ac971ef1239e7301d84f8f09dc8cda718872e1d2d09e01aebcbbec979
   source_inventory:
     file_count: 248
     algorithm: >-
       SHA256 of sorted lines emitted by sha256sum for every regular runtime,
       matrix, generated, Domain, Port, adapter, owner, and Story-test file;
       __pycache__ excluded
-    sha256: 6009633a7e4c31252a08c74f85726f1647e8877de6bbe260256a3b6b408c2e21
+    sha256: 736a299dbaab2038a586567487791ce1cbebf751be29f9a52936b298f79b035c
 matrices:
   repository_surface: 0dcd8edabe662bb94dc38960b372dfabf1afc8e83f74e3acc4757049fda6f1f0
   concurrency: 66cb474d428703e83b7b84744c4f843463b0a040714b907e00137438f5ba08ab
@@ -38,10 +38,10 @@ matrices:
 generated_outputs:
   catalog_ir:
     path: changes/st-0308/generated/persistence-catalog-ir.v1.json
-    sha256: 5dad7775532ad32f446b61c8029ebe569c1fe362d4bf5e15e13e4109f336873a
+    sha256: 83cef4815f24939f98cf2e77958f1fd45a42bd52185bbbdabbb4e5961d24f1e2
   ops_reference:
     path: changes/st-0308/generated/persistence-runtime.ops-reference.v1.json
-    sha256: 2e97f0e01f23df1a78ae4d8b83aa30a389b4e28e20948b9b39457cc12563b987
+    sha256: 28a3411f72cd18c8bbc32a1004b28324d2f3249c1e9b3d9f1e9d7bda4e99df26
   generated_package:
     inventory:
       - __init__.py

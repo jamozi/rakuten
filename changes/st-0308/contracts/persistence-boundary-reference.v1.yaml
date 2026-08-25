@@ -8,8 +8,8 @@ document:
   executable: false
   implementation_dependencies:
     - uri: repo://scripts/build_st1506_production_deployment.py
-      bytes: 76728
-      sha256: a55385ccdd8fb3f9740eb2cbb2c24c3ba67006a46e1612dd27cd9e0973b6cc7e
+      bytes: 78141
+      sha256: cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be
       use: DESCRIPTOR_SAFE_YAML_PATH_AND_ATOMIC_OUTPUT_ONLY
 sources:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md

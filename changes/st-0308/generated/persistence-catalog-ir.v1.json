@@ -60,7 +60,7 @@
     },
     "owner_generator": {
       "path": "scripts/build_st0308_persistence.py",
-      "sha256": "679c2ee572c78868a31c43329d6ea49ba52c3a162e9a07dcaf0fa938c94e30e2"
+      "sha256": "a52c4a0ac971ef1239e7301d84f8f09dc8cda718872e1d2d09e01aebcbbec979"
     },
     "source_sha256": {
       "changes/st-0105/README.md": "15adf4e461592453f78a363ccba411c861f476aeaf58444039c6eaff12ade8de",

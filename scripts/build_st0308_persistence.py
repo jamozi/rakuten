@@ -3445,7 +3445,10 @@ def _render_physical_constraints(
         f"COLUMN_RULES_BY_RELATION: Final = MappingProxyType({columns!r})",
         f"CHECKS_BY_RELATION: Final = MappingProxyType({checks!r})",
         f"MAPPER_CALLABLES: Final = MappingProxyType({callables!r})",
-        f"CHECK_EVALUATOR_INVENTORY: Final = {inventory!r}",
+        (
+            "CHECK_EVALUATOR_INVENTORY: "
+            f"Final[tuple[tuple[str, str, str, str], ...]] = {inventory!r}"
+        ),
         "CHECK_CONSTRAINT_COUNT: Final = 519",
         "CHECK_EVALUATOR_KIND: Final = 'EXACT_RUNTIME_AST'",
         "MAPPER_CALLABLE_COUNT: Final = 205",
