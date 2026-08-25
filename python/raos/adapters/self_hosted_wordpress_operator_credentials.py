@@ -41,6 +41,7 @@ _DIRECTORY_COMPONENTS: Final = (".secrets", "wordpress-operator-local")
 _CREDENTIAL_FILE: Final = "credentials.v1.json"
 _PROPOSAL_INTENT_DIRECTORY: Final = "proposal-intents"
 _PROPOSAL_INTENT_SCHEMA: Final = "RAOS_WORDPRESS_OPERATOR_PROPOSAL_INTENT_V1"
+_PROPOSAL_INTENT_CANONICAL_PREFIX: Final = b'{"canonical_request_sha256":"'
 _PROPOSAL_INTENT_FILES: Final = {
     WordPressOperatorOperation.APPLY_YOAST_PROFILE: "apply-yoast-profile.intent.v1.json",
     WordPressOperatorOperation.UPDATE_CHILD_THEME: "update-child-theme.intent.v1.json",
@@ -236,6 +237,7 @@ def _read_bounded_private_file(
     maximum: int,
     owner_uid: int,
     expected_link_count: int = 1,
+    allow_empty: bool = False,
 ) -> bytes | None:
     descriptor = -1
     try:
@@ -251,7 +253,7 @@ def _read_bounded_private_file(
             or before.st_uid != owner_uid
             or stat.S_IMODE(before.st_mode) != 0o600
             or before.st_nlink != expected_link_count
-            or not 1 <= before.st_size <= maximum
+            or not (0 if allow_empty else 1) <= before.st_size <= maximum
         ):
             _fail()
         chunks: list[bytes] = []
@@ -306,7 +308,7 @@ def _recover_proposal_intent_staging(
         not stat.S_ISREG(staging.st_mode)
         or staging.st_uid != owner_uid
         or stat.S_IMODE(staging.st_mode) != 0o600
-        or not 1 <= staging.st_size <= MAX_PROPOSAL_INTENT_BYTES
+        or staging.st_size > MAX_PROPOSAL_INTENT_BYTES
     ):
         _fail()
     if final is None:
@@ -317,10 +319,36 @@ def _recover_proposal_intent_staging(
             staging_name,
             maximum=MAX_PROPOSAL_INTENT_BYTES,
             owner_uid=owner_uid,
+            allow_empty=True,
         )
         if payload is None:
             _fail()
-        _decode_proposal_intent(payload, operation)
+        try:
+            _decode_proposal_intent(payload, operation)
+        except WordPressOperatorFailure:
+            prefix_length = min(len(payload), len(_PROPOSAL_INTENT_CANONICAL_PREFIX))
+            if payload[:prefix_length] != _PROPOSAL_INTENT_CANONICAL_PREFIX[
+                :prefix_length
+            ] or payload.endswith(b"}"):
+                raise
+            # No transport can start until record() returns.  A private, unlinked
+            # canonical prefix that cannot yet decode is therefore only an
+            # interrupted pre-publication write, never a published intent.
+            rebound = _named_metadata(directory_fd, staging_name)
+            if (
+                rebound is None
+                or not _same_identity(staging, rebound)
+                or rebound.st_nlink != 1
+            ):
+                _fail()
+            try:
+                os.unlink(staging_name, dir_fd=directory_fd)
+                os.fsync(directory_fd)
+            except BaseException:
+                _fail()
+            if _named_metadata(directory_fd, staging_name) is not None:
+                _fail()
+            return
         try:
             os.link(
                 staging_name,
@@ -333,6 +361,8 @@ def _recover_proposal_intent_staging(
             _fail()
         final = _named_metadata(directory_fd, final_name)
         staging = _named_metadata(directory_fd, staging_name)
+    elif staging.st_size < 1:
+        _fail()
     if (
         final is None
         or staging is None

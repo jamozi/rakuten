@@ -486,16 +486,50 @@ def test_intent_staging_recovery_is_crash_atomic_and_fails_closed(
             is domain.WordPressOperatorFailureCode.CREDENTIAL_STORE_INVALID
         )
 
-    update = domain.WordPressOperatorOperation.UPDATE_CHILD_THEME
-    update_pending = directory / ".update-child-theme.intent.v1.json.pending"
-    with journal.exclusive(update):
-        _write_fsynced_private(update_pending, b"{}")
+
+@pytest.mark.parametrize("interrupted_payload", (b"", b'{"canonical_request_sha256":"'))
+def test_incomplete_unpublished_intent_staging_is_discarded_for_fresh_record(
+    private_repository: Path, interrupted_payload: bytes
+) -> None:
+    journal = credentials.OwnerPrivateWordPressOperatorProposalIntentJournal(
+        private_repository
+    )
+    operation = domain.WordPressOperatorOperation.APPLY_YOAST_PROFILE
+    directory = (
+        private_repository / ".secrets/wordpress-operator-local/proposal-intents"
+    )
+    pending = directory / ".apply-yoast-profile.intent.v1.json.pending"
+
+    with journal.exclusive(operation):
+        _write_fsynced_private(pending, interrupted_payload)
+        assert journal.load(operation) is None
+        assert not pending.exists()
+
+        recorded = journal.record(domain.OperatorProposal.yoast("d" * 64))
+        assert journal.load(operation) == recorded
+
+
+def test_malformed_unpublished_intent_staging_still_fails_closed(
+    private_repository: Path,
+) -> None:
+    journal = credentials.OwnerPrivateWordPressOperatorProposalIntentJournal(
+        private_repository
+    )
+    operation = domain.WordPressOperatorOperation.UPDATE_CHILD_THEME
+    directory = (
+        private_repository / ".secrets/wordpress-operator-local/proposal-intents"
+    )
+    pending = directory / ".update-child-theme.intent.v1.json.pending"
+
+    with journal.exclusive(operation):
+        _write_fsynced_private(pending, b"{}")
         with pytest.raises(domain.WordPressOperatorFailure) as captured:
-            journal.load(update)
+            journal.load(operation)
         assert (
             captured.value.code
             is domain.WordPressOperatorFailureCode.CREDENTIAL_STORE_INVALID
         )
+        assert pending.exists()
 
 
 def test_status_values_are_closed_and_theme_payload_has_no_inventory() -> None:
