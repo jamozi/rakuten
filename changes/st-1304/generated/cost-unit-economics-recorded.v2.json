@@ -79,7 +79,7 @@
     "source_artifacts": [
       {
         "bytes": 8101,
-        "sha256": "db28dd7d53e3098e940a2a8497e4f7ea631482cf54f14f40509d30680634d6b3",
+        "sha256": "5ee2782af4e47cdf0f7e787e34191b656277d515ad09c590013cc8ed8e42402b",
         "uri": "repo://changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml"
       },
       {
@@ -166,7 +166,7 @@
       },
       "st0706_cost_boundary": {
         "path": "changes/st-0706/generated/durable-ai-job-queue.v2.json",
-        "sha256": "13efe202cc5a823d7a9cad3f1b33adb1666612645efb186c0bb0efd393a512ea"
+        "sha256": "3de4738acf15bee81ba94120c613d9070b0027c2d24039b660dfb056fe7625d1"
       },
       "st1205_projection": {
         "path": "changes/st-1205/generated/kpi-read-model.v2.json",
