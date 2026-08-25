@@ -50,9 +50,9 @@ provenance:
   - uri: repo://changes/st-0304/manifest.yaml
     sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
   - uri: repo://changes/st-0305/manifest.yaml
-    sha256: 1de981e51f57d24e77480309149d4b7e9863a0fff5c926f211aee8f77751784d
+    sha256: 0efddf30798426a5322606328941e77e8a36fd2d274910f06224437fb5861d3f
   - uri: repo://changes/st-0306/manifest.yaml
-    sha256: 2ea10f2b5ebe558c3d2a8055b84d91500ca0c5e67aa28a54bd504226bbc485a0
+    sha256: 25b451a247192d0db2cdbc434151bef71d9a9d822e07d5c56f450c98f167595d
 production_graph:
   anchor_revision: '202608030001'
   predecessor_revision: '202608030005'
@@ -83,7 +83,7 @@ source_artifacts:
   sha256: a7a565a02fb99e30200539dedf2072dcb598f89835e6bfdc8e3b75516bd901e9
 - uri: repo://scripts/build_st0307_migration_fixtures.py
   bytes: 34971
-  sha256: 0f5b8be6bd1419bad11ac5b53242558d36cb1b899aa32f7b89f31e5ba89ab225
+  sha256: f23de1d15a33586b13f9366fefe88724e2d9b14e694258af4835147358b3388c
 - uri: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
   bytes: 434952
   sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
@@ -125,10 +125,10 @@ source_artifacts:
   sha256: d09aed90f37c7238f2a3dab4675e6e3b06f108b6c40d4468979541d70577ee51
 - uri: repo://changes/st-0305/manifest.yaml
   bytes: 14863
-  sha256: 1de981e51f57d24e77480309149d4b7e9863a0fff5c926f211aee8f77751784d
+  sha256: 0efddf30798426a5322606328941e77e8a36fd2d274910f06224437fb5861d3f
 - uri: repo://changes/st-0306/manifest.yaml
   bytes: 8660
-  sha256: 2ea10f2b5ebe558c3d2a8055b84d91500ca0c5e67aa28a54bd504226bbc485a0
+  sha256: 25b451a247192d0db2cdbc434151bef71d9a9d822e07d5c56f450c98f167595d
 - uri: repo://python/raos/migrations/catalog.py
   bytes: 20363
   sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
