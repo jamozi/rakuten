@@ -613,7 +613,7 @@ def _validate_public_shapes(projection: dict[str, object]) -> None:
         fail_public_projection(PublicProjectionFailureCode.PUBLIC_ALLOWLIST_VIOLATION)
     try:
         for field_name in ("article_id", "publication_id", "publication_snapshot_id"):
-            UUID(_text(article[field_name], maximum=36))
+            _uuid7(UUID(_text(article[field_name], maximum=36)))
     except Exception:
         fail_public_projection(PublicProjectionFailureCode.PUBLIC_ALLOWLIST_VIOLATION)
     for index, item in enumerate(blocks):
