@@ -20,9 +20,10 @@ commit result, or persistence. OD-003 remains blocking and
 Dependency provenance distinguishes each original feature commit from the
 commit whose tree supplies the exact bound artifact bytes. ST-1202's seven
 files remain byte-identical to its feature commit. ST-1302's nine current files
-are bound at later mechanical artifact commit
-`c4e1a17678e295e853caeab660470369cdcf6c55`, while retaining its original
-feature commit separately.
+are bound at current mechanical artifact commit
+`02b7441f216e0ed01b3e8c6808db4ab7ec19be8d`, while retaining its original
+feature commit separately. The binding is provenance only and grants no runtime,
+provider, publication, staging, release, or Production authority.
 
 Canonical sources require Provider Fact, Direct, Estimated, and Unattributed
 to remain distinct. Direct requires a verifiable provider key. Estimated

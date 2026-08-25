@@ -70,7 +70,7 @@ def test_manifest_binds_every_source_input_dependency_and_generated_plan() -> No
         },
         "st1302": {
             "feature_commit": "96d388761f4e933f06760f3a7e3d3b0f2c12b65c",
-            "artifact_binding_commit": ("54a6d21169f70a0093d8b10a3c9508d9a332c234"),
+            "artifact_binding_commit": ("02b7441f216e0ed01b3e8c6808db4ab7ec19be8d"),
             "binding": "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT",
         },
     }

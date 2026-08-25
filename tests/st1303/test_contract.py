@@ -86,7 +86,7 @@ def test_dependencies_bind_exact_commits_files_and_closed_semantics() -> None:
     assert st1202["required_semantics"]["emission_enabled"] is False
     assert st1302["feature_commit"] == ("96d388761f4e933f06760f3a7e3d3b0f2c12b65c")
     assert st1302["artifact_binding_commit"] == (
-        "54a6d21169f70a0093d8b10a3c9508d9a332c234"
+        "02b7441f216e0ed01b3e8c6808db4ab7ec19be8d"
     )
     assert st1302["binding"] == "EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT"
     assert len(st1302["artifacts"]) == 9

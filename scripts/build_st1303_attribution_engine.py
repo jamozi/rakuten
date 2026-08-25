@@ -125,7 +125,7 @@ SOURCE_BINDINGS: Final = {
     },
     "st1302_runtime": {
         "path": "changes/st-1302/manifest.v2.yaml",
-        "sha256": "1c1ee418d69bf199730e9354f9197f166de96d2629dd22298dd058d1bf7b2790",
+        "sha256": "cd49fd67e860a52670799bfaa8ec60711341ddc3fbbf37ceff89b76c85609dd9",
     },
     "five_slot_measurement": {
         "path": ST1704_CONTRACT_PATH.as_posix(),

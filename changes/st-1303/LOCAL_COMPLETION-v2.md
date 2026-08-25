@@ -15,26 +15,30 @@ status.
 
 ## Local verification
 
-Source freeze verification was executed from the isolated ST-1303 worktree on
-2026-08-24 (JST). These are local results and are not formal TST evidence.
+Source freeze verification was refreshed from the isolated ST-1303 worktree on
+2026-08-25 (JST). These are local results and are not formal TST evidence.
 
 - `python -m py_compile` over the four runtime modules, generator and focused
   tests: PASS.
-- `ruff check` over the four runtime modules, generator and `tests/st1303_v2`:
+- `ruff check` over the four runtime modules, both owner generators and both
+  ST-1303 test directories:
   PASS (`All checks passed!`).
 - `ruff format --check` over the same owned Python inventory: PASS.
-- `mypy --explicit-package-bases` over the same owned Python inventory: PASS
-  (`Success: no issues found in 10 source files`).
-- `python scripts/build_st1303_attribution_engine.py --check`: PASS
-  (`ST-1303 attribution projection checked`). The check was repeated before and
-  after the focused suite and did not write the generated artifact.
-- `pytest -q tests/st1303_v2`: PASS (`74 passed`). This includes deterministic
-  generation/replay, hostile fixture, tamper, conservation, unavailable-state,
-  exact-JPY and authority-boundary coverage.
+- strict `mypy --explicit-package-bases` over the same owned Python inventory:
+  PASS (`Success: no issues found in 15 source files`).
+- project-wide Pyright over `python/raos`: PASS (`0 errors, 0 warnings, 0
+  informations`).
+- Both `build_st1303_attribution_engine_reference_plan.py --check` and
+  `build_st1303_attribution_engine.py --check`: PASS. Each check was repeated
+  after generation and did not write its generated artifact.
+- `pytest -q tests/st1303`: PASS (`368 passed`) and the same suite under the
+  repository network-denied wrapper: PASS (`368 passed`).
+- `pytest -q tests/st1303_v2`: PASS (`74 passed`) and the same suite under the
+  repository network-denied wrapper: PASS (`74 passed`). These include
+  deterministic generation/replay, hostile fixture, tamper, conservation,
+  unavailable-state, exact-JPY and authority-boundary coverage.
 - `pytest -q tests/st1202_v2`: PASS (`5 passed`).
-- `pytest -q tests/st1302/test_provider_fact_commit.py
-  tests/st1302/test_provider_fact_commit_negative.py
-  tests/st1302/test_recorded_generation.py`: PASS (`50 passed`).
+- `pytest -q tests/st1302`: PASS (`254 passed`).
 - `python scripts/build_st1202_public_event_instrumentation.py --check`: PASS.
 - `python scripts/build_st1302_provider_fact_commit_recorded.py --check`: PASS
   (`ST-1302 recorded provider-fact projection checked`).
@@ -56,16 +60,10 @@ Unattributed 79, with difference 0.
 Introduced deferred verification debt: none. The formal/live items below are
 pre-existing Canonical gates and remain deliberately unclaimed.
 
-Pre-existing historical audit item: `python
-scripts/build_st1303_attribution_engine_reference_plan.py --check` reports
-`ST-1303 build failed: INPUT_HASH_DRIFT field=input` against the frozen,
-non-executable V1 reference artifacts. The drift predates and is not consumed by
-this V2 runtime; its affected owners are
-`attribution-engine-reference-plan.v1.json` and the V1 manifest. The executable
-V2 owner is `scripts/build_st1303_attribution_engine.py --check`, which is green.
-The safe impact is none at runtime because V1 has no activation or authority;
-historical V1 rebind/archive remains an integration-audit item rather than an
-ST-1303 V2 implementation debt.
+The historical non-executable V1 reference owner was rebound to the exact
+current ST-1302 artifact bytes, ST-0308 reference projection and shared owner
+helper. Both the V1 owner and executable V2 owner now pass generate and
+no-write `--check`; V1 remains inert with no activation or authority.
 
 ## Remaining formal/live work
 

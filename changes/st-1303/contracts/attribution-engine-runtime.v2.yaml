@@ -36,7 +36,7 @@ source_bindings:
     sha256: 03f334898c53ed39132c09460ff0ed1b44c17b41f245011c942ae3e7b6dd173c
   st1302_runtime:
     path: changes/st-1302/manifest.v2.yaml
-    sha256: 1c1ee418d69bf199730e9354f9197f166de96d2629dd22298dd058d1bf7b2790
+    sha256: cd49fd67e860a52670799bfaa8ec60711341ddc3fbbf37ceff89b76c85609dd9
   five_slot_measurement:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
     sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8

@@ -80,14 +80,14 @@ dependencies:
   st1302:
     story_id: ST-1302
     feature_commit: 96d388761f4e933f06760f3a7e3d3b0f2c12b65c
-    artifact_binding_commit: 54a6d21169f70a0093d8b10a3c9508d9a332c234
+    artifact_binding_commit: 02b7441f216e0ed01b3e8c6808db4ab7ec19be8d
     binding: EXACT_ARTIFACT_BYTES_AT_BINDING_COMMIT
     artifacts:
       changes/st-1302/README.md: 985ea23a3c06ca354f2e2852d24b1d2a037396c7d5472ff501227212c3f5f207
-      changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml: 6f4848b121ecdd31b63fda9b41488b2e690d839bb7d4806de1e09039a7418a10
-      changes/st-1302/generated/provider-fact-commit-reference-plan.v1.json: 3696e25dc436e669734449ded67699eaf9493ed5275a5fb4032fc17c9b64f4fc
-      changes/st-1302/manifest.yaml: a6c73192f5b3b419ac8e0fffec46e8dfc1978c240a3fb1843949097dc71003ec
-      scripts/build_st1302_provider_fact_commit_reference_plan.py: bc335568dbc774682001fd01cb4057acf3e8444a0dc21fb05bf8614fe987678a
+      changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml: b306ef823ed7e0bad404b63551c8015b09fed6f59dfba011ac6dd9b58d78adec
+      changes/st-1302/generated/provider-fact-commit-reference-plan.v1.json: b7b297ce8d2a09157262aa64348f7da6e22bbbd1c9c6615cf84cb2ea928b89d2
+      changes/st-1302/manifest.yaml: f28d364f8bd7b88abf6e3406b13928d64fea366715ad0dd868494a7b0cae2bdf
+      scripts/build_st1302_provider_fact_commit_reference_plan.py: d3d991b1e0049be11ebee5144fcf98638d001661aa157216fc6dd3f463a2196a
       tests/st1302/conftest.py: 2ee8fd7b038097a4457c6886343e0908b88a0b406186bd7f806c1755011875ab
       tests/st1302/test_contract.py: ca2c055f6e155a8bf8ccb8a199a7b4e84daee5f73ef57680d1fdf0196563a955
       tests/st1302/test_generation.py: 3eb59e0e5f4a297867b6505e41a92abfdece837812f88437fcdd38055d4c9055
@@ -141,7 +141,7 @@ source_pins:
     sha256: 0757434a72b22ae54dadd13edbd3d7995eaf0776a18ba69be5064f2db8e75e61
   st0308_persistence_plan:
     path: changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
-    sha256: 84a7068faf73ecb134145b31f1646e0af778bae9fd3263efec0498469d869dcc
+    sha256: c9562f65899e41fc086eedf6b7173ed99949e01769d7c72634bdb56ffd7040b8
   revenue_row_schema:
     path: contracts/raos-v0.4/contracts/schemas/imports/revenue-canonical-row.schema.json
     sha256: 02bc3d854a7420a74a8b302342a9ad0e23cfe4529565716a185c333b43ebbff8

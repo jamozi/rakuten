@@ -19,7 +19,7 @@
     "source_artifacts": [
       {
         "bytes": 5727,
-        "sha256": "fb6eb68a838f08ef8e52002da198424230cdf77f7bb4e4f9db21a94cd2c4d9b6",
+        "sha256": "f8fc2b3113387d419e675e9a286e008c806728a056281a3376ca367356b1d758",
         "uri": "repo://changes/st-1303/contracts/attribution-engine-runtime.v2.yaml"
       },
       {
@@ -38,18 +38,18 @@
         "uri": "repo://changes/st-1303/PREFLIGHT-v2.md"
       },
       {
-        "bytes": 3895,
-        "sha256": "ed507b9fa3bd668eb6b32e680ff4c1b4e72bd202a9c7f62f23bf4bc87017794b",
+        "bytes": 3741,
+        "sha256": "ca3e151269f530c5c4406474f2f4371f532a80b4d5166746ec8e6dac82b20e4e",
         "uri": "repo://changes/st-1303/LOCAL_COMPLETION-v2.md"
       },
       {
         "bytes": 24396,
-        "sha256": "872f76724aa942de4d94c0fad8c8e2574dea815463570d14c5defc715797e77f",
+        "sha256": "1f545ca4dd1aae2a7546c3b36122a417fcb7d6b89a3b60e58afe0792a36934f8",
         "uri": "repo://scripts/build_st1303_attribution_engine.py"
       },
       {
-        "bytes": 55008,
-        "sha256": "20d7fa4e365d80a000564279f138e7e544fbb8d0cf4158cbe503b56b6be24749",
+        "bytes": 55172,
+        "sha256": "b1fadc7d2446e943bd4e34a63016b883121566f3cb8c8f7b6fa04533b8d38b7c",
         "uri": "repo://python/raos/domain/finance/attribution.py"
       },
       {
@@ -63,8 +63,8 @@
         "uri": "repo://python/raos/application/finance/attribution.py"
       },
       {
-        "bytes": 15638,
-        "sha256": "a9d10fd9137264cd890f81acb10152dd8dbf8b296caae48ed44aea97e504d0d0",
+        "bytes": 15731,
+        "sha256": "8fc4912697e613b1fcedb2f66f9d19dea19351f5c02cc95f518ef673064e2dad",
         "uri": "repo://python/raos/adapters/recorded_attribution.py"
       },
       {
@@ -136,7 +136,7 @@
       },
       {
         "name": "st1302_runtime",
-        "sha256": "1c1ee418d69bf199730e9354f9197f166de96d2629dd22298dd058d1bf7b2790",
+        "sha256": "cd49fd67e860a52670799bfaa8ec60711341ddc3fbbf37ceff89b76c85609dd9",
         "uri": "repo://changes/st-1302/manifest.v2.yaml"
       },
       {
