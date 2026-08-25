@@ -59,7 +59,7 @@ FIXTURE_PATH: Final = Path(
 MANIFEST_PATH: Final = Path("changes/st-0806/manifest.v2.yaml")
 GENERATED_PATHS: Final = (PLAN_PATH, FIXTURE_PATH, MANIFEST_PATH)
 EXPECTED_CONTRACT_SHA256: Final = (
-    "67d505f445c912b7987180ccc7caeeeee04c1148a5a467a01dd3c2b835aeb966"
+    "42715fc526bcb4eddccbd836084769f7ef8886b7767ad806f33accdff4843bdd"
 )
 EXPECTED_POLICY_SHA256: Final = (
     "443b5ea91544ea1e8d5f9c7c2e71ebe331fda6f81397f0b51e25aa70da5c77f2"
@@ -281,7 +281,7 @@ def _load_contract(root: Path) -> dict[str, object]:
     consumer = cast(dict[str, object], consumer_value)
     if (
         consumer.get("contract_sha256")
-        != "3d881d352a1a9d253055930d4e6487154cc03a7e2e9489fd52ff81bb9b74bc7a"
+        != "54338981006281c8c2c683e6ba2b2415f6d6cadb981360c08907a00bdda9dee1"
         or consumer.get("policy_sha256")
         != "f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8"
         or consumer.get("owns_queue_state_or_cas") is not False

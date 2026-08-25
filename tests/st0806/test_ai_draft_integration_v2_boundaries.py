@@ -135,7 +135,7 @@ def test_values_are_redacted_frozen_and_non_pickleable() -> None:
 
 def test_contract_and_policy_inventory_is_closed_and_versioned() -> None:
     assert domain.CONTRACT_SHA256 == (
-        "67d505f445c912b7987180ccc7caeeeee04c1148a5a467a01dd3c2b835aeb966"
+        "42715fc526bcb4eddccbd836084769f7ef8886b7767ad806f33accdff4843bdd"
     )
     assert domain.POLICY_SHA256 == (
         "443b5ea91544ea1e8d5f9c7c2e71ebe331fda6f81397f0b51e25aa70da5c77f2"
