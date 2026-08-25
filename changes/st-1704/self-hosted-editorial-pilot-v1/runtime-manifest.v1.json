@@ -1726,9 +1726,9 @@
       "sha256": "9378e49990bf5d2ab099283f9d48d258396c057f9f306ac700c45719213a4449"
     },
     {
-      "bytes": 56375,
+      "bytes": 56540,
       "path": "scripts/st1704_official_source_capture.py",
-      "sha256": "87a9e1af2b20ba1d17dfc6908b7240ae18b051d468f7a7cfe2758182e77b8a22"
+      "sha256": "66ec5ab002abda5ee5ff117786672726c5939a3e421ff12090eb69413cf51e47"
     },
     {
       "bytes": 42098,

@@ -87,6 +87,8 @@ _BASE_RUNTIME_PATHS: Final[tuple[str, ...]] = (
     "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
     "changes/st-1704/self-hosted-editorial-pilot-v1/PREFLIGHT.md",
     "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
+    "changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_EXPERIMENT_RUNBOOK.md",
+    "changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_UNBLOCK_WORKLOG.md",
     "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
     "changes/st-1704/self-hosted-editorial-pilot-v1/media/product-media-registry.v1.json",
     "changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json",
