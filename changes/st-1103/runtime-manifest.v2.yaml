@@ -18,7 +18,7 @@ source_artifacts:
   role: OWNER_SOURCE
 - uri: repo://packages/web-ui/src/freshness-operations-workspace-v2.ts
   bytes: 30935
-  sha256: 2d58a8c280bd3cc04333ace3b5e619b2f60844af4aec1b0b79d7a5c3acc4490d
+  sha256: b8e2546bcc44aad6c9675ba3424948811843be36f0ebfc99cd315a18667aea10
   role: OWNER_SOURCE
 - uri: repo://packages/web-ui/src/index.ts
   bytes: 21657
