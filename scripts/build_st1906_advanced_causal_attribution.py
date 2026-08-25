@@ -63,7 +63,7 @@ REPORT_PATH: Final = Path("changes/st-1906/generated/causal-attribution-report.v
 MANIFEST_PATH: Final = Path("changes/st-1906/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1906_advanced_causal_attribution.py")
 HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
-BASE_COMMIT: Final = "e757ddd27f534d85a25383de1d438eb550fed8a6"
+BASE_COMMIT: Final = "54132aff878d3ef4fe879ca6abd575b267b8bbf5"
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 SHA256_PATTERN: Final = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 

@@ -78,15 +78,15 @@ authority:
 predecessor:
   story_id: ST-1303
   binding: EXACT_BASE_COMMIT_BYTES
-  base_commit: e757ddd27f534d85a25383de1d438eb550fed8a6
+  base_commit: 54132aff878d3ef4fe879ca6abd575b267b8bbf5
   artifacts:
-    changes/st-1303/contracts/attribution-engine-runtime.v2.yaml: fb6eb68a838f08ef8e52002da198424230cdf77f7bb4e4f9db21a94cd2c4d9b6
+    changes/st-1303/contracts/attribution-engine-runtime.v2.yaml: f8fc2b3113387d419e675e9a286e008c806728a056281a3376ca367356b1d758
     changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b
-    changes/st-1303/generated/attribution-engine-recorded.v2.json: 424e7aec5cb798416c23ad2613d2e8e9700c33e3a835d47ec73acafaaa5cfaeb
-    python/raos/domain/finance/attribution.py: 20d7fa4e365d80a000564279f138e7e544fbb8d0cf4158cbe503b56b6be24749
+    changes/st-1303/generated/attribution-engine-recorded.v2.json: a45dd5a69bc97a8983c1c30f60588a3c366cfbc97a677257295f6d4f78804277
+    python/raos/domain/finance/attribution.py: b1fadc7d2446e943bd4e34a63016b883121566f3cb8c8f7b6fa04533b8d38b7c
     python/raos/ports/attribution.py: 3d56b802a2898be2c14b45f03e7747400ec1a060b78db4fd1e139174bed73a42
     python/raos/application/finance/attribution.py: 9943325951342a3d21d23bcecc0e17b98082a4466d0a21643057997b0e254b4f
-    python/raos/adapters/recorded_attribution.py: a9d10fd9137264cd890f81acb10152dd8dbf8b296caae48ed44aea97e504d0d0
+    python/raos/adapters/recorded_attribution.py: 8fc4912697e613b1fcedb2f66f9d19dea19351f5c02cc95f518ef673064e2dad
     changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
   required_semantics:
     five_slot_contract: true

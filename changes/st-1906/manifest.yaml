@@ -7,9 +7,9 @@ document:
   authority: NONE
   production_eligible: false
 provenance:
-  base_commit: e757ddd27f534d85a25383de1d438eb550fed8a6
+  base_commit: 54132aff878d3ef4fe879ca6abd575b267b8bbf5
   contract_uri: repo://changes/st-1906/contracts/advanced-causal-attribution.v1.yaml
-  contract_sha256: 51de00e63a1b39207de86431d2a0ec45d4055bad58464d3eb177005a356b5827
+  contract_sha256: b31e8c07569b749477ce4b7a6df12b4a80545896b61c1c4b33fcd43df2cd4b33
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -37,26 +37,26 @@ provenance:
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
   predecessor_inputs:
   - uri: repo://changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: fb6eb68a838f08ef8e52002da198424230cdf77f7bb4e4f9db21a94cd2c4d9b6
+    sha256: f8fc2b3113387d419e675e9a286e008c806728a056281a3376ca367356b1d758
   - uri: repo://changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
     sha256: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b
   - uri: repo://changes/st-1303/generated/attribution-engine-recorded.v2.json
-    sha256: 424e7aec5cb798416c23ad2613d2e8e9700c33e3a835d47ec73acafaaa5cfaeb
+    sha256: a45dd5a69bc97a8983c1c30f60588a3c366cfbc97a677257295f6d4f78804277
   - uri: repo://python/raos/domain/finance/attribution.py
-    sha256: 20d7fa4e365d80a000564279f138e7e544fbb8d0cf4158cbe503b56b6be24749
+    sha256: b1fadc7d2446e943bd4e34a63016b883121566f3cb8c8f7b6fa04533b8d38b7c
   - uri: repo://python/raos/ports/attribution.py
     sha256: 3d56b802a2898be2c14b45f03e7747400ec1a060b78db4fd1e139174bed73a42
   - uri: repo://python/raos/application/finance/attribution.py
     sha256: 9943325951342a3d21d23bcecc0e17b98082a4466d0a21643057997b0e254b4f
   - uri: repo://python/raos/adapters/recorded_attribution.py
-    sha256: a9d10fd9137264cd890f81acb10152dd8dbf8b296caae48ed44aea97e504d0d0
+    sha256: 8fc4912697e613b1fcedb2f66f9d19dea19351f5c02cc95f518ef673064e2dad
   - uri: repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
     sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
 source_artifact_count: 19
 source_artifacts:
 - uri: repo://changes/st-1906/contracts/advanced-causal-attribution.v1.yaml
   bytes: 8751
-  sha256: 51de00e63a1b39207de86431d2a0ec45d4055bad58464d3eb177005a356b5827
+  sha256: b31e8c07569b749477ce4b7a6df12b4a80545896b61c1c4b33fcd43df2cd4b33
 - uri: repo://changes/st-1906/fixtures/recorded/causal-attribution.synthetic.v1.json
   bytes: 5542
   sha256: 667c42e8f6dd217d68df54b122ec4ee6315a8aca22e2011299dfcd9726708d2e
@@ -79,11 +79,11 @@ source_artifacts:
   bytes: 5032
   sha256: 96a84bd3860b5ba0175122d491bc3b49f372e81c1cd23d336f11f0454bc8bf7e
 - uri: repo://python/raos/adapters/recorded_causal_attribution.py
-  bytes: 10383
-  sha256: 8120ed6c1b12e44cb6d21a809c08230822199a06a2b5aa426fcd378ffd9419f6
+  bytes: 10537
+  sha256: bc94a5a9433432a8fd35cb3ee5320554b6bd3309facc0a4acc99e0cc001d2d14
 - uri: repo://scripts/build_st1906_advanced_causal_attribution.py
   bytes: 29664
-  sha256: 8dfcb3c04b6195d96c615afd143137f75ee7dec7f3916aec880a6012da18dfd3
+  sha256: 60ff7918475ce70ab4eb5574d69ebf4cee95d364e5046df4656ea2dbcf1c383e
 - uri: repo://scripts/secure_generated_publication.py
   bytes: 22651
   sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
