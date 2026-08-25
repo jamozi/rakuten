@@ -1,8 +1,7 @@
 """Owner-gated fixed-origin WordPress HTTPS adapter for ST-1704.
 
-The adapter exposes only three exact operations: create one review draft,
-reconcile that same draft by slug, and read the corresponding public post.  It
-has no generic request API and no publish, update, media, taxonomy, plugin,
+The adapter exposes only closed review-draft operations and fixed public reads.
+It has no generic request API and no publish, update, media, taxonomy, plugin,
 theme, delete, private-status, or scheduling path.
 """
 
@@ -10,7 +9,9 @@ from __future__ import annotations
 
 from collections.abc import Generator, Mapping
 from contextlib import contextmanager
+from dataclasses import dataclass
 from datetime import datetime
+from html import unescape
 from html.parser import HTMLParser
 import json
 import os
@@ -21,7 +22,8 @@ import ssl
 import stat
 import threading
 from typing import Final, NoReturn, cast, final
-from urllib.parse import urlsplit
+from urllib.parse import unquote_to_bytes, urlsplit
+import unicodedata
 import xml.etree.ElementTree as ElementTree
 
 from raos.adapters.self_hosted_wordpress_credentials import (
@@ -40,10 +42,15 @@ from raos.adapters.self_hosted_wordpress_https import (
     require_clean_self_hosted_wordpress_environment,
 )
 from raos.domain.editorial.self_hosted_editorial_pilot import (
+    CarryOnSingleUrlReconciliationBinding,
+    CarryOnSingleUrlReconciliationEvidence,
     EditorialPilotFailure,
     EditorialPilotFailureCode,
     PILOT_ARTICLE_IDENTITIES,
+    PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID,
+    PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID,
     PILOT_CREATE_PATH,
+    PILOT_CTA_LABEL,
     PILOT_ORIGIN,
     PILOT_POSTS_PATH,
     PILOT_PUBLIC_VERIFICATION_CHECKS,
@@ -83,13 +90,29 @@ _XML_CONTENT_TYPE = re.compile(
     r'(?:application|text)/xml(?:\s*;\s*charset="?utf-8"?)?\Z',
     re.ASCII | re.IGNORECASE,
 )
+_MALFORMED_PERCENT_ESCAPE = re.compile(r"%(?![0-9A-Fa-f]{2})", re.ASCII)
+_REMAINING_PERCENT_ESCAPE = re.compile(r"%[0-9A-Fa-f]{2}", re.ASCII)
+_REVIEW_LEAK_TOKEN = re.compile(r"[^\W_]{16,}", re.UNICODE)
+_REVIEW_LEAK_FRAGMENT_LENGTH: Final = 24
+_REVIEW_CTA_HIGH_SIGNAL_FRAGMENTS: Final = (
+    "楽天市場で写真・価格・在庫",
+    "楽天市場で写真・価格を見る",
+    "楽天市場で価格・在庫を見る",
+    "楽天市場で価格を見る",
+    "楽天市場で在庫を見る",
+)
 _RECOVERY_FIELDS: Final = (
     "id%2Ctype%2Cslug%2Cstatus%2Ccategories%2Cdate_gmt%2Cmodified_gmt%2Ctitle.raw%2C"
     "excerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1"
 )
 _TARGET_FIELDS: Final = "id%2Ctype%2Cslug%2Cstatus"
 _ALLOWED_COMMANDS: Final = frozenset(
-    {"create-review-draft", "recover-create-review-draft", "verify-public"}
+    {
+        "create-review-draft",
+        "recover-create-review-draft",
+        "verify-carry-on-single-url",
+        "verify-public",
+    }
 )
 _GATE_KEYS: Final = frozenset(
     {
@@ -137,6 +160,9 @@ _PUBLIC_KINDS: Final = frozenset(
         "page-sitemap",
         "publication-target",
         "related-target",
+        "review-draft-rest",
+        "review-public-rest",
+        "review-url-html",
     }
 )
 _HTML_VOID_TAGS: Final = frozenset(
@@ -157,6 +183,54 @@ _HTML_VOID_TAGS: Final = frozenset(
         "wbr",
     }
 )
+_REVIEW_EVIDENCE_KINDS: Final = frozenset(
+    {"review-draft-rest", "review-public-rest", "review-url-html"}
+)
+
+
+@dataclass(frozen=True, slots=True)
+class _FixedPublicReadCapture:
+    """One validated fixed GET plus the metadata needed for evidence hashing."""
+
+    kind: str
+    path: str
+    http_status: int
+    content_type: str
+    location_header: str | None
+    x_wp_total: str | None
+    x_wp_total_pages: str | None
+    body: bytes
+
+    def evidence_sha256(self) -> str:
+        if (
+            self.kind not in _REVIEW_EVIDENCE_KINDS
+            or type(self.path) is not str
+            or not self.path.startswith("/")
+            or type(self.http_status) is not int
+            or type(self.content_type) is not str
+            or self.location_header is not None
+            or (self.x_wp_total is not None and type(self.x_wp_total) is not str)
+            or (
+                self.x_wp_total_pages is not None
+                and type(self.x_wp_total_pages) is not str
+            )
+            or type(self.body) is not bytes
+        ):
+            _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+        return canonical_sha256(
+            {
+                "body_sha256": bytes_sha256(self.body),
+                "content_type": self.content_type,
+                "http_status": self.http_status,
+                "kind": self.kind,
+                "location_header": self.location_header,
+                "method": "GET",
+                "path": self.path,
+                "schema": "RAOS_ST1704_REVIEW_SURFACE_EVIDENCE_V1",
+                "x_wp_total": self.x_wp_total,
+                "x_wp_total_pages": self.x_wp_total_pages,
+            }
+        )
 
 
 def _fail(
@@ -1092,6 +1166,7 @@ class _HomepageClusterParser(HTMLParser):
         "cluster_links",
         "pilot_hrefs",
         "pilot_urls",
+        "review_href_count",
     )
 
     def __init__(self) -> None:
@@ -1107,9 +1182,13 @@ class _HomepageClusterParser(HTMLParser):
             f"{PILOT_ORIGIN}/{identity.slug}/" for identity in PILOT_ARTICLE_IDENTITIES
         }
         self.pilot_hrefs: list[str] = []
+        self.review_href_count = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         attributes = _html_attributes(attrs)
+        href_value = attributes.get("href")
+        if type(href_value) is str and _contains_review_draft_href(href_value):
+            self.review_href_count += 1
         class_value = attributes.get("class")
         classes = set(class_value.split()) if type(class_value) is str else set[str]()
         opened_container = False
@@ -1228,6 +1307,7 @@ def _validate_homepage_html(
         or parser.active_href is not None
         or parser.cluster_container_depth != 0
         or tuple(parser.cluster_links) != display_order
+        or parser.review_href_count != 0
     ):
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
     for cluster_id in display_order:
@@ -1622,6 +1702,203 @@ def _decode_surface_text(raw: bytes, *, maximum: int) -> str:
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
 
 
+class _ReviewLeakTextParser(HTMLParser):
+    __slots__ = ("parts", "suppressed_depth")
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.parts: list[str] = []
+        self.suppressed_depth = 0
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        del attrs
+        if tag.lower() in {"script", "style", "template"}:
+            self.suppressed_depth += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() in {"script", "style", "template"} and self.suppressed_depth:
+            self.suppressed_depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if self.suppressed_depth == 0 and data:
+            self.parts.append(data)
+
+
+def _normalized_review_leak_text(value: str) -> str:
+    decoded = unescape(value)
+    decoded = unescape(decoded)
+    normalized = unicodedata.normalize("NFKC", decoded).casefold()
+    return " ".join(normalized.split())
+
+
+def _review_leak_views(value: str) -> tuple[str, ...]:
+    decoded = unescape(unescape(value))
+    parser = _ReviewLeakTextParser()
+    try:
+        parser.feed(decoded)
+        parser.close()
+    except ValueError, TypeError, RecursionError:
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    raw = _normalized_review_leak_text(decoded)
+    visible = _normalized_review_leak_text(" ".join(parser.parts))
+    candidates = (raw, visible, re.sub(r"\s+", "", visible))
+    return tuple(dict.fromkeys(candidate for candidate in candidates if candidate))
+
+
+def _review_visible_leak_views(value: str) -> tuple[str, ...]:
+    """Return entity-decoded visible text without URL or attribute material."""
+
+    decoded = unescape(unescape(value))
+    parser = _ReviewLeakTextParser()
+    try:
+        parser.feed(decoded)
+        parser.close()
+    except ValueError, TypeError, RecursionError:
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    visible = _normalized_review_leak_text(" ".join(parser.parts))
+    candidates = (visible, re.sub(r"\s+", "", visible))
+    return tuple(dict.fromkeys(candidate for candidate in candidates if candidate))
+
+
+def _review_leak_fragments(values: tuple[str, ...]) -> set[str]:
+    fragments: set[str] = set()
+    for value in values:
+        for view in _review_visible_leak_views(value):
+            materials = (view, re.sub(r"\s+", "", view))
+            for material in materials:
+                if len(material) < _REVIEW_LEAK_FRAGMENT_LENGTH:
+                    continue
+                for offset in range(len(material) - _REVIEW_LEAK_FRAGMENT_LENGTH + 1):
+                    fragment = material[offset : offset + _REVIEW_LEAK_FRAGMENT_LENGTH]
+                    if sum(character.isalnum() for character in fragment) >= 16:
+                        fragments.add(fragment)
+    return fragments
+
+
+def _contains_review_leak_fragment(
+    observed_views: tuple[str, ...], fragments: set[str]
+) -> bool:
+    if not fragments:
+        return False
+    for view in observed_views:
+        for material in (view, re.sub(r"\s+", "", view)):
+            if len(material) < _REVIEW_LEAK_FRAGMENT_LENGTH:
+                continue
+            for offset in range(len(material) - _REVIEW_LEAK_FRAGMENT_LENGTH + 1):
+                if (
+                    material[offset : offset + _REVIEW_LEAK_FRAGMENT_LENGTH]
+                    in fragments
+                ):
+                    return True
+    return False
+
+
+def _review_snapshot_leak_fragments(
+    snapshot_json: str, *, canonical_url: str
+) -> set[str]:
+    """Keep snapshot windows except the expected clean canonical URL itself."""
+
+    allowed_canonical_views = _review_leak_views(canonical_url)
+    return {
+        fragment
+        for fragment in _review_leak_fragments((snapshot_json,))
+        if not any(fragment.strip('",') in view for view in allowed_canonical_views)
+    }
+
+
+def _contains_review_cta_fragment(observed_views: tuple[str, ...]) -> bool:
+    normalized_fragments = tuple(
+        _normalized_review_leak_text(fragment)
+        for fragment in _REVIEW_CTA_HIGH_SIGNAL_FRAGMENTS
+    )
+    return any(
+        fragment in observed
+        for fragment in normalized_fragments
+        for observed in observed_views
+    )
+
+
+def _validate_review_not_found_body(raw: bytes, *, request: ReviewDraftRequest) -> None:
+    """Reject a nominal 404 that contains committed editorial material."""
+
+    document = _decode_surface_text(raw, maximum=MAX_RESPONSE_BYTES)
+    exact_committed_values = (
+        request.title,
+        request.excerpt,
+        request.content,
+        request.snapshot.json_string(),
+    )
+    article_markers = (
+        PILOT_CTA_LABEL,
+        PILOT_SNAPSHOT_META_KEY,
+        "data-raos-article-id",
+        "hb.afl.rakuten.co.jp",
+        "raos-comparison",
+        "raos-cta",
+        "raos-disclosure",
+        "raos-product-card",
+        "raos-structured-data",
+    )
+    observed_views = _review_leak_views(document)
+    normalized_exact_values = tuple(
+        _normalized_review_leak_text(value) for value in exact_committed_values
+    )
+    article_fragment_sources = (
+        request.title,
+        request.excerpt,
+        request.content,
+    )
+    snapshot_json = request.snapshot.json_string()
+    snapshot_token_sources = (
+        snapshot_json,
+        request.snapshot.payload_sha256,
+        request.snapshot.payload.packet_sha256,
+        request.snapshot.payload.visible_content_sha256,
+    )
+    source_views = tuple(
+        view
+        for value in (*article_fragment_sources, *snapshot_token_sources)
+        for view in _review_leak_views(value)
+    )
+    allowed_canonical_views = _review_leak_views(request.snapshot.payload.canonical_url)
+    meaningful_tokens = {
+        match.group(0)
+        for view in source_views
+        for match in _REVIEW_LEAK_TOKEN.finditer(view)
+        if not any(match.group(0) in allowed for allowed in allowed_canonical_views)
+    }
+    if (
+        any(value in document for value in exact_committed_values)
+        or any(
+            value and any(value in observed for observed in observed_views)
+            for value in normalized_exact_values
+        )
+        or any(
+            marker.casefold() in observed
+            for marker in article_markers
+            for observed in observed_views
+        )
+        or any(
+            token in observed
+            for token in meaningful_tokens
+            for observed in observed_views
+        )
+        or _contains_review_cta_fragment(observed_views)
+        or _contains_review_leak_fragment(
+            observed_views,
+            _review_leak_fragments(article_fragment_sources),
+        )
+        or _contains_review_leak_fragment(
+            observed_views,
+            _review_snapshot_leak_fragments(
+                snapshot_json,
+                canonical_url=request.snapshot.payload.canonical_url,
+            ),
+        )
+    ):
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+
+
 def _robots_rule_matches(pattern: str, path: str) -> tuple[bool, int]:
     compact = pattern.replace(" ", "")
     if not compact:
@@ -1708,6 +1985,23 @@ def _validate_robots(raw: bytes, *, canonical_path: str) -> None:
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
 
 
+def _strict_percent_decoded_url_component(value: str) -> str:
+    if type(value) is not str or _MALFORMED_PERCENT_ESCAPE.search(value) is not None:
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    try:
+        decoded = unquote_to_bytes(value).decode("utf-8", errors="strict")
+    except UnicodeError, ValueError, TypeError:
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    if (
+        "%" in decoded
+        or _REMAINING_PERCENT_ESCAPE.search(decoded) is not None
+        or "\\" in decoded
+        or any(ord(character) < 32 or ord(character) == 127 for character in decoded)
+    ):
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    return unicodedata.normalize("NFKC", decoded)
+
+
 def _same_origin_url(value: object) -> str:
     if type(value) is not str or value != value.strip() or not value.isascii():
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
@@ -1716,6 +2010,7 @@ def _same_origin_url(value: object) -> str:
         port = parts.port
     except ValueError:
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    decoded_path = _strict_percent_decoded_url_component(parts.path)
     if (
         parts.scheme != "https"
         or parts.netloc != "kurashinoshirube.com"
@@ -1723,12 +2018,30 @@ def _same_origin_url(value: object) -> str:
         or parts.password is not None
         or port is not None
         or not parts.path.startswith("/")
+        or not decoded_path.startswith("/")
         or parts.query
         or parts.fragment
         or value != PILOT_ORIGIN + parts.path
     ):
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
     return value
+
+
+def _contains_review_draft_href(value: str) -> bool:
+    """Return whether one href exposes a temporary RAOS review slug."""
+
+    if type(value) is not str:
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    try:
+        parts = urlsplit(value)
+        components = (parts.netloc, parts.path, parts.query, parts.fragment)
+    except ValueError:
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    marker = "raos-review-"
+    return marker in value.casefold() or any(
+        marker in _strict_percent_decoded_url_component(component).casefold()
+        for component in components
+    )
 
 
 def _xml_document(raw: bytes) -> ElementTree.Element:
@@ -1797,7 +2110,11 @@ def _validate_post_and_page_sitemaps(
 ) -> None:
     post_urls = _sitemap_urls(post_raw)
     page_urls = _sitemap_urls(page_raw)
-    if post_urls.count(canonical_url) != 1 or canonical_url in page_urls:
+    if (
+        post_urls.count(canonical_url) != 1
+        or canonical_url in page_urls
+        or any(_contains_review_draft_href(url) for url in (*post_urls, *page_urls))
+    ):
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
 
 
@@ -2120,6 +2437,17 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
         kind: str,
         authorization: str,
     ) -> bytes:
+        return self._fixed_public_capture(
+            request, kind=kind, authorization=authorization
+        ).body
+
+    def _fixed_public_capture(
+        self,
+        request: ReviewDraftRequest,
+        *,
+        kind: str,
+        authorization: str,
+    ) -> _FixedPublicReadCapture:
         if kind not in _PUBLIC_KINDS or type(authorization) is not str:
             _fail(EditorialPilotFailureCode.OPERATION_NOT_ALLOWED)
         related_identity = (
@@ -2245,6 +2573,33 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                 False,
                 404,
             ),
+            "review-draft-rest": (
+                f"{PILOT_POSTS_PATH}?context=edit&slug={request.slug}"
+                f"&status={PILOT_REVIEW_STATUS}&_fields={_RECOVERY_FIELDS}"
+                "&page=1&per_page=100",
+                "application/json",
+                _CONTENT_TYPE,
+                MAX_RESPONSE_BYTES,
+                True,
+                200,
+            ),
+            "review-public-rest": (
+                f"{PILOT_POSTS_PATH}?slug={request.slug}&status=publish"
+                f"&_fields={_TARGET_FIELDS}&page=1&per_page=100",
+                "application/json",
+                _CONTENT_TYPE,
+                MAX_RESPONSE_BYTES,
+                False,
+                200,
+            ),
+            "review-url-html": (
+                f"/{request.slug}/",
+                "text/html",
+                _HTML_CONTENT_TYPE,
+                MAX_RESPONSE_BYTES,
+                False,
+                404,
+            ),
         }
         (
             path,
@@ -2273,13 +2628,22 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                 connection.set_read_timeout(READ_TIMEOUT_SECONDS)
                 connection.request("GET", path, b"", headers)
                 response = connection.getresponse()
+                http_status = response.status
                 content_type = response.getheader("Content-Type")
+                location_header = response.getheader("Location")
+                x_wp_total = response.getheader("X-WP-Total")
+                x_wp_total_pages = response.getheader("X-WP-TotalPages")
                 if (
-                    type(response.status) is not int
-                    or response.status != expected_status
+                    type(http_status) is not int
+                    or http_status != expected_status
                     or type(content_type) is not str
                     or content_type_pattern.fullmatch(content_type) is None
-                    or response.getheader("Location") is not None
+                    or location_header is not None
+                    or (x_wp_total is not None and type(x_wp_total) is not str)
+                    or (
+                        x_wp_total_pages is not None
+                        and type(x_wp_total_pages) is not str
+                    )
                 ):
                     _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
                 if kind == "article-html":
@@ -2385,7 +2749,49 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                         )
                     ):
                         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-                return raw
+                elif kind == "review-public-rest":
+                    decoded = _decode_response(raw)
+                    if type(decoded) is not list:
+                        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+                    collection = cast(list[object], decoded)
+                    if (
+                        collection
+                        or response.getheader("X-WP-Total") != "0"
+                        or response.getheader("X-WP-TotalPages") != "0"
+                        or not _collection_link_header_is_fixed(
+                            response.getheader("Link")
+                        )
+                    ):
+                        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+                elif kind == "review-draft-rest":
+                    decoded = _decode_response(raw)
+                    if type(decoded) is not list:
+                        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+                    collection = cast(list[object], decoded)
+                    expected_count = (
+                        1
+                        if request.article_id == "st1703-first-suitcase-comparison"
+                        else 0
+                    )
+                    if (
+                        len(collection) != expected_count
+                        or x_wp_total != str(expected_count)
+                        or x_wp_total_pages != ("1" if expected_count else "0")
+                        or not _collection_link_header_is_fixed(
+                            response.getheader("Link")
+                        )
+                    ):
+                        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+                return _FixedPublicReadCapture(
+                    kind=kind,
+                    path=path,
+                    http_status=http_status,
+                    content_type=content_type,
+                    location_header=location_header,
+                    x_wp_total=x_wp_total,
+                    x_wp_total_pages=x_wp_total_pages,
+                    body=raw,
+                )
         except EditorialPilotFailure:
             raise
         except BaseException:
@@ -2564,17 +2970,24 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
             live_authority=True,
         )
 
-    def verify_public(
-        self, request: ReviewDraftRequest, expected_public_post_id: int
+    def _verify_public_surfaces(
+        self,
+        request: ReviewDraftRequest,
+        expected_public_post_id: int,
+        *,
+        command: str,
     ) -> PublicVerification:
-        if type(request) is not ReviewDraftRequest:
+        if type(request) is not ReviewDraftRequest or command not in {
+            "verify-carry-on-single-url",
+            "verify-public",
+        }:
             _fail(EditorialPilotFailureCode.REQUEST_INVALID)
         if (
             type(expected_public_post_id) is not int
             or not 1 <= expected_public_post_id <= (1 << 63) - 1
         ):
             _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-        self.preflight(request, "verify-public")
+        self.preflight(request, command)
         self._claim_attempt()
         authorization = self._credentials_header()
         rest_raw = self._fixed_public_read(
@@ -2656,6 +3069,40 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
             kind="core-sitemap",
             authorization=authorization,
         )
+        review_draft_rest_capture = self._fixed_public_capture(
+            request,
+            kind="review-draft-rest",
+            authorization=authorization,
+        )
+        review_draft_rows = cast(
+            list[object], _decode_response(review_draft_rest_capture.body)
+        )
+        review_draft_post_id = (
+            _validate_post(
+                review_draft_rows[0],
+                request=request,
+                expected_status=PILOT_REVIEW_STATUS,
+            )
+            if request.article_id == PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID
+            else None
+        )
+        if (
+            request.article_id == PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID
+            and review_draft_post_id
+            != PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID
+        ):
+            _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+        review_public_rest_capture = self._fixed_public_capture(
+            request,
+            kind="review-public-rest",
+            authorization=authorization,
+        )
+        review_url_html_capture = self._fixed_public_capture(
+            request,
+            kind="review-url-html",
+            authorization=authorization,
+        )
+        _validate_review_not_found_body(review_url_html_capture.body, request=request)
         _validate_article_html(
             article_raw,
             request=request,
@@ -2687,6 +3134,15 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
             "page_sitemap_sha256": bytes_sha256(page_sitemap_raw),
             "post_sitemap_sha256": bytes_sha256(post_sitemap_raw),
             "related_target_sha256": related_target_sha256,
+            "review_draft_rest_evidence_sha256": (
+                review_draft_rest_capture.evidence_sha256()
+            ),
+            "review_public_rest_evidence_sha256": (
+                review_public_rest_capture.evidence_sha256()
+            ),
+            "review_url_html_evidence_sha256": (
+                review_url_html_capture.evidence_sha256()
+            ),
             "robots_sha256": bytes_sha256(robots_raw),
             "sitemap_index_sha256": bytes_sha256(sitemap_index_raw),
         }
@@ -2699,7 +3155,7 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
             status="publish",
             target_public_post_id=(
                 expected_public_post_id
-                if request.article_id == "st1703-first-suitcase-comparison"
+                if request.article_id == PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID
                 else None
             ),
             expected_public_post_id=expected_public_post_id,
@@ -2713,11 +3169,46 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
             post_sitemap_sha256=surface_hashes["post_sitemap_sha256"],
             page_sitemap_sha256=surface_hashes["page_sitemap_sha256"],
             related_target_sha256=surface_hashes["related_target_sha256"],
+            review_draft_post_id=review_draft_post_id,
+            review_draft_rest_evidence_sha256=surface_hashes[
+                "review_draft_rest_evidence_sha256"
+            ],
+            review_public_rest_evidence_sha256=surface_hashes[
+                "review_public_rest_evidence_sha256"
+            ],
+            review_url_html_evidence_sha256=surface_hashes[
+                "review_url_html_evidence_sha256"
+            ],
             public_surface_sha256=canonical_sha256(surface_hashes),
             verified_checks=PILOT_PUBLIC_VERIFICATION_CHECKS,
             public_surface_verified=True,
             recorded_evidence_only=False,
             live_read=True,
+        )
+
+    def verify_public(
+        self, request: ReviewDraftRequest, expected_public_post_id: int
+    ) -> PublicVerification:
+        return self._verify_public_surfaces(
+            request,
+            expected_public_post_id,
+            command="verify-public",
+        )
+
+    def verify_carry_on_single_url(
+        self, binding: CarryOnSingleUrlReconciliationBinding
+    ) -> CarryOnSingleUrlReconciliationEvidence:
+        if type(binding) is not CarryOnSingleUrlReconciliationBinding:
+            _fail(EditorialPilotFailureCode.OPERATION_NOT_ALLOWED)
+        verification = self._verify_public_surfaces(
+            binding.request,
+            binding.target_public_post_id,
+            command="verify-carry-on-single-url",
+        )
+        if verification.review_draft_post_id != binding.expected_review_draft_post_id:
+            _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+        return CarryOnSingleUrlReconciliationEvidence.from_strict_verification(
+            binding, verification
         )
 
 

@@ -1637,12 +1637,13 @@ def test_capture_cli_refuses_arbitrary_identifier_url_and_output(
     assert rejected.value.code == 2
 
 
-def test_existing_wordpress_cli_remains_exactly_four_commands() -> None:
+def test_existing_wordpress_cli_remains_exactly_five_commands() -> None:
     namespace = runpy.run_path(str(WORDPRESS_SCRIPT))
     assert namespace["COMMANDS"] == (
         "prepare",
         "create-review-draft",
         "recover-create-review-draft",
+        "verify-carry-on-single-url",
         "verify-public",
     )
     parser = namespace["_parser"]()

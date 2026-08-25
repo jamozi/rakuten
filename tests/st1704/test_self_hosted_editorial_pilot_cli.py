@@ -21,6 +21,7 @@ import pytest
 import raos.adapters.self_hosted_editorial_pilot_https as https_module
 import raos.adapters.self_hosted_editorial_pilot_json as json_module
 import raos.application.editorial.self_hosted_editorial_pilot as application_module
+import raos.domain.editorial.self_hosted_editorial_pilot as domain_module
 from raos.adapters.self_hosted_editorial_pilot_https import (
     OWNER_GATE_AUTHORITY,
     OWNER_GATE_DIRECTORY,
@@ -42,6 +43,7 @@ from raos.adapters.self_hosted_editorial_pilot_json import (
     rakuten_affiliate_response_relative_path,
     rakuten_image_relative_path,
     rakuten_response_relative_path,
+    request_artifact_relative_path,
     source_body_relative_path,
     source_evidence_relative_path,
 )
@@ -49,11 +51,17 @@ from raos.application.editorial.self_hosted_editorial_pilot import (
     prepare_editorial_article,
 )
 from raos.domain.editorial.self_hosted_editorial_pilot import (
+    CarryOnSingleUrlReconciliationBinding,
+    CarryOnSingleUrlReconciliationEvidence,
     EditorialPilotFailure,
     EditorialPilotFailureCode,
     PILOT_ARTICLE_IDENTITIES,
+    PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID,
+    PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID,
+    PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID,
     PILOT_CREATE_PATH,
     PILOT_CTA_LABEL,
+    PILOT_PUBLIC_VERIFICATION_CHECKS,
     PILOT_SNAPSHOT_META_KEY,
     OfficialSourceCaptureEvidence,
     PublicVerification,
@@ -495,8 +503,16 @@ def private_root() -> Iterator[Path]:
 
 
 class _ArtifactJournalPort:
-    def __init__(self, *, create_fails: bool = False) -> None:
+    def __init__(
+        self,
+        *,
+        create_fails: bool = False,
+        recover_fails: bool = False,
+        target_public_post_id: int = 42,
+    ) -> None:
         self.create_fails = create_fails
+        self.recover_fails = recover_fails
+        self.target_public_post_id = target_public_post_id
         self.created: list[ReviewDraftRequest] = []
         self.recovered: list[ReviewDraftRequest] = []
         self.verified: list[ReviewDraftRequest] = []
@@ -509,6 +525,7 @@ class _ArtifactJournalPort:
         assert command in {
             "create-review-draft",
             "recover-create-review-draft",
+            "verify-carry-on-single-url",
             "verify-public",
         }
 
@@ -516,7 +533,11 @@ class _ArtifactJournalPort:
         self, request: ReviewDraftRequest, command: str
     ) -> int | None:
         assert command in {"create-review-draft", "recover-create-review-draft"}
-        return 42 if request.article_id == "st1703-first-suitcase-comparison" else None
+        return (
+            self.target_public_post_id
+            if request.article_id == PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID
+            else None
+        )
 
     def create(self, request: ReviewDraftRequest) -> ReviewDraftReceipt:
         self.created.append(request)
@@ -526,6 +547,8 @@ class _ArtifactJournalPort:
 
     def recover(self, request: ReviewDraftRequest) -> ReviewDraftReceipt:
         self.recovered.append(request)
+        if self.recover_fails:
+            raise EditorialPilotFailure(EditorialPilotFailureCode.OUTCOME_AMBIGUOUS)
         return self._receipt(request, ReviewDraftDisposition.OWNER_LIVE_RECOVERED)
 
     def verify_public(
@@ -542,9 +565,50 @@ class _ArtifactJournalPort:
             status="publish",
         )
 
-    @staticmethod
+    def verify_carry_on_single_url(
+        self, binding: CarryOnSingleUrlReconciliationBinding
+    ) -> CarryOnSingleUrlReconciliationEvidence:
+        request = binding.request
+        self.verified.append(request)
+        self.verified_public_post_ids.append(binding.target_public_post_id)
+        surface_hashes = {
+            "article_html_sha256": "1" * 64,
+            "category_sha256": "2" * 64,
+            "core_sitemap_sha256": "3" * 64,
+            "homepage_html_sha256": "4" * 64,
+            "homepage_targets_sha256": "5" * 64,
+            "page_sitemap_sha256": "6" * 64,
+            "post_sitemap_sha256": "7" * 64,
+            "related_target_sha256": "8" * 64,
+            "review_draft_rest_evidence_sha256": "9" * 64,
+            "review_public_rest_evidence_sha256": "a" * 64,
+            "review_url_html_evidence_sha256": "b" * 64,
+            "robots_sha256": "c" * 64,
+            "sitemap_index_sha256": "d" * 64,
+        }
+        strict_verification = PublicVerification(
+            article_id=request.article_id,
+            packet_sha256=request.packet_sha256,
+            request_sha256=request.request_sha256,
+            response_sha256="e" * 64,
+            post_id=binding.target_public_post_id,
+            status="publish",
+            expected_public_post_id=binding.target_public_post_id,
+            target_public_post_id=binding.target_public_post_id,
+            review_draft_post_id=binding.expected_review_draft_post_id,
+            public_surface_sha256=canonical_sha256(surface_hashes),
+            verified_checks=PILOT_PUBLIC_VERIFICATION_CHECKS,
+            public_surface_verified=True,
+            recorded_evidence_only=False,
+            live_read=True,
+            **surface_hashes,
+        )
+        return CarryOnSingleUrlReconciliationEvidence.from_strict_verification(
+            binding, strict_verification
+        )
+
     def _receipt(
-        request: ReviewDraftRequest, disposition: ReviewDraftDisposition
+        self, request: ReviewDraftRequest, disposition: ReviewDraftDisposition
     ) -> ReviewDraftReceipt:
         return ReviewDraftReceipt(
             article_id=request.article_id,
@@ -554,7 +618,9 @@ class _ArtifactJournalPort:
             draft_id=1704,
             disposition=disposition,
             target_public_post_id=(
-                42 if request.article_id == "st1703-first-suitcase-comparison" else None
+                self.target_public_post_id
+                if request.article_id == PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID
+                else None
             ),
             recorded_evidence_only=False,
             live_authority=True,
@@ -1569,13 +1635,16 @@ class _QueueFactory:
 
 
 def _wp_post(
-    status: str = "draft", candidate: object | None = None
+    status: str = "draft",
+    candidate: object | None = None,
+    *,
+    post_id: int = 1704,
 ) -> dict[str, object]:
     candidate = request() if candidate is None else candidate
     post: dict[str, object] = {
         "content": {"raw": candidate.content},
         "excerpt": {"raw": candidate.excerpt},
-        "id": 1704,
+        "id": post_id,
         "meta": {PILOT_SNAPSHOT_META_KEY: candidate.snapshot.json_string()},
         "slug": candidate.slug if status == "draft" else candidate.public_slug,
         "status": status,
@@ -1641,11 +1710,16 @@ def _public_article_html(candidate: object) -> bytes:
         f'<meta property="{name}" content="{value}">'
         for name, value in properties.items()
     )
+    navigation = https_module._load_theme_related_navigation(  # type: ignore[attr-defined]
+        REPOSITORY_ROOT
+    )
+    home_url, home_label = cast(
+        tuple[str, str], navigation[candidate.article_id]["home"]
+    )
     related = (
         '<aside class="raos-related-guides" aria-labelledby="raos-related-title">'
         '<h2 id="raos-related-title">関連記事</h2><ul><li>'
-        '<a href="https://kurashinoshirube.com/#cluster-ready">'
-        "暮らしの道具「備え」の一覧へ</a></li></ul></aside>"
+        f'<a href="{home_url}">{home_label}</a></li></ul></aside>'
     )
     return (
         "<!doctype html><html><head>"
@@ -1707,11 +1781,15 @@ def _url_sitemap(*urls: str) -> bytes:
     ).encode()
 
 
-def _public_connections(candidate: object) -> list[_Connection]:
+def _public_connections(
+    candidate: object, *, public_post_id: int = 1704
+) -> list[_Connection]:
     return [
         _Connection(
             _Response(
-                canonical_json_bytes([_wp_post("publish", candidate)]),
+                canonical_json_bytes(
+                    [_wp_post("publish", candidate, post_id=public_post_id)]
+                ),
                 status=200,
                 total="1",
                 pages="1",
@@ -1727,10 +1805,16 @@ def _public_connections(candidate: object) -> list[_Connection]:
                 pages="1",
             )
         ),
-        _Connection(_Response(b"[]", status=200, total="0", pages="0")),
+        *(
+            [_Connection(_Response(b"[]", status=200, total="0", pages="0"))]
+            if candidate.article_id != "st1703-first-suitcase-comparison"
+            else []
+        ),
         _Connection(
             _Response(
-                canonical_json_bytes([_wp_post("publish", candidate)]),
+                canonical_json_bytes(
+                    [_wp_post("publish", candidate, post_id=public_post_id)]
+                ),
                 status=200,
                 total="1",
                 pages="1",
@@ -1781,7 +1865,97 @@ def _public_connections(candidate: object) -> list[_Connection]:
                 content_type="text/html; charset=UTF-8",
             )
         ),
+        _Connection(
+            _Response(
+                (
+                    canonical_json_bytes(
+                        [
+                            _wp_post(
+                                "draft",
+                                candidate,
+                                post_id=(
+                                    PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID
+                                ),
+                            )
+                        ]
+                    )
+                    if candidate.article_id == "st1703-first-suitcase-comparison"
+                    else b"[]"
+                ),
+                status=200,
+                total=(
+                    "1"
+                    if candidate.article_id == "st1703-first-suitcase-comparison"
+                    else "0"
+                ),
+                pages=(
+                    "1"
+                    if candidate.article_id == "st1703-first-suitcase-comparison"
+                    else "0"
+                ),
+            )
+        ),
+        _Connection(_Response(b"[]", status=200, total="0", pages="0")),
+        _Connection(
+            _Response(
+                b"<html><body>review not found</body></html>",
+                status=404,
+                content_type="text/html; charset=UTF-8",
+            )
+        ),
     ]
+
+
+def _review_surface_evidence_sha256(kind: str, path: str, response: _Response) -> str:
+    return canonical_sha256(
+        {
+            "body_sha256": bytes_sha256(response.body),
+            "content_type": response.content_type,
+            "http_status": response.status,
+            "kind": kind,
+            "location_header": response.getheader("Location"),
+            "method": "GET",
+            "path": path,
+            "schema": "RAOS_ST1704_REVIEW_SURFACE_EVIDENCE_V1",
+            "x_wp_total": response.getheader("X-WP-Total"),
+            "x_wp_total_pages": response.getheader("X-WP-TotalPages"),
+        }
+    )
+
+
+def _synthetic_carry_on_reconciliation_binding(
+    candidate: ReviewDraftRequest, monkeypatch: pytest.MonkeyPatch
+) -> CarryOnSingleUrlReconciliationBinding:
+    artifact_sha256 = "a" * 64
+    monkeypatch.setattr(
+        domain_module,
+        "PILOT_CARRY_ON_RECONCILIATION_PACKET_SHA256",
+        candidate.packet_sha256,
+    )
+    monkeypatch.setattr(
+        domain_module,
+        "PILOT_CARRY_ON_RECONCILIATION_REQUEST_SHA256",
+        candidate.request_sha256,
+    )
+    monkeypatch.setattr(
+        domain_module,
+        "PILOT_CARRY_ON_RECONCILIATION_PAYLOAD_SHA256",
+        candidate.snapshot.payload_sha256,
+    )
+    monkeypatch.setattr(
+        domain_module,
+        "PILOT_CARRY_ON_RECONCILIATION_ARTIFACT_SHA256",
+        artifact_sha256,
+    )
+    return CarryOnSingleUrlReconciliationBinding(
+        request=candidate,
+        request_artifact_sha256=artifact_sha256,
+        journal_state="RECOVERY_ATTEMPTED",
+        target_public_post_id=PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID,
+        expected_review_draft_post_id=(
+            PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID
+        ),
+    )
 
 
 def _install_fake_live_boundary(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -2072,6 +2246,34 @@ def test_verify_public_checks_exact_anonymous_surface_and_bound_post_id(
     assert verification.homepage_html_sha256
     assert verification.homepage_targets_sha256
     assert verification.core_sitemap_sha256
+    assert verification.review_draft_post_id is None
+    assert verification.review_draft_rest_evidence_sha256
+    assert verification.review_public_rest_evidence_sha256
+    assert verification.review_url_html_evidence_sha256
+    assert verification.verified_checks == PILOT_PUBLIC_VERIFICATION_CHECKS
+    assert verification.public_surface_sha256 == canonical_sha256(
+        {
+            "article_html_sha256": verification.article_html_sha256,
+            "category_sha256": verification.category_sha256,
+            "core_sitemap_sha256": verification.core_sitemap_sha256,
+            "homepage_html_sha256": verification.homepage_html_sha256,
+            "homepage_targets_sha256": verification.homepage_targets_sha256,
+            "page_sitemap_sha256": verification.page_sitemap_sha256,
+            "post_sitemap_sha256": verification.post_sitemap_sha256,
+            "related_target_sha256": verification.related_target_sha256,
+            "review_draft_rest_evidence_sha256": (
+                verification.review_draft_rest_evidence_sha256
+            ),
+            "review_public_rest_evidence_sha256": (
+                verification.review_public_rest_evidence_sha256
+            ),
+            "review_url_html_evidence_sha256": (
+                verification.review_url_html_evidence_sha256
+            ),
+            "robots_sha256": verification.robots_sha256,
+            "sitemap_index_sha256": verification.sitemap_index_sha256,
+        }
+    )
     assert not factory.connections
     observed = [connection.observed for connection in connections]
     assert all(value is not None for value in observed)
@@ -2082,6 +2284,15 @@ def test_verify_public_checks_exact_anonymous_surface_and_bound_post_id(
     assert paths[1].startswith("/wp-json/wp/v2/categories?search=")
     assert "slug=anker-solix-c300-c800-c1000-differences" in paths[2]
     assert paths[3].startswith("/wp-json/wp/v2/posts?context=edit&status=publish&slug=")
+    review_draft_path = (
+        f"/wp-json/wp/v2/posts?context=edit&slug={candidate.slug}&status=draft"
+        f"&_fields={https_module._RECOVERY_FIELDS}&page=1&per_page=100"  # type: ignore[attr-defined]
+    )
+    review_public_path = (
+        f"/wp-json/wp/v2/posts?slug={candidate.slug}&status=publish"
+        "&_fields=id%2Ctype%2Cslug%2Cstatus&page=1&per_page=100"
+    )
+    review_url_path = f"/{candidate.slug}/"
     assert paths[4:] == [
         "/portable-power-station-guide/",
         "/",
@@ -2090,14 +2301,173 @@ def test_verify_public_checks_exact_anonymous_surface_and_bound_post_id(
         "/post-sitemap.xml",
         "/page-sitemap.xml",
         "/wp-sitemap.xml",
+        review_draft_path,
+        review_public_path,
+        review_url_path,
     ]
+    assert verification.review_draft_rest_evidence_sha256 == (
+        _review_surface_evidence_sha256(
+            "review-draft-rest", review_draft_path, connections[11].response
+        )
+    )
+    assert verification.review_public_rest_evidence_sha256 == (
+        _review_surface_evidence_sha256(
+            "review-public-rest", review_public_path, connections[12].response
+        )
+    )
+    assert verification.review_url_html_evidence_sha256 == (
+        _review_surface_evidence_sha256(
+            "review-url-html", review_url_path, connections[13].response
+        )
+    )
     headers = [
         cast(tuple[str, str, bytes, dict[str, str]], value)[3] for value in observed
     ]
     assert "Authorization" in headers[0]
     assert "Authorization" in headers[2]
     assert "Authorization" in headers[3]
-    assert all("Authorization" not in value for value in headers[1:2] + headers[4:])
+    assert "Authorization" in headers[11]
+    assert all(
+        "Authorization" not in value
+        for index, value in enumerate(headers)
+        if index not in {0, 2, 3, 11}
+    )
+
+
+def test_verify_public_binds_the_retained_at003_review_draft(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    candidate = _prepared_request("st1703-first-suitcase-comparison")
+    connections = _public_connections(candidate)
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=_QueueFactory(*connections)
+    )
+
+    verification = adapter.verify_public(candidate, 1704)
+
+    assert (
+        verification.review_draft_post_id
+        == PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID
+    )
+    with pytest.raises(EditorialPilotFailure) as cloned_id:
+        replace(verification, review_draft_post_id=27)
+    assert cloned_id.value.code is EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH
+    draft_observation = cast(
+        tuple[str, str, bytes, dict[str, str]], connections[-3].observed
+    )
+    assert draft_observation[1].startswith(
+        f"/wp-json/wp/v2/posts?context=edit&slug={candidate.slug}&status=draft"
+    )
+    assert "Authorization" in draft_observation[3]
+    assert verification.review_draft_rest_evidence_sha256 == (
+        _review_surface_evidence_sha256(
+            "review-draft-rest",
+            draft_observation[1],
+            connections[-3].response,
+        )
+    )
+
+
+def test_carry_on_reconciliation_uses_its_distinct_owner_gate_and_fixed_ids(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    candidate = cast(
+        ReviewDraftRequest,
+        _prepared_request(PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID),
+    )
+    binding = _synthetic_carry_on_reconciliation_binding(candidate, monkeypatch)
+    connections = _public_connections(
+        candidate,
+        public_post_id=PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID,
+    )
+    observed_commands: list[str] = []
+
+    def capture_gate(_root: Path, _request: ReviewDraftRequest, command: str) -> None:
+        observed_commands.append(command)
+
+    monkeypatch.setattr(https_module, "require_owner_live_gate", capture_gate)
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=_QueueFactory(*connections)
+    )
+
+    evidence = adapter.verify_carry_on_single_url(binding)
+
+    assert observed_commands == ["verify-carry-on-single-url"]
+    assert type(evidence) is CarryOnSingleUrlReconciliationEvidence
+    assert (
+        evidence.post_id
+        == evidence.target_public_post_id
+        == PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID
+    )
+    assert (
+        evidence.review_draft_post_id
+        == PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID
+    )
+    assert evidence.formal_gate_eligible is False
+    assert evidence.public_surface_verified is False
+    assert evidence.strict_public_checks_passed is True
+    assert evidence.reconciliation_status == "PENDING_HUMAN_EXCEPTION"
+    assert evidence.status == "READ_ONLY_RECONCILIATION_EVIDENCE"
+    assert evidence.public_post_status == "publish"
+    assert evidence.production_evidence is False
+    assert evidence.publication_authority is False
+    with pytest.raises(EditorialPilotFailure) as promoted:
+        replace(evidence, public_surface_verified=True)
+    assert promoted.value.code is EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected_code"),
+    [
+        ("missing", EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH),
+        ("wrong-retained-id", EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH),
+        ("wrong-title", EditorialPilotFailureCode.OUTCOME_AMBIGUOUS),
+    ],
+)
+def test_verify_public_rejects_missing_or_mismatched_at003_review_draft(
+    private_root: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+    expected_code: EditorialPilotFailureCode,
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    candidate = _prepared_request("st1703-first-suitcase-comparison")
+    connections = _public_connections(candidate)
+    response = connections[-3].response
+    if mutation == "missing":
+        response.body = b"[]"
+        response.total = "0"
+        response.pages = "0"
+    elif mutation == "wrong-title":
+        post = _wp_post(
+            "draft",
+            candidate,
+            post_id=PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID,
+        )
+        cast(dict[str, object], post["title"])["raw"] = "異なるレビュー題名"
+        response.body = canonical_json_bytes([post])
+    elif mutation == "wrong-retained-id":
+        response.body = canonical_json_bytes(
+            [
+                _wp_post(
+                    "draft",
+                    candidate,
+                    post_id=(PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID + 1),
+                )
+            ]
+        )
+    else:
+        raise AssertionError("unknown mutation")
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=_QueueFactory(*connections)
+    )
+
+    with pytest.raises(EditorialPilotFailure) as failure:
+        adapter.verify_public(candidate, 1704)
+
+    assert failure.value.code is expected_code
 
 
 @pytest.mark.parametrize(
@@ -2114,10 +2484,30 @@ def test_verify_public_checks_exact_anonymous_surface_and_bound_post_id(
         ("bot-noindex", 4),
         ("missing-related", 4),
         ("homepage-unbound-link", 5),
+        ("homepage-review-link", 5),
+        ("homepage-review-percent-encoded", 5),
+        ("homepage-review-percent-encoded-authority", 5),
+        ("homepage-review-malformed-percent", 5),
         ("target-robots-disallow", 6),
         ("malformed-sitemap-port", 7),
+        ("duplicate-clean-canonical", 8),
+        ("post-sitemap-review-url", 8),
+        ("post-sitemap-review-url-double-encoded", 8),
+        ("page-sitemap-clean-canonical", 9),
+        ("page-sitemap-review-url", 9),
+        ("page-sitemap-review-url-percent-encoded", 9),
         ("wrong-category", 1),
         ("core-sitemap-enabled", 10),
+        ("promoted-review-draft-still-present", 11),
+        ("review-public-rest-nonempty", 12),
+        ("review-url-redirect", 13),
+        ("review-url-public", 13),
+        ("review-url-body-leak", 13),
+        ("review-url-partial-content-leak", 13),
+        ("review-url-entity-title-leak", 13),
+        ("review-url-snapshot-payload-sha-leak", 13),
+        ("review-url-snapshot-interior-leak", 13),
+        ("review-url-shortened-cta-leak", 13),
     ],
 )
 def test_verify_public_rejects_duplicate_or_unindexable_public_surfaces(
@@ -2187,6 +2577,34 @@ def test_verify_public_rejects_duplicate_or_unindexable_public_surfaces(
             ),
             1,
         )
+    elif mutation == "homepage-review-link":
+        response.body = response.body.replace(
+            b"</body>",
+            (f'<a href="/?next={candidate.slug}">Review</a></body>'.encode()),
+        )
+    elif mutation == "homepage-review-percent-encoded":
+        response.body = response.body.replace(
+            b"</body>",
+            (
+                f'<a href="/%72aos%2Dreview-{candidate.request_sha256}/">'
+                "Review</a></body>"
+            ).encode(),
+        )
+    elif mutation == "homepage-review-percent-encoded-authority":
+        response.body = response.body.replace(
+            b"</body>",
+            (
+                f'<a href="https://%72aos%2Dreview-{candidate.request_sha256}.example/">'
+                "Review</a></body>"
+            ).encode(),
+        )
+    elif mutation == "homepage-review-malformed-percent":
+        response.body = response.body.replace(
+            b"</body>",
+            (
+                f'<a href="/raos%2review-{candidate.request_sha256}/">Review</a></body>'
+            ).encode(),
+        )
     elif mutation == "target-robots-disallow":
         response.body = response.body.replace(
             b"Disallow:\n",
@@ -2197,6 +2615,56 @@ def test_verify_public_rejects_duplicate_or_unindexable_public_surfaces(
             b"https://kurashinoshirube.com/post-sitemap.xml",
             b"https://kurashinoshirube.com:invalid/post-sitemap.xml",
         )
+    elif mutation == "duplicate-clean-canonical":
+        response.body = response.body.replace(
+            b"</urlset>",
+            (
+                f"<url><loc>{candidate.snapshot.payload.canonical_url}</loc>"
+                "</url></urlset>"
+            ).encode(),
+        )
+    elif mutation == "post-sitemap-review-url":
+        response.body = response.body.replace(
+            b"</urlset>",
+            (
+                f"<url><loc>https://kurashinoshirube.com/{candidate.slug}/</loc>"
+                "</url></urlset>"
+            ).encode(),
+        )
+    elif mutation == "post-sitemap-review-url-double-encoded":
+        response.body = response.body.replace(
+            b"</urlset>",
+            (
+                "<url><loc>https://kurashinoshirube.com/"
+                f"%2572aos%252Dreview-{candidate.request_sha256}/</loc>"
+                "</url></urlset>"
+            ).encode(),
+        )
+    elif mutation == "page-sitemap-clean-canonical":
+        response.body = response.body.replace(
+            b"</urlset>",
+            (
+                f"<url><loc>{candidate.snapshot.payload.canonical_url}</loc>"
+                "</url></urlset>"
+            ).encode(),
+        )
+    elif mutation == "page-sitemap-review-url":
+        response.body = response.body.replace(
+            b"</urlset>",
+            (
+                f"<url><loc>https://kurashinoshirube.com/{candidate.slug}/</loc>"
+                "</url></urlset>"
+            ).encode(),
+        )
+    elif mutation == "page-sitemap-review-url-percent-encoded":
+        response.body = response.body.replace(
+            b"</urlset>",
+            (
+                "<url><loc>https://kurashinoshirube.com/"
+                f"%72aos%2Dreview-{candidate.request_sha256}/</loc>"
+                "</url></urlset>"
+            ).encode(),
+        )
     elif mutation == "wrong-category":
         response.body = canonical_json_bytes(
             [{"id": 42, "name": "未分類", "slug": "uncategorized"}]
@@ -2205,6 +2673,44 @@ def test_verify_public_rejects_duplicate_or_unindexable_public_surfaces(
         response.status = 200
         response.content_type = "application/xml"
         response.body = _sitemap_index()
+    elif mutation == "promoted-review-draft-still-present":
+        response.body = canonical_json_bytes([_wp_post("draft", candidate, post_id=26)])
+        response.total = "1"
+        response.pages = "1"
+    elif mutation == "review-public-rest-nonempty":
+        response.body = canonical_json_bytes([_wp_post("publish", candidate)])
+        response.total = "1"
+        response.pages = "1"
+    elif mutation == "review-url-redirect":
+        response.headers["Location"] = candidate.snapshot.payload.canonical_url
+    elif mutation == "review-url-public":
+        response.status = 200
+    elif mutation == "review-url-body-leak":
+        response.body = _public_article_html(candidate)
+    elif mutation == "review-url-partial-content-leak":
+        fragment = (
+            "容量が大きいほど自分に合うとは限らないことです。使いたい機器の消費電力"
+        )
+        assert fragment in candidate.content
+        response.body = f"<html><body>{fragment}</body></html>".encode()
+    elif mutation == "review-url-entity-title-leak":
+        fragment = candidate.title[2:32]
+        encoded = "".join(f"&#x{ord(character):x};" for character in fragment)
+        response.body = f"<html><body>{encoded}</body></html>".encode()
+    elif mutation == "review-url-snapshot-payload-sha-leak":
+        response.body = (
+            f"<html><body>{candidate.snapshot.payload_sha256}</body></html>".encode()
+        )
+    elif mutation == "review-url-snapshot-interior-leak":
+        snapshot = candidate.snapshot.json_string()
+        start = snapshot.index('"canonical_url"')
+        fragment = snapshot[start : start + 70]
+        assert len(fragment) == 70
+        response.body = f"<html><body>{fragment}</body></html>".encode()
+    elif mutation == "review-url-shortened-cta-leak":
+        response.body = (
+            "<html><body>楽天市場で写真・価格・在庫を確認する</body></html>".encode()
+        )
     else:
         raise AssertionError("unknown mutation")
 
@@ -2214,6 +2720,26 @@ def test_verify_public_rejects_duplicate_or_unindexable_public_surfaces(
     with pytest.raises(EditorialPilotFailure) as failure:
         adapter.verify_public(candidate, 1704)
     assert failure.value.code is EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH
+
+
+def test_review_404_leak_guard_allows_clean_canonical_navigation_only(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    candidate = _prepared_request()
+    connections = _public_connections(candidate)
+    connections[13].response.body = (
+        '<html><body><a href="'
+        f"{candidate.snapshot.payload.canonical_url}"
+        '">公開記事へ戻る</a></body></html>'
+    ).encode()
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=_QueueFactory(*connections)
+    )
+
+    verification = adapter.verify_public(candidate, 1704)
+
+    assert verification.public_surface_verified is True
 
 
 def test_verify_public_rejects_x_robots_none_and_wrong_post_identity(
@@ -2272,10 +2798,170 @@ def test_cli_verify_uses_committed_artifact_without_reprepare(
 
     assert result["packet_sha256"] == original.request.packet_sha256
     assert result["request_sha256"] == original.request.request_sha256
+    assert "review_draft_post_id" in result
+    assert "review_draft_rest_evidence_sha256" in result
+    assert "review_public_rest_evidence_sha256" in result
+    assert "review_url_html_evidence_sha256" in result
     assert cli_port.verified == [original.request]
     assert cli_port.verified_public_post_ids == [1704]
     with pytest.raises(AssertionError, match="current-evidence prepare"):
         run("create-review-draft", article_id)
+
+
+def test_cli_carry_on_reconciliation_is_non_formal_and_never_reprepares(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    candidate = cast(
+        ReviewDraftRequest,
+        _prepared_request(PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID),
+    )
+    binding = _synthetic_carry_on_reconciliation_binding(candidate, monkeypatch)
+    cli_port = _ArtifactJournalPort(
+        target_public_post_id=PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID
+    )
+
+    class _ReadOnlyReconciliationJournal:
+        def __init__(self, root: Path, port: object) -> None:
+            assert root == private_root
+            assert port is cli_port
+
+        def carry_on_single_url_reconciliation_binding(
+            self, article_id: str
+        ) -> CarryOnSingleUrlReconciliationBinding:
+            if article_id != PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID:
+                raise EditorialPilotFailure(
+                    EditorialPilotFailureCode.OPERATION_NOT_ALLOWED
+                )
+            return binding
+
+    def reprepare_forbidden(*_args: object, **_kwargs: object) -> object:
+        raise AssertionError("reconciliation attempted current-evidence prepare")
+
+    monkeypatch.setattr(
+        application_module, "prepare_editorial_article", reprepare_forbidden
+    )
+    monkeypatch.setattr(
+        https_module,
+        "OfficialSelfHostedEditorialPilotWordPressAdapter",
+        lambda _root: cli_port,
+    )
+    monkeypatch.setattr(
+        json_module,
+        "OwnerPrivateLiveReviewDraftJournal",
+        _ReadOnlyReconciliationJournal,
+    )
+    namespace = runpy.run_path(str(SCRIPT))
+    run = namespace["_run"]
+    run.__globals__["REPOSITORY_ROOT"] = private_root
+
+    result = run(
+        "verify-carry-on-single-url",
+        PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID,
+    )
+
+    assert result["command"] == "verify-carry-on-single-url"
+    assert result["authority"] == "OWNER_GATED_READ_ONLY_RECONCILIATION"
+    assert result["journal_state"] == "RECOVERY_ATTEMPTED"
+    assert result["reconciliation_status"] == "PENDING_HUMAN_EXCEPTION"
+    assert result["formal_gate_eligible"] is False
+    assert result["journal_mutated"] is False
+    assert result["production_evidence"] is False
+    assert result["publication_authority"] is False
+    assert result["strict_public_checks_passed"] is True
+    assert result["public_surface_verified"] is False
+    assert result["expected_public_post_id"] == 19
+    assert result["expected_review_draft_post_id"] == 26
+    assert result["review_draft_post_id"] == 26
+    assert result["payload_sha256"] == candidate.snapshot.payload_sha256
+    assert result["request_artifact_sha256"] == binding.request_artifact_sha256
+    assert cli_port.verified == [candidate]
+    assert cli_port.verified_public_post_ids == [19]
+    with pytest.raises(Exception) as other_article:
+        run("verify-carry-on-single-url", "st1704-portable-power-station-guide")
+    assert getattr(other_article.value, "code", None) == "OPERATION_NOT_ALLOWED"
+
+
+def test_terminal_carry_on_reconciliation_load_is_exact_and_journal_read_only(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    candidate = cast(
+        ReviewDraftRequest,
+        _prepared_request(PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID),
+    )
+    initial = OwnerPrivateLiveReviewDraftJournal(
+        private_root,
+        _ArtifactJournalPort(
+            create_fails=True,
+            target_public_post_id=(PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID),
+        ),
+    )
+    with pytest.raises(EditorialPilotFailure):
+        initial.create(candidate)
+    terminal = OwnerPrivateLiveReviewDraftJournal(
+        private_root,
+        _ArtifactJournalPort(
+            recover_fails=True,
+            target_public_post_id=(PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID),
+        ),
+    )
+    with pytest.raises(EditorialPilotFailure):
+        terminal.recover(candidate)
+
+    artifact_path = private_root / request_artifact_relative_path(candidate)
+    artifact_sha256 = bytes_sha256(artifact_path.read_bytes())
+    monkeypatch.setattr(
+        domain_module,
+        "PILOT_CARRY_ON_RECONCILIATION_PACKET_SHA256",
+        candidate.packet_sha256,
+    )
+    monkeypatch.setattr(
+        domain_module,
+        "PILOT_CARRY_ON_RECONCILIATION_REQUEST_SHA256",
+        candidate.request_sha256,
+    )
+    monkeypatch.setattr(
+        domain_module,
+        "PILOT_CARRY_ON_RECONCILIATION_PAYLOAD_SHA256",
+        candidate.snapshot.payload_sha256,
+    )
+    monkeypatch.setattr(
+        domain_module,
+        "PILOT_CARRY_ON_RECONCILIATION_ARTIFACT_SHA256",
+        artifact_sha256,
+    )
+    journal_directory = private_root / ".secrets" / OWNER_DIRECTORY / JOURNAL_DIRECTORY
+    journal_path = next(
+        journal_directory.glob(f"{candidate.article_id}.*.live.v1.json")
+    )
+    before_entries = tuple(sorted(path.name for path in journal_directory.iterdir()))
+    before_journal = journal_path.read_bytes()
+    before_artifact = artifact_path.read_bytes()
+    before_journal_stat = journal_path.stat()
+    before_artifact_stat = artifact_path.stat()
+
+    binding = terminal.carry_on_single_url_reconciliation_binding(candidate.article_id)
+
+    assert binding.request == candidate
+    assert binding.request_artifact_sha256 == artifact_sha256
+    assert binding.journal_state == "RECOVERY_ATTEMPTED"
+    assert binding.target_public_post_id == 19
+    assert binding.expected_review_draft_post_id == 26
+    assert not binding.formal_gate_eligible
+    assert not binding.journal_mutated
+    assert before_entries == tuple(
+        sorted(path.name for path in journal_directory.iterdir())
+    )
+    assert journal_path.read_bytes() == before_journal
+    assert artifact_path.read_bytes() == before_artifact
+    assert journal_path.stat().st_mtime_ns == before_journal_stat.st_mtime_ns
+    assert journal_path.stat().st_ctime_ns == before_journal_stat.st_ctime_ns
+    assert artifact_path.stat().st_mtime_ns == before_artifact_stat.st_mtime_ns
+    assert artifact_path.stat().st_ctime_ns == before_artifact_stat.st_ctime_ns
+    with pytest.raises(EditorialPilotFailure) as other_article:
+        terminal.carry_on_single_url_reconciliation_binding(
+            "st1704-portable-power-station-guide"
+        )
+    assert other_article.value.code is EditorialPilotFailureCode.OPERATION_NOT_ALLOWED
 
 
 def test_cli_recover_uses_intent_artifact_without_reprepare(
@@ -2318,7 +3004,7 @@ def test_cli_recover_uses_intent_artifact_without_reprepare(
     assert recovery_port.recovered == [original.request]
 
 
-def test_cli_exposes_only_four_commands_and_no_caller_selected_path() -> None:
+def test_cli_exposes_only_five_commands_and_no_caller_selected_path() -> None:
     environment = {
         **os.environ,
         "LANG": "C",
@@ -2346,6 +3032,7 @@ def test_cli_exposes_only_four_commands_and_no_caller_selected_path() -> None:
         "prepare",
         "create-review-draft",
         "recover-create-review-draft",
+        "verify-carry-on-single-url",
         "verify-public",
     ):
         assert command in help_result.stdout
@@ -2367,6 +3054,22 @@ def test_cli_exposes_only_four_commands_and_no_caller_selected_path() -> None:
     )
     assert rejected.returncode == 2
     assert "unrecognized arguments" in rejected.stderr
+    rejected_article = subprocess.run(
+        [
+            str(REPOSITORY_ROOT / ".venv/bin/python"),
+            str(SCRIPT),
+            "verify-carry-on-single-url",
+            "--article-id",
+            "st1704-portable-power-station-guide",
+        ],
+        cwd=REPOSITORY_ROOT,
+        env=environment,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert rejected_article.returncode == 2
+    assert "invalid choice" in rejected_article.stderr
 
 
 def test_at003_receipt_emits_complete_fixed_tools_assertion_url() -> None:

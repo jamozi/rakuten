@@ -43,8 +43,8 @@ WordPress request and exposes no caller URL or generic HTTP interface. Zero or
 multiple exact product identities stop the affected article.
 
 Run it only through the isolated command in `OPERATIONS_RUNBOOK.md`. Its separate
-runtime manifest leaves the existing four-command WordPress runtime and the ST-1703
-predecessor unchanged.
+runtime manifest remains independent from the closed five-command WordPress runtime
+and leaves the ST-1703 predecessor unchanged.
 
 ## External action boundary
 
@@ -143,6 +143,34 @@ WordPress revision are the manual recovery sources. The CLI cannot invoke this s
 and still has no public update or publish command.
 
 `REVENUE_UNBLOCK_WORKLOG.md` records the sanitized 2026-08-26 containment handoff.
+The additive
+`../carry-on-single-url-evidence-loop-v1/` overlay closes the read-only carry-on
+evidence loop: `verify-public` now requires the exact derived Review URL to be an
+anonymous 404 with no redirect, its anonymous public REST projection to be empty,
+all home-page hrefs and both post/page sitemaps to exclude `raos-review-*`, and the
+clean canonical to appear exactly once in the post sitemap and never in the page
+sitemap. Its existing authenticated owner boundary must find retained AT-003 Draft
+post ID 26 exactly and zero Draft rows for the other four promoted Review
+slugs. Each Review-surface evidence digest binds path, status, content type,
+`Location`, REST count headers, and body SHA-256; a nominal 404 containing committed
+article fragments, including snapshot JSON interior, payload SHA-256,
+HTML-entity-encoded text, and high-signal shortened CTA fragments, is rejected.
+Article fragments use visible text rather than HTML attributes; snapshot comparison
+excludes only windows or tokens wholly contained in the expected clean canonical URL.
+Review routes are strictly percent-decoded once across authority, path, query, and
+fragment; malformed, ambiguous, and double-encoded variants fail closed on home and
+sitemap surfaces.
+
+AT-003's current owner journal is terminal `RECOVERY_ATTEMPTED`, so ordinary
+`verify-public` remains unavailable and `COMMITTED`-only. The separate
+`verify-carry-on-single-url` command reads only the worklog-fixed immutable artifact,
+public post ID 19, and Review Draft ID 26 without creating or locking journal state.
+Its output is explicitly `formal_gate_eligible=false`,
+`reconciliation_status=PENDING_HUMAN_EXCEPTION`, and never Production evidence. No
+redirect or deletion authority is added. The adapter exposes only the dedicated
+`CarryOnSingleUrlReconciliationEvidence` result, whose invariants keep
+`public_surface_verified=false` and `strict_public_checks_passed=true`; its internal
+strict `PublicVerification` is not returned.
 After a final URL is human-published and verified, use
 `REVENUE_EXPERIMENT_RUNBOOK.md` with the existing owner-private affiliate-learning
 V2 interface; neither document grants live mutation authority.

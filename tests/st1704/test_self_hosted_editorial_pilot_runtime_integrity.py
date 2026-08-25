@@ -235,6 +235,11 @@ def test_external_dependency_cannot_prepopulate_raos_before_verified_loader(
     )
     imported = cast(types.ModuleType, CLI_GLOBALS["importlib"])
     original_import = cast(Callable[[str], types.ModuleType], imported.import_module)
+    # Load the fixed external set before replacing ``importlib.import_module``.
+    # Otherwise a first import can retain the test injector as a module-local
+    # alias after monkeypatch teardown and contaminate the following test.
+    for dependency in cast(tuple[str, ...], CLI["_EXTERNAL_DEPENDENCIES"]):
+        original_import(dependency)
     loader_calls = 0
 
     def injecting_import(name: str) -> types.ModuleType:

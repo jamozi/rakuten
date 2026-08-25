@@ -15,8 +15,11 @@ from typing import Final, NoReturn, cast, final
 import zlib
 
 from raos.domain.editorial.self_hosted_editorial_pilot import (
+    CarryOnSingleUrlReconciliationBinding,
     EditorialPilotFailure,
     EditorialPilotFailureCode,
+    PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID,
+    PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID,
     PILOT_ORIGIN,
     PILOT_REVIEW_STATUS,
     PILOT_SNAPSHOT_META_KEY,
@@ -2169,6 +2172,79 @@ def _load_journal_bound_request_locked(
     return request, state
 
 
+def _load_terminal_reconciliation_request_read_only(
+    repository_root: Path,
+    journal_directory: Path,
+    *,
+    article_id: str,
+) -> tuple[ReviewDraftRequest, dict[str, object], str]:
+    """Read the sole terminal exception without creating or locking journal state."""
+
+    if article_id != PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID:
+        _fail(EditorialPilotFailureCode.OPERATION_NOT_ALLOWED)
+    candidates = _live_journal_candidates(journal_directory, article_id)
+    if len(candidates) != 1:
+        _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+    journal_path = candidates[0]
+    journal_raw = _read_private_file(
+        journal_path,
+        maximum_bytes=MAX_JOURNAL_BYTES,
+        missing_code=EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+    )
+    header = _decode_live_journal_header(journal_raw, expected_article_id=article_id)
+    if (
+        journal_path.name
+        != _live_journal_name_for(article_id, cast(str, header["packet_sha256"]))
+        or header["state"] != "RECOVERY_ATTEMPTED"
+    ):
+        _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+    request_directory = _request_layout(
+        repository_root,
+        create=False,
+        missing_code=EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+    )
+    artifact_name = cast(str, header["request_artifact_name"])
+    artifact_candidates = _request_artifact_candidates(request_directory, article_id)
+    if len(artifact_candidates) != 1 or artifact_candidates[0].name != artifact_name:
+        _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+    artifact_path = artifact_candidates[0]
+    artifact_raw = _read_private_file(
+        artifact_path,
+        maximum_bytes=MAX_REQUEST_ARTIFACT_BYTES,
+        missing_code=EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+    )
+    request, artifact_sha256 = _decode_request_artifact(
+        artifact_raw, expected_article_id=article_id
+    )
+    if artifact_sha256 != header["request_artifact_sha256"]:
+        _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+    state = _decode_live_journal(
+        journal_raw,
+        request,
+        request_artifact_name=artifact_name,
+        request_artifact_sha256=artifact_sha256,
+    )
+    if (
+        _read_private_file(
+            journal_path,
+            maximum_bytes=MAX_JOURNAL_BYTES,
+            missing_code=EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+        )
+        != journal_raw
+        or _read_private_file(
+            artifact_path,
+            maximum_bytes=MAX_REQUEST_ARTIFACT_BYTES,
+            missing_code=EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+        )
+        != artifact_raw
+        or _live_journal_candidates(journal_directory, article_id) != candidates
+        or _request_artifact_candidates(request_directory, article_id)
+        != artifact_candidates
+    ):
+        _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+    return request, state, artifact_sha256
+
+
 @final
 class OwnerPrivateLiveReviewDraftJournal:
     """Write durable intent before the sole owner-gated live POST or recovery GET."""
@@ -2381,6 +2457,41 @@ class OwnerPrivateLiveReviewDraftJournal:
         else:
             expected_public_post_id = _positive_post_id(state["draft_id"])
         return request, expected_public_post_id
+
+    def carry_on_single_url_reconciliation_binding(
+        self, article_id: str
+    ) -> CarryOnSingleUrlReconciliationBinding:
+        """Read the one fixed RECOVERY_ATTEMPTED exception without journal writes."""
+
+        if article_id != PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID:
+            _fail(EditorialPilotFailureCode.OPERATION_NOT_ALLOWED)
+        owner, _secrets = _owner_base_layout(
+            self._root,
+            create=False,
+            missing_code=EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+        )
+        journal = _private_child(
+            owner,
+            JOURNAL_DIRECTORY,
+            create=False,
+            missing_code=EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+        )
+        request, state, artifact_sha256 = (
+            _load_terminal_reconciliation_request_read_only(
+                self._root,
+                journal,
+                article_id=article_id,
+            )
+        )
+        return CarryOnSingleUrlReconciliationBinding(
+            request=request,
+            request_artifact_sha256=artifact_sha256,
+            journal_state=cast(str, state["state"]),
+            target_public_post_id=_positive_post_id(state["target_public_post_id"]),
+            expected_review_draft_post_id=(
+                PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID
+            ),
+        )
 
     def public_target(self, request: ReviewDraftRequest) -> int | None:
         """Read the committed publication target without any external action."""

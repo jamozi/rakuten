@@ -11,6 +11,26 @@
   "generated_by": "scripts/build_st1704_self_hosted_editorial_manifest.py",
   "paths": [
     {
+      "bytes": 9864,
+      "path": "changes/st-1704/carry-on-single-url-evidence-loop-v1/DESIGN_HANDOFF_V1.yaml",
+      "sha256": "7c5d832b4c0c4fa59e82af6ed405fe3cf9dce6cf2ddf16cbb8cce5c410a39e92"
+    },
+    {
+      "bytes": 3500,
+      "path": "changes/st-1704/carry-on-single-url-evidence-loop-v1/PREFLIGHT.md",
+      "sha256": "70302e8008dd979880b5f0daf436a20d806990b9d14c8e6a69eaad638f87da93"
+    },
+    {
+      "bytes": 3941,
+      "path": "changes/st-1704/carry-on-single-url-evidence-loop-v1/README.md",
+      "sha256": "360064173bed5d96c30cf3668c1b1089e38b4aab5952aea0198d0b73fcab1bb5"
+    },
+    {
+      "bytes": 5793,
+      "path": "changes/st-1704/carry-on-single-url-evidence-loop-v1/contracts/carry-on-single-url-evidence-loop.v1.json",
+      "sha256": "8b6aa2491021618f02f6d9296874d4bfa75cdad1a7ae204d6b06949ad3de6e24"
+    },
+    {
       "bytes": 7691,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
       "sha256": "d8fc10e0822b228e0b87445aa4166134822cb30d1e4d98199bffcb6d8e7db6a8"
@@ -23,12 +43,12 @@
     {
       "bytes": 3612,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
-      "sha256": "c57a5f563d39adf03172f921133647bf92be40e62c59d7d8086440f21545f50b"
+      "sha256": "8e1ba9b5cdab55268b36800a3a7f6d1b899cae46927b7ee9043c43ec58585849"
     },
     {
-      "bytes": 26387,
+      "bytes": 28817,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "488089438c2f771615dbd173e31b05020e48be4d77436b879f8c295280c9045d"
+      "sha256": "0383738ca861160bff42852fb9b83e7124b088f7f6945b909ed149744a0e835a"
     },
     {
       "bytes": 2486,
@@ -36,9 +56,9 @@
       "sha256": "a6bb1182c3c2013eda5d16b4ed3201700b2d525afc4654ae02c1ade399ca8aa6"
     },
     {
-      "bytes": 8562,
+      "bytes": 10571,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
-      "sha256": "c24d3e41138a3358393d169f5c9153bae453c95ca1a2a79b5998f225fd3d456a"
+      "sha256": "46caf7e4bd288b39d60f67b7b9d5af2521b4cd43ed605b08e7f2d882eea3f971"
     },
     {
       "bytes": 4525,
@@ -46,9 +66,9 @@
       "sha256": "217e2dab5519432a2e43cc84449aa4bf7e5691908cd610e4c85b5dd8111e58eb"
     },
     {
-      "bytes": 7293,
+      "bytes": 9965,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_UNBLOCK_WORKLOG.md",
-      "sha256": "e1c61c25d6c7441be04644b4a46cff11d98e0856379d430c4324a8d50c046d36"
+      "sha256": "ccfff1f1c0eb2f7f328034514319cedcfbde777cbc4ecec1ee2076c79744436d"
     },
     {
       "bytes": 111502,
@@ -156,14 +176,14 @@
       "sha256": "a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac"
     },
     {
-      "bytes": 105363,
+      "bytes": 123938,
       "path": "python/raos/adapters/self_hosted_editorial_pilot_https.py",
-      "sha256": "eb805e837ec7bc5a75870505527bb3f776a0927c68c1412d90da5b9ff9fd2425"
+      "sha256": "2eaf571898db90cff68c1e9e8ee9f70be96c0e98ce33b2f5445370a10edb7d45"
     },
     {
-      "bytes": 90381,
+      "bytes": 94777,
       "path": "python/raos/adapters/self_hosted_editorial_pilot_json.py",
-      "sha256": "72e6c6c1bff82423629ba02729beb4f0ce6dcd13b088c1f8111cbf2b787e041e"
+      "sha256": "93331970e785dbe7761fa71ba6947b7048240659f3d984fe232c930130b85434"
     },
     {
       "bytes": 53919,
@@ -206,9 +226,9 @@
       "sha256": "69f4c373dca5ddcbebf7dcefc23a8a9376792ca85b70fb3d48d6137212fb6f27"
     },
     {
-      "bytes": 54968,
+      "bytes": 68546,
       "path": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
-      "sha256": "bd9fac2d684db686c901575835d49f721b395ca13f66c378e83d1ed760ecf804"
+      "sha256": "a6656fda5534a796a0a8d9d146d140fa3996bb91673720c10e92f1ac6650aac8"
     },
     {
       "bytes": 11383,
@@ -1716,9 +1736,9 @@
       "sha256": "c9928badddb180761299688f261e58694b357d22b99dfe7f91f44bfaa507a25d"
     },
     {
-      "bytes": 10053,
+      "bytes": 10340,
       "path": "scripts/build_st1704_self_hosted_editorial_manifest.py",
-      "sha256": "cc486666714d78e7e68562a756ed35c8897b3692cbefa83d7ccc445b6ae3de14"
+      "sha256": "938a01c984fb06f10044491800cb4069aba6759237e578be2799d428495326c7"
     },
     {
       "bytes": 14966,
@@ -1726,14 +1746,14 @@
       "sha256": "ea4c96f32e4bc5e62dbe78a5c26edf5b570544f75514fd1699ecb2d2146cbe12"
     },
     {
-      "bytes": 56540,
+      "bytes": 56878,
       "path": "scripts/st1704_official_source_capture.py",
-      "sha256": "66ec5ab002abda5ee5ff117786672726c5939a3e421ff12090eb69413cf51e47"
+      "sha256": "2e8804cfadf6dc12323a419d0096abfca855b673693cbcfcfae2955a57486fc1"
     },
     {
-      "bytes": 42098,
+      "bytes": 45536,
       "path": "scripts/st1704_self_hosted_editorial_pilot.py",
-      "sha256": "b9deadc3660aaa8b7ed9f9dede5de9b18b1db5d727c483bead6d4dff369d4863"
+      "sha256": "8c39f4fa0969fbb51ff07fc7355ffce592ffadb14694cbfc130ce0a3a4754578"
     }
   ],
   "predecessor": {
