@@ -4,13 +4,14 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Iterator
 from decimal import Decimal
 import hashlib
 import json
 import os
 from pathlib import Path
 import stat
-from typing import NoReturn, cast
+from typing import NoReturn, Protocol, cast
 
 import yaml
 from jsonschema import Draft202012Validator  # type: ignore[import-untyped]
@@ -32,6 +33,10 @@ METRIC_SCALE = 1_000_000
 
 class St0707BuildError(RuntimeError):
     pass
+
+
+class _JsonSchemaValidator(Protocol):
+    def iter_errors(self, instance: object) -> Iterator[object]: ...
 
 
 def _fail() -> NoReturn:
@@ -59,7 +64,7 @@ def _sha(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
 
-def _repository_path(root: Path, relative: Path) -> Path:
+def _repository_path(root: object, relative: object) -> Path:
     if (
         not isinstance(root, Path)
         or not isinstance(relative, Path)
@@ -161,9 +166,12 @@ def _boolean(value: object) -> bool:
 
 
 def _list(value: object, maximum: int = 256) -> list[object]:
-    if type(value) is not list or len(value) > maximum:
+    if type(value) is not list:
         _fail()
-    return cast(list[object], value)
+    items = cast(list[object], value)
+    if len(items) > maximum:
+        _fail()
+    return items
 
 
 def _contract(root: Path) -> dict[str, object]:
@@ -332,7 +340,7 @@ def _render_registry(
     if len(zero_tolerance) != 8 or len(set(zero_tolerance)) != 8:
         _fail()
     st0705 = _mapping(contract["st0705_bindings"])
-    source = {
+    source: dict[str, object] = {
         "bindings": {
             "evaluation_catalog_sha256": inputs["evaluation_catalog"][2],
             "profile_registry_sha256": inputs["st0705_profile_registry"][2],
@@ -405,9 +413,10 @@ def _render_dataset(
     try:
         evaluation_case_schema = json.loads(inputs["evaluation_case_schema"][1])
         Draft202012Validator.check_schema(evaluation_case_schema)
-        errors = tuple(
-            Draft202012Validator(evaluation_case_schema).iter_errors(evaluation_case)
+        validator = cast(
+            _JsonSchemaValidator, Draft202012Validator(evaluation_case_schema)
         )
+        errors = tuple(validator.iter_errors(evaluation_case))
     except Exception:
         _fail()
     if errors:

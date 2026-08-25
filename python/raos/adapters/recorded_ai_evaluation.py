@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Iterator
 from types import MappingProxyType
-from typing import Mapping, NoReturn, SupportsIndex, cast, final
+from typing import Mapping, NoReturn, Protocol, SupportsIndex, cast, final
 
 from jsonschema import Draft202012Validator  # type: ignore[import-untyped]
 
@@ -33,15 +34,19 @@ from raos.domain.ai.output_validation import evaluate_ai_output
 _MAX_ARTIFACT_BYTES = 4 * 1024 * 1024
 _MAX_COLLECTION = 256
 _EXPECTED_ST0705 = {
-    "runtime_contract": "26673778bd1d73110714ca7568b16d249599069fcc2a59f9505d49086fbed2e6",
-    "profile_registry": "1831c39897914faa3695eef1b2ca8239d3172f937f00511d173aa41a3074592b",
-    "recorded_fixture": "903ff2a612f5754259fad9664c8fdb3cc47be5c9264293538df64f3459dd50d3",
-    "runtime_manifest": "68daa05c266bab0bfd49572c2cf44d6d40be76e99e91e9aa46ec7ceb99319cd6",
+    "runtime_contract": "8c70be715819f98b605fabd4784ec2b4d86d5e6610c7400aae360ebe80dfa2b6",
+    "profile_registry": "5a2a62f88867d7d204b724c2a8fa44a43c988cb786a93eeae5b9ab54a3c5f107",
+    "recorded_fixture": "42760689231e6455d66e99d9d5f60decd36c00796c680664775e3861f986d52c",
+    "runtime_manifest": "10ad8df0c206aa9c981ccb131c82462767e2f6f9f09aa5142c5c2a6c11d29f51",
     "task_schema": "504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123",
 }
 _EXPECTED_EVALUATION_CASE_SCHEMA_SHA256 = (
     "363094954df80ab4bd8c28804d27e4634f79210fcd28fa82062ea49729549b7a"
 )
+
+
+class _JsonSchemaValidator(Protocol):
+    def iter_errors(self, instance: object) -> Iterator[object]: ...
 
 
 @final
@@ -116,9 +121,12 @@ def _json_document(value: object) -> dict[str, object]:
 
 
 def _mapping(value: object, keys: frozenset[str]) -> dict[str, object]:
-    if type(value) is not dict or frozenset(value) != keys:
+    if type(value) is not dict:
         _fail()
-    return cast(dict[str, object], value)
+    mapping = cast(dict[object, object], value)
+    if frozenset(mapping) != keys:
+        _fail()
+    return cast(dict[str, object], mapping)
 
 
 def _string(value: object, *, maximum: int = 256) -> str:
@@ -154,9 +162,12 @@ def _boolean(value: object) -> bool:
 
 
 def _items(value: object, *, maximum: int = _MAX_COLLECTION) -> list[object]:
-    if type(value) is not list or len(value) > maximum:
+    if type(value) is not list:
         _fail()
-    return cast(list[object], value)
+    items = cast(list[object], value)
+    if len(items) > maximum:
+        _fail()
+    return items
 
 
 def _local_environment(value: object) -> bool:
@@ -385,9 +396,8 @@ def _load_dataset(
             ),
         )
         try:
-            schema_errors = tuple(
-                evaluation_case_validator.iter_errors(evaluation_case)
-            )
+            validator = cast(_JsonSchemaValidator, evaluation_case_validator)
+            schema_errors = tuple(validator.iter_errors(evaluation_case))
         except Exception:
             _fail()
         if (

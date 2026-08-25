@@ -20,7 +20,7 @@ from raos.domain.ai.output_validation import AiOutputValidationReport
 HARNESS_VERSION = "ST0707_RECORDED_EVALUATION_HARNESS_V1"
 REPORT_PROFILE = "ST0707_RECORDED_EVALUATION_REPORT_V1"
 TRUSTED_RUNTIME_CONTRACT_SHA256 = (
-    "fda479ad619144e22c8b41cb734ef741baa95152dd16e37ff54ee08a4afac6eb"
+    "0ec1398be1ce82fcfe71929b9f1dbfb45b7041f69869a6f64030ecc728be8e49"
 )
 MAX_EVALUATION_CASES = 256
 METRIC_SCALE = 1_000_000
@@ -332,7 +332,7 @@ class LockedEvaluationDataset(_RedactedValue):
         return {
             "canonical_dataset": self.canonical_dataset,
             "cases": [
-                item._document() | {"case_sha256": item.case_sha256}
+                item._document() | {"case_sha256": item.case_sha256}  # pyright: ignore[reportPrivateUsage]
                 for item in self.cases
             ],
             "dataset_id": self.dataset_id,
@@ -768,7 +768,11 @@ def finalize_report(report: EvaluationHarnessReport) -> EvaluationHarnessReport:
 
     if type(report) is not EvaluationHarnessReport:
         fail_evaluation_harness(EvaluationHarnessFailureCode.INVALID_REPORT)
-    digest = sha256_bytes(canonical_json_bytes(report._document(include_hash=False)))
+    digest = sha256_bytes(
+        canonical_json_bytes(
+            report._document(include_hash=False)  # pyright: ignore[reportPrivateUsage]
+        )
+    )
     finalized = replace(report, report_sha256=digest)
     finalized.require_valid()
     return finalized
