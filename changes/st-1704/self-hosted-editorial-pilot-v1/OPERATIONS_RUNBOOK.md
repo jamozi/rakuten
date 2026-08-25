@@ -44,6 +44,47 @@ module is then rechecked by verified-loader and object identity before live boun
    acceptable. Re-run the manifest check at the merged head; any drift invalidates the
    handoff.
 
+## Human-only containment of an accidentally public Review Draft
+
+The repository exposes no command for this operation. If a temporary
+`raos-review-*` post is public, a human WordPress operator first records its ID,
+status, slug, title, category, current revision, and closed snapshot hash. The
+operator then changes only the post status to `draft`; title, slug, excerpt, content,
+snapshot meta, category, media, and revisions remain unchanged. Do not delete or
+replace the post. Purge the existing site cache through its normal human-operated
+control only after all selected status changes have succeeded.
+
+For the 2026-08-26 revenue-unblock incident, the closed target set is post IDs 26,
+28, 29, and 30. After the human action, an anonymous read must prove that each Review
+URL is non-public, each ID is absent from the public posts REST projection, and no
+Review URL appears on the home page or in the Yoast post sitemap. Post ID 19 remains
+unchanged until its separate AT-003 snapshot update. Any mismatch stops later
+publication; it does not authorize an automated retry or a broader WordPress write.
+
+Child theme 1.1.1 independently excludes every temporary Review slug and every
+allowlisted final slug without an exact bound public snapshot from both the Yoast
+post sitemap and the front-page latest-guides Query block. This is defense in depth,
+not authority to perform the human containment action.
+
+## Human-gated five-article recovery schedule
+
+The offsets below begin with the first successful human-confirmed public action.
+They combine the canonical publication-plan order with the current incident IDs and
+article-specific stop conditions. A failed article keeps only that article blocked;
+it does not shift an independently ready article or authorize a bypass.
+
+| Offset | Article and WordPress identity | Required gate before the human public action |
+| --- | --- | --- |
+| Day 1 | Suitcase: Review post 26 remains Draft; existing final post 19 is the only update target | Uniquely reconcile the immutable AT-003 request and exact hashes in `REVENUE_UNBLOCK_WORKLOG.md`; use only the human Tools screen if its server-side validation accepts the one-off journal state |
+| Day 4 | Portable power: post 28 moves from Draft to its final slug only after a valid successor snapshot is confirmed | Resolve the Jackery 500 New source conflict from current official specifications; if the packet changes, use the closed revision path and do not reuse a stale snapshot or Rakuten capture |
+| Day 7 | Anker model comparison: post 29 moves from Draft to its final slug | Confirm the existing committed request, final slug, category, exact snapshot, and current product evidence |
+| Day 10 | Dishwasher: prepare and create one new Review Draft; no post ID is preassigned | Capture exact Rakuten link/image evidence for all four products, including one exact THANKO variant, no more than 24 hours before `prepare`; any missing identity or image stops this article |
+| Day 13 | Robot vacuum: post 30 moves from Draft to its final slug | Confirm the existing committed request, final slug, category, exact snapshot, and current product evidence |
+
+Every status, slug, category, AT-003 update, and publication step in this table is a
+human WordPress operation. The repository only prepares, records, or verifies the
+closed artifacts allowed by the existing CLI.
+
 ## Owner-private evidence and operation gates
 
 Keep `.secrets/`, `.secrets/st1704-self-hosted-editorial-pilot/`, and every child
@@ -222,11 +263,11 @@ recover and verify do not rebuild the confirmed request from current provider fi
 
 ## One-time human activation
 
-1. Yoast activation remains blocked while
-   `theme/yoast-seo-28.3.lock.json` records `OFFICIAL_CHECKSUM_UNAVAILABLE`. The
-   locally calculated archive SHA-256 is not an official checksum. A human operator
-   must obtain an authoritative checksum for the exact 28.3 archive, bind that
-   evidence to the locally recorded SHA-256, and reject any mismatch before install.
+1. The official WordPress.org 28.3 per-file checksum manifest and its SHA-256 are
+   bound in `theme/yoast-seo-28.3.lock.json`. A human WordPress operator must run the
+   recorded strict installed-file verification for `wordpress-seo` 28.3 and reject
+   any missing, modified, or unexpected file. The locally calculated archive SHA-256
+   is not a substitute for installed-file verification.
 2. A human WordPress administrator installs and activates Yoast 28.3 only after that
    blocker is resolved, then disables its automatic updates, usage tracking, AI
    features, Semrush, Wincher, and additional
@@ -237,7 +278,7 @@ recover and verify do not rebuild the confirmed request from current provider fi
    1600×900 theme asset with an empty attachment ID. These are persisted human
    settings, not values written by the theme.
 3. A human WordPress administrator installs and activates the generated child-theme
-   1.1.0 package only after reviewing its exact hash. No repository command activates
+   1.1.1 package only after reviewing its exact hash. No repository command activates
    either component.
 4. Start a fresh WordPress request and require the Site Health test
    `RAOS Yoast 28.3設定` to report `good`. The theme only reads back the persisted
@@ -297,6 +338,15 @@ recover and verify do not rebuild the confirmed request from current provider fi
    article's exact homepage cluster/link/title with no unbound future article link,
    Yoast sitemap index/post/page maps, and that the WordPress core sitemap is not a
    second public owner. A failed check does not become Production evidence.
+   On the final anonymous URL, also repeat the combined 360/768/1440 CSS-pixel,
+   200%-zoom, keyboard-only, and JavaScript-disabled matrix. Require HTTP 200,
+   self-canonical, `index, follow`, exactly one sitemap occurrence, and no Review URL
+   on the home page or sitemap. Recheck every 128×128 product image and alt, exact
+   product identity, Rakuten direct destination, `rel="sponsored nofollow"`, first-view
+   disclosure, and absence of fixed price, inventory, points, unverified first-hand
+   claims, or broken links. Description, canonical, OG/X, robots, and the sole RAOS
+   JSON-LD graph each remain one system. The article's measurement `T0` begins only
+   after this public matrix passes.
 7. Related navigation is theme chrome outside `visible_content_sha256`. Publishing a
    paired target legitimately adds the allowlisted reciprocal link. Re-run
    `verify-public` for both ends of that pair after the target publication; no article

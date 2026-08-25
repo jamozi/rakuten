@@ -9,7 +9,7 @@ The slice owns five things:
 1. five closed article/resource packets covering all MVP article types;
 2. a deterministic renderer and draft-only WordPress review boundary;
 3. a credential-free, allowlisted official-source capture boundary;
-4. child theme 1.1.0 with the five-article editorial UI and RAOS/Yoast bridge;
+4. child theme 1.1.1 with the five-article editorial UI and RAOS/Yoast bridge;
 5. local/CI evidence and a handoff for the remaining human-controlled actions.
 
 It does **not** publish, activate plugins or themes, enter credentials, accept terms,
@@ -119,14 +119,15 @@ artifact. Neither command rebuilds an old public snapshot from refreshed or stal
 provider files. An artifact can never authorize a new create, and an ambiguous live
 journal, modified binding, or wrong lifecycle state fails closed.
 
-The Yoast lock records a local SHA-256 of the official HTTPS archive, but WordPress's
-official checksum endpoint did not provide a checksum at the observation time. That
-local digest is not promoted to an official checksum: plugin activation remains
-blocked until a human binds an authoritative 28.3 checksum and the post-activation
-Site Health readback confirms the exact persisted configuration.
+The Yoast lock records a local SHA-256 of the official HTTPS archive. WordPress.org's
+official per-file checksum manifest for 28.3 is now hash-bound in the lock, but the
+repository cannot read the installed plugin tree. A human WordPress operator must
+still verify the installed files against that official inventory, and the
+post-activation Site Health readback must confirm the exact persisted configuration.
+The archive digest alone is never promoted to installed-file evidence.
 
 The existing suitcase post is never replaced by a clone. Its reviewed draft uses a
-digest-bound temporary slug, and theme 1.1.0 exposes one POST-only administrator
+digest-bound temporary slug, and theme 1.1.1 exposes one POST-only administrator
 screen that can copy only the approved title, excerpt, content, and closed snapshot
 back to the exact existing public post. That screen requires an explicit nonce-bound
 human action, preserves the target ID/slug/status/date/author/taxonomies, uses a
@@ -140,3 +141,8 @@ and preserved invariants as a crash-recovery artifact. If an installed save hook
 a preserved invariant, the action fails visibly; the retained receipt artifact and the
 WordPress revision are the manual recovery sources. The CLI cannot invoke this screen
 and still has no public update or publish command.
+
+`REVENUE_UNBLOCK_WORKLOG.md` records the sanitized 2026-08-26 containment handoff.
+After a final URL is human-published and verified, use
+`REVENUE_EXPERIMENT_RUNBOOK.md` with the existing owner-private affiliate-learning
+V2 interface; neither document grants live mutation authority.

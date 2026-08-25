@@ -23,9 +23,10 @@
   confirmed snapshot from later evidence.
 - Human gates retained: provider credential/live retrieval, theme/plugin activation,
   privacy/analytics activation, each publication/update, rollback, and Production claim.
-- Yoast activation blocker: the exact official 28.3 checksum is unavailable in the
-  observed WordPress checksum API; the locally computed archive SHA-256 is not treated
-  as an official checksum, and persisted settings require a fresh-request readback.
+- Yoast verification blocker: the official WordPress.org 28.3 per-file checksum
+  manifest is available and hash-bound, but comparison with the installed plugin tree
+  is not executed; the local archive SHA-256 is not substituted for that check, and
+  persisted settings still require a fresh-request readback.
 - Formal evidence: local and CI results remain local/CI evidence. `TST-018`, `TST-020`,
   `TST-032`, staging, release, and Production remain unclaimed until their owners execute
   the Canonical gates.

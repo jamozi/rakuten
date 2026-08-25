@@ -19,11 +19,12 @@ from xml.etree import ElementTree
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 THEME_SLUG: Final = "kurashinoshirube-child"
+THEME_VERSION: Final = "1.1.1"
 THEME_ROOT: Final = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme" / THEME_SLUG
 )
 OUTPUT_DIRECTORY: Final = ROOT / ".secrets/st1704-self-hosted-editorial-pilot/theme"
-OUTPUT_PATH: Final = OUTPUT_DIRECTORY / f"{THEME_SLUG}-1.1.0.zip"
+OUTPUT_PATH: Final = OUTPUT_DIRECTORY / f"{THEME_SLUG}-{THEME_VERSION}.zip"
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 MAX_PACKAGE_BYTES: Final = 16 * 1024 * 1024
 ZIP_TIMESTAMP: Final = (2026, 8, 23, 0, 0, 0)
@@ -43,6 +44,52 @@ SOURCE_FILES: Final = (
     "theme-contract.v1.json",
     "theme.json",
 )
+
+PUBLIC_LISTING_ELIGIBILITY: Final = {
+    "candidate_query": {
+        "post_type": "post",
+        "slug_classes": [
+            "raos-review-*",
+            "snapshot.article_bindings[].slug",
+        ],
+    },
+    "consumers": {
+        "front_page_latest_posts": {
+            "filter": "query_loop_block_query_vars",
+            "merge_target": "post__not_in",
+        },
+        "yoast_sitemap": {
+            "filter": "wpseo_exclude_from_sitemap_by_post_ids",
+        },
+    },
+    "existing_exclusion_policy": "PRESERVE_POSITIVE_POST_IDS_AND_DEDUPLICATE",
+    "lookup_failure_policy": "SUPPRESS_POST_SITEMAP_AND_FRONT_PAGE_POST_RESULTS",
+    "lookup_success_requirement": "GET_RESULTS_ARRAY_AND_WPDB_LAST_ERROR_EMPTY_STRING",
+    "matrix": [
+        {
+            "eligible": False,
+            "slug_class": "RAOS_REVIEW",
+            "snapshot_state": "ANY",
+        },
+        {
+            "eligible": False,
+            "slug_class": "ALLOWLISTED_FINAL",
+            "snapshot_state": "MISSING_INVALID_OR_ARTICLE_ID_MISMATCH",
+        },
+        {
+            "eligible": True,
+            "slug_class": "ALLOWLISTED_FINAL",
+            "snapshot_state": "EXACT_PUBLISHED_BOUND_MATCHING_ARTICLE_ID",
+        },
+        {
+            "eligible": True,
+            "slug_class": "UNRELATED_POST",
+            "snapshot_state": "NOT_EVALUATED",
+        },
+    ],
+    "query_cache": "REQUEST_LOCAL_ONLY",
+    "snapshot_validator": "kurashinoshirube_bound_post_snapshot(post_id,false)",
+}
 
 
 class ThemeBuildFailure(RuntimeError):
@@ -178,7 +225,7 @@ def validate_sources() -> dict[str, str]:
     style = _text("style.css")
     if (
         "Theme Name: 暮らしのしるべ Child" not in style
-        or "Version: 1.1.0" not in style
+        or f"Version: {THEME_VERSION}" not in style
         or "Template:" not in style
     ):
         _fail()
@@ -204,11 +251,16 @@ def validate_sources() -> dict[str, str]:
     php = _text("functions.php")
     required_php = (
         "_raos_publication_snapshot_v1",
+        "KURASHINOSHIRUBE_THEME_VERSION",
         "wpseo_json_ld_output",
         "wpseo_title",
         "wpseo_metadesc",
         "wpseo_canonical",
         "wpseo_robots",
+        "wpseo_exclude_from_sitemap_by_post_ids",
+        "query_loop_block_query_vars",
+        "kurashinoshirube_public_listing_post_is_eligible",
+        "kurashinoshirube_public_listing_excluded_post_ids",
         "KURASHINOSHIRUBE_EXISTING_UPDATE_ACTION",
         "kurashinoshirube_handle_existing_update",
     )
@@ -226,6 +278,16 @@ def validate_sources() -> dict[str, str]:
     )
     if any(token in php for token in forbidden_php):
         _fail()
+    php_theme_version = re.search(
+        r"const KURASHINOSHIRUBE_THEME_VERSION = '([^']+)';",
+        php,
+    )
+    if (
+        php_theme_version is None
+        or php_theme_version.group(1) != THEME_VERSION
+        or "$theme->get('Version') !== KURASHINOSHIRUBE_THEME_VERSION" not in php
+    ):
+        _fail()
 
     theme_json = _json("theme.json")
     if theme_json.get("version") != 3:
@@ -233,8 +295,12 @@ def validate_sources() -> dict[str, str]:
     contract = _json("theme-contract.v1.json")
     if (
         contract.get("schema") != "SELF_HOSTED_EDITORIAL_THEME_CONTRACT_V1"
-        or contract.get("theme_version") != "1.1.0"
+        or contract.get("theme_version") != THEME_VERSION
         or contract.get("publication_authority") != "NONE"
+        or contract.get("public_listing_eligibility") != PUBLIC_LISTING_ELIGIBILITY
+        or not isinstance(contract.get("snapshot"), dict)
+        or contract["snapshot"].get("excerpt_binding")
+        != "EXACT_WORDPRESS_POST_EXCERPT_EQUALS_DESCRIPTION_RAW_UTF8"
         or not isinstance(contract.get("human_existing_update"), dict)
     ):
         _fail()
@@ -298,7 +364,10 @@ def validate_sources() -> dict[str, str]:
     ):
         _fail()
     assets = _json("raos-assets.v1.json")
-    if assets.get("schema") != "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1":
+    if (
+        assets.get("schema") != "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
+        or assets.get("theme_version") != THEME_VERSION
+    ):
         _fail()
 
     _validate_webp("assets/images/article-suitcase-guide.webp")
