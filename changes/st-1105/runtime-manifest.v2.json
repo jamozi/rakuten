@@ -14,7 +14,7 @@
       "uri": "repo://changes/st-1105/contracts/admin-visual-accessibility-acceptance.v2.json",
       "role": "OWNER_SOURCE",
       "bytes": 16368,
-      "sha256": "0b6434b0c8cd20788db06241307a3fd9d5f26f1e54a17de13501f0142b978692"
+      "sha256": "b8640f160cd11fe2697dc6f5c2972c8a7bdab3831f9ed0e8d3cc8893173f8216"
     },
     {
       "uri": "repo://changes/st-1105/contracts/admin-visual-browser-evidence.v2.json",
@@ -272,19 +272,19 @@
       "uri": "repo://changes/st-0709/contracts/ai-governance-workspace.v2.yaml",
       "role": "BOUND_INPUT",
       "bytes": 8535,
-      "sha256": "457c5c503e3a641cc8212ef3744e6f5e57eeedab789cfc151a1ceb18893373a6"
+      "sha256": "86a07297a74aca32dba4ec34eea955f86adfb09635c376a6fa1289b4f089c26e"
     },
     {
       "uri": "repo://changes/st-0709/generated/ai-governance-workspace.v2.json",
       "role": "BOUND_INPUT",
       "bytes": 31547,
-      "sha256": "2106b26d88a44b0a14f70280df28f2354b2397dc2488c3108c80a8b063cae037"
+      "sha256": "2801dbb307f2d29f5f99dda17c78f724842eeaf3942af1f2480074dac3658f0b"
     },
     {
       "uri": "repo://changes/st-0709/runtime-manifest.v2.json",
       "role": "BOUND_INPUT",
       "bytes": 7913,
-      "sha256": "c346b8d0a419883c87a4dd56bb09238698ebe4336c71b17536b5595be46d7e5b"
+      "sha256": "2d69c6c6574617e59e22a64d4b8267c627ac0e0c48595c991969a7ead7475b45"
     },
     {
       "uri": "repo://changes/st-0906/contracts/publication-review-workspace.v2.yaml",
@@ -398,13 +398,13 @@
       "uri": "repo://changes/st-1105/generated/admin-visual-accessibility-recorded.v2.json",
       "role": "GENERATED_OWNER_OUTPUT",
       "bytes": 94305,
-      "sha256": "da227f4bb405d47ed61de631833673c6c2ca77f2c3ef91f7276a232f8f35556c"
+      "sha256": "815f79c0b0e58d8eba1587afbc4621359651345b559c19ed7622065cc4bd6c69"
     },
     {
       "uri": "repo://packages/web-ui/src/admin-visual-accessibility-recorded.v2.ts",
       "role": "GENERATED_OWNER_OUTPUT",
       "bytes": 97833,
-      "sha256": "78d142ae4f5a2bd4cdd6ebf0c3222e4e8bcb477b2cf2e1cea08f48adaef94c7d"
+      "sha256": "442f0ba2df605c87cdcd51c0ff175891023dc72912f48f5f20639cf904f46e02"
     },
     {
       "uri": "repo://changes/st-1105/baselines/admin-visual.synthetic.v2.json",

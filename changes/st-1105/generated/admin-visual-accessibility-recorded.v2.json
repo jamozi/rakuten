@@ -2796,7 +2796,7 @@
       "required_st0606_patch_sha": "020bfbdb91b081929340aa12eb1e655e9160d810",
       "local_dependency_base_sha": "82225f48357d55846adfa4f8ee4ac1e9e063be1d"
     },
-    "acceptance_contract_sha256": "0b6434b0c8cd20788db06241307a3fd9d5f26f1e54a17de13501f0142b978692",
+    "acceptance_contract_sha256": "b8640f160cd11fe2697dc6f5c2972c8a7bdab3831f9ed0e8d3cc8893173f8216",
     "browser_contract_sha256": "4862fc2f5d8c93ab6a487fc751b8cb9eb108362a7a749314ca75f6480a232f10",
     "fixture_sha256": "055be8d7901e0b7a609d58f2be0289ca796770ad445cf94ddfdc0ab2d555a7ad",
     "source_bindings": [
@@ -2886,15 +2886,15 @@
       },
       {
         "path": "changes/st-0709/contracts/ai-governance-workspace.v2.yaml",
-        "sha256": "457c5c503e3a641cc8212ef3744e6f5e57eeedab789cfc151a1ceb18893373a6"
+        "sha256": "86a07297a74aca32dba4ec34eea955f86adfb09635c376a6fa1289b4f089c26e"
       },
       {
         "path": "changes/st-0709/generated/ai-governance-workspace.v2.json",
-        "sha256": "2106b26d88a44b0a14f70280df28f2354b2397dc2488c3108c80a8b063cae037"
+        "sha256": "2801dbb307f2d29f5f99dda17c78f724842eeaf3942af1f2480074dac3658f0b"
       },
       {
         "path": "changes/st-0709/runtime-manifest.v2.json",
-        "sha256": "c346b8d0a419883c87a4dd56bb09238698ebe4336c71b17536b5595be46d7e5b"
+        "sha256": "2d69c6c6574617e59e22a64d4b8267c627ac0e0c48595c991969a7ead7475b45"
       },
       {
         "path": "changes/st-0906/contracts/publication-review-workspace.v2.yaml",
@@ -2972,5 +2972,5 @@
   },
   "formal_acceptance_achieved": false,
   "production_eligible": false,
-  "payload_sha256": "67e36a3e9520304bca2fc7fc798caab8834cde1af531ee46d5fb41d439844e32"
+  "payload_sha256": "60e836c31447307ddc4bc529f28d1475c32d50fef6f987eb52ae77e107a4fced"
 }
