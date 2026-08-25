@@ -8,7 +8,7 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: application/yaml
   bytes: 3417
-  sha256: 98dd34d5b714bb5a56d6cb6bb92ed2d83e17ccea119548dad6d4698e9732c16e
+  sha256: 8e6872f6c859ef5da7bc5c5c67d1a92c904d7143604596ec9ab864afe6fe05b9
 - uri: repo://scripts/build_st0901_review_completion_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -153,7 +153,7 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
   bytes: 45997
-  sha256: 86e0af8ff6b651b50a7959a0a8c0f85864c230a57144b51e190041d658ee7d93
+  sha256: 3d27a451f3f719a9928c55f2a87231c3cec66be3b82caed6c48a8748c0673e7e
 - uri: repo://python/raos/application/editorial/policy_engine.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
@@ -167,13 +167,13 @@ source_artifacts:
 - uri: repo://changes/st-0805/generated/policy-pass.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
-  bytes: 73579
-  sha256: 7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849
+  bytes: 73573
+  sha256: 1e685c7d7f76cc0751d794146edde0fa948450c622d722c1062310ee6ab5c250
 - uri: repo://changes/st-0805/runtime-manifest.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 11572
-  sha256: 19dd52b254b648f88c6cda0ea3d9d5b6167b184a0a4ce735431ebb09056d6367
+  sha256: b95070af4e019cbd32e8c3f01810f680ab90afcc80253c3d51652f46af38f8bc
 - uri: repo://scripts/secure_generated_publication.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
@@ -185,12 +185,12 @@ generated_artifacts:
   artifact_role: GENERATED_RECORDED_FIXTURE
   media_type: application/json
   bytes: 1456
-  sha256: 57587322562eae4a2b58bebfc6b917e39fb05f077cf7268deb4056563950a361
+  sha256: de4a82d147d4647716b77a72e25489980578fb7b406723cb3f818dbc424080e4
 - uri: repo://python/raos/adapters/recorded_review_completion_fixture_v2.py
   artifact_role: GENERATED_RUNTIME_MODULE
   media_type: text/x-python
   bytes: 1795
-  sha256: 6684865e4bdc29569203092bb10fe5df28b84376b97134c26ad33882386680fc
+  sha256: aeaf06deba0e885317ffa2053f5e115979bb6a7ae2b7f52a44e4aea9c03ed945
 generation:
   owner: repo://scripts/build_st0901_review_completion_v2.py
   command: .venv/bin/python scripts/build_st0901_review_completion_v2.py
