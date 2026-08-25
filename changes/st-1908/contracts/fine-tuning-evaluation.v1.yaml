@@ -86,16 +86,16 @@ authority:
 predecessor:
   story_id: ST-0707
   binding: EXACT_BASE_COMMIT_BYTES
-  base_commit: 0fab69e92d0896f58f0efc633aa350bbf3561f73
+  base_commit: 3b96731aa8435af35724237279d7f4b4726b7b59
   artifacts:
-    changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml: fda479ad619144e22c8b41cb734ef741baa95152dd16e37ff54ee08a4afac6eb
-    changes/st-0707/runtime-manifest.v1.json: 77a3871007c115699418c6d0243daeac8c6cbc04f9d9ca12866d0e142026e7c9
-    changes/st-0707/generated/evaluation-suite-registry.v1.json: 37ec0ca48b794a691bc9b643b1ee28a88208116f77536dd5e8df5d6edab3010d
-    changes/st-0707/generated/locked-synthetic-holdout.v1.json: d4f3855a1f54e4de5d62e0dcb9d0c0b892e40704f476182349df45d7de1b0a79
-    python/raos/domain/ai/evaluation_harness.py: e8465d503d18b266f0c0bb93a954fe1385cc3df8aee50beb65bde4a764364698
+    changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml: 0ec1398be1ce82fcfe71929b9f1dbfb45b7041f69869a6f64030ecc728be8e49
+    changes/st-0707/runtime-manifest.v1.json: 4652b7e618da23110636d6747dbcda1ccf0aad94c531e02972632ec01822927e
+    changes/st-0707/generated/evaluation-suite-registry.v1.json: 3faad9c9d3a9130f1f9d9cca0b1e075d5befdd49432dbf00e750941ae56e91e0
+    changes/st-0707/generated/locked-synthetic-holdout.v1.json: 8985e548590b5ac6d8bdc8d1ad457e39b45f547c7838f0cd1c13e13fb5f35df6
+    python/raos/domain/ai/evaluation_harness.py: 904d046710eec3706180090b0025eb62523fe0987293bbe97b5e42e2ffb98b24
     python/raos/ports/ai_evaluation.py: e59355f34144e41d2ee6a62529758c46d2c120b29b041320894258fbf84feed4
     python/raos/application/ai/evaluation_harness.py: 1b959a4e685cb6565beb964c94bb70001a887b0516d7582fc17ef0de8a36ea24
-    python/raos/adapters/recorded_ai_evaluation.py: eea06d32b13b2241486b5b1965170c60d11ab09a796735142bc790fc39ce8fd2
+    python/raos/adapters/recorded_ai_evaluation.py: cf5514c0152ef076b174676a40d248238ad6291601d74f484d9a10a23398f3ec
   required_semantics:
     recorded_synthetic_only: true
     synthetic_release_eligible: false

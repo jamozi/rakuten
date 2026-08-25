@@ -7,9 +7,9 @@ document:
   authority: NONE
   production_eligible: false
 provenance:
-  base_commit: 0fab69e92d0896f58f0efc633aa350bbf3561f73
+  base_commit: 3b96731aa8435af35724237279d7f4b4726b7b59
   contract_uri: repo://changes/st-1908/contracts/fine-tuning-evaluation.v1.yaml
-  contract_sha256: 62dab56b9c6dea27c252e4463e7bbc59f061392c41cb3a7c44025637c0f702f5
+  contract_sha256: 14de4f0057b45336ee8eaec83882d391928e6b7792afb8461faf658eb3b94b84
   fixture_uri: repo://changes/st-1908/fixtures/recorded/fine-tuning-candidate.synthetic.v1.json
   fixture_sha256: 5bfc483d7102ac8155f12d6d13f480039e079a0e011baad4692cfbb9b6515a43
   report_sha256: 8188e832365bc7c7740a7ed7b9a0dabbc876f03aec24db241830824296534422
@@ -18,7 +18,7 @@ source_artifact_count: 20
 source_artifacts:
 - uri: repo://changes/st-1908/contracts/fine-tuning-evaluation.v1.yaml
   bytes: 11015
-  sha256: 62dab56b9c6dea27c252e4463e7bbc59f061392c41cb3a7c44025637c0f702f5
+  sha256: 14de4f0057b45336ee8eaec83882d391928e6b7792afb8461faf658eb3b94b84
 - uri: repo://changes/st-1908/fixtures/recorded/fine-tuning-candidate.synthetic.v1.json
   bytes: 2858
   sha256: 5bfc483d7102ac8155f12d6d13f480039e079a0e011baad4692cfbb9b6515a43
@@ -36,7 +36,7 @@ source_artifacts:
   sha256: 7ff6114618f11f05c80611de4a00945708baf46c53bee54b456680934b6ee1f6
 - uri: repo://python/raos/domain/ai/fine_tuning_evaluation.py
   bytes: 35119
-  sha256: 667785f69cc676191c399bb07ac9cdf40da8110d87548a4910d548e32dbe8fa9
+  sha256: a501502333dc52697205c3f33e41a21b7f78d327eb5193b7ea762d0d9b816c5b
 - uri: repo://python/raos/ports/fine_tuning_evaluation.py
   bytes: 556
   sha256: 8e72256e245cdb0003026ff20533f828562691a5b60568fe7c345ce2782cd671
@@ -44,11 +44,11 @@ source_artifacts:
   bytes: 11274
   sha256: 8d8e382f4f8e553079a0ce53dd4485084468e3af1fdcd3a8bb0f57cbd2883979
 - uri: repo://python/raos/adapters/recorded_fine_tuning_evaluation.py
-  bytes: 14431
-  sha256: 90f46ae498f6a10f8a1f8b2ec1d32bbf76e4436acdcf9115ce82db8160c7b9a4
+  bytes: 14549
+  sha256: af5a8b7efbdcb0957828b9b876e17a2185dd8d092e8539f431003e045e08b421
 - uri: repo://scripts/build_st1908_fine_tuning_evaluation.py
   bytes: 20263
-  sha256: 6a1d97f5a37aff59254021093ba043a98298a25faab57aacaedad9fac498bdaa
+  sha256: 2829f594b2265d413190d06d4e4abcb25cf5a4830d7ce4f989ed505ab11d30a5
 - uri: repo://tests/st1908/__init__.py
   bytes: 49
   sha256: ab711141e771329ca9776c25d16e1f0289df53c902629de19a241ca097f7ee98

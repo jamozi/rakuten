@@ -53,7 +53,7 @@ REPORT_PATH: Final = Path(
 MANIFEST_PATH: Final = Path("changes/st-1908/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1908_fine_tuning_evaluation.py")
 HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
-BASE_COMMIT: Final = "0fab69e92d0896f58f0efc633aa350bbf3561f73"
+BASE_COMMIT: Final = "3b96731aa8435af35724237279d7f4b4726b7b59"
 RECORDING_ID: Final = "st1908_recorded_evaluation_v1"
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
