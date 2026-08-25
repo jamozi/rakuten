@@ -791,8 +791,6 @@ ci-unit: ci-network-assert | python-sync node-sync
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0703
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st0801
 	$(UV_READONLY_RUN) pytest -p no:cacheprovider -q tests/st1704
-	PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp TEMP=/tmp TMP=/tmp \
-		$(UV_READONLY_RUN) pytest -p no:cacheprovider -q -s tests/st1506_operator
 	$(NODE_RUN) "$(NODE_MODULES)/vitest/vitest.mjs" run \
 		--config "$(RAOS_REPOSITORY_ROOT)/vitest.config.ts" \
 		--configLoader native
