@@ -151,12 +151,12 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-0905/contracts/publication-commands-reference-plan.v1.yaml",
-    "source_contract_sha256": "0d0dda374ae36c861475a5e8d62a9cdb6cb1350b65159032bfaa49dcce31fbae",
+    "source_contract_sha256": "66e680fe1c8dec0fe4a83a080f70c31040b41503b81cfcb6b1ea1a808012d9d0",
     "generated_by": "repo://scripts/build_st0905_publication_commands_reference_plan.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st0905_publication_commands_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
+      "sha256": "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     },
     "digest_classification": "LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT"
   },
@@ -164,14 +164,14 @@
     {
       "story_id": "ST-0903",
       "artifact": "repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-      "sha256": "29a986318f337443c2810df6a40f085dc565ba0e324e0ddc90164fff96f9004f",
+      "sha256": "43c4d87836ca5bed6887bb5db6de35189f1d263c3f3669ae3986f8b7b2b4b88a",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "NONEXECUTABLE_REFERENCE_PLAN_NO_AUTHORITATIVE_SNAPSHOT"
     },
     {
       "story_id": "ST-0904",
       "artifact": "repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml",
-      "sha256": "b88ddf693dbbed7b4165a72087cd60a282592b3f9e77de9c5db7f86115e8ecac",
+      "sha256": "f07294fd61a59b5127dfaa6c35583f92612d5be5bbf35f9b0c77a4c28eeaea83",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "NONEXECUTABLE_REFERENCE_PLAN_NO_PROJECTOR_OR_PUBLIC_ROW"
     },

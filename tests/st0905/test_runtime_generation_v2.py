@@ -75,7 +75,7 @@ def test_manifest_binds_every_owner_dependency_and_generated_byte() -> None:
             1,
         ),
         lambda value: value.replace(
-            "6f18ed11cbed99c57dac757875ce4ab3e1fab09cc24710c1fd7bce7e5823cd99",
+            "b28e259b64241c7dc595fbdadb45ed4c2d99443d85c2584b4532388dbf4141e3",
             "f" * 64,
             1,
         ),
