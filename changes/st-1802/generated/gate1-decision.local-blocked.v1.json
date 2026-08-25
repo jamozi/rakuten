@@ -66,17 +66,17 @@
         {
           "kind": "GENERATED_BLOCKED_PORTFOLIO",
           "uri": "repo://changes/st-1801/generated/portfolio-expansion.local-blocked.v1.json",
-          "sha256": "713052a45f6a04ac26e31167afec82c6ad5f9b6d52862230375746ad0f6d28d7"
+          "sha256": "09817fb25db034d3146338d9b026debde04e5ea2931250909206606e7ccb9f21"
         },
         {
           "kind": "RUNTIME_MANIFEST",
           "uri": "repo://changes/st-1801/generated/runtime-manifest.v1.yaml",
-          "sha256": "fe65a1f12831bb3e7bf6470bbaeb585bce87e286218d1c8cc737e17027dcfd74"
+          "sha256": "c375aa9525b77f864e72c75d3c7560d6d57d8ba4a46d74cdaed07832de8ed83a"
         },
         {
           "kind": "OWNER_GENERATOR",
           "uri": "repo://scripts/build_st1801_portfolio_expansion.py",
-          "sha256": "25ba019eb6c0ab5d0f68c94f06312023e54bed4a09199394eef4c6be9a749484"
+          "sha256": "be72c4a4e801bc787bcc592d9fb309ab8215a692273e961e9f1cb26d5b94f6c7"
         }
       ]
     },
@@ -87,12 +87,12 @@
         {
           "kind": "GENERATED_BLOCKED_SIGNOFF",
           "uri": "repo://changes/st-1705/generated/pilot-security-recovery-signoff.local-blocked.v1.json",
-          "sha256": "dcafa129b6032cb455bf81741aa9ea3720a6564348bf4347b795752cb8f3de72"
+          "sha256": "c6f6e85237c3aa19684e6ed3913ddb23913efb02574fb08b91709ee1f157d192"
         },
         {
           "kind": "MANIFEST",
           "uri": "repo://changes/st-1705/manifest.yaml",
-          "sha256": "82abe3b09a521797824a38c174799c7e72b0f873a6de0a527dba78e7f9aa1df7"
+          "sha256": "e1de0a8fde0a2ab6a172e126e0fe52db296e5d175a61216c4010f4451f1d9a49"
         }
       ]
     },
@@ -441,14 +441,14 @@
   "recorded_synthetic_harness": {
     "classification": "RECORDED_SYNTHETIC_ONLY_NON_ATTESTING",
     "dependency_uri": "repo://changes/st-1801/generated/portfolio-expansion.local-blocked.v1.json",
-    "dependency_sha256": "713052a45f6a04ac26e31167afec82c6ad5f9b6d52862230375746ad0f6d28d7",
+    "dependency_sha256": "09817fb25db034d3146338d9b026debde04e5ea2931250909206606e7ccb9f21",
     "dependency_decision": "BLOCKED",
     "dependency_eligibility": "NOT_ELIGIBLE",
     "planned_synthetic_placeholder_count": 30,
     "actual_article_count": "UNAVAILABLE",
     "placeholders_are_actual_articles": false,
     "output_uri": "repo://changes/st-1802/generated/recorded-synthetic-gate1-evaluation.v1.json",
-    "output_sha256": "6f45ffa490cd32cc1c55527e54f4974fa6308697030faf5b2a70fa012fb9e00c",
+    "output_sha256": "ace22e7dcb08d7d6e6f865edab79088b0232dfc5972ad717ab6e50cf4f2386ad",
     "contains_synthetic_pass_case": true,
     "qualifies_as_article_evidence": false,
     "qualifies_as_story_evidence": false,

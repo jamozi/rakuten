@@ -12,7 +12,7 @@
   "dependency_context": {
     "story_id": "ST-1801",
     "uri": "repo://changes/st-1801/generated/portfolio-expansion.local-blocked.v1.json",
-    "sha256": "713052a45f6a04ac26e31167afec82c6ad5f9b6d52862230375746ad0f6d28d7",
+    "sha256": "09817fb25db034d3146338d9b026debde04e5ea2931250909206606e7ccb9f21",
     "decision": "BLOCKED",
     "dependency_eligibility": "NOT_ELIGIBLE",
     "planned_synthetic_placeholder_count": 30,
