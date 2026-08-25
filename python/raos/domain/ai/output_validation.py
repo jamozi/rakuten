@@ -42,45 +42,45 @@ from raos.domain.evidence.claim_evidence import (
 VALIDATOR_VERSION: Final = "ST0705_AI_OUTPUT_VALIDATION_V1"
 PROFILE_REGISTRY_VERSION: Final = "ST0705_TASK_VALIDATION_PROFILES_V1"
 TRUSTED_PROFILE_REGISTRY_SHA256: Final = Sha256Digest(
-    "8bd37a680ea67df1ff97463fda8b418680614acf709bcd6f61cad3ef15624cf3"
+    "7266bb90e673320fc64b9c5344fcfefbda864a8ce41da10c5857f68682e9c8ed"
 )
 TRUSTED_PROFILE_SHA256_BY_TASK: Final[Mapping[str, Sha256Digest]] = MappingProxyType(
     {
         "AIT-001": Sha256Digest(
-            "02c2c55e3ef230389119b3b1f91b232574d563f666d3b1fe5c055accca9b6682"
+            "9c73806794f288cc357adfac1bf534f0814c14ff1af0bc7691f236fa44468f67"
         ),
         "AIT-002": Sha256Digest(
-            "b8df9f3c2a9377f5e9d456d3aab28223c53d63ae05af7b33aa868b9d896356f5"
+            "7cfa2382b40e3133b0a7f375e3ab145007ffca8d12f9ab24e9ac94f555ae5402"
         ),
         "AIT-003": Sha256Digest(
-            "127dacd5aa8640075ce92054b6af77c3ce049f6fe22a1a9ffb2386f775412a09"
+            "4b45d36eb294ebbe6f2b56bb157ebd356d77e56995516ee2a35b00399ddcc010"
         ),
         "AIT-004": Sha256Digest(
-            "dcc5d3a18ca3bf66534aa84a16fbcd33ae7edeaa854021e73a0dec594e4d0fc4"
+            "0acef68f0243f3cfd62446dbb0fc40337741ee83e217295ce0afd2d7aba79bb0"
         ),
         "AIT-005": Sha256Digest(
-            "5d6d691c9ffbb7e14a95271680afc1ad9161ece89d87f5ab412d657fd484723b"
+            "22c4f17e7085d29fe82f5373c8f8d07a5d2fc11a7e593f37c41c04d92c7a1e2c"
         ),
         "AIT-006": Sha256Digest(
-            "9e8301a82b7e578d7212380118a3271a53a616b96c515372fd577451cf9445e6"
+            "03fce65db37d53321211c6edba46ed4576fa99dede4ac9559d847cb2312fb718"
         ),
         "AIT-007": Sha256Digest(
-            "abc458db25a50d0ba37881ceead23403f742345a21222c3f34ccf53f194733de"
+            "571ac899cae3c53c928d2c1eb15a2571c1a409b0abf62150de4ec2c52623be3b"
         ),
         "AIT-008": Sha256Digest(
-            "3ea975b2bbfad521f9d1e4919a2ffbd2688ba854cd0f4f6a3aca40c04550fc4c"
+            "41aeaf75367d198de1b97cb2dedf3fb1230d64fc9bb645ed73e14203cb98be83"
         ),
         "AIT-009": Sha256Digest(
-            "61839c7c1cb98ffddf0b9f685087d9e5858fb5579c12abe8534536185336a561"
+            "44114687fae48012904bebac0e664d2cd3d1931bef43b0ecaaae80aaab28f94b"
         ),
         "AIT-010": Sha256Digest(
-            "666b722b73ce3912f947fd589671df70bcbec60a70f88a7ddbcd2c7932643791"
+            "f9e568af570f6a1a3b8921c169546633dd5d16285dddda2566740f14433f72c7"
         ),
         "AIT-011": Sha256Digest(
-            "3710ec2192e0c6888662037f8a195db7396475a8d73383f0f936608d2f3b6960"
+            "83f0118c0b3181b6f3c5d87ff5e198a047091972d39cd854ecd45eefd4498d60"
         ),
         "AIT-012": Sha256Digest(
-            "b6bbf6bb7342ecc4ef99568b4a29cd0b0adde7163468256b001edd2f3d647868"
+            "48e740e8cacb0638e0b2e9bf3f84d5dc5d6642e8a6612545268893dd13eedf39"
         ),
     }
 )

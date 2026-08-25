@@ -14,9 +14,9 @@ toolchain:
   referencing: 0.37.0
   rpds-py: 2026.6.3
 source_sha256:
-  changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml: 0bdc3319b4f4c3c3a0363b17afdb9cd302e9bea49c128f37819331bb434baddb
+  changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml: 25e8696211025ee2581b0318ca2758dbcd4dccccd37447be1e8ad84667dbb02d
   scripts/build_st0705_ai_output_validation_runtime.py: 9b5bb4c7981d2791c507d8e895c05aef0f45bb56b83d19c57656fb3433fde113
-  python/raos/domain/ai/output_validation.py: ceb08c66410875574609f6768765d6b68c1bde60b0e70b585557e234c1f3d412
+  python/raos/domain/ai/output_validation.py: f5dbf4c35e3d5b4648e65576defd0c8f101824570f45785d1d47618a6ea78503
   python/raos/ports/ai_output_validation.py: eb0298e1e5b72fed0eb1301c4362cc62ee16a2d1b573b69162d4dc15c9e8e046
   python/raos/application/ai/output_validation.py: 6a1a182c80a1f9dff4de286f87017811bc2eff35425fc057c31ad333cc0f02d6
   python/raos/adapters/recorded_ai_output_validation.py: 8b2a305a30efa308ff9eb5a114c1309a8a060a9d6673373067da0927e6fbf52a
@@ -55,8 +55,8 @@ source_sha256:
   contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.source_packet_gap_analysis.v1.output.schema.json: 1b13b6f11f16ac289a0548b6519e288639ee92271516d65d9fc5a026af51a57c
   contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.update_priority_explanation.v1.output.schema.json: 0de826d10e8b6f4ddd10543eb68b70af209a4fac67f79482d24dc7b5922be4ef
 generated_sha256:
-  changes/st-0705/generated/ai-output-validation-profiles.v1.json: 8bd37a680ea67df1ff97463fda8b418680614acf709bcd6f61cad3ef15624cf3
-  changes/st-0705/generated/ai-output-validation-pass.v1.json: 828bb8b1c456a07fb0883cd98284bdc779ae44159da433909f06a32f1e104601
+  changes/st-0705/generated/ai-output-validation-profiles.v1.json: 7266bb90e673320fc64b9c5344fcfefbda864a8ce41da10c5857f68682e9c8ed
+  changes/st-0705/generated/ai-output-validation-pass.v1.json: e87088fc150bad7b7c4d863f540eac6f474591a1da86c830d5b7a3f942bcfaf2
 profile_count: 12
 schema_count: 12
 local_status_vocabulary:
