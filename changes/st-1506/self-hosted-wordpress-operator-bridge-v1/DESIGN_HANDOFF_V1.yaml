@@ -1,0 +1,179 @@
+DESIGN_HANDOFF_V1:
+  record_status: REPOSITORY_LOCAL_ADDITIVE_DESIGN_RECORD
+  authority: DESIGN_IMPLEMENTATION_AND_LOCAL_EVIDENCE_ONLY
+  canonical_package_modified: false
+  approved_story: ST-1506
+  approved_scope: SELF_HOSTED_WORDPRESS_OPERATOR_BRIDGE_V1
+  source_design_refs:
+  - docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  - docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml#INT-DEC-013
+  - docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-009
+  - docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-011
+  - docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-013
+  - docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml#OD-015
+  - docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml
+  - docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  - docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  - docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1506
+  - changes/st-1506/contracts/production-deployment-definition.v1.yaml
+  - changes/st-1506/self-hosted-wordpress-operator-bridge-v1/ADR-001-HASH-BOUND-WORDPRESS-OPERATOR.md
+  - changes/st-1506/self-hosted-wordpress-operator-bridge-v1/contracts/self-hosted-wordpress-operator.v1.yaml
+  additive_integration_decision:
+    id: ST1506-INT-DEC-001
+    preserves_int_dec_013: true
+    statement: Codex may execute only an exact validated WordPress operation whose immutable proposal identifier was independently approved by a different human through the bounded server operator; Codex cannot approve itself or widen the approved operation
+    production_gate_effect: NONE
+  decision:
+    wordpress:
+      deployment_model: SELF_HOSTED_EXISTING_SITE
+      rest_namespace: raos-operator/v1
+      plugin_slug: raos-bounded-operator
+      plugin_version: 1.0.0
+      operator_contract_version: 1
+      profile_version: 1
+      executor_role: raos_operator_executor
+      bootstrap: HUMAN_ONLY
+    routes:
+      status: GET /wp-json/raos-operator/v1/status
+      yoast_checksum: POST /wp-json/raos-operator/v1/yoast-checksum
+      proposal_create: POST /wp-json/raos-operator/v1/proposals
+      proposal_apply: POST /wp-json/raos-operator/v1/proposals/{proposal_id}/apply
+      approval_rest_route: ABSENT
+    operations:
+      read_only:
+      - STATUS
+      - VERIFY_YOAST_CHECKSUMS
+      writes:
+      - APPLY_YOAST_PROFILE
+      - UPDATE_CHILD_THEME
+      child_theme_slug: kurashinoshirube-child
+      publication: FORBIDDEN
+    proposal:
+      canonicalization: SORTED_ASCII_JSON_WITH_CLOSED_INTEGER_BOOLEAN_STRING_TYPES
+      proposal_id: LOWERCASE_SHA256_OF_CANONICAL_VALIDATED_REQUEST_BYTES
+      etag: SAME_AS_PROPOSAL_ID
+      if_match_required: true
+      mutable_after_creation: false
+      replay: FORBIDDEN_AFTER_TERMINAL_STATE
+      create_response_loss_recovery: OWNER_PRIVATE_WRITE_AHEAD_INTENT_REUSE
+      canonical_golden_vector: PYTHON_AND_PHP_REQUIRED
+    independent_human_approval:
+      channel: WP_ADMIN_TOOLS_PAGE_COOKIE_SESSION_ONLY
+      rest_creation: FORBIDDEN
+      required_capability: manage_options
+      proposal_specific_nonce: REQUIRED
+      password_reauthentication: REQUIRED
+      reason_length_characters:
+        minimum: 10
+        maximum: 300
+      typed_hash_suffix_characters: 12
+      approver_must_differ_from_proposer: true
+      immutable_hash_binding: REQUIRED
+      expiry: REQUIRED
+    activation:
+      external_wp_config_constant: RAOS_OPERATOR_WRITES_ENABLED
+      exact_enabled_value: true
+      default: DISABLED
+      rest_toggle: ABSENT
+      option_toggle: ABSENT
+      bound_executor_option: WRITE_ONCE_FIRST_VALID_EXACT_ROLE_APPLICATION_PASSWORD
+      bound_executor_network_user_meta: WRITE_ONCE_GLOBAL_QUARANTINE_MARKER
+      multisite: UNSUPPORTED
+    capabilities:
+      role:
+      - read
+      - raos_operator_read
+      - raos_operator_propose
+      - raos_operator_apply
+      administrator_only_approval_capability: manage_options
+      administrator_role_for_executor: FORBIDDEN
+      activation_bootstrap: IDEMPOTENT_CREATE_OR_RECONCILE_EXACT_EXECUTOR_ROLE_CAPABILITIES
+      runtime_role_mutation: ABSENT
+      deactivation_or_uninstall_role_deletion: FORBIDDEN
+    credentials:
+      executor: OWNER_INSTALLED_APPLICATION_PASSWORD
+      bound_user_id: FIXED_POSITIVE_ID_NEVER_OVERWRITTEN_OR_DELETED
+      network_identity_marker: FIXED_ORIGIN_AND_USER_ID_NEVER_OVERWRITTEN_OR_DELETED
+      xmlrpc_non_rest_other_origin_or_any_multisite: FORBIDDEN
+      unrelated_application_password_users: UNAFFECTED
+      owner_private_files: EFFECTIVE_UID_CAPTURED_ONCE_AT_OBJECT_CONSTRUCTION
+      rest_surface: EXACT_FOUR_METHOD_ROUTE_CALLBACK_BINDINGS_ONLY
+      argv: FORBIDDEN
+      repository: FORBIDDEN
+      logs: REDACTED_AND_HTTP_DEBUGLEVEL_FORCED_ZERO
+      human_password: NEVER_PERSISTED
+    operational_launcher:
+      path: scripts/st1506_wordpress_operator_python.sh
+      runtime: EXACT_OWNER_MANAGED_CPYTHON_3_14_6_WITH_B_I_S
+      source: EXACT_CURRENT_HEAD_BLOB_OVER_FIFO_STDIN
+      runtime_bytes: CURRENT_HEAD_EQUALS_WORKING_FOR_CLOSED_PATH_SET
+      module_load: CLOSED_IN_MEMORY_LOADER_FROM_CAPTURED_COMMITTED_BYTES
+      verified_mode_repository_sys_path: ABSENT
+      inherited_environment: REPLACED
+      direct_python_or_imported_main: REFUSE_BEFORE_CREDENTIAL_OR_NETWORK
+    apply_serialization:
+      mutex: GLOBAL_PER_DB_PREFIX_AND_FIXED_ORIGIN_ZERO_WAIT
+      ownership: VERIFIED_BEFORE_CAPTURE_AFTER_APPLYING_COMMIT_BEFORE_MUTATION_AND_BEFORE_TERMINAL_PERSISTENCE
+      release: VERIFIED_IN_FINALLY
+    yoast_storage:
+      options_table_engine: EXACT_SINGLE_BINARY_MATCH_INNODB_REQUIRED
+      transaction: SELECT_FOR_UPDATE_BYTE_EXACT_BINARY_RAW_ROW_CAS_AND_EXACT_READBACK
+      stale_restore: FORBIDDEN
+    theme_recovery:
+      backup: COMPLETE_SYMLINK_FREE_MANIFEST_VERIFIED_BEFORE_RESTORE
+      restore_after_cleanup_started: FORBIDDEN
+  forbidden_surfaces:
+  - POST_CONTENT_OR_STATUS
+  - PUBLICATION_OR_SCHEDULING
+  - TAXONOMY
+  - MEDIA
+  - PLUGIN_INSTALL_ACTIVATE_UPDATE_DELETE
+  - GENERIC_OR_RUNTIME_USER_OR_ROLE_MUTATION
+  - ARBITRARY_OPTION
+  - GENERIC_WORDPRESS_REST
+  - ARBITRARY_HTTP
+  - ARBITRARY_SHELL_OR_PROCESS
+  - ARBITRARY_PHP
+  - ARBITRARY_SQL
+  - DELETE_OR_IRREVERSIBLE_DATA_OPERATION
+  - CODEX_SELF_APPROVAL
+  security_and_approval_gates:
+    local_repository_implementation: AUTHORIZED_REVERSIBLE
+    plugin_install_and_activation: HUMAN_OPERATOR_REQUIRED
+    executor_application_password_installation: HUMAN_OPERATOR_REQUIRED
+    writes_enabled_constant: HUMAN_HOST_OPERATOR_REQUIRED
+    proposal_creation: BOUNDED_EXECUTOR_ALLOWED
+    proposal_approval: INDEPENDENT_HUMAN_PER_PROPOSAL
+    proposal_application: CODEX_ALLOWED_ONLY_AFTER_EXACT_APPROVAL
+    release: NOT_AUTHORIZED_BY_THIS_RECORD
+    production_claim: FORBIDDEN
+  acceptance_criteria:
+  - the package and runtime manifest reproduce byte-for-byte
+  - REST and CLI command inventories are closed and reject unknown input
+  - proposal creation atomically publishes and fsyncs an owner-private intent whose explicit canonical-request hash equals proposal_id before transport, reuses the exact unresolved per-operation intent after response loss, and clears it only after a validated matching receipt
+  - operational execution uses only the fixed environment-clean launcher, exact managed Python and isolation flags, a current-HEAD CLI blob over FIFO stdin, and current-HEAD-equal runtime files; direct Python and imported-main execution refuse before credential or network use
+  - proxy environment values are inert under the direct stdlib transport, while non-empty ambient TLS override variables fail closed before transport
+  - every secret-bearing HTTPS request forces and verifies per-instance debug logging disabled
+  - owner-private credential and proposal-journal checks capture the effective UID once at object construction
+  - a validated APPLIED receipt clears only a matching unresolved create intent for the same operation and proposal ID; an absent or different intent is unchanged, and ambiguous or unsuccessful apply retains it
+  - a fresh proposal intent rejects replayed receipts, every malformed post-write receipt is ambiguous, and an APPLIED receipt's result code is exactly bound to its operation before any intent can clear
+  - Python and PHP canonicalization agree with the committed golden proposal vector
+  - no executor capability can approve a proposal or administer WordPress
+  - the first valid exact-role executor Application Password is permanently bound by a site option and network-global user-meta marker; XML-RPC, non-REST, another origin, every Multisite subsite, and every non-allowlisted REST callback fail closed without blocking unrelated Application Password users
+  - every REST request verifies the exact HTTPS site origin, exact bound executor identity, exact single executor role, exact role capability map, and absence of user-specific capability grants
+  - every write is bound to the canonical proposal identifier, If-Match, independent approval, expiry, before-state, and host write constant
+  - all applies hold one database advisory mutex through mutation, recovery or readback, terminal state, and terminal audit, and verify ownership and release
+  - Yoast changes lock both raw option rows, replace only the fixed allowlisted profile keys, preserve every other string or numeric option key and autoload value, use byte-exact binary raw-row CAS and an exact single-row InnoDB proof, and transactionally roll back without stale restoration writes
+  - Yoast application revalidates and merges the profile stored in the independently approved immutable request; runtime-derived prerequisite values are never substituted as a new write source
+  - child-theme changes target only kurashinoshirube-child with every archive entry size and SHA-256 bound to the stage-captured ST-1704 manifest, an exact package hash, ASCII case-fold-unique paths, ZIP_STORED entries, verified complete backup before restore, and no restore after cleanup begins
+  - responses and diagnostics never expose Application Passwords, cookies, nonces, current passwords, authorization headers, or full approval reasons
+  - publication and all other forbidden surfaces are absent
+  formal_evidence_status:
+    ST_1506: NOT_STARTED
+    TST_001: NOT_EXECUTED
+    TST_012: NOT_EXECUTED
+    TST_026: NOT_EXECUTED
+    TST_032: NOT_EXECUTED
+    live_wordpress: NOT_EXECUTED
+    staging: NOT_CONFIGURED
+    production: NOT_READY

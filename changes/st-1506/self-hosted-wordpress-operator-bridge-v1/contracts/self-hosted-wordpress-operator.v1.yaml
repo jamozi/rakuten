@@ -1,0 +1,647 @@
+document:
+  id: RAOS-SELF-HOSTED-WORDPRESS-OPERATOR-001
+  version: 1.0.0
+  story_id: ST-1506
+  slice_id: SELF_HOSTED_WORDPRESS_OPERATOR_BRIDGE_V1
+  status: LOCAL_IMPLEMENTATION_CONTRACT
+  canonical_package_modified: false
+authority:
+  additive_decision: ST1506-INT-DEC-001
+  inherited_boundary: INT-DEC-013
+  codex_can_propose: true
+  codex_can_apply_exact_independently_approved_proposal: true
+  codex_can_approve: false
+  production_release_authority: false
+site:
+  origin: https://kurashinoshirube.com
+  runtime_origin_validation:
+  - is_ssl_is_true
+  - normalized_home_url_equals_origin
+  - normalized_site_url_equals_origin
+  wordpress_rest_prefix: /wp-json
+  namespace: raos-operator/v1
+  plugin_slug: raos-bounded-operator
+  plugin_version: 1.0.0
+  operator_contract_version: 1
+  profile_version: 1
+  executor_role: raos_operator_executor
+activation:
+  host_constant: RAOS_OPERATOR_WRITES_ENABLED
+  enabled_iff_defined_and_strictly_true: true
+  default: DISABLED
+  rest_toggle: ABSENT
+  wordpress_option_toggle: ABSENT
+  plugin_bootstrap: HUMAN_ONLY
+  role_bootstrap: IDEMPOTENT_CREATE_OR_RECONCILE_EXACT_EXECUTOR_ROLE_CAPABILITIES
+  role_bootstrap_time: HUMAN_PLUGIN_ACTIVATION_ONLY
+  runtime_user_or_role_mutation: ABSENT
+  deactivation_or_uninstall_cleanup: PRESERVE_USERS_ROLE_PROPOSALS_AND_AUDIT_DATA
+authentication:
+  rest_executor: WORDPRESS_APPLICATION_PASSWORD_OVER_HTTPS
+  expected_role: raos_operator_executor
+  administrator_role: FORBIDDEN
+  credentials_in_argv: FORBIDDEN
+  credentials_in_environment: FORBIDDEN
+  credential_store: OWNER_PRIVATE_FILE_0600_UNDER_OWNER_DIRECTORIES_0700
+  credential_owner_identity: CAPTURE_OS_GETEUID_ONCE_AT_STORE_CONSTRUCTION
+  approval_session: COOKIE_AUTHENTICATED_WP_ADMIN_ONLY
+  operator_identity_binding:
+    option_name: raos_operator_bound_user_id_v1
+    value: CANONICAL_POSITIVE_WORDPRESS_USER_ID
+    autoload: false
+    bootstrap: ATOMIC_ADD_OPTION_ON_FIRST_VALID_APPLICATION_PASSWORD_FOR_EXACT_SINGLE_ROLE_EXECUTOR
+    network_user_meta_name: raos_operator_network_identity_v1
+    network_user_meta_value: FIXED_SITE_ORIGIN_AND_CANONICAL_POSITIVE_USER_ID
+    network_scope: GLOBAL_WORDPRESS_USER_IDENTITY_QUARANTINE
+    network_bootstrap: ATOMIC_ADD_UNIQUE_USER_META_UNDER_ZERO_WAIT_DATABASE_MUTEX
+    existing_binding_promotion: PLUGINS_LOADED_BEFORE_OPERATOR_AUTHENTICATION
+    overwrite_or_reconcile: FORBIDDEN
+    runtime_delete: FORBIDDEN
+    deactivation_or_uninstall_delete: FORBIDDEN
+    invalid_or_conflicting_binding: REFUSE_AND_REQUIRE_OWNER_DB_RECOVERY_OUTSIDE_BRIDGE
+    operator_command: ABSENT
+  application_password_surface:
+    authentication_hook: wp_authenticate_application_password_errors
+    rest_firewall_hook: rest_request_before_callbacks
+    xmlrpc_or_non_rest: REFUSE_AUTHENTICATION
+    multisite: UNSUPPORTED_AND_MARKED_OPERATOR_REFUSED_ON_EVERY_SUBSITE
+    unrelated_application_password_users: UNAFFECTED
+    exact_rest_handlers:
+      GET /raos-operator/v1/status: rest_status
+      POST /raos-operator/v1/yoast-checksum: rest_yoast_checksum
+      POST /raos-operator/v1/proposals: rest_create_proposal
+      POST /raos-operator/v1/proposals/{64_lowercase_hex}/apply: rest_apply
+    callback_binding: EXACT_PLUGIN_INSTANCE_AND_METHOD
+    all_other_rest_handlers: REFUSE_403_BEFORE_CALLBACK
+  executor_request_time_validation:
+    bound_user_id: EXACT_CURRENT_APPLICATION_PASSWORD_USER
+    user_role_list: EXACTLY_RAOS_OPERATOR_EXECUTOR
+    role_capability_map: EXACTLY_EXECUTOR_CAPABILITIES_ALL_TRUE
+    user_direct_capability_grants: ABSENT
+    multisite: FORBIDDEN
+    drift: REFUSE
+transport_environment:
+  implementation: PYTHON_STDLIB_HTTP_CLIENT_DIRECT_TLS
+  http_debug_logging: FORCE_AND_VERIFY_INSTANCE_DEBUGLEVEL_ZERO_BEFORE_EVERY_SECRET_REQUEST
+  proxy_variables:
+  - HTTP_PROXY
+  - HTTPS_PROXY
+  - ALL_PROXY
+  - NO_PROXY
+  proxy_variable_effect: ACCEPTED_BUT_INERT_AND_NOT_CONSUMED
+  refused_nonempty_tls_variables:
+  - SSL_CERT_DIR
+  - SSL_CERT_FILE
+  - SSLKEYLOGFILE
+  refusal: TRANSPORT_REFUSED_BEFORE_CREDENTIAL_OR_NETWORK_USE
+capabilities:
+  executor_exact:
+  - read
+  - raos_operator_read
+  - raos_operator_propose
+  - raos_operator_apply
+  approval_exact:
+  - manage_options
+  executor_can_manage_options: false
+  executor_can_edit_posts: false
+  executor_can_publish_posts: false
+routes:
+  - id: STATUS
+    method: GET
+    path: /wp-json/raos-operator/v1/status
+    capability: raos_operator_read
+    request_body: ABSENT
+    operator_state_write: false
+    wordpress_target_mutation: false
+  - id: VERIFY_YOAST_CHECKSUMS
+    method: POST
+    path: /wp-json/raos-operator/v1/yoast-checksum
+    capability: raos_operator_read
+    request_body: EMPTY_JSON_OBJECT_ONLY
+    operator_state_write: false
+    wordpress_target_mutation: false
+  - id: CREATE_PROPOSAL
+    method: POST
+    path: /wp-json/raos-operator/v1/proposals
+    capability: raos_operator_propose
+    request_body: EXACT_PROPOSAL_REQUEST
+    operator_state_write: true
+    wordpress_target_mutation: false
+    host_write_constant_required: true
+  - id: APPLY_PROPOSAL
+    method: POST
+    path: /wp-json/raos-operator/v1/proposals/{proposal_id}/apply
+    capability: raos_operator_apply
+    request_body: OPERATION_SPECIFIC_APPLY_PAYLOAD
+    required_header:
+      If-Match: QUOTED_PROPOSAL_ID
+      Idempotency-Key: UNQUOTED_PROPOSAL_ID
+    operator_state_write: true
+    wordpress_target_mutation: true
+    host_write_constant_required: true
+approval_rest_route: ABSENT
+status_response:
+  exact_keys:
+  - schema
+  - operator_version
+  - writes_enabled
+  - supported_operations
+  - yoast_profile_code
+  - theme
+  - proposal_counts
+  yoast_profile_code_closed_values:
+  - YOAST_VERSION_ABSENT
+  - YOAST_VERSION_MISMATCH
+  - YOAST_PROFILE_PREREQUISITE_FAILED
+  - YOAST_PROFILE_MATCH
+  - YOAST_PROFILE_MISMATCH
+  theme:
+    exact_keys:
+    - slug
+    - installed_version
+    - active
+    - state_code
+    - file_count
+    - tree_sha256
+    slug: kurashinoshirube-child
+    installed_version: STRICT_SEMVER_OR_NULL_ONLY_WHEN_ABSENT_OR_UNREADABLE
+    active: BOOLEAN
+    state_code_closed_values:
+    - THEME_ABSENT
+    - THEME_TREE_UNREADABLE
+    - THEME_TREE_READABLE
+    file_count: INTEGER_0_TO_64
+    tree_sha256: LOWERCASE_SHA256_OR_NULL_ONLY_WHEN_ABSENT_OR_UNREADABLE
+    tree_hash_material: CANONICAL_SORTED_PATH_SIZE_SHA256_MANIFEST
+    tree_read_limits:
+      file_count_maximum: 64
+      file_bytes_maximum: 4194304
+  generic_site_health: ABSENT
+  generic_plugin_or_theme_inventory: ABSENT
+closed_commands:
+  status:
+    caller_inputs: []
+  verify-yoast-checksums:
+    caller_inputs: []
+  propose-yoast-profile:
+    caller_inputs: []
+  apply-yoast-profile:
+    caller_inputs:
+    - proposal_id
+  propose-theme-update:
+    caller_inputs: []
+  apply-theme-update:
+    caller_inputs:
+    - proposal_id
+  caller_request_token: FORBIDDEN
+  caller_package_path: FORBIDDEN
+argv_parser:
+  parser: ARGPARSE_EXACT_SUBCOMMAND_PARSE_ARGS
+  abbreviation: FORBIDDEN
+  response_file_expansion: FORBIDDEN
+  shell_or_eval_expansion: FORBIDDEN
+  unknown_argument: REFUSE_BEFORE_TRANSPORT
+  apply_proposal_id: EXACT_64_LOWERCASE_HEX_BEFORE_CREDENTIAL_OR_TRANSPORT_USE
+operational_launcher:
+  path: scripts/st1506_wordpress_operator_python.sh
+  mode: '0755'
+  fixed_repository_root: /home/minami/rakuten
+  shell: EXACT_USR_BIN_BUSYBOX
+  environment: ENV_I_FIXED_PATH_LOCALE_AND_TIMEZONE_ONLY_PLUS_STAGE_BINDINGS
+  python: EXACT_OWNER_MANAGED_CPYTHON_3_14_6
+  flags:
+  - -B
+  - -I
+  - -S
+  - -X_pycache_prefix=/dev/null
+  cli_source: EXACT_CURRENT_HEAD_BLOB_OVER_FIFO_STDIN
+  accepted_argv: EXACT_CLOSED_COMMAND_INVENTORY_AND_PROPOSAL_ID_SHAPES
+  stage_zero:
+    direct_script_or_imported_main: REFUSE_69_BEFORE_CREDENTIAL_OR_NETWORK_USE
+    root_head_and_working_bytes: EXACT_FOR_EVERY_DECLARED_RUNTIME_PATH
+    runtime_module_load: CLOSED_IN_MEMORY_LOADER_FROM_CAPTURED_COMMITTED_BYTES
+    verified_mode_repository_sys_path: ABSENT
+    python_flags_environment_executable_and_prefix: EXACT
+    preloaded_raos_site_sitecustomize_or_usercustomize: FORBIDDEN
+    head_drift_during_verification: REFUSE
+proposal_intent_journal:
+  directory: .secrets/wordpress-operator-local/proposal-intents
+  per_operation_schema: RAOS_WORDPRESS_OPERATOR_PROPOSAL_INTENT_V1
+  files:
+    APPLY_YOAST_PROFILE: apply-yoast-profile.intent.v1.json
+    UPDATE_CHILD_THEME: update-child-theme.intent.v1.json
+  lock_files:
+    APPLY_YOAST_PROFILE: apply-yoast-profile.lock
+    UPDATE_CHILD_THEME: update-child-theme.lock
+  ownership: CURRENT_EFFECTIVE_USER
+  owner_identity_capture: CAPTURE_OS_GETEUID_ONCE_AT_JOURNAL_CONSTRUCTION
+  directory_mode: '0700'
+  file_mode: '0600'
+  regular_single_link_no_symlink: REQUIRED
+  entries:
+    key: operation
+    allowed_operations:
+    - APPLY_YOAST_PROFILE
+    - UPDATE_CHILD_THEME
+    maximum_total: 2
+    maximum_unresolved_per_operation: 1
+    exact_fields:
+    - canonical_request_sha256
+    - operation
+    - proposal_id
+    - request_token
+    - schema
+    proposal_id_semantics: CANONICAL_REQUEST_SHA256
+    canonical_request_sha256: MUST_EQUAL_PROPOSAL_ID
+  write_ahead: EXCLUSIVE_CREATE_FULL_WRITE_FILE_FSYNC_ATOMIC_HARDLINK_PUBLICATION_AND_DIRECTORY_FSYNC_BEFORE_FIRST_CREATE_TRANSPORT_ATTEMPT
+  same_operation_retry: REUSE_EXACT_UNRESOLVED_REQUEST_TOKEN_AND_PROPOSAL_ID
+  current_input_drift: REFUSE_AND_RETAIN_EXISTING_INTENT
+  transport_or_response_failure: RETAIN_UNCHANGED
+  clear_conditions:
+    create: VALIDATED_MATCHING_CREATE_RECEIPT_INCLUDING_EXPIRED_EXACT_REPLAY
+    apply: VALIDATED_APPLIED_RECEIPT_WITH_MATCHING_OPERATION_AND_PROPOSAL_ID
+  apply_clear_matching_semantics:
+    absent_intent: NO_OP
+    different_proposal_id: RETAIN_UNCHANGED_NO_ERROR
+    matching_proposal_id: CLEAR
+    ambiguous_or_non_success_apply: RETAIN_UNCHANGED
+  clear_write: LOCKED_UNLINK_AND_DIRECTORY_FSYNC
+  automatic_timeout_or_error_clear: FORBIDDEN
+  credential_or_application_password_storage: FORBIDDEN
+proposal_create_receipt:
+  exact_schema: RAOS_OPERATOR_PROPOSAL_V1
+  proposal_id: EXACT_REQUEST_PROPOSAL_ID
+  operation: EXACT_REQUEST_OPERATION
+  state_closed_values:
+  - PROPOSED
+  - APPROVED
+  - APPLYING
+  created_at_and_expires_at: STRICT_UTC_RFC3339
+  ttl_seconds_exact: 900
+  replayed: BOOLEAN
+  etag: QUOTED_PROPOSAL_ID
+  invalid_receipt_effect: REFUSE_AND_RETAIN_WRITE_AHEAD_INTENT
+  malformed_post_write_effect: OUTCOME_AMBIGUOUS_AND_RETAIN_WRITE_AHEAD_INTENT
+  initial_receipt_rules:
+    replayed: false
+    state: PROPOSED
+    expires_at_must_be_future_at_validation: true
+  replay_receipt_rules:
+    replayed: true
+    states:
+    - PROPOSED
+    - APPROVED
+    - APPLYING
+    expired_exact_receipt:
+      journal: CLEAR_AS_COMMUNICATION_OUTCOME_RESOLVED
+      command_result: NON_SUCCESS_NEW_PROPOSAL_REQUIRED
+  next_action_by_state:
+    PROPOSED: HUMAN_APPROVAL_REQUIRED_BEFORE_MATCHING_APPLY_COMMAND
+    APPROVED: RUN_MATCHING_APPLY_COMMAND
+    APPLYING: VERIFY_STATUS_BEFORE_ANY_RETRY
+    expired_exact_replay: NEW_PROPOSAL_REQUIRED
+  approval_surface_by_state:
+    live_PROPOSED: WORDPRESS_ADMIN_TOOLS_ONLY
+    APPROVED_APPLYING_or_expired: NOT_APPLICABLE
+apply_receipt:
+  exact_schema: RAOS_OPERATOR_APPLY_V1
+  proposal_id: EXACT_REQUEST_PROPOSAL_ID
+  operation: EXACT_REQUEST_OPERATION
+  state: APPLIED
+  replayed: BOOLEAN
+  result_code_by_operation:
+    APPLY_YOAST_PROFILE: YOAST_PROFILE_APPLIED
+    UPDATE_CHILD_THEME: THEME_UPDATE_APPLIED
+  malformed_or_cross_operation_post_write_effect: OUTCOME_AMBIGUOUS_AND_RETAIN_MATCHING_INTENT
+proposal:
+  ttl_seconds: 900
+  storage_bounds:
+    nonterminal_unexpired_per_proposer_maximum: 20
+    creations_per_proposer_per_rolling_window_maximum: 5
+    rolling_window_seconds: 600
+    total_rows_maximum: 1000
+    caller_selected_limits: FORBIDDEN
+    automatic_deletion: FORBIDDEN
+  request_token:
+    pattern: ^[0-9a-f]{64}$
+    purpose: one caller intent per proposal without reusing a terminal record
+    generation: INTERNAL_OS_CSPRNG_32_BYTES
+    caller_supplied: false
+  canonicalization:
+    accepted_types:
+    - object
+    - array
+    - string
+    - integer
+    - boolean
+    - 'null'
+    floats: FORBIDDEN
+    duplicate_keys: FORBIDDEN
+    unknown_keys: FORBIDDEN
+    object_key_order: UNICODE_CODE_POINT_ASCENDING
+    separators: COMMA_AND_COLON_WITHOUT_WHITESPACE
+    string_encoding: JSON_ASCII_ESCAPED
+    final_newline: ABSENT
+  proposal_id:
+    expression: lower_hex(sha256(canonical_validated_request_bytes))
+    pattern: ^[0-9a-f]{64}$
+    public_proposal_hash_field: ABSENT
+    etag: SAME_VALUE
+  immutable_server_bindings:
+  - proposal_id
+  - canonical_validated_request_bytes
+  - proposer_user_id
+  - created_at
+  - expires_at
+  - before_state_hash
+  - operation
+  state_machine:
+    initial: PROPOSED
+    states:
+    - PROPOSED
+    - APPROVED
+    - APPLYING
+    - APPLIED
+    - FAILED
+    - NEEDS_RECOVERY
+    - EXPIRED
+    terminal:
+    - APPLIED
+    - FAILED
+    - NEEDS_RECOVERY
+    - EXPIRED
+  replay_policy:
+    proposal_create_same_nonterminal_request: IDEMPOTENT_RECEIPT
+    apply_applied_proposal: IDEMPOTENT_RECEIPT_NO_SECOND_WRITE
+    terminal_record_for_new_intent: NEW_REQUEST_TOKEN_REQUIRED
+    approval_reuse_for_different_id: FORBIDDEN
+  canonical_golden_vector:
+    fixture: changes/st-1506/self-hosted-wordpress-operator-bridge-v1/contracts/canonical-proposal-golden.v1.json
+    request_token: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+    canonical_byte_length: 870
+    proposal_id: 699a1c5a40786449e3f0241958a594f436e03504472a592d2abc1e3eae2b7d90
+    python_verification: REQUIRED
+    php_runtime_self_check_before_proposal_create: REQUIRED
+operation_requests:
+  APPLY_YOAST_PROFILE:
+    exact_request:
+      operation: APPLY_YOAST_PROFILE
+      operator_contract_version: 1
+      profile_version: 1
+      request_token: LOWERCASE_SHA256_TOKEN
+      site_origin: https://kurashinoshirube.com
+      ttl_seconds: 900
+      yoast_profile:
+        plugin_slug: wordpress-seo
+        version: '28.3'
+        wpseo:
+          enable_ai_generator: false
+          enable_headless_rest_endpoints: false
+          enable_index_now: false
+          enable_schema: false
+          enable_schema_aggregation_endpoint: false
+          enable_xml_sitemap: true
+          google_site_kit_feature_enabled: false
+          googleverify: ''
+          semrush_integration_active: false
+          tracking: false
+          wincher_integration_active: false
+        wpseo_social:
+          og_default_image: https://kurashinoshirube.com/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp
+          og_default_image_id: ''
+          opengraph: true
+          twitter: true
+          twitter_card_type: summary_large_image
+    apply_payload: EMPTY_JSON_OBJECT_ONLY
+    applied_profile_source: STORED_APPROVED_REQUEST_JSON_YOAST_PROFILE
+    prewrite_revalidation:
+    - stored_profile_equals_fixed_contract_profile
+    - stored_profile_equals_runtime_derived_prerequisite_profile
+    runtime_derived_profile_write_source: FORBIDDEN
+    exact_target_options:
+    - wpseo
+    - wpseo_social
+    write_algorithm: MERGE_ALLOWLISTED_KEYS_ONLY
+    whole_option_replacement: FORBIDDEN
+    storage_engine_precondition:
+      table: EXACT_WPDB_OPTIONS_TABLE
+      engine: EXACT_STRING_InnoDB
+      verification: READ_ONLY_INFORMATION_SCHEMA_TABLES_QUERY
+      schema_binding: BYTE_EXACT_BINARY_TABLE_SCHEMA_EQUALS_DATABASE
+      table_binding: BYTE_EXACT_BINARY_TABLE_NAME_EQUALS_EXACT_WPDB_OPTIONS
+      result_cardinality: EXACTLY_ONE_ROW_WITHOUT_LIMIT
+      timing:
+      - before_capture
+      - before_apply
+      missing_multiple_unknown_or_non_innodb: REFUSE_WITHOUT_OPTION_WRITE
+      capture_error: raos_yoast_option_table_engine_unsupported_HTTP_409
+      apply_result: YOAST_OPTION_TABLE_ENGINE_UNSUPPORTED_FAILED
+    transaction_model:
+      start: BEFORE_READING_TARGET_ROWS
+      locked_rows: EXACTLY_WPSEO_AND_WPSEO_SOCIAL_SELECT_FOR_UPDATE
+      captured_row_material:
+      - exact_serialized_option_value
+      - exact_autoload_value
+      before_state_hash: SHA256_LENGTH_DELIMITED_RAW_ROW_MATERIAL
+      writes: CONDITIONAL_BYTE_EXACT_BINARY_RAW_ROW_CAS_MATCHING_OPTION_NAME_VALUE_AND_AUTOLOAD
+      locked_readback: EXACT_BOTH_ROWS_BEFORE_COMMIT
+      cache_flush: AFTER_COMMIT_OR_ROLLBACK
+      post_commit_readback: EXACT_ROWS_PROFILE_AND_NON_PROFILE_PRESERVATION
+    preserved_state: EVERY_NON_PROFILE_KEY_AND_VALUE_IN_BOTH_OPTION_ARRAYS
+    required_readback:
+    - every_allowlisted_key_equals_exact_profile_value
+    - every_non_profile_key_and_value_equals_captured_before_state
+    rollback: DATABASE_TRANSACTION_ROLLBACK_WITH_EXACT_CAPTURED_RAW_ROW_VERIFICATION
+    stale_update_option_restore: FORBIDDEN
+    uncertain_outcomes:
+      commit: YOAST_COMMIT_UNCERTAIN_NEEDS_RECOVERY
+      rollback: YOAST_TRANSACTION_ROLLBACK_UNCERTAIN_NEEDS_RECOVERY
+      post_commit: YOAST_POST_COMMIT_DRIFT_NEEDS_RECOVERY
+  UPDATE_CHILD_THEME:
+    exact_request:
+      operation: UPDATE_CHILD_THEME
+      operator_contract_version: 1
+      profile_version: 1
+      request_token: LOWERCASE_SHA256_TOKEN
+      site_origin: https://kurashinoshirube.com
+      theme:
+        file_manifest: SORTED_NONEMPTY_CLOSED_FILE_LIST
+        from_version: '1.1.1'
+        package_sha256: LOWERCASE_SHA256
+        package_size: INTEGER_1_TO_16777216
+        slug: kurashinoshirube-child
+        to_version: STRICT_SEMVER_GREATER_THAN_FROM_VERSION
+      ttl_seconds: 900
+    limits:
+      package_bytes_maximum: 16777216
+      total_uncompressed_bytes_maximum: 67108864
+      file_bytes_maximum: 4194304
+      file_count_maximum: 64
+      manifest_paths: ASCII_SAFE_RELATIVE_POSIX_CASEFOLD_UNIQUE_SORTED
+      zip_compression: ZIP_STORED_ONLY
+      zip_encryption: FORBIDDEN
+    apply_payload: EXACT_BOUND_THEME_ARCHIVE_BYTES
+    content_type: application/zip
+    package_source:
+      builder: scripts/build_st1704_self_hosted_theme.py
+      manifest_builder: scripts/build_st1704_self_hosted_editorial_manifest.py
+      runtime_manifest: changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json
+      runtime_manifest_verification: TRACKED_BYTES_EQUAL_DETERMINISTIC_REBUILD_BEFORE_PROPOSE_AND_APPLY
+      committed_manifest_verification: CURRENT_HEAD_BLOB_EQUALS_TRACKED_AND_REBUILT_BYTES
+      stage_captured_entry_binding: EVERY_ARCHIVE_ENTRY_SIZE_AND_SHA256_EQUAL_CAPTURED_MANIFEST
+      post_build_revalidation: CAPTURED_MANIFEST_AND_SOURCE_SET_RECHECKED_BEFORE_PROPOSAL
+      git_reader: FIXED_READ_ONLY_USR_BIN_GIT_PLUMBING_NO_SHELL_CLEAN_ENV_TIMEOUT_AND_SIZE_BOUNDED
+      caller_selected_path: FORBIDDEN
+      rebuild_before_propose_and_apply: REQUIRED
+    package_root: kurashinoshirube-child/
+    package_compression: DETERMINISTIC_ZIP_STORED
+    before_state: CAPTURE_EXACT_ACTIVE_CHILD_THEME_DIRECTORY_HASH_AND_FILE_MANIFEST
+    required_readback:
+    - active_theme_slug_is_kurashinoshirube_child
+    - installed_version_equals_bound_to_version
+    - installed_file_manifest_and_hashes_equal_bound_manifest
+    recovery_backup:
+      filesystem: WP_FILESYSTEM_DIRECT_ONLY
+      preexisting_backup: REFUSE_BEFORE_UPDATE
+      symlinks: FORBIDDEN
+      verification: BACKUP_TREE_MUST_EXACTLY_MATCH_CAPTURED_BEFORE_MANIFEST_BEFORE_RESTORE
+      restore_without_verified_backup: FORBIDDEN
+      cleanup_start_is_irreversible_boundary: true
+      restore_after_cleanup_started: FORBIDDEN
+      cleanup_failure: KEEP_AND_VERIFY_NEW_THEME_THEN_NEEDS_RECOVERY
+    rollback: RESTORE_ONLY_FROM_VERIFIED_COMPLETE_BACKUP_ON_UPDATE_OR_READBACK_FAILURE
+yoast_checksum:
+  plugin_slug: wordpress-seo
+  version: '28.3'
+  official_manifest_url: https://downloads.wordpress.org/plugin-checksums/wordpress-seo/28.3.json
+  redirect: FORBIDDEN
+  expected_manifest_sha256: 1773aaadf88827311b488877c069aefcb6422e8dc6d5a7f50c1bd492d34bf85f
+  expected_manifest_bytes: 343370
+  expected_sha256_file_count: 1952
+  result_statuses:
+  - PASS
+  - FAIL
+  - UNAVAILABLE
+  no_result_is_not_pass: true
+  cache:
+    ttl_seconds: 300
+    fresh_computations_per_cache_miss: 1
+    cache_miss_lock: REQUIRED
+    unknown_or_corrupt_cache: UNAVAILABLE_NEVER_PASS
+independent_human_approval:
+  creation_channel: WP_ADMIN_TOOLS_PAGE_AND_ADMIN_POST_ONLY
+  rest_creation: FORBIDDEN
+  required:
+  - cookie_authenticated_session
+  - manage_options
+  - proposal_specific_wp_nonce
+  - current_password_reauthentication
+  - approval_reason_10_to_300_characters
+  - exact_final_12_hex_characters_of_proposal_id
+  - approver_user_id_differs_from_proposer_user_id
+  - proposal_not_expired
+  transition: COMPARE_AND_SWAP_PROPOSED_TO_APPROVED
+  review_ui_must_show:
+  - operation
+  - exact_target
+  - exact_impact
+  - proposal_id
+  - before_state_hash
+  - expires_at
+  stored_binding:
+  - proposal_id
+  - approved_by_user_id
+  - approved_at
+  - approval_expires_at
+  - reason
+  - audit_hash
+  approval_evidence_hash:
+    material:
+    - proposal_id
+    - approved_by_user_id
+    - approved_at
+    - approval_expires_at
+    - normalized_reason
+    storage: REQUIRED
+    verification_at_apply: REQUIRED
+  password_persistence: FORBIDDEN
+  nonce_or_cookie_disclosure: FORBIDDEN
+  audit_insert_failure: REFUSE_APPROVAL_WITHOUT_STATE_TRANSITION
+apply_preconditions:
+  - HTTPS_ORIGIN_EXACT
+  - EXECUTOR_ROLE_AND_CAPABILITY_EXACT
+  - RAOS_OPERATOR_WRITES_ENABLED_STRICT_TRUE
+  - PROPOSAL_ID_PATH_PATTERN_VALID
+  - IF_MATCH_QUOTED_PROPOSAL_ID_EXACT
+  - IDEMPOTENCY_KEY_UNQUOTED_PROPOSAL_ID_EXACT
+  - STORED_CANONICAL_REQUEST_HASH_EXACT
+  - REQUEST_JSON_REHASH_EQUALS_PROPOSAL_ID
+  - STORED_INDEPENDENT_APPROVAL_EXACT
+  - APPROVAL_AND_PROPOSAL_UNEXPIRED
+  - APPROVER_DIFFERS_FROM_PROPOSER
+  - BEFORE_STATE_HASH_UNCHANGED
+  - OPERATION_PAYLOAD_HASH_EXACT
+  - OPERATION_IS_CLOSED_ALLOWLIST_MEMBER
+apply_serialization:
+  scope: ONE_GLOBAL_MUTEX_PER_DB_PREFIX_AND_SITE_ORIGIN_FOR_BOTH_OPERATIONS
+  name: raos_apply_v1_PLUS_FIRST_48_HEX_OF_SHA256_DB_NAME_NEWLINE_PREFIX_NEWLINE_SITE_ORIGIN
+  acquire: SELECT_GET_LOCK_WITH_ZERO_SECOND_WAIT
+  unavailable: REFUSE_409_BEFORE_TARGET_MUTATION
+  held_across:
+  - locked_proposal_revalidation
+  - before_state_recheck
+  - target_mutation
+  - readback_or_recovery
+  - terminal_state_and_audit_persistence
+  ownership_checks:
+  - before_before_state_capture
+  - after_applying_cas_commit_immediately_before_target_mutation
+  - after_target_mutation_before_terminal_persistence
+  ownership_query: SELECT_IS_USED_LOCK_EQUALS_CONNECTION_ID
+  ownership_loss: PRE_APPLYING_REFUSE_OR_APPLYING_NEEDS_RECOVERY_WITHOUT_SUCCESS
+  release: FINALLY_SELECT_RELEASE_LOCK_AND_VERIFY_EXACT_SUCCESS
+  release_uncertain: REFUSE_500_WITHOUT_REPORTING_SUCCESS
+forbidden_surfaces:
+  - post_content
+  - post_status
+  - publication
+  - scheduling
+  - taxonomy
+  - media
+  - plugin_install
+  - plugin_activate
+  - plugin_update
+  - plugin_delete
+  - generic_or_runtime_user_or_role_mutation
+  - arbitrary_option
+  - arbitrary_meta
+  - generic_wordpress_rest
+  - caller_selected_url
+  - arbitrary_http
+  - arbitrary_php
+  - arbitrary_sql
+  - arbitrary_shell_or_process
+  - delete_or_irreversible_data_operation
+  - codex_self_approval
+redaction:
+  never_log_or_return:
+  - Authorization
+  - application_password
+  - Cookie
+  - nonce
+  - current_password
+  - raw_approval_reason
+  - raw_theme_archive
+  errors: CLOSED_STATIC_CODES_ONLY
+audit:
+  proposal_create: REQUIRED
+  approval: REQUIRED_BEFORE_APPROVED_STATE_VISIBLE
+  apply_start_and_terminal: REQUIRED
+  insert_failure: FAIL_CLOSED_AND_NEVER_AUTHORIZE_OR_REPORT_SUCCESS
+evidence_boundary:
+  local_contract_and_tests: LOCAL_IMPLEMENTATION_EVIDENCE_ONLY
+  live_wordpress: NOT_EXECUTED
+  TST_032: NOT_EXECUTED
+  staging: NOT_CONFIGURED
+  release: NOT_AUTHORIZED
+  production_readiness: NOT_READY

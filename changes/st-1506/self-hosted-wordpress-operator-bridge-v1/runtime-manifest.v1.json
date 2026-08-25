@@ -1,0 +1,155 @@
+{
+  "canonical_package_modified": false,
+  "external_action_authority": "EXACT_INDEPENDENT_HUMAN_APPROVAL_ONLY",
+  "forbidden_surfaces": [
+    "ARBITRARY_HTTP",
+    "ARBITRARY_OPTION",
+    "ARBITRARY_PHP",
+    "ARBITRARY_SHELL_OR_PROCESS",
+    "ARBITRARY_SQL",
+    "CODEX_SELF_APPROVAL",
+    "MEDIA",
+    "PLUGIN_MUTATION",
+    "POST_CONTENT_OR_STATUS",
+    "PUBLICATION_OR_SCHEDULING",
+    "TAXONOMY",
+    "GENERIC_OR_RUNTIME_USER_OR_ROLE_MUTATION"
+  ],
+  "generated_by": "scripts/build_st1506_wordpress_operator.py",
+  "operator_contract_version": 1,
+  "package": {
+    "bytes": 134448,
+    "compression": "ZIP_STORED",
+    "file_count": 2,
+    "root": "raos-bounded-operator/",
+    "sha256": "1a07fada64dcd2866192e0624ec63eebae180f433a65f3ea251e80ebe851b9b8",
+    "version": "1.0.0"
+  },
+  "paths": [
+    {
+      "bytes": 8612,
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/ADR-001-HASH-BOUND-WORDPRESS-OPERATOR.md",
+      "sha256": "2624ebb0d289fe5b8db0ebfe0aba5696fd30afc04776edca9f62eded1fbd5580"
+    },
+    {
+      "bytes": 10521,
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/DESIGN_HANDOFF_V1.yaml",
+      "sha256": "c3d08e5cdf83adbd27de8f9acff0d81be22008d2a86f027ceab826324ecde87d"
+    },
+    {
+      "bytes": 2905,
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/Makefile",
+      "sha256": "0fbc2b9f15f850c3a8ff4b2ceab668e931b50fdac01fc20550bbd51407bb7a1a"
+    },
+    {
+      "bytes": 15080,
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/OPERATIONS_RUNBOOK.md",
+      "sha256": "9426d7337d1caf1fcd697f2af7f251ebc178a8f5b419f3b2de8bb3b3277601fc"
+    },
+    {
+      "bytes": 2689,
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/PREFLIGHT.md",
+      "sha256": "73ea2da2a910a8aea380de3c9364bfcd94c66f51f0a0d03bed4221a7888c3019"
+    },
+    {
+      "bytes": 3808,
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/README.md",
+      "sha256": "daf4670e52c1264a72e9e4189e549b6e88c47e68bf8788bf211fa613673009e3"
+    },
+    {
+      "bytes": 1238,
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/contracts/canonical-proposal-golden.v1.json",
+      "sha256": "65dd77c345a1936596b96c80c91d2ff71f9074454437d469ea002f5ec9af9b1f"
+    },
+    {
+      "bytes": 23629,
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/contracts/self-hosted-wordpress-operator.v1.yaml",
+      "sha256": "06d0c5e4b42b74b89d26623720ca844c74add7ac82c4c4a761b261abcafe2fd1"
+    },
+    {
+      "bytes": 4485,
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/README.md",
+      "sha256": "3ff461eca0c27a3d7fc5d53592254572110c75f0d85c84a964d6ee976c8505c6"
+    },
+    {
+      "bytes": 129633,
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/raos-bounded-operator.php",
+      "sha256": "eb028ba70bbc287cefb785131320c61438377dcc9806f8f09a5baec0b0d1f32c"
+    },
+    {
+      "bytes": 69856,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
+      "sha256": "dcec77cd8fd15eb1eff6ea5f2661cfd34f62a0799f2decdd31602e24c683670c"
+    },
+    {
+      "bytes": 77,
+      "path": "python/raos/__init__.py",
+      "sha256": "700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596"
+    },
+    {
+      "bytes": 3033,
+      "path": "python/raos/adapters/__init__.py",
+      "sha256": "6f6ede5e08b6050430852e856234a157475c0977005dfd6a533f49d1863e1029"
+    },
+    {
+      "bytes": 26928,
+      "path": "python/raos/domain/operations/self_hosted_wordpress_operator.py",
+      "sha256": "9fa92cf6363ba66342e7009ff6f62c2a7f567e5a993bb723f8d121b54d5e1ec4"
+    },
+    {
+      "bytes": 3031,
+      "path": "python/raos/ports/__init__.py",
+      "sha256": "512efd7c0063720f4181881455af518e3e72365edc4637ccda05c2bd9d2ebf4e"
+    },
+    {
+      "bytes": 910,
+      "path": "python/raos/ports/self_hosted_wordpress_operator.py",
+      "sha256": "9b7fc96a540a340e3c0be44a741c2c58d6b01356a21ad3e9db3fdda0e7181ddd"
+    },
+    {
+      "bytes": 27171,
+      "path": "python/raos/adapters/self_hosted_wordpress_operator_credentials.py",
+      "sha256": "6d52345c1da4a656ada6479bab22de3f139122b44eb18a0d0833a6c530cbf4b6"
+    },
+    {
+      "bytes": 23685,
+      "path": "python/raos/adapters/self_hosted_wordpress_operator_https.py",
+      "sha256": "f0beae01752017701ff8ea53d0d1a7c25c70353dbe998e782d1a39790e9c4221"
+    },
+    {
+      "bytes": 10053,
+      "path": "scripts/build_st1704_self_hosted_editorial_manifest.py",
+      "sha256": "cc486666714d78e7e68562a756ed35c8897b3692cbefa83d7ccc445b6ae3de14"
+    },
+    {
+      "bytes": 14966,
+      "path": "scripts/build_st1704_self_hosted_theme.py",
+      "sha256": "ea4c96f32e4bc5e62dbe78a5c26edf5b570544f75514fd1699ecb2d2146cbe12"
+    },
+    {
+      "bytes": 33422,
+      "path": "scripts/st1506_wordpress_operator.py",
+      "sha256": "40b9d88aa6231b653dcd3c1860f58450d33f772f5ac1a2aabcb7200c037dd2b0"
+    },
+    {
+      "bytes": 5028,
+      "path": "scripts/st1506_wordpress_operator_python.sh",
+      "sha256": "ef3ee271b75f95890ca5ac3eb253f94d6463cfdc3829cfa19133135e4e6a3a19"
+    },
+    {
+      "bytes": 14387,
+      "path": "scripts/build_st1506_wordpress_operator.py",
+      "sha256": "86009880033cf2888a3a2250beca35c6084e3c9ebdb1007bf9f77ec11d20ea40"
+    }
+  ],
+  "production_readiness": "NOT_READY",
+  "publication_authority": "NONE",
+  "schema": "RAOS_SELF_HOSTED_WORDPRESS_OPERATOR_RUNTIME_MANIFEST_V1",
+  "slice_id": "SELF_HOSTED_WORDPRESS_OPERATOR_BRIDGE_V1",
+  "story_id": "ST-1506",
+  "supported_mutations": [
+    "APPLY_YOAST_PROFILE",
+    "UPDATE_CHILD_THEME"
+  ],
+  "writes_default": "DISABLED"
+}
