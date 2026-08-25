@@ -162,21 +162,21 @@ EXPECTED_DEPENDENCY_INPUTS: Final = (
         "ST-0805",
         "policy_engine_v2",
         Path("python/raos/domain/editorial/policy_engine_v2.py"),
-        "86e0af8ff6b651b50a7959a0a8c0f85864c230a57144b51e190041d658ee7d93",
+        "ef690e73cf657d3963572428785b2e777f7485ba15c30a53a978ad8919e31e24",
         "ADDITIVE_RUNTIME_PROVENANCE_ONLY",
     ),
     (
         "ST-0805",
         "runtime_manifest_v2",
         Path("changes/st-0805/runtime-manifest.v2.yaml"),
-        "19dd52b254b648f88c6cda0ea3d9d5b6167b184a0a4ce735431ebb09056d6367",
+        "f10516b1d26e6dc448ade04873880211244e82d1c0f7175b5c57ce2c95f411ce",
         "ADDITIVE_RUNTIME_PROVENANCE_ONLY",
     ),
 )
 MATERIAL_RUNTIME_DEPENDENCIES: Final = (
     (
         Path("python/raos/domain/shared/persistence.py"),
-        "2a3d5cdc7d2e93ecd6883c3cdd37a0f27eb36638bd569399fcd95be7a06dfc20",
+        "7d97e3316b4b451f575309dd641a2ee568b7e80b9429ef264f5114b1ac5dcc1a",
     ),
     (
         Path("python/raos/domain/shared/identity.py"),
@@ -184,7 +184,7 @@ MATERIAL_RUNTIME_DEPENDENCIES: Final = (
     ),
     (
         Path("python/raos/domain/shared/json_values.py"),
-        "c995c2ba5f3dcd9f4302328d423192ae9f8c3b1415f294bf791c92baf07d4644",
+        "5c86fbaab887100e09a94c947511bc4f0ad850c6163bad10f5e965ad3d56514e",
     ),
     (
         Path("python/raos/config/runtime.py"),
