@@ -59,27 +59,48 @@ def _history_binding() -> owner.ReviewedHistoryBinding:
 
 
 def _git_blob(object_id: str) -> bytes:
+    environment = {
+        "GIT_CONFIG_GLOBAL": os.devnull,
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_SYSTEM": os.devnull,
+        "GIT_NO_LAZY_FETCH": "1",
+        "GIT_NO_REPLACE_OBJECTS": "1",
+        "GIT_OPTIONAL_LOCKS": "0",
+        "GIT_TERMINAL_PROMPT": "0",
+        "LANG": "C",
+        "LC_ALL": "C",
+        "PATH": os.defpath,
+    }
     result = subprocess.run(
         ["/usr/bin/git", "cat-file", "blob", object_id],
         cwd=REPOSITORY_ROOT,
-        env={
-            "GIT_CONFIG_GLOBAL": os.devnull,
-            "GIT_CONFIG_NOSYSTEM": "1",
-            "GIT_CONFIG_SYSTEM": os.devnull,
-            "GIT_NO_LAZY_FETCH": "1",
-            "GIT_NO_REPLACE_OBJECTS": "1",
-            "GIT_OPTIONAL_LOCKS": "0",
-            "GIT_TERMINAL_PROMPT": "0",
-            "LANG": "C",
-            "LC_ALL": "C",
-            "PATH": os.defpath,
-        },
+        env=environment,
         stdin=subprocess.DEVNULL,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         check=False,
         timeout=20,
     )
+    if result.returncode != 0:
+        probe = subprocess.run(
+            [
+                "/usr/bin/git",
+                "cat-file",
+                "--batch-check=%(objectname) %(objecttype)",
+            ],
+            cwd=REPOSITORY_ROOT,
+            env=environment,
+            input=f"{object_id}\n",
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            text=True,
+            encoding="utf-8",
+            timeout=20,
+        )
+        assert probe.returncode == 0, probe.stderr
+        if probe.stdout == f"{object_id} missing\n":
+            pytest.skip("requires the complete repository object history")
     assert result.returncode == 0, result.stderr.decode("utf-8", "replace")
     return result.stdout
 
@@ -207,6 +228,9 @@ def _rebind_entry(entry: dict[str, object], source_data: bytes) -> dict[str, obj
 
 
 def test_owner_check_is_read_only_and_generated_outputs_are_exact() -> None:
+    policy = _policy()
+    _git_blob(policy.prior.blob_oid)
+    _git_blob(_history_binding().source_identifier)
     before = (V3_PATH.read_bytes(), MANIFEST_PATH.read_bytes())
     result = subprocess.run(
         [
