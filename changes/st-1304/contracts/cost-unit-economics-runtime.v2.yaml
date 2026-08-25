@@ -45,19 +45,19 @@ source_bindings:
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
   st0706_cost_boundary:
     path: changes/st-0706/generated/durable-ai-job-queue.v2.json
-    sha256: bf5a60509879837bb25928c5da54b804755a1ee91025a9f6f1140379a6771912
+    sha256: 13efe202cc5a823d7a9cad3f1b33adb1666612645efb186c0bb0efd393a512ea
   st1205_runtime:
     path: changes/st-1205/contracts/kpi-read-model.v2.yaml
-    sha256: 4cb71bbecec12342aca564309a860c686a8126fdd3238b79ba14ccbdb260b973
+    sha256: 8f7e0664c844615a291c926520fff14af399daa5fd21bac8d002bfc7857218ed
   st1205_projection:
     path: changes/st-1205/generated/kpi-read-model.v2.json
     sha256: 295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb
   st1303_runtime:
     path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: fb6eb68a838f08ef8e52002da198424230cdf77f7bb4e4f9db21a94cd2c4d9b6
+    sha256: f8fc2b3113387d419e675e9a286e008c806728a056281a3376ca367356b1d758
   st1303_projection:
     path: changes/st-1303/generated/attribution-engine-recorded.v2.json
-    sha256: 424e7aec5cb798416c23ad2613d2e8e9700c33e3a835d47ec73acafaaa5cfaeb
+    sha256: a45dd5a69bc97a8983c1c30f60588a3c366cfbc97a677257295f6d4f78804277
   st1303_fixture:
     path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
     sha256: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b

@@ -815,11 +815,7 @@ def _validate_measurement_cost_binding(request: UnitEconomicsRunRequest) -> None
         for name in ("work_minutes", "incremental_cost_jpy"):
             cost_value = cost.metric_map[name]
             measured_value = measurement.metric_map[name]
-            if (
-                cost_value.observed
-                and measured_value.observed
-                and cost_value != measured_value
-            ):
+            if cost_value != measured_value:
                 fail_unit_economics(UnitEconomicsFailureCode.MEASUREMENT_COST_MISMATCH)
 
 

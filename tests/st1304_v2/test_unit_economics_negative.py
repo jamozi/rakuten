@@ -296,6 +296,36 @@ def test_measurement_cost_mismatch_is_rejected(
     )
 
 
+@pytest.mark.parametrize(
+    ("name", "measurement"),
+    [
+        (
+            "work_minutes",
+            MeasurementValue(MeasurementValueState.NOT_OBSERVED, None, None),
+        ),
+        (
+            "incremental_cost_jpy",
+            MeasurementValue(MeasurementValueState.UNVERIFIED, 0, HASH),
+        ),
+    ],
+)
+def test_measurement_cost_binding_rejects_one_sided_availability(
+    scenario: RecordedUnitEconomicsScenario,
+    name: str,
+    measurement: MeasurementValue,
+) -> None:
+    request = _replace_attribution_metric(
+        scenario.request,
+        slot=1,
+        name=name,
+        value=measurement,
+    )
+    assert (
+        failure_code(lambda: build_unit_economics(request))
+        is UnitEconomicsFailureCode.MEASUREMENT_COST_MISMATCH
+    )
+
+
 def test_immature_cohort_is_unavailable(
     scenario: RecordedUnitEconomicsScenario,
 ) -> None:
