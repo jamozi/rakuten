@@ -460,7 +460,7 @@
     },
     {
       "path": "changes/st-1103/runtime-manifest.v2.yaml",
-      "sha256": "96da1416b6f4738edbf887926ec85c69680ae8cc59d64f53ebba9f490d3892d1"
+      "sha256": "4c03c7102f0a47cc97220e9f89cdd5ecd8af7ef2f6d77234a7134e6f9c86d09b"
     },
     {
       "path": "packages/web-ui/src/freshness-operations-workspace-v2.ts",

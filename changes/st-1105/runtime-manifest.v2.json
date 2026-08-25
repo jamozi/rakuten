@@ -14,7 +14,7 @@
       "uri": "repo://changes/st-1105/contracts/admin-visual-accessibility-acceptance.v2.json",
       "role": "OWNER_SOURCE",
       "bytes": 16368,
-      "sha256": "be7b604a943e0af10d4e971d5f1b2eff63f547357283a1883a8b8555eea2ee3a"
+      "sha256": "0b6434b0c8cd20788db06241307a3fd9d5f26f1e54a17de13501f0142b978692"
     },
     {
       "uri": "repo://changes/st-1105/contracts/admin-visual-browser-evidence.v2.json",
@@ -350,7 +350,7 @@
       "uri": "repo://changes/st-1103/runtime-manifest.v2.yaml",
       "role": "BOUND_INPUT",
       "bytes": 9372,
-      "sha256": "96da1416b6f4738edbf887926ec85c69680ae8cc59d64f53ebba9f490d3892d1"
+      "sha256": "4c03c7102f0a47cc97220e9f89cdd5ecd8af7ef2f6d77234a7134e6f9c86d09b"
     },
     {
       "uri": "repo://packages/web-ui/src/freshness-operations-workspace-v2.ts",
@@ -398,13 +398,13 @@
       "uri": "repo://changes/st-1105/generated/admin-visual-accessibility-recorded.v2.json",
       "role": "GENERATED_OWNER_OUTPUT",
       "bytes": 94305,
-      "sha256": "2668d731d87d72cb7f4f0326d2448f08a6fa179fe8309ca88174e31379ddcf29"
+      "sha256": "da227f4bb405d47ed61de631833673c6c2ca77f2c3ef91f7276a232f8f35556c"
     },
     {
       "uri": "repo://packages/web-ui/src/admin-visual-accessibility-recorded.v2.ts",
       "role": "GENERATED_OWNER_OUTPUT",
       "bytes": 97833,
-      "sha256": "2e1961f0bb253c545e9a1d4cf3a014273e3d9e0a1e6b7d4bfbae4cd25cdea237"
+      "sha256": "78d142ae4f5a2bd4cdd6ebf0c3222e4e8bcb477b2cf2e1cea08f48adaef94c7d"
     },
     {
       "uri": "repo://changes/st-1105/baselines/admin-visual.synthetic.v2.json",

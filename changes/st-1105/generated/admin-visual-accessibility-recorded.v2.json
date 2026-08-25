@@ -2796,7 +2796,7 @@
       "required_st0606_patch_sha": "020bfbdb91b081929340aa12eb1e655e9160d810",
       "local_dependency_base_sha": "82225f48357d55846adfa4f8ee4ac1e9e063be1d"
     },
-    "acceptance_contract_sha256": "be7b604a943e0af10d4e971d5f1b2eff63f547357283a1883a8b8555eea2ee3a",
+    "acceptance_contract_sha256": "0b6434b0c8cd20788db06241307a3fd9d5f26f1e54a17de13501f0142b978692",
     "browser_contract_sha256": "4862fc2f5d8c93ab6a487fc751b8cb9eb108362a7a749314ca75f6480a232f10",
     "fixture_sha256": "055be8d7901e0b7a609d58f2be0289ca796770ad445cf94ddfdc0ab2d555a7ad",
     "source_bindings": [
@@ -2938,7 +2938,7 @@
       },
       {
         "path": "changes/st-1103/runtime-manifest.v2.yaml",
-        "sha256": "96da1416b6f4738edbf887926ec85c69680ae8cc59d64f53ebba9f490d3892d1"
+        "sha256": "4c03c7102f0a47cc97220e9f89cdd5ecd8af7ef2f6d77234a7134e6f9c86d09b"
       },
       {
         "path": "packages/web-ui/src/freshness-operations-workspace-v2.ts",
@@ -2972,5 +2972,5 @@
   },
   "formal_acceptance_achieved": false,
   "production_eligible": false,
-  "payload_sha256": "7fd1fa3783d9b9cf4d8b6419f7e6de9ba5d561a5e6841228f0441bd7cf26604f"
+  "payload_sha256": "67e36a3e9520304bca2fc7fc798caab8834cde1af531ee46d5fb41d439844e32"
 }
