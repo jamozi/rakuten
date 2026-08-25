@@ -8,7 +8,7 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: application/yaml
   bytes: 5107
-  sha256: b79fa109cd459f333dac87736fbade08de69714af795d80f5c94df39e5781969
+  sha256: cf2f56fa0579ddb0ca7d189c93eb32106f8c208f3191776355d6e9e931c12c66
 - uri: repo://scripts/build_st0902_final_approval_runtime_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -143,7 +143,7 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
   bytes: 84553
-  sha256: 5e292cc4a257ec3be2dc1cc0e2e66c68afc51e2e216c5610bd563f642022ca2b
+  sha256: 865d8f5f97befaa4c8b7c655035ca1f2ff9ffb441d08577775030aa5c8d350d4
 - uri: repo://changes/st-0605/contracts/claim-evidence-runtime.v1.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
@@ -153,32 +153,32 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 8936
-  sha256: b8e76e4013eb097ba514b7d2cb39f5861c2694acb7cc19919149011ccdc44c41
+  sha256: f21f1e2c589a018fe17ced53b309fcaa1443df3793f57f743c5084a1314e1267
 - uri: repo://python/raos/domain/editorial/policy_engine_v2.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
   bytes: 45997
-  sha256: 3d27a451f3f719a9928c55f2a87231c3cec66be3b82caed6c48a8748c0673e7e
+  sha256: ef690e73cf657d3963572428785b2e777f7485ba15c30a53a978ad8919e31e24
 - uri: repo://python/raos/adapters/recorded_policy_engine.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
-  bytes: 34363
-  sha256: d6355547e2b90aa2c21aa61ca76d14203e05559c614dcb0336e565c1fddb67c3
+  bytes: 34687
+  sha256: 2d094fc94fb28eb03c157f42dfea3632da53ae0bfba4bb411fb4f81c2dc0d793
 - uri: repo://changes/st-0805/generated/policy-pass.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
   bytes: 73573
-  sha256: 1e685c7d7f76cc0751d794146edde0fa948450c622d722c1062310ee6ab5c250
+  sha256: 75797ab838b37b482ecfd30312101e4103dc7301a4ee57e0f6ce544a845300b9
 - uri: repo://changes/st-0805/contracts/policy-runtime.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 3458
-  sha256: 513773cead46b78b1441ae3abff0739878898d4dfc21e6d9083abb7d85df1043
+  sha256: 9310987f4929192c924869e3842d8897381140358c55522a8e81b65545b08e75
 - uri: repo://changes/st-0805/runtime-manifest.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 11572
-  sha256: b95070af4e019cbd32e8c3f01810f680ab90afcc80253c3d51652f46af38f8bc
+  sha256: f10516b1d26e6dc448ade04873880211244e82d1c0f7175b5c57ce2c95f411ce
 - uri: repo://python/raos/domain/publishing/review_completion_v2.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
@@ -193,17 +193,17 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
   bytes: 1456
-  sha256: de4a82d147d4647716b77a72e25489980578fb7b406723cb3f818dbc424080e4
+  sha256: 84778adfb038bbd8665dbcf3fcf9bce9e23e0afe248f11a2f8bd10846cde32ec
 - uri: repo://changes/st-0901/contracts/review-completion-runtime.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 3417
-  sha256: 8e6872f6c859ef5da7bc5c5c67d1a92c904d7143604596ec9ab864afe6fe05b9
+  sha256: f210b48686350116bf4251b8a7bacfe1f92ecccc390219313e7805e32c947a2a
 - uri: repo://changes/st-0901/runtime-manifest.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 9292
-  sha256: b0e4d6672ef2613e2a1b178024f1e266aa7fa174b822e008010e5f23e0fbaafb
+  sha256: b2e6295f71905dcea300edc202f993b9eca89a72a2ef12767414592c58ff6551
 - uri: repo://changes/st-0902/README.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown
@@ -240,12 +240,12 @@ generated_artifacts:
   artifact_role: GENERATED_RECORDED_FIXTURE
   media_type: application/json
   bytes: 2562
-  sha256: 568ebb980eae29adc300fff6817548ede79e906e0eb034f26be097ee328b355f
+  sha256: ca2c057e5afd61b13edbaac340f3d0b6013c0781b3fd5c64c4202bf9d1ee6412
 - uri: repo://python/raos/adapters/recorded_final_approval_fixture_v2.py
   artifact_role: GENERATED_RUNTIME_MODULE
   media_type: text/x-python
   bytes: 2889
-  sha256: 5befc9922dc9ebfa8455439fda43790a160dff37134a2dd70c5c37b9723e06c3
+  sha256: b04cbe4e2aea436a3c3be8c70fdafd4b12a8c9e70ccf6f536d458a19512162c6
 generation:
   owner: repo://scripts/build_st0902_final_approval_runtime_v2.py
   command: .venv/bin/python scripts/build_st0902_final_approval_runtime_v2.py
