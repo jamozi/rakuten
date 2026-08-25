@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st0604_source_packet_lifecycle_reference_plan.py
   generation_command: uv run --locked --no-sync python scripts/build_st0604_source_packet_lifecycle_reference_plan.py
 provenance:
-  contract_sha256: c66c1f914af93119ab1cf106eb8067192502e15dd106caca482647e63dba4e6c
+  contract_sha256: 5f0fc1d75207535a89e5e50d6b33bc3f710d17e60183e63ab39e394b5e8d049c
   canonical_story:
     uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
@@ -55,7 +55,7 @@ provenance:
     - uri: repo://tests/st0603/test_negative_cases.py
       sha256: 1aa9580ccfe4a61fc9ad52899f09ca2366a8683a7d45454e92a00c26e6d9504e
   - story_id: ST-0403
-    commit: ad36831bef1182b555baeb03ba977623f9a68854
+    commit: 16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517
     inputs:
     - uri: repo://changes/st-0403/README.md
       sha256: d21f1ddefd4f201a6618e9baa8889d6c77302b141070d89d03b4e2199746d5cc
@@ -80,13 +80,13 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml
   bytes: 7568
-  sha256: c66c1f914af93119ab1cf106eb8067192502e15dd106caca482647e63dba4e6c
+  sha256: 5f0fc1d75207535a89e5e50d6b33bc3f710d17e60183e63ab39e394b5e8d049c
 - uri: repo://changes/st-0604/README.md
   bytes: 3142
-  sha256: c8d8f28d90ac5f3db14a3e024cf968d02dbb74bc9b759f71d74b82b5c34f8c34
+  sha256: b3d71908781fcdd2d442b3f16ed7fade49780d18bcca688c4b88ee0204c089ff
 - uri: repo://scripts/build_st0604_source_packet_lifecycle_reference_plan.py
   bytes: 31221
-  sha256: 97daab5cc3c8ea76ce2f343a95194e96de3794717f450e0036d96b9c7e9a1843
+  sha256: 7e6e1dcb1ea4ddec72b71e246769de940032b97dc86976fa8cc91f47e46ed97f
 - uri: repo://tests/st0604/conftest.py
   bytes: 1034
   sha256: d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a
@@ -103,7 +103,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json
   bytes: 10619
-  sha256: 4b96aed0df3e1bf8aaa74378885e2c8eb9dbd19f953691e49ef9591dd4074bcf
+  sha256: 3c7a7cc6a296c96162847f2bb452bba2ff7048bc8f277dbe720bf19a97fafaee
 boundary:
   classification: SOURCE_DERIVED_NON_EXECUTABLE_SOURCE_PACKET_LIFECYCLE_REFERENCE_PLAN
   executable: false

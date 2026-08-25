@@ -25,7 +25,7 @@ commits themselves:
   non-executable conflict-review reference plan with no Facts, comparisons,
   conflicts, findings, queue records, or resolutions and a `NOT_READY`
   decision.
-- ST-0403 `095046c752595bea3235caf2e3a653fd9383882e` contributes only its
+- ST-0403 `16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517` contributes only its
   recorded development authorization seam. It is deny-default and supplies no
   live or Production approval.
 

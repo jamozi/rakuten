@@ -30,11 +30,12 @@
     "ST-0604 V1 reference-plan suite: 206 passed after exact predecessor and helper rebind",
     "ST-0604 V2 complete suite including owner generator: 49 passed",
     "ST-0604 combined V1 and V2 suite: 255 passed",
-    "affected complete ST-0602 suite: 206 passed with owner-private Linux TMPDIR",
-    "affected complete ST-0603 suite: 219 passed with owner-private Linux TMPDIR",
-    "affected ST-0403 authorization behavior: 96 passed; 3 owner-generation assertions remain blocked by the pre-existing ST-0403 database_role_contract provenance drift and are not ST-0604 runtime failures",
+    "affected complete ST-0601 suite: 102 passed normally and 102 passed with network denied",
+    "affected complete ST-0602 suite: 206 passed normally and 206 passed with network denied",
+    "affected complete ST-0603 suite: 219 passed normally and 219 passed with network denied",
+    "affected complete ST-0403 suite: 99 passed normally and 99 passed with network denied",
     "V1 and V2 owner generation and deterministic no-write checks passed",
-    "V1 and V2 owners rebound to the exact current ST-0602 commit 806b978803cbc78392117cbc31015db19ea09a74 and ST-0603 commit 4f4285f0385a14b83e027e9c4527c17b8966bb70",
+    "V1 and V2 owners rebound to the exact current ST-0602 commit 806b978803cbc78392117cbc31015db19ea09a74 ST-0603 commit 4f4285f0385a14b83e027e9c4527c17b8966bb70 and ST-0403 commit 16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517",
     "V1 owner generation used repository-pinned uv 0.12.1 with the existing reviewed environment",
     "Ruff format and lint passed for owned runtime sources tests and both owner generators",
     "strict mypy passed with 0 issues for both owner generators and all four V2 runtime modules",
@@ -55,17 +56,12 @@
     {
       "debt_id": "ST0604-PREDECESSOR-REBIND",
       "status": "CLOSED_EXACT_REBIND",
-      "detail": "Both ST-0604 owners bind exact current ST-0602 and ST-0603 bytes at integration dependency HEAD 4f4285f0385a14b83e027e9c4527c17b8966bb70 and retain the exact unchanged ST-0403 authorization bytes from ad36831bef1182b555baeb03ba977623f9a68854; the V2 binding includes the ST-0403 durable authorization schema-V2 contract."
+      "detail": "Both ST-0604 owners bind exact current ST-0602 ST-0603 and final green ST-0403 predecessor bytes at integration dependency commit 16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517; the V2 binding includes the ST-0403 durable authorization schema-V2 contract."
     },
     {
       "debt_id": "ST0604-CROSS-RESTART-ROLLBACK-ANCHOR",
       "status": "EXTERNAL_ANCHOR_NOT_IMPLEMENTED_NO_CLAIM",
       "detail": "The database identity count head and every completely verified observed prefix are monotonic only during one process lifetime; no independent durable external anchor or cross-restart rollback claim is made."
-    },
-    {
-      "debt_id": "ST0604-ST0403-PREDECESSOR-OWNER-DRIFT",
-      "status": "PREEXISTING_DEPENDENCY_DEBT_NOT_INTRODUCED",
-      "detail": "At integration dependency HEAD 4f4285f0385a14b83e027e9c4527c17b8966bb70 the ST-0403 behavior suite passes 96 assertions, while three owner-generation assertions stop only on the separately owned database_role_contract source hash drift. ST-0604 keeps the exact unchanged authorization bytes and does not alter or weaken that dependency."
     },
     {
       "debt_id": "ST0604-DOWNSTREAM-PROVENANCE",

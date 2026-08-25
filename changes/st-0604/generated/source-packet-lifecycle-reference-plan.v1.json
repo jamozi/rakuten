@@ -154,7 +154,7 @@
     },
     {
       "story_id": "ST-0403",
-      "commit": "ad36831bef1182b555baeb03ba977623f9a68854",
+      "commit": "16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517",
       "relationship": "DENY_DEFAULT_RECORDED_AUTHORIZATION_CONTEXT_ONLY",
       "files": [
         {

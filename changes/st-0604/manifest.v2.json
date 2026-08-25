@@ -2,22 +2,22 @@
   "schema_version": "2.0.0",
   "story_id": "ST-0604",
   "generation_command": "python scripts/build_st0604_source_packet_lifecycle_runtime.py",
-  "integration_commit": "4f4285f0385a14b83e027e9c4527c17b8966bb70",
+  "integration_commit": "16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517",
   "source_sha256": {
     "changes/st-0403/contracts/authorization-registry.v1.json": "a2ef5f7df66492164128ba8ffffcceb254b58bedc5cac7d03716d20700bc1093",
     "changes/st-0403/contracts/durable-authorization-runtime.v2.json": "478626abf1649682c173ecb45dd6abdf56932bd013cbee88f7c2d4753dab27f0",
-    "changes/st-0403/generated/authorization-registry.v1.json": "d27aa5ef7e6d6029eef88640ba38a3de72139bf99f8564eb4c47ac15b2053229",
-    "changes/st-0403/manifest.json": "a014b8e25299a99142518d234fe8aa5d3de31e8dd5dded3876fc1d2c94ccafc2",
+    "changes/st-0403/generated/authorization-registry.v1.json": "d6776ed935d136eaff4908d5ca712b3a4fc274e93ecbca353639327b9ef69b0e",
+    "changes/st-0403/manifest.json": "855b17606e51cfc720a2ac371f83d8052d4a505cd77acb524ab4ebb2a1ab9e0d",
     "changes/st-0602/contracts/fact-extraction-runtime.v2.json": "50a8e2a8dc32f0dc93696466d02aba9688dd985db5918fe05abb70eeba18ef78",
     "changes/st-0602/generated/fact-extraction-runtime.v2.json": "1793b4928c6d473e35e843ae76840b2a4c2c588e56daa4a2b6526957bf1ffa51",
     "changes/st-0602/manifest.v2.json": "8416ef914a1a3f550a43ad5799f03e5c0701a60f423c6d59ec343a822e9330af",
     "changes/st-0603/contracts/fact-conflict-runtime.v2.json": "595cb7ff6035adad50ee9edc2a55187ca829bce9ca59efb0e2dc10579fb8cbd9",
     "changes/st-0603/generated/fact-conflict-runtime.v2.json": "6e8ad9f6673d70639d2a84851c32694c163f38a7cb7c7c22a5979a2925c337e3",
     "changes/st-0603/manifest.v2.json": "f79feb5978b1ceebf5974e417d02723df5cc6bf3fab4762f14d08036d78e472f",
-    "changes/st-0604/LOCAL-IMPLEMENTATION-COMPLETION-20260825-v2.json": "25c7ebe0737cd1ca5c0d64a0b9a17cd8fef191ce7cad6ea0a542f9df6890c69d",
+    "changes/st-0604/LOCAL-IMPLEMENTATION-COMPLETION-20260825-v2.json": "a3c11fdc2ed96f98491abf4ed923d47e383df347619659ff31a3ddc3a93c1448",
     "changes/st-0604/PREFLIGHT-v2.md": "c3daf0f879411c4c06d1cb042d3138b54bbe850cf8a600e25b0ac309516580e6",
     "changes/st-0604/README-v2.md": "ac84a8c86c4313a95ed3462fc5c198172c9f2e8e515be34c8952663fe6482a92",
-    "changes/st-0604/contracts/source-packet-lifecycle-runtime.v2.json": "a43084f42f95c2a37792d7ca1ed24d1ea8ae6fa1d11530d085702c41f93db0f2",
+    "changes/st-0604/contracts/source-packet-lifecycle-runtime.v2.json": "8fc6a6bc7a9b016ed70ec099da005f430f472702b0e422d227c32e45f8623f93",
     "changes/st-0604/fixtures/source-packet-lifecycle.synthetic.v2.json": "7d21b4dbb73f0bef75adee1842b5768330bf5e4d82a02012ac08dc052e455c23",
     "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626",
     "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
@@ -52,7 +52,7 @@
     "tests/st0604/test_source_packet_lifecycle_sqlite_v2.py": "6791b2d7d748fcf8935d5493f8354250067f03d975c70d51ee43ed7886b9f492"
   },
   "generated_sha256": {
-    "changes/st-0604/generated/source-packet-lifecycle-runtime.v2.json": "e84fd2913fd96ee9df4491cfdc5715480dac3a439af03e1ae7fdd9a2386b2ff6"
+    "changes/st-0604/generated/source-packet-lifecycle-runtime.v2.json": "0d781fa1c6e7f16176d3fab9da15af7ea440116e3cb7a9088b536d3936c63fb1"
   },
   "external_actions": [],
   "formal_TST_012": "NOT_EXECUTED",

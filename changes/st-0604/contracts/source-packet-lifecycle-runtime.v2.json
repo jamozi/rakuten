@@ -4,7 +4,7 @@
   "classification": "MAXIMUM_SAFE_RECORDED_LOCAL_DURABLE_SOURCE_PACKET_LIFECYCLE",
   "local_implementation_status": "LOCAL_CODE_COMPLETE",
   "canonical_status": "UNCHANGED",
-  "integration_commit": "4f4285f0385a14b83e027e9c4527c17b8966bb70",
+  "integration_commit": "16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517",
   "dependency_bindings": {
     "ST-0602": {
       "git_commit": "806b978803cbc78392117cbc31015db19ea09a74",
@@ -33,7 +33,7 @@
       }
     },
     "ST-0403": {
-      "git_commit": "ad36831bef1182b555baeb03ba977623f9a68854",
+      "git_commit": "16d15cb1ac3252fdd0fe4c6251ad8c1ff22f1517",
       "operation_id": "PUBADM-004",
       "action": "review_article",
       "resource_kind": "REVIEW_ASSIGNMENT",
@@ -41,8 +41,8 @@
       "artifacts": {
         "changes/st-0403/contracts/authorization-registry.v1.json": "a2ef5f7df66492164128ba8ffffcceb254b58bedc5cac7d03716d20700bc1093",
         "changes/st-0403/contracts/durable-authorization-runtime.v2.json": "478626abf1649682c173ecb45dd6abdf56932bd013cbee88f7c2d4753dab27f0",
-        "changes/st-0403/generated/authorization-registry.v1.json": "d27aa5ef7e6d6029eef88640ba38a3de72139bf99f8564eb4c47ac15b2053229",
-        "changes/st-0403/manifest.json": "a014b8e25299a99142518d234fe8aa5d3de31e8dd5dded3876fc1d2c94ccafc2",
+        "changes/st-0403/generated/authorization-registry.v1.json": "d6776ed935d136eaff4908d5ca712b3a4fc274e93ecbca353639327b9ef69b0e",
+        "changes/st-0403/manifest.json": "855b17606e51cfc720a2ac371f83d8052d4a505cd77acb524ab4ebb2a1ab9e0d",
         "python/raos/adapters/generated_st0403_authorization_registry.py": "1618f3b2fce03fab6b06fc46227f33223d72eeb522b0ce24d731e67b684958a2",
         "python/raos/adapters/recorded_authorization.py": "b25242c24053c5b22e1f42ecb0ec6f5ce5a5323f819a2394aa6204af7553508f",
         "python/raos/application/iam/authorization.py": "8c1133b948fc935b62d8e2ed964a795a7f9e24c9943c9aa1b44bcf898dba3814",
