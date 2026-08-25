@@ -48,7 +48,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -85,7 +85,7 @@ EXPECTED_SOURCES: Final = (
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
     ),
 )
-PREDECESSOR_COMMIT: Final = "80162f932738f9c3854ff012ae8e488275f7e1f5"
+PREDECESSOR_COMMIT: Final = "1829e1ba31addce6579b445da51be5b604732278"
 EXPECTED_PREDECESSOR_ARTIFACTS: Final = (
     (
         Path("changes/st-0503/README.md"),

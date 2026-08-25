@@ -30,7 +30,7 @@ authority:
 
 predecessor:
   story_id: ST-0503
-  commit: 80162f932738f9c3854ff012ae8e488275f7e1f5
+  commit: 1829e1ba31addce6579b445da51be5b604732278
   status: NORMALIZED_PROVENANCE_PRESERVING_CANDIDATES_ONLY
   connection_status: INTERFACE_AVAILABLE_NOT_CONNECTED
   artifacts:

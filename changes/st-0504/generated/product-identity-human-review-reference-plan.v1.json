@@ -44,12 +44,12 @@
     "generation_command": "uv run --locked --no-sync python scripts/build_st0504_product_identity_human_review_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
+      "sha256": "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     }
   },
   "predecessor_binding": {
     "story_id": "ST-0503",
-    "commit": "80162f932738f9c3854ff012ae8e488275f7e1f5",
+    "commit": "1829e1ba31addce6579b445da51be5b604732278",
     "status": "NORMALIZED_PROVENANCE_PRESERVING_CANDIDATES_ONLY",
     "connection_status": "INTERFACE_AVAILABLE_NOT_CONNECTED",
     "artifacts": [

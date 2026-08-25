@@ -11,8 +11,8 @@ review record, approval, runtime implementation, or formal test result.
 
 ## Closed reference boundary
 
-- The plan binds the exact committed ST-0503 lossless normalization slice at
-  commit `4481d98a5c20a43f03418b1cdabee2a9e723adbe` and all nine committed owner
+- The plan binds the current committed ST-0503 normalization slice at
+  commit `1829e1ba31addce6579b445da51be5b604732278` and all nine compatible V1 owner
   artifacts by SHA-256.
 - ST-0503 supplies only provenance-preserving candidate drafts in recorded,
   lossless structural mode. It supplies no product identity, grouping,
