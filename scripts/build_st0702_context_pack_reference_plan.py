@@ -45,7 +45,7 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st0702_context_pack_reference_plan.py"
 )
 EXPECTED_CONTRACT_SHA256: Final = (
-    "7879f0ecc83020fb95a6ec2e6576643f2406f31cfc6f1205f8e828d3743effc3"
+    "bac32da9b2e026ad36abb0b622fecbca56e4e9d3fdc0e4cccc807a4e4392837b"
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
@@ -61,33 +61,33 @@ INTEGRATION_PATH: Final = Path(
 INTEGRATION_SHA256: Final = (
     "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
 )
-ST0604_FEATURE_COMMIT: Final = "ced9029f767c63b82690b13cb8d90d1b8eb4b882"
+ST0604_FEATURE_COMMIT: Final = "89d8074951ce73a5c76ca55f0ea3b2c129559d81"
 ST0701_BASE_COMMIT: Final = "679ccdc4a49fca8e1bee8827177be7130d6d45b6"
 
 ST0604_ARTIFACTS: Final = (
     (
         Path("changes/st-0604/README.md"),
-        "5165b09e9049709005a4e2965ca2fb07e01172b4ef3e550892742fafc3e101c8",
+        "b3d71908781fcdd2d442b3f16ed7fade49780d18bcca688c4b88ee0204c089ff",
     ),
     (
         Path(
             "changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml"
         ),
-        "b7144670eab5f12eb79c2f49380d152a4ef5700a030b799878aa147ca563ec2c",
+        "5f0fc1d75207535a89e5e50d6b33bc3f710d17e60183e63ab39e394b5e8d049c",
     ),
     (
         Path(
             "changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json"
         ),
-        "f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb",
+        "3c7a7cc6a296c96162847f2bb452bba2ff7048bc8f277dbe720bf19a97fafaee",
     ),
     (
         Path("changes/st-0604/manifest.yaml"),
-        "cb3313f3fb5e3460cbc39e2b9a3c64b8e3859c975c58b54e7ca45f59636a2795",
+        "df78078b95d6042a08651cdef6923c01009362655393ab47af39eba2f3e420b6",
     ),
     (
         Path("scripts/build_st0604_source_packet_lifecycle_reference_plan.py"),
-        "745704cb20a54e2073e487b706112fcce00d022cf01ec26da8d52776932d10e1",
+        "7e6e1dcb1ea4ddec72b71e246769de940032b97dc86976fa8cc91f47e46ed97f",
     ),
     (
         Path("tests/st0604/conftest.py"),
@@ -585,8 +585,11 @@ def _sha256(content: bytes) -> str:
 
 
 def _read(root: Path, relative: Path, field: str) -> bytes:
-    physical = base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
-        root, relative, field
+    physical = cast(
+        Path,
+        base._repository_regular_file(  # pyright: ignore[reportPrivateUsage]  # noqa: SLF001
+            root, relative, field
+        ),
     )
     try:
         content = physical.read_bytes()

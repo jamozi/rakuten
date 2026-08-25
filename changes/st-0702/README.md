@@ -68,7 +68,7 @@ for a provider, live runtime, staging, release, or Production action.
 ## 2026-08-25 provenance reconciliation
 
 - Rebound ST-0604 to the exact owner commit
-  `ced9029f767c63b82690b13cb8d90d1b8eb4b882` and its current reference-plan
+  `89d8074951ce73a5c76ca55f0ea3b2c129559d81` and its current reference-plan
   bytes. The durable ST-0604 runtime does not create an approved packet for
   this recorded projection, so packet, Fact, mapping, approval, and generation
   inputs remain unavailable.
