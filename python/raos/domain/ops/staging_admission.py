@@ -1037,6 +1037,13 @@ class LocalStagingAdmissionSpec:
                 "classification",
                 "persistence",
                 "owner_private",
+                "initialization",
+                "preexisting_empty_storage_adoption",
+                "schema_inventory",
+                "filesystem_identity_binding",
+                "process_monotonic_anchor",
+                "append_only_lifecycle_audit_guards",
+                "replacement_and_rollback_detection",
                 "idempotency",
                 "commit_ambiguity_recovery",
                 "restart_recovery",
@@ -1053,7 +1060,30 @@ class LocalStagingAdmissionSpec:
         )
         _literal(journal["persistence"], "LOCAL_ONLY", "durable_journal.persistence")
         _bool(journal["owner_private"], True, "durable_journal.owner_private")
+        _literal(
+            journal["initialization"],
+            "CREATED_ONLY_FAIL_CLOSED",
+            "durable_journal.initialization",
+        )
+        _literal(
+            journal["preexisting_empty_storage_adoption"],
+            "FORBIDDEN",
+            "durable_journal.preexisting_empty_storage_adoption",
+        )
+        _literal(
+            journal["schema_inventory"],
+            "EXACT_STRICT_APPLICATION_ID_USER_VERSION",
+            "durable_journal.schema_inventory",
+        )
+        _literal(
+            journal["filesystem_identity_binding"],
+            "ROOT_AND_DATABASE_DEVICE_INODE_REQUIRED",
+            "durable_journal.filesystem_identity_binding",
+        )
         for field in (
+            "process_monotonic_anchor",
+            "append_only_lifecycle_audit_guards",
+            "replacement_and_rollback_detection",
             "idempotency",
             "commit_ambiguity_recovery",
             "restart_recovery",

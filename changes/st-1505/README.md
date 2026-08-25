@@ -78,6 +78,18 @@ No concrete alternate provider is selected by this slice.
   provenance binding, in-memory Expand-Migrate-Contract plan and dry-run,
   recorded loopback Public/Admin/Internal health, in-memory rollback/restore
   integrity, and owner-private durable recovery
+- Local journal initialization: created-only `O_CREAT|O_EXCL`; a pre-existing
+  zero-byte or valid-empty SQLite file is never adopted or initialized
+- Local journal schema: exact application ID/user version, three `STRICT`
+  tables, exact implicit indexes and composite foreign key, and nine exact
+  lifecycle/append-only triggers
+- Local journal identity: original owner-private root and database
+  device/inode are pinned, shared by all same-process instances, and checked
+  around every connection and operation; unexpected SQLite sidecars fail
+  closed
+- Local journal continuity: a process-local monotonic count/tail anchor detects
+  whole-file rollback even when an internally consistent older snapshot is
+  restored to the same inode; root or database replacement is also refused
 - Runtime, hosted, formal, live-provider, staging, release, and Production
   evidence: `NOT_EXECUTED`
 
@@ -141,7 +153,9 @@ added by this slice.
 The explicit local runner requires a caller-created absolute directory with
 mode `0700`, a closed `st1505-run-*` identifier, and a non-secret
 `st1505-key-*` replay key. It hashes the replay key before persistence and
-writes only the fixed `st1505-local-admission.sqlite3` file with mode `0600`:
+writes only a newly created fixed `st1505-local-admission.sqlite3` file with
+mode `0600`. It never overwrites, initializes, or adopts a pre-existing empty
+file:
 
 ```bash
 PYTHONPATH=python:. python -m raos.staging_admission_runner \

@@ -7,7 +7,7 @@ document:
   canonical_status_effect: NONE
 implementation_input:
   mode: STRICT_STORY
-  base_integration_commit: 77470e14b544bd4ed6e3f185306eb8bc3285b8e4
+  base_integration_commit: 0930155a15d717fe9c5d83babd495b5126317dca
   design_handoff: repo://changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml
   source_contract: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
   predecessor_stories:
@@ -16,9 +16,11 @@ implementation_input:
     - ST-1504
 preflight:
   objective: >-
-    Close the repository-local portion of DEBT-W1-033 with a deterministic,
-    executable, offline-only admission simulation while preserving every live
-    staging, migration, browser, release, and Production gate.
+    Harden the repository-local ST-1505 admission journal with created-only
+    initialization, exact STRICT schema inventory, filesystem/process anchors,
+    append-only lifecycle guards, and rollback/replacement detection while
+    preserving every live staging, migration, browser, release, and Production
+    gate.
   files_and_contracts_read:
     - repo://AGENTS.md
     - repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
@@ -60,6 +62,10 @@ preflight:
     - recorded Public/Admin/Internal loopback health and isolation
     - rollback/restore integrity simulator
     - durable idempotency, commit ambiguity, restart, tamper, path, and concurrency
+    - pre-existing zero-byte and valid-empty SQLite adoption refusal
+    - exact STRICT/application-ID/user-version/trigger/composite-FK inventory
+    - append-only update/delete and out-of-order lifecycle insert refusal
+    - root/database inode replacement, sidecar, and same-inode rollback refusal
     - hostile activation and journal collaborators, forged receipts, sanitized errors, and single-attempt behavior
     - exact SQLite DDL, auto-index, and foreign-key structure with weakened-constraint drift refusal
     - fixed-contract, descendant, repository-root, and repository-ancestor symlink refusal
@@ -75,6 +81,7 @@ provisional_local_assumptions:
   - A closed synthetic artifact and recorded loopback response can exercise admission logic but can never satisfy formal supply-chain, database, browser, transport, staging, or release evidence.
   - A repository-inert pipeline fixture outside .github/workflows may describe local phases only when enabled remains false and every external action count remains zero.
   - SQLite is used only as an owner-private local journal for deterministic recovery tests and carries no credential, provider, personal, publication, or Production data.
+  - The process-local monotonic anchor detects rollback and replacement during one process lifetime; it is local tamper evidence and is not a substitute for an independently protected external transparency log or formal database evidence.
 completion_boundary:
   local_runtime: IMPLEMENTED_LOCAL_NOT_FORMAL
   deterministic_generation: REPRODUCIBLE_NO_WRITE_CHECK_PASS
@@ -89,10 +96,13 @@ verification_results:
     command: >-
       pytest -p no:cacheprovider -q tests/st1505/test_local_runtime.py
       tests/st1505/test_local_runtime_negative.py tests/st1505/test_local_journal.py
-    result: PASS_62_TESTS
+    result: PASS_74_TESTS
   complete_story_suite:
     command: pytest -p no:cacheprovider -q tests/st1505
-    result: PASS_471_TESTS
+    result: PASS_483_TESTS
+  denied_network_story_suite:
+    isolation: FRESH_NETWORK_AND_PID_NAMESPACE_SOCKET_API_DENIED
+    result: PASS_483_TESTS
   predecessor_owner_no_write:
     stories:
       - ST-1501
@@ -116,7 +126,7 @@ verification_results:
     bytecode_location: OUTSIDE_REPOSITORY
     result: PASS
   active_workflows:
-    comparison_base: 77470e14b544bd4ed6e3f185306eb8bc3285b8e4
+    comparison_base: 0930155a15d717fe9c5d83babd495b5126317dca
     changed_files: 0
     result: PASS_UNCHANGED
   denied_network_physical_snapshot_secret_scan:
@@ -126,3 +136,17 @@ verification_results:
     result: PASS
   git_diff_check:
     result: PASS
+downstream_integration:
+  consumer_story: ST-1506
+  command: pytest -p no:cacheprovider -q tests/st1506
+  result: FAIL_CLOSED_EXPECTED_DIGEST_REBIND_REQUIRED
+  observed:
+    passed: 305
+    failed: 121
+    errors: 64
+    reason_codes:
+      - SOURCE_DIGEST_MISMATCH
+      - BINDING_DIGEST_MISMATCH
+      - GENERATED_BYTE_DRIFT
+  owner: ST-1506_OR_INTEGRATION_OWNER
+  safe_impact: EXTERNAL_ACTIVATION_REMAINS_DISABLED

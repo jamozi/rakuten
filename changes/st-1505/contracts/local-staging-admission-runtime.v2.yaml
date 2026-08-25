@@ -226,6 +226,13 @@ durable_journal:
   classification: OWNER_PRIVATE_LOCAL_SQLITE_JOURNAL_ONLY
   persistence: LOCAL_ONLY
   owner_private: true
+  initialization: CREATED_ONLY_FAIL_CLOSED
+  preexisting_empty_storage_adoption: FORBIDDEN
+  schema_inventory: EXACT_STRICT_APPLICATION_ID_USER_VERSION
+  filesystem_identity_binding: ROOT_AND_DATABASE_DEVICE_INODE_REQUIRED
+  process_monotonic_anchor: REQUIRED
+  append_only_lifecycle_audit_guards: REQUIRED
+  replacement_and_rollback_detection: REQUIRED
   idempotency: REQUIRED
   commit_ambiguity_recovery: REQUIRED
   restart_recovery: REQUIRED

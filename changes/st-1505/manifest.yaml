@@ -9,8 +9,8 @@ provenance:
   contract_uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
   contract_sha256: ef0fbfe3267861c3b279da2cbaa20ebfe17da235e9cb8de3d9bc382e6e637dea
   local_runtime_contract_uri: repo://changes/st-1505/contracts/local-staging-admission-runtime.v2.yaml
-  local_runtime_contract_sha256: b475a2bcdeb18b12ec61fd7364d1488a22aad9e525adff23a3321e2e396be76d
-  local_runtime_contract_semantic_sha256: 509bfd0102d54c035e4c514b30389936695f8779c39adf02340fa66706c314fd
+  local_runtime_contract_sha256: c731b0e48d26dbb0f77a76263a7760932a001d01322a85bf8cc48128587202b5
+  local_runtime_contract_semantic_sha256: 3177f52b7ed2dbf9f8651ce2961d9a8c21d679c750e13e54a876d0e5f09f5fca
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -103,26 +103,26 @@ source_artifacts:
   bytes: 36283
   sha256: ef0fbfe3267861c3b279da2cbaa20ebfe17da235e9cb8de3d9bc382e6e637dea
 - uri: repo://changes/st-1505/contracts/local-staging-admission-runtime.v2.yaml
-  bytes: 10195
-  sha256: b475a2bcdeb18b12ec61fd7364d1488a22aad9e525adff23a3321e2e396be76d
+  bytes: 10549
+  sha256: c731b0e48d26dbb0f77a76263a7760932a001d01322a85bf8cc48128587202b5
 - uri: repo://changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml
   bytes: 12096
   sha256: 5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5
 - uri: repo://changes/st-1505/IMPLEMENTATION_RECORD_V2_ST1505_LOCAL_ADMISSION.yaml
-  bytes: 6439
-  sha256: e3843f7717a9927a01f146fe3bc9c57b650d061a598a4a14ac987a4031081d39
+  bytes: 7620
+  sha256: 0f3dbb80684d347887e980b1a6bfcd2bed0969b15e1c409e08215eb48f4032fe
 - uri: repo://changes/st-1505/LOCAL_COMPLETION_EVIDENCE_V2.md
-  bytes: 4284
-  sha256: a21e67447d02e481b57435e4ce06b5296006129b613a694f812631db18f78307
+  bytes: 5785
+  sha256: c12080f97100843a9b9de5ea0f5c98af525d6b78dcbae701f22a3c42d3c03d2c
 - uri: repo://changes/st-1505/README.md
-  bytes: 9496
-  sha256: bd4087d8ac354e5506d4a48d155ab3c9ac9174fa7f086cf78461fe53fb9c1283
+  bytes: 10366
+  sha256: 531d947fd1ed4c6118ebb8f3964bf4ec4872d652b0c3272983f5f67e0a9a43c7
 - uri: repo://scripts/build_st1505_staging_deployment.py
   bytes: 111875
-  sha256: ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5
+  sha256: 0599d9d089c17629b4e999aa77f8cab581c22296536e3f192b24895a49202f50
 - uri: repo://python/raos/domain/ops/staging_admission.py
-  bytes: 50294
-  sha256: fffe7393d36474ecfdf601f984ed9e5b2b8db4a1e2a9d9de5831679e835455b2
+  bytes: 51455
+  sha256: 5551c38f4ee4dcd9581b876cd29d537397c10ad2a732ca1ce8fcf9a10510c53a
 - uri: repo://python/raos/ports/staging_admission.py
   bytes: 5675
   sha256: 32d9a2c4d36498a5187ff26132cc47c1ebae6e21f2a17680eeab4c988f6db2c8
@@ -130,8 +130,8 @@ source_artifacts:
   bytes: 10698
   sha256: 9afb8935d93da3555702128ea1a32da0b6bdb647eabd7457891f5143d38e78e1
 - uri: repo://python/raos/adapters/recorded_staging_admission.py
-  bytes: 26541
-  sha256: 670f2356415bfce4de376e7e0f27a1f1ee3dd39d4ac6476d2c521d404e446ed7
+  bytes: 46869
+  sha256: be663dd4365461777ed14232ce8f5bff5d957ef124a7ffcbc34f5e615795c445
 - uri: repo://python/raos/staging_admission_runner.py
   bytes: 10700
   sha256: 16bfe6ddc4b1775f1619c1c6d92fc26766b718c5d0a2304c94e52fc99d345aac
@@ -149,13 +149,13 @@ source_artifacts:
   sha256: b5c1b4ccbd301e2550e6fac447f424c8e23da6cda4335ae5ed6269189ed0ecea
 - uri: repo://tests/st1505/test_local_runtime.py
   bytes: 7552
-  sha256: 8bb67b53c4c60ba500afde7b2d7a5d9c58f181da177a077afaae7c034392f98b
+  sha256: 6e9d1448cf0e3c4dd1da4564eb106a1131e229f61ab28a9521f6c50f44ae235b
 - uri: repo://tests/st1505/test_local_runtime_negative.py
   bytes: 15822
   sha256: ac6ffec3bfc0ecfcbebb79d85ec3c75aa6e2fae551b6c61dd65250bb9e1684f9
 - uri: repo://tests/st1505/test_local_journal.py
-  bytes: 11756
-  sha256: 857713adec8a6584e560f74827e8b3655b2bb8ed4f28bfc557cd634c1086c66b
+  bytes: 21423
+  sha256: 2517862f6c16e3e778fe2c804076cae66c1fffdf03e3afc9ad6b3a9a1956bc96
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
@@ -163,10 +163,10 @@ generated_artifacts:
   sha256: 0731e1274623628016e41cc1f04a7a7e5e37717efe376ca066ed8259ed1f6624
 - uri: repo://infra/terraform/staging/local-staging-admission.pipeline.disabled.v2.yaml
   bytes: 2032
-  sha256: c427bad717bda13de880ab7af45b1a82745390919b0ea3bee43f30d932e96146
+  sha256: c954773bf58265030ca0c7a31579c0abf89ffe73de1b0e7418782be4fd3df7c9
 - uri: repo://infra/terraform/staging/local-staging-admission.result.recorded.v2.json
   bytes: 3095
-  sha256: bcd16eb96868da461150a09a10f9277dbe1a4421d65389bf2ffeeafca2ccc15b
+  sha256: d5ebe229fe0788a48e2d745823811ef918c641360042697c54a846ca2289dec7
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
@@ -250,7 +250,7 @@ boundary:
   local_pipeline_enabled: false
   local_pipeline_default_enabled: false
   local_pipeline_active_workflow_path: null
-  local_pipeline_contract_sha256: 509bfd0102d54c035e4c514b30389936695f8779c39adf02340fa66706c314fd
+  local_pipeline_contract_sha256: 3177f52b7ed2dbf9f8651ce2961d9a8c21d679c750e13e54a876d0e5f09f5fca
   local_pipeline_action_counts:
     network: 0
     credential: 0
