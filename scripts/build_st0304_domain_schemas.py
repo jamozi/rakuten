@@ -65,7 +65,7 @@ EXPECTED_UPSTREAM_DESIGN_SHA256: Final = (
     "dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c"
 )
 EXPECTED_PREDECESSOR_MANIFEST_SHA256: Final = (
-    "f795daab918844b2bd0c2fb6e8aa17031f4e849e9ccb5bcfe45d554ddf69fe8b"
+    "e698c9464ce6fb26b4d431e50ca102e68ed147db0db69ffe48802fb4e28bcfdf"
 )
 GENERATION_COMMAND: Final = (
     "uv run --locked --no-sync --no-env-file python "
