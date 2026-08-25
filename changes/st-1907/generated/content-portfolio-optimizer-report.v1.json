@@ -37,14 +37,14 @@
       "RECORDED_SYNTHETIC_ONLY",
       "SEPARATE_RELEASE_DECISION_REQUIRED"
     ],
-    "command_sha256": "4e8a8f6096084c3abba4877a606276f8b9c2b0546a4e182c576c17bd5a645e4d",
-    "contract_sha256": "e6bfa042705b6dea7cb636aeec180adac38cb40cfb4398e2b9dda5e0196d0cba",
+    "command_sha256": "f3269dcf1ae2a023e0e6b7a470ff6364d7f6d09e01d24721af8b2b87750e36e2",
+    "contract_sha256": "4243cf7f4e8adf1a5e39c0b49e1a5702946a925e1f9a1c4cec6304c50143d2ff",
     "dependency": {
       "acceptance_criteria_satisfied": false,
       "actual_observation_count": 0,
       "human_decision_present": false,
       "local_integration_complete": false,
-      "pack_sha256": "18e4115223c37109f796e211dd5f92e69dec9e6c6235b1cd1aa8e72ccb95cbe8",
+      "pack_sha256": "bf9899509a376ab6a9abd1613cfe5f12ab207629a6c94b2ba3bf2106a992098e",
       "readiness": "BLOCKED_NO_DECISION",
       "source_authorized": false,
       "source_outcome": "NO_DECISION",
@@ -80,16 +80,16 @@
     "proposal_count": 0,
     "proposal_state": "NO_PROPOSALS",
     "proposals": [],
-    "report_sha256": "57f10cabdb1bda6109c4d2aed71b2d919ca2b2f5c81f2d40a446acdc44f939b3",
-    "signal_policy_sha256": "afc540e9cc866e4ef48cb276eb56f2aec636e614c6c2b863c3865b8be873a922",
-    "source_sha256": "a795257a9e6442394cffd99959a09b9efee452cb40a7909ece776c9e8a493c2a",
+    "report_sha256": "16f60eaeabd363f947352a6ce96734ed05097047ec90298fd05e1e11e7dc87b1",
+    "signal_policy_sha256": "10871f65afe59fb6e44c6ac5401ce5e4b1b5cb0024497ae19fc43d6f6b997256",
+    "source_sha256": "175dbcc7337f902a0b7c5078e4db0894b5c56cf8157c1ad68ed52842698199c8",
     "unavailable_reason": "DEPENDENCY_BLOCKED_NO_DECISION"
   },
   "source": {
     "bytes": 986,
     "fixture_profile": "RAOS_ST1907_RECORDED_SYNTHETIC_V1",
     "path": "changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json",
-    "sha256": "a795257a9e6442394cffd99959a09b9efee452cb40a7909ece776c9e8a493c2a",
+    "sha256": "175dbcc7337f902a0b7c5078e4db0894b5c56cf8157c1ad68ed52842698199c8",
     "synthetic": true
   }
 }
