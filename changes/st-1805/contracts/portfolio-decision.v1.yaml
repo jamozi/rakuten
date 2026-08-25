@@ -22,10 +22,10 @@ source_bindings:
 
 dependency_bindings:
   ST-1804:
-    changes/st-1804/contracts/gate3-economics.v1.yaml: 175eebea290129352a8f328331e7ceb7410cc9fecb76c5f8d808512e9521a7ed
-    changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json: c2ebe8ba14bd772e8842e348cd8d9e853ec4273c86eaf6a9f28627301226f10a
-    changes/st-1804/generated/gate3-economics.local-blocked.v1.json: a455e7050847dc7f008746d8e4200e761649587df30aa39a263a7961d65801af
-    scripts/build_st1804_gate3_economics.py: d74ef2e200bf6e9c3bf0d034ebbd5afaae7bb1794f5b4a28d4c28894dfff1b18
+    changes/st-1804/contracts/gate3-economics.v1.yaml: c1a5408eba861aaf4b6bc1dd407e84e1bfc6eb045a6b45dac28954aa086acf11
+    changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json: c31f339748cef32084285101d1c434216d3763398b633992ab84b086a02505e5
+    changes/st-1804/generated/gate3-economics.local-blocked.v1.json: f39934be295442f3109185324d3c96e5c2d5401a320f01fd60f75c4fe5414cb4
+    scripts/build_st1804_gate3_economics.py: 095b0a681e0653d0690e475c68f558e431d462a9d5da8522526f16abc499b8d8
 
 decision_contract:
   objective: QUALITY_ECONOMICS_RISK_EVIDENCE_FOR_HUMAN_PORTFOLIO_DECISION
