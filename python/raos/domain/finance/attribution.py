@@ -643,6 +643,11 @@ class AttributionRunRequest(_Redacted):
         payload["input_sha256"] = self.input_sha256.value
         return _canonical_bytes(payload)
 
+    def has_valid_input_binding(self) -> bool:
+        """Confirm that the immutable request still matches its canonical input."""
+
+        return self.input_sha256 == _digest(self._payload())
+
 
 @dataclass(frozen=True, slots=True, repr=False)
 class DerivedMetric(_Redacted):
@@ -1318,7 +1323,7 @@ def build_attribution_run(request: AttributionRunRequest) -> AttributionRunResul
 
     if type(request) is not AttributionRunRequest:
         fail_attribution()
-    if request.input_sha256 != _digest(request._payload()):  # noqa: SLF001
+    if not request.has_valid_input_binding():
         fail_attribution(AttributionFailureCode.INPUT_HASH_MISMATCH)
     evaluation = evaluate_measurements(
         contract=request.contract,

@@ -75,9 +75,12 @@ def _mapping(value: object, keys: tuple[str, ...]) -> Mapping[str, object]:
 def _sequence(
     value: object, *, minimum: int = 0, maximum: int = 10_000
 ) -> list[object]:
-    if type(value) is not list or not minimum <= len(value) <= maximum:
+    if type(value) is not list:
         fail_attribution(AttributionFailureCode.FIXTURE_INVALID)
-    return cast(list[object], value)
+    result = cast(list[object], value)
+    if not minimum <= len(result) <= maximum:
+        fail_attribution(AttributionFailureCode.FIXTURE_INVALID)
+    return result
 
 
 def _string(value: object, *, maximum: int = 256) -> str:
@@ -350,7 +353,7 @@ class RecordedAttributionScenario(_Redacted):
 
 
 def load_recorded_attribution_fixture(
-    path: Path,
+    path: object,
     *,
     contract: MeasurementAttributionContract,
 ) -> RecordedAttributionScenario:
