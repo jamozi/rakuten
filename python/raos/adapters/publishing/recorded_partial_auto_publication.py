@@ -105,9 +105,12 @@ def _reject_number(value: str) -> NoReturn:
 
 
 def _mapping(value: object, keys: frozenset[str]) -> dict[str, object]:
-    if type(value) is not dict or frozenset(value) != keys:
+    if type(value) is not dict:
         _invalid()
-    return cast(dict[str, object], value)
+    mapping = cast(dict[object, object], value)
+    if frozenset(mapping) != keys:
+        _invalid()
+    return cast(dict[str, object], mapping)
 
 
 def _string(value: object, maximum: int = 160) -> str:

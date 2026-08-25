@@ -4,16 +4,16 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 import json
 import os
 from pathlib import Path
 import stat
 import sys
-from typing import Any, Final, NoReturn, cast
+from typing import Callable, Final, NoReturn, Protocol, cast
 
 import yaml
-from yaml.nodes import MappingNode
+from yaml.nodes import MappingNode, Node
 from yaml.tokens import AliasToken, AnchorToken, TagToken
 
 
@@ -101,7 +101,7 @@ def _fail(code: str = "ST1903_BUILD_FAILED") -> NoReturn:
     raise PartialAutoPublicationBuildError(code) from None
 
 
-def _repository_path(root: Path, relative: Path) -> Path:
+def _repository_path(root: object, relative: object) -> Path:
     if (
         not isinstance(root, Path)
         or not isinstance(relative, Path)
@@ -167,17 +167,23 @@ class _UniqueSafeLoader(yaml.SafeLoader):
     pass
 
 
+class _YamlConstructor(Protocol):
+    def construct_object(self, node: Node, deep: bool = False) -> object: ...
+
+
 def _construct_mapping(
     loader: _UniqueSafeLoader,
     node: MappingNode,
     deep: bool = False,
 ) -> dict[object, object]:
     result: dict[object, object] = {}
-    for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+    pairs = cast(list[tuple[Node, Node]], node.value)
+    constructor = cast(_YamlConstructor, loader)
+    for key_node, value_node in pairs:
+        key = constructor.construct_object(key_node, deep=deep)
         if type(key) is not str or key in result:
             _fail("YAML_DUPLICATE_OR_NONSTRING_KEY")
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = constructor.construct_object(value_node, deep=deep)
     return result
 
 
@@ -187,36 +193,46 @@ _UniqueSafeLoader.add_constructor(
 )
 
 
-def _parse_yaml(content: bytes) -> dict[str, Any]:
+def _parse_yaml(content: bytes) -> dict[str, object]:
     if type(content) is not bytes or not content or len(content) > MAX_READ_BYTES:
         _fail("YAML_INVALID")
     try:
         text = content.decode("utf-8", errors="strict")
+        scan_value = cast(object, getattr(yaml, "scan"))
+        if not callable(scan_value):
+            _fail("YAML_INVALID")
+        scan = cast(Callable[[str], Iterable[object]], scan_value)
         if any(
             isinstance(token, (AliasToken, AnchorToken, TagToken))
-            for token in yaml.scan(text)
+            for token in scan(text)
         ):
             _fail("YAML_COMPLEXITY_FORBIDDEN")
-        value = yaml.load(text, Loader=_UniqueSafeLoader)
+        value: object = yaml.load(text, Loader=_UniqueSafeLoader)
     except PartialAutoPublicationBuildError:
         raise
     except Exception:
         _fail("YAML_INVALID")
     if type(value) is not dict:
         _fail("YAML_INVALID")
-    return cast(dict[str, Any], value)
+    raw = cast(dict[object, object], value)
+    if any(type(key) is not str for key in raw):
+        _fail("YAML_INVALID")
+    return cast(dict[str, object], raw)
 
 
-def _mapping(value: object, code: str = "CONTRACT_INVALID") -> dict[str, Any]:
-    if type(value) is not dict or any(type(key) is not str for key in value):
+def _mapping(value: object, code: str = "CONTRACT_INVALID") -> dict[str, object]:
+    if type(value) is not dict:
         _fail(code)
-    return cast(dict[str, Any], value)
+    raw = cast(dict[object, object], value)
+    if any(type(key) is not str for key in raw):
+        _fail(code)
+    return cast(dict[str, object], raw)
 
 
-def _list(value: object, code: str = "CONTRACT_INVALID") -> list[Any]:
+def _list(value: object, code: str = "CONTRACT_INVALID") -> list[object]:
     if type(value) is not list:
         _fail(code)
-    return value
+    return cast(list[object], value)
 
 
 def _string(value: object, code: str = "CONTRACT_INVALID") -> str:
@@ -234,16 +250,16 @@ def _hash_binding(root: Path, row: object) -> Path:
     return path
 
 
-def _canonical_story(root: Path, binding: dict[str, Any]) -> None:
+def _canonical_story(root: Path, binding: dict[str, object]) -> None:
     backlog = _parse_yaml(_read(root, Path(_string(binding.get("path")))))
-    story = next(
-        (
-            _mapping(row)
-            for row in _list(backlog.get("stories"))
-            if type(row) is dict and row.get("id") == "ST-1903"
-        ),
-        None,
-    )
+    story: dict[str, object] | None = None
+    for row_value in _list(backlog.get("stories")):
+        if type(row_value) is not dict:
+            continue
+        row = _mapping(cast(object, row_value))
+        if row.get("id") == "ST-1903":
+            story = row
+            break
     expected = {
         "id": "ST-1903",
         "epic_id": "EPIC-19",
@@ -268,16 +284,16 @@ def _canonical_story(root: Path, binding: dict[str, Any]) -> None:
         _fail("CANONICAL_STORY_DRIFT")
 
 
-def _tst032(root: Path, binding: dict[str, Any]) -> None:
+def _tst032(root: Path, binding: dict[str, object]) -> None:
     catalog = _parse_yaml(_read(root, Path(_string(binding.get("path")))))
-    suite = next(
-        (
-            _mapping(row)
-            for row in _list(catalog.get("suites"))
-            if type(row) is dict and row.get("id") == "TST-032"
-        ),
-        None,
-    )
+    suite: dict[str, object] | None = None
+    for row_value in _list(catalog.get("suites")):
+        if type(row_value) is not dict:
+            continue
+        row = _mapping(cast(object, row_value))
+        if row.get("id") == "TST-032":
+            suite = row
+            break
     if (
         suite is None
         or suite.get("release_blocking") is not True
@@ -287,7 +303,7 @@ def _tst032(root: Path, binding: dict[str, Any]) -> None:
         _fail("TST032_CONTRACT_DRIFT")
 
 
-def _validate_dependency(root: Path, predecessor: dict[str, Any]) -> None:
+def _validate_dependency(root: Path, predecessor: dict[str, object]) -> None:
     if (
         predecessor.get("story_id") != "ST-1805"
         or predecessor.get("binding") != "EXACT_BASE_COMMIT_BYTES"
@@ -297,14 +313,13 @@ def _validate_dependency(root: Path, predecessor: dict[str, Any]) -> None:
     for relative, expected in _mapping(predecessor.get("artifacts")).items():
         if sha256_bytes(_read(root, Path(relative))) != _string(expected):
             _fail("PREDECESSOR_HASH_DRIFT")
-    pack = json.loads(
+    loaded_pack: object = json.loads(
         _read(
             root,
             Path("changes/st-1805/generated/portfolio-decision.local-blocked.v1.json"),
         )
     )
-    if type(pack) is not dict:
-        _fail("PREDECESSOR_INVALID")
+    pack = _mapping(loaded_pack, "PREDECESSOR_INVALID")
     decision = _mapping(pack.get("decision"), "PREDECESSOR_INVALID")
     completion = _mapping(pack.get("completion_boundary"), "PREDECESSOR_INVALID")
     if (
@@ -318,7 +333,7 @@ def _validate_dependency(root: Path, predecessor: dict[str, Any]) -> None:
         _fail("PREDECESSOR_BOUNDARY_DRIFT")
 
 
-def load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
+def load_contract(root: Path = REPO_ROOT) -> dict[str, object]:
     contract = _parse_yaml(_read(root, CONTRACT_PATH))
     document = _mapping(contract.get("document"))
     if document != {
@@ -337,9 +352,11 @@ def load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     }:
         _fail("CONTRACT_DOCUMENT_INVALID")
     authority = _mapping(contract.get("authority"))
-    for row in authority.values():
-        if type(row) is dict and "path" in row:
-            _hash_binding(root, row)
+    for row_value in authority.values():
+        if type(row_value) is dict:
+            row = _mapping(cast(object, row_value))
+            if "path" in row:
+                _hash_binding(root, row)
     story_binding = _mapping(authority.get("canonical_story"))
     _canonical_story(root, story_binding)
     _tst032(root, _mapping(authority.get("test_catalog")))
@@ -522,7 +539,7 @@ def validate_report(value: object) -> None:
 
 
 def _manifest_bytes(root: Path, report: bytes) -> bytes:
-    sources = []
+    sources: list[dict[str, object]] = []
     for relative in SOURCE_ARTIFACT_PATHS:
         content = _read(root, relative)
         sources.append(
@@ -532,7 +549,7 @@ def _manifest_bytes(root: Path, report: bytes) -> bytes:
                 "uri": f"repo://{relative.as_posix()}",
             }
         )
-    manifest = {
+    manifest: dict[str, object] = {
         "boundary": {
             "activation": "DISABLED",
             "actions": [],

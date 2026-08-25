@@ -54,11 +54,11 @@ source_artifacts:
 - bytes: 4587
   sha256: a45b82a5f32e7566ad1afa05683e13f0efea84ebbcf99bade0b9b2a3cfbde173
   uri: repo://python/raos/application/publishing/partial_auto_publication.py
-- bytes: 10142
-  sha256: 9695d62fc6624f75662d8be2d5c14ef28f731a85adbee510ccdc448d95bcbe2a
+- bytes: 10218
+  sha256: 768ba45f62399c2b21b571debb3f1da9831479661ebe498b765eb9f2c90aa5f2
   uri: repo://python/raos/adapters/publishing/recorded_partial_auto_publication.py
-- bytes: 23376
-  sha256: 825911d5d8dd9c55b63dcab599dd4a59cba56966e136e001377b224892aba586
+- bytes: 24357
+  sha256: 607d671c7d239299ed8c9237a09b2643a0669b31f1cb9b8faa574a908600066c
   uri: repo://scripts/build_st1903_partial_auto_publication.py
 - bytes: 49
   sha256: 38bd1479e1fa3be97a859c5657688cb30eb503f537545556b4aa4cf9fcf8e804
