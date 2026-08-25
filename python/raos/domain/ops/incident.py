@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from enum import Enum
 import hashlib
 import re
-from typing import NoReturn, SupportsIndex, TypeAlias, final
+from typing import NoReturn, SupportsIndex, TypeAlias, cast, final
 from uuid import UUID
 
 from raos.domain.ops.kill_switch import (
@@ -352,13 +352,17 @@ class IncidentEvidenceReference(_RedactedValue):
 def require_evidence_references(
     value: object,
 ) -> tuple[IncidentEvidenceReference, ...]:
-    if (
-        type(value) is not tuple
-        or len(value) > MAX_INCIDENT_EVIDENCE_REFERENCES
-        or any(type(item) is not IncidentEvidenceReference for item in value)
+    if type(value) is not tuple:
+        fail_incident(IncidentFailureCode.INVALID_ARGUMENT)
+    untyped_references = cast(tuple[object, ...], value)
+    if len(untyped_references) > MAX_INCIDENT_EVIDENCE_REFERENCES or any(
+        type(item) is not IncidentEvidenceReference for item in untyped_references
     ):
         fail_incident(IncidentFailureCode.INVALID_ARGUMENT)
-    references = value
+    references = cast(
+        tuple[IncidentEvidenceReference, ...],
+        untyped_references,
+    )
     if len({item.artifact_id for item in references}) != len(references):
         fail_incident(IncidentFailureCode.INVALID_ARGUMENT)
     return references
@@ -784,16 +788,23 @@ def _copy_utc(value: object) -> datetime:
 def _copy_evidence_references(
     values: object,
 ) -> tuple[IncidentEvidenceReference, ...]:
-    if type(values) is not tuple or any(
-        type(value) is not IncidentEvidenceReference for value in values
+    if type(values) is not tuple:
+        fail_incident(IncidentFailureCode.INVALID_ARGUMENT)
+    untyped_references = cast(tuple[object, ...], values)
+    if any(
+        type(value) is not IncidentEvidenceReference for value in untyped_references
     ):
         fail_incident(IncidentFailureCode.INVALID_ARGUMENT)
+    references = cast(
+        tuple[IncidentEvidenceReference, ...],
+        untyped_references,
+    )
     return tuple(
         IncidentEvidenceReference(
             artifact_id=_copy_uuid(value.artifact_id),
             artifact_sha256=value.artifact_sha256,
         )
-        for value in values
+        for value in references
     )
 
 
