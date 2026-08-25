@@ -270,7 +270,7 @@
     {
       "bytes": 16368,
       "path": "changes/st-1105/contracts/admin-visual-accessibility-acceptance.v2.json",
-      "sha256": "e1176e4cc97e0d61b40559242d4e8162ff2a78879890a11c6b87215bfb4cd71f"
+      "sha256": "be7b604a943e0af10d4e971d5f1b2eff63f547357283a1883a8b8555eea2ee3a"
     },
     {
       "bytes": 4342,
@@ -285,7 +285,7 @@
     {
       "bytes": 94305,
       "path": "changes/st-1105/generated/admin-visual-accessibility-recorded.v2.json",
-      "sha256": "b154124d2e2f99cbd8bed0e04689d071a06c3ed3fb930f1ab76f1ab9df1312cc"
+      "sha256": "2668d731d87d72cb7f4f0326d2448f08a6fa179fe8309ca88174e31379ddcf29"
     },
     {
       "bytes": 37543,
@@ -298,9 +298,9 @@
       "sha256": "5f90c108937fc85dfa7c94c881acc44b9b5a8f08844fc1ba809b93cf294081ac"
     },
     {
-      "bytes": 1850,
+      "bytes": 1906,
       "path": "package.json",
-      "sha256": "3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828"
+      "sha256": "a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd"
     },
     {
       "bytes": 271352,
@@ -308,7 +308,7 @@
       "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b"
     }
   ],
-  "source_bundle_sha256": "30bba91a056cb448ef4aa1784c02fa77db4dc87bc96164e5c4b6364d6ab6abf3",
+  "source_bundle_sha256": "4175dd86e44acb00312e445157faf34a60fad202d45465fcff5f70104f3c4a26",
   "story_id": "ST-1105",
   "synthetic_fixture": {
     "result": "LOCAL_AUTOMATED_PASS_SYNTHETIC_FIXTURE_ONLY",
