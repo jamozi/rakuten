@@ -100,9 +100,12 @@ def _pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
 
 
 def _mapping(value: object, keys: tuple[str, ...]) -> Mapping[str, object]:
-    if type(value) is not dict or tuple(value) != keys:
+    if type(value) is not dict:
         _fail()
-    return cast(Mapping[str, object], value)
+    mapping = cast(dict[object, object], value)
+    if tuple(mapping) != keys:
+        _fail()
+    return cast(Mapping[str, object], mapping)
 
 
 def _sequence(
@@ -111,9 +114,12 @@ def _sequence(
     minimum: int = 0,
     maximum: int,
 ) -> list[object]:
-    if type(value) is not list or not minimum <= len(value) <= maximum:
+    if type(value) is not list:
         _fail()
-    return cast(list[object], value)
+    sequence = cast(list[object], value)
+    if not minimum <= len(sequence) <= maximum:
+        _fail()
+    return sequence
 
 
 def _string(value: object, *, maximum: int = 512) -> str:
