@@ -3,7 +3,7 @@
     "id": "RAOS-ST1602-SLO-ALERT-RUNTIME-CATALOG-002",
     "version": "2.0.0",
     "story_id": "ST-1602",
-    "contract_sha256": "3737fd25156119db659138bf372b68a8730261f9785aa12b2d8be65bbae27095",
+    "contract_sha256": "ff1f3e47865e3d2b273b1b202a3830feb4c557a6b44dc7965fe31d534f6c621a",
     "classification": "LOCAL_SYNTHETIC_NON_ATTESTING_SLO_ALERT_RUNTIME"
   },
   "authority": {

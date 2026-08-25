@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st1602_slo_alert_runtime.py
   generation_command: uv run --locked --no-sync python scripts/build_st1602_slo_alert_runtime.py
 provenance:
-  contract_sha256: 3737fd25156119db659138bf372b68a8730261f9785aa12b2d8be65bbae27095
+  contract_sha256: ff1f3e47865e3d2b273b1b202a3830feb4c557a6b44dc7965fe31d534f6c621a
   authority_sources:
   - role: open_decisions
     uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
@@ -52,27 +52,27 @@ provenance:
   - uri: repo://changes/st-1602/contracts/slo-alert-reference-plan.v1.yaml
     sha256: 31c8d3c57501e351bd9bcde3c796abe70eb80277b4cb7a1c738cf93817ba65b1
   - uri: repo://changes/st-1602/generated/slo-alert-reference-plan.v1.json
-    sha256: 34e613c246dba10f6ff390d0a676d42b61701f2d47251a1fb81a8e8aa19b8de6
+    sha256: b4a8723c3fa4b70d30bf8ac8b145daaa4d7e41c993d53de3364d1c0a6a8ad4b3
   - uri: repo://changes/st-1602/manifest.yaml
-    sha256: c1854c8a16bf1fb10e1ab10fb38498511cca5d5cf62fc50e505c4bf13b62dc14
+    sha256: 89b37ab9fc483573aa9743a7e36edc9963f4865126a26e1b0c1ae938b0a79809
   - uri: repo://scripts/build_st1602_slo_alert_reference_plan.py
-    sha256: 9fd96a891ad72db9f46201c5b8b8c69f9e1156484ca7b845567c026151fe92aa
+    sha256: 6b7cc5d945710173acff0d54216046f56af3ac6675a1308c7b12b1e7364c380f
   implementation_helper:
     uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5
+    sha256: 478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5
     purpose: OWNER_SAFE_LOCAL_FILE_IO_ONLY
     semantics: NO_RUNTIME_AUTHORITY
 source_artifact_count: 12
 source_artifacts:
 - uri: repo://changes/st-1602/contracts/slo-alert-runtime.v2.yaml
   bytes: 6177
-  sha256: 3737fd25156119db659138bf372b68a8730261f9785aa12b2d8be65bbae27095
+  sha256: ff1f3e47865e3d2b273b1b202a3830feb4c557a6b44dc7965fe31d534f6c621a
 - uri: repo://changes/st-1602/README-v2.md
   bytes: 3042
   sha256: 4a5a16a4666abd3e60fdeb09bdeb8cf8a879f9b07cdeee12854208f14f90a49d
 - uri: repo://python/raos/domain/ops/slo_alert_runtime_v2.py
   bytes: 49691
-  sha256: f9083fabd78c40e3165c9390ae21485300129954d519b68219c16cac1b8be120
+  sha256: d756b836a7c2e3388106d36b5b0b3390cfbcea728b255b0964a27470a9c10d56
 - uri: repo://python/raos/ports/slo_alert_runtime_v2.py
   bytes: 3418
   sha256: f2b8a347b5b07a5c926ea98b2d1a2d879af9cf64a2b0fdb91a6c556ac7f45b3d
@@ -84,7 +84,7 @@ source_artifacts:
   sha256: 06ba82ad3b655849157bd3999fed58c8af016d693a912533e119a8c73d7e5c68
 - uri: repo://scripts/build_st1602_slo_alert_runtime.py
   bytes: 31807
-  sha256: 104a6b1f16e521e0e94c37e72d736da7bcaf531130f1b61e5e7fcacbd8f8f79c
+  sha256: bd48653ce8414bad57aa35bb597906f295944fe468a5328b9b7265ca10809374
 - uri: repo://tests/st1602/test_local_runtime_v2.py
   bytes: 9362
   sha256: ca83fedd6aa2e7bc0a6e3a402db89b9ed00553e85985557d630bc1c8bd120356
@@ -104,10 +104,10 @@ generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://changes/st-1602/generated/slo-alert-runtime-catalog.v2.json
   bytes: 30686
-  sha256: e1f3703cce549ff3eb17c5ac99aff9c4f3d04d8fec1f0c7aad4ee2f6f0ffe189
+  sha256: f91e001bd9a4c2593a42fe488504ba0b89c46a9ea439499012c81620141dedda
 - uri: repo://changes/st-1602/generated/slo-alert-runtime-recorded-fixture.v2.json
   bytes: 18619
-  sha256: e18b8f2e52419e1a942faa2f21174189f6a0ce2953fcd7728d53a02517b2b7c2
+  sha256: 9b0b5de7e10c7bd6a0a7e191ee50a7c369c482eb2484e7d0144eea815f857087
 - uri: repo://changes/st-1602/evidence/slo-alert-runtime-local-completion.v2.yaml
   bytes: 738
   sha256: de64cb5fc20da34d1124861b6ce082f7a79d740a9d6cc8f2c18ddf2abf3c3bf1

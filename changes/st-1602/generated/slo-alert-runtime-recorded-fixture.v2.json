@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "story_id": "ST-1602",
     "classification": "LOCAL_SYNTHETIC_NON_ATTESTING",
-    "catalog_sha256": "a79bc393feb4c52c87ef9acc7cfae3a34791289ef5b28293b68b77158e42eee4"
+    "catalog_sha256": "3ebed06ee07c0dbf685f4ee2604387939214c1f008324c20c733fc3e92d47b60"
   },
   "slo_windows": [
     {

@@ -69,7 +69,7 @@ GENERATION_COMMAND: Final = (
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 EXPECTED_CONTRACT_SHA256: Final = (
-    "3737fd25156119db659138bf372b68a8730261f9785aa12b2d8be65bbae27095"
+    "ff1f3e47865e3d2b273b1b202a3830feb4c557a6b44dc7965fe31d534f6c621a"
 )
 
 AUTHORITY_SOURCES: Final = (
@@ -152,20 +152,20 @@ V1_SOURCES: Final = (
     ),
     (
         v1.REFERENCE_PLAN_PATH.as_posix(),
-        "34e613c246dba10f6ff390d0a676d42b61701f2d47251a1fb81a8e8aa19b8de6",
+        "b4a8723c3fa4b70d30bf8ac8b145daaa4d7e41c993d53de3364d1c0a6a8ad4b3",
     ),
     (
         v1.MANIFEST_PATH.as_posix(),
-        "c1854c8a16bf1fb10e1ab10fb38498511cca5d5cf62fc50e505c4bf13b62dc14",
+        "89b37ab9fc483573aa9743a7e36edc9963f4865126a26e1b0c1ae938b0a79809",
     ),
     (
         v1.GENERATOR_PATH.as_posix(),
-        "9fd96a891ad72db9f46201c5b8b8c69f9e1156484ca7b845567c026151fe92aa",
+        "6b7cc5d945710173acff0d54216046f56af3ac6675a1308c7b12b1e7364c380f",
     ),
 )
 IMPLEMENTATION_HELPER: Final = (
     HELPER_PATH.as_posix(),
-    "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5",
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5",
 )
 
 ROUTE_MAP: Final = {
