@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Iterable
 from copy import deepcopy
 from dataclasses import replace
 from datetime import datetime, timezone
@@ -76,6 +77,7 @@ from raos.domain.editorial.policy_engine_v2 import (  # noqa: E402
     recommendation_receipt_sha256,
 )
 from raos.domain.editorial.recommendation_v2 import (  # noqa: E402
+    DimensionAssessmentV2,
     RecommendationRecordReceipt,
     assessment_set_sha256,
     comparison_receipt_sha256,
@@ -120,13 +122,13 @@ UPSTREAM_RECOMMENDATION_PATH: Final = Path(
     "changes/st-0804/generated/recommendation-pass.v2.json"
 )
 UPSTREAM_RECOMMENDATION_SHA256: Final = (
-    "84bcc4596c320bf50d3baeddfa25883ec373eba9a0ddf0954da1bfaa46e8f3e7"
+    "52a48ea6608d54abc0346c559823b5994c67eca59012c10e19291d0dcfc2cbc6"
 )
 UPSTREAM_RECOMMENDATION_MANIFEST: Final = Path(
     "changes/st-0804/runtime-manifest.v2.yaml"
 )
 UPSTREAM_RECOMMENDATION_MANIFEST_SHA256: Final = (
-    "891b4d46f3a52cf524c150cd322b301b76dcd5b967dcaba574caeabd4c803395"
+    "15e8a2087a45602070e140d00b6f5f4755085fdbab6fc2c55b2e8d04d6fce5da"
 )
 CONTENT_AST_SEED_PATH: Final = Path(
     "contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json"
@@ -204,7 +206,7 @@ DEPENDENCY_BINDINGS: Final = (
     ),
     (
         Path("python/raos/domain/editorial/recommendation_v2.py"),
-        "02552d963d3391cd929c4e85a12ad752da15b961255c7d96d07478739ed7e26c",
+        "d7b020a65dfe2071335fda7bdb9b804fcd02def954c415a36318437a9e4d5de4",
     ),
     (UPSTREAM_RECOMMENDATION_PATH, UPSTREAM_RECOMMENDATION_SHA256),
     (
@@ -292,11 +294,21 @@ def _construct_mapping(
     deep: bool = False,
 ) -> dict[object, object]:
     result: dict[object, object] = {}
-    for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+    for key_node, value_node in cast(list[tuple[yaml.Node, yaml.Node]], node.value):
+        key = cast(
+            object,
+            loader.construct_object(  # pyright: ignore[reportUnknownMemberType]
+                key_node, deep=deep
+            ),
+        )
         if key in result:
             _fail("DUPLICATE_YAML_KEY")
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = cast(
+            object,
+            loader.construct_object(  # pyright: ignore[reportUnknownMemberType]
+                value_node, deep=deep
+            ),
+        )
     return result
 
 
@@ -405,19 +417,26 @@ def load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     if not payload:
         _fail("CONTRACT_SIZE_INVALID")
     try:
-        tokens = tuple(yaml.scan(payload))
+        tokens = tuple(
+            cast(
+                Iterable[object],
+                yaml.scan(payload),  # pyright: ignore[reportUnknownMemberType]
+            )
+        )
         if any(
             isinstance(token, (AliasToken, AnchorToken, TagToken)) for token in tokens
         ):
             _fail("YAML_FEATURE_REJECTED")
-        loaded = yaml.load(payload, Loader=_UniqueLoader)
+        loaded = cast(object, yaml.load(payload, Loader=_UniqueLoader))
     except RuntimeGenerationError:
         raise
     except Exception:
         _fail("CONTRACT_PARSE_FAILED")
-    if type(loaded) is not dict or tuple(loaded) != TOP_LEVEL_KEYS:
+    if type(loaded) is not dict:
         _fail("CONTRACT_SHAPE_INVALID")
     result = cast(dict[str, Any], loaded)
+    if tuple(result) != TOP_LEVEL_KEYS:
+        _fail("CONTRACT_SHAPE_INVALID")
     if (
         type(result["schema_version"]) is not int
         or result["schema_version"] != 2
@@ -771,7 +790,7 @@ def _build_fixture(root: Path, contract: dict[str, Any]) -> bytes:
     context = replace(context, binding_sha256=decision_context_sha256(context))
     cells = {(item.product_id, item.axis_id): item for item in comparison.cells}
     dimensions = {item.axis_id: item for item in upstream.dimensions}
-    assessments = []
+    assessments: list[DimensionAssessmentV2] = []
     for assessment in upstream.assessments:
         dimension = dimensions[assessment.axis_id]
         cell = cells[(assessment.product_id, assessment.axis_id)]
@@ -869,9 +888,8 @@ def _build_fixture(root: Path, contract: dict[str, Any]) -> bytes:
             "binding_sha256": context.binding_sha256.value,
         }
     )
-    for raw, assessment in zip(
-        recommendation_raw["assessments"], assessment_tuple, strict=True
-    ):
+    raw_assessments = cast(list[dict[str, Any]], recommendation_raw["assessments"])
+    for raw, assessment in zip(raw_assessments, assessment_tuple, strict=True):
         raw["normalization_input_sha256"] = assessment.normalization_input_sha256.value
         raw["normalization_decision_sha256"] = (
             assessment.normalization_decision_sha256.value

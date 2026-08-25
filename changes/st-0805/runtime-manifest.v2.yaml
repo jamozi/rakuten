@@ -8,17 +8,17 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: application/yaml
   bytes: 3458
-  sha256: ec64cd6e0be75987ef1f99e4f3f04574650c19670f3d08839875afa0bfcf52e4
+  sha256: 513773cead46b78b1441ae3abff0739878898d4dfc21e6d9083abb7d85df1043
 - uri: repo://scripts/build_st0805_policy_runtime.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 45356
-  sha256: f19385878e9e360f2f3ad209b60023b77fb3a7cfb2b48c7334ddc4604c52172d
+  bytes: 45984
+  sha256: 22a689937652dd8b9a3969593686f904ac30f6651689e3e953cb28955e48b53d
 - uri: repo://python/raos/domain/editorial/policy_engine_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
   bytes: 45997
-  sha256: 86e0af8ff6b651b50a7959a0a8c0f85864c230a57144b51e190041d658ee7d93
+  sha256: 3d27a451f3f719a9928c55f2a87231c3cec66be3b82caed6c48a8748c0673e7e
 - uri: repo://python/raos/ports/editorial/policy_engine.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -62,8 +62,8 @@ source_artifacts:
 - uri: repo://docs/worklogs/RAOS-IMPLEMENTATION-DEBT.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
-  bytes: 245556
-  sha256: 5766197ae7df6239e924adbe82e964e16b3722d33557c8dd74c0c2a11288e270
+  bytes: 250023
+  sha256: b58a9aa09852a0d2db11ded463c66c447d7f062eed40753ee3f586c8e1f1fe6e
 - uri: repo://tests/st0805_runtime/__init__.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -163,17 +163,17 @@ source_artifacts:
   artifact_role: DEPENDENCY_CONTRACT
   media_type: text/x-python
   bytes: 93816
-  sha256: 02552d963d3391cd929c4e85a12ad752da15b961255c7d96d07478739ed7e26c
+  sha256: d7b020a65dfe2071335fda7bdb9b804fcd02def954c415a36318437a9e4d5de4
 - uri: repo://changes/st-0804/generated/recommendation-pass.v2.json
   artifact_role: DEPENDENCY_CONTRACT
   media_type: application/json
-  bytes: 26962
-  sha256: 84bcc4596c320bf50d3baeddfa25883ec373eba9a0ddf0954da1bfaa46e8f3e7
+  bytes: 26959
+  sha256: 52a48ea6608d54abc0346c559823b5994c67eca59012c10e19291d0dcfc2cbc6
 - uri: repo://changes/st-0804/runtime-manifest.v2.yaml
   artifact_role: DEPENDENCY_CONTRACT
   media_type: application/yaml
   bytes: 11532
-  sha256: 891b4d46f3a52cf524c150cd322b301b76dcd5b967dcaba574caeabd4c803395
+  sha256: 15e8a2087a45602070e140d00b6f5f4755085fdbab6fc2c55b2e8d04d6fce5da
 - uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json
   artifact_role: DEPENDENCY_CONTRACT
   media_type: application/json
@@ -207,8 +207,8 @@ source_artifacts:
 - uri: repo://python/raos/domain/evidence/claim_evidence.py
   artifact_role: RUNTIME_DEPENDENCY
   media_type: text/x-python
-  bytes: 84408
-  sha256: 97996a564e6fe21a417f06110fbb7dfd66d605bd2fa43aa9f19e9a4c11592c81
+  bytes: 84553
+  sha256: 5e292cc4a257ec3be2dc1cc0e2e66c68afc51e2e216c5610bd563f642022ca2b
 - uri: repo://python/raos/domain/shared/persistence.py
   artifact_role: RUNTIME_DEPENDENCY
   media_type: text/x-python
@@ -238,8 +238,8 @@ generated_artifacts:
 - uri: repo://changes/st-0805/generated/policy-pass.v2.json
   artifact_role: RECORDED_SYNTHETIC_FIXTURE
   media_type: application/json
-  bytes: 73579
-  sha256: 7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849
+  bytes: 73573
+  sha256: 1e685c7d7f76cc0751d794146edde0fa948450c622d722c1062310ee6ab5c250
 generation:
   owner: repo://scripts/build_st0805_policy_runtime.py
   command: .venv/bin/python scripts/build_st0805_policy_runtime.py
