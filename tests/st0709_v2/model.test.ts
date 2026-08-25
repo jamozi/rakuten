@@ -60,12 +60,12 @@ describe('ST-0709 V2 recorded governance model', () => {
     assert.equal(evaluation['outcome'], 'REFUSED_INCOMPLETE_EVIDENCE');
     assert.equal(
       evaluation['reportSha256'],
-      '0406c371f0896af3e8db46dd307033e0786221a73940fd38513562a7580c64e6',
+      'e583af1ef694facb6441fa9d9bbd06be4e4238b8aaa3636c6e642bc379b13566',
     );
     assert.equal(release['outcome'], 'REFUSED_INCOMPLETE_EVIDENCE');
     assert.equal(
       release['reportSha256'],
-      '19244919f060de6d6cad4abe379add28a6372d421e1069db9872c83fe3c4b87e',
+      'c9d40408ce6e83ae04b2c5793d80bd3d556cbb6ed7ebac5876e749d9e435203e',
     );
     assert.equal(release['authority'], 'NONE');
     assert.equal(release['approvalAuthority'], 'HUMAN_ONLY');
