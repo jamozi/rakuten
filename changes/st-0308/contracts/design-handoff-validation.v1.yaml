@@ -276,7 +276,7 @@ source_inputs:
   - {id: st0304_catalog, path: changes/st-0304/generated/domain-catalog.v1.json, sha256: 41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208}
   - {id: st0304_validation, path: changes/st-0304/generated/domain-validation.v1.sql, sha256: 7e1ce307a5751fc5d95e4c06652f0e6fb41b8bdc29c583ea9cd0a3d83d1fa3a5}
   - {id: st0304_migration, path: migrations/versions/202608030004_domain_schemas.py, sha256: 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407}
-  - {id: st0306_candidate_roles, path: changes/st-0306/contracts/database-roles-grants.v1.yaml, sha256: b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3}
+  - {id: st0306_candidate_roles, path: changes/st-0306/contracts/database-roles-grants.v1.yaml, sha256: 93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206}
   trusted_v2_bundle_source_refs:
   - {id: correction_request_v2, path: changes/st-0308/PRO-CORRECTION-REQUEST-v2.md, sha256: d443a7d64291022d02ae0c7d924b3905d5d2cde0b5b4f5945c2aebb13ccaa1f2}
   - {id: reconciliation_v2, path: changes/st-0308/CANONICAL-RECONCILIATION-v2.md, sha256: 6c20546d907d347352c9e29e5dc68ae0c593d1f6feec4a39f8cc95919d577b60}

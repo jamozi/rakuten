@@ -137,7 +137,7 @@ For a candidate, calculate its exact bytes first:
     python3 scripts/validate_st0308_design_handoff.py --handoff /path/to/DESIGN_HANDOFF_V1.yaml --expected-sha256 "$HANDOFF_SHA256"
 
 The current tooling-only contract digest is
-`4816fef129814c3b140b4521c1f11f11ad7de749c83e7a9c238beafb8bb85f90`, pinned
+`0a1e9e1dba1f6af870d76289344a74e78938eafd50d1aee914f3f7cb0d9c71b7`, pinned
 by the validator. The isolated Story suite passed 165 tests; Ruff check and
 Ruff format check passed for the validator and four Python test files.
 

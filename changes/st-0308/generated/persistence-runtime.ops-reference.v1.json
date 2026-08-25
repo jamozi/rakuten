@@ -143,13 +143,13 @@
   "owner": {
     "command": "python scripts/build_st0308_persistence.py",
     "generator": "scripts/build_st0308_persistence.py",
-    "generator_sha256": "edb633e7b715298fa5531ac4e22cc0d3a7b85637172e757b9e8e3eed965eac48"
+    "generator_sha256": "679c2ee572c78868a31c43329d6ea49ba52c3a162e9a07dcaf0fa938c94e30e2"
   },
   "physical_parity": {
     "catalog_ir_check_constraint_count": 519,
     "catalog_ir_column_count": 1376,
     "catalog_ir_relation_count": 104,
-    "catalog_ir_sha256": "6ff3a13fd51aa199a34c63ebb96763d5f2b632d03023e4b813b3f14512ec6050",
+    "catalog_ir_sha256": "5dad7775532ad32f446b61c8029ebe569c1fe362d4bf5e15e13e4109f336873a",
     "lock_version_relation_membership_verified": 27,
     "physical_tables_matched_to_relation_contracts": 103,
     "physical_view_column_type_nullability_parity": "POSTGRESQL_RUNTIME_NOT_EXECUTED",
@@ -233,12 +233,12 @@
     "changes/st-0304/contracts/physical/10-domain-physical.sql": "3d806436b7ed91f25e0396e15b914dda7258b743589ec4dc6c3f4272c9fcb38d",
     "changes/st-0304/contracts/physical/11-domain-physical.sql": "947e480157a52b0d926461a4d40a7409e92e6e50482c216d394953a462d8cd09",
     "changes/st-0304/generated/domain-catalog.v1.json": "41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208",
-    "changes/st-0306/contracts/database-roles-grants.v1.yaml": "b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3",
+    "changes/st-0306/contracts/database-roles-grants.v1.yaml": "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206",
     "changes/st-0308/CANONICAL-RECONCILIATION-v3.md": "91748530eafc018823b5a6a74cc2ca052569cb3c46f6e90dd1224d720d3fdc08",
     "changes/st-0308/DESIGN_HANDOFF_V1_ST0308_LOCAL_PERSISTENCE_RUNTIME_V2.yaml": "7ce27915b7d848dfd4ad1a38a8df094fa3955847a2d9a28159ea61cbd428e882",
     "changes/st-0308/IMPLEMENTATION-READINESS-v3.md": "29e90628cc8ed4259b54486ab12abddb606ae414e3a2391c5055dbbf521577f7",
     "changes/st-0308/PRO-CORRECTION-REQUEST-v3.md": "0906d9bf46920bfd1d018590490857a6665ab9fc8eecc92411e3fcdb9d206270",
-    "changes/st-0308/contracts/persistence-runtime.v2.yaml": "8ee74a13fd1232f86887e988cbeb475421f2ed17c6a73257968e62ecc0dc54c7",
+    "changes/st-0308/contracts/persistence-runtime.v2.yaml": "0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4",
     "changes/st-0308/contracts/persistence/ops-reference-slice.v1.yaml": "77b47ea2d3ef5a238e65132fd5c13053772eaf0c7bb6f53935aa9e7572753866",
     "contracts/raos-v0.4/contracts/schemas/events/jp-raos-ai-evaluation-completed-v2.schema.json": "49d495fd47a2638cd6c008fa04823617af784b7991dad65d27f2c724c0725f39",
     "contracts/raos-v0.4/contracts/schemas/events/jp-raos-ai-job-failed-v1.schema.json": "5cb07491fe735a9e1724b7539f50763928a32befb96627d642c1ad30e39fa2c7",

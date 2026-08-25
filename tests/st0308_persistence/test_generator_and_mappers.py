@@ -323,7 +323,7 @@ def test_identity_query_is_exact_seven_fact_hash_bound_static_inventory() -> Non
         "WORKER_COMMAND": "raos_worker_rw",
     }
     assert identity_contract.ST0306_CONTRACT_SHA256 == (
-        "b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3"
+        "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206"
     )
     sql = identity_contract.IDENTITY_FACTS_SQL_TEXT
     assert "SESSION_USER = CURRENT_USER" in sql

@@ -228,7 +228,7 @@ EXPECTED_IDENTITY_RUNTIME: Final = MappingProxyType(
         "semantic_anchor": {
             "path": "changes/st-0306/contracts/database-roles-grants.v1.yaml",
             "sha256": (
-                "b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3"
+                "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206"
             ),
             "authority": "CANDIDATE_IDENTITY_EVIDENCE_ONLY",
         },
@@ -340,7 +340,7 @@ EXPECTED_BOUND_INPUT_SHA256: Final = MappingProxyType(
             "41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208"
         ),
         "changes/st-0306/contracts/database-roles-grants.v1.yaml": (
-            "b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3"
+            "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206"
         ),
         "changes/st-0304/contracts/physical/01-domain-physical.sql": (
             "b2f937ae00d526a886e5e875e095e247702f4bd7831a3164e2eda93423d7fdb8"
