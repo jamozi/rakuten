@@ -8,12 +8,12 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: application/yaml
   bytes: 2636
-  sha256: 7e26d5fa628e96bafc71f2664b170b740eb93cea364dc61da74bf39bcfeeadae
+  sha256: 8df66ad3c9c6fc91578b00b604fa7bb1b99993ca04a28a769a95c0687fb047a6
 - uri: repo://scripts/build_st0804_recommendation_runtime.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 32525
-  sha256: f12fc88e1c020bb00c5c3b3244de6248fbd48653cd15b6b00aa5c40396d5963a
+  bytes: 33045
+  sha256: b753b2c5e848e0636b9323472e16f908ee1158fdb8891096f296a6749e7f9fc9
 - uri: repo://python/raos/domain/editorial/recommendation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -23,7 +23,7 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
   bytes: 93816
-  sha256: 02552d963d3391cd929c4e85a12ad752da15b961255c7d96d07478739ed7e26c
+  sha256: d7b020a65dfe2071335fda7bdb9b804fcd02def954c415a36318437a9e4d5de4
 - uri: repo://python/raos/ports/editorial/recommendation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -102,8 +102,8 @@ source_artifacts:
 - uri: repo://changes/st-0803/generated/comparison-validation-pass.v2.json
   artifact_role: UPSTREAM_RECORDED_FIXTURE
   media_type: application/json
-  bytes: 17739
-  sha256: 21594b37e56f32f7b82ac51ab5a428c97b6875d4dea7660541b513515a31a25b
+  bytes: 17736
+  sha256: b848a969269aae6be540c04ebe10ddc6c9392dc6afd22cfdeadcf70dae0cec02
 - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
   artifact_role: CANONICAL_INPUT
   media_type: text/markdown
@@ -158,7 +158,7 @@ source_artifacts:
   artifact_role: DEPENDENCY_CONTRACT
   media_type: application/yaml
   bytes: 13078
-  sha256: 2e4f5d02d12255f0e7b41b778cdb94dbc9b0c8093c27452a5a1ad10809781f7e
+  sha256: 5ea8c8022561b7d00f8137e427e45b7ac5a48246bf752fefc06e7dd46bc6643d
 - uri: repo://scripts/secure_generated_publication.py
   artifact_role: DEPENDENCY_CONTRACT
   media_type: text/x-python
@@ -243,8 +243,8 @@ generated_artifacts:
 - uri: repo://changes/st-0804/generated/recommendation-pass.v2.json
   artifact_role: RECORDED_SYNTHETIC_FIXTURE
   media_type: application/json
-  bytes: 26962
-  sha256: 84bcc4596c320bf50d3baeddfa25883ec373eba9a0ddf0954da1bfaa46e8f3e7
+  bytes: 26959
+  sha256: 52a48ea6608d54abc0346c559823b5994c67eca59012c10e19291d0dcfc2cbc6
 generation:
   owner: repo://scripts/build_st0804_recommendation_runtime.py
   command: .venv/bin/python scripts/build_st0804_recommendation_runtime.py

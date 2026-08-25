@@ -8,8 +8,8 @@
     "methodology_source_sha256": "fb71ad7900c7f688f305e10256b49563281893408e54d8668aac02efa7e57862",
     "st0803_contract_sha256": "ca198b81bf9a3886712efd660fa4b9700c4f24a67cd8a92f580e38ff135f591f",
     "st0803_domain_sha256": "010f445797704e72a5c5cdaf2355e36ed9bf70f536dc1574fe23fb802e91d552",
-    "st0803_recorded_fixture_sha256": "21594b37e56f32f7b82ac51ab5a428c97b6875d4dea7660541b513515a31a25b",
-    "st0803_runtime_manifest_sha256": "2e4f5d02d12255f0e7b41b778cdb94dbc9b0c8093c27452a5a1ad10809781f7e"
+    "st0803_recorded_fixture_sha256": "b848a969269aae6be540c04ebe10ddc6c9392dc6afd22cfdeadcf70dae0cec02",
+    "st0803_runtime_manifest_sha256": "5ea8c8022561b7d00f8137e427e45b7ac5a48246bf752fefc06e7dd46bc6643d"
   },
   "comparison_request": {
     "schema_version": 2,
@@ -325,12 +325,12 @@
         {
           "kind": "PACKET_APPROVAL_MEMBERSHIP",
           "owner_story_id": "ST-0604",
-          "contract_version": "SOURCE-PACKET-LIFECYCLE-REFERENCE-PLAN@1",
-          "contract_sha256": "a80c41890e6bae7077728d1456f5a3b5d99b1877e047f581beff8ed41e0c2cec",
+          "contract_version": "SOURCE-PACKET-LIFECYCLE-RUNTIME@2.0.0",
+          "contract_sha256": "719f5366eced10c19a16dc11355d92680fb66dfe08bebce5be5251618e79cfbe",
           "origin": "RECORDED_SYNTHETIC_ONLY",
           "subject_sha256": "5113c184044507308f41d4d80036ca3b352345767aa7297d00d809e50515fef5",
           "input_sha256": "d4d0010908959e4f5c26c60db299dccb4ba93f81eaf36f525f61b80c6901c8b2",
-          "decision_sha256": "4a7e76de00433e5d8a3dcb9a7ad98a6978958dba22524b8aad5e484f1d1feb68",
+          "decision_sha256": "89dcbf8d4dcf05c6dd9d7dafc259c59bfca7685eef1058a63482811ac90ebfd0",
           "validated_at": "2026-08-23T23:00:00Z",
           "valid": true
         },
@@ -338,11 +338,11 @@
           "kind": "FACT_VALIDATION",
           "owner_story_id": "ST-0602",
           "contract_version": "FACT-EXTRACTION-VALIDATION-REFERENCE-PLAN@1",
-          "contract_sha256": "ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e",
+          "contract_sha256": "c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073",
           "origin": "RECORDED_SYNTHETIC_ONLY",
           "subject_sha256": "e01f09009e0c7fe19d739bb88c935e2c0b3420145cc7a899b7b4acdc39e38431",
           "input_sha256": "7a0fe30ffff752e5fc310847d4204d3a0217c3a1f75613adff6439f637f3485e",
-          "decision_sha256": "b26ce92ceaa99d73fc8cb33e767f6e350e6fc1cee0370f9585fbd1bf7722c68d",
+          "decision_sha256": "0de8dd90721173899272d2da2a7a3db3fc4c61d9cc567ff38e0e42341fe960f8",
           "validated_at": "2026-08-23T23:00:00Z",
           "valid": true
         },
@@ -350,11 +350,11 @@
           "kind": "FACT_VALIDATION",
           "owner_story_id": "ST-0602",
           "contract_version": "FACT-EXTRACTION-VALIDATION-REFERENCE-PLAN@1",
-          "contract_sha256": "ffc60166a1f2b17fa1dd32e8f84cd9575c31eeacd8c7ecae313ac19b9fd4694e",
+          "contract_sha256": "c7d7c16ee41a3d3ba5203c9cb091cc6f09fd1556400abb0d42438434d8bea073",
           "origin": "RECORDED_SYNTHETIC_ONLY",
           "subject_sha256": "b4848396d48d75f702d574a6afdfa1d9a2a4272b4a543e2519ebbc7c1343dd4a",
           "input_sha256": "7109d90c64699f4cb749ca784e6d225930742bcaa8bf31bd8b3090defc54f70f",
-          "decision_sha256": "e668fc38c39151f5ca12faca50c129ab7fef2d76aeff413dbbae599b1745617e",
+          "decision_sha256": "63ffdb62e89c393e33d7395c69fcb1d92625822d8c4d1c5b75e9fc99bafb3b61",
           "validated_at": "2026-08-23T23:00:00Z",
           "valid": true
         },
@@ -362,11 +362,11 @@
           "kind": "IDENTITY_DECISION",
           "owner_story_id": "ST-0504",
           "contract_version": "PRODUCT-IDENTITY-HUMAN-REVIEW-REFERENCE-PLAN@1",
-          "contract_sha256": "246c21aa1d79489ed8c8a02fe0b7d1a50ffe1b2f7e85fcc4ba210369477512b8",
+          "contract_sha256": "9e73f7e436ab14df75394b2337e853f1dcbf553c16e0f950a8bdb604da685304",
           "origin": "RECORDED_SYNTHETIC_ONLY",
           "subject_sha256": "3fabe1af282ff9ef5159eb671a0f8f8b3cde53527663bf3ae20ffac5c154bd5c",
           "input_sha256": "673dc0b4ce458b85d2cdf058938c23b3f4a511e141501c8d2375c7ba6eb975a2",
-          "decision_sha256": "cd8cc51788ed85b5614e6b5635bd0ca7d7365b15beb21edcdf64c89e61ddaa95",
+          "decision_sha256": "a6cd1e01ac72ea3408a65fd50c414ab427a4a85a675d52ce4bd136c3e7d3dece",
           "validated_at": "2026-08-23T23:00:00Z",
           "valid": true
         },
@@ -374,11 +374,11 @@
           "kind": "IDENTITY_DECISION",
           "owner_story_id": "ST-0504",
           "contract_version": "PRODUCT-IDENTITY-HUMAN-REVIEW-REFERENCE-PLAN@1",
-          "contract_sha256": "246c21aa1d79489ed8c8a02fe0b7d1a50ffe1b2f7e85fcc4ba210369477512b8",
+          "contract_sha256": "9e73f7e436ab14df75394b2337e853f1dcbf553c16e0f950a8bdb604da685304",
           "origin": "RECORDED_SYNTHETIC_ONLY",
           "subject_sha256": "52d959ad30001c3f52d4095114d94360c31613b21d3ecaf6a9ba27929bbe6325",
           "input_sha256": "a956e3b2b9c7c55da2e87b69867b55ecce6db8ae174f042145398200502c2c05",
-          "decision_sha256": "afd0374c60dd67de2d4fdde9410940be17c996ef9f025a4ee41567af8a8ac834",
+          "decision_sha256": "20755725c9ba6af26dd2a0a158901a38f95d3e084ec90210b6f232d67e72d296",
           "validated_at": "2026-08-23T23:00:00Z",
           "valid": true
         },
@@ -386,11 +386,11 @@
           "kind": "CONFLICT_CLOSURE",
           "owner_story_id": "ST-0603",
           "contract_version": "FACT-CONFLICT-REVIEW-REFERENCE-PLAN@1",
-          "contract_sha256": "51df56b9475e9a635a0e33ed39109fa4b1d91e7c5a9be08996007eea3698ae07",
+          "contract_sha256": "bca7c63e49be113d7e2b7d15017d22ad6a9b27c59509325b2bbca407081246ef",
           "origin": "RECORDED_SYNTHETIC_ONLY",
           "subject_sha256": "3eae35b6d938eba8d185c1c37666fcddf58e6532cac3dfec95e7378d94e24f93",
           "input_sha256": "55fbbf8f5dc3a9fdb3d6e20d7dd5bb43c82a323775e819509c50208295f8e59f",
-          "decision_sha256": "2fa9d2ccb00467014da3dbc7aeb9608db28351587443b00c507919dfb68478dd",
+          "decision_sha256": "f74e5ad354197636a6ac2ab2f61838d41c161fc36b67b1cdbbe9922a39958477",
           "validated_at": "2026-08-23T23:00:00Z",
           "valid": true
         }
@@ -559,6 +559,6 @@
     "decision_context_sha256": "05b4a8cfbb0566b3d26a0e5bc9da9b522bcb5a13a8ee3957731d1a38942cb35c",
     "dimension_set_sha256": "f7f6633267f82eb1aa0cece21a60c529873bc9b819658d54f68d96f8142d28f1",
     "assessment_set_sha256": "09b01e225bde68f783f4af44b0b2e4cf7a0f201971c92b6ac2c10da363f8e79a",
-    "recommendation_input_sha256": "e9c43ed9b12686c0cd359dcbcb45072c7a09df8cefacc63c0fccb60079fb40b3"
+    "recommendation_input_sha256": "703cc67fe413f4e36a6f7f7c2641b0c43cbb6147724a5e313fa646d7b225b8ef"
   }
 }

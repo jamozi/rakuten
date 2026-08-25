@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Iterable
 from dataclasses import replace
 from decimal import Decimal
 import errno
@@ -82,7 +83,7 @@ UPSTREAM_FIXTURE_PATH: Final = Path(
     "changes/st-0803/generated/comparison-validation-pass.v2.json"
 )
 UPSTREAM_FIXTURE_SHA256: Final = (
-    "21594b37e56f32f7b82ac51ab5a428c97b6875d4dea7660541b513515a31a25b"
+    "b848a969269aae6be540c04ebe10ddc6c9392dc6afd22cfdeadcf70dae0cec02"
 )
 SECURE_HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
 SECURE_HELPER_SHA256: Final = (
@@ -136,7 +137,7 @@ DEPENDENCY_BINDINGS: Final = (
     ),
     (
         Path("changes/st-0803/runtime-manifest.v2.yaml"),
-        "2e4f5d02d12255f0e7b41b778cdb94dbc9b0c8093c27452a5a1ad10809781f7e",
+        "5ea8c8022561b7d00f8137e427e45b7ac5a48246bf752fefc06e7dd46bc6643d",
     ),
     (SECURE_HELPER_PATH, SECURE_HELPER_SHA256),
 )
@@ -226,11 +227,21 @@ def _construct_mapping(
     deep: bool = False,
 ) -> dict[object, object]:
     result: dict[object, object] = {}
-    for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+    for key_node, value_node in cast(list[tuple[yaml.Node, yaml.Node]], node.value):
+        key = cast(
+            object,
+            loader.construct_object(  # pyright: ignore[reportUnknownMemberType]
+                key_node, deep=deep
+            ),
+        )
         if key in result:
             _fail("DUPLICATE_YAML_KEY")
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = cast(
+            object,
+            loader.construct_object(  # pyright: ignore[reportUnknownMemberType]
+                value_node, deep=deep
+            ),
+        )
     return result
 
 
@@ -344,19 +355,26 @@ def load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     if not payload:
         _fail("CONTRACT_SIZE_INVALID")
     try:
-        tokens = tuple(yaml.scan(payload))
+        tokens = tuple(
+            cast(
+                Iterable[object],
+                yaml.scan(payload),  # pyright: ignore[reportUnknownMemberType]
+            )
+        )
         if any(
             isinstance(token, (AliasToken, AnchorToken, TagToken)) for token in tokens
         ):
             _fail("YAML_FEATURE_REJECTED")
-        loaded = yaml.load(payload, Loader=_UniqueLoader)
+        loaded = cast(object, yaml.load(payload, Loader=_UniqueLoader))
     except RuntimeGenerationError:
         raise
     except Exception:
         _fail("CONTRACT_PARSE_FAILED")
-    if type(loaded) is not dict or tuple(loaded) != TOP_LEVEL_KEYS:
+    if type(loaded) is not dict:
         _fail("CONTRACT_SHAPE_INVALID")
     result = cast(dict[str, Any], loaded)
+    if tuple(result) != TOP_LEVEL_KEYS:
+        _fail("CONTRACT_SHAPE_INVALID")
     if (
         type(result["schema_version"]) is not int
         or result["schema_version"] != 2
