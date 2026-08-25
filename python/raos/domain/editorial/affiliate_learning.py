@@ -444,8 +444,9 @@ class MeasurementContract:
         raw_articles = source["articles"]
         if type(raw_articles) is not list:
             _fail()
+        article_values = cast(list[object], raw_articles)
         return cls(
-            articles=tuple(ContractArticle.parse(item) for item in raw_articles),
+            articles=tuple(ContractArticle.parse(item) for item in article_values),
             article_collection_sha256=_sha256(bindings["article_collection_sha256"]),
             compatibility_template_sha256=_sha256(
                 bindings["compatibility_template_sha256"]
@@ -897,12 +898,15 @@ def parse_ledger(
     ):
         _fail(PilotFailureCode.LEDGER_TAMPERED)
     raw_events = source["events"]
-    if type(raw_events) is not list or len(raw_events) > 1000:
+    if type(raw_events) is not list:
+        _fail(PilotFailureCode.LEDGER_TAMPERED)
+    event_values = cast(list[object], raw_events)
+    if len(event_values) > 1000:
         _fail(PilotFailureCode.LEDGER_TAMPERED)
     events: list[LearningLedgerEvent] = []
     previous = GENESIS_SHA256
     ids: set[str] = set()
-    for sequence, raw_event in enumerate(cast(list[object], raw_events), 1):
+    for sequence, raw_event in enumerate(event_values, 1):
         event = _mapping(raw_event)
         _keys(
             event,
