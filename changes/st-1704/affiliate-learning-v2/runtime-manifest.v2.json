@@ -38,8 +38,8 @@
     },
     {
       "path": "python/raos/domain/editorial/affiliate_learning.py",
-      "sha256": "7a6d2a716369e439a935dbca9b1cb325882a140f863544b777189361fd10d187",
-      "size": 48204
+      "sha256": "3354b3beebb6540d7a8381283aed4cf5a3921464ff6f34a0589f625346b5bf6a",
+      "size": 48351
     },
     {
       "path": "python/raos/domain/editorial/owner_local_pilot.py",
