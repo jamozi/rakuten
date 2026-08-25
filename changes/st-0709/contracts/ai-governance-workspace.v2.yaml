@@ -154,28 +154,28 @@ source_bindings:
       sha256: 089b8d3353e2adafe284c03839b2a36dc9a391ab0c060df28bf68dfc9bc38641
     st0707_contract:
       path: changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml
-      sha256: 96c26aae5067b9f240ee0da18cb3ff9eac83e17f03c8a02b99fc3a0b4736eeb1
+      sha256: 55044e7b2f030298d5ee61932122e5c0821491b23189bb57b9affc8c47bc043d
     st0707_manifest:
       path: changes/st-0707/runtime-manifest.v1.json
-      sha256: b458d4382a51f7af30299ebc72244a8138af0f30aa8f8495748c9c43449a7b77
+      sha256: 3547a1d0df3e33c7f793e5d6f520596e1e48a4121b238dc185f642b294976930
     st0707_suite:
       path: changes/st-0707/generated/evaluation-suite-registry.v1.json
-      sha256: 11c58dfd3b26a587f4c8ad84eebea3448ff2bd0dac3f0afdb9a3bef6951e589e
+      sha256: 7eb7edb3bf0139b89fb903d852eca9e49edb0c87f2b16ae281213ba677cdd427
     st0707_dataset:
       path: changes/st-0707/generated/locked-synthetic-holdout.v1.json
-      sha256: 37a2de0c31ad7047cfda3bfb593d5286bfd80f29d41f72a35117b4ce2a3be639
+      sha256: 2de91a49805c4027a69eb6303ee651b6b9816c4e3a5cadc9ac14e1bebda1ae5b
     st0708_contract:
       path: changes/st-0708/contracts/recorded-live-evaluation-runtime.v2.yaml
-      sha256: 4164b2f3b1c41434c8e54e4a0d6b257036616c0b000994f71129da28f29e628d
+      sha256: 2cda2fb12e2bc46e70292e5f7e846eb5c2a3b0760e1be39886c1793e153885a2
     st0708_manifest:
       path: changes/st-0708/runtime-manifest.v2.json
-      sha256: 4ad7ce545e14136e1bb8e2a59c9196466bdd8268de2518688903beace4f65075
+      sha256: 2da64638ad2bd1902b687aa3d831f1104baf8d47390b9d85313a1bd98580a551
     st0708_request:
       path: changes/st-0708/generated/recorded-live-evaluation-request.v2.json
-      sha256: ec64e23748bc6ff30648d0758bbca3710e0eeb55918a11367e71d0d0a6d62f88
+      sha256: eaa02e095d8c2393e504e36c17809e45388a137bfdb6b0c22443b35ce9bbd468
     st0708_report:
       path: changes/st-0708/generated/recorded-live-evaluation-report.v2.json
-      sha256: aed923ec207c358a53261036c83549380e9a3b62494f702072a52d5d92536843
+      sha256: d8fe28f12beb86fedd6d32db55a7a2092f72304f8c3545294d5dc376c2f59142
     st1101_readme:
       path: changes/st-1101/README.md
       sha256: a2c2cebdf12493b52af1ed70ad148eafef3828249082eda5b8683043f417f936
