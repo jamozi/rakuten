@@ -10,7 +10,7 @@ source_artifacts:
   role: OWNER_SOURCE
 - uri: repo://scripts/build_st1103_freshness_operations_workspace.py
   bytes: 45142
-  sha256: 73bf982b13c0188e1493f42c9e4cac777481349c7f7a9afed3842b9df080aad4
+  sha256: 443bc74478857938c6f45620a374f8320dd5662439be367cdf0a9c21ce8fa0b3
   role: OWNER_SOURCE
 - uri: repo://packages/web-ui/src/freshness-operations-workspace.ts
   bytes: 20972
@@ -21,8 +21,8 @@ source_artifacts:
   sha256: 2d58a8c280bd3cc04333ace3b5e619b2f60844af4aec1b0b79d7a5c3acc4490d
   role: OWNER_SOURCE
 - uri: repo://packages/web-ui/src/index.ts
-  bytes: 19601
-  sha256: 527efe6b033da86de0b6dd05d6e74eb1711bee83e34fe3d5d6477f125aa8f22d
+  bytes: 21657
+  sha256: ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c
   role: OWNER_SOURCE
 - uri: repo://changes/st-1103/README.md
   bytes: 6857
@@ -129,12 +129,12 @@ source_artifacts:
   sha256: 3a33b44d99f92fce6417257de8c170d4622dd900fe7cc7cbac0b67494469dd95
   role: DEPENDENCY_CONTRACT
 - uri: repo://python/raos/adapters/recorded_freshness.py
-  bytes: 17438
-  sha256: 83ad91d3301c48d3db3efa40c5835ae97dddaf22ebae4c5aa466bed8a0261ff5
+  bytes: 17741
+  sha256: 0b4cff4e9c0d22311604abb4c756d63a72d63269073bf1dea1e4cec032639de6
   role: DEPENDENCY_CONTRACT
 - uri: repo://python/raos/domain/ops/job_runtime.py
-  bytes: 28287
-  sha256: e3623bdef2c6bdce9a3ed49c2d76929e7e590189af9ae65418cee565120162e6
+  bytes: 28513
+  sha256: 3c9e4266aa2ad76acb0d87d64e0989f974dfceac611bec23a409c9cf027d515b
   role: DEPENDENCY_CONTRACT
 - uri: repo://python/raos/application/ops/job_runtime.py
   bytes: 19822
@@ -165,8 +165,8 @@ source_artifacts:
   sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
   role: DEPENDENCY_CONTRACT
 - uri: repo://package.json
-  bytes: 1850
-  sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+  bytes: 1906
+  sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
   role: LOCKED_TOOLCHAIN
 - uri: repo://package-lock.json
   bytes: 271352
@@ -185,12 +185,12 @@ generated_artifacts:
   artifact_role: RECORDED_SYNTHETIC_PROJECTION
   media_type: application/json
   bytes: 19470
-  sha256: e0b72934b9d478dc132583691f30a5f46f97ec523a2b9e8a8bfef8c5c7512298
+  sha256: d33b9f9d185350dfef9f6fab3bd9a7ea9351874dbb4ec6729b2c18b43cc6317c
 - uri: repo://packages/web-ui/src/freshness-operations-recorded.v2.ts
   artifact_role: IMMUTABLE_TYPESCRIPT_FIXTURE_WRAPPER
   media_type: text/typescript
   bytes: 19767
-  sha256: aa7ed877f782860ae529fa8fe33e9b4fdf896842b54e7d75f0d5edb5648e9d60
+  sha256: 1a581ee7e42e929e1b278256039e636a1c586749d189798bce26b7b1fe45fb61
 generation:
   owner: repo://scripts/build_st1103_freshness_operations_workspace.py
   command: .venv/bin/python scripts/build_st1103_freshness_operations_workspace.py
