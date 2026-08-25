@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import argparse
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from datetime import date
 from decimal import Decimal
 import fcntl
@@ -14,11 +14,11 @@ import os
 from pathlib import Path
 import stat
 import sys
-from typing import Final, NoReturn, cast
+from typing import Callable, Final, NoReturn, Protocol, cast
 
 import yaml
 from yaml.constructor import ConstructorError
-from yaml.nodes import MappingNode
+from yaml.nodes import MappingNode, Node
 from yaml.tokens import AliasToken, AnchorToken
 
 
@@ -78,10 +78,10 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st1803_gate2_observation.py"
 )
 CONTRACT_SHA256: Final = (
-    "4e494e2e974f2aa7b6e0d623f0bc038d7be3a65d8108e3edaf86c2c5b30e8714"
+    "a362c5cbef19c87dd518813460b1b2f9cecacff76bd008071a25eaffa865befe"
 )
 FIXTURE_SHA256: Final = (
-    "3e61f2cd73c6fcb46010a5573bfa6c0ed770b3e47964112f8e430bc2b43d28ce"
+    "28e50ec3fc02ae7ff91838b8d18acb18662ac25654fa5769feb313398e6f67f3"
 )
 INPUT_SHA256: Final = "5dd59db906b6c3fbb234ec725fef375280f2b8234ceb94e339270b5abddb4e62"
 SOURCE_HEAD_SHA256: Final = (
@@ -120,7 +120,7 @@ EXPECTED_BINDINGS: Final = {
         "295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb"
     ),
     "changes/st-1205/manifest.yaml": (
-        "4f9ac1ec5dc0a8588788b98c972bd44f5db6f21925238ece6c62a2bb9f38032d"
+        "391ef69e2d1d46734b5fe4784c4447f1d83d52535438a17b83b23121a3b27d80"
     ),
     "python/raos/domain/analytics/kpi_read_model.py": (
         "7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac"
@@ -135,13 +135,19 @@ class _StrictLoader(yaml.SafeLoader):
     pass
 
 
+class _YamlConstructor(Protocol):
+    def construct_object(self, node: Node, deep: bool = False) -> object: ...
+
+
 def _construct_mapping(
     loader: _StrictLoader, node: MappingNode, deep: bool = False
 ) -> dict[object, object]:
     loader.flatten_mapping(node)
     result: dict[object, object] = {}
-    for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+    pairs = cast(list[tuple[Node, Node]], node.value)
+    constructor = cast(_YamlConstructor, loader)
+    for key_node, value_node in pairs:
+        key = constructor.construct_object(key_node, deep=deep)
         try:
             if key in result:
                 raise ConstructorError(
@@ -157,7 +163,7 @@ def _construct_mapping(
                 "unhashable key",
                 key_node.start_mark,
             ) from exc
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = constructor.construct_object(value_node, deep=deep)
     return result
 
 
@@ -237,7 +243,11 @@ def load_contract() -> Mapping[str, object]:
     if _sha256(content) != CONTRACT_SHA256:
         _error("CONTRACT_HASH_DRIFT", str(CONTRACT_PATH))
     try:
-        for token in yaml.scan(content.decode("utf-8", errors="strict")):
+        scan_value = cast(object, getattr(yaml, "scan"))
+        if not callable(scan_value):
+            _error("CONTRACT_INVALID", "yaml.scan")
+        scan = cast(Callable[[str], Iterable[object]], scan_value)
+        for token in scan(content.decode("utf-8", errors="strict")):
             if isinstance(token, (AliasToken, AnchorToken)):
                 _error("CONTRACT_INVALID", "yaml.alias_or_anchor")
         loaded = yaml.load(content, Loader=_StrictLoader)

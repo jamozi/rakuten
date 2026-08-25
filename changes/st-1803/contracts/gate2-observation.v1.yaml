@@ -22,7 +22,7 @@ dependency_bindings:
     scripts/build_st1802_gate1_decision.py: 863eac62ad46bab25c4f1def65b5e18ffbfa3a3b3e4305494b2ea51ad29e3316
   ST-1205:
     changes/st-1205/generated/kpi-read-model.v2.json: 295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb
-    changes/st-1205/manifest.yaml: 4f9ac1ec5dc0a8588788b98c972bd44f5db6f21925238ece6c62a2bb9f38032d
+    changes/st-1205/manifest.yaml: 391ef69e2d1d46734b5fe4784c4447f1d83d52535438a17b83b23121a3b27d80
     python/raos/domain/analytics/kpi_read_model.py: 7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac
 
 observation_contract:

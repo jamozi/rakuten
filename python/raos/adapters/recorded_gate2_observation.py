@@ -288,9 +288,11 @@ def parse_recorded_fixture(
     period = _period(context["period"])
     program_id = _string(context["program"])
     entries_value = source["entries"]
-    if type(entries_value) is not list or len(entries_value) != 6:
+    if type(entries_value) is not list:
         _fail()
     entries = cast(list[object], entries_value)
+    if len(entries) != 6:
+        _fail()
     articles = tuple(_article(entries[index], index + 1) for index in range(5))
     program = _program(entries[5])
     input_digest = canonical_input_digest(articles, program)
