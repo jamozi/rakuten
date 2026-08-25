@@ -11,9 +11,9 @@ import json
 import re
 import stat
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path, PurePosixPath
-from typing import Any, Final, NoReturn
+from typing import Any, Final, NoReturn, cast
 
 import yaml
 from yaml.constructor import ConstructorError
@@ -27,7 +27,7 @@ PLAN_PATH: Final = Path("changes/st-0706/generated/durable-ai-job-queue.v2.json"
 MANIFEST_PATH: Final = Path("changes/st-0706/manifest.yaml")
 GENERATED_PATHS: Final = (PLAN_PATH, MANIFEST_PATH)
 EXPECTED_CONTRACT_SHA256: Final = (
-    "27c6e326c2b4485d97fa0179eb01a9f01f904ab45b2361de648fec02bd307e20"
+    "3d881d352a1a9d253055930d4e6487154cc03a7e2e9489fd52ff81bb9b74bc7a"
 )
 EXPECTED_POLICY_SHA256: Final = (
     "f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8"
@@ -79,7 +79,7 @@ PINNED_SOURCE_BINDINGS: Final = {
         "884ce44d875339d9cd7f88e896d5779b2eac3154a5af39d3238748acc144924e"
     ),
     "changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml": (
-        "26673778bd1d73110714ca7568b16d249599069fcc2a59f9505d49086fbed2e6"
+        "8c70be715819f98b605fabd4784ec2b4d86d5e6610c7400aae360ebe80dfa2b6"
     ),
     "changes/st-0004/contracts/ai/RAOS_05_failure_taxonomy_v0.1.yaml": (
         "55db49d67678a1d8052fd4da9035ebfe2516913659c528bccd9f1a0313b38504"
@@ -144,10 +144,13 @@ class UniqueKeyLoader(yaml.SafeLoader):
 
 def _construct_mapping(
     loader: UniqueKeyLoader, node: MappingNode, deep: bool = False
-) -> dict[Any, Any]:
-    mapping: dict[Any, Any] = {}
+) -> dict[object, object]:
+    mapping: dict[object, object] = {}
+    construct = cast(
+        Callable[[object, bool], object], getattr(loader, "construct_object")
+    )
     for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+        key = construct(cast(object, key_node), deep)
         try:
             duplicate = key in mapping
         except TypeError:
@@ -164,7 +167,7 @@ def _construct_mapping(
                 "duplicate key",
                 key_node.start_mark,
             ) from None
-        mapping[key] = loader.construct_object(value_node, deep=deep)
+        mapping[key] = construct(cast(object, value_node), deep)
     return mapping
 
 
@@ -212,11 +215,21 @@ def _canonical_json_sha256(value: object) -> str:
 def _exact_mapping(
     value: object, *, keys: frozenset[str], field: str
 ) -> Mapping[str, object]:
-    if not isinstance(value, Mapping) or set(value) != keys:
+    if type(value) is not dict:
         _fail("CONTRACT_SHAPE_INVALID", field)
-    if not all(type(key) is str for key in value):
+    raw = cast(dict[object, object], value)
+    if frozenset(raw) != keys or not all(type(key) is str for key in raw):
         _fail("CONTRACT_SHAPE_INVALID", field)
-    return value
+    return cast(Mapping[str, object], raw)
+
+
+def _typed_mapping(value: object, *, code: str, field: str) -> Mapping[str, object]:
+    if type(value) is not dict:
+        _fail(code, field)
+    raw = cast(dict[object, object], value)
+    if any(type(key) is not str for key in raw):
+        _fail(code, field)
+    return cast(Mapping[str, object], raw)
 
 
 def _load_contract(root: Path) -> Mapping[str, object]:
@@ -227,12 +240,13 @@ def _load_contract(root: Path) -> Mapping[str, object]:
         _fail("CONTRACT_HASH_DRIFT", "contract")
     try:
         text = raw.decode("utf-8", errors="strict")
-        tokens = tuple(yaml.scan(text))
+        scan = cast(Callable[[str], Sequence[object]], getattr(yaml, "scan"))
+        tokens = tuple(scan(text))
         if any(
             isinstance(token, (AliasToken, AnchorToken, TagToken)) for token in tokens
         ):
             _fail("CONTRACT_YAML_FEATURE_FORBIDDEN", "contract")
-        loaded = yaml.load(text, Loader=UniqueKeyLoader)
+        loaded = cast(object, yaml.load(text, Loader=UniqueKeyLoader))
     except DurableQueueBuildError:
         raise
     except UnicodeDecodeError, yaml.YAMLError, RecursionError:
@@ -288,18 +302,31 @@ def _validate_contract(root: Path, contract: Mapping[str, object]) -> None:
     }
     if dict(document) != expected_document:
         _fail("CONTRACT_VALUE_INVALID", "document")
-    authority = contract["authority"]
-    policy = contract["recorded_policy"]
-    durability = contract["durability_boundary"]
-    outbox = contract["outbox_boundary"]
-    safe_defaults = contract["safe_defaults"]
-    if (
-        not isinstance(authority, Mapping)
-        or authority.get("generic_runtime_owner") != "ST-1404"
-    ):
+    authority = _typed_mapping(
+        contract["authority"], code="GENERIC_OWNER_INVALID", field="authority"
+    )
+    policy = _typed_mapping(
+        contract["recorded_policy"],
+        code="CONTRACT_VALUE_INVALID",
+        field="recorded_policy",
+    )
+    durability = _typed_mapping(
+        contract["durability_boundary"],
+        code="DURABILITY_BOUNDARY_INVALID",
+        field="durability_boundary",
+    )
+    outbox = _typed_mapping(
+        contract["outbox_boundary"],
+        code="OUTBOX_BOUNDARY_INVALID",
+        field="outbox_boundary",
+    )
+    safe_defaults = _typed_mapping(
+        contract["safe_defaults"],
+        code="SAFE_DEFAULT_INVALID",
+        field="safe_defaults",
+    )
+    if authority.get("generic_runtime_owner") != "ST-1404":
         _fail("GENERIC_OWNER_INVALID", "authority")
-    if not isinstance(policy, Mapping):
-        _fail("CONTRACT_VALUE_INVALID", "recorded_policy")
     policy_values = dict(policy)
     policy_sha256 = policy_values.pop("policy_sha256", None)
     if policy_values != {
@@ -335,32 +362,33 @@ def _validate_contract(root: Path, contract: Mapping[str, object]) -> None:
         and _canonical_json_sha256(policy_values) == EXPECTED_POLICY_SHA256
     ):
         _fail("CONTRACT_VALUE_INVALID", "recorded_policy")
-    if (
-        not isinstance(durability, Mapping)
-        or durability.get("storage") != "CALLER_OWNED_CAS_ATOMIC_PORT"
-    ):
+    if durability.get("storage") != "CALLER_OWNED_CAS_ATOMIC_PORT":
         _fail("DURABILITY_BOUNDARY_INVALID", "durability_boundary")
-    if not isinstance(outbox, Mapping) or outbox.get("dispatch") != "NOT_IMPLEMENTED":
+    if outbox.get("dispatch") != "NOT_IMPLEMENTED":
         _fail("OUTBOX_BOUNDARY_INVALID", "outbox_boundary")
-    if (
-        not isinstance(safe_defaults, Mapping)
-        or safe_defaults.get("activation") != "DISABLED"
-    ):
+    if safe_defaults.get("activation") != "DISABLED":
         _fail("SAFE_DEFAULT_INVALID", "safe_defaults")
-    bindings = contract["source_bindings"]
-    if type(bindings) is not list or len(bindings) != len(PINNED_SOURCE_BINDINGS):
+    bindings_value = contract["source_bindings"]
+    if type(bindings_value) is not list:
+        _fail("SOURCE_BINDING_INVENTORY_INVALID", "source_bindings")
+    bindings = cast(list[object], bindings_value)
+    if len(bindings) != len(PINNED_SOURCE_BINDINGS):
         _fail("SOURCE_BINDING_INVENTORY_INVALID", "source_bindings")
     observed: dict[str, str] = {}
     for index, value in enumerate(bindings):
-        if not isinstance(value, Mapping) or set(value) != {
+        if type(value) is not dict:
+            _fail("SOURCE_BINDING_SHAPE_INVALID", f"source_bindings[{index}]")
+        raw_binding = cast(dict[object, object], value)
+        if set(raw_binding) != {
             "path",
             "sha256",
             "owner",
             "role",
-        }:
+        } or not all(type(key) is str for key in raw_binding):
             _fail("SOURCE_BINDING_SHAPE_INVALID", f"source_bindings[{index}]")
-        path = value["path"]
-        digest = value["sha256"]
+        binding = cast(Mapping[str, object], raw_binding)
+        path = binding["path"]
+        digest = binding["sha256"]
         if (
             type(path) is not str
             or type(digest) is not str
@@ -421,11 +449,15 @@ def _source_hashes(root: Path) -> dict[str, str]:
 def _plan_bytes(
     contract: Mapping[str, object], source_hashes: Mapping[str, str]
 ) -> bytes:
-    document = contract["document"]
-    policy = contract["recorded_policy"]
-    assert isinstance(document, Mapping)
-    assert isinstance(policy, Mapping)
-    plan = {
+    _typed_mapping(
+        contract["document"], code="CONTRACT_SHAPE_INVALID", field="document"
+    )
+    policy = _typed_mapping(
+        contract["recorded_policy"],
+        code="CONTRACT_SHAPE_INVALID",
+        field="recorded_policy",
+    )
+    plan: dict[str, object] = {
         "document_id": "RAOS-ST0706-DURABLE-AI-JOB-QUEUE-PLAN-002",
         "version": "2.0.0",
         "story_id": "ST-0706",

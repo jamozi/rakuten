@@ -14,7 +14,7 @@ from enum import Enum
 import hashlib
 import json
 import re
-from typing import NoReturn, SupportsIndex, final
+from typing import NoReturn, SupportsIndex, TypeGuard, cast, final
 from uuid import UUID
 
 from raos.config.runtime import RuntimeEnvironment
@@ -35,7 +35,7 @@ from raos.domain.ai.routing import (
 
 POLICY_ID = "st-0706.recorded-durable-ai-job-queue.v2"
 POLICY_SHA256 = "f4d7c6bacfbbc8c104d2e4cbd1700d87d946191b789c7967183a1c4b9186d5a8"
-CONTRACT_SHA256 = "27c6e326c2b4485d97fa0179eb01a9f01f904ab45b2361de648fec02bd307e20"
+CONTRACT_SHA256 = "3d881d352a1a9d253055930d4e6487154cc03a7e2e9489fd52ff81bb9b74bc7a"
 STATE_DOCUMENT_ID = "RAOS-ST0706-DURABLE-AI-JOB-QUEUE-STATE-002"
 STATE_SCHEMA_VERSION = 2
 QUEUE_CAPACITY = 32
@@ -194,14 +194,18 @@ def _canonical_sha256(value: object) -> str:
 def _exact_dict(value: object, keys: frozenset[str]) -> dict[str, object]:
     if type(value) is not dict:
         fail_durable_queue(DurableQueueFailureCode.STATE_INVALID)
-    mapping = value
-    if set(mapping) != keys or not all(type(key) is str for key in mapping):
+    mapping = cast(dict[object, object], value)
+    if frozenset(mapping) != keys or not all(type(key) is str for key in mapping):
         fail_durable_queue(DurableQueueFailureCode.STATE_INVALID)
-    return mapping
+    return cast(dict[str, object], mapping)
+
+
+def _is_object_list(value: object) -> TypeGuard[list[object]]:
+    return type(value) is list
 
 
 def _exact_list(value: object, *, maximum: int) -> list[object]:
-    if type(value) is not list or len(value) > maximum:
+    if not _is_object_list(value) or len(value) > maximum:
         fail_durable_queue(DurableQueueFailureCode.STATE_INVALID)
     return value
 
@@ -271,18 +275,6 @@ def _state_optional_uuid(value: object) -> UUID | None:
     if value is None:
         return None
     return _state_uuid(value)
-
-
-def _state_optional_token(value: object) -> str | None:
-    if value is None:
-        return None
-    return _state_token(value)
-
-
-def _state_optional_sha256(value: object) -> str | None:
-    if value is None:
-        return None
-    return _state_sha256(value)
 
 
 def _enum_from_state(enum_type: type[Enum], value: object) -> Enum:

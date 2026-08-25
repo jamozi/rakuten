@@ -1,6 +1,6 @@
 {
   "authority": "NONE",
-  "contract_sha256": "27c6e326c2b4485d97fa0179eb01a9f01f904ab45b2361de648fec02bd307e20",
+  "contract_sha256": "3d881d352a1a9d253055930d4e6487154cc03a7e2e9489fd52ff81bb9b74bc7a",
   "document_id": "RAOS-ST0706-DURABLE-AI-JOB-QUEUE-PLAN-002",
   "durability_boundary": {
     "broker": "NOT_IMPLEMENTED",
@@ -55,16 +55,16 @@
   "owner_source_sha256": {
     "changes/st-0706/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml": "f3f3574fec061ccfa3d8244e2b81bb7f06c561984448ce95ee1b9fe480ee6c58",
     "changes/st-0706/README.md": "2ea7aefa0acd747a4df13d39ebbdc45340a98e95ecbe642a2763b2f0bb35bbbd",
-    "changes/st-0706/contracts/durable-ai-job-queue.v2.yaml": "27c6e326c2b4485d97fa0179eb01a9f01f904ab45b2361de648fec02bd307e20",
+    "changes/st-0706/contracts/durable-ai-job-queue.v2.yaml": "3d881d352a1a9d253055930d4e6487154cc03a7e2e9489fd52ff81bb9b74bc7a",
     "python/raos/adapters/recorded_ai_job_orchestration.py": "089b8d3353e2adafe284c03839b2a36dc9a391ab0c060df28bf68dfc9bc38641",
     "python/raos/adapters/recorded_durable_ai_job_queue_v2.py": "3339f96f8577b5eb551b49f6c947111d44d2056b41e57e363a0eef3611a5d998",
     "python/raos/application/ai/durable_job_queue_v2.py": "862e5690a06e2dbea5a4c78067d17d729f8e3662719ef5be8ca28babee200435",
     "python/raos/application/ai/job_orchestration.py": "515d9172400ec282c7b0b3893be8f66ec87dfb165a95bfab1d823371c9a4d244",
-    "python/raos/domain/ai/durable_job_queue_v2.py": "90d8745313ebdf624f61a212f1c35a13777cf10abb1177ca4f7e75a40f865629",
+    "python/raos/domain/ai/durable_job_queue_v2.py": "e7f9d34f6cd6e0fdd2260c341864ce0d67a4f082201ffce83cd6642ada1b01e6",
     "python/raos/domain/ai/job_orchestration.py": "5ef0e0d90f5bb07257d4a9d27829647dd07ced443310f9ba5bc6fed8fc7d97c2",
     "python/raos/ports/ai_job_orchestration.py": "6a3a33345d17ca4072c468b0a018d95b9b5f33241bbfe6d97a4ae260b992ff9d",
     "python/raos/ports/durable_ai_job_queue_v2.py": "b0cc4840d1f39b50482a7d954bcc5f5ba3d3f89fd4e000f21ae24e6ef2a68660",
-    "scripts/build_st0706_durable_ai_job_queue.py": "3126aeae0f47e0b9d812064debc2f379e5708bb6ea28b22e78c2494c661b3b09",
+    "scripts/build_st0706_durable_ai_job_queue.py": "717b36e405621b9d0b3d4ad320210d06e2c5e49728094b6b30916b3ee480183e",
     "scripts/secure_generated_publication.py": "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e",
     "tests/st0706/conftest.py": "3121a41dc54fdc593d9599db864a6fff7efc897df3d4a7cfbafa02e775979b0b",
     "tests/st0706/test_boundaries.py": "2dc8480e2360b83274b303cd5ea7142ad8bfb9b4d7b6d51fb251b026b37bb9a7",
@@ -201,7 +201,7 @@
       "owner": "ST-0705",
       "path": "changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml",
       "role": "OUTPUT_VALIDATION_RUNTIME_CONTRACT",
-      "sha256": "26673778bd1d73110714ca7568b16d249599069fcc2a59f9505d49086fbed2e6"
+      "sha256": "8c70be715819f98b605fabd4784ec2b4d86d5e6610c7400aae360ebe80dfa2b6"
     },
     {
       "owner": "ST-0004",
