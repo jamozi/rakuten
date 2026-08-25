@@ -434,6 +434,9 @@ final class RAOS_Bounded_Operator
             wp_die(esc_html('RAOS operator role initialization failed.'));
         }
         self::install_tables();
+        if (! self::operator_table_schemas_are_exact()) {
+            wp_die(esc_html('RAOS operator table schema initialization failed.'));
+        }
         if (! self::append_activation_audit()) {
             wp_die(esc_html('RAOS operator audit initialization failed.'));
         }
@@ -471,6 +474,213 @@ final class RAOS_Bounded_Operator
     {
         return self::operator_table_is_innodb(self::proposal_table())
             && self::operator_table_is_innodb(self::audit_table());
+    }
+
+    private static function operator_table_schemas_are_exact()
+    {
+        return self::operator_tables_are_innodb()
+            && self::operator_table_schema_is_exact(
+                self::proposal_table(),
+                array(
+                    array('internal_id', 'bigint', null, true, false, null, 'auto_increment'),
+                    array('proposal_id', 'char', 64, false, false, null, ''),
+                    array('operation', 'varchar', 32, false, false, null, ''),
+                    array('request_json', 'longtext', null, false, false, null, ''),
+                    array('state', 'varchar', 24, false, false, null, ''),
+                    array('created_at', 'datetime', null, false, false, null, ''),
+                    array('expires_at', 'datetime', null, false, false, null, ''),
+                    array('proposer_user_id', 'bigint', null, true, false, null, ''),
+                    array('before_state_hash', 'char', 64, false, false, null, ''),
+                    array('approved_by_user_id', 'bigint', null, true, true, null, ''),
+                    array('approved_at', 'datetime', null, false, true, null, ''),
+                    array('approval_expires_at', 'datetime', null, false, true, null, ''),
+                    array('approval_reason', 'varchar', 300, false, true, null, ''),
+                    array('approval_evidence_hash', 'char', 64, false, true, null, ''),
+                    array('apply_started_at', 'datetime', null, false, true, null, ''),
+                    array('completed_at', 'datetime', null, false, true, null, ''),
+                    array('idempotency_key', 'char', 64, false, true, null, ''),
+                    array('result_code', 'varchar', 64, false, true, null, ''),
+                    array('state_version', 'bigint', null, true, false, '1', ''),
+                ),
+                array(
+                    array('PRIMARY', 0, 1, 'internal_id'),
+                    array('idempotency_key', 0, 1, 'idempotency_key'),
+                    array('proposal_id', 0, 1, 'proposal_id'),
+                    array('state_expiry', 1, 1, 'state'),
+                    array('state_expiry', 1, 2, 'expires_at'),
+                ),
+                array(
+                    array('PRIMARY', 'PRIMARY KEY'),
+                    array('idempotency_key', 'UNIQUE'),
+                    array('proposal_id', 'UNIQUE'),
+                )
+            )
+            && self::operator_table_schema_is_exact(
+                self::audit_table(),
+                array(
+                    array('audit_id', 'bigint', null, true, false, null, 'auto_increment'),
+                    array('occurred_at', 'datetime', null, false, false, null, ''),
+                    array('actor_user_id', 'bigint', null, true, false, null, ''),
+                    array('event_code', 'varchar', 64, false, false, null, ''),
+                    array('proposal_id', 'char', 64, false, true, null, ''),
+                    array('detail_code', 'varchar', 64, false, false, null, ''),
+                    array('previous_hash', 'char', 64, false, false, null, ''),
+                    array('event_hash', 'char', 64, false, false, null, ''),
+                ),
+                array(
+                    array('PRIMARY', 0, 1, 'audit_id'),
+                    array('event_hash', 0, 1, 'event_hash'),
+                    array('proposal_events', 1, 1, 'proposal_id'),
+                    array('proposal_events', 1, 2, 'audit_id'),
+                ),
+                array(
+                    array('PRIMARY', 'PRIMARY KEY'),
+                    array('event_hash', 'UNIQUE'),
+                )
+            );
+    }
+
+    private static function operator_table_schema_is_exact(
+        $table,
+        array $expected_columns,
+        array $expected_indexes,
+        array $expected_constraints
+    ) {
+        global $wpdb;
+        if (! is_string($table)
+            || ! in_array(
+                $table,
+                array(self::proposal_table(), self::audit_table()),
+                true
+            )) {
+            return false;
+        }
+        $columns = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT COLUMN_NAME, DATA_TYPE, COLUMN_TYPE, IS_NULLABLE, '
+                . 'COLUMN_DEFAULT, EXTRA, CHARACTER_MAXIMUM_LENGTH '
+                . 'FROM information_schema.COLUMNS '
+                . 'WHERE BINARY TABLE_SCHEMA = BINARY DATABASE() '
+                . 'AND BINARY TABLE_NAME = BINARY %s ORDER BY ORDINAL_POSITION ASC',
+                $table
+            ),
+            ARRAY_A
+        );
+        if ($wpdb->last_error !== ''
+            || ! is_array($columns)
+            || count($columns) !== count($expected_columns)) {
+            return false;
+        }
+        foreach ($expected_columns as $offset => $expected) {
+            $column = $columns[$offset];
+            if (! is_array($column)
+                || ! isset(
+                    $column['COLUMN_NAME'],
+                    $column['DATA_TYPE'],
+                    $column['COLUMN_TYPE'],
+                    $column['IS_NULLABLE'],
+                    $column['EXTRA']
+                )
+                || ! array_key_exists('COLUMN_DEFAULT', $column)
+                || ! array_key_exists('CHARACTER_MAXIMUM_LENGTH', $column)
+                || ! in_array($column['IS_NULLABLE'], array('YES', 'NO'), true)) {
+                return false;
+            }
+            $length = $column['CHARACTER_MAXIMUM_LENGTH'];
+            $default = $column['COLUMN_DEFAULT'];
+            $column_type = strtolower(trim((string) $column['COLUMN_TYPE']));
+            $column_type = preg_replace('/\s+/', ' ', $column_type);
+            if (! is_string($column_type)) {
+                return false;
+            }
+            if ($expected[1] === 'bigint') {
+                $suffix = $expected[3] ? ' unsigned' : '';
+                $expected_column_types = array('bigint(20)' . $suffix, 'bigint' . $suffix);
+            } elseif ($expected[2] !== null) {
+                $expected_column_types = array($expected[1] . '(' . (string) $expected[2] . ')');
+            } else {
+                $expected_column_types = array($expected[1]);
+            }
+            $extra = strtolower(trim((string) $column['EXTRA']));
+            $extra = trim(str_replace('default_generated', '', $extra));
+            if ($column['COLUMN_NAME'] !== $expected[0]
+                || strtolower((string) $column['DATA_TYPE']) !== $expected[1]
+                || ! in_array($column_type, $expected_column_types, true)
+                || (strpos($column_type, 'unsigned') !== false)
+                    !== $expected[3]
+                || ($column['IS_NULLABLE'] === 'YES') !== $expected[4]
+                || ($expected[2] === null
+                    ? ($length !== null && in_array($expected[1], array('char', 'varchar'), true))
+                    : (string) $length !== (string) $expected[2])
+                || ($default === null ? null : (string) $default) !== $expected[5]
+                || $extra !== $expected[6]) {
+                return false;
+            }
+        }
+
+        $indexes = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT INDEX_NAME, NON_UNIQUE, SEQ_IN_INDEX, COLUMN_NAME, SUB_PART, INDEX_TYPE '
+                . 'FROM information_schema.STATISTICS '
+                . 'WHERE BINARY TABLE_SCHEMA = BINARY DATABASE() '
+                . 'AND BINARY TABLE_NAME = BINARY %s '
+                . 'ORDER BY BINARY INDEX_NAME ASC, SEQ_IN_INDEX ASC',
+                $table
+            ),
+            ARRAY_A
+        );
+        if ($wpdb->last_error !== ''
+            || ! is_array($indexes)
+            || count($indexes) !== count($expected_indexes)) {
+            return false;
+        }
+        foreach ($expected_indexes as $offset => $expected) {
+            $index = $indexes[$offset];
+            if (! is_array($index)
+                || ! isset(
+                    $index['INDEX_NAME'],
+                    $index['NON_UNIQUE'],
+                    $index['SEQ_IN_INDEX'],
+                    $index['COLUMN_NAME'],
+                    $index['INDEX_TYPE']
+                )
+                || ! array_key_exists('SUB_PART', $index)
+                || $index['INDEX_NAME'] !== $expected[0]
+                || (string) $index['NON_UNIQUE'] !== (string) $expected[1]
+                || (string) $index['SEQ_IN_INDEX'] !== (string) $expected[2]
+                || $index['COLUMN_NAME'] !== $expected[3]
+                || $index['SUB_PART'] !== null
+                || strtoupper((string) $index['INDEX_TYPE']) !== 'BTREE') {
+                return false;
+            }
+        }
+
+        $constraints = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE '
+                . 'FROM information_schema.TABLE_CONSTRAINTS '
+                . 'WHERE BINARY TABLE_SCHEMA = BINARY DATABASE() '
+                . 'AND BINARY TABLE_NAME = BINARY %s '
+                . 'ORDER BY BINARY CONSTRAINT_NAME ASC',
+                $table
+            ),
+            ARRAY_A
+        );
+        if ($wpdb->last_error !== ''
+            || ! is_array($constraints)
+            || count($constraints) !== count($expected_constraints)) {
+            return false;
+        }
+        foreach ($expected_constraints as $offset => $expected) {
+            $constraint = $constraints[$offset];
+            if (! is_array($constraint)
+                || ! isset($constraint['CONSTRAINT_NAME'], $constraint['CONSTRAINT_TYPE'])
+                || $constraint['CONSTRAINT_NAME'] !== $expected[0]
+                || strtoupper((string) $constraint['CONSTRAINT_TYPE']) !== $expected[1]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static function operator_table_is_innodb($table)

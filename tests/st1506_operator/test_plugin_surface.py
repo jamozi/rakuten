@@ -205,6 +205,63 @@ def test_activation_requires_exact_role_readback_before_tables_and_audit() -> No
     )
 
 
+def test_activation_validates_complete_table_schemas_before_success_audit() -> None:
+    php = _php()
+    activation = php[php.index("public static function activate") :]
+    activation = activation[
+        : activation.index("private static function append_activation_audit")
+    ]
+    install = activation.index("self::install_tables()")
+    schema_gate = activation.index("if (! self::operator_table_schemas_are_exact())")
+    schema_failure = activation.index(
+        "RAOS operator table schema initialization failed."
+    )
+    success_audit = activation.index("self::append_activation_audit()")
+    assert install < schema_gate < schema_failure < success_audit
+
+    schemas = php[php.index("private static function operator_table_schemas_are_exact") :]
+    schemas = schemas[: schemas.index("private static function operator_table_is_innodb")]
+    for token in (
+        "self::operator_tables_are_innodb()",
+        "information_schema.COLUMNS",
+        "ORDER BY ORDINAL_POSITION ASC",
+        "count($columns) !== count($expected_columns)",
+        "CHARACTER_MAXIMUM_LENGTH",
+        "COLUMN_DEFAULT",
+        "information_schema.STATISTICS",
+        "ORDER BY BINARY INDEX_NAME ASC, SEQ_IN_INDEX ASC",
+        "count($indexes) !== count($expected_indexes)",
+        "$index['SUB_PART'] !== null",
+        "information_schema.TABLE_CONSTRAINTS",
+        "ORDER BY BINARY CONSTRAINT_NAME ASC",
+        "count($constraints) !== count($expected_constraints)",
+    ):
+        assert token in schemas
+    for required_column in (
+        "internal_id",
+        "proposal_id",
+        "idempotency_key",
+        "state_version",
+        "audit_id",
+        "event_hash",
+    ):
+        assert f"array('{required_column}'," in schemas
+    for required_index in (
+        "array('proposal_id', 0, 1, 'proposal_id')",
+        "array('idempotency_key', 0, 1, 'idempotency_key')",
+        "array('state_expiry', 1, 2, 'expires_at')",
+        "array('event_hash', 0, 1, 'event_hash')",
+        "array('proposal_events', 1, 2, 'audit_id')",
+    ):
+        assert required_index in schemas
+    for required_constraint in (
+        "array('proposal_id', 'UNIQUE')",
+        "array('idempotency_key', 'UNIQUE')",
+        "array('event_hash', 'UNIQUE')",
+    ):
+        assert required_constraint in schemas
+
+
 def test_role_durable_readback_is_closed_and_rejects_stale_or_excessive() -> None:
     php = _php()
     durable = php[

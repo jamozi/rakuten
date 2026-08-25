@@ -18,11 +18,11 @@
   "generated_by": "scripts/build_st1506_wordpress_operator.py",
   "operator_contract_version": 1,
   "package": {
-    "bytes": 179951,
+    "bytes": 189879,
     "compression": "ZIP_STORED",
     "file_count": 2,
     "root": "raos-bounded-operator/",
-    "sha256": "7ed778fd0d1ef20b7b3b4f570a20c25ac61c4ea35d6c6a0b3ec270eed5d4d6fd",
+    "sha256": "18f0c162e7cee2baf0dc731a4325e61b5bdcc7be5a060123ef80ad9369cb8bb8",
     "version": "1.0.0"
   },
   "paths": [
@@ -72,9 +72,9 @@
       "sha256": "cd912fbc5528e8936411b2825ce8f2b1f804f5f30a5caa296a2a03ab279a15ea"
     },
     {
-      "bytes": 171387,
+      "bytes": 181315,
       "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/raos-bounded-operator.php",
-      "sha256": "883d23093cc85d21e1203e5cf19c2268f78fc0b6337d6000c4b1d906a159195c"
+      "sha256": "6c8b80900524f339802e578d44c5569f6c3e915fda57010e8ec98399815ce4bd"
     },
     {
       "bytes": 70703,
