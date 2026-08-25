@@ -2366,7 +2366,8 @@ final class RAOS_Bounded_Operator
             }
             return $this->apply_response($row, true);
         }
-        if (strtotime($row['expires_at'] . ' UTC') <= time()) {
+        if ($row['state'] !== 'APPLYING'
+            && strtotime($row['expires_at'] . ' UTC') <= time()) {
             if ($wpdb->query('START TRANSACTION') === false) {
                 return self::error('raos_transaction_unavailable', 500);
             }
@@ -2403,8 +2404,9 @@ final class RAOS_Bounded_Operator
             }
             return self::error('raos_proposal_expired', 409);
         }
-        if ($row['state'] !== 'APPROVED'
-            || ! $this->approval_evidence_is_valid($row, $proposal_id, true)) {
+        if ($row['state'] !== 'APPLYING'
+            && ($row['state'] !== 'APPROVED'
+                || ! $this->approval_evidence_is_valid($row, $proposal_id, true))) {
             return self::error('raos_proposal_not_approved', 409);
         }
         $body = $request->get_body();
@@ -2480,6 +2482,16 @@ final class RAOS_Bounded_Operator
             && hash_equals($row['idempotency_key'], $idempotency_key)
             && $this->approval_evidence_is_valid($row, $proposal_id, false)) {
             return $this->apply_response($row, true);
+        }
+        if ($row['state'] === 'APPLYING') {
+            if (! $this->apply_mutex_is_owned($mutex_name)) {
+                return self::error('raos_apply_mutex_ownership_lost', 500);
+            }
+            return $this->finish_failure(
+                $proposal_id,
+                'NEEDS_RECOVERY',
+                'ORPHANED_APPLYING_RECOVERED'
+            );
         }
         if ($row['state'] !== 'APPROVED'
             || strtotime($row['expires_at'] . ' UTC') <= time()

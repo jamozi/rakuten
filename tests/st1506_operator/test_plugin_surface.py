@@ -467,7 +467,7 @@ def test_apply_is_globally_serialized_through_terminal_audit() -> None:
     assert "apply_theme_package" in execute
     assert "finish_success" in execute
     assert "finish_failure" in execute
-    assert execute.count("apply_mutex_is_owned($mutex_name)") == 3
+    assert execute.count("apply_mutex_is_owned($mutex_name)") == 4
     before_mutation_check = execute.index("APPLY_MUTEX_LOST_BEFORE_MUTATION")
     assert execute.index("$wpdb->query('COMMIT')") < before_mutation_check
     assert before_mutation_check < execute.index("apply_yoast_profile")
@@ -808,6 +808,26 @@ def test_all_exact_proposal_states_replay_without_mutation_or_terminal_409() -> 
     ]
     assert "$created_epoch = time();" in create_under_lock
     assert "$created_epoch + $normalized['ttl_seconds']" in create_under_lock
+
+
+def test_orphaned_applying_is_audited_into_recovery_after_mutex_reacquisition() -> None:
+    php = _php()
+    outer = php[php.index("public function rest_apply") :]
+    outer = outer[: outer.index("private function execute_apply_under_mutex")]
+    assert "$row['state'] !== 'APPLYING'" in outer
+    execute = php[php.index("private function execute_apply_under_mutex") :]
+    execute = execute[: execute.index("private function apply_mutex_name")]
+    orphan = execute[execute.index("if ($row['state'] === 'APPLYING')") :]
+    orphan = orphan[: orphan.index("if ($row['state'] !== 'APPROVED'")]
+    assert orphan.index("apply_mutex_is_owned") < orphan.index("finish_failure")
+    assert "'NEEDS_RECOVERY'" in orphan
+    assert "'ORPHANED_APPLYING_RECOVERED'" in orphan
+    finish = php[php.index("private function finish_failure") :]
+    finish = finish[: finish.index("private function apply_response")]
+    assert "WHERE proposal_id = %s AND state = %s" in finish
+    assert "'APPLYING'" in finish
+    assert "'APPLY_FAILED'" in finish
+    assert finish.index("append_audit") < finish.index("COMMIT")
 
 
 def test_theme_stage_is_private_identity_bound_and_rechecked_before_upgrader() -> None:
