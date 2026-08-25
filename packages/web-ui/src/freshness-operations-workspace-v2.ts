@@ -240,8 +240,8 @@ const expectedBindings = createJsonValue({
   dependencies: {
     st1401Completion: '37be7ef769384885aafb802f6c69bb15dc8d7cb0aeaf15dff013144526b6f866',
     st1401Domain: '3a33b44d99f92fce6417257de8c170d4622dd900fe7cc7cbac0b67494469dd95',
-    st1401Adapter: '83ad91d3301c48d3db3efa40c5835ae97dddaf22ebae4c5aa466bed8a0261ff5',
-    st1404Domain: 'e3623bdef2c6bdce9a3ed49c2d76929e7e590189af9ae65418cee565120162e6',
+    st1401Adapter: '0b4cff4e9c0d22311604abb4c756d63a72d63269073bf1dea1e4cec032639de6',
+    st1404Domain: '3c9e4266aa2ad76acb0d87d64e0989f974dfceac611bec23a409c9cf027d515b',
     st1404Application: 'b1ea28fcc6b0e051b5f4a7ba0ae09d1628b4ed9f0400fd747fa7c2f032dc0403',
     st1404Adapter: '89db55e209caed06b0be29f95b7b165ded6e9acd9153e01ac54a8e8c51790064',
     st1101Serializable: '56adb1e0356fba66e147be4c055b7a40f1115608a3e29bbee4584234f8b3273d',
