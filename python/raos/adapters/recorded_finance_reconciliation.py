@@ -175,10 +175,10 @@ class RecordedFinanceReconciliationScenario(_Redacted):
 
 
 def load_recorded_finance_reconciliation_fixture(
-    path: Path,
+    path: object,
     *,
-    unit_economics_fixture_path: Path,
-    attribution_fixture_path: Path,
+    unit_economics_fixture_path: object,
+    attribution_fixture_path: object,
     contract: MeasurementAttributionContract,
 ) -> RecordedFinanceReconciliationScenario:
     """Load one strict tracked synthetic report request."""

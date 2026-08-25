@@ -349,6 +349,11 @@ class FinanceReconciliationRunRequest(_Redacted):
         payload["input_sha256"] = self.input_sha256.value
         return _canonical_bytes(payload)
 
+    def has_valid_input_binding(self) -> bool:
+        """Confirm that the immutable request still matches its canonical input."""
+
+        return self.input_sha256 == _digest(self._payload())
+
 
 @dataclass(frozen=True, slots=True, repr=False)
 class ReconciliationComparison(_Redacted):
@@ -1122,7 +1127,7 @@ def build_finance_reconciliation(
 
     if type(request) is not FinanceReconciliationRunRequest:
         fail_finance_reconciliation()
-    if request.input_sha256 != _digest(request._payload()):  # noqa: SLF001
+    if not request.has_valid_input_binding():
         fail_finance_reconciliation(
             FinanceReconciliationFailureCode.INPUT_HASH_MISMATCH
         )
