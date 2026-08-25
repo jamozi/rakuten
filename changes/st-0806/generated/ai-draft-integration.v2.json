@@ -13,9 +13,9 @@
     "release": "NOT_EXECUTED",
     "staging": "NOT_EXECUTED"
   },
-  "generated_fixture_sha256": "06f03861743fef7bea937b87463fa85b165ec28fbd431b395d75244d68b36aa9",
+  "generated_fixture_sha256": "95cead14bea7899c4a1b0aa6eafc29363f2878a8d2c89c9ffe2bfc25ba28696b",
   "owner_source_sha256": {
-    "changes/st-0605/generated/claim-evidence-runtime-pass.v1.json": "eb1c36bd1f70ea27e57e1720b937211286578136e701664b5fb4c8c823395226",
+    "changes/st-0605/generated/claim-evidence-runtime-pass.v1.json": "9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106",
     "changes/st-0806/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml": "277e6376107a5b3a9237cf47f69f4e128a51fc4400e2438b88f0e8ed82f9517d",
     "changes/st-0806/README.md": "413acc384c612591434874ecdf13b1a776302ace15833e6b555ace14e6e74b87",
     "changes/st-0806/contracts/ai-draft-integration.v2.yaml": "c08c4b9cbf1c35d0c8e3177d0929d0fc9a0fbd2187d0fc4c08683ac636eef18e",

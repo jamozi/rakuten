@@ -17,7 +17,7 @@ source_sha256:
   scripts/build_st0806_ai_draft_integration_v2.py: 9c5536c06b40937815b73cb0dc8db1d01b6c0261fd823b7ce0ba42954bb8729f
   scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
   contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json: 8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489
-  changes/st-0605/generated/claim-evidence-runtime-pass.v1.json: eb1c36bd1f70ea27e57e1720b937211286578136e701664b5fb4c8c823395226
+  changes/st-0605/generated/claim-evidence-runtime-pass.v1.json: 9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106
   python/raos/domain/editorial/ai_draft_integration.py: 1ae4f54822862b9ffc29ca18b7a071d369404144ac1b03d8ea16f3cca8d6d889
   python/raos/ports/ai_draft_integration.py: 22a427745833771f788e1cc98b7b6bc3ae62870241376e7fb638fb97cfce9510
   python/raos/application/editorial/ai_draft_integration.py: 64f1d8e7623e6946f64ad90bc37a085846c8e83a7725a8805b4db1f7a0427102
@@ -32,8 +32,8 @@ source_sha256:
   tests/st0806/test_ai_draft_integration_v2_boundaries.py: b9cca8ce0631bd68e8c8cead7cb551159a2b1998025679655c107350077bfcc4
   tests/st0806/test_ai_draft_integration_v2_generation.py: 584b4ea8eb2c5b98b5c69864444ec4508a4d9a52d7ac92a1e542d5edf9ad05af
 generated_sha256:
-  changes/st-0806/generated/ai-draft-integration.v2.json: b81b3630b2ac39e853b65fe4d12211962b94f8130991652d7c460ffccbf6ea90
-  changes/st-0806/generated/ai-draft-integration-fixture.v2.json: 06f03861743fef7bea937b87463fa85b165ec28fbd431b395d75244d68b36aa9
+  changes/st-0806/generated/ai-draft-integration.v2.json: 6bb8e4d2afb38d95c78303cdb7794cc8ac03cd1204f0396efbce22ed5ce76a46
+  changes/st-0806/generated/ai-draft-integration-fixture.v2.json: 95cead14bea7899c4a1b0aa6eafc29363f2878a8d2c89c9ffe2bfc25ba28696b
 generation:
   command: uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads
     python scripts/build_st0806_ai_draft_integration_v2.py
