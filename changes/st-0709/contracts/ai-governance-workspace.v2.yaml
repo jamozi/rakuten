@@ -136,7 +136,7 @@ source_bindings:
   dependencies:
     st0701_manifest:
       path: changes/st-0701/manifest.yaml
-      sha256: 55a07bd216eef26ce9b49e236ae068b7d838e7b9678d1e52e665fb5385ec414e
+      sha256: 01653bf5968c08a5ce186cfa06a9c25f33fc7a945808b6b2a622118025b2cbce
     st0701_task_registry:
       path: changes/st-0701/generated/ai-task-registry.v1.json
       sha256: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
@@ -154,31 +154,31 @@ source_bindings:
       sha256: 089b8d3353e2adafe284c03839b2a36dc9a391ab0c060df28bf68dfc9bc38641
     st0707_contract:
       path: changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml
-      sha256: fda479ad619144e22c8b41cb734ef741baa95152dd16e37ff54ee08a4afac6eb
+      sha256: 0ec1398be1ce82fcfe71929b9f1dbfb45b7041f69869a6f64030ecc728be8e49
     st0707_manifest:
       path: changes/st-0707/runtime-manifest.v1.json
-      sha256: 77a3871007c115699418c6d0243daeac8c6cbc04f9d9ca12866d0e142026e7c9
+      sha256: 4652b7e618da23110636d6747dbcda1ccf0aad94c531e02972632ec01822927e
     st0707_suite:
       path: changes/st-0707/generated/evaluation-suite-registry.v1.json
-      sha256: 37ec0ca48b794a691bc9b643b1ee28a88208116f77536dd5e8df5d6edab3010d
+      sha256: 3faad9c9d3a9130f1f9d9cca0b1e075d5befdd49432dbf00e750941ae56e91e0
     st0707_dataset:
       path: changes/st-0707/generated/locked-synthetic-holdout.v1.json
-      sha256: d4f3855a1f54e4de5d62e0dcb9d0c0b892e40704f476182349df45d7de1b0a79
+      sha256: 8985e548590b5ac6d8bdc8d1ad457e39b45f547c7838f0cd1c13e13fb5f35df6
     st0708_contract:
       path: changes/st-0708/contracts/recorded-live-evaluation-runtime.v2.yaml
-      sha256: aa337bcf043eb95ee9dfd094f5f6ea1d2b4d6216f391a91272f311010540763b
+      sha256: 02f1592d11086f09b51a11b0f9fce92cff1467d64c4ad7bb05b7ee17bcc370d3
     st0708_manifest:
       path: changes/st-0708/runtime-manifest.v2.json
-      sha256: 6f6f39ebdd36db4e270e8533c89df9162630513845921f8b92ce3af828d91855
+      sha256: 0506e8f618b01d26bff9cbf51b8ad88c34f55586d4ea647a8172d9e64ee57b42
     st0708_request:
       path: changes/st-0708/generated/recorded-live-evaluation-request.v2.json
-      sha256: 30e6c23c49c7610921cff7df5e68ba08baa5b1246a4256a8961d2851fa47be62
+      sha256: 15f816b1a98d36ffd1d31c826db0bf7cbac30b901df01a7c49c44ae3420eabe0
     st0708_report:
       path: changes/st-0708/generated/recorded-live-evaluation-report.v2.json
-      sha256: b24d6bc3fdf4c671609af6ca5651cdcc50aa698a81c308650e4d6492eea6d52b
+      sha256: 65ca1c03208c2be6ab34caa449d5f7bc5f28c760c60d20b3af0f066f338c6635
     st1101_readme:
       path: changes/st-1101/README.md
-      sha256: b2bb91e89d5948f8081853e39596951adcee16974ce2a6ffa159892310ead08c
+      sha256: a2c2cebdf12493b52af1ed70ad148eafef3828249082eda5b8683043f417f936
     st1101_serializable:
       path: packages/web-ui/src/serializable.ts
       sha256: 56adb1e0356fba66e147be4c055b7a40f1115608a3e29bbee4584234f8b3273d

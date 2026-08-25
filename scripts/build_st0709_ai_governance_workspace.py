@@ -152,7 +152,7 @@ def _json_output(value: object) -> bytes:
     return _canonical(value) + b"\n"
 
 
-def _repository_path(root: Path, relative: Path) -> Path:
+def _repository_path(root: object, relative: object) -> Path:
     if (
         not isinstance(root, Path)
         or not isinstance(relative, Path)
@@ -231,9 +231,12 @@ def _mapping(value: object, keys: frozenset[str] | None = None) -> dict[str, obj
 
 
 def _list(value: object, *, maximum: int = 256) -> list[object]:
-    if type(value) is not list or len(value) > maximum:
+    if type(value) is not list:
         _fail()
-    return cast(list[object], value)
+    items = cast(list[object], value)
+    if len(items) > maximum:
+        _fail()
+    return items
 
 
 def _string(value: object, maximum: int = 512) -> str:
@@ -500,11 +503,11 @@ def _registry_rows(
     list[dict[str, object]],
     list[dict[str, object]],
 ]:
-    registry_path = Path(
-        _mapping(_mapping(contract["source_bindings"])["dependencies"])[
-            "st0701_task_registry"
-        ]["path"]  # type: ignore[index]
+    dependencies = _mapping(_mapping(contract["source_bindings"])["dependencies"])
+    registry_binding = _mapping(
+        dependencies["st0701_task_registry"], frozenset({"path", "sha256"})
     )
+    registry_path = Path(_string(registry_binding["path"]))
     registry = _mapping(_parse_json(_read_regular(root, registry_path)))
     tasks = _list(registry.get("tasks"), maximum=12)
     if registry.get("task_count") != 12 or len(tasks) != 12:

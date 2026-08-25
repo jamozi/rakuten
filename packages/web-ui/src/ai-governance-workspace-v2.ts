@@ -6,7 +6,7 @@ import { createJsonValue } from './serializable.ts';
 import type { JsonObject, JsonValue } from './serializable.ts';
 
 const EXPECTED_RECORDED_FIXTURE_SHA256 =
-  '8f1dc6ad71659ba376008f75f59ae005763dcac9444d00bf1e88b606346cc01e';
+  'e0ab24a2247c2dacc98c391b46f4e8b0e9969d4219353e2507237986017ad9f7';
 
 export const AI_GOVERNANCE_V2_SECTION_IDS = createJsonValue([
   'TASK',
