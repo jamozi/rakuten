@@ -147,7 +147,7 @@ def test_report_hash_is_reproducible_and_binds_payload(
 ) -> None:
     assert (
         report.evaluation_sha256.value
-        == "3adc1661e91aa0046e01082344f5a50a28f1298dbe5c6193ef730d2e205ff2ca"
+        == "14b0b0608bd46fee5c6aa1c293a5b611d8783a39b84e189fb3a1f19d51e9a11e"
     )
     assert report.canonical_bytes() == report.canonical_bytes()
 

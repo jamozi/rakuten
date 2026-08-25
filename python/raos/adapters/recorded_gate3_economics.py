@@ -253,9 +253,11 @@ def parse_recorded_gate3_fixture(
     context = _mapping(source["context"], _CONTEXT_KEYS)
     program_id = _string(context["program"])
     entries_value = source["entries"]
-    if type(entries_value) is not list or len(entries_value) != 3:
+    if type(entries_value) is not list:
         _fail()
     entries = cast(list[object], entries_value)
+    if len(entries) != 3:
+        _fail()
     months = tuple(_month(entries[index], index + 1) for index in range(3))
     input_digest = canonical_input_digest(months)
     if (

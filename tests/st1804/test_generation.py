@@ -19,7 +19,7 @@ def test_rendered_bytes_match_owned_generated_pack() -> None:
     assert observed == expected
     assert observed.endswith(b"\n")
     assert hashlib.sha256(observed).hexdigest() == (
-        "a455e7050847dc7f008746d8e4200e761649587df30aa39a263a7961d65801af"
+        "63bf5e29d81952d9c333f8565d684c9855ac17879acc4273b004302da36a2b8e"
     )
     parsed = json.loads(observed)
     assert parsed["schema"] == "ST1804_GATE3_PACK_V1"

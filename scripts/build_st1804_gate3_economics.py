@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import argparse
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 import fcntl
 import hashlib
 import json
@@ -12,11 +12,11 @@ import os
 from pathlib import Path
 import stat
 import sys
-from typing import Final, NoReturn, cast
+from typing import Callable, Final, NoReturn, Protocol, cast
 
 import yaml
 from yaml.constructor import ConstructorError
-from yaml.nodes import MappingNode
+from yaml.nodes import MappingNode, Node
 from yaml.tokens import AliasToken, AnchorToken
 
 
@@ -83,10 +83,10 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st1804_gate3_economics.py"
 )
 CONTRACT_SHA256: Final = (
-    "175eebea290129352a8f328331e7ceb7410cc9fecb76c5f8d808512e9521a7ed"
+    "878ce407d9d3be2f73c790846433361ef2574755f24606f39a483d7d51c2199d"
 )
 FIXTURE_SHA256: Final = (
-    "c2ebe8ba14bd772e8842e348cd8d9e853ec4273c86eaf6a9f28627301226f10a"
+    "5dcff24d5f81c78cee0bb19418f0652d0c87cce889652d442d8fffb466de6e03"
 )
 INPUT_SHA256: Final = "a532e84c3be3d656978a8168047a8e4df94c872fd78d703137f399c77e0199b2"
 SOURCE_HEAD_SHA256: Final = (
@@ -128,16 +128,16 @@ EXPECTED_BINDINGS: Final = {
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
     ),
     "changes/st-1803/contracts/gate2-observation.v1.yaml": (
-        "4e494e2e974f2aa7b6e0d623f0bc038d7be3a65d8108e3edaf86c2c5b30e8714"
+        "a362c5cbef19c87dd518813460b1b2f9cecacff76bd008071a25eaffa865befe"
     ),
     "changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json": (
-        "3e61f2cd73c6fcb46010a5573bfa6c0ed770b3e47964112f8e430bc2b43d28ce"
+        "28e50ec3fc02ae7ff91838b8d18acb18662ac25654fa5769feb313398e6f67f3"
     ),
     "changes/st-1803/generated/gate2-observation.local-blocked.v1.json": (
-        "9b4574559aafb7fa5db85a8ba86122bcd20c2eff798be935717382b54223d1c3"
+        "2003593c88a2fab2a3ccabd2ed5ca3052f10a934e52cbde5ad3a9ec7da45fe74"
     ),
     "scripts/build_st1803_gate2_observation.py": (
-        "afcd368a4e4cf4badce2bb05cecc02b801b6b0606dbdaff5bf0cde64b5cd42dc"
+        "80e7a579f11fe4277a875a6fdcd51fc4184d6bbc161d6fec6949eb39ee0b8094"
     ),
     "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml": (
         "afc540e9cc866e4ef48cb276eb56f2aec636e614c6c2b863c3865b8be873a922"
@@ -167,6 +167,10 @@ class _StrictLoader(yaml.SafeLoader):
     pass
 
 
+class _YamlConstructor(Protocol):
+    def construct_object(self, node: Node, deep: bool = False) -> object: ...
+
+
 def _construct_mapping(
     loader: _StrictLoader,
     node: MappingNode,
@@ -174,8 +178,10 @@ def _construct_mapping(
 ) -> dict[object, object]:
     loader.flatten_mapping(node)
     result: dict[object, object] = {}
-    for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+    pairs = cast(list[tuple[Node, Node]], node.value)
+    constructor = cast(_YamlConstructor, loader)
+    for key_node, value_node in pairs:
+        key = constructor.construct_object(key_node, deep=deep)
         try:
             if key in result:
                 raise ConstructorError(
@@ -191,7 +197,7 @@ def _construct_mapping(
                 "unhashable key",
                 key_node.start_mark,
             ) from exc
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = constructor.construct_object(value_node, deep=deep)
     return result
 
 
@@ -276,7 +282,11 @@ def _mapping(value: object, field: str) -> Mapping[str, object]:
 def _strict_yaml(content: bytes, field: str) -> Mapping[str, object]:
     try:
         text = content.decode("utf-8", errors="strict")
-        tokens = tuple(yaml.scan(text))
+        scan_value = cast(object, getattr(yaml, "scan"))
+        if not callable(scan_value):
+            _error("YAML_INVALID", field)
+        scan = cast(Callable[[str], Iterable[object]], scan_value)
+        tokens = tuple(scan(text))
         if any(isinstance(token, (AnchorToken, AliasToken)) for token in tokens):
             _error("YAML_REFERENCE_FORBIDDEN", field)
         document = yaml.load(text, Loader=_StrictLoader)
@@ -462,6 +472,7 @@ def build_pack() -> dict[str, object]:
     candidates = learning.get("candidates")
     if type(candidates) is not list:
         _error("ST1305_LEARNING_BOUNDARY_DRIFT", "candidates")
+    candidate_rows = cast(list[object], candidates)
 
     source_paths = (
         CONTRACT_PATH,
@@ -563,7 +574,7 @@ def build_pack() -> dict[str, object]:
             "uri": f"repo://{GENERATOR_PATH}",
         },
         "learning_boundary": {
-            "candidate_count": len(candidates),
+            "candidate_count": len(candidate_rows),
             "candidate_output_kind": learning["output_kind"],
             "finance_signals_excluded": learning["finance_signals_excluded"],
             "finance_used_for_product_or_recommendation_ranking": False,
