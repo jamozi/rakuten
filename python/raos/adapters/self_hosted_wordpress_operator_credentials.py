@@ -61,6 +61,15 @@ _CREDENTIAL_KEYS: Final = frozenset(
         "username",
     }
 )
+_PROPOSAL_INTENT_KEYS: Final = frozenset(
+    {
+        "canonical_request_sha256",
+        "operation",
+        "proposal_id",
+        "request_token",
+        "schema",
+    }
+)
 _DIRECTORY_FLAGS: Final = os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW
 _FILE_FLAGS: Final = os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK
 _NEW_FILE_FLAGS: Final = (
@@ -458,19 +467,28 @@ def _decode_credentials(payload: bytes) -> WordPressOperatorCredentials:
         frozenset(mapping) != _CREDENTIAL_KEYS
         or type(mapping["schema_version"]) is not int
         or mapping["schema_version"] != WORDPRESS_OPERATOR_CONTRACT_VERSION
-        or mapping["site_origin"] != WORDPRESS_OPERATOR_ORIGIN
-        or mapping["expected_role"] != WORDPRESS_OPERATOR_EXPECTED_ROLE
+    ):
+        _fail(WordPressOperatorFailureCode.CREDENTIAL_METADATA_INVALID)
+    site_origin = _ascii_text(
+        mapping["site_origin"], maximum=128, forbid_colon=False, allow_spaces=False
+    )
+    expected_role = _ascii_text(
+        mapping["expected_role"], maximum=128, forbid_colon=True, allow_spaces=False
+    )
+    if (
+        site_origin != WORDPRESS_OPERATOR_ORIGIN
+        or expected_role != WORDPRESS_OPERATOR_EXPECTED_ROLE
     ):
         _fail(WordPressOperatorFailureCode.CREDENTIAL_METADATA_INVALID)
     metadata = WordPressOperatorCredentialMetadata(
-        site_origin=mapping["site_origin"],
+        site_origin=site_origin,
         username=_ascii_text(
             mapping["username"],
             maximum=128,
             forbid_colon=True,
             allow_spaces=False,
         ),
-        expected_role=mapping["expected_role"],
+        expected_role=expected_role,
     )
     return WordPressOperatorCredentials(
         metadata=metadata,
@@ -536,14 +554,7 @@ def _decode_proposal_intent(
         _fail()
     mapping = cast(dict[str, object], value)
     if (
-        frozenset(mapping)
-        != {
-            "canonical_request_sha256",
-            "operation",
-            "proposal_id",
-            "request_token",
-            "schema",
-        }
+        frozenset(mapping) != _PROPOSAL_INTENT_KEYS
         or mapping["schema"] != _PROPOSAL_INTENT_SCHEMA
         or mapping["operation"] != expected_operation.value
     ):
