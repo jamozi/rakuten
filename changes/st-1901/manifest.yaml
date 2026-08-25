@@ -10,7 +10,7 @@ evaluation:
   case_count: 200
   decision_outcome: REFUSED_UNVERIFIABLE_CALIBRATION
   local_metric_criteria_met: true
-  report_sha256: 879152139d9b8e5c0bb17d1e65015e481661e70d28c0aedc74f0e0346a929aff
+  report_sha256: 3b65bf70d331b6e26b612f9de178405dd9a9b0cc3ec3992f490cdd22099b1296
   separate_release_decision_required: true
 formal_status:
   actual_human_labeling: NOT_EXECUTED
@@ -21,13 +21,13 @@ formal_status:
   staging: NOT_EXECUTED
 generated_sha256:
   changes/st-1901/fixtures/recorded/model-judge-human-labels.synthetic.v1.json: be92b734b715db7948ec3e64d87226dc65ab42aeabb0b70b4e93ed678ef794cb
-  changes/st-1901/generated/model-judge-calibration-evaluation.v1.json: 7c476a8e0021dc87ef4737238f5bccd19898070adf070bcb952cce74d0bbc788
+  changes/st-1901/generated/model-judge-calibration-evaluation.v1.json: d97e03d824dc7c96ca34513f0fa49aa54c9c32ab403052f919aa1006a497e31f
 source_sha256:
-  changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml: 0ec1398be1ce82fcfe71929b9f1dbfb45b7041f69869a6f64030ecc728be8e49
-  changes/st-0707/generated/evaluation-suite-registry.v1.json: 3faad9c9d3a9130f1f9d9cca0b1e075d5befdd49432dbf00e750941ae56e91e0
-  changes/st-0707/runtime-manifest.v1.json: 4652b7e618da23110636d6747dbcda1ccf0aad94c531e02972632ec01822927e
+  changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml: 55044e7b2f030298d5ee61932122e5c0821491b23189bb57b9affc8c47bc043d
+  changes/st-0707/generated/evaluation-suite-registry.v1.json: 7eb7edb3bf0139b89fb903d852eca9e49edb0c87f2b16ae281213ba677cdd427
+  changes/st-0707/runtime-manifest.v1.json: 3547a1d0df3e33c7f793e5d6f520596e1e48a4121b238dc185f642b294976930
   changes/st-1901/README.md: 342d498c48ed8573d26f3414f8c68fdf6f5c35146f0f985614832947c0721c96
-  changes/st-1901/contracts/model-judge-calibration.v1.yaml: ae04cc52b1d9e80452afb12bc37f875668647e4e3eaedd539ef9040f67360299
+  changes/st-1901/contracts/model-judge-calibration.v1.yaml: 602e13a803b99176d58b6a359bfdb91c8cb4df98f71e2cf5d5cea5588c81da95
   contracts/raos-v0.4/contracts/ai/RAOS_05_evaluation_catalog_v0.1.yaml: a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3
   contracts/raos-v0.4/contracts/ai/RAOS_05_human_review_rubric_v0.1.yaml: a346b6c046cdcc384aeb5993fcd09ca61da62cb9b19e3b229572e8251b5010d9
   contracts/raos-v0.4/contracts/ai/schemas/eval/judge_output.v1.schema.json: 8d832fe5c58a7cfeb8bafa8dab18c64aa45bdb56c3282bd3d7d6e14cad6e87d4
@@ -41,9 +41,9 @@ source_sha256:
   docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
   docs/execplans/ST-1901.md: 766d22cd17853f2685c948f7efdc7649603c585078f7c5f8f9c26b8a8228c3d4
   docs/worklogs/ST-1901.md: e5738b26de0c8b6e52ca36d852cfa25b7c162b8827169fd20433e10996cd4fbb
-  python/raos/adapters/recorded_model_judge_calibration.py: 4e5bd7ed93c4e637cbcbab3de179557a593d13db5b46e277e9fe62025139d0b0
+  python/raos/adapters/recorded_model_judge_calibration.py: acf154bf239ec68d987c963ae5b2521f5657d3bc7e824cb43faaa6f78ce716b0
   python/raos/application/ai/model_judge_calibration.py: 2bdedb9d589e7244c3b3f9103389fd1ba957c7b8bc8ab8acde09d5f8be239386
-  python/raos/domain/ai/model_judge_calibration.py: 1492ec427be68d9d58a494d72488f30469f9ecca6ef81b7a366396ed6cc1f7da
+  python/raos/domain/ai/model_judge_calibration.py: 1feea8ff49dce81a2d6029b51631fb4fd6f1f0ff48900c215ca2dd7d087a98aa
   python/raos/ports/model_judge_calibration.py: 8be13dda30dd55b1e14ab84e61b0a1f40b03a861271745c29a9a3770812ab6b3
   scripts/build_st1901_model_judge_calibration.py: 9cd090d8b49601df9ce3d390fc70d1855ab916b5615e1d294b58bfc6a3e8ad41
   scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
