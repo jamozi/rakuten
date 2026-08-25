@@ -83,7 +83,7 @@ UPSTREAM_FIXTURE_PATH: Final = Path(
     "changes/st-0803/generated/comparison-validation-pass.v2.json"
 )
 UPSTREAM_FIXTURE_SHA256: Final = (
-    "b848a969269aae6be540c04ebe10ddc6c9392dc6afd22cfdeadcf70dae0cec02"
+    "e252ba7f10382b1f04fd327cc3a5af0594e1003a23a8da81763fc6373186b67c"
 )
 SECURE_HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
 SECURE_HELPER_SHA256: Final = (
@@ -133,11 +133,11 @@ DEPENDENCY_BINDINGS: Final = (
     ),
     (
         Path("python/raos/adapters/recorded_comparison_validation.py"),
-        "7771067b307e4e99c2a64a280a297aa91828f75260ddaafdff8d1028a42a4d8d",
+        "b879765d79ffb0b19e3313909da0a9a8c5aac7f4f2943957511f97a426eeb484",
     ),
     (
         Path("changes/st-0803/runtime-manifest.v2.yaml"),
-        "5ea8c8022561b7d00f8137e427e45b7ac5a48246bf752fefc06e7dd46bc6643d",
+        "8789ea33ee1c059a0f7f3679e5047a8b681cd3ae01cca714cbfb5eb358d2598d",
     ),
     (SECURE_HELPER_PATH, SECURE_HELPER_SHA256),
 )

@@ -8,12 +8,12 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: application/yaml
   bytes: 2636
-  sha256: 8df66ad3c9c6fc91578b00b604fa7bb1b99993ca04a28a769a95c0687fb047a6
+  sha256: 58ad130ed98bf12b73d606278f47e748a5154e492dc91ddf0fc2aec2afa973a8
 - uri: repo://scripts/build_st0804_recommendation_runtime.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
   bytes: 33045
-  sha256: b753b2c5e848e0636b9323472e16f908ee1158fdb8891096f296a6749e7f9fc9
+  sha256: 531da4042bf4f16528a73000cc14121f94bb299e5faced030ec6f42fc3e59895
 - uri: repo://python/raos/domain/editorial/recommendation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -23,7 +23,7 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
   bytes: 93816
-  sha256: d7b020a65dfe2071335fda7bdb9b804fcd02def954c415a36318437a9e4d5de4
+  sha256: 990228a1a883cf8c93ca16ac3a83e687947b9357ba59eaabdfaa7934cf4b0a01
 - uri: repo://python/raos/ports/editorial/recommendation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -37,8 +37,8 @@ source_artifacts:
 - uri: repo://python/raos/adapters/recorded_recommendation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 25973
-  sha256: 89281f37fc146a2e3033c2fa811297c5568c9aa8e533ad2281ecafa070f16988
+  bytes: 26094
+  sha256: 4b78da529a7b81952084c1d36b6c3a4f17841692da5d53d9f52d9d3270377c9a
 - uri: repo://changes/st-0804/README.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
@@ -103,7 +103,7 @@ source_artifacts:
   artifact_role: UPSTREAM_RECORDED_FIXTURE
   media_type: application/json
   bytes: 17736
-  sha256: b848a969269aae6be540c04ebe10ddc6c9392dc6afd22cfdeadcf70dae0cec02
+  sha256: e252ba7f10382b1f04fd327cc3a5af0594e1003a23a8da81763fc6373186b67c
 - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
   artifact_role: CANONICAL_INPUT
   media_type: text/markdown
@@ -152,13 +152,13 @@ source_artifacts:
 - uri: repo://python/raos/adapters/recorded_comparison_validation.py
   artifact_role: DEPENDENCY_CONTRACT
   media_type: text/x-python
-  bytes: 23923
-  sha256: 7771067b307e4e99c2a64a280a297aa91828f75260ddaafdff8d1028a42a4d8d
+  bytes: 24044
+  sha256: b879765d79ffb0b19e3313909da0a9a8c5aac7f4f2943957511f97a426eeb484
 - uri: repo://changes/st-0803/runtime-manifest.v2.yaml
   artifact_role: DEPENDENCY_CONTRACT
   media_type: application/yaml
   bytes: 13078
-  sha256: 5ea8c8022561b7d00f8137e427e45b7ac5a48246bf752fefc06e7dd46bc6643d
+  sha256: 8789ea33ee1c059a0f7f3679e5047a8b681cd3ae01cca714cbfb5eb358d2598d
 - uri: repo://scripts/secure_generated_publication.py
   artifact_role: DEPENDENCY_CONTRACT
   media_type: text/x-python
@@ -217,8 +217,8 @@ source_artifacts:
 - uri: repo://python/raos/domain/shared/persistence.py
   artifact_role: RUNTIME_DEPENDENCY
   media_type: text/x-python
-  bytes: 8063
-  sha256: 2a3d5cdc7d2e93ecd6883c3cdd37a0f27eb36638bd569399fcd95be7a06dfc20
+  bytes: 8701
+  sha256: 7d97e3316b4b451f575309dd641a2ee568b7e80b9429ef264f5114b1ac5dcc1a
 - uri: repo://python/raos/ports/__init__.py
   artifact_role: RUNTIME_DEPENDENCY
   media_type: text/x-python
@@ -244,7 +244,7 @@ generated_artifacts:
   artifact_role: RECORDED_SYNTHETIC_FIXTURE
   media_type: application/json
   bytes: 26959
-  sha256: 52a48ea6608d54abc0346c559823b5994c67eca59012c10e19291d0dcfc2cbc6
+  sha256: d5270a098496ecb8d2dbdac2884464a8c992d060c1aa1f23dcee11a8b483b660
 generation:
   owner: repo://scripts/build_st0804_recommendation_runtime.py
   command: .venv/bin/python scripts/build_st0804_recommendation_runtime.py

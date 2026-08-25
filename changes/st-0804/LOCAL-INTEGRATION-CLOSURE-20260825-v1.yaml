@@ -1,0 +1,81 @@
+document:
+  id: RAOS-ST0804-LOCAL-INTEGRATION-CLOSURE-20260825-V1
+  schema_version: 1
+  story_id: ST-0804
+  evidence_kind: LOCAL_INTEGRATION_CLOSURE
+  recorded_at: '2026-08-25T10:24:36Z'
+  authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
+  canonical_status: UNCHANGED
+  formal_validation_claimed: false
+base:
+  branch: codex/raos-local-integration-complete
+  observed_integration_head_sha: a2c571a36248ff180c9437cd49f828c073c9459b
+scope:
+  historical_v1_preserved: true
+  recorded_v2_runtime_preserved: true
+  semantic_behavior_changed: false
+  change_kind: PREDECESSOR_PROVENANCE_REBIND
+  publication_or_live_authority_changed: false
+  external_action_performed: false
+dependency_binding:
+  story_id: ST-0803
+  exact_commit_sha: eea49a55f0ba1c3d2528af290058e6cd08bcfb8a
+  contract_sha256: ca198b81bf9a3886712efd660fa4b9700c4f24a67cd8a92f580e38ff135f591f
+  domain_sha256: 010f445797704e72a5c5cdaf2355e36ed9bf70f536dc1574fe23fb802e91d552
+  recorded_adapter_sha256: b879765d79ffb0b19e3313909da0a9a8c5aac7f4f2943957511f97a426eeb484
+  recorded_fixture_sha256: e252ba7f10382b1f04fd327cc3a5af0594e1003a23a8da81763fc6373186b67c
+  runtime_manifest_sha256: 8789ea33ee1c059a0f7f3679e5047a8b681cd3ae01cca714cbfb5eb358d2598d
+  semantic_revalidation: PASS
+owner_artifacts:
+  contract_sha256: 58ad130ed98bf12b73d606278f47e748a5154e492dc91ddf0fc2aec2afa973a8
+  recorded_fixture_sha256: d5270a098496ecb8d2dbdac2884464a8c992d060c1aa1f23dcee11a8b483b660
+  runtime_manifest_sha256: c6862ed8679cd6c926ac72d1d5b584fd18a06bb71f7be9ab2c3f5560859e2f8f
+runtime_boundary:
+  evaluator: PURE_DETERMINISTIC
+  provider_mode: RECORDED_SYNTHETIC_ONLY
+  repository_write: false
+  approval_authority: NONE
+  recommendation_authority: NONE
+  ranking_authority: NONE
+  publication_authority: NONE
+  production_eligible: false
+verification:
+  owner_checks:
+    ST-0804: PASS
+    ST-0803: PASS
+    ST-0605_reference_and_runtime: PASS
+    ST-0504_reference_and_runtime: PASS
+  tests:
+    combined_affected:
+      normal: {result: PASS, passed: 655}
+      network_denied: {result: PASS, passed: 655}
+    ST-0804_runtime:
+      normal: {result: PASS, passed: 71}
+      network_denied: {result: PASS, passed: 71}
+    ST-0804_historical:
+      normal: {result: PASS, passed: 75}
+      network_denied: {result: PASS, passed: 75}
+    ST-0803_runtime:
+      normal: {result: PASS, passed: 52}
+      network_denied: {result: PASS, passed: 52}
+    ST-0803_historical:
+      normal: {result: PASS, passed: 31}
+      network_denied: {result: PASS, passed: 31}
+  static_and_boundary:
+    ruff_check_and_format: PASS
+    strict_mypy_runtime_and_tests: PASS
+    project_pyright: PASS_ZERO_ERRORS_ZERO_WARNINGS
+    compile: PASS
+    git_diff_check: PASS
+debt:
+  introduced_local_debt: NONE
+formal_and_external_boundaries:
+  formal_tst_007: NOT_EXECUTED
+  formal_tst_020: NOT_EXECUTED
+  hosted_ci: NOT_EXECUTED
+  live_provider_or_credential_activity: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  release: NOT_EXECUTED
+  production: NOT_EXECUTED
+  validated_claim: FORBIDDEN
