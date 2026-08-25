@@ -617,7 +617,9 @@ class ModelJudgeCalibrationReport(_RedactedValue):
     release: ExecutionStatus = field(default=ExecutionStatus.NOT_EXECUTED)
     production: ExecutionStatus = field(default=ExecutionStatus.NOT_EXECUTED)
 
-    def _document(self, *, include_hash: bool) -> dict[str, object]:
+    def document(self, *, include_hash: bool) -> dict[str, object]:
+        """Return the summary-only shape without exposing label records."""
+
         value: dict[str, object] = {
             "actual_human_labeling": self.actual_human_labeling.value,
             "batch_sha256": self.batch_sha256,
@@ -650,7 +652,7 @@ class ModelJudgeCalibrationReport(_RedactedValue):
 
     def canonical_bytes(self) -> bytes:
         self.require_valid()
-        return canonical_json_bytes(self._document(include_hash=True))
+        return canonical_json_bytes(self.document(include_hash=True))
 
     def require_valid(self) -> None:
         for digest in (
@@ -799,9 +801,7 @@ class ModelJudgeCalibrationReport(_RedactedValue):
             or self.decision.local_metric_criteria_met is not expected_local_criteria
         ):
             fail_calibration(ModelJudgeCalibrationFailureCode.INVALID_REPORT)
-        expected = sha256_bytes(
-            canonical_json_bytes(self._document(include_hash=False))
-        )
+        expected = sha256_bytes(canonical_json_bytes(self.document(include_hash=False)))
         if self.report_sha256 != expected:
             fail_calibration(ModelJudgeCalibrationFailureCode.INVALID_REPORT)
 
@@ -811,7 +811,7 @@ def finalize_report(
 ) -> ModelJudgeCalibrationReport:
     if type(report) is not ModelJudgeCalibrationReport:
         fail_calibration(ModelJudgeCalibrationFailureCode.INVALID_REPORT)
-    digest = sha256_bytes(canonical_json_bytes(report._document(include_hash=False)))
+    digest = sha256_bytes(canonical_json_bytes(report.document(include_hash=False)))
     finalized = replace(report, report_sha256=digest)
     finalized.require_valid()
     return finalized

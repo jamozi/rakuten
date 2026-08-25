@@ -91,15 +91,21 @@ def _json_artifact(value: object) -> dict[str, object]:
 
 
 def _mapping(value: object, keys: frozenset[str]) -> dict[str, object]:
-    if type(value) is not dict or frozenset(value) != keys:
+    if type(value) is not dict:
         _fail()
-    return cast(dict[str, object], value)
+    mapping = cast(dict[object, object], value)
+    if frozenset(mapping) != keys:
+        _fail()
+    return {key: mapping[key] for key in keys}
 
 
 def _items(value: object, *, maximum: int = _MAX_CASES) -> list[object]:
-    if type(value) is not list or not 1 <= len(value) <= maximum:
+    if type(value) is not list:
         _fail()
-    return cast(list[object], value)
+    items = cast(list[object], value)
+    if not 1 <= len(items) <= maximum:
+        _fail()
+    return items
 
 
 def _string(value: object, *, maximum: int = 256) -> str:
@@ -147,12 +153,15 @@ def _validate_sources(
     if (
         type(runtime_contract_bytes) is not bytes
         or sha256_bytes(runtime_contract_bytes) != TRUSTED_RUNTIME_CONTRACT_SHA256
-        or type(source_bytes) is not dict
-        or frozenset(source_bytes) != frozenset(_EXPECTED_SOURCES)
     ):
         _fail()
+    if type(source_bytes) is not dict:
+        _fail()
+    sources = cast(dict[object, object], source_bytes)
+    if frozenset(sources) != frozenset(_EXPECTED_SOURCES):
+        _fail()
     for name, expected in _EXPECTED_SOURCES.items():
-        value = source_bytes[name]
+        value = sources[name]
         if (
             type(value) is not bytes
             or not 1 <= len(value) <= _MAX_ARTIFACT_BYTES
