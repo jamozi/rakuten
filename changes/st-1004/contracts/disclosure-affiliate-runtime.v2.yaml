@@ -32,20 +32,20 @@ dependency_bindings:
   ST-1002:
     contract:
       path: changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
-      sha256: 5674f573b0a812395ada32667dab1ba84ed9b2fd5549915824948406fbea938f
+      sha256: e248d4dab10c7c98aa08b45ddeb2295851f84713ad9fed2dfd40d0250cadf258
     recorded_view:
       path: changes/st-1002/generated/public-article-renderer-recorded.v2.json
-      sha256: 866c7348e6a08806ed16fa14cbed4cbdc80f39c22d1982e1c56c16921f8ecc99
+      sha256: b19b67f6530b66004d50754f015f394cd033d07451106d5b3a6db9a5a648bc3b
     manifest:
       path: changes/st-1002/runtime-manifest.v2.yaml
-      sha256: 00c96a6e5ab2a31f069b4f9d394d10ece8f440df626e373577d0199906aabf27
+      sha256: 6da3cb69a3eef23594fb868e5cf0adcc84eadd4412990aafc26770d3dd0db300
     exact_slug: synthetic-recorded-policy-seo
     exact_path: /articles/synthetic-recorded-policy-seo
     recorded_disclosure_copy: この記事にはアフィリエイト広告が含まれます。
   ST-0503:
     readme:
       path: changes/st-0503/README.md
-      sha256: aa956454a96c0c88dedd52982264fdf5ad66f181ee3c3717a1aea8204bfbf138
+      sha256: e372c00533e7ddddb71e10308fb703e8c31261351c61d593c520371c505b2f0b
     normalization_source:
       path: python/raos/domain/catalog/catalog_normalization.py
       sha256: 6fa0adbd3ade25c5e6880e5aaec70f2c010173873b3cd3d11987d317f81642d9

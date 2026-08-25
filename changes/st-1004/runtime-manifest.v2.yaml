@@ -6,7 +6,7 @@ source_artifact_count: 29
 source_artifacts:
 - uri: repo://changes/st-1004/contracts/disclosure-affiliate-runtime.v2.yaml
   bytes: 7905
-  sha256: 476b1bebd416fec4038e620144e91760f3a459084f3503dacbbc049c289963eb
+  sha256: b11d96045c0ce49bf27c0fddb4c142e1d53301356d9e760be7c32c330f0b9231
   role: OWNER_SOURCE
 - uri: repo://scripts/build_st1004_disclosure_affiliate_runtime.py
   bytes: 22370
@@ -17,8 +17,8 @@ source_artifacts:
   sha256: 4e53048e1c59030dfabc882b868d7e6ccafd57adf715707b1fe2bc80091c47be
   role: OWNER_SOURCE
 - uri: repo://packages/web-ui/src/index.ts
-  bytes: 19601
-  sha256: 527efe6b033da86de0b6dd05d6e74eb1711bee83e34fe3d5d6477f125aa8f22d
+  bytes: 21657
+  sha256: ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c
   role: OWNER_SOURCE
 - uri: repo://apps/web/src/public-article-page.tsx
   bytes: 8041
@@ -98,19 +98,19 @@ source_artifacts:
   role: CANONICAL_INPUT
 - uri: repo://changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
   bytes: 6462
-  sha256: 5674f573b0a812395ada32667dab1ba84ed9b2fd5549915824948406fbea938f
+  sha256: e248d4dab10c7c98aa08b45ddeb2295851f84713ad9fed2dfd40d0250cadf258
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1002/generated/public-article-renderer-recorded.v2.json
   bytes: 5229
-  sha256: 866c7348e6a08806ed16fa14cbed4cbdc80f39c22d1982e1c56c16921f8ecc99
+  sha256: b19b67f6530b66004d50754f015f394cd033d07451106d5b3a6db9a5a648bc3b
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1002/runtime-manifest.v2.yaml
   bytes: 8759
-  sha256: 00c96a6e5ab2a31f069b4f9d394d10ece8f440df626e373577d0199906aabf27
+  sha256: 6da3cb69a3eef23594fb868e5cf0adcc84eadd4412990aafc26770d3dd0db300
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-0503/README.md
-  bytes: 3554
-  sha256: aa956454a96c0c88dedd52982264fdf5ad66f181ee3c3717a1aea8204bfbf138
+  bytes: 6403
+  sha256: e372c00533e7ddddb71e10308fb703e8c31261351c61d593c520371c505b2f0b
   role: DEPENDENCY_ARTIFACT
 - uri: repo://python/raos/domain/catalog/catalog_normalization.py
   bytes: 29866
