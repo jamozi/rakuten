@@ -12,7 +12,7 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
   bytes: 38304
-  sha256: bae342ba1ec958aa733b586304999b90c4e66313f24108592de75ce7df752bda
+  sha256: 1fdf8b7e3a706a8189a53cbe51598075ac683bdd35bf68bec82507bdad4abe5d
 - uri: repo://python/raos/domain/editorial/comparison_validation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -36,13 +36,13 @@ source_artifacts:
 - uri: repo://python/raos/adapters/recorded_comparison_validation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 23923
-  sha256: 7771067b307e4e99c2a64a280a297aa91828f75260ddaafdff8d1028a42a4d8d
+  bytes: 24044
+  sha256: b879765d79ffb0b19e3313909da0a9a8c5aac7f4f2943957511f97a426eeb484
 - uri: repo://changes/st-0803/README.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
-  bytes: 2855
-  sha256: 8bb43e24dc12865761bd22bc2b02b1123ebe4a73fa0f7f2e51df90dfb31d0d9b
+  bytes: 3347
+  sha256: edeea5022fc815950c5f2bfefabfcfd371337084de0b94e1e4e8ebd74399070e
 - uri: repo://changes/st-0803/HISTORICAL-DRIFT.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
@@ -51,8 +51,8 @@ source_artifacts:
 - uri: repo://changes/st-0803/completion/completion.v2.yaml
   artifact_role: OWNER_SOURCE
   media_type: application/yaml
-  bytes: 2163
-  sha256: 15873164ebb2c11ebcdb46e31a3285e136d6b5bf55276e8e482bbd6b4960170f
+  bytes: 2411
+  sha256: 56cb0d1cdcdc3accda3dcdac8e9e732f209047edb347e001b31aeba7e177dd36
 - uri: repo://docs/execplans/ST-0803.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
@@ -61,8 +61,8 @@ source_artifacts:
 - uri: repo://docs/worklogs/ST-0803.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
-  bytes: 1676
-  sha256: 5bbb694553539038abd179b9e3b25867734afd7e490c7e9632c7ff989eb57ef5
+  bytes: 2635
+  sha256: 9fcce22d258ad95017cf7f96decfb8f7bdb568f132fa121f0d7e274bd7129b06
 - uri: repo://docs/worklogs/RAOS-IMPLEMENTATION-DEBT.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
@@ -107,7 +107,7 @@ source_artifacts:
   artifact_role: UPSTREAM_RECORDED_FIXTURE
   media_type: application/json
   bytes: 12411
-  sha256: 9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106
+  sha256: b805ee491f7388ab39d99bd61dbc0a29d3b1659a9a44b44ebdeb73063e8356a1
 - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
   artifact_role: CANONICAL_INPUT
   media_type: text/markdown
@@ -162,7 +162,7 @@ source_artifacts:
   artifact_role: DEPENDENCY_CONTRACT
   media_type: application/yaml
   bytes: 5361
-  sha256: 9e73f7e436ab14df75394b2337e853f1dcbf553c16e0f950a8bdb604da685304
+  sha256: f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab
 - uri: repo://changes/st-0605/contracts/claim-evidence-runtime.v1.yaml
   artifact_role: DEPENDENCY_CONTRACT
   media_type: application/yaml
@@ -222,7 +222,7 @@ source_artifacts:
   artifact_role: RUNTIME_DEPENDENCY
   media_type: text/x-python
   bytes: 84553
-  sha256: 5e292cc4a257ec3be2dc1cc0e2e66c68afc51e2e216c5610bd563f642022ca2b
+  sha256: 865d8f5f97befaa4c8b7c655035ca1f2ff9ffb441d08577775030aa5c8d350d4
 - uri: repo://python/raos/domain/evidence/enums.py
   artifact_role: RUNTIME_DEPENDENCY
   media_type: text/x-python
@@ -246,13 +246,13 @@ source_artifacts:
 - uri: repo://python/raos/domain/shared/json_values.py
   artifact_role: RUNTIME_DEPENDENCY
   media_type: text/x-python
-  bytes: 5675
-  sha256: c995c2ba5f3dcd9f4302328d423192ae9f8c3b1415f294bf791c92baf07d4644
+  bytes: 5971
+  sha256: 5c86fbaab887100e09a94c947511bc4f0ad850c6163bad10f5e965ad3d56514e
 - uri: repo://python/raos/domain/shared/persistence.py
   artifact_role: RUNTIME_DEPENDENCY
   media_type: text/x-python
-  bytes: 8063
-  sha256: 2a3d5cdc7d2e93ecd6883c3cdd37a0f27eb36638bd569399fcd95be7a06dfc20
+  bytes: 8701
+  sha256: 7d97e3316b4b451f575309dd641a2ee568b7e80b9429ef264f5114b1ac5dcc1a
 - uri: repo://python/raos/ports/__init__.py
   artifact_role: RUNTIME_DEPENDENCY
   media_type: text/x-python
@@ -278,7 +278,7 @@ generated_artifacts:
   artifact_role: RECORDED_SYNTHETIC_FIXTURE
   media_type: application/json
   bytes: 17736
-  sha256: b848a969269aae6be540c04ebe10ddc6c9392dc6afd22cfdeadcf70dae0cec02
+  sha256: e252ba7f10382b1f04fd327cc3a5af0594e1003a23a8da81763fc6373186b67c
 generation:
   owner: repo://scripts/build_st0803_comparison_validation_runtime.py
   command: .venv/bin/python scripts/build_st0803_comparison_validation_runtime.py

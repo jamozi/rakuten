@@ -103,7 +103,7 @@ UPSTREAM_FIXTURE_PATH: Final = Path(
     "changes/st-0605/generated/claim-evidence-runtime-pass.v1.json"
 )
 UPSTREAM_FIXTURE_SHA256: Final = (
-    "9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106"
+    "b805ee491f7388ab39d99bd61dbc0a29d3b1659a9a44b44ebdeb73063e8356a1"
 )
 
 CANONICAL_BINDINGS: Final = (
@@ -164,7 +164,7 @@ DEPENDENCY_BINDINGS: Final = (
             "changes/st-0504/contracts/"
             "product-identity-human-review-reference-plan.v1.yaml"
         ),
-        "9e73f7e436ab14df75394b2337e853f1dcbf553c16e0f950a8bdb604da685304",
+        "f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab",
     ),
     (
         Path("changes/st-0605/contracts/claim-evidence-runtime.v1.yaml"),

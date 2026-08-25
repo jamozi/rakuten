@@ -52,3 +52,13 @@ A finding-free recorded fixture returns `LOCAL_VALIDATED`, while all
 publication/recommendation/ranking/Production authority flags remain false.
 Formal TST-007/TST-020, live validation, hosted CI, staging, release and
 Production remain `NOT_EXECUTED`.
+
+## 2026-08-25 provenance reconciliation
+
+- Rebound the recorded Claim/Evidence fixture to the exact ST-0605 owner
+  commit `160e5d4e210a35b216395c1bdf16b9c664ecc8e7` and its current fixture
+  bytes. The Claim/Evidence contract and the V2 receipt semantics are
+  unchanged.
+- Rebound the ST-0504 identity-review reference plan to its current exact
+  bytes. This is a provenance-only dependency update; live identity resolution
+  and category-specific merge rules remain outside this runtime.
