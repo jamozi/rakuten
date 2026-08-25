@@ -7,7 +7,7 @@ document:
   generation_command: uv run --frozen --offline --no-cache --no-sync --no-env-file
     python scripts/build_st1205_kpi_read_model_reference_plan.py
 provenance:
-  contract_sha256: 8f7e0664c844615a291c926520fff14af399daa5fd21bac8d002bfc7857218ed
+  contract_sha256: e51dbf760e7873a342e85759279047f30f7a12d66e01eb9e30e32f3e859b7af3
   authority:
     canonical_story:
       path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
@@ -41,7 +41,7 @@ provenance:
     binding: EXACT_CURRENT_COMMITTED_BYTES
     artifacts:
       changes/st-1203/README.md: c333b3400b8f0f13ce18be7e04d43345caa812b4d818dae8222cb8b498099c3e
-      changes/st-1203/manifest.json: 6fdcaa8c41819eb6167b6c1f317ed1024a8ce54ae494c75e4a60b05b34bd9845
+      changes/st-1203/manifest.json: d83e1aa7ba9c6a1ad4c6f3d4103485d3ef51bd3b304109ee8a425f101d93fd64
       python/raos/domain/analytics/search_console.py: e49396e6dfac336b05488ae4ba80100c106fc4bf64c2ed476d16f459c16759ce
     required_semantics:
       rows_not_guaranteed_complete: true
@@ -52,7 +52,7 @@ provenance:
     binding: EXACT_CURRENT_COMMITTED_BYTES
     artifacts:
       changes/st-1204/RUNTIME-SLICE-v1.md: 021e21ca20d8fa82c3b0a9134de6cf989daf4fd80f1dc8d4a5ddbfc9a2579b69
-      changes/st-1204/generated/manifest.json: 242f7a4f726577488fdb29be95b0d1eb4c977e176809ea4d38e7f2b9b397498b
+      changes/st-1204/generated/manifest.json: ac0045dd652bf27337497e7d889375a367125f6c54719185cfc835a57c38b67c
       python/raos/domain/analytics/ga4.py: 785dd16788fffabd5ab6c05c6f43f535bc6521630a246c93a54d23d257de124f
     required_semantics:
       returned_rows_incomplete: true
@@ -70,7 +70,7 @@ source_artifact_count: 14
 source_artifacts:
 - uri: repo://changes/st-1205/contracts/kpi-read-model.v2.yaml
   bytes: 7702
-  sha256: 8f7e0664c844615a291c926520fff14af399daa5fd21bac8d002bfc7857218ed
+  sha256: e51dbf760e7873a342e85759279047f30f7a12d66e01eb9e30e32f3e859b7af3
 - uri: repo://changes/st-1205/fixtures/recorded/kpi-calculation-complete.v2.json
   bytes: 11343
   sha256: da6d51ccd7ba56411ec81e316994659849e4ea7fa11e5458982a99a6f2317676
@@ -79,7 +79,7 @@ source_artifacts:
   sha256: 4722c69a67112898a1d070021d6262f64442d95f9296c956287d2fb829c10b72
 - uri: repo://scripts/build_st1205_kpi_read_model_reference_plan.py
   bytes: 24509
-  sha256: 915818c92d1506a35cb31a990ecd3fe4a82530925aa1d290715f61034e41edd3
+  sha256: 4a43187e85f15bb98b9a138713ba508c8645716c0b3397869297c84b90ecb01d
 - uri: repo://python/raos/domain/analytics/kpi_read_model.py
   bytes: 51846
   sha256: 7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac
