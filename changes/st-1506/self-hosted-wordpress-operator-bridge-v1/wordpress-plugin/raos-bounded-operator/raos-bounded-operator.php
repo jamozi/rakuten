@@ -430,7 +430,9 @@ final class RAOS_Bounded_Operator
         if (is_multisite()) {
             wp_die(esc_html('RAOS Bounded Operator does not support multisite.'));
         }
-        self::install_role();
+        if (! self::install_role()) {
+            wp_die(esc_html('RAOS operator role initialization failed.'));
+        }
         self::install_tables();
         if (! self::append_activation_audit()) {
             wp_die(esc_html('RAOS operator audit initialization failed.'));
@@ -501,22 +503,76 @@ final class RAOS_Bounded_Operator
     private static function install_role()
     {
         $exact = self::exact_executor_capabilities();
-        $role = get_role(self::ROLE);
-        if (! $role instanceof WP_Role) {
-            add_role(self::ROLE, 'RAOS Operator Executor', $exact);
+        try {
             $role = get_role(self::ROLE);
-        }
-        if (! $role instanceof WP_Role) {
-            return;
-        }
-        foreach (array_keys($role->capabilities) as $capability) {
-            if (! array_key_exists($capability, $exact)) {
+            if (! $role instanceof WP_Role) {
+                $created = add_role(
+                    self::ROLE,
+                    'RAOS Operator Executor',
+                    $exact
+                );
+                if (! $created instanceof WP_Role) {
+                    return false;
+                }
+                $role = get_role(self::ROLE);
+            }
+            if (! $role instanceof WP_Role
+                || ! is_array($role->capabilities)) {
+                return false;
+            }
+            foreach (array_keys($role->capabilities) as $capability) {
                 $role->remove_cap($capability);
             }
+            foreach ($exact as $capability => $grant) {
+                $role->add_cap($capability, $grant);
+            }
+            $verified = get_role(self::ROLE);
+            return $verified instanceof WP_Role
+                && is_array($verified->capabilities)
+                && $verified->capabilities === $exact
+                && self::persisted_executor_role_is_exact();
+        } catch (Throwable $exception) {
+            return false;
         }
-        foreach ($exact as $capability => $grant) {
-            $role->add_cap($capability, $grant);
+    }
+
+    private static function persisted_executor_role_is_exact()
+    {
+        global $wpdb;
+        $option_name = $wpdb->prefix . 'user_roles';
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT option_value FROM {$wpdb->options} "
+                . 'WHERE BINARY option_name = BINARY %s',
+                $option_name
+            ),
+            ARRAY_A
+        );
+        if ($wpdb->last_error !== ''
+            || ! is_array($rows)
+            || count($rows) !== 1
+            || ! is_array($rows[0])
+            || count($rows[0]) !== 1
+            || ! isset($rows[0]['option_value'])
+            || ! is_string($rows[0]['option_value'])
+            || ! is_serialized($rows[0]['option_value'], true)) {
+            return false;
         }
+        $stored_roles = @unserialize(
+            $rows[0]['option_value'],
+            array('allowed_classes' => false)
+        );
+        if (! is_array($stored_roles)
+            || ! isset($stored_roles[self::ROLE])
+            || ! is_array($stored_roles[self::ROLE])) {
+            return false;
+        }
+        $record = $stored_roles[self::ROLE];
+        return count($record) === 2
+            && isset($record['name'], $record['capabilities'])
+            && $record['name'] === 'RAOS Operator Executor'
+            && is_array($record['capabilities'])
+            && $record['capabilities'] === self::exact_executor_capabilities();
     }
 
     private static function exact_executor_capabilities()
@@ -2149,16 +2205,19 @@ final class RAOS_Bounded_Operator
             wp_die(esc_html('The proposal is invalid.'), '', array('response' => 400));
         }
         check_admin_referer('raos_operator_approve_' . $proposal_id);
-        $reason = isset($_POST['approval_reason'])
-            ? sanitize_textarea_field(wp_unslash($_POST['approval_reason']))
+        $reason_input = isset($_POST['approval_reason'])
+            ? wp_unslash($_POST['approval_reason'])
             : '';
-        if (function_exists('mb_strlen')) {
-            $reason_length = mb_strlen($reason, 'UTF-8');
-        } else {
-            if (strlen($reason) < 10 || strlen($reason) > 300) {
-                wp_die(esc_html('The approval evidence is invalid.'), '', array('response' => 400));
-            }
-            $reason_length = strlen($reason);
+        if (! is_string($reason_input)
+            || strlen($reason_input) > 1200
+            || wp_check_invalid_utf8($reason_input) !== $reason_input
+            || preg_match('//u', $reason_input) !== 1) {
+            wp_die(esc_html('The approval evidence is invalid.'), '', array('response' => 400));
+        }
+        $reason = sanitize_textarea_field($reason_input);
+        if (wp_check_invalid_utf8($reason) !== $reason
+            || preg_match('/\A.{10,300}\z/us', $reason) !== 1) {
+            wp_die(esc_html('The approval evidence is invalid.'), '', array('response' => 400));
         }
         $confirmation = isset($_POST['hash_confirmation'])
             ? sanitize_text_field(wp_unslash($_POST['hash_confirmation']))
@@ -2166,8 +2225,7 @@ final class RAOS_Bounded_Operator
         $reauthentication_input = isset($_POST['current_password'])
             ? (string) wp_unslash($_POST['current_password'])
             : '';
-        if ($reason_length < 10 || $reason_length > 300
-            || ! hash_equals(substr($proposal_id, -12), $confirmation)) {
+        if (! hash_equals(substr($proposal_id, -12), $confirmation)) {
             wp_die(esc_html('The approval evidence is invalid.'), '', array('response' => 400));
         }
         $current_user = wp_get_current_user();

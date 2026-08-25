@@ -158,11 +158,83 @@ def test_executor_role_is_exact_and_activation_never_deletes_it() -> None:
     activation = activation[: activation.index("private static function install_role")]
     assert "if (is_multisite())" in activation
     assert "does not support multisite" in activation
-    assert "manage_options" not in re.search(
+    install_role = re.search(
         r"private static function install_role\(\).*?\n    }",
         php,
         re.DOTALL,
-    ).group(0)
+    )
+    assert install_role is not None
+    assert "manage_options" not in install_role.group(0)
+
+
+def test_activation_requires_exact_role_readback_before_tables_and_audit() -> None:
+    php = _php()
+    activation = php[php.index("public static function activate") :]
+    activation = activation[
+        : activation.index("private static function append_activation_audit")
+    ]
+    role_gate = activation.index("if (! self::install_role())")
+    role_failure = activation.index("RAOS operator role initialization failed.")
+    tables = activation.index("self::install_tables()")
+    audit = activation.index("self::append_activation_audit()")
+    assert role_gate < role_failure < tables < audit
+    failure_branch = activation[role_gate:tables]
+    assert "wp_die(" in failure_branch
+    assert "ROLE_AND_TABLES_READY" not in failure_branch
+
+    install_role = php[php.index("private static function install_role") :]
+    install_role = install_role[
+        : install_role.index("private static function exact_executor_capabilities")
+    ]
+    for token in (
+        "$created = add_role(",
+        "! $created instanceof WP_Role",
+        "return false;",
+        "foreach (array_keys($role->capabilities) as $capability)",
+        "$role->remove_cap($capability)",
+        "$role->add_cap($capability, $grant)",
+        "$verified = get_role(self::ROLE)",
+        "$verified instanceof WP_Role",
+        "$verified->capabilities === $exact",
+        "self::persisted_executor_role_is_exact()",
+        "catch (Throwable $exception)",
+    ):
+        assert token in install_role
+    assert install_role.index("$verified = get_role(self::ROLE)") < install_role.index(
+        "$verified->capabilities === $exact"
+    )
+
+
+def test_role_durable_readback_is_closed_and_rejects_stale_or_excessive() -> None:
+    php = _php()
+    durable = php[
+        php.index("private static function persisted_executor_role_is_exact()") :
+    ]
+    durable = durable[
+        : durable.index("private static function exact_executor_capabilities")
+    ]
+    for token in (
+        "global $wpdb;",
+        "$option_name = $wpdb->prefix . 'user_roles';",
+        "SELECT option_value FROM {$wpdb->options}",
+        "WHERE BINARY option_name = BINARY %s",
+        "$wpdb->prepare(",
+        "$wpdb->last_error !== ''",
+        "count($rows) !== 1",
+        "count($rows[0]) !== 1",
+        "is_serialized($rows[0]['option_value'], true)",
+        "@unserialize(",
+        "array('allowed_classes' => false)",
+        "count($record) === 2",
+        "$record['name'] === 'RAOS Operator Executor'",
+        "$record['capabilities'] === self::exact_executor_capabilities()",
+    ):
+        assert token in durable
+    assert "maybe_unserialize" not in durable
+    assert "$_GET" not in durable
+    assert "$_POST" not in durable
+    assert "$_REQUEST" not in durable
+    assert "LIMIT 1" not in durable
 
 
 def test_write_gate_is_external_strict_and_has_no_runtime_toggle() -> None:
@@ -300,8 +372,22 @@ def test_approval_is_admin_only_reauthenticated_hash_bound_and_audited() -> None
         "approval_expires_at",
     ):
         assert token in approval
-    assert "strlen($reason) < 10" in approval
-    assert "strlen($reason) > 300" in approval
+    for token in (
+        "strlen($reason_input) > 1200",
+        "wp_check_invalid_utf8($reason_input) !== $reason_input",
+        "preg_match('//u', $reason_input) !== 1",
+        "$reason = sanitize_textarea_field($reason_input)",
+        "wp_check_invalid_utf8($reason) !== $reason",
+        "preg_match('/\\A.{10,300}\\z/us', $reason) !== 1",
+    ):
+        assert token in approval
+    assert approval.index("wp_check_invalid_utf8($reason_input)") < approval.index(
+        "sanitize_textarea_field($reason_input)"
+    )
+    assert "mb_strlen" not in approval
+    assert "preg_match_all(" not in approval
+    assert "$reason_scalars" not in approval
+    assert "strlen($reason)" not in approval
     assert "normalized" in approval.lower()
     assert "append_audit" in approval
     assert re.search(r"append_audit\(.*?\).*?=== false", approval, re.DOTALL)

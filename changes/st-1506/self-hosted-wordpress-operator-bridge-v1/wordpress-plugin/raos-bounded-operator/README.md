@@ -9,6 +9,12 @@ Activation creates the dedicated `raos_operator_executor` role and the
 proposal/audit tables. It never deletes data on deactivation or uninstall.
 Assign the dedicated role to a service account and authenticate it using a
 WordPress Application Password over HTTPS. Do not assign any additional role.
+Role creation and capability reconciliation are read back and must equal the
+four-capability fixed role exactly. The plugin also reads the fixed current-site
+`user_roles` option directly from the WordPress options table and decodes it
+with object instantiation disabled, so an in-memory role update cannot conceal
+a failed persistent write. Activation stops before table creation and the
+activation audit if either verification fails.
 Activation verifies that both operator tables are InnoDB, then appends the
 activation audit event inside one explicit transaction. Audit append or commit
 uncertainty rolls the audit transaction back and fails activation.
@@ -43,7 +49,12 @@ define('RAOS_OPERATOR_WRITES_ENABLED', true);
 An administrator must independently approve every exact proposal under
 **Tools → RAOS Operator** using a cookie-authenticated session, a proposal nonce,
 their current password, a 10–300 character reason, and the final 12 characters
-of the proposal ID. REST and Application Password authentication cannot approve.
+of the proposal ID. Reason length is the exact Unicode scalar count after
+WordPress textarea sanitization. Raw input is capped at 1200 bytes before any
+Unicode match allocation, invalid UTF-8 is rejected before sanitization, and a
+bounded anchored Unicode expression enforces the final 10–300 scalars without
+materializing per-character matches. REST and Application Password
+authentication cannot approve.
 
 The REST namespace is `raos-operator/v1`:
 
