@@ -18,19 +18,19 @@ from .support import FIXTURE_PATH, REPOSITORY_ROOT
 CONTRACT_PATH = Path("changes/st-1902/contracts/champion-challenger-shadow.v1.yaml")
 ST0708_BINDINGS = {
     "changes/st-0708/contracts/recorded-live-evaluation-runtime.v2.yaml": (
-        "aa337bcf043eb95ee9dfd094f5f6ea1d2b4d6216f391a91272f311010540763b"
+        "02f1592d11086f09b51a11b0f9fce92cff1467d64c4ad7bb05b7ee17bcc370d3"
     ),
     "changes/st-0708/generated/recorded-live-evaluation-request.v2.json": (
-        "30e6c23c49c7610921cff7df5e68ba08baa5b1246a4256a8961d2851fa47be62"
+        "15f816b1a98d36ffd1d31c826db0bf7cbac30b901df01a7c49c44ae3420eabe0"
     ),
     "changes/st-0708/generated/recorded-live-evaluation-report.v2.json": (
-        "b24d6bc3fdf4c671609af6ca5651cdcc50aa698a81c308650e4d6492eea6d52b"
+        "65ca1c03208c2be6ab34caa449d5f7bc5f28c760c60d20b3af0f066f338c6635"
     ),
     "changes/st-0708/runtime-manifest.v2.json": (
-        "6f6f39ebdd36db4e270e8533c89df9162630513845921f8b92ce3af828d91855"
+        "0506e8f618b01d26bff9cbf51b8ad88c34f55586d4ea647a8172d9e64ee57b42"
     ),
     "python/raos/domain/ai/live_evaluation.py": (
-        "d8b7be4dac4d0df4f2abf611d5a8b2af0944a1ca1bcc61a93f4ff80d086500b5"
+        "e574167f1ce9028c773f9a295cae06bb5bf71480115248e217b812921a0e6976"
     ),
     "python/raos/application/ai/live_evaluation.py": (
         "9fe29acc16ff0e5a6f540c45d0f9db2930ccdfb9e563fea8307dc55f9359e88a"
@@ -39,7 +39,7 @@ ST0708_BINDINGS = {
         "4fb29af21dd1efb9f46867041f5772dacf9d57a5f3ab5e75de2f4e7eec0a64d6"
     ),
     "python/raos/adapters/recorded_live_evaluation.py": (
-        "b364589fb9645d06213f3e315552691797bcf748061826dee2334b1c95beb8d2"
+        "48778329088e43da5a6b22dba41c397ebc82bf2fdf3cfd19800abf934509f89d"
     ),
 }
 
@@ -88,7 +88,7 @@ def test_exact_dependency_and_authority_hashes_match_base_bytes() -> None:
     contract = _contract()
     predecessor = contract["predecessor"]
     assert isinstance(predecessor, dict)
-    assert predecessor["base_commit"] == ("acdcc3719670c110bf6ec94af1762d87ac7fcb74")
+    assert predecessor["base_commit"] == ("975ff87fd4297927be1c66da789ee7bb7b748ae4")
     assert predecessor["artifacts"] == ST0708_BINDINGS
     for relative, digest in ST0708_BINDINGS.items():
         assert _sha(relative) == digest

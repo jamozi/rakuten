@@ -98,7 +98,7 @@ def test_recorded_shadow_is_deterministic_and_always_keeps_champion() -> None:
     second = service_for().evaluate(command_for())
     assert first == second
     assert first.report_sha256.value == (
-        "ebd56c4ed66774a334ef6fd16cc324bcc9a517c45b17f9b7e05e5c5953b77516"
+        "06fa90c60fed279a0f6d566b5c3f6dbaf49564233327a39c1550e0d0840e9449"
     )
     assert (
         first.cohort_size,

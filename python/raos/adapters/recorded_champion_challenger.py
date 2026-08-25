@@ -27,7 +27,7 @@ TRUSTED_ROUTE_CATALOG_SHA256: Final = (
     "dc76ed6d2586eec9bf18b8ac2e95eb76971179fe87fa1ee07b1ba8702f8faa96"
 )
 TRUSTED_ST0708_REPORT_SHA256: Final = (
-    "b24d6bc3fdf4c671609af6ca5651cdcc50aa698a81c308650e4d6492eea6d52b"
+    "65ca1c03208c2be6ab34caa449d5f7bc5f28c760c60d20b3af0f066f338c6635"
 )
 _REDACTED: Final = "<redacted-recorded-champion-challenger-source>"
 _ROOT_KEYS = frozenset({"document", "observations"})
