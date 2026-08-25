@@ -145,9 +145,12 @@ def _pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
 
 
 def _mapping(value: object, keys: tuple[str, ...]) -> Mapping[str, object]:
-    if type(value) is not dict or tuple(value) != keys:
+    if type(value) is not dict:
         _fail()
-    return cast(Mapping[str, object], value)
+    mapping = cast(dict[object, object], value)
+    if tuple(mapping) != keys:
+        _fail()
+    return cast(Mapping[str, object], mapping)
 
 
 def _sequence(
@@ -156,9 +159,12 @@ def _sequence(
     minimum: int = 0,
     maximum: int = _MAX_COLLECTION,
 ) -> list[object]:
-    if type(value) is not list or not minimum <= len(value) <= maximum:
+    if type(value) is not list:
         _fail()
-    return cast(list[object], value)
+    sequence = cast(list[object], value)
+    if not minimum <= len(sequence) <= maximum:
+        _fail()
+    return sequence
 
 
 def _string(value: object, *, maximum: int = 512) -> str:
@@ -572,7 +578,7 @@ def build_policy_input_from_seed(
             provenance_digest,
         ) in predecessor_material.items()
     )
-    policies = []
+    policies: list[PolicyAssessment] = []
     for policy_definition in POLICY_DEFINITIONS:
         rule_result = PolicyRuleResult(policy_states[policy_definition.policy_id])
         suffix = policy_definition.policy_id.removeprefix("POL-CONT-")
@@ -595,7 +601,7 @@ def build_policy_input_from_seed(
                 detector=_bound(f"DETECTOR-POLICY-{suffix}"),
             )
         )
-    axes = []
+    axes: list[QualityAxisAssessment] = []
     for axis_definition in QUALITY_AXIS_DEFINITIONS:
         raw_state, score = axis_seed[axis_definition.axis_id]
         state = AxisAssessmentState(raw_state)
@@ -634,7 +640,7 @@ def build_policy_input_from_seed(
         )
         for index, label in enumerate(ZERO_TOLERANCE_LABELS, start=1)
     )
-    gates = []
+    gates: list[QualityGateAssessment] = []
     for gate_definition in QUALITY_GATE_DEFINITIONS:
         state = GateAssessmentState(gate_states[gate_definition.gate_id])
         suffix = gate_definition.gate_id.removeprefix("QG-CONT-")
@@ -655,7 +661,7 @@ def build_policy_input_from_seed(
                 evaluator=_bound(f"EVALUATOR-GATE-{suffix}"),
             )
         )
-    waivers = []
+    waivers: list[WaiverAttempt] = []
     for policy_id in waiver_ids:
         if PolicyRuleResult(policy_states[policy_id]) is not PolicyRuleResult.FAIL:
             _fail()
@@ -853,15 +859,18 @@ class RecordedPolicyAdapter:
         if (
             type(environment) is not RuntimeEnvironment
             or environment not in {RuntimeEnvironment.ENV_DEV, RuntimeEnvironment.CI}
-            or type(fixtures) is not tuple
-            or not 1 <= len(fixtures) <= _MAX_COLLECTION
             or type(capacity) is not int
             or not 1 <= capacity <= _MAX_COLLECTION
         ):
             _fail()
+        if type(fixtures) is not tuple:
+            _fail()
+        raw_fixtures = cast(tuple[object, ...], fixtures)
+        if not 1 <= len(raw_fixtures) <= _MAX_COLLECTION:
+            _fail()
         normalized: list[bytes] = []
         anchors: list[tuple[UUID, str, str]] = []
-        for payload in fixtures:
+        for payload in raw_fixtures:
             if type(payload) is not bytes:
                 _fail()
             owned = bytes(payload)
