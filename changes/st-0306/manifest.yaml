@@ -32,7 +32,7 @@ provenance:
   predecessor_manifest:
     story_id: ST-0305
     uri: repo://changes/st-0305/manifest.yaml
-    sha256: 1de981e51f57d24e77480309149d4b7e9863a0fff5c926f211aee8f77751784d
+    sha256: 0efddf30798426a5322606328941e77e8a36fd2d274910f06224437fb5861d3f
 revision:
   revision: '202608030006'
   down_revision: '202608030005'
@@ -70,7 +70,7 @@ source_artifacts:
   sha256: 687fd00f51c27a1181c213d044412f4c676d96b34e35f0590f0edcd5b4221699
 - uri: repo://scripts/build_st0306_database_roles.py
   bytes: 55822
-  sha256: efe2bddc40f6593a734f96b7976c13c633cf7731099d974ecaf49207a2e2eab9
+  sha256: 904becd675d83485cbfa13fc2341a282064c468c16524743eab1f7e8cd043925
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
@@ -82,7 +82,7 @@ source_artifacts:
   sha256: 6275ad1f451b16ff7a51fbaf7337917c262c668dca70257949c15ba015bb1435
 - uri: repo://changes/st-0305/manifest.yaml
   bytes: 14863
-  sha256: 1de981e51f57d24e77480309149d4b7e9863a0fff5c926f211aee8f77751784d
+  sha256: 0efddf30798426a5322606328941e77e8a36fd2d274910f06224437fb5861d3f
 - uri: repo://migrations/versions/202608030005_publication_analytics_finance.py
   bytes: 41097
   sha256: 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
