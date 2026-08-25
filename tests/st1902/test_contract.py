@@ -18,19 +18,19 @@ from .support import FIXTURE_PATH, REPOSITORY_ROOT
 CONTRACT_PATH = Path("changes/st-1902/contracts/champion-challenger-shadow.v1.yaml")
 ST0708_BINDINGS = {
     "changes/st-0708/contracts/recorded-live-evaluation-runtime.v2.yaml": (
-        "02f1592d11086f09b51a11b0f9fce92cff1467d64c4ad7bb05b7ee17bcc370d3"
+        "2cda2fb12e2bc46e70292e5f7e846eb5c2a3b0760e1be39886c1793e153885a2"
     ),
     "changes/st-0708/generated/recorded-live-evaluation-request.v2.json": (
-        "15f816b1a98d36ffd1d31c826db0bf7cbac30b901df01a7c49c44ae3420eabe0"
+        "eaa02e095d8c2393e504e36c17809e45388a137bfdb6b0c22443b35ce9bbd468"
     ),
     "changes/st-0708/generated/recorded-live-evaluation-report.v2.json": (
-        "65ca1c03208c2be6ab34caa449d5f7bc5f28c760c60d20b3af0f066f338c6635"
+        "d8fe28f12beb86fedd6d32db55a7a2092f72304f8c3545294d5dc376c2f59142"
     ),
     "changes/st-0708/runtime-manifest.v2.json": (
-        "0506e8f618b01d26bff9cbf51b8ad88c34f55586d4ea647a8172d9e64ee57b42"
+        "2da64638ad2bd1902b687aa3d831f1104baf8d47390b9d85313a1bd98580a551"
     ),
     "python/raos/domain/ai/live_evaluation.py": (
-        "e574167f1ce9028c773f9a295cae06bb5bf71480115248e217b812921a0e6976"
+        "ab600675038a60c1b8f360fd6bbec53a427e2523dc41816fb33e558020652ce7"
     ),
     "python/raos/application/ai/live_evaluation.py": (
         "9fe29acc16ff0e5a6f540c45d0f9db2930ccdfb9e563fea8307dc55f9359e88a"

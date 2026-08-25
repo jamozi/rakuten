@@ -9,7 +9,7 @@ document:
 provenance:
   base_commit: 975ff87fd4297927be1c66da789ee7bb7b748ae4
   contract_uri: repo://changes/st-1902/contracts/champion-challenger-shadow.v1.yaml
-  contract_sha256: f3ed38d1fe12d1209cc3449e787566b439f3759b81dc91a5bf31ae5ac3c7b318
+  contract_sha256: b58583bce48d14967781ffe8e5d1ec0bf5f91d12bee5826c3a1f47c7708593ee
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -33,15 +33,15 @@ provenance:
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
   predecessor_inputs:
   - uri: repo://changes/st-0708/contracts/recorded-live-evaluation-runtime.v2.yaml
-    sha256: 02f1592d11086f09b51a11b0f9fce92cff1467d64c4ad7bb05b7ee17bcc370d3
+    sha256: 2cda2fb12e2bc46e70292e5f7e846eb5c2a3b0760e1be39886c1793e153885a2
   - uri: repo://changes/st-0708/generated/recorded-live-evaluation-request.v2.json
-    sha256: 15f816b1a98d36ffd1d31c826db0bf7cbac30b901df01a7c49c44ae3420eabe0
+    sha256: eaa02e095d8c2393e504e36c17809e45388a137bfdb6b0c22443b35ce9bbd468
   - uri: repo://changes/st-0708/generated/recorded-live-evaluation-report.v2.json
-    sha256: 65ca1c03208c2be6ab34caa449d5f7bc5f28c760c60d20b3af0f066f338c6635
+    sha256: d8fe28f12beb86fedd6d32db55a7a2092f72304f8c3545294d5dc376c2f59142
   - uri: repo://changes/st-0708/runtime-manifest.v2.json
-    sha256: 0506e8f618b01d26bff9cbf51b8ad88c34f55586d4ea647a8172d9e64ee57b42
+    sha256: 2da64638ad2bd1902b687aa3d831f1104baf8d47390b9d85313a1bd98580a551
   - uri: repo://python/raos/domain/ai/live_evaluation.py
-    sha256: e574167f1ce9028c773f9a295cae06bb5bf71480115248e217b812921a0e6976
+    sha256: ab600675038a60c1b8f360fd6bbec53a427e2523dc41816fb33e558020652ce7
   - uri: repo://python/raos/application/ai/live_evaluation.py
     sha256: 9fe29acc16ff0e5a6f540c45d0f9db2930ccdfb9e563fea8307dc55f9359e88a
   - uri: repo://python/raos/ports/live_evaluation.py
@@ -52,10 +52,10 @@ source_artifact_count: 18
 source_artifacts:
 - uri: repo://changes/st-1902/contracts/champion-challenger-shadow.v1.yaml
   bytes: 7483
-  sha256: f3ed38d1fe12d1209cc3449e787566b439f3759b81dc91a5bf31ae5ac3c7b318
+  sha256: b58583bce48d14967781ffe8e5d1ec0bf5f91d12bee5826c3a1f47c7708593ee
 - uri: repo://changes/st-1902/fixtures/recorded/champion-challenger-shadow.v1.json
   bytes: 2611
-  sha256: 93ed9e3f815671ccfa7ad2ad8a5b361fbee4036468b63c52c2ee8539353551a8
+  sha256: c8fa78543f3568134c0545e0a747b83ee652d6328657d26f3c8c2b8e65b3c342
 - uri: repo://changes/st-1902/README.md
   bytes: 1972
   sha256: 8fa127a9e47ce71fc35fb6ddee6b8646ed62393fcc39307a53c54d1955d54433
@@ -76,7 +76,7 @@ source_artifacts:
   sha256: 881f4c72d58f36ae0d6e13eff54c39e2b2d88f341667494f92d7a58d770855e7
 - uri: repo://python/raos/adapters/recorded_champion_challenger.py
   bytes: 7985
-  sha256: dd7cd69b0b4097002d3b5968f6c35bb8e1c783a5b43940573d09d613fc752be8
+  sha256: 9af6ded97acdb94edbc7d054232656f774fa8417d00597dfaa71fedc451be516
 - uri: repo://scripts/build_st1902_champion_challenger.py
   bytes: 25023
   sha256: f010ef456d489361cb8696fef320fded6c717333fafe848b1bb99c560e027d7a
@@ -94,7 +94,7 @@ source_artifacts:
   sha256: 037c0a705eb6443e7a5b8d88f01343dc849831fc737f1e274b4fd25b532d7a7f
 - uri: repo://tests/st1902/test_contract.py
   bytes: 5778
-  sha256: 67902d88ee6da482bb54544e446e13fbf6227007f075207ce8fa6882e5479b9f
+  sha256: fae4df95fd3312c532d279318b073864d98e648cd568717ace99ca5db862de8b
 - uri: repo://tests/st1902/test_generation.py
   bytes: 5667
   sha256: 6afbb23b0166428d12f1a24571b4392e5f0c287296c7088d6a806ebe022900c0
@@ -103,12 +103,12 @@ source_artifacts:
   sha256: ba30833a49578fa62a9c0f7823280e07e8aff5ec3363c70974b4742b29f87a6c
 - uri: repo://tests/st1902/test_shadow_service.py
   bytes: 8621
-  sha256: 08bd62c11f3887579940f547aa76d10cf378bb90549813c80843c525863b648b
+  sha256: eb8bee6a70e842ce8b755e83ce21e33377891679da793d50e77fe15ab65e2546
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1902/generated/champion-challenger-shadow-report.v1.json
   bytes: 2217
-  sha256: b2ffb10a7bcfa94914f49cd7a6d24f44f183c29c7862b8b173e819726b73998b
+  sha256: c0d4ea7c4dfaebec2d03b28716f2f371b1f5d4dda827ea7aa38c9a13301197fd
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
