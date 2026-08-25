@@ -79,7 +79,8 @@ verification_results:
   strict_pyright: PASS_8_STORY_SOURCE_ZERO_DIAGNOSTICS
   compile_and_import: PASS_8_SOURCE_8_TEST
   denied_network_runtime: PASS_TWO_STEP_ZERO_EXTERNAL_ACTIONS
-  denied_network_focused_secret_scan: PASS_20_CHANGED_FILES_NO_MATCH
+  denied_network_complete_story_suite: PASS_505_EXTERNAL_NETWORK_DENIED
+  physical_clone_full_history_secret_scan: PASS_ST0106_V3_EXACT_REVIEWED_LEDGER
   active_workflows: PASS_BYTE_UNCHANGED_FROM_EXACT_BASE
   git_diff_check: PASS
 inherited_provenance_drift:

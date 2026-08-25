@@ -42,11 +42,11 @@ staging, release, live-provider, or Production status.
   Strict mypy passed separately for the same eight source and eight test
   files. Pinned Pyright 1.1.411 reported 0 errors, warnings, or information
   diagnostics across all eight Story source files.
-- Compile/import passed for eight source and eight test files. The explicit
-  two-step runner passed inside the denied-network namespace with every
-  external action count at zero. A denied-network credential-pattern scan of
-  all 20 changed files found no match, including the former
-  `GENERIC_CREDENTIAL` false-positive location.
+- Compile/import passed for eight source and eight test files. The complete
+  505-test Story suite also passed inside an isolated denied-network namespace;
+  every simulated external action count remained zero. A physical no-local,
+  single-branch clone passed the full maintained-worktree and Git-history
+  secret scan with the exact ST-0106 V3 reviewed-findings ledger.
 - Active `.github/workflows` bytes are unchanged from exact base
   `1882647ff55354c6611b52d4552f86bf7e932626`; both ST-1506 owner generators
   are deterministic and their `--check` modes are read-only.

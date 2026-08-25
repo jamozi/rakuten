@@ -160,11 +160,11 @@ source_artifacts:
   bytes: 18218
   sha256: e892e7f27e255a7fc71ceb3adb5f308f84ef198201e9a22185261b8a42bdbed0
 - uri: repo://changes/st-1506/IMPLEMENTATION_RECORD_V2_ST1506_LOCAL_CANARY.yaml
-  bytes: 3720
-  sha256: c393f8ce4e1b7e4ef94e294a0ddae7761e3d391953e7eb562cc521272676e9b3
+  bytes: 3803
+  sha256: bdce92ae275ab4b80ed241017315ea1e3dd43845c4d7dcaabfb842dcd60c9c63
 - uri: repo://changes/st-1506/LOCAL_COMPLETION_EVIDENCE_V2.md
-  bytes: 3661
-  sha256: b04203c5c818e0a00790f9ef7402ac2bc70705d3adf9bda8744fd9e02ae61c8d
+  bytes: 3700
+  sha256: 6d5e98cf46dead8db091678f600217e8b42ccc9e5fdc95e357127ac288a03bc9
 - uri: repo://changes/st-1506/README_V2.md
   bytes: 3293
   sha256: 406da05e659fa41547209a8f25e4061832b6d938a2eef371f933298966ea90ff
