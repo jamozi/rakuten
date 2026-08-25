@@ -30,10 +30,10 @@ dependency_bindings:
     artifacts:
       - kind: GENERATED_BLOCKED_SIGNOFF
         uri: repo://changes/st-1705/generated/pilot-security-recovery-signoff.local-blocked.v1.json
-        sha256: dcafa129b6032cb455bf81741aa9ea3720a6564348bf4347b795752cb8f3de72
+        sha256: c6f6e85237c3aa19684e6ed3913ddb23913efb02574fb08b91709ee1f157d192
       - kind: MANIFEST
         uri: repo://changes/st-1705/manifest.yaml
-        sha256: 82abe3b09a521797824a38c174799c7e72b0f873a6de0a527dba78e7f9aa1df7
+        sha256: e1de0a8fde0a2ab6a172e126e0fe52db296e5d175a61216c4010f4451f1d9a49
   st_1704:
     story_id: ST-1704
     role: FIVE_ARTICLE_LOCAL_NON_ATTESTING_INPUT
