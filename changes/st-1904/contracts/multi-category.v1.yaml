@@ -78,10 +78,10 @@ authority:
 predecessor:
   story_id: ST-1805
   binding: EXACT_BASE_COMMIT_BYTES
-  base_commit: aa289a91916b21d04865ac79dfae540c83ea0831
+  base_commit: 0aaaa69d7776c6e6c4d131246c57c06d2ec996a5
   artifacts:
-    changes/st-1805/contracts/portfolio-decision.v1.yaml: 1d8066ba1bdc7ef5ac5b8cf0c01d98b78eaaed8639e50d2c00965d0ebe2637c3
-    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: 18e4115223c37109f796e211dd5f92e69dec9e6c6235b1cd1aa8e72ccb95cbe8
+    changes/st-1805/contracts/portfolio-decision.v1.yaml: ec398cf427a41b0760e6b99108004d317883c8139796b768d1e122c6ea7648e7
+    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: bf9899509a376ab6a9abd1613cfe5f12ab207629a6c94b2ba3bf2106a992098e
   required_semantics:
     overall: BLOCKED
     outcome: NO_DECISION
@@ -96,7 +96,7 @@ dependency_contracts:
     sha256: 85cc1693ec4f842aaf9e156658c5fa7f95edfd32aef688f162565e40943dd914
   st1702_recorded_fixture:
     path: changes/st-1702/generated/category-fixture-runtime-recorded.v2.json
-    sha256: 24ec5547c1e55380c3ec5d7d62d201bc63408232d6d7af8b5e21510a0ddfc1b9
+    sha256: aac3734ee6ab7e30f928d46ba2fe7903fb2f859303f99b2b9fa3e1489d69fcbf
     required_semantics:
       synthetic_only: true
       candidate_applied: false
@@ -113,10 +113,10 @@ dependency_contracts:
       production_authorized: false
   st1702_runtime_manifest:
     path: changes/st-1702/runtime-manifest.v2.yaml
-    sha256: 4310c1f09710d597ba2a77bcd2b4a8263c427d6fd8ae30f4912fe57184f32ab6
+    sha256: c46b4097865c90c87f21a9be03b1716c147dc3c14323d74c37e670c551d7875c
   identity_reference_plan:
     path: changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json
-    sha256: 8c938fab6b2b51d644cec4add08a6ee2eba7b208f6cbc477a8251a422e55050e
+    sha256: f3ce4f99f5309fdc0349bd7b5a9d930ae18006d72aeb0fd480165b870d8e3f1b
     required_semantics:
       decision: NOT_READY
       safe_default: NO_AUTOMATIC_MERGE_HUMAN_REVIEW_REQUIRED
@@ -183,8 +183,8 @@ multi_category_contract:
 recorded_fixture:
   path: changes/st-1904/fixtures/recorded/multi-category.synthetic.v1.json
   bytes: 2992
-  sha256: 3cbc83d55abf908096ca2bfdccff7769eb043269368b2c23334fd5e485e9a439
-  binding_set_sha256: 46dff9e6a22cfae30f8b5655ab2c74fab4e097322d1e5bcb5e1af0746553040a
+  sha256: f9979344c980f1c3e2045a446c8170902d54d16cd849b5b8b44a35d89815bbe5
+  binding_set_sha256: 498defa989d3368651b8e1625393e88d358aedca0b541284fe7000efa83106ea
   synthetic: true
   real_category_present: false
   provider_evidence_present: false

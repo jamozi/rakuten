@@ -50,7 +50,7 @@ REPORT_PATH: Final = Path("changes/st-1904/generated/multi-category-evaluation.v
 MANIFEST_PATH: Final = Path("changes/st-1904/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1904_multi_category.py")
 HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
-BASE_COMMIT: Final = "aa289a91916b21d04865ac79dfae540c83ea0831"
+BASE_COMMIT: Final = "0aaaa69d7776c6e6c4d131246c57c06d2ec996a5"
 RECORDING_ID: Final = "st1904_recorded_multi_category_v1"
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -550,7 +550,7 @@ def _validate_contract(root: Path, contract: dict[str, Any]) -> None:
         or fixture.get("bytes") != len(fixture_bytes)
         or fixture.get("sha256") != sha256_bytes(fixture_bytes)
         or fixture.get("binding_set_sha256")
-        != "46dff9e6a22cfae30f8b5655ab2c74fab4e097322d1e5bcb5e1af0746553040a"
+        != "498defa989d3368651b8e1625393e88d358aedca0b541284fe7000efa83106ea"
         or fixture.get("synthetic") is not True
         or fixture.get("real_category_present") is not False
         or fixture.get("provider_evidence_present") is not False

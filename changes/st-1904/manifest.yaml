@@ -7,22 +7,22 @@ document:
   authority: NONE
   production_eligible: false
 provenance:
-  base_commit: aa289a91916b21d04865ac79dfae540c83ea0831
+  base_commit: 0aaaa69d7776c6e6c4d131246c57c06d2ec996a5
   contract_uri: repo://changes/st-1904/contracts/multi-category.v1.yaml
-  contract_sha256: 854eb8ebd3ee5f48f41b8b76aa31bd0edf880520f153ca8c510081ab938883bf
+  contract_sha256: 39ebd7cfba3879a0e3dc60b608d78ce302db39624cdf5d9727a0380b0577ea16
   fixture_uri: repo://changes/st-1904/fixtures/recorded/multi-category.synthetic.v1.json
-  fixture_sha256: 3cbc83d55abf908096ca2bfdccff7769eb043269368b2c23334fd5e485e9a439
-  binding_set_sha256: 46dff9e6a22cfae30f8b5655ab2c74fab4e097322d1e5bcb5e1af0746553040a
-  evaluation_report_sha256: 00b3ac65b78cd8b45619c0c9fbfe65968943728f746f0792b9331a60c1bffebf
-  report_artifact_sha256: 16481d14f42a5be266632bd602ae8f2d35cd3d131782c6ede3b4f034914e57e5
+  fixture_sha256: f9979344c980f1c3e2045a446c8170902d54d16cd849b5b8b44a35d89815bbe5
+  binding_set_sha256: 498defa989d3368651b8e1625393e88d358aedca0b541284fe7000efa83106ea
+  evaluation_report_sha256: 4f67d65998da5de48ba53d1f9c7ba04b893c4311252e01d4cdadaf172fe282a7
+  report_artifact_sha256: 6011ee75a0dfefb24b047508d5ac136a091258a59d2386be500b8a4be1ef935c
 source_artifact_count: 20
 source_artifacts:
 - uri: repo://changes/st-1904/contracts/multi-category.v1.yaml
   bytes: 10442
-  sha256: 854eb8ebd3ee5f48f41b8b76aa31bd0edf880520f153ca8c510081ab938883bf
+  sha256: 39ebd7cfba3879a0e3dc60b608d78ce302db39624cdf5d9727a0380b0577ea16
 - uri: repo://changes/st-1904/fixtures/recorded/multi-category.synthetic.v1.json
   bytes: 2992
-  sha256: 3cbc83d55abf908096ca2bfdccff7769eb043269368b2c23334fd5e485e9a439
+  sha256: f9979344c980f1c3e2045a446c8170902d54d16cd849b5b8b44a35d89815bbe5
 - uri: repo://changes/st-1904/PREFLIGHT.md
   bytes: 1257
   sha256: 5baee43eaade6c328979d564099fac3389d7c193ce9e30eb227fae4ff9a39355
@@ -49,7 +49,7 @@ source_artifacts:
   sha256: 3b4c5c1ceb7df61c9099d754b89d13bbb38c82da13b2a877f2ef00d0135eaa66
 - uri: repo://scripts/build_st1904_multi_category.py
   bytes: 31452
-  sha256: edac51b2cb0de9cdc1e7cd6d2f5451c9c2a07526dc7c7abdb037d35603e71cff
+  sha256: 55b4f8dd087175ccfd17221bdef9c88302d19c82a2e21df30089be5ab0247e58
 - uri: repo://tests/st1904/__init__.py
   bytes: 49
   sha256: 8ad32383ce689b06e486edf004fc62685a90a4ec3f542be2218c307e2f6e651c
@@ -80,7 +80,7 @@ source_artifacts:
 generated_artifacts:
 - uri: repo://changes/st-1904/generated/multi-category-evaluation.v1.json
   bytes: 2045
-  sha256: 16481d14f42a5be266632bd602ae8f2d35cd3d131782c6ede3b4f034914e57e5
+  sha256: 6011ee75a0dfefb24b047508d5ac136a091258a59d2386be500b8a4be1ef935c
 boundary:
   default_enabled: false
   recorded_synthetic_only: true
