@@ -55,7 +55,7 @@ predecessors:
       changes/st-0701/README.md: 58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6
       changes/st-0701/contracts/ai-contract-registry-loader.v1.yaml: 8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a
       changes/st-0701/generated/ai-task-registry.v1.json: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
-      changes/st-0701/manifest.yaml: 55a07bd216eef26ce9b49e236ae068b7d838e7b9678d1e52e665fb5385ec414e
+      changes/st-0701/manifest.yaml: 01653bf5968c08a5ce186cfa06a9c25f33fc7a945808b6b2a622118025b2cbce
       scripts/build_st0701_ai_registry.py: 2876b4e3bdc678cd97c11452a0a48e2786279933cbf27c0320307d0eccc1d360
       tests/st0701/conftest.py: a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b
       tests/st0701/test_compiled_task_registry.py: bdc75302f0a901e2d0859c8fee03569db6d4f628f77515385d1c9a57d17e8854
