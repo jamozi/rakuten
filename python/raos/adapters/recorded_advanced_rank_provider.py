@@ -80,9 +80,12 @@ def _reject_float(value: str) -> NoReturn:
 
 
 def _mapping(value: object, keys: frozenset[str]) -> dict[str, object]:
-    if type(value) is not dict or frozenset(value) != keys:
+    if type(value) is not dict:
         _invalid()
-    return cast(dict[str, object], value)
+    mapping = cast(dict[object, object], value)
+    if frozenset(mapping) != keys:
+        _invalid()
+    return cast(dict[str, object], mapping)
 
 
 def _string(value: object, maximum: int = 160) -> str:
@@ -191,13 +194,13 @@ def _parse(
             AdvancedRankProviderFailureCode.DEPENDENCY_CONTRACT_DRIFT
         )
     raw_observations = root["observations"]
-    if (
-        type(raw_observations) is not list
-        or not 1 <= len(raw_observations) <= MAX_PROVIDER_OBSERVATIONS
-    ):
+    if type(raw_observations) is not list:
+        _invalid()
+    observation_values = cast(list[object], raw_observations)
+    if not 1 <= len(observation_values) <= MAX_PROVIDER_OBSERVATIONS:
         _invalid()
     observations: list[RecordedAdvancedRankObservation] = []
-    for raw in raw_observations:
+    for raw in observation_values:
         item = _mapping(raw, _OBSERVATION_KEYS)
         if item["provider_code"] != SYNTHETIC_PROVIDER_CODE:
             fail_advanced_rank_provider(
