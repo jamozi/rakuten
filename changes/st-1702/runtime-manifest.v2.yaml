@@ -10,11 +10,11 @@ source_artifacts:
   role: OWNER_SOURCE
 - uri: repo://scripts/build_st1702_category_fixture_runtime.py
   bytes: 19754
-  sha256: 556ff3364aa547932084b25b6432adae9318bafb6160d25dc549a7dc065c2642
+  sha256: 67296f91286f1c5f941642befdf735b51281da1998ce69d7ca91a3ae3de95d2f
   role: OWNER_SOURCE
 - uri: repo://python/raos/domain/catalog/category_fixtures.py
-  bytes: 34306
-  sha256: a3c258756f141334039a64dd2094a9e19d925f118b7674ee4c94a2a559d39722
+  bytes: 34708
+  sha256: b4b71ecc9f75abd6fdc07d588648689ffb2f0142f993c94115fc2cde68af882a
   role: OWNER_SOURCE
 - uri: repo://python/raos/ports/category_fixtures.py
   bytes: 478
@@ -26,7 +26,7 @@ source_artifacts:
   role: OWNER_SOURCE
 - uri: repo://python/raos/adapters/recorded_category_fixtures.py
   bytes: 5423
-  sha256: 33faefd04e1616d937d2652d90a850157ee345d532908c20c24ff92b4020ae9a
+  sha256: d041f947ab8b8590c49947b1e10742a5f95f0526ed4d11433b426dd7a78f1228
   role: OWNER_SOURCE
 - uri: repo://changes/st-1702/README.md
   bytes: 9894
@@ -58,11 +58,11 @@ source_artifacts:
   role: OWNER_SOURCE
 - uri: repo://tests/st1702_v2/test_generation.py
   bytes: 6495
-  sha256: d7e2edd0db39dcfd7e1540807bbc12cdfb7292b2f2a9e3afe0d61536d5b6cc39
+  sha256: 40aaa07dbbf51209d51c86b260c2d2bd49a534d19fe6762b732c617ec9914a56
   role: OWNER_SOURCE
 - uri: repo://changes/st-1702/generated/category-fixtures-rules-reference-plan.v1.json
   bytes: 20722
-  sha256: bf7cf69e296f4e225610fa1fd2b1219dd2b47bcc168d8c45f73165d851708169
+  sha256: 07f2ea06d3d28fafd7a895dfc4c6be0f66a8185a6e032a27c997e5709c3f73fc
   role: DEPENDENCY_CONTRACT
 - uri: repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml
   bytes: 10678
@@ -74,7 +74,7 @@ source_artifacts:
   role: DEPENDENCY_CONTRACT
 - uri: repo://changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json
   bytes: 8598
-  sha256: 8c30308b4f18e250f2117b78d37a72059c9a36646c31e9906d565bee80d4ef90
+  sha256: f3ce4f99f5309fdc0349bd7b5a9d930ae18006d72aeb0fd480165b870d8e3f1b
   role: DEPENDENCY_CONTRACT
 - uri: repo://changes/st-1401/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v1.yaml
   bytes: 3249
@@ -116,11 +116,11 @@ generated_artifacts:
 - uri: repo://changes/st-1702/generated/category-fixture-runtime-recorded.v2.json
   role: RECORDED_SYNTHETIC_FIXTURE
   bytes: 4513
-  sha256: 24ec5547c1e55380c3ec5d7d62d201bc63408232d6d7af8b5e21510a0ddfc1b9
+  sha256: aac3734ee6ab7e30f928d46ba2fe7903fb2f859303f99b2b9fa3e1489d69fcbf
 - uri: repo://python/raos/adapters/recorded_category_fixture_v2.py
   role: IMMUTABLE_PYTHON_FIXTURE_WRAPPER
   bytes: 4858
-  sha256: b7a996534a9204ae51508c5987ab000203db3613fb07c44a73a79a05e420ec49
+  sha256: 773f6a4033758c6daa57384abd3f36400ed1c1c366115ea117953e7c1cc873d0
 generation:
   owner: repo://scripts/build_st1702_category_fixture_runtime.py
   check: .venv/bin/python scripts/build_st1702_category_fixture_runtime.py --check

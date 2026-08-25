@@ -55,7 +55,7 @@ BINDINGS: Final = (
         Path(
             "changes/st-1702/generated/category-fixtures-rules-reference-plan.v1.json"
         ),
-        "bf7cf69e296f4e225610fa1fd2b1219dd2b47bcc168d8c45f73165d851708169",
+        "07f2ea06d3d28fafd7a895dfc4c6be0f66a8185a6e032a27c997e5709c3f73fc",
     ),
     (
         "st1701_decision_package",
@@ -72,7 +72,7 @@ BINDINGS: Final = (
         Path(
             "changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json"
         ),
-        "8c30308b4f18e250f2117b78d37a72059c9a36646c31e9906d565bee80d4ef90",
+        "f3ce4f99f5309fdc0349bd7b5a9d930ae18006d72aeb0fd480165b870d8e3f1b",
     ),
     (
         "st1401_completion",

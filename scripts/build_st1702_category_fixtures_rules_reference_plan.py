@@ -132,24 +132,24 @@ ST0504_ARTIFACTS: Final = (
             "changes/st-0504/contracts/"
             "product-identity-human-review-reference-plan.v1.yaml"
         ),
-        "246c21aa1d79489ed8c8a02fe0b7d1a50ffe1b2f7e85fcc4ba210369477512b8",
+        "f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab",
     ),
     (
         Path(
             "changes/st-0504/generated/"
             "product-identity-human-review-reference-plan.v1.json"
         ),
-        "8c30308b4f18e250f2117b78d37a72059c9a36646c31e9906d565bee80d4ef90",
+        "f3ce4f99f5309fdc0349bd7b5a9d930ae18006d72aeb0fd480165b870d8e3f1b",
     ),
     (
         Path("changes/st-0504/manifest.yaml"),
-        "f2f7478512c857b4ecd24e3ae360a7dc5ad0ff65829b5754d730b055c247b333",
+        "1edbbd3cef50f79af8bc1169f64195097be787c3c57e7c65aa31c399735d9e7a",
     ),
 )
 ST1401_ARTIFACTS: Final = (
     (
         Path("changes/st-1401/README.md"),
-        "ff02077940493d640b305e3a6f8ac0f6198bed01d88d64100f737814d3a565ed",
+        "b5a54f7dc2344503d8baaf4f18d417f021f839baea78e712f5bed26c2e6e6caf",
     ),
     (
         Path(
@@ -172,7 +172,7 @@ ST1401_ARTIFACTS: Final = (
     ),
     (
         Path("python/raos/adapters/recorded_freshness.py"),
-        "83ad91d3301c48d3db3efa40c5835ae97dddaf22ebae4c5aa466bed8a0261ff5",
+        "0b4cff4e9c0d22311604abb4c756d63a72d63269073bf1dea1e4cec032639de6",
     ),
 )
 DEPENDENCY_ARTIFACTS: Final = (

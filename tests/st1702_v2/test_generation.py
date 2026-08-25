@@ -106,7 +106,7 @@ def test_historical_v1_plan_semantics_remain_exact_after_rebind() -> None:
     )
     payload = path.read_bytes()
     assert hashlib.sha256(payload).hexdigest() == (
-        "bf7cf69e296f4e225610fa1fd2b1219dd2b47bcc168d8c45f73165d851708169"
+        "07f2ea06d3d28fafd7a895dfc4c6be0f66a8185a6e032a27c997e5709c3f73fc"
     )
     record = json.loads(payload)
     assert record["fixture_boundary"]["runtime_category_config"] == "NOT_CREATED"

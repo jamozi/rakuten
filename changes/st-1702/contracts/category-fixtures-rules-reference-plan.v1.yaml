@@ -74,11 +74,11 @@ dependencies:
     connection_status: SOURCE_BOUND_NOT_CONNECTED
     artifacts:
       - uri: repo://changes/st-0504/contracts/product-identity-human-review-reference-plan.v1.yaml
-        sha256: 246c21aa1d79489ed8c8a02fe0b7d1a50ffe1b2f7e85fcc4ba210369477512b8
+        sha256: f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab
       - uri: repo://changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json
-        sha256: 8c30308b4f18e250f2117b78d37a72059c9a36646c31e9906d565bee80d4ef90
+        sha256: f3ce4f99f5309fdc0349bd7b5a9d930ae18006d72aeb0fd480165b870d8e3f1b
       - uri: repo://changes/st-0504/manifest.yaml
-        sha256: f2f7478512c857b4ecd24e3ae360a7dc5ad0ff65829b5754d730b055c247b333
+        sha256: 1edbbd3cef50f79af8bc1169f64195097be787c3c57e7c65aa31c399735d9e7a
   - story_id: ST-1401
     status: PROVISIONAL_CANONICAL_SAFE_DEFAULT_DISABLED_RECORDED_FRESHNESS_INTERFACE
     canonical_story_status: NOT_STARTED
@@ -88,7 +88,7 @@ dependencies:
     connection_status: SOURCE_BOUND_NOT_CONNECTED
     artifacts:
       - uri: repo://changes/st-1401/README.md
-        sha256: ff02077940493d640b305e3a6f8ac0f6198bed01d88d64100f737814d3a565ed
+        sha256: b5a54f7dc2344503d8baaf4f18d417f021f839baea78e712f5bed26c2e6e6caf
       - uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_freshness_update_policy_v0.1.yaml
         sha256: a4d490d2a54b3def63c9c240b09d34a759ebd3924e60cfcca438ee979334cea2
       - uri: repo://python/raos/domain/freshness/freshness.py
@@ -98,7 +98,7 @@ dependencies:
       - uri: repo://python/raos/application/freshness/freshness.py
         sha256: f716a703af1581d6bb0ed2cde8db4a82848dd6d143bc5bb27ae4ad4353302c43
       - uri: repo://python/raos/adapters/recorded_freshness.py
-        sha256: 83ad91d3301c48d3db3efa40c5835ae97dddaf22ebae4c5aa466bed8a0261ff5
+        sha256: 0b4cff4e9c0d22311604abb4c756d63a72d63269073bf1dea1e4cec032639de6
 
 runtime_blockers:
   status: BLOCKED
