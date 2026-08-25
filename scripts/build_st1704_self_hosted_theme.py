@@ -47,12 +47,17 @@ SOURCE_FILES: Final = (
 
 PUBLIC_LISTING_ELIGIBILITY: Final = {
     "candidate_query": {
+        "max_candidates_per_slot": 2,
+        "max_rows": 10,
         "post_type": "post",
+        "query_limit": 11,
         "slug_classes": [
             "raos-review-*",
             "snapshot.article_bindings[].slug",
         ],
+        "slot_count": 5,
     },
+    "candidate_overflow_policy": "LOOKUP_FAILURE_WHEN_RESULT_COUNT_EXCEEDS_MAX_ROWS",
     "consumers": {
         "front_page_latest_posts": {
             "filter": "query_loop_block_query_vars",

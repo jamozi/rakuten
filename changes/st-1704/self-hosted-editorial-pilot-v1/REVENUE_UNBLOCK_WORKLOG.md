@@ -101,11 +101,12 @@ file comparison and the Site Health readback remain Human Gates and `NOT_EXECUTE
 
 - Child-theme package:
   `.secrets/st1704-self-hosted-editorial-pilot/theme/kurashinoshirube-child-1.1.1.zip`
-- Package bytes: `321360`
+- Package bytes: `321987`
 - Package SHA-256:
-  `715bbe1c5e6d3d493386a3d8fb643ece9e6a4325fd0fa3ce1aed7868e9d29da5`
+  `072ba1f5864af0b7f5b5b3c9deaf04ce6c162a13132762b7ffda0b0823de35a7`
 - Theme source check and deterministic package check: `PASS`
-- Focused ST-1704 theme/release tests: `42 passed`
+- Focused ST-1704 theme/release tests: `42 passed`; bounded-listing theme file:
+  `35 passed`
 - Ruff lint/format, both ST-1704 runtime-manifest checks, and
   `git diff --check`: `PASS`
 - PHP syntax check: `NOT_EXECUTED`; no PHP executable is installed in this local

@@ -1947,14 +1947,22 @@ function kurashinoshirube_public_listing_excluded_post_ids(): ?array
         return null;
     }
 
+    // The five-slot pilot permits at most two candidate rows per slot. Fetch
+    // one sentinel row beyond that closed bound so overflow fails closed.
+    $max_candidates_per_slot = 2;
+    $max_candidate_rows = count($final_slugs) * $max_candidates_per_slot;
+    $query_row_limit = $max_candidate_rows + 1;
+
     $placeholders = implode(', ', array_fill(0, count($final_slugs), '%s'));
     $query = $wpdb->prepare(
         "SELECT ID, post_name FROM {$wpdb->posts} "
             . "WHERE post_type = %s AND (post_name LIKE %s "
-            . "OR post_name IN ({$placeholders}))",
+            . "OR post_name IN ({$placeholders})) "
+            . "ORDER BY ID ASC LIMIT %d",
         array_merge(
             array('post', $wpdb->esc_like('raos-review-') . '%'),
-            $final_slugs
+            $final_slugs,
+            array($query_row_limit)
         )
     );
     if (! is_string($query)) {
@@ -1966,6 +1974,7 @@ function kurashinoshirube_public_listing_excluded_post_ids(): ?array
         || ! is_string($wpdb->last_error)
         || $wpdb->last_error !== ''
         || ! is_array($rows)
+        || count($rows) > $max_candidate_rows
     ) {
         return null;
     }

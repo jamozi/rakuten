@@ -417,12 +417,19 @@ def test_public_listing_contract_matrix_is_fail_closed_for_pilot_routes(
         }
     ]
     assert policy["candidate_query"] == {
+        "max_candidates_per_slot": 2,
+        "max_rows": 10,
         "post_type": "post",
+        "query_limit": 11,
         "slug_classes": [
             "raos-review-*",
             "snapshot.article_bindings[].slug",
         ],
+        "slot_count": 5,
     }
+    assert policy["candidate_overflow_policy"] == (
+        "LOOKUP_FAILURE_WHEN_RESULT_COUNT_EXCEEDS_MAX_ROWS"
+    )
     assert policy["query_cache"] == "REQUEST_LOCAL_ONLY"
     assert policy["lookup_failure_policy"] == (
         "SUPPRESS_POST_SITEMAP_AND_FRONT_PAGE_POST_RESULTS"
@@ -474,12 +481,21 @@ def test_sitemap_and_front_page_share_one_public_listing_exclusion_policy() -> N
     assert "$resolved = true;" in resolver
     assert '"SELECT ID, post_name FROM {$wpdb->posts} "' in resolver
     assert '"WHERE post_type = %s AND (post_name LIKE %s "' in resolver
-    assert '"OR post_name IN ({$placeholders}))"' in resolver
+    assert '"OR post_name IN ({$placeholders})) "' in resolver
+    assert '"ORDER BY ID ASC LIMIT %d"' in resolver
     assert "$wpdb->esc_like('raos-review-') . '%'" in resolver
+    assert "$max_candidates_per_slot = 2;" in resolver
+    assert (
+        "$max_candidate_rows = count($final_slugs) * $max_candidates_per_slot;"
+        in resolver
+    )
+    assert "$query_row_limit = $max_candidate_rows + 1;" in resolver
+    assert "array($query_row_limit)" in resolver
     assert resolver.count("$wpdb->get_results($query)") == 1
     assert "! isset($wpdb->last_error)" in resolver
     assert "! is_string($wpdb->last_error)" in resolver
     assert "$wpdb->last_error !== ''" in resolver
+    assert "count($rows) > $max_candidate_rows" in resolver
     assert "kurashinoshirube_public_listing_post_is_eligible(" in resolver
     assert "return $cached;" in resolver
     assert resolver.count("return null;") >= 4
@@ -506,13 +522,30 @@ def test_sitemap_and_front_page_share_one_public_listing_exclusion_policy() -> N
     assert "wp_cache_" not in resolver
 
 
-def test_wpdb_empty_rows_with_last_error_fail_closed_for_both_consumers() -> None:
-    """Model the WordPress error shape that get_results alone cannot distinguish."""
+def test_wpdb_errors_and_candidate_overflow_fail_closed_for_consumers() -> None:
+    """Model SQL-error and sentinel-overflow shapes for both consumers."""
+
+    contract = _load_json(CONTRACT_PATH)
+    policy = contract["public_listing_eligibility"]
+    assert isinstance(policy, dict)
+    candidate_query = policy["candidate_query"]
+    assert isinstance(candidate_query, dict)
+    slot_count = candidate_query["slot_count"]
+    max_candidates_per_slot = candidate_query["max_candidates_per_slot"]
+    max_rows = candidate_query["max_rows"]
+    query_limit = candidate_query["query_limit"]
+    assert isinstance(slot_count, int) and slot_count == 5
+    assert isinstance(max_candidates_per_slot, int) and max_candidates_per_slot == 2
+    assert isinstance(max_rows, int) and max_rows == 10
+    assert max_rows == slot_count * max_candidates_per_slot
+    assert isinstance(query_limit, int) and query_limit == max_rows + 1
 
     def modeled_lookup(rows: object, last_error: object) -> list[int] | None:
         if not isinstance(last_error, str) or last_error != "":
             return None
-        return [] if isinstance(rows, list) else None
+        if not isinstance(rows, list) or len(rows) > max_rows:
+            return None
+        return []
 
     lookup = modeled_lookup([], "simulated SQL error")
     assert lookup is None
@@ -522,6 +555,17 @@ def test_wpdb_empty_rows_with_last_error_fail_closed_for_both_consumers() -> Non
     assert front_page_post_in == [0]
 
     assert modeled_lookup([], "") == []
+    assert modeled_lookup([{} for _ in range(max_rows)], "") == []
+
+    overflow_lookup = modeled_lookup([{} for _ in range(query_limit)], "")
+    assert overflow_lookup is None
+    overflow_sitemap_post_type_excluded = overflow_lookup is None
+    overflow_front_page_post_in = [0] if overflow_lookup is None else None
+    assert overflow_sitemap_post_type_excluded
+    assert overflow_front_page_post_in == [0]
+    assert policy["candidate_overflow_policy"] == (
+        "LOOKUP_FAILURE_WHEN_RESULT_COUNT_EXCEEDS_MAX_ROWS"
+    )
 
 
 def test_bound_snapshot_rejects_excerpt_mismatch() -> None:
