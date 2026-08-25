@@ -84,7 +84,7 @@
       {
         "name": "v1_reference_contract",
         "uri": "repo://changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml",
-        "sha256": "6f4848b121ecdd31b63fda9b41488b2e690d839bb7d4806de1e09039a7418a10"
+        "sha256": "b306ef823ed7e0bad404b63551c8015b09fed6f59dfba011ac6dd9b58d78adec"
       },
       {
         "name": "recorded_fixture",

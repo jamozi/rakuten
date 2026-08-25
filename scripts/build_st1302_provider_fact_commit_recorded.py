@@ -69,7 +69,7 @@ SOURCE_PATHS: Final = (
 GENERATED_PATHS: Final = (PLAN_PATH, MANIFEST_PATH)
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 GENERATION_COMMAND: Final = (
@@ -151,7 +151,7 @@ SOURCE_BINDINGS: Final = (
     (
         "v1_reference_contract",
         Path("changes/st-1302/contracts/provider-fact-commit-reference-plan.v1.yaml"),
-        "6f4848b121ecdd31b63fda9b41488b2e690d839bb7d4806de1e09039a7418a10",
+        "b306ef823ed7e0bad404b63551c8015b09fed6f59dfba011ac6dd9b58d78adec",
     ),
     (
         "recorded_fixture",

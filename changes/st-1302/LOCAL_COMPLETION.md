@@ -46,17 +46,19 @@ Canonical status transition.
 
 - both ST-1302 owner generators accept their exact installed output in
   no-write `--check` mode;
-- the complete ST-1302 local suite passes: `254 passed`;
+- the complete ST-1302 local suite passes normally and under the repository
+  network-denied wrapper: `254 passed` in each mode;
 - the ST-1301 predecessor suite passes: `58 passed`;
 - the ST-0308 handoff suite passes: `165 passed`, and its exact reference-plan
   suite passes: `134 passed`;
 - the locally runnable ST-0305 portion reports `6 passed, 35 skipped`; every
   skip is the documented absence of exact PostgreSQL 18.4 runtime input and is
   not database or TST-008 evidence;
-- focused Ruff check/format and strict mypy for the four runtime modules pass;
-- the V2 generator passes strict mypy with external helper imports skipped;
+- focused Pyright, Ruff check/format, and strict mypy for the four runtime
+  modules pass;
+- both owner generators pass strict mypy with external helper imports skipped;
 - canonical import verification and workspace drift verification pass;
-- an exact 18-file ST-1302-owned scan through the repository secret scanner
+- an exact 22-file ST-1302-owned scan through the repository secret scanner
   reports zero findings.
 
 The broad `scan_secrets.py --worktree` command cannot traverse this linked Git
