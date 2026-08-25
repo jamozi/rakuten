@@ -32,26 +32,26 @@ dependency_bindings:
   ST-1002:
     contract:
       path: changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
-      sha256: 5674f573b0a812395ada32667dab1ba84ed9b2fd5549915824948406fbea938f
+      sha256: e248d4dab10c7c98aa08b45ddeb2295851f84713ad9fed2dfd40d0250cadf258
     recorded_view:
       path: changes/st-1002/generated/public-article-renderer-recorded.v2.json
-      sha256: 866c7348e6a08806ed16fa14cbed4cbdc80f39c22d1982e1c56c16921f8ecc99
+      sha256: b19b67f6530b66004d50754f015f394cd033d07451106d5b3a6db9a5a648bc3b
     manifest:
       path: changes/st-1002/runtime-manifest.v2.yaml
-      sha256: 00c96a6e5ab2a31f069b4f9d394d10ece8f440df626e373577d0199906aabf27
+      sha256: 6da3cb69a3eef23594fb868e5cf0adcc84eadd4412990aafc26770d3dd0db300
     route_path: /articles/synthetic-recorded-policy-seo
     screen_id: PUB-003
     public_identity_fields_available: false
   ST-1004:
     contract:
       path: changes/st-1004/contracts/disclosure-affiliate-runtime.v2.yaml
-      sha256: 476b1bebd416fec4038e620144e91760f3a459084f3503dacbbc049c289963eb
+      sha256: b11d96045c0ce49bf27c0fddb4c142e1d53301356d9e760be7c32c330f0b9231
     recorded_view:
       path: changes/st-1004/generated/disclosure-affiliate-recorded.v2.json
       sha256: 4dcec2348f41b1533ed944a6d6ab63f14b6dd9900bab8cfcbab0fa11f46e7167
     manifest:
       path: changes/st-1004/runtime-manifest.v2.yaml
-      sha256: 0a9d90317ba7f14a1545dc7f83b4dcbf0118e915c744ada58d446b878421fb83
+      sha256: 2f6fb6fb8a1d7b832037af1b4fedcf4b96c1962cba9d7173989af50a6c9a5e80
     affiliate_cta_state: UNAVAILABLE_SOURCE
     affiliate_cta_rendered: false
     direct_native_navigation_independent: true

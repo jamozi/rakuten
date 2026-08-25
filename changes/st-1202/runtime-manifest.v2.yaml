@@ -6,7 +6,7 @@ source_artifact_count: 37
 source_artifacts:
 - uri: repo://changes/st-1202/contracts/public-event-instrumentation-runtime.v2.yaml
   bytes: 12882
-  sha256: 1592f22d9e40c2c2a70449247f19ed7465622b178541bdaf8385ef4d3737e053
+  sha256: c7b9624a04c14ebea9606f431bf0dde03503a20cf2b573bd81485b7e1b3e40b2
   role: OWNER_SOURCE
 - uri: repo://scripts/build_st1202_public_event_instrumentation.py
   bytes: 26627
@@ -110,19 +110,19 @@ source_artifacts:
   role: CANONICAL_INPUT
 - uri: repo://changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
   bytes: 6462
-  sha256: 5674f573b0a812395ada32667dab1ba84ed9b2fd5549915824948406fbea938f
+  sha256: e248d4dab10c7c98aa08b45ddeb2295851f84713ad9fed2dfd40d0250cadf258
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1002/generated/public-article-renderer-recorded.v2.json
   bytes: 5229
-  sha256: 866c7348e6a08806ed16fa14cbed4cbdc80f39c22d1982e1c56c16921f8ecc99
+  sha256: b19b67f6530b66004d50754f015f394cd033d07451106d5b3a6db9a5a648bc3b
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1002/runtime-manifest.v2.yaml
   bytes: 8759
-  sha256: 00c96a6e5ab2a31f069b4f9d394d10ece8f440df626e373577d0199906aabf27
+  sha256: 6da3cb69a3eef23594fb868e5cf0adcc84eadd4412990aafc26770d3dd0db300
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1004/contracts/disclosure-affiliate-runtime.v2.yaml
   bytes: 7905
-  sha256: 476b1bebd416fec4038e620144e91760f3a459084f3503dacbbc049c289963eb
+  sha256: b11d96045c0ce49bf27c0fddb4c142e1d53301356d9e760be7c32c330f0b9231
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1004/generated/disclosure-affiliate-recorded.v2.json
   bytes: 3869
@@ -130,7 +130,7 @@ source_artifacts:
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1004/runtime-manifest.v2.yaml
   bytes: 7245
-  sha256: 0a9d90317ba7f14a1545dc7f83b4dcbf0118e915c744ada58d446b878421fb83
+  sha256: 2f6fb6fb8a1d7b832037af1b4fedcf4b96c1962cba9d7173989af50a6c9a5e80
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1201/README.md
   bytes: 5398
