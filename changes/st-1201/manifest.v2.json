@@ -5,7 +5,7 @@
     {
       "bytes": 8308,
       "path": "changes/st-1201/generated/durable-recorded-event-store.v2.json",
-      "sha256": "8e0d0c72975a8e65f4d9e3af7760056dbd3f1f5df884dfc68e7ee45d0bb95f4b"
+      "sha256": "d9311ab10c23a92f70398568acab64487e089394df0801879b198e2d80bd4e77"
     }
   ],
   "owner_generator": "scripts/build_st1201_durable_event_store.py",
@@ -79,7 +79,7 @@
     {
       "bytes": 7556,
       "path": "tests/st1201/test_boundaries.py",
-      "sha256": "32a1813d7409d5b4dc6865e5f3f1bf7b538722656826be595d1404940ea272b6"
+      "sha256": "af7843a77e95ebd5afc094c26666a08d8a55d5edc9b5c00c066358183845a2a4"
     },
     {
       "bytes": 5462,
