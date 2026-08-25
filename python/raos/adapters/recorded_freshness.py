@@ -29,6 +29,8 @@ class RecordedFreshnessEvaluationFixture:
     evaluation: FreshnessEvaluation
 
     def __post_init__(self) -> None:
+        request: FreshnessEvaluationRequest | None = None
+        expected: FreshnessEvaluation | None = None
         matches = False
         if (
             type(self.request) is FreshnessEvaluationRequest
@@ -47,7 +49,7 @@ class RecordedFreshnessEvaluationFixture:
                 failed = True
             if failed:
                 matches = False
-        if not matches:
+        if not matches or request is None or expected is None:
             fail_freshness(FreshnessFailureCode.EVALUATION_MISMATCH)
         object.__setattr__(self, "request", request)
         object.__setattr__(self, "evaluation", expected)
@@ -67,6 +69,8 @@ class RecordedFreshnessScheduleFixture:
     selection: FreshnessScheduleSelection
 
     def __post_init__(self) -> None:
+        request: FreshnessScheduleRequest | None = None
+        expected: FreshnessScheduleSelection | None = None
         matches = False
         if (
             type(self.request) is FreshnessScheduleRequest
@@ -85,7 +89,7 @@ class RecordedFreshnessScheduleFixture:
                 failed = True
             if failed:
                 matches = False
-        if not matches:
+        if not matches or request is None or expected is None:
             fail_freshness(FreshnessFailureCode.SCHEDULE_MISMATCH)
         object.__setattr__(self, "request", request)
         object.__setattr__(self, "selection", expected)

@@ -148,9 +148,12 @@ def _object(value: object, keys: tuple[str, ...]) -> dict[str, object]:
 
 
 def _array(value: object, *, minimum: int, maximum: int) -> list[object]:
-    if type(value) is not list or not minimum <= len(value) <= maximum:
+    if type(value) is not list:
         fail_category_fixture(CategoryFixtureFailureCode.FIXTURE_INVALID)
-    return cast(list[object], value)
+    items = cast(list[object], value)
+    if not minimum <= len(items) <= maximum:
+        fail_category_fixture(CategoryFixtureFailureCode.FIXTURE_INVALID)
+    return items
 
 
 def _enum(enum_type: type[Enum], value: object) -> Enum:
@@ -603,11 +606,12 @@ def build_category_fixture_bundle(
 
     source_sha = category_fixture_sha256(source_fixture_sha256)
     top = _object(record, _TOP_LEVEL_KEYS)
+    data_class = _text(top["dataClass"], maximum=80, pattern=_CODE)
     if (
         top["schemaVersion"] != 2
         or top["storyId"] != "ST-1702"
         or top["classification"] != "RECORDED_SYNTHETIC_CATEGORY_FIXTURE_V2"
-        or top["dataClass"] != "SYNTHETIC_VALIDATOR_FIXTURE_ONLY"
+        or data_class != "SYNTHETIC_VALIDATOR_FIXTURE_ONLY"
         or top["environment"] != "CI"
         or top["localStatus"] != "LOCAL_IMPLEMENTATION_COMPLETE_FOR_UNRESOLVED_BOUNDARY"
         or top["canonicalStatus"]
@@ -636,9 +640,13 @@ def build_category_fixture_bundle(
             "activation",
         ),
     )
+    category_id = _text(category["categoryId"], maximum=64, pattern=_KEY)
+    candidate_category_id = _text(
+        category["candidateCategoryId"], maximum=64, pattern=_KEY
+    )
     if (
-        category["categoryId"] != "synthetic_validator_category"
-        or category["candidateCategoryId"] != "suitcase_and_carry_bags"
+        category_id != "synthetic_validator_category"
+        or candidate_category_id != "suitcase_and_carry_bags"
         or category["candidateApplied"] is not False
     ):
         fail_category_fixture(CategoryFixtureFailureCode.FIXTURE_INVALID)
@@ -774,9 +782,9 @@ def build_category_fixture_bundle(
 
     bundle = CategoryFixtureBundle(
         fixture_id=fixture_id,
-        category_id=category["categoryId"],
+        category_id=category_id,
         display_name=display_name,
-        candidate_category_id=category["candidateCategoryId"],
+        candidate_category_id=candidate_category_id,
         category_activation=category_activation,
         attribute_schema=tuple(attributes),
         golden_products=tuple(products),
@@ -784,7 +792,7 @@ def build_category_fixture_bundle(
         source_bindings=source_bindings,
         source_fixture_sha256=source_sha,
         record_fingerprint=_canonical_fingerprint(top),
-        data_class=top["dataClass"],
+        data_class="SYNTHETIC_VALIDATOR_FIXTURE_ONLY",
         identity_activation=cast(
             IdentityActivation,
             _enum(IdentityActivation, identity["activation"]),
@@ -845,11 +853,12 @@ def _validate_case_semantics(bundle: CategoryFixtureBundle) -> None:
         left = products[case.left_product_id]
         right = products[case.right_product_id]
         differences = {key for key in _ATTRIBUTE_KEYS if left[key] != right[key]}
-        expected = {
+        expected_differences: dict[IdentityScenario, set[str]] = {
             IdentityScenario.EXACT_SYNTHETIC_FIELDS: set(),
             IdentityScenario.VARIANT_DIFFERENCE: {"variant_code"},
             IdentityScenario.SET_COUNT_DIFFERENCE: {"set_count"},
-        }[case.scenario]
+        }
+        expected = expected_differences[case.scenario]
         if differences != expected:
             fail_category_fixture(CategoryFixtureFailureCode.FIXTURE_INVALID)
 
