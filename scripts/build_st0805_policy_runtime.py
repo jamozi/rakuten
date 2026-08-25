@@ -122,13 +122,13 @@ UPSTREAM_RECOMMENDATION_PATH: Final = Path(
     "changes/st-0804/generated/recommendation-pass.v2.json"
 )
 UPSTREAM_RECOMMENDATION_SHA256: Final = (
-    "52a48ea6608d54abc0346c559823b5994c67eca59012c10e19291d0dcfc2cbc6"
+    "d5270a098496ecb8d2dbdac2884464a8c992d060c1aa1f23dcee11a8b483b660"
 )
 UPSTREAM_RECOMMENDATION_MANIFEST: Final = Path(
     "changes/st-0804/runtime-manifest.v2.yaml"
 )
 UPSTREAM_RECOMMENDATION_MANIFEST_SHA256: Final = (
-    "15e8a2087a45602070e140d00b6f5f4755085fdbab6fc2c55b2e8d04d6fce5da"
+    "c6862ed8679cd6c926ac72d1d5b584fd18a06bb71f7be9ab2c3f5560859e2f8f"
 )
 CONTENT_AST_SEED_PATH: Final = Path(
     "contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json"
@@ -206,7 +206,7 @@ DEPENDENCY_BINDINGS: Final = (
     ),
     (
         Path("python/raos/domain/editorial/recommendation_v2.py"),
-        "d7b020a65dfe2071335fda7bdb9b804fcd02def954c415a36318437a9e4d5de4",
+        "990228a1a883cf8c93ca16ac3a83e687947b9357ba59eaabdfaa7934cf4b0a01",
     ),
     (UPSTREAM_RECOMMENDATION_PATH, UPSTREAM_RECOMMENDATION_SHA256),
     (
