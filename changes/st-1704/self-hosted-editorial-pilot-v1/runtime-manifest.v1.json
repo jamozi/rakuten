@@ -93,12 +93,12 @@
     {
       "bytes": 34519,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
-      "sha256": "c172c7a1573d5c394efe4a9cb19dc528fa7b5aba6dd07c6875c5cbbaf766984c"
+      "sha256": "41136109762edf3f909d8753e9dbbb15c4d3a901201652149e6760f1f6d8b634"
     },
     {
       "bytes": 41489,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
-      "sha256": "7ca08f16ccb512420bd066f38007786f5b404b86b2ab3438930d5984189acf46"
+      "sha256": "227f71b399f5a232e09c4f9ed1c6ca5094465de1dd7519c89ff305bfc9977bc8"
     },
     {
       "bytes": 70148,

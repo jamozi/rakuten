@@ -536,7 +536,7 @@ def test_capture_plan_binds_five_articles_and_eighteen_unique_products() -> None
     ]
     assert [target.fixed_item_code for target in rows[3]] == [
         "panasonic-store:10000735",
-        "thanko:000000004715",
+        "thanko:10005443",
         "siroca:10000024",
         "jyupro:10136298",
     ]
