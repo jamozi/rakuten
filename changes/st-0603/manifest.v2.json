@@ -3,12 +3,12 @@
   "formal_TST_007": "NOT_EXECUTED",
   "formal_TST_020": "NOT_EXECUTED",
   "generated_sha256": {
-    "changes/st-0603/generated/fact-conflict-runtime.v2.json": "3bbe9d26294e8eb5587fd5c31ef25007a2454c1a3184960ff55b5b2fcacae0dd"
+    "changes/st-0603/generated/fact-conflict-runtime.v2.json": "6e8ad9f6673d70639d2a84851c32694c163f38a7cb7c7c22a5979a2925c337e3"
   },
   "generation_command": "python scripts/build_st0603_fact_conflict_runtime.py",
   "hosted_ci": "NOT_EXECUTED",
   "live_provider": "NOT_EXECUTED",
-  "predecessor_commit": "d95d90ccbf314ca66db61711021d924faa90173d",
+  "predecessor_commit": "806b978803cbc78392117cbc31015db19ea09a74",
   "production": "NOT_EXECUTED",
   "production_authority": "NONE",
   "release": "NOT_EXECUTED",
@@ -16,11 +16,11 @@
   "source_sha256": {
     "changes/st-0602/contracts/fact-extraction-runtime.v2.json": "50a8e2a8dc32f0dc93696466d02aba9688dd985db5918fe05abb70eeba18ef78",
     "changes/st-0602/generated/fact-extraction-runtime.v2.json": "1793b4928c6d473e35e843ae76840b2a4c2c588e56daa4a2b6526957bf1ffa51",
-    "changes/st-0602/manifest.v2.json": "bf05524e61654321b519f17aec564f5889609f91ddda92d5ad5a395ce5d700c4",
-    "changes/st-0603/LOCAL-IMPLEMENTATION-COMPLETION-20260825-v2.json": "d4c41f4e2b1af835fcf44a63168fdafd69059139c7b2a2730eecc89b2ab2f966",
+    "changes/st-0602/manifest.v2.json": "8416ef914a1a3f550a43ad5799f03e5c0701a60f423c6d59ec343a822e9330af",
+    "changes/st-0603/LOCAL-IMPLEMENTATION-COMPLETION-20260825-v2.json": "75cd28e0d98d86242a0af8f2a3631899a1a4976203dd378068cc2d2d9342c1ac",
     "changes/st-0603/PREFLIGHT-v2.md": "f6193dfc7c425de08c944de7f27959f0d9184644c8f1fcd2076adcf3435af308",
     "changes/st-0603/README-v2.md": "0942b00cfd7b9b20cf94896bb1a7dbae306e5d7df059509100439e0086156cfd",
-    "changes/st-0603/contracts/fact-conflict-runtime.v2.json": "1a40a331c40e1daa1d89e91e6ed8a8d02f6517e7c0222d29a98958abd5740b7c",
+    "changes/st-0603/contracts/fact-conflict-runtime.v2.json": "595cb7ff6035adad50ee9edc2a55187ca829bce9ca59efb0e2dc10579fb8cbd9",
     "changes/st-0603/fixtures/fact-conflict.synthetic.v2.json": "272b37b76d0a8011d615bbbb311d2a613e13d48c176a02f5e4f31f3e3df6a20b",
     "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626",
     "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",

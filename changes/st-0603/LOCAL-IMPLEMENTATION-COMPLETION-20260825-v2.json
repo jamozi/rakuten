@@ -35,7 +35,7 @@
     "V1 owner generation used the repository-pinned uv 0.12.1 toolchain",
     "Ruff format and lint passed for owned runtime sources tests and both owner generators",
     "strict mypy passed with 0 issues for six owned source and generator files",
-    "target Pyright passed with 0 errors and 0 warnings for four V2 runtime modules and the V2 owner generator",
+    "target Pyright passed with 0 errors and 0 warnings for four V2 runtime modules and both owner generators",
     "Python compile and import smoke passed for six owned source and generator files",
     "JSON and YAML document parse checks passed",
     "closed contract fixture and owner render validation passed with temporary current-file predecessor hashes before the exact final pin",
@@ -55,7 +55,7 @@
     {
       "debt_id": "ST0603-PREDECESSOR-REBIND",
       "status": "CLOSED_EXACT_REBIND",
-      "detail": "The V1 reference-plan owner remains bound to its exact integration predecessor commit 1829e1ba31addce6579b445da51be5b604732278. The V2 runtime owner binds exact current integration predecessor commit d95d90ccbf314ca66db61711021d924faa90173d and the current required ST-0602 artifact hashes; both owners generate and check without drift."
+      "detail": "The V1 reference-plan and V2 runtime owners bind exact current integration predecessor commit 806b978803cbc78392117cbc31015db19ea09a74 and the current required ST-0602 artifact hashes; both owners generate and check without drift."
     },
     {
       "debt_id": "ST0603-CROSS-RESTART-ROLLBACK-ANCHOR",

@@ -36,12 +36,12 @@
     "generation_command": "uv run --locked --no-sync python scripts/build_st0603_fact_conflict_review_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
+      "sha256": "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     }
   },
   "predecessor_binding": {
     "story_id": "ST-0602",
-    "commit": "1829e1ba31addce6579b445da51be5b604732278",
+    "commit": "806b978803cbc78392117cbc31015db19ea09a74",
     "relationship": "EMPTY_FACT_INPUT_REFERENCE_ONLY",
     "files": [
       {
@@ -54,15 +54,15 @@
       },
       {
         "path": "changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json",
-        "sha256": "c6b725cb8a52d6bbe4a085803587a1ad0679b0ad4f1ffe77c302891d7f66c23d"
+        "sha256": "c515af3410be014a714be4d9f9cd133bd320f4c19e5da5820bb3cd6b1a39abb5"
       },
       {
         "path": "changes/st-0602/manifest.yaml",
-        "sha256": "b31af1f0425c158dd5df32abcadc23dd4f663c2cc0f01d117a65c6eef9d02839"
+        "sha256": "e4ac2cbe7458035e53356ab0647bcd8439cec4c352297538ef7b595edf5bd18e"
       },
       {
         "path": "scripts/build_st0602_fact_extraction_validation_reference_plan.py",
-        "sha256": "b4726b0b59761ad716599373084bdc56917566e4acba45e0ec0692f6de2a893b"
+        "sha256": "94947fcde0e2f5d9c972c38dbe9d1fea287659c5a0e7ab329a485eaf61b1e753"
       },
       {
         "path": "tests/st0602/conftest.py",
