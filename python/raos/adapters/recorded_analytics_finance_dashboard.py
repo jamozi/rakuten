@@ -84,9 +84,12 @@ def _text(value: object) -> str:
 
 
 def _string_array(value: object) -> tuple[str, ...]:
-    if type(value) is not list or any(type(item) is not str for item in value):
+    if type(value) is not list:
         _invalid()
-    return tuple(cast(list[str], value))
+    values = cast(list[object], value)
+    if any(type(item) is not str for item in values):
+        _invalid()
+    return tuple(cast(list[str], values))
 
 
 def _timestamp(value: object) -> datetime:
