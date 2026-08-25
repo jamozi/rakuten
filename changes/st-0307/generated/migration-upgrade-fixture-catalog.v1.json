@@ -311,6 +311,6 @@
   },
   "schema_version": "migration-upgrade-fixture-catalog.v1",
   "source_contract": "changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml",
-  "source_contract_sha256": "e13c9d550dc0df1483613db4ecc3641bef705d322fe3f2493a63bee21d876f30",
+  "source_contract_sha256": "33bc260ab7cf494ae0fc139e1fea8cdfb66b122f036c0963cb338dd2e3c9827a",
   "story_id": "ST-0307"
 }

@@ -52,7 +52,7 @@ provenance:
   - uri: repo://changes/st-0305/manifest.yaml
     sha256: 1de981e51f57d24e77480309149d4b7e9863a0fff5c926f211aee8f77751784d
   - uri: repo://changes/st-0306/manifest.yaml
-    sha256: 6647e9673cf075d77ac396e9c0e745d76e05fb4cc2f39bca79a6f600b4513fc5
+    sha256: 2ea10f2b5ebe558c3d2a8055b84d91500ca0c5e67aa28a54bd504226bbc485a0
 production_graph:
   anchor_revision: '202608030001'
   predecessor_revision: '202608030005'
@@ -65,7 +65,7 @@ source_artifact_count: 45
 source_artifacts:
 - uri: repo://changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml
   bytes: 14170
-  sha256: e13c9d550dc0df1483613db4ecc3641bef705d322fe3f2493a63bee21d876f30
+  sha256: 33bc260ab7cf494ae0fc139e1fea8cdfb66b122f036c0963cb338dd2e3c9827a
 - uri: repo://changes/st-0307/README.md
   bytes: 2249
   sha256: 0b32aa4a289a297f47ddf770244d696f437a0e98cf857556ef3d6a6cede41023
@@ -83,7 +83,7 @@ source_artifacts:
   sha256: a7a565a02fb99e30200539dedf2072dcb598f89835e6bfdc8e3b75516bd901e9
 - uri: repo://scripts/build_st0307_migration_fixtures.py
   bytes: 34971
-  sha256: 8fbb8c05f2a258655770d60d07d85659f887951464d6fde41fa738cd3ea341f1
+  sha256: 0f5b8be6bd1419bad11ac5b53242558d36cb1b899aa32f7b89f31e5ba89ab225
 - uri: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
   bytes: 434952
   sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
@@ -128,7 +128,7 @@ source_artifacts:
   sha256: 1de981e51f57d24e77480309149d4b7e9863a0fff5c926f211aee8f77751784d
 - uri: repo://changes/st-0306/manifest.yaml
   bytes: 8660
-  sha256: 6647e9673cf075d77ac396e9c0e745d76e05fb4cc2f39bca79a6f600b4513fc5
+  sha256: 2ea10f2b5ebe558c3d2a8055b84d91500ca0c5e67aa28a54bd504226bbc485a0
 - uri: repo://python/raos/migrations/catalog.py
   bytes: 20363
   sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
@@ -214,7 +214,7 @@ generated_artifacts:
   sha256: ac133f0d975241b22a8744bd7b78ec52904dc64414f344f7c3f1e83e9339cf3d
 - uri: repo://changes/st-0307/generated/migration-upgrade-fixture-catalog.v1.json
   bytes: 11444
-  sha256: 06e748f878aadfe592130aa731daf63fabffa700c8a44715ee9c0e386298854c
+  sha256: 25d4e5e10be62655154e9490df8ffd37789bd8e759930172d2cae5a8b9066a7b
 manifest_self_integrity:
   included_in_source_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check
