@@ -28,6 +28,20 @@ OWNER_PATH: Final = Path("scripts/build_st0106_reviewed_findings_rebind.py")
 HEX_SHA256: Final = re.compile(r"[0-9a-f]{64}")
 HEX_OBJECT_ID: Final = re.compile(r"[0-9a-f]{40}")
 RATIONALE: Final = "Sanitized source location reviewed; no live credential is present."
+EXPECTED_REVIEWED_HISTORY_BINDING: Final = {
+    "scope": "git_history",
+    "exact_source_identifier": "90716c9c3d514d265c3c7463c8d71b172e43d951",
+    "exact_line_number": 193,
+    "exact_source_bytes": 16883,
+    "exact_source_sha256": (
+        "19b37f2470e01a261336d501ce0ef9739efd18150b7e446fbdf04af39ed66dd0"
+    ),
+    "exact_line_sha256": (
+        "2ac0364bcf02c18716c5518114835168d24c88eccf2aea3d6d0f18dfd4b880db"
+    ),
+    "classification": "REVIEWED_FALSE_POSITIVE",
+    "rationale": RATIONALE,
+}
 EXPECTED_PREDECESSOR_PATH: Final = (
     "changes/st-0106/contracts/reviewed-secret-findings.v2.yaml"
 )
@@ -99,6 +113,20 @@ class RebindPolicy:
     project_current_blob_to_history: bool
     expected_findings: frozenset[tuple[int, str]]
     allowed_hunks: tuple[ChangedHunk, ...]
+
+
+@dataclass(frozen=True)
+class ReviewedHistoryBinding:
+    """One exact, already-reviewed history finding that may be appended."""
+
+    scope: str
+    source_identifier: str
+    line: int
+    source_bytes: int
+    source_sha256: str
+    line_sha256: str
+    classification: str
+    rationale: str
 
 
 def _strict_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
@@ -288,6 +316,59 @@ def parse_rebind_policy(document: Mapping[str, object]) -> RebindPolicy:
         project_current_blob_to_history=True,
         expected_findings=frozenset(expected_findings),
         allowed_hunks=tuple(hunks),
+    )
+
+
+def parse_reviewed_history_bindings(
+    document: Mapping[str, object],
+) -> tuple[ReviewedHistoryBinding, ...]:
+    """Parse the single exact reviewed-history addition authorized for V3."""
+
+    raw_bindings = _sequence(
+        document.get("reviewed_history_additions"),
+        code="INVALID_REVIEWED_HISTORY_ADDITIONS",
+    )
+    if len(raw_bindings) != 1:
+        raise OwnerError("INVALID_REVIEWED_HISTORY_ADDITIONS")
+    raw_binding = _mapping(
+        raw_bindings[0],
+        keys=frozenset(EXPECTED_REVIEWED_HISTORY_BINDING),
+        code="INVALID_REVIEWED_HISTORY_BINDING",
+    )
+    if raw_binding != EXPECTED_REVIEWED_HISTORY_BINDING:
+        raise OwnerError("UNAUTHORIZED_REVIEWED_HISTORY_BINDING")
+    return (
+        ReviewedHistoryBinding(
+            scope=_text(raw_binding["scope"], code="INVALID_REVIEWED_HISTORY_BINDING"),
+            source_identifier=_blob_oid(
+                raw_binding["exact_source_identifier"],
+                code="INVALID_REVIEWED_HISTORY_BINDING",
+            ),
+            line=_positive_int(
+                raw_binding["exact_line_number"],
+                code="INVALID_REVIEWED_HISTORY_BINDING",
+            ),
+            source_bytes=_positive_int(
+                raw_binding["exact_source_bytes"],
+                code="INVALID_REVIEWED_HISTORY_BINDING",
+            ),
+            source_sha256=_sha256(
+                raw_binding["exact_source_sha256"],
+                code="INVALID_REVIEWED_HISTORY_BINDING",
+            ),
+            line_sha256=_sha256(
+                raw_binding["exact_line_sha256"],
+                code="INVALID_REVIEWED_HISTORY_BINDING",
+            ),
+            classification=_text(
+                raw_binding["classification"],
+                code="INVALID_REVIEWED_HISTORY_BINDING",
+            ),
+            rationale=_text(
+                raw_binding["rationale"],
+                code="INVALID_REVIEWED_HISTORY_BINDING",
+            ),
+        ),
     )
 
 
@@ -509,6 +590,97 @@ def _git_blob(root: Path, object_id: str) -> bytes:
     return result.stdout
 
 
+def _reviewed_history_entry(
+    binding: ReviewedHistoryBinding,
+) -> dict[str, object]:
+    return {
+        "scope": binding.scope,
+        "exact_source_identifier": binding.source_identifier,
+        "exact_line_number": binding.line,
+        "exact_source_bytes": binding.source_bytes,
+        "exact_source_sha256": binding.source_sha256,
+        "exact_line_sha256": binding.line_sha256,
+        "classification": binding.classification,
+        "rationale": binding.rationale,
+    }
+
+
+def validate_reviewed_history_binding(
+    data: bytes,
+    binding: ReviewedHistoryBinding,
+) -> None:
+    """Validate one exact value-free binding without exposing source bytes."""
+
+    if (
+        binding.scope != "git_history"
+        or binding.classification != "REVIEWED_FALSE_POSITIVE"
+        or binding.rationale != RATIONALE
+    ):
+        raise OwnerError("INVALID_REVIEWED_HISTORY_BINDING")
+    if (
+        len(data) != binding.source_bytes
+        or hashlib.sha256(data).hexdigest() != binding.source_sha256
+    ):
+        raise OwnerError("REVIEWED_HISTORY_SOURCE_DRIFT")
+    if (
+        hashlib.sha256(_line_bytes(data, binding.line)).hexdigest()
+        != binding.line_sha256
+    ):
+        raise OwnerError("REVIEWED_HISTORY_LINE_DRIFT")
+    findings = _sanitized_findings(
+        data,
+        f"git-blob:{binding.source_identifier}",
+    )
+    if findings != frozenset({(binding.line, scanner.RULE_GENERIC_CREDENTIAL)}):
+        raise OwnerError("REVIEWED_HISTORY_FINDING_SET_DRIFT")
+
+
+def append_reviewed_history_bindings(
+    ledger_data: bytes,
+    bindings: Sequence[ReviewedHistoryBinding],
+    *,
+    root: Path,
+) -> bytes:
+    """Append only the closed exact reviewed-history set to a generated ledger."""
+
+    document = _load_json(ledger_data, code="INVALID_GENERATED_LEDGER")
+    scanner.parse_reviewed_findings(ledger_data)
+    raw_entries = document.get("entries")
+    if type(raw_entries) is not list:
+        raise OwnerError("INVALID_GENERATED_LEDGER")
+    entries: list[dict[str, object]] = []
+    keys: set[tuple[int, str, int]] = set()
+    for raw_entry in cast(list[object], raw_entries):
+        if type(raw_entry) is not dict:
+            raise OwnerError("INVALID_GENERATED_LEDGER")
+        entry = dict(cast(dict[str, object], raw_entry))
+        key = _ledger_entry_sort_key(entry)
+        if key in keys:
+            raise OwnerError("DUPLICATE_GENERATED_LEDGER_ENTRY")
+        keys.add(key)
+        entries.append(entry)
+
+    for binding in bindings:
+        entry = _reviewed_history_entry(binding)
+        key = _ledger_entry_sort_key(entry)
+        if key in keys:
+            raise OwnerError("REVIEWED_HISTORY_ENTRY_ALREADY_PRESENT")
+        validate_reviewed_history_binding(
+            _git_blob(root, binding.source_identifier),
+            binding,
+        )
+        keys.add(key)
+        entries.append(entry)
+
+    entries.sort(key=_ledger_entry_sort_key)
+    document["entries"] = entries
+    rendered = (json.dumps(document, ensure_ascii=True, indent=2) + "\n").encode(
+        "utf-8"
+    )
+    scanner.parse_reviewed_findings(rendered)
+    return rendered
+
+
 def _exact_file(root: Path, binding: Mapping[str, object], *, code: str) -> bytes:
     path = _relative_path(binding.get("path"), code=code)
     data = scanner.read_maintained_file(root, path)
@@ -529,8 +701,14 @@ def _render_manifest(
     current_data: bytes,
     ledger_data: bytes,
     policy: RebindPolicy,
+    reviewed_history_bindings: Sequence[ReviewedHistoryBinding],
     output_path: str,
 ) -> bytes:
+    ledger_document = _load_json(ledger_data, code="INVALID_GENERATED_LEDGER")
+    raw_ledger_entries = ledger_document.get("entries")
+    if type(raw_ledger_entries) is not list:
+        raise OwnerError("INVALID_GENERATED_LEDGER")
+    ledger_entries = cast(list[object], raw_ledger_entries)
     document = {
         "schema_version": 1,
         "story_id": "ST-0106",
@@ -578,13 +756,26 @@ def _render_manifest(
             "classification_change": "NONE",
             "rationale_change": "NONE",
         },
+        "reviewed_history_additions": [
+            {
+                **_reviewed_history_entry(binding),
+                "sanitized_finding_set": [
+                    {
+                        "line": binding.line,
+                        "rule_id": scanner.RULE_GENERIC_CREDENTIAL,
+                    }
+                ],
+                "specific_rule_findings": 0,
+            }
+            for binding in reviewed_history_bindings
+        ],
         "generated_ledger": {
             "path": output_path,
             "bytes": len(ledger_data),
             "sha256": hashlib.sha256(ledger_data).hexdigest(),
-            "entry_count": 116,
+            "entry_count": len(ledger_entries),
             "changed_entry_count": 1,
-            "added_entry_count": 1,
+            "added_entry_count": 1 + len(reviewed_history_bindings),
             "specific_rule_suppression": "FORBIDDEN",
         },
         "boundaries": {
@@ -609,6 +800,7 @@ def build_outputs(root: Path = REPO_ROOT) -> tuple[Path, bytes, Path, bytes]:
         "predecessor_ledger",
         "scanner_source",
         "source_rebind",
+        "reviewed_history_additions",
         "outputs",
         "boundaries",
     }:
@@ -649,12 +841,18 @@ def build_outputs(root: Path = REPO_ROOT) -> tuple[Path, bytes, Path, bytes]:
         raise OwnerError("INVALID_SCANNER_BINDING")
     scanner_data = _exact_file(root, scanner_binding, code="SCANNER_SOURCE_DRIFT")
     policy = parse_rebind_policy(document)
+    reviewed_history_bindings = parse_reviewed_history_bindings(document)
     prior_data = _git_blob(root, policy.prior.blob_oid)
     current_data = scanner.read_maintained_file(root, policy.path)
     current_blob_data = _git_blob(root, policy.current.blob_oid)
     if current_data != current_blob_data:
         raise OwnerError("CURRENT_BLOB_WORKTREE_MISMATCH")
     ledger_data = reconcile_ledger(predecessor_data, prior_data, current_data, policy)
+    ledger_data = append_reviewed_history_bindings(
+        ledger_data,
+        reviewed_history_bindings,
+        root=root,
+    )
 
     outputs = _mapping(
         document["outputs"],
@@ -689,6 +887,7 @@ def build_outputs(root: Path = REPO_ROOT) -> tuple[Path, bytes, Path, bytes]:
         current_data=current_data,
         ledger_data=ledger_data,
         policy=policy,
+        reviewed_history_bindings=reviewed_history_bindings,
         output_path=ledger_path_text,
     )
     return (

@@ -29,9 +29,16 @@ SCANNER_PATH = REPOSITORY_ROOT / "scripts/scan_secrets.py"
 SOURCE_PATH = REPOSITORY_ROOT / "tests/st1703/test_wordpresscom_review_draft_https.py"
 TARGET_RELATIVE = "tests/st1703/test_wordpresscom_review_draft_https.py"
 EXPECTED_V2_SHA256 = "667fee6720dad2e25e71220b2ec2fc8918a845ee30309c581f687ca87f51ca1b"
-EXPECTED_V3_SHA256 = "09277639d9db84371e8e3882ad2379ee4e15a13ff35a74b003201bde2f681f40"
+EXPECTED_V3_SHA256 = "be150c6dafe3055385abf46978213537296dca6cf3000d9cc8382542bf013690"
 EXPECTED_REVIEWED_LINE_SHA256 = (
     "e7ce26448515f4510b0f6165edeeb2cd464b8db7309504eb969193824b726293"
+)
+EXPECTED_HISTORY_OBJECT_ID = "90716c9c3d514d265c3c7463c8d71b172e43d951"
+EXPECTED_HISTORY_SOURCE_SHA256 = (
+    "19b37f2470e01a261336d501ce0ef9739efd18150b7e446fbdf04af39ed66dd0"
+)
+EXPECTED_HISTORY_LINE_SHA256 = (
+    "2ac0364bcf02c18716c5518114835168d24c88eccf2aea3d6d0f18dfd4b880db"
 )
 
 
@@ -43,6 +50,12 @@ def _input_document() -> dict[str, object]:
 
 def _policy() -> owner.RebindPolicy:
     return owner.parse_rebind_policy(_input_document())
+
+
+def _history_binding() -> owner.ReviewedHistoryBinding:
+    bindings = owner.parse_reviewed_history_bindings(_input_document())
+    assert len(bindings) == 1
+    return bindings[0]
 
 
 def _git_blob(object_id: str) -> bytes:
@@ -84,6 +97,25 @@ def _entry(document: dict[str, object]) -> dict[str, object]:
             candidate.get("scope") == "worktree"
             and candidate.get("exact_source_identifier") == TARGET_RELATIVE
             and candidate.get("exact_line_number") == 961
+        ):
+            matches.append(candidate)
+    assert len(matches) == 1
+    return matches[0]
+
+
+def _history_entry(document: dict[str, object]) -> dict[str, object]:
+    raw_entries = document["entries"]
+    assert type(raw_entries) is list
+    entries = cast(list[object], raw_entries)
+    matches: list[dict[str, object]] = []
+    for item in entries:
+        if type(item) is not dict:
+            continue
+        candidate = cast(dict[str, object], item)
+        if (
+            candidate.get("scope") == "git_history"
+            and candidate.get("exact_source_identifier") == EXPECTED_HISTORY_OBJECT_ID
+            and candidate.get("exact_line_number") == 193
         ):
             matches.append(candidate)
     assert len(matches) == 1
@@ -202,7 +234,7 @@ def test_v3_rebinds_worktree_and_projects_only_the_current_history_blob() -> Non
     v2_data = V2_PATH.read_bytes()
     v3_data = V3_PATH.read_bytes()
     assert len(v2_data) == 59769
-    assert len(v3_data) == 60287
+    assert len(v3_data) == 60805
     assert hashlib.sha256(v2_data).hexdigest() == EXPECTED_V2_SHA256
     assert hashlib.sha256(v3_data).hexdigest() == EXPECTED_V3_SHA256
     v2 = cast(dict[str, object], json.loads(v2_data))
@@ -214,13 +246,14 @@ def test_v3_rebinds_worktree_and_projects_only_the_current_history_blob() -> Non
     v2_entries = cast(list[dict[str, object]], v2["entries"])
     v3_entries = cast(list[dict[str, object]], v3["entries"])
     assert len(v2_entries) == 115
-    assert len(v3_entries) == 116
+    assert len(v3_entries) == 117
     v2_by_key = {_entry_key(entry): entry for entry in v2_entries}
     v3_by_key = {_entry_key(entry): entry for entry in v3_entries}
     assert not (set(v2_by_key) - set(v3_by_key))
     added_keys = set(v3_by_key) - set(v2_by_key)
     assert added_keys == {
-        ("git_history", "8dcd2ab01f276a6dac924b42e733a827574c13ed", 961)
+        ("git_history", "8dcd2ab01f276a6dac924b42e733a827574c13ed", 961),
+        ("git_history", EXPECTED_HISTORY_OBJECT_ID, 193),
     }
     changed_keys_by_entry = {
         key for key in v2_by_key if v2_by_key[key] != v3_by_key[key]
@@ -239,12 +272,22 @@ def test_v3_rebinds_worktree_and_projects_only_the_current_history_blob() -> Non
     assert before["classification"] == after["classification"]
     assert before["rationale"] == after["rationale"]
 
-    projected = v3_by_key[added_keys.pop()]
+    projected = v3_by_key[
+        ("git_history", "8dcd2ab01f276a6dac924b42e733a827574c13ed", 961)
+    ]
     assert projected["exact_source_bytes"] == after["exact_source_bytes"]
     assert projected["exact_source_sha256"] == after["exact_source_sha256"]
     assert projected["exact_line_sha256"] == after["exact_line_sha256"]
     assert projected["classification"] == after["classification"]
     assert projected["rationale"] == after["rationale"]
+
+    reviewed_history = v3_by_key[("git_history", EXPECTED_HISTORY_OBJECT_ID, 193)]
+    assert reviewed_history == _history_entry(v3)
+    assert reviewed_history["exact_source_bytes"] == 16883
+    assert reviewed_history["exact_source_sha256"] == EXPECTED_HISTORY_SOURCE_SHA256
+    assert reviewed_history["exact_line_sha256"] == EXPECTED_HISTORY_LINE_SHA256
+    assert reviewed_history["classification"] == "REVIEWED_FALSE_POSITIVE"
+    assert reviewed_history["rationale"] == owner.RATIONALE
 
 
 def test_manifest_binds_owner_inputs_and_keeps_formal_boundaries() -> None:
@@ -268,9 +311,9 @@ def test_manifest_binds_owner_inputs_and_keeps_formal_boundaries() -> None:
     assert generated["path"] == V3_PATH.relative_to(REPOSITORY_ROOT).as_posix()
     assert generated["bytes"] == len(V3_PATH.read_bytes())
     assert generated["sha256"] == EXPECTED_V3_SHA256
-    assert generated["entry_count"] == 116
+    assert generated["entry_count"] == 117
     assert generated["changed_entry_count"] == 1
-    assert generated["added_entry_count"] == 1
+    assert generated["added_entry_count"] == 2
     assert generated["specific_rule_suppression"] == "FORBIDDEN"
     source = cast(dict[str, object], manifest["source_rebind"])
     assert source["reviewed_line"] == 961
@@ -280,6 +323,23 @@ def test_manifest_binds_owner_inputs_and_keeps_formal_boundaries() -> None:
     assert source["current_blob_history_projection_added"] is True
     assert source["classification_change"] == "NONE"
     assert source["rationale_change"] == "NONE"
+    history_additions = cast(
+        list[dict[str, object]], manifest["reviewed_history_additions"]
+    )
+    assert len(history_additions) == 1
+    history = history_additions[0]
+    assert history["scope"] == "git_history"
+    assert history["exact_source_identifier"] == EXPECTED_HISTORY_OBJECT_ID
+    assert history["exact_line_number"] == 193
+    assert history["exact_source_bytes"] == 16883
+    assert history["exact_source_sha256"] == EXPECTED_HISTORY_SOURCE_SHA256
+    assert history["exact_line_sha256"] == EXPECTED_HISTORY_LINE_SHA256
+    assert history["classification"] == "REVIEWED_FALSE_POSITIVE"
+    assert history["rationale"] == owner.RATIONALE
+    assert history["sanitized_finding_set"] == [
+        {"line": 193, "rule_id": "GENERIC_CREDENTIAL"}
+    ]
+    assert history["specific_rule_findings"] == 0
     boundaries = cast(dict[str, object], manifest["boundaries"])
     assert boundaries == {
         "scanner_semantic_change": "NONE",
@@ -289,6 +349,61 @@ def test_manifest_binds_owner_inputs_and_keeps_formal_boundaries() -> None:
         "formal_tst_002": "NOT_EXECUTED",
         "release_or_production": "NOT_AUTHORIZED",
     }
+
+
+def test_owner_accepts_only_the_exact_reviewed_history_binding() -> None:
+    document = _input_document()
+    raw_bindings = document["reviewed_history_additions"]
+    assert type(raw_bindings) is list
+    bindings = cast(list[object], raw_bindings)
+    assert len(bindings) == 1
+    raw_binding = bindings[0]
+    assert type(raw_binding) is dict
+    changed_binding = dict(cast(dict[str, object], raw_binding))
+    changed_binding["exact_line_number"] = 194
+    document["reviewed_history_additions"] = [changed_binding]
+
+    with pytest.raises(owner.OwnerError, match="UNAUTHORIZED_REVIEWED_HISTORY_BINDING"):
+        owner.parse_reviewed_history_bindings(document)
+
+
+def test_reviewed_history_binding_is_hash_and_finding_set_bound() -> None:
+    binding = _history_binding()
+    data = _git_blob(binding.source_identifier)
+    owner.validate_reviewed_history_binding(data, binding)
+
+    source_drift = dataclasses.replace(binding, source_sha256="0" * 64)
+    with pytest.raises(owner.OwnerError, match="REVIEWED_HISTORY_SOURCE_DRIFT"):
+        owner.validate_reviewed_history_binding(data, source_drift)
+
+    line_drift = dataclasses.replace(binding, line_sha256="0" * 64)
+    with pytest.raises(owner.OwnerError, match="REVIEWED_HISTORY_LINE_DRIFT"):
+        owner.validate_reviewed_history_binding(data, line_drift)
+
+    specific_value = "AK" + "IA" + "A1B2C3D4E5F6G7H8"
+    mutated = _replace_line(
+        data,
+        binding.line + 1,
+        ('marker = "' + specific_value + '"\n').encode("ascii"),
+    )
+    rebound = dataclasses.replace(
+        binding,
+        source_bytes=len(mutated),
+        source_sha256=hashlib.sha256(mutated).hexdigest(),
+    )
+    with pytest.raises(owner.OwnerError, match="REVIEWED_HISTORY_FINDING_SET_DRIFT"):
+        owner.validate_reviewed_history_binding(mutated, rebound)
+
+
+def test_reviewed_history_binding_cannot_be_appended_twice() -> None:
+    with pytest.raises(
+        owner.OwnerError, match="REVIEWED_HISTORY_ENTRY_ALREADY_PRESENT"
+    ):
+        owner.append_reviewed_history_bindings(
+            V3_PATH.read_bytes(),
+            (_history_binding(),),
+            root=REPOSITORY_ROOT,
+        )
 
 
 def test_owner_refuses_a_reviewed_line_change_even_with_rebound_source_hash() -> None:

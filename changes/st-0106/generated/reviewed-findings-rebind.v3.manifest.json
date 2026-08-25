@@ -4,15 +4,15 @@
   "status": "LOCAL_RECONCILIATION_COMPLETE_NOT_FORMAL_EVIDENCE",
   "owner": {
     "path": "scripts/build_st0106_reviewed_findings_rebind.py",
-    "bytes": 27030,
-    "sha256": "fcdb773402079d9ca603ecc69fca68cc210cba08a7aff0ae552de9a8464fc973",
+    "bytes": 34084,
+    "sha256": "18ffbcf56599d393ca0ebcc6a258218310700e70891ccc64790bb3c6aae2c2fb",
     "check_command": "/home/minami/rakuten/.venv/bin/python scripts/build_st0106_reviewed_findings_rebind.py --check"
   },
   "inputs": [
     {
       "path": "changes/st-0106/reviewed-finding-source-rebind.v3.json",
-      "bytes": 2271,
-      "sha256": "1ff412d4bf8829e25240a0ea3cfee41e1afa3cc53eea4eaa4a22b1338dbd79c7"
+      "bytes": 2827,
+      "sha256": "3c23e5e1e96804e357c0f345afb72599e0aee43bc8401cb8ef953997ef3218ea"
     },
     {
       "path": "changes/st-0106/contracts/reviewed-secret-findings.v2.yaml",
@@ -52,13 +52,32 @@
     "classification_change": "NONE",
     "rationale_change": "NONE"
   },
+  "reviewed_history_additions": [
+    {
+      "scope": "git_history",
+      "exact_source_identifier": "90716c9c3d514d265c3c7463c8d71b172e43d951",
+      "exact_line_number": 193,
+      "exact_source_bytes": 16883,
+      "exact_source_sha256": "19b37f2470e01a261336d501ce0ef9739efd18150b7e446fbdf04af39ed66dd0",
+      "exact_line_sha256": "2ac0364bcf02c18716c5518114835168d24c88eccf2aea3d6d0f18dfd4b880db",
+      "classification": "REVIEWED_FALSE_POSITIVE",
+      "rationale": "Sanitized source location reviewed; no live credential is present.",
+      "sanitized_finding_set": [
+        {
+          "line": 193,
+          "rule_id": "GENERIC_CREDENTIAL"
+        }
+      ],
+      "specific_rule_findings": 0
+    }
+  ],
   "generated_ledger": {
     "path": "changes/st-0106/contracts/reviewed-secret-findings.v3.yaml",
-    "bytes": 60287,
-    "sha256": "09277639d9db84371e8e3882ad2379ee4e15a13ff35a74b003201bde2f681f40",
-    "entry_count": 116,
+    "bytes": 60805,
+    "sha256": "be150c6dafe3055385abf46978213537296dca6cf3000d9cc8382542bf013690",
+    "entry_count": 117,
     "changed_entry_count": 1,
-    "added_entry_count": 1,
+    "added_entry_count": 2,
     "specific_rule_suppression": "FORBIDDEN"
   },
   "boundaries": {
