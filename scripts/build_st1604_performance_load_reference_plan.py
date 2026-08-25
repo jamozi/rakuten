@@ -46,7 +46,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -92,15 +92,15 @@ EXPECTED_SOURCES: Final = (
 EXPECTED_PREDECESSORS: Final = (
     (
         ST1505_CONTRACT_PATH,
-        "ef0fbfe3267861c3b279da2cbaa20ebfe17da235e9cb8de3d9bc382e6e637dea",
+        "be104a13490d4c39139047e101092e1b2f3541d45c9277e2d9937915a731e2f0",
     ),
     (
         ST1505_PLAN_PATH,
-        "0731e1274623628016e41cc1f04a7a7e5e37717efe376ca066ed8259ed1f6624",
+        "0c607b4c207068432477db1aa2a2e9598092964dbdce470d8b537c7022eaf105",
     ),
     (
         ST1505_MANIFEST_PATH,
-        "a9ad6a56a6d98c6e4258463334525255ed45452f288764a1edf4113a17acbdd9",
+        "0e970c5749a8bd94fcc8ae5e695d11a4b927028fcc168838618998ac48075aeb",
     ),
     (
         ST1601_PATH,

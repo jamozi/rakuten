@@ -44,7 +44,7 @@
     "generation_command": "uv run --locked --no-sync python scripts/build_st1604_performance_load_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5"
+      "sha256": "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     }
   },
   "predecessor_bindings": [
@@ -54,15 +54,15 @@
       "bindings": [
         {
           "uri": "repo://changes/st-1505/contracts/staging-deployment.v1.yaml",
-          "sha256": "ef0fbfe3267861c3b279da2cbaa20ebfe17da235e9cb8de3d9bc382e6e637dea"
+          "sha256": "be104a13490d4c39139047e101092e1b2f3541d45c9277e2d9937915a731e2f0"
         },
         {
           "uri": "repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json",
-          "sha256": "0731e1274623628016e41cc1f04a7a7e5e37717efe376ca066ed8259ed1f6624"
+          "sha256": "0c607b4c207068432477db1aa2a2e9598092964dbdce470d8b537c7022eaf105"
         },
         {
           "uri": "repo://changes/st-1505/manifest.yaml",
-          "sha256": "a9ad6a56a6d98c6e4258463334525255ed45452f288764a1edf4113a17acbdd9"
+          "sha256": "0e970c5749a8bd94fcc8ae5e695d11a4b927028fcc168838618998ac48075aeb"
         }
       ],
       "provider_neutral_admission": {
