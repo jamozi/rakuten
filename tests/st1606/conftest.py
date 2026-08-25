@@ -24,7 +24,9 @@ def repository_copy(tmp_path: Path) -> Iterator[Path]:
         *map(Path, builder.EXPECTED_PREDECESSOR_HASHES),
         *map(Path, builder.EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES),
         *builder.SOURCE_PATHS,
+        *map(Path, data_generator.PINNED_SOURCES),
         *data_generator.SOURCE_ARTIFACT_PATHS,
+        *map(Path, staging_generator.PINNED_SOURCES),
         *staging_generator.SOURCE_ARTIFACT_PATHS,
     }
     for relative in paths:

@@ -39,13 +39,15 @@ predecessor_bindings:
   data_services:
     story_id: ST-1502
     contract_uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
-    contract_sha256: bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041
+    contract_sha256: 89a0f1e7babfceffd2b270bc3a16f5d74fbeb6b62699e03156c860c9ae16c7e1
     reference_plan_uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
-    reference_plan_sha256: 84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699
+    reference_plan_sha256: 2d52d7b99a4edda75814af603e48016f06fa34507bc221e3f573379c066f35c5
     manifest_uri: repo://changes/st-1502/manifest.yaml
-    manifest_sha256: c3c25d72a14d5cc302702a1e20cf6ad9ee19614c5ca6ac4550d6cea46ec91a7d
-    required_classification: SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_REFERENCE_PLAN
-    required_executable: false
+    manifest_sha256: efa59447601cf20f0fca3daf271567e1eeb5d81497b4414b0847cd9ae21bc390
+    required_classification: SOURCE_DERIVED_PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_DATA_SERVICES_HCL
+    required_executable: true
+    required_execution_kind: PROVIDER_FREE_VALIDATION_ONLY_LOGICAL_HCL
+    required_implementation_scope: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE
     required_activation_enabled: false
     required_activation_status: DISABLED
     required_selected_values: UNSET
@@ -78,11 +80,11 @@ predecessor_bindings:
   staging_deployment:
     story_id: ST-1505
     contract_uri: repo://changes/st-1505/contracts/staging-deployment.v1.yaml
-    contract_sha256: d7cddea6d006f620835c4facf1e76e62ce7f69d9ac0ae8d824b7ff67237764e5
+    contract_sha256: be104a13490d4c39139047e101092e1b2f3541d45c9277e2d9937915a731e2f0
     reference_plan_uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
-    reference_plan_sha256: 7dc30e3f703c2e3f6a4e40729ae122d033f4a84b75646b1c1609e4da6c95d968
+    reference_plan_sha256: 0c607b4c207068432477db1aa2a2e9598092964dbdce470d8b537c7022eaf105
     manifest_uri: repo://changes/st-1505/manifest.yaml
-    manifest_sha256: 97d3cda19e6f2c35543c0056a5f2bbbfdaab3ed9cadbc273dfc9ff198a587137
+    manifest_sha256: 0e970c5749a8bd94fcc8ae5e695d11a4b927028fcc168838618998ac48075aeb
     required_classification: SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_STAGING_ADMISSION_REFERENCE_PLAN
     required_executable: false
     required_activation_enabled: false

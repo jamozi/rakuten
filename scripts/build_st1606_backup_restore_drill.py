@@ -105,30 +105,30 @@ EXPECTED_SOURCE_HASHES: Final = {
 }
 EXPECTED_PREDECESSOR_HASHES: Final = {
     "changes/st-1502/contracts/data-services-foundation.v1.yaml": (
-        "bb5eefc8bc5cfa62905bf87436b457cfaf3d40ac16e1d285ffabb13c8c3e1041"
+        "89a0f1e7babfceffd2b270bc3a16f5d74fbeb6b62699e03156c860c9ae16c7e1"
     ),
     "infra/terraform/data-services/data-services.reference-plan.v1.json": (
-        "84868985990b42dfb6824887582be127962af480d9f48cf50fa103ad92e01699"
+        "2d52d7b99a4edda75814af603e48016f06fa34507bc221e3f573379c066f35c5"
     ),
     "changes/st-1502/manifest.yaml": (
-        "c3c25d72a14d5cc302702a1e20cf6ad9ee19614c5ca6ac4550d6cea46ec91a7d"
+        "efa59447601cf20f0fca3daf271567e1eeb5d81497b4414b0847cd9ae21bc390"
     ),
     "changes/st-1505/contracts/staging-deployment.v1.yaml": (
-        "d7cddea6d006f620835c4facf1e76e62ce7f69d9ac0ae8d824b7ff67237764e5"
+        "be104a13490d4c39139047e101092e1b2f3541d45c9277e2d9937915a731e2f0"
     ),
     "infra/terraform/staging/staging-deployment.reference-plan.v1.json": (
-        "7dc30e3f703c2e3f6a4e40729ae122d033f4a84b75646b1c1609e4da6c95d968"
+        "0c607b4c207068432477db1aa2a2e9598092964dbdce470d8b537c7022eaf105"
     ),
     "changes/st-1505/manifest.yaml": (
-        "97d3cda19e6f2c35543c0056a5f2bbbfdaab3ed9cadbc273dfc9ff198a587137"
+        "0e970c5749a8bd94fcc8ae5e695d11a4b927028fcc168838618998ac48075aeb"
     ),
 }
 EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES: Final = {
     "scripts/build_st1502_data_services.py": (
-        "ba974d9d44c2184f6809ba68e14c8cd9df422573cd517dd957015e070932a6cf"
+        "73876b415aba2f7160d94dbe8df113087d4bf5be27b4830b82425b34f6ea6abe"
     ),
     "scripts/build_st1505_staging_deployment.py": (
-        "cd22f5fcf16cfd135b1ecac64ea65c0f8b9d86b60d812d0ab987ff6bc3a4f42d"
+        "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     ),
 }
 
@@ -579,10 +579,12 @@ def _expected_predecessors() -> dict[str, object]:
                 "changes/st-1502/manifest.yaml"
             ],
             "required_classification": (
-                "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_"
-                "REFERENCE_PLAN"
+                "SOURCE_DERIVED_PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_DATA_"
+                "SERVICES_HCL"
             ),
-            "required_executable": False,
+            "required_executable": True,
+            "required_execution_kind": ("PROVIDER_FREE_VALIDATION_ONLY_LOGICAL_HCL"),
+            "required_implementation_scope": "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE",
             "required_activation_enabled": False,
             "required_activation_status": "DISABLED",
             "required_selected_values": "UNSET",
@@ -682,30 +684,12 @@ def _provider_neutral_summary(
 
 
 def _render_data_owner_outputs(root: Path) -> tuple[bytes, bytes]:
-    contract = _load_yaml(
-        root,
-        Path("changes/st-1502/contracts/data-services-foundation.v1.yaml"),
-        "data_owner.contract",
-    )
     try:
-        data_base._exact_keys(  # noqa: SLF001
-            contract, data_base.TOP_LEVEL_KEYS, "data_owner.contract"
+        outputs = data_base.render_outputs(root)
+        return (
+            outputs[data_base.REFERENCE_PLAN_PATH],
+            outputs[data_base.MANIFEST_PATH],
         )
-        expected_sources = [
-            {"uri": f"repo://{relative}", "sha256": digest}
-            for relative, digest in data_base.PINNED_SOURCES.items()
-        ]
-        data_base._strict_match(  # noqa: SLF001
-            contract["sources"], expected_sources, "data_owner.sources"
-        )
-        data_base._validate_capability_inventory(contract)  # noqa: SLF001
-        for section, expected in data_base.EXPECTED_SECTIONS.items():
-            data_base._strict_match(  # noqa: SLF001
-                contract[section], expected, f"data_owner.{section}"
-            )
-        model = data_base.DataServicesModel(contract=dict(contract))
-        plan = data_base.render_reference_plan(model)
-        return plan, data_base.render_manifest(model, plan, root)
     except data_base.DataServicesContractError:
         _fail("PREDECESSOR_OWNER_VALIDATION_FAILED", "data_services")
 
@@ -720,7 +704,17 @@ def _render_staging_owner_outputs(root: Path) -> tuple[bytes, bytes]:
         base._validate_local_safety_invariants(contract)  # noqa: SLF001
         model = base.StagingDeploymentModel(contract=dict(contract))
         plan = base.render_reference_plan(model)
-        return plan, base.render_manifest(model, plan, root)
+        runtime, runtime_specification = base.load_and_validate_runtime_contract(root)
+        local_pipeline = base.render_local_pipeline(runtime, runtime_specification)
+        local_result = base.render_local_result(runtime_specification)
+        return plan, base.render_manifest(
+            model,
+            plan,
+            local_pipeline,
+            local_result,
+            runtime_specification,
+            root,
+        )
     except base.StagingDeploymentContractError:
         _fail("PREDECESSOR_OWNER_VALIDATION_FAILED", "staging_deployment")
 
@@ -757,11 +751,12 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
     data_document = _mapping(data_plan.get("document"), "data_plan.document")
     if (
         data_document.get("artifact_kind")
-        != (
-            "SOURCE_DERIVED_NON_EXECUTABLE_PROVIDER_NEUTRAL_DATA_SERVICES_"
-            "REFERENCE_PLAN"
-        )
-        or data_document.get("executable") is not False
+        != ("SOURCE_DERIVED_PROVIDER_SCHEMA_FREE_EXECUTABLE_LOGICAL_DATA_SERVICES_HCL")
+        or data_document.get("executable") is not True
+        or data_document.get("execution_kind")
+        != "PROVIDER_FREE_VALIDATION_ONLY_LOGICAL_HCL"
+        or data_document.get("implementation_scope")
+        != "MAXIMUM_SAFE_LOCAL_CODE_COMPLETE"
     ):
         _fail("PREDECESSOR_SEMANTIC_DRIFT", "data_plan.document")
     data_activation = _mapping(data_plan.get("activation"), "data_plan.activation")

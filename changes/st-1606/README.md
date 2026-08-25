@@ -45,8 +45,11 @@ validated.
 
 The owner builder validates exact bytes, closed owner semantics, and
 deterministically rendered bytes for the current provider-neutral ST-1502 and
-ST-1505 contracts, reference plans, and manifests. Both remain disabled,
-ineligible, unconfigured, and zero-action. AWS Tokyo remains the current
+ST-1505 contracts, reference plans, and manifests. ST-1502's provider-schema-
+free logical HCL is executable only for offline validation: it has no provider
+plugin, physical resource, backend, credential, plan, apply, or restore path.
+Both predecessors remain activation-disabled, ineligible, unconfigured, and
+zero-action. AWS Tokyo remains the current
 Canonical Reference Architecture inherited from INT-DEC-007, and the
 Canonical AWS-specific Story deliverables remain authoritative; this portable
 overlay does not erase, replace, or complete them. AWS service and staging

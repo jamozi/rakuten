@@ -19,6 +19,10 @@ def test_contract_loads_as_closed_non_executable_boundary() -> None:
     assert contract["execution_boundary"] == builder.EXPECTED_EXECUTION
     assert contract["evidence_boundary"] == builder.EXPECTED_EVIDENCE
     predecessors = contract["predecessor_bindings"]
+    assert predecessors["data_services"]["required_executable"] is True
+    assert predecessors["data_services"]["required_execution_kind"] == (
+        "PROVIDER_FREE_VALIDATION_ONLY_LOGICAL_HCL"
+    )
     assert predecessors["data_services"]["provider_neutral_admission"] == (
         builder.EXPECTED_DATA_PROVIDER_NEUTRAL_ADMISSION
     )
