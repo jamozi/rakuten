@@ -478,7 +478,16 @@ final class RAOS_Bounded_Operator
 
     private static function operator_table_schemas_are_exact()
     {
+        $charset = self::operator_expected_charset_and_collation();
+        if (! is_array($charset)) {
+            return false;
+        }
         return self::operator_tables_are_innodb()
+            && self::operator_table_character_set_is_exact(
+                self::proposal_table(),
+                $charset['character_set'],
+                $charset['collation']
+            )
             && self::operator_table_schema_is_exact(
                 self::proposal_table(),
                 array(
@@ -513,7 +522,14 @@ final class RAOS_Bounded_Operator
                     array('PRIMARY', 'PRIMARY KEY'),
                     array('idempotency_key', 'UNIQUE'),
                     array('proposal_id', 'UNIQUE'),
-                )
+                ),
+                $charset['character_set'],
+                $charset['collation']
+            )
+            && self::operator_table_character_set_is_exact(
+                self::audit_table(),
+                $charset['character_set'],
+                $charset['collation']
             )
             && self::operator_table_schema_is_exact(
                 self::audit_table(),
@@ -536,15 +552,106 @@ final class RAOS_Bounded_Operator
                 array(
                     array('PRIMARY', 'PRIMARY KEY'),
                     array('event_hash', 'UNIQUE'),
-                )
+                ),
+                $charset['character_set'],
+                $charset['collation']
             );
+    }
+
+    private static function operator_expected_charset_and_collation()
+    {
+        global $wpdb;
+        $character_set = strtolower(trim((string) $wpdb->charset));
+        $collation = strtolower(trim((string) $wpdb->collate));
+        if (! preg_match('/\A[a-z0-9_]+\z/', $character_set)
+            || ($collation !== ''
+                && ! preg_match('/\A[a-z0-9_]+\z/', $collation))) {
+            return null;
+        }
+        if ($collation === '') {
+            $rows = $wpdb->get_results(
+                $wpdb->prepare(
+                    'SELECT COLLATION_NAME FROM information_schema.COLLATIONS '
+                    . 'WHERE BINARY CHARACTER_SET_NAME = BINARY %s '
+                    . "AND IS_DEFAULT = 'Yes'",
+                    $character_set
+                ),
+                ARRAY_A
+            );
+            if ($wpdb->last_error !== ''
+                || ! is_array($rows)
+                || count($rows) !== 1
+                || ! isset($rows[0]['COLLATION_NAME'])
+                || ! is_string($rows[0]['COLLATION_NAME'])) {
+                return null;
+            }
+            $collation = strtolower($rows[0]['COLLATION_NAME']);
+        }
+        $mapping = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT CHARACTER_SET_NAME FROM '
+                . 'information_schema.COLLATION_CHARACTER_SET_APPLICABILITY '
+                . 'WHERE BINARY COLLATION_NAME = BINARY %s',
+                $collation
+            ),
+            ARRAY_A
+        );
+        if ($wpdb->last_error !== ''
+            || ! is_array($mapping)
+            || count($mapping) !== 1
+            || ! isset($mapping[0]['CHARACTER_SET_NAME'])
+            || strtolower((string) $mapping[0]['CHARACTER_SET_NAME']) !== $character_set) {
+            return null;
+        }
+        return array(
+            'character_set' => $character_set,
+            'collation' => $collation,
+        );
+    }
+
+    private static function operator_table_character_set_is_exact(
+        $table,
+        $expected_character_set,
+        $expected_collation
+    ) {
+        global $wpdb;
+        if (! is_string($table)
+            || ! in_array(
+                $table,
+                array(self::proposal_table(), self::audit_table()),
+                true
+            )) {
+            return false;
+        }
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT CCSA.CHARACTER_SET_NAME, T.TABLE_COLLATION '
+                . 'FROM information_schema.TABLES AS T '
+                . 'INNER JOIN information_schema.COLLATION_CHARACTER_SET_APPLICABILITY AS CCSA '
+                . 'ON BINARY CCSA.COLLATION_NAME = BINARY T.TABLE_COLLATION '
+                . 'WHERE BINARY T.TABLE_SCHEMA = BINARY DATABASE() '
+                . 'AND BINARY T.TABLE_NAME = BINARY %s',
+                $table
+            ),
+            ARRAY_A
+        );
+        return $wpdb->last_error === ''
+            && is_array($rows)
+            && count($rows) === 1
+            && isset($rows[0]['CHARACTER_SET_NAME'], $rows[0]['TABLE_COLLATION'])
+            && strtolower((string) $rows[0]['CHARACTER_SET_NAME'])
+                === $expected_character_set
+            && strtolower((string) $rows[0]['TABLE_COLLATION'])
+                === $expected_collation;
     }
 
     private static function operator_table_schema_is_exact(
         $table,
         array $expected_columns,
         array $expected_indexes,
-        array $expected_constraints
+        array $expected_constraints,
+        $expected_character_set,
+        $expected_collation
     ) {
         global $wpdb;
         if (! is_string($table)
@@ -558,7 +665,8 @@ final class RAOS_Bounded_Operator
         $columns = $wpdb->get_results(
             $wpdb->prepare(
                 'SELECT COLUMN_NAME, DATA_TYPE, COLUMN_TYPE, IS_NULLABLE, '
-                . 'COLUMN_DEFAULT, EXTRA, CHARACTER_MAXIMUM_LENGTH '
+                . 'COLUMN_DEFAULT, EXTRA, CHARACTER_MAXIMUM_LENGTH, '
+                . 'CHARACTER_SET_NAME, COLLATION_NAME '
                 . 'FROM information_schema.COLUMNS '
                 . 'WHERE BINARY TABLE_SCHEMA = BINARY DATABASE() '
                 . 'AND BINARY TABLE_NAME = BINARY %s ORDER BY ORDINAL_POSITION ASC',
@@ -583,6 +691,8 @@ final class RAOS_Bounded_Operator
                 )
                 || ! array_key_exists('COLUMN_DEFAULT', $column)
                 || ! array_key_exists('CHARACTER_MAXIMUM_LENGTH', $column)
+                || ! array_key_exists('CHARACTER_SET_NAME', $column)
+                || ! array_key_exists('COLLATION_NAME', $column)
                 || ! in_array($column['IS_NULLABLE'], array('YES', 'NO'), true)) {
                 return false;
             }
@@ -603,6 +713,11 @@ final class RAOS_Bounded_Operator
             }
             $extra = strtolower(trim((string) $column['EXTRA']));
             $extra = trim(str_replace('default_generated', '', $extra));
+            $is_character_column = in_array(
+                $expected[1],
+                array('char', 'varchar', 'longtext'),
+                true
+            );
             if ($column['COLUMN_NAME'] !== $expected[0]
                 || strtolower((string) $column['DATA_TYPE']) !== $expected[1]
                 || ! in_array($column_type, $expected_column_types, true)
@@ -613,7 +728,15 @@ final class RAOS_Bounded_Operator
                     ? ($length !== null && in_array($expected[1], array('char', 'varchar'), true))
                     : (string) $length !== (string) $expected[2])
                 || ($default === null ? null : (string) $default) !== $expected[5]
-                || $extra !== $expected[6]) {
+                || $extra !== $expected[6]
+                || ($is_character_column
+                    ? strtolower((string) $column['CHARACTER_SET_NAME'])
+                        !== $expected_character_set
+                    : $column['CHARACTER_SET_NAME'] !== null)
+                || ($is_character_column
+                    ? strtolower((string) $column['COLLATION_NAME'])
+                        !== $expected_collation
+                    : $column['COLLATION_NAME'] !== null)) {
                 return false;
             }
         }
@@ -1417,6 +1540,7 @@ final class RAOS_Bounded_Operator
             );
         }
         $expected = array();
+        $expected_casefold = array();
         $mismatches = 0;
         foreach ($checksums as $path => $record) {
             $digest = is_array($record) && isset($record['sha256'])
@@ -1433,8 +1557,8 @@ final class RAOS_Bounded_Operator
                     'mismatch_count' => 0,
                 );
             }
-            $folded = strtolower($path);
-            if (isset($expected[$folded])) {
+            $folded = $this->ascii_casefold_path($path);
+            if (isset($expected_casefold[$folded])) {
                 return array(
                     'status' => 'UNAVAILABLE',
                     'code' => 'YOAST_OFFICIAL_CHECKSUM_INVALID',
@@ -1442,7 +1566,8 @@ final class RAOS_Bounded_Operator
                     'mismatch_count' => 0,
                 );
             }
-            $expected[$folded] = $path;
+            $expected[$path] = true;
+            $expected_casefold[$folded] = $path;
             $file = $plugin_root . '/' . $path;
             if (! is_file($file) || is_link($file)) {
                 $mismatches++;
@@ -1454,6 +1579,7 @@ final class RAOS_Bounded_Operator
             }
         }
 
+        $actual_casefold = array();
         try {
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator(
@@ -1473,7 +1599,22 @@ final class RAOS_Bounded_Operator
                 $absolute = $file_info->getPathname();
                 $relative = substr($absolute, strlen($plugin_root) + 1);
                 $relative = str_replace(DIRECTORY_SEPARATOR, '/', $relative);
-                if (! isset($expected[strtolower($relative)])) {
+                if (! is_string($relative)
+                    || ! $this->safe_relative_path($relative)) {
+                    $mismatches++;
+                    continue;
+                }
+                $folded = $this->ascii_casefold_path($relative);
+                if (isset($actual_casefold[$folded])
+                    && $actual_casefold[$folded] !== $relative) {
+                    $mismatches++;
+                } else {
+                    $actual_casefold[$folded] = $relative;
+                }
+                if (isset($expected_casefold[$folded])
+                    && $expected_casefold[$folded] !== $relative) {
+                    $mismatches++;
+                } elseif (! isset($expected[$relative])) {
                     $mismatches++;
                 }
             }
@@ -2139,6 +2280,15 @@ final class RAOS_Bounded_Operator
             }
         }
         return true;
+    }
+
+    private function ascii_casefold_path($path)
+    {
+        return strtr(
+            $path,
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            'abcdefghijklmnopqrstuvwxyz'
+        );
     }
 
     private function capture_theme_state()

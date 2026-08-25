@@ -223,10 +223,16 @@ def test_activation_validates_complete_table_schemas_before_success_audit() -> N
     schemas = schemas[: schemas.index("private static function operator_table_is_innodb")]
     for token in (
         "self::operator_tables_are_innodb()",
+        "operator_expected_charset_and_collation()",
+        "operator_table_character_set_is_exact(",
+        "information_schema.COLLATIONS",
+        "information_schema.COLLATION_CHARACTER_SET_APPLICABILITY",
+        "CCSA.CHARACTER_SET_NAME, T.TABLE_COLLATION",
         "information_schema.COLUMNS",
         "ORDER BY ORDINAL_POSITION ASC",
         "count($columns) !== count($expected_columns)",
         "CHARACTER_MAXIMUM_LENGTH",
+        "CHARACTER_SET_NAME, COLLATION_NAME",
         "COLUMN_DEFAULT",
         "information_schema.STATISTICS",
         "ORDER BY BINARY INDEX_NAME ASC, SEQ_IN_INDEX ASC",
@@ -237,6 +243,8 @@ def test_activation_validates_complete_table_schemas_before_success_audit() -> N
         "count($constraints) !== count($expected_constraints)",
     ):
         assert token in schemas
+    assert "=== $expected_character_set" in schemas
+    assert "=== $expected_collation" in schemas
     for required_column in (
         "internal_id",
         "proposal_id",
@@ -409,6 +417,25 @@ def test_checksum_is_exact_pinned_cached_and_never_unknown_pass() -> None:
         "                    ? $this->compute_yoast_checksum()"
     ) in checksum
     assert checksum.index("set_transient") < checksum.index("release_auxiliary_mutex")
+
+    verifier = php[php.index("private function verify_installed_yoast") :]
+    verifier = verifier[: verifier.index("public function rest_create_proposal")]
+    for token in (
+        "$expected[$path] = true;",
+        "$expected_casefold[$folded] = $path;",
+        "$this->ascii_casefold_path($path)",
+        "$this->ascii_casefold_path($relative)",
+        "$actual_casefold[$folded] !== $relative",
+        "$expected_casefold[$folded] !== $relative",
+        "! isset($expected[$relative])",
+    ):
+        assert token in verifier
+    assert "$expected[strtolower($relative)]" not in verifier
+    casefold = php[php.index("private function ascii_casefold_path") :]
+    casefold = casefold[: casefold.index("private function capture_theme_state")]
+    assert "ABCDEFGHIJKLMNOPQRSTUVWXYZ" in casefold
+    assert "abcdefghijklmnopqrstuvwxyz" in casefold
+    assert "strtolower" not in casefold
 
 
 def test_approval_is_admin_only_reauthenticated_hash_bound_and_audited() -> None:
