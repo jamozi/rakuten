@@ -9,6 +9,13 @@ its exact source Story, source digest, period boundary, attribution basis,
 freshness state, verification state, and explicit availability. The V2 projection
 is process-local, synthetic, confidential, and non-attesting.
 
+The predecessor closure is semantically rebound to ST-1101
+`bae6de32505705d78e07d2d1b31ff67aaefa69dc`, ST-1205
+`9d504b5bafaa3e07b6214b44bc64f11d302335ff`, and ST-1304
+`d2eddc34e3889ace7fe90dde3a5182994822c385`. The ST-1304 binding includes its
+stricter byte-for-byte work-minute and incremental-cost measurement provenance;
+the dashboard still consumes only the already verified immutable result.
+
 The two dependency fixtures cover different periods. V2 records
 `UNAVAILABLE_PERIOD_MISMATCH` and never combines their values. ST-1205's exact
 recorded timestamp and upstream freshness label are visible. ST-1304 declares no
@@ -139,22 +146,19 @@ evidence only and are not formal `TST-022`, `TST-024`, or `TST-030` execution.
 Completed local checks, using the already hydrated pinned root toolchains
 without dependency synchronization:
 
-- focused `tests/st1104/*.test.ts`: PASS, 20/20;
+- focused `tests/st1104_v2`: PASS, 16/16 ordinary and denied-network;
+- focused `tests/st1104/*.test.ts`: PASS, 21/21 ordinary and denied-network;
 - strict `packages/web-ui` TypeScript: PASS;
-- strict standalone TypeScript for all five owned tests: PASS;
-- affected `tests/st1101/*.test.ts tests/st1102/*.test.ts tests/st1103/*.test.ts`:
-  PASS, 71/71;
-- isolated ST-1205 generator no-write check: PASS;
-- isolated dependency `tests/st1205`: PASS, 57/57;
-- ESLint on the two owned package paths and five tests: PASS;
-- Prettier check on all eight owned paths: PASS;
-- `make check-workspace`: PASS, zero changed paths across 42 directories;
-- canonical import verification: PASS, 105 imported files, 104 checksums, and
-  103 manifest entries;
-- `git diff --check`: PASS.
+- affected `tests/st1101/*.test.ts`: PASS, 34/34 ordinary and denied-network;
+- ST-1205 owner no-write check and `tests/st1205`: PASS, 57/57 ordinary and
+  denied-network;
+- both ST-1304 owner no-write checks plus `tests/st1304` 492/492 and
+  `tests/st1304_v2` 51/51: PASS ordinary and denied-network;
+- Ruff check/format, strict mypy, repository Pyright, Python compile, ESLint,
+  Prettier, and `git diff --check`: PASS;
 
-The unchanged secret scanner rejects linked-worktree Git metadata fail-closed
-with `ERROR code=unsafe-git-metadata source="."`. A complete non-Git
-`git archive HEAD` snapshot was overlaid with only the exact eight owned paths
-after `cmp --silent` verified every byte; the scanner's full fallback traversal
-then passed with no findings.
+The linked-worktree scanner intentionally rejects `.git` indirection. The
+authoritative full worktree-and-history scan therefore runs after commit in a
+physical clone checked out at the exact Story SHA with the V3 reviewed-finding
+ledger; its result is reported with that SHA rather than embedded into this
+self-referential owner manifest.

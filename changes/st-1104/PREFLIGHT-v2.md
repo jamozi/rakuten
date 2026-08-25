@@ -15,8 +15,12 @@
 - UI design, screen/component/workflow catalogs, accessibility checklist,
   analytics design, dashboard/KPI catalogs, security/privacy design, role matrix,
   data classification, security controls, and TST-022/TST-024.
-- Current ST-1101 disabled route guard, historical ST-1104 V1 metadata candidate,
-  ST-1205 recorded KPI runtime, and ST-1304 recorded unit-economics runtime.
+- Current ST-1101 disabled route guard at
+  `bae6de32505705d78e07d2d1b31ff67aaefa69dc`, historical ST-1104 V1 metadata
+  candidate, ST-1205 recorded KPI runtime at
+  `9d504b5bafaa3e07b6214b44bc64f11d302335ff`, and ST-1304 recorded
+  unit-economics runtime at
+  `d2eddc34e3889ace7fe90dde3a5182994822c385`.
 
 ## Open decisions and safe defaults
 
@@ -48,8 +52,9 @@
   adapter mismatch, nonlocal environment, authority escalation, and public/
   editorial isolation negative paths.
 - Owner generation/no-write check, ST-1101/ST-1205/ST-1304 regressions, Ruff,
-  strict mypy, TypeScript compile, focused sensitive-data scan, and
-  `git diff --check`.
+  strict mypy, Pyright, Python compile, TypeScript compile, ESLint, Prettier,
+  ordinary plus denied-network execution, post-commit exact-SHA physical-clone
+  secret scanning, and `git diff --check`.
 
 ## Out of scope
 

@@ -36,32 +36,28 @@ authority:
   release_authorized: false
   production_authorized: false
 verification:
-  focused_python_suite: PASS_16_OF_16
-  focused_node_suite: PASS_21_OF_21_HISTORICAL_V1_PLUS_ADDITIVE_V2
-  owner_generator_check: PASS_NO_WRITE
-  st1101_regression: PASS_31_OF_31
-  st1205_regression: PASS_57_OF_57_AND_OWNER_NO_WRITE
-  st1304_regression: PASS_49_OF_49_V2_AND_V1_V2_OWNER_NO_WRITE
+  focused_python_suite: PASS_16_OF_16_ORDINARY_AND_NETWORK_DENIED
+  focused_node_suite: PASS_21_OF_21_ORDINARY_AND_NETWORK_DENIED_HISTORICAL_V1_PLUS_ADDITIVE_V2
+  owner_generator_check: PASS_NO_WRITE_ORDINARY_AND_NETWORK_DENIED
+  st1101_regression: PASS_34_OF_34_ORDINARY_AND_NETWORK_DENIED
+  st1205_regression: PASS_57_OF_57_AND_OWNER_NO_WRITE_ORDINARY_AND_NETWORK_DENIED
+  st1304_regression: PASS_492_OF_492_V1_AND_51_OF_51_V2_AND_BOTH_OWNER_NO_WRITE_ORDINARY_AND_NETWORK_DENIED
   ruff: PASS_OWNED_CHECK_AND_FORMAT
   strict_mypy: PASS_OWNED_RUNTIME_GENERATOR_AND_TESTS
+  pyright: PASS_REPOSITORY_CONFIG_ZERO_ERRORS_ZERO_WARNINGS
   python_compile: PASS_10_OWNED_PYTHON_FILES
   typescript: PASS_FULL_STRICT_TSC
   eslint_prettier: PASS_OWNED_TYPESCRIPT
-  focused_sensitive_data_scan: PASS_21_CHANGED_PATHS_ZERO_FINDINGS
   git_diff_check: PASS
 operational_observations:
   linked_worktree_repository_scan:
     result: REFUSED_BEFORE_CONTENT_SCAN
     reason_code: unsafe-git-metadata
     introduced_by_ST-1104: false
-  non_git_archive_reviewed_ledger_scan:
-    result: REFUSED_ON_EXISTING_LEDGER_BINDING
-    reason_code: reviewed-finding-source-size-drift
-    introduced_by_ST-1104: false
-  exact_changed_path_isolated_scan:
-    result: PASS
-    changed_paths: 21
-    findings: 0
+  exact_sha_physical_clone_worktree_and_history_scan:
+    result: REQUIRED_POST_COMMIT_REPORTED_WITH_EXACT_SHA
+    reviewed_findings: changes/st-0106/contracts/reviewed-secret-findings.v3.yaml
+    self_referential_result_embedded: false
 debt:
   introduced_local_debt: NONE
 not_executed:

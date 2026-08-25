@@ -72,7 +72,7 @@ source_bindings:
     sha256: f01349dae9f14b3790972da53fc77d9d973a142f3c10cca87c0965d27ffaa3ce
   st1205_runtime:
     path: changes/st-1205/contracts/kpi-read-model.v2.yaml
-    sha256: 2777cf19d0482f84172ac581ed72f27bc6e93b51b5bd45ea4b23e14cf0f95665
+    sha256: 8f7e0664c844615a291c926520fff14af399daa5fd21bac8d002bfc7857218ed
   st1205_projection:
     path: changes/st-1205/generated/kpi-read-model.v2.json
     sha256: 295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb
@@ -93,16 +93,16 @@ source_bindings:
     sha256: 864e0f4f7d6925b3fe513ed329ad5b21a8fec32a193a18cd3aee91cbbac0b0f0
   st1304_runtime:
     path: changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
-    sha256: 28fb4b6d0d198c1ccaca56124f133a8c9045577b61f01029ed5d6f338beda60f
+    sha256: 5ee2782af4e47cdf0f7e787e34191b656277d515ad09c590013cc8ed8e42402b
   st1304_projection:
     path: changes/st-1304/generated/cost-unit-economics-recorded.v2.json
-    sha256: 23f468589e408555e5506f873a74df89b806d809855d5c1b53e8237b6edb4ddc
+    sha256: 93e8e99e0119a8e93334c55b8c51dd4a3a1480d6f6cad2e32b31035af96a86df
   st1304_fixture:
     path: changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
     sha256: 90b3ccaecc1345b26054f563365936f4fd06b5def3259c5786adeea0327a8942
   st1304_domain:
     path: python/raos/domain/finance/unit_economics.py
-    sha256: 3c1c723b19cb61715e9f3f95018ebe5d14d3efa719c56a65c8164981bff25eb6
+    sha256: 5f21551473f0c3ac3a56d7b385c43b77f554ea45c1c55b28f1d0f3aee4e9a575
   st1304_application:
     path: python/raos/application/finance/unit_economics.py
     sha256: 429ae3d7be1de6375df42f80412c046c0e6fccd3691b1c520b85796abd5f2b85
@@ -111,13 +111,13 @@ source_bindings:
     sha256: e9ed53b135a98c625cc110b94e844ba6f7c58dd232b3db34fe47b7b2f53d6137
   st1304_adapter:
     path: python/raos/adapters/recorded_unit_economics.py
-    sha256: 191937ab2764bc032a4fbda15d17232c8f7cff39181a43726f8aea85f29f4f09
+    sha256: 0956071070accd9752cc0e404b685f9d4d2ceeb6da70fafd0b1bb187efde7841
   st1303_generator:
     path: scripts/build_st1303_attribution_engine.py
-    sha256: 508bd593b24fd9dca3d0e1119ae26f0d7e6d49d85c36a7c6818adaf8a9612f14
+    sha256: 1f545ca4dd1aae2a7546c3b36122a417fcb7d6b89a3b60e58afe0792a36934f8
   st1303_contract:
     path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: 417919e2c4552b8e1e6e3fef18f4daccfa0cf44d13803db62d474fe154fb574b
+    sha256: f8fc2b3113387d419e675e9a286e008c806728a056281a3376ca367356b1d758
   st1303_fixture:
     path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
     sha256: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b
