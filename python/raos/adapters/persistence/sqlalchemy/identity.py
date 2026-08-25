@@ -9,7 +9,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import Enum
-from typing import Final, NoReturn, SupportsIndex, cast
+from typing import Final, NoReturn, Protocol, SupportsIndex, cast
 
 from sqlalchemy.engine import Connection, RowMapping
 
@@ -24,6 +24,15 @@ from raos.ports.persistence.errors import PersistenceError, PersistenceErrorCode
 class WorkloadProfile(str, Enum):
     API_COMMAND = "API_COMMAND"
     WORKER_COMMAND = "WORKER_COMMAND"
+
+
+class _MatchesConnection(Protocol):
+    def __call__(
+        self,
+        *,
+        connection: Connection,
+        profile: WorkloadProfile,
+    ) -> bool: ...
 
 
 _PROOF_ISSUER: Final[object] = object()
@@ -48,13 +57,14 @@ class _DatabaseIdentityFacts:
         return "_DatabaseIdentityFacts(<redacted>)"
 
 
-def _validated_identity_facts(row: Mapping[str, object]) -> _DatabaseIdentityFacts:
+def _validated_identity_facts(row: object) -> _DatabaseIdentityFacts:
     if type(row) not in {dict, RowMapping} and not isinstance(row, Mapping):
         _reject_identity()
-    if frozenset(row) != _EXPECTED_KEYS or len(row) != len(_EXPECTED_KEYS):
+    values = cast(Mapping[str, object], row)
+    if frozenset(values) != _EXPECTED_KEYS or len(values) != len(_EXPECTED_KEYS):
         _reject_identity()
-    login_role = row.get("login_role")
-    inherited_groups_value = row.get("inherited_groups")
+    login_role = values.get("login_role")
+    inherited_groups_value = values.get("inherited_groups")
     if (
         type(login_role) is not str
         or not login_role
@@ -76,16 +86,16 @@ def _validated_identity_facts(row: Mapping[str, object]) -> _DatabaseIdentityFac
         "create_database",
         "owns_selected_relation",
     )
-    if any(type(row.get(field)) is not bool for field in boolean_fields):
+    if any(type(values.get(field)) is not bool for field in boolean_fields):
         _reject_identity()
     return _DatabaseIdentityFacts(
         login_role=login_role,
         inherited_groups=inherited_groups,
-        is_superuser=cast(bool, row["is_superuser"]),
-        bypass_rls=cast(bool, row["bypass_rls"]),
-        create_role=cast(bool, row["create_role"]),
-        create_database=cast(bool, row["create_database"]),
-        owns_selected_relation=cast(bool, row["owns_selected_relation"]),
+        is_superuser=cast(bool, values["is_superuser"]),
+        bypass_rls=cast(bool, values["bypass_rls"]),
+        create_role=cast(bool, values["create_role"]),
+        create_database=cast(bool, values["create_database"]),
+        owns_selected_relation=cast(bool, values["owns_selected_relation"]),
     )
 
 
@@ -110,7 +120,7 @@ class VerifiedDatabaseIdentity:
             _issuer is not _PROOF_ISSUER
             or type(facts) is not _DatabaseIdentityFacts
             or type(profile) is not WorkloadProfile
-            or not isinstance(connection, Connection)
+            or not isinstance(cast(object, connection), Connection)
             or connection.closed
             or connection.invalidated
         ):
@@ -164,7 +174,7 @@ class SqlAlchemyEffectiveRoleVerifier:
         expected_profile: WorkloadProfile,
     ) -> VerifiedDatabaseIdentity:
         if (
-            not isinstance(connection, Connection)
+            not isinstance(cast(object, connection), Connection)
             or connection.closed
             or connection.invalidated
             or type(expected_profile) is not WorkloadProfile
@@ -201,17 +211,19 @@ class SqlAlchemyEffectiveRoleVerifier:
         )
 
 
-def _require_verified_identity(
+def require_verified_identity(
     proof: object,
     connection: Connection,
     expected_profile: WorkloadProfile,
 ) -> VerifiedDatabaseIdentity:
     if (
         type(proof) is not VerifiedDatabaseIdentity
-        or not isinstance(connection, Connection)
+        or not isinstance(cast(object, connection), Connection)
         or type(expected_profile) is not WorkloadProfile
-        or not proof._matches(connection=connection, profile=expected_profile)
     ):
+        _reject_identity()
+    matches = cast(_MatchesConnection, getattr(proof, "_matches"))
+    if not matches(connection=connection, profile=expected_profile):
         _reject_identity()
     return proof
 

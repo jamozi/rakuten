@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Final, NoReturn
+from typing import Callable, Final, NoReturn, cast
 
 from sqlalchemy.engine import Connection, Engine
 from sqlalchemy.orm import Session
@@ -12,11 +12,11 @@ from raos.adapters.persistence.sqlalchemy.identity import (
     SqlAlchemyEffectiveRoleVerifier,
     VerifiedDatabaseIdentity,
     WorkloadProfile,
-    _require_verified_identity,
+    require_verified_identity,
 )
 from raos.adapters.persistence.sqlalchemy.transaction import (
-    _ExecutionPoint,
-    _ExecutionState,
+    ExecutionPoint,
+    ExecutionState,
 )
 from raos.ports.persistence.errors import PersistenceError, PersistenceErrorCode
 
@@ -48,13 +48,13 @@ class VerifiedConnection:
     ) -> None:
         if (
             _issuer is not _CHECKOUT_ISSUER
-            or not isinstance(connection, Connection)
+            or not isinstance(cast(object, connection), Connection)
             or type(identity) is not VerifiedDatabaseIdentity
             or type(profile) is not WorkloadProfile
             or provider_key is None
         ):
             _fail(PersistenceErrorCode.IDENTITY_REJECTED)
-        _require_verified_identity(identity, connection, profile)
+        require_verified_identity(identity, connection, profile)
         object.__setattr__(self, "_VerifiedConnection__connection", connection)
         object.__setattr__(self, "_VerifiedConnection__identity", identity)
         object.__setattr__(self, "_VerifiedConnection__profile", profile)
@@ -70,7 +70,7 @@ class VerifiedConnection:
             or expected_profile is not self.__profile
         ):
             _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
-        _require_verified_identity(
+        require_verified_identity(
             self.__identity,
             self.__connection,
             self.__profile,
@@ -93,7 +93,7 @@ class SqlAlchemyEngineProvider:
         verifier: SqlAlchemyEffectiveRoleVerifier | None = None,
     ) -> None:
         if (
-            not isinstance(engine, Engine)
+            not isinstance(cast(object, engine), Engine)
             or engine.dialect.name != "postgresql"
             or type(expected_profile) is not WorkloadProfile
             or (
@@ -115,9 +115,9 @@ class SqlAlchemyEngineProvider:
 
     def _checkout_verified(
         self,
-        execution_state: _ExecutionState | None,
+        execution_state: ExecutionState | None,
     ) -> VerifiedConnection:
-        if execution_state is not None and type(execution_state) is not _ExecutionState:
+        if execution_state is not None and type(execution_state) is not ExecutionState:
             raise ValueError("INVALID_SQLALCHEMY_EXECUTION_STATE") from None
         connection: Connection | None = None
         try:
@@ -129,11 +129,11 @@ class SqlAlchemyEngineProvider:
             ):
                 _fail(PersistenceErrorCode.IDENTITY_REJECTED)
             if execution_state is not None:
-                execution_state.require_allowed(_ExecutionPoint.POST_CHECKOUT)
+                execution_state.require_allowed(ExecutionPoint.POST_CHECKOUT)
             proof = self._verifier.verify(connection, self._profile)
-            _require_verified_identity(proof, connection, self._profile)
+            require_verified_identity(proof, connection, self._profile)
             if execution_state is not None:
-                execution_state.require_allowed(_ExecutionPoint.POST_IDENTITY)
+                execution_state.require_allowed(ExecutionPoint.POST_IDENTITY)
             if connection.in_transaction():
                 connection.rollback()
             if connection.in_transaction():
@@ -163,7 +163,11 @@ class SqlAlchemyEngineProvider:
     def _connection(self, checkout: VerifiedConnection) -> Connection:
         if type(checkout) is not VerifiedConnection:
             _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
-        return checkout._adapter_connection(self._key, self._profile)
+        adapter_connection = cast(
+            Callable[[object, WorkloadProfile], Connection],
+            getattr(checkout, "_adapter_connection"),
+        )
+        return adapter_connection(self._key, self._profile)
 
     def _create_session(self, checkout: VerifiedConnection) -> Session:
         connection = self._connection(checkout)
@@ -208,6 +212,50 @@ class SqlAlchemyEngineProvider:
             connection.close()
         except Exception:
             pass
+
+
+def checkout_verified(
+    provider: SqlAlchemyEngineProvider,
+    execution_state: ExecutionState | None,
+) -> VerifiedConnection:
+    method = cast(
+        Callable[[ExecutionState | None], VerifiedConnection],
+        getattr(provider, "_checkout_verified"),
+    )
+    return method(execution_state)
+
+
+def create_session(
+    provider: SqlAlchemyEngineProvider,
+    checkout: VerifiedConnection,
+) -> Session:
+    method = cast(
+        Callable[[VerifiedConnection], Session],
+        getattr(provider, "_create_session"),
+    )
+    return method(checkout)
+
+
+def invalidate_and_close(
+    provider: SqlAlchemyEngineProvider,
+    checkout: VerifiedConnection,
+) -> None:
+    method = cast(
+        Callable[[VerifiedConnection], None],
+        getattr(provider, "_invalidate_and_close"),
+    )
+    method(checkout)
+
+
+def close_checkout(
+    provider: SqlAlchemyEngineProvider,
+    checkout: VerifiedConnection,
+) -> None:
+    method = cast(
+        Callable[[VerifiedConnection], None],
+        getattr(provider, "_close"),
+    )
+    method(checkout)
 
 
 __all__ = ["SqlAlchemyEngineProvider"]

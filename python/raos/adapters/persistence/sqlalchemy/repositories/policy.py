@@ -19,6 +19,7 @@ from sqlalchemy.sql.elements import ColumnElement
 
 import raos.adapters.persistence.sqlalchemy.mappers.policy as domain_mappers
 from raos.adapters.persistence.sqlalchemy.session_runtime import (
+    aggregate_events_buffer,
     fail_session_operation,
     guard_repository_class,
     persistence_context,
@@ -122,7 +123,7 @@ def _table(relation: str) -> Table:
             TABLES_BY_RELATION,
         )
 
-        table = TABLES_BY_RELATION[relation]
+        table = cast(object, TABLES_BY_RELATION[relation])
     except ImportError, KeyError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     if not isinstance(table, Table) or table.fullname != relation:
@@ -145,37 +146,12 @@ def _exact(row: StorageRow, key: str, expected: type[T]) -> T:
     return value
 
 
-def _optional(row: StorageRow, key: str, expected: type[T]) -> T | None:
-    try:
-        value = row[key]
-    except KeyError:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    if value is None:
-        return None
-    if type(value) is not expected:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    return value
-
-
 def _json_object(row: StorageRow, key: str) -> FrozenJsonObject:
-    value = _exact(row, key, dict)
+    value = cast(dict[str, object], _exact(row, key, dict))
     try:
         return FrozenJsonObject.from_mapping(value)
     except ValueError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-
-
-def _string_array(row: StorageRow, key: str) -> tuple[str, ...]:
-    try:
-        value = row[key]
-    except KeyError:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    if type(value) not in {list, tuple}:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    items = cast(list[object] | tuple[object, ...], value)
-    if any(type(item) is not str for item in items):
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    return cast(tuple[str, ...], tuple(items))
 
 
 def _encode_scalar(value: object) -> object:
@@ -204,8 +180,10 @@ def _encode_scalar(value: object) -> object:
             | UriReference,
             value,
         ).value
-    if type(value) is tuple and all(type(item) is str for item in value):
-        return list(value)
+    if type(value) is tuple:
+        items = cast(tuple[object, ...], value)
+        if all(type(item) is str for item in items):
+            return [cast(str, item) for item in items]
     if isinstance(
         value,
         (
@@ -271,7 +249,7 @@ def _execute(session: Session, statement: Executable) -> None:
 
 
 def _require_session(session: Session) -> None:
-    if not isinstance(session, Session):
+    if not isinstance(cast(object, session), Session):
         raise ValueError("INVALID_POLICY_REPOSITORY") from None
 
 
@@ -956,7 +934,7 @@ class SqlAlchemyPolicyBundleRepository:
             self._session,
             aggregate_type="policy.policy_bundle",
             aggregate_id=bundle.state.id.value,
-            buffer=bundle._events,
+            buffer=aggregate_events_buffer(bundle),
         )
         return bundle
 
@@ -993,7 +971,7 @@ class SqlAlchemyPolicyBundleRepository:
             self._session,
             aggregate_type="policy.policy_bundle",
             aggregate_id=bundle.state.id.value,
-            buffer=bundle._events,
+            buffer=aggregate_events_buffer(bundle),
         )
         return bundle
 
@@ -1012,7 +990,7 @@ class SqlAlchemyPolicyBundleRepository:
             self._session,
             aggregate_type="policy.policy_bundle",
             aggregate_id=bundle.state.id.value,
-            buffer=bundle._events,
+            buffer=aggregate_events_buffer(bundle),
         )
         observed = _latest_version(
             self._session,
@@ -1095,7 +1073,7 @@ class SqlAlchemyPolicyBundleRepository:
             self._session,
             aggregate_type="policy.policy_bundle",
             aggregate_id=bundle_id.value,
-            buffer=transition._events,
+            buffer=aggregate_events_buffer(transition),
         )
         current_row = _execute_one(
             self._session,

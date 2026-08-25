@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import cast
+
 from sqlalchemy.orm import Session
 
 from raos.adapters.persistence.sqlalchemy.repositories.portfolio import (
@@ -25,7 +27,7 @@ class SqlAlchemyPortfolioRepositories:
     )
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_PORTFOLIO_UOW_SURFACE") from None
         self.sites = SqlAlchemySiteRepository(session)
         self.categories = SqlAlchemyCategoryRepository(session)

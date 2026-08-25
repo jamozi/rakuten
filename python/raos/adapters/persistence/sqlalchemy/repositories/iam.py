@@ -7,7 +7,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
 import json
-from typing import NoReturn, TypeVar
+from typing import NoReturn, TypeVar, cast
 from uuid import UUID
 
 from sqlalchemy import Table, insert, select, update
@@ -30,7 +30,6 @@ from raos.domain.iam.aggregates import (
     PrincipalRoleAssignmentRecord,
     PrincipalState,
     Role,
-    RolePermissionBinding,
     ServicePrincipal,
     SessionRevocation,
     UserAccount,
@@ -85,7 +84,7 @@ def _table(relation: str) -> Table:
             TABLES_BY_RELATION,
         )
 
-        table = TABLES_BY_RELATION[relation]
+        table = cast(object, TABLES_BY_RELATION[relation])
     except ImportError, KeyError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     if not isinstance(table, Table):
@@ -116,22 +115,9 @@ def _optional(row: RowData, key: str, expected: type[T]) -> T | None:
 
 
 def _json_object(row: RowData, key: str) -> FrozenJsonObject:
-    value = _exact(row, key, dict)
+    value = cast(dict[str, object], _exact(row, key, dict))
     try:
         return FrozenJsonObject.from_mapping(value)
-    except ValueError:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-
-
-def _evidence_id(row: RowData, key: str, name: str) -> EntityId:
-    from raos.domain.evidence.ids import FactId, SourceSnapshotId
-
-    classes = {"FactId": FactId, "SourceSnapshotId": SourceSnapshotId}
-    cls = classes.get(name)
-    if cls is None:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    try:
-        return cls(_exact(row, key, UUID))
     except ValueError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
 
@@ -252,13 +238,6 @@ def _decode_iam_permission(row: RowData) -> Permission:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
 
 
-def _encode_iam_permission(value: Permission) -> dict[str, object]:
-    return _encoded(
-        ("id", "permission_code", "description", "risk_level", "status", "created_at"),
-        domain_mappers.map_iam_permission_to_row(value),
-    )
-
-
 def _decode_iam_principal(row: RowData) -> PrincipalState:
     try:
         return domain_mappers.map_iam_principal_from_row(
@@ -376,39 +355,6 @@ def _decode_iam_role(row: RowData) -> Role:
         )
     except KeyError, TypeError, ValueError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-
-
-def _encode_iam_role(value: Role) -> dict[str, object]:
-    return _encoded(
-        (
-            "id",
-            "role_code",
-            "name",
-            "description",
-            "is_system_role",
-            "status",
-            "created_at",
-        ),
-        domain_mappers.map_iam_role_to_row(value),
-    )
-
-
-def _decode_iam_role_permission(row: RowData) -> RolePermissionBinding:
-    try:
-        return domain_mappers.map_iam_role_permission_from_row(
-            role_id=RoleId(_exact(row, "role_id", UUID)),
-            permission_id=PermissionId(_exact(row, "permission_id", UUID)),
-            created_at=AwareUtcDateTime(_exact(row, "created_at", datetime)),
-        )
-    except KeyError, TypeError, ValueError:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-
-
-def _encode_iam_role_permission(value: RolePermissionBinding) -> dict[str, object]:
-    return _encoded(
-        ("role_id", "permission_id", "created_at"),
-        domain_mappers.map_iam_role_permission_to_row(value),
-    )
 
 
 def _decode_iam_service_principal(row: RowData) -> ServicePrincipal:
@@ -588,7 +534,7 @@ class SqlAlchemyPrincipalRepository:
     __slots__ = ("_principal", "_service", "_session", "_user")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_IAM_REPOSITORY") from None
         self._session = session
         self._principal = _table("iam.principal")
@@ -698,7 +644,7 @@ class SqlAlchemyRoleCatalogRepository:
     __slots__ = ("_binding", "_permission", "_role", "_session")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_IAM_REPOSITORY") from None
         self._session = session
         self._role = _table("iam.role")
@@ -776,7 +722,7 @@ class SqlAlchemyPrincipalRoleAssignmentRepository:
     __slots__ = ("_session", "_table")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_IAM_REPOSITORY") from None
         self._session = session
         self._table = _table("iam.principal_role_assignment")
@@ -916,7 +862,7 @@ class SqlAlchemySessionRevocationRepository:
     __slots__ = ("_session", "_table")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_IAM_REPOSITORY") from None
         self._session = session
         self._table = _table("iam.session_revocation")
@@ -944,7 +890,7 @@ class SqlAlchemyBreakGlassRecordRepository:
     __slots__ = ("_session", "_table")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_IAM_REPOSITORY") from None
         self._session = session
         self._table = _table("iam.break_glass_record")

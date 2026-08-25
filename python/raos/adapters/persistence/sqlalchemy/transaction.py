@@ -6,7 +6,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
 from time import monotonic_ns
-from typing import NoReturn
+from typing import NoReturn, TypeAlias, cast
 from uuid import RFC_4122, UUID
 
 from sqlalchemy.orm import Session
@@ -111,7 +111,7 @@ class _SqlAlchemyTransaction:
     successful_dml_count: int = 0
     joined_count: int = 0
     acknowledged_buffers: list[PendingEventBuffer[DomainEvent]] = field(
-        default_factory=list
+        default_factory=lambda: list[PendingEventBuffer[DomainEvent]]()
     )
 
     def __post_init__(self) -> None:
@@ -121,7 +121,7 @@ class _SqlAlchemyTransaction:
             or self.transaction_id.variant != RFC_4122
             or type(self.context) is not PersistenceContext
             or type(self.timestamp) is not AwareUtcDateTime
-            or not isinstance(self.session, Session)
+            or not isinstance(cast(object, self.session), Session)
             or type(self.execution_state) is not _ExecutionState
             or type(self.successful_dml_count) is not int
             or self.successful_dml_count < 0
@@ -162,12 +162,20 @@ class _SqlAlchemyTransaction:
 
     def restore_acknowledged(self) -> None:
         for buffer in reversed(self.acknowledged_buffers):
-            buffer._restore_acknowledged()
+            restore = cast(
+                Callable[[], None],
+                getattr(buffer, "_restore_acknowledged"),
+            )
+            restore()
         self.acknowledged_buffers.clear()
 
     def finish_acknowledged(self) -> None:
         for buffer in self.acknowledged_buffers:
-            buffer._finish_acknowledged()
+            finish = cast(
+                Callable[[], None],
+                getattr(buffer, "_finish_acknowledged"),
+            )
+            finish()
         self.acknowledged_buffers.clear()
 
 
@@ -175,6 +183,16 @@ def require_uuid7(value: object) -> UUID:
     if type(value) is not UUID or value.version != 7 or value.variant != RFC_4122:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     return value
+
+
+# Publicly named, adapter-local type seams avoid cross-module access to private
+# implementation names.  The concrete classes remain absent from ``__all__``
+# and therefore do not widen the supported persistence API.
+ExecutionBudget: TypeAlias = _ExecutionBudget
+ExecutionPoint: TypeAlias = _ExecutionPoint
+ExecutionState: TypeAlias = _ExecutionState
+ExecutionStateFactory: TypeAlias = _ExecutionStateFactory
+SqlAlchemyTransaction: TypeAlias = _SqlAlchemyTransaction
 
 
 __all__: list[str] = []

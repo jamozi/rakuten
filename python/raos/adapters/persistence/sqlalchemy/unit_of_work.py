@@ -20,6 +20,10 @@ from raos.adapters.persistence.sqlalchemy.identity import WorkloadProfile
 from raos.adapters.persistence.sqlalchemy.provider import (
     SqlAlchemyEngineProvider,
     VerifiedConnection,
+    checkout_verified,
+    close_checkout,
+    create_session,
+    invalidate_and_close,
 )
 from raos.adapters.persistence.sqlalchemy.repositories.ai import (
     SqlAlchemyAiJobRepository,
@@ -103,12 +107,13 @@ from raos.adapters.persistence.sqlalchemy.session_runtime import (
     require_session_runtime,
 )
 from raos.adapters.persistence.sqlalchemy.transaction import (
-    _ExecutionBudget,
-    _ExecutionPoint,
-    _ExecutionStateFactory,
-    _SqlAlchemyTransaction,
+    ExecutionBudget,
+    ExecutionPoint,
+    ExecutionStateFactory,
+    SqlAlchemyTransaction,
     require_uuid7,
 )
+import raos.ports.persistence.transaction as transaction_port
 from raos.domain.shared.events import DomainEvent
 from raos.domain.shared.json_values import FrozenJsonObject, canonical_json_bytes
 from raos.domain.shared.persistence import AwareUtcDateTime, PendingEventBuffer
@@ -117,7 +122,6 @@ from raos.ports.persistence.errors import PersistenceError, PersistenceErrorCode
 from raos.ports.persistence.transaction import (
     TransactionJoin,
     TransactionState,
-    _issue_transaction_join,
 )
 
 
@@ -126,6 +130,34 @@ RepositoryConstructor = Callable[[Session], object]
 
 def _fail(code: PersistenceErrorCode) -> NoReturn:
     raise PersistenceError(code) from None
+
+
+def _issue_join(
+    *,
+    transaction_id: UUID,
+    context_digest: str,
+    owner_key: object,
+) -> TransactionJoin:
+    issuer = cast(
+        Callable[..., TransactionJoin],
+        getattr(transaction_port, "_issue_transaction_join"),
+    )
+    return issuer(
+        transaction_id=transaction_id,
+        context_digest=context_digest,
+        owner_key=owner_key,
+    )
+
+
+def _join_fields(
+    join_capability: TransactionJoin,
+    owner_key: object,
+) -> tuple[UUID, str]:
+    fields = cast(
+        Callable[[object], tuple[UUID, str]],
+        getattr(join_capability, "_adapter_fields"),
+    )
+    return fields(owner_key)
 
 
 def _context_digest(context: PersistenceContext) -> str:
@@ -160,9 +192,12 @@ def _transaction_timestamp(session: Session) -> AwareUtcDateTime:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     except Exception:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    if not isinstance(row, RowMapping) or frozenset(row) != {"transaction_timestamp"}:
+    if not isinstance(row, RowMapping):
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    value = row["transaction_timestamp"]
+    row_values = cast(Mapping[str, object], row)
+    if frozenset(row_values) != frozenset({"transaction_timestamp"}):
+        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
+    value = row_values["transaction_timestamp"]
     if (
         type(value) is not datetime
         or value.utcoffset() is None
@@ -205,6 +240,13 @@ class _ModuleComposition:
     repositories: Mapping[str, RepositoryConstructor]
 
     def __post_init__(self) -> None:
+        repositories_candidate: object = self.repositories
+        if type(repositories_candidate) is not MappingProxyType:
+            raise ValueError("INVALID_SQLALCHEMY_MODULE_COMPOSITION") from None
+        repositories = cast(
+            Mapping[str, RepositoryConstructor],
+            repositories_candidate,
+        )
         if (
             type(self.module) is not str
             or self.module
@@ -218,11 +260,10 @@ class _ModuleComposition:
                 "ai",
                 "policy",
             }
-            or type(self.repositories) is not MappingProxyType
-            or not self.repositories
+            or not repositories
             or any(
                 type(name) is not str or not name or not callable(constructor)
-                for name, constructor in self.repositories.items()
+                for name, constructor in repositories.items()
             )
         ):
             raise ValueError("INVALID_SQLALCHEMY_MODULE_COMPOSITION") from None
@@ -230,55 +271,53 @@ class _ModuleComposition:
 
 @dataclass(frozen=True, slots=True)
 class _JoinedTransactionCapability:
-    __transaction: _SqlAlchemyTransaction
+    _transaction: SqlAlchemyTransaction
 
     @property
     def transaction_id(self) -> UUID:
-        return self.__transaction.transaction_id
+        return self._transaction.transaction_id
 
     def require_active(self, transaction_id: UUID) -> None:
-        if self.__transaction.transaction_id != transaction_id:
+        if self._transaction.transaction_id != transaction_id:
             _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
-        self.__transaction.require_active()
+        self._transaction.require_active()
 
     def enter(self, transaction_id: UUID) -> None:
         self.require_active(transaction_id)
-        self.__transaction.joined_count += 1
+        self._transaction.joined_count += 1
 
     def exit(self, transaction_id: UUID, *, rollback_only: bool) -> None:
         self.require_active(transaction_id)
-        if self.__transaction.joined_count < 1:
+        if self._transaction.joined_count < 1:
             _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
         if rollback_only:
-            self.__transaction.rollback_only = True
-        self.__transaction.joined_count -= 1
+            self._transaction.rollback_only = True
+        self._transaction.joined_count -= 1
 
     def mark_rollback_only(self, transaction_id: UUID) -> None:
         self.require_active(transaction_id)
-        self.__transaction.rollback_only = True
+        self._transaction.rollback_only = True
 
     def require_flush_allowed(self, transaction_id: UUID) -> None:
         self.require_active(transaction_id)
         try:
-            self.__transaction.execution_state.require_allowed(
-                _ExecutionPoint.PRE_FLUSH
-            )
-            self.__transaction.session.flush()
+            self._transaction.execution_state.require_allowed(ExecutionPoint.PRE_FLUSH)
+            self._transaction.session.flush()
         except IntegrityError:
-            self.__transaction.poison()
+            self._transaction.poison()
             _fail(PersistenceErrorCode.INTEGRITY_CONFLICT)
         except DBAPIError:
-            self.__transaction.poison()
+            self._transaction.poison()
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
         except PersistenceError as error:
-            self.__transaction.poison()
+            self._transaction.poison()
             raise error from None
         except Exception:
-            self.__transaction.poison()
+            self._transaction.poison()
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
 
-    def owns(self, transaction: _SqlAlchemyTransaction) -> bool:
-        return self.__transaction is transaction
+    def owns(self, transaction: SqlAlchemyTransaction) -> bool:
+        return self._transaction is transaction
 
 
 @dataclass(frozen=True, slots=True)
@@ -319,12 +358,14 @@ class _SqlAlchemyOuterUnitOfWork:
             raise ValueError("INVALID_SQLALCHEMY_UOW") from None
         self._factory = factory
         self._context = context
-        self._execution_state = factory._execution_state_factory.new_outer_state()
+        self._execution_state = _factory_execution_state_factory(
+            factory
+        ).new_outer_state()
         self._state = TransactionState.NEW
         self._entered = False
         self._checkout: VerifiedConnection | None = None
         self._session: Session | None = None
-        self._transaction: _SqlAlchemyTransaction | None = None
+        self._transaction: SqlAlchemyTransaction | None = None
         self._audit_appender: SqlAlchemyAuditEventAppender | None = None
         self._outbox_appender: SqlAlchemyOutboxEventAppender | None = None
         self._idempotency_repository: SqlAlchemyIdempotencyRepository | None = None
@@ -335,7 +376,7 @@ class _SqlAlchemyOuterUnitOfWork:
     def context(self) -> PersistenceContext:
         return self._context
 
-    def _active_transaction(self) -> _SqlAlchemyTransaction:
+    def _active_transaction(self) -> SqlAlchemyTransaction:
         transaction = self._transaction
         if (
             not self._entered
@@ -373,23 +414,25 @@ class _SqlAlchemyOuterUnitOfWork:
         if self._entered or self._state is not TransactionState.NEW:
             _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
         try:
-            self._execution_state.require_allowed(_ExecutionPoint.PRE_CHECKOUT)
+            self._execution_state.require_allowed(ExecutionPoint.PRE_CHECKOUT)
         except PersistenceError:
             self._state = TransactionState.CLOSED
             raise
         checkout: VerifiedConnection | None = None
         session: Session | None = None
-        transaction: _SqlAlchemyTransaction | None = None
+        transaction: SqlAlchemyTransaction | None = None
         try:
-            checkout = self._factory._provider._checkout_verified(self._execution_state)
+            provider = _factory_provider(self._factory)
+            composition = _factory_composition(self._factory)
+            checkout = checkout_verified(provider, self._execution_state)
             self._checkout = checkout
-            session = self._factory._provider._create_session(checkout)
+            session = create_session(provider, checkout)
             self._session = session
-            self._execution_state.require_allowed(_ExecutionPoint.PRE_SESSION_BEGIN)
+            self._execution_state.require_allowed(ExecutionPoint.PRE_SESSION_BEGIN)
             session.begin()
             _set_transaction_timezone_utc(session)
             timestamp = _transaction_timestamp(session)
-            transaction = _SqlAlchemyTransaction(
+            transaction = SqlAlchemyTransaction(
                 transaction_id=require_uuid7(uuid7()),
                 context=self._context,
                 timestamp=timestamp,
@@ -407,19 +450,19 @@ class _SqlAlchemyOuterUnitOfWork:
             repositories = MappingProxyType(
                 {
                     name: constructor(session)
-                    for name, constructor in self._factory._composition.repositories.items()
+                    for name, constructor in composition.repositories.items()
                 }
             )
             registration = _JoinRegistration(
                 transaction_scope=_JoinedTransactionCapability(transaction),
                 context_digest=_context_digest(self._context),
-                module=self._factory._composition.module,
+                module=composition.module,
                 audit=audit,
                 outbox=outbox,
                 repositories=repositories,
             )
-            self._execution_state.require_allowed(_ExecutionPoint.PRE_EXPOSURE)
-            self._factory._register(transaction.transaction_id, registration)
+            self._execution_state.require_allowed(ExecutionPoint.PRE_EXPOSURE)
+            _factory_register(self._factory, transaction.transaction_id, registration)
 
             def guard(state: ORMExecuteState) -> object:
                 """Own every Session.execute path, including repository bypasses."""
@@ -468,7 +511,7 @@ class _SqlAlchemyOuterUnitOfWork:
                     pass
             if checkout is not None:
                 try:
-                    self._factory._provider._invalidate_and_close(checkout)
+                    invalidate_and_close(_factory_provider(self._factory), checkout)
                 except Exception:
                     pass
             self._clear_runtime()
@@ -523,9 +566,9 @@ class _SqlAlchemyOuterUnitOfWork:
         if checkout is not None:
             try:
                 if invalidate:
-                    self._factory._provider._invalidate_and_close(checkout)
+                    invalidate_and_close(_factory_provider(self._factory), checkout)
                 else:
-                    self._factory._provider._close(checkout)
+                    close_checkout(_factory_provider(self._factory), checkout)
             except Exception:
                 failed = True
         self._checkout = None
@@ -533,19 +576,20 @@ class _SqlAlchemyOuterUnitOfWork:
         if failed:
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
 
-    def _discard_registration(self, transaction: _SqlAlchemyTransaction) -> bool:
+    def _discard_registration(self, transaction: SqlAlchemyTransaction) -> bool:
         """Best-effort terminal registry cleanup; report any internal defect."""
 
         failed = False
         try:
-            self._factory._unregister(transaction.transaction_id, transaction)
+            _factory_unregister(self._factory, transaction.transaction_id, transaction)
         except Exception:
             failed = True
         try:
-            registration = self._factory._registry.get(transaction.transaction_id)
+            registry = _factory_registry(self._factory)
+            registration = registry.get(transaction.transaction_id)
             if registration is not None:
                 if registration.transaction_scope.owns(transaction):
-                    del self._factory._registry[transaction.transaction_id]
+                    del registry[transaction.transaction_id]
                 else:
                     failed = True
         except Exception:
@@ -554,7 +598,7 @@ class _SqlAlchemyOuterUnitOfWork:
 
     def _finish_known_rollback(
         self,
-        transaction: _SqlAlchemyTransaction,
+        transaction: SqlAlchemyTransaction,
         *,
         rollback_session: bool,
     ) -> None:
@@ -581,7 +625,7 @@ class _SqlAlchemyOuterUnitOfWork:
         if rollback_failed:
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
 
-    def _finish_unknown(self, transaction: _SqlAlchemyTransaction) -> None:
+    def _finish_unknown(self, transaction: SqlAlchemyTransaction) -> None:
         try:
             transaction.finish_acknowledged()
         except Exception:
@@ -595,7 +639,7 @@ class _SqlAlchemyOuterUnitOfWork:
             pass
         self._clear_runtime()
 
-    def _finish_known_commit(self, transaction: _SqlAlchemyTransaction) -> None:
+    def _finish_known_commit(self, transaction: SqlAlchemyTransaction) -> None:
         """Finalize a driver-confirmed commit without ever reclassifying it unknown."""
 
         terminal_failed = False
@@ -654,7 +698,7 @@ class _SqlAlchemyOuterUnitOfWork:
         if session is None:
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
         try:
-            transaction.execution_state.require_allowed(_ExecutionPoint.PRE_FLUSH)
+            transaction.execution_state.require_allowed(ExecutionPoint.PRE_FLUSH)
             session.flush()
         except IntegrityError:
             transaction.poison()
@@ -684,7 +728,7 @@ class _SqlAlchemyOuterUnitOfWork:
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
         try:
             require_no_unstaged_pending_events(session)
-            transaction.execution_state.require_allowed(_ExecutionPoint.PRE_COMMIT)
+            transaction.execution_state.require_allowed(ExecutionPoint.PRE_COMMIT)
         except PersistenceError as error:
             if error.code in {
                 PersistenceErrorCode.CANCELLED,
@@ -722,10 +766,10 @@ class _SqlAlchemyOuterUnitOfWork:
 
     def join_token(self) -> TransactionJoin:
         transaction = self._active_transaction()
-        return _issue_transaction_join(
+        return _issue_join(
             transaction_id=transaction.transaction_id,
             context_digest=_context_digest(self._context),
-            owner_key=self._factory._owner_key,
+            owner_key=_factory_owner_key(self._factory),
         )
 
     def _stage_pending_events(
@@ -852,7 +896,7 @@ class _SqlAlchemyModuleFactory:
         *,
         timeout_ns: int | None = None,
     ) -> None:
-        if not isinstance(provider, SqlAlchemyEngineProvider):
+        if not isinstance(cast(object, provider), SqlAlchemyEngineProvider):
             raise ValueError("INVALID_SQLALCHEMY_UOW_FACTORY") from None
         if (
             self._requires_api_profile
@@ -861,8 +905,8 @@ class _SqlAlchemyModuleFactory:
             _fail(PersistenceErrorCode.IDENTITY_REJECTED)
         self._provider = provider
         self._composition = self._composition_definition
-        self._execution_state_factory = _ExecutionStateFactory(
-            _ExecutionBudget(timeout_ns)
+        self._execution_state_factory = ExecutionStateFactory(
+            ExecutionBudget(timeout_ns)
         )
         self._owner_key = object()
         self._registry: dict[UUID, _JoinRegistration] = {}
@@ -889,7 +933,7 @@ class _SqlAlchemyModuleFactory:
         ):
             _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
         try:
-            transaction_id, digest = join_capability._adapter_fields(self._owner_key)
+            transaction_id, digest = _join_fields(join_capability, self._owner_key)
         except TypeError, ValueError:
             _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
         registration = self._registry.get(transaction_id)
@@ -924,13 +968,78 @@ class _SqlAlchemyModuleFactory:
     def _unregister(
         self,
         transaction_id: UUID,
-        transaction: _SqlAlchemyTransaction,
+        transaction: SqlAlchemyTransaction,
     ) -> None:
         registration = self._registry.get(transaction_id)
         if registration is not None and registration.transaction_scope.owns(
             transaction
         ):
             del self._registry[transaction_id]
+
+
+def _factory_provider(
+    factory: _SqlAlchemyModuleFactory,
+) -> SqlAlchemyEngineProvider:
+    value = getattr(factory, "_provider", None)
+    if not isinstance(value, SqlAlchemyEngineProvider):
+        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
+    return value
+
+
+def _factory_composition(factory: _SqlAlchemyModuleFactory) -> _ModuleComposition:
+    value = getattr(factory, "_composition", None)
+    if type(value) is not _ModuleComposition:
+        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
+    return value
+
+
+def _factory_execution_state_factory(
+    factory: _SqlAlchemyModuleFactory,
+) -> ExecutionStateFactory:
+    value = getattr(factory, "_execution_state_factory", None)
+    if type(value) is not ExecutionStateFactory:
+        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
+    return value
+
+
+def _factory_owner_key(factory: _SqlAlchemyModuleFactory) -> object:
+    value = getattr(factory, "_owner_key", None)
+    if value is None:
+        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
+    return value
+
+
+def _factory_registry(
+    factory: _SqlAlchemyModuleFactory,
+) -> dict[UUID, _JoinRegistration]:
+    value = getattr(factory, "_registry", None)
+    if type(value) is not dict:
+        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
+    return cast(dict[UUID, _JoinRegistration], value)
+
+
+def _factory_register(
+    factory: _SqlAlchemyModuleFactory,
+    transaction_id: UUID,
+    registration: _JoinRegistration,
+) -> None:
+    method = cast(
+        Callable[[UUID, _JoinRegistration], None],
+        getattr(factory, "_register"),
+    )
+    method(transaction_id, registration)
+
+
+def _factory_unregister(
+    factory: _SqlAlchemyModuleFactory,
+    transaction_id: UUID,
+    transaction: SqlAlchemyTransaction,
+) -> None:
+    method = cast(
+        Callable[[UUID, SqlAlchemyTransaction], None],
+        getattr(factory, "_unregister"),
+    )
+    method(transaction_id, transaction)
 
 
 def _composition(

@@ -11,13 +11,13 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from functools import wraps
 import hashlib
-from typing import Any, Callable, Final, NoReturn, cast
+from typing import Callable, Final, NoReturn, Protocol, TypeVar, cast
 from uuid import RFC_4122, UUID
 
 from sqlalchemy.orm import Session
 
 from raos.adapters.persistence.sqlalchemy.shared import SqlAlchemyOutboxEventAppender
-from raos.adapters.persistence.sqlalchemy.transaction import _SqlAlchemyTransaction
+from raos.adapters.persistence.sqlalchemy.transaction import SqlAlchemyTransaction
 from raos.domain.shared.events import (
     EVENT_BY_TYPE,
     EVENT_DESCRIPTORS,
@@ -35,14 +35,66 @@ from raos.ports.persistence.outbox import ValidatedOutboxEvent
 
 
 _SESSION_RUNTIME_KEY: Final = "raos.st0308.private.session-runtime.v1"
+RepositoryT = TypeVar("RepositoryT")
 
 
 def _fail(code: PersistenceErrorCode) -> NoReturn:
     raise PersistenceError(code) from None
 
 
+def _restore_acknowledged(buffer: PendingEventBuffer[DomainEvent]) -> None:
+    restore = cast(
+        Callable[[], None],
+        getattr(buffer, "_restore_acknowledged"),
+    )
+    restore()
+
+
+def aggregate_events_buffer(aggregate: object) -> PendingEventBuffer[DomainEvent]:
+    """Resolve the approved ``_events`` aggregate seam and validate its type."""
+
+    value = getattr(aggregate, "_events", None)
+    if type(value) is not PendingEventBuffer:
+        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
+    return cast(PendingEventBuffer[DomainEvent], value)
+
+
+def aggregate_event_buffer(aggregate: object) -> PendingEventBuffer[DomainEvent]:
+    """Resolve the approved ``_event_buffer`` aggregate seam and validate it."""
+
+    value = getattr(aggregate, "_event_buffer", None)
+    if type(value) is not PendingEventBuffer:
+        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
+    return cast(PendingEventBuffer[DomainEvent], value)
+
+
+class _TransactionRuntime(Protocol):
+    active: bool
+    context: PersistenceContext
+    rollback_only: bool
+    session: Session
+    successful_dml_count: int
+    timestamp: AwareUtcDateTime
+
+    def acknowledge(self, buffer: PendingEventBuffer[DomainEvent]) -> None: ...
+
+    def poison(self) -> None: ...
+
+    def record_successful_dml(self) -> None: ...
+
+    def require_active(self) -> None: ...
+
+
+def _is_sqlalchemy_transaction(value: object) -> bool:
+    return type(value) is SqlAlchemyTransaction
+
+
 class _SqlAlchemySessionRuntime:
     """Exact mutable event-ID/staging seam owned by one outer UoW."""
+
+    context: PersistenceContext
+    outbox: SqlAlchemyOutboxEventAppender
+    transaction: _TransactionRuntime
 
     __slots__ = (
         "_pending_buffers",
@@ -54,13 +106,14 @@ class _SqlAlchemySessionRuntime:
     def __init__(
         self,
         *,
-        transaction: _SqlAlchemyTransaction,
+        transaction: _TransactionRuntime,
         outbox: SqlAlchemyOutboxEventAppender,
     ) -> None:
+        outbox_transaction = getattr(outbox, "_transaction", None)
         if (
-            type(transaction) is not _SqlAlchemyTransaction
+            not _is_sqlalchemy_transaction(transaction)
             or type(outbox) is not SqlAlchemyOutboxEventAppender
-            or outbox._transaction is not transaction
+            or outbox_transaction is not transaction
         ):
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
         self.transaction = transaction
@@ -182,12 +235,12 @@ class _SqlAlchemySessionRuntime:
         except PersistenceError:
             self.transaction.rollback_only = True
             if not buffer.pending_events():
-                buffer._restore_acknowledged()
+                _restore_acknowledged(buffer)
             raise
         except TypeError, ValueError:
             self.transaction.rollback_only = True
             if not buffer.pending_events():
-                buffer._restore_acknowledged()
+                _restore_acknowledged(buffer)
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
 
     def register_pending_events(
@@ -256,10 +309,13 @@ class _SqlAlchemySessionRuntime:
 def bind_session_runtime(
     session: Session,
     *,
-    transaction: _SqlAlchemyTransaction,
+    transaction: SqlAlchemyTransaction,
     outbox: SqlAlchemyOutboxEventAppender,
 ) -> None:
-    if not isinstance(session, Session) or _SESSION_RUNTIME_KEY in session.info:
+    if (
+        not isinstance(cast(object, session), Session)
+        or _SESSION_RUNTIME_KEY in session.info
+    ):
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     session.info[_SESSION_RUNTIME_KEY] = _SqlAlchemySessionRuntime(
         transaction=transaction,
@@ -268,13 +324,13 @@ def bind_session_runtime(
 
 
 def clear_session_runtime(session: Session) -> None:
-    if not isinstance(session, Session):
+    if not isinstance(cast(object, session), Session):
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     session.info.pop(_SESSION_RUNTIME_KEY, None)
 
 
 def require_session_runtime(session: Session) -> _SqlAlchemySessionRuntime:
-    if not isinstance(session, Session):
+    if not isinstance(cast(object, session), Session):
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     value = session.info.get(_SESSION_RUNTIME_KEY)
     if type(value) is not _SqlAlchemySessionRuntime:
@@ -302,7 +358,7 @@ def record_successful_dml(session: Session) -> None:
     require_session_runtime(session).record_successful_dml()
 
 
-def guard_repository_class(repository_type: type[Any]) -> type[Any]:
+def guard_repository_class(repository_type: type[RepositoryT]) -> type[RepositoryT]:
     """Poison a bound transaction when a repository fails after successful DML."""
 
     if type(repository_type) is not type:
@@ -339,7 +395,7 @@ def guard_repository_class(repository_type: type[Any]) -> type[Any]:
     for name, candidate in tuple(vars(repository_type).items()):
         if name.startswith("_") or not callable(candidate):
             continue
-        setattr(repository_type, name, wrap(cast(Callable[..., object], candidate)))
+        setattr(repository_type, name, wrap(candidate))
     return repository_type
 
 

@@ -44,6 +44,14 @@ def _invalid() -> NoReturn:
     raise _ConstraintEvaluationError from None
 
 
+def _is_exact_dict(value: object) -> bool:
+    return type(value) is dict
+
+
+def _is_exact_tuple(value: object) -> bool:
+    return type(value) is tuple
+
+
 def _plain(value: object) -> object:
     """Unwrap approved nominal scalar/JSON values without accepting aggregates."""
 
@@ -54,14 +62,16 @@ def _plain(value: object) -> object:
     if isinstance(value, Enum):
         return _plain(value.value)
     if isinstance(value, Mapping):
+        mapping = cast(Mapping[object, object], value)
         result: dict[str, object] = {}
-        for key, item in value.items():
+        for key, item in mapping.items():
             if type(key) is not str or key in result:
                 _invalid()
             result[key] = _plain(item)
         return result
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
-        return tuple(_plain(item) for item in value)
+        sequence = cast(Sequence[object], value)
+        return tuple(_plain(item) for item in sequence)
     value_type = type(value)
     if value_type.__module__.startswith("raos.domain.") and is_dataclass(value):
         value_fields = fields(value)
@@ -86,13 +96,15 @@ def _validate_json(value: object, *, depth: int = 0) -> None:
             _invalid()
         return
     if type(value) is dict:
-        for key, item in value.items():
+        mapping = cast(dict[object, object], value)
+        for key, item in mapping.items():
             if type(key) is not str:
                 _invalid()
             _validate_json(item, depth=depth + 1)
         return
     if type(value) is tuple:
-        for item in value:
+        sequence = cast(tuple[object, ...], value)
+        for item in sequence:
             _validate_json(item, depth=depth + 1)
         return
     _invalid()
@@ -161,9 +173,10 @@ def _validate_column(value: object, rule: tuple[object, ...]) -> None:
         _validate_json(value)
         return
     if kind == "text_array":
-        if type(value) is not tuple or any(
-            item is not None and type(item) is not str for item in value
-        ):
+        if not _is_exact_tuple(value):
+            _invalid()
+        sequence = cast(tuple[object, ...], value)
+        if any(item is not None and type(item) is not str for item in sequence):
             _invalid()
         return
     _invalid()
@@ -291,7 +304,7 @@ def _ordered_datetime(operator: str, left: datetime, right: datetime) -> bool:
 def _node(value: object) -> CheckNode:
     if type(value) is not tuple:
         _invalid()
-    return value
+    return cast(tuple[object, ...], value)
 
 
 def _numeric(value: object) -> NumericValue:
@@ -333,13 +346,15 @@ def _json_get(value: object, key: object, *, text: bool) -> object:
     if value is None or key is None:
         return None
     found: object
-    if type(value) is dict and type(key) is str:
-        if key not in value:
+    if _is_exact_dict(value) and type(key) is str:
+        mapping = cast(dict[object, object], value)
+        if key not in mapping:
             return None
-        found = value[key]
-    elif type(value) is tuple and type(key) is int:
+        found = mapping[key]
+    elif _is_exact_tuple(value) and type(key) is int:
+        sequence = cast(tuple[object, ...], value)
         try:
-            found = value[key]
+            found = sequence[key]
         except IndexError:
             return None
     else:
@@ -399,10 +414,10 @@ def _cast_value(cast_type: str, value: object) -> object:
         if type(value) is not str:
             _invalid()
         try:
-            parsed = json.loads(value)
+            parsed_json = cast(object, json.loads(value))
         except json.JSONDecodeError:
             _invalid()
-        return _plain(parsed)
+        return _plain(parsed_json)
     _invalid()
 
 
@@ -426,11 +441,12 @@ def _call(name: str, arguments: tuple[object, ...]) -> object:
     if name == "cardinality":
         if type(arguments[0]) is not tuple:
             _invalid()
-        return len(arguments[0])
+        return len(cast(tuple[object, ...], arguments[0]))
     if name == "array_position":
         if type(arguments[0]) is not tuple:
             _invalid()
-        for index, item in enumerate(arguments[0], 1):
+        sequence = cast(tuple[object, ...], arguments[0])
+        for index, item in enumerate(sequence, 1):
             if item is None and arguments[1] is None:
                 return index
             if _equal(item, arguments[1]) is True:
@@ -465,9 +481,9 @@ def _evaluate(node: CheckNode, row: Mapping[str, object]) -> object:
         return row[column]
     if kind == "array":
         members = node[1]
-        if type(members) is not tuple:
+        if not _is_exact_tuple(members):
             _invalid()
-        return tuple(_evaluate(member, row) for member in members)
+        return tuple(_evaluate(_node(member), row) for member in _node(members))
     if kind == "cast":
         cast_type = node[1]
         if type(cast_type) is not str:
@@ -512,11 +528,15 @@ def _evaluate(node: CheckNode, row: Mapping[str, object]) -> object:
             return _numeric(left) + _numeric(right)
         if operator == "-":
             if (
-                type(left) is dict
-                and type(right) is tuple
-                and all(type(item) is str for item in right)
+                _is_exact_dict(left)
+                and _is_exact_tuple(right)
+                and all(type(item) is str for item in _node(right))
             ):
-                return {key: value for key, value in left.items() if key not in right}
+                mapping = cast(dict[object, object], left)
+                excluded = frozenset(cast(str, item) for item in _node(right))
+                return {
+                    key: value for key, value in mapping.items() if key not in excluded
+                }
             if type(left) in {int, Decimal} and type(right) in {int, Decimal}:
                 return _numeric(left) - _numeric(right)
             _invalid()
@@ -559,17 +579,25 @@ def _evaluate(node: CheckNode, row: Mapping[str, object]) -> object:
         if operator == "->>":
             return _json_get(left, right, text=True)
         if operator == "?&":
-            if type(right) is not tuple or any(type(item) is not str for item in right):
+            if not _is_exact_tuple(right):
                 _invalid()
-            if type(left) is dict:
-                return all(item in left for item in right)
-            if type(left) is tuple:
-                return all(item in left for item in right)
+            right_values = _node(right)
+            if any(type(item) is not str for item in right_values):
+                _invalid()
+            required = tuple(cast(str, item) for item in right_values)
+            if _is_exact_dict(left):
+                mapping = cast(dict[object, object], left)
+                return all(item in mapping for item in required)
+            if _is_exact_tuple(left):
+                sequence = _node(left)
+                return all(item in sequence for item in required)
             _invalid()
         if operator == "&&":
-            if type(left) is not tuple or type(right) is not tuple:
+            if not _is_exact_tuple(left) or not _is_exact_tuple(right):
                 _invalid()
-            return any(item in right for item in left)
+            left_values = _node(left)
+            right_values = _node(right)
+            return any(item in right_values for item in left_values)
         _invalid()
     if kind == "is_null":
         negated = node[1]
@@ -598,9 +626,11 @@ def _evaluate(node: CheckNode, row: Mapping[str, object]) -> object:
     if kind == "in":
         value = _evaluate(_node(node[1]), row)
         members = node[2]
-        if type(members) is not tuple:
+        if not _is_exact_tuple(members):
             _invalid()
-        results = tuple(_equal(value, _evaluate(member, row)) for member in members)
+        results = tuple(
+            _equal(value, _evaluate(_node(member), row)) for member in _node(members)
+        )
         if True in results:
             return True
         return None if None in results else False
@@ -613,9 +643,9 @@ def _evaluate(node: CheckNode, row: Mapping[str, object]) -> object:
         members = _evaluate(_node(node[4]), row)
         if members is None:
             return None
-        if type(members) is not tuple:
+        if not _is_exact_tuple(members):
             _invalid()
-        results = tuple(_compare(operator, value, member) for member in members)
+        results = tuple(_compare(operator, value, member) for member in _node(members))
         if quantifier == "ANY":
             if True in results:
                 return True
@@ -626,9 +656,12 @@ def _evaluate(node: CheckNode, row: Mapping[str, object]) -> object:
     if kind == "call":
         name = node[1]
         arguments = node[2]
-        if type(name) is not str or type(arguments) is not tuple:
+        if type(name) is not str or not _is_exact_tuple(arguments):
             _invalid()
-        return _call(name, tuple(_evaluate(argument, row) for argument in arguments))
+        return _call(
+            name,
+            tuple(_evaluate(_node(argument), row) for argument in _node(arguments)),
+        )
     _invalid()
 
 
@@ -639,13 +672,14 @@ def validate_physical_row(relation: str, raw_row: Mapping[str, object]) -> None:
         column_rules = COLUMN_RULES_BY_RELATION[relation]
         checks = CHECKS_BY_RELATION[relation]
         expected_columns = tuple(rule[0] for rule in column_rules)
-        if (
-            type(raw_row) is not dict
-            or len(raw_row) != len(expected_columns)
-            or set(raw_row) != set(expected_columns)
+        if type(cast(object, raw_row)) is not dict:
+            _invalid()
+        raw_mapping = cast(dict[str, object], raw_row)
+        if len(raw_mapping) != len(expected_columns) or set(raw_mapping) != set(
+            expected_columns
         ):
             _invalid()
-        row = {column: _plain(raw_row[column]) for column in expected_columns}
+        row = {column: _plain(raw_mapping[column]) for column in expected_columns}
         for column, nullable, rule in column_rules:
             value = row[column]
             if value is None:
@@ -689,13 +723,16 @@ def _to_row_guard(
     @wraps(function)
     def guarded(*args: object, **kwargs: object) -> object:
         result = function(*args, **kwargs)
-        if type(result) is not tuple or len(result) != len(columns):
+        if not _is_exact_tuple(result):
+            _corrupt()
+        items = cast(tuple[object, ...], result)
+        if len(items) != len(columns):
             _corrupt()
         validate_physical_row(
             relation,
-            dict(zip(columns, cast(tuple[object, ...], result), strict=True)),
+            dict(zip(columns, items, strict=True)),
         )
-        return result
+        return items
 
     setattr(guarded, "__raos_physical_constraint_guard__", True)
     return guarded

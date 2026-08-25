@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import cast
+
 from sqlalchemy.orm import Session
 
 from raos.adapters.persistence.sqlalchemy.repositories.iam import (
@@ -23,7 +25,7 @@ class SqlAlchemyIamRepositories:
     )
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_IAM_UOW_SURFACE") from None
         self.principals = SqlAlchemyPrincipalRepository(session)
         self.role_catalog = SqlAlchemyRoleCatalogRepository(session)

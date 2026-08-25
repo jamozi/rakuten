@@ -7,7 +7,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
 import json
-from typing import Literal, NoReturn, TypeVar, overload
+from typing import Literal, NoReturn, TypeVar, cast, overload
 from uuid import UUID
 
 from sqlalchemy import Table, func, insert, select, update
@@ -19,6 +19,7 @@ from sqlalchemy.sql.selectable import TableClause
 
 import raos.adapters.persistence.sqlalchemy.mappers.catalog as domain_mappers
 from raos.adapters.persistence.sqlalchemy.session_runtime import (
+    aggregate_event_buffer,
     fail_session_operation,
     guard_repository_class,
     register_pending_events,
@@ -142,7 +143,7 @@ def _table(relation: str) -> Table:
             TABLES_BY_RELATION,
         )
 
-        table = TABLES_BY_RELATION[relation]
+        table = cast(object, TABLES_BY_RELATION[relation])
     except ImportError, KeyError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     if not isinstance(table, Table):
@@ -156,7 +157,7 @@ def _view(relation: str) -> TableClause:
             READ_ONLY_VIEWS,
         )
 
-        view = READ_ONLY_VIEWS[relation]
+        view = cast(object, READ_ONLY_VIEWS[relation])
     except ImportError, KeyError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     if not isinstance(view, TableClause):
@@ -187,7 +188,7 @@ def _optional(row: RowData, key: str, expected: type[T]) -> T | None:
 
 
 def _json_object(row: RowData, key: str) -> FrozenJsonObject:
-    value = _exact(row, key, dict)
+    value = cast(dict[str, object], _exact(row, key, dict))
     try:
         return FrozenJsonObject.from_mapping(value)
     except ValueError:
@@ -1429,7 +1430,7 @@ class SqlAlchemyProviderEndpointRepository:
     )
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_CATALOG_REPOSITORY") from None
         self._session = session
         self._table = _table("catalog.provider_endpoint")
@@ -1593,7 +1594,7 @@ class SqlAlchemyIngestionRequestRepository:
     __slots__ = ("_session", "_table")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_CATALOG_REPOSITORY") from None
         self._session = session
         self._table = _table("catalog.ingestion_request")
@@ -1767,7 +1768,7 @@ class SqlAlchemyRakutenGenreRepository:
     __slots__ = ("_mapping", "_root", "_session")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_CATALOG_REPOSITORY") from None
         self._session = session
         self._root = _table("catalog.rakuten_genre")
@@ -1890,7 +1891,7 @@ class SqlAlchemyShopRepository:
     __slots__ = ("_session", "_table")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_CATALOG_REPOSITORY") from None
         self._session = session
         self._table = _table("catalog.shop")
@@ -1933,7 +1934,7 @@ class SqlAlchemyProductCandidateRepository:
     __slots__ = ("_session", "_table")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_CATALOG_REPOSITORY") from None
         self._session = session
         self._table = _table("catalog.product_candidate")
@@ -1988,7 +1989,7 @@ class SqlAlchemyGroupingDecisionRepository:
     __slots__ = ("_session", "_table")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_CATALOG_REPOSITORY") from None
         self._session = session
         self._table = _table("catalog.grouping_decision")
@@ -2022,7 +2023,7 @@ class SqlAlchemyCanonicalProductRepository:
     __slots__ = ("_membership", "_relation", "_root", "_session")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_CATALOG_REPOSITORY") from None
         self._session = session
         self._root = _table("catalog.canonical_product")
@@ -2255,7 +2256,7 @@ class SqlAlchemyAttributeDefinitionRepository:
     __slots__ = ("_product", "_root", "_session", "_value")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_CATALOG_REPOSITORY") from None
         self._session = session
         self._root = _table("catalog.attribute_definition")
@@ -2436,7 +2437,7 @@ class SqlAlchemyOfferRepository:
     )
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_CATALOG_REPOSITORY") from None
         self._session = session
         self._root = _table("catalog.offer")
@@ -2526,7 +2527,7 @@ class SqlAlchemyOfferRepository:
                 self._session,
                 aggregate_type="catalog.offer",
                 aggregate_id=offer.state.id.value,
-                buffer=offer._event_buffer,
+                buffer=aggregate_event_buffer(offer),
             )
         return offer
 
@@ -2537,7 +2538,7 @@ class SqlAlchemyOfferRepository:
             self._session,
             aggregate_type="catalog.offer",
             aggregate_id=offer.state.id.value,
-            buffer=offer._event_buffer,
+            buffer=aggregate_event_buffer(offer),
         )
         _execute(
             self._session,
@@ -2598,7 +2599,7 @@ class SqlAlchemyOfferRepository:
             self._session,
             aggregate_type="catalog.offer",
             aggregate_id=offer.state.id.value,
-            buffer=offer._event_buffer,
+            buffer=aggregate_event_buffer(offer),
         )
         if (
             current.price_observation_rows != offer.price_observation_rows
@@ -2748,7 +2749,7 @@ class SqlAlchemySafeOfferCurrentReader:
     __slots__ = ("_session", "_view")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_CATALOG_REPOSITORY") from None
         self._session = session
         self._view = _view("catalog.v_safe_offer_current")

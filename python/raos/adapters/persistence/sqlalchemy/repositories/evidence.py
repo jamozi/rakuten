@@ -17,6 +17,7 @@ from sqlalchemy.sql.base import Executable
 
 import raos.adapters.persistence.sqlalchemy.mappers.evidence as domain_mappers
 from raos.adapters.persistence.sqlalchemy.session_runtime import (
+    aggregate_events_buffer,
     fail_session_operation,
     guard_repository_class,
     persistence_context,
@@ -122,6 +123,10 @@ from raos.ports.persistence.errors import PersistenceError, PersistenceErrorCode
 T = TypeVar("T")
 
 
+def _is_exact_tuple(value: object) -> bool:
+    return type(value) is tuple
+
+
 def _fail(code: PersistenceErrorCode) -> NoReturn:
     raise PersistenceError(code) from None
 
@@ -141,7 +146,7 @@ def _table(relation: str) -> Table:
             TABLES_BY_RELATION,
         )
 
-        table = TABLES_BY_RELATION[relation]
+        table = cast(object, TABLES_BY_RELATION[relation])
     except ImportError, KeyError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     if not isinstance(table, Table) or table.fullname != relation:
@@ -164,37 +169,12 @@ def _exact(row: Mapping[str, object], key: str, expected: type[T]) -> T:
     return value
 
 
-def _optional(row: Mapping[str, object], key: str, expected: type[T]) -> T | None:
-    try:
-        value = row[key]
-    except KeyError:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    if value is None:
-        return None
-    if type(value) is not expected:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    return value
-
-
 def _json_object(row: Mapping[str, object], key: str) -> FrozenJsonObject:
-    value = _exact(row, key, dict)
+    value = cast(dict[str, object], _exact(row, key, dict))
     try:
         return FrozenJsonObject.from_mapping(value)
     except ValueError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-
-
-def _string_array(row: Mapping[str, object], key: str) -> tuple[str, ...]:
-    try:
-        value = row[key]
-    except KeyError:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    if type(value) not in {list, tuple}:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    items = cast(list[object] | tuple[object, ...], value)
-    if any(type(item) is not str for item in items):
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    return tuple(cast(str, item) for item in items)
 
 
 def _encode_scalar(value: object) -> object:
@@ -223,8 +203,10 @@ def _encode_scalar(value: object) -> object:
             | UriReference,
             value,
         ).value
-    if type(value) is tuple and all(type(item) is str for item in value):
-        return list(value)
+    if _is_exact_tuple(value):
+        items = cast(tuple[object, ...], value)
+        if all(type(item) is str for item in items):
+            return [cast(str, item) for item in items]
     if type(value) in {
         FactLocatorJson,
         FactValueJsonJson,
@@ -1049,7 +1031,7 @@ def _encode_evidence_source_snapshot(value: SourceSnapshot) -> dict[str, object]
 
 
 def _require_session(session: Session) -> None:
-    if not isinstance(session, Session):
+    if not isinstance(cast(object, session), Session):
         raise ValueError("INVALID_EVIDENCE_REPOSITORY") from None
 
 
@@ -1192,7 +1174,7 @@ class SqlAlchemySourceRepository:
             self._session,
             aggregate_type="evidence.source",
             aggregate_id=source.state.id.value,
-            buffer=source._events,
+            buffer=aggregate_events_buffer(source),
         )
         return source
 
@@ -1203,7 +1185,7 @@ class SqlAlchemySourceRepository:
             self._session,
             aggregate_type="evidence.source",
             aggregate_id=source.state.id.value,
-            buffer=source._events,
+            buffer=aggregate_events_buffer(source),
         )
         _execute(
             self._session,
@@ -1226,7 +1208,7 @@ class SqlAlchemySourceRepository:
             self._session,
             aggregate_type="evidence.source",
             aggregate_id=source.state.id.value,
-            buffer=source._events,
+            buffer=aggregate_events_buffer(source),
         )
         return _cas_update(
             self._session,
@@ -1720,6 +1702,7 @@ class SqlAlchemySourcePacketRepository:
         }
         reviewed_by = transition.state.reviewed_by_principal_id
         reviewed_at = transition.state.reviewed_at
+        values: dict[str, object] = {"status": target}
         if reviewed_edge:
             context_principal = _context_principal_id(self._session)
             at = transaction_timestamp(self._session)
@@ -1730,13 +1713,16 @@ class SqlAlchemySourcePacketRepository:
                 or reviewed_at != at
             ):
                 _fail(PersistenceErrorCode.STATE_CONFLICT)
+            values.update(
+                reviewed_by_principal_id=context_principal.value,
+                reviewed_at=at.value,
+            )
         elif (
             transition.state.reviewed_by_principal_id
             != current.reviewed_by_principal_id
             or transition.state.reviewed_at != current.reviewed_at
         ):
             _fail(PersistenceErrorCode.STATE_CONFLICT)
-        values: dict[str, object] = {"status": target}
         predicates = [
             self._version.c.id == version_id.value,
             self._version.c.status == expected_status.value,
@@ -1747,10 +1733,6 @@ class SqlAlchemySourcePacketRepository:
                     self._version.c.reviewed_by_principal_id.is_(None),
                     self._version.c.reviewed_at.is_(None),
                 ]
-            )
-            values.update(
-                reviewed_by_principal_id=context_principal.value,
-                reviewed_at=at.value,
             )
         row = _execute_one(
             self._session,

@@ -19,6 +19,7 @@ from sqlalchemy.sql.elements import ColumnElement
 
 import raos.adapters.persistence.sqlalchemy.mappers.ai as domain_mappers
 from raos.adapters.persistence.sqlalchemy.session_runtime import (
+    aggregate_events_buffer,
     fail_session_operation,
     guard_repository_class,
     register_pending_events,
@@ -178,7 +179,7 @@ def _table(relation: str) -> Table:
             TABLES_BY_RELATION,
         )
 
-        table = TABLES_BY_RELATION[relation]
+        table = cast(object, TABLES_BY_RELATION[relation])
     except ImportError, KeyError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     if not isinstance(table, Table) or table.fullname != relation:
@@ -201,20 +202,8 @@ def _exact(row: StorageRow, key: str, expected: type[T]) -> T:
     return value
 
 
-def _optional(row: StorageRow, key: str, expected: type[T]) -> T | None:
-    try:
-        value = row[key]
-    except KeyError:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    if value is None:
-        return None
-    if type(value) is not expected:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    return value
-
-
 def _json_object(row: StorageRow, key: str) -> FrozenJsonObject:
-    value = _exact(row, key, dict)
+    value = cast(dict[str, object], _exact(row, key, dict))
     try:
         return FrozenJsonObject.from_mapping(value)
     except ValueError:
@@ -260,8 +249,10 @@ def _encode_scalar(value: object) -> object:
             | UriReference,
             value,
         ).value
-    if type(value) is tuple and all(type(item) is str for item in value):
-        return list(value)
+    if type(value) is tuple:
+        items = cast(tuple[object, ...], value)
+        if all(type(item) is str for item in items):
+            return [cast(str, item) for item in items]
     if isinstance(
         value,
         (
@@ -335,7 +326,7 @@ def _execute(session: Session, statement: Executable) -> None:
 
 
 def _require_session(session: Session) -> None:
-    if not isinstance(session, Session):
+    if not isinstance(cast(object, session), Session):
         raise ValueError("INVALID_AI_REPOSITORY") from None
 
 
@@ -2496,8 +2487,8 @@ class SqlAlchemyOutputSchemaVersionRepository:
         if current.status is not expected_status:
             _fail(PersistenceErrorCode.STATE_CONFLICT)
         at = transaction_timestamp(self._session)
+        effective_from = current.effective_from or at
         if target_status is OutputSchemaVersionStatus.ACTIVE:
-            effective_from = current.effective_from or at
             if transition.state.effective_from != effective_from:
                 _fail(PersistenceErrorCode.STATE_CONFLICT)
         else:
@@ -3052,12 +3043,12 @@ class SqlAlchemyAiJobRepository:
             self._session,
             aggregate_type="ai.ai_job",
             aggregate_id=job.state.id.value,
-            buffer=job._events,
+            buffer=aggregate_events_buffer(job),
         )
         return job
 
     def add(self, job: AiJob) -> AggregateVersion:
-        attempt_ids = (
+        attempt_ids: frozenset[AiAttemptId] = (
             frozenset(item.id for item in job.ai_attempt_rows)
             if type(job) is AiJob
             else frozenset()
@@ -3085,7 +3076,7 @@ class SqlAlchemyAiJobRepository:
             self._session,
             aggregate_type="ai.ai_job",
             aggregate_id=job.state.id.value,
-            buffer=job._events,
+            buffer=aggregate_events_buffer(job),
         )
         _execute(
             self._session,
@@ -3158,7 +3149,7 @@ class SqlAlchemyAiJobRepository:
             self._session,
             aggregate_type="ai.ai_job",
             aggregate_id=job_id.value,
-            buffer=transition._events,
+            buffer=aggregate_events_buffer(transition),
         )
         current_row = _execute_one(
             self._session,
@@ -3800,12 +3791,12 @@ class SqlAlchemyEvaluationRunRepository:
             self._session,
             aggregate_type="ai.evaluation_run",
             aggregate_id=run.state.id.value,
-            buffer=run._events,
+            buffer=aggregate_events_buffer(run),
         )
         return run
 
     def add(self, run: EvaluationRun) -> AggregateVersion:
-        result_ids = (
+        result_ids: frozenset[EvaluationCaseResultId] = (
             frozenset(item.id for item in run.evaluation_case_result_rows)
             if type(run) is EvaluationRun
             else frozenset()
@@ -3829,7 +3820,7 @@ class SqlAlchemyEvaluationRunRepository:
             self._session,
             aggregate_type="ai.evaluation_run",
             aggregate_id=run.state.id.value,
-            buffer=run._events,
+            buffer=aggregate_events_buffer(run),
         )
         _execute(
             self._session,
@@ -3880,7 +3871,7 @@ class SqlAlchemyEvaluationRunRepository:
             self._session,
             aggregate_type="ai.evaluation_run",
             aggregate_id=run_id.value,
-            buffer=transition._events,
+            buffer=aggregate_events_buffer(transition),
         )
         current_row = _execute_one(
             self._session,
@@ -4179,7 +4170,7 @@ class SqlAlchemyReleaseDecisionRepository:
             self._session,
             aggregate_type="ai.release_decision",
             aggregate_id=decision.state.id.value,
-            buffer=decision._events,
+            buffer=aggregate_events_buffer(decision),
         )
         return decision
 
@@ -4201,7 +4192,7 @@ class SqlAlchemyReleaseDecisionRepository:
             self._session,
             aggregate_type="ai.release_decision",
             aggregate_id=decision.state.id.value,
-            buffer=decision._events,
+            buffer=aggregate_events_buffer(decision),
         )
         _execute(
             self._session,
@@ -4304,7 +4295,7 @@ class SqlAlchemyReleaseDecisionRepository:
             self._session,
             aggregate_type="ai.release_decision",
             aggregate_id=decision_id.value,
-            buffer=transition._events,
+            buffer=aggregate_events_buffer(transition),
         )
         current_row = _execute_one(
             self._session,

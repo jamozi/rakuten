@@ -6,7 +6,7 @@ from collections.abc import Callable, Mapping
 from datetime import datetime, timezone
 from functools import wraps
 import json
-from typing import Any, NoReturn, cast
+from typing import Any, NoReturn, TypeVar, cast
 from uuid import UUID
 
 from sqlalchemy import insert
@@ -22,7 +22,8 @@ from raos.adapters.persistence.sqlalchemy.generated.ops_reference import (
 from raos.adapters.persistence.sqlalchemy.mappers.ops import (
     map_ops_idempotency_record_from_row,
 )
-from raos.adapters.persistence.sqlalchemy.transaction import _SqlAlchemyTransaction
+import raos.domain.shared.idempotency as idempotency_domain
+from raos.adapters.persistence.sqlalchemy.transaction import SqlAlchemyTransaction
 from raos.domain.ops.aggregates import IdempotencyRecord
 from raos.domain.ops.enums import IdempotencyRecordStatus
 from raos.domain.ops.ids import IdempotencyRecordId, ObjectArtifactId
@@ -43,7 +44,6 @@ from raos.domain.shared.idempotency import (
     ReplaySucceeded,
     RequestHash,
     ResourceRef,
-    _issue_claim_handle,
 )
 from raos.domain.shared.identity import OpaqueResourceId
 from raos.domain.shared.json_values import FrozenJsonObject, canonical_json_bytes
@@ -51,6 +51,9 @@ from raos.domain.shared.persistence import AwareUtcDateTime, Sha256Digest
 from raos.ports.persistence.audit import AuditIntent
 from raos.ports.persistence.errors import PersistenceError, PersistenceErrorCode
 from raos.ports.persistence.outbox import ValidatedOutboxEvent
+
+
+AdapterT = TypeVar("AdapterT")
 
 
 def _fail(code: PersistenceErrorCode) -> NoReturn:
@@ -70,7 +73,7 @@ def _plain(value: FrozenJsonObject) -> dict[str, object]:
 
 
 def _execute_one(
-    transaction: _SqlAlchemyTransaction,
+    transaction: SqlAlchemyTransaction,
     statement: Executable,
     parameters: Mapping[str, object] | None = None,
 ) -> RowMapping | None:
@@ -96,7 +99,7 @@ def _execute_one(
 
 
 def _execute_many(
-    transaction: _SqlAlchemyTransaction,
+    transaction: SqlAlchemyTransaction,
     statement: Executable,
     parameters: list[dict[str, object]],
 ) -> None:
@@ -124,7 +127,7 @@ def _mapping(row: RowMapping) -> Mapping[str, object]:
     return cast(Mapping[str, object], row)
 
 
-def _guard_transaction_class(adapter_type: type[Any]) -> type[Any]:
+def _guard_transaction_class(adapter_type: type[AdapterT]) -> type[AdapterT]:
     """Poison an adapter transaction when a public call fails after DML."""
 
     if type(adapter_type) is not type:
@@ -136,14 +139,14 @@ def _guard_transaction_class(adapter_type: type[Any]) -> type[Any]:
             transaction = getattr(self, "_transaction", None)
             before = (
                 transaction.successful_dml_count
-                if type(transaction) is _SqlAlchemyTransaction
+                if type(transaction) is SqlAlchemyTransaction
                 else None
             )
             try:
                 return method(self, *args, **kwargs)
             except BaseException:
                 if (
-                    type(transaction) is _SqlAlchemyTransaction
+                    type(transaction) is SqlAlchemyTransaction
                     and before is not None
                     and transaction.successful_dml_count > before
                     and transaction.active
@@ -156,7 +159,7 @@ def _guard_transaction_class(adapter_type: type[Any]) -> type[Any]:
     for name, candidate in tuple(vars(adapter_type).items()):
         if name.startswith("_") or not callable(candidate):
             continue
-        setattr(adapter_type, name, wrap(cast(Callable[..., object], candidate)))
+        setattr(adapter_type, name, wrap(candidate))
     return adapter_type
 
 
@@ -164,8 +167,8 @@ def _guard_transaction_class(adapter_type: type[Any]) -> type[Any]:
 class SqlAlchemyAuditEventAppender:
     __slots__ = ("_transaction",)
 
-    def __init__(self, transaction: _SqlAlchemyTransaction) -> None:
-        if type(transaction) is not _SqlAlchemyTransaction:
+    def __init__(self, transaction: SqlAlchemyTransaction) -> None:
+        if type(transaction) is not SqlAlchemyTransaction:
             raise ValueError("INVALID_SQLALCHEMY_AUDIT_APPENDER") from None
         self._transaction = transaction
 
@@ -222,8 +225,8 @@ class SqlAlchemyAuditEventAppender:
 class SqlAlchemyOutboxEventAppender:
     __slots__ = ("_transaction",)
 
-    def __init__(self, transaction: _SqlAlchemyTransaction) -> None:
-        if type(transaction) is not _SqlAlchemyTransaction:
+    def __init__(self, transaction: SqlAlchemyTransaction) -> None:
+        if type(transaction) is not SqlAlchemyTransaction:
             raise ValueError("INVALID_SQLALCHEMY_OUTBOX_APPENDER") from None
         self._transaction = transaction
 
@@ -427,8 +430,8 @@ def _classify(
 class SqlAlchemyIdempotencyRepository:
     __slots__ = ("_transaction",)
 
-    def __init__(self, transaction: _SqlAlchemyTransaction) -> None:
-        if type(transaction) is not _SqlAlchemyTransaction:
+    def __init__(self, transaction: SqlAlchemyTransaction) -> None:
+        if type(transaction) is not SqlAlchemyTransaction:
             raise ValueError("INVALID_SQLALCHEMY_IDEMPOTENCY_REPOSITORY") from None
         self._transaction = transaction
 
@@ -464,7 +467,11 @@ class SqlAlchemyIdempotencyRepository:
         created_at = _aware(_exact(row, "created_at", datetime)).value
         if expires_at <= created_at or expires_at <= self._now:
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-        return _issue_claim_handle(
+        issuer = cast(
+            Callable[..., IdempotencyClaimHandle],
+            getattr(idempotency_domain, "_issue_claim_handle"),
+        )
+        return issuer(
             record_id=cast(UUID, _exact(row, "id", UUID)),
             identity=identity,
             request_hash=request_hash,
@@ -604,7 +611,14 @@ class SqlAlchemyIdempotencyRepository:
         ):
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
         try:
-            record_id, identity, request_hash = handle._adapter_fields(
+            adapter_fields = cast(
+                Callable[
+                    [UUID],
+                    tuple[UUID, IdempotencyIdentity, RequestHash],
+                ],
+                getattr(handle, "_adapter_fields"),
+            )
+            record_id, identity, request_hash = adapter_fields(
                 self._transaction.transaction_id
             )
         except TypeError, ValueError:

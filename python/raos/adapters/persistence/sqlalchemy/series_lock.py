@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import NoReturn
-
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
@@ -18,10 +16,6 @@ from raos.ports.persistence.errors import PersistenceError, PersistenceErrorCode
 _LOCK_RUNTIME_SETTING_VERSION = text(
     'LOCK TABLE "ops"."runtime_setting_version" IN SHARE ROW EXCLUSIVE MODE'
 )
-
-
-def _fail(code: PersistenceErrorCode) -> NoReturn:
-    raise PersistenceError(code) from None
 
 
 def lock_runtime_setting_version_series(session: Session) -> None:

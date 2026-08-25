@@ -18,6 +18,7 @@ from sqlalchemy.sql.elements import ColumnElement
 
 import raos.adapters.persistence.sqlalchemy.mappers.editorial as domain_mappers
 from raos.adapters.persistence.sqlalchemy.session_runtime import (
+    aggregate_events_buffer,
     fail_session_operation,
     guard_repository_class,
     persistence_context,
@@ -163,6 +164,10 @@ from raos.ports.persistence.errors import PersistenceError, PersistenceErrorCode
 T = TypeVar("T")
 
 
+def _is_exact_tuple(value: object) -> bool:
+    return type(value) is tuple
+
+
 def _fail(code: PersistenceErrorCode) -> NoReturn:
     raise PersistenceError(code) from None
 
@@ -204,7 +209,7 @@ def _table(relation: str) -> Table:
             TABLES_BY_RELATION,
         )
 
-        table = TABLES_BY_RELATION[relation]
+        table = cast(object, TABLES_BY_RELATION[relation])
     except ImportError, KeyError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     if not isinstance(table, Table) or table.fullname != relation:
@@ -227,20 +232,8 @@ def _exact(row: Mapping[str, object], key: str, expected: type[T]) -> T:
     return value
 
 
-def _optional(row: Mapping[str, object], key: str, expected: type[T]) -> T | None:
-    try:
-        value = row[key]
-    except KeyError:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    if value is None:
-        return None
-    if type(value) is not expected:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    return value
-
-
 def _json_object(row: Mapping[str, object], key: str) -> FrozenJsonObject:
-    value = _exact(row, key, dict)
+    value = cast(dict[str, object], _exact(row, key, dict))
     try:
         return FrozenJsonObject.from_mapping(value)
     except ValueError:
@@ -286,8 +279,10 @@ def _encode_scalar(value: object) -> object:
             | UriReference,
             value,
         ).value
-    if type(value) is tuple and all(type(item) is str for item in value):
-        return list(value)
+    if _is_exact_tuple(value):
+        items = cast(tuple[object, ...], value)
+        if all(type(item) is str for item in items):
+            return [cast(str, item) for item in items]
     if type(value) in {
         ArticleBlockContentJson,
         ArticlePlanBriefJson,
@@ -1840,7 +1835,7 @@ def _encode_editorial_structured_data_manifest(
 
 
 def _require_session(session: Session) -> None:
-    if not isinstance(session, Session):
+    if not isinstance(cast(object, session), Session):
         raise ValueError("INVALID_EDITORIAL_REPOSITORY") from None
 
 
@@ -1954,7 +1949,7 @@ class SqlAlchemyArticlePlanRepository:
             self._session,
             aggregate_type="editorial.article_plan",
             aggregate_id=plan.state.id.value,
-            buffer=plan._events,
+            buffer=aggregate_events_buffer(plan),
         )
         return plan
 
@@ -1965,7 +1960,7 @@ class SqlAlchemyArticlePlanRepository:
             self._session,
             aggregate_type="editorial.article_plan",
             aggregate_id=plan.state.id.value,
-            buffer=plan._events,
+            buffer=aggregate_events_buffer(plan),
         )
         _execute(
             self._session,
@@ -1988,7 +1983,7 @@ class SqlAlchemyArticlePlanRepository:
             self._session,
             aggregate_type="editorial.article_plan",
             aggregate_id=plan.state.id.value,
-            buffer=plan._events,
+            buffer=aggregate_events_buffer(plan),
         )
         persisted = _cas_update(
             self._session,
@@ -2116,7 +2111,7 @@ class SqlAlchemyArticleRepository:
                 self._session,
                 aggregate_type="editorial.article",
                 aggregate_id=article.state.id.value,
-                buffer=article._events,
+                buffer=aggregate_events_buffer(article),
             )
         return article
 
@@ -2287,7 +2282,7 @@ class SqlAlchemyArticleRepository:
             self._session,
             aggregate_type="editorial.article",
             aggregate_id=article.state.id.value,
-            buffer=article._events,
+            buffer=aggregate_events_buffer(article),
         )
         _execute(
             self._session,
@@ -2398,7 +2393,7 @@ class SqlAlchemyArticleRepository:
             self._session,
             aggregate_type="editorial.article",
             aggregate_id=article.state.id.value,
-            buffer=article._events,
+            buffer=aggregate_events_buffer(article),
         )
         return _cas_update(
             self._session,
@@ -2415,7 +2410,7 @@ class SqlAlchemyArticleRepository:
                 self._session,
                 aggregate_type="editorial.article_version",
                 aggregate_id=version.state.id.value,
-                buffer=version._events,
+                buffer=aggregate_events_buffer(version),
             )
         return version
 
@@ -2689,7 +2684,7 @@ class SqlAlchemyArticleRepository:
             self._session,
             aggregate_type="editorial.article_version",
             aggregate_id=version.state.id.value,
-            buffer=version._events,
+            buffer=aggregate_events_buffer(version),
         )
         _execute(
             self._session,
@@ -2885,7 +2880,7 @@ class SqlAlchemyArticleRepository:
             self._session,
             aggregate_type="editorial.article_version",
             aggregate_id=version.state.id.value,
-            buffer=version._events,
+            buffer=aggregate_events_buffer(version),
         )
         persisted = _cas_update(
             self._session,

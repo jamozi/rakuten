@@ -7,7 +7,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
 import json
-from typing import NoReturn, TypeVar
+from typing import NoReturn, TypeVar, cast
 from uuid import UUID
 
 from sqlalchemy import Table, func, insert, select, update
@@ -18,6 +18,7 @@ from sqlalchemy.sql.base import Executable
 
 import raos.adapters.persistence.sqlalchemy.mappers.ops as domain_mappers
 from raos.adapters.persistence.sqlalchemy.session_runtime import (
+    aggregate_event_buffer,
     fail_session_operation,
     guard_repository_class,
     persistence_context,
@@ -97,7 +98,7 @@ def _table(relation: str) -> Table:
             TABLES_BY_RELATION,
         )
 
-        table = TABLES_BY_RELATION[relation]
+        table = cast(object, TABLES_BY_RELATION[relation])
     except ImportError, KeyError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
     if not isinstance(table, Table):
@@ -128,22 +129,9 @@ def _optional(row: RowData, key: str, expected: type[T]) -> T | None:
 
 
 def _json_object(row: RowData, key: str) -> FrozenJsonObject:
-    value = _exact(row, key, dict)
+    value = cast(dict[str, object], _exact(row, key, dict))
     try:
         return FrozenJsonObject.from_mapping(value)
-    except ValueError:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-
-
-def _evidence_id(row: RowData, key: str, name: str) -> EntityId:
-    from raos.domain.evidence.ids import FactId, SourceSnapshotId
-
-    classes = {"FactId": FactId, "SourceSnapshotId": SourceSnapshotId}
-    cls = classes.get(name)
-    if cls is None:
-        _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-    try:
-        return cls(_exact(row, key, UUID))
     except ValueError:
         _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
 
@@ -554,7 +542,7 @@ class SqlAlchemyJobRepository:
     __slots__ = ("_attempt", "_job", "_session")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_OPS_REPOSITORY") from None
         self._session = session
         self._job = _table("ops.job")
@@ -614,7 +602,7 @@ class SqlAlchemyJobRepository:
             self._session,
             aggregate_type="ops.job",
             aggregate_id=job.state.id.value,
-            buffer=job._event_buffer,
+            buffer=aggregate_event_buffer(job),
         )
         _execute(self._session, insert(self._job).values(**_encode_ops_job(job.state)))
         for attempt in job.job_attempt_rows:
@@ -638,7 +626,7 @@ class SqlAlchemyObjectArtifactRepository:
     __slots__ = ("_session", "_table")
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_OPS_REPOSITORY") from None
         self._session = session
         self._table = _table("ops.object_artifact")
@@ -687,7 +675,7 @@ class SqlAlchemyRuntimeSettingRepository:
     )
 
     def __init__(self, session: Session) -> None:
-        if not isinstance(session, Session):
+        if not isinstance(cast(object, session), Session):
             raise ValueError("INVALID_OPS_REPOSITORY") from None
         self._session = session
         self._table = _table("ops.runtime_setting_version")
