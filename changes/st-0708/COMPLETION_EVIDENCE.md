@@ -2,7 +2,7 @@
 
 Status: `LOCAL_IMPLEMENTATION_COMPLETE`
 
-Base commit: `71c709844d625ee26026b2ba8555a16fa351b982`
+Base commit: `a2c571a36248ff180c9437cd49f828c073c9459b`
 
 This record covers repository-local implementation only. Formal TST-018, live
 provider execution, credentials, staging, release, and Production remain
@@ -17,32 +17,32 @@ Introduced debt: `[]`.
 ## Installed local evidence
 
 - V2 runtime contract SHA-256:
-  `dc7733254fa3549ef5f30922ae5e02e252cc7378158a55535d90e979d9d2289f`
+  `4164b2f3b1c41434c8e54e4a0d6b257036616c0b000994f71129da28f29e628d`
 - Historical V1 compatibility artifact SHA-256:
   `6310dd1107e8685feb8b86f9babbb0d889ffe611e3e2d92f4e0b83154e65d805`
 - V2 request artifact SHA-256:
-  `3d440efa6d6a7a5b807de2180cac6c063741797effc1c213746deb1abb205463`
+  `ec64e23748bc6ff30648d0758bbca3710e0eeb55918a11367e71d0d0a6d62f88`
 - V2 request identity:
-  `36a17adb5166bf53797fc2fc1076e02e4177549cebf044ec870d74a1caf4405c`
+  `db7a37961f746e2b24bbaad4c1f07380486648fe1cf4aa840e8bbfd0f2f88d80`
 - V2 report artifact SHA-256:
-  `08059f2de2ca59c3712735be63c450ef0dc12b71df8632fc243ef34f7bbfb053`
+  `aed923ec207c358a53261036c83549380e9a3b62494f702072a52d5d92536843`
 - V2 report identity:
-  `7dd7c804ce2e85c2246bd70fbdeb1fa3a3ee7c9eb198004de6534d56594865bd`
+  `c9d40408ce6e83ae04b2c5793d80bd3d556cbb6ed7ebac5876e749d9e435203e`
 - V2 runtime-manifest artifact SHA-256:
-  `e24ca761f4a3f0e12348014ea675274e4ea3f342db338efef9504435f0c701c6`
+  `4ad7ce545e14136e1bb8e2a59c9196466bdd8268de2518688903beace4f65075`
 - V2 runtime-manifest identity:
-  `4c4132ae57e7351482e78e03f84f5b6ae1f61e02f54202b71662e1da7a166626`
+  `4c6b85be299f189cbf392638d9d3fa8a7b2f7a6e9bc77a56bf937ab57d901b15`
 - Owner manifest SHA-256:
-  `39849c03c9f4fb694a9bab4c3fc4c68bfdcb2e2364ee167d6ba3d8f83f4a0d16`
+  `a3b78dce1604affe20484711bbe0affe621df3faff7bb2057f4ec64722e75896`
 - Hardened publication helper SHA-256:
   `38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e`
 
 The installed report binds ST-0703 candidate identity
-`78b441e412807279824dc2487ed7aa1d668a7c0e68d49220aa065f61dcb03fda`,
+`6bb38f56c448ff7ddb1ccf8518e1ff2b0c5482087dbeb3ed3d3c98d5f8014ec3`,
 ST-0707 bundle
-`200c8378d8312133b838f6d167d6b2532f8c28e0d3d1c446c122536b76c355ed`,
+`a363cbcbdc243c0de72e3bea7c44bf542c32ed66bcfc8c5e5f93f8f3bece4493`,
 and ST-0707 report
-`4458db297cb5f0d324dfde5c22fc4847b5c74e148326c32dfc77ff27aba54962`.
+`e583af1ef694facb6441fa9d9bbd06be4e4238b8aaa3636c6e642bc379b13566`.
 All nine AIT-004 CRITICAL metrics and all eight zero-tolerance classes remain
 `UNAVAILABLE`, so the result is not a pass.
 
