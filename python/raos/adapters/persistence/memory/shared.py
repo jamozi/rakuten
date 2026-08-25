@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import NoReturn, TypeAlias
 
-from raos.adapters.persistence.memory.store import _MemoryClaimReservation
-from raos.adapters.persistence.memory.transaction import _MemoryTransaction
+from raos.adapters.persistence.memory.store import MemoryClaimReservation
+from raos.adapters.persistence.memory.transaction import MemoryTransaction
 from raos.domain.ops.aggregates import (
     AuditEventRecord,
     IdempotencyRecord,
@@ -40,7 +40,7 @@ from raos.domain.shared.idempotency import (
     ReplaySucceeded,
     RequestHash,
     ResourceRef,
-    _issue_claim_handle,
+    issue_claim_handle,
 )
 from raos.domain.shared.identity import (
     ActorId,
@@ -62,7 +62,7 @@ def _fail(code: PersistenceErrorCode) -> NoReturn:
 class MemoryAuditEventAppender:
     __slots__ = ("_transaction",)
 
-    def __init__(self, transaction: _MemoryTransaction) -> None:
+    def __init__(self, transaction: MemoryTransaction) -> None:
         self._transaction = transaction
 
     def append_many(self, intents: tuple[AuditIntent, ...]) -> None:
@@ -131,7 +131,7 @@ class MemoryAuditEventAppender:
 class MemoryOutboxEventAppender:
     __slots__ = ("_transaction",)
 
-    def __init__(self, transaction: _MemoryTransaction) -> None:
+    def __init__(self, transaction: MemoryTransaction) -> None:
         self._transaction = transaction
 
     def append_many(self, events: tuple[ValidatedOutboxEvent, ...]) -> None:
@@ -238,7 +238,7 @@ def _classify(
 
 
 def _classify_reservation(
-    reservation: _MemoryClaimReservation,
+    reservation: MemoryClaimReservation,
     request_hash: RequestHash,
 ) -> ClaimInProgress | PayloadMismatch:
     if reservation.request_hash != request_hash.value:
@@ -249,7 +249,7 @@ def _classify_reservation(
 class MemoryIdempotencyRepository:
     __slots__ = ("_transaction",)
 
-    def __init__(self, transaction: _MemoryTransaction) -> None:
+    def __init__(self, transaction: MemoryTransaction) -> None:
         self._transaction = transaction
 
     def _find(self, identity: IdempotencyIdentity) -> IdempotencyRecord | None:
@@ -269,7 +269,7 @@ class MemoryIdempotencyRepository:
         identity: IdempotencyIdentity,
         request_hash: RequestHash,
     ) -> IdempotencyClaimHandle:
-        return _issue_claim_handle(
+        return issue_claim_handle(
             record_id=record.id.value,
             identity=identity,
             request_hash=request_hash,
@@ -286,7 +286,7 @@ class MemoryIdempotencyRepository:
         record = self._find(claim.identity)
         if record is None:
             record_id = IdempotencyRecordId(self._transaction.new_uuid7())
-            observed = self._transaction.store._observe_or_reserve_idempotency_claim(
+            observed = self._transaction.store.observe_or_reserve_idempotency_claim(
                 transaction_id=self._transaction.transaction_id,
                 identity_key=_identity_key(claim.identity),
                 request_hash=claim.request_hash.value,
@@ -298,7 +298,7 @@ class MemoryIdempotencyRepository:
                 if observed.expires_at.value <= now.value:
                     _fail(PersistenceErrorCode.CONCURRENCY_CONFLICT)
                 return _classify(observed, claim.request_hash)
-            if type(observed) is not _MemoryClaimReservation:
+            if type(observed) is not MemoryClaimReservation:
                 _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
             if observed.owner_transaction_id != self._transaction.transaction_id:
                 return _classify_reservation(observed, claim.request_hash)
@@ -325,7 +325,7 @@ class MemoryIdempotencyRepository:
             )
         if record.expires_at.value > now.value:
             return _classify(record, claim.request_hash)
-        observed = self._transaction.store._observe_or_reserve_idempotency_claim(
+        observed = self._transaction.store.observe_or_reserve_idempotency_claim(
             transaction_id=self._transaction.transaction_id,
             identity_key=_identity_key(claim.identity),
             request_hash=claim.request_hash.value,
@@ -337,7 +337,7 @@ class MemoryIdempotencyRepository:
             if observed.expires_at.value <= now.value:
                 _fail(PersistenceErrorCode.CONCURRENCY_CONFLICT)
             return _classify(observed, claim.request_hash)
-        if type(observed) is not _MemoryClaimReservation:
+        if type(observed) is not MemoryClaimReservation:
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
         if observed.owner_transaction_id != self._transaction.transaction_id:
             return _classify_reservation(observed, claim.request_hash)
@@ -422,7 +422,7 @@ class MemoryIdempotencyRepository:
         ):
             _fail(PersistenceErrorCode.LOST_IDEMPOTENCY_CLAIM)
         try:
-            record_uuid, identity, request_hash = handle._adapter_fields(
+            record_uuid, identity, request_hash = handle.adapter_fields(
                 self._transaction.transaction_id
             )
         except TypeError, ValueError:

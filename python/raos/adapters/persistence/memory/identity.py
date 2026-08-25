@@ -4,7 +4,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Final, NoReturn, Protocol, SupportsIndex, runtime_checkable
+from typing import (
+    Final,
+    NoReturn,
+    Protocol,
+    SupportsIndex,
+    TypeAlias,
+    runtime_checkable,
+)
 
 from raos.ports.persistence.errors import PersistenceError, PersistenceErrorCode
 
@@ -123,6 +130,22 @@ class VerifiedDatabaseIdentity:
             and self.__inherited_groups == inherited_groups
         )
 
+    def is_bound_to(
+        self,
+        *,
+        connection_key: object,
+        expected_profile: WorkloadProfile,
+        login_role: str,
+        inherited_groups: frozenset[str],
+        _issuer: object,
+    ) -> bool:
+        return _issuer is _IDENTITY_PROOF_ISSUER and self._matches(
+            connection_key=connection_key,
+            expected_profile=expected_profile,
+            login_role=login_role,
+            inherited_groups=inherited_groups,
+        )
+
     def __reduce_ex__(self, protocol: SupportsIndex) -> NoReturn:
         del protocol
         raise TypeError("database identity proof serialization is not supported")
@@ -166,6 +189,67 @@ class MemoryConnection:
     @property
     def invalidated(self) -> bool:
         return self._invalidated
+
+    def record_lifecycle(self, event: str, *, _issuer: object) -> None:
+        if (
+            _issuer is not _IDENTITY_PROOF_ISSUER
+            or type(event) is not str
+            or event
+            not in {
+                "identity.verify",
+                "session.begin",
+                "session.close",
+                "session.commit",
+                "session.construct",
+                "session.rollback",
+            }
+        ):
+            raise ValueError("INVALID_MEMORY_CONNECTION") from None
+        self._trace.append(event)
+
+    def issue_verified_identity(
+        self,
+        expected_profile: WorkloadProfile,
+        *,
+        _issuer: object,
+    ) -> VerifiedDatabaseIdentity:
+        if (
+            _issuer is not _IDENTITY_PROOF_ISSUER
+            or self._closed
+            or self._invalidated
+            or type(expected_profile) is not WorkloadProfile
+        ):
+            _reject_identity()
+        identity = self._identity
+        return VerifiedDatabaseIdentity(
+            identity.login_role,
+            identity.inherited_groups,
+            expected_profile,
+            self._identity_proof_key,
+            _issuer=_IDENTITY_PROOF_ISSUER,
+        )
+
+    def accepts_verified_identity(
+        self,
+        proof: object,
+        expected_profile: WorkloadProfile,
+        *,
+        _issuer: object,
+    ) -> bool:
+        return (
+            _issuer is _IDENTITY_PROOF_ISSUER
+            and type(proof) is VerifiedDatabaseIdentity
+            and not self._closed
+            and not self._invalidated
+            and type(expected_profile) is WorkloadProfile
+            and proof.is_bound_to(
+                connection_key=self._identity_proof_key,
+                expected_profile=expected_profile,
+                login_role=self._identity.login_role,
+                inherited_groups=self._identity.inherited_groups,
+                _issuer=_IDENTITY_PROOF_ISSUER,
+            )
+        )
 
     def invalidate(self) -> None:
         self._trace.append("connection.invalidate")
@@ -215,7 +299,10 @@ class MemoryEffectiveRoleVerifier:
             or type(expected_profile) is not WorkloadProfile
         ):
             _reject_identity()
-        connection._trace.append("identity.verify")
+        connection.record_lifecycle(
+            "identity.verify",
+            _issuer=_IDENTITY_PROOF_ISSUER,
+        )
         identity = connection.identity
         required = _REQUIRED_GROUP[expected_profile]
         groups = identity.inherited_groups
@@ -242,12 +329,8 @@ def _issue_verified_identity(
         or type(expected_profile) is not WorkloadProfile
     ):
         _reject_identity()
-    identity = connection.identity
-    return VerifiedDatabaseIdentity(
-        identity.login_role,
-        identity.inherited_groups,
+    return connection.issue_verified_identity(
         expected_profile,
-        connection._identity_proof_key,
         _issuer=_IDENTITY_PROOF_ISSUER,
     )
 
@@ -263,15 +346,22 @@ def _require_verified_identity(
         or type(expected_profile) is not WorkloadProfile
         or connection.closed
         or connection.invalidated
-        or not proof._matches(
-            connection_key=connection._identity_proof_key,
-            expected_profile=expected_profile,
-            login_role=connection.identity.login_role,
-            inherited_groups=connection.identity.inherited_groups,
+        or not connection.accepts_verified_identity(
+            proof,
+            expected_profile,
+            _issuer=_IDENTITY_PROOF_ISSUER,
         )
     ):
         _reject_identity()
     return proof
+
+
+def require_verified_identity(
+    proof: object,
+    connection: MemoryConnection,
+    expected_profile: WorkloadProfile,
+) -> VerifiedDatabaseIdentity:
+    return _require_verified_identity(proof, connection, expected_profile)
 
 
 class MemoryCommitMode(str, Enum):
@@ -288,8 +378,12 @@ class _UnknownCommit(RuntimeError):
     pass
 
 
+KnownMemoryCommitFailure: TypeAlias = _KnownCommitFailure
+UnknownMemoryCommit: TypeAlias = _UnknownCommit
+
+
 class MemorySession:
-    __slots__ = ("_active", "_closed", "_commit_mode", "_connection", "_trace")
+    __slots__ = ("_active", "_closed", "_commit_mode", "_connection")
 
     def __init__(
         self,
@@ -297,7 +391,6 @@ class MemorySession:
         commit_mode: MemoryCommitMode,
     ) -> None:
         self._connection = connection
-        self._trace = connection._trace
         self._commit_mode = commit_mode
         self._active = False
         self._closed = False
@@ -305,13 +398,19 @@ class MemorySession:
     def begin(self) -> None:
         if self._closed or self._active:
             raise _KnownCommitFailure
-        self._trace.append("session.begin")
+        self._connection.record_lifecycle(
+            "session.begin",
+            _issuer=_IDENTITY_PROOF_ISSUER,
+        )
         self._active = True
 
     def commit(self) -> None:
         if self._closed or not self._active:
             raise _KnownCommitFailure
-        self._trace.append("session.commit")
+        self._connection.record_lifecycle(
+            "session.commit",
+            _issuer=_IDENTITY_PROOF_ISSUER,
+        )
         if self._commit_mode is MemoryCommitMode.UNKNOWN:
             self._active = False
             raise _UnknownCommit
@@ -321,12 +420,18 @@ class MemorySession:
 
     def rollback(self) -> None:
         if not self._closed and self._active:
-            self._trace.append("session.rollback")
+            self._connection.record_lifecycle(
+                "session.rollback",
+                _issuer=_IDENTITY_PROOF_ISSUER,
+            )
             self._active = False
 
     def close(self) -> None:
         if not self._closed:
-            self._trace.append("session.close")
+            self._connection.record_lifecycle(
+                "session.close",
+                _issuer=_IDENTITY_PROOF_ISSUER,
+            )
             self._closed = True
 
 
@@ -343,7 +448,10 @@ class MemorySessionFactory:
     def create(self, connection: MemoryConnection) -> MemorySession:
         if type(connection) is not MemoryConnection or connection.closed:
             raise PersistenceError(PersistenceErrorCode.IDENTITY_REJECTED) from None
-        connection._trace.append("session.construct")
+        connection.record_lifecycle(
+            "session.construct",
+            _issuer=_IDENTITY_PROOF_ISSUER,
+        )
         return MemorySession(connection, self._commit_mode)
 
 

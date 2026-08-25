@@ -11,8 +11,9 @@ from typing import Literal, NoReturn, Self
 from uuid import RFC_4122, UUID
 
 from raos.adapters.persistence.memory.execution import (
-    _ExecutionPoint,
-    _ExecutionStateFactory,
+    ExecutionPoint,
+    ExecutionState,
+    ExecutionStateFactory,
 )
 from raos.adapters.persistence.memory.identity import (
     EffectiveRoleVerifier,
@@ -21,9 +22,9 @@ from raos.adapters.persistence.memory.identity import (
     MemorySession,
     MemorySessionFactory,
     WorkloadProfile,
-    _KnownCommitFailure,
-    _UnknownCommit,
-    _require_verified_identity,
+    KnownMemoryCommitFailure,
+    UnknownMemoryCommit,
+    require_verified_identity,
 )
 from raos.adapters.persistence.memory.repositories import (
     MemoryObjectArtifactRepository,
@@ -36,8 +37,8 @@ from raos.adapters.persistence.memory.shared import (
 )
 from raos.adapters.persistence.memory.store import MemoryPersistenceStore
 from raos.adapters.persistence.memory.transaction import (
+    MemoryTransaction,
     Uuid7Factory,
-    _MemoryTransaction,
     transaction_timestamp,
 )
 from raos.domain.shared.events import DomainEvent
@@ -49,7 +50,7 @@ from raos.ports.persistence.outbox import ValidatedOutboxEvent
 from raos.ports.persistence.transaction import (
     TransactionJoin,
     TransactionState,
-    _issue_transaction_join,
+    issue_transaction_join,
 )
 
 
@@ -83,11 +84,19 @@ def _new_uuid7(factory: Uuid7Factory) -> UUID:
     return value
 
 
-@dataclass(frozen=True, slots=True)
+def _require_effective_role_verifier(value: object) -> EffectiveRoleVerifier:
+    if not isinstance(value, EffectiveRoleVerifier):
+        raise ValueError("INVALID_MEMORY_UOW_FACTORY") from None
+    return value
+
+
 class _JoinedTransactionCapability:
     """Narrow join bookkeeping; it exposes no owner or persistence state."""
 
-    __transaction: _MemoryTransaction
+    __slots__ = ("__transaction",)
+
+    def __init__(self, transaction: MemoryTransaction) -> None:
+        self.__transaction = transaction
 
     @property
     def transaction_id(self) -> UUID:
@@ -116,9 +125,9 @@ class _JoinedTransactionCapability:
 
     def require_flush_allowed(self, transaction_id: UUID) -> None:
         self.require_active(transaction_id)
-        self.__transaction.execution_state.require_allowed(_ExecutionPoint.PRE_FLUSH)
+        self.__transaction.execution_state.require_allowed(ExecutionPoint.PRE_FLUSH)
 
-    def owns(self, transaction: _MemoryTransaction) -> bool:
+    def owns(self, transaction: MemoryTransaction) -> bool:
         return self.__transaction is transaction
 
 
@@ -132,6 +141,138 @@ class _JoinRegistration:
     runtime_settings: MemoryRuntimeSettingRepository
 
 
+class _MemoryFactoryRuntime:
+    """Adapter-private dependency owner shared by issued memory UoWs."""
+
+    __slots__ = (
+        "_clock",
+        "_expected_profile",
+        "_id_factory",
+        "_owner_key",
+        "_pool",
+        "_registry",
+        "_session_factory",
+        "_store",
+        "_verifier",
+    )
+
+    def __init__(
+        self,
+        *,
+        store: MemoryPersistenceStore,
+        pool: MemoryConnectionPool,
+        verifier: EffectiveRoleVerifier,
+        session_factory: MemorySessionFactory,
+        expected_profile: WorkloadProfile,
+        clock: Callable[[], datetime],
+        id_factory: Uuid7Factory,
+    ) -> None:
+        self._store = store
+        self._pool = pool
+        self._verifier = verifier
+        self._session_factory = session_factory
+        self._expected_profile = expected_profile
+        self._clock = clock
+        self._id_factory = id_factory
+        self._owner_key = object()
+        self._registry: dict[UUID, _JoinRegistration] = {}
+
+    def idempotency_allowed(self) -> bool:
+        return self._expected_profile is WorkloadProfile.API_COMMAND
+
+    def checkout_connection(self) -> MemoryConnection:
+        return self._pool.checkout()
+
+    def verify_connection_identity(self, connection: MemoryConnection) -> None:
+        proof = self._verifier.verify(connection, self._expected_profile)
+        require_verified_identity(proof, connection, self._expected_profile)
+
+    def create_session(self, connection: MemoryConnection) -> MemorySession:
+        return self._session_factory.create(connection)
+
+    def create_transaction(
+        self,
+        context: PersistenceContext,
+        execution_state: ExecutionState,
+    ) -> MemoryTransaction:
+        revision, state = self._store.begin_transaction()
+        return MemoryTransaction(
+            transaction_id=_new_uuid7(self._id_factory),
+            context=context,
+            timestamp=transaction_timestamp(self._clock),
+            base_revision=revision,
+            state=state,
+            store=self._store,
+            id_factory=self._id_factory,
+            execution_state=execution_state,
+        )
+
+    def commit_transaction(
+        self,
+        transaction: MemoryTransaction,
+        commit_session: Callable[[], None],
+    ) -> None:
+        self._store.commit_transaction(
+            transaction.transaction_id,
+            tuple(sorted(transaction.claim_reservation_keys)),
+            transaction.base_revision,
+            transaction.state,
+            commit_session,
+        )
+
+    def issue_join(self, transaction_id: UUID, context_digest: str) -> TransactionJoin:
+        return issue_transaction_join(
+            transaction_id=transaction_id,
+            context_digest=context_digest,
+            owner_key=self._owner_key,
+        )
+
+    def registration_for_join(
+        self,
+        join_capability: TransactionJoin,
+        context: PersistenceContext,
+    ) -> _JoinRegistration:
+        try:
+            transaction_id, digest = join_capability.adapter_fields(self._owner_key)
+        except TypeError, ValueError:
+            _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
+        registration = self._registry.get(transaction_id)
+        supplied_context_digest = _context_digest(context)
+        if (
+            registration is None
+            or digest != registration.context_digest
+            or supplied_context_digest != registration.context_digest
+        ):
+            _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
+        registration.transaction_scope.require_active(transaction_id)
+        return registration
+
+    def register_transaction(
+        self,
+        transaction_id: UUID,
+        registration: _JoinRegistration,
+    ) -> None:
+        if transaction_id in self._registry:
+            _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
+        if (
+            type(registration) is not _JoinRegistration
+            or registration.transaction_scope.transaction_id != transaction_id
+        ):
+            _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
+        self._registry[transaction_id] = registration
+
+    def unregister_transaction(
+        self,
+        transaction_id: UUID,
+        transaction: MemoryTransaction,
+    ) -> None:
+        registration = self._registry.get(transaction_id)
+        if registration is not None and registration.transaction_scope.owns(
+            transaction
+        ):
+            del self._registry[transaction_id]
+
+
 class MemoryOpsUnitOfWork:
     """One explicit transaction owner; repositories appear only after enter."""
 
@@ -141,7 +282,7 @@ class MemoryOpsUnitOfWork:
         "_context",
         "_entered",
         "_execution_state",
-        "_factory",
+        "_runtime",
         "_idempotency_repository",
         "_object_artifact_repository",
         "_outbox_appender",
@@ -153,19 +294,24 @@ class MemoryOpsUnitOfWork:
 
     def __init__(
         self,
-        factory: MemoryOpsUnitOfWorkFactory,
+        runtime: _MemoryFactoryRuntime,
         context: PersistenceContext,
+        execution_state: ExecutionState,
     ) -> None:
-        if type(context) is not PersistenceContext:
+        if (
+            type(runtime) is not _MemoryFactoryRuntime
+            or type(context) is not PersistenceContext
+            or type(execution_state) is not ExecutionState
+        ):
             raise ValueError("INVALID_MEMORY_UOW") from None
-        self._factory = factory
+        self._runtime = runtime
         self._context = context
-        self._execution_state = factory._execution_state_factory.new_outer_state()
+        self._execution_state = execution_state
         self._state = TransactionState.NEW
         self._entered = False
         self._connection: MemoryConnection | None = None
         self._session: MemorySession | None = None
-        self._transaction: _MemoryTransaction | None = None
+        self._transaction: MemoryTransaction | None = None
         self._audit_appender: MemoryAuditEventAppender | None = None
         self._outbox_appender: MemoryOutboxEventAppender | None = None
         self._idempotency_repository: MemoryIdempotencyRepository | None = None
@@ -176,7 +322,7 @@ class MemoryOpsUnitOfWork:
     def context(self) -> PersistenceContext:
         return self._context
 
-    def _active_transaction(self) -> _MemoryTransaction:
+    def _active_transaction(self) -> MemoryTransaction:
         transaction = self._transaction
         if (
             not self._entered
@@ -223,25 +369,20 @@ class MemoryOpsUnitOfWork:
         if self._entered or self._state is not TransactionState.NEW:
             _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
         try:
-            self._execution_state.require_allowed(_ExecutionPoint.PRE_CHECKOUT)
+            self._execution_state.require_allowed(ExecutionPoint.PRE_CHECKOUT)
         except PersistenceError:
             self._state = TransactionState.CLOSED
             raise
         try:
-            connection = self._factory._pool.checkout()
+            connection = self._runtime.checkout_connection()
         except Exception:
             self._state = TransactionState.CLOSED
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
         self._connection = connection
         try:
-            self._execution_state.require_allowed(_ExecutionPoint.POST_CHECKOUT)
-            proof = self._factory._verifier.verify(
-                connection, self._factory._expected_profile
-            )
-            _require_verified_identity(
-                proof, connection, self._factory._expected_profile
-            )
-            self._execution_state.require_allowed(_ExecutionPoint.POST_IDENTITY)
+            self._execution_state.require_allowed(ExecutionPoint.POST_CHECKOUT)
+            self._runtime.verify_connection_identity(connection)
+            self._execution_state.require_allowed(ExecutionPoint.POST_IDENTITY)
         except PersistenceError as error:
             if error.code in {
                 PersistenceErrorCode.CANCELLED,
@@ -263,24 +404,16 @@ class MemoryOpsUnitOfWork:
             self._state = TransactionState.CLOSED
             _fail(PersistenceErrorCode.IDENTITY_REJECTED)
         session: MemorySession | None = None
-        transaction: _MemoryTransaction | None = None
+        transaction: MemoryTransaction | None = None
         registered = False
         try:
-            session = self._factory._session_factory.create(connection)
+            session = self._runtime.create_session(connection)
             self._session = session
-            self._execution_state.require_allowed(_ExecutionPoint.PRE_SESSION_BEGIN)
+            self._execution_state.require_allowed(ExecutionPoint.PRE_SESSION_BEGIN)
             session.begin()
-            revision, state = self._factory._store._begin()
-            timestamp = transaction_timestamp(self._factory._clock)
-            transaction = _MemoryTransaction(
-                transaction_id=_new_uuid7(self._factory._id_factory),
-                context=self._context,
-                timestamp=timestamp,
-                base_revision=revision,
-                state=state,
-                store=self._factory._store,
-                id_factory=self._factory._id_factory,
-                execution_state=self._execution_state,
+            transaction = self._runtime.create_transaction(
+                self._context,
+                self._execution_state,
             )
             audit = MemoryAuditEventAppender(transaction)
             outbox = MemoryOutboxEventAppender(transaction)
@@ -295,13 +428,19 @@ class MemoryOpsUnitOfWork:
                 object_artifacts=object_artifacts,
                 runtime_settings=runtime_settings,
             )
-            self._execution_state.require_allowed(_ExecutionPoint.PRE_EXPOSURE)
-            self._factory._register(transaction.transaction_id, registration)
+            self._execution_state.require_allowed(ExecutionPoint.PRE_EXPOSURE)
+            self._runtime.register_transaction(
+                transaction.transaction_id,
+                registration,
+            )
             registered = True
         except Exception as error:
             if transaction is not None:
                 if registered:
-                    self._factory._unregister(transaction.transaction_id, transaction)
+                    self._runtime.unregister_transaction(
+                        transaction.transaction_id,
+                        transaction,
+                    )
                 try:
                     transaction.release_claim_reservations()
                     transaction.restore_acknowledged()
@@ -352,7 +491,7 @@ class MemoryOpsUnitOfWork:
 
     def _finish_known_rollback(
         self,
-        transaction: _MemoryTransaction,
+        transaction: MemoryTransaction,
         *,
         rollback_session: bool,
     ) -> None:
@@ -370,13 +509,13 @@ class MemoryOpsUnitOfWork:
             rollback_failed = True
         transaction.active = False
         self._state = TransactionState.ROLLED_BACK
-        self._factory._unregister(transaction.transaction_id, transaction)
+        self._runtime.unregister_transaction(transaction.transaction_id, transaction)
         if rollback_failed:
             self._close_transport(invalidate=True)
             self._entered = False
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
 
-    def _finish_unknown(self, transaction: _MemoryTransaction) -> None:
+    def _finish_unknown(self, transaction: MemoryTransaction) -> None:
         try:
             transaction.finish_acknowledged()
             transaction.release_claim_reservations()
@@ -384,7 +523,7 @@ class MemoryOpsUnitOfWork:
             pass
         transaction.active = False
         self._state = TransactionState.UNKNOWN
-        self._factory._unregister(transaction.transaction_id, transaction)
+        self._runtime.unregister_transaction(transaction.transaction_id, transaction)
         self._close_transport(invalidate=True)
         self._entered = False
 
@@ -415,7 +554,7 @@ class MemoryOpsUnitOfWork:
 
     def flush(self) -> None:
         transaction = self._active_transaction()
-        transaction.execution_state.require_allowed(_ExecutionPoint.PRE_FLUSH)
+        transaction.execution_state.require_allowed(ExecutionPoint.PRE_FLUSH)
 
     def mark_rollback_only(self) -> None:
         self._active_transaction().rollback_only = True
@@ -431,7 +570,7 @@ class MemoryOpsUnitOfWork:
         if session is None:
             _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
         try:
-            transaction.execution_state.require_allowed(_ExecutionPoint.PRE_COMMIT)
+            transaction.execution_state.require_allowed(ExecutionPoint.PRE_COMMIT)
         except PersistenceError as error:
             if error.code in {
                 PersistenceErrorCode.CANCELLED,
@@ -445,20 +584,17 @@ class MemoryOpsUnitOfWork:
             nonlocal driver_return_known
             try:
                 session.commit()
-            except _KnownCommitFailure:
+            except KnownMemoryCommitFailure:
                 driver_return_known = True
                 raise
             driver_return_known = True
 
         try:
-            self._factory._store._commit_transaction(
-                transaction.transaction_id,
-                tuple(sorted(transaction.claim_reservation_keys)),
-                transaction.base_revision,
-                transaction.state,
+            self._runtime.commit_transaction(
+                transaction,
                 commit_session,
             )
-        except _UnknownCommit:
+        except UnknownMemoryCommit:
             self._finish_unknown(transaction)
             _fail(PersistenceErrorCode.UNKNOWN_COMMIT)
         except PersistenceError:
@@ -466,7 +602,7 @@ class MemoryOpsUnitOfWork:
                 transaction.execution_state.observe_known_driver_return()
             self._finish_known_rollback(transaction, rollback_session=True)
             raise
-        except _KnownCommitFailure:
+        except KnownMemoryCommitFailure:
             if driver_return_known:
                 transaction.execution_state.observe_known_driver_return()
             self._finish_known_rollback(transaction, rollback_session=True)
@@ -479,7 +615,7 @@ class MemoryOpsUnitOfWork:
         transaction.finish_acknowledged()
         transaction.active = False
         self._state = TransactionState.COMMITTED
-        self._factory._unregister(transaction.transaction_id, transaction)
+        self._runtime.unregister_transaction(transaction.transaction_id, transaction)
 
     def rollback(self) -> None:
         transaction = self._active_transaction()
@@ -492,10 +628,9 @@ class MemoryOpsUnitOfWork:
 
     def join_token(self) -> TransactionJoin:
         transaction = self._active_transaction()
-        return _issue_transaction_join(
-            transaction_id=transaction.transaction_id,
-            context_digest=_context_digest(self._context),
-            owner_key=self._factory._owner_key,
+        return self._runtime.issue_join(
+            transaction.transaction_id,
+            _context_digest(self._context),
         )
 
     def _stage_pending_events(
@@ -618,18 +753,7 @@ class MemoryJoinedOpsUnitOfWork:
 class MemoryOpsUnitOfWorkFactory:
     """Factory owns workload profile; ``PersistenceContext`` never selects it."""
 
-    __slots__ = (
-        "_clock",
-        "_expected_profile",
-        "_execution_state_factory",
-        "_id_factory",
-        "_owner_key",
-        "_pool",
-        "_registry",
-        "_session_factory",
-        "_store",
-        "_verifier",
-    )
+    __slots__ = ("_execution_state_factory", "_runtime")
 
     def __init__(
         self,
@@ -645,34 +769,41 @@ class MemoryOpsUnitOfWorkFactory:
         if (
             type(store) is not MemoryPersistenceStore
             or type(pool) is not MemoryConnectionPool
-            or not isinstance(verifier, EffectiveRoleVerifier)
             or type(session_factory) is not MemorySessionFactory
             or type(expected_profile) is not WorkloadProfile
             or not callable(clock)
             or not callable(id_factory)
         ):
             raise ValueError("INVALID_MEMORY_UOW_FACTORY") from None
-        self._store = store
-        self._pool = pool
-        self._verifier = verifier
-        self._session_factory = session_factory
-        self._expected_profile = expected_profile
-        self._execution_state_factory = _ExecutionStateFactory()
-        self._clock = clock
-        self._id_factory = id_factory
-        self._owner_key = object()
-        self._registry: dict[UUID, _JoinRegistration] = {}
+        self._execution_state_factory = ExecutionStateFactory()
+        self._runtime = _MemoryFactoryRuntime(
+            store=store,
+            pool=pool,
+            verifier=_require_effective_role_verifier(verifier),
+            session_factory=session_factory,
+            expected_profile=expected_profile,
+            clock=clock,
+            id_factory=id_factory,
+        )
 
     def begin(self, context: PersistenceContext) -> MemoryOpsUnitOfWork:
-        return MemoryOpsUnitOfWork(self, context)
+        return MemoryOpsUnitOfWork(
+            self._runtime,
+            context,
+            self._execution_state_factory.new_outer_state(),
+        )
 
     def begin_idempotent(
         self,
         context: PersistenceContext,
     ) -> MemoryIdempotentOpsUnitOfWork:
-        if self._expected_profile is not WorkloadProfile.API_COMMAND:
+        if not self._runtime.idempotency_allowed():
             _fail(PersistenceErrorCode.IDENTITY_REJECTED)
-        return MemoryIdempotentOpsUnitOfWork(self, context)
+        return MemoryIdempotentOpsUnitOfWork(
+            self._runtime,
+            context,
+            self._execution_state_factory.new_outer_state(),
+        )
 
     def join(
         self,
@@ -684,45 +815,8 @@ class MemoryOpsUnitOfWorkFactory:
             or type(context) is not PersistenceContext
         ):
             _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
-        try:
-            transaction_id, digest = join_capability._adapter_fields(self._owner_key)
-        except TypeError, ValueError:
-            _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
-        registration = self._registry.get(transaction_id)
-        supplied_context_digest = _context_digest(context)
-        if (
-            registration is None
-            or digest != registration.context_digest
-            or supplied_context_digest != registration.context_digest
-        ):
-            _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
-        registration.transaction_scope.require_active(transaction_id)
+        registration = self._runtime.registration_for_join(join_capability, context)
         return MemoryJoinedOpsUnitOfWork(registration, context)
-
-    def _register(
-        self,
-        transaction_id: UUID,
-        registration: _JoinRegistration,
-    ) -> None:
-        if transaction_id in self._registry:
-            _fail(PersistenceErrorCode.TRANSACTION_OWNERSHIP)
-        if (
-            type(registration) is not _JoinRegistration
-            or registration.transaction_scope.transaction_id != transaction_id
-        ):
-            _fail(PersistenceErrorCode.STORAGE_CORRUPTION)
-        self._registry[transaction_id] = registration
-
-    def _unregister(
-        self,
-        transaction_id: UUID,
-        transaction: _MemoryTransaction,
-    ) -> None:
-        registration = self._registry.get(transaction_id)
-        if registration is not None and registration.transaction_scope.owns(
-            transaction
-        ):
-            del self._registry[transaction_id]
 
 
 __all__ = [

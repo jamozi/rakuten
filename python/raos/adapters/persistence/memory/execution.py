@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from time import monotonic_ns
+from typing import TypeAlias
 
 from raos.ports.persistence.errors import PersistenceError, PersistenceErrorCode
 
@@ -87,6 +88,11 @@ class _ExecutionStateFactory:
 
     def new_outer_state(self) -> _ExecutionState:
         return _ExecutionState(self._budget)
+
+
+ExecutionPoint: TypeAlias = _ExecutionPoint
+ExecutionState: TypeAlias = _ExecutionState
+ExecutionStateFactory: TypeAlias = _ExecutionStateFactory
 
 
 __all__: list[str] = []

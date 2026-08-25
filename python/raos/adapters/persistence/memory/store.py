@@ -27,6 +27,26 @@ from raos.ports.persistence.errors import PersistenceError, PersistenceErrorCode
 _IdempotencyIdentityKey: TypeAlias = tuple[str, str, str]
 
 
+def _empty_object_artifacts() -> dict[ObjectArtifactId, ObjectArtifact]:
+    return {}
+
+
+def _empty_runtime_settings() -> dict[RuntimeSettingVersionId, RuntimeSettingVersion]:
+    return {}
+
+
+def _empty_audit_events() -> list[AuditEventRecord]:
+    return []
+
+
+def _empty_outbox_events() -> list[OutboxEventRecord]:
+    return []
+
+
+def _empty_idempotency_records() -> dict[IdempotencyRecordId, IdempotencyRecord]:
+    return {}
+
+
 @dataclass(frozen=True, slots=True)
 class _MemoryClaimReservation:
     owner_transaction_id: UUID
@@ -39,15 +59,15 @@ class _MemoryClaimReservation:
 @dataclass(slots=True)
 class _MemoryState:
     object_artifacts: dict[ObjectArtifactId, ObjectArtifact] = field(
-        default_factory=dict
+        default_factory=_empty_object_artifacts
     )
     runtime_settings: dict[RuntimeSettingVersionId, RuntimeSettingVersion] = field(
-        default_factory=dict
+        default_factory=_empty_runtime_settings
     )
-    audit_events: list[AuditEventRecord] = field(default_factory=list)
-    outbox_events: list[OutboxEventRecord] = field(default_factory=list)
+    audit_events: list[AuditEventRecord] = field(default_factory=_empty_audit_events)
+    outbox_events: list[OutboxEventRecord] = field(default_factory=_empty_outbox_events)
     idempotency_records: dict[IdempotencyRecordId, IdempotencyRecord] = field(
-        default_factory=dict
+        default_factory=_empty_idempotency_records
     )
 
     def clone(self) -> _MemoryState:
@@ -58,6 +78,14 @@ class _MemoryState:
             outbox_events=list(self.outbox_events),
             idempotency_records=dict(self.idempotency_records),
         )
+
+
+MemoryClaimReservation: TypeAlias = _MemoryClaimReservation
+MemoryState: TypeAlias = _MemoryState
+
+
+def _clone_memory_state(state: MemoryState) -> MemoryState:
+    return state.clone()
 
 
 @dataclass(frozen=True, slots=True)
@@ -84,26 +112,29 @@ class MemoryPersistenceStore:
     def __init__(
         self,
         *,
-        state_cloner: Callable[[_MemoryState], _MemoryState] | None = None,
+        state_cloner: Callable[[MemoryState], MemoryState] | None = None,
     ) -> None:
         if state_cloner is not None and not callable(state_cloner):
             raise ValueError("INVALID_MEMORY_PERSISTENCE_STORE") from None
         self._lock = RLock()
         self._revision = 0
         self._state = _MemoryState()
-        self._state_cloner = (
-            (lambda state: state.clone()) if state_cloner is None else state_cloner
+        self._state_cloner: Callable[[MemoryState], MemoryState] = (
+            _clone_memory_state if state_cloner is None else state_cloner
         )
         self._claim_reservations: dict[
-            _IdempotencyIdentityKey, _MemoryClaimReservation
+            _IdempotencyIdentityKey, MemoryClaimReservation
         ] = {}
 
-    def _begin(self) -> tuple[int, _MemoryState]:
+    def _begin(self) -> tuple[int, MemoryState]:
         with self._lock:
             return self._revision, self._state.clone()
 
-    def _commit(self, expected_revision: int, replacement: _MemoryState) -> None:
-        if type(expected_revision) is not int or type(replacement) is not _MemoryState:
+    def begin_transaction(self) -> tuple[int, MemoryState]:
+        return self._begin()
+
+    def _commit(self, expected_revision: int, replacement: MemoryState) -> None:
+        if type(expected_revision) is not int or type(replacement) is not MemoryState:
             raise PersistenceError(PersistenceErrorCode.STORAGE_CORRUPTION) from None
         safe_replacement = self._clone_for_commit(replacement)
         with self._lock:
@@ -114,12 +145,12 @@ class MemoryPersistenceStore:
             self._state = safe_replacement
             self._revision += 1
 
-    def _clone_for_commit(self, replacement: _MemoryState) -> _MemoryState:
+    def _clone_for_commit(self, replacement: MemoryState) -> MemoryState:
         try:
             result = self._state_cloner(replacement)
         except Exception:
             raise PersistenceError(PersistenceErrorCode.STORAGE_CORRUPTION) from None
-        if type(result) is not _MemoryState or result is replacement:
+        if type(result) is not MemoryState or result is replacement:
             raise PersistenceError(PersistenceErrorCode.STORAGE_CORRUPTION) from None
         return result
 
@@ -132,7 +163,7 @@ class MemoryPersistenceStore:
         expires_at: datetime,
         record_id: IdempotencyRecordId,
         observed_record: IdempotencyRecord | None,
-    ) -> _MemoryClaimReservation | IdempotencyRecord:
+    ) -> MemoryClaimReservation | IdempotencyRecord:
         if (
             type(transaction_id) is not UUID
             or type(identity_key) is not tuple
@@ -187,6 +218,25 @@ class MemoryPersistenceStore:
             self._claim_reservations[identity_key] = reservation
             return reservation
 
+    def observe_or_reserve_idempotency_claim(
+        self,
+        *,
+        transaction_id: UUID,
+        identity_key: _IdempotencyIdentityKey,
+        request_hash: str,
+        expires_at: datetime,
+        record_id: IdempotencyRecordId,
+        observed_record: IdempotencyRecord | None,
+    ) -> MemoryClaimReservation | IdempotencyRecord:
+        return self._observe_or_reserve_idempotency_claim(
+            transaction_id=transaction_id,
+            identity_key=identity_key,
+            request_hash=request_hash,
+            expires_at=expires_at,
+            record_id=record_id,
+            observed_record=observed_record,
+        )
+
     def _release_claim_reservations(
         self,
         transaction_id: UUID,
@@ -207,12 +257,19 @@ class MemoryPersistenceStore:
                 ):
                     del self._claim_reservations[key]
 
+    def release_claim_reservations(
+        self,
+        transaction_id: UUID,
+        identity_keys: tuple[_IdempotencyIdentityKey, ...],
+    ) -> None:
+        self._release_claim_reservations(transaction_id, identity_keys)
+
     def _commit_transaction(
         self,
         transaction_id: UUID,
         reservation_keys: tuple[_IdempotencyIdentityKey, ...],
         expected_revision: int,
-        replacement: _MemoryState,
+        replacement: MemoryState,
         transaction_commit: Callable[[], None],
     ) -> None:
         if (
@@ -220,7 +277,7 @@ class MemoryPersistenceStore:
             or type(reservation_keys) is not tuple
             or len(reservation_keys) != len(set(reservation_keys))
             or type(expected_revision) is not int
-            or type(replacement) is not _MemoryState
+            or type(replacement) is not MemoryState
             or not callable(transaction_commit)
         ):
             raise PersistenceError(PersistenceErrorCode.STORAGE_CORRUPTION) from None
@@ -243,6 +300,22 @@ class MemoryPersistenceStore:
             self._revision += 1
             for key in reservation_keys:
                 del self._claim_reservations[key]
+
+    def commit_transaction(
+        self,
+        transaction_id: UUID,
+        reservation_keys: tuple[_IdempotencyIdentityKey, ...],
+        expected_revision: int,
+        replacement: MemoryState,
+        transaction_commit: Callable[[], None],
+    ) -> None:
+        self._commit_transaction(
+            transaction_id,
+            reservation_keys,
+            expected_revision,
+            replacement,
+            transaction_commit,
+        )
 
     def snapshot(self) -> MemoryPersistenceSnapshot:
         with self._lock:

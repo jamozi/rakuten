@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import NoReturn
 
-from raos.adapters.persistence.memory.transaction import _MemoryTransaction
+from raos.adapters.persistence.memory.transaction import MemoryTransaction
 from raos.domain.iam.ids import PrincipalId
 from raos.domain.ops.aggregates import (
     ObjectArtifact,
@@ -25,7 +25,7 @@ def _fail(code: PersistenceErrorCode) -> NoReturn:
 class MemoryObjectArtifactRepository:
     __slots__ = ("_transaction",)
 
-    def __init__(self, transaction: _MemoryTransaction) -> None:
+    def __init__(self, transaction: MemoryTransaction) -> None:
         self._transaction = transaction
 
     def get(self, artifact_id: ObjectArtifactId) -> ObjectArtifact | None:
@@ -90,7 +90,7 @@ def _preserved(
 class MemoryRuntimeSettingRepository:
     __slots__ = ("_transaction",)
 
-    def __init__(self, transaction: _MemoryTransaction) -> None:
+    def __init__(self, transaction: MemoryTransaction) -> None:
         self._transaction = transaction
 
     def get_current(
