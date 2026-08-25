@@ -107,8 +107,8 @@ source_artifacts:
   bytes: 18730
   sha256: d0c3013c7b42112584523cdd142f98488fa2f827139c1f8cbfad916e80b180e1
 - uri: repo://tests/st0202/test_wrapper.py
-  bytes: 49959
-  sha256: 43589eebbdb50c978eafbec5f8420206745e086d713740e0f208d1a9b39ef1d6
+  bytes: 50554
+  sha256: d4f807ddf6eb485e9984e0c53af601e38173e5973faec98e7f16cec372adc37a
 - uri: repo://.github/workflows/ci.yml
   bytes: 20122
   sha256: 8fb768a883432d15a1f86390cd16bfd23092030c6483cf283a64a41e21dfb3fb
