@@ -50,7 +50,7 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -219,7 +219,7 @@ DEPENDENCY_INPUTS: Final = (
         "ST-0405",
         "readme",
         "changes/st-0405/README.md",
-        "8b046d65492947a458306c308f5515bb6496e0371bdc9695226d52328a04a657",
+        "d815e3f71728ff43c3c7301cdf973534f723c505bffba1f6d97b82e8d76c588f",
     ),
     (
         "ST-0405",
@@ -839,7 +839,7 @@ def _validate_authority_semantics(root: Path) -> None:
     _require_fragments(
         root,
         Path("changes/st-0405/README.md"),
-        ("This slice is process-local only.", "durable writer, durable query"),
+        ("process-local V1 seam remains intact.", "owner-private SQLite audit row"),
         "dependency.st0405",
     )
     _require_fragments(

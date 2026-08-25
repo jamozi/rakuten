@@ -130,12 +130,12 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-1407/contracts/external-policy-registry-reference-plan.v1.yaml",
-    "source_contract_sha256": "080fe7fae6ed8d91d9e9d5c7a1188721cd436d2f6a38ccc0514fe2c5f41c56c6",
+    "source_contract_sha256": "56f081255614ab02fddd8c080788ecb36f3b3abd6892f62f10511486a19a3f8b",
     "generated_by": "repo://scripts/build_st1407_external_policy_registry_reference_plan.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st1407_external_policy_registry_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+      "sha256": "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     }
   },
   "dependencies": [
@@ -145,7 +145,7 @@
         {
           "role": "readme",
           "uri": "repo://changes/st-0405/README.md",
-          "sha256": "8b046d65492947a458306c308f5515bb6496e0371bdc9695226d52328a04a657"
+          "sha256": "d815e3f71728ff43c3c7301cdf973534f723c505bffba1f6d97b82e8d76c588f"
         },
         {
           "role": "audit_port",
