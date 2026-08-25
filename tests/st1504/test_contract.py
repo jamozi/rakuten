@@ -74,7 +74,7 @@ def test_pr_governance_predecessor_has_closed_semantic_and_byte_bindings() -> No
     contract_path = REPOSITORY_ROOT / "changes/st-0107/contracts/pr-governance.v1.yaml"
     desired_state_path = REPOSITORY_ROOT / "changes/st-0107/ruleset-policy.v1.json"
     assert generator.semantic_sha256(generator.load_yaml(contract_path)) == (
-        "141dce557ae5b16c1ef54490ed1c41ce083c33cf27c5e9b66a38de4827dd6dfb"
+        "774a8ffe8b53bef1e76d851c3da1bd53f6837473537f3d7f14f6d88c16548cc0"
     )
     desired_state = generator.load_json(desired_state_path)
     assert generator.semantic_sha256(desired_state) == (

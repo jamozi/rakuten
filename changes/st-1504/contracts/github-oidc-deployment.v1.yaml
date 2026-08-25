@@ -38,7 +38,7 @@ sources:
   - uri: repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml
     sha256: 36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04
   - uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
-    sha256: b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92
+    sha256: a573506749efd1bfed3c11a021ad56d10fbea901566cc1483547df60d364bf45
   - uri: repo://changes/st-0107/ruleset-policy.v1.json
     sha256: e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
   - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
@@ -63,7 +63,7 @@ predecessor_bindings:
   pr_governance:
     story_id: ST-0107
     contract_uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
-    contract_sha256: b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92
+    contract_sha256: a573506749efd1bfed3c11a021ad56d10fbea901566cc1483547df60d364bf45
     desired_state_uri: repo://changes/st-0107/ruleset-policy.v1.json
     desired_state_sha256: e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
     required_artifact_kind: DESIRED_STATE_NOT_API_PAYLOAD

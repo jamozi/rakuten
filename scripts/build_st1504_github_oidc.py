@@ -12,10 +12,10 @@ import re
 import stat
 import sys
 import tempfile
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
-from typing import Any, Final, NoReturn
+from typing import Any, Final, NoReturn, TypeGuard, cast
 
 import yaml
 from yaml.constructor import ConstructorError
@@ -111,7 +111,7 @@ AUTHORITY_SOURCES: Final = {
 }
 PREDECESSOR_SOURCES: Final = {
     "changes/st-0107/contracts/pr-governance.v1.yaml": (
-        "b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92"
+        "a573506749efd1bfed3c11a021ad56d10fbea901566cc1483547df60d364bf45"
     ),
     "changes/st-0107/ruleset-policy.v1.json": (
         "e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5"
@@ -168,10 +168,10 @@ EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
     "e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282"
 )
 EXPECTED_CONTRACT_SEMANTIC_SHA256: Final = (
-    "f0a8a5ca57f34f8b983aa547f8b5f036ee91e0cc9acb63813da64e62a317d2db"
+    "0eac1cba01ca2218f4f9adf734f58e748bf8c355425427516aab1d79d17bc91f"
 )
 EXPECTED_PR_GOVERNANCE_CONTRACT_SEMANTIC_SHA256: Final = (
-    "141dce557ae5b16c1ef54490ed1c41ce083c33cf27c5e9b66a38de4827dd6dfb"
+    "774a8ffe8b53bef1e76d851c3da1bd53f6837473537f3d7f14f6d88c16548cc0"
 )
 EXPECTED_PR_GOVERNANCE_DESIRED_STATE_SEMANTIC_SHA256: Final = (
     "bcfc8440e5e508648607dc22f8deacca4dc14021404c050457077ce451934c33"
@@ -513,8 +513,12 @@ def _aws_reference_mappings() -> list[dict[str, str]]:
 
 
 def _binding_policy() -> dict[str, object]:
-    unset = {"selected": None, "default": None, "fallback": None}
-    return {
+    unset: dict[str, object] = {
+        "selected": None,
+        "default": None,
+        "fallback": None,
+    }
+    policy: dict[str, object] = {
         name: copy.deepcopy(unset)
         for name in (
             "target_provider",
@@ -525,10 +529,10 @@ def _binding_policy() -> dict[str, object]:
             "target_identity_or_role",
             "identity_plugin_or_adapter",
         )
-    } | {
-        "implicit_binding": "FORBIDDEN",
-        "name_or_reference_only_eligibility": "FORBIDDEN",
     }
+    policy["implicit_binding"] = "FORBIDDEN"
+    policy["name_or_reference_only_eligibility"] = "FORBIDDEN"
+    return policy
 
 
 def _capability_mapping_requirements() -> list[dict[str, object]]:
@@ -1013,11 +1017,14 @@ class NoAliasDumper(yaml.SafeDumper):
 
 def _construct_unique_mapping(
     loader: UniqueKeyLoader, node: MappingNode, deep: bool = False
-) -> dict[Any, Any]:
+) -> dict[object, object]:
     loader.flatten_mapping(node)
-    result: dict[Any, Any] = {}
+    result: dict[object, object] = {}
+    construct = cast(
+        Callable[[object, bool], object], getattr(loader, "construct_object")
+    )
     for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+        key = construct(cast(object, key_node), deep)
         try:
             duplicate = key in result
         except TypeError as exc:
@@ -1034,7 +1041,7 @@ def _construct_unique_mapping(
                 "found duplicate key",
                 key_node.start_mark,
             )
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = construct(cast(object, value_node), deep)
     return result
 
 
@@ -1078,15 +1085,20 @@ def _fail(code: str, field: str) -> NoReturn:
 
 
 def _mapping(value: object, field: str) -> Mapping[str, Any]:
-    if not isinstance(value, Mapping) or not all(
-        type(key) is str for key in value.keys()
-    ):
+    if type(value) is not dict:
         _fail("TYPE_MISMATCH", field)
-    return value
+    raw = cast(dict[object, object], value)
+    if not all(type(key) is str for key in raw):
+        _fail("TYPE_MISMATCH", field)
+    return cast(Mapping[str, Any], value)
+
+
+def _is_any_list(value: object) -> TypeGuard[list[Any]]:
+    return type(value) is list
 
 
 def _list(value: object, field: str) -> list[Any]:
-    if type(value) is not list:
+    if not _is_any_list(value):
         _fail("TYPE_MISMATCH", field)
     return value
 
@@ -1097,16 +1109,16 @@ def _exact_keys(value: Mapping[str, Any], expected: set[str], field: str) -> Non
 
 
 def _strict_match(actual: object, expected: object, field: str) -> None:
-    if isinstance(expected, Mapping):
+    if type(expected) is dict:
         value = _mapping(actual, field)
-        expected_mapping = _mapping(expected, field)
+        expected_mapping = _mapping(cast(object, expected), field)
         _exact_keys(value, set(expected_mapping), field)
         for key, expected_value in expected_mapping.items():
             _strict_match(value[key], expected_value, f"{field}.{key}")
         return
     if type(expected) is list:
         value_list = _list(actual, field)
-        expected_list = _list(expected, field)
+        expected_list = _list(cast(object, expected), field)
         if not expected_list and value_list:
             _fail("SELECTION_MUST_REMAIN_UNSET", field)
         if len(value_list) != len(expected_list):
@@ -1169,7 +1181,7 @@ def _repository_regular_file(root: Path, relative: Path, field: str) -> Path:
     return target
 
 
-def load_yaml(path: Path) -> Any:
+def load_yaml(path: Path) -> object:
     _regular_file(path, "yaml")
     try:
         content = path.read_bytes()
@@ -1179,12 +1191,13 @@ def load_yaml(path: Path) -> Any:
         _fail("YAML_SIZE_LIMIT", "yaml")
     try:
         text = content.decode("utf-8")
-        for token in yaml.scan(text):
+        scan = cast(Callable[[str], Sequence[object]], getattr(yaml, "scan"))
+        for token in scan(text):
             if isinstance(token, (AliasToken, AnchorToken)):
                 _fail("YAML_ALIAS_FORBIDDEN", "yaml")
             if isinstance(token, TagToken):
                 _fail("YAML_TAG_FORBIDDEN", "yaml")
-        return yaml.load(text, Loader=UniqueKeyLoader)
+        return cast(object, yaml.load(text, Loader=UniqueKeyLoader))
     except GithubOidcContractError:
         raise
     except UnicodeError, yaml.YAMLError:
@@ -1260,11 +1273,13 @@ def _find_exact_record(
     document: Mapping[str, Any], collection: str, record_id: str, field: str
 ) -> Mapping[str, Any]:
     rows = _list(document.get(collection), field)
-    matches = [
-        _mapping(row, field)
-        for row in rows
-        if isinstance(row, Mapping) and row.get("id") == record_id
-    ]
+    matches: list[Mapping[str, Any]] = []
+    for row in rows:
+        if type(row) is not dict:
+            continue
+        candidate = _mapping(cast(object, row), field)
+        if candidate.get("id") == record_id:
+            matches.append(candidate)
     if len(matches) != 1:
         _fail("AUTHORITY_RECORD_MISSING", field)
     return matches[0]

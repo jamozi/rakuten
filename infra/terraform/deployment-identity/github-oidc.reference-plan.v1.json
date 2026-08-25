@@ -174,7 +174,7 @@
   },
   "predecessor_bindings": {
     "pr_governance": {
-      "contract_sha256": "b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92",
+      "contract_sha256": "a573506749efd1bfed3c11a021ad56d10fbea901566cc1483547df60d364bf45",
       "contract_uri": "repo://changes/st-0107/contracts/pr-governance.v1.yaml",
       "desired_state_sha256": "e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5",
       "desired_state_uri": "repo://changes/st-0107/ruleset-policy.v1.json",
