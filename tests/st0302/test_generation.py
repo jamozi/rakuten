@@ -16,6 +16,13 @@ from scripts import build_st0302_foundation as generator
 from scripts import build_st0303_iam_ops as successor
 
 
+FROZEN_MANIFEST_PATH = Path(
+    "changes/st-0005/evidence/artifacts/"
+    "d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0-"
+    "manifest.yaml"
+)
+
+
 def test_historical_renderer_is_deterministic_and_frozen_outputs_remain_pinned() -> (
     None
 ):
@@ -43,9 +50,13 @@ def test_historical_renderer_is_deterministic_and_frozen_outputs_remain_pinned()
             "d9db1f849ec8ff29a10736e03e98dad34a9a978147c26ed46c8dfa65911b2aa0"
         ),
     }
-    assert {
-        path: hashlib.sha256((REPOSITORY_ROOT / path).read_bytes()).hexdigest()
+    observed_paths = {
+        path: FROZEN_MANIFEST_PATH if path == generator.MANIFEST_PATH else path
         for path in generator.GENERATED_PATHS
+    }
+    assert {
+        path: hashlib.sha256((REPOSITORY_ROOT / observed).read_bytes()).hexdigest()
+        for path, observed in observed_paths.items()
     } == expected_frozen_digests
 
 

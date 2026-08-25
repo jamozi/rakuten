@@ -61,7 +61,7 @@ PINNED_INPUTS: Final = {
 
 # Updated once after the shared graph source freeze.
 EXPECTED_PREDECESSOR_SHA256: Final = (
-    "f571c11aea5eb221f34fcae96f3a4f8e9a7ff28ee098a04352e3afdf54476a59"
+    "5abdb26df67dd204dc92a88f3c93132dc30c99a16a2109eea4f84a35c6e574eb"
 )
 SUCCESSOR_CONTRACT_PATH: Final = Path(
     "changes/st-0303/contracts/iam-ops-schema.v1.yaml"

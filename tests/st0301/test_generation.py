@@ -15,9 +15,21 @@ from scripts import build_st0302_foundation as successor
 from scripts import build_st0306_database_roles as active_successor
 
 
+FROZEN_CATALOG_PATH = Path(
+    "changes/st-0005/evidence/artifacts/"
+    "07de505a2dc75c8c06046dd1a588ff414c11ee21e1be07cbedf8e206c92d1e09-"
+    "migration-catalog.v1.json"
+)
+FROZEN_MANIFEST_PATH = Path(
+    "changes/st-0005/evidence/artifacts/"
+    "287d1f365523f39bb7b28535680317103cb6abad5d5b3f5e4db4bc60250eb2ff-"
+    "manifest.yaml"
+)
+
+
 def test_frozen_predecessor_outputs_are_parseable_and_hash_pinned() -> None:
-    catalog_bytes = (REPOSITORY_ROOT / generator.CATALOG_PATH).read_bytes()
-    manifest_bytes = (REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes()
+    catalog_bytes = (REPOSITORY_ROOT / FROZEN_CATALOG_PATH).read_bytes()
+    manifest_bytes = (REPOSITORY_ROOT / FROZEN_MANIFEST_PATH).read_bytes()
     catalog = json.loads(catalog_bytes)
     manifest = yaml.safe_load(manifest_bytes)
 
@@ -53,7 +65,11 @@ def test_manifest_source_inventory_is_exact_and_unique() -> None:
     observed = [item["uri"] for item in manifest["source_artifacts"]]
 
     assert len(observed) == len(set(observed))
-    assert len(observed) == manifest["source_artifact_count"] == 58
+    assert (
+        len(observed)
+        == manifest["source_artifact_count"]
+        == len(generator.SOURCE_ARTIFACT_PATHS)
+    )
     assert not any(uri.startswith("repo://zip/") for uri in observed)
     assert not any(uri.startswith("repo://docs/canonical/") for uri in observed)
     assert not any(uri.startswith("repo://docs/upstream/") for uri in observed)

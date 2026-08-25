@@ -32,7 +32,7 @@ provenance:
   predecessor_manifest:
     story_id: ST-0305
     uri: repo://changes/st-0305/manifest.yaml
-    sha256: fc5d172bb46cd0b5d482e7c5d3c416d00a69e9c6666d7c6f58181376288ae41a
+    sha256: af6034f99374b427aee444a6048531a174f0d78ae58974b2456c2be97f3d33b9
 revision:
   revision: '202608030006'
   down_revision: '202608030005'
@@ -70,19 +70,19 @@ source_artifacts:
   sha256: 687fd00f51c27a1181c213d044412f4c676d96b34e35f0590f0edcd5b4221699
 - uri: repo://scripts/build_st0306_database_roles.py
   bytes: 55822
-  sha256: cbde8129d95df2ac56f819c71a2b2f46971149ada3f524d7ff7ca77cfbd1c65b
+  sha256: 5068bbc63f441f584394c33cc0ab60c03c3b5a116baa91441c68a938aa650cf4
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
 - uri: repo://scripts/build_st0304_domain_schemas.py
   bytes: 79921
-  sha256: 8850b6fa49cc6d6630d94144d43dbb879bb612048b7f9cba682a9a9df9dd660b
+  sha256: eb581423ef6d2e9f1f901821a92abd5073062807a87694eb17c83fae325c1629
 - uri: repo://scripts/build_st0305_publication_analytics_finance.py
   bytes: 69650
-  sha256: 36415b1142e0acb71dc7fa889980b4e4c6fdd55e19f482d42b679c8f4fe34873
+  sha256: a599bb45f7ef464de539a751a6ba44bcb7196b237591e35407bf6877cd2892ee
 - uri: repo://changes/st-0305/manifest.yaml
   bytes: 14863
-  sha256: fc5d172bb46cd0b5d482e7c5d3c416d00a69e9c6666d7c6f58181376288ae41a
+  sha256: af6034f99374b427aee444a6048531a174f0d78ae58974b2456c2be97f3d33b9
 - uri: repo://migrations/versions/202608030005_publication_analytics_finance.py
   bytes: 41097
   sha256: 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
@@ -108,8 +108,8 @@ source_artifacts:
   bytes: 10581
   sha256: fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9
 - uri: repo://tests/st0301/test_generation.py
-  bytes: 7281
-  sha256: fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1
+  bytes: 7684
+  sha256: b16610a6625dcb1181674609811e61f82252fa326f50f0847f5aaeb87ac4bc4e
 - uri: repo://tests/st0301/test_postgresql.py
   bytes: 34214
   sha256: b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7

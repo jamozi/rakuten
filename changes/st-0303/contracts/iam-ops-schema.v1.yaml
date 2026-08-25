@@ -70,7 +70,7 @@ source_precedence:
   predecessor_manifest:
     story_id: ST-0302
     path: changes/st-0302/manifest.yaml
-    sha256: db893574684fbd356263fb3cc86c9757bc227743afc0ca78aa2675991beb856c
+    sha256: b2576fe7b440fbcc5ba847b17e9505074276a91fb76a26ca291903c92bdd193e
   translation_rules:
   - COPY_SELECTED_TABLE_METADATA_EXACTLY_EXCEPT_ALLOWLISTED_PG_CATALOG_QUALIFICATION
   - APPLY_ST_0002_FINAL_JOB_CONTRACT_TO_FRESH_TABLE

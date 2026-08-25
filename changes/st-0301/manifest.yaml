@@ -145,8 +145,8 @@ source_artifacts:
   bytes: 10581
   sha256: fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9
 - uri: repo://tests/st0301/test_generation.py
-  bytes: 7281
-  sha256: fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1
+  bytes: 7684
+  sha256: b16610a6625dcb1181674609811e61f82252fa326f50f0847f5aaeb87ac4bc4e
 - uri: repo://tests/st0301/test_postgresql.py
   bytes: 34214
   sha256: b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7

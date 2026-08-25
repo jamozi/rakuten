@@ -69,7 +69,7 @@ EXPECTED_POLICY_SOURCE_SHA256: Final = (
     "cdb4ba3f94691425059b2282f343b0cdc82e6b82bb93fdbfe8dd3a6a3dd4290e"
 )
 EXPECTED_PREDECESSOR_MANIFEST_SHA256: Final = (
-    "fc5d172bb46cd0b5d482e7c5d3c416d00a69e9c6666d7c6f58181376288ae41a"
+    "af6034f99374b427aee444a6048531a174f0d78ae58974b2456c2be97f3d33b9"
 )
 GENERATION_COMMAND: Final = (
     "uv run --locked --no-sync --no-env-file python "

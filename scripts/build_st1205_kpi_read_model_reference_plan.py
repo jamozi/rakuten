@@ -107,7 +107,7 @@ INTEGRATION_PATH: Final = Path(
 )
 
 EXPECTED_CONTRACT_SHA256: Final = (
-    "e51dbf760e7873a342e85759279047f30f7a12d66e01eb9e30e32f3e859b7af3"
+    "c831abdfd181cbab74ab58926f9596cf608edb88901becb739479199194d5da2"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 GENERATION_COMMAND: Final = (
@@ -134,7 +134,7 @@ PREDECESSOR_HASHES: Final = {
     ): "c333b3400b8f0f13ce18be7e04d43345caa812b4d818dae8222cb8b498099c3e",
     Path(
         "changes/st-1203/manifest.json"
-    ): "d83e1aa7ba9c6a1ad4c6f3d4103485d3ef51bd3b304109ee8a425f101d93fd64",
+    ): "5e72a75fc5908fb32697673977332c296674c6a00bf6ab35bdff992b746b2c1e",
     Path(
         "python/raos/domain/analytics/search_console.py"
     ): "e49396e6dfac336b05488ae4ba80100c106fc4bf64c2ed476d16f459c16759ce",
@@ -143,7 +143,7 @@ PREDECESSOR_HASHES: Final = {
     ): "021e21ca20d8fa82c3b0a9134de6cf989daf4fd80f1dc8d4a5ddbfc9a2579b69",
     Path(
         "changes/st-1204/generated/manifest.json"
-    ): "ac0045dd652bf27337497e7d889375a367125f6c54719185cfc835a57c38b67c",
+    ): "e74b5463d9aca244e330f2dd8e5f454418f5834a29133de6b475f02c93aa172f",
     Path(
         "python/raos/domain/analytics/ga4.py"
     ): "785dd16788fffabd5ab6c05c6f43f535bc6521630a246c93a54d23d257de124f",

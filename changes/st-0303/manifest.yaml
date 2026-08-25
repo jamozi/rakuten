@@ -30,7 +30,7 @@ provenance:
   predecessor_manifest:
     story_id: ST-0302
     uri: repo://changes/st-0302/manifest.yaml
-    sha256: db893574684fbd356263fb3cc86c9757bc227743afc0ca78aa2675991beb856c
+    sha256: b2576fe7b440fbcc5ba847b17e9505074276a91fb76a26ca291903c92bdd193e
   allowlisted_security_normalization:
     policy: ALLOWLIST_ONLY
     reject_unlisted_source_drift: true
@@ -80,7 +80,7 @@ source_artifacts:
   sha256: b130d66eb42fb3fee8764e87d61732f3227ac0b38f3c992589278649b2705388
 - uri: repo://scripts/build_st0302_foundation.py
   bytes: 37087
-  sha256: 27e128066b410db836d7de8f680529bf18a8fda867d582c1147d57d95db81ff7
+  sha256: 2903b7b16ab5f9a3371255d882b15c9c85bc6a7db77e06a84631b8107bc4c4f0
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36958
   sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
@@ -145,8 +145,8 @@ source_artifacts:
   bytes: 10581
   sha256: fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9
 - uri: repo://tests/st0301/test_generation.py
-  bytes: 7281
-  sha256: fa4a7b2a0230efa664a869aafa8fb2431bba763e708335963ff2984857d93cf1
+  bytes: 7684
+  sha256: b16610a6625dcb1181674609811e61f82252fa326f50f0847f5aaeb87ac4bc4e
 - uri: repo://tests/st0301/test_postgresql.py
   bytes: 34214
   sha256: b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7
@@ -163,8 +163,8 @@ source_artifacts:
   bytes: 7049
   sha256: cf6ec315c48b4b0395ddd783dedf1dce7e8e577a652125307ea30d7512ab3077
 - uri: repo://tests/st0302/test_generation.py
-  bytes: 9691
-  sha256: 23f11dc30623cb4ad49e134acd9b74d1677e01e094e7585d7d4bc8395543dd1e
+  bytes: 10024
+  sha256: b62c0f994fe0ab2f6aa36388c722793e2dce0543545dcefc62916770273be00e
 - uri: repo://tests/st0302/test_postgresql.py
   bytes: 25958
   sha256: 8c8bd7bf0605295743811c4701dc07d92821d7b7da88cb0b0cef3069f9e8d8d9
@@ -182,10 +182,10 @@ source_artifacts:
   sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
 - uri: repo://changes/st-0301/manifest.yaml
   bytes: 13018
-  sha256: f571c11aea5eb221f34fcae96f3a4f8e9a7ff28ee098a04352e3afdf54476a59
+  sha256: 5abdb26df67dd204dc92a88f3c93132dc30c99a16a2109eea4f84a35c6e574eb
 - uri: repo://changes/st-0303/contracts/iam-ops-schema.v1.yaml
   bytes: 84141
-  sha256: 6f04e1f773c4234587d3ace990d16ece8314e3186ce4338547f8684fdd225f01
+  sha256: fbf7c27d94b4fc10a8353e907e55502e3f003af24295ca9fa70d4983af2f22c7
 - uri: repo://changes/st-0303/README.md
   bytes: 5584
   sha256: b8866fb9c9c2d593f8699fcf7d444c373732710cede6e413ed49992706f46e97
@@ -197,7 +197,7 @@ source_artifacts:
   sha256: 185bfb91b11c430d22830781acc7e87edaf9d7430972838598d0ef14974d90c5
 - uri: repo://scripts/build_st0303_iam_ops.py
   bytes: 139198
-  sha256: e4c0435b63633d64f2a825b460279e775e75c06859014618a48bcfb661e1591d
+  sha256: 29d77c9f5d04573347ebbb0c15d50546e0e3fedcca82a250a0b58cf048527ed2
 - uri: repo://migrations/versions/202608030002_foundation_schemas.py
   bytes: 1303
   sha256: f91f6315779a045871d955cedb4b7a2606a562fbd8fdddae48810e54ef7dded4
@@ -214,8 +214,8 @@ source_artifacts:
   bytes: 51303
   sha256: 8bcd54943b6c9157cdb3819fb11f2e7e7b0102dcf50d3bda32a5ae29235b4e05
 - uri: repo://changes/st-0302/manifest.yaml
-  bytes: 8661
-  sha256: db893574684fbd356263fb3cc86c9757bc227743afc0ca78aa2675991beb856c
+  bytes: 8662
+  sha256: b2576fe7b440fbcc5ba847b17e9505074276a91fb76a26ca291903c92bdd193e
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://migrations/versions/202608030003_iam_ops_tables.py
@@ -223,7 +223,7 @@ generated_artifacts:
   sha256: a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
 - uri: repo://changes/st-0303/generated/iam-ops-catalog.v1.json
   bytes: 121622
-  sha256: b7300fe3761cd0311e54881f593859d97376d6f40a270eb27c71374858608fba
+  sha256: bc5cee9fe5a3c20eeef81e43abaf684a9986d185908be1d2412a2eb096bc42f3
 - uri: repo://changes/st-0303/generated/iam-ops-validation.v1.sql
   bytes: 138643
   sha256: 33be33b53b9a14c7e9ad686f8dd08834a2bc8211e6fab82577f78811219fde32
