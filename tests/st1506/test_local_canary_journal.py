@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import os
+import shutil
 import sqlite3
+import stat
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -23,6 +25,7 @@ from raos.domain.ops.production_canary import (
     CanaryCommandKind,
     CanarySession,
     CanaryState,
+    ProductionCanaryError,
     ProductionCanarySpec,
     advance_once,
     canonical_bytes,
@@ -38,6 +41,8 @@ from raos.production_canary_runner import load_local_production_canary_spec
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 _DATABASE_NAME = "st1506-local-production-canary.sqlite3"
+_APPLICATION_ID = 1_506_003
+_DATABASE_SCHEMA_VERSION = 3
 
 
 @pytest.fixture
@@ -234,20 +239,19 @@ def test_direct_write_cannot_change_contract_mid_run(
         "UPDATE canary_journal SET previous_entry_sha256 = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'",
     ],
 )
-def test_hash_chain_and_cas_tamper_are_detected(
+def test_append_only_and_lifecycle_guards_reject_row_tamper_before_commit(
     spec: ProductionCanarySpec, private_root: Path, tamper_sql: str
 ) -> None:
     journal = RecordedProductionCanaryJournal(private_root=private_root)
     _start(_service(spec, journal), run="tamper", key="tamper")
     connection = sqlite3.connect(private_root / _DATABASE_NAME)
     try:
-        connection.execute(tamper_sql)
-        connection.commit()
+        with pytest.raises(sqlite3.IntegrityError):
+            connection.execute(tamper_sql)
+        connection.rollback()
     finally:
         connection.close()
-    with pytest.raises(ProductionCanaryJournalError) as captured:
-        journal.verify_integrity()
-    assert captured.value.code is ProductionCanaryJournalFailureCode.TAMPER_DETECTED
+    assert journal.verify_integrity() == 1
 
 
 def test_same_column_weakened_schema_is_rejected(
@@ -340,6 +344,8 @@ def test_concurrent_first_writers_do_not_both_commit(
             return "PASS"
         except ProductionCanaryJournalError as error:
             return error.code.value
+        except ProductionCanaryError as error:
+            return error.code
 
     with ThreadPoolExecutor(max_workers=2) as executor:
         outcomes = list(executor.map(invoke, (1, 2)))
@@ -347,6 +353,7 @@ def test_concurrent_first_writers_do_not_both_commit(
     assert set(outcomes) <= {
         "PASS",
         "CONCURRENCY_FAILURE",
+        "STATE_TRANSITION_FORBIDDEN",
     }
     assert journal.verify_integrity() == 1
 
@@ -361,6 +368,314 @@ def test_extra_trigger_or_index_is_rejected(private_root: Path) -> None:
         connection.commit()
     finally:
         connection.close()
+    with pytest.raises(ProductionCanaryJournalError) as captured:
+        journal.verify_integrity()
+    assert captured.value.code is ProductionCanaryJournalFailureCode.TAMPER_DETECTED
+
+
+def test_exact_strict_schema_foreign_key_and_trigger_inventory(
+    private_root: Path,
+) -> None:
+    journal = RecordedProductionCanaryJournal(private_root=private_root)
+    connection = sqlite3.connect(journal.database_path)
+    try:
+        assert connection.execute("PRAGMA application_id").fetchone() == (
+            _APPLICATION_ID,
+        )
+        assert connection.execute("PRAGMA user_version").fetchone() == (
+            _DATABASE_SCHEMA_VERSION,
+        )
+        assert connection.execute(
+            "SELECT name,strict FROM pragma_table_list "
+            "WHERE schema='main' AND name NOT LIKE 'sqlite_%' ORDER BY name"
+        ).fetchall() == [
+            ("canary_journal", 1),
+            ("canary_metadata", 1),
+            ("canary_run", 1),
+        ]
+        assert [
+            row[0]
+            for row in connection.execute(
+                "SELECT name FROM sqlite_schema WHERE type='trigger' ORDER BY name"
+            ).fetchall()
+        ] == [
+            "st1506_journal_guard_insert",
+            "st1506_journal_no_delete",
+            "st1506_journal_no_update",
+            "st1506_metadata_guard_update",
+            "st1506_metadata_no_delete",
+            "st1506_metadata_no_insert",
+            "st1506_run_guard_insert",
+            "st1506_run_guard_update",
+            "st1506_run_no_delete",
+        ]
+        foreign_keys = connection.execute(
+            'PRAGMA foreign_key_list("canary_journal")'
+        ).fetchall()
+        assert foreign_keys == [
+            (
+                0,
+                0,
+                "canary_run",
+                "run_id",
+                "run_id",
+                "RESTRICT",
+                "RESTRICT",
+                "NONE",
+            )
+        ]
+    finally:
+        connection.close()
+    assert journal.verify_integrity() == 0
+
+
+@pytest.mark.parametrize("tamper", ["application_id", "user_version", "trigger"])
+def test_schema_header_and_guard_removal_are_detected(
+    private_root: Path, tamper: str
+) -> None:
+    journal = RecordedProductionCanaryJournal(private_root=private_root)
+    connection = sqlite3.connect(journal.database_path)
+    try:
+        if tamper == "application_id":
+            connection.execute("PRAGMA application_id=0")
+        elif tamper == "user_version":
+            connection.execute("PRAGMA user_version=0")
+        else:
+            connection.execute("DROP TRIGGER st1506_journal_no_delete")
+        connection.commit()
+    finally:
+        connection.close()
+    with pytest.raises(ProductionCanaryJournalError) as captured:
+        journal.verify_integrity()
+    assert captured.value.code is ProductionCanaryJournalFailureCode.TAMPER_DETECTED
+
+
+def test_restored_trigger_inventory_cannot_hide_canonical_row_tamper(
+    spec: ProductionCanarySpec, private_root: Path
+) -> None:
+    journal = RecordedProductionCanaryJournal(private_root=private_root)
+    _start(_service(spec, journal), run="restored-trigger", key="restored-trigger")
+    connection = sqlite3.connect(journal.database_path)
+    try:
+        row = connection.execute(
+            "SELECT sql FROM sqlite_schema "
+            "WHERE type='trigger' AND name='st1506_journal_no_update'"
+        ).fetchone()
+        assert row is not None and isinstance(row[0], str)
+        trigger_sql = row[0]
+        connection.execute("DROP TRIGGER st1506_journal_no_update")
+        connection.execute(
+            "UPDATE canary_journal SET request_sha256=? WHERE sequence=1",
+            ("f" * 64,),
+        )
+        connection.execute(trigger_sql)
+        connection.commit()
+    finally:
+        connection.close()
+    with pytest.raises(ProductionCanaryJournalError) as captured:
+        journal.verify_integrity()
+    assert captured.value.code is ProductionCanaryJournalFailureCode.TAMPER_DETECTED
+
+
+def test_lifecycle_guards_reject_delete_and_out_of_order_insert(
+    spec: ProductionCanarySpec, private_root: Path
+) -> None:
+    journal = RecordedProductionCanaryJournal(private_root=private_root)
+    _start(_service(spec, journal), run="lifecycle-guard", key="lifecycle-guard")
+    statements: tuple[tuple[str, tuple[object, ...]], ...] = (
+        ("DELETE FROM canary_metadata", ()),
+        ("DELETE FROM canary_run", ()),
+        ("DELETE FROM canary_journal", ()),
+        (
+            "INSERT INTO canary_run VALUES(?,?,?,?,?,?,?,?,?)",
+            (
+                "st1506-run-hostile-insert",
+                "1" * 64,
+                1,
+                "OBSERVE",
+                "OBSERVE_REQUIRED",
+                "2" * 64,
+                b"{}",
+                99,
+                "3" * 64,
+            ),
+        ),
+        (
+            "INSERT INTO canary_journal VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (
+                99,
+                "0" * 64,
+                "4" * 64,
+                "st1506-run-hostile-insert",
+                "5" * 64,
+                "6" * 64,
+                "1" * 64,
+                0,
+                1,
+                "OBSERVE",
+                "OBSERVE_REQUIRED",
+                "2" * 64,
+                b"{}",
+            ),
+        ),
+    )
+    connection = sqlite3.connect(journal.database_path)
+    try:
+        for statement, parameters in statements:
+            with pytest.raises(sqlite3.IntegrityError):
+                connection.execute(statement, parameters)
+            connection.rollback()
+    finally:
+        connection.close()
+    assert journal.verify_integrity() == 1
+
+
+def test_concurrent_distinct_commits_share_one_monotonic_anchor(
+    spec: ProductionCanarySpec, private_root: Path
+) -> None:
+    journals = [
+        RecordedProductionCanaryJournal(private_root=private_root) for _ in range(4)
+    ]
+
+    def invoke(index: int) -> LocalProductionCanaryRunReceipt:
+        return _start(
+            _service(spec, journals[index % len(journals)]),
+            run=f"parallel-{index:03d}",
+            key=f"parallel-{index:03d}",
+        )
+
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        receipts = list(executor.map(invoke, range(8)))
+    assert sorted(receipt.persistence.sequence for receipt in receipts) == list(
+        range(1, 9)
+    )
+    assert len({receipt.persistence.entry_sha256 for receipt in receipts}) == 8
+    assert journals[0].verify_integrity() == 8
+
+
+def test_private_root_and_database_modes_are_exact(
+    spec: ProductionCanarySpec, private_root: Path
+) -> None:
+    journal = RecordedProductionCanaryJournal(private_root=private_root)
+    _start(_service(spec, journal), run="mode-exact", key="mode-exact")
+    assert stat.S_IMODE(private_root.stat().st_mode) == 0o700
+    assert stat.S_IMODE(journal.database_path.stat().st_mode) == 0o600
+    journal.database_path.chmod(0o640)
+    with pytest.raises(ProductionCanaryJournalError) as captured:
+        journal.verify_integrity()
+    assert (
+        captured.value.code is ProductionCanaryJournalFailureCode.STORAGE_PATH_INVALID
+    )
+
+
+def test_preexisting_zero_byte_database_is_never_adopted(
+    private_root: Path,
+) -> None:
+    database = private_root / _DATABASE_NAME
+    database.write_bytes(b"")
+    database.chmod(0o600)
+    with pytest.raises(ProductionCanaryJournalError) as captured:
+        RecordedProductionCanaryJournal(private_root=private_root)
+    assert (
+        captured.value.code is ProductionCanaryJournalFailureCode.STORAGE_PATH_INVALID
+    )
+    assert database.read_bytes() == b""
+
+
+def test_preexisting_valid_empty_sqlite_database_is_never_adopted(
+    private_root: Path,
+) -> None:
+    database = private_root / _DATABASE_NAME
+    connection = sqlite3.connect(database)
+    try:
+        connection.execute("VACUUM")
+    finally:
+        connection.close()
+    database.chmod(0o600)
+    before = database.read_bytes()
+    assert before
+    with pytest.raises(ProductionCanaryJournalError) as captured:
+        RecordedProductionCanaryJournal(private_root=private_root)
+    assert captured.value.code is ProductionCanaryJournalFailureCode.TAMPER_DETECTED
+    assert database.read_bytes() == before
+
+
+def test_database_inode_replacement_is_detected(private_root: Path) -> None:
+    journal = RecordedProductionCanaryJournal(private_root=private_root)
+    database = journal.database_path
+    original_inode = database.stat().st_ino
+    replacement = private_root / "replacement.sqlite3"
+    replacement.write_bytes(database.read_bytes())
+    replacement.chmod(0o600)
+    os.replace(replacement, database)
+    assert database.stat().st_ino != original_inode
+    with pytest.raises(ProductionCanaryJournalError) as captured:
+        journal.verify_integrity()
+    assert (
+        captured.value.code is ProductionCanaryJournalFailureCode.STORAGE_PATH_INVALID
+    )
+
+
+def test_private_root_inode_replacement_is_detected(private_root: Path) -> None:
+    journal = RecordedProductionCanaryJournal(private_root=private_root)
+    displaced = private_root.with_name(f"{private_root.name}-displaced")
+    private_root.rename(displaced)
+    private_root.mkdir(mode=0o700)
+    database = private_root / _DATABASE_NAME
+    database.write_bytes((displaced / _DATABASE_NAME).read_bytes())
+    database.chmod(0o600)
+    with pytest.raises(ProductionCanaryJournalError) as captured:
+        journal.verify_integrity()
+    assert (
+        captured.value.code is ProductionCanaryJournalFailureCode.STORAGE_PATH_INVALID
+    )
+
+
+def test_same_inode_whole_database_rollback_is_detected_by_process_anchor(
+    spec: ProductionCanarySpec, private_root: Path
+) -> None:
+    journal = RecordedProductionCanaryJournal(private_root=private_root)
+    service = _service(spec, journal)
+    _start(service, run="rollback-one", key="rollback-one")
+    database = journal.database_path
+    original_inode = database.stat().st_ino
+    one_entry_snapshot = database.read_bytes()
+    _start(service, run="rollback-two", key="rollback-two")
+    database.write_bytes(one_entry_snapshot)
+    assert database.stat().st_ino == original_inode
+    with pytest.raises(ProductionCanaryJournalError) as captured:
+        journal.verify_integrity()
+    assert captured.value.code is ProductionCanaryJournalFailureCode.TAMPER_DETECTED
+
+
+def test_sidecar_target_is_rejected_without_following_it(private_root: Path) -> None:
+    journal = RecordedProductionCanaryJournal(private_root=private_root)
+    outside = private_root.parent / "outside-sidecar"
+    outside.write_bytes(b"outside")
+    sidecar = private_root / f"{_DATABASE_NAME}-wal"
+    sidecar.symlink_to(outside)
+    with pytest.raises(ProductionCanaryJournalError) as captured:
+        journal.verify_integrity()
+    assert (
+        captured.value.code is ProductionCanaryJournalFailureCode.STORAGE_PATH_INVALID
+    )
+    assert outside.read_bytes() == b"outside"
+
+
+def test_same_inode_snapshot_copy_does_not_replace_database_identity(
+    spec: ProductionCanarySpec, private_root: Path
+) -> None:
+    """Document that rollback detection is chain-based, not an inode shortcut."""
+
+    journal = RecordedProductionCanaryJournal(private_root=private_root)
+    _start(_service(spec, journal), run="copy-one", key="copy-one")
+    database = journal.database_path
+    snapshot = private_root / "snapshot.sqlite3"
+    shutil.copyfile(database, snapshot)
+    original_inode = database.stat().st_ino
+    _start(_service(spec, journal), run="copy-two", key="copy-two")
+    shutil.copyfile(snapshot, database)
+    assert database.stat().st_ino == original_inode
     with pytest.raises(ProductionCanaryJournalError) as captured:
         journal.verify_integrity()
     assert captured.value.code is ProductionCanaryJournalFailureCode.TAMPER_DETECTED

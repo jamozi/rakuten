@@ -42,7 +42,7 @@
     "selected_mapping_count": 0
   },
   "classification": "DETERMINISTIC_SYNTHETIC_LOCAL_ONLY_NOT_PRODUCTION_EVIDENCE",
-  "contract_sha256": "6c4576882e38afbddb89aa8c2f63c2d383127ad0c2b1c017f4a56693abb9ab6a",
+  "contract_sha256": "3a5cd58608eedc0d5d1315f42089d8ac86f3a43c78feee75be9fc4b8bc1683e0",
   "external_evidence": {
     "formal_tst_009": "NOT_EXECUTED",
     "formal_tst_022": "NOT_EXECUTED",
@@ -67,12 +67,12 @@
     "safeguard_enabled": true
   },
   "pipeline_id": "st1506-pipeline-local-canary-v2",
-  "result_sha256": "f5dadd3fffe377dd62fb61af7fabafe53a5dfdc5f74d5814b0c4929ca23f0ee7",
+  "result_sha256": "468c04d9df7933698ab048aade009fd1590b965f12f45f5946f530d60f7204f1",
   "scenarios": [
     {
       "decision_outcome": "HUMAN_APPROVALS_REQUIRED",
       "external_actions": 0,
-      "observation_sha256": "c0de39441fb0a028f986155c85d037dfd00cb919e3f18e8e6dfd77960d0edf1b",
+      "observation_sha256": "a662b9b09536a9d4ea2986c390303a6ae2974bc56cde56778aac7582a61b1a8d",
       "scenario_id": "st1506-healthy-mature-v2",
       "start_outcome": "OBSERVE_REQUIRED",
       "terminal_state": "HOLD_FOR_HUMAN_APPROVAL"
@@ -80,7 +80,7 @@
     {
       "decision_outcome": "ABORT_REQUIRED",
       "external_actions": 0,
-      "observation_sha256": "a6baa5207851c07e9c497a5c83532cda5c3a2ecde58cfca03ac88fb0a7e1276d",
+      "observation_sha256": "17ca29d72db57a360416e0cf53a9572d2d9235433e08c87a0710df5a79097b9c",
       "scenario_id": "st1506-canary-regression-v2",
       "start_outcome": "OBSERVE_REQUIRED",
       "terminal_state": "ABORT_REQUIRED"
@@ -88,7 +88,7 @@
     {
       "decision_outcome": "ROLLBACK_REQUIRED",
       "external_actions": 0,
-      "observation_sha256": "8faa6f9cce4e7776d74ff65a080fccc11ec70a7714ab4c8a3e8c16ecbbf9d3e7",
+      "observation_sha256": "756ad900eb6ff998ce9fdc1e8b17b2f6690d086d16214e6976e0a51790b6c1d3",
       "scenario_id": "st1506-post-canary-regression-v2",
       "start_outcome": "OBSERVE_REQUIRED",
       "terminal_state": "ROLLBACK_REQUIRED"

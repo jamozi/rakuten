@@ -7,7 +7,7 @@ document:
   canonical_status_effect: NONE
 implementation_input:
   mode: STRICT_STORY
-  base_integration_commit: 61565261b6bee147e71aa068a46076088e8b3df7
+  base_integration_commit: 1882647ff55354c6611b52d4552f86bf7e932626
   design_handoff: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml
   v1_contract: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
   v2_contract: repo://changes/st-1506/contracts/local-production-canary-runtime.v2.yaml
@@ -34,12 +34,11 @@ preflight:
   selected_live_values: NONE
   selected_provider_account_region_target_credential: NONE
 implementation:
-  v1_compatibility: PRESERVED_BYTE_FOR_BYTE
-  v1_owner_check_inherited_state: >-
-    SOURCE_DIGEST_MISMATCH_FROM_PREEXISTING_ST1501_TO_ST1505_PROVENANCE_DRIFT
+  v1_compatibility: REBOUND_CURRENT_PREDECESSOR_PROVENANCE_NO_EXECUTION_AUTHORITY
+  v1_owner_check_inherited_state: CLOSED_BY_CURRENT_PREDECESSOR_REBIND
   predecessor_owner_artifact_bindings: >-
     FIVE_HANDOFFS_FIVE_CONTRACTS_FIVE_GENERATORS_FIVE_REFERENCE_PLANS_FIVE_MANIFESTS_RAW_AND_SEMANTIC_AS_APPLICABLE
-  v1_contract_binding: RAW_AND_SEMANTIC_BYTE_BOUND_NOT_ADMITTED
+  v1_contract_binding: RAW_AND_SEMANTIC_CURRENT_PREDECESSOR_BOUND_NOT_ADMITTED
   capability_inventory: CLOSED_TEN_CAPABILITIES_ALL_UNCONFIGURED
   runtime: DETERMINISTIC_EXPLICIT_ONE_STEP_SYNTHETIC_LOCAL_ONLY
   activation: DISABLED
@@ -52,7 +51,8 @@ implementation:
     gate_report: ABSENT
     security_approval: ABSENT
     operations_approval: ABSENT
-  durable_journal: OWNER_PRIVATE_EXACT_SCHEMA_SQLITE_CAS_HASH_CHAIN
+  durable_journal: >-
+    OWNER_PRIVATE_CREATED_ONLY_EXACT_STRICT_SCHEMA_TRIGGERED_SQLITE_CAS_HASH_CHAIN_INODE_AND_PROCESS_MONOTONIC_BOUND
   external_actions: 0
   active_workflow_changes: 0
 completion_boundary:
@@ -67,27 +67,23 @@ completion_boundary:
   live_staging_release_production: NOT_EXECUTED
   canonical_status_transition: NONE
 verification_results:
-  focused_runtime_and_hostile_paths: PASS_78
-  complete_story_suite: >-
-    V2_PASS_78_V1_INHERITED_DRIFT_281_PASS_119_FAIL_12_ERROR
-  predecessor_owner_checks: PASS_ST1501_TO_ST1505
-  predecessor_regressions: >-
-    PASS_ST1501_175_ST1502_343_ST1503_393_ST1504_385_ST1505_471
-  ruff_format_and_lint: PASS_11_FILES
-  strict_mypy: PASS_7_SOURCE_4_TEST
-  strict_pyright: PASS_6_RUNTIME_FILES_ZERO_ERRORS
-  compile_and_import: PASS
-  network_syscall_trace: PASS_ZERO_NETWORK_SYSCALLS
-  focused_secret_scan: PASS_NO_MATCH
-  active_workflows: PASS_BYTE_UNCHANGED_FROM_BASE
+  complete_story_suite: PASS_505
+  focused_hostile_paths: PASS_27
+  focused_journal_and_recovery_paths: PASS_31
+  focused_runtime_paths: PASS_22
+  complete_v1_negative_paths: PASS_390
+  v1_contract_generation_and_v2_generation_paths: PASS_35
+  owner_no_write_checks: PASS_ST1501_TO_ST1506_SEVEN_OWNERS
+  ruff_format_and_lint: PASS_8_SOURCE_8_TEST
+  strict_mypy: PASS_8_SOURCE_8_TEST
+  strict_pyright: PASS_8_STORY_SOURCE_ZERO_DIAGNOSTICS
+  compile_and_import: PASS_8_SOURCE_8_TEST
+  denied_network_runtime: PASS_TWO_STEP_ZERO_EXTERNAL_ACTIONS
+  denied_network_focused_secret_scan: PASS_20_CHANGED_FILES_NO_MATCH
+  active_workflows: PASS_BYTE_UNCHANGED_FROM_EXACT_BASE
   git_diff_check: PASS
-  independent_read_only_review: THREE_FINDINGS_REMEDIATED_BEFORE_FREEZE
 inherited_provenance_drift:
   introduced_by_st1506_v2: false
   owner: ST1506_V1_PROVIDER_NEUTRAL_REFERENCE
-  command: >-
-    PYTHONPATH=python python scripts/build_st1506_production_deployment.py --check
-  result: ERROR_SOURCE_DIGEST_MISMATCH_PINNED_SOURCE
-  safe_impact: >-
-    V1 remains byte-preserved and non-executable; V2 binds current predecessor
-    owner artifacts independently and grants no activation authority.
+  result: CLOSED_BY_CURRENT_PREDECESSOR_REBIND
+  safe_impact: NO_EXECUTION_OR_EXTERNAL_AUTHORITY_CREATED

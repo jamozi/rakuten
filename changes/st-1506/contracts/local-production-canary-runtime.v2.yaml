@@ -67,16 +67,16 @@ predecessor_bindings:
     design_handoff_sha256: 36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04
     design_handoff_semantic_sha256: e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282
     contract_uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
-    contract_sha256: 3cb7faf3a5c2515bf76150ed8cc9e5dc109bb5a519c5b15c0727b1bfe20bc4c8
-    contract_semantic_sha256: f0a8a5ca57f34f8b983aa547f8b5f036ee91e0cc9acb63813da64e62a317d2db
+    contract_sha256: 20558e50a78c5d8be62a553858445578cc3fdd39fd285de3a92fe5cd5b5d9257
+    contract_semantic_sha256: 0eac1cba01ca2218f4f9adf734f58e748bf8c355425427516aab1d79d17bc91f
     owner_generator_uri: repo://scripts/build_st1504_github_oidc.py
-    owner_generator_sha256: 24268932c010afe9ff1b6e003d06cb402b637fa9cfb07e4ff8f712761205938c
+    owner_generator_sha256: 4e7ff7664326a754b89039bb4c5fcd399e629c3197814da5b79260a54d01bdb0
     reference_plan_uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
-    reference_plan_sha256: 2bbdc8579473be7df47167be57e0c0ec7d3c1f800ffc9afea1b3270adfa9aff8
-    reference_plan_semantic_sha256: 20f3e810ce17aa546b88a7510f8d5fa4dd249593ca233e7bcd8fb37211310f51
+    reference_plan_sha256: 7316a9f71cfea72edf071757ead8b44403362d106eb986d146193a27d658d6e6
+    reference_plan_semantic_sha256: 38e1e8bc7a500ca9961c78949c6697fbadf099d3378822731b3fc72a24b35e3e
     manifest_uri: repo://changes/st-1504/manifest.yaml
-    manifest_sha256: f75cecdea748d6bd174753be87c35d681daf0ff3b8e45d671f3cea0573c8765e
-    manifest_semantic_sha256: ad6c7c0b06e04eb100ccb161caba8af0208af46cf8930e058cdc31b28c8923f3
+    manifest_sha256: ad2da9ab4738e5c78144cdb039a35a36a74fbed796724814495e2f279112f7c9
+    manifest_semantic_sha256: 26c45e25ec140491d6f16dda129a344d1847b654e47142e8c79597e22b10d483
     owner_check_required: true
     admission_status: BLOCKED_NO_PRODUCTION_AUTHORITY
   ST-1505:
@@ -85,21 +85,21 @@ predecessor_bindings:
     design_handoff_sha256: 5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5
     design_handoff_semantic_sha256: d4f680a468ab1246734595394d7e2b1edefa6a590e33c418f7c0c9b487e30448
     contract_uri: repo://changes/st-1505/contracts/local-staging-admission-runtime.v2.yaml
-    contract_sha256: b475a2bcdeb18b12ec61fd7364d1488a22aad9e525adff23a3321e2e396be76d
-    contract_semantic_sha256: 509bfd0102d54c035e4c514b30389936695f8779c39adf02340fa66706c314fd
+    contract_sha256: 88c037e0417f60b8a1850b5a01426948c09613c367fe49ca8ba605e4a059da80
+    contract_semantic_sha256: 03621bb572ae84f6dd2110d98593f4c1ea71aecd86b7d8ea90cfc80135f8c4de
     owner_generator_uri: repo://scripts/build_st1505_staging_deployment.py
-    owner_generator_sha256: ed557f514da1bcf05a2946cc776cb944062be0c920c7b5b8a851d42f19adc5d5
+    owner_generator_sha256: 478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5
     reference_plan_uri: repo://infra/terraform/staging/staging-deployment.reference-plan.v1.json
-    reference_plan_sha256: 0731e1274623628016e41cc1f04a7a7e5e37717efe376ca066ed8259ed1f6624
-    reference_plan_semantic_sha256: 86929c3e59918645ab6193855e5f296eb3446a84b851b64695d5856e26cd5b29
+    reference_plan_sha256: 0c607b4c207068432477db1aa2a2e9598092964dbdce470d8b537c7022eaf105
+    reference_plan_semantic_sha256: b986581663bb884a53fed33a63047681499f64a671d4fe65b9185d0950e081ce
     manifest_uri: repo://changes/st-1505/manifest.yaml
-    manifest_sha256: a9ad6a56a6d98c6e4258463334525255ed45452f288764a1edf4113a17acbdd9
-    manifest_semantic_sha256: 7568d876e7de9db33ab15e7b0288feef0ade519f6e3db68cb4909f9136c36b79
+    manifest_sha256: 0e970c5749a8bd94fcc8ae5e695d11a4b927028fcc168838618998ac48075aeb
+    manifest_semantic_sha256: cd5bce90c997730cf865a05a28f7d3e4dc7349cafc5dab727624e4649e0bdaf3
     pipeline_uri: repo://infra/terraform/staging/local-staging-admission.pipeline.disabled.v2.yaml
-    pipeline_sha256: c427bad717bda13de880ab7af45b1a82745390919b0ea3bee43f30d932e96146
+    pipeline_sha256: 8c8fb463627eadd0b886372818133b2fd65be8a16ba87d5ab2a843512ccf173a
     result_uri: repo://infra/terraform/staging/local-staging-admission.result.recorded.v2.json
-    result_sha256: bcd16eb96868da461150a09a10f9277dbe1a4421d65389bf2ffeeafca2ccc15b
-    admitted_result_sha256: 696668a3f9dc74e6de614cad18c4185b30cd2658c39f547d8070cbf733a342e9
+    result_sha256: 2d0801bd6b88c8c18ea24a4b83a7cf9291e4e665e1922d90423aec4953df9a79
+    admitted_result_sha256: 437a3fc0bf71723f1d5b8dd930392502dd9d02552a55a6024aa416f854bd450c
     artifact_payload_sha256: d615727014ef5fd32023e7d1ce745cc89c08cbfde37d2838ace4acf3956cc345
     sbom_sha256: 171cd38d63d5e37c8ec352a1a5fe8e735524d8fcf5bd909342e1536ce4a1a3df
     provenance_sha256: 254caf782caa5f8417f27d559231f594b37de21cd5a9da47a2874d532145211e
@@ -111,9 +111,9 @@ predecessor_bindings:
 
 v1_compatibility_binding:
   contract_uri: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
-  contract_sha256: 5543dc6b6f3c2c0ca4d12d3e2b7154351a9e0e732baeccbdec82082c4648179a
-  contract_semantic_sha256: 176c1fb22be9676655d9339eeb2a715ade654a4f8c998dcd5d84ce4602c16735
-  compatibility: PRESERVED_BYTES_NOT_ADMITTED_DUE_INHERITED_PREDECESSOR_DRIFT
+  contract_sha256: 3acad1c924ec66a65c9a0915674233926aeb1ff236b2706f32ad75e4b29b19e1
+  contract_semantic_sha256: 571f85ae7a0eb609a08ab3b1579dc11380388292514491bfa887a51eddf2fe70
+  compatibility: PRESERVED_SEMANTICS_REBOUND_TO_CURRENT_PREDECESSORS_NO_PRODUCTION_AUTHORITY
   activation_authority: NONE
 
 capability_boundary:
@@ -389,6 +389,14 @@ durable_journal:
   owner_private_directory_mode: "0700"
   owner_private_file_mode: "0600"
   exact_schema_required: true
+  strict_tables_indexes_foreign_keys_and_triggers: REQUIRED
+  created_only_initialization: REQUIRED_O_EXCL
+  preexisting_empty_or_foreign_database: REJECT
+  append_only_journal_and_guarded_lifecycle: REQUIRED
+  root_and_database_device_inode_binding: REQUIRED
+  process_shared_monotonic_anchor: REQUIRED
+  whole_database_rollback_detection: REQUIRED_WHILE_PROCESS_ANCHOR_EXISTS
+  sidecar_or_database_replacement: REJECT
   content_addressed_result_bytes: true
   hash_chain: REQUIRED
   compare_and_swap: REQUIRED

@@ -136,19 +136,19 @@ def test_manifest_binds_active_workflows_without_owning_them() -> None:
         ),
         (
             "changes/st-1506/contracts/production-deployment-definition.v1.yaml",
-            "5543dc6b6f3c2c0ca4d12d3e2b7154351a9e0e732baeccbdec82082c4648179a",
+            "3acad1c924ec66a65c9a0915674233926aeb1ff236b2706f32ad75e4b29b19e1",
         ),
         (
             "changes/st-1506/manifest.yaml",
-            "868b33f0c94f3254349f135247d89b7fdd609b6d5d4fc787404dc5af4a0cc8bf",
+            "f1505a5a489b873fce6e1b749a81edb8d132ed5ffdadb02e11b74cd671f98701",
         ),
         (
             "scripts/build_st1506_production_deployment.py",
-            "a55385ccdd8fb3f9740eb2cbb2c24c3ba67006a46e1612dd27cd9e0973b6cc7e",
+            "cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be",
         ),
         (
             "infra/terraform/deployment-production/production-deployment.reference-plan.v1.json",
-            "4520b8e3dddc46efdbb66f37dc93d05bed8af69e596f6f83b68b0f32c47abb01",
+            "13db1afcf826b9a307e4a80a3503a562204280f422be094826764b13464bf0ba",
         ),
     ],
 )

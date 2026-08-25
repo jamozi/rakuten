@@ -10,7 +10,9 @@ The V2 contract exact-hash binds every current ST-1501 through ST-1505 design
 handoff, contract, owner generator, generated reference plan, and manifest,
 plus the integrated ST-1505 V2 inert pipeline, recorded result, admitted
 artifact, SBOM, and provenance. It also binds the byte-preserved ST-1506 V1
-contract. A raw or semantic mismatch blocks before simulation.
+contract. The V1 source and generated reference are rebound to the same current
+predecessor chain without granting execution authority. A raw or semantic
+mismatch blocks before simulation.
 
 The closed Production capability inventory contains workload runtime,
 relational persistence, immutable object storage, asynchronous queue, public
@@ -42,6 +44,13 @@ Generated files are outside the active workflow tree:
 - `infra/terraform/deployment-production/local-production-canary.pipeline.disabled.v2.yaml`
 - `infra/terraform/deployment-production/local-production-canary.result.recorded.v2.json`
 - `changes/st-1506/manifest.v2.yaml`
+
+The owner-private journal is created only through `O_EXCL`. Existing empty or
+foreign databases are rejected without initialization. Every access verifies
+the exact STRICT table/index/foreign-key/trigger inventory, append-only journal
+and lifecycle guards, root/database device and inode, absence of SQLite
+sidecars, and a process-shared monotonic chain anchor. This detects replacement
+and same-inode whole-database rollback while the process anchor exists.
 
 Generate:
 

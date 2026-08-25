@@ -18,7 +18,7 @@ from typing import Final, NoReturn, cast
 
 
 EXPECTED_CONTRACT_SEMANTIC_SHA256: Final = (
-    "6c4576882e38afbddb89aa8c2f63c2d383127ad0c2b1c017f4a56693abb9ab6a"
+    "3a5cd58608eedc0d5d1315f42089d8ac86f3a43c78feee75be9fc4b8bc1683e0"
 )
 
 EXTERNAL_ACTION_NAMES: Final = (

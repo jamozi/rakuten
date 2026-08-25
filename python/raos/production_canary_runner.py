@@ -41,7 +41,7 @@ _CONTRACT_RELATIVE_PATH = Path(
     "changes/st-1506/contracts/local-production-canary-runtime.v2.yaml"
 )
 _CONTRACT_RAW_SHA256 = (
-    "0f044678160331280bdbfb90e9737923bf02ef5ae4dcae77dc1b65b820d63972"
+    "e892e7f27e255a7fc71ceb3adb5f308f84ef198201e9a22185261b8a42bdbed0"
 )
 _MAX_DOCUMENT_BYTES = 262_144
 

@@ -89,7 +89,7 @@ def test_contract_exactly_binds_predecessors_and_staging_admission(
     spec: ProductionCanarySpec,
 ) -> None:
     assert spec.semantic_sha256 == (
-        "6c4576882e38afbddb89aa8c2f63c2d383127ad0c2b1c017f4a56693abb9ab6a"
+        "3a5cd58608eedc0d5d1315f42089d8ac86f3a43c78feee75be9fc4b8bc1683e0"
     )
     assert [story for story, _ in spec.predecessor_hashes] == [
         "ST-1501",
@@ -99,10 +99,10 @@ def test_contract_exactly_binds_predecessors_and_staging_admission(
         "ST-1505",
     ]
     assert spec.staging_contract_semantic_sha256 == (
-        "509bfd0102d54c035e4c514b30389936695f8779c39adf02340fa66706c314fd"
+        "03621bb572ae84f6dd2110d98593f4c1ea71aecd86b7d8ea90cfc80135f8c4de"
     )
     assert spec.staging_result_sha256 == (
-        "696668a3f9dc74e6de614cad18c4185b30cd2658c39f547d8070cbf733a342e9"
+        "437a3fc0bf71723f1d5b8dd930392502dd9d02552a55a6024aa416f854bd450c"
     )
     assert spec.artifact_sha256 == (
         "d615727014ef5fd32023e7d1ce745cc89c08cbfde37d2838ace4acf3956cc345"

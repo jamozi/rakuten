@@ -190,7 +190,7 @@ class _HostileJournal:
             for name in PersistedCanaryStep.__dataclass_fields__:
                 object.__setattr__(forged, name, getattr(observed, name))
             object.__setattr__(
-                forged, "result_json", b'{"secret":"' + SECRET_CANARY.encode() + b'"}'
+                forged, "result_json", b'{"tainted":"' + SECRET_CANARY.encode() + b'"}'
             )
             return forged
         if observed is not None and self.failure == "forged-valid-load":
