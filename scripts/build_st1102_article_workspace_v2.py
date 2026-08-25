@@ -67,10 +67,10 @@ CONTENT_FIXTURE_PATH: Final = Path(
     "contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json"
 )
 ST0806_FIXTURE_SHA256: Final = (
-    "a890cfa8a5c371f8f79b83bbe846fff2076eebad567613c772956ebfb5b8d78b"
+    "656e434ab1b8c6b7af3a0c4bc75dcd880ef487744a50bc870ca0ab70ad9361c6"
 )
 ST0806_PLAN_SHA256: Final = (
-    "9b52b5d4070d8dc5f8efe62a84ba9e8113c5f6bd2e24221c3714a1c6a14d9c33"
+    "d2f81925a2abd77177de3f8233286e521f158081bd421e7d1d9529631873a4d9"
 )
 
 ARTICLE_ID: Final = "018f3e90-7b00-7000-8000-000000000806"
@@ -184,24 +184,24 @@ CANONICAL_BINDINGS: Final = (
 DEPENDENCY_BINDINGS: Final = (
     (
         Path("changes/st-0806/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml"),
-        "277e6376107a5b3a9237cf47f69f4e128a51fc4400e2438b88f0e8ed82f9517d",
+        "55347f6ce7d85dfc2b92ebeb41e8c51bfbb4ee83398a490e7022946b634d1556",
         "st0806Completion",
     ),
     (ST0806_PLAN_PATH, ST0806_PLAN_SHA256, "st0806Plan"),
     (ST0806_FIXTURE_PATH, ST0806_FIXTURE_SHA256, "st0806Fixture"),
     (
         Path("changes/st-0806/contracts/ai-draft-integration.v2.yaml"),
-        "4ca2dfb59f60a4c65bb6c0c31595cac1281d6b62b3900bfe5204770f5cc8c6e7",
+        "42715fc526bcb4eddccbd836084769f7ef8886b7767ad806f33accdff4843bdd",
         "st0806Contract",
     ),
     (
         Path("python/raos/domain/editorial/ai_draft_integration_v2.py"),
-        "fa04d6c194f84741e4f8d94cfa55d76babd516c9132c648cde7c2eb98cb75ad1",
+        "a033b7baac023179ea5cd245f399986e9969f2f1c611d6f4faf7cf98363e81b7",
         "st0806Domain",
     ),
     (
         Path("python/raos/adapters/recorded_ai_draft_integration_v2.py"),
-        "716ed3f59abb63bda6291549c61a079c08272db6ff58fa807592e1ec0604bcbd",
+        "5f43a7e69eb6430ba2fa190635d0e4d1bc16e01f66e3b3043625277ffedda85c",
         "st0806Adapter",
     ),
     (

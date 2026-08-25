@@ -9,9 +9,9 @@ contract_sha256: ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52
 hardened_writer_sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
 source_sha256:
   changes/st-1102/contracts/article-workspace.v2.yaml: ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52f
-  scripts/build_st1102_article_workspace_v2.py: 439f46d96a2873d1020044aabf5ebf6c9dca23a74c7fe9582cb1e978f657681a
+  scripts/build_st1102_article_workspace_v2.py: 6e2e212acb0ee004ad5df1dd674ac8a6a29e82c2b296829f5a8920fd954a136c
   packages/web-ui/src/article-workspace-v2.ts: d696e713b00239c2b4089a360ca95109720218b2a66071c8106105ae24583bae
-  packages/web-ui/src/index.ts: 527efe6b033da86de0b6dd05d6e74eb1711bee83e34fe3d5d6477f125aa8f22d
+  packages/web-ui/src/index.ts: ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c
   changes/st-1102/README.md: 87fd7d5e8b7ccf0d9de46729e56af21ba6939bb5be14415376bc74b2d84a5912
   changes/st-1102/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: 9db6e0565e762f72fdd78a896fd7cd4ca2b58aa1aa4a33b0dd4f11bf302665f8
   docs/execplans/ST-1102.md: ec8d3c68b7c846a556ea8a4dcf765758beb1102b36cfafb717972601fdd7aff3
@@ -38,12 +38,12 @@ source_sha256:
   docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
   contracts/raos-v0.4/contracts/openapi-admin.v0.4.yaml: 6a22ee7a5f13ed89ac3bb6ceeffe49aad8b11e4f2a3a137c927542461c2ace70
   contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json: a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac
-  changes/st-0806/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: 277e6376107a5b3a9237cf47f69f4e128a51fc4400e2438b88f0e8ed82f9517d
-  changes/st-0806/generated/ai-draft-integration.v2.json: 9b52b5d4070d8dc5f8efe62a84ba9e8113c5f6bd2e24221c3714a1c6a14d9c33
-  changes/st-0806/generated/ai-draft-integration-fixture.v2.json: a890cfa8a5c371f8f79b83bbe846fff2076eebad567613c772956ebfb5b8d78b
-  changes/st-0806/contracts/ai-draft-integration.v2.yaml: 4ca2dfb59f60a4c65bb6c0c31595cac1281d6b62b3900bfe5204770f5cc8c6e7
-  python/raos/domain/editorial/ai_draft_integration_v2.py: fa04d6c194f84741e4f8d94cfa55d76babd516c9132c648cde7c2eb98cb75ad1
-  python/raos/adapters/recorded_ai_draft_integration_v2.py: 716ed3f59abb63bda6291549c61a079c08272db6ff58fa807592e1ec0604bcbd
+  changes/st-0806/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: 55347f6ce7d85dfc2b92ebeb41e8c51bfbb4ee83398a490e7022946b634d1556
+  changes/st-0806/generated/ai-draft-integration.v2.json: d2f81925a2abd77177de3f8233286e521f158081bd421e7d1d9529631873a4d9
+  changes/st-0806/generated/ai-draft-integration-fixture.v2.json: 656e434ab1b8c6b7af3a0c4bc75dcd880ef487744a50bc870ca0ab70ad9361c6
+  changes/st-0806/contracts/ai-draft-integration.v2.yaml: 42715fc526bcb4eddccbd836084769f7ef8886b7767ad806f33accdff4843bdd
+  python/raos/domain/editorial/ai_draft_integration_v2.py: a033b7baac023179ea5cd245f399986e9969f2f1c611d6f4faf7cf98363e81b7
+  python/raos/adapters/recorded_ai_draft_integration_v2.py: 5f43a7e69eb6430ba2fa190635d0e4d1bc16e01f66e3b3043625277ffedda85c
   contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json: 8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489
   packages/web-ui/src/serializable.ts: 56adb1e0356fba66e147be4c055b7a40f1115608a3e29bbee4584234f8b3273d
   packages/web-ui/src/route-guard.ts: 8395f542c7c65445fa3d1bec4a0e037c96610da8589e1807604b4fb3fa6a584f
@@ -52,13 +52,13 @@ source_sha256:
   packages/web-ui/src/dialog.ts: 494ac8b9e2a4087de2d003dd6c28bfcab7c85961f418a5892453c865058724bc
   packages/web-ui/src/article-workspace.ts: 01d2f680ddfb5a64fa9d84db1c10e1ae9cd3de490520e67f135f3be63260db89
   scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
-  package.json: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+  package.json: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
   package-lock.json: d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b
   pyproject.toml: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
   uv.lock: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
 generated_sha256:
-  changes/st-1102/article-workspace-recorded.v2.json: 35cbe2d3817c375d30bece98518e3ac598475f6218851ac3a33805091d350030
-  packages/web-ui/src/article-workspace-recorded.v2.ts: b45bcca73d774cbba9f2f93c81b476f5e2d8bd6d6337dbdfd24cf0985238bd95
+  changes/st-1102/article-workspace-recorded.v2.json: e28bdabb017c070383fcf373ccdef5315a93238715033e14c12d5a467f7e32ea
+  packages/web-ui/src/article-workspace-recorded.v2.ts: 026102acd962302b073b170ac5e001c181280645c8456eda8cdc2fcad9eb25cb
 generation:
   command: uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads
     python scripts/build_st1102_article_workspace_v2.py
