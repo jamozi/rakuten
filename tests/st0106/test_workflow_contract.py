@@ -1279,7 +1279,6 @@ def test_unit_job_keeps_overlapping_story_modules_in_separate_processes() -> Non
         "tests/st0701",
         "tests/st0703",
         "tests/st0801",
-        "tests/st1506_operator",
         "tests/st1704",
     )
     assert unit_recipe.count("pytest -p no:cacheprovider -q") == len(expected_suites)
