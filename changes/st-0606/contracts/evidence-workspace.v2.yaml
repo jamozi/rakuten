@@ -15,26 +15,26 @@ source_bindings:
     semantic: CURRENT_SOURCE_PACKET_LIFECYCLE_AUTHORITY
     artifacts:
       - uri: repo://changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml
-        sha256: b7144670eab5f12eb79c2f49380d152a4ef5700a030b799878aa147ca563ec2c
+        sha256: 5f0fc1d75207535a89e5e50d6b33bc3f710d17e60183e63ab39e394b5e8d049c
       - uri: repo://changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json
-        sha256: f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb
+        sha256: 3c7a7cc6a296c96162847f2bb452bba2ff7048bc8f277dbe720bf19a97fafaee
       - uri: repo://changes/st-0604/manifest.yaml
-        sha256: cb3313f3fb5e3460cbc39e2b9a3c64b8e3859c975c58b54e7ca45f59636a2795
+        sha256: df78078b95d6042a08651cdef6923c01009362655393ab47af39eba2f3e420b6
   - story_id: ST-0605
     semantic: CURRENT_CLAIM_EVIDENCE_REPORT_AND_ATTESTATION_AUTHORITY
     artifacts:
       - uri: repo://changes/st-0605/contracts/claim-evidence-runtime.v1.yaml
         sha256: 7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb
       - uri: repo://changes/st-0605/generated/claim-evidence-runtime-pass.v1.json
-        sha256: 9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106
+        sha256: b805ee491f7388ab39d99bd61dbc0a29d3b1659a9a44b44ebdeb73063e8356a1
       - uri: repo://changes/st-0605/runtime-manifest.v1.yaml
-        sha256: b8e76e4013eb097ba514b7d2cb39f5861c2694acb7cc19919149011ccdc44c41
+        sha256: f21f1e2c589a018fe17ced53b309fcaa1443df3793f57f743c5084a1314e1267
       - uri: repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml
-        sha256: b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49
+        sha256: 16b964f73e0f23041676eb6a0db7e74590fdfa3e80781fd7b9d1758e13809120
       - uri: repo://changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json
-        sha256: 015938473428cea3e028f0bc969a8fc290cfe8c87cb0a700383f492821c86142
+        sha256: ef271dcaddaba9a72b7853b4b04ad487ce3630dfbf60a56f996c4c66251acb9d
       - uri: repo://changes/st-0605/manifest.yaml
-        sha256: 888808d5992dae9da65db7e095157495138b3c612e48336fe163c35b1ff46de8
+        sha256: bdcc53843f40514cd402663a578353055731ceff676319c8e79b6c745e4fbd33
   - story_id: ST-1101
     semantic: DISABLED_ADMIN_AUTH_AND_ROUTE_BOUNDARY
     artifacts:

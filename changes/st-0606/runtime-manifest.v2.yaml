@@ -5,16 +5,16 @@ source_artifact_count: 14
 source_artifacts:
 - uri: repo://changes/st-0606/contracts/evidence-workspace.v2.yaml
   bytes: 7476
-  sha256: 5b7b2b66e45ea05a327a8f73594e92574dd06e02ea4f1fb63dd4cb257b4f3380
+  sha256: 6317e8f2643ecda6ad0f1cc0c56f39df45c3ca3e5c91281d11ad8d84d58114cf
 - uri: repo://changes/st-0606/fixtures/evidence-workspace-recorded.synthetic.v2.json
   bytes: 1765
-  sha256: 3a7d09a0eb1c68a0a8cef1008c22fd6b5597d63708e1d1352907e2a3c61c12e2
+  sha256: a74ea9877ef625ad71c11ecffe6b6b8cf03c06be153f5b156e059e7db412d029
 - uri: repo://changes/st-0606/PREFLIGHT-v2.md
   bytes: 4762
   sha256: f77f9b99b368825a1414f0e3f550f1f0bf5c085a91d36db26c85f6a350911c82
 - uri: repo://changes/st-0606/README.md
-  bytes: 4905
-  sha256: 02e1a5af7f0543c1adf49215889b21ada9cd8a1946e1065404f98be27388c645
+  bytes: 4975
+  sha256: 600f66faafe413c81a10663b5a79c12f9a9de28ffd141528de46aef87ef77975
 - uri: repo://changes/st-0606/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml
   bytes: 2825
   sha256: 5e59ff0b3270a57802ad6729370fe7e571a7b4d36755b6eb3c15cf4f08acc9f7
@@ -26,13 +26,13 @@ source_artifacts:
   sha256: 36898af717259394403db452bb4cd945dcf3f47ad918b15c5b6aeea7a5ff9e4d
 - uri: repo://packages/web-ui/src/evidence-workspace-v2.ts
   bytes: 32639
-  sha256: 0bc50ad26ff6731f1215241b83d20fd5c62576fcb99f595f117b0fa7e3598fd0
+  sha256: aec4a3cabed705470cd71a306b41815f1760a08a4cfc8fa0aae9537a0b24a67a
 - uri: repo://scripts/build_st0606_evidence_workspace_v2.py
-  bytes: 48906
-  sha256: fb5c64fa1168bcd5297ee2fc65e66299c0641c5e8ee0c23e9d2aad79a74db4b0
+  bytes: 49000
+  sha256: b6a722a51d24a64e3ecd55591f7ac0e6c3f9040991cd149765b4bf6f94e8a9ed
 - uri: repo://tests/st0606_v2/evidence-workspace-v2-generation.test.ts
   bytes: 3672
-  sha256: af1849ff0acfc9113d1126d190e39190c367170ecd10242b1d9432331894036c
+  sha256: 755dee1bb0e86114d2829e3cf989bf9a2c1471e6c9664c899121c57051459cc0
 - uri: repo://tests/st0606_v2/evidence-workspace-v2-model.test.ts
   bytes: 5245
   sha256: 32c6a2124da91ac37f10289496d695a0be20830c5cfb8993f8f5d1ca511d82ca
@@ -43,15 +43,15 @@ source_artifacts:
   bytes: 1238
   sha256: d71a7cff6b372e767b0282ec1cd0d15b0fc2e40b5a6b266134ff5731528d998a
 - uri: repo://tests/st0606_v2/test_negative.py
-  bytes: 2957
-  sha256: bae52cc22d68db2732fa34c4f16c17bce0a1a3dbdafc25d17a79639810acdcc1
+  bytes: 2994
+  sha256: 8329e0dcda5cbde31a7eaf3ad2645e63c3274a8aa812e7fcb2ed69daa36d33a9
 generated_artifacts:
 - uri: repo://changes/st-0606/generated/evidence-workspace-recorded.v2.json
   bytes: 33617
-  sha256: 9e172560df39f513815223868ba6283847db4623c85ef64d987b2da6cc2fd303
+  sha256: 7788c3eeae45bd1dd63930d904eb08c45bab4e6e266801b7af77a9afd8e0a54e
 - uri: repo://packages/web-ui/src/evidence-workspace-recorded.v2.ts
   bytes: 35096
-  sha256: 98ca962679ec44ad3ff3fc7f26efba9a520b119bf085ef27be5831e662b721b1
+  sha256: 10d19f49ef1f25164909389fe3ccf3c350c8b08d16ea3de67d74a7bcf3157474
 generation:
   owner: repo://scripts/build_st0606_evidence_workspace_v2.py
   command: .venv/bin/python scripts/build_st0606_evidence_workspace_v2.py

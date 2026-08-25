@@ -2,9 +2,10 @@
 
 Status: `LOCAL_CODE_COMPLETE` / additive V2 recorded headless read projection
 
-The additive V2 consumes the current ST-0604 Source Packet lifecycle source and
-the current ST-0605 recorded synthetic coverage runtime. It projects typed
-Source, Fact, Conflict, Coverage, Claim–Evidence Matrix, and validation
+The additive V2 consumes the ST-0604 lifecycle provenance finalized at
+`89d8074951ce73a5c76ca55f0ea3b2c129559d81` and the ST-0605 coverage
+provenance finalized at `160e5d4e210a35b216395c1bdf16b9c664ecc8e7`.
+It projects typed Source, Fact, Conflict, Coverage, Claim–Evidence Matrix, and validation
 attestation read models for the canonical `EVD-001..004` screens. ST-0605's
 report and every attestation are bound by exact kind, subject digest, input
 digest, contract version/digest, owner, and decision digest. ST-0604 remains the

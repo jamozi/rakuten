@@ -59,31 +59,31 @@ ST0605_FIXTURE_PATH: Final = Path(
 
 EXPECTED_SOURCE_BINDINGS: Final = {
     "repo://changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml": (
-        "b7144670eab5f12eb79c2f49380d152a4ef5700a030b799878aa147ca563ec2c"
+        "5f0fc1d75207535a89e5e50d6b33bc3f710d17e60183e63ab39e394b5e8d049c"
     ),
     "repo://changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json": (
-        "f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb"
+        "3c7a7cc6a296c96162847f2bb452bba2ff7048bc8f277dbe720bf19a97fafaee"
     ),
     "repo://changes/st-0604/manifest.yaml": (
-        "cb3313f3fb5e3460cbc39e2b9a3c64b8e3859c975c58b54e7ca45f59636a2795"
+        "df78078b95d6042a08651cdef6923c01009362655393ab47af39eba2f3e420b6"
     ),
     "repo://changes/st-0605/contracts/claim-evidence-runtime.v1.yaml": (
         "7d84f3a4883a226eff782e976aa72169646be67bf1fc798af5b1b65367d2c3cb"
     ),
     "repo://changes/st-0605/generated/claim-evidence-runtime-pass.v1.json": (
-        "9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106"
+        "b805ee491f7388ab39d99bd61dbc0a29d3b1659a9a44b44ebdeb73063e8356a1"
     ),
     "repo://changes/st-0605/runtime-manifest.v1.yaml": (
-        "b8e76e4013eb097ba514b7d2cb39f5861c2694acb7cc19919149011ccdc44c41"
+        "f21f1e2c589a018fe17ced53b309fcaa1443df3793f57f743c5084a1314e1267"
     ),
     "repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml": (
-        "b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49"
+        "16b964f73e0f23041676eb6a0db7e74590fdfa3e80781fd7b9d1758e13809120"
     ),
     "repo://changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json": (
-        "015938473428cea3e028f0bc969a8fc290cfe8c87cb0a700383f492821c86142"
+        "ef271dcaddaba9a72b7853b4b04ad487ce3630dfbf60a56f996c4c66251acb9d"
     ),
     "repo://changes/st-0605/manifest.yaml": (
-        "888808d5992dae9da65db7e095157495138b3c612e48336fe163c35b1ff46de8"
+        "bdcc53843f40514cd402663a578353055731ceff676319c8e79b6c745e4fbd33"
     ),
     "repo://packages/web-ui/src/route-guard.ts": (
         "8395f542c7c65445fa3d1bec4a0e037c96610da8589e1807604b4fb3fa6a584f"
@@ -221,14 +221,19 @@ class UniqueSafeLoader(yaml.SafeLoader):
 def _construct_mapping(
     loader: UniqueSafeLoader, node: yaml.MappingNode, deep: bool = False
 ) -> dict[object, object]:
-    if not isinstance(node, yaml.MappingNode):
-        _fail("YAML_SHAPE_INVALID", "contract")
     result: dict[object, object] = {}
     for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+        key = cast(
+            object,
+            loader.construct_object(  # pyright: ignore[reportUnknownMemberType]
+                key_node, deep=deep
+            ),
+        )
         if key in result:
             _fail("YAML_DUPLICATE_KEY", "contract")
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = loader.construct_object(  # pyright: ignore[reportUnknownMemberType]
+            value_node, deep=deep
+        )
     return result
 
 

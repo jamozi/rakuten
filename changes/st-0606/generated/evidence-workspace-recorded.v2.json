@@ -8,20 +8,20 @@
     "verification": "NOT_EXECUTED"
   },
   "source_mode": "RECORDED_SYNTHETIC_DEV_CI_ONLY",
-  "contract_sha256": "5b7b2b66e45ea05a327a8f73594e92574dd06e02ea4f1fb63dd4cb257b4f3380",
-  "fixture_sha256": "3a7d09a0eb1c68a0a8cef1008c22fd6b5597d63708e1d1352907e2a3c61c12e2",
+  "contract_sha256": "6317e8f2643ecda6ad0f1cc0c56f39df45c3ca3e5c91281d11ad8d84d58114cf",
+  "fixture_sha256": "a74ea9877ef625ad71c11ecffe6b6b8cf03c06be153f5b156e059e7db412d029",
   "source_bindings": [
     {
       "uri": "repo://changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml",
-      "sha256": "b7144670eab5f12eb79c2f49380d152a4ef5700a030b799878aa147ca563ec2c"
+      "sha256": "5f0fc1d75207535a89e5e50d6b33bc3f710d17e60183e63ab39e394b5e8d049c"
     },
     {
       "uri": "repo://changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json",
-      "sha256": "f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb"
+      "sha256": "3c7a7cc6a296c96162847f2bb452bba2ff7048bc8f277dbe720bf19a97fafaee"
     },
     {
       "uri": "repo://changes/st-0604/manifest.yaml",
-      "sha256": "cb3313f3fb5e3460cbc39e2b9a3c64b8e3859c975c58b54e7ca45f59636a2795"
+      "sha256": "df78078b95d6042a08651cdef6923c01009362655393ab47af39eba2f3e420b6"
     },
     {
       "uri": "repo://changes/st-0605/contracts/claim-evidence-runtime.v1.yaml",
@@ -29,23 +29,23 @@
     },
     {
       "uri": "repo://changes/st-0605/generated/claim-evidence-runtime-pass.v1.json",
-      "sha256": "9a13203bd40b176fe493fe79dd2d9178a08d16c91a3a914c2dbb30fc24a05106"
+      "sha256": "b805ee491f7388ab39d99bd61dbc0a29d3b1659a9a44b44ebdeb73063e8356a1"
     },
     {
       "uri": "repo://changes/st-0605/runtime-manifest.v1.yaml",
-      "sha256": "b8e76e4013eb097ba514b7d2cb39f5861c2694acb7cc19919149011ccdc44c41"
+      "sha256": "f21f1e2c589a018fe17ced53b309fcaa1443df3793f57f743c5084a1314e1267"
     },
     {
       "uri": "repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml",
-      "sha256": "b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49"
+      "sha256": "16b964f73e0f23041676eb6a0db7e74590fdfa3e80781fd7b9d1758e13809120"
     },
     {
       "uri": "repo://changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json",
-      "sha256": "015938473428cea3e028f0bc969a8fc290cfe8c87cb0a700383f492821c86142"
+      "sha256": "ef271dcaddaba9a72b7853b4b04ad487ce3630dfbf60a56f996c4c66251acb9d"
     },
     {
       "uri": "repo://changes/st-0605/manifest.yaml",
-      "sha256": "888808d5992dae9da65db7e095157495138b3c612e48336fe163c35b1ff46de8"
+      "sha256": "bdcc53843f40514cd402663a578353055731ceff676319c8e79b6c745e4fbd33"
     },
     {
       "uri": "repo://packages/web-ui/src/route-guard.ts",
@@ -58,7 +58,7 @@
   ],
   "lifecycle": {
     "story_id": "ST-0604",
-    "source_sha256": "f465580b8cd484f8abe39225b16d557b2e7df5689f707057f7d59165bc9339eb",
+    "source_sha256": "3c7a7cc6a296c96162847f2bb452bba2ff7048bc8f277dbe720bf19a97fafaee",
     "authority": "CURRENT_LIFECYCLE_SOURCE",
     "decision": "NOT_READY",
     "availability": "UNAVAILABLE",
@@ -90,7 +90,7 @@
       "article_version_id": "11111111-1111-4111-8111-111111111111",
       "complete_claim_set_sha256": "4662cfeca44015efce97a1a82bed5cbda727075dc533a9211a6b9794c875d5af",
       "evaluated_at": "2026-08-24T00:00:00Z",
-      "evaluation_input_sha256": "1ee43fc1aecd8d8afd382b2d340f86014809f05d479a74e65a11184813bc5094",
+      "evaluation_input_sha256": "5c77d14388a7ac2d102ee6c92605bf8d9e38d8c4cffc839f92c4933c8cd8cb13",
       "evaluator_version": "ST0605_CLAIM_EVIDENCE_COVERAGE_V1",
       "findings": [],
       "formal_test_status": "NOT_EXECUTED",
@@ -106,7 +106,7 @@
       "profile": "ST0605_COVERAGE_REPORT_V1",
       "publication_authorized": false,
       "release_status": "NOT_EXECUTED",
-      "report_sha256": "dbbd1b02fdc84d17bc058be669c434dc5a5a93cc0274496bdab7bc23a52d5a0d",
+      "report_sha256": "001763e392a3068c6de1000815e655ddc24f703217c62dbda3e72b937b804d11",
       "source_packet_content_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
       "source_packet_version_id": "33333333-3333-4333-8333-333333333333",
       "staging_status": "NOT_EXECUTED",
@@ -148,11 +148,11 @@
       "kind": "PACKET_APPROVAL_MEMBERSHIP",
       "owner_story_id": "ST-0604",
       "contract_version": "SOURCE-PACKET-LIFECYCLE-RUNTIME@2.0.0",
-      "contract_sha256": "719f5366eced10c19a16dc11355d92680fb66dfe08bebce5be5251618e79cfbe",
+      "contract_sha256": "8fc6a6bc7a9b016ed70ec099da005f430f472702b0e422d227c32e45f8623f93",
       "origin": "RECORDED_SYNTHETIC_ONLY",
       "subject_sha256": "5113c184044507308f41d4d80036ca3b352345767aa7297d00d809e50515fef5",
       "input_sha256": "d4d0010908959e4f5c26c60db299dccb4ba93f81eaf36f525f61b80c6901c8b2",
-      "decision_sha256": "89dcbf8d4dcf05c6dd9d7dafc259c59bfca7685eef1058a63482811ac90ebfd0",
+      "decision_sha256": "8326756287464cef30c873bc8be27016688efb65d1fe2df9bae806dc3d6dc67b",
       "validated_at": "2026-08-23T23:00:00Z",
       "valid": true
     },
@@ -187,11 +187,11 @@
       "kind": "IDENTITY_DECISION",
       "owner_story_id": "ST-0504",
       "contract_version": "PRODUCT-IDENTITY-HUMAN-REVIEW-REFERENCE-PLAN@1",
-      "contract_sha256": "9e73f7e436ab14df75394b2337e853f1dcbf553c16e0f950a8bdb604da685304",
+      "contract_sha256": "f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab",
       "origin": "RECORDED_SYNTHETIC_ONLY",
       "subject_sha256": "3fabe1af282ff9ef5159eb671a0f8f8b3cde53527663bf3ae20ffac5c154bd5c",
       "input_sha256": "673dc0b4ce458b85d2cdf058938c23b3f4a511e141501c8d2375c7ba6eb975a2",
-      "decision_sha256": "a6cd1e01ac72ea3408a65fd50c414ab427a4a85a675d52ce4bd136c3e7d3dece",
+      "decision_sha256": "ab31f7adc5e232fcaf512d54e65279cefdf3cfc23604da443219eebf207671c0",
       "validated_at": "2026-08-23T23:00:00Z",
       "valid": true
     },
@@ -200,11 +200,11 @@
       "kind": "IDENTITY_DECISION",
       "owner_story_id": "ST-0504",
       "contract_version": "PRODUCT-IDENTITY-HUMAN-REVIEW-REFERENCE-PLAN@1",
-      "contract_sha256": "9e73f7e436ab14df75394b2337e853f1dcbf553c16e0f950a8bdb604da685304",
+      "contract_sha256": "f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab",
       "origin": "RECORDED_SYNTHETIC_ONLY",
       "subject_sha256": "52d959ad30001c3f52d4095114d94360c31613b21d3ecaf6a9ba27929bbe6325",
       "input_sha256": "a956e3b2b9c7c55da2e87b69867b55ecce6db8ae174f042145398200502c2c05",
-      "decision_sha256": "20755725c9ba6af26dd2a0a158901a38f95d3e084ec90210b6f232d67e72d296",
+      "decision_sha256": "f2b708a33c1a452dcc8cd348b9028d78f549767da502d82668db1e0155b80459",
       "validated_at": "2026-08-23T23:00:00Z",
       "valid": true
     },
@@ -213,11 +213,11 @@
       "kind": "CONFLICT_CLOSURE",
       "owner_story_id": "ST-0603",
       "contract_version": "FACT-CONFLICT-REVIEW-REFERENCE-PLAN@1",
-      "contract_sha256": "bca7c63e49be113d7e2b7d15017d22ad6a9b27c59509325b2bbca407081246ef",
+      "contract_sha256": "74d58a889c0e20cb74e699196c267b270a86db80667459c9178b04aefe66c093",
       "origin": "RECORDED_SYNTHETIC_ONLY",
       "subject_sha256": "3eae35b6d938eba8d185c1c37666fcddf58e6532cac3dfec95e7378d94e24f93",
       "input_sha256": "55fbbf8f5dc3a9fdb3d6e20d7dd5bb43c82a323775e819509c50208295f8e59f",
-      "decision_sha256": "f74e5ad354197636a6ac2ab2f61838d41c161fc36b67b1cdbbe9922a39958477",
+      "decision_sha256": "b7de61db11e13694b8513a7a490350a5b2cf556fdd30923eb979a41b6d299b55",
       "validated_at": "2026-08-23T23:00:00Z",
       "valid": true
     }
