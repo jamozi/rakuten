@@ -111,27 +111,27 @@ CANONICAL_BINDINGS: Final = (
 DEPENDENCY_BINDINGS: Final = (
     (
         Path("changes/st-0901/generated/review-completion-pass.v2.json"),
-        "57587322562eae4a2b58bebfc6b917e39fb05f077cf7268deb4056563950a361",
+        "84778adfb038bbd8665dbcf3fcf9bce9e23e0afe248f11a2f8bd10846cde32ec",
         "st0901ReviewFixture",
     ),
     (
         Path("changes/st-0902/generated/final-approval-pass.v2.json"),
-        "93c44f4d303fef41304962bf4235e19491bcb45c555aecb66a87dcd34e6bca07",
+        "ca2c057e5afd61b13edbaac340f3d0b6013c0781b3fd5c64c4202bf9d1ee6412",
         "st0902FinalApprovalFixture",
     ),
     (
         Path("changes/st-0903/generated/publication-snapshot-pass.v2.json"),
-        "6f18ed11cbed99c57dac757875ce4ab3e1fab09cc24710c1fd7bce7e5823cd99",
+        "b28e259b64241c7dc595fbdadb45ed4c2d99443d85c2584b4532388dbf4141e3",
         "st0903SnapshotFixture",
     ),
     (
         Path("changes/st-0904/generated/public-projection-recorded.v2.json"),
-        "d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1",
+        "a15edb77dcebb3f4b18c9f40737ebc949ab7564191a88052c5b8c54b3ddab7ce",
         "st0904ProjectionFixture",
     ),
     (
         Path("changes/st-0905/generated/publication-commands-recorded.v2.json"),
-        "632e56fd8737db71016042d1d13e90773f2c444bd788d78c79e024473c23a117",
+        "804834d1850297daaf1da50f935cbe5f1bce4a2073c805e20c1b7d885387a631",
         "st0905CommandFixture",
     ),
     (

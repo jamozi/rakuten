@@ -13,12 +13,12 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
   bytes: 52383
-  sha256: 899b5466fc1d313ea0c50f9429eba2a9986b01a8da6d81ab38c2efae01fa2898
+  sha256: c71dc3a96eb83ead3aac4811890afc18caf18cc70c78af76383f96d7513943e7
 - uri: repo://packages/web-ui/src/publication-review-workspace.ts
   artifact_role: OWNER_SOURCE
   media_type: text/typescript
   bytes: 43596
-  sha256: 0b285d4e117530af3d377dce9752397b0beb3bae2198f444692e71d85f8579f6
+  sha256: 7c3e19a674dafc3acf660bad8f436185bbaf794661a5eb0ccec999b886a06a23
 - uri: repo://packages/web-ui/src/publication-review-workspace-v2.ts
   artifact_role: OWNER_SOURCE
   media_type: text/typescript
@@ -27,8 +27,8 @@ source_artifacts:
 - uri: repo://packages/web-ui/src/index.ts
   artifact_role: OWNER_SOURCE
   media_type: text/typescript
-  bytes: 19601
-  sha256: 527efe6b033da86de0b6dd05d6e74eb1711bee83e34fe3d5d6477f125aa8f22d
+  bytes: 21657
+  sha256: ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c
 - uri: repo://changes/st-0906/README.md
   artifact_role: OWNER_SOURCE
   media_type: text/markdown
@@ -48,7 +48,7 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: text/typescript
   bytes: 3945
-  sha256: 77338dfda26f4ec208bab689ae367bc11b8b94abe6bf183cfee42f8914040fcf
+  sha256: 2981d177d0ea41355166c40f6e957871a9eb8a5b36f4eb320d23099a4ff3d89d
 - uri: repo://tests/st0906/publication-review-workspace-v2-render.test.ts
   artifact_role: OWNER_SOURCE
   media_type: text/typescript
@@ -143,27 +143,27 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
   bytes: 1456
-  sha256: 57587322562eae4a2b58bebfc6b917e39fb05f077cf7268deb4056563950a361
+  sha256: 84778adfb038bbd8665dbcf3fcf9bce9e23e0afe248f11a2f8bd10846cde32ec
 - uri: repo://changes/st-0902/generated/final-approval-pass.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
   bytes: 2562
-  sha256: 93c44f4d303fef41304962bf4235e19491bcb45c555aecb66a87dcd34e6bca07
+  sha256: ca2c057e5afd61b13edbaac340f3d0b6013c0781b3fd5c64c4202bf9d1ee6412
 - uri: repo://changes/st-0903/generated/publication-snapshot-pass.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
   bytes: 12357
-  sha256: 6f18ed11cbed99c57dac757875ce4ab3e1fab09cc24710c1fd7bce7e5823cd99
+  sha256: b28e259b64241c7dc595fbdadb45ed4c2d99443d85c2584b4532388dbf4141e3
 - uri: repo://changes/st-0904/generated/public-projection-recorded.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
   bytes: 7764
-  sha256: d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1
+  sha256: a15edb77dcebb3f4b18c9f40737ebc949ab7564191a88052c5b8c54b3ddab7ce
 - uri: repo://changes/st-0905/generated/publication-commands-recorded.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
   bytes: 12797
-  sha256: 632e56fd8737db71016042d1d13e90773f2c444bd788d78c79e024473c23a117
+  sha256: 804834d1850297daaf1da50f935cbe5f1bce4a2073c805e20c1b7d885387a631
 - uri: repo://python/raos/domain/publishing/publication_commands_v2.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
@@ -217,8 +217,8 @@ source_artifacts:
 - uri: repo://package.json
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/json
-  bytes: 1850
-  sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+  bytes: 1906
+  sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
 - uri: repo://package-lock.json
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/json
@@ -240,12 +240,12 @@ generated_artifacts:
   artifact_role: GENERATED_RECORDED_WORKSPACE_FIXTURE
   media_type: application/json
   bytes: 16222
-  sha256: 2844fa84443debf27531640b1802d9504bbdfb56029f411a68dcc4a67b96c5e8
+  sha256: 386605bed81778252e2543cbeb7d2ba91c496d9dfbd85d8c1b4625ba11f28b68
 - uri: repo://packages/web-ui/src/publication-review-recorded.v2.ts
   artifact_role: GENERATED_TYPESCRIPT_FIXTURE_WRAPPER
   media_type: text/typescript
   bytes: 16746
-  sha256: fd8e6697b11e331a3a10cfb7548b75a34f719aca443506e17fba424a703485a9
+  sha256: f4da80e2e42af238da4a18607ff6e762c952276c017a82f5c68d6ea3182a56f8
 generation:
   owner: repo://scripts/build_st0906_publication_review_workspace_v2.py
   command: .venv/bin/python scripts/build_st0906_publication_review_workspace_v2.py

@@ -86,6 +86,6 @@ describe('ST-0906 V2 recorded workspace model', () => {
         ),
       )
       .digest('hex');
-    assert.equal(digest, '0b285d4e117530af3d377dce9752397b0beb3bae2198f444692e71d85f8579f6');
+    assert.equal(digest, '7c3e19a674dafc3acf660bad8f436185bbaf794661a5eb0ccec999b886a06a23');
   });
 });
