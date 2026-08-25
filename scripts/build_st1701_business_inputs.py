@@ -386,7 +386,7 @@ EXPECTED_GOLD_SOURCE_ROWS: Final = (
 )
 IMPLEMENTATION_DEPENDENCIES: Final = {
     "scripts/build_st1506_production_deployment.py": (
-        "a55385ccdd8fb3f9740eb2cbb2c24c3ba67006a46e1612dd27cd9e0973b6cc7e"
+        "cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be"
     )
 }
 STANDING_DEVELOPMENT_AUTHORITY_PATH: Final = Path("AGENTS.md")

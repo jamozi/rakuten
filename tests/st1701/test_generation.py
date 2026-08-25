@@ -448,7 +448,7 @@ def test_manifest_provenance_rows_match_independent_approved_literals() -> None:
     assert provenance["implementation_inputs"] == [
         {
             "uri": "repo://scripts/build_st1506_production_deployment.py",
-            "sha256": "a55385ccdd8fb3f9740eb2cbb2c24c3ba67006a46e1612dd27cd9e0973b6cc7e",
+            "sha256": "cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be",
         }
     ]
     current = provenance["current_development_rebinding"]
