@@ -35,7 +35,7 @@ override CLEAN_PYTHON := /usr/bin/env -i PATH=/usr/bin:/bin \
 help:
 	@echo 'Offline: check manifest-check rakuten-capture-manifest-check theme-source-check theme-check tests cli-help source-cli-help rakuten-capture-cli-help'
 	@echo 'Local artifacts: manifest-generate rakuten-capture-manifest-generate theme-package'
-	@echo 'Article operations: use the four closed subcommands shown by cli-help'
+	@echo 'Article operations: use the five closed subcommands shown by cli-help'
 	@echo 'Read-only source capture: use the two closed subcommands shown by source-cli-help'
 	@echo 'Owner-authorized Rakuten capture: use the one closed subcommand shown by rakuten-capture-cli-help'
 	@echo 'Operational process: repository-root CLEAN_PYTHON only (-B -I -S; ambient environment removed)'

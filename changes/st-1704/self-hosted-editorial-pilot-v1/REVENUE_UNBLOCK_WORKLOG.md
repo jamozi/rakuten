@@ -71,7 +71,8 @@ The corresponding owner-private request artifact SHA-256 is
 `2305a5baa3ffc636b90194acdff651310d3ea070c16355cbc99cb958796d04ed`.
 The existing live journal is terminal `RECOVERY_ATTEMPTED` with no recorded draft
 ID even though anonymous WordPress state shows post 26. Therefore no valid CLI
-receipt or `verify-public` gate exists for AT-003. A human must explicitly treat
+receipt or formal `verify-public` gate exists for AT-003. The dedicated read-only
+`verify-carry-on-single-url` exception does not change that state. A human must explicitly treat
 this as a one-off reconciliation exception; the Tools screen's exact server-side
 validation may reject it, and rejection must not be bypassed. No journal is edited
 and no create/recover request is retried.
@@ -98,6 +99,44 @@ and 1952 SHA-256 file records. This resolves manifest availability only. Install
 file comparison and the Site Health readback remain Human Gates and `NOT_EXECUTED`.
 
 ## Local implementation evidence
+
+The additive `carry-on-single-url-evidence-loop-v1` contract defines the safe URL
+disposition as Draft plus anonymous 404 with no `Location` and no redirect. Its
+read-only public-surface projection also requires an empty anonymous public REST
+lookup, no Review href anywhere on the home page, no Review URL in either post/page
+sitemap, and exactly one clean carry-on canonical in the post sitemap only. The same
+existing owner gate performs an exact authenticated Draft lookup: retained AT-003
+must be the fully request-bound Draft at fixed post ID 26, while promoted article modes must have zero
+Draft rows at the retired Review slug. A nominal 404 leaking committed article or
+affiliate material fails closed after HTML-entity decoding, Unicode/whitespace
+normalization, and meaningful partial-fragment comparison across snapshot JSON and
+payload SHA-256 as well as article fields. High-signal shortened CTA fragments fail
+closed. Article fragments use visible text, and snapshot comparison excludes only
+windows or tokens wholly contained in the expected clean canonical URL. Home and
+sitemap Review routes are strictly percent-decoded once across
+authority, path, query, and fragment; malformed, ambiguous, and double-encoded
+variants fail closed. The three Review-surface evidence hashes bind path,
+status, content type, `Location`, REST count headers, and body SHA-256 before becoming
+members of the aggregate public-surface hash. Theme
+1.1.1 is the containment and rollback floor; returning to theme 1.0.2 is not an
+allowed rollback while any Review Draft or unbound pilot slug remains.
+
+The journal remains terminal `RECOVERY_ATTEMPTED`, so ordinary `verify-public`
+remains `COMMITTED`-only and cannot be used for AT-003. The separate
+`verify-carry-on-single-url` read binds the exact hashes listed in the Human Gate
+handoff above, public post ID 19, and retained Draft ID 26. It does not create or lock
+the journal and emits `formal_gate_eligible=false`,
+`journal_state=RECOVERY_ATTEMPTED`, and
+`reconciliation_status=PENDING_HUMAN_EXCEPTION`; this is not formal or Production
+evidence. The adapter returns only `CarryOnSingleUrlReconciliationEvidence`, whose
+invariants keep `public_surface_verified=false` and
+`strict_public_checks_passed=true`; its internal strict `PublicVerification` is not
+returned.
+
+This statement is a repository contract and local implementation record only. The
+human Draft containment, cache purge, and owner-gated live
+`verify-carry-on-single-url`/`verify-public` runs remain
+`NOT_EXECUTED`; no live/public response is committed here.
 
 - Child-theme package:
   `.secrets/st1704-self-hosted-editorial-pilot/theme/kurashinoshirube-child-1.1.1.zip`

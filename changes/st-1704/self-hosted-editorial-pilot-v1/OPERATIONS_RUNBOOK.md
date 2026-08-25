@@ -4,8 +4,8 @@ This runbook starts only after the repository manifest and local checks pass. It
 not grant publication, credential, provider, plugin, theme, privacy, rollback, or
 Production authority.
 
-Run every `prepare`, `create-review-draft`, `recover-create-review-draft`, and
-`verify-public` command from the exact repository root through the isolated process
+Run every `prepare`, `create-review-draft`, `recover-create-review-draft`,
+`verify-carry-on-single-url`, and `verify-public` command from the exact repository root through the isolated process
 below (substitute only the closed command and allowlisted article ID):
 
 ```sh
@@ -141,7 +141,7 @@ The command accepts no URL, header, credential, output path, WordPress target, o
 publication action. Run it in the repository's clean environment without proxy or
 custom certificate variables. A single-source refresh may instead use
 `capture-source --source-ref <tracked-ref>`. These are the only two subcommands; the
-separate WordPress CLI exposes exactly four commands and independently enforces its
+separate WordPress CLI exposes exactly five commands and independently enforces its
 own committed-manifest/verified-byte runtime boundary described above.
 
 `capture-article` commits each source independently and never treats a partial batch
@@ -231,7 +231,7 @@ request boundary so direct
 requests are paced at least 1.1 seconds apart across CLI invocations and are never
 retried automatically. Do not retry `REQUEST_AMBIGUOUS` blindly; inspect provider availability
 before a new owner-authorized run. The existing WordPress CLI remains limited to its
-four documented commands.
+five documented commands.
 
 After a fresh `prepare` succeeds, a human creates a separate one-operation gate at
 `.secrets/st1704-self-hosted-editorial-pilot/owner-live-gates/<article-id>.<packet-sha256>.<command>.v1.json`.
@@ -239,7 +239,8 @@ Its exact schema is `RAOS_ST1704_OWNER_LIVE_GATE_V1`, authority is
 `HUMAN_OWNER_ONE_OPERATION`, origin is `https://kurashinoshirube.com`, and the closed
 fields are `schema`, `authority`, `origin`, `article_id`, `packet_sha256`,
 `request_sha256`, and `command`. The command is exactly one of
-`create-review-draft`, `recover-create-review-draft`, or `verify-public`; each command
+`create-review-draft`, `recover-create-review-draft`,
+`verify-carry-on-single-url`, or `verify-public`; each command
 requires its own exact gate. For create, copy the packet and request hashes from that
 fresh successful `prepare` result. For recovery or verification, copy the original
 hashes from the immutable request and bound journal; do not run a new prepare to
@@ -330,14 +331,42 @@ recover and verify do not rebuild the confirmed request from current provider fi
    only title, excerpt, content, and the closed snapshot to the existing post and
    leaves the Review Draft intact. Credential entry is a human-only gate and must not
    be delegated to browser automation.
-6. Immediately run `verify-public` for the same allowlisted article and exact snapshot.
+6. Immediately run `verify-public` for a `COMMITTED` article and exact snapshot. For
+   the terminal carry-on exception, run only `verify-carry-on-single-url`.
    Create its one-operation gate from the original immutable request/journal hashes;
    verification deliberately does not run a fresh prepare.
    Confirm the journal-bound post ID, one description, canonical, robots policy,
    OG/X set, sole RAOS JSON-LD graph, exact related-navigation state, the current
    article's exact homepage cluster/link/title with no unbound future article link,
    Yoast sitemap index/post/page maps, and that the WordPress core sitemap is not a
-   second public owner. A failed check does not become Production evidence.
+   second public owner. The command also derives the exact digest-bound Review URL
+   from the journal-bound immutable request; an anonymous GET must return HTTP 404 with no
+   `Location`, and an anonymous public posts REST lookup for that exact slug must be
+   empty. Through the same existing owner gate and credential header, an exact-slug
+   Draft REST read must return retained post ID 26 for AT-003 and bind its title,
+   excerpt, content, snapshot, status, and slug to the fixed request. The other
+   four article modes require zero Draft rows because their Review post becomes the
+   clean published post. Every home-page `href` and every post/page sitemap URL must exclude
+   raw or strictly percent-decoded `raos-review-*`; malformed, ambiguous, or
+   double-encoded routes fail closed. The clean canonical must occur exactly once in the post sitemap
+   and zero times in the page sitemap. A 404 body that contains the committed title,
+   excerpt, content, snapshot JSON interior, payload SHA-256, RAOS article markers,
+   high-signal shortened CTA fragments, or affiliate content fails closed, including
+   meaningful partial or HTML-entity-encoded leakage after normalization. Each of
+   those article fragments is drawn from visible text rather than HTML attributes;
+   snapshot comparison excludes only windows or tokens wholly contained in the
+   expected clean canonical URL. Each of
+   the three Review-surface evidence digests binds its fixed path,
+   actual status, content type, absent `Location`, relevant REST count headers, and
+   body SHA-256 before joining `public_surface_sha256`. A failed check does not become
+   Production evidence and grants no redirect, delete, or retry authority.
+   For the carry-on exception only, use `verify-carry-on-single-url`; it reads the
+   exact terminal `RECOVERY_ATTEMPTED` artifact and IDs 19/26 without writing or
+   locking the journal. Its dedicated adapter evidence type keeps
+   `formal_gate_eligible=false`, `public_surface_verified=false`,
+   `strict_public_checks_passed=true`, and `PENDING_HUMAN_EXCEPTION`; the internal
+   strict `PublicVerification` is not returned. Ordinary `verify-public` remains
+   `COMMITTED`-only.
    On the final anonymous URL, also repeat the combined 360/768/1440 CSS-pixel,
    200%-zoom, keyboard-only, and JavaScript-disabled matrix. Require HTTP 200,
    self-canonical, `index, follow`, exactly one sitemap occurrence, and no Review URL
@@ -370,8 +399,10 @@ If a live defect is confirmed, a human operator performs these reversible action
 order:
 
 1. deactivate Yoast if duplicated or broken SEO output is the cause;
-2. restore the reviewed child-theme 1.0.2 package from the ST-1703 slice;
-3. restore the affected WordPress post revision.
+2. keep or restore the exact reviewed child-theme 1.1.1 package as the minimum
+   containment floor; do not roll back to 1.0.2 while any Review Draft or unbound
+   pilot slug exists;
+3. keep every temporary Review post Draft with no redirect; restore the affected WordPress post revision when required.
 
 If the AT-003 Tools action reports a preserved-invariant or rollback failure, stop;
 do not remove or bypass its durable approval lock. Capture the public response and

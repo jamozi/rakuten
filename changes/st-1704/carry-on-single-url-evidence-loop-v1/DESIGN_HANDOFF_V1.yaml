@@ -1,0 +1,146 @@
+DESIGN_HANDOFF_V1:
+  record_status: REPOSITORY_LOCAL_DESIGN_RECORD
+  authority: DESIGN_IMPLEMENTATION_AND_LOCAL_EVIDENCE_ONLY
+  approved_story: ST-1704
+  approved_scope: CARRY_ON_SINGLE_URL_EVIDENCE_LOOP_V1
+  source_design_refs:
+    - docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
+    - docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    - docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+    - docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    - docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md
+    - docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md
+    - docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml#SEC-DATA-004
+    - docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml#SEC-DATA-006
+    - docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml#THR-018
+    - docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml#THR-019
+    - docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-020
+    - docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-021
+    - docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-022
+    - docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml#TST-032
+    - docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml#ST-1704
+    - changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml
+    - changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_UNBLOCK_WORKLOG.md
+  decision:
+    article_id: st1703-first-suitcase-comparison
+    clean_canonical_url: https://kurashinoshirube.com/carry-on-suitcase-comparison/
+    reconciliation_command: verify-carry-on-single-url
+    source_request: SOLE_TERMINAL_RECOVERY_ATTEMPTED_BOUND_IMMUTABLE_ARTIFACT
+    journal_state: RECOVERY_ATTEMPTED
+    packet_sha256: 570708758b22b2af06e663d1e89dbb39bcd2bb4536e039a6c486e6d47405687c
+    request_sha256: 9ead64fcc0bedb35718d9e62c8f073cf89482d97a182243e5852feb4b272b516
+    payload_sha256: f743a2944f1adca0a8fef2cdd850567767f2257836bb807c47901b25c04fc942
+    request_artifact_sha256: 2305a5baa3ffc636b90194acdff651310d3ea070c16355cbc99cb958796d04ed
+    target_public_post_id: 19
+    expected_review_draft_post_id: 26
+    formal_gate_eligible: false
+    reconciliation_status: PENDING_HUMAN_EXCEPTION
+    reconciliation_adapter_return_type: CarryOnSingleUrlReconciliationEvidence
+    reconciliation_public_surface_verified: false
+    reconciliation_strict_public_checks_passed: true
+    existing_verify_public_journal_requirement: COMMITTED_UNCHANGED
+    review_url_derivation: PILOT_ORIGIN_PLUS_REVIEW_DRAFT_SLUG_OF_BOUND_SNAPSHOT
+    safe_review_disposition: DRAFT
+    review_url_anonymous_status: 404
+    review_url_location_header: ABSENT
+    review_public_rest_projection: EMPTY
+    at003_authenticated_exact_review_draft_count: 1
+    promoted_article_authenticated_review_draft_count: 0
+    home_review_href_policy: ABSENT_ANYWHERE
+    post_and_page_sitemap_review_url_policy: ABSENT
+    clean_canonical_post_sitemap_count: 1
+    clean_canonical_page_sitemap_count: 0
+    redirect_authority: NONE
+    delete_authority: NONE
+    publication_authority: NONE
+    review_surface_evidence_record: PATH_STATUS_CONTENT_TYPE_LOCATION_COUNTS_AND_BODY_SHA256
+    review_body_leak_guard: HTML_UNESCAPE_NFKC_SNAPSHOT_TOKENS_AND_HIGH_SIGNAL_CTA_FRAGMENTS
+    review_route_decoding: STRICT_SINGLE_UTF8_PERCENT_DECODE_FAIL_CLOSED
+    aggregate_hash: SHA256_OF_CANONICAL_PER_SURFACE_EVIDENCE_SHA256_MAP
+  rationale:
+    - one clean canonical must be the only indexable article identity
+    - a retained Review Draft preserves audit and rollback material without creating a second public URL
+    - anonymous URL, REST, home, and sitemap checks close distinct leakage paths
+    - the authenticated exact-slug read proves the retained AT-003 draft is the committed review artifact rather than an unrelated draft
+    - the existing credential-gated command remains read-only and accepts no caller-selected URL
+  rejected_alternatives:
+    - alternative: AUTOMATED_301_REDIRECT
+      reason: requires a public WordPress mutation and a durable redirect decision outside this slice
+    - alternative: DELETE_REVIEW_POST
+      reason: destroys review and revision evidence and is not required for containment
+    - alternative: NOINDEX_PUBLIC_REVIEW_URL
+      reason: still exposes duplicate public content and does not establish one public URL
+    - alternative: CALLER_SELECTED_URL_AUDIT
+      reason: widens the fixed-origin adapter and creates an unnecessary outbound-input boundary
+  constraints:
+    - no WordPress write, publish, update, delete, redirect, cache purge, plugin, or theme action
+    - no credential access or live network request during implementation or local tests
+    - verify-public remains bound only to one owner gate and one sole COMMITTED request artifact
+    - verify-carry-on-single-url accepts only the fixed RECOVERY_ATTEMPTED-bound AT-003 artifact and never writes or locks the journal
+    - the Review URL and public REST path are derived only from the validated request
+    - every public read remains fixed-origin, GET-only, redirect-refusing, and bounded
+    - the existing owner gate and credential header are reused; no new credential boundary exists
+    - the carry-on adapter never returns its internal public_surface_verified=true PublicVerification; only the dedicated non-formal evidence type crosses the public method boundary
+    - malformed, ambiguous, or double-encoded Review routes fail closed on home and sitemap surfaces
+    - no live, staging, release, or Production evidence is recorded in this overlay
+    - Canonical and upstream files remain unchanged
+  security_and_approval_gates:
+    local_repository_implementation: AUTHORIZED_REVERSIBLE
+    owner_gated_live_verify_public: HUMAN_OWNER_REQUIRED
+    owner_gated_live_carry_on_reconciliation: HUMAN_OWNER_REQUIRED_NON_FORMAL
+    wordpress_status_change: HUMAN_OPERATOR_REQUIRED
+    wordpress_redirect_change: HUMAN_OPERATOR_AND_DESIGN_DECISION_REQUIRED
+    wordpress_delete: NOT_AUTHORIZED
+    theme_activation: HUMAN_OPERATOR_REQUIRED
+    rollback: HUMAN_OPERATOR_REQUIRED
+    release: NOT_AUTHORIZED_BY_THIS_RECORD
+    production_claim: FORBIDDEN
+  acceptance_criteria:
+    - the clean canonical appears exactly once in the post sitemap and zero times in the page sitemap
+    - no post or page sitemap URL contains a raos-review slug
+    - no homepage href contains a raos-review slug
+    - the exact derived Review URL returns anonymous HTTP 404 with no Location header
+    - the exact derived Review slug has an empty anonymous public REST projection
+    - AT-003 has exactly one authenticated exact-slug Draft at fixed post ID 26 whose full post fields bind the fixed exception request
+    - each promoted non-AT-003 article has zero authenticated Draft rows at its retired Review slug
+    - the anonymous 404 body contains no exact, HTML-entity-encoded, or meaningful partial committed title, excerpt, content, snapshot, RAOS article marker, or affiliate content
+    - snapshot JSON interior fragments and tokens including payload SHA-256, plus high-signal shortened CTA fragments, fail closed
+    - percent-encoded Review routes are detected after one strict UTF-8 decode and malformed, ambiguous, or double-encoded routes fail closed
+    - the reconciliation output states formal_gate_eligible false, journal_state RECOVERY_ATTEMPTED, and reconciliation_status PENDING_HUMAN_EXCEPTION
+    - the adapter returns CarryOnSingleUrlReconciliationEvidence whose type invariants keep public_surface_verified false and strict_public_checks_passed true
+    - all three Review-surface evidence-record SHA-256 values are members of public_surface_sha256
+    - verify-public exposes the complete closed verification vocabulary and no mutation authority
+  required_test_evidence:
+    - focused positive adapter test for all fixed public surfaces and aggregate hash
+    - negative tests for Review URL 200, redirect, and nonempty public REST projection
+    - negative test for committed Review article content returned with HTTP 404
+    - negative tests for meaningful partial content and HTML-entity-encoded title leakage
+    - negative tests for snapshot payload SHA-256, snapshot JSON interior, and shortened CTA leakage
+    - direct adapter return-type test proving non-formal evidence invariants cannot be promoted
+    - negative tests for encoded, malformed, and double-encoded Review routes across home, post sitemap, and page sitemap
+    - positive and negative authenticated exact Draft disposition tests for AT-003 and promoted articles
+    - read-only reconciliation test proving fixed hashes, post IDs 19 and 26, unchanged journal bytes, and non-formal CLI projection
+    - negative tests for home, post sitemap, and page sitemap Review URL leakage
+    - negative tests for duplicate or page-owned clean canonical
+    - release-contract test for this overlay and exact runtime vocabulary
+    - Ruff lint and format checks for changed Python
+    - deterministic runtime-manifest generation and no-write check
+    - git diff --check
+  open_decision_state:
+    OD-002_site_name_and_domain: NOT_RESOLVED_BY_THIS_RECORD
+    OD-005_human_reviewer_and_hourly_cost: NOT_RESOLVED_BY_THIS_RECORD
+    OD-007_category_freshness_sla: NOT_RESOLVED_BY_THIS_RECORD
+    OD-008_legal_review_boundary: NOT_RESOLVED_BY_THIS_RECORD
+    OD-012_privacy_and_consent_mode: NOT_RESOLVED_BY_THIS_RECORD
+    OD-015_production_provider_credentials: NOT_RESOLVED_BY_THIS_RECORD
+  formal_evidence_status:
+    ST_1704: NOT_STARTED
+    TST_018: NOT_EXECUTED
+    TST_020: NOT_EXECUTED
+    TST_021: NOT_EXECUTED
+    TST_022: NOT_EXECUTED
+    TST_032: NOT_EXECUTED
+    live_verify_public: NOT_EXECUTED
+    live_verify_carry_on_single_url: NOT_EXECUTED
+    staging: NOT_CONFIGURED
+    production: NOT_READY

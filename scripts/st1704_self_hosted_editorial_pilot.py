@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Closed four-command CLI for the ST-1704 self-hosted editorial pilot."""
+"""Closed five-command CLI for the ST-1704 self-hosted editorial pilot."""
 
 from __future__ import annotations
 
@@ -168,6 +168,7 @@ COMMANDS: Final = (
     "prepare",
     "create-review-draft",
     "recover-create-review-draft",
+    "verify-carry-on-single-url",
     "verify-public",
 )
 ARTICLE_IDS: Final = (
@@ -1025,12 +1026,64 @@ def _verification_result(value: Any) -> dict[str, object]:
         "public_surface_sha256": value.public_surface_sha256,
         "public_surface_verified": value.public_surface_verified,
         "related_target_sha256": value.related_target_sha256,
+        "review_draft_post_id": value.review_draft_post_id,
+        "review_draft_rest_evidence_sha256": (value.review_draft_rest_evidence_sha256),
+        "review_public_rest_evidence_sha256": (
+            value.review_public_rest_evidence_sha256
+        ),
+        "review_url_html_evidence_sha256": value.review_url_html_evidence_sha256,
         "publication_authority": False,
         "request_sha256": value.request_sha256,
         "response_sha256": value.response_sha256,
         "robots_sha256": value.robots_sha256,
         "sitemap_index_sha256": value.sitemap_index_sha256,
         "status": value.status,
+        "target_public_post_id": value.target_public_post_id,
+        "verified_checks": list(value.verified_checks),
+    }
+
+
+def _carry_on_reconciliation_result(value: Any) -> dict[str, object]:
+    return {
+        "article_html_sha256": value.article_html_sha256,
+        "article_id": value.article_id,
+        "authority": value.authority,
+        "category_sha256": value.category_sha256,
+        "command": value.command,
+        "core_sitemap_sha256": value.core_sitemap_sha256,
+        "expected_public_post_id": value.expected_public_post_id,
+        "expected_review_draft_post_id": value.expected_review_draft_post_id,
+        "formal_gate_eligible": value.formal_gate_eligible,
+        "homepage_html_sha256": value.homepage_html_sha256,
+        "homepage_targets_sha256": value.homepage_targets_sha256,
+        "journal_mutated": value.journal_mutated,
+        "journal_state": value.journal_state,
+        "live_read": value.live_read,
+        "packet_sha256": value.packet_sha256,
+        "page_sitemap_sha256": value.page_sitemap_sha256,
+        "payload_sha256": value.payload_sha256,
+        "post_id": value.post_id,
+        "post_sitemap_sha256": value.post_sitemap_sha256,
+        "production_evidence": value.production_evidence,
+        "public_post_status": value.public_post_status,
+        "public_surface_sha256": value.public_surface_sha256,
+        "public_surface_verified": value.public_surface_verified,
+        "publication_authority": value.publication_authority,
+        "reconciliation_status": value.reconciliation_status,
+        "related_target_sha256": value.related_target_sha256,
+        "request_artifact_sha256": value.request_artifact_sha256,
+        "request_sha256": value.request_sha256,
+        "response_sha256": value.response_sha256,
+        "review_draft_post_id": value.review_draft_post_id,
+        "review_draft_rest_evidence_sha256": (value.review_draft_rest_evidence_sha256),
+        "review_public_rest_evidence_sha256": (
+            value.review_public_rest_evidence_sha256
+        ),
+        "review_url_html_evidence_sha256": value.review_url_html_evidence_sha256,
+        "robots_sha256": value.robots_sha256,
+        "sitemap_index_sha256": value.sitemap_index_sha256,
+        "status": value.status,
+        "strict_public_checks_passed": value.strict_public_checks_passed,
         "target_public_post_id": value.target_public_post_id,
         "verified_checks": list(value.verified_checks),
     }
@@ -1049,7 +1102,13 @@ def _parser() -> argparse.ArgumentParser:
     commands = parser.add_subparsers(dest="command", required=True)
     for name in COMMANDS:
         command = commands.add_parser(name, allow_abbrev=False)
-        command.add_argument("--article-id", choices=ARTICLE_IDS, required=True)
+        command.add_argument(
+            "--article-id",
+            choices=(
+                ARTICLE_IDS[:1] if name == "verify-carry-on-single-url" else ARTICLE_IDS
+            ),
+            required=True,
+        )
     return parser
 
 
@@ -1086,11 +1145,15 @@ def _run(
     journal_type = getattr(json_adapter, "OwnerPrivateLiveReviewDraftJournal", None)
     prepare_editorial_article = getattr(application, "prepare_editorial_article", None)
     failure_type = getattr(domain, "EditorialPilotFailure", None)
+    reconciliation_evidence_type = getattr(
+        domain, "CarryOnSingleUrlReconciliationEvidence", None
+    )
     if (
         not callable(adapter_type)
         or not callable(journal_type)
         or not callable(prepare_editorial_article)
         or not isinstance(failure_type, type)
+        or not isinstance(reconciliation_evidence_type, type)
     ):
         _fail_runtime()
 
@@ -1131,6 +1194,14 @@ def _run(
             return _verification_result(
                 adapter.verify_public(persisted_request, expected_public_post_id)
             )
+        if command == "verify-carry-on-single-url":
+            rebind()
+            binding = journal.carry_on_single_url_reconciliation_binding(article_id)
+            rebind()
+            evidence = adapter.verify_carry_on_single_url(binding)
+            if type(evidence) is not reconciliation_evidence_type:
+                _fail_runtime()
+            return _carry_on_reconciliation_result(evidence)
         raise AssertionError("unreachable command")
     except Exception as error:
         if isinstance(error, failure_type):

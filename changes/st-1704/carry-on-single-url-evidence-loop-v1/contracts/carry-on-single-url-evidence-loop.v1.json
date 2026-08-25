@@ -1,0 +1,151 @@
+{
+  "article_id": "st1703-first-suitcase-comparison",
+  "authority": "LOCAL_CONTRACT_AND_OWNER_GATED_READ_ONLY_VERIFICATION_ONLY",
+  "canonical_surface": {
+    "page_sitemap_count": 0,
+    "path": "/carry-on-suitcase-comparison/",
+    "public_post_id": 19,
+    "post_sitemap_count": 1,
+    "url": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+  },
+  "external_action_authority": "NONE",
+  "global_exclusions": {
+    "home_href_pattern": "raos-review-*",
+    "page_sitemap_url_pattern": "raos-review-*",
+    "post_sitemap_url_pattern": "raos-review-*"
+  },
+  "per_surface_sha256_fields": [
+    "article_html_sha256",
+    "category_sha256",
+    "core_sitemap_sha256",
+    "homepage_html_sha256",
+    "homepage_targets_sha256",
+    "page_sitemap_sha256",
+    "post_sitemap_sha256",
+    "related_target_sha256",
+    "review_draft_rest_evidence_sha256",
+    "review_public_rest_evidence_sha256",
+    "review_url_html_evidence_sha256",
+    "robots_sha256",
+    "sitemap_index_sha256"
+  ],
+  "production_evidence": "NOT_CLAIMED",
+  "public_surface_hash_algorithm": "SHA256_OF_CANONICAL_JSON_PER_SURFACE_DIGEST_MAP",
+  "reconciliation_evidence": {
+    "adapter_return_type": "CarryOnSingleUrlReconciliationEvidence",
+    "formal_gate_eligible": false,
+    "production_evidence": false,
+    "public_surface_verified": false,
+    "publication_authority": false,
+    "reconciliation_status": "PENDING_HUMAN_EXCEPTION",
+    "strict_public_checks_passed": true
+  },
+  "reconciliation_command": {
+    "allowed_article_id": "st1703-first-suitcase-comparison",
+    "command": "verify-carry-on-single-url",
+    "expected_review_draft_post_id": 26,
+    "formal_gate_eligible": false,
+    "journal_mutation": false,
+    "journal_state": "RECOVERY_ATTEMPTED",
+    "packet_sha256": "570708758b22b2af06e663d1e89dbb39bcd2bb4536e039a6c486e6d47405687c",
+    "payload_sha256": "f743a2944f1adca0a8fef2cdd850567767f2257836bb807c47901b25c04fc942",
+    "production_evidence": false,
+    "publication_authority": false,
+    "reconciliation_status": "PENDING_HUMAN_EXCEPTION",
+    "request_artifact_sha256": "2305a5baa3ffc636b90194acdff651310d3ea070c16355cbc99cb958796d04ed",
+    "request_sha256": "9ead64fcc0bedb35718d9e62c8f073cf89482d97a182243e5852feb4b272b516",
+    "target_public_post_id": 19,
+    "verify_public_journal_requirement": "COMMITTED_UNCHANGED"
+  },
+  "review_body_leak_guard": {
+    "article_fragment_scope": "ENTITY_DECODED_VISIBLE_TEXT_EXCLUDING_HTML_ATTRIBUTES",
+    "fragment_sources": [
+      "TITLE",
+      "EXCERPT",
+      "CONTENT",
+      "SNAPSHOT_JSON_MEANINGFUL_WINDOWS_AND_TOKENS",
+      "SNAPSHOT_PAYLOAD_SHA256",
+      "SNAPSHOT_PACKET_SHA256",
+      "SNAPSHOT_VISIBLE_CONTENT_SHA256"
+    ],
+    "high_signal_cta_fragments": [
+      "楽天市場で写真・価格・在庫",
+      "楽天市場で写真・価格を見る",
+      "楽天市場で価格・在庫を見る",
+      "楽天市場で価格を見る",
+      "楽天市場で在庫を見る"
+    ],
+    "html_entity_decode_passes": 2,
+    "meaningful_fragment_characters": 24,
+    "meaningful_fragment_minimum_alphanumeric": 16,
+    "meaningful_token_characters": 16,
+    "normalization": "HTML_UNESCAPE_THEN_NFKC_CASEFOLD_AND_WHITESPACE_COLLAPSE",
+    "snapshot_canonical_url_handling": "EXCLUDE_ONLY_EXPECTED_CLEAN_CANONICAL_URL_WINDOWS_AND_TOKENS"
+  },
+  "review_route_detection": {
+    "decoded_marker": "raos-review-",
+    "decoded_url_components": ["AUTHORITY", "PATH", "QUERY", "FRAGMENT"],
+    "double_encoded_or_remaining_percent": "FAIL_CLOSED",
+    "malformed_percent_escape": "FAIL_CLOSED",
+    "percent_decode": "ONE_STRICT_UTF8_PASS",
+    "surfaces": ["HOME_HREF", "POST_SITEMAP_URL", "PAGE_SITEMAP_URL"]
+  },
+  "review_surface": {
+    "at003_authenticated_draft_count": 1,
+    "caller_selected_url_allowed": false,
+    "derivation": "PILOT_ORIGIN_PLUS_REVIEW_DRAFT_SLUG_OF_BOUND_SNAPSHOT",
+    "disposition": "DRAFT",
+    "location_header": "ABSENT",
+    "promoted_article_authenticated_draft_count": 0,
+    "public_rest_projection_count": 0,
+    "redirect_authority": "NONE",
+    "retained_post_id": 26,
+    "url_http_status": 404
+  },
+  "review_surface_evidence_record": {
+    "digest_fields": [
+      "body_sha256",
+      "content_type",
+      "http_status",
+      "kind",
+      "location_header",
+      "method",
+      "path",
+      "schema",
+      "x_wp_total",
+      "x_wp_total_pages"
+    ],
+    "digest_operation": "SHA256_OF_CANONICAL_JSON",
+    "schema": "RAOS_ST1704_REVIEW_SURFACE_EVIDENCE_V1"
+  },
+  "rollback_floor": {
+    "clean_public_post": "UNCHANGED_UNLESS_SEPARATE_HUMAN_APPROVAL",
+    "review_post": "DRAFT_PRESERVE_CONTENT_META_AND_REVISIONS",
+    "theme_version": "1.1.1"
+  },
+  "schema": "RAOS_ST1704_CARRY_ON_SINGLE_URL_EVIDENCE_LOOP_V1",
+  "slice_id": "CARRY_ON_SINGLE_URL_EVIDENCE_LOOP_V1",
+  "source_request": "SOLE_TERMINAL_RECOVERY_ATTEMPTED_BOUND_IMMUTABLE_ARTIFACT",
+  "story_id": "ST-1704",
+  "verified_checks": [
+    "WORDPRESS_PUBLISHED_POST",
+    "REVIEW_DRAFT_URL_ANONYMOUS_404_NO_REDIRECT",
+    "REVIEW_DRAFT_PUBLIC_REST_PROJECTION_EMPTY",
+    "REVIEW_DRAFT_AUTHENTICATED_ID_26_EXACT_FOR_AT003_OR_ABSENT_AFTER_PROMOTION",
+    "PUBLIC_ARTICLE_SEO_HEAD",
+    "PUBLIC_ARTICLE_OPEN_GRAPH",
+    "PUBLIC_ARTICLE_X_CARD",
+    "PUBLIC_ARTICLE_RAOS_JSON_LD",
+    "PUBLIC_ARTICLE_VISIBLE_BODY_EXACT",
+    "PUBLIC_ARTICLE_CATEGORY_EXACT",
+    "THEME_RELATED_NAVIGATION_EXACT",
+    "PUBLIC_HOME_CLUSTER_NAVIGATION_EXACT",
+    "PUBLIC_HOME_EXCLUDES_REVIEW_DRAFT_HREFS",
+    "ROBOTS_YOAST_SITEMAP_REFERENCE",
+    "YOAST_SITEMAP_INDEX_POSTS_AND_PAGES_ONLY",
+    "YOAST_POST_SITEMAP_CONTAINS_CLEAN_CANONICAL_EXACTLY_ONCE",
+    "YOAST_PAGE_SITEMAP_EXCLUDES_CLEAN_CANONICAL",
+    "YOAST_POST_AND_PAGE_SITEMAPS_EXCLUDE_REVIEW_DRAFT_URLS",
+    "WORDPRESS_CORE_SITEMAP_DISABLED"
+  ]
+}

@@ -39,8 +39,28 @@ PILOT_RAKUTEN_AFFILIATE_IDENTITY_SCHEMA: Final = (
 )
 PILOT_RAKUTEN_REQUEST_SCHEMA: Final = "RAOS_ST1704_RAKUTEN_ITEM_SEARCH_REQUEST_V1"
 PILOT_SOURCE_CAPTURE_SCHEMA: Final = "RAOS_ST1704_OFFICIAL_SOURCE_CAPTURE_V1"
+PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID: Final = "st1703-first-suitcase-comparison"
+PILOT_CARRY_ON_RECONCILIATION_PACKET_SHA256: Final = (
+    "570708758b22b2af06e663d1e89dbb39bcd2bb4536e039a6c486e6d47405687c"
+)
+PILOT_CARRY_ON_RECONCILIATION_REQUEST_SHA256: Final = (
+    "9ead64fcc0bedb35718d9e62c8f073cf89482d97a182243e5852feb4b272b516"
+)
+PILOT_CARRY_ON_RECONCILIATION_PAYLOAD_SHA256: Final = (
+    "f743a2944f1adca0a8fef2cdd850567767f2257836bb807c47901b25c04fc942"
+)
+PILOT_CARRY_ON_RECONCILIATION_ARTIFACT_SHA256: Final = (
+    "2305a5baa3ffc636b90194acdff651310d3ea070c16355cbc99cb958796d04ed"
+)
+PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID: Final = 19
+PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID: Final = 26
+PILOT_CARRY_ON_RECONCILIATION_JOURNAL_STATE: Final = "RECOVERY_ATTEMPTED"
+PILOT_CARRY_ON_RECONCILIATION_STATUS: Final = "PENDING_HUMAN_EXCEPTION"
 PILOT_PUBLIC_VERIFICATION_CHECKS: Final = (
     "WORDPRESS_PUBLISHED_POST",
+    "REVIEW_DRAFT_URL_ANONYMOUS_404_NO_REDIRECT",
+    "REVIEW_DRAFT_PUBLIC_REST_PROJECTION_EMPTY",
+    "REVIEW_DRAFT_AUTHENTICATED_ID_26_EXACT_FOR_AT003_OR_ABSENT_AFTER_PROMOTION",
     "PUBLIC_ARTICLE_SEO_HEAD",
     "PUBLIC_ARTICLE_OPEN_GRAPH",
     "PUBLIC_ARTICLE_X_CARD",
@@ -49,10 +69,12 @@ PILOT_PUBLIC_VERIFICATION_CHECKS: Final = (
     "PUBLIC_ARTICLE_CATEGORY_EXACT",
     "THEME_RELATED_NAVIGATION_EXACT",
     "PUBLIC_HOME_CLUSTER_NAVIGATION_EXACT",
+    "PUBLIC_HOME_EXCLUDES_REVIEW_DRAFT_HREFS",
     "ROBOTS_YOAST_SITEMAP_REFERENCE",
     "YOAST_SITEMAP_INDEX_POSTS_AND_PAGES_ONLY",
-    "YOAST_POST_SITEMAP_CONTAINS_ARTICLE",
-    "YOAST_PAGE_SITEMAP_VALID",
+    "YOAST_POST_SITEMAP_CONTAINS_CLEAN_CANONICAL_EXACTLY_ONCE",
+    "YOAST_PAGE_SITEMAP_EXCLUDES_CLEAN_CANONICAL",
+    "YOAST_POST_AND_PAGE_SITEMAPS_EXCLUDE_REVIEW_DRAFT_URLS",
     "WORDPRESS_CORE_SITEMAP_DISABLED",
 )
 
@@ -1314,6 +1336,47 @@ class ReviewDraftRequest:
         }
 
 
+@dataclass(frozen=True, slots=True, repr=False)
+class CarryOnSingleUrlReconciliationBinding:
+    """Exact read-only binding for the terminal AT-003 reconciliation exception."""
+
+    request: ReviewDraftRequest
+    request_artifact_sha256: str
+    journal_state: str
+    target_public_post_id: int
+    expected_review_draft_post_id: int
+    reconciliation_status: str = PILOT_CARRY_ON_RECONCILIATION_STATUS
+    formal_gate_eligible: bool = False
+    journal_mutated: bool = False
+    production_evidence: bool = False
+    publication_authority: bool = False
+
+    def __post_init__(self) -> None:
+        if (
+            type(self.request) is not ReviewDraftRequest
+            or self.request.article_id != PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID
+            or self.request.packet_sha256 != PILOT_CARRY_ON_RECONCILIATION_PACKET_SHA256
+            or self.request.request_sha256
+            != PILOT_CARRY_ON_RECONCILIATION_REQUEST_SHA256
+            or self.request.snapshot.payload_sha256
+            != PILOT_CARRY_ON_RECONCILIATION_PAYLOAD_SHA256
+            or self.request_artifact_sha256
+            != PILOT_CARRY_ON_RECONCILIATION_ARTIFACT_SHA256
+            or self.journal_state != PILOT_CARRY_ON_RECONCILIATION_JOURNAL_STATE
+            or self.target_public_post_id
+            != PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID
+            or self.expected_review_draft_post_id
+            != PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID
+            or self.reconciliation_status != PILOT_CARRY_ON_RECONCILIATION_STATUS
+            or self.formal_gate_eligible is not False
+            or self.journal_mutated is not False
+            or self.production_evidence is not False
+            or self.publication_authority is not False
+        ):
+            fail_editorial_pilot(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+        require_sha256(self.request_artifact_sha256)
+
+
 class ReviewDraftDisposition(StrEnum):
     RECORDED_CREATED = "RECORDED_CREATED"
     RECORDED_RECOVERED = "RECORDED_RECOVERED"
@@ -1402,6 +1465,7 @@ class PublicVerification:
     status: str
     expected_public_post_id: int | None = None
     target_public_post_id: int | None = None
+    review_draft_post_id: int | None = None
     article_html_sha256: str | None = None
     category_sha256: str | None = None
     homepage_html_sha256: str | None = None
@@ -1412,6 +1476,9 @@ class PublicVerification:
     page_sitemap_sha256: str | None = None
     related_target_sha256: str | None = None
     core_sitemap_sha256: str | None = None
+    review_draft_rest_evidence_sha256: str | None = None
+    review_public_rest_evidence_sha256: str | None = None
+    review_url_html_evidence_sha256: str | None = None
     public_surface_sha256: str | None = None
     verified_checks: tuple[str, ...] = ()
     public_surface_verified: bool = False
@@ -1442,15 +1509,27 @@ class PublicVerification:
             or not 1 <= self.expected_public_post_id <= _MAX_POST_ID
         ):
             fail_editorial_pilot(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+        if self.review_draft_post_id is not None and (
+            type(self.review_draft_post_id) is not int
+            or not 1 <= self.review_draft_post_id <= _MAX_POST_ID
+        ):
+            fail_editorial_pilot(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
         if self.live_read and (
             self.expected_public_post_id != self.post_id
             or (
-                self.article_id == "st1703-first-suitcase-comparison"
-                and self.target_public_post_id != self.post_id
+                self.article_id == PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID
+                and (
+                    self.target_public_post_id != self.post_id
+                    or self.review_draft_post_id
+                    != PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID
+                )
             )
             or (
-                self.article_id != "st1703-first-suitcase-comparison"
-                and self.target_public_post_id is not None
+                self.article_id != PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID
+                and (
+                    self.target_public_post_id is not None
+                    or self.review_draft_post_id is not None
+                )
             )
         ):
             fail_editorial_pilot(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
@@ -1463,6 +1542,13 @@ class PublicVerification:
             "page_sitemap_sha256": self.page_sitemap_sha256,
             "post_sitemap_sha256": self.post_sitemap_sha256,
             "related_target_sha256": self.related_target_sha256,
+            "review_draft_rest_evidence_sha256": (
+                self.review_draft_rest_evidence_sha256
+            ),
+            "review_public_rest_evidence_sha256": (
+                self.review_public_rest_evidence_sha256
+            ),
+            "review_url_html_evidence_sha256": self.review_url_html_evidence_sha256,
             "robots_sha256": self.robots_sha256,
             "sitemap_index_sha256": self.sitemap_index_sha256,
         }
@@ -1487,18 +1573,208 @@ class PublicVerification:
         elif (
             self.public_surface_sha256 is not None
             or self.verified_checks
+            or self.review_draft_post_id is not None
             or any(value is not None for value in surface_hashes.values())
         ):
             fail_editorial_pilot(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
 
 
+@dataclass(frozen=True, slots=True, repr=False)
+class CarryOnSingleUrlReconciliationEvidence:
+    """Non-formal projection of one strict carry-on public-surface read."""
+
+    article_id: str
+    packet_sha256: str
+    request_sha256: str
+    payload_sha256: str
+    request_artifact_sha256: str
+    response_sha256: str
+    post_id: int
+    expected_public_post_id: int
+    target_public_post_id: int
+    expected_review_draft_post_id: int
+    review_draft_post_id: int
+    article_html_sha256: str
+    category_sha256: str
+    core_sitemap_sha256: str
+    homepage_html_sha256: str
+    homepage_targets_sha256: str
+    page_sitemap_sha256: str
+    post_sitemap_sha256: str
+    related_target_sha256: str
+    review_draft_rest_evidence_sha256: str
+    review_public_rest_evidence_sha256: str
+    review_url_html_evidence_sha256: str
+    robots_sha256: str
+    sitemap_index_sha256: str
+    public_surface_sha256: str
+    verified_checks: tuple[str, ...] = PILOT_PUBLIC_VERIFICATION_CHECKS
+    authority: str = "OWNER_GATED_READ_ONLY_RECONCILIATION"
+    command: str = "verify-carry-on-single-url"
+    status: str = "READ_ONLY_RECONCILIATION_EVIDENCE"
+    public_post_status: str = "publish"
+    journal_state: str = PILOT_CARRY_ON_RECONCILIATION_JOURNAL_STATE
+    reconciliation_status: str = PILOT_CARRY_ON_RECONCILIATION_STATUS
+    formal_gate_eligible: bool = False
+    journal_mutated: bool = False
+    strict_public_checks_passed: bool = True
+    public_surface_verified: bool = False
+    live_read: bool = True
+    production_evidence: bool = False
+    publication_authority: bool = False
+
+    def __post_init__(self) -> None:
+        if (
+            self.article_id != PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID
+            or self.packet_sha256 != PILOT_CARRY_ON_RECONCILIATION_PACKET_SHA256
+            or self.request_sha256 != PILOT_CARRY_ON_RECONCILIATION_REQUEST_SHA256
+            or self.payload_sha256 != PILOT_CARRY_ON_RECONCILIATION_PAYLOAD_SHA256
+            or self.request_artifact_sha256
+            != PILOT_CARRY_ON_RECONCILIATION_ARTIFACT_SHA256
+            or type(self.post_id) is not int
+            or self.post_id != PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID
+            or type(self.expected_public_post_id) is not int
+            or self.expected_public_post_id
+            != PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID
+            or type(self.target_public_post_id) is not int
+            or self.target_public_post_id
+            != PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID
+            or type(self.expected_review_draft_post_id) is not int
+            or self.expected_review_draft_post_id
+            != PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID
+            or type(self.review_draft_post_id) is not int
+            or self.review_draft_post_id
+            != PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID
+            or self.verified_checks != PILOT_PUBLIC_VERIFICATION_CHECKS
+            or self.authority != "OWNER_GATED_READ_ONLY_RECONCILIATION"
+            or self.command != "verify-carry-on-single-url"
+            or self.status != "READ_ONLY_RECONCILIATION_EVIDENCE"
+            or self.public_post_status != "publish"
+            or self.journal_state != PILOT_CARRY_ON_RECONCILIATION_JOURNAL_STATE
+            or self.reconciliation_status != PILOT_CARRY_ON_RECONCILIATION_STATUS
+            or self.formal_gate_eligible is not False
+            or self.journal_mutated is not False
+            or self.strict_public_checks_passed is not True
+            or self.public_surface_verified is not False
+            or self.live_read is not True
+            or self.production_evidence is not False
+            or self.publication_authority is not False
+        ):
+            fail_editorial_pilot(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+        surface_hashes = {
+            "article_html_sha256": self.article_html_sha256,
+            "category_sha256": self.category_sha256,
+            "core_sitemap_sha256": self.core_sitemap_sha256,
+            "homepage_html_sha256": self.homepage_html_sha256,
+            "homepage_targets_sha256": self.homepage_targets_sha256,
+            "page_sitemap_sha256": self.page_sitemap_sha256,
+            "post_sitemap_sha256": self.post_sitemap_sha256,
+            "related_target_sha256": self.related_target_sha256,
+            "review_draft_rest_evidence_sha256": (
+                self.review_draft_rest_evidence_sha256
+            ),
+            "review_public_rest_evidence_sha256": (
+                self.review_public_rest_evidence_sha256
+            ),
+            "review_url_html_evidence_sha256": self.review_url_html_evidence_sha256,
+            "robots_sha256": self.robots_sha256,
+            "sitemap_index_sha256": self.sitemap_index_sha256,
+        }
+        for value in (
+            self.packet_sha256,
+            self.request_sha256,
+            self.payload_sha256,
+            self.request_artifact_sha256,
+            self.response_sha256,
+            *surface_hashes.values(),
+        ):
+            require_sha256(value)
+        if require_sha256(self.public_surface_sha256) != canonical_sha256(
+            surface_hashes
+        ):
+            fail_editorial_pilot(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+
+    @classmethod
+    def from_strict_verification(
+        cls,
+        binding: CarryOnSingleUrlReconciliationBinding,
+        verification: PublicVerification,
+    ) -> CarryOnSingleUrlReconciliationEvidence:
+        """Copy a strict internal read into the non-formal public boundary."""
+
+        if (
+            type(binding) is not CarryOnSingleUrlReconciliationBinding
+            or type(verification) is not PublicVerification
+            or verification.article_id != binding.request.article_id
+            or verification.packet_sha256 != binding.request.packet_sha256
+            or verification.request_sha256 != binding.request.request_sha256
+            or verification.post_id != binding.target_public_post_id
+            or verification.expected_public_post_id != binding.target_public_post_id
+            or verification.target_public_post_id != binding.target_public_post_id
+            or verification.review_draft_post_id
+            != binding.expected_review_draft_post_id
+            or verification.verified_checks != PILOT_PUBLIC_VERIFICATION_CHECKS
+            or verification.public_surface_verified is not True
+            or verification.recorded_evidence_only is not False
+            or verification.live_read is not True
+            or verification.production_evidence is not False
+        ):
+            fail_editorial_pilot(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+        return cls(
+            article_id=verification.article_id,
+            packet_sha256=verification.packet_sha256,
+            request_sha256=verification.request_sha256,
+            payload_sha256=binding.request.snapshot.payload_sha256,
+            request_artifact_sha256=binding.request_artifact_sha256,
+            response_sha256=verification.response_sha256,
+            post_id=verification.post_id,
+            expected_public_post_id=binding.target_public_post_id,
+            target_public_post_id=binding.target_public_post_id,
+            expected_review_draft_post_id=binding.expected_review_draft_post_id,
+            review_draft_post_id=binding.expected_review_draft_post_id,
+            article_html_sha256=require_sha256(verification.article_html_sha256),
+            category_sha256=require_sha256(verification.category_sha256),
+            core_sitemap_sha256=require_sha256(verification.core_sitemap_sha256),
+            homepage_html_sha256=require_sha256(verification.homepage_html_sha256),
+            homepage_targets_sha256=require_sha256(
+                verification.homepage_targets_sha256
+            ),
+            page_sitemap_sha256=require_sha256(verification.page_sitemap_sha256),
+            post_sitemap_sha256=require_sha256(verification.post_sitemap_sha256),
+            related_target_sha256=require_sha256(verification.related_target_sha256),
+            review_draft_rest_evidence_sha256=require_sha256(
+                verification.review_draft_rest_evidence_sha256
+            ),
+            review_public_rest_evidence_sha256=require_sha256(
+                verification.review_public_rest_evidence_sha256
+            ),
+            review_url_html_evidence_sha256=require_sha256(
+                verification.review_url_html_evidence_sha256
+            ),
+            robots_sha256=require_sha256(verification.robots_sha256),
+            sitemap_index_sha256=require_sha256(verification.sitemap_index_sha256),
+            public_surface_sha256=require_sha256(verification.public_surface_sha256),
+        )
+
+
 __all__ = [
+    "CarryOnSingleUrlReconciliationEvidence",
+    "CarryOnSingleUrlReconciliationBinding",
     "EditorialPilotFailure",
     "EditorialPilotFailureCode",
     "PILOT_ARTICLE_IDENTITIES",
     "PILOT_ARTICLE_IDS",
     "PILOT_AUTHOR_NAME",
     "PILOT_CTA_LABEL",
+    "PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID",
+    "PILOT_CARRY_ON_RECONCILIATION_ARTIFACT_SHA256",
+    "PILOT_CARRY_ON_RECONCILIATION_JOURNAL_STATE",
+    "PILOT_CARRY_ON_RECONCILIATION_PACKET_SHA256",
+    "PILOT_CARRY_ON_RECONCILIATION_PAYLOAD_SHA256",
+    "PILOT_CARRY_ON_RECONCILIATION_REQUEST_SHA256",
+    "PILOT_CARRY_ON_RECONCILIATION_REVIEW_DRAFT_POST_ID",
+    "PILOT_CARRY_ON_RECONCILIATION_STATUS",
+    "PILOT_CARRY_ON_RECONCILIATION_TARGET_PUBLIC_POST_ID",
     "PILOT_CREATE_PATH",
     "PILOT_CREATE_RESPONSE_FIELDS",
     "PILOT_ORIGIN",

@@ -15,6 +15,7 @@ from typing import Final, NoReturn, cast
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE: Final = "changes/st-1704/self-hosted-editorial-pilot-v1"
+SINGLE_URL_SLICE: Final = "changes/st-1704/carry-on-single-url-evidence-loop-v1"
 OUTPUT_PATH: Final = ROOT / SLICE / "runtime-manifest.v1.json"
 PREDECESSOR_PATH: Final = (
     ROOT / "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json"
@@ -33,6 +34,10 @@ ARTICLE_IDS: Final = (
 )
 
 _BASE_RUNTIME_PATHS: Final[tuple[str, ...]] = (
+    f"{SINGLE_URL_SLICE}/DESIGN_HANDOFF_V1.yaml",
+    f"{SINGLE_URL_SLICE}/PREFLIGHT.md",
+    f"{SINGLE_URL_SLICE}/README.md",
+    f"{SINGLE_URL_SLICE}/contracts/carry-on-single-url-evidence-loop.v1.json",
     f"{SLICE}/DESIGN_HANDOFF_V1.yaml",
     f"{SLICE}/EDITORIAL_RESEARCH_NOTES.md",
     f"{SLICE}/Makefile",

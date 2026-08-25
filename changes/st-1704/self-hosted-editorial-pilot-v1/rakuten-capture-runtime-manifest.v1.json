@@ -18,12 +18,12 @@
     {
       "bytes": 3612,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
-      "sha256": "c57a5f563d39adf03172f921133647bf92be40e62c59d7d8086440f21545f50b"
+      "sha256": "8e1ba9b5cdab55268b36800a3a7f6d1b899cae46927b7ee9043c43ec58585849"
     },
     {
-      "bytes": 26387,
+      "bytes": 28817,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "488089438c2f771615dbd173e31b05020e48be4d77436b879f8c295280c9045d"
+      "sha256": "0383738ca861160bff42852fb9b83e7124b088f7f6945b909ed149744a0e835a"
     },
     {
       "bytes": 2486,
@@ -36,9 +36,9 @@
       "sha256": "ab88b54c667588554a0e8d683983f3b56fd543be5c775114057ece6e5cd4690c"
     },
     {
-      "bytes": 8562,
+      "bytes": 10571,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
-      "sha256": "c24d3e41138a3358393d169f5c9153bae453c95ca1a2a79b5998f225fd3d456a"
+      "sha256": "46caf7e4bd288b39d60f67b7b9d5af2521b4cd43ed605b08e7f2d882eea3f971"
     },
     {
       "bytes": 111502,
@@ -61,9 +61,9 @@
       "sha256": "ff5f27ff8f9a5c056ce09ea4b87e08c7c3c3b5c32bfe2f7d904a32e5130e69d1"
     },
     {
-      "bytes": 54968,
+      "bytes": 68546,
       "path": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
-      "sha256": "bd9fac2d684db686c901575835d49f721b395ca13f66c378e83d1ed760ecf804"
+      "sha256": "a6656fda5534a796a0a8d9d146d140fa3996bb91673720c10e92f1ac6650aac8"
     },
     {
       "bytes": 3255,

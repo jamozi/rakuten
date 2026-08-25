@@ -81,6 +81,10 @@ SOURCE_REFS: Final = (
 )
 
 _BASE_RUNTIME_PATHS: Final[tuple[str, ...]] = (
+    "changes/st-1704/carry-on-single-url-evidence-loop-v1/DESIGN_HANDOFF_V1.yaml",
+    "changes/st-1704/carry-on-single-url-evidence-loop-v1/PREFLIGHT.md",
+    "changes/st-1704/carry-on-single-url-evidence-loop-v1/README.md",
+    "changes/st-1704/carry-on-single-url-evidence-loop-v1/contracts/carry-on-single-url-evidence-loop.v1.json",
     "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
     "changes/st-1704/self-hosted-editorial-pilot-v1/EDITORIAL_RESEARCH_NOTES.md",
     "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
