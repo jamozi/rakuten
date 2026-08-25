@@ -159,11 +159,18 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_1_0_successor() -> None:
+def test_theme_is_an_isolated_1_1_1_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.1.0\n") == 1
+    functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    assert stylesheet.count("\nVersion: 1.1.1\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.1.1"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.1.1'") == 1
+    at003_gate = functions.split(
+        "function kurashinoshirube_existing_update_context", 1
+    )[1]
+    assert "$theme->get('Version') !== KURASHINOSHIRUBE_THEME_VERSION" in at003_gate
     assert THEME_ROOT != (
         REPOSITORY_ROOT
         / "changes/st-1703/self-hosted-minimum-start-v1/theme"
@@ -174,7 +181,7 @@ def test_theme_is_an_isolated_1_1_0_successor() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.1.0"
+    assert manifest["theme_version"] == "1.1.1"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 3
     for record in records:
@@ -370,6 +377,220 @@ def test_homepage_cluster_contract_is_hash_bound_and_covers_all_articles() -> No
     assert config_match.group(1) == canonical
     assert json.loads(config_match.group(1)) == configuration
     assert hash_match.group(1) == homepage["config_sha256"]
+
+
+@pytest.mark.parametrize(
+    ("slug_class", "snapshot_state", "expected"),
+    (
+        ("RAOS_REVIEW", "ANY", False),
+        (
+            "ALLOWLISTED_FINAL",
+            "MISSING_INVALID_OR_ARTICLE_ID_MISMATCH",
+            False,
+        ),
+        (
+            "ALLOWLISTED_FINAL",
+            "EXACT_PUBLISHED_BOUND_MATCHING_ARTICLE_ID",
+            True,
+        ),
+        ("UNRELATED_POST", "NOT_EVALUATED", True),
+    ),
+)
+def test_public_listing_contract_matrix_is_fail_closed_for_pilot_routes(
+    slug_class: str,
+    snapshot_state: str,
+    expected: bool,
+) -> None:
+    contract = _load_json(CONTRACT_PATH)
+    policy = contract["public_listing_eligibility"]
+    assert isinstance(policy, dict)
+    matches = [
+        row
+        for row in policy["matrix"]
+        if row["slug_class"] == slug_class and row["snapshot_state"] == snapshot_state
+    ]
+    assert matches == [
+        {
+            "eligible": expected,
+            "slug_class": slug_class,
+            "snapshot_state": snapshot_state,
+        }
+    ]
+    assert policy["candidate_query"] == {
+        "max_candidates_per_slot": 2,
+        "max_rows": 10,
+        "post_type": "post",
+        "query_limit": 11,
+        "slug_classes": [
+            "raos-review-*",
+            "snapshot.article_bindings[].slug",
+        ],
+        "slot_count": 5,
+    }
+    assert policy["candidate_overflow_policy"] == (
+        "LOOKUP_FAILURE_WHEN_RESULT_COUNT_EXCEEDS_MAX_ROWS"
+    )
+    assert policy["query_cache"] == "REQUEST_LOCAL_ONLY"
+    assert policy["lookup_failure_policy"] == (
+        "SUPPRESS_POST_SITEMAP_AND_FRONT_PAGE_POST_RESULTS"
+    )
+    assert policy["lookup_success_requirement"] == (
+        "GET_RESULTS_ARRAY_AND_WPDB_LAST_ERROR_EMPTY_STRING"
+    )
+    assert policy["snapshot_validator"] == (
+        "kurashinoshirube_bound_post_snapshot(post_id,false)"
+    )
+
+
+def test_sitemap_and_front_page_share_one_public_listing_exclusion_policy() -> None:
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    contract = _load_json(CONTRACT_PATH)
+    policy = contract["public_listing_eligibility"]
+    assert isinstance(policy, dict)
+    assert contract["publication_authority"] == "NONE"
+    assert policy["consumers"] == {
+        "front_page_latest_posts": {
+            "filter": "query_loop_block_query_vars",
+            "merge_target": "post__not_in",
+        },
+        "yoast_sitemap": {
+            "filter": "wpseo_exclude_from_sitemap_by_post_ids",
+        },
+    }
+    assert policy["existing_exclusion_policy"] == (
+        "PRESERVE_POSITIVE_POST_IDS_AND_DEDUPLICATE"
+    )
+
+    eligibility = source.split(
+        "function kurashinoshirube_public_listing_post_is_eligible", 1
+    )[1].split("function kurashinoshirube_public_listing_excluded_post_ids", 1)[0]
+    assert "strpos($slug, 'raos-review-') === 0" in eligibility
+    assert "kurashinoshirube_article_bindings()" in eligibility
+    assert "kurashinoshirube_bound_post_snapshot($post_id, false)" in eligibility
+    assert "($snapshot['article_id'] ?? null) === $article_id" in eligibility
+    assert eligibility.count("return false;") == 1
+    assert eligibility.count("return true;") == 1
+
+    resolver = source.split(
+        "function kurashinoshirube_public_listing_excluded_post_ids", 1
+    )[1].split("function kurashinoshirube_merge_public_listing_exclusions", 1)[0]
+    assert "): ?array" in resolver
+    assert "static $resolved = false;" in resolver
+    assert "static $cached = null;" in resolver
+    assert "if ($resolved)" in resolver
+    assert "$resolved = true;" in resolver
+    assert '"SELECT ID, post_name FROM {$wpdb->posts} "' in resolver
+    assert '"WHERE post_type = %s AND (post_name LIKE %s "' in resolver
+    assert '"OR post_name IN ({$placeholders})) "' in resolver
+    assert '"ORDER BY ID ASC LIMIT %d"' in resolver
+    assert "$wpdb->esc_like('raos-review-') . '%'" in resolver
+    assert "$max_candidates_per_slot = 2;" in resolver
+    assert (
+        "$max_candidate_rows = count($final_slugs) * $max_candidates_per_slot;"
+        in resolver
+    )
+    assert "$query_row_limit = $max_candidate_rows + 1;" in resolver
+    assert "array($query_row_limit)" in resolver
+    assert resolver.count("$wpdb->get_results($query)") == 1
+    assert "! isset($wpdb->last_error)" in resolver
+    assert "! is_string($wpdb->last_error)" in resolver
+    assert "$wpdb->last_error !== ''" in resolver
+    assert "count($rows) > $max_candidate_rows" in resolver
+    assert "kurashinoshirube_public_listing_post_is_eligible(" in resolver
+    assert "return $cached;" in resolver
+    assert resolver.count("return null;") >= 4
+
+    assert source.count("'wpseo_exclude_from_sitemap_by_post_ids'") == 1
+    assert source.count("'query_loop_block_query_vars'") == 1
+    sitemap = source.split("function kurashinoshirube_sitemap_exclude_post_ids", 1)[
+        1
+    ].split("/** Exclude the same post IDs", 1)[0]
+    latest = source.split(
+        "function kurashinoshirube_filter_front_page_latest_query", 1
+    )[1].split("/** Keep the sitemap", 1)[0]
+    assert "kurashinoshirube_merge_public_listing_exclusions($post_ids)" in sitemap
+    assert "if (! is_front_page())" in latest
+    assert "$query['post__not_in'] ?? array()" in latest
+    assert "kurashinoshirube_merge_public_listing_exclusions(" in latest
+    assert "$query['post__in'] = array(0);" in latest
+    post_type = source.split("function kurashinoshirube_sitemap_exclude_post_type", 1)[
+        1
+    ].split("function kurashinoshirube_sitemap_exclude_taxonomy", 1)[0]
+    assert "$post_type === 'post'" in post_type
+    assert "kurashinoshirube_public_listing_excluded_post_ids() === null" in post_type
+    assert "pre_get_posts" not in source
+    assert "wp_cache_" not in resolver
+
+
+def test_wpdb_errors_and_candidate_overflow_fail_closed_for_consumers() -> None:
+    """Model SQL-error and sentinel-overflow shapes for both consumers."""
+
+    contract = _load_json(CONTRACT_PATH)
+    policy = contract["public_listing_eligibility"]
+    assert isinstance(policy, dict)
+    candidate_query = policy["candidate_query"]
+    assert isinstance(candidate_query, dict)
+    slot_count = candidate_query["slot_count"]
+    max_candidates_per_slot = candidate_query["max_candidates_per_slot"]
+    max_rows = candidate_query["max_rows"]
+    query_limit = candidate_query["query_limit"]
+    assert isinstance(slot_count, int) and slot_count == 5
+    assert isinstance(max_candidates_per_slot, int) and max_candidates_per_slot == 2
+    assert isinstance(max_rows, int) and max_rows == 10
+    assert max_rows == slot_count * max_candidates_per_slot
+    assert isinstance(query_limit, int) and query_limit == max_rows + 1
+
+    def modeled_lookup(rows: object, last_error: object) -> list[int] | None:
+        if not isinstance(last_error, str) or last_error != "":
+            return None
+        if not isinstance(rows, list) or len(rows) > max_rows:
+            return None
+        return []
+
+    lookup = modeled_lookup([], "simulated SQL error")
+    assert lookup is None
+    sitemap_post_type_excluded = lookup is None
+    front_page_post_in = [0] if lookup is None else None
+    assert sitemap_post_type_excluded
+    assert front_page_post_in == [0]
+
+    assert modeled_lookup([], "") == []
+    assert modeled_lookup([{} for _ in range(max_rows)], "") == []
+
+    overflow_lookup = modeled_lookup([{} for _ in range(query_limit)], "")
+    assert overflow_lookup is None
+    overflow_sitemap_post_type_excluded = overflow_lookup is None
+    overflow_front_page_post_in = [0] if overflow_lookup is None else None
+    assert overflow_sitemap_post_type_excluded
+    assert overflow_front_page_post_in == [0]
+    assert policy["candidate_overflow_policy"] == (
+        "LOOKUP_FAILURE_WHEN_RESULT_COUNT_EXCEEDS_MAX_ROWS"
+    )
+
+
+def test_bound_snapshot_rejects_excerpt_mismatch() -> None:
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    bound = source.split("function kurashinoshirube_bound_post_snapshot", 1)[1].split(
+        "/** Bind the singular presentation", 1
+    )[0]
+    assert "$excerpt = get_post_field('post_excerpt', $post_id, 'raw');" in bound
+    assert "! is_string($excerpt)" in bound
+    assert "$payload['description'] !== $excerpt" in bound
+
+    _, wrapper = _valid_snapshot()
+    payload = wrapper["payload"]
+    assert isinstance(payload, dict)
+    exact_excerpt = payload["description"]
+    assert isinstance(exact_excerpt, str)
+    assert payload["description"] == exact_excerpt
+    assert payload["description"] != exact_excerpt + "改変"
+
+    contract = _load_json(CONTRACT_PATH)
+    snapshot = contract["snapshot"]
+    assert isinstance(snapshot, dict)
+    assert snapshot["excerpt_binding"] == (
+        "EXACT_WORDPRESS_POST_EXCERPT_EQUALS_DESCRIPTION_RAW_UTF8"
+    )
 
 
 def test_footer_removes_the_broken_subscription_link() -> None:
@@ -715,7 +936,7 @@ def test_yoast_lock_is_exact_and_human_gated() -> None:
     assert lock["activation_authority"] == "HUMAN_ONLY"
     assert lock["release_status"] == "BLOCKED"
     assert lock["activation_blockers"] == [
-        "OFFICIAL_CHECKSUM_UNAVAILABLE",
+        "INSTALLED_FILES_NOT_VERIFIED_AGAINST_OFFICIAL_CHECKSUMS",
         "PERSISTED_CONFIGURATION_READBACK_NOT_EXECUTED",
         "WORDPRESS_YOAST_INTEGRATION_NOT_EXECUTED",
     ]
@@ -732,7 +953,25 @@ def test_yoast_lock_is_exact_and_human_gated() -> None:
         ),
     }
     checksum = lock["official_checksum_api"]
-    assert checksum["status"] == "NOT_AVAILABLE_HTTP_404_AT_OBSERVATION_TIME"
+    assert checksum == {
+        "manifest_byte_length": 343370,
+        "manifest_sha256": (
+            "1773aaadf88827311b488877c069aefcb6422e8dc6d5a7f50c1bd492d34bf85f"
+        ),
+        "observed_at": "2026-08-25T16:36:44Z",
+        "sha256_file_count": 1952,
+        "status": "AVAILABLE_HTTP_200",
+        "url": (
+            "https://downloads.wordpress.org/plugin-checksums/wordpress-seo/28.3.json"
+        ),
+    }
+    assert lock["installed_file_verification"] == {
+        "authority": "HUMAN_WORDPRESS_OPERATOR",
+        "required_command": (
+            "wp plugin verify-checksums wordpress-seo --version=28.3 --strict"
+        ),
+        "status": "NOT_EXECUTED",
+    }
     readback = lock["configuration_readback"]
     assert readback == {
         "authority": "HUMAN_PERSISTED_OPTIONS_WITH_THEME_READBACK_GATE",

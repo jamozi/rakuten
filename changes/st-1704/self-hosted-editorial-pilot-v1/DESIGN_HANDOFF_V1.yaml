@@ -19,7 +19,7 @@ DESIGN_HANDOFF_V1:
       exact_origin: https://kurashinoshirube.com
       cms: SELF_HOSTED_WORDPRESS
       hosting_migration: DISABLED
-      child_theme_version: 1.1.0
+      child_theme_version: 1.1.1
     editorial:
       article_slots: 5
       existing_article_counts_as_slot_one: true
@@ -63,6 +63,8 @@ DESIGN_HANDOFF_V1:
         - sitemap
       yoast_schema: DISABLED
       yoast_headless_rest: DISABLED
+      ineligible_pilot_sitemap_policy: EXCLUDE_REVIEW_SLUG_AND_UNBOUND_FINAL_SLUG_BY_POST_ID
+      ineligible_pilot_home_query_policy: FRONT_PAGE_ONLY_EXCLUDE_SAME_POST_IDS
       raos_jsonld_types:
         - Article
         - BreadcrumbList

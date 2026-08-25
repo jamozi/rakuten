@@ -12,6 +12,7 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.1.1';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guide.webp';
@@ -588,6 +589,7 @@ function kurashinoshirube_bound_post_snapshot(
     $raw = get_post_meta($post_id, KURASHINOSHIRUBE_SNAPSHOT_META_KEY, true);
     $payload = kurashinoshirube_parse_snapshot($raw);
     $content = get_post_field('post_content', $post_id, 'raw');
+    $excerpt = get_post_field('post_excerpt', $post_id, 'raw');
     $title = get_post_field('post_title', $post_id, 'raw');
     $slug = get_post_field('post_name', $post_id, 'raw');
     $status = get_post_status($post_id);
@@ -598,9 +600,11 @@ function kurashinoshirube_bound_post_snapshot(
         $payload === null
         || get_post_type($post_id) !== 'post'
         || ! is_string($content)
+        || ! is_string($excerpt)
         || ! is_string($title)
         || ! is_string($slug)
         || ! is_string($status)
+        || $payload['description'] !== $excerpt
         || $payload['title'] !== $title
         || ! (
             ($status === 'publish' && $payload['slug'] === $slug)
@@ -804,7 +808,7 @@ function kurashinoshirube_existing_update_context(
     if (
         get_stylesheet() !== 'kurashinoshirube-child'
         || ! is_object($theme)
-        || $theme->get('Version') !== '1.1.0'
+        || $theme->get('Version') !== KURASHINOSHIRUBE_THEME_VERSION
         || ! kurashinoshirube_yoast_configuration_is_exact()
     ) {
         return null;
@@ -1879,10 +1883,218 @@ function kurashinoshirube_filter_robots($robots, $presentation)
 }
 add_filter('wpseo_robots', 'kurashinoshirube_filter_robots', 20, 2);
 
+/**
+ * Apply the one public-listing policy to a candidate post.
+ *
+ * Review routes are never public-listing eligible. An allowlisted final route
+ * is eligible only when its published post bytes and exact article identity
+ * remain bound to the stored snapshot. All unrelated posts remain eligible.
+ */
+function kurashinoshirube_public_listing_post_is_eligible(
+    int $post_id,
+    string $slug
+): bool {
+    if ($post_id <= 0 || strpos($slug, 'raos-review-') === 0) {
+        return false;
+    }
+    foreach (kurashinoshirube_article_bindings() as $article_id => $binding) {
+        if (! is_array($binding) || $slug !== ($binding['slug'] ?? null)) {
+            continue;
+        }
+        $snapshot = kurashinoshirube_bound_post_snapshot($post_id, false);
+        return $snapshot !== null
+            && ($snapshot['article_id'] ?? null) === $article_id;
+    }
+    return true;
+}
+
+/**
+ * Resolve only review routes and allowlisted final routes once per request.
+ * The direct database read is bounded to post IDs and slugs; it performs no
+ * write and does not create a persistent cache or a generic query surface.
+ * Null is a distinct lookup failure which every consumer must suppress.
+ */
+function kurashinoshirube_public_listing_excluded_post_ids(): ?array
+{
+    static $resolved = false;
+    static $cached = null;
+    if ($resolved) {
+        return $cached;
+    }
+    $resolved = true;
+
+    global $wpdb;
+    if (
+        ! is_object($wpdb)
+        || ! isset($wpdb->posts)
+        || ! is_string($wpdb->posts)
+        || preg_match('/\A[A-Za-z0-9_]+\z/D', $wpdb->posts) !== 1
+        || ! method_exists($wpdb, 'esc_like')
+        || ! method_exists($wpdb, 'prepare')
+        || ! method_exists($wpdb, 'get_results')
+    ) {
+        return null;
+    }
+
+    $final_slugs = array();
+    foreach (kurashinoshirube_article_bindings() as $binding) {
+        if (is_array($binding) && is_string($binding['slug'] ?? null)) {
+            $final_slugs[] = $binding['slug'];
+        }
+    }
+    sort($final_slugs, SORT_STRING);
+    if (count($final_slugs) !== 5 || count(array_unique($final_slugs)) !== 5) {
+        return null;
+    }
+
+    // The five-slot pilot permits at most two candidate rows per slot. Fetch
+    // one sentinel row beyond that closed bound so overflow fails closed.
+    $max_candidates_per_slot = 2;
+    $max_candidate_rows = count($final_slugs) * $max_candidates_per_slot;
+    $query_row_limit = $max_candidate_rows + 1;
+
+    $placeholders = implode(', ', array_fill(0, count($final_slugs), '%s'));
+    $query = $wpdb->prepare(
+        "SELECT ID, post_name FROM {$wpdb->posts} "
+            . "WHERE post_type = %s AND (post_name LIKE %s "
+            . "OR post_name IN ({$placeholders})) "
+            . "ORDER BY ID ASC LIMIT %d",
+        array_merge(
+            array('post', $wpdb->esc_like('raos-review-') . '%'),
+            $final_slugs,
+            array($query_row_limit)
+        )
+    );
+    if (! is_string($query)) {
+        return null;
+    }
+    $rows = $wpdb->get_results($query);
+    if (
+        ! isset($wpdb->last_error)
+        || ! is_string($wpdb->last_error)
+        || $wpdb->last_error !== ''
+        || ! is_array($rows)
+        || count($rows) > $max_candidate_rows
+    ) {
+        return null;
+    }
+
+    $excluded = array();
+    foreach ($rows as $row) {
+        $raw_id = is_object($row) && isset($row->ID) ? $row->ID : null;
+        $slug = is_object($row) && isset($row->post_name)
+            ? $row->post_name
+            : null;
+        if (
+            ! (is_int($raw_id)
+                || (is_string($raw_id) && ctype_digit($raw_id)))
+            || ! is_string($slug)
+        ) {
+            return null;
+        }
+        $post_id = (int) $raw_id;
+        if (
+            ! kurashinoshirube_public_listing_post_is_eligible(
+                $post_id,
+                $slug
+            )
+        ) {
+            $excluded[$post_id] = $post_id;
+        }
+    }
+    ksort($excluded, SORT_NUMERIC);
+    $cached = array_values($excluded);
+    return $cached;
+}
+
+/** Normalize a caller-owned exclusion set without widening it. */
+function kurashinoshirube_normalize_positive_post_ids($post_ids): array
+{
+    $normalized = array();
+    foreach (is_array($post_ids) ? $post_ids : array() as $post_id) {
+        if (
+            ! (is_int($post_id)
+                || (is_string($post_id) && ctype_digit($post_id)))
+            || (int) $post_id <= 0
+        ) {
+            continue;
+        }
+        $normalized[(int) $post_id] = (int) $post_id;
+    }
+    ksort($normalized, SORT_NUMERIC);
+    return array_values($normalized);
+}
+
+/** Preserve and deduplicate an existing positive post-ID exclusion set. */
+function kurashinoshirube_merge_public_listing_exclusions($post_ids): ?array
+{
+    $excluded = kurashinoshirube_public_listing_excluded_post_ids();
+    if ($excluded === null) {
+        return null;
+    }
+    $merged = is_array($post_ids) ? $post_ids : array();
+    foreach ($excluded as $post_id) {
+        $merged[] = $post_id;
+    }
+    return kurashinoshirube_normalize_positive_post_ids($merged);
+}
+
+/** Exclude non-eligible pilot posts through Yoast's official post-ID filter. */
+function kurashinoshirube_sitemap_exclude_post_ids($post_ids): array
+{
+    $merged = kurashinoshirube_merge_public_listing_exclusions($post_ids);
+    return $merged === null
+        ? kurashinoshirube_normalize_positive_post_ids($post_ids)
+        : $merged;
+}
+add_filter(
+    'wpseo_exclude_from_sitemap_by_post_ids',
+    'kurashinoshirube_sitemap_exclude_post_ids',
+    20,
+    1
+);
+
+/** Exclude the same post IDs from the front-page latest-post Query block. */
+function kurashinoshirube_filter_front_page_latest_query(
+    array $query,
+    $block,
+    $page
+): array {
+    if (! is_front_page()) {
+        return $query;
+    }
+    if (
+        isset($query['post_type'])
+        && $query['post_type'] !== 'post'
+        && $query['post_type'] !== array('post')
+    ) {
+        return $query;
+    }
+    $excluded = kurashinoshirube_merge_public_listing_exclusions(
+        $query['post__not_in'] ?? array()
+    );
+    if ($excluded === null) {
+        $query['post__in'] = array(0);
+        return $query;
+    }
+    $query['post__not_in'] = $excluded;
+    return $query;
+}
+add_filter(
+    'query_loop_block_query_vars',
+    'kurashinoshirube_filter_front_page_latest_query',
+    20,
+    3
+);
+
 /** Keep the sitemap to post and page URLs only. */
 function kurashinoshirube_sitemap_exclude_post_type($excluded, $post_type): bool
 {
-    return (bool) $excluded || ! in_array($post_type, array('post', 'page'), true);
+    if ((bool) $excluded || ! in_array($post_type, array('post', 'page'), true)) {
+        return true;
+    }
+    return $post_type === 'post'
+        && kurashinoshirube_public_listing_excluded_post_ids() === null;
 }
 function kurashinoshirube_sitemap_exclude_taxonomy($excluded, $taxonomy): bool
 {

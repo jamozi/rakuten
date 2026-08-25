@@ -11,9 +11,9 @@
   "generated_by": "scripts/build_st1704_rakuten_capture_manifest.py",
   "paths": [
     {
-      "bytes": 7518,
+      "bytes": 7691,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "49902bbbbfe791f313c68c7d450c47271972bbf94f7486d2837040fdbceb0371"
+      "sha256": "d8fc10e0822b228e0b87445aa4166134822cb30d1e4d98199bffcb6d8e7db6a8"
     },
     {
       "bytes": 3612,
@@ -21,14 +21,14 @@
       "sha256": "c57a5f563d39adf03172f921133647bf92be40e62c59d7d8086440f21545f50b"
     },
     {
-      "bytes": 22297,
+      "bytes": 26387,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "51c58db22e868b00be0a53747f1f801ec04befed151d5ae06714624f28326034"
+      "sha256": "488089438c2f771615dbd173e31b05020e48be4d77436b879f8c295280c9045d"
     },
     {
-      "bytes": 2429,
+      "bytes": 2486,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/PREFLIGHT.md",
-      "sha256": "b9b562c335a6c86a1f61c5bd2eb7df12c7cf37a624f91f094eed850b81c6d6df"
+      "sha256": "a6bb1182c3c2013eda5d16b4ed3201700b2d525afc4654ae02c1ade399ca8aa6"
     },
     {
       "bytes": 1588,
@@ -36,9 +36,9 @@
       "sha256": "ab88b54c667588554a0e8d683983f3b56fd543be5c775114057ece6e5cd4690c"
     },
     {
-      "bytes": 8193,
+      "bytes": 8562,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
-      "sha256": "47b49d7554f2399761780f2c5c4c378d583aedbed39b6afb82798115f7dd6a45"
+      "sha256": "c24d3e41138a3358393d169f5c9153bae453c95ca1a2a79b5998f225fd3d456a"
     },
     {
       "bytes": 111502,

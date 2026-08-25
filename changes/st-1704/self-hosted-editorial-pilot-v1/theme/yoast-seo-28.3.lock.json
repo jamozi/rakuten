@@ -1,7 +1,7 @@
 {
   "activation_authority": "HUMAN_ONLY",
   "activation_blockers": [
-    "OFFICIAL_CHECKSUM_UNAVAILABLE",
+    "INSTALLED_FILES_NOT_VERIFIED_AGAINST_OFFICIAL_CHECKSUMS",
     "PERSISTED_CONFIGURATION_READBACK_NOT_EXECUTED",
     "WORDPRESS_YOAST_INTEGRATION_NOT_EXECUTED"
   ],
@@ -55,8 +55,17 @@
   },
   "downloaded_archive_committed": false,
   "official_checksum_api": {
-    "status": "NOT_AVAILABLE_HTTP_404_AT_OBSERVATION_TIME",
-    "url": "https://api.wordpress.org/plugins/checksums/1.0/?slug=wordpress-seo&version=28.3"
+    "manifest_byte_length": 343370,
+    "manifest_sha256": "1773aaadf88827311b488877c069aefcb6422e8dc6d5a7f50c1bd492d34bf85f",
+    "observed_at": "2026-08-25T16:36:44Z",
+    "sha256_file_count": 1952,
+    "status": "AVAILABLE_HTTP_200",
+    "url": "https://downloads.wordpress.org/plugin-checksums/wordpress-seo/28.3.json"
+  },
+  "installed_file_verification": {
+    "authority": "HUMAN_WORDPRESS_OPERATOR",
+    "required_command": "wp plugin verify-checksums wordpress-seo --version=28.3 --strict",
+    "status": "NOT_EXECUTED"
   },
   "official_plugin_info_url": "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request%5Bslug%5D=wordpress-seo",
   "official_plugin_page": "https://wordpress.org/plugins/wordpress-seo/",

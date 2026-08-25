@@ -49,6 +49,7 @@ def test_runtime_manifest_is_exact_and_keeps_st1703_as_predecessor() -> None:
 
 
 def test_theme_package_is_deterministic_closed_and_has_no_javascript() -> None:
+    assert theme_builder.OUTPUT_PATH.name == "kurashinoshirube-child-1.1.1.zip"
     first = theme_builder.build_package()
     second = theme_builder.build_package()
     assert first == second
@@ -134,6 +135,46 @@ def test_runbook_preserves_all_external_human_gates_and_reversible_rollback() ->
         "Do not delete database rows",
     ):
         assert required in runbook
+
+
+def test_revenue_unblock_schedule_and_experiments_match_the_approved_limits() -> None:
+    runbook = (SLICE / "OPERATIONS_RUNBOOK.md").read_text(encoding="utf-8")
+    experiment = (SLICE / "REVENUE_EXPERIMENT_RUNBOOK.md").read_text(encoding="utf-8")
+    runbook_flat = " ".join(runbook.split())
+    experiment_flat = " ".join(experiment.split())
+    for required in (
+        "Day 1 | Suitcase: Review post 26 remains Draft; existing final post 19",
+        "Day 4 | Portable power: post 28 moves from Draft",
+        "Day 7 | Anker model comparison: post 29 moves from Draft",
+        "Day 10 | Dishwasher: prepare and create one new Review Draft",
+        "including one exact THANKO variant, no more than 24 hours",
+        "Day 13 | Robot vacuum: post 30 moves from Draft",
+        "360/768/1440 CSS-pixel",
+        "200%-zoom, keyboard-only, and JavaScript-disabled matrix",
+        'rel="sponsored nofollow"',
+        "The article's measurement `T0` begins only",
+    ):
+        assert required in runbook_flat
+
+    for required in (
+        "end of the following month",
+        "28 days and 200 impressions per compared variant",
+        "organic clicks or CTR improves at least 20%",
+        "average position worsens by no more than 2",
+        "500 impressions, and 20 clicks",
+        "this runbook imposes no unapproved percentage threshold",
+        "Add at most two query-led comparison/difference/model articles",
+        "Rakuten confirmed outcomes have been reconciled at least twice",
+    ):
+        assert required in experiment_flat
+    for invented in (
+        "affiliate click rate improves at least 20%",
+        "cluster organic clicks rise at least 25%",
+        "cannibalization stays at or below 15%",
+        "over 56–90 days",
+        "two confirmed provider cycles",
+    ):
+        assert invented not in experiment_flat
 
 
 def test_competitor_research_is_pattern_only_and_never_product_evidence() -> None:

@@ -183,6 +183,56 @@
     "owner": "THEME_FIXED_ALLOWLIST"
   },
   "publication_authority": "NONE",
+  "public_listing_eligibility": {
+    "candidate_query": {
+      "max_candidates_per_slot": 2,
+      "max_rows": 10,
+      "post_type": "post",
+      "query_limit": 11,
+      "slug_classes": [
+        "raos-review-*",
+        "snapshot.article_bindings[].slug"
+      ],
+      "slot_count": 5
+    },
+    "candidate_overflow_policy": "LOOKUP_FAILURE_WHEN_RESULT_COUNT_EXCEEDS_MAX_ROWS",
+    "consumers": {
+      "front_page_latest_posts": {
+        "filter": "query_loop_block_query_vars",
+        "merge_target": "post__not_in"
+      },
+      "yoast_sitemap": {
+        "filter": "wpseo_exclude_from_sitemap_by_post_ids"
+      }
+    },
+    "existing_exclusion_policy": "PRESERVE_POSITIVE_POST_IDS_AND_DEDUPLICATE",
+    "lookup_failure_policy": "SUPPRESS_POST_SITEMAP_AND_FRONT_PAGE_POST_RESULTS",
+    "lookup_success_requirement": "GET_RESULTS_ARRAY_AND_WPDB_LAST_ERROR_EMPTY_STRING",
+    "matrix": [
+      {
+        "eligible": false,
+        "slug_class": "RAOS_REVIEW",
+        "snapshot_state": "ANY"
+      },
+      {
+        "eligible": false,
+        "slug_class": "ALLOWLISTED_FINAL",
+        "snapshot_state": "MISSING_INVALID_OR_ARTICLE_ID_MISMATCH"
+      },
+      {
+        "eligible": true,
+        "slug_class": "ALLOWLISTED_FINAL",
+        "snapshot_state": "EXACT_PUBLISHED_BOUND_MATCHING_ARTICLE_ID"
+      },
+      {
+        "eligible": true,
+        "slug_class": "UNRELATED_POST",
+        "snapshot_state": "NOT_EVALUATED"
+      }
+    ],
+    "query_cache": "REQUEST_LOCAL_ONLY",
+    "snapshot_validator": "kurashinoshirube_bound_post_snapshot(post_id,false)"
+  },
   "related_navigation": {
     "availability_transition": "TARGET_HUMAN_PUBLICATION_ONLY",
     "content_hash_scope": "THEME_CHROME_OUTSIDE_WORDPRESS_POST_CONTENT",
@@ -258,6 +308,7 @@
     "canonical_encoding": "RECURSIVE_LEXICOGRAPHIC_OBJECT_KEYS_JSON_UNESCAPED_SLASHES_UNICODE_PRESERVE_ZERO_FRACTION",
     "canonical_origin": "https://kurashinoshirube.com",
     "content_binding": "SHA256_EXACT_WORDPRESS_POST_CONTENT_RAW_UTF8",
+    "excerpt_binding": "EXACT_WORDPRESS_POST_EXCERPT_EQUALS_DESCRIPTION_RAW_UTF8",
     "max_bytes": 16384,
     "meta_key": "_raos_publication_snapshot_v1",
     "payload_keys": [
@@ -285,5 +336,5 @@
     "wrapper_keys": ["payload", "payload_sha256", "schema"]
   },
   "theme_slug": "kurashinoshirube-child",
-  "theme_version": "1.1.0"
+  "theme_version": "1.1.1"
 }

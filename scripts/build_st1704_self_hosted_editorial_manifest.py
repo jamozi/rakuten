@@ -39,6 +39,8 @@ _BASE_RUNTIME_PATHS: Final[tuple[str, ...]] = (
     f"{SLICE}/OPERATIONS_RUNBOOK.md",
     f"{SLICE}/PREFLIGHT.md",
     f"{SLICE}/README.md",
+    f"{SLICE}/REVENUE_EXPERIMENT_RUNBOOK.md",
+    f"{SLICE}/REVENUE_UNBLOCK_WORKLOG.md",
     f"{SLICE}/content/articles.v1.json",
     f"{SLICE}/media/product-media-registry.v1.json",
     f"{SLICE}/operations/measurement-ledger.v1.json",
@@ -153,7 +155,7 @@ def _load_json(relative: str) -> object:
     payload = _read_regular_file(relative)
     try:
         return json.loads(payload.decode("utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError):
+    except UnicodeDecodeError, json.JSONDecodeError:
         _fail()
 
 
