@@ -71,7 +71,7 @@
   "predecessor_bindings": [
     {
       "story_id": "ST-0702",
-      "feature_commit": "28627d017e92e9749cabcd81ed0584b963585b84",
+      "feature_commit": "e289b5d23c2b945c062fc8c69e50d9de514af314",
       "binding": "EXACT_CURRENT_COMMITTED_BYTES_AND_SEMANTICS",
       "artifacts": [
         {
@@ -87,17 +87,17 @@
         {
           "uri": "repo://changes/st-0702/generated/context-pack.reference-plan.v1.json",
           "bytes": 94168,
-          "sha256": "c854166d7bf5fdbae2e4892033c700306776caaf583c00adeb2714aa29b36a3b"
+          "sha256": "652f59db25fd2b588132f4a467a7d519eaa133181e3d868edacc375d966c3230"
         },
         {
           "uri": "repo://changes/st-0702/manifest.yaml",
           "bytes": 5910,
-          "sha256": "1fe77ad944cb29050707603a233444e97e83b8e57d750922b7eebefda85c4961"
+          "sha256": "2dcf94fe14a8e38276d3c17e42bb65636bce3569066b872912aa5e82617ee5a2"
         },
         {
           "uri": "repo://scripts/build_st0702_context_pack_reference_plan.py",
           "bytes": 39123,
-          "sha256": "88efb24f4ed261027aad948a1ae69645927cad8ea491ca9803bfe10c0006c7eb"
+          "sha256": "4a1ad45056b30ccc36c46c941de3a6ce65f5b012fc70afcb070da2e4d3144a6e"
         },
         {
           "uri": "repo://tests/st0702/conftest.py",
@@ -125,7 +125,7 @@
     },
     {
       "story_id": "ST-0703",
-      "feature_commit": "aff94a21ac9f03886b19e32fef6e1c8b16de5b95",
+      "feature_commit": "bb7402549fe65a94032120401903d4d933a5bfc6",
       "binding": "EXACT_CURRENT_COMMITTED_BYTES_AND_SEMANTICS",
       "artifacts": [
         {
@@ -136,12 +136,12 @@
         {
           "uri": "repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml",
           "bytes": 15689,
-          "sha256": "6628bc64b527cc049d691b4f61da787f7623c93abb482fe331e289f91ab89d64"
+          "sha256": "cdc4d54631cf87cfb28ad0fd2af55984cd4d86a14b6d4951876a574a48271cec"
         },
         {
           "uri": "repo://changes/st-0703/generated/recorded-fixture-registry.v1.json",
           "bytes": 5547,
-          "sha256": "8d1dfe95f08b37fac85a0f2fc74695381ae35491630ac5453e6122e88cd680d9"
+          "sha256": "2dabdc8ff6a4d38f8cb1169924dfcf516ee463ba3337e54540148d05da512151"
         },
         {
           "uri": "repo://python/raos/domain/ai/provider.py",

@@ -78,7 +78,7 @@ def test_predecessors_are_exact_byte_and_semantic_bindings() -> None:
     assert [row["story_id"] for row in bindings] == ["ST-0702", "ST-0703", "ST-0605"]
     assert bindings == generator.expected_predecessor_bindings()
     context = bindings[0]
-    assert context["feature_commit"] == "28627d017e92e9749cabcd81ed0584b963585b84"
+    assert context["feature_commit"] == "e289b5d23c2b945c062fc8c69e50d9de514af314"
     assert context["artifacts"][1]["sha256"] == (
         "7879f0ecc83020fb95a6ec2e6576643f2406f31cfc6f1205f8e828d3743effc3"
     )

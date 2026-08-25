@@ -32,7 +32,7 @@ common_semantic_receipts:
   - receipt_kind: PROVIDER_SUCCESS_SAFETY
     owner_story_id: ST-0703
     owner_contract_path: changes/st-0703/contracts/openai-responses-adapter.v1.yaml
-    owner_contract_sha256: 6628bc64b527cc049d691b4f61da787f7623c93abb482fe331e289f91ab89d64
+    owner_contract_sha256: cdc4d54631cf87cfb28ad0fd2af55984cd4d86a14b6d4951876a574a48271cec
   - receipt_kind: POLICY_BUNDLE_BINDING
     owner_story_id: ST-0805
     owner_contract_path: contracts/raos-v0.4/contracts/content/RAOS_06_editorial_policy_catalog_v0.1.yaml
