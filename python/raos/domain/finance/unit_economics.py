@@ -378,6 +378,11 @@ class UnitEconomicsRunRequest(_Redacted):
         payload["input_sha256"] = self.input_sha256.value
         return _canonical_bytes(payload)
 
+    def has_valid_input_binding(self) -> bool:
+        """Confirm that the immutable request still matches its canonical input."""
+
+        return self.input_sha256 == _digest(self._payload())
+
 
 @dataclass(frozen=True, slots=True, repr=False)
 class UnitEconomicsMetric(_Redacted):
@@ -850,7 +855,7 @@ def build_unit_economics(
 
     if type(request) is not UnitEconomicsRunRequest:
         fail_unit_economics()
-    if request.input_sha256 != _digest(request._payload()):  # noqa: SLF001
+    if not request.has_valid_input_binding():
         fail_unit_economics(UnitEconomicsFailureCode.INPUT_HASH_MISMATCH)
     readiness = _readiness(request)
     _validate_measurement_cost_binding(request)
@@ -1153,9 +1158,7 @@ def build_unit_economics(
                 ratio_metric(
                     metric_id="KPI-022",
                     name="article_update_cost_ratio",
-                    numerator=(
-                        Decimal(0) if update_cost.value is None else update_cost.value
-                    ),
+                    numerator=update_cost.value,
                     denominator=_Aggregate(
                         direct_decimal,
                         None,
@@ -1178,9 +1181,7 @@ def build_unit_economics(
                 ratio_metric(
                     metric_id="KPI-023",
                     name="content_payback_months",
-                    numerator=(
-                        Decimal(0) if initial_cost.value is None else initial_cost.value
-                    ),
+                    numerator=initial_cost.value,
                     denominator=trailing_contribution,
                     unit=MetricUnit.MONTHS,
                     multiplier="1",
@@ -1199,7 +1200,7 @@ def build_unit_economics(
                 ratio_metric(
                     metric_id="KPI-025",
                     name="ai_cost_per_approved_article_jpy",
-                    numerator=Decimal(0) if ai_cost.value is None else ai_cost.value,
+                    numerator=ai_cost.value,
                     denominator=approved_versions,
                     unit=MetricUnit.JPY_PER_APPROVED_ARTICLE,
                     multiplier="1",
