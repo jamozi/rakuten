@@ -105,7 +105,10 @@ def _reject_float(value: str) -> NoReturn:
 
 
 def _mapping(value: object, keys: frozenset[str]) -> dict[str, object]:
-    if type(value) is not dict or frozenset(value) != keys:
+    if type(value) is not dict:
+        _invalid()
+    candidate = cast(dict[object, object], value)
+    if frozenset(candidate) != keys:
         _invalid()
     return cast(dict[str, object], value)
 
@@ -284,9 +287,12 @@ def _parse(
     ):
         fail_causal_attribution(CausalAttributionFailureCode.DEPENDENCY_CONTRACT_DRIFT)
     raw_cells = root["cells"]
-    if type(raw_cells) is not list or len(raw_cells) > 5:
+    if type(raw_cells) is not list:
         _invalid()
-    cells = tuple(_cell(value) for value in raw_cells)
+    cell_values = cast(list[object], raw_cells)
+    if len(cell_values) > 5:
+        _invalid()
+    cells = tuple(_cell(value) for value in cell_values)
     return RecordedCausalAttributionBatch(
         recording_id=command.recording_id,
         experiment_id=command.experiment_id,
