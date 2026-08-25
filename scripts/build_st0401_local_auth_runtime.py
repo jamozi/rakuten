@@ -17,7 +17,7 @@ from pathlib import Path
 import stat
 import sys
 from types import MappingProxyType
-from typing import Any, Final, NoReturn, cast
+from typing import Final, NoReturn, cast
 
 
 REPOSITORY_ROOT: Final = Path(__file__).resolve().parents[1]
@@ -69,7 +69,7 @@ CANONICAL_BINDINGS: Final = MappingProxyType(
         ): "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
         Path(
             "changes/st-0308/contracts/persistence-runtime.v2.yaml"
-        ): "8ee74a13fd1232f86887e988cbeb475421f2ed17c6a73257968e62ecc0dc54c7",
+        ): "0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4",
     }
 )
 OWNED_IMPLEMENTATION_PATHS: Final = (
@@ -234,8 +234,8 @@ def _read_regular(
             os.close(descriptor)
 
 
-def _reject_duplicate(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
-    result: dict[str, Any] = {}
+def _reject_duplicate(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    result: dict[str, object] = {}
     for key, value in pairs:
         if key in result:
             _fail("CONTRACT_DUPLICATE_KEY")
@@ -247,7 +247,7 @@ def _reject_constant(_value: str) -> NoReturn:
     _fail("CONTRACT_NONFINITE_NUMBER")
 
 
-def _parse_contract(payload: bytes) -> dict[str, Any]:
+def _parse_contract(payload: bytes) -> dict[str, object]:
     try:
         decoded = payload.decode("utf-8", errors="strict")
         parsed = json.loads(
@@ -259,10 +259,10 @@ def _parse_contract(payload: bytes) -> dict[str, Any]:
         _fail("CONTRACT_INVALID")
     if type(parsed) is not dict:
         _fail("CONTRACT_INVALID")
-    return cast(dict[str, Any], parsed)
+    return cast(dict[str, object], parsed)
 
 
-def _validate_contract(contract: dict[str, Any]) -> None:
+def _validate_contract(contract: dict[str, object]) -> None:
     if set(contract) != {
         "schema_version",
         "story_id",
@@ -290,8 +290,11 @@ def _validate_contract(contract: dict[str, Any]) -> None:
         "provider_selection": "UNSELECTED",
     }:
         _fail("OPEN_DECISION_BOUNDARY_INVALID")
-    runtime = contract["runtime"]
-    if type(runtime) is not dict or set(runtime) != {
+    runtime_value = contract["runtime"]
+    if type(runtime_value) is not dict:
+        _fail("RUNTIME_BOUNDARY_INVALID")
+    runtime = cast(dict[str, object], runtime_value)
+    if set(runtime) != {
         "environment",
         "provider_adapter",
         "provider_sdk",
@@ -303,15 +306,18 @@ def _validate_contract(contract: dict[str, Any]) -> None:
         "persistence",
     }:
         _fail("RUNTIME_BOUNDARY_INVALID")
-    transport = runtime["transport"]
-    persistence = runtime["persistence"]
+    transport_value = runtime["transport"]
+    persistence_value = runtime["persistence"]
+    if type(transport_value) is not dict or type(persistence_value) is not dict:
+        _fail("RUNTIME_BOUNDARY_INVALID")
+    transport = cast(dict[str, object], transport_value)
+    persistence = cast(dict[str, object], persistence_value)
     if (
         runtime["environment"] != "ENV-DEV"
         or runtime["provider_adapter"] != "RECORDED_FAKE_NO_NETWORK"
         or runtime["provider_sdk"] != "ABSENT"
         or runtime["credential_resolution"] != "ABSENT"
         or runtime["external_provider_calls"] is not False
-        or type(transport) is not dict
         or transport["route_registration"] is not False
         or transport["external_dispatch"] != "UNCONDITIONAL_RFC9457_503_REFUSAL"
         or transport["recorded_origin"]
@@ -321,7 +327,6 @@ def _validate_contract(contract: dict[str, Any]) -> None:
         or transport["browser_storage"] != "UNSELECTED_NOT_DELIVERED"
         or type(transport["recorded_external_action_count"]) is not int
         or transport["recorded_external_action_count"] != 0
-        or type(persistence) is not dict
         or persistence["external_io_inside_transaction"] is not False
         or persistence["migration_or_production_schema_authority"] is not False
         or persistence["unknown_commit"]
@@ -341,29 +346,29 @@ def _validate_contract(contract: dict[str, Any]) -> None:
         or persistence["cross_restart_trusted_anchor"] != "ABSENT_NOT_CLAIMED"
     ):
         _fail("RUNTIME_BOUNDARY_INVALID")
-    authority = contract["authority"]
-    if (
-        type(authority) is not dict
-        or not authority
-        or any(type(value) is not bool or value for value in authority.values())
+    authority_value = contract["authority"]
+    if type(authority_value) is not dict:
+        _fail("AUTHORITY_BOUNDARY_INVALID")
+    authority = cast(dict[str, object], authority_value)
+    if not authority or any(
+        type(value) is not bool or value for value in authority.values()
     ):
         _fail("AUTHORITY_BOUNDARY_INVALID")
-    verification = contract["verification"]
-    if (
-        type(verification) is not dict
-        or verification.get("local_focused") != "EXECUTABLE"
-        or any(
-            verification.get(key) != "NOT_EXECUTED"
-            for key in (
-                "formal_tst_012",
-                "formal_tst_022",
-                "formal_tst_026",
-                "browser",
-                "hosted_ci",
-                "staging",
-                "release",
-                "production",
-            )
+    verification_value = contract["verification"]
+    if type(verification_value) is not dict:
+        _fail("VERIFICATION_BOUNDARY_INVALID")
+    verification = cast(dict[str, object], verification_value)
+    if verification.get("local_focused") != "EXECUTABLE" or any(
+        verification.get(key) != "NOT_EXECUTED"
+        for key in (
+            "formal_tst_012",
+            "formal_tst_022",
+            "formal_tst_026",
+            "browser",
+            "hosted_ci",
+            "staging",
+            "release",
+            "production",
         )
     ):
         _fail("VERIFICATION_BOUNDARY_INVALID")

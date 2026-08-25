@@ -135,7 +135,7 @@
     },
     {
       "path": "scripts/build_st0401_local_auth_runtime.py",
-      "sha256": "fe7823e04f0449debc442244286767c9bce9022bf5c1deab64f1a4cf626daac6"
+      "sha256": "fa5cfa50f9dfdf6d8081fd2819d90d3e3431d89ad4f30ba0a0bc67fd3d7f6864"
     },
     {
       "path": "scripts/secure_generated_publication.py",
@@ -151,7 +151,7 @@
     },
     {
       "path": "python/raos/application/iam/authentication.py",
-      "sha256": "49b692c66ac7deeb5b3ff4285b92c9de22e810172799671240692f92c858af30"
+      "sha256": "edb92df10bf68bcb1fc76f9c5635f6dd87340a562e24d58c44fcc136df2aa32a"
     },
     {
       "path": "python/raos/adapters/development_oidc.py",
@@ -191,7 +191,7 @@
     },
     {
       "path": "changes/st-0308/contracts/persistence-runtime.v2.yaml",
-      "sha256": "8ee74a13fd1232f86887e988cbeb475421f2ed17c6a73257968e62ecc0dc54c7"
+      "sha256": "0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4"
     }
   ],
   "story_id": "ST-0401"

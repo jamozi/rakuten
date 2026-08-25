@@ -342,6 +342,8 @@ class AuthenticationService:
             raise
         observed_at = require_utc(now)
         self._require_monotonic_session_time(predecessor, observed_at)
+        if predecessor.revoked_at is not None:
+            _raise(AuthenticationFailureCode.SESSION_CONFLICT)
         predecessor.require_active(observed_at)
         successor = Session(
             session_id=SessionId.from_bytes(self._token_bytes()),
