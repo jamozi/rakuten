@@ -43,15 +43,15 @@
     },
     "st0805Contract": {
       "path": "changes/st-0805/contracts/policy-runtime.v2.yaml",
-      "sha256": "ec64cd6e0be75987ef1f99e4f3f04574650c19670f3d08839875afa0bfcf52e4"
+      "sha256": "9310987f4929192c924869e3842d8897381140358c55522a8e81b65545b08e75"
     },
     "st0805Fixture": {
       "path": "changes/st-0805/generated/policy-pass.v2.json",
-      "sha256": "7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849"
+      "sha256": "75797ab838b37b482ecfd30312101e4103dc7301a4ee57e0f6ce544a845300b9"
     },
     "st0805Domain": {
       "path": "python/raos/domain/editorial/policy_engine_v2.py",
-      "sha256": "86e0af8ff6b651b50a7959a0a8c0f85864c230a57144b51e190041d658ee7d93"
+      "sha256": "ef690e73cf657d3963572428785b2e777f7485ba15c30a53a978ad8919e31e24"
     },
     "securePublication": {
       "path": "scripts/secure_generated_publication.py",
