@@ -107,10 +107,10 @@ MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 EXPECTED_PROFILE_IDS: Final = tuple(f"AIT-{number:03d}" for number in range(1, 13))
 PINNED_INPUTS: Final[dict[Path, str]] = {
     TASK_REGISTRY_PATH: "33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07",
-    CONTEXT_CONTRACT_PATH: "7879f0ecc83020fb95a6ec2e6576643f2406f31cfc6f1205f8e828d3743effc3",
+    CONTEXT_CONTRACT_PATH: "bac32da9b2e026ad36abb0b622fecbca56e4e9d3fdc0e4cccc807a4e4392837b",
     ALIGNMENT_PATH: "7b141fdb7e401ee886efe59f65e9bdff6be4af566deca73d29ebc50a1f200477",
     PROVIDER_PATH: "179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991",
-    COVERAGE_PATH: "5e292cc4a257ec3be2dc1cc0e2e66c68afc51e2e216c5610bd563f642022ca2b",
+    COVERAGE_PATH: "865d8f5f97befaa4c8b7c655035ca1f2ff9ffb441d08577775030aa5c8d350d4",
     Path(
         "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md"
     ): "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",

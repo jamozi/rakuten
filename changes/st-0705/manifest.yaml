@@ -6,19 +6,19 @@ source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-0705/README.md
   bytes: 3653
-  sha256: 9eaf057fe20e01c0a9d49fca45bc2d924965dad7de9e6d6a9c07aef546428f01
+  sha256: edd83d6740576254341253dc828ac7f83c1c628a6c2e9a15d07f530059a7bde4
 - uri: repo://changes/st-0705/contracts/ai-output-validation-reference-plan.v1.yaml
   bytes: 2180
   sha256: ea935831a1bb667229ae5a5495a27a801b9c21ab3c3ddbe53e266b8f7c311c42
 - uri: repo://scripts/build_st0705_ai_output_validation_reference_plan.py
-  bytes: 31325
-  sha256: cff078c7ab32c781a866d02cf90def2c13657c27813e53b1c72ac9bbb8f7e828
+  bytes: 31331
+  sha256: 2487d7ad216b1972360f71189b911275833281f330b61c0f38b53acdc2cd315e
 - uri: repo://tests/st0705/conftest.py
   bytes: 1767
   sha256: afd9c595b76bef9fd650ac5672862b31cd874e1883241e4f141aa39f5636559f
 - uri: repo://tests/st0705/test_contract.py
   bytes: 5339
-  sha256: 7641777c03eacc5b0d552ebebfb33afa3cd312f9f8f9e8c1a53db481f727ab6a
+  sha256: 7e30c294d4d35b1c7ee98924a77b3b024f1ada2eae95867d053f5faec5e3467a
 - uri: repo://tests/st0705/test_generation.py
   bytes: 4071
   sha256: fd0f9e555d3ce5afaca417fcd0b8dd24a111a35755108efaa328ce0263c23687
@@ -51,25 +51,25 @@ provenance:
   predecessor_inputs:
   - uri: repo://changes/st-0702/README.md
     bytes: 4297
-    sha256: 457ddad700764543fbdbdae23da67bf1cd2f38fb54fd118bf89e6281f22282b9
+    sha256: b735d366592c5060c9c3b80cc6b7cc023e2fb9567234362843b251c386d9243b
   - uri: repo://changes/st-0702/contracts/context-pack-reference-plan.v1.yaml
     bytes: 8079
-    sha256: 7879f0ecc83020fb95a6ec2e6576643f2406f31cfc6f1205f8e828d3743effc3
+    sha256: bac32da9b2e026ad36abb0b622fecbca56e4e9d3fdc0e4cccc807a4e4392837b
   - uri: repo://changes/st-0702/generated/context-pack.reference-plan.v1.json
     bytes: 94168
-    sha256: 652f59db25fd2b588132f4a467a7d519eaa133181e3d868edacc375d966c3230
+    sha256: 0250a2d7f2fa961198891d556a603bdb2cc3b01884fa5f7377e6114d64e359f8
   - uri: repo://changes/st-0702/manifest.yaml
     bytes: 5910
-    sha256: 2dcf94fe14a8e38276d3c17e42bb65636bce3569066b872912aa5e82617ee5a2
+    sha256: e564e0f7c54cd4169c62bb3ffced0a447a7789b6cf045a50f6707dbd00ed8118
   - uri: repo://scripts/build_st0702_context_pack_reference_plan.py
-    bytes: 39123
-    sha256: 4a1ad45056b30ccc36c46c941de3a6ce65f5b012fc70afcb070da2e4d3144a6e
+    bytes: 39166
+    sha256: ae67717bbacc6d02eb7d536f9f67c4d7dc54a66cb9d3d49d73f63bf062be65e2
   - uri: repo://tests/st0702/conftest.py
     bytes: 985
     sha256: 264e9473e46515d4992542f38ea329887a316e9e9216a4db399727679df7f6ab
   - uri: repo://tests/st0702/test_contract.py
     bytes: 5180
-    sha256: dd1241e525ebb84a6ba4cce3ac5434a3b6260322a250061ac525be50aaebbb9f
+    sha256: a8946eed66df1cfcb7ff04b7b1e517e3605020ad1d78e8435d314df7cf7de8e1
   - uri: repo://tests/st0702/test_generation.py
     bytes: 3503
     sha256: f13d528f54216dfcba9b415acba7075bc28fb5263a4fa17ba0cbdafdda97c979
@@ -96,19 +96,19 @@ provenance:
     sha256: d1ca262711e73af59923d852fdc299ecc9ba67ae29675fd8e2512ea357d26017
   - uri: repo://changes/st-0605/README.md
     bytes: 4016
-    sha256: 116c86877e397e1804e6edff2189b14ea756566b8fe27e2b64a3b8be91abc2fb
+    sha256: a28dde8ebcc1fc241ae3e37ad458ed1fd6222d967948d44cbb35c080fbbaa060
   - uri: repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml
     bytes: 11114
-    sha256: b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49
+    sha256: 16b964f73e0f23041676eb6a0db7e74590fdfa3e80781fd7b9d1758e13809120
   - uri: repo://changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json
     bytes: 78849
-    sha256: 015938473428cea3e028f0bc969a8fc290cfe8c87cb0a700383f492821c86142
+    sha256: ef271dcaddaba9a72b7853b4b04ad487ce3630dfbf60a56f996c4c66251acb9d
   - uri: repo://changes/st-0605/manifest.yaml
     bytes: 8536
-    sha256: 888808d5992dae9da65db7e095157495138b3c612e48336fe163c35b1ff46de8
+    sha256: bdcc53843f40514cd402663a578353055731ceff676319c8e79b6c745e4fbd33
   - uri: repo://scripts/build_st0605_claim_evidence_coverage_reference_plan.py
     bytes: 45152
-    sha256: 9b7cfc7ec76d6dabec0e11af2e9a09333c89b9a4155c2f8331f900801338d890
+    sha256: e4fc9f5d5568473519ffedb434c594bb4c621dc3028b522d42fde698173be1fb
   - uri: repo://tests/st0605/conftest.py
     bytes: 2071
     sha256: 089d70a4d95bda6c984646153129cd091126199806136a71e2b8621a01cd1219
@@ -128,4 +128,4 @@ provenance:
 generated_artifacts:
 - uri: repo://changes/st-0705/generated/ai-output-validation-reference-plan.v1.json
   bytes: 20174
-  sha256: 7e08d524232fae4adfd6d943fd6f41db59a531e7e5422790e2909b329ba46734
+  sha256: 169843619dd8a355da9b6a31bb11bc8d934c55a9c64484116fcb765ab32f2500

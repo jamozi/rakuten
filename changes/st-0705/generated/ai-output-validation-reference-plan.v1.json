@@ -71,33 +71,33 @@
   "predecessor_bindings": [
     {
       "story_id": "ST-0702",
-      "feature_commit": "e289b5d23c2b945c062fc8c69e50d9de514af314",
+      "feature_commit": "fe379dd30fd16112111142920b3e1da5b30aa83a",
       "binding": "EXACT_CURRENT_COMMITTED_BYTES_AND_SEMANTICS",
       "artifacts": [
         {
           "uri": "repo://changes/st-0702/README.md",
           "bytes": 4297,
-          "sha256": "457ddad700764543fbdbdae23da67bf1cd2f38fb54fd118bf89e6281f22282b9"
+          "sha256": "b735d366592c5060c9c3b80cc6b7cc023e2fb9567234362843b251c386d9243b"
         },
         {
           "uri": "repo://changes/st-0702/contracts/context-pack-reference-plan.v1.yaml",
           "bytes": 8079,
-          "sha256": "7879f0ecc83020fb95a6ec2e6576643f2406f31cfc6f1205f8e828d3743effc3"
+          "sha256": "bac32da9b2e026ad36abb0b622fecbca56e4e9d3fdc0e4cccc807a4e4392837b"
         },
         {
           "uri": "repo://changes/st-0702/generated/context-pack.reference-plan.v1.json",
           "bytes": 94168,
-          "sha256": "652f59db25fd2b588132f4a467a7d519eaa133181e3d868edacc375d966c3230"
+          "sha256": "0250a2d7f2fa961198891d556a603bdb2cc3b01884fa5f7377e6114d64e359f8"
         },
         {
           "uri": "repo://changes/st-0702/manifest.yaml",
           "bytes": 5910,
-          "sha256": "2dcf94fe14a8e38276d3c17e42bb65636bce3569066b872912aa5e82617ee5a2"
+          "sha256": "e564e0f7c54cd4169c62bb3ffced0a447a7789b6cf045a50f6707dbd00ed8118"
         },
         {
           "uri": "repo://scripts/build_st0702_context_pack_reference_plan.py",
-          "bytes": 39123,
-          "sha256": "4a1ad45056b30ccc36c46c941de3a6ce65f5b012fc70afcb070da2e4d3144a6e"
+          "bytes": 39166,
+          "sha256": "ae67717bbacc6d02eb7d536f9f67c4d7dc54a66cb9d3d49d73f63bf062be65e2"
         },
         {
           "uri": "repo://tests/st0702/conftest.py",
@@ -107,7 +107,7 @@
         {
           "uri": "repo://tests/st0702/test_contract.py",
           "bytes": 5180,
-          "sha256": "dd1241e525ebb84a6ba4cce3ac5434a3b6260322a250061ac525be50aaebbb9f"
+          "sha256": "a8946eed66df1cfcb7ff04b7b1e517e3605020ad1d78e8435d314df7cf7de8e1"
         },
         {
           "uri": "repo://tests/st0702/test_generation.py",
@@ -166,33 +166,33 @@
     },
     {
       "story_id": "ST-0605",
-      "feature_commit": "f64ab370cbd8379b17e245ea801f18c6e09811c8",
+      "feature_commit": "160e5d4e210a35b216395c1bdf16b9c664ecc8e7",
       "binding": "EXACT_CURRENT_COMMITTED_BYTES_AND_SEMANTICS",
       "artifacts": [
         {
           "uri": "repo://changes/st-0605/README.md",
           "bytes": 4016,
-          "sha256": "116c86877e397e1804e6edff2189b14ea756566b8fe27e2b64a3b8be91abc2fb"
+          "sha256": "a28dde8ebcc1fc241ae3e37ad458ed1fd6222d967948d44cbb35c080fbbaa060"
         },
         {
           "uri": "repo://changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml",
           "bytes": 11114,
-          "sha256": "b6903a3eaa14108006b6a17477b5bb93116b80bda25c215fba92b2e60859df49"
+          "sha256": "16b964f73e0f23041676eb6a0db7e74590fdfa3e80781fd7b9d1758e13809120"
         },
         {
           "uri": "repo://changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json",
           "bytes": 78849,
-          "sha256": "015938473428cea3e028f0bc969a8fc290cfe8c87cb0a700383f492821c86142"
+          "sha256": "ef271dcaddaba9a72b7853b4b04ad487ce3630dfbf60a56f996c4c66251acb9d"
         },
         {
           "uri": "repo://changes/st-0605/manifest.yaml",
           "bytes": 8536,
-          "sha256": "888808d5992dae9da65db7e095157495138b3c612e48336fe163c35b1ff46de8"
+          "sha256": "bdcc53843f40514cd402663a578353055731ceff676319c8e79b6c745e4fbd33"
         },
         {
           "uri": "repo://scripts/build_st0605_claim_evidence_coverage_reference_plan.py",
           "bytes": 45152,
-          "sha256": "9b7cfc7ec76d6dabec0e11af2e9a09333c89b9a4155c2f8331f900801338d890"
+          "sha256": "e4fc9f5d5568473519ffedb434c594bb4c621dc3028b522d42fde698173be1fb"
         },
         {
           "uri": "repo://tests/st0605/conftest.py",

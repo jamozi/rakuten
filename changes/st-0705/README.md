@@ -56,7 +56,7 @@ production evidence.
 ## 2026-08-25 predecessor provenance reconciliation
 
 ST-0705 now binds the current ST-0702 owner commit
-`28627d017e92e9749cabcd81ed0584b963585b84`. The historical plan pins all nine
+`fe379dd30fd16112111142920b3e1da5b30aa83a`. The historical plan pins all nine
 current ST-0702 owner artifacts and the current ST-0605 reference boundary,
 while the runtime requires both context and taint receipts to bind the current
 context-contract hash and pins the current ST-0605 coverage domain. The ST-0702
