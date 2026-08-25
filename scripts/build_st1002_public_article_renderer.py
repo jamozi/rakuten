@@ -78,13 +78,13 @@ CANONICAL_HASHES: Final = {
 }
 
 DEPENDENCY_HASHES: Final = {
-    SOURCE_FIXTURE_PATH: "d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1",
+    SOURCE_FIXTURE_PATH: "a15edb77dcebb3f4b18c9f40737ebc949ab7564191a88052c5b8c54b3ddab7ce",
     Path(
         "changes/st-0904/runtime-manifest.v2.yaml"
-    ): "463887fc57ccc2aeda2a1707eef302962c730bf1c19f6f59bfb986bf3523be9f",
+    ): "b1a9523c784c3a53c33c65f5774aa260fcc10396348cae01b96739c47101af10",
     Path(
         "changes/st-0904/contracts/public-projection-runtime.v2.yaml"
-    ): "210961b25d78bc3f9f7994855eea425a813b9e978d52709fa26618f2653a5463",
+    ): "62b4caad968901be8f9d5aa0fff33bb43c7e0fa0580669f0409ed52acb8d65fc",
     Path(
         "changes/st-1001/contracts/public-app-shell-runtime.v2.yaml"
     ): "e916db42258a52ab30139349fd13f0d64742f21464882ef10bc282276201f459",

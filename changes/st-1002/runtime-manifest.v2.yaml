@@ -6,19 +6,19 @@ source_artifact_count: 40
 source_artifacts:
   - uri: repo://changes/st-1002/contracts/public-article-renderer-runtime.v2.yaml
     bytes: 6462
-    sha256: 5674f573b0a812395ada32667dab1ba84ed9b2fd5549915824948406fbea938f
+    sha256: e248d4dab10c7c98aa08b45ddeb2295851f84713ad9fed2dfd40d0250cadf258
     role: OWNER_SOURCE
   - uri: repo://scripts/build_st1002_public_article_renderer.py
     bytes: 41606
-    sha256: d298ffeb76fc3b37465534d7082b270f5343232e0f1377dc7d8a45e56497de12
+    sha256: 3c5468c1259a6a552db7a7ab6ea3827d73e854d31214e2aaf7b737c8673893b8
     role: OWNER_SOURCE
   - uri: repo://packages/web-ui/src/public-article-renderer.ts
     bytes: 32612
     sha256: d97c459fc695cc4c5f0ef0c79e7efd61172a4317cfac46fdeb2866b101a44a21
     role: OWNER_SOURCE
   - uri: repo://packages/web-ui/src/index.ts
-    bytes: 19601
-    sha256: 527efe6b033da86de0b6dd05d6e74eb1711bee83e34fe3d5d6477f125aa8f22d
+    bytes: 21657
+    sha256: ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c
     role: OWNER_SOURCE
   - uri: repo://apps/web/app/articles/[slug]/page.tsx
     bytes: 1333
@@ -46,7 +46,7 @@ source_artifacts:
     role: OWNER_SOURCE
   - uri: repo://tests/st1002_v2/public-article-model.test.ts
     bytes: 5020
-    sha256: c8dc344f14d0aa786418badb2bb5496f71ab239fedc83c59b94390cb95750cc1
+    sha256: 989c0cbffe7195619068d0769081f1327b31e7e9b6422312639e299d1fed7fd9
     role: OWNER_SOURCE
   - uri: repo://tests/st1002_v2/public-article-negative.test.ts
     bytes: 4652
@@ -74,7 +74,7 @@ source_artifacts:
     role: OWNER_SOURCE
   - uri: repo://changes/st-1002/completion/completion.v2.yaml
     bytes: 2202
-    sha256: a6df948e3da92c9cea7e89e17156ac69940a1c226fe395afe04c4232ca762270
+    sha256: c756b0a090a6b1b17094733e2c3eb50f62db03c5e5bfc3e2aac9e6b8d397817e
     role: OWNER_SOURCE
   - uri: repo://docs/execplans/ST-1002.md
     bytes: 2350
@@ -126,15 +126,15 @@ source_artifacts:
     role: CANONICAL_INPUT
   - uri: repo://changes/st-0904/generated/public-projection-recorded.v2.json
     bytes: 7764
-    sha256: d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1
+    sha256: a15edb77dcebb3f4b18c9f40737ebc949ab7564191a88052c5b8c54b3ddab7ce
     role: DEPENDENCY_ARTIFACT
   - uri: repo://changes/st-0904/runtime-manifest.v2.yaml
     bytes: 12199
-    sha256: 463887fc57ccc2aeda2a1707eef302962c730bf1c19f6f59bfb986bf3523be9f
+    sha256: b1a9523c784c3a53c33c65f5774aa260fcc10396348cae01b96739c47101af10
     role: DEPENDENCY_ARTIFACT
   - uri: repo://changes/st-0904/contracts/public-projection-runtime.v2.yaml
     bytes: 4503
-    sha256: 210961b25d78bc3f9f7994855eea425a813b9e978d52709fa26618f2653a5463
+    sha256: 62b4caad968901be8f9d5aa0fff33bb43c7e0fa0580669f0409ed52acb8d65fc
     role: DEPENDENCY_ARTIFACT
   - uri: repo://changes/st-1001/contracts/public-app-shell-runtime.v2.yaml
     bytes: 11431
@@ -153,8 +153,8 @@ source_artifacts:
     sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
     role: DEPENDENCY_ARTIFACT
   - uri: repo://package.json
-    bytes: 1850
-    sha256: 3cd73015d86ec56c0ed5657230e8da4fdfdef6e327b5ba51c223887b7de67828
+    bytes: 1906
+    sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
     role: LOCKED_TOOLCHAIN
   - uri: repo://package-lock.json
     bytes: 271352
@@ -169,12 +169,12 @@ generated_artifacts:
     artifact_role: EXACT_RECORDED_TYPESCRIPT_SOURCE
     media_type: text/typescript
     bytes: 5066
-    sha256: f8e993d0ba8f1b0ef128422812e0ee900d156906f08d2a754c7f75a7f66ae2ec
+    sha256: 0e18d34b79b48ceca8678ca54639fbab40e2e74fb8b1ee4004186920f2b377f8
   - uri: repo://changes/st-1002/generated/public-article-renderer-recorded.v2.json
     artifact_role: DETERMINISTIC_RENDERER_VIEW_FIXTURE
     media_type: application/json
     bytes: 5229
-    sha256: 866c7348e6a08806ed16fa14cbed4cbdc80f39c22d1982e1c56c16921f8ecc99
+    sha256: b19b67f6530b66004d50754f015f394cd033d07451106d5b3a6db9a5a648bc3b
 generation:
   owner: repo://scripts/build_st1002_public_article_renderer.py
   command: .venv/bin/python scripts/build_st1002_public_article_renderer.py

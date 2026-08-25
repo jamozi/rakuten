@@ -156,7 +156,7 @@
   },
   "sourceBinding": {
     "fixtureHashVerifiedByOwner": true,
-    "fixtureSha256": "d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1",
+    "fixtureSha256": "a15edb77dcebb3f4b18c9f40737ebc949ab7564191a88052c5b8c54b3ddab7ce",
     "fixtureUri": "repo://changes/st-0904/generated/public-projection-recorded.v2.json",
     "profile": "ST0904_PUBLIC_PROJECTION_RECORDED_LOCAL_V2",
     "projectionHashVerifiedByOwner": true,

@@ -6,7 +6,7 @@ classification: LOCAL_RECORDED_NOINDEX_SSR_ARTICLE_PREVIEW_V2
 scope:
   exact_recorded_slug_count: 1
   source_fixture: changes/st-0904/generated/public-projection-recorded.v2.json
-  source_fixture_sha256: d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1
+  source_fixture_sha256: a15edb77dcebb3f4b18c9f40737ebc949ab7564191a88052c5b8c54b3ddab7ce
   source_projection_sha256: 4c5d4c8e2f2465d53d2ead84cd20e9ea9328b353854d0b365bcde63211ef1980
   internal_identifiers_rendered: false
   product_cards_rendered: false
