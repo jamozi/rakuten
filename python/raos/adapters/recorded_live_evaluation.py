@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+from collections.abc import Callable, Iterable
 import json
 from typing import NoReturn, SupportsIndex, cast, final
 
@@ -178,11 +179,15 @@ def _construct_mapping(
     loader: _UniqueSafeLoader, node: yaml.MappingNode, deep: bool = False
 ) -> dict[object, object]:
     result: dict[object, object] = {}
+    construct = cast(
+        Callable[[object, bool], object],
+        loader.construct_object,  # pyright: ignore[reportUnknownMemberType]
+    )
     for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+        key = construct(key_node, deep)
         if key == "<<" or key in result:
             _fail()
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = construct(value_node, deep)
     return result
 
 
@@ -196,7 +201,11 @@ def _yaml_document(value: object, *, allow_aliases: bool = False) -> dict[str, o
         _fail()
     try:
         text = value.decode("utf-8", errors="strict")
-        for token in yaml.scan(text):
+        scan = cast(
+            Callable[[str], Iterable[object]],
+            yaml.scan,  # pyright: ignore[reportUnknownMemberType]
+        )
+        for token in scan(text):
             if not allow_aliases and isinstance(token, (AliasToken, AnchorToken)):
                 _fail()
         parsed = yaml.load(text, Loader=_UniqueSafeLoader)
@@ -210,18 +219,24 @@ def _yaml_document(value: object, *, allow_aliases: bool = False) -> dict[str, o
 
 
 def _mapping(value: object, keys: frozenset[str] | None = None) -> dict[str, object]:
-    if type(value) is not dict or not all(type(key) is str for key in value):
+    if type(value) is not dict:
         _fail()
-    result = cast(dict[str, object], value)
+    mapping = cast(dict[object, object], value)
+    if not all(type(key) is str for key in mapping):
+        _fail()
+    result = cast(dict[str, object], mapping)
     if keys is not None and frozenset(result) != keys:
         _fail()
     return result
 
 
 def _items(value: object, maximum: int = 256) -> list[object]:
-    if type(value) is not list or len(value) > maximum:
+    if type(value) is not list:
         _fail()
-    return cast(list[object], value)
+    items = cast(list[object], value)
+    if len(items) > maximum:
+        _fail()
+    return items
 
 
 def _string(value: object, maximum: int = 512) -> str:
@@ -675,7 +690,7 @@ def _manifest_source_paths(contract: dict[str, object]) -> frozenset[str]:
         for value in _mapping(contract.get(section_name)).values():
             if type(value) is not dict:
                 continue
-            item = _mapping(value, frozenset({"path", "sha256"}))
+            item = _mapping(cast(object, value), frozenset({"path", "sha256"}))
             paths.add(_string(item.get("path")))
     for value in _items(contract.get("owned_sources"), 64):
         paths.add(_string(value))
@@ -757,7 +772,7 @@ def _verify_runtime_manifest(
         for section_value in _mapping(contract.get(section_name)).values():
             if type(section_value) is not dict:
                 continue
-            item = _mapping(section_value, frozenset({"path", "sha256"}))
+            item = _mapping(cast(object, section_value), frozenset({"path", "sha256"}))
             if sources.get(_string(item.get("path"))) != _sha(item.get("sha256")):
                 _fail()
 

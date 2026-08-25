@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import argparse
 import ast
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from decimal import Decimal
 import hashlib
 import json
@@ -73,7 +73,7 @@ CONTRACT_SHA256: Final = (
     "4252b0dd7c92a494b281ca406183b593b5d8ea6fb8b1f54d57c3d73efc6a1f65"
 )
 RUNTIME_CONTRACT_SHA256: Final = (
-    "aa337bcf043eb95ee9dfd094f5f6ea1d2b4d6216f391a91272f311010540763b"
+    "02f1592d11086f09b51a11b0f9fce92cff1467d64c4ad7bb05b7ee17bcc370d3"
 )
 BASE_COMMIT: Final = "71c709844d625ee26026b2ba8555a16fa351b982"
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
@@ -139,7 +139,7 @@ def _sha256(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
 
 
-def _repository_path(root: Path, relative: Path) -> Path:
+def _repository_path(root: object, relative: object) -> Path:
     if (
         not isinstance(root, Path)
         or not isinstance(relative, Path)
@@ -216,11 +216,15 @@ def _construct_mapping(
     loader: _UniqueSafeLoader, node: yaml.MappingNode, deep: bool = False
 ) -> dict[object, object]:
     result: dict[object, object] = {}
+    construct = cast(
+        Callable[[object, bool], object],
+        loader.construct_object,  # pyright: ignore[reportUnknownMemberType]
+    )
     for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+        key = construct(key_node, deep)
         if key == "<<" or key in result:
             _fail("SOURCE_PARSE_FAILED")
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = construct(value_node, deep)
     return result
 
 
@@ -230,15 +234,21 @@ _UniqueSafeLoader.add_constructor(
 
 
 def _mapping(value: object) -> dict[str, Any]:
-    if type(value) is not dict or not all(type(key) is str for key in value):
+    if type(value) is not dict:
         _fail("TYPE_MISMATCH")
-    return cast(dict[str, Any], value)
+    mapping = cast(dict[object, object], value)
+    if not all(type(key) is str for key in mapping):
+        _fail("TYPE_MISMATCH")
+    return cast(dict[str, Any], mapping)
 
 
 def _rows(value: object, maximum: int = 256) -> list[dict[str, Any]]:
-    if type(value) is not list or len(value) > maximum:
+    if type(value) is not list:
         _fail("TYPE_MISMATCH")
-    return [_mapping(row) for row in cast(list[object], value)]
+    rows = cast(list[object], value)
+    if len(rows) > maximum:
+        _fail("TYPE_MISMATCH")
+    return [_mapping(row) for row in rows]
 
 
 def _string(value: object, maximum: int = 512) -> str:
@@ -263,7 +273,11 @@ def _parse_yaml_bytes(content: bytes, *, allow_aliases: bool = False) -> dict[st
         _fail("SOURCE_PARSE_FAILED")
     try:
         text = content.decode("utf-8", errors="strict")
-        for token in yaml.scan(text):
+        scan = cast(
+            Callable[[str], Iterable[object]],
+            yaml.scan,  # pyright: ignore[reportUnknownMemberType]
+        )
+        for token in scan(text):
             if not allow_aliases and isinstance(token, (AliasToken, AnchorToken)):
                 _fail("SOURCE_PARSE_FAILED")
         parsed = yaml.load(text, Loader=_UniqueSafeLoader)
@@ -763,15 +777,6 @@ def _source_hashes(
     return {
         path.as_posix(): _sha256(_read(root, path))
         for path in sorted(paths, key=lambda item: item.as_posix())
-    }
-
-
-def _artifact(root: Path, relative: Path) -> dict[str, object]:
-    content = _read(root, relative)
-    return {
-        "uri": f"repo://{relative.as_posix()}",
-        "bytes": len(content),
-        "sha256": _sha256(content),
     }
 
 
