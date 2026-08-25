@@ -36,10 +36,10 @@ dependency_bindings:
     artifacts:
       - kind: GENERATED_LOCAL_BLOCKED_GATE_PACK
         uri: repo://changes/st-1607/generated/gate-evidence-pack.local-blocked.v1.json
-        sha256: b3ed3df7c3e94e356576543722bdb461fb8f5b861c5235c0c1b5aa9f31641ffa
+        sha256: 9fb64e6ea6e6c38869f02422fe45960fa72b0cca3e05af0f1d57f57a05ab8ec5
       - kind: MANIFEST
         uri: repo://changes/st-1607/manifest.yaml
-        sha256: 19798c032f0dc34b5baae98dfa600d6ec3de5e9a0364f9fedbf71b6209db63bb
+        sha256: 7efd7d57e6d1599461bca7903fe76c58cbd9a4969f3036b1a74ae26e7df415be
   st_1704_self_hosted:
     story_id: ST-1704
     role: LOCAL_ARTICLE_ARTIFACT_INPUT

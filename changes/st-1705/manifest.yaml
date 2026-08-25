@@ -6,7 +6,7 @@ source_artifact_count: 11
 source_artifacts:
 - uri: repo://changes/st-1705/contracts/pilot-security-recovery-signoff.v1.yaml
   bytes: 9964
-  sha256: dd554330b0b73850de018fadabc26b9db57a870db9bff6bb80dfcd4a8fe822b8
+  sha256: 4f1d7c0fe89a1492ea8352ae513e8e374170d01d7562073a635c743db3654257
 - uri: repo://changes/st-1705/contracts/pilot-signoff-evidence-input.v1.schema.json
   bytes: 8422
   sha256: 3a38ab7c4f57db962b07c5cb78782f5fa42a2d787eb78da3f954772352a684c1
@@ -21,7 +21,7 @@ source_artifacts:
   sha256: 4caa4c15565a3310fc1037bc349cd042bc02996b183b32ec858fbd7db1896ca3
 - uri: repo://scripts/build_st1705_pilot_signoff.py
   bytes: 69227
-  sha256: d8d227ed4fa83473662d388b5e56a1cad2395097b26e8252313830d52b22a867
+  sha256: 2efac6ccaff38d8e6fb95d464dcb4349f0bfb6bbb0f35237c81b339cc16187c2
 - uri: repo://tests/st1705/conftest.py
   bytes: 821
   sha256: 51afac507c58d9871ab79f5df3a5f2d6bb639fd1c86cc6135fc3375cb2999b86
@@ -73,10 +73,10 @@ bound_inputs:
   sha256: 60ab681822e1aa7c63584bb1b1f4cb6202f4f0dcbea572462dd3a3e7fa8c15f6
   classification: CANONICAL_AUTHORITY
 - uri: repo://changes/st-1607/generated/gate-evidence-pack.local-blocked.v1.json
-  sha256: b3ed3df7c3e94e356576543722bdb461fb8f5b861c5235c0c1b5aa9f31641ffa
+  sha256: 9fb64e6ea6e6c38869f02422fe45960fa72b0cca3e05af0f1d57f57a05ab8ec5
   classification: NON_ATTESTING_DEPENDENCY_INPUT
 - uri: repo://changes/st-1607/manifest.yaml
-  sha256: 19798c032f0dc34b5baae98dfa600d6ec3de5e9a0364f9fedbf71b6209db63bb
+  sha256: 7efd7d57e6d1599461bca7903fe76c58cbd9a4969f3036b1a74ae26e7df415be
   classification: NON_ATTESTING_DEPENDENCY_INPUT
 - uri: repo://changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml
   sha256: 49902bbbbfe791f313c68c7d450c47271972bbf94f7486d2837040fdbceb0371
@@ -106,7 +106,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1705/generated/pilot-security-recovery-signoff.local-blocked.v1.json
   bytes: 12742
-  sha256: dcafa129b6032cb455bf81741aa9ea3720a6564348bf4347b795752cb8f3de72
+  sha256: c6f6e85237c3aa19684e6ed3913ddb23913efb02574fb08b91709ee1f157d192
 transaction:
   model: TWO_OUTPUT_RECOVERABLE_ALL_OR_NOTHING
   writer_lock: STORY_DIRECTORY_FLOCK
