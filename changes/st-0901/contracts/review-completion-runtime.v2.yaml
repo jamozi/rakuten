@@ -18,9 +18,9 @@ bindings:
   review_checklist_version: 1.0.0
   review_checklist_sha256: 8373dbd354c751c699d02bc8c49b18074ae2e10a2ed0573ebd77d99103d3ea63
   st0805_policy_fixture_uri: repo://changes/st-0805/generated/policy-pass.v2.json
-  st0805_policy_fixture_sha256: 1e685c7d7f76cc0751d794146edde0fa948450c622d722c1062310ee6ab5c250
-  st0805_policy_report_sha256: be8106b9ee5774e0d11b989d7a888a735c7d5754e70d0fbe2796f07ef8a59e8d
-  st0805_finding_snapshot_sha256: 226ec3c3580afb086bfd5431ecf5fefcc1bfc5613b631e25a82f468c476575b0
+  st0805_policy_fixture_sha256: 75797ab838b37b482ecfd30312101e4103dc7301a4ee57e0f6ce544a845300b9
+  st0805_policy_report_sha256: c878a107d845aa9df4c30ce1b990fb3c814dc10d1a21ea6ac3074e6885c007c7
+  st0805_finding_snapshot_sha256: 29a2fa3d208022de73f4e2b67bd778a56987b187570d3ae4ac0c4cf7765ee1fa
   st0805_receipt_sequence: 1
 fixture:
   fixture_id: 018f3e90-7b00-7000-8000-000000000900
