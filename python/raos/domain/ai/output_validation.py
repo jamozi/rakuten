@@ -10,7 +10,7 @@ numeric, order, or Claim mapping.
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from datetime import datetime, timezone
 from enum import Enum
@@ -18,7 +18,7 @@ import json
 import math
 import re
 from types import MappingProxyType
-from typing import Final, NoReturn, SupportsIndex, cast, final
+from typing import Any, Final, NoReturn, SupportsIndex, cast, final
 from uuid import RFC_4122, UUID
 
 from jsonschema import Draft202012Validator, FormatChecker  # type: ignore[import-untyped]
@@ -42,45 +42,45 @@ from raos.domain.evidence.claim_evidence import (
 VALIDATOR_VERSION: Final = "ST0705_AI_OUTPUT_VALIDATION_V1"
 PROFILE_REGISTRY_VERSION: Final = "ST0705_TASK_VALIDATION_PROFILES_V1"
 TRUSTED_PROFILE_REGISTRY_SHA256: Final = Sha256Digest(
-    "1831c39897914faa3695eef1b2ca8239d3172f937f00511d173aa41a3074592b"
+    "b3f19c2145e2cc003c94f6964e959eb546cee0d9bd053eaf855e03acbca8098b"
 )
 TRUSTED_PROFILE_SHA256_BY_TASK: Final[Mapping[str, Sha256Digest]] = MappingProxyType(
     {
         "AIT-001": Sha256Digest(
-            "793e838ce9759df6723bd1999a78b8f6218d1a7780d70e591d326b4ccbb66bc9"
+            "247246de42a0898db6010d14b92a28852c8ad1d47618b3edac685ce7cf85bcd5"
         ),
         "AIT-002": Sha256Digest(
-            "00bd4d28b03f393a891123e6cd8bbcea137e0d4cbfbb1b1c5883b9235bb8081f"
+            "fcd6fd7d7c3ceb4e06ecb2d21d6cd20144b877e4bfc2d1a2c5aca1f778b72791"
         ),
         "AIT-003": Sha256Digest(
-            "df0a198f024a9f502a5956e1a01237b9e90c225fa327682a537854a280e5e458"
+            "26fb5c750af63ca25e787a6bca285452f3f3358af9f8739323cdb548499511e9"
         ),
         "AIT-004": Sha256Digest(
-            "8f7da839bd86a4ecb2e19bdd91ec75f9cc431a2f9890b2bd20b95d1b62ebd876"
+            "2a0f86668ef6c18efe1a4b67ea87c3c079340d16b79fb716de4bd8ed6914c26f"
         ),
         "AIT-005": Sha256Digest(
-            "0b10082b00eaae2f4c2cd9fa2ed011ae6c208fa6581e498807a2650cd2afa791"
+            "6ec82abd12772a79991f67c43e18e2bbddbd6553cd50bac6282ac9e61f13795f"
         ),
         "AIT-006": Sha256Digest(
-            "222c3d185479a1d23cbbd644c0ea69cbe0a95cfb770ee8735c243063f4490bc0"
+            "9a2d5305472cee1368e226d8dcdc3a9f48bfe9a1569d9a400351baf7c40a11a8"
         ),
         "AIT-007": Sha256Digest(
-            "3547341852135be1aade8904ce1375819d94b38f3db2b8b4cc8f9fa99120a238"
+            "79773c164f91cdae433e72a5e05df90e1f6bb45bfbe682b6c61f22cbb3371a06"
         ),
         "AIT-008": Sha256Digest(
-            "4de4b9353650c9a4c3768fc503919fba7926467e1b49bb7c6cde1f0df6e92943"
+            "da8108a2264cb652cce251a90d40fe1e503b837214976af9f65f157a5a6f3160"
         ),
         "AIT-009": Sha256Digest(
-            "08be66fc05d4a4850a2a63b5b262f385324631082d9e70cce82a824308f26c7d"
+            "c6da22f063119fa6686b4b67f0b5213783e06bd5166f74638bfddfa3a0e76c9a"
         ),
         "AIT-010": Sha256Digest(
-            "557a4334344f1e529dada1687ea7e96ed1bd0e8584b8cd4789e9bd024e6623df"
+            "e8460cd3d5c8e934d545b2dea8f2944b78af1c5095a7a07da0b5147913229ec3"
         ),
         "AIT-011": Sha256Digest(
-            "7cfd46f094693ea34d452acaa9de191a8f648d598a9ddbeb690c8ceb500d3f35"
+            "764d6fb52a0a78ecadf1eb128951424240999acc047568094f9cd3185ee111c4"
         ),
         "AIT-012": Sha256Digest(
-            "6c6223e8089093d70ba04843cfb5f48db72b2c4888c0260cd5165dd6034e6cd4"
+            "dd06b3524ac36abb1108a93dfdc8afd7322e10c678db6c7a5b186bb6efb107d5"
         ),
     }
 )
@@ -299,10 +299,6 @@ def canonical_validation_time(value: object) -> datetime:
     """Return an immutable UTC snapshot using the evaluator's exact time rule."""
 
     return _require_utc(value)
-
-
-def _enum_value(value: Enum | None) -> str | None:
-    return None if value is None else cast(str, value.value)
 
 
 @dataclass(frozen=True, slots=True, repr=False)
@@ -1521,7 +1517,14 @@ def _schema_findings(
             schema_document,
             format_checker=FormatChecker(),
         )
-        errors = tuple(validator.iter_errors(document))
+        errors = tuple(
+            cast(
+                Iterable[object],
+                validator.iter_errors(  # pyright: ignore[reportUnknownMemberType]
+                    cast(Any, document)
+                ),
+            )
+        )
     except SchemaError, ValueError, TypeError, json.JSONDecodeError:
         return (), (), False
     except Exception:
@@ -1571,14 +1574,18 @@ def _canonical_uuid_formats(schema_document: object, document: object) -> bool:
         current: object = root
         for raw_token in reference[2:].split("/"):
             token = raw_token.replace("~1", "/").replace("~0", "~")
-            if type(current) is not dict or token not in current:
+            if type(current) is not dict:
                 return None
-            current = cast(dict[str, object], current)[token]
+            current_map = cast(Mapping[str, object], current)
+            if token not in current_map:
+                return None
+            current = current_map[token]
         return cast(dict[str, object], current) if type(current) is dict else None
 
     def walk(node: object, instance: object, depth: int) -> bool:
         nonlocal visits
         visits += 1
+        instance_type = type(instance)
         if visits > _MAX_TEXT_VISITS or depth > _MAX_POINTER_DEPTH:
             return False
         if type(node) is not dict:
@@ -1595,27 +1602,27 @@ def _canonical_uuid_formats(schema_document: object, document: object) -> bool:
                 for branch in cast(list[object], branches)
             ):
                 return False
-        if schema_node.get("format") == "uuid" and type(instance) is str:
+        if schema_node.get("format") == "uuid" and instance_type is str:
             try:
-                parsed = UUID(instance)
+                parsed = UUID(cast(str, instance))
             except ValueError, AttributeError:
                 return False
             if parsed.int == 0 or parsed.variant != RFC_4122 or str(parsed) != instance:
                 return False
         properties = schema_node.get("properties")
-        if type(instance) is dict and type(properties) is dict:
-            instance_map = cast(dict[str, object], instance)
-            for key, child_schema in cast(dict[str, object], properties).items():
+        if instance_type is dict and type(properties) is dict:
+            instance_map = cast(Mapping[str, object], instance)
+            property_map = cast(Mapping[str, object], properties)
+            for key, child_schema in property_map.items():
                 if key in instance_map and not walk(
                     child_schema, instance_map[key], depth + 1
                 ):
                     return False
         items = schema_node.get("items")
-        if type(instance) is list and type(items) is dict:
-            if any(
-                not walk(items, item, depth + 1)
-                for item in cast(list[object], instance)
-            ):
+        if instance_type is list and type(items) is dict:
+            item_schema = cast(Mapping[str, object], items)
+            instance_items = cast(Sequence[object], instance)
+            if any(not walk(item_schema, item, depth + 1) for item in instance_items):
                 return False
         return True
 

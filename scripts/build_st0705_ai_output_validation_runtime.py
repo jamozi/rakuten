@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Iterable
 import ctypes
 from dataclasses import dataclass
 import errno
@@ -17,7 +18,7 @@ import sys
 from typing import Final, NoReturn, cast
 
 import yaml
-from yaml.tokens import AliasToken, AnchorToken, TagToken
+from yaml.tokens import AliasToken, AnchorToken, TagToken, Token
 
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
@@ -106,10 +107,10 @@ MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 EXPECTED_PROFILE_IDS: Final = tuple(f"AIT-{number:03d}" for number in range(1, 13))
 PINNED_INPUTS: Final[dict[Path, str]] = {
     TASK_REGISTRY_PATH: "33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07",
-    CONTEXT_CONTRACT_PATH: "b684e534268de79e4b118713f07932cfa71d10bda2e092003f00985f76811eaf",
+    CONTEXT_CONTRACT_PATH: "7879f0ecc83020fb95a6ec2e6576643f2406f31cfc6f1205f8e828d3743effc3",
     ALIGNMENT_PATH: "7b141fdb7e401ee886efe59f65e9bdff6be4af566deca73d29ebc50a1f200477",
     PROVIDER_PATH: "179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991",
-    COVERAGE_PATH: "97996a564e6fe21a417f06110fbb7dfd66d605bd2fa43aa9f19e9a4c11592c81",
+    COVERAGE_PATH: "5e292cc4a257ec3be2dc1cc0e2e66c68afc51e2e216c5610bd563f642022ca2b",
     Path(
         "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md"
     ): "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
@@ -225,10 +226,20 @@ def _construct_mapping(
 ) -> dict[object, object]:
     result: dict[object, object] = {}
     for key_node, value_node in node.value:
-        key = loader.construct_object(key_node, deep=deep)
+        key = cast(
+            object,
+            loader.construct_object(  # pyright: ignore[reportUnknownMemberType]
+                key_node, deep=deep
+            ),
+        )
         if type(key) is not str or key in result:
             _fail()
-        result[key] = loader.construct_object(value_node, deep=deep)
+        result[key] = cast(
+            object,
+            loader.construct_object(  # pyright: ignore[reportUnknownMemberType]
+                value_node, deep=deep
+            ),
+        )
     return result
 
 
@@ -276,10 +287,13 @@ def _sha(data: bytes) -> str:
 
 def _load_yaml_bytes(data: bytes) -> dict[str, object]:
     try:
-        for token in yaml.scan(data):
+        for token in cast(
+            Iterable[Token],
+            yaml.scan(data),  # pyright: ignore[reportUnknownMemberType]
+        ):
             if isinstance(token, (AliasToken, AnchorToken, TagToken)):
                 _fail()
-        loaded = yaml.load(data, Loader=_StrictLoader)
+        loaded: object = yaml.load(data, Loader=_StrictLoader)
     except St0705BuildError:
         raise
     except Exception:
@@ -299,7 +313,7 @@ def _load_json_bytes(data: bytes) -> dict[str, object]:
         return result
 
     try:
-        loaded = json.loads(
+        loaded: object = json.loads(
             data,
             object_pairs_hook=pairs,
             parse_constant=lambda _value: _fail(),
@@ -318,15 +332,21 @@ def load_contract(root: Path = REPO_ROOT) -> dict[str, object]:
 
 
 def _mapping(value: object) -> dict[str, object]:
-    if type(value) is not dict or any(type(key) is not str for key in value):
+    if type(value) is not dict:
         _fail()
-    return cast(dict[str, object], value)
+    raw = cast(dict[object, object], value)
+    if any(type(key) is not str for key in raw):
+        _fail()
+    return cast(dict[str, object], raw)
 
 
 def _sequence(value: object) -> list[object]:
-    if type(value) is not list or len(value) > 10_000:
+    if type(value) is not list:
         _fail()
-    return cast(list[object], value)
+    items = cast(list[object], value)
+    if len(items) > 10_000:
+        _fail()
+    return items
 
 
 def _string(value: object) -> str:
@@ -1423,8 +1443,7 @@ def _replace_generated(artifacts: tuple[tuple[Path, bytes], ...]) -> None:
     if (
         not artifacts
         or any(
-            not isinstance(path, Path)
-            or not path.is_absolute()
+            not path.is_absolute()
             or type(payload) is not bytes
             or not payload
             or len(payload) > MAX_SOURCE_BYTES

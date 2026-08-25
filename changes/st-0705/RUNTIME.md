@@ -21,11 +21,18 @@ strict-output, disabled tool/network/state/storage, and zero-action semantics.
 Changing bytes and merely updating a digest cannot admit an unsafe context
 contract.
 
+The current context contract also pins the current ST-0701 registry manifest
+and ST-0604 Source Packet reference boundary. Those transitive bindings remain
+non-executable: they do not create a context pack, approve a packet, or grant a
+provider call.
+
 ST-0605 evidence coverage is accepted only through an exact binding of the
 output, Article Version, Article body, Source Packet version/content, complete
 Claim set, evaluation input, and validated report hashes.  A valid blocked
 coverage report blocks the candidate; corrupt or incomplete coverage evidence
-is unevaluable.  AI-output AST is not converted to Content AST here.
+is unevaluable. The coverage-domain source itself is hash-bound to the current
+ST-0605 implementation, including its ST-0604 V2 attestation binding.
+AI-output AST is not converted to Content AST here.
 
 The following frozen-schema limitations intentionally remain fail closed:
 

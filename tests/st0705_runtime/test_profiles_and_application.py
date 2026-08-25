@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone, tzinfo
+import hashlib
 from pathlib import Path
+from typing import cast
 
 import pytest
 
@@ -50,7 +52,10 @@ def test_owner_generator_is_reproducible_and_all_profiles_are_exact(
     for profile in profiles:
         schema = ROOT / profile.output_schema_path
         assert schema.is_file()
-        assert generator._sha(schema.read_bytes()) == profile.output_schema_sha256.value
+        assert (
+            hashlib.sha256(schema.read_bytes()).hexdigest()
+            == profile.output_schema_sha256.value
+        )
         checks = set(profile.required_runtime_checks) | set(
             profile.prompt_required_runtime_checks
         )
@@ -61,7 +66,7 @@ def test_owner_generator_is_reproducible_and_all_profiles_are_exact(
 def test_all_profiles_bind_the_repaired_st0702_context_contract(
     trusted_profiles: TrustedTaskValidationProfiles,
 ) -> None:
-    expected = "b684e534268de79e4b118713f07932cfa71d10bda2e092003f00985f76811eaf"
+    expected = "7879f0ecc83020fb95a6ec2e6576643f2406f31cfc6f1205f8e828d3743effc3"
     for profile in trusted_profiles.values():
         context_receipts = profile.required_semantic_receipts[:2]
         assert tuple(item.receipt_kind for item in context_receipts) == (
@@ -82,7 +87,11 @@ def test_profile_capability_gaps_versions_and_disabled_lifecycle_are_explicit(
     ait009 = trusted_profiles.get("AIT-009")
     ait011 = trusted_profiles.get("AIT-011")
     ait012 = trusted_profiles.get("AIT-012")
-    assert all(item is not None for item in (ait004, ait005, ait009, ait011, ait012))
+    assert ait004 is not None
+    assert ait005 is not None
+    assert ait009 is not None
+    assert ait011 is not None
+    assert ait012 is not None
     assert [item.pointer for item in ait004.schema_version_locators] == [
         "/schema_version",
         "/article/schema_version",
@@ -108,9 +117,9 @@ def test_registry_is_content_addressed_and_runtime_lookup_is_immutable() -> None
         load_trusted_ai_output_validation_profiles(payload + b" ")
     profiles = load_trusted_ai_output_validation_profiles(payload)
     with pytest.raises(TypeError):
-        TRUSTED_PROFILE_SHA256_BY_TASK["AIT-001"] = TRUSTED_PROFILE_SHA256_BY_TASK[
-            "AIT-002"
-        ]  # type: ignore[index]
+        cast(dict[str, object], TRUSTED_PROFILE_SHA256_BY_TASK)["AIT-001"] = (
+            TRUSTED_PROFILE_SHA256_BY_TASK["AIT-002"]
+        )
     with pytest.raises(RecordedAiOutputValidationError):
         TrustedTaskValidationProfiles(
             profiles={item.task_id: item for item in profiles.values()},
@@ -170,6 +179,10 @@ class _ChangingTimezone(tzinfo):
     def dst(self, value: datetime | None) -> timedelta:
         del value
         return timedelta(0)
+
+    def tzname(self, value: datetime | None) -> str:
+        del value
+        return "changing"
 
 
 @pytest.mark.parametrize(

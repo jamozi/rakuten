@@ -53,17 +53,22 @@ These commands provide local deterministic artifact evidence only. They do not
 constitute formal TST-019/TST-020, runtime, provider, staging, release, or
 production evidence.
 
-## 2026-08-24 ST-0702 provenance reconciliation
+## 2026-08-25 predecessor provenance reconciliation
 
-ST-0705 now binds the repaired ST-0702 owner commit
-`3fc1bd8b3135ecefaa05989b90906ecab8380119`. The historical plan pins all nine
-current ST-0702 owner artifacts, while the runtime requires both context and
-taint receipts to bind the current context-contract hash. Reconciliation is
-semantic, not hash-only: both builders reject drift in typed-manifest handling,
-task-scoped Source Packet requirements, required/audit manifest checks,
-allowlist/denylist enforcement, disabled tools/network/state/storage, strict
-structured output, fail-closed build/action counts, and no external action.
+ST-0705 now binds the current ST-0702 owner commit
+`28627d017e92e9749cabcd81ed0584b963585b84`. The historical plan pins all nine
+current ST-0702 owner artifacts and the current ST-0605 reference boundary,
+while the runtime requires both context and taint receipts to bind the current
+context-contract hash and pins the current ST-0605 coverage domain. The ST-0702
+contract in turn binds the current ST-0701 registry manifest and ST-0604 Source
+Packet reference bytes. Reconciliation is semantic, not hash-only: both
+builders reject drift in typed-manifest handling, task-scoped Source Packet
+requirements, required/audit manifest checks, allowlist/denylist enforcement,
+disabled tools/network/state/storage, strict structured output, fail-closed
+build/action counts, and no external action.
 
 This reconciliation grants no runtime packing, provider, persistence,
 publication, approval, release, staging, or Production authority. An old
-ST-0702 receipt remains invalid after the owner contract changes.
+ST-0702 receipt remains invalid after the owner contract changes. The rebound
+ST-0605 bytes do not turn a historical unapproved Source Packet projection into
+an approval or coverage receipt.

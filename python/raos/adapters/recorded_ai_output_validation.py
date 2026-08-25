@@ -75,9 +75,12 @@ def _pairs(values: list[tuple[str, object]]) -> dict[str, object]:
 
 
 def _mapping(value: object, keys: frozenset[str]) -> dict[str, object]:
-    if type(value) is not dict or frozenset(value) != keys:
+    if type(value) is not dict:
         _fail()
-    return cast(dict[str, object], value)
+    raw = cast(dict[object, object], value)
+    if any(type(key) is not str for key in raw) or frozenset(raw) != keys:
+        _fail()
+    return cast(dict[str, object], raw)
 
 
 def _string(value: object) -> str:
@@ -105,15 +108,21 @@ def _integer(value: object) -> int:
 
 
 def _strings(value: object) -> tuple[str, ...]:
-    if type(value) is not list or len(value) > _MAX_PROFILE_COLLECTION:
+    if type(value) is not list:
         _fail()
-    return tuple(_string(item) for item in cast(list[object], value))
+    items = cast(list[object], value)
+    if len(items) > _MAX_PROFILE_COLLECTION:
+        _fail()
+    return tuple(_string(item) for item in items)
 
 
 def _items(value: object, *, maximum: int = _MAX_PROFILE_COLLECTION) -> list[object]:
-    if type(value) is not list or len(value) > maximum:
+    if type(value) is not list:
         _fail()
-    return cast(list[object], value)
+    items = cast(list[object], value)
+    if len(items) > maximum:
+        _fail()
+    return items
 
 
 def _local_environment(value: object) -> bool:
@@ -164,6 +173,7 @@ class TrustedTaskValidationProfiles:
     """Content-addressed immutable lookup for exactly twelve owner profiles."""
 
     __slots__ = ("_profiles",)
+    _profiles: Mapping[str, TaskValidationProfile]
 
     def __init__(
         self,
@@ -171,17 +181,16 @@ class TrustedTaskValidationProfiles:
         profiles: Mapping[str, TaskValidationProfile],
         trust_anchor: object,
     ) -> None:
-        if (
-            trust_anchor is not _TRUST_ANCHOR_SENTINEL
-            or type(profiles) is not dict
-            or tuple(sorted(profiles))
-            != tuple(f"AIT-{number:03d}" for number in range(1, 13))
-            or any(
-                type(item) is not TaskValidationProfile for item in profiles.values()
-            )
+        if trust_anchor is not _TRUST_ANCHOR_SENTINEL or type(profiles) is not dict:
+            _fail()
+        raw_profiles = cast(dict[str, TaskValidationProfile], profiles)
+        if tuple(sorted(raw_profiles)) != tuple(
+            f"AIT-{number:03d}" for number in range(1, 13)
+        ) or any(
+            type(item) is not TaskValidationProfile for item in raw_profiles.values()
         ):
             _fail()
-        self._profiles = MappingProxyType(dict(profiles))
+        self._profiles = MappingProxyType(dict(raw_profiles))
 
     def get(self, task_id: str) -> TaskValidationProfile | None:
         if type(task_id) is not str:
@@ -389,6 +398,7 @@ def load_trusted_ai_output_validation_profiles(
             }
         ),
     )
+    profile_rows = _items(root["profiles"])
     if (
         header
         != {
@@ -400,12 +410,11 @@ def load_trusted_ai_output_validation_profiles(
             "authority": "NONE",
             "production_eligible": False,
         }
-        or type(root["profiles"]) is not list
-        or len(cast(list[object], root["profiles"])) != 12
+        or len(profile_rows) != 12
     ):
         _fail()
     profiles: dict[str, TaskValidationProfile] = {}
-    for raw in _items(root["profiles"], maximum=12):
+    for raw in profile_rows:
         profile = _load_profile(raw)
         if profile.task_id in profiles:
             _fail()
@@ -492,12 +501,12 @@ def load_recorded_ai_output_validation_fixture(
         ),
     )
     profile = profiles.get(_string(case["task_id"]))
+    receipt_rows = _items(case["semantic_receipts"])
     if (
         profile is None
         or _string(case["task_code"]) != profile.task_code
         or type(case["output"]) is not dict
-        or type(case["semantic_receipts"]) is not list
-        or len(cast(list[object], case["semantic_receipts"])) > _MAX_PROFILE_COLLECTION
+        or len(receipt_rows) > _MAX_PROFILE_COLLECTION
     ):
         _fail()
     try:
@@ -528,7 +537,7 @@ def load_recorded_ai_output_validation_fixture(
         item.receipt_kind: item for item in profile.required_semantic_receipts
     }
     receipts: list[SemanticReceiptBinding] = []
-    for raw in _items(case["semantic_receipts"]):
+    for raw in receipt_rows:
         row = _mapping(
             raw,
             frozenset(
