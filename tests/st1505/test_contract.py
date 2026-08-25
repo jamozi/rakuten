@@ -222,7 +222,7 @@ PREDECESSORS = {
         "story_id": "ST-1504",
         "owner_generator_uri": "repo://scripts/build_st1504_github_oidc.py",
         "owner_generator_sha256": (
-            "24268932c010afe9ff1b6e003d06cb402b637fa9cfb07e4ff8f712761205938c"
+            "4e7ff7664326a754b89039bb4c5fcd399e629c3197814da5b79260a54d01bdb0"
         ),
         "handoff_uri": (
             "repo://changes/st-1504/"
@@ -238,20 +238,20 @@ PREDECESSORS = {
             "repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml"
         ),
         "contract_sha256": (
-            "3cb7faf3a5c2515bf76150ed8cc9e5dc109bb5a519c5b15c0727b1bfe20bc4c8"
+            "20558e50a78c5d8be62a553858445578cc3fdd39fd285de3a92fe5cd5b5d9257"
         ),
         "contract_semantic_sha256": (
-            "f0a8a5ca57f34f8b983aa547f8b5f036ee91e0cc9acb63813da64e62a317d2db"
+            "0eac1cba01ca2218f4f9adf734f58e748bf8c355425427516aab1d79d17bc91f"
         ),
         "plan_uri": (
             "repo://infra/terraform/deployment-identity/"
             "github-oidc.reference-plan.v1.json"
         ),
         "plan_sha256": (
-            "2bbdc8579473be7df47167be57e0c0ec7d3c1f800ffc9afea1b3270adfa9aff8"
+            "7316a9f71cfea72edf071757ead8b44403362d106eb986d146193a27d658d6e6"
         ),
         "plan_semantic_sha256": (
-            "20f3e810ce17aa546b88a7510f8d5fa4dd249593ca233e7bcd8fb37211310f51"
+            "38e1e8bc7a500ca9961c78949c6697fbadf099d3378822731b3fc72a24b35e3e"
         ),
         "action_counts": {"create": 0, "update": 0, "delete": 0},
     },

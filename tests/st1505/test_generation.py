@@ -92,7 +92,7 @@ PREDECESSOR_INPUTS = (
     ),
     (
         "changes/st-0107/contracts/pr-governance.v1.yaml",
-        "b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92",
+        "a573506749efd1bfed3c11a021ad56d10fbea901566cc1483547df60d364bf45",
     ),
     (
         "changes/st-0107/ruleset-policy.v1.json",
@@ -105,19 +105,19 @@ PREDECESSOR_INPUTS = (
     ),
     (
         "changes/st-1504/contracts/github-oidc-deployment.v1.yaml",
-        "3cb7faf3a5c2515bf76150ed8cc9e5dc109bb5a519c5b15c0727b1bfe20bc4c8",
+        "20558e50a78c5d8be62a553858445578cc3fdd39fd285de3a92fe5cd5b5d9257",
     ),
     (
         "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json",
-        "2bbdc8579473be7df47167be57e0c0ec7d3c1f800ffc9afea1b3270adfa9aff8",
+        "7316a9f71cfea72edf071757ead8b44403362d106eb986d146193a27d658d6e6",
     ),
     (
         "scripts/build_st1504_github_oidc.py",
-        "24268932c010afe9ff1b6e003d06cb402b637fa9cfb07e4ff8f712761205938c",
+        "4e7ff7664326a754b89039bb4c5fcd399e629c3197814da5b79260a54d01bdb0",
     ),
     (
         "changes/st-1504/manifest.yaml",
-        "f75cecdea748d6bd174753be87c35d681daf0ff3b8e45d671f3cea0573c8765e",
+        "ad2da9ab4738e5c78144cdb039a35a36a74fbed796724814495e2f279112f7c9",
     ),
     (
         "python/raos/domain/deployment_identity.py",

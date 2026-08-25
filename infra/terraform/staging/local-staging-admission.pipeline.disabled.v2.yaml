@@ -18,7 +18,7 @@ activation:
 pipeline:
   fixture_id: st1505-fixture-local-admission-v2
   pipeline_id: st1505-pipeline-local-admission-v2
-  contract_sha256: 3177f52b7ed2dbf9f8651ce2961d9a8c21d679c750e13e54a876d0e5f09f5fca
+  contract_sha256: 03621bb572ae84f6dd2110d98593f4c1ea71aecd86b7d8ea90cfc80135f8c4de
   phases:
   - SAFETY_BOUNDARY
   - ARTIFACT_ADMISSION

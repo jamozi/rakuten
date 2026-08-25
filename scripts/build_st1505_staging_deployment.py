@@ -167,7 +167,7 @@ PREDECESSOR_SOURCES: Final = {
         "a19e6eec9dac3c5f46b34538189bc2cac95836e57762925d53823f9948497d27"
     ),
     "changes/st-0107/contracts/pr-governance.v1.yaml": (
-        "b387255fa65577051203b0fb1f935d5340c0d00f1285fd25557a38776fb07d92"
+        "a573506749efd1bfed3c11a021ad56d10fbea901566cc1483547df60d364bf45"
     ),
     "changes/st-0107/ruleset-policy.v1.json": (
         "e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5"
@@ -177,16 +177,16 @@ PREDECESSOR_SOURCES: Final = {
         "36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04"
     ),
     "changes/st-1504/contracts/github-oidc-deployment.v1.yaml": (
-        "3cb7faf3a5c2515bf76150ed8cc9e5dc109bb5a519c5b15c0727b1bfe20bc4c8"
+        "20558e50a78c5d8be62a553858445578cc3fdd39fd285de3a92fe5cd5b5d9257"
     ),
     "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json": (
-        "2bbdc8579473be7df47167be57e0c0ec7d3c1f800ffc9afea1b3270adfa9aff8"
+        "7316a9f71cfea72edf071757ead8b44403362d106eb986d146193a27d658d6e6"
     ),
     "scripts/build_st1504_github_oidc.py": (
-        "24268932c010afe9ff1b6e003d06cb402b637fa9cfb07e4ff8f712761205938c"
+        "4e7ff7664326a754b89039bb4c5fcd399e629c3197814da5b79260a54d01bdb0"
     ),
     "changes/st-1504/manifest.yaml": (
-        "f75cecdea748d6bd174753be87c35d681daf0ff3b8e45d671f3cea0573c8765e"
+        "ad2da9ab4738e5c78144cdb039a35a36a74fbed796724814495e2f279112f7c9"
     ),
     "python/raos/domain/deployment_identity.py": (
         "7808bbe1ced665f0e7c184574eeb760c80278966e5c61d832f63d734efc52f13"
@@ -821,10 +821,10 @@ EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
     "d4f680a468ab1246734595394d7e2b1edefa6a590e33c418f7c0c9b487e30448"
 )
 EXPECTED_CONTRACT_SEMANTIC_SHA256: Final = (
-    "187e1d2ec5f36f91d78163004a821a4d257e40fc8e039adc07d4ad05e549a308"
+    "05a6e65104522354273b54493faa004675d4010e742af67996a1ce074adad416"
 )
 EXPECTED_RUNTIME_CONTRACT_SEMANTIC_SHA256: Final = (
-    "3177f52b7ed2dbf9f8651ce2961d9a8c21d679c750e13e54a876d0e5f09f5fca"
+    "03621bb572ae84f6dd2110d98593f4c1ea71aecd86b7d8ea90cfc80135f8c4de"
 )
 PREDECESSOR_SEMANTIC_SHA256: Final = {
     "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml": (
@@ -859,10 +859,10 @@ PREDECESSOR_SEMANTIC_SHA256: Final = {
         "e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282"
     ),
     "changes/st-1504/contracts/github-oidc-deployment.v1.yaml": (
-        "f0a8a5ca57f34f8b983aa547f8b5f036ee91e0cc9acb63813da64e62a317d2db"
+        "0eac1cba01ca2218f4f9adf734f58e748bf8c355425427516aab1d79d17bc91f"
     ),
     "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json": (
-        "20f3e810ce17aa546b88a7510f8d5fa4dd249593ca233e7bcd8fb37211310f51"
+        "38e1e8bc7a500ca9961c78949c6697fbadf099d3378822731b3fc72a24b35e3e"
     ),
 }
 PREDECESSOR_SPECIFICATIONS: Final = (

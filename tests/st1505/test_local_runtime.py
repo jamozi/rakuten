@@ -36,7 +36,7 @@ def test_runtime_contract_is_closed_hash_bound_and_local_only(
     runtime_document: dict[str, Any], runtime_spec: LocalStagingAdmissionSpec
 ) -> None:
     assert runtime_spec.semantic_sha256 == (
-        "3177f52b7ed2dbf9f8651ce2961d9a8c21d679c750e13e54a876d0e5f09f5fca"
+        "03621bb572ae84f6dd2110d98593f4c1ea71aecd86b7d8ea90cfc80135f8c4de"
     )
     assert runtime_spec.action_counts == tuple(
         (name, 0) for name in EXTERNAL_ACTION_NAMES

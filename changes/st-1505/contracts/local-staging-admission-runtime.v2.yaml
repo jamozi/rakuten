@@ -28,9 +28,9 @@ predecessor_bindings:
   ST-1504:
     story_id: ST-1504
     contract_uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
-    contract_sha256: 3cb7faf3a5c2515bf76150ed8cc9e5dc109bb5a519c5b15c0727b1bfe20bc4c8
+    contract_sha256: 20558e50a78c5d8be62a553858445578cc3fdd39fd285de3a92fe5cd5b5d9257
     reference_plan_uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
-    reference_plan_sha256: 2bbdc8579473be7df47167be57e0c0ec7d3c1f800ffc9afea1b3270adfa9aff8
+    reference_plan_sha256: 7316a9f71cfea72edf071757ead8b44403362d106eb986d146193a27d658d6e6
     required_status: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE
     required_activation: DISABLED
     required_external_actions: 0
@@ -55,7 +55,7 @@ pipeline:
 identity_boundary:
   source_story: ST-1504
   source_manifest_uri: repo://changes/st-1504/manifest.yaml
-  source_manifest_sha256: f75cecdea748d6bd174753be87c35d681daf0ff3b8e45d671f3cea0573c8765e
+  source_manifest_sha256: ad2da9ab4738e5c78144cdb039a35a36a74fbed796724814495e2f279112f7c9
   source_activation_port_uri: repo://python/raos/ports/deployment_identity.py
   source_activation_port_sha256: 34659b7fbcc113221e9890f14ab7cb8435af58b9e3722fc094beeec1a0d5de45
   policy_id: st1504-policy-repository-inert-v1

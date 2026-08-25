@@ -27,7 +27,7 @@
     "sbom_binding_verified": true
   },
   "classification": "DETERMINISTIC_RECORDED_LOCAL_ONLY_NOT_STAGING_EVIDENCE",
-  "contract_sha256": "3177f52b7ed2dbf9f8651ce2961d9a8c21d679c750e13e54a876d0e5f09f5fca",
+  "contract_sha256": "03621bb572ae84f6dd2110d98593f4c1ea71aecd86b7d8ea90cfc80135f8c4de",
   "external_evidence": {
     "formal_tst_009": "NOT_EXECUTED",
     "formal_tst_022": "NOT_EXECUTED",
@@ -61,7 +61,7 @@
     "strategy": "EXPAND_MIGRATE_CONTRACT"
   },
   "pipeline_id": "st1505-pipeline-local-admission-v2",
-  "result_sha256": "80b41b346e55efc59bb6b04f0a95462a393a0c4e66501a9f4370365005662ce8",
+  "result_sha256": "437a3fc0bf71723f1d5b8dd930392502dd9d02552a55a6024aa416f854bd450c",
   "rollback_restore": {
     "external_actions": 0,
     "formal_restore": "NOT_EXECUTED",
@@ -94,7 +94,7 @@
       "phase": "ROLLBACK_RESTORE_SIMULATION"
     },
     {
-      "evidence_sha256": "046beb7dfcf99f86ea37ddcea1698b16ea0fa9cc5940518fdb9c45fbee9e1a55",
+      "evidence_sha256": "4ccc61f8f99d5c753e68030502393ad22a24feba2c02b8c140a2f3c0b1f69f9c",
       "phase": "LOCAL_ADMISSION_COMPLETE"
     }
   ],
