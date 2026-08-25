@@ -53,10 +53,10 @@ GENERATION_COMMAND: Final = (
 )
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
 HELPER_SHA256: Final = (
-    "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 CONTRACT_SHA256: Final = (
-    "b88ddf693dbbed7b4165a72087cd60a282592b3f9e77de9c5db7f86115e8ecac"
+    "f07294fd61a59b5127dfaa6c35583f92612d5be5bbf35f9b0c77a4c28eeaea83"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -242,12 +242,12 @@ DEPENDENCY_INPUTS: Final = (
     (
         "ST-0903",
         "changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-        "29a986318f337443c2810df6a40f085dc565ba0e324e0ddc90164fff96f9004f",
+        "43c4d87836ca5bed6887bb5db6de35189f1d263c3f3669ae3986f8b7b2b4b88a",
     ),
     (
         "ST-0306",
         "changes/st-0306/contracts/database-roles-grants.v1.yaml",
-        "b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3",
+        "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206",
     ),
 )
 

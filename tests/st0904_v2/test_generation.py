@@ -101,7 +101,7 @@ def test_generated_article_and_route_validate_against_public_openapi() -> None:
         ),
         (
             lambda value: value.replace(
-                "6f18ed11cbed99c57dac757875ce4ab3e1fab09cc24710c1fd7bce7e5823cd99",
+                "b28e259b64241c7dc595fbdadb45ed4c2d99443d85c2584b4532388dbf4141e3",
                 "a" * 64,
                 1,
             ),

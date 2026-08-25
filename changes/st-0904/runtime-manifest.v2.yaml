@@ -8,7 +8,7 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: application/yaml
   bytes: 4503
-  sha256: 210961b25d78bc3f9f7994855eea425a813b9e978d52709fa26618f2653a5463
+  sha256: 62b4caad968901be8f9d5aa0fff33bb43c7e0fa0580669f0409ed52acb8d65fc
 - uri: repo://scripts/build_st0904_public_projection_runtime_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -17,8 +17,8 @@ source_artifacts:
 - uri: repo://python/raos/domain/publishing/public_projection_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 32804
-  sha256: bae7931903279130d4ad59b386eede5cb1fce1de2e570a812a88ef067a564634
+  bytes: 32812
+  sha256: ef2a032ea5e4de9027e5f3f2e1d56f92dc39b90ea0dbc169001a516182b5f4c2
 - uri: repo://python/raos/ports/public_projection_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -78,7 +78,7 @@ source_artifacts:
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
   bytes: 4826
-  sha256: 2f3988298bd32cfe44e7ae01df009ce284b47944b9b44c2d4d55ce572e6ef015
+  sha256: 39fbf8a108ac342ec76d2c7922fcb1be2204db1ecde2bc289fc59d9ae7e7fecc
 - uri: repo://tests/st0904_v2/test_static_boundary.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -153,12 +153,12 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
   bytes: 12357
-  sha256: 6f18ed11cbed99c57dac757875ce4ab3e1fab09cc24710c1fd7bce7e5823cd99
+  sha256: b28e259b64241c7dc595fbdadb45ed4c2d99443d85c2584b4532388dbf4141e3
 - uri: repo://changes/st-0903/runtime-manifest.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 13326
-  sha256: 094b8ecc79fd76605025cf816eff65d9bad05778496c7e612d5b43e7c2081157
+  sha256: e5a37bc89e9a51ec48f47573f832f4893f27dc1ff580a0b677767f5ccfedbf69
 - uri: repo://python/raos/domain/publishing/publication_snapshot_v2.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
@@ -183,27 +183,27 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
   bytes: 2562
-  sha256: 93c44f4d303fef41304962bf4235e19491bcb45c555aecb66a87dcd34e6bca07
+  sha256: ca2c057e5afd61b13edbaac340f3d0b6013c0781b3fd5c64c4202bf9d1ee6412
 - uri: repo://changes/st-0805/generated/policy-pass.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
-  bytes: 73579
-  sha256: 7c0c7d1eda772d501c7278ba045c32c599153ed5bd63063673e0b5cf67d45849
+  bytes: 73573
+  sha256: 75797ab838b37b482ecfd30312101e4103dc7301a4ee57e0f6ce544a845300b9
 - uri: repo://changes/st-0901/generated/review-completion-pass.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
   bytes: 1456
-  sha256: 57587322562eae4a2b58bebfc6b917e39fb05f077cf7268deb4056563950a361
+  sha256: 84778adfb038bbd8665dbcf3fcf9bce9e23e0afe248f11a2f8bd10846cde32ec
 - uri: repo://changes/st-0807/generated/seo-render-recorded.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
   bytes: 13776
-  sha256: ab0ad1cf37368834cb4a9e3856938dce73e0525f26c45acc2255372cb0f593ef
+  sha256: 1d11c5cac089881f439a66fa4ae955effd14ed8a6ab97b7bd66e9b5c252c734c
 - uri: repo://changes/st-0306/contracts/database-roles-grants.v1.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 4705
-  sha256: b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3
+  sha256: 93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206
 - uri: repo://changes/st-0306/generated/database-roles-grants.v1.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
@@ -218,22 +218,22 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 12960
-  sha256: b88ddf693dbbed7b4165a72087cd60a282592b3f9e77de9c5db7f86115e8ecac
+  sha256: f07294fd61a59b5127dfaa6c35583f92612d5be5bbf35f9b0c77a4c28eeaea83
 - uri: repo://changes/st-0904/generated/public-projection-reference-plan.v1.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
   bytes: 17894
-  sha256: 8ebab29c77836cb537f744b03531a326b026ba799c1d40f20f6fedfa26550e4e
+  sha256: bd40c921dde98f0e9d77e697b752cda7310b6b501d077d3130f2e31aa151f133
 - uri: repo://changes/st-0904/manifest.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 7855
-  sha256: f7fd5da0236cc50cf360b1f913e086a866d87fb4cede92808c7331bbc2c85e12
+  sha256: 136bc0b583ccf44fce21232a319d317fd95b8205aa9a5f2572af2d76bc051a3c
 - uri: repo://scripts/build_st0904_public_projection_reference_plan.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
   bytes: 45785
-  sha256: 2d751fd9af52102a1229554cb428e2561ef15abdb80309196d716191f4d06c04
+  sha256: 58cfd88a61eee699cf11bd305b8a6ce65e91a73ca6aa806db685d20378df9642
 - uri: repo://scripts/secure_generated_publication.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
@@ -245,12 +245,12 @@ generated_artifacts:
   artifact_role: GENERATED_RECORDED_PUBLIC_PROJECTION_FIXTURE
   media_type: application/json
   bytes: 7764
-  sha256: d73a112ccb1879e0f8e8fc5f6f52e75d1c9c2802d761aede81003f9343fefce1
+  sha256: a15edb77dcebb3f4b18c9f40737ebc949ab7564191a88052c5b8c54b3ddab7ce
 - uri: repo://python/raos/adapters/recorded_public_projection_fixture_v2.py
   artifact_role: GENERATED_RUNTIME_MODULE
   media_type: text/x-python
   bytes: 8441
-  sha256: c922e32ccc95ff90fa1f793a4285001deeea8c26cbaecfc00ac50fa6fa66a763
+  sha256: 237641fce2b6a60a74afeb30f4bd8174566b202ae0b13f5eeb54ac1595dc594e
 generation:
   owner: repo://scripts/build_st0904_public_projection_runtime_v2.py
   command: .venv/bin/python scripts/build_st0904_public_projection_runtime_v2.py

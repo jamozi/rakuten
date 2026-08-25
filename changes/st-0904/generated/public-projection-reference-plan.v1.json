@@ -154,12 +154,12 @@
   },
   "provenance": {
     "source_contract": "repo://changes/st-0904/contracts/public-projection-reference-plan.v1.yaml",
-    "source_contract_sha256": "b88ddf693dbbed7b4165a72087cd60a282592b3f9e77de9c5db7f86115e8ecac",
+    "source_contract_sha256": "f07294fd61a59b5127dfaa6c35583f92612d5be5bbf35f9b0c77a4c28eeaea83",
     "generated_by": "repo://scripts/build_st0904_public_projection_reference_plan.py",
     "generation_command": "uv run --locked --no-sync python scripts/build_st0904_public_projection_reference_plan.py",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "00d791a17bea96a5dc4608876c37907effe53ebb3a8f7786ca7b98823faff5b9"
+      "sha256": "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     },
     "digest_classification": "LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT"
   },
@@ -167,14 +167,14 @@
     {
       "story_id": "ST-0903",
       "artifact": "repo://changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml",
-      "sha256": "29a986318f337443c2810df6a40f085dc565ba0e324e0ddc90164fff96f9004f",
+      "sha256": "43c4d87836ca5bed6887bb5db6de35189f1d263c3f3669ae3986f8b7b2b4b88a",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "NONEXECUTABLE_REFERENCE_PLAN_NO_PROJECTABLE_SNAPSHOT"
     },
     {
       "story_id": "ST-0306",
       "artifact": "repo://changes/st-0306/contracts/database-roles-grants.v1.yaml",
-      "sha256": "b35770ca163ce53b8df31b62b1a0f92322997bc699bb7a251e15b036af4408f3",
+      "sha256": "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206",
       "connection_status": "NOT_EXECUTED",
       "authority_status": "PUBLIC_READMODEL_ROLE_CANDIDATE_ONLY"
     }
