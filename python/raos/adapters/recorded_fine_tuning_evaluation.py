@@ -157,15 +157,21 @@ def _reject_float(value: str) -> NoReturn:
 
 
 def _mapping(value: object, keys: frozenset[str]) -> dict[str, object]:
-    if type(value) is not dict or frozenset(value) != keys:
+    if type(value) is not dict:
         _invalid()
-    return cast(dict[str, object], value)
+    mapping = cast(dict[object, object], value)
+    if frozenset(mapping) != keys:
+        _invalid()
+    return cast(dict[str, object], mapping)
 
 
 def _list(value: object, length: int) -> list[object]:
-    if type(value) is not list or len(value) != length:
+    if type(value) is not list:
         _invalid()
-    return cast(list[object], value)
+    items = cast(list[object], value)
+    if len(items) != length:
+        _invalid()
+    return items
 
 
 def _string(value: object, maximum: int = 160) -> str:
