@@ -267,21 +267,21 @@ EXPECTED_PREDECESSOR_HASHES: Final = {
         "42164321018c35f61d71c215d2a0c764d8e04c973dff56194db79e96926046e0"
     ),
     STAGING_CONTRACT_PATH.as_posix(): (
-        "d7cddea6d006f620835c4facf1e76e62ce7f69d9ac0ae8d824b7ff67237764e5"
+        "be104a13490d4c39139047e101092e1b2f3541d45c9277e2d9937915a731e2f0"
     ),
     STAGING_PLAN_PATH.as_posix(): (
-        "7dc30e3f703c2e3f6a4e40729ae122d033f4a84b75646b1c1609e4da6c95d968"
+        "0c607b4c207068432477db1aa2a2e9598092964dbdce470d8b537c7022eaf105"
     ),
     STAGING_MANIFEST_PATH.as_posix(): (
-        "97d3cda19e6f2c35543c0056a5f2bbbfdaab3ed9cadbc273dfc9ff198a587137"
+        "0e970c5749a8bd94fcc8ae5e695d11a4b927028fcc168838618998ac48075aeb"
     ),
 }
 EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES: Final = {
     "scripts/build_st1505_staging_deployment.py": (
-        "cd22f5fcf16cfd135b1ecac64ea65c0f8b9d86b60d812d0ab987ff6bc3a4f42d"
+        "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
     ),
     "scripts/build_st1506_production_deployment.py": (
-        "a55385ccdd8fb3f9740eb2cbb2c24c3ba67006a46e1612dd27cd9e0973b6cc7e"
+        "cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be"
     ),
 }
 
@@ -388,7 +388,23 @@ def _render_staging_owner_outputs(root: Path) -> tuple[bytes, bytes]:
             contract=dict(owner_contract)
         )
         owner_plan = staging_owner.render_reference_plan(owner_model)
-        owner_manifest = staging_owner.render_manifest(owner_model, owner_plan, root)
+        owner_runtime, owner_runtime_specification = (
+            staging_owner.load_and_validate_runtime_contract(root)
+        )
+        owner_local_pipeline = staging_owner.render_local_pipeline(
+            owner_runtime, owner_runtime_specification
+        )
+        owner_local_result = staging_owner.render_local_result(
+            owner_runtime_specification
+        )
+        owner_manifest = staging_owner.render_manifest(
+            owner_model,
+            owner_plan,
+            owner_local_pipeline,
+            owner_local_result,
+            owner_runtime_specification,
+            root,
+        )
     except (
         staging_owner.StagingDeploymentContractError,
         base.ProductionDeploymentContractError,
