@@ -144,7 +144,7 @@ def _canonical(value: object) -> bytes:
             separators=(",", ":"),
             sort_keys=True,
         ).encode("utf-8", errors="strict")
-    except TypeError, ValueError, UnicodeEncodeError, RecursionError:
+    except (TypeError, ValueError, UnicodeEncodeError, RecursionError):
         _fail()
 
 
