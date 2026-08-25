@@ -9,7 +9,7 @@ document:
 provenance:
   base_commit: 3b96731aa8435af35724237279d7f4b4726b7b59
   contract_uri: repo://changes/st-1908/contracts/fine-tuning-evaluation.v1.yaml
-  contract_sha256: 14de4f0057b45336ee8eaec83882d391928e6b7792afb8461faf658eb3b94b84
+  contract_sha256: 3ec51c4815e6c975f0adf823e9415348a0341121c24eac103e5b51085e458ebd
   fixture_uri: repo://changes/st-1908/fixtures/recorded/fine-tuning-candidate.synthetic.v1.json
   fixture_sha256: 5bfc483d7102ac8155f12d6d13f480039e079a0e011baad4692cfbb9b6515a43
   report_sha256: 8188e832365bc7c7740a7ed7b9a0dabbc876f03aec24db241830824296534422
@@ -18,7 +18,7 @@ source_artifact_count: 20
 source_artifacts:
 - uri: repo://changes/st-1908/contracts/fine-tuning-evaluation.v1.yaml
   bytes: 11015
-  sha256: 14de4f0057b45336ee8eaec83882d391928e6b7792afb8461faf658eb3b94b84
+  sha256: 3ec51c4815e6c975f0adf823e9415348a0341121c24eac103e5b51085e458ebd
 - uri: repo://changes/st-1908/fixtures/recorded/fine-tuning-candidate.synthetic.v1.json
   bytes: 2858
   sha256: 5bfc483d7102ac8155f12d6d13f480039e079a0e011baad4692cfbb9b6515a43
@@ -36,7 +36,7 @@ source_artifacts:
   sha256: 7ff6114618f11f05c80611de4a00945708baf46c53bee54b456680934b6ee1f6
 - uri: repo://python/raos/domain/ai/fine_tuning_evaluation.py
   bytes: 35119
-  sha256: a501502333dc52697205c3f33e41a21b7f78d327eb5193b7ea762d0d9b816c5b
+  sha256: f4812b903693357f7c3f7c6f8e01d3715dcfe1f6eec870878aa8b2e82193e968
 - uri: repo://python/raos/ports/fine_tuning_evaluation.py
   bytes: 556
   sha256: 8e72256e245cdb0003026ff20533f828562691a5b60568fe7c345ce2782cd671
