@@ -77,13 +77,13 @@ DEPENDENCY_BINDINGS: Final = MappingProxyType(
     {
         Path(
             "changes/st-0308/contracts/persistence-runtime.v2.yaml"
-        ): "8ee74a13fd1232f86887e988cbeb475421f2ed17c6a73257968e62ecc0dc54c7",
+        ): "0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4",
         Path(
             "changes/st-0401/generated/local-auth-runtime.v2.json"
-        ): "3a13c251f5cea13583696b04ae5131c81030abec75805d6773a118ce7902db6d",
+        ): "42d7133f717fb315da0fe5688c8e86cc73ca03e8c232b0ac8b9c20e34d407ad7",
         Path(
             "changes/st-0401/generated/local-auth-runtime-manifest.v2.json"
-        ): "b95e37fccc9ebe7fe2fa9d002eaa9a20b075ebeca7c2d6f9624900e936407581",
+        ): "4e970a9ec68149ebe28bd6392257206501a08189097d7b83d34240476e0c82b5",
     }
 )
 OWNED_IMPLEMENTATION_PATHS: Final = (

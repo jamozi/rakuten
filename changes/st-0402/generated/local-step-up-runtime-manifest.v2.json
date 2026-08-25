@@ -36,7 +36,7 @@
   "generated_artifacts": [
     {
       "path": "changes/st-0402/generated/local-step-up-runtime.v2.json",
-      "sha256": "01e70daeb3800d6f5b9c1453a016f47e27555fb5c74a715d1f05e6368d8f1db4"
+      "sha256": "dd582c4f4e42dc7f4682cb4e2349047f880298cc7fe6ba5da5be8ae953bf472f"
     }
   ],
   "generation": {
@@ -52,7 +52,7 @@
     },
     {
       "path": "scripts/build_st0402_local_step_up_runtime.py",
-      "sha256": "286fe99ab80d4a5c687ab31ea4e8d0353133438d9f09bbf328350228b9f38bb5"
+      "sha256": "e54be2208fefe5e9b6d1c0b6cdf824a922aa920c849c587277556f9d74a82073"
     },
     {
       "path": "scripts/secure_generated_publication.py",
@@ -112,15 +112,15 @@
     },
     {
       "path": "changes/st-0308/contracts/persistence-runtime.v2.yaml",
-      "sha256": "8ee74a13fd1232f86887e988cbeb475421f2ed17c6a73257968e62ecc0dc54c7"
+      "sha256": "0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4"
     },
     {
       "path": "changes/st-0401/generated/local-auth-runtime.v2.json",
-      "sha256": "3a13c251f5cea13583696b04ae5131c81030abec75805d6773a118ce7902db6d"
+      "sha256": "42d7133f717fb315da0fe5688c8e86cc73ca03e8c232b0ac8b9c20e34d407ad7"
     },
     {
       "path": "changes/st-0401/generated/local-auth-runtime-manifest.v2.json",
-      "sha256": "b95e37fccc9ebe7fe2fa9d002eaa9a20b075ebeca7c2d6f9624900e936407581"
+      "sha256": "4e970a9ec68149ebe28bd6392257206501a08189097d7b83d34240476e0c82b5"
     }
   ],
   "story_id": "ST-0402"
