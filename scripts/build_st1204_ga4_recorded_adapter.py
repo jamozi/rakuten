@@ -748,7 +748,7 @@ def _validate_exact_contract(contract: Mapping[str, object]) -> None:
         provenance.get("official_provider_references"),
         label="official_provider_references",
     )
-    if provider.get("retrieved_on") != "2026-08-06":
+    if provider.get("retrieved_on") != "2026-08-25":
         raise RuntimeError("official GA4 review date drifted")
     sources = _sequence(provider.get("sources"), label="official sources")
     if [_mapping(item, label="official source").get("subject") for item in sources] != [
