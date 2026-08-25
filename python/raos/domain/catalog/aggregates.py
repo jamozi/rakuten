@@ -9,6 +9,7 @@ import re
 from typing import NoReturn
 import unicodedata
 from urllib.parse import urlsplit
+from uuid import UUID
 
 from raos.domain.catalog.enums import (
     AffiliateLinkObservationValidationStatus,
@@ -1175,7 +1176,7 @@ class Offer:
     affiliate_link_observation_rows: tuple[AffiliateLinkObservation, ...] = ()
     offer_current_projection: OfferCurrentProjection | None = None
     _event_buffer: PendingEventBuffer[DomainEvent] = field(
-        default_factory=PendingEventBuffer, init=False, compare=False
+        default_factory=PendingEventBuffer[DomainEvent], init=False, compare=False
     )
 
     def __post_init__(self) -> None:
@@ -1234,23 +1235,21 @@ class Offer:
     def pending_events(self) -> tuple[DomainEvent, ...]:
         return self._event_buffer.pending_events()
 
-    def acknowledge_events(self, event_ids: tuple[object, ...]) -> None:
-        from uuid import UUID
-
+    def acknowledge_events(self, event_ids: tuple[UUID, ...]) -> None:
         if type(event_ids) is not tuple or any(
             type(item) is not UUID for item in event_ids
         ):
             _invalid()
-        self._event_buffer.acknowledge_events(event_ids)  # type: ignore[arg-type]
+        self._event_buffer.acknowledge_events(event_ids)
 
     def _record_event(self, event: DomainEvent) -> None:
         self._event_buffer.record(event)
 
     def _restore_acknowledged_events(self) -> None:
-        self._event_buffer._restore_acknowledged()
+        self._event_buffer.restore_acknowledged()
 
     def _finish_acknowledged_events(self) -> None:
-        self._event_buffer._finish_acknowledged()
+        self._event_buffer.finish_acknowledged()
 
     def __repr__(self) -> str:
         return "Offer(<redacted>)"

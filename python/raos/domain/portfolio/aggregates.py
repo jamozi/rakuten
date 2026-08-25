@@ -7,6 +7,7 @@ from datetime import date
 from decimal import Decimal
 from typing import NoReturn
 import unicodedata
+from uuid import UUID
 
 from raos.domain.iam.ids import (
     PrincipalId,
@@ -59,7 +60,6 @@ from raos.domain.shared.persistence import (
     YenMinor,
 )
 from raos.domain.shared.events import DomainEvent
-from raos.domain.shared.identity import EntityId
 from raos.domain.shared.persistence import PendingEventBuffer
 
 _MAX_BIGINT = (1 << 63) - 1
@@ -88,15 +88,6 @@ def _integer(value: object) -> None:
 
 def _decimal(value: object) -> None:
     if type(value) is not Decimal or not value.is_finite():
-        _invalid()
-
-
-def _nominal(value: object, module: str, name: str) -> None:
-    if (
-        not isinstance(value, EntityId)
-        or type(value).__module__ != module
-        or type(value).__name__ != name
-    ):
         _invalid()
 
 
@@ -509,7 +500,7 @@ class SiteState:
 class ActionCandidate:
     state: ActionCandidateState
     _event_buffer: PendingEventBuffer[DomainEvent] = field(
-        default_factory=PendingEventBuffer, init=False, compare=False
+        default_factory=PendingEventBuffer[DomainEvent], init=False, compare=False
     )
 
     def __post_init__(self) -> None:
@@ -519,23 +510,21 @@ class ActionCandidate:
     def pending_events(self) -> tuple[DomainEvent, ...]:
         return self._event_buffer.pending_events()
 
-    def acknowledge_events(self, event_ids: tuple[object, ...]) -> None:
-        from uuid import UUID
-
+    def acknowledge_events(self, event_ids: tuple[UUID, ...]) -> None:
         if type(event_ids) is not tuple or any(
             type(item) is not UUID for item in event_ids
         ):
             _invalid()
-        self._event_buffer.acknowledge_events(event_ids)  # type: ignore[arg-type]
+        self._event_buffer.acknowledge_events(event_ids)
 
     def _record_event(self, event: DomainEvent) -> None:
         self._event_buffer.record(event)
 
     def _restore_acknowledged_events(self) -> None:
-        self._event_buffer._restore_acknowledged()
+        self._event_buffer.restore_acknowledged()
 
     def _finish_acknowledged_events(self) -> None:
-        self._event_buffer._finish_acknowledged()
+        self._event_buffer.finish_acknowledged()
 
     def __repr__(self) -> str:
         return "ActionCandidate(<redacted>)"

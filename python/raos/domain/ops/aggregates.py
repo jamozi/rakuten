@@ -7,6 +7,7 @@ import hashlib
 import re
 from typing import NoReturn
 import unicodedata
+from uuid import UUID
 
 from raos.domain.iam.ids import CreatedByPrincipalId, PrincipalId
 from raos.domain.ops.enums import (
@@ -666,7 +667,7 @@ class Job:
     state: JobState
     job_attempt_rows: tuple[JobAttempt, ...] = ()
     _event_buffer: PendingEventBuffer[DomainEvent] = field(
-        default_factory=PendingEventBuffer,
+        default_factory=PendingEventBuffer[DomainEvent],
         init=False,
         compare=False,
     )
@@ -685,23 +686,21 @@ class Job:
     def pending_events(self) -> tuple[DomainEvent, ...]:
         return self._event_buffer.pending_events()
 
-    def acknowledge_events(self, event_ids: tuple[object, ...]) -> None:
-        from uuid import UUID
-
+    def acknowledge_events(self, event_ids: tuple[UUID, ...]) -> None:
         if type(event_ids) is not tuple or any(
             type(event_id) is not UUID for event_id in event_ids
         ):
             _invalid()
-        self._event_buffer.acknowledge_events(event_ids)  # type: ignore[arg-type]
+        self._event_buffer.acknowledge_events(event_ids)
 
     def _record_event(self, event: DomainEvent) -> None:
         self._event_buffer.record(event)
 
     def _restore_acknowledged_events(self) -> None:
-        self._event_buffer._restore_acknowledged()
+        self._event_buffer.restore_acknowledged()
 
     def _finish_acknowledged_events(self) -> None:
-        self._event_buffer._finish_acknowledged()
+        self._event_buffer.finish_acknowledged()
 
     def __repr__(self) -> str:
         return "Job(<redacted>)"

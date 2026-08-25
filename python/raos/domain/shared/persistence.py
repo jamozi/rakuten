@@ -37,6 +37,14 @@ def _invalid(code: str = "INVALID_PERSISTENCE_VALUE") -> NoReturn:
     raise ValueError(code) from None
 
 
+def _is_concrete_entity_id(value: object) -> bool:
+    return isinstance(value, EntityId) and type(value) is not EntityId
+
+
+def _is_event_identity(value: object) -> bool:
+    return isinstance(value, EventIdentity)
+
+
 def require_rfc3339_date_time(value: object) -> str:
     """Return one exact RFC 3339 date-time string or fail closed.
 
@@ -182,8 +190,7 @@ class StrongEtag:
         if (
             type(aggregate_type) is not str
             or not aggregate_type
-            or type(aggregate_id) is EntityId
-            or not isinstance(aggregate_id, EntityId)
+            or not _is_concrete_entity_id(aggregate_id)
             or type(version) is not AggregateVersion
         ):
             _invalid()
@@ -238,7 +245,7 @@ class PendingEventBuffer(Generic[EventT]):
         return self._pending
 
     def record(self, event: EventT) -> None:
-        if not isinstance(event, EventIdentity) or self._acknowledged:
+        if not _is_event_identity(event) or self._acknowledged:
             _invalid("EVENT_RECORDING_CONFLICT")
         if event.event_id in {candidate.event_id for candidate in self._pending}:
             _invalid("EVENT_RECORDING_CONFLICT")
@@ -253,13 +260,27 @@ class PendingEventBuffer(Generic[EventT]):
         self._acknowledged = self._pending
         self._pending = ()
 
-    def _restore_acknowledged(self) -> None:
+    def restore_acknowledged(self) -> None:
+        """Restore an acknowledged event snapshot after a known rollback."""
+
         if self._acknowledged:
             self._pending = self._acknowledged + self._pending
             self._acknowledged = ()
 
-    def _finish_acknowledged(self) -> None:
+    def finish_acknowledged(self) -> None:
+        """Discard an acknowledged event snapshot after a known commit."""
+
         self._acknowledged = ()
+
+    def _restore_acknowledged(self) -> None:
+        """Compatibility wrapper for the predecessor adapter-private seam."""
+
+        self.restore_acknowledged()
+
+    def _finish_acknowledged(self) -> None:
+        """Compatibility wrapper for the predecessor adapter-private seam."""
+
+        self.finish_acknowledged()
 
 
 __all__ = [

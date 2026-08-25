@@ -20,9 +20,6 @@ from raos.domain.shared.json_values import FrozenJsonObject
 from raos.domain.shared.persistence import require_rfc3339_date_time
 
 
-_SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
-
-
 def _invalid_payload() -> NoReturn:
     raise ValueError("INVALID_DOMAIN_EVENT") from None
 
@@ -37,33 +34,6 @@ def _uuid(value: object) -> UUID:
     if str(parsed) != value:
         _invalid_payload()
     return parsed
-
-
-def _artifact(value: object) -> None:
-    if type(value) is not FrozenJsonObject:
-        _invalid_payload()
-    allowed = frozenset({"artifact_id", "uri", "sha256", "content_type", "byte_size"})
-    if not {"artifact_id", "sha256"}.issubset(value):
-        _invalid_payload()
-    if not frozenset(value).issubset(allowed):
-        _invalid_payload()
-    _uuid(value["artifact_id"])
-    sha256 = value["sha256"]
-    if type(sha256) is not str or _SHA256.fullmatch(sha256) is None:
-        _invalid_payload()
-    uri = value["uri"] if "uri" in value else None
-    if uri is not None and (
-        type(uri) is not str or re.match(r"(?:s3|file)://", uri) is None
-    ):
-        _invalid_payload()
-    content_type = value["content_type"] if "content_type" in value else None
-    if content_type is not None and (
-        type(content_type) is not str or len(content_type) > 120
-    ):
-        _invalid_payload()
-    byte_size = value["byte_size"] if "byte_size" in value else None
-    if byte_size is not None and (type(byte_size) is not int or byte_size < 0):
-        _invalid_payload()
 
 
 def _validate_PolicyPolicyBundleActivated(
@@ -90,9 +60,10 @@ def _validate_PolicyPolicyBundleActivated(
         _invalid_payload()
     if type(payload["version_no"]) is not int:
         _invalid_payload()
+    bundle_sha256 = payload["bundle_sha256"]
     if (
-        type(payload["bundle_sha256"]) is not str
-        or re.fullmatch("^[0-9a-f]{64}$", payload["bundle_sha256"]) is None
+        type(bundle_sha256) is not str
+        or re.fullmatch("^[0-9a-f]{64}$", bundle_sha256) is None
     ):
         _invalid_payload()
     try:

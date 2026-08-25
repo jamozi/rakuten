@@ -60,13 +60,18 @@ class TransactionJoin:
     def __repr__(self) -> str:
         return "TransactionJoin(<redacted>)"
 
-    def _adapter_fields(self, owner_key: object) -> tuple[UUID, str]:
+    def adapter_fields(self, owner_key: object) -> tuple[UUID, str]:
         if owner_key is not self.__owner_key:
             _invalid()
         return self.__transaction_id, self.__context_digest
 
+    def _adapter_fields(self, owner_key: object) -> tuple[UUID, str]:
+        """Compatibility wrapper for the predecessor adapter-private seam."""
 
-def _issue_transaction_join(
+        return self.adapter_fields(owner_key)
+
+
+def issue_transaction_join(
     *, transaction_id: UUID, context_digest: str, owner_key: object
 ) -> TransactionJoin:
     """Adapter-private issuer; intentionally absent from ``__all__``."""
@@ -77,6 +82,9 @@ def _issue_transaction_join(
         owner_key,
         _issuer=_JOIN_ISSUER,
     )
+
+
+_issue_transaction_join = issue_transaction_join
 
 
 __all__ = ["TransactionJoin", "TransactionState"]

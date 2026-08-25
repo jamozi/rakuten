@@ -10,6 +10,7 @@ from raos.domain.catalog.ids import OfferId
 from raos.domain.shared.events import (
     DomainEvent,
     EVENT_BY_TYPE,
+    EventPayloadValidator,
     EventRuntimeBinding,
 )
 from raos.domain.shared.json_values import FrozenJsonArray, FrozenJsonObject
@@ -124,7 +125,7 @@ class CatalogAffiliateLinkInvalid(_CatalogOfferEvent):
 
 def _binding(
     event_class: type[_CatalogOfferEvent],
-    validator: object,
+    validator: EventPayloadValidator,
 ) -> EventRuntimeBinding:
     descriptor = EVENT_BY_TYPE[event_class.DESCRIPTOR_TYPE]
     if not callable(validator):

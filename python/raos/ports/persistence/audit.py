@@ -49,6 +49,10 @@ def _sensitive_key(key: str) -> bool:
     return any(marker in normalized for marker in _SENSITIVE_KEY_MARKERS)
 
 
+def _is_concrete_entity_id(value: object) -> bool:
+    return isinstance(value, EntityId) and type(value) is not EntityId
+
+
 def _sensitive_text(value: str) -> bool:
     if _SAFE_DETAIL_TEXT.fullmatch(value) is None or _HIGH_ENTROPY_TEXT.fullmatch(
         value
@@ -140,10 +144,7 @@ class AuditIntent:
             or _TOKEN.fullmatch(self.target_type) is None
             or (
                 self.target_id is not None
-                and (
-                    type(self.target_id) is EntityId
-                    or not isinstance(self.target_id, EntityId)
-                )
+                and (not _is_concrete_entity_id(self.target_id))
             )
             or self.outcome not in {"SUCCESS", "DENIED", "FAILED", "NOOP"}
             or type(self.reason) is not str

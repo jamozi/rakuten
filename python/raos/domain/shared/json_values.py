@@ -6,7 +6,7 @@ from collections.abc import Iterator, Mapping, Sequence
 import json
 import math
 from types import MappingProxyType
-from typing import NoReturn, TypeAlias, cast, overload
+from typing import NoReturn, TypeAlias, TypeGuard, cast, overload
 
 
 JsonScalar: TypeAlias = None | bool | int | float | str
@@ -33,6 +33,16 @@ def _key(value: object) -> str:
     return value
 
 
+def _is_mapping(value: object) -> TypeGuard[Mapping[object, object]]:
+    return isinstance(value, Mapping)
+
+
+def _is_sequence(value: object) -> TypeGuard[Sequence[object]]:
+    return isinstance(value, Sequence) and not isinstance(
+        value, (str, bytes, bytearray)
+    )
+
+
 def freeze_json(value: object, *, _depth: int = 0) -> JsonValue:
     if _depth > _MAX_DEPTH:
         _invalid()
@@ -50,7 +60,7 @@ def freeze_json(value: object, *, _depth: int = 0) -> JsonValue:
         return value
     if type(value) is FrozenJsonArray or type(value) is FrozenJsonObject:
         return value
-    if isinstance(value, Mapping):
+    if _is_mapping(value):
         if len(value) > _MAX_ITEMS:
             _invalid()
         pairs: list[tuple[str, JsonValue]] = []
@@ -62,7 +72,7 @@ def freeze_json(value: object, *, _depth: int = 0) -> JsonValue:
             seen.add(key)
             pairs.append((key, freeze_json(item, _depth=_depth + 1)))
         return FrozenJsonObject(tuple(sorted(pairs)))
-    if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+    if _is_sequence(value):
         if len(value) > _MAX_ITEMS:
             _invalid()
         return FrozenJsonArray(
@@ -136,6 +146,8 @@ class FrozenJsonObject(Mapping[str, JsonValue]):
     def from_mapping(cls, value: Mapping[str, object]) -> FrozenJsonObject:
         frozen = freeze_json(value)
         if type(frozen) is not cls:
+            _invalid()
+        if type(frozen) is not FrozenJsonObject:
             _invalid()
         return frozen
 

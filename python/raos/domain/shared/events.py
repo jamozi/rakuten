@@ -411,6 +411,18 @@ def _invalid() -> NoReturn:
     raise ValueError("INVALID_DOMAIN_EVENT") from None
 
 
+def _is_concrete_entity_id(value: object) -> bool:
+    return isinstance(value, EntityId) and type(value) is not EntityId
+
+
+def _is_concrete_event_class(value: object) -> bool:
+    return (
+        isinstance(value, type)
+        and value is not DomainEvent
+        and issubclass(value, DomainEvent)
+    )
+
+
 @dataclass(frozen=True, slots=True, repr=False)
 class DomainEvent:
     """Sealed base; concrete module-owned subclasses fix one descriptor."""
@@ -434,9 +446,7 @@ class DomainEvent:
             or self.event_id.variant != RFC_4122
         ):
             _invalid()
-        if type(self.aggregate_id) is EntityId or not isinstance(
-            self.aggregate_id, EntityId
-        ):
+        if not _is_concrete_entity_id(self.aggregate_id):
             _invalid()
         if type(self.aggregate_version) is not AggregateVersion:
             _invalid()
@@ -486,9 +496,7 @@ class EventRuntimeBinding:
     def __post_init__(self) -> None:
         if (
             type(self.descriptor) is not EventDescriptor
-            or not isinstance(self.event_class, type)
-            or self.event_class is DomainEvent
-            or not issubclass(self.event_class, DomainEvent)
+            or not _is_concrete_event_class(self.event_class)
             or type(self.payload_schema_sha256) is not str
             or self.payload_schema_sha256 != self.descriptor.schema_sha256
             or getattr(self.event_class, "DESCRIPTOR_TYPE", None)

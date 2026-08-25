@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from decimal import Decimal
 from typing import NoReturn
 import unicodedata
 
@@ -38,9 +37,6 @@ from raos.domain.shared.persistence import (
     AwareUtcDateTime,
     EmailAddress,
 )
-from raos.domain.shared.identity import EntityId
-
-_MAX_BIGINT = (1 << 63) - 1
 
 
 def _invalid() -> NoReturn:
@@ -55,25 +51,6 @@ def _text(value: object) -> None:
         or value != value.strip()
         or unicodedata.normalize("NFC", value) != value
         or any(unicodedata.category(character).startswith("C") for character in value)
-    ):
-        _invalid()
-
-
-def _integer(value: object) -> None:
-    if type(value) is not int or not 0 <= value <= _MAX_BIGINT:
-        _invalid()
-
-
-def _decimal(value: object) -> None:
-    if type(value) is not Decimal or not value.is_finite():
-        _invalid()
-
-
-def _nominal(value: object, module: str, name: str) -> None:
-    if (
-        not isinstance(value, EntityId)
-        or type(value).__module__ != module
-        or type(value).__name__ != name
     ):
         _invalid()
 

@@ -133,7 +133,8 @@ def _validate_AiJobSucceeded(
     if type(payload["task_code"]) is not str:
         _invalid_payload()
     _artifact(payload["output_artifact"])
-    if type(payload["usage_cost_jpy"]) is not int or payload["usage_cost_jpy"] < 0:
+    usage_cost_jpy = payload["usage_cost_jpy"]
+    if type(usage_cost_jpy) is not int or usage_cost_jpy < 0:
         _invalid_payload()
     if payload["validation_passed"] is not True:
         _invalid_payload()
@@ -263,7 +264,8 @@ def _validate_AiEvaluationCompletedV2(
     if parsed_evaluation_run_id != aggregate_id:
         _invalid_payload()
     _uuid(payload["suite_id"])
-    if type(payload["suite_version"]) is not int or payload["suite_version"] < 1:
+    suite_version = payload["suite_version"]
+    if type(suite_version) is not int or suite_version < 1:
         _invalid_payload()
     _uuid(payload["dataset_version_id"])
     if payload["baseline_evaluation_run_id"] is not None:
@@ -274,20 +276,20 @@ def _validate_AiEvaluationCompletedV2(
     _uuid(payload["resolved_model_id"])
     _uuid(payload["output_schema_version_id"])
     _uuid(payload["policy_bundle_version_id"])
+    code_git_sha = payload["code_git_sha"]
     if (
-        type(payload["code_git_sha"]) is not str
-        or len(payload["code_git_sha"]) < 40
-        or len(payload["code_git_sha"]) > 64
-        or re.fullmatch("^[0-9a-f]{40,64}$", payload["code_git_sha"]) is None
+        type(code_git_sha) is not str
+        or not 40 <= len(code_git_sha) <= 64
+        or re.fullmatch("^[0-9a-f]{40,64}$", code_git_sha) is None
     ):
         _invalid_payload()
     if type(payload["passed"]) is not bool:
         _invalid_payload()
+    result_manifest_sha256 = payload["result_manifest_sha256"]
     if (
-        type(payload["result_manifest_sha256"]) is not str
-        or len(payload["result_manifest_sha256"]) < 64
-        or len(payload["result_manifest_sha256"]) > 64
-        or re.fullmatch("^[0-9a-f]{64}$", payload["result_manifest_sha256"]) is None
+        type(result_manifest_sha256) is not str
+        or len(result_manifest_sha256) != 64
+        or re.fullmatch("^[0-9a-f]{64}$", result_manifest_sha256) is None
     ):
         _invalid_payload()
     try:
@@ -360,11 +362,11 @@ def _validate_AiReleaseDecisionApproved(
     _uuid(payload["evaluation_run_id"])
     if payload["judge_calibration_id"] is not None:
         _uuid(payload["judge_calibration_id"])
+    code_git_sha = payload["code_git_sha"]
     if (
-        type(payload["code_git_sha"]) is not str
-        or len(payload["code_git_sha"]) < 40
-        or len(payload["code_git_sha"]) > 64
-        or re.fullmatch("^[0-9a-f]{40,64}$", payload["code_git_sha"]) is None
+        type(code_git_sha) is not str
+        or not 40 <= len(code_git_sha) <= 64
+        or re.fullmatch("^[0-9a-f]{40,64}$", code_git_sha) is None
     ):
         _invalid_payload()
     if type(payload["phase"]) is not str or payload["phase"] not in (
@@ -372,11 +374,11 @@ def _validate_AiReleaseDecisionApproved(
         "ACTIVE",
     ):
         _invalid_payload()
+    decision_manifest_sha256 = payload["decision_manifest_sha256"]
     if (
-        type(payload["decision_manifest_sha256"]) is not str
-        or len(payload["decision_manifest_sha256"]) < 64
-        or len(payload["decision_manifest_sha256"]) > 64
-        or re.fullmatch("^[0-9a-f]{64}$", payload["decision_manifest_sha256"]) is None
+        type(decision_manifest_sha256) is not str
+        or len(decision_manifest_sha256) != 64
+        or re.fullmatch("^[0-9a-f]{64}$", decision_manifest_sha256) is None
     ):
         _invalid_payload()
     if type(payload["rollback_strategy"]) is not str or payload[
@@ -387,58 +389,51 @@ def _validate_AiReleaseDecisionApproved(
         _uuid(payload["rollback_release_decision_id"])
     if payload["rollback_runbook_artifact_id"] is not None:
         _uuid(payload["rollback_runbook_artifact_id"])
-    if payload["rollback_runbook_sha256"] is not None:
+    rollback_runbook_sha256 = payload["rollback_runbook_sha256"]
+    if rollback_runbook_sha256 is not None:
         if (
-            type(payload["rollback_runbook_sha256"]) is not str
-            or len(payload["rollback_runbook_sha256"]) < 64
-            or len(payload["rollback_runbook_sha256"]) > 64
-            or re.fullmatch("^[0-9a-f]{64}$", payload["rollback_runbook_sha256"])
-            is None
+            type(rollback_runbook_sha256) is not str
+            or len(rollback_runbook_sha256) != 64
+            or re.fullmatch("^[0-9a-f]{64}$", rollback_runbook_sha256) is None
         ):
             _invalid_payload()
-    if payload["canary_evidence_sha256"] is not None:
+    canary_evidence_sha256 = payload["canary_evidence_sha256"]
+    if canary_evidence_sha256 is not None:
         if (
-            type(payload["canary_evidence_sha256"]) is not str
-            or len(payload["canary_evidence_sha256"]) < 64
-            or len(payload["canary_evidence_sha256"]) > 64
-            or re.fullmatch("^[0-9a-f]{64}$", payload["canary_evidence_sha256"]) is None
+            type(canary_evidence_sha256) is not str
+            or len(canary_evidence_sha256) != 64
+            or re.fullmatch("^[0-9a-f]{64}$", canary_evidence_sha256) is None
         ):
             _invalid_payload()
+    canary_monitoring_sha256 = payload["canary_monitoring_sha256"]
     if (
-        type(payload["canary_monitoring_sha256"]) is not str
-        or len(payload["canary_monitoring_sha256"]) < 64
-        or len(payload["canary_monitoring_sha256"]) > 64
-        or re.fullmatch("^[0-9a-f]{64}$", payload["canary_monitoring_sha256"]) is None
+        type(canary_monitoring_sha256) is not str
+        or len(canary_monitoring_sha256) != 64
+        or re.fullmatch("^[0-9a-f]{64}$", canary_monitoring_sha256) is None
     ):
         _invalid_payload()
     try:
         require_rfc3339_date_time(payload["canary_started_at"])
     except ValueError:
         _invalid_payload()
-    if (
-        type(payload["canary_started_txid"]) is not int
-        or payload["canary_started_txid"] < 1
-    ):
+    canary_started_txid = payload["canary_started_txid"]
+    if type(canary_started_txid) is not int or canary_started_txid < 1:
         _invalid_payload()
     if payload["canary_completed_at"] is not None:
         try:
             require_rfc3339_date_time(payload["canary_completed_at"])
         except ValueError:
             _invalid_payload()
-    if payload["canary_completed_txid"] is not None:
-        if (
-            type(payload["canary_completed_txid"]) is not int
-            or payload["canary_completed_txid"] < 1
-        ):
+    canary_completed_txid = payload["canary_completed_txid"]
+    if canary_completed_txid is not None:
+        if type(canary_completed_txid) is not int or canary_completed_txid < 1:
             _invalid_payload()
     try:
         require_rfc3339_date_time(payload["approved_at"])
     except ValueError:
         _invalid_payload()
-    if (
-        type(payload["aggregate_version"]) is not int
-        or payload["aggregate_version"] < 1
-    ):
+    aggregate_version = payload["aggregate_version"]
+    if type(aggregate_version) is not int or aggregate_version < 1:
         _invalid_payload()
 
 
@@ -486,11 +481,8 @@ def _validate_AiReleaseDecisionRevoked(
     if parsed_release_decision_id != aggregate_id:
         _invalid_payload()
     _uuid(payload["task_definition_id"])
-    if (
-        type(payload["reason_code"]) is not str
-        or len(payload["reason_code"]) < 1
-        or len(payload["reason_code"]) > 100
-    ):
+    reason_code = payload["reason_code"]
+    if type(reason_code) is not str or not 1 <= len(reason_code) <= 100:
         _invalid_payload()
     if type(payload["rollback_strategy"]) is not str or payload[
         "rollback_strategy"
@@ -500,29 +492,24 @@ def _validate_AiReleaseDecisionRevoked(
         _uuid(payload["rollback_release_decision_id"])
     if payload["rollback_runbook_artifact_id"] is not None:
         _uuid(payload["rollback_runbook_artifact_id"])
-    if payload["rollback_runbook_sha256"] is not None:
+    rollback_runbook_sha256 = payload["rollback_runbook_sha256"]
+    if rollback_runbook_sha256 is not None:
         if (
-            type(payload["rollback_runbook_sha256"]) is not str
-            or len(payload["rollback_runbook_sha256"]) < 64
-            or len(payload["rollback_runbook_sha256"]) > 64
-            or re.fullmatch("^[0-9a-f]{64}$", payload["rollback_runbook_sha256"])
-            is None
+            type(rollback_runbook_sha256) is not str
+            or len(rollback_runbook_sha256) != 64
+            or re.fullmatch("^[0-9a-f]{64}$", rollback_runbook_sha256) is None
         ):
             _invalid_payload()
-    if payload["canary_completed_txid"] is not None:
-        if (
-            type(payload["canary_completed_txid"]) is not int
-            or payload["canary_completed_txid"] < 1
-        ):
+    canary_completed_txid = payload["canary_completed_txid"]
+    if canary_completed_txid is not None:
+        if type(canary_completed_txid) is not int or canary_completed_txid < 1:
             _invalid_payload()
     try:
         require_rfc3339_date_time(payload["revoked_at"])
     except ValueError:
         _invalid_payload()
-    if (
-        type(payload["aggregate_version"]) is not int
-        or payload["aggregate_version"] < 1
-    ):
+    aggregate_version = payload["aggregate_version"]
+    if type(aggregate_version) is not int or aggregate_version < 1:
         _invalid_payload()
 
 

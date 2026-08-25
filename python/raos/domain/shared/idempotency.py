@@ -177,7 +177,7 @@ class IdempotencyClaimHandle:
         del protocol
         raise TypeError("idempotency handle serialization is not supported")
 
-    def _adapter_fields(
+    def adapter_fields(
         self, transaction_id: UUID
     ) -> tuple[UUID, IdempotencyIdentity, RequestHash]:
         """Return the exact completion CAS identity to the owning adapter only."""
@@ -187,8 +187,15 @@ class IdempotencyClaimHandle:
             _invalid()
         return self.__record_id, self.__identity, self.__request_hash
 
+    def _adapter_fields(
+        self, transaction_id: UUID
+    ) -> tuple[UUID, IdempotencyIdentity, RequestHash]:
+        """Compatibility wrapper for the predecessor adapter-private seam."""
 
-def _issue_claim_handle(
+        return self.adapter_fields(transaction_id)
+
+
+def issue_claim_handle(
     *,
     record_id: UUID,
     identity: IdempotencyIdentity,
@@ -204,6 +211,9 @@ def _issue_claim_handle(
         transaction_id,
         _issuer=_HANDLE_ISSUER,
     )
+
+
+_issue_claim_handle = issue_claim_handle
 
 
 @dataclass(frozen=True, slots=True)

@@ -650,7 +650,7 @@ class PolicyBundle:
     state: PolicyBundleState
     bundle_rule_rows: tuple[BundleRuleBinding, ...] = ()
     _events: PendingEventBuffer[DomainEvent] = field(
-        default_factory=PendingEventBuffer, repr=False, compare=False
+        default_factory=PendingEventBuffer[DomainEvent], repr=False, compare=False
     )
 
     def __post_init__(self) -> None:
@@ -683,10 +683,10 @@ class PolicyBundle:
         self._events.record(event)
 
     def _restore_acknowledged_events(self) -> None:
-        self._events._restore_acknowledged()
+        self._events.restore_acknowledged()
 
     def _finish_acknowledged_events(self) -> None:
-        self._events._finish_acknowledged()
+        self._events.finish_acknowledged()
 
     def __repr__(self) -> str:
         return "PolicyBundle(<redacted>)"

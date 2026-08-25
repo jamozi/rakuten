@@ -1932,7 +1932,7 @@ class AiJob:
     ai_attempt_rows: tuple[AiAttemptState, ...] = ()
     usage_cost_rows: tuple[UsageCost, ...] = ()
     _events: PendingEventBuffer[DomainEvent] = field(
-        default_factory=PendingEventBuffer, repr=False, compare=False
+        default_factory=PendingEventBuffer[DomainEvent], repr=False, compare=False
     )
 
     def __post_init__(self) -> None:
@@ -1967,10 +1967,10 @@ class AiJob:
         self._events.record(event)
 
     def _restore_acknowledged_events(self) -> None:
-        self._events._restore_acknowledged()
+        self._events.restore_acknowledged()
 
     def _finish_acknowledged_events(self) -> None:
-        self._events._finish_acknowledged()
+        self._events.finish_acknowledged()
 
     def __repr__(self) -> str:
         return "AiJob(<redacted>)"
@@ -2027,7 +2027,7 @@ class EvaluationRun:
     evaluation_case_result_rows: tuple[EvaluationCaseResult, ...] = ()
     human_evaluation_rows: tuple[HumanEvaluation, ...] = ()
     _events: PendingEventBuffer[DomainEvent] = field(
-        default_factory=PendingEventBuffer, repr=False, compare=False
+        default_factory=PendingEventBuffer[DomainEvent], repr=False, compare=False
     )
 
     def __post_init__(self) -> None:
@@ -2068,10 +2068,10 @@ class EvaluationRun:
         self._events.record(event)
 
     def _restore_acknowledged_events(self) -> None:
-        self._events._restore_acknowledged()
+        self._events.restore_acknowledged()
 
     def _finish_acknowledged_events(self) -> None:
-        self._events._finish_acknowledged()
+        self._events.finish_acknowledged()
 
     def __repr__(self) -> str:
         return "EvaluationRun(<redacted>)"
@@ -2154,7 +2154,7 @@ class ReleaseDecision:
     state: ReleaseDecisionState
     release_approval_rows: tuple[ReleaseApproval, ...] = ()
     _events: PendingEventBuffer[DomainEvent] = field(
-        default_factory=PendingEventBuffer, repr=False, compare=False
+        default_factory=PendingEventBuffer[DomainEvent], repr=False, compare=False
     )
 
     def __post_init__(self) -> None:
@@ -2183,10 +2183,10 @@ class ReleaseDecision:
         self._events.record(event)
 
     def _restore_acknowledged_events(self) -> None:
-        self._events._restore_acknowledged()
+        self._events.restore_acknowledged()
 
     def _finish_acknowledged_events(self) -> None:
-        self._events._finish_acknowledged()
+        self._events.finish_acknowledged()
 
     def __repr__(self) -> str:
         return "ReleaseDecision(<redacted>)"
