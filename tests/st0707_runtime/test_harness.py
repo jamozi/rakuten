@@ -206,10 +206,10 @@ def test_exact_st0705_profile_manifest_output_and_runtime_bindings_survive(
     assert case.output_sha256 == report.output_sha256.value
     assert case.provider_exchange_sha256 == report.provider_exchange_sha256.value
     assert bundle.suite.profile_registry_sha256 == (
-        "8bd37a680ea67df1ff97463fda8b418680614acf709bcd6f61cad3ef15624cf3"
+        "7266bb90e673320fc64b9c5344fcfefbda864a8ce41da10c5857f68682e9c8ed"
     )
     assert bundle.suite.st0705_runtime_contract_sha256 == (
-        "0bdc3319b4f4c3c3a0363b17afdb9cd302e9bea49c128f37819331bb434baddb"
+        "25e8696211025ee2581b0318ca2758dbcd4dccccd37447be1e8ad84667dbb02d"
     )
 
 
