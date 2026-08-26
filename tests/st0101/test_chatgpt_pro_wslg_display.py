@@ -14,6 +14,9 @@ import pytest
 from scripts import chatgpt_pro_orchestrator as orchestrator
 
 
+pytestmark = pytest.mark.raos_owner_private
+
+
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 WRAPPER_PATH = REPOSITORY_ROOT / "scripts/chatgpt_pro_mcp.sh"
 MAKEFILE_PATH = REPOSITORY_ROOT / "Makefile"

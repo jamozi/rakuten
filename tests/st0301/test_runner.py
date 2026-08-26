@@ -271,6 +271,7 @@ def test_missing_required_password_open_flag_fails_closed(
     assert raised.value.code is runner.MigrationErrorCode.INVALID_PASSWORD_FILE
 
 
+@pytest.mark.serial
 @pytest.mark.parametrize("node_kind", ("fifo", "socket", "directory"))
 def test_special_password_leaf_fails_closed_without_blocking(
     tmp_path: Path,

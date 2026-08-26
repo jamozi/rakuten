@@ -37,6 +37,9 @@ from .test_rakuten_live_smoke_runtime import (
 )
 
 
+pytestmark = pytest.mark.raos_owner_private
+
+
 SOURCE_ROOT = Path(__file__).resolve().parents[2]
 INSTALL_STAGE = SOURCE_ROOT / "scripts/rakuten_live_smoke_runtime_install.sh"
 INSTALL_FAILURE = b"RAKUTEN_LIVE_SMOKE_RUNTIME_INSTALL_FAILED\n"

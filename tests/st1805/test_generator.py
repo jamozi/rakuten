@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import json
 import subprocess
+import sys
 
 import pytest
 
@@ -82,7 +83,7 @@ def test_dependency_state_preserves_block(generated_pack) -> None:
 def test_cli_requires_isolated_no_bytecode_mode() -> None:
     result = subprocess.run(
         [
-            "/home/minami/rakuten/.venv/bin/python",
+            sys.executable,
             str(builder.REPO_ROOT / builder.GENERATOR_PATH),
             "--check",
         ],

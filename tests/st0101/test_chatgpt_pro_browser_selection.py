@@ -664,6 +664,7 @@ def test_stop_states_never_trigger_cross_browser_fallback(
     assert not transports[0].secret_file.exists()
 
 
+@pytest.mark.raos_owner_private
 @requires_pathname_unix_socket
 @pytest.mark.parametrize("browser", ["edge", "chrome"])
 def test_stdio_child_receives_only_the_selected_closed_browser(

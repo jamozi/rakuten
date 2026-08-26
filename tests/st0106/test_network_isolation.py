@@ -177,6 +177,7 @@ def test_outer_sandbox_delegation_requires_a_real_guard() -> None:
     assert result.stderr == ""
 
 
+@pytest.mark.raos_owner_private
 @requires_unsandboxed_parent
 def test_guard_creates_a_clean_network_namespace_before_child_execution(
     tmp_path: Path,
@@ -323,6 +324,7 @@ def test_guard_closes_a_high_socket_above_a_lowered_soft_limit(tmp_path: Path) -
                     peer.recv(1)
 
 
+@pytest.mark.raos_owner_private
 @requires_unsandboxed_parent
 def test_guard_rejects_a_connected_socket_as_a_standard_descriptor(
     tmp_path: Path,
@@ -438,6 +440,7 @@ def test_assertion_rejects_the_parent_network_namespace() -> None:
     assert "network_isolation=namespace-not-isolated" in result.stderr
 
 
+@pytest.mark.raos_owner_private
 @requires_unsandboxed_parent
 def test_assertion_rejects_a_root_mapped_child_namespace() -> None:
     parent = os.readlink("/proc/self/ns/net")
@@ -513,6 +516,7 @@ def test_assertion_requires_a_fresh_fallback_mount_namespace() -> None:
     assert "network_isolation=parent-mount-namespace-missing" in result.stderr
 
 
+@pytest.mark.raos_owner_private
 @requires_unsandboxed_parent
 def test_assertion_rejects_a_reused_fallback_mount_namespace() -> None:
     parent_network = os.readlink("/proc/self/ns/net")
@@ -832,6 +836,7 @@ def test_wrapper_rejects_a_failed_passwordless_sudo_preflight(tmp_path: Path) ->
     assert "trusted passwordless sudo fallback is not authorized" in result.stderr
 
 
+@pytest.mark.raos_owner_private
 @requires_unsandboxed_parent
 def test_wrapper_rejects_a_root_mapped_caller(tmp_path: Path) -> None:
     result = subprocess.run(
