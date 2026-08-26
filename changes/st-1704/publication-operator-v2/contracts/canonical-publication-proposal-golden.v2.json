@@ -1,0 +1,7 @@
+{
+  "canonical_ascii_json": "{\"article_id\":\"st1704-portable-power-station-guide\",\"category_contract\":\"KURASHINO_DOGU_SINGLE_V1\",\"draft_post_id\":28,\"operation\":\"PUBLISH_ST1704_ARTICLE\",\"operator_contract_version\":2,\"packet_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"profile_version\":2,\"public_slug\":\"portable-power-station-guide\",\"request_sha256\":\"2222222222222222222222222222222222222222222222222222222222222222\",\"request_token\":\"5555555555555555555555555555555555555555555555555555555555555555\",\"site_origin\":\"https://kurashinoshirube.com\",\"snapshot_payload_sha256\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"ttl_seconds\":900,\"visible_content_sha256\":\"4444444444444444444444444444444444444444444444444444444444444444\"}",
+  "canonical_byte_length": 748,
+  "proposal_id": "7836b1f1083e306743301ca28978959859cc8c974eb1f2c742614450dbf6c0fa",
+  "request_token": "5555555555555555555555555555555555555555555555555555555555555555",
+  "schema": "RAOS_ST1704_PUBLICATION_OPERATOR_CANONICAL_GOLDEN_V2"
+}
