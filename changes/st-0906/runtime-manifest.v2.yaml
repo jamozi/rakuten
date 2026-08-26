@@ -12,8 +12,8 @@ source_artifacts:
 - uri: repo://scripts/build_st0906_publication_review_workspace_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 52383
-  sha256: c71dc3a96eb83ead3aac4811890afc18caf18cc70c78af76383f96d7513943e7
+  bytes: 51849
+  sha256: 8f36fb3937360b52c14819e93410407dc52afa31a5633faa86a1d47d73e9b349
 - uri: repo://packages/web-ui/src/publication-review-workspace.ts
   artifact_role: OWNER_SOURCE
   media_type: text/typescript
@@ -72,8 +72,8 @@ source_artifacts:
 - uri: repo://tests/st0906/test_generation_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 4968
-  sha256: 1c2d006c85f933aa57ed5862a316faaba556e9ffea1e06b248519252ec7eaa92
+  bytes: 4882
+  sha256: b24fb349de452a543055862df60dc6ce1c704eae2f5b9a1508ddcb25b9c7bfcf
 - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown
@@ -227,13 +227,13 @@ source_artifacts:
 - uri: repo://pyproject.toml
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/octet-stream
-  bytes: 1334
-  sha256: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
+  bytes: 1753
+  sha256: 34ee344782dbaf4135cb235e2fec215a1c709089c0994415fdeadf33979a6207
 - uri: repo://uv.lock
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/octet-stream
-  bytes: 128286
-  sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+  bytes: 129836
+  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
 generated_artifact_count: 2
 generated_artifacts:
 - uri: repo://changes/st-0906/generated/publication-review-workspace-recorded.v2.json

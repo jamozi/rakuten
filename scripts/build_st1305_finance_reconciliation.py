@@ -18,6 +18,11 @@ import yaml
 
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from scripts.raos_build_core import input_hash_required  # noqa: E402
+
 GENERATOR_PATH: Final = Path("scripts/build_st1305_finance_reconciliation.py")
 CONTRACT_PATH: Final = Path(
     "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml"
@@ -541,7 +546,11 @@ def validate_contract(contract: Mapping[str, object]) -> None:
 def _validate_bindings(root: Path, bindings: Mapping[str, object]) -> None:
     for name in SOURCE_BINDING_KEYS:
         row = cast(dict[str, str], bindings[name])
-        if _sha256(_regular_bytes(root, Path(row["path"]), name)) != row["sha256"]:
+        if (
+            input_hash_required(row["path"])
+            and _sha256(_regular_bytes(root, Path(row["path"]), name))
+            != row["sha256"]
+        ):
             _fail("INPUT_HASH_DRIFT", name)
 
 

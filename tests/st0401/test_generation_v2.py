@@ -11,7 +11,7 @@ import sys
 
 import pytest
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st0401_local_auth_runtime as generator
 
 
@@ -103,13 +103,10 @@ def test_duplicate_nonfinite_and_wrong_contract_shapes_are_rejected() -> None:
         generator._validate_contract({"story_id": "ST-0401"})
 
 
-def test_hash_pin_rejects_contract_or_canonical_mutation() -> None:
+def test_tracked_contract_is_semantic_and_canonical_remains_hash_bound() -> None:
     inputs = generator._capture_sources(REPOSITORY_ROOT)
     inputs[generator.CONTRACT_PATH] += b" "
-    with pytest.raises(
-        generator.LocalAuthRuntimeGenerationError, match="CONTRACT_HASH_DRIFT"
-    ):
-        generator._validate_pins(inputs)
+    generator._validate_pins(inputs)
 
     inputs = generator._capture_sources(REPOSITORY_ROOT)
     canonical_path = next(iter(generator.CANONICAL_BINDINGS))

@@ -25,6 +25,7 @@ readonly maximum_ephemeral_port=65535
 readonly local_project='raos-st0202-local'
 
 docker_executable=''
+docker_candidate=''
 repository_root=''
 compose_file=''
 fixture_client=''
@@ -39,7 +40,7 @@ ephemeral_override_file=''
 
 usage() {
   printf '%s\n' \
-    'usage: scripts/object_storage_service.sh --docker ABSOLUTE_PATH COMMAND' \
+    'usage: scripts/object_storage_service.sh --docker EXECUTABLE COMMAND' \
     '' \
     'Commands: config, up, check, down, test'
 }
@@ -868,12 +869,19 @@ trap 'exit 129' HUP
 trap 'exit 130' INT
 trap 'exit 143' TERM
 
-if (( $# != 3 )) || [[ $1 != --docker ]] || [[ $2 != /* ]]; then
+if (( $# != 3 )) || [[ $1 != --docker ]]; then
   usage >&2
   exit 64
 fi
 
-canonicalize_existing 'Docker executable' "$2" docker_executable
+reject_transport_characters 'Docker executable' "$2"
+if [[ $2 == */* ]]; then
+  docker_candidate=$2
+elif ! docker_candidate=$(type -P -- "$2"); then
+  error "Docker executable is unavailable on the safe PATH: $2"
+  exit 69
+fi
+canonicalize_existing 'Docker executable' "$docker_candidate" docker_executable
 reject_transport_characters 'Docker executable path' "$docker_executable"
 if [[ ! -f $docker_executable || ! -x $docker_executable ]]; then
   error "Docker executable must be a regular executable: $docker_executable"

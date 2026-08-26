@@ -8,7 +8,7 @@ import inspect
 from pathlib import Path
 from types import ModuleType
 
-from conftest import PLAN, REPOSITORY_ROOT
+from .support import PLAN, REPOSITORY_ROOT
 from raos.adapters.recorded_ai_job_orchestration import (
     RecordedAiJobOrchestrationAdapter,
     RecordedProviderStep,

@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from scripts import build_st1502_data_services as generator
+from scripts.raos_build_core import input_hash_required
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -304,7 +305,8 @@ def test_source_pins_match_regular_files() -> None:
         path = REPOSITORY_ROOT / relative
         assert path.is_file()
         assert not path.is_symlink()
-        assert generator.sha256_file(path) == expected_digest
+        if input_hash_required(relative):
+            assert generator.sha256_file(path) == expected_digest
 
 
 def test_generated_json_matches_strict_renderer(

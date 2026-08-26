@@ -16,7 +16,7 @@
   "source_sha256": {
     "changes/st-0602/contracts/fact-extraction-runtime.v2.json": "50a8e2a8dc32f0dc93696466d02aba9688dd985db5918fe05abb70eeba18ef78",
     "changes/st-0602/generated/fact-extraction-runtime.v2.json": "1793b4928c6d473e35e843ae76840b2a4c2c588e56daa4a2b6526957bf1ffa51",
-    "changes/st-0602/manifest.v2.json": "8416ef914a1a3f550a43ad5799f03e5c0701a60f423c6d59ec343a822e9330af",
+    "changes/st-0602/manifest.v2.json": "c0047965ac95266f894d14ef83909c9ac405660e66091d3ee40df2fbde0ed81c",
     "changes/st-0603/LOCAL-IMPLEMENTATION-COMPLETION-20260825-v2.json": "75cd28e0d98d86242a0af8f2a3631899a1a4976203dd378068cc2d2d9342c1ac",
     "changes/st-0603/PREFLIGHT-v2.md": "f6193dfc7c425de08c944de7f27959f0d9184644c8f1fcd2076adcf3435af308",
     "changes/st-0603/README-v2.md": "0942b00cfd7b9b20cf94896bb1a7dbae306e5d7df059509100439e0086156cfd",
@@ -39,10 +39,10 @@
     "python/raos/domain/evidence/fact_extraction_runtime_v2.py": "9e80ec5c06bf8afe94e99a1b4a0805d249126a0d7a064a93d3ee641a1a91f770",
     "python/raos/ports/fact_conflict_runtime_v2.py": "6971030b5210a1e9149ca910429c0984dd0e47dce45aa8f55de45746fa687acd",
     "python/raos/ports/fact_extraction_runtime_v2.py": "dfcb76f5f838a29fede41f028a78916f7b9e2e9cfbda25ffab8a549860e6dc15",
-    "scripts/build_st0603_fact_conflict_runtime.py": "2636cda8956c035e0b2a4d43988e994b77a31a86003d1e8a68155dec2fa4a515",
+    "scripts/build_st0603_fact_conflict_runtime.py": "188a128e2cae6bc5a4a4dd5e6f2d8fb0946b4972c01c4a334c37920bb41635dd",
     "tests/st0603/st0603_runtime_v2_fixtures.py": "4caf90d37341f0f0fdc5c518c3341551f38a16848f2b8ccca8f000df4327154d",
     "tests/st0603/test_st0603_fact_conflict_domain_v2.py": "448b6881c68ebec41e16f9eb5e6976e400d19bd27e13be0add6ec724b5819e2b",
-    "tests/st0603/test_st0603_fact_conflict_generator_v2.py": "f87a5660bb607dc0c32f5e6771f9173e7d2dd4d21f7ed816345824af8dd4f66a",
+    "tests/st0603/test_st0603_fact_conflict_generator_v2.py": "444397d70075f9ae18fbf042ad4063d0b78187e52bef56fe2e292e773bc12a5e",
     "tests/st0603/test_st0603_fact_conflict_hostile_v2.py": "2c4e67e54a5f771cffd3a3d0dbcad7fa97c9ddfd612625043e7fc12fa99d36b1",
     "tests/st0603/test_st0603_fact_conflict_sqlite_v2.py": "ec8ee2210cb4df653dc6f351fc02a0c2a69ab35f6cc0ab73d664a9be9a80f2a7"
   },

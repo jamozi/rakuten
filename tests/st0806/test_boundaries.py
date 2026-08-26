@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from conftest import REPOSITORY_ROOT, candidate, request
+from .support import REPOSITORY_ROOT, candidate, request
 from raos.adapters.recorded_ai_draft_integration import (
     RecordedAiDraftIntegrationAdapter,
 )

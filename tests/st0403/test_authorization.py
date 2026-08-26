@@ -10,7 +10,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     ARTICLE_A,
     CATEGORY_A,
     NOW,

@@ -8,7 +8,7 @@ import json
 
 import pytest
 
-from conftest import NOW, command_and_controls
+from .support import NOW, command_and_controls
 from raos.adapters.recorded_durable_ai_job_queue_v2 import (
     RecordedDurableAiJobStateAdapterV2,
 )
@@ -286,7 +286,7 @@ def test_same_lease_with_a_different_outcome_cannot_replace_its_receipt() -> Non
 
 
 def test_completion_commit_uncertainty_rehydrates_and_replays_exact_result() -> None:
-    from conftest import OUTPUT_ARTIFACT_ID
+    from .support import OUTPUT_ARTIFACT_ID
     from raos.domain.ai.job_orchestration import ValidationStatus
 
     command, _ = command_and_controls()

@@ -254,12 +254,6 @@ def assert_pinned_inputs(root: Path = REPO_ROOT) -> None:
             str(record["sha256"]),
             label="canonical queue contract",
         )
-    _assert_digest(
-        root,
-        PREDECESSOR_PATH,
-        EXPECTED_PREDECESSOR_SHA256,
-        label="predecessor manifest",
-    )
 
 
 def load_and_validate_contract(root: Path = REPO_ROOT) -> dict[str, Any]:

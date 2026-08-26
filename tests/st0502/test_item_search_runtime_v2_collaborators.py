@@ -34,7 +34,7 @@ from raos.ports.rakuten_item_search_runtime_v2 import (
     ItemSearchIngestionUnitOfWorkStoreV2,
 )
 
-from runtime_v2_fixtures import (
+from .runtime_v2_fixtures import (
     OBSERVED_AT_V2,
     SESSION_ID_V2,
     runtime_command_v2,

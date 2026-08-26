@@ -433,7 +433,7 @@ def _write_package(payload: bytes) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(allow_abbrev=False)
-    commands = parser.add_mutually_exclusive_group(required=True)
+    commands = parser.add_mutually_exclusive_group()
     commands.add_argument("--source-check", action="store_true")
     commands.add_argument("--package", action="store_true")
     commands.add_argument("--check", action="store_true")
@@ -448,7 +448,8 @@ def main() -> int:
         if first != second:
             _fail()
         digest = hashlib.sha256(first).hexdigest()
-        if arguments.package:
+        package_mode = arguments.package or not arguments.check
+        if package_mode:
             _write_package(first)
             print(
                 json.dumps(

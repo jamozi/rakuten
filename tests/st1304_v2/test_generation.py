@@ -14,7 +14,7 @@ import yaml
 
 from scripts import build_st1304_cost_unit_economics as generator
 
-from .conftest import ROOT
+from .support import ROOT
 
 
 def test_projection_is_deterministic_and_has_closed_boundaries() -> None:

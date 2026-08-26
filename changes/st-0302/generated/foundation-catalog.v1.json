@@ -9,7 +9,7 @@
   },
   "contract": {
     "path": "changes/st-0302/contracts/foundation-schema.v1.yaml",
-    "sha256": "fc7c794e5a6406960f3fa8007193736cfdff32e6210216a62bd363759be9dcec"
+    "sha256": "f3b08f4feb9c216834dda673978df3091e8e599323d5b7366773c9c4df9336e4"
   },
   "document": {
     "formal_verification": "NOT_EXECUTED",

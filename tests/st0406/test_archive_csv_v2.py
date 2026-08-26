@@ -11,7 +11,7 @@ import zipfile
 
 import pytest
 
-from conftest import v2_descriptor, v2_policy
+from .support import v2_descriptor, v2_policy
 from raos.adapters.recorded_object_intake_runtime_v2 import (
     DeterministicContentInspectorV2,
 )

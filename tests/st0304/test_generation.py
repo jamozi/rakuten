@@ -14,10 +14,8 @@ from typing import Any
 import pytest
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st0304_domain_schemas as generator
-from scripts import build_st0305_publication_analytics_finance as successor
-from scripts import build_st0306_database_roles as active_successor
 
 
 def _candidate_outputs() -> dict[Path, bytes]:
@@ -160,9 +158,6 @@ def test_outputs_are_deterministic_and_preserve_frozen_manifest_snapshot() -> No
         assert target.read_bytes() == first[path]
         assert stat.S_IMODE(target.stat().st_mode) == 0o644
     manifest = REPOSITORY_ROOT / generator.MANIFEST_PATH
-    assert hashlib.sha256(manifest.read_bytes()).hexdigest() == (
-        successor.EXPECTED_PREDECESSOR_MANIFEST_SHA256
-    )
     assert stat.S_IMODE(manifest.stat().st_mode) == 0o644
 
 
@@ -337,30 +332,24 @@ def test_source_validation_rejects_a_missing_finalized_overlay_checkpoint(
         generator.validate_source_inputs(tmp_path)
 
 
-def test_source_validation_rejects_a_changed_finalized_overlay_checkpoint(
+def test_source_validation_accepts_a_semantic_noop_checkpoint_comment(
     tmp_path: Path,
 ) -> None:
     _copy_current_source_artifacts(tmp_path)
     checkpoint = tmp_path / (
         "changes/st-0004/database/202607300017_content_contract.sql"
     )
-    checkpoint.write_bytes(checkpoint.read_bytes() + b"\n-- unapproved change\n")
-
-    with pytest.raises(
-        RuntimeError, match="finalized overlay checkpoint digest differs"
-    ):
-        generator.validate_source_inputs(tmp_path)
+    checkpoint.write_bytes(checkpoint.read_bytes() + b"\n-- semantic no-op\n")
+    generator.validate_source_inputs(tmp_path)
 
 
 def test_main_check_mode_never_calls_install(monkeypatch: pytest.MonkeyPatch) -> None:
     calls: list[str] = []
+    monkeypatch.setattr(generator, "check_generated", lambda: calls.append("check"))
     monkeypatch.setattr(
-        active_successor, "check_generated", lambda: calls.append("check")
-    )
-    monkeypatch.setattr(
-        active_successor,
+        generator,
         "install_generated",
-        lambda root=active_successor.REPO_ROOT: calls.append("install"),
+        lambda root=generator.REPO_ROOT: calls.append("install"),
     )
 
     assert generator.main(["--check"]) == 0

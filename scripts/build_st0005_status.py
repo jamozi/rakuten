@@ -3301,7 +3301,6 @@ def source_paths() -> list[Path]:
         REPO_ROOT / "scripts" / "import_raos_design.py",
         REPO_ROOT / "docs" / "README.md",
         DEFAULT_BUNDLE_ROOT / "README.md",
-        REPO_ROOT / ".github" / "workflows" / "status-registry.yml",
         REPO_ROOT / "docs" / "execplans" / "ST-0005.md",
         REPO_ROOT / "docs" / "worklogs" / "ST-0005.md",
         REPO_ROOT / "tests" / "test_import_raos_design.py",

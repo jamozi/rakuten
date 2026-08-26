@@ -21,7 +21,6 @@ def isolated_repository(tmp_path: Path) -> Path:
     root = tmp_path / "repository"
     required = {
         *generator.SOURCE_PATHS,
-        generator.HELPER_PATH,
         *(Path(path) for _role, path, _digest in generator.EXPECTED_SOURCES),
         *(path for path, _digest in generator.EXPECTED_PREDECESSOR_ARTIFACTS),
     }

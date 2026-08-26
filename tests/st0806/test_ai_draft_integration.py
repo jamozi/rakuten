@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from conftest import (
+from .support import (
     ARTICLE_ID,
     CATEGORY_ID,
     CLAIM_ID_1,

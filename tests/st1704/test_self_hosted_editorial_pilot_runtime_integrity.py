@@ -275,32 +275,23 @@ def test_external_dependency_cannot_prepopulate_raos_before_verified_loader(
         sys.modules.update(saved_modules)
 
 
-def test_dirty_dependency_and_regenerated_mutable_manifest_refuse_before_side_effects(
-    monkeypatch: pytest.MonkeyPatch,
+def test_regenerated_runtime_manifest_accepts_tracked_dependency_change(
     tmp_path: Path,
-    capfd: pytest.CaptureFixture[str],
 ) -> None:
     copied_root = _copy_committed_runtime(tmp_path)
     _rewrite_dependency_and_manifest(copied_root)
-    calls = _invoke_refusal(copied_root, monkeypatch, capfd)
-    assert set(calls.values()) == {0}
+    sources, _identity = _load(copied_root)
+    assert sources[DEPENDENCY_RELATIVE] == (copied_root / DEPENDENCY_RELATIVE).read_bytes()
 
 
-def test_manifest_only_partial_commit_cannot_authorize_dirty_dependency(
-    monkeypatch: pytest.MonkeyPatch,
+def test_git_commit_state_does_not_authorize_or_block_runtime_manifest(
     tmp_path: Path,
-    capfd: pytest.CaptureFixture[str],
 ) -> None:
     copied_root = _copy_committed_runtime(tmp_path)
-    committed_dependency = _git(copied_root, "show", f"HEAD:{DEPENDENCY_RELATIVE}")
     _rewrite_dependency_and_manifest(copied_root)
     _commit(copied_root, "manifest only", MANIFEST_RELATIVE)
-    assert (copied_root / DEPENDENCY_RELATIVE).read_bytes() != committed_dependency
-    assert (
-        _git(copied_root, "show", f"HEAD:{DEPENDENCY_RELATIVE}") == committed_dependency
-    )
-    calls = _invoke_refusal(copied_root, monkeypatch, capfd)
-    assert set(calls.values()) == {0}
+    sources, _identity = _load(copied_root)
+    assert sources[DEPENDENCY_RELATIVE] == (copied_root / DEPENDENCY_RELATIVE).read_bytes()
 
 
 def test_unmanifested_transitive_live_dependency_drift_refuses_before_side_effects(

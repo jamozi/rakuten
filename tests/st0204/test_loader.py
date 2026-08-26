@@ -9,7 +9,7 @@ from typing import Any, cast
 from pydantic import TypeAdapter, ValidationError
 import pytest
 
-from conftest import CANONICAL_ENVIRONMENTS, logical_reference
+from .support import CANONICAL_ENVIRONMENTS, logical_reference
 from raos.config import (
     LogLevel,
     RuntimeConfig,

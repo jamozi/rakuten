@@ -23,9 +23,6 @@ sources:
   - {path: changes/st-0304/generated/domain-catalog.v1.json, sha256: 41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208}
   - {path: docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md, sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3}
   - {path: docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md, sha256: dce0b457ddacef791b1e134fb5988dee6a4c1f51fa905a3bc7e7d33fb3a0269c}
-  - {path: changes/st-0308/PRO-CORRECTION-REQUEST-v3.md, sha256: 0906d9bf46920bfd1d018590490857a6665ab9fc8eecc92411e3fcdb9d206270}
-  - {path: changes/st-0308/CANONICAL-RECONCILIATION-v3.md, sha256: 91748530eafc018823b5a6a74cc2ca052569cb3c46f6e90dd1224d720d3fdc08}
-  - {path: changes/st-0308/IMPLEMENTATION-READINESS-v3.md, sha256: 29e90628cc8ed4259b54486ab12abddb606ae414e3a2391c5055dbbf521577f7}
   - {path: changes/st-0306/contracts/database-roles-grants.v1.yaml, sha256: 93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206, authority: CANDIDATE_IDENTITY_EVIDENCE_ONLY}
 physical_fragments:
   - {path: changes/st-0304/contracts/physical/01-domain-physical.sql, sha256: b2f937ae00d526a886e5e875e095e247702f4bd7831a3164e2eda93423d7fdb8}
@@ -121,4 +118,4 @@ two_way_gates:
   - event matrix to module event classes registry schemas and Outbox validation
   - idempotency matrix to the shared result unions and exact generated claim replacement completion SQL
   - identity matrix to effective-role query verification and begin-before-identity negative tests
-  - every generated artifact records source and matrix hashes and owner generator hash
+  - manifest v2 records semantic inputs, owner identity/version, and generated output integrity

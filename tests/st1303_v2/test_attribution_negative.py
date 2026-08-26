@@ -39,7 +39,7 @@ from raos.domain.finance.attribution import (
 from raos.domain.finance.provider_fact_commit import JpyAmount
 from raos.domain.ops.object_intake import Sha256Digest
 
-from .conftest import FIXTURE, ROOT, failure_code
+from .support import FIXTURE, ROOT, failure_code
 
 
 HASH = Sha256Digest("f" * 64)

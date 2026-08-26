@@ -12,7 +12,7 @@ from typing import Any
 
 import pytest
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 
 
 WRAPPER = REPOSITORY_ROOT / "scripts/postgres_service.sh"
@@ -419,17 +419,17 @@ def test_old_compose_and_non_docker_executable_are_rejected(tmp_path: Path) -> N
     assert "did not identify itself" in wrong_result.stderr
 
 
-def test_wrapper_rejects_relative_docker_path_and_unknown_command() -> None:
+def test_wrapper_resolves_safe_path_executable_and_rejects_unknown_command() -> None:
     relative = subprocess.run(
-        [str(WRAPPER), "--docker", "docker", "config"],
+        [str(WRAPPER), "--docker", "true", "config"],
         cwd=REPOSITORY_ROOT,
         check=False,
         capture_output=True,
         text=True,
         encoding="utf-8",
     )
-    assert relative.returncode == 64
-    assert "usage:" in relative.stderr
+    assert relative.returncode == 69
+    assert "did not identify itself" in relative.stderr
     unknown = subprocess.run(
         [str(WRAPPER), "--docker", "/bin/true", "destroy"],
         cwd=REPOSITORY_ROOT,

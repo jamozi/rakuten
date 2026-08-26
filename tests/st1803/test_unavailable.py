@@ -7,7 +7,7 @@ from datetime import date
 
 import pytest
 
-from conftest import PERIOD, rebuild_batch, replace_metric
+from .support import PERIOD, rebuild_batch, replace_metric
 from raos.domain.analytics.gate2_observation import (
     ArticleObservation,
     AttributionBasis,

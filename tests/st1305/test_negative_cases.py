@@ -9,7 +9,7 @@ from typing import Any, Callable, cast
 import pytest
 import yaml
 
-from scripts import build_st1505_staging_deployment as base
+from scripts import raos_build_core as base
 from scripts import build_st1305_finance_reconciliation_reference_plan as generator
 
 
@@ -239,16 +239,28 @@ def test_path_traversal_is_rejected(
 BOUND_INPUT_PATHS = tuple(
     path for path, _digest in generator._contract_artifacts(generator.load_contract())
 )
+IMMUTABLE_INPUT_PATHS = tuple(
+    path for path in BOUND_INPUT_PATHS if path.as_posix().startswith("docs/canonical/")
+)
 
 
-@pytest.mark.parametrize("relative", BOUND_INPUT_PATHS)
-def test_bound_input_byte_drift_is_rejected(
+@pytest.mark.parametrize("relative", IMMUTABLE_INPUT_PATHS)
+def test_immutable_input_byte_drift_is_rejected(
     isolated_repository: Path, relative: Path
 ) -> None:
     path = isolated_repository / relative
     path.write_bytes(path.read_bytes() + b"\ndrift\n")
     with pytest.raises(generator.FinanceReconciliationReferenceError):
         generator.render_outputs(isolated_repository)
+
+
+def test_tracked_predecessor_readme_is_semantic_not_digest_bound(
+    isolated_repository: Path,
+) -> None:
+    relative = next(path for path in BOUND_INPUT_PATHS if path.name == "README.md")
+    path = isolated_repository / relative
+    path.write_bytes(path.read_bytes() + b"\neditorial note\n")
+    assert generator.render_outputs(isolated_repository)
 
 
 def test_failure_does_not_echo_untrusted_value(

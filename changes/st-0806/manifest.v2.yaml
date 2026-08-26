@@ -14,7 +14,7 @@ source_sha256:
   changes/st-0806/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: 55347f6ce7d85dfc2b92ebeb41e8c51bfbb4ee83398a490e7022946b634d1556
   docs/execplans/ST-0806.md: 93f64c78a230baa17b22327e4ee93c39214172fef981dd0b30e6c82ffff825c9
   docs/worklogs/ST-0806.md: eb616f2223012b2ba9cc373d1b340f1626b577ecf70ade27665df010d6be6a3c
-  scripts/build_st0806_ai_draft_integration_v2.py: 28b44392ae226ae423241146569d16ee9fd66389413a0f2e3c170a9ec83725e6
+  scripts/build_st0806_ai_draft_integration_v2.py: 52e7f56ab02be8e4925715d3c7b2dab364663c1f0f8f72a611bbada8230a57f2
   scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
   contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json: 8467c824215c548479f1ccba5877797910c3a4abec736af37627605059422489
   changes/st-0605/generated/claim-evidence-runtime-pass.v1.json: b805ee491f7388ab39d99bd61dbc0a29d3b1659a9a44b44ebdeb73063e8356a1
@@ -27,18 +27,16 @@ source_sha256:
   python/raos/application/editorial/ai_draft_integration_v2.py: 72ddb13f422b09b288ed06fc05242e0b20decab07458f2a23f122717260f4de6
   python/raos/adapters/recorded_ai_draft_integration_v2.py: 5f43a7e69eb6430ba2fa190635d0e4d1bc16e01f66e3b3043625277ffedda85c
   tests/st0806/v2_support.py: 8f5eeaa3520a6c6a242e20944304009a41ab202e443d373a168c2421bbd768be
-  tests/st0806/test_ai_draft_integration_v2.py: 6d096a8b325c817768665c5a772e65a53d4ef33cfb977f5b4b06894459156400
-  tests/st0806/test_ai_draft_integration_v2_negative.py: 8e43d766f9e9a165a87a6ed9f8dad1e2816a1f18f57df7029b984f7243162f02
-  tests/st0806/test_ai_draft_integration_v2_boundaries.py: ec9714eeb5cbf00ed5ba47f9366c66586a8836296c7baecf48da706ebeec30f5
-  tests/st0806/test_ai_draft_integration_v2_generation.py: 584b4ea8eb2c5b98b5c69864444ec4508a4d9a52d7ac92a1e542d5edf9ad05af
+  tests/st0806/test_ai_draft_integration_v2.py: cc3aabee1fdbd91de588dd06247fb8623014508394953587cda7a3d19494869f
+  tests/st0806/test_ai_draft_integration_v2_negative.py: 916f965a8f0950e3c4cd024dcd2d1ce7e104309d4464a25c03f0e048bb7d7c62
+  tests/st0806/test_ai_draft_integration_v2_boundaries.py: c20f416362f2b1af174bbd347c780959aa905b0db2383dce4fe274aed0b3977b
+  tests/st0806/test_ai_draft_integration_v2_generation.py: 2d0664c0a5ae0fb1e52bbaa660814c94fbba55f26ee01c374f64aa72492adfa2
 generated_sha256:
-  changes/st-0806/generated/ai-draft-integration.v2.json: d2f81925a2abd77177de3f8233286e521f158081bd421e7d1d9529631873a4d9
+  changes/st-0806/generated/ai-draft-integration.v2.json: 02b066093f9bcc66058b05314437deae35260b33a21b26a048d48e33a4015867
   changes/st-0806/generated/ai-draft-integration-fixture.v2.json: 656e434ab1b8c6b7af3a0c4bc75dcd880ef487744a50bc870ca0ab70ad9361c6
 generation:
-  command: uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads
-    python scripts/build_st0806_ai_draft_integration_v2.py
-  check_command: uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads
-    python scripts/build_st0806_ai_draft_integration_v2.py --check
+  command: python scripts/build_st0806_ai_draft_integration_v2.py
+  check_command: python scripts/build_st0806_ai_draft_integration_v2.py --check
 bounds:
   activation: DISABLED
   adapter: RECORDED_SYNTHETIC_CALLER_BYTES_ONLY

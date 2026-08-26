@@ -29,7 +29,7 @@ from openai import (
     UnprocessableEntityError,
 )
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 import raos.adapters.openai_responses as adapter_module
 from raos.adapters.openai_responses import (
     OpenAIResponseRoute,

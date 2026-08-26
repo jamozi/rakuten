@@ -8,7 +8,7 @@ from typing import Callable, cast
 
 import pytest
 
-from conftest import (
+from .support import (
     DECIDED_AT,
     OTHER_REVIEWER_ID,
     adapter,

@@ -37,7 +37,7 @@ def test_exact_source_and_predecessor_inventories() -> None:
     sources = contract["sources"]
     predecessors = contract["predecessor_bindings"]
 
-    assert len(sources) == 16
+    assert len(sources) == 15
     assert [row["uri"] for row in sources] == [
         f"repo://{path}" for path, _size, _digest in builder.SOURCE_ROWS
     ]
@@ -49,7 +49,7 @@ def test_exact_source_and_predecessor_inventories() -> None:
         "API_BINDINGS_ONLY_NOT_PERSISTENCE_DESIGN"
     )
     assert predecessors["ST-0105"]["semantic_projection"] == ("MANIFEST_FACTS_ONLY")
-    assert len(predecessors["ST-0105"]["rows"]) == 11
+    assert len(predecessors["ST-0105"]["rows"]) == 10
     assert predecessors["ST-0105"]["manifest_facts"] == (builder.EXPECTED_ST0105_FACTS)
 
 

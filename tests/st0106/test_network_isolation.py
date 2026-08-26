@@ -888,47 +888,21 @@ def test_network_wrapper_rejects_an_extended_or_ambiguous_cli(
     assert "usage:" in result.stderr.lower() or "error:" in result.stderr.lower()
 
 
-def test_ci_wrapper_runs_only_network_denied_repository_checks() -> None:
-    ci_wrapper = (REPOSITORY_ROOT / "scripts/ci_job.sh").read_text(encoding="utf-8")
+def test_ci_uses_cached_hydration_then_parallel_repository_checks() -> None:
     makefile = (REPOSITORY_ROOT / "Makefile").read_text(encoding="utf-8")
-    assert "ci-hydrate: python-sync node-sync" in makefile
-    for target in ("ci-static", "ci-unit", "ci-contracts"):
-        header = next(
-            line for line in makefile.splitlines() if line.startswith(f"{target}:")
-        )
-        assert "ci-network-assert" in header
-    for target in ("ci-database", "ci-storage"):
-        header = next(
-            line for line in makefile.splitlines() if line.startswith(f"{target}:")
-        )
-        assert "ci-network-assert" not in header
-    assert "ci-storage" not in ci_wrapper
-    assert "ci-hydrate" not in ci_wrapper
-    assert "dependency-hydration" not in ci_wrapper
-    assert "CI_PHASE network=denied purpose=repository-checks" in ci_wrapper
-    assert "RAOS_CI_OFFLINE=1" in ci_wrapper
-    assert '"$network_wrapper" --home' in ci_wrapper
-
-
-@pytest.mark.parametrize("value", ["", "00", "2", "0 1", "1 "])
-def test_make_rejects_noncanonical_ci_offline_values(value: str) -> None:
-    result = subprocess.run(
-        [
-            "/usr/bin/make",
-            "--no-builtin-rules",
-            "--no-builtin-variables",
-            "--file",
-            str(REPOSITORY_ROOT / "Makefile"),
-            "ci-network-assert",
-            f"RAOS_CI_OFFLINE={value}",
-        ],
-        cwd=REPOSITORY_ROOT,
-        env={"PATH": os.defpath},
-        check=False,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        timeout=10,
+    workflow = (REPOSITORY_ROOT / ".github/workflows/ci.yml").read_text(
+        encoding="utf-8"
     )
-    assert result.returncode != 0
-    assert "RAOS_CI_OFFLINE must be 0 or 1" in result.stderr
+    assert "enable-cache: true" in workflow
+    assert "cache: npm" in workflow
+    for target in ("final-static", "test-parallel", "test-serial", "contracts"):
+        assert target in makefile
+    for job in ("static:", "tests:", "contracts:", "data:", "storage:", "secrets:"):
+        assert job in workflow
+    assert "name: Final Integration" in workflow
+
+
+def test_obsolete_offline_gate_is_absent_from_the_normal_loop() -> None:
+    makefile = (REPOSITORY_ROOT / "Makefile").read_text(encoding="utf-8")
+    assert "ci-network-assert" not in makefile
+    assert "RAOS_CI_OFFLINE" not in makefile

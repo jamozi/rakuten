@@ -4,13 +4,14 @@ document:
   story_id: ST-0703
   status: LOCAL_IMPLEMENTATION_CANDIDATE
   generated_by: repo://scripts/build_st0703_recorded_adapter.py
-  generation_command: uv run --locked --no-sync --no-env-file python scripts/build_st0703_recorded_adapter.py
+  generator_owner_id: build_st0703_recorded_adapter
+  generator_owner_version: 2
 provenance:
   contract_uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
-  contract_sha256: 1fdd6247f93cb173c1f9d5e803fc09883aed82f455b1fba05f44fb7fc78f598c
-  handoff_uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v5.yaml
+  contract_semantic_id: openai-responses-adapter-contract
+  contract_version: 2
   fixture_registry_uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
-  fixture_registry_sha256: 4bb7c33daff8720da390fbdc055bdb780699509966ffa17ade64be5dc22c7f6a
+  fixture_registry_sha256: 6b3a04e446bd98463405373eae033bb9e5e04fd35d9f14cb8f88a6c33ddc11ca
   predecessor_story_ids:
   - ST-0204
   - ST-0701
@@ -19,65 +20,8 @@ evidence_chain:
   - ST-0204
   - ST-0701
   - ST-0703
-source_artifact_count: 51
+source_artifact_count: 14
 source_artifacts:
-- uri: repo://.github/workflows/ci.yml
-  bytes: 20122
-  sha256: 8fb768a883432d15a1f86390cd16bfd23092030c6483cf283a64a41e21dfb3fb
-- uri: repo://Makefile
-  bytes: 34422
-  sha256: 8d4030bfcffaa5bde56842b6a2475bbe2b845e074722c787b9d712bc22d2a40f
-- uri: repo://README.md
-  bytes: 58459
-  sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
-- uri: repo://changes/st-0204/manifest.yaml
-  bytes: 5976
-  sha256: 2c26f24dce1a1eda9a79bd0d339478b208dde77ecc76e9dfd71c918ad9fab3be
-- uri: repo://changes/st-0701/manifest.yaml
-  bytes: 15116
-  sha256: 01653bf5968c08a5ce186cfa06a9c25f33fc7a945808b6b2a622118025b2cbce
-- uri: repo://changes/st-0703/CANONICAL-RECONCILIATION-v3.md
-  bytes: 8513
-  sha256: 3c0629b4c308e316991d64ae49d4a9b002f77dd78afe684c17da7e47d3bca290
-- uri: repo://changes/st-0703/CANONICAL-RECONCILIATION-v4.md
-  bytes: 5035
-  sha256: 6c3285712156781c9a107dfb5417f87896246c75e3158fec485f1ea07be54887
-- uri: repo://changes/st-0703/CANONICAL-RECONCILIATION-v5.md
-  bytes: 5398
-  sha256: 65021265c8c5bd40bd8949eb876542e53400333bb615794d67418975873d6ac3
-- uri: repo://changes/st-0703/DESIGN-DECISION-REQUEST-v3.md
-  bytes: 24418
-  sha256: 85bb47958a36e994e97cb182589c7e8eb7e20c283476bfd5e823951eea76d76c
-- uri: repo://changes/st-0703/DESIGN-DECISION-REQUEST-v5.md
-  bytes: 5035
-  sha256: e2cec557d0c412effd5ae4a7fa7d1069ff46579caada980a9c8dd7479a6a51cd
-- uri: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v3.yaml
-  bytes: 1316
-  sha256: df9b39bf9969618a34a58fc0dfab679467ab02a360f22c306d4d408a8ecd5eae
-- uri: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v4.yaml
-  bytes: 2069
-  sha256: ed717125191c26dc609c61341320f020be7883add1f0967096b20d11e60eb202
-- uri: repo://changes/st-0703/DESIGN-HANDOFF-APPROVAL-v5.yaml
-  bytes: 2468
-  sha256: 3f3183275ed819349c2528bfd555d195d48b221f759bea42e29f8e941b048fb3
-- uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v2.yaml
-  bytes: 6119
-  sha256: f768571d5f56a313437cc108485f21a7c3a8a9226016bee7830ab3709a90f08f
-- uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v3.yaml
-  bytes: 19814
-  sha256: a510526678190b0512a5d28e016f1ab978469e10cc5063d6a2482f93b6ce43c8
-- uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v4.yaml
-  bytes: 21056
-  sha256: 7d384015c2975d7a718ff348cb4d1538a354f095cc0d9a2b0c76dbca5f6e4898
-- uri: repo://changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v5.yaml
-  bytes: 24374
-  sha256: ac8afef5f18b4602c099d27ad7f86f3880acb28be5e57badc47d45b27c3abe97
-- uri: repo://changes/st-0703/README.md
-  bytes: 5207
-  sha256: 18b91c6d0edad9546c2bef77d2b0ffb39ae01810d85f8d4945762fcb8972b83c
-- uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
-  bytes: 15689
-  sha256: 1fdd6247f93cb173c1f9d5e803fc09883aed82f455b1fba05f44fb7fc78f598c
 - uri: repo://changes/st-0703/fixtures/recorded/error-rate-limit-429.json
   bytes: 1736
   sha256: e0ce4372d287766cf4b5f3ec1f0afcaf17b49dc41939c379e64c4773dac2eb72
@@ -93,9 +37,6 @@ source_artifacts:
 - uri: repo://changes/st-0703/fixtures/recorded/success-structured.json
   bytes: 3282
   sha256: a6a7506c8201a979cdba2cf1e41c9c9d7288d801cf6f2f72aa5e6684e6da168c
-- uri: repo://changes/st-0801/manifest.yaml
-  bytes: 32587
-  sha256: a6608026cf2e2c5026d9777de9fec605fc2cbd5b47f7f489f6f2ea108b5da6d6
 - uri: repo://contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-request.schema.json
   bytes: 1766
   sha256: 163fee46bb70bb87c4cb43c6fd304d5d551c72be204d50a9db9ffad12f5e7e31
@@ -120,65 +61,52 @@ source_artifacts:
 - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
   bytes: 71458
   sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
-- uri: repo://pyproject.toml
-  bytes: 1334
-  sha256: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
-- uri: repo://python/raos/adapters/__init__.py
-  bytes: 3033
-  sha256: 6f6ede5e08b6050430852e856234a157475c0977005dfd6a533f49d1863e1029
-- uri: repo://python/raos/adapters/openai_responses.py
-  bytes: 33352
-  sha256: d1ca262711e73af59923d852fdc299ecc9ba67ae29675fd8e2512ea357d26017
-- uri: repo://python/raos/adapters/recorded_ai.py
-  bytes: 6998
-  sha256: 294394757d1739889f54dbb6cf20a8353275faf233bc3bba7fdd3f932671dc6a
-- uri: repo://python/raos/domain/ai/provider.py
-  bytes: 39611
-  sha256: 179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991
-- uri: repo://python/raos/ports/ai_provider.py
-  bytes: 5993
-  sha256: 3b4ccb19ba26793251b938954c736fdc8be871d618312d3eea2d6a4eff1a5c62
-- uri: repo://scripts/build_st0703_recorded_adapter.py
-  bytes: 78521
-  sha256: 3af7c15788c51838b25fe2c46f9343430d6bd7f3028f1260a471db861971c6e6
-- uri: repo://scripts/ci_job.sh
-  bytes: 7456
-  sha256: 6f93f7ceeacf1ed69158adc6d0e9176ec658cd1a71d6db05fb90d84a1570a067
-- uri: repo://scripts/run_network_denied.sh
-  bytes: 6688
-  sha256: 171e9be2a368473dc855cf5bf996df14762766791f06569fd70e7ab90ebe0efd
-- uri: repo://tests/st0102/test_toolchain_contract.py
-  bytes: 5621
-  sha256: a4bcbf7d25931065d61b0cfa585577f996e30e52b2ecbe60b32fedda5a0d8482
-- uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 66604
-  sha256: 3993db51b4783f33bc993720a45a44e908e8f007aad611317d4d3042eb6c71f0
-- uri: repo://tests/st0703/conftest.py
-  bytes: 366
-  sha256: 0d381662b12f3a67ad8bd9d78a0351fbf525870b9503947558995e4b8a00c369
-- uri: repo://tests/st0703/test_adapter.py
-  bytes: 61209
-  sha256: 3912a42b5a3417901c555db9fabdc2c96cfa29d8f1812f8939ff6b360861203b
-- uri: repo://tests/st0703/test_generation.py
-  bytes: 58129
-  sha256: 1e13993ad089f677011f57ffb6f831cf621546f3fee6e41031ab87a1d6b3df14
-- uri: repo://tests/st0703/test_implementation_manifest.py
-  bytes: 2343
-  sha256: 6a2f721e321227f2e97f30fad67605485d69a11431f1987b801f9aa51d6c389b
-- uri: repo://tests/st0703/test_recorded_support.py
-  bytes: 12463
-  sha256: 6b40dfb714c837968527ce30e30a6fcf5097e56702ca954f06d0b8a74d6d6eae
 - uri: repo://uv.lock
-  bytes: 128286
-  sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+  bytes: 129836
+  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
+semantic_source_count: 12
+semantic_sources:
+- uri: repo://changes/st-0204/manifest.yaml
+  semantic_id: changes/st-0204/manifest.yaml
+  version: 2
+- uri: repo://changes/st-0701/manifest.yaml
+  semantic_id: changes/st-0701/manifest.yaml
+  version: 2
+- uri: repo://changes/st-0703/contracts/openai-responses-adapter.v1.yaml
+  semantic_id: changes/st-0703/contracts/openai-responses-adapter.v1.yaml
+  version: 2
+- uri: repo://changes/st-0801/manifest.yaml
+  semantic_id: changes/st-0801/manifest.yaml
+  version: 2
+- uri: repo://pyproject.toml
+  semantic_id: pyproject.toml
+  version: 2
+- uri: repo://python/raos/adapters/__init__.py
+  semantic_id: python/raos/adapters/__init__.py
+  version: 2
+- uri: repo://python/raos/adapters/openai_responses.py
+  semantic_id: python/raos/adapters/openai_responses.py
+  version: 2
+- uri: repo://python/raos/adapters/recorded_ai.py
+  semantic_id: python/raos/adapters/recorded_ai.py
+  version: 2
+- uri: repo://python/raos/domain/ai/provider.py
+  semantic_id: python/raos/domain/ai/provider.py
+  version: 2
+- uri: repo://python/raos/ports/ai_provider.py
+  semantic_id: python/raos/ports/ai_provider.py
+  version: 2
+- uri: repo://scripts/build_st0703_recorded_adapter.py
+  semantic_id: scripts/build_st0703_recorded_adapter.py
+  version: 2
 - uri: repo://uv.toml
-  bytes: 349
-  sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+  semantic_id: uv.toml
+  version: 2
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
-  bytes: 5547
-  sha256: 4bb7c33daff8720da390fbdc055bdb780699509966ffa17ade64be5dc22c7f6a
+  bytes: 3726
+  sha256: 6b3a04e446bd98463405373eae033bb9e5e04fd35d9f14cb8f88a6c33ddc11ca
 manifest_self_integrity:
   included_in_source_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check-installed

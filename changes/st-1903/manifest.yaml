@@ -19,9 +19,10 @@ generated_artifacts:
   sha256: ad9386daf5f8f8ff1b0bd67d5989de5e123a95925792a79b9b6b48de555138d8
   uri: repo://changes/st-1903/generated/partial-auto-publication-report.v1.json
 generated_by:
-  implementation_base: 0aaaa69d7776c6e6c4d131246c57c06d2ec996a5
   method_version: RAOS_ST1903_DISABLED_RECORDED_ELIGIBILITY_V1
   owner: repo://scripts/build_st1903_partial_auto_publication.py
+  owner_id: build_st1903_partial_auto_publication
+  owner_version: 2
   parser_version: st1903-recorded-partial-auto-publication-json.v1
 source_artifacts:
 - bytes: 1305
@@ -33,8 +34,8 @@ source_artifacts:
 - bytes: 908
   sha256: e4e4939a8ecf96bbf57340cfdd6f43d281fe815892ced481da048e6622fff0d2
   uri: repo://changes/st-1903/completion/completion.v1.yaml
-- bytes: 9670
-  sha256: af4b00f1b8d5ad58689654bb1b50e64bb592b798373fbb19c5c4bd0707b3083c
+- bytes: 9164
+  sha256: fd8a115e7628e327c1d85eae10105d347f643c571ad2485981e0785d0ec17e7b
   uri: repo://changes/st-1903/contracts/partial-auto-publication.v1.yaml
 - bytes: 1456
   sha256: 90f4c70184f44e4a8fb27125ceb2eb5084f0ddf2d950572a217e75b7904e4107
@@ -57,8 +58,8 @@ source_artifacts:
 - bytes: 10218
   sha256: 768ba45f62399c2b21b571debb3f1da9831479661ebe498b765eb9f2c90aa5f2
   uri: repo://python/raos/adapters/publishing/recorded_partial_auto_publication.py
-- bytes: 24357
-  sha256: 9c55f52f642c1e1b712a8c3ffb79b1a055f8420455c5a92fda3638488cfe70c4
+- bytes: 24043
+  sha256: 557973c07f48ccba7dfb980c1f3de9e087dbc4ac19b7a9ba7a6354de5acc8011
   uri: repo://scripts/build_st1903_partial_auto_publication.py
 - bytes: 49
   sha256: 38bd1479e1fa3be97a859c5657688cb30eb503f537545556b4aa4cf9fcf8e804

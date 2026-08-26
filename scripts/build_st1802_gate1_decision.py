@@ -953,7 +953,9 @@ def _validate_hashes(root: Path) -> None:
         **EXPECTED_SOURCE_HASHES,
         **EXPECTED_DEPENDENCY_HASHES,
     }.items():
-        if _sha256(_read(root, Path(path), f"input.{path}")) != digest:
+        if path.startswith(("docs/canonical/", "docs/upstream/")) and _sha256(
+            _read(root, Path(path), f"input.{path}")
+        ) != digest:
             _fail("PINNED_INPUT_DRIFT", f"input.{path}")
     if (
         _sha256(_read(root, FIXTURE_SCHEMA_PATH, "fixture_schema"))

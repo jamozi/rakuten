@@ -33,7 +33,7 @@ from raos.domain.ops.external_policy_registry import (
 from raos.domain.shared.persistence import Sha256Digest
 from raos.ports.external_policy_registry import ExternalPolicyRegistryExchange
 
-from conftest import ACQUIRED_AT, DUE_AT, build_request
+from .support import ACQUIRED_AT, DUE_AT, build_request
 
 
 @pytest.mark.parametrize(

@@ -1448,7 +1448,7 @@ def _read_output_package() -> bytes:
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(allow_abbrev=False)
-    group = parser.add_mutually_exclusive_group(required=True)
+    group = parser.add_mutually_exclusive_group()
     group.add_argument("--source-check", action="store_true")
     group.add_argument("--package", action="store_true")
     group.add_argument("--check", action="store_true")
@@ -1462,14 +1462,15 @@ def main(argv: list[str] | None = None) -> int:
             result = source_check()
         else:
             payload = package_bytes()
-            if arguments.package:
+            package_mode = arguments.package or not arguments.check
+            if package_mode:
                 _write_package(payload)
             elif _read_output_package() != payload:
                 _fail("THEME_PACKAGE_DRIFT")
             result = {
                 "package_bytes": len(payload),
                 "package_sha256": hashlib.sha256(payload).hexdigest(),
-                "status": "PACKAGED" if arguments.package else "PACKAGE_VALID",
+                "status": "PACKAGED" if package_mode else "PACKAGE_VALID",
                 "theme_slug": THEME_SLUG,
             }
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))

@@ -30,7 +30,7 @@ from raos.domain.catalog.rakuten_item_search_runtime_v2 import (
     ProviderTextTrustV2,
 )
 
-from runtime_v2_fixtures import (
+from .runtime_v2_fixtures import (
     normalization_service_v2,
     normalization_store_v2,
     source_fixture_v2,

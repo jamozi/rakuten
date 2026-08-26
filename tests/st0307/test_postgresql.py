@@ -8,7 +8,7 @@ from typing import Any
 import pytest
 from psycopg import sql
 
-from conftest import HistoricalDatabaseFactory, REPO_ROOT, apply_fixture, run_psql
+from .support import HistoricalDatabaseFactory, REPO_ROOT, apply_fixture, run_psql
 from raos.migrations import catalog, runner
 from scripts import build_st0305_publication_analytics_finance as st0305_generator
 from scripts import build_st0307_migration_fixtures as generator

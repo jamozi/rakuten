@@ -27,7 +27,7 @@ from raos.domain.publishing.review_decision_operations import (
 )
 from raos.domain.publishing.review_workflow import PrincipalId, ReviewDecisionId
 
-from .conftest import request_with
+from .support import request_with
 
 
 def uuid7(suffix: int) -> UUID:

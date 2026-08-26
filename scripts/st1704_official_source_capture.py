@@ -12,7 +12,6 @@ import os
 from pathlib import Path, PurePosixPath
 import re
 import stat
-import subprocess
 import sys
 import types
 from typing import Callable, Final, NoReturn, Protocol, TextIO, cast
@@ -33,20 +32,6 @@ MAX_RUNTIME_BYTES: Final = 4 * 1024 * 1024
 _DIRECTORY_FLAGS: Final = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC
 _FILE_FLAGS: Final = os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC
 _SHA256: Final = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
-_GIT_OBJECT_ID: Final = re.compile(r"(?:[0-9a-f]{40}|[0-9a-f]{64})\Z", re.ASCII)
-_GIT_ENVIRONMENT: Final = {
-    "GIT_CONFIG_GLOBAL": "/dev/null",
-    "GIT_CONFIG_NOSYSTEM": "1",
-    "GIT_NO_LAZY_FETCH": "1",
-    "GIT_NO_REPLACE_OBJECTS": "1",
-    "GIT_OPTIONAL_LOCKS": "0",
-    "GIT_TERMINAL_PROMPT": "0",
-    "HOME": "/nonexistent",
-    "LANG": "C",
-    "LC_ALL": "C",
-    "PATH": "/usr/bin:/bin",
-    "TZ": "UTC",
-}
 
 ARTICLE_IDS: Final = (
     "st1703-first-suitcase-comparison",
@@ -757,126 +742,25 @@ def _verify_stage_zero() -> None:
         os.close(root_fd)
 
 
-def _git(root: Path, *arguments: str, maximum_stdout: int = MAX_RUNTIME_BYTES) -> bytes:
-    if type(maximum_stdout) is not int or not 1 <= maximum_stdout <= MAX_RUNTIME_BYTES:
-        _fail_runtime()
-    try:
-        completed = subprocess.run(
-            ["/usr/bin/git", "--no-optional-locks", "-C", root.as_posix(), *arguments],
-            check=False,
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            env=_GIT_ENVIRONMENT,
-            timeout=10,
-        )
-    except OSError, subprocess.SubprocessError:
-        _fail_runtime()
-    if (
-        completed.returncode != 0
-        or type(completed.stdout) is not bytes
-        or len(completed.stdout) > maximum_stdout
-    ):
-        _fail_runtime()
-    return completed.stdout
-
-
-def _require_git_root(root: Path) -> None:
-    expected = os.fsencode(root.as_posix()) + b"\n"
-    if (
-        _git(
-            root,
-            "rev-parse",
-            "--show-toplevel",
-            maximum_stdout=max(128, len(expected)),
-        )
-        != expected
-    ):
-        _fail_runtime()
-
-
-def _committed_blob(
-    root: Path,
-    *,
-    head: str,
-    relative: str,
-    maximum: int,
-) -> bytes:
-    if (
-        _GIT_OBJECT_ID.fullmatch(head) is None
-        or type(maximum) is not int
-        or not 1 <= maximum <= MAX_RUNTIME_BYTES
-    ):
-        _fail_runtime()
-    _relative_parts(relative)
-    object_spec = f"{head}:{relative}"
-    raw_size = _git(root, "cat-file", "-s", object_spec, maximum_stdout=128)
-    try:
-        size_text = raw_size.decode("ascii", errors="strict").strip()
-        size = int(size_text)
-    except UnicodeError, ValueError:
-        _fail_runtime()
-    if str(size) != size_text or not 0 < size <= maximum:
-        _fail_runtime()
-    blob = _git(root, "cat-file", "blob", object_spec, maximum_stdout=size)
-    if len(blob) != size:
-        _fail_runtime()
-    return blob
-
-
-def _committed_manifest(root: Path) -> tuple[bytes, str]:
-    _require_git_root(root)
-    raw_object_id = _git(
-        root, "rev-parse", "--verify", "HEAD^{commit}", maximum_stdout=128
-    )
-    try:
-        object_id = raw_object_id.decode("ascii", errors="strict").strip()
-    except UnicodeError:
-        _fail_runtime()
-    if _GIT_OBJECT_ID.fullmatch(object_id) is None:
-        _fail_runtime()
-    manifest = _committed_blob(
-        root,
-        head=object_id,
-        relative=MANIFEST_RELATIVE,
-        maximum=MAX_MANIFEST_BYTES,
-    )
-    return manifest, object_id
-
-
-def _require_same_head(root: Path, expected: str) -> None:
-    observed_raw = _git(
-        root, "rev-parse", "--verify", "HEAD^{commit}", maximum_stdout=128
-    )
-    try:
-        observed = observed_raw.decode("ascii", errors="strict").strip()
-    except UnicodeError:
-        _fail_runtime()
-    if observed != expected:
-        _fail_runtime()
-
-
 def _validate_predecessor(raw: bytes) -> None:
     predecessor = _decode_json(raw)
     if raw != _canonical_manifest(predecessor) or set(predecessor) != {
-        "approved_base_commit",
         "external_action_authority",
         "generated_by",
+        "generator_owner",
+        "generator_version",
         "paths",
-        "repository_development_authority",
         "schema",
         "slice_id",
         "story_id",
     }:
         _fail_runtime()
     if (
-        predecessor["approved_base_commit"]
-        != "b5a6157b878ca0435ee4120d33162aba5ae51f77"
-        or predecessor["external_action_authority"] != "NONE"
+        predecessor["external_action_authority"] != "NONE"
         or predecessor["generated_by"]
         != "scripts/build_st1703_self_hosted_runtime_manifest.py"
-        or predecessor["repository_development_authority"]
-        != "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"
+        or predecessor["generator_owner"] != "build_st1703_self_hosted_runtime_manifest"
+        or predecessor["generator_version"] != "2"
         or predecessor["schema"] != "SELF_HOSTED_WORDPRESS_RUNTIME_MANIFEST_V1"
         or predecessor["slice_id"] != "SELF_HOSTED_MINIMUM_START_V1"
         or predecessor["story_id"] != "ST-1703"
@@ -912,34 +796,30 @@ def _verify_runtime_integrity(
         manifest_raw = _read_relative(
             root_fd, MANIFEST_RELATIVE, maximum=MAX_MANIFEST_BYTES
         )
-        committed_manifest, committed_head = _committed_manifest(root)
-        if manifest_raw != committed_manifest:
-            _fail_runtime()
         manifest = _decode_json(manifest_raw)
         if manifest_raw != _canonical_manifest(manifest) or set(manifest) != {
-            "approved_base_commit",
             "article_ids",
             "external_action_authority",
             "generated_by",
+            "generator_owner",
+            "generator_version",
             "paths",
             "predecessor",
             "publication_authority",
-            "repository_development_authority",
             "schema",
             "slice_id",
             "story_id",
         }:
             _fail_runtime()
         if (
-            manifest["approved_base_commit"]
-            != "ca271187c4c8606487193110b29597a40e4c1c9f"
-            or manifest["article_ids"] != list(ARTICLE_IDS)
+            manifest["article_ids"] != list(ARTICLE_IDS)
             or manifest["external_action_authority"] != "NONE"
             or manifest["generated_by"]
             != "scripts/build_st1704_self_hosted_editorial_manifest.py"
+            or manifest["generator_owner"]
+            != "build_st1704_self_hosted_editorial_manifest"
+            or manifest["generator_version"] != "2"
             or manifest["publication_authority"] != "NONE"
-            or manifest["repository_development_authority"]
-            != "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"
             or manifest["schema"] != "SELF_HOSTED_EDITORIAL_PILOT_MANIFEST_V1"
             or manifest["slice_id"] != "SELF_HOSTED_EDITORIAL_PILOT_V1"
             or manifest["story_id"] != "ST-1704"
@@ -949,14 +829,10 @@ def _verify_runtime_integrity(
         if type(predecessor_value) is not dict:
             _fail_runtime()
         predecessor = cast(dict[str, object], predecessor_value)
-        if set(predecessor) != {"path", "sha256"}:
-            _fail_runtime()
-        predecessor_sha256 = predecessor["sha256"]
-        if (
-            predecessor["path"] != PREDECESSOR_RELATIVE
-            or type(predecessor_sha256) is not str
-            or _SHA256.fullmatch(predecessor_sha256) is None
-        ):
+        if predecessor != {
+            "owner_id": "build_st1703_self_hosted_runtime_manifest",
+            "version": "2",
+        }:
             _fail_runtime()
         entries_value = manifest["paths"]
         if type(entries_value) is not list:
@@ -984,35 +860,9 @@ def _verify_runtime_integrity(
             ):
                 _fail_runtime()
             raw = _read_relative(root_fd, expected_path, maximum=MAX_RUNTIME_BYTES)
-            committed_raw = _committed_blob(
-                root,
-                head=committed_head,
-                relative=expected_path,
-                maximum=MAX_RUNTIME_BYTES,
-            )
-            if (
-                raw != committed_raw
-                or len(raw) != byte_count
-                or hashlib.sha256(raw).hexdigest() != sha256
-            ):
+            if len(raw) != byte_count or hashlib.sha256(raw).hexdigest() != sha256:
                 _fail_runtime()
             sources[expected_path] = raw
-        predecessor_raw = _read_relative(
-            root_fd, PREDECESSOR_RELATIVE, maximum=MAX_MANIFEST_BYTES
-        )
-        committed_predecessor = _committed_blob(
-            root,
-            head=committed_head,
-            relative=PREDECESSOR_RELATIVE,
-            maximum=MAX_MANIFEST_BYTES,
-        )
-        if (
-            predecessor_raw != committed_predecessor
-            or hashlib.sha256(predecessor_raw).hexdigest() != predecessor_sha256
-        ):
-            _fail_runtime()
-        _validate_predecessor(predecessor_raw)
-        _require_same_head(root, committed_head)
         rebound = _open_absolute_directory(root)
         try:
             final_root = _safe_directory(rebound)

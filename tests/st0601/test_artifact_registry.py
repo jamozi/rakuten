@@ -29,7 +29,7 @@ from raos.domain.ops.artifact_registry import (
     Sha256Digest,
 )
 
-from conftest import (
+from .support import (
     ACQUIRED_AT,
     SYNTHETIC_CONTENT,
     location_candidate,

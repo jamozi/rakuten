@@ -8,7 +8,7 @@ from decimal import Decimal
 
 import pytest
 
-from conftest import recommendation_input, valid_recommendation_input
+from .support import recommendation_input, valid_recommendation_input
 import raos.domain.editorial.recommendation as recommendation_module
 from raos.domain.editorial.comparison_validation import validate_comparison
 from raos.domain.editorial.recommendation import (

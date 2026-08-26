@@ -11,7 +11,7 @@ import pytest
 import yaml
 
 from scripts import build_st0705_ai_output_validation_reference_plan as generator
-from scripts import build_st1505_staging_deployment as base
+from scripts import raos_build_core as base
 
 
 EXPECTED_ERRORS = (
@@ -115,9 +115,9 @@ def test_oversized_contract_is_rejected(isolated_repository: Path) -> None:
 
 @pytest.mark.parametrize(
     "relative",
-    [*generator.AUTHORITY_PATHS, *generator.PREDECESSOR_PATHS],
+    generator.AUTHORITY_PATHS,
 )
-def test_authority_or_predecessor_byte_drift_is_rejected(
+def test_immutable_authority_byte_drift_is_rejected(
     isolated_repository: Path,
     relative: Path,
 ) -> None:
@@ -125,6 +125,19 @@ def test_authority_or_predecessor_byte_drift_is_rejected(
     path.write_bytes(path.read_bytes() + b"\ndrift\n")
     with pytest.raises(generator.AiOutputValidationReferenceError):
         generator.render_outputs(isolated_repository)
+
+
+def test_predecessor_readmes_are_semantic_not_digest_bound(
+    isolated_repository: Path,
+) -> None:
+    for relative in (
+        generator.PREDECESSOR_PATHS[0],
+        generator.PREDECESSOR_PATHS[9],
+        generator.PREDECESSOR_PATHS[15],
+    ):
+        path = isolated_repository / relative
+        path.write_bytes(path.read_bytes() + b"\neditorial note\n")
+    assert generator.render_outputs(isolated_repository)
 
 
 def test_predecessor_semantic_tamper_is_rejected_after_hash_rebind(

@@ -7,9 +7,10 @@ document:
   authority: NONE
   production_eligible: false
 provenance:
-  base_commit: 3b96731aa8435af35724237279d7f4b4726b7b59
+  generator_owner: build_st1908_fine_tuning_evaluation
+  generator_version: 2
   contract_uri: repo://changes/st-1908/contracts/fine-tuning-evaluation.v1.yaml
-  contract_sha256: 3ec51c4815e6c975f0adf823e9415348a0341121c24eac103e5b51085e458ebd
+  contract_sha256: fe67ace9d346e2a51cb1b0e933ccfb98c866ff44bd4d13a9f16a900b8449fe37
   fixture_uri: repo://changes/st-1908/fixtures/recorded/fine-tuning-candidate.synthetic.v1.json
   fixture_sha256: 5bfc483d7102ac8155f12d6d13f480039e079a0e011baad4692cfbb9b6515a43
   report_sha256: 8188e832365bc7c7740a7ed7b9a0dabbc876f03aec24db241830824296534422
@@ -17,8 +18,8 @@ provenance:
 source_artifact_count: 20
 source_artifacts:
 - uri: repo://changes/st-1908/contracts/fine-tuning-evaluation.v1.yaml
-  bytes: 11015
-  sha256: 3ec51c4815e6c975f0adf823e9415348a0341121c24eac103e5b51085e458ebd
+  bytes: 10517
+  sha256: fe67ace9d346e2a51cb1b0e933ccfb98c866ff44bd4d13a9f16a900b8449fe37
 - uri: repo://changes/st-1908/fixtures/recorded/fine-tuning-candidate.synthetic.v1.json
   bytes: 2858
   sha256: 5bfc483d7102ac8155f12d6d13f480039e079a0e011baad4692cfbb9b6515a43
@@ -47,8 +48,8 @@ source_artifacts:
   bytes: 14549
   sha256: af5a8b7efbdcb0957828b9b876e17a2185dd8d092e8539f431003e045e08b421
 - uri: repo://scripts/build_st1908_fine_tuning_evaluation.py
-  bytes: 20263
-  sha256: 2829f594b2265d413190d06d4e4abcb25cf5a4830d7ce4f989ed505ab11d30a5
+  bytes: 20117
+  sha256: f283dbd3a73ca500fba0afd27cc6937057880f234cb2c094dc86196b803d4bca
 - uri: repo://tests/st1908/__init__.py
   bytes: 49
   sha256: ab711141e771329ca9776c25d16e1f0289df53c902629de19a241ca097f7ee98
@@ -59,8 +60,8 @@ source_artifacts:
   bytes: 4183
   sha256: 1d875e269b57d4b91a4746dcc51d92016e1774745416719fa4eef2358fa3f9b0
 - uri: repo://tests/st1908/test_contract.py
-  bytes: 6192
-  sha256: ab4c97d2f799586985cb07f65d73905dce0a43273737c45903c547e4152a8a43
+  bytes: 6002
+  sha256: 2f4e60e314bb8e853507a38cf10fbade5e83de1d8ae9bf890a318dc460e40b32
 - uri: repo://tests/st1908/test_evaluator.py
   bytes: 7020
   sha256: e826396923b862bf4d4c25de2426849620a4266f2ab0095d66fea5dd65fccb08

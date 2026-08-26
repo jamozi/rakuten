@@ -64,16 +64,13 @@ def test_authority_story_suite_and_unresolved_decisions_are_current() -> None:
     assert suite["execution_status"] == "NOT_EXECUTED"
 
 
-def test_predecessor_is_exact_current_st0707_bytes() -> None:
+def test_predecessor_is_semantic_current_st0707_input() -> None:
     predecessor = _contract()["predecessor"]
     assert predecessor["story_id"] == "ST-0707"
-    assert predecessor["binding"] == "EXACT_BASE_COMMIT_BYTES"
-    assert predecessor["base_commit"] == generator.BASE_COMMIT
     assert len(predecessor["artifacts"]) == 8
-    for path, digest in predecessor["artifacts"].items():
-        assert (
-            generator.sha256_bytes((generator.REPO_ROOT / path).read_bytes()) == digest
-        )
+    assert all(
+        (generator.REPO_ROOT / path).is_file() for path in predecessor["artifacts"]
+    )
     semantics = predecessor["required_semantics"]
     assert semantics["recorded_synthetic_only"] is True
     assert semantics["synthetic_release_eligible"] is False

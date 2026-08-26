@@ -16,6 +16,9 @@ from types import ModuleType
 import pytest
 
 
+pytestmark = pytest.mark.raos_owner_private
+
+
 ROOT = Path(__file__).resolve().parents[2]
 CLI_PATH = ROOT / "scripts/self_hosted_wordpress.py"
 GENERATOR_PATH = ROOT / "scripts/build_st1703_self_hosted_runtime_manifest.py"
@@ -1210,9 +1213,8 @@ def test_runtime_manifest_generator_check_is_current_and_inventory_matches() -> 
     assert set(paths).intersection(generator.FINAL_THEME_IMAGE_RUNTIME_PATHS) == set(
         generator.FINAL_THEME_IMAGE_RUNTIME_PATHS
     )
-    assert generator.APPROVED_BASE_COMMIT == SHIPPED_PR_BASE
-    assert cli._RUNTIME_APPROVED_BASE_COMMIT == SHIPPED_PR_BASE
-    assert manifest["approved_base_commit"] == SHIPPED_PR_BASE
+    assert manifest["generator_owner"] == "build_st1703_self_hosted_runtime_manifest"
+    assert manifest["generator_version"] == "2"
     assert manifest["external_action_authority"] == "NONE"
 
     inventory_lines = python_inventory_bytes.decode("ascii").splitlines()

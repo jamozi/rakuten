@@ -8,7 +8,7 @@ from pathlib import Path
 import re
 from typing import Any
 
-from conftest import EXPECTED_NODE_VERSION, EXPECTED_NPM_VERSION, REPOSITORY_ROOT
+from .support import EXPECTED_NODE_VERSION, EXPECTED_NPM_VERSION, REPOSITORY_ROOT
 
 
 EXPECTED_WORKSPACES = ["apps/web", "packages/web-contracts", "packages/web-ui"]
@@ -255,8 +255,8 @@ def test_lint_format_pyright_and_vitest_configs_are_explicit() -> None:
     assert ".venv" in excluded
     assert ".venv-offline-check" in excluded
     assert "python/raos/generated" in excluded
-    assert "venvPath" not in pyright
-    assert "venv" not in pyright
+    assert pyright["venvPath"] == "."
+    assert pyright["venv"] == ".venv"
     assert "tests/st0103/**/*.test.ts" in vitest
     assert "passWithNoTests: false" in vitest
 

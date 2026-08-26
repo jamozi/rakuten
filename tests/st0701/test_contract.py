@@ -205,42 +205,15 @@ def test_generated_artifact_loads_all_tasks_through_runtime_adapter() -> None:
         registry.get("ai.unknown.v1")
 
 
-def test_make_readme_and_story_docs_expose_only_local_offline_commands() -> None:
+def test_unified_development_commands_replace_story_specific_targets() -> None:
     makefile = (REPOSITORY_ROOT / "Makefile").read_text(encoding="utf-8")
-    readme = (REPOSITORY_ROOT / "README.md").read_text(encoding="utf-8")
     story_readme = (REPOSITORY_ROOT / "changes/st-0701/README.md").read_text(
         encoding="utf-8"
     )
-    execplan = (REPOSITORY_ROOT / "docs/execplans/ST-0701.md").read_text(
-        encoding="utf-8"
-    )
-    worklog = (REPOSITORY_ROOT / "docs/worklogs/ST-0701.md").read_text(encoding="utf-8")
+    for target in ("setup", "generate", "check", "fast", "final"):
+        assert f"\n{target}:" in f"\n{makefile}"
     for target in ("ai-registry-generate", "ai-registry-check", "ai-registry-test"):
-        assert f"{target}:" in makefile
-        assert f"make {target}" in story_readme
+        assert f"{target}:" not in makefile
     assert "CompiledTaskRegistry(" in story_readme
     assert ".resolve()" in story_readme
-    assert _load_yaml(MANIFEST_PATH)["generated_artifacts"][0]["sha256"] in story_readme
-    for documentation in (readme, story_readme):
-        assert "make python-sync UV=/absolute/path/to/uv" in documentation
-        assert "PYTHONDONTWRITEBYTECODE=1 uv run --locked --offline --no-cache" in (
-            documentation
-        )
-        assert "--no-sync" in documentation
-        assert "--no-env-file --no-python-downloads" in documentation
-    check_block = makefile.split("\nai-registry-check:", 1)[1].split(
-        "\nai-registry-test:", 1
-    )[0]
-    assert "$(UV_READONLY_RUN)" in check_block
-    assert "--check" in check_block
-    normalized = " ".join(f"{readme}\n{story_readme}\n{execplan}\n{worklog}".split())
-    for token in (
-        "TST-001",
-        "TST-017",
-        "NOT_EXECUTED",
-        "provider",
-        "network",
-        "database",
-        "does not activate",
-    ):
-        assert token.lower() in normalized.lower()
+    assert _load_yaml(MANIFEST_PATH)["generated_artifacts"]

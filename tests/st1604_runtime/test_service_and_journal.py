@@ -33,7 +33,7 @@ from raos.ports.performance_load import (
     PerformanceLoadWriteDisposition,
 )
 
-from conftest import make_request
+from .support import make_request
 
 
 _DATABASE_NAME = "st1604-local-performance-load.sqlite3"

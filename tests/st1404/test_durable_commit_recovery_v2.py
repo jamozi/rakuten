@@ -31,7 +31,7 @@ from raos.domain.ops.job_runtime import (
     RuntimeFailureCode,
 )
 
-from conftest import (
+from .support import (
     EVENT_ID,
     IDENTITY_NAMESPACE,
     JOB_ID,

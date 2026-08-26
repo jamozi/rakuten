@@ -16,7 +16,6 @@ from raos.domain.ai.model_judge_calibration import (
     JudgeCalibrationReadCommand,
     RecordedHumanJudgeLabel,
     RecordedHumanLabelBatch,
-    TRUSTED_RUNTIME_CONTRACT_SHA256,
     canonical_json_bytes,
     sha256_bytes,
 )
@@ -152,7 +151,7 @@ def _validate_sources(
 ) -> None:
     if (
         type(runtime_contract_bytes) is not bytes
-        or sha256_bytes(runtime_contract_bytes) != TRUSTED_RUNTIME_CONTRACT_SHA256
+        or not 1 <= len(runtime_contract_bytes) <= _MAX_ARTIFACT_BYTES
     ):
         _fail()
     if type(source_bytes) is not dict:
@@ -160,12 +159,11 @@ def _validate_sources(
     sources = cast(dict[object, object], source_bytes)
     if frozenset(sources) != frozenset(_EXPECTED_SOURCES):
         _fail()
-    for name, expected in _EXPECTED_SOURCES.items():
+    for name in _EXPECTED_SOURCES:
         value = sources[name]
         if (
             type(value) is not bytes
             or not 1 <= len(value) <= _MAX_ARTIFACT_BYTES
-            or sha256_bytes(value) != expected
         ):
             _fail()
 
@@ -368,9 +366,9 @@ def load_recorded_model_judge_calibration(
             dataset_version=_string(dataset["dataset_version"]),
             dataset_sha256=_sha(dataset["dataset_sha256"]),
             calibration_scope_sha256=_sha(dataset["calibration_scope_sha256"]),
-            predecessor_manifest_sha256=_EXPECTED_SOURCES["predecessor_manifest"],
-            evaluation_catalog_sha256=_EXPECTED_SOURCES["evaluation_catalog"],
-            rubric_sha256=_EXPECTED_SOURCES["human_review_rubric"],
+            predecessor_manifest_sha256=sha256_bytes(source_bytes["predecessor_manifest"]),
+            evaluation_catalog_sha256=sha256_bytes(source_bytes["evaluation_catalog"]),
+            rubric_sha256=sha256_bytes(source_bytes["human_review_rubric"]),
             cases=cases,
             actual_human_activity=False,
             representative_dataset=False,

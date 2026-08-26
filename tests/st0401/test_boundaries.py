@@ -8,7 +8,7 @@ import pickle
 
 import pytest
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.domain.iam.authentication import (
     AuthenticationFailure,
     AuthenticationFailureCode,

@@ -13,7 +13,7 @@ import sys
 import pytest
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_local_compose as generator
 from scripts import build_st0201_postgres_service as postgres_generator
 

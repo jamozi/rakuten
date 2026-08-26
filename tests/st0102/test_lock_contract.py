@@ -7,7 +7,7 @@ import re
 from typing import Any
 from urllib.parse import urlsplit
 
-from test_toolchain_contract import (
+from .test_toolchain_contract import (
     DIRECT_DEV_PINS,
     DIRECT_RUNTIME_PINS,
     PYTHON_VERSION,

@@ -27,8 +27,6 @@ sources:
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
     sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
-  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   - uri: repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
     sha256: 2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d
   - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
@@ -43,11 +41,10 @@ predecessor_binding:
   story_id: ST-1501
   extension_kind: COMPUTE_CDN_WAF
   design_handoff_uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
-  design_handoff_sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
+  owner_id: build_st1501_terraform_foundation
+  owner_version: 2
   contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-  contract_sha256: 5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e
   reference_plan_uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-  reference_plan_sha256: bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72
   toolchain_lock_uri: repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json
   toolchain_lock_sha256: 696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44
   required_validation_tool: Terraform

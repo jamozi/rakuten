@@ -33,29 +33,30 @@ canonical_sources:
 st0705_bindings:
   atomic_publication_owner:
     path: scripts/secure_generated_publication.py
-    sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
+    semantic_id: secure-generated-publication
+    version: 2
   runtime_contract:
     path: changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml
-    sha256: 25e8696211025ee2581b0318ca2758dbcd4dccccd37447be1e8ad84667dbb02d
+    owner_id: build_st0705_ai_output_validation_runtime
+    owner_version: 2
   profile_registry:
     path: changes/st-0705/generated/ai-output-validation-profiles.v1.json
-    sha256: 7266bb90e673320fc64b9c5344fcfefbda864a8ce41da10c5857f68682e9c8ed
+    owner_id: build_st0705_ai_output_validation_runtime
+    owner_version: 2
   recorded_fixture:
     path: changes/st-0705/generated/ai-output-validation-pass.v1.json
-    sha256: e87088fc150bad7b7c4d863f540eac6f474591a1da86c830d5b7a3f942bcfaf2
+    owner_id: build_st0705_ai_output_validation_runtime
+    owner_version: 2
   runtime_manifest:
     path: changes/st-0705/runtime-manifest.v1.yaml
-    sha256: d590ad333830cd9f8006400de2f23f82ca1daa36daac00bd8078e50fcd609747
+    owner_id: build_st0705_ai_output_validation_runtime
+    owner_version: 2
   task_schema:
     path: contracts/raos-v0.4/contracts/ai/schemas/tasks/ai.opportunity_assessment.v1.output.schema.json
-    sha256: 504cc8907a2d4dd6835adef13ad53d6e31e6a0f412102ec6a8495600e3242123
+    owner_id: build_st0105_generated_contracts
+    owner_version: 2
   task_id: AIT-001
   task_code: ai.opportunity_assessment.v1
-  profile_sha256: 9c73806794f288cc357adfac1bf534f0814c14ff1af0bc7691f236fa44468f67
-  validation_manifest_sha256: 04ef7e48abe5305a3a6ebc144b3cb1469ff2b5104377f9dc097fb33081194dea
-  output_sha256: e59813caeafb3375ca931e4f1c7bc9bab53d2c3f84916ac8942ff78c182ea03f
-  provider_exchange_sha256: e6d5b8cbbed495404ba4d560dbd6a073fbe1ace516dc2e239203b3d72b91d02e
-  validation_report_sha256: 770dc5834fd0ad1259098c8276909db70e14fc88feca520a1cb679e95e4fe36f
 
 suite:
   suite_code: suite.ai.opportunity_assessment.v1.release.v1

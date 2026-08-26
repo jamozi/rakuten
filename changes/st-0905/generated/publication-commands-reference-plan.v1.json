@@ -153,10 +153,11 @@
     "source_contract": "repo://changes/st-0905/contracts/publication-commands-reference-plan.v1.yaml",
     "source_contract_sha256": "66e680fe1c8dec0fe4a83a080f70c31040b41503b81cfcb6b1ea1a808012d9d0",
     "generated_by": "repo://scripts/build_st0905_publication_commands_reference_plan.py",
-    "generation_command": "uv run --locked --no-sync python scripts/build_st0905_publication_commands_reference_plan.py",
+    "generation_command": "python scripts/raos_build.py generate",
     "implementation_helper": {
       "uri": "repo://scripts/build_st1505_staging_deployment.py",
-      "sha256": "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
+      "owner_id": "build_st1505_staging_deployment",
+      "owner_version": 2
     },
     "digest_classification": "LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT"
   },

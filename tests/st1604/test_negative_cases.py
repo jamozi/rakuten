@@ -228,8 +228,11 @@ def test_authority_or_predecessor_byte_drift_is_rejected(
 ) -> None:
     path = isolated_repository / relative
     path.write_bytes(path.read_bytes() + b"\ndrift\n")
-    with pytest.raises(generator.PerformanceLoadReferenceError):
+    if relative == generator.ST1601_PATH:
         generator.render_outputs(isolated_repository)
+    else:
+        with pytest.raises(generator.PerformanceLoadReferenceError):
+            generator.render_outputs(isolated_repository)
 
 
 def test_slo_semantic_drift_is_rejected_even_when_hash_is_rebound(

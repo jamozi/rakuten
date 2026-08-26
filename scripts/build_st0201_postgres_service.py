@@ -160,7 +160,7 @@ EXPECTED_COMPOSE: Final = {
 }
 EXPECTED_RUNTIME: Final = {
     "wrapper": "repo://scripts/postgres_service.sh",
-    "interface": "scripts/postgres_service.sh --docker ABSOLUTE_PATH COMMAND",
+    "interface": "scripts/postgres_service.sh --docker EXECUTABLE COMMAND",
     "commands": ["config", "up", "check", "down", "test"],
     "docker_host": "unix:///var/run/docker.sock",
     "minimum_compose_version": "2.24.4",

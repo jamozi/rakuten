@@ -2,7 +2,8 @@
   "schema_version": "1.0.0",
   "generator": {
     "uri": "repo://scripts/build_st1705_pilot_signoff.py",
-    "command": "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1705_pilot_signoff.py",
+    "owner_id": "build_st1705_pilot_signoff",
+    "owner_version": "2",
     "source_contract": "repo://changes/st-1705/contracts/pilot-security-recovery-signoff.v1.yaml"
   },
   "story": {
@@ -286,9 +287,6 @@
   },
   "evidence_boundary": {
     "classification": "LOCAL_BLOCKED_PILOT_SIGNOFF_NON_ATTESTING",
-    "local_base_commit": "94a1ecc75f148149dae4e825a9bd90727bd85dbb",
-    "local_base_commit_status": "RECORDED_IMPLEMENTATION_BASE_ONLY",
-    "local_base_commit_qualifying_evidence": false,
     "source_freeze_status": "UNAVAILABLE",
     "source_freeze_identifier": null,
     "reviewed_implementation_tree_status": "UNAVAILABLE",
@@ -319,7 +317,6 @@
     "MEASUREMENT_INTERFACE_IS_NOT_AN_OBSERVED_OWNER_PRIVATE_LEDGER",
     "LOCAL_GENERATION_IS_NOT_TST_026_TST_029_OR_TST_032",
     "SCHEMA_SHAPED_INPUT_CANNOT_SELF_AUTHORIZE_FORMAL_EVIDENCE",
-    "RECORDED_BASE_COMMIT_IS_NOT_A_SOURCE_FREEZE_OR_REVIEWED_TREE",
     "BLOCKED_RECORD_IS_NOT_GATE_APPROVAL_OR_SECURITY_SIGN_OFF",
     "NO_STATUS_PUBLICATION_STAGING_RELEASE_DEPLOYMENT_OR_PRODUCTION_AUTHORITY"
   ]

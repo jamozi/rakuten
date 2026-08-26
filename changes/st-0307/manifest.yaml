@@ -70,11 +70,11 @@ source_artifacts:
   bytes: 2249
   sha256: 0b32aa4a289a297f47ddf770244d696f437a0e98cf857556ef3d6a6cede41023
 - uri: repo://README.md
-  bytes: 58459
-  sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
+  bytes: 3960
+  sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
 - uri: repo://Makefile
-  bytes: 34422
-  sha256: 8d4030bfcffaa5bde56842b6a2475bbe2b845e074722c787b9d712bc22d2a40f
+  bytes: 2077
+  sha256: d505133bfc56b259cdb3a3279d6f242a885998f239a3e29fc003ec63dfbbb9e9
 - uri: repo://docs/execplans/ST-0307.md
   bytes: 2270
   sha256: 237d9c6369926402c8afe12de8f5a58c8bda76af36e735dbda0475ba336e0fb8
@@ -82,8 +82,8 @@ source_artifacts:
   bytes: 3863
   sha256: a7a565a02fb99e30200539dedf2072dcb598f89835e6bfdc8e3b75516bd901e9
 - uri: repo://scripts/build_st0307_migration_fixtures.py
-  bytes: 34971
-  sha256: 950b53de8067230e4b9d259988347e22abb9b2eb024d423ebd5cf07e4faadfb1
+  bytes: 34702
+  sha256: 3230745395c9f7b86cd3ce6e076bc87254632ba6cb922556b76b8470c4e47471
 - uri: repo://docs/upstream/RAOS_03_data_model_package_v0.1.zip
   bytes: 434952
   sha256: 82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357
@@ -112,23 +112,23 @@ source_artifacts:
   bytes: 82151
   sha256: 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
 - uri: repo://changes/st-0301/manifest.yaml
-  bytes: 13018
-  sha256: 5abdb26df67dd204dc92a88f3c93132dc30c99a16a2109eea4f84a35c6e574eb
+  bytes: 13013
+  sha256: c913f3abd53aa99f177719795d42fc0c153d5dd594488ff6a04e4b3faea297d4
 - uri: repo://changes/st-0302/manifest.yaml
-  bytes: 8662
-  sha256: b2576fe7b440fbcc5ba847b17e9505074276a91fb76a26ca291903c92bdd193e
+  bytes: 8657
+  sha256: 8f1e7e537acd5eafb0c410a5b14bcba6d334e63709aa31a5cafa21ef5f39ad0b
 - uri: repo://changes/st-0303/manifest.yaml
-  bytes: 11534
-  sha256: 816b59f87f80ec3c672f271fb3a1efd3e3cdb63a24981ab8aaea64f79356186c
+  bytes: 11451
+  sha256: b23a1c6b9056db4d4607f975c30d3f8c48d89fb2e0b273030aeb532e3fe17caa
 - uri: repo://changes/st-0304/manifest.yaml
-  bytes: 11667
-  sha256: 5a3772b87591b90b5f698eaa86131a10b5d9767d93cc8e2be67340df4b310623
+  bytes: 11664
+  sha256: fdace21bc3f21299a7a178f365cd49ca7c33bf35873affb7986856f32c0e829c
 - uri: repo://changes/st-0305/manifest.yaml
-  bytes: 14863
-  sha256: af6034f99374b427aee444a6048531a174f0d78ae58974b2456c2be97f3d33b9
+  bytes: 14860
+  sha256: 143a922a96af87354b92a3a3d57635ea22923af680c82f2c5f13a8b7852b472b
 - uri: repo://changes/st-0306/manifest.yaml
-  bytes: 8660
-  sha256: 4849ef0c78204c81dd466a4d25a59b0c830b93ab42084c8903c5b3e54651c7df
+  bytes: 8657
+  sha256: 35e837f468ca148ae07c46652124eda3f4ce4270a71127d778d4e359fa951cf0
 - uri: repo://python/raos/migrations/catalog.py
   bytes: 20363
   sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
@@ -190,14 +190,14 @@ source_artifacts:
   bytes: 14562
   sha256: 005eb43bcc8692a22ae7cf237fdd7d721165e8ea54988f4d7d6acada45366381
 - uri: repo://tests/st0307/conftest.py
-  bytes: 6628
-  sha256: 2b12d0396500ca31a268b389866dbb2bd081608b7f0e31f28232d5afab6b1505
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st0307/test_generation.py
-  bytes: 13071
-  sha256: f45ac13048b8d613a656c0eba20a32b5647d7924c137553bfdb1710ac87008cb
+  bytes: 11825
+  sha256: b8883da55c5cc1ec35730f0c5593ababa3a51006038da1e9850e2984e1e50571
 - uri: repo://tests/st0307/test_postgresql.py
   bytes: 31404
-  sha256: 64ef6097bbb9da4c51c7dfb4f64504928d743228240341dc57efe8ef9179946f
+  sha256: 42fa38610bb1a31d486fba3658bd601d806061e47ff19e71f2f6c6f7c2a6cc77
 generated_artifact_count: 5
 generated_artifacts:
 - uri: repo://tests/fixtures/migrations/st0307/v0.1-job-alignment.v1.sql

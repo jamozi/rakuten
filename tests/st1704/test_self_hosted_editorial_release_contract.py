@@ -43,11 +43,10 @@ def test_runtime_manifest_is_exact_and_keeps_st1703_as_predecessor() -> None:
     assert manifest["publication_authority"] == "NONE"
     assert manifest["article_ids"] == list(manifest_builder.ARTICLE_IDS)
 
-    predecessor = ROOT / manifest["predecessor"]["path"]
-    assert (
-        manifest["predecessor"]["sha256"]
-        == hashlib.sha256(predecessor.read_bytes()).hexdigest()
-    )
+    assert manifest["predecessor"] == {
+        "owner_id": "build_st1703_self_hosted_runtime_manifest",
+        "version": "2",
+    }
     records = manifest["paths"]
     assert [record["path"] for record in records] == list(
         manifest_builder.REQUIRED_RUNTIME_PATHS

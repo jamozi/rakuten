@@ -20,7 +20,7 @@ from raos.ports.rakuten_item_search import (
     RawResponseRecorder,
 )
 
-from conftest import (
+from .support import (
     REPOSITORY_ROOT,
     item_search_command,
     item_search_request,

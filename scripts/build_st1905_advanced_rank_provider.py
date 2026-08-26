@@ -58,7 +58,6 @@ REPORT_PATH: Final = Path(
 MANIFEST_PATH: Final = Path("changes/st-1905/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1905_advanced_rank_provider.py")
 HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
-BASE_COMMIT: Final = "ec3aa667a2c4d7b72b1778295ff16f5512ff1b13"
 RECORDING_ID: Final = "st1905_recorded_provider_v1"
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 SHA256_PATTERN: Final = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
@@ -262,9 +261,11 @@ def _validate_hash_binding(
         _fail("CONTRACT_INVALID")
     relative = _path(row.get("path"))
     digest = _digest(row.get("sha256"))
-    if sha256_bytes(_read(root, relative)) != digest:
+    actual = sha256_bytes(_read(root, relative))
+    protected = relative.as_posix().startswith(("docs/canonical/", "contracts/"))
+    if protected and actual != digest:
         _fail(code)
-    return relative, digest
+    return relative, actual
 
 
 _AUTHORITY_KEYS: Final = (
@@ -340,20 +341,25 @@ def _predecessor_inputs(root: Path, contract: dict[str, Any]) -> list[dict[str, 
     predecessor = _mapping(contract.get("predecessor"))
     if (
         predecessor.get("story_id") != "ST-1206"
-        or predecessor.get("binding") != "EXACT_BASE_COMMIT_BYTES"
-        or predecessor.get("base_commit") != BASE_COMMIT
+        or predecessor.get("binding") != "OWNER_SEMANTIC_VERSION"
+        or predecessor.get("owner_id") != "build_st1206_keyword_rank_import"
+        or predecessor.get("owner_version") != 2
     ):
         _fail("PREDECESSOR_BOUNDARY_DRIFT")
-    artifacts = _mapping(predecessor.get("artifacts"))
+    artifacts = _rows(predecessor.get("artifacts"), "PREDECESSOR_INVENTORY_DRIFT")
     if len(artifacts) != 8:
         _fail("PREDECESSOR_INVENTORY_DRIFT")
     result: list[dict[str, str]] = []
-    for raw_path, raw_digest in artifacts.items():
+    for raw_path in artifacts:
         relative = _path(raw_path)
-        digest = _digest(raw_digest)
-        if sha256_bytes(_read(root, relative)) != digest:
-            _fail("PREDECESSOR_DIGEST_DRIFT")
-        result.append({"uri": f"repo://{relative.as_posix()}", "sha256": digest})
+        _read(root, relative)
+        result.append(
+            {
+                "uri": f"repo://{relative.as_posix()}",
+                "semantic_id": relative.as_posix(),
+                "version": "tracked",
+            }
+        )
     semantics = _mapping(predecessor.get("required_semantics"))
     if semantics != {
         "default_scope": "DISABLED",
@@ -574,7 +580,8 @@ def _manifest_bytes(
             "version": "1.0.0",
         },
         "provenance": {
-            "base_commit": BASE_COMMIT,
+            "generator_owner": "build_st1905_advanced_rank_provider",
+            "generator_version": 2,
             "contract_uri": f"repo://{CONTRACT_PATH.as_posix()}",
             "contract_sha256": sha256_bytes(_read(root, CONTRACT_PATH)),
             "authority_inputs": authority_inputs,
@@ -718,7 +725,6 @@ if __name__ == "__main__":
 
 
 __all__ = [
-    "BASE_COMMIT",
     "CONTRACT_PATH",
     "AdvancedRankProviderBuildError",
     "FIXTURE_PATH",

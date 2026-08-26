@@ -31,68 +31,28 @@ dependency_bindings:
   st_0005:
     story_id: ST-0005
     role: STATUS_SOURCE
-    artifacts:
-    - kind: CONTRACT
-      uri: repo://changes/st-0005/contracts/status-policy.v1.yaml
-      sha256: 15969f4d5db3aee48059ece1fb572786f25bc0807eb34458b36f97f63f8ccfaf
-    - kind: GENERATED_STATUS_OVERLAY
-      uri: repo://changes/st-0005/status-overlay.v1.yaml
-      sha256: d8f432c8fe79d6e4066a33c55d00527f23f93c2a810f88b0d8555bd317b77b90
-    - kind: MANIFEST
-      uri: repo://changes/st-0005/manifest.yaml
-      sha256: 10bcbe759f9c1aa89d064748136b88a6694500956f049a6679041fe44e0785ce
+    owner_id: build_st0005_status
+    owner_version: 2
   st_1603:
     story_id: ST-1603
     role: SECURITY_VERIFICATION_INPUT
-    artifacts:
-    - kind: CONTRACT
-      uri: repo://changes/st-1603/contracts/security-verification-pack.v1.yaml
-      sha256: 9dee0475108d905d31e2ec3c832ce721cf7970966f35988e38cefc9b1cf64f1e
-    - kind: GENERATED_REFERENCE_PLAN
-      uri: repo://changes/st-1603/generated/security-verification-pack.reference-plan.v1.json
-      sha256: 4a354954044c38c527598e6e58f5b5fff46d579262224c833ddffab4cf1bec42
-    - kind: MANIFEST
-      uri: repo://changes/st-1603/manifest.yaml
-      sha256: 945531f9a0a203ba235d713f5ac283cb2741fb0cf589c8cadee21ad43473e2f6
+    owner_id: build_st1603_security_verification
+    owner_version: 2
   st_1605:
     story_id: ST-1605
     role: FAILURE_INJECTION_INPUT
-    artifacts:
-    - kind: CONTRACT
-      uri: repo://changes/st-1605/contracts/failure-injection-drill.v1.yaml
-      sha256: 27be70b911bf3d71b47dc13f47c3df122b42c79cd7df1b9f2b1c2cdca75c28ab
-    - kind: GENERATED_LOCAL_SYNTHETIC_EVIDENCE
-      uri: repo://changes/st-1605/generated/failure-injection-drill.local-synthetic-evidence.v1.json
-      sha256: 4a3cac40464c3494ed74e66f4c5790e3318f94369baf8954f9b3626108484ddf
-    - kind: MANIFEST
-      uri: repo://changes/st-1605/manifest.yaml
-      sha256: 7720c4064de09a164bc20e8efeccdbf7f300cd0049171e3b4a6bcbfc822d7c1a
+    owner_id: build_st1605_failure_injection
+    owner_version: 2
   st_1606:
     story_id: ST-1606
     role: BACKUP_RESTORE_INPUT
-    artifacts:
-    - kind: CONTRACT
-      uri: repo://changes/st-1606/contracts/backup-restore-drill.v1.yaml
-      sha256: 4898aace08155c06e05a3654d6a2854ad05492c1697da85a7965c68d6b353202
-    - kind: GENERATED_REFERENCE_PLAN
-      uri: repo://changes/st-1606/generated/backup-restore-drill.reference-plan.v1.json
-      sha256: 1eba3b4b622eb77517848ca77d101427311918866735342e2e827f3bb6de26fb
-    - kind: MANIFEST
-      uri: repo://changes/st-1606/manifest.yaml
-      sha256: d4d3b5df9cdcf56ede791d1512614302e0e77887c9e417dcc918ff9d477a27e8
+    owner_id: build_st1606_backup_restore
+    owner_version: 2
 decision_gate_binding:
   story_id: ST-0006
   role: OPEN_DECISION_BLOCKER_INPUT
-  artifacts:
-  - kind: POLICY
-    uri: repo://changes/st-0006/contracts/decision-gate-policy.v1.yaml
-    sha256: 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
-  - kind: GENERATED_BLOCKER_REPORT
-    uri: repo://changes/st-0006/gate-blocker-report.v1.yaml
-    sha256: 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
-  - kind: MANIFEST
-    uri: repo://changes/st-0006/manifest.yaml
-    sha256: bbff3aee2fb89a4ecf45bfb92550d06b3936cceb7f3bce247f45daf5b9ca82be
+  owner_id: build_st0006_decision_gates
+  owner_version: 2
   required_by_interpretation: OPAQUE_CONTEXT_ONLY
   target_policy: ALL_ACTIVE_BLOCKERS_TO_ALL_TARGETS
   clear_means_gate_pass: false
@@ -160,19 +120,7 @@ snapshot_boundary:
   - GATE-2
   - GATE-3
   - GATE-4
-  local_base_commit: a3ea6d1a1e8621d9ff198c9dea31b0c6f7a768d5
-  local_base_commit_type: GIT_SHA1_LOWER_HEX_40
-  local_base_commit_status: RECORDED_PREDECESSOR_CHECKOUT_ONLY
-  local_base_commit_scope: PREDECESSOR_CHECKOUT_PROVENANCE_ONLY
-  local_base_commit_qualifying_evidence: false
-  source_freeze_identifier_type: OPTIONAL_SHA256_LOWER_HEX_64
-  source_freeze_status: ABSENT
-  source_freeze_identifier: null
-  source_freeze_qualifying_evidence: false
-  reviewed_implementation_tree_commit_type: OPTIONAL_GIT_SHA1_LOWER_HEX_40
-  reviewed_implementation_tree_commit_status: ABSENT
-  reviewed_implementation_tree_commit: null
-  reviewed_implementation_tree_commit_qualifying_evidence: false
+  repository_tracking: GIT_AND_CI
   target_release_version: null
   target_environment: STAGING
   staging_execution_identifier: null
@@ -307,13 +255,9 @@ execution_boundary:
   executable: false
   local_report_generation_only: true
   input_size_limit_bytes: 2097152
-  input_read_model: ROOT_FD_DESCRIPTOR_RELATIVE_CAPTURED_LEAF
-  implementation_input_behavior: HASH_VERIFY_ONLY_NEVER_IMPORT_OR_EXECUTE
-  writer_model: SINGLE_PROCESS_SAME_UID_EXCLUSIVE_LOCK
-  concurrent_writer_behavior: FAIL_CLOSED
-  output_transaction: TWO_OUTPUT_RECOVERABLE_ALL_OR_NOTHING
-  pending_recovery_before_source_validation: true
-  check_pending_recovery_behavior: READ_ONLY_REJECT
+  input_read_model: SHARED_BUILD_RUNNER
+  predecessor_validation: OWNER_ID_AND_VERSION
+  writer_model: SHARED_ATOMIC_REPLACE
   network_access: FORBIDDEN
   environment_access: FORBIDDEN
   credential_access: FORBIDDEN

@@ -36,10 +36,10 @@
     "python/raos/ports/rakuten_item_search_runtime_v2.py": "fd7f385825fb80c1ee8966923fa19828b2916cb9a78a66b154c7736a70598628",
     "scripts/build_st0503_catalog_normalization_runtime.py": "d0892b14c6aa29b9811222800c51ee62b160e4b45aaeab5f8f61b3aa5941ea8a",
     "tests/st0503/runtime_v2_fixtures.py": "14aa9814b2248fcc2d8608c057ed3a6859cc40660171da76ffe6e1bba343c85d",
-    "tests/st0503/test_catalog_normalization_runtime_v2.py": "bb4d869d51f550eec6a50fdbe5a62ae6085ee98329ca8e6695c36313868fc2d9",
+    "tests/st0503/test_catalog_normalization_runtime_v2.py": "6e2b5ecab6e8fe16d458ed251089dda4574414327ba8c6c42ee79ade90ca4cce",
     "tests/st0503/test_catalog_normalization_runtime_v2_generator.py": "b831527df0d2033e5f1cc65cbe57b3e3169bb1a88258247198736fb723761005",
-    "tests/st0503/test_catalog_normalization_runtime_v2_hostile.py": "759c2a761900cdbca2fb8102334663adf7efe1818bef898cc23ef820177eb467",
-    "tests/st0503/test_catalog_normalization_runtime_v2_storage.py": "b119b6423ad3a606316b5c9fcca1e7cec6be76512d9a093345d920559777e2bf"
+    "tests/st0503/test_catalog_normalization_runtime_v2_hostile.py": "75d35b183f01b5fe5e94cc76368fccb5750758f8afc4c832e38de3a126651d95",
+    "tests/st0503/test_catalog_normalization_runtime_v2_storage.py": "cf9653837e58d1b577d04df9af886cbe11aff804e8efbdbe85900f03436d6288"
   },
   "staging": "NOT_EXECUTED",
   "story_id": "ST-0503"

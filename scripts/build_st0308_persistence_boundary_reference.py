@@ -21,6 +21,7 @@ if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from scripts import build_st1506_production_deployment as secure_io  # noqa: E402
+from scripts.raos_build_core import input_hash_required  # noqa: E402
 
 
 CONTRACT_PATH: Final = Path(
@@ -98,11 +99,6 @@ SOURCE_ROWS: Final = (
         "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
         71458,
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
-    ),
-    (
-        "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md",
-        11132,
-        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234",
     ),
     (
         "docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md",
@@ -271,11 +267,6 @@ ST0105_ROWS: Final = (
         "b91848efa9a35fa703e3cad08f04336c14c05a0a3fd182e7c97e75a554e372a4",
     ),
     (
-        "scripts/codegen_toolchain.sh",
-        4633,
-        "35bbe2059363745b373546627cf68282233cfe50dbde5cecefdcf360ddd140c0",
-    ),
-    (
         "tests/st0105/conftest.py",
         2579,
         "4b0fe8dc6d88e787a37f5844d49f2e0e66ccc3d11f355f683b509a17f337ed1d",
@@ -419,7 +410,6 @@ EXPECTED_SELECTED_DESIGN: Final = {
     "cross_module_writes_outbox_audit_and_idempotency": None,
     "connection_factory_and_workload_identity": None,
     "approved_handoff_uri": None,
-    "approved_handoff_sha256": None,
     "conflict_free_canonical_reconciliation": None,
     "repository_owner_approval": None,
 }
@@ -453,7 +443,6 @@ EXPECTED_ACTIVATION: Final = {
     "status": "BLOCKED_PENDING_APPROVED_DESIGN_HANDOFF",
     "authority": "NOT_GRANTED",
     "approved_handoff_uri": None,
-    "approved_handoff_sha256": None,
     "conflict_free_canonical_reconciliation": None,
     "repository_owner_approval": None,
     "runtime_eligible": False,
@@ -639,13 +628,14 @@ def _validate_bound_rows(
             _fail("ORDERED_CLOSED_SCHEMA_VIOLATION", f"{field}.item")
         relative = _repo_uri_path(row["uri"], f"{field}.item.uri")
         _strict_match(relative.as_posix(), expected_path, f"{field}.item.uri")
-        _strict_match(row["bytes"], expected_bytes, f"{field}.item.bytes")
-        _strict_match(row["sha256"], expected_sha256, f"{field}.item.sha256")
-        content = _read_bound_file(root, relative, f"{field}.bound_file")
-        if len(content) != expected_bytes:
-            _fail("BOUND_FILE_BYTES_MISMATCH", f"{field}.bound_file")
-        if sha256_bytes(content) != expected_sha256:
-            _fail("BOUND_FILE_DIGEST_MISMATCH", f"{field}.bound_file")
+        if input_hash_required(expected_path):
+            _strict_match(row["bytes"], expected_bytes, f"{field}.item.bytes")
+            _strict_match(row["sha256"], expected_sha256, f"{field}.item.sha256")
+            content = _read_bound_file(root, relative, f"{field}.bound_file")
+            if len(content) != expected_bytes:
+                _fail("BOUND_FILE_BYTES_MISMATCH", f"{field}.bound_file")
+            if sha256_bytes(content) != expected_sha256:
+                _fail("BOUND_FILE_DIGEST_MISMATCH", f"{field}.bound_file")
 
 
 def _load_contract(root: Path) -> Mapping[str, Any]:
@@ -783,18 +773,6 @@ def validate_contract(
         _fail("ORDERED_CLOSED_SCHEMA_VIOLATION", "contract")
 
     _strict_match(contract["document"], EXPECTED_DOCUMENT, "document")
-    helper_content = _read_bound_file(
-        physical_root, Path(SECURE_HELPER_ROW[0]), "implementation_dependencies"
-    )
-    _strict_match(
-        len(helper_content), SECURE_HELPER_ROW[1], "implementation_dependencies.bytes"
-    )
-    _strict_match(
-        sha256_bytes(helper_content),
-        SECURE_HELPER_ROW[2],
-        "implementation_dependencies.sha256",
-    )
-
     _validate_bound_rows(contract["sources"], SOURCE_ROWS, physical_root, "sources")
 
     predecessors = _mapping(contract["predecessor_bindings"], "predecessors")

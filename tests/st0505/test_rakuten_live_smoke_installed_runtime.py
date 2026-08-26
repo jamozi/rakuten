@@ -27,7 +27,7 @@ from raos.domain.catalog.rakuten_live_smoke import RakutenLiveSmokeFailure
 from scripts import build_st0505_rakuten_live_smoke_reference_plan as generator
 from scripts import install_rakuten_live_smoke_runtime as installer
 from scripts import rakuten_live_smoke as cli
-from test_rakuten_live_smoke_runtime import (
+from .test_rakuten_live_smoke_runtime import (
     FakeReader,
     MemoryWriter,
     StaticTransport,

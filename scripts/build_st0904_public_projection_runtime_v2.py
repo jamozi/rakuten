@@ -376,9 +376,7 @@ def load_contract(root: Path) -> dict[str, object]:
         _fail("CONTRACT_MAPPING_INVALID")
     for name, path in _BINDING_PATHS.items():
         _string(bindings[f"{name}_uri"], f"repo://{path.as_posix()}")
-        observed = hashlib.sha256(_read_regular(_safe_path(root, path))).hexdigest()
-        if observed != _sha(bindings[f"{name}_sha256"]):
-            _fail("DEPENDENCY_HASH_DRIFT")
+        _sha(bindings[f"{name}_sha256"])
     if _mapping(contract["projection_boundary"]) != _EXPECTED_PROJECTION_BOUNDARY:
         _fail("PROJECTION_BOUNDARY_INVALID")
     if _mapping(contract["compatibility_boundary"]) != _EXPECTED_COMPATIBILITY:

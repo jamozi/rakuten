@@ -13,7 +13,7 @@ from uuid import UUID
 import pytest
 import raos.adapters.sqlite_product_identity_runtime_v2 as sqlite_runtime_v2
 
-from runtime_v2_support import (
+from .runtime_v2_support import (
     DECISION_AT_V2,
     DECISION_OPERATION_IDS_V2,
     authorization_fixture_v2,
@@ -54,7 +54,7 @@ def _request(
     operation_id: UUID,
     reason: str,
 ) -> ProductIdentityHumanDecisionRequestV2:
-    from runtime_v2_support import AuthorizationFixtureV2
+    from .runtime_v2_support import AuthorizationFixtureV2
     from raos.domain.catalog.product_identity_runtime_v2 import (
         PersistedProductIdentityReviewQueueV2,
     )

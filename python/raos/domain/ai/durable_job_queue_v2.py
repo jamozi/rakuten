@@ -840,6 +840,8 @@ class DurableQueueState(_RedactedValue):
             )
             if (
                 len(requested) != 1
+                or job_intents[0] is not requested[0]
+                or (terminal and job_intents != [requested[0], terminal[0]])
                 or requested[0].attempt_number != job.command.attempt_number
                 or requested[0].status
                 not in {
@@ -1336,9 +1338,7 @@ def encode_durable_queue_state(state: DurableQueueState) -> bytes:
         ],
         "outbox_intents": [
             _intent_to_data(intent)
-            for intent in sorted(
-                state.outbox_intents, key=lambda item: item.intent_id_sha256
-            )
+            for intent in state.outbox_intents
         ],
     }
     encoded = _canonical_bytes(data) + b"\n"

@@ -30,7 +30,7 @@ from raos.domain.ops.job_runtime import (
 )
 from raos.ports.queue import QueueDelivery, QueueMessage, QueuePort
 
-from conftest import (
+from .support import (
     CONSUMER_NAME,
     EVENT_ID,
     HANDLER_VERSION,

@@ -10,7 +10,7 @@ from raos.domain.ai.output_validation import (
     failure_disposition,
 )
 
-from .conftest import CaseFactory
+from .support import CaseFactory
 
 
 AIT004_DOCUMENT = {

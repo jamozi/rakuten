@@ -28,8 +28,8 @@ source_artifacts:
   bytes: 32639
   sha256: aec4a3cabed705470cd71a306b41815f1760a08a4cfc8fa0aae9537a0b24a67a
 - uri: repo://scripts/build_st0606_evidence_workspace_v2.py
-  bytes: 49000
-  sha256: b6a722a51d24a64e3ecd55591f7ac0e6c3f9040991cd149765b4bf6f94e8a9ed
+  bytes: 48984
+  sha256: 8348f46129baf5ca3f089a6ec569b8f7f9d077da52747af5302b893155f26837
 - uri: repo://tests/st0606_v2/evidence-workspace-v2-generation.test.ts
   bytes: 3672
   sha256: 755dee1bb0e86114d2829e3cf989bf9a2c1471e6c9664c899121c57051459cc0

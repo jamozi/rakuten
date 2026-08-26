@@ -50,7 +50,7 @@ def test_isolated_publication_is_atomic_0644_and_adjacent(
     generator.build(isolated_repository, check=True)
 
 
-def test_manifest_binds_sources_predecessor_generated_plan_and_helper() -> None:
+def test_manifest_binds_sources_predecessor_and_generated_plan() -> None:
     manifest = yaml.safe_load(
         (generator.REPO_ROOT / generator.MANIFEST_PATH).read_bytes()
     )
@@ -88,10 +88,6 @@ def test_manifest_binds_sources_predecessor_generated_plan_and_helper() -> None:
             "sha256": generator._sha256(reference),
         }
     ]
-    assert manifest["provenance"]["implementation_helper"] == {
-        "uri": f"repo://{generator.HELPER_PATH.as_posix()}",
-        "sha256": generator.HELPER_SHA256,
-    }
 
 
 def test_generated_or_manifest_drift_is_rejected(

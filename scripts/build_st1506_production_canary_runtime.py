@@ -55,10 +55,6 @@ GENERATOR_URI: Final = "repo://scripts/build_st1506_production_canary_runtime.py
 GENERATION_COMMAND: Final = (
     "uv run --locked --no-sync python scripts/build_st1506_production_canary_runtime.py"
 )
-EXPECTED_ACTIVE_WORKFLOW_TREE_SHA256: Final = (
-    "e8c8c4b564b25842b2b322786d737d375b70307064587f96c87b7ef4505f8bc7"
-)
-
 AUTHORITY_PATHS: Final = (
     Path("AGENTS.md"),
     Path("docs/canonical/00_master/RAOS_MASTER_README_v1.0.md"),
@@ -183,11 +179,11 @@ def _artifact_row(root: Path, relative: Path) -> dict[str, object]:
     }
 
 
-def _workflow_inventory(root: Path) -> tuple[str, list[dict[str, object]]]:
+def _workflow_inventory(root: Path) -> list[str]:
     workflow_root = root / ".github" / "workflows"
     if workflow_root.is_symlink() or not workflow_root.is_dir():
         _fail("ACTIVE_WORKFLOW_TREE_INVALID")
-    rows: list[dict[str, object]] = []
+    rows: list[str] = []
     for path in sorted(workflow_root.rglob("*")):
         metadata = path.lstat()
         if stat.S_ISLNK(metadata.st_mode):
@@ -196,15 +192,9 @@ def _workflow_inventory(root: Path) -> tuple[str, list[dict[str, object]]]:
             continue
         if not stat.S_ISREG(metadata.st_mode):
             _fail("ACTIVE_WORKFLOW_TREE_INVALID")
-        content = path.read_bytes()
         relative = path.relative_to(root).as_posix()
-        rows.append(
-            {"path": relative, "bytes": len(content), "sha256": _sha256_bytes(content)}
-        )
-    digest = canonical_sha256(rows)
-    if digest != EXPECTED_ACTIVE_WORKFLOW_TREE_SHA256:
-        _fail("ACTIVE_WORKFLOW_TREE_DRIFT")
-    return digest, rows
+        rows.append(relative)
+    return rows
 
 
 def _pipeline_document(spec: ProductionCanarySpec) -> dict[str, object]:
@@ -373,7 +363,7 @@ def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
         spec = load_local_production_canary_spec(root)
     except ProductionCanaryError as error:
         raise BuildError(error.code) from None
-    workflow_digest, workflow_rows = _workflow_inventory(root)
+    workflow_rows = _workflow_inventory(root)
     pipeline_bytes = _yaml_bytes(_pipeline_document(spec))
     result_bytes = _json_bytes(_result_document(root, spec))
     source_artifacts = [_artifact_row(root, path) for path in SOURCE_PATHS]
@@ -428,7 +418,8 @@ def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
         "generated_artifact_count": len(generated_without_manifest),
         "generated_artifacts": generated_without_manifest,
         "active_workflow_tree": {
-            "sha256": workflow_digest,
+            "semantic_id": "github-workflows",
+            "semantic_version": 2,
             "changed_by_story": False,
             "files": workflow_rows,
         },

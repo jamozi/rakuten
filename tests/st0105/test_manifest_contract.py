@@ -8,7 +8,7 @@ from pathlib import Path
 import re
 from typing import Any
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.shared.contract_repository import ContractRepository
 
 

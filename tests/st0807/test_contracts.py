@@ -15,7 +15,7 @@ from raos.domain.editorial.seo_renderer import (
     render_seo,
 )
 
-from conftest import render_request
+from .support import render_request
 
 
 @pytest.mark.parametrize(

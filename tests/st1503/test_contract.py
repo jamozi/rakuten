@@ -9,6 +9,7 @@ from typing import Any, cast
 import yaml
 
 from scripts import build_st1503_compute_edge as generator
+from scripts.raos_build_core import input_hash_required
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -42,16 +43,11 @@ def test_contract_is_closed_provider_neutral_interface(
     assert admission["concrete_alternate_provider_selected"] is False
 
 
-def test_direct_handoff_is_hash_and_semantic_bound() -> None:
+def test_direct_handoff_is_bound_by_semantic_identity_and_required_capabilities() -> None:
     handoff_path = REPOSITORY_ROOT / generator.DESIGN_HANDOFF_PATH
     handoff = generator.load_yaml(handoff_path)
-    assert (
-        generator.sha256_file(handoff_path)
-        == generator.AUTHORITY_SOURCES[generator.DESIGN_HANDOFF_PATH.as_posix()]
-    )
-    assert (
-        generator.semantic_sha256(handoff) == generator.EXPECTED_HANDOFF_SEMANTIC_SHA256
-    )
+    assert handoff["schema"] == "DESIGN_HANDOFF_V1"
+    assert handoff["version"] == 1
     assert handoff["approved_story"] == "ST-1503"
     assert handoff["decision"]["required_capability_ids"] == [
         capability_id
@@ -265,7 +261,8 @@ def test_source_pins_and_generated_json_match() -> None:
     for relative, expected_digest in generator.PINNED_SOURCES.items():
         path = REPOSITORY_ROOT / relative
         assert path.is_file() and not path.is_symlink()
-        assert generator.sha256_file(path) == expected_digest
+        if input_hash_required(relative):
+            assert generator.sha256_file(path) == expected_digest
     model = generator.load_and_validate_contract(REPOSITORY_ROOT)
     path = REPOSITORY_ROOT / generator.REFERENCE_PLAN_PATH
     assert json.loads(path.read_bytes()) == generator.reference_plan_document(model)

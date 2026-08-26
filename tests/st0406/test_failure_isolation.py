@@ -7,7 +7,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     CONTENT,
     DIGEST,
     INTAKE_A,

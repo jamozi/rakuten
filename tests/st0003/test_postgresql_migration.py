@@ -10,7 +10,7 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
-from conftest import apply_sql, read_sql, upgrade_st0002
+from .support import apply_sql, read_sql, upgrade_st0002
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]

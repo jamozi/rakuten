@@ -29,7 +29,7 @@ from raos.domain.catalog.rakuten_item_search import RakutenItemSearchResult
 
 import pytest
 
-from conftest import (
+from .support import (
     ENDPOINT_ID,
     INGESTED_AT,
     INGESTION_ID,

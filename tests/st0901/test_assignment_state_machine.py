@@ -9,7 +9,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     ARTICLE_VERSION_ID,
     ASSIGNED_BY,
     ASSIGNED_TO,

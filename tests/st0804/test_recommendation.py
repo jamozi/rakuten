@@ -8,7 +8,7 @@ import json
 
 import pytest
 
-from conftest import recommendation_input, valid_recommendation_input
+from .support import recommendation_input, valid_recommendation_input
 from raos.domain.editorial.recommendation import (
     CandidateEligibility,
     CandidateRecommendation,

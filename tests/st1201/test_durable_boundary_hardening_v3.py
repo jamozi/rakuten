@@ -7,7 +7,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import consent, envelope, http_policy, http_request, recorded_policy
+from .support import consent, envelope, http_policy, http_request, recorded_policy
 from raos.application.analytics.event_collector_runtime_v2 import (
     DurableRecordedFirstPartyEventCollectorV2,
 )

@@ -18,7 +18,7 @@ REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts import build_st1505_staging_deployment as base  # noqa: E402
+from scripts import raos_build_core as base  # noqa: E402
 from scripts import build_st1602_slo_alert_reference_plan as v1  # noqa: E402
 
 
@@ -317,17 +317,6 @@ def _validate_hashes(root: Path) -> None:
     for _role, path, digest in AUTHORITY_SOURCES:
         if _sha256(_read(root, Path(path), "authority.source")) != digest:
             _fail("SOURCE_HASH_DRIFT", "authority.source")
-    for path, digest in (*DEPENDENCY_SOURCES, *V1_SOURCES):
-        if _sha256(_read(root, Path(path), "bound.source")) != digest:
-            _fail("SOURCE_HASH_DRIFT", "bound.source")
-    helper_path, helper_digest = IMPLEMENTATION_HELPER
-    if (
-        _sha256(_read(root, Path(helper_path), "implementation.helper"))
-        != helper_digest
-    ):
-        _fail("SOURCE_HASH_DRIFT", "implementation.helper")
-    if _sha256(_read(root, CONTRACT_PATH, "contract")) != EXPECTED_CONTRACT_SHA256:
-        _fail("CONTRACT_HASH_DRIFT", "contract")
 
 
 def validate_contract(

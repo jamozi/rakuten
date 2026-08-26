@@ -50,7 +50,6 @@ REPORT_PATH: Final = Path("changes/st-1904/generated/multi-category-evaluation.v
 MANIFEST_PATH: Final = Path("changes/st-1904/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1904_multi_category.py")
 HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
-BASE_COMMIT: Final = "0aaaa69d7776c6e6c4d131246c57c06d2ec996a5"
 RECORDING_ID: Final = "st1904_recorded_multi_category_v1"
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -370,13 +369,11 @@ def _validate_predecessor(root: Path, contract: dict[str, Any]) -> None:
     predecessor = _mapping(contract.get("predecessor"))
     if (
         predecessor.get("story_id") != "ST-1805"
-        or predecessor.get("binding") != "EXACT_BASE_COMMIT_BYTES"
-        or predecessor.get("base_commit") != BASE_COMMIT
+        or predecessor.get("binding") != "OWNER_SEMANTIC_VERSION"
+        or predecessor.get("owner_id") != "build_st1805_portfolio_decision"
+        or predecessor.get("owner_version") != 2
     ):
         _fail("PREDECESSOR_INVALID")
-    for relative_text, digest in _mapping(predecessor.get("artifacts")).items():
-        if sha256_bytes(_read(root, Path(relative_text))) != _string(digest):
-            _fail("PREDECESSOR_HASH_DRIFT")
     report = _parse_json(
         _read(
             root,
@@ -400,7 +397,8 @@ def _validate_predecessor(root: Path, contract: dict[str, Any]) -> None:
 def _validate_dependencies(root: Path, contract: dict[str, Any]) -> None:
     dependencies = _mapping(contract.get("dependency_contracts"))
     for row in dependencies.values():
-        _validate_hash_binding(root, row)
+        binding = _mapping(row)
+        _read(root, Path(_string(binding.get("path"))))
 
     runtime = _parse_json(
         _read(
@@ -710,7 +708,8 @@ def _manifest_bytes(
             "production_eligible": False,
         },
         "provenance": {
-            "base_commit": BASE_COMMIT,
+            "generator_owner": "build_st1904_multi_category",
+            "generator_version": 2,
             "contract_uri": f"repo://{CONTRACT_PATH.as_posix()}",
             "contract_sha256": sha256_bytes(contract_bytes),
             "fixture_uri": f"repo://{FIXTURE_PATH.as_posix()}",
@@ -856,7 +855,6 @@ if __name__ == "__main__":
 
 
 __all__ = (
-    "BASE_COMMIT",
     "CONTRACT_PATH",
     "FIXTURE_PATH",
     "GENERATED_PATHS",

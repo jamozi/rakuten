@@ -7,7 +7,7 @@ document:
   generation_command: uv run --locked --no-sync python scripts/build_st1504_github_oidc.py
 provenance:
   contract_uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
-  contract_sha256: 20558e50a78c5d8be62a553858445578cc3fdd39fd285de3a92fe5cd5b5d9257
+  contract_sha256: d42ddb5e92559702ec02c312a9d5524a31e6fa5cd0d9620ae5fdd202b3f74502
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -35,10 +35,6 @@ provenance:
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
     sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
-  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
-  - uri: repo://AGENTS.md
-    sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
   - uri: repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml
     sha256: 36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04
   predecessor_inputs:
@@ -67,8 +63,8 @@ provenance:
 source_artifact_count: 15
 source_artifacts:
 - uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
-  bytes: 22669
-  sha256: 20558e50a78c5d8be62a553858445578cc3fdd39fd285de3a92fe5cd5b5d9257
+  bytes: 22115
+  sha256: d42ddb5e92559702ec02c312a9d5524a31e6fa5cd0d9620ae5fdd202b3f74502
 - uri: repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml
   bytes: 13676
   sha256: 36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04
@@ -82,8 +78,8 @@ source_artifacts:
   bytes: 9018
   sha256: eadeee62d5d6233dc306c3201f8d4368d995c9c9922dc50e4e4c85fb6169859a
 - uri: repo://scripts/build_st1504_github_oidc.py
-  bytes: 101457
-  sha256: 4e7ff7664326a754b89039bb4c5fcd399e629c3197814da5b79260a54d01bdb0
+  bytes: 98589
+  sha256: a053ca9a090ac548d3e7fdc48f0c5a83f69aa6ea95ba8e56b9da295f2ee9b8cf
 - uri: repo://python/raos/domain/deployment_identity.py
   bytes: 17972
   sha256: 7808bbe1ced665f0e7c184574eeb760c80278966e5c61d832f63d734efc52f13
@@ -97,14 +93,14 @@ source_artifacts:
   bytes: 631
   sha256: e7ea76882f2d42aa0928fe519d9bf38449f33cf118c42cfdaa86b336bcbc9bf3
 - uri: repo://tests/st1504/test_contract.py
-  bytes: 14285
-  sha256: d9477fe76ee175fd55cb054f7f731a62d933854fe768d544090d7e22db030b67
+  bytes: 14434
+  sha256: 309b84fb9e48b713a6f4de527b36869b76d36b23abebfacc1bd2e5f1dfa1eac5
 - uri: repo://tests/st1504/test_generation.py
   bytes: 12028
   sha256: 3dbca427e188695cf1fd8d8df789a05df15a22b99eb5a09f965acf10bf4f0890
 - uri: repo://tests/st1504/test_negative_cases.py
-  bytes: 36536
-  sha256: 10c440a80d30332cf6cd5fb623a87bc45be297df3840df97848f6608e58db609
+  bytes: 36833
+  sha256: 3ba745057c40a4082b6727eb9ae0967192a8639fa1419359ef73748df2fb982d
 - uri: repo://tests/st1504/test_offline_runtime.py
   bytes: 6804
   sha256: 19d0dbf7f7a6d01cc9ae86b77982e4d6e08f0b9a513920b7c2cfe20d9b9361fd
@@ -114,8 +110,8 @@ source_artifacts:
 generated_artifact_count: 5
 generated_artifacts:
 - uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
-  bytes: 22515
-  sha256: 7316a9f71cfea72edf071757ead8b44403362d106eb986d146193a27d658d6e6
+  bytes: 22190
+  sha256: 2fc71d3040d593274c0597f492c9e9eae90d6bb943d168a1a73620bb8891b6db
 - uri: repo://infra/terraform/deployment-identity/github-oidc.claims.recorded.v1.json
   bytes: 1285
   sha256: 26f648c750b80e2af2b36dc60d3e12d66c8acc16e5ba909a6013a30843505764

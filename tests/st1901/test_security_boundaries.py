@@ -8,7 +8,7 @@ import pickle
 
 import pytest
 
-from conftest import FIXTURE_PATH, REPOSITORY_ROOT, load_batch
+from .support import FIXTURE_PATH, REPOSITORY_ROOT, load_batch
 from raos.application.ai.model_judge_calibration import ModelJudgeCalibrationHarness
 from raos.domain.ai.model_judge_calibration import (
     ModelJudgeCalibrationError,

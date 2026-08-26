@@ -57,7 +57,7 @@ def test_duplicate_documents_and_bound_dependency_drift_fail_closed(
         return payload.replace(b"affiliate_url=None", b"affiliate_url='invented'", 1)
 
     monkeypatch.setattr(builder, "_read_regular", changed)
-    with pytest.raises(builder.St1004BuildError, match="^SOURCE_BINDING_DRIFT$"):
+    with pytest.raises(builder.St1004BuildError, match="^ST0503_SOURCE_DRIFT$"):
         builder.expected_artifacts(ROOT)
 
 

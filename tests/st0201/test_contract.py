@@ -6,7 +6,7 @@ from typing import Any
 
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st0201_postgres_service as generator
 
 

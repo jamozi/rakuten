@@ -14,7 +14,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import consent, envelope, validated_event
+from .support import consent, envelope, validated_event
 from raos.adapters.sqlite_event_collector_runtime_v2 import (
     EventStoreCommitFault,
     SqliteDurableRecordedEventStoreV2,

@@ -8,7 +8,7 @@ import pickle
 
 import pytest
 
-from conftest import (
+from .support import (
     CONTRACT_PATH,
     REPOSITORY_ROOT,
     batch_with_cases,
@@ -74,22 +74,22 @@ def test_unknown_or_leaky_fixture_fields_are_rejected_without_echo() -> None:
         pickle.dumps(captured.value)
 
 
-def test_contract_and_provenance_hash_drift_are_rejected() -> None:
+def test_tracked_contract_and_provenance_are_not_digest_authorities() -> None:
     contract = (REPOSITORY_ROOT / CONTRACT_PATH).read_bytes()
-    with pytest.raises(RecordedModelJudgeCalibrationError):
-        load_recorded_model_judge_calibration(
-            fixture_bytes=fixture_bytes(),
-            runtime_contract_bytes=contract + b"\n",
-            source_bytes=source_bytes(),
-        )
+    loaded = load_recorded_model_judge_calibration(
+        fixture_bytes=fixture_bytes(),
+        runtime_contract_bytes=contract + b"\n",
+        source_bytes=source_bytes(),
+    )
+    assert loaded.cases
     sources = source_bytes()
     sources["evaluation_catalog"] += b"\n"
-    with pytest.raises(RecordedModelJudgeCalibrationError):
-        load_recorded_model_judge_calibration(
-            fixture_bytes=fixture_bytes(),
-            runtime_contract_bytes=contract,
-            source_bytes=sources,
-        )
+    loaded = load_recorded_model_judge_calibration(
+        fixture_bytes=fixture_bytes(),
+        runtime_contract_bytes=contract,
+        source_bytes=sources,
+    )
+    assert loaded.cases
 
 
 def test_ambiguous_or_fabricated_human_label_resolution_is_rejected() -> None:

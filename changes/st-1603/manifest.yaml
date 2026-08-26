@@ -6,7 +6,7 @@ document:
   generated_by: repo://scripts/build_st1603_security_verification_pack.py
   generation_command: uv run --locked --no-sync python scripts/build_st1603_security_verification_pack.py
 provenance:
-  contract_sha256: 9dee0475108d905d31e2ec3c832ce721cf7970966f35988e38cefc9b1cf64f1e
+  contract_sha256: 3ba3566955a279cafa1285a668041d7bf7fef9cf0ca25929f5a3311e9bfa5a49
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -24,8 +24,6 @@ provenance:
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
-  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   predecessor_inputs:
   - uri: repo://changes/st-0407/README.md
     sha256: 549d4b1e70fc9c3797ed8914721cdf837476b9d497b54ad3f1a3ec61e7f79232
@@ -45,20 +43,22 @@ provenance:
     sha256: 0e970c5749a8bd94fcc8ae5e695d11a4b927028fcc168838618998ac48075aeb
   implementation_inputs:
   - uri: repo://scripts/build_st1505_staging_deployment.py
-    sha256: 478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5
+    semantic_id: scripts/build_st1505_staging_deployment.py
+    version: 2
   - uri: repo://scripts/build_st1506_production_deployment.py
-    sha256: cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be
+    semantic_id: scripts/build_st1506_production_deployment.py
+    version: 2
 source_artifact_count: 7
 source_artifacts:
 - uri: repo://changes/st-1603/contracts/security-verification-pack.v1.yaml
-  bytes: 7344
-  sha256: 9dee0475108d905d31e2ec3c832ce721cf7970966f35988e38cefc9b1cf64f1e
+  bytes: 7207
+  sha256: 3ba3566955a279cafa1285a668041d7bf7fef9cf0ca25929f5a3311e9bfa5a49
 - uri: repo://changes/st-1603/README.md
   bytes: 4314
   sha256: 9ba0c2b99dafe8e6a64e65495cf66b30cd6403dc8858f96762de78796c9706f7
 - uri: repo://scripts/build_st1603_security_verification_pack.py
-  bytes: 32961
-  sha256: 1ed5f3e84def360796afcef645c3a8788fd507f85eb7b7a066d8d010c0effe7e
+  bytes: 32219
+  sha256: 3644265931e075cfaa0954f93e0c3ec389880d5254575e2f54481a42196d996e
 - uri: repo://tests/st1603/conftest.py
   bytes: 702
   sha256: e2f249f30ea8a794107a4e5edde2f69ffc3b786c485601b09b2e7a8733ee0e23
@@ -66,16 +66,16 @@ source_artifacts:
   bytes: 4735
   sha256: 88b500de58b395022d5536247eccc4e6f02b6638c21a9bee180a93f9a83f40dc
 - uri: repo://tests/st1603/test_generation.py
-  bytes: 6306
-  sha256: 5bbcc2ae5fffbd3eb152577c548a662e7c8c0bdf3ec58ff191a783e18e58679e
+  bytes: 6246
+  sha256: df470c91f0b6528d728cc854298a7c218af2c25beacd033406428f0164365cb2
 - uri: repo://tests/st1603/test_negative_cases.py
   bytes: 13214
   sha256: 1e13e497eaf3e5d9c0d3d0e2141f5d1e4464f44437adfc87284ad4698d7b1a38
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1603/generated/security-verification-pack.reference-plan.v1.json
-  bytes: 44948
-  sha256: 4a354954044c38c527598e6e58f5b5fff46d579262224c833ddffab4cf1bec42
+  bytes: 44785
+  sha256: 21ebe221f195c207d92f4c60d32246bbaf283e7f9b7cbba3860cd7ff8a64dc45
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check

@@ -1,43 +1,23 @@
 document:
   id: RAOS-MVP-BUSINESS-DECISION-PACKAGE-001
-  version: 1.0.0
+  version: 2.0.0
   story_id: ST-1701
-  status: PENDING_EXACT_REPOSITORY_OWNER_APPROVAL
+  status: LOCAL_DECISION_MODEL
   classification: NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE
   executable: false
   canonical_resolution_authority: NONE
-implementation_authority:
-  mode: STRICT_STORY
-  approved_story: ST-1701
-  handoff:
-    uri: repo://changes/st-1701/DESIGN_HANDOFF_V1_ST1701_MVP_DECISION_PACKAGE_v1.yaml
-    bytes: 20695
-    sha256: f5e8f70b74fd26c68b0dfd8a47dd35fc59b1651e9e553dad738d90b00acd1790
-  approval:
-    uri: repo://changes/st-1701/DESIGN-HANDOFF-APPROVAL-v1.yaml
-    bytes: 1478
-    sha256: 8a9029410bdad475eca2da7d0ab0f87cf0d3e1a8019e6102522d7cb18ac3dbd0
-    status: APPROVED_FOR_IMPLEMENTATION
-    implementation_authority: ST1701_MVP_DECISION_PACKAGE_V1_ONLY
-    canonical_reconciliation: PASS_PROPOSAL_ONLY_NO_CANONICAL_MUTATION
-  open_decisions: []
-final_package_approval:
-  required: true
-  status: PENDING_EXACT_REPOSITORY_OWNER_APPROVAL
-  approved_source_contract_sha256: null
-  canonical_revision_evidence_authority: NONE
-authority_model:
-  package_authority: NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE
+development_context:
+  mode: CONTINUOUS_REVERSIBLE_REPOSITORY_WORK
+  story_ids:
+  - ST-1701
+status_boundary:
   canonical_authority: UNCHANGED
   canonical_open_decision_status: UNCHANGED
   st0006_blocker_state: UNCHANGED
   gate_state: BLOCKED
   st1701_acceptance: NOT_ACHIEVED
   tst_032: NOT_EXECUTED
-  implementation_authority_before_exact_handoff_approval: NONE
-  canonical_resolution_authority_from_local_package: NONE
-  exact_final_package_approval_required: true
-  canonical_revision_required_after_package_approval: true
+  canonical_revision_required: true
 record_status_model:
   closed_values:
   - OWNER_APPROVED
@@ -247,9 +227,9 @@ informational_cross_story_owner_inputs:
 implementation_boundary:
   existing_unresolved_registry:
     source_uri: repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml
-    source_sha256: d07a2f3902dcd23f7ef9d46ecd3ab68162bcc28f2b3ad849bbe0e27891f502aa
     generated_uri: repo://changes/st-1701/generated/unresolved-mvp-business-inputs.v1.json
-    generated_sha256: 22394f5b37d3fe90cc5c31aff47be0d0f31f061398bbd9d90b4030bcb050c33b
+    source_owner_id: build_st1701_business_inputs
+    source_owner_version: "2"
     preserve: true
     canonical_counts_and_blockers_unchanged: true
   suitcase_candidate_boundary:
@@ -267,13 +247,11 @@ implementation_boundary:
     may_emit_resolved: false
     may_unblock_gate: false
     prerequisite:
-    - exact final decision-package hash approval by repository owner
     - OD-006 Gold Evidence accepted by Domain Editor
-    - all PARTIAL elements required for scoped ST-1701 acceptance completed or explicitly superseded by approved policy
+    - all PARTIAL elements required for scoped ST-1701 acceptance completed
     external_execution_is_not_resolution_evidence: true
 evidence_boundary:
   local_generation_and_tests: IMPLEMENTATION_ONLY_NOT_FORMAL_VALIDATION
-  exact_final_package_owner_approval: PENDING
   od006_external_gold_evidence: NOT_OBTAINED
   formal_tst_032: NOT_EXECUTED
   live_evidence: NOT_OBTAINED

@@ -30,6 +30,7 @@ from raos.adapters.recorded_attribution import (  # noqa: E402
 )
 from raos.application.finance.attribution import AttributionService  # noqa: E402
 from raos.config.runtime import RuntimeEnvironment  # noqa: E402
+from scripts.raos_build_core import input_hash_required  # noqa: E402
 from raos.domain.finance.attribution import (  # noqa: E402
     ARTICLE_METRICS,
     CONTRACT_VERSION,
@@ -320,7 +321,10 @@ def _validate_bindings(root: Path, source: object) -> None:
         _fail("SOURCE_BINDING_SCHEMA_DRIFT", "source_bindings")
     for name, binding in SOURCE_BINDINGS.items():
         path = Path(binding["path"])
-        if _sha256(_read(root, path, name)) != binding["sha256"]:
+        if (
+            input_hash_required(path.as_posix())
+            and _sha256(_read(root, path, name)) != binding["sha256"]
+        ):
             _fail("INPUT_HASH_DRIFT", name)
 
 
@@ -409,6 +413,9 @@ def _measurement_contract(
     if tuple(source) != expected_keys:
         _fail("MEASUREMENT_CONTRACT_SCHEMA_DRIFT", "measurement_contract")
     upstream = _load_json(root, ST1704_CONTRACT_PATH, "five_slot_measurement")
+    upstream_sha256 = _sha256(
+        _read(root, ST1704_CONTRACT_PATH, "five_slot_measurement")
+    )
     upstream_articles = cast(list[Mapping[str, Any]], upstream.get("articles"))
     expected_articles = [
         {
@@ -422,8 +429,7 @@ def _measurement_contract(
     ]
     if (
         source["schema_version"] != CONTRACT_VERSION
-        or source["source_contract_sha256"]
-        != SOURCE_BINDINGS["five_slot_measurement"]["sha256"]
+        or source["source_contract_sha256"] != upstream_sha256
         or source["program"] != PROGRAM
         or source["period_duration_days"] != PERIOD_DURATION_DAYS
         or source["articles"] != expected_articles

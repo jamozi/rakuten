@@ -5,7 +5,7 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from .conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 
 
 README = Path("changes/st-1406/README.md")

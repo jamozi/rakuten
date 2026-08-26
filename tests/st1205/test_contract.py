@@ -7,7 +7,7 @@ from typing import Any
 
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.domain.analytics.kpi_read_model import (
     KPI_CALCULATION_VERSION,
     KPI_DEFINITIONS,

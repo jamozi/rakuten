@@ -11,7 +11,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     V2_NOW,
     v2_authorization_runtime,
     v2_descriptor,

@@ -9,7 +9,7 @@ import stat
 import pytest
 import yaml
 
-from conftest import MANIFEST, run_builder
+from .support import MANIFEST, run_builder
 from scripts import build_st0705_ai_output_validation_reference_plan as generator
 
 
@@ -60,26 +60,20 @@ def test_isolated_publication_is_atomic_0644_and_checkable(
     generator.build(isolated_repository, check=True)
 
 
-def test_manifest_inventories_sources_authority_predecessors_helper_and_output() -> (
-    None
-):
+def test_manifest_v2_uses_semantic_inputs_and_output_integrity() -> None:
     manifest = yaml.safe_load(MANIFEST.read_bytes())
     reference = (generator.REPO_ROOT / generator.REFERENCE_PLAN_PATH).read_bytes()
-    assert manifest["source_artifact_count"] == len(generator.SOURCE_PATHS)
-    assert [row["uri"] for row in manifest["source_artifacts"]] == [
-        f"repo://{path.as_posix()}" for path in generator.SOURCE_PATHS
-    ]
-    assert manifest["provenance"]["authority_inputs"] == (
+    assert manifest["document"]["version"] == "2.0.0"
+    assert manifest["semantic_inputs"]["canonical_package"] == (
         generator.expected_authority_manifest_rows()
     )
-    assert manifest["provenance"]["predecessor_inputs"] == (
+    assert manifest["semantic_inputs"]["predecessors"] == (
         generator.expected_predecessor_manifest_rows()
     )
-    assert manifest["provenance"]["implementation_helper"] == {
-        "uri": f"repo://{generator.HELPER_PATH.as_posix()}",
-        "sha256": generator.HELPER_SHA256,
-    }
-    assert manifest["generated_artifacts"] == [
+    assert all(
+        "sha256" not in row for row in manifest["semantic_inputs"]["predecessors"]
+    )
+    assert manifest["outputs"] == [
         {
             "uri": f"repo://{generator.REFERENCE_PLAN_PATH.as_posix()}",
             "bytes": len(reference),

@@ -12,8 +12,8 @@ source_artifacts:
 - uri: repo://scripts/build_st0804_recommendation_runtime.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 33045
-  sha256: 531da4042bf4f16528a73000cc14121f94bb299e5faced030ec6f42fc3e59895
+  bytes: 32432
+  sha256: 00295e5d75fe3e2e9d639c79595abe07af728b567bc8018bc389771192cbb68b
 - uri: repo://python/raos/domain/editorial/recommendation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -158,7 +158,7 @@ source_artifacts:
   artifact_role: DEPENDENCY_CONTRACT
   media_type: application/yaml
   bytes: 13078
-  sha256: 8789ea33ee1c059a0f7f3679e5047a8b681cd3ae01cca714cbfb5eb358d2598d
+  sha256: 08d54bc44ab5b23fd14669dae232084161f8ab1aaf9fb6d9572873adf5be9550
 - uri: repo://scripts/secure_generated_publication.py
   artifact_role: DEPENDENCY_CONTRACT
   media_type: text/x-python
@@ -232,13 +232,13 @@ source_artifacts:
 - uri: repo://pyproject.toml
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/toml
-  bytes: 1334
-  sha256: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
+  bytes: 1753
+  sha256: 34ee344782dbaf4135cb235e2fec215a1c709089c0994415fdeadf33979a6207
 - uri: repo://uv.lock
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/octet-stream
-  bytes: 128286
-  sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+  bytes: 129836
+  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
 generated_artifacts:
 - uri: repo://changes/st-0804/generated/recommendation-pass.v2.json
   artifact_role: RECORDED_SYNTHETIC_FIXTURE

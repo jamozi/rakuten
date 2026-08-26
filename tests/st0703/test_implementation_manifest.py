@@ -7,8 +7,9 @@ from pathlib import Path
 import shutil
 
 import pytest
+import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st0703_recorded_adapter as generator
 
 
@@ -18,21 +19,28 @@ def _sha256(path: Path) -> str:
 
 def _copy_repository(tmp_path: Path) -> Path:
     target = tmp_path / "repository"
-    shutil.copytree(
-        REPOSITORY_ROOT,
-        target,
-        ignore=shutil.ignore_patterns(
-            ".git",
-            ".venv",
-            ".venv-offline-check",
-            "node_modules",
-            "__pycache__",
-            ".pytest_cache",
-            "output",
-            "tmp",
-            "zip",
-        ),
+    contract = yaml.safe_load(
+        (REPOSITORY_ROOT / generator.CONTRACT_PATH).read_text(encoding="utf-8")
     )
+    paths = {
+        generator.CONTRACT_PATH,
+        generator.PYPROJECT_PATH,
+        generator.UV_LOCK_PATH,
+        generator.UV_CONFIG_PATH,
+        generator.GENERATED_REGISTRY_PATH,
+        generator.MANIFEST_PATH,
+        *generator.IMPLEMENTATION_SOURCE_PATHS,
+        *generator.PREDECESSOR_MANIFEST_PROJECTION_SHA256,
+        *(generator.FIXTURE_ROOT / spec.path for spec in generator.FIXTURE_SPECS),
+    }
+    for entries in contract["provenance"].values():
+        for entry in entries:
+            paths.add(Path(entry["uri"].removeprefix("repo://")))
+    for relative in paths:
+        source = REPOSITORY_ROOT / relative
+        destination = target / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
     return target
 
 

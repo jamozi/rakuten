@@ -257,8 +257,9 @@ def test_manifest_pins_direct_handoff_and_all_predecessor_inputs() -> None:
     assert provenance["local_runtime_contract_sha256"] == generator.sha256_file(
         runtime_contract
     )
+    _runtime, runtime_spec = generator.load_and_validate_runtime_contract()
     assert provenance["local_runtime_contract_semantic_sha256"] == (
-        generator.EXPECTED_RUNTIME_CONTRACT_SEMANTIC_SHA256
+        runtime_spec.semantic_sha256
     )
     assert provenance["authority_inputs"][-1] == {
         "uri": (

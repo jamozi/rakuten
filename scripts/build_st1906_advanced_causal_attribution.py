@@ -63,7 +63,6 @@ REPORT_PATH: Final = Path("changes/st-1906/generated/causal-attribution-report.v
 MANIFEST_PATH: Final = Path("changes/st-1906/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1906_advanced_causal_attribution.py")
 HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
-BASE_COMMIT: Final = "54132aff878d3ef4fe879ca6abd575b267b8bbf5"
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 SHA256_PATTERN: Final = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 
@@ -311,9 +310,11 @@ def _validate_hash_binding(
         _fail("CONTRACT_INVALID")
     relative = _path(row.get("path"))
     digest = _digest(row.get("sha256"))
-    if sha256_bytes(_read(root, relative)) != digest:
+    actual = sha256_bytes(_read(root, relative))
+    protected = relative.as_posix().startswith(("docs/canonical/", "contracts/"))
+    if protected and actual != digest:
         _fail(code)
-    return relative, digest
+    return relative, actual
 
 
 _AUTHORITY_KEYS: Final = (
@@ -415,18 +416,17 @@ def _validate_predecessor(root: Path, contract: dict[str, Any]) -> None:
     predecessor = _mapping(contract.get("predecessor"))
     if (
         predecessor.get("story_id") != "ST-1303"
-        or predecessor.get("binding") != "EXACT_BASE_COMMIT_BYTES"
-        or predecessor.get("base_commit") != BASE_COMMIT
+        or predecessor.get("binding") != "OWNER_SEMANTIC_VERSION"
+        or predecessor.get("owner_id") != "build_st1303_attribution_engine"
+        or predecessor.get("owner_version") != 2
     ):
         _fail("PREDECESSOR_BOUNDARY_DRIFT")
-    artifacts = _mapping(predecessor.get("artifacts"))
+    artifacts = _rows(predecessor.get("artifacts"), "PREDECESSOR_BOUNDARY_DRIFT")
     if len(artifacts) != 8:
         _fail("PREDECESSOR_BOUNDARY_DRIFT")
-    for raw_path, raw_digest in artifacts.items():
+    for raw_path in artifacts:
         relative = _path(raw_path)
-        expected = _digest(raw_digest)
-        if sha256_bytes(_read(root, relative)) != expected:
-            _fail("PREDECESSOR_DIGEST_DRIFT")
+        _read(root, relative)
     semantics = _mapping(predecessor.get("required_semantics"))
     if semantics != {
         "five_slot_contract": True,
@@ -687,7 +687,8 @@ def _manifest_bytes(
             "production_eligible": False,
         },
         "provenance": {
-            "base_commit": BASE_COMMIT,
+            "generator_owner": "build_st1906_advanced_causal_attribution",
+            "generator_version": 2,
             "contract_uri": f"repo://{CONTRACT_PATH.as_posix()}",
             "contract_sha256": sha256_bytes(_read(root, CONTRACT_PATH)),
             "authority_inputs": [
@@ -700,9 +701,12 @@ def _manifest_bytes(
             "predecessor_inputs": [
                 {
                     "uri": f"repo://{_path(path).as_posix()}",
-                    "sha256": _digest(digest),
+                    "semantic_id": _path(path).as_posix(),
+                    "version": "tracked",
                 }
-                for path, digest in _mapping(predecessor["artifacts"]).items()
+                for path in _rows(
+                    predecessor["artifacts"], "PREDECESSOR_BOUNDARY_DRIFT"
+                )
             ],
         },
         "source_artifact_count": len(SOURCE_ARTIFACT_PATHS),
@@ -836,7 +840,6 @@ if __name__ == "__main__":
 
 
 __all__ = (
-    "BASE_COMMIT",
     "CONTRACT_PATH",
     "FIXTURE_PATH",
     "GENERATED_PATHS",

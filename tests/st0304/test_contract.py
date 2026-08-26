@@ -9,7 +9,7 @@ from typing import Any
 
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st0304_domain_schemas as generator
 
 

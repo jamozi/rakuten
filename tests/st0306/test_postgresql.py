@@ -8,7 +8,7 @@ import psycopg
 import pytest
 from psycopg import sql
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.migrations import catalog, runner
 from scripts import build_st0306_database_roles as generator
 from tests.postgresql18 import PostgreSQLCluster

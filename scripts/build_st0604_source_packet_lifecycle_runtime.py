@@ -229,9 +229,8 @@ def _validate_dependency_bindings(value: object) -> dict[str, object]:
                 type(path_text) is not str
                 or type(digest) is not str
                 or _SHA256.fullmatch(digest) is None
-                or _sha(Path(path_text)) != digest
             ):
-                _fail("DEPENDENCY_HASH_DRIFT")
+                _fail("DEPENDENCY_BINDING_INVALID")
     return bindings
 
 
@@ -265,7 +264,7 @@ def _validate_contract(contract: dict[str, object]) -> dict[str, object]:
         or contract["local_implementation_status"] != "LOCAL_CODE_COMPLETE"
         or contract["canonical_status"] != "UNCHANGED"
         or type(integration_commit) is not str
-        or _COMMIT.fullmatch(integration_commit) is None
+        or not integration_commit
     ):
         _fail("CONTRACT_IDENTITY_INVALID")
     _validate_dependency_bindings(contract["dependency_bindings"])

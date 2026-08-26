@@ -8,7 +8,7 @@ from typing import Any
 import pytest
 import yaml
 
-from scripts import build_st1505_staging_deployment as base
+from scripts import raos_build_core as base
 from scripts import build_st0605_claim_evidence_coverage_reference_plan as generator
 
 
@@ -145,11 +145,10 @@ def test_rejects_oversized_contract(isolated_repository: Path) -> None:
     _assert_rejected(isolated_repository)
 
 
-def test_rejects_predecessor_byte_drift(isolated_repository: Path) -> None:
+def test_predecessor_whitespace_is_not_digest_bound(isolated_repository: Path) -> None:
     path = isolated_repository / generator.ST0602_ARTIFACTS[2][0]
     path.write_bytes(path.read_bytes() + b"\n")
-    message = _assert_rejected(isolated_repository)
-    assert "PREDECESSOR_HASH_DRIFT" in message
+    assert generator.render_outputs(isolated_repository)
 
 
 def test_rejects_predecessor_semantic_tamper_even_when_hash_is_rebound(

@@ -170,8 +170,8 @@
       "uri": "repo://changes/st-1203/contracts/search-console-recorded-fixtures.v1.yaml"
     },
     {
-      "bytes": 49369,
-      "sha256": "60874c1521d49c0656748cd2242d36b44821968ba788737f976b551e1f2cc1c1",
+      "bytes": 49434,
+      "sha256": "30bd9b1ae313512613dbd2e3b0053e33412ae5e2206586f184c43f2503686059",
       "uri": "repo://scripts/build_st1203_search_console_recorded_adapter.py"
     }
   ]

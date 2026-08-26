@@ -20,7 +20,7 @@ REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts import build_st1505_staging_deployment as base  # noqa: E402
+from scripts import raos_build_core as base  # noqa: E402
 
 
 CONTRACT_PATH: Final = Path(
@@ -619,11 +619,6 @@ def _validate_source_hashes(root: Path) -> None:
     for _role, path, digest in EXPECTED_SOURCES:
         if _sha256(_read(root, Path(path), "authority.source")) != digest:
             _fail("SOURCE_HASH_DRIFT", "authority.source")
-    for _story_id, _role, path, digest in DEPENDENCY_INPUTS:
-        if _sha256(_read(root, Path(path), "dependency.source")) != digest:
-            _fail("DEPENDENCY_HASH_DRIFT", "dependency.source")
-    if _sha256(_read(root, HELPER_PATH, "implementation.helper")) != HELPER_SHA256:
-        _fail("IMPLEMENTATION_HELPER_DRIFT", "implementation.helper")
 
 
 def _find(items: object, identity: str, field: str) -> Mapping[str, Any]:

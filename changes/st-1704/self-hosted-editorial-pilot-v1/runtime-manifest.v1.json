@@ -1,5 +1,4 @@
 {
-  "approved_base_commit": "ca271187c4c8606487193110b29597a40e4c1c9f",
   "article_ids": [
     "st1703-first-suitcase-comparison",
     "st1704-portable-power-station-guide",
@@ -9,6 +8,8 @@
   ],
   "external_action_authority": "NONE",
   "generated_by": "scripts/build_st1704_self_hosted_editorial_manifest.py",
+  "generator_owner": "build_st1704_self_hosted_editorial_manifest",
+  "generator_version": "2",
   "paths": [
     {
       "bytes": 9864,
@@ -1736,32 +1737,31 @@
       "sha256": "c9928badddb180761299688f261e58694b357d22b99dfe7f91f44bfaa507a25d"
     },
     {
-      "bytes": 10340,
+      "bytes": 10145,
       "path": "scripts/build_st1704_self_hosted_editorial_manifest.py",
-      "sha256": "938a01c984fb06f10044491800cb4069aba6759237e578be2799d428495326c7"
+      "sha256": "368f6a5981dc7a8de3df152a0f9aeff80d15b7cfa7f013bf6d24cf39e5f3bb5d"
     },
     {
-      "bytes": 14966,
+      "bytes": 15012,
       "path": "scripts/build_st1704_self_hosted_theme.py",
-      "sha256": "ea4c96f32e4bc5e62dbe78a5c26edf5b570544f75514fd1699ecb2d2146cbe12"
+      "sha256": "a599ca6041c720bb02e70c9d7e63db7516dedd42812cbca234352df53d039b1b"
     },
     {
-      "bytes": 56879,
+      "bytes": 52168,
       "path": "scripts/st1704_official_source_capture.py",
-      "sha256": "d0abe7c7ff4d027a9e65c06b0c34ce3d60f88926577e6e122fe60792761582f9"
+      "sha256": "eb31d1ad09302336a4fe5cff37f873472840798006fd2d95dad0f1962c64dac6"
     },
     {
-      "bytes": 45536,
+      "bytes": 41835,
       "path": "scripts/st1704_self_hosted_editorial_pilot.py",
-      "sha256": "8c39f4fa0969fbb51ff07fc7355ffce592ffadb14694cbfc130ce0a3a4754578"
+      "sha256": "bcbdd9381379e86b32eda9ad7aee1dd1fb6f97fff6bc36ce5edfcc46aa589f5d"
     }
   ],
   "predecessor": {
-    "path": "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json",
-    "sha256": "47dbfa52146a4f99fb6a2c4bde8ab97ea1712434392ad26d5013642771be5348"
+    "owner_id": "build_st1703_self_hosted_runtime_manifest",
+    "version": "2"
   },
   "publication_authority": "NONE",
-  "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
   "schema": "SELF_HOSTED_EDITORIAL_PILOT_MANIFEST_V1",
   "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
   "story_id": "ST-1704"

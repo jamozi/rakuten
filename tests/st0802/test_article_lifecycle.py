@@ -29,7 +29,7 @@ from raos.domain.editorial.content_ast import ArticleType, dump_content_ast_json
 from raos.domain.portfolio.workflow import EntityVersion, IdempotencyKey, StrongEtag
 from raos.domain.portfolio.workflow import PortfolioWorkflowFailure
 
-from conftest import (
+from .support import (
     ACTION_BY_OPERATION,
     ARTICLE_ID,
     SITE_ID,

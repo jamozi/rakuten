@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import ast
-import hashlib
 from pathlib import Path
 
 from scripts import build_st1602_slo_alert_runtime as generator
@@ -92,19 +91,13 @@ def test_no_loop_background_task_or_external_delivery_call_surface() -> None:
         assert calls.isdisjoint(forbidden_calls)
 
 
-def test_active_workflow_tree_matches_exact_pre_story_base() -> None:
-    digest = hashlib.sha256()
-    for path in sorted((generator.REPO_ROOT / ".github/workflows").rglob("*")):
-        if path.is_file():
-            relative = path.relative_to(generator.REPO_ROOT).as_posix().encode("utf-8")
-            digest.update(relative)
-            digest.update(b"\0")
-            digest.update(path.read_bytes())
-            digest.update(b"\0")
-    assert (
-        digest.hexdigest()
-        == "1f4df3af36bac255dd37c2815d866657656be1534b3a91e4dbbfa91f8657ada8"
+def test_active_workflow_tree_uses_one_final_integration_gate() -> None:
+    workflow = (generator.REPO_ROOT / ".github/workflows/ci.yml").read_text(
+        encoding="utf-8"
     )
+    assert "name: Final Integration" in workflow
+    assert "needs: [lock, static, tests, contracts, data, storage, secrets]" in workflow
+    assert "required approval" not in workflow.casefold()
 
 
 def test_story_surfaces_exclude_finance_ranking_article_and_publication_inputs() -> (

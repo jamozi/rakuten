@@ -9,7 +9,7 @@ import pickle
 
 import pytest
 
-from conftest import (
+from .support import (
     OTHER_REVIEWER_ID,
     adapter,
     empty_history,

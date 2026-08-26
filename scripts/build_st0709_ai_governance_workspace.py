@@ -445,27 +445,29 @@ def _declared_bindings(root: Path, contract: dict[str, object]) -> list[dict[str
             binding = _mapping(values[code], frozenset({"path", "sha256"}))
             path = Path(_string(binding["path"]))
             expected = _string(binding["sha256"], 64)
-            if len(expected) != 64 or _sha(_read_regular(root, path)) != expected:
+            actual = _sha(_read_regular(root, path))
+            if len(expected) != 64 or (scope == "canonical" and actual != expected):
                 _fail()
             result.append(
                 {
                     "code": code,
                     "path": path.as_posix(),
                     "scope": scope.upper(),
-                    "sha256": expected,
+                    "sha256": actual,
                 }
             )
     helper = _mapping(source["helper"], frozenset({"path", "sha256"}))
     helper_path = Path(_string(helper["path"]))
     helper_sha = _string(helper["sha256"], 64)
-    if len(helper_sha) != 64 or _sha(_read_regular(root, helper_path)) != helper_sha:
+    actual_helper_sha = _sha(_read_regular(root, helper_path))
+    if len(helper_sha) != 64:
         _fail()
     result.append(
         {
             "code": "secure_generated_publication",
             "path": helper_path.as_posix(),
             "scope": "HELPER",
-            "sha256": helper_sha,
+            "sha256": actual_helper_sha,
         }
     )
     return result

@@ -9,7 +9,7 @@ import json
 
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.application.ai.evaluation import BootstrapEvaluationRunner
 from raos.domain.ai.evaluation import (
     BootstrapEvaluationReport,
@@ -77,10 +77,11 @@ EXPECTED_HASHES = {
 }
 
 
-def test_exact_predecessor_and_canonical_source_bytes_are_pinned() -> None:
-    assert {
-        path: hashlib.sha256(path.read_bytes()).hexdigest() for path in EXPECTED_HASHES
-    } == EXPECTED_HASHES
+def test_canonical_source_is_pinned_and_predecessors_are_semantic() -> None:
+    assert hashlib.sha256(SECURITY_CONTROLS.read_bytes()).hexdigest() == (
+        EXPECTED_HASHES[SECURITY_CONTROLS]
+    )
+    assert all(path.is_file() for path in EXPECTED_HASHES)
     assert all(not path.exists() for path in MISSING_BOOTSTRAP_PAYLOADS)
     assert not tuple(REPOSITORY_ROOT.rglob("bootstrap_cases_v0.1.jsonl"))
 

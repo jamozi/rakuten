@@ -57,8 +57,8 @@ source_artifacts:
   bytes: 92
   sha256: 1a20f87f9fdd174ccd6fccada520e54e2634cf31c38c31b5401f6818ef43d8e5
 - path: scripts/build_st0005_status.py
-  bytes: 152030
-  sha256: 70d68daedeeb12f30251713ef88dd5653dcf790766cd8261344d4c9ba841c348
+  bytes: 151961
+  sha256: bcf693d9d39efbea7e221229f6cb6c426ef922a59cbf25d9a2a619887ad320ad
 - path: scripts/import_raos_design.py
   bytes: 30495
   sha256: 13c36b2104ebf1d51b07f4774939e2ee89180d9d479f905176eaaa71dadd4f37
@@ -68,9 +68,6 @@ source_artifacts:
 - path: changes/st-0005/README.md
   bytes: 10382
   sha256: 984e28ee8e12be99f08e07f7742739d6c72ed90a44844aaee0fe01444b4af8ce
-- path: .github/workflows/status-registry.yml
-  bytes: 4330
-  sha256: 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
 - path: docs/execplans/ST-0005.md
   bytes: 9685
   sha256: d7cb4d77223cd7c889c403518684afb3a647cecb91e2be4072bda9c204dade7e
@@ -3056,9 +3053,12 @@ source_artifacts:
 - path: changes/st-0005/evidence/artifacts/ffbf05570be9bec2a9ac56c5d6732f6aec3da472786447c74d524772d6a43bec-build_st0107_pr_governance.py
   bytes: 45264
   sha256: ffbf05570be9bec2a9ac56c5d6732f6aec3da472786447c74d524772d6a43bec
+- path: tests/st0005/__init__.py
+  bytes: 60
+  sha256: 48b8d7a8ec08b106a8d7cd71d60ac7e9ff63a7224c62780571203c14bd0cda18
 - path: tests/st0005/conftest.py
-  bytes: 8444
-  sha256: 2ece50f24abd906541623f448776d001bd6e03a4ee7a8d1a5a5477c4cd996529
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - path: tests/st0005/fixtures/artifacts/1411f55ce60f6316e83567110fb2847e0db49239cb63dcabf9e81612c3b72ab8-status-registry.yaml
   bytes: 7481
   sha256: 1411f55ce60f6316e83567110fb2847e0db49239cb63dcabf9e81612c3b72ab8
@@ -3197,15 +3197,18 @@ source_artifacts:
 - path: tests/st0005/fixtures/evidence/st1606-runtime-partial.yaml
   bytes: 632
   sha256: 0efd183ae3f01b086e1a5e6e260d9c7dcbfb6d105b28c3bd07d7eea148fad76b
+- path: tests/st0005/support.py
+  bytes: 8444
+  sha256: 2ece50f24abd906541623f448776d001bd6e03a4ee7a8d1a5a5477c4cd996529
 - path: tests/st0005/test_overlay_contract.py
-  bytes: 30137
-  sha256: c5c406e624fe2cf0eaf73c0e9a03ede1e4ca9d0d1346f7a23cce8580e4fa8ab7
+  bytes: 22241
+  sha256: 51eb8e8ba767daa09c621595a9ca2fcb42fe41ddda5bb31263ef34bfa662c395
 - path: tests/st0005/test_revision_generation.py
-  bytes: 6613
-  sha256: dff5b68d72b1c19de9e6772996fdc434354f81e5c5ba69f8b48c8c4ae56c1726
+  bytes: 6617
+  sha256: 9f91055d786e84d8f3fc6c16312bd49ac63f6ed42eef23592a15006e5fad4a6f
 - path: tests/st0005/test_transition_validation.py
   bytes: 86692
-  sha256: 09a8fa75385ffcbbefefaa4287d2ebfa87c9423d74de6a070ed29dfad13a2329
+  sha256: 4cb1421fbb1c9520a514250164799f1d1c3c5a6052bc49d92797cb98c4d0b30c
 generated_artifact_count: 3
 generated_artifacts:
 - path: changes/st-0005/status-overlay.v1.yaml

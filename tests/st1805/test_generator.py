@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import copy
-import hashlib
 import json
 import subprocess
 
@@ -10,15 +9,14 @@ import pytest
 from scripts import build_st1805_portfolio_decision as builder
 
 
-def test_contract_and_dependency_bindings_are_exact() -> None:
+def test_contract_dependency_bindings_are_semantic_paths() -> None:
     contract = builder.load_contract()
     bindings = builder._flatten_bindings(contract)
-    assert bindings == builder.EXPECTED_BINDINGS
-    for path, expected in bindings.items():
-        assert (
-            hashlib.sha256((builder.REPO_ROOT / path).read_bytes()).hexdigest()
-            == expected
-        )
+    assert set(bindings) == {
+        *builder.EXPECTED_CANONICAL_BINDINGS,
+        *builder.EXPECTED_PREDECESSOR_PATHS,
+    }
+    assert all((builder.REPO_ROOT / path).is_file() for path in bindings)
 
 
 def test_pack_is_deterministic_and_current(output_path) -> None:
@@ -73,7 +71,8 @@ def test_dependency_state_preserves_block(generated_pack) -> None:
         "actual_observation_count": 0,
         "gate_pass_claim": False,
         "overall": "BLOCKED",
-        "pack_sha256": builder.ST1804_OUTPUT_SHA256,
+        "owner_id": "build_st1804_gate3_economics",
+        "owner_version": 2,
         "scale_authority": "NONE",
         "schema": "ST1804_GATE3_PACK_V1",
         "synthetic": True,

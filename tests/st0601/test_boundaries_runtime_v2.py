@@ -40,7 +40,7 @@ from raos.ports.artifact_registry_runtime_v2 import (
     ItemSearchRawArchiveSourceV2,
 )
 
-from runtime_v2_fixtures import (
+from .runtime_v2_fixtures import (
     BODY_ONE,
     private_root,
     receipt_for,

@@ -10,7 +10,7 @@ evaluation:
   case_count: 200
   decision_outcome: REFUSED_UNVERIFIABLE_CALIBRATION
   local_metric_criteria_met: true
-  report_sha256: 3b65bf70d331b6e26b612f9de178405dd9a9b0cc3ec3992f490cdd22099b1296
+  report_sha256: cf0dcaf179a9a2e45724640df96bef70029ca826e9e30650899d63489394b791
   separate_release_decision_required: true
 formal_status:
   actual_human_labeling: NOT_EXECUTED
@@ -21,11 +21,11 @@ formal_status:
   staging: NOT_EXECUTED
 generated_sha256:
   changes/st-1901/fixtures/recorded/model-judge-human-labels.synthetic.v1.json: be92b734b715db7948ec3e64d87226dc65ab42aeabb0b70b4e93ed678ef794cb
-  changes/st-1901/generated/model-judge-calibration-evaluation.v1.json: d97e03d824dc7c96ca34513f0fa49aa54c9c32ab403052f919aa1006a497e31f
+  changes/st-1901/generated/model-judge-calibration-evaluation.v1.json: e20987322324d09ff2d1d69535ca4507f39f56063f99a3b627734461e88c4454
 source_sha256:
-  changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml: 55044e7b2f030298d5ee61932122e5c0821491b23189bb57b9affc8c47bc043d
-  changes/st-0707/generated/evaluation-suite-registry.v1.json: 7eb7edb3bf0139b89fb903d852eca9e49edb0c87f2b16ae281213ba677cdd427
-  changes/st-0707/runtime-manifest.v1.json: 3547a1d0df3e33c7f793e5d6f520596e1e48a4121b238dc185f642b294976930
+  changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml: 591643370e5dd3baacd2419e868160e431c5587303418df52e41014131405d64
+  changes/st-0707/generated/evaluation-suite-registry.v1.json: 23ed9116af29b04f6ada828001153afca605c6934b25e34285fb0ff870e71568
+  changes/st-0707/runtime-manifest.v1.json: dba71685cbfa203dc542ee80281198be982c19e73653f37655d73ae9ec553f8b
   changes/st-1901/README.md: 342d498c48ed8573d26f3414f8c68fdf6f5c35146f0f985614832947c0721c96
   changes/st-1901/contracts/model-judge-calibration.v1.yaml: 602e13a803b99176d58b6a359bfdb91c8cb4df98f71e2cf5d5cea5588c81da95
   contracts/raos-v0.4/contracts/ai/RAOS_05_evaluation_catalog_v0.1.yaml: a94e94a90c5029e6169c753d2924c08c0e3dd388cb5e1ea9f343674818322de3
@@ -41,15 +41,15 @@ source_sha256:
   docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
   docs/execplans/ST-1901.md: 766d22cd17853f2685c948f7efdc7649603c585078f7c5f8f9c26b8a8228c3d4
   docs/worklogs/ST-1901.md: e5738b26de0c8b6e52ca36d852cfa25b7c162b8827169fd20433e10996cd4fbb
-  python/raos/adapters/recorded_model_judge_calibration.py: acf154bf239ec68d987c963ae5b2521f5657d3bc7e824cb43faaa6f78ce716b0
+  python/raos/adapters/recorded_model_judge_calibration.py: 9a9b21097e8cd0c0ce538dde3677fce8c4a4eebc6c403bcac761dbb666e394ac
   python/raos/application/ai/model_judge_calibration.py: 2bdedb9d589e7244c3b3f9103389fd1ba957c7b8bc8ab8acde09d5f8be239386
   python/raos/domain/ai/model_judge_calibration.py: 1feea8ff49dce81a2d6029b51631fb4fd6f1f0ff48900c215ca2dd7d087a98aa
   python/raos/ports/model_judge_calibration.py: 8be13dda30dd55b1e14ab84e61b0a1f40b03a861271745c29a9a3770812ab6b3
-  scripts/build_st1901_model_judge_calibration.py: 9cd090d8b49601df9ce3d390fc70d1855ab916b5615e1d294b58bfc6a3e8ad41
+  scripts/build_st1901_model_judge_calibration.py: 0e4b68f53b623327e763712e094165c2d65c3adb37080b2aeb2fdc17384012e2
   scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
-  tests/st1901/conftest.py: 57a2faf2287d36351ba7f40d0ca9123efb2d8e29d99ef56da726b18ad98d4c51
-  tests/st1901/test_calibration.py: 2c7e8bb3985972dc292419a30f5ab96510beef58815f56dee5844b4423b438ba
-  tests/st1901/test_contract.py: b6610d3268f84a27bf0253e09a49b6a896b2f88f49bf220e8e576975d6b482de
-  tests/st1901/test_generation.py: ee7878ddc88c9884dc4ed649777907a28a0c5343fbcfb19222b2188ff906d67d
-  tests/st1901/test_negative_cases.py: 08b3351669f9a1453d40df5ea4dd8e04e245fdacdee48a3cc2256fb8c2f6471a
-  tests/st1901/test_security_boundaries.py: 32672fb6e44a98729736b2035975dad22771944bf3abf014a73c89f3bb70e202
+  tests/st1901/conftest.py: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
+  tests/st1901/test_calibration.py: 5627e9a10135d7954395704dd2ff873c220ec25e616c7e6328322725293f0dc8
+  tests/st1901/test_contract.py: cd2ae4fb869963beefbe2f4905360512765d8f61274d386730e37d89a772492b
+  tests/st1901/test_generation.py: 0edec6f6bb0309ad79ff28005bdb7d040a0ae7a3034384e7c87cae729d7a22eb
+  tests/st1901/test_negative_cases.py: 7432398ebb50a422ede4ea4ab33ad51e89483976a495cb0bd8821d8af9fb3d21
+  tests/st1901/test_security_boundaries.py: e26406f059649cfcf19b244b874742543f08d1193ad5250231d8c12390dd8581

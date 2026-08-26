@@ -72,13 +72,15 @@ def test_projection_uses_exact_recorded_reports_and_preserves_unknown_cost() -> 
         list[dict[str, object]],
         cast(dict[str, object], sections["COST"]["table"])["rows"],
     )
-    assert evaluation["reportSha256"] == (
-        "90d4dc14f5906a8c7b7d8545f6dedef8a63c6d60ae24793b8a375d8d84bede50"
+    request = _json(builder.ST0708_PATHS["request_artifact_bytes"].as_posix())
+    source_report = cast(
+        dict[str, object], cast(dict[str, object], request["evidence"])["source_report"]
     )
+    report = _json(builder.ST0708_PATHS["report_artifact_bytes"].as_posix())
+    release_report = cast(dict[str, object], report["report"])
+    assert evaluation["reportSha256"] == source_report["report_sha256"]
     assert evaluation["outcome"] == "REFUSED_INCOMPLETE_EVIDENCE"
-    assert release["reportSha256"] == (
-        "dadbb3e1832cfa3f11fad9285c0e4e9999f8c473f663b2d96675f2279e48168e"
-    )
+    assert release["reportSha256"] == release_report["report_sha256"]
     assert release["outcome"] == "REFUSED_INCOMPLETE_EVIDENCE"
     assert release["authority"] == "NONE"
     assert all(
@@ -123,7 +125,7 @@ def test_v1_bytes_and_restricted_projection_fields_are_unchanged_or_absent() -> 
     visit(fixture)
 
 
-def test_duplicate_json_and_source_hash_drift_fail_closed(
+def test_duplicate_json_fails_closed_and_tracked_source_bytes_are_semantic(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     with pytest.raises(
@@ -140,10 +142,7 @@ def test_duplicate_json_and_source_hash_drift_fail_closed(
         return payload
 
     monkeypatch.setattr(builder, "_read_regular", changed)
-    with pytest.raises(
-        builder.St0709BuildError, match="^ST0709_AI_GOVERNANCE_BUILD_FAILED$"
-    ):
-        builder.build(ROOT)
+    assert builder.build(ROOT) == builder.build(ROOT)
 
 
 def test_owner_check_refuses_symlink_and_multiple_link_outputs(

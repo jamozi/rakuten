@@ -26,6 +26,10 @@ dist/
 build/
 coverage/
 
+# The repository-wide generator registry is a tracked product artifact.
+!changes/build/
+!changes/build/**
+
 # Editors and operating systems
 .DS_Store
 Thumbs.db

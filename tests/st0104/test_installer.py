@@ -14,7 +14,7 @@ from typing import Any
 
 import pytest
 
-from conftest import (
+from .support import (
     INSTALLER_PATH,
     MANIFEST_NAME,
     REPO_ROOT,

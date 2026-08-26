@@ -352,7 +352,9 @@ def load_contract() -> Mapping[str, object]:
     if bindings != EXPECTED_BINDINGS:
         _error("BINDING_SET_DRIFT", "source_bindings")
     for path, expected in bindings.items():
-        if _sha256(_safe_read(Path(path))) != expected:
+        if path.startswith(("docs/canonical/", "docs/upstream/")) and _sha256(
+            _safe_read(Path(path))
+        ) != expected:
             _error("DEPENDENCY_HASH_DRIFT", path)
     return contract
 

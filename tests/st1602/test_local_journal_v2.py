@@ -229,6 +229,7 @@ def test_stale_expected_version_is_rejected_without_append(tmp_path: Path) -> No
     assert journal.verify_integrity() == 1
 
 
+@pytest.mark.serial
 def test_concurrent_compare_and_swap_allows_exactly_one_append(tmp_path: Path) -> None:
     path = _owner_directory(tmp_path) / "alerts.sqlite3"
     first_journal = OwnerPrivateSqliteAlertJournal(database_path=path)

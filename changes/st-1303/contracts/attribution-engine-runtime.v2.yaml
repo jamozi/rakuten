@@ -50,7 +50,7 @@ open_decision_boundary:
 
 measurement_contract:
   schema_version: RAOS_ST1303_MEASUREMENT_ATTRIBUTION_CONTRACT_V2
-  source_contract_sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+  source_contract_sha256: 2d95494568c9f753755603a1912a60049a3c78e91835f0f2e7405694a2d62e09
   program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
   period_duration_days: 14
   articles:
@@ -72,7 +72,7 @@ measurement_contract:
     - slot: 4
       article_id: st1704-countertop-dishwasher-for-small-households
       slug: countertop-dishwasher-for-small-households
-      packet_sha256: b1a0c447cd07d6d3d65bbe5b842110a246351c3e6ddfb8dae9bf8363f12b7adb
+      packet_sha256: fffb199087fde4a9f9170273763b452a90488698261437ac783adf861adc300e
       intent_classification: HOUSEHOLD_FIT_COMPARISON
     - slot: 5
       article_id: st1704-compact-robot-vacuum-shortlist

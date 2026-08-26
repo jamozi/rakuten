@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from scripts import build_st1505_staging_deployment as base
+from scripts import raos_build_core as base
 from scripts import build_st1602_slo_alert_reference_plan as generator
 
 
@@ -156,8 +156,8 @@ def test_path_traversal_is_rejected(
         generator.load_contract(isolated_repository)
 
 
-@pytest.mark.parametrize("relative", [generator.ST1601_PATH, generator.SLO_PATH])
-def test_dependency_or_catalog_byte_drift_is_rejected(
+@pytest.mark.parametrize("relative", [generator.SLO_PATH])
+def test_canonical_catalog_byte_drift_is_rejected(
     isolated_repository: Path,
     relative: Path,
 ) -> None:
@@ -165,6 +165,14 @@ def test_dependency_or_catalog_byte_drift_is_rejected(
     path.write_bytes(path.read_bytes() + b"\ndrift\n")
     with pytest.raises(generator.SloAlertReferenceError):
         generator.render_outputs(isolated_repository)
+
+
+def test_tracked_dependency_readme_is_not_digest_bound(
+    isolated_repository: Path,
+) -> None:
+    path = isolated_repository / generator.ST1601_PATH
+    path.write_bytes(path.read_bytes() + b"\neditorial note\n")
+    assert generator.render_outputs(isolated_repository)
 
 
 def test_catalog_semantic_drift_is_rejected_even_when_hash_is_rebound(

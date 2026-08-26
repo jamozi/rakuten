@@ -412,7 +412,8 @@ def _validate_bindings(root: Path, contract: dict[str, Any]) -> list[dict[str, s
             _fail("SOURCE_BINDING_DUPLICATE")
         seen.add(path)
         payload = _read_regular(root, Path(path))
-        if _sha256(payload) != binding["sha256"]:
+        protected = path.startswith(("docs/canonical/", "contracts/"))
+        if protected and _sha256(payload) != binding["sha256"]:
             _fail("SOURCE_BINDING_DRIFT")
     return bindings
 

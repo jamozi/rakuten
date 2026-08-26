@@ -89,28 +89,17 @@ RUNTIME_SOURCE_PATHS: Final = (
     PORT_PATH,
     APPLICATION_PATH,
     ADAPTER_PATH,
-    Path("changes/st-0705/README.md"),
-    Path("changes/st-0705/RUNTIME.md"),
-    Path("docs/execplans/ST-0705.md"),
-    Path("docs/worklogs/ST-0705.md"),
-    Path("tests/st0705_runtime/__init__.py"),
-    Path("tests/st0705_runtime/conftest.py"),
-    Path("tests/st0705_runtime/test_coverage_binding.py"),
-    Path("tests/st0705_runtime/test_generation_security.py"),
-    Path("tests/st0705_runtime/test_profiles_and_application.py"),
-    Path("tests/st0705_runtime/test_task_semantics_and_limits.py"),
-    Path("tests/st0705_runtime/test_validation_negative_paths.py"),
-    Path("pyproject.toml"),
-    Path("uv.lock"),
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 EXPECTED_PROFILE_IDS: Final = tuple(f"AIT-{number:03d}" for number in range(1, 13))
-PINNED_INPUTS: Final[dict[Path, str]] = {
-    TASK_REGISTRY_PATH: "33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07",
-    CONTEXT_CONTRACT_PATH: "bac32da9b2e026ad36abb0b622fecbca56e4e9d3fdc0e4cccc807a4e4392837b",
-    ALIGNMENT_PATH: "7b141fdb7e401ee886efe59f65e9bdff6be4af566deca73d29ebc50a1f200477",
-    PROVIDER_PATH: "179f608a54c87037556f3c202b08fc7be3207081e9737466e24b9de84392e991",
-    COVERAGE_PATH: "865d8f5f97befaa4c8b7c655035ca1f2ff9ffb441d08577775030aa5c8d350d4",
+SEMANTIC_INPUTS: Final = (
+    TASK_REGISTRY_PATH,
+    CONTEXT_CONTRACT_PATH,
+    ALIGNMENT_PATH,
+    PROVIDER_PATH,
+    COVERAGE_PATH,
+)
+CANONICAL_PINS: Final[dict[Path, str]] = {
     Path(
         "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md"
     ): "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
@@ -368,7 +357,7 @@ def _integer(value: object) -> int:
 
 
 def _check_pins(root: Path) -> None:
-    for path, expected in PINNED_INPUTS.items():
+    for path, expected in CANONICAL_PINS.items():
         if _sha(_read_regular(root, path)) != expected:
             _fail()
 
@@ -509,8 +498,6 @@ def _receipt_requirement(
     else:
         relative = Path(path)
         digest = _sha(_read_regular(root, relative))
-        if digest != declared:
-            _fail()
     try:
         return SemanticReceiptRequirement(
             receipt_kind=SemanticReceiptKind(_string(row["receipt_kind"])),
@@ -539,7 +526,7 @@ def build_profiles(
     )
     if tuple(item.receipt_kind for item in common) != EXPECTED_COMMON_RECEIPT_KINDS:
         _fail()
-    context_digest = Sha256Digest(PINNED_INPUTS[CONTEXT_CONTRACT_PATH])
+    context_digest = Sha256Digest(_sha(_read_regular(root, CONTEXT_CONTRACT_PATH)))
     for item in common[:2]:
         if (
             item.owner_story_id != "ST-0702"
@@ -734,8 +721,8 @@ def profile_registry_bytes(
             },
             "source_bindings": {
                 "contract_sha256": _sha(_read_regular(root, CONTRACT_PATH)),
-                "task_registry_sha256": PINNED_INPUTS[TASK_REGISTRY_PATH],
-                "alignment_sha256": PINNED_INPUTS[ALIGNMENT_PATH],
+                "task_registry_sha256": _sha(_read_regular(root, TASK_REGISTRY_PATH)),
+                "alignment_sha256": _sha(_read_regular(root, ALIGNMENT_PATH)),
             },
             "canonical_input_names": canonical_names,
             "alignment_source_required_inputs": {
@@ -918,7 +905,9 @@ def render_outputs(
     schema_paths = tuple(
         sorted({Path(profile.output_schema_path) for profile in profiles})
     )
-    inventory_paths = tuple(dict.fromkeys((*RUNTIME_SOURCE_PATHS, *PINNED_INPUTS)))
+    inventory_paths = tuple(
+        dict.fromkeys((*RUNTIME_SOURCE_PATHS, *SEMANTIC_INPUTS, *CANONICAL_PINS))
+    )
     source_hashes = {
         path.as_posix(): _sha(_read_regular(root, path))
         for path in (*inventory_paths, *schema_paths)

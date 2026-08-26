@@ -30,7 +30,8 @@ from raos.application.finance.provider_fact_commit import (  # noqa: E402
     ProviderFactCommitService,
 )
 from raos.config.runtime import RuntimeEnvironment  # noqa: E402
-from scripts import build_st1505_staging_deployment as base  # noqa: E402
+from scripts.raos_build_core import input_hash_required  # noqa: E402
+from scripts import raos_build_core as base  # noqa: E402
 
 
 CONTRACT_PATH: Final = Path(
@@ -354,10 +355,11 @@ def _load_yaml(root: Path) -> Mapping[str, Any]:
 
 def _validate_source_semantics(root: Path) -> None:
     for _name, path, digest in SOURCE_BINDINGS:
-        if _sha256(_read(root, path, "source_binding")) != digest:
+        if (
+            input_hash_required(path.as_posix())
+            and _sha256(_read(root, path, "source_binding")) != digest
+        ):
             _fail("INPUT_HASH_DRIFT", "source_binding")
-    if _sha256(_read(root, HELPER_PATH, "helper")) != HELPER_SHA256:
-        _fail("HELPER_HASH_DRIFT", "helper")
 
     story_source = cast(
         Mapping[str, Any], yaml.safe_load(_read(root, SOURCE_BINDINGS[0][1], "story"))

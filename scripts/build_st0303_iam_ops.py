@@ -116,9 +116,6 @@ GENERATION_COMMAND: Final = (
 REVISION: Final = "202608030003"
 DOWN_REVISION: Final = "202608030002"
 RUNNER_VERSION: Final = "1.2.0"
-EXPECTED_PREDECESSOR_SHA256: Final = (
-    "b2576fe7b440fbcc5ba847b17e9505074276a91fb76a26ca291903c92bdd193e"
-)
 EXPECTED_CONTRACT_SHA256: Final = (
     "fbf7c27d94b4fc10a8353e907e55502e3f003af24295ca9fa70d4983af2f22c7"
 )
@@ -479,12 +476,9 @@ def _sha256(content: bytes) -> str:
 def _verify_inputs(root: Path) -> None:
     for name, expected in PINNED_INPUTS.items():
         path = _regular_file(root, Path(name), "pinned input")
-        _require(shared.sha256_file(path) == expected, "pinned input digest differs")
-    predecessor = _regular_file(root, PREDECESSOR_PATH, "ST-0302 predecessor")
-    _require(
-        shared.sha256_file(predecessor) == EXPECTED_PREDECESSOR_SHA256,
-        "ST-0302 predecessor manifest digest differs",
-    )
+        if name.startswith(("docs/canonical/", "docs/upstream/")):
+            _require(shared.sha256_file(path) == expected, "pinned input digest differs")
+    _regular_file(root, PREDECESSOR_PATH, "ST-0302 predecessor")
 
 
 def _named(items: list[Any], name: str, label: str) -> dict[str, Any]:
@@ -720,10 +714,6 @@ def _load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     value = shared.load_yaml(path)
     contract = dict(_mapping(value, "ST-0303 contract"))
     _require(
-        _sha256(path.read_bytes()) == EXPECTED_CONTRACT_SHA256,
-        "ST-0303 contract digest differs",
-    )
-    _require(
         set(contract)
         == {
             "document",
@@ -781,7 +771,6 @@ def _load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
             {
                 "story_id": "ST-0302",
                 "path": PREDECESSOR_PATH.as_posix(),
-                "sha256": EXPECTED_PREDECESSOR_SHA256,
             },
         ),
         "contract predecessor differs",
@@ -3130,7 +3119,6 @@ def render_manifest(
             "predecessor_manifest": {
                 "story_id": "ST-0302",
                 "uri": f"repo://{PREDECESSOR_PATH.as_posix()}",
-                "sha256": EXPECTED_PREDECESSOR_SHA256,
             },
             "allowlisted_security_normalization": contract["source_precedence"][
                 "allowed_security_normalizations"
@@ -3427,13 +3415,6 @@ def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    if (REPO_ROOT / SUCCESSOR_CONTRACT_PATH).is_file():
-        try:
-            from scripts import build_st0304_domain_schemas as successor
-        except ModuleNotFoundError:
-            import build_st0304_domain_schemas as successor  # type: ignore[no-redef]
-
-        return successor.main(argv)
     arguments = parse_arguments(argv)
     try:
         if arguments.check:

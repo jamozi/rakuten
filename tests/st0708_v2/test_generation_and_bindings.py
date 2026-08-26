@@ -32,10 +32,7 @@ def test_owner_generator_is_deterministic_and_no_write_check_passes() -> None:
 def test_runtime_manifest_binds_exact_helper_sources_and_formal_nonexecution() -> None:
     manifest = json.loads((ROOT / generator.RUNTIME_MANIFEST_PATH).read_bytes())
     assert manifest["document"]["status"] == "LOCAL_IMPLEMENTATION_COMPLETE"
-    assert manifest["helper"] == {
-        "path": "scripts/secure_generated_publication.py",
-        "sha256": generator.HELPER_SHA256,
-    }
+    assert manifest["helper"] == {"path": "scripts/secure_generated_publication.py"}
     assert (
         manifest["source_sha256"]["scripts/secure_generated_publication.py"]
         == generator.HELPER_SHA256

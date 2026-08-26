@@ -10,7 +10,7 @@ from typing import cast
 
 import pytest
 
-from conftest import (
+from .support import (
     ARTICLE_VERSION_ID,
     bound,
     digest_for,

@@ -8,7 +8,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     HEADER,
     REPOSITORY_ROOT,
     ROW_GENERATED,

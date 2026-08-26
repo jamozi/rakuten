@@ -124,13 +124,13 @@ source_bindings:
 
 recorded_fixture:
   path: changes/st-1104/fixtures/analytics-finance-dashboard-recorded.synthetic.v2.json
-  sha256: 8fc81882b1b6b169f38ceb155b8b511c1d5f4e22cecdde1a7676fae369077b0d
+  sha256: 328114d50342471f3256fc00680fd28ca19f0945c6eef17c9d1f893f0a30556c
   bytes: 1734
   synthetic: true
   environment: ENV-CI
   st1205_input_sha256: 5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92
-  st1304_input_sha256: 6756429c32484b34a1beb8d628b8823b49570bcd9dc504fc268d9aa6d1bfa141
-  st1304_result_sha256: e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3
+  st1304_input_sha256: c4ba203cf5d4e9868b70ca88f9e2ce7aa6ce9ce9c4374537382de3e4839b33e4
+  st1304_result_sha256: 97553a93910f84c6e190d8c8f55a5ffb0cda2e4471ce3583cf68a19ec7ef0f46
   provider_execution: NOT_EXECUTED
 
 screen_contract:

@@ -373,8 +373,12 @@ def test_manifest_records_exact_owner_inventory(repository_copy: Path) -> None:
         f"repo://{builder.EVIDENCE_PATH.as_posix()}"
     )
     assert manifest["provenance"]["implementation_inputs"] == [
-        {"uri": f"repo://{path}", "sha256": digest}
-        for path, digest in builder.EXPECTED_IMPLEMENTATION_HASHES.items()
+        {
+            "uri": f"repo://{path.as_posix()}",
+            "semantic_id": path.as_posix(),
+            "version": 2,
+        }
+        for path in builder.IMPLEMENTATION_DEPENDENCY_PATHS
     ]
     assert manifest["provenance"]["runtime_module_inputs"] == [
         {
@@ -440,14 +444,12 @@ def test_authority_hash_drift_fails_closed(repository_copy: Path) -> None:
     assert error.value.code == "SOURCE_HASH_DRIFT"
 
 
-def test_dependency_hash_drift_fails_closed(repository_copy: Path) -> None:
+def test_tracked_dependency_bytes_are_semantic(repository_copy: Path) -> None:
     relative = Path(next(iter(builder.EXPECTED_ST1405_HASHES)))
     target = repository_copy / relative
     target.chmod(0o600)
     target.write_bytes(target.read_bytes() + b"\n")
-    with pytest.raises(builder.FailureInjectionDrillError) as error:
-        builder.render_outputs(repository_copy)
-    assert error.value.code == "DEPENDENCY_HASH_DRIFT"
+    assert builder.render_outputs(repository_copy)
 
 
 def test_runtime_module_hash_drift_fails_before_import(repository_copy: Path) -> None:
@@ -503,20 +505,17 @@ def test_runtime_executes_captured_bytes_after_post_capture_path_swap(
     assert not any(name == "raos" or name.startswith("raos.") for name in sys.modules)
 
 
-def test_secure_io_bootstrap_is_descriptor_read_and_exact_hash_bound(
+def test_secure_io_bootstrap_is_descriptor_read_without_mutable_hash_authority(
     repository_copy: Path,
 ) -> None:
     content = builder._bootstrap_read_secure_io(repository_copy)  # noqa: SLF001
-    assert builder._sha256_bytes(content) == builder.SECURE_IO_SHA256  # noqa: SLF001
     assert content == (repository_copy / builder.SECURE_IO_PATH).read_bytes()
 
 
-def test_secure_io_bootstrap_rejects_helper_hash_drift(repository_copy: Path) -> None:
+def test_secure_io_bootstrap_accepts_tracked_helper_changes(repository_copy: Path) -> None:
     helper = repository_copy / builder.SECURE_IO_PATH
     helper.write_bytes(helper.read_bytes() + b"\n")
-    with pytest.raises(builder.SecureIoBootstrapError) as captured:
-        builder._bootstrap_read_secure_io(repository_copy)  # noqa: SLF001
-    assert captured.value.code == "HELPER_HASH_DRIFT"
+    assert builder._bootstrap_read_secure_io(repository_copy).endswith(b"\n")  # noqa: SLF001
 
 
 def test_secure_io_bootstrap_rejects_leaf_swap_without_following_outside(

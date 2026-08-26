@@ -22,6 +22,7 @@ dev = [
   "datamodel-code-generator==0.71.0",
   "mypy==2.3.0",
   "pytest==9.1.1",
+  "pytest-xdist==3.8.0",
   "pyyaml==6.0.3",
   "referencing==0.37.0",
   "ruff==0.16.1",
@@ -62,7 +63,13 @@ addopts = [
   "--strict-config",
   "--strict-markers",
   "--disable-plugin-autoload",
+  "--import-mode=importlib",
 ]
 markers = [
+  "external: requires a non-local service or provider",
+  "live: performs a live provider or publication operation",
   "raos_owner_private: requires the physical owner repository and untracked owner-private policy inputs",
+  "database: requires a database engine or database-specific process boundary",
+  "serial: uses a database, storage service, or process-global filesystem state",
+  "storage: requires an object-storage service or storage-specific process boundary",
 ]

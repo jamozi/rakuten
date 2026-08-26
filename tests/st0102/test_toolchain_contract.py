@@ -6,7 +6,7 @@ from pathlib import Path
 import sys
 from typing import Any
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 
 
 PYTHON_VERSION = "3.14.6"
@@ -14,6 +14,7 @@ DIRECT_DEV_PINS = {
     "datamodel-code-generator": "0.71.0",
     "mypy": "2.3.0",
     "pytest": "9.1.1",
+    "pytest-xdist": "3.8.0",
     "pyyaml": "6.0.3",
     "referencing": "0.37.0",
     "ruff": "0.16.1",
@@ -44,7 +45,7 @@ UV_SETTINGS = {
     "prerelease": "disallow",
     "python-downloads": "manual",
     "python-preference": "only-managed",
-    "required-version": "==0.12.1",
+    "required-version": ">=0.12.1,<0.13",
     "resolution": "highest",
 }
 
@@ -171,6 +172,7 @@ def test_pytest_requires_the_pin_and_disables_ambient_plugins(
         "--strict-config",
         "--strict-markers",
         "--disable-plugin-autoload",
+        "--import-mode=importlib",
     ]
     assert "testpaths" not in pytest_config
 

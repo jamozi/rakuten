@@ -3616,7 +3616,7 @@ def test_sensitive_response_is_rejected_without_persisting_the_value(
             assert synthetic_secret.encode() not in artifact.read_bytes()
 
 
-def test_make_config_agents_and_skill_retain_approved_policy() -> None:
+def test_pro_is_optional_and_absent_from_the_normal_development_loop() -> None:
     makefile = MAKEFILE_PATH.read_text(encoding="utf-8")
     for target in (
         "pro-runtime-install:",
@@ -3626,38 +3626,8 @@ def test_make_config_agents_and_skill_retain_approved_policy() -> None:
         "pro-resume:",
         "pro-import-response:",
     ):
-        assert target in makefile
-    assert "scripts/chatgpt_pro_python.sh" in makefile
-    assert '"$(PRO_PYTHON_LAUNCHER)" setup' in makefile
-    assert '"$(PRO_PYTHON_LAUNCHER)" doctor' in makefile
-    assert '"$(PRO_PYTHON_LAUNCHER)" ask' in makefile
-    assert '"$(PRO_PYTHON_LAUNCHER)" resume' in makefile
-    assert '"$(PRO_PYTHON_LAUNCHER)" runtime-install' in makefile
-    assert '"$(PRO_PYTHON_LAUNCHER)" import-response' in makefile
-    pro_targets = makefile[
-        makefile.index("PRO_REQUEST_FILE ?=") : makefile.index(
-            "pro-owner-private-test:"
-        )
-    ]
-    assert "UV_READONLY_RUN" not in pro_targets
-    assert '--private-root "$(PRO_PRIVATE_ROOT)"' in pro_targets
-    assert "PRO_REQUEST_FILE ?=\n" in makefile
-    assert "PRO_RESPONSE_FILE ?=\n" in makefile
-    assert "PRO_NODE ?=" in pro_targets
-    assert "PRO_NPM_CLI ?=" in pro_targets
-    assert "PRO_BROWSER ?= auto" in pro_targets
-    assert "PRO_INTERACTIVE_AUTH_WAIT_SECONDS ?= 900" in pro_targets
-    assert (
-        '$(if $(strip $(PRO_REQUEST_FILE)),--request-file "$(PRO_REQUEST_FILE)",)'
-        in makefile
-    )
-    assert '--importance "$(PRO_IMPORTANCE)"' in makefile
-    assert '--run-id "$(PRO_RUN_ID)"' in makefile
-    assert '--browser "$(PRO_BROWSER)"' in pro_targets
-    assert (
-        '--interactive-auth-wait-seconds "$(PRO_INTERACTIVE_AUTH_WAIT_SECONDS)"'
-        in pro_targets
-    )
+        assert target not in makefile
+    assert "PRO_REQUEST_FILE" not in makefile
 
     config = tomllib.loads(CONFIG_PATH.read_text(encoding="utf-8"))
     playwright = config["mcp_servers"]["playwright"]
@@ -3686,51 +3656,23 @@ def test_make_config_agents_and_skill_retain_approved_policy() -> None:
     story_readme = (REPOSITORY_ROOT / "changes/st-0101/README.md").read_text(
         encoding="utf-8"
     )
-    assert "## 継続的な開発承認" in agents
-    assert "`raos-ask-pro` を暗黙的に使用してはならない" in agents
-    assert "PRO_IMPORTANCE=ordinary" in agents
-    assert "リポジトリ内の作業は停止させない" in agents
-    assert "別個の owner approval" in agents
-    assert "publication" in agents
-    assert "Production" in agents
-    assert "固定上限はない" in agents
-    assert "実質的に重複した response" in agents
-    assert "material delta" in agents
-    assert "DESIGN_HANDOFF_V1" in agents
+    assert agents.count("Pro は user が明示した場合だけ使える任意の助言機能") == 1
+    assert "diagnostic_fallback_entry_code" not in agents
+    assert "DESIGN_HANDOFF_V1" not in agents
 
     worker = tomllib.loads(IMPLEMENTATION_WORKER_PATH.read_text(encoding="utf-8"))
-    assert set(worker) == {
-        "name",
-        "description",
-        "model",
-        "model_reasoning_effort",
-        "developer_instructions",
-    }
+    assert set(worker) == {"name", "description", "developer_instructions"}
     assert worker["name"] == "implementation_worker"
-    assert worker["model"] == "gpt-5.6-sol"
-    assert worker["model_reasoning_effort"] == "ultra"
     worker_instructions = worker["developer_instructions"]
     for required in (
-        "あなたは RAOS implementation worker です",
-        "親エージェントは引き続き integration",
-        "STRICT_STORY",
-        "IMPLEMENTATION_FIRST_WAVE",
-        "DESIGN_HANDOFF_V1",
-        "generated output を手作業で編集してはいけません",
-        "`VALIDATED`",
-        "git diff --check",
+        "親エージェントが指定したownershipとscopeだけ",
+        "Story IDは追跡情報",
+        "generated outputはowner経由",
     ):
         assert required in worker_instructions
-    for policy in (agents, story_readme):
-        assert "diagnostic_fallback_entry_code" in policy
-        assert (
-            "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_WHITESPACE_SCALAR"
-            in policy
-        )
-        assert (
-            "ADVANCED_RESPONSE_PRECONTENT_REF_FREE_ENTRY_OUTSIDE_PRESENTATION_WRAPPER"
-            in policy
-        )
+    assert "model" not in worker
+    assert "model_reasoning_effort" not in worker
+    assert "diagnostic_fallback_entry_code" in story_readme
 
 
 @pytest.mark.raos_owner_private

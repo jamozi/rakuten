@@ -13,8 +13,9 @@ def write_json(path: Path, value: object) -> None:
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", "utf-8")
 
 
-def test_source_hash_drift_is_rejected(isolated_root: Path) -> None:
+def test_canonical_source_hash_drift_is_rejected(isolated_root: Path) -> None:
     path = isolated_root / owner.SCREEN_CATALOG_PATH
+    path.chmod(0o600)
     path.write_bytes(path.read_bytes() + b"\n")
     with pytest.raises(owner.BuildError, match="SOURCE_HASH_DRIFT"):
         owner.build_projection(isolated_root)

@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from conftest import CONTENT_ROOT, encoded
+from .support import CONTENT_ROOT, encoded
 import raos.domain.editorial.content_ast as loader_module
 from raos.domain.editorial import (
     ContentAstContractError,

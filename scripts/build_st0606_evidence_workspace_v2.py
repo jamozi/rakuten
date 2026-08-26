@@ -386,7 +386,7 @@ def _validate_bindings(root: Path, contract: dict[str, object]) -> None:
     if canonical != EXPECTED_CANONICAL_BINDINGS:
         _fail("CANONICAL_BINDING_INVALID", "canonical_bindings")
 
-    for uri, digest in {**observed, **canonical}.items():
+    for uri, digest in canonical.items():
         if not uri.startswith("repo://"):
             _fail("URI_INVALID", "binding.uri")
         relative = Path(uri.removeprefix("repo://"))

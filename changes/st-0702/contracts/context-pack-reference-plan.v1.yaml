@@ -26,18 +26,9 @@ authority:
 predecessors:
   st0604:
     story_id: ST-0604
-    feature_commit: 89d8074951ce73a5c76ca55f0ea3b2c129559d81
-    binding: EXACT_COMMITTED_OWNED_BYTES
-    artifacts:
-      changes/st-0604/README.md: b3d71908781fcdd2d442b3f16ed7fade49780d18bcca688c4b88ee0204c089ff
-      changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml: 5f0fc1d75207535a89e5e50d6b33bc3f710d17e60183e63ab39e394b5e8d049c
-      changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json: 3c7a7cc6a296c96162847f2bb452bba2ff7048bc8f277dbe720bf19a97fafaee
-      changes/st-0604/manifest.yaml: df78078b95d6042a08651cdef6923c01009362655393ab47af39eba2f3e420b6
-      scripts/build_st0604_source_packet_lifecycle_reference_plan.py: 7e6e1dcb1ea4ddec72b71e246769de940032b97dc86976fa8cc91f47e46ed97f
-      tests/st0604/conftest.py: d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a
-      tests/st0604/test_contract.py: 68c3fad0196b6fc353dd354c172d32dcc64106474754a54665f362a51b415462
-      tests/st0604/test_generation.py: 5ed32f62c06924f3f6931fb827a6c68dc4ffcbd415ddc6b8ece54c66e93a9cca
-      tests/st0604/test_negative_cases.py: 143ea1cf8f9b5558f98c521909be7c1506e8ad6cbda5534edb01c11ef8afdb45
+    owner_id: build_st0604_source_packet_lifecycle_reference_plan
+    owner_version: "2"
+    binding: SEMANTIC_OWNER_GRAPH
     required_semantics:
       decision: NOT_READY
       packet_count: null
@@ -49,18 +40,9 @@ predecessors:
       mapping_status: UNAVAILABLE
   st0701:
     story_id: ST-0701
-    base_commit: 679ccdc4a49fca8e1bee8827177be7130d6d45b6
-    binding: CURRENT_COMMITTED_OWNED_BYTES_AT_ST0702_BASE
-    artifacts:
-      changes/st-0701/README.md: 58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6
-      changes/st-0701/contracts/ai-contract-registry-loader.v1.yaml: 8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a
-      changes/st-0701/generated/ai-task-registry.v1.json: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
-      changes/st-0701/manifest.yaml: 01653bf5968c08a5ce186cfa06a9c25f33fc7a945808b6b2a622118025b2cbce
-      scripts/build_st0701_ai_registry.py: 2876b4e3bdc678cd97c11452a0a48e2786279933cbf27c0320307d0eccc1d360
-      tests/st0701/conftest.py: a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b
-      tests/st0701/test_compiled_task_registry.py: bdc75302f0a901e2d0859c8fee03569db6d4f628f77515385d1c9a57d17e8854
-      tests/st0701/test_contract.py: d0fe98b31176b23d35d241aa9dd89bdc438412272528bdcffb5d045aa72fbe55
-      tests/st0701/test_generation.py: 09fa81e4a46d8652c18b1993c200d508ff87e7970fc8f0222b8c6bbc387bf34e
+    owner_id: build_st0701_ai_registry
+    owner_version: "2"
+    binding: SEMANTIC_OWNER_GRAPH
     required_semantics:
       task_count: 12
       complete_binding_metadata: true
@@ -82,14 +64,14 @@ predecessors:
 
 registry_projection:
   source_path: changes/st-0701/generated/ai-task-registry.v1.json
-  source_sha256: 33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07
-  order_source: EXACT_SOURCE_ORDER
+  source_owner_id: build_st0701_ai_registry
+  source_owner_version: "2"
+  order_source: SEMANTIC_SOURCE_ORDER
   projection: FULL_BINDING_METADATA
   task_count: 12
   activation_inferred: false
   activated_task_count: null
   selected_task_count: null
-
 packing_rules:
   available:
     typed_manifest_required: true

@@ -15,7 +15,7 @@ from typing import NoReturn
 
 import pytest
 
-from conftest import (
+from .support import (
     FINISHED_AT,
     REPOSITORY_ROOT,
     STARTED_AT,

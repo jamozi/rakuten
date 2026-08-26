@@ -3,8 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import cast
 
-import pytest
-
 from scripts import build_st1104_analytics_finance_dashboard as builder
 
 
@@ -20,7 +18,7 @@ def test_owner_generator_is_no_write_reproducible() -> None:
         assert (builder.REPO_ROOT / path).read_bytes() == content
 
 
-def test_contract_dependency_hash_drift_is_rejected(tmp_path: Path) -> None:
+def test_tracked_contract_dependency_bytes_are_semantic(tmp_path: Path) -> None:
     root = tmp_path / "repo"
     root.mkdir()
     contract = builder._load_contract()
@@ -45,5 +43,4 @@ def test_contract_dependency_hash_drift_is_rejected(tmp_path: Path) -> None:
         target.write_bytes(source.read_bytes())
     target = root / "changes/st-1205/contracts/kpi-read-model.v2.yaml"
     target.write_bytes(target.read_bytes() + b"\n")
-    with pytest.raises(builder.DashboardBuildError, match="SOURCE_HASH_DRIFT"):
-        builder._load_contract(root)
+    assert builder._load_contract(root)

@@ -94,18 +94,16 @@ def test_manifest_inventory_hashes_every_owned_source_and_generated_plan() -> No
         }
     ]
     assert manifest["provenance"]["implementation_inputs"] == [
-        {"uri": f"repo://{path}", "sha256": digest}
-        for path, digest in generator.EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES.items()
+        {"uri": f"repo://{path}", "semantic_id": path, "version": 2}
+        for path in generator.IMPLEMENTATION_DEPENDENCY_PATHS
     ]
 
 
-def test_imported_local_builder_dependency_is_hash_bound() -> None:
-    for (
-        relative,
-        expected,
-    ) in generator.EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES.items():
-        content = (REPOSITORY_ROOT / relative).read_bytes()
-        assert hashlib.sha256(content).hexdigest() == expected
+def test_imported_local_builder_dependency_is_semantically_registered() -> None:
+    assert generator.IMPLEMENTATION_DEPENDENCY_PATHS == (
+        "scripts/build_st1505_staging_deployment.py",
+        "scripts/build_st1506_production_deployment.py",
+    )
 
 
 def test_builder_has_no_scan_network_environment_or_process_surface() -> None:

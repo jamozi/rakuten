@@ -25,24 +25,11 @@ sources:
 - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
   bytes: 71458
   sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
-- uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-  bytes: 10741
-  sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
 predecessor_binding:
   story_id: ST-0006
-  owner_check: scripts.build_st0006_decision_gates.check_generated
-  generator:
-    uri: repo://scripts/build_st0006_decision_gates.py
-    bytes: 66037
-    sha256: 0f6ad788aa90660775cb7852f7bb2ab7d8712d62bbf17dcaa651fe0fb8f6e06f
-  policy:
-    uri: repo://changes/st-0006/contracts/decision-gate-policy.v1.yaml
-    bytes: 1064
-    sha256: 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
-  report:
-    uri: repo://changes/st-0006/gate-blocker-report.v1.yaml
-    bytes: 9999
-    sha256: 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
+  owner_id: build_st0006_decision_gates
+  owner_version: "2"
+  binding: SEMANTIC_OWNER_GRAPH
   required_semantics:
     overall_open_decision_check: BLOCKED
     global_decision_count: 15

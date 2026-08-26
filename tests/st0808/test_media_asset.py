@@ -6,7 +6,7 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 
-from conftest import (
+from .support import (
     ASSET_ID,
     command,
     intake_result,

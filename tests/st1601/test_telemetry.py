@@ -11,7 +11,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     ARTICLE_ID,
     CAUSATION_ID,
     CORRELATION_ID,

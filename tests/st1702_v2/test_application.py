@@ -145,7 +145,6 @@ def test_adapter_rejects_post_init_fixture_rebinding(
     monkeypatch.setattr(
         adapter_module, "ST1702_RECORDED_CATEGORY_FIXTURE_V2_SHA256", digest
     )
-    monkeypatch.setattr(adapter_module, "_EXPECTED_FIXTURE_SHA256", digest)
     with pytest.raises(CategoryFixtureFailure) as captured:
         adapter.load(_request())
     assert captured.value.code is CategoryFixtureFailureCode.FIXTURE_HASH_MISMATCH

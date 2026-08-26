@@ -62,18 +62,18 @@ source_artifacts:
 - uri: repo://tests/st0901_v2/conftest.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 2669
-  sha256: 187660846c1b62728dcf76f722a53e86958220a53cc807a5a81694f79b589fac
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st0901_v2/test_domain.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 10087
-  sha256: 18b5cc59fe75c5b1d694111aea15524de600a5932f648a35557da61121dffab0
+  bytes: 10086
+  sha256: 59cb9642bba076ae86905a252953ce7b92d8fbf46ceee4136d564c02702612e4
 - uri: repo://tests/st0901_v2/test_application_adapter.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 6074
-  sha256: fd78f283f8044fffff8d9b3c099074ec5139fa1b22be3c67a0d278fa2acdb8be
+  bytes: 6073
+  sha256: 9a97c623e17e341a0e27a566ccdb92dfb42da2886cb2d6ecba41d06a49659f9f
 - uri: repo://tests/st0901_v2/test_generation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -87,8 +87,8 @@ source_artifacts:
 - uri: repo://AGENTS.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown
-  bytes: 54428
-  sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
+  bytes: 4225
+  sha256: 9bc1321a39df5260efa9121b7df76802045f59add4ae27eab198890745b26d18
 - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown
@@ -172,8 +172,8 @@ source_artifacts:
 - uri: repo://changes/st-0805/runtime-manifest.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
-  bytes: 11572
-  sha256: f10516b1d26e6dc448ade04873880211244e82d1c0f7175b5c57ce2c95f411ce
+  bytes: 11571
+  sha256: f7aa3bb94e733a4e321ec0627db05b0f712ce029c29a35be0b77c818192ec4fc
 - uri: repo://scripts/secure_generated_publication.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python

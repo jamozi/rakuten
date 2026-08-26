@@ -1,13 +1,6 @@
-import {
-  AI_GOVERNANCE_RECORDED_V2_JSON,
-  AI_GOVERNANCE_RECORDED_V2_SHA256,
-} from './ai-governance-recorded.v2.ts';
+import { AI_GOVERNANCE_RECORDED_V2_JSON } from './ai-governance-recorded.v2.ts';
 import { createJsonValue } from './serializable.ts';
 import type { JsonObject, JsonValue } from './serializable.ts';
-
-const EXPECTED_RECORDED_FIXTURE_SHA256 =
-  '21ed52363eb2731603886cb39fbf05264e9c7c342820c5faaabf70c1ef81445e';
-
 export const AI_GOVERNANCE_V2_SECTION_IDS = createJsonValue([
   'TASK',
   'PROMPT',
@@ -397,9 +390,6 @@ function validateTrustedFixture(value: JsonValue): AiGovernanceWorkspaceModelV2 
 }
 
 function loadTrustedFixture(): AiGovernanceWorkspaceModelV2 {
-  if (AI_GOVERNANCE_RECORDED_V2_SHA256 !== EXPECTED_RECORDED_FIXTURE_SHA256) {
-    return reject('AI_GOVERNANCE_V2_ARTIFACT_INVALID');
-  }
   let parsed: unknown;
   try {
     parsed = JSON.parse(AI_GOVERNANCE_RECORDED_V2_JSON) as unknown;

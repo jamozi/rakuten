@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from conftest import (
+from .support import (
     CERTIFICATION_ID,
     EXPIRES_AT,
     IDENTITY,

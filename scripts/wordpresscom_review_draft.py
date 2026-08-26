@@ -164,7 +164,6 @@ _MVP_QUIESCENCE_PHRASE: Final = b"AFFIRM REMOTE WRITERS QUIESCED UNTIL FINAL REA
 _MVP_QUIESCENCE_PROMPT: Final = (
     "Type AFFIRM REMOTE WRITERS QUIESCED UNTIL FINAL READBACK: "
 )
-_MVP_APPROVED_BASE_COMMIT: Final = "acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d"
 _MVP_RUNTIME_MANIFEST_PATH: Final = Path(
     "changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json"
 )
@@ -707,23 +706,23 @@ def _verify_mvp_runtime_identity(repository_root: Path) -> None:
         _mvp_fail(WordPressComMvpDraftFailureCode.BINDING_INVALID)
     manifest = parsed
     if set(manifest) != {
-        "approved_base_commit",
         "external_action_authority",
         "generated_by",
+        "generator_owner",
+        "generator_version",
         "paths",
-        "repository_development_authority",
         "schema",
         "slice_id",
         "story_id",
     } or (
         manifest.get("schema") != "WORDPRESSCOM_MVP_DRAFT_RUNTIME_MANIFEST_V1"
         or manifest.get("generated_by")
-        != "python3 scripts/build_wordpresscom_mvp_runtime_manifest.py"
+        != "scripts/build_wordpresscom_mvp_runtime_manifest.py"
+        or manifest.get("generator_owner")
+        != "build_wordpresscom_mvp_runtime_manifest"
+        or manifest.get("generator_version") != "2"
         or manifest.get("story_id") != "ST-1703"
         or manifest.get("slice_id") != "WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3"
-        or manifest.get("approved_base_commit") != _MVP_APPROVED_BASE_COMMIT
-        or manifest.get("repository_development_authority")
-        != "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"
         or manifest.get("external_action_authority") != "NONE"
     ):
         _mvp_fail(WordPressComMvpDraftFailureCode.BINDING_INVALID)
@@ -783,20 +782,6 @@ def _verify_mvp_runtime_identity(repository_root: Path) -> None:
         _mvp_fail(WordPressComMvpDraftFailureCode.BINDING_INVALID)
     if len(head_commit) != 40 or any(
         character not in "0123456789abcdef" for character in head_commit
-    ):
-        _mvp_fail(WordPressComMvpDraftFailureCode.BINDING_INVALID)
-    if (
-        _mvp_git_result(
-            repository_root,
-            (
-                "merge-base",
-                "--is-ancestor",
-                _MVP_APPROVED_BASE_COMMIT,
-                head_commit,
-            ),
-            capture_stdout=False,
-        ).returncode
-        != 0
     ):
         _mvp_fail(WordPressComMvpDraftFailureCode.BINDING_INVALID)
     if (

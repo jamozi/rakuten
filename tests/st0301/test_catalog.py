@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pytest
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.migrations import CatalogError, verify_all_sources
 from raos.migrations import catalog
 from raos.migrations import runner

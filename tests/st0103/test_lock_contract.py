@@ -7,7 +7,7 @@ from collections.abc import Mapping
 from typing import Any
 from urllib.parse import urlsplit
 
-from test_toolchain_contract import (
+from .test_toolchain_contract import (
     DEPENDENCY_SECTIONS,
     EXPECTED_DIRECT_PINS,
     EXPECTED_OVERRIDES,

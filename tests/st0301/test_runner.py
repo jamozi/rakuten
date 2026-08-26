@@ -13,7 +13,7 @@ from typing import Any
 
 import pytest
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.migrations import (
     CatalogError,
     DatabaseTarget,

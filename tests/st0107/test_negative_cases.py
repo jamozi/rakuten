@@ -8,7 +8,7 @@ from typing import Any
 import pytest
 from yaml.constructor import ConstructorError
 
-from conftest import RejectContract
+from .support import RejectContract
 from scripts import build_st0107_pr_governance as generator
 
 
@@ -275,19 +275,22 @@ def test_unreviewed_codeowners_entry_cannot_be_added(
     reject_contract(mutable_contract, "CODEOWNERS inventory differs")
 
 
-def test_required_owner_category_cannot_reference_an_unowned_pattern(
+def test_required_owner_review_category_cannot_be_reintroduced(
     mutable_contract: dict[str, Any], reject_contract: RejectContract
 ) -> None:
-    mutable_contract["ruleset_policy"]["required_owner_categories"]["security"][
-        "patterns"
-    ].append("/not-owned/")
+    mutable_contract["ruleset_policy"]["required_owner_categories"]["security"] = {
+        "patterns": ["/tests/security/"],
+        "roles": ["security"],
+    }
     reject_contract(mutable_contract, "required owner categories differ")
 
 
-def test_required_owner_category_inventory_cannot_be_reduced(
+def test_required_owner_category_must_remain_empty(
     mutable_contract: dict[str, Any], reject_contract: RejectContract
 ) -> None:
-    del mutable_contract["ruleset_policy"]["required_owner_categories"]["migration"]
+    mutable_contract["ruleset_policy"]["required_owner_categories"] = {
+        "migration": {"patterns": ["/migrations/"], "roles": ["data"]}
+    }
     reject_contract(mutable_contract, "required owner categories differ")
 
 
@@ -320,11 +323,12 @@ def test_fail_closed_ruleset_field_cannot_be_weakened(
     ("field", "value"),
     [
         ("allowed_merge_methods", ["merge", "squash"]),
-        ("dismiss_stale_reviews_on_push", False),
-        ("require_code_owner_review", False),
-        ("require_last_push_approval", False),
-        ("required_approving_review_count", 0),
-        ("required_review_thread_resolution", False),
+        ("dismiss_stale_reviews_on_push", True),
+        ("require_code_owner_review", True),
+        ("require_last_push_approval", True),
+        ("required_approving_review_count", 1),
+        ("required_review_thread_resolution", True),
+        ("auto_merge_after_required_checks", False),
     ],
 )
 def test_pull_request_protection_cannot_be_weakened(
@@ -340,8 +344,8 @@ def test_pull_request_protection_cannot_be_weakened(
 def test_required_check_context_cannot_drift(
     mutable_contract: dict[str, Any], reject_contract: RejectContract
 ) -> None:
-    mutable_contract["ruleset_policy"]["required_status_checks"][4]["context"] = (
-        "Secret scan"
+    mutable_contract["ruleset_policy"]["required_status_checks"][0]["context"] = (
+        "Static"
     )
     reject_contract(mutable_contract, "status-check inventory differs")
 
@@ -422,9 +426,10 @@ def test_activation_prerequisite_cannot_be_omitted(
 @pytest.mark.parametrize(
     ("field", "value"),
     [
-        ("require_not_applicable_rationale", False),
-        ("require_generated_or_ai_assisted_review", False),
-        ("required_owner_categories", ["contract", "migration", "security"]),
+        ("story_ids_are_tracking_only", False),
+        ("repeated_owner_routing", True),
+        ("require_generated_or_ai_assisted_review", True),
+        ("record_once", ["story_ids", "summary"]),
     ],
 )
 def test_pull_request_template_review_requirements_cannot_be_reduced(

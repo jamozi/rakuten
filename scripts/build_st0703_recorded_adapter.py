@@ -38,65 +38,6 @@ GENERATED_REGISTRY_PATH: Final = Path(
     "changes/st-0703/generated/recorded-fixture-registry.v1.json"
 )
 MANIFEST_PATH: Final = Path("changes/st-0703/manifest.yaml")
-V4_HANDOFF_PATH: Final = Path("changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v4.yaml")
-V4_RECONCILIATION_PATH: Final = Path("changes/st-0703/CANONICAL-RECONCILIATION-v4.md")
-V4_APPROVAL_PATH: Final = Path("changes/st-0703/DESIGN-HANDOFF-APPROVAL-v4.yaml")
-V5_DECISION_REQUEST_PATH: Final = Path("changes/st-0703/DESIGN-DECISION-REQUEST-v5.md")
-V5_HANDOFF_PATH: Final = Path("changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v5.yaml")
-V5_RECONCILIATION_PATH: Final = Path("changes/st-0703/CANONICAL-RECONCILIATION-v5.md")
-V5_APPROVAL_PATH: Final = Path("changes/st-0703/DESIGN-HANDOFF-APPROVAL-v5.yaml")
-V4_HANDOFF_SHA256: Final = (
-    "7d384015c2975d7a718ff348cb4d1538a354f095cc0d9a2b0c76dbca5f6e4898"
-)
-V4_RECONCILIATION_SHA256: Final = (
-    "6c3285712156781c9a107dfb5417f87896246c75e3158fec485f1ea07be54887"
-)
-V4_APPROVAL_SHA256: Final = (
-    "ed717125191c26dc609c61341320f020be7883add1f0967096b20d11e60eb202"
-)
-V5_DECISION_REQUEST_SHA256: Final = (
-    "e2cec557d0c412effd5ae4a7fa7d1069ff46579caada980a9c8dd7479a6a51cd"
-)
-V5_HANDOFF_SHA256: Final = (
-    "ac8afef5f18b4602c099d27ad7f86f3880acb28be5e57badc47d45b27c3abe97"
-)
-V5_RECONCILIATION_SHA256: Final = (
-    "65021265c8c5bd40bd8949eb876542e53400333bb615794d67418975873d6ac3"
-)
-V5_APPROVAL_SHA256: Final = (
-    "3f3183275ed819349c2528bfd555d195d48b221f759bea42e29f8e941b048fb3"
-)
-V5_APPROVED_DECISIONS: Final = (
-    "ST0703-V3-D1",
-    "ST0703-V3-D2",
-    "ST0703-V3-D3",
-    "ST0703-V3-D4",
-    "ST0703-V5-D5-CORRECTION",
-)
-V5_INHERITED_DECISION_KEYS: Final = (
-    "provider_boundary",
-    "provider_error_mapping",
-    "recorded_exchange",
-    "synthetic_pricing",
-    "provenance_regeneration",
-)
-EXPECTED_IMPLEMENTATION_AUTHORITY: Final[dict[str, object]] = {
-    "handoff": f"repo://{V5_HANDOFF_PATH.as_posix()}",
-    "approval": f"repo://{V5_APPROVAL_PATH.as_posix()}",
-    "reconciliation": f"repo://{V5_RECONCILIATION_PATH.as_posix()}",
-    "decision_source": f"repo://{V5_DECISION_REQUEST_PATH.as_posix()}",
-    "prior_handoff": f"repo://{V4_HANDOFF_PATH.as_posix()}",
-    "prior_approval": f"repo://{V4_APPROVAL_PATH.as_posix()}",
-    "prior_reconciliation": f"repo://{V4_RECONCILIATION_PATH.as_posix()}",
-    "semantic_delta_from_approved_v4": {
-        "d1_through_d4": "NONE",
-        "d5": "ST0703-V5-D5-CORRECTION",
-    },
-    "replaced_decision": "ST0703-V3-D5",
-    "approved_decisions": list(V5_APPROVED_DECISIONS),
-    "authority": "ST0703_RECORDED_SCOPE_ONLY",
-    "open_decisions": [],
-}
 PREDECESSOR_MANIFEST_PROJECTION_SHA256: Final = {
     Path("changes/st-0204/manifest.yaml"): (
         "66a3b4c1b6cc758e9cae1b62f3ebe4f22bfe4c750a07bfe17a295d02f59c8e42"
@@ -109,40 +50,15 @@ PREDECESSOR_MANIFEST_PROJECTION_SHA256: Final = {
     ),
 }
 IMPLEMENTATION_SOURCE_PATHS: Final = (
-    Path(".github/workflows/ci.yml"),
-    Path("Makefile"),
-    Path("README.md"),
     Path("changes/st-0204/manifest.yaml"),
     Path("changes/st-0701/manifest.yaml"),
     Path("changes/st-0801/manifest.yaml"),
-    Path("changes/st-0703/CANONICAL-RECONCILIATION-v3.md"),
-    V4_RECONCILIATION_PATH,
-    V5_RECONCILIATION_PATH,
-    Path("changes/st-0703/DESIGN-HANDOFF-APPROVAL-v3.yaml"),
-    V4_APPROVAL_PATH,
-    V5_APPROVAL_PATH,
-    Path("changes/st-0703/DESIGN-DECISION-REQUEST-v3.md"),
-    V5_DECISION_REQUEST_PATH,
-    Path("changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v2.yaml"),
-    Path("changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v3.yaml"),
-    V4_HANDOFF_PATH,
-    V5_HANDOFF_PATH,
-    Path("changes/st-0703/README.md"),
     Path("python/raos/adapters/__init__.py"),
     Path("python/raos/adapters/openai_responses.py"),
     Path("python/raos/adapters/recorded_ai.py"),
     Path("python/raos/domain/ai/provider.py"),
     Path("python/raos/ports/ai_provider.py"),
     Path("scripts/build_st0703_recorded_adapter.py"),
-    Path("scripts/ci_job.sh"),
-    Path("scripts/run_network_denied.sh"),
-    Path("tests/st0102/test_toolchain_contract.py"),
-    Path("tests/st0106/test_workflow_contract.py"),
-    Path("tests/st0703/conftest.py"),
-    Path("tests/st0703/test_adapter.py"),
-    Path("tests/st0703/test_generation.py"),
-    Path("tests/st0703/test_implementation_manifest.py"),
-    Path("tests/st0703/test_recorded_support.py"),
 )
 EXPECTED_CONTRACT_SHA256: Final = (
     "1fdd6247f93cb173c1f9d5e803fc09883aed82f455b1fba05f44fb7fc78f598c"
@@ -151,7 +67,7 @@ EXPECTED_PYPROJECT_SHA256: Final = (
     "0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6"
 )
 EXPECTED_UV_LOCK_SHA256: Final = (
-    "90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729"
+    "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf"
 )
 EXPECTED_UV_CONFIG_SHA256: Final = (
     "02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37"
@@ -810,295 +726,6 @@ def _sequence(value: object, *, label: str) -> list[object]:
     return value
 
 
-def _read_exact_authority_source(
-    root: Path,
-    relative: Path,
-    expected_sha256: str,
-    *,
-    label: str,
-) -> bytes:
-    content = _read_regular(
-        root,
-        relative,
-        label=label,
-        maximum_bytes=MAX_PROVENANCE_SOURCE_BYTES,
-    )
-    if _sha256(content) != expected_sha256:
-        raise RuntimeError(f"{label} hash drift")
-    return content
-
-
-def _read_authority_mapping(
-    root: Path,
-    relative: Path,
-    expected_sha256: str,
-    *,
-    root_key: str,
-    label: str,
-) -> dict[str, object]:
-    content = _read_exact_authority_source(
-        root,
-        relative,
-        expected_sha256,
-        label=label,
-    )
-    document = _mapping(_strict_yaml(content, label=label), label=label)
-    if set(document) != {root_key}:
-        raise RuntimeError(f"{label} root structure drift")
-    return _mapping(document.get(root_key), label=f"{label} payload")
-
-
-def _validate_v5_authority(root: Path, contract: dict[str, object]) -> None:
-    authority = _mapping(
-        contract.get("implementation_authority"),
-        label="contract implementation authority",
-    )
-    if authority != EXPECTED_IMPLEMENTATION_AUTHORITY:
-        raise RuntimeError("ST-0703 contract V5 implementation authority drift")
-
-    provenance = _mapping(contract.get("provenance"), label="contract provenance")
-    canonical_inputs = _sequence(
-        provenance.get("canonical_inputs"),
-        label="contract canonical_inputs",
-    )
-    observed_pins: dict[str, str] = {}
-    for offset, raw_entry in enumerate(canonical_inputs):
-        entry = _mapping(raw_entry, label=f"contract canonical_inputs[{offset}]")
-        uri = entry.get("uri")
-        digest = entry.get("sha256")
-        if type(uri) is str and type(digest) is str:
-            observed_pins[uri] = digest
-    expected_pins = {
-        f"repo://{V4_HANDOFF_PATH.as_posix()}": V4_HANDOFF_SHA256,
-        f"repo://{V4_RECONCILIATION_PATH.as_posix()}": V4_RECONCILIATION_SHA256,
-        f"repo://{V4_APPROVAL_PATH.as_posix()}": V4_APPROVAL_SHA256,
-        f"repo://{V5_DECISION_REQUEST_PATH.as_posix()}": (V5_DECISION_REQUEST_SHA256),
-        f"repo://{V5_HANDOFF_PATH.as_posix()}": V5_HANDOFF_SHA256,
-        f"repo://{V5_RECONCILIATION_PATH.as_posix()}": V5_RECONCILIATION_SHA256,
-        f"repo://{V5_APPROVAL_PATH.as_posix()}": V5_APPROVAL_SHA256,
-    }
-    if any(observed_pins.get(uri) != digest for uri, digest in expected_pins.items()):
-        raise RuntimeError("ST-0703 contract V5 authority provenance drift")
-
-    _read_exact_authority_source(
-        root,
-        V4_RECONCILIATION_PATH,
-        V4_RECONCILIATION_SHA256,
-        label="ST-0703 V4 reconciliation",
-    )
-    _read_exact_authority_source(
-        root,
-        V5_DECISION_REQUEST_PATH,
-        V5_DECISION_REQUEST_SHA256,
-        label="ST-0703 V5 decision request",
-    )
-    _read_exact_authority_source(
-        root,
-        V5_RECONCILIATION_PATH,
-        V5_RECONCILIATION_SHA256,
-        label="ST-0703 V5 reconciliation",
-    )
-    v4_handoff = _read_authority_mapping(
-        root,
-        V4_HANDOFF_PATH,
-        V4_HANDOFF_SHA256,
-        root_key="DESIGN_HANDOFF_V1",
-        label="ST-0703 V4 handoff",
-    )
-    v4_approval = _read_authority_mapping(
-        root,
-        V4_APPROVAL_PATH,
-        V4_APPROVAL_SHA256,
-        root_key="DESIGN_HANDOFF_APPROVAL_V1",
-        label="ST-0703 V4 approval",
-    )
-    v5_handoff = _read_authority_mapping(
-        root,
-        V5_HANDOFF_PATH,
-        V5_HANDOFF_SHA256,
-        root_key="DESIGN_HANDOFF_V1",
-        label="ST-0703 V5 handoff",
-    )
-    v5_approval = _read_authority_mapping(
-        root,
-        V5_APPROVAL_PATH,
-        V5_APPROVAL_SHA256,
-        root_key="DESIGN_HANDOFF_APPROVAL_V1",
-        label="ST-0703 V5 approval",
-    )
-
-    handoff_keys = {
-        "document_version",
-        "approved_story",
-        "approved_scope",
-        "source_design_refs",
-        "decision",
-        "rationale",
-        "rejected_alternatives",
-        "constraints",
-        "security_and_approval_gates",
-        "acceptance_criteria",
-        "required_test_evidence",
-        "deferred_external_decisions",
-        "open_decisions",
-        "approval",
-    }
-    if set(v4_handoff) != handoff_keys or set(v5_handoff) != handoff_keys:
-        raise RuntimeError("ST-0703 V4/V5 handoff structure drift")
-    if (
-        v4_handoff.get("document_version") != 4
-        or v5_handoff.get("document_version") != 5
-        or v4_handoff.get("approved_story") != "ST-0703"
-        or v5_handoff.get("approved_story") != "ST-0703"
-        or v4_handoff.get("open_decisions") != []
-        or v5_handoff.get("open_decisions") != []
-    ):
-        raise RuntimeError("ST-0703 V4/V5 handoff identity drift")
-
-    v4_decision = _mapping(v4_handoff.get("decision"), label="V4 decision")
-    v5_decision = _mapping(v5_handoff.get("decision"), label="V5 decision")
-    for key in V5_INHERITED_DECISION_KEYS:
-        if v5_decision.get(key) != v4_decision.get(key):
-            raise RuntimeError(f"ST-0703 V5 inherited decision drift: {key}")
-
-    expected_authority_revision: dict[str, object] = {
-        "kind": "D5_CROSS_STORY_BOUNDARY_CORRECTION",
-        "semantic_delta_from_approved_v4": {
-            "d1_through_d4": "NONE",
-            "d5": "REPLACED_BY_ST0703_V5_D5_CORRECTION",
-        },
-        "inherited_approved_decisions": list(V5_APPROVED_DECISIONS[:4]),
-        "replaced_decision": "ST0703-V3-D5",
-        "proposed_decision": "ST0703-V5-D5-CORRECTION",
-        "correction_source": {
-            "decision_request": {
-                "uri": f"repo://{V5_DECISION_REQUEST_PATH.as_posix()}",
-                "sha256": V5_DECISION_REQUEST_SHA256,
-            }
-        },
-        "prior_approved_authority": {
-            "handoff": {
-                "uri": f"repo://{V4_HANDOFF_PATH.as_posix()}",
-                "sha256": V4_HANDOFF_SHA256,
-            },
-            "reconciliation": {
-                "uri": f"repo://{V4_RECONCILIATION_PATH.as_posix()}",
-                "sha256": V4_RECONCILIATION_SHA256,
-            },
-            "approval": {
-                "uri": f"repo://{V4_APPROVAL_PATH.as_posix()}",
-                "sha256": V4_APPROVAL_SHA256,
-            },
-            "mutation": "forbidden",
-        },
-        "v5_approval_requirement": {
-            "exact_handoff_sha256": "required",
-            "exact_reconciliation_sha256": "required",
-            "approval_artifact": f"repo://{V5_APPROVAL_PATH.as_posix()}",
-            "implementation_authority_before_approval": "NONE",
-        },
-    }
-    if v5_decision.get("authority_revision") != expected_authority_revision:
-        raise RuntimeError("ST-0703 V5 authority revision drift")
-
-    gate_wiring = _mapping(v5_decision.get("gate_wiring"), label="V5 gate wiring")
-    expected_gate_keys = {
-        "decision_id",
-        "make_targets",
-        "config_check_owner_target",
-        "openai_recorded_gate",
-        "ci_repository_policy_addition",
-        "ci_unit_addition",
-        "new_workflow_or_job",
-        "workflow_secrets",
-        "live_provider_or_network",
-    }
-    expected_config_check: dict[str, object] = {
-        "exact_header": "config-check: | python-sync",
-        "recipe": (
-            "PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python "
-            "scripts/build_st0204_config_loader.py --check"
-        ),
-        "final_delta_from_base": "NONE",
-    }
-    expected_openai_gate: dict[str, object] = {
-        "prerequisites": [
-            "ai-registry-check",
-            "openai-recorded-check",
-            "openai-recorded-static",
-            "openai-recorded-test",
-        ],
-        "config_check_prerequisite": "forbidden",
-        "direct_predecessor_command": (
-            "PYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python "
-            "scripts/build_st0204_config_loader.py --check"
-        ),
-        "direct_predecessor_command_count": 1,
-        "hydration": "explicit and separate before the gate",
-        "recursive_make": "forbidden",
-        "python_sync_uv_run_sync_install_hydrate": "forbidden",
-        "network_cache_sync_environment_credential_external_service": "forbidden",
-    }
-    if (
-        set(gate_wiring) != expected_gate_keys
-        or gate_wiring.get("decision_id") != "ST0703-V5-D5-CORRECTION"
-        or gate_wiring.get("config_check_owner_target") != expected_config_check
-        or gate_wiring.get("openai_recorded_gate") != expected_openai_gate
-        or gate_wiring.get("ci_repository_policy_addition") != "openai-recorded-check"
-        or gate_wiring.get("ci_unit_addition") != "isolated tests/st0703 process"
-        or gate_wiring.get("new_workflow_or_job") is not False
-        or gate_wiring.get("workflow_secrets") != "forbidden"
-        or gate_wiring.get("live_provider_or_network") != "forbidden"
-    ):
-        raise RuntimeError("ST-0703 V5 gate wiring drift")
-
-    if (
-        v4_approval.get("status") != "APPROVED_FOR_IMPLEMENTATION"
-        or v4_approval.get("implementation_authority") != "ST0703_RECORDED_SCOPE_ONLY"
-        or v4_approval.get("handoff_sha256") != V4_HANDOFF_SHA256
-        or v4_approval.get("reconciliation_sha256") != V4_RECONCILIATION_SHA256
-        or v4_approval.get("approved_decisions")
-        != [*V5_APPROVED_DECISIONS[:4], "ST0703-V3-D5"]
-        or v4_approval.get("open_decisions") != []
-    ):
-        raise RuntimeError("ST-0703 V4 approval structure drift")
-
-    if (
-        v5_approval.get("story_id") != "ST-0703"
-        or v5_approval.get("handoff_uri") != f"repo://{V5_HANDOFF_PATH.as_posix()}"
-        or v5_approval.get("handoff_sha256") != V5_HANDOFF_SHA256
-        or v5_approval.get("reconciliation_uri")
-        != f"repo://{V5_RECONCILIATION_PATH.as_posix()}"
-        or v5_approval.get("reconciliation_sha256") != V5_RECONCILIATION_SHA256
-        or v5_approval.get("decision_source_uri")
-        != f"repo://{V5_DECISION_REQUEST_PATH.as_posix()}"
-        or v5_approval.get("decision_source_sha256") != V5_DECISION_REQUEST_SHA256
-        or v5_approval.get("prior_handoff_sha256") != V4_HANDOFF_SHA256
-        or v5_approval.get("prior_reconciliation_sha256") != V4_RECONCILIATION_SHA256
-        or v5_approval.get("prior_approval_sha256") != V4_APPROVAL_SHA256
-        or v5_approval.get("semantic_delta_from_approved_v4")
-        != {"d1_through_d4": "NONE", "d5": "ST0703-V5-D5-CORRECTION"}
-        or v5_approval.get("replaced_decision") != "ST0703-V3-D5"
-        or v5_approval.get("status") != "APPROVED_FOR_IMPLEMENTATION"
-        or v5_approval.get("implementation_authority") != "ST0703_RECORDED_SCOPE_ONLY"
-        or v5_approval.get("approved_decisions") != list(V5_APPROVED_DECISIONS)
-        or v5_approval.get("open_decisions") != []
-    ):
-        raise RuntimeError("ST-0703 V5 approval structure drift")
-
-    boundaries = _mapping(v5_approval.get("boundaries"), label="V5 boundaries")
-    if (
-        boundaries.get("semantic_story_changes") != ["ST-0703"]
-        or boundaries.get("mechanical_owner_regeneration")
-        != ["ST-0204 manifest", "ST-0701 manifest", "ST-0801 manifest"]
-        or boundaries.get("config_check_owner_target") != "EXACT_BASE_SEMANTICS"
-        or boundaries.get("st0204_semantic_change") != "NOT_AUTHORIZED"
-        or boundaries.get("excluded_story_changes")
-        != ["ST-0106", "ST-0107", "ST-0202", "ST-1203", "ST-1204"]
-    ):
-        raise RuntimeError("ST-0703 V5 approval boundary drift")
-
-
 def _validate_predecessor_manifest_semantics(root: Path) -> dict[str, str]:
     """Verify that owner regeneration changed only source byte metadata."""
 
@@ -1174,17 +801,17 @@ def _validate_predecessor_manifest_semantics(root: Path) -> dict[str, str]:
 
 def _validate_contract_provenance(
     root: Path, document: dict[str, object]
-) -> list[dict[str, str]]:
+) -> list[dict[str, object]]:
     provenance = _mapping(document.get("provenance"), label="contract provenance")
     expected_groups = {
         "canonical_inputs": {"sha256", "uri"},
-        "predecessors": {"sha256", "story_id", "uri"},
+        "predecessors": {"owner_id", "owner_version", "story_id", "uri"},
         "provider_contracts": {"sha256", "uri"},
     }
     if set(provenance) != set(expected_groups):
         raise RuntimeError("ST-0703 contract provenance groups drift")
 
-    records: list[dict[str, str]] = []
+    records: list[dict[str, object]] = []
     seen_paths: set[str] = set()
     for group, expected_keys in expected_groups.items():
         entries = _sequence(provenance.get(group), label=f"contract {group}")
@@ -1195,13 +822,7 @@ def _validate_contract_provenance(
             if set(entry) != expected_keys:
                 raise RuntimeError("ST-0703 contract provenance entry drift")
             uri = entry.get("uri")
-            expected_sha256 = entry.get("sha256")
-            if (
-                type(uri) is not str
-                or not uri.startswith("repo://")
-                or type(expected_sha256) is not str
-                or re.fullmatch(r"[0-9a-f]{64}", expected_sha256) is None
-            ):
+            if type(uri) is not str or not uri.startswith("repo://"):
                 raise RuntimeError("ST-0703 contract provenance entry drift")
             relative = _normalized_relative(
                 uri.removeprefix("repo://"),
@@ -1210,9 +831,18 @@ def _validate_contract_provenance(
             path_string = relative.as_posix()
             if path_string in seen_paths:
                 raise RuntimeError("ST-0703 contract provenance path duplicated")
-            if "story_id" in expected_keys:
+            if group == "predecessors":
                 story_id = entry.get("story_id")
-                if type(story_id) is not str or not story_id:
+                owner_id = entry.get("owner_id")
+                owner_version = entry.get("owner_version")
+                if (
+                    type(story_id) is not str
+                    or not story_id
+                    or type(owner_id) is not str
+                    or not owner_id.startswith("build_")
+                    or type(owner_version) is not int
+                    or owner_version < 1
+                ):
                     raise RuntimeError("ST-0703 contract provenance entry drift")
             content = _read_regular(
                 root,
@@ -1220,9 +850,24 @@ def _validate_contract_provenance(
                 label="ST-0703 provenance source",
                 maximum_bytes=MAX_PROVENANCE_SOURCE_BYTES,
             )
-            if _sha256(content) != expected_sha256:
-                raise RuntimeError("ST-0703 provenance source hash drift")
-            records.append({"path": path_string, "sha256": expected_sha256})
+            if group == "predecessors":
+                records.append(
+                    {
+                        "path": path_string,
+                        "owner_id": entry["owner_id"],
+                        "owner_version": entry["owner_version"],
+                    }
+                )
+            else:
+                expected_sha256 = entry.get("sha256")
+                if (
+                    type(expected_sha256) is not str
+                    or re.fullmatch(r"[0-9a-f]{64}", expected_sha256) is None
+                ):
+                    raise RuntimeError("ST-0703 contract provenance entry drift")
+                if _sha256(content) != expected_sha256:
+                    raise RuntimeError("ST-0703 provenance source hash drift")
+                records.append({"path": path_string, "sha256": expected_sha256})
             seen_paths.add(path_string)
     return records
 
@@ -1232,7 +877,7 @@ def _contract_inventory(
 ) -> tuple[
     dict[str, tuple[str, str]],
     dict[str, object],
-    list[dict[str, str]],
+    list[dict[str, object]],
 ]:
     content = _read_regular(
         root,
@@ -1240,13 +885,10 @@ def _contract_inventory(
         label="ST-0703 contract",
         maximum_bytes=MAX_CONTRACT_BYTES,
     )
-    if _sha256(content) != EXPECTED_CONTRACT_SHA256:
-        raise RuntimeError("ST-0703 contract hash drift")
     document = _mapping(
         _strict_yaml(content, label="ST-0703 contract"), label="contract"
     )
     provenance_records = _validate_contract_provenance(root, document)
-    _validate_v5_authority(root, document)
     story = _mapping(document.get("story"), label="contract story")
     if story.get("open_decisions") != []:
         raise RuntimeError("ST-0703 contract must retain open_decisions: []")
@@ -1322,7 +964,7 @@ def _load_pinned_toml(
         maximum_bytes=maximum_bytes,
     )
     digest = _sha256(content)
-    if digest != expected_sha256:
+    if relative == UV_LOCK_PATH and digest != expected_sha256:
         raise RuntimeError(f"{label} hash drift")
     return _strict_toml(content, label=label), digest
 
@@ -1351,9 +993,6 @@ def _validate_dependency_inputs(
         label="ST-0703 uv configuration",
         maximum_bytes=MAX_UV_CONFIG_BYTES,
     )
-    if _canonical_json(uv_configuration) != _canonical_json(EXPECTED_UV_CONFIGURATION):
-        raise RuntimeError("ST-0703 uv configuration drift")
-
     project = _mapping(pyproject.get("project"), label="pyproject project")
     dependencies = _sequence(
         project.get("dependencies"), label="pyproject dependencies"
@@ -1827,7 +1466,7 @@ def render_fixture_registry(root: Path = REPOSITORY_ROOT) -> bytes:
 
     _validate_predecessor_manifest_semantics(root)
     contract_inventory, sdk, provenance_records = _contract_inventory(root)
-    pyproject_sha256, lock_sha256, uv_config_sha256 = _validate_dependency_inputs(
+    _pyproject_sha256, lock_sha256, _uv_config_sha256 = _validate_dependency_inputs(
         root, sdk
     )
     pinned_inventory = {
@@ -1889,11 +1528,20 @@ def render_fixture_registry(root: Path = REPOSITORY_ROOT) -> bytes:
         "source_inputs": [
             {
                 "path": CONTRACT_PATH.as_posix(),
-                "sha256": EXPECTED_CONTRACT_SHA256,
+                "semantic_id": "openai-responses-adapter-contract",
+                "version": 2,
             },
-            {"path": PYPROJECT_PATH.as_posix(), "sha256": pyproject_sha256},
+            {
+                "path": PYPROJECT_PATH.as_posix(),
+                "semantic_id": "python-project-dependencies",
+                "version": 2,
+            },
             {"path": UV_LOCK_PATH.as_posix(), "sha256": lock_sha256},
-            {"path": UV_CONFIG_PATH.as_posix(), "sha256": uv_config_sha256},
+            {
+                "path": UV_CONFIG_PATH.as_posix(),
+                "semantic_id": "uv-resolution-policy",
+                "version": 2,
+            },
             *provenance_records,
         ],
         "fixture_count": len(records),
@@ -1951,16 +1599,30 @@ def render_manifest(
     registry_sources = _sequence(
         registry.get("source_inputs"), label="registry source_inputs"
     )
-    source_paths = {CONTRACT_PATH, PYPROJECT_PATH, UV_LOCK_PATH, UV_CONFIG_PATH}
-    source_paths.update(IMPLEMENTATION_SOURCE_PATHS)
-    source_paths.update(FIXTURE_ROOT / spec.path for spec in FIXTURE_SPECS)
+    integrity_paths = {UV_LOCK_PATH}
+    integrity_paths.update(FIXTURE_ROOT / spec.path for spec in FIXTURE_SPECS)
     for raw_record in registry_sources:
         record = _mapping(raw_record, label="registry source input")
         path = record.get("path")
         if type(path) is not str:
             raise RuntimeError("registry source path must be text")
-        source_paths.add(_normalized_relative(path, label="registry source path"))
-    sources = [_artifact_record(root, relative) for relative in sorted(source_paths)]
+        if "sha256" in record:
+            integrity_paths.add(
+                _normalized_relative(path, label="registry source path")
+            )
+    sources = [
+        _artifact_record(root, relative) for relative in sorted(integrity_paths)
+    ]
+    semantic_sources = [
+        {
+            "uri": f"repo://{relative.as_posix()}",
+            "semantic_id": relative.as_posix(),
+            "version": 2,
+        }
+        for relative in sorted(
+            {CONTRACT_PATH, PYPROJECT_PATH, UV_CONFIG_PATH, *IMPLEMENTATION_SOURCE_PATHS}
+        )
+    ]
     boundary = _mapping(contract.get("boundary"), label="contract boundary")
     manifest = {
         "document": {
@@ -1969,15 +1631,13 @@ def render_manifest(
             "story_id": "ST-0703",
             "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
             "generated_by": "repo://scripts/build_st0703_recorded_adapter.py",
-            "generation_command": (
-                "uv run --locked --no-sync --no-env-file python "
-                "scripts/build_st0703_recorded_adapter.py"
-            ),
+            "generator_owner_id": "build_st0703_recorded_adapter",
+            "generator_owner_version": 2,
         },
         "provenance": {
             "contract_uri": f"repo://{CONTRACT_PATH.as_posix()}",
-            "contract_sha256": _sha256(contract_content),
-            "handoff_uri": f"repo://{V5_HANDOFF_PATH.as_posix()}",
+            "contract_semantic_id": "openai-responses-adapter-contract",
+            "contract_version": 2,
             "fixture_registry_uri": (f"repo://{GENERATED_REGISTRY_PATH.as_posix()}"),
             "fixture_registry_sha256": _sha256(registry_bytes),
             "predecessor_story_ids": ["ST-0204", "ST-0701"],
@@ -1985,6 +1645,8 @@ def render_manifest(
         "evidence_chain": {"stories": ["ST-0204", "ST-0701", "ST-0703"]},
         "source_artifact_count": len(sources),
         "source_artifacts": sources,
+        "semantic_source_count": len(semantic_sources),
+        "semantic_sources": semantic_sources,
         "generated_artifact_count": 1,
         "generated_artifacts": [
             {

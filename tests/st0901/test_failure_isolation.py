@@ -7,7 +7,7 @@ from typing import Callable, cast
 
 import pytest
 
-from conftest import (
+from .support import (
     ASSIGNMENT_ID,
     FINISHED_AT,
     STARTED_AT,

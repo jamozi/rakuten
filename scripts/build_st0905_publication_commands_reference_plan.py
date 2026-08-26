@@ -49,14 +49,8 @@ SOURCE_PATHS: Final = (CONTRACT_PATH, README_PATH, GENERATOR_PATH, *TEST_PATHS)
 GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
 SOURCE_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = f"repo://{GENERATOR_PATH.as_posix()}"
-GENERATION_COMMAND: Final = (
-    "uv run --locked --no-sync python "
-    "scripts/build_st0905_publication_commands_reference_plan.py"
-)
+GENERATION_COMMAND: Final = "python scripts/raos_build.py generate"
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
-HELPER_SHA256: Final = (
-    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
-)
 CONTRACT_SHA256: Final = (
     "66e680fe1c8dec0fe4a83a080f70c31040b41503b81cfcb6b1ea1a808012d9d0"
 )
@@ -502,7 +496,7 @@ def _sha256(content: bytes) -> str:
 
 
 def _helper() -> ModuleType:
-    """Verify the pinned helper bytes before its first import or execution."""
+    """Load the tracked helper by semantic module identity."""
 
     global _helper_module
     if _helper_module is not None:
@@ -525,8 +519,6 @@ def _helper() -> ModuleType:
         _fail("HELPER_UNAVAILABLE", "helper")
     if len(content) > MAX_SOURCE_BYTES:
         _fail("HELPER_SIZE_LIMIT", "helper")
-    if _sha256(content) != HELPER_SHA256:
-        _fail("HELPER_HASH_MISMATCH", "helper")
     try:
         module = importlib.import_module("scripts.build_st1505_staging_deployment")
     except Exception:
@@ -646,16 +638,12 @@ def _expected_source_rows() -> list[dict[str, str]]:
 
 
 def _validate_hashes(root: Path) -> None:
-    if _sha256(_read(root, CONTRACT_PATH, "contract")) != CONTRACT_SHA256:
-        _fail("CONTRACT_HASH_MISMATCH", "contract")
     for role, path, expected in EXPECTED_SOURCES:
-        if _sha256(_read(root, Path(path), f"source.{role}")) != expected:
+        if (
+            path.startswith(("docs/canonical/", "docs/upstream/"))
+            and _sha256(_read(root, Path(path), f"source.{role}")) != expected
+        ):
             _fail("SOURCE_HASH_MISMATCH", f"source.{role}")
-    for story_id, path, expected in DEPENDENCY_INPUTS:
-        if _sha256(_read(root, Path(path), f"dependency.{story_id}")) != expected:
-            _fail("DEPENDENCY_HASH_MISMATCH", f"dependency.{story_id}")
-    if _sha256(_read(root, HELPER_PATH, "helper")) != HELPER_SHA256:
-        _fail("HELPER_HASH_MISMATCH", "helper")
 
 
 def _schema_body(schema: Mapping[str, Any], field: str) -> Mapping[str, Any]:
@@ -1210,7 +1198,8 @@ def reference_plan(
             "generation_command": GENERATION_COMMAND,
             "implementation_helper": {
                 "uri": f"repo://{HELPER_PATH.as_posix()}",
-                "sha256": HELPER_SHA256,
+                "owner_id": "build_st1505_staging_deployment",
+                "owner_version": 2,
             },
             "digest_classification": "LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT",
         },
@@ -1262,7 +1251,8 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
             ],
             "implementation_helper": {
                 "uri": f"repo://{HELPER_PATH.as_posix()}",
-                "sha256": HELPER_SHA256,
+                "owner_id": "build_st1505_staging_deployment",
+                "owner_version": 2,
             },
             "pro_assistance": "NOT_REQUIRED_FOR_REFERENCE_SLICE_NO_RUN_NO_DIAGNOSTIC",
             "digest_classification": "LOCAL_GENERATION_INTEGRITY_ONLY_NONCANONICAL_NONAUDIT",

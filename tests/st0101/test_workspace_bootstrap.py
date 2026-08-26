@@ -295,138 +295,21 @@ def test_seed_materialization_is_complete_idempotent_and_checkable(
     assert_success(run_bootstrap(seed_root, "--check"), mode="check", changed=[])
 
 
-def test_local_git_clean_clone_bootstraps_via_make(
-    seed_root: Path, tmp_path: Path
-) -> None:
-    git = shutil.which("git")
-    if git is None:
-        pytest.skip("git is unavailable; local clean-clone acceptance cannot run")
-
-    git_environment = minimal_environment()
-    commands = (
-        [git, "init", "--quiet", str(seed_root)],
-        [git, "-C", str(seed_root), "add", "--all"],
-        [
-            git,
-            "-C",
-            str(seed_root),
-            "-c",
-            "user.name=ST-0101 Test",
-            "-c",
-            "user.email=st0101@example.invalid",
-            "commit",
-            "--quiet",
-            "-m",
-            "bootstrap seed",
-        ],
-    )
-    for command in commands:
-        subprocess.run(
-            command,
-            env=git_environment,
-            check=True,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-        )
-
-    clone = tmp_path / "clone"
-    subprocess.run(
-        [
-            git,
-            "clone",
-            "--quiet",
-            "--local",
-            "--no-hardlinks",
-            str(seed_root),
-            str(clone),
-        ],
-        env=git_environment,
-        check=True,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-    )
-    assert (clone / ".git").is_dir()
-    assert not (clone / "apps").exists()
-
-    first = assert_success(run_make(clone, "bootstrap"), mode="bootstrap")
-    assert len(first["changed"]) == 42
-    assert_success(run_make(clone, "bootstrap"), mode="bootstrap", changed=[])
-    assert_success(run_make(clone, "check-workspace"), mode="check", changed=[])
+def test_make_exposes_only_the_unified_development_interface() -> None:
+    makefile = (REPO_ROOT / "Makefile").read_text(encoding="utf-8")
+    for target in ("setup:", "generate:", "check:", "fast:", "final:"):
+        assert makefile.count(target) == 1
+    assert "bootstrap:" not in makefile
+    assert "check-workspace:" not in makefile
 
 
-def test_synthetic_tracked_tree_clone_is_noop_and_git_clean(
+def test_workspace_bootstrap_remains_a_direct_deterministic_builder(
     seed_root: Path,
-    tmp_path: Path,
 ) -> None:
-    """Model the eventual tracked tree even though this workspace has no Git index."""
-
-    git = shutil.which("git")
-    if git is None:
-        pytest.skip("git is unavailable; tracked-tree clone acceptance cannot run")
-    for relative_text in EXPECTED_DIRECTORIES:
-        source = REPO_ROOT / relative_text / "README.md"
-        target = seed_root / relative_text / "README.md"
-        target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source, target)
-
-    git_environment = minimal_environment()
-    commands = (
-        [git, "init", "--quiet", str(seed_root)],
-        [git, "-C", str(seed_root), "add", "--all"],
-        [
-            git,
-            "-C",
-            str(seed_root),
-            "-c",
-            "user.name=ST-0101 Test",
-            "-c",
-            "user.email=st0101@example.invalid",
-            "commit",
-            "--quiet",
-            "-m",
-            "tracked workspace",
-        ],
-    )
-    for command in commands:
-        subprocess.run(
-            command,
-            env=git_environment,
-            check=True,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-        )
-
-    clone = tmp_path / "tracked-clone"
-    subprocess.run(
-        [
-            git,
-            "clone",
-            "--quiet",
-            "--local",
-            "--no-hardlinks",
-            str(seed_root),
-            str(clone),
-        ],
-        env=git_environment,
-        check=True,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-    )
-    assert_success(run_make(clone, "bootstrap"), mode="bootstrap", changed=[])
-    assert_success(run_make(clone, "check-workspace"), mode="check", changed=[])
-    status = subprocess.run(
-        [git, "-C", str(clone), "status", "--porcelain"],
-        env=git_environment,
-        check=True,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-    )
-    assert status.stdout == ""
+    first = assert_success(run_bootstrap(seed_root), mode="bootstrap")
+    assert len(first["changed"]) == 42
+    assert_success(run_bootstrap(seed_root), mode="bootstrap", changed=[])
+    assert_success(run_bootstrap(seed_root, "--check"), mode="check", changed=[])
 
 
 @pytest.mark.parametrize(

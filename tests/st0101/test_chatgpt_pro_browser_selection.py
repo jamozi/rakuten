@@ -808,12 +808,8 @@ def test_wrapper_and_makefile_keep_only_fixed_browser_mappings() -> None:
         assert prohibited not in wrapper
 
     makefile = MAKEFILE_PATH.read_text(encoding="utf-8")
-    pro_region = makefile[
-        makefile.index("PRO_REQUEST_FILE ?=") : makefile.index("python-install:")
-    ]
-    assert "PRO_BROWSER ?= auto" in pro_region
-    assert '--browser "$(PRO_BROWSER)"' in pro_region
-    assert pro_region.count('--browser "$(PRO_BROWSER)"') == 1
+    assert "PRO_BROWSER" not in makefile
+    assert "pro-ask:" not in makefile
 
 
 def test_documentation_records_edge_first_scope_and_profile_prohibition() -> None:

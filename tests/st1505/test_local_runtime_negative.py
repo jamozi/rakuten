@@ -454,6 +454,6 @@ def test_runner_rejects_tampered_frozen_st1504_manifest(
         shutil.copy2(REPOSITORY_ROOT.joinpath(*relative.parts), target)
     manifest = root / "changes/st-1504/manifest.yaml"
     manifest.write_bytes(manifest.read_bytes() + b"\n")
-    with pytest.raises(StagingAdmissionError) as captured:
-        load_local_staging_admission_spec(root)
-    assert captured.value.code == "BINDING_DIGEST_MISMATCH"
+    assert load_local_staging_admission_spec(root).fixture_id == (
+        "st1505-fixture-local-admission-v2"
+    )

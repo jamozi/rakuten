@@ -15,7 +15,7 @@ from typing import Any
 import pytest
 import yaml
 
-from conftest import MANIFEST_NAME, REPO_ROOT, VERIFIER_PATH, VERSION_ROOT
+from .support import MANIFEST_NAME, REPO_ROOT, VERIFIER_PATH, VERSION_ROOT
 
 
 EXPECTED_REPORT = {

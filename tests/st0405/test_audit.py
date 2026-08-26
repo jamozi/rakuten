@@ -10,7 +10,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     ACTOR_ID,
     ARTICLE_ID,
     CORRELATION_ID,

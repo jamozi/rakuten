@@ -7,7 +7,7 @@ from typing import Any
 
 import pytest
 
-from conftest import logical_reference
+from .support import logical_reference
 from raos.config import ConfigurationError, load_runtime_config
 
 

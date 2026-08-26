@@ -73,15 +73,14 @@ def test_exact_canonical_gates_validators_failures_controls_and_suites_project()
     assert all(row["execution_status"] == "NOT_EXECUTED" for row in plan["test_suites"])
 
 
-def test_predecessors_are_exact_byte_and_semantic_bindings() -> None:
+def test_predecessors_are_semantic_owner_bindings() -> None:
     bindings = _plan()["predecessor_bindings"]
     assert [row["story_id"] for row in bindings] == ["ST-0702", "ST-0703", "ST-0605"]
     assert bindings == generator.expected_predecessor_bindings()
     context = bindings[0]
-    assert context["feature_commit"] == "fe379dd30fd16112111142920b3e1da5b30aa83a"
-    assert context["artifacts"][1]["sha256"] == (
-        "bac32da9b2e026ad36abb0b622fecbca56e4e9d3fdc0e4cccc807a4e4392837b"
-    )
+    assert context["owner_id"] == "build_st0702_context_pack_reference_plan"
+    assert context["owner_version"] == 2
+    assert all("sha256" not in item for item in context["inputs"])
     recorded = next(row for row in bindings if row["story_id"] == "ST-0703")
     assert recorded["recorded_schema_success_is_content_validation"] is False
     assert recorded["content_validation"] == "NOT_EXECUTED"

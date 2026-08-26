@@ -9,7 +9,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import NOW, OUTPUT_ARTIFACT_ID, command_and_controls
+from .support import NOW, OUTPUT_ARTIFACT_ID, command_and_controls
 from raos.adapters.recorded_durable_ai_job_queue_v2 import (
     RecordedDurableAiJobStateAdapterV2,
 )

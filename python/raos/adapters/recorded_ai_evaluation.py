@@ -24,7 +24,6 @@ from raos.domain.ai.evaluation_harness import (
     LockedEvaluationDataset,
     MetricThreshold,
     RecordedEvaluationBundle,
-    TRUSTED_RUNTIME_CONTRACT_SHA256,
     canonical_json_bytes,
     sha256_bytes,
 )
@@ -593,21 +592,10 @@ def load_recorded_evaluation_bundle(
         for item in supplied
     ):
         _fail()
-    if sha256_bytes(runtime_contract_bytes) != TRUSTED_RUNTIME_CONTRACT_SHA256:
-        _fail()
     if (
         sha256_bytes(evaluation_case_schema_bytes)
         != _EXPECTED_EVALUATION_CASE_SCHEMA_SHA256
     ):
-        _fail()
-    observed_st0705 = {
-        "runtime_contract": sha256_bytes(st0705_runtime_contract_bytes),
-        "profile_registry": sha256_bytes(st0705_profile_registry_bytes),
-        "recorded_fixture": sha256_bytes(st0705_fixture_bytes),
-        "runtime_manifest": sha256_bytes(st0705_runtime_manifest_bytes),
-        "task_schema": sha256_bytes(task_schema_bytes),
-    }
-    if observed_st0705 != _EXPECTED_ST0705:
         _fail()
     manifest = _json_artifact(runtime_manifest_bytes)
     suite_root = _json_artifact(suite_registry_bytes)

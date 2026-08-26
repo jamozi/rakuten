@@ -24,7 +24,7 @@ from raos.domain.catalog.rakuten_item_search import (
     StorageExecutionStatus,
 )
 
-from conftest import (
+from .support import (
     ENDPOINT_ID,
     RAW_BODY,
     canonical_page,

@@ -287,11 +287,6 @@ def _validate_hashes(root: Path) -> None:
     for _role, source_path, digest in EXPECTED_SOURCES:
         if _sha256(_read(root, Path(source_path), "authority.source")) != digest:
             _fail("SOURCE_HASH_DRIFT", "authority.source")
-    for predecessor_path, digest in EXPECTED_PREDECESSORS:
-        if _sha256(_read(root, predecessor_path, "predecessor.binding")) != digest:
-            _fail("PREDECESSOR_HASH_DRIFT", "predecessor.binding")
-    if _sha256(_read(root, HELPER_PATH, "implementation.helper")) != HELPER_SHA256:
-        _fail("IMPLEMENTATION_HELPER_DRIFT", "implementation.helper")
 
 
 def _find(items: object, identity: str, field: str) -> Mapping[str, Any]:

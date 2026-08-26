@@ -11,8 +11,8 @@ source_artifacts:
 - uri: repo://scripts/build_st0803_comparison_validation_runtime.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 38304
-  sha256: 1fdf8b7e3a706a8189a53cbe51598075ac683bdd35bf68bec82507bdad4abe5d
+  bytes: 37533
+  sha256: 6c8253be247cf1c9c6bebe9604f01cef2c2c84531d8dc83e231d2e9c0280c9b7
 - uri: repo://python/raos/domain/editorial/comparison_validation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -266,13 +266,13 @@ source_artifacts:
 - uri: repo://pyproject.toml
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/toml
-  bytes: 1334
-  sha256: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
+  bytes: 1753
+  sha256: 34ee344782dbaf4135cb235e2fec215a1c709089c0994415fdeadf33979a6207
 - uri: repo://uv.lock
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/octet-stream
-  bytes: 128286
-  sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+  bytes: 129836
+  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
 generated_artifacts:
 - uri: repo://changes/st-0803/generated/comparison-validation-pass.v2.json
   artifact_role: RECORDED_SYNTHETIC_FIXTURE

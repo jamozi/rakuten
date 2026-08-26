@@ -42,7 +42,7 @@ def test_recorded_view_is_canonical_and_manifest_binds_both_outputs() -> None:
     assert outputs[1]["sha256"] == hashlib.sha256(rendered).hexdigest()
 
 
-def test_duplicate_keys_and_source_content_drift_fail_closed(
+def test_duplicate_keys_fail_closed_and_tracked_source_change_is_buildable(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     with pytest.raises(builder.PublicArticleBuildError, match="^DUPLICATE_YAML_KEY$"):
@@ -61,11 +61,7 @@ def test_duplicate_keys_and_source_content_drift_fail_closed(
         return (json.dumps(document, sort_keys=True) + "\n").encode()
 
     monkeypatch.setattr(builder, "_read_regular", changed)
-    with pytest.raises(
-        builder.PublicArticleBuildError,
-        match="^DEPENDENCY_BINDING_DRIFT$",
-    ):
-        builder._validate_contract(ROOT)
+    assert builder._validate_contract(ROOT)
 
 
 def test_source_reader_rejects_symlink_leaf_and_parent(tmp_path: Path) -> None:

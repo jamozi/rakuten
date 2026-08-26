@@ -11,7 +11,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     ACTOR_ID,
     AUTHORIZATION_COMMAND_ID,
     EVENT_ID,

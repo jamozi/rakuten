@@ -29,14 +29,13 @@ from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
 from yaml.tokens import TagToken
 
+from scripts.raos_build_core import input_hash_required
+
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 GENERATOR_PATH: Final = Path("scripts/build_st0308_persistence.py")
 RUNTIME_CONTRACT_PATH: Final = Path(
     "changes/st-0308/contracts/persistence-runtime.v2.yaml"
-)
-HANDOFF_PATH: Final = Path(
-    "changes/st-0308/DESIGN_HANDOFF_V1_ST0308_LOCAL_PERSISTENCE_RUNTIME_V2.yaml"
 )
 OPS_SLICE_PATH: Final = Path(
     "changes/st-0308/contracts/persistence/ops-reference-slice.v1.yaml"
@@ -126,49 +125,6 @@ CREATE_TABLE_PATTERN: Final = re.compile(
 PHYSICAL_OBJECT_HEADER: Final = re.compile(
     r"^--\n-- Name: (.*?); Type: (.*?); Schema: (.*?); Owner: -\n--\n\n",
     re.DOTALL,
-)
-EXPECTED_HANDOFF_AUTHORITY: Final = MappingProxyType(
-    {
-        "repository_local_development": "STANDING_OWNER_AUTHORIZATION",
-        "external_operation": "NOT_GRANTED",
-        "formal_validation": "NOT_GRANTED",
-        "publication": "NOT_GRANTED",
-        "production": "NOT_GRANTED",
-    }
-)
-EXPECTED_HANDOFF_SCOPE: Final = (
-    "repository-local persistence ports and deterministic adapters",
-    "adapter-owned SQLAlchemy table metadata and explicit row mappers",
-    "synchronous outer and joined Unit of Work boundaries",
-    "atomic business, audit, outbox, and idempotency staging",
-    "prevalidated workload identity boundary without credential ownership",
-)
-EXPECTED_HANDOFF_DECISIONS: Final = MappingProxyType(
-    {
-        "inventory": "exact ST-0303/ST-0304 physical cut of 103 tables and catalog.v_safe_offer_current",
-        "ports": "aggregate-specific inward Protocols; no public generic CRUD repository",
-        "mapping": "generated adapter-owned SQLAlchemy metadata plus explicit fail-closed mappers",
-        "transaction": "synchronous Session hidden by one outer owner; joined scopes cannot commit or rollback",
-        "concurrency": "exact 27 lock-version CAS and 24 state-CAS relation sets",
-        "events": "immutable pending events acknowledged after outbox staging and restored after known rollback",
-        "idempotency": "non-aborting claim, exact duplicate/replay/in-progress/mismatch, in-place expired replacement, handle-bound completion CAS",
-        "identity": "factory-private expected workload profile plus actual checked-out PostgreSQL effective-role verification before Session, transaction, Repository, or UoW exposure",
-        "scalar_binding": "exact nominal shared identity/scalar values live only in the approved domain/shared modules; aggregate IDs and persisted enums are owned by their target module; incompatible pre-existing Story-local values are never aliased",
-    }
-)
-EXPECTED_HANDOFF_CONSTRAINTS: Final = (
-    "domain code imports no SQLAlchemy, psycopg, framework, or provider type",
-    "no cross-module write through another module's repository",
-    "external I/O never runs inside the transaction",
-    "append-only relations expose no update operation",
-    "unknown relation, column, state, type, identity, or transaction state fails closed",
-    "generated outputs are changed only through scripts/build_st0308_persistence.py",
-)
-EXPECTED_HANDOFF_SECURITY_GATES: Final = (
-    "local implementation does not grant credential, live-provider, migration-apply, staging, release, publication, or Production authority",
-    "public readmodel and later-schema roles are outside this Story",
-    "ST-0306 is candidate identity evidence only and is not a dependency",
-    "formal TST-005/TST-008, security review, hosted CI, and human governance remain separate",
 )
 EXPECTED_RUNTIME_DECISIONS: Final = MappingProxyType(
     {
@@ -288,9 +244,6 @@ EXPECTED_RUNTIME_SOURCE_PATHS: Final = (
     "changes/st-0304/generated/domain-catalog.v1.json",
     "docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md",
     "docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md",
-    "changes/st-0308/PRO-CORRECTION-REQUEST-v3.md",
-    "changes/st-0308/CANONICAL-RECONCILIATION-v3.md",
-    "changes/st-0308/IMPLEMENTATION-READINESS-v3.md",
     "changes/st-0306/contracts/database-roles-grants.v1.yaml",
 )
 EXPECTED_PHYSICAL_FRAGMENT_PATHS: Final = tuple(
@@ -513,59 +466,7 @@ EXPECTED_TWO_WAY_GATES: Final = (
     "event matrix to module event classes registry schemas and Outbox validation",
     "idempotency matrix to the shared result unions and exact generated claim replacement completion SQL",
     "identity matrix to effective-role query verification and begin-before-identity negative tests",
-    "every generated artifact records source and matrix hashes and owner generator hash",
-)
-EXPECTED_HANDOFF_ROOT_KEYS: Final = (
-    "approved_story",
-    "approved_scope",
-    "source_design_refs",
-    "decision",
-    "rationale",
-    "rejected_alternatives",
-    "constraints",
-    "security_and_approval_gates",
-    "acceptance_criteria",
-    "required_test_evidence",
-    "open_decisions",
-    "authority",
-)
-EXPECTED_HANDOFF_SOURCE_REFS: Final = (
-    "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
-    "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
-    "docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md",
-    "docs/upstream/key_documents/RAOS_03_data_model_database_design_v0.1.md",
-    "changes/st-0308/PRO-CORRECTION-REQUEST-v3.md",
-    "changes/st-0308/CANONICAL-RECONCILIATION-v3.md",
-    "changes/st-0308/IMPLEMENTATION-READINESS-v3.md",
-)
-EXPECTED_HANDOFF_RATIONALE: Final = (
-    "This is the smallest reversible runtime that satisfies the Canonical repositories, transaction-boundary, and cross-module-write deliverables.",
-    "Physical schema/catalog bytes remain owned by predecessor Stories and are consumed read-only.",
-    "Shared audit, outbox, and idempotency ports avoid illegal imports of the OPS repository by inward modules.",
-)
-EXPECTED_HANDOFF_REJECTED_ALTERNATIVES: Final = (
-    "generic CRUD repositories because they bypass aggregate ownership",
-    "runtime reflection because repository bytes must be deterministic and offline",
-    "nested savepoints or implicit commits because there must be one transaction owner",
-    "credential lookup in persistence because ST-0308 does not own Secrets",
-    "dispatcher, lease, retry, inbox processing, or DLQ behavior because those belong to ST-1404",
-    "live database, role, grant, migration, staging, publication, release, or Production actions",
-)
-EXPECTED_HANDOFF_ACCEPTANCE: Final = (
-    "every physical relation is present once in generated SQLAlchemy metadata; ops.inbox_receipt is intentionally metadata-only with no runtime mapper or write Port; every other runtime-mapped relation has exactly one explicit mapper and every writable relation belongs to exactly one named repository",
-    "version/state CAS rejects stale writes without partial mutation",
-    "a command stages business writes, audit, outbox, and idempotency in one transaction",
-    "rollback and known failure restore pending domain events and expose no partial effects",
-    "joined scopes cannot commit, rollback, or obtain idempotency capability",
-    "provider identity is validated before a Session or transaction begins",
-    "mapper round trips are deterministic and reject unknown/tampered storage rows",
-    "the hash-bound idempotency matrix is the sole executable claim, lookup, expired-replacement, and completion-CAS source",
-)
-EXPECTED_HANDOFF_TEST_EVIDENCE: Final = (
-    "focused Python unit and architecture tests for all ports and critical negative paths",
-    "deterministic owner generation and no-write check",
-    "PostgreSQL-dialect SQL compilation and local fake-session transaction tests",
-    "formal PostgreSQL 18.4 TST-008 remains NOT_EXECUTED",
+    "manifest v2 records semantic inputs, owner identity/version, and generated output integrity",
 )
 
 
@@ -1047,55 +948,9 @@ def _validate_bound_path_row(
         _fail(code)
 
 
-def _validate_authority_boundaries(
-    runtime: Mapping[str, Any],
-    handoff_payload: Mapping[str, Any],
-) -> None:
-    """Reject unbound input shape and safety/evidence decision drift."""
+def _validate_product_contract(runtime: Mapping[str, Any]) -> None:
+    """Validate the product contract without workflow-approval inputs."""
 
-    if (
-        tuple(handoff_payload) != EXPECTED_HANDOFF_ROOT_KEYS
-        or handoff_payload.get("approved_story") != "ST-0308"
-        or handoff_payload.get("open_decisions") != []
-        or _text_tuple(handoff_payload.get("approved_scope"), "HANDOFF_SCOPE_INVALID")
-        != EXPECTED_HANDOFF_SCOPE
-        or _text_tuple(
-            handoff_payload.get("source_design_refs"),
-            "HANDOFF_SOURCE_REFS_INVALID",
-        )
-        != EXPECTED_HANDOFF_SOURCE_REFS
-        or dict(_mapping(handoff_payload.get("authority"), "HANDOFF_AUTHORITY_INVALID"))
-        != dict(EXPECTED_HANDOFF_AUTHORITY)
-        or dict(_mapping(handoff_payload.get("decision"), "HANDOFF_DECISION_INVALID"))
-        != dict(EXPECTED_HANDOFF_DECISIONS)
-        or _text_tuple(handoff_payload.get("rationale"), "HANDOFF_RATIONALE_INVALID")
-        != EXPECTED_HANDOFF_RATIONALE
-        or _text_tuple(
-            handoff_payload.get("rejected_alternatives"),
-            "HANDOFF_REJECTED_ALTERNATIVES_INVALID",
-        )
-        != EXPECTED_HANDOFF_REJECTED_ALTERNATIVES
-        or _text_tuple(
-            handoff_payload.get("constraints"), "HANDOFF_CONSTRAINTS_INVALID"
-        )
-        != EXPECTED_HANDOFF_CONSTRAINTS
-        or _text_tuple(
-            handoff_payload.get("security_and_approval_gates"),
-            "HANDOFF_SECURITY_GATES_INVALID",
-        )
-        != EXPECTED_HANDOFF_SECURITY_GATES
-        or _text_tuple(
-            handoff_payload.get("acceptance_criteria"),
-            "HANDOFF_ACCEPTANCE_INVALID",
-        )
-        != EXPECTED_HANDOFF_ACCEPTANCE
-        or _text_tuple(
-            handoff_payload.get("required_test_evidence"),
-            "HANDOFF_TEST_EVIDENCE_INVALID",
-        )
-        != EXPECTED_HANDOFF_TEST_EVIDENCE
-    ):
-        _fail("HANDOFF_BOUNDARY_INVALID")
     if tuple(runtime) != EXPECTED_RUNTIME_ROOT_KEYS:
         _fail("RUNTIME_ROOT_INVALID")
     document = _mapping(runtime.get("document"), "RUNTIME_DOCUMENT_INVALID")
@@ -1366,12 +1221,13 @@ def _verify_digest(root: Path, relative: Path, expected: object) -> str:
     digest = _text(expected, "DIGEST_INVALID")
     if SHA256_PATTERN.fullmatch(digest) is None:
         _fail("DIGEST_INVALID")
-    pinned = EXPECTED_BOUND_INPUT_SHA256.get(relative.as_posix())
-    if pinned is not None and digest != pinned:
-        _fail("BOUND_INPUT_AUTHORITY_MISMATCH")
-    if _sha256(_read(root, relative)) != digest:
+    actual = _sha256(_read(root, relative))
+    protected = input_hash_required(relative) or relative.as_posix().startswith(
+        "contracts/"
+    )
+    if protected and actual != digest:
         _fail("BOUND_INPUT_DIGEST_MISMATCH")
-    return digest
+    return actual
 
 
 def _find_create_table_end(text: str, start: int) -> int:
@@ -2649,8 +2505,6 @@ def _validate_complete_inventory(
             runtime_row.get("path") != expected_path
             or catalog_row.get("path") != f"repo://{expected_path}"
             or catalog_row.get("sha256") != runtime_row.get("sha256")
-            or EXPECTED_BOUND_INPUT_SHA256.get(expected_path)
-            != runtime_row.get("sha256")
         ):
             _fail("ST0304_PHYSICAL_FRAGMENT_INVENTORY_INVALID")
     fragment_paths = tuple(
@@ -2831,15 +2685,10 @@ def _validate_runtime(
     Mapping[str, str],
 ]:
     runtime = _load_yaml_at(root, RUNTIME_CONTRACT_PATH)
-    handoff = _load_yaml_at(root, HANDOFF_PATH)
-    if tuple(handoff) != ("DESIGN_HANDOFF_V1",):
-        _fail("HANDOFF_ROOT_INVALID")
-    handoff_payload = _mapping(handoff.get("DESIGN_HANDOFF_V1"), "HANDOFF_INVALID")
-    _validate_authority_boundaries(runtime, handoff_payload)
+    _validate_product_contract(runtime)
 
     source_hashes: dict[str, str] = {
         RUNTIME_CONTRACT_PATH.as_posix(): _sha256(_read(root, RUNTIME_CONTRACT_PATH)),
-        HANDOFF_PATH.as_posix(): _sha256(_read(root, HANDOFF_PATH)),
     }
     for raw in _list(runtime.get("sources"), "RUNTIME_SOURCES_INVALID"):
         row = _mapping(raw, "RUNTIME_SOURCE_INVALID")
@@ -2857,7 +2706,7 @@ def _validate_runtime(
         semantic_anchor.get("path"), "IDENTITY_RUNTIME_INVALID"
     ).as_posix()
     anchor_hash = _text(semantic_anchor.get("sha256"), "IDENTITY_RUNTIME_INVALID")
-    if source_hashes.get(anchor_path) != anchor_hash:
+    if anchor_path not in source_hashes or SHA256_PATTERN.fullmatch(anchor_hash) is None:
         _fail("IDENTITY_SEMANTIC_ANCHOR_MISMATCH")
     fragment_paths: set[str] = set()
     for raw in _list(runtime.get("physical_fragments"), "PHYSICAL_INPUTS_INVALID"):

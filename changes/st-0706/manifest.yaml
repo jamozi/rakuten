@@ -11,31 +11,29 @@ source_sha256:
   changes/st-0706/contracts/durable-ai-job-queue.v2.yaml: a8abc40d249529601d5026ed4c8a6cda6478a0465500003166e216e04ed47b30
   changes/st-0706/README.md: 2ea7aefa0acd747a4df13d39ebbdc45340a98e95ecbe642a2763b2f0bb35bbbd
   changes/st-0706/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: f3f3574fec061ccfa3d8244e2b81bb7f06c561984448ce95ee1b9fe480ee6c58
-  scripts/build_st0706_durable_ai_job_queue.py: 206bd71b7ba90658f3575041860d3991f73fd646e256c76840b7b4ab5cdcd36c
+  scripts/build_st0706_durable_ai_job_queue.py: a6bf24508fa60f1ae6cd73c007143b65a4b1242a771231365e20b97c7de0f9ce
   scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
   python/raos/domain/ai/job_orchestration.py: 5ef0e0d90f5bb07257d4a9d27829647dd07ced443310f9ba5bc6fed8fc7d97c2
   python/raos/ports/ai_job_orchestration.py: 6a3a33345d17ca4072c468b0a018d95b9b5f33241bbfe6d97a4ae260b992ff9d
   python/raos/application/ai/job_orchestration.py: 515d9172400ec282c7b0b3893be8f66ec87dfb165a95bfab1d823371c9a4d244
   python/raos/adapters/recorded_ai_job_orchestration.py: 089b8d3353e2adafe284c03839b2a36dc9a391ab0c060df28bf68dfc9bc38641
-  python/raos/domain/ai/durable_job_queue_v2.py: 99a6c7ff883d91d846ed9740cecd08728aafca49ad039bd1ef35c3d01aa28cca
+  python/raos/domain/ai/durable_job_queue_v2.py: aec190b8ebbd70c54c2369b5ffe1b78d749e67d5e482423069096937107c97c3
   python/raos/ports/durable_ai_job_queue_v2.py: b0cc4840d1f39b50482a7d954bcc5f5ba3d3f89fd4e000f21ae24e6ef2a68660
   python/raos/application/ai/durable_job_queue_v2.py: 862e5690a06e2dbea5a4c78067d17d729f8e3662719ef5be8ca28babee200435
   python/raos/adapters/recorded_durable_ai_job_queue_v2.py: 3339f96f8577b5eb551b49f6c947111d44d2056b41e57e363a0eef3611a5d998
-  tests/st0706/conftest.py: 3121a41dc54fdc593d9599db864a6fff7efc897df3d4a7cfbafa02e775979b0b
-  tests/st0706/test_boundaries.py: 2dc8480e2360b83274b303cd5ea7142ad8bfb9b4d7b6d51fb251b026b37bb9a7
-  tests/st0706/test_failure_isolation.py: 15396dc093d69143456ecedfed749ab0ac20e73d6f4a6b9d3d8df9fd8e19712a
-  tests/st0706/test_orchestration.py: d15e19bdb2559043d9c74612bde81fba454b31c37acd8d5a00f54fa58718bf52
-  tests/st0706/test_durable_queue_v2.py: f3962e7b6b018f966a4bb0a484cb5db6e89ac2e26d529b269d0b8584c1ec4910
-  tests/st0706/test_durable_queue_v2_negative.py: f54be9dd0ae13d9455ca88bbd38a357a2762103185557bb155f96d410399cc18
-  tests/st0706/test_durable_queue_v2_boundaries.py: b394cd05867013c580cfb8184c176063cb607651709c34c73819c888f81edfb8
-  tests/st0706/test_durable_queue_v2_generation.py: ba771a0e43a1a5949fe585574aa168d1223fd33ff7d81044da6a1951e69d8568
+  tests/st0706/conftest.py: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
+  tests/st0706/test_boundaries.py: 9a233b83f50f762466fad582c361fb18d04e2869d5550534db1ebb53644795c5
+  tests/st0706/test_failure_isolation.py: a9e5fd0f29432fe94fadef0a6c17d0720f821efdf2933af1bdf6d99b1f27e85e
+  tests/st0706/test_orchestration.py: 70bdfccc7d9154241bf39a3f20fb23154f4d05261f35a710f48ae35886856df3
+  tests/st0706/test_durable_queue_v2.py: a2328d68d59a637c519343ea4462a9cbf76ca39ad0e66d6ec2b62d6e385f0771
+  tests/st0706/test_durable_queue_v2_negative.py: 9a7f76dbb1ffbca8a89401dd3c3d5d6a28737e6dc9582a0602a4151829a66986
+  tests/st0706/test_durable_queue_v2_boundaries.py: fa1765af1ddfa9d5d5aa10c33d29d2b0312f25408f81ec04ebab9a6af1399a79
+  tests/st0706/test_durable_queue_v2_generation.py: 2e5ff57eeaab25994a372430a92de02926acf7664e7b137ac09df86b4154e40d
 generated_sha256:
-  changes/st-0706/generated/durable-ai-job-queue.v2.json: 724b4580cab8283b1a500565e81c69e202fa3ddad057ee8825bf6a3492e7efcd
+  changes/st-0706/generated/durable-ai-job-queue.v2.json: d3ef1cd9a03ab67ad831f69145c381fbd4cb566124996d259633da12297542ce
 generation:
-  command: uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads
-    python scripts/build_st0706_durable_ai_job_queue.py
-  check_command: uv run --locked --offline --no-cache --no-sync --no-env-file --no-python-downloads
-    python scripts/build_st0706_durable_ai_job_queue.py --check
+  command: python scripts/build_st0706_durable_ai_job_queue.py
+  check_command: python scripts/build_st0706_durable_ai_job_queue.py --check
 bounds:
   generic_runtime_owner: ST-1404
   persistence: CALLER_OWNED_CAS_ATOMIC_PORT

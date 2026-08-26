@@ -8,7 +8,7 @@ from typing import cast
 
 import pytest
 
-from conftest import axis, rule, valid_recommendation_input
+from .support import axis, rule, valid_recommendation_input
 from raos.domain.editorial.comparison_validation import (
     ComparisonFieldName,
     EvidenceId,

@@ -35,7 +35,7 @@ from raos.ports.rakuten_item_search_runtime_v2 import (
     ItemSearchPageProviderV2,
 )
 
-from runtime_v2_fixtures import runtime_plan_v2, runtime_provider_v2, runtime_store_v2
+from .runtime_v2_fixtures import runtime_plan_v2, runtime_provider_v2, runtime_store_v2
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -133,7 +133,7 @@ def test_disabled_activation_constructor_accepts_no_client_or_secret_reader() ->
         environment=RuntimeEnvironment.CI
     )
     request = ItemSearchWireRequestV2.from_plan(runtime_plan_v2(), page=1)
-    from runtime_v2_fixtures import OBSERVED_AT_V2
+    from .runtime_v2_fixtures import OBSERVED_AT_V2
 
     observation = adapter.fetch_once(request, observed_at=OBSERVED_AT_V2)
     assert adapter.mode is observation.mode is ProviderModeV2.DISABLED
@@ -222,7 +222,7 @@ def test_official_source_binding_is_only_url_version_facts_and_raw_hash() -> Non
 def test_production_is_rejected_for_service_and_durable_store(tmp_path: Path) -> None:
     plan = runtime_plan_v2()
     request = ItemSearchWireRequestV2.from_plan(plan, page=1)
-    from runtime_v2_fixtures import (
+    from .runtime_v2_fixtures import (
         OBSERVED_AT_V2,
         runtime_exchange_v2,
         runtime_success_observation_v2,

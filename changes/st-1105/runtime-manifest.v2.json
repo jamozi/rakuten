@@ -1,420 +1,426 @@
 {
   "schema_version": 2,
   "story_id": "ST-1105",
-  "classification": "ST1105_EXACT_LOCAL_PROVENANCE_MANIFEST_V2",
+  "classification": "RAOS_SEMANTIC_BUILD_MANIFEST_V2",
+  "generator_owner": "build_st1105_admin_visual_accessibility",
+  "generator_version": 2,
   "local_status": "LOCAL_IMPLEMENTATION_COMPLETE",
   "integration_provenance": {
-    "requested_base_sha": "378748e344249190136939dcd8c7e22f62620836",
-    "required_st0606_patch_sha": "020bfbdb91b081929340aa12eb1e655e9160d810",
-    "local_dependency_base_sha": "82225f48357d55846adfa4f8ee4ac1e9e063be1d"
+    "workflow": "SEMANTIC_OWNER_GRAPH",
+    "owners": [
+      {
+        "owner_id": "build_st0606_evidence_workspace_v2",
+        "owner_version": 2
+      }
+    ]
   },
   "artifact_count": 68,
   "artifacts": [
     {
       "uri": "repo://changes/st-1105/contracts/admin-visual-accessibility-acceptance.v2.json",
-      "role": "OWNER_SOURCE",
-      "bytes": 16368,
-      "sha256": "b8640f160cd11fe2697dc6f5c2972c8a7bdab3831f9ed0e8d3cc8893173f8216"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "changes/st-1105/contracts/admin-visual-accessibility-acceptance.v2.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1105/contracts/admin-visual-browser-evidence.v2.json",
-      "role": "OWNER_SOURCE",
-      "bytes": 4342,
-      "sha256": "4862fc2f5d8c93ab6a487fc751b8cb9eb108362a7a749314ca75f6480a232f10"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "changes/st-1105/contracts/admin-visual-browser-evidence.v2.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1105/fixtures/admin-visual-accessibility.synthetic.v2.json",
-      "role": "OWNER_SOURCE",
-      "bytes": 1788,
-      "sha256": "055be8d7901e0b7a609d58f2be0289ca796770ad445cf94ddfdc0ab2d555a7ad"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "changes/st-1105/fixtures/admin-visual-accessibility.synthetic.v2.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1105/EXECPLAN-20260824-v2.md",
-      "role": "OWNER_SOURCE",
-      "bytes": 2235,
-      "sha256": "b2eb6aea95f417d59c4dd58acbc6fa910528d9635c7eee68f9f42cb4291a0955"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "changes/st-1105/EXECPLAN-20260824-v2.md",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1105/DEFERRED-VERIFICATION-v2.yaml",
-      "role": "OWNER_SOURCE",
-      "bytes": 1261,
-      "sha256": "0b0f8d229df64155efde7f2c70806e17d2c966200d5e1143d2457933f986989e"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "changes/st-1105/DEFERRED-VERIFICATION-v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1105/README.md",
-      "role": "OWNER_SOURCE",
-      "bytes": 3333,
-      "sha256": "1184bd38de6a608bae2b49049b46392702edaf97c7e8900714e47415af5c8869"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "changes/st-1105/README.md",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1105/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml",
-      "role": "OWNER_SOURCE",
-      "bytes": 2251,
-      "sha256": "d4c2976070fa3b26b9f9e7b28f8c627115108c1a62d1fc31e43e12c2300817cd"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "changes/st-1105/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://docs/worklogs/ST-1105.md",
-      "role": "OWNER_SOURCE",
-      "bytes": 2470,
-      "sha256": "66e8eba746fe96ff0f93dbab124afcc88b463a7925567df44a5f1c242af1fcf6"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "docs/worklogs/ST-1105.md",
+      "version": "tracked"
     },
     {
       "uri": "repo://packages/web-ui/src/admin-visual-accessibility-acceptance-v2.ts",
-      "role": "OWNER_SOURCE",
-      "bytes": 10045,
-      "sha256": "aff0160fa92e95e8ba9dfe3d3c2315a247f8e0f3e7f5e1b97944bda53a44d1c0"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "packages/web-ui/src/admin-visual-accessibility-acceptance-v2.ts",
+      "version": "tracked"
     },
     {
       "uri": "repo://packages/web-ui/src/index.ts",
-      "role": "OWNER_SOURCE",
-      "bytes": 21657,
-      "sha256": "ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "packages/web-ui/src/index.ts",
+      "version": "tracked"
     },
     {
       "uri": "repo://scripts/build_st1105_admin_visual_accessibility.py",
-      "role": "OWNER_SOURCE",
-      "bytes": 27275,
-      "sha256": "00a94f49785f155ec3f4474200604d0efab5795cbec92e382462757516021248"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "scripts/build_st1105_admin_visual_accessibility.py",
+      "version": "tracked"
     },
     {
       "uri": "repo://scripts/check_st1105_admin_acceptance_browser.mjs",
-      "role": "OWNER_SOURCE",
-      "bytes": 41898,
-      "sha256": "5f90c108937fc85dfa7c94c881acc44b9b5a8f08844fc1ba809b93cf294081ac"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "scripts/check_st1105_admin_acceptance_browser.mjs",
+      "version": "tracked"
     },
     {
       "uri": "repo://tests/st1105_v2/__init__.py",
-      "role": "OWNER_SOURCE",
-      "bytes": 40,
-      "sha256": "3e5b88e8d4bcc07b1e5c92b8cb1ab98efe8b99addd4f29bb9d5a3242d8194ab5"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "tests/st1105_v2/__init__.py",
+      "version": "tracked"
     },
     {
       "uri": "repo://tests/st1105_v2/conftest.py",
-      "role": "OWNER_SOURCE",
-      "bytes": 901,
-      "sha256": "dc03fd09f5ab0eeb5c955fe511d5423505ca602c493200e7d46c8c29fdf74b65"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "tests/st1105_v2/conftest.py",
+      "version": "tracked"
     },
     {
       "uri": "repo://tests/st1105_v2/test_generation.py",
-      "role": "OWNER_SOURCE",
-      "bytes": 1182,
-      "sha256": "cc9f2c2aa8ad8d0076cc153eeb4faa744ad1f9d5135e746741e29af1892bf84b"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "tests/st1105_v2/test_generation.py",
+      "version": "tracked"
     },
     {
       "uri": "repo://tests/st1105_v2/test_negative.py",
-      "role": "OWNER_SOURCE",
-      "bytes": 2124,
-      "sha256": "79ccb9edfb2ca29d4b61e3a1db76c837f4917cba93cf0e83bfed45af4663794c"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "tests/st1105_v2/test_negative.py",
+      "version": "tracked"
     },
     {
       "uri": "repo://tests/st1105/admin-visual-accessibility-v2.test.ts",
-      "role": "OWNER_SOURCE",
-      "bytes": 7285,
-      "sha256": "75d288012d779982644189741a03234bf14a8cf4a33d3b2db3e58a34225ab15e"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "tests/st1105/admin-visual-accessibility-v2.test.ts",
+      "version": "tracked"
     },
     {
       "uri": "repo://tests/st1105/admin-visual-accessibility-v2-negative.test.ts",
-      "role": "OWNER_SOURCE",
-      "bytes": 4065,
-      "sha256": "dbc6443fb8bae70b7acaeb071d34adf165fc4b6a8efa045aac03408c8d80b2e0"
+      "role": "TRACKED_OWNER_SOURCE",
+      "semantic_id": "tests/st1105/admin-visual-accessibility-v2-negative.test.ts",
+      "version": "tracked"
     },
     {
       "uri": "repo://pyproject.toml",
-      "role": "LOCKED_TOOLCHAIN",
-      "bytes": 1334,
-      "sha256": "0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6"
+      "role": "TRACKED_DEPENDENCY_DESCRIPTOR",
+      "semantic_id": "pyproject.toml",
+      "version": "tracked"
     },
     {
       "uri": "repo://uv.lock",
-      "role": "LOCKED_TOOLCHAIN",
-      "bytes": 128286,
-      "sha256": "90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729"
+      "role": "DEPENDENCY_LOCK",
+      "bytes": 129836,
+      "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf"
     },
     {
       "uri": "repo://package.json",
-      "role": "LOCKED_TOOLCHAIN",
-      "bytes": 1906,
-      "sha256": "a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd"
+      "role": "TRACKED_DEPENDENCY_DESCRIPTOR",
+      "semantic_id": "package.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://package-lock.json",
-      "role": "LOCKED_TOOLCHAIN",
+      "role": "DEPENDENCY_LOCK",
       "bytes": 271352,
       "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b"
     },
     {
       "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 7943,
       "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
     },
     {
       "uri": "repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 3955,
       "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
     },
     {
       "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 4956,
       "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
     },
     {
       "uri": "repo://docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 8046,
       "sha256": "0cec24c40dfa69c14d51fb73e56977790ee19ed0ad5ed74d0339553ff25b860e"
     },
     {
       "uri": "repo://docs/canonical/02_ui/RAOS_08_screen_catalog_v1.0.yaml",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 23487,
       "sha256": "dae723c7e423febe4abc0ab8752420411e6e95586069b75186bda7e92de85050"
     },
     {
       "uri": "repo://docs/canonical/02_ui/RAOS_08_component_catalog_v1.0.yaml",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 12504,
       "sha256": "986ed1682b0f6b48c7e9fab04ff51229c000f4673e3cc3981e50903832f208f2"
     },
     {
       "uri": "repo://docs/canonical/02_ui/RAOS_08_workflow_catalog_v1.0.yaml",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 3613,
       "sha256": "59983683ec920cf450d0d887ee43f0b9871e500c2025562f9bec5c6bbc6fe87e"
     },
     {
       "uri": "repo://docs/canonical/02_ui/RAOS_08_accessibility_checklist_v1.0.csv",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 4051,
       "sha256": "690233f34abb08608e3e1241e6108fb93d4c6bb47ffe23be02e34f2a02b6d77e"
     },
     {
       "uri": "repo://docs/canonical/04_security/RAOS_10_security_privacy_design_v1.0.md",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 7929,
       "sha256": "6424dd403cf94b6cd4591792868dfe6435d680ab5b08eefa2fb24a229b4ab01b"
     },
     {
       "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 24993,
       "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
     },
     {
       "uri": "repo://docs/canonical/04_security/RAOS_10_data_classification_v1.0.yaml",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 1063,
       "sha256": "59854810967b8fa1f0df759bf5160d128fc4dea00084a95f6b4f11876a415ab0"
     },
     {
       "uri": "repo://docs/canonical/04_security/RAOS_10_role_permission_matrix_v1.0.yaml",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 5175,
       "sha256": "dfd67960ca8a004bbe6f3249ca9fa64ab1b24e94a57a2e88fc282267adc8b984"
     },
     {
       "uri": "repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 6609,
       "sha256": "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
     },
     {
       "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 11395,
       "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
     },
     {
       "uri": "repo://docs/canonical/05_test/RAOS_11_test_environment_matrix_v1.0.yaml",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 1106,
       "sha256": "3dc59c8c951a39d2079eb82e6a3e5adde3ce1910296abf8e1a3a539107a96b68"
     },
     {
       "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
-      "role": "BOUND_INPUT",
+      "role": "IMMUTABLE_CANONICAL",
       "bytes": 71458,
       "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
     },
     {
       "uri": "repo://packages/web-ui/src/admin-visual-accessibility-acceptance.ts",
-      "role": "BOUND_INPUT",
-      "bytes": 16056,
-      "sha256": "68baca66f7dd34de1107a6b7b00d8d97db30bc287d73719d27722471c092fd0c"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "packages/web-ui/src/admin-visual-accessibility-acceptance.ts",
+      "version": "tracked"
     },
     {
       "uri": "repo://packages/web-ui/src/portfolio-catalog-workspace.ts",
-      "role": "BOUND_INPUT",
-      "bytes": 20744,
-      "sha256": "48715e6e10af1ad134839ac7fe87dee19924507a3d8ab8d627def65dc444ca79"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "packages/web-ui/src/portfolio-catalog-workspace.ts",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-0606/contracts/evidence-workspace.v2.yaml",
-      "role": "BOUND_INPUT",
-      "bytes": 7476,
-      "sha256": "6317e8f2643ecda6ad0f1cc0c56f39df45c3ca3e5c91281d11ad8d84d58114cf"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-0606/contracts/evidence-workspace.v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-0606/generated/evidence-workspace-recorded.v2.json",
-      "role": "BOUND_INPUT",
-      "bytes": 33617,
-      "sha256": "7788c3eeae45bd1dd63930d904eb08c45bab4e6e266801b7af77a9afd8e0a54e"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-0606/generated/evidence-workspace-recorded.v2.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-0606/runtime-manifest.v2.yaml",
-      "role": "BOUND_INPUT",
-      "bytes": 3543,
-      "sha256": "d892896c1984536508f189dbb55aa3ad7c95bfcf2d4a0da4211e276843f9dd12"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-0606/runtime-manifest.v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-0709/contracts/ai-governance-workspace.v2.yaml",
-      "role": "BOUND_INPUT",
-      "bytes": 8535,
-      "sha256": "86a07297a74aca32dba4ec34eea955f86adfb09635c376a6fa1289b4f089c26e"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-0709/contracts/ai-governance-workspace.v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-0709/generated/ai-governance-workspace.v2.json",
-      "role": "BOUND_INPUT",
-      "bytes": 31547,
-      "sha256": "2801dbb307f2d29f5f99dda17c78f724842eeaf3942af1f2480074dac3658f0b"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-0709/generated/ai-governance-workspace.v2.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-0709/runtime-manifest.v2.json",
-      "role": "BOUND_INPUT",
-      "bytes": 7913,
-      "sha256": "2d69c6c6574617e59e22a64d4b8267c627ac0e0c48595c991969a7ead7475b45"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-0709/runtime-manifest.v2.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-0906/contracts/publication-review-workspace.v2.yaml",
-      "role": "BOUND_INPUT",
-      "bytes": 3005,
-      "sha256": "653e93d6af6077c399906542e56c5643441dd703b5dc77bc64f60fc01e239bc0"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-0906/contracts/publication-review-workspace.v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-0906/generated/publication-review-workspace-recorded.v2.json",
-      "role": "BOUND_INPUT",
-      "bytes": 16222,
-      "sha256": "386605bed81778252e2543cbeb7d2ba91c496d9dfbd85d8c1b4625ba11f28b68"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-0906/generated/publication-review-workspace-recorded.v2.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-0906/runtime-manifest.v2.yaml",
-      "role": "BOUND_INPUT",
-      "bytes": 12124,
-      "sha256": "79dbfee4813895aef86d1967be17fb86e2a84626c9a3618001d99c33046dc429"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-0906/runtime-manifest.v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://packages/web-ui/src/publication-review-workspace-v2.ts",
-      "role": "BOUND_INPUT",
-      "bytes": 37543,
-      "sha256": "ba557f91577ecc48ef552263a70d403f16d806b2357dad309f48f9c360ecb5b9"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "packages/web-ui/src/publication-review-workspace-v2.ts",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1102/contracts/article-workspace.v2.yaml",
-      "role": "BOUND_INPUT",
-      "bytes": 4421,
-      "sha256": "ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52f"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-1102/contracts/article-workspace.v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1102/article-workspace-recorded.v2.json",
-      "role": "BOUND_INPUT",
-      "bytes": 25661,
-      "sha256": "e28bdabb017c070383fcf373ccdef5315a93238715033e14c12d5a467f7e32ea"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-1102/article-workspace-recorded.v2.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1102/runtime-manifest.v2.yaml",
-      "role": "BOUND_INPUT",
-      "bytes": 6913,
-      "sha256": "327a19c10195792b3fa8f961571fc110d63ca659a1c1693c01c48693589e1f87"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-1102/runtime-manifest.v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://packages/web-ui/src/article-workspace-v2.ts",
-      "role": "BOUND_INPUT",
-      "bytes": 29429,
-      "sha256": "269bca8158dd34086544df18f02c7397ae8f4ad8f117f0e04a3a28a610e895ab"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "packages/web-ui/src/article-workspace-v2.ts",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1103/contracts/freshness-operations-workspace.v2.yaml",
-      "role": "BOUND_INPUT",
-      "bytes": 1704,
-      "sha256": "d5434f5fcd4a2de7a436e88ea9c02d3d97228dc032494d90ee1b2f52fcbe9965"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-1103/contracts/freshness-operations-workspace.v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1103/freshness-operations-recorded.v2.json",
-      "role": "BOUND_INPUT",
-      "bytes": 19470,
-      "sha256": "d33b9f9d185350dfef9f6fab3bd9a7ea9351874dbb4ec6729b2c18b43cc6317c"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-1103/freshness-operations-recorded.v2.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1103/runtime-manifest.v2.yaml",
-      "role": "BOUND_INPUT",
-      "bytes": 9372,
-      "sha256": "4c03c7102f0a47cc97220e9f89cdd5ecd8af7ef2f6d77234a7134e6f9c86d09b"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-1103/runtime-manifest.v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://packages/web-ui/src/freshness-operations-workspace-v2.ts",
-      "role": "BOUND_INPUT",
-      "bytes": 30935,
-      "sha256": "b8e2546bcc44aad6c9675ba3424948811843be36f0ebfc99cd315a18667aea10"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "packages/web-ui/src/freshness-operations-workspace-v2.ts",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1104/contracts/analytics-finance-dashboard.v2.yaml",
-      "role": "BOUND_INPUT",
-      "bytes": 9624,
-      "sha256": "1ccf6e2caa98149dbb21315a5c1e788dc23cd6b2b4154331a0f7c6620e81bfb1"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-1104/contracts/analytics-finance-dashboard.v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json",
-      "role": "BOUND_INPUT",
-      "bytes": 30334,
-      "sha256": "f31ace8268a5540fd4c5488f4e927eb891c215d90bcf13ddd152cc4d59f771bf"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1104/runtime-manifest.v2.yaml",
-      "role": "BOUND_INPUT",
-      "bytes": 11819,
-      "sha256": "470bdedbe9aa2d6b96a913053c6167f75b603fa3dde06193352673ab134c8e14"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "changes/st-1104/runtime-manifest.v2.yaml",
+      "version": "tracked"
     },
     {
       "uri": "repo://packages/web-ui/src/analytics-finance-recorded.v2.ts",
-      "role": "BOUND_INPUT",
-      "bytes": 31473,
-      "sha256": "be3f48ce8b1b2727c204156248c9e6e1e7ea58cf5bc2d8a6061b701f3762b81d"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "packages/web-ui/src/analytics-finance-recorded.v2.ts",
+      "version": "tracked"
     },
     {
       "uri": "repo://package.json",
-      "role": "BOUND_INPUT",
-      "bytes": 1906,
-      "sha256": "a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "package.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://package-lock.json",
-      "role": "BOUND_INPUT",
-      "bytes": 271352,
-      "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b"
+      "role": "TRACKED_PREDECESSOR",
+      "semantic_id": "package-lock.json",
+      "version": "tracked"
     },
     {
       "uri": "repo://changes/st-1105/generated/admin-visual-accessibility-recorded.v2.json",
       "role": "GENERATED_OWNER_OUTPUT",
-      "bytes": 94305,
-      "sha256": "815f79c0b0e58d8eba1587afbc4621359651345b559c19ed7622065cc4bd6c69"
+      "bytes": 94253,
+      "sha256": "1a95de2c1d15d01c75fce2836dca7747ef90b50c416dba4d55b06eaa2087da18"
     },
     {
       "uri": "repo://packages/web-ui/src/admin-visual-accessibility-recorded.v2.ts",
       "role": "GENERATED_OWNER_OUTPUT",
-      "bytes": 97833,
-      "sha256": "442f0ba2df605c87cdcd51c0ff175891023dc72912f48f5f20639cf904f46e02"
+      "bytes": 97785,
+      "sha256": "61a12934573d59a6f68a56a04d6f773e5190b2e3c2da3001dbe5f0742eb3ace7"
     },
     {
       "uri": "repo://changes/st-1105/baselines/admin-visual.synthetic.v2.json",
-      "role": "LOCAL_SYNTHETIC_VISUAL_BASELINE",
+      "role": "RUNTIME_DATA_INTEGRITY",
       "bytes": 7078,
       "sha256": "9086828e2210ab749d565aa7942159d3bbb174de4b9712912bcf0e6b77a74702"
     },
     {
       "uri": "repo://changes/st-1105/evidence/local-browser-automated.v2.json",
-      "role": "LOCAL_BROWSER_AUTOMATED_EVIDENCE",
+      "role": "RUNTIME_DATA_INTEGRITY",
       "bytes": 60032,
       "sha256": "f168c1642029c2e60e437f98c4d7102eac6e580d4dffd8e9700d193f9b4e7fd4"
     }

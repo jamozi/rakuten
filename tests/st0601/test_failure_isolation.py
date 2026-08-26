@@ -20,7 +20,7 @@ from raos.domain.ops.artifact_registry import (
     RegistryMode,
 )
 
-from conftest import SYNTHETIC_CONTENT, provenance
+from .support import SYNTHETIC_CONTENT, provenance
 
 
 REJECTED_CANARY = "REJECTED_VALUE_CANARY_ST0601_DO_NOT_ECHO"

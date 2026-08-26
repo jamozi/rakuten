@@ -67,14 +67,10 @@ def test_recorded_result_is_exactly_recomputed_and_generated(
         ),
         "st0802_published_at": None,
         "st0802_state": "DRAFT",
-        "st0805_evaluation_input_sha256": (
-            "d4376e4554da70e821a575344ee8a25262178b749e4c243feb88c2d12ec041f5"
-        ),
+        "st0805_evaluation_input_sha256": report.evaluation_input_sha256.value,
         "st0805_fixture_sha256": generator.ST0805_FIXTURE_SHA256,
         "st0805_local_eligibility": True,
-        "st0805_report_sha256": (
-            "4222b076411f165967b5802f5b2057fc8635c0f0e94aadf6bcd7462e9ffa4fec"
-        ),
+        "st0805_report_sha256": report.report_sha256.value,
         "st0805_status": "LOCAL_EVALUATED",
     }
     assert dependency["st0805_report_sha256"] == report.report_sha256.value

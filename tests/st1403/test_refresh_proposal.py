@@ -31,7 +31,7 @@ from raos.domain.freshness.refresh_proposal import (
     build_refresh_proposal,
 )
 
-from conftest import (
+from .support import (
     freshness_request,
     freshness_result,
     hex_digest,

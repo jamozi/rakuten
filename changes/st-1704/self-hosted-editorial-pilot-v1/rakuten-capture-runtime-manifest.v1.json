@@ -1,5 +1,4 @@
 {
-  "approved_base_commit": "f6af738a9a46625fe75cc4ba8642f7b0dc7179bb",
   "article_ids": [
     "st1703-first-suitcase-comparison",
     "st1704-portable-power-station-guide",
@@ -66,14 +65,14 @@
       "sha256": "a6656fda5534a796a0a8d9d146d140fa3996bb91673720c10e92f1ac6650aac8"
     },
     {
-      "bytes": 3255,
+      "bytes": 3128,
       "path": "scripts/build_st1704_rakuten_capture_manifest.py",
-      "sha256": "379b183ae6f0af9b431944d0e94d9ee57868e596614f4699745f792df8d3f6f2"
+      "sha256": "118efdb2f7436e8cfb07151c15eb282b2475e4aeeb5bcc0f9da15eb1f327676f"
     },
     {
-      "bytes": 24700,
+      "bytes": 24262,
       "path": "scripts/st1704_rakuten_product_capture.py",
-      "sha256": "9c2409a62df73cf96f35e65e7923864447e2934bf699a786c46f960d2b312796"
+      "sha256": "3b44f764bced2d4aa15074fce8899ce7eaf4eff12586a3812cdfe8a842825c57"
     }
   ],
   "publication_authority": "NONE",

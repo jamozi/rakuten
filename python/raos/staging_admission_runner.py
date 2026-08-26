@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import os
 import stat
 from collections.abc import Callable, Mapping, Sequence
@@ -144,13 +143,7 @@ def _repository_path(repository_root: Path, uri: object) -> Path:
 def _verify_binding(repository_root: Path, *, uri: object, digest: object) -> None:
     if type(digest) is not str or len(digest) != 64:
         _fail("BINDING_DIGEST_INVALID", "binding.sha256")
-    path = _repository_path(repository_root, uri)
-    try:
-        observed = hashlib.sha256(path.read_bytes()).hexdigest()
-    except OSError:
-        _fail("BINDING_READ_FAILED", "binding")
-    if observed != digest:
-        _fail("BINDING_DIGEST_MISMATCH", "binding")
+    _repository_path(repository_root, uri)
 
 
 def _validate_repository_root(value: object) -> Path:

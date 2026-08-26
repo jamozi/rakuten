@@ -28,7 +28,7 @@ from raos.domain.freshness.refresh_proposal import (
 )
 from raos.ports.refresh_proposal import RefreshProposalExchange
 
-from conftest import (
+from .support import (
     freshness_request,
     freshness_result,
     policy_result,

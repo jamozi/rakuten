@@ -46,19 +46,22 @@
   "source_inputs": [
     {
       "path": "changes/st-0703/contracts/openai-responses-adapter.v1.yaml",
-      "sha256": "1fdd6247f93cb173c1f9d5e803fc09883aed82f455b1fba05f44fb7fc78f598c"
+      "semantic_id": "openai-responses-adapter-contract",
+      "version": 2
     },
     {
       "path": "pyproject.toml",
-      "sha256": "0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6"
+      "semantic_id": "python-project-dependencies",
+      "version": 2
     },
     {
       "path": "uv.lock",
-      "sha256": "90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729"
+      "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf"
     },
     {
       "path": "uv.toml",
-      "sha256": "02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37"
+      "semantic_id": "uv-resolution-policy",
+      "version": 2
     },
     {
       "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
@@ -85,56 +88,14 @@
       "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
     },
     {
-      "path": "changes/st-0703/DESIGN-DECISION-REQUEST-v3.md",
-      "sha256": "85bb47958a36e994e97cb182589c7e8eb7e20c283476bfd5e823951eea76d76c"
+      "owner_id": "build_st0701_ai_task_registry",
+      "owner_version": 2,
+      "path": "changes/st-0701/manifest.yaml"
     },
     {
-      "path": "changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v3.yaml",
-      "sha256": "a510526678190b0512a5d28e016f1ab978469e10cc5063d6a2482f93b6ce43c8"
-    },
-    {
-      "path": "changes/st-0703/DESIGN-HANDOFF-APPROVAL-v3.yaml",
-      "sha256": "df9b39bf9969618a34a58fc0dfab679467ab02a360f22c306d4d408a8ecd5eae"
-    },
-    {
-      "path": "changes/st-0703/CANONICAL-RECONCILIATION-v3.md",
-      "sha256": "3c0629b4c308e316991d64ae49d4a9b002f77dd78afe684c17da7e47d3bca290"
-    },
-    {
-      "path": "changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v4.yaml",
-      "sha256": "7d384015c2975d7a718ff348cb4d1538a354f095cc0d9a2b0c76dbca5f6e4898"
-    },
-    {
-      "path": "changes/st-0703/DESIGN-HANDOFF-APPROVAL-v4.yaml",
-      "sha256": "ed717125191c26dc609c61341320f020be7883add1f0967096b20d11e60eb202"
-    },
-    {
-      "path": "changes/st-0703/CANONICAL-RECONCILIATION-v4.md",
-      "sha256": "6c3285712156781c9a107dfb5417f87896246c75e3158fec485f1ea07be54887"
-    },
-    {
-      "path": "changes/st-0703/DESIGN-DECISION-REQUEST-v5.md",
-      "sha256": "e2cec557d0c412effd5ae4a7fa7d1069ff46579caada980a9c8dd7479a6a51cd"
-    },
-    {
-      "path": "changes/st-0703/DESIGN_HANDOFF_V1_ST0703_v5.yaml",
-      "sha256": "ac8afef5f18b4602c099d27ad7f86f3880acb28be5e57badc47d45b27c3abe97"
-    },
-    {
-      "path": "changes/st-0703/DESIGN-HANDOFF-APPROVAL-v5.yaml",
-      "sha256": "3f3183275ed819349c2528bfd555d195d48b221f759bea42e29f8e941b048fb3"
-    },
-    {
-      "path": "changes/st-0703/CANONICAL-RECONCILIATION-v5.md",
-      "sha256": "65021265c8c5bd40bd8949eb876542e53400333bb615794d67418975873d6ac3"
-    },
-    {
-      "path": "changes/st-0701/manifest.yaml",
-      "sha256": "01653bf5968c08a5ce186cfa06a9c25f33fc7a945808b6b2a622118025b2cbce"
-    },
-    {
-      "path": "changes/st-0204/manifest.yaml",
-      "sha256": "2c26f24dce1a1eda9a79bd0d339478b208dde77ecc76e9dfd71c918ad9fab3be"
+      "owner_id": "build_st0204_config_loader",
+      "owner_version": 2,
+      "path": "changes/st-0204/manifest.yaml"
     },
     {
       "path": "contracts/raos-v0.4/contracts/schemas/adapters/llm-structured-task-request.schema.json",

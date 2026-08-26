@@ -1,7 +1,8 @@
 {
-  "approved_base_commit": "b5a6157b878ca0435ee4120d33162aba5ae51f77",
   "external_action_authority": "NONE",
   "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
+  "generator_owner": "build_st1703_self_hosted_runtime_manifest",
+  "generator_version": "2",
   "paths": [
     {
       "bytes": 17095,
@@ -154,9 +155,9 @@
       "sha256": "e962fec07de9846da994dafadce044f199251d9feafb471784a88c27cba5489b"
     },
     {
-      "bytes": 55868,
+      "bytes": 55913,
       "path": "scripts/build_st1703_self_hosted_theme.py",
-      "sha256": "a5312c9881fcf73d885ca504baedfffcecebc8e0a01a7be39a670e276b4b9d0e"
+      "sha256": "c8f606909c8de91286fbd31a4cb39e641b9692e74c6d1585bac6757396abf2d4"
     },
     {
       "bytes": 41947,
@@ -164,17 +165,16 @@
       "sha256": "d3bb775e37a7eff41f7cdd76c0fb98055ef60452a3078bf877bacca06bc05cd0"
     },
     {
-      "bytes": 59631,
+      "bytes": 59137,
       "path": "scripts/self_hosted_wordpress.py",
-      "sha256": "19277851d225de853acb576728999cf2fce413b1f5239291ff3dcc8c1be38db2"
+      "sha256": "2688abfa44e1715352952316627c74e45c43454ffe99d977d7906052aab8aabb"
     },
     {
-      "bytes": 22764,
+      "bytes": 22611,
       "path": "scripts/self_hosted_wordpress_python.sh",
-      "sha256": "632f3b973be11aeed994148380841bc4cbd333c637da4cc0dd9311a9137af0b4"
+      "sha256": "d5ae33eb239654e3bfc9aba75d5456254b5353974c87d0599228aad616259021"
     }
   ],
-  "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
   "schema": "SELF_HOSTED_WORDPRESS_RUNTIME_MANIFEST_V1",
   "slice_id": "SELF_HOSTED_MINIMUM_START_V1",
   "story_id": "ST-1703"

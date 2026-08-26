@@ -33,8 +33,6 @@ sources:
   sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
 - uri: repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
   sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
-- uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-  sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
 predecessor_bindings:
   data_services:
     story_id: ST-1502

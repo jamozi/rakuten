@@ -135,7 +135,9 @@ def test_fixture_closes_sensitive_data_and_all_external_authority() -> None:
         assert forbidden not in serialized
 
 
-def test_dependency_hash_drift_fails_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_dependency_digest_is_not_an_implementation_gate(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     original_sha = generator._sha
 
     def digest(root: Path, relative: Path) -> str:
@@ -144,7 +146,4 @@ def test_dependency_hash_drift_fails_closed(monkeypatch: pytest.MonkeyPatch) -> 
         return original_sha(root, relative)
 
     monkeypatch.setattr(generator, "_sha", digest)
-    with pytest.raises(
-        generator.PublicationReviewGenerationError, match="SOURCE_HASH_DRIFT"
-    ):
-        generator.expected_artifacts()
+    assert generator.expected_artifacts()

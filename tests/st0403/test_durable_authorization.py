@@ -14,7 +14,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     ARTICLE_A,
     NOW,
     SITE_A,

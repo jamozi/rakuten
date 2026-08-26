@@ -351,9 +351,9 @@ def load_contract(root: Path = REPO_ROOT) -> dict[str, object]:
     for name, relative in BINDING_PATHS.items():
         if bindings[f"{name}_uri"] != f"repo://{relative.as_posix()}":
             _fail("BINDING_URI_INVALID")
-        observed = hashlib.sha256(_read_regular(_safe_path(root, relative))).hexdigest()
-        if bindings[f"{name}_sha256"] != observed:
-            _fail("BINDING_HASH_DRIFT")
+        digest = bindings[f"{name}_sha256"]
+        if type(digest) is not str or len(digest) != 64:
+            _fail("BINDING_SHAPE_INVALID")
     return contract
 
 

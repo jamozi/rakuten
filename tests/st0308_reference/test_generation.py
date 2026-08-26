@@ -10,7 +10,7 @@ from typing import Any, cast
 
 import pytest
 
-from conftest import RepositoryHarness
+from .support import RepositoryHarness
 from scripts import build_st0308_persistence_boundary_reference as builder
 from scripts import build_st1506_production_deployment as secure_io
 

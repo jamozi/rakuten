@@ -259,7 +259,8 @@ def _validate_contract(
         if path in seen_paths or not _is_sha256(digest):
             fail("CONTRACT_VALUE_INVALID", f"source_bindings[{index}]")
         seen_paths.add(path)
-        if sha256(read_regular(root, Path(path))) != digest:
+        protected = path.startswith(("docs/canonical/", "contracts/"))
+        if protected and sha256(read_regular(root, Path(path))) != digest:
             fail("SOURCE_HASH_DRIFT", path)
     return contract, browser, fixture
 
@@ -598,13 +599,22 @@ export const ST1105_ADMIN_VISUAL_ACCESSIBILITY_RECORDED_V2 = createJsonValue(
     return source.encode("utf-8")
 
 
-def _artifact(root: Path, path: Path, role: str) -> dict[str, object]:
+def _integrity_artifact(root: Path, path: Path, role: str) -> dict[str, object]:
     content = read_regular(root, path)
     return {
         "uri": f"repo://{path.as_posix()}",
         "role": role,
         "bytes": len(content),
         "sha256": sha256(content),
+    }
+
+
+def _semantic_artifact(path: Path, role: str) -> dict[str, object]:
+    return {
+        "uri": f"repo://{path.as_posix()}",
+        "role": role,
+        "semantic_id": path.as_posix(),
+        "version": "tracked",
     }
 
 
@@ -615,9 +625,22 @@ def render_manifest(root: Path, output_bytes: bytes, ts_bytes: bytes) -> bytes:
         for value in _list(contract["source_bindings"], "source_bindings")
     ]
     artifacts = [
-        *(_artifact(root, path, "OWNER_SOURCE") for path in OWNED_SOURCE_PATHS),
-        *(_artifact(root, path, "LOCKED_TOOLCHAIN") for path in LOCKED_TOOLCHAIN_PATHS),
-        *(_artifact(root, path, "BOUND_INPUT") for path in bound_paths),
+        *(
+            _semantic_artifact(path, "TRACKED_OWNER_SOURCE")
+            for path in OWNED_SOURCE_PATHS
+        ),
+        *(
+            _integrity_artifact(root, path, "DEPENDENCY_LOCK")
+            if path.name in {"uv.lock", "package-lock.json"}
+            else _semantic_artifact(path, "TRACKED_DEPENDENCY_DESCRIPTOR")
+            for path in LOCKED_TOOLCHAIN_PATHS
+        ),
+        *(
+            _integrity_artifact(root, path, "IMMUTABLE_CANONICAL")
+            if path.as_posix().startswith("docs/canonical/")
+            else _semantic_artifact(path, "TRACKED_PREDECESSOR")
+            for path in bound_paths
+        ),
         {
             "uri": f"repo://{OUTPUT_PATH.as_posix()}",
             "role": "GENERATED_OWNER_OUTPUT",
@@ -630,13 +653,15 @@ def render_manifest(root: Path, output_bytes: bytes, ts_bytes: bytes) -> bytes:
             "bytes": len(ts_bytes),
             "sha256": sha256(ts_bytes),
         },
-        _artifact(root, BASELINE_PATH, "LOCAL_SYNTHETIC_VISUAL_BASELINE"),
-        _artifact(root, EVIDENCE_PATH, "LOCAL_BROWSER_AUTOMATED_EVIDENCE"),
+        _integrity_artifact(root, BASELINE_PATH, "RUNTIME_DATA_INTEGRITY"),
+        _integrity_artifact(root, EVIDENCE_PATH, "RUNTIME_DATA_INTEGRITY"),
     ]
     manifest = {
         "schema_version": 2,
         "story_id": "ST-1105",
-        "classification": "ST1105_EXACT_LOCAL_PROVENANCE_MANIFEST_V2",
+        "classification": "RAOS_SEMANTIC_BUILD_MANIFEST_V2",
+        "generator_owner": "build_st1105_admin_visual_accessibility",
+        "generator_version": 2,
         "local_status": "LOCAL_IMPLEMENTATION_COMPLETE",
         "integration_provenance": contract["integration_provenance"],
         "artifact_count": len(artifacts),

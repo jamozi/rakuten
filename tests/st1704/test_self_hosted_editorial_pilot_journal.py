@@ -31,7 +31,7 @@ from raos.domain.editorial.self_hosted_editorial_pilot import (
     canonical_sha256,
     fail_editorial_pilot,
 )
-from test_self_hosted_editorial_pilot import envelope, recorded_post, request
+from .test_self_hosted_editorial_pilot import envelope, recorded_post, request
 
 
 @pytest.fixture

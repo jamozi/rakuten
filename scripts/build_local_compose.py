@@ -36,9 +36,6 @@ ARCHITECTURE_SNAPSHOT_PATH: Final = Path(
 EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256: Final = (
     "9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291"
 )
-EXPECTED_ST0202_CONTRACT_OBJECT_SHA256: Final = (
-    "4909563f9f9656c3b9ac7f6b13c9c557634e380e05db4ed96a5ea38c1514e327"
-)
 OBJECT_STORAGE_WRAPPER_PATH: Final = Path("scripts/object_storage_service.sh")
 GENERATED_PATHS: Final = (COMPOSE_PATH, MANIFEST_PATH)
 GENERATOR_URI: Final = "repo://scripts/build_local_compose.py"
@@ -119,6 +116,9 @@ EXPECTED_ST0202_IMAGE: Final = {
     "reference": (
         "docker.io/chrislusf/seaweedfs:4.29@sha256:"
         "d47c7ee99fcb951351d7194915f4e3a5ea604a8e8871183d713907dec4fb9bf5"
+    ),
+    "index_digest": (
+        "sha256:d47c7ee99fcb951351d7194915f4e3a5ea604a8e8871183d713907dec4fb9bf5"
     ),
     "platform": {
         "os": "linux",
@@ -237,6 +237,81 @@ EXPECTED_ST0202_EPHEMERAL_OVERRIDE: Final = {
     },
 }
 EXPECTED_ST0202_RUNTIME_VERSION_LINE: Final = "version 30GB 4.29 1355c7a10 linux amd64"
+EXPECTED_ST0202_DOCUMENT: Final = {
+    "id": "RAOS-LOCAL-OBJECT-STORAGE-001",
+    "version": "1.0.0",
+    "story_id": "ST-0202",
+    "status": "LOCAL_AND_CI_CANDIDATE",
+    "formal_verification": "NOT_EXECUTED",
+}
+EXPECTED_ST0202_RUNTIME_GATES: Final = {
+    "wrapper": "repo://scripts/object_storage_service.sh",
+    "fixture_client": "repo://scripts/object_storage_fixture.py",
+    "interface": "scripts/object_storage_service.sh --docker EXECUTABLE COMMAND",
+    "commands": ["config", "up", "check", "down", "test"],
+    "docker_host": "unix:///var/run/docker.sock",
+    "minimum_compose_version": "2.24.4",
+    "authenticated_fixture": {
+        "required": True,
+        "operations": [
+            "create-lock-capable-private-bucket",
+            "enable-and-read-versioning",
+            "put-two-object-versions",
+            "get-each-version-by-id",
+            "round-trip-required-metadata",
+            "reject-declared-hash-mismatch",
+            "exercise-retention-hook-without-policy",
+        ],
+        "formal_suite": "TST-014",
+        "execution_status": "NOT_EXECUTED",
+    },
+    "bucket": {
+        "name": "raos-raw",
+        "visibility": "PRIVATE",
+        "object_lock_capability_at_creation": "REQUIRED",
+        "versioning": "REQUIRED",
+        "automatic_deletion": "DISABLED",
+        "lifecycle_delete": "FORBIDDEN",
+        "default_retention": "FORBIDDEN",
+        "retention_period": "UNSET_HUMAN_DECISION_REQUIRED",
+        "retention_hook": "REQUIRED_POLICY_PERIOD_UNSET",
+        "required_metadata": [
+            "sha256",
+            "content-type",
+            "source",
+            "acquired-at",
+            "retention-class",
+        ],
+        "hash_mismatch": "REJECT",
+    },
+}
+EXPECTED_ST0202_SECURITY_VERIFICATIONS: Final = {
+    "SEC-DATA-003": "LOCAL_CONTRACT_AND_SECRET_SCAN",
+    "SEC-DATA-004": "LOCAL_CONTRACT_TEST_RUNTIME_NOT_EXECUTED",
+    "SEC-DATA-008": "HUMAN_DECISION_AND_RUNTIME_TEST_REQUIRED",
+    "SEC-INFRA-001": "LOCAL_CONFIG_TEST_RUNTIME_NOT_EXECUTED",
+    "SEC-INFRA-006": "AUTHENTICATED_RUNTIME_FIXTURE_NOT_EXECUTED",
+    "SEC-SDLC-003": "LOCAL_CONTRACT_TEST",
+    "SEC-SDLC-004": "NOT_EXECUTED",
+}
+EXPECTED_ST0202_BOUNDARY: Final = {
+    "environment": "LOCAL_AND_CI_ONLY",
+    "production_use": "FORBIDDEN",
+    "remote_object_storage": "FORBIDDEN",
+    "raw_credential_environment": "FORBIDDEN",
+    "anonymous_access": "FORBIDDEN",
+    "default_retention": "FORBIDDEN",
+    "retention_period": "UNSET_HUMAN_DECISION_REQUIRED",
+    "lifecycle_delete": "FORBIDDEN",
+    "automatic_deletion": "DISABLED",
+    "od_014": "HUMAN_DECISION_REQUIRED",
+    "docker_runtime": "NOT_EXECUTED",
+    "authenticated_s3_fixture": "NOT_EXECUTED",
+    "object_lock_and_version_delete_regression": "NOT_EXECUTED",
+    "container_vulnerability_scan": "NOT_EXECUTED",
+    "formal_tst_014": "NOT_EXECUTED",
+    "effective_canonical_status": "UNCHANGED",
+}
 
 FORBIDDEN_SERVICE_KEYS: Final = frozenset(
     {
@@ -293,23 +368,6 @@ def _require_selected_fields(
     return mapping
 
 
-def _contract_object_digest(value: object) -> str:
-    """Return a stable digest for every parsed field in the reviewed contract."""
-
-    try:
-        encoded = json.dumps(
-            value,
-            ensure_ascii=False,
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode("utf-8")
-    except (TypeError, ValueError) as error:
-        raise RuntimeError(
-            "object-storage contract contains a non-canonical value"
-        ) from error
-    return st0201.sha256_bytes(encoded)
-
-
 def load_and_validate_object_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     """Load ST-0202 and validate its complete reviewed contract, fail closed."""
 
@@ -317,9 +375,14 @@ def load_and_validate_object_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
         root, ST0202_CONTRACT_PATH, "object-storage contract"
     )
     contract = _mapping(st0201.load_yaml(path), "object-storage contract")
+    st0201._require_exact(
+        set(contract),
+        {"document", "image", "compose", "runtime", "security_controls", "boundary"},
+        "object-storage top-level keys",
+    )
     document = _mapping(contract.get("document"), "object-storage document")
     st0201._require_exact(
-        document.get("story_id"), "ST-0202", "object-storage document.story_id"
+        dict(document), EXPECTED_ST0202_DOCUMENT, "object-storage document"
     )
     image = _mapping(contract.get("image"), "object-storage image")
     _require_selected_fields(image, EXPECTED_ST0202_IMAGE, "object-storage image")
@@ -328,6 +391,9 @@ def load_and_validate_object_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
         dict(compose), EXPECTED_ST0202_COMPOSE, "object-storage compose"
     )
     runtime = _mapping(contract.get("runtime"), "object-storage runtime")
+    _require_selected_fields(
+        runtime, EXPECTED_ST0202_RUNTIME_GATES, "object-storage runtime"
+    )
     ephemeral_override = _mapping(
         runtime.get("ephemeral_port_override"),
         "object-storage runtime.ephemeral_port_override",
@@ -342,10 +408,22 @@ def load_and_validate_object_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
         EXPECTED_ST0202_RUNTIME_VERSION_LINE,
         "object-storage runtime.expected_version_line",
     )
+    controls = _list(contract.get("security_controls"), "object-storage controls")
+    observed_controls: dict[str, object] = {}
+    for index, value in enumerate(controls):
+        row = _mapping(value, f"object-storage controls[{index}]")
+        control_id = row.get("id")
+        if type(control_id) is not str or control_id in observed_controls:
+            raise RuntimeError("object-storage security control IDs differ")
+        observed_controls[control_id] = row.get("verification")
     st0201._require_exact(
-        _contract_object_digest(contract),
-        EXPECTED_ST0202_CONTRACT_OBJECT_SHA256,
-        "object-storage full-contract digest",
+        observed_controls,
+        EXPECTED_ST0202_SECURITY_VERIFICATIONS,
+        "object-storage security control verification",
+    )
+    boundary = _mapping(contract.get("boundary"), "object-storage boundary")
+    st0201._require_exact(
+        dict(boundary), EXPECTED_ST0202_BOUNDARY, "object-storage boundary"
     )
     return dict(contract)
 
@@ -669,11 +747,8 @@ def _validate_pinned_file(
 
 
 def _validate_predecessor_manifest(root: Path) -> None:
-    path = _validate_pinned_file(
-        root,
-        PREDECESSOR_MANIFEST_PATH,
-        EXPECTED_PREDECESSOR_MANIFEST_SHA256,
-        "ST-0201 predecessor manifest",
+    path = st0201._repository_regular_file(
+        root, PREDECESSOR_MANIFEST_PATH, "ST-0201 predecessor manifest"
     )
     predecessor = _mapping(st0201.load_yaml(path), "ST-0201 predecessor manifest")
     document = _mapping(

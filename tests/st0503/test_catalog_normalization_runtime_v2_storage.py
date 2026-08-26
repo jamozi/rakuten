@@ -23,7 +23,7 @@ from raos.domain.catalog.catalog_normalization_runtime_v2 import (
     CatalogReplayStatusV2,
 )
 
-from runtime_v2_fixtures import (
+from .runtime_v2_fixtures import (
     normalization_service_v2,
     normalization_store_v2,
     source_fixture_v2,

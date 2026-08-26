@@ -10,8 +10,8 @@ source_artifacts:
   sha256: d69e338d3f4a01735b5fea383da5007315d66645e582ce85db65b82820fc4e34
 - uri: repo://scripts/build_st1407_external_policy_registry_runtime.py
   role: OWNER_SOURCE
-  bytes: 34115
-  sha256: a52e04848e3deeb0057eba605bf4cb41f26628fa23a692049d2191603693c367
+  bytes: 33576
+  sha256: c867f5f11119d05f32bfa3008c85e9d11e93dd5f4b9930ae20ec7049de62b9dc
 - uri: repo://python/raos/domain/ops/external_policy_registry.py
   role: OWNER_SOURCE
   bytes: 42683
@@ -42,16 +42,16 @@ source_artifacts:
   sha256: e5e6a599ffd60fb3982723a9abcea098f104e2991cca74522ed21a8263432b4c
 - uri: repo://tests/st1407_v2/conftest.py
   role: OWNER_SOURCE
-  bytes: 5430
-  sha256: 1657c66504380b2366e51ec419f97a7a434d976ebda6c3dcda685c91a051f82d
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st1407_v2/test_domain.py
   role: OWNER_SOURCE
   bytes: 7390
-  sha256: 7253463340be5cccde1e44159a3834fb12ca7f573da72d51be196bacd7fee8e1
+  sha256: 23d0489d8740eec545d1fbd080d49a5abb5363549c6a7ab654fd2d9c7c7ac2d8
 - uri: repo://tests/st1407_v2/test_boundaries.py
   role: OWNER_SOURCE
   bytes: 16486
-  sha256: 02299aafc8c0f1faccae11a2acfd26e057f6ece8b8c96e8baf941bcf46f6f723
+  sha256: cff17b77be9bff9789ba05bf9cbba21d438175768137b6d566321e3a75238579
 - uri: repo://tests/st1407_v2/test_generation.py
   role: OWNER_SOURCE
   bytes: 7901
@@ -110,8 +110,8 @@ source_artifacts:
   sha256: ef690e73cf657d3963572428785b2e777f7485ba15c30a53a978ad8919e31e24
 - uri: repo://changes/st-0805/runtime-manifest.v2.yaml
   role: PINNED_AUTHORITY_OR_DEPENDENCY
-  bytes: 11572
-  sha256: f10516b1d26e6dc448ade04873880211244e82d1c0f7175b5c57ce2c95f411ce
+  bytes: 11571
+  sha256: f7aa3bb94e733a4e321ec0627db05b0f712ce029c29a35be0b77c818192ec4fc
 - uri: repo://python/raos/domain/shared/persistence.py
   role: PINNED_RUNTIME_DEPENDENCY
   bytes: 8701
@@ -134,12 +134,12 @@ source_artifacts:
   sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
 - uri: repo://pyproject.toml
   role: LOCKED_TOOLCHAIN
-  bytes: 1334
-  sha256: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
+  bytes: 1753
+  sha256: 34ee344782dbaf4135cb235e2fec215a1c709089c0994415fdeadf33979a6207
 - uri: repo://uv.lock
   role: LOCKED_TOOLCHAIN
-  bytes: 128286
-  sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+  bytes: 129836
+  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
 generated_artifacts:
 - uri: repo://changes/st-1407/generated/external-policy-registry-recorded.v2.json
   role: RECORDED_SYNTHETIC_REGISTRY_FIXTURE

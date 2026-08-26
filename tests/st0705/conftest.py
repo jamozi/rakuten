@@ -1,68 +1,9 @@
-"""Shared fixtures for the isolated ST-0705 reference-plan suite."""
+"""Pytest entrypoint; reusable helpers live in support.py."""
 
-from __future__ import annotations
-
-import json
-from pathlib import Path
-import shutil
-import subprocess
-import sys
-from typing import Any
-
-import pytest
-import yaml
+from . import support as _support
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-if str(REPOSITORY_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPOSITORY_ROOT))
-
-from scripts import (  # noqa: E402
-    build_st0705_ai_output_validation_reference_plan as generator,
-)
-
-
-BUILDER = REPOSITORY_ROOT / generator.GENERATOR_PATH
-CONTRACT = REPOSITORY_ROOT / generator.CONTRACT_PATH
-GENERATED = REPOSITORY_ROOT / generator.REFERENCE_PLAN_PATH
-MANIFEST = REPOSITORY_ROOT / generator.MANIFEST_PATH
-
-
-@pytest.fixture(scope="session")
-def contract() -> dict[str, Any]:
-    loaded = yaml.safe_load(CONTRACT.read_bytes())
-    assert isinstance(loaded, dict)
-    return loaded
-
-
-@pytest.fixture(scope="session")
-def generated() -> dict[str, Any]:
-    loaded = json.loads(GENERATED.read_bytes())
-    assert isinstance(loaded, dict)
-    return loaded
-
-
-@pytest.fixture()
-def isolated_repository(tmp_path: Path) -> Path:
-    root = tmp_path / "repository"
-    required = {
-        *generator.SOURCE_PATHS,
-        *generator.AUTHORITY_PATHS,
-        *generator.PREDECESSOR_PATHS,
-        generator.HELPER_PATH,
-    }
-    for relative in required:
-        target = root / relative
-        target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(REPOSITORY_ROOT / relative, target)
-    return root
-
-
-def run_builder(*arguments: str) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        [sys.executable, str(BUILDER), *arguments],
-        cwd=REPOSITORY_ROOT,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
+for _name in dir(_support):
+    if not _name.startswith("__"):
+        globals()[_name] = getattr(_support, _name)
+del _name, _support

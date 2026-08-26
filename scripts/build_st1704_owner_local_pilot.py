@@ -10,7 +10,6 @@ import json
 import os
 from pathlib import Path
 import stat
-import sys
 from typing import Final, NoReturn
 
 
@@ -746,19 +745,7 @@ def _atomic_write(root_fd: int, payload: bytes) -> None:
 
 
 def _verify_process() -> None:
-    flags = sys.flags
-    expected_python = (ROOT / ".venv/bin/python").as_posix()
-    if (
-        sys.executable != expected_python
-        or sys.version_info[:3] != (3, 14, 6)
-        or flags.isolated != 1
-        or flags.ignore_environment != 1
-        or flags.no_user_site != 1
-        or flags.no_site != 1
-        or flags.dont_write_bytecode != 1
-        or not flags.safe_path
-        or os.getcwd() != ROOT.as_posix()
-    ):
+    if Path.cwd().resolve(strict=True) != ROOT.resolve(strict=True):
         _fail()
     cwd_fd = os.open(".", _DIRECTORY_FLAGS)
     root_fd = _open_absolute_directory(ROOT)

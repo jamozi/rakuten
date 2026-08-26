@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from .conftest import REPO_ROOT, read
+from .support import REPO_ROOT, read
 from scripts import build_st0903_publication_snapshot_runtime_v2 as generator
 from raos.adapters.recorded_publication_snapshot_fixture_v2 import (
     PUBLICATION_SNAPSHOT_PASS_V2_JSON,
@@ -82,14 +82,6 @@ def test_v1_reference_plan_owner_is_no_write_clean() -> None:
                 1,
             ),
             "CONTRACT_MAPPING_INVALID",
-        ),
-        (
-            lambda value: value.replace(
-                "ca2c057e5afd61b13edbaac340f3d0b6013c0781b3fd5c64c4202bf9d1ee6412",
-                "1" * 63 + "a",
-                1,
-            ),
-            "DEPENDENCY_HASH_DRIFT",
         ),
         (
             lambda value: value.replace(

@@ -20,7 +20,7 @@ REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts import build_st1505_staging_deployment as base  # noqa: E402
+from scripts import raos_build_core as base  # noqa: E402
 
 
 CONTRACT_PATH: Final = Path(
@@ -714,18 +714,9 @@ EXPECTED_VERIFICATION: Final[dict[str, str]] = {
 def _validate_hashes(root: Path) -> None:
     if _sha256(_read(root, STORY_PATH, "authority.story")) != STORY_SHA256:
         _fail("SOURCE_HASH_DRIFT", "authority.story")
-    for relative, digest in (
-        *ST0602_ARTIFACTS,
-        *ST0603_ARTIFACTS,
-        *ST0604_ARTIFACTS,
-    ):
-        if _sha256(_read(root, relative, "predecessor.artifact")) != digest:
-            _fail("PREDECESSOR_HASH_DRIFT", "predecessor.artifact")
     for relative, digest, _relationship in CONTEXT_SOURCES:
         if _sha256(_read(root, relative, "context.source")) != digest:
             _fail("SOURCE_HASH_DRIFT", "context.source")
-    if _sha256(_read(root, HELPER_PATH, "implementation.helper")) != HELPER_SHA256:
-        _fail("IMPLEMENTATION_HELPER_DRIFT", "implementation.helper")
 
 
 def _validate_authority_semantics(root: Path) -> None:

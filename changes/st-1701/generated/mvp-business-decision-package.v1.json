@@ -1,398 +1,96 @@
 {
-  "document": {
-    "id": "RAOS-MVP-BUSINESS-DECISION-PACKAGE-READ-MODEL-001",
-    "version": "1.0.0",
-    "story_id": "ST-1701",
-    "classification": "NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
-    "authority": "OWNER_APPROVED_CANONICAL_REVISION_EVIDENCE_CANDIDATE_ONLY",
-    "status": "OWNER_APPROVED_EVIDENCE_CANDIDATE_NOT_READY",
-    "executable": false,
-    "canonical_resolution_authority": "NONE",
-    "source_contract": "repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml",
-    "source_contract_sha256": "7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f",
-    "source_contract_internal_status": "PENDING_EXACT_REPOSITORY_OWNER_APPROVAL",
-    "approved_handoff": "repo://changes/st-1701/DESIGN_HANDOFF_V1_ST1701_MVP_DECISION_PACKAGE_v1.yaml",
-    "approved_handoff_sha256": "f5e8f70b74fd26c68b0dfd8a47dd35fc59b1651e9e553dad738d90b00acd1790",
-    "handoff_approval": "repo://changes/st-1701/DESIGN-HANDOFF-APPROVAL-v1.yaml",
-    "handoff_approval_sha256": "8a9029410bdad475eca2da7d0ab0f87cf0d3e1a8019e6102522d7cb18ac3dbd0",
-    "detached_final_package_approval": "repo://changes/st-1701/MVP-BUSINESS-DECISION-PACKAGE-APPROVAL-v1.yaml",
-    "detached_final_package_approval_sha256": "749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34",
-    "generated_by": "repo://scripts/build_st1701_business_inputs.py",
-    "generation_command": "uv run --locked --no-sync python scripts/build_st1701_business_inputs.py",
-    "serialization": "UTF8_JSON_INDENT_2_TRAILING_NEWLINE"
-  },
-  "final_package_approval": {
-    "source_package_internal": {
-      "required": true,
-      "status": "PENDING_EXACT_REPOSITORY_OWNER_APPROVAL",
-      "approved_source_contract_sha256": null,
-      "canonical_revision_evidence_authority": "NONE"
+  "action_boundary": {
+    "account_or_credential_setup": "NOT_AUTHORIZED",
+    "action_counts": {
+      "account": 0,
+      "browser": 0,
+      "domain": 0,
+      "external": 0,
+      "production": 0,
+      "provider": 0,
+      "publication": 0,
+      "release": 0,
+      "staging": 0
     },
-    "detached_effective": {
-      "uri": "repo://changes/st-1701/MVP-BUSINESS-DECISION-PACKAGE-APPROVAL-v1.yaml",
-      "bytes": 2098,
-      "sha256": "749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34",
-      "status": "APPROVED_AS_NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
-      "authority": "OWNER_APPROVED_CANONICAL_REVISION_EVIDENCE_CANDIDATE_ONLY",
-      "approved_by": "repository_owner:jamozi",
-      "approved_at": "2026-08-11T15:59:01Z",
-      "source_package_uri": "repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml",
-      "source_package_bytes": 10678,
-      "source_package_sha256": "7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f"
-    },
-    "effective_boundary": {
-      "source_package_internal_pending_field": "PRESERVED_IMMUTABLE_PROPOSAL_STATE",
-      "detached_exact_hash_approval": "EFFECTIVE",
-      "canonical_revision_request": "OWNER_APPROVED_EVIDENCE_CANDIDATE_NOT_READY",
-      "canonical_mutation_authority": "NONE",
-      "canonical_open_decision_status": "UNCHANGED",
-      "st0006_blocker_state": "UNCHANGED",
-      "gate_state": "BLOCKED",
-      "st1701_acceptance": "NOT_ACHIEVED",
-      "st1702_ready": false
-    },
-    "remaining_prerequisites": {
-      "od005_alternate_reviewer_or_approved_exception": "NOT_SATISFIED",
-      "od006_gold_evidence": "NOT_OBTAINED",
-      "od006_domain_editor_acceptance": "NOT_OBTAINED",
-      "formal_tst_032": "NOT_EXECUTED",
-      "canonical_revision_approval_and_import": "NOT_EXECUTED"
-    },
-    "external_and_release_boundary": {
-      "domain_purchase_or_control": "NOT_EXECUTED",
-      "account_or_credential_setup": "NOT_EXECUTED",
-      "browser_or_provider_action": "NOT_EXECUTED",
-      "staging": "NOT_EXECUTED",
-      "publication": "NOT_EXECUTED",
-      "release": "NOT_EXECUTED",
-      "production": "NOT_EXECUTED"
-    }
-  },
-  "authority_model": {
-    "package_authority": "NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
-    "canonical_authority": "UNCHANGED",
-    "canonical_open_decision_status": "UNCHANGED",
-    "st0006_blocker_state": "UNCHANGED",
-    "gate_state": "BLOCKED",
-    "st1701_acceptance": "NOT_ACHIEVED",
-    "tst_032": "NOT_EXECUTED",
-    "implementation_authority_before_exact_handoff_approval": "NONE",
-    "canonical_resolution_authority_from_local_package": "NONE",
-    "exact_final_package_approval_required": true,
-    "canonical_revision_required_after_package_approval": true
+    "browser_actions": "NOT_AUTHORIZED",
+    "domain_purchase": "NOT_AUTHORIZED",
+    "external_actions": "NOT_AUTHORIZED",
+    "golden_products": "NOT_CREATED",
+    "production": "NOT_AUTHORIZED",
+    "provider_actions": "NOT_AUTHORIZED",
+    "publication": "NOT_AUTHORIZED",
+    "release": "NOT_AUTHORIZED",
+    "runtime_category_config": "NOT_CREATED",
+    "staging": "NOT_AUTHORIZED"
   },
   "canonical_truth_boundary": {
+    "activation": "BLOCKED_UNRESOLVED_INPUTS",
     "canonical_open_decisions_document_status": "ACTIVE_UNCHANGED",
+    "effective_canonical_status": "UNCHANGED",
     "existing_unresolved_registry": "PRESERVED_ACTIVE",
-    "scoped_unresolved_count": 7,
+    "gate_state": "BLOCKED",
+    "global_blocked_target_count": 6,
     "global_decision_count": 15,
     "global_unresolved_blocker_count": 14,
-    "global_blocked_target_count": 6,
-    "activation": "BLOCKED_UNRESOLVED_INPUTS",
-    "gate_state": "BLOCKED",
-    "st1701_acceptance": "NOT_ACHIEVED",
-    "effective_canonical_status": "UNCHANGED"
+    "scoped_unresolved_count": 7,
+    "st1701_acceptance": "NOT_ACHIEVED"
   },
-  "record_status_model": {
-    "closed_values": [
-      "OWNER_APPROVED",
-      "PARTIAL",
-      "EVIDENCE_PENDING",
-      "EXECUTION_PENDING"
-    ],
-    "meanings": {
-      "OWNER_APPROVED": "The owner selected a complete business value, but canonical status and downstream gates remain unchanged.",
-      "PARTIAL": "At least one decision element or required professional confirmation remains absent.",
-      "EVIDENCE_PENDING": "The proposed value requires external or domain evidence before it can be proposed as canonically resolved.",
-      "EXECUTION_PENDING": "The business choice is selected, but a separately approved external action or setup remains unexecuted."
-    },
-    "forbidden_values": [
-      "RESOLVED",
-      "VALIDATED",
-      "ACTIVE",
-      "RELEASED",
-      "PRODUCTION_READY"
-    ],
-    "status_is_not_canonical_resolution": true
+  "development_context": {
+    "mode": "CONTINUOUS_REVERSIBLE_REPOSITORY_WORK",
+    "story_ids": [
+      "ST-1701"
+    ]
   },
-  "scoped_decisions": [
-    {
-      "id": "OD-001",
-      "canonical_truth": {
-        "source_status": "HUMAN_DECISION_REQUIRED",
-        "resolution_state": "UNRESOLVED",
-        "active_blocker": true,
-        "selected_value": null,
-        "blocked_targets": [
-          "GATE-0",
-          "GATE-1",
-          "GATE-2",
-          "GATE-3",
-          "GATE-4",
-          "PRODUCTION_RELEASE"
-        ]
-      },
-      "owner_decision_candidate": {
-        "id": "OD-001",
-        "record_status": "OWNER_APPROVED",
-        "owner": "Product Owner",
-        "selected_value": {
-          "category_id": "suitcase_and_carry_bags",
-          "display_name_ja": "スーツケース・キャリーバッグ"
-        },
-        "runtime_activation": "DISABLED",
-        "synthetic_fixture_use_only": true,
-        "canonical_resolution": "NOT_PROPOSED_UNTIL_PACKAGE_APPROVAL"
-      }
+  "document": {
+    "canonical_resolution_authority": "NONE",
+    "classification": "NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
+    "executable": false,
+    "id": "RAOS-MVP-BUSINESS-DECISION-PACKAGE-001",
+    "status": "LOCAL_DECISION_MODEL",
+    "story_id": "ST-1701",
+    "version": "2.0.0"
+  },
+  "evidence_boundary": {
+    "formal_tst_032": "NOT_EXECUTED",
+    "live_evidence": "NOT_OBTAINED",
+    "local_generation_and_tests": "IMPLEMENTATION_ONLY_NOT_FORMAL_VALIDATION",
+    "od006_external_gold_evidence": "NOT_OBTAINED",
+    "production": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  },
+  "implementation_boundary": {
+    "canonical_revision_request": {
+      "authority": "PROPOSAL_ONLY",
+      "external_execution_is_not_resolution_evidence": true,
+      "generated": true,
+      "may_edit_canonical": false,
+      "may_emit_resolved": false,
+      "may_unblock_gate": false,
+      "prerequisite": [
+        "OD-006 Gold Evidence accepted by Domain Editor",
+        "all PARTIAL elements required for scoped ST-1701 acceptance completed"
+      ]
     },
-    {
-      "id": "OD-002",
-      "canonical_truth": {
-        "source_status": "HUMAN_DECISION_REQUIRED",
-        "resolution_state": "UNRESOLVED",
-        "active_blocker": true,
-        "selected_value": null,
-        "blocked_targets": [
-          "GATE-0",
-          "GATE-1",
-          "GATE-2",
-          "GATE-3",
-          "GATE-4",
-          "PRODUCTION_RELEASE"
-        ]
-      },
-      "owner_decision_candidate": {
-        "id": "OD-002",
-        "record_status": "EXECUTION_PENDING",
-        "owner": "Product Owner",
-        "selected_value": {
-          "brand_name": "旅具比較ノート",
-          "formal_domain_candidate": "tabigu-note.jp",
-          "operator_form": "INDIVIDUAL_SOLE_PROPRIETOR_WITH_TRADE_NAME"
-        },
-        "execution_state": {
-          "domain_purchase": "NOT_EXECUTED",
-          "domain_control_evidence": "NOT_OBTAINED",
-          "public_activation": "FORBIDDEN"
-        },
-        "domain_rules": {
-          "allowed_tld": ".jp",
-          "fallback_domain": "example.invalid",
-          "candidate_is_not_ownership_evidence": true
-        }
-      }
+    "existing_unresolved_registry": {
+      "canonical_counts_and_blockers_unchanged": true,
+      "generated_uri": "repo://changes/st-1701/generated/unresolved-mvp-business-inputs.v1.json",
+      "preserve": true,
+      "source_owner_id": "build_st1701_business_inputs",
+      "source_owner_version": "2",
+      "source_uri": "repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml"
     },
-    {
-      "id": "OD-005",
-      "canonical_truth": {
-        "source_status": "HUMAN_DECISION_REQUIRED",
-        "resolution_state": "UNRESOLVED",
-        "active_blocker": true,
-        "selected_value": null,
-        "blocked_targets": [
-          "GATE-0",
-          "GATE-1",
-          "GATE-2",
-          "GATE-3",
-          "GATE-4",
-          "PRODUCTION_RELEASE"
-        ]
-      },
-      "owner_decision_candidate": {
-        "id": "OD-005",
-        "record_status": "PARTIAL",
-        "owner": "Business Owner",
-        "selected_value": {
-          "primary_reviewer": "REPOSITORY_OWNER",
-          "alternate_reviewer": null,
-          "standard_labor_cost": {
-            "amount": 3000,
-            "currency": "JPY",
-            "unit": "HOUR"
-          }
-        },
-        "publication_until_alternate_or_explicit_exception": "BLOCKED",
-        "contribution_profit_labor_basis": "OWNER_SELECTED_NOT_CANONICALLY_ACTIVE"
-      }
-    },
-    {
-      "id": "OD-006",
-      "canonical_truth": {
-        "source_status": "EXTERNAL_EVIDENCE_REQUIRED",
-        "resolution_state": "UNRESOLVED",
-        "active_blocker": true,
-        "selected_value": null,
-        "blocked_targets": [
-          "GATE-0",
-          "GATE-1",
-          "GATE-2",
-          "GATE-3",
-          "GATE-4",
-          "PRODUCTION_RELEASE"
-        ]
-      },
-      "owner_decision_candidate": {
-        "id": "OD-006",
-        "record_status": "EVIDENCE_PENDING",
-        "owner": "Domain Editor",
-        "selected_value": {
-          "category_id": "suitcase_and_carry_bags",
-          "granularity": "EXACT_SKU",
-          "automatic_merge": "EXACT_MATCH_ONLY",
-          "required_exact_fields": [
-            "brand",
-            "manufacturer_model",
-            "size",
-            "capacity",
-            "external_dimensions",
-            "color_or_variant",
-            "set_count"
-          ],
-          "jan_policy": {
-            "optional_identity_evidence": true,
-            "if_either_value_present": "both must be present, valid, and exactly equal",
-            "if_both_absent": "absence alone neither authorizes nor vetoes an otherwise exact match"
-          },
-          "missing_required_field": "HUMAN_REVIEW",
-          "conflict": "HUMAN_REVIEW",
-          "fuzzy_matching": "FORBIDDEN",
-          "inferred_equivalence": "FORBIDDEN",
-          "automatic_split_or_merge_without_exact_rule": "FORBIDDEN"
-        },
-        "evidence_gate": {
-          "status": "EXTERNAL_GOLD_EVIDENCE_NOT_OBTAINED",
-          "minimum_listing_count": 30,
-          "minimum_product_family_count": 10,
-          "minimum_shop_count": 5,
-          "required_cases": [
-            "exact_duplicates",
-            "color_or_variant_differences",
-            "size_or_capacity_differences",
-            "missing_jan",
-            "bundles_and_set_count",
-            "conflicting_fields"
-          ],
-          "maximum_false_automatic_merges": 0,
-          "reviewer": "DOMAIN_EDITOR",
-          "raw_source_links_and_observations_required": true
-        },
-        "runtime_automatic_merge": "DISABLED_PENDING_EVIDENCE_AND_CANONICAL_REVISION"
-      }
-    },
-    {
-      "id": "OD-007",
-      "canonical_truth": {
-        "source_status": "HUMAN_DECISION_REQUIRED",
-        "resolution_state": "UNRESOLVED",
-        "active_blocker": true,
-        "selected_value": null,
-        "blocked_targets": [
-          "GATE-0",
-          "GATE-1",
-          "GATE-2",
-          "GATE-3",
-          "GATE-4",
-          "PRODUCTION_RELEASE"
-        ]
-      },
-      "owner_decision_candidate": {
-        "id": "OD-007",
-        "record_status": "OWNER_APPROVED",
-        "owner": "Managing Editor",
-        "selected_value": {
-          "maximum_age": {
-            "price_hours": 72,
-            "availability_hours": 48,
-            "affiliate_link_hours": 72,
-            "major_specifications_days": 90,
-            "image_days": 30
-          },
-          "stale_or_missing_behavior": {
-            "price": "HIDE_OR_MARK_UNAVAILABLE",
-            "availability": "HIDE_OR_MARK_UNKNOWN",
-            "affiliate_link": "DO_NOT_RENDER_ACTIONABLE_LINK",
-            "major_specifications": "BLOCK_AFFECTED_CLAIM_OR_REQUIRE_REVIEW",
-            "image": "HIDE_IMAGE_OR_USE_APPROVED_NON_PRODUCT_PLACEHOLDER"
-          },
-          "stale_never_treated_as_fresh": true
-        },
-        "runtime_activation": "DISABLED_PENDING_CANONICAL_REVISION"
-      }
-    },
-    {
-      "id": "OD-008",
-      "canonical_truth": {
-        "source_status": "HUMAN_DECISION_REQUIRED",
-        "resolution_state": "UNRESOLVED",
-        "active_blocker": true,
-        "selected_value": null,
-        "blocked_targets": [
-          "GATE-0",
-          "GATE-1",
-          "GATE-2",
-          "GATE-3",
-          "GATE-4",
-          "PRODUCTION_RELEASE"
-        ]
-      },
-      "owner_decision_candidate": {
-        "id": "OD-008",
-        "record_status": "OWNER_APPROVED",
-        "owner": "Business Owner / Legal",
-        "selected_value": {
-          "consultation_trigger": "ACTUAL_IDENTIFIED_LEGAL_OR_POLICY_ISSUE",
-          "default_stop_scope": "AFFECTED_SCOPE_ONLY",
-          "site_wide_stop_trigger": "SHARED_POLICY_OR_SYSTEMIC_RISK",
-          "legal_judgment_by_ai_or_developer": "FORBIDDEN",
-          "professional_decision_record_required": true
-        },
-        "unresolved_issue_behavior": "BLOCK_AFFECTED_PUBLICATION_OR_OPERATION"
-      }
-    },
-    {
-      "id": "OD-009",
-      "canonical_truth": {
-        "source_status": "HUMAN_DECISION_REQUIRED",
-        "resolution_state": "UNRESOLVED",
-        "active_blocker": true,
-        "selected_value": null,
-        "blocked_targets": [
-          "GATE-0",
-          "GATE-1",
-          "GATE-2",
-          "GATE-3",
-          "GATE-4",
-          "PRODUCTION_RELEASE"
-        ]
-      },
-      "owner_decision_candidate": {
-        "id": "OD-009",
-        "record_status": "OWNER_APPROVED",
-        "owner": "Business Owner",
-        "selected_value": {
-          "currency": "JPY",
-          "monthly_external_spend_cap": 30000,
-          "thresholds": {
-            "warning_percent": 60,
-            "optional_external_work_stop_percent": 80,
-            "hard_stop_new_external_spend_percent": 100
-          },
-          "initial_soft_allocation": {
-            "aws": 15000,
-            "llm": 10000,
-            "other_external": 5000
-          },
-          "acceptable_loss_window": {
-            "months": 3,
-            "cumulative_amount": 90000,
-            "terminal_decision": "EXPLICIT_GO_NO_GO"
-          },
-          "overrun_behavior": "FAIL_CLOSED_NO_NEW_EXTERNAL_SPEND"
-        },
-        "production_activation": "DISABLED_PENDING_CANONICAL_REVISION_AND_ACCOUNT_SETUP"
-      }
+    "suitcase_candidate_boundary": {
+      "allowed_test_data": "SYNTHETIC_VALIDATOR_FIXTURES_ONLY",
+      "external_fetch": "FORBIDDEN",
+      "golden_products": "NOT_CREATED",
+      "production_data": "FORBIDDEN",
+      "purpose": "DECISION_PACKAGE_AND_EVIDENCE_PLANNING_ONLY",
+      "runtime_config": "NOT_CREATED",
+      "st1702_authority": "NOT_GRANTED"
     }
-  ],
+  },
   "informational_cross_story_owner_inputs": {
     "authority": "INFORMATION_ONLY_NO_IMPLEMENTATION_OR_STATUS_EFFECT",
     "owner_follow_up_required": true,
@@ -416,225 +114,247 @@
         "id": "OD-011",
         "record_status": "PARTIAL",
         "selection": {
+          "alternate": null,
           "critical": "immediate email plus GitHub Issue",
           "high": "GitHub Issue plus daily email",
-          "primary": "REPOSITORY_OWNER",
-          "alternate": null
+          "primary": "REPOSITORY_OWNER"
         }
       },
       {
         "id": "OD-012",
         "record_status": "PARTIAL",
         "selection": {
-          "consent": "EXPLICIT_OPT_IN",
           "before_consent": "FIRST_PARTY_MINIMAL_EVENTS_ONLY",
-          "ga4": "OPT_IN_ONLY",
-          "exact_public_privacy_text": "NOT_APPROVED"
+          "consent": "EXPLICIT_OPT_IN",
+          "exact_public_privacy_text": "NOT_APPROVED",
+          "ga4": "OPT_IN_ONLY"
         }
       },
       {
         "id": "OD-013",
         "record_status": "OWNER_APPROVED",
         "selection": {
-          "primary_region": "ap-northeast-1",
           "backup_region": "ap-northeast-3",
-          "foreign_copy_default": "FORBIDDEN"
+          "foreign_copy_default": "FORBIDDEN",
+          "primary_region": "ap-northeast-1"
         }
       },
       {
         "id": "OD-014",
         "record_status": "PARTIAL",
         "selection": {
-          "analytics_raw_days": 90,
-          "security_and_audit_years": 7,
           "ai_run_and_evaluation_months": 37,
-          "publication_referenced_ai_artifact": "EXTEND_WHILE_REQUIRED_BY_PUBLICATION_EVIDENCE",
+          "analytics_raw_days": 90,
           "finance_fiscal_years": 7,
-          "professional_confirmation_before_production": "REQUIRED"
+          "professional_confirmation_before_production": "REQUIRED",
+          "publication_referenced_ai_artifact": "EXTEND_WHILE_REQUIRED_BY_PUBLICATION_EVIDENCE",
+          "security_and_audit_years": 7
         }
       },
       {
         "id": "OD-015",
         "record_status": "EXECUTION_PENDING",
         "selection": {
+          "account_or_credential_setup": "NOT_EXECUTED",
           "ordered_setup": [
             "domain_and_aws_cognito",
             "rakuten",
             "openai",
             "search_console",
             "ga4_after_consent"
-          ],
-          "account_or_credential_setup": "NOT_EXECUTED"
+          ]
         }
       }
     ]
   },
-  "pending_conditions": {
-    "scoped": [
-      {
-        "id": "OD-002",
-        "record_status": "EXECUTION_PENDING",
-        "condition": "domain purchase is NOT_EXECUTED, domain-control evidence is NOT_OBTAINED, and public activation remains FORBIDDEN"
-      },
-      {
-        "id": "OD-005",
-        "record_status": "PARTIAL",
-        "condition": "alternate_reviewer is absent; publication remains blocked unless a separately approved policy explicitly permits an exception"
-      },
-      {
-        "id": "OD-006",
-        "record_status": "EVIDENCE_PENDING",
-        "condition": "closed external Gold Evidence has not been obtained"
-      },
-      {
-        "id": "OD-006",
-        "record_status": "EVIDENCE_PENDING",
-        "condition": "evidence requires at least 30 listings, 10 product families, and 5 shops"
-      },
-      {
-        "id": "OD-006",
-        "record_status": "EVIDENCE_PENDING",
-        "condition": "required cases are exact_duplicates, color_or_variant_differences, size_or_capacity_differences, missing_jan, bundles_and_set_count, and conflicting_fields"
-      },
-      {
-        "id": "OD-006",
-        "record_status": "EVIDENCE_PENDING",
-        "condition": "maximum false automatic merges is 0 and Domain Editor review remains required"
-      },
-      {
-        "id": "OD-006",
-        "record_status": "EVIDENCE_PENDING",
-        "condition": "raw source links and observations are required"
-      }
+  "record_status_model": {
+    "closed_values": [
+      "OWNER_APPROVED",
+      "PARTIAL",
+      "EVIDENCE_PENDING",
+      "EXECUTION_PENDING"
     ],
-    "informational_no_status_effect": [
-      {
-        "id": "OD-003",
-        "record_status": "EVIDENCE_PENDING",
-        "condition": "Rakuten account and report sample are not prepared"
+    "forbidden_values": [
+      "RESOLVED",
+      "VALIDATED",
+      "ACTIVE",
+      "RELEASED",
+      "PRODUCTION_READY"
+    ],
+    "meanings": {
+      "EVIDENCE_PENDING": "The proposed value requires external or domain evidence before it can be proposed as canonically resolved.",
+      "EXECUTION_PENDING": "The business choice is selected, but a separately approved external action or setup remains unexecuted.",
+      "OWNER_APPROVED": "The owner selected a complete business value, but canonical status and downstream gates remain unchanged.",
+      "PARTIAL": "At least one decision element or required professional confirmation remains absent."
+    },
+    "status_is_not_canonical_resolution": true
+  },
+  "scoped_decisions": [
+    {
+      "canonical_resolution": "NOT_PROPOSED_UNTIL_PACKAGE_APPROVAL",
+      "id": "OD-001",
+      "owner": "Product Owner",
+      "record_status": "OWNER_APPROVED",
+      "runtime_activation": "DISABLED",
+      "selected_value": {
+        "category_id": "suitcase_and_carry_bags",
+        "display_name_ja": "スーツケース・キャリーバッグ"
       },
-      {
-        "id": "OD-010",
-        "record_status": "EXECUTION_PENDING",
-        "condition": "Amazon Cognito account setup and activation are unexecuted"
+      "synthetic_fixture_use_only": true
+    },
+    {
+      "domain_rules": {
+        "allowed_tld": ".jp",
+        "candidate_is_not_ownership_evidence": true,
+        "fallback_domain": "example.invalid"
       },
-      {
-        "id": "OD-011",
-        "record_status": "PARTIAL",
-        "condition": "alternate notification owner is absent"
+      "execution_state": {
+        "domain_control_evidence": "NOT_OBTAINED",
+        "domain_purchase": "NOT_EXECUTED",
+        "public_activation": "FORBIDDEN"
       },
-      {
-        "id": "OD-012",
-        "record_status": "PARTIAL",
-        "condition": "exact public privacy text is not approved"
-      },
-      {
-        "id": "OD-014",
-        "record_status": "PARTIAL",
-        "condition": "professional confirmation before Production is required"
-      },
-      {
-        "id": "OD-015",
-        "record_status": "EXECUTION_PENDING",
-        "condition": "account and credential setup is NOT_EXECUTED"
+      "id": "OD-002",
+      "owner": "Product Owner",
+      "record_status": "EXECUTION_PENDING",
+      "selected_value": {
+        "brand_name": "旅具比較ノート",
+        "formal_domain_candidate": "tabigu-note.jp",
+        "operator_form": "INDIVIDUAL_SOLE_PROPRIETOR_WITH_TRADE_NAME"
       }
-    ]
-  },
-  "implementation_boundary": {
-    "existing_unresolved_registry": {
-      "source_uri": "repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml",
-      "source_sha256": "d07a2f3902dcd23f7ef9d46ecd3ab68162bcc28f2b3ad849bbe0e27891f502aa",
-      "generated_uri": "repo://changes/st-1701/generated/unresolved-mvp-business-inputs.v1.json",
-      "generated_sha256": "22394f5b37d3fe90cc5c31aff47be0d0f31f061398bbd9d90b4030bcb050c33b",
-      "preserve": true,
-      "canonical_counts_and_blockers_unchanged": true
     },
-    "suitcase_candidate_boundary": {
-      "purpose": "DECISION_PACKAGE_AND_EVIDENCE_PLANNING_ONLY",
-      "runtime_config": "NOT_CREATED",
-      "golden_products": "NOT_CREATED",
-      "production_data": "FORBIDDEN",
-      "external_fetch": "FORBIDDEN",
-      "st1702_authority": "NOT_GRANTED",
-      "allowed_test_data": "SYNTHETIC_VALIDATOR_FIXTURES_ONLY"
+    {
+      "contribution_profit_labor_basis": "OWNER_SELECTED_NOT_CANONICALLY_ACTIVE",
+      "id": "OD-005",
+      "owner": "Business Owner",
+      "publication_until_alternate_or_explicit_exception": "BLOCKED",
+      "record_status": "PARTIAL",
+      "selected_value": {
+        "alternate_reviewer": null,
+        "primary_reviewer": "REPOSITORY_OWNER",
+        "standard_labor_cost": {
+          "amount": 3000,
+          "currency": "JPY",
+          "unit": "HOUR"
+        }
+      }
     },
-    "canonical_revision_request": {
-      "generated": true,
-      "authority": "PROPOSAL_ONLY",
-      "may_edit_canonical": false,
-      "may_emit_resolved": false,
-      "may_unblock_gate": false,
-      "prerequisite": [
-        "exact final decision-package hash approval by repository owner",
-        "OD-006 Gold Evidence accepted by Domain Editor",
-        "all PARTIAL elements required for scoped ST-1701 acceptance completed or explicitly superseded by approved policy"
-      ],
-      "external_execution_is_not_resolution_evidence": true
+    {
+      "evidence_gate": {
+        "maximum_false_automatic_merges": 0,
+        "minimum_listing_count": 30,
+        "minimum_product_family_count": 10,
+        "minimum_shop_count": 5,
+        "raw_source_links_and_observations_required": true,
+        "required_cases": [
+          "exact_duplicates",
+          "color_or_variant_differences",
+          "size_or_capacity_differences",
+          "missing_jan",
+          "bundles_and_set_count",
+          "conflicting_fields"
+        ],
+        "reviewer": "DOMAIN_EDITOR",
+        "status": "EXTERNAL_GOLD_EVIDENCE_NOT_OBTAINED"
+      },
+      "id": "OD-006",
+      "owner": "Domain Editor",
+      "record_status": "EVIDENCE_PENDING",
+      "runtime_automatic_merge": "DISABLED_PENDING_EVIDENCE_AND_CANONICAL_REVISION",
+      "selected_value": {
+        "automatic_merge": "EXACT_MATCH_ONLY",
+        "automatic_split_or_merge_without_exact_rule": "FORBIDDEN",
+        "category_id": "suitcase_and_carry_bags",
+        "conflict": "HUMAN_REVIEW",
+        "fuzzy_matching": "FORBIDDEN",
+        "granularity": "EXACT_SKU",
+        "inferred_equivalence": "FORBIDDEN",
+        "jan_policy": {
+          "if_both_absent": "absence alone neither authorizes nor vetoes an otherwise exact match",
+          "if_either_value_present": "both must be present, valid, and exactly equal",
+          "optional_identity_evidence": true
+        },
+        "missing_required_field": "HUMAN_REVIEW",
+        "required_exact_fields": [
+          "brand",
+          "manufacturer_model",
+          "size",
+          "capacity",
+          "external_dimensions",
+          "color_or_variant",
+          "set_count"
+        ]
+      }
+    },
+    {
+      "id": "OD-007",
+      "owner": "Managing Editor",
+      "record_status": "OWNER_APPROVED",
+      "runtime_activation": "DISABLED_PENDING_CANONICAL_REVISION",
+      "selected_value": {
+        "maximum_age": {
+          "affiliate_link_hours": 72,
+          "availability_hours": 48,
+          "image_days": 30,
+          "major_specifications_days": 90,
+          "price_hours": 72
+        },
+        "stale_never_treated_as_fresh": true,
+        "stale_or_missing_behavior": {
+          "affiliate_link": "DO_NOT_RENDER_ACTIONABLE_LINK",
+          "availability": "HIDE_OR_MARK_UNKNOWN",
+          "image": "HIDE_IMAGE_OR_USE_APPROVED_NON_PRODUCT_PLACEHOLDER",
+          "major_specifications": "BLOCK_AFFECTED_CLAIM_OR_REQUIRE_REVIEW",
+          "price": "HIDE_OR_MARK_UNAVAILABLE"
+        }
+      }
+    },
+    {
+      "id": "OD-008",
+      "owner": "Business Owner / Legal",
+      "record_status": "OWNER_APPROVED",
+      "selected_value": {
+        "consultation_trigger": "ACTUAL_IDENTIFIED_LEGAL_OR_POLICY_ISSUE",
+        "default_stop_scope": "AFFECTED_SCOPE_ONLY",
+        "legal_judgment_by_ai_or_developer": "FORBIDDEN",
+        "professional_decision_record_required": true,
+        "site_wide_stop_trigger": "SHARED_POLICY_OR_SYSTEMIC_RISK"
+      },
+      "unresolved_issue_behavior": "BLOCK_AFFECTED_PUBLICATION_OR_OPERATION"
+    },
+    {
+      "id": "OD-009",
+      "owner": "Business Owner",
+      "production_activation": "DISABLED_PENDING_CANONICAL_REVISION_AND_ACCOUNT_SETUP",
+      "record_status": "OWNER_APPROVED",
+      "selected_value": {
+        "acceptable_loss_window": {
+          "cumulative_amount": 90000,
+          "months": 3,
+          "terminal_decision": "EXPLICIT_GO_NO_GO"
+        },
+        "currency": "JPY",
+        "initial_soft_allocation": {
+          "aws": 15000,
+          "llm": 10000,
+          "other_external": 5000
+        },
+        "monthly_external_spend_cap": 30000,
+        "overrun_behavior": "FAIL_CLOSED_NO_NEW_EXTERNAL_SPEND",
+        "thresholds": {
+          "hard_stop_new_external_spend_percent": 100,
+          "optional_external_work_stop_percent": 80,
+          "warning_percent": 60
+        }
+      }
     }
-  },
-  "evidence_boundary": {
-    "source_package_internal": {
-      "local_generation_and_tests": "IMPLEMENTATION_ONLY_NOT_FORMAL_VALIDATION",
-      "exact_final_package_owner_approval": "PENDING",
-      "od006_external_gold_evidence": "NOT_OBTAINED",
-      "formal_tst_032": "NOT_EXECUTED",
-      "live_evidence": "NOT_OBTAINED",
-      "staging": "NOT_EXECUTED",
-      "publication": "NOT_EXECUTED",
-      "release": "NOT_EXECUTED",
-      "production": "NOT_EXECUTED"
-    },
-    "effective_final_package_owner_approval": {
-      "status": "APPROVED_AS_NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
-      "authority": "OWNER_APPROVED_CANONICAL_REVISION_EVIDENCE_CANDIDATE_ONLY",
-      "approval_sha256": "749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34"
-    },
-    "canonical_revision_request_readiness": "NOT_READY",
-    "remaining_prerequisites": {
-      "od005_alternate_reviewer_or_approved_exception": "NOT_SATISFIED",
-      "od006_gold_evidence": "NOT_OBTAINED",
-      "od006_domain_editor_acceptance": "NOT_OBTAINED",
-      "formal_tst_032": "NOT_EXECUTED",
-      "canonical_revision_approval_and_import": "NOT_EXECUTED"
-    }
-  },
-  "action_boundary": {
-    "runtime_category_config": "NOT_CREATED",
-    "golden_products": "NOT_CREATED",
-    "external_actions": "NOT_AUTHORIZED",
-    "browser_actions": "NOT_AUTHORIZED",
-    "provider_actions": "NOT_AUTHORIZED",
-    "account_or_credential_setup": "NOT_AUTHORIZED",
-    "domain_purchase": "NOT_AUTHORIZED",
-    "publication": "NOT_AUTHORIZED",
-    "staging": "NOT_AUTHORIZED",
-    "release": "NOT_AUTHORIZED",
-    "production": "NOT_AUTHORIZED",
-    "action_counts": {
-      "external": 0,
-      "browser": 0,
-      "provider": 0,
-      "account": 0,
-      "domain": 0,
-      "publication": 0,
-      "staging": 0,
-      "release": 0,
-      "production": 0
-    }
-  },
-  "downstream_truth": {
-    "st_1702_ready": false,
-    "readiness_status": "BLOCKED_BY_ST_1701_ACCEPTANCE",
-    "publication_ready": false,
-    "release_ready": false,
-    "production_ready": false
-  },
-  "prohibited_effects": [
-    "NO_CANONICAL_FILE_MUTATION",
-    "NO_CANONICAL_DECISION_STATUS_CHANGE",
-    "NO_GATE_OR_STATUS_PROMOTION",
-    "NO_ST1702_RUNTIME_CATEGORY_CONFIGURATION",
-    "NO_ST1702_GOLDEN_PRODUCTS",
-    "NO_EXTERNAL_OR_LIVE_ACTION"
-  ]
+  ],
+  "status_boundary": {
+    "canonical_authority": "UNCHANGED",
+    "canonical_open_decision_status": "UNCHANGED",
+    "canonical_revision_required": true,
+    "gate_state": "BLOCKED",
+    "st0006_blocker_state": "UNCHANGED",
+    "st1701_acceptance": "NOT_ACHIEVED",
+    "tst_032": "NOT_EXECUTED"
+  }
 }

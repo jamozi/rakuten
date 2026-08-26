@@ -10,7 +10,7 @@ from typing import Any
 
 import pytest
 
-from conftest import INVALID_FIXTURE_ROOT, VALID_FIXTURE_ROOT
+from .support import INVALID_FIXTURE_ROOT, VALID_FIXTURE_ROOT
 import raos.domain.editorial.content_ast as loader_module
 from raos.domain.editorial import (
     ContentAst,

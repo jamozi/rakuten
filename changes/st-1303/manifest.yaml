@@ -16,8 +16,8 @@ source_artifacts:
   bytes: 2886
   sha256: 4944f2cdc8fe7c73b3acba4086b1bf2a79c35e96cb6a5d4f151ab83fc529a819
 - uri: repo://scripts/build_st1303_attribution_engine_reference_plan.py
-  bytes: 30801
-  sha256: fe6e7f34e748fc66dfa7961a16aa4ec7dee608f51ca300617506b6866e1e637c
+  bytes: 30822
+  sha256: 8355596ed0c32c5dc1e30430d8b90706486532c63b84f9f84c657398cb54b95d
 - uri: repo://tests/st1303/conftest.py
   bytes: 1000
   sha256: 1d972ef360dbfda49b235f8c5066b8fa812d55db4cb0114cf34165cc7340e62f
@@ -28,8 +28,8 @@ source_artifacts:
   bytes: 5161
   sha256: 3c5d9bdf542bca44dfbdd8e1e0d14cac0a08a4cf91c7e3433b59087214cfa144
 - uri: repo://tests/st1303/test_negative_cases.py
-  bytes: 11326
-  sha256: b2afcd5ea05cc8927becc95d3a7987ec72e3a14ef8386d4aebad7efd2a56bf52
+  bytes: 11796
+  sha256: 516605fa175d34206ec837b5826c082d51173a2a83363cacb232ff1b0367f971
 generated_artifacts:
 - uri: repo://changes/st-1303/generated/attribution-engine-reference-plan.v1.json
   bytes: 16908

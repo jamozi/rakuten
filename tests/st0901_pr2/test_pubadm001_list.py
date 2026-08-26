@@ -6,7 +6,7 @@ from typing import cast
 
 import pytest
 
-from conftest import (
+from .support import (
     ACTOR_ID,
     OTHER_REVIEWER_ID,
     REVIEWER_ID,

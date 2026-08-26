@@ -13,7 +13,7 @@ from uuid import UUID
 
 import pytest
 
-from runtime_v2_support import (
+from .runtime_v2_support import (
     DECISION_AT_V2,
     DECISION_OPERATION_IDS_V2,
     SITE_ID_V2,
@@ -79,7 +79,7 @@ def _request(
     supersedes: UUID | None,
     reason: str,
 ) -> ProductIdentityHumanDecisionRequestV2:
-    from runtime_v2_support import AuthorizationFixtureV2
+    from .runtime_v2_support import AuthorizationFixtureV2
 
     assert type(authorization) is AuthorizationFixtureV2
     return ProductIdentityHumanDecisionRequestV2(

@@ -12,8 +12,8 @@ source_artifacts:
 - uri: repo://scripts/build_st0904_public_projection_runtime_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 22696
-  sha256: 635bae43f31cf9d2c63ed85aaf3a89937c8451cd725b873ddbb2aac024631703
+  bytes: 22552
+  sha256: 9b46cc4a0b5b8a816d288f926f2b95847f1c3f9ee86096ab27cade65a79d1b62
 - uri: repo://python/raos/domain/publishing/public_projection_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -62,8 +62,8 @@ source_artifacts:
 - uri: repo://tests/st0904_v2/conftest.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 1517
-  sha256: f9635ce5a5b1efc27ca1b40f78b06ef1ed5a92580a5c0bb6aedaa8fd5ce60c2b
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st0904_v2/test_domain.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -72,23 +72,23 @@ source_artifacts:
 - uri: repo://tests/st0904_v2/test_application_adapter.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 4564
-  sha256: 45c384bb52461eee84c61eac176b76bace0625b59f7b8d44b5bd7c080536f1e0
+  bytes: 4563
+  sha256: c628ce5dc819865c309d697e266e48e8d6a011870370d1414ac7c0acdfefd5d2
 - uri: repo://tests/st0904_v2/test_generation.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 4826
-  sha256: 39fbf8a108ac342ec76d2c7922fcb1be2204db1ecde2bc289fc59d9ae7e7fecc
+  bytes: 4582
+  sha256: 94521785d9428a8f54e9946e33c8ed908b56dd15f5222eb19be859eb19aab017
 - uri: repo://tests/st0904_v2/test_static_boundary.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 2786
-  sha256: be03c8887b078fb6802cac79a028670001229c4bd685e1e6ebfd029c214393a0
+  bytes: 2785
+  sha256: 8c13a7ffbdc6eeba4db0278878316aadac214bb513085dc6a29826390d8fdcd6
 - uri: repo://AGENTS.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown
-  bytes: 54428
-  sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
+  bytes: 4225
+  sha256: 9bc1321a39df5260efa9121b7df76802045f59add4ae27eab198890745b26d18
 - uri: repo://docs/canonical/08_codex/AGENTS.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown
@@ -157,8 +157,8 @@ source_artifacts:
 - uri: repo://changes/st-0903/runtime-manifest.v2.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
-  bytes: 13326
-  sha256: e5a37bc89e9a51ec48f47573f832f4893f27dc1ff580a0b677767f5ccfedbf69
+  bytes: 13324
+  sha256: 117e8d31ff22dc0b32738924b590a723c181dec8683a4bf0b1f0391ca81cd507
 - uri: repo://python/raos/domain/publishing/publication_snapshot_v2.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
@@ -222,18 +222,18 @@ source_artifacts:
 - uri: repo://changes/st-0904/generated/public-projection-reference-plan.v1.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
-  bytes: 17894
-  sha256: bd40c921dde98f0e9d77e697b752cda7310b6b501d077d3130f2e31aa151f133
+  bytes: 17837
+  sha256: a3e4a105eaf114c22e71abc1fbc39e2e0674ae77b6dfe53f1639c94c7a3e97b0
 - uri: repo://changes/st-0904/manifest.yaml
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
-  bytes: 7855
-  sha256: 136bc0b583ccf44fce21232a319d317fd95b8205aa9a5f2572af2d76bc051a3c
+  bytes: 7793
+  sha256: 000eeb6640123a3331ef9213dcef78f8dbcd980ffcd07da9b9a6a18a69bd3591
 - uri: repo://scripts/build_st0904_public_projection_reference_plan.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
-  bytes: 45785
-  sha256: 58cfd88a61eee699cf11bd305b8a6ce65e91a73ca6aa806db685d20378df9642
+  bytes: 45271
+  sha256: 29dae8588b9c418841df78792907805b35328a229b5829b0476b1f9c283c2061
 - uri: repo://scripts/secure_generated_publication.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python

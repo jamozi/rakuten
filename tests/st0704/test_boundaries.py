@@ -11,7 +11,7 @@ import pickle
 
 import pytest
 
-from conftest import IDENTITY, NOW, quote, reservation_request, routing_service
+from .support import IDENTITY, NOW, quote, reservation_request, routing_service
 from raos.domain.ai.routing import (
     AuthorizedRouteReservation,
     BudgetReservation,

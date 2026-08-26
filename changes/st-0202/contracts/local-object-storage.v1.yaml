@@ -81,7 +81,7 @@ compose:
 runtime:
   wrapper: repo://scripts/object_storage_service.sh
   fixture_client: repo://scripts/object_storage_fixture.py
-  interface: scripts/object_storage_service.sh --docker ABSOLUTE_PATH COMMAND
+  interface: scripts/object_storage_service.sh --docker EXECUTABLE COMMAND
   commands: [config, up, check, down, test]
   docker_host: unix:///var/run/docker.sock
   minimum_compose_version: 2.24.4

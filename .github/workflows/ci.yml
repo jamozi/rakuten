@@ -1,13 +1,14 @@
-name: Base CI
+name: Final Integration CI
 
 on:
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: base-ci-${{ github.event.pull_request.number }}
+  group: final-integration-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 defaults:
@@ -15,398 +16,124 @@ defaults:
     shell: bash
 
 jobs:
+  lock:
+    name: Lock and Reproducibility
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: 0.12.3
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 24.18.1
+          cache: npm
+      - run: npm install --global npm@11.16.0 --no-audit --no-fund
+      - run: uv sync --locked --group dev
+      - run: uv lock --check
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: .venv/bin/python scripts/verify_dev_toolchain.py
+      - run: npm ls --all
+
   static:
     name: Static
+    needs: lock
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - name: Check out pull-request tree
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 1
           persist-credentials: false
-          show-progress: false
-      - name: Validate dependency metadata without network
-        run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/validate_ci_hydration.py
-      - name: Install exact uv
-        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
-        with:
-          version: 0.12.1
-          enable-cache: false
-      - name: Install exact Node
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
-        with:
-          node-version: 24.18.1
-          package-manager-cache: false
-          check-latest: false
-      - name: Prove npm lock closure without network
-        run: |
-          set -euo pipefail
-          node_path="$(command -v node)"
-          node_prefix="$(dirname "$(dirname "$node_path")")"
-          npm_cli="$node_prefix/lib/node_modules/npm/bin/npm-cli.js"
-          preflight_root="$(mktemp -d "$RUNNER_TEMP/raos-npm-preflight.XXXXXX")"
-          preflight_workspace="$preflight_root/workspace"
-          preflight_home="$preflight_root/home"
-          preflight_config="$preflight_root/config"
-          preflight_cache="$preflight_root/cache"
-          umask 077
-          mkdir -p "$preflight_workspace/apps/web" \
-            "$preflight_workspace/packages/web-contracts" \
-            "$preflight_workspace/packages/web-ui" \
-            "$preflight_home" "$preflight_config" "$preflight_cache"
-          cp -- package.json package-lock.json "$preflight_workspace/"
-          cp -- apps/web/package.json "$preflight_workspace/apps/web/"
-          cp -- packages/web-contracts/package.json \
-            "$preflight_workspace/packages/web-contracts/"
-          cp -- packages/web-ui/package.json \
-            "$preflight_workspace/packages/web-ui/"
-          : >"$preflight_config/user.conf"
-          : >"$preflight_config/global.conf"
-          lock_sha="$(sha256sum package-lock.json | cut -d' ' -f1)"
-          scripts/run_network_denied.sh --home "$preflight_home" -- \
-            /usr/bin/env -i --chdir="$preflight_workspace" \
-            PATH=/usr/bin:/bin HOME="$preflight_home" LANG=C.UTF-8 \
-            LC_ALL=C.UTF-8 TZ=UTC CI=true \
-            "$node_path" "$npm_cli" \
-            --userconfig "$preflight_config/user.conf" \
-            --globalconfig "$preflight_config/global.conf" \
-            --cache "$preflight_cache" --registry https://registry.npmjs.org/ \
-            --replace-registry-host=always --ignore-scripts=true --audit=false \
-            --fund=false --update-notifier=false --package-lock=true --save=false \
-            --install-links=true --legacy-peer-deps=false --strict-peer-deps=true \
-            --prefer-dedupe=true --omit-lockfile-registry-resolved=false \
-            --provenance=false --loglevel=error ci --dry-run --offline >/dev/null
-          test ! -e "$preflight_workspace/node_modules"
-          test "$lock_sha" = \
-            "$(sha256sum "$preflight_workspace/package-lock.json" | cut -d' ' -f1)"
-      - name: Install exact Python without repository code
-        run: |
-          set -euo pipefail
-          uv_path="$(command -v uv)"
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
-            "$uv_path" --no-config --color never python install \
-            --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
-      - name: Hydrate source-constrained locked dependencies
-        run: |
-          set -euo pipefail
-          uv_path="$(command -v uv)"
-          node_path="$(command -v node)"
-          node_prefix="$(dirname "$(dirname "$node_path")")"
-          npm_cli="$node_prefix/lib/node_modules/npm/bin/npm-cli.js"
-          npm_config_dir="$(mktemp -d "$RUNNER_TEMP/raos-npm-config.XXXXXX")"
-          npm_cache_dir="$(mktemp -d "$RUNNER_TEMP/raos-npm-cache.XXXXXX")"
-          umask 077
-          : >"$npm_config_dir/user.conf"
-          : >"$npm_config_dir/global.conf"
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
-            "$uv_path" --no-config --color never sync --locked \
-            --no-default-groups --group dev --no-install-project --no-install-local \
-            --managed-python --no-python-downloads --python 3.14.6 \
-            --no-build --no-sources --default-index https://pypi.org/simple \
-            --index-strategy first-index --keyring-provider disabled --link-mode copy \
-            --resolution highest --prerelease disallow \
-            --exclude-newer 2026-08-01T16:50:16Z --no-cache --no-progress
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC CI=true \
-            "$node_path" "$npm_cli" \
-            --userconfig "$npm_config_dir/user.conf" \
-            --globalconfig "$npm_config_dir/global.conf" \
-            --cache "$npm_cache_dir" --registry https://registry.npmjs.org/ \
-            --replace-registry-host=always --ignore-scripts=true --audit=false \
-            --fund=false --update-notifier=false --package-lock=true --save=false \
-            --install-links=true --legacy-peer-deps=false --strict-peer-deps=true \
-            --prefer-dedupe=true --omit-lockfile-registry-resolved=false \
-            --provenance=false ci
-      - name: Reproduce static job
-        run: |
-          set -euo pipefail
-          node_path="$(command -v node)"
-          node_prefix="$(dirname "$(dirname "$node_path")")"
-          scripts/run_network_denied.sh --home "$HOME" -- \
-            "$GITHUB_WORKSPACE/scripts/ci_job.sh" \
-            --uv "$(command -v uv)" \
-            --node "$node_path" \
-            --npm-cli "$node_prefix/lib/node_modules/npm/bin/npm-cli.js" \
-            static
+      - uses: ./.github/actions/setup
+      - run: make final-static
+      - run: .venv/bin/python scripts/raos_build.py check --all
+      - run: .venv/bin/python scripts/status_v2.py --check
 
-  unit:
-    name: Unit
+  tests:
+    name: Tests
+    needs: lock
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
-      - name: Check out pull-request tree
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 1
           persist-credentials: false
-          show-progress: false
-      - name: Validate dependency metadata without network
-        run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/validate_ci_hydration.py
-      - name: Install exact uv
-        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
-        with:
-          version: 0.12.1
-          enable-cache: false
-      - name: Install exact Node
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
-        with:
-          node-version: 24.18.1
-          package-manager-cache: false
-          check-latest: false
-      - name: Prove npm lock closure without network
-        run: |
-          set -euo pipefail
-          node_path="$(command -v node)"
-          node_prefix="$(dirname "$(dirname "$node_path")")"
-          npm_cli="$node_prefix/lib/node_modules/npm/bin/npm-cli.js"
-          preflight_root="$(mktemp -d "$RUNNER_TEMP/raos-npm-preflight.XXXXXX")"
-          preflight_workspace="$preflight_root/workspace"
-          preflight_home="$preflight_root/home"
-          preflight_config="$preflight_root/config"
-          preflight_cache="$preflight_root/cache"
-          umask 077
-          mkdir -p "$preflight_workspace/apps/web" \
-            "$preflight_workspace/packages/web-contracts" \
-            "$preflight_workspace/packages/web-ui" \
-            "$preflight_home" "$preflight_config" "$preflight_cache"
-          cp -- package.json package-lock.json "$preflight_workspace/"
-          cp -- apps/web/package.json "$preflight_workspace/apps/web/"
-          cp -- packages/web-contracts/package.json \
-            "$preflight_workspace/packages/web-contracts/"
-          cp -- packages/web-ui/package.json \
-            "$preflight_workspace/packages/web-ui/"
-          : >"$preflight_config/user.conf"
-          : >"$preflight_config/global.conf"
-          lock_sha="$(sha256sum package-lock.json | cut -d' ' -f1)"
-          scripts/run_network_denied.sh --home "$preflight_home" -- \
-            /usr/bin/env -i --chdir="$preflight_workspace" \
-            PATH=/usr/bin:/bin HOME="$preflight_home" LANG=C.UTF-8 \
-            LC_ALL=C.UTF-8 TZ=UTC CI=true \
-            "$node_path" "$npm_cli" \
-            --userconfig "$preflight_config/user.conf" \
-            --globalconfig "$preflight_config/global.conf" \
-            --cache "$preflight_cache" --registry https://registry.npmjs.org/ \
-            --replace-registry-host=always --ignore-scripts=true --audit=false \
-            --fund=false --update-notifier=false --package-lock=true --save=false \
-            --install-links=true --legacy-peer-deps=false --strict-peer-deps=true \
-            --prefer-dedupe=true --omit-lockfile-registry-resolved=false \
-            --provenance=false --loglevel=error ci --dry-run --offline >/dev/null
-          test ! -e "$preflight_workspace/node_modules"
-          test "$lock_sha" = \
-            "$(sha256sum "$preflight_workspace/package-lock.json" | cut -d' ' -f1)"
-      - name: Install exact Python without repository code
-        run: |
-          set -euo pipefail
-          uv_path="$(command -v uv)"
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
-            "$uv_path" --no-config --color never python install \
-            --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
-      - name: Hydrate source-constrained locked dependencies
-        run: |
-          set -euo pipefail
-          uv_path="$(command -v uv)"
-          node_path="$(command -v node)"
-          node_prefix="$(dirname "$(dirname "$node_path")")"
-          npm_cli="$node_prefix/lib/node_modules/npm/bin/npm-cli.js"
-          umask 077
-          uv_cache_dir="$RUNNER_TEMP/raos-unit-uv-cache"
-          test ! -e "$uv_cache_dir"
-          test ! -L "$uv_cache_dir"
-          mkdir --mode=0700 -- "$uv_cache_dir"
-          npm_config_dir="$(mktemp -d "$RUNNER_TEMP/raos-npm-config.XXXXXX")"
-          npm_cache_dir="$GITHUB_WORKSPACE/.npm-cache"
-          test ! -e "$npm_cache_dir"
-          test ! -L "$npm_cache_dir"
-          mkdir --mode=0700 -- "$npm_cache_dir"
-          test "$(stat --format='%u:%g:%a' -- "$npm_cache_dir")" = \
-            "$(id -u):$(id -g):700"
-          : >"$npm_config_dir/user.conf"
-          : >"$npm_config_dir/global.conf"
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
-            "$uv_path" --no-config --color never --cache-dir "$uv_cache_dir" \
-            sync --locked \
-            --no-default-groups --group dev --no-install-project --no-install-local \
-            --managed-python --no-python-downloads --python 3.14.6 \
-            --no-build --no-sources --default-index https://pypi.org/simple \
-            --index-strategy first-index --keyring-provider disabled --link-mode copy \
-            --resolution highest --prerelease disallow \
-            --exclude-newer 2026-08-01T16:50:16Z --no-progress
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC CI=true \
-            "$node_path" "$npm_cli" \
-            --userconfig "$npm_config_dir/user.conf" \
-            --globalconfig "$npm_config_dir/global.conf" \
-            --cache "$npm_cache_dir" --registry https://registry.npmjs.org/ \
-            --replace-registry-host=always --ignore-scripts=true --audit=false \
-            --fund=false --update-notifier=false --package-lock=true --save=false \
-            --install-links=true --legacy-peer-deps=false --strict-peer-deps=true \
-            --prefer-dedupe=true --omit-lockfile-registry-resolved=false \
-            --provenance=false ci
-      - name: Reproduce unit job
-        run: |
-          set -euo pipefail
-          node_path="$(command -v node)"
-          node_prefix="$(dirname "$(dirname "$node_path")")"
-          scripts/run_network_denied.sh --home "$HOME" -- \
-            "$GITHUB_WORKSPACE/scripts/ci_job.sh" \
-            --uv "$(command -v uv)" \
-            --node "$node_path" \
-            --npm-cli "$node_prefix/lib/node_modules/npm/bin/npm-cli.js" \
-            --uv-cache "$RUNNER_TEMP/raos-unit-uv-cache" \
-            --runner-temp "$RUNNER_TEMP" \
-            unit
+      - uses: ./.github/actions/setup
+      - run: make test-parallel test-serial
 
   contracts:
     name: Contracts
+    needs: lock
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - name: Check out pull-request tree
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 1
           persist-credentials: false
-          show-progress: false
-      - name: Validate dependency metadata without network
-        run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/validate_ci_hydration.py
-      - name: Install exact uv
-        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
-        with:
-          version: 0.12.1
-          enable-cache: false
-      - name: Install exact Node
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
-        with:
-          node-version: 24.18.1
-          package-manager-cache: false
-          check-latest: false
-      - name: Prove npm lock closure without network
-        run: |
-          set -euo pipefail
-          node_path="$(command -v node)"
-          node_prefix="$(dirname "$(dirname "$node_path")")"
-          npm_cli="$node_prefix/lib/node_modules/npm/bin/npm-cli.js"
-          preflight_root="$(mktemp -d "$RUNNER_TEMP/raos-npm-preflight.XXXXXX")"
-          preflight_workspace="$preflight_root/workspace"
-          preflight_home="$preflight_root/home"
-          preflight_config="$preflight_root/config"
-          preflight_cache="$preflight_root/cache"
-          umask 077
-          mkdir -p "$preflight_workspace/apps/web" \
-            "$preflight_workspace/packages/web-contracts" \
-            "$preflight_workspace/packages/web-ui" \
-            "$preflight_home" "$preflight_config" "$preflight_cache"
-          cp -- package.json package-lock.json "$preflight_workspace/"
-          cp -- apps/web/package.json "$preflight_workspace/apps/web/"
-          cp -- packages/web-contracts/package.json \
-            "$preflight_workspace/packages/web-contracts/"
-          cp -- packages/web-ui/package.json \
-            "$preflight_workspace/packages/web-ui/"
-          : >"$preflight_config/user.conf"
-          : >"$preflight_config/global.conf"
-          lock_sha="$(sha256sum package-lock.json | cut -d' ' -f1)"
-          scripts/run_network_denied.sh --home "$preflight_home" -- \
-            /usr/bin/env -i --chdir="$preflight_workspace" \
-            PATH=/usr/bin:/bin HOME="$preflight_home" LANG=C.UTF-8 \
-            LC_ALL=C.UTF-8 TZ=UTC CI=true \
-            "$node_path" "$npm_cli" \
-            --userconfig "$preflight_config/user.conf" \
-            --globalconfig "$preflight_config/global.conf" \
-            --cache "$preflight_cache" --registry https://registry.npmjs.org/ \
-            --replace-registry-host=always --ignore-scripts=true --audit=false \
-            --fund=false --update-notifier=false --package-lock=true --save=false \
-            --install-links=true --legacy-peer-deps=false --strict-peer-deps=true \
-            --prefer-dedupe=true --omit-lockfile-registry-resolved=false \
-            --provenance=false --loglevel=error ci --dry-run --offline >/dev/null
-          test ! -e "$preflight_workspace/node_modules"
-          test "$lock_sha" = \
-            "$(sha256sum "$preflight_workspace/package-lock.json" | cut -d' ' -f1)"
-      - name: Install exact Python without repository code
-        run: |
-          set -euo pipefail
-          uv_path="$(command -v uv)"
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
-            "$uv_path" --no-config --color never python install \
-            --managed-python --no-bin --no-registry --no-cache --no-progress 3.14.6
-      - name: Hydrate source-constrained locked dependencies
-        run: |
-          set -euo pipefail
-          uv_path="$(command -v uv)"
-          node_path="$(command -v node)"
-          node_prefix="$(dirname "$(dirname "$node_path")")"
-          npm_cli="$node_prefix/lib/node_modules/npm/bin/npm-cli.js"
-          npm_config_dir="$(mktemp -d "$RUNNER_TEMP/raos-npm-config.XXXXXX")"
-          npm_cache_dir="$(mktemp -d "$RUNNER_TEMP/raos-npm-cache.XXXXXX")"
-          umask 077
-          : >"$npm_config_dir/user.conf"
-          : >"$npm_config_dir/global.conf"
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC \
-            "$uv_path" --no-config --color never sync --locked \
-            --no-default-groups --group dev --no-install-project --no-install-local \
-            --managed-python --no-python-downloads --python 3.14.6 \
-            --no-build --no-sources --default-index https://pypi.org/simple \
-            --index-strategy first-index --keyring-provider disabled --link-mode copy \
-            --resolution highest --prerelease disallow \
-            --exclude-newer 2026-08-01T16:50:16Z --no-cache --no-progress
-          env -i PATH=/usr/bin:/bin HOME="$HOME" LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC CI=true \
-            "$node_path" "$npm_cli" \
-            --userconfig "$npm_config_dir/user.conf" \
-            --globalconfig "$npm_config_dir/global.conf" \
-            --cache "$npm_cache_dir" --registry https://registry.npmjs.org/ \
-            --replace-registry-host=always --ignore-scripts=true --audit=false \
-            --fund=false --update-notifier=false --package-lock=true --save=false \
-            --install-links=true --legacy-peer-deps=false --strict-peer-deps=true \
-            --prefer-dedupe=true --omit-lockfile-registry-resolved=false \
-            --provenance=false ci
-      - name: Reproduce contracts job
-        run: |
-          set -euo pipefail
-          node_path="$(command -v node)"
-          node_prefix="$(dirname "$(dirname "$node_path")")"
-          scripts/run_network_denied.sh --home "$HOME" -- \
-            "$GITHUB_WORKSPACE/scripts/ci_job.sh" \
-            --uv "$(command -v uv)" \
-            --node "$node_path" \
-            --npm-cli "$node_prefix/lib/node_modules/npm/bin/npm-cli.js" \
-            contracts
+      - uses: ./.github/actions/setup
+      - run: make contracts
 
-  database:
-    name: Database
+  data:
+    name: Data and Database
+    needs: lock
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
-      - name: Check out pull-request tree
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 1
           persist-credentials: false
-          show-progress: false
-      - name: Verify exact PostgreSQL service
-        run: scripts/postgres_service.sh --docker "$(command -v docker)" test
+      - uses: ./.github/actions/setup
+      - run: make database
 
   storage:
     name: Storage
+    needs: lock
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
-      - name: Check out pull-request tree
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 1
           persist-credentials: false
-          show-progress: false
-      - name: Verify exact object-storage service
-        run: scripts/object_storage_service.sh --docker "$(command -v docker)" test
+      - uses: ./.github/actions/setup
+      - run: make storage
 
   secrets:
     name: Secrets
+    needs: lock
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
-      - name: Check out complete pull-request history
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
           persist-credentials: false
-          show-progress: false
-      - name: Reproduce secret scan
-        run: scripts/run_network_denied.sh --home "$HOME" -- /usr/bin/python3 -I scripts/scan_secrets.py --worktree --git-history --reviewed-findings changes/st-0106/contracts/reviewed-secret-findings.v3.yaml
+      - uses: ./.github/actions/setup
+        with:
+          node: 'false'
+      - run: make final-secrets
+
+  final:
+    name: Final Integration
+    if: always()
+    needs: [lock, static, tests, contracts, data, storage, secrets]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Aggregate required jobs
+        env:
+          LOCK_RESULT: ${{ needs.lock.result }}
+          STATIC_RESULT: ${{ needs.static.result }}
+          TESTS_RESULT: ${{ needs.tests.result }}
+          CONTRACTS_RESULT: ${{ needs.contracts.result }}
+          DATA_RESULT: ${{ needs.data.result }}
+          STORAGE_RESULT: ${{ needs.storage.result }}
+          SECRETS_RESULT: ${{ needs.secrets.result }}
+        run: |
+          for result in "$LOCK_RESULT" "$STATIC_RESULT" "$TESTS_RESULT" \
+            "$CONTRACTS_RESULT" "$DATA_RESULT" "$STORAGE_RESULT" "$SECRETS_RESULT"; do
+            test "$result" = success
+          done

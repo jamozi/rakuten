@@ -65,8 +65,8 @@ source_artifacts:
   bytes: 6257
   sha256: f3590fb864de262eb1d31769ffe892010f41f98084c27634f099dfca9573f2f8
 - uri: repo://scripts/build_st0602_fact_extraction_validation_reference_plan.py
-  bytes: 28273
-  sha256: 94947fcde0e2f5d9c972c38dbe9d1fea287659c5a0e7ab329a485eaf61b1e753
+  bytes: 27890
+  sha256: 65b96985c7bc83390ee3ca57e9c16b7345b8aaa12139170ba2d2694e975bc528
 - uri: repo://tests/st0602/conftest.py
   bytes: 1029
   sha256: a687a2fee7033a83b82caa305712a1885a3c66d11d0efc7b761397447746d1c8
@@ -77,8 +77,8 @@ source_artifacts:
   bytes: 3734
   sha256: 1b5d8314fe24cbe9f76556fb5699d22168f17736ccce982f129de8a2209db2b2
 - uri: repo://tests/st0602/test_negative_cases.py
-  bytes: 12774
-  sha256: 46b65c0b3954da438425f734c7898dccdf39c9dd7445d4b4e15ac682b15c78c9
+  bytes: 12916
+  sha256: 6636f9a5d1e6ad9feecb416a52022c8d2965cea52f3dcc4d77a5567e59dcd27f
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0602/generated/fact-extraction-validation-reference-plan.v1.json

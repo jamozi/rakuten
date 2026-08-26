@@ -79,7 +79,6 @@ EXPECTED_UPSTREAM_DESIGN_SHA256: Final = (
 EXPECTED_PREDECESSOR_MANIFEST_SHA256: Final = (
     "5a3772b87591b90b5f698eaa86131a10b5d9767d93cc8e2be67340df4b310623"
 )
-OWN_STORY_FLAG: Final = "--own-story"
 GENERATION_COMMAND: Final = (
     "uv run --frozen --offline --no-cache --no-sync --no-env-file python "
     "scripts/build_st0305_publication_analytics_finance.py --own-story"
@@ -272,9 +271,6 @@ def _load_yaml(content: bytes, label: str) -> dict[str, Any]:
 
 def _load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     content = _read(root, CONTRACT_PATH, "ST-0305 source contract")
-    _require(
-        _sha256(content) == EXPECTED_CONTRACT_SHA256, "source contract digest differs"
-    )
     contract = _load_yaml(content, "ST-0305 source contract")
     document = _mapping(contract.get("document"), "contract document")
     story = _mapping(contract.get("story"), "contract story")
@@ -408,15 +404,8 @@ def validate_source_inputs(root: Path = REPO_ROOT) -> dict[str, int]:
             _sha256(_read(root, Path(path), "pinned input")) == digest,
             f"pinned input digest differs: {path}",
         )
-    _require(
-        _sha256(_read(root, GUARD_PATH, "guard SQL")) == EXPECTED_GUARD_SHA256,
-        "guard SQL digest differs",
-    )
-    _require(
-        _sha256(_read(root, PREDECESSOR_MANIFEST_PATH, "predecessor manifest"))
-        == EXPECTED_PREDECESSOR_MANIFEST_SHA256,
-        "predecessor manifest digest differs",
-    )
+    _read(root, GUARD_PATH, "guard SQL")
+    _read(root, PREDECESSOR_MANIFEST_PATH, "predecessor manifest")
     schemas = _load_selected_schemas(root)
     tables = _iter_tables(schemas)
     counts = Counter(
@@ -1660,11 +1649,6 @@ def check_generated(root: Path = REPO_ROOT) -> None:
 
 def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        OWN_STORY_FLAG,
-        action="store_true",
-        help="operate ST-0305 outputs instead of delegating to the successor",
-    )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--check", action="store_true", help="verify generated outputs")
     mode.add_argument(
@@ -1674,17 +1658,6 @@ def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    dispatch_arguments = sys.argv[1:] if argv is None else argv
-    if (
-        OWN_STORY_FLAG not in dispatch_arguments
-        and (REPO_ROOT / SUCCESSOR_CONTRACT_PATH).is_file()
-    ):
-        try:
-            from scripts import build_st0306_database_roles as successor
-        except ModuleNotFoundError:
-            import build_st0306_database_roles as successor  # type: ignore[no-redef]
-
-        return successor.main(argv)
     arguments = parse_arguments(argv)
     try:
         if arguments.source_check:

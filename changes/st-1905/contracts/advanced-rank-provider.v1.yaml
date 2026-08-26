@@ -70,17 +70,18 @@ authority:
 
 predecessor:
   story_id: ST-1206
-  binding: EXACT_BASE_COMMIT_BYTES
-  base_commit: ec3aa667a2c4d7b72b1778295ff16f5512ff1b13
+  binding: OWNER_SEMANTIC_VERSION
+  owner_id: build_st1206_keyword_rank_import
+  owner_version: 2
   artifacts:
-    changes/st-1206/contracts/keyword-rank-import.v1.yaml: 2f891e361224bbca3b6b284fd8b49cd76ba134b804e255ad1c515ff2318b8246
-    changes/st-1206/fixtures/recorded/keyword-rank-synthetic.v1.csv: e06d21cf450a75250e096d3528ac45839fa3fb7d08d9988a58d0e0b9ecd59611
-    changes/st-1206/generated/keyword-rank-evaluation.v1.json: 80b745e7b92b2b14babbd05bf684b440e4ee17e602ecdee12bc1cb22ac663ebc
-    changes/st-1206/manifest.yaml: b9cc790396b82bae909e5c3c6d7f3a2b48d4b21569cd533ef9b626024341571d
-    python/raos/domain/analytics/keyword_rank.py: 9d73e103487598762d914c036a79c933c2d4f3b4d309637851f3985369c903e7
-    python/raos/ports/keyword_rank.py: 132af0eb97addf17ea3e8de5ca3cee045c87d17f34ff1f4a0f29e45f1e0af2e8
-    python/raos/application/analytics/keyword_rank_import.py: 94c511e0b183223c905adf31f03e3bb8a2f6616acb52203febae63c4e70c4cee
-    python/raos/adapters/recorded_keyword_rank.py: cd598c7a8846875c32963a32fa1bbcebabec0e08ac458ee338f9375e8e48661c
+    - changes/st-1206/contracts/keyword-rank-import.v1.yaml
+    - changes/st-1206/fixtures/recorded/keyword-rank-synthetic.v1.csv
+    - changes/st-1206/generated/keyword-rank-evaluation.v1.json
+    - changes/st-1206/manifest.yaml
+    - python/raos/domain/analytics/keyword_rank.py
+    - python/raos/ports/keyword_rank.py
+    - python/raos/application/analytics/keyword_rank_import.py
+    - python/raos/adapters/recorded_keyword_rank.py
   required_semantics:
     default_scope: DISABLED
     recorded_synthetic_evaluation_only: true

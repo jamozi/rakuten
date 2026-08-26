@@ -8,7 +8,7 @@ from typing import cast
 
 import pytest
 
-from conftest import NOW, authentication_service, session
+from .support import NOW, authentication_service, session
 from raos.adapters.disabled_admin_authorization_http import (
     DisabledAdminAuthorizationHttpAdapter,
 )
@@ -33,7 +33,7 @@ from raos.domain.iam.authorization import (
 from raos.adapters.recorded_authorization import (
     RecordedSqliteAuthorizationRepository,
 )
-from test_durable_authorization import (
+from .test_durable_authorization import (
     ENTITLEMENT_REVISION,
     POLICY_REVISION,
     _command,

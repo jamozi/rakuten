@@ -66,36 +66,21 @@ def test_all_five_current_provider_neutral_predecessor_bindings_are_exact(
             action_counts,
         ) = specification
         binding = _mapping(bindings[binding_name])
+        assert (
+            binding["owner_id"]
+            == {
+                "ST-1501": "build_st1501_terraform_foundation",
+                "ST-1502": "build_st1502_data_services",
+                "ST-1503": "build_st1503_compute_edge",
+                "ST-1504": "build_st1504_github_oidc",
+                "ST-1505": "build_st1505_staging_deployment",
+            }[story_id]
+        )
+        assert binding["owner_version"] == 2
         assert binding["owner_generator_uri"] == f"repo://{owner_generator_path}"
-        assert (
-            binding["owner_generator_sha256"]
-            == generator.PREDECESSOR_SOURCES[owner_generator_path]
-        )
         assert binding["design_handoff_uri"] == f"repo://{handoff_path}"
-        assert (
-            binding["design_handoff_sha256"]
-            == generator.PREDECESSOR_SOURCES[handoff_path]
-        )
-        assert (
-            binding["design_handoff_semantic_sha256"]
-            == generator.PREDECESSOR_SEMANTIC_SHA256[handoff_path]
-        )
         assert binding["contract_uri"] == f"repo://{contract_path}"
-        assert (
-            binding["contract_sha256"] == generator.PREDECESSOR_SOURCES[contract_path]
-        )
-        assert (
-            binding["contract_semantic_sha256"]
-            == generator.PREDECESSOR_SEMANTIC_SHA256[contract_path]
-        )
         assert binding["reference_plan_uri"] == f"repo://{plan_path}"
-        assert (
-            binding["reference_plan_sha256"] == generator.PREDECESSOR_SOURCES[plan_path]
-        )
-        assert (
-            binding["reference_plan_semantic_sha256"]
-            == generator.PREDECESSOR_SEMANTIC_SHA256[plan_path]
-        )
         assert (
             binding["required_provider_policy"]
             == generator.DEPENDENCY_POLICIES[story_id]

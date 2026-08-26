@@ -6,7 +6,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     CONTENT,
     DIGEST,
     SITE_B,

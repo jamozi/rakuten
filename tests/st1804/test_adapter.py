@@ -11,7 +11,7 @@ from typing import Any, cast
 
 import pytest
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.adapters.recorded_gate3_economics import RecordedGate3EconomicsAdapter
 from raos.application.analytics.gate3_economics import RecordedGate3EconomicsJob
 from raos.domain.analytics.gate3_economics import (

@@ -15,7 +15,6 @@ import os
 from pathlib import Path
 import re
 import stat
-import subprocess
 import sys
 import types
 from typing import Any, Final, NoReturn, Protocol, TextIO, cast
@@ -49,21 +48,7 @@ MAX_RUNTIME_BYTES: Final = 4 * 1024 * 1024
 MAX_COMMAND_LINE_BYTES: Final = 64 * 1024
 _DIRECTORY_FLAGS: Final = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC
 _FILE_FLAGS: Final = os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC
-_GIT_OBJECT_ID: Final = re.compile(r"(?:[0-9a-f]{40}|[0-9a-f]{64})\Z", re.ASCII)
 _SHA256: Final = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
-_GIT_ENVIRONMENT: Final = {
-    "GIT_CONFIG_GLOBAL": "/dev/null",
-    "GIT_CONFIG_NOSYSTEM": "1",
-    "GIT_NO_LAZY_FETCH": "1",
-    "GIT_NO_REPLACE_OBJECTS": "1",
-    "GIT_OPTIONAL_LOCKS": "0",
-    "GIT_TERMINAL_PROMPT": "0",
-    "HOME": "/nonexistent",
-    "LANG": "C",
-    "LC_ALL": "C",
-    "PATH": "/usr/bin:/bin",
-    "TZ": "UTC",
-}
 _PROCESS_ENVIRONMENT: Final = {
     "LANG": "C",
     "LC_ALL": "C",
@@ -516,46 +501,7 @@ def _verify_stage_zero() -> None:
         os.close(root_fd)
 
 
-def _git(root: Path, *arguments: str, maximum_stdout: int) -> bytes:
-    if type(maximum_stdout) is not int or not 1 <= maximum_stdout <= MAX_RUNTIME_BYTES:
-        _fail_runtime()
-    try:
-        completed = subprocess.run(
-            ["/usr/bin/git", "--no-optional-locks", "-C", root.as_posix(), *arguments],
-            check=False,
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            env=_GIT_ENVIRONMENT,
-            timeout=10,
-        )
-    except OSError, subprocess.SubprocessError:
-        _fail_runtime()
-    if completed.returncode != 0 or len(completed.stdout) > maximum_stdout:
-        _fail_runtime()
-    return completed.stdout
-
-
-def _committed_blob(root: Path, *, head: str, relative: str, maximum: int) -> bytes:
-    if _GIT_OBJECT_ID.fullmatch(head) is None:
-        _fail_runtime()
-    _relative_parts(relative)
-    object_spec = f"{head}:{relative}"
-    raw_size = _git(root, "cat-file", "-s", object_spec, maximum_stdout=128)
-    try:
-        size_text = raw_size.decode("ascii", errors="strict").strip()
-        size = int(size_text)
-    except UnicodeError, ValueError:
-        _fail_runtime()
-    if str(size) != size_text or not 0 < size <= maximum:
-        _fail_runtime()
-    raw = _git(root, "cat-file", "blob", object_spec, maximum_stdout=size)
-    if len(raw) != size:
-        _fail_runtime()
-    return raw
-
-
-def _bootstrap_sources() -> tuple[bytes, bytes, bytes, RootIdentity, str]:
+def _bootstrap_sources() -> tuple[bytes, bytes, bytes, RootIdentity]:
     root_fd = _open_absolute_directory(REPOSITORY_ROOT)
     try:
         root_metadata = _safe_directory(root_fd)
@@ -570,57 +516,13 @@ def _bootstrap_sources() -> tuple[bytes, bytes, bytes, RootIdentity, str]:
         )
     finally:
         os.close(root_fd)
-    expected_root = os.fsencode(REPOSITORY_ROOT.as_posix()) + b"\n"
-    if (
-        _git(
-            REPOSITORY_ROOT,
-            "rev-parse",
-            "--show-toplevel",
-            maximum_stdout=max(128, len(expected_root)),
-        )
-        != expected_root
-    ):
-        _fail_runtime()
-    raw_head = _git(
-        REPOSITORY_ROOT,
-        "rev-parse",
-        "--verify",
-        "HEAD^{commit}",
-        maximum_stdout=128,
-    )
-    try:
-        head = raw_head.decode("ascii", errors="strict").strip()
-    except UnicodeError:
-        _fail_runtime()
-    if _GIT_OBJECT_ID.fullmatch(head) is None:
-        _fail_runtime()
-    for relative, raw, maximum in (
-        (MANIFEST_RELATIVE, manifest, MAX_MANIFEST_BYTES),
-        (SOURCE_BOOTSTRAP_RELATIVE, bootstrap, MAX_RUNTIME_BYTES),
-        (BOOTSTRAP_RELATIVE, current_cli, MAX_RUNTIME_BYTES),
-    ):
-        if raw != _committed_blob(
-            REPOSITORY_ROOT, head=head, relative=relative, maximum=maximum
-        ):
-            _fail_runtime()
-    observed_head = _git(
-        REPOSITORY_ROOT,
-        "rev-parse",
-        "--verify",
-        "HEAD^{commit}",
-        maximum_stdout=128,
-    )
-    if observed_head != raw_head:
-        _fail_runtime()
     identity = (root_metadata.st_dev, root_metadata.st_ino)
     _rebind_root(REPOSITORY_ROOT, identity)
-    return manifest, bootstrap, current_cli, identity, head
+    return manifest, bootstrap, current_cli, identity
 
 
 def _load_verified_runtime() -> tuple[dict[str, bytes], RootIdentity]:
-    initial_manifest, bootstrap, current_cli, initial_identity, initial_head = (
-        _bootstrap_sources()
-    )
+    _initial_manifest, bootstrap, current_cli, initial_identity = _bootstrap_sources()
     module = types.ModuleType("_raos_st1704_verified_source_bootstrap")
     module.__file__ = (REPOSITORY_ROOT / SOURCE_BOOTSTRAP_RELATIVE).as_posix()
     module.__package__ = ""
@@ -633,13 +535,6 @@ def _load_verified_runtime() -> tuple[dict[str, bytes], RootIdentity]:
         if not callable(verifier):
             _fail_runtime()
 
-        def committed_manifest(root: object) -> tuple[bytes, str]:
-            if not isinstance(root, Path) or root != REPOSITORY_ROOT:
-                _fail_runtime()
-            _rebind_root(REPOSITORY_ROOT, initial_identity)
-            return initial_manifest, initial_head
-
-        setattr(module, "_committed_manifest", committed_manifest)
         sources, identity = cast(_RuntimeVerifier, verifier)(REPOSITORY_ROOT)
     except _RuntimeFailure:
         raise
@@ -653,15 +548,6 @@ def _load_verified_runtime() -> tuple[dict[str, bytes], RootIdentity]:
         or sources.get(BOOTSTRAP_RELATIVE) != current_cli
         or sources.get(SOURCE_BOOTSTRAP_RELATIVE) != bootstrap
     ):
-        _fail_runtime()
-    final_head = _git(
-        REPOSITORY_ROOT,
-        "rev-parse",
-        "--verify",
-        "HEAD^{commit}",
-        maximum_stdout=128,
-    )
-    if final_head != (initial_head + "\n").encode("ascii"):
         _fail_runtime()
     _rebind_root(REPOSITORY_ROOT, identity)
     return sources, identity

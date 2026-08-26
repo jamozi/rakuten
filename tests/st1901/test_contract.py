@@ -6,7 +6,7 @@ import hashlib
 
 import yaml
 
-from conftest import CONTRACT_PATH, REPOSITORY_ROOT
+from .support import CONTRACT_PATH, REPOSITORY_ROOT
 from raos.domain.ai.model_judge_calibration import (
     DEFAULT_MODEL_JUDGE_CALIBRATION_SCOPE,
     MAXIMUM_CRITICAL_FALSE_FAIL_RATE_MICROS,

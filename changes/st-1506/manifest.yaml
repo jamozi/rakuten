@@ -7,7 +7,7 @@ document:
   generation_command: uv run --locked --no-sync python scripts/build_st1506_production_deployment.py
 provenance:
   contract_uri: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
-  contract_sha256: 3acad1c924ec66a65c9a0915674233926aeb1ff236b2706f32ad75e4b29b19e1
+  contract_sha256: fc6daf0ff3d8535ab492626604cae0784835b897054a2e11f5e111e7febba6c3
   authority_inputs:
   - uri: repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
     sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
@@ -45,8 +45,6 @@ provenance:
     sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
   - uri: repo://docs/canonical/05_test/RAOS_11_release_evidence_template_v1.0.yaml
     sha256: 3354001be5fc0f7f7ef6a265fdd3112618ee943092755745d8cd62986487e95a
-  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   - uri: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml
     sha256: 5dc4ccfaa954b65aaae39a5d899c1c4e7f7d106787780d502514a48c7c13ad5e
   predecessor_inputs:
@@ -97,8 +95,8 @@ provenance:
 source_artifact_count: 8
 source_artifacts:
 - uri: repo://changes/st-1506/contracts/production-deployment-definition.v1.yaml
-  bytes: 34188
-  sha256: 3acad1c924ec66a65c9a0915674233926aeb1ff236b2706f32ad75e4b29b19e1
+  bytes: 31070
+  sha256: fc6daf0ff3d8535ab492626604cae0784835b897054a2e11f5e111e7febba6c3
 - uri: repo://changes/st-1506/DESIGN_HANDOFF_V1_ST1506_PROVIDER_NEUTRAL_PRODUCTION.yaml
   bytes: 11679
   sha256: 5dc4ccfaa954b65aaae39a5d899c1c4e7f7d106787780d502514a48c7c13ad5e
@@ -106,25 +104,25 @@ source_artifacts:
   bytes: 9249
   sha256: 6c6af3972a75a6f9c3d7af8952332cf84c8f811cc893bc8f5cf742f120846270
 - uri: repo://scripts/build_st1506_production_deployment.py
-  bytes: 78141
-  sha256: cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be
+  bytes: 77893
+  sha256: f68a2d3b2acb42cb092dd6bf562c43deae8e3da0e9cc7ec3a76ba279f431168f
 - uri: repo://tests/st1506/conftest.py
   bytes: 650
   sha256: 6e1d73217032d1b903701e6c589d89df06201adafa2185053a4a3500ef187eee
 - uri: repo://tests/st1506/test_contract.py
-  bytes: 20201
-  sha256: 28a30d2ff951181a81f1d0c059ba60f88f7fa49a442613efa2987f10575ec06d
+  bytes: 19703
+  sha256: 59b6a2a2cb0ef560cef232aec6b51e09c5e365d72190727a108c17f9f99d6d08
 - uri: repo://tests/st1506/test_generation.py
   bytes: 11709
   sha256: 7b9a98f4562f78e8967c70525b09e821da9e031e044acf859c1284c4dd21ccb5
 - uri: repo://tests/st1506/test_negative_cases.py
-  bytes: 44292
-  sha256: db57659aaae744048160a784976ff38a50838303e7cfeb9d725fe5a388b37a8c
+  bytes: 1405
+  sha256: 3dca153f09d454fe7cfbf3a2bf874345977c8a5d62920cbf5b27732afcd15862
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://infra/terraform/deployment-production/production-deployment.reference-plan.v1.json
-  bytes: 32723
-  sha256: 13db1afcf826b9a307e4a80a3503a562204280f422be094826764b13464bf0ba
+  bytes: 29557
+  sha256: dbc7186a7b0f213abfc39c4d639f81fccc6335435b8d8523e8e1b670c20f0faa
 manifest_self_integrity:
   included_in_generated_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check

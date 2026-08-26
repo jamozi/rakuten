@@ -7,7 +7,7 @@ from pathlib import Path
 
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.domain.ops.audit_runtime_v2 import AUDIT_RUNTIME_CONTRACT_SHA256_V2
 
 

@@ -6,7 +6,7 @@ import hashlib
 
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.domain.publishing.review_workflow import (
     CHECKLIST_EVIDENCE_OR_COMMENT_REQUIRED_ON,
     CHECKLIST_RESPONSE_TOKENS,

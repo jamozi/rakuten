@@ -48,7 +48,7 @@
   "gate_pass_claim": false,
   "generated_by": {
     "command": "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1803_gate2_observation.py",
-    "generator_sha256": "fe7c178087d113e287e95a02d6bcd68e93bd2f2e82817442800cede768b79cd4",
+    "generator_sha256": "65cbfc61f1c1ab4390f347a8457f4e16584853d54a31dd97c9e6a4465a38b060",
     "uri": "repo://scripts/build_st1803_gate2_observation.py"
   },
   "mandatory_criteria": [
@@ -609,11 +609,11 @@
       "uri": "repo://changes/st-1802/generated/gate1-decision.local-blocked.v1.json"
     },
     {
-      "sha256": "3a1672f7a299bd0308b5b1df72c16d9cbc554594342c0fb978bd486d69d546dc",
+      "sha256": "9352e1f1050dc1035f14d1eb38d425bdf4472632248d186407dd4a4784417046",
       "uri": "repo://changes/st-1802/generated/runtime-manifest.v1.yaml"
     },
     {
-      "sha256": "cf9de30e12ffea2202dcff0c0ef1377ab0a6546d185cc9129c402584567024bf",
+      "sha256": "b1ef1c415e1c19ee070052080959734d6b4a36538c67af32cfff234617813e9d",
       "uri": "repo://scripts/build_st1802_gate1_decision.py"
     },
     {
@@ -621,7 +621,7 @@
       "uri": "repo://changes/st-1205/generated/kpi-read-model.v2.json"
     },
     {
-      "sha256": "9b25af0167a195de99d57e7d4e2eb54c4832a9051ec2b42de666bf6e32eb7548",
+      "sha256": "d5b3a56d721740d30e280c1d8a0b2f0db910ba0d032a2bb57d19242ee8bc6914",
       "uri": "repo://changes/st-1205/manifest.yaml"
     },
     {

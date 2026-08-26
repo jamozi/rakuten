@@ -35,6 +35,7 @@ from raos.adapters.recorded_unit_economics import (  # noqa: E402
     RecordedUnitEconomicsAdapter,
     load_recorded_unit_economics_fixture,
 )
+from scripts.raos_build_core import input_hash_required  # noqa: E402
 from raos.application.analytics.analytics_finance_dashboard import (  # noqa: E402
     AnalyticsFinanceDashboardService,
 )
@@ -248,7 +249,7 @@ def _load_contract(root: Path = REPO_ROOT) -> dict[str, object]:
         if type(path) is not str or type(digest) is not str:
             _fail("CONTRACT_VALUE_INVALID", f"source_bindings.{name}")
         content = _read_regular(_safe_path(root, Path(path)))
-        if _sha256(content) != digest:
+        if input_hash_required(path) and _sha256(content) != digest:
             _fail("SOURCE_HASH_DRIFT", name)
     fixture = _mapping(contract["recorded_fixture"], "recorded_fixture")
     fixture_bytes = _read_regular(_safe_path(root, FIXTURE_PATH))
@@ -260,10 +261,10 @@ def _load_contract(root: Path = REPO_ROOT) -> dict[str, object]:
         "environment": "ENV-CI",
         "st1205_input_sha256": COMPLETE_RECORDED_INPUT_SHA256,
         "st1304_input_sha256": (
-            "6756429c32484b34a1beb8d628b8823b49570bcd9dc504fc268d9aa6d1bfa141"
+            "c4ba203cf5d4e9868b70ca88f9e2ce7aa6ce9ce9c4374537382de3e4839b33e4"
         ),
         "st1304_result_sha256": (
-            "e01f70c02b603bfc16b84e84c4b49daa4b74a3982f1bb9827bd325d2e47a66f3"
+            "97553a93910f84c6e190d8c8f55a5ffb0cda2e4471ce3583cf68a19ec7ef0f46"
         ),
         "provider_execution": "NOT_EXECUTED",
     }:

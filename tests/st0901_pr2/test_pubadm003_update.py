@@ -7,7 +7,7 @@ from dataclasses import replace
 
 import pytest
 
-from conftest import (
+from .support import (
     FINISHED_AT,
     STARTED_AT,
     adapter,

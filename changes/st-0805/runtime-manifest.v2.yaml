@@ -12,8 +12,8 @@ source_artifacts:
 - uri: repo://scripts/build_st0805_policy_runtime.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 45984
-  sha256: 84645e26a954483a392d8ee854671e3790a0da69b73400388e6691eecb0cd30b
+  bytes: 45251
+  sha256: e8e640da7007c3ff1f7a8a6d94d49df517b0eb784cc39197ab4517531bea8a90
 - uri: repo://python/raos/domain/editorial/policy_engine_v2.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -72,13 +72,13 @@ source_artifacts:
 - uri: repo://tests/st0805_runtime/conftest.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 1705
-  sha256: e7816e06bc70163b91938da0f9b7c2f3a0e5a6ac88747a7d7fe1e4244107bb89
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st0805_runtime/test_domain.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
-  bytes: 14457
-  sha256: af8f477db5902eadabc29f736fb841f434212cf5e6c2e6ea577062ad9604f9bf
+  bytes: 14456
+  sha256: 3e62976d6b457f262454c2914e911e56b22f38dcc0b09d153c9a1a802d865218
 - uri: repo://tests/st0805_runtime/test_application_adapter.py
   artifact_role: OWNER_SOURCE
   media_type: text/x-python
@@ -173,7 +173,7 @@ source_artifacts:
   artifact_role: DEPENDENCY_CONTRACT
   media_type: application/yaml
   bytes: 11532
-  sha256: c6862ed8679cd6c926ac72d1d5b584fd18a06bb71f7be9ab2c3f5560859e2f8f
+  sha256: 9b96213e917828972e4c7262b768a71c9923b64be6d3fb0cf37b11a730d5c832
 - uri: repo://contracts/raos-v0.4/contracts/content/fixtures/valid/selection_guide.json
   artifact_role: DEPENDENCY_CONTRACT
   media_type: application/json
@@ -227,13 +227,13 @@ source_artifacts:
 - uri: repo://pyproject.toml
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/toml
-  bytes: 1334
-  sha256: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
+  bytes: 1753
+  sha256: 34ee344782dbaf4135cb235e2fec215a1c709089c0994415fdeadf33979a6207
 - uri: repo://uv.lock
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/octet-stream
-  bytes: 128286
-  sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+  bytes: 129836
+  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
 generated_artifacts:
 - uri: repo://changes/st-0805/generated/policy-pass.v2.json
   artifact_role: RECORDED_SYNTHETIC_FIXTURE

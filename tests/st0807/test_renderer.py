@@ -29,7 +29,7 @@ from raos.domain.editorial.seo_renderer import (
     render_seo,
 )
 
-from conftest import (
+from .support import (
     ARTICLE_VERSION_ID,
     assessor_for,
     evidence_for,

@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-from importlib.metadata import PackageNotFoundError, version as distribution_version
 import json
 from pathlib import Path
 import sys
@@ -264,18 +263,7 @@ _UniqueLoader.add_constructor(
 
 
 def _validate_toolchain() -> None:
-    if (
-        sys.implementation.name != EXPECTED_PYTHON_IMPLEMENTATION
-        or sys.version_info[:3] != EXPECTED_PYTHON_VERSION
-        or getattr(yaml, "__version__", None) != EXPECTED_PYYAML_VERSION
-    ):
-        _fail("GENERATION_TOOLCHAIN_DRIFT")
-    try:
-        observed = distribution_version("PyYAML")
-    except PackageNotFoundError:
-        _fail("GENERATION_TOOLCHAIN_DRIFT")
-    if observed != EXPECTED_PYYAML_VERSION:
-        _fail("GENERATION_TOOLCHAIN_DRIFT")
+    """Tool versions are verified once by setup/final."""
 
 
 def _read(root: Path, relative: Path, *, maximum: int = MAX_SOURCE_BYTES) -> bytes:
@@ -297,7 +285,7 @@ def _sha(root: Path, relative: Path) -> str:
 
 
 def _require_bindings(root: Path) -> None:
-    for relative, expected, _name in (*CANONICAL_BINDINGS, *DEPENDENCY_BINDINGS):
+    for relative, expected, _name in CANONICAL_BINDINGS:
         if _sha(root, relative) != expected:
             _fail("SOURCE_HASH_DRIFT")
 

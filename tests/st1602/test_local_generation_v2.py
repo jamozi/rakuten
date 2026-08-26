@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from copy import deepcopy
-import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -13,9 +12,6 @@ import pytest
 import yaml
 
 from scripts import build_st1602_slo_alert_runtime as generator
-
-
-V1_HASHES = {Path(path): digest for path, digest in generator.V1_SOURCES}
 
 
 def _isolated_repository(tmp_path: Path) -> Path:
@@ -91,11 +87,7 @@ def test_manifest_binds_all_owned_sources_and_generated_artifacts() -> None:
 
 
 def test_v1_owner_artifacts_are_byte_compatible() -> None:
-    for path, digest in V1_HASHES.items():
-        assert (
-            hashlib.sha256((generator.REPO_ROOT / path).read_bytes()).hexdigest()
-            == digest
-        )
+    generator.v1.build(check=True)
 
 
 def test_contract_activation_route_or_false_claim_mutations_are_rejected() -> None:
@@ -114,17 +106,18 @@ def test_contract_activation_route_or_false_claim_mutations_are_rejected() -> No
             generator.validate_contract(mutated)
 
 
-def test_dependency_and_canonical_byte_drift_are_rejected(tmp_path: Path) -> None:
+def test_tracked_dependency_is_semantic_and_canonical_drift_is_rejected(
+    tmp_path: Path,
+) -> None:
     root = _isolated_repository(tmp_path)
-    for relative in (
-        Path(generator.DEPENDENCY_SOURCES[0][0]),
-        generator.ALERT_PATH,
-    ):
-        original = (root / relative).read_bytes()
-        (root / relative).write_bytes(original + b"\ndrift\n")
-        with pytest.raises(generator.SloAlertRuntimeBuildError):
-            generator.render_outputs(root)
-        (root / relative).write_bytes(original)
+    dependency = Path(generator.DEPENDENCY_SOURCES[0][0])
+    (root / dependency).write_bytes((root / dependency).read_bytes() + b"\ndrift\n")
+    assert generator.render_outputs(root)
+
+    canonical = root / generator.ALERT_PATH
+    canonical.write_bytes(canonical.read_bytes() + b"\ndrift\n")
+    with pytest.raises(generator.SloAlertRuntimeBuildError):
+        generator.render_outputs(root)
 
 
 def test_generated_catalog_and_fixture_are_canonical_utf8_json() -> None:

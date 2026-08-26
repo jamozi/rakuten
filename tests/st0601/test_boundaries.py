@@ -12,7 +12,7 @@ from raos.adapters.recorded_artifact_registry import RecordedArtifactCandidateOb
 from raos.domain.ops import artifact_registry as domain
 from raos.ports.artifact_registry import ArtifactCandidateObserver
 
-from conftest import REPOSITORY_ROOT, observer_for, provenance
+from .support import REPOSITORY_ROOT, observer_for, provenance
 
 
 OWNED_SOURCES = (

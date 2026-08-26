@@ -30,7 +30,7 @@ from raos.ports.analytics_finance_dashboard import (
     RecordedAnalyticsFinanceDashboardPort,
 )
 
-from .conftest import build_snapshot
+from .support import build_snapshot
 
 
 def failure_code(action: Callable[[], object]) -> DashboardFailureCode:

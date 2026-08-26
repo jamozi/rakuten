@@ -20,7 +20,7 @@ from raos.domain.ops.artifact_registry_runtime_v2 import (
 from raos.domain.ops.enums import ObjectArtifactArtifactKind
 from raos.domain.ops.ids import ObjectArtifactId
 
-from runtime_v2_fixtures import (
+from .runtime_v2_fixtures import (
     BODY_ONE,
     BODY_TWO,
     private_root,

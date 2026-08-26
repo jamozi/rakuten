@@ -6,7 +6,7 @@ import json
 
 import pytest
 
-from .conftest import REPO_ROOT, read
+from .support import REPO_ROOT, read
 from scripts import build_st0903_publication_snapshot_runtime_v2 as generator
 from raos.adapters.recorded_publication_snapshot_v2 import (
     RecordedPublicationSnapshotAdapter,

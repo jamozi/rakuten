@@ -17,8 +17,7 @@ document:
 
 authority:
   precedence: CANONICAL_INTEGRATION_THEN_STORY_THEN_OPEN_DECISION_TEST_AND_SECURITY_CATALOGS
-  implementation_mode: OWNER_APPROVED_IMPLEMENTATION_FIRST_WAVE_W3
-  base_commit: 6e56aa4d328ffb4135e9ad23145a611ab584b519
+  implementation_mode: CONTINUOUS_LOCAL_DEVELOPMENT
   sources:
     - role: integration
       uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md

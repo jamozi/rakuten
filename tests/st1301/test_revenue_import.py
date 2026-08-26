@@ -8,7 +8,7 @@ from dataclasses import FrozenInstanceError, replace
 from datetime import date
 import pickle
 
-from conftest import (
+from .support import (
     ROW_CONFIRMED,
     ROW_GENERATED,
     SYNTHETIC_CSV,

@@ -12,7 +12,7 @@ import weakref
 
 import pytest
 
-from conftest import (
+from .support import (
     CORRELATION_ID,
     NOW,
     REPOSITORY_ROOT,

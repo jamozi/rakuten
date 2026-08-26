@@ -12,7 +12,7 @@ from raos.domain.editorial import article_plan
 from raos.domain.portfolio import workflow as portfolio
 from raos.ports.portfolio_workflow import PortfolioWorkflowExchange
 
-from conftest import REPOSITORY_ROOT, category_request
+from .support import REPOSITORY_ROOT, category_request
 
 
 OWNED_SOURCES = (

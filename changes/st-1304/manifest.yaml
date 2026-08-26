@@ -16,8 +16,8 @@ source_artifacts:
   bytes: 2591
   sha256: 6528d7d60c8686cdd4d85a8db7d78fad5440e7d19fd293881c28fda0b407a3f2
 - uri: repo://scripts/build_st1304_cost_unit_economics_reference_plan.py
-  bytes: 31972
-  sha256: a2f9bb2dafb11bcb6455c606b80afe8ca7a3a816c67feeba5d71c274fafe1362
+  bytes: 32161
+  sha256: 85fa17bd3a3a82863a5321ca45def96ba9f4b2bae1e9990540f0ef3a1808037a
 - uri: repo://tests/st1304/conftest.py
   bytes: 1001
   sha256: 913f94bbc4018b868679bdf3477a5c480ce8e9662ddffd43aff14c3cee670f4f
@@ -28,8 +28,8 @@ source_artifacts:
   bytes: 5160
   sha256: f51f44bfe7b63d9dce4b511453fad21574395e857543b5098383966c8f6c75c5
 - uri: repo://tests/st1304/test_negative_cases.py
-  bytes: 10386
-  sha256: 50224c09d38959dfaf36ba1fc4125016920e709494eb71a47d1525d286a562dd
+  bytes: 10856
+  sha256: 0f2a1a2aebb0be87edf83b0fe80f88f64d47ae9b241fab4d30ce6e6ec5867a7a
 generated_artifacts:
 - uri: repo://changes/st-1304/generated/cost-unit-economics-reference-plan.v1.json
   bytes: 24066

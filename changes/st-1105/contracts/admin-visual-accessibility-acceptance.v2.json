@@ -9,9 +9,13 @@
     "v2_additive": true
   },
   "integration_provenance": {
-    "requested_base_sha": "378748e344249190136939dcd8c7e22f62620836",
-    "required_st0606_patch_sha": "020bfbdb91b081929340aa12eb1e655e9160d810",
-    "local_dependency_base_sha": "82225f48357d55846adfa4f8ee4ac1e9e063be1d"
+    "workflow": "SEMANTIC_OWNER_GRAPH",
+    "owners": [
+      {
+        "owner_id": "build_st0606_evidence_workspace_v2",
+        "owner_version": 2
+      }
+    ]
   },
   "screen_groups": [
     {

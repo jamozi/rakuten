@@ -48,12 +48,12 @@
     },
     {
       "bytes": 3729,
-      "sha256": "03abafd467a3b6e0fab0555b22003b27bc2a0446beaa308ebcd03559fb2f5ffd",
+      "sha256": "1b9168fcce8844c3ed170b5f1e26497c10fca23babc25bc99021c2ea626f8105",
       "uri": "repo://changes/st-1604/manifest.yaml"
     },
     {
-      "bytes": 14174,
-      "sha256": "0e970c5749a8bd94fcc8ae5e695d11a4b927028fcc168838618998ac48075aeb",
+      "bytes": 13933,
+      "sha256": "9baee2bffb91543bcae065fc2ab8e53b048396076510a1cb3e87bc4fdcbe35e5",
       "uri": "repo://changes/st-1505/manifest.yaml"
     },
     {
@@ -135,8 +135,8 @@
       "uri": "repo://python/raos/adapters/recorded_performance_load.py"
     },
     {
-      "bytes": 2378,
-      "sha256": "b096c5b69f7869ea6bbc0577cd94e35520f4787c0e4dd261d41512ca3cf5b5ed",
+      "bytes": 234,
+      "sha256": "4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528",
       "uri": "repo://tests/st1604_runtime/conftest.py"
     },
     {
@@ -156,7 +156,7 @@
     },
     {
       "bytes": 19920,
-      "sha256": "2bae242f7f13137fd63027072c18183b650ad43e51dd47d70bd985a1b6b5e560",
+      "sha256": "16a6adbfe9b1a0b9290ceea9869b7d66c9a762e471c89dfaedcd262299514fd0",
       "uri": "repo://tests/st1604_runtime/test_service_and_journal.py"
     }
   ]

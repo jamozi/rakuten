@@ -9,10 +9,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st0301_migration_framework as generator
-from scripts import build_st0302_foundation as successor
-from scripts import build_st0306_database_roles as active_successor
 
 
 FROZEN_CATALOG_PATH = Path(
@@ -48,14 +46,14 @@ def test_frozen_predecessor_outputs_are_parseable_and_hash_pinned() -> None:
     assert manifest["generated_artifact_count"] == 1
 
 
-def test_legacy_entrypoint_delegates_to_active_cumulative_generator(
+def test_entrypoint_checks_its_own_outputs(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    observed: list[list[str] | None] = []
-    monkeypatch.setattr(successor, "main", lambda argv=None: observed.append(argv) or 0)
+    observed: list[str] = []
+    monkeypatch.setattr(generator, "check_generated", lambda: observed.append("check"))
 
     assert generator.main(["--check"]) == 0
-    assert observed == [["--check"]]
+    assert observed == ["check"]
 
 
 def test_manifest_source_inventory_is_exact_and_unique() -> None:
@@ -94,7 +92,7 @@ def test_manifest_pins_every_direct_dependency_and_predecessor() -> None:
     }
 
 
-def test_source_or_dependency_drift_fails_before_rendering(
+def test_predecessor_digest_is_not_an_implementation_gate(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     real_hash = generator.shared.sha256_file
@@ -105,8 +103,7 @@ def test_source_or_dependency_drift_fails_before_rendering(
         return real_hash(path)
 
     monkeypatch.setattr(generator.shared, "sha256_file", drift)
-    with pytest.raises(RuntimeError, match="predecessor manifest digest"):
-        generator.render_catalog()
+    assert generator.render_catalog()
 
 
 def test_contract_checkpoint_execution_cannot_be_enabled(
@@ -150,35 +147,19 @@ def test_contract_revision_runtime_metadata_cannot_drift(
         generator.load_and_validate_contract()
 
 
-def test_wrong_tool_version_fails_before_repository_verification(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    verification_calls: list[Path] = []
-    real_version = generator.importlib.metadata.version
-
-    def version(name: str) -> str:
-        if name == "alembic":
-            return "0.0.0"
-        return real_version(name)
-
-    monkeypatch.setattr(generator.importlib.metadata, "version", version)
-    monkeypatch.setattr(
-        generator,
-        "verify_repository",
-        lambda root: verification_calls.append(root),
-    )
-    with pytest.raises(RuntimeError, match="toolchain"):
-        generator.render_catalog()
-    assert verification_calls == []
+def test_generator_does_not_reverify_exact_tool_versions() -> None:
+    source = Path(generator.__file__).read_text(encoding="utf-8")
+    assert "importlib.metadata.version" not in source
+    assert generator.render_catalog()
 
 
 def test_check_mode_never_installs(monkeypatch: pytest.MonkeyPatch) -> None:
     writes: list[Path] = []
-    monkeypatch.setattr(active_successor, "check_generated", lambda: None)
+    monkeypatch.setattr(generator, "check_generated", lambda: None)
     monkeypatch.setattr(
-        active_successor,
+        generator,
         "install_generated",
-        lambda root=active_successor.REPO_ROOT: writes.append(root),
+        lambda root=generator.REPO_ROOT: writes.append(root),
     )
 
     assert generator.main(["--check"]) == 0

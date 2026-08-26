@@ -7,7 +7,7 @@ import hashlib
 import json
 from typing import cast
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st1201_durable_event_store as generator
 
 

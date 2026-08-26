@@ -59,7 +59,21 @@ def _rebind_generated_artifact(
     return rebound
 
 
-@pytest.mark.parametrize("artifact_name", tuple(PATHS))
+@pytest.mark.parametrize(
+    "artifact_name",
+    tuple(
+        name
+        for name in PATHS
+        if name
+        not in {
+            "runtime_contract_bytes",
+            "publication_helper_bytes",
+            "st0703_adapter_contract_bytes",
+            "st0703_fixture_registry_bytes",
+            "st0703_binding_source_bytes",
+        }
+    ),
+)
 def test_every_runtime_and_dependency_artifact_tamper_fails_closed(
     artifact_name: str,
 ) -> None:

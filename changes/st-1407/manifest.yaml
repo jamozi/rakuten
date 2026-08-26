@@ -101,8 +101,8 @@ source_artifacts:
   bytes: 5331
   sha256: cdf072c7d212cc72555e82512f13f2940d21379e3622b20b9e4df9e3f92d9d96
 - uri: repo://scripts/build_st1407_external_policy_registry_reference_plan.py
-  bytes: 47496
-  sha256: 9c1c2c3f4b90dce8ec5b519a121fe991065db774a777da11ff4d1e8899dae43b
+  bytes: 47125
+  sha256: 7c6ee7ba6233c17d9ac51d1fd9cdeea722c8c7f4a6a735cc627a51d30e8a4e30
 - uri: repo://tests/st1407/conftest.py
   bytes: 1012
   sha256: ee0eb9124eca66cac5fa035d396a4e1c50c62a8bfa8f7e06bd25efceff87cf32
@@ -113,8 +113,8 @@ source_artifacts:
   bytes: 4758
   sha256: 7adf9c9c897f1d287ec2ebeac9419ac477f86b77115a8ff63fed6551116fccf4
 - uri: repo://tests/st1407/test_negative_cases.py
-  bytes: 12396
-  sha256: 957b6d5269a1cd4e1468fa4a78c70e890292f3105f1447f7381aba630614984c
+  bytes: 12669
+  sha256: 7836dbb0a23d6340ebc0240de1d6a6ab4a94fd7ec4fd379633c9d70a840b5814
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1407/generated/external-policy-registry-reference-plan.v1.json

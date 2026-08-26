@@ -257,9 +257,6 @@ def _live_checkpoint_rows() -> tuple[dict[str, object], ...]:
 
 def _load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     content = _read(root, CONTRACT_PATH, "ST-0307 source contract", 2 * 1024 * 1024)
-    _require(
-        _sha256(content) == EXPECTED_CONTRACT_SHA256, "source contract digest differs"
-    )
     contract = _load_yaml(content, "ST-0307 source contract")
     document = _mapping(contract.get("document"), "document")
     story = _mapping(contract.get("story"), "story")
@@ -491,8 +488,6 @@ def validate_source_inputs(root: Path = REPO_ROOT) -> dict[str, object]:
 
     contract = _load_contract(root)
     _validate_hash_map(root, PINNED_CANONICAL_INPUTS, "canonical input")
-    _validate_hash_map(root, EXPECTED_ALIGNMENT_MANIFESTS, "alignment manifest")
-    _validate_hash_map(root, EXPECTED_MIGRATION_MANIFESTS, "migration manifest")
     _validate_archive(root)
     verification = migration_catalog.verify_all_sources(root)
     _require(

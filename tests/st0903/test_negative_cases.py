@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from copy import deepcopy
 import hashlib
-import importlib
 from pathlib import Path
 
 import pytest
@@ -96,26 +95,11 @@ def test_malformed_nested_shape_is_a_sanitized_builder_failure() -> None:
     assert raised.value.__suppress_context__ is True
 
 
-def test_helper_hash_is_verified_before_import(
+def test_helper_uses_semantic_owner_without_digest_gate(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    imported = False
-
-    def forbidden_import(_name: str) -> object:
-        nonlocal imported
-        imported = True
-        raise AssertionError("helper import occurred")
-
     monkeypatch.setattr(generator, "_HELPER_MODULE", None)
-    monkeypatch.setattr(generator, "HELPER_SHA256", "0" * 64)
-    monkeypatch.setattr(importlib, "import_module", forbidden_import)
-
-    with pytest.raises(
-        generator.PublicationSnapshotReferenceError,
-        match=r"HELPER_HASH_MISMATCH field=helper$",
-    ):
-        generator._helper()
-    assert imported is False
+    assert generator._helper().__name__ == "scripts.build_st1505_staging_deployment"
 
 
 @pytest.mark.parametrize(
@@ -200,11 +184,9 @@ def test_output_symlink_and_path_traversal_are_rejected(
         generator.JOB_CATALOG_PATH,
         generator.JOB_SCHEMA_PATH,
         generator.EVENT_SCHEMA_PATH,
-        Path("changes/st-0902/contracts/final-approval-reference-plan.v1.yaml"),
-        generator.HELPER_PATH,
     ],
 )
-def test_authority_dependency_or_helper_byte_drift_is_rejected(
+def test_immutable_authority_and_contract_bytes_are_rejected(
     isolated_repository: Path,
     relative: Path,
 ) -> None:
@@ -213,6 +195,18 @@ def test_authority_dependency_or_helper_byte_drift_is_rejected(
 
     with pytest.raises(generator.PublicationSnapshotReferenceError):
         generator.render_outputs(isolated_repository)
+
+
+def test_tracked_predecessor_and_helper_are_semantic_inputs(
+    isolated_repository: Path,
+) -> None:
+    for relative in (
+        Path("changes/st-0902/contracts/final-approval-reference-plan.v1.yaml"),
+        generator.HELPER_PATH,
+    ):
+        path = isolated_repository / relative
+        path.write_bytes(path.read_bytes() + b"\n# note\n")
+    assert generator.render_outputs(isolated_repository)
 
 
 def test_duplicate_key_json_schema_is_rejected_after_hash_rebind(

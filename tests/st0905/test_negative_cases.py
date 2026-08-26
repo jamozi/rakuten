@@ -2,7 +2,6 @@
 
 from copy import deepcopy
 import hashlib
-import importlib
 import json
 from pathlib import Path
 from typing import Any, Callable, cast
@@ -114,22 +113,11 @@ def test_all_malformed_nested_shapes_are_sanitized(
         generator.validate_contract(contract)
 
 
-def test_helper_hash_is_verified_before_import(monkeypatch: pytest.MonkeyPatch) -> None:
-    imported = False
-
-    def forbidden(_name: str) -> object:
-        nonlocal imported
-        imported = True
-        raise AssertionError
-
+def test_helper_uses_semantic_owner_without_digest_gate(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(generator, "_helper_module", None)
-    monkeypatch.setattr(generator, "HELPER_SHA256", "0" * 64)
-    monkeypatch.setattr(importlib, "import_module", forbidden)
-    with pytest.raises(
-        generator.PublicationCommandsReferenceError, match="HELPER_HASH_MISMATCH"
-    ):
-        generator._helper()
-    assert imported is False
+    assert generator._helper().__name__ == "scripts.build_st1505_staging_deployment"
 
 
 @pytest.mark.parametrize(
@@ -185,17 +173,24 @@ def test_output_symlink_is_rejected_without_touching_target(
         generator.PUBLISHED_EVENT_SCHEMA_PATH,
         Path("changes/st-0903/contracts/publication-snapshot-reference-plan.v1.yaml"),
         Path("changes/st-0904/contracts/public-projection-reference-plan.v1.yaml"),
-        Path("changes/st-0402/README.md"),
-        generator.HELPER_PATH,
     ],
 )
-def test_authority_dependency_and_helper_byte_drift_is_rejected(
+def test_authority_and_dependency_semantic_drift_is_rejected(
     isolated_repository: Path, relative: Path
 ) -> None:
     path = isolated_repository / relative
     path.write_bytes(path.read_bytes() + b"\ndrift\n")
     with pytest.raises(generator.PublicationCommandsReferenceError):
         generator.render_outputs(isolated_repository)
+
+
+def test_readme_and_helper_are_semantic_inputs_not_digest_bound(
+    isolated_repository: Path,
+) -> None:
+    for relative in (Path("changes/st-0402/README.md"), generator.HELPER_PATH):
+        path = isolated_repository / relative
+        path.write_bytes(path.read_bytes() + b"\n# note\n")
+    assert generator.render_outputs(isolated_repository)
 
 
 def test_duplicate_key_json_is_rejected_after_hash_rebind(

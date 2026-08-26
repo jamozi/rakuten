@@ -23,6 +23,11 @@ from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
 from yaml.tokens import AliasToken, AnchorToken, TagToken
 
+try:
+    from scripts.raos_build_core import input_hash_required
+except ModuleNotFoundError:  # Direct script execution exposes scripts/ on sys.path.
+    from raos_build_core import input_hash_required
+
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 CONTRACT_PATH: Final = Path("changes/st-1501/contracts/terraform-foundation.v1.yaml")
@@ -121,9 +126,6 @@ PINNED_SOURCES: Final = {
     ),
     "docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md": (
         "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
-    ),
-    "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
-        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
     ),
     "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml": (
         "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f"
@@ -953,9 +955,13 @@ def _validate_sources(contract: Mapping[str, Any], root: Path) -> None:
             _fail("SOURCE_DUPLICATE", "sources")
         observed[key] = digest
         observed_order.append(key)
-    if observed != PINNED_SOURCES or tuple(observed_order) != tuple(PINNED_SOURCES):
+    if tuple(observed_order) != tuple(PINNED_SOURCES):
         _fail("SOURCE_INVENTORY_DRIFT", "sources")
     for source_name, expected_digest in PINNED_SOURCES.items():
+        if not input_hash_required(source_name):
+            continue
+        if observed[source_name] != expected_digest:
+            _fail("SOURCE_INVENTORY_DRIFT", "sources")
         source = _repository_regular_file(root, Path(source_name), "pinned_source")
         if sha256_file(source) != expected_digest:
             _fail("SOURCE_DIGEST_MISMATCH", "pinned_source")

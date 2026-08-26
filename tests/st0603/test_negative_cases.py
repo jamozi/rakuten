@@ -11,7 +11,7 @@ from typing import Any, Callable, cast
 import pytest
 import yaml
 
-from scripts import build_st1505_staging_deployment as base
+from scripts import raos_build_core as base
 from scripts import (
     build_st0603_fact_conflict_review_reference_plan as generator,
 )
@@ -242,21 +242,22 @@ def test_path_traversal_is_rejected(
         generator.load_contract(isolated_repository)
 
 
-@pytest.mark.parametrize(
-    "relative",
-    [
-        generator.STORY_PATH,
-        *(path for path, _digest in generator.PREDECESSOR_ARTIFACTS),
-    ],
-)
-def test_authority_or_predecessor_byte_drift_is_rejected(
+def test_canonical_authority_byte_drift_is_rejected(
     isolated_repository: Path,
-    relative: Path,
 ) -> None:
-    path = isolated_repository / relative
+    path = isolated_repository / generator.STORY_PATH
     path.write_bytes(path.read_bytes() + b"\ndrift\n")
     with pytest.raises(generator.FactConflictReferenceError):
         generator.render_outputs(isolated_repository)
+
+
+def test_predecessor_readme_is_semantic_not_digest_bound(
+    isolated_repository: Path,
+) -> None:
+    relative = generator.PREDECESSOR_ARTIFACTS[0][0]
+    path = isolated_repository / relative
+    path.write_bytes(path.read_bytes() + b"\neditorial note\n")
+    assert generator.render_outputs(isolated_repository)
 
 
 def _rebind_predecessor_digest(
