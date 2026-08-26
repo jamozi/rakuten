@@ -1031,17 +1031,11 @@ def test_handoff_generated_and_domain_policy_are_semantically_equal() -> None:
     assert projected == builder.POLICY == PILOT_POLICY
 
 
-def test_base_ci_routes_story_test_and_generator_check() -> None:
+def test_unified_build_routes_owner_generation_and_checks() -> None:
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
-    unit = makefile.split("\nci-unit:", 1)[1].split("\nci-contracts:", 1)[0]
-    policy = makefile.split("\nci-repository-policy:", 1)[1].split("\nci-static:", 1)[0]
-    assert unit.count("tests/st1704") == 1
-    assert policy.count("scripts/build_st1704_owner_local_pilot.py --check") == 1
-    assert "/usr/bin/env -i PATH=/usr/bin:/bin" in policy
-    assert 'HOME="$(RAOS_REPOSITORY_ROOT)"' in policy
-    assert "LANG=C LC_ALL=C TZ=UTC" in policy
-    assert '"$(RAOS_REPOSITORY_ROOT)/.venv/bin/python" -B -I -S' in policy
-    assert "$(UV_READONLY_RUN) python -B -I -S" not in policy
+    assert "scripts/raos_build.py $(BASE_ARGUMENT) generate" in makefile
+    assert "scripts/raos_build.py $(BASE_ARGUMENT) check" in makefile
+    assert "scripts/build_st1704_owner_local_pilot.py --check" not in makefile
 
 
 def test_generator_check_rejects_manifest_mutation(

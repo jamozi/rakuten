@@ -53,7 +53,6 @@ REPORT_PATH: Final = Path(
 MANIFEST_PATH: Final = Path("changes/st-1908/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1908_fine_tuning_evaluation.py")
 HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
-BASE_COMMIT: Final = "3b96731aa8435af35724237279d7f4b4726b7b59"
 RECORDING_ID: Final = "st1908_recorded_evaluation_v1"
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
@@ -316,14 +315,11 @@ def _validate_contract(root: Path, contract: dict[str, Any]) -> None:
     predecessor = _mapping(contract.get("predecessor"))
     if (
         predecessor.get("story_id") != "ST-0707"
-        or predecessor.get("binding") != "EXACT_BASE_COMMIT_BYTES"
-        or predecessor.get("base_commit") != BASE_COMMIT
+        or predecessor.get("binding") != "OWNER_SEMANTIC_VERSION"
+        or predecessor.get("owner_id") != "build_st0707_evaluation_harness_runtime"
+        or predecessor.get("owner_version") != 2
     ):
         _fail("PREDECESSOR_INVALID")
-    for relative_text, digest in _mapping(predecessor.get("artifacts")).items():
-        if sha256_bytes(_read(root, Path(relative_text))) != _string(digest):
-            _fail("PREDECESSOR_HASH_DRIFT")
-
     canonical = _mapping(contract.get("canonical_contracts"))
     for row in canonical.values():
         _validate_hash_binding(root, row)
@@ -434,7 +430,8 @@ def _manifest_bytes(
             "production_eligible": False,
         },
         "provenance": {
-            "base_commit": BASE_COMMIT,
+            "generator_owner": "build_st1908_fine_tuning_evaluation",
+            "generator_version": 2,
             "contract_uri": f"repo://{CONTRACT_PATH.as_posix()}",
             "contract_sha256": sha256_bytes(contract_bytes),
             "fixture_uri": f"repo://{FIXTURE_PATH.as_posix()}",
@@ -577,7 +574,6 @@ if __name__ == "__main__":
 
 
 __all__ = (
-    "BASE_COMMIT",
     "CONTRACT_PATH",
     "FIXTURE_PATH",
     "FineTuningBuildError",

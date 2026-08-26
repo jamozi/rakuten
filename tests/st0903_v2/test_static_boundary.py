@@ -4,7 +4,7 @@ import ast
 import json
 from pathlib import Path
 
-from .conftest import read
+from .support import read
 from scripts import build_st0903_publication_snapshot_runtime_v2 as generator
 
 

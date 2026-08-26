@@ -1,0 +1,912 @@
+document:
+  id: RAOS-STATUS-002
+  version: 2.0.0
+  history: GIT_AND_CI
+  legacy_v1: ARCHIVE_ONLY
+canonical_source:
+  uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+stories:
+- story_id: ST-0001
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0002
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0003
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0004
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0005
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0006
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0101
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0102
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0103
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0104
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0105
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0106
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0107
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0201
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0202
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0203
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0204
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0205
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0301
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0302
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0303
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0304
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0305
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0306
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0307
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0308
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0401
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0402
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0403
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0404
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0405
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0406
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0407
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0501
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0502
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0503
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0504
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0505
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0506
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0601
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0602
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0603
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0604
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0605
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0606
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0701
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0702
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0703
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0704
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0705
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0706
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0707
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0708
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0709
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0801
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0802
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0803
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0804
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0805
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0806
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0807
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0808
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0901
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0902
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0903
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0904
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0905
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-0906
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1001
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1002
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1003
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1004
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1005
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1006
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1007
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1101
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1102
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1103
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1104
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1105
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1201
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1202
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1203
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1204
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1205
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1206
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1301
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1302
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1303
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1304
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1305
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1401
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1402
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1403
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1404
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1405
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1406
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1407
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1501
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1502
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1503
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1504
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1505
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1506
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1601
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1602
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1603
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1604
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1605
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1606
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1607
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1701
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1702
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1703
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1704
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1705
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1801
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1802
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1803
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1804
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1805
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1901
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1902
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1903
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1904
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1905
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1906
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1907
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private
+- story_id: ST-1908
+  implementation: IMPLEMENTED
+  verification: NOT_RUN
+  external_not_run:
+  - live
+  - external
+  - owner_private

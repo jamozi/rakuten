@@ -68,15 +68,21 @@ source_artifacts:
 - path: docs/worklogs/ST-0006.md
   bytes: 4575
   sha256: cca8d351539812d072ef57f468259dee617d10e07e276cf72176df60f46069a0
+- path: tests/st0006/__init__.py
+  bytes: 60
+  sha256: 48b8d7a8ec08b106a8d7cd71d60ac7e9ff63a7224c62780571203c14bd0cda18
 - path: tests/st0006/conftest.py
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
+- path: tests/st0006/support.py
   bytes: 1694
   sha256: f0b16438a99f7a055ea7386420af2e7d32146d7db4357f9939c40580304270d2
 - path: tests/st0006/test_decision_loader.py
   bytes: 9774
-  sha256: 0b51046ac6b47ee607ac93e186824bffaf1f2aec19890622c86dcfeb25e396ba
+  sha256: 1aa87e0ba798512527745e6c812834d5942f0dc1716d22ac4012279a5037be50
 - path: tests/st0006/test_gate_report.py
   bytes: 7905
-  sha256: 01b700550dc099a52f323e1b8231661c43d3b6151b7d5c9dd16158c9ae59e5d0
+  sha256: 89c235b30a3c922ee79f662fb1ed2b0445eab31b56fe4fc46766501cec8f6a16
 - path: tests/st0006/test_revision_generation.py
   bytes: 14093
   sha256: 9cf59bd6c3f57890b0812f9afb774a98faa613adfadd9479e8cf05ad575970c4

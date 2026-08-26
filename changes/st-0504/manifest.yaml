@@ -52,8 +52,8 @@ source_artifacts:
   bytes: 2893
   sha256: de3a67a0bac23b5710a280d970e99ad055dcaa443b7eed0b5a088d405e82a637
 - uri: repo://scripts/build_st0504_product_identity_human_review_reference_plan.py
-  bytes: 26043
-  sha256: 1a6097fff382c7ee7ed41ecb52807d9f4f9f236aa889e7ebefeece4f8380dad5
+  bytes: 25652
+  sha256: ed568b1be3b91cf909e4ea88cbb1a144982967099ff12785eca9ab3743a76b63
 - uri: repo://tests/st0504/conftest.py
   bytes: 972
   sha256: e76a58c45929decedbbcc268bf0b56f8aadfe8c44332de3674523812ab5bc530
@@ -64,8 +64,8 @@ source_artifacts:
   bytes: 3971
   sha256: 8cfca5e1f09a4bcc119e16eaf527e2befc7f44f2ac534cf7d34cd1d5c30b1c64
 - uri: repo://tests/st0504/test_negative_cases.py
-  bytes: 13803
-  sha256: 9e74abaa1be9d514edb6be64d07613b42d75db578cb5e8c31a3c430f26bc9764
+  bytes: 14038
+  sha256: edac300fc1c126576a7e85ea8106dbbe39c9a30814405858295935003e35d2c6
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json

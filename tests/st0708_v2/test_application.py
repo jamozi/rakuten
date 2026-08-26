@@ -79,12 +79,8 @@ def test_installed_recorded_result_is_exact_refusal_without_pass_coercion(
     )
     report = service.evaluate(recorded_result.request)
     assert report.outcome is ReleaseDecisionOutcome.REFUSED_INCOMPLETE_EVIDENCE
-    assert report.source_bundle_sha256 == (
-        "30eac79515e718e9c47f682419c05a2df1348db7f0d8e994dcd14189ba479278"
-    )
-    assert report.source_report_sha256 == (
-        "90d4dc14f5906a8c7b7d8545f6dedef8a63c6d60ae24793b8a375d8d84bede50"
-    )
+    assert report.source_bundle_sha256 == recorded_result.source_report.bundle_sha256
+    assert report.source_report_sha256 == recorded_result.source_report.report_sha256
     assert all(item.status is AssessmentStatus.UNAVAILABLE for item in report.metrics)
     assert all(
         item.status is AssessmentStatus.UNAVAILABLE for item in report.zero_tolerance

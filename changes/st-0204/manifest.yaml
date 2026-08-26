@@ -50,14 +50,14 @@ source_artifacts:
   bytes: 7
   sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
 - uri: repo://pyproject.toml
-  bytes: 1334
-  sha256: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
+  bytes: 1753
+  sha256: 34ee344782dbaf4135cb235e2fec215a1c709089c0994415fdeadf33979a6207
 - uri: repo://uv.lock
-  bytes: 128286
-  sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+  bytes: 129836
+  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
 - uri: repo://uv.toml
-  bytes: 349
-  sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+  bytes: 355
+  sha256: 1511da8b08f4c030085b823f59fcf8cd8c6d0ba6393444efd5053848a7357085
 - uri: repo://changes/st-0204/contracts/runtime-config.v1.yaml
   bytes: 5113
   sha256: 8e417ed10181f6a9bf015fff0b205098dae37876082231e42f28d37b0d14722a
@@ -71,11 +71,11 @@ source_artifacts:
   bytes: 6118
   sha256: 6426260acb608da19832965e8e2ddd7726745f3a8ef860fdf44bce22bba08d80
 - uri: repo://scripts/build_st0204_config_loader.py
-  bytes: 21540
-  sha256: 139973d5e0b8e2a8aba22906ae56111cc98dbad7b948226f656f914ca105cce4
+  bytes: 20177
+  sha256: c1164e38af285ad9d58d2902ef53a431742769f9bb3552fb223b0fc67d75511d
 - uri: repo://scripts/build_st0201_postgres_service.py
-  bytes: 36958
-  sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+  bytes: 36955
+  sha256: 847c9eab92236b8f40d63423b6640e0aa299cf5562040aa64f60358248ea4375
 - uri: repo://python/raos/config/__init__.py
   bytes: 524
   sha256: e893d5e333ec1b4d84d74cb59a6cc4ac62672b493d5905c379ee4ebe9936c314
@@ -83,35 +83,35 @@ source_artifacts:
   bytes: 35671
   sha256: 2a1b7b550bcf5365df610c8ebffe1994d12ab888a5be4042dde032ed7c5a0ac3
 - uri: repo://tests/st0204/conftest.py
-  bytes: 2696
-  sha256: 815b438f7281388a0412b0644065ce2499a0db07e71474cb82c346cc1c7ac516
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st0204/test_loader.py
   bytes: 8689
-  sha256: 0c83946c43ff022540eade9fadf4da2277f0db6f5f2be6e30dc720ffddc387ad
+  sha256: 4fc39380403be99f6704238fc9c584f20e8c8988b6ea0ba714282b31c917088b
 - uri: repo://tests/st0204/test_negative_cases.py
   bytes: 10016
-  sha256: e773de7d9fdeb178cfdb87f8ea285a87365ee4b36cfaf9d302c9440f9497b138
+  sha256: b1dabcb7f02cb44e8fa473a4d099e821f5cecec1ef81139606ed9f487be9f1e6
 - uri: repo://tests/st0204/test_privacy.py
   bytes: 20004
-  sha256: 6be2153a471974f353afd99f21a8facded33a1511f7ac24cd633bf62ac53d03c
+  sha256: a5058138ac05471deb129e40f7ba5979ddb7e78ea2629514eb58e80deca3955d
 - uri: repo://tests/st0204/test_contract.py
   bytes: 8913
-  sha256: 9b08c0020aa6a83b9834348a093323a06cb4fde4b72587393640f356dfc9c367
+  sha256: 708b27a49f9dbb0792cc766edc21a2590c56ec7b116b6db346029b5d199ba1fa
 - uri: repo://tests/st0204/test_generation.py
-  bytes: 9196
-  sha256: 8d0986edb94818b94d6c5f1335a387a9f6698422638e30bf0906a7bca5039c2c
+  bytes: 1898
+  sha256: 8ac3af3d74527b9a283801964091a668b6bc3dabed3c529b13f2f01cf23a1de6
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 66604
-  sha256: 3993db51b4783f33bc993720a45a44e908e8f007aad611317d4d3042eb6c71f0
+  bytes: 3362
+  sha256: 2ff9163b43b7c445190d5a01a31485ab9e2c4474c5bade65041f541ea90dc333
 - uri: repo://Makefile
-  bytes: 34422
-  sha256: 8d4030bfcffaa5bde56842b6a2475bbe2b845e074722c787b9d712bc22d2a40f
+  bytes: 2077
+  sha256: d505133bfc56b259cdb3a3279d6f242a885998f239a3e29fc003ec63dfbbb9e9
 - uri: repo://README.md
-  bytes: 58459
-  sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
+  bytes: 3960
+  sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
 - uri: repo://changes/st-0203/manifest.yaml
-  bytes: 5787
-  sha256: 11f03ee9e148e1588df84b392388f73bb0a57bae52d78fd4ed18b5f611c2192f
+  bytes: 5784
+  sha256: f76f6c8d2526c68e7e837dc833f0ff2827ad8e4a724a74e7dea95af05f9a7fc5
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0204/generated/runtime-config.v1.schema.json

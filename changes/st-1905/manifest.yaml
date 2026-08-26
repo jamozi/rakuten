@@ -7,9 +7,10 @@ document:
   story_id: ST-1905
   version: 1.0.0
 provenance:
-  base_commit: ec3aa667a2c4d7b72b1778295ff16f5512ff1b13
+  generator_owner: build_st1905_advanced_rank_provider
+  generator_version: 2
   contract_uri: repo://changes/st-1905/contracts/advanced-rank-provider.v1.yaml
-  contract_sha256: b60a58d4b3a6824456d6ad53a2c5a95416b3e43e7674755049ba5272d087d7d7
+  contract_sha256: e2aef6b502601df3a2b5a9b173cda0223991b55c230abb0b0a2c797232e530fc
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -33,26 +34,34 @@ provenance:
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
   predecessor_inputs:
   - uri: repo://changes/st-1206/contracts/keyword-rank-import.v1.yaml
-    sha256: 2f891e361224bbca3b6b284fd8b49cd76ba134b804e255ad1c515ff2318b8246
+    semantic_id: changes/st-1206/contracts/keyword-rank-import.v1.yaml
+    version: tracked
   - uri: repo://changes/st-1206/fixtures/recorded/keyword-rank-synthetic.v1.csv
-    sha256: e06d21cf450a75250e096d3528ac45839fa3fb7d08d9988a58d0e0b9ecd59611
+    semantic_id: changes/st-1206/fixtures/recorded/keyword-rank-synthetic.v1.csv
+    version: tracked
   - uri: repo://changes/st-1206/generated/keyword-rank-evaluation.v1.json
-    sha256: 80b745e7b92b2b14babbd05bf684b440e4ee17e602ecdee12bc1cb22ac663ebc
+    semantic_id: changes/st-1206/generated/keyword-rank-evaluation.v1.json
+    version: tracked
   - uri: repo://changes/st-1206/manifest.yaml
-    sha256: b9cc790396b82bae909e5c3c6d7f3a2b48d4b21569cd533ef9b626024341571d
+    semantic_id: changes/st-1206/manifest.yaml
+    version: tracked
   - uri: repo://python/raos/domain/analytics/keyword_rank.py
-    sha256: 9d73e103487598762d914c036a79c933c2d4f3b4d309637851f3985369c903e7
+    semantic_id: python/raos/domain/analytics/keyword_rank.py
+    version: tracked
   - uri: repo://python/raos/ports/keyword_rank.py
-    sha256: 132af0eb97addf17ea3e8de5ca3cee045c87d17f34ff1f4a0f29e45f1e0af2e8
+    semantic_id: python/raos/ports/keyword_rank.py
+    version: tracked
   - uri: repo://python/raos/application/analytics/keyword_rank_import.py
-    sha256: 94c511e0b183223c905adf31f03e3bb8a2f6616acb52203febae63c4e70c4cee
+    semantic_id: python/raos/application/analytics/keyword_rank_import.py
+    version: tracked
   - uri: repo://python/raos/adapters/recorded_keyword_rank.py
-    sha256: cd598c7a8846875c32963a32fa1bbcebabec0e08ac458ee338f9375e8e48661c
+    semantic_id: python/raos/adapters/recorded_keyword_rank.py
+    version: tracked
 source_artifact_count: 18
 source_artifacts:
 - uri: repo://changes/st-1905/contracts/advanced-rank-provider.v1.yaml
-  bytes: 8083
-  sha256: b60a58d4b3a6824456d6ad53a2c5a95416b3e43e7674755049ba5272d087d7d7
+  bytes: 7578
+  sha256: e2aef6b502601df3a2b5a9b173cda0223991b55c230abb0b0a2c797232e530fc
 - uri: repo://changes/st-1905/fixtures/recorded/advanced-rank-provider.v1.json
   bytes: 1976
   sha256: 0f11d433f1fad9bfc2509087fdb99f7714e03a9cb3287dd65ffb746ed2f1b404
@@ -78,8 +87,8 @@ source_artifacts:
   bytes: 8755
   sha256: 3bcebca5eee8b1dfbe7745e49648bc0f595821e41b7691ddd798db09ef249702
 - uri: repo://scripts/build_st1905_advanced_rank_provider.py
-  bytes: 25970
-  sha256: 8a88fffb99fe389814e07bf919817599d1806511198b2da54c70e7278fc03bd6
+  bytes: 26159
+  sha256: 0e29f5b24cd1b3d72f7d9a3e8fd2e620b43946e324acaf2d7fb486c7af36e48c
 - uri: repo://scripts/secure_generated_publication.py
   bytes: 22651
   sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
@@ -93,8 +102,8 @@ source_artifacts:
   bytes: 1882
   sha256: d0ee6dde6bdfebc54c859fc73d2a5d578ffbf40cb3a1903390b5379a691eb617
 - uri: repo://tests/st1905/test_contract.py
-  bytes: 6953
-  sha256: 9ac2e1a713867a53c7dc5a3ff53e8cdee1e4cc204acbc34b0eee9f4a1e210c5d
+  bytes: 6754
+  sha256: 6b3324ec866175a4f3bac8fbdab9c13826af12bbae00b72f622e91c30930b52a
 - uri: repo://tests/st1905/test_generation.py
   bytes: 5995
   sha256: 0a5a85bb1e858a66a6cb0c357af7bce69d2b359c3131cfb0b17d458c9317c0de

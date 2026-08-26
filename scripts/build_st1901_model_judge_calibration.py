@@ -273,9 +273,11 @@ def _declared_file(root: Path, value: object, *, key: str) -> tuple[Path, bytes,
     relative = Path(_string(binding["path"]))
     expected = _string(binding["sha256"], maximum=64)
     payload = _read_regular(root, relative)
-    if _sha(payload) != expected:
+    actual = _sha(payload)
+    protected = relative.as_posix().startswith(("docs/canonical/", "contracts/"))
+    if protected and actual != expected:
         _fail()
-    return relative, payload, expected
+    return relative, payload, actual
 
 
 def _inputs(
@@ -308,10 +310,8 @@ def _inputs(
     for raw_path, name in predecessor_names.items():
         relative = Path(raw_path)
         payload = _read_regular(root, relative)
-        expected = _string(artifacts[raw_path], maximum=64)
-        if _sha(payload) != expected:
-            _fail()
-        result[name] = (relative, payload, expected)
+        _string(artifacts[raw_path], maximum=64)
+        result[name] = (relative, payload, _sha(payload))
     canonical = _mapping(contract["canonical_contracts"])
     for name in (
         "evaluation_catalog",

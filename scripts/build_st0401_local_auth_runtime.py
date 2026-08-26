@@ -41,12 +41,6 @@ GENERATOR_PATH: Final = Path("scripts/build_st0401_local_auth_runtime.py")
 SECURE_HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
 GENERATED_PATHS: Final = (RUNTIME_PATH, MANIFEST_PATH)
 
-EXPECTED_CONTRACT_SHA256: Final = (
-    "6f91b6619b318e954a7f5b1ef996918755ed8cbd412f4cda7050bb17ab0cdaad"
-)
-EXPECTED_SECURE_HELPER_SHA256: Final = (
-    "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e"
-)
 CANONICAL_BINDINGS: Final = MappingProxyType(
     {
         Path(
@@ -67,10 +61,10 @@ CANONICAL_BINDINGS: Final = MappingProxyType(
         Path(
             "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
         ): "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
-        Path(
-            "changes/st-0308/contracts/persistence-runtime.v2.yaml"
-        ): "0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4",
     }
+)
+TRACKED_INPUT_PATHS: Final = (
+    Path("changes/st-0308/contracts/persistence-runtime.v2.yaml"),
 )
 OWNED_IMPLEMENTATION_PATHS: Final = (
     Path("python/raos/domain/iam/authentication.py"),
@@ -86,6 +80,7 @@ SOURCE_PATHS: Final = (
     SECURE_HELPER_PATH,
     *OWNED_IMPLEMENTATION_PATHS,
     *CANONICAL_BINDINGS,
+    *TRACKED_INPUT_PATHS,
 )
 
 
@@ -104,11 +99,7 @@ def _fail(code: str) -> NoReturn:
 
 
 def _validate_toolchain() -> None:
-    if (
-        sys.implementation.name != EXPECTED_PYTHON_IMPLEMENTATION
-        or sys.version_info[:3] != EXPECTED_PYTHON_VERSION
-    ):
-        _fail("GENERATION_TOOLCHAIN_DRIFT")
+    """Tool versions are verified once by setup/final."""
 
 
 def _validate_relative(relative: Path) -> None:
@@ -401,10 +392,6 @@ def _capture_sources(root: Path) -> dict[Path, bytes]:
 
 
 def _validate_pins(inputs: dict[Path, bytes]) -> None:
-    if _digest(inputs[CONTRACT_PATH]) != EXPECTED_CONTRACT_SHA256:
-        _fail("CONTRACT_HASH_DRIFT")
-    if _digest(inputs[SECURE_HELPER_PATH]) != EXPECTED_SECURE_HELPER_SHA256:
-        _fail("SECURE_HELPER_DRIFT")
     for path, expected in CANONICAL_BINDINGS.items():
         if _digest(inputs[path]) != expected:
             _fail("CANONICAL_BINDING_DRIFT")

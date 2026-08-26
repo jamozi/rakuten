@@ -13,7 +13,6 @@ from typing import Final
 ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE: Final = Path("changes/st-1704/self-hosted-editorial-pilot-v1")
 MANIFEST: Final = SLICE / "rakuten-capture-runtime-manifest.v1.json"
-APPROVED_BASE_COMMIT: Final = "f6af738a9a46625fe75cc4ba8642f7b0dc7179bb"
 ARTICLE_IDS: Final = (
     "st1703-first-suitcase-comparison",
     "st1704-portable-power-station-guide",
@@ -55,7 +54,6 @@ def _path_record(relative: str) -> dict[str, object]:
 
 def build_manifest() -> bytes:
     document = {
-        "approved_base_commit": APPROVED_BASE_COMMIT,
         "article_ids": list(ARTICLE_IDS),
         "external_action_authority": "HUMAN_OWNER_BOUNDED_RAKUTEN_READ",
         "generated_by": "scripts/build_st1704_rakuten_capture_manifest.py",

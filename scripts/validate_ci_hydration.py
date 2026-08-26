@@ -52,7 +52,7 @@ MAX_CONTRACT_BYTES = {
 }
 
 EXPECTED_UV_CONFIG: dict[str, Any] = {
-    "required-version": "==0.12.1",
+    "required-version": ">=0.12.1,<0.13",
     "no-sources": True,
     "python-downloads": "manual",
     "python-preference": "only-managed",

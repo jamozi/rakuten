@@ -15,7 +15,7 @@ from typing import Any
 import pytest
 import yaml
 
-from conftest import REPOSITORY_ROOT, copy_owner_root
+from .support import REPOSITORY_ROOT, copy_owner_root
 from scripts import build_st1206_keyword_rank_import as builder
 
 
@@ -141,12 +141,11 @@ def test_safety_mutation_is_rejected_even_when_contract_hash_is_rebound(
         builder.load_contract(root)
 
 
-def test_predecessor_and_authority_hash_drift_is_rejected(tmp_path: Path) -> None:
+def test_predecessor_bytes_are_semantic_inputs(tmp_path: Path) -> None:
     root = copy_owner_root(tmp_path, builder, include_outputs=False)
-    predecessor = root / next(iter(builder.PREDECESSOR_HASHES))
+    predecessor = root / builder.PREDECESSOR_PATHS[0]
     predecessor.write_bytes(predecessor.read_bytes() + b"\n")
-    with pytest.raises(builder.KeywordRankBuildError):
-        builder.load_contract(root)
+    builder.load_contract(root)
 
 
 def test_input_and_output_symlink_targets_are_rejected(tmp_path: Path) -> None:

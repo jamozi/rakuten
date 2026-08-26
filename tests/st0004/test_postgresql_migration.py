@@ -7,7 +7,7 @@ from typing import Any
 
 import pytest
 
-from conftest import apply_sql, upgrade_st0002
+from .support import apply_sql, upgrade_st0002
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]

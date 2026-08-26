@@ -29,7 +29,7 @@ from raos.domain.freshness.refresh_proposal import (
     build_refresh_proposal,
 )
 
-from conftest import (
+from .support import (
     freshness_request,
     freshness_result,
     policy_result,
@@ -138,7 +138,11 @@ def test_runtime_manifest_binds_every_owner_source_and_artifact() -> None:
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert type(manifest) is dict
     root = cast(dict[str, object], manifest)
-    assert root["integrationBaseSha"] == ("d96614da45f7676b622df20164de28cc8d12c2d8")
+    assert root["generatorOwnerId"] == "build_st1403_refresh_proposal_runtime"
+    assert root["generatorVersion"] == "2"
+    assert "integrationBaseSha" not in root
+    assert "ownerCommand" not in root
+    assert "checkCommand" not in root
     sources = cast(list[dict[str, object]], root["sources"])
     for item in sources:
         payload = (ROOT / cast(str, item["path"])).read_bytes()

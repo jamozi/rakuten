@@ -51,7 +51,6 @@ from secure_generated_publication import publish_generated  # noqa: E402
 CONTRACT_PATH = ROOT / "changes/st-1403/contracts/refresh-proposal-runtime.v2.json"
 OUTPUT_PATH = ROOT / "changes/st-1403/generated/refresh-proposal-recorded.v2.json"
 MANIFEST_PATH = ROOT / "changes/st-1403/runtime-manifest.v2.json"
-INTEGRATION_BASE_SHA = "d96614da45f7676b622df20164de28cc8d12c2d8"
 MAXIMUM_SOURCE_BYTES = 8 * 1024 * 1024
 MAXIMUM_OUTPUT_BYTES = 2 * 1024 * 1024
 _SHA = frozenset("0123456789abcdef")
@@ -503,13 +502,8 @@ def _manifest_bytes(record: bytes) -> bytes:
             "schemaVersion": 2,
             "storyId": "ST-1403",
             "classification": "LOCAL_RECORDED_GENERATION_PROVENANCE_V2",
-            "integrationBaseSha": INTEGRATION_BASE_SHA,
-            "ownerCommand": (
-                ".venv/bin/python scripts/build_st1403_refresh_proposal_runtime.py"
-            ),
-            "checkCommand": (
-                ".venv/bin/python scripts/build_st1403_refresh_proposal_runtime.py --check"
-            ),
+            "generatorOwnerId": "build_st1403_refresh_proposal_runtime",
+            "generatorVersion": "2",
             "sources": _source_records(),
             "artifacts": [
                 {

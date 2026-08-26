@@ -67,18 +67,23 @@ def test_runtime_manifest_matches_sources_and_package() -> None:
     assert builder.MANIFEST_PATH.read_bytes() == expected
     manifest = json.loads(expected)
     assert manifest["schema"] == "RAOS_ST1704_PUBLICATION_OPERATOR_RUNTIME_MANIFEST_V2"
-    assert manifest["publication_authority"] == ("EXACT_DISTINCT_HUMAN_APPROVAL_ONLY")
+    assert manifest["publication_authority"] == "DISTINCT_HUMAN_APPROVAL_ONLY"
     assert manifest["codex_approval_authority"] == "NONE"
     assert manifest["writes_default"] == "DISABLED"
     assert manifest["production_readiness"] == "NOT_READY"
     assert manifest["publication_article_ids"] == [
         item[0] for item in builder.PUBLISH_BINDINGS
     ]
-    assert [row["path"] for row in manifest["paths"]] == list(builder.RUNTIME_PATHS)
-    for row in manifest["paths"]:
-        payload = (ROOT / row["path"]).read_bytes()
-        assert row["bytes"] == len(payload)
-        assert row["sha256"] == hashlib.sha256(payload).hexdigest()
+    canonical_paths = {
+        builder.BASE_CANONICAL_DECISIONS_RELATIVE.as_posix(),
+        builder.BASE_CANONICAL_BACKLOG_RELATIVE.as_posix(),
+    }
+    assert {row["path"] for row in manifest["integrity_inputs"]} == canonical_paths
+    assert all("sha256" in row for row in manifest["integrity_inputs"])
+    assert [row["path"] for row in manifest["semantic_inputs"]] == [
+        path for path in builder.RUNTIME_PATHS if path not in canonical_paths
+    ]
+    assert all("sha256" not in row for row in manifest["semantic_inputs"])
     package = builder.build_package()
     assert manifest["package"]["sha256"] == hashlib.sha256(package).hexdigest()
     assert manifest["package"]["file_count"] == len(builder.PLUGIN_FILES)

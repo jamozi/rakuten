@@ -1,91 +1,28 @@
 {
-  "schema_version": 1,
-  "story_id": "ST-0106",
-  "status": "LOCAL_RECONCILIATION_COMPLETE_NOT_FORMAL_EVIDENCE",
-  "owner": {
-    "path": "scripts/build_st0106_reviewed_findings_rebind.py",
-    "bytes": 34084,
-    "sha256": "18ffbcf56599d393ca0ebcc6a258218310700e70891ccc64790bb3c6aae2c2fb",
-    "check_command": "/home/minami/rakuten/.venv/bin/python scripts/build_st0106_reviewed_findings_rebind.py --check"
-  },
-  "inputs": [
-    {
-      "path": "changes/st-0106/reviewed-finding-source-rebind.v3.json",
-      "bytes": 2827,
-      "sha256": "3c23e5e1e96804e357c0f345afb72599e0aee43bc8401cb8ef953997ef3218ea"
-    },
-    {
-      "path": "changes/st-0106/contracts/reviewed-secret-findings.v2.yaml",
-      "bytes": 59769,
-      "sha256": "667fee6720dad2e25e71220b2ec2fc8918a845ee30309c581f687ca87f51ca1b"
-    },
-    {
-      "path": "scripts/scan_secrets.py",
-      "bytes": 43062,
-      "sha256": "3af1b7c468cd5eb55016f3a9199204dcac11ab8b1cbffee831876408d7b57970"
-    }
-  ],
-  "source_rebind": {
-    "path": "tests/st1703/test_wordpresscom_review_draft_https.py",
-    "reviewed_line": 961,
-    "reviewed_line_sha256": "e7ce26448515f4510b0f6165edeeb2cd464b8db7309504eb969193824b726293",
-    "prior_blob_oid": "c70f788f8b0bd1bf1b0a442d83642c44d190edbd",
-    "prior_bytes": 33671,
-    "prior_sha256": "d7a8fb6685a7665394f6dda3e22238b13d52a24657726459b24ef887082c8cf7",
-    "current_blob_oid": "8dcd2ab01f276a6dac924b42e733a827574c13ed",
-    "current_bytes": 33667,
-    "current_sha256": "40aebe8fc975dda5c4742e3f587d4656373e2f6cb56699f818b7ef0408db5e9f",
-    "changed_hunks": [
-      {
-        "operation": "replace",
-        "prior_start_line": 967,
-        "prior_end_line": 967,
-        "current_start_line": 967,
-        "current_end_line": 967,
-        "prior_line_sha256": "015ea57645d114eb56c2a65f8506db2a4b2b6c88bfc507cf4c9bad264aaabb51",
-        "current_line_sha256": "2b6c49ad48e625104bd0f1305a0b8bfa3f1590716f1fae74dfec3f6912876998"
-      }
-    ],
-    "sanitized_finding_set_unchanged": true,
-    "specific_rule_findings": 0,
-    "current_blob_history_projection_added": true,
-    "classification_change": "NONE",
-    "rationale_change": "NONE"
-  },
-  "reviewed_history_additions": [
-    {
-      "scope": "git_history",
-      "exact_source_identifier": "90716c9c3d514d265c3c7463c8d71b172e43d951",
-      "exact_line_number": 193,
-      "exact_source_bytes": 16883,
-      "exact_source_sha256": "19b37f2470e01a261336d501ce0ef9739efd18150b7e446fbdf04af39ed66dd0",
-      "exact_line_sha256": "2ac0364bcf02c18716c5518114835168d24c88eccf2aea3d6d0f18dfd4b880db",
-      "classification": "REVIEWED_FALSE_POSITIVE",
-      "rationale": "Sanitized source location reviewed; no live credential is present.",
-      "sanitized_finding_set": [
-        {
-          "line": 193,
-          "rule_id": "GENERIC_CREDENTIAL"
-        }
-      ],
-      "specific_rule_findings": 0
-    }
-  ],
-  "generated_ledger": {
-    "path": "changes/st-0106/contracts/reviewed-secret-findings.v3.yaml",
+  "external_operations": "NOT_RUN",
+  "output": {
     "bytes": 60805,
-    "sha256": "be150c6dafe3055385abf46978213537296dca6cf3000d9cc8382542bf013690",
-    "entry_count": 117,
-    "changed_entry_count": 1,
-    "added_entry_count": 2,
-    "specific_rule_suppression": "FORBIDDEN"
+    "sha256": "e43018935b46fe643f1f1c835153e851dc2c9bc48698ebeb283dedec9da750f1",
+    "uri": "repo://changes/st-0106/contracts/reviewed-secret-findings.v3.yaml"
   },
-  "boundaries": {
-    "scanner_semantic_change": "NONE",
-    "historical_v1_v2_artifact_change": "NONE",
-    "external_action": "NONE",
-    "formal_tst_001": "NOT_EXECUTED",
-    "formal_tst_002": "NOT_EXECUTED",
-    "release_or_production": "NOT_AUTHORIZED"
-  }
+  "owner": {
+    "owner_id": "build_st0106_reviewed_findings_rebind",
+    "owner_version": 2
+  },
+  "schema_version": 2,
+  "semantic_inputs": [
+    {
+      "semantic_id": "secret_scanner_interface",
+      "uri": "repo://scripts/scan_secrets.py",
+      "version": 2
+    },
+    {
+      "entry_count": 117,
+      "semantic_id": "reviewed_false_positive_line_set",
+      "version": 2
+    }
+  ],
+  "story_ids": [
+    "ST-0106"
+  ]
 }

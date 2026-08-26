@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from conftest import (
+from .support import (
     LATER_DECIDED_AT,
     adapter,
     in_progress_assignment,

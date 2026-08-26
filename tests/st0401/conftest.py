@@ -1,13 +1,9 @@
-"""Import isolation for the ST-0401 authentication suite."""
+"""Pytest entrypoint; reusable helpers live in support.py."""
 
-from __future__ import annotations
-
-from pathlib import Path
-import sys
+from . import support as _support
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-PYTHON_ROOT = REPOSITORY_ROOT / "python"
-
-if str(PYTHON_ROOT) not in sys.path:
-    sys.path.insert(0, str(PYTHON_ROOT))
+for _name in dir(_support):
+    if not _name.startswith("__"):
+        globals()[_name] = getattr(_support, _name)
+del _name, _support

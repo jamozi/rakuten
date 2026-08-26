@@ -28,17 +28,13 @@ def test_contract_and_document_are_exact_non_executable_boundaries() -> None:
     assert plan["document"]["story_acceptance"] is False
 
 
-def test_predecessors_bind_exact_commits_bytes_and_safe_semantics() -> None:
+def test_predecessors_bind_owner_graph_and_safe_semantics() -> None:
     predecessors = _plan()["predecessor_bindings"]
     assert predecessors == generator.EXPECTED_PREDECESSORS
-    assert predecessors["st0604"]["feature_commit"] == (
-        "89d8074951ce73a5c76ca55f0ea3b2c129559d81"
-    )
-    assert predecessors["st0701"]["base_commit"] == (
-        "679ccdc4a49fca8e1bee8827177be7130d6d45b6"
-    )
-    assert len(predecessors["st0604"]["artifacts"]) == 9
-    assert len(predecessors["st0701"]["artifacts"]) == 9
+    assert predecessors["st0604"]["owner_version"] == "2"
+    assert predecessors["st0701"]["owner_version"] == "2"
+    assert predecessors["st0604"]["binding"] == "SEMANTIC_OWNER_GRAPH"
+    assert predecessors["st0701"]["binding"] == "SEMANTIC_OWNER_GRAPH"
     assert "known_owner_debt" not in predecessors["st0701"]
     semantics = predecessors["st0701"]["required_semantics"]
     assert semantics["source_packet_required_task_count"] == 9

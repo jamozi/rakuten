@@ -390,12 +390,11 @@
     "update": 0
   },
   "predecessor_binding": {
-    "contract_sha256": "5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e",
     "contract_uri": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
-    "design_handoff_sha256": "cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f",
     "design_handoff_uri": "repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml",
     "extension_kind": "COMPUTE_CDN_WAF",
-    "reference_plan_sha256": "bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72",
+    "owner_id": "build_st1501_terraform_foundation",
+    "owner_version": 2,
     "reference_plan_uri": "repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json",
     "required_activation_status": "DISABLED",
     "required_admission_status": "NOT_EVALUATED",

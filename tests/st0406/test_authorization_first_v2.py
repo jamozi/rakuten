@@ -9,7 +9,7 @@ from typing import Callable, NoReturn
 
 import pytest
 
-from conftest import (
+from .support import (
     SITE_B,
     V2_NOW,
     V2_RESOURCE_ID,

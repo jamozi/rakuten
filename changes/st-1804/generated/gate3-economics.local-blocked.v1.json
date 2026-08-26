@@ -31,7 +31,7 @@
         "start_date": "2026-08-25"
       },
       "reconciliation_availability": "PARTIAL",
-      "result_sha256": "d8ebf595e96ef8f063fef0e0f2242534e4eb040a0a2e1a39fa50427b17c1467e",
+      "result_sha256": "4b33df432dc013406f0ffcda5c275dfb2fdab1b53b9773a832afcccaab6c7995",
       "synthetic": true
     },
     "ST-1803": {
@@ -74,7 +74,7 @@
   "gate_pass_claim": false,
   "generated_by": {
     "command": "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1804_gate3_economics.py",
-    "generator_sha256": "095b0a681e0653d0690e475c68f558e431d462a9d5da8522526f16abc499b8d8",
+    "generator_sha256": "094abe0656a61e80bdcaaef3dd274d8b38960b8a886b76aac0a5ac211a2357ef",
     "uri": "repo://scripts/build_st1804_gate3_economics.py"
   },
   "learning_boundary": {
@@ -95,7 +95,7 @@
     ],
     "finance_used_for_product_or_recommendation_ranking": false,
     "modifications_applied": [],
-    "source_result_sha256": "d8ebf595e96ef8f063fef0e0f2242534e4eb040a0a2e1a39fa50427b17c1467e"
+    "source_result_sha256": "4b33df432dc013406f0ffcda5c275dfb2fdab1b53b9773a832afcccaab6c7995"
   },
   "mandatory_criteria": [
     {
@@ -327,8 +327,8 @@
         "uri": "repo://python/raos/adapters/recorded_gate3_economics.py"
       },
       {
-        "bytes": 26083,
-        "sha256": "095b0a681e0653d0690e475c68f558e431d462a9d5da8522526f16abc499b8d8",
+        "bytes": 26164,
+        "sha256": "094abe0656a61e80bdcaaef3dd274d8b38960b8a886b76aac0a5ac211a2357ef",
         "uri": "repo://scripts/build_st1804_gate3_economics.py"
       }
     ]

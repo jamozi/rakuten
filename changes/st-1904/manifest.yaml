@@ -7,9 +7,10 @@ document:
   authority: NONE
   production_eligible: false
 provenance:
-  base_commit: 0aaaa69d7776c6e6c4d131246c57c06d2ec996a5
+  generator_owner: build_st1904_multi_category
+  generator_version: 2
   contract_uri: repo://changes/st-1904/contracts/multi-category.v1.yaml
-  contract_sha256: 39ebd7cfba3879a0e3dc60b608d78ce302db39624cdf5d9727a0380b0577ea16
+  contract_sha256: e0af62d4fde5fc833aed8bcedf0660e7aa1a9c0c32e3efac482c18fe5faca1e3
   fixture_uri: repo://changes/st-1904/fixtures/recorded/multi-category.synthetic.v1.json
   fixture_sha256: f9979344c980f1c3e2045a446c8170902d54d16cd849b5b8b44a35d89815bbe5
   binding_set_sha256: 498defa989d3368651b8e1625393e88d358aedca0b541284fe7000efa83106ea
@@ -18,8 +19,8 @@ provenance:
 source_artifact_count: 20
 source_artifacts:
 - uri: repo://changes/st-1904/contracts/multi-category.v1.yaml
-  bytes: 10442
-  sha256: 39ebd7cfba3879a0e3dc60b608d78ce302db39624cdf5d9727a0380b0577ea16
+  bytes: 10320
+  sha256: e0af62d4fde5fc833aed8bcedf0660e7aa1a9c0c32e3efac482c18fe5faca1e3
 - uri: repo://changes/st-1904/fixtures/recorded/multi-category.synthetic.v1.json
   bytes: 2992
   sha256: f9979344c980f1c3e2045a446c8170902d54d16cd849b5b8b44a35d89815bbe5
@@ -48,8 +49,8 @@ source_artifacts:
   bytes: 12428
   sha256: 3b4c5c1ceb7df61c9099d754b89d13bbb38c82da13b2a877f2ef00d0135eaa66
 - uri: repo://scripts/build_st1904_multi_category.py
-  bytes: 31452
-  sha256: 55b4f8dd087175ccfd17221bdef9c88302d19c82a2e21df30089be5ab0247e58
+  bytes: 31337
+  sha256: 6d4ce8f18233f7abd82657f15a117de3e5bf34d728f8b744d2a85f9a9a62e2e5
 - uri: repo://tests/st1904/__init__.py
   bytes: 49
   sha256: 8ad32383ce689b06e486edf004fc62685a90a4ec3f542be2218c307e2f6e651c
@@ -60,8 +61,8 @@ source_artifacts:
   bytes: 2502
   sha256: 3fcc78f395526a559639fe572e0343bb991f86230e535963128cb85eeb4e6bab
 - uri: repo://tests/st1904/test_contract.py
-  bytes: 7628
-  sha256: 6d84d528135d6ce4f3a6e82cbeb65660a49d0b1a15fa1f856f17daa53e4e2aec
+  bytes: 7392
+  sha256: 98b2c6844ecacd9ac9101db46c83146a6afb01a30479393a2825c1f1142e6344
 - uri: repo://tests/st1904/test_service.py
   bytes: 7171
   sha256: 4b913789c99a6487e6a9afbe75bfac18948beb983aaaa5026923d3aeef375682

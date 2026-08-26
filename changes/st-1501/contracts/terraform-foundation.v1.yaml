@@ -27,8 +27,6 @@ sources:
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
     sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
-  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
     sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
 reference_architecture:

@@ -7,7 +7,7 @@ document:
   generation_command: uv run --locked --no-sync python scripts/build_st1502_data_services.py
 provenance:
   contract_uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
-  contract_sha256: 89a0f1e7babfceffd2b270bc3a16f5d74fbeb6b62699e03156c860c9ae16c7e1
+  contract_sha256: 18a4ae470ba2476ae0f38dc27d08914fb788527296602ac73de52a556028209e
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -31,8 +31,6 @@ provenance:
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
     sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
-  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   - uri: repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
     sha256: 2826ec76994e6fb1d4e1c41bc0ce7affecc96351d1fcf527e45c2909bb89f97c
   predecessor_inputs:
@@ -47,8 +45,8 @@ provenance:
 source_artifact_count: 11
 source_artifacts:
 - uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
-  bytes: 24009
-  sha256: 89a0f1e7babfceffd2b270bc3a16f5d74fbeb6b62699e03156c860c9ae16c7e1
+  bytes: 23673
+  sha256: 18a4ae470ba2476ae0f38dc27d08914fb788527296602ac73de52a556028209e
 - uri: repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
   bytes: 16318
   sha256: 2826ec76994e6fb1d4e1c41bc0ce7affecc96351d1fcf527e45c2909bb89f97c
@@ -62,14 +60,14 @@ source_artifacts:
   bytes: 6924
   sha256: b6c936f6c52134bfa49fe151f83d62df85e95628c5ae27bf7f3aac532e032ea0
 - uri: repo://scripts/build_st1502_data_services.py
-  bytes: 117608
-  sha256: 73876b415aba2f7160d94dbe8df113087d4bf5be27b4830b82425b34f6ea6abe
+  bytes: 117089
+  sha256: 5b3fb45a343d87616005eaa98894cde9a9f00bb5f9c9ac4d1db6ab7131c6dae9
 - uri: repo://tests/st1502/conftest.py
   bytes: 637
   sha256: 224ab7f55228ff2c5c7d3150f5b2db35ba388df7031dff2014d668c36d54aeae
 - uri: repo://tests/st1502/test_contract.py
-  bytes: 13388
-  sha256: a37751b2a035ed0ae5c13774770d010ebc462ba237dcf07dcf113e7588983fd1
+  bytes: 13490
+  sha256: 72f6744fe8eb023e761a420cd7e951967c6a77c01f0f21a52e98b4ef613d3855
 - uri: repo://tests/st1502/test_generation.py
   bytes: 9467
   sha256: e532359111850cd5e26ced63cabf274fa96aa3b220c2e16fce09168c13cd2582
@@ -77,13 +75,13 @@ source_artifacts:
   bytes: 18669
   sha256: df5ec1318e5b0e4f2d0779bade8de94369ea5a0368fe5dc95e7b41188fb77829
 - uri: repo://tests/st1502/test_negative_cases.py
-  bytes: 31424
-  sha256: 4c0c12b67930904f0af8af505fda9442f2be133a27954166f407898ad48c704d
+  bytes: 30929
+  sha256: 7f88968ea3fc263a49f2151188876321e30503b33c6c377029d12933bfe10625
 generated_artifact_count: 8
 generated_artifacts:
 - uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
-  bytes: 26340
-  sha256: 2d52d7b99a4edda75814af603e48016f06fa34507bc221e3f573379c066f35c5
+  bytes: 26132
+  sha256: b359042fd260b589e285b79f8196a85e8a080ef0fb834fa406682cd9820225dd
 - uri: repo://infra/terraform/data-services/data-services.logical-plan.v1.json
   bytes: 39827
   sha256: a112654696a47ae0ad3833573a38beeb986a360c332603edd369a15a772d15c8

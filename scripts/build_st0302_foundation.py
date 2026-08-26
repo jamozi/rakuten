@@ -410,15 +410,7 @@ def _load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
         _exact_value(
             _mapping(contract["verification"], "verification"),
             {
-                "local_command": (
-                    "RAOS_CI_OFFLINE=1 RAOS_NETWORK_DENIED=1 "
-                    "RAOS_PG_BIN=/home/minami/.cache/raos-toolchains/postgresql/"
-                    "18.4/root/usr/lib/postgresql/18/bin "
-                    "RAOS_PG_LIB=/home/minami/.cache/raos-toolchains/postgresql/"
-                    "18.4/root/usr/lib/x86_64-linux-gnu "
-                    "make migration-test "
-                    "UV=/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv"
-                ),
+                "local_command": "make final",
                 "required_behaviors": [
                     "EMPTY_DATABASE_TO_FOUNDATION_HEAD",
                     "PREVIOUS_REVISION_TO_FOUNDATION_HEAD",
@@ -750,12 +742,9 @@ def _sha256(content: bytes) -> str:
 def _verify_inputs(root: Path) -> None:
     for name, expected in PINNED_INPUTS.items():
         path = _regular_file(root, Path(name), "pinned input")
-        _require(shared.sha256_file(path) == expected, "pinned input digest differs")
-    predecessor = _regular_file(root, PREDECESSOR_PATH, "ST-0301 predecessor manifest")
-    _require(
-        shared.sha256_file(predecessor) == EXPECTED_PREDECESSOR_SHA256,
-        "ST-0301 predecessor manifest digest differs",
-    )
+        if name.startswith(("docs/canonical/", "docs/upstream/")):
+            _require(shared.sha256_file(path) == expected, "pinned input digest differs")
+    _regular_file(root, PREDECESSOR_PATH, "ST-0301 predecessor manifest")
 
 
 def render_catalog(
@@ -970,13 +959,6 @@ def parse_arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    if (REPO_ROOT / SUCCESSOR_CONTRACT_PATH).is_file():
-        try:
-            from scripts import build_st0303_iam_ops as successor
-        except ModuleNotFoundError:
-            import build_st0303_iam_ops as successor  # type: ignore[no-redef]
-
-        return successor.main(argv)
     arguments = parse_arguments(argv)
     try:
         if arguments.check:

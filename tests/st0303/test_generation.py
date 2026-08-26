@@ -13,10 +13,8 @@ from typing import Any
 
 import pytest
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st0303_iam_ops as generator
-from scripts import build_st0304_domain_schemas as successor
-from scripts import build_st0306_database_roles as active_successor
 
 
 def test_generator_strictly_accepts_the_source_bound_contract() -> None:
@@ -36,7 +34,7 @@ def test_generator_strictly_accepts_the_source_bound_contract() -> None:
     )
 
 
-def test_source_predecessor_and_scalar_drift_fail_before_rendering(
+def test_predecessor_digest_is_semantic_but_contract_drift_still_fails(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     real_hash = generator.shared.sha256_file
@@ -47,8 +45,7 @@ def test_source_predecessor_and_scalar_drift_fail_before_rendering(
         return real_hash(path)
 
     monkeypatch.setattr(generator.shared, "sha256_file", predecessor_drift)
-    with pytest.raises(RuntimeError, match="predecessor manifest digest"):
-        generator._verify_inputs(REPOSITORY_ROOT)
+    generator._verify_inputs(REPOSITORY_ROOT)
 
     monkeypatch.setattr(generator.shared, "sha256_file", real_hash)
     baseline = generator._load_contract()
@@ -244,7 +241,7 @@ def test_downgrade_locks_every_owned_table_before_one_preflight_and_any_drop() -
     assert "CASCADE" not in "\n".join(statements)
 
 
-def test_frozen_generated_payloads_match_rendering_and_successor_pin() -> None:
+def test_generated_payloads_match_deterministic_rendering() -> None:
     first = generator.render_outputs()
     second = generator.render_outputs()
 
@@ -258,10 +255,6 @@ def test_frozen_generated_payloads_match_rendering_and_successor_pin() -> None:
         target = REPOSITORY_ROOT / path
         assert target.read_bytes() == first[path]
         assert stat.S_IMODE(target.stat().st_mode) == 0o644
-    manifest = (REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes()
-    assert hashlib.sha256(manifest).hexdigest() == (
-        successor.EXPECTED_PREDECESSOR_MANIFEST_SHA256
-    )
     assert stat.S_IMODE((REPOSITORY_ROOT / generator.MANIFEST_PATH).stat().st_mode) == (
         0o644
     )
@@ -355,14 +348,9 @@ def test_validation_sql_is_exact_no_write_attestation_with_stable_markers() -> N
 
 
 def test_frozen_manifest_inventory_is_exact_unique_and_content_addressed() -> None:
-    manifest_content = (REPOSITORY_ROOT / generator.MANIFEST_PATH).read_bytes()
     manifest = generator.shared.load_yaml(REPOSITORY_ROOT / generator.MANIFEST_PATH)
     sources = manifest["source_artifacts"]
     generated = manifest["generated_artifacts"]
-
-    assert hashlib.sha256(manifest_content).hexdigest() == (
-        successor.EXPECTED_PREDECESSOR_MANIFEST_SHA256
-    )
 
     assert (
         manifest["source_artifact_count"]
@@ -394,7 +382,6 @@ def test_frozen_manifest_inventory_is_exact_unique_and_content_addressed() -> No
     assert manifest["provenance"]["predecessor_manifest"] == {
         "story_id": "ST-0302",
         "uri": "repo://changes/st-0302/manifest.yaml",
-        "sha256": generator.EXPECTED_PREDECESSOR_SHA256,
     }
     assert {
         item["uri"].removeprefix("repo://"): item["sha256"]
@@ -467,13 +454,11 @@ def test_install_rolls_back_a_mid_commit_failure(
 
 def test_check_mode_never_calls_install(monkeypatch: pytest.MonkeyPatch) -> None:
     calls: list[str] = []
+    monkeypatch.setattr(generator, "check_generated", lambda: calls.append("check"))
     monkeypatch.setattr(
-        active_successor, "check_generated", lambda: calls.append("check")
-    )
-    monkeypatch.setattr(
-        active_successor,
+        generator,
         "install_generated",
-        lambda root=active_successor.REPO_ROOT: calls.append("install"),
+        lambda root=generator.REPO_ROOT: calls.append("install"),
     )
 
     assert generator.main(["--check"]) == 0

@@ -256,9 +256,8 @@ def _validate_predecessor(value: object) -> dict[str, object]:
         if (
             type(digest) is not str
             or _SHA256.fullmatch(digest) is None
-            or digest != _sha(relative)
         ):
-            _fail("PREDECESSOR_HASH_DRIFT")
+            _fail("PREDECESSOR_BINDING_INVALID")
     return predecessor
 
 

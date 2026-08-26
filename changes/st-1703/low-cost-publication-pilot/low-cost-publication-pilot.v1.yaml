@@ -1,41 +1,17 @@
 document:
-  schema: RAOS_LOW_COST_PUBLICATION_PILOT_V1
+  schema: RAOS_LOW_COST_PUBLICATION_PILOT_V2
   id: RAOS-ST1703-LOW-COST-PUBLICATION-PILOT-001
-  version: 1.0.0
+  version: 2.0.0
   story_id: ST-1703
   classification: SOURCE_DERIVED_NON_EXECUTABLE_NON_ATTESTING_PLAN
-  design_status: OWNER_APPROVED_FOR_REPOSITORY_LOCAL_IMPLEMENTATION
-  implementation_status: LOCAL_GOVERNANCE_SLICE_ONLY
+  development_status: CONTINUOUS_LOCAL_IMPLEMENTATION
   formal_verification: NOT_EXECUTED
   production_readiness: NOT_READY
-authority:
-  approved_proposal:
-    text: 30日パイロットでは、WordPress.com Personalを唯一の公開基盤、Codex＋Gitを記事作成・品質管理基盤とする。OpenAI API、AWS、Cloudflare Pages、独自Admin/API/Workerは保留。既存ChatGPT契約を除く外部費上限は月2,000円。CodexはDraft作成と検証のみで、公開は人手に限定する。
-    utf8_bytes: 342
-    sha256: 131534a5c035096a3e18abbc1e82f9937b50cd7d3c84e4a3fc413d52e57b6a5b
-  owner_response:
-    text: 承認
-    utf8_bytes: 6
-    sha256: 5d103c64a39b8ac1e10c8a7038fa6d780ed1d1b205e071e2b52236f9540f59a6
-    observed_on: '2026-08-13'
-    semantic_approval_precedes_serialization: true
-  implementation_authority: REPOSITORY_LOCAL_ARCHITECTURE_AND_GOVERNANCE_ONLY
-  handoff_uri: repo://changes/st-1703/low-cost-publication-pilot/DESIGN_HANDOFF_V1_ST1703_LOW_COST_PUBLICATION_PILOT_V1.yaml
-  approval_uri: repo://changes/st-1703/low-cost-publication-pilot/DESIGN-HANDOFF-APPROVAL-ST1703-LOW-COST-PUBLICATION-PILOT-v1.yaml
-bindings:
-  approved_base_commit: 0d6286ad19fe3a30599359a33b2409b64ae00f1f
-  approved_base_tree: 3b84020ed4c3aa232e2755ebf9e4607fa02a44e1
-  wave3:
-    handoff:
-      uri: repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml
-      sha256: 46f43208309e139c062995adf7bae0cd522a564bd17d77d7966e76f8f51277be
-    approval:
-      uri: repo://changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml
-      sha256: e46de3b040bcb04276ff1cc0246857c10b763888e27a5eb4577f84e424103660
-    runtime_manifest:
-      uri: repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json
-      sha256: ac5f80152c846df3be09b90a28a0bd5ca93f2e165807b9fcb50ca7eb569c908c
-    relationship: CURRENT_FIXED_TARGET_METADATA_ONLY_NO_EXECUTION_AUTHORITY
+decision_context:
+  proposal: 30日パイロットでは、WordPress.com Personalを唯一の公開基盤、Codex＋Gitを記事作成・品質管理基盤とする。OpenAI API、AWS、Cloudflare Pages、独自Admin/API/Workerは保留。既存ChatGPT契約を除く外部費上限は月2,000円。CodexはDraft作成と検証のみで、公開は人手に限定する。
+  owner_acknowledgement: RECORDED
+  observed_on: '2026-08-13'
+  development_authority: CONTINUOUS_REVERSIBLE_REPOSITORY_WORK
 pilot:
   duration_days: 30
   public_platforms:

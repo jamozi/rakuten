@@ -8,7 +8,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     ARTICLE_VERSION_ID,
     ASSIGNMENT_ID,
     assigned,

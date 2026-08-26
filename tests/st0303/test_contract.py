@@ -10,7 +10,7 @@ from typing import Any
 import pytest
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st0201_postgres_service as shared
 
 
@@ -314,7 +314,7 @@ def test_strict_loader_rejects_duplicate_keys_and_aliases(tmp_path: Path) -> Non
         shared.load_yaml(alias)
 
 
-def test_source_pins_and_predecessor_are_exact_live_bytes(
+def test_immutable_source_pins_and_semantic_predecessor_are_bound(
     iam_ops_contract: dict[str, Any],
 ) -> None:
     precedence = iam_ops_contract["source_precedence"]
@@ -329,11 +329,11 @@ def test_source_pins_and_predecessor_are_exact_live_bytes(
         )
 
     predecessor = precedence["predecessor_manifest"]
-    assert predecessor["story_id"] == "ST-0302"
-    assert (
-        hashlib.sha256((REPOSITORY_ROOT / predecessor["path"]).read_bytes()).hexdigest()
-        == predecessor["sha256"]
-    )
+    assert predecessor == {
+        "story_id": "ST-0302",
+        "path": "changes/st-0302/manifest.yaml",
+    }
+    assert (REPOSITORY_ROOT / predecessor["path"]).is_file()
 
 
 def test_contract_is_the_exact_allowlisted_normalized_source_oracle(

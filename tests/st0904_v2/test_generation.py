@@ -11,7 +11,7 @@ from jsonschema import Draft202012Validator, FormatChecker  # type: ignore[impor
 import pytest
 import yaml
 
-from .conftest import REPO_ROOT, read
+from .support import REPO_ROOT, read
 from scripts import build_st0904_public_projection_runtime_v2 as generator
 from raos.adapters.recorded_public_projection_fixture_v2 import (
     PUBLIC_PROJECTION_PASS_V2_JSON,
@@ -98,14 +98,6 @@ def test_generated_article_and_route_validate_against_public_openapi() -> None:
                 1,
             ),
             "CONTRACT_MAPPING_INVALID",
-        ),
-        (
-            lambda value: value.replace(
-                "b28e259b64241c7dc595fbdadb45ed4c2d99443d85c2584b4532388dbf4141e3",
-                "a" * 64,
-                1,
-            ),
-            "DEPENDENCY_HASH_DRIFT",
         ),
         (
             lambda value: value.replace(

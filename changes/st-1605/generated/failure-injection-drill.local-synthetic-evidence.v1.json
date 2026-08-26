@@ -67,11 +67,6 @@
       "role": "threat_register",
       "uri": "repo://docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
       "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
-    },
-    {
-      "role": "implementation_first_execplan",
-      "uri": "repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md",
-      "sha256": "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
     }
   ],
   "dependency_bindings": {

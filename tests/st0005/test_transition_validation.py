@@ -11,7 +11,7 @@ import pytest
 from jsonschema import Draft202012Validator
 
 from scripts import build_st0005_status as status
-from conftest import (
+from .support import (
     TEST_ARTIFACT_PREFIX,
     TEST_EVIDENCE_PREFIX,
     apply_request,

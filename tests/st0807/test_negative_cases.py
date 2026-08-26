@@ -37,7 +37,7 @@ from raos.domain.editorial.seo_renderer import (
     render_seo,
 )
 
-from conftest import (
+from .support import (
     ARTICLE_VERSION_ID,
     MODIFIED_AT,
     PUBLISHED_AT,

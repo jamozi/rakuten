@@ -11,7 +11,7 @@ from typing import Any, Callable, cast
 import pytest
 import yaml
 
-from scripts import build_st1505_staging_deployment as base
+from scripts import raos_build_core as base
 from scripts import (
     build_st0504_product_identity_human_review_reference_plan as generator,
 )
@@ -238,14 +238,22 @@ def test_path_traversal_is_rejected(
         *(path for path, _digest in generator.EXPECTED_PREDECESSOR_ARTIFACTS),
     ],
 )
-def test_authority_or_predecessor_byte_drift_is_rejected(
+def test_immutable_authority_is_hashed_and_predecessors_are_semantic(
     isolated_repository: Path,
     relative: Path,
 ) -> None:
     path = isolated_repository / relative
     path.write_bytes(path.read_bytes() + b"\ndrift\n")
-    with pytest.raises(generator.ProductIdentityReferenceError):
-        generator.render_outputs(isolated_repository)
+    immutable = {
+        generator.OPEN_DECISIONS_PATH,
+        generator.TEST_CATALOG_PATH,
+        generator.STORY_PATH,
+    }
+    if relative in immutable:
+        with pytest.raises(generator.ProductIdentityReferenceError):
+            generator.render_outputs(isolated_repository)
+    else:
+        assert generator.render_outputs(isolated_repository)
 
 
 def test_predecessor_semantic_drift_is_rejected_even_when_hash_is_rebound(

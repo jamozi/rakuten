@@ -488,21 +488,8 @@ def test_direct_ask_rejects_invalid_wait_before_layout_or_transport(
 
 def test_make_and_guidance_keep_wait_scoped_to_pro_ask() -> None:
     makefile = MAKEFILE_PATH.read_text(encoding="utf-8")
-    pro_region = makefile[
-        makefile.index("PRO_REQUEST_FILE ?=") : makefile.index("python-install:")
-    ]
-    assert "PRO_INTERACTIVE_AUTH_WAIT_SECONDS ?= 900" in pro_region
-    assert (
-        '--interactive-auth-wait-seconds "$(PRO_INTERACTIVE_AUTH_WAIT_SECONDS)"'
-        in pro_region
-    )
-    assert pro_region.count("--interactive-auth-wait-seconds") == 1
-    doctor_region = pro_region[
-        pro_region.index("pro-doctor:") : pro_region.index("pro-ask:")
-    ]
-    resume_region = pro_region[pro_region.index("pro-resume:") :]
-    assert "interactive-auth-wait" not in doctor_region
-    assert "interactive-auth-wait" not in resume_region
+    assert "PRO_INTERACTIVE_AUTH_WAIT_SECONDS" not in makefile
+    assert "pro-ask:" not in makefile
 
     readme = README_PATH.read_text(encoding="utf-8")
     assert "900" in readme

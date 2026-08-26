@@ -9,7 +9,7 @@
   "production": "NOT_EXECUTED",
   "schema_version": "2.0.0",
   "source_sha256": {
-    "changes/st-0202/contracts/local-object-storage.v1.yaml": "5a5ca7e3847c730e97172646638088070dfaa96776485910cb967a67ab552a9f",
+    "changes/st-0202/contracts/local-object-storage.v1.yaml": "0398760c655eb95a9d715c56aa6d9cd243a970d3fb2606445adc33fa0a21b002",
     "changes/st-0403/contracts/authorization-registry.v1.json": "a2ef5f7df66492164128ba8ffffcceb254b58bedc5cac7d03716d20700bc1093",
     "changes/st-0406/LOCAL-IMPLEMENTATION-COMPLETION-20260825-v3.yaml": "da2ab93547128cbf3f634f7e2e2fd3cfe8d271a96d2a162f2c15bdc4f4a1b2ac",
     "changes/st-0406/PREFLIGHT-20260825-v3.md": "06b7ed3a97594609963ffaddff1a88bc10a3bedf89dc73e05007d09c423e4a47",
@@ -25,12 +25,12 @@
     "python/raos/domain/ops/object_intake_runtime_v2.py": "804a82729febb0d6a218b4fb8efa59601134e38bd49508e757df06829ac54a67",
     "python/raos/ports/object_intake_runtime_v2.py": "5991db85a98f2265dac84faf35052f9ab15f9945ece977941ebd56738d2ca6c6",
     "scripts/build_st0406_secure_object_intake_runtime.py": "4f262875753f9cf4264e8fa353bea8cc28e2766ec96b210a5d9baabe1e49c0e1",
-    "tests/st0406/conftest.py": "a4aea24265c60469d54923566924cabf4897c1e537bd6b30b474f0440755acdf",
-    "tests/st0406/test_archive_csv_v2.py": "7704a42a2d372e4cdafa458c2576cf598173b449b0f1ab46eddcdd1c2f7db547",
-    "tests/st0406/test_authorization_first_v2.py": "349ec8a2d4409b4a71fded43777e68d895e65e84fc82914860f9c7223b55d572",
+    "tests/st0406/conftest.py": "4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528",
+    "tests/st0406/test_archive_csv_v2.py": "8033bfa7e65d2fe75798cc8593a38b6cc8664e70fac91ff075c317327bb92b6b",
+    "tests/st0406/test_authorization_first_v2.py": "0cd7ad368044138623f940465f806868d8227047162197bbced6cb1601f0163d",
     "tests/st0406/test_generation_v2.py": "85a4e55fb9e5c80b28798d015434c4ec415d4858a77c2ec9662ffda95dd1f410",
-    "tests/st0406/test_runtime_v2.py": "fc5d441a511ab9df7de03bfe41ae549a216f5f4e76a60b21ae127102d3fa24fe",
-    "tests/st0406/test_storage_security_v2.py": "167331c2defda3da8a7129f3e58871a287873b03c2de3e4ed80fee28c3032343"
+    "tests/st0406/test_runtime_v2.py": "c8a075f10c32b01d0e97e5b6ec495321863a87eb88389e730edb02fab353994d",
+    "tests/st0406/test_storage_security_v2.py": "d23e165a14c920e6a17c6ce18c5808785d8b6dc48de50b28d1f40917a6647c6e"
   },
   "staging": "NOT_EXECUTED",
   "story_id": "ST-0406"

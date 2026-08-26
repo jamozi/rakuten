@@ -103,20 +103,20 @@ source_artifacts:
   bytes: 4016
   sha256: a28dde8ebcc1fc241ae3e37ad458ed1fd6222d967948d44cbb35c080fbbaa060
 - uri: repo://scripts/build_st0605_claim_evidence_coverage_reference_plan.py
-  bytes: 45152
-  sha256: e4fc9f5d5568473519ffedb434c594bb4c621dc3028b522d42fde698173be1fb
+  bytes: 44719
+  sha256: 551d1b0cf78651ef30686ea0369929ffc8803f21dd6fdcce3d57bcb6696687c8
 - uri: repo://tests/st0605/conftest.py
-  bytes: 2071
-  sha256: 089d70a4d95bda6c984646153129cd091126199806136a71e2b8621a01cd1219
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st0605/test_contract.py
   bytes: 5269
   sha256: 4dbfe43f08382899de0bd65901f91dda0831f64298ae3dafedb06fe6f20cff86
 - uri: repo://tests/st0605/test_generation.py
-  bytes: 5305
-  sha256: fd305593ae296ec6e763c5b88aa6ee89ff5aa25feb6b4296b3730d3b21f2e9e1
+  bytes: 5306
+  sha256: a52e7e433564a512121c0a471bb8bd16160714b336b87538452d91756c7cbf24
 - uri: repo://tests/st0605/test_negative_cases.py
-  bytes: 8019
-  sha256: 463e15c2ead5deab957cf755a7865e38d92a3fa4fb270a8886c4dc10fe42bd35
+  bytes: 7973
+  sha256: b05a6f6f904709142b84391514b1dc7683dbae2a25e3e3050d6f9fa4474a5385
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0605/generated/claim-evidence-coverage-reference-plan.v1.json

@@ -22,7 +22,7 @@ from raos.domain.freshness.freshness import (
     select_due_freshness,
 )
 
-from conftest import (
+from .support import (
     EVALUATED_AT,
     JST,
     SCHEDULE_IDS,

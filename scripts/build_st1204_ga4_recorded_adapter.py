@@ -602,7 +602,8 @@ def _validate_pinned_sources(
                 label=f"pinned source {group_name}[{index}]",
                 maximum_bytes=MAX_SOURCE_BYTES,
             )
-            if _sha256(content) != _text(entry.get("sha256"), label="source sha256"):
+            expected = _text(entry.get("sha256"), label="source sha256")
+            if group_name != "predecessors" and _sha256(content) != expected:
                 raise RuntimeError(f"pinned source hash drift in {group_name}")
             captured[relative] = content
 

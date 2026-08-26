@@ -29,7 +29,7 @@ from raos.domain.freshness.safe_degradation import (
     decide_safe_degradation,
 )
 
-from conftest import (
+from .support import (
     bound_request,
     freshness_request,
     freshness_result,

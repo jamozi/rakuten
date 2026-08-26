@@ -23,7 +23,7 @@ from raos.domain.catalog.rakuten_item_search import (
     RawResponseReceipt,
 )
 
-from conftest import (
+from .support import (
     canonical_page,
     item_search_command,
     raw_response,

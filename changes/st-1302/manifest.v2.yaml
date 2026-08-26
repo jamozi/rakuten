@@ -19,8 +19,8 @@ source_artifacts:
   bytes: 3661
   sha256: 610c6984cda4cbd8fbeaec18c9c769fa24e9f8d57b85c7660ab906e998504607
 - uri: repo://scripts/build_st1302_provider_fact_commit_recorded.py
-  bytes: 24374
-  sha256: fc7c6a1a3edfca78dc26a8cf5c1211772e9f19102fce5f572ca546dba16354d9
+  bytes: 24391
+  sha256: c19d678ded80c8c17232488d3829e5d735d605dc30cf05aa304cc78ef9e3ed5d
 - uri: repo://python/raos/domain/finance/provider_fact_commit.py
   bytes: 49832
   sha256: 738968dc4e9bc1446dd28a920ba76ce894eddd1d3e8d671377131d14dc37b386

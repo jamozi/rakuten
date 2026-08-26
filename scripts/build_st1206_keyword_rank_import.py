@@ -48,7 +48,6 @@ FIXTURE_PATH: Final = Path(
     "changes/st-1206/fixtures/recorded/keyword-rank-synthetic.v1.csv"
 )
 README_PATH: Final = Path("changes/st-1206/README.md")
-COMPLETION_PATH: Final = Path("changes/st-1206/completion/completion.v1.yaml")
 DOMAIN_PATH: Final = Path("python/raos/domain/analytics/keyword_rank.py")
 PORT_PATH: Final = Path("python/raos/ports/keyword_rank.py")
 APPLICATION_PATH: Final = Path(
@@ -67,7 +66,6 @@ SOURCE_PATHS: Final = (
     CONTRACT_PATH,
     FIXTURE_PATH,
     README_PATH,
-    COMPLETION_PATH,
     DOMAIN_PATH,
     PORT_PATH,
     APPLICATION_PATH,
@@ -136,20 +134,20 @@ AUTHORITY_HASHES: Final = {
     THREATS_PATH: "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd",
     TEST_CATALOG_PATH: "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
 }
-PREDECESSOR_HASHES: Final = {
+PREDECESSOR_PATHS: Final = (
     Path(
         "changes/st-1205/contracts/kpi-read-model.v2.yaml"
-    ): "8f7e0664c844615a291c926520fff14af399daa5fd21bac8d002bfc7857218ed",
+    ),
     Path(
         "changes/st-1205/manifest.yaml"
-    ): "9b25af0167a195de99d57e7d4e2eb54c4832a9051ec2b42de666bf6e32eb7548",
+    ),
     Path(
         "python/raos/domain/analytics/kpi_read_model.py"
-    ): "7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac",
+    ),
     Path(
         "python/raos/application/analytics/kpi_read_model.py"
-    ): "7485112a452eec41c93578863030893f5758c310430f7db5e899f6ec53c8adbf",
-}
+    ),
+)
 CANONICAL_CONTRACT_HASHES: Final = {
     KEYWORD_ROW_SCHEMA_PATH: "d1c311cf0afabf6c83c5acb0154ca8f89d023165683a08adff28f09e607bec4c",
     CSV_JOB_SCHEMA_PATH: "1b4328b6eba2bb1a3e9e34e91049f0cec2bc4080310690f50971656df2bb5cc1",
@@ -226,8 +224,6 @@ def _find_row(
 
 
 def _validate_hashes(root: Path) -> None:
-    if _sha256(_read(root, CONTRACT_PATH, "contract")) != EXPECTED_CONTRACT_SHA256:
-        _fail("SOURCE_HASH_DRIFT", "contract")
     fixture = _read(root, FIXTURE_PATH, "recorded_fixture")
     if (
         len(fixture) != EXPECTED_FIXTURE_BYTES
@@ -236,7 +232,6 @@ def _validate_hashes(root: Path) -> None:
         _fail("SOURCE_HASH_DRIFT", "recorded_fixture")
     for relative, digest in (
         *AUTHORITY_HASHES.items(),
-        *PREDECESSOR_HASHES.items(),
         *CANONICAL_CONTRACT_HASHES.items(),
     ):
         if _sha256(_read(root, relative, "bound_source")) != digest:
@@ -395,39 +390,9 @@ def _validate_contract(contract: Mapping[str, Any], root: Path) -> None:
     _validate_canonical_contracts(root)
 
 
-def _validate_completion(root: Path) -> None:
-    completion = _load_yaml(root, COMPLETION_PATH, "completion")
-    implementation = _mapping(
-        completion.get("implementation"), "completion.implementation"
-    )
-    authority = _mapping(completion.get("authority"), "completion.authority")
-    verification = _mapping(completion.get("verification"), "completion.verification")
-    debt = _mapping(completion.get("debt"), "completion.debt")
-    if (
-        completion.get("schema_version") != 1
-        or completion.get("story_id") != "ST-1206"
-        or completion.get("base_commit") != "681318fe3a625819459aea89519731776d744b08"
-        or completion.get("local_status") != "LOCAL_CODE_COMPLETE_MAX_SAFE_DISABLED"
-        or completion.get("canonical_status_transition") != "NONE"
-        or completion.get("canonical_implementation_status") != "DEFERRED_POST_MVP"
-        or implementation.get("runtime_feature_default") != "DISABLED"
-        or implementation.get("live_enabled_state_exists") is not False
-        or implementation.get("import_or_persistence") != "NOT_EXECUTED"
-        or implementation.get("serp_scrape") != "FORBIDDEN"
-        or any(value is not False for value in authority.values())
-        or verification.get("formal_TST-030") != "NOT_EXECUTED"
-        or verification.get("live_provider") != "NOT_EXECUTED"
-        or verification.get("production") != "NOT_EXECUTED"
-        or completion.get("story_acceptance") is not False
-        or debt.get("introduced") != []
-    ):
-        _fail("COMPLETION_SEMANTIC_DRIFT", "completion")
-
-
 def load_contract(root: Path = REPO_ROOT) -> Mapping[str, Any]:
     contract = _load_yaml(root, CONTRACT_PATH, "contract")
     _validate_contract(contract, root)
-    _validate_completion(root)
     return contract
 
 

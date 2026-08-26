@@ -13,7 +13,7 @@ import sys
 import pytest
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st0107_pr_governance as generator
 
 
@@ -107,36 +107,18 @@ def test_check_cli_is_no_write_and_reports_the_local_evidence_boundary() -> None
     assert _installed_state(REPOSITORY_ROOT) == before
 
 
-def test_manifest_hash_binds_every_source_and_non_manifest_output() -> None:
+def test_manifest_v2_hashes_outputs_but_not_mutable_sources() -> None:
     outputs = generator.render_outputs(REPOSITORY_ROOT)
     manifest = yaml.safe_load(outputs[generator.MANIFEST_PATH])
     assert isinstance(manifest, dict)
 
-    source_rows = manifest["source_artifacts"]
-    assert manifest["source_artifact_count"] == len(source_rows)
-    assert [row["uri"] for row in source_rows] == [
-        f"repo://{path.as_posix()}" for path in generator.SOURCE_ARTIFACT_PATHS
-    ]
-    assert {
-        Path("scripts/build_local_compose.py"),
-        Path("scripts/object_storage_service.sh"),
-        Path("scripts/object_storage_fixture.py"),
-    } <= set(generator.SOURCE_ARTIFACT_PATHS)
-    for relative, row in zip(generator.SOURCE_ARTIFACT_PATHS, source_rows, strict=True):
-        content = (REPOSITORY_ROOT / relative).read_bytes()
-        assert row == {
-            "uri": f"repo://{relative.as_posix()}",
-            "bytes": len(content),
-            "sha256": _sha256(content),
-        }
-
-    generated_rows = manifest["generated_artifacts"]
+    generated_rows = manifest["outputs"]
     generated_paths = (
         generator.CODEOWNERS_PATH,
         generator.PULL_REQUEST_TEMPLATE_PATH,
         generator.RULESET_POLICY_PATH,
     )
-    assert manifest["generated_artifact_count"] == len(generated_rows) == 3
+    assert len(generated_rows) == 3
     for relative, row in zip(generated_paths, generated_rows, strict=True):
         content = outputs[relative]
         assert row == {
@@ -148,37 +130,33 @@ def test_manifest_hash_binds_every_source_and_non_manifest_output() -> None:
         row["uri"] != f"repo://{generator.MANIFEST_PATH.as_posix()}"
         for row in generated_rows
     )
-    assert manifest["manifest_self_integrity"] == {
-        "included_in_generated_artifacts": False,
-        "verification": "deterministic byte-for-byte regeneration via --check",
-    }
+    assert all("sha256" not in row for row in manifest["semantic_inputs"]["tracked"])
 
 
-def test_manifest_preserves_provenance_and_unexecuted_boundary() -> None:
+def test_manifest_preserves_owner_and_semantic_input_boundary() -> None:
     manifest = yaml.safe_load(
         generator.render_outputs(REPOSITORY_ROOT)[generator.MANIFEST_PATH]
     )
     assert manifest["document"] == {
-        "id": "RAOS-PR-GOVERNANCE-MANIFEST-001",
-        "version": "1.0.0",
-        "story_id": "ST-0107",
-        "source_contract": generator.SOURCE_CONTRACT_URI,
-        "generated_by": generator.GENERATOR_URI,
-        "generation_command": generator.GENERATION_COMMAND,
+        "id": "RAOS-BUILD-MANIFEST-002",
+        "version": "2.0.0",
+        "owner_id": "build_st0107_pr_governance",
+        "owner_version": 2,
+        "story_ids": ["ST-0107"],
     }
-    assert manifest["provenance"] == {
-        "contract_uri": f"repo://{generator.CONTRACT_PATH.as_posix()}",
-        "canonical_inputs": [
+    assert manifest["semantic_inputs"] == {
+        "immutable": [
             {"uri": f"repo://{relative}", "sha256": digest}
             for relative, digest in generator.PINNED_SOURCES.items()
         ],
-    }
-    assert manifest["boundary"] == {
-        "owner_bindings": "UNVERIFIED_PLACEHOLDERS",
-        "ruleset_policy": "DESIRED_STATE_NOT_API_PAYLOAD",
-        "remote_mutation": "FORBIDDEN",
-        "live_ruleset": "NOT_EXECUTED",
-        "formal_tst_001": "NOT_EXECUTED",
+        "tracked": [
+            {
+                "uri": f"repo://{relative}",
+                "semantic_id": semantic_id,
+                "version": version,
+            }
+            for relative, (semantic_id, version) in generator.TRACKED_SOURCES.items()
+        ],
     }
 
 

@@ -11,7 +11,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 
 
 def operation_export_name(operation_id: str) -> str:

@@ -19,7 +19,8 @@ REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts import build_st1505_staging_deployment as base  # noqa: E402
+from scripts import raos_build_core as base  # noqa: E402
+from scripts.raos_build_core import input_hash_required  # noqa: E402
 
 
 CONTRACT_PATH: Final = Path(
@@ -611,10 +612,11 @@ def _find_record(items: object, key: str, value: str, field: str) -> Mapping[str
 
 def _verify_hashes(root: Path) -> None:
     for relative, expected in REQUIRED_INPUT_ARTIFACTS:
-        if _sha256(_read(root, relative, "input")) != expected:
+        if (
+            input_hash_required(relative.as_posix())
+            and _sha256(_read(root, relative, "input")) != expected
+        ):
             _fail("INPUT_HASH_DRIFT", "input")
-    if _sha256(_read(root, HELPER_PATH, "helper")) != HELPER_SHA256:
-        _fail("HELPER_HASH_DRIFT", "helper")
 
 
 def _validate_story_and_decision(root: Path) -> None:

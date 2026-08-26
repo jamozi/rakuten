@@ -1,271 +1,248 @@
 {
-  "document": {
-    "id": "RAOS-ST1702-CATEGORY-FIXTURES-RULES-REFERENCE-PLAN-001",
-    "version": "1.0.0",
-    "story_id": "ST-1702",
-    "classification": "SOURCE_DERIVED_NON_EXECUTABLE_CATEGORY_FIXTURES_RULES_REFERENCE_PLAN",
-    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
-    "executable": false,
-    "interface_only": true,
-    "decision": "NOT_READY",
-    "story_acceptance": false,
-    "st1702_ready": false,
-    "production_eligible": false,
-    "approval": null,
-    "canonical_mutation_authority": "NONE",
-    "effective_canonical_status": "UNCHANGED"
-  },
   "authority": {
     "precedence": "CANONICAL_INTEGRATION_THEN_DECISIONS_STORY_TEST_SECURITY_AND_BOUND_DEPENDENCIES",
-    "integration_base_commit": "53d23dd8f6782c9a68ed27234f9c0719916d5707",
     "sources": [
       {
         "role": "integration",
-        "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
-        "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
+        "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md"
       },
       {
         "role": "canonical_decisions",
-        "uri": "repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
-        "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626"
+        "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml"
       },
       {
         "role": "open_decisions",
-        "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
-        "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
+        "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
+        "uri": "repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml"
       },
       {
         "role": "test_catalog",
-        "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
-        "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
+        "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
+        "uri": "repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml"
       },
       {
         "role": "story",
-        "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
-        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
+        "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+        "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
       },
       {
         "role": "security_controls",
-        "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
-        "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
+        "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8",
+        "uri": "repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml"
       }
     ]
   },
-  "provenance": {
-    "source_contract": "repo://changes/st-1702/contracts/category-fixtures-rules-reference-plan.v1.yaml",
-    "generated_by": "repo://scripts/build_st1702_category_fixtures_rules_reference_plan.py",
-    "generation_command": "/home/minami/rakuten/.venv/bin/python scripts/build_st1702_category_fixtures_rules_reference_plan.py",
-    "integration_base_commit": "53d23dd8f6782c9a68ed27234f9c0719916d5707",
-    "implementation_io": "SELF_CONTAINED_DESCRIPTOR_CAPTURED_BOUNDED_INPUTS_AND_RECOVERABLE_PAIRED_OUTPUT_TRANSACTION"
+  "category_candidate": {
+    "allowed_test_data": "SYNTHETIC_VALIDATOR_FIXTURES_ONLY",
+    "attribute_schema": "NOT_CREATED",
+    "candidate_record_status": "OWNER_APPROVED",
+    "canonical_resolution": "UNCHANGED_UNRESOLVED",
+    "category_attributes": [],
+    "category_id": "suitcase_and_carry_bags",
+    "category_specific_implementation": "STOPPED",
+    "classification": "NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
+    "display_name_ja": "スーツケース・キャリーバッグ",
+    "golden_products": "NOT_CREATED",
+    "production_data": "FORBIDDEN",
+    "provider_evidence": [],
+    "runtime_activation": "DISABLED",
+    "runtime_category_config": "NOT_CREATED",
+    "source_observations": [],
+    "source_story": "ST-1701"
   },
-  "security_controls": {
-    "formal_verification": "NOT_EXECUTED",
-    "evidence": null,
-    "controls": [
-      {
-        "id": "SEC-DATA-003",
-        "category": "DATA",
-        "title": "Secret storage",
-        "requirement": "SecretをDB/Repo/Logへ置かない",
-        "verification": "secret scan",
-        "priority": "P0",
-        "gate": "GATE-0",
-        "design_status": "APPROVED_FOR_IMPLEMENTATION",
-        "implementation_status": "NOT_STARTED",
-        "verification_status": "NOT_EXECUTED",
-        "formal_verification": "NOT_EXECUTED",
-        "evidence": null
-      },
-      {
-        "id": "SEC-DATA-004",
-        "category": "DATA",
-        "title": "Object integrity",
-        "requirement": "Raw/SnapshotへSHA-256とVersionを記録",
-        "verification": "tamper test",
-        "priority": "P0",
-        "gate": "GATE-0",
-        "design_status": "APPROVED_FOR_IMPLEMENTATION",
-        "implementation_status": "NOT_STARTED",
-        "verification_status": "NOT_EXECUTED",
-        "formal_verification": "NOT_EXECUTED",
-        "evidence": null
-      },
-      {
-        "id": "SEC-DATA-006",
-        "category": "DATA",
-        "title": "Public projection isolation",
-        "requirement": "Public roleはreadmodelのみ",
-        "verification": "DB grant test",
-        "priority": "P0",
-        "gate": "GATE-0",
-        "design_status": "APPROVED_FOR_IMPLEMENTATION",
-        "implementation_status": "NOT_STARTED",
-        "verification_status": "NOT_EXECUTED",
-        "formal_verification": "NOT_EXECUTED",
-        "evidence": null
-      },
-      {
-        "id": "SEC-AI-007",
-        "category": "AI",
-        "title": "Human gate",
-        "requirement": "Critical Task出力は承認・公開できない",
-        "verification": "authorization/E2E",
-        "priority": "P0",
-        "gate": "GATE-0",
-        "design_status": "APPROVED_FOR_IMPLEMENTATION",
-        "implementation_status": "NOT_STARTED",
-        "verification_status": "NOT_EXECUTED",
-        "formal_verification": "NOT_EXECUTED",
-        "evidence": null
-      },
-      {
-        "id": "SEC-SDLC-002",
-        "category": "SDLC",
-        "title": "CODEOWNERS",
-        "requirement": "Security、migration、contractsへowner review",
-        "verification": "PR test",
-        "priority": "P1",
-        "gate": "GATE-0",
-        "design_status": "APPROVED_FOR_IMPLEMENTATION",
-        "implementation_status": "NOT_STARTED",
-        "verification_status": "NOT_EXECUTED",
-        "formal_verification": "NOT_EXECUTED",
-        "evidence": null
-      },
-      {
-        "id": "SEC-SDLC-006",
-        "category": "SDLC",
-        "title": "Secret scanning",
-        "requirement": "History/PR/artifactをscan",
-        "verification": "CI evidence",
-        "priority": "P1",
-        "gate": "GATE-0",
-        "design_status": "APPROVED_FOR_IMPLEMENTATION",
-        "implementation_status": "NOT_STARTED",
-        "verification_status": "NOT_EXECUTED",
-        "formal_verification": "NOT_EXECUTED",
-        "evidence": null
-      },
-      {
-        "id": "SEC-SDLC-009",
-        "category": "SDLC",
-        "title": "Reproducible generation",
-        "requirement": "OpenAPI/Schema生成のdriftを検知",
-        "verification": "CI evidence",
-        "priority": "P1",
-        "gate": "GATE-0",
-        "design_status": "APPROVED_FOR_IMPLEMENTATION",
-        "implementation_status": "NOT_STARTED",
-        "verification_status": "NOT_EXECUTED",
-        "formal_verification": "NOT_EXECUTED",
-        "evidence": null
-      },
-      {
-        "id": "SEC-SDLC-012",
-        "category": "SDLC",
-        "title": "Environment protection",
-        "requirement": "Production deployはHuman approval",
-        "verification": "GitHub environment evidence",
-        "priority": "P1",
-        "gate": "GATE-0",
-        "design_status": "APPROVED_FOR_IMPLEMENTATION",
-        "implementation_status": "NOT_STARTED",
-        "verification_status": "NOT_EXECUTED",
-        "formal_verification": "NOT_EXECUTED",
-        "evidence": null
-      }
-    ]
-  },
-  "dependency_bindings": [
+  "dependencies": [
     {
-      "story_id": "ST-1701",
-      "status": "NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
+      "canonical_acceptance": "NOT_ACHIEVED",
       "canonical_story_status": "NOT_STARTED",
       "canonical_verification_status": "NOT_EXECUTED",
-      "canonical_acceptance": "NOT_ACHIEVED",
-      "st1702_ready": false,
       "connection_status": "SOURCE_BOUND_NOT_ACTIVATED",
-      "artifacts": [
-        {
-          "uri": "repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml",
-          "sha256": "7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f"
-        },
-        {
-          "uri": "repo://changes/st-1701/MVP-BUSINESS-DECISION-PACKAGE-APPROVAL-v1.yaml",
-          "sha256": "749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34"
-        },
-        {
-          "uri": "repo://changes/st-1701/generated/gold-evidence-validation.v1.json",
-          "sha256": "cbf7b267ccd1d51b9d2ab0a0d379529a2b2dc237cf65921468999968d677e4da"
-        }
-      ]
+      "owner_id": "build_st1701_business_inputs",
+      "owner_version": "2",
+      "st1702_ready": false,
+      "status": "LOCAL_DECISION_MODEL",
+      "story_id": "ST-1701"
     },
     {
-      "story_id": "ST-0504",
+      "canonical_acceptance": "NOT_ACHIEVED",
+      "canonical_story_status": "NOT_STARTED",
+      "canonical_verification_status": "NOT_EXECUTED",
+      "connection_status": "SOURCE_BOUND_NOT_CONNECTED",
+      "owner_id": "build_st0504_product_identity_human_review_reference_plan",
+      "owner_version": "2",
+      "st1702_ready": false,
       "status": "SOURCE_DERIVED_NON_EXECUTABLE_PRODUCT_IDENTITY_HUMAN_REVIEW_REFERENCE_PLAN",
-      "canonical_story_status": "NOT_STARTED",
-      "canonical_verification_status": "NOT_EXECUTED",
-      "canonical_acceptance": "NOT_ACHIEVED",
-      "st1702_ready": false,
-      "connection_status": "SOURCE_BOUND_NOT_CONNECTED",
-      "artifacts": [
-        {
-          "uri": "repo://changes/st-0504/contracts/product-identity-human-review-reference-plan.v1.yaml",
-          "sha256": "f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab"
-        },
-        {
-          "uri": "repo://changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json",
-          "sha256": "f3ce4f99f5309fdc0349bd7b5a9d930ae18006d72aeb0fd480165b870d8e3f1b"
-        },
-        {
-          "uri": "repo://changes/st-0504/manifest.yaml",
-          "sha256": "1edbbd3cef50f79af8bc1169f64195097be787c3c57e7c65aa31c399735d9e7a"
-        }
-      ]
+      "story_id": "ST-0504"
     },
     {
-      "story_id": "ST-1401",
-      "status": "PROVISIONAL_CANONICAL_SAFE_DEFAULT_DISABLED_RECORDED_FRESHNESS_INTERFACE",
+      "canonical_acceptance": "NOT_ACHIEVED",
       "canonical_story_status": "NOT_STARTED",
       "canonical_verification_status": "NOT_EXECUTED",
-      "canonical_acceptance": "NOT_ACHIEVED",
-      "st1702_ready": false,
       "connection_status": "SOURCE_BOUND_NOT_CONNECTED",
-      "artifacts": [
-        {
-          "uri": "repo://changes/st-1401/README.md",
-          "sha256": "b5a54f7dc2344503d8baaf4f18d417f021f839baea78e712f5bed26c2e6e6caf"
-        },
-        {
-          "uri": "repo://contracts/raos-v0.4/contracts/content/RAOS_06_freshness_update_policy_v0.1.yaml",
-          "sha256": "a4d490d2a54b3def63c9c240b09d34a759ebd3924e60cfcca438ee979334cea2"
-        },
-        {
-          "uri": "repo://python/raos/domain/freshness/freshness.py",
-          "sha256": "3a33b44d99f92fce6417257de8c170d4622dd900fe7cc7cbac0b67494469dd95"
-        },
-        {
-          "uri": "repo://python/raos/ports/freshness.py",
-          "sha256": "8b72de55a697bee06b4d43f3cda3b9dc12b1532091755876b6cab891aaa07d91"
-        },
-        {
-          "uri": "repo://python/raos/application/freshness/freshness.py",
-          "sha256": "f716a703af1581d6bb0ed2cde8db4a82848dd6d143bc5bb27ae4ad4353302c43"
-        },
-        {
-          "uri": "repo://python/raos/adapters/recorded_freshness.py",
-          "sha256": "0b4cff4e9c0d22311604abb4c756d63a72d63269073bf1dea1e4cec032639de6"
-        }
-      ]
+      "semantic_id": "st1401-freshness-safe-default",
+      "semantic_version": "1.0.0",
+      "st1702_ready": false,
+      "status": "PROVISIONAL_CANONICAL_SAFE_DEFAULT_DISABLED_RECORDED_FRESHNESS_INTERFACE",
+      "story_id": "ST-1401"
+    }
+  ],
+  "document": {
+    "approval": null,
+    "canonical_mutation_authority": "NONE",
+    "classification": "SOURCE_DERIVED_NON_EXECUTABLE_CATEGORY_FIXTURES_RULES_REFERENCE_PLAN",
+    "decision": "NOT_READY",
+    "effective_canonical_status": "UNCHANGED",
+    "executable": false,
+    "id": "RAOS-ST1702-CATEGORY-FIXTURES-RULES-REFERENCE-PLAN-001",
+    "interface_only": true,
+    "production_eligible": false,
+    "st1702_ready": false,
+    "status": "LOCAL_IMPLEMENTATION_CANDIDATE",
+    "story_acceptance": false,
+    "story_id": "ST-1702",
+    "version": "1.0.0"
+  },
+  "execution_boundary": {
+    "action_counts": {
+      "apply_freshness_override": 0,
+      "approve": 0,
+      "assign_review": 0,
+      "configure_category": 0,
+      "create_fixture": 0,
+      "create_golden_product": 0,
+      "emit": 0,
+      "enqueue": 0,
+      "evaluate_identity": 0,
+      "external": 0,
+      "merge": 0,
+      "persist": 0,
+      "publish": 0,
+      "review": 0,
+      "split": 0
+    },
+    "category_rule_engine": "NOT_EXECUTED",
+    "database": "NOT_EXECUTED",
+    "enabled": false,
+    "event": "NOT_EXECUTED",
+    "external_authority": "NONE",
+    "freshness_scheduler": "NOT_EXECUTED",
+    "golden_products": "NOT_CREATED",
+    "human_review": "NOT_EXECUTED",
+    "job": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "persistence": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "provider": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "repository": "ABSENT",
+    "runtime_category_config": "NOT_CREATED",
+    "staging": "NOT_EXECUTED",
+    "status": "DISABLED"
+  },
+  "fixture_boundary": {
+    "creation_authority": "NONE",
+    "empty_interpretation": "NO_CATEGORY_FIXTURE_OR_GOLDEN_PRODUCT_ARTIFACT_EXISTS",
+    "evidence_records": [],
+    "fixture_records": [],
+    "fixture_schema": "NOT_CREATED",
+    "golden_product_records": [],
+    "golden_products": "NOT_CREATED",
+    "provider_observations": [],
+    "reference_only": true,
+    "runtime_category_config": "NOT_CREATED",
+    "runtime_loader": "NOT_CREATED",
+    "source_snapshots": []
+  },
+  "freshness_boundary": {
+    "canonical_status": "HUMAN_DECISION_REQUIRED",
+    "category_override_applied": false,
+    "category_overrides": [],
+    "open_decision_id": "OD-007",
+    "persistence": "NOT_EXECUTED",
+    "policy_activation": "DISABLED_UNRESOLVED_OD_007",
+    "policy_active": false,
+    "policy_authority": "PROVISIONAL_CANONICAL_SAFE_DEFAULT",
+    "provider_override_applied": false,
+    "provider_overrides": [],
+    "recommendation_auto_reorder": "FORBIDDEN",
+    "runtime_freshness_config": "NOT_CREATED",
+    "scheduler_connection": "NOT_EXECUTED",
+    "source_story": "ST-1401",
+    "st1701_candidate_sla_bound_not_applied": true,
+    "stale_never_treated_as_fresh": true
+  },
+  "human_review": {
+    "actor": null,
+    "approval": null,
+    "assignment": null,
+    "delivery_records": [],
+    "domain_reviewer_approval": "NOT_OBTAINED",
+    "queue": null,
+    "required": true,
+    "review_records": [],
+    "reviewer": null,
+    "role": null,
+    "route": null,
+    "routing_status": "NOT_CONFIGURED",
+    "sla": null,
+    "status": "REQUIRED_NOT_EXECUTED"
+  },
+  "identity_boundary": {
+    "automatic_merge_enabled": false,
+    "automatic_split_enabled": false,
+    "candidate_rule_source_bound_not_applied": true,
+    "canonical_status": "EXTERNAL_EVIDENCE_REQUIRED",
+    "domain_editor_approval": "NOT_OBTAINED",
+    "gold_evidence_status": "EVIDENCE_INSUFFICIENT",
+    "gold_evidence_stop_code": "STOP_EVIDENCE_INSUFFICIENT",
+    "human_review_required": true,
+    "identity_decisions": [],
+    "membership_records": [],
+    "merge_records": [],
+    "open_decision_id": "OD-006",
+    "rule_config": "NOT_CREATED",
+    "rule_engine": "NOT_EXECUTED",
+    "rules": [],
+    "scores": [],
+    "source_story": "ST-0504",
+    "split_records": [],
+    "thresholds": []
+  },
+  "open_decisions": [
+    {
+      "blocking": true,
+      "candidate_authority": "NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
+      "canonical_status": "HUMAN_DECISION_REQUIRED",
+      "id": "OD-001",
+      "resolved": false,
+      "runtime_activation": "DISABLED",
+      "safe_default": "STOP_CATEGORY_SPECIFIC_IMPLEMENTATION_SYNTHETIC_FIXTURES_ONLY"
+    },
+    {
+      "blocking": true,
+      "candidate_authority": "NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
+      "canonical_status": "EXTERNAL_EVIDENCE_REQUIRED",
+      "id": "OD-006",
+      "resolved": false,
+      "runtime_activation": "DISABLED",
+      "safe_default": "NO_AUTOMATIC_MERGE_HUMAN_REVIEW_REQUIRED"
+    },
+    {
+      "blocking": true,
+      "candidate_authority": "NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
+      "canonical_status": "HUMAN_DECISION_REQUIRED",
+      "id": "OD-007",
+      "resolved": false,
+      "runtime_activation": "DISABLED",
+      "safe_default": "PROVISIONAL_SAFE_DEFAULT_STALE_HIDE_NO_CATEGORY_OVERRIDE"
     }
   ],
   "runtime_blockers": {
-    "status": "BLOCKED",
     "canonical_global_unresolved_blocker_count": 14,
     "canonical_scoped_unresolved_count": 7,
     "gate_state": "BLOCKED",
-    "st1701_acceptance": "NOT_ACHIEVED",
-    "st1702_ready": false,
     "required_conditions": [
       {
         "id": "OD001_CANONICAL_RESOLUTION",
@@ -331,284 +308,45 @@
         "id": "TST020_FORMAL",
         "status": "NOT_EXECUTED"
       }
+    ],
+    "st1701_acceptance": "NOT_ACHIEVED",
+    "st1702_ready": false,
+    "status": "BLOCKED"
+  },
+  "security_controls": {
+    "evidence": null,
+    "formal_verification": "NOT_EXECUTED",
+    "required": [
+      "SEC-DATA-003",
+      "SEC-DATA-004",
+      "SEC-DATA-006",
+      "SEC-AI-007",
+      "SEC-SDLC-002",
+      "SEC-SDLC-006",
+      "SEC-SDLC-009",
+      "SEC-SDLC-012"
     ]
   },
-  "open_decisions": [
-    {
-      "id": "OD-001",
-      "canonical_status": "HUMAN_DECISION_REQUIRED",
-      "blocking": true,
-      "resolved": false,
-      "candidate_authority": "NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
-      "safe_default": "STOP_CATEGORY_SPECIFIC_IMPLEMENTATION_SYNTHETIC_FIXTURES_ONLY",
-      "runtime_activation": "DISABLED"
-    },
-    {
-      "id": "OD-006",
-      "canonical_status": "EXTERNAL_EVIDENCE_REQUIRED",
-      "blocking": true,
-      "resolved": false,
-      "candidate_authority": "NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
-      "safe_default": "NO_AUTOMATIC_MERGE_HUMAN_REVIEW_REQUIRED",
-      "runtime_activation": "DISABLED"
-    },
-    {
-      "id": "OD-007",
-      "canonical_status": "HUMAN_DECISION_REQUIRED",
-      "blocking": true,
-      "resolved": false,
-      "candidate_authority": "NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
-      "safe_default": "PROVISIONAL_SAFE_DEFAULT_STALE_HIDE_NO_CATEGORY_OVERRIDE",
-      "runtime_activation": "DISABLED"
-    }
-  ],
-  "test_suites": [
-    {
-      "id": "TST-020",
-      "name": "Content AST and policy",
-      "layer": "content",
-      "purpose": "5記事型、Block、Claim、Recommendation、Disclosure",
-      "candidate_tools": [
-        "pytest",
-        "schema fixtures"
-      ],
-      "release_blocking": true,
-      "environments": [
-        "CI"
-      ],
-      "owner": "Engineering",
-      "design_status": "APPROVED_FOR_IMPLEMENTATION",
-      "implementation_status": "NOT_STARTED",
-      "execution_status": "NOT_EXECUTED",
-      "formal_execution": "NOT_EXECUTED",
-      "evidence": null
-    },
-    {
-      "id": "TST-032",
-      "name": "GATE acceptance pack",
-      "layer": "acceptance",
-      "purpose": "GATE-0..4のEvidenceをSnapshot化",
-      "candidate_tools": [
-        "custom report generator"
-      ],
-      "release_blocking": true,
-      "environments": [
-        "staging"
-      ],
-      "owner": "Product Owner",
-      "design_status": "APPROVED_FOR_IMPLEMENTATION",
-      "implementation_status": "NOT_STARTED",
-      "execution_status": "NOT_EXECUTED",
-      "formal_execution": "NOT_EXECUTED",
-      "evidence": null
-    },
-    {
-      "id": "TST-007",
-      "name": "Property-based domain tests",
-      "layer": "unit",
-      "purpose": "冪等性、状態遷移、金額、正規化の不変条件",
-      "candidate_tools": [
-        "hypothesis",
-        "fast-check"
-      ],
-      "release_blocking": true,
-      "environments": [
-        "CI"
-      ],
-      "owner": "Engineering",
-      "design_status": "APPROVED_FOR_IMPLEMENTATION",
-      "implementation_status": "NOT_STARTED",
-      "execution_status": "NOT_EXECUTED",
-      "formal_execution": "NOT_EXECUTED",
-      "evidence": null
-    },
-    {
-      "id": "TST-005",
-      "name": "Python unit",
-      "layer": "unit",
-      "purpose": "Domain value/object/policyの局所Test",
-      "candidate_tools": [
-        "pytest"
-      ],
-      "release_blocking": true,
-      "environments": [
-        "CI"
-      ],
-      "owner": "Engineering",
-      "design_status": "APPROVED_FOR_IMPLEMENTATION",
-      "implementation_status": "NOT_STARTED",
-      "execution_status": "NOT_EXECUTED",
-      "formal_execution": "NOT_EXECUTED",
-      "evidence": null
-    },
-    {
-      "id": "TST-028",
-      "name": "Reliability failure injection",
-      "layer": "reliability",
-      "purpose": "provider/queue/db/timeouts/retry/kill switch",
-      "candidate_tools": [
-        "fault proxy",
-        "scripts"
-      ],
-      "release_blocking": true,
-      "environments": [
-        "staging"
-      ],
-      "owner": "Engineering",
-      "design_status": "APPROVED_FOR_IMPLEMENTATION",
-      "implementation_status": "NOT_STARTED",
-      "execution_status": "NOT_EXECUTED",
-      "formal_execution": "NOT_EXECUTED",
-      "evidence": null
-    }
-  ],
-  "category_candidate": {
-    "source_story": "ST-1701",
-    "category_id": "suitcase_and_carry_bags",
-    "display_name_ja": "スーツケース・キャリーバッグ",
-    "classification": "NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE",
-    "candidate_record_status": "OWNER_APPROVED",
-    "canonical_resolution": "UNCHANGED_UNRESOLVED",
-    "runtime_activation": "DISABLED",
-    "category_specific_implementation": "STOPPED",
-    "runtime_category_config": "NOT_CREATED",
-    "golden_products": "NOT_CREATED",
-    "attribute_schema": "NOT_CREATED",
-    "category_attributes": [],
-    "source_observations": [],
-    "provider_evidence": [],
-    "allowed_test_data": "SYNTHETIC_VALIDATOR_FIXTURES_ONLY",
-    "production_data": "FORBIDDEN"
-  },
-  "fixture_boundary": {
-    "reference_only": true,
-    "runtime_category_config": "NOT_CREATED",
-    "fixture_schema": "NOT_CREATED",
-    "fixture_records": [],
-    "golden_products": "NOT_CREATED",
-    "golden_product_records": [],
-    "runtime_loader": "NOT_CREATED",
-    "source_snapshots": [],
-    "provider_observations": [],
-    "evidence_records": [],
-    "creation_authority": "NONE",
-    "empty_interpretation": "NO_CATEGORY_FIXTURE_OR_GOLDEN_PRODUCT_ARTIFACT_EXISTS"
-  },
-  "identity_boundary": {
-    "source_story": "ST-0504",
-    "open_decision_id": "OD-006",
-    "canonical_status": "EXTERNAL_EVIDENCE_REQUIRED",
-    "gold_evidence_status": "EVIDENCE_INSUFFICIENT",
-    "gold_evidence_stop_code": "STOP_EVIDENCE_INSUFFICIENT",
-    "domain_editor_approval": "NOT_OBTAINED",
-    "human_review_required": true,
-    "automatic_merge_enabled": false,
-    "automatic_split_enabled": false,
-    "candidate_rule_source_bound_not_applied": true,
-    "rule_config": "NOT_CREATED",
-    "rules": [],
-    "thresholds": [],
-    "scores": [],
-    "identity_decisions": [],
-    "membership_records": [],
-    "merge_records": [],
-    "split_records": [],
-    "rule_engine": "NOT_EXECUTED"
-  },
-  "freshness_boundary": {
-    "source_story": "ST-1401",
-    "open_decision_id": "OD-007",
-    "canonical_status": "HUMAN_DECISION_REQUIRED",
-    "policy_authority": "PROVISIONAL_CANONICAL_SAFE_DEFAULT",
-    "policy_activation": "DISABLED_UNRESOLVED_OD_007",
-    "policy_active": false,
-    "st1701_candidate_sla_bound_not_applied": true,
-    "runtime_freshness_config": "NOT_CREATED",
-    "category_overrides": [],
-    "provider_overrides": [],
-    "category_override_applied": false,
-    "provider_override_applied": false,
-    "stale_never_treated_as_fresh": true,
-    "recommendation_auto_reorder": "FORBIDDEN",
-    "scheduler_connection": "NOT_EXECUTED",
-    "persistence": "NOT_EXECUTED"
-  },
-  "human_review": {
-    "required": true,
-    "status": "REQUIRED_NOT_EXECUTED",
-    "domain_reviewer_approval": "NOT_OBTAINED",
-    "routing_status": "NOT_CONFIGURED",
-    "queue": null,
-    "route": null,
-    "reviewer": null,
-    "actor": null,
-    "role": null,
-    "assignment": null,
-    "sla": null,
-    "approval": null,
-    "review_records": [],
-    "delivery_records": []
-  },
-  "execution_boundary": {
-    "enabled": false,
-    "status": "DISABLED",
-    "runtime_category_config": "NOT_CREATED",
-    "golden_products": "NOT_CREATED",
-    "category_rule_engine": "NOT_EXECUTED",
-    "freshness_scheduler": "NOT_EXECUTED",
-    "human_review": "NOT_EXECUTED",
-    "repository": "ABSENT",
-    "database": "NOT_EXECUTED",
-    "persistence": "NOT_EXECUTED",
-    "job": "NOT_EXECUTED",
-    "event": "NOT_EXECUTED",
-    "provider": "NOT_EXECUTED",
-    "live": "NOT_EXECUTED",
-    "publication": "NOT_EXECUTED",
-    "staging": "NOT_EXECUTED",
-    "release": "NOT_EXECUTED",
-    "production": "NOT_EXECUTED",
-    "external_authority": "NONE",
-    "action_counts": {
-      "configure_category": 0,
-      "create_fixture": 0,
-      "create_golden_product": 0,
-      "evaluate_identity": 0,
-      "merge": 0,
-      "split": 0,
-      "apply_freshness_override": 0,
-      "assign_review": 0,
-      "review": 0,
-      "approve": 0,
-      "persist": 0,
-      "enqueue": 0,
-      "emit": 0,
-      "publish": 0,
-      "external": 0
-    }
-  },
   "verification_boundary": {
-    "projection_only": true,
-    "dependency_connections": "NOT_EXECUTED",
-    "local_generation": "IMPLEMENTATION_ONLY_NOT_FORMAL_VALIDATION",
-    "formal_tst_020": "NOT_EXECUTED",
-    "dependency_tst_032": "NOT_EXECUTED",
-    "dependency_tst_007": "NOT_EXECUTED",
-    "dependency_tst_005": "NOT_EXECUTED",
-    "dependency_tst_028": "NOT_EXECUTED",
-    "domain_reviewer_approval": "NOT_EXECUTED",
-    "runtime": "NOT_EXECUTED",
-    "provider": "NOT_EXECUTED",
-    "live": "NOT_EXECUTED",
-    "publication": "NOT_EXECUTED",
-    "staging": "NOT_EXECUTED",
-    "release": "NOT_EXECUTED",
-    "production": "NOT_EXECUTED",
-    "decision": "NOT_READY",
     "approval": null,
-    "story_acceptance": false,
-    "st1702_ready": false,
+    "decision": "NOT_READY",
+    "dependency_tst_005": "NOT_EXECUTED",
+    "dependency_tst_007": "NOT_EXECUTED",
+    "dependency_tst_028": "NOT_EXECUTED",
+    "dependency_tst_032": "NOT_EXECUTED",
+    "domain_reviewer_approval": "NOT_EXECUTED",
+    "effective_canonical_status": "UNCHANGED",
+    "formal_tst_020": "NOT_EXECUTED",
+    "live": "NOT_EXECUTED",
+    "local_generation": "IMPLEMENTATION_ONLY_NOT_FORMAL_VALIDATION",
+    "production": "NOT_EXECUTED",
     "production_eligible": false,
-    "effective_canonical_status": "UNCHANGED"
+    "provider": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "runtime": "NOT_EXECUTED",
+    "st1702_ready": false,
+    "staging": "NOT_EXECUTED",
+    "story_acceptance": false
   }
 }

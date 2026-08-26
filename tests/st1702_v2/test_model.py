@@ -171,11 +171,11 @@ def test_hash_argument_is_strict_and_not_recomputed_from_untrusted_record() -> N
             build_category_fixture_bundle(record, source_fixture_sha256=value)
 
 
-def test_dependency_binding_digest_mutation_fails_closed() -> None:
+def test_dependency_owner_binding_mutation_fails_closed() -> None:
     record, digest = _material()
     bindings = record["bindings"]
     assert isinstance(bindings, dict)
-    bindings["st1701_decision_package"] = "0" * 64
+    bindings["st1701_decision_package"]["owner_id"] = "unknown_owner"
     with pytest.raises(CategoryFixtureFailure) as captured:
         build_category_fixture_bundle(record, source_fixture_sha256=digest)
     assert captured.value.code is CategoryFixtureFailureCode.FIXTURE_INVALID

@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from conftest import (
+from .support import (
     CERTIFICATION_ID,
     IDENTITY,
     NOW,

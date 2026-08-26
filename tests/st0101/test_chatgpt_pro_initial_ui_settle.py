@@ -12,7 +12,6 @@ from scripts import chatgpt_pro_workflow as workflow
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-MAKEFILE_PATH = REPOSITORY_ROOT / "Makefile"
 WRAPPER_PATH = REPOSITORY_ROOT / "scripts/chatgpt_pro_mcp.sh"
 README_PATH = REPOSITORY_ROOT / "changes/st-0101/README.md"
 SKILL_PATH = Path("/home/minami/.codex/skills/raos-ask-pro/SKILL.md")
@@ -548,16 +547,12 @@ def test_initial_settle_is_fixed_and_has_no_runtime_configuration() -> None:
     assert "for " not in helper
     assert "while " not in helper
 
-    makefile = MAKEFILE_PATH.read_text(encoding="utf-8")
-    pro_region = makefile[
-        makefile.index("PRO_REQUEST_FILE ?=") : makefile.index("python-install:")
-    ]
     wrapper = WRAPPER_PATH.read_text(encoding="utf-8")
     parser_source = source[source.index("def _parser(") : source.index("\ndef main(")]
     transport_source = source[
         source.index("class StdioMcpTransport:") : source.index("\ndef _extract_url(")
     ]
-    for text in (pro_region, wrapper, parser_source, transport_source):
+    for text in (wrapper, parser_source, transport_source):
         assert "initial-ui-settle" not in text.casefold()
         assert "initial_ui_settle" not in text.casefold()
 

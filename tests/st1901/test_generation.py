@@ -14,7 +14,7 @@ import time
 import pytest
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st1901_model_judge_calibration as builder
 
 

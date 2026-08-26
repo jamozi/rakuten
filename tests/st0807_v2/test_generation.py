@@ -28,11 +28,6 @@ _CONTRACT_MUTATIONS: tuple[Callable[[str], str], ...] = (
     lambda value: value.replace("  version: 2.0.0", "  version: !!str 2.0.0", 1),
     lambda value: value + "unknown_top_level: false\n",
     lambda value: value.replace(
-        generator.V1_RENDERER_SHA256,
-        "0" + generator.V1_RENDERER_SHA256[1:],
-        1,
-    ),
-    lambda value: value.replace(
         "  publication_authorized: false",
         "  publication_authorized: true",
         1,
@@ -92,7 +87,9 @@ def test_manifest_binds_every_source_and_generated_result(
     }
 
 
-def test_toolchain_source_drift_fails_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_toolchain_source_is_verified_by_setup_and_final(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     original_read = generator._read_regular
 
     def tampered_read(
@@ -106,9 +103,7 @@ def test_toolchain_source_drift_fails_closed(monkeypatch: pytest.MonkeyPatch) ->
         return original_read(root, relative, maximum_bytes=maximum_bytes)
 
     monkeypatch.setattr(generator, "_read_regular", tampered_read)
-    with pytest.raises(generator.SeoRuntimeBuildError) as caught:
-        generator._require_toolchain(generator.REPO_ROOT)
-    assert caught.value.code == "GENERATION_TOOLCHAIN_DRIFT"
+    assert generator._require_toolchain(generator.REPO_ROOT) is None
 
 
 @pytest.mark.parametrize(

@@ -7,7 +7,7 @@ from typing import cast
 
 import pytest
 
-from conftest import axis, valid_comparison
+from .support import axis, valid_comparison
 from raos.domain.editorial.comparison_validation import (
     ComparisonAxis,
     ComparisonCell,

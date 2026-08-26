@@ -36,7 +36,7 @@ from raos.domain.analytics.event_collector import (
 )
 from raos.domain.http.security import HttpCredentialMode, HttpMethod
 
-from conftest import (
+from .support import (
     EVENT_ID,
     collector,
     consent,

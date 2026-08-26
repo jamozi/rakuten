@@ -25,7 +25,7 @@ from raos.domain.editorial.article_lifecycle import (
     CreateVersionRequest,
 )
 
-from conftest import (
+from .support import (
     SITE_ID,
     create_outcome,
     create_request,

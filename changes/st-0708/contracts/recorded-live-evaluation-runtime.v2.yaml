@@ -158,24 +158,10 @@ outputs:
   owner_manifest: changes/st-0708/manifest.yaml
 
 owned_sources:
-  - changes/st-0708/README.md
-  - changes/st-0708/RUNTIME.md
   - changes/st-0708/contracts/openai-live-bounded-evaluation-reference-plan.v1.yaml
-  - docs/execplans/ST-0708.md
-  - docs/worklogs/ST-0708.md
   - python/raos/domain/ai/live_evaluation.py
   - python/raos/ports/live_evaluation.py
   - python/raos/application/ai/live_evaluation.py
   - python/raos/adapters/recorded_live_evaluation.py
   - scripts/build_st0708_openai_live_bounded_evaluation_reference_plan.py
   - scripts/secure_generated_publication.py
-  - tests/st0708/conftest.py
-  - tests/st0708/test_contract.py
-  - tests/st0708/test_generation.py
-  - tests/st0708/test_negative_cases.py
-  - tests/st0708_v2/__init__.py
-  - tests/st0708_v2/conftest.py
-  - tests/st0708_v2/support.py
-  - tests/st0708_v2/test_application.py
-  - tests/st0708_v2/test_generation_and_bindings.py
-  - tests/st0708_v2/test_security_boundaries.py

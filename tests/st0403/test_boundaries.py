@@ -6,7 +6,7 @@ import ast
 from pathlib import Path
 import re
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 
 
 DOMAIN = Path("python/raos/domain/iam/authorization.py")

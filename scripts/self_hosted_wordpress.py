@@ -24,7 +24,6 @@ _RUNTIME_CLI_PATH: Final = "scripts/self_hosted_wordpress.py"
 _RUNTIME_STAGE_HEAD_ENV: Final = "RAOS_SELF_HOSTED_STAGE_HEAD"
 _RUNTIME_STAGE_CLI_BLOB_ENV: Final = "RAOS_SELF_HOSTED_STAGE_CLI_BLOB"
 _RUNTIME_STAGE_CLI_SHA256_ENV: Final = "RAOS_SELF_HOSTED_STAGE_CLI_SHA256"
-_RUNTIME_APPROVED_BASE_COMMIT: Final = "b5a6157b878ca0435ee4120d33162aba5ae51f77"
 _THEME_RUNTIME_PREFIX: Final = (
     "changes/st-1703/self-hosted-minimum-start-v1/theme/kurashinoshirube-child/"
 )
@@ -772,7 +771,7 @@ def _verify_self_hosted_runtime_identity(
     stage_cli_blob: str,
     stage_cli_sha256: str,
 ) -> dict[str, bytes]:
-    """Bind a reviewed clean HEAD and exact runtime bytes before RAOS imports."""
+    """Bind the current clean runtime bytes before RAOS imports."""
 
     if (
         repository_root != _EXPECTED_REPOSITORY_ROOT
@@ -818,20 +817,6 @@ def _verify_self_hosted_runtime_identity(
         or cli_object_id != stage_cli_blob
     ):
         _runtime_fail()
-    if (
-        _runtime_git_result(
-            repository_root,
-            (
-                "merge-base",
-                "--is-ancestor",
-                _RUNTIME_APPROVED_BASE_COMMIT,
-                head_commit,
-            ),
-            capture_stdout=False,
-        ).returncode
-        != 0
-    ):
-        _runtime_fail()
     manifest_raw = _read_runtime_file(
         repository_root,
         _RUNTIME_MANIFEST_PATH,
@@ -861,23 +846,23 @@ def _verify_self_hosted_runtime_identity(
         _runtime_fail()
     manifest = cast(dict[str, object], parsed)
     if set(manifest) != {
-        "approved_base_commit",
         "external_action_authority",
         "generated_by",
+        "generator_owner",
+        "generator_version",
         "paths",
-        "repository_development_authority",
         "schema",
         "slice_id",
         "story_id",
     }:
         _runtime_fail()
     if (
-        manifest.get("approved_base_commit") != _RUNTIME_APPROVED_BASE_COMMIT
-        or manifest.get("external_action_authority") != "NONE"
+        manifest.get("external_action_authority") != "NONE"
         or manifest.get("generated_by")
         != "scripts/build_st1703_self_hosted_runtime_manifest.py"
-        or manifest.get("repository_development_authority")
-        != "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION"
+        or manifest.get("generator_owner")
+        != "build_st1703_self_hosted_runtime_manifest"
+        or manifest.get("generator_version") != "2"
         or manifest.get("schema") != "SELF_HOSTED_WORDPRESS_RUNTIME_MANIFEST_V1"
         or manifest.get("slice_id") != "SELF_HOSTED_MINIMUM_START_V1"
         or manifest.get("story_id") != "ST-1703"

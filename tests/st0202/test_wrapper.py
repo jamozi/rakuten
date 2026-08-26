@@ -15,7 +15,7 @@ import pytest
 
 from scripts import object_storage_fixture as fixture
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 
 
 WRAPPER = REPOSITORY_ROOT / "scripts/object_storage_service.sh"

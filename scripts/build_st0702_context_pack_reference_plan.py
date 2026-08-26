@@ -18,7 +18,7 @@ REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts import build_st1505_staging_deployment as base  # noqa: E402
+from scripts import raos_build_core as base  # noqa: E402
 
 
 CONTRACT_PATH: Final = Path(
@@ -30,27 +30,11 @@ REFERENCE_PLAN_PATH: Final = Path(
 MANIFEST_PATH: Final = Path("changes/st-0702/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st0702_context_pack_reference_plan.py")
 README_PATH: Final = Path("changes/st-0702/README.md")
-TEST_PATHS: Final = (
-    Path("tests/st0702/conftest.py"),
-    Path("tests/st0702/test_contract.py"),
-    Path("tests/st0702/test_generation.py"),
-    Path("tests/st0702/test_negative_cases.py"),
-)
-SOURCE_PATHS: Final = (CONTRACT_PATH, README_PATH, GENERATOR_PATH, *TEST_PATHS)
+SOURCE_PATHS: Final = (CONTRACT_PATH, README_PATH, GENERATOR_PATH)
 GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
 SOURCE_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = f"repo://{GENERATOR_PATH.as_posix()}"
-GENERATION_COMMAND: Final = (
-    "uv run --locked --offline --no-cache --no-sync --no-env-file python "
-    "scripts/build_st0702_context_pack_reference_plan.py"
-)
-EXPECTED_CONTRACT_SHA256: Final = (
-    "bac32da9b2e026ad36abb0b622fecbca56e4e9d3fdc0e4cccc807a4e4392837b"
-)
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
-HELPER_SHA256: Final = (
-    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
-)
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 
 STORY_PATH: Final = Path("docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml")
@@ -61,91 +45,14 @@ INTEGRATION_PATH: Final = Path(
 INTEGRATION_SHA256: Final = (
     "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
 )
-ST0604_FEATURE_COMMIT: Final = "89d8074951ce73a5c76ca55f0ea3b2c129559d81"
-ST0701_BASE_COMMIT: Final = "679ccdc4a49fca8e1bee8827177be7130d6d45b6"
-
-ST0604_ARTIFACTS: Final = (
-    (
-        Path("changes/st-0604/README.md"),
-        "b3d71908781fcdd2d442b3f16ed7fade49780d18bcca688c4b88ee0204c089ff",
-    ),
-    (
-        Path(
-            "changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml"
-        ),
-        "5f0fc1d75207535a89e5e50d6b33bc3f710d17e60183e63ab39e394b5e8d049c",
-    ),
-    (
-        Path(
-            "changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json"
-        ),
-        "3c7a7cc6a296c96162847f2bb452bba2ff7048bc8f277dbe720bf19a97fafaee",
-    ),
-    (
-        Path("changes/st-0604/manifest.yaml"),
-        "df78078b95d6042a08651cdef6923c01009362655393ab47af39eba2f3e420b6",
-    ),
-    (
-        Path("scripts/build_st0604_source_packet_lifecycle_reference_plan.py"),
-        "7e6e1dcb1ea4ddec72b71e246769de940032b97dc86976fa8cc91f47e46ed97f",
-    ),
-    (
-        Path("tests/st0604/conftest.py"),
-        "d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a",
-    ),
-    (
-        Path("tests/st0604/test_contract.py"),
-        "68c3fad0196b6fc353dd354c172d32dcc64106474754a54665f362a51b415462",
-    ),
-    (
-        Path("tests/st0604/test_generation.py"),
-        "5ed32f62c06924f3f6931fb827a6c68dc4ffcbd415ddc6b8ece54c66e93a9cca",
-    ),
-    (
-        Path("tests/st0604/test_negative_cases.py"),
-        "143ea1cf8f9b5558f98c521909be7c1506e8ad6cbda5534edb01c11ef8afdb45",
-    ),
+ST0604_CONTRACT_PATH: Final = Path(
+    "changes/st-0604/contracts/source-packet-lifecycle-reference-plan.v1.yaml"
 )
-ST0701_ARTIFACTS: Final = (
-    (
-        Path("changes/st-0701/README.md"),
-        "58fcbaf403649f3717803a8d7bd60da8bb2df2e57139fffe42d3fb7112c962b6",
-    ),
-    (
-        Path("changes/st-0701/contracts/ai-contract-registry-loader.v1.yaml"),
-        "8898b6f49e692586598109a27c046ae6dff4423f59f81837af00f5c5ab8bb90a",
-    ),
-    (
-        Path("changes/st-0701/generated/ai-task-registry.v1.json"),
-        "33bbb3601aae2e02d37bf995a2522e67684befcd9a43ba4375b4a7685aedef07",
-    ),
-    (
-        Path("changes/st-0701/manifest.yaml"),
-        "01653bf5968c08a5ce186cfa06a9c25f33fc7a945808b6b2a622118025b2cbce",
-    ),
-    (
-        Path("scripts/build_st0701_ai_registry.py"),
-        "2876b4e3bdc678cd97c11452a0a48e2786279933cbf27c0320307d0eccc1d360",
-    ),
-    (
-        Path("tests/st0701/conftest.py"),
-        "a25d2a4025e99331dd5b82cc0e4df093fe75b8b52403c5c8de85f2e8df1dfb9b",
-    ),
-    (
-        Path("tests/st0701/test_compiled_task_registry.py"),
-        "bdc75302f0a901e2d0859c8fee03569db6d4f628f77515385d1c9a57d17e8854",
-    ),
-    (
-        Path("tests/st0701/test_contract.py"),
-        "d0fe98b31176b23d35d241aa9dd89bdc438412272528bdcffb5d045aa72fbe55",
-    ),
-    (
-        Path("tests/st0701/test_generation.py"),
-        "09fa81e4a46d8652c18b1993c200d508ff87e7970fc8f0222b8c6bbc387bf34e",
-    ),
+ST0701_README_PATH: Final = Path("changes/st-0701/README.md")
+ST0701_REGISTRY_PATH: Final = Path(
+    "changes/st-0701/generated/ai-task-registry.v1.json"
 )
-ST0701_REGISTRY_PATH: Final = ST0701_ARTIFACTS[2][0]
-ST0701_MANIFEST_PATH: Final = ST0701_ARTIFACTS[3][0]
+ST0701_MANIFEST_PATH: Final = Path("changes/st-0701/manifest.yaml")
 
 CONTRACT_KEYS: Final = (
     "document",
@@ -249,21 +156,6 @@ EXPECTED_AUTHORITY: Final = {
 }
 
 
-def _artifact_rows(
-    artifacts: Sequence[tuple[Path, str]],
-) -> dict[str, str]:
-    return {path.as_posix(): digest for path, digest in artifacts}
-
-
-def _artifact_uri_rows(
-    artifacts: Sequence[tuple[Path, str]],
-) -> list[dict[str, str]]:
-    return [
-        {"uri": f"repo://{path.as_posix()}", "sha256": digest}
-        for path, digest in artifacts
-    ]
-
-
 EXPECTED_ST0604_SEMANTICS: Final = {
     "decision": "NOT_READY",
     "packet_count": None,
@@ -296,23 +188,24 @@ EXPECTED_ST0701_SEMANTICS: Final = {
 EXPECTED_PREDECESSORS: Final = {
     "st0604": {
         "story_id": "ST-0604",
-        "feature_commit": ST0604_FEATURE_COMMIT,
-        "binding": "EXACT_COMMITTED_OWNED_BYTES",
-        "artifacts": _artifact_rows(ST0604_ARTIFACTS),
+        "owner_id": "build_st0604_source_packet_lifecycle_reference_plan",
+        "owner_version": "2",
+        "binding": "SEMANTIC_OWNER_GRAPH",
         "required_semantics": EXPECTED_ST0604_SEMANTICS,
     },
     "st0701": {
         "story_id": "ST-0701",
-        "base_commit": ST0701_BASE_COMMIT,
-        "binding": "CURRENT_COMMITTED_OWNED_BYTES_AT_ST0702_BASE",
-        "artifacts": _artifact_rows(ST0701_ARTIFACTS),
+        "owner_id": "build_st0701_ai_registry",
+        "owner_version": "2",
+        "binding": "SEMANTIC_OWNER_GRAPH",
         "required_semantics": EXPECTED_ST0701_SEMANTICS,
     },
 }
 EXPECTED_REGISTRY_PROJECTION: Final = {
     "source_path": ST0701_REGISTRY_PATH.as_posix(),
-    "source_sha256": ST0701_ARTIFACTS[2][1],
-    "order_source": "EXACT_SOURCE_ORDER",
+    "source_owner_id": "build_st0701_ai_registry",
+    "source_owner_version": "2",
+    "order_source": "SEMANTIC_SOURCE_ORDER",
     "projection": "FULL_BINDING_METADATA",
     "task_count": 12,
     "activation_inferred": False,
@@ -636,12 +529,8 @@ def _find(items: object, identity: str, field: str) -> Mapping[str, Any]:
 
 def _validate_hashes(root: Path) -> None:
     expected = (
-        (CONTRACT_PATH, EXPECTED_CONTRACT_SHA256, "contract"),
         (STORY_PATH, STORY_SHA256, "authority.story"),
         (INTEGRATION_PATH, INTEGRATION_SHA256, "authority.integration"),
-        (HELPER_PATH, HELPER_SHA256, "implementation.helper"),
-        *((path, digest, "predecessor.st0604") for path, digest in ST0604_ARTIFACTS),
-        *((path, digest, "predecessor.st0701") for path, digest in ST0701_ARTIFACTS),
     )
     for relative, digest, field in expected:
         if _sha256(_read(root, relative, field)) != digest:
@@ -658,7 +547,7 @@ def _validate_authority(root: Path) -> None:
 
 
 def _validate_st0604(root: Path) -> None:
-    contract = _load_yaml(root, ST0604_ARTIFACTS[1][0], "predecessor.st0604")
+    contract = _load_yaml(root, ST0604_CONTRACT_PATH, "predecessor.st0604")
     _exact(contract.get("decision"), "NOT_READY", "predecessor.st0604.decision")
     _exact(contract.get("approval"), False, "predecessor.st0604.approval")
     _exact(
@@ -877,7 +766,7 @@ def _validate_st0701(root: Path) -> Mapping[str, Any]:
         "NOT_EXECUTED",
         "predecessor.st0701.validation",
     )
-    readme = _text(root, ST0701_ARTIFACTS[0][0], "predecessor.st0701.readme")
+    readme = _text(root, ST0701_README_PATH, "predecessor.st0701.readme")
     for fragment in (
         "does not activate any task",
         "call a provider",
@@ -955,11 +844,13 @@ def reference_plan(
         "provenance": {
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,
-            "generation_command": GENERATION_COMMAND,
-            "inventory_derivation": "FIXED_OWNER_INVENTORY_AT_ST0702_BASE",
+            "generator_owner_id": "build_st0702_context_pack_reference_plan",
+            "generator_version": "2",
+            "inventory_derivation": "SEMANTIC_OWNER_GRAPH",
             "implementation_helper": {
                 "uri": f"repo://{HELPER_PATH.as_posix()}",
-                "sha256": HELPER_SHA256,
+                "semantic_id": "safe-generated-publication-helper",
+                "semantic_version": "1",
             },
         },
         "predecessor_bindings": contract["predecessors"],
@@ -993,15 +884,15 @@ def _predecessor_manifest_rows() -> list[dict[str, object]]:
     return [
         {
             "story_id": "ST-0604",
-            "feature_commit": ST0604_FEATURE_COMMIT,
-            "binding": "EXACT_COMMITTED_OWNED_BYTES",
-            "inputs": _artifact_uri_rows(ST0604_ARTIFACTS),
+            "owner_id": "build_st0604_source_packet_lifecycle_reference_plan",
+            "owner_version": "2",
+            "binding": "SEMANTIC_OWNER_GRAPH",
         },
         {
             "story_id": "ST-0701",
-            "base_commit": ST0701_BASE_COMMIT,
-            "binding": "CURRENT_COMMITTED_OWNED_BYTES_AT_ST0702_BASE",
-            "inputs": _artifact_uri_rows(ST0701_ARTIFACTS),
+            "owner_id": "build_st0701_ai_registry",
+            "owner_version": "2",
+            "binding": "SEMANTIC_OWNER_GRAPH",
         },
     ]
 
@@ -1014,10 +905,12 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
             "story_id": "ST-0702",
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,
-            "generation_command": GENERATION_COMMAND,
+            "generator_owner_id": "build_st0702_context_pack_reference_plan",
+            "generator_version": "2",
         },
         "provenance": {
-            "contract_sha256": EXPECTED_CONTRACT_SHA256,
+            "contract_semantic_id": "st0702-context-pack-reference-plan",
+            "contract_semantic_version": "1.0.0",
             "canonical_story": {
                 "uri": f"repo://{STORY_PATH.as_posix()}",
                 "sha256": STORY_SHA256,
@@ -1026,11 +919,12 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
                 "uri": f"repo://{INTEGRATION_PATH.as_posix()}",
                 "sha256": INTEGRATION_SHA256,
             },
-            "inventory_derivation": "FIXED_OWNER_INVENTORY_AT_ST0702_BASE",
+            "inventory_derivation": "SEMANTIC_OWNER_GRAPH",
             "predecessors": _predecessor_manifest_rows(),
             "implementation_helper": {
                 "uri": f"repo://{HELPER_PATH.as_posix()}",
-                "sha256": HELPER_SHA256,
+                "semantic_id": "safe-generated-publication-helper",
+                "semantic_version": "1",
             },
         },
         "source_artifact_count": len(SOURCE_PATHS),

@@ -11,7 +11,7 @@ from typing import Any
 
 import pytest
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.adapters.recorded_gate2_observation import RecordedGate2ObservationAdapter
 from raos.application.analytics.gate2_observation import RecordedGate2ObservationJob
 from raos.domain.analytics.gate2_observation import (

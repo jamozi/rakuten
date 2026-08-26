@@ -11,7 +11,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     CONTENT,
     REPOSITORY_ROOT,
     authorization_grant,

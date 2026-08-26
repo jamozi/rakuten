@@ -9,7 +9,7 @@ from typing import Any, cast
 
 import pytest
 
-from conftest import (
+from .support import (
     ADMIN_ORIGIN,
     CSRF_PROOF,
     LOCAL_ORIGIN,

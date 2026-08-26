@@ -85,8 +85,8 @@ source_artifacts:
   bytes: 3142
   sha256: b3d71908781fcdd2d442b3f16ed7fade49780d18bcca688c4b88ee0204c089ff
 - uri: repo://scripts/build_st0604_source_packet_lifecycle_reference_plan.py
-  bytes: 31221
-  sha256: 7e6e1dcb1ea4ddec72b71e246769de940032b97dc86976fa8cc91f47e46ed97f
+  bytes: 30819
+  sha256: 0bc4071bebfc0fca57ff9d1eb393a586a6c7cfd64214c8925824263d31e88c3f
 - uri: repo://tests/st0604/conftest.py
   bytes: 1034
   sha256: d53440253de34f65e95f9668ac2c8bd3c55855797f99723d848613bd1d3fc04a
@@ -97,8 +97,8 @@ source_artifacts:
   bytes: 4501
   sha256: 5ed32f62c06924f3f6931fb827a6c68dc4ffcbd415ddc6b8ece54c66e93a9cca
 - uri: repo://tests/st0604/test_negative_cases.py
-  bytes: 14644
-  sha256: 143ea1cf8f9b5558f98c521909be7c1506e8ad6cbda5534edb01c11ef8afdb45
+  bytes: 14861
+  sha256: 227dce9fe72e882a3462eac7ef3ebe2dc49ea8efec5058a7de9e8e5802da589c
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0604/generated/source-packet-lifecycle-reference-plan.v1.json

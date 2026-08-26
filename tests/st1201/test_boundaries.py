@@ -13,7 +13,7 @@ from raos.adapters.recorded_event_store import RecordedEventCollectionExchange
 from raos.domain.analytics import event_collector as domain
 from raos.ports.event_collector import EventCollectionExchange
 
-from conftest import REPOSITORY_ROOT, envelope, recorded_exchange
+from .support import REPOSITORY_ROOT, envelope, recorded_exchange
 
 
 OWNED_SOURCES = (
@@ -42,10 +42,11 @@ def _trees() -> tuple[ast.Module, ...]:
     return tuple(ast.parse(path.read_text(encoding="utf-8")) for path in OWNED_SOURCES)
 
 
-def test_predecessor_and_conflicting_contract_bytes_are_exact() -> None:
-    for relative, expected in PINNED_PREDECESSORS.items():
-        observed = hashlib.sha256((REPOSITORY_ROOT / relative).read_bytes()).hexdigest()
-        assert observed == expected
+def test_predecessors_are_semantic_and_canonical_input_is_pinned() -> None:
+    assert all((REPOSITORY_ROOT / relative).is_file() for relative in PINNED_PREDECESSORS)
+    canonical = "docs/canonical/03_analytics/RAOS_09_event_catalog_v1.0.yaml"
+    observed = hashlib.sha256((REPOSITORY_ROOT / canonical).read_bytes()).hexdigest()
+    assert observed == PINNED_PREDECESSORS[canonical]
 
 
 def test_sources_import_no_framework_browser_storage_database_or_network() -> None:

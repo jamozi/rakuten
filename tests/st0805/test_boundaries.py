@@ -16,7 +16,7 @@ from typing import NoReturn
 
 import pytest
 
-from conftest import valid_policy_input, with_gate_state, with_policy_result
+from .support import valid_policy_input, with_gate_state, with_policy_result
 from raos.domain.editorial import policy_engine
 from raos.domain.editorial.policy_engine import (
     ExecutionStatus,

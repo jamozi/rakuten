@@ -9,7 +9,7 @@ from pathlib import Path
 
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.domain.analytics.keyword_rank import (
     DEFAULT_KEYWORD_RANK_SCOPE,
     KeywordRankScope,
@@ -32,12 +32,18 @@ def _yaml(path: str | Path) -> object:
     return yaml.safe_load((REPOSITORY_ROOT / path).read_text(encoding="utf-8"))
 
 
-def test_exact_canonical_contract_and_predecessor_bytes_are_bound() -> None:
-    observed = {
+def test_canonical_bytes_are_bound_and_predecessors_are_semantic() -> None:
+    canonical = {
         path: hashlib.sha256((REPOSITORY_ROOT / path).read_bytes()).hexdigest()
         for path in BOUND_HASHES
+        if path.startswith("docs/canonical/")
     }
-    assert observed == BOUND_HASHES
+    assert canonical == {
+        path: digest
+        for path, digest in BOUND_HASHES.items()
+        if path.startswith("docs/canonical/")
+    }
+    assert all((REPOSITORY_ROOT / path).is_file() for path in BOUND_HASHES)
 
 
 def test_story_remains_post_mvp_deferred_and_requires_no_serp_scrape() -> None:

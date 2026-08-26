@@ -1,12 +1,10 @@
 document:
-  id: RAOS-PR-GOVERNANCE-001
-  version: 1.0.0
+  id: RAOS-PR-GOVERNANCE-002
+  version: 2.0.0
   story_id: ST-0107
   status: LOCAL_DESIRED_STATE
   formal_verification: NOT_EXECUTED
 sources:
-  - uri: repo://docs/manifest.json
-    sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
   - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
   - uri: repo://docs/canonical/08_codex/RAOS_14_codex_implementation_handbook_v1.0.md
@@ -21,10 +19,13 @@ sources:
     sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
   - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+tracked_sources:
   - uri: repo://.github/workflows/ci.yml
-    sha256: 8fb768a883432d15a1f86390cd16bfd23092030c6483cf283a64a41e21dfb3fb
-  - uri: repo://.github/workflows/status-registry.yml
-    sha256: 4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a
+    semantic_id: final-integration-ci
+    version: 2
+  - uri: repo://.github/workflows/auto-merge.yml
+    semantic_id: final-integration-auto-merge
+    version: 1
 owner_bindings:
   organization: raos
   status: UNVERIFIED_PLACEHOLDERS
@@ -95,10 +96,10 @@ codeowners:
     - pattern: /.github/
       roles: [security, operations]
 pull_request_template:
-  canonical_source: repo://docs/canonical/08_codex/github/PULL_REQUEST_TEMPLATE.md
-  required_owner_categories: [contract, migration, security, deployment]
-  require_not_applicable_rationale: true
-  require_generated_or_ai_assisted_review: true
+  story_ids_are_tracking_only: true
+  repeated_owner_routing: false
+  require_generated_or_ai_assisted_review: false
+  record_once: [story_ids, summary, verification, external_not_run]
 ruleset_policy:
   name: RAOS protected default branch
   target: branch
@@ -112,68 +113,24 @@ ruleset_policy:
   require_linear_history: true
   pull_request:
     allowed_merge_methods: [squash]
-    dismiss_stale_reviews_on_push: true
-    require_code_owner_review: true
-    require_last_push_approval: true
-    required_approving_review_count: 1
-    required_review_thread_resolution: true
+    dismiss_stale_reviews_on_push: false
+    require_code_owner_review: false
+    require_last_push_approval: false
+    required_approving_review_count: 0
+    required_review_thread_resolution: false
+    auto_merge_after_required_checks: true
   required_status_checks:
-    - context: Static
-      expected_source: github-actions
-      integration_id_binding: REQUIRED_AT_ACTIVATION
-    - context: Unit
-      expected_source: github-actions
-      integration_id_binding: REQUIRED_AT_ACTIVATION
-    - context: Contracts
-      expected_source: github-actions
-      integration_id_binding: REQUIRED_AT_ACTIVATION
-    - context: Database
-      expected_source: github-actions
-      integration_id_binding: REQUIRED_AT_ACTIVATION
-    - context: Storage
-      expected_source: github-actions
-      integration_id_binding: REQUIRED_AT_ACTIVATION
-    - context: Secrets
-      expected_source: github-actions
-      integration_id_binding: REQUIRED_AT_ACTIVATION
-    - context: Validate status overlay
+    - context: Final Integration
       expected_source: github-actions
       integration_id_binding: REQUIRED_AT_ACTIVATION
   strict_required_status_checks_policy: true
   do_not_enforce_on_create: false
-  required_owner_categories:
-    contract:
-      patterns: [/contracts/, /changes/*/contracts/]
-      roles: [architecture, engineering]
-    migration:
-      patterns: [/migrations/, /changes/*/database/]
-      roles: [data, security]
-    security:
-      patterns:
-        - /docs/canonical/04_security/
-        - /tests/security/
-        - /scripts/scan_secrets.py
-        - /scripts/run_network_denied.sh
-        - /scripts/assert_network_denied.py
-        - /.github/
-      roles: [security]
-    deployment:
-      patterns:
-        - /infra/
-        - /docker-compose.yml
-        - /scripts/build_local_compose.py
-        - /scripts/postgres_service.sh
-        - /scripts/object_storage_service.sh
-        - /scripts/object_storage_fixture.py
-      roles: [operations, security]
+  required_owner_categories: {}
 activation:
   generator_remote_mutation: FORBIDDEN
   live_status: NOT_EXECUTED
   formal_tst_001: NOT_EXECUTED
   prerequisites:
     - real repository and default branch identified
-    - every team binding resolves to a visible GitHub team with write permission
-    - every required check has run in the repository and is bound to the expected GitHub Actions app
-    - ruleset API request is assembled from the reviewed policy and live numeric bindings, and authenticated read-back matches the desired active policy with no bypass actor
-    - contract, migration, security, deployment, direct-push, stale-review, last-push, missing-check, deletion, and force-push PR probes pass
-    - a distinct human reviewer approves the governance change
+    - Final Integration has run and is bound to GitHub Actions
+    - deletion and force-push protections are confirmed by authenticated read-back

@@ -9,7 +9,7 @@ import jsonschema
 from pydantic import ValidationError
 import pytest
 
-from .conftest import REPO_ROOT
+from .support import REPO_ROOT
 from raos.adapters.recorded_publication_snapshot_v2 import (
     RecordedPublicationSnapshotStep,
 )

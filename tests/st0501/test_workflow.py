@@ -43,7 +43,7 @@ from raos.domain.portfolio.workflow import (
 from raos.domain.iam.authorization import AuthorizationGrant
 from raos.ports.portfolio_workflow import PortfolioWorkflowExchange
 
-from conftest import (
+from .support import (
     ACTION_BY_OPERATION,
     CATEGORY_A,
     NOW,

@@ -6,7 +6,7 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 
-from conftest import valid_comparison
+from .support import valid_comparison
 from raos.domain.editorial.comparison_validation import (
     ComparisonDecision,
     CoverageStatus,

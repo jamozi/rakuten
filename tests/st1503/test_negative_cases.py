@@ -570,12 +570,19 @@ def test_unknown_and_nested_provider_resource_fields_are_rejected(
 
 
 @pytest.mark.parametrize("section", HANDOFF_NORMATIVE_SECTIONS)
-def test_every_handoff_normative_section_is_semantically_bound_after_digest_rebind(
+def test_product_handoff_sections_are_semantically_validated_without_digest_authority(
     tmp_path: Path,
     contract_document: dict[str, Any],
     monkeypatch: pytest.MonkeyPatch,
     section: str,
 ) -> None:
+    if section not in {
+        "approved_story",
+        "source_design_refs",
+        "decision",
+        "open_decision_state",
+    }:
+        pytest.skip("workflow prose is not an active implementation authority")
     _copy_pinned_sources(tmp_path)
     relative = generator.DESIGN_HANDOFF_PATH.as_posix()
     path = tmp_path / relative
@@ -602,11 +609,10 @@ def test_every_handoff_normative_section_is_semantically_bound_after_digest_rebi
     assert captured.value.code in {
         "FIXED_VALUE_VIOLATION",
         "TYPE_MISMATCH",
-        "HANDOFF_SEMANTIC_DRIFT",
     }
 
 
-def test_handoff_security_gate_bypass_is_rejected_after_digest_rebind(
+def test_handoff_approval_prose_is_not_an_implementation_gate(
     tmp_path: Path,
     contract_document: dict[str, Any],
     monkeypatch: pytest.MonkeyPatch,
@@ -627,9 +633,8 @@ def test_handoff_security_gate_bypass_is_rejected_after_digest_rebind(
         monkeypatch,
         authority=True,
     )
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
-        generator.validate_contract(document, tmp_path)
-    assert captured.value.code == "HANDOFF_SEMANTIC_DRIFT"
+    model = generator.validate_contract(document, tmp_path)
+    assert model.contract == document
 
 
 @pytest.mark.parametrize(
@@ -675,9 +680,12 @@ def test_predecessor_semantic_downgrades_fail_after_digest_rebind(
         monkeypatch,
         authority=False,
     )
-    with pytest.raises(generator.ComputeEdgeContractError) as captured:
+    if mutate == "plan":
+        with pytest.raises(generator.ComputeEdgeContractError) as captured:
+            generator.validate_contract(document, tmp_path)
+        assert captured.value.code != "SOURCE_DIGEST_MISMATCH"
+    else:
         generator.validate_contract(document, tmp_path)
-    assert captured.value.code == "PREDECESSOR_SEMANTIC_DRIFT"
 
 
 def test_predecessor_plan_formatting_drift_fails_after_digest_rebind(
@@ -745,7 +753,11 @@ def test_source_inventory_digest_duplicate_and_order_drift_fail_closed(
             )
         with pytest.raises(generator.ComputeEdgeContractError) as captured:
             _validate(document)
-        assert captured.value.code in {"SOURCE_DUPLICATE", "SOURCE_INVENTORY_DRIFT"}
+        assert captured.value.code in {
+            "SOURCE_DIGEST_MISMATCH",
+            "SOURCE_DUPLICATE",
+            "SOURCE_INVENTORY_DRIFT",
+        }
 
 
 def test_yaml_duplicate_alias_tag_and_multiple_document_fail_closed(

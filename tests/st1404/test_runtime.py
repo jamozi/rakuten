@@ -10,7 +10,7 @@ from uuid import UUID
 
 import pytest
 
-from conftest import (
+from .support import (
     CONSUMER_NAME,
     EVENT_ID,
     HANDLER_VERSION,

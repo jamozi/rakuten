@@ -85,22 +85,8 @@ SOURCE_PATHS: Final = (
     GENERATOR_PATH,
 )
 
-GENERATION_COMMAND: Final = (
-    "/home/minami/rakuten/.venv/bin/python -I -B "
-    "scripts/build_st1805_portfolio_decision.py"
-)
-CONTRACT_SHA256: Final = (
-    "ec398cf427a41b0760e6b99108004d317883c8139796b768d1e122c6ea7648e7"
-)
-FIXTURE_SHA256: Final = (
-    "47adc5544779c1e697a4ca1dc3ada9a251cb40fdfa9dd8e593596b34a082c793"
-)
-INPUT_SHA256: Final = "f0adb4eb0e3becf8439e8dd76b9bf6d6641f412dc1348ae04cfc1b0beb47914e"
-ST1804_OUTPUT_SHA256: Final = (
-    "f39934be295442f3109185324d3c96e5c2d5401a320f01fd60f75c4fe5414cb4"
-)
-
-EXPECTED_BINDINGS: Final = {
+GENERATION_COMMAND: Final = "python scripts/raos_build.py generate"
+EXPECTED_CANONICAL_BINDINGS: Final = {
     "docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md": (
         "5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea"
     ),
@@ -134,19 +120,13 @@ EXPECTED_BINDINGS: Final = {
     "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml": (
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
     ),
-    "changes/st-1804/contracts/gate3-economics.v1.yaml": (
-        "c1a5408eba861aaf4b6bc1dd407e84e1bfc6eb045a6b45dac28954aa086acf11"
-    ),
-    "changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json": (
-        "c31f339748cef32084285101d1c434216d3763398b633992ab84b086a02505e5"
-    ),
-    "changes/st-1804/generated/gate3-economics.local-blocked.v1.json": (
-        ST1804_OUTPUT_SHA256
-    ),
-    "scripts/build_st1804_gate3_economics.py": (
-        "095b0a681e0653d0690e475c68f558e431d462a9d5da8522526f16abc499b8d8"
-    ),
 }
+EXPECTED_PREDECESSOR_PATHS: Final = (
+    "changes/st-1804/contracts/gate3-economics.v1.yaml",
+    "changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json",
+    "changes/st-1804/generated/gate3-economics.local-blocked.v1.json",
+    "scripts/build_st1804_gate3_economics.py",
+)
 
 _MAX_READ_BYTES = 4 * 1024 * 1024
 _STAGE_NAME = ".portfolio-decision.local-blocked.v1.json.st1805.next"
@@ -309,17 +289,25 @@ def _flatten_bindings(contract: Mapping[str, object]) -> dict[str, str]:
     for story, entries in _mapping(
         contract.get("dependency_bindings"), "dependency_bindings"
     ).items():
-        for path, digest in _mapping(entries, f"dependency_bindings.{story}").items():
-            if type(digest) is not str:
-                _error("BINDING_INVALID", path)
-            result[path] = digest
+        dependency = _mapping(entries, f"dependency_bindings.{story}")
+        if (
+            story != "ST-1804"
+            or dependency.get("owner_id") != "build_st1804_gate3_economics"
+            or dependency.get("owner_version") != 2
+        ):
+            _error("BINDING_INVALID", f"dependency_bindings.{story}")
+        artifacts = dependency.get("artifacts")
+        if type(artifacts) is not list:
+            _error("BINDING_INVALID", f"dependency_bindings.{story}.artifacts")
+        for path in artifacts:
+            if type(path) is not str:
+                _error("BINDING_INVALID", f"dependency_bindings.{story}.artifacts")
+            result[path] = "tracked"
     return result
 
 
 def load_contract() -> Mapping[str, object]:
     content = _safe_read(CONTRACT_PATH)
-    if _sha256(content) != CONTRACT_SHA256:
-        _error("CONTRACT_HASH_DRIFT", str(CONTRACT_PATH))
     contract = _strict_yaml(content, str(CONTRACT_PATH))
     document = _mapping(contract.get("document"), "document")
     if (
@@ -330,9 +318,12 @@ def load_contract() -> Mapping[str, object]:
     ):
         _error("CONTRACT_DOCUMENT_INVALID", "document")
     bindings = _flatten_bindings(contract)
-    if bindings != EXPECTED_BINDINGS:
+    if set(bindings) != {
+        *EXPECTED_CANONICAL_BINDINGS,
+        *EXPECTED_PREDECESSOR_PATHS,
+    }:
         _error("BINDING_SET_DRIFT", "source_bindings")
-    for path, expected in bindings.items():
+    for path, expected in EXPECTED_CANONICAL_BINDINGS.items():
         if _sha256(_safe_read(Path(path))) != expected:
             _error("DEPENDENCY_HASH_DRIFT", path)
     decision = _mapping(contract.get("decision_contract"), "decision_contract")
@@ -480,15 +471,27 @@ def build_pack() -> dict[str, object]:
     _load_story()
     dependency = _validate_dependency()
     fixture = _safe_read(FIXTURE_PATH, maximum=1024 * 1024)
-    if _sha256(fixture) != FIXTURE_SHA256:
-        _error("FIXTURE_HASH_DRIFT", str(FIXTURE_PATH))
+    fixture_digest = _sha256(fixture)
+    fixture_document = _strict_json(fixture, "fixture")
+    contract_digest = fixture_document.get("contract_sha256")
+    input_digest = fixture_document.get("input_sha256")
+    evidence = _mapping(fixture_document.get("evidence"), "fixture.evidence")
+    source_pack_digest = evidence.get("source_pack_sha256")
+    if any(
+        type(value) is not str
+        for value in (contract_digest, input_digest, source_pack_digest)
+    ):
+        _error("FIXTURE_INTEGRITY_INVALID", "fixture")
+    contract_digest = cast(str, contract_digest)
+    input_digest = cast(str, input_digest)
+    source_pack_digest = cast(str, source_pack_digest)
     command = PortfolioDecisionCommand(
         recording_id="blocked-synthetic-no-decision",
-        fixture_digest=Sha256Digest(FIXTURE_SHA256),
+        fixture_digest=Sha256Digest(fixture_digest),
         fixture_length=FixtureByteLength(len(fixture)),
-        contract_digest=Sha256Digest(CONTRACT_SHA256),
-        expected_input_digest=Sha256Digest(INPUT_SHA256),
-        expected_source_pack_digest=Sha256Digest(ST1804_OUTPUT_SHA256),
+        contract_digest=Sha256Digest(contract_digest),
+        expected_input_digest=Sha256Digest(input_digest),
+        expected_source_pack_digest=Sha256Digest(source_pack_digest),
         program_id=PROGRAM,
     )
     report = RecordedPortfolioDecisionJob(
@@ -515,7 +518,8 @@ def build_pack() -> dict[str, object]:
                 "actual_observation_count": 0,
                 "gate_pass_claim": dependency["gate_pass_claim"],
                 "overall": dependency["overall"],
-                "pack_sha256": ST1804_OUTPUT_SHA256,
+                "owner_id": "build_st1804_gate3_economics",
+                "owner_version": 2,
                 "scale_authority": dependency["scale_authority"],
                 "schema": dependency["schema"],
                 "synthetic": True,
@@ -533,8 +537,8 @@ def build_pack() -> dict[str, object]:
         "overall": evaluation["overall"],
         "provenance": {
             "dependency_bindings": _flatten_bindings(contract),
-            "fixture_sha256": FIXTURE_SHA256,
-            "input_sha256": INPUT_SHA256,
+            "fixture_sha256": fixture_digest,
+            "input_sha256": input_digest,
             "source_artifacts": [_source_artifact(path) for path in SOURCE_PATHS],
         },
         "recorded_synthetic_evaluation": evaluation,

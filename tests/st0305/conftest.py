@@ -1,14 +1,9 @@
-"""Shared exact-PostgreSQL fixtures for ST-0305 tests."""
+"""Pytest entrypoint; reusable helpers live in support.py."""
 
-from __future__ import annotations
-
-import sys
-from pathlib import Path
+from . import support as _support
 
 
-REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
-PYTHON_ROOT = REPOSITORY_ROOT / "python"
-if str(PYTHON_ROOT) not in sys.path:
-    sys.path.insert(0, str(PYTHON_ROOT))
-
-from tests.postgresql18 import empty_database, postgresql_cluster  # noqa: E402, F401
+for _name in dir(_support):
+    if not _name.startswith("__"):
+        globals()[_name] = getattr(_support, _name)
+del _name, _support

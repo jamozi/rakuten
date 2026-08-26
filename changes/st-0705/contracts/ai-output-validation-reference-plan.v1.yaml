@@ -28,7 +28,7 @@ authority:
   canonical_status_changes: false
 
 predecessor_boundary:
-  binding: EXACT_CURRENT_COMMITTED_BYTES_AND_SEMANTICS
+  binding: SEMANTIC_OWNER_GRAPH
   story_ids:
     - ST-0702
     - ST-0703

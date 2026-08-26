@@ -11,7 +11,7 @@ from typing import Any
 
 import pytest
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.adapters import recorded_kpi_input as adapter_module
 from raos.adapters.recorded_kpi_input import RecordedKpiInputAdapter
 from raos.application.analytics.kpi_read_model import RecordedKpiCalculationJob

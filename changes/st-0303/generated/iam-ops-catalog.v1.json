@@ -14,7 +14,7 @@
   },
   "contract": {
     "path": "changes/st-0303/contracts/iam-ops-schema.v1.yaml",
-    "sha256": "fbf7c27d94b4fc10a8353e907e55502e3f003af24295ca9fa70d4983af2f22c7"
+    "sha256": "efdecd00965052817879a52907dd7d76f5fe1d647337da89e09172f60e0ca6db"
   },
   "creation_order": [
     "ops.object_artifact",

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from conftest import (
+from .support import (
     ACTOR_ID,
     REVIEWER_ID,
     adapter,

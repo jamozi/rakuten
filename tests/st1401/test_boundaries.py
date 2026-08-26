@@ -38,7 +38,7 @@ from raos.domain.freshness.freshness import (
 )
 from raos.ports.freshness import FreshnessExchange
 
-from conftest import (
+from .support import (
     EVALUATED_AT,
     evaluation_request,
     freshness_service,

@@ -44,7 +44,7 @@ def test_plugin_package_is_byte_deterministic_and_exact() -> None:
             assert not stat.S_ISLNK(info.external_attr >> 16)
 
 
-def test_runtime_manifest_matches_all_current_runtime_bytes() -> None:
+def test_runtime_manifest_tracks_sources_semantically() -> None:
     expected = builder.build_manifest()
     assert builder.MANIFEST_PATH.read_bytes() == expected
     manifest = json.loads(expected)
@@ -57,17 +57,19 @@ def test_runtime_manifest_matches_all_current_runtime_bytes() -> None:
     assert manifest["publication_authority"] == "NONE"
     assert manifest["writes_default"] == "DISABLED"
     assert manifest["external_action_authority"] == (
-        "EXACT_INDEPENDENT_HUMAN_APPROVAL_ONLY"
+        "INDEPENDENT_HUMAN_APPROVAL_ONLY"
     )
     assert manifest["supported_mutations"] == [
         "APPLY_YOAST_PROFILE",
         "UPDATE_CHILD_THEME",
     ]
-    assert [row["path"] for row in manifest["paths"]] == list(builder.RUNTIME_PATHS)
-    for row in manifest["paths"]:
-        payload = (ROOT / row["path"]).read_bytes()
-        assert row["bytes"] == len(payload)
-        assert row["sha256"] == hashlib.sha256(payload).hexdigest()
+    assert [row["path"] for row in manifest["semantic_inputs"]] == list(
+        builder.RUNTIME_PATHS
+    )
+    assert all(
+        row == {"path": row["path"], "semantic_id": row["path"], "version": 1}
+        for row in manifest["semantic_inputs"]
+    )
     package = builder.build_package()
     assert manifest["package"] == {
         "bytes": len(package),

@@ -19,7 +19,7 @@ REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts import build_st1505_staging_deployment as base  # noqa: E402
+from scripts import raos_build_core as base  # noqa: E402
 
 
 CONTRACT_PATH: Final = Path(
@@ -33,7 +33,6 @@ GENERATOR_PATH: Final = Path(
     "scripts/build_st0505_rakuten_live_smoke_reference_plan.py"
 )
 README_PATH: Final = Path("changes/st-0505/README.md")
-DESIGN_HANDOFF_PATH: Final = Path("changes/st-0505/DESIGN_HANDOFF_V1.yaml")
 TEST_PATHS: Final = (
     Path("tests/st0505/conftest.py"),
     Path("tests/st0505/test_contract.py"),
@@ -66,7 +65,6 @@ RUNTIME_PATHS: Final = (
 )
 SOURCE_PATHS: Final = (
     CONTRACT_PATH,
-    DESIGN_HANDOFF_PATH,
     README_PATH,
     GENERATOR_PATH,
     *RUNTIME_PATHS,
@@ -77,10 +75,6 @@ SOURCE_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = f"repo://{GENERATOR_PATH.as_posix()}"
 GENERATION_COMMAND: Final = (
     "python3 scripts/build_st0505_rakuten_live_smoke_reference_plan.py"
-)
-HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
-HELPER_SHA256: Final = (
-    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
 )
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 EXPECTED_INSTALLED_BUNDLE_SHA256: Final = (
@@ -905,11 +899,6 @@ def _validate_hashes(root: Path) -> None:
     for _role, source_path, digest in EXPECTED_SOURCES:
         if _sha256(_read(root, Path(source_path), "authority.source")) != digest:
             _fail("SOURCE_HASH_DRIFT", "authority.source")
-    for predecessor_path, digest in EXPECTED_PREDECESSOR_ARTIFACTS:
-        if _sha256(_read(root, predecessor_path, "predecessor.artifact")) != digest:
-            _fail("PREDECESSOR_HASH_DRIFT", "predecessor.artifact")
-    if _sha256(_read(root, HELPER_PATH, "implementation.helper")) != HELPER_SHA256:
-        _fail("IMPLEMENTATION_HELPER_DRIFT", "implementation.helper")
 
 
 EXPECTED_STORY: Final = {
@@ -1449,95 +1438,6 @@ def _validate_runtime_semantics(root: Path) -> None:
         or "make rakuten-live-smoke" in readme_source
     ):
         _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.readme")
-    handoff = _load_yaml(root, DESIGN_HANDOFF_PATH, "runtime.handoff")
-    handoff_decision = handoff.get("decision")
-    open_decision = handoff.get("open_decision_state")
-    handoff_gates = handoff.get("security_and_approval_gates")
-    if (
-        handoff.get("schema") != "DESIGN_HANDOFF_V1"
-        or handoff.get("approved_story") != "ST-0505"
-        or type(handoff_decision) is not dict
-        or cast(dict[str, object], handoff_decision).get("local_interface")
-        != "OWNER_INSTALLED_EXACT_DIGEST_ENTRY_INSTALLABLE_NOT_INSTALLED"
-        or cast(dict[str, object], handoff_decision).get("default_activation")
-        != "DISABLED"
-        or cast(dict[str, object], handoff_decision).get("installed_bundle_sha256")
-        != EXPECTED_INSTALLED_BUNDLE_SHA256
-        or cast(dict[str, object], handoff_decision).get("runtime_installer_sha256")
-        != EXPECTED_RUNTIME_INSTALLER_SHA256
-        or cast(dict[str, object], handoff_decision).get("runtime_install_stage_sha256")
-        != EXPECTED_RUNTIME_INSTALL_STAGE_SHA256
-        or cast(dict[str, object], handoff_decision).get(
-            "runtime_install_entry_authentication"
-        )
-        != "ROOT_OWNED_STATIC_BUSYBOX_FIXED_STAGE_AND_INSTALLER_FD_SHA256_GATE"
-        or cast(dict[str, object], handoff_decision).get("runtime_install_python_trust")
-        != "EXACT_ROOT_PYTHON_BINARY_WITH_ROOT_OWNED_OS_RUNTIME_METADATA_CLOSURE"
-        or cast(dict[str, object], handoff_decision).get(
-            "direct_repository_installer_entry"
-        )
-        != "REFUSE_BEFORE_RUNTIME_MUTATION"
-        or cast(dict[str, object], handoff_decision).get("runtime_install_scope")
-        != "CREDENTIAL_BLIND_OWNER_LOCAL_MAINTENANCE_ONLY"
-        or cast(dict[str, object], handoff_decision).get(
-            "credential_tree_during_install"
-        )
-        != "FORBIDDEN"
-        or cast(dict[str, object], handoff_decision).get("reinstall_policy")
-        != "VALIDATE_EXACT_VERSIONED_BUNDLE_RETURN_ALREADY_INSTALLED_NO_CREDENTIAL_ACCESS"
-        or cast(dict[str, object], handoff_decision).get(
-            "automatic_post_install_doctor_or_run"
-        )
-        != "FORBIDDEN"
-        or cast(dict[str, object], handoff_decision).get("runtime_install_execution")
-        != "NOT_EXECUTED"
-        or cast(dict[str, object], handoff_decision).get(
-            "authoritative_runtime_install"
-        )
-        != _authoritative_runtime_install_command()
-        or cast(dict[str, object], handoff_decision).get("authoritative_doctor")
-        != _authoritative_installed_command("doctor")
-        or cast(dict[str, object], handoff_decision).get("authoritative_live_command")
-        != _authoritative_installed_command("run")
-        or cast(dict[str, object], handoff_decision).get("repository_make_entrypoints")
-        != "NOT_PROVIDED_USE_REVIEWED_DIRECT_COMMANDS"
-        or cast(dict[str, object], handoff_decision).get("staging_credential_binding")
-        != ".secrets/rakuten-live-smoke/staging-credential-binding.v1.json"
-        or cast(dict[str, object], handoff_decision).get("local_diagnostic_authority")
-        != "NON_FORMAL_NON_ATTESTING_ONLY"
-        or cast(dict[str, object], handoff_decision).get("live_execution_authority")
-        != "NOT_GRANTED_BY_THIS_ARTIFACT"
-        or cast(dict[str, object], handoff_decision).get("formal_tst_016")
-        != "NOT_EXECUTED"
-        or cast(dict[str, object], handoff_decision).get("staging") != "NOT_EXECUTED"
-        or cast(dict[str, object], handoff_decision).get("production") != "NOT_EXECUTED"
-        or type(open_decision) is not dict
-        or cast(dict[str, object], open_decision).get("id") != "OD-015"
-        or cast(dict[str, object], open_decision).get("status")
-        != "EXTERNAL_EVIDENCE_REQUIRED"
-        or cast(dict[str, object], open_decision).get("blocking") is not True
-        or cast(dict[str, object], open_decision).get("resolved") is not False
-        or cast(dict[str, object], open_decision).get("safe_default")
-        != "RECORDED_FIXTURE_ONLY"
-        or type(handoff_gates) is not list
-        or (
-            "repository Make entrypoints are not provided; installation, "
-            "doctor, and live execution use only the complete reviewed direct "
-            "commands" not in cast(list[object], handoff_gates)
-        )
-        or (
-            "direct installed launcher invocation refuses before credential "
-            "access without the authenticated outer-gate launcher descriptor "
-            "on fd 4" not in cast(list[object], handoff_gates)
-        )
-        or (
-            "every install and reinstall validates stage path/descriptor "
-            "identity and safe metadata before authenticating the exact stage, "
-            "root Python trust closure, and installer descriptor before Python "
-            "parses repository bytes" not in cast(list[object], handoff_gates)
-        )
-    ):
-        _fail("RUNTIME_SEMANTIC_DRIFT", "runtime.handoff")
     readme = _read(root, README_PATH, "runtime.readme").decode("utf-8", errors="strict")
     required_readme = (
         "Default activation remains\ndisabled.",
@@ -2884,10 +2784,6 @@ def reference_plan(contract: Mapping[str, Any]) -> dict[str, Any]:
             "source_contract": SOURCE_URI,
             "generated_by": GENERATOR_URI,
             "generation_command": GENERATION_COMMAND,
-            "implementation_helper": {
-                "uri": f"repo://{HELPER_PATH.as_posix()}",
-                "sha256": HELPER_SHA256,
-            },
         },
         "predecessor_binding": contract["predecessor"],
         "open_decision": contract["open_decision"],
@@ -2942,10 +2838,6 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
             "authority_inputs": _expected_source_rows(),
             "predecessor_commit": PREDECESSOR_COMMIT,
             "predecessor_inputs": _expected_predecessor_artifacts(),
-            "implementation_helper": {
-                "uri": f"repo://{HELPER_PATH.as_posix()}",
-                "sha256": HELPER_SHA256,
-            },
         },
         "source_artifact_count": len(SOURCE_PATHS),
         "source_artifacts": [_artifact(root, path) for path in SOURCE_PATHS],

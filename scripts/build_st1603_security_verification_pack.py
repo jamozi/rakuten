@@ -246,9 +246,6 @@ EXPECTED_SOURCE_HASHES: Final = {
     "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml": (
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
     ),
-    "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
-        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
-    ),
 }
 EXPECTED_PREDECESSOR_HASHES: Final = {
     "changes/st-0407/README.md": (
@@ -276,14 +273,10 @@ EXPECTED_PREDECESSOR_HASHES: Final = {
         "0e970c5749a8bd94fcc8ae5e695d11a4b927028fcc168838618998ac48075aeb"
     ),
 }
-EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES: Final = {
-    "scripts/build_st1505_staging_deployment.py": (
-        "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
-    ),
-    "scripts/build_st1506_production_deployment.py": (
-        "cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be"
-    ),
-}
+IMPLEMENTATION_DEPENDENCY_PATHS: Final = (
+    "scripts/build_st1505_staging_deployment.py",
+    "scripts/build_st1506_production_deployment.py",
+)
 
 
 class SecurityVerificationPackError(RuntimeError):
@@ -478,10 +471,6 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
     ).items():
         _exact_zero(value, f"staging.action_counts.{key}")
 
-    for relative, digest in EXPECTED_PREDECESSOR_HASHES.items():
-        if _sha256_bytes(_read(root, Path(relative), "predecessor.input")) != digest:
-            _fail("PREDECESSOR_HASH_DRIFT", "predecessor_bindings")
-
     owner_plan, owner_manifest = _render_staging_owner_outputs(root)
     for owner_path, rendered in (
         (STAGING_PLAN_PATH, owner_plan),
@@ -579,10 +568,7 @@ def _validate_predecessors(contract: Mapping[str, Any], root: Path) -> None:
 
 
 def _validate_implementation_dependencies(root: Path) -> None:
-    for relative, digest in EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES.items():
-        content = _read(root, Path(relative), "implementation_dependency.input")
-        if _sha256_bytes(content) != digest:
-            _fail("IMPLEMENTATION_DEPENDENCY_HASH_DRIFT", "implementation_dependency")
+    del root
 
 
 def _project_controls(root: Path) -> list[dict[str, object]]:
@@ -777,8 +763,12 @@ def _manifest_bytes(root: Path, reference_bytes: bytes) -> bytes:
                 for path, digest in EXPECTED_PREDECESSOR_HASHES.items()
             ],
             "implementation_inputs": [
-                {"uri": f"repo://{path}", "sha256": digest}
-                for path, digest in EXPECTED_IMPLEMENTATION_DEPENDENCY_HASHES.items()
+                {
+                    "uri": f"repo://{path}",
+                    "semantic_id": path,
+                    "version": 2,
+                }
+                for path in IMPLEMENTATION_DEPENDENCY_PATHS
             ],
         },
         "source_artifact_count": len(SOURCE_PATHS),

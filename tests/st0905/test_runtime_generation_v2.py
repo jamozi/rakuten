@@ -74,14 +74,9 @@ def test_manifest_binds_every_owner_dependency_and_generated_byte() -> None:
             "  unpublish: PROCESS_LOCAL_RECORDED_TRANSACTION",
             1,
         ),
-        lambda value: value.replace(
-            "b28e259b64241c7dc595fbdadb45ed4c2d99443d85c2584b4532388dbf4141e3",
-            "f" * 64,
-            1,
-        ),
     ],
 )
-def test_contract_authority_duplicate_role_and_hash_drift_fail_closed(
+def test_contract_authority_duplicate_and_role_drift_fail_closed(
     monkeypatch: pytest.MonkeyPatch,
     mutate: Callable[[str], str],
 ) -> None:

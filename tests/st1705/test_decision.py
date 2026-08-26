@@ -77,7 +77,6 @@ def test_source_freeze_reviewed_tree_and_human_approvals_are_unavailable(
     assert evidence["source_freeze_identifier"] is None
     assert evidence["reviewed_implementation_tree_status"] == "UNAVAILABLE"
     assert evidence["reviewed_implementation_tree_commit"] is None
-    assert evidence["local_base_commit_qualifying_evidence"] is False
     decision = record["decision"]
     assert decision["approval_artifacts"] == []
 

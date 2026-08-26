@@ -42,8 +42,8 @@ source_artifacts:
   bytes: 2815
   sha256: 22ba200315f8cd36198930842c12f0e17008b979b6f38f850cc534c13af7e071
 - uri: repo://scripts/build_st0603_fact_conflict_review_reference_plan.py
-  bytes: 24231
-  sha256: c18ec5df96bfbaa1a18d86cba3fd468221ae1b8fffdf2a5d38dd3a2e9af9b589
+  bytes: 23865
+  sha256: f524c16e034e99eeb2d8f56b289bba2e6019529318e3688b31a0f8051d5479e8
 - uri: repo://tests/st0603/conftest.py
   bytes: 906
   sha256: b0041b91eac50acd6ba109e7218b24886197619130b2ddf5e803e84a5311f977
@@ -54,8 +54,8 @@ source_artifacts:
   bytes: 4192
   sha256: 30010ac3fb8dc51cb8ff1ebeb87ca689dde607713a43e26c8ebfdca5cb673c77
 - uri: repo://tests/st0603/test_negative_cases.py
-  bytes: 12893
-  sha256: 1aa9580ccfe4a61fc9ad52899f09ca2366a8683a7d45454e92a00c26e6d9504e
+  bytes: 13025
+  sha256: 0bc60e58f1ffa67d5da9084098a9b4cbd8e6116fb19f33da269a362e84767737
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0603/generated/fact-conflict-review-reference-plan.v1.json

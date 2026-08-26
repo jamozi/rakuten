@@ -12,7 +12,7 @@ from typing import cast
 
 import pytest
 
-from conftest import (
+from .support import (
     LOGICAL_REFERENCE_CANARY,
     MAXIMUM_LEASE_LIFETIME,
     NOW,

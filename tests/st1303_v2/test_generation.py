@@ -13,7 +13,7 @@ import yaml
 
 from scripts import build_st1303_attribution_engine as generator
 
-from .conftest import ROOT
+from .support import ROOT
 
 
 def test_projection_is_deterministic_and_has_closed_boundaries() -> None:

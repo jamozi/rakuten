@@ -36,9 +36,6 @@ sources:
   - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
     bytes: 71458
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
-  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    bytes: 11132
-    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   - uri: repo://docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md
     bytes: 150878
     sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3
@@ -144,9 +141,6 @@ predecessor_bindings:
       - uri: repo://scripts/build_st0105_generated_contracts.py
         bytes: 80107
         sha256: b91848efa9a35fa703e3cad08f04336c14c05a0a3fd182e7c97e75a554e372a4
-      - uri: repo://scripts/codegen_toolchain.sh
-        bytes: 4633
-        sha256: 35bbe2059363745b373546627cf68282233cfe50dbde5cecefdcf360ddd140c0
       - uri: repo://tests/st0105/conftest.py
         bytes: 2579
         sha256: 4b0fe8dc6d88e787a37f5844d49f2e0e66ccc3d11f355f683b509a17f337ed1d
@@ -261,7 +255,6 @@ selected_design:
   cross_module_writes_outbox_audit_and_idempotency: null
   connection_factory_and_workload_identity: null
   approved_handoff_uri: null
-  approved_handoff_sha256: null
   conflict_free_canonical_reconciliation: null
   repository_owner_approval: null
 implementation_inventory:
@@ -291,7 +284,6 @@ activation:
   status: BLOCKED_PENDING_APPROVED_DESIGN_HANDOFF
   authority: NOT_GRANTED
   approved_handoff_uri: null
-  approved_handoff_sha256: null
   conflict_free_canonical_reconciliation: null
   repository_owner_approval: null
   runtime_eligible: false

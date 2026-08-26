@@ -392,7 +392,10 @@ class OwnerPrivateSqliteAlertJournal:
             if connection.execute("PRAGMA foreign_keys = ON").fetchone() is not None:
                 fail(SloAlertFailureCode.JOURNAL_TAMPERED, "journal.connection")
             connection.execute("PRAGMA busy_timeout = 0")
-            journal_mode = connection.execute("PRAGMA journal_mode = DELETE").fetchone()
+            # DELETE is the SQLite default and is persisted for this owner-private
+            # database.  Querying it avoids taking a write lock while a competing
+            # compare-and-swap transaction is active.
+            journal_mode = connection.execute("PRAGMA journal_mode").fetchone()
             connection.execute("PRAGMA synchronous = FULL")
             if (
                 journal_mode != ("delete",)

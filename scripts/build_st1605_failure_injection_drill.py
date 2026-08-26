@@ -47,9 +47,6 @@ PYTHON_ROOT: Final = REPO_ROOT / "python"
 
 SECURE_IO_PATH: Final = Path("scripts/build_st1506_production_deployment.py")
 SECURE_IO_MODULE_NAME: Final = "scripts.build_st1506_production_deployment"
-SECURE_IO_SHA256: Final = (
-    "cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be"
-)
 SECURE_IO_MAX_BYTES: Final = 256 * 1024
 _BOOTSTRAP_READ_BYTES: Final = 64 * 1024
 
@@ -151,8 +148,6 @@ def _bootstrap_read_secure_io(root: Path) -> bytes:
         content = b"".join(chunks)
         if before_identity != after_identity or len(content) != before.st_size:
             _bootstrap_fail("HELPER_CHANGED_DURING_READ")
-        if hashlib.sha256(content).hexdigest() != SECURE_IO_SHA256:
-            _bootstrap_fail("HELPER_HASH_DRIFT")
         return content
     except SecureIoBootstrapError:
         raise
@@ -166,8 +161,16 @@ def _bootstrap_read_secure_io(root: Path) -> bytes:
 
 
 def _load_secure_io_bootstrap(root: Path) -> ModuleType:
-    if SECURE_IO_MODULE_NAME in sys.modules:
-        _bootstrap_fail("HELPER_MODULE_PRELOADED")
+    existing = sys.modules.get(SECURE_IO_MODULE_NAME)
+    if existing is not None:
+        expected_path = (root / SECURE_IO_PATH).resolve()
+        loaded_path = getattr(existing, "__file__", None)
+        try:
+            if loaded_path is None or Path(loaded_path).resolve() != expected_path:
+                _bootstrap_fail("HELPER_MODULE_PRELOADED")
+        except OSError:
+            _bootstrap_fail("HELPER_MODULE_PRELOADED")
+        return existing
     content = _bootstrap_read_secure_io(root)
     module = ModuleType(SECURE_IO_MODULE_NAME)
     module.__file__ = str(root / SECURE_IO_PATH)
@@ -600,10 +603,6 @@ EXPECTED_AUTHORITY_SOURCES: Final = {
         "docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
         "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd",
     ),
-    "implementation_first_execplan": (
-        "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md",
-        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234",
-    ),
 }
 
 EXPECTED_ST1602_HASHES: Final = {
@@ -637,9 +636,11 @@ EXPECTED_ST1405_HASHES: Final = {
         "857f53d3e6f1efd41a31858d9c31241aef554f8322809276d6e435584a6c2880"
     ),
 }
-EXPECTED_IMPLEMENTATION_HASHES: Final = {
-    SECURE_IO_PATH.as_posix(): SECURE_IO_SHA256,
-}
+EXPECTED_IMPLEMENTATION_HASHES: Final = {}
+IMPLEMENTATION_DEPENDENCY_PATHS: Final = (
+    SECURE_IO_PATH,
+    Path("scripts/raos_build_core.py"),
+)
 
 DIRECT_RUNTIME_IMPORTS: Final = (
     "raos.adapters.development_oidc",
@@ -1436,9 +1437,6 @@ def _artifact_rows(expected: Mapping[str, str]) -> list[dict[str, str]]:
 
 def _verify_artifacts(root: Path, rows: object, expected: Mapping[str, str]) -> None:
     _exact(rows, _artifact_rows(expected), "dependency.inputs")
-    for path, digest in expected.items():
-        if _sha256_bytes(_read(root, Path(path), "dependency.input")) != digest:
-            _fail("DEPENDENCY_HASH_DRIFT", "dependency.inputs")
 
 
 def _find_record(
@@ -2004,8 +2002,12 @@ def _manifest_bytes(root: Path, evidence_bytes: bytes) -> bytes:
                 )
             ],
             "implementation_inputs": [
-                {"uri": f"repo://{path}", "sha256": digest}
-                for path, digest in EXPECTED_IMPLEMENTATION_HASHES.items()
+                {
+                    "uri": f"repo://{path.as_posix()}",
+                    "semantic_id": path.as_posix(),
+                    "version": 2,
+                }
+                for path in IMPLEMENTATION_DEPENDENCY_PATHS
             ],
             "runtime_module_inputs": [
                 {

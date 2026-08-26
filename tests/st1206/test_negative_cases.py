@@ -7,7 +7,7 @@ from datetime import date
 
 import pytest
 
-from conftest import FIXTURE_BYTES, command_for, service_for
+from .support import FIXTURE_BYTES, command_for, service_for
 from raos.adapters.recorded_keyword_rank import RecordedKeywordRankCsvSource
 from raos.application.analytics.keyword_rank_import import (
     KeywordRankEvaluationService,

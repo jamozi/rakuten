@@ -25,7 +25,7 @@ from raos.domain.editorial.ai_draft_integration_v2 import (
     AiDraftV2FailureCode,
 )
 from raos.ports.ai_draft_integration_v2 import RecordedAiDraftIntegrationPortV2
-from v2_support import REPOSITORY_ROOT, V2_FIXTURE, request, service_and_adapter
+from .v2_support import REPOSITORY_ROOT, V2_FIXTURE, request, service_and_adapter
 
 
 RUNTIME_PATHS = (

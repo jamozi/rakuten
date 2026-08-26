@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from scripts import build_st1505_staging_deployment as base
+from scripts import raos_build_core as base
 from scripts import build_st1407_external_policy_registry_reference_plan as generator
 
 
@@ -170,12 +170,9 @@ def test_path_traversal_is_rejected(
         generator.EXTERNAL_RULE_PATH,
         generator.OFFICIAL_REFERENCE_PATH,
         generator.EDITORIAL_POLICY_PATH,
-        Path("changes/st-0405/README.md"),
-        Path("python/raos/domain/editorial/policy_engine.py"),
-        generator.HELPER_PATH,
     ],
 )
-def test_authority_dependency_or_helper_byte_drift_is_rejected(
+def test_immutable_authority_and_policy_bytes_are_rejected(
     isolated_repository: Path,
     relative: Path,
 ) -> None:
@@ -185,6 +182,19 @@ def test_authority_dependency_or_helper_byte_drift_is_rejected(
         (generator.ExternalPolicyReferenceError, base.StagingDeploymentContractError)
     ):
         generator.render_outputs(isolated_repository)
+
+
+def test_tracked_runtime_and_helper_are_semantic_inputs(
+    isolated_repository: Path,
+) -> None:
+    for relative in (
+        Path("changes/st-0405/README.md"),
+        Path("python/raos/domain/editorial/policy_engine.py"),
+        generator.HELPER_PATH,
+    ):
+        path = isolated_repository / relative
+        path.write_bytes(path.read_bytes() + b"\n# note\n")
+    assert generator.render_outputs(isolated_repository)
 
 
 def test_external_mapping_drift_is_rejected_even_when_hash_is_rebound(

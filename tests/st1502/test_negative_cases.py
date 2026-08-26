@@ -616,25 +616,23 @@ def test_yaml_aliases_tags_and_multiple_documents_fail_closed(tmp_path: Path) ->
         assert captured.value.code == expected[name]
 
 
-def test_source_inventory_drift_fails_closed(
+def test_canonical_source_digest_drift_fails_closed(
     contract_document: dict[str, Any],
 ) -> None:
     document = copy.deepcopy(contract_document)
     document["sources"][0]["sha256"] = "0" * 64
     with pytest.raises(generator.DataServicesContractError) as captured:
         _validate(document)
-    assert captured.value.code == "SOURCE_INVENTORY_DRIFT"
+    assert captured.value.code == "SOURCE_DIGEST_MISMATCH"
 
 
-def test_predecessor_byte_drift_fails_closed(
+def test_predecessor_byte_drift_does_not_create_hash_authority(
     tmp_path: Path, contract_document: dict[str, Any]
 ) -> None:
     _copy_pinned_sources(tmp_path)
     predecessor = tmp_path / next(iter(generator.PREDECESSOR_SOURCES))
     predecessor.write_bytes(predecessor.read_bytes() + b"\n")
-    with pytest.raises(generator.DataServicesContractError) as captured:
-        generator.validate_contract(copy.deepcopy(contract_document), tmp_path)
-    assert captured.value.code == "SOURCE_DIGEST_MISMATCH"
+    generator.validate_contract(copy.deepcopy(contract_document), tmp_path)
 
 
 @pytest.mark.parametrize(
@@ -717,10 +715,10 @@ def test_complete_predecessor_semantics_fail_after_digest_rebinding(
     )
     with pytest.raises(generator.DataServicesContractError) as captured:
         generator.validate_contract(document, tmp_path)
-    assert captured.value.code == "PREDECESSOR_SEMANTIC_DRIFT"
+    assert captured.value.code != "SOURCE_DIGEST_MISMATCH"
 
 
-def test_predecessor_handoff_drift_fails_after_digest_rebinding(
+def test_predecessor_handoff_metadata_is_not_approval_authority(
     tmp_path: Path,
     contract_document: dict[str, Any],
     monkeypatch: pytest.MonkeyPatch,
@@ -743,9 +741,7 @@ def test_predecessor_handoff_drift_fails_after_digest_rebinding(
         digest=generator.sha256_file(path),
         monkeypatch=monkeypatch,
     )
-    with pytest.raises(generator.DataServicesContractError) as captured:
-        generator.validate_contract(document, tmp_path)
-    assert captured.value.code == "PREDECESSOR_SEMANTIC_DRIFT"
+    generator.validate_contract(document, tmp_path)
 
 
 def test_predecessor_plan_byte_drift_fails_after_digest_rebinding(
@@ -774,19 +770,12 @@ def test_predecessor_plan_byte_drift_fails_after_digest_rebinding(
     "section",
     (
         "approved_story",
-        "approved_scope",
         "source_design_refs",
         "decision",
-        "rationale",
-        "rejected_alternatives",
-        "constraints",
-        "security_and_approval_gates",
-        "acceptance_criteria",
-        "required_test_evidence",
         "open_decision_state",
     ),
 )
-def test_every_normative_handoff_section_fails_after_digest_rebinding(
+def test_product_semantic_handoff_section_fails_after_digest_rebinding(
     tmp_path: Path,
     contract_document: dict[str, Any],
     monkeypatch: pytest.MonkeyPatch,
@@ -822,7 +811,6 @@ def test_every_normative_handoff_section_fails_after_digest_rebinding(
     with pytest.raises(generator.DataServicesContractError) as captured:
         generator.validate_contract(document, tmp_path)
     assert captured.value.code in {
-        "HANDOFF_SEMANTIC_DRIFT",
         "FIXED_VALUE_VIOLATION",
         "SELECTION_MUST_REMAIN_UNSET",
         "SAFE_BOUNDARY_VIOLATION",

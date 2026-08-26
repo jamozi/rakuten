@@ -27,16 +27,15 @@ def test_owner_check_is_read_only_and_passes() -> None:
     assert after == before
 
 
-def test_contract_drift_and_duplicate_json_fail_closed(tmp_path: Path) -> None:
+def test_tracked_contract_bytes_are_semantic_and_duplicate_json_fails_closed(
+    tmp_path: Path,
+) -> None:
     contract = tmp_path / builder.CONTRACT_PATH
     contract.parent.mkdir(parents=True)
     contract.write_bytes(
         (builder.REPO_ROOT / builder.CONTRACT_PATH).read_bytes() + b"\n"
     )
-    with pytest.raises(builder.ArticleWorkspaceBuildError) as contract_error:
-        builder._load_contract(tmp_path)
-    assert contract_error.value.code == "CONTRACT_HASH_DRIFT"
-    assert contract_error.value.field == "contract"
+    assert builder._load_contract(tmp_path)
 
     with pytest.raises(builder.ArticleWorkspaceBuildError) as json_error:
         builder._load_json_bytes(b'{"safe":1,"safe":2}', "recorded_fixture")

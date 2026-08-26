@@ -10,7 +10,7 @@ import pytest
 import yaml
 
 from scripts import build_st0902_final_approval_reference_plan as generator
-from scripts import build_st1505_staging_deployment as base
+from scripts import raos_build_core as base
 
 
 @pytest.mark.parametrize(
@@ -198,15 +198,9 @@ def test_path_traversal_is_rejected(
         generator.ROLE_MATRIX_PATH,
         generator.ADMIN_API_PATH,
         generator.APPROVAL_GRANTED_EVENT_PATH,
-        Path("changes/st-0305/contracts/physical/publishing-guards.sql"),
-        Path(
-            "changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml"
-        ),
-        Path("python/raos/domain/publishing/review_decision_operations.py"),
-        generator.HELPER_PATH,
     ],
 )
-def test_authority_dependency_or_helper_byte_drift_is_rejected(
+def test_immutable_authority_byte_drift_is_rejected(
     isolated_repository: Path,
     relative: Path,
 ) -> None:
@@ -217,6 +211,23 @@ def test_authority_dependency_or_helper_byte_drift_is_rejected(
         (generator.FinalApprovalReferenceError, base.StagingDeploymentContractError)
     ):
         generator.render_outputs(isolated_repository)
+
+
+def test_tracked_dependencies_and_helper_are_semantic_inputs(
+    isolated_repository: Path,
+) -> None:
+    notes = {
+        Path("changes/st-0305/contracts/physical/publishing-guards.sql"): b"\n-- note\n",
+        Path(
+            "changes/st-0605/contracts/claim-evidence-coverage-reference-plan.v1.yaml"
+        ): b"\n# note\n",
+        Path("python/raos/domain/publishing/review_decision_operations.py"): b"\n# note\n",
+        generator.HELPER_PATH: b"\n# note\n",
+    }
+    for relative, note in notes.items():
+        path = isolated_repository / relative
+        path.write_bytes(path.read_bytes() + note)
+    assert generator.render_outputs(isolated_repository)
 
 
 def _rebind_source(

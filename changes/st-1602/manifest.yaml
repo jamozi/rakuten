@@ -44,8 +44,8 @@ source_artifacts:
   bytes: 2530
   sha256: 9ed7dfa14f736cf30aa166c8c79d3f42386abfab90ec31b2792454e89ad976bc
 - uri: repo://scripts/build_st1602_slo_alert_reference_plan.py
-  bytes: 23085
-  sha256: 6b7cc5d945710173acff0d54216046f56af3ac6675a1308c7b12b1e7364c380f
+  bytes: 22789
+  sha256: 14179f766757bfbeba05f65514fc2fa428bfc0b07c3d28b1835b49cbda7c7ffd
 - uri: repo://tests/st1602/conftest.py
   bytes: 895
   sha256: a240b249e4e93a33c48c083b2f3877684a7359bc5bd7e02d90e768579d3956f7
@@ -56,8 +56,8 @@ source_artifacts:
   bytes: 3254
   sha256: 67d1b7ec19f080371e17cc08b6039ab0d3392cdccd7a0f82cffda62334060f0d
 - uri: repo://tests/st1602/test_negative_cases.py
-  bytes: 8472
-  sha256: 9197a85475ad047a4c8b87ad098161f449aa6845aaa0543f4ec0ceabb98fb0df
+  bytes: 8705
+  sha256: 58e5352eb24ad3f1a1bc885688287623e32958da0aa2c45003b0d9077a86ea48
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1602/generated/slo-alert-reference-plan.v1.json

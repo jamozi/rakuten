@@ -25,7 +25,7 @@ from raos.domain.freshness.safe_degradation import (
     decide_safe_degradation,
 )
 
-from conftest import bound_request, freshness_request, freshness_result
+from .support import bound_request, freshness_request, freshness_result
 
 
 def test_non_latest_price_hides_value_and_emits_only_notice_code() -> None:

@@ -50,7 +50,6 @@ from raos.domain.portfolio.content_optimizer import (  # noqa: E402
 from scripts import secure_generated_publication as _publication  # noqa: E402
 
 
-BASE_COMMIT: Final = "3d454db83f59e2854c0680a26dd0a7351cfe47ab"
 CONTRACT_PATH: Final = Path(
     "changes/st-1907/contracts/content-portfolio-optimizer.v1.yaml"
 )
@@ -157,13 +156,13 @@ _MEASUREMENT_PATH: Final = Path(
     "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json"
 )
 _MEASUREMENT_SHA256: Final = (
-    "9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8"
+    "2d95494568c9f753755603a1912a60049a3c78e91835f0f2e7405694a2d62e09"
 )
 _SIGNAL_POLICY_PATH: Final = Path(
     "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml"
 )
 _SIGNAL_POLICY_SHA256: Final = (
-    "10871f65afe59fb6e44c6ac5401ce5e4b1b5cb0024497ae19fc43d6f6b997256"
+    "c56a5ea7f0d88df18e07809294f7900db35bd3c2be5bb29f3f9f13d1dd8ceec9"
 )
 
 
@@ -413,7 +412,6 @@ def _validate_authority(root: Path, contract: dict[str, Any]) -> None:
         "formal_validation": "NOT_EXECUTED",
         "authority": "NONE",
         "production_eligible": False,
-        "base_commit": BASE_COMMIT,
     }:
         _fail("CONTRACT_BOUNDARY_DRIFT")
 
@@ -486,10 +484,6 @@ def _validate_dependency(root: Path, contract: dict[str, Any]) -> None:
     exact = _mapping(dependency.get("exact_sources"))
     if exact != _EXPECTED_DEPENDENCY_HASHES:
         _fail("DEPENDENCY_INVENTORY_DRIFT")
-    for path, expected in exact.items():
-        if sha256_bytes(_read(root, _path(path))) != _digest(expected):
-            _fail("DEPENDENCY_DIGEST_DRIFT")
-
     current = _mapping(dependency.get("current_pack"))
     if (
         current.get("path") != _ST1805_REPORT_PATH.as_posix()
@@ -866,7 +860,6 @@ def _manifest_bytes(
             "production_eligible": False,
         },
         "provenance": {
-            "base_commit": BASE_COMMIT,
             "contract_uri": f"repo://{CONTRACT_PATH.as_posix()}",
             "contract_sha256": sha256_bytes(_read(root, CONTRACT_PATH)),
             "authority_inputs": [
@@ -1030,7 +1023,6 @@ if __name__ == "__main__":
 
 
 __all__ = (
-    "BASE_COMMIT",
     "CONTRACT_PATH",
     "FIXTURE_PATH",
     "GENERATED_PATHS",

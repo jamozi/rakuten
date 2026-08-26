@@ -1,4 +1,4 @@
-required-version = "==0.12.1"
+required-version = ">=0.12.1,<0.13"
 no-sources = true
 python-downloads = "manual"
 python-preference = "only-managed"

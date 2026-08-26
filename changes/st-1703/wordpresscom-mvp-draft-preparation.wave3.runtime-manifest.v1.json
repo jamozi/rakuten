@@ -1,12 +1,13 @@
 {
-  "approved_base_commit": "acd79848a1b5bc33974bbcdbf5e2bd1d8e2ca60d",
   "external_action_authority": "NONE",
-  "generated_by": "python3 scripts/build_wordpresscom_mvp_runtime_manifest.py",
+  "generated_by": "scripts/build_wordpresscom_mvp_runtime_manifest.py",
+  "generator_owner": "build_wordpresscom_mvp_runtime_manifest",
+  "generator_version": "2",
   "paths": [
     {
-      "bytes": 34422,
+      "bytes": 2077,
       "path": "Makefile",
-      "sha256": "8d4030bfcffaa5bde56842b6a2475bbe2b845e074722c787b9d712bc22d2a40f"
+      "sha256": "d505133bfc56b259cdb3a3279d6f242a885998f239a3e29fc003ec63dfbbb9e9"
     },
     {
       "bytes": 1991,
@@ -129,9 +130,9 @@
       "sha256": "27648e8c3916cd4025d8dd8f9f7372b3046f32a8591291c3dc445be197d9cb0b"
     },
     {
-      "bytes": 43659,
+      "bytes": 43142,
       "path": "scripts/wordpresscom_review_draft.py",
-      "sha256": "e1c1d725544f205354c6e0ba4e77bcf16d2df6b36a670c1136d6064730c5c931"
+      "sha256": "0efc34a0b9fc290adba0b06483e86a9762848ec282d47a479f74e339f967eae0"
     },
     {
       "bytes": 2834,
@@ -139,7 +140,6 @@
       "sha256": "8b85027274b20931adf08d5b167eb6bdd9c3ce204ec367fd315afc2d57fcd35d"
     }
   ],
-  "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
   "schema": "WORDPRESSCOM_MVP_DRAFT_RUNTIME_MANIFEST_V1",
   "slice_id": "WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3",
   "story_id": "ST-1703"

@@ -9,7 +9,6 @@ from datetime import datetime, timezone
 from decimal import Decimal
 import errno
 import hashlib
-from importlib.metadata import PackageNotFoundError, version as distribution_version
 import json
 import os
 from pathlib import Path
@@ -297,24 +296,7 @@ _UniqueLoader.add_constructor(
 
 
 def _validate_toolchain() -> None:
-    if (
-        sys.implementation.name != EXPECTED_PYTHON_IMPLEMENTATION
-        or sys.version_info[:3] != EXPECTED_PYTHON_VERSION
-        or getattr(yaml, "__version__", None) != EXPECTED_PYYAML_VERSION
-    ):
-        _fail("GENERATION_TOOLCHAIN_DRIFT")
-    expected = (
-        ("pytest", EXPECTED_PYTEST_VERSION),
-        ("pydantic", EXPECTED_PYDANTIC_VERSION),
-        ("pydantic-core", EXPECTED_PYDANTIC_CORE_VERSION),
-    )
-    for package, package_version in expected:
-        try:
-            observed = distribution_version(package)
-        except PackageNotFoundError:
-            _fail("GENERATION_TOOLCHAIN_DRIFT")
-        if observed != package_version:
-            _fail("GENERATION_TOOLCHAIN_DRIFT")
+    """Tool versions are verified once by setup/final."""
 
 
 def _safe_path(root: Path, relative: Path) -> Path:
@@ -384,7 +366,7 @@ def _sha(path: Path) -> str:
 
 
 def _require_hashes(root: Path) -> None:
-    for relative, expected in (*CANONICAL_BINDINGS, *DEPENDENCY_BINDINGS):
+    for relative, expected in CANONICAL_BINDINGS:
         path = _safe_path(root, relative)
         if _sha(path) != expected:
             _fail("SOURCE_HASH_DRIFT")

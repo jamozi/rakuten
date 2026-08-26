@@ -9,8 +9,8 @@ source_artifacts:
   sha256: d5434f5fcd4a2de7a436e88ea9c02d3d97228dc032494d90ee1b2f52fcbe9965
   role: OWNER_SOURCE
 - uri: repo://scripts/build_st1103_freshness_operations_workspace.py
-  bytes: 45142
-  sha256: 443bc74478857938c6f45620a374f8320dd5662439be367cdf0a9c21ce8fa0b3
+  bytes: 44608
+  sha256: 70f85bcff39ed7c66796e753f58f924d49889c4b41d7f554cc9fcd1e885de1d2
   role: OWNER_SOURCE
 - uri: repo://packages/web-ui/src/freshness-operations-workspace.ts
   bytes: 20972
@@ -173,12 +173,12 @@ source_artifacts:
   sha256: d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b
   role: LOCKED_TOOLCHAIN
 - uri: repo://pyproject.toml
-  bytes: 1334
-  sha256: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
+  bytes: 1753
+  sha256: 34ee344782dbaf4135cb235e2fec215a1c709089c0994415fdeadf33979a6207
   role: LOCKED_TOOLCHAIN
 - uri: repo://uv.lock
-  bytes: 128286
-  sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+  bytes: 129836
+  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
   role: LOCKED_TOOLCHAIN
 generated_artifacts:
 - uri: repo://changes/st-1103/freshness-operations-recorded.v2.json

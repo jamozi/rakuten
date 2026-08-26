@@ -10,7 +10,7 @@ from threading import Barrier, Thread
 
 import pytest
 
-from conftest import (
+from .support import (
     AUTHORIZATION_COMMAND_ID,
     NOW,
     audit_context,

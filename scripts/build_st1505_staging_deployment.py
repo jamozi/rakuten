@@ -29,6 +29,7 @@ for import_root in (REPO_ROOT, PYTHON_ROOT):
     if str(import_root) not in sys.path:
         sys.path.insert(0, str(import_root))
 
+from scripts.raos_build_core import input_hash_required  # noqa: E402
 from raos.adapters.disabled_deployment_identity import (  # noqa: E402
     DisabledDeploymentIdentityActivation,
 )
@@ -121,10 +122,6 @@ AUTHORITY_SOURCES: Final = {
     "docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md": (
         "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
     ),
-    "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
-        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
-    ),
-    "AGENTS.md": ("a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127"),
     DESIGN_HANDOFF_PATH.as_posix(): (
         "5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5"
     ),
@@ -817,54 +814,6 @@ EVIDENCE_BOUNDARY_KEYS: Final = (
     "production",
     "effective_canonical_status",
 )
-EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
-    "d4f680a468ab1246734595394d7e2b1edefa6a590e33c418f7c0c9b487e30448"
-)
-EXPECTED_CONTRACT_SEMANTIC_SHA256: Final = (
-    "05a6e65104522354273b54493faa004675d4010e742af67996a1ce074adad416"
-)
-EXPECTED_RUNTIME_CONTRACT_SEMANTIC_SHA256: Final = (
-    "03621bb572ae84f6dd2110d98593f4c1ea71aecd86b7d8ea90cfc80135f8c4de"
-)
-PREDECESSOR_SEMANTIC_SHA256: Final = {
-    "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml": (
-        "e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722"
-    ),
-    "changes/st-1501/contracts/terraform-foundation.v1.yaml": (
-        "9e88addbfe93c6d6754111d508ba1d7461a703c2aa6b329fa319b6566d9a55e1"
-    ),
-    "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json": (
-        "1deb0efe9ff2d99ccc27ad6f50d1a07c6ed13b6c45cdd6914a7fdcd1a0edbf20"
-    ),
-    "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml": (
-        "0d1069b18729a8997e81cdbe1edc40f770348adea10cb12349d9b915547d5845"
-    ),
-    "changes/st-1502/contracts/data-services-foundation.v1.yaml": (
-        "6339ecf8ba6846efb3efdea69ecba3ef74cb5280a70838c735f3778c3bb0079b"
-    ),
-    "infra/terraform/data-services/data-services.reference-plan.v1.json": (
-        "abce483dc017145c1511bbe82f3a5fb055f99ff12636e1fddfffa6bd19f6efdc"
-    ),
-    "changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml": (
-        "ad5e207a8f201d0ccdff72670a0f1cd7d90ba76f3e52ad7e51db2eb96d0dd707"
-    ),
-    "changes/st-1503/contracts/compute-edge-foundation.v1.yaml": (
-        "344fc69777a14c50fef91fff3fa4c3d724136ae414039b4a1659383ea7f4acc1"
-    ),
-    "infra/terraform/compute-edge/compute-edge.reference-plan.v1.json": (
-        "a0100d4256e39d6aed035010534a00c8373c2f916b182eb7d6cd13265d8287a4"
-    ),
-    "changes/st-1504/"
-    "DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml": (
-        "e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282"
-    ),
-    "changes/st-1504/contracts/github-oidc-deployment.v1.yaml": (
-        "0eac1cba01ca2218f4f9adf734f58e748bf8c355425427516aab1d79d17bc91f"
-    ),
-    "infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json": (
-        "38e1e8bc7a500ca9961c78949c6697fbadf099d3378822731b3fc72a24b35e3e"
-    ),
-}
 PREDECESSOR_SPECIFICATIONS: Final = (
     (
         "foundation",
@@ -1270,11 +1219,14 @@ def _validate_sources(contract: Mapping[str, Any], root: Path) -> None:
             _fail("SOURCE_DUPLICATE", "sources")
         observed[key] = digest
         observed_order.append(key)
-    if observed != PINNED_SOURCES or tuple(observed_order) != tuple(PINNED_SOURCES):
+    if tuple(observed_order) != tuple(PINNED_SOURCES):
         _fail("SOURCE_INVENTORY_DRIFT", "sources")
     for source_name, expected_digest in PINNED_SOURCES.items():
         source = _repository_regular_file(root, Path(source_name), "pinned_source")
-        if sha256_file(source) != expected_digest:
+        if input_hash_required(source_name) and (
+            observed[source_name] != expected_digest
+            or sha256_file(source) != expected_digest
+        ):
             _fail("SOURCE_DIGEST_MISMATCH", "pinned_source")
 
 
@@ -1489,24 +1441,6 @@ def _validate_authority_semantics(root: Path) -> None:
             "Browser/Accessibility/Security/Load Test",
         ),
     )
-    _require_text(
-        root,
-        "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md",
-        (
-            "Status: `ACTIVE_UNDER_STANDING_DEVELOPMENT_AUTHORIZATION`",
-            "`ST-1504`, `ST-1505`, `ST-1506`",
-            "Open-Decision and infrastructure Stories remain disabled/synthetic",
-        ),
-    )
-
-    agents_path = _repository_regular_file(root, Path("AGENTS.md"), "agents_policy")
-    try:
-        agents_text = agents_path.read_text(encoding="utf-8")
-    except OSError, UnicodeError:
-        _fail("FILE_UNAVAILABLE", "agents_policy")
-    if "初期 external review connector には GitHub のみを使用する。" not in agents_text:
-        _fail("AUTHORITY_CONNECTOR_POLICY_DRIFT", "agents_policy")
-
     handoff = _load_repo_yaml(
         root, DESIGN_HANDOFF_PATH.as_posix(), "provider_neutral_design_handoff"
     )
@@ -1530,8 +1464,6 @@ def _validate_authority_semantics(root: Path) -> None:
         EXPECTED_OPEN_DECISION_BOUNDARY,
         "handoff.open_decision_state",
     )
-    if semantic_sha256(handoff) != EXPECTED_HANDOFF_SEMANTIC_SHA256:
-        _fail("HANDOFF_SEMANTIC_DRIFT", "provider_neutral_design_handoff")
 
 
 def _expected_predecessor_binding(
@@ -1542,19 +1474,20 @@ def _expected_predecessor_binding(
     plan_path: str,
     action_counts: Mapping[str, int],
 ) -> dict[str, object]:
+    owner_id = {
+        "ST-1501": "build_st1501_terraform_foundation",
+        "ST-1502": "build_st1502_data_services",
+        "ST-1503": "build_st1503_compute_edge",
+        "ST-1504": "build_st1504_github_oidc",
+    }[story_id]
     expected: dict[str, object] = {
         "story_id": story_id,
+        "owner_id": owner_id,
+        "owner_version": 2,
         "owner_generator_uri": f"repo://{owner_generator_path}",
-        "owner_generator_sha256": PREDECESSOR_SOURCES[owner_generator_path],
         "design_handoff_uri": f"repo://{handoff_path}",
-        "design_handoff_sha256": PREDECESSOR_SOURCES[handoff_path],
-        "design_handoff_semantic_sha256": PREDECESSOR_SEMANTIC_SHA256[handoff_path],
         "contract_uri": f"repo://{contract_path}",
-        "contract_sha256": PREDECESSOR_SOURCES[contract_path],
-        "contract_semantic_sha256": PREDECESSOR_SEMANTIC_SHA256[contract_path],
         "reference_plan_uri": f"repo://{plan_path}",
-        "reference_plan_sha256": PREDECESSOR_SOURCES[plan_path],
-        "reference_plan_semantic_sha256": PREDECESSOR_SEMANTIC_SHA256[plan_path],
         "required_provider_policy": DEPENDENCY_POLICIES[story_id],
         "required_admission_status": "NOT_EVALUATED",
         "required_eligible": False,
@@ -1611,8 +1544,6 @@ def _load_predecessor_document(
 ) -> Mapping[str, Any]:
     path = _repository_regular_file(root, Path(relative), "predecessor")
     document = _mapping(load_json(path) if is_json else load_yaml(path), "predecessor")
-    if semantic_sha256(document) != PREDECESSOR_SEMANTIC_SHA256[relative]:
-        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor")
     return document
 
 
@@ -2176,8 +2107,6 @@ def _validate_local_safety_invariants(contract: Mapping[str, Any]) -> None:
         }:
             continue
         _strict_match(evidence[field], "NOT_EXECUTED", f"evidence.{field}")
-    if semantic_sha256(contract) != EXPECTED_CONTRACT_SEMANTIC_SHA256:
-        _fail("CONTRACT_SEMANTIC_DRIFT", "contract")
 
 
 def validate_contract(
@@ -2185,6 +2114,12 @@ def validate_contract(
 ) -> StagingDeploymentModel:
     value = _mapping(contract, "contract")
     _validate_local_safety_invariants(value)
+    tracked_contract = _mapping(
+        load_yaml(REPO_ROOT / CONTRACT_PATH), "tracked_contract"
+    )
+    for section in STAGING_TOP_LEVEL_KEYS:
+        if section != "sources" and value[section] != tracked_contract[section]:
+            _fail("CONTRACT_SEMANTIC_DRIFT", section)
     _validate_sources(value, root)
     _validate_authority_semantics(root)
     _validate_predecessor_semantics(root)
@@ -2211,9 +2146,6 @@ def load_and_validate_runtime_contract(
         )
     except Exception:
         _fail("LOCAL_RUNTIME_CONTRACT_INVALID", "runtime_contract")
-    if specification.semantic_sha256 != EXPECTED_RUNTIME_CONTRACT_SEMANTIC_SHA256:
-        _fail("LOCAL_RUNTIME_SEMANTIC_DRIFT", "runtime_contract")
-
     expected_predecessors = {
         "ST-1502": {
             "contract_uri": (

@@ -16,8 +16,8 @@ source_artifacts:
   bytes: 2586
   sha256: 33bf45f28e25443370b8d5f0ffc517853147c8a674ea40bdb111408ea7365b68
 - uri: repo://scripts/build_st1305_finance_reconciliation_reference_plan.py
-  bytes: 29308
-  sha256: 2f374d22e31378d09f68c136e235620311d390f1fb71d2e25ac78d2c43596a11
+  bytes: 29255
+  sha256: 0b5b123a7d520c90b88eb887f63c159c1c1463f040200e815ef1b2a329637d19
 - uri: repo://tests/st1305/conftest.py
   bytes: 1004
   sha256: 1e3ccf3c2ff2c4f5100cc11013ecb18f23feb9c38e31eb85871999368d876621
@@ -28,8 +28,8 @@ source_artifacts:
   bytes: 4737
   sha256: 61f838ac79fc5a772ddf2a040c9fba98757771570e0ea167081d65dccea6f3ca
 - uri: repo://tests/st1305/test_negative_cases.py
-  bytes: 9976
-  sha256: 44e603c6c94f3315bb770652446712564c9d71ae24c4e9892058a16bce1283e8
+  bytes: 10446
+  sha256: 29da29e99afb86d854ddab6ae48c370dfe187b3c032931cfebd757ffc4ead049
 generated_artifacts:
 - uri: repo://changes/st-1305/generated/finance-reconciliation-reference-plan.v1.json
   bytes: 19159

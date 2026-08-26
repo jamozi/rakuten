@@ -1,6 +1,6 @@
 {
   "canonical_package_modified": false,
-  "external_action_authority": "EXACT_INDEPENDENT_HUMAN_APPROVAL_ONLY",
+  "external_action_authority": "INDEPENDENT_HUMAN_APPROVAL_ONLY",
   "forbidden_surfaces": [
     "ARBITRARY_HTTP",
     "ARBITRARY_OPTION",
@@ -22,129 +22,129 @@
     "compression": "ZIP_STORED",
     "file_count": 2,
     "root": "raos-bounded-operator/",
-    "sha256": "99b3c92582283fae00e6e55f443164124370962783f5ffc4eb69e3fbc949136f",
+    "sha256": "d00697502b6f3e96e8ff8e3cf81eeada5567baebca434e4359ca7685eaece20a",
     "version": "1.0.0"
   },
-  "paths": [
-    {
-      "bytes": 8624,
-      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/ADR-001-HASH-BOUND-WORDPRESS-OPERATOR.md",
-      "sha256": "ee909fbdc997d198d41129e499298206071224a72e271ed72d9a1af836eab3cf"
-    },
-    {
-      "bytes": 10545,
-      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "2a8f605a1b81294874adff2da2c49cdb1de92d5892d6ea6481a35d581aa06696"
-    },
-    {
-      "bytes": 2905,
-      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/Makefile",
-      "sha256": "0fbc2b9f15f850c3a8ff4b2ceab668e931b50fdac01fc20550bbd51407bb7a1a"
-    },
-    {
-      "bytes": 15094,
-      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "447f9966ce59425c5fe4da545b9768633e5e53fac9e7db1c840e64ccbe471366"
-    },
-    {
-      "bytes": 2689,
-      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/PREFLIGHT.md",
-      "sha256": "73ea2da2a910a8aea380de3c9364bfcd94c66f51f0a0d03bed4221a7888c3019"
-    },
-    {
-      "bytes": 3932,
-      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/README.md",
-      "sha256": "6d00bcbdd56bb6a7d58afadce8dd9d9f57323771ac0245956184ab062f24c276"
-    },
-    {
-      "bytes": 1238,
-      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/contracts/canonical-proposal-golden.v1.json",
-      "sha256": "65dd77c345a1936596b96c80c91d2ff71f9074454437d469ea002f5ec9af9b1f"
-    },
-    {
-      "bytes": 24145,
-      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/contracts/self-hosted-wordpress-operator.v1.yaml",
-      "sha256": "408e455e1c65ebe2352097aa08264de00a936c73ca9ca95468fd2f65d4bca009"
-    },
-    {
-      "bytes": 8234,
-      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/README.md",
-      "sha256": "cd912fbc5528e8936411b2825ce8f2b1f804f5f30a5caa296a2a03ab279a15ea"
-    },
-    {
-      "bytes": 187983,
-      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/raos-bounded-operator.php",
-      "sha256": "9e6be30fba7abf369b6ce518eb39d0382882efa491949abd02b551698dd1c087"
-    },
-    {
-      "bytes": 70703,
-      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "abe24df98cfdcc033dcb4cf66f6bb97bc5e8eebe046ccba7b40511d90cd79101"
-    },
-    {
-      "bytes": 77,
-      "path": "python/raos/__init__.py",
-      "sha256": "700d7d03288b2e80438a468cc5e45d308026ad82120a9d0f7d509664519ce596"
-    },
-    {
-      "bytes": 3033,
-      "path": "python/raos/adapters/__init__.py",
-      "sha256": "6f6ede5e08b6050430852e856234a157475c0977005dfd6a533f49d1863e1029"
-    },
-    {
-      "bytes": 27173,
-      "path": "python/raos/domain/operations/self_hosted_wordpress_operator.py",
-      "sha256": "058fcdfde54695d32223e1d4cab6843c88b2e98b8247699c4a27fff19f87bb6a"
-    },
-    {
-      "bytes": 3031,
-      "path": "python/raos/ports/__init__.py",
-      "sha256": "512efd7c0063720f4181881455af518e3e72365edc4637ccda05c2bd9d2ebf4e"
-    },
-    {
-      "bytes": 910,
-      "path": "python/raos/ports/self_hosted_wordpress_operator.py",
-      "sha256": "9b7fc96a540a340e3c0be44a741c2c58d6b01356a21ad3e9db3fdda0e7181ddd"
-    },
-    {
-      "bytes": 28780,
-      "path": "python/raos/adapters/self_hosted_wordpress_operator_credentials.py",
-      "sha256": "7e50f1c4ed9c32e2d721f9d0df941c403261c88f5b39ea39bcab6f73f6ecb46e"
-    },
-    {
-      "bytes": 23685,
-      "path": "python/raos/adapters/self_hosted_wordpress_operator_https.py",
-      "sha256": "f0beae01752017701ff8ea53d0d1a7c25c70353dbe998e782d1a39790e9c4221"
-    },
-    {
-      "bytes": 10340,
-      "path": "scripts/build_st1704_self_hosted_editorial_manifest.py",
-      "sha256": "938a01c984fb06f10044491800cb4069aba6759237e578be2799d428495326c7"
-    },
-    {
-      "bytes": 14966,
-      "path": "scripts/build_st1704_self_hosted_theme.py",
-      "sha256": "ea4c96f32e4bc5e62dbe78a5c26edf5b570544f75514fd1699ecb2d2146cbe12"
-    },
-    {
-      "bytes": 33497,
-      "path": "scripts/st1506_wordpress_operator.py",
-      "sha256": "95f4a5be34649ea47ecec7ad4ede4ceb728b6a782f0a7bab55f0550cb7906368"
-    },
-    {
-      "bytes": 5028,
-      "path": "scripts/st1506_wordpress_operator_python.sh",
-      "sha256": "ef3ee271b75f95890ca5ac3eb253f94d6463cfdc3829cfa19133135e4e6a3a19"
-    },
-    {
-      "bytes": 14387,
-      "path": "scripts/build_st1506_wordpress_operator.py",
-      "sha256": "86009880033cf2888a3a2250beca35c6084e3c9ebdb1007bf9f77ec11d20ea40"
-    }
-  ],
   "production_readiness": "NOT_READY",
   "publication_authority": "NONE",
   "schema": "RAOS_SELF_HOSTED_WORDPRESS_OPERATOR_RUNTIME_MANIFEST_V1",
+  "semantic_inputs": [
+    {
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/ADR-001-HASH-BOUND-WORDPRESS-OPERATOR.md",
+      "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/ADR-001-HASH-BOUND-WORDPRESS-OPERATOR.md",
+      "version": 1
+    },
+    {
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/DESIGN_HANDOFF_V1.yaml",
+      "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/DESIGN_HANDOFF_V1.yaml",
+      "version": 1
+    },
+    {
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/Makefile",
+      "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/Makefile",
+      "version": 1
+    },
+    {
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/OPERATIONS_RUNBOOK.md",
+      "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/OPERATIONS_RUNBOOK.md",
+      "version": 1
+    },
+    {
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/PREFLIGHT.md",
+      "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/PREFLIGHT.md",
+      "version": 1
+    },
+    {
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/README.md",
+      "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/README.md",
+      "version": 1
+    },
+    {
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/contracts/canonical-proposal-golden.v1.json",
+      "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/contracts/canonical-proposal-golden.v1.json",
+      "version": 1
+    },
+    {
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/contracts/self-hosted-wordpress-operator.v1.yaml",
+      "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/contracts/self-hosted-wordpress-operator.v1.yaml",
+      "version": 1
+    },
+    {
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/README.md",
+      "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/README.md",
+      "version": 1
+    },
+    {
+      "path": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/raos-bounded-operator.php",
+      "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/raos-bounded-operator.php",
+      "version": 1
+    },
+    {
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
+      "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
+      "version": 1
+    },
+    {
+      "path": "python/raos/__init__.py",
+      "semantic_id": "python/raos/__init__.py",
+      "version": 1
+    },
+    {
+      "path": "python/raos/adapters/__init__.py",
+      "semantic_id": "python/raos/adapters/__init__.py",
+      "version": 1
+    },
+    {
+      "path": "python/raos/domain/operations/self_hosted_wordpress_operator.py",
+      "semantic_id": "python/raos/domain/operations/self_hosted_wordpress_operator.py",
+      "version": 1
+    },
+    {
+      "path": "python/raos/ports/__init__.py",
+      "semantic_id": "python/raos/ports/__init__.py",
+      "version": 1
+    },
+    {
+      "path": "python/raos/ports/self_hosted_wordpress_operator.py",
+      "semantic_id": "python/raos/ports/self_hosted_wordpress_operator.py",
+      "version": 1
+    },
+    {
+      "path": "python/raos/adapters/self_hosted_wordpress_operator_credentials.py",
+      "semantic_id": "python/raos/adapters/self_hosted_wordpress_operator_credentials.py",
+      "version": 1
+    },
+    {
+      "path": "python/raos/adapters/self_hosted_wordpress_operator_https.py",
+      "semantic_id": "python/raos/adapters/self_hosted_wordpress_operator_https.py",
+      "version": 1
+    },
+    {
+      "path": "scripts/build_st1704_self_hosted_editorial_manifest.py",
+      "semantic_id": "scripts/build_st1704_self_hosted_editorial_manifest.py",
+      "version": 1
+    },
+    {
+      "path": "scripts/build_st1704_self_hosted_theme.py",
+      "semantic_id": "scripts/build_st1704_self_hosted_theme.py",
+      "version": 1
+    },
+    {
+      "path": "scripts/st1506_wordpress_operator.py",
+      "semantic_id": "scripts/st1506_wordpress_operator.py",
+      "version": 1
+    },
+    {
+      "path": "scripts/st1506_wordpress_operator_python.sh",
+      "semantic_id": "scripts/st1506_wordpress_operator_python.sh",
+      "version": 1
+    },
+    {
+      "path": "scripts/build_st1506_wordpress_operator.py",
+      "semantic_id": "scripts/build_st1506_wordpress_operator.py",
+      "version": 1
+    }
+  ],
   "slice_id": "SELF_HOSTED_WORDPRESS_OPERATOR_BRIDGE_V1",
   "story_id": "ST-1506",
   "supported_mutations": [

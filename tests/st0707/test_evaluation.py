@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from conftest import ALL_CHECKS, make_case, observe
+from .support import ALL_CHECKS, make_case, observe
 from raos.application.ai.evaluation import BootstrapEvaluationRunner
 from raos.domain.ai.evaluation import (
     BootstrapSmokeStatus,

@@ -24,7 +24,7 @@ from raos.domain.ops.external_policy_registry import (
     registry_request_payload,
 )
 
-from conftest import (
+from .support import (
     ACQUIRED_AT,
     DUE_AT,
     RULE_MAP,

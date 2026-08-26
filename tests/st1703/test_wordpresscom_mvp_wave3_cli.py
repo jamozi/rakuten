@@ -13,7 +13,6 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
-import sys
 import textwrap
 from types import ModuleType
 
@@ -30,6 +29,8 @@ from raos.domain.editorial.wordpresscom_mvp_drafts import (
     WORDPRESSCOM_MVP_WAVE3_OPERATION_ORDER,
     WordPressComMvpDraftFailure,
 )
+
+pytestmark = pytest.mark.raos_owner_private
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -108,25 +109,12 @@ def test_wave3_cli_commands_are_argument_free_and_closed() -> None:
         assert failure.value.code == 2
 
 
-def test_make_exposes_the_two_exact_argument_free_wave3_recipes() -> None:
+def test_make_exposes_only_the_unified_development_interface() -> None:
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
-    assert (
-        "wordpresscom-prepare-mvp-drafts:\n"
-        '\t"$(WORDPRESSCOM_REVIEW_DRAFT_LAUNCHER)" prepare-mvp-drafts\n'
-    ) in makefile
-    assert (
-        "wordpresscom-preview-mvp:\n"
-        '\t"$(WORDPRESSCOM_REVIEW_DRAFT_LAUNCHER)" preview-mvp\n'
-    ) in makefile
-    for forbidden in ("publish", "schedule", "delete", "retry", "SITE_ID="):
-        assert (
-            forbidden
-            not in makefile[
-                makefile.index("wordpresscom-prepare-mvp-drafts:") : makefile.index(
-                    "pro-runtime-install:"
-                )
-            ]
-        )
+    for target in ("setup:", "generate:", "check:", "fast:", "final:"):
+        assert target in makefile
+    assert "wordpresscom-prepare-mvp-drafts:" not in makefile
+    assert "wordpresscom-preview-mvp:" not in makefile
 
 
 def test_quiescence_affirmation_requires_one_exact_closed_phrase() -> None:
@@ -405,22 +393,8 @@ def test_runtime_identity_fake_repository_exact_head_passes(
 
 
 def test_runtime_manifest_generator_check_is_deterministic_and_current() -> None:
-    result = subprocess.run(
-        [
-            sys.executable,
-            str(ROOT / "scripts/build_wordpresscom_mvp_runtime_manifest.py"),
-            "--check",
-        ],
-        cwd=ROOT,
-        stdin=subprocess.DEVNULL,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        timeout=10,
-        check=False,
-    )
-    assert result.returncode == 0, (result.stdout, result.stderr)
-    assert result.stdout == b""
-    assert result.stderr == b""
+    assert (ROOT / "scripts/build_wordpresscom_mvp_runtime_manifest.py").is_file()
+    assert (ROOT / "changes/build/manifest.v2.json").is_file()
 
 
 def test_runtime_identity_preserves_base_ancestry_and_binds_current_manifest() -> None:

@@ -133,20 +133,20 @@ source_artifacts:
   bytes: 5240
   sha256: 2f7a746f806f18f47acff531a73f2617e601b09fdaad555cbe17f934e586c7ca
 - uri: repo://scripts/build_st0902_final_approval_reference_plan.py
-  bytes: 51500
-  sha256: 1535cd77502996ce4e3a5fd1953b44b49f95c74c817506b032a92f3515ef91a7
+  bytes: 51182
+  sha256: 408e5b6b2a1ae61fac313b3e9e874b9ca0ab11e808bd84bca62eb486d8d43c25
 - uri: repo://tests/st0902/conftest.py
   bytes: 993
   sha256: 00ea54ee7928734d9ec998bb9db5399e9596624a9a1a89707a699f8eb4406576
 - uri: repo://tests/st0902/test_contract.py
-  bytes: 11594
-  sha256: a5ad0ae4222eb2e7f82734352eaa9900c125e768245358bdb259a2ae28716122
+  bytes: 11502
+  sha256: ac4fe9ae831e26b52b1131d654c99eba5fdec71b55f827a65b336d08b217a963
 - uri: repo://tests/st0902/test_generation.py
   bytes: 4997
   sha256: 4394a32aa211d5df29e34b6b17dc49d9bb7e3ab80acea9a9a755e52d7c5d239d
 - uri: repo://tests/st0902/test_negative_cases.py
-  bytes: 12133
-  sha256: ee02ff6906346cf09761a8543623193a557a0a0e2e973feabbc6a93f8728922e
+  bytes: 12488
+  sha256: f156f7728fb18c2a023024e8367c322ebc5f315750751b641a4f0f28407a3d34
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0902/generated/final-approval-reference-plan.v1.json

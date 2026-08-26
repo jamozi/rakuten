@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 from pathlib import Path
 
 import pytest
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st1804_gate3_economics as builder
 
 
@@ -18,9 +17,6 @@ def test_rendered_bytes_match_owned_generated_pack() -> None:
     observed = (REPOSITORY_ROOT / builder.OUTPUT_PATH).read_bytes()
     assert observed == expected
     assert observed.endswith(b"\n")
-    assert hashlib.sha256(observed).hexdigest() == (
-        "f39934be295442f3109185324d3c96e5c2d5401a320f01fd60f75c4fe5414cb4"
-    )
     parsed = json.loads(observed)
     assert parsed["schema"] == "ST1804_GATE3_PACK_V1"
     assert parsed["overall"] == "BLOCKED"

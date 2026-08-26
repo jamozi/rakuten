@@ -9,7 +9,7 @@ import json
 
 import pytest
 
-from conftest import (
+from .support import (
     EVALUATED_AT,
     bound,
     digest_for,

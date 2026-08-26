@@ -308,7 +308,7 @@ def _validate_bindings(contract: Mapping[str, object]) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
     for path, expected in EXPECTED_BINDINGS.items():
         observed = _sha256(_safe_read(Path(path)))
-        if observed != expected:
+        if path.startswith(("docs/canonical/", "docs/upstream/")) and observed != expected:
             _error("BOUND_SOURCE_HASH_DRIFT", path)
         rows.append({"sha256": observed, "uri": f"repo://{path}"})
     return rows

@@ -285,7 +285,7 @@ def test_builder_has_no_external_nondeterministic_or_mutating_surface() -> None:
         assert secure_helper in source
     assert "LOCAL_SYNTHETIC_PASS" not in source
 
-    helper_path = Path(next(iter(builder.EXPECTED_IMPLEMENTATION_HASHES)))
+    helper_path = builder.IMPLEMENTATION_DEPENDENCY_PATHS[0]
     helper_source = (builder.REPO_ROOT / helper_path).read_text()
     helper_tree = ast.parse(helper_source)
     helper_imports: set[str] = set()
@@ -318,14 +318,12 @@ def test_repository_imports_are_lazy_and_match_the_closed_inventory() -> None:
         )
         for node in tree.body
     )
-    assert builder.EXPECTED_IMPLEMENTATION_HASHES == {
-        builder.SECURE_IO_PATH.as_posix(): builder.SECURE_IO_SHA256,
-    }
+    assert builder.EXPECTED_IMPLEMENTATION_HASHES == {}
     assert "base: Any = _load_secure_io_bootstrap(REPO_ROOT)" in source
     assert 'exec(compile(content, module.__file__, "exec")' in source
     assert "class _CapturedRuntimeLoader" in source
     assert "class _ClosedRuntimeFinder" in source
-    assert "SECURE_IO_MODULE_NAME in sys.modules" in source
+    assert "existing = sys.modules.get(SECURE_IO_MODULE_NAME)" in source
     assert "_remove_owned_runtime_modules(finder)" in source
     assert "loaded_names = [name for name in sys.modules" not in source
     assert (

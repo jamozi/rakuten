@@ -14,7 +14,7 @@ from raos.adapters.recorded_article_lifecycle import (
 from raos.domain.editorial import article_lifecycle as domain
 from raos.ports.article_lifecycle import ArticleLifecycleExchange
 
-from conftest import REPOSITORY_ROOT, create_request, create_service
+from .support import REPOSITORY_ROOT, create_request, create_service
 
 
 OWNED_SOURCES = (

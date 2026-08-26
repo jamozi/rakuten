@@ -42,7 +42,7 @@ from raos.domain.evidence.claim_evidence import (
     required_validation_attestation_inputs,
     validation_attestation_owner_binding,
 )
-from v2_support import V2_FIXTURE, durable_success, request, service_and_adapter
+from .v2_support import V2_FIXTURE, durable_success, request, service_and_adapter
 
 
 class _MaterialPort:

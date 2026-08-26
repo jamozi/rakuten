@@ -911,9 +911,19 @@ def git_worktree_files(root: Path) -> list[str]:
     )
     if result.returncode != 0 or not result.stdout.endswith(b"\x00") and result.stdout:
         raise ScanError("git-worktree-enumeration-failed", ".")
+    deleted = _run_git(root, ["ls-files", "-z", "--deleted", "--"])
+    if deleted.returncode != 0 or (
+        not deleted.stdout.endswith(b"\x00") and deleted.stdout
+    ):
+        raise ScanError("git-worktree-enumeration-failed", ".")
+    deleted_paths = {path for path in deleted.stdout.split(b"\x00") if path}
     paths: set[str] = set()
     for raw_path in result.stdout.split(b"\x00"):
         if not raw_path:
+            continue
+        # A tracked deletion is an intentional absence in the current
+        # worktree. History scanning still inspects the deleted blob.
+        if raw_path in deleted_paths:
             continue
         if raw_path.startswith(b"/") or b"\x00" in raw_path:
             raise ScanError("unsafe-git-path", ".")

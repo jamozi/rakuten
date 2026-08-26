@@ -30,7 +30,7 @@ from raos.domain.editorial.policy_engine_v2 import (
 from raos.domain.evidence.claim_evidence import ValidationAttestationKind
 from raos.domain.shared.persistence import Sha256Digest
 
-from .conftest import rehash_policy_input
+from .support import rehash_policy_input
 
 
 def _bound(label: str) -> BoundReference:

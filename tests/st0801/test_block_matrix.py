@@ -9,7 +9,7 @@ import json
 
 import pytest
 
-from conftest import (
+from .support import (
     BLOCK_SCHEMA_ROOT,
     BLOCK_TEXT_PATHS,
     BLOCK_TYPES,

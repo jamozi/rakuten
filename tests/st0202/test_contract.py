@@ -6,7 +6,7 @@ from typing import Any
 
 import yaml
 
-from conftest import (
+from .support import (
     EXPECTED_BOUNDARY,
     EXPECTED_COMMAND,
     EXPECTED_COMPOSE,

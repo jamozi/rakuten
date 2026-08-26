@@ -7,7 +7,7 @@ import json
 
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.domain.finance.revenue_import import (
     RevenueEventType,
     RevenueRowParseStatus,

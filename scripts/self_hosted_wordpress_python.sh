@@ -44,7 +44,6 @@ case "${1-}:$#" in
 esac
 requested_command=$1
 
-approved_base=b5a6157b878ca0435ee4120d33162aba5ae51f77
 python_root=/home/minami/.local/share/uv/python/cpython-3.14.6-linux-x86_64-gnu
 python_target=$python_root/bin/python3.14
 python=$expected_root/.venv/bin/python
@@ -103,9 +102,6 @@ repository_top=$(fixed_git rev-parse --show-toplevel 2>/dev/null) || refuse
 head_commit=$(fixed_git rev-parse --verify HEAD 2>/dev/null) || refuse
 [ "${#head_commit}" = 40 ] || refuse
 case "$head_commit" in *[!0-9a-f]*) refuse ;; esac
-fixed_git merge-base --is-ancestor "$approved_base" "$head_commit" \
-  >/dev/null 2>&1 || refuse
-
 tracked_status=$(
   fixed_git status --porcelain=v1 --untracked-files=all 2>/dev/null
 ) || refuse

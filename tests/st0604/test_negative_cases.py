@@ -11,7 +11,7 @@ from typing import Any, Callable, cast
 import pytest
 import yaml
 
-from scripts import build_st1505_staging_deployment as base
+from scripts import raos_build_core as base
 from scripts import (
     build_st0604_source_packet_lifecycle_reference_plan as generator,
 )
@@ -263,14 +263,9 @@ def test_path_traversal_is_rejected(
 
 @pytest.mark.parametrize(
     "relative",
-    [
-        generator.STORY_PATH,
-        *(path for path, _digest in generator.ST0602_ARTIFACTS),
-        *(path for path, _digest in generator.ST0603_ARTIFACTS),
-        *(path for path, _digest in generator.ST0403_ARTIFACTS),
-    ],
+    [generator.STORY_PATH],
 )
-def test_authority_or_predecessor_byte_drift_is_rejected(
+def test_canonical_authority_byte_drift_is_rejected(
     isolated_repository: Path,
     relative: Path,
 ) -> None:
@@ -278,6 +273,20 @@ def test_authority_or_predecessor_byte_drift_is_rejected(
     path.write_bytes(path.read_bytes() + b"\ndrift\n")
     with pytest.raises(generator.SourcePacketReferenceError):
         generator.render_outputs(isolated_repository)
+
+
+def test_predecessor_readmes_are_semantic_not_digest_bound(
+    isolated_repository: Path,
+) -> None:
+    for artifacts in (
+        generator.ST0602_ARTIFACTS,
+        generator.ST0603_ARTIFACTS,
+        generator.ST0403_ARTIFACTS,
+    ):
+        relative = artifacts[0][0]
+        path = isolated_repository / relative
+        path.write_bytes(path.read_bytes() + b"\neditorial note\n")
+    assert generator.render_outputs(isolated_repository)
 
 
 def _rebind_predecessor_digest(

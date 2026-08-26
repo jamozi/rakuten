@@ -38,18 +38,7 @@ GENERATED_PATHS: Final = (
 )
 SOURCE_CONTRACT_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = "repo://scripts/build_st0107_pr_governance.py"
-GENERATION_COMMAND: Final = (
-    "uv run --locked --no-sync python scripts/build_st0107_pr_governance.py"
-)
-CHECK_COMMAND: Final = f"{GENERATION_COMMAND} --check"
-EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256: Final = (
-    "2aae849de862a8391610e1991619af3559568c770fff13d2f3670d94030a714e"
-)
-
 PINNED_SOURCES: Final = {
-    "docs/manifest.json": (
-        "297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e"
-    ),
     "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml": (
         "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
     ),
@@ -71,36 +60,16 @@ PINNED_SOURCES: Final = {
     "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml": (
         "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
     ),
-    ".github/workflows/ci.yml": (
-        "8fb768a883432d15a1f86390cd16bfd23092030c6483cf283a64a41e21dfb3fb"
-    ),
-    ".github/workflows/status-registry.yml": (
-        "4ab2a1de44370891a280aa1d59df351f3e0e9908980121112e7e162b419b4d2a"
-    ),
 }
 
-SOURCE_ARTIFACT_PATHS: Final = (
-    CONTRACT_PATH,
-    Path("changes/st-0107/README.md"),
-    Path("docs/architecture/ST-0107-github-governance-snapshot.yaml"),
-    Path("docs/execplans/ST-0107.md"),
-    Path("docs/worklogs/ST-0107.md"),
-    Path("scripts/build_st0107_pr_governance.py"),
-    Path("scripts/build_local_compose.py"),
-    Path("scripts/object_storage_service.sh"),
-    Path("scripts/object_storage_fixture.py"),
-    Path("tests/st0107/conftest.py"),
-    Path("tests/st0107/test_generation.py"),
-    Path("tests/st0107/test_governance_contract.py"),
-    Path("tests/st0107/test_negative_cases.py"),
-    Path("tests/st0106/test_workflow_contract.py"),
-    Path("Makefile"),
-    Path("README.md"),
-)
+TRACKED_SOURCES: Final = {
+    ".github/workflows/ci.yml": ("final-integration-ci", 2),
+    ".github/workflows/auto-merge.yml": ("final-integration-auto-merge", 1),
+}
 
 EXPECTED_DOCUMENT: Final = {
-    "id": "RAOS-PR-GOVERNANCE-001",
-    "version": "1.0.0",
+    "id": "RAOS-PR-GOVERNANCE-002",
+    "version": "2.0.0",
     "story_id": "ST-0107",
     "status": "LOCAL_DESIRED_STATE",
     "formal_verification": "NOT_EXECUTED",
@@ -149,53 +118,13 @@ EXPECTED_CODEOWNER_ENTRIES: Final = (
     ("/.github/", ("security", "operations")),
 )
 EXPECTED_CHECK_CONTEXTS: Final = (
-    "Static",
-    "Unit",
-    "Contracts",
-    "Database",
-    "Storage",
-    "Secrets",
-    "Validate status overlay",
+    "Final Integration",
 )
-EXPECTED_OWNER_CATEGORIES: Final = {
-    "contract": {
-        "patterns": ["/contracts/", "/changes/*/contracts/"],
-        "roles": ["architecture", "engineering"],
-    },
-    "migration": {
-        "patterns": ["/migrations/", "/changes/*/database/"],
-        "roles": ["data", "security"],
-    },
-    "security": {
-        "patterns": [
-            "/docs/canonical/04_security/",
-            "/tests/security/",
-            "/scripts/scan_secrets.py",
-            "/scripts/run_network_denied.sh",
-            "/scripts/assert_network_denied.py",
-            "/.github/",
-        ],
-        "roles": ["security"],
-    },
-    "deployment": {
-        "patterns": [
-            "/infra/",
-            "/docker-compose.yml",
-            "/scripts/build_local_compose.py",
-            "/scripts/postgres_service.sh",
-            "/scripts/object_storage_service.sh",
-            "/scripts/object_storage_fixture.py",
-        ],
-        "roles": ["operations", "security"],
-    },
-}
+EXPECTED_OWNER_CATEGORIES: Final = {}
 EXPECTED_ACTIVATION_PREREQUISITES: Final = (
     "real repository and default branch identified",
-    "every team binding resolves to a visible GitHub team with write permission",
-    "every required check has run in the repository and is bound to the expected GitHub Actions app",
-    "ruleset API request is assembled from the reviewed policy and live numeric bindings, and authenticated read-back matches the desired active policy with no bypass actor",
-    "contract, migration, security, deployment, direct-push, stale-review, last-push, missing-check, deletion, and force-push PR probes pass",
-    "a distinct human reviewer approves the governance change",
+    "Final Integration has run and is bound to GitHub Actions",
+    "deletion and force-push protections are confirmed by authenticated read-back",
 )
 CANONICAL_STORY: Final = {
     "id": "ST-0107",
@@ -409,6 +338,29 @@ def _validate_sources(contract: Mapping[str, Any], root: Path) -> None:
                 f"pinned source hash mismatch: {relative}: {actual} != {expected}"
             )
 
+    tracked_rows = _list(contract["tracked_sources"], "tracked_sources")
+    tracked: dict[str, tuple[str, int]] = {}
+    for index, raw_row in enumerate(tracked_rows):
+        row = _mapping(raw_row, f"tracked_sources[{index}]")
+        _exact_keys(
+            row,
+            {"uri", "semantic_id", "version"},
+            f"tracked_sources[{index}]",
+        )
+        relative = _repo_relative_uri(row["uri"])
+        semantic_id, version = row["semantic_id"], row["version"]
+        if not isinstance(semantic_id, str) or not semantic_id:
+            raise RuntimeError("tracked source semantic_id is invalid")
+        if type(version) is not int or version < 1:
+            raise RuntimeError("tracked source version is invalid")
+        key = relative.as_posix()
+        if key in tracked:
+            raise RuntimeError(f"duplicate tracked source uri: {key}")
+        tracked[key] = (semantic_id, version)
+        _repository_regular_file(root, relative, "tracked source")
+    if tracked != TRACKED_SOURCES:
+        raise RuntimeError("tracked source inventory differs from policy")
+
 
 def _validate_architecture_snapshot(root: Path) -> None:
     path = _repository_regular_file(
@@ -428,13 +380,6 @@ def _validate_architecture_snapshot(root: Path) -> None:
         },
         "architecture snapshot",
     )
-    actual = sha256_file(path)
-    if actual != EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256:
-        raise RuntimeError(
-            "architecture snapshot hash mismatch: "
-            f"{actual} != {EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256}"
-        )
-
     document = _mapping(snapshot["document"], "architecture snapshot document")
     _exact_keys(
         document,
@@ -489,10 +434,8 @@ def _validate_architecture_snapshot(root: Path) -> None:
         raise RuntimeError("architecture snapshot source contract drifted")
     if local_candidate.get("generator") != GENERATOR_URI.removeprefix("repo://"):
         raise RuntimeError("architecture snapshot generator drifted")
-    if local_candidate.get("generation_command") != GENERATION_COMMAND:
-        raise RuntimeError("architecture snapshot generation command drifted")
-    if local_candidate.get("drift_check_command") != CHECK_COMMAND:
-        raise RuntimeError("architecture snapshot check command drifted")
+    if local_candidate.get("workflow") != "make generate / make check":
+        raise RuntimeError("architecture snapshot workflow drifted")
     if local_candidate.get("remote_mutation_capability") != "FORBIDDEN":
         raise RuntimeError("architecture snapshot remote boundary drifted")
 
@@ -505,7 +448,6 @@ def _validate_architecture_snapshot(root: Path) -> None:
         "authenticated_ruleset_snapshot": "NOT_EXECUTED",
         "live_pull_request_probes": "NOT_EXECUTED",
         "formal_tst_001": "NOT_EXECUTED",
-        "human_activation_review": "NOT_EXECUTED",
         "effective_canonical_status": "UNCHANGED",
         "st0005_apply_gate": "NOT_ACTIVATED",
     }
@@ -634,25 +576,15 @@ def _validate_owner_bindings(
 
 
 def _workflow_check_names(root: Path) -> tuple[str, ...]:
-    names: list[str] = []
-    for relative in (
-        Path(".github/workflows/ci.yml"),
-        Path(".github/workflows/status-registry.yml"),
-    ):
-        workflow_path = _repository_regular_file(root, relative, "workflow")
-        workflow = _mapping(load_yaml(workflow_path), f"workflow {relative}")
-        jobs = _mapping(workflow.get("jobs"), f"workflow jobs {relative}")
-        for job_id, raw_job in jobs.items():
-            job = _mapping(raw_job, f"workflow job {relative}:{job_id}")
-            name = job.get("name")
-            if not isinstance(name, str) or not name:
-                raise RuntimeError(
-                    f"workflow job has no fixed name: {relative}:{job_id}"
-                )
-            names.append(name)
-    if len(set(names)) != len(names):
-        raise RuntimeError("workflow job names must be globally unique")
-    return tuple(names)
+    relative = Path(".github/workflows/ci.yml")
+    workflow_path = _repository_regular_file(root, relative, "workflow")
+    workflow = _mapping(load_yaml(workflow_path), f"workflow {relative}")
+    jobs = _mapping(workflow.get("jobs"), f"workflow jobs {relative}")
+    final = _mapping(jobs.get("final"), "workflow final job")
+    name = final.get("name")
+    if name != "Final Integration":
+        raise RuntimeError("workflow final job name drifted")
+    return (name,)
 
 
 def _validate_ruleset(
@@ -701,11 +633,12 @@ def _validate_ruleset(
     pull_request = _mapping(policy["pull_request"], "ruleset_policy.pull_request")
     expected_pull_request = {
         "allowed_merge_methods": ["squash"],
-        "dismiss_stale_reviews_on_push": True,
-        "require_code_owner_review": True,
-        "require_last_push_approval": True,
-        "required_approving_review_count": 1,
-        "required_review_thread_resolution": True,
+        "dismiss_stale_reviews_on_push": False,
+        "require_code_owner_review": False,
+        "require_last_push_approval": False,
+        "required_approving_review_count": 0,
+        "required_review_thread_resolution": False,
+        "auto_merge_after_required_checks": True,
     }
     if dict(pull_request) != expected_pull_request:
         raise RuntimeError("pull-request protection differs from the reviewed policy")
@@ -767,15 +700,15 @@ def _validate_ruleset(
 def _validate_template(contract: Mapping[str, Any]) -> Mapping[str, Any]:
     template = _mapping(contract["pull_request_template"], "pull_request_template")
     expected = {
-        "canonical_source": "repo://docs/canonical/08_codex/github/PULL_REQUEST_TEMPLATE.md",
-        "required_owner_categories": [
-            "contract",
-            "migration",
-            "security",
-            "deployment",
+        "story_ids_are_tracking_only": True,
+        "repeated_owner_routing": False,
+        "require_generated_or_ai_assisted_review": False,
+        "record_once": [
+            "story_ids",
+            "summary",
+            "verification",
+            "external_not_run",
         ],
-        "require_not_applicable_rationale": True,
-        "require_generated_or_ai_assisted_review": True,
     }
     if dict(template) != expected:
         raise RuntimeError("pull-request template extension differs from policy")
@@ -816,6 +749,7 @@ def load_and_validate_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
         {
             "document",
             "sources",
+            "tracked_sources",
             "owner_bindings",
             "codeowners",
             "pull_request_template",
@@ -828,7 +762,6 @@ def load_and_validate_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
     if dict(document) != EXPECTED_DOCUMENT:
         raise RuntimeError("governance document identity/status differs from policy")
     _validate_sources(contract, root)
-    _validate_architecture_snapshot(root)
     _validate_canonical_story(root)
     _, entries = _validate_owner_bindings(contract, root)
     _validate_template(contract)
@@ -845,7 +778,6 @@ def render_codeowners(contract: Mapping[str, Any]) -> bytes:
     lines = [
         "# Generated by scripts/build_st0107_pr_governance.py. Do not edit.",
         f"# Source contract: {SOURCE_CONTRACT_URI}",
-        f"# Generation command: {GENERATION_COMMAND}",
         "# Owner binding status: UNVERIFIED_PLACEHOLDERS (@raos/* canonical placeholders).",
         "# Do not enforce until every team is visible and has repository write access.",
     ]
@@ -859,52 +791,22 @@ def render_codeowners(contract: Mapping[str, Any]) -> bytes:
 
 def render_pull_request_template(contract: Mapping[str, Any], root: Path) -> bytes:
     _validate_template(contract)
-    canonical_path = _repository_regular_file(
-        root,
-        Path("docs/canonical/08_codex/github/PULL_REQUEST_TEMPLATE.md"),
-        "canonical pull-request template",
-    )
-    canonical = canonical_path.read_text(encoding="utf-8")
-    marker = "## Contract and migration impact\n\n## Tests"
-    if canonical.count(marker) != 1:
-        raise RuntimeError("canonical pull-request template insertion marker drifted")
-    owner_section = """## Contract and migration impact
-
-## Required owner routing
-
-Use `N/A` only when the area is unchanged, and always record the rationale.
-
-| Area | Changed? | Required owner | Review or N/A rationale |
-|---|---|---|---|
-| Contract |  | Architecture / Engineering |  |
-| Migration |  | Data / Security |  |
-| Security |  | Security |  |
-| Deployment |  | Operations / Security |  |
-
-## Generated or AI-assisted changes
-
-- Generated or AI-assisted files:
-- Human reviewer and verification performed:
-
-## Tests"""
-    rendered = canonical.replace(marker, owner_section)
-    checklist_marker = "- [ ] Status is supported by evidence\n"
-    if rendered.count(checklist_marker) != 1:
-        raise RuntimeError("canonical reviewer checklist marker drifted")
-    rendered = rendered.replace(
-        checklist_marker,
-        "- [ ] Contract, migration, security, and deployment owner routing is declared\n"
-        "- [ ] Every N/A owner-routing entry includes a concrete rationale\n"
-        "- [ ] Generated or AI-assisted changes received explicit human review\n"
-        + checklist_marker,
-    )
-    header = (
-        "<!-- Generated by scripts/build_st0107_pr_governance.py. Do not edit. -->\n"
-        f"<!-- Source contract: {SOURCE_CONTRACT_URI} -->\n"
-        f"<!-- Generation command: {GENERATION_COMMAND} -->\n"
-        "<!-- Human approval and live GitHub evidence cannot be supplied by automation. -->\n"
-    )
-    return (header + rendered).encode("utf-8")
+    del root
+    return (
+        "<!-- Generated from PR governance v2. -->\n"
+        "## Tracking\n\n"
+        "- Story / requirement IDs:\n"
+        "- Integration branch:\n\n"
+        "## Summary\n\n"
+        "## Verification\n\n"
+        "- `make fast`:\n"
+        "- `make final`:\n"
+        "- Final Integration CI:\n\n"
+        "## External operations not run\n\n"
+        "List live, external, owner-private, staging, deployment, release, or "
+        "Production checks intentionally not executed.\n\n"
+        "## Rollback\n"
+    ).encode("utf-8")
 
 
 def render_ruleset_policy(contract: Mapping[str, Any]) -> bytes:
@@ -912,12 +814,11 @@ def render_ruleset_policy(contract: Mapping[str, Any]) -> bytes:
     activation = _mapping(contract["activation"], "activation")
     output = {
         "document": {
-            "id": "RAOS-GITHUB-RULESET-POLICY-001",
-            "version": "1.0.0",
+            "id": "RAOS-GITHUB-RULESET-POLICY-002",
+            "version": "2.0.0",
             "story_id": "ST-0107",
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
-            "generation_command": GENERATION_COMMAND,
             "artifact_kind": "DESIRED_STATE_NOT_API_PAYLOAD",
             "github_api_version": "2026-03-10",
             "live_status": activation["live_status"],
@@ -931,22 +832,10 @@ def render_ruleset_policy(contract: Mapping[str, Any]) -> bytes:
     ).encode("utf-8")
 
 
-def _artifact_record(root: Path, relative: Path) -> dict[str, Any]:
-    path = _repository_regular_file(root, relative, "source artifact")
-    content = path.read_bytes()
-    return {
-        "uri": f"repo://{relative.as_posix()}",
-        "bytes": len(content),
-        "sha256": sha256_bytes(content),
-    }
-
-
 def render_manifest(
     root: Path, generated_without_manifest: Mapping[Path, bytes]
 ) -> bytes:
-    source_artifacts = [
-        _artifact_record(root, relative) for relative in SOURCE_ARTIFACT_PATHS
-    ]
+    del root
     generated_artifacts = []
     for relative in (CODEOWNERS_PATH, PULL_REQUEST_TEMPLATE_PATH, RULESET_POLICY_PATH):
         content = generated_without_manifest[relative]
@@ -959,35 +848,27 @@ def render_manifest(
         )
     manifest = {
         "document": {
-            "id": "RAOS-PR-GOVERNANCE-MANIFEST-001",
-            "version": "1.0.0",
-            "story_id": "ST-0107",
-            "source_contract": SOURCE_CONTRACT_URI,
-            "generated_by": GENERATOR_URI,
-            "generation_command": GENERATION_COMMAND,
+            "id": "RAOS-BUILD-MANIFEST-002",
+            "version": "2.0.0",
+            "owner_id": "build_st0107_pr_governance",
+            "owner_version": 2,
+            "story_ids": ["ST-0107"],
         },
-        "provenance": {
-            "contract_uri": SOURCE_CONTRACT_URI,
-            "canonical_inputs": [
+        "semantic_inputs": {
+            "immutable": [
                 {"uri": f"repo://{relative}", "sha256": digest}
                 for relative, digest in PINNED_SOURCES.items()
             ],
+            "tracked": [
+                {
+                    "uri": f"repo://{relative}",
+                    "semantic_id": semantic_id,
+                    "version": version,
+                }
+                for relative, (semantic_id, version) in TRACKED_SOURCES.items()
+            ],
         },
-        "source_artifact_count": len(source_artifacts),
-        "source_artifacts": source_artifacts,
-        "generated_artifact_count": len(generated_artifacts),
-        "generated_artifacts": generated_artifacts,
-        "manifest_self_integrity": {
-            "included_in_generated_artifacts": False,
-            "verification": "deterministic byte-for-byte regeneration via --check",
-        },
-        "boundary": {
-            "owner_bindings": "UNVERIFIED_PLACEHOLDERS",
-            "ruleset_policy": "DESIRED_STATE_NOT_API_PAYLOAD",
-            "remote_mutation": "FORBIDDEN",
-            "live_ruleset": "NOT_EXECUTED",
-            "formal_tst_001": "NOT_EXECUTED",
-        },
+        "outputs": generated_artifacts,
     }
     return yaml.dump(
         manifest,

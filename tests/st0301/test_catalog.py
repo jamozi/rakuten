@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pytest
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.migrations import CatalogError, verify_all_sources
 from raos.migrations import catalog
 from raos.migrations import runner
@@ -169,6 +169,7 @@ def test_missing_required_source_open_flag_fails_closed(
     assert raised.value.code is catalog.CatalogErrorCode.INVALID_SOURCE
 
 
+@pytest.mark.serial
 @pytest.mark.parametrize("node_kind", ("fifo", "socket", "directory"))
 def test_special_source_leaf_fails_closed_without_blocking(
     tmp_path: Path,

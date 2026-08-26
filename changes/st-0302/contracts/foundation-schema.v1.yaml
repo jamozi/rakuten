@@ -111,12 +111,7 @@ security:
   provider_or_network_access: FORBIDDEN
   production_execution: FORBIDDEN
 verification:
-  local_command: >-
-    RAOS_CI_OFFLINE=1 RAOS_NETWORK_DENIED=1
-    RAOS_PG_BIN=/home/minami/.cache/raos-toolchains/postgresql/18.4/root/usr/lib/postgresql/18/bin
-    RAOS_PG_LIB=/home/minami/.cache/raos-toolchains/postgresql/18.4/root/usr/lib/x86_64-linux-gnu
-    make migration-test
-    UV=/home/minami/.local/share/raos-toolchains/uv/0.12.1/uv
+  local_command: make final
   required_behaviors:
     - EMPTY_DATABASE_TO_FOUNDATION_HEAD
     - PREVIOUS_REVISION_TO_FOUNDATION_HEAD

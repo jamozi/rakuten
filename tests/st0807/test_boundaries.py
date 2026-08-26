@@ -19,7 +19,7 @@ import pytest
 
 from raos.domain.editorial import seo_renderer as domain
 
-from conftest import REPOSITORY_ROOT, render_request
+from .support import REPOSITORY_ROOT, render_request
 
 
 SOURCE = REPOSITORY_ROOT / "python/raos/domain/editorial/seo_renderer.py"

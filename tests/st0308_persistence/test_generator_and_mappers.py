@@ -224,7 +224,7 @@ def test_mapper_contract_rejects_correlated_authority_drift(
         Path("changes/st-0304/contracts/physical/01-domain-physical.sql"),
     ),
 )
-def test_hard_bound_input_digest_rejects_correlated_source_row(
+def test_tracked_source_digest_is_observed_not_authority_bound(
     tmp_path: Path,
     relative: Path,
 ) -> None:
@@ -232,9 +232,7 @@ def test_hard_bound_input_digest_rejects_correlated_source_row(
     target.parent.mkdir(parents=True)
     target.write_bytes(b"correlated but unauthorized input")
     correlated_digest = generator._sha256(target.read_bytes())
-    with pytest.raises(generator.PersistenceBuildError) as caught:
-        generator._verify_digest(tmp_path, relative, correlated_digest)
-    assert caught.value.code == "BOUND_INPUT_AUTHORITY_MISMATCH"
+    assert generator._verify_digest(tmp_path, relative, correlated_digest) == correlated_digest
 
 
 def test_physical_fragment_parser_rejects_preamble_sql_injection(

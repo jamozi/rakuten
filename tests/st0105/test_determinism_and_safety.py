@@ -11,7 +11,7 @@ from typing import Any
 
 import pytest
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st0105_generated_contracts as generator
 
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from conftest import REVIEWER_ID, adapter, request, service, step
+from .support import REVIEWER_ID, adapter, request, service, step
 from raos.domain.publishing.review_decision_operations import (
     RecordedAuditAction,
     RecordedExecution,

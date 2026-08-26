@@ -9,7 +9,11 @@
     "repository_local_development": "STANDING_OWNER_AUTHORIZATION",
     "staging": "NOT_GRANTED"
   },
-  "contract_sha256": "ad1ee6e206017c0a20979aceb09f038f1bcc07c2a8eda64577593784884b2923",
+  "contract": {
+    "semantic_id": "local-artifact-registry-runtime",
+    "uri": "repo://changes/st-0601/contracts/local-artifact-registry-runtime.v2.yaml",
+    "version": 2
+  },
   "document": {
     "formal_tst_014": "NOT_EXECUTED",
     "id": "RAOS-LOCAL-ARTIFACT-REGISTRY-RUNTIME-002",
@@ -41,10 +45,6 @@
     "owner": "scripts/build_st0601_artifact_registry_runtime.py",
     "source": "changes/st-0601/contracts/local-artifact-registry-runtime.v2.yaml",
     "write_on_check": "FORBIDDEN"
-  },
-  "owner_generator": {
-    "path": "scripts/build_st0601_artifact_registry_runtime.py",
-    "sha256": "c219cc7edf7d585ce24d38fe8bc0b16bf45716f02e53a26d6f4d2a96bc832972"
   },
   "runtime": {
     "action_counts": {
@@ -162,40 +162,53 @@
   },
   "sources": [
     {
+      "kind": "immutable",
       "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
       "sha256": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a"
     },
     {
+      "kind": "immutable",
       "path": "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
       "sha256": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e"
     },
     {
+      "kind": "immutable",
       "path": "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
       "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
     },
     {
+      "kind": "immutable",
       "path": "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
       "sha256": "c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8"
     },
     {
+      "kind": "immutable",
       "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
       "sha256": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b"
     },
     {
+      "kind": "tracked",
       "path": "changes/st-0202/contracts/local-object-storage.v1.yaml",
-      "sha256": "5a5ca7e3847c730e97172646638088070dfaa96776485910cb967a67ab552a9f"
+      "semantic_id": "local-object-storage",
+      "version": 1
     },
     {
+      "kind": "tracked",
       "path": "changes/st-0308/contracts/persistence-runtime.v2.yaml",
-      "sha256": "0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4"
+      "semantic_id": "persistence-runtime",
+      "version": 2
     },
     {
+      "kind": "tracked",
       "path": "python/raos/domain/catalog/rakuten_item_search_runtime_v2.py",
-      "sha256": "76ec60dfdd36f09376bf2fe94f596ffbc15bd3c5d59b20628a89eea6bf261b67"
+      "semantic_id": "rakuten-item-search-runtime-domain",
+      "version": 2
     },
     {
+      "kind": "tracked",
       "path": "python/raos/ports/rakuten_item_search_runtime_v2.py",
-      "sha256": "fd7f385825fb80c1ee8966923fa19828b2916cb9a78a66b154c7736a70598628"
+      "semantic_id": "rakuten-item-search-runtime-port",
+      "version": 2
     }
   ],
   "story": {

@@ -23,7 +23,7 @@ from raos.domain.catalog.catalog_normalization import (
     CatalogNormalizationFailureCode,
 )
 
-from conftest import (
+from .support import (
     SECOND_INGESTION_ID,
     expected_batch,
     normalization_command,

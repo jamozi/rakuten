@@ -588,49 +588,32 @@ def test_commit_clone_fault_is_precommit_and_unknown_commit_invalidates() -> Non
     assert "session.rollback" not in unknown_pool.trace
 
 
-def test_generator_rejects_authority_decision_constraint_and_boundary_drift() -> None:
+def test_generator_rejects_product_boundary_drift() -> None:
     runtime = copy.deepcopy(
         generator.load_yaml(generator.REPO_ROOT / generator.RUNTIME_CONTRACT_PATH)
     )
-    handoff = copy.deepcopy(
-        generator.load_yaml(generator.REPO_ROOT / generator.HANDOFF_PATH)
-    )["DESIGN_HANDOFF_V1"]
-    generator._validate_authority_boundaries(runtime, handoff)
+    generator._validate_product_contract(runtime)
 
     mutations = (
-        lambda candidate: candidate[1]["authority"].__setitem__(
-            "publication", "GRANTED"
-        ),
-        lambda candidate: candidate[1]["decision"].__setitem__(
-            "transaction", "IMPLICIT_COMMIT"
-        ),
-        lambda candidate: candidate[1]["constraints"].pop(),
-        lambda candidate: candidate[1]["approved_scope"].append(
-            "production publication"
-        ),
-        lambda candidate: candidate[1]["security_and_approval_gates"].pop(),
-        lambda candidate: candidate[0]["boundary"].__setitem__("production", "ALLOWED"),
-        lambda candidate: candidate[0]["runtime_decisions"].__setitem__(
+        lambda candidate: candidate["boundary"].__setitem__("production", "ALLOWED"),
+        lambda candidate: candidate["runtime_decisions"].__setitem__(
             "cross_module_write", "ALLOWED"
         ),
-        lambda candidate: candidate[0]["execution_control"].__setitem__(
+        lambda candidate: candidate["execution_control"].__setitem__(
             "caller_generic_callback", "ALLOWED"
         ),
-        lambda candidate: candidate[0]["identity_runtime"].__setitem__(
+        lambda candidate: candidate["identity_runtime"].__setitem__(
             "query_owner", "ST0306_MIGRATION"
         ),
-        lambda candidate: candidate[0]["document"].__setitem__(
+        lambda candidate: candidate["document"].__setitem__(
             "formal_tst_005", "VALIDATED"
         ),
     )
     for mutate in mutations:
         candidate_runtime = copy.deepcopy(runtime)
-        candidate_handoff = copy.deepcopy(handoff)
-        mutate((candidate_runtime, candidate_handoff))
+        mutate(candidate_runtime)
         with pytest.raises(generator.PersistenceBuildError):
-            generator._validate_authority_boundaries(
-                candidate_runtime, candidate_handoff
-            )
+            generator._validate_product_contract(candidate_runtime)
 
     metadata = json.loads(
         (
@@ -639,7 +622,6 @@ def test_generator_rejects_authority_decision_constraint_and_boundary_drift() ->
         ).read_bytes()
     )
     assert generator.RUNTIME_CONTRACT_PATH.as_posix() in metadata["source_sha256"]
-    assert generator.HANDOFF_PATH.as_posix() in metadata["source_sha256"]
     assert metadata["runtime_artifacts_implemented"]["scope"] == (
         "FULL_LOCAL_PERSISTENCE_CATALOG_WITH_OPS_REFERENCE_SQL"
     )
@@ -659,75 +641,58 @@ def test_generator_rejects_authority_decision_constraint_and_boundary_drift() ->
     )
 
 
-def test_generator_rejects_unbound_provenance_inventory_and_evidence_drift() -> None:
+def test_generator_rejects_unbound_product_inventory_drift() -> None:
     runtime = copy.deepcopy(
         generator.load_yaml(generator.REPO_ROOT / generator.RUNTIME_CONTRACT_PATH)
     )
-    handoff = copy.deepcopy(
-        generator.load_yaml(generator.REPO_ROOT / generator.HANDOFF_PATH)
-    )["DESIGN_HANDOFF_V1"]
-    generator._validate_authority_boundaries(runtime, handoff)
+    generator._validate_product_contract(runtime)
 
     mutations = (
-        lambda candidate: candidate[0].__setitem__("publication_authority", "GRANTED"),
-        lambda candidate: candidate[1].__setitem__("production_authority", "GRANTED"),
-        lambda candidate: candidate[0]["sources"][0].__setitem__(
+        lambda candidate: candidate.__setitem__("publication_authority", "GRANTED"),
+        lambda candidate: candidate["sources"][0].__setitem__(
             "production_authority", "GRANTED"
         ),
-        lambda candidate: candidate[0]["sources"].pop(),
-        lambda candidate: candidate[0]["sources"].append(
-            copy.deepcopy(candidate[0]["sources"][0])
+        lambda candidate: candidate["sources"].pop(),
+        lambda candidate: candidate["sources"].append(
+            copy.deepcopy(candidate["sources"][0])
         ),
-        lambda candidate: candidate[0]["sources"][0].__setitem__(
-            "path", candidate[0]["sources"][1]["path"]
+        lambda candidate: candidate["sources"][0].__setitem__(
+            "path", candidate["sources"][1]["path"]
         ),
-        lambda candidate: candidate[0]["sources"].reverse(),
-        lambda candidate: candidate[0]["sources"][-1].pop("authority"),
-        lambda candidate: candidate[0]["sources"][-1].__setitem__(
+        lambda candidate: candidate["sources"].reverse(),
+        lambda candidate: candidate["sources"][-1].pop("authority"),
+        lambda candidate: candidate["sources"][-1].__setitem__(
             "authority", "PRODUCTION"
         ),
-        lambda candidate: candidate[0]["physical_fragments"].pop(),
-        lambda candidate: candidate[0]["physical_fragments"][0].__setitem__(
+        lambda candidate: candidate["physical_fragments"].pop(),
+        lambda candidate: candidate["physical_fragments"][0].__setitem__(
             "authority", "PRODUCTION"
         ),
-        lambda candidate: candidate[0]["executable_matrices"]["identity"].__setitem__(
+        lambda candidate: candidate["executable_matrices"]["identity"].__setitem__(
             "path",
-            candidate[0]["executable_matrices"]["concurrency"]["path"],
+            candidate["executable_matrices"]["concurrency"]["path"],
         ),
-        lambda candidate: candidate[0]["executable_matrices"]["identity"].__setitem__(
+        lambda candidate: candidate["executable_matrices"]["identity"].__setitem__(
             "authority", "PRODUCTION"
         ),
-        lambda candidate: candidate[0]["representative_slices"][
+        lambda candidate: candidate["representative_slices"][
             "ops_reference"
         ].__setitem__("authority", "PRODUCTION"),
-        lambda candidate: candidate[0]["inventory"].__setitem__("tables", 104),
-        lambda candidate: candidate[0]["inventory"].__setitem__("tables", True),
-        lambda candidate: candidate[0]["inventory"].__setitem__(
+        lambda candidate: candidate["inventory"].__setitem__("tables", 104),
+        lambda candidate: candidate["inventory"].__setitem__("tables", True),
+        lambda candidate: candidate["inventory"].__setitem__(
             "contract_bidirectional_table_mapper_rows", True
         ),
-        lambda candidate: candidate[0]["inventory"].__setitem__(
+        lambda candidate: candidate["inventory"].__setitem__(
             "repository_relation_ownership", 104
         ),
-        lambda candidate: candidate[0]["two_way_gates"].pop(),
-        lambda candidate: candidate[1]["acceptance_criteria"].pop(),
-        lambda candidate: candidate[1]["acceptance_criteria"].reverse(),
-        lambda candidate: candidate[1]["required_test_evidence"].append(
-            "formal validation is granted"
-        ),
-        lambda candidate: candidate[1]["required_test_evidence"].__setitem__(
-            0, "replacement evidence"
-        ),
-        lambda candidate: candidate[1]["source_design_refs"].pop(),
-        lambda candidate: candidate[1]["rationale"].pop(),
+        lambda candidate: candidate["two_way_gates"].pop(),
     )
     for mutate in mutations:
         candidate_runtime = copy.deepcopy(runtime)
-        candidate_handoff = copy.deepcopy(handoff)
-        mutate((candidate_runtime, candidate_handoff))
+        mutate(candidate_runtime)
         with pytest.raises(generator.PersistenceBuildError):
-            generator._validate_authority_boundaries(
-                candidate_runtime, candidate_handoff
-            )
+            generator._validate_product_contract(candidate_runtime)
 
     metadata = json.loads(
         (
@@ -736,13 +701,9 @@ def test_generator_rejects_unbound_provenance_inventory_and_evidence_drift() -> 
         ).read_bytes()
     )
     assert set(metadata["matrix_sha256"]) == set(generator.MATRIX_KEYS)
-    assert set(generator.EXPECTED_HANDOFF_SOURCE_REFS) <= set(
-        generator.EXPECTED_RUNTIME_SOURCE_PATHS
-    )
     assert set(generator.EXPECTED_RUNTIME_SOURCE_PATHS) <= set(
         metadata["source_sha256"]
     )
-    assert set(generator.EXPECTED_HANDOFF_SOURCE_REFS) <= set(metadata["source_sha256"])
     inventory = metadata["contract_inventory_verified"]
     assert inventory["repository_owned_relation_count"] == 103
     assert len(inventory["repository_owned_relation_identities"]) == 103

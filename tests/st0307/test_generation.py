@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from conftest import apply_fixture, apply_upstream_bootstrap
+from .support import apply_fixture, apply_upstream_bootstrap
 from raos.migrations import catalog as migration_catalog
 from scripts import build_st0307_migration_fixtures as generator
 
@@ -301,40 +301,12 @@ def test_check_mode_is_read_only_and_detects_no_drift() -> None:
 def test_root_make_and_readme_route_only_the_st0307_fixture_surface() -> None:
     makefile = (REPO_ROOT / "Makefile").read_text(encoding="utf-8")
     readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
-    assert (
-        "migration-fixture-generate migration-fixture-check migration-fixture-test"
-        in (makefile)
-    )
-    assert (
-        "migration-fixture-generate: | python-sync\n"
-        "\t$(UV_RUN) run --locked --no-sync --no-env-file python \\\n"
-        "\t\tscripts/build_st0307_migration_fixtures.py"
-    ) in makefile
-    assert (
-        "migration-fixture-check: | python-sync\n"
-        "\tPYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) python \\\n"
-        "\t\tscripts/build_st0307_migration_fixtures.py --check"
-    ) in makefile
-    assert (
-        "migration-fixture-test: | python-sync\n"
-        "\tPYTHONDONTWRITEBYTECODE=1 $(UV_READONLY_RUN) pytest \\\n"
-        "\t\t-p no:cacheprovider -q tests/st0307"
-    ) in makefile
-    cumulative_test = makefile.split("migration-test: | python-sync", 1)[1].split(
-        "migration-fixture-generate:", 1
-    )[0]
-    assert "tests/st0307" not in cumulative_test
-    repository_policy_dependencies = makefile.split("ci-repository-policy:", 1)[
-        1
-    ].split("\n\tPYTHONDONTWRITEBYTECODE", 1)[0]
-    normalized_policy_dependencies = " ".join(
-        repository_policy_dependencies.replace("\\\n", " ").split()
-    )
-    assert (
-        "migration-check migration-fixture-check ai-registry-check content-ast-check"
-        in normalized_policy_dependencies
-    )
-    assert "scripts/build_st0307_migration_fixtures.py" in readme
-    assert "make migration-fixture-generate" in readme
-    assert "make migration-fixture-check" in readme
-    assert "make migration-fixture-test" in readme
+    for target in ("generate", "check", "fast", "final"):
+        assert f"{target}:" in makefile
+        assert f"make {target}" in readme
+    for obsolete in (
+        "migration-fixture-generate",
+        "migration-fixture-check",
+        "migration-fixture-test",
+    ):
+        assert f"{obsolete}:" not in makefile

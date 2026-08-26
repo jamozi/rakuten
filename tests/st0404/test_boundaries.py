@@ -5,7 +5,7 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 
 
 DOMAIN_SOURCE = Path("python/raos/domain/http/security.py")

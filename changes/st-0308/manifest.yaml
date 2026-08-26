@@ -11,8 +11,8 @@ document:
   manifest_self_excluded: true
 source_artifacts:
 - uri: repo://changes/st-0308/contracts/persistence-boundary-reference.v1.yaml
-  bytes: 13782
-  sha256: f523622b96fe7ad1b26f16b2a2ac4bc26b1a910d93fe8f10385f4e174f399f8b
+  bytes: 13414
+  sha256: a63813d7e34ee5aea1662f4db86cac208efa7e5dfce9b2cbfd558d99ebc6b842
 - uri: repo://changes/st-0308/PERSISTENCE-BOUNDARY-REFERENCE.md
   bytes: 5346
   sha256: 116b1410fa123dcd80bc678464a3e397afd162c2d8eb6a8c6c7d8fbc22bfa036
@@ -20,24 +20,24 @@ source_artifacts:
   bytes: 4712
   sha256: 69a51f3cdc494627d84fe2cd65c16a2237b9ec0afd88282ae974887de25da72a
 - uri: repo://scripts/build_st0308_persistence_boundary_reference.py
-  bytes: 35779
-  sha256: 12c83c3bedc5b57aa9e16bd869e9e7345c13f31f51423f3a67da6b9f118a877e
+  bytes: 35170
+  sha256: 69a3ce0d618e52e20dd7cce8fc584c4a602c33351cd2cc100f5bbfe892399827
 - uri: repo://tests/st0308_reference/conftest.py
-  bytes: 3831
-  sha256: 0707bba9ef6b97397395e049c3984d79f733f410cb6e8d0e264a7253af3243a2
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st0308_reference/test_contract.py
   bytes: 4720
-  sha256: 1ff59a710e7395d6b8e91ea51ba5d68ca0ca78e7607641cf81dbe99dc9f83be5
+  sha256: 501feab7720608e7e514a0feb2c9f6ec422277150c341670a425ac8ceea6bd4f
 - uri: repo://tests/st0308_reference/test_generation.py
   bytes: 4318
-  sha256: cdcab34a6c14900c57f42a30286f63c59a82525790569f390027c79f14491d3d
+  sha256: 27faa509024fbfb435c50a009cb34a57e5b0300ddd6a52f0bbc6940aebde579a
 - uri: repo://tests/st0308_reference/test_negative_cases.py
-  bytes: 13520
-  sha256: 657db6ebf86a2caa87611b28de0e5ad347cedf86ce18452deaf15e17aad51542
+  bytes: 13653
+  sha256: 774578fb8f964e36cc1483fe8c6c070625bc6ad0ecb798de61ce6c17b9a4da0b
 generated_artifacts:
 - uri: repo://changes/st-0308/generated/persistence-boundary.reference-plan.v1.json
-  bytes: 17409
-  sha256: c9562f65899e41fc086eedf6b7173ed99949e01769d7c72634bdb56ffd7040b8
+  bytes: 16961
+  sha256: de0d4336edf071a077de23ce5868d03a9e3cceae62edfa6383abe3200991e783
 boundary:
   classification: SOURCE_BOUND_NON_AUTHORITATIVE_NON_EXECUTABLE_PERSISTENCE_BOUNDARY_REFERENCE_PLAN
   implementation_authority: NOT_GRANTED

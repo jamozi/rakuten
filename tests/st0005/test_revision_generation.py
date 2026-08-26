@@ -166,7 +166,7 @@ def test_manifest_source_inventory_is_exact_and_includes_validator_dependencies(
     assert "docs/README.md" in actual
     assert "scripts/import_raos_design.py" in actual
     assert "tests/test_import_raos_design.py" in actual
-    assert ".github/workflows/status-registry.yml" in actual
+    assert ".github/workflows/status-registry.yml" not in actual
     assert "tests/st0005/test_transition_validation.py" in actual
     assert any(
         path.startswith("tests/st0005/fixtures/artifacts/")

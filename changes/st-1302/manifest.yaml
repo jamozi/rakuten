@@ -13,8 +13,8 @@ source_artifacts:
   bytes: 5355
   sha256: 985ea23a3c06ca354f2e2852d24b1d2a037396c7d5472ff501227212c3f5f207
 - uri: repo://scripts/build_st1302_provider_fact_commit_reference_plan.py
-  bytes: 31870
-  sha256: d3d991b1e0049be11ebee5144fcf98638d001661aa157216fc6dd3f463a2196a
+  bytes: 31891
+  sha256: 97535d30e8f8b82456084e50d79624141dde52eeaabc0ae58f5f6f038e224def
 - uri: repo://tests/st1302/conftest.py
   bytes: 956
   sha256: 2ee8fd7b038097a4457c6886343e0908b88a0b406186bd7f806c1755011875ab
@@ -25,8 +25,8 @@ source_artifacts:
   bytes: 4600
   sha256: 3eb59e0e5f4a297867b6505e41a92abfdece837812f88437fcdd38055d4c9055
 - uri: repo://tests/st1302/test_negative_cases.py
-  bytes: 13979
-  sha256: 61b41087a83acca1f5d22490841ae928ad6d74ed8550e36db822ad0dc4c6f32c
+  bytes: 14146
+  sha256: 63c514a2eaf940e131072f2a09d3a5b64adad8e4e738b8697bf4cf07fea86bc1
 generated_artifacts:
 - uri: repo://changes/st-1302/generated/provider-fact-commit-reference-plan.v1.json
   bytes: 10734

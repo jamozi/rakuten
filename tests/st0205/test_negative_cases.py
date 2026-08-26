@@ -10,7 +10,7 @@ from scripts import build_st0205_synthetic_data as generator
 
 
 @pytest.mark.parametrize("story_index", [0, 1])
-def test_dependency_manifest_hash_mismatch_fails_before_generation(
+def test_dependency_manifest_bytes_are_semantic_inputs(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     story_index: int,
@@ -36,8 +36,8 @@ def test_dependency_manifest_hash_mismatch_fails_before_generation(
         "_read_repository_file",
         read_repository_file,
     )
-    with pytest.raises(RuntimeError, match="predecessor manifest digest drift"):
-        generator.render_outputs()
+    outputs = generator.render_outputs()
+    assert generator.MANIFEST_PATH in outputs
 
 
 def test_unknown_contract_field_fails_closed(

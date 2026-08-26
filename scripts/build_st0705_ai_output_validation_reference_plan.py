@@ -18,7 +18,7 @@ REPO_ROOT: Final = Path(__file__).resolve().parents[1]
 if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts import build_st1505_staging_deployment as base  # noqa: E402
+from scripts import raos_build_core as base  # noqa: E402
 
 
 CONTRACT_PATH: Final = Path(
@@ -38,13 +38,10 @@ TEST_PATHS: Final = (
     Path("tests/st0705/test_generation.py"),
     Path("tests/st0705/test_negative_cases.py"),
 )
-SOURCE_PATHS: Final = (README_PATH, CONTRACT_PATH, GENERATOR_PATH, *TEST_PATHS)
+SOURCE_PATHS: Final = (CONTRACT_PATH, GENERATOR_PATH)
 GENERATED_PATHS: Final = (REFERENCE_PLAN_PATH, MANIFEST_PATH)
 
 HELPER_PATH: Final = Path("scripts/build_st1505_staging_deployment.py")
-HELPER_SHA256: Final = (
-    "478c70fcdec48ceca5c9d072c84e4ad3dc55f63e8ccbee0f8e09d4d78eb6fdf5"
-)
 MAX_SOURCE_BYTES: Final = base.MAX_DOCUMENT_BYTES
 
 INTEGRATION_PATH: Final = Path(
@@ -166,7 +163,7 @@ EXPECTED_AUTHORITY: Final = {
     "canonical_status_changes": False,
 }
 EXPECTED_PREDECESSOR_BOUNDARY: Final = {
-    "binding": "EXACT_CURRENT_COMMITTED_BYTES_AND_SEMANTICS",
+    "binding": "SEMANTIC_OWNER_GRAPH",
     "story_ids": ["ST-0702", "ST-0703", "ST-0605"],
     "recorded_schema_success_is_content_validation": False,
     "predecessor_runtime_activation": False,
@@ -286,10 +283,10 @@ FAILURE_CODES: Final = (
 SECURITY_IDS: Final = tuple(f"SEC-AI-{number:03d}" for number in range(1, 9))
 TEST_IDS: Final = ("TST-019", "TST-020")
 
-FEATURE_COMMITS: Final = {
-    "ST-0702": "fe379dd30fd16112111142920b3e1da5b30aa83a",
-    "ST-0703": "bb7402549fe65a94032120401903d4d933a5bfc6",
-    "ST-0605": "160e5d4e210a35b216395c1bdf16b9c664ecc8e7",
+PREDECESSOR_OWNERS: Final = {
+    "ST-0702": "build_st0702_context_pack_reference_plan",
+    "ST-0703": "build_st0703_recorded_adapter",
+    "ST-0605": "build_st0605_claim_evidence_coverage_reference_plan",
 }
 
 EXPECTED_ST0702_ST0701_SEMANTICS: Final = {
@@ -424,11 +421,9 @@ def load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
 
 
 def _verify_pinned_inputs(root: Path) -> None:
-    for relative, expected in EXPECTED_INPUT_SHA256.items():
+    for relative, expected in AUTHORITY_SHA256.items():
         if _sha256(_read(root, relative, "pinned_input")) != expected:
             _fail("PINNED_INPUT_DRIFT")
-    if _sha256(_read(root, HELPER_PATH, "helper")) != HELPER_SHA256:
-        _fail("HELPER_DRIFT")
 
 
 def _load_yaml_mapping(root: Path, relative: Path) -> Mapping[str, Any]:
@@ -598,12 +593,14 @@ def _validate_predecessors(root: Path) -> None:
         _fail("ST0702_SEMANTIC_DRIFT")
 
     st0703 = _load_yaml_mapping(root, ST0703_PLAN_PATH)
-    authority = _mapping(st0703.get("implementation_authority"), "ST0703_DRIFT")
+    document = _mapping(st0703.get("document"), "ST0703_DRIFT")
+    provenance = _mapping(st0703.get("provenance"), "ST0703_DRIFT")
     recorded = _mapping(st0703.get("recorded_exchange_contract"), "ST0703_DRIFT")
     canonical_json = _mapping(recorded.get("canonical_json"), "ST0703_DRIFT")
     request = _mapping(st0703.get("request_contract"), "ST0703_DRIFT")
     if (
-        authority.get("authority") != "ST0703_RECORDED_SCOPE_ONLY"
+        document.get("story_id") != "ST-0703"
+        or not isinstance(provenance.get("predecessors"), list)
         or canonical_json.get("allow_nan") is not False
         or request.get("call_limit_per_execute") != 1
     ):
@@ -643,7 +640,24 @@ def expected_authority_manifest_rows(root: Path = REPO_ROOT) -> list[dict[str, o
 def expected_predecessor_manifest_rows(
     root: Path = REPO_ROOT,
 ) -> list[dict[str, object]]:
-    return _artifact_rows(root, PREDECESSOR_PATHS)
+    del root
+    rows: list[dict[str, object]] = []
+    for story_id, paths in (
+        ("ST-0702", ST0702_PATHS),
+        ("ST-0703", ST0703_PATHS),
+        ("ST-0605", ST0605_PATHS),
+    ):
+        rows.extend(
+            {
+                "uri": f"repo://{relative.as_posix()}",
+                "semantic_id": relative.as_posix(),
+                "version": 2,
+                "owner_id": PREDECESSOR_OWNERS[story_id],
+                "owner_version": 2,
+            }
+            for relative in paths
+        )
+    return rows
 
 
 def expected_predecessor_bindings(root: Path = REPO_ROOT) -> list[dict[str, object]]:
@@ -655,9 +669,17 @@ def expected_predecessor_bindings(root: Path = REPO_ROOT) -> list[dict[str, obje
     ):
         row: dict[str, object] = {
             "story_id": story_id,
-            "feature_commit": FEATURE_COMMITS[story_id],
-            "binding": "EXACT_CURRENT_COMMITTED_BYTES_AND_SEMANTICS",
-            "artifacts": _artifact_rows(root, paths),
+            "owner_id": PREDECESSOR_OWNERS[story_id],
+            "owner_version": 2,
+            "binding": "SEMANTIC_OWNER_GRAPH",
+            "inputs": [
+                {
+                    "uri": f"repo://{relative.as_posix()}",
+                    "semantic_id": relative.as_posix(),
+                    "version": 2,
+                }
+                for relative in paths
+            ],
             "runtime_activated": False,
             "story_acceptance_inherited": False,
         }
@@ -740,38 +762,28 @@ def _yaml_bytes(document: Mapping[str, object]) -> bytes:
         _fail("YAML_RENDER_FAILED")
 
 
-def _source_artifacts(root: Path) -> list[dict[str, object]]:
-    return [
-        {
-            "uri": f"repo://{relative.as_posix()}",
-            "bytes": len(_read(root, relative, "source")),
-            "sha256": _sha256(_read(root, relative, "source")),
-        }
-        for relative in SOURCE_PATHS
-    ]
-
-
 def _manifest(root: Path, reference_bytes: bytes) -> bytes:
     document: dict[str, object] = {
         "document": {
-            "schema_version": "1.0.0",
-            "story_id": "ST-0705",
-            "classification": "GENERATOR_OWNED_REFERENCE_PLAN_MANIFEST",
+            "id": "RAOS-BUILD-MANIFEST-002",
+            "version": "2.0.0",
+            "owner_id": "build_st0705_ai_output_validation_reference_plan",
+            "owner_version": 2,
+            "story_ids": ["ST-0705"],
         },
-        "source_artifact_count": len(SOURCE_PATHS),
-        "source_artifacts": _source_artifacts(root),
-        "provenance": {
-            "authority_inputs": expected_authority_manifest_rows(root),
-            "predecessor_inputs": expected_predecessor_manifest_rows(root),
-            "implementation_helper": {
-                "uri": f"repo://{HELPER_PATH.as_posix()}",
-                "sha256": HELPER_SHA256,
-            },
-            "generation_command": (
-                "python scripts/build_st0705_ai_output_validation_reference_plan.py"
-            ),
+        "semantic_inputs": {
+            "canonical_package": expected_authority_manifest_rows(root),
+            "tracked": [
+                {
+                    "uri": f"repo://{relative.as_posix()}",
+                    "semantic_id": relative.as_posix(),
+                    "version": 2,
+                }
+                for relative in SOURCE_PATHS
+            ],
+            "predecessors": expected_predecessor_manifest_rows(root),
         },
-        "generated_artifacts": [
+        "outputs": [
             {
                 "uri": f"repo://{REFERENCE_PLAN_PATH.as_posix()}",
                 "bytes": len(reference_bytes),

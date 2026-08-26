@@ -77,11 +77,12 @@ authority:
 
 predecessor:
   story_id: ST-1805
-  binding: EXACT_BASE_COMMIT_BYTES
-  base_commit: 0aaaa69d7776c6e6c4d131246c57c06d2ec996a5
+  binding: OWNER_SEMANTIC_VERSION
+  owner_id: build_st1805_portfolio_decision
+  owner_version: 2
   artifacts:
-    changes/st-1805/contracts/portfolio-decision.v1.yaml: ec398cf427a41b0760e6b99108004d317883c8139796b768d1e122c6ea7648e7
-    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: bf9899509a376ab6a9abd1613cfe5f12ab207629a6c94b2ba3bf2106a992098e
+    - changes/st-1805/contracts/portfolio-decision.v1.yaml
+    - changes/st-1805/generated/portfolio-decision.local-blocked.v1.json
   required_semantics:
     overall: BLOCKED
     outcome: NO_DECISION

@@ -1,0 +1,32 @@
+name: Setup locked RAOS dependencies
+description: Restore caches and synchronize the repository lockfiles.
+inputs:
+  node:
+    description: Install Node dependencies.
+    default: 'true'
+runs:
+  using: composite
+  steps:
+    - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      with:
+        version: 0.12.3
+        enable-cache: true
+        cache-dependency-glob: uv.lock
+    - shell: bash
+      run: uv python install --managed-python --no-bin --no-registry --no-progress 3.14.6
+    - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+      if: inputs.node == 'true'
+      with:
+        node-version: 24.18.1
+        cache: npm
+    - shell: bash
+      run: uv sync --locked --group dev
+    - shell: bash
+      if: inputs.node == 'true'
+      run: npm install --global npm@11.16.0 --no-audit --no-fund
+    - shell: bash
+      if: inputs.node == 'true'
+      run: npm ci --ignore-scripts --no-audit --no-fund
+    - shell: bash
+      if: inputs.node == 'true'
+      run: .venv/bin/python scripts/verify_dev_toolchain.py

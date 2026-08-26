@@ -11,7 +11,7 @@ import sqlite3
 
 import pytest
 
-from conftest import consent, envelope, http_policy, http_request, recorded_policy
+from .support import consent, envelope, http_policy, http_request, recorded_policy
 from raos.adapters.sqlite_event_collector_runtime_v2 import (
     EventStoreCommitFault,
     SqliteDurableRecordedEventStoreV2,

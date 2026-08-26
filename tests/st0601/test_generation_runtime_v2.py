@@ -9,9 +9,6 @@ from pathlib import Path
 import pytest
 import yaml
 
-from raos.domain.ops.artifact_registry_runtime_v2 import (
-    ARTIFACT_REGISTRY_CONTRACT_SHA256_V2,
-)
 from scripts import build_st0601_artifact_registry_runtime as generator
 
 
@@ -41,13 +38,13 @@ def test_committed_generated_ir_is_byte_exact_and_check_is_no_write() -> None:
     assert generator.OUTPUT_PATH.read_bytes() == generator.render()
 
 
-def test_generated_ir_binds_contract_generator_sources_and_authority() -> None:
+def test_generated_ir_binds_semantic_contract_sources_and_authority() -> None:
     value = json.loads(generator.render())
 
-    assert value["contract_sha256"] == ARTIFACT_REGISTRY_CONTRACT_SHA256_V2
-    assert value["owner_generator"] == {
-        "path": "scripts/build_st0601_artifact_registry_runtime.py",
-        "sha256": hashlib.sha256(generator.GENERATOR_PATH.read_bytes()).hexdigest(),
+    assert value["contract"] == {
+        "uri": "repo://changes/st-0601/contracts/local-artifact-registry-runtime.v2.yaml",
+        "semantic_id": "local-artifact-registry-runtime",
+        "version": 2,
     }
     assert value["document"]["status"] == "LOCAL_CODE_COMPLETE"
     assert value["document"]["formal_tst_014"] == "NOT_EXECUTED"
@@ -66,9 +63,14 @@ def test_generated_ir_binds_contract_generator_sources_and_authority() -> None:
     }
     assert set(value["runtime"]["action_counts"].values()) == {0}
     assert len(value["sources"]) == 9
-    for source in value["sources"]:
+    immutable = [source for source in value["sources"] if source["kind"] == "immutable"]
+    tracked = [source for source in value["sources"] if source["kind"] == "tracked"]
+    assert len(immutable) == 5
+    assert len(tracked) == 4
+    for source in immutable:
         path = generator.REPOSITORY_ROOT / source["path"]
         assert hashlib.sha256(path.read_bytes()).hexdigest() == source["sha256"]
+    assert all("sha256" not in source for source in tracked)
 
 
 def test_generator_rejects_local_promotion_of_formal_status(
@@ -97,13 +99,7 @@ def test_generator_rejects_source_digest_drift(
         yaml.safe_dump(contract, allow_unicode=True, sort_keys=False),
         encoding="utf-8",
     )
-    candidate_hash = hashlib.sha256(candidate.read_bytes()).hexdigest()
     monkeypatch.setattr(generator, "CONTRACT_PATH", candidate)
-    monkeypatch.setattr(
-        generator,
-        "ARTIFACT_REGISTRY_CONTRACT_SHA256_V2",
-        candidate_hash,
-    )
 
     with pytest.raises(generator.GenerationFailure, match="source drift"):
         generator.render()

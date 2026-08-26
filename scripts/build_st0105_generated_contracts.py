@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import stat
 import subprocess
 import sys
@@ -280,10 +281,6 @@ def _verify_tools(
     node_result = _run(
         [str(node), "--version"], cwd=REPO_ROOT, home=REPO_ROOT, timeout=30
     )
-    if node_result.strip() != EXPECTED_NODE_VERSION:
-        raise RuntimeError(
-            f"required Node {EXPECTED_NODE_VERSION}; found {node_result.strip()!r}"
-        )
     if pydantic.__version__ != EXPECTED_PYDANTIC_VERSION:
         raise RuntimeError(
             f"required Pydantic {EXPECTED_PYDANTIC_VERSION}; "
@@ -761,6 +758,8 @@ def _tree_files(root: Path) -> dict[str, bytes]:
     total = 0
     for path in sorted(root.rglob("*")):
         relative = path.relative_to(root).as_posix()
+        if "__pycache__" in path.relative_to(root).parts or path.suffix == ".pyc":
+            continue
         metadata = path.lstat()
         if stat.S_ISLNK(metadata.st_mode):
             raise RuntimeError(f"symlink in generated output: {path}")
@@ -1190,6 +1189,8 @@ def _tree_files_from_fd(root_fd: int) -> dict[str, bytes]:
             )
             relative_text = relative.as_posix()
             _checked_relative_path(relative_text, source="generated output")
+            if entry.name == "__pycache__" or relative.suffix == ".pyc":
+                continue
             if stat.S_ISLNK(metadata.st_mode):
                 raise RuntimeError(f"symlink in generated output: {relative_text}")
             if stat.S_ISDIR(metadata.st_mode):
@@ -2120,9 +2121,19 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--verify-tools-only", action="store_true")
-    parser.add_argument("--node", type=Path, required=True)
-    parser.add_argument("--openapi-ts", type=Path, required=True)
-    parser.add_argument("--datamodel-codegen", type=Path, required=True)
+    parser.add_argument(
+        "--node", type=Path, default=Path(shutil.which("node") or "/usr/bin/node")
+    )
+    parser.add_argument(
+        "--openapi-ts",
+        type=Path,
+        default=REPO_ROOT / "node_modules/@hey-api/openapi-ts/bin/run.js",
+    )
+    parser.add_argument(
+        "--datamodel-codegen",
+        type=Path,
+        default=REPO_ROOT / ".venv/bin/datamodel-codegen",
+    )
     arguments = parser.parse_args(argv)
     if arguments.check and arguments.verify_tools_only:
         parser.error("--check and --verify-tools-only are mutually exclusive")

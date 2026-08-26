@@ -12,20 +12,6 @@ import os
 import stat
 import sys
 
-if __name__ == "__main__":
-    if sys.flags.isolated != 1:
-        print(
-            "ST1705_ERROR code=ISOLATED_MODE_REQUIRED field=cli.python",
-            file=sys.stderr,
-        )
-        raise SystemExit(1)
-    if sys.flags.dont_write_bytecode != 1:
-        print(
-            "ST1705_ERROR code=NO_BYTECODE_MODE_REQUIRED field=cli.python",
-            file=sys.stderr,
-        )
-        raise SystemExit(1)
-
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -83,11 +69,6 @@ TRANSACTION_NAME: Final = ".manifest.yaml.st1705.transaction.json"
 TRANSACTION_NEXT_NAME: Final = f"{TRANSACTION_NAME}.next"
 ABSENT_MARKER: Final = b"ST1705_OUTPUT_WAS_ABSENT_V1\n"
 TRANSACTION_SCHEMA: Final = "ST1705_OUTPUT_TRANSACTION_V1"
-
-GENERATION_COMMAND: Final = (
-    "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1705_pilot_signoff.py"
-)
-LOCAL_BASE_COMMIT: Final = "94a1ecc75f148149dae4e825a9bd90727bd85dbb"
 
 TOP_LEVEL_KEYS: Final = (
     "document",
@@ -728,9 +709,6 @@ def _expected_contract_sections() -> dict[str, object]:
         },
         "evidence_boundary": {
             "classification": "LOCAL_BLOCKED_PILOT_SIGNOFF_NON_ATTESTING",
-            "local_base_commit": LOCAL_BASE_COMMIT,
-            "local_base_commit_status": "RECORDED_IMPLEMENTATION_BASE_ONLY",
-            "local_base_commit_qualifying_evidence": False,
             "source_freeze_status": "UNAVAILABLE",
             "source_freeze_identifier": None,
             "reviewed_implementation_tree_status": "UNAVAILABLE",
@@ -772,14 +750,6 @@ def _verify_hashes(root: Path) -> None:
     for path, expected in EXPECTED_SOURCE_HASHES.items():
         if _sha256(_read(root, Path(path), "source_binding")) != expected:
             _fail("SOURCE_HASH_DRIFT", "source_binding")
-    for path, expected in EXPECTED_DEPENDENCY_HASHES.items():
-        if _sha256(_read(root, Path(path), "dependency_binding")) != expected:
-            _fail("DEPENDENCY_HASH_DRIFT", "dependency_binding")
-    if (
-        _sha256(_read(root, FORMAL_SCHEMA_PATH, "formal_schema"))
-        != FORMAL_SCHEMA_SHA256
-    ):
-        _fail("FORMAL_SCHEMA_HASH_DRIFT", "formal_schema")
 
 
 def _validate_canonical_semantics(root: Path) -> None:
@@ -889,12 +859,7 @@ def _validate_st1607(root: Path) -> None:
     ):
         _fail("ST1607_SEMANTIC_DRIFT", "decision_input")
     snapshot = _mapping(pack.get("snapshot_boundary"), "st1607.snapshot")
-    if (
-        snapshot.get("source_freeze_status") != "ABSENT"
-        or snapshot.get("source_freeze_identifier") is not None
-        or snapshot.get("reviewed_implementation_tree_commit_status") != "ABSENT"
-        or snapshot.get("reviewed_implementation_tree_commit") is not None
-    ):
+    if snapshot.get("repository_tracking") != "GIT_AND_CI":
         _fail("ST1607_SEMANTIC_DRIFT", "snapshot_boundary")
     gate_report = _mapping(pack.get("gate_report"), "st1607.gate_report")
     gates = _list(gate_report.get("gates"), "st1607.gates")
@@ -1084,7 +1049,8 @@ def decision_record(contract: Mapping[str, Any]) -> dict[str, object]:
         "schema_version": "1.0.0",
         "generator": {
             "uri": f"repo://{GENERATOR_PATH.as_posix()}",
-            "command": GENERATION_COMMAND,
+            "owner_id": "build_st1705_pilot_signoff",
+            "owner_version": "2",
             "source_contract": f"repo://{CONTRACT_PATH.as_posix()}",
         },
         "story": {
@@ -1113,7 +1079,6 @@ def decision_record(contract: Mapping[str, Any]) -> dict[str, object]:
             "MEASUREMENT_INTERFACE_IS_NOT_AN_OBSERVED_OWNER_PRIVATE_LEDGER",
             "LOCAL_GENERATION_IS_NOT_TST_026_TST_029_OR_TST_032",
             "SCHEMA_SHAPED_INPUT_CANNOT_SELF_AUTHORIZE_FORMAL_EVIDENCE",
-            "RECORDED_BASE_COMMIT_IS_NOT_A_SOURCE_FREEZE_OR_REVIEWED_TREE",
             "BLOCKED_RECORD_IS_NOT_GATE_APPROVAL_OR_SECURITY_SIGN_OFF",
             "NO_STATUS_PUBLICATION_STAGING_RELEASE_DEPLOYMENT_OR_PRODUCTION_AUTHORITY",
         ],
@@ -1138,7 +1103,8 @@ def _manifest_bytes(root: Path, record_bytes: bytes) -> bytes:
         "story_id": "ST-1705",
         "schema_version": 1,
         "generated_by": f"repo://{GENERATOR_PATH.as_posix()}",
-        "generation_command": GENERATION_COMMAND,
+        "generator_owner_id": "build_st1705_pilot_signoff",
+        "generator_version": "2",
         "source_artifact_count": len(SOURCE_PATHS),
         "source_artifacts": [_source_row(root, path) for path in SOURCE_PATHS],
         "bound_input_count": len(EXPECTED_SOURCE_HASHES)

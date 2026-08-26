@@ -25,7 +25,7 @@ from raos.domain.analytics.event_collector import (
     TrackingActivation,
 )
 
-from conftest import (
+from .support import (
     collector,
     consent,
     envelope,

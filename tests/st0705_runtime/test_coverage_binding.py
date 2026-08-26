@@ -19,7 +19,7 @@ from raos.domain.evidence.claim_evidence import (
     evaluate_claim_evidence,
 )
 
-from .conftest import CaseFactory
+from .support import CaseFactory
 
 
 ROOT = Path(__file__).resolve().parents[2]

@@ -2792,11 +2792,15 @@
   },
   "provenance": {
     "integration": {
-      "requested_base_sha": "378748e344249190136939dcd8c7e22f62620836",
-      "required_st0606_patch_sha": "020bfbdb91b081929340aa12eb1e655e9160d810",
-      "local_dependency_base_sha": "82225f48357d55846adfa4f8ee4ac1e9e063be1d"
+      "workflow": "SEMANTIC_OWNER_GRAPH",
+      "owners": [
+        {
+          "owner_id": "build_st0606_evidence_workspace_v2",
+          "owner_version": 2
+        }
+      ]
     },
-    "acceptance_contract_sha256": "b8640f160cd11fe2697dc6f5c2972c8a7bdab3831f9ed0e8d3cc8893173f8216",
+    "acceptance_contract_sha256": "02103927365d76a6c46d0d4f6a66fee1824ca447a55dbf91111e7a9e0a1742e6",
     "browser_contract_sha256": "4862fc2f5d8c93ab6a487fc751b8cb9eb108362a7a749314ca75f6480a232f10",
     "fixture_sha256": "055be8d7901e0b7a609d58f2be0289ca796770ad445cf94ddfdc0ab2d555a7ad",
     "source_bindings": [
@@ -2972,5 +2976,5 @@
   },
   "formal_acceptance_achieved": false,
   "production_eligible": false,
-  "payload_sha256": "60e836c31447307ddc4bc529f28d1475c32d50fef6f987eb52ae77e107a4fced"
+  "payload_sha256": "2ccc58323bca7d6fe1cef3abb2dec289bf23214a72365cb162d9f4bea4ed8a20"
 }

@@ -85,17 +85,18 @@ authority:
 
 predecessor:
   story_id: ST-0707
-  binding: EXACT_BASE_COMMIT_BYTES
-  base_commit: 3b96731aa8435af35724237279d7f4b4726b7b59
+  binding: OWNER_SEMANTIC_VERSION
+  owner_id: build_st0707_evaluation_harness_runtime
+  owner_version: 2
   artifacts:
-    changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml: 55044e7b2f030298d5ee61932122e5c0821491b23189bb57b9affc8c47bc043d
-    changes/st-0707/runtime-manifest.v1.json: 3547a1d0df3e33c7f793e5d6f520596e1e48a4121b238dc185f642b294976930
-    changes/st-0707/generated/evaluation-suite-registry.v1.json: 7eb7edb3bf0139b89fb903d852eca9e49edb0c87f2b16ae281213ba677cdd427
-    changes/st-0707/generated/locked-synthetic-holdout.v1.json: 2de91a49805c4027a69eb6303ee651b6b9816c4e3a5cadc9ac14e1bebda1ae5b
-    python/raos/domain/ai/evaluation_harness.py: c9b49de9499ee89e9ae5e321ff531c75d9e07558ed046d7c5ba65511d447f842
-    python/raos/ports/ai_evaluation.py: e59355f34144e41d2ee6a62529758c46d2c120b29b041320894258fbf84feed4
-    python/raos/application/ai/evaluation_harness.py: 1b959a4e685cb6565beb964c94bb70001a887b0516d7582fc17ef0de8a36ea24
-    python/raos/adapters/recorded_ai_evaluation.py: d2c0edb0133efc9ff3979a0fac6cadcf579d4428208057cb9580efbbdcf2238a
+    - changes/st-0707/contracts/evaluation-harness-runtime.v1.yaml
+    - changes/st-0707/runtime-manifest.v1.json
+    - changes/st-0707/generated/evaluation-suite-registry.v1.json
+    - changes/st-0707/generated/locked-synthetic-holdout.v1.json
+    - python/raos/domain/ai/evaluation_harness.py
+    - python/raos/ports/ai_evaluation.py
+    - python/raos/application/ai/evaluation_harness.py
+    - python/raos/adapters/recorded_ai_evaluation.py
   required_semantics:
     recorded_synthetic_only: true
     synthetic_release_eligible: false

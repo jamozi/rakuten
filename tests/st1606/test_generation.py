@@ -93,7 +93,10 @@ def test_predecessor_hash_drift_fails_closed(repository_copy: Path) -> None:
     target.write_bytes(target.read_bytes() + b"\n")
     with pytest.raises(builder.BackupRestoreReferenceError) as error:
         builder.render_outputs(repository_copy)
-    assert error.value.code == "PREDECESSOR_HASH_DRIFT"
+    assert error.value.code in {
+        "PREDECESSOR_HASH_DRIFT",
+        "PREDECESSOR_OWNER_OUTPUT_DRIFT",
+    }
 
 
 def test_symlinked_output_target_is_rejected(repository_copy: Path) -> None:

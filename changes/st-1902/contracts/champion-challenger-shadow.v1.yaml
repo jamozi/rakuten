@@ -75,8 +75,7 @@ authority:
 
 predecessor:
   story_id: ST-0708
-  binding: EXACT_BASE_COMMIT_BYTES
-  base_commit: 975ff87fd4297927be1c66da789ee7bb7b748ae4
+  binding: SEMANTIC_OWNER_GRAPH
   artifacts:
     changes/st-0708/contracts/recorded-live-evaluation-runtime.v2.yaml: 2cda2fb12e2bc46e70292e5f7e846eb5c2a3b0760e1be39886c1793e153885a2
     changes/st-0708/generated/recorded-live-evaluation-request.v2.json: eaa02e095d8c2393e504e36c17809e45388a137bfdb6b0c22443b35ce9bbd468

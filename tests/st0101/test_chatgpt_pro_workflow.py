@@ -536,20 +536,13 @@ def test_transport_wrapper_is_exact_origin_pinned_and_fail_closed() -> None:
 
 def test_repository_policy_keeps_proposals_unapproved_and_live_separate() -> None:
     policy = (REPOSITORY_ROOT / "AGENTS.md").read_text(encoding="utf-8")
-    normalized_policy = " ".join(policy.split())
-    assert "正確な `https://chatgpt.com` origin" in policy
-    assert "利用可能な最大の Pro effort" in normalized_policy
-    assert "MCP secret name のみを type する" in normalized_policy
-    assert (
-        "Codex の restart や run ごとの exported variable は 必要ない"
-        in normalized_policy
+    story_policy = (REPOSITORY_ROOT / "changes/st-0101/README.md").read_text(
+        encoding="utf-8"
     )
-    assert "`UNAPPROVED_PROPOSAL`" in policy
-    assert (
-        "Pro content も handoff も、それ自体では Canonical Open Decision を解決しない"
-        in normalized_policy
-    )
-    assert (
-        "fixture/dry-run evidence、live smoke、および formal validation は別個"
-        in normalized_policy
-    )
+    browser_contract = (
+        REPOSITORY_ROOT / "changes/st-0101/design-handoff.pro-browser.v1.yaml"
+    ).read_text(encoding="utf-8")
+    assert policy.count("Pro は user が明示した場合だけ使える任意の助言機能") == 1
+    assert "https://chatgpt.com" not in policy
+    assert "https://chatgpt.com" in browser_contract
+    assert "UNAPPROVED_PROPOSAL" in story_policy

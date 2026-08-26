@@ -37,10 +37,6 @@ sources:
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
     sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
-  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
-  - uri: repo://AGENTS.md
-    sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
   - uri: repo://changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml
     sha256: 5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5
   - uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
@@ -92,17 +88,12 @@ sources:
 predecessor_bindings:
   foundation:
     story_id: ST-1501
+    owner_id: build_st1501_terraform_foundation
+    owner_version: 2
     owner_generator_uri: repo://scripts/build_st1501_terraform_foundation.py
-    owner_generator_sha256: ca5bf43cb45578207678f7afcce77cab01a9e54b34f45a3f1c9a5f4f417aa7cb
     design_handoff_uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
-    design_handoff_sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
-    design_handoff_semantic_sha256: e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722
     contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-    contract_sha256: 5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e
-    contract_semantic_sha256: 9e88addbfe93c6d6754111d508ba1d7461a703c2aa6b329fa319b6566d9a55e1
     reference_plan_uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-    reference_plan_sha256: bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72
-    reference_plan_semantic_sha256: 1deb0efe9ff2d99ccc27ad6f50d1a07c6ed13b6c45cdd6914a7fdcd1a0edbf20
     required_provider_policy: STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION
     required_admission_status: NOT_EVALUATED
     required_eligible: false
@@ -120,17 +111,12 @@ predecessor_bindings:
       delete: 0
   data_services:
     story_id: ST-1502
+    owner_id: build_st1502_data_services
+    owner_version: 2
     owner_generator_uri: repo://scripts/build_st1502_data_services.py
-    owner_generator_sha256: 73876b415aba2f7160d94dbe8df113087d4bf5be27b4830b82425b34f6ea6abe
     design_handoff_uri: repo://changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml
-    design_handoff_sha256: 2826ec76994e6fb1d4e1c41bc0ce7affecc96351d1fcf527e45c2909bb89f97c
-    design_handoff_semantic_sha256: 0d1069b18729a8997e81cdbe1edc40f770348adea10cb12349d9b915547d5845
     contract_uri: repo://changes/st-1502/contracts/data-services-foundation.v1.yaml
-    contract_sha256: 89a0f1e7babfceffd2b270bc3a16f5d74fbeb6b62699e03156c860c9ae16c7e1
-    contract_semantic_sha256: 6339ecf8ba6846efb3efdea69ecba3ef74cb5280a70838c735f3778c3bb0079b
     reference_plan_uri: repo://infra/terraform/data-services/data-services.reference-plan.v1.json
-    reference_plan_sha256: 2d52d7b99a4edda75814af603e48016f06fa34507bc221e3f573379c066f35c5
-    reference_plan_semantic_sha256: abce483dc017145c1511bbe82f3a5fb055f99ff12636e1fddfffa6bd19f6efdc
     required_provider_policy: STRICT_PROVIDER_NEUTRAL_DATA_SERVICES_CAPABILITY_ADMISSION
     required_admission_status: NOT_EVALUATED
     required_eligible: false
@@ -153,17 +139,12 @@ predecessor_bindings:
       rotate: 0
   compute_edge:
     story_id: ST-1503
+    owner_id: build_st1503_compute_edge
+    owner_version: 2
     owner_generator_uri: repo://scripts/build_st1503_compute_edge.py
-    owner_generator_sha256: a19e6eec9dac3c5f46b34538189bc2cac95836e57762925d53823f9948497d27
     design_handoff_uri: repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
-    design_handoff_sha256: 2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d
-    design_handoff_semantic_sha256: ad5e207a8f201d0ccdff72670a0f1cd7d90ba76f3e52ad7e51db2eb96d0dd707
     contract_uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
-    contract_sha256: 682ab350c5036bf8697a99f08269d5d6db1aaff7387ca8401db07b9d811b1c08
-    contract_semantic_sha256: 344fc69777a14c50fef91fff3fa4c3d724136ae414039b4a1659383ea7f4acc1
     reference_plan_uri: repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json
-    reference_plan_sha256: 1ac46b4ac6a779f41776c10f69416c05e770f2119fb1ce3b6898c11d7e1295ee
-    reference_plan_semantic_sha256: a0100d4256e39d6aed035010534a00c8373c2f916b182eb7d6cd13265d8287a4
     required_provider_policy: STRICT_PROVIDER_NEUTRAL_COMPUTE_EDGE_CAPABILITY_ADMISSION
     required_admission_status: NOT_EVALUATED
     required_eligible: false
@@ -181,17 +162,12 @@ predecessor_bindings:
       delete: 0
   deployment_identity:
     story_id: ST-1504
+    owner_id: build_st1504_github_oidc
+    owner_version: 2
     owner_generator_uri: repo://scripts/build_st1504_github_oidc.py
-    owner_generator_sha256: 4e7ff7664326a754b89039bb4c5fcd399e629c3197814da5b79260a54d01bdb0
     design_handoff_uri: repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml
-    design_handoff_sha256: 36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04
-    design_handoff_semantic_sha256: e26a0bbedb909530587462881a96e8b85b7bfdb93aedc57e281eda9d4d043282
     contract_uri: repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml
-    contract_sha256: 20558e50a78c5d8be62a553858445578cc3fdd39fd285de3a92fe5cd5b5d9257
-    contract_semantic_sha256: 0eac1cba01ca2218f4f9adf734f58e748bf8c355425427516aab1d79d17bc91f
     reference_plan_uri: repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json
-    reference_plan_sha256: 7316a9f71cfea72edf071757ead8b44403362d106eb986d146193a27d658d6e6
-    reference_plan_semantic_sha256: 38e1e8bc7a500ca9961c78949c6697fbadf099d3378822731b3fc72a24b35e3e
     required_provider_policy: STRICT_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY_CAPABILITY_ADMISSION
     required_admission_status: NOT_EVALUATED
     required_eligible: false

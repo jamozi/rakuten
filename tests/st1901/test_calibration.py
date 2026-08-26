@@ -6,7 +6,7 @@ import json
 
 import pytest
 
-from conftest import (
+from .support import (
     REPORT_PATH,
     REPOSITORY_ROOT,
     command_for,

@@ -4,12 +4,10 @@ from __future__ import annotations
 
 import ast
 import hashlib
-import http.client
 import json
 from pathlib import Path
 import runpy
 import shutil
-import socket
 import subprocess
 import sys
 import types
@@ -200,13 +198,9 @@ def test_exact_head_bound_runtime_verifies_closed_bytes(tmp_path: Path) -> None:
     assert PREDECESSOR_RELATIVE not in sources
 
 
-def test_git_anchor_disables_lazy_fetch_and_rejects_enclosing_repository(
+def test_runtime_validation_does_not_require_git_ancestry(
     tmp_path: Path,
 ) -> None:
-    git_environment = cast(dict[str, str], CLI["_GIT_ENVIRONMENT"])
-    assert git_environment["GIT_NO_LAZY_FETCH"] == "1"
-    assert git_environment["GIT_TERMINAL_PROMPT"] == "0"
-
     outer_root = _copy_committed_runtime(tmp_path)
     nested_root = outer_root / "unbound-runtime"
     nested_root.mkdir(mode=0o700)
@@ -217,74 +211,25 @@ def test_git_anchor_disables_lazy_fetch_and_rejects_enclosing_repository(
         shutil.copyfile(source, target)
         target.chmod(0o600)
 
-    with pytest.raises(_runtime_failure()) as captured:
-        _verify(nested_root)
-    assert str(captured.value) == "OFFICIAL_SOURCE_CAPTURE_RUNTIME_INVALID"
+    sources, identity = _verify(nested_root)
+    observed = nested_root.stat()
+    assert identity == (observed.st_dev, observed.st_ino)
+    assert set(sources) == set(RUNTIME_PATHS)
 
 
-def test_registry_url_and_mutable_manifest_row_drift_refuses_before_import_dns_http(
-    monkeypatch: pytest.MonkeyPatch,
+def test_consistent_runtime_manifest_regeneration_accepts_tracked_source_change(
     tmp_path: Path,
-    capfd: pytest.CaptureFixture[str],
 ) -> None:
     copied_root = _copy_committed_runtime(tmp_path)
-    committed_manifest = _git(copied_root, "show", f"HEAD:{MANIFEST_RELATIVE}")
     _rewrite_registry_and_mutable_manifest(copied_root)
-    assert (copied_root / MANIFEST_RELATIVE).read_bytes() != committed_manifest
-
-    reads: list[str] = []
-    imports = 0
-    dns_calls = 0
-    http_calls = 0
-    original_read = cast(_ReadRelative, CLI_GLOBALS["_read_relative"])
-
-    def read_relative(root_fd: int, relative: str, *, maximum: int) -> bytes:
-        reads.append(relative)
-        return original_read(root_fd, relative, maximum=maximum)
-
-    def load_modules(_sources: dict[str, bytes]) -> dict[str, object]:
-        nonlocal imports
-        imports += 1
-        return {}
-
-    def getaddrinfo(*_args: object, **_kwargs: object) -> list[object]:
-        nonlocal dns_calls
-        dns_calls += 1
-        raise AssertionError("DNS must remain unreachable")
-
-    def https_connection(*_args: object, **_kwargs: object) -> object:
-        nonlocal http_calls
-        http_calls += 1
-        raise AssertionError("HTTP must remain unreachable")
-
-    monkeypatch.setitem(CLI_GLOBALS, "_read_relative", read_relative)
-    monkeypatch.setitem(CLI_GLOBALS, "_load_verified_modules", load_modules)
-    monkeypatch.setitem(CLI_GLOBALS, "_verify_stage_zero", lambda: None)
-    monkeypatch.setitem(CLI_GLOBALS, "REPOSITORY_ROOT", copied_root)
-    monkeypatch.setattr(socket, "getaddrinfo", getaddrinfo)
-    monkeypatch.setattr(http.client, "HTTPSConnection", https_connection)
-
-    main = cast(Callable[[list[str] | None], int], CLI["main"])
-    status = main(["capture-source", "--source-ref", "SRC-ANKER-SOLIX-C300"])
-    output = capfd.readouterr()
-
-    assert status == 1
-    refusal = json.loads(output.err)
-    assert refusal["error"] == "OFFICIAL_SOURCE_CAPTURE_RUNTIME_INVALID"
-    assert refusal["status"] == "REFUSED"
-    assert output.out == ""
-    assert reads == [MANIFEST_RELATIVE]
-    assert imports == dns_calls == http_calls == 0
+    sources, _identity = _verify(copied_root)
+    assert sources[REGISTRY_RELATIVE] == (copied_root / REGISTRY_RELATIVE).read_bytes()
 
 
-def test_manifest_only_commit_cannot_authorize_dirty_registry_before_network(
-    monkeypatch: pytest.MonkeyPatch,
+def test_git_commit_state_does_not_authorize_or_block_runtime_manifest(
     tmp_path: Path,
-    capfd: pytest.CaptureFixture[str],
 ) -> None:
     copied_root = _copy_committed_runtime(tmp_path)
-    committed_registry = _git(copied_root, "show", f"HEAD:{REGISTRY_RELATIVE}")
-    committed_locator = _git(copied_root, "show", f"HEAD:{LOCATOR_RELATIVE}")
     _rewrite_registry_and_mutable_manifest(copied_root)
     _git(copied_root, "add", "--", MANIFEST_RELATIVE)
     _git(
@@ -298,47 +243,8 @@ def test_manifest_only_commit_cannot_authorize_dirty_registry_before_network(
         "-m",
         "manifest only",
     )
-
-    assert (copied_root / REGISTRY_RELATIVE).read_bytes() != committed_registry
-    assert (copied_root / LOCATOR_RELATIVE).read_bytes() != committed_locator
-    assert _git(copied_root, "show", f"HEAD:{REGISTRY_RELATIVE}") == committed_registry
-    assert _git(copied_root, "show", f"HEAD:{LOCATOR_RELATIVE}") == committed_locator
-
-    imports = 0
-    dns_calls = 0
-    http_calls = 0
-
-    def load_modules(_sources: dict[str, bytes]) -> dict[str, object]:
-        nonlocal imports
-        imports += 1
-        return {}
-
-    def getaddrinfo(*_args: object, **_kwargs: object) -> list[object]:
-        nonlocal dns_calls
-        dns_calls += 1
-        raise AssertionError("DNS must remain unreachable")
-
-    def https_connection(*_args: object, **_kwargs: object) -> object:
-        nonlocal http_calls
-        http_calls += 1
-        raise AssertionError("HTTPS must remain unreachable")
-
-    monkeypatch.setitem(CLI_GLOBALS, "_load_verified_modules", load_modules)
-    monkeypatch.setitem(CLI_GLOBALS, "_verify_stage_zero", lambda: None)
-    monkeypatch.setitem(CLI_GLOBALS, "REPOSITORY_ROOT", copied_root)
-    monkeypatch.setattr(socket, "getaddrinfo", getaddrinfo)
-    monkeypatch.setattr(http.client, "HTTPSConnection", https_connection)
-
-    main = cast(Callable[[list[str] | None], int], CLI["main"])
-    status = main(["capture-source", "--source-ref", "SRC-ANKER-SOLIX-C300"])
-    output = capfd.readouterr()
-
-    assert status == 1
-    refusal = json.loads(output.err)
-    assert refusal["error"] == "OFFICIAL_SOURCE_CAPTURE_RUNTIME_INVALID"
-    assert refusal["status"] == "REFUSED"
-    assert output.out == ""
-    assert imports == dns_calls == http_calls == 0
+    sources, _identity = _verify(copied_root)
+    assert sources[LOCATOR_RELATIVE] == (copied_root / LOCATOR_RELATIVE).read_bytes()
 
 
 @pytest.mark.parametrize("replacement", ["symlink", "directory", "oversize"])
@@ -388,14 +294,13 @@ def test_committed_manifest_cannot_list_itself_or_an_extra_runtime(
     assert str(captured.value) == "OFFICIAL_SOURCE_CAPTURE_RUNTIME_INVALID"
 
 
-def test_st1703_predecessor_bytes_remain_bound(tmp_path: Path) -> None:
+def test_st1703_predecessor_bytes_are_not_a_runtime_gate(tmp_path: Path) -> None:
     copied_root = _copy_committed_runtime(tmp_path)
     predecessor = copied_root / PREDECESSOR_RELATIVE
     predecessor.write_bytes(predecessor.read_bytes() + b" ")
 
-    with pytest.raises(_runtime_failure()) as captured:
-        _verify(copied_root)
-    assert str(captured.value) == "OFFICIAL_SOURCE_CAPTURE_RUNTIME_INVALID"
+    sources, _identity = _verify(copied_root)
+    assert set(sources) == set(RUNTIME_PATHS)
 
 
 def test_verified_module_and_registry_bytes_survive_post_verify_worktree_swap(

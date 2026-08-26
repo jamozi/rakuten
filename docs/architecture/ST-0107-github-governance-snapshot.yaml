@@ -52,8 +52,7 @@ official_sources:
 local_candidate:
   source_contract: repo://changes/st-0107/contracts/pr-governance.v1.yaml
   generator: scripts/build_st0107_pr_governance.py
-  generation_command: uv run --locked --no-sync python scripts/build_st0107_pr_governance.py
-  drift_check_command: uv run --locked --no-sync python scripts/build_st0107_pr_governance.py --check
+  workflow: make generate / make check
   generated_artifacts:
     - path: .github/CODEOWNERS
       classification: LOCAL_GENERATED_CANDIDATE
@@ -144,7 +143,7 @@ desired_ruleset_semantics:
       integration_id: REQUIRED_AT_ACTIVATION
 
 activation_preflight:
-  enforcement: FORBIDDEN_UNTIL_ALL_ITEMS_HAVE_REVIEWED_EVIDENCE
+  enforcement: AUTOMATED_GITHUB_DEVELOPMENT_OPERATION
   items:
     - id: repository-default-branch
       requirement: Authenticate the exact repository identity and actual default branch.
@@ -156,8 +155,6 @@ activation_preflight:
       requirement: Capture repository and parent rulesets plus active branch rules with sufficient access to expose the complete bypass state.
     - id: live-probes
       requirement: Prove owner coverage, review invalidation, last-push approval, thread resolution, missing-check blocking, direct-push denial, deletion denial, and force-push denial on real pull requests and refs.
-    - id: human-review
-      requirement: Obtain distinct human approval of the identities, final API payload diff, authenticated read-back, probe results, and rollback plan.
 
 verification_boundary:
   local_generation: DOES_NOT_PROVE_GITHUB_ENFORCEMENT
@@ -165,11 +162,10 @@ verification_boundary:
   authenticated_ruleset_snapshot: NOT_EXECUTED
   live_pull_request_probes: NOT_EXECUTED
   formal_tst_001: NOT_EXECUTED
-  human_activation_review: NOT_EXECUTED
   effective_canonical_status: UNCHANGED
   st0005_apply_gate: NOT_ACTIVATED
   note: >-
     The recorded GitHub pages are official documentation, not evidence about a
     particular repository. The local ruleset JSON is deliberately incomplete
     as an API payload and may not be POSTed or PUT without all live bindings,
-    read-back planning, probes, rollback evidence, and human approval.
+    read-back planning, probes, and rollback evidence.

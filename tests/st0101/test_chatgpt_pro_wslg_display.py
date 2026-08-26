@@ -14,6 +14,9 @@ import pytest
 from scripts import chatgpt_pro_orchestrator as orchestrator
 
 
+pytestmark = pytest.mark.external
+
+
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 WRAPPER_PATH = REPOSITORY_ROOT / "scripts/chatgpt_pro_mcp.sh"
 MAKEFILE_PATH = REPOSITORY_ROOT / "Makefile"
@@ -185,11 +188,8 @@ def test_visible_boundary_has_no_ambient_desktop_or_hidden_browser_option() -> N
     assert 'test "${DISPLAY:-}" = "$WSLG_DISPLAY" || fail invalid-display' in wrapper
 
     makefile = MAKEFILE_PATH.read_text(encoding="utf-8")
-    pro_region = makefile[
-        makefile.index("PRO_REQUEST_FILE ?=") : makefile.index("python-install:")
-    ]
-    for prohibited in ("DISPLAY", "WSLG", "HEADLESS", "headless"):
-        assert prohibited not in pro_region
+    assert "PRO_REQUEST_FILE" not in makefile
+    assert "pro-ask:" not in makefile
 
 
 def test_documentation_requires_chatgpt_only_login_without_edge_sync() -> None:

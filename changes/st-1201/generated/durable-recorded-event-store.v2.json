@@ -149,44 +149,44 @@
       "sha256": "79a6949e03b56f91603d751788cf85285920e89c88b477acf341653998d062a0"
     },
     {
-      "bytes": 5504,
+      "bytes": 234,
       "path": "tests/st1201/conftest.py",
-      "sha256": "4ae5cb8ca3cc747a269fd9d552d639cb8846935101ff3e208004b269246c555e"
+      "sha256": "4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528"
     },
     {
-      "bytes": 7556,
+      "bytes": 7684,
       "path": "tests/st1201/test_boundaries.py",
-      "sha256": "af7843a77e95ebd5afc094c26666a08d8a55d5edc9b5c00c066358183845a2a4"
+      "sha256": "72521b3f972336b94d8744868a99c572048f7f54ff3eb89a4bbf4c8f63635132"
     },
     {
       "bytes": 5462,
       "path": "tests/st1201/test_collector.py",
-      "sha256": "e009577784a5450b66dbd421fdfdf1e6c5beb0b8ab3fb1593735363b402bd183"
+      "sha256": "0d11ed5e5bee0657d88f820b489eaeb7d22f243fcd10cb142679d852610a4ec0"
     },
     {
       "bytes": 7616,
       "path": "tests/st1201/test_durable_boundary_hardening_v3.py",
-      "sha256": "371f6090f866812409f8d820d0bfd970278d3418e86f70b7397a930bf091d7bf"
+      "sha256": "fb5c47a3a86c2e6a90e2609c64b60533f260d8a0fb89f1d254ae3fa824e12fe5"
     },
     {
       "bytes": 4212,
       "path": "tests/st1201/test_durable_generation_v2.py",
-      "sha256": "4f912545d0dfa653482bf8506ce9db84f546009a9b367c10a1ce47f39c81b930"
+      "sha256": "a439bf6513b5436ec0ada685f870d6e818d3b21942535462a09564ebe57ec675"
     },
     {
       "bytes": 10516,
       "path": "tests/st1201/test_durable_runtime_v2.py",
-      "sha256": "07f05f4edec897a507bfdd5fb52cacbfe4e626049e2735c5ee28f293271c57a0"
+      "sha256": "9c56f9b00f2fd3de05109648cda9808dfa947992bb48a1e5a4c012969ea34ce7"
     },
     {
       "bytes": 21758,
       "path": "tests/st1201/test_durable_sqlite_hardening_v3.py",
-      "sha256": "70af5b78624f491e67be0d64e23f5a8e94387a4e7042ba313258063c5a243dd4"
+      "sha256": "5f038e220403dd5c638b0e7a9f3c6078d9f936bf4a1ea957e5d2cfbada3b3f17"
     },
     {
       "bytes": 12872,
       "path": "tests/st1201/test_failure_isolation.py",
-      "sha256": "3acb571f2d5bc5323bd4246d71977342dad7d269196c2897b0c57000b7ea697e"
+      "sha256": "08f774bea00d58d7032b1d748d514543e1af2649fa7543eb11fbb3ecd3c9390f"
     },
     {
       "bytes": 32199,

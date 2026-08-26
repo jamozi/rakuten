@@ -12,7 +12,7 @@ import yaml
 
 from scripts import build_st0006_decision_gates as gates
 
-from conftest import clone, write_csv_source, write_yaml_source
+from .support import clone, write_csv_source, write_yaml_source
 
 
 def canonical_yaml_document() -> dict[str, Any]:

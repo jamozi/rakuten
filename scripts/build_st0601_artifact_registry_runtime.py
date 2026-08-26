@@ -15,12 +15,11 @@ import yaml
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 PYTHON_ROOT = REPOSITORY_ROOT / "python"
-if str(PYTHON_ROOT) not in sys.path:
-    sys.path.insert(0, str(PYTHON_ROOT))
+for import_root in (REPOSITORY_ROOT, PYTHON_ROOT):
+    if str(import_root) not in sys.path:
+        sys.path.insert(0, str(import_root))
 
-from raos.domain.ops.artifact_registry_runtime_v2 import (  # noqa: E402
-    ARTIFACT_REGISTRY_CONTRACT_SHA256_V2,
-)
+from scripts.raos_build_core import input_hash_required  # noqa: E402
 
 
 CONTRACT_PATH = (
@@ -30,9 +29,6 @@ CONTRACT_PATH = (
 OUTPUT_PATH = (
     REPOSITORY_ROOT / "changes/st-0601/generated/artifact-registry-runtime.v2.json"
 )
-GENERATOR_PATH = Path(__file__).resolve()
-
-
 class GenerationFailure(RuntimeError):
     __slots__ = ()
 
@@ -154,30 +150,59 @@ def _load_contract() -> dict[str, Any]:
     return contract
 
 
-def _verify_sources(contract: dict[str, Any]) -> tuple[dict[str, str], ...]:
-    result: list[dict[str, str]] = []
+def _verify_sources(contract: dict[str, Any]) -> tuple[dict[str, object], ...]:
+    result: list[dict[str, object]] = []
     seen: set[str] = set()
     for index, value in enumerate(_list(contract["sources"], "sources")):
         source = _mapping(value, f"sources[{index}]")
-        if set(source) != {"path", "sha256"}:
-            _fail("source entry shape differs")
         relative = source["path"]
-        expected = source["sha256"]
         if (
             type(relative) is not str
             or not relative
             or relative.startswith("/")
             or ".." in Path(relative).parts
             or relative in seen
-            or type(expected) is not str
-            or len(expected) != 64
         ):
-            _fail("source path or digest is invalid")
+            _fail("source path is invalid")
         seen.add(relative)
         path = REPOSITORY_ROOT / relative
-        if not path.is_file() or path.is_symlink() or _sha256(path) != expected:
-            _fail(f"source drift: {relative}")
-        result.append({"path": relative, "sha256": expected})
+        if not path.is_file() or path.is_symlink():
+            _fail(f"source unavailable: {relative}")
+        if input_hash_required(relative):
+            if set(source) != {"path", "kind", "sha256"}:
+                _fail("immutable source entry shape differs")
+            expected = source["sha256"]
+            if (
+                source["kind"] != "immutable"
+                or type(expected) is not str
+                or len(expected) != 64
+                or _sha256(path) != expected
+            ):
+                _fail(f"source drift: {relative}")
+            result.append(
+                {"path": relative, "kind": "immutable", "sha256": expected}
+            )
+            continue
+        if set(source) != {"path", "kind", "semantic_id", "version"}:
+            _fail("tracked source entry shape differs")
+        semantic_id = source["semantic_id"]
+        version = source["version"]
+        if (
+            source["kind"] != "tracked"
+            or type(semantic_id) is not str
+            or not semantic_id
+            or type(version) is not int
+            or version < 1
+        ):
+            _fail("tracked source identity is invalid")
+        result.append(
+            {
+                "path": relative,
+                "kind": "tracked",
+                "semantic_id": semantic_id,
+                "version": version,
+            }
+        )
     if not result:
         _fail("sources cannot be empty")
     return tuple(result)
@@ -185,9 +210,6 @@ def _verify_sources(contract: dict[str, Any]) -> tuple[dict[str, str], ...]:
 
 def render() -> bytes:
     contract = _load_contract()
-    contract_sha256 = _sha256(CONTRACT_PATH)
-    if contract_sha256 != ARTIFACT_REGISTRY_CONTRACT_SHA256_V2:
-        _fail("runtime contract digest differs from Domain binding")
     sources = _verify_sources(contract)
     output = {
         "authority": {
@@ -200,14 +222,14 @@ def render() -> bytes:
             "staging": "NOT_GRANTED",
             "production": "NOT_GRANTED",
         },
-        "contract_sha256": contract_sha256,
+        "contract": {
+            "uri": "repo://changes/st-0601/contracts/local-artifact-registry-runtime.v2.yaml",
+            "semantic_id": "local-artifact-registry-runtime",
+            "version": 2,
+        },
         "document": contract["document"],
         "evidence": contract["evidence"],
         "generation": contract["generation"],
-        "owner_generator": {
-            "path": "scripts/build_st0601_artifact_registry_runtime.py",
-            "sha256": _sha256(GENERATOR_PATH),
-        },
         "runtime": contract["runtime"],
         "security_controls": contract["security_controls"],
         "sources": sources,

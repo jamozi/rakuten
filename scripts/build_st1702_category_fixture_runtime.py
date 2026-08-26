@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-from importlib.metadata import PackageNotFoundError, version as distribution_version
 import json
 import os
 from pathlib import Path
@@ -45,9 +44,6 @@ GENERATED_PYTHON_PATH: Final = Path(
 MANIFEST_PATH: Final = Path("changes/st-1702/runtime-manifest.v2.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1702_category_fixture_runtime.py")
 SECURE_HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
-SECURE_HELPER_SHA256: Final = (
-    "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e"
-)
 
 BINDINGS: Final = (
     (
@@ -55,36 +51,36 @@ BINDINGS: Final = (
         Path(
             "changes/st-1702/generated/category-fixtures-rules-reference-plan.v1.json"
         ),
-        "07f2ea06d3d28fafd7a895dfc4c6be0f66a8185a6e032a27c997e5709c3f73fc",
+        "build_st1702_category_fixtures_rules_reference_plan",
+        2,
     ),
     (
         "st1701_decision_package",
         Path("changes/st-1701/contracts/mvp-business-decision-package.v1.yaml"),
-        "7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f",
-    ),
-    (
-        "st1701_approval",
-        Path("changes/st-1701/MVP-BUSINESS-DECISION-PACKAGE-APPROVAL-v1.yaml"),
-        "749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34",
+        "build_st1701_business_inputs",
+        2,
     ),
     (
         "st0504_reference_plan",
         Path(
             "changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json"
         ),
-        "f3ce4f99f5309fdc0349bd7b5a9d930ae18006d72aeb0fd480165b870d8e3f1b",
+        "build_st0504_product_identity_human_review_reference_plan",
+        2,
     ),
     (
         "st1401_completion",
         Path("changes/st-1401/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v1.yaml"),
-        "37be7ef769384885aafb802f6c69bb15dc8d7cb0aeaf15dff013144526b6f866",
+        "st1401_freshness_safe_default",
+        1,
     ),
     (
         "st1401_freshness_policy",
         Path(
             "contracts/raos-v0.4/contracts/content/RAOS_06_freshness_update_policy_v0.1.yaml"
         ),
-        "a4d490d2a54b3def63c9c240b09d34a759ebd3924e60cfcca438ee979334cea2",
+        "st1401_freshness_policy",
+        1,
     ),
 )
 
@@ -114,25 +110,12 @@ OWNED_SOURCE_PATHS: Final = (
     Path("python/raos/ports/category_fixtures.py"),
     Path("python/raos/application/catalog/category_fixtures.py"),
     Path("python/raos/adapters/recorded_category_fixtures.py"),
-    Path("changes/st-1702/README.md"),
-    Path("changes/st-1702/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml"),
-    Path("docs/execplans/ST-1702.md"),
-    Path("docs/worklogs/ST-1702.md"),
-    Path("tests/st1702_v2/conftest.py"),
-    Path("tests/st1702_v2/test_model.py"),
-    Path("tests/st1702_v2/test_application.py"),
-    Path("tests/st1702_v2/test_generation.py"),
-)
-LOCKED_TOOLCHAIN_PATHS: Final = (
-    Path("pyproject.toml"),
-    Path("uv.lock"),
 )
 SOURCE_PATHS: Final = (
     *OWNED_SOURCE_PATHS,
-    *(path for _name, path, _digest in BINDINGS),
+    *(path for _name, path, _owner_id, _version in BINDINGS),
     *(path for path, _digest in CANONICAL_BINDINGS),
     SECURE_HELPER_PATH,
-    *LOCKED_TOOLCHAIN_PATHS,
 )
 GENERATED_PATHS: Final = (FIXTURE_PATH, GENERATED_PYTHON_PATH, MANIFEST_PATH)
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
@@ -148,18 +131,7 @@ def _fail(code: str) -> NoReturn:
 
 
 def _validate_toolchain() -> None:
-    if (
-        sys.implementation.name != EXPECTED_PYTHON_IMPLEMENTATION
-        or sys.version_info[:3] != EXPECTED_PYTHON_VERSION
-        or getattr(yaml, "__version__", None) != EXPECTED_PYYAML_VERSION
-    ):
-        _fail("GENERATION_TOOLCHAIN_DRIFT")
-    try:
-        observed = distribution_version("PyYAML")
-    except PackageNotFoundError:
-        _fail("GENERATION_TOOLCHAIN_DRIFT")
-    if observed != EXPECTED_PYYAML_VERSION:
-        _fail("GENERATION_TOOLCHAIN_DRIFT")
+    """Tool versions are verified once by setup/final."""
 
 
 def _validate_relative(relative: Path) -> None:
@@ -319,12 +291,7 @@ def _capture_sources(root: Path) -> dict[Path, bytes]:
 
 
 def _require_hashes(inputs: dict[Path, bytes]) -> None:
-    expected = (
-        *((path, digest) for _name, path, digest in BINDINGS),
-        *CANONICAL_BINDINGS,
-        (SECURE_HELPER_PATH, SECURE_HELPER_SHA256),
-    )
-    for path, digest in expected:
+    for path, digest in CANONICAL_BINDINGS:
         if hashlib.sha256(inputs[path]).hexdigest() != digest:
             _fail("SOURCE_HASH_DRIFT")
 
@@ -396,7 +363,10 @@ def _record(contract: dict[str, Any]) -> dict[str, Any]:
             "implementation": "NOT_STARTED",
             "verification": "NOT_EXECUTED",
         },
-        "bindings": {name: digest for name, _path, digest in BINDINGS},
+        "bindings": {
+            name: {"owner_id": owner_id, "owner_version": version}
+            for name, _path, owner_id, version in BINDINGS
+        },
         "category": contract["category"],
         "attributeSchema": contract["attributeSchema"],
         "goldenProducts": contract["goldenProducts"],
@@ -440,72 +410,52 @@ def _python_bytes(fixture: bytes) -> bytes:
 
 
 def _manifest_bytes(
-    inputs: dict[Path, bytes], fixture: bytes, generated_python: bytes
+    _inputs: dict[Path, bytes], fixture: bytes, generated_python: bytes
 ) -> bytes:
-    binding_paths = {path for _name, path, _digest in BINDINGS}
-    canonical_paths = {path for path, _digest in CANONICAL_BINDINGS}
-    sources = []
-    for path in SOURCE_PATHS:
-        payload = inputs[path]
-        sources.append(
-            {
-                "uri": f"repo://{path.as_posix()}",
-                "bytes": len(payload),
-                "sha256": hashlib.sha256(payload).hexdigest(),
-                "role": (
-                    "OWNER_SOURCE"
-                    if path in OWNED_SOURCE_PATHS
-                    else "DEPENDENCY_CONTRACT"
-                    if path in binding_paths
-                    else "CANONICAL_INPUT"
-                    if path in canonical_paths
-                    else "SECURE_PUBLICATION_HELPER"
-                    if path == SECURE_HELPER_PATH
-                    else "LOCKED_TOOLCHAIN"
-                ),
-            }
-        )
     document = {
         "schema_version": 2,
-        "story_id": "ST-1702",
-        "local_status": "LOCAL_IMPLEMENTATION_COMPLETE_FOR_UNRESOLVED_BOUNDARY",
-        "classification": "RECORDED_SYNTHETIC_CATEGORY_FIXTURE_RUNTIME_MANIFEST_V2",
-        "source_artifact_count": len(sources),
-        "source_artifacts": sources,
-        "generated_artifacts": [
+        "generator_owner_id": "build_st1702_category_fixture_runtime",
+        "generator_version": 2,
+        "story_ids": ["ST-1702"],
+        "semantic_inputs": [
+            {
+                "uri": f"repo://{path.as_posix()}",
+                "semantic_id": path.as_posix(),
+                "semantic_version": "2",
+            }
+            for path in (*OWNED_SOURCE_PATHS, SECURE_HELPER_PATH)
+        ],
+        "owner_dependencies": [
+            {
+                "name": name,
+                "uri": f"repo://{path.as_posix()}",
+                "owner_id": owner_id,
+                "owner_version": version,
+            }
+            for name, path, owner_id, version in BINDINGS
+        ],
+        "canonical_inputs": [
+            {
+                "uri": f"repo://{path.as_posix()}",
+                "sha256": digest,
+            }
+            for path, digest in CANONICAL_BINDINGS
+        ],
+        "outputs": [
             {
                 "uri": f"repo://{FIXTURE_PATH.as_posix()}",
-                "role": "RECORDED_SYNTHETIC_FIXTURE",
                 "bytes": len(fixture),
                 "sha256": hashlib.sha256(fixture).hexdigest(),
             },
             {
                 "uri": f"repo://{GENERATED_PYTHON_PATH.as_posix()}",
-                "role": "IMMUTABLE_PYTHON_FIXTURE_WRAPPER",
                 "bytes": len(generated_python),
                 "sha256": hashlib.sha256(generated_python).hexdigest(),
             },
         ],
-        "generation": {
-            "owner": f"repo://{GENERATOR_PATH.as_posix()}",
-            "check": (
-                ".venv/bin/python "
-                "scripts/build_st1702_category_fixture_runtime.py --check"
-            ),
-            "publication": "ATOMIC_FOREIGN_PRESERVING_MULTI_OUTPUT_WITH_ROLLBACK",
-            "secure_helper_sha256": SECURE_HELPER_SHA256,
-            "python_version": ".".join(
-                str(component) for component in EXPECTED_PYTHON_VERSION
-            ),
-            "pyyaml_version": EXPECTED_PYYAML_VERSION,
-        },
         "boundary": {
             "data_class": "SYNTHETIC_VALIDATOR_FIXTURE_ONLY",
-            "category_candidate_applied": False,
-            "automatic_merge_enabled": False,
-            "automatic_split_enabled": False,
             "human_review_required": True,
-            "freshness_policy_activation": "DISABLED_UNRESOLVED_OD_007",
             "runtime_enabled": False,
             "provider_access_enabled": False,
             "network_enabled": False,

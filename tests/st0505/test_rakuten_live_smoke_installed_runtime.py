@@ -27,7 +27,7 @@ from raos.domain.catalog.rakuten_live_smoke import RakutenLiveSmokeFailure
 from scripts import build_st0505_rakuten_live_smoke_reference_plan as generator
 from scripts import install_rakuten_live_smoke_runtime as installer
 from scripts import rakuten_live_smoke as cli
-from test_rakuten_live_smoke_runtime import (
+from .test_rakuten_live_smoke_runtime import (
     FakeReader,
     MemoryWriter,
     StaticTransport,
@@ -35,6 +35,9 @@ from test_rakuten_live_smoke_runtime import (
     WIRE_HEADER_PROOF,
     _credential_repository,
 )
+
+
+pytestmark = pytest.mark.raos_owner_private
 
 
 SOURCE_ROOT = Path(__file__).resolve().parents[2]

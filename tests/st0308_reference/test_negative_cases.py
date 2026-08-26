@@ -12,9 +12,10 @@ from typing import Any, cast
 
 import pytest
 
-from conftest import RepositoryHarness
+from .support import RepositoryHarness
 from scripts import build_st0308_persistence_boundary_reference as builder
 from scripts import build_st1506_production_deployment as secure_io
+from scripts.raos_build_core import input_hash_required
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -137,7 +138,6 @@ def test_every_gap_selection_and_payload_must_be_exact_null(
         "cross_module_writes_outbox_audit_and_idempotency",
         "connection_factory_and_workload_identity",
         "approved_handoff_uri",
-        "approved_handoff_sha256",
         "conflict_free_canonical_reconciliation",
         "repository_owner_approval",
     ],
@@ -206,7 +206,6 @@ def test_executable_activation_status_and_readiness_promotions_are_rejected(
     "field",
     [
         "approved_handoff_uri",
-        "approved_handoff_sha256",
         "conflict_free_canonical_reconciliation",
         "repository_owner_approval",
     ],
@@ -275,7 +274,10 @@ def test_predecessor_and_source_byte_changes_are_rejected(
         target.chmod(0o600)
         original = target.read_bytes()
         target.write_bytes(original + b"\n")
-        with pytest.raises(builder.PersistenceReferenceError):
+        if input_hash_required(relative.as_posix()):
+            with pytest.raises(builder.PersistenceReferenceError):
+                builder.load_and_validate_contract(repository_harness.root)
+        else:
             builder.load_and_validate_contract(repository_harness.root)
         target.write_bytes(original)
 

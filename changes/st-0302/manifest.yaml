@@ -37,17 +37,17 @@ source_artifacts:
   bytes: 7
   sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
 - uri: repo://pyproject.toml
-  bytes: 1334
-  sha256: 0c4e1f0ac9d9e4ed1f19bee3ec64c4860a2932257ed4e1ea6fdf13422c0718b6
+  bytes: 1753
+  sha256: 34ee344782dbaf4135cb235e2fec215a1c709089c0994415fdeadf33979a6207
 - uri: repo://uv.lock
-  bytes: 128286
-  sha256: 90d79255a5bd0a6d0c918b8f496dec0a1bd11fb25316cdc5b1a9526c2eed3729
+  bytes: 129836
+  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
 - uri: repo://uv.toml
-  bytes: 349
-  sha256: 02303c42f583b4a2106a7b9185bd0fad5264c4991e656ad58739558045f3ab37
+  bytes: 355
+  sha256: 1511da8b08f4c030085b823f59fcf8cd8c6d0ba6393444efd5053848a7357085
 - uri: repo://changes/st-0302/contracts/foundation-schema.v1.yaml
-  bytes: 4457
-  sha256: fc7c794e5a6406960f3fa8007193736cfdff32e6210216a62bd363759be9dcec
+  bytes: 4138
+  sha256: f3b08f4feb9c216834dda673978df3091e8e599323d5b7366773c9c4df9336e4
 - uri: repo://changes/st-0302/README.md
   bytes: 1962
   sha256: 3125e4a3e79441d909fd199433bc87487a3bd3e694071d52059dd577b8e1d7c4
@@ -58,14 +58,14 @@ source_artifacts:
   bytes: 3627
   sha256: b130d66eb42fb3fee8764e87d61732f3227ac0b38f3c992589278649b2705388
 - uri: repo://scripts/build_st0302_foundation.py
-  bytes: 37087
-  sha256: 2903b7b16ab5f9a3371255d882b15c9c85bc6a7db77e06a84631b8107bc4c4f0
+  bytes: 36236
+  sha256: c004ea7ee8d0a257d3f9dafe282dd5094efa3f7434fae400e163590601a8e82a
 - uri: repo://scripts/build_st0201_postgres_service.py
-  bytes: 36958
-  sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+  bytes: 36955
+  sha256: 847c9eab92236b8f40d63423b6640e0aa299cf5562040aa64f60358248ea4375
 - uri: repo://scripts/build_st0301_migration_framework.py
-  bytes: 23133
-  sha256: 7ef96813e20a9c4f69307d7b30ac9def68975f00a1e5de0fb62673523c5c0eb9
+  bytes: 20418
+  sha256: 8846f478d85f7be611b683c9b5af64b562f60bc1fd5e648e4209618e72ecab6d
 - uri: repo://changes/st-0301/contracts/migration-framework.v1.yaml
   bytes: 10671
   sha256: 8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f
@@ -103,65 +103,65 @@ source_artifacts:
   bytes: 214267
   sha256: 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
 - uri: repo://tests/conftest.py
-  bytes: 212
-  sha256: 7c459692951c620b4223186bddd8be73415d167f786ff886a60a2c5c54844728
+  bytes: 1892
+  sha256: 3cdb157bf4fabdc226ed3c3e764f29b2dd7993902f91f4e3ee8807087c99b9de
 - uri: repo://tests/st0102/test_commands_and_docs.py
-  bytes: 11741
-  sha256: 26d34e90521dc2970d81582dcd7d269460c22f0f9272899d6c81b3656e4ff167
+  bytes: 2643
+  sha256: 244d720d0c4fdc9f0bc20b0a20313cc35e6a5f6e5913f0c345438aa22c66d39d
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 66604
-  sha256: 3993db51b4783f33bc993720a45a44e908e8f007aad611317d4d3042eb6c71f0
+  bytes: 3362
+  sha256: 2ff9163b43b7c445190d5a01a31485ab9e2c4474c5bade65041f541ea90dc333
 - uri: repo://tests/st0301/conftest.py
-  bytes: 1424
-  sha256: b24ff5730611b60b03722eeaa77743f05465f655c51d1eb426807b916a8e933d
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st0301/test_catalog.py
-  bytes: 11918
-  sha256: 7fc52b6cdb8061ee393e477fd8e160b1372719ad9b0761da05a0546bf5a697ce
+  bytes: 11938
+  sha256: bc9d6b419592f56a75490bda377c534f18985be00ab934b60db2a33b39e02b34
 - uri: repo://tests/st0301/test_cli.py
   bytes: 2723
-  sha256: 62e5b7be84268cca6cc4fe2bf4d00d7fbfd3bd29929e6b152f6b5553bc720dde
+  sha256: fd0b0aabc1b870a42d9b2f4c67ae08937cda6f8ce91b3301b47dae41132f9409
 - uri: repo://tests/st0301/test_contract.py
   bytes: 10581
-  sha256: fb95d32e4a12a99e75cfc2eae3a64d900e57be736a0b03e072cf8379231cb8c9
+  sha256: 4b0cab077989393fc3d41c5663bf5dcbf9318abff471cce92ea06514e532bf5b
 - uri: repo://tests/st0301/test_generation.py
-  bytes: 7684
-  sha256: b16610a6625dcb1181674609811e61f82252fa326f50f0847f5aaeb87ac4bc4e
+  bytes: 7594
+  sha256: b1f806aa383afe176f34f59bdf03bd107412061e52351c3adf8bafda887b6d70
 - uri: repo://tests/st0301/test_postgresql.py
   bytes: 34214
-  sha256: b3ef592995f2b2150bb08ad53807437dcea7bf6b98709d82ac9dbd9727fe9db7
+  sha256: 117c51b3cf5f4b39635d3a55090e8fbd69606bc2d703a2345bcd0ecbc04e8b7e
 - uri: repo://tests/st0301/test_runner.py
-  bytes: 32098
-  sha256: 48a7d7ab69506228d60da640d0466fed3be02cb84068f79fe7c20a9c61475ab2
+  bytes: 32118
+  sha256: 71208aac56bc84825c0f140199fd388c09d1c9ec60e56c35719080f425e62d7e
 - uri: repo://tests/postgresql18.py
   bytes: 8178
   sha256: 14d81fbbb7b35fd2672a11ccd162d8683905fe7216be6fb45b46d73d2b4d6085
 - uri: repo://tests/st0302/conftest.py
-  bytes: 740
-  sha256: 30384cad7a2c92cb90d6eba7c331ceb5e20fa53ac68c1891ed5cd2e3ba21b43e
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st0302/test_contract.py
   bytes: 7049
-  sha256: cf6ec315c48b4b0395ddd783dedf1dce7e8e577a652125307ea30d7512ab3077
+  sha256: c3727c274717eae2ff9cff8586b29e24a692747f6a8c3e1985c87094e641c8fd
 - uri: repo://tests/st0302/test_generation.py
-  bytes: 10024
-  sha256: b62c0f994fe0ab2f6aa36388c722793e2dce0543545dcefc62916770273be00e
+  bytes: 8686
+  sha256: f873f65645c68a4b8ea225a156ee7d34f99a602a8d0befe4c52ed52580dd3cc2
 - uri: repo://tests/st0302/test_postgresql.py
   bytes: 25958
-  sha256: 8c8bd7bf0605295743811c4701dc07d92821d7b7da88cb0b0cef3069f9e8d8d9
+  sha256: c7d2a301f40624a6d40d0de86913242ccbf0876fa7515a1a0fe32d891b0bf670
 - uri: repo://tests/st0302/test_revision.py
   bytes: 5015
-  sha256: c70df913b7e4f95440739ff71a8fcdca302f9c0d12b2bd789e981e3fe0b24f75
+  sha256: 4a962b419b4099ec6eea3d9a690ba624eb529b9c6bd5b18d3f38a3b3473cca98
 - uri: repo://pyrightconfig.json
-  bytes: 553
-  sha256: df638ebde267dfb2d865662b5846e728fa6251abc87fe29acbce66bdb0083191
+  bytes: 591
+  sha256: ae00b6ec27e1938d762201d58eb3a476c2d2f7c06ff22f3a7c6b94d81642f5b2
 - uri: repo://Makefile
-  bytes: 34422
-  sha256: 8d4030bfcffaa5bde56842b6a2475bbe2b845e074722c787b9d712bc22d2a40f
+  bytes: 2077
+  sha256: d505133bfc56b259cdb3a3279d6f242a885998f239a3e29fc003ec63dfbbb9e9
 - uri: repo://README.md
-  bytes: 58459
-  sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
+  bytes: 3960
+  sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
 - uri: repo://changes/st-0301/manifest.yaml
-  bytes: 13018
-  sha256: 5abdb26df67dd204dc92a88f3c93132dc30c99a16a2109eea4f84a35c6e574eb
+  bytes: 10097
+  sha256: 46f38c965c0e966929f68fdeeeb411230b30a23a4702d4ca06214850f333f542
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://migrations/versions/202608030002_foundation_schemas.py
@@ -172,7 +172,7 @@ generated_artifacts:
   sha256: 9f32cad90b6f5e81211f096900a1b929b55912ecf5aea04ba3d544192e0e0273
 - uri: repo://changes/st-0302/generated/foundation-catalog.v1.json
   bytes: 3303
-  sha256: eb2d3c5fe8266e9e627cc7b6555dce0dffa9e24b776b4390094c67b9990bb927
+  sha256: d867beb1842b0ed57d4c9f9060c662f3f86811e29086d3ca79c9d4d7694ed0f9
 manifest_self_integrity:
   included_in_source_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check

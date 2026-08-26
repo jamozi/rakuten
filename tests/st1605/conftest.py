@@ -53,6 +53,7 @@ def repository_copy(tmp_path: Path) -> Iterator[Path]:
         *map(Path, builder.EXPECTED_ST1602_HASHES),
         *map(Path, builder.EXPECTED_ST1405_HASHES),
         *map(Path, builder.EXPECTED_IMPLEMENTATION_HASHES),
+        *builder.IMPLEMENTATION_DEPENDENCY_PATHS,
         *(Path(path) for path, _digest in builder.EXPECTED_RUNTIME_MODULES.values()),
     }
     paths = {*authority_paths, *dependency_paths, *builder.SOURCE_PATHS}

@@ -7,7 +7,7 @@ from dataclasses import replace
 
 import pytest
 
-from conftest import axis, known_cell, product, valid_comparison
+from .support import axis, known_cell, product, valid_comparison
 import raos.domain.editorial.comparison_validation as comparison_module
 from raos.domain.editorial.comparison_validation import (
     ComparisonDecision,

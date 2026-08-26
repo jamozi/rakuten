@@ -40,7 +40,7 @@ from raos.domain.freshness.freshness import (
     provisional_freshness_policy_binding,
 )
 
-from conftest import EVALUATED_AT, JST, REPOSITORY_ROOT, evaluation_request
+from .support import EVALUATED_AT, JST, REPOSITORY_ROOT, evaluation_request
 
 
 POLICY_PATH = (

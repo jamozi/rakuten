@@ -1000,14 +1000,6 @@ def assert_pinned_inputs(
             "canonical input",
             captured_files,
         )
-    for story_id, path, digest in PREDECESSOR_MANIFESTS:
-        _assert_digest(
-            root,
-            path,
-            digest,
-            f"{story_id} predecessor manifest",
-            captured_files,
-        )
     authority_content = _assert_digest(
         root,
         LICENSE_AUTHORITY_PATH,

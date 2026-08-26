@@ -6,7 +6,7 @@ import ast
 import inspect
 from pathlib import Path
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.adapters.recorded_telemetry import (
     DisabledTelemetrySink,
     RecordedTelemetrySink,

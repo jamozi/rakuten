@@ -20,7 +20,6 @@ OUTPUT_PATH: Final = ROOT / SLICE / "runtime-manifest.v1.json"
 PREDECESSOR_PATH: Final = (
     ROOT / "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json"
 )
-APPROVED_BASE_COMMIT: Final = "ca271187c4c8606487193110b29597a40e4c1c9f"
 MAX_FILE_BYTES: Final = 4 * 1024 * 1024
 MAX_MANIFEST_BYTES: Final = 256 * 1024
 GENERATED_CONTRACT_ROOT: Final = ROOT / "python/raos/generated/contracts"
@@ -202,7 +201,7 @@ def _validate_required_paths() -> None:
 def build_manifest() -> bytes:
     _validate_required_paths()
     _validate_content_identity()
-    predecessor = _read_regular_file(
+    _read_regular_file(
         "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json",
         maximum=MAX_MANIFEST_BYTES,
     )
@@ -217,17 +216,14 @@ def build_manifest() -> bytes:
             }
         )
     manifest = {
-        "approved_base_commit": APPROVED_BASE_COMMIT,
         "article_ids": list(ARTICLE_IDS),
         "external_action_authority": "NONE",
         "generated_by": "scripts/build_st1704_self_hosted_editorial_manifest.py",
         "paths": paths,
-        "predecessor": {
-            "path": "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json",
-            "sha256": _sha256(predecessor),
-        },
+        "generator_owner": "build_st1704_self_hosted_editorial_manifest",
+        "generator_version": "2",
+        "predecessor": {"owner_id": "build_st1703_self_hosted_runtime_manifest", "version": "2"},
         "publication_authority": "NONE",
-        "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
         "schema": "SELF_HOSTED_EDITORIAL_PILOT_MANIFEST_V1",
         "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
         "story_id": "ST-1704",

@@ -13,7 +13,7 @@ import sys
 import pytest
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_local_compose as generator
 from scripts import build_st0201_postgres_service as postgres_generator
 
@@ -177,7 +177,7 @@ def test_st0201_manifest_remains_a_frozen_component_attestation() -> None:
     )
 
 
-def test_active_manifest_attests_cumulative_stack_and_frozen_predecessor() -> None:
+def test_active_manifest_attests_cumulative_stack_and_semantic_predecessor() -> None:
     outputs = generator.render_outputs(REPOSITORY_ROOT)
     manifest = yaml.safe_load(outputs[generator.MANIFEST_PATH])
     assert manifest["document"] == {
@@ -191,7 +191,8 @@ def test_active_manifest_attests_cumulative_stack_and_frozen_predecessor() -> No
     assert manifest["stack"] == {"stories": ["ST-0201", "ST-0202"]}
     assert manifest["provenance"]["predecessor_manifest"] == {
         "uri": "repo://changes/st-0201/manifest.yaml",
-        "sha256": generator.EXPECTED_PREDECESSOR_MANIFEST_SHA256,
+        "owner_id": "build_st0201_postgres_service",
+        "owner_version": 2,
         "story_id": "ST-0201",
     }
     assert manifest["generated_artifacts"] == [
@@ -207,21 +208,20 @@ def test_active_manifest_attests_cumulative_stack_and_frozen_predecessor() -> No
     }
 
 
-def test_active_manifest_covers_the_maintained_integration_surfaces() -> None:
+def test_active_manifest_tracks_maintained_surfaces_semantically() -> None:
     manifest = yaml.safe_load(
         generator.render_outputs(REPOSITORY_ROOT)[generator.MANIFEST_PATH]
     )
-    rows = manifest["source_artifacts"]
-    assert manifest["source_artifact_count"] == len(generator.SOURCE_ARTIFACT_PATHS)
+    rows = manifest["semantic_inputs"]
+    assert manifest["semantic_input_count"] == len(generator.SEMANTIC_INPUT_PATHS)
     assert [row["uri"] for row in rows] == [
-        f"repo://{path.as_posix()}" for path in generator.SOURCE_ARTIFACT_PATHS
+        f"repo://{path.as_posix()}" for path in generator.SEMANTIC_INPUT_PATHS
     ]
-    for relative, row in zip(generator.SOURCE_ARTIFACT_PATHS, rows, strict=True):
-        content = (REPOSITORY_ROOT / relative).read_bytes()
+    for relative, row in zip(generator.SEMANTIC_INPUT_PATHS, rows, strict=True):
         assert row == {
             "uri": f"repo://{relative.as_posix()}",
-            "bytes": len(content),
-            "sha256": _sha256(content),
+            "semantic_id": relative.as_posix(),
+            "version": 2,
         }
 
 

@@ -41,7 +41,7 @@ from raos.domain.freshness.refresh_proposal import (
 from raos.ports.refresh_proposal import RefreshProposalExchange
 from raos.domain.shared.persistence import Sha256Digest
 
-from conftest import (
+from .support import (
     freshness_request,
     freshness_result,
     hex_digest,

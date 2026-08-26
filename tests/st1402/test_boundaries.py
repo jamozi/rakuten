@@ -29,7 +29,7 @@ from raos.domain.freshness.safe_degradation import (
 )
 from raos.ports.safe_degradation import SafeDegradationExchange
 
-from conftest import bound_request
+from .support import bound_request
 
 
 ROOT = Path(__file__).resolve().parents[2]

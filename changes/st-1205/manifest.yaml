@@ -4,8 +4,7 @@ document:
   story_id: ST-1205
   source_contract: repo://changes/st-1205/contracts/kpi-read-model.v2.yaml
   generated_by: repo://scripts/build_st1205_kpi_read_model_reference_plan.py
-  generation_command: uv run --frozen --offline --no-cache --no-sync --no-env-file
-    python scripts/build_st1205_kpi_read_model_reference_plan.py
+  generation_command: python scripts/build_st1205_kpi_read_model_reference_plan.py
 provenance:
   contract_sha256: c831abdfd181cbab74ab58926f9596cf608edb88901becb739479199194d5da2
   authority:
@@ -78,8 +77,8 @@ source_artifacts:
   bytes: 4133
   sha256: 4722c69a67112898a1d070021d6262f64442d95f9296c956287d2fb829c10b72
 - uri: repo://scripts/build_st1205_kpi_read_model_reference_plan.py
-  bytes: 24509
-  sha256: c99dbc7756944566033941322983728bbdf85f01622c7e9b43f996225f11d50b
+  bytes: 24270
+  sha256: 4f8793973550c83a75ce6ae00ef123e7e6ed1a15425ee04dc1904c7a2a173852
 - uri: repo://python/raos/domain/analytics/kpi_read_model.py
   bytes: 51846
   sha256: 7cc8ad6e10c61add95f3543605e1b1305762c20a691b4a05f9c070143f3101ac
@@ -93,23 +92,23 @@ source_artifacts:
   bytes: 8624
   sha256: 864e0f4f7d6925b3fe513ed329ad5b21a8fec32a193a18cd3aee91cbbac0b0f0
 - uri: repo://tests/st1205/conftest.py
-  bytes: 3208
-  sha256: 5658caf178b330bc77d38af1077aff78de7729c312baddcf7d5f2311f2b142f8
+  bytes: 234
+  sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st1205/test_contract.py
   bytes: 5378
-  sha256: 59b0280f951557eb4979edc07864c8d0f445da07b087d8f85d09b25a51479ba6
+  sha256: 13e22849f01faa327edb24b4394206ae74b801981ba5ea87b3244bc51f6da1b9
 - uri: repo://tests/st1205/test_calculation.py
   bytes: 4203
   sha256: 649419031b811bf4bac76765b14a054305b8e0961815550e2bc8a78f0452ada2
 - uri: repo://tests/st1205/test_adapter_job.py
   bytes: 7352
-  sha256: 857b8790054cc6ff7d6e8a9183677f780319c0239083097b5265baac36b59551
+  sha256: 815f4556a3baa08d3e14fa20e47fb35d3a9fe3357c751edf76c8709af6e86803
 - uri: repo://tests/st1205/test_negative_cases.py
   bytes: 7609
   sha256: da8301b627006da29fba46fe410cfd3150c49a7c3765018aa1a927bf54a4da0f
 - uri: repo://tests/st1205/test_generation.py
-  bytes: 7209
-  sha256: d9bee72fbc33353d9f993c7fa80a96aa0c00938e14b16e9021076414b60c22b2
+  bytes: 7159
+  sha256: 8e9eeabc25fad1b75b40ebcec12bdf765004fbba88d4fdbe4f1caa36dfb193fa
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1205/generated/kpi-read-model.v2.json

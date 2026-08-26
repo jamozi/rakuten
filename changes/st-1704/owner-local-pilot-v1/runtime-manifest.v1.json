@@ -1016,9 +1016,9 @@
       "sha256": "c8ee10a2acb0fca4df8a92ff33cd96cfddb908395bd948dc37bdfa21343f7f96"
     },
     {
-      "bytes": 24847,
+      "bytes": 24466,
       "path": "scripts/build_st1704_owner_local_pilot.py",
-      "sha256": "a733a4488fd096a57272f6eab0da8ce4fbd317185bc3bdc5a198e8f6e7c0f4c8"
+      "sha256": "6fda483fc5176c8e9b8d2f9a8560bd09fa27b722e70799f2037ab22b6103fd07"
     },
     {
       "bytes": 18405,

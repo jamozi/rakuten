@@ -9,7 +9,7 @@ import pytest
 
 from scripts import build_st0006_decision_gates as gates
 
-from conftest import clone, synthetic_catalog
+from .support import clone, synthetic_catalog
 
 
 def test_current_report_blocks_every_target_with_same_14_decisions(

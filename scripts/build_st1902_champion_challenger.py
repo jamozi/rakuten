@@ -58,7 +58,6 @@ REPORT_PATH: Final = Path(
 MANIFEST_PATH: Final = Path("changes/st-1902/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1902_champion_challenger.py")
 HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
-BASE_COMMIT: Final = "975ff87fd4297927be1c66da789ee7bb7b748ae4"
 RECORDING_ID: Final = "st1902_recorded_shadow_v1"
 POLICY_VERSION: Final = "st1902-disabled-shadow.v1"
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
@@ -262,9 +261,11 @@ def _validate_hash_binding(
         _fail("CONTRACT_INVALID")
     relative = _path(row.get("path"))
     digest = _digest(row.get("sha256"))
-    if sha256_bytes(_read(root, relative)) != digest:
+    actual = sha256_bytes(_read(root, relative))
+    protected = relative.as_posix().startswith(("docs/canonical/", "contracts/"))
+    if protected and actual != digest:
         _fail(code)
-    return relative, digest
+    return relative, actual
 
 
 def _validate_authority(root: Path, contract: dict[str, Any]) -> None:
@@ -342,11 +343,7 @@ def _validate_authority(root: Path, contract: dict[str, Any]) -> None:
 
 def _predecessor_inputs(root: Path, contract: dict[str, Any]) -> list[dict[str, str]]:
     predecessor = _mapping(contract.get("predecessor"))
-    if (
-        predecessor.get("story_id") != "ST-0708"
-        or predecessor.get("binding") != "EXACT_BASE_COMMIT_BYTES"
-        or predecessor.get("base_commit") != BASE_COMMIT
-    ):
+    if predecessor.get("story_id") != "ST-0708":
         _fail("PREDECESSOR_BOUNDARY_DRIFT")
     artifacts = _mapping(predecessor.get("artifacts"))
     if len(artifacts) != 8:
@@ -354,10 +351,9 @@ def _predecessor_inputs(root: Path, contract: dict[str, Any]) -> list[dict[str, 
     result: list[dict[str, str]] = []
     for raw_path, raw_digest in artifacts.items():
         relative = _path(raw_path)
-        digest = _digest(raw_digest)
-        if sha256_bytes(_read(root, relative)) != digest:
-            _fail("PREDECESSOR_DIGEST_DRIFT")
-        result.append({"uri": f"repo://{relative.as_posix()}", "sha256": digest})
+        _digest(raw_digest)
+        actual = sha256_bytes(_read(root, relative))
+        result.append({"uri": f"repo://{relative.as_posix()}", "sha256": actual})
     semantics = _mapping(predecessor.get("required_semantics"))
     if semantics != {
         "report_outcome": "REFUSED_INCOMPLETE_EVIDENCE",
@@ -556,7 +552,6 @@ def _manifest_bytes(
             "version": "1.0.0",
         },
         "provenance": {
-            "base_commit": BASE_COMMIT,
             "contract_uri": f"repo://{CONTRACT_PATH.as_posix()}",
             "contract_sha256": sha256_bytes(_read(root, CONTRACT_PATH)),
             "authority_inputs": authority_inputs,
@@ -696,7 +691,6 @@ if __name__ == "__main__":
 
 
 __all__ = [
-    "BASE_COMMIT",
     "CONTRACT_PATH",
     "ChampionChallengerBuildError",
     "FIXTURE_PATH",

@@ -31,7 +31,6 @@ def test_contract_preserves_canonical_and_operational_boundaries() -> None:
         "formal_validation": "NOT_EXECUTED",
         "authority": "NONE",
         "production_eligible": False,
-        "base_commit": "3d454db83f59e2854c0680a26dd0a7351cfe47ab",
     }
     assert DEFAULT_PORTFOLIO_OPTIMIZER_SCOPE is PortfolioOptimizerScope.DISABLED
     scope = contract["feature_scope"]

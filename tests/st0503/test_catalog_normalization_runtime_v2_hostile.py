@@ -39,7 +39,7 @@ from raos.ports.catalog_normalization_runtime_v2 import (
     CatalogNormalizationUnitOfWorkStoreV2,
 )
 
-from runtime_v2_fixtures import normalization_store_v2, source_fixture_v2
+from .runtime_v2_fixtures import normalization_store_v2, source_fixture_v2
 
 
 CANARY = "AKIA-DO-NOT-ECHO-ST0503-HOSTILE"

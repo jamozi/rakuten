@@ -7,7 +7,7 @@ from typing import cast
 
 import pytest
 
-from conftest import candidate, request, service_and_adapter
+from .support import candidate, request, service_and_adapter
 from raos.application.editorial.ai_draft_integration import AiDraftIntegrationService
 from raos.domain.editorial.ai_draft_integration import (
     AiDraftEnvironment,

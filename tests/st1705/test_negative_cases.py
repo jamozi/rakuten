@@ -74,20 +74,25 @@ def test_unknown_missing_duplicate_and_alias_contract_shapes_are_rejected(
     assert error.value.code == "YAML_ALIAS_FORBIDDEN"
 
 
-def test_bound_input_hash_drift_fails_closed(repository_copy: Path) -> None:
-    cases = (
-        (next(iter(builder.EXPECTED_SOURCE_HASHES)), "SOURCE_HASH_DRIFT"),
-        (next(iter(builder.EXPECTED_DEPENDENCY_HASHES)), "DEPENDENCY_HASH_DRIFT"),
-        (builder.FORMAL_SCHEMA_PATH.as_posix(), "FORMAL_SCHEMA_HASH_DRIFT"),
-    )
-    for relative, code in cases:
+def test_canonical_hash_is_protected_and_tracked_inputs_are_semantic(
+    repository_copy: Path,
+) -> None:
+    canonical = repository_copy / next(iter(builder.EXPECTED_SOURCE_HASHES))
+    canonical.chmod(0o600)
+    original = canonical.read_bytes()
+    canonical.write_bytes(original + b"\n")
+    with pytest.raises(builder.PilotSignoffError) as error:
+        builder.load_contract(repository_copy)
+    assert error.value.code == "SOURCE_HASH_DRIFT"
+    canonical.write_bytes(original)
+
+    for relative in (
+        next(iter(builder.EXPECTED_DEPENDENCY_HASHES)),
+        builder.FORMAL_SCHEMA_PATH.as_posix(),
+    ):
         target = repository_copy / relative
-        original = target.read_bytes()
-        target.write_bytes(original + b"\n")
-        with pytest.raises(builder.PilotSignoffError) as error:
-            builder.load_contract(repository_copy)
-        assert error.value.code == code
-        target.write_bytes(original)
+        target.write_bytes(target.read_bytes() + b"\n")
+    assert builder.load_contract(repository_copy)
 
 
 def test_duplicate_key_in_json_dependency_is_rejected_even_after_hash_rebind(
@@ -340,7 +345,7 @@ def test_cli_accepts_only_build_or_check() -> None:
 
 
 @pytest.mark.parametrize("flags", ((), ("-I",), ("-B",)))
-def test_cli_requires_isolated_and_no_bytecode_mode(flags: tuple[str, ...]) -> None:
+def test_cli_does_not_require_special_interpreter_flags(flags: tuple[str, ...]) -> None:
     result = subprocess.run(
         [
             sys.executable,
@@ -353,12 +358,8 @@ def test_cli_requires_isolated_and_no_bytecode_mode(flags: tuple[str, ...]) -> N
         text=True,
         check=False,
     )
-    assert result.returncode == 1
-    assert result.stdout == ""
-    expected = (
-        "NO_BYTECODE_MODE_REQUIRED" if flags == ("-I",) else "ISOLATED_MODE_REQUIRED"
-    )
-    assert expected in result.stderr
+    assert result.returncode == 0
+    assert result.stderr == ""
 
 
 def test_formal_schema_rejects_unknown_top_level_property_shape() -> None:

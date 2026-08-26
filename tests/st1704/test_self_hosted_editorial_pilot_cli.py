@@ -73,7 +73,7 @@ from raos.domain.editorial.self_hosted_editorial_pilot import (
     canonical_json_bytes,
     canonical_sha256,
 )
-from test_self_hosted_editorial_pilot import request
+from .test_self_hosted_editorial_pilot import request
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]

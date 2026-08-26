@@ -8,7 +8,7 @@ from typing import Any
 import yaml
 from jsonschema.validators import Draft202012Validator
 
-from conftest import CANONICAL_ENVIRONMENTS, EXPECTED_TOOLCHAIN, logical_reference
+from .support import CANONICAL_ENVIRONMENTS, EXPECTED_TOOLCHAIN, logical_reference
 from raos.config import LogLevel, RuntimeConfig
 from scripts import build_st0204_config_loader as generator
 

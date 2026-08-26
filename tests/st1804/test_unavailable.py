@@ -8,7 +8,7 @@ from typing import cast
 
 import pytest
 
-from conftest import clone_month, rebuild_batch, replace_metric
+from .support import clone_month, rebuild_batch, replace_metric
 from raos.domain.analytics.gate3_economics import (
     CohortMaturity,
     CriterionStatus,

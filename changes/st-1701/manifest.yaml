@@ -1,287 +1,44 @@
-document:
-  id: RAOS-ST1701-MVP-BUSINESS-INPUTS-MANIFEST-001
-  version: 1.0.0
-  story_id: ST-1701
-  source_contracts:
-  - repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml
-  - repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml
-  generated_by: repo://scripts/build_st1701_business_inputs.py
-  generation_command: uv run --locked --no-sync python scripts/build_st1701_business_inputs.py
-provenance:
-  implementation_authority:
-    handoff:
-      uri: repo://changes/st-1701/DESIGN_HANDOFF_V1_ST1701_MVP_DECISION_PACKAGE_v1.yaml
-      bytes: 20695
-      sha256: f5e8f70b74fd26c68b0dfd8a47dd35fc59b1651e9e553dad738d90b00acd1790
-    approval:
-      uri: repo://changes/st-1701/DESIGN-HANDOFF-APPROVAL-v1.yaml
-      bytes: 1478
-      sha256: 8a9029410bdad475eca2da7d0ab0f87cf0d3e1a8019e6102522d7cb18ac3dbd0
-      status: APPROVED_FOR_IMPLEMENTATION
-      implementation_authority: ST1701_MVP_DECISION_PACKAGE_V1_ONLY
-  gold_evidence_implementation_authority:
-    handoff:
-      uri: repo://changes/st-1701/DESIGN_HANDOFF_V1_ST1701_GOLD_EVIDENCE_CANONICAL_REVISION_v1.yaml
-      bytes: 26483
-      sha256: c45bea63891448be4af4d696d7d164ea37f246b76f5acce91de791638f49c17f
-    approval:
-      uri: repo://changes/st-1701/DESIGN-HANDOFF-APPROVAL-GOLD-EVIDENCE-v1.yaml
-      bytes: 1876
-      sha256: 288e96b9e4814e1a3d9409addcee2bf1b5bdf12ab9e0a8e756ec66846f057197
-      status: APPROVED_FOR_IMPLEMENTATION
-      implementation_authority: ST1701_GOLD_EVIDENCE_CANONICAL_REVISION_V1_ONLY
-      open_decisions: []
-      self_approval_binding: NOT_PRESENT_NO_CIRCULAR_APPROVAL
-    preapproval_generated_output: GOLD_EVIDENCE_VALIDATION_V1_ONLY
-  final_package_approval:
-    uri: repo://changes/st-1701/MVP-BUSINESS-DECISION-PACKAGE-APPROVAL-v1.yaml
-    bytes: 2098
-    sha256: 749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34
-    status: APPROVED_AS_NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE
-    authority: OWNER_APPROVED_CANONICAL_REVISION_EVIDENCE_CANDIDATE_ONLY
-    source_package:
-      uri: repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml
-      bytes: 10678
-      sha256: 7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f
-    implementation_handoff:
-      uri: repo://changes/st-1701/DESIGN_HANDOFF_V1_ST1701_MVP_DECISION_PACKAGE_v1.yaml
-      sha256: f5e8f70b74fd26c68b0dfd8a47dd35fc59b1651e9e553dad738d90b00acd1790
-    implementation_handoff_approval:
-      uri: repo://changes/st-1701/DESIGN-HANDOFF-APPROVAL-v1.yaml
-      sha256: 8a9029410bdad475eca2da7d0ab0f87cf0d3e1a8019e6102522d7cb18ac3dbd0
-    open_decisions: []
-    self_approval_binding: NOT_PRESENT_NO_CIRCULAR_APPROVAL
-  approved_preimplementation_inputs:
-  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
-    bytes: 7943
-    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
-  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
-    bytes: 4956
-    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
-  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
-    bytes: 71458
-    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
-  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
-    bytes: 11395
-    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
-  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
-    bytes: 24993
-    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
-  - uri: repo://changes/st-0006/contracts/decision-gate-policy.v1.yaml
-    bytes: 1064
-    sha256: 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
-  - uri: repo://changes/st-0006/gate-blocker-report.v1.yaml
-    bytes: 9999
-    sha256: 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
-  - uri: repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml
-    bytes: 8680
-    sha256: d07a2f3902dcd23f7ef9d46ecd3ab68162bcc28f2b3ad849bbe0e27891f502aa
-  - uri: repo://changes/st-1701/README.md
-    bytes: 4690
-    sha256: c7337ffee3bb1e0aa15a9258d3a57a63ac1b65985745ed343d63e530ea77ad1d
-  - uri: repo://scripts/build_st1701_business_inputs.py
-    bytes: 23341
-    sha256: a9462d347c68ff8da234df16327298190ad54b453fce318358ed39d94a973528
-  gold_evidence_approved_preimplementation_inputs:
-  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
-    bytes: 7943
-    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
-  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
-    bytes: 4956
-    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
-  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
-    bytes: 71458
-    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
-  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
-    bytes: 11395
-    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
-  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
-    bytes: 24993
-    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
-  - uri: repo://changes/st-0006/contracts/decision-gate-policy.v1.yaml
-    bytes: 1064
-    sha256: 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
-  - uri: repo://changes/st-0006/gate-blocker-report.v1.yaml
-    bytes: 9999
-    sha256: 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
-  - uri: repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml
-    bytes: 8680
-    sha256: d07a2f3902dcd23f7ef9d46ecd3ab68162bcc28f2b3ad849bbe0e27891f502aa
-  - uri: repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml
-    bytes: 10678
-    sha256: 7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f
-  - uri: repo://changes/st-1701/MVP-BUSINESS-DECISION-PACKAGE-APPROVAL-v1.yaml
-    bytes: 2098
-    sha256: 749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34
-  - uri: repo://changes/st-1701/generated/canonical-revision-request.v1.md
-    bytes: 4268
-    sha256: 6f6425ef97b53ca9a406b98ff5e9b2a64762adc5badc4569cc539afc53da7d04
-  - uri: repo://changes/st-1701/README.md
-    bytes: 10769
-    sha256: da33c6c0720d83477de3e73dc794863f33d2f7bf0304f55a9b23eeb23100525e
-  - uri: repo://scripts/build_st1701_business_inputs.py
-    bytes: 64297
-    sha256: cc89aabbebe241cd81d0f1247ef467b6f48e640ec6a3e8c8c3c4e570899a048b
-  authority_inputs:
-  - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
-    bytes: 7943
-    sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
-  - uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
-    bytes: 3955
-    sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
-  - uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
-    bytes: 4956
-    sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
-  - uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
-    bytes: 24993
-    sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
-  - uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
-    bytes: 11395
-    sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
-  - uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
-    bytes: 71458
-    sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
-  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    bytes: 10741
-    sha256: 9996eb1ff99d84cd1f666663011e53de37ab5c99234707698cad9be04d972d8b
-  predecessor_inputs:
-  - uri: repo://scripts/build_st0006_decision_gates.py
-    bytes: 66037
-    sha256: 0f6ad788aa90660775cb7852f7bb2ab7d8712d62bbf17dcaa651fe0fb8f6e06f
-  - uri: repo://changes/st-0006/contracts/decision-gate-policy.v1.yaml
-    bytes: 1064
-    sha256: 127da325fa02682f2d3ce13bedfb0830e47eb17db401fa4d94b73c698d08d989
-  - uri: repo://changes/st-0006/gate-blocker-report.v1.yaml
-    bytes: 9999
-    sha256: 92fc3fdbe021db08508bc0cc5ee1f6542de94d5fc336b40e45ace30037bdff15
-  implementation_inputs:
-  - uri: repo://scripts/build_st1506_production_deployment.py
-    sha256: cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be
-  current_development_rebinding:
-    classification: REVERSIBLE_REPOSITORY_DEVELOPMENT_ONLY
-    authority_source:
-      uri: repo://AGENTS.md
-      bytes: 54428
-      sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
-      authority: ROOT_STANDING_DEVELOPMENT_AUTHORIZATION
-    current_authority_inputs:
-    - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-      bytes: 11132
-      sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
-    current_implementation_inputs:
-    - uri: repo://scripts/build_st1506_production_deployment.py
-      bytes: 78141
-      sha256: cc6ba0582e40f697ce670ff9a28ad3e8af8bba9c2dc8af68061d77f6ff0044be
-    historical_source_and_authority_rows_preserved: true
-    semantic_delta_from_business_inputs: NONE
-    formal_evidence: false
-    repository_git_authority: ROOT_STANDING_DEVELOPMENT_AUTHORIZATION
-    external_authority: NONE
-    live_provider_authority: NONE
-    credential_authority: NONE
-    staging_authority: NONE
-    publication_authority: NONE
-    release_authority: NONE
-    production_authority: NONE
-  source_contracts:
-  - uri: repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml
-    bytes: 8680
-    sha256: d07a2f3902dcd23f7ef9d46ecd3ab68162bcc28f2b3ad849bbe0e27891f502aa
-  - uri: repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml
-    bytes: 10678
-    sha256: 7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f
-source_artifact_count: 11
-source_artifacts:
+schema_version: 2
+generator_owner_id: build_st1701_business_inputs
+generator_version: 2
+story_ids:
+- ST-1701
+semantic_inputs:
 - uri: repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml
-  bytes: 8680
-  sha256: d07a2f3902dcd23f7ef9d46ecd3ab68162bcc28f2b3ad849bbe0e27891f502aa
+  semantic_id: st1701-unresolved-business-inputs
+  semantic_version: 1.0.0
 - uri: repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml
-  bytes: 10678
-  sha256: 7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f
-- uri: repo://changes/st-1701/MVP-BUSINESS-DECISION-PACKAGE-APPROVAL-v1.yaml
-  bytes: 2098
-  sha256: 749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34
-- uri: repo://changes/st-1701/DESIGN_HANDOFF_V1_ST1701_GOLD_EVIDENCE_CANONICAL_REVISION_v1.yaml
-  bytes: 26483
-  sha256: c45bea63891448be4af4d696d7d164ea37f246b76f5acce91de791638f49c17f
-- uri: repo://changes/st-1701/DESIGN-HANDOFF-APPROVAL-GOLD-EVIDENCE-v1.yaml
-  bytes: 1876
-  sha256: 288e96b9e4814e1a3d9409addcee2bf1b5bdf12ab9e0a8e756ec66846f057197
-- uri: repo://changes/st-1701/README.md
-  bytes: 15933
-  sha256: 9ff100dfcdcf5fb1f94705ebdd7d4b8a87a8d734450db8ad3c51eb0e0a1337fa
-- uri: repo://scripts/build_st1701_business_inputs.py
-  bytes: 91360
-  sha256: 47aef25232372fb41736d6a67ca3fae402cdb3bc2902e65064d0fef41741fb7c
-- uri: repo://tests/st1701/conftest.py
-  bytes: 1358
-  sha256: 63463ddef096ed3e0fcb2d1cf098dc39c4959e8ba136979743ec4d347809085a
-- uri: repo://tests/st1701/test_contract.py
-  bytes: 26903
-  sha256: d6b1d10644b79dcb4ca221ab474cffa1562cd2858f399b13f41e9eb0f838c856
-- uri: repo://tests/st1701/test_generation.py
-  bytes: 32527
-  sha256: cb3de00255c97df8c8bd4fda81f4b2ed36d30b5d7a5aaae8f26e705c37a7573a
-- uri: repo://tests/st1701/test_negative_cases.py
-  bytes: 31546
-  sha256: b2c32a3dc17b87f691ab0b4bde840bf901db9cab488464513fea9657c6efa3fd
-generated_artifact_count: 4
-generated_artifacts:
+  semantic_id: st1701-business-decision-model
+  semantic_version: 2.0.0
+canonical_inputs:
+- uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+  bytes: 7943
+  sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
+- uri: repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml
+  bytes: 3955
+  sha256: 6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626
+- uri: repo://docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+  bytes: 4956
+  sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
+- uri: repo://docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+  bytes: 24993
+  sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
+- uri: repo://docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+  bytes: 11395
+  sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
+- uri: repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+  bytes: 71458
+  sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
+outputs:
 - uri: repo://changes/st-1701/generated/unresolved-mvp-business-inputs.v1.json
-  bytes: 10928
-  sha256: 22394f5b37d3fe90cc5c31aff47be0d0f31f061398bbd9d90b4030bcb050c33b
+  bytes: 10383
+  sha256: 2866b126e659b6c940a20b73d7d9034730cee7b5d14fd001c38d45f65e8be1d7
 - uri: repo://changes/st-1701/generated/mvp-business-decision-package.v1.json
-  bytes: 22781
-  sha256: 623af8942c87c1b14a06b07df1687e3e0cf537085bdd500c59388dd90c0b2f58
+  bytes: 12096
+  sha256: f21122b2a1c704ab579c4725f70b92747cf8137c16b6a12aaf7f719ec8db6c99
 - uri: repo://changes/st-1701/generated/canonical-revision-request.v1.md
-  bytes: 4268
-  sha256: 6f6425ef97b53ca9a406b98ff5e9b2a64762adc5badc4569cc539afc53da7d04
+  bytes: 206
+  sha256: e284d8195144c740e748846e0da6ae6ae3f77812388fc796ce410d4e19e2db05
 - uri: repo://changes/st-1701/generated/gold-evidence-validation.v1.json
-  bytes: 5709
-  sha256: cbf7b267ccd1d51b9d2ab0a0d379529a2b2dc237cf65921468999968d677e4da
-manifest_self_integrity:
-  included_in_generated_artifacts: false
-  verification: deterministic byte-for-byte regeneration via --check
-boundary:
-  package_authority: NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE
-  source_package_internal_final_approval: PENDING_EXACT_REPOSITORY_OWNER_APPROVAL
-  final_package_approval: APPROVED_AS_NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE
-  final_package_approval_authority: OWNER_APPROVED_CANONICAL_REVISION_EVIDENCE_CANDIDATE_ONLY
-  canonical_authority: UNCHANGED
-  canonical_open_decision_status: UNCHANGED
-  st0006_blocker_state: UNCHANGED
-  scoped_decision_count: 7
-  scoped_record_status_counts:
-    OWNER_APPROVED: 4
-    PARTIAL: 1
-    EVIDENCE_PENDING: 1
-    EXECUTION_PENDING: 1
-  canonical_scoped_unresolved_count: 7
-  global_unresolved_blocker_count: 14
-  activation: BLOCKED_UNRESOLVED_INPUTS
-  gate_state: BLOCKED
-  formal_tst_032: NOT_EXECUTED
-  st_1701_acceptance_achieved: false
-  st_1702_ready: false
-  publication_ready: false
-  release_ready: false
-  production_ready: false
-  effective_canonical_status: UNCHANGED
-  informational_cross_story_effect: INFORMATION_ONLY_NO_IMPLEMENTATION_OR_STATUS_EFFECT
-  canonical_revision_request_status: OWNER_APPROVED_EVIDENCE_CANDIDATE_NOT_READY
-  canonical_revision_request_authority: OWNER_APPROVED_CANONICAL_REVISION_EVIDENCE_CANDIDATE_ONLY
-  canonical_revision_request_readiness: NOT_READY
-  gold_evidence_validation_status: EVIDENCE_INSUFFICIENT
-  gold_evidence_stop_code: STOP_EVIDENCE_INSUFFICIENT
-  gold_evidence_ledger_present: false
-  gold_domain_editor_approval_present: false
-  gold_complete_ledger_acceptance_enabled: false
-  gold_resolution_candidates_generated: false
-  gold_open_decisions_revision_candidate_generated: false
-  gold_canonical_revision_request_generated: false
-  gold_canonical_revision_bundle_manifest_generated: false
-  gold_canonical_revision_bundle_approval_present: false
-  gold_candidate_bound_exhaustion_claimed: false
-  gold_postapproval_generation_enabled: false
-  canonical_mutation_authority: NONE
-  status_overlays: UNCHANGED
+  bytes: 308
+  sha256: 9675e25c749b332cdf62925f333ae95c55e0ce1c577048f5d836179f918d8419

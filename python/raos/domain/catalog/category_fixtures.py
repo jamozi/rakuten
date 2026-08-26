@@ -156,6 +156,12 @@ def _array(value: object, *, minimum: int, maximum: int) -> list[object]:
     return items
 
 
+def _positive_integer(value: object) -> int:
+    if type(value) is not int or value < 1:
+        fail_category_fixture(CategoryFixtureFailureCode.FIXTURE_INVALID)
+    return value
+
+
 def _enum(enum_type: type[Enum], value: object) -> Enum:
     if type(value) is not str:
         fail_category_fixture(CategoryFixtureFailureCode.FIXTURE_INVALID)
@@ -245,11 +251,14 @@ class SyntheticIdentityCase(_RedactedValue):
 @dataclass(frozen=True, slots=True, repr=False)
 class CategoryFixtureSourceBinding(_RedactedValue):
     name: str
-    sha256: str
+    owner_id: str
+    owner_version: int
 
     def __post_init__(self) -> None:
         _text(self.name, maximum=64, pattern=_KEY)
-        category_fixture_sha256(self.sha256)
+        _text(self.owner_id, maximum=96, pattern=_KEY)
+        if type(self.owner_version) is not int or self.owner_version < 1:
+            fail_category_fixture(CategoryFixtureFailureCode.FIXTURE_INVALID)
 
 
 @dataclass(frozen=True, slots=True, repr=False)
@@ -358,9 +367,12 @@ class CategoryFixtureBundle(_RedactedValue):
             or len({item.fixture_key for item in self.golden_products}) != 4
             or len(self.identity_cases) != 3
             or len({item.case_id for item in self.identity_cases}) != 3
-            or len(self.source_bindings) != 6
-            or len({item.name for item in self.source_bindings}) != 6
-            or tuple((item.name, item.sha256) for item in self.source_bindings)
+            or len(self.source_bindings) != 5
+            or len({item.name for item in self.source_bindings}) != 5
+            or tuple(
+                (item.name, item.owner_id, item.owner_version)
+                for item in self.source_bindings
+            )
             != _EXPECTED_BINDINGS
         ):
             fail_category_fixture(CategoryFixtureFailureCode.FIXTURE_INVALID)
@@ -442,7 +454,6 @@ _TOP_LEVEL_KEYS = (
 _BINDING_KEYS = (
     "v1_reference_plan",
     "st1701_decision_package",
-    "st1701_approval",
     "st0504_reference_plan",
     "st1401_completion",
     "st1401_freshness_policy",
@@ -450,27 +461,28 @@ _BINDING_KEYS = (
 _EXPECTED_BINDINGS = (
     (
         "v1_reference_plan",
-        "07f2ea06d3d28fafd7a895dfc4c6be0f66a8185a6e032a27c997e5709c3f73fc",
+        "build_st1702_category_fixtures_rules_reference_plan",
+        2,
     ),
     (
         "st1701_decision_package",
-        "7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f",
-    ),
-    (
-        "st1701_approval",
-        "749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34",
+        "build_st1701_business_inputs",
+        2,
     ),
     (
         "st0504_reference_plan",
-        "f3ce4f99f5309fdc0349bd7b5a9d930ae18006d72aeb0fd480165b870d8e3f1b",
+        "build_st0504_product_identity_human_review_reference_plan",
+        2,
     ),
     (
         "st1401_completion",
-        "37be7ef769384885aafb802f6c69bb15dc8d7cb0aeaf15dff013144526b6f866",
+        "st1401_freshness_safe_default",
+        1,
     ),
     (
         "st1401_freshness_policy",
-        "a4d490d2a54b3def63c9c240b09d34a759ebd3924e60cfcca438ee979334cea2",
+        "st1401_freshness_policy",
+        1,
     ),
 )
 _ATTRIBUTE_KEYS = ("model_code", "size_code", "variant_code", "set_count")
@@ -504,7 +516,11 @@ def _bundle_record(bundle: CategoryFixtureBundle) -> dict[str, object]:
             "verification": "NOT_EXECUTED",
         },
         "bindings": {
-            binding.name: binding.sha256 for binding in bundle.source_bindings
+            binding.name: {
+                "owner_id": binding.owner_id,
+                "owner_version": binding.owner_version,
+            }
+            for binding in bundle.source_bindings
         },
         "category": {
             "categoryId": bundle.category_id,
@@ -622,12 +638,25 @@ def build_category_fixture_bundle(
 
     binding_map = _object(top["bindings"], _BINDING_KEYS)
     source_bindings = tuple(
-        CategoryFixtureSourceBinding(name, category_fixture_sha256(binding_map[name]))
+        CategoryFixtureSourceBinding(
+            name,
+            _text(
+                _object(binding_map[name], ("owner_id", "owner_version"))["owner_id"],
+                maximum=96,
+                pattern=_KEY,
+            ),
+            _positive_integer(
+                _object(binding_map[name], ("owner_id", "owner_version"))[
+                    "owner_version"
+                ]
+            ),
+        )
         for name in _BINDING_KEYS
     )
-    if tuple((binding.name, binding.sha256) for binding in source_bindings) != (
-        _EXPECTED_BINDINGS
-    ):
+    if tuple(
+        (binding.name, binding.owner_id, binding.owner_version)
+        for binding in source_bindings
+    ) != _EXPECTED_BINDINGS:
         fail_category_fixture(CategoryFixtureFailureCode.FIXTURE_INVALID)
 
     category = _object(

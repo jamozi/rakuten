@@ -8,7 +8,7 @@ import pickle
 
 import pytest
 
-from conftest import FIXTURE_BYTES, command_for, service_for
+from .support import FIXTURE_BYTES, command_for, service_for
 from raos.application.analytics.keyword_rank_import import (
     KeywordRankEvaluationService,
 )

@@ -16,7 +16,6 @@ document:
 
 authority:
   precedence: CANONICAL_INTEGRATION_THEN_DECISIONS_STORY_TEST_SECURITY_AND_BOUND_DEPENDENCIES
-  integration_base_commit: 53d23dd8f6782c9a68ed27234f9c0719916d5707
   sources:
     - role: integration
       uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -52,54 +51,32 @@ security_controls:
 
 dependencies:
   - story_id: ST-1701
-    status: NON_AUTHORITATIVE_OWNER_DECISION_CANDIDATE
+    owner_id: build_st1701_business_inputs
+    owner_version: "2"
+    status: LOCAL_DECISION_MODEL
     canonical_story_status: NOT_STARTED
     canonical_verification_status: NOT_EXECUTED
     canonical_acceptance: NOT_ACHIEVED
     st1702_ready: false
     connection_status: SOURCE_BOUND_NOT_ACTIVATED
-    artifacts:
-      - uri: repo://changes/st-1701/contracts/mvp-business-decision-package.v1.yaml
-        sha256: 7fa28f95bb3e36abd139052afadda72877129d244697ae3de91319a840022d9f
-      - uri: repo://changes/st-1701/MVP-BUSINESS-DECISION-PACKAGE-APPROVAL-v1.yaml
-        sha256: 749a9296837c58ea25a5a3e4a57b0aefd2dc41e94a0b5b34871ddce353d95c34
-      - uri: repo://changes/st-1701/generated/gold-evidence-validation.v1.json
-        sha256: cbf7b267ccd1d51b9d2ab0a0d379529a2b2dc237cf65921468999968d677e4da
   - story_id: ST-0504
+    owner_id: build_st0504_product_identity_human_review_reference_plan
+    owner_version: "2"
     status: SOURCE_DERIVED_NON_EXECUTABLE_PRODUCT_IDENTITY_HUMAN_REVIEW_REFERENCE_PLAN
     canonical_story_status: NOT_STARTED
     canonical_verification_status: NOT_EXECUTED
     canonical_acceptance: NOT_ACHIEVED
     st1702_ready: false
     connection_status: SOURCE_BOUND_NOT_CONNECTED
-    artifacts:
-      - uri: repo://changes/st-0504/contracts/product-identity-human-review-reference-plan.v1.yaml
-        sha256: f8113f69157fc2afce5c5fb40ff5188c55d7d88b30ae7162441a710a7d54d5ab
-      - uri: repo://changes/st-0504/generated/product-identity-human-review-reference-plan.v1.json
-        sha256: f3ce4f99f5309fdc0349bd7b5a9d930ae18006d72aeb0fd480165b870d8e3f1b
-      - uri: repo://changes/st-0504/manifest.yaml
-        sha256: 1edbbd3cef50f79af8bc1169f64195097be787c3c57e7c65aa31c399735d9e7a
   - story_id: ST-1401
+    semantic_id: st1401-freshness-safe-default
+    semantic_version: "1.0.0"
     status: PROVISIONAL_CANONICAL_SAFE_DEFAULT_DISABLED_RECORDED_FRESHNESS_INTERFACE
     canonical_story_status: NOT_STARTED
     canonical_verification_status: NOT_EXECUTED
     canonical_acceptance: NOT_ACHIEVED
     st1702_ready: false
     connection_status: SOURCE_BOUND_NOT_CONNECTED
-    artifacts:
-      - uri: repo://changes/st-1401/README.md
-        sha256: b5a54f7dc2344503d8baaf4f18d417f021f839baea78e712f5bed26c2e6e6caf
-      - uri: repo://contracts/raos-v0.4/contracts/content/RAOS_06_freshness_update_policy_v0.1.yaml
-        sha256: a4d490d2a54b3def63c9c240b09d34a759ebd3924e60cfcca438ee979334cea2
-      - uri: repo://python/raos/domain/freshness/freshness.py
-        sha256: 3a33b44d99f92fce6417257de8c170d4622dd900fe7cc7cbac0b67494469dd95
-      - uri: repo://python/raos/ports/freshness.py
-        sha256: 8b72de55a697bee06b4d43f3cda3b9dc12b1532091755876b6cab891aaa07d91
-      - uri: repo://python/raos/application/freshness/freshness.py
-        sha256: f716a703af1581d6bb0ed2cde8db4a82848dd6d143bc5bb27ae4ad4353302c43
-      - uri: repo://python/raos/adapters/recorded_freshness.py
-        sha256: 0b4cff4e9c0d22311604abb4c756d63a72d63269073bf1dea1e4cec032639de6
-
 runtime_blockers:
   status: BLOCKED
   canonical_global_unresolved_blocker_count: 14

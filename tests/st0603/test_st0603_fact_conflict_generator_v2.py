@@ -185,15 +185,14 @@ def test_closed_contract_and_fixture_mutations_are_rejected(
         generator._render()  # noqa: SLF001
 
 
-def test_predecessor_byte_drift_is_rejected(
+def test_predecessor_whitespace_is_not_digest_bound(
     st0603_generator_repository_v2: Path,
     monkeypatch,
 ) -> None:
     target = st0603_generator_repository_v2 / generator.PREDECESSOR_RUNTIME[0]
     target.write_bytes(target.read_bytes() + b"\n")
     monkeypatch.setattr(generator, "REPO_ROOT", st0603_generator_repository_v2)
-    with pytest.raises(generator.BuildError, match="PREDECESSOR_HASH_DRIFT"):
-        generator._render()  # noqa: SLF001
+    assert generator._render()  # noqa: SLF001
 
 
 def test_isolated_generation_is_atomic_mode_0644_and_checkable(

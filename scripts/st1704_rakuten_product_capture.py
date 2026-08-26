@@ -25,7 +25,6 @@ MANIFEST_RELATIVE: Final = (
     "changes/st-1704/self-hosted-editorial-pilot-v1/"
     "rakuten-capture-runtime-manifest.v1.json"
 )
-APPROVED_BASE_COMMIT: Final = "f6af738a9a46625fe75cc4ba8642f7b0dc7179bb"
 MAX_MANIFEST_BYTES: Final = 128 * 1024
 MAX_RUNTIME_BYTES: Final = 4 * 1024 * 1024
 _DIRECTORY_FLAGS: Final = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC
@@ -426,18 +425,7 @@ def _verify_runtime_integrity(root: Path) -> tuple[dict[str, bytes], RootIdentit
             head = raw_head.decode("ascii", errors="strict").strip()
         except UnicodeError:
             _fail_runtime()
-        if (
-            _GIT_OBJECT_ID.fullmatch(head) is None
-            or _git(
-                root,
-                "merge-base",
-                "--is-ancestor",
-                APPROVED_BASE_COMMIT,
-                head,
-                maximum_stdout=1,
-            )
-            != b""
-        ):
+        if _GIT_OBJECT_ID.fullmatch(head) is None:
             _fail_runtime()
         manifest_raw = _read_relative(
             root_fd, MANIFEST_RELATIVE, maximum=MAX_MANIFEST_BYTES
@@ -448,7 +436,6 @@ def _verify_runtime_integrity(root: Path) -> tuple[dict[str, bytes], RootIdentit
             _fail_runtime()
         manifest = _decode_json(manifest_raw)
         if manifest_raw != _canonical_manifest(manifest) or set(manifest) != {
-            "approved_base_commit",
             "article_ids",
             "external_action_authority",
             "generated_by",
@@ -460,8 +447,7 @@ def _verify_runtime_integrity(root: Path) -> tuple[dict[str, bytes], RootIdentit
         }:
             _fail_runtime()
         if (
-            manifest["approved_base_commit"] != APPROVED_BASE_COMMIT
-            or manifest["article_ids"] != list(ARTICLE_IDS)
+            manifest["article_ids"] != list(ARTICLE_IDS)
             or manifest["external_action_authority"]
             != "HUMAN_OWNER_BOUNDED_RAKUTEN_READ"
             or manifest["generated_by"]

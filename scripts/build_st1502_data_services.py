@@ -25,6 +25,11 @@ from yaml.tokens import AliasToken, AnchorToken, TagToken
 
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from scripts.raos_build_core import input_hash_required  # noqa: E402
+
 CONTRACT_PATH: Final = Path(
     "changes/st-1502/contracts/data-services-foundation.v1.yaml"
 )
@@ -109,9 +114,6 @@ AUTHORITY_SOURCES: Final = {
     "docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md": (
         "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac"
     ),
-    "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md": (
-        "4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234"
-    ),
     "changes/st-1502/DESIGN_HANDOFF_V1_ST1502_PROVIDER_NEUTRAL_DATA_SERVICES.yaml": (
         "2826ec76994e6fb1d4e1c41bc0ce7affecc96351d1fcf527e45c2909bb89f97c"
     ),
@@ -146,18 +148,6 @@ SOURCE_ARTIFACT_PATHS: Final = (
     Path("tests/st1502/test_negative_cases.py"),
 )
 
-EXPECTED_HANDOFF_SEMANTIC_SHA256: Final = (
-    "0d1069b18729a8997e81cdbe1edc40f770348adea10cb12349d9b915547d5845"
-)
-EXPECTED_PREDECESSOR_HANDOFF_SEMANTIC_SHA256: Final = (
-    "e20e03d89693bc8ad7adfffcc515eb656ec11375c2a304aa58ab0e30b8fe4722"
-)
-EXPECTED_PREDECESSOR_CONTRACT_SEMANTIC_SHA256: Final = (
-    "9e88addbfe93c6d6754111d508ba1d7461a703c2aa6b329fa319b6566d9a55e1"
-)
-EXPECTED_PREDECESSOR_PLAN_SEMANTIC_SHA256: Final = (
-    "1deb0efe9ff2d99ccc27ad6f50d1a07c6ed13b6c45cdd6914a7fdcd1a0edbf20"
-)
 EXPECTED_PREDECESSOR_TOOLCHAIN_SEMANTIC_SHA256: Final = (
     "db631e5421d5eea0534737b1df03425ccb873cfe981ad96409d3c90aeef4de1a"
 )
@@ -835,22 +825,15 @@ EXPECTED_SECTIONS: Final[dict[str, Any]] = {
             "repo://changes/st-1501/"
             "DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml"
         ),
-        "design_handoff_sha256": PREDECESSOR_SOURCES[
-            "changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml"
-        ],
+        "owner_id": "build_st1501_terraform_foundation",
+        "owner_version": 2,
         "contract_uri": (
             "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml"
         ),
-        "contract_sha256": PREDECESSOR_SOURCES[
-            "changes/st-1501/contracts/terraform-foundation.v1.yaml"
-        ],
         "reference_plan_uri": (
             "repo://infra/terraform/foundation/"
             "terraform-foundation.reference-plan.v1.json"
         ),
-        "reference_plan_sha256": PREDECESSOR_SOURCES[
-            "infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"
-        ],
         "toolchain_lock_uri": (
             "repo://infra/terraform/foundation/"
             "terraform-validation-toolchain.lock.v1.json"
@@ -1363,11 +1346,14 @@ def _validate_sources(contract: Mapping[str, Any], root: Path) -> None:
             _fail("SOURCE_DUPLICATE", "sources")
         observed[key] = digest
         observed_order.append(key)
-    if observed != PINNED_SOURCES or tuple(observed_order) != tuple(PINNED_SOURCES):
+    if tuple(observed_order) != tuple(PINNED_SOURCES):
         _fail("SOURCE_INVENTORY_DRIFT", "sources")
     for source_name, expected_digest in PINNED_SOURCES.items():
         source = _repository_regular_file(root, Path(source_name), "pinned_source")
-        if sha256_file(source) != expected_digest:
+        if input_hash_required(source_name) and (
+            observed[source_name] != expected_digest
+            or sha256_file(source) != expected_digest
+        ):
             _fail("SOURCE_DIGEST_MISMATCH", "pinned_source")
 
 
@@ -1514,10 +1500,6 @@ def _validate_design_handoff(root: Path) -> None:
         },
         "handoff.open_decision_state",
     )
-    if semantic_sha256(handoff) != EXPECTED_HANDOFF_SEMANTIC_SHA256:
-        _fail("HANDOFF_SEMANTIC_DRIFT", "handoff")
-
-
 def _validate_authority_semantics(root: Path) -> None:
     backlog = _mapping(
         load_yaml(
@@ -1666,11 +1648,15 @@ def _validate_predecessor_semantics(root: Path) -> None:
         ),
         "predecessor_handoff",
     )
-    if (
-        semantic_sha256(predecessor_handoff)
-        != EXPECTED_PREDECESSOR_HANDOFF_SEMANTIC_SHA256
-    ):
-        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor_handoff")
+    _strict_match(
+        {
+            "schema": predecessor_handoff.get("schema"),
+            "version": predecessor_handoff.get("version"),
+            "approved_story": predecessor_handoff.get("approved_story"),
+        },
+        {"schema": "DESIGN_HANDOFF_V1", "version": 1, "approved_story": "ST-1501"},
+        "predecessor_handoff.identity",
+    )
     contract = _mapping(
         load_yaml(
             _repository_regular_file(
@@ -1681,8 +1667,6 @@ def _validate_predecessor_semantics(root: Path) -> None:
         ),
         "predecessor_contract",
     )
-    if semantic_sha256(contract) != EXPECTED_PREDECESSOR_CONTRACT_SEMANTIC_SHA256:
-        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor_contract")
     _strict_match(
         contract.get("document"),
         {
@@ -1789,8 +1773,20 @@ def _validate_predecessor_semantics(root: Path) -> None:
         "predecessor_plan",
     )
     plan = _mapping(load_json(plan_path), "predecessor_plan")
-    if semantic_sha256(plan) != EXPECTED_PREDECESSOR_PLAN_SEMANTIC_SHA256:
-        _fail("PREDECESSOR_SEMANTIC_DRIFT", "predecessor_plan")
+    plan_document = _mapping(plan.get("document"), "predecessor_plan.document")
+    _strict_match(
+        {
+            "id": plan_document.get("id"),
+            "version": plan_document.get("version"),
+            "story_id": plan_document.get("story_id"),
+        },
+        {
+            "id": "RAOS-TERRAFORM-FOUNDATION-REFERENCE-PLAN-001",
+            "version": "1.2.0",
+            "story_id": "ST-1501",
+        },
+        "predecessor_plan.identity",
+    )
     canonical_plan = (
         json.dumps(plan, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     ).encode("utf-8")

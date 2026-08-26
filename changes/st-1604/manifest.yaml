@@ -41,8 +41,8 @@ source_artifacts:
   bytes: 6160
   sha256: d4ea71b8e8459f2c1e13eea0dee8122bb82ac9328537cdc0db3b496a57e3ed66
 - uri: repo://scripts/build_st1604_performance_load_reference_plan.py
-  bytes: 33855
-  sha256: b2e42561a821890b652f7bdd7343c24c2a3527ed62366d528d1aa2427dc160a3
+  bytes: 33491
+  sha256: a20bd9842308af7e9e8f2b62cf17714ec3b0c5fb6a9566892e1f13733fcce12d
 - uri: repo://tests/st1604/conftest.py
   bytes: 1188
   sha256: 66a8abaf803a6825ee5ec0769f75047d141dc745d6f062d625a5afafa2324a0f
@@ -53,8 +53,8 @@ source_artifacts:
   bytes: 3473
   sha256: fd8536be4f59aa2f13c3bfed82b363ecb909c936a9f6fae4c5b947158aec7eb4
 - uri: repo://tests/st1604/test_negative_cases.py
-  bytes: 18051
-  sha256: b6f343e48f4a8691a5b56e4791153d5047a22b99b2f6012cf1632c83d59dfb79
+  bytes: 18165
+  sha256: 935414f8e2285f01e62590ff4ddb20deeefbabcf9c9cfc9825d60c11f0de64e6
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-1604/generated/performance-load-reference-plan.v1.json

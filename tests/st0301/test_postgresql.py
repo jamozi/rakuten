@@ -10,7 +10,7 @@ import psycopg
 import pytest
 from alembic import command as alembic_command
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.migrations import DatabaseTarget, MigrationError
 from raos.migrations import catalog
 from raos.migrations import runner

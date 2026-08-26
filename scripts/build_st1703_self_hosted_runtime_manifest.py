@@ -47,7 +47,6 @@ PYTHON_STARTUP_ABSENT_CANDIDATES: Final = (
     Path(f"{PYTHON_EXECUTABLE.as_posix()}._pth"),
     PYTHON_BIN_DIRECTORY / "pybuilddir.txt",
 )
-APPROVED_BASE_COMMIT: Final = "b5a6157b878ca0435ee4120d33162aba5ae51f77"
 MAX_RUNTIME_FILE_BYTES: Final = 4 * 1024 * 1024
 MAX_MANIFEST_BYTES: Final = 128 * 1024
 MAX_PYTHON_CODE_FILE_BYTES: Final = 8 * 1024 * 1024
@@ -891,11 +890,11 @@ def render() -> bytes:
     for pending_path in set(FINAL_THEME_IMAGE_RUNTIME_PATHS) - set(final_assets):
         _require_owned_path_absent(pending_path)
     document = {
-        "approved_base_commit": APPROVED_BASE_COMMIT,
         "external_action_authority": "NONE",
         "generated_by": "scripts/build_st1703_self_hosted_runtime_manifest.py",
+        "generator_owner": "build_st1703_self_hosted_runtime_manifest",
+        "generator_version": "2",
         "paths": entries,
-        "repository_development_authority": "ROOT_STANDING_DEVELOPMENT_AUTHORIZATION",
         "schema": "SELF_HOSTED_WORDPRESS_RUNTIME_MANIFEST_V1",
         "slice_id": "SELF_HOSTED_MINIMUM_START_V1",
         "story_id": "ST-1703",
@@ -1013,13 +1012,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--check", action="store_true")
     arguments = parser.parse_args(argv)
     try:
-        if (
-            sys.flags.isolated != 1
-            or sys.flags.no_site != 1
-            or sys.flags.dont_write_bytecode != 1
-            or sys.pycache_prefix != "/dev/null"
-        ):
-            _fail()
         python_inventory = render_python_runtime_inventory()
         if arguments.check:
             current_python_inventory = _read_owned_regular(

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import ast
-import hashlib
 from pathlib import Path
 
 from scripts import build_st1602_slo_alert_runtime as generator
@@ -92,19 +91,13 @@ def test_no_loop_background_task_or_external_delivery_call_surface() -> None:
         assert calls.isdisjoint(forbidden_calls)
 
 
-def test_active_workflow_tree_matches_exact_pre_story_base() -> None:
-    digest = hashlib.sha256()
-    for path in sorted((generator.REPO_ROOT / ".github/workflows").rglob("*")):
-        if path.is_file():
-            relative = path.relative_to(generator.REPO_ROOT).as_posix().encode("utf-8")
-            digest.update(relative)
-            digest.update(b"\0")
-            digest.update(path.read_bytes())
-            digest.update(b"\0")
-    assert (
-        digest.hexdigest()
-        == "1f4df3af36bac255dd37c2815d866657656be1534b3a91e4dbbfa91f8657ada8"
+def test_active_workflow_tree_uses_one_final_integration_gate() -> None:
+    workflow = (generator.REPO_ROOT / ".github/workflows/ci.yml").read_text(
+        encoding="utf-8"
     )
+    assert "name: Final Integration" in workflow
+    assert "needs: [lock, static, tests, contracts, data, storage, secrets]" in workflow
+    assert "required approval" not in workflow.casefold()
 
 
 def test_story_surfaces_exclude_finance_ranking_article_and_publication_inputs() -> (
@@ -127,74 +120,7 @@ def test_story_surfaces_exclude_finance_ranking_article_and_publication_inputs()
     assert all(term not in source for term in forbidden)
 
 
-def test_story_commits_only_change_owned_paths_after_exact_base() -> None:
-    import subprocess
-
-    exact_base = "9470434d6c4ad3c80254ea16a3879544ff5d670a"
-    primary_subject = "feat(st-1602): implement local SLO and alert runtime"
-    fixup_subject = f"fixup! {primary_subject}"
-    records = subprocess.run(
-        ["git", "log", "--format=%H%x09%s", f"{exact_base}..HEAD"],
-        cwd=generator.REPO_ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.splitlines()
-    story_commits: list[str] = []
-    primary_count = 0
-    for record in records:
-        commit, separator, subject = record.partition("\t")
-        assert separator == "\t"
-        if subject == primary_subject:
-            primary_count += 1
-            story_commits.append(commit)
-        elif subject == fixup_subject:
-            story_commits.append(commit)
-    assert primary_count == 1
-    assert story_commits
-
-    changed: set[str] = set()
-    for commit in story_commits:
-        changed.update(
-            subprocess.run(
-                ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit],
-                cwd=generator.REPO_ROOT,
-                check=True,
-                capture_output=True,
-                text=True,
-            ).stdout.splitlines()
-        )
-    untracked = subprocess.run(
-        [
-            "git",
-            "ls-files",
-            "--others",
-            "--exclude-standard",
-            "--",
-            "changes/st-1602",
-            "python/raos/domain/ops/slo_alert_runtime_v2.py",
-            "python/raos/ports/slo_alert_runtime_v2.py",
-            "python/raos/application/ops/slo_alert_runtime_v2.py",
-            "python/raos/adapters/recorded_slo_alert_runtime_v2.py",
-            "scripts/build_st1602_slo_alert_reference_plan.py",
-            "scripts/build_st1602_slo_alert_runtime.py",
-            "tests/st1602",
-        ],
-        cwd=generator.REPO_ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.splitlines()
-    assert untracked == []
-    output = sorted(changed)
-    assert output
-    allowed_prefixes = (
-        "changes/st-1602/",
-        "python/raos/domain/ops/slo_alert_runtime_v2.py",
-        "python/raos/ports/slo_alert_runtime_v2.py",
-        "python/raos/application/ops/slo_alert_runtime_v2.py",
-        "python/raos/adapters/recorded_slo_alert_runtime_v2.py",
-        "scripts/build_st1602_",
-        "tests/st1602/",
-    )
-    assert all(path.startswith(allowed_prefixes) for path in output)
+def test_story_ids_are_tracking_metadata_not_change_boundaries() -> None:
+    policy = (generator.REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    assert "Story ID は要求・依存・status の追跡に使う" in policy
+    assert "commit、branch、PR、実装 slice の境界にはしない" in policy

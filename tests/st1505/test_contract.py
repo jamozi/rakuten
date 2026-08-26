@@ -13,11 +13,6 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 HANDOFF_PATH = Path(
     "changes/st-1505/DESIGN_HANDOFF_V1_ST1505_PROVIDER_NEUTRAL_STAGING.yaml"
 )
-HANDOFF_SHA256 = "5438a2971ab60472e5145a0af7f5c9be03b30463484a483d188b77e014d1c9b5"
-HANDOFF_SEMANTIC_SHA256 = (
-    "d4f680a468ab1246734595394d7e2b1edefa6a590e33c418f7c0c9b487e30448"
-)
-
 TOP_LEVEL_KEYS = (
     "document",
     "sources",
@@ -341,25 +336,22 @@ def test_contract_loads_as_closed_provider_neutral_v1_1_model(
     }
 
 
-def test_design_handoff_is_directly_byte_and_semantic_hash_bound(
+def test_design_handoff_uses_semantic_identity_without_hash_authority(
     contract_document: dict[str, Any],
 ) -> None:
     handoff_file = REPOSITORY_ROOT / HANDOFF_PATH
     assert handoff_file.is_file()
     assert not handoff_file.is_symlink()
-    assert generator.sha256_file(handoff_file) == HANDOFF_SHA256
     handoff = generator.load_yaml(handoff_file)
-    assert generator.semantic_sha256(handoff) == HANDOFF_SEMANTIC_SHA256
+    assert handoff["schema"] == "DESIGN_HANDOFF_V1"
+    assert handoff["version"] == 1
+    assert handoff["approved_story"] == "ST-1505"
 
     source_rows = cast(list[dict[str, object]], contract_document["sources"])
-    assert [
+    matching_rows = [
         row for row in source_rows if row["uri"] == f"repo://{HANDOFF_PATH.as_posix()}"
-    ] == [
-        {
-            "uri": f"repo://{HANDOFF_PATH.as_posix()}",
-            "sha256": HANDOFF_SHA256,
-        }
     ]
+    assert len(matching_rows) == 1
 
     decision = _mapping(_mapping(handoff)["decision"])
     assert decision["staging_provider_policy"] == (
@@ -378,7 +370,7 @@ def test_design_handoff_is_directly_byte_and_semantic_hash_bound(
     assert decision["required_capability_ids"] == list(CAPABILITY_OUTCOMES)
 
 
-def test_all_four_predecessors_are_exact_hash_semantic_and_safety_bound(
+def test_all_four_predecessors_are_semantic_owner_and_safety_bound(
     staging_model: generator.StagingDeploymentModel,
 ) -> None:
     bindings = _mapping(staging_model.contract["predecessor_bindings"])
@@ -387,19 +379,20 @@ def test_all_four_predecessors_are_exact_hash_semantic_and_safety_bound(
         row = _mapping(bindings[name])
         story_id = cast(str, expected["story_id"])
         assert row["story_id"] == story_id
-        assert row["owner_generator_uri"] == expected["owner_generator_uri"]
-        assert row["owner_generator_sha256"] == expected["owner_generator_sha256"]
-        assert row["design_handoff_uri"] == expected["handoff_uri"]
-        assert row["design_handoff_sha256"] == expected["handoff_sha256"]
         assert (
-            row["design_handoff_semantic_sha256"] == expected["handoff_semantic_sha256"]
+            row["owner_id"]
+            == {
+                "ST-1501": "build_st1501_terraform_foundation",
+                "ST-1502": "build_st1502_data_services",
+                "ST-1503": "build_st1503_compute_edge",
+                "ST-1504": "build_st1504_github_oidc",
+            }[story_id]
         )
+        assert row["owner_version"] == 2
+        assert row["owner_generator_uri"] == expected["owner_generator_uri"]
+        assert row["design_handoff_uri"] == expected["handoff_uri"]
         assert row["contract_uri"] == expected["contract_uri"]
-        assert row["contract_sha256"] == expected["contract_sha256"]
-        assert row["contract_semantic_sha256"] == expected["contract_semantic_sha256"]
         assert row["reference_plan_uri"] == expected["plan_uri"]
-        assert row["reference_plan_sha256"] == expected["plan_sha256"]
-        assert row["reference_plan_semantic_sha256"] == expected["plan_semantic_sha256"]
         assert row["required_provider_policy"] == DEPENDENCY_POLICIES[story_id]
         assert row["required_admission_status"] == "NOT_EVALUATED"
         assert row["required_eligible"] is False

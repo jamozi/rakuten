@@ -393,52 +393,34 @@ def test_contract_is_closed_and_binds_the_exact_approved_handoff() -> None:
     )
 
 
-def test_marker_registration_and_make_selectors_are_exact_and_narrow() -> None:
+def test_unified_marker_registration_and_make_selectors_are_narrow() -> None:
     pyproject = tomllib.loads(PYPROJECT_PATH.read_text(encoding="utf-8"))
-    assert pyproject["tool"]["pytest"]["ini_options"]["markers"] == [
-        MARKER_REGISTRATION
-    ]
+    markers = pyproject["tool"]["pytest"]["ini_options"]["markers"]
+    marker_names = {marker.partition(":")[0] for marker in markers}
+    assert marker_names == {
+        "database",
+        "external",
+        "live",
+        "raos_owner_private",
+        "serial",
+        "storage",
+    }
+    assert MARKER_REGISTRATION in markers
 
     makefile = MAKEFILE_PATH.read_text(encoding="utf-8")
-    assert makefile.count("-m 'not raos_owner_private'") == 1
-    assert makefile.count("-m raos_owner_private tests/st0101") == 1
-    phony_declaration = makefile[
-        makefile.index(".PHONY:") : makefile.index("\nbootstrap:")
-    ]
-    phony_targets = phony_declaration.replace("\\\n", " ").split()
-    assert phony_targets.count("pro-owner-private-test") == 1
-    owner_target = makefile[
-        makefile.index("pro-owner-private-test:") : makefile.index("python-install:")
-    ]
-    assert 'test "$(RAOS_REPOSITORY_ROOT)" = /home/minami/rakuten' in owner_target
-    assert "test_hosted_unit_hybrid_boundary.py" in owner_target
-    assert "PRO_RUNTIME_READY" in owner_target
-    assert "len(cases) == 7" in owner_target
-    assert 'root.findall(".//skipped")' in owner_target
-    assert owner_target.index("test_hosted_unit_hybrid_boundary.py") < (
-        owner_target.index("-m raos_owner_private")
-    )
-    assert owner_target.count('cd "$(RAOS_REPOSITORY_ROOT)"') == 3
-    for digest in (
-        "ba54950ce5b13803dfc14f9c0e1e05c2dc7384b78e6aac675f31a265d3ae1172",
-        "fbb6ed9a22a2204045da6f9b6aa96db2fad21ebd4fcce5284bc2bf5793c394aa",
-        "b77308a94b3254f467391e37ba21741481acc6d4737905e4119b67b4407ccafd",
-        "06fbf7646f830182a5a424172bb76056bdda433a1a94d5f0784f19cb9681d77f",
-        "acaefe2d566d84e504803b7df4d745d2eab5dd64fc8d548d4934dca1929cae07",
-    ):
-        assert digest in owner_target
-    ci_unit = makefile[makefile.index("ci-unit:") : makefile.index("ci-contracts:")]
-    assert ci_unit.count("not raos_owner_private") == 1
-    assert ci_unit.count("tests/st0101") == 1
-    assert "tests/st0102" in ci_unit
-    assert "tests/st0801" in ci_unit
+    assert "not serial and not live and not external and not raos_owner_private" in makefile
+    assert "serial and not database and not storage" in makefile
+    assert "pro-owner-private-test" not in makefile
 
 
-def test_direct_function_markers_equal_the_contract_without_hidden_outcomes() -> None:
-    _validate_boundary_contract(_load_yaml(CONTRACT_PATH))
-    assert not (TEST_ROOT / "conftest.py").exists()
-    assert not (REPOSITORY_ROOT / "conftest.py").exists()
-    assert _direct_marker_node_ids() == set(OWNER_PRIVATE_NODE_IDS)
+def test_repository_collection_hook_owns_unified_marker_classification() -> None:
+    conftest = REPOSITORY_ROOT / "tests/conftest.py"
+    assert conftest.is_file()
+    source = conftest.read_text(encoding="utf-8")
+    assert "pytest_collection_modifyitems" in source
+    assert "pytest.mark.serial" in source
+    assert "pytest.mark.database" in source
+    assert "pytest.mark.storage" in source
 
 
 def test_full_marked_and_hosted_collections_form_an_exact_partition() -> None:

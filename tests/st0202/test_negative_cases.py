@@ -8,7 +8,7 @@ from typing import Any
 import pytest
 from yaml.constructor import ConstructorError
 
-from conftest import (
+from .support import (
     CONTRACT_FILE,
     REPOSITORY_ROOT,
     RejectContract,
@@ -360,7 +360,7 @@ def test_runtime_contract_cannot_be_weakened_or_promoted(
     reject_contract(mutable_contract, r"runtime\.")
 
 
-def test_production_version_guard_survives_a_matching_full_digest_pin(
+def test_production_version_guard_is_semantic_without_a_full_digest_gate(
     mutable_contract: dict[str, Any], monkeypatch: pytest.MonkeyPatch
 ) -> None:
     mutable_contract["runtime"]["expected_version_line"] = (
@@ -374,11 +374,6 @@ def test_production_version_guard_survives_a_matching_full_digest_pin(
         return real_load_yaml(path)
 
     monkeypatch.setattr(strict_yaml, "load_yaml", load_yaml)
-    monkeypatch.setattr(
-        generator,
-        "EXPECTED_ST0202_CONTRACT_OBJECT_SHA256",
-        generator._contract_object_digest(mutable_contract),
-    )
     with pytest.raises(
         RuntimeError,
         match=r"object-storage runtime\.expected_version_line differs",

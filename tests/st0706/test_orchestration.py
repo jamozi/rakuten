@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from conftest import NOW, command_and_controls, success_script
+from .support import NOW, command_and_controls, success_script
 from raos.adapters.recorded_ai_job_orchestration import (
     RecordedAiJobOrchestrationAdapter,
     RecordedProviderStep,

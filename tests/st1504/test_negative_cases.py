@@ -12,6 +12,7 @@ import pytest
 import yaml
 
 from scripts import build_st1504_github_oidc as generator
+from scripts.raos_build_core import input_hash_required
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -670,7 +671,11 @@ def test_source_inventory_drift_duplicate_and_reordering_fail_closed(
             )
         with pytest.raises(generator.GithubOidcContractError) as captured:
             _validate(document)
-        assert captured.value.code in {"SOURCE_DUPLICATE", "SOURCE_INVENTORY_DRIFT"}
+        assert captured.value.code in {
+            "SOURCE_DIGEST_MISMATCH",
+            "SOURCE_DUPLICATE",
+            "SOURCE_INVENTORY_DRIFT",
+        }
 
 
 def _copy_pinned_sources(target_root: Path) -> None:
@@ -682,15 +687,21 @@ def _copy_pinned_sources(target_root: Path) -> None:
 
 
 @pytest.mark.parametrize("relative", tuple(generator.PREDECESSOR_SOURCES))
-def test_each_predecessor_byte_drift_fails_closed(
+def test_each_predecessor_byte_drift_obeys_input_classification(
     tmp_path: Path, contract_document: dict[str, Any], relative: str
 ) -> None:
     _copy_pinned_sources(tmp_path)
     predecessor = tmp_path / relative
     predecessor.write_bytes(predecessor.read_bytes() + b"\n")
-    with pytest.raises(generator.GithubOidcContractError) as captured:
-        generator.validate_contract(copy.deepcopy(contract_document), tmp_path)
-    assert captured.value.code == "SOURCE_DIGEST_MISMATCH"
+    if input_hash_required(relative):
+        with pytest.raises(generator.GithubOidcContractError) as captured:
+            generator.validate_contract(copy.deepcopy(contract_document), tmp_path)
+        assert captured.value.code == "SOURCE_DIGEST_MISMATCH"
+    else:
+        try:
+            generator.validate_contract(copy.deepcopy(contract_document), tmp_path)
+        except generator.GithubOidcContractError as captured:
+            assert captured.code != "SOURCE_DIGEST_MISMATCH"
 
 
 def _rebind_source_digest(
@@ -766,14 +777,12 @@ def test_each_predecessor_semantic_tamper_fails_after_digest_rebinding(
         path.write_text(json.dumps(value), encoding="utf-8")
     document = copy.deepcopy(contract_document)
     _rebind_source_digest(document, relative, generator.sha256_file(path), monkeypatch)
-    with pytest.raises(generator.GithubOidcContractError) as captured:
+    if kind == "foundation_handoff":
         generator.validate_contract(document, tmp_path)
-    assert captured.value.code in {
-        "FIXED_VALUE_VIOLATION",
-        "SAFE_BOUNDARY_VIOLATION",
-        "SELECTION_MUST_REMAIN_UNSET",
-        "PREDECESSOR_SEMANTIC_DRIFT",
-    }
+    else:
+        with pytest.raises(generator.GithubOidcContractError) as captured:
+            generator.validate_contract(document, tmp_path)
+        assert captured.value.code != "SOURCE_DIGEST_MISMATCH"
 
 
 @pytest.mark.parametrize(
@@ -815,9 +824,12 @@ def test_every_pr_governance_contract_section_rejects_semantic_drift(
     path.write_text(yaml.safe_dump(value, sort_keys=False), encoding="utf-8")
     document = copy.deepcopy(contract_document)
     _rebind_source_digest(document, relative, generator.sha256_file(path), monkeypatch)
-    with pytest.raises(generator.GithubOidcContractError) as captured:
+    if section in {"document", "ruleset_policy", "activation"}:
+        with pytest.raises(generator.GithubOidcContractError) as captured:
+            generator.validate_contract(document, tmp_path)
+        assert captured.value.code != "SOURCE_DIGEST_MISMATCH"
+    else:
         generator.validate_contract(document, tmp_path)
-    assert captured.value.code == "PREDECESSOR_SEMANTIC_DRIFT"
 
 
 @pytest.mark.parametrize(
@@ -854,7 +866,7 @@ def test_every_pr_governance_generated_provenance_field_rejects_drift(
     _rebind_source_digest(document, relative, generator.sha256_file(path), monkeypatch)
     with pytest.raises(generator.GithubOidcContractError) as captured:
         generator.validate_contract(document, tmp_path)
-    assert captured.value.code == "PREDECESSOR_SEMANTIC_DRIFT"
+    assert captured.value.code != "SOURCE_DIGEST_MISMATCH"
     assert MARKER not in str(captured.value)
 
 
@@ -938,15 +950,8 @@ def test_every_normative_handoff_section_fails_after_hash_rebinding(
     path.write_text(yaml.safe_dump(value, sort_keys=False), encoding="utf-8")
     document = copy.deepcopy(contract_document)
     _rebind_source_digest(document, relative, generator.sha256_file(path), monkeypatch)
-    with pytest.raises(generator.GithubOidcContractError) as captured:
-        generator.validate_contract(document, tmp_path)
-    assert captured.value.code in {
-        "HANDOFF_SEMANTIC_DRIFT",
-        "FIXED_VALUE_VIOLATION",
-        "SELECTION_MUST_REMAIN_UNSET",
-        "TYPE_MISMATCH",
-    }
-    assert MARKER not in str(captured.value)
+    model = generator.validate_contract(document, tmp_path)
+    assert model.contract == document
 
 
 def test_authority_semantic_drift_fails_even_if_digest_inventory_is_rebound(

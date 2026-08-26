@@ -89,17 +89,18 @@ authority:
 
 predecessor:
   story_id: ST-1805
-  binding: EXACT_BASE_COMMIT_BYTES
-  base_commit: 0aaaa69d7776c6e6c4d131246c57c06d2ec996a5
+  binding: OWNER_SEMANTIC_VERSION
+  owner_id: build_st1805_portfolio_decision
+  owner_version: 2
   artifacts:
-    changes/st-1805/contracts/portfolio-decision.v1.yaml: ec398cf427a41b0760e6b99108004d317883c8139796b768d1e122c6ea7648e7
-    changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json: 47adc5544779c1e697a4ca1dc3ada9a251cb40fdfa9dd8e593596b34a082c793
-    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: bf9899509a376ab6a9abd1613cfe5f12ab207629a6c94b2ba3bf2106a992098e
-    scripts/build_st1805_portfolio_decision.py: f0bd5722bc066178f49434de0fe2ac97d677445d6ec29a212b172ba0233d03eb
-    python/raos/domain/portfolio/scale_decision.py: 40b2f943bd19ea24d5df9a6ad8c6fce20681b2a07620b91693697b6bcf3458cd
-    python/raos/ports/scale_decision.py: 10e1728ad94a911c137b0d361adba3cd4b464e0691978c2afb13cbeaaf6834a7
-    python/raos/application/portfolio/scale_decision.py: 9dc9cfb21eaeec106fc51a76db032ed4ba74abc5f4ba930483a7581377ffb30e
-    python/raos/adapters/recorded_scale_decision.py: 9a73d36b2998f5fb41ee6cbf21927c3b7ef31a046f0398b617f3a97edb532c60
+    - changes/st-1805/contracts/portfolio-decision.v1.yaml
+    - changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json
+    - changes/st-1805/generated/portfolio-decision.local-blocked.v1.json
+    - scripts/build_st1805_portfolio_decision.py
+    - python/raos/domain/portfolio/scale_decision.py
+    - python/raos/ports/scale_decision.py
+    - python/raos/application/portfolio/scale_decision.py
+    - python/raos/adapters/recorded_scale_decision.py
   current_semantics:
     overall: BLOCKED
     outcome: NO_DECISION

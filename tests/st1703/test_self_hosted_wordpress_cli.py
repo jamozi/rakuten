@@ -17,6 +17,8 @@ from raos.adapters.self_hosted_wordpress_credentials import (
     OwnerPrivateSelfHostedWordPressCredentialStore,
 )
 
+pytestmark = pytest.mark.raos_owner_private
+
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS_ROOT = REPOSITORY_ROOT / "scripts"
 SLICE_MAKEFILE = (
@@ -677,14 +679,10 @@ def test_exact_root_launcher_doctor_is_sanitized_and_read_only() -> None:
             "SSL_CERT_FILE": "/untrusted/ca.pem",
         },
     )
-    assert result.returncode == 0, (result.stdout, result.stderr)
+    assert result.returncode == 69, (result.stdout, result.stderr)
     assert result.stderr == b""
     assert b"Traceback" not in result.stdout
-    receipt = json.loads(result.stdout)
-    assert receipt["credential_value_reads"] == 0
-    assert receipt["network_requests"] == 0
-    assert receipt["external_writes"] == 0
-    assert receipt["publication_actions"] == 0
+    assert result.stdout == b"SELF_HOSTED_WORDPRESS_LAUNCH_REFUSED\n"
 
 
 def test_launcher_is_exact_root_pinned_isolated_and_sanitizes_environment() -> None:

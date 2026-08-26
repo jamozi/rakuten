@@ -13,7 +13,7 @@ import yaml
 
 from scripts import build_st0806_ai_draft_integration_v2 as generator
 from scripts import secure_generated_publication
-from v2_support import REPOSITORY_ROOT
+from .v2_support import REPOSITORY_ROOT
 
 
 def test_rendered_outputs_exactly_match_committed_artifacts() -> None:

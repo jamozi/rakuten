@@ -9,7 +9,8 @@ provenance:
   contract_uri: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
   architecture_snapshot:
     uri: repo://docs/architecture/ST-0202-object-storage-provider-snapshot.yaml
-    sha256: 9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291
+    semantic_id: docs/architecture/ST-0202-object-storage-provider-snapshot.yaml
+    version: 2
   canonical_inputs:
   - uri: repo://docs/manifest.json
     sha256: 297301b55c70c529e01de2e52ff9a6a0add9c2a7ef4791a9813221316be7501e
@@ -38,104 +39,78 @@ provenance:
     config_digest: sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd
   predecessor_manifest:
     uri: repo://changes/st-0201/manifest.yaml
-    sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
+    owner_id: build_st0201_postgres_service
+    owner_version: 2
     story_id: ST-0201
 stack:
   stories:
   - ST-0201
   - ST-0202
-source_artifact_count: 30
-source_artifacts:
+semantic_input_count: 21
+semantic_inputs:
 - uri: repo://changes/st-0202/contracts/local-object-storage.v1.yaml
-  bytes: 9754
-  sha256: 5a5ca7e3847c730e97172646638088070dfaa96776485910cb967a67ab552a9f
+  semantic_id: changes/st-0202/contracts/local-object-storage.v1.yaml
+  version: 2
 - uri: repo://changes/st-0202/README.md
-  bytes: 12862
-  sha256: 700ff32b9a99f91f6103daa23ea2b1b7d14444cb94d150c0d6ac0d4fe7fe297b
+  semantic_id: changes/st-0202/README.md
+  version: 2
 - uri: repo://docs/architecture/ST-0202-object-storage-provider-snapshot.yaml
-  bytes: 9112
-  sha256: 9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291
-- uri: repo://docs/execplans/ST-0202.md
-  bytes: 13797
-  sha256: 6f2494e9f508a9802e283ba6d12d641cd6886fa9bd692f7854491161ab4b6e53
-- uri: repo://docs/worklogs/ST-0202.md
-  bytes: 17465
-  sha256: d0b88c03025bdd72036fa8314ec645bb7fef8e2af8110ceffd91516566d98647
+  semantic_id: docs/architecture/ST-0202-object-storage-provider-snapshot.yaml
+  version: 2
 - uri: repo://changes/st-0201/manifest.yaml
-  bytes: 5607
-  sha256: fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3
+  semantic_id: changes/st-0201/manifest.yaml
+  version: 2
 - uri: repo://scripts/build_local_compose.py
-  bytes: 35255
-  sha256: 16225c1f832ac0a379b45d22648db63b024e3b66a0b9b7a86b072544895d2fb4
+  semantic_id: scripts/build_local_compose.py
+  version: 2
 - uri: repo://scripts/build_st0201_postgres_service.py
-  bytes: 36958
-  sha256: 8743202d390bc75409a86004d9a039ac48ead343025a84c2779de21ff7b4d66c
+  semantic_id: scripts/build_st0201_postgres_service.py
+  version: 2
 - uri: repo://scripts/postgres_service.sh
-  bytes: 12609
-  sha256: 09e0d1fbb3b7a8a5f702c47fa558528c9f13adfb8dbdb485f2bb0de3bc2a665e
+  semantic_id: scripts/postgres_service.sh
+  version: 2
 - uri: repo://scripts/object_storage_service.sh
-  bytes: 31873
-  sha256: 335929f32b87bae3d9a4038d11a432db23b3836351495df6f33f6ca6cb0f774c
+  semantic_id: scripts/object_storage_service.sh
+  version: 2
 - uri: repo://scripts/object_storage_fixture.py
-  bytes: 30201
-  sha256: 50bdb508fb979038ecb5e937318fcd17328672f0278ab840af360903d560a527
+  semantic_id: scripts/object_storage_fixture.py
+  version: 2
 - uri: repo://tests/st0201/conftest.py
-  bytes: 1528
-  sha256: bbf43f1c353ac9c5fb70d9b3dfb5b91c7da09586884295d270ae5560c9082dca
+  semantic_id: tests/st0201/conftest.py
+  version: 2
 - uri: repo://tests/st0201/test_contract.py
-  bytes: 8196
-  sha256: f8d4372e0ef578ee6a646184f2db5afdd0634fb932fd9f892b2ff51e829c278b
+  semantic_id: tests/st0201/test_contract.py
+  version: 2
 - uri: repo://tests/st0201/test_generation.py
-  bytes: 12221
-  sha256: 8352263511b7c2c7ee0a561d8fea710cafce17e61d3cee588b2ce482f2efb644
+  semantic_id: tests/st0201/test_generation.py
+  version: 2
 - uri: repo://tests/st0201/test_negative_cases.py
-  bytes: 10845
-  sha256: e32afefa7070ac148d8d5a953624e61e455b142af0c8c81a76fa1df70edf5d09
+  semantic_id: tests/st0201/test_negative_cases.py
+  version: 2
 - uri: repo://tests/st0201/test_wrapper.py
-  bytes: 18844
-  sha256: 6857ff30a797e29c65e7a371449aea622b7d358fa1940adbbe7ad8807f538039
+  semantic_id: tests/st0201/test_wrapper.py
+  version: 2
 - uri: repo://tests/st0202/conftest.py
-  bytes: 16851
-  sha256: c684bd1ed82dd8240bd033d3c5ea44fa6d7c9fd61785245b05ee82d9c7eb0009
+  semantic_id: tests/st0202/conftest.py
+  version: 2
 - uri: repo://tests/st0202/test_contract.py
-  bytes: 17228
-  sha256: c5d656106721dcf789ac9a2a85d335909621f7ab8e24319626910bb822f8d3d2
+  semantic_id: tests/st0202/test_contract.py
+  version: 2
 - uri: repo://tests/st0202/test_fixture.py
-  bytes: 14906
-  sha256: 14ed94d27e0bcd7a451e2a16278aa7a1ba7336541045ef76282a43c466df31dc
+  semantic_id: tests/st0202/test_fixture.py
+  version: 2
 - uri: repo://tests/st0202/test_negative_cases.py
-  bytes: 18730
-  sha256: d0c3013c7b42112584523cdd142f98488fa2f827139c1f8cbfad916e80b180e1
+  semantic_id: tests/st0202/test_negative_cases.py
+  version: 2
 - uri: repo://tests/st0202/test_wrapper.py
-  bytes: 50554
-  sha256: d4f807ddf6eb485e9984e0c53af601e38173e5973faec98e7f16cec372adc37a
-- uri: repo://.github/workflows/ci.yml
-  bytes: 20122
-  sha256: 8fb768a883432d15a1f86390cd16bfd23092030c6483cf283a64a41e21dfb3fb
-- uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
-  bytes: 7204
-  sha256: a573506749efd1bfed3c11a021ad56d10fbea901566cc1483547df60d364bf45
-- uri: repo://changes/st-0107/manifest.yaml
-  bytes: 4848
-  sha256: 77b62b841ccc584f9b5809b30870213a0cb3d8488189772714961da49ef39499
-- uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 66604
-  sha256: 3993db51b4783f33bc993720a45a44e908e8f007aad611317d4d3042eb6c71f0
+  semantic_id: tests/st0202/test_wrapper.py
+  version: 2
 - uri: repo://workspace-layout.json
-  bytes: 6679
-  sha256: 7d9e3a5d83fd20b10009c51f2589645e78a57eb6522ee9e060e9f6332d034a85
+  semantic_id: workspace-layout.json
+  version: 2
 - uri: repo://infra/docker/README.md
-  bytes: 460
-  sha256: 324a062bb99e482626fde5dfe9bbcca214f65eb6b8f07281f8b345698dab40f0
-- uri: repo://AGENTS.md
-  bytes: 54428
-  sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
-- uri: repo://Makefile
-  bytes: 34422
-  sha256: 8d4030bfcffaa5bde56842b6a2475bbe2b845e074722c787b9d712bc22d2a40f
-- uri: repo://README.md
-  bytes: 58459
-  sha256: 9557224f338b50cfa8e7cf38e7ec655abe49673eecde4c565cc34749c6d38749
+  semantic_id: infra/docker/README.md
+  version: 2
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://docker-compose.yml

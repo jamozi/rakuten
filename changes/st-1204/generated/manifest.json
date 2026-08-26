@@ -263,8 +263,8 @@
       "uri": "repo://changes/st-1204/contracts/ga4-recorded-fixtures.v1.yaml"
     },
     {
-      "bytes": 190212,
-      "sha256": "c287358ba1954249e60f18198239d4dc1e1ac61f136792445bf2bffd6ce04944",
+      "bytes": 190277,
+      "sha256": "57dcb824c70d8a3083a8a7edddfe83f1ab26373fa4ee3c9c7c16f59df4c2e1df",
       "uri": "repo://scripts/build_st1204_ga4_recorded_adapter.py"
     },
     {

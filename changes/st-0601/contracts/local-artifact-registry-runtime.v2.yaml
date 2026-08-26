@@ -15,23 +15,36 @@ story:
   open_decisions: [OD-014]
 sources:
   - path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
+    kind: immutable
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
   - path: docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml
+    kind: immutable
     sha256: a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e
   - path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
+    kind: immutable
     sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
   - path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
+    kind: immutable
     sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
   - path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml
+    kind: immutable
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - path: changes/st-0202/contracts/local-object-storage.v1.yaml
-    sha256: 5a5ca7e3847c730e97172646638088070dfaa96776485910cb967a67ab552a9f
+    kind: tracked
+    semantic_id: local-object-storage
+    version: 1
   - path: changes/st-0308/contracts/persistence-runtime.v2.yaml
-    sha256: 0dc1de1069988807c59130df42a39837640d006c4f28ab23cf5334895abe51e4
+    kind: tracked
+    semantic_id: persistence-runtime
+    version: 2
   - path: python/raos/domain/catalog/rakuten_item_search_runtime_v2.py
-    sha256: 76ec60dfdd36f09376bf2fe94f596ffbc15bd3c5d59b20628a89eea6bf261b67
+    kind: tracked
+    semantic_id: rakuten-item-search-runtime-domain
+    version: 2
   - path: python/raos/ports/rakuten_item_search_runtime_v2.py
-    sha256: fd7f385825fb80c1ee8966923fa19828b2916cb9a78a66b154c7736a70598628
+    kind: tracked
+    semantic_id: rakuten-item-search-runtime-port
+    version: 2
 runtime:
   mode: RECORDED_LOCAL
   environments: [ENV-DEV, CI]

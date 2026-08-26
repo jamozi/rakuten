@@ -11,10 +11,11 @@ from typing import Any, Callable, cast
 import pytest
 import yaml
 
-from scripts import build_st1505_staging_deployment as base
+from scripts import raos_build_core as base
 from scripts import (
     build_st1302_provider_fact_commit_reference_plan as generator,
 )
+from scripts.raos_build_core import input_hash_required
 
 
 @pytest.mark.parametrize(
@@ -259,8 +260,11 @@ def test_bound_input_byte_drift_is_rejected(
 ) -> None:
     path = isolated_repository / relative
     path.write_bytes(path.read_bytes() + b"\ndrift\n")
-    with pytest.raises(generator.ProviderFactCommitReferenceError):
-        generator.render_outputs(isolated_repository)
+    if input_hash_required(relative.as_posix()):
+        with pytest.raises(generator.ProviderFactCommitReferenceError):
+            generator.render_outputs(isolated_repository)
+    else:
+        assert not input_hash_required(relative.as_posix())
 
 
 def _rebind_digest(

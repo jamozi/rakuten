@@ -10,7 +10,7 @@ import yaml
 from alembic.config import Config
 from alembic.script import ScriptDirectory
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from raos.migrations.catalog import (
     ANCHOR_REVISION,
     CHECKPOINT_SPECS,

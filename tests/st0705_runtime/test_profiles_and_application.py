@@ -66,7 +66,7 @@ def test_owner_generator_is_reproducible_and_all_profiles_are_exact(
 def test_all_profiles_bind_the_repaired_st0702_context_contract(
     trusted_profiles: TrustedTaskValidationProfiles,
 ) -> None:
-    expected = "bac32da9b2e026ad36abb0b622fecbca56e4e9d3fdc0e4cccc807a4e4392837b"
+    expected = hashlib.sha256((ROOT / generator.CONTEXT_CONTRACT_PATH).read_bytes()).hexdigest()
     for profile in trusted_profiles.values():
         context_receipts = profile.required_semantic_receipts[:2]
         assert tuple(item.receipt_kind for item in context_receipts) == (

@@ -37,7 +37,7 @@ from raos.domain.publishing.review_workflow import (
 )
 from raos.domain.shared.persistence import Sha256Digest
 
-from .conftest import request_with
+from .support import request_with
 
 
 def uuid7(suffix: int) -> UUID:

@@ -738,18 +738,12 @@ def test_check_mode_uses_mode_from_the_same_output_capture(
 def test_root_make_and_readme_route_the_story_surface() -> None:
     makefile = (generator.REPO_ROOT / "Makefile").read_text()
     readme = (generator.REPO_ROOT / "README.md").read_text()
-    assert (
-        "synthetic-data-generate synthetic-data-check synthetic-data-test" in makefile
-    )
-    assert "scripts/build_st0205_synthetic_data.py --check" in makefile
-    assert "tests/st0205" in makefile
-    assert (
-        "synthetic-data-check"
-        in makefile.split("ci-repository-policy:", 1)[1].split("ci-static:", 1)[0]
-    )
-    assert (
-        "tests/st0205" in makefile.split("ci-unit:", 1)[1].split("ci-contracts:", 1)[0]
-    )
-    assert "make synthetic-data-generate" in readme
-    assert "make synthetic-data-check" in readme
-    assert "make synthetic-data-test" in readme
+    for target in ("generate", "check", "fast", "final"):
+        assert f"{target}:" in makefile
+        assert f"make {target}" in readme
+    for obsolete in (
+        "synthetic-data-generate",
+        "synthetic-data-check",
+        "synthetic-data-test",
+    ):
+        assert f"{obsolete}:" not in makefile

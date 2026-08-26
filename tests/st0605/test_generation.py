@@ -8,9 +8,9 @@ from typing import Any
 
 import yaml
 
-from conftest import GENERATED, MANIFEST, run_builder
+from .support import GENERATED, MANIFEST, run_builder
 from scripts import build_st0605_claim_evidence_coverage_reference_plan as generator
-from test_contract import EXPECTED_CASE_IDS, EXPECTED_RESULT_COUNTS
+from .test_contract import EXPECTED_CASE_IDS, EXPECTED_RESULT_COUNTS
 
 
 def _snapshot(paths: list[Path]) -> dict[Path, tuple[bytes, int, int]]:

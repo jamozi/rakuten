@@ -7,7 +7,7 @@ from typing import cast
 
 import pytest
 
-from conftest import command, observation, service_for, validator_for
+from .support import command, observation, service_for, validator_for
 from raos.adapters.recorded_media_asset import (
     RecordedMediaAssetStep,
     RecordedMediaAssetValidator,

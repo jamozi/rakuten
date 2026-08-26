@@ -5,20 +5,11 @@ from __future__ import annotations
 import hashlib
 import os
 from pathlib import Path
-from typing import NamedTuple
 
 import pytest
 import yaml
 
 from scripts import build_st0801_content_ast as generator
-
-
-class RuntimeVersion(NamedTuple):
-    major: int
-    minor: int
-    micro: int
-    releaselevel: str
-    serial: int
 
 
 def test_manifest_rendering_is_byte_deterministic() -> None:
@@ -66,40 +57,12 @@ def test_generation_toolchain_matches_contract() -> None:
     assert contract["toolchain"] == generator.EXPECTED_TOOLCHAIN
 
 
-def test_wrong_python_runtime_fails_before_contract_loading(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    contract_calls: list[None] = []
-
-    def forbidden_contract(root: Path = generator.REPO_ROOT) -> dict[str, object]:
-        del root
-        contract_calls.append(None)
-        raise AssertionError("contract loading must not start")
-
-    monkeypatch.setattr(
-        generator.sys, "version_info", RuntimeVersion(3, 14, 5, "final", 0)
-    )
-    monkeypatch.setattr(generator, "load_and_validate_contract", forbidden_contract)
-
-    with pytest.raises(RuntimeError, match="Python runtime version"):
-        generator.render_manifest()
-    assert contract_calls == []
-
-
-def test_wrong_dependency_runtime_fails_closed(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    real_version = generator.importlib_metadata.version
-
-    def version(distribution: str) -> str:
-        if distribution == "jsonschema":
-            return "4.25.1"
-        return real_version(distribution)
-
-    monkeypatch.setattr(generator.importlib_metadata, "version", version)
-
-    with pytest.raises(RuntimeError, match="jsonschema runtime version"):
-        generator.render_manifest()
+def test_generation_defers_runtime_version_verification_to_setup_and_final() -> None:
+    source = Path(generator.__file__).read_text(encoding="utf-8")
+    assert generator.assert_generation_toolchain() is None
+    assert "sys.version_info" not in source
+    assert "importlib_metadata" not in source
+    assert generator.render_manifest()
 
 
 def test_unselected_st0105_output_drift_fails_recursive_integrity(

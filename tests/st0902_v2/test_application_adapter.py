@@ -23,7 +23,7 @@ from raos.domain.publishing.final_approval import (
     RecordedFinalApprovalAuthorizationV2,
 )
 
-from .conftest import request_with
+from .support import request_with
 
 
 def uuid7(suffix: int) -> UUID:

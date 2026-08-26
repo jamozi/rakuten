@@ -10,7 +10,6 @@ document:
   formal_validation: NOT_EXECUTED
   authority: NONE
   production_eligible: false
-  base_commit: 3d454db83f59e2854c0680a26dd0a7351cfe47ab
 
 authority:
   integration_precedence:
@@ -96,10 +95,10 @@ dependency:
 measurement_and_signal_policy:
   measurement_contract:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+    sha256: 2d95494568c9f753755603a1912a60049a3c78e91835f0f2e7405694a2d62e09
   signal_policy:
     path: changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml
-    sha256: 10871f65afe59fb6e44c6ac5401ce5e4b1b5cb0024497ae19fc43d6f6b997256
+    sha256: c56a5ea7f0d88df18e07809294f7900db35bd3c2be5bb29f3f9f13d1dd8ceec9
   program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
   period_duration_days: 14
   same_program_required: true
@@ -143,7 +142,7 @@ proposal_contract:
 
 recorded_fixture:
   path: changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json
-  sha256: 175dbcc7337f902a0b7c5078e4db0894b5c56cf8157c1ad68ed52842698199c8
+  sha256: beb83c10350037468cbcace5a3949a688b65e9a75906907d1324dc465f684fa2
   bytes: 986
   synthetic: true
   current_availability: UNAVAILABLE

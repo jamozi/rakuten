@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from scripts import build_st1504_github_oidc as generator
+from scripts.raos_build_core import input_hash_required
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -28,22 +29,14 @@ def test_contract_loads_as_closed_repository_inert_offline_model(
         "formal_verification": "NOT_EXECUTED",
     }
     assert set(github_oidc_model.contract) == generator.TOP_LEVEL_KEYS
-    assert (
-        generator.semantic_sha256(github_oidc_model.contract)
-        == generator.EXPECTED_CONTRACT_SEMANTIC_SHA256
-    )
 
 
-def test_direct_handoff_is_hash_and_semantically_bound() -> None:
+def test_direct_handoff_has_semantic_identity_without_hash_authority() -> None:
     path = REPOSITORY_ROOT / generator.DESIGN_HANDOFF_PATH
-    assert (
-        generator.sha256_file(path)
-        == generator.AUTHORITY_SOURCES[generator.DESIGN_HANDOFF_PATH.as_posix()]
-    )
-    assert (
-        generator.semantic_sha256(generator.load_yaml(path))
-        == generator.EXPECTED_HANDOFF_SEMANTIC_SHA256
-    )
+    handoff = generator.load_yaml(path)
+    assert handoff["schema"] == "DESIGN_HANDOFF_V1"
+    assert handoff["version"] == 1
+    assert handoff["approved_story"] == "ST-1504"
 
 
 def test_both_predecessors_are_exactly_bound_and_fail_closed(
@@ -55,7 +48,11 @@ def test_both_predecessors_are_exactly_bound_and_fail_closed(
     assert governance["required_desired_enforcement"] == "active"
     assert governance["required_remote_mutation"] == "FORBIDDEN"
     assert governance["required_bypass_actors"] == []
-    assert all(governance["required_protected_pr_controls"].values())
+    controls = governance["required_protected_pr_controls"]
+    assert controls["prohibit_deletion"] is True
+    assert controls["prohibit_force_push"] is True
+    assert controls["require_code_owner_review"] is False
+    assert controls["require_last_push_approval"] is False
     foundation = _mapping(bindings["terraform_foundation"])
     assert foundation["required_provider_policy"] == (
         "STRICT_PROVIDER_NEUTRAL_FOUNDATION_CAPABILITY_ADMISSION"
@@ -70,15 +67,16 @@ def test_both_predecessors_are_exactly_bound_and_fail_closed(
     }
 
 
-def test_pr_governance_predecessor_has_closed_semantic_and_byte_bindings() -> None:
+def test_pr_governance_predecessor_uses_v2_semantic_identity() -> None:
     contract_path = REPOSITORY_ROOT / "changes/st-0107/contracts/pr-governance.v1.yaml"
     desired_state_path = REPOSITORY_ROOT / "changes/st-0107/ruleset-policy.v1.json"
-    assert generator.semantic_sha256(generator.load_yaml(contract_path)) == (
-        "774a8ffe8b53bef1e76d851c3da1bd53f6837473537f3d7f14f6d88c16548cc0"
-    )
+    contract = generator.load_yaml(contract_path)
+    assert contract["document"]["id"] == "RAOS-PR-GOVERNANCE-002"
+    assert contract["document"]["version"] == "2.0.0"
     desired_state = generator.load_json(desired_state_path)
-    assert generator.semantic_sha256(desired_state) == (
-        "bcfc8440e5e508648607dc22f8deacca4dc14021404c050457077ce451934c33"
+    assert desired_state["document"]["id"] == "RAOS-GITHUB-RULESET-POLICY-002"
+    assert desired_state["ruleset"]["required_status_checks"][0]["context"] == (
+        "Final Integration"
     )
     assert desired_state_path.read_bytes() == (
         json.dumps(desired_state, ensure_ascii=False, indent=2, sort_keys=False) + "\n"
@@ -319,7 +317,8 @@ def test_source_pins_match_regular_files() -> None:
         path = REPOSITORY_ROOT / relative
         assert path.is_file()
         assert not path.is_symlink()
-        assert generator.sha256_file(path) == expected_digest
+        if input_hash_required(relative):
+            assert generator.sha256_file(path) == expected_digest
 
 
 def test_generated_json_matches_strict_renderer(

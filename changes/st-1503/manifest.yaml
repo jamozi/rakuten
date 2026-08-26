@@ -7,7 +7,7 @@ document:
   generation_command: uv run --locked --no-sync python scripts/build_st1503_compute_edge.py
 provenance:
   contract_uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
-  contract_sha256: 682ab350c5036bf8697a99f08269d5d6db1aaff7387ca8401db07b9d811b1c08
+  contract_sha256: 6554563a72d7ca19fcc032f5193f5fb70bfb52775298b8246383c79a2e3cf4c8
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -31,8 +31,6 @@ provenance:
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
     sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
-  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
   - uri: repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
     sha256: 2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d
   predecessor_inputs:
@@ -47,8 +45,8 @@ provenance:
 source_artifact_count: 12
 source_artifacts:
 - uri: repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml
-  bytes: 24946
-  sha256: 682ab350c5036bf8697a99f08269d5d6db1aaff7387ca8401db07b9d811b1c08
+  bytes: 24610
+  sha256: 6554563a72d7ca19fcc032f5193f5fb70bfb52775298b8246383c79a2e3cf4c8
 - uri: repo://changes/st-1503/DESIGN_HANDOFF_V1_ST1503_PROVIDER_NEUTRAL_COMPUTE_EDGE.yaml
   bytes: 13910
   sha256: 2a6da0fa771153cafe2aa79f01b09843832e032ec13a29dd34884a31ae0c519d
@@ -65,14 +63,14 @@ source_artifacts:
   bytes: 8922
   sha256: e7cea25a1d31744b83655b76d01e9a1a39946e490d6b2f24eb991d1db9996e70
 - uri: repo://scripts/build_st1503_compute_edge.py
-  bytes: 145694
-  sha256: a19e6eec9dac3c5f46b34538189bc2cac95836e57762925d53823f9948497d27
+  bytes: 143802
+  sha256: 9f790fee8765ee2454bc74915be91aab8facf3e5c93e6ce78a31c549ca893de0
 - uri: repo://tests/st1503/conftest.py
   bytes: 634
   sha256: 37224046c0eeac5b366183b2a7d91a5a7c7abfe168b6b308fec938caa49fdfc0
 - uri: repo://tests/st1503/test_contract.py
-  bytes: 12491
-  sha256: 062445003d8554815b46581c9e2a82d5bfaa82f3147b86ef6f99c8cb636c1a48
+  bytes: 12457
+  sha256: c4daafdeb1d041dd1553a6985d280217ae4fb6b12037a75bb2fea46711dad75f
 - uri: repo://tests/st1503/test_generation.py
   bytes: 8971
   sha256: 742a923f97d03a5e94180e5cd156690822e88fdff702d1f2fae4d422c06fa08c
@@ -80,13 +78,13 @@ source_artifacts:
   bytes: 20889
   sha256: 70c9a09fba370026fd819f263b492d11dfbd8db9c26088635ab5983cbb637a0a
 - uri: repo://tests/st1503/test_negative_cases.py
-  bytes: 27641
-  sha256: 0088984d4d0602992225adc7762cfcec19459c4188a3e0c81300522d20e7b7ba
+  bytes: 27903
+  sha256: 330d5045b67f24e63cc8bc3e8cc102d5236445986b8f0559449c19ceca57ed88
 generated_artifact_count: 8
 generated_artifacts:
 - uri: repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json
-  bytes: 27583
-  sha256: 1ac46b4ac6a779f41776c10f69416c05e770f2119fb1ce3b6898c11d7e1295ee
+  bytes: 27375
+  sha256: 21c351b64e957f8332a7fe43de1ca2ecf45b1f4475c58be46b5255f7a56a5581
 - uri: repo://infra/terraform/compute-edge/compute-edge.logical-plan.v1.json
   bytes: 58235
   sha256: 8535331c0a43fcc1f9309c855b51d814d8165fa05eaed9edf5f520e56eb408ff

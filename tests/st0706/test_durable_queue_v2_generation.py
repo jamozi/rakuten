@@ -11,7 +11,7 @@ import stat
 import pytest
 import yaml
 
-from conftest import REPOSITORY_ROOT
+from .support import REPOSITORY_ROOT
 from scripts import build_st0706_durable_ai_job_queue as generator
 from scripts import secure_generated_publication
 

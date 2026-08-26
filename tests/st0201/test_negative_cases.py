@@ -9,7 +9,7 @@ from typing import Any
 import pytest
 from yaml.constructor import ConstructorError
 
-from conftest import RejectContract
+from .support import RejectContract
 from scripts import build_local_compose as compose_generator
 from scripts import build_st0201_postgres_service as generator
 

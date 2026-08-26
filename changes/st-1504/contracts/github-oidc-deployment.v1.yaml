@@ -31,10 +31,6 @@ sources:
     sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b
   - uri: repo://docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md
     sha256: 28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac
-  - uri: repo://docs/execplans/RAOS-IMPLEMENTATION-FIRST.md
-    sha256: 4d4cffb36f790f15fb467713ee93f9f55e00ea2f3c2b74c19fe3436c56755234
-  - uri: repo://AGENTS.md
-    sha256: a302eac0ebd61e352c94f9e07e715b41545bc29c1eae6c73f6115cf6ff3f2127
   - uri: repo://changes/st-1504/DESIGN_HANDOFF_V1_ST1504_PROVIDER_NEUTRAL_DEPLOYMENT_IDENTITY.yaml
     sha256: 36ac3095033f8ad7c91deac77f6a6689d354dc63dd46f03350e0bf68b3ccca04
   - uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
@@ -62,10 +58,10 @@ sources:
 predecessor_bindings:
   pr_governance:
     story_id: ST-0107
+    owner_id: build_st0107_pr_governance
+    owner_version: 2
     contract_uri: repo://changes/st-0107/contracts/pr-governance.v1.yaml
-    contract_sha256: a573506749efd1bfed3c11a021ad56d10fbea901566cc1483547df60d364bf45
     desired_state_uri: repo://changes/st-0107/ruleset-policy.v1.json
-    desired_state_sha256: e999838c2f592e3795aa79222bcfbc8cedf4b59bad06024f0328ebd65b3e11f5
     required_artifact_kind: DESIRED_STATE_NOT_API_PAYLOAD
     required_target: branch
     required_include:
@@ -79,17 +75,16 @@ predecessor_bindings:
       prohibit_force_push: true
       require_linear_history: true
       dismiss_stale_reviews_on_push: true
-      require_code_owner_review: true
-      require_last_push_approval: true
+      require_code_owner_review: false
+      require_last_push_approval: false
       required_review_thread_resolution: true
   terraform_foundation:
     story_id: ST-1501
     design_handoff_uri: repo://changes/st-1501/DESIGN_HANDOFF_V1_ST1501_PROVIDER_NEUTRAL_FOUNDATION.yaml
-    design_handoff_sha256: cbbf28700a9ce019cb821bb4bfadf529393c8c948101b205d74be898c7599d7f
+    owner_id: build_st1501_terraform_foundation
+    owner_version: 2
     contract_uri: repo://changes/st-1501/contracts/terraform-foundation.v1.yaml
-    contract_sha256: 5f13094d18dfbece65ccf36a68928fc9d602d316068aa5f1b538f14d90136e1e
     reference_plan_uri: repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json
-    reference_plan_sha256: bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72
     validation_toolchain_lock_uri: repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json
     validation_toolchain_lock_sha256: 696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44
     required_contract_status: MAXIMUM_SAFE_LOCAL_CODE_COMPLETE

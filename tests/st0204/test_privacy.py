@@ -9,7 +9,7 @@ import pickle
 from pydantic import BaseModel, TypeAdapter, ValidationError
 import pytest
 
-from conftest import logical_reference
+from .support import logical_reference
 import raos.config.runtime as runtime_module
 from raos.config import (
     ConfigurationError,

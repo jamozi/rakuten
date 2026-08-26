@@ -25,11 +25,6 @@ from raos.adapters.recorded_category_fixture_v2 import (
 _MAX_FIXTURE_BYTES = 256 * 1024
 _MAX_JSON_DEPTH = 24
 _MAX_JSON_NODES = 10_000
-_EXPECTED_FIXTURE_SHA256 = (
-    "aac3734ee6ab7e30f928d46ba2fe7903fb2f859303f99b2b9fa3e1489d69fcbf"
-)
-
-
 def _invalid() -> NoReturn:
     fail_category_fixture(CategoryFixtureFailureCode.FIXTURE_INVALID)
 
@@ -82,10 +77,7 @@ def _fixture_material() -> tuple[bytes, dict[str, Any]]:
     if not 2 <= len(payload) <= _MAX_FIXTURE_BYTES:
         _invalid()
     expected_sha = category_fixture_sha256(ST1702_RECORDED_CATEGORY_FIXTURE_V2_SHA256)
-    if (
-        expected_sha != _EXPECTED_FIXTURE_SHA256
-        or hashlib.sha256(payload).hexdigest() != _EXPECTED_FIXTURE_SHA256
-    ):
+    if hashlib.sha256(payload).hexdigest() != expected_sha:
         fail_category_fixture(CategoryFixtureFailureCode.FIXTURE_HASH_MISMATCH)
     try:
         parsed: object = json.loads(

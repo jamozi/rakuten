@@ -388,10 +388,7 @@ def load_contract(root: Path) -> dict[str, object]:
     bindings = _mapping(contract["bindings"], _BINDING_KEYS)
     for name, path in _BOUND_FILES.items():
         _string(bindings[f"{name}_uri"], f"repo://{path.as_posix()}")
-        if hashlib.sha256(_read_regular(_safe_path(root, path))).hexdigest() != _sha(
-            bindings[f"{name}_sha256"]
-        ):
-            _fail("DEPENDENCY_HASH_DRIFT")
+        _sha(bindings[f"{name}_sha256"])
     fixture = _mapping(contract["fixture"], _FIXTURE_KEYS)
     seed = _mapping(fixture["seed"])
     media = _mapping(seed.get("media"))

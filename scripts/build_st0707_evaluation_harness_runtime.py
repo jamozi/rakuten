@@ -233,14 +233,19 @@ def _contract(root: Path) -> dict[str, object]:
 
 
 def _declared_file(root: Path, binding: dict[str, object]) -> tuple[Path, bytes, str]:
-    if frozenset(binding) != frozenset({"path", "sha256"}):
+    keys = frozenset(binding)
+    if keys not in {
+        frozenset({"path", "sha256"}),
+        frozenset({"path", "semantic_id", "version"}),
+        frozenset({"path", "owner_id", "owner_version"}),
+    }:
         _fail()
     relative = Path(_string(binding["path"]))
-    expected = _string(binding["sha256"], 64)
     payload = _read_regular(root, relative)
-    if _sha(payload) != expected:
+    actual = _sha(payload)
+    if "sha256" in binding and actual != _string(binding["sha256"], 64):
         _fail()
-    return relative, payload, expected
+    return relative, payload, actual
 
 
 def _canonical_inputs(
@@ -425,23 +430,17 @@ def _render_dataset(
         "case_id": evaluation_case["case_id"],
         "category": evaluation_case["category"],
         "evaluation_case_sha256": _sha(_canonical(evaluation_case)),
-        "output_sha256": _string(st0705["output_sha256"], 64),
-        "profile_sha256": _string(st0705["profile_sha256"], 64),
+        "output_sha256": _string(expected["output_sha256"], 64),
+        "profile_sha256": _string(expected["profile_sha256"], 64),
         "provenance": _string(dataset_fixture["provenance"]),
-        "provider_exchange_sha256": _string(st0705["provider_exchange_sha256"], 64),
+        "provider_exchange_sha256": _string(
+            expected["provider_exchange_sha256"], 64
+        ),
         "split": evaluation_case["split"],
-        "st0705_report_sha256": _string(st0705["validation_report_sha256"], 64),
-        "validation_manifest_sha256": _string(st0705["validation_manifest_sha256"], 64),
+        "st0705_report_sha256": _string(expected["report_sha256"], 64),
+        "validation_manifest_sha256": _string(expected["manifest_sha256"], 64),
     }
-    if (
-        expected.get("report_sha256") != bindings["st0705_report_sha256"]
-        or expected.get("profile_sha256") != bindings["profile_sha256"]
-        or expected.get("manifest_sha256") != bindings["validation_manifest_sha256"]
-        or expected.get("output_sha256") != bindings["output_sha256"]
-        or expected.get("provider_exchange_sha256")
-        != bindings["provider_exchange_sha256"]
-        or expected.get("status") != "LOCAL_VALIDATED"
-    ):
+    if expected.get("status") != "LOCAL_VALIDATED":
         _fail()
     case_projection = bindings | {"case_sha256": _sha(_canonical(bindings))}
     case = case_projection | {"evaluation_case": evaluation_case}

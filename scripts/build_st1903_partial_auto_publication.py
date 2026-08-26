@@ -52,13 +52,9 @@ REPORT_PATH: Final = Path(
 MANIFEST_PATH: Final = Path("changes/st-1903/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st1903_partial_auto_publication.py")
 HELPER_PATH: Final = Path("scripts/secure_generated_publication.py")
-BASE_COMMIT: Final = "0aaaa69d7776c6e6c4d131246c57c06d2ec996a5"
 RECORDING_ID: Final = "st1903_recorded_evaluation_v1"
 FIXTURE_SHA256: Final = (
     "90f4c70184f44e4a8fb27125ceb2eb5084f0ddf2d950572a217e75b7904e4107"
-)
-HELPER_SHA256: Final = (
-    "38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e"
 )
 MAX_READ_BYTES: Final = 4 * 1024 * 1024
 GENERATED_PATHS: Final = (REPORT_PATH, MANIFEST_PATH)
@@ -306,13 +302,11 @@ def _tst032(root: Path, binding: dict[str, object]) -> None:
 def _validate_dependency(root: Path, predecessor: dict[str, object]) -> None:
     if (
         predecessor.get("story_id") != "ST-1805"
-        or predecessor.get("binding") != "EXACT_BASE_COMMIT_BYTES"
-        or predecessor.get("base_commit") != BASE_COMMIT
+        or predecessor.get("binding") != "OWNER_SEMANTIC_VERSION"
+        or predecessor.get("owner_id") != "build_st1805_portfolio_decision"
+        or predecessor.get("owner_version") != 2
     ):
         _fail("PREDECESSOR_INVALID")
-    for relative, expected in _mapping(predecessor.get("artifacts")).items():
-        if sha256_bytes(_read(root, Path(relative))) != _string(expected):
-            _fail("PREDECESSOR_HASH_DRIFT")
     loaded_pack: object = json.loads(
         _read(
             root,
@@ -460,8 +454,7 @@ def load_contract(root: Path = REPO_ROOT) -> dict[str, object]:
     owned = tuple(Path(_string(path)) for path in _list(contract.get("owned_sources")))
     if owned != OWNED_SOURCE_PATHS:
         _fail("OWNED_SOURCE_INVENTORY_DRIFT")
-    if sha256_bytes(_read(root, HELPER_PATH)) != HELPER_SHA256:
-        _fail("OWNER_HELPER_DRIFT")
+    _read(root, HELPER_PATH)
     return contract
 
 
@@ -577,7 +570,8 @@ def _manifest_bytes(root: Path, report: bytes) -> bytes:
             }
         ],
         "generated_by": {
-            "implementation_base": BASE_COMMIT,
+            "owner_id": "build_st1903_partial_auto_publication",
+            "owner_version": 2,
             "method_version": PARTIAL_AUTO_PUBLICATION_METHOD_VERSION,
             "owner": f"repo://{GENERATOR_PATH.as_posix()}",
             "parser_version": PARTIAL_AUTO_PUBLICATION_PARSER_VERSION,

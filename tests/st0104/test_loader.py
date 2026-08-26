@@ -13,7 +13,7 @@ from typing import Any
 
 import pytest
 
-from conftest import MANIFEST_NAME, VERSION_ROOT
+from .support import MANIFEST_NAME, VERSION_ROOT
 from raos.shared.contract_repository import (
     MAX_ARTIFACT_BYTES,
     MAX_MANIFEST_BYTES,

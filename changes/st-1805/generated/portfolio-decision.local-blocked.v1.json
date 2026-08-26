@@ -31,7 +31,8 @@
       "actual_observation_count": 0,
       "gate_pass_claim": false,
       "overall": "BLOCKED",
-      "pack_sha256": "f39934be295442f3109185324d3c96e5c2d5401a320f01fd60f75c4fe5414cb4",
+      "owner_id": "build_st1804_gate3_economics",
+      "owner_version": 2,
       "scale_authority": "NONE",
       "schema": "ST1804_GATE3_PACK_V1",
       "synthetic": true
@@ -69,8 +70,8 @@
     "reward_used_for_product_ranking": false
   },
   "generated_by": {
-    "command": "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1805_portfolio_decision.py",
-    "generator_sha256": "f0bd5722bc066178f49434de0fe2ac97d677445d6ec29a212b172ba0233d03eb",
+    "command": "python scripts/raos_build.py generate",
+    "generator_sha256": "cf8ea58a795c8b6dcc5db4137f045387be1689427b79e0a8355d60ffcdec295c",
     "uri": "repo://scripts/build_st1805_portfolio_decision.py"
   },
   "mandatory_criteria": [
@@ -108,9 +109,9 @@
   "overall": "BLOCKED",
   "provenance": {
     "dependency_bindings": {
-      "changes/st-1804/contracts/gate3-economics.v1.yaml": "c1a5408eba861aaf4b6bc1dd407e84e1bfc6eb045a6b45dac28954aa086acf11",
-      "changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json": "c31f339748cef32084285101d1c434216d3763398b633992ab84b086a02505e5",
-      "changes/st-1804/generated/gate3-economics.local-blocked.v1.json": "f39934be295442f3109185324d3c96e5c2d5401a320f01fd60f75c4fe5414cb4",
+      "changes/st-1804/contracts/gate3-economics.v1.yaml": "tracked",
+      "changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json": "tracked",
+      "changes/st-1804/generated/gate3-economics.local-blocked.v1.json": "tracked",
       "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626",
       "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md": "540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a",
       "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml": "a51de01ab7665c37047371cad8c9308d3d1a9428dab485599a2ce3de3ddba07e",
@@ -122,14 +123,14 @@
       "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
       "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
       "docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md": "5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea",
-      "scripts/build_st1804_gate3_economics.py": "095b0a681e0653d0690e475c68f558e431d462a9d5da8522526f16abc499b8d8"
+      "scripts/build_st1804_gate3_economics.py": "tracked"
     },
     "fixture_sha256": "47adc5544779c1e697a4ca1dc3ada9a251cb40fdfa9dd8e593596b34a082c793",
     "input_sha256": "f0adb4eb0e3becf8439e8dd76b9bf6d6641f412dc1348ae04cfc1b0beb47914e",
     "source_artifacts": [
       {
-        "bytes": 4044,
-        "sha256": "ec398cf427a41b0760e6b99108004d317883c8139796b768d1e122c6ea7648e7",
+        "bytes": 3875,
+        "sha256": "7561b93bb25fbc7fd0424fe8cc81553c7d615f305c9b22b1b4e1f63207416826",
         "uri": "repo://changes/st-1805/contracts/portfolio-decision.v1.yaml"
       },
       {
@@ -168,8 +169,8 @@
         "uri": "repo://python/raos/adapters/recorded_scale_decision.py"
       },
       {
-        "bytes": 23265,
-        "sha256": "f0bd5722bc066178f49434de0fe2ac97d677445d6ec29a212b172ba0233d03eb",
+        "bytes": 23644,
+        "sha256": "cf8ea58a795c8b6dcc5db4137f045387be1689427b79e0a8355d60ffcdec295c",
         "uri": "repo://scripts/build_st1805_portfolio_decision.py"
       }
     ]
