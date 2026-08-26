@@ -125,8 +125,8 @@ source_artifacts:
   bytes: 30259
   sha256: 3f20a17584492c881cc6ebefc39047ee2ed7d773a22f69ae856836c888824a34
 - uri: repo://tests/st0505/test_rakuten_live_smoke_installed_runtime.py
-  bytes: 46641
-  sha256: 1aa1166c6db3d3db6e10b228fed29471ddf20b3210eac0acca86d23044240a10
+  bytes: 46687
+  sha256: 4eae5951274a7b9e4c8421bb49a9e09bfef298b2b8a912d5f236fe1c4cb1e9b3
 - uri: repo://tests/st0505/test_rakuten_live_smoke_runtime.py
   bytes: 45447
   sha256: ee6395cd11963e48aa65ccd1e37ac37d3151c5ff8e171218031814076bbb2b02

@@ -129,7 +129,7 @@ source_artifacts:
   sha256: 9ddf4b26bdaa5fef22b14703937e0d010ea0690123b18eb77bd53651d800c72e
 - uri: repo://changes/st-0304/manifest.yaml
   bytes: 11664
-  sha256: 1955671fa30ff66c7434c04cd874939ca90ac35d961165005c95dad3927cfe8e
+  sha256: 195a25fe839e23c5c8f28c15bea1e96ce9f1fc6f0698a2d987302eaf5e96cf63
 - uri: repo://migrations/versions/202608030004_domain_schemas.py
   bytes: 106632
   sha256: 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407
@@ -149,8 +149,8 @@ source_artifacts:
   bytes: 3362
   sha256: 2ff9163b43b7c445190d5a01a31485ab9e2c4474c5bade65041f541ea90dc333
 - uri: repo://tests/st0301/test_catalog.py
-  bytes: 11918
-  sha256: bff9b2fe480caec198bb0071e3ed57a778d2592bb9be1f3fac686ededbd34741
+  bytes: 11938
+  sha256: bc9d6b419592f56a75490bda377c534f18985be00ab934b60db2a33b39e02b34
 - uri: repo://tests/st0301/test_cli.py
   bytes: 2723
   sha256: fd0b0aabc1b870a42d9b2f4c67ae08937cda6f8ce91b3301b47dae41132f9409
@@ -158,8 +158,8 @@ source_artifacts:
   bytes: 10581
   sha256: 4b0cab077989393fc3d41c5663bf5dcbf9318abff471cce92ea06514e532bf5b
 - uri: repo://tests/st0301/test_generation.py
-  bytes: 6975
-  sha256: a890c078164cb7996ff93bc330b93707f4b0728a88062be69896c949910abab6
+  bytes: 7594
+  sha256: b1f806aa383afe176f34f59bdf03bd107412061e52351c3adf8bafda887b6d70
 - uri: repo://tests/st0301/test_postgresql.py
   bytes: 34214
   sha256: 117c51b3cf5f4b39635d3a55090e8fbd69606bc2d703a2345bcd0ecbc04e8b7e

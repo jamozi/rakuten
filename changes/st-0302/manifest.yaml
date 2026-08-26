@@ -64,8 +64,8 @@ source_artifacts:
   bytes: 36955
   sha256: 847c9eab92236b8f40d63423b6640e0aa299cf5562040aa64f60358248ea4375
 - uri: repo://scripts/build_st0301_migration_framework.py
-  bytes: 21357
-  sha256: 41ed990a6da595dea9b51e08a6f89f2026114be12bb97d6f6c24411a4067e6a8
+  bytes: 20418
+  sha256: 8846f478d85f7be611b683c9b5af64b562f60bc1fd5e648e4209618e72ecab6d
 - uri: repo://changes/st-0301/contracts/migration-framework.v1.yaml
   bytes: 10671
   sha256: 8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f
@@ -115,8 +115,8 @@ source_artifacts:
   bytes: 234
   sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st0301/test_catalog.py
-  bytes: 11918
-  sha256: bff9b2fe480caec198bb0071e3ed57a778d2592bb9be1f3fac686ededbd34741
+  bytes: 11938
+  sha256: bc9d6b419592f56a75490bda377c534f18985be00ab934b60db2a33b39e02b34
 - uri: repo://tests/st0301/test_cli.py
   bytes: 2723
   sha256: fd0b0aabc1b870a42d9b2f4c67ae08937cda6f8ce91b3301b47dae41132f9409
@@ -124,14 +124,14 @@ source_artifacts:
   bytes: 10581
   sha256: 4b0cab077989393fc3d41c5663bf5dcbf9318abff471cce92ea06514e532bf5b
 - uri: repo://tests/st0301/test_generation.py
-  bytes: 6975
-  sha256: a890c078164cb7996ff93bc330b93707f4b0728a88062be69896c949910abab6
+  bytes: 7594
+  sha256: b1f806aa383afe176f34f59bdf03bd107412061e52351c3adf8bafda887b6d70
 - uri: repo://tests/st0301/test_postgresql.py
   bytes: 34214
   sha256: 117c51b3cf5f4b39635d3a55090e8fbd69606bc2d703a2345bcd0ecbc04e8b7e
 - uri: repo://tests/st0301/test_runner.py
-  bytes: 32098
-  sha256: 13ce08116fa3416d833715d3ec2eb117cfa6df365c1401139b89449f1660a9b9
+  bytes: 32118
+  sha256: 71208aac56bc84825c0f140199fd388c09d1c9ec60e56c35719080f425e62d7e
 - uri: repo://tests/postgresql18.py
   bytes: 8178
   sha256: 14d81fbbb7b35fd2672a11ccd162d8683905fe7216be6fb45b46d73d2b4d6085
@@ -160,8 +160,8 @@ source_artifacts:
   bytes: 3960
   sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
 - uri: repo://changes/st-0301/manifest.yaml
-  bytes: 13013
-  sha256: b3cf75fdf75f97ba71299d2d8c2ee8fe2745e73c588459bc6b833b654534847d
+  bytes: 10097
+  sha256: 46f38c965c0e966929f68fdeeeb411230b30a23a4702d4ca06214850f333f542
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://migrations/versions/202608030002_foundation_schemas.py

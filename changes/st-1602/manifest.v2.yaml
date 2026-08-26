@@ -98,8 +98,8 @@ source_artifacts:
   bytes: 5477
   sha256: 9461058415d44f2a091e40798302432656d5c8982fca45fb5a95e1b5945f4698
 - uri: repo://tests/st1602/test_local_static_v2.py
-  bytes: 5920
-  sha256: c2a59164f4070838a9b1c277023b0f49e7557e21ea52018cab7cb7cc93e6aa9e
+  bytes: 3693
+  sha256: d5cc5b13b11c24b7b4e92615284bfd181b5d39df1bd07c43c9d72a3154dd0f28
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://changes/st-1602/generated/slo-alert-runtime-catalog.v2.json

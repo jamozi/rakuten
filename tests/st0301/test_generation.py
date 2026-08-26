@@ -71,9 +71,19 @@ def test_manifest_source_inventory_is_exact_and_unique() -> None:
     assert not any(uri.startswith("repo://zip/") for uri in observed)
     assert not any(uri.startswith("repo://docs/canonical/") for uri in observed)
     assert not any(uri.startswith("repo://docs/upstream/") for uri in observed)
+    assert not any(uri.startswith("repo://tests/") for uri in observed)
+    assert not any("docs/execplans/" in uri for uri in observed)
+    assert not any("docs/worklogs/" in uri for uri in observed)
+    for item in manifest["source_artifacts"]:
+        if item["kind"] == "dependency_lock":
+            assert set(item) == {"uri", "kind", "sha256"}
+        else:
+            assert set(item) == {"uri", "kind", "semantic_id", "version"}
+            assert item["kind"] == "tracked"
+            assert item["version"] == 2
 
 
-def test_manifest_pins_every_direct_dependency_and_predecessor() -> None:
+def test_manifest_references_every_dependency_and_predecessor_semantically() -> None:
     manifest = yaml.safe_load(
         (REPOSITORY_ROOT / generator.MANIFEST_PATH).read_text(encoding="utf-8")
     )
@@ -88,8 +98,10 @@ def test_manifest_pins_every_direct_dependency_and_predecessor() -> None:
     assert manifest["provenance"]["predecessor_manifest"] == {
         "story_id": "ST-0204",
         "uri": "repo://changes/st-0204/manifest.yaml",
-        "sha256": generator.EXPECTED_PREDECESSOR_SHA256,
+        "owner_id": "build_st0204_config_loader",
+        "owner_version": 2,
     }
+    assert all("sha256" not in item for item in dependencies)
 
 
 def test_predecessor_digest_is_not_an_implementation_gate(

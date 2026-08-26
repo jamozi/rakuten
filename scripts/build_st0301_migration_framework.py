@@ -45,11 +45,6 @@ PREDECESSOR_PATH: Final = Path("changes/st-0204/manifest.yaml")
 GENERATED_PATHS: Final = (CATALOG_PATH, MANIFEST_PATH)
 SOURCE_CONTRACT_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = f"repo://{GENERATOR_PATH.as_posix()}"
-GENERATION_COMMAND: Final = (
-    "uv run --locked --no-sync --no-env-file python "
-    "scripts/build_st0301_migration_framework.py"
-)
-
 EXPECTED_TOOLCHAIN: Final = {
     "python": "3.14.6",
     "uv": "0.12.1",
@@ -77,24 +72,12 @@ PINNED_CANONICAL_INPUTS: Final = {
 DEPENDENCY_MANIFESTS: Final = {
     "ST-0201": (
         Path("changes/st-0201/manifest.yaml"),
-        "fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3",
+        "build_st0201_postgres_service",
     ),
-    "ST-0002": (
-        Path("changes/st-0002/manifest.yaml"),
-        "ec687f51795c4f97d4e4b08db38ce4bec7c94da0e337c7e9a1bff2a9b2cb0f1e",
-    ),
-    "ST-0003": (
-        Path("changes/st-0003/manifest.yaml"),
-        "142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482",
-    ),
-    "ST-0004": (
-        Path("changes/st-0004/manifest.yaml"),
-        "5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458",
-    ),
+    "ST-0002": (Path("changes/st-0002/manifest.yaml"), "build_st0002_revision"),
+    "ST-0003": (Path("changes/st-0003/manifest.yaml"), "build_st0003_revision"),
+    "ST-0004": (Path("changes/st-0004/manifest.yaml"), "build_st0004_revision"),
 }
-EXPECTED_PREDECESSOR_SHA256: Final = (
-    "2c26f24dce1a1eda9a79bd0d339478b208dde77ecc76e9dfd71c918ad9fab3be"
-)
 SUCCESSOR_CONTRACT_PATH: Final = Path(
     "changes/st-0302/contracts/foundation-schema.v1.yaml"
 )
@@ -106,8 +89,6 @@ SOURCE_ARTIFACT_PATHS: Final = (
     Path("uv.toml"),
     CONTRACT_PATH,
     Path("changes/st-0301/README.md"),
-    Path("docs/execplans/ST-0301.md"),
-    Path("docs/worklogs/ST-0301.md"),
     GENERATOR_PATH,
     Path("scripts/build_st0201_postgres_service.py"),
     Path("migrations/FRAMEWORK.md"),
@@ -120,24 +101,7 @@ SOURCE_ARTIFACT_PATHS: Final = (
     Path("python/raos/migrations/catalog.py"),
     Path("python/raos/migrations/cli.py"),
     Path("python/raos/migrations/runner.py"),
-    Path("tests/st0301/conftest.py"),
-    Path("tests/st0301/test_catalog.py"),
-    Path("tests/st0301/test_cli.py"),
-    Path("tests/st0301/test_contract.py"),
-    Path("tests/st0301/test_generation.py"),
-    Path("tests/st0301/test_postgresql.py"),
-    Path("tests/st0301/test_runner.py"),
-    Path("tests/st0102/test_toolchain_contract.py"),
-    Path("tests/st0102/test_lock_contract.py"),
-    Path("tests/st0102/test_commands_and_docs.py"),
-    Path("scripts/validate_ci_hydration.py"),
-    Path("tests/st0106/test_hydration_validator.py"),
-    Path("tests/st0106/test_workflow_contract.py"),
-    Path("Makefile"),
-    Path("README.md"),
     *(item.relative_path for item in CHECKPOINT_SPECS),
-    *(path for path, _ in DEPENDENCY_MANIFESTS.values()),
-    PREDECESSOR_PATH,
 )
 
 
@@ -327,7 +291,7 @@ def _verify_pinned_inputs(root: Path) -> None:
     for relative, expected in PINNED_CANONICAL_INPUTS.items():
         path = shared._repository_regular_file(root, Path(relative), "canonical input")
         _require(shared.sha256_file(path) == expected, "canonical input digest differs")
-    for _story, (relative, _historical_digest) in DEPENDENCY_MANIFESTS.items():
+    for relative, _owner_id in DEPENDENCY_MANIFESTS.values():
         shared._repository_regular_file(root, relative, "dependency manifest")
     shared._repository_regular_file(root, PREDECESSOR_PATH, "predecessor manifest")
 
@@ -385,13 +349,19 @@ def render_catalog(root: Path = REPO_ROOT) -> bytes:
 
 
 def _artifact_record(root: Path, relative: Path) -> dict[str, object]:
-    content = shared._repository_regular_file(
-        root, relative, "source artifact"
-    ).read_bytes()
+    path = shared._repository_regular_file(root, relative, "source artifact")
+    uri = f"repo://{relative.as_posix()}"
+    if relative == Path("uv.lock"):
+        return {
+            "uri": uri,
+            "kind": "dependency_lock",
+            "sha256": shared.sha256_file(path),
+        }
     return {
-        "uri": f"repo://{relative.as_posix()}",
-        "bytes": len(content),
-        "sha256": shared.sha256_bytes(content),
+        "uri": uri,
+        "kind": "tracked",
+        "semantic_id": relative.as_posix(),
+        "version": 2,
     }
 
 
@@ -403,15 +373,17 @@ def render_manifest(root: Path = REPO_ROOT) -> bytes:
     artifacts = [_artifact_record(root, relative) for relative in SOURCE_ARTIFACT_PATHS]
     manifest = {
         "document": {
-            "id": "RAOS-MIGRATION-FRAMEWORK-MANIFEST-001",
-            "version": "1.0.0",
+            "id": "RAOS-MIGRATION-FRAMEWORK-MANIFEST-002",
+            "version": "2.0.0",
             "story_id": "ST-0301",
+            "generator_owner": "build_st0301_migration_framework",
+            "owner_version": 2,
             "source_contract": SOURCE_CONTRACT_URI,
             "generated_by": GENERATOR_URI,
-            "generation_command": GENERATION_COMMAND,
+            "developer_interface": "make generate",
         },
         "provenance": {
-            "toolchain": dict(EXPECTED_TOOLCHAIN),
+            "toolchain_verification": "setup_and_final",
             "canonical_inputs": [
                 {"uri": f"repo://{relative}", "sha256": digest}
                 for relative, digest in PINNED_CANONICAL_INPUTS.items()
@@ -420,14 +392,16 @@ def render_manifest(root: Path = REPO_ROOT) -> bytes:
                 {
                     "story_id": story,
                     "uri": f"repo://{path.as_posix()}",
-                    "sha256": digest,
+                    "owner_id": owner_id,
+                    "owner_version": 2,
                 }
-                for story, (path, digest) in DEPENDENCY_MANIFESTS.items()
+                for story, (path, owner_id) in DEPENDENCY_MANIFESTS.items()
             ],
             "predecessor_manifest": {
                 "story_id": "ST-0204",
                 "uri": f"repo://{PREDECESSOR_PATH.as_posix()}",
-                "sha256": EXPECTED_PREDECESSOR_SHA256,
+                "owner_id": "build_st0204_config_loader",
+                "owner_version": 2,
             },
         },
         "source_artifact_count": len(artifacts),

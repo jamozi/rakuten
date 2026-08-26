@@ -7914,8 +7914,8 @@
           "uri": "repo://changes/st-0301/generated/migration-catalog.v1.json"
         },
         {
-          "bytes": 13013,
-          "sha256": "b3cf75fdf75f97ba71299d2d8c2ee8fe2745e73c588459bc6b833b654534847d",
+          "bytes": 10097,
+          "sha256": "46f38c965c0e966929f68fdeeeb411230b30a23a4702d4ca06214850f333f542",
           "uri": "repo://changes/st-0301/manifest.yaml"
         }
       ],
@@ -7933,18 +7933,6 @@
           "kind": "tracked",
           "semantic_id": ".python-version",
           "uri": "repo://.python-version",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "Makefile",
-          "uri": "repo://Makefile",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "README.md",
-          "uri": "repo://README.md",
           "version": 2
         },
         {
@@ -8084,84 +8072,6 @@
           "version": 2
         },
         {
-          "kind": "tracked",
-          "semantic_id": "scripts/validate_ci_hydration.py",
-          "uri": "repo://scripts/validate_ci_hydration.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0102/test_commands_and_docs.py",
-          "uri": "repo://tests/st0102/test_commands_and_docs.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0102/test_lock_contract.py",
-          "uri": "repo://tests/st0102/test_lock_contract.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0102/test_toolchain_contract.py",
-          "uri": "repo://tests/st0102/test_toolchain_contract.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0106/test_hydration_validator.py",
-          "uri": "repo://tests/st0106/test_hydration_validator.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0106/test_workflow_contract.py",
-          "uri": "repo://tests/st0106/test_workflow_contract.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0301/conftest.py",
-          "uri": "repo://tests/st0301/conftest.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0301/test_catalog.py",
-          "uri": "repo://tests/st0301/test_catalog.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0301/test_cli.py",
-          "uri": "repo://tests/st0301/test_cli.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0301/test_contract.py",
-          "uri": "repo://tests/st0301/test_contract.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0301/test_generation.py",
-          "uri": "repo://tests/st0301/test_generation.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0301/test_postgresql.py",
-          "uri": "repo://tests/st0301/test_postgresql.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0301/test_runner.py",
-          "uri": "repo://tests/st0301/test_runner.py",
-          "version": 2
-        },
-        {
           "kind": "dependency",
           "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
           "uri": "repo://uv.lock"
@@ -8197,7 +8107,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "f31a65daceda2b4aeb7579b5788c1b6061a08abb29b76894f22156e1e0599c02",
+          "sha256": "f99c4fc88bd909d4cb3c1137f6a592a5089b8d0332bb511805f110740526821b",
           "uri": "repo://changes/st-0302/manifest.yaml"
         },
         {
@@ -8488,7 +8398,7 @@
         },
         {
           "bytes": 11451,
-          "sha256": "21546403f5868f86b8a43a162f883a484db5a4bd41ac606efc8abffd92314961",
+          "sha256": "07899ece7c39b15bb7b25fc335cd030bbb70e413657556806572f75d0dc98059",
           "uri": "repo://changes/st-0303/manifest.yaml"
         },
         {
@@ -8845,7 +8755,7 @@
         },
         {
           "bytes": 11664,
-          "sha256": "1955671fa30ff66c7434c04cd874939ca90ac35d961165005c95dad3927cfe8e",
+          "sha256": "195a25fe839e23c5c8f28c15bea1e96ce9f1fc6f0698a2d987302eaf5e96cf63",
           "uri": "repo://changes/st-0304/manifest.yaml"
         },
         {
@@ -9065,7 +8975,7 @@
         },
         {
           "bytes": 14860,
-          "sha256": "133dbb2afe5fef18d206dd0317f443c530bb93dc33265036a551fd8191fe22b5",
+          "sha256": "221ccfdb41036e7cb34352ec2726d6f6b2b9b0cd956a56754915a0eb93ee362e",
           "uri": "repo://changes/st-0305/manifest.yaml"
         },
         {
@@ -9296,7 +9206,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "83a06116ee2dca366e2a82932b0e45e28fd9bb098b5f7489fbd35e6e4c36aa58",
+          "sha256": "65057492ef89d0e4c80f8400ba756e7dca5f9ddac958f651fe2e60178658ce53",
           "uri": "repo://changes/st-0306/manifest.yaml"
         },
         {
@@ -9548,7 +9458,7 @@
         },
         {
           "bytes": 15335,
-          "sha256": "03344f7262daa6150622ed5c1a6a5a60d8047ac74811a09a63c323c1371e7e74",
+          "sha256": "213cd33f1e2a200d595c7222c8419b6abe97660a128a2240c5fdafae025b2bc3",
           "uri": "repo://changes/st-0307/manifest.yaml"
         },
         {
@@ -10904,7 +10814,7 @@
         },
         {
           "bytes": 8575,
-          "sha256": "fc78ced4bf6da59617ee30bc4092968c4245fda6b563796d5c3edaaad5479341",
+          "sha256": "1beefa6222049f116341e0bc503ab2da811481f756eeb9abd2b17cd9f7c67326",
           "uri": "repo://changes/st-0505/manifest.yaml"
         }
       ],
@@ -23646,7 +23556,7 @@
         },
         {
           "bytes": 6264,
-          "sha256": "253cd84d7afd4332c183e2d3898ff7407d18963a92515e81077ab84be09c2efc",
+          "sha256": "16d2bf301f5f2fed8bf5edffe25b0927d2e6d27cbdadcbbb827cc8c3c7482adf",
           "uri": "repo://changes/st-1602/manifest.v2.yaml"
         }
       ],
