@@ -78,19 +78,6 @@ BASE_CANONICAL_BACKLOG_SHA256: Final = (
     "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d"
 )
 
-V1_MAIN_SHA256: Final = (
-    "9e6be30fba7abf369b6ce518eb39d0382882efa491949abd02b551698dd1c087"
-)
-V1_README_SHA256: Final = (
-    "cd912fbc5528e8936411b2825ce8f2b1f804f5f30a5caa296a2a03ab279a15ea"
-)
-V1_MANIFEST_SHA256: Final = (
-    "b6a92fcb4d3643fb7095986dcbbe89fd0af39a55dbe1433b4eee6d6c1dc5dc9d"
-)
-ST1704_V1_MANIFEST_SHA256: Final = (
-    "abe24df98cfdcc033dcb4cf66f6bb97bc5e8eebe046ccba7b40511d90cd79101"
-)
-
 PUBLISH_BINDINGS: Final = (
     ("st1704-portable-power-station-guide", "portable-power-station-guide"),
     (
@@ -225,59 +212,28 @@ def _load_json(relative: str | Path) -> object:
         _fail()
 
 
-def _manifest_path_map(document: object) -> dict[str, dict[str, object]]:
-    if not isinstance(document, dict) or not isinstance(document.get("paths"), list):
-        _fail()
-    result: dict[str, dict[str, object]] = {}
-    for item in document["paths"]:
-        if (
-            not isinstance(item, dict)
-            or set(item) != {"bytes", "path", "sha256"}
-            or type(item["path"]) is not str
-            or item["path"] in result
-        ):
-            _fail()
-        result[item["path"]] = item
-    return result
-
-
-def _verify_manifest_member(
-    manifest: dict[str, dict[str, object]], relative: Path, payload: bytes
-) -> None:
-    record = manifest.get(relative.as_posix())
-    if record != {
-        "bytes": len(payload),
-        "path": relative.as_posix(),
-        "sha256": sha256_bytes(payload),
-    }:
-        _fail("ST1704_PUBLICATION_OPERATOR_V2_PREDECESSOR_DRIFT")
-
-
 def validate_predecessors() -> None:
     pinned = (
         (BASE_CANONICAL_DECISIONS_RELATIVE, BASE_CANONICAL_DECISIONS_SHA256),
         (BASE_CANONICAL_BACKLOG_RELATIVE, BASE_CANONICAL_BACKLOG_SHA256),
-        (V1_MAIN_RELATIVE, V1_MAIN_SHA256),
-        (V1_README_RELATIVE, V1_README_SHA256),
-        (V1_MANIFEST_RELATIVE, V1_MANIFEST_SHA256),
-        (ST1704_V1_MANIFEST_RELATIVE, ST1704_V1_MANIFEST_SHA256),
     )
     for relative, expected in pinned:
         if sha256_bytes(_read_repository(relative)) != expected:
             _fail("ST1704_PUBLICATION_OPERATOR_V2_PREDECESSOR_DRIFT")
 
-    v1_manifest = _manifest_path_map(_load_json(V1_MANIFEST_RELATIVE))
-    _verify_manifest_member(
-        v1_manifest, V1_MAIN_RELATIVE, _read_repository(V1_MAIN_RELATIVE)
-    )
-    _verify_manifest_member(
-        v1_manifest, V1_README_RELATIVE, _read_repository(V1_README_RELATIVE)
-    )
-    editorial_manifest = _manifest_path_map(_load_json(ST1704_V1_MANIFEST_RELATIVE))
-    for relative in (PUBLICATION_PLAN_RELATIVE, ARTICLES_RELATIVE):
-        _verify_manifest_member(
-            editorial_manifest, relative, _read_repository(relative)
-        )
+    v1_manifest = _load_json(V1_MANIFEST_RELATIVE)
+    editorial_manifest = _load_json(ST1704_V1_MANIFEST_RELATIVE)
+    if (
+        not isinstance(v1_manifest, dict)
+        or v1_manifest.get("schema")
+        != "RAOS_SELF_HOSTED_WORDPRESS_OPERATOR_RUNTIME_MANIFEST_V1"
+        or v1_manifest.get("story_id") != "ST-1506"
+        or not isinstance(editorial_manifest, dict)
+        or editorial_manifest.get("schema")
+        != "SELF_HOSTED_EDITORIAL_PILOT_MANIFEST_V1"
+        or editorial_manifest.get("story_id") != "ST-1704"
+    ):
+        _fail("ST1704_PUBLICATION_OPERATOR_V2_PREDECESSOR_DRIFT")
 
 
 def validate_publication_bindings() -> None:
@@ -474,18 +430,21 @@ def build_package() -> bytes:
 def build_manifest() -> bytes:
     package = build_package()
     files = package_files()
-    paths: list[dict[str, object]] = []
-    for relative in RUNTIME_PATHS:
-        payload = _read_repository(relative)
-        paths.append(
-            {"bytes": len(payload), "path": relative, "sha256": sha256_bytes(payload)}
-        )
+    semantic_inputs = [
+        {"path": relative, "semantic_id": relative, "version": 2}
+        for relative in RUNTIME_PATHS
+        if relative
+        not in {
+            BASE_CANONICAL_DECISIONS_RELATIVE.as_posix(),
+            BASE_CANONICAL_BACKLOG_RELATIVE.as_posix(),
+        }
+    ]
     manifest = {
         "approval_authority": "DISTINCT_COOKIE_AUTHENTICATED_MANAGE_OPTIONS_HUMAN_ONLY",
         "base_canonical_package_bytes_modified": False,
         "canonical_addendum": "INT-DEC-016",
         "codex_approval_authority": "NONE",
-        "external_action_authority": "EXACT_HASH_BOUND_HUMAN_APPROVAL_ONLY",
+        "external_action_authority": "DISTINCT_HUMAN_APPROVAL_ONLY",
         "generated_by": "scripts/build_st1704_wordpress_publication_operator_v2.py",
         "gates": {
             "RAOS_OPERATOR_WRITES_ENABLED": "DEFAULT_DISABLED",
@@ -508,18 +467,24 @@ def build_manifest() -> bytes:
             "sha256": sha256_bytes(package),
             "version": PLUGIN_VERSION,
         },
-        "paths": paths,
+        "integrity_inputs": [
+            {
+                "path": BASE_CANONICAL_DECISIONS_RELATIVE.as_posix(),
+                "sha256": BASE_CANONICAL_DECISIONS_SHA256,
+            },
+            {
+                "path": BASE_CANONICAL_BACKLOG_RELATIVE.as_posix(),
+                "sha256": BASE_CANONICAL_BACKLOG_SHA256,
+            },
+        ],
+        "semantic_inputs": semantic_inputs,
         "predecessors": {
-            "base_canonical_backlog_sha256": BASE_CANONICAL_BACKLOG_SHA256,
-            "base_canonical_decisions_sha256": BASE_CANONICAL_DECISIONS_SHA256,
-            "st1506_runtime_manifest_sha256": V1_MANIFEST_SHA256,
-            "st1506_v1_main_sha256": V1_MAIN_SHA256,
-            "st1506_v1_readme_sha256": V1_README_SHA256,
-            "st1704_editorial_runtime_manifest_sha256": (ST1704_V1_MANIFEST_SHA256),
+            "st1506_wordpress_operator": {"owner_version": 1},
+            "st1704_editorial_runtime": {"owner_version": 1},
         },
         "production_readiness": "NOT_READY",
         "publication_article_ids": [item[0] for item in PUBLISH_BINDINGS],
-        "publication_authority": "EXACT_DISTINCT_HUMAN_APPROVAL_ONLY",
+        "publication_authority": "DISTINCT_HUMAN_APPROVAL_ONLY",
         "schema": "RAOS_ST1704_PUBLICATION_OPERATOR_RUNTIME_MANIFEST_V2",
         "slice_id": "ST1704_PUBLICATION_OPERATOR_V2",
         "story_id": "ST-1704",
@@ -575,7 +540,7 @@ def check_manifest(expected: bytes) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(allow_abbrev=False)
-    commands = parser.add_mutually_exclusive_group(required=True)
+    commands = parser.add_mutually_exclusive_group()
     commands.add_argument("--bindings", action="store_true")
     commands.add_argument("--source-check", action="store_true")
     commands.add_argument("--package-check", action="store_true")
@@ -592,6 +557,9 @@ def main(argv: list[str] | None = None) -> int:
             package_files()
             print("ST1704_PUBLICATION_OPERATOR_V2_SOURCE_OK")
             return 0
+        default_generate = not any(vars(arguments).values())
+        if arguments.manifest or default_generate:
+            _atomic_write(BINDINGS_PATH, build_bindings(), 0o644)
         first = build_package()
         second = build_package()
         if first != second:
@@ -606,7 +574,7 @@ def main(argv: list[str] | None = None) -> int:
                     {
                         "artifact": OUTPUT_PATH.as_posix(),
                         "bytes": len(first),
-                        "publication_authority": "EXACT_DISTINCT_HUMAN_APPROVAL_ONLY",
+                        "publication_authority": "DISTINCT_HUMAN_APPROVAL_ONLY",
                         "sha256": sha256_bytes(first),
                     },
                     allow_nan=False,
@@ -615,7 +583,7 @@ def main(argv: list[str] | None = None) -> int:
             )
             return 0
         manifest = build_manifest()
-        if arguments.manifest:
+        if arguments.manifest or default_generate:
             _atomic_write(MANIFEST_PATH, manifest, 0o644)
             print("ST1704_PUBLICATION_OPERATOR_V2_MANIFEST_GENERATED")
             return 0

@@ -25,7 +25,7 @@ from raos.domain.operations.self_hosted_wordpress_publication_operator_v2 import
     PublicationOperatorFailure,
     PublicationOperatorFailureCode,
 )
-from test_domain import review_request
+from .test_domain import review_request
 
 
 @pytest.fixture

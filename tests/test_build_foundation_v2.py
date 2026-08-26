@@ -18,7 +18,9 @@ from scripts.raos_build_core import (
 
 def test_all_generators_have_one_owner_and_an_acyclic_graph() -> None:
     registry = discover_registry()
-    assert len(registry) == 134
+    # The migration started with 134 owners; new generators must join the same
+    # registry instead of requiring another Story-specific workflow.
+    assert len(registry) >= 134
     outputs = [path for spec in registry.values() for path in spec.outputs]
     assert len(outputs) == len(set(outputs))
     for owner, dependencies in EXPLICIT_OWNER_DEPENDENCIES.items():

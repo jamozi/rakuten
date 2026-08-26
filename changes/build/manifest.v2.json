@@ -2,7 +2,7 @@
   "document": {
     "id": "RAOS-BUILD-MANIFEST-002",
     "mutable_source_hash_authority": false,
-    "owner_count": 134,
+    "owner_count": 136,
     "version": "2.0.0"
   },
   "owners": [
@@ -23536,6 +23536,42 @@
       "output_scope": "tracked",
       "outputs": [
         {
+          "bytes": 5874,
+          "sha256": "9421479a661ef64bb5c374ee917924bd081f0f386b0c786854d50d4014f71eb6",
+          "uri": "repo://changes/st-1506/self-hosted-wordpress-operator-bridge-v1/runtime-manifest.v1.json"
+        }
+      ],
+      "owner_dependencies": [],
+      "owner_id": "build_st1506_wordpress_operator",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": ".secrets/st1506-wordpress-operator/plugin",
+          "uri": "repo://.secrets/st1506-wordpress-operator/plugin",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1",
+          "uri": "repo://changes/st-1506/self-hosted-wordpress-operator-bridge-v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1506_wordpress_operator.py",
+          "uri": "repo://scripts/build_st1506_wordpress_operator.py",
+          "version": 2
+        }
+      ],
+      "story_ids": [
+        "ST-1506"
+      ]
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
           "bytes": 25903,
           "sha256": "b4a8723c3fa4b70d30bf8ac8b145daaa4d7e41c993d53de3364d1c0a6a8ad4b3",
           "uri": "repo://changes/st-1602/generated/slo-alert-reference-plan.v1.json"
@@ -24785,6 +24821,99 @@
       ],
       "story_ids": [
         "ST-1704"
+      ]
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
+          "bytes": 9376,
+          "sha256": "898c28f7c8ada83a347a4d75125061884a95a8264b0fd3bb3c369bd21f01e88a",
+          "uri": "repo://changes/st-1704/publication-operator-v2/runtime-manifest.v2.json"
+        }
+      ],
+      "owner_dependencies": [
+        "build_st1506_wordpress_operator"
+      ],
+      "owner_id": "build_st1704_wordpress_publication_operator_v2",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": ".secrets/st1704-publication-operator-v2/plugin",
+          "uri": "repo://.secrets/st1704-publication-operator-v2/plugin",
+          "version": 2
+        },
+        {
+          "kind": "predecessor",
+          "owner_id": "build_st1506_wordpress_operator",
+          "owner_version": 2,
+          "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/runtime-manifest.v1.json",
+          "uri": "repo://changes/st-1506/self-hosted-wordpress-operator-bridge-v1/runtime-manifest.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator",
+          "uri": "repo://changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/README.md",
+          "uri": "repo://changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/README.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/raos-bounded-operator.php",
+          "uri": "repo://changes/st-1506/self-hosted-wordpress-operator-bridge-v1/wordpress-plugin/raos-bounded-operator/raos-bounded-operator.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/publication-operator-v2",
+          "uri": "repo://changes/st-1704/publication-operator-v2",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/operations/publication-plan.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/operations/publication-plan.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "immutable",
+          "sha256": "6330a7e8690edeb30de47ac15a1294e42534bf5d9ef617064ef7c0e0f71c7626",
+          "uri": "repo://docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml"
+        },
+        {
+          "kind": "immutable",
+          "sha256": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
+          "uri": "repo://docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_wordpress_publication_operator_v2.py",
+          "uri": "repo://scripts/build_st1704_wordpress_publication_operator_v2.py",
+          "version": 2
+        }
+      ],
+      "story_ids": [
+        "ST-1704",
+        "ST-1506"
       ]
     },
     {

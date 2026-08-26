@@ -261,19 +261,13 @@ def build_package() -> bytes:
 
 def build_manifest() -> bytes:
     package = build_package()
-    paths: list[dict[str, object]] = []
-    for relative in RUNTIME_PATHS:
-        payload = _read_repository(relative)
-        paths.append(
-            {
-                "bytes": len(payload),
-                "path": relative,
-                "sha256": sha256_bytes(payload),
-            }
-        )
+    semantic_inputs = [
+        {"path": relative, "semantic_id": relative, "version": 1}
+        for relative in RUNTIME_PATHS
+    ]
     manifest = {
         "canonical_package_modified": False,
-        "external_action_authority": "EXACT_INDEPENDENT_HUMAN_APPROVAL_ONLY",
+        "external_action_authority": "INDEPENDENT_HUMAN_APPROVAL_ONLY",
         "forbidden_surfaces": list(FORBIDDEN_SURFACES),
         "generated_by": "scripts/build_st1506_wordpress_operator.py",
         "operator_contract_version": 1,
@@ -285,7 +279,7 @@ def build_manifest() -> bytes:
             "sha256": sha256_bytes(package),
             "version": PLUGIN_VERSION,
         },
-        "paths": paths,
+        "semantic_inputs": semantic_inputs,
         "production_readiness": "NOT_READY",
         "publication_authority": "NONE",
         "schema": "RAOS_SELF_HOSTED_WORDPRESS_OPERATOR_RUNTIME_MANIFEST_V1",
@@ -375,7 +369,7 @@ def check_manifest(expected: bytes) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(allow_abbrev=False)
-    commands = parser.add_mutually_exclusive_group(required=True)
+    commands = parser.add_mutually_exclusive_group()
     commands.add_argument("--source-check", action="store_true")
     commands.add_argument("--package-check", action="store_true")
     commands.add_argument("--package", action="store_true")
@@ -410,7 +404,7 @@ def main(argv: list[str] | None = None) -> int:
             )
             return 0
         manifest = build_manifest()
-        if arguments.manifest:
+        if arguments.manifest or not any(vars(arguments).values()):
             _write_manifest(manifest)
             print("ST1506_WORDPRESS_OPERATOR_MANIFEST_GENERATED")
             return 0
