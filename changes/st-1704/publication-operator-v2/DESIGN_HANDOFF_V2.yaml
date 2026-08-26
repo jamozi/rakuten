@@ -1,0 +1,54 @@
+document:
+  id: ST1704-PUBLICATION-OPERATOR-DESIGN-HANDOFF-V2
+  story_id: ST-1704
+  slice_id: ST1704_PUBLICATION_OPERATOR_V2
+  status: LOCAL_IMPLEMENTATION_HANDOFF
+decision:
+  canonical_addendum: INT-DEC-016
+  exact_operation: PUBLISH_ST1704_ARTICLE
+  approval: DISTINCT_WP_ADMIN_HUMAN_EXACT_HASH_BOUND
+  codex_self_approval: FORBIDDEN
+bindings:
+  generated_class: RAOS_ST1704_Publication_Bindings_V2
+  generated_path: wordpress-plugin/raos-bounded-operator/includes/st1704-publication-bindings.v2.php
+  controller_class: RAOS_ST1704_Publication_Controller_V2
+  controller_path: wordpress-plugin/raos-bounded-operator/includes/st1704-publication-controller.v2.php
+  article_count: 4
+  excluded_article: st1703-first-suitcase-comparison
+plugin:
+  slug: raos-bounded-operator
+  package_version: 2.0.0
+  predecessor_v1_repository_bytes: UNCHANGED_AND_SHA256_PINNED
+  injection_order:
+  - UNCHANGED_V1_ACTIVATION_AND_INSTANCE
+  - GENERATED_BINDINGS_REQUIRE
+  - V2_CONTROLLER_REQUIRE
+  - V2_ACTIVATION_REGISTRATION
+  - V2_INSTANCE_WITH_EXACT_V1_INSTANCE
+  rest_namespace: raos-operator/v2
+  routes:
+  - GET /status
+  - POST /proposals
+  - GET /proposals/{proposal_id}
+  - POST /proposals/{proposal_id}/apply
+gates:
+  master: RAOS_OPERATOR_WRITES_ENABLED
+  publication: RAOS_ST1704_PUBLICATION_WRITES_ENABLED
+  enabled: BOTH_DEFINED_AND_STRICTLY_TRUE
+  default: DISABLED
+mutation:
+  allowed:
+  - DRAFT_TO_PUBLISH
+  - REVIEW_SLUG_TO_FIXED_PUBLIC_SLUG
+  - EXACT_EXISTING_SINGLE_CATEGORY_ASSIGNMENT
+  forbidden:
+  - TITLE_EXCERPT_CONTENT_OR_SNAPSHOT_MUTATION
+  - MEDIA_OR_TAG_MUTATION
+  - TERM_CREATION
+  - GENERIC_POST_OR_WORDPRESS_ADMINISTRATION
+verification:
+  deterministic_builder: scripts/build_st1704_wordpress_publication_operator_v2.py
+  runtime_manifest: runtime-manifest.v2.json
+  formal_validation: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  production_readiness: NOT_READY

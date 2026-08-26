@@ -1,0 +1,239 @@
+document:
+  id: RAOS-ST1704-WORDPRESS-PUBLICATION-OPERATOR-002
+  version: 2.0.0
+  story_id: ST-1704
+  slice_id: ST1704_PUBLICATION_OPERATOR_V2
+  status: LOCAL_IMPLEMENTATION_CONTRACT
+authority:
+  additive_decision: INT-DEC-016
+  inherited_decisions:
+  - INT-DEC-009
+  - INT-DEC-013
+  codex_can_propose: true
+  codex_can_execute_exact_independently_approved_proposal: true
+  codex_can_approve: false
+  production_release_authority: false
+site:
+  origin: https://kurashinoshirube.com
+  rest_prefix: /wp-json
+  namespace: raos-operator/v2
+  plugin_slug: raos-bounded-operator
+  plugin_version: 2.0.0
+  wordpress_core_release_line: 7.1.x
+  operator_contract_version: 2
+  profile_version: 2
+  executor_role: raos_operator_executor
+activation:
+  master_constant: RAOS_OPERATOR_WRITES_ENABLED
+  publication_constant: RAOS_ST1704_PUBLICATION_WRITES_ENABLED
+  enabled_iff_both_defined_and_strictly_true: true
+  default: DISABLED
+  rest_or_option_toggle: ABSENT
+  plugin_install_and_activation: HUMAN_BOOTSTRAP_ONLY
+authentication:
+  executor: WORDPRESS_APPLICATION_PASSWORD_OVER_HTTPS
+  independent_approval: COOKIE_AUTHENTICATED_WP_ADMIN_MANAGE_OPTIONS_HUMAN_ONLY
+  executor_can_manage_options: false
+  executor_can_edit_posts: false
+  executor_can_publish_posts: false
+  v1_identity_binding_and_application_password_firewall: PRESERVED
+operation:
+  exact: PUBLISH_ST1704_ARTICLE
+  article_count_per_proposal: 1
+  article_count_per_apply: 1
+  maximum_global_nonterminal_unexpired_publication_proposals: 1
+  ttl_seconds: 900
+  category:
+    contract: KURASHINO_DOGU_SINGLE_V1
+    exact_name: 暮らしの道具
+    resolution: EXACTLY_ONE_EXISTING_TERM
+    term_creation: FORBIDDEN
+  allowed_article_bindings:
+    st1704-portable-power-station-guide: portable-power-station-guide
+    st1704-anker-solix-c300-c800-c1000-differences: anker-solix-c300-c800-c1000-differences
+    st1704-countertop-dishwasher-for-small-households: countertop-dishwasher-for-small-households
+    st1704-compact-robot-vacuum-shortlist: compact-robot-vacuum-shortlist
+  excluded_article_ids:
+  - st1703-first-suitcase-comparison
+  exact_target_changes:
+  - POST_STATUS_DRAFT_TO_PUBLISH
+  - POST_NAME_REVIEW_SLUG_TO_FIXED_PUBLIC_SLUG
+  - CATEGORY_ASSIGNMENT_TO_EXACT_EXISTING_SINGLE_TERM
+  wordpress_required_bounded_effects:
+  - PUBLICATION_TIMESTAMPS
+  - REVISION_AND_CACHE_EFFECTS_REQUIRED_BY_CORE_TRANSITION
+  must_preserve_exact:
+  - POST_ID
+  - POST_TITLE
+  - POST_EXCERPT
+  - POST_CONTENT
+  - _raos_publication_snapshot_v1
+  - FEATURED_MEDIA_AND__thumbnail_id
+  - TAGS
+  - ALL_NON_OPERATOR_POST_META
+  forbidden:
+  - ARBITRARY_POST_LOOKUP_OR_MUTATION
+  - UPDATE_EXISTING_ARTICLE
+  - TITLE_EXCERPT_CONTENT_OR_SNAPSHOT_MUTATION
+  - MEDIA_UPLOAD_OR_MUTATION
+  - TERM_CREATION_OR_ARBITRARY_TAXONOMY
+  - PLUGIN_OR_THEME_MUTATION
+  - GENERIC_HTTP_PHP_SQL_SHELL_OR_OPTION_SURFACE
+routes:
+  - id: STATUS
+    method: GET
+    path: /wp-json/raos-operator/v2/status
+    request_body: ABSENT
+    capability: raos_operator_read
+  - id: CREATE_PROPOSAL
+    method: POST
+    path: /wp-json/raos-operator/v2/proposals
+    request_body: EXACT_CANONICAL_PROPOSAL_REQUEST
+    capability: raos_operator_propose
+    both_write_constants_required: true
+  - id: READ_EXACT_PROPOSAL
+    method: GET
+    path: /wp-json/raos-operator/v2/proposals/{64_lowercase_hex}
+    request_body: ABSENT
+    capability: raos_operator_read
+    list_or_search: ABSENT
+  - id: APPLY_PROPOSAL
+    method: POST
+    path: /wp-json/raos-operator/v2/proposals/{64_lowercase_hex}/apply
+    request_body: EMPTY_JSON_OBJECT_ONLY
+    capability: raos_operator_apply
+    required_headers:
+      If-Match: EXACT_QUOTED_PROPOSAL_ID
+      Idempotency-Key: EXACT_UNQUOTED_PROPOSAL_ID
+    both_write_constants_required: true
+approval:
+  rest_route: ABSENT
+  surface: WP_ADMIN_TOOLS_COOKIE_SESSION_ONLY
+  required:
+  - manage_options
+  - PROPOSAL_SPECIFIC_NONCE
+  - CURRENT_PASSWORD_REAUTHENTICATION
+  - UNICODE_REASON_10_TO_300_SCALARS
+  - EXACT_FINAL_12_CHARACTERS_OF_PROPOSAL_ID
+  - APPROVER_USER_ID_NOT_EQUAL_PROPOSER_USER_ID
+  binds:
+  - proposal_id
+  - approved_by_user_id
+  - approved_at
+  - expires_at
+  - normalized_reason
+  application_password_can_approve: false
+  executor_can_self_approve: false
+proposal_request:
+  exact_keys:
+  - article_id
+  - category_contract
+  - draft_post_id
+  - operation
+  - operator_contract_version
+  - packet_sha256
+  - profile_version
+  - public_slug
+  - request_sha256
+  - request_token
+  - site_origin
+  - snapshot_payload_sha256
+  - ttl_seconds
+  - visible_content_sha256
+  operation: PUBLISH_ST1704_ARTICLE
+  operator_contract_version: 2
+  profile_version: 2
+  site_origin: https://kurashinoshirube.com
+  category_contract: KURASHINO_DOGU_SINGLE_V1
+  ttl_seconds: 900
+  draft_post_id: POSITIVE_INTEGER
+  hashes: EXACT_64_LOWERCASE_HEX
+  request_token: CLIENT_GENERATED_EXACT_64_LOWERCASE_HEX
+  canonicalization: SORTED_KEYS_COMPACT_ASCII_JSON_NO_NAN
+  proposal_id: SHA256_OF_EXACT_CANONICAL_REQUEST_BYTES
+proposal_states:
+- PROPOSED
+- APPROVED
+- APPLYING
+- APPLIED
+- FAILED
+- NEEDS_RECOVERY
+- EXPIRED
+proposal_receipt:
+  schema: RAOS_ST1704_PUBLICATION_OPERATOR_PROPOSAL_V2
+  exact_keys:
+  - schema
+  - proposal_id
+  - operation
+  - state
+  - created_at
+  - expires_at
+  - replayed
+  create_initial:
+    http_status: 201
+    state: PROPOSED
+    replayed: false
+    expires_at: EXACTLY_CREATED_AT_PLUS_900_SECONDS
+  create_exact_existing_replay:
+    http_status: 201
+    replayed: true
+    state: ANY_CLOSED_PROPOSAL_STATE
+  exact_get_recovery:
+    replayed: true
+    state: ANY_CLOSED_PROPOSAL_STATE
+    sensitive_approval_or_audit_material: ABSENT
+  list_or_search_receipt: ABSENT
+  response_etag: EXACT_QUOTED_PROPOSAL_ID
+apply_receipt:
+  schema: RAOS_ST1704_PUBLICATION_OPERATOR_APPLY_V2
+  exact_keys:
+  - schema
+  - proposal_id
+  - operation
+  - state
+  - result_code
+  - replayed
+  success_state: APPLIED
+  success_result_code: ST1704_ARTICLE_PUBLISHED
+  response_etag: EXACT_QUOTED_PROPOSAL_ID
+status_response:
+  schema: RAOS_ST1704_PUBLICATION_OPERATOR_STATUS_V2
+  exact_keys:
+  - schema
+  - operator_version
+  - master_writes_enabled
+  - publication_writes_enabled
+  - writes_enabled
+  - supported_operations
+  - proposal_counts
+  operator_version: 2.0.0
+  writes_enabled: LOGICAL_AND_OF_STRICT_GATE_VALUES
+  supported_operations:
+  - PUBLISH_ST1704_ARTICLE
+  proposal_count_keys: EXACT_CLOSED_PROPOSAL_STATES
+  generic_site_health_or_inventory: ABSENT
+concurrency_and_integrity:
+  create: GLOBAL_ONE_ACTIVE_PUBLICATION_PROPOSAL_FAIL_CLOSED
+  apply: GLOBAL_DATABASE_MUTEX_WITH_OWNERSHIP_RECHECK
+  precondition: RECOMPUTE_AND_MATCH_ALL_BOUND_DRAFT_AND_SNAPSHOT_HASHES
+  audit: APPEND_ONLY_HASH_CHAIN_FAIL_CLOSED
+  terminal_replay: SAME_HASH_BOUND_RECEIPT_ONLY
+client_intent_journal:
+  directory: .secrets/wordpress-operator-local/publication-v2
+  file: publish-st1704-article.intent.v2.json
+  lock: publish-st1704-article.lock
+  schema: RAOS_ST1704_PUBLICATION_PROPOSAL_INTENT_V2
+  scope: ONE_GLOBAL_UNRESOLVED_INTENT_ACROSS_FOUR_ARTICLES
+  phases:
+  - CREATE_INTENT
+  - PROPOSED
+  - APPLY_INTENT
+  ambiguous_outcome: RETAIN
+  exact_validated_terminal_receipt: CLEAR_MATCHING_INTENT_ONLY
+release_boundary:
+  local_implementation: ALLOWED
+  plugin_install_activation_and_gate_change: HUMAN_EXTERNAL_OPERATION
+  live_publication: REQUIRES_EXACT_DISTINCT_HUMAN_APPROVAL
+  formal_validation: NOT_EXECUTED
+  staging: NOT_EXECUTED
+  production_readiness: NOT_READY

@@ -1,0 +1,33 @@
+document:
+  id: RAOS-ST1704-DECISION-ADDENDUM-WORDPRESS-PUBLICATION-OPERATOR-V2
+  version: 1.0.0
+  additive_to: RAOS_07_canonical_decisions_v1.0.yaml
+  base_canonical_bytes_modified: false
+decision:
+  id: INT-DEC-016
+  status: ADOPTED_ADDITIVE_CLARIFICATION
+  scope:
+  - ST-1704
+  - SELF_HOSTED_WORDPRESS_PUBLICATION_OPERATOR_V2
+  statement: >-
+    Codex may execute one deterministic WordPress publication transition only
+    through the bounded operator after a different, cookie-authenticated
+    manage_options human has approved the exact immutable proposal hash.
+  relationship_to_existing_decisions:
+    INT-DEC-009: PRESERVED_HUMAN_FINAL_PUBLICATION_DECISION
+    INT-DEC-013: PRESERVED_CODEX_HAS_NO_SELF_APPROVAL_OR_FINAL_APPROVAL_AUTHORITY
+  allowed_operation:
+    operation: PUBLISH_ST1704_ARTICLE
+    articles: EXACT_FOUR_ST1704_PUBLISH_NEW_BINDINGS_ONLY
+    transition: EXACT_BOUND_REVIEW_DRAFT_TO_PUBLIC_SLUG
+    category: EXISTING_EXACT_SINGLE_KURASHINO_DOGU_TERM_ONLY
+  mandatory_boundaries:
+  - DISTINCT_HUMAN_HASH_BOUND_APPROVAL
+  - CODEX_CANNOT_APPROVE_OR_MODIFY_APPROVAL
+  - ONE_ARTICLE_PER_PROPOSAL_AND_APPLY
+  - NO_TITLE_EXCERPT_CONTENT_SNAPSHOT_MEDIA_OR_TERM_CREATION_MUTATION
+  - MASTER_AND_PUBLICATION_WRITE_GATES_DEFAULT_DISABLED
+  - NO_GENERIC_POST_OR_WORDPRESS_ADMINISTRATION_SURFACE
+  - NO_PRODUCTION_OR_FORMAL_VALIDATION_CLAIM_FROM_LOCAL_EVIDENCE
+  excluded_article: st1703-first-suitcase-comparison
+  activation_and_release: HUMAN_GATED_EXTERNAL_OPERATION
