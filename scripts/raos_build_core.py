@@ -44,6 +44,7 @@ OUTPUT_OWNER_OVERRIDES: Final = {
 }
 OWNER_PRIVATE_OWNER_IDS: Final = frozenset(
     {
+        "build_st1703_self_hosted_runtime_manifest",
         "build_st1703_self_hosted_theme",
         "build_st1704_self_hosted_theme",
     }

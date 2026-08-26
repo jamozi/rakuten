@@ -10,6 +10,7 @@ import yaml
 from scripts.raos_build_core import (
     ACTIVE_MANIFEST_PATH,
     EXPLICIT_OWNER_DEPENDENCIES,
+    OWNER_PRIVATE_OWNER_IDS,
     REPOSITORY_ROOT,
     InputKind,
     active_manifest_document,
@@ -33,6 +34,10 @@ def test_build_infrastructure_change_selects_the_complete_graph() -> None:
     registry = discover_registry()
     selected = affected_owners(registry, {Path("scripts/raos_build_core.py")})
     assert set(selected) == set(registry)
+
+
+def test_physical_runtime_generator_is_owner_private() -> None:
+    assert "build_st1703_self_hosted_runtime_manifest" in OWNER_PRIVATE_OWNER_IDS
 
 
 def test_active_manifest_uses_hashes_only_for_integrity_inputs_and_outputs() -> None:

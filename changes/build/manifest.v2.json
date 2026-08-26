@@ -24557,7 +24557,7 @@
       ]
     },
     {
-      "output_scope": "tracked",
+      "output_scope": "owner_private",
       "outputs": [
         {
           "bytes": 7283,
