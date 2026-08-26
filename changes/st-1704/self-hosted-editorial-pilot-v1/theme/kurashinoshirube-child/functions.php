@@ -12,7 +12,7 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.2.0';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.3.0';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guide.webp';
@@ -1772,8 +1772,7 @@ function kurashinoshirube_render_featured_guide($attributes, $content, $tag): st
         }
     }
     if ($featured === '') {
-        $featured = '<p class="raos-empty-state">公開済みの注目ガイドはまだありません。'
-            . '編集部の確認が終わるまで未公開記事は表示しません。</p>';
+        return '';
     }
     return '<section class="raos-home-section raos-featured alignwide" '
         . 'aria-labelledby="raos-featured-title"><div class="raos-section-heading">'
@@ -1857,7 +1856,7 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
                 . esc_html($title) . '</a></li>';
         }
         if ($items === '') {
-            $items = '<li>ガイドを準備中です。</li>';
+            continue;
         }
         $sections .= '<section id="' . esc_attr($id) . '" class="raos-cluster" '
             . 'aria-labelledby="' . esc_attr($id) . '-title">'
@@ -1866,6 +1865,11 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
             . esc_html($cluster['heading']) . '</h3><ul>' . $items
             . '</ul></section>';
     }
+    if ($sections === '') {
+        $sections = '<p class="raos-empty-state">カテゴリ別ガイドは、'
+            . '根拠と公開条件の確認が完了したものから掲載します。</p>';
+    }
+
     return '<section class="raos-cluster-nav raos-home-section alignwide" '
         . 'aria-labelledby="raos-cluster-nav-title"><div class="raos-section-heading">'
         . '<p class="raos-kicker">CHOOSE BY NEED</p><h2 id="raos-cluster-nav-title">'
