@@ -2323,14 +2323,35 @@ final class RAOS_ST1704_Publication_Controller_V2
             return false;
         }
         if ($expected_modified_times !== array()) {
+            $expected_publication_dates = self::publication_date_fields(
+                $before,
+                $expected_modified_times
+            );
+            $current_post_date = self::decode_exact_base64(
+                $current['restore']['post_fields']['post_date']
+            );
+            $current_post_date_gmt = self::decode_exact_base64(
+                $current['restore']['post_fields']['post_date_gmt']
+            );
             $current_post_modified = self::decode_exact_base64(
                 $current['restore']['post_fields']['post_modified']
             );
             $current_post_modified_gmt = self::decode_exact_base64(
                 $current['restore']['post_fields']['post_modified_gmt']
             );
-            if (! is_string($current_post_modified)
+            if (! is_array($expected_publication_dates)
+                || ! is_string($current_post_date)
+                || ! is_string($current_post_date_gmt)
+                || ! is_string($current_post_modified)
                 || ! is_string($current_post_modified_gmt)
+                || ! hash_equals(
+                    $expected_publication_dates['post_date'],
+                    $current_post_date
+                )
+                || ! hash_equals(
+                    $expected_publication_dates['post_date_gmt'],
+                    $current_post_date_gmt
+                )
                 || ! hash_equals(
                     $expected_modified_times['post_modified'],
                     $current_post_modified
@@ -2605,6 +2626,46 @@ final class RAOS_ST1704_Publication_Controller_V2
         );
     }
 
+    private static function publication_date_fields(
+        array $before,
+        array $modified_times
+    ) {
+        if (! isset($before['storage']['restore']['post_fields'])
+            || ! self::has_exact_keys(
+                $modified_times,
+                array('post_modified', 'post_modified_gmt')
+            )
+            || ! is_string($modified_times['post_modified'])
+            || ! is_string($modified_times['post_modified_gmt'])) {
+            return false;
+        }
+        $fields = $before['storage']['restore']['post_fields'];
+        if (! is_array($fields)
+            || ! isset($fields['post_date'], $fields['post_date_gmt'])) {
+            return false;
+        }
+        $post_date = self::decode_exact_base64($fields['post_date']);
+        $post_date_gmt = self::decode_exact_base64($fields['post_date_gmt']);
+        if (! is_string($post_date) || ! is_string($post_date_gmt)) {
+            return false;
+        }
+        if ($post_date_gmt === '0000-00-00 00:00:00') {
+            $post_date = $modified_times['post_modified'];
+            if (! function_exists('get_gmt_from_date')) {
+                return false;
+            }
+            $post_date_gmt = get_gmt_from_date($post_date);
+        }
+        if (self::strict_mysql_utc_epoch($post_date) === null
+            || self::strict_mysql_utc_epoch($post_date_gmt) === null) {
+            return false;
+        }
+        return array(
+            'post_date' => $post_date,
+            'post_date_gmt' => $post_date_gmt,
+        );
+    }
+
     private function write_bounded_publication_rows(
         array $proposal,
         array $before,
@@ -2646,6 +2707,13 @@ final class RAOS_ST1704_Publication_Controller_V2
         if ($post_fields['post_status'] !== 'draft'
             || $post_fields['post_name'] !== $review_slug
             || $post_fields['post_type'] !== 'post') {
+            return false;
+        }
+        $publication_dates = self::publication_date_fields(
+            $before,
+            $modified_times
+        );
+        if (! is_array($publication_dates)) {
             return false;
         }
 
@@ -2781,19 +2849,26 @@ final class RAOS_ST1704_Publication_Controller_V2
             $wpdb->prepare(
                 "UPDATE {$wpdb->posts}
                  SET post_name = %s, post_status = %s,
+                     post_date = %s, post_date_gmt = %s,
                      post_modified = %s, post_modified_gmt = %s
                  WHERE ID = %d
                    AND BINARY post_name = BINARY %s
                    AND BINARY post_status = BINARY %s
+                   AND BINARY post_date = BINARY %s
+                   AND BINARY post_date_gmt = BINARY %s
                    AND BINARY post_type = BINARY %s
                    AND (IS_USED_LOCK(%s) = CONNECTION_ID())",
                 $proposal['public_slug'],
                 'publish',
+                $publication_dates['post_date'],
+                $publication_dates['post_date_gmt'],
                 $modified_times['post_modified'],
                 $modified_times['post_modified_gmt'],
                 $post_id,
                 $review_slug,
                 'draft',
+                $post_fields['post_date'],
+                $post_fields['post_date_gmt'],
                 'post',
                 $mutex_name
             )
@@ -2840,6 +2915,17 @@ final class RAOS_ST1704_Publication_Controller_V2
                 'ok' => false,
                 'state' => 'FAILED',
                 'code' => 'PUBLICATION_MODIFIED_TIME_INVALID',
+            );
+        }
+        $publication_dates = self::publication_date_fields(
+            $before,
+            $modified_times
+        );
+        if (! is_array($publication_dates)) {
+            return array(
+                'ok' => false,
+                'state' => 'FAILED',
+                'code' => 'PUBLICATION_DATE_INVALID',
             );
         }
         if (! function_exists('wp_after_insert_post')) {
@@ -3285,6 +3371,14 @@ final class RAOS_ST1704_Publication_Controller_V2
                     || $published_post->post_status !== 'publish'
                     || $published_post->post_type !== 'post'
                     || ! hash_equals(
+                        $publication_dates['post_date'],
+                        $published_post->post_date
+                    )
+                    || ! hash_equals(
+                        $publication_dates['post_date_gmt'],
+                        $published_post->post_date_gmt
+                    )
+                    || ! hash_equals(
                         $modified_times['post_modified'],
                         $published_post->post_modified
                     )
@@ -3323,6 +3417,14 @@ final class RAOS_ST1704_Publication_Controller_V2
                 $post_after = get_post($post_id);
                 if (! $post_after instanceof WP_Post
                     || (int) $post_after->ID !== $post_id
+                    || ! hash_equals(
+                        $publication_dates['post_date'],
+                        $post_after->post_date
+                    )
+                    || ! hash_equals(
+                        $publication_dates['post_date_gmt'],
+                        $post_after->post_date_gmt
+                    )
                     || ! hash_equals(
                         $modified_times['post_modified'],
                         $post_after->post_modified
@@ -3535,6 +3637,8 @@ final class RAOS_ST1704_Publication_Controller_V2
         $post_fields = array();
         foreach (
             array(
+                'post_date',
+                'post_date_gmt',
                 'post_modified',
                 'post_modified_gmt',
                 'post_name',
@@ -3555,6 +3659,13 @@ final class RAOS_ST1704_Publication_Controller_V2
         if ($post_fields['post_name'] !== $review_slug
             || $post_fields['post_status'] !== 'draft'
             || $post_fields['post_type'] !== 'post') {
+            return false;
+        }
+        $publication_dates = self::publication_date_fields(
+            $before,
+            $modified_times
+        );
+        if (! is_array($publication_dates)) {
             return false;
         }
 
@@ -3626,8 +3737,8 @@ final class RAOS_ST1704_Publication_Controller_V2
         }
         $current_post = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT post_name, post_status, post_modified,
-                        post_modified_gmt, post_type
+                "SELECT post_name, post_status, post_date, post_date_gmt,
+                        post_modified, post_modified_gmt, post_type
                  FROM {$wpdb->posts} WHERE ID = %d FOR UPDATE",
                 $post_id
             ),
@@ -3638,6 +3749,8 @@ final class RAOS_ST1704_Publication_Controller_V2
             || ! self::has_exact_keys(
                 $current_post,
                 array(
+                    'post_date',
+                    'post_date_gmt',
                     'post_modified',
                     'post_modified_gmt',
                     'post_name',
@@ -3647,6 +3760,10 @@ final class RAOS_ST1704_Publication_Controller_V2
             )
             || $current_post['post_name'] !== $proposal['public_slug']
             || $current_post['post_status'] !== 'publish'
+            || $current_post['post_date']
+                !== $publication_dates['post_date']
+            || $current_post['post_date_gmt']
+                !== $publication_dates['post_date_gmt']
             || $current_post['post_modified']
                 !== $modified_times['post_modified']
             || $current_post['post_modified_gmt']
@@ -3746,21 +3863,28 @@ final class RAOS_ST1704_Publication_Controller_V2
             $wpdb->prepare(
                 "UPDATE {$wpdb->posts}
                  SET post_name = %s, post_status = %s,
+                     post_date = %s, post_date_gmt = %s,
                      post_modified = %s, post_modified_gmt = %s
                  WHERE ID = %d
                    AND BINARY post_name = BINARY %s
                    AND BINARY post_status = BINARY %s
+                   AND BINARY post_date = BINARY %s
+                   AND BINARY post_date_gmt = BINARY %s
                    AND BINARY post_modified = BINARY %s
                    AND BINARY post_modified_gmt = BINARY %s
                    AND BINARY post_type = BINARY %s
                    AND (IS_USED_LOCK(%s) = CONNECTION_ID())",
                 $post_fields['post_name'],
                 $post_fields['post_status'],
+                $post_fields['post_date'],
+                $post_fields['post_date_gmt'],
                 $post_fields['post_modified'],
                 $post_fields['post_modified_gmt'],
                 $post_id,
                 $proposal['public_slug'],
                 'publish',
+                $publication_dates['post_date'],
+                $publication_dates['post_date_gmt'],
                 $modified_times['post_modified'],
                 $modified_times['post_modified_gmt'],
                 'post',

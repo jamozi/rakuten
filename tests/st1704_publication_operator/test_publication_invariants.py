@@ -108,7 +108,10 @@ def test_apply_is_one_proposal_with_cas_idempotency_audit_and_readback() -> None
     assert "INSERT INTO {$wpdb->term_relationships}" in bounded_write
     assert "UPDATE {$wpdb->posts}" in bounded_write
     assert "SET post_name = %s, post_status = %s," in bounded_write
+    assert "post_date = %s, post_date_gmt = %s" in bounded_write
     assert "post_modified = %s, post_modified_gmt = %s" in bounded_write
+    assert "AND BINARY post_date = BINARY %s" in bounded_write
+    assert "AND BINARY post_date_gmt = BINARY %s" in bounded_write
     assert bounded_write.count("(IS_USED_LOCK(%s) = CONNECTION_ID())") == 3
     execute = source.split("private function execute_apply_under_mutex", 1)[1].split(
         "private function published_state_matches", 1

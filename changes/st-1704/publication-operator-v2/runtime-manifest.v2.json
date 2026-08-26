@@ -11,7 +11,7 @@
   "generated_by": "scripts/build_st1704_wordpress_publication_operator_v2.py",
   "operator_contract_version": 2,
   "package": {
-    "bytes": 352307,
+    "bytes": 357251,
     "compression": "ZIP_STORED",
     "file_count": 4,
     "files": [
@@ -26,9 +26,9 @@
         "sha256": "a47fdd998505bf7cce1ec5c168f111cd1052804916957b36fc09b4c2c03d0f7b"
       },
       {
-        "bytes": 160810,
+        "bytes": 165754,
         "path": "includes/st1704-publication-controller.v2.php",
-        "sha256": "3db4d4b18cac407f45c8f10ec47a2f10965bb43e5f9bd5320a86d3ee0f0f4645"
+        "sha256": "432bf71a079ca40360b1f73a3c100efaced9b8579809f745064e1a9c75d8e450"
       },
       {
         "bytes": 188345,
@@ -37,7 +37,7 @@
       }
     ],
     "root": "raos-bounded-operator/",
-    "sha256": "b6469fe308067a1cf0e1a5e00abb7578116285d5e0b96c5e8d4a421191b96839",
+    "sha256": "c71d87c84857a4f50b1d4f4466433e60960deaf58928f86a2c5a7ddaca7e007c",
     "version": "2.0.0"
   },
   "paths": [
@@ -107,9 +107,9 @@
       "sha256": "a47fdd998505bf7cce1ec5c168f111cd1052804916957b36fc09b4c2c03d0f7b"
     },
     {
-      "bytes": 160810,
+      "bytes": 165754,
       "path": "changes/st-1704/publication-operator-v2/wordpress-plugin/raos-bounded-operator/includes/st1704-publication-controller.v2.php",
-      "sha256": "3db4d4b18cac407f45c8f10ec47a2f10965bb43e5f9bd5320a86d3ee0f0f4645"
+      "sha256": "432bf71a079ca40360b1f73a3c100efaced9b8579809f745064e1a9c75d8e450"
     },
     {
       "bytes": 5764,

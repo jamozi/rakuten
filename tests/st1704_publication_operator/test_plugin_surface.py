@@ -166,9 +166,12 @@ def test_apply_mutates_one_post_with_only_the_closed_fields() -> None:
     update = mutation[mutation.index('"UPDATE {$wpdb->posts}') :]
     update = update[: update.index('",', update.index('"UPDATE {$wpdb->posts}'))]
     assert "SET post_name = %s, post_status = %s," in update
+    assert "post_date = %s, post_date_gmt = %s" in update
     assert "post_modified = %s, post_modified_gmt = %s" in update
     assert "AND BINARY post_name = BINARY %s" in update
     assert "AND BINARY post_status = BINARY %s" in update
+    assert "AND BINARY post_date = BINARY %s" in update
+    assert "AND BINARY post_date_gmt = BINARY %s" in update
     assert "AND BINARY post_type = BINARY %s" in update
     for forbidden in ("post_title", "post_excerpt", "post_content", "meta_input"):
         assert forbidden not in update
@@ -246,6 +249,20 @@ def test_apply_defers_post_mutation_hooks_and_refuses_observed_pre_hooks() -> No
     assert "new DateTimeImmutable('@' . $epoch)" in modified_times
     assert "new DateTimeZone('UTC')" in modified_times
     assert "strict_mysql_utc_epoch($post_modified_gmt)" in modified_times
+    assert "function publication_date_fields" in modified_times
+    assert "get_gmt_from_date($post_date)" in modified_times
+    assert "$post_date_gmt === '0000-00-00 00:00:00'" in modified_times
+    zero_gmt = modified_times.index(
+        "if ($post_date_gmt === '0000-00-00 00:00:00')"
+    )
+    local_publish_date = modified_times.index(
+        "$post_date = $modified_times['post_modified'];", zero_gmt
+    )
+    derived_gmt = modified_times.index(
+        "$post_date_gmt = get_gmt_from_date($post_date);", local_publish_date
+    )
+    assert zero_gmt < local_publish_date < derived_gmt
+    assert "empty($post_date)" not in modified_times
     observer_check = mutation.index("publication_pre_mutation_hooks_are_unobserved()")
     write = mutation.index("write_bounded_publication_rows(")
     commit = mutation.index("$wpdb->query('COMMIT')")
@@ -301,8 +318,12 @@ def test_apply_defers_post_mutation_hooks_and_refuses_observed_pre_hooks() -> No
     assert "$pre_update_data" not in source()
     assert "$published_post->post_modified" in mutation
     assert "$published_post->post_modified_gmt" in mutation
+    assert "$published_post->post_date" in mutation
+    assert "$published_post->post_date_gmt" in mutation
     assert "$post_after->post_modified" in mutation
     assert "$post_after->post_modified_gmt" in mutation
+    assert "$post_after->post_date" in mutation
+    assert "$post_after->post_date_gmt" in mutation
     assert mutation.count("$modified_times") >= 8
     assert "'add_post_metadata'" in mutation
     assert "PHP_INT_MAX" in mutation
@@ -443,6 +464,8 @@ def test_post_write_readback_rollback_and_terminal_replay_fail_closed() -> None:
     assert "'category_relationship_sha256'" in readback
     assert "'term_order' => 0" in readback
     assert "$new['category_relationship_sha256']" in readback
+    assert "$expected_publication_dates['post_date']" in readback
+    assert "$expected_publication_dates['post_date_gmt']" in readback
     failure = method("mutation_failure_result", "decode_exact_base64")
     rollback = method("rollback_post_state", "persist_hook_replay_completion")
     assert "is_array($modified_times)" in failure
@@ -454,10 +477,13 @@ def test_post_write_readback_rollback_and_terminal_replay_fail_closed() -> None:
     assert "post_title" not in rollback
     assert "post_content" not in rollback
     assert "post_excerpt" not in rollback
-    assert "SELECT post_name, post_status, post_modified," in rollback
+    assert "SELECT post_name, post_status, post_date, post_date_gmt," in rollback
     assert "SET post_name = %s, post_status = %s," in rollback
+    assert "post_date = %s, post_date_gmt = %s" in rollback
     assert "AND BINARY post_name = BINARY %s" in rollback
     assert "AND BINARY post_status = BINARY %s" in rollback
+    assert "AND BINARY post_date = BINARY %s" in rollback
+    assert "AND BINARY post_date_gmt = BINARY %s" in rollback
     assert "AND BINARY post_modified = BINARY %s" in rollback
     assert "AND BINARY post_modified_gmt = BINARY %s" in rollback
     assert "count($current_categories) !== 1" in rollback
