@@ -98,8 +98,8 @@ source_artifacts:
   bytes: 3960
   sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
 - uri: repo://changes/st-0202/manifest.yaml
-  bytes: 7720
-  sha256: 418ec06d8a8423a2efb7b596c6e405bf9bfcbb9e635f88a9856f5c4e84592d26
+  bytes: 5972
+  sha256: d6af8f46720413318545a93e4bfd3f0c24435db757354a09be892dbfb1a4f57f
 - uri: repo://contracts/raos-v0.4/contracts/schemas/common/job-message.schema.json
   bytes: 2987
   sha256: cdb8e8094d4fa74843c26ea453354df7083bc41a6f165220ddd0e263e37db8d5

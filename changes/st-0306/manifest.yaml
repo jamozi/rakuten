@@ -82,7 +82,7 @@ source_artifacts:
   sha256: 0525da397e16e535792364f6dd9ed1128218c1a080c07b6cb25f471f8e9cb78d
 - uri: repo://changes/st-0305/manifest.yaml
   bytes: 14860
-  sha256: 143a922a96af87354b92a3a3d57635ea22923af680c82f2c5f13a8b7852b472b
+  sha256: 133dbb2afe5fef18d206dd0317f443c530bb93dc33265036a551fd8191fe22b5
 - uri: repo://migrations/versions/202608030005_publication_analytics_finance.py
   bytes: 41097
   sha256: 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b

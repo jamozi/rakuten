@@ -245,7 +245,7 @@ source_artifacts:
   sha256: 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458
 - uri: repo://changes/st-0204/manifest.yaml
   bytes: 5972
-  sha256: a7f243a9d7ffd899aa292c0e0fd2a3949acbda373e4aebea096682669d4de397
+  sha256: 23f3980db3778f078bfc57524db84abd7236290bbda64fe3d981ab1f2c2b1fe1
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0301/generated/migration-catalog.v1.json

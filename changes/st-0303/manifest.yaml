@@ -181,7 +181,7 @@ source_artifacts:
   sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
 - uri: repo://changes/st-0301/manifest.yaml
   bytes: 13013
-  sha256: c913f3abd53aa99f177719795d42fc0c153d5dd594488ff6a04e4b3faea297d4
+  sha256: b3cf75fdf75f97ba71299d2d8c2ee8fe2745e73c588459bc6b833b654534847d
 - uri: repo://changes/st-0303/contracts/iam-ops-schema.v1.yaml
   bytes: 84064
   sha256: efdecd00965052817879a52907dd7d76f5fe1d647337da89e09172f60e0ca6db
@@ -214,7 +214,7 @@ source_artifacts:
   sha256: 58ed5d965da4c2c2503bec8e47f60a049e7b1d842f72194b04a57e32bb0fe384
 - uri: repo://changes/st-0302/manifest.yaml
   bytes: 8657
-  sha256: 8f1e7e537acd5eafb0c410a5b14bcba6d334e63709aa31a5cafa21ef5f39ad0b
+  sha256: f31a65daceda2b4aeb7579b5788c1b6061a08abb29b76894f22156e1e0599c02
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://migrations/versions/202608030003_iam_ops_tables.py

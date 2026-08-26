@@ -21,7 +21,7 @@ import stat
 import subprocess
 import sys
 import tempfile
-from typing import Any, Callable, Final, NoReturn, TypeGuard, cast
+from typing import Any, Callable, Final, NoReturn, TypedDict, TypeGuard, cast
 
 import yaml
 from yaml.constructor import ConstructorError
@@ -32,6 +32,9 @@ from yaml.tokens import AliasToken, AnchorToken, TagToken
 REPOSITORY_ROOT: Final = Path(__file__).resolve().parents[1]
 ACTIVE_MANIFEST_PATH: Final = Path("changes/build/manifest.v2.json")
 BUILD_SCRIPT_GLOB: Final = "build_*.py"
+BUILD_INFRASTRUCTURE_PATHS: Final = frozenset(
+    {Path("scripts/raos_build.py"), Path("scripts/raos_build_core.py")}
+)
 STORY_PATTERN: Final = re.compile(r"st([0-9]{4})", re.IGNORECASE)
 REPO_URI_PATTERN: Final = re.compile(r"repo://([^#\s]+)")
 HEX64_PATTERN: Final = re.compile(r"^[0-9a-f]{64}$")
@@ -69,6 +72,7 @@ EXPLICIT_OWNER_DEPENDENCIES: Final[dict[str, tuple[str, ...]]] = {
     # Some predecessor paths are declared by YAML contracts rather than Python
     # constants. Keep those semantic edges explicit so affected generation never
     # relies on a legacy digest to discover ordering.
+    "build_st0203_queue_fake": ("build_local_compose",),
     "build_st0707_evaluation_harness_runtime": (
         "build_st0705_ai_output_validation_runtime",
     ),
@@ -218,6 +222,15 @@ class BuildSpec:
                 else "tracked"
             ),
         }
+
+
+class _ProvisionalBuild(TypedDict):
+    generator: Path
+    source: str
+    paths: set[Path]
+    outputs: set[Path]
+    story_ids: tuple[str, ...]
+    dependencies: set[str]
 
 
 class BuildRegistryError(RuntimeError):
@@ -574,10 +587,10 @@ def _path_value(
         return tuple(paths)
     if isinstance(node, ast.Dict):
         paths = []
-        for item in (*node.keys, *node.values):
-            if item is None:
+        for key_or_value in (*node.keys, *node.values):
+            if key_or_value is None:
                 continue
-            paths.extend(_path_value(item, known))
+            paths.extend(_path_value(key_or_value, known))
         return tuple(paths)
     return ()
 
@@ -762,7 +775,7 @@ def _declared_outputs(owner_id: str, *, root: Path) -> set[Path]:
 
 
 def discover_registry(*, root: Path = REPOSITORY_ROOT) -> dict[str, BuildSpec]:
-    provisional: dict[str, dict[str, object]] = {}
+    provisional: dict[str, _ProvisionalBuild] = {}
     for absolute_generator in sorted((root / "scripts").glob(BUILD_SCRIPT_GLOB)):
         if not absolute_generator.is_file():
             continue
@@ -795,7 +808,7 @@ def discover_registry(*, root: Path = REPOSITORY_ROOT) -> dict[str, BuildSpec]:
 
     output_owner: dict[Path, str] = {}
     for owner_id, item in provisional.items():
-        for output in item["outputs"]:  # type: ignore[union-attr]
+        for output in item["outputs"]:
             override = OUTPUT_OWNER_OVERRIDES.get(output)
             if override is not None and owner_id != override:
                 continue
@@ -849,7 +862,7 @@ def discover_registry(*, root: Path = REPOSITORY_ROOT) -> dict[str, BuildSpec]:
                 and producer_story is not None
                 and int(producer_story.group(1)) < int(consumer_story.group(1))
             )
-            if ordered_predecessor:
+            if ordered_predecessor and predecessor is not None:
                 dependencies.add(predecessor)
             inputs.append(
                 BuildInput(
@@ -972,6 +985,8 @@ def affected_owners(
     registry: Mapping[str, BuildSpec], paths: Iterable[Path]
 ) -> tuple[str, ...]:
     changed = set(paths)
+    if changed & BUILD_INFRASTRUCTURE_PATHS:
+        return topological_order(registry)
     direct: set[str] = set()
     for owner, spec in registry.items():
         owned = {spec.generator, *spec.outputs}

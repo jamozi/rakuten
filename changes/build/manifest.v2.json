@@ -7464,11 +7464,12 @@
       "outputs": [
         {
           "bytes": 5784,
-          "sha256": "bf6719262ab3f8248516f884012c569d510a7a1a380d6147caae348a52153bdf",
+          "sha256": "f76f6c8d2526c68e7e837dc833f0ff2827ad8e4a724a74e7dea95af05f9a7fc5",
           "uri": "repo://changes/st-0203/manifest.yaml"
         }
       ],
       "owner_dependencies": [
+        "build_local_compose",
         "build_st0104_contract_repository",
         "build_st0201_postgres_service"
       ],
@@ -7614,7 +7615,7 @@
       "outputs": [
         {
           "bytes": 5972,
-          "sha256": "a7f243a9d7ffd899aa292c0e0fd2a3949acbda373e4aebea096682669d4de397",
+          "sha256": "23f3980db3778f078bfc57524db84abd7236290bbda64fe3d981ab1f2c2b1fe1",
           "uri": "repo://changes/st-0204/manifest.yaml"
         }
       ],
@@ -7914,7 +7915,7 @@
         },
         {
           "bytes": 13013,
-          "sha256": "c913f3abd53aa99f177719795d42fc0c153d5dd594488ff6a04e4b3faea297d4",
+          "sha256": "b3cf75fdf75f97ba71299d2d8c2ee8fe2745e73c588459bc6b833b654534847d",
           "uri": "repo://changes/st-0301/manifest.yaml"
         }
       ],
@@ -8196,7 +8197,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "8f1e7e537acd5eafb0c410a5b14bcba6d334e63709aa31a5cafa21ef5f39ad0b",
+          "sha256": "f31a65daceda2b4aeb7579b5788c1b6061a08abb29b76894f22156e1e0599c02",
           "uri": "repo://changes/st-0302/manifest.yaml"
         },
         {
@@ -8487,7 +8488,7 @@
         },
         {
           "bytes": 11451,
-          "sha256": "b23a1c6b9056db4d4607f975c30d3f8c48d89fb2e0b273030aeb532e3fe17caa",
+          "sha256": "21546403f5868f86b8a43a162f883a484db5a4bd41ac606efc8abffd92314961",
           "uri": "repo://changes/st-0303/manifest.yaml"
         },
         {
@@ -8844,7 +8845,7 @@
         },
         {
           "bytes": 11664,
-          "sha256": "fdace21bc3f21299a7a178f365cd49ca7c33bf35873affb7986856f32c0e829c",
+          "sha256": "1955671fa30ff66c7434c04cd874939ca90ac35d961165005c95dad3927cfe8e",
           "uri": "repo://changes/st-0304/manifest.yaml"
         },
         {
@@ -9064,7 +9065,7 @@
         },
         {
           "bytes": 14860,
-          "sha256": "143a922a96af87354b92a3a3d57635ea22923af680c82f2c5f13a8b7852b472b",
+          "sha256": "133dbb2afe5fef18d206dd0317f443c530bb93dc33265036a551fd8191fe22b5",
           "uri": "repo://changes/st-0305/manifest.yaml"
         },
         {
@@ -9295,7 +9296,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "35e837f468ca148ae07c46652124eda3f4ce4270a71127d778d4e359fa951cf0",
+          "sha256": "83a06116ee2dca366e2a82932b0e45e28fd9bb098b5f7489fbd35e6e4c36aa58",
           "uri": "repo://changes/st-0306/manifest.yaml"
         },
         {
@@ -9547,7 +9548,7 @@
         },
         {
           "bytes": 15335,
-          "sha256": "b331ed90c8467bc0f61c5f7487b16ba3c146b281e09391d46531facbaea651e9",
+          "sha256": "03344f7262daa6150622ed5c1a6a5a60d8047ac74811a09a63c323c1371e7e74",
           "uri": "repo://changes/st-0307/manifest.yaml"
         },
         {
@@ -14407,7 +14408,7 @@
       "outputs": [
         {
           "bytes": 32582,
-          "sha256": "436123a5594e17e5c94f8e4e6f3e384354710ec3de322e49b6a8f8784fb741b2",
+          "sha256": "7bbfa617e8c1461174f9c435bd17dfa828da819c04908258846ffb2a679961bc",
           "uri": "repo://changes/st-0801/manifest.yaml"
         }
       ],

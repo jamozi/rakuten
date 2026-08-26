@@ -4,13 +4,14 @@
 from __future__ import annotations
 
 import argparse
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 import os
 import subprocess
 import sys
 import tempfile
 
 from raos_build_core import (
+    BuildSpec,
     BuildRegistryError,
     OWNER_PRIVATE_OWNER_IDS,
     REPOSITORY_ROOT,
@@ -22,6 +23,7 @@ from raos_build_core import (
     generation_relevant_paths,
     registry_document,
     run_commands,
+    topological_order,
     write_active_manifest,
 )
 
@@ -32,7 +34,10 @@ def _parser() -> argparse.ArgumentParser:
     subcommands = parser.add_subparsers(dest="command", required=True)
     registry = subcommands.add_parser("registry", help="validate the owner graph")
     registry.add_argument("--json", action="store_true", help="print the registry")
-    subcommands.add_parser("generate", help="run affected generators")
+    generate = subcommands.add_parser("generate", help="run affected generators")
+    generate.add_argument(
+        "--all", action="store_true", help="regenerate every non-owner-private owner"
+    )
     check = subcommands.add_parser("check", help="run generator checks")
     check.add_argument(
         "--all",
@@ -44,19 +49,23 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _selected(registry: dict[str, object], base: str | None) -> tuple[str, ...]:
+def _selected(
+    registry: Mapping[str, BuildSpec], base: str | None
+) -> tuple[str, ...]:
     return tuple(
         owner
-        for owner in affected_owners(registry, changed_paths(base=base))  # type: ignore[arg-type]
+        for owner in affected_owners(registry, changed_paths(base=base))
         if owner not in OWNER_PRIVATE_OWNER_IDS
     )
 
 
-def _tests_for(registry: dict[str, object], owners: tuple[str, ...]) -> tuple[str, ...]:
+def _tests_for(
+    registry: Mapping[str, BuildSpec], owners: tuple[str, ...]
+) -> tuple[str, ...]:
     paths = {
         path.as_posix()
         for owner in owners
-        for path in registry[owner].test_paths  # type: ignore[union-attr]
+        for path in registry[owner].test_paths
     }
     return tuple(sorted(paths))
 
@@ -164,8 +173,10 @@ def main(argv: list[str] | None = None) -> int:
             )
         )
         if arguments.command == "generate":
-            generation_owners = affected_owners(
-                registry, generation_relevant_paths(changed)
+            generation_owners = (
+                topological_order(registry)
+                if arguments.all
+                else affected_owners(registry, generation_relevant_paths(changed))
             )
             generation_owners = tuple(
                 owner

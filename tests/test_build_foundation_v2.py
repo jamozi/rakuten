@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import yaml
 
@@ -12,6 +13,7 @@ from scripts.raos_build_core import (
     REPOSITORY_ROOT,
     InputKind,
     active_manifest_document,
+    affected_owners,
     discover_registry,
 )
 
@@ -25,6 +27,12 @@ def test_all_generators_have_one_owner_and_an_acyclic_graph() -> None:
     assert len(outputs) == len(set(outputs))
     for owner, dependencies in EXPLICIT_OWNER_DEPENDENCIES.items():
         assert set(dependencies) <= set(registry[owner].owner_dependencies)
+
+
+def test_build_infrastructure_change_selects_the_complete_graph() -> None:
+    registry = discover_registry()
+    selected = affected_owners(registry, {Path("scripts/raos_build_core.py")})
+    assert set(selected) == set(registry)
 
 
 def test_active_manifest_uses_hashes_only_for_integrity_inputs_and_outputs() -> None:

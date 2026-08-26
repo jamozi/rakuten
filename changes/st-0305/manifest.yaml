@@ -129,7 +129,7 @@ source_artifacts:
   sha256: 9ddf4b26bdaa5fef22b14703937e0d010ea0690123b18eb77bd53651d800c72e
 - uri: repo://changes/st-0304/manifest.yaml
   bytes: 11664
-  sha256: fdace21bc3f21299a7a178f365cd49ca7c33bf35873affb7986856f32c0e829c
+  sha256: 1955671fa30ff66c7434c04cd874939ca90ac35d961165005c95dad3927cfe8e
 - uri: repo://migrations/versions/202608030004_domain_schemas.py
   bytes: 106632
   sha256: 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407

@@ -111,7 +111,7 @@ source_artifacts:
   sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
 - uri: repo://changes/st-0203/manifest.yaml
   bytes: 5784
-  sha256: bf6719262ab3f8248516f884012c569d510a7a1a380d6147caae348a52153bdf
+  sha256: f76f6c8d2526c68e7e837dc833f0ff2827ad8e4a724a74e7dea95af05f9a7fc5
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0204/generated/runtime-config.v1.schema.json

@@ -158,7 +158,7 @@ source_artifacts:
   sha256: afaf1fcd180593faac3404a4f978aa9f44452657a74b5f301924e78f1a9a1e39
 - uri: repo://changes/st-0303/manifest.yaml
   bytes: 11451
-  sha256: b23a1c6b9056db4d4607f975c30d3f8c48d89fb2e0b273030aeb532e3fe17caa
+  sha256: 21546403f5868f86b8a43a162f883a484db5a4bd41ac606efc8abffd92314961
 - uri: repo://migrations/versions/202608030003_iam_ops_tables.py
   bytes: 62827
   sha256: a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
