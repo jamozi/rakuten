@@ -12,7 +12,7 @@
     {
       "bytes": 7703,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "fff61d6c22fa9c583bac2ea37fdf1252cba29f5476dca4b85ba807434c47c243"
+      "sha256": "d6074feb278a2ee96bf457250e2b84e062e1e88240aaaf61e99eeb7d7772f2d6"
     },
     {
       "bytes": 3612,
@@ -22,7 +22,7 @@
     {
       "bytes": 28851,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "ae19b2c99add80e01d4bae4aa4b308258812ed8c9d0dc7ccaa624a6412063cf4"
+      "sha256": "22f2fa8aab30c9fd08f2f423a1d334fab3d31b2cee04b7d1037f61d4fe8273d3"
     },
     {
       "bytes": 2486,
@@ -37,7 +37,7 @@
     {
       "bytes": 11222,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
-      "sha256": "39422cf42a4ce8b99ef9730a6170849e593725de9aff554bc304d0d763675f1c"
+      "sha256": "ab9620e2a2363547cfad28e1bb68988607e30b048749d489c201ddb0210cc7bf"
     },
     {
       "bytes": 117572,

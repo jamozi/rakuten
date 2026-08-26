@@ -159,14 +159,14 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_2_0_successor() -> None:
+def test_theme_is_an_isolated_1_3_0_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.2.0\n") == 1
+    assert stylesheet.count("\nVersion: 1.3.0\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.2.0"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.2.0'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.0"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.0'") == 1
     at003_gate = functions.split(
         "function kurashinoshirube_existing_update_context", 1
     )[1]
@@ -181,7 +181,7 @@ def test_theme_is_an_isolated_1_2_0_successor() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.2.0"
+    assert manifest["theme_version"] == "1.3.0"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 3
     for record in records:
@@ -213,9 +213,13 @@ def test_homepage_has_one_h1_three_clusters_and_the_brand_promise() -> None:
     front = (THEME_ROOT / "templates/front-page.html").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
     assert header.count('"level":0') == 1
+    assert "raos-skip-link" not in header
     assert front.count('<h1 class="') == 1
     assert front.count('"level":1') == 1
-    assert "暮らしの道具を、根拠から選ぶ。" in front
+    assert "<span>暮らしの道具を、</span><span>根拠から選ぶ。</span>" in front
+    assert front.count('class="wp-block-group raos-hero__proof"') == 1
+    assert "THE EDITORIAL STANDARD" in front
+    assert front.count('class="raos-trust-bar__number"') == 3
     assert "最新の比較ガイドを見る" in front
     assert front.count("[kurashinoshirube_featured_guide]") == 1
     assert front.count("[kurashinoshirube_published_clusters]") == 1
@@ -229,6 +233,8 @@ def test_homepage_has_one_h1_three_clusters_and_the_brand_promise() -> None:
     assert "広告報酬をおすすめ順位の判断材料にしません" in front
     assert "よく読まれている" not in front
     assert "注目ガイド" in functions
+    assert "公開済みの注目ガイドはまだありません" not in functions
+    assert "カテゴリ別ガイドは、" in functions
     assert "条件から選ぶ" in functions
     assert "カテゴリから選ぶ" in functions
     assert '"inherit":false' in front
@@ -707,7 +713,8 @@ def test_focus_and_text_color_pairs_meet_wcag_aa() -> None:
     assert ".raos-hero :where(a, button):focus-visible" in css
     assert ".raos-masthead nav a" in css
     assert ".raos-wordmark:focus-visible" in css
-    assert "outline-color: #fff" in css
+    assert "outline-color: var(--raos-focus)" in css
+    assert "grid-template-columns: repeat(3, minmax(0, 1fr))" in css
     assert "@media (forced-colors: active)" in css
 
 
@@ -738,7 +745,7 @@ def test_visual_fixtures_are_explicitly_non_production_and_closed() -> None:
         assert "本番表示ではありません" in payload
         assert "<script" not in payload.casefold()
         assert "javascript:" not in payload.casefold()
-    assert "暮らしの道具を、根拠から選ぶ。" in home
+    assert "<span>暮らしの道具を、</span><span>根拠から選ぶ。</span>" in home
     assert "よく読まれている" not in home
     assert "中立画像" in home
     assert "検証済み画像なし" in article
