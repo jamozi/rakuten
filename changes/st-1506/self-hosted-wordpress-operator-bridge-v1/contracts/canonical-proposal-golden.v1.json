@@ -1,0 +1,7 @@
+{
+  "canonical_ascii_json": "{\"operation\":\"APPLY_YOAST_PROFILE\",\"operator_contract_version\":1,\"profile_version\":1,\"request_token\":\"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\",\"site_origin\":\"https://kurashinoshirube.com\",\"ttl_seconds\":900,\"yoast_profile\":{\"plugin_slug\":\"wordpress-seo\",\"version\":\"28.3\",\"wpseo\":{\"enable_ai_generator\":false,\"enable_headless_rest_endpoints\":false,\"enable_index_now\":false,\"enable_schema\":false,\"enable_schema_aggregation_endpoint\":false,\"enable_xml_sitemap\":true,\"google_site_kit_feature_enabled\":false,\"googleverify\":\"\",\"semrush_integration_active\":false,\"tracking\":false,\"wincher_integration_active\":false},\"wpseo_social\":{\"og_default_image\":\"https://kurashinoshirube.com/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp\",\"og_default_image_id\":\"\",\"opengraph\":true,\"twitter\":true,\"twitter_card_type\":\"summary_large_image\"}}}",
+  "canonical_byte_length": 870,
+  "proposal_id": "699a1c5a40786449e3f0241958a594f436e03504472a592d2abc1e3eae2b7d90",
+  "request_token": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "schema": "RAOS_WORDPRESS_OPERATOR_CANONICAL_GOLDEN_V1"
+}
