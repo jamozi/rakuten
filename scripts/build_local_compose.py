@@ -27,14 +27,8 @@ ST0202_CONTRACT_PATH: Final = Path(
     "changes/st-0202/contracts/local-object-storage.v1.yaml"
 )
 PREDECESSOR_MANIFEST_PATH: Final = Path("changes/st-0201/manifest.yaml")
-EXPECTED_PREDECESSOR_MANIFEST_SHA256: Final = (
-    "fce4b7f18cec09425264a1058bda59759e081be0c04826ffa3eae433a68fcda3"
-)
 ARCHITECTURE_SNAPSHOT_PATH: Final = Path(
     "docs/architecture/ST-0202-object-storage-provider-snapshot.yaml"
-)
-EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256: Final = (
-    "9939eee21ef71e25c3fdab6c0cfa7bc6879abfa52a88208e2871b90c75a44291"
 )
 OBJECT_STORAGE_WRAPPER_PATH: Final = Path("scripts/object_storage_service.sh")
 GENERATED_PATHS: Final = (COMPOSE_PATH, MANIFEST_PATH)
@@ -79,12 +73,10 @@ PINNED_CANONICAL_INPUTS: Final = {
     ),
 }
 
-SOURCE_ARTIFACT_PATHS: Final = (
+SEMANTIC_INPUT_PATHS: Final = (
     ST0202_CONTRACT_PATH,
     Path("changes/st-0202/README.md"),
     ARCHITECTURE_SNAPSHOT_PATH,
-    Path("docs/execplans/ST-0202.md"),
-    Path("docs/worklogs/ST-0202.md"),
     PREDECESSOR_MANIFEST_PATH,
     Path("scripts/build_local_compose.py"),
     Path("scripts/build_st0201_postgres_service.py"),
@@ -101,15 +93,8 @@ SOURCE_ARTIFACT_PATHS: Final = (
     Path("tests/st0202/test_fixture.py"),
     Path("tests/st0202/test_negative_cases.py"),
     Path("tests/st0202/test_wrapper.py"),
-    Path(".github/workflows/ci.yml"),
-    Path("changes/st-0107/contracts/pr-governance.v1.yaml"),
-    Path("changes/st-0107/manifest.yaml"),
-    Path("tests/st0106/test_workflow_contract.py"),
     Path("workspace-layout.json"),
     Path("infra/docker/README.md"),
-    Path("AGENTS.md"),
-    Path("Makefile"),
-    Path("README.md"),
 )
 
 EXPECTED_ST0202_IMAGE: Final = {
@@ -778,24 +763,17 @@ def _validate_predecessor_manifest(root: Path) -> None:
 
 
 def _validate_manifest_provenance(root: Path) -> None:
-    _validate_pinned_file(
-        root,
-        ARCHITECTURE_SNAPSHOT_PATH,
-        EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256,
-        "ST-0202 architecture snapshot",
-    )
     for relative, digest in PINNED_CANONICAL_INPUTS.items():
         _validate_pinned_file(root, relative, digest, f"canonical input {relative}")
     _validate_predecessor_manifest(root)
 
 
-def _artifact_record(root: Path, relative: Path) -> dict[str, object]:
-    path = st0201._repository_regular_file(root, relative, "source artifact")
-    content = path.read_bytes()
+def _semantic_input_record(root: Path, relative: Path) -> dict[str, object]:
+    st0201._repository_regular_file(root, relative, "semantic input")
     return {
         "uri": f"repo://{relative.as_posix()}",
-        "bytes": len(content),
-        "sha256": st0201.sha256_bytes(content),
+        "semantic_id": relative.as_posix(),
+        "version": 2,
     }
 
 
@@ -807,8 +785,8 @@ def render_manifest(root: Path, compose_content: bytes) -> bytes:
     image = _mapping(contract["image"], "object-storage image")
     platform = _mapping(image["platform"], "object-storage image.platform")
     boundary = _mapping(contract["boundary"], "object-storage boundary")
-    source_artifacts = [
-        _artifact_record(root, relative) for relative in SOURCE_ARTIFACT_PATHS
+    semantic_inputs = [
+        _semantic_input_record(root, relative) for relative in SEMANTIC_INPUT_PATHS
     ]
     generated_artifacts = [
         {
@@ -830,7 +808,8 @@ def render_manifest(root: Path, compose_content: bytes) -> bytes:
             "contract_uri": SOURCE_CONTRACT_URI,
             "architecture_snapshot": {
                 "uri": f"repo://{ARCHITECTURE_SNAPSHOT_PATH.as_posix()}",
-                "sha256": EXPECTED_ARCHITECTURE_SNAPSHOT_SHA256,
+                "semantic_id": ARCHITECTURE_SNAPSHOT_PATH.as_posix(),
+                "version": 2,
             },
             "canonical_inputs": [
                 {"uri": f"repo://{relative.as_posix()}", "sha256": digest}
@@ -844,13 +823,14 @@ def render_manifest(root: Path, compose_content: bytes) -> bytes:
             },
             "predecessor_manifest": {
                 "uri": f"repo://{PREDECESSOR_MANIFEST_PATH.as_posix()}",
-                "sha256": EXPECTED_PREDECESSOR_MANIFEST_SHA256,
+                "owner_id": "build_st0201_postgres_service",
+                "owner_version": 2,
                 "story_id": "ST-0201",
             },
         },
         "stack": {"stories": ["ST-0201", "ST-0202"]},
-        "source_artifact_count": len(source_artifacts),
-        "source_artifacts": source_artifacts,
+        "semantic_input_count": len(semantic_inputs),
+        "semantic_inputs": semantic_inputs,
         "generated_artifact_count": len(generated_artifacts),
         "generated_artifacts": generated_artifacts,
         "manifest_self_integrity": {

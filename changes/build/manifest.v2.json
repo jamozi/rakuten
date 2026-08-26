@@ -10,8 +10,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 7720,
-          "sha256": "418ec06d8a8423a2efb7b596c6e405bf9bfcbb9e635f88a9856f5c4e84592d26",
+          "bytes": 5972,
+          "sha256": "d6af8f46720413318545a93e4bfd3f0c24435db757354a09be892dbfb1a4f57f",
           "uri": "repo://changes/st-0202/manifest.yaml"
         },
         {
@@ -26,36 +26,6 @@
       "owner_id": "build_local_compose",
       "owner_version": 2,
       "semantic_inputs": [
-        {
-          "kind": "tracked",
-          "semantic_id": ".github/workflows/ci.yml",
-          "uri": "repo://.github/workflows/ci.yml",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "Makefile",
-          "uri": "repo://Makefile",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "README.md",
-          "uri": "repo://README.md",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/st-0107/contracts/pr-governance.v1.yaml",
-          "uri": "repo://changes/st-0107/contracts/pr-governance.v1.yaml",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/st-0107/manifest.yaml",
-          "uri": "repo://changes/st-0107/manifest.yaml",
-          "version": 2
-        },
         {
           "kind": "tracked",
           "semantic_id": "changes/st-0201/manifest.yaml",
@@ -159,12 +129,6 @@
           "kind": "tracked",
           "semantic_id": "scripts/object_storage_service.sh",
           "uri": "repo://scripts/object_storage_service.sh",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/st0106/test_workflow_contract.py",
-          "uri": "repo://tests/st0106/test_workflow_contract.py",
           "version": 2
         },
         {
