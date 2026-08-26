@@ -322,7 +322,7 @@ final class RAOS_Bounded_Operator
 
     private function bind_operator_identity($user_id, $write_local_binding)
     {
-        $mutex_name = $this->identity_mutex_name($user_id);
+        $mutex_name = $this->identity_mutex_name();
         if (! is_string($mutex_name)) {
             return false;
         }
@@ -336,19 +336,6 @@ final class RAOS_Bounded_Operator
         $valid = false;
         $released = false;
         try {
-            $marker = $this->operator_network_marker($user_id);
-            if ($marker['state'] === 'ABSENT') {
-                add_user_meta(
-                    $user_id,
-                    self::NETWORK_IDENTITY_META,
-                    $this->network_identity_value($user_id),
-                    true
-                );
-                $marker = $this->operator_network_marker($user_id);
-            }
-            if ($marker['state'] !== 'VALID') {
-                return false;
-            }
             if ($write_local_binding) {
                 $binding = $this->operator_user_binding();
                 if ($binding['state'] === 'ABSENT') {
@@ -365,6 +352,19 @@ final class RAOS_Bounded_Operator
                     return false;
                 }
             }
+            $marker = $this->operator_network_marker($user_id);
+            if ($marker['state'] === 'ABSENT') {
+                add_user_meta(
+                    $user_id,
+                    self::NETWORK_IDENTITY_META,
+                    $this->network_identity_value($user_id),
+                    true
+                );
+                $marker = $this->operator_network_marker($user_id);
+            }
+            if ($marker['state'] !== 'VALID') {
+                return false;
+            }
             $valid = true;
         } finally {
             $released_value = $wpdb->get_var(
@@ -376,12 +376,10 @@ final class RAOS_Bounded_Operator
         return $valid && $released;
     }
 
-    private function identity_mutex_name($user_id)
+    private function identity_mutex_name()
     {
         global $wpdb;
-        if (! is_int($user_id)
-            || $user_id < 1
-            || ! defined('DB_NAME')
+        if (! defined('DB_NAME')
             || ! is_string(DB_NAME)
             || DB_NAME === ''
             || ! is_string($wpdb->base_prefix)
@@ -389,8 +387,8 @@ final class RAOS_Bounded_Operator
             return null;
         }
         $scope = DB_NAME . "\n" . $wpdb->base_prefix . "\n"
-            . self::NETWORK_IDENTITY_META . "\n" . self::SITE_ORIGIN . "\n"
-            . (string) $user_id;
+            . self::NETWORK_IDENTITY_META . "\n" . self::BOUND_OPERATOR_OPTION
+            . "\n" . self::SITE_ORIGIN;
         return 'raos_identity_v1_' . substr(hash('sha256', $scope), 0, 44);
     }
 
@@ -2800,7 +2798,10 @@ final class RAOS_Bounded_Operator
                 $mutex_name
             );
         } catch (Throwable $exception) {
-            $response = $this->finish_unhandled_apply_exception($proposal_id);
+            $response = $this->finish_unhandled_apply_exception(
+                $proposal_id,
+                $mutex_name
+            );
         } finally {
             $mutex_released = $this->release_apply_mutex($mutex_name);
         }
@@ -2865,7 +2866,8 @@ final class RAOS_Bounded_Operator
             return $this->finish_failure(
                 $proposal_id,
                 'NEEDS_RECOVERY',
-                'ORPHANED_APPLYING_RECOVERED'
+                'ORPHANED_APPLYING_RECOVERED',
+                $mutex_name
             );
         }
         if ($row['state'] !== 'APPROVED'
@@ -2928,7 +2930,8 @@ final class RAOS_Bounded_Operator
             return $this->finish_failure(
                 $proposal_id,
                 'NEEDS_RECOVERY',
-                'APPLY_MUTEX_LOST_BEFORE_MUTATION'
+                'APPLY_MUTEX_LOST_BEFORE_MUTATION',
+                $mutex_name
             );
         }
         if ($spec['operation'] === 'APPLY_YOAST_PROFILE') {
@@ -2943,19 +2946,30 @@ final class RAOS_Bounded_Operator
                 $row['before_state_hash']
             );
         } else {
-            return $this->finish_failure($proposal_id, 'NEEDS_RECOVERY', 'OPERATION_RECORD_INVALID');
+            return $this->finish_failure(
+                $proposal_id,
+                'NEEDS_RECOVERY',
+                'OPERATION_RECORD_INVALID',
+                $mutex_name
+            );
         }
         if (! $this->apply_mutex_is_owned($mutex_name)) {
             return $this->finish_failure(
                 $proposal_id,
                 'NEEDS_RECOVERY',
-                'APPLY_MUTEX_OWNERSHIP_LOST'
+                'APPLY_MUTEX_OWNERSHIP_LOST',
+                $mutex_name
             );
         }
         if ($result['ok']) {
-            return $this->finish_success($proposal_id, $result['code']);
+            return $this->finish_success($proposal_id, $result['code'], $mutex_name);
         }
-        return $this->finish_failure($proposal_id, $result['state'], $result['code']);
+        return $this->finish_failure(
+            $proposal_id,
+            $result['state'],
+            $result['code'],
+            $mutex_name
+        );
     }
 
     private function apply_mutex_name()
@@ -3009,8 +3023,11 @@ final class RAOS_Bounded_Operator
         return $wpdb->last_error === '' && (string) $owned === '1';
     }
 
-    private function finish_unhandled_apply_exception($proposal_id)
+    private function finish_unhandled_apply_exception($proposal_id, $mutex_name)
     {
+        if (! $this->apply_mutex_is_owned($mutex_name)) {
+            return self::error('raos_apply_mutex_ownership_lost', 500);
+        }
         global $wpdb;
         $state = $wpdb->get_var(
             $wpdb->prepare(
@@ -3023,7 +3040,8 @@ final class RAOS_Bounded_Operator
             return $this->finish_failure(
                 $proposal_id,
                 'NEEDS_RECOVERY',
-                'APPLY_UNHANDLED_EXCEPTION'
+                'APPLY_UNHANDLED_EXCEPTION',
+                $mutex_name
             );
         }
         return self::error('raos_apply_execution_failed', 500);
@@ -4516,12 +4534,16 @@ final class RAOS_Bounded_Operator
         return $actual === $expected;
     }
 
-    private function finish_success($proposal_id, $code)
+    private function finish_success($proposal_id, $code, $mutex_name)
     {
         global $wpdb;
         $table = self::proposal_table();
         if ($wpdb->query('START TRANSACTION') === false) {
             return self::error('raos_transaction_unavailable', 500);
+        }
+        if (! $this->apply_mutex_is_owned($mutex_name)) {
+            $wpdb->query('ROLLBACK');
+            return self::error('raos_apply_mutex_ownership_lost', 500);
         }
         $updated = $wpdb->query(
             $wpdb->prepare(
@@ -4564,7 +4586,7 @@ final class RAOS_Bounded_Operator
         return $this->apply_response($row, false);
     }
 
-    private function finish_failure($proposal_id, $state, $code)
+    private function finish_failure($proposal_id, $state, $code, $mutex_name)
     {
         if (! in_array($state, array('FAILED', 'NEEDS_RECOVERY'), true)) {
             $state = 'NEEDS_RECOVERY';
@@ -4574,6 +4596,10 @@ final class RAOS_Bounded_Operator
         $table = self::proposal_table();
         if ($wpdb->query('START TRANSACTION') === false) {
             return self::error('raos_transaction_unavailable', 500);
+        }
+        if (! $this->apply_mutex_is_owned($mutex_name)) {
+            $wpdb->query('ROLLBACK');
+            return self::error('raos_apply_mutex_ownership_lost', 500);
         }
         $updated = $wpdb->query(
             $wpdb->prepare(

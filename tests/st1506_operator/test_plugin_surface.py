@@ -98,6 +98,21 @@ def test_application_password_is_bound_to_one_identity_and_exact_rest_callbacks(
     assert "update_option(self::BOUND_OPERATOR_OPTION" not in php
     assert "delete_option(self::BOUND_OPERATOR_OPTION" not in php
     assert "delete_user_meta(" not in php
+    mutex = identity[identity.index("private function identity_mutex_name") :]
+    assert "private function identity_mutex_name()" in mutex
+    assert "self::NETWORK_IDENTITY_META" in mutex
+    assert "self::BOUND_OPERATOR_OPTION" in mutex
+    assert "self::SITE_ORIGIN" in mutex
+    assert "$user_id" not in mutex
+    bind = identity[identity.index("private function bind_operator_identity") :]
+    bind = bind[: bind.index("private function identity_mutex_name")]
+    binding_read = bind.index("operator_user_binding()")
+    marker_read = bind.index("operator_network_marker($user_id)")
+    assert binding_read < marker_read
+    pre_marker = bind[binding_read:marker_read]
+    assert "$binding['state'] !== 'VALID'" in pre_marker
+    assert "$binding['user_id'] !== $user_id" in pre_marker
+    assert "return false" in pre_marker
 
     firewall = php[php.index("public function guard_operator_rest_route") :]
     firewall = firewall[: firewall.index("public static function activate")]
@@ -588,6 +603,24 @@ def test_apply_is_globally_serialized_through_terminal_audit() -> None:
     terminal = php[php.index("private function finish_success") :]
     terminal = terminal[: terminal.index("private static function append_audit")]
     assert "append_audit" in terminal
+    for name in ("finish_success", "finish_failure"):
+        finish = terminal[terminal.index(f"private function {name}") :]
+        if name == "finish_success":
+            finish = finish[: finish.index("private function finish_failure")]
+        else:
+            finish = finish[: finish.index("private function apply_response")]
+        transaction = finish.index("START TRANSACTION")
+        ownership = finish.index("apply_mutex_is_owned($mutex_name)")
+        update = finish.index("UPDATE {$table}")
+        assert transaction < ownership < update
+        lost = finish[ownership:update]
+        assert "ROLLBACK" in lost
+        assert "raos_apply_mutex_ownership_lost" in lost
+    unhandled = php[php.index("private function finish_unhandled_apply_exception") :]
+    unhandled = unhandled[: unhandled.index("private function validated_stored_proposal")]
+    assert unhandled.index("apply_mutex_is_owned($mutex_name)") < unhandled.index(
+        "finish_failure("
+    )
 
 
 def test_yoast_merge_is_row_locked_cas_preserving_and_transactional() -> None:
