@@ -67,7 +67,7 @@ def test_runtime_manifest_is_exact_and_keeps_st1703_as_predecessor() -> None:
 
 
 def test_theme_package_is_deterministic_closed_and_has_no_javascript() -> None:
-    assert theme_builder.OUTPUT_PATH.name == "kurashinoshirube-child-1.1.1.zip"
+    assert theme_builder.OUTPUT_PATH.name == "kurashinoshirube-child-1.2.0.zip"
     first = theme_builder.build_package()
     second = theme_builder.build_package()
     assert first == second
@@ -105,6 +105,15 @@ def test_measurement_ledger_adds_no_tracking_and_cannot_rank_products() -> None:
     assert ledger["publication_authority"] == "NONE"
     assert ledger["finance_signal_policy"] == (
         "OBSERVATION_ONLY_NEVER_RECOMMENDATION_ORDER"
+    )
+    assert [row["event"] for row in ledger["future_acceptance_event_spec"]] == [
+        "affiliate_cta_activate",
+        "product_card_reach",
+        "comparison_table_view",
+    ]
+    assert all(
+        row["status"] == "SEMANTIC_MARKUP_ONLY_NO_TRANSMISSION"
+        for row in ledger["future_acceptance_event_spec"]
     )
     rows = ledger["articles"]
     assert isinstance(rows, list) and len(rows) == 5
@@ -148,7 +157,8 @@ def test_runbook_preserves_all_external_human_gates_and_reversible_rollback() ->
         "暮らしの道具",
         "The repository CLI has no publish or schedule command",
         "deactivate Yoast",
-        "child-theme 1.1.1",
+        "child-theme 1.2.0",
+        "child-theme 1.1.1 package as the minimum containment floor",
         "do not roll back to 1.0.2",
         "temporary Review post Draft with no redirect",
         "restore the affected WordPress post revision",

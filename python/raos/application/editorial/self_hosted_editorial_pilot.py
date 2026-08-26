@@ -114,6 +114,13 @@ _FINAL_SOURCE_STATUS: Final = "STRUCTURED_FACT_SNAPSHOT_CAPTURED"
 _FINAL_SOURCE_APPROVAL: Final = "READY_FOR_HUMAN_PUBLICATION_REVIEW"
 ARTICLE_FACT_MAX_AGE_DAYS: Final = 14
 RAKUTEN_EVIDENCE_MAX_AGE: Final = timedelta(hours=24)
+_EVIDENCE_LEVEL_LABELS: Final = {
+    "A": "公式仕様",
+    "B": "第三者実測",
+    "C": "利用者の傾向",
+    "D": "編集部の判断",
+    "UNKNOWN": "未確認",
+}
 
 
 def _utc_now() -> datetime:
@@ -552,6 +559,7 @@ def _validate_sources(
                 {
                     "claim_id",
                     "classification",
+                    "evidence_level",
                     "evidence_refs",
                     "statement",
                     "status",
@@ -568,16 +576,18 @@ def _validate_sources(
             ):
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
             classification = claim["classification"]
+            evidence_level = claim["evidence_level"]
             status = claim["status"]
             if classification == "MAJOR_VERIFIABLE":
                 verifiable_count += 1
-                if status not in {
+                if evidence_level != "A" or status not in {
                     "BOUND_TO_OFFICIAL_SOURCE",
                     "BOUND_WITH_EXPLICIT_SOURCE_CONFLICT",
                 }:
                     _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
             elif (
                 classification != "EDITORIAL_INFERENCE"
+                or evidence_level != "D"
                 or status != "INFERENCE_FROM_BOUND_OFFICIAL_FACTS"
             ):
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
@@ -1026,7 +1036,30 @@ def _bind_product_evidence(
     list[Mapping[str, object]],
 ]:
     render = _mapping(article["render_model"])
-    _exact(render, _RENDER_KEYS)
+    render_keys = set(_RENDER_KEYS)
+    if "presentation" in render:
+        render_keys.add("presentation")
+    _exact(render, render_keys)
+    presentation = render.get("presentation")
+    if presentation is not None:
+        presentation_map = _mapping(presentation)
+        _exact(
+            presentation_map,
+            {
+                "fact_checker",
+                "first_hand_test",
+                "reader_summary",
+                "scope_label",
+                "scope_note",
+            },
+        )
+        for value in presentation_map.values():
+            _text(value, maximum=1000)
+    if (
+        article["article_id"] == "st1703-first-suitcase-comparison"
+        and presentation is None
+    ):
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     disclosure = _mapping(render["disclosure"])
     cta_policy = _mapping(render["cta_policy"])
     internal_link_policy = _mapping(render["internal_link_policy"])
@@ -1067,10 +1100,7 @@ def _bind_product_evidence(
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     for paragraph in _list(disclosure["paragraphs"]):
         _text(paragraph)
-    cards = _index(
-        render["product_cards"],
-        key="product_selection_ref",
-        exact_keys={
+    base_card_keys = {
             "affiliate_ref",
             "caution",
             "condition_label",
@@ -1082,8 +1112,23 @@ def _bind_product_evidence(
             "product_name",
             "product_selection_ref",
             "source_refs",
-        },
-    )
+    }
+    cards: dict[str, Mapping[str, object]] = {}
+    for raw_card in _list(render["product_cards"]):
+        card = _mapping(raw_card)
+        card_keys = set(base_card_keys)
+        if "presentation_v2" in card:
+            card_keys.add("presentation_v2")
+        _exact(card, card_keys)
+        card_ref = _text(card["product_selection_ref"], maximum=300)
+        if card_ref in cards:
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        cards[card_ref] = card
+    if (
+        article["article_id"] == "st1703-first-suitcase-comparison"
+        and any("presentation_v2" not in card for card in cards.values())
+    ):
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     evidences: dict[str, RakutenProductEvidence] = {}
     affiliate_records: list[Mapping[str, object]] = []
     media_records: list[Mapping[str, object]] = []
@@ -1103,6 +1148,40 @@ def _bind_product_evidence(
             _exact(fact, {"claim_ids", "label", "value"})
             _text(fact["label"], maximum=300)
             _text(fact["value"], maximum=1000)
+        raw_presentation = card.get("presentation_v2")
+        if raw_presentation is not None:
+            card_presentation = _mapping(raw_presentation)
+            _exact(
+                card_presentation,
+                {
+                    "benefit",
+                    "cta_context",
+                    "detail_anchor",
+                    "facts_checked_on",
+                    "fits",
+                    "not_fits",
+                    "official_source_ref",
+                    "recommendation_reason",
+                },
+            )
+            for key in ("benefit", "cta_context", "recommendation_reason"):
+                _text(card_presentation[key], maximum=2000)
+            for key in ("fits", "not_fits"):
+                values = _list(card_presentation[key])
+                if not values:
+                    _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+                for value in values:
+                    _text(value, maximum=1000)
+            _date(card_presentation["facts_checked_on"])
+            official_source_ref = _text(
+                card_presentation["official_source_ref"], maximum=300
+            )
+            detail_anchor = _text(card_presentation["detail_anchor"], maximum=80)
+            if (
+                official_source_ref not in source_refs
+                or re.fullmatch(r"[a-z][a-z0-9-]{2,79}", detail_anchor) is None
+            ):
+                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         affiliate_ref = _text(card["affiliate_ref"], maximum=300)
         media_ref = _text(card["media_asset_ref"], maximum=300)
         affiliate = affiliates.get(affiliate_ref)
@@ -1262,6 +1341,7 @@ class _Renderer:
         "alts",
         "axes",
         "cards",
+        "claims",
         "evidences",
         "model",
         "recommendations",
@@ -1276,6 +1356,7 @@ class _Renderer:
         article: Mapping[str, object],
         routes: Mapping[str, Mapping[str, object]],
         sources: Mapping[str, Mapping[str, object]],
+        claims: Mapping[str, Mapping[str, object]],
         cards: Mapping[str, Mapping[str, object]],
         evidences: Mapping[str, RakutenProductEvidence],
         alts: Mapping[str, str],
@@ -1283,6 +1364,7 @@ class _Renderer:
         self.article = article
         self.routes = routes
         self.sources = sources
+        self.claims = claims
         self.cards = cards
         self.evidences = evidences
         self.alts = alts
@@ -1312,6 +1394,68 @@ class _Renderer:
     def rich(self, value: object) -> str:
         return _rich(value, routes=self.routes, sources=self.sources)
 
+    def evidence_badges(self, claim_ids: object) -> str:
+        raw_ids = _list(claim_ids)
+        if not raw_ids:
+            levels = ["UNKNOWN"]
+        else:
+            observed: set[str] = set()
+            for raw_id in raw_ids:
+                claim_id = _text(raw_id, maximum=300)
+                claim = self.claims.get(claim_id)
+                if claim is None:
+                    _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+                level = _text(claim["evidence_level"], maximum=20)
+                if level not in _EVIDENCE_LEVEL_LABELS:
+                    _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+                observed.add(level)
+            levels = sorted(observed)
+        return "".join(
+            '<span class="raos-evidence-badge" data-raos-evidence-level="'
+            + escape(level, quote=True)
+            + '">'
+            + escape(f"{level}：{_EVIDENCE_LEVEL_LABELS[level]}")
+            + "</span>"
+            for level in levels
+        )
+
+    def article_facts(self) -> str:
+        presentation = self.model.get("presentation")
+        if presentation is None:
+            return (
+                '<dl class="raos-article-facts raos-article-facts--compact">'
+                "<div><dt>執筆</dt><dd>暮らしのしるべ編集部</dd></div>"
+                "<div><dt>商品情報確認</dt><dd>編集部ファクトチェック</dd></div></dl>"
+            )
+        values = _mapping(presentation)
+        freshness = _mapping(self.article["freshness"])
+        return (
+            '<dl class="raos-article-facts">'
+            "<div><dt>対象読者</dt><dd>"
+            + escape(cast(str, values["reader_summary"]))
+            + "</dd></div><div><dt>執筆</dt><dd>暮らしのしるべ編集部</dd></div>"
+            + "<div><dt>商品情報確認</dt><dd>"
+            + escape(cast(str, values["fact_checker"]))
+            + "</dd></div><div><dt>最終確認日</dt><dd>"
+            + escape(_date(freshness["facts_checked_on"]))
+            + "</dd></div><div><dt>実機試験</dt><dd>"
+            + escape(cast(str, values["first_hand_test"]))
+            + "</dd></div></dl>"
+        )
+
+    def article_scope(self) -> str:
+        presentation = self.model.get("presentation")
+        if presentation is None:
+            return ""
+        values = _mapping(presentation)
+        return (
+            '<p class="raos-article-scope"><strong>比較範囲：'
+            + escape(cast(str, values["scope_label"]))
+            + "。</strong>"
+            + escape(cast(str, values["scope_note"]))
+            + "</p>"
+        )
+
     def card(self, product_selection_ref: str) -> str:
         card = self.cards.get(product_selection_ref)
         if card is None:
@@ -1323,11 +1467,42 @@ class _Renderer:
             + escape(_text(_mapping(raw)["label"], maximum=200))
             + "：</strong>"
             + escape(_text(_mapping(raw)["value"], maximum=1000))
+            + self.evidence_badges(_mapping(raw)["claim_ids"])
             + "</li>"
             for raw in _list(card["confirmed_facts"])
         )
+        raw_presentation = card.get("presentation_v2")
+        presentation: Mapping[str, object]
+        if raw_presentation is None:
+            presentation = {
+                "benefit": card["editorial_fit"],
+                "cta_context": "写真と現在の販売情報を商品ページで確認できます。",
+                "detail_anchor": f"product-{product_id.casefold()}",
+                "facts_checked_on": _mapping(self.article["freshness"])[
+                    "facts_checked_on"
+                ],
+                "fits": [card["editorial_fit"]],
+                "not_fits": [card["caution"]],
+                "official_source_ref": _list(card["source_refs"])[0],
+                "recommendation_reason": card["editorial_fit"],
+            }
+        else:
+            presentation = _mapping(raw_presentation)
+        source = self.sources.get(cast(str, presentation["official_source_ref"]))
+        if source is None:
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        detail_anchor = cast(str, presentation["detail_anchor"])
+        fits = "".join(
+            f"<li>{escape(_text(value, maximum=1000))}</li>"
+            for value in _list(presentation["fits"])
+        )
+        not_fits = "".join(
+            f"<li>{escape(_text(value, maximum=1000))}</li>"
+            for value in _list(presentation["not_fits"])
+        )
         return (
-            '<article class="raos-product-card">'
+            f'<article id="{escape(detail_anchor, quote=True)}" class="raos-product-card" '
+            f'data-raos-product-id="{escape(product_id, quote=True)}">'
             '<div class="raos-product-card__media">'
             f'<img src="{escape(evidence.image_url, quote=True)}" '
             f'alt="{escape(self.alts[product_id], quote=True)}" '
@@ -1336,14 +1511,25 @@ class _Renderer:
             '<div class="raos-product-card__body">'
             f"<h3>{escape(cast(str, card['product_name']))}</h3>"
             f'<p class="raos-condition-label">{escape(cast(str, card["condition_label"]))}</p>'
+            f'<p class="raos-product-card__lead">{escape(cast(str, presentation["benefit"]))}</p>'
+            "<p><strong>おすすめする理由：</strong>"
+            f'{escape(cast(str, presentation["recommendation_reason"]))}</p>'
             f'<ul class="raos-product-card__facts">{facts}</ul>'
-            f"<p>{escape(cast(str, card['editorial_fit']))}</p>"
-            f"<p><strong>向かない条件：</strong>{escape(cast(str, card['caution']))}</p>"
+            f'<div class="raos-product-card__fit"><strong>向いている人</strong><ul>{fits}</ul>'
+            f'<strong>向いていない人</strong><ul>{not_fits}</ul></div>'
+            f'<p id="{escape(detail_anchor, quote=True)}-caution" class="raos-product-card__caution">'
+            f'<strong>注意点：</strong>{escape(cast(str, card["caution"]))}</p>'
+            '<p class="raos-source-link">情報確認日 '
+            f'{escape(_date(presentation["facts_checked_on"]))}・'
+            f'<a href="{escape(cast(str, source["url"]), quote=True)}">公式サイトで仕様を確認する</a>'
+            f'・<a href="#{escape(detail_anchor, quote=True)}-caution">この商品の注意点を先に読む</a></p>'
+            '<div class="raos-product-card__actions">'
+            f'<p class="raos-cta-context">{escape(cast(str, presentation["cta_context"]))}</p>'
             f'<a class="raos-cta" href="{escape(evidence.destination_url, quote=True)}" '
             'rel="sponsored nofollow" '
             f'data-raos-article-id="{escape(cast(str, self.article["article_id"]), quote=True)}" '
             f'data-raos-product-id="{escape(product_id, quote=True)}" '
-            f'data-raos-placement="product_card">{PILOT_CTA_LABEL}</a>'
+            f'data-raos-placement="product_card">{PILOT_CTA_LABEL}</a></div>'
             "</div></article>"
         )
 
@@ -1364,11 +1550,23 @@ class _Renderer:
         )
         if len(axis_refs) != len(header.split('<th scope="col">')) - 1:
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        raw_rows = [_mapping(value) for value in _list(table["rows"])]
+        difference_axes = {
+            ref: len(
+                {
+                    cast(str, _mapping(value)["value"])
+                    for row in raw_rows
+                    for value in _list(row["cells"])
+                    if _mapping(value).get("axis_ref") == ref
+                }
+            )
+            > 1
+            for ref in axis_refs
+        }
         rows: list[str] = []
         mobile_cards: list[str] = []
         observed_products: list[str] = []
-        for raw_row in _list(table["rows"]):
-            row = _mapping(raw_row)
+        for row in raw_rows:
             _exact(row, {"cells", "product_selection_ref"})
             product_ref = _text(row["product_selection_ref"], maximum=300)
             card = self.cards.get(product_ref)
@@ -1382,23 +1580,37 @@ class _Renderer:
             if tuple(cells) != tuple(axis_refs):
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
             rendered_cells = "".join(
-                f"<td>{escape(cast(str, cells[ref]['value']))}</td>"
+                '<td data-raos-difference="'
+                + ("true" if difference_axes[ref] else "false")
+                + '"><span>'
+                + escape(cast(str, cells[ref]["value"]))
+                + "</span>"
+                + self.evidence_badges(cells[ref]["claim_ids"])
+                + "</td>"
                 for ref in axis_refs
             )
+            product_id = cast(str, card["product_id"])
+            evidence = self.evidences[product_id]
             rows.append(
-                f'<tr><th scope="row">{escape(cast(str, card["product_name"]))}</th>'
+                '<tr><th scope="row"><img class="raos-comparison__product-image" '
+                f'src="{escape(evidence.image_url, quote=True)}" alt="" width="64" height="64" '
+                'loading="lazy" decoding="async"><span>'
+                f'{escape(cast(str, card["product_name"]))}</span></th>'
                 f"{rendered_cells}</tr>"
             )
             mobile_pairs = [
-                "<div><dt>商品</dt><dd>"
+                '<div><dt>商品</dt><dd><img class="raos-comparison__product-image" '
+                + f'src="{escape(evidence.image_url, quote=True)}" alt="" width="64" height="64" '
+                + 'loading="lazy" decoding="async"><span>'
                 + escape(cast(str, card["product_name"]))
-                + "</dd></div>"
+                + "</span></dd></div>"
             ]
             mobile_pairs.extend(
                 "<div><dt>"
                 + escape(cast(str, self.axes[ref]["label"]))
                 + "</dt><dd>"
                 + escape(cast(str, cells[ref]["value"]))
+                + self.evidence_badges(cells[ref]["claim_ids"])
                 + "</dd></div>"
                 for ref in axis_refs
             )
@@ -1415,9 +1627,14 @@ class _Renderer:
         if observed_products != expected_products:
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         title_id = f"{cast(str, block['block_id']).lower()}-title"
+        facts_checked_on = _date(_mapping(self.article["freshness"])["facts_checked_on"])
         return (
             f'<section><h2 id="{title_id}">比較表</h2>'
-            f'<div class="raos-comparison" role="region" tabindex="0" aria-labelledby="{title_id}">'
+            f'<p class="raos-comparison__checked">情報確認日：{escape(facts_checked_on)}。'
+            "価格・在庫・カラーは比較順位に使っていません。</p>"
+            f'<div class="raos-comparison" role="region" tabindex="0" aria-labelledby="{title_id}" '
+            f'data-raos-article-id="{escape(cast(str, self.article["article_id"]), quote=True)}" '
+            'data-raos-placement="comparison_table">'
             '<div class="raos-comparison__table-view">'
             f"<table><caption>{escape(cast(str, table['caption']))}</caption>"
             f'<thead><tr><th scope="col">商品</th>{header}</tr></thead>'
@@ -1473,24 +1690,61 @@ class _Renderer:
                     f"<p>{escape(_text(value))}</p>"
                     for value in _list(disclosure["paragraphs"])
                 )
+                output.append(self.article_facts())
                 output.append(
                     '<aside class="raos-disclosure" aria-label="広告表示">'
-                    f"<h2>{escape(cast(str, disclosure['label']))}</h2>{paragraphs}</aside>"
+                    f"<h2>{escape(cast(str, disclosure['label']))}</h2>"
+                    "<p><strong>広告を含みます。</strong>報酬は選定・掲載順に使いません。"
+                    "実機を使ったレビューではありません。</p>"
+                    f"<details><summary>広告と編集の詳細</summary>{paragraphs}</details></aside>"
                 )
+                scope = self.article_scope()
+                if scope:
+                    output.append(scope)
             elif kind == "lead":
                 output.append(f'<p class="raos-lead">{self.rich(block["content"])}</p>')
             elif kind == "decision_summary":
-                items = "".join(
-                    '<li><strong class="raos-condition-label">'
-                    + escape(cast(str, _mapping(raw)["condition"]))
-                    + "</strong>"
-                    + self.rich(_mapping(raw)["summary"])
-                    + "</li>"
-                    for raw in _list(block["items"])
-                )
+                rendered_items: list[str] = []
+                for raw in _list(block["items"]):
+                    item = _mapping(raw)
+                    recommendation = self.recommendations.get(
+                        cast(str, item["recommendation_ref"])
+                    )
+                    if recommendation is None:
+                        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+                    card = self.cards.get(
+                        cast(str, recommendation["product_selection_ref"])
+                    )
+                    if card is None:
+                        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+                    product_id = cast(str, card["product_id"])
+                    evidence = self.evidences[product_id]
+                    presentation = card.get("presentation_v2")
+                    detail_anchor = (
+                        cast(str, _mapping(presentation)["detail_anchor"])
+                        if presentation is not None
+                        else f"product-{product_id.casefold()}"
+                    )
+                    rendered_items.append(
+                        '<li><img src="'
+                        + escape(evidence.image_url, quote=True)
+                        + '" alt="" width="96" height="96" loading="lazy" decoding="async">'
+                        + '<strong class="raos-condition-label">'
+                        + escape(cast(str, item["condition"]))
+                        + '</strong><span class="raos-decision-summary__product">'
+                        + escape(cast(str, card["product_name"]))
+                        + "</span><p>"
+                        + self.rich(item["summary"])
+                        + self.evidence_badges(item["claim_ids"])
+                        + '</p><p><strong>注意点：</strong>'
+                        + escape(cast(str, card["caution"]))
+                        + '</p><a class="raos-decision-summary__link" href="#'
+                        + escape(detail_anchor, quote=True)
+                        + '">詳しい理由と注意点を読む</a></li>'
+                    )
                 output.append(
                     '<section class="raos-decision-summary"><h2>30秒でわかる条件別の結論</h2>'
-                    f"<ul>{items}</ul></section>"
+                    f"<ul>{''.join(rendered_items)}</ul></section>"
                 )
             elif kind == "intended_reader":
                 output.append(
@@ -1770,6 +2024,7 @@ def prepare_editorial_article(
         article=article,
         routes=routes,
         sources=sources,
+        claims=all_registry_claims,
         cards=cards,
         evidences=evidences,
         alts={

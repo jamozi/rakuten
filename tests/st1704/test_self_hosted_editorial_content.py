@@ -7,6 +7,7 @@ import json
 import re
 from collections.abc import Iterable
 from pathlib import Path
+from typing import cast
 from urllib.parse import urlsplit
 
 from jsonschema import Draft202012Validator, FormatChecker
@@ -21,14 +22,14 @@ CONTENT_AST_SCHEMA_PATH = (
     ROOT / "changes/st-0004/contracts/content/schemas/content-ast.schema.json"
 )
 
-CTA_COPY = "楽天市場で写真・価格・在庫を見る"
+CTA_COPY = "楽天市場で現在の価格・在庫・カラーを見る"
 ARTICLE_ROWS = (
     (
         "st1703-first-suitcase-comparison",
         "AT-003",
         "product_comparison",
         "carry-on-suitcase-comparison",
-        "機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ",
+        "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ",
     ),
     (
         "st1704-portable-power-station-guide",
@@ -200,6 +201,18 @@ def test_source_fact_packets_are_ready_hash_bound_and_cover_every_claim() -> Non
 
     assert len(packets) == 5
     assert len(sources) == 19
+    assert sources["SRC-ACE-CRESTA-06316"]["url"] == (
+        "https://store.ace.jp/shop/g/g06316-01/"
+    )
+    assert sources["SRC-ACE-DIFFERENCE-05721"]["url"] == (
+        "https://store.ace.jp/shop/g/g05721-04"
+    )
+    assert sources["SRC-ACE-MAXPASS4-01471"]["url"] == (
+        "https://store.ace.jp/shop/g/g01471-02"
+    )
+    assert sources["SRC-ANA-CARRY-ON-BAGGAGE"]["url"] == (
+        "https://www.ana.co.jp/ja/jp/notice/carry-on-baggage/20260601/"
+    )
     assert len(registry["policy_sources"]) == 3
     assert registry["source_policy"]["immutable_capture_hash_algorithm"] == (
         "SHA256_CANONICAL_UTF8_JSON_V1"
@@ -234,6 +247,11 @@ def test_source_fact_packets_are_ready_hash_bound_and_cover_every_claim() -> Non
             == packet["source_packet_ref"]
         )
         defined_claims = {claim["claim_id"] for claim in packet["claims"]}
+        for claim in packet["claims"]:
+            expected_level = (
+                "A" if claim["classification"] == "MAJOR_VERIFIABLE" else "D"
+            )
+            assert claim["evidence_level"] == expected_level
         ast_claims = _claim_ids(articles[packet["article_id"]]["content_ast"])
         render_claims = _claim_ids(articles[packet["article_id"]]["render_model"])
         assert ast_claims <= defined_claims
@@ -287,6 +305,46 @@ def test_source_fact_packets_are_ready_hash_bound_and_cover_every_claim() -> Non
         }
         assert source["immutable_capture_sha256"] == _canonical_sha256(preimage)
 
+
+def test_suitcase_presentation_is_scope_bounded_evidence_labeled_and_reader_led() -> None:
+    collection = _load(CONTENT_PATH)
+    article = cast(dict[str, object], collection["articles"][0])
+    render = cast(dict[str, object], article["render_model"])
+    presentation = cast(dict[str, object], render["presentation"])
+    assert article["title"] == (
+        "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ"
+    )
+    assert presentation["scope_label"] == "エース系3モデル"
+    assert "市場全体" in cast(str, presentation["scope_note"])
+    assert presentation["first_hand_test"] == "未実施"
+    cards = cast(list[dict[str, object]], render["product_cards"])
+    assert len(cards) == 3
+    for card in cards:
+        detail = cast(dict[str, object], card["presentation_v2"])
+        assert set(detail) == {
+            "benefit",
+            "cta_context",
+            "detail_anchor",
+            "facts_checked_on",
+            "fits",
+            "not_fits",
+            "official_source_ref",
+            "recommendation_reason",
+        }
+        assert detail["facts_checked_on"] == "2026-08-26"
+        assert detail["official_source_ref"] in card["source_refs"]
+        assert cast(list[object], detail["fits"])
+        assert cast(list[object], detail["not_fits"])
+    body = json.dumps(article, ensure_ascii=False)
+    for prohibited in (
+        "今すぐ購入",
+        "絶対に買うべき",
+        "残りわずか",
+        "最安",
+        "最強",
+        "これを選べば間違いない",
+    ):
+        assert prohibited not in body
 
 def test_product_cards_bind_only_exact_rakuten_resources_and_pending_media_blocks() -> (
     None

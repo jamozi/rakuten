@@ -63,6 +63,27 @@
   ],
   "analytics_transmission_added": false,
   "finance_signal_policy": "OBSERVATION_ONLY_NEVER_RECOMMENDATION_ORDER",
+  "future_acceptance_event_spec": [
+    {
+      "event": "affiliate_cta_activate",
+      "semantic_attributes": [
+        "data-raos-article-id",
+        "data-raos-product-id",
+        "data-raos-placement"
+      ],
+      "status": "SEMANTIC_MARKUP_ONLY_NO_TRANSMISSION"
+    },
+    {
+      "event": "product_card_reach",
+      "semantic_attributes": ["data-raos-product-id"],
+      "status": "SEMANTIC_MARKUP_ONLY_NO_TRANSMISSION"
+    },
+    {
+      "event": "comparison_table_view",
+      "semantic_attributes": ["data-raos-article-id", "data-raos-placement"],
+      "status": "SEMANTIC_MARKUP_ONLY_NO_TRANSMISSION"
+    }
+  ],
   "publication_authority": "NONE",
   "schema": "SELF_HOSTED_EDITORIAL_MEASUREMENT_LEDGER_V1",
   "story_id": "ST-1704"

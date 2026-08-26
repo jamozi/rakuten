@@ -61,7 +61,7 @@ Review URL appears on the home page or in the Yoast post sitemap. Post ID 19 rem
 unchanged until its separate AT-003 snapshot update. Any mismatch stops later
 publication; it does not authorize an automated retry or a broader WordPress write.
 
-Child theme 1.1.1 independently excludes every temporary Review slug and every
+Child theme 1.2.0 independently excludes every temporary Review slug and every
 allowlisted final slug without an exact bound public snapshot from both the Yoast
 post sitemap and the front-page latest-guides Query block. This is defense in depth,
 not authority to perform the human containment action.
@@ -278,8 +278,8 @@ recover and verify do not rebuild the confirmed request from current provider fi
    must be `summary_large_image`, and the default social image must be the verified
    1600×900 theme asset with an empty attachment ID. These are persisted human
    settings, not values written by the theme.
-3. A human WordPress administrator installs and activates the generated child-theme
-   1.1.1 package only after reviewing its exact hash. No repository command activates
+3. A human WordPress administrator installs and activates the generated child-theme 1.2.0
+   package only after reviewing its exact hash. No repository command activates
    either component.
 4. Start a fresh WordPress request and require the Site Health test
    `RAOS Yoast 28.3設定` to report `good`. The theme only reads back the persisted
@@ -399,8 +399,8 @@ If a live defect is confirmed, a human operator performs these reversible action
 order:
 
 1. deactivate Yoast if duplicated or broken SEO output is the cause;
-2. keep or restore the exact reviewed child-theme 1.1.1 package as the minimum
-   containment floor; do not roll back to 1.0.2 while any Review Draft or unbound
+2. revert the ST-1704 integration commit, or restore the exact reviewed child-theme 1.1.1 package as the minimum containment floor;
+   do not roll back to 1.0.2 while any Review Draft or unbound
    pilot slug exists;
 3. keep every temporary Review post Draft with no redirect; restore the affected WordPress post revision when required.
 

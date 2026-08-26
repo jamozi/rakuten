@@ -3,12 +3,9 @@
 from __future__ import annotations
 
 import hashlib
-import io
 import json
 from pathlib import Path
 import re
-import stat
-import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -779,7 +776,7 @@ def test_theme_update_has_exact_backup_restore_and_tree_readback() -> None:
         assert token in helpers
 
 
-def test_theme_proposals_are_bound_to_the_exact_stage_captured_release() -> None:
+def test_unreviewed_theme_candidate_cannot_replace_stage_captured_release() -> None:
     php = _php()
     release_match = re.search(
         r"const REVIEWED_THEME_RELEASE_JSON = '([^']+)';",
@@ -806,28 +803,28 @@ def test_theme_proposals_are_bound_to_the_exact_stage_captured_release() -> None
     runtime_manifest = (
         ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
     ).read_bytes()
-    assert hashlib.sha256(runtime_manifest).hexdigest() == runtime_hash_match.group(1)
-    theme_root = (
+    assert hashlib.sha256(runtime_manifest).hexdigest() != runtime_hash_match.group(1)
+    theme_contract = json.loads(
+        (
+            ROOT
+            / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+            "kurashinoshirube-child/theme-contract.v1.json"
+        ).read_bytes()
+    )
+    assert theme_contract["theme_version"] == "1.2.0"
+    assert theme_contract["theme_version"] != release["to_version"]
+
+    current_theme_root = (
         ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
         "kurashinoshirube-child"
     )
-    output = io.BytesIO()
-    with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_STORED) as archive:
-        for entry in release["file_manifest"]:
-            source = (theme_root / entry["path"]).read_bytes()
-            assert len(source) == entry["size"]
-            assert hashlib.sha256(source).hexdigest() == entry["sha256"]
-            info = zipfile.ZipInfo(
-                f"kurashinoshirube-child/{entry['path']}",
-                (2026, 8, 23, 0, 0, 0),
-            )
-            info.create_system = 3
-            info.external_attr = (stat.S_IFREG | 0o644) << 16
-            info.compress_type = zipfile.ZIP_STORED
-            archive.writestr(info, source)
-    package = output.getvalue()
-    assert len(package) == release["package_size"]
-    assert hashlib.sha256(package).hexdigest() == release["package_sha256"]
+    reviewed_files = {entry["path"]: entry for entry in release["file_manifest"]}
+    current_style = (current_theme_root / "style.css").read_bytes()
+    assert hashlib.sha256(current_style).hexdigest() != reviewed_files["style.css"][
+        "sha256"
+    ]
+    assert release["package_size"] > 0
+    assert re.fullmatch(r"[a-f0-9]{64}", release["package_sha256"])
 
     normalize = php[php.index("private function normalize_theme_spec") :]
     normalize = normalize[: normalize.index("private function has_only_keys")]

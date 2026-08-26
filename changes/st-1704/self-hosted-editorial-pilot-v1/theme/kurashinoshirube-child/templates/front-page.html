@@ -1,8 +1,54 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 <!-- wp:group {"tagName":"main","className":"raos-main","anchor":"main-content","layout":{"type":"default"}} -->
-<main id="main-content" class="wp-block-group raos-main"><!-- wp:group {"align":"full","className":"raos-hero","layout":{"type":"constrained"}} --><div class="wp-block-group alignfull raos-hero"><!-- wp:group {"className":"raos-hero__copy","layout":{"type":"constrained"}} --><div class="wp-block-group raos-hero__copy"><!-- wp:paragraph {"className":"raos-kicker"} --><p class="raos-kicker">TOOLS FOR A CONSIDERED LIFE</p><!-- /wp:paragraph --><!-- wp:heading {"level":1,"fontSize":"xx-large"} --><h1 class="wp-block-heading has-xx-large-font-size">暮らしの道具に、根拠のある余白を。</h1><!-- /wp:heading --><!-- wp:paragraph --><p>メーカーや制度運営者の一次情報を読み解き、移動・家事・備えの道具を、使う条件から選べる形に整えます。</p><!-- /wp:paragraph --><!-- wp:buttons --><div class="wp-block-buttons"><!-- wp:button --><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#latest-guides">最新のガイドを見る</a></div><!-- /wp:button --></div><!-- /wp:buttons --></div><!-- /wp:group --></div><!-- /wp:group -->
-<!-- wp:group {"align":"wide","className":"raos-trust-bar","layout":{"type":"grid","columnCount":3}} --><div class="wp-block-group alignwide raos-trust-bar"><!-- wp:paragraph --><p><strong>一次情報を優先</strong><br>メーカーと制度運営者の公開情報を根拠にします。</p><!-- /wp:paragraph --><!-- wp:paragraph --><p><strong>条件で結論を分ける</strong><br>万能な1位ではなく、向く人と向かない人を示します。</p><!-- /wp:paragraph --><!-- wp:paragraph --><p><strong>広告と編集を分離</strong><br>広告報酬をおすすめ順位の判断材料にしません。</p><!-- /wp:paragraph --></div><!-- /wp:group -->
+<main id="main-content" class="wp-block-group raos-main">
+<!-- wp:group {"align":"full","className":"raos-hero","layout":{"type":"constrained"}} -->
+<div class="wp-block-group alignfull raos-hero">
+<!-- wp:group {"className":"raos-hero__copy","layout":{"type":"constrained"}} -->
+<div class="wp-block-group raos-hero__copy">
+<!-- wp:paragraph {"className":"raos-kicker"} --><p class="raos-kicker">買う前に、比べる基準を。</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":1,"fontSize":"xx-large"} --><h1 class="wp-block-heading has-xx-large-font-size">暮らしの道具を、根拠から選ぶ。</h1><!-- /wp:heading -->
+<!-- wp:paragraph --><p>公式情報と選び方を整理し、向く人・向かない人まで正直に伝えます。</p><!-- /wp:paragraph -->
+<!-- wp:buttons --><div class="wp-block-buttons"><!-- wp:button --><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#latest-guides">最新の比較ガイドを見る</a></div><!-- /wp:button --></div><!-- /wp:buttons -->
+</div><!-- /wp:group -->
+</div><!-- /wp:group -->
+
+<!-- wp:group {"align":"wide","className":"raos-trust-bar","layout":{"type":"grid","columnCount":3}} -->
+<div class="wp-block-group alignwide raos-trust-bar">
+<!-- wp:paragraph --><p><strong>一次情報を優先</strong><br>メーカーと制度運営者の公開情報を根拠にします。</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><strong>条件で結論を分ける</strong><br>万能な1位ではなく、向く人と向かない人を示します。</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><strong>広告と編集を分離</strong><br>広告報酬をおすすめ順位の判断材料にしません。</p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->
+
+<!-- wp:group {"align":"wide","className":"raos-home-section raos-latest-guides","anchor":"latest-guides","layout":{"type":"default"}} -->
+<section id="latest-guides" class="wp-block-group alignwide raos-home-section raos-latest-guides">
+<!-- wp:group {"className":"raos-section-heading","layout":{"type":"constrained"}} --><div class="wp-block-group raos-section-heading"><!-- wp:paragraph {"className":"raos-kicker"} --><p class="raos-kicker">NEW GUIDES</p><!-- /wp:paragraph --><!-- wp:heading {"level":2} --><h2 class="wp-block-heading">最新のガイド</h2><!-- /wp:heading --><!-- wp:paragraph --><p>新しく確認を終えた比較・選び方から読めます。</p><!-- /wp:paragraph --></div><!-- /wp:group -->
+<!-- wp:query {"query":{"inherit":false,"perPage":5,"postType":"post","order":"desc","orderBy":"date"}} -->
+<div class="wp-block-query">
+<!-- wp:post-template {"className":"raos-guide-grid"} -->
+<!-- wp:group {"tagName":"article","className":"raos-guide-card","layout":{"type":"constrained"}} -->
+<article class="wp-block-group raos-guide-card">
+<!-- wp:group {"className":"raos-guide-card__visual","layout":{"type":"default"}} --><div class="wp-block-group raos-guide-card__visual" aria-hidden="true"></div><!-- /wp:group -->
+<!-- wp:group {"className":"raos-guide-card__body","layout":{"type":"default"}} --><div class="wp-block-group raos-guide-card__body">
+<!-- wp:group {"className":"raos-guide-card__meta","layout":{"type":"flex","flexWrap":"wrap"}} --><div class="wp-block-group raos-guide-card__meta"><!-- wp:post-terms {"term":"category"} /--><!-- wp:paragraph {"className":"raos-article-type"} --><p class="raos-article-type">比較ガイド</p><!-- /wp:paragraph --></div><!-- /wp:group -->
+<!-- wp:post-title {"isLink":true,"level":3} /-->
+<!-- wp:post-excerpt {"moreText":"このガイドを読む"} /-->
+<!-- wp:post-date {"format":"Y年n月j日","className":"raos-guide-card__date"} /-->
+</div><!-- /wp:group -->
+</article><!-- /wp:group -->
+<!-- /wp:post-template -->
+<!-- wp:query-no-results --><!-- wp:paragraph {"className":"raos-empty-state"} --><p class="raos-empty-state">ガイドは現在、編集と確認を進めています。未公開の記事を公開済みとして表示することはありません。</p><!-- /wp:paragraph --><!-- /wp:query-no-results -->
+</div><!-- /wp:query -->
+</section><!-- /wp:group -->
+
+<!-- wp:shortcode -->[kurashinoshirube_featured_guide]<!-- /wp:shortcode -->
 <!-- wp:shortcode -->[kurashinoshirube_published_clusters]<!-- /wp:shortcode -->
-<!-- wp:group {"align":"wide","className":"raos-editorial-flow","anchor":"latest-guides","layout":{"type":"default"}} --><div id="latest-guides" class="wp-block-group alignwide raos-editorial-flow"><!-- wp:query {"query":{"inherit":false,"perPage":5,"postType":"post","order":"desc","orderBy":"date"}} --><div class="wp-block-query"><!-- wp:post-template --><!-- wp:group {"tagName":"article","className":"raos-guide-card","layout":{"type":"constrained"}} --><article class="wp-block-group raos-guide-card"><!-- wp:post-date /--><!-- wp:post-title {"isLink":true,"level":2} /--><!-- wp:post-excerpt {"moreText":"続きを読む"} /--></article><!-- /wp:group --><!-- /wp:post-template --><!-- wp:query-no-results --><!-- wp:paragraph --><p>ガイドは現在、編集と確認を進めています。</p><!-- /wp:paragraph --><!-- /wp:query-no-results --></div><!-- /wp:query --><!-- wp:group {"className":"raos-promise","layout":{"type":"constrained"}} --><div class="wp-block-group raos-promise"><!-- wp:heading {"level":2} --><h2 class="wp-block-heading">このメディアの約束</h2><!-- /wp:heading --><!-- wp:paragraph --><p>確認できた事実と編集上の判断を分けます。AIは調査整理と表現補助に限り、事実確認と公開判断は人が行います。</p><!-- /wp:paragraph --><!-- wp:paragraph --><p><a href="/about-ad-policy/">運営・広告方針を読む</a></p><!-- /wp:paragraph --></div><!-- /wp:group --></div><!-- /wp:group --></main>
-<!-- /wp:group -->
+
+<!-- wp:group {"align":"wide","className":"raos-home-section raos-promise","layout":{"type":"constrained"}} -->
+<section class="wp-block-group alignwide raos-home-section raos-promise">
+<!-- wp:paragraph {"className":"raos-kicker"} --><p class="raos-kicker">EDITORIAL POLICY</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":2} --><h2 class="wp-block-heading">編集部の比較方針</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>確認できた事実と編集上の判断を分けます。AIは調査整理と表現補助に限り、事実確認と公開判断は人が行います。</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><a href="/about-ad-policy/">運営・広告方針を読む</a></p><!-- /wp:paragraph -->
+</section><!-- /wp:group -->
+</main><!-- /wp:group -->
 <!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

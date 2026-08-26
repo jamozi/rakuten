@@ -4,7 +4,7 @@
   "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
   "publication_authority": "NONE",
   "generated_on": "2026-08-26",
-  "source_registry_sha256": "9216a5e58d5dccbb6aef2cc1237a78cb8ded8ec5c30e96facb83fc587afda84f",
+  "source_registry_sha256": "f870e0ac3d097adda623cfdefb9cdd50cb018c62d359488cd52223cdedd4f8b1",
   "locator_policy": {
     "claim_statement_source": "TRACKED_SOURCE_PACKET_EXACT",
     "fragment_source": "TRACKED_REVIEWED_EXACT_UTF8_FRAGMENT",
@@ -101,10 +101,12 @@
         {
           "claim_id": "CLM-ST1704-SUITCASE-CARRYON-LIMITS",
           "exact_utf8_fragments": [
-            "3辺合計115cm以内（55cm×40cm×25cm以内）",
-            "3辺合計100cm以内（45cm×35cm×20cm以内）",
-            "合計10kg以内",
-            "(手荷物と身の回り品の総重量)"
+            "3辺合計115cm以内",
+            "（55cm×40cm×25cm以内）",
+            "3辺合計100cm以内",
+            "（45cm×35cm×20cm以内）",
+            "合計10kg以内<br>",
+            "（手荷物と身の回り品の総重量）"
           ]
         }
       ]

@@ -92,7 +92,7 @@ _WORDPRESS_API_DISCOVERY_LINK = (
 
 
 def _fixed_clock() -> datetime:
-    return datetime(2026, 8, 23, 11, 30, tzinfo=timezone.utc)
+    return datetime(2026, 8, 26, 11, 30, tzinfo=timezone.utc)
 
 
 def _documents() -> tuple[dict[str, object], dict[str, object], dict[str, object]]:
@@ -236,7 +236,7 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
         image_url=image_url,
         width=128,
         height=128,
-        retrieved_at="2026-08-23T11:00:00Z",
+        retrieved_at="2026-08-26T11:00:00Z",
         request_fingerprint=canonical_sha256(request_material),
         response_sha256=bytes_sha256(response),
         selected_result_sha256=canonical_sha256(selected_result),
@@ -780,21 +780,42 @@ def test_all_five_packets_render_deterministically_with_closed_draft_payload() -
             PILOT_SNAPSHOT_META_KEY
         }
         content = first.request.content
-        assert content.startswith('<aside class="raos-disclosure"')
+        assert content.startswith('<dl class="raos-article-facts')
+        assert content.index('<dl class="raos-article-facts') < content.index(
+            '<aside class="raos-disclosure"'
+        )
         assert "<h1" not in content.lower()
         assert content.count('class="raos-product-card"') == first.product_count
         assert content.count('class="raos-product-card__media"') == first.product_count
         assert content.count('class="raos-comparison__table-view"') == 1
+        assert content.count('data-raos-placement="comparison_table"') == 1
         assert content.count('class="raos-comparison__cards"') == 1
         assert content.count('class="raos-comparison-card"') == first.product_count
         assert "<dl><div><dt>商品</dt><dd>" in content
         assert content.count('width="128" height="128"') == first.product_count
         assert content.count('class="raos-cta"') == first.product_count * 2
         assert content.count(PILOT_CTA_LABEL) == first.product_count * 2
+        assert 'data-raos-evidence-level="A"' in content
+        assert "A：公式仕様" in content
+        if identity.article_id == "st1703-first-suitcase-comparison":
+            assert "UNKNOWN：未確認" in content
+        assert content.count('class="raos-comparison__product-image"') == (
+            first.product_count * 2
+        )
         assert content.count("Supported by Rakuten Developers") == 1
         assert 'rel="sponsored nofollow"' in content
         assert 'data-raos-placement="product_card"' in content
         assert 'data-raos-placement="final_summary"' in content
+        assert "公式サイトで仕様を確認する" in content
+        assert "この商品の注意点を先に読む" in content
+        if identity.article_id == "st1703-first-suitcase-comparison":
+            assert 'class="raos-article-facts"' in content
+            assert "エース系3モデル" in content
+            assert "市場全体のおすすめ順位ではなく" in content
+            assert "<dt>実機試験</dt><dd>未実施" in content
+            assert content.index("<dt>対象読者</dt>") < content.index("広告を含みます。")
+            assert content.index("広告を含みます。") < content.index("比較範囲：")
+            assert "D：編集部の判断" in content
         assert first.request.snapshot.payload.seo_title
         assert first.request.snapshot.payload.seo_title != ""
         assert first.request.snapshot.payload.packet_sha256 == first.packet_sha256
@@ -824,7 +845,7 @@ def test_committed_request_survives_three_day_freshness_and_shared_c300_refresh(
     port = _ArtifactJournalPort()
     journal = OwnerPrivateLiveReviewDraftJournal(private_root, port)
     journal.create(original.request)
-    day_seven = datetime(2026, 8, 26, 11, 30, tzinfo=timezone.utc)
+    day_seven = datetime(2026, 8, 29, 11, 30, tzinfo=timezone.utc)
 
     with pytest.raises(EditorialPilotFailure) as stale_current_evidence:
         prepare_editorial_article(
@@ -843,7 +864,7 @@ def test_committed_request_survives_three_day_freshness_and_shared_c300_refresh(
         del root
         return replace(
             _synthetic_evidence(product_id),
-            retrieved_at="2026-08-26T11:00:00Z",
+            retrieved_at="2026-08-29T11:00:00Z",
         )
 
     refreshed = prepare_editorial_article(
