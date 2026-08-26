@@ -219,8 +219,12 @@ def test_activation_validates_complete_table_schemas_before_success_audit() -> N
     success_audit = activation.index("self::append_activation_audit()")
     assert install < schema_gate < schema_failure < success_audit
 
-    schemas = php[php.index("private static function operator_table_schemas_are_exact") :]
-    schemas = schemas[: schemas.index("private static function operator_table_is_innodb")]
+    schemas = php[
+        php.index("private static function operator_table_schemas_are_exact") :
+    ]
+    schemas = schemas[
+        : schemas.index("private static function operator_table_is_innodb")
+    ]
     for token in (
         "self::operator_tables_are_innodb()",
         "operator_expected_charset_and_collation()",
@@ -511,6 +515,29 @@ def test_apply_revalidates_every_hash_gate_and_audit_failure_fails_closed() -> N
     assert '"' in apply
     assert "append_audit" in apply
     assert "raos_audit" in apply.lower()
+
+
+def test_applied_replay_validates_exact_operation_payload_before_receipt() -> None:
+    php = _php()
+    outer = php[php.index("public function rest_apply") :]
+    outer = outer[: outer.index("private function execute_apply_under_mutex")]
+    under_mutex = php[php.index("private function execute_apply_under_mutex") :]
+    under_mutex = under_mutex[: under_mutex.index("private function apply_mutex_name")]
+
+    outer_replay = outer.index("$row['state'] === 'APPLIED'")
+    assert outer.index("$request->get_header('if-match')") < outer_replay
+    assert outer.index("$request->get_header('idempotency-key')") < outer_replay
+    for apply in (outer, under_mutex):
+        replay = apply.index("$row['state'] === 'APPLIED'")
+        receipt = apply.index("$this->apply_response($row, true)", replay)
+        for token in (
+            "$request->get_header('content-type') !== 'application/json'",
+            "$body !== '{}'",
+            "$request->get_header('content-type') !== 'application/zip'",
+            "strlen($body) !== $spec['theme']['package_size']",
+            "hash_equals($spec['theme']['package_sha256'], hash('sha256', $body))",
+        ):
+            assert apply.index(token) < replay < receipt
 
 
 def test_apply_is_globally_serialized_through_terminal_audit() -> None:

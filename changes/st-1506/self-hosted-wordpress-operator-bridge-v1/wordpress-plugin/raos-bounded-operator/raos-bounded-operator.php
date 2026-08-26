@@ -2718,6 +2718,22 @@ final class RAOS_Bounded_Operator
         if (is_wp_error($spec)) {
             return $spec;
         }
+        $body = $request->get_body();
+        if ($spec['operation'] === 'APPLY_YOAST_PROFILE') {
+            if ($request->get_header('content-type') !== 'application/json'
+                || $body !== '{}') {
+                return self::error('raos_yoast_apply_payload_invalid', 400);
+            }
+        } elseif ($spec['operation'] === 'UPDATE_CHILD_THEME') {
+            if ($request->get_header('content-type') !== 'application/zip'
+                || ! is_string($body)
+                || strlen($body) !== $spec['theme']['package_size']
+                || ! hash_equals($spec['theme']['package_sha256'], hash('sha256', $body))) {
+                return self::error('raos_theme_apply_payload_invalid', 400);
+            }
+        } else {
+            return self::error('raos_operation_unsupported', 400);
+        }
         if ($row['state'] === 'APPLIED'
             && is_string($row['idempotency_key'])
             && hash_equals($row['idempotency_key'], $idempotency_key)) {
@@ -2768,22 +2784,6 @@ final class RAOS_Bounded_Operator
             && ($row['state'] !== 'APPROVED'
                 || ! $this->approval_evidence_is_valid($row, $proposal_id, true))) {
             return self::error('raos_proposal_not_approved', 409);
-        }
-        $body = $request->get_body();
-        if ($spec['operation'] === 'APPLY_YOAST_PROFILE') {
-            if ($request->get_header('content-type') !== 'application/json'
-                || $body !== '{}') {
-                return self::error('raos_yoast_apply_payload_invalid', 400);
-            }
-        } elseif ($spec['operation'] === 'UPDATE_CHILD_THEME') {
-            if ($request->get_header('content-type') !== 'application/zip'
-                || ! is_string($body)
-                || strlen($body) !== $spec['theme']['package_size']
-                || ! hash_equals($spec['theme']['package_sha256'], hash('sha256', $body))) {
-                return self::error('raos_theme_apply_payload_invalid', 400);
-            }
-        } else {
-            return self::error('raos_operation_unsupported', 400);
         }
         $mutex_name = $this->apply_mutex_name();
         $mutex = $this->acquire_apply_mutex($mutex_name);
@@ -2837,6 +2837,21 @@ final class RAOS_Bounded_Operator
         if (is_wp_error($spec)) {
             return $spec;
         }
+        if ($spec['operation'] === 'APPLY_YOAST_PROFILE') {
+            if ($request->get_header('content-type') !== 'application/json'
+                || $body !== '{}') {
+                return self::error('raos_yoast_apply_payload_invalid', 400);
+            }
+        } elseif ($spec['operation'] === 'UPDATE_CHILD_THEME') {
+            if ($request->get_header('content-type') !== 'application/zip'
+                || ! is_string($body)
+                || strlen($body) !== $spec['theme']['package_size']
+                || ! hash_equals($spec['theme']['package_sha256'], hash('sha256', $body))) {
+                return self::error('raos_theme_apply_payload_invalid', 400);
+            }
+        } else {
+            return self::error('raos_operation_unsupported', 400);
+        }
         if ($row['state'] === 'APPLIED'
             && is_string($row['idempotency_key'])
             && hash_equals($row['idempotency_key'], $idempotency_key)
@@ -2857,21 +2872,6 @@ final class RAOS_Bounded_Operator
             || strtotime($row['expires_at'] . ' UTC') <= time()
             || ! $this->approval_evidence_is_valid($row, $proposal_id, true)) {
             return self::error('raos_proposal_not_approved', 409);
-        }
-        if ($spec['operation'] === 'APPLY_YOAST_PROFILE') {
-            if ($request->get_header('content-type') !== 'application/json'
-                || $body !== '{}') {
-                return self::error('raos_yoast_apply_payload_invalid', 400);
-            }
-        } elseif ($spec['operation'] === 'UPDATE_CHILD_THEME') {
-            if ($request->get_header('content-type') !== 'application/zip'
-                || ! is_string($body)
-                || strlen($body) !== $spec['theme']['package_size']
-                || ! hash_equals($spec['theme']['package_sha256'], hash('sha256', $body))) {
-                return self::error('raos_theme_apply_payload_invalid', 400);
-            }
-        } else {
-            return self::error('raos_operation_unsupported', 400);
         }
         if (! $this->apply_mutex_is_owned($mutex_name)) {
             return self::error('raos_apply_mutex_ownership_lost', 500);
