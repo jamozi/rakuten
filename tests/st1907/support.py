@@ -159,9 +159,9 @@ def signal(
         "publication_mutation_requested": False,
         "recommendation_order_change_requested": False,
         "signal_id": signal_id,
-        "signal_policy_sha256": (
-            "c56a5ea7f0d88df18e07809294f7900db35bd3c2be5bb29f3f9f13d1dd8ceec9"
-        ),
+        "signal_policy_sha256": fixture_document()["document"][
+            "signal_policy_sha256"
+        ],
         "source_sha256": "a" * 64,
         "verification": "VERIFIED",
     }

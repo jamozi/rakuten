@@ -24,9 +24,9 @@
       "source_type": "PRODUCT_PAGE",
       "title": "ACE クレスタ 06316（エース公式オンラインストア）",
       "url": "https://store.ace.jp/shop/g/g06316-01/",
-      "retrieved_on": "2026-08-12",
+      "retrieved_on": "2026-08-26",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "8c2218cc875aa20fcfb6c9b8f43a3c334e49fcb71b814f1e4ac31772c2be42e3",
+      "immutable_capture_sha256": "1aa1c75d603d46e583f401cd28a6b7bb77290c3a2e24016f40277875fbbdca7b",
       "review_body_excluded_from_claim_evidence": true
     },
     {
@@ -34,10 +34,10 @@
       "authority": "MANUFACTURER_OFFICIAL",
       "source_type": "PRODUCT_PAGE",
       "title": "ace.TOKYO LABEL ディフェレンス 05721（エース公式オンラインストア）",
-      "url": "https://store.ace.jp/shop/g/g05721-01",
-      "retrieved_on": "2026-08-12",
+      "url": "https://store.ace.jp/shop/g/g05721-04",
+      "retrieved_on": "2026-08-26",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "ec2478037d19cd3ab1a3ebd4d706656d367f76fe1465b3652d5cecc007e2d4a0",
+      "immutable_capture_sha256": "a24939625b65f2871350d76a16be79b5ae6885cce611f2d01f2e7acc40506e41",
       "review_body_excluded_from_claim_evidence": true
     },
     {
@@ -45,21 +45,21 @@
       "authority": "MANUFACTURER_OFFICIAL",
       "source_type": "PRODUCT_PAGE",
       "title": "PROTECA マックスパス4 01471（エース公式オンラインストア）",
-      "url": "https://store.ace.jp/shop/g/g01471-08",
-      "retrieved_on": "2026-08-12",
+      "url": "https://store.ace.jp/shop/g/g01471-02",
+      "retrieved_on": "2026-08-26",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "2b96d24651624905cd6f59737486351624b67abb73465a98086cfb4aebaf8d66",
+      "immutable_capture_sha256": "6fc106466db9b179978dc49e8a30b9e21364b98c6a38793392470644b034120e",
       "review_body_excluded_from_claim_evidence": true
     },
     {
       "source_ref": "SRC-ANA-CARRY-ON-BAGGAGE",
       "authority": "CARRIER_OFFICIAL",
       "source_type": "POLICY_PAGE",
-      "title": "ANA 手荷物について",
-      "url": "https://www.ana.co.jp/ja/tr/travel-information/baggage-information/",
-      "retrieved_on": "2026-08-12",
+      "title": "ANA 機内持ち込み手荷物および身の回り品に関するお願い（2026年7月1日搭乗分より）",
+      "url": "https://www.ana.co.jp/ja/jp/notice/carry-on-baggage/20260601/",
+      "retrieved_on": "2026-08-26",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "6e0f0c800996b20ca5e446a1977c5d6212154df4a15cd8d2b5717ca47bfdefd1",
+      "immutable_capture_sha256": "95e04bcd8f6f8dcd4b3b53d8f163aa7c5ad4b1c4718207d8e80f28faa6114154",
       "review_body_excluded_from_claim_evidence": true
     },
     {
@@ -269,7 +269,7 @@
       "article_id": "st1703-first-suitcase-comparison",
       "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "fact_packet_sha256": "c71f9362bc09cb541cb47e06ad798cb4c687a9fad71994f697acc532a5c70273",
+      "fact_packet_sha256": "0703ac8bc19f4d76d1d26b7c507a3de8d10be1e4805029a6998bc1b4b8665e81",
       "source_refs": [
         "SRC-ACE-CRESTA-06316",
         "SRC-ACE-DIFFERENCE-05721",
@@ -280,6 +280,7 @@
         {
           "claim_id": "CLM-ST1704-SUITCASE-CRESTA-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "ACE クレスタ 06316は非拡張時H55×W35×D25cm、34L、3.2kgで、拡張時は奥行29cm、39Lと案内されている。",
           "evidence_refs": [
             "SRC-ACE-CRESTA-06316"
@@ -289,6 +290,7 @@
         {
           "claim_id": "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "ディフェレンス 05721は非拡張時H55×W36×D24cm、32L、3.5kg、拡張時D27cm、38Lで、2通りの開き方、拡張機能、キャスターストッパーが案内されている。",
           "evidence_refs": [
             "SRC-ACE-DIFFERENCE-05721"
@@ -298,6 +300,7 @@
         {
           "claim_id": "CLM-ST1704-SUITCASE-MAXPASS-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "PROTECA マックスパス4 01471はH50×W40×D25cm、40L、3.6kgで、フロントポケットからメイン収納へアクセスでき、14インチPC収納、キャスターストッパーが案内されている。",
           "evidence_refs": [
             "SRC-ACE-MAXPASS4-01471"
@@ -307,6 +310,7 @@
         {
           "claim_id": "CLM-ST1704-SUITCASE-CARRYON-LIMITS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "ANAの案内では100席以上の航空機は3辺合計115cm以内かつ55×40×25cm以内、100席未満は3辺合計100cm以内かつ45×35×20cm以内で、身の回り品を含む合計重量は10kg以内とされる。",
           "evidence_refs": [
             "SRC-ANA-CARRY-ON-BAGGAGE"
@@ -316,6 +320,7 @@
         {
           "claim_id": "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
           "classification": "EDITORIAL_INFERENCE",
+          "evidence_level": "D",
           "statement": "公表値ではクレスタ3.2kg、ディフェレンス3.5kg、マックスパス4 3.6kgのためクレスタが3モデルで最軽量である。非拡張容量は順に34L、32L、40Lのためマックスパス4が最大で、ディフェレンスは2通りの開き方とストッパー、マックスパス4はフロントポケットからメイン収納へのアクセスが条件別候補になる。",
           "evidence_refs": [
             "SRC-ACE-CRESTA-06316",
@@ -337,7 +342,7 @@
       "article_id": "st1704-portable-power-station-guide",
       "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "fact_packet_sha256": "e659d5dd277bd01e281ecf57a91c2922e17cf9c9fe1cb8d7f3caa41ffd7c7a8c",
+      "fact_packet_sha256": "421bbf30a29e2d42c09bd3d5c64701546133b578e0509b9aee7d8c42ef4efabc",
       "source_refs": [
         "SRC-ANKER-SOLIX-C300",
         "SRC-JACKERY-500-NEW",
@@ -348,6 +353,7 @@
         {
           "claim_id": "CLM-ST1704-POWER-C300-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "Anker Solix C300は288Wh、定格300W、約4.1kg、約16.4×16.1×24.0cmと案内されている。",
           "evidence_refs": [
             "SRC-ANKER-SOLIX-C300"
@@ -357,6 +363,7 @@
         {
           "claim_id": "CLM-ST1704-POWER-JACKERY-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "Jackery 500 Newは512Wh、定格500W、約5.7kgと案内されている。",
           "evidence_refs": [
             "SRC-JACKERY-500-NEW"
@@ -366,6 +373,7 @@
         {
           "claim_id": "CLM-ST1704-POWER-AC70-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "BLUETTI AC70は768Wh、定格1000W、約10.2kg、314×209.5×255.8mmと案内されている。",
           "evidence_refs": [
             "SRC-BLUETTI-AC70"
@@ -375,6 +383,7 @@
         {
           "claim_id": "CLM-ST1704-POWER-DELTA-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "EcoFlow DELTA 3 Classicは1024Wh、定格1500W、約12.1kg、20.0×39.8×28.3cmと案内されている。",
           "evidence_refs": [
             "SRC-ECOFLOW-DELTA3-CLASSIC"
@@ -384,6 +393,7 @@
         {
           "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
           "classification": "EDITORIAL_INFERENCE",
+          "evidence_level": "D",
           "statement": "公表値はC300が288Wh・定格300W・約4.1kg、Jackery 500 Newが512Wh・定格500W・約5.7kg、AC70が768Wh・定格1000W・約10.2kg、DELTA 3 Classicが1024Wh・定格1500W・約12.1kgである。この4モデルではC300が最軽量かつ容量・定格出力が最小、DELTA 3 Classicが容量・定格出力・重量で最大のため、持ち運びやすさと必要な容量・出力で候補が変わる。",
           "evidence_refs": [
             "SRC-ANKER-SOLIX-C300",
@@ -406,7 +416,7 @@
       "article_id": "st1704-countertop-dishwasher-for-small-households",
       "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "fact_packet_sha256": "aa82402be01c7eb00932b0e481db8988f4d843a61b2f260da0ea422970a5a76e",
+      "fact_packet_sha256": "3aaf789090ba6ee257c9c759459709fc5a1ee5830d239c7ddbe8b9fb479f8f27",
       "source_refs": [
         "SRC-PANASONIC-NP-TMLK1",
         "SRC-THANKO-RAKUA-MINI-COLOR",
@@ -417,6 +427,7 @@
         {
           "claim_id": "CLM-ST1704-DISH-NP-TMLK1-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "Panasonic NP-TMLK1は食器6点、約2.5L、約幅310×高さ435×奥行225mm、約7.5kgの着脱タンク式で、送風乾燥に対応すると案内されている。",
           "evidence_refs": [
             "SRC-PANASONIC-NP-TMLK1"
@@ -426,6 +437,7 @@
         {
           "claim_id": "CLM-ST1704-DISH-RAKUA-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "THANKO ラクアmini colorは食器11〜12点、3.2L、幅308×高さ415×奥行315mm、扉開放時奥行594mm、約8kgのタンク式で、温風乾燥に対応すると案内されている。",
           "evidence_refs": [
             "SRC-THANKO-RAKUA-MINI-COLOR"
@@ -435,6 +447,7 @@
         {
           "claim_id": "CLM-ST1704-DISH-SS-MA251-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "siroca SS-MA251は食器16点、約6L、幅42×奥行44×高さ47cm、約13.5kgで、送風とオートオープン機能を備えると案内されている。",
           "evidence_refs": [
             "SRC-SIROCA-SS-MA251"
@@ -444,6 +457,7 @@
         {
           "claim_id": "CLM-ST1704-DISH-NP-TSP1-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "Panasonic NP-TSP1は食器24点、約9L、約幅550×高さ600×奥行341mm、約19kgのタンク式で、乾燥機能とリフトアップオープンドアを備えると案内されている。",
           "evidence_refs": [
             "SRC-PANASONIC-NP-TSP1"
@@ -453,6 +467,7 @@
         {
           "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
           "classification": "EDITORIAL_INFERENCE",
+          "evidence_level": "D",
           "statement": "公表値ではNP-TMLK1が奥行225mm・約2.5L・食器6点、ラクアmini colorが奥行315mm・3.2L・食器11〜12点、SS-MA251が奥行44cm・約6L・食器16点、NP-TSP1が奥行341mm・約9L・食器24点である。この4モデルではNP-TMLK1が奥行と標準使用水量で最小、NP-TSP1が標準食器点数で最大であり、SS-MA251はオートオープン対応のため、設置寸法、食器点数、水量、乾燥・扉方式で候補が変わる。",
           "evidence_refs": [
             "SRC-PANASONIC-NP-TMLK1",
@@ -475,7 +490,7 @@
       "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
       "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "fact_packet_sha256": "d593a11260d08e2536fbba5de12919f35120faa665ba47ec3373388221ace7de",
+      "fact_packet_sha256": "055732c85872115bed8eaaaca214d61f7204372fa5a62fa15a1a30084ee89c9b",
       "source_refs": [
         "SRC-ANKER-SOLIX-C300",
         "SRC-ANKER-SOLIX-C800-PLUS",
@@ -486,6 +501,7 @@
         {
           "claim_id": "CLM-ST1704-ANKER-C300-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "Anker Solix C300は288Wh、定格300W、約4.1kg、約16.4×16.1×24.0cmである。",
           "evidence_refs": [
             "SRC-ANKER-SOLIX-C300"
@@ -495,6 +511,7 @@
         {
           "claim_id": "CLM-ST1704-ANKER-C800-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "Anker Solix C800 Plusは768Wh、定格1200W、約10.9kg、約37.1×20.5×25.0cmである。",
           "evidence_refs": [
             "SRC-ANKER-SOLIX-C800-PLUS"
@@ -504,6 +521,7 @@
         {
           "claim_id": "CLM-ST1704-ANKER-C1000-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "Anker Solix C1000は1056Wh、定格1500W、約12.9kg、約37.6×20.5×26.7cmである。",
           "evidence_refs": [
             "SRC-ANKER-SOLIX-C1000"
@@ -513,6 +531,7 @@
         {
           "claim_id": "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "Anker Solix C1000 Gen 2は1024Wh、定格1550W、約11.3kg、約38.4×20.8×24.4cmである。",
           "evidence_refs": [
             "SRC-ANKER-SOLIX-C1000-GEN2"
@@ -522,6 +541,7 @@
         {
           "claim_id": "CLM-ST1704-ANKER-C1000-GENERATION-DIFF",
           "classification": "EDITORIAL_INFERENCE",
+          "evidence_level": "D",
           "statement": "C1000 Gen 2は旧C1000より公表容量が32Wh小さい一方、定格出力は50W高く、公表重量は約1.6kg軽い。固定価格差を使わず、この差が用途に必要かで判断する。",
           "evidence_refs": [
             "SRC-ANKER-SOLIX-C1000",
@@ -542,7 +562,7 @@
       "article_id": "st1704-compact-robot-vacuum-shortlist",
       "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "fact_packet_sha256": "6a3affcbb75a821c00edc44d87128490ac8dd8e12f1ba012f3a1e30dd66a713f",
+      "fact_packet_sha256": "49d2d8d2c6d9058753c96f6cd10b39253920d7dc4e137894f1fcdb61912ca79b",
       "source_refs": [
         "SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY",
         "SRC-SWITCHBOT-K11-PRO",
@@ -553,6 +573,7 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-ROOMBA-MINI-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "Roomba Mini + AutoEmptyは本体24.5×24.5×9.2cm、ステーション17.8×21.2×28.5cmで、掃除機がけと使い捨てシート式水拭き、自動ゴミ収集に対応し、自動給水、ローラーモップの自動洗浄・自動乾燥には対応しない。",
           "evidence_refs": [
             "SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY"
@@ -562,6 +583,7 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-K11-PRO-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "SwitchBot K11+ Proは本体248×248×92mmで、ゴミ収集ステーションは底面240×180mm、高さ250mm、自動ゴミ収集に対応し、市販のお掃除シートを使って使用後に捨てる方式と案内されている。",
           "evidence_refs": [
             "SRC-SWITCHBOT-K11-PRO"
@@ -571,6 +593,7 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-K10-COMBO-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "SwitchBot K10+ Pro Comboは本体248×248×92mm、デュアル集塵ステーションは公式表記195×297×410mmで、お掃除シート式に対応し、コードレス掃除機との共用ステーションを備える。寸法の数値順は本文でも保持する。",
           "evidence_refs": [
             "SRC-SWITCHBOT-K10-PRO-COMBO"
@@ -580,6 +603,7 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-ROOMBA-515-SPECS",
           "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
           "statement": "Roomba Plus 515 Comboは本体30.3×29.8×8.4cm、ステーション34.0×33.0×48.5cmで、DualCleanモップパッドを備え、ゴミ収集、自動給水、モップパッドの温水洗浄・温風乾燥に対応する。",
           "evidence_refs": [
             "SRC-IROBOT-ROOMBA-PLUS-515-COMBO"
@@ -589,6 +613,7 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
           "classification": "EDITORIAL_INFERENCE",
+          "evidence_level": "D",
           "statement": "公表寸法ではRoomba Miniは本体最大底面辺24.5cm・ステーション最大底面辺21.2cm、K11+ Proは24.8cm・24.0cm、K10+ Pro Comboは24.8cm・29.7cm、Roomba Plus 515 Comboは30.3cm・34.0cmである。この4モデルでは本体とステーションをともに25cm以下とする条件にRoomba MiniとK11+ Proだけが残り、K10+ Pro ComboとRoomba Plus 515 Comboは外れる。Roomba Plus 515 Comboは本体最大底面辺とステーション最大底面辺が最大で、使い捨てシート式、自動ゴミ収集、共用ステーション、DualCleanモップパッドの自動手入れという方式差でも候補が分かれる。",
           "evidence_refs": [
             "SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY",
@@ -616,7 +641,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": "https://hb.afl.rakuten.co.jp/hgc/g00qlfdo.0l0f20c2.g00qlfdo.0l0f32e9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06316%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Face-store%2Fi%2F10007275%2F&rafcid=wsc_i_is_bff71885-68be-4da1-a7e2-a4d1c4a46aaa",
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": {
         "api": "item-search",
         "api_version": "2026-07-01",
@@ -638,7 +663,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": "https://hb.afl.rakuten.co.jp/hgc/g00qlfdo.0l0f20c2.g00qlfdo.0l0f32e9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F05721%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Face-store%2Fi%2F10009372%2F&rafcid=wsc_i_is_bff71885-68be-4da1-a7e2-a4d1c4a46aaa",
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": {
         "api": "item-search",
         "api_version": "2026-07-01",
@@ -660,7 +685,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": "https://hb.afl.rakuten.co.jp/hgc/g00qlfdo.0l0f20c2.g00qlfdo.0l0f32e9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01471%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Face-store%2Fi%2F10009099%2F&rafcid=wsc_i_is_bff71885-68be-4da1-a7e2-a4d1c4a46aaa",
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": {
         "api": "item-search",
         "api_version": "2026-07-01",
@@ -682,7 +707,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -694,7 +719,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -706,7 +731,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -718,7 +743,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -730,7 +755,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -742,7 +767,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -754,7 +779,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -766,7 +791,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -778,7 +803,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -790,7 +815,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -802,7 +827,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -814,7 +839,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -826,7 +851,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -838,7 +863,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
@@ -850,7 +875,7 @@
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
       "required_rel": "sponsored nofollow",
-      "cta_copy": "楽天市場で写真・価格・在庫を見る",
+      "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
       "evidence": null,
       "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     }

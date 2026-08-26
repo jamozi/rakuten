@@ -29,7 +29,7 @@ PILOT_CREATE_PATH: Final = f"{PILOT_POSTS_PATH}?_fields={PILOT_CREATE_RESPONSE_F
 PILOT_SNAPSHOT_META_KEY: Final = "_raos_publication_snapshot_v1"
 PILOT_SNAPSHOT_SCHEMA: Final = "RAOS_PUBLICATION_SNAPSHOT_V1"
 PILOT_AUTHOR_NAME: Final = "暮らしのしるべ編集部"
-PILOT_CTA_LABEL: Final = "楽天市場で写真・価格・在庫を見る"
+PILOT_CTA_LABEL: Final = "楽天市場で現在の価格・在庫・カラーを見る"
 PILOT_RAKUTEN_CREDIT_LABEL: Final = "Supported by Rakuten Developers"
 PILOT_RAKUTEN_CREDIT_URL: Final = "https://developers.rakuten.com/"
 PILOT_RAKUTEN_EVIDENCE_SCHEMA: Final = "RAOS_ST1704_RAKUTEN_PRODUCT_EVIDENCE_V1"

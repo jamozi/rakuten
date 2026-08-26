@@ -9,12 +9,23 @@ The slice owns five things:
 1. five closed article/resource packets covering all MVP article types;
 2. a deterministic renderer and draft-only WordPress review boundary;
 3. a credential-free, allowlisted official-source capture boundary;
-4. child theme 1.1.1 with the five-article editorial UI and RAOS/Yoast bridge;
+4. child theme 1.2.0 with the five-article editorial UI and RAOS/Yoast bridge;
 5. local/CI evidence and a handoff for the remaining human-controlled actions.
 
 It does **not** publish, activate plugins or themes, enter credentials, accept terms,
 enable analytics, call a live provider without the owner gate, or claim staging,
 release, or Production evidence.
+
+The 2026-08-26 editorial/UX improvement artifacts are:
+
+- `BENCHMARK_2026-08-26.md` — ten-site observation log, twelve-axis assessment,
+  public RAOS baseline, and abstracted principles;
+- `DESIGN_SYSTEM.md` and `BRAND_VOICE.md` — reusable visual and editorial rules;
+- `UI_REVIEW.md` and `IMPLEMENTATION_REPORT.md` — browser evidence, gate results,
+  external exclusions, handoff, and rollback;
+- `visual-fixtures/` — explicitly non-production home/article states; and
+- `visual-evidence/` — RAOS-only public-before/local-after screenshots with source,
+  viewport, HTTP status where applicable, and SHA-256. No competitor image is stored.
 
 ## Editorial portfolio
 
@@ -127,7 +138,7 @@ post-activation Site Health readback must confirm the exact persisted configurat
 The archive digest alone is never promoted to installed-file evidence.
 
 The existing suitcase post is never replaced by a clone. Its reviewed draft uses a
-digest-bound temporary slug, and theme 1.1.1 exposes one POST-only administrator
+digest-bound temporary slug, and theme 1.2.0 exposes one POST-only administrator
 screen that can copy only the approved title, excerpt, content, and closed snapshot
 back to the exact existing public post. That screen requires an explicit nonce-bound
 human action, preserves the target ID/slug/status/date/author/taxonomies, uses a

@@ -159,14 +159,14 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_1_1_successor() -> None:
+def test_theme_is_an_isolated_1_2_0_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.1.1\n") == 1
+    assert stylesheet.count("\nVersion: 1.2.0\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.1.1"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.1.1'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.2.0"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.2.0'") == 1
     at003_gate = functions.split(
         "function kurashinoshirube_existing_update_context", 1
     )[1]
@@ -181,7 +181,7 @@ def test_theme_is_an_isolated_1_1_1_successor() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.1.1"
+    assert manifest["theme_version"] == "1.2.0"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 3
     for record in records:
@@ -215,7 +215,9 @@ def test_homepage_has_one_h1_three_clusters_and_the_brand_promise() -> None:
     assert header.count('"level":0') == 1
     assert front.count('<h1 class="') == 1
     assert front.count('"level":1') == 1
-    assert "暮らしの道具に、根拠のある余白を。" in front
+    assert "暮らしの道具を、根拠から選ぶ。" in front
+    assert "最新の比較ガイドを見る" in front
+    assert front.count("[kurashinoshirube_featured_guide]") == 1
     assert front.count("[kurashinoshirube_published_clusters]") == 1
     for label, anchor in (
         ("移動", "cluster-mobility"),
@@ -225,6 +227,10 @@ def test_homepage_has_one_h1_three_clusters_and_the_brand_promise() -> None:
         assert label in functions
         assert functions.count(anchor) >= 1
     assert "広告報酬をおすすめ順位の判断材料にしません" in front
+    assert "よく読まれている" not in front
+    assert "注目ガイド" in functions
+    assert "条件から選ぶ" in functions
+    assert "カテゴリから選ぶ" in functions
     assert '"inherit":false' in front
     assert "get_page_by_path($slug, OBJECT, 'post')" in functions
     assert "get_post_status($post) !== 'publish'" in functions
@@ -660,8 +666,20 @@ def test_comparison_and_cta_contracts_are_accessible_and_closed() -> None:
     assert comparison["mobile_card_class"] == "raos-comparison-card"
     assert comparison["mobile_semantics"] == "article>dl>div>dt+dd"
     assert comparison["mobile_breakpoint_max_px"] == 640
+    assert comparison["event_attributes"] == [
+        "data-raos-article-id",
+        "data-raos-placement=comparison_table",
+    ]
+    assert contract["measurement"]["analytics_transmission_added"] is False
+    assert contract["homepage_section_order"] == [
+        "最新のガイド",
+        "注目ガイド",
+        "条件から選ぶ",
+        "カテゴリから選ぶ",
+        "編集部の比較方針",
+    ]
     cta = markup["affiliate_cta"]
-    assert cta["exact_label"] == "楽天市場で写真・価格・在庫を見る"
+    assert cta["exact_label"] == "楽天市場で現在の価格・在庫・カラーを見る"
     assert sorted(cta["rel_tokens"]) == ["nofollow", "sponsored"]
     assert cta["required_host_provenance"].startswith("VALIDATED_RAKUTEN_")
     css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
@@ -709,6 +727,41 @@ def test_snapshot_contract_accepts_only_canonical_hash_bound_shape() -> None:
     assert snapshot["slug_binding"] == (
         "PUBLIC_SLUG_ONLY_WHEN_PUBLISHED_OR_EXACT_DERIVED_REVIEW_SLUG_WHEN_DRAFT"
     )
+
+
+def test_visual_fixtures_are_explicitly_non_production_and_closed() -> None:
+    fixture_root = THEME_ROOT.parents[1] / "visual-fixtures"
+    home = (fixture_root / "home.html").read_text(encoding="utf-8")
+    article = (fixture_root / "article.html").read_text(encoding="utf-8")
+    for payload in (home, article):
+        assert "LOCAL STATIC THEME FIXTURE" in payload
+        assert "本番表示ではありません" in payload
+        assert "<script" not in payload.casefold()
+        assert "javascript:" not in payload.casefold()
+    assert "暮らしの道具を、根拠から選ぶ。" in home
+    assert "よく読まれている" not in home
+    assert "中立画像" in home
+    assert "検証済み画像なし" in article
+    assert "UNKNOWN：未確認" in article
+    assert "在庫なしfixture・CTAなし" in article
+    assert "長い商品名" in article
+    assert 'data-raos-placement="comparison_table"' in article
+
+
+def test_raos_visual_evidence_is_hash_bound_and_never_calls_local_after_production() -> None:
+    evidence_root = THEME_ROOT.parents[1] / "visual-evidence"
+    manifest = json.loads((evidence_root / "manifest.v1.json").read_text("utf-8"))
+    assert manifest["schema"] == "ST1704_RAOS_VISUAL_EVIDENCE_V1"
+    assert manifest["competitor_screenshots_committed"] is False
+    assert manifest["production_claim_for_after"] is False
+    assert len(manifest["captures"]) == 7
+    for capture in manifest["captures"]:
+        payload = (evidence_root / capture["path"]).read_bytes()
+        assert hashlib.sha256(payload).hexdigest() == capture["sha256"]
+        assert capture["viewport"]["width"] in {390, 1440}
+        if capture["state"].startswith("LOCAL_STATIC_AFTER"):
+            assert capture["source"].startswith("../visual-fixtures/")
+            assert capture["http_status"] is None
 
 
 @pytest.mark.parametrize(

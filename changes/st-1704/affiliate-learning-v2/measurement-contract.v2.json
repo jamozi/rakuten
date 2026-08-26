@@ -5,7 +5,7 @@
       "article_type_code": "AT-003",
       "intent_classification": "CONDITION_COMPARISON",
       "intent_cluster": "移動",
-      "packet_sha256": "9d0e7032fab6200566639555dce6ebdd29113e3ea87982f0c80fc048d6b9b537",
+      "packet_sha256": "1f8b057b007a217a8541483a58ebb1f3f9fd481a2fd241c5486f72ab85924f57",
       "slot": 1,
       "slug": "carry-on-suitcase-comparison"
     },
@@ -14,7 +14,7 @@
       "article_type_code": "AT-001",
       "intent_classification": "SELECTION_GUIDE",
       "intent_cluster": "備え",
-      "packet_sha256": "4d670e37a45d96c775a6f42132fc8d9e8e6ac6d97e67cb26a1ecea8e6acfd9c1",
+      "packet_sha256": "029c58eca30c5106db8f54ba228e2d6767c85971228d273286c5c745e4319564",
       "slot": 2,
       "slug": "portable-power-station-guide"
     },
@@ -23,7 +23,7 @@
       "article_type_code": "AT-004",
       "intent_classification": "MODEL_DIFFERENCES",
       "intent_cluster": "備え",
-      "packet_sha256": "edea36dcc82f9ba1705d1cde8916b2c8da70eab2e41892d94dc9bfb35547c7b3",
+      "packet_sha256": "88fc4d065981fcde7c0a169181c428e519d19546f9ed451a5cc1d57b9442b645",
       "slot": 3,
       "slug": "anker-solix-c300-c800-c1000-differences"
     },
@@ -32,7 +32,7 @@
       "article_type_code": "AT-002",
       "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
       "intent_cluster": "家事",
-      "packet_sha256": "fffb199087fde4a9f9170273763b452a90488698261437ac783adf861adc300e",
+      "packet_sha256": "8376928e4a442b9e6ffb16fc8a030ffa1fee151d52e6f879ec8d69ec0fb60540",
       "slot": 4,
       "slug": "countertop-dishwasher-for-small-households"
     },
@@ -41,7 +41,7 @@
       "article_type_code": "AT-005",
       "intent_classification": "CONDITION_SHORTLIST",
       "intent_cluster": "家事",
-      "packet_sha256": "229da594e299fab8d869b6e38e73011bc449e6716500017cc2e42766e3f643b2",
+      "packet_sha256": "1594da95466b454f123d32fe31b91136b4df84b833af85a789fd8f03ce7b0390",
       "slot": 5,
       "slug": "compact-robot-vacuum-shortlist"
     }
@@ -123,9 +123,9 @@
   "slice_id": "AFFILIATE_LEARNING_MEASUREMENT_V2",
   "source_bindings": {
     "article_collection_path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-    "article_collection_sha256": "b8cc847a15b5996eaaf005d7474173c7d13555a4bea40efee6afec9162b25058",
+    "article_collection_sha256": "df3856ec35e6b1f976369adf110f891265af59a9a2c97b6b418764bc36b8385a",
     "compatibility_template_path": "changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json",
-    "compatibility_template_sha256": "1a1827f0296f1bdd7c983d141b2c2eae87a4ad9f327e68062e036adde289c73c"
+    "compatibility_template_sha256": "885735bdf2df835c6725d92a7792328d292e56555e76cc0f3ac7df1eda08fc3b"
   },
   "story_id": "ST-1704"
 }

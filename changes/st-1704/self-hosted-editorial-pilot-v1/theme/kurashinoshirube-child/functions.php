@@ -12,7 +12,7 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.1.1';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.2.0';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guide.webp';
@@ -26,8 +26,8 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_RELATED_ARTICLE_MAP_SHA256 = 'c8c266182695745fa59caee6cdde1796da261820093b66ca9a2573508283ba31';
 const KURASHINOSHIRUBE_RELATED_ARTICLE_MAP_JSON = '{"st1703-first-suitcase-comparison":{"home_anchor":"cluster-mobility","home_label":"暮らしの道具「移動」の一覧へ","targets":{}},"st1704-anker-solix-c300-c800-c1000-differences":{"home_anchor":"cluster-ready","home_label":"暮らしの道具「備え」の一覧へ","targets":{"st1704-portable-power-station-guide":"停電対策用ポータブル電源の選び方"}},"st1704-compact-robot-vacuum-shortlist":{"home_anchor":"cluster-home","home_label":"暮らしの道具「家事」の一覧へ","targets":{"st1704-countertop-dishwasher-for-small-households":"工事不要の食洗機を1〜2人暮らし向けに比較"}},"st1704-countertop-dishwasher-for-small-households":{"home_anchor":"cluster-home","home_label":"暮らしの道具「家事」の一覧へ","targets":{"st1704-compact-robot-vacuum-shortlist":"省スペースのロボット掃除機を条件で絞る"}},"st1704-portable-power-station-guide":{"home_anchor":"cluster-ready","home_label":"暮らしの道具「備え」の一覧へ","targets":{"st1704-anker-solix-c300-c800-c1000-differences":"Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い"}}}';
-const KURASHINOSHIRUBE_HOMEPAGE_CLUSTERS_SHA256 = 'bd0e5fcfb20e1c042c65210f4a088ca2c87ae9c5ec3c269db338678ebabefc60';
-const KURASHINOSHIRUBE_HOMEPAGE_CLUSTERS_JSON = '{"clusters":{"cluster-home":{"description":"置き場所と手間から、無理のない一台を選ぶ。","heading":"置き場所と日々の手間を整える","label":"家事","post_order":["st1704-countertop-dishwasher-for-small-households","st1704-compact-robot-vacuum-shortlist"],"posts":{"st1704-compact-robot-vacuum-shortlist":"省スペースのロボット掃除機を条件で絞る","st1704-countertop-dishwasher-for-small-households":"工事不要の食洗機を1〜2人暮らし向けに比較"}},"cluster-mobility":{"description":"軽さ、容量、持ち運び方の違いをほどく。","heading":"持ち運ぶ負担を小さくする","label":"移動","post_order":["st1703-first-suitcase-comparison"],"posts":{"st1703-first-suitcase-comparison":"機内持ち込み対応スーツケース3モデルを条件別比較"}},"cluster-ready":{"description":"必要な容量と出力を、使う場面から逆算する。","heading":"必要な電力を過不足なく備える","label":"備え","post_order":["st1704-portable-power-station-guide","st1704-anker-solix-c300-c800-c1000-differences"],"posts":{"st1704-anker-solix-c300-c800-c1000-differences":"Anker Solix 4モデルの違い","st1704-portable-power-station-guide":"停電対策用ポータブル電源の選び方"}}},"display_order":["cluster-mobility","cluster-home","cluster-ready"]}';
+const KURASHINOSHIRUBE_HOMEPAGE_CLUSTERS_SHA256 = 'd9e2e40d369723e2e8dc2f6d5bfc0e74e2873c7748936a287f04a4acbc7dc7da';
+const KURASHINOSHIRUBE_HOMEPAGE_CLUSTERS_JSON = '{"clusters":{"cluster-home":{"description":"置き場所と手間から、無理のない一台を選ぶ。","heading":"置き場所と日々の手間を整える","label":"家事","post_order":["st1704-countertop-dishwasher-for-small-households","st1704-compact-robot-vacuum-shortlist"],"posts":{"st1704-compact-robot-vacuum-shortlist":"省スペースのロボット掃除機を条件で絞る","st1704-countertop-dishwasher-for-small-households":"工事不要の食洗機を1〜2人暮らし向けに比較"}},"cluster-mobility":{"description":"軽さ、容量、持ち運び方の違いをほどく。","heading":"持ち運ぶ負担を小さくする","label":"移動","post_order":["st1703-first-suitcase-comparison"],"posts":{"st1703-first-suitcase-comparison":"エースの機内持ち込みスーツケース3モデル比較"}},"cluster-ready":{"description":"必要な容量と出力を、使う場面から逆算する。","heading":"必要な電力を過不足なく備える","label":"備え","post_order":["st1704-portable-power-station-guide","st1704-anker-solix-c300-c800-c1000-differences"],"posts":{"st1704-anker-solix-c300-c800-c1000-differences":"Anker Solix 4モデルの違い","st1704-portable-power-station-guide":"停電対策用ポータブル電源の選び方"}}},"display_order":["cluster-mobility","cluster-home","cluster-ready"]}';
 
 /** Return the only article identities accepted by the v1 bridge. */
 function kurashinoshirube_article_bindings(): array
@@ -1557,7 +1557,7 @@ function kurashinoshirube_render_first_article_lead_image($attributes, $content,
         || $tag !== 'kurashinoshirube_first_article_lead_image'
         || ! is_singular('post')
         || get_post_field('post_title', get_the_ID(), 'raw')
-            !== '機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ'
+            !== 'エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ'
         || get_post_field('post_name', get_the_ID(), 'raw')
             !== 'carry-on-suitcase-comparison'
         || get_stylesheet() !== 'kurashinoshirube-child'
@@ -1603,6 +1603,33 @@ function kurashinoshirube_render_breadcrumb($attributes, $content, $tag): string
         . '</ol></nav>';
 }
 add_shortcode('kurashinoshirube_breadcrumb', 'kurashinoshirube_render_breadcrumb');
+
+/** Render a bounded article category label from the hash-bound pilot identity. */
+function kurashinoshirube_render_article_category($attributes, $content, $tag): string
+{
+    if (
+        $attributes !== array()
+        || ! in_array($content, array(null, ''), true)
+        || $tag !== 'kurashinoshirube_article_category'
+        || ! is_singular('post')
+    ) {
+        return '';
+    }
+    $snapshot = kurashinoshirube_current_snapshot();
+    if ($snapshot === null) {
+        return '';
+    }
+    $binding = kurashinoshirube_article_bindings()[$snapshot['article_id']] ?? null;
+    if (! is_array($binding) || ! is_string($binding['section'] ?? null)) {
+        return '';
+    }
+    return '<p class="raos-article-category">' . esc_html($binding['section'])
+        . '／比較ガイド</p>';
+}
+add_shortcode(
+    'kurashinoshirube_article_category',
+    'kurashinoshirube_render_article_category'
+);
 
 /**
  * Render theme-owned related navigation after the hash-bound article copy.
@@ -1665,6 +1692,98 @@ function kurashinoshirube_render_related_guides($attributes, $content, $tag): st
 add_shortcode(
     'kurashinoshirube_related_guides',
     'kurashinoshirube_render_related_guides'
+);
+
+/**
+ * Render one explicitly ordered public guide without implying popularity.
+ * The first eligible pilot article in the fixed editorial order wins.
+ */
+function kurashinoshirube_render_featured_guide($attributes, $content, $tag): string
+{
+    if (
+        $attributes !== array()
+        || ! in_array($content, array(null, ''), true)
+        || $tag !== 'kurashinoshirube_featured_guide'
+        || ! is_front_page()
+    ) {
+        return '';
+    }
+    $configuration = kurashinoshirube_homepage_clusters();
+    if ($configuration === array()) {
+        return '';
+    }
+    $featured = '';
+    foreach ($configuration['display_order'] as $cluster_id) {
+        $cluster = $configuration['clusters'][$cluster_id] ?? null;
+        if (! is_array($cluster) || ! is_array($cluster['post_order'] ?? null)) {
+            return '';
+        }
+        foreach ($cluster['post_order'] as $article_id) {
+            $binding = kurashinoshirube_article_bindings()[$article_id] ?? null;
+            if (! is_array($binding)) {
+                return '';
+            }
+            $slug = $binding['slug'];
+            $post = get_page_by_path($slug, OBJECT, 'post');
+            $snapshot = $post instanceof WP_Post
+                ? kurashinoshirube_bound_post_snapshot((int) $post->ID, false)
+                : null;
+            $expected_permalink = KURASHINOSHIRUBE_SITE_ORIGIN . '/' . $slug . '/';
+            if (
+                ! ($post instanceof WP_Post)
+                || get_post_status($post) !== 'publish'
+                || $snapshot === null
+                || $snapshot['article_id'] !== $article_id
+                || get_permalink($post) !== $expected_permalink
+            ) {
+                continue;
+            }
+            $title = get_post_field('post_title', $post->ID, 'raw');
+            $excerpt = get_post_field('post_excerpt', $post->ID, 'raw');
+            $modified = get_post_modified_time('Y年n月j日', false, $post->ID);
+            if (
+                ! kurashinoshirube_is_clean_text($title, 1, 140)
+                || ! kurashinoshirube_is_clean_text($excerpt, 1, 300)
+                || ! is_string($modified)
+                || $modified === ''
+            ) {
+                continue;
+            }
+            $visual = '<span class="raos-guide-card__visual" aria-hidden="true"></span>';
+            if ($article_id === KURASHINOSHIRUBE_EXISTING_UPDATE_ARTICLE_ID) {
+                $image_uri = kurashinoshirube_verified_asset_uri(
+                    KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH,
+                    KURASHINOSHIRUBE_ARTICLE_IMAGE_SHA256
+                );
+                if ($image_uri !== null) {
+                    $visual = '<span class="raos-guide-card__visual '
+                        . 'raos-guide-card__visual--image"><img src="'
+                        . esc_url($image_uri) . '" alt="" width="1600" height="900" '
+                        . 'loading="lazy" decoding="async"></span>';
+                }
+            }
+            $featured = '<article class="raos-featured-guide">' . $visual
+                . '<div class="raos-featured-guide__body"><p class="raos-article-category">'
+                . esc_html($binding['section']) . '／比較ガイド</p><h3><a href="'
+                . esc_url($expected_permalink) . '">' . esc_html($title)
+                . '</a></h3><p>' . esc_html($excerpt) . '</p><p class="raos-guide-card__date">'
+                . '更新 ' . esc_html($modified) . '</p></div></article>';
+            break 2;
+        }
+    }
+    if ($featured === '') {
+        $featured = '<p class="raos-empty-state">公開済みの注目ガイドはまだありません。'
+            . '編集部の確認が終わるまで未公開記事は表示しません。</p>';
+    }
+    return '<section class="raos-home-section raos-featured alignwide" '
+        . 'aria-labelledby="raos-featured-title"><div class="raos-section-heading">'
+        . '<p class="raos-kicker">EDITOR\'S PICK</p><h2 id="raos-featured-title">注目ガイド</h2>'
+        . '<p>閲覧数ではなく、編集部が最初に読んでほしい順で選びます。</p></div>'
+        . $featured . '</section>';
+}
+add_shortcode(
+    'kurashinoshirube_featured_guide',
+    'kurashinoshirube_render_featured_guide'
 );
 
 /** Render clusters with links only for posts that are already public. */
@@ -1747,11 +1866,15 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
             . esc_html($cluster['heading']) . '</h3><ul>' . $items
             . '</ul></section>';
     }
-    return '<section class="raos-cluster-nav alignwide" '
-        . 'aria-labelledby="raos-cluster-nav-title"><h2 id="raos-cluster-nav-title">'
-        . '暮らしの場面から探す</h2><nav class="raos-cluster-nav__grid" '
+    return '<section class="raos-cluster-nav raos-home-section alignwide" '
+        . 'aria-labelledby="raos-cluster-nav-title"><div class="raos-section-heading">'
+        . '<p class="raos-kicker">CHOOSE BY NEED</p><h2 id="raos-cluster-nav-title">'
+        . '条件から選ぶ</h2><p>総合1位ではなく、いま困っていることから入口を選べます。</p></div>'
+        . '<nav class="raos-cluster-nav__grid" '
         . 'aria-label="記事テーマ">' . $navigation . '</nav>'
-        . '<div class="raos-clusters">' . $sections . '</div></section>';
+        . '<div class="raos-category-heading"><p class="raos-kicker">CATEGORIES</p>'
+        . '<h2>カテゴリから選ぶ</h2></div><div class="raos-clusters">'
+        . $sections . '</div></section>';
 }
 add_shortcode(
     'kurashinoshirube_published_clusters',

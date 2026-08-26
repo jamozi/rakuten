@@ -23,7 +23,7 @@
       "route_ref": "ROUTE-ARTICLE-SUITCASE",
       "article_id": "st1703-first-suitcase-comparison",
       "path": "/carry-on-suitcase-comparison/",
-      "title": "機内持ち込み対応スーツケース3モデルを条件別比較",
+      "title": "エースの機内持ち込みスーツケース3モデル比較",
       "publication_state": "PUBLISHED_EXISTING_REVIEW_UPDATE_PENDING"
     },
     {
@@ -70,12 +70,12 @@
       },
       "slug": "carry-on-suitcase-comparison",
       "canonical_url": "https://kurashinoshirube.com/carry-on-suitcase-comparison/",
-      "title": "機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ",
+      "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ",
       "category": "暮らしの道具",
       "intent_cluster": "移動",
       "seo": {
-        "meta_title": "機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方",
-        "meta_description": "機内持ち込み候補3モデルを、軽さ・容量・開き方で条件別に比較。メーカー公表値と航空会社の条件を分けて、向く人と注意点を整理します。",
+        "meta_title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方",
+        "meta_description": "型番と一次情報を照合できたエース系3モデルを、軽さ・容量・開き方で条件別に比較。市場全体の順位ではなく、向く人と注意点を整理します。",
         "draft_robots": "noindex,nofollow",
         "published_robots": "index,follow",
         "structured_data_allowed": ["Article", "BreadcrumbList", "Organization", "WebSite"],
@@ -83,17 +83,17 @@
         "visible_content_must_match": true
       },
       "freshness": {
-        "facts_checked_on": "2026-08-12",
+        "facts_checked_on": "2026-08-26",
         "publication_recheck_required": true
       },
       "source_packet_ref": "SPV-ST1704-SUITCASE-V1",
       "content_ast": {
         "schema_version": "1.0.0",
         "article_id": "st1703-first-suitcase-comparison",
-        "article_version_id": "st1703-first-suitcase-comparison@v2",
+        "article_version_id": "st1703-first-suitcase-comparison@v3",
         "article_type": "product_comparison",
         "locale": "ja-JP",
-        "title": "機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ",
+        "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ",
         "methodology_ref": "METH-ST1704-PILOT-V1",
         "seo_metadata_ref": "SEO-ST1704-SUITCASE-V2",
         "source_packet_version_ref": "SPV-ST1704-SUITCASE-V1",
@@ -109,15 +109,15 @@
             "block_id": "BLK-SUITCASE-002",
             "type": "lead",
             "claim_ids": [],
-            "content": [{"type": "text", "text": "似た寸法の機内持ち込みスーツケースでも、ケース自体の重さ、非拡張時の容量、荷物へのアクセス方法で旅支度のしやすさは変わります。ここでは型番を照合できた3モデルを同じ条件で見比べます。"}]
+            "content": [{"type": "text", "text": "似た寸法でも、駅の階段で持ち上げる重さ、狭いホテルでの開き方、拡張せずに入る荷物量は異なります。この記事は市場全体のランキングではありません。エース公式情報と型番を照合できた3モデルだけを、同じ条件で見比べます。"}]
           },
           {
             "block_id": "BLK-SUITCASE-003",
             "type": "decision_summary",
             "items": [
-              {"condition": "ケース本体の軽さを優先", "recommendation_ref": "REC-SUITCASE-CRESTA", "summary": [{"type": "text", "text": "比較した3モデルでは3.2kgのACE クレスタ 06316が候補です。"}], "claim_ids": ["CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES"]},
-              {"condition": "開き方とキャスターストッパーを優先", "recommendation_ref": "REC-SUITCASE-DIFFERENCE", "summary": [{"type": "text", "text": "2通りの開き方を案内するディフェレンス 05721が候補です。"}], "claim_ids": ["CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES"]},
-              {"condition": "非拡張時の容量とフロント収納を優先", "recommendation_ref": "REC-SUITCASE-MAXPASS", "summary": [{"type": "text", "text": "40Lのマックスパス4 01471が候補です。"}], "claim_ids": ["CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES"]}
+              {"condition": "軽さを優先", "recommendation_ref": "REC-SUITCASE-CRESTA", "summary": [{"type": "text", "text": "階段や収納棚で持ち上げるなら、3モデルで最も軽い3.2kgのACE クレスタ 06316。"}], "claim_ids": ["CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES"]},
+              {"condition": "開き方とストッパーを優先", "recommendation_ref": "REC-SUITCASE-DIFFERENCE", "summary": [{"type": "text", "text": "狭い場所で荷物へ触れるなら、2WAYオープンとストッパーを確認できるディフェレンス 05721。"}], "claim_ids": ["CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES"]},
+              {"condition": "非拡張容量を優先", "recommendation_ref": "REC-SUITCASE-MAXPASS", "summary": [{"type": "text", "text": "拡張せず容量を確保するなら、40Lとフロント収納を確認できるマックスパス4 01471。"}], "claim_ids": ["CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES"]}
             ]
           },
           {
@@ -136,14 +136,14 @@
             "candidate_universe_summary": [{"type": "text", "text": "エース公式サイトと公式楽天市場店で同一型番を照合できた3モデルを比較しました。"}],
             "inclusion_rules": [[{"type": "text", "text": "メーカー公式仕様で外寸、容量、重量を確認できる"}], [{"type": "text", "text": "同じ確認時点、同じ軸で比較できる"}]],
             "exclusion_rules": [[{"type": "text", "text": "購入者レビュー、価格、在庫、ポイント、報酬率は比較に使わない"}], [{"type": "text", "text": "実機で確認していない耐久性や使い勝手は評価しない"}]],
-            "data_checked_at": "2026-08-12T00:00:00Z"
+            "data_checked_at": "2026-08-26T13:54:33Z"
           },
           {
             "block_id": "BLK-SUITCASE-006",
             "type": "difference_matrix",
             "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS", "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS", "CLM-ST1704-SUITCASE-MAXPASS-SPECS"],
             "matrix_ref": "MATRIX-SUITCASE-V1",
-            "comparison_axis_refs": ["AXIS-SUITCASE-DIMENSIONS", "AXIS-SUITCASE-CAPACITY", "AXIS-SUITCASE-WEIGHT", "AXIS-SUITCASE-ACCESS", "AXIS-SUITCASE-EXPANSION"],
+            "comparison_axis_refs": ["AXIS-SUITCASE-DIMENSIONS", "AXIS-SUITCASE-CAPACITY", "AXIS-SUITCASE-WEIGHT", "AXIS-SUITCASE-ACCESS", "AXIS-SUITCASE-EXPANSION", "AXIS-SUITCASE-FIT", "AXIS-SUITCASE-CAUTION"],
             "product_selection_refs": ["PSEL-SUITCASE-CRESTA", "PSEL-SUITCASE-DIFFERENCE", "PSEL-SUITCASE-MAXPASS"],
             "show_equal_values": true,
             "show_unknown_values": true
@@ -153,7 +153,7 @@
             "type": "comparison_table",
             "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS", "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS", "CLM-ST1704-SUITCASE-MAXPASS-SPECS"],
             "comparison_table_ref": "TABLE-SUITCASE-V1",
-            "comparison_axis_refs": ["AXIS-SUITCASE-DIMENSIONS", "AXIS-SUITCASE-CAPACITY", "AXIS-SUITCASE-WEIGHT", "AXIS-SUITCASE-ACCESS", "AXIS-SUITCASE-EXPANSION"],
+            "comparison_axis_refs": ["AXIS-SUITCASE-DIMENSIONS", "AXIS-SUITCASE-CAPACITY", "AXIS-SUITCASE-WEIGHT", "AXIS-SUITCASE-ACCESS", "AXIS-SUITCASE-EXPANSION", "AXIS-SUITCASE-FIT", "AXIS-SUITCASE-CAUTION"],
             "product_selection_refs": ["PSEL-SUITCASE-CRESTA", "PSEL-SUITCASE-DIFFERENCE", "PSEL-SUITCASE-MAXPASS"],
             "display_mode": "desktop_table_mobile_cards",
             "show_unknown_values": true
@@ -181,12 +181,19 @@
             "severity": "warning",
             "content": [{"type": "text", "text": "「機内持ち込み対応」という商品表示だけで決めず、拡張状態を含む実寸と、実際の運航会社・便・機材の最新条件を搭乗前に確認してください。"}]
           },
-          {"block_id": "BLK-SUITCASE-016", "type": "source_summary", "claim_ids": [], "source_packet_version_ref": "SPV-ST1704-SUITCASE-V1", "last_checked_at": "2026-08-12T00:00:00Z", "editorial_policy_route_ref": "ROUTE-EDITORIAL-POLICY", "show_source_categories": true},
+          {"block_id": "BLK-SUITCASE-016", "type": "source_summary", "claim_ids": [], "source_packet_version_ref": "SPV-ST1704-SUITCASE-V1", "last_checked_at": "2026-08-26T13:54:33Z", "editorial_policy_route_ref": "ROUTE-EDITORIAL-POLICY", "show_source_categories": true},
           {"block_id": "BLK-SUITCASE-017", "type": "internal_links", "links": [{"route_ref": "ROUTE-HOME-GUIDES", "anchor_text": "暮らしの道具「移動」の一覧へ", "journey_purpose": "移動・家事・備えの別の判断ガイドを探す"}]}
         ],
         "publication_flags": {"affiliate_content": true, "human_approval_required": true, "allow_auto_publish": false}
       },
       "render_model": {
+        "presentation": {
+          "reader_summary": "100席以上の航空機で使う候補を、軽さ・容量・開き方で比べたい人",
+          "scope_label": "エース系3モデル",
+          "scope_note": "市場全体のおすすめ順位ではなく、型番と一次情報を照合できた候補だけを比較",
+          "fact_checker": "暮らしのしるべ編集部",
+          "first_hand_test": "未実施"
+        },
         "disclosure": {
           "label": "広告と編集について",
           "paragraphs": [
@@ -195,23 +202,25 @@
             "構成と表現整理にはAIを補助的に使いますが、事実確認、最終文面、公開判断は運営者が行います。実機を使ったレビューではありません。"
           ]
         },
-        "cta_policy": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "direct_link_only": true, "fixed_price_inventory_points_in_body": false, "independent_from_finance": true},
+        "cta_policy": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "direct_link_only": true, "fixed_price_inventory_points_in_body": false, "independent_from_finance": true},
         "comparison_axes": [
           {"comparison_axis_ref": "AXIS-SUITCASE-DIMENSIONS", "label": "非拡張時の外寸", "description": "搭乗時の寸法条件と照合する"},
           {"comparison_axis_ref": "AXIS-SUITCASE-CAPACITY", "label": "基本容量", "description": "拡張に頼らない容量を比べる"},
           {"comparison_axis_ref": "AXIS-SUITCASE-WEIGHT", "label": "本体重量", "description": "荷物を含む重量条件とは分けて比べる"},
           {"comparison_axis_ref": "AXIS-SUITCASE-ACCESS", "label": "アクセス方法", "description": "公式に掲載された開き方や前面収納だけを扱う"},
-          {"comparison_axis_ref": "AXIS-SUITCASE-EXPANSION", "label": "拡張", "description": "拡張時は持ち込み寸法を再確認する"}
+          {"comparison_axis_ref": "AXIS-SUITCASE-EXPANSION", "label": "拡張", "description": "拡張時は持ち込み寸法を再確認する"},
+          {"comparison_axis_ref": "AXIS-SUITCASE-FIT", "label": "向く人", "description": "一次情報から編集部が整理した条件"},
+          {"comparison_axis_ref": "AXIS-SUITCASE-CAUTION", "label": "注意点", "description": "選ぶ前に同じ強さで確認する制約"}
         ],
         "comparison_tables": [
           {
             "comparison_table_ref": "TABLE-SUITCASE-V1",
             "caption": "機内持ち込み候補3モデルのメーカー公表仕様",
-            "axis_refs": ["AXIS-SUITCASE-DIMENSIONS", "AXIS-SUITCASE-CAPACITY", "AXIS-SUITCASE-WEIGHT", "AXIS-SUITCASE-ACCESS", "AXIS-SUITCASE-EXPANSION"],
+            "axis_refs": ["AXIS-SUITCASE-DIMENSIONS", "AXIS-SUITCASE-CAPACITY", "AXIS-SUITCASE-WEIGHT", "AXIS-SUITCASE-ACCESS", "AXIS-SUITCASE-EXPANSION", "AXIS-SUITCASE-FIT", "AXIS-SUITCASE-CAUTION"],
             "rows": [
-              {"product_selection_ref": "PSEL-SUITCASE-CRESTA", "cells": [{"axis_ref": "AXIS-SUITCASE-DIMENSIONS", "value": "H55×W35×D25cm", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-CAPACITY", "value": "34L", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-WEIGHT", "value": "3.2kg", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-ACCESS", "value": "公式特徴欄で確認できず", "claim_ids": [], "state": "UNKNOWN"}, {"axis_ref": "AXIS-SUITCASE-EXPANSION", "value": "39L・D29cm", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"], "state": "KNOWN"}]},
-              {"product_selection_ref": "PSEL-SUITCASE-DIFFERENCE", "cells": [{"axis_ref": "AXIS-SUITCASE-DIMENSIONS", "value": "H55×W36×D24cm", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-CAPACITY", "value": "32L", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-WEIGHT", "value": "3.5kg", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-ACCESS", "value": "2通りの開き方", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-EXPANSION", "value": "38L・D27cm", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"], "state": "KNOWN"}]},
-              {"product_selection_ref": "PSEL-SUITCASE-MAXPASS", "cells": [{"axis_ref": "AXIS-SUITCASE-DIMENSIONS", "value": "H50×W40×D25cm", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-CAPACITY", "value": "40L", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-WEIGHT", "value": "3.6kg", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-ACCESS", "value": "フロントポケットからメイン収納へアクセス", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-EXPANSION", "value": "公式特徴欄で確認できず", "claim_ids": [], "state": "UNKNOWN"}]}
+              {"product_selection_ref": "PSEL-SUITCASE-CRESTA", "cells": [{"axis_ref": "AXIS-SUITCASE-DIMENSIONS", "value": "H55×W35×D25cm", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-CAPACITY", "value": "34L", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-WEIGHT", "value": "3.2kg", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-ACCESS", "value": "未確認", "claim_ids": [], "state": "UNKNOWN"}, {"axis_ref": "AXIS-SUITCASE-EXPANSION", "value": "39L・D29cm", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-FIT", "value": "階段や収納棚で本体重量を抑えたい人", "claim_ids": ["CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-CAUTION", "value": "拡張時は持ち込み寸法の候補外", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS", "CLM-ST1704-SUITCASE-CARRYON-LIMITS"], "state": "KNOWN"}]},
+              {"product_selection_ref": "PSEL-SUITCASE-DIFFERENCE", "cells": [{"axis_ref": "AXIS-SUITCASE-DIMENSIONS", "value": "H55×W36×D24cm", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-CAPACITY", "value": "32L", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-WEIGHT", "value": "3.5kg", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-ACCESS", "value": "2通りの開き方", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-EXPANSION", "value": "38L・D27cm", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-FIT", "value": "狭い場所で開き方を使い分けたい人", "claim_ids": ["CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-CAUTION", "value": "拡張時の3辺合計は118cm", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS", "CLM-ST1704-SUITCASE-CARRYON-LIMITS"], "state": "KNOWN"}]},
+              {"product_selection_ref": "PSEL-SUITCASE-MAXPASS", "cells": [{"axis_ref": "AXIS-SUITCASE-DIMENSIONS", "value": "H50×W40×D25cm", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-CAPACITY", "value": "40L", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-WEIGHT", "value": "3.6kg", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-ACCESS", "value": "フロントポケットからメイン収納へアクセス", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-EXPANSION", "value": "未確認", "claim_ids": [], "state": "UNKNOWN"}, {"axis_ref": "AXIS-SUITCASE-FIT", "value": "非拡張容量と前面収納を優先する人", "claim_ids": ["CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES"], "state": "KNOWN"}, {"axis_ref": "AXIS-SUITCASE-CAUTION", "value": "3モデルでは最も重い3.6kg", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS", "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES"], "state": "KNOWN"}]}
             ]
           }
         ],
@@ -222,9 +231,75 @@
           {"recommendation_ref": "REC-SUITCASE-MAXPASS", "product_selection_ref": "PSEL-SUITCASE-MAXPASS", "condition": "非拡張容量とフロント収納を優先", "rationale": "3モデルで最大の40Lとフロントポケットを公式に掲載", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS", "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES"]}
         ],
         "product_cards": [
-          {"product_selection_ref": "PSEL-SUITCASE-CRESTA", "product_id": "PRD-ACE-CRESTA-06316", "product_name": "ACE クレスタ 06316", "source_refs": ["SRC-ACE-CRESTA-06316"], "affiliate_ref": "AFF-ACE-CRESTA-06316", "media_asset_ref": "MEDIA-ACE-CRESTA-06316", "condition_label": "軽さを優先", "confirmed_facts": [{"label": "外寸", "value": "H55×W35×D25cm", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"]}, {"label": "容量", "value": "34L", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"]}, {"label": "重量", "value": "3.2kg", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"]}], "editorial_fit": "非拡張でケース本体の軽さを抑えたい場合の候補", "caution": "拡張時は持ち込み寸法から外れるため非拡張で確認する", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1703-first-suitcase-comparison", "data_product_id": "PRD-ACE-CRESTA-06316", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-SUITCASE-DIFFERENCE", "product_id": "PRD-ACE-DIFFERENCE-05721", "product_name": "ace.TOKYO LABEL ディフェレンス 05721", "source_refs": ["SRC-ACE-DIFFERENCE-05721"], "affiliate_ref": "AFF-ACE-DIFFERENCE-05721", "media_asset_ref": "MEDIA-ACE-DIFFERENCE-05721", "condition_label": "開き方を優先", "confirmed_facts": [{"label": "外寸", "value": "H55×W36×D24cm", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"]}, {"label": "容量", "value": "32L", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"]}, {"label": "重量", "value": "3.5kg", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"]}], "editorial_fit": "前側と中央側の開き方を使い分けたい場合の候補", "caution": "拡張時は持ち込み寸法から外れるため非拡張で確認する", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1703-first-suitcase-comparison", "data_product_id": "PRD-ACE-DIFFERENCE-05721", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-SUITCASE-MAXPASS", "product_id": "PRD-ACE-MAXPASS4-01471", "product_name": "PROTECA マックスパス4 01471", "source_refs": ["SRC-ACE-MAXPASS4-01471"], "affiliate_ref": "AFF-ACE-MAXPASS4-01471", "media_asset_ref": "MEDIA-ACE-MAXPASS4-01471", "condition_label": "容量と前面収納を優先", "confirmed_facts": [{"label": "外寸", "value": "H50×W40×D25cm", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"]}, {"label": "容量", "value": "40L", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"]}, {"label": "重量", "value": "3.6kg", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"]}], "editorial_fit": "非拡張容量とフロント収納を優先する場合の候補", "caution": "3モデルでは最も重いため荷物を含む合計重量を確認する", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1703-first-suitcase-comparison", "data_product_id": "PRD-ACE-MAXPASS4-01471", "data_placement": "product_card"}}
+          {
+            "product_selection_ref": "PSEL-SUITCASE-CRESTA",
+            "product_id": "PRD-ACE-CRESTA-06316",
+            "product_name": "ACE クレスタ 06316",
+            "source_refs": ["SRC-ACE-CRESTA-06316"],
+            "affiliate_ref": "AFF-ACE-CRESTA-06316",
+            "media_asset_ref": "MEDIA-ACE-CRESTA-06316",
+            "condition_label": "軽さを優先",
+            "confirmed_facts": [{"label": "外寸", "value": "H55×W35×D25cm", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"]}, {"label": "容量", "value": "34L", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"]}, {"label": "重量", "value": "3.2kg", "claim_ids": ["CLM-ST1704-SUITCASE-CRESTA-SPECS"]}],
+            "editorial_fit": "非拡張でケース本体の軽さを抑えたい場合の候補",
+            "caution": "39Lへ拡張すると奥行29cmとなり、100席以上向けの25cm以内という寸法条件から外れます。搭乗時は非拡張で航空会社・便・機材の条件を確認してください。",
+            "presentation_v2": {
+              "benefit": "駅の階段や機内の収納棚で、ケース本体の重さを少しでも抑えたい場面に。",
+              "recommendation_reason": "比較した3モデルでは3.2kgと最も軽く、非拡張で34Lを確保できるためです。",
+              "fits": ["短期旅行の荷物を入れつつ、持ち上げる場面の負担を抑えたい人"],
+              "not_fits": ["拡張した状態のまま機内へ持ち込みたい人", "40Lの非拡張容量を優先する人"],
+              "facts_checked_on": "2026-08-26",
+              "official_source_ref": "SRC-ACE-CRESTA-06316",
+              "detail_anchor": "product-cresta-06316",
+              "cta_context": "商品ページでは、現在の価格・在庫・選べるカラーと商品写真を確認できます。"
+            },
+            "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1703-first-suitcase-comparison", "data_product_id": "PRD-ACE-CRESTA-06316", "data_placement": "product_card"}
+          },
+          {
+            "product_selection_ref": "PSEL-SUITCASE-DIFFERENCE",
+            "product_id": "PRD-ACE-DIFFERENCE-05721",
+            "product_name": "ace.TOKYO LABEL ディフェレンス 05721",
+            "source_refs": ["SRC-ACE-DIFFERENCE-05721"],
+            "affiliate_ref": "AFF-ACE-DIFFERENCE-05721",
+            "media_asset_ref": "MEDIA-ACE-DIFFERENCE-05721",
+            "condition_label": "開き方とストッパーを優先",
+            "confirmed_facts": [{"label": "外寸", "value": "H55×W36×D24cm", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"]}, {"label": "容量", "value": "32L", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"]}, {"label": "重量", "value": "3.5kg", "claim_ids": ["CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"]}],
+            "editorial_fit": "前側と中央側の開き方を使い分けたい場合の候補",
+            "caution": "拡張時はD27cm・3辺合計118cmです。搭乗時は非拡張に戻し、利用する航空会社・便・機材の条件を確認してください。",
+            "presentation_v2": {
+              "benefit": "狭いホテルの床で大きく広げにくい場面や、移動中に荷物へ触れたい場面に。",
+              "recommendation_reason": "公式仕様で2WAYオープンとキャスターストッパーを確認でき、開き方を使い分けられるためです。",
+              "fits": ["前側と中央側の開き方を使い分けたい人", "電車やバスで転がりを抑えるストッパーを重視する人"],
+              "not_fits": ["3モデルで最軽量の本体を求める人", "拡張状態で機内へ持ち込みたい人"],
+              "facts_checked_on": "2026-08-26",
+              "official_source_ref": "SRC-ACE-DIFFERENCE-05721",
+              "detail_anchor": "product-difference-05721",
+              "cta_context": "商品ページでは、色ごとの販売状況、現在の価格・在庫と2WAY構造の写真を確認できます。"
+            },
+            "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1703-first-suitcase-comparison", "data_product_id": "PRD-ACE-DIFFERENCE-05721", "data_placement": "product_card"}
+          },
+          {
+            "product_selection_ref": "PSEL-SUITCASE-MAXPASS",
+            "product_id": "PRD-ACE-MAXPASS4-01471",
+            "product_name": "PROTECA マックスパス4 01471",
+            "source_refs": ["SRC-ACE-MAXPASS4-01471"],
+            "affiliate_ref": "AFF-ACE-MAXPASS4-01471",
+            "media_asset_ref": "MEDIA-ACE-MAXPASS4-01471",
+            "condition_label": "非拡張容量を優先",
+            "confirmed_facts": [{"label": "外寸", "value": "H50×W40×D25cm", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"]}, {"label": "容量", "value": "40L", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"]}, {"label": "重量", "value": "3.6kg", "claim_ids": ["CLM-ST1704-SUITCASE-MAXPASS-SPECS"]}],
+            "editorial_fit": "非拡張容量とフロント収納を優先する場合の候補",
+            "caution": "3モデルでは最も重い3.6kgです。手荷物と身の回り品を合わせた重量条件を含め、利用する航空会社・便・機材を確認してください。",
+            "presentation_v2": {
+              "benefit": "100席以上向け115cm枠で容量を確保し、出張中にPCや小物へ前から触れたい場面に。",
+              "recommendation_reason": "非拡張で40Lと3モデル最大の容量があり、フロントポケットからメイン収納へアクセスできるためです。",
+              "fits": ["非拡張容量と前面収納を優先する人", "14インチPCや小物を前面から取り出したい人"],
+              "not_fits": ["ケース本体の軽さを最優先する人", "100席未満の航空機向け寸法を探している人"],
+              "facts_checked_on": "2026-08-26",
+              "official_source_ref": "SRC-ACE-MAXPASS4-01471",
+              "detail_anchor": "product-maxpass4-01471",
+              "cta_context": "商品ページでは、現在の価格・在庫・カラーとフロント収納の写真を確認できます。"
+            },
+            "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1703-first-suitcase-comparison", "data_product_id": "PRD-ACE-MAXPASS4-01471", "data_placement": "product_card"}
+          }
         ],
         "primary_source_refs": ["SRC-ACE-CRESTA-06316", "SRC-ACE-DIFFERENCE-05721", "SRC-ACE-MAXPASS4-01471", "SRC-ANA-CARRY-ON-BAGGAGE"],
         "internal_link_policy": {"resolve_only_when_target_is_published": true, "unresolved_behavior": "OMIT_LINK"}
@@ -297,7 +372,7 @@
       },
       "render_model": {
         "disclosure": {"label": "広告と編集について", "paragraphs": ["この記事には楽天アフィリエイトのリンクを掲載します。リンク経由の購入により運営者が成果報酬を受け取る場合があります。", "報酬率、価格、ポイント、在庫は、評価、掲載順、条件別の候補選定に使いません。", "構成と表現整理にはAIを補助的に使いますが、事実確認、最終文面、公開判断は運営者が行います。実機を使ったレビューではありません。"]},
-        "cta_policy": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "direct_link_only": true, "fixed_price_inventory_points_in_body": false, "independent_from_finance": true},
+        "cta_policy": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "direct_link_only": true, "fixed_price_inventory_points_in_body": false, "independent_from_finance": true},
         "comparison_axes": [
           {"comparison_axis_ref": "AXIS-POWER-CAPACITY", "label": "容量", "description": "公表Whを比較する"},
           {"comparison_axis_ref": "AXIS-POWER-OUTPUT", "label": "定格出力", "description": "公表Wを接続機器と照合する"},
@@ -318,10 +393,10 @@
           {"recommendation_ref": "REC-POWER-DELTA", "product_selection_ref": "PSEL-POWER-DELTA", "condition": "容量と出力を優先して約12kgを許容", "rationale": "4モデルで最大の容量と定格出力", "claim_ids": ["CLM-ST1704-POWER-DELTA-SPECS", "CLM-ST1704-POWER-CONDITIONAL-CHOICES"]}
         ],
         "product_cards": [
-          {"product_selection_ref": "PSEL-POWER-C300", "product_id": "PRD-ANKER-SOLIX-C300", "product_name": "Anker Solix C300 Portable Power Station", "source_refs": ["SRC-ANKER-SOLIX-C300"], "affiliate_ref": "AFF-ANKER-SOLIX-C300", "media_asset_ref": "MEDIA-ANKER-SOLIX-C300", "condition_label": "持ち運びを優先", "confirmed_facts": [{"label": "容量", "value": "288Wh", "claim_ids": ["CLM-ST1704-POWER-C300-SPECS"]}, {"label": "定格出力", "value": "300W", "claim_ids": ["CLM-ST1704-POWER-C300-SPECS"]}, {"label": "重量", "value": "約4.1kg", "claim_ids": ["CLM-ST1704-POWER-C300-SPECS"]}], "editorial_fit": "情報機器や照明を中心に、小さく備えたい場合の候補", "caution": "容量と定格出力は4モデルで最小", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-portable-power-station-guide", "data_product_id": "PRD-ANKER-SOLIX-C300", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-POWER-JACKERY", "product_id": "PRD-JACKERY-500-NEW", "product_name": "Jackery ポータブル電源 500 New", "source_refs": ["SRC-JACKERY-500-NEW"], "affiliate_ref": "AFF-JACKERY-500-NEW", "media_asset_ref": "MEDIA-JACKERY-500-NEW", "condition_label": "容量と重量の中間", "confirmed_facts": [{"label": "容量", "value": "512Wh", "claim_ids": ["CLM-ST1704-POWER-JACKERY-SPECS"]}, {"label": "定格出力", "value": "500W", "claim_ids": ["CLM-ST1704-POWER-JACKERY-SPECS"]}, {"label": "重量", "value": "約5.7kg", "claim_ids": ["CLM-ST1704-POWER-JACKERY-SPECS"]}], "editorial_fit": "C300より容量を増やしつつ、片付けや移動を想定する場合の候補", "caution": "設置前に公式商品ページで最新寸法を確認する", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-portable-power-station-guide", "data_product_id": "PRD-JACKERY-500-NEW", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-POWER-AC70", "product_id": "PRD-BLUETTI-AC70", "product_name": "BLUETTI AC70", "source_refs": ["SRC-BLUETTI-AC70"], "affiliate_ref": "AFF-BLUETTI-AC70", "media_asset_ref": "MEDIA-BLUETTI-AC70", "condition_label": "1000Wまでを候補に", "confirmed_facts": [{"label": "容量", "value": "768Wh", "claim_ids": ["CLM-ST1704-POWER-AC70-SPECS"]}, {"label": "定格出力", "value": "1000W", "claim_ids": ["CLM-ST1704-POWER-AC70-SPECS"]}, {"label": "重量", "value": "約10.2kg", "claim_ids": ["CLM-ST1704-POWER-AC70-SPECS"]}], "editorial_fit": "500Wを超える機器も候補に入れたい場合", "caution": "約10.2kgの移動方法と設置寸法を確認する", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-portable-power-station-guide", "data_product_id": "PRD-BLUETTI-AC70", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-POWER-DELTA", "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC", "product_name": "EcoFlow DELTA 3 Classic", "source_refs": ["SRC-ECOFLOW-DELTA3-CLASSIC"], "affiliate_ref": "AFF-ECOFLOW-DELTA3-CLASSIC", "media_asset_ref": "MEDIA-ECOFLOW-DELTA3-CLASSIC", "condition_label": "容量と出力を優先", "confirmed_facts": [{"label": "容量", "value": "1024Wh", "claim_ids": ["CLM-ST1704-POWER-DELTA-SPECS"]}, {"label": "定格出力", "value": "1500W", "claim_ids": ["CLM-ST1704-POWER-DELTA-SPECS"]}, {"label": "重量", "value": "約12.1kg", "claim_ids": ["CLM-ST1704-POWER-DELTA-SPECS"]}], "editorial_fit": "4モデルで最大の容量と定格出力を優先する場合", "caution": "約12.1kgを保管場所から安全に運べるか確認する", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-portable-power-station-guide", "data_product_id": "PRD-ECOFLOW-DELTA3-CLASSIC", "data_placement": "product_card"}}
+          {"product_selection_ref": "PSEL-POWER-C300", "product_id": "PRD-ANKER-SOLIX-C300", "product_name": "Anker Solix C300 Portable Power Station", "source_refs": ["SRC-ANKER-SOLIX-C300"], "affiliate_ref": "AFF-ANKER-SOLIX-C300", "media_asset_ref": "MEDIA-ANKER-SOLIX-C300", "condition_label": "持ち運びを優先", "confirmed_facts": [{"label": "容量", "value": "288Wh", "claim_ids": ["CLM-ST1704-POWER-C300-SPECS"]}, {"label": "定格出力", "value": "300W", "claim_ids": ["CLM-ST1704-POWER-C300-SPECS"]}, {"label": "重量", "value": "約4.1kg", "claim_ids": ["CLM-ST1704-POWER-C300-SPECS"]}], "editorial_fit": "情報機器や照明を中心に、小さく備えたい場合の候補", "caution": "容量と定格出力は4モデルで最小", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-portable-power-station-guide", "data_product_id": "PRD-ANKER-SOLIX-C300", "data_placement": "product_card"}},
+          {"product_selection_ref": "PSEL-POWER-JACKERY", "product_id": "PRD-JACKERY-500-NEW", "product_name": "Jackery ポータブル電源 500 New", "source_refs": ["SRC-JACKERY-500-NEW"], "affiliate_ref": "AFF-JACKERY-500-NEW", "media_asset_ref": "MEDIA-JACKERY-500-NEW", "condition_label": "容量と重量の中間", "confirmed_facts": [{"label": "容量", "value": "512Wh", "claim_ids": ["CLM-ST1704-POWER-JACKERY-SPECS"]}, {"label": "定格出力", "value": "500W", "claim_ids": ["CLM-ST1704-POWER-JACKERY-SPECS"]}, {"label": "重量", "value": "約5.7kg", "claim_ids": ["CLM-ST1704-POWER-JACKERY-SPECS"]}], "editorial_fit": "C300より容量を増やしつつ、片付けや移動を想定する場合の候補", "caution": "設置前に公式商品ページで最新寸法を確認する", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-portable-power-station-guide", "data_product_id": "PRD-JACKERY-500-NEW", "data_placement": "product_card"}},
+          {"product_selection_ref": "PSEL-POWER-AC70", "product_id": "PRD-BLUETTI-AC70", "product_name": "BLUETTI AC70", "source_refs": ["SRC-BLUETTI-AC70"], "affiliate_ref": "AFF-BLUETTI-AC70", "media_asset_ref": "MEDIA-BLUETTI-AC70", "condition_label": "1000Wまでを候補に", "confirmed_facts": [{"label": "容量", "value": "768Wh", "claim_ids": ["CLM-ST1704-POWER-AC70-SPECS"]}, {"label": "定格出力", "value": "1000W", "claim_ids": ["CLM-ST1704-POWER-AC70-SPECS"]}, {"label": "重量", "value": "約10.2kg", "claim_ids": ["CLM-ST1704-POWER-AC70-SPECS"]}], "editorial_fit": "500Wを超える機器も候補に入れたい場合", "caution": "約10.2kgの移動方法と設置寸法を確認する", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-portable-power-station-guide", "data_product_id": "PRD-BLUETTI-AC70", "data_placement": "product_card"}},
+          {"product_selection_ref": "PSEL-POWER-DELTA", "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC", "product_name": "EcoFlow DELTA 3 Classic", "source_refs": ["SRC-ECOFLOW-DELTA3-CLASSIC"], "affiliate_ref": "AFF-ECOFLOW-DELTA3-CLASSIC", "media_asset_ref": "MEDIA-ECOFLOW-DELTA3-CLASSIC", "condition_label": "容量と出力を優先", "confirmed_facts": [{"label": "容量", "value": "1024Wh", "claim_ids": ["CLM-ST1704-POWER-DELTA-SPECS"]}, {"label": "定格出力", "value": "1500W", "claim_ids": ["CLM-ST1704-POWER-DELTA-SPECS"]}, {"label": "重量", "value": "約12.1kg", "claim_ids": ["CLM-ST1704-POWER-DELTA-SPECS"]}], "editorial_fit": "4モデルで最大の容量と定格出力を優先する場合", "caution": "約12.1kgを保管場所から安全に運べるか確認する", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-portable-power-station-guide", "data_product_id": "PRD-ECOFLOW-DELTA3-CLASSIC", "data_placement": "product_card"}}
         ],
         "primary_source_refs": ["SRC-ANKER-SOLIX-C300", "SRC-JACKERY-500-NEW", "SRC-BLUETTI-AC70", "SRC-ECOFLOW-DELTA3-CLASSIC"],
         "internal_link_policy": {"resolve_only_when_target_is_published": true, "unresolved_behavior": "OMIT_LINK"}
@@ -385,7 +460,7 @@
       },
       "render_model": {
         "disclosure": {"label": "広告と編集について", "paragraphs": ["この記事には楽天アフィリエイトのリンクを掲載します。リンク経由の購入により運営者が成果報酬を受け取る場合があります。", "報酬率、価格、ポイント、在庫は、評価、掲載順、条件別の候補選定に使いません。", "構成と表現整理にはAIを補助的に使いますが、事実確認、最終文面、公開判断は運営者が行います。実機を使ったレビューではありません。"]},
-        "cta_policy": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "direct_link_only": true, "fixed_price_inventory_points_in_body": false, "independent_from_finance": true},
+        "cta_policy": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "direct_link_only": true, "fixed_price_inventory_points_in_body": false, "independent_from_finance": true},
         "comparison_axes": [
           {"comparison_axis_ref": "AXIS-ANKER-CAPACITY", "label": "容量", "description": "公式公表Whを型番ごとに比較"},
           {"comparison_axis_ref": "AXIS-ANKER-OUTPUT", "label": "定格出力", "description": "公式公表Wを比較"},
@@ -407,10 +482,10 @@
           {"recommendation_ref": "REC-ANKER-C1000-GEN2", "product_selection_ref": "PSEL-ANKER-C1000-GEN2", "condition": "C1000世代で重量と出力を優先", "rationale": "旧C1000より約1.6kg軽く定格出力が50W高い", "claim_ids": ["CLM-ST1704-ANKER-C1000-SPECS", "CLM-ST1704-ANKER-C1000-GEN2-SPECS", "CLM-ST1704-ANKER-C1000-GENERATION-DIFF"]}
         ],
         "product_cards": [
-          {"product_selection_ref": "PSEL-ANKER-C300", "product_id": "PRD-ANKER-SOLIX-C300", "product_name": "Anker Solix C300 Portable Power Station", "source_refs": ["SRC-ANKER-SOLIX-C300"], "affiliate_ref": "AFF-ANKER-SOLIX-C300", "media_asset_ref": "MEDIA-ANKER-SOLIX-C300", "condition_label": "持ち運び優先", "confirmed_facts": [{"label": "容量", "value": "288Wh", "claim_ids": ["CLM-ST1704-ANKER-C300-SPECS"]}, {"label": "定格出力", "value": "300W", "claim_ids": ["CLM-ST1704-ANKER-C300-SPECS"]}, {"label": "重量", "value": "約4.1kg", "claim_ids": ["CLM-ST1704-ANKER-C300-SPECS"]}], "editorial_fit": "小型機器中心で持ち運びを優先する場合", "caution": "4モデルで容量と定格出力は最小", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-anker-solix-c300-c800-c1000-differences", "data_product_id": "PRD-ANKER-SOLIX-C300", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-ANKER-C800", "product_id": "PRD-ANKER-SOLIX-C800-PLUS", "product_name": "Anker Solix C800 Plus Portable Power Station", "source_refs": ["SRC-ANKER-SOLIX-C800-PLUS"], "affiliate_ref": "AFF-ANKER-SOLIX-C800-PLUS", "media_asset_ref": "MEDIA-ANKER-SOLIX-C800-PLUS", "condition_label": "中容量帯", "confirmed_facts": [{"label": "容量", "value": "768Wh", "claim_ids": ["CLM-ST1704-ANKER-C800-SPECS"]}, {"label": "定格出力", "value": "1200W", "claim_ids": ["CLM-ST1704-ANKER-C800-SPECS"]}, {"label": "重量", "value": "約10.9kg", "claim_ids": ["CLM-ST1704-ANKER-C800-SPECS"]}], "editorial_fit": "C300より容量と出力を増やしC1000世代より軽くしたい場合", "caution": "約10.9kgの保管・移動方法を確認する", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-anker-solix-c300-c800-c1000-differences", "data_product_id": "PRD-ANKER-SOLIX-C800-PLUS", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-ANKER-C1000", "product_id": "PRD-ANKER-SOLIX-C1000", "product_name": "Anker Solix C1000 Portable Power Station", "source_refs": ["SRC-ANKER-SOLIX-C1000"], "affiliate_ref": "AFF-ANKER-SOLIX-C1000", "media_asset_ref": "MEDIA-ANKER-SOLIX-C1000", "condition_label": "1056Whを優先", "confirmed_facts": [{"label": "容量", "value": "1056Wh", "claim_ids": ["CLM-ST1704-ANKER-C1000-SPECS"]}, {"label": "定格出力", "value": "1500W", "claim_ids": ["CLM-ST1704-ANKER-C1000-SPECS"]}, {"label": "重量", "value": "約12.9kg", "claim_ids": ["CLM-ST1704-ANKER-C1000-SPECS"]}], "editorial_fit": "Gen 2より32Wh大きい公表容量を優先する場合", "caution": "Gen 2より重く、付属品互換性を推測しない", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-anker-solix-c300-c800-c1000-differences", "data_product_id": "PRD-ANKER-SOLIX-C1000", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-ANKER-C1000-GEN2", "product_id": "PRD-ANKER-SOLIX-C1000-GEN2", "product_name": "Anker Solix C1000 Gen 2 Portable Power Station", "source_refs": ["SRC-ANKER-SOLIX-C1000-GEN2"], "affiliate_ref": "AFF-ANKER-SOLIX-C1000-GEN2", "media_asset_ref": "MEDIA-ANKER-SOLIX-C1000-GEN2", "condition_label": "重量と1550Wを優先", "confirmed_facts": [{"label": "容量", "value": "1024Wh", "claim_ids": ["CLM-ST1704-ANKER-C1000-GEN2-SPECS"]}, {"label": "定格出力", "value": "1550W", "claim_ids": ["CLM-ST1704-ANKER-C1000-GEN2-SPECS"]}, {"label": "重量", "value": "約11.3kg", "claim_ids": ["CLM-ST1704-ANKER-C1000-GEN2-SPECS"]}], "editorial_fit": "C1000世代で重量を抑え、定格出力を優先する場合", "caution": "公表容量は旧C1000より32Wh小さく、互換性を推測しない", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-anker-solix-c300-c800-c1000-differences", "data_product_id": "PRD-ANKER-SOLIX-C1000-GEN2", "data_placement": "product_card"}}
+          {"product_selection_ref": "PSEL-ANKER-C300", "product_id": "PRD-ANKER-SOLIX-C300", "product_name": "Anker Solix C300 Portable Power Station", "source_refs": ["SRC-ANKER-SOLIX-C300"], "affiliate_ref": "AFF-ANKER-SOLIX-C300", "media_asset_ref": "MEDIA-ANKER-SOLIX-C300", "condition_label": "持ち運び優先", "confirmed_facts": [{"label": "容量", "value": "288Wh", "claim_ids": ["CLM-ST1704-ANKER-C300-SPECS"]}, {"label": "定格出力", "value": "300W", "claim_ids": ["CLM-ST1704-ANKER-C300-SPECS"]}, {"label": "重量", "value": "約4.1kg", "claim_ids": ["CLM-ST1704-ANKER-C300-SPECS"]}], "editorial_fit": "小型機器中心で持ち運びを優先する場合", "caution": "4モデルで容量と定格出力は最小", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-anker-solix-c300-c800-c1000-differences", "data_product_id": "PRD-ANKER-SOLIX-C300", "data_placement": "product_card"}},
+          {"product_selection_ref": "PSEL-ANKER-C800", "product_id": "PRD-ANKER-SOLIX-C800-PLUS", "product_name": "Anker Solix C800 Plus Portable Power Station", "source_refs": ["SRC-ANKER-SOLIX-C800-PLUS"], "affiliate_ref": "AFF-ANKER-SOLIX-C800-PLUS", "media_asset_ref": "MEDIA-ANKER-SOLIX-C800-PLUS", "condition_label": "中容量帯", "confirmed_facts": [{"label": "容量", "value": "768Wh", "claim_ids": ["CLM-ST1704-ANKER-C800-SPECS"]}, {"label": "定格出力", "value": "1200W", "claim_ids": ["CLM-ST1704-ANKER-C800-SPECS"]}, {"label": "重量", "value": "約10.9kg", "claim_ids": ["CLM-ST1704-ANKER-C800-SPECS"]}], "editorial_fit": "C300より容量と出力を増やしC1000世代より軽くしたい場合", "caution": "約10.9kgの保管・移動方法を確認する", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-anker-solix-c300-c800-c1000-differences", "data_product_id": "PRD-ANKER-SOLIX-C800-PLUS", "data_placement": "product_card"}},
+          {"product_selection_ref": "PSEL-ANKER-C1000", "product_id": "PRD-ANKER-SOLIX-C1000", "product_name": "Anker Solix C1000 Portable Power Station", "source_refs": ["SRC-ANKER-SOLIX-C1000"], "affiliate_ref": "AFF-ANKER-SOLIX-C1000", "media_asset_ref": "MEDIA-ANKER-SOLIX-C1000", "condition_label": "1056Whを優先", "confirmed_facts": [{"label": "容量", "value": "1056Wh", "claim_ids": ["CLM-ST1704-ANKER-C1000-SPECS"]}, {"label": "定格出力", "value": "1500W", "claim_ids": ["CLM-ST1704-ANKER-C1000-SPECS"]}, {"label": "重量", "value": "約12.9kg", "claim_ids": ["CLM-ST1704-ANKER-C1000-SPECS"]}], "editorial_fit": "Gen 2より32Wh大きい公表容量を優先する場合", "caution": "Gen 2より重く、付属品互換性を推測しない", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-anker-solix-c300-c800-c1000-differences", "data_product_id": "PRD-ANKER-SOLIX-C1000", "data_placement": "product_card"}},
+          {"product_selection_ref": "PSEL-ANKER-C1000-GEN2", "product_id": "PRD-ANKER-SOLIX-C1000-GEN2", "product_name": "Anker Solix C1000 Gen 2 Portable Power Station", "source_refs": ["SRC-ANKER-SOLIX-C1000-GEN2"], "affiliate_ref": "AFF-ANKER-SOLIX-C1000-GEN2", "media_asset_ref": "MEDIA-ANKER-SOLIX-C1000-GEN2", "condition_label": "重量と1550Wを優先", "confirmed_facts": [{"label": "容量", "value": "1024Wh", "claim_ids": ["CLM-ST1704-ANKER-C1000-GEN2-SPECS"]}, {"label": "定格出力", "value": "1550W", "claim_ids": ["CLM-ST1704-ANKER-C1000-GEN2-SPECS"]}, {"label": "重量", "value": "約11.3kg", "claim_ids": ["CLM-ST1704-ANKER-C1000-GEN2-SPECS"]}], "editorial_fit": "C1000世代で重量を抑え、定格出力を優先する場合", "caution": "公表容量は旧C1000より32Wh小さく、互換性を推測しない", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-anker-solix-c300-c800-c1000-differences", "data_product_id": "PRD-ANKER-SOLIX-C1000-GEN2", "data_placement": "product_card"}}
         ],
         "primary_source_refs": ["SRC-ANKER-SOLIX-C300", "SRC-ANKER-SOLIX-C800-PLUS", "SRC-ANKER-SOLIX-C1000", "SRC-ANKER-SOLIX-C1000-GEN2"],
         "internal_link_policy": {"resolve_only_when_target_is_published": true, "unresolved_behavior": "OMIT_LINK"}
@@ -475,7 +550,7 @@
       },
       "render_model": {
         "disclosure": {"label": "広告と編集について", "paragraphs": ["この記事には楽天アフィリエイトのリンクを掲載します。リンク経由の購入により運営者が成果報酬を受け取る場合があります。", "報酬率、価格、ポイント、在庫は、評価、掲載順、条件別の候補選定に使いません。", "構成と表現整理にはAIを補助的に使いますが、事実確認、最終文面、公開判断は運営者が行います。実機を使ったレビューではありません。"]},
-        "cta_policy": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "direct_link_only": true, "fixed_price_inventory_points_in_body": false, "independent_from_finance": true},
+        "cta_policy": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "direct_link_only": true, "fixed_price_inventory_points_in_body": false, "independent_from_finance": true},
         "comparison_axes": [
           {"comparison_axis_ref": "AXIS-DISH-SIZE", "label": "本体寸法", "description": "扉開放時と周囲空間を別途確認"},
           {"comparison_axis_ref": "AXIS-DISH-CAPACITY", "label": "標準食器点数", "description": "各社の標準条件による点数"},
@@ -496,10 +571,10 @@
           {"recommendation_ref": "REC-DISH-NP-TSP1", "product_selection_ref": "PSEL-DISH-NP-TSP1", "condition": "設置場所を確保し食器量を優先", "rationale": "4モデルで最大の食器24点", "claim_ids": ["CLM-ST1704-DISH-NP-TSP1-SPECS", "CLM-ST1704-DISH-CONDITIONAL-CHOICES"]}
         ],
         "product_cards": [
-          {"product_selection_ref": "PSEL-DISH-NP-TMLK1", "product_id": "PRD-PANASONIC-NP-TMLK1", "product_name": "Panasonic NP-TMLK1", "source_refs": ["SRC-PANASONIC-NP-TMLK1"], "affiliate_ref": "AFF-PANASONIC-NP-TMLK1", "media_asset_ref": "MEDIA-PANASONIC-NP-TMLK1", "condition_label": "1人分・短い奥行", "confirmed_facts": [{"label": "標準食器点数", "value": "6点", "claim_ids": ["CLM-ST1704-DISH-NP-TMLK1-SPECS"]}, {"label": "標準使用水量", "value": "約2.5L", "claim_ids": ["CLM-ST1704-DISH-NP-TMLK1-SPECS"]}, {"label": "本体寸法", "value": "約W310×H435×D225mm", "claim_ids": ["CLM-ST1704-DISH-NP-TMLK1-SPECS"]}], "editorial_fit": "1人分の食器量と奥行の短さを優先する場合", "caution": "食器6点を超えるまとめ洗いには小さい", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-countertop-dishwasher-for-small-households", "data_product_id": "PRD-PANASONIC-NP-TMLK1", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-DISH-RAKUA", "product_id": "PRD-THANKO-RAKUA-MINI-COLOR", "product_name": "THANKO ラクアmini color", "source_refs": ["SRC-THANKO-RAKUA-MINI-COLOR"], "affiliate_ref": "AFF-THANKO-RAKUA-MINI-COLOR", "media_asset_ref": "MEDIA-THANKO-RAKUA-MINI-COLOR", "condition_label": "幅約31cm・11〜12点", "confirmed_facts": [{"label": "標準収納容量", "value": "11〜12点", "claim_ids": ["CLM-ST1704-DISH-RAKUA-SPECS"]}, {"label": "使用水量", "value": "3.2L", "claim_ids": ["CLM-ST1704-DISH-RAKUA-SPECS"]}, {"label": "本体寸法", "value": "W308×H415×D315mm", "claim_ids": ["CLM-ST1704-DISH-RAKUA-SPECS"]}, {"label": "乾燥方式", "value": "温風乾燥", "claim_ids": ["CLM-ST1704-DISH-RAKUA-SPECS"]}], "editorial_fit": "幅を抑えつつ1〜2人分の食器を想定する場合", "caution": "扉開放時奥行594mmを確保し、楽天では本体単品の色を選ぶ", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-countertop-dishwasher-for-small-households", "data_product_id": "PRD-THANKO-RAKUA-MINI-COLOR", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-DISH-SS-MA251", "product_id": "PRD-SIROCA-SS-MA251", "product_name": "siroca SS-MA251", "source_refs": ["SRC-SIROCA-SS-MA251"], "affiliate_ref": "AFF-SIROCA-SS-MA251", "media_asset_ref": "MEDIA-SIROCA-SS-MA251", "condition_label": "16点・オートオープン", "confirmed_facts": [{"label": "標準収納容量", "value": "16点", "claim_ids": ["CLM-ST1704-DISH-SS-MA251-SPECS"]}, {"label": "使用水量", "value": "約6L", "claim_ids": ["CLM-ST1704-DISH-SS-MA251-SPECS"]}, {"label": "本体寸法", "value": "W42×D44×H47cm", "claim_ids": ["CLM-ST1704-DISH-SS-MA251-SPECS"]}], "editorial_fit": "2人分の食器量とオートオープンを重視する場合", "caution": "幅42cm・奥行44cm・高さ47cmと扉開放空間を測る", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-countertop-dishwasher-for-small-households", "data_product_id": "PRD-SIROCA-SS-MA251", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-DISH-NP-TSP1", "product_id": "PRD-PANASONIC-NP-TSP1", "product_name": "Panasonic NP-TSP1", "source_refs": ["SRC-PANASONIC-NP-TSP1"], "affiliate_ref": "AFF-PANASONIC-NP-TSP1", "media_asset_ref": "MEDIA-PANASONIC-NP-TSP1", "condition_label": "食器量を優先", "confirmed_facts": [{"label": "標準食器点数", "value": "24点", "claim_ids": ["CLM-ST1704-DISH-NP-TSP1-SPECS"]}, {"label": "標準使用水量", "value": "約9L", "claim_ids": ["CLM-ST1704-DISH-NP-TSP1-SPECS"]}, {"label": "本体寸法", "value": "約W550×H600×D341mm", "claim_ids": ["CLM-ST1704-DISH-NP-TSP1-SPECS"]}], "editorial_fit": "食器24点と広い設置場所を優先する場合", "caution": "約19kgと大きいため設置・移動条件を先に確認する", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-countertop-dishwasher-for-small-households", "data_product_id": "PRD-PANASONIC-NP-TSP1", "data_placement": "product_card"}}
+          {"product_selection_ref": "PSEL-DISH-NP-TMLK1", "product_id": "PRD-PANASONIC-NP-TMLK1", "product_name": "Panasonic NP-TMLK1", "source_refs": ["SRC-PANASONIC-NP-TMLK1"], "affiliate_ref": "AFF-PANASONIC-NP-TMLK1", "media_asset_ref": "MEDIA-PANASONIC-NP-TMLK1", "condition_label": "1人分・短い奥行", "confirmed_facts": [{"label": "標準食器点数", "value": "6点", "claim_ids": ["CLM-ST1704-DISH-NP-TMLK1-SPECS"]}, {"label": "標準使用水量", "value": "約2.5L", "claim_ids": ["CLM-ST1704-DISH-NP-TMLK1-SPECS"]}, {"label": "本体寸法", "value": "約W310×H435×D225mm", "claim_ids": ["CLM-ST1704-DISH-NP-TMLK1-SPECS"]}], "editorial_fit": "1人分の食器量と奥行の短さを優先する場合", "caution": "食器6点を超えるまとめ洗いには小さい", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-countertop-dishwasher-for-small-households", "data_product_id": "PRD-PANASONIC-NP-TMLK1", "data_placement": "product_card"}},
+          {"product_selection_ref": "PSEL-DISH-RAKUA", "product_id": "PRD-THANKO-RAKUA-MINI-COLOR", "product_name": "THANKO ラクアmini color", "source_refs": ["SRC-THANKO-RAKUA-MINI-COLOR"], "affiliate_ref": "AFF-THANKO-RAKUA-MINI-COLOR", "media_asset_ref": "MEDIA-THANKO-RAKUA-MINI-COLOR", "condition_label": "幅約31cm・11〜12点", "confirmed_facts": [{"label": "標準収納容量", "value": "11〜12点", "claim_ids": ["CLM-ST1704-DISH-RAKUA-SPECS"]}, {"label": "使用水量", "value": "3.2L", "claim_ids": ["CLM-ST1704-DISH-RAKUA-SPECS"]}, {"label": "本体寸法", "value": "W308×H415×D315mm", "claim_ids": ["CLM-ST1704-DISH-RAKUA-SPECS"]}, {"label": "乾燥方式", "value": "温風乾燥", "claim_ids": ["CLM-ST1704-DISH-RAKUA-SPECS"]}], "editorial_fit": "幅を抑えつつ1〜2人分の食器を想定する場合", "caution": "扉開放時奥行594mmを確保し、楽天では本体単品の色を選ぶ", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-countertop-dishwasher-for-small-households", "data_product_id": "PRD-THANKO-RAKUA-MINI-COLOR", "data_placement": "product_card"}},
+          {"product_selection_ref": "PSEL-DISH-SS-MA251", "product_id": "PRD-SIROCA-SS-MA251", "product_name": "siroca SS-MA251", "source_refs": ["SRC-SIROCA-SS-MA251"], "affiliate_ref": "AFF-SIROCA-SS-MA251", "media_asset_ref": "MEDIA-SIROCA-SS-MA251", "condition_label": "16点・オートオープン", "confirmed_facts": [{"label": "標準収納容量", "value": "16点", "claim_ids": ["CLM-ST1704-DISH-SS-MA251-SPECS"]}, {"label": "使用水量", "value": "約6L", "claim_ids": ["CLM-ST1704-DISH-SS-MA251-SPECS"]}, {"label": "本体寸法", "value": "W42×D44×H47cm", "claim_ids": ["CLM-ST1704-DISH-SS-MA251-SPECS"]}], "editorial_fit": "2人分の食器量とオートオープンを重視する場合", "caution": "幅42cm・奥行44cm・高さ47cmと扉開放空間を測る", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-countertop-dishwasher-for-small-households", "data_product_id": "PRD-SIROCA-SS-MA251", "data_placement": "product_card"}},
+          {"product_selection_ref": "PSEL-DISH-NP-TSP1", "product_id": "PRD-PANASONIC-NP-TSP1", "product_name": "Panasonic NP-TSP1", "source_refs": ["SRC-PANASONIC-NP-TSP1"], "affiliate_ref": "AFF-PANASONIC-NP-TSP1", "media_asset_ref": "MEDIA-PANASONIC-NP-TSP1", "condition_label": "食器量を優先", "confirmed_facts": [{"label": "標準食器点数", "value": "24点", "claim_ids": ["CLM-ST1704-DISH-NP-TSP1-SPECS"]}, {"label": "標準使用水量", "value": "約9L", "claim_ids": ["CLM-ST1704-DISH-NP-TSP1-SPECS"]}, {"label": "本体寸法", "value": "約W550×H600×D341mm", "claim_ids": ["CLM-ST1704-DISH-NP-TSP1-SPECS"]}], "editorial_fit": "食器24点と広い設置場所を優先する場合", "caution": "約19kgと大きいため設置・移動条件を先に確認する", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-countertop-dishwasher-for-small-households", "data_product_id": "PRD-PANASONIC-NP-TSP1", "data_placement": "product_card"}}
         ],
         "primary_source_refs": ["SRC-PANASONIC-NP-TMLK1", "SRC-THANKO-RAKUA-MINI-COLOR", "SRC-SIROCA-SS-MA251", "SRC-PANASONIC-NP-TSP1"],
         "internal_link_policy": {"resolve_only_when_target_is_published": true, "unresolved_behavior": "OMIT_LINK"}
@@ -564,7 +639,7 @@
       },
       "render_model": {
         "disclosure": {"label": "広告と編集について", "paragraphs": ["この記事には楽天アフィリエイトのリンクを掲載します。リンク経由の購入により運営者が成果報酬を受け取る場合があります。", "報酬率、価格、ポイント、在庫は、評価、掲載順、条件別の候補選定に使いません。", "構成と表現整理にはAIを補助的に使いますが、事実確認、最終文面、公開判断は運営者が行います。実機を使ったレビューではありません。"]},
-        "cta_policy": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "direct_link_only": true, "fixed_price_inventory_points_in_body": false, "independent_from_finance": true},
+        "cta_policy": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "direct_link_only": true, "fixed_price_inventory_points_in_body": false, "independent_from_finance": true},
         "comparison_axes": [
           {"comparison_axis_ref": "AXIS-ROBOT-BODY", "label": "本体寸法", "description": "公式表記の数値順を保ち、最大底面辺（丸形は直径）と高さを比較"},
           {"comparison_axis_ref": "AXIS-ROBOT-STATION", "label": "ステーション寸法", "description": "公式表記の数値順を保ち、最大底面辺と高さを比較"},
@@ -585,10 +660,10 @@
           {"recommendation_ref": "REC-ROBOT-ROOMBA-515", "product_selection_ref": "PSEL-ROBOT-ROOMBA-515", "condition": "設置面積よりモップの自動手入れを優先", "rationale": "自動給水・温水洗浄・温風乾燥", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-515-SPECS", "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES"]}
         ],
         "product_cards": [
-          {"product_selection_ref": "PSEL-ROBOT-ROOMBA-MINI", "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY", "product_name": "Roomba Mini 掃除機＆床拭きロボット + AutoEmpty 充電ステーション", "source_refs": ["SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY"], "affiliate_ref": "AFF-IROBOT-ROOMBA-MINI-AUTOEMPTY", "media_asset_ref": "MEDIA-IROBOT-ROOMBA-MINI-AUTOEMPTY", "condition_label": "本体・ステーションの最大底面辺25cm以下", "confirmed_facts": [{"label": "本体", "value": "24.5×24.5×9.2cm", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-MINI-SPECS"]}, {"label": "ステーション", "value": "17.8×21.2×28.5cm", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-MINI-SPECS"]}, {"label": "水拭き", "value": "シート式", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-MINI-SPECS"]}], "editorial_fit": "小さい本体と集塵ステーションを優先する場合", "caution": "モップ自動洗浄には対応しない", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-compact-robot-vacuum-shortlist", "data_product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-ROBOT-K11-PRO", "product_id": "PRD-SWITCHBOT-K11-PRO", "product_name": "SwitchBot ロボット掃除機 K11+ Pro", "source_refs": ["SRC-SWITCHBOT-K11-PRO"], "affiliate_ref": "AFF-SWITCHBOT-K11-PRO", "media_asset_ref": "MEDIA-SWITCHBOT-K11-PRO", "condition_label": "小型・自動ゴミ収集", "confirmed_facts": [{"label": "本体", "value": "248×248×92mm（公式表記順）", "claim_ids": ["CLM-ST1704-ROBOT-K11-PRO-SPECS"]}, {"label": "ステーション", "value": "底面240×180mm・高さ250mm", "claim_ids": ["CLM-ST1704-ROBOT-K11-PRO-SPECS"]}, {"label": "手入れ", "value": "自動ゴミ収集", "claim_ids": ["CLM-ST1704-ROBOT-K11-PRO-SPECS"]}], "editorial_fit": "本体とステーションの最大底面辺を25cm以下にしたい場合", "caution": "水拭きは市販のお掃除シートを使用後に捨てる方式", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-compact-robot-vacuum-shortlist", "data_product_id": "PRD-SWITCHBOT-K11-PRO", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-ROBOT-K10-COMBO", "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO", "product_name": "SwitchBot ロボット掃除機 K10+ Pro Combo", "source_refs": ["SRC-SWITCHBOT-K10-PRO-COMBO"], "affiliate_ref": "AFF-SWITCHBOT-K10-PRO-COMBO", "media_asset_ref": "MEDIA-SWITCHBOT-K10-PRO-COMBO", "condition_label": "コードレス掃除機も統合", "confirmed_facts": [{"label": "本体", "value": "248×248×92mm（公式表記順）", "claim_ids": ["CLM-ST1704-ROBOT-K10-COMBO-SPECS"]}, {"label": "ステーション", "value": "195×297×410mm（公式表記順）", "claim_ids": ["CLM-ST1704-ROBOT-K10-COMBO-SPECS"]}, {"label": "構成", "value": "コードレス掃除機との共用ステーション", "claim_ids": ["CLM-ST1704-ROBOT-K10-COMBO-SPECS"]}], "editorial_fit": "床と細部の掃除機を1か所へまとめたい場合", "caution": "ステーションの最大底面辺25cm以下の条件には合わない", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-compact-robot-vacuum-shortlist", "data_product_id": "PRD-SWITCHBOT-K10-PRO-COMBO", "data_placement": "product_card"}},
-          {"product_selection_ref": "PSEL-ROBOT-ROOMBA-515", "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO", "product_name": "Roomba Plus 515 Combo ロボット + AutoWash 充電ステーション", "source_refs": ["SRC-IROBOT-ROOMBA-PLUS-515-COMBO"], "affiliate_ref": "AFF-IROBOT-ROOMBA-PLUS-515-COMBO", "media_asset_ref": "MEDIA-IROBOT-ROOMBA-PLUS-515-COMBO", "condition_label": "モップ自動手入れ", "confirmed_facts": [{"label": "本体", "value": "30.3×29.8×8.4cm", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-515-SPECS"]}, {"label": "ステーション", "value": "34.0×33.0×48.5cm", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-515-SPECS"]}, {"label": "手入れ", "value": "自動給水・温水洗浄・温風乾燥", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-515-SPECS"]}], "editorial_fit": "設置面積より水拭きの自動手入れを優先する場合", "caution": "厳しい省スペース条件からは外れる", "cta": {"copy": "楽天市場で写真・価格・在庫を見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-compact-robot-vacuum-shortlist", "data_product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO", "data_placement": "product_card"}}
+          {"product_selection_ref": "PSEL-ROBOT-ROOMBA-MINI", "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY", "product_name": "Roomba Mini 掃除機＆床拭きロボット + AutoEmpty 充電ステーション", "source_refs": ["SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY"], "affiliate_ref": "AFF-IROBOT-ROOMBA-MINI-AUTOEMPTY", "media_asset_ref": "MEDIA-IROBOT-ROOMBA-MINI-AUTOEMPTY", "condition_label": "本体・ステーションの最大底面辺25cm以下", "confirmed_facts": [{"label": "本体", "value": "24.5×24.5×9.2cm", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-MINI-SPECS"]}, {"label": "ステーション", "value": "17.8×21.2×28.5cm", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-MINI-SPECS"]}, {"label": "水拭き", "value": "シート式", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-MINI-SPECS"]}], "editorial_fit": "小さい本体と集塵ステーションを優先する場合", "caution": "モップ自動洗浄には対応しない", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-compact-robot-vacuum-shortlist", "data_product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY", "data_placement": "product_card"}},
+          {"product_selection_ref": "PSEL-ROBOT-K11-PRO", "product_id": "PRD-SWITCHBOT-K11-PRO", "product_name": "SwitchBot ロボット掃除機 K11+ Pro", "source_refs": ["SRC-SWITCHBOT-K11-PRO"], "affiliate_ref": "AFF-SWITCHBOT-K11-PRO", "media_asset_ref": "MEDIA-SWITCHBOT-K11-PRO", "condition_label": "小型・自動ゴミ収集", "confirmed_facts": [{"label": "本体", "value": "248×248×92mm（公式表記順）", "claim_ids": ["CLM-ST1704-ROBOT-K11-PRO-SPECS"]}, {"label": "ステーション", "value": "底面240×180mm・高さ250mm", "claim_ids": ["CLM-ST1704-ROBOT-K11-PRO-SPECS"]}, {"label": "手入れ", "value": "自動ゴミ収集", "claim_ids": ["CLM-ST1704-ROBOT-K11-PRO-SPECS"]}], "editorial_fit": "本体とステーションの最大底面辺を25cm以下にしたい場合", "caution": "水拭きは市販のお掃除シートを使用後に捨てる方式", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-compact-robot-vacuum-shortlist", "data_product_id": "PRD-SWITCHBOT-K11-PRO", "data_placement": "product_card"}},
+          {"product_selection_ref": "PSEL-ROBOT-K10-COMBO", "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO", "product_name": "SwitchBot ロボット掃除機 K10+ Pro Combo", "source_refs": ["SRC-SWITCHBOT-K10-PRO-COMBO"], "affiliate_ref": "AFF-SWITCHBOT-K10-PRO-COMBO", "media_asset_ref": "MEDIA-SWITCHBOT-K10-PRO-COMBO", "condition_label": "コードレス掃除機も統合", "confirmed_facts": [{"label": "本体", "value": "248×248×92mm（公式表記順）", "claim_ids": ["CLM-ST1704-ROBOT-K10-COMBO-SPECS"]}, {"label": "ステーション", "value": "195×297×410mm（公式表記順）", "claim_ids": ["CLM-ST1704-ROBOT-K10-COMBO-SPECS"]}, {"label": "構成", "value": "コードレス掃除機との共用ステーション", "claim_ids": ["CLM-ST1704-ROBOT-K10-COMBO-SPECS"]}], "editorial_fit": "床と細部の掃除機を1か所へまとめたい場合", "caution": "ステーションの最大底面辺25cm以下の条件には合わない", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-compact-robot-vacuum-shortlist", "data_product_id": "PRD-SWITCHBOT-K10-PRO-COMBO", "data_placement": "product_card"}},
+          {"product_selection_ref": "PSEL-ROBOT-ROOMBA-515", "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO", "product_name": "Roomba Plus 515 Combo ロボット + AutoWash 充電ステーション", "source_refs": ["SRC-IROBOT-ROOMBA-PLUS-515-COMBO"], "affiliate_ref": "AFF-IROBOT-ROOMBA-PLUS-515-COMBO", "media_asset_ref": "MEDIA-IROBOT-ROOMBA-PLUS-515-COMBO", "condition_label": "モップ自動手入れ", "confirmed_facts": [{"label": "本体", "value": "30.3×29.8×8.4cm", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-515-SPECS"]}, {"label": "ステーション", "value": "34.0×33.0×48.5cm", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-515-SPECS"]}, {"label": "手入れ", "value": "自動給水・温水洗浄・温風乾燥", "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-515-SPECS"]}], "editorial_fit": "設置面積より水拭きの自動手入れを優先する場合", "caution": "厳しい省スペース条件からは外れる", "cta": {"copy": "楽天市場で現在の価格・在庫・カラーを見る", "destination_label": "楽天市場", "required_rel": "sponsored nofollow", "data_article_id": "st1704-compact-robot-vacuum-shortlist", "data_product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO", "data_placement": "product_card"}}
         ],
         "primary_source_refs": ["SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY", "SRC-SWITCHBOT-K11-PRO", "SRC-SWITCHBOT-K10-PRO-COMBO", "SRC-IROBOT-ROOMBA-PLUS-515-COMBO"],
         "internal_link_policy": {"resolve_only_when_target_is_published": true, "unresolved_behavior": "OMIT_LINK"}

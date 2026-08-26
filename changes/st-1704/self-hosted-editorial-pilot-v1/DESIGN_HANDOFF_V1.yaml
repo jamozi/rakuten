@@ -19,7 +19,7 @@ DESIGN_HANDOFF_V1:
       exact_origin: https://kurashinoshirube.com
       cms: SELF_HOSTED_WORDPRESS
       hosting_migration: DISABLED
-      child_theme_version: 1.1.1
+      child_theme_version: 1.2.0
     editorial:
       article_slots: 5
       existing_article_counts_as_slot_one: true
@@ -42,7 +42,7 @@ DESIGN_HANDOFF_V1:
       destination: DIRECT_ONLY
       required_rel: sponsored nofollow
       fixed_price_inventory_points_in_body: DISABLED
-      exact_cta_label: 楽天市場で写真・価格・在庫を見る
+      exact_cta_label: 楽天市場で現在の価格・在庫・カラーを見る
     media:
       allowed_public_product_image: EXACT_VALIDATED_RAKUTEN_ITEM_SEARCH_IMAGE
       image_modification: FORBIDDEN

@@ -37,8 +37,8 @@
       "RECORDED_SYNTHETIC_ONLY",
       "SEPARATE_RELEASE_DECISION_REQUIRED"
     ],
-    "command_sha256": "beec5b371540bcbf8c2442288603a4222796d291f5a7daf5dfd191d779e6b7c8",
-    "contract_sha256": "322a619fc917ad91620d0127d2f6306f2a9be01b12b1183894e9728851e4e150",
+    "command_sha256": "34a8f55fd5141b2e28e7914050d6d4f027a9cb6e7c6dced7273da662a50f8e34",
+    "contract_sha256": "b1bfa0b187106b12df31c718f0710bdd2b8c27d74b495b604e66e04b630bda9a",
     "dependency": {
       "acceptance_criteria_satisfied": false,
       "actual_observation_count": 0,
@@ -51,7 +51,7 @@
       "source_overall": "BLOCKED",
       "story_id": "ST-1805"
     },
-    "measurement_contract_sha256": "2d95494568c9f753755603a1912a60049a3c78e91835f0f2e7405694a2d62e09",
+    "measurement_contract_sha256": "f6122cb16a952cf853f28041acc3eed5dd921625562e59944e283aec8e497cc2",
     "method_version": "RAOS_ST1907_HUMAN_PROPOSAL_PORTFOLIO_OPTIMIZER_V1",
     "policy": {
       "action_vocabulary": [
@@ -80,16 +80,16 @@
     "proposal_count": 0,
     "proposal_state": "NO_PROPOSALS",
     "proposals": [],
-    "report_sha256": "801d58972045e079aa76000b2fe3bee003411dfb5bf78df1fafe8da9c2dc985e",
-    "signal_policy_sha256": "c56a5ea7f0d88df18e07809294f7900db35bd3c2be5bb29f3f9f13d1dd8ceec9",
-    "source_sha256": "beb83c10350037468cbcace5a3949a688b65e9a75906907d1324dc465f684fa2",
+    "report_sha256": "e894557efa55257b32cb9a6bda76986d55bbc304feb4497297d58cd433cc3806",
+    "signal_policy_sha256": "093e61611f22a39ed25839a08509795bc986f85067f32a46c85eaa045a691c5d",
+    "source_sha256": "39f2b13b6f7173df822a2a907b3b1fe7d9954f1b3ce25ca58926d72d85c924a6",
     "unavailable_reason": "DEPENDENCY_BLOCKED_NO_DECISION"
   },
   "source": {
     "bytes": 986,
     "fixture_profile": "RAOS_ST1907_RECORDED_SYNTHETIC_V1",
     "path": "changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json",
-    "sha256": "beb83c10350037468cbcace5a3949a688b65e9a75906907d1324dc465f684fa2",
+    "sha256": "39f2b13b6f7173df822a2a907b3b1fe7d9954f1b3ce25ca58926d72d85c924a6",
     "synthetic": true
   }
 }

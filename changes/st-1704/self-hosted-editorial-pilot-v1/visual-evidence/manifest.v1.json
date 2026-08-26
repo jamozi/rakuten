@@ -1,0 +1,79 @@
+{
+  "schema": "ST1704_RAOS_VISUAL_EVIDENCE_V1",
+  "story_id": "ST-1704",
+  "browser": "Google Chrome 151.0.7922.174 via Playwright",
+  "competitor_screenshots_committed": false,
+  "production_claim_for_after": false,
+  "captures": [
+    {
+      "path": "before-public-home-1440.png",
+      "state": "PUBLIC_BEFORE",
+      "source": "https://kurashinoshirube.com/",
+      "captured_at": "2026-08-26T14:22:37Z",
+      "viewport": {"width": 1440, "height": 1000},
+      "capture_mode": "VIEWPORT",
+      "http_status": 200,
+      "sha256": "ddaa8ed43c677d6b071a22988adde297a5636700e605836d496da803fdabeb3d"
+    },
+    {
+      "path": "before-public-home-390.png",
+      "state": "PUBLIC_BEFORE",
+      "source": "https://kurashinoshirube.com/",
+      "captured_at": "2026-08-26T14:22:37Z",
+      "viewport": {"width": 390, "height": 844},
+      "capture_mode": "VIEWPORT",
+      "http_status": 200,
+      "sha256": "a0683db4f8ce58eab2be2966a378c97807cf114aea15481a3d110bde2d91a3a5"
+    },
+    {
+      "path": "before-public-article-404-390.png",
+      "state": "PUBLIC_BEFORE",
+      "source": "https://kurashinoshirube.com/carry-on-suitcase-comparison/",
+      "captured_at": "2026-08-26T14:22:38Z",
+      "viewport": {"width": 390, "height": 844},
+      "capture_mode": "VIEWPORT",
+      "http_status": 404,
+      "sha256": "51b7c67ba8dfa6aea0d183cea7bc51da49cb05b36fb8b07af098f6ff7b4b04e8"
+    },
+    {
+      "path": "after-local-home-1440.png",
+      "state": "LOCAL_STATIC_AFTER_NOT_PRODUCTION",
+      "source": "../visual-fixtures/home.html",
+      "captured_at": "2026-08-26T14:26:26Z",
+      "viewport": {"width": 1440, "height": 1000},
+      "capture_mode": "FULL_PAGE",
+      "http_status": null,
+      "sha256": "6a1c99d9c497a0f0ab9e073253ed5134ede9827aebfc3f7bc099f8b4c314d991"
+    },
+    {
+      "path": "after-local-home-390.png",
+      "state": "LOCAL_STATIC_AFTER_NOT_PRODUCTION",
+      "source": "../visual-fixtures/home.html",
+      "captured_at": "2026-08-26T14:26:24Z",
+      "viewport": {"width": 390, "height": 844},
+      "capture_mode": "FULL_PAGE",
+      "http_status": null,
+      "sha256": "45f90aa7f49be1120cadf30a71fc4d96b5ad9530a24a3230c1a38b60e26a3d07"
+    },
+    {
+      "path": "after-local-article-1440.png",
+      "state": "LOCAL_STATIC_AFTER_NOT_PRODUCTION",
+      "source": "../visual-fixtures/article.html",
+      "captured_at": "2026-08-26T14:26:26Z",
+      "viewport": {"width": 1440, "height": 1000},
+      "capture_mode": "FULL_PAGE",
+      "http_status": null,
+      "sha256": "033769e80d8d409f1018460d900954045ef932e8b4efecb0501b6a0b7d5329e2"
+    },
+    {
+      "path": "after-local-article-390.png",
+      "state": "LOCAL_STATIC_AFTER_NOT_PRODUCTION",
+      "source": "../visual-fixtures/article.html",
+      "captured_at": "2026-08-26T14:26:25Z",
+      "viewport": {"width": 390, "height": 844},
+      "capture_mode": "FULL_PAGE",
+      "http_status": null,
+      "sha256": "ada0ffd6bb49469fc64a86195d5c61684c16ab1d9f4e463e5f93d123ba96bc93"
+    }
+  ]
+}

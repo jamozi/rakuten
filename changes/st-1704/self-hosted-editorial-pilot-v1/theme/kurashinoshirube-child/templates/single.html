@@ -1,5 +1,13 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 <!-- wp:group {"tagName":"main","anchor":"main-content","className":"raos-article-shell","layout":{"type":"constrained"}} -->
-<main id="main-content" class="wp-block-group raos-article-shell"><!-- wp:shortcode -->[kurashinoshirube_breadcrumb]<!-- /wp:shortcode --><!-- wp:group {"tagName":"article","className":"raos-article","layout":{"type":"constrained"}} --><article class="wp-block-group raos-article"><!-- wp:post-date {"className":"raos-article-date"} /--><!-- wp:post-title {"level":1} /--><!-- wp:paragraph {"className":"raos-byline"} --><p class="raos-byline">暮らしのしるべ編集部</p><!-- /wp:paragraph --><!-- wp:post-content {"layout":{"type":"constrained"}} /--><!-- wp:shortcode -->[kurashinoshirube_related_guides]<!-- /wp:shortcode --></article><!-- /wp:group --></main>
-<!-- /wp:group -->
+<main id="main-content" class="wp-block-group raos-article-shell">
+<!-- wp:shortcode -->[kurashinoshirube_breadcrumb]<!-- /wp:shortcode -->
+<!-- wp:group {"tagName":"article","className":"raos-article","layout":{"type":"constrained"}} -->
+<article class="wp-block-group raos-article">
+<!-- wp:shortcode -->[kurashinoshirube_article_category]<!-- /wp:shortcode -->
+<!-- wp:post-title {"level":1} /-->
+<!-- wp:post-content {"layout":{"type":"constrained"}} /-->
+<!-- wp:shortcode -->[kurashinoshirube_related_guides]<!-- /wp:shortcode -->
+</article><!-- /wp:group -->
+</main><!-- /wp:group -->
 <!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

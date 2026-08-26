@@ -999,10 +999,15 @@ class _RenderedContentParser(HTMLParser):
                         "src",
                         "width",
                     }
+                    if attributes.get("class") == "raos-comparison__product-image":
+                        allowed.add("class")
+                    image_size = (
+                        attributes.get("width"),
+                        attributes.get("height"),
+                    )
                     if (
                         set(attributes) != allowed
-                        or attributes.get("width") != "128"
-                        or attributes.get("height") != "128"
+                        or image_size not in {("64", "64"), ("96", "96"), ("128", "128")}
                         or attributes.get("loading") != "lazy"
                         or attributes.get("decoding") != "async"
                         or type(attributes.get("alt")) is not str
