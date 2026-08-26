@@ -19,7 +19,7 @@ from xml.etree import ElementTree
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 THEME_SLUG: Final = "kurashinoshirube-child"
-THEME_VERSION: Final = "1.2.0"
+THEME_VERSION: Final = "1.3.0"
 THEME_ROOT: Final = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme" / THEME_SLUG
 )
@@ -236,7 +236,10 @@ def validate_sources() -> dict[str, str]:
         _fail()
     front_page = _text("templates/front-page.html")
     single = _text("templates/single.html")
-    if "暮らしの道具を、根拠から選ぶ。" not in front_page:
+    if (
+        "<span>暮らしの道具を、</span><span>根拠から選ぶ。</span>"
+        not in front_page
+    ):
         _fail()
     if single.count("wp:post-title") != 1:
         _fail()
