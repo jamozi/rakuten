@@ -14,7 +14,7 @@ import pytest
 from scripts import chatgpt_pro_orchestrator as orchestrator
 
 
-pytestmark = pytest.mark.raos_owner_private
+pytestmark = pytest.mark.external
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
