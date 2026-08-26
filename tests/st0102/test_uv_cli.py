@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 
 from .support import REPOSITORY_ROOT, local_uv_binaries, uv_environment
 
@@ -13,10 +14,15 @@ LOCK_INPUTS = (".python-version", "pyproject.toml", "uv.toml", "uv.lock")
 
 
 def run_lock_check(binary: Path, project: Path, cache: Path) -> subprocess.CompletedProcess[str]:
+    environment = uv_environment(cache)
+    # Validate lock consistency with the already-selected repository runtime.
+    # Interpreter discovery is setup's concern and must not make this check
+    # dependent on a runner-specific managed-Python installation directory.
+    environment["UV_PYTHON"] = sys.executable
     return subprocess.run(
         [str(binary), "lock", "--check"],
         cwd=project,
-        env=uv_environment(cache),
+        env=environment,
         check=False,
         capture_output=True,
         text=True,

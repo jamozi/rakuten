@@ -76,8 +76,8 @@ source_artifacts:
 - bytes: 3308
   sha256: 3e624594d06f07b9eb7511a0c65b0021f114211701fa4119bbce411832cf08a8
   uri: repo://tests/st1903/test_application.py
-- bytes: 3647
-  sha256: 0cc72b0e1d1d9ce37957bd929f3988d5449ed0f17b8039dc4541381c87143a57
+- bytes: 3633
+  sha256: a389022cb0dc3b8bd103feddaa76f503a704b1fa7a95b9bb5c03d19c66a1d0cd
   uri: repo://tests/st1903/test_contract_generation.py
 - bytes: 3754
   sha256: 33c57cacd263bb1983cffe51cba70f720045ca702f58d741dc61623461a23910

@@ -4,6 +4,7 @@ from copy import deepcopy
 import json
 from pathlib import Path
 import subprocess
+import sys
 
 import pytest
 import yaml
@@ -88,7 +89,7 @@ def test_check_mode_is_no_write(report_path: Path, manifest_path: Path) -> None:
 def test_cli_requires_isolated_no_bytecode_mode() -> None:
     result = subprocess.run(
         [
-            "/home/minami/rakuten/.venv/bin/python",
+            sys.executable,
             str(builder.REPO_ROOT / builder.GENERATOR_PATH),
             "--check",
         ],
