@@ -43,7 +43,7 @@ def test_addendum_preserves_human_decision_and_forbids_self_approval(
 def test_routes_operation_gates_and_receipts_are_closed(
     publication_contract: dict[str, Any],
 ) -> None:
-    assert publication_contract["site"]["plugin_version"] == "2.1.8"
+    assert publication_contract["site"]["plugin_version"] == "2.1.9"
     assert publication_contract["site"]["wordpress_core_release_line"] == "7.1.x"
     assert publication_contract["operation"]["exact"] == "PUBLISH_ST1704_ARTICLE"
     assert publication_contract["operation"]["allowed_article_bindings"] == (

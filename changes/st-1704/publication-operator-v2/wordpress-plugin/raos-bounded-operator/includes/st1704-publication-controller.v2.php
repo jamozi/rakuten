@@ -164,7 +164,7 @@ final class RAOS_ST1704_Publication_Controller_V2
         add_filter(
             'user_has_cap',
             array($this, 'filter_draft_writer_read_projection_capabilities'),
-            20,
+            -PHP_INT_MAX,
             4
         );
         add_action(

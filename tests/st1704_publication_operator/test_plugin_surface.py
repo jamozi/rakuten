@@ -163,6 +163,10 @@ def test_draft_writer_projection_is_fixed_per_request_and_never_persists_caps() 
         "filter_draft_writer_read_projection_capabilities",
         "clear_draft_writer_application_password_state",
     )
+    call_site = method(
+        "draft_writer_read_projection_call_site_is_exact",
+        "compile_draft_writer_read_projection_targets",
+    )
     assert "get_query_params()" in compile_targets
     assert "self::DRAFT_WRITER_RECOVERY_FIELDS" in compile_targets
     assert "self::CARRY_ON_REVIEW_POST_ID" in compile_targets
@@ -181,6 +185,9 @@ def test_draft_writer_projection_is_fixed_per_request_and_never_persists_caps() 
     assert "array('edit_others_posts')" in cap_filter
     assert "array('edit_published_posts')" in cap_filter
     assert "array('edit_posts')" in cap_filter
+    assert "'check_update_permission'" in call_site
+    assert "$frame['object'] === $controller" in call_site
+    assert "$frame['function'] === 'get_items'" in call_site
     for forbidden in (
         "add_cap(",
         "remove_cap(",
@@ -191,7 +198,12 @@ def test_draft_writer_projection_is_fixed_per_request_and_never_persists_caps() 
     ):
         assert forbidden not in cap_filter
     assert "rest_request_after_callbacks" in php
-    assert php.count("-PHP_INT_MAX") >= 2
+    assert php.count("-PHP_INT_MAX") >= 3
+    assert (
+        "'user_has_cap',\n"
+        "            array($this, 'filter_draft_writer_read_projection_capabilities'),\n"
+        "            -PHP_INT_MAX,"
+    ) in php
     assert "'shutdown'" in php
     assert php.count("clear_draft_writer_read_projection_state();") >= 3
 

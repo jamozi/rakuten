@@ -1,4 +1,4 @@
-# RAOS Bounded Operator 2.1.8
+# RAOS Bounded Operator 2.1.9
 
 This deterministic package preserves the closed ST-1506 v1 status, Yoast, and
 child-theme surfaces and adds the ST-1704 publication controller under the
@@ -64,6 +64,12 @@ shutdown. The guard recognizes either the immutable login or the role marker,
 so role removal/replacement before credential revocation remains refused. No
 extra role/user capability is persisted and no publish, plugin, theme,
 operator, or administration authority is added.
+
+Patch 2.1.9 runs the transient capability projection at its earliest bounded
+`user_has_cap` hook priority so its exact full-capability comparison sees the
+persisted role baseline before ordinary filters can alter the received array.
+The exact request, controller, `get_items`/`check_update_permission` stack,
+post, and mapped-capability gates are unchanged.
 
 The v2 controller can only publish one of four generated article bindings, or
 revise the exact existing Draft IDs 28, 29, 41, and 30. A revision is

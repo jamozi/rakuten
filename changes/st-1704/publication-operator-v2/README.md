@@ -12,7 +12,7 @@ The tracked runtime manifest binds every runtime source and each packaged file.
 The generated package advertises WordPress 7.1 and the v2 controller also
 refuses to initialize outside the 7.1.x release line.
 
-Package 2.1.8 keeps the publication and revision REST contracts unchanged. It
+Package 2.1.9 keeps the publication and revision REST contracts unchanged. It
 fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
 exact core registration, and prevents those callbacks from creating Review URL
 redirect metadata during bounded `post_updated` replay. All other metadata,
@@ -81,6 +81,13 @@ firewall. The transport guard recognizes either that immutable WordPress login
 or the role marker, so removing/replacing the role before credential revocation
 is refused rather than turning the credential into an ordinary WordPress
 Application Password.
+
+Patch 2.1.9 evaluates the transient `user_has_cap` projection at its earliest
+bounded hook priority, before ordinary capability filters can alter the
+received array.
+The existing exact full-capability comparison is retained, as are the armed
+request, controller, `get_items`/`check_update_permission` stack, fixed post
+ID/slug/status, and mapped-capability checks.
 
 Normal execution still requires two default-off host gates and a distinct wp-admin
 human approval of the exact proposal hash. There is no REST approval route, no

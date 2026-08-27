@@ -490,6 +490,25 @@ foreach ($public as $slug => $post_id) {
     );
 }
 
+// WordPress's update-permission row filter is bounded to the exact controller
+// while inside its exact get_items callback.
+raos_reset_projection($operator);
+raos_authorize_and_prepare(
+    $operator,
+    $user,
+    raos_request(raos_public_query('portable-power-station-guide')),
+    $handler
+);
+raos_assert(
+    $core->check_update_permission(
+        $operator,
+        $user,
+        28,
+        array('edit_others_posts', 'edit_published_posts')
+    ) === $base_caps,
+    'out-of-get_items update-permission check gained projection'
+);
+
 // Related reads are the four fixed non-suitcase targets at per_page=2.
 foreach (array_slice($public, 1, null, true) as $slug => $post_id) {
     raos_reset_projection($operator);

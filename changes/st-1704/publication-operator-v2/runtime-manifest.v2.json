@@ -65,14 +65,14 @@
   ],
   "operator_contract_version": 2,
   "package": {
-    "bytes": 525454,
+    "bytes": 525823,
     "compression": "ZIP_STORED",
     "file_count": 4,
     "files": [
       {
-        "bytes": 5231,
+        "bytes": 5590,
         "path": "README.md",
-        "sha256": "596a82ac2352c309e41bbae14937e2863e1a80b0e4c18ae8963d217f219beb6f"
+        "sha256": "74bf2ea4dd4c4f15b28d5efa2a315869bb1f7f94c0b3e53f5a54b18abe284452"
       },
       {
         "bytes": 2491,
@@ -80,19 +80,19 @@
         "sha256": "2b3d7d828941890e799b575f24cbab690b0895cea1cd64d45fd3166ab030dc8b"
       },
       {
-        "bytes": 328641,
+        "bytes": 328651,
         "path": "includes/st1704-publication-controller.v2.php",
-        "sha256": "94a0ca55f644ede537589771975cf9e9d2f56007d073a13467f6e09059d06be2"
+        "sha256": "93617d7d6ef22ab224a5c2c78eeffcccba5ee06d4328b8f0c48c88ab238850db"
       },
       {
         "bytes": 188345,
         "path": "raos-bounded-operator.php",
-        "sha256": "b7a9c8b2bb84b6cf612e5e06d63bc5b54fd7ae9a142d7164a232d5ecdcb2d541"
+        "sha256": "1bb3bde6e9ad3696dace946cc9ae3203dec8da5b53e84e0818b820c967d41aec"
       }
     ],
     "root": "raos-bounded-operator/",
-    "sha256": "bb1c5c181cdcec13601c14b64c4a50f15426b17b296409d36af70f5ee8d5abae",
-    "version": "2.1.8"
+    "sha256": "fc688e4a709dee9370cabeb1303dcca0f059e38429dac5b2f57b6311bc51e925",
+    "version": "2.1.9"
   },
   "predecessors": {
     "st1506_wordpress_operator": {
