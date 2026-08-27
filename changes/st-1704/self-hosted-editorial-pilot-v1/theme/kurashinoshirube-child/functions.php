@@ -12,7 +12,7 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.3.3';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.3.4';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guide.webp';
@@ -658,6 +658,28 @@ function kurashinoshirube_current_snapshot(): ?array
     }
     return $cache[$post_id];
 }
+
+/** Preserve authored RAOS HTML instead of applying WordPress auto-paragraphs. */
+function kurashinoshirube_disable_wpautop_for_bound_public_article(): void
+{
+    if (! is_singular('post')) {
+        return;
+    }
+    $post_id = (int) get_queried_object_id();
+    if (
+        $post_id <= 0
+        || get_post_status($post_id) !== 'publish'
+        || kurashinoshirube_bound_post_snapshot($post_id, false) === null
+    ) {
+        return;
+    }
+    remove_filter('the_content', 'wpautop', 10);
+}
+add_action(
+    'wp',
+    'kurashinoshirube_disable_wpautop_for_bound_public_article',
+    0
+);
 
 /** Read one exact lower-case SHA-256 assertion from a request boundary. */
 function kurashinoshirube_read_sha256_input(int $input_type, string $name): ?string

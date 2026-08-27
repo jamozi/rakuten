@@ -811,7 +811,7 @@ def test_unreviewed_theme_candidate_cannot_replace_stage_captured_release() -> N
             "kurashinoshirube-child/theme-contract.v1.json"
         ).read_bytes()
     )
-    assert theme_contract["theme_version"] == "1.3.3"
+    assert theme_contract["theme_version"] == "1.3.4"
     assert theme_contract["theme_version"] != release["to_version"]
 
     current_theme_root = (

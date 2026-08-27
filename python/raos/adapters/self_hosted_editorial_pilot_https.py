@@ -1847,6 +1847,20 @@ def _validate_review_not_found_body(raw: bytes, *, request: ReviewDraftRequest) 
         "raos-structured-data",
     )
     observed_views = _review_leak_views(document)
+    visible_views = _review_visible_leak_views(document)
+    allowed_review_route_views = _review_leak_views(
+        f"{PILOT_ORIGIN}/{request.slug}/"
+    ) + _review_leak_views(request.slug)
+    observed_without_expected_route: list[str] = []
+    for observed in observed_views:
+        cleaned = observed
+        for allowed in sorted(
+            set(allowed_review_route_views), key=len, reverse=True
+        ):
+            cleaned = cleaned.replace(allowed, "")
+        if cleaned:
+            observed_without_expected_route.append(cleaned)
+    content_views = tuple(dict.fromkeys(observed_without_expected_route))
     normalized_exact_values = tuple(
         _normalized_review_leak_text(value) for value in exact_committed_values
     )
@@ -1888,7 +1902,7 @@ def _validate_review_not_found_body(raw: bytes, *, request: ReviewDraftRequest) 
         or any(
             token in observed
             for token in meaningful_tokens
-            for observed in observed_views
+            for observed in content_views
         )
         or _contains_review_cta_fragment(observed_views)
         or _contains_review_leak_fragment(
@@ -1896,7 +1910,7 @@ def _validate_review_not_found_body(raw: bytes, *, request: ReviewDraftRequest) 
             _review_leak_fragments(article_fragment_sources),
         )
         or _contains_review_leak_fragment(
-            observed_views,
+            visible_views,
             _review_snapshot_leak_fragments(
                 snapshot_json,
                 canonical_url=request.snapshot.payload.canonical_url,

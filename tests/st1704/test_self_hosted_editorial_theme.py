@@ -159,14 +159,14 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_3_3_successor() -> None:
+def test_theme_is_an_isolated_1_3_4_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.3.3\n") == 1
+    assert stylesheet.count("\nVersion: 1.3.4\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.3"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.3'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.4"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.4'") == 1
     at003_gate = functions.split(
         "function kurashinoshirube_existing_update_context", 1
     )[1]
@@ -178,10 +178,35 @@ def test_theme_is_an_isolated_1_3_3_successor() -> None:
     )
 
 
+def test_only_bound_public_articles_disable_wordpress_wpautop() -> None:
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    function = source.split(
+        "function kurashinoshirube_disable_wpautop_for_bound_public_article",
+        1,
+    )[1].split("add_action(", 1)[0]
+    assert "is_singular('post')" in function
+    assert "get_queried_object_id()" in function
+    assert "get_post_status($post_id) !== 'publish'" in function
+    assert "kurashinoshirube_bound_post_snapshot($post_id, false) === null" in function
+    assert "remove_filter('the_content', 'wpautop', 10);" in function
+    assert source.count("remove_filter('the_content', 'wpautop', 10);") == 1
+    registration = source.split(
+        "function kurashinoshirube_disable_wpautop_for_bound_public_article",
+        1,
+    )[1]
+    assert (
+        "add_action(\n"
+        "    'wp',\n"
+        "    'kurashinoshirube_disable_wpautop_for_bound_public_article',\n"
+        "    0\n"
+        ");"
+    ) in registration
+
+
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.3.3"
+    assert manifest["theme_version"] == "1.3.4"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 3
     for record in records:

@@ -2832,6 +2832,27 @@ def test_review_404_leak_guard_allows_clean_canonical_navigation_only(
     assert verification.public_surface_verified is True
 
 
+def test_review_404_leak_guard_allows_expected_review_route_metadata(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    candidate = _prepared_request()
+    connections = _public_connections(candidate)
+    review_url = f"https://kurashinoshirube.com/{candidate.slug}/"
+    connections[13].response.body = (
+        '<html><head><meta property="og:url" content="'
+        f'{review_url}"><link rel="canonical" href="{review_url}">'
+        "</head><body>ページが見つかりません。</body></html>"
+    ).encode()
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=_QueueFactory(*connections)
+    )
+
+    verification = adapter.verify_public(candidate, 1704)
+
+    assert verification.public_surface_verified is True
+
+
 def test_verify_public_rejects_x_robots_none_and_wrong_post_identity(
     private_root: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
