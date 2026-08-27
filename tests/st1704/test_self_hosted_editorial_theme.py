@@ -159,14 +159,14 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_3_0_successor() -> None:
+def test_theme_is_an_isolated_1_3_1_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.3.0\n") == 1
+    assert stylesheet.count("\nVersion: 1.3.1\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.0"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.0'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.1"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.1'") == 1
     at003_gate = functions.split(
         "function kurashinoshirube_existing_update_context", 1
     )[1]
@@ -178,10 +178,33 @@ def test_theme_is_an_isolated_1_3_0_successor() -> None:
     )
 
 
+def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
+    css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    theme_json = _load_json(THEME_ROOT / "theme.json")
+    typography = theme_json["settings"]["typography"]
+    families = {
+        record["slug"]: record["fontFamily"]
+        for record in typography["fontFamilies"]
+    }
+    serif = (
+        "'Hiragino Mincho ProN', 'Yu Mincho', YuMincho, "
+        "'Noto Serif CJK JP', 'Noto Serif JP', serif"
+    )
+    sans = (
+        "-apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', "
+        "'Yu Gothic', YuGothic, 'Noto Sans CJK JP', 'Noto Sans JP', sans-serif"
+    )
+    assert families == {"editorial-serif": serif, "editorial-sans": sans}
+    assert "--raos-font-serif: " + serif.replace("'", '"') + ";" in css
+    assert css.count("font-family: var(--raos-font-serif);") == 4
+    assert "ui-serif" not in css
+    assert "ui-serif" not in families["editorial-serif"]
+
+
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.3.0"
+    assert manifest["theme_version"] == "1.3.1"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 3
     for record in records:

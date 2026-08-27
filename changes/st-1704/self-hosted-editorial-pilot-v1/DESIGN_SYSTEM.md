@@ -13,6 +13,12 @@ public interface.
 - Space: `0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4rem`.
 - Radius: `0.35, 0.75, 1.25rem`.
 - Shadows: a low-contrast card shadow and a larger floating-surface shadow.
+- Display type: use each platform's Japanese Mincho in the order Hiragino Mincho,
+  Yu Mincho, Noto Serif CJK JP, Noto Serif JP, then generic serif. Do not put
+  `ui-serif` ahead of Japanese families: a Latin-oriented system alias can make
+  Japanese glyphs fall back to a Gothic face even when the computed stack says serif.
+- Body type: use the platform UI face followed by Hiragino Kaku Gothic, Yu Gothic,
+  Noto Sans CJK JP, Noto Sans JP, then generic sans-serif.
 - Article imagery: 4:3 framing. Product imagery: square box, `contain`, never crop
   or upscale.
 - Desktop hero: `clamp(32rem, 56svh, 42rem)`. Mobile hero: content height with
