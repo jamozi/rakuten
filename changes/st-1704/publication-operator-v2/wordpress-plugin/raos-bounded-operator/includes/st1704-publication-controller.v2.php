@@ -32,6 +32,16 @@ final class RAOS_ST1704_Publication_Controller_V2
     const ROLE = 'raos_operator_executor';
     const DRAFT_WRITER_ROLE = 'raos_draft_writer';
     const DRAFT_WRITER_ROLE_DISPLAY = 'RAOS Draft Writer';
+    const DRAFT_WRITER_LOGIN = 'raos-draft-writer';
+    const DRAFT_WRITER_RECOVERY_FIELDS =
+        'id,type,slug,status,categories,date_gmt,modified_gmt,title.raw,'
+        . 'excerpt.raw,content.raw,meta._raos_publication_snapshot_v1';
+    const CARRY_ON_PUBLIC_SLUG = 'carry-on-suitcase-comparison';
+    const CARRY_ON_PUBLIC_POST_ID = 19;
+    const CARRY_ON_REVIEW_POST_ID = 26;
+    const CARRY_ON_REVIEW_SLUG =
+        'raos-review-carry-on-suitcase-comparison-'
+        . 'f743a2944f1adca0a8fef2cdd850567767f2257836bb807c47901b25c04fc942';
     const CAP_READ = 'raos_operator_read';
     const CAP_PROPOSE = 'raos_operator_propose';
     const CAP_APPLY = 'raos_operator_apply';
@@ -67,6 +77,11 @@ final class RAOS_ST1704_Publication_Controller_V2
     private static $instance = null;
     private static $application_password_authenticated = false;
     private static $application_password_user_id = 0;
+    private static $draft_writer_application_password_authenticated = false;
+    private static $draft_writer_application_password_user_id = 0;
+    private static $draft_writer_read_projection_user_id = 0;
+    private static $draft_writer_read_projection_targets = array();
+    private static $draft_writer_read_projection_controller = null;
 
     private $legacy_operator;
     private $combined_firewall_ready = false;
@@ -128,6 +143,35 @@ final class RAOS_ST1704_Publication_Controller_V2
             20,
             2
         );
+        add_action(
+            'wp_authenticate_application_password_errors',
+            array($this, 'guard_draft_writer_application_password_transport'),
+            20,
+            4
+        );
+        add_filter(
+            'rest_request_before_callbacks',
+            array($this, 'prepare_draft_writer_read_projection'),
+            20,
+            3
+        );
+        add_filter(
+            'rest_request_after_callbacks',
+            array($this, 'clear_draft_writer_read_projection_after_callbacks'),
+            -PHP_INT_MAX,
+            3
+        );
+        add_filter(
+            'user_has_cap',
+            array($this, 'filter_draft_writer_read_projection_capabilities'),
+            20,
+            4
+        );
+        add_action(
+            'shutdown',
+            array($this, 'clear_draft_writer_read_projection_on_shutdown'),
+            -PHP_INT_MAX
+        );
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         add_action('admin_menu', array($this, 'register_admin_page'));
         add_action(
@@ -149,13 +193,497 @@ final class RAOS_ST1704_Publication_Controller_V2
         unset($item);
         self::$application_password_authenticated = false;
         self::$application_password_user_id = 0;
+        self::$draft_writer_application_password_authenticated = false;
+        self::$draft_writer_application_password_user_id = 0;
         if ($this->combined_firewall_ready
             && $user instanceof WP_User
             && $user->exists()
             && $this->executor_identity_is_exact($user, false)) {
             self::$application_password_authenticated = true;
             self::$application_password_user_id = (int) $user->ID;
+        } elseif ($this->combined_firewall_ready
+            && $user instanceof WP_User
+            && $user->exists()
+            && $this->draft_writer_identity_is_exact($user, false)) {
+            self::$draft_writer_application_password_authenticated = true;
+            self::$draft_writer_application_password_user_id = (int) $user->ID;
         }
+    }
+
+    public function guard_draft_writer_application_password_transport(
+        $error,
+        $user,
+        $item,
+        $password
+    ) {
+        unset($item, $password);
+        if (! $error instanceof WP_Error
+            || ! $user instanceof WP_User
+            || ! $user->exists()) {
+            return;
+        }
+        $has_fixed_login = isset($user->user_login)
+            && is_string($user->user_login)
+            && $user->user_login === self::DRAFT_WRITER_LOGIN;
+        $has_role_marker = is_array($user->roles)
+            && in_array(self::DRAFT_WRITER_ROLE, $user->roles, true);
+        if (! $has_fixed_login && ! $has_role_marker) {
+            return;
+        }
+        $request_uri = isset($_SERVER['REQUEST_URI'])
+            ? (string) $_SERVER['REQUEST_URI']
+            : '';
+        $request_path = parse_url($request_uri, PHP_URL_PATH);
+        $request_query = parse_url($request_uri, PHP_URL_QUERY);
+        $raw_query = array();
+        if (is_string($request_query)) {
+            parse_str($request_query, $raw_query);
+        }
+        if (! $this->combined_firewall_ready
+            || ! $this->draft_writer_identity_is_exact($user, false)
+            || ! defined('REST_REQUEST')
+            || REST_REQUEST !== true
+            || ! isset($_SERVER['REQUEST_METHOD'])
+            || ! in_array(
+                $_SERVER['REQUEST_METHOD'],
+                array('GET', 'POST'),
+                true
+            )
+            || isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])
+            || $request_path !== '/wp-json/wp/v2/posts'
+            || ! is_array($raw_query)
+            || array_key_exists('_method', $raw_query)
+            || array_key_exists('rest_route', $raw_query)) {
+            $error->add(
+                'raos_st1704_draft_writer_transport_forbidden',
+                'The ST-1704 Draft-writer credential is restricted.'
+            );
+        }
+    }
+
+    public function prepare_draft_writer_read_projection(
+        $response,
+        $handler,
+        $request
+    ) {
+        self::clear_draft_writer_read_projection_state();
+        $authenticated = $this->authenticated_draft_writer_is_exact();
+        if (! $authenticated) {
+            self::clear_draft_writer_application_password_state();
+            return $response;
+        }
+        if ($response instanceof WP_Error) {
+            self::clear_draft_writer_application_password_state();
+            return $response;
+        }
+        if ($this->is_exact_core_posts_create_handler($handler, $request)) {
+            self::clear_draft_writer_application_password_state();
+            return $response;
+        }
+        if (! $this->is_exact_core_posts_collection_handler(
+            $handler,
+            $request
+        )) {
+            self::clear_draft_writer_application_password_state();
+            return self::error(
+                'raos_st1704_draft_writer_rest_scope_forbidden',
+                403
+            );
+        }
+        $targets = $this->compile_draft_writer_read_projection_targets(
+            $request
+        );
+        self::clear_draft_writer_application_password_state();
+        if (! is_array($targets)) {
+            return $response;
+        }
+        if (count($targets) < 1) {
+            return $response;
+        }
+        self::$draft_writer_read_projection_user_id =
+            (int) wp_get_current_user()->ID;
+        self::$draft_writer_read_projection_targets = $targets;
+        self::$draft_writer_read_projection_controller =
+            $handler['callback'][0];
+        return $response;
+    }
+
+    public function clear_draft_writer_read_projection_on_shutdown()
+    {
+        self::clear_draft_writer_read_projection_state();
+        self::clear_draft_writer_application_password_state();
+    }
+
+    public function clear_draft_writer_read_projection_after_callbacks(
+        $response,
+        $handler,
+        $request
+    ) {
+        unset($handler, $request);
+        self::clear_draft_writer_read_projection_state();
+        self::clear_draft_writer_application_password_state();
+        return $response;
+    }
+
+    public function filter_draft_writer_read_projection_capabilities(
+        $allcaps,
+        $caps,
+        $args,
+        $user
+    ) {
+        if (! is_array($allcaps)
+            || ! is_array($caps)
+            || ! is_array($args)
+            || ! $user instanceof WP_User
+            || ! $this->draft_writer_projection_identity_is_exact($user)
+            || ! $this->draft_writer_read_projection_call_site_is_exact()
+            || count($args) !== 3
+            || ! isset($args[0], $args[1], $args[2])
+            || $args[0] !== 'edit_post'
+            || ! is_int($args[1])
+            || $args[1] !== (int) $user->ID
+            || ! is_int($args[2])
+            || $args[2] < 1
+            || ! isset(
+                self::$draft_writer_read_projection_targets[$args[2]]
+            )) {
+            return $allcaps;
+        }
+        $expected_allcaps = self::exact_draft_writer_capabilities();
+        $expected_allcaps[self::DRAFT_WRITER_ROLE] = true;
+        $observed_allcaps = $allcaps;
+        ksort($expected_allcaps, SORT_STRING);
+        ksort($observed_allcaps, SORT_STRING);
+        if ($observed_allcaps !== $expected_allcaps) {
+            return $allcaps;
+        }
+        $target = self::$draft_writer_read_projection_targets[$args[2]];
+        $post = get_post($args[2]);
+        if (! is_array($target)
+            || array_keys($target) !== array('slug', 'status')
+            || ! $post instanceof WP_Post
+            || (int) $post->ID !== $args[2]
+            || $post->post_type !== 'post'
+            || $post->post_name !== $target['slug']
+            || $post->post_status !== $target['status']
+            || ! is_string($post->post_author)
+            || preg_match('/\A[1-9][0-9]{0,18}\z/D', $post->post_author) !== 1) {
+            return $allcaps;
+        }
+        $same_author = (int) $post->post_author === (int) $user->ID;
+        if ($target['status'] === 'publish') {
+            $expected_caps = $same_author
+                ? array('edit_published_posts')
+                : array('edit_others_posts', 'edit_published_posts');
+        } elseif ($target['status'] === 'draft') {
+            $expected_caps = $same_author
+                ? array('edit_posts')
+                : array('edit_others_posts');
+        } else {
+            return $allcaps;
+        }
+        $observed_caps = $caps;
+        sort($expected_caps, SORT_STRING);
+        sort($observed_caps, SORT_STRING);
+        if ($observed_caps !== $expected_caps) {
+            return $allcaps;
+        }
+        foreach ($expected_caps as $capability) {
+            $allcaps[$capability] = true;
+        }
+        return $allcaps;
+    }
+
+    private static function clear_draft_writer_application_password_state()
+    {
+        self::$draft_writer_application_password_authenticated = false;
+        self::$draft_writer_application_password_user_id = 0;
+    }
+
+    private static function clear_draft_writer_read_projection_state()
+    {
+        self::$draft_writer_read_projection_user_id = 0;
+        self::$draft_writer_read_projection_targets = array();
+        self::$draft_writer_read_projection_controller = null;
+    }
+
+    private function is_exact_core_posts_collection_handler(
+        $handler,
+        $request
+    ) {
+        if (! $request instanceof WP_REST_Request
+            || strtoupper((string) $request->get_method()) !== 'GET'
+            || ! isset($_SERVER['REQUEST_METHOD'])
+            || $_SERVER['REQUEST_METHOD'] !== 'GET'
+            || isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])
+            || (string) $request->get_route() !== '/wp/v2/posts'
+            || (string) $request->get_body() !== ''
+            || $request->get_url_params() !== array()
+            || $request->get_body_params() !== array()
+            || ! in_array($request->get_json_params(), array(null, array()), true)
+            || $request->get_file_params() !== array()
+            || ! is_array($handler)
+            || ! isset($handler['callback'], $handler['permission_callback'])
+            || ! is_array($handler['callback'])
+            || ! is_array($handler['permission_callback'])
+            || count($handler['callback']) !== 2
+            || count($handler['permission_callback']) !== 2
+            || ! isset($handler['callback'][0], $handler['callback'][1])
+            || ! isset(
+                $handler['permission_callback'][0],
+                $handler['permission_callback'][1]
+            )
+            || ! $handler['callback'][0] instanceof WP_REST_Posts_Controller
+            || get_class($handler['callback'][0])
+                !== 'WP_REST_Posts_Controller'
+            || $handler['permission_callback'][0] !== $handler['callback'][0]
+            || $handler['callback'][1] !== 'get_items'
+            || $handler['permission_callback'][1]
+                !== 'get_items_permissions_check') {
+            return false;
+        }
+        return true;
+    }
+
+    private function is_exact_core_posts_create_handler($handler, $request)
+    {
+        if (! $request instanceof WP_REST_Request
+            || strtoupper((string) $request->get_method()) !== 'POST'
+            || ! isset($_SERVER['REQUEST_METHOD'])
+            || $_SERVER['REQUEST_METHOD'] !== 'POST'
+            || isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])
+            || (string) $request->get_route() !== '/wp/v2/posts'
+            || $request->get_url_params() !== array()
+            || ! is_array($handler)
+            || ! isset($handler['callback'], $handler['permission_callback'])
+            || ! is_array($handler['callback'])
+            || ! is_array($handler['permission_callback'])
+            || count($handler['callback']) !== 2
+            || count($handler['permission_callback']) !== 2
+            || ! isset($handler['callback'][0], $handler['callback'][1])
+            || ! isset(
+                $handler['permission_callback'][0],
+                $handler['permission_callback'][1]
+            )
+            || ! $handler['callback'][0] instanceof WP_REST_Posts_Controller
+            || get_class($handler['callback'][0])
+                !== 'WP_REST_Posts_Controller'
+            || $handler['permission_callback'][0] !== $handler['callback'][0]
+            || $handler['callback'][1] !== 'create_item'
+            || $handler['permission_callback'][1]
+                !== 'create_item_permissions_check') {
+            return false;
+        }
+        return true;
+    }
+
+    private function draft_writer_read_projection_call_site_is_exact()
+    {
+        $controller = self::$draft_writer_read_projection_controller;
+        if (! $controller instanceof WP_REST_Posts_Controller
+            || get_class($controller) !== 'WP_REST_Posts_Controller') {
+            return false;
+        }
+        $trace = debug_backtrace(
+            DEBUG_BACKTRACE_IGNORE_ARGS | DEBUG_BACKTRACE_PROVIDE_OBJECT,
+            32
+        );
+        if (! is_array($trace)) {
+            return false;
+        }
+        $inside_exact_collection = false;
+        $allowed_capability_caller = false;
+        foreach ($trace as $frame) {
+            if (! is_array($frame)
+                || ! isset($frame['function'])
+                || ! is_string($frame['function'])) {
+                continue;
+            }
+            if (isset($frame['object'])
+                && $frame['object'] === $controller
+                && $frame['function'] === 'get_items') {
+                $inside_exact_collection = true;
+            }
+            if ((isset($frame['object'])
+                    && $frame['object'] === $controller
+                    && $frame['function'] === 'check_update_permission')
+                || (! isset($frame['object'])
+                    && in_array(
+                        $frame['function'],
+                        array(
+                            'kurashinoshirube_authorize_snapshot_meta',
+                            'kurashinoshirube_hide_public_snapshot_meta',
+                        ),
+                        true
+                    ))) {
+                $allowed_capability_caller = true;
+            }
+        }
+        return $inside_exact_collection && $allowed_capability_caller;
+    }
+
+    private function compile_draft_writer_read_projection_targets($request)
+    {
+        if (! $request instanceof WP_REST_Request) {
+            return null;
+        }
+        $query = $request->get_query_params();
+        if (! is_array($query)) {
+            return null;
+        }
+        foreach ($query as $key => $value) {
+            if (! is_string($key)
+                || (! is_string($value)
+                    && ! is_int($value)
+                    && ! is_array($value))) {
+                return null;
+            }
+        }
+        $public_targets = self::fixed_pilot_public_targets();
+        if (count($public_targets) !== 5) {
+            return null;
+        }
+        $common = array(
+            'context' => 'edit',
+            'status' => array('publish'),
+        );
+        foreach ($public_targets as $slug => $target) {
+            $single_recovery = $common + array(
+                'slug' => array($slug),
+                '_fields' => self::DRAFT_WRITER_RECOVERY_FIELDS,
+                'per_page' => 100,
+            );
+            $related_slugs = array(
+                'portable-power-station-guide',
+                'anker-solix-c300-c800-c1000-differences',
+                'countertop-dishwasher-for-small-households',
+                'compact-robot-vacuum-shortlist',
+            );
+            $related_recovery = in_array($slug, $related_slugs, true)
+                ? $common + array(
+                    'slug' => array($slug),
+                    '_fields' => self::DRAFT_WRITER_RECOVERY_FIELDS,
+                    'per_page' => 2,
+                )
+                : null;
+            if (self::query_parameters_are_exact($query, $single_recovery)
+                || (is_array($related_recovery)
+                    && self::query_parameters_are_exact(
+                        $query,
+                        $related_recovery
+                    ))) {
+                return array((int) $target['id'] => array(
+                    'slug' => $slug,
+                    'status' => 'publish',
+                ));
+            }
+        }
+        $home_slugs = array_keys($public_targets);
+        $homepage = $common + array(
+            'slug' => $home_slugs,
+            'page' => 1,
+            'per_page' => 5,
+            '_fields' => self::DRAFT_WRITER_RECOVERY_FIELDS,
+        );
+        if (self::query_parameters_are_exact($query, $homepage)) {
+            $targets = array();
+            foreach ($public_targets as $slug => $target) {
+                $targets[(int) $target['id']] = array(
+                    'slug' => $slug,
+                    'status' => 'publish',
+                );
+            }
+            return $targets;
+        }
+        $review_slugs = isset($query['slug']) ? $query['slug'] : array();
+        $review_slug = is_array($review_slugs)
+            && count($review_slugs) === 1
+            && isset($review_slugs[0])
+            && is_string($review_slugs[0])
+            ? $review_slugs[0]
+            : '';
+        $review = array(
+            'context' => 'edit',
+            'slug' => array($review_slug),
+            'status' => array('draft'),
+            '_fields' => self::DRAFT_WRITER_RECOVERY_FIELDS,
+            'page' => 1,
+            'per_page' => 100,
+        );
+        if (! self::query_parameters_are_exact($query, $review)
+            || preg_match(
+                '/\Araos-review-(' . self::pilot_public_slug_pattern()
+                . ')-[a-f0-9]{64}\z/D',
+                $review_slug,
+                $matches
+            ) !== 1) {
+            return null;
+        }
+        return $review_slug === self::CARRY_ON_REVIEW_SLUG
+            ? array(self::CARRY_ON_REVIEW_POST_ID => array(
+                'slug' => $review_slug,
+                'status' => 'draft',
+            ))
+            : array();
+    }
+
+    private static function query_parameters_are_exact(array $observed, array $expected)
+    {
+        ksort($observed, SORT_STRING);
+        ksort($expected, SORT_STRING);
+        return $observed === $expected;
+    }
+
+    private static function fixed_pilot_public_targets()
+    {
+        $articles = RAOS_ST1704_Publication_Bindings_V2::articles();
+        $post_ids = RAOS_ST1704_Publication_Bindings_V2::revision_post_ids();
+        if (! is_array($articles)
+            || ! is_array($post_ids)
+            || count($articles) !== 4
+            || count($post_ids) !== 4
+            || array_keys($articles) !== array_keys($post_ids)) {
+            return array();
+        }
+        $targets = array(
+            self::CARRY_ON_PUBLIC_SLUG => array(
+                'id' => self::CARRY_ON_PUBLIC_POST_ID,
+            ),
+        );
+        foreach ($articles as $article_id => $slug) {
+            if (! is_string($article_id)
+                || ! is_string($slug)
+                || ! isset($post_ids[$article_id])
+                || ! is_int($post_ids[$article_id])
+                || $post_ids[$article_id] < 1
+                || isset($targets[$slug])) {
+                return array();
+            }
+            $targets[$slug] = array('id' => $post_ids[$article_id]);
+        }
+        $ordered = array();
+        foreach (array(
+            self::CARRY_ON_PUBLIC_SLUG,
+            'portable-power-station-guide',
+            'anker-solix-c300-c800-c1000-differences',
+            'countertop-dishwasher-for-small-households',
+            'compact-robot-vacuum-shortlist',
+        ) as $slug) {
+            if (! isset($targets[$slug])) {
+                return array();
+            }
+            $ordered[$slug] = $targets[$slug];
+        }
+        return $ordered;
+    }
+
+    private static function pilot_public_slug_pattern()
+    {
+        $patterns = array();
+        foreach (array_keys(self::fixed_pilot_public_targets()) as $slug) {
+            $patterns[] = preg_quote($slug, '/');
+        }
+        return count($patterns) === 5 ? implode('|', $patterns) : '(?!)';
     }
 
     public function guard_combined_operator_rest_route(
@@ -330,6 +858,67 @@ final class RAOS_ST1704_Publication_Controller_V2
             && $user->exists()
             && self::$application_password_user_id === (int) $user->ID
             && $this->executor_identity_is_exact($user, true);
+    }
+
+    private function authenticated_draft_writer_is_exact()
+    {
+        $user = wp_get_current_user();
+        return $this->combined_firewall_ready
+            && self::$draft_writer_application_password_authenticated
+            && $user instanceof WP_User
+            && $user->exists()
+            && self::$draft_writer_application_password_user_id
+                === (int) $user->ID
+            && $this->draft_writer_identity_is_exact($user, true);
+    }
+
+    private function draft_writer_projection_identity_is_exact($user)
+    {
+        return self::$draft_writer_read_projection_user_id > 0
+            && self::$draft_writer_read_projection_user_id === (int) $user->ID
+            && is_array(self::$draft_writer_read_projection_targets)
+            && count(self::$draft_writer_read_projection_targets) > 0
+            && $this->draft_writer_identity_is_exact($user, false);
+    }
+
+    private function draft_writer_identity_is_exact($user, $require_marker)
+    {
+        if (! $user instanceof WP_User
+            || ! $user->exists()
+            || ! self::runtime_origin_is_exact()
+            || ! isset($user->user_login)
+            || ! is_string($user->user_login)
+            || $user->user_login !== self::DRAFT_WRITER_LOGIN
+            || ! is_array($user->roles)
+            || count($user->roles) !== 1
+            || reset($user->roles) !== self::DRAFT_WRITER_ROLE
+            || ($require_marker
+                && (! self::$draft_writer_application_password_authenticated
+                    || self::$draft_writer_application_password_user_id
+                        !== (int) $user->ID))) {
+            return false;
+        }
+        $role = get_role(self::DRAFT_WRITER_ROLE);
+        if (! $role instanceof WP_Role
+            || ! is_array($role->capabilities)
+            || ! is_array($user->caps)
+            || ! is_array($user->allcaps)) {
+            return false;
+        }
+        $expected = self::exact_draft_writer_capabilities();
+        $expected_all = $expected;
+        $expected_all[self::DRAFT_WRITER_ROLE] = true;
+        $role_caps = $role->capabilities;
+        $user_caps = $user->caps;
+        $all_caps = $user->allcaps;
+        ksort($expected, SORT_STRING);
+        ksort($expected_all, SORT_STRING);
+        ksort($role_caps, SORT_STRING);
+        ksort($user_caps, SORT_STRING);
+        ksort($all_caps, SORT_STRING);
+        return $role_caps === $expected
+            && $user_caps === array(self::DRAFT_WRITER_ROLE => true)
+            && $all_caps === $expected_all;
     }
 
     private function executor_identity_is_exact($user, $require_marker)

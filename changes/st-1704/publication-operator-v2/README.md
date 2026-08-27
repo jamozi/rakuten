@@ -12,7 +12,7 @@ The tracked runtime manifest binds every runtime source and each packaged file.
 The generated package advertises WordPress 7.1 and the v2 controller also
 refuses to initialize outside the 7.1.x release line.
 
-Package 2.1.7 keeps the publication and revision REST contracts unchanged. It
+Package 2.1.8 keeps the publication and revision REST contracts unchanged. It
 fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
 exact core registration, and prevents those callbacks from creating Review URL
 redirect metadata during bounded `post_updated` replay. All other metadata,
@@ -60,6 +60,27 @@ persisted WordPress role option. Creation, persistence, or exact-readback
 failure stops activation. The patch does not assign the role, create a user or
 Application Password, alter the bound operator identity/firewall, or add REST
 or publication authority.
+
+Patch 2.1.8 adds a fail-closed, verify-only read projection for the distinct
+fixed-login `raos-draft-writer` Application Password without changing its
+persisted capabilities.
+The credential transport is confined to raw HTTPS `GET` or `POST` requests on
+the core `/wp/v2/posts` collection; XML-RPC, method overrides, every other
+method, and every other REST path are refused. The pre-existing base-role
+authority to create and recover the user's own Drafts is unchanged. After
+WordPress 7.1 sanitizes an exact formal-verifier `GET`, the controller requires
+the core posts-controller callback and permission callback plus one fixed query
+shape. A per-request `user_has_cap` bridge may satisfy only an `edit_post`
+check for fixed public post IDs 19, 28, 29, 41, and 30, or fixed Review Draft
+post 26 at the exact payload-hash-bound carry-on Review slug. Nonmatching
+`GET`/`POST` requests receive only base-role behavior and never arm the bridge.
+State is cleared before every callback, at the first after-callback priority,
+and at shutdown. The projection never persists an extra role/user capability,
+authorizes a write, changes article state, or changes the bound operator
+firewall. The transport guard recognizes either that immutable WordPress login
+or the role marker, so removing/replacing the role before credential revocation
+is refused rather than turning the credential into an ordinary WordPress
+Application Password.
 
 Normal execution still requires two default-off host gates and a distinct wp-admin
 human approval of the exact proposal hash. There is no REST approval route, no

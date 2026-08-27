@@ -84,6 +84,7 @@ def test_activation_installs_only_the_exact_unassigned_draft_writer_role() -> No
     )
     assert "const DRAFT_WRITER_ROLE = 'raos_draft_writer';" in php
     assert "const DRAFT_WRITER_ROLE_DISPLAY = 'RAOS Draft Writer';" in php
+    assert "const DRAFT_WRITER_LOGIN = 'raos-draft-writer';" in php
     assert "self::install_draft_writer_role()" in activation
     assert "RAOS draft writer role initialization failed." in activation
     assert "add_role(" in install
@@ -110,6 +111,89 @@ def test_activation_installs_only_the_exact_unassigned_draft_writer_role() -> No
     assert "add_user" not in install
     assert "wp_create_user" not in install
     assert "application_password" not in install
+
+
+def test_draft_writer_application_password_is_read_only_and_exactly_firewalled() -> None:
+    php = source()
+    transport = method(
+        "guard_draft_writer_application_password_transport",
+        "prepare_draft_writer_read_projection",
+    )
+    prepare = method(
+        "prepare_draft_writer_read_projection",
+        "clear_draft_writer_read_projection_after_callbacks",
+    )
+    handler = method(
+        "is_exact_core_posts_collection_handler",
+        "compile_draft_writer_read_projection_targets",
+    )
+    assert "wp_authenticate_application_password_errors" in php
+    assert "application_password_did_authenticate" in php
+    assert "self::DRAFT_WRITER_LOGIN" in transport
+    assert "$has_fixed_login" in transport
+    assert "$has_role_marker" in transport
+    assert "REST_REQUEST !== true" in transport
+    assert "array('GET', 'POST')" in transport
+    assert "HTTP_X_HTTP_METHOD_OVERRIDE" in transport
+    assert "'/wp-json/wp/v2/posts'" in transport
+    assert "raos_st1704_draft_writer_transport_forbidden" in transport
+    assert "return $response;" in prepare
+    assert "get_class($handler['callback'][0])" in handler
+    assert "'WP_REST_Posts_Controller'" in handler
+    assert "'get_items'" in handler
+    assert "'get_items_permissions_check'" in handler
+    assert "'/wp/v2/posts'" in handler
+    for empty_bucket in (
+        "get_body()",
+        "get_url_params()",
+        "get_body_params()",
+        "get_json_params()",
+        "get_file_params()",
+    ):
+        assert empty_bucket in handler
+
+
+def test_draft_writer_projection_is_fixed_per_request_and_never_persists_caps() -> None:
+    php = source()
+    compile_targets = method(
+        "compile_draft_writer_read_projection_targets",
+        "query_parameters_are_exact",
+    )
+    cap_filter = method(
+        "filter_draft_writer_read_projection_capabilities",
+        "clear_draft_writer_application_password_state",
+    )
+    assert "get_query_params()" in compile_targets
+    assert "self::DRAFT_WRITER_RECOVERY_FIELDS" in compile_targets
+    assert "self::CARRY_ON_REVIEW_POST_ID" in compile_targets
+    assert "self::CARRY_ON_REVIEW_SLUG" in compile_targets
+    assert "[a-f0-9]{64}" in compile_targets
+    assert "'page' => 1" in compile_targets
+    assert "'per_page' => 100" in compile_targets
+    assert "'per_page' => 5" in compile_targets
+    assert "'per_page' => 2" in compile_targets
+    assert "'status' => array('publish')" in compile_targets
+    assert "'status' => array('draft')" in compile_targets
+    assert "count($targets) !== 5" not in compile_targets
+    assert "$args[0] !== 'edit_post'" in cap_filter
+    assert "self::$draft_writer_read_projection_targets[$args[2]]" in cap_filter
+    assert "array('edit_others_posts', 'edit_published_posts')" in cap_filter
+    assert "array('edit_others_posts')" in cap_filter
+    assert "array('edit_published_posts')" in cap_filter
+    assert "array('edit_posts')" in cap_filter
+    for forbidden in (
+        "add_cap(",
+        "remove_cap(",
+        "update_user_meta(",
+        "wp_update_user(",
+        "wp_update_post(",
+        "wp_insert_post(",
+    ):
+        assert forbidden not in cap_filter
+    assert "rest_request_after_callbacks" in php
+    assert php.count("-PHP_INT_MAX") >= 2
+    assert "'shutdown'" in php
+    assert php.count("clear_draft_writer_read_projection_state();") >= 3
 
 
 def test_proposal_surface_is_fixed_and_globally_serialized() -> None:

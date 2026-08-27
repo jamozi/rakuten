@@ -32,7 +32,7 @@ def test_generated_binding_is_current_and_exact() -> None:
 
 
 def test_package_is_deterministic_and_injects_after_unchanged_v1_boot() -> None:
-    assert builder.PLUGIN_VERSION == "2.1.7"
+    assert builder.PLUGIN_VERSION == "2.1.8"
     v1_before = (ROOT / builder.V1_MAIN_RELATIVE).read_bytes()
     first = builder.build_package()
     second = builder.build_package()
@@ -49,7 +49,7 @@ def test_package_is_deterministic_and_injects_after_unchanged_v1_boot() -> None:
             assert stat.S_IMODE(info.external_attr >> 16) == 0o644
         main = archive.read(builder.PACKAGE_ROOT + "raos-bounded-operator.php")
     text = main.decode("utf-8")
-    assert text.count(" * Version: 2.1.7\n") == 1
+    assert text.count(" * Version: 2.1.8\n") == 1
     assert text.count(" * Requires at least: 7.1\n") == 1
     assert text.count(" * Tested up to: 7.1\n") == 1
     assert " * Requires at least: 6.9\n" not in text
@@ -78,6 +78,19 @@ def test_runtime_manifest_matches_sources_and_package() -> None:
         "application_password_creation": "ABSENT",
         "capabilities": {"edit_posts": True, "read": True},
         "display_name": "RAOS Draft Writer",
+        "fixed_user_login": "raos-draft-writer",
+        "read_projection": {
+            "authority": "EXACT_APPLICATION_PASSWORD_USER_HAS_CAP_PER_REQUEST",
+            "core_route": "GET_/wp/v2/posts_COLLECTION_ONLY",
+            "mapped_meta_cap": "edit_post",
+            "persistent_extra_capabilities": "ABSENT",
+            "public_post_ids": [19, 28, 29, 41, 30],
+            "review_draft_post_id": 26,
+            "transport": (
+                "REST_GET_POST_COLLECTION_ONLY_XMLRPC_OTHER_METHODS_REFUSED"
+            ),
+            "base_own_draft_create_recover_authority": "UNCHANGED",
+        },
         "role": "raos_draft_writer",
         "user_assignment": "ABSENT",
     }

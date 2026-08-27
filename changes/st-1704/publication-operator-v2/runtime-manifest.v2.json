@@ -11,6 +11,23 @@
       "read": true
     },
     "display_name": "RAOS Draft Writer",
+    "fixed_user_login": "raos-draft-writer",
+    "read_projection": {
+      "authority": "EXACT_APPLICATION_PASSWORD_USER_HAS_CAP_PER_REQUEST",
+      "base_own_draft_create_recover_authority": "UNCHANGED",
+      "core_route": "GET_/wp/v2/posts_COLLECTION_ONLY",
+      "mapped_meta_cap": "edit_post",
+      "persistent_extra_capabilities": "ABSENT",
+      "public_post_ids": [
+        19,
+        28,
+        29,
+        41,
+        30
+      ],
+      "review_draft_post_id": 26,
+      "transport": "REST_GET_POST_COLLECTION_ONLY_XMLRPC_OTHER_METHODS_REFUSED"
+    },
     "role": "raos_draft_writer",
     "user_assignment": "ABSENT"
   },
@@ -48,14 +65,14 @@
   ],
   "operator_contract_version": 2,
   "package": {
-    "bytes": 501420,
+    "bytes": 525454,
     "compression": "ZIP_STORED",
     "file_count": 4,
     "files": [
       {
-        "bytes": 4172,
+        "bytes": 5231,
         "path": "README.md",
-        "sha256": "29b9eeeb1baef2f65b961812dc43595429cc88741710358688a8348f662eeea3"
+        "sha256": "596a82ac2352c309e41bbae14937e2863e1a80b0e4c18ae8963d217f219beb6f"
       },
       {
         "bytes": 2491,
@@ -63,19 +80,19 @@
         "sha256": "2b3d7d828941890e799b575f24cbab690b0895cea1cd64d45fd3166ab030dc8b"
       },
       {
-        "bytes": 305666,
+        "bytes": 328641,
         "path": "includes/st1704-publication-controller.v2.php",
-        "sha256": "dd6f889e1633328bb2946f80b96c0c980fbad1a714b33e2d63ec50c16a830830"
+        "sha256": "94a0ca55f644ede537589771975cf9e9d2f56007d073a13467f6e09059d06be2"
       },
       {
         "bytes": 188345,
         "path": "raos-bounded-operator.php",
-        "sha256": "cc7ab5769468cb21a229317a6f1db3dd19d502e61788fc0cd09909b9f3b447fa"
+        "sha256": "b7a9c8b2bb84b6cf612e5e06d63bc5b54fd7ae9a142d7164a232d5ecdcb2d541"
       }
     ],
     "root": "raos-bounded-operator/",
-    "sha256": "2b39857dfb03dac9c88bfa7a1e7a2ce46297c190b78063fb4663ca589b689fc4",
-    "version": "2.1.7"
+    "sha256": "bb1c5c181cdcec13601c14b64c4a50f15426b17b296409d36af70f5ee8d5abae",
+    "version": "2.1.8"
   },
   "predecessors": {
     "st1506_wordpress_operator": {

@@ -43,7 +43,7 @@ def test_addendum_preserves_human_decision_and_forbids_self_approval(
 def test_routes_operation_gates_and_receipts_are_closed(
     publication_contract: dict[str, Any],
 ) -> None:
-    assert publication_contract["site"]["plugin_version"] == "2.1.7"
+    assert publication_contract["site"]["plugin_version"] == "2.1.8"
     assert publication_contract["site"]["wordpress_core_release_line"] == "7.1.x"
     assert publication_contract["operation"]["exact"] == "PUBLISH_ST1704_ARTICLE"
     assert publication_contract["operation"]["allowed_article_bindings"] == (
@@ -77,9 +77,26 @@ def test_routes_operation_gates_and_receipts_are_closed(
     assert publication_contract["authentication"]["draft_writer"] == {
         "role": "raos_draft_writer",
         "display_name": "RAOS Draft Writer",
+        "fixed_user_login": "raos-draft-writer",
         "credential": "DISTINCT_WORDPRESS_APPLICATION_PASSWORD_OVER_HTTPS",
         "installation": "PLUGIN_ACTIVATION_EXACT_PERSISTENCE_VERIFIED",
         "exact_capabilities": {"read": True, "edit_posts": True},
+        "read_projection": {
+            "authority": "EXACT_APPLICATION_PASSWORD_USER_HAS_CAP_PER_REQUEST",
+            "core_route": "GET_/wp/v2/posts_COLLECTION_ONLY",
+            "mapped_meta_cap": "edit_post",
+            "persistent_extra_capabilities": "ABSENT",
+            "public_post_ids": [19, 28, 29, 41, 30],
+            "review_draft_post_id": 26,
+            "request_shape": "EXACT_FORMAL_VERIFIER_COLLECTIONS_ONLY",
+            "nonmatching_projection": "ABSENT_BASE_ROLE_BEHAVIOR_UNCHANGED",
+            "xmlrpc": "REFUSED",
+            "cookie_only_projection": "ABSENT",
+            "base_own_draft_create_recover_authority": "UNCHANGED",
+            "application_password_transport": (
+                "GET_OR_POST_CORE_POSTS_COLLECTION_ONLY"
+            ),
+        },
         "user_assignment": "HUMAN_EXTERNAL_OPERATION",
         "application_password_creation": "HUMAN_EXTERNAL_OPERATION",
     }

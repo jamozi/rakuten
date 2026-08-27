@@ -2,7 +2,7 @@
 
 ## Offline build and review
 
-The current deterministic package is `raos-bounded-operator` 2.1.7. This patch
+The current deterministic package is `raos-bounded-operator` 2.1.8. This patch
 does not change either REST schema. It requires the exact WordPress 7.1
 priority-12 `wp_check_for_changed_slugs` and `wp_check_for_changed_dates`
 registrations, and suppresses only their target-post redirect-meta operations
@@ -46,6 +46,20 @@ edit-published, edit-others, operator, or administrator capability. Activation
 stops if WordPress cannot create, persist, normalize, or exactly read back the
 role. This does not assign the role or create a credential.
 
+Patch 2.1.8 confines the distinct fixed-login `raos-draft-writer` credential's
+transport to raw HTTPS `GET` or `POST` on the core `/wp/v2/posts` collection.
+XML-RPC, method overrides, other methods, other REST paths, and
+identity/capability drift are refused. The transport guard recognizes either
+the immutable login or the role marker, including after role removal or
+replacement.
+The existing base-role authority to create and recover the user's own Drafts
+is unchanged. Only the formal verifier's exact post-sanitization `GET` query
+shapes arm the transient projection; nonmatching collection `GET`/`POST`
+requests fall back to base-role behavior. The bridge may satisfy only
+`edit_post` for fixed public posts 19, 28, 29, 41, and 30, plus fixed Review
+Draft 26 at the exact payload-hash-bound carry-on Review slug. It persists no
+extra capability and never grants publication or administration authority.
+
 1. Run `make -f changes/st-1704/publication-operator-v2/Makefile check`.
 2. Review the exact runtime manifest, deterministic package SHA-256, generated
    four-article binding, controller diff, and terminal local checks.
@@ -60,12 +74,48 @@ operations. Both `RAOS_OPERATOR_WRITES_ENABLED` and
 for proposal creation or apply; either false/absent closes the v2 write surface.
 Keep the existing exact executor identity and Application Password confinement.
 For owner-private authenticated draft/public verification, a human WordPress
-administrator may create a distinct non-administrator user, assign only
-`RAOS Draft Writer`, and create a dedicated Application Password. User
+administrator may create the distinct non-administrator login
+`raos-draft-writer`, assign only `RAOS Draft Writer`, and create a dedicated
+Application Password. User
 creation, role assignment, Application Password creation/copying, and insertion
 into the owner-private credential store remain human external operations. Never
 reuse the bound `raos_operator_executor` identity or its Application Password
 for owner verification.
+
+Do not create or install the Draft-writer Application Password until plugin
+2.1.8 or later is active and its exact package/version checks pass. The
+temporary projection is read-only; the role's pre-existing own-Draft
+create/recover behavior is unchanged and remains bounded by its exact base
+capabilities.
+
+For a fresh deployment that has never activated 2.1.7 or later, keep every
+Draft-writer user and Application Password absent. Install the package, then
+explicitly activate it. Package replacement alone does not run activation
+hooks. Verify the active plugin version and exact persisted `RAOS Draft Writer`
+role (`read`, `edit_posts`, and no other capability) before assigning the role
+to the exact `raos-draft-writer` login and creating the Application Password.
+If activation stops
+after normalizing the role, do not create a credential; restore or reactivate a
+known-good package and repeat exact role verification first.
+
+For the current 2.1.7 upgrade state, the role has already been activated and
+exactly persisted, dedicated user ID 3 is assigned, and no Draft-writer
+Application Password exists. Version 2.1.8 does not change that DB/role schema.
+Replace 2.1.7 in place without deactivation/reactivation, then verify active
+version 2.1.8, the exact persisted role, dedicated user ID 3's exact
+`raos-draft-writer` login and identity,
+and both operator status surfaces before creating the Application Password.
+Avoiding deactivation also avoids an unnecessary interval without the new
+transport confinement.
+
+Before rollback, downgrade, deactivation, role removal/replacement, or any
+direct database identity change after a Draft-writer credential exists, revoke
+that Application Password first, then remove/disable the dedicated user's
+Draft-writer assignment while 2.1.8 confinement is still active. WordPress UI
+does not rename `user_login`; do not edit this immutable binding directly.
+Deactivation does not remove the persisted role or Application Password, so
+reversing that order would leave the base `read`/`edit_posts` authority without
+the transport confinement.
 
 ## Fixed terminal redirect-metadata reconciliation
 

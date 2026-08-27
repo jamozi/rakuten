@@ -1,4 +1,4 @@
-# RAOS Bounded Operator 2.1.7
+# RAOS Bounded Operator 2.1.8
 
 This deterministic package preserves the closed ST-1506 v1 status, Yoast, and
 child-theme surfaces and adds the ST-1704 publication controller under the
@@ -48,6 +48,22 @@ and its complete capability set (`read`, `edit_posts`). Any creation,
 persistence, or readback failure stops activation. It does not assign a user,
 create an Application Password, modify `raos_operator_executor`, broaden the
 Application Password firewall, or add publication/REST authority.
+
+Patch 2.1.8 confines the distinct fixed-login `raos-draft-writer` Application
+Password transport to raw HTTPS `GET` or `POST` on the WordPress core
+`/wp/v2/posts` collection.
+XML-RPC, method overrides, other methods, and other REST paths are refused.
+The existing base-role authority to create and recover the user's own Drafts
+is unchanged. Only the formal verifier's fixed post-sanitization `GET` shapes
+can activate a per-request `user_has_cap` projection. It may satisfy only
+`edit_post` for fixed public posts 19, 28, 29, 41, and 30, or Review Draft 26
+at the exact payload-hash-bound carry-on Review slug. Nonmatching collection
+requests fall back to base-role behavior without projection. State is cleared
+before callback dispatch, at the first after-callback priority, and at
+shutdown. The guard recognizes either the immutable login or the role marker,
+so role removal/replacement before credential revocation remains refused. No
+extra role/user capability is persisted and no publish, plugin, theme,
+operator, or administration authority is added.
 
 The v2 controller can only publish one of four generated article bindings, or
 revise the exact existing Draft IDs 28, 29, 41, and 30. A revision is

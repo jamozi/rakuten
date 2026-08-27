@@ -19,7 +19,7 @@ ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE_RELATIVE: Final = Path("changes/st-1704/publication-operator-v2")
 SLICE_ROOT: Final = ROOT / SLICE_RELATIVE
 PLUGIN_SLUG: Final = "raos-bounded-operator"
-PLUGIN_VERSION: Final = "2.1.7"
+PLUGIN_VERSION: Final = "2.1.8"
 PACKAGE_ROOT: Final = f"{PLUGIN_SLUG}/"
 MANIFEST_RELATIVE: Final = SLICE_RELATIVE / "runtime-manifest.v2.json"
 MANIFEST_PATH: Final = ROOT / MANIFEST_RELATIVE
@@ -422,6 +422,9 @@ def package_files() -> dict[str, bytes]:
         "RAOS_ST1704_PUBLICATION_WRITES_ENABLED",
         "raos_draft_writer",
         "RAOS Draft Writer",
+        "raos-draft-writer",
+        "wp_authenticate_application_password_errors",
+        "draft_writer_read_projection",
     ):
         if token not in controller_text:
             _fail("ST1704_PUBLICATION_OPERATOR_V2_CONTROLLER_DRIFT")
@@ -494,6 +497,17 @@ def build_manifest() -> bytes:
             "application_password_creation": "ABSENT",
             "capabilities": {"edit_posts": True, "read": True},
             "display_name": "RAOS Draft Writer",
+            "fixed_user_login": "raos-draft-writer",
+            "read_projection": {
+                "authority": "EXACT_APPLICATION_PASSWORD_USER_HAS_CAP_PER_REQUEST",
+                "core_route": "GET_/wp/v2/posts_COLLECTION_ONLY",
+                "mapped_meta_cap": "edit_post",
+                "persistent_extra_capabilities": "ABSENT",
+                "public_post_ids": [19, 28, 29, 41, 30],
+                "review_draft_post_id": 26,
+                "transport": "REST_GET_POST_COLLECTION_ONLY_XMLRPC_OTHER_METHODS_REFUSED",
+                "base_own_draft_create_recover_authority": "UNCHANGED",
+            },
             "role": "raos_draft_writer",
             "user_assignment": "ABSENT",
         },
