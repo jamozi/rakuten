@@ -1,4 +1,4 @@
-# RAOS Bounded Operator 2.1.4
+# RAOS Bounded Operator 2.1.5
 
 This deterministic package preserves the closed ST-1506 v1 status, Yoast, and
 child-theme surfaces and adds the ST-1704 publication controller under the
@@ -27,6 +27,14 @@ messages, error data, proposal material, or metadata values.
 Patch 2.1.4 makes that rolled-back preview classify the known replay-exception
 receipt separately from other result-code mismatches without rendering the
 stored value. Neither class is eligible for cleanup.
+
+Patch 2.1.5 admits the two exact replay terminal codes to the same complete
+state proof. The receipt's actual result must match its audit event and is
+bound into the cleanup hash. Every other result remains ineligible, and a
+replay exception without exact published storage plus exact redirect-only meta
+drift remains fail-closed.
+This does not claim hook replay completion or repair untracked hook side
+effects; the original exception receipt and result code remain unchanged.
 
 The v2 controller can only publish one of four generated article bindings, or
 revise the exact existing Draft IDs 28, 29, 41, and 30. A revision is

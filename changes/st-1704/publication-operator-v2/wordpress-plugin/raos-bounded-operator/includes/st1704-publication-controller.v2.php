@@ -2847,7 +2847,6 @@ final class RAOS_ST1704_Publication_Controller_V2
             'raos_st1704_reconciliation_candidate_failure_code_mismatch',
             'raos_st1704_reconciliation_candidate_invalid',
             'raos_st1704_reconciliation_candidate_missing',
-            'raos_st1704_reconciliation_candidate_replay_exception',
             'raos_st1704_reconciliation_core_delete_prestate',
             'raos_st1704_reconciliation_dates_invalid',
             'raos_st1704_reconciliation_disabled',
@@ -3318,15 +3317,24 @@ final class RAOS_ST1704_Publication_Controller_V2
             || preg_match('/\A[A-Z0-9_]{1,64}\z/', $candidate['result_code']) !== 1) {
             return self::error('raos_st1704_reconciliation_candidate_invalid', 409);
         }
-        if ($candidate['result_code'] === self::RECONCILIATION_FAILURE_CODE) {
+        if (in_array(
+            $candidate['result_code'],
+            self::terminal_reconciliation_failure_codes(),
+            true
+        )) {
             return null;
         }
         return self::error(
-            $candidate['result_code']
-                === self::RECONCILIATION_EXCEPTION_FAILURE_CODE
-                ? 'raos_st1704_reconciliation_candidate_replay_exception'
-                : 'raos_st1704_reconciliation_candidate_failure_code_mismatch',
+            'raos_st1704_reconciliation_candidate_failure_code_mismatch',
             409
+        );
+    }
+
+    private static function terminal_reconciliation_failure_codes()
+    {
+        return array(
+            self::RECONCILIATION_FAILURE_CODE,
+            self::RECONCILIATION_EXCEPTION_FAILURE_CODE,
         );
     }
 
@@ -3491,7 +3499,11 @@ final class RAOS_ST1704_Publication_Controller_V2
         );
         if ($candidate['operation'] !== self::OPERATION
             || $candidate['state'] !== 'NEEDS_RECOVERY'
-            || $candidate['result_code'] !== self::RECONCILIATION_FAILURE_CODE
+            || ! in_array(
+                $candidate['result_code'],
+                self::terminal_reconciliation_failure_codes(),
+                true
+            )
             || ! is_string($candidate['idempotency_key'])
             || ! hash_equals($proposal_id, $candidate['idempotency_key'])
             || ! is_string($candidate['rollback_json'])
@@ -3569,6 +3581,7 @@ final class RAOS_ST1704_Publication_Controller_V2
         return array(
             'audit' => $audit,
             'before' => $before,
+            'failure_code' => $candidate['result_code'],
             'modified_times' => $modified_times,
             'proposal' => $proposal,
             'publication_dates' => $publication_dates,
@@ -3682,7 +3695,7 @@ final class RAOS_ST1704_Publication_Controller_V2
             ),
             array(
                 'actor' => (int) $candidate['proposer_user_id'],
-                'detail' => self::RECONCILIATION_FAILURE_CODE,
+                'detail' => $candidate['result_code'],
                 'event' => 'APPLY_FAILED',
                 'time' => $candidate['completed_at'],
             ),
@@ -3853,7 +3866,7 @@ final class RAOS_ST1704_Publication_Controller_V2
                         $receipt['modified_times']['post_modified'],
                     'expected_post_modified_gmt' =>
                         $receipt['modified_times']['post_modified_gmt'],
-                    'failure_code' => self::RECONCILIATION_FAILURE_CODE,
+                    'failure_code' => $receipt['failure_code'],
                     'expires_at' => $candidate['expires_at'],
                     'idempotency_key_sha256' => hash(
                         'sha256',

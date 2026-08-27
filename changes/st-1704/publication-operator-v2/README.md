@@ -12,7 +12,7 @@ The tracked runtime manifest binds every runtime source and each packaged file.
 The generated package advertises WordPress 7.1 and the v2 controller also
 refuses to initialize outside the 7.1.x release line.
 
-Package 2.1.4 keeps the publication and revision REST contracts unchanged. It
+Package 2.1.5 keeps the publication and revision REST contracts unchanged. It
 fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
 exact core registration, and prevents those callbacks from creating Review URL
 redirect metadata during bounded `post_updated` replay. All other metadata,
@@ -37,6 +37,14 @@ metadata values remain undisclosed.
 Patch 2.1.4 broadens only the rolled-back candidate preview read so it can
 classify a known replay-exception receipt or another result-code mismatch.
 Cleanup still requires the single original pinned replay-uncertain code.
+
+Patch 2.1.5 admits the two exact post-commit replay outcomes (`UNCERTAIN` and
+`EXCEPTION`) only when the full existing receipt, audit, current-storage, and
+redirect-meta proof succeeds. The actual result is audit-matched and operation-
+hash-bound; no other result code becomes eligible.
+The exception receipt remains terminal because target-post equality cannot
+prove or reverse every hook side effect. The reconciliation attests only the
+exact metadata restoration and separately verified public surface.
 
 Normal execution still requires two default-off host gates and a distinct wp-admin
 human approval of the exact proposal hash. There is no REST approval route, no

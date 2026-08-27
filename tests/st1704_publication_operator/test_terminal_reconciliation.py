@@ -96,10 +96,10 @@ def test_candidate_discovery_is_exact_unique_and_never_generic_latest() -> None:
         "terminal_reconciliation_plan_for_assertion",
     )
     assert "[A-Z0-9_]{1,64}" in result
+    assert "terminal_reconciliation_failure_codes" in result
+    assert "candidate_failure_code_mismatch" in result
     assert "RECONCILIATION_FAILURE_CODE" in result
     assert "RECONCILIATION_EXCEPTION_FAILURE_CODE" in result
-    assert "candidate_replay_exception" in result
-    assert "candidate_failure_code_mismatch" in result
     assertion = method(
         "terminal_reconciliation_plan_for_assertion",
         "terminal_reconciliation_candidates_for_update",
@@ -137,7 +137,7 @@ def test_terminal_receipt_binds_rollback_approval_dates_and_state_without_mutati
     )
     for required in (
         "NEEDS_RECOVERY",
-        "RECONCILIATION_FAILURE_CODE",
+        "terminal_reconciliation_failure_codes",
         "idempotency_key",
         "rollback_json",
         "before_state_json",
@@ -156,6 +156,7 @@ def test_terminal_receipt_binds_rollback_approval_dates_and_state_without_mutati
         assert required in receipt
     assert "(int) $candidate['state_version'] !== 4" in receipt
     assert "hash_equals($proposal_id, $candidate['idempotency_key'])" in receipt
+    assert "'failure_code' => $candidate['result_code']" in receipt
 
 
 def test_full_audit_chain_and_exact_incident_event_sequence_are_verified() -> None:
@@ -171,7 +172,7 @@ def test_full_audit_chain_and_exact_incident_event_sequence_are_verified() -> No
         ("PROPOSAL_CREATED", "PROPOSED"),
         ("HUMAN_APPROVED", "APPROVED"),
         ("APPLY_STARTED", "APPLYING"),
-        ("APPLY_FAILED", "RECONCILIATION_FAILURE_CODE"),
+        ("APPLY_FAILED", "$candidate['result_code']"),
         ("RECONCILIATION_CLEANUP_EVENT", "[A-F0-9]{64}"),
         ("RECONCILIATION_PUBLIC_EVENT", "[A-F0-9]{64}"),
     ):
@@ -260,6 +261,7 @@ def test_cleanup_hash_binds_terminal_instance_audit_ids_and_before_after_hashes(
         "completed_at",
         "created_at",
         "expires_at",
+        "failure_code",
         "proposal_state_version",
         "proposal_state",
         "proposer_user_id",
@@ -280,6 +282,7 @@ def test_cleanup_hash_binds_terminal_instance_audit_ids_and_before_after_hashes(
         "wordpress_release_line",
     ):
         assert f"'{field}'" in plan
+    assert "'failure_code' => $receipt['failure_code']" in plan
     assert "hash('sha256', $operation_material)" in plan
     meta = method("reconciliation_meta_cleanup_plan", "rest_verify_revision")
     assert "'meta_id' => $row['meta_id']" in meta

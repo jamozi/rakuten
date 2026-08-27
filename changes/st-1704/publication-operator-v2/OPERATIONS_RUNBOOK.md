@@ -2,7 +2,7 @@
 
 ## Offline build and review
 
-The current deterministic package is `raos-bounded-operator` 2.1.4. This patch
+The current deterministic package is `raos-bounded-operator` 2.1.5. This patch
 does not change either REST schema. It requires the exact WordPress 7.1
 priority-12 `wp_check_for_changed_slugs` and `wp_check_for_changed_dates`
 registrations, and suppresses only their target-post redirect-meta operations
@@ -18,6 +18,18 @@ precise: the rolled-back preview examines all publication `NEEDS_RECOVERY`
 receipts, propagates a bounded validation class, and distinguishes the known
 replay-exception result from an otherwise mismatched result code. It never
 renders the stored result value or enables either class for cleanup.
+
+Patch 2.1.5 admits the two fixed replay outcomes, `UNCERTAIN` and `EXCEPTION`,
+to the same exact-state proof. The actual terminal result must match its audit
+event and is bound into the cleanup operation hash. A replay exception alone
+never authorizes cleanup: every existing canonical receipt, expired approval,
+audit chain, published storage, callback registration, and exact redirect-meta
+multiset check must still pass. The proposal remains terminal after cleanup.
+This reconciliation proves only removal of the exact redirect metadata and the
+later checked public surface. It does not prove hook replay completion or undo
+emails, webhooks, remote caches, term-count work, revisions, or any other
+external effect that may have occurred before the Throwable. A recurrence on a
+later article remains a new terminal incident and must stop publication.
 
 1. Run `make -f changes/st-1704/publication-operator-v2/Makefile check`.
 2. Review the exact runtime manifest, deterministic package SHA-256, generated

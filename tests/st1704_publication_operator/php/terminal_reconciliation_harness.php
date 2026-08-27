@@ -350,10 +350,8 @@ $replay_exception = $result_error_method->invoke(
     array('result_code' => 'POST_COMMIT_HOOK_REPLAY_EXCEPTION')
 );
 expect_true(
-    $replay_exception instanceof WP_Error
-        && $replay_exception->get_error_code()
-            === 'raos_st1704_reconciliation_candidate_replay_exception',
-    'known replay exception must be classified but remain ineligible'
+    $replay_exception === null,
+    'fixed replay exception must be eligible for exact-state reconciliation'
 );
 $other_result = $result_error_method->invoke(
     null,
@@ -652,6 +650,7 @@ $candidate = array(
     'approved_at' => $approved_at,
     'apply_started_at' => $apply_at,
     'completed_at' => $completed_at,
+    'result_code' => 'POST_COMMIT_HOOK_REPLAY_UNCERTAIN',
 );
 $audit_base_result = $audit_method->invoke(
     $controller,
@@ -663,6 +662,42 @@ expect_true(
         && $audit_base_result['stage'] === 'CLEANUP_REQUIRED',
     'base audit must require cleanup'
 );
+$exception_candidate = $candidate;
+$exception_candidate['result_code'] = 'POST_COMMIT_HOOK_REPLAY_EXCEPTION';
+$GLOBALS['wpdb']->audit_rows[4]['detail_code'] =
+    'POST_COMMIT_HOOK_REPLAY_EXCEPTION';
+$exception_material = implode("\n", array(
+    $GLOBALS['wpdb']->audit_rows[4]['previous_hash'],
+    $GLOBALS['wpdb']->audit_rows[4]['occurred_at'],
+    $GLOBALS['wpdb']->audit_rows[4]['actor_user_id'],
+    $GLOBALS['wpdb']->audit_rows[4]['event_code'],
+    $GLOBALS['wpdb']->audit_rows[4]['proposal_id'],
+    $GLOBALS['wpdb']->audit_rows[4]['detail_code'],
+));
+$GLOBALS['wpdb']->audit_rows[4]['event_hash'] = hash(
+    'sha256',
+    $exception_material
+);
+$exception_audit_result = $audit_method->invoke(
+    $controller,
+    $exception_candidate,
+    $proposal_id
+);
+expect_true(
+    is_array($exception_audit_result)
+        && $exception_audit_result['stage'] === 'CLEANUP_REQUIRED',
+    'exception receipt must bind its exact audit failure detail'
+);
+$cross_swapped_audit = $audit_method->invoke(
+    $controller,
+    $candidate,
+    $proposal_id
+);
+expect_true(
+    $cross_swapped_audit instanceof WP_Error,
+    'receipt and audit failure codes must not cross-swap'
+);
+$GLOBALS['wpdb']->audit_rows = $base_audit;
 $GLOBALS['wpdb']->audit_rows[2]['actor_user_id'] = '99';
 $tampered_audit = $audit_method->invoke($controller, $candidate, $proposal_id);
 expect_true($tampered_audit instanceof WP_Error, 'audit tamper must fail');
