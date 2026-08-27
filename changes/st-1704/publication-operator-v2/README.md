@@ -12,7 +12,7 @@ The tracked runtime manifest binds every runtime source and each packaged file.
 The generated package advertises WordPress 7.1 and the v2 controller also
 refuses to initialize outside the 7.1.x release line.
 
-Package 2.1.2 keeps the publication and revision REST contracts unchanged. It
+Package 2.1.3 keeps the publication and revision REST contracts unchanged. It
 fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
 exact core registration, and prevents those callbacks from creating Review URL
 redirect metadata during bounded `post_updated` replay. All other metadata,
@@ -29,6 +29,10 @@ and, when WordPress 7.1 would have added it, the one bound previous-date row by
 exact `meta_id` CAS. A second form records only the SHA-256 of owner-private
 public verification evidence. Neither stage changes the terminal proposal or
 adds a REST route.
+
+Patch 2.1.3 adds a bounded administrator-only diagnostic code to a refused
+reconciliation preview. Error messages, error data, proposal material, and
+metadata values remain undisclosed.
 
 Normal execution still requires two default-off host gates and a distinct wp-admin
 human approval of the exact proposal hash. There is no REST approval route, no

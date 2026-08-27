@@ -1,4 +1,4 @@
-# RAOS Bounded Operator 2.1.2
+# RAOS Bounded Operator 2.1.3
 
 This deterministic package preserves the closed ST-1506 v1 status, Yoast, and
 child-theme surfaces and adds the ST-1704 publication controller under the
@@ -19,6 +19,10 @@ cookie-authenticated administrator can remove only exact unexpected core
 redirect rows by locked `meta_id` CAS and then attest one owner-private public
 verification artifact SHA-256. The proposal remains terminal, its counts do not
 change, and the REST routes and schemas are unchanged.
+
+Patch 2.1.3 exposes only a bounded internal error code to an administrator when
+that gated reconciliation preview is refused. It does not render error
+messages, error data, proposal material, or metadata values.
 
 The v2 controller can only publish one of four generated article bindings, or
 revise the exact existing Draft IDs 28, 29, 41, and 30. A revision is

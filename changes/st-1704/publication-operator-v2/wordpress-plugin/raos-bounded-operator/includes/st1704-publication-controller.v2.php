@@ -2740,6 +2740,14 @@ final class RAOS_ST1704_Publication_Controller_V2
                 <p><?php echo esc_html(
                     'No single exact terminal candidate with an unambiguous locked state is available.'
                 ); ?></p>
+                <?php
+                $diagnostic_code = self::terminal_reconciliation_diagnostic_code(
+                    $plan
+                );
+                ?>
+                <p><?php echo esc_html('Administrator diagnostic code:'); ?>
+                    <code><?php echo esc_html($diagnostic_code); ?></code>
+                </p>
                 <?php continue; ?>
             <?php endif; ?>
             <dl>
@@ -2820,6 +2828,46 @@ final class RAOS_ST1704_Publication_Controller_V2
             <?php endif; ?>
             <?php
         endforeach;
+    }
+
+    private static function terminal_reconciliation_diagnostic_code($error)
+    {
+        $fallback = 'raos_st1704_reconciliation_preview_unavailable';
+        if (! is_wp_error($error)) {
+            return $fallback;
+        }
+        $code = $error->get_error_code();
+        $allowed = array(
+            'raos_st1704_reconciliation_allowlist_invalid',
+            'raos_st1704_reconciliation_assertion_invalid',
+            'raos_st1704_reconciliation_audit_invalid',
+            'raos_st1704_reconciliation_candidate_ambiguous',
+            'raos_st1704_reconciliation_candidate_invalid',
+            'raos_st1704_reconciliation_candidate_missing',
+            'raos_st1704_reconciliation_core_delete_prestate',
+            'raos_st1704_reconciliation_dates_invalid',
+            'raos_st1704_reconciliation_disabled',
+            'raos_st1704_reconciliation_hash_invalid',
+            'raos_st1704_reconciliation_lock_lost',
+            'raos_st1704_reconciliation_lock_unavailable',
+            'raos_st1704_reconciliation_meta_ambiguous',
+            'raos_st1704_reconciliation_meta_duplicate',
+            'raos_st1704_reconciliation_meta_extra',
+            'raos_st1704_reconciliation_meta_invalid',
+            'raos_st1704_reconciliation_meta_missing',
+            'raos_st1704_reconciliation_operation_invalid',
+            'raos_st1704_reconciliation_post_invalid',
+            'raos_st1704_reconciliation_post_locked',
+            'raos_st1704_reconciliation_receipt_invalid',
+            'raos_st1704_reconciliation_runtime_invalid',
+            'raos_st1704_reconciliation_slug_conflict',
+            'raos_st1704_reconciliation_state_ambiguous',
+            'raos_st1704_reconciliation_state_invalid',
+            'raos_st1704_reconciliation_target_invalid',
+        );
+        return is_string($code) && in_array($code, $allowed, true)
+            ? $code
+            : $fallback;
     }
 
     private function preview_terminal_reconciliation($article_id)

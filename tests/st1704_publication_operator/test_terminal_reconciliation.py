@@ -88,6 +88,27 @@ def test_candidate_discovery_is_exact_unique_and_never_generic_latest() -> None:
     assert "hash_equals" in assertion
 
 
+def test_admin_preview_exposes_only_a_bounded_error_code_for_diagnosis() -> None:
+    render = method(
+        "render_terminal_reconciliation_tools",
+        "preview_terminal_reconciliation",
+    )
+    assert "Administrator diagnostic code:" in render
+    assert "terminal_reconciliation_diagnostic_code" in render
+    assert "$plan->get_error_message()" not in render
+    assert "$plan->get_error_data()" not in render
+    diagnostic = method(
+        "terminal_reconciliation_diagnostic_code",
+        "preview_terminal_reconciliation",
+    )
+    assert "$error->get_error_code()" in diagnostic
+    assert "in_array($code, $allowed, true)" in diagnostic
+    assert "raos_st1704_reconciliation_preview_unavailable" in diagnostic
+    assert "preg_match" not in diagnostic
+    assert "get_error_message" not in diagnostic
+    assert "get_error_data" not in diagnostic
+
+
 def test_terminal_receipt_binds_rollback_approval_dates_and_state_without_mutation() -> None:
     receipt = method(
         "validate_terminal_reconciliation_receipt",
