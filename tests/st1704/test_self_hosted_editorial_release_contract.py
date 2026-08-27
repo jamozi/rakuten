@@ -67,7 +67,7 @@ def test_runtime_manifest_is_exact_and_keeps_st1703_as_predecessor() -> None:
 
 
 def test_theme_package_is_deterministic_closed_and_has_no_javascript() -> None:
-    assert theme_builder.OUTPUT_PATH.name == "kurashinoshirube-child-1.3.0.zip"
+    assert theme_builder.OUTPUT_PATH.name == "kurashinoshirube-child-1.3.3.zip"
     first = theme_builder.build_package()
     second = theme_builder.build_package()
     assert first == second
@@ -157,7 +157,7 @@ def test_runbook_preserves_all_external_human_gates_and_reversible_rollback() ->
         "暮らしの道具",
         "The repository CLI has no publish or schedule command",
         "deactivate Yoast",
-        "child-theme 1.3.0",
+        "child-theme 1.3.3",
         "child-theme 1.1.1 package as the minimum containment floor",
         "do not roll back to 1.0.2",
         "temporary Review post Draft with no redirect",

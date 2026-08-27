@@ -159,14 +159,14 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_3_1_successor() -> None:
+def test_theme_is_an_isolated_1_3_3_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.3.1\n") == 1
+    assert stylesheet.count("\nVersion: 1.3.3\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.1"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.1'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.3"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.3'") == 1
     at003_gate = functions.split(
         "function kurashinoshirube_existing_update_context", 1
     )[1]
@@ -181,7 +181,7 @@ def test_theme_is_an_isolated_1_3_1_successor() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.3.1"
+    assert manifest["theme_version"] == "1.3.3"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 3
     for record in records:
@@ -945,6 +945,46 @@ def test_yoast_is_the_only_generic_head_metadata_owner() -> None:
         'name="twitter:',
     ):
         assert duplicate not in combined
+
+
+def test_document_title_has_one_conditional_owner_and_core_fallback() -> None:
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    contract = _load_json(CONTRACT_PATH)
+    deduplication = contract["head"]["document_title_deduplication"]
+    assert deduplication == {
+        "active_when": "WPSEO_VERSION_DEFINED",
+        "hook": "wp_head",
+        "hook_priority": 0,
+        "removed_priority_1_callbacks": [
+            "_wp_render_title_tag",
+            "_block_template_render_title_tag",
+            "gutenberg_render_title_tag",
+        ],
+    }
+    assert contract["head"]["document_title_owner"] == (
+        "YOAST_WHEN_ACTIVE_OTHERWISE_WORDPRESS_OR_GUTENBERG_FALLBACK"
+    )
+    assert source.count("add_theme_support('title-tag');") == 1
+    assert source.count(
+        "function kurashinoshirube_select_document_title_owner(): void"
+    ) == 1
+    owner = source.split(
+        "function kurashinoshirube_select_document_title_owner(): void", 1
+    )[1].split("add_action(", 1)[0]
+    assert "if (! defined('WPSEO_VERSION'))" in owner
+    for callback in deduplication["removed_priority_1_callbacks"]:
+        assert owner.count(f"'{callback}'") == 1
+    assert "remove_action('wp_head', $callback, 1);" in owner
+    assert "else" not in owner
+    assert source.count(
+        "'wp_head',\n"
+        "    'kurashinoshirube_select_document_title_owner',\n"
+        "    0"
+    ) == 1
+    assert source.count(
+        "'after_setup_theme',\n"
+        "    'kurashinoshirube_select_document_title_owner'"
+    ) == 0
 
 
 def test_existing_article_update_is_one_human_only_preserving_action() -> None:

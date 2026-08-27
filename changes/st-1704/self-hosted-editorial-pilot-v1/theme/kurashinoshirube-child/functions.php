@@ -12,7 +12,7 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.3.1';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.3.3';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guide.webp';
@@ -1537,6 +1537,28 @@ add_action('after_setup_theme', static function (): void {
     add_theme_support('responsive-embeds');
     add_theme_support('html5', array('caption', 'comment-form', 'comment-list', 'gallery', 'search-form', 'style', 'script'));
 });
+
+/** Let Yoast own the title when active, preserving the platform fallback. */
+function kurashinoshirube_select_document_title_owner(): void
+{
+    if (! defined('WPSEO_VERSION')) {
+        return;
+    }
+    foreach (
+        array(
+            '_wp_render_title_tag',
+            '_block_template_render_title_tag',
+            'gutenberg_render_title_tag',
+        ) as $callback
+    ) {
+        remove_action('wp_head', $callback, 1);
+    }
+}
+add_action(
+    'wp_head',
+    'kurashinoshirube_select_document_title_owner',
+    0
+);
 
 add_action('wp_enqueue_scripts', static function (): void {
     $theme = wp_get_theme();

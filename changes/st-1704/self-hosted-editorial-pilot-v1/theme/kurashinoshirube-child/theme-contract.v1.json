@@ -91,6 +91,17 @@
       "Organization",
       "WebSite"
     ],
+    "document_title_deduplication": {
+      "active_when": "WPSEO_VERSION_DEFINED",
+      "hook": "wp_head",
+      "hook_priority": 0,
+      "removed_priority_1_callbacks": [
+        "_wp_render_title_tag",
+        "_block_template_render_title_tag",
+        "gutenberg_render_title_tag"
+      ]
+    },
+    "document_title_owner": "YOAST_WHEN_ACTIVE_OTHERWISE_WORDPRESS_OR_GUTENBERG_FALLBACK",
     "forbidden_json_ld_types": [
       "AggregateRating",
       "FAQPage",
@@ -381,5 +392,5 @@
     "wrapper_keys": ["payload", "payload_sha256", "schema"]
   },
   "theme_slug": "kurashinoshirube-child",
-  "theme_version": "1.3.1"
+  "theme_version": "1.3.3"
 }

@@ -19,7 +19,7 @@ from xml.etree import ElementTree
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 THEME_SLUG: Final = "kurashinoshirube-child"
-THEME_VERSION: Final = "1.3.1"
+THEME_VERSION: Final = "1.3.3"
 THEME_ROOT: Final = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme" / THEME_SLUG
 )
@@ -94,6 +94,17 @@ PUBLIC_LISTING_ELIGIBILITY: Final = {
     ],
     "query_cache": "REQUEST_LOCAL_ONLY",
     "snapshot_validator": "kurashinoshirube_bound_post_snapshot(post_id,false)",
+}
+
+DOCUMENT_TITLE_DEDUPLICATION: Final = {
+    "active_when": "WPSEO_VERSION_DEFINED",
+    "hook": "wp_head",
+    "hook_priority": 0,
+    "removed_priority_1_callbacks": [
+        "_wp_render_title_tag",
+        "_block_template_render_title_tag",
+        "gutenberg_render_title_tag",
+    ],
 }
 
 
@@ -265,6 +276,11 @@ def validate_sources() -> dict[str, str]:
         "wpseo_metadesc",
         "wpseo_canonical",
         "wpseo_robots",
+        "kurashinoshirube_select_document_title_owner",
+        "'_wp_render_title_tag'",
+        "'_block_template_render_title_tag'",
+        "'gutenberg_render_title_tag'",
+        "remove_action('wp_head', $callback, 1)",
         "wpseo_exclude_from_sitemap_by_post_ids",
         "query_loop_block_query_vars",
         "kurashinoshirube_public_listing_post_is_eligible",
@@ -305,6 +321,10 @@ def validate_sources() -> dict[str, str]:
         contract.get("schema") != "SELF_HOSTED_EDITORIAL_THEME_CONTRACT_V1"
         or contract.get("theme_version") != THEME_VERSION
         or contract.get("publication_authority") != "NONE"
+        or contract.get("head", {}).get("document_title_deduplication")
+        != DOCUMENT_TITLE_DEDUPLICATION
+        or contract.get("head", {}).get("document_title_owner")
+        != "YOAST_WHEN_ACTIVE_OTHERWISE_WORDPRESS_OR_GUTENBERG_FALLBACK"
         or contract.get("public_listing_eligibility") != PUBLIC_LISTING_ELIGIBILITY
         or not isinstance(contract.get("snapshot"), dict)
         or contract["snapshot"].get("excerpt_binding")
