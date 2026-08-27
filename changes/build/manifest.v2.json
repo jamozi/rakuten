@@ -2,7 +2,7 @@
   "document": {
     "id": "RAOS-BUILD-MANIFEST-002",
     "mutable_source_hash_authority": false,
-    "owner_count": 136,
+    "owner_count": 137,
     "version": "2.0.0"
   },
   "owners": [
@@ -7784,7 +7784,7 @@
         },
         {
           "bytes": 5351,
-          "sha256": "a4c1a6d98967afbb09a2e830c852b53761929f27547676ada10eab6923394f82",
+          "sha256": "b72e7cbda7dbfbd681bf8080c661c22cc5f3e28183e29cad86f26f4abdd96acf",
           "uri": "repo://changes/st-0205/manifest.yaml"
         }
       ],
@@ -24578,6 +24578,36 @@
       "output_scope": "tracked",
       "outputs": [
         {
+          "bytes": 1183,
+          "sha256": "0a89ae66f60868f81dcf690340651e5d2dbdca2fac236ad63bfc9dacd73e09e4",
+          "uri": "repo://changes/st-1704/at003-recovery-operator-v1/runtime-manifest.v1.json"
+        }
+      ],
+      "owner_dependencies": [],
+      "owner_id": "build_st1704_at003_recovery_operator",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/at003-recovery-operator-v1",
+          "uri": "repo://changes/st-1704/at003-recovery-operator-v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_at003_recovery_operator.py",
+          "uri": "repo://scripts/build_st1704_at003_recovery_operator.py",
+          "version": 2
+        }
+      ],
+      "story_ids": [
+        "ST-1704"
+      ]
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
           "bytes": 30099,
           "sha256": "7a4aa76abbda5c28f9c60740302dbe37227d29cd842a3cb2de7bc00b956a2986",
           "uri": "repo://changes/st-1704/owner-local-pilot-v1/runtime-manifest.v1.json"
@@ -24609,7 +24639,7 @@
       "outputs": [
         {
           "bytes": 3170,
-          "sha256": "b79cf95b50e73bb5843eb9b31bc80207e69b3602d55c61c3d7dc4244a5cb0125",
+          "sha256": "0af1aaec6ef68aec95ef4676ac606a634af5826d32efb0ca3a906cc6fe8324fc",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -24638,8 +24668,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 70562,
-          "sha256": "ddcf2124099a6d6dd10102d4f0bdd88b8fb76798127b176ecece6f737053873d",
+          "bytes": 70563,
+          "sha256": "700b51ca0b44383c674bfe54435fa3db686d26f36390f028a45aff4a72950fe0",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -24702,8 +24732,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 9376,
-          "sha256": "898c28f7c8ada83a347a4d75125061884a95a8264b0fd3bb3c369bd21f01e88a",
+          "bytes": 10782,
+          "sha256": "a3740f8fee89af6fe20de163bde6acd251610ff745766cdf90dea6ba2c424bef",
           "uri": "repo://changes/st-1704/publication-operator-v2/runtime-manifest.v2.json"
         }
       ],

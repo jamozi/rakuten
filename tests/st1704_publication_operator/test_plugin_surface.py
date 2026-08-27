@@ -25,7 +25,9 @@ def method(name: str, following: str) -> str:
 def test_routes_are_distinct_and_exactly_firewalled() -> None:
     php = source()
     assert "const REST_NAMESPACE = 'raos-operator/v2';" in php
-    assert php.count("register_rest_route(") == 4
+    assert php.count("register_rest_route(") == 7
+    assert "'/revision-status'" in php
+    assert "'/proposals/(?P<proposal_id>[a-f0-9]{64})/verify'" in php
     assert "'/proposals/(?P<proposal_id>[a-f0-9]{64})'" in php
     assert "'/proposals/(?P<proposal_id>[a-f0-9]{64})/apply'" in php
     guard = method("guard_combined_operator_rest_route", "is_exact_v2_handler")
@@ -66,6 +68,48 @@ def test_v2_auth_reuses_only_the_exact_bounded_executor_identity() -> None:
     assert "self::CAP_APPLY => true" in caps
     for forbidden in ("publish_posts", "edit_posts", "manage_categories"):
         assert forbidden not in caps
+
+
+def test_activation_installs_only_the_exact_unassigned_draft_writer_role() -> None:
+    php = source()
+    activation = method("activate", "install_tables")
+    install = method(
+        "install_draft_writer_role",
+        "persisted_draft_writer_role_is_exact",
+    )
+    persisted = method("persisted_draft_writer_role_is_exact", "activate")
+    exact = method(
+        "exact_draft_writer_capabilities",
+        "install_draft_writer_role",
+    )
+    assert "const DRAFT_WRITER_ROLE = 'raos_draft_writer';" in php
+    assert "const DRAFT_WRITER_ROLE_DISPLAY = 'RAOS Draft Writer';" in php
+    assert "self::install_draft_writer_role()" in activation
+    assert "RAOS draft writer role initialization failed." in activation
+    assert "add_role(" in install
+    assert "self::DRAFT_WRITER_ROLE_DISPLAY" in install
+    assert "self::persisted_draft_writer_role_is_exact()" in install
+    assert "catch (Throwable $exception)" in install
+    assert "'read' => true" in exact
+    assert "'edit_posts' => true" in exact
+    for forbidden in (
+        "delete_posts",
+        "publish_posts",
+        "upload_files",
+        "edit_published_posts",
+        "edit_others_posts",
+        "manage_options",
+    ):
+        assert forbidden not in exact
+    assert "$wpdb->prefix . 'user_roles'" in persisted
+    assert "count($rows) !== 1" in persisted
+    assert "is_serialized($rows[0]['option_value'], true)" in persisted
+    assert "array('allowed_classes' => false)" in persisted
+    assert "$record['name'] === self::DRAFT_WRITER_ROLE_DISPLAY" in persisted
+    assert "self::exact_draft_writer_capabilities()" in persisted
+    assert "add_user" not in install
+    assert "wp_create_user" not in install
+    assert "application_password" not in install
 
 
 def test_proposal_surface_is_fixed_and_globally_serialized() -> None:
@@ -150,7 +194,7 @@ def test_admin_approval_is_distinct_hash_bound_and_reauthenticated() -> None:
     assert "wp_check_password(" in approval
     assert "substr($proposal_id, -12)" in approval
     assert "proposer_user_id <> %d" in approval
-    assert "capture_publication_state" in approval
+    assert "capture_operation_state" in approval
     assert "approval_evidence_hash" in approval
 
 
@@ -326,6 +370,7 @@ def test_apply_defers_post_mutation_hooks_and_refuses_observed_pre_hooks() -> No
     assert "$post_after->post_date_gmt" in mutation
     assert mutation.count("$modified_times") >= 8
     assert "'add_post_metadata'" in mutation
+    assert "'delete_post_metadata'" in mutation
     assert "PHP_INT_MAX" in mutation
     assert "PHP_INT_MIN" in mutation
     assert "(int) $object_id === $post_id" in mutation
@@ -356,6 +401,115 @@ def test_apply_defers_post_mutation_hooks_and_refuses_observed_pre_hooks() -> No
     post_commit_exception = mutation.index("if ($external_effects_possible)")
     rollback = mutation.index("$wpdb->query('ROLLBACK');", post_commit_exception)
     assert post_commit_exception < rollback
+
+
+def test_wp71_redirect_metadata_guard_is_exact_phase_bounded_and_fail_closed() -> None:
+    php = source()
+    callback_guard = method(
+        "publication_core_redirect_callbacks_are_exact",
+        "publication_redirect_metadata_values",
+    )
+    meta_values = method(
+        "publication_redirect_metadata_values",
+        "publication_redirect_meta_plan",
+    )
+    redirect_plan = method(
+        "publication_redirect_meta_plan",
+        "redirect_metadata_filter_stack_is_exact",
+    )
+    stack_guard = method(
+        "redirect_metadata_filter_stack_is_exact",
+        "capture_publication_hook_snapshot",
+    )
+    mutation = method("apply_one_publication", "mutation_failure_result")
+
+    assert "const REDIRECT_META_PHASE_INACTIVE = 'INACTIVE';" in php
+    assert (
+        "const REDIRECT_META_PHASE_POST_UPDATED = 'POST_UPDATED';" in php
+    )
+    for callback_name in (
+        "wp_check_for_changed_slugs",
+        "wp_check_for_changed_dates",
+    ):
+        assert f"'{callback_name}'" in callback_guard
+        assert "function_exists($callback_name)" in callback_guard
+    assert "$wp_filter['post_updated']->callbacks[12]" in callback_guard
+    assert "array('accepted_args', 'function')" in callback_guard
+    assert "$callback['accepted_args'] !== 3" in callback_guard
+    assert "$callback['function'] !== $callback_name" in callback_guard
+
+    for meta_key in ("_wp_old_slug", "_wp_old_date"):
+        assert f"'{meta_key}' => array()" in meta_values
+        assert meta_values.count(f"'{meta_key}'") >= 1
+        assert redirect_plan.count(f"'{meta_key}'") >= 3
+        assert mutation.count(f"'{meta_key}'") >= 2
+    assert "$values[$key][] = maybe_unserialize($value);" in meta_values
+    assert "count($before['storage']['restore']['meta_rows'])" in meta_values
+    assert "> self::MAX_META_ROWS" in meta_values
+
+    assert "array('add_post_metadata', 'delete_post_metadata')" in stack_guard
+    assert "$wp_current_filter[$active_index - 1] === 'post_updated'" in stack_guard
+    assert "array_keys($wp_current_filter, 'post_updated', true)" in stack_guard
+    assert "array_keys($wp_current_filter, $metadata_hook, true)" in stack_guard
+
+    callback_check = mutation.index(
+        "publication_core_redirect_callbacks_are_exact()"
+    )
+    bounded_write = mutation.index("write_bounded_publication_rows(")
+    commit = mutation.index("$wpdb->query('COMMIT')", bounded_write)
+    assert callback_check < bounded_write < commit
+    assert "CORE_REDIRECT_META_PLAN_INVALID" in mutation
+    assert "publication_redirect_meta_plan(" in mutation
+    assert "gmdate(" in redirect_plan and "strtotime(" in redirect_plan
+    assert "$values[$key][]" not in mutation
+    assert "$values['_wp_old_slug']" in redirect_plan
+    assert "$values['_wp_old_date']" in redirect_plan
+    assert redirect_plan.count("in_array(") == 4
+    assert "! empty($previous_slug)" in redirect_plan
+    assert "! empty($previous_date)" in redirect_plan
+
+    assert mutation.count("add_filter(") >= 2
+    assert "'add_post_metadata',\n                $core_queue_meta_suppressor" in mutation
+    assert (
+        "'delete_post_metadata',\n"
+        "                $core_redirect_meta_delete_suppressor" in mutation
+    )
+    assert mutation.count("PHP_INT_MAX,\n                5") >= 2
+    assert "$check !== null" in mutation
+    assert "! is_int($object_id)" in mutation
+    assert "$object_id !== $post_id" in mutation
+    assert "$unique !== false" in mutation
+    assert "$delete_all !== false" in mutation
+    assert "$shape['add_expected'] !== true" in mutation
+    assert "$shape['delete_expected'] !== true" in mutation
+    assert "redirect metadata add shape refused" in mutation
+    assert "redirect metadata delete shape refused" in mutation
+    assert mutation.count("redirect_metadata_filter_stack_is_exact(") == 2
+
+    phase_start = mutation.index(
+        "$redirect_meta_phase = self::REDIRECT_META_PHASE_POST_UPDATED;"
+    )
+    post_updated = mutation.index("do_action(\n                        'post_updated'", phase_start)
+    phase_end = mutation.index(
+        "$redirect_meta_phase = self::REDIRECT_META_PHASE_INACTIVE;",
+        post_updated,
+    )
+    next_hook = mutation.index("'save_post_post',", phase_end)
+    assert phase_start < post_updated < phase_end < next_hook
+    assert "try {" in mutation[phase_start:post_updated]
+    assert "} finally {" in mutation[post_updated:phase_end]
+    assert "$expected_add_count = $shape['add_expected'] ? 1 : 0;" in mutation
+    assert "$expected_delete_count = $shape['delete_expected'] ? 1 : 0;" in mutation
+    assert "redirect metadata suppression incomplete" in mutation
+
+    cleanup = mutation[mutation.index("} finally {", phase_end) :]
+    assert "remove_filter(" in cleanup
+    assert "'add_post_metadata'" in cleanup
+    assert "'delete_post_metadata'" in cleanup
+    assert cleanup.count("=== false") >= 2
+    readback = method("published_state_matches", "before_state_matches")
+    assert "'all_meta_sha256'" in readback
+    assert "'other_meta_sha256'" in readback
 
 
 def test_reacquired_mutex_closes_orphaned_applying_with_audit_path() -> None:
@@ -439,8 +593,8 @@ def test_success_receipt_locks_preserved_storage_through_applied_commit() -> Non
     commit = success.index("$wpdb->query('COMMIT')", applied)
     assert isolation < start < post_lock < locked_readback < applied < commit
     assert "$modified_times,\n                true" in success
-    assert php.count("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE") == 1
-    assert php.count("$modified_times,\n                true") == 1
+    assert php.count("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE") == 6
+    assert php.count("$modified_times,\n                true") == 3
 
 
 def test_post_write_readback_rollback_and_terminal_replay_fail_closed() -> None:

@@ -1,0 +1,67 @@
+{
+  "approval": {
+    "authority": "DISTINCT_COOKIE_AUTHENTICATED_MANAGE_OPTIONS_HUMAN_ONLY",
+    "password_reauthentication": true,
+    "proposal_hash_confirmation": true
+  },
+  "article_post_bindings": {
+    "st1704-anker-solix-c300-c800-c1000-differences": 29,
+    "st1704-compact-robot-vacuum-shortlist": 30,
+    "st1704-countertop-dishwasher-for-small-households": 41,
+    "st1704-portable-power-station-guide": 28
+  },
+  "atomic_write_set": [
+    "post_title",
+    "post_excerpt",
+    "post_content",
+    "post_name",
+    "post_modified",
+    "post_modified_gmt",
+    "_raos_publication_snapshot_v1",
+    "proposal_applied_receipt"
+  ],
+  "immutable": [
+    "post_id",
+    "post_status_draft",
+    "post_type",
+    "post_author",
+    "post_date",
+    "post_date_gmt",
+    "taxonomy",
+    "thumbnail",
+    "non_snapshot_meta",
+    "legacy_committed_journal",
+    "immutable_request_artifacts"
+  ],
+  "operation": "REVISE_ST1704_DRAFT",
+  "proposal_binding": [
+    "article_id",
+    "draft_post_id",
+    "generation",
+    "predecessor_packet_request_snapshot_content_review_slug",
+    "successor_packet_request_snapshot_content_review_slug_and_body",
+    "operation_sha256",
+    "request_token"
+  ],
+  "recovery": {
+    "applying": "EXACT_IDEMPOTENT_APPLY_RETRY_ONLY",
+    "classification": [
+      "EXACT_SUCCESSOR",
+      "EXACT_PREDECESSOR"
+    ],
+    "mutex": "PUBLICATION_V2_SHARED_MUTEX",
+    "proposal_id": "SAME_PROPOSAL_ID_ONLY",
+    "terminal_states": [
+      "APPLIED",
+      "FAILED",
+      "NEEDS_RECOVERY",
+      "EXPIRED",
+      "EXPIRED_PROPOSED_OR_APPROVED"
+    ]
+  },
+  "recovery_route": "/wp-json/raos-operator/v2/proposals/{proposal_id}/revision-state",
+  "schema": "RAOS_ST1704_WORDPRESS_DRAFT_REVISION_CONTRACT_V2",
+  "status_route": "/wp-json/raos-operator/v2/revision-status",
+  "verify_route": "/wp-json/raos-operator/v2/proposals/{proposal_id}/verify",
+  "writes_default": "DISABLED"
+}

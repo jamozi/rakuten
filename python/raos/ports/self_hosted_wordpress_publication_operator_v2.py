@@ -4,6 +4,13 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
+from raos.domain.operations.self_hosted_wordpress_draft_revision_operator_v2 import (
+    DraftRevisionApplyReceipt,
+    DraftRevisionOperatorStatus,
+    DraftRevisionProposal,
+    DraftRevisionRecoveryReceipt,
+    DraftRevisionVerifyReceipt,
+)
 from raos.domain.operations.self_hosted_wordpress_publication_operator_v2 import (
     CommittedReviewDraftBinding,
     PublicationApplyReceipt,
@@ -33,6 +40,24 @@ class SelfHostedWordPressPublicationOperatorV2Port(Protocol):
     ) -> PublicationProposalReceipt: ...
 
     def apply(self, proposal_id: str) -> PublicationApplyReceipt: ...
+
+    def propose_revision(
+        self, proposal: DraftRevisionProposal
+    ) -> PublicationProposalReceipt: ...
+
+    def revision_status(self) -> DraftRevisionOperatorStatus: ...
+
+    def recover_revision_proposal(
+        self, proposal: DraftRevisionProposal
+    ) -> PublicationProposalReceipt: ...
+
+    def apply_revision(self, proposal_id: str) -> DraftRevisionApplyReceipt: ...
+
+    def recover_revision_state(
+        self, proposal_id: str
+    ) -> DraftRevisionRecoveryReceipt: ...
+
+    def verify_revision(self, proposal_id: str) -> DraftRevisionVerifyReceipt: ...
 
 
 __all__ = [

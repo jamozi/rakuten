@@ -159,14 +159,14 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_3_1_successor() -> None:
+def test_theme_is_an_isolated_1_3_3_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.3.1\n") == 1
+    assert stylesheet.count("\nVersion: 1.3.3\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.1"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.1'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.3"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.3'") == 1
     at003_gate = functions.split(
         "function kurashinoshirube_existing_update_context", 1
     )[1]
@@ -204,7 +204,7 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.3.1"
+    assert manifest["theme_version"] == "1.3.3"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 3
     for record in records:
@@ -217,6 +217,68 @@ def test_asset_manifest_is_complete_and_hash_bound() -> None:
     assert isinstance(source_files, list)
     assert source_files == sorted(source_files)
     assert all((THEME_ROOT / str(path)).is_file() for path in source_files)
+
+
+def test_consent_defaults_are_opt_in_and_global() -> None:
+    functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    assert functions.count(
+        "add_filter('wp_get_consent_type', 'kurashinoshirube_wp_consent_type');"
+    ) == 1
+    assert "return 'optin';" in functions
+    assert functions.count(
+        "'wp_cookie_expiration',\n"
+        "    'kurashinoshirube_wp_consent_cookie_expiration'"
+    ) == 1
+    assert "function kurashinoshirube_wp_consent_cookie_expiration(): int" in functions
+    assert "return 365;" in functions
+    assert functions.count(
+        "'googlesitekit_consent_defaults',\n"
+        "    'kurashinoshirube_site_kit_global_consent_defaults'"
+    ) == 1
+    consent_filter = functions.split(
+        "function kurashinoshirube_site_kit_global_consent_defaults", 1
+    )[1]
+    assert "if (!is_array($defaults))" in consent_filter
+    assert "unset($defaults['region']);" in consent_filter
+    assert "$defaults['wait_for_update'] = 2000;" in consent_filter
+    assert "return $defaults;" in consent_filter
+    assert functions.count(
+        "'script_loader_tag',\n"
+        "    'kurashinoshirube_gate_site_kit_analytics_loader'"
+    ) == 1
+    analytics_filter = functions.split(
+        "function kurashinoshirube_gate_site_kit_analytics_loader", 1
+    )[1]
+    assert "$handle !== 'google_gtagjs'" in analytics_filter
+    assert "www.googletagmanager.com" in analytics_filter
+    assert "'/gtag/js'" in analytics_filter
+    assert 'data-raos-consent-gate="statistics"' in analytics_filter
+    assert 'data-raos-consent-config="statistics"' in analytics_filter
+    assert 'type="text/plain"' in analytics_filter
+    assert "eligibleAtParse" in analytics_filter
+    assert 'window.getCkyConsent' in analytics_filter
+    assert 'window.wp_has_consent("statistics")' in analytics_filter
+    assert 'window._googlesitekitConsents.analytics_storage==="granted"' in analytics_filter
+    for event_name in (
+        "wp_consent_type_defined",
+        "wp_listen_for_consent_change",
+        "cookieyes_consent_update",
+    ):
+        assert event_name in analytics_filter
+    assert analytics_filter.count('data-cookieyes","cookieyes-analytics') == 2
+    assert analytics_filter.index("config.replaceWith(configScript)") < (
+        analytics_filter.index("analytics.src=source")
+    )
+    assert analytics_filter.index("analytics.src=source") < analytics_filter.index(
+        "loader.replaceWith(analytics)"
+    )
+    assert "$loader_replacement_count !== 1" in analytics_filter
+    assert "$config_replacement_count === 1" in analytics_filter
+    assert "? $gated_tag" in analytics_filter
+    assert "googlesitekit_analytics-4_tag_blocked" not in functions
+    assert "googlesitekit_analytics-4_tag_block_on_consent" not in functions
+    assert "gtag('consent'" not in functions
+    assert "X-RAOS-Consent" not in functions
 
 
 def test_brand_mark_is_bounded_accessible_svg() -> None:
@@ -906,6 +968,46 @@ def test_yoast_is_the_only_generic_head_metadata_owner() -> None:
         'name="twitter:',
     ):
         assert duplicate not in combined
+
+
+def test_document_title_has_one_conditional_owner_and_core_fallback() -> None:
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    contract = _load_json(CONTRACT_PATH)
+    deduplication = contract["head"]["document_title_deduplication"]
+    assert deduplication == {
+        "active_when": "WPSEO_VERSION_DEFINED",
+        "hook": "wp_head",
+        "hook_priority": 0,
+        "removed_priority_1_callbacks": [
+            "_wp_render_title_tag",
+            "_block_template_render_title_tag",
+            "gutenberg_render_title_tag",
+        ],
+    }
+    assert contract["head"]["document_title_owner"] == (
+        "YOAST_WHEN_ACTIVE_OTHERWISE_WORDPRESS_OR_GUTENBERG_FALLBACK"
+    )
+    assert source.count("add_theme_support('title-tag');") == 1
+    assert source.count(
+        "function kurashinoshirube_select_document_title_owner(): void"
+    ) == 1
+    owner = source.split(
+        "function kurashinoshirube_select_document_title_owner(): void", 1
+    )[1].split("add_action(", 1)[0]
+    assert "if (! defined('WPSEO_VERSION'))" in owner
+    for callback in deduplication["removed_priority_1_callbacks"]:
+        assert owner.count(f"'{callback}'") == 1
+    assert "remove_action('wp_head', $callback, 1);" in owner
+    assert "else" not in owner
+    assert source.count(
+        "'wp_head',\n"
+        "    'kurashinoshirube_select_document_title_owner',\n"
+        "    0"
+    ) == 1
+    assert source.count(
+        "'after_setup_theme',\n"
+        "    'kurashinoshirube_select_document_title_owner'"
+    ) == 0
 
 
 def test_existing_article_update_is_one_human_only_preserving_action() -> None:

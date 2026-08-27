@@ -43,6 +43,7 @@ def test_addendum_preserves_human_decision_and_forbids_self_approval(
 def test_routes_operation_gates_and_receipts_are_closed(
     publication_contract: dict[str, Any],
 ) -> None:
+    assert publication_contract["site"]["plugin_version"] == "2.1.7"
     assert publication_contract["site"]["wordpress_core_release_line"] == "7.1.x"
     assert publication_contract["operation"]["exact"] == "PUBLISH_ST1704_ARTICLE"
     assert publication_contract["operation"]["allowed_article_bindings"] == (
@@ -73,6 +74,15 @@ def test_routes_operation_gates_and_receipts_are_closed(
     }
     assert publication_contract["approval"]["rest_route"] == "ABSENT"
     assert publication_contract["approval"]["executor_can_self_approve"] is False
+    assert publication_contract["authentication"]["draft_writer"] == {
+        "role": "raos_draft_writer",
+        "display_name": "RAOS Draft Writer",
+        "credential": "DISTINCT_WORDPRESS_APPLICATION_PASSWORD_OVER_HTTPS",
+        "installation": "PLUGIN_ACTIVATION_EXACT_PERSISTENCE_VERIFIED",
+        "exact_capabilities": {"read": True, "edit_posts": True},
+        "user_assignment": "HUMAN_EXTERNAL_OPERATION",
+        "application_password_creation": "HUMAN_EXTERNAL_OPERATION",
+    }
     assert publication_contract["proposal_receipt"]["exact_get_recovery"] == {
         "replayed": True,
         "state": "ANY_CLOSED_PROPOSAL_STATE",
@@ -141,3 +151,31 @@ def test_mutation_boundary_preserves_content_media_and_taxonomy_creation(
         "staging": "NOT_EXECUTED",
         "production_readiness": "NOT_READY",
     }
+
+
+def test_additive_revision_contract_keeps_literal_ids_and_draft_invariants() -> None:
+    revision = json.loads(
+        (
+            SLICE
+            / "contracts/self-hosted-wordpress-draft-revision.v2.json"
+        ).read_bytes()
+    )
+    assert revision["operation"] == "REVISE_ST1704_DRAFT"
+    assert revision["article_post_bindings"] == {
+        "st1704-portable-power-station-guide": 28,
+        "st1704-anker-solix-c300-c800-c1000-differences": 29,
+        "st1704-countertop-dishwasher-for-small-households": 41,
+        "st1704-compact-robot-vacuum-shortlist": 30,
+    }
+    assert "post_status_draft" in revision["immutable"]
+    assert "proposal_applied_receipt" in revision["atomic_write_set"]
+    assert revision["recovery"]["proposal_id"] == "SAME_PROPOSAL_ID_ONLY"
+    assert revision["recovery"]["applying"] == (
+        "EXACT_IDEMPOTENT_APPLY_RETRY_ONLY"
+    )
+    assert revision["recovery"]["classification"] == [
+        "EXACT_SUCCESSOR",
+        "EXACT_PREDECESSOR",
+    ]
+    assert revision["recovery"]["mutex"] == "PUBLICATION_V2_SHARED_MUTEX"
+    assert revision["recovery_route"].endswith("/{proposal_id}/revision-state")

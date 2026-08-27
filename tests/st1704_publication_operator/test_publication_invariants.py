@@ -19,7 +19,7 @@ def _source() -> str:
 def test_exact_routes_and_combined_v1_v2_firewall_are_bound() -> None:
     source = _source()
     assert "const REST_NAMESPACE = 'raos-operator/v2';" in source
-    assert source.count("register_rest_route(") == 4
+    assert source.count("register_rest_route(") == 7
     for callback in (
         "rest_status",
         "rest_create_proposal",
@@ -77,12 +77,23 @@ def test_content_media_term_creation_and_core_publish_caps_are_bounded() -> None
         "media_handle_",
         "wp_insert_attachment(",
         "set_post_thumbnail(",
-        "add_role(",
         "remove_role(",
     ):
         assert forbidden not in source
+    draft_writer_install = source.split(
+        "private static function install_draft_writer_role", 1
+    )[1].split("private static function persisted_draft_writer_role_is_exact", 1)[0]
+    assert source.count("add_role(") == 1
+    assert "add_role(" in draft_writer_install
     assert "current_user_can('edit_posts')" not in source
-    assert "current_user_can('publish_posts')" not in source
+    executor_caps = source.split(
+        "private static function exact_executor_capabilities", 1
+    )[1].split("private function operator_user_binding", 1)[0]
+    assert "publish_posts" not in executor_caps
+    reconciliation_auth = source.split(
+        "private function reconciliation_submission_authentication", 1
+    )[1].split("public function handle_reconciliation_cleanup", 1)[0]
+    assert "current_user_can('publish_posts')" in reconciliation_auth
     # These server-side fields must be read and hash-bound for preservation;
     # they are not caller inputs and may not be sent as mutation fields.
     for preserved in ("post_title", "post_content", "post_excerpt"):
@@ -159,5 +170,10 @@ def test_apply_is_one_proposal_with_cas_idempotency_audit_and_readback() -> None
     ):
         assert f"'{hook_name}'" in mutation
     assert "POST_COMMIT_HOOK_REPLAY_UNCERTAIN" in mutation
+    assert "wp_check_for_changed_slugs" in source
+    assert "wp_check_for_changed_dates" in source
+    assert "_wp_old_slug" in mutation
+    assert "_wp_old_date" in mutation
+    assert "'delete_post_metadata'" in mutation
     assert "function_exists('wp_after_insert_post')" in mutation
     assert "wp_after_insert_post(" in mutation

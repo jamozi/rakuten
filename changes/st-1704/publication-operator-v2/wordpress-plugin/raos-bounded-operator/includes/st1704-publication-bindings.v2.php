@@ -12,6 +12,9 @@ final class RAOS_ST1704_Publication_Bindings_V2
     const ARTICLES_JSON = '{"st1704-anker-solix-c300-c800-c1000-differences":"anker-solix-c300-c800-c1000-differences","st1704-compact-robot-vacuum-shortlist":"compact-robot-vacuum-shortlist","st1704-countertop-dishwasher-for-small-households":"countertop-dishwasher-for-small-households","st1704-portable-power-station-guide":"portable-power-station-guide"}';
     const ARTICLES_SHA256 = '264e7fec00e5e4d59086d010700beb8ce2540c343f0519ea517a5e9df168db14';
 
+    const REVISION_POST_IDS_JSON = '{"st1704-anker-solix-c300-c800-c1000-differences":29,"st1704-compact-robot-vacuum-shortlist":30,"st1704-countertop-dishwasher-for-small-households":41,"st1704-portable-power-station-guide":28}';
+    const REVISION_POST_IDS_SHA256 = 'f1075561e70a2674de3e7a1508c819ea8be805f3a343264777f53c3408165f53';
+
     public static function articles()
     {
         if (! hash_equals(
@@ -32,5 +35,26 @@ final class RAOS_ST1704_Publication_Bindings_V2
             }
         }
         return $articles;
+    }
+
+    public static function revision_post_ids()
+    {
+        if (! hash_equals(
+            self::REVISION_POST_IDS_SHA256,
+            hash('sha256', self::REVISION_POST_IDS_JSON)
+        )) {
+            return array();
+        }
+        $post_ids = json_decode(self::REVISION_POST_IDS_JSON, true);
+        if (! is_array($post_ids) || count($post_ids) !== 4) {
+            return array();
+        }
+        foreach ($post_ids as $article_id => $post_id) {
+            if (! is_string($article_id) || ! is_int($post_id)
+                || $post_id < 1) {
+                return array();
+            }
+        }
+        return $post_ids;
     }
 }

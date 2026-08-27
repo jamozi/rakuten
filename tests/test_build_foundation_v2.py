@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import sys
 
 import yaml
 
@@ -16,6 +17,7 @@ from scripts.raos_build_core import (
     active_manifest_document,
     affected_owners,
     discover_registry,
+    run_commands,
 )
 
 
@@ -34,6 +36,14 @@ def test_build_infrastructure_change_selects_the_complete_graph() -> None:
     registry = discover_registry()
     selected = affected_owners(registry, {Path("scripts/raos_build_core.py")})
     assert set(selected) == set(registry)
+
+
+def test_owner_commands_do_not_write_python_bytecode(tmp_path: Path) -> None:
+    (tmp_path / "owner_module.py").write_text("VALUE = 1\n", encoding="utf-8")
+
+    run_commands(((sys.executable, "-c", "import owner_module"),), root=tmp_path)
+
+    assert not (tmp_path / "__pycache__").exists()
 
 
 def test_physical_runtime_generator_is_owner_private() -> None:

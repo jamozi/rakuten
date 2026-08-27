@@ -97,6 +97,7 @@ def test_v2_stage_map_is_closed_and_does_not_import_v1_cli() -> None:
         "raos.adapters.self_hosted_wordpress_publication_operator_json_v2",
         "raos.domain.editorial.self_hosted_editorial_pilot",
         "raos.domain.operations.self_hosted_wordpress_operator",
+        "raos.domain.operations.self_hosted_wordpress_draft_revision_operator_v2",
         "raos.domain.operations.self_hosted_wordpress_publication_operator_v2",
         "raos.ports.self_hosted_editorial_pilot",
         "raos.ports.self_hosted_wordpress_publication_operator_v2",
@@ -108,6 +109,20 @@ def test_launcher_is_executable_and_parser_never_echoes_invalid_argv(
 ) -> None:
     launcher = ROOT / "scripts/st1704_wordpress_publication_operator_v2_python.sh"
     assert stat.S_IMODE(launcher.stat().st_mode) == 0o755
+    launcher_source = launcher.read_text(encoding="utf-8")
+    for command_shape in (
+        "revision-status:1",
+        "propose-review-draft-revision:3",
+        "recover-review-draft-revision:5",
+        "apply-review-draft-revision:5",
+        "verify-review-draft-revision:5",
+    ):
+        assert command_shape in launcher_source
+    assert (
+        "python/raos/domain/operations/"
+        "self_hosted_wordpress_draft_revision_operator_v2.py"
+        in launcher_source
+    )
     with pytest.raises(PublicationOperatorFailure) as invalid:
         cli._parser().parse_args(["--credential=SUPERSECRET"])
     assert invalid.value.code is PublicationOperatorFailureCode.INVALID_ARGUMENT

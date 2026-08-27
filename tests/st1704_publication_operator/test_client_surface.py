@@ -18,6 +18,7 @@ from raos.domain.operations.self_hosted_wordpress_publication_operator_v2 import
     PublicationOperatorFailureCode,
     PublicationProposal,
 )
+from tests.st1704_publication_operator.test_draft_revision import revision_proposal
 
 
 def proposal() -> PublicationProposal:
@@ -226,6 +227,181 @@ def test_malformed_post_write_receipt_is_outcome_ambiguous_and_never_invalid(
         ).propose(candidate)
     assert failed.value.code is PublicationOperatorFailureCode.OUTCOME_AMBIGUOUS
     assert "secret" not in str(failed.value)
+
+
+def test_revision_uses_additive_status_propose_apply_and_verify_routes(
+    tmp_path: Path,
+) -> None:
+    candidate = revision_proposal()
+    status_connection = _Connection(
+        _Response(
+            {
+                "master_writes_enabled": True,
+                "operator_version": "2.1.0",
+                "publication_writes_enabled": True,
+                "schema": "RAOS_ST1704_DRAFT_REVISION_STATUS_V2",
+                "supported_operations": ["REVISE_ST1704_DRAFT"],
+                "writes_enabled": True,
+            },
+            status=200,
+        )
+    )
+    status = https.OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+        tmp_path, _Factory(status_connection)
+    ).revision_status()
+    assert status.writes_enabled
+    assert status_connection.calls[0][0:3] == (
+        "GET",
+        "/wp-json/raos-operator/v2/revision-status",
+        b"",
+    )
+
+    apply_connection = _Connection(
+        _Response(
+            {
+                "operation": "REVISE_ST1704_DRAFT",
+                "proposal_id": candidate.proposal_id,
+                "replayed": False,
+                "result_code": "ST1704_DRAFT_REVISED",
+                "schema": "RAOS_ST1704_PUBLICATION_OPERATOR_APPLY_V2",
+                "state": "APPLIED",
+            },
+            status=200,
+            etag=candidate.proposal_id,
+        )
+    )
+    applied = https.OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+        tmp_path, _Factory(apply_connection)
+    ).apply_revision(candidate.proposal_id)
+    assert applied.result_code == "ST1704_DRAFT_REVISED"
+    assert apply_connection.calls[0][0:3] == (
+        "POST",
+        f"/wp-json/raos-operator/v2/proposals/{candidate.proposal_id}/apply",
+        b"{}",
+    )
+
+    verify_connection = _Connection(
+        _Response(
+            {
+                "draft_post_id": 28,
+                "operation": "REVISE_ST1704_DRAFT",
+                "operation_sha256": candidate.binding.operation_sha256,
+                "proposal_id": candidate.proposal_id,
+                "result_code": "ST1704_DRAFT_REVISION_VERIFIED",
+                "schema": "RAOS_ST1704_DRAFT_REVISION_VERIFY_V2",
+                "state": "APPLIED",
+            },
+            status=200,
+            etag=candidate.proposal_id,
+        )
+    )
+    verified = https.OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+        tmp_path, _Factory(verify_connection)
+    ).verify_revision(candidate.proposal_id)
+    assert verified.operation_sha256 == candidate.binding.operation_sha256
+    assert verify_connection.calls[0][0:3] == (
+        "GET",
+        f"/wp-json/raos-operator/v2/proposals/{candidate.proposal_id}/verify",
+        b"",
+    )
+
+
+def _revision_recovery_payload() -> dict[str, object]:
+    candidate = revision_proposal()
+    return {
+        "disposition": "PREDECESSOR",
+        "draft_post_id": candidate.binding.draft_id,
+        "operation": "REVISE_ST1704_DRAFT",
+        "operation_sha256": candidate.binding.operation_sha256,
+        "proposal_id": candidate.proposal_id,
+        "proposal_state": "FAILED",
+        "result_code": "ST1704_DRAFT_REVISION_STATE_OBSERVED",
+        "schema": "RAOS_ST1704_DRAFT_REVISION_RECOVERY_V2",
+    }
+
+
+def test_revision_state_recovery_is_exact_read_only_get_with_etag(
+    tmp_path: Path,
+) -> None:
+    candidate = revision_proposal()
+    connection = _Connection(
+        _Response(
+            _revision_recovery_payload(),
+            status=200,
+            etag=candidate.proposal_id,
+        )
+    )
+
+    recovered = https.OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+        tmp_path, _Factory(connection)
+    ).recover_revision_state(candidate.proposal_id)
+
+    assert recovered.proposal_id == candidate.proposal_id
+    assert recovered.operation_sha256 == candidate.binding.operation_sha256
+    assert recovered.draft_post_id == candidate.binding.draft_id
+    assert recovered.proposal_state.value == "FAILED"
+    assert recovered.disposition.value == "PREDECESSOR"
+    method, path, body, headers = connection.calls[0]
+    assert (method, path, body) == (
+        "GET",
+        (
+            "/wp-json/raos-operator/v2/proposals/"
+            f"{candidate.proposal_id}/revision-state"
+        ),
+        b"",
+    )
+    assert "If-Match" not in headers
+    assert "Idempotency-Key" not in headers
+
+
+@pytest.mark.parametrize(
+    "malformation",
+    [
+        "extra-field",
+        "wrong-schema",
+        "wrong-proposal-id",
+        "invalid-state-disposition",
+    ],
+)
+def test_revision_state_recovery_refuses_malformed_receipts(
+    tmp_path: Path, malformation: str
+) -> None:
+    candidate = revision_proposal()
+    payload = _revision_recovery_payload()
+    if malformation == "extra-field":
+        payload["untrusted"] = True
+    elif malformation == "wrong-schema":
+        payload["schema"] = "RAOS_ST1704_DRAFT_REVISION_VERIFY_V2"
+    elif malformation == "wrong-proposal-id":
+        payload["proposal_id"] = "f" * 64
+    elif malformation == "invalid-state-disposition":
+        payload["proposal_state"] = "APPLIED"
+    else:  # pragma: no cover - parametrization is closed above
+        raise AssertionError("unreachable malformed recovery case")
+    connection = _Connection(
+        _Response(payload, status=200, etag=candidate.proposal_id)
+    )
+
+    with pytest.raises(PublicationOperatorFailure) as failure:
+        https.OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+            tmp_path, _Factory(connection)
+        ).recover_revision_state(candidate.proposal_id)
+
+    assert failure.value.code is PublicationOperatorFailureCode.RESPONSE_INVALID
+
+
+def test_revision_state_recovery_requires_exact_etag(tmp_path: Path) -> None:
+    candidate = revision_proposal()
+    connection = _Connection(
+        _Response(_revision_recovery_payload(), status=200, etag=None)
+    )
+
+    with pytest.raises(PublicationOperatorFailure) as failure:
+        https.OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+            tmp_path, _Factory(connection)
+        ).recover_revision_state(candidate.proposal_id)
+
+    assert failure.value.code is PublicationOperatorFailureCode.RESPONSE_INVALID
 
 
 @pytest.mark.parametrize(

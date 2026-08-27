@@ -17,6 +17,9 @@ from raos.adapters import self_hosted_wordpress_operator_credentials as _v1_priv
 from raos.domain.operations.self_hosted_wordpress_operator import (
     WordPressOperatorFailure,
 )
+from raos.domain.operations.self_hosted_wordpress_draft_revision_operator_v2 import (
+    DraftRevisionProposal,
+)
 from raos.domain.operations.self_hosted_wordpress_publication_operator_v2 import (
     PublicationOperatorFailure,
     PublicationOperatorFailureCode,
@@ -36,6 +39,9 @@ PUBLICATION_INTENT_STAGING_FILE: Final = f".{PUBLICATION_INTENT_FILE}.pending"
 PUBLICATION_INTENT_LOCK_FILE: Final = "publish-st1704-article.lock"
 PUBLICATION_INTENT_SCHEMA: Final = "RAOS_ST1704_PUBLICATION_PROPOSAL_INTENT_V2"
 MAX_PUBLICATION_INTENT_BYTES: Final = 4096
+_ALLOWED_OPERATIONS: Final = frozenset(
+    {"PUBLISH_ST1704_ARTICLE", "REVISE_ST1704_DRAFT"}
+)
 
 _DIRECTORY_NAME: Final = "publication-v2"
 _LOCK_FLAGS: Final = os.O_RDWR | os.O_CLOEXEC | os.O_NOFOLLOW | os.O_NONBLOCK
@@ -107,6 +113,14 @@ def _post_id(value: object) -> int:
     return value
 
 
+def _proposal_identity(
+    proposal: PublicationProposal | DraftRevisionProposal,
+) -> tuple[str, int]:
+    if isinstance(proposal, PublicationProposal):
+        return proposal.binding.article_id, proposal.binding.draft_post_id
+    return proposal.binding.successor.article_id, proposal.binding.draft_id
+
+
 @dataclass(frozen=True, slots=True, repr=False)
 class PublicationProposalIntent:
     article_id: str
@@ -126,34 +140,42 @@ class PublicationProposalIntent:
         if (
             self.canonical_request_sha256 != self.proposal_id
             or type(self.phase) is not PublicationIntentPhase
-            or self.operation != "PUBLISH_ST1704_ARTICLE"
+            or self.operation not in _ALLOWED_OPERATIONS
         ):
             _fail(PublicationOperatorFailureCode.JOURNAL_MISMATCH)
 
     @classmethod
     def from_proposal(
         cls,
-        proposal: PublicationProposal,
+        proposal: PublicationProposal | DraftRevisionProposal,
         phase: PublicationIntentPhase,
     ) -> PublicationProposalIntent:
-        if type(proposal) is not PublicationProposal:
+        if type(proposal) not in {PublicationProposal, DraftRevisionProposal}:
             _fail()
+        article_id, draft_post_id = _proposal_identity(proposal)
         return cls(
-            article_id=proposal.binding.article_id,
-            draft_post_id=proposal.binding.draft_post_id,
+            article_id=article_id,
+            draft_post_id=draft_post_id,
             proposal_id=proposal.proposal_id,
             request_token=proposal.request_token,
             canonical_request_sha256=proposal.proposal_id,
             phase=phase,
+            operation=proposal.operation.value,
         )
 
-    def matches(self, proposal: PublicationProposal) -> bool:
-        return type(proposal) is PublicationProposal and (
-            self.article_id == proposal.binding.article_id
-            and self.draft_post_id == proposal.binding.draft_post_id
+    def matches(
+        self, proposal: PublicationProposal | DraftRevisionProposal
+    ) -> bool:
+        if type(proposal) not in {PublicationProposal, DraftRevisionProposal}:
+            return False
+        article_id, draft_post_id = _proposal_identity(proposal)
+        return (
+            self.article_id == article_id
+            and self.draft_post_id == draft_post_id
             and self.proposal_id == proposal.proposal_id
             and self.request_token == proposal.request_token
             and self.canonical_request_sha256 == proposal.proposal_id
+            and self.operation == proposal.operation.value
         )
 
     def canonical_bytes(self) -> bytes:
@@ -193,10 +215,12 @@ def _decode_intent(payload: bytes) -> PublicationProposalIntent:
     if type(value) is not dict:
         _fail()
     mapping = cast(dict[str, object], value)
+    operation = mapping.get("operation")
     if (
         frozenset(mapping) != _INTENT_KEYS
         or mapping["schema"] != PUBLICATION_INTENT_SCHEMA
-        or mapping["operation"] != "PUBLISH_ST1704_ARTICLE"
+        or type(operation) is not str
+        or operation not in _ALLOWED_OPERATIONS
     ):
         _fail()
     try:
@@ -209,6 +233,7 @@ def _decode_intent(payload: bytes) -> PublicationProposalIntent:
                 mapping["canonical_request_sha256"]
             ),
             phase=_phase(mapping["phase"]),
+            operation=operation,
         )
     except PublicationOperatorFailure:
         _fail()
@@ -478,7 +503,7 @@ class OwnerPrivatePublicationProposalJournalV2:
             os.close(directory_fd)
 
     def record_create_intent(
-        self, proposal: PublicationProposal
+        self, proposal: PublicationProposal | DraftRevisionProposal
     ) -> PublicationProposalIntent:
         self._require_lock()
         if self.load() is not None:
@@ -493,7 +518,7 @@ class OwnerPrivatePublicationProposalJournalV2:
         return intent
 
     def require_matching(
-        self, proposal: PublicationProposal
+        self, proposal: PublicationProposal | DraftRevisionProposal
     ) -> PublicationProposalIntent:
         self._require_lock()
         observed = self.load()
@@ -503,7 +528,7 @@ class OwnerPrivatePublicationProposalJournalV2:
 
     def advance(
         self,
-        proposal: PublicationProposal,
+        proposal: PublicationProposal | DraftRevisionProposal,
         *,
         expected: PublicationIntentPhase,
         target: PublicationIntentPhase,
@@ -522,7 +547,9 @@ class OwnerPrivatePublicationProposalJournalV2:
             _fail(PublicationOperatorFailureCode.JOURNAL_MISMATCH)
         return advanced
 
-    def clear_matching(self, proposal: PublicationProposal) -> None:
+    def clear_matching(
+        self, proposal: PublicationProposal | DraftRevisionProposal
+    ) -> None:
         self._require_lock()
         self.require_matching(proposal)
         directory_fd = self._directory()

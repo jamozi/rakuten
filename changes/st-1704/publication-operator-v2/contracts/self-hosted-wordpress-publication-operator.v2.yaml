@@ -18,7 +18,7 @@ site:
   rest_prefix: /wp-json
   namespace: raos-operator/v2
   plugin_slug: raos-bounded-operator
-  plugin_version: 2.0.0
+  plugin_version: 2.1.7
   wordpress_core_release_line: 7.1.x
   operator_contract_version: 2
   profile_version: 2
@@ -37,6 +37,16 @@ authentication:
   executor_can_edit_posts: false
   executor_can_publish_posts: false
   v1_identity_binding_and_application_password_firewall: PRESERVED
+  draft_writer:
+    role: raos_draft_writer
+    display_name: RAOS Draft Writer
+    credential: DISTINCT_WORDPRESS_APPLICATION_PASSWORD_OVER_HTTPS
+    installation: PLUGIN_ACTIVATION_EXACT_PERSISTENCE_VERIFIED
+    exact_capabilities:
+      read: true
+      edit_posts: true
+    user_assignment: HUMAN_EXTERNAL_OPERATION
+    application_password_creation: HUMAN_EXTERNAL_OPERATION
 operation:
   exact: PUBLISH_ST1704_ARTICLE
   article_count_per_proposal: 1

@@ -3,12 +3,39 @@
   "base_canonical_package_bytes_modified": false,
   "canonical_addendum": "INT-DEC-016",
   "codex_approval_authority": "NONE",
+  "draft_writer_role": {
+    "activation": "EXACT_CREATE_CAPABILITY_NORMALIZE_AND_PERSISTENCE_VERIFY",
+    "application_password_creation": "ABSENT",
+    "capabilities": {
+      "edit_posts": true,
+      "read": true
+    },
+    "display_name": "RAOS Draft Writer",
+    "role": "raos_draft_writer",
+    "user_assignment": "ABSENT"
+  },
   "external_action_authority": "DISTINCT_HUMAN_APPROVAL_ONLY",
   "gates": {
     "RAOS_OPERATOR_WRITES_ENABLED": "DEFAULT_DISABLED",
+    "RAOS_ST1704_PUBLICATION_RECONCILIATION_WRITES_ENABLED": "DEFAULT_DISABLED_ADMIN_ONLY_INCIDENT_RECONCILIATION",
     "RAOS_ST1704_PUBLICATION_WRITES_ENABLED": "DEFAULT_DISABLED"
   },
   "generated_by": "scripts/build_st1704_wordpress_publication_operator_v2.py",
+  "incident_reconciliation": {
+    "authority": "COOKIE_SESSION_MANAGE_OPTIONS_PUBLISH_POSTS_EDIT_POST_DISTINCT_HUMAN",
+    "proposal_state_mutation": "NONE",
+    "rest_authority": "NONE",
+    "targets": [
+      {
+        "article_id": "st1704-portable-power-station-guide",
+        "post_id": 28
+      },
+      {
+        "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+        "post_id": 29
+      }
+    ]
+  },
   "integrity_inputs": [
     {
       "path": "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
@@ -21,34 +48,34 @@
   ],
   "operator_contract_version": 2,
   "package": {
-    "bytes": 357251,
+    "bytes": 501440,
     "compression": "ZIP_STORED",
     "file_count": 4,
     "files": [
       {
-        "bytes": 898,
+        "bytes": 4172,
         "path": "README.md",
-        "sha256": "211ef9d8b17b38df6f09d73ec869de6b019b3d16effbead4159bbea5f9f5d263"
+        "sha256": "29b9eeeb1baef2f65b961812dc43595429cc88741710358688a8348f662eeea3"
       },
       {
-        "bytes": 1508,
+        "bytes": 2491,
         "path": "includes/st1704-publication-bindings.v2.php",
-        "sha256": "a47fdd998505bf7cce1ec5c168f111cd1052804916957b36fc09b4c2c03d0f7b"
+        "sha256": "2b3d7d828941890e799b575f24cbab690b0895cea1cd64d45fd3166ab030dc8b"
       },
       {
-        "bytes": 165754,
+        "bytes": 305686,
         "path": "includes/st1704-publication-controller.v2.php",
-        "sha256": "432bf71a079ca40360b1f73a3c100efaced9b8579809f745064e1a9c75d8e450"
+        "sha256": "d46c147eadca63def081b86ab52bf2c75351292588a3413ea69af0a21d74f022"
       },
       {
         "bytes": 188345,
         "path": "raos-bounded-operator.php",
-        "sha256": "9ab7c8d382c1ae4beaa4ae501de918a3c61b60a50cea14888378f20980f7f80d"
+        "sha256": "cc7ab5769468cb21a229317a6f1db3dd19d502e61788fc0cd09909b9f3b447fa"
       }
     ],
     "root": "raos-bounded-operator/",
-    "sha256": "72557a926398418cbe7d2685ed02eb37142f490b64b062d393c041e7b8da8a7e",
-    "version": "2.0.0"
+    "sha256": "97884efc0649edea9cba539274952d6cbcaf95192007fe3dbfe867cc6fe07507",
+    "version": "2.1.7"
   },
   "predecessors": {
     "st1506_wordpress_operator": {
@@ -106,6 +133,11 @@
     {
       "path": "changes/st-1704/publication-operator-v2/contracts/canonical-publication-proposal-golden.v2.json",
       "semantic_id": "changes/st-1704/publication-operator-v2/contracts/canonical-publication-proposal-golden.v2.json",
+      "version": 2
+    },
+    {
+      "path": "changes/st-1704/publication-operator-v2/contracts/self-hosted-wordpress-draft-revision.v2.json",
+      "semantic_id": "changes/st-1704/publication-operator-v2/contracts/self-hosted-wordpress-draft-revision.v2.json",
       "version": 2
     },
     {
@@ -174,6 +206,11 @@
       "version": 2
     },
     {
+      "path": "python/raos/domain/operations/self_hosted_wordpress_draft_revision_operator_v2.py",
+      "semantic_id": "python/raos/domain/operations/self_hosted_wordpress_draft_revision_operator_v2.py",
+      "version": 2
+    },
+    {
       "path": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
       "semantic_id": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
       "version": 2
@@ -232,7 +269,8 @@
   "slice_id": "ST1704_PUBLICATION_OPERATOR_V2",
   "story_id": "ST-1704",
   "supported_mutations": [
-    "PUBLISH_ST1704_ARTICLE"
+    "PUBLISH_ST1704_ARTICLE",
+    "REVISE_ST1704_DRAFT"
   ],
   "writes_default": "DISABLED"
 }

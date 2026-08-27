@@ -52,6 +52,7 @@ _STAGE_RUNTIME_PATHS: Final = (
     "python/raos/adapters/self_hosted_wordpress_publication_operator_json_v2.py",
     "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
     "python/raos/domain/operations/self_hosted_wordpress_operator.py",
+    "python/raos/domain/operations/self_hosted_wordpress_draft_revision_operator_v2.py",
     "python/raos/domain/operations/self_hosted_wordpress_publication_operator_v2.py",
     "python/raos/ports/__init__.py",
     "python/raos/ports/self_hosted_editorial_pilot.py",
@@ -72,6 +73,9 @@ _STAGE_MODULE_PATHS: Final = {
     ),
     "raos.domain.operations.self_hosted_wordpress_operator": (
         "python/raos/domain/operations/self_hosted_wordpress_operator.py"
+    ),
+    "raos.domain.operations.self_hosted_wordpress_draft_revision_operator_v2": (
+        "python/raos/domain/operations/self_hosted_wordpress_draft_revision_operator_v2.py"
     ),
     "raos.adapters.self_hosted_wordpress_operator_credentials": (
         "python/raos/adapters/self_hosted_wordpress_operator_credentials.py"
@@ -412,19 +416,33 @@ from raos.adapters.self_hosted_wordpress_publication_operator_journal_v2 import 
 from raos.adapters.self_hosted_wordpress_publication_operator_json_v2 import (  # noqa: E402
     OwnerPrivateCommittedReviewDraftBindingAdapter,
 )
+from raos.adapters.self_hosted_editorial_pilot_json import (  # noqa: E402
+    OwnerPrivateReviewDraftGenerationLedger,
+)
+from raos.domain.operations.self_hosted_wordpress_draft_revision_operator_v2 import (  # noqa: E402
+    DraftRevisionProposal,
+    DraftRevisionRecoveryDisposition,
+)
 from raos.domain.operations.self_hosted_wordpress_publication_operator_v2 import (  # noqa: E402
     PublicationOperatorFailure,
     PublicationOperatorFailureCode,
     PublicationProposal,
     PublicationProposalReceipt,
     PublicationProposalState,
+    canonical_json_bytes,
     fail_publication_operator,
     require_publish_article_id,
     require_sha256,
 )
+from raos.ports.self_hosted_editorial_pilot import (  # noqa: E402
+    ReviewDraftRevisionDisposition,
+    ReviewDraftRevisionObservation,
+)
 
 
 _RESULT_SCHEMA: Final = "RAOS_ST1704_PUBLICATION_OPERATOR_CLI_RESULT_V2"
+_NOT_CREATED_AT: Final = "1970-01-01T00:00:00Z"
+_NOT_CREATED_EXPIRES_AT: Final = "1970-01-01T00:15:00Z"
 _ERROR_SCHEMA: Final = "RAOS_ST1704_PUBLICATION_OPERATOR_CLI_ERROR_V2"
 _SANITIZED_EXCEPTIONS: Final = (OSError, ValueError, TypeError, RuntimeError)
 
@@ -442,16 +460,22 @@ def _parser() -> argparse.ArgumentParser:
     )
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("status")
+    commands.add_parser("revision-status")
     for command in ("propose-article-publication",):
         child = commands.add_parser(command)
         child.add_argument("--article-id", required=True)
     for command in (
         "recover-article-publication",
         "apply-article-publication",
+        "recover-review-draft-revision",
+        "apply-review-draft-revision",
+        "verify-review-draft-revision",
     ):
         child = commands.add_parser(command)
         child.add_argument("--article-id", required=True)
         child.add_argument("--proposal-id", required=True)
+    child = commands.add_parser("propose-review-draft-revision")
+    child.add_argument("--article-id", required=True)
     return parser
 
 
@@ -492,6 +516,43 @@ def _proposal_from_intent(
         article_id
     )
     return PublicationProposal.bind(binding, request_token)
+
+
+def _revision_proposal_from_intent(
+    article_id: str,
+    request_token: str,
+    expected_proposal_id: str | None = None,
+) -> DraftRevisionProposal:
+    ledger = OwnerPrivateReviewDraftGenerationLedger(REPOSITORY_ROOT)
+    if expected_proposal_id is None:
+        return DraftRevisionProposal.bind(
+            ledger.pending_binding(article_id), request_token
+        )
+    expected_proposal_id = require_sha256(expected_proposal_id)
+    candidates = tuple(
+        proposal
+        for binding in ledger.revision_bindings(article_id)
+        if (
+            proposal := DraftRevisionProposal.bind(binding, request_token)
+        ).proposal_id
+        == expected_proposal_id
+    )
+    if len(candidates) != 1:
+        fail_publication_operator(PublicationOperatorFailureCode.JOURNAL_MISMATCH)
+    return candidates[0]
+
+
+def _revision_observation(
+    proposal: DraftRevisionProposal,
+    payload: dict[str, object],
+    disposition: ReviewDraftRevisionDisposition,
+) -> ReviewDraftRevisionObservation:
+    return ReviewDraftRevisionObservation(
+        operation_sha256=proposal.binding.operation_sha256,
+        response_sha256=hashlib.sha256(canonical_json_bytes(payload)).hexdigest(),
+        draft_id=proposal.binding.draft_id,
+        disposition=disposition,
+    )
 
 
 def _receipt_payload(receipt: PublicationProposalReceipt) -> dict[str, object]:
@@ -708,6 +769,237 @@ def _apply(article_id: str, proposal_id: str) -> dict[str, object]:
         return receipt.public_payload()
 
 
+def _reconcile_revision_receipt(
+    journal: OwnerPrivatePublicationProposalJournalV2,
+    proposal: DraftRevisionProposal,
+    receipt: PublicationProposalReceipt,
+) -> tuple[dict[str, object], int]:
+    if (
+        receipt.proposal_id != proposal.proposal_id
+        or receipt.operation is not proposal.operation
+        or receipt.replayed is not True
+    ):
+        fail_publication_operator(PublicationOperatorFailureCode.RESPONSE_INVALID)
+    intent = journal.require_matching(proposal)
+    ledger = OwnerPrivateReviewDraftGenerationLedger(REPOSITORY_ROOT)
+    if receipt.state is PublicationProposalState.APPLIED:
+        verification = OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+            REPOSITORY_ROOT
+        ).verify_revision(proposal.proposal_id)
+        if (
+            verification.operation_sha256 != proposal.binding.operation_sha256
+            or verification.draft_post_id != proposal.binding.draft_id
+        ):
+            fail_publication_operator(PublicationOperatorFailureCode.RESPONSE_INVALID)
+        observation = _revision_observation(
+            proposal,
+            verification.public_payload(),
+            ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED,
+        )
+        ledger.recover(proposal.binding, observation)
+        journal.clear_matching(proposal)
+        return verification.public_payload(), 0
+    if (
+        intent.phase is PublicationIntentPhase.CREATE_INTENT
+        and receipt.state is PublicationProposalState.FAILED
+        and receipt.created_at == _NOT_CREATED_AT
+        and receipt.expires_at == _NOT_CREATED_EXPIRES_AT
+    ):
+        # No server proposal means no apply authority existed. Preserve the
+        # still-pending generation and allow a new token to repropose it.
+        journal.clear_matching(proposal)
+        return _receipt_payload(receipt), 2
+    if (
+        receipt.state is PublicationProposalState.NEEDS_RECOVERY
+        or receipt.requires_new_proposal()
+    ):
+        recovery = OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+            REPOSITORY_ROOT
+        ).recover_revision_state(proposal.proposal_id)
+        if (
+            recovery.operation_sha256 != proposal.binding.operation_sha256
+            or recovery.draft_post_id != proposal.binding.draft_id
+        ):
+            fail_publication_operator(PublicationOperatorFailureCode.RESPONSE_INVALID)
+        if recovery.disposition is DraftRevisionRecoveryDisposition.SUCCESSOR:
+            disposition = (
+                ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED
+            )
+            code = 0
+        else:
+            disposition = (
+                ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_PREDECESSOR
+            )
+            code = 2
+        ledger.recover(
+            proposal.binding,
+            _revision_observation(
+                proposal,
+                recovery.public_payload(),
+                disposition,
+            ),
+        )
+        journal.clear_matching(proposal)
+        return recovery.public_payload(), code
+    if intent.phase is PublicationIntentPhase.CREATE_INTENT and receipt.state in {
+        PublicationProposalState.PROPOSED,
+        PublicationProposalState.APPROVED,
+    }:
+        journal.advance(
+            proposal,
+            expected=PublicationIntentPhase.CREATE_INTENT,
+            target=PublicationIntentPhase.PROPOSED,
+        )
+    elif intent.phase is PublicationIntentPhase.APPLY_INTENT and receipt.state in {
+        PublicationProposalState.PROPOSED,
+        PublicationProposalState.APPROVED,
+    }:
+        journal.advance(
+            proposal,
+            expected=PublicationIntentPhase.APPLY_INTENT,
+            target=PublicationIntentPhase.PROPOSED,
+        )
+    return _receipt_payload(receipt), (
+        0
+        if receipt.state
+        in {PublicationProposalState.PROPOSED, PublicationProposalState.APPROVED}
+        else 2
+    )
+
+
+def _propose_revision(article_id: str) -> tuple[dict[str, object], int]:
+    journal = OwnerPrivatePublicationProposalJournalV2(REPOSITORY_ROOT)
+    with journal.exclusive():
+        intent = journal.load()
+        if intent is None:
+            proposal = _revision_proposal_from_intent(article_id, _request_token())
+            journal.record_create_intent(proposal)
+            try:
+                receipt = OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+                    REPOSITORY_ROOT
+                ).propose_revision(proposal)
+            except PublicationOperatorFailure as failure:
+                if failure.code is PublicationOperatorFailureCode.PROPOSAL_NOT_CREATED:
+                    journal.clear_matching(proposal)
+                raise
+            if (
+                receipt.replayed
+                or receipt.proposal_id != proposal.proposal_id
+                or receipt.operation is not proposal.operation
+                or receipt.state is not PublicationProposalState.PROPOSED
+            ):
+                fail_publication_operator(
+                    PublicationOperatorFailureCode.OUTCOME_AMBIGUOUS
+                )
+            journal.advance(
+                proposal,
+                expected=PublicationIntentPhase.CREATE_INTENT,
+                target=PublicationIntentPhase.PROPOSED,
+            )
+            return _receipt_payload(receipt), 0
+        if intent.article_id != article_id or intent.operation != "REVISE_ST1704_DRAFT":
+            fail_publication_operator(PublicationOperatorFailureCode.JOURNAL_AMBIGUOUS)
+        proposal = _revision_proposal_from_intent(
+            article_id, intent.request_token, intent.proposal_id
+        )
+        if not intent.matches(proposal):
+            fail_publication_operator(PublicationOperatorFailureCode.JOURNAL_MISMATCH)
+        receipt = OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+            REPOSITORY_ROOT
+        ).recover_revision_proposal(proposal)
+        return _reconcile_revision_receipt(journal, proposal, receipt)
+
+
+def _recover_revision(
+    article_id: str, proposal_id: str
+) -> tuple[dict[str, object], int]:
+    journal = OwnerPrivatePublicationProposalJournalV2(REPOSITORY_ROOT)
+    with journal.exclusive():
+        intent = journal.load()
+        if (
+            intent is None
+            or intent.article_id != article_id
+            or intent.operation != "REVISE_ST1704_DRAFT"
+            or intent.proposal_id != proposal_id
+        ):
+            fail_publication_operator(PublicationOperatorFailureCode.JOURNAL_MISMATCH)
+        proposal = _revision_proposal_from_intent(
+            article_id, intent.request_token, intent.proposal_id
+        )
+        if not intent.matches(proposal):
+            fail_publication_operator(PublicationOperatorFailureCode.JOURNAL_MISMATCH)
+        receipt = OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+            REPOSITORY_ROOT
+        ).recover_revision_proposal(proposal)
+        return _reconcile_revision_receipt(journal, proposal, receipt)
+
+
+def _apply_revision(article_id: str, proposal_id: str) -> dict[str, object]:
+    journal = OwnerPrivatePublicationProposalJournalV2(REPOSITORY_ROOT)
+    with journal.exclusive():
+        intent = journal.load()
+        if (
+            intent is None
+            or intent.article_id != article_id
+            or intent.operation != "REVISE_ST1704_DRAFT"
+            or intent.proposal_id != proposal_id
+        ):
+            fail_publication_operator(PublicationOperatorFailureCode.JOURNAL_MISMATCH)
+        proposal = _revision_proposal_from_intent(
+            article_id, intent.request_token, intent.proposal_id
+        )
+        if not intent.matches(proposal):
+            fail_publication_operator(PublicationOperatorFailureCode.JOURNAL_MISMATCH)
+        ledger = OwnerPrivateReviewDraftGenerationLedger(REPOSITORY_ROOT)
+        ledger.mark_attempted(proposal.binding)
+        if intent.phase is PublicationIntentPhase.PROPOSED:
+            journal.advance(
+                proposal,
+                expected=PublicationIntentPhase.PROPOSED,
+                target=PublicationIntentPhase.APPLY_INTENT,
+            )
+        elif intent.phase is not PublicationIntentPhase.APPLY_INTENT:
+            fail_publication_operator(PublicationOperatorFailureCode.JOURNAL_AMBIGUOUS)
+        receipt = OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+            REPOSITORY_ROOT
+        ).apply_revision(proposal.proposal_id)
+        disposition = (
+            ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED
+            if receipt.replayed
+            else ReviewDraftRevisionDisposition.OWNER_LIVE_APPLIED
+        )
+        observation = _revision_observation(
+            proposal, receipt.public_payload(), disposition
+        )
+        if receipt.replayed:
+            ledger.recover(proposal.binding, observation)
+        else:
+            ledger.commit(proposal.binding, observation)
+        journal.clear_matching(proposal)
+        return receipt.public_payload()
+
+
+def _verify_revision(article_id: str, proposal_id: str) -> dict[str, object]:
+    ledger = OwnerPrivateReviewDraftGenerationLedger(REPOSITORY_ROOT)
+    receipt = OfficialSelfHostedWordPressPublicationOperatorV2Adapter(
+        REPOSITORY_ROOT
+    ).verify_revision(proposal_id)
+    binding = ledger.revision_binding(article_id, receipt.operation_sha256)
+    if (
+        receipt.operation_sha256 != binding.operation_sha256
+        or receipt.draft_post_id != binding.draft_id
+    ):
+        fail_publication_operator(PublicationOperatorFailureCode.RESPONSE_INVALID)
+    proposal = DraftRevisionProposal.bind(binding, "0" * 64)
+    observation = _revision_observation(
+        proposal,
+        receipt.public_payload(),
+        ReviewDraftRevisionDisposition.OWNER_LIVE_VERIFIED,
+    )
+    ledger.verify(binding, observation)
+    return receipt.public_payload()
+
+
 def _run(arguments: argparse.Namespace) -> int:
     command = arguments.command
     if type(command) is not str:
@@ -720,15 +1012,33 @@ def _run(arguments: argparse.Namespace) -> int:
         )
         _write_result(command, result)
         return 0
+    if command == "revision-status":
+        result = (
+            OfficialSelfHostedWordPressPublicationOperatorV2Adapter(REPOSITORY_ROOT)
+            .revision_status()
+            .public_payload()
+        )
+        _write_result(command, result)
+        return 0
     article_id = require_publish_article_id(getattr(arguments, "article_id", None))
     if command == "propose-article-publication":
         result, code = _propose(article_id)
+    elif command == "propose-review-draft-revision":
+        result, code = _propose_revision(article_id)
     else:
         proposal_id = require_sha256(getattr(arguments, "proposal_id", None))
         if command == "recover-article-publication":
             result, code = _recover(article_id, proposal_id)
         elif command == "apply-article-publication":
             result = _apply(article_id, proposal_id)
+            code = 0
+        elif command == "recover-review-draft-revision":
+            result, code = _recover_revision(article_id, proposal_id)
+        elif command == "apply-review-draft-revision":
+            result = _apply_revision(article_id, proposal_id)
+            code = 0
+        elif command == "verify-review-draft-revision":
+            result = _verify_revision(article_id, proposal_id)
             code = 0
         else:
             fail_publication_operator(
