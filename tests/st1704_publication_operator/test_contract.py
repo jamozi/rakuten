@@ -43,6 +43,7 @@ def test_addendum_preserves_human_decision_and_forbids_self_approval(
 def test_routes_operation_gates_and_receipts_are_closed(
     publication_contract: dict[str, Any],
 ) -> None:
+    assert publication_contract["site"]["plugin_version"] == "2.1.7"
     assert publication_contract["site"]["wordpress_core_release_line"] == "7.1.x"
     assert publication_contract["operation"]["exact"] == "PUBLISH_ST1704_ARTICLE"
     assert publication_contract["operation"]["allowed_article_bindings"] == (
@@ -73,6 +74,15 @@ def test_routes_operation_gates_and_receipts_are_closed(
     }
     assert publication_contract["approval"]["rest_route"] == "ABSENT"
     assert publication_contract["approval"]["executor_can_self_approve"] is False
+    assert publication_contract["authentication"]["draft_writer"] == {
+        "role": "raos_draft_writer",
+        "display_name": "RAOS Draft Writer",
+        "credential": "DISTINCT_WORDPRESS_APPLICATION_PASSWORD_OVER_HTTPS",
+        "installation": "PLUGIN_ACTIVATION_EXACT_PERSISTENCE_VERIFIED",
+        "exact_capabilities": {"read": True, "edit_posts": True},
+        "user_assignment": "HUMAN_EXTERNAL_OPERATION",
+        "application_password_creation": "HUMAN_EXTERNAL_OPERATION",
+    }
     assert publication_contract["proposal_receipt"]["exact_get_recovery"] == {
         "replayed": True,
         "state": "ANY_CLOSED_PROPOSAL_STATE",

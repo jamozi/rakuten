@@ -12,7 +12,7 @@ The tracked runtime manifest binds every runtime source and each packaged file.
 The generated package advertises WordPress 7.1 and the v2 controller also
 refuses to initialize outside the 7.1.x release line.
 
-Package 2.1.6 keeps the publication and revision REST contracts unchanged. It
+Package 2.1.7 keeps the publication and revision REST contracts unchanged. It
 fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
 exact core registration, and prevents those callbacks from creating Review URL
 redirect metadata during bounded `post_updated` replay. All other metadata,
@@ -51,6 +51,15 @@ only authentication/evidence codes or one fixed execution-refused code. It
 does not expose error messages, error data, submitted values, proposal
 material, database details, or any new write authority; cleanup semantics and
 both REST contracts remain unchanged.
+
+Patch 2.1.7 adds the exact `raos_draft_writer` (`RAOS Draft Writer`) role during
+ST-1704 controller activation for the distinct owner-verification credential.
+The role grants only `read` and `edit_posts`; activation removes any extra
+capabilities and verifies the exact display name and capabilities in the
+persisted WordPress role option. Creation, persistence, or exact-readback
+failure stops activation. The patch does not assign the role, create a user or
+Application Password, alter the bound operator identity/firewall, or add REST
+or publication authority.
 
 Normal execution still requires two default-off host gates and a distinct wp-admin
 human approval of the exact proposal hash. There is no REST approval route, no

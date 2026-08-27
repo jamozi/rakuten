@@ -1,4 +1,4 @@
-# RAOS Bounded Operator 2.1.6
+# RAOS Bounded Operator 2.1.7
 
 This deterministic package preserves the closed ST-1506 v1 status, Yoast, and
 child-theme surfaces and adds the ST-1704 publication controller under the
@@ -41,6 +41,13 @@ submission. It distinguishes fixed authentication/evidence classes from one
 fixed execution-refused class without rendering messages, error data,
 submitted values, identifiers, metadata, or database details. Cleanup behavior,
 receipts, audit rules, and REST authority are unchanged.
+
+Patch 2.1.7 installs the separate `raos_draft_writer` role during ST-1704
+activation and exact-verifies its persisted display name (`RAOS Draft Writer`)
+and its complete capability set (`read`, `edit_posts`). Any creation,
+persistence, or readback failure stops activation. It does not assign a user,
+create an Application Password, modify `raos_operator_executor`, broaden the
+Application Password firewall, or add publication/REST authority.
 
 The v2 controller can only publish one of four generated article bindings, or
 revise the exact existing Draft IDs 28, 29, 41, and 30. A revision is

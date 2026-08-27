@@ -30,6 +30,8 @@ final class RAOS_ST1704_Publication_Controller_V2
     const REDIRECT_META_PHASE_POST_UPDATED = 'POST_UPDATED';
     const DEFAULT_TTL = 900;
     const ROLE = 'raos_operator_executor';
+    const DRAFT_WRITER_ROLE = 'raos_draft_writer';
+    const DRAFT_WRITER_ROLE_DISPLAY = 'RAOS Draft Writer';
     const CAP_READ = 'raos_operator_read';
     const CAP_PROPOSE = 'raos_operator_propose';
     const CAP_APPLY = 'raos_operator_apply';
@@ -474,6 +476,90 @@ final class RAOS_ST1704_Publication_Controller_V2
         );
     }
 
+    private static function exact_draft_writer_capabilities()
+    {
+        return array(
+            'read' => true,
+            'edit_posts' => true,
+        );
+    }
+
+    private static function install_draft_writer_role()
+    {
+        $exact = self::exact_draft_writer_capabilities();
+        try {
+            $role = get_role(self::DRAFT_WRITER_ROLE);
+            if (! $role instanceof WP_Role) {
+                $created = add_role(
+                    self::DRAFT_WRITER_ROLE,
+                    self::DRAFT_WRITER_ROLE_DISPLAY,
+                    $exact
+                );
+                if (! $created instanceof WP_Role) {
+                    return false;
+                }
+                $role = get_role(self::DRAFT_WRITER_ROLE);
+            }
+            if (! $role instanceof WP_Role
+                || ! is_array($role->capabilities)) {
+                return false;
+            }
+            foreach (array_keys($role->capabilities) as $capability) {
+                $role->remove_cap($capability);
+            }
+            foreach ($exact as $capability => $grant) {
+                $role->add_cap($capability, $grant);
+            }
+            $verified = get_role(self::DRAFT_WRITER_ROLE);
+            return $verified instanceof WP_Role
+                && is_array($verified->capabilities)
+                && $verified->capabilities === $exact
+                && self::persisted_draft_writer_role_is_exact();
+        } catch (Throwable $exception) {
+            return false;
+        }
+    }
+
+    private static function persisted_draft_writer_role_is_exact()
+    {
+        global $wpdb;
+        $option_name = $wpdb->prefix . 'user_roles';
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT option_value FROM {$wpdb->options} "
+                . 'WHERE BINARY option_name = BINARY %s',
+                $option_name
+            ),
+            ARRAY_A
+        );
+        if ($wpdb->last_error !== ''
+            || ! is_array($rows)
+            || count($rows) !== 1
+            || ! is_array($rows[0])
+            || count($rows[0]) !== 1
+            || ! isset($rows[0]['option_value'])
+            || ! is_string($rows[0]['option_value'])
+            || ! is_serialized($rows[0]['option_value'], true)) {
+            return false;
+        }
+        $stored_roles = @unserialize(
+            $rows[0]['option_value'],
+            array('allowed_classes' => false)
+        );
+        if (! is_array($stored_roles)
+            || ! isset($stored_roles[self::DRAFT_WRITER_ROLE])
+            || ! is_array($stored_roles[self::DRAFT_WRITER_ROLE])) {
+            return false;
+        }
+        $record = $stored_roles[self::DRAFT_WRITER_ROLE];
+        return count($record) === 2
+            && isset($record['name'], $record['capabilities'])
+            && $record['name'] === self::DRAFT_WRITER_ROLE_DISPLAY
+            && is_array($record['capabilities'])
+            && $record['capabilities']
+                === self::exact_draft_writer_capabilities();
+    }
+
     public static function activate()
     {
         if (! self::wordpress_core_is_supported()) {
@@ -484,6 +570,9 @@ final class RAOS_ST1704_Publication_Controller_V2
         }
         if (! self::bindings_are_exact()) {
             wp_die(esc_html('RAOS ST-1704 publication bindings are invalid.'));
+        }
+        if (! self::install_draft_writer_role()) {
+            wp_die(esc_html('RAOS draft writer role initialization failed.'));
         }
         self::install_tables();
         if (! self::tables_are_innodb()

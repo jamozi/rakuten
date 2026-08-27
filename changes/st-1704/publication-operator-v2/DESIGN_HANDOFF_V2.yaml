@@ -17,8 +17,17 @@ bindings:
   excluded_article: st1703-first-suitcase-comparison
 plugin:
   slug: raos-bounded-operator
-  package_version: 2.0.0
+  package_version: 2.1.7
   predecessor_v1_repository_bytes: UNCHANGED_AND_SHA256_PINNED
+  draft_writer_role:
+    role: raos_draft_writer
+    display_name: RAOS Draft Writer
+    exact_capabilities:
+      read: true
+      edit_posts: true
+    install: ACTIVATION_EXACT_PERSISTENCE_VERIFIED
+    user_assignment: ABSENT
+    application_password_creation: ABSENT
   injection_order:
   - UNCHANGED_V1_ACTIVATION_AND_INSTANCE
   - GENERATED_BINDINGS_REQUIRE

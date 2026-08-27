@@ -19,7 +19,7 @@ ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE_RELATIVE: Final = Path("changes/st-1704/publication-operator-v2")
 SLICE_ROOT: Final = ROOT / SLICE_RELATIVE
 PLUGIN_SLUG: Final = "raos-bounded-operator"
-PLUGIN_VERSION: Final = "2.1.6"
+PLUGIN_VERSION: Final = "2.1.7"
 PACKAGE_ROOT: Final = f"{PLUGIN_SLUG}/"
 MANIFEST_RELATIVE: Final = SLICE_RELATIVE / "runtime-manifest.v2.json"
 MANIFEST_PATH: Final = ROOT / MANIFEST_RELATIVE
@@ -420,6 +420,8 @@ def package_files() -> dict[str, bytes]:
         "PUBLISH_ST1704_ARTICLE",
         "REVISE_ST1704_DRAFT",
         "RAOS_ST1704_PUBLICATION_WRITES_ENABLED",
+        "raos_draft_writer",
+        "RAOS Draft Writer",
     ):
         if token not in controller_text:
             _fail("ST1704_PUBLICATION_OPERATOR_V2_CONTROLLER_DRIFT")
@@ -487,6 +489,14 @@ def build_manifest() -> bytes:
         "canonical_addendum": "INT-DEC-016",
         "codex_approval_authority": "NONE",
         "external_action_authority": "DISTINCT_HUMAN_APPROVAL_ONLY",
+        "draft_writer_role": {
+            "activation": "EXACT_CREATE_CAPABILITY_NORMALIZE_AND_PERSISTENCE_VERIFY",
+            "application_password_creation": "ABSENT",
+            "capabilities": {"edit_posts": True, "read": True},
+            "display_name": "RAOS Draft Writer",
+            "role": "raos_draft_writer",
+            "user_assignment": "ABSENT",
+        },
         "generated_by": "scripts/build_st1704_wordpress_publication_operator_v2.py",
         "gates": {
             "RAOS_OPERATOR_WRITES_ENABLED": "DEFAULT_DISABLED",

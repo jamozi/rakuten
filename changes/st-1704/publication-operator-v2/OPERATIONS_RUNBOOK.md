@@ -2,7 +2,7 @@
 
 ## Offline build and review
 
-The current deterministic package is `raos-bounded-operator` 2.1.6. This patch
+The current deterministic package is `raos-bounded-operator` 2.1.7. This patch
 does not change either REST schema. It requires the exact WordPress 7.1
 priority-12 `wp_check_for_changed_slugs` and `wp_check_for_changed_dates`
 registrations, and suppresses only their target-post redirect-meta operations
@@ -39,6 +39,13 @@ or database errors. Close all gates before investigating any refusal, then use
 the rolled-back Tools preview to distinguish `CLEANED` from
 `CLEANUP_REQUIRED` before considering another submission.
 
+Patch 2.1.7 installs and exact-verifies the separate `raos_draft_writer`
+(`RAOS Draft Writer`) role during ST-1704 activation. Its complete capability
+set is `read` and `edit_posts`; it has no delete, publish, upload,
+edit-published, edit-others, operator, or administrator capability. Activation
+stops if WordPress cannot create, persist, normalize, or exactly read back the
+role. This does not assign the role or create a credential.
+
 1. Run `make -f changes/st-1704/publication-operator-v2/Makefile check`.
 2. Review the exact runtime manifest, deterministic package SHA-256, generated
    four-article binding, controller diff, and terminal local checks.
@@ -52,6 +59,13 @@ operations. Both `RAOS_OPERATOR_WRITES_ENABLED` and
 `RAOS_ST1704_PUBLICATION_WRITES_ENABLED` must be explicitly and strictly true
 for proposal creation or apply; either false/absent closes the v2 write surface.
 Keep the existing exact executor identity and Application Password confinement.
+For owner-private authenticated draft/public verification, a human WordPress
+administrator may create a distinct non-administrator user, assign only
+`RAOS Draft Writer`, and create a dedicated Application Password. User
+creation, role assignment, Application Password creation/copying, and insertion
+into the owner-private credential store remain human external operations. Never
+reuse the bound `raos_operator_executor` identity or its Application Password
+for owner verification.
 
 ## Fixed terminal redirect-metadata reconciliation
 

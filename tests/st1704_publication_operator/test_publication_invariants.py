@@ -77,10 +77,14 @@ def test_content_media_term_creation_and_core_publish_caps_are_bounded() -> None
         "media_handle_",
         "wp_insert_attachment(",
         "set_post_thumbnail(",
-        "add_role(",
         "remove_role(",
     ):
         assert forbidden not in source
+    draft_writer_install = source.split(
+        "private static function install_draft_writer_role", 1
+    )[1].split("private static function persisted_draft_writer_role_is_exact", 1)[0]
+    assert source.count("add_role(") == 1
+    assert "add_role(" in draft_writer_install
     assert "current_user_can('edit_posts')" not in source
     executor_caps = source.split(
         "private static function exact_executor_capabilities", 1

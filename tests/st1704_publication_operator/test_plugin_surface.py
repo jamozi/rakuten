@@ -70,6 +70,48 @@ def test_v2_auth_reuses_only_the_exact_bounded_executor_identity() -> None:
         assert forbidden not in caps
 
 
+def test_activation_installs_only_the_exact_unassigned_draft_writer_role() -> None:
+    php = source()
+    activation = method("activate", "install_tables")
+    install = method(
+        "install_draft_writer_role",
+        "persisted_draft_writer_role_is_exact",
+    )
+    persisted = method("persisted_draft_writer_role_is_exact", "activate")
+    exact = method(
+        "exact_draft_writer_capabilities",
+        "install_draft_writer_role",
+    )
+    assert "const DRAFT_WRITER_ROLE = 'raos_draft_writer';" in php
+    assert "const DRAFT_WRITER_ROLE_DISPLAY = 'RAOS Draft Writer';" in php
+    assert "self::install_draft_writer_role()" in activation
+    assert "RAOS draft writer role initialization failed." in activation
+    assert "add_role(" in install
+    assert "self::DRAFT_WRITER_ROLE_DISPLAY" in install
+    assert "self::persisted_draft_writer_role_is_exact()" in install
+    assert "catch (Throwable $exception)" in install
+    assert "'read' => true" in exact
+    assert "'edit_posts' => true" in exact
+    for forbidden in (
+        "delete_posts",
+        "publish_posts",
+        "upload_files",
+        "edit_published_posts",
+        "edit_others_posts",
+        "manage_options",
+    ):
+        assert forbidden not in exact
+    assert "$wpdb->prefix . 'user_roles'" in persisted
+    assert "count($rows) !== 1" in persisted
+    assert "is_serialized($rows[0]['option_value'], true)" in persisted
+    assert "array('allowed_classes' => false)" in persisted
+    assert "$record['name'] === self::DRAFT_WRITER_ROLE_DISPLAY" in persisted
+    assert "self::exact_draft_writer_capabilities()" in persisted
+    assert "add_user" not in install
+    assert "wp_create_user" not in install
+    assert "application_password" not in install
+
+
 def test_proposal_surface_is_fixed_and_globally_serialized() -> None:
     php = source()
     normalize = method("normalize_proposal_request", "fixed_articles")
