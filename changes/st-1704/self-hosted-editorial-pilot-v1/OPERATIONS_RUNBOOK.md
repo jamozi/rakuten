@@ -339,7 +339,11 @@ recover and verify do not rebuild the confirmed request from current provider fi
    OG/X set, sole RAOS JSON-LD graph, exact related-navigation state, the current
    article's exact homepage cluster/link/title with no unbound future article link,
    Yoast sitemap index/post/page maps, and that the WordPress core sitemap is not a
-   second public owner. The command also derives the exact digest-bound Review URL
+   second public owner. With the fixed Yoast SEO 28.3 profile, `/wp-sitemap.xml`
+   must be the exact empty-body HTTP 301 delegation to the same-origin
+   `/sitemap_index.xml` with `X-Redirect-By: Yoast SEO`; other redirect targets,
+   statuses, owners, or response bodies fail closed. The command also derives the
+   exact digest-bound Review URL
    from the journal-bound immutable request; an anonymous GET must return HTTP 404 with no
    `Location`, and an anonymous public posts REST lookup for that exact slug must be
    empty. Through the same existing owner gate and credential header, an exact-slug
