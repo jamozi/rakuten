@@ -1,0 +1,36 @@
+{
+  "approval": "COOKIE_AUTHENTICATED_MANAGE_OPTIONS_HUMAN_REAUTHENTICATION",
+  "article_id": "st1703-first-suitcase-comparison",
+  "generated_by": "scripts/build_st1704_at003_recovery_operator.py",
+  "host_gate": "RAOS_AT003_RECOVERY_WRITES_ENABLED_DEFAULT_DISABLED",
+  "package": {
+    "bytes": 32358,
+    "files": [
+      {
+        "bytes": 364,
+        "path": "README.md",
+        "sha256": "ef4f107de2335207c6cc83ca166c69fc20e441d78a5f591114c13c54a2cbb5ad"
+      },
+      {
+        "bytes": 1344,
+        "path": "at003-snapshot.v1.json",
+        "sha256": "ff46c26ef1a8763a425c2d70206fd68b5d397be2f4025db0c24baca90a51e6ed"
+      },
+      {
+        "bytes": 30100,
+        "path": "raos-at003-recovery-operator.php",
+        "sha256": "7db13096e12a8ffa2c4f2b2723b9d50289a8733bd709500fb3a2e83d1292d4f0"
+      }
+    ],
+    "sha256": "cebf887787af00b682059db8794cd561467653555e26a97da68bfcca3dab3540",
+    "slug": "raos-at003-recovery-operator",
+    "version": "1.1.0"
+  },
+  "schema": "RAOS_ST1704_AT003_RECOVERY_OPERATOR_MANIFEST_V1",
+  "source_post_id": 26,
+  "supported_mutations": [
+    "COPY_FIXED_REVIEW_FIELDS",
+    "TARGET_DRAFT_TO_PUBLISH"
+  ],
+  "target_post_id": 19
+}

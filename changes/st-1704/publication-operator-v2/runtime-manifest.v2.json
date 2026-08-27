@@ -21,34 +21,34 @@
   ],
   "operator_contract_version": 2,
   "package": {
-    "bytes": 357251,
+    "bytes": 408322,
     "compression": "ZIP_STORED",
     "file_count": 4,
     "files": [
       {
-        "bytes": 898,
+        "bytes": 1475,
         "path": "README.md",
-        "sha256": "211ef9d8b17b38df6f09d73ec869de6b019b3d16effbead4159bbea5f9f5d263"
+        "sha256": "94b62e7807e39d47727a959b479a3b5b2557bf2ed717f622dbb5e79a80c8b0e7"
       },
       {
-        "bytes": 1508,
+        "bytes": 2491,
         "path": "includes/st1704-publication-bindings.v2.php",
-        "sha256": "a47fdd998505bf7cce1ec5c168f111cd1052804916957b36fc09b4c2c03d0f7b"
+        "sha256": "2b3d7d828941890e799b575f24cbab690b0895cea1cd64d45fd3166ab030dc8b"
       },
       {
-        "bytes": 165754,
+        "bytes": 215265,
         "path": "includes/st1704-publication-controller.v2.php",
-        "sha256": "432bf71a079ca40360b1f73a3c100efaced9b8579809f745064e1a9c75d8e450"
+        "sha256": "64ee43ac400af1dfa690ca012e71f897c1a6cb16de1471004a99e66ca2cb7798"
       },
       {
         "bytes": 188345,
         "path": "raos-bounded-operator.php",
-        "sha256": "9ab7c8d382c1ae4beaa4ae501de918a3c61b60a50cea14888378f20980f7f80d"
+        "sha256": "e635e7d796adb16d5df5d6df9c5a3dafaff141c7b464dfca04c99715d0bd31c9"
       }
     ],
     "root": "raos-bounded-operator/",
-    "sha256": "72557a926398418cbe7d2685ed02eb37142f490b64b062d393c041e7b8da8a7e",
-    "version": "2.0.0"
+    "sha256": "bccd1ef3098ec543db68fd5a63e9a53ac007f584ad1076c4090acef9056769d8",
+    "version": "2.1.0"
   },
   "predecessors": {
     "st1506_wordpress_operator": {
@@ -106,6 +106,11 @@
     {
       "path": "changes/st-1704/publication-operator-v2/contracts/canonical-publication-proposal-golden.v2.json",
       "semantic_id": "changes/st-1704/publication-operator-v2/contracts/canonical-publication-proposal-golden.v2.json",
+      "version": 2
+    },
+    {
+      "path": "changes/st-1704/publication-operator-v2/contracts/self-hosted-wordpress-draft-revision.v2.json",
+      "semantic_id": "changes/st-1704/publication-operator-v2/contracts/self-hosted-wordpress-draft-revision.v2.json",
       "version": 2
     },
     {
@@ -174,6 +179,11 @@
       "version": 2
     },
     {
+      "path": "python/raos/domain/operations/self_hosted_wordpress_draft_revision_operator_v2.py",
+      "semantic_id": "python/raos/domain/operations/self_hosted_wordpress_draft_revision_operator_v2.py",
+      "version": 2
+    },
+    {
       "path": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
       "semantic_id": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
       "version": 2
@@ -232,7 +242,8 @@
   "slice_id": "ST1704_PUBLICATION_OPERATOR_V2",
   "story_id": "ST-1704",
   "supported_mutations": [
-    "PUBLISH_ST1704_ARTICLE"
+    "PUBLISH_ST1704_ARTICLE",
+    "REVISE_ST1704_DRAFT"
   ],
   "writes_default": "DISABLED"
 }

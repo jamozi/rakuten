@@ -12,10 +12,12 @@ import pytest
 
 import raos.adapters.self_hosted_editorial_pilot_json as journal_module
 from raos.adapters.self_hosted_editorial_pilot_json import (
+    GENERATION_DIRECTORY,
     JOURNAL_DIRECTORY,
     OWNER_DIRECTORY,
     REQUEST_DIRECTORY,
     OwnerPrivateLiveReviewDraftJournal,
+    OwnerPrivateReviewDraftGenerationLedger,
     OwnerPrivateReviewDraftJournal,
     RecordedWordPressReviewDraftAdapter,
     request_artifact_relative_path,
@@ -30,6 +32,11 @@ from raos.domain.editorial.self_hosted_editorial_pilot import (
     canonical_json_bytes,
     canonical_sha256,
     fail_editorial_pilot,
+)
+from raos.ports.self_hosted_editorial_pilot import (
+    ReviewDraftRevisionBinding,
+    ReviewDraftRevisionDisposition,
+    ReviewDraftRevisionObservation,
 )
 from .test_self_hosted_editorial_pilot import envelope, recorded_post, request
 
@@ -70,6 +77,45 @@ def _live_journal_path(root: Path, candidate: ReviewDraftRequest) -> Path:
         / OWNER_DIRECTORY
         / JOURNAL_DIRECTORY
         / f"{candidate.article_id}.{candidate.packet_sha256}.live.v1.json"
+    )
+
+
+def _generation_ledger_path(root: Path, article_id: str) -> Path:
+    return (
+        root
+        / ".secrets"
+        / OWNER_DIRECTORY
+        / GENERATION_DIRECTORY
+        / f"{article_id}.generations.v1.json"
+    )
+
+
+def _revision(
+    predecessor: ReviewDraftRequest,
+    successor: ReviewDraftRequest,
+    *,
+    generation: int,
+    draft_id: int = 1704,
+) -> ReviewDraftRevisionBinding:
+    return ReviewDraftRevisionBinding.bind(
+        predecessor=predecessor,
+        successor=successor,
+        draft_id=draft_id,
+        generation=generation,
+    )
+
+
+def _revision_observation(
+    binding: ReviewDraftRevisionBinding,
+    disposition: ReviewDraftRevisionDisposition,
+    *,
+    response_sha256: str = "e" * 64,
+) -> ReviewDraftRevisionObservation:
+    return ReviewDraftRevisionObservation(
+        operation_sha256=binding.operation_sha256,
+        response_sha256=response_sha256,
+        draft_id=binding.draft_id,
+        disposition=disposition,
     )
 
 
@@ -468,6 +514,360 @@ def test_committed_request_rejects_multiple_journals_but_ignores_orphan_artifact
     with pytest.raises(EditorialPilotFailure) as multiple:
         journal.committed_request(candidate.article_id)
     assert multiple.value.code is EditorialPilotFailureCode.JOURNAL_AMBIGUOUS
+
+
+def test_generation_ledger_bootstraps_legacy_and_atomically_activates_successor(
+    private_root: Path,
+) -> None:
+    predecessor = request()
+    successor = request(
+        packet_sha256="b" * 64,
+        content='<p class="ks-lead">新しい一次情報で条件を再確認します。</p>',
+    )
+    live_journal = OwnerPrivateLiveReviewDraftJournal(
+        private_root, FakeOwnerLivePort(private_root)
+    )
+    live_journal.create(predecessor)
+    old_journal_path = _live_journal_path(private_root, predecessor)
+    old_artifact_path = private_root / request_artifact_relative_path(predecessor)
+    old_journal_raw = old_journal_path.read_bytes()
+    old_artifact_raw = old_artifact_path.read_bytes()
+    ledger = OwnerPrivateReviewDraftGenerationLedger(private_root)
+    binding = _revision(predecessor, successor, generation=2)
+
+    assert ledger.active_request(predecessor.article_id) == (
+        predecessor,
+        1704,
+        1,
+    )
+    assert ledger.revision_preparation_context(predecessor.article_id) == (
+        predecessor,
+        1704,
+        2,
+    )
+    assert ledger.propose(binding) == binding
+    assert ledger.propose(binding) == binding
+    with pytest.raises(EditorialPilotFailure) as pending_preparation:
+        ledger.revision_preparation_context(predecessor.article_id)
+    assert pending_preparation.value.code is EditorialPilotFailureCode.JOURNAL_AMBIGUOUS
+    assert ledger.pending_binding(predecessor.article_id) == binding
+    assert ledger.revision_binding(
+        predecessor.article_id, binding.operation_sha256
+    ) == binding
+    assert ledger.active_request(predecessor.article_id) == (
+        predecessor,
+        1704,
+        1,
+    )
+    assert live_journal.committed_request(predecessor.article_id) == (
+        predecessor,
+        1704,
+    )
+    assert old_journal_path.read_bytes() == old_journal_raw
+    assert old_artifact_path.read_bytes() == old_artifact_raw
+    assert (private_root / request_artifact_relative_path(successor)).is_file()
+    assert len(
+        list(
+            (
+                private_root / ".secrets" / OWNER_DIRECTORY / REQUEST_DIRECTORY
+            ).glob(f"{predecessor.article_id}.*.request.v1.json")
+        )
+    ) == 2
+
+    ledger.mark_attempted(binding)
+    applied = _revision_observation(
+        binding, ReviewDraftRevisionDisposition.OWNER_LIVE_APPLIED
+    )
+    assert ledger.commit(binding, applied) == (successor, 1704, 2)
+    assert ledger.commit(binding, applied) == (successor, 1704, 2)
+    # A process may die after the generation ledger commits but before the
+    # publication intent is cleared. The exact completed binding remains
+    # reconstructable and an apply replay must not overwrite its audit result.
+    assert ledger.revision_bindings(predecessor.article_id) == (binding,)
+    assert ledger.mark_attempted(binding) == binding
+    assert ledger.recover(
+        binding,
+        _revision_observation(
+            binding,
+            ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED,
+            response_sha256="f" * 64,
+        ),
+    ) == (successor, 1704, 2)
+    assert ledger.active_request(predecessor.article_id) == (successor, 1704, 2)
+    assert live_journal.committed_request(predecessor.article_id) == (
+        successor,
+        1704,
+    )
+    assert ledger.revision_binding(predecessor.article_id) == binding
+    verified = _revision_observation(
+        binding,
+        ReviewDraftRevisionDisposition.OWNER_LIVE_VERIFIED,
+        response_sha256="f" * 64,
+    )
+    assert ledger.verify(binding, verified) == (successor, 1704, 2)
+    assert old_journal_path.read_bytes() == old_journal_raw
+    assert old_artifact_path.read_bytes() == old_artifact_raw
+    generation_path = _generation_ledger_path(private_root, predecessor.article_id)
+    assert generation_path.stat().st_mode & 0o777 == 0o600
+    document = json.loads(generation_path.read_text(encoding="utf-8"))
+    assert document["active_generation"] == 2
+    assert document["pending"] is None
+    assert [entry["generation"] for entry in document["generations"]] == [1, 2]
+    assert document["generations"][1]["operation_sha256"] == (
+        binding.operation_sha256
+    )
+    assert document["generations"][1]["outcome"] == (
+        ReviewDraftRevisionDisposition.OWNER_LIVE_APPLIED.value
+    )
+    assert document["generations"][1]["response_sha256"] == (
+        applied.response_sha256
+    )
+
+
+def test_generation_recovery_keeps_predecessor_active_and_retains_failed_audit(
+    private_root: Path,
+) -> None:
+    predecessor = request()
+    OwnerPrivateLiveReviewDraftJournal(
+        private_root, FakeOwnerLivePort(private_root)
+    ).create(predecessor)
+    ledger = OwnerPrivateReviewDraftGenerationLedger(private_root)
+    rejected_successor = request(
+        packet_sha256="b" * 64,
+        content='<p class="ks-lead">確認対象を更新します。</p>',
+    )
+    rejected = _revision(predecessor, rejected_successor, generation=2)
+    ledger.propose(rejected)
+    recovered_predecessor = _revision_observation(
+        rejected,
+        ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_PREDECESSOR,
+    )
+
+    assert ledger.recover(rejected, recovered_predecessor) == (
+        predecessor,
+        1704,
+        1,
+    )
+    assert ledger.revision_bindings(predecessor.article_id) == (rejected,)
+    assert ledger.revision_preparation_context(predecessor.article_id) == (
+        predecessor,
+        1704,
+        3,
+    )
+    assert ledger.recover(rejected, recovered_predecessor) == (
+        predecessor,
+        1704,
+        1,
+    )
+    with pytest.raises(EditorialPilotFailure) as no_active_revision:
+        ledger.revision_binding(predecessor.article_id)
+    assert (
+        no_active_revision.value.code
+        is EditorialPilotFailureCode.JOURNAL_AMBIGUOUS
+    )
+
+    applied_successor = request(
+        packet_sha256="c" * 64,
+        content='<p class="ks-lead">再取得した一次情報で条件を確定します。</p>',
+    )
+    applied = _revision(predecessor, applied_successor, generation=3)
+    ledger.propose(applied)
+    # A newer offline generation may be staged after the remote outcome was
+    # finalized but before its separate publication intent was cleared. The
+    # exact older predecessor recovery remains replayable without touching it.
+    assert ledger.recover(rejected, recovered_predecessor) == (
+        predecessor,
+        1704,
+        1,
+    )
+    assert ledger.pending_binding(predecessor.article_id) == applied
+    ledger.mark_attempted(applied)
+    recovered_applied = _revision_observation(
+        applied,
+        ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED,
+        response_sha256="f" * 64,
+    )
+    assert ledger.recover(applied, recovered_applied) == (
+        applied_successor,
+        1704,
+        3,
+    )
+    document = json.loads(
+        _generation_ledger_path(private_root, predecessor.article_id).read_text(
+            encoding="utf-8"
+        )
+    )
+    assert document["active_generation"] == 3
+    assert len(document["generations"]) == 3
+    assert document["generations"][1]["outcome"] == (
+        ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_PREDECESSOR.value
+    )
+    assert document["generations"][2]["predecessor_generation"] == 1
+    assert document["generations"][2]["outcome"] == (
+        ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED.value
+    )
+    assert len(
+        list(
+            (
+                private_root / ".secrets" / OWNER_DIRECTORY / REQUEST_DIRECTORY
+            ).glob(f"{predecessor.article_id}.*.request.v1.json")
+        )
+    ) == 3
+
+
+def test_completed_success_replay_survives_a_newer_pending_generation(
+    private_root: Path,
+) -> None:
+    predecessor = request()
+    OwnerPrivateLiveReviewDraftJournal(
+        private_root, FakeOwnerLivePort(private_root)
+    ).create(predecessor)
+    ledger = OwnerPrivateReviewDraftGenerationLedger(private_root)
+    successor = request(
+        packet_sha256="b" * 64,
+        content='<p class="ks-lead">第二世代を確定します。</p>',
+    )
+    completed = _revision(predecessor, successor, generation=2)
+    ledger.propose(completed)
+    ledger.mark_attempted(completed)
+    original = _revision_observation(
+        completed,
+        ReviewDraftRevisionDisposition.OWNER_LIVE_APPLIED,
+    )
+    ledger.commit(completed, original)
+
+    later_request = request(
+        packet_sha256="c" * 64,
+        content='<p class="ks-lead">第三世代をオフラインで準備します。</p>',
+    )
+    later = _revision(successor, later_request, generation=3)
+    ledger.propose(later)
+
+    assert ledger.mark_attempted(completed) == completed
+    assert ledger.recover(
+        completed,
+        _revision_observation(
+            completed,
+            ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED,
+            response_sha256="f" * 64,
+        ),
+    ) == (successor, 1704, 2)
+    assert ledger.revision_binding(
+        predecessor.article_id, completed.operation_sha256
+    ) == completed
+    assert ledger.verify(
+        completed,
+        _revision_observation(
+            completed,
+            ReviewDraftRevisionDisposition.OWNER_LIVE_VERIFIED,
+            response_sha256="e" * 64,
+        ),
+    ) == (successor, 1704, 2)
+    assert ledger.pending_binding(predecessor.article_id) == later
+    document = json.loads(
+        _generation_ledger_path(private_root, predecessor.article_id).read_text(
+            encoding="utf-8"
+        )
+    )
+    assert document["active_generation"] == 2
+    assert document["pending"]["successor_generation"] == 3
+    assert document["generations"][1]["outcome"] == original.disposition.value
+    assert document["generations"][1]["response_sha256"] == (
+        original.response_sha256
+    )
+
+
+def test_generation_ledger_cas_rejects_competing_binding_and_draft_id_drift(
+    private_root: Path,
+) -> None:
+    predecessor = request()
+    OwnerPrivateLiveReviewDraftJournal(
+        private_root, FakeOwnerLivePort(private_root)
+    ).create(predecessor)
+    ledger = OwnerPrivateReviewDraftGenerationLedger(private_root)
+    successor = request(
+        packet_sha256="b" * 64,
+        content='<p class="ks-lead">新しい証拠へ更新します。</p>',
+    )
+    binding = _revision(predecessor, successor, generation=2)
+    with pytest.raises(EditorialPilotFailure) as wrong_draft:
+        ledger.propose(
+            _revision(predecessor, successor, generation=2, draft_id=1705)
+        )
+    assert wrong_draft.value.code is EditorialPilotFailureCode.JOURNAL_MISMATCH
+    ledger.propose(binding)
+    competing = _revision(
+        predecessor,
+        request(
+            packet_sha256="c" * 64,
+            content='<p class="ks-lead">競合する別の更新です。</p>',
+        ),
+        generation=2,
+    )
+    with pytest.raises(EditorialPilotFailure) as competing_failure:
+        ledger.propose(competing)
+    assert competing_failure.value.code is EditorialPilotFailureCode.JOURNAL_MISMATCH
+
+    assert ledger.mark_attempted(binding) == binding
+    assert ledger.mark_attempted(binding) == binding
+    wrong_observation = ReviewDraftRevisionObservation(
+        operation_sha256="0" * 64,
+        response_sha256="e" * 64,
+        draft_id=binding.draft_id,
+        disposition=ReviewDraftRevisionDisposition.OWNER_LIVE_APPLIED,
+    )
+    with pytest.raises(EditorialPilotFailure) as wrong_outcome:
+        ledger.commit(binding, wrong_observation)
+    assert wrong_outcome.value.code is EditorialPilotFailureCode.OUTCOME_AMBIGUOUS
+    assert ledger.pending_binding(predecessor.article_id) == binding
+
+    ledger.commit(
+        binding,
+        _revision_observation(
+            binding, ReviewDraftRevisionDisposition.OWNER_LIVE_APPLIED
+        ),
+    )
+    generation_path = _generation_ledger_path(private_root, predecessor.article_id)
+    document = json.loads(generation_path.read_text(encoding="utf-8"))
+    document["draft_id"] = 1705
+    material = {
+        key: value for key, value in document.items() if key != "integrity_sha256"
+    }
+    document["integrity_sha256"] = canonical_sha256(material)
+    generation_path.write_bytes(canonical_json_bytes(document) + b"\n")
+    generation_path.chmod(0o600)
+    with pytest.raises(EditorialPilotFailure) as drift:
+        ledger.active_request(predecessor.article_id)
+    assert drift.value.code is EditorialPilotFailureCode.JOURNAL_MISMATCH
+
+
+def test_generation_ledger_rejects_more_than_thirty_two_generations(
+    private_root: Path,
+) -> None:
+    predecessor = request()
+    OwnerPrivateLiveReviewDraftJournal(
+        private_root, FakeOwnerLivePort(private_root)
+    ).create(predecessor)
+    ledger = OwnerPrivateReviewDraftGenerationLedger(private_root)
+    successor = request(
+        packet_sha256="b" * 64,
+        content='<p class="ks-lead">上限検証用の更新です。</p>',
+    )
+    binding = _revision(predecessor, successor, generation=2)
+    ledger.propose(binding)
+    generation_path = _generation_ledger_path(private_root, predecessor.article_id)
+    document = json.loads(generation_path.read_text(encoding="utf-8"))
+    document["generations"] = document["generations"] * 17
+    material = {
+        key: value for key, value in document.items() if key != "integrity_sha256"
+    }
+    document["integrity_sha256"] = canonical_sha256(material)
+    generation_path.write_bytes(canonical_json_bytes(document) + b"\n")
+    generation_path.chmod(0o600)
+
+    with pytest.raises(EditorialPilotFailure) as oversized:
+        ledger.active_request(predecessor.article_id)
+    assert oversized.value.code is EditorialPilotFailureCode.JOURNAL_MISMATCH
 
 
 def test_symlinked_owner_layout_fails_closed(private_root: Path) -> None:

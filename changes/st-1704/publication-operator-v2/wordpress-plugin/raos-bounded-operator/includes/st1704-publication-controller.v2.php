@@ -1,6 +1,6 @@
 <?php
 /**
- * ST-1704 publication-only extension for the verified bounded operator.
+ * ST-1704 publication and fixed Draft-revision extension for the bounded operator.
  *
  * This file deliberately owns a separate namespace, proposal ledger, audit
  * chain, write gate, and approval action. It never grants a WordPress publish,
@@ -14,12 +14,17 @@ if (! defined('ABSPATH')) {
 final class RAOS_ST1704_Publication_Controller_V2
 {
     const VERSION = '2.0.0';
+    const REVISION_VERSION = '2.1.0';
     const REST_NAMESPACE = 'raos-operator/v2';
     const SITE_ORIGIN = 'https://kurashinoshirube.com';
     const OPERATOR_CONTRACT_VERSION = 2;
     const PROFILE_VERSION = 2;
     const OPERATION = 'PUBLISH_ST1704_ARTICLE';
+    const REVISION_OPERATION = 'REVISE_ST1704_DRAFT';
     const RESULT_CODE = 'ST1704_ARTICLE_PUBLISHED';
+    const REVISION_RESULT_CODE = 'ST1704_DRAFT_REVISED';
+    const REVISION_VERIFY_RESULT_CODE = 'ST1704_DRAFT_REVISION_VERIFIED';
+    const REVISION_RECOVERY_RESULT_CODE = 'ST1704_DRAFT_REVISION_STATE_OBSERVED';
     const HOOK_REPLAY_COMPLETED = 'HOOK_REPLAY_COMPLETED';
     const DEFAULT_TTL = 900;
     const ROLE = 'raos_operator_executor';
@@ -31,6 +36,7 @@ final class RAOS_ST1704_Publication_Controller_V2
     const SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
     const SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
     const SNAPSHOT_MAX_BYTES = 16384;
+    const REVISION_CONTENT_MAX_BYTES = 2097152;
     const REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
     const ADMIN_PAGE = 'raos-st1704-publication-operator-v2';
     const APPROVAL_ACTION = 'raos_st1704_publication_approve_v2';
@@ -164,6 +170,10 @@ final class RAOS_ST1704_Publication_Controller_V2
             && $route === '/' . self::REST_NAMESPACE . '/status') {
             return $callback === 'rest_status';
         }
+        if ($method === 'GET'
+            && $route === '/' . self::REST_NAMESPACE . '/revision-status') {
+            return $callback === 'rest_revision_status';
+        }
         if ($method === 'POST'
             && $route === '/' . self::REST_NAMESPACE . '/proposals') {
             return $callback === 'rest_create_proposal';
@@ -184,6 +194,22 @@ final class RAOS_ST1704_Publication_Controller_V2
             ) === 1) {
             return $callback === 'rest_apply';
         }
+        if ($method === 'GET'
+            && preg_match(
+                '#\A/' . preg_quote(self::REST_NAMESPACE, '#')
+                . '/proposals/[a-f0-9]{64}/verify\z#',
+                $route
+            ) === 1) {
+            return $callback === 'rest_verify_revision';
+        }
+        if ($method === 'GET'
+            && preg_match(
+                '#\A/' . preg_quote(self::REST_NAMESPACE, '#')
+                . '/proposals/[a-f0-9]{64}/revision-state\z#',
+                $route
+            ) === 1) {
+            return $callback === 'rest_recover_revision_state';
+        }
         return false;
     }
 
@@ -195,6 +221,33 @@ final class RAOS_ST1704_Publication_Controller_V2
             array(
                 'methods' => WP_REST_Server::READABLE,
                 'callback' => array($this, 'rest_status'),
+                'permission_callback' => array($this, 'can_read'),
+            )
+        );
+        register_rest_route(
+            self::REST_NAMESPACE,
+            '/revision-status',
+            array(
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => array($this, 'rest_revision_status'),
+                'permission_callback' => array($this, 'can_read'),
+            )
+        );
+        register_rest_route(
+            self::REST_NAMESPACE,
+            '/proposals/(?P<proposal_id>[a-f0-9]{64})/verify',
+            array(
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => array($this, 'rest_verify_revision'),
+                'permission_callback' => array($this, 'can_read'),
+            )
+        );
+        register_rest_route(
+            self::REST_NAMESPACE,
+            '/proposals/(?P<proposal_id>[a-f0-9]{64})/revision-state',
+            array(
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => array($this, 'rest_recover_revision_state'),
                 'permission_callback' => array($this, 'can_read'),
             )
         );
@@ -558,6 +611,27 @@ final class RAOS_ST1704_Publication_Controller_V2
         );
     }
 
+    public function rest_revision_status(WP_REST_Request $request)
+    {
+        if (! self::runtime_origin_is_exact()) {
+            return self::error('raos_st1704_runtime_origin_invalid', 409);
+        }
+        if ($request->get_body() !== ''
+            || $request->get_query_params() !== array()) {
+            return self::error('raos_st1704_revision_status_request_invalid', 400);
+        }
+        return rest_ensure_response(
+            array(
+                'schema' => 'RAOS_ST1704_DRAFT_REVISION_STATUS_V2',
+                'operator_version' => self::REVISION_VERSION,
+                'master_writes_enabled' => self::master_writes_enabled(),
+                'publication_writes_enabled' => self::publication_writes_enabled(),
+                'writes_enabled' => self::writes_enabled(),
+                'supported_operations' => array(self::REVISION_OPERATION),
+            )
+        );
+    }
+
     public function rest_create_proposal(WP_REST_Request $request)
     {
         if (! self::runtime_origin_is_exact()) {
@@ -637,6 +711,10 @@ final class RAOS_ST1704_Publication_Controller_V2
 
     private function normalize_proposal_request(array $input)
     {
+        if (isset($input['operation'])
+            && $input['operation'] === self::REVISION_OPERATION) {
+            return $this->normalize_revision_proposal_request($input);
+        }
         $keys = array(
             'article_id',
             'category_contract',
@@ -704,10 +782,240 @@ final class RAOS_ST1704_Publication_Controller_V2
         );
     }
 
+    private static function decode_canonical_base64($value, $maximum)
+    {
+        if (! is_string($value)
+            || $value === ''
+            || ! is_int($maximum)
+            || $maximum < 1
+            || strlen($value) > 4 * $maximum + 4) {
+            return null;
+        }
+        $decoded = base64_decode($value, true);
+        return is_string($decoded)
+            && strlen($decoded) <= $maximum
+            && hash_equals($value, base64_encode($decoded))
+            ? $decoded
+            : null;
+    }
+
+    private function normalize_revision_proposal_request(array $input)
+    {
+        $keys = array(
+            'article_id',
+            'draft_post_id',
+            'generation',
+            'operation',
+            'operation_sha256',
+            'operator_contract_version',
+            'predecessor',
+            'profile_version',
+            'public_slug',
+            'request_token',
+            'site_origin',
+            'successor',
+            'ttl_seconds',
+        );
+        $binding_keys = array(
+            'content_sha256',
+            'packet_sha256',
+            'payload_sha256',
+            'request_sha256',
+            'review_slug',
+        );
+        $successor_keys = array_merge(
+            $binding_keys,
+            array(
+                'content_base64',
+                'excerpt_base64',
+                'snapshot_base64',
+                'title_base64',
+            )
+        );
+        if (! self::has_exact_keys($input, $keys)
+            || $input['operation'] !== self::REVISION_OPERATION
+            || $input['operator_contract_version'] !== self::OPERATOR_CONTRACT_VERSION
+            || $input['profile_version'] !== self::PROFILE_VERSION
+            || $input['site_origin'] !== self::SITE_ORIGIN
+            || $input['ttl_seconds'] !== self::DEFAULT_TTL
+            || ! is_string($input['article_id'])
+            || ! is_string($input['public_slug'])
+            || ! is_int($input['draft_post_id'])
+            || $input['draft_post_id'] < 1
+            || ! is_int($input['generation'])
+            || $input['generation'] < 2
+            || $input['generation'] > 32
+            || ! self::has_exact_keys($input['predecessor'], $binding_keys)
+            || ! self::has_exact_keys($input['successor'], $successor_keys)) {
+            return self::error('raos_st1704_revision_proposal_invalid', 400);
+        }
+        $articles = self::fixed_articles();
+        $revision_post_ids = self::fixed_revision_post_ids();
+        if (! isset($articles[$input['article_id']])
+            || $articles[$input['article_id']] !== $input['public_slug']
+            || ! isset($revision_post_ids[$input['article_id']])
+            || $revision_post_ids[$input['article_id']]
+                !== $input['draft_post_id']) {
+            return self::error('raos_st1704_article_not_bound', 409);
+        }
+        foreach (array('operation_sha256', 'request_token') as $hash_key) {
+            if (! is_string($input[$hash_key])
+                || preg_match('/\A[a-f0-9]{64}\z/', $input[$hash_key]) !== 1) {
+                return self::error('raos_st1704_revision_proposal_invalid', 400);
+            }
+        }
+        foreach (array('predecessor', 'successor') as $side) {
+            foreach (
+                array(
+                    'content_sha256',
+                    'packet_sha256',
+                    'payload_sha256',
+                    'request_sha256',
+                ) as $hash_key
+            ) {
+                if (! is_string($input[$side][$hash_key])
+                    || preg_match(
+                        '/\A[a-f0-9]{64}\z/',
+                        $input[$side][$hash_key]
+                    ) !== 1) {
+                    return self::error(
+                        'raos_st1704_revision_proposal_invalid',
+                        400
+                    );
+                }
+            }
+            $expected_review_slug = 'raos-review-' . $input['public_slug'] . '-'
+                . $input[$side]['payload_sha256'];
+            if (! is_string($input[$side]['review_slug'])
+                || ! hash_equals(
+                    $expected_review_slug,
+                    $input[$side]['review_slug']
+                )) {
+                return self::error(
+                    'raos_st1704_revision_proposal_invalid',
+                    400
+                );
+            }
+        }
+        if (hash_equals(
+            $input['predecessor']['request_sha256'],
+            $input['successor']['request_sha256']
+        ) || hash_equals(
+            $input['predecessor']['packet_sha256'],
+            $input['successor']['packet_sha256']
+        )) {
+            return self::error('raos_st1704_revision_not_fresh', 409);
+        }
+        $title = self::decode_canonical_base64(
+            $input['successor']['title_base64'],
+            1200
+        );
+        $excerpt = self::decode_canonical_base64(
+            $input['successor']['excerpt_base64'],
+            2400
+        );
+        $content = self::decode_canonical_base64(
+            $input['successor']['content_base64'],
+            self::REVISION_CONTENT_MAX_BYTES
+        );
+        $snapshot_raw = self::decode_canonical_base64(
+            $input['successor']['snapshot_base64'],
+            self::SNAPSHOT_MAX_BYTES
+        );
+        $snapshot = is_string($snapshot_raw)
+            ? self::parse_snapshot($snapshot_raw)
+            : null;
+        if (! is_string($title)
+            || ! is_string($excerpt)
+            || ! is_string($content)
+            || $content === ''
+            || strpos($content, "\0") !== false
+            || ! is_array($snapshot)
+            || $snapshot['payload']['article_id'] !== $input['article_id']
+            || $snapshot['payload']['slug'] !== $input['public_slug']
+            || $snapshot['payload']['packet_sha256']
+                !== $input['successor']['packet_sha256']
+            || $snapshot['payload']['visible_content_sha256']
+                !== $input['successor']['content_sha256']
+            || $snapshot['payload_sha256']
+                !== $input['successor']['payload_sha256']
+            || $snapshot['payload']['title'] !== $title
+            || $snapshot['payload']['description'] !== $excerpt
+            || ! hash_equals(
+                $input['successor']['content_sha256'],
+                hash('sha256', $content)
+            )) {
+            return self::error('raos_st1704_revision_successor_invalid', 409);
+        }
+        $successor_body = array(
+            'content' => $content,
+            'excerpt' => $excerpt,
+            'meta' => array(self::SNAPSHOT_META_KEY => $snapshot_raw),
+            'slug' => $input['successor']['review_slug'],
+            'status' => 'draft',
+            'title' => $title,
+        );
+        $request_material = self::canonical_json(
+            array(
+                'body' => $successor_body,
+                'origin' => self::SITE_ORIGIN,
+                'path' => self::REVIEW_REQUEST_PATH,
+            )
+        );
+        if (! is_string($request_material)
+            || ! hash_equals(
+                $input['successor']['request_sha256'],
+                hash('sha256', $request_material)
+            )) {
+            return self::error('raos_st1704_revision_request_not_bound', 409);
+        }
+        $operation_material = array(
+            'article_id' => $input['article_id'],
+            'draft_id' => $input['draft_post_id'],
+            'generation' => $input['generation'],
+            'predecessor' => $input['predecessor'],
+            'schema' => 'RAOS_ST1704_REVIEW_DRAFT_REVISION_OPERATION_V1',
+            'successor' => array_intersect_key(
+                $input['successor'],
+                array_fill_keys($binding_keys, true)
+            ),
+        );
+        $operation_json = self::canonical_ascii_json($operation_material);
+        if (! is_string($operation_json)
+            || ! hash_equals(
+                $input['operation_sha256'],
+                hash('sha256', $operation_json)
+            )) {
+            return self::error('raos_st1704_revision_operation_not_bound', 409);
+        }
+        return array(
+            'article_id' => $input['article_id'],
+            'draft_post_id' => $input['draft_post_id'],
+            'generation' => $input['generation'],
+            'operation' => self::REVISION_OPERATION,
+            'operation_sha256' => $input['operation_sha256'],
+            'operator_contract_version' => self::OPERATOR_CONTRACT_VERSION,
+            'predecessor' => $input['predecessor'],
+            'profile_version' => self::PROFILE_VERSION,
+            'public_slug' => $input['public_slug'],
+            'request_token' => $input['request_token'],
+            'site_origin' => self::SITE_ORIGIN,
+            'successor' => $input['successor'],
+            'ttl_seconds' => self::DEFAULT_TTL,
+        );
+    }
+
     private static function fixed_articles()
     {
         return self::bindings_are_exact()
             ? RAOS_ST1704_Publication_Bindings_V2::articles()
+            : array();
+    }
+
+    private static function fixed_revision_post_ids()
+    {
+        return self::bindings_are_exact()
+            ? RAOS_ST1704_Publication_Bindings_V2::revision_post_ids()
             : array();
     }
 
@@ -720,8 +1028,13 @@ final class RAOS_ST1704_Publication_Controller_V2
             return false;
         }
         $articles = RAOS_ST1704_Publication_Bindings_V2::articles();
+        $revision_post_ids = RAOS_ST1704_Publication_Bindings_V2::revision_post_ids();
         if (! is_array($articles)
             || count($articles) !== 4
+            || ! is_array($revision_post_ids)
+            || count($revision_post_ids) !== 4
+            || array_keys($revision_post_ids) !== array_keys($articles)
+            || count(array_unique(array_values($revision_post_ids))) !== 4
             || isset($articles['st1703-first-suitcase-comparison'])) {
             return false;
         }
@@ -729,6 +1042,9 @@ final class RAOS_ST1704_Publication_Controller_V2
             if (! is_string($article_id)
                 || strpos($article_id, 'st1704-') !== 0
                 || ! is_string($slug)
+                || ! isset($revision_post_ids[$article_id])
+                || ! is_int($revision_post_ids[$article_id])
+                || $revision_post_ids[$article_id] < 1
                 || preg_match('/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/', $slug) !== 1) {
                 return false;
             }
@@ -768,6 +1084,19 @@ final class RAOS_ST1704_Publication_Controller_V2
             JSON_UNESCAPED_SLASHES
                 | JSON_UNESCAPED_UNICODE
                 | JSON_PRESERVE_ZERO_FRACTION
+        );
+        return is_string($json) ? $json : null;
+    }
+
+    private static function canonical_ascii_json($value)
+    {
+        $normalized = self::sort_for_json($value);
+        if ($normalized === null && $value !== null) {
+            return null;
+        }
+        $json = wp_json_encode(
+            $normalized,
+            JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION
         );
         return is_string($json) ? $json : null;
     }
@@ -883,7 +1212,11 @@ final class RAOS_ST1704_Publication_Controller_V2
             || ! is_string($row['request_json'])
             || ! hash_equals($proposal_id, hash('sha256', $row['request_json']))
             || ! is_string($row['operation'])
-            || $row['operation'] !== self::OPERATION
+            || ! in_array(
+                $row['operation'],
+                array(self::OPERATION, self::REVISION_OPERATION),
+                true
+            )
             || ! is_string($row['state'])
             || ! in_array($row['state'], self::states(), true)
             || ! is_string($row['before_state_json'])
@@ -1141,7 +1474,7 @@ final class RAOS_ST1704_Publication_Controller_V2
         if ($unresolved !== 0) {
             return self::error('raos_st1704_unresolved_proposal_exists', 409);
         }
-        $before_state = $this->capture_publication_state($normalized);
+        $before_state = $this->capture_operation_state($normalized);
         if (is_wp_error($before_state)) {
             return $before_state;
         }
@@ -1165,7 +1498,7 @@ final class RAOS_ST1704_Publication_Controller_V2
             $table,
             array(
                 'proposal_id' => $proposal_id,
-                'operation' => self::OPERATION,
+                'operation' => $normalized['operation'],
                 'request_json' => $canonical,
                 'state' => 'PROPOSED',
                 'created_at' => $created_at,
@@ -1195,7 +1528,7 @@ final class RAOS_ST1704_Publication_Controller_V2
         return $this->validated_proposal_response(
             array(
                 'proposal_id' => $proposal_id,
-                'operation' => self::OPERATION,
+                'operation' => $normalized['operation'],
                 'request_json' => $canonical,
                 'state' => 'PROPOSED',
                 'created_at' => $created_at,
@@ -1389,11 +1722,12 @@ final class RAOS_ST1704_Publication_Controller_V2
     private function capture_post_storage(
         $post_id,
         array $category,
-        $for_update = false
+        $for_update = false,
+        $revision_mutable_fields = false
     )
     {
         global $wpdb;
-        if (! is_bool($for_update)) {
+        if (! is_bool($for_update) || ! is_bool($revision_mutable_fields)) {
             return self::error('raos_st1704_draft_not_exact', 409);
         }
         $lock_clause = $for_update ? ' FOR UPDATE' : '';
@@ -1422,16 +1756,21 @@ final class RAOS_ST1704_Publication_Controller_V2
             $restore_fields[$column] = base64_encode($post[$column]);
         }
         $protected_fields = $restore_fields;
-        foreach (
-            array(
-                'post_date',
-                'post_date_gmt',
-                'post_modified',
-                'post_modified_gmt',
-                'post_status',
-                'post_name',
-            ) as $mutable_column
-        ) {
+        $mutable_columns = array(
+            'post_date',
+            'post_date_gmt',
+            'post_modified',
+            'post_modified_gmt',
+            'post_status',
+            'post_name',
+        );
+        if ($revision_mutable_fields) {
+            $mutable_columns = array_merge(
+                $mutable_columns,
+                array('post_content', 'post_excerpt', 'post_title')
+            );
+        }
+        foreach ($mutable_columns as $mutable_column) {
             unset($protected_fields[$mutable_column]);
         }
 
@@ -1692,6 +2031,277 @@ final class RAOS_ST1704_Publication_Controller_V2
         );
     }
 
+    private function capture_operation_state(array $proposal, $for_update = false)
+    {
+        return isset($proposal['operation'])
+            && $proposal['operation'] === self::REVISION_OPERATION
+            ? $this->capture_revision_state($proposal, $for_update)
+            : $this->capture_publication_state($proposal);
+    }
+
+    private function capture_revision_state(
+        array $proposal,
+        $for_update = false,
+        $require_successor_unique = true
+    )
+    {
+        global $wpdb;
+        $category = $this->resolve_exact_category();
+        if (is_wp_error($category)) {
+            return $category;
+        }
+        $fixed_ids = self::fixed_revision_post_ids();
+        if (! isset($fixed_ids[$proposal['article_id']])
+            || $fixed_ids[$proposal['article_id']] !== $proposal['draft_post_id']) {
+            return self::error('raos_st1704_revision_post_not_bound', 409);
+        }
+        $storage = $this->capture_post_storage(
+            $proposal['draft_post_id'],
+            $category,
+            $for_update,
+            true
+        );
+        if (is_wp_error($storage)) {
+            return $storage;
+        }
+        $summary = $storage['summary'];
+        $snapshot = self::parse_snapshot($storage['snapshot_raw']);
+        $predecessor = $proposal['predecessor'];
+        if (! is_array($snapshot)
+            || $summary['status'] !== 'draft'
+            || $summary['slug'] !== $predecessor['review_slug']
+            || $snapshot['payload']['article_id'] !== $proposal['article_id']
+            || $snapshot['payload']['slug'] !== $proposal['public_slug']
+            || $snapshot['payload']['packet_sha256']
+                !== $predecessor['packet_sha256']
+            || $snapshot['payload']['visible_content_sha256']
+                !== $predecessor['content_sha256']
+            || $snapshot['payload_sha256'] !== $predecessor['payload_sha256']
+            || $summary['title_sha256']
+                !== hash('sha256', $snapshot['payload']['title'])
+            || $summary['excerpt_sha256']
+                !== hash('sha256', $snapshot['payload']['description'])
+            || $summary['content_sha256'] !== $predecessor['content_sha256']) {
+            return self::error('raos_st1704_revision_predecessor_changed', 409);
+        }
+        $request_material = self::canonical_json(
+            array(
+                'body' => array(
+                    'content' => base64_decode(
+                        $storage['restore']['post_fields']['post_content'],
+                        true
+                    ),
+                    'excerpt' => base64_decode(
+                        $storage['restore']['post_fields']['post_excerpt'],
+                        true
+                    ),
+                    'meta' => array(
+                        self::SNAPSHOT_META_KEY => $storage['snapshot_raw'],
+                    ),
+                    'slug' => $predecessor['review_slug'],
+                    'status' => 'draft',
+                    'title' => base64_decode(
+                        $storage['restore']['post_fields']['post_title'],
+                        true
+                    ),
+                ),
+                'origin' => self::SITE_ORIGIN,
+                'path' => self::REVIEW_REQUEST_PATH,
+            )
+        );
+        if (! is_string($request_material)
+            || ! hash_equals(
+                $predecessor['request_sha256'],
+                hash('sha256', $request_material)
+            )) {
+            return self::error('raos_st1704_revision_predecessor_changed', 409);
+        }
+        if ($require_successor_unique) {
+            $slug_lock_clause = $for_update ? ' FOR UPDATE' : '';
+            $successor_slug_conflict = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT ID FROM {$wpdb->posts}
+                     WHERE ID <> %d AND BINARY post_name = BINARY %s
+                     ORDER BY ID ASC LIMIT 1{$slug_lock_clause}",
+                    $proposal['draft_post_id'],
+                    $proposal['successor']['review_slug']
+                )
+            );
+            if ($wpdb->last_error !== '' || $successor_slug_conflict !== null) {
+                return self::error('raos_st1704_revision_slug_not_unique', 409);
+            }
+        }
+        return array(
+            'article_id' => $proposal['article_id'],
+            'draft_post_id' => $proposal['draft_post_id'],
+            'generation' => $proposal['generation'],
+            'operation_sha256' => $proposal['operation_sha256'],
+            'predecessor' => $predecessor,
+            'public_slug' => $proposal['public_slug'],
+            'storage' => $storage,
+        );
+    }
+
+    private function revision_before_state_matches(
+        array $proposal,
+        array $before,
+        $for_update = false,
+        $require_successor_unique = true
+    ) {
+        $current = $this->capture_revision_state(
+            $proposal,
+            $for_update,
+            $require_successor_unique
+        );
+        if (is_wp_error($current)) {
+            return false;
+        }
+        $current_json = self::canonical_json($current);
+        $before_json = self::canonical_json($before);
+        return is_string($current_json)
+            && is_string($before_json)
+            && hash_equals($before_json, $current_json);
+    }
+
+    private function revision_state_matches_successor(
+        array $proposal,
+        array $before,
+        array $expected_modified_times = array(),
+        $for_update = false
+    ) {
+        global $wpdb;
+        $category = $this->resolve_exact_category();
+        if (is_wp_error($category)) {
+            return false;
+        }
+        $current = $this->capture_post_storage(
+            $proposal['draft_post_id'],
+            $category,
+            $for_update,
+            true
+        );
+        if (is_wp_error($current)) {
+            return false;
+        }
+        $successor = $proposal['successor'];
+        $content = self::decode_canonical_base64(
+            $successor['content_base64'],
+            self::REVISION_CONTENT_MAX_BYTES
+        );
+        $excerpt = self::decode_canonical_base64(
+            $successor['excerpt_base64'],
+            2400
+        );
+        $title = self::decode_canonical_base64(
+            $successor['title_base64'],
+            1200
+        );
+        $snapshot_raw = self::decode_canonical_base64(
+            $successor['snapshot_base64'],
+            self::SNAPSHOT_MAX_BYTES
+        );
+        $snapshot = is_string($snapshot_raw)
+            ? self::parse_snapshot($snapshot_raw)
+            : null;
+        if (! is_string($content)
+            || ! is_string($excerpt)
+            || ! is_string($title)
+            || ! is_string($snapshot_raw)
+            || ! is_array($snapshot)) {
+            return false;
+        }
+        $old = $before['storage']['summary'];
+        $new = $current['summary'];
+        foreach (
+            array(
+                'all_taxonomy_sha256',
+                'category_relationship_sha256',
+                'category_term_taxonomy_ids',
+                'featured_media_id',
+                'other_meta_sha256',
+                'other_taxonomy_sha256',
+                'post_id',
+                'protected_post_fields_sha256',
+                'thumbnail_meta_sha256',
+            ) as $preserved
+        ) {
+            if (! array_key_exists($preserved, $old)
+                || ! array_key_exists($preserved, $new)
+                || $old[$preserved] !== $new[$preserved]) {
+                return false;
+            }
+        }
+        foreach (array('post_date', 'post_date_gmt') as $date_field) {
+            $old_value = self::decode_exact_base64(
+                $before['storage']['restore']['post_fields'][$date_field]
+            );
+            $new_value = self::decode_exact_base64(
+                $current['restore']['post_fields'][$date_field]
+            );
+            if (! is_string($old_value)
+                || ! is_string($new_value)
+                || ! hash_equals($old_value, $new_value)) {
+                return false;
+            }
+        }
+        if ($expected_modified_times !== array()) {
+            foreach (array('post_modified', 'post_modified_gmt') as $field) {
+                $observed = self::decode_exact_base64(
+                    $current['restore']['post_fields'][$field]
+                );
+                if (! isset($expected_modified_times[$field])
+                    || ! is_string($observed)
+                    || ! hash_equals($expected_modified_times[$field], $observed)) {
+                    return false;
+                }
+            }
+        }
+        $slug_conflicts = $this->strict_count(
+            $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$wpdb->posts}
+                     WHERE ID <> %d AND BINARY post_name = BINARY %s",
+                    $proposal['draft_post_id'],
+                    $successor['review_slug']
+                )
+            )
+        );
+        $request_material = self::canonical_json(
+            array(
+                'body' => array(
+                    'content' => $content,
+                    'excerpt' => $excerpt,
+                    'meta' => array(self::SNAPSHOT_META_KEY => $snapshot_raw),
+                    'slug' => $successor['review_slug'],
+                    'status' => 'draft',
+                    'title' => $title,
+                ),
+                'origin' => self::SITE_ORIGIN,
+                'path' => self::REVIEW_REQUEST_PATH,
+            )
+        );
+        return is_int($slug_conflicts)
+            && $slug_conflicts === 0
+            && $new['status'] === 'draft'
+            && $new['slug'] === $successor['review_slug']
+            && $new['content_sha256'] === $successor['content_sha256']
+            && $new['title_sha256'] === hash('sha256', $title)
+            && $new['excerpt_sha256'] === hash('sha256', $excerpt)
+            && $new['snapshot_meta_sha256'] === hash('sha256', $snapshot_raw)
+            && $snapshot['payload']['article_id'] === $proposal['article_id']
+            && $snapshot['payload']['slug'] === $proposal['public_slug']
+            && $snapshot['payload']['packet_sha256']
+                === $successor['packet_sha256']
+            && $snapshot['payload_sha256'] === $successor['payload_sha256']
+            && $snapshot['payload']['visible_content_sha256']
+                === $successor['content_sha256']
+            && is_string($request_material)
+            && hash_equals(
+                $successor['request_sha256'],
+                hash('sha256', $request_material)
+            );
+    }
+
     public function register_admin_page()
     {
         add_management_page(
@@ -1734,8 +2344,8 @@ final class RAOS_ST1704_Publication_Controller_V2
             : null;
         ?>
         <div class="wrap">
-            <h1><?php echo esc_html('RAOS ST-1704 Publication Approval'); ?></h1>
-            <p><?php echo esc_html('Approval binds one exact Review Draft. It does not publish the post.'); ?></p>
+            <h1><?php echo esc_html('RAOS ST-1704 Bounded Operation Approval'); ?></h1>
+            <p><?php echo esc_html('Approval binds one exact Review Draft and one exact operation.'); ?></p>
             <?php if (! self::writes_enabled()) : ?>
                 <div class="notice notice-warning"><p><?php
                     echo esc_html('Both the master and ST-1704 publication write gates must be strict true.');
@@ -1755,30 +2365,53 @@ final class RAOS_ST1704_Publication_Controller_V2
                 <?php else : ?>
                     <?php $spec = $stored['request']; ?>
                     <dl>
+                        <dt><?php echo esc_html('Operation'); ?></dt>
+                        <dd><code><?php echo esc_html($spec['operation']); ?></code></dd>
                         <dt><?php echo esc_html('Article ID'); ?></dt>
                         <dd><code><?php echo esc_html($spec['article_id']); ?></code></dd>
                         <dt><?php echo esc_html('Draft post ID'); ?></dt>
                         <dd><code><?php echo esc_html((string) $spec['draft_post_id']); ?></code></dd>
                         <dt><?php echo esc_html('Final public slug'); ?></dt>
                         <dd><code><?php echo esc_html($spec['public_slug']); ?></code></dd>
-                        <dt><?php echo esc_html('Existing single category'); ?></dt>
-                        <dd><code><?php echo esc_html(RAOS_ST1704_Publication_Bindings_V2::CATEGORY_NAME); ?></code></dd>
                         <dt><?php echo esc_html('Proposal ID'); ?></dt>
                         <dd><code><?php echo esc_html($proposal_id); ?></code></dd>
-                        <dt><?php echo esc_html('Packet SHA-256'); ?></dt>
-                        <dd><code><?php echo esc_html($spec['packet_sha256']); ?></code></dd>
-                        <dt><?php echo esc_html('Review request SHA-256'); ?></dt>
-                        <dd><code><?php echo esc_html($spec['request_sha256']); ?></code></dd>
-                        <dt><?php echo esc_html('Snapshot payload SHA-256'); ?></dt>
-                        <dd><code><?php echo esc_html($spec['snapshot_payload_sha256']); ?></code></dd>
-                        <dt><?php echo esc_html('Visible content SHA-256'); ?></dt>
-                        <dd><code><?php echo esc_html($spec['visible_content_sha256']); ?></code></dd>
+                        <?php if ($spec['operation'] === self::REVISION_OPERATION) : ?>
+                            <dt><?php echo esc_html('Generation'); ?></dt>
+                            <dd><code><?php echo esc_html((string) $spec['generation']); ?></code></dd>
+                            <dt><?php echo esc_html('Revision operation SHA-256'); ?></dt>
+                            <dd><code><?php echo esc_html($spec['operation_sha256']); ?></code></dd>
+                            <dt><?php echo esc_html('Predecessor request SHA-256'); ?></dt>
+                            <dd><code><?php echo esc_html($spec['predecessor']['request_sha256']); ?></code></dd>
+                            <dt><?php echo esc_html('Successor request SHA-256'); ?></dt>
+                            <dd><code><?php echo esc_html($spec['successor']['request_sha256']); ?></code></dd>
+                            <dt><?php echo esc_html('Successor packet SHA-256'); ?></dt>
+                            <dd><code><?php echo esc_html($spec['successor']['packet_sha256']); ?></code></dd>
+                            <dt><?php echo esc_html('Successor snapshot SHA-256'); ?></dt>
+                            <dd><code><?php echo esc_html($spec['successor']['payload_sha256']); ?></code></dd>
+                            <dt><?php echo esc_html('Successor content SHA-256'); ?></dt>
+                            <dd><code><?php echo esc_html($spec['successor']['content_sha256']); ?></code></dd>
+                        <?php else : ?>
+                            <dt><?php echo esc_html('Existing single category'); ?></dt>
+                            <dd><code><?php echo esc_html(RAOS_ST1704_Publication_Bindings_V2::CATEGORY_NAME); ?></code></dd>
+                            <dt><?php echo esc_html('Packet SHA-256'); ?></dt>
+                            <dd><code><?php echo esc_html($spec['packet_sha256']); ?></code></dd>
+                            <dt><?php echo esc_html('Review request SHA-256'); ?></dt>
+                            <dd><code><?php echo esc_html($spec['request_sha256']); ?></code></dd>
+                            <dt><?php echo esc_html('Snapshot payload SHA-256'); ?></dt>
+                            <dd><code><?php echo esc_html($spec['snapshot_payload_sha256']); ?></code></dd>
+                            <dt><?php echo esc_html('Visible content SHA-256'); ?></dt>
+                            <dd><code><?php echo esc_html($spec['visible_content_sha256']); ?></code></dd>
+                        <?php endif; ?>
                         <dt><?php echo esc_html('Complete pre-state SHA-256'); ?></dt>
                         <dd><code><?php echo esc_html($row['before_state_hash']); ?></code></dd>
                         <dt><?php echo esc_html('Expires (UTC)'); ?></dt>
                         <dd><code><?php echo esc_html($row['expires_at']); ?></code></dd>
                     </dl>
-                    <p><?php echo esc_html('Only draft→publish, review slug→final slug, one existing category assignment, and unavoidable WordPress publication timestamps are permitted.'); ?></p>
+                    <p><?php echo esc_html(
+                        $spec['operation'] === self::REVISION_OPERATION
+                            ? 'Only the fixed Draft title, excerpt, content, review slug, snapshot, and modified timestamps may change; post ID and Draft status remain fixed.'
+                            : 'Only draft→publish, review slug→final slug, one existing category assignment, and unavoidable WordPress publication timestamps are permitted.'
+                    ); ?></p>
                     <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                         <input type="hidden" name="action" value="<?php echo esc_attr(self::APPROVAL_ACTION); ?>">
                         <input type="hidden" name="proposal_id" value="<?php echo esc_attr($proposal_id); ?>">
@@ -1792,7 +2425,7 @@ final class RAOS_ST1704_Publication_Controller_V2
                         <p><label><?php echo esc_html('Current WordPress password'); ?><br>
                             <input name="current_password" type="password" autocomplete="current-password" required>
                         </label></p>
-                        <?php submit_button('Approve exact publication proposal', 'primary', 'submit', false); ?>
+                        <?php submit_button('Approve exact bounded proposal', 'primary', 'submit', false); ?>
                     </form>
                 <?php endif; ?>
             <?php endif; ?>
@@ -1873,7 +2506,7 @@ final class RAOS_ST1704_Publication_Controller_V2
             || (int) $row['proposer_user_id'] === (int) $approver->ID) {
             wp_die(esc_html('The proposal cannot be approved.'), '', array('response' => 409));
         }
-        $current_state = $this->capture_publication_state($stored['request']);
+        $current_state = $this->capture_operation_state($stored['request']);
         $current_json = is_wp_error($current_state)
             ? null
             : self::canonical_json($current_state);
@@ -2000,6 +2633,193 @@ final class RAOS_ST1704_Publication_Controller_V2
             );
     }
 
+    public function rest_verify_revision(WP_REST_Request $request)
+    {
+        if (! self::runtime_origin_is_exact()) {
+            return self::error('raos_st1704_runtime_origin_invalid', 409);
+        }
+        $proposal_id = (string) $request['proposal_id'];
+        if (preg_match('/\A[a-f0-9]{64}\z/', $proposal_id) !== 1
+            || $request->get_body() !== ''
+            || $request->get_query_params() !== array()) {
+            return self::error('raos_st1704_revision_verify_invalid', 400);
+        }
+        $row = $this->proposal_row($proposal_id);
+        $stored = is_array($row)
+            ? $this->validated_stored_proposal($row, $proposal_id)
+            : self::error('raos_st1704_proposal_not_found', 404);
+        $modified_times = is_array($row)
+            ? self::publication_modified_times_from_gmt($row['apply_started_at'])
+            : false;
+        if (is_wp_error($stored)
+            || $stored['request']['operation'] !== self::REVISION_OPERATION
+            || $row['state'] !== 'APPLIED'
+            || $row['result_code'] !== self::REVISION_RESULT_CODE
+            || (int) $row['proposer_user_id'] !== get_current_user_id()
+            || ! is_array($modified_times)
+            || ! $this->approval_evidence_is_valid($row, $proposal_id, false)
+            || ! $this->revision_state_matches_successor(
+                $stored['request'],
+                $stored['before_state'],
+                $modified_times
+            )) {
+            return self::error('raos_st1704_revision_verify_mismatch', 409);
+        }
+        return new WP_REST_Response(
+            array(
+                'schema' => 'RAOS_ST1704_DRAFT_REVISION_VERIFY_V2',
+                'proposal_id' => $proposal_id,
+                'operation' => self::REVISION_OPERATION,
+                'operation_sha256' => $stored['request']['operation_sha256'],
+                'draft_post_id' => $stored['request']['draft_post_id'],
+                'state' => 'APPLIED',
+                'result_code' => self::REVISION_VERIFY_RESULT_CODE,
+            ),
+            200,
+            array('ETag' => '"' . $proposal_id . '"')
+        );
+    }
+
+    public function rest_recover_revision_state(WP_REST_Request $request)
+    {
+        if (! self::runtime_origin_is_exact()) {
+            return self::error('raos_st1704_runtime_origin_invalid', 409);
+        }
+        $proposal_id = (string) $request['proposal_id'];
+        if (preg_match('/\A[a-f0-9]{64}\z/', $proposal_id) !== 1
+            || $request->get_body() !== ''
+            || $request->get_query_params() !== array()) {
+            return self::error('raos_st1704_revision_recovery_invalid', 400);
+        }
+        $mutex_name = $this->publication_mutex_name();
+        if (! $this->acquire_publication_mutex($mutex_name)) {
+            return self::error('raos_st1704_publication_busy', 409);
+        }
+        $released = false;
+        try {
+            $response = $this->recover_revision_state_under_mutex($proposal_id);
+        } catch (Throwable $exception) {
+            $response = self::error(
+                'raos_st1704_revision_recovery_unavailable',
+                500
+            );
+        } finally {
+            $released = $this->release_publication_mutex($mutex_name);
+        }
+        return $released
+            ? $response
+            : self::error('raos_st1704_mutex_release_uncertain', 500);
+    }
+
+    private function recover_revision_state_under_mutex($proposal_id)
+    {
+        $mutex_name = $this->publication_mutex_name();
+        if (! $this->publication_mutex_is_owned($mutex_name)) {
+            return self::error('raos_st1704_publication_lock_lost', 500);
+        }
+        $row = $this->proposal_row($proposal_id);
+        $stored = is_array($row)
+            ? $this->validated_stored_proposal($row, $proposal_id)
+            : self::error('raos_st1704_proposal_not_found', 404);
+        if (is_wp_error($stored)
+            || $stored['request']['operation'] !== self::REVISION_OPERATION
+            || (int) $row['proposer_user_id'] !== get_current_user_id()) {
+            return self::error('raos_st1704_revision_recovery_mismatch', 409);
+        }
+
+        $proposal = $stored['request'];
+        $before = $stored['before_state'];
+        $state = $row['state'];
+        $disposition = null;
+        $modified_times = self::publication_modified_times_from_gmt(
+            $row['apply_started_at']
+        );
+        if ($state === 'APPLIED') {
+            if ($row['result_code'] !== self::REVISION_RESULT_CODE
+                || ! is_array($modified_times)
+                || ! $this->approval_evidence_is_valid(
+                    $row,
+                    $proposal_id,
+                    false
+                )
+                || ! $this->revision_state_matches_successor(
+                    $proposal,
+                    $before,
+                    $modified_times
+                )) {
+                return self::error(
+                    'raos_st1704_revision_recovery_mismatch',
+                    409
+                );
+            }
+            $disposition = 'SUCCESSOR';
+        } elseif ($state === 'NEEDS_RECOVERY') {
+            if (is_array($modified_times)
+                && $this->approval_evidence_is_valid(
+                    $row,
+                    $proposal_id,
+                    false
+                )
+                && $this->revision_state_matches_successor(
+                    $proposal,
+                    $before,
+                    $modified_times
+                )) {
+                $disposition = 'SUCCESSOR';
+            } elseif ($this->revision_before_state_matches(
+                $proposal,
+                $before,
+                false,
+                false
+            )) {
+                $disposition = 'PREDECESSOR';
+            }
+        } elseif (in_array($state, array('FAILED', 'EXPIRED'), true)) {
+            if ($this->revision_before_state_matches(
+                $proposal,
+                $before,
+                false,
+                false
+            )) {
+                $disposition = 'PREDECESSOR';
+            }
+        } elseif (in_array($state, array('PROPOSED', 'APPROVED'), true)) {
+            $expires_epoch = self::strict_mysql_utc_epoch($row['expires_at']);
+            if (is_int($expires_epoch)
+                && $expires_epoch <= time()
+                && $this->revision_before_state_matches(
+                    $proposal,
+                    $before,
+                    false,
+                    false
+                )) {
+                $disposition = 'PREDECESSOR';
+            }
+        }
+        // APPLYING remains recoverable only through the exact idempotent apply
+        // request. Classifying it here could race an in-flight transaction.
+        if (! is_string($disposition)) {
+            return self::error('raos_st1704_revision_recovery_mismatch', 409);
+        }
+        if (! $this->publication_mutex_is_owned($mutex_name)) {
+            return self::error('raos_st1704_publication_lock_lost', 500);
+        }
+        return new WP_REST_Response(
+            array(
+                'schema' => 'RAOS_ST1704_DRAFT_REVISION_RECOVERY_V2',
+                'proposal_id' => $proposal_id,
+                'operation' => self::REVISION_OPERATION,
+                'operation_sha256' => $proposal['operation_sha256'],
+                'draft_post_id' => $proposal['draft_post_id'],
+                'proposal_state' => $state,
+                'disposition' => $disposition,
+                'result_code' => self::REVISION_RECOVERY_RESULT_CODE,
+            ),
+            200,
+            array('ETag' => '"' . $proposal_id . '"')
+        );
+    }
+
     public function rest_apply(WP_REST_Request $request)
     {
         if (! self::runtime_origin_is_exact()) {
@@ -2071,6 +2891,15 @@ final class RAOS_ST1704_Publication_Controller_V2
         if (is_wp_error($stored)
             || (int) $row['proposer_user_id'] !== get_current_user_id()) {
             return self::error('raos_st1704_proposal_record_invalid', 409);
+        }
+        if ($stored['request']['operation'] === self::REVISION_OPERATION) {
+            return $this->execute_revision_apply_under_mutex(
+                $row,
+                $stored,
+                $proposal_id,
+                $idempotency_key,
+                $mutex_name
+            );
         }
         if ($row['state'] === 'APPLIED') {
             $modified_times = self::publication_modified_times_from_gmt(
@@ -2280,6 +3109,400 @@ final class RAOS_ST1704_Publication_Controller_V2
             $result['state'],
             $result['code'],
             $mutex_name
+        );
+    }
+
+    private function execute_revision_apply_under_mutex(
+        array $row,
+        array $stored,
+        $proposal_id,
+        $idempotency_key,
+        $mutex_name
+    ) {
+        global $wpdb;
+        $proposal = $stored['request'];
+        $before = $stored['before_state'];
+        if ($row['state'] === 'APPLIED') {
+            $modified_times = self::publication_modified_times_from_gmt(
+                $row['apply_started_at']
+            );
+            if (! is_array($modified_times)
+                || ! is_string($row['idempotency_key'])
+                || ! hash_equals($idempotency_key, $row['idempotency_key'])
+                || $row['result_code'] !== self::REVISION_RESULT_CODE
+                || ! $this->approval_evidence_is_valid($row, $proposal_id, false)
+                || ! $this->revision_state_matches_successor(
+                    $proposal,
+                    $before,
+                    $modified_times
+                )) {
+                return self::error('raos_st1704_revision_terminal_replay_invalid', 409);
+            }
+            return $this->apply_response($row, true);
+        }
+        if ($row['state'] !== 'APPROVED' && $row['state'] !== 'APPLYING') {
+            return self::error('raos_st1704_proposal_not_approved', 409);
+        }
+        if (! $this->approval_evidence_is_valid(
+            $row,
+            $proposal_id,
+            $row['state'] === 'APPROVED'
+        )) {
+            return self::error('raos_st1704_proposal_not_approved', 409);
+        }
+        require_once ABSPATH . 'wp-admin/includes/post.php';
+        if (! function_exists('wp_check_post_lock')
+            || wp_check_post_lock($proposal['draft_post_id']) !== false
+            || ! $this->publication_mutex_is_owned($mutex_name)) {
+            return self::error('raos_st1704_post_locked', 409);
+        }
+        if ($row['state'] === 'APPROVED') {
+            $current = $this->capture_revision_state($proposal);
+            $current_json = is_wp_error($current)
+                ? null
+                : self::canonical_json($current);
+            $modified_times = self::capture_publication_modified_times();
+            if (! is_string($current_json)
+                || ! is_array($modified_times)
+                || ! hash_equals($row['before_state_json'], $current_json)
+                || ! hash_equals(
+                    $row['before_state_hash'],
+                    hash('sha256', $current_json)
+                )) {
+                return self::error('raos_st1704_before_state_changed', 409);
+            }
+            $now = $modified_times['post_modified_gmt'];
+            $table = self::proposal_table();
+            if ($wpdb->query('START TRANSACTION') === false
+                || ! $this->publication_mutex_is_owned($mutex_name)) {
+                $wpdb->query('ROLLBACK');
+                return self::error('raos_st1704_transaction_unavailable', 500);
+            }
+            $cas = $wpdb->query(
+                $wpdb->prepare(
+                    "UPDATE {$table}
+                     SET state = %s, apply_started_at = %s,
+                         idempotency_key = %s, rollback_json = %s,
+                         state_version = state_version + 1
+                     WHERE proposal_id = %s AND state = %s
+                       AND approved_by_user_id IS NOT NULL
+                       AND approved_by_user_id <> proposer_user_id
+                       AND before_state_hash = %s
+                       AND approval_evidence_hash = %s
+                       AND expires_at > %s AND approval_expires_at > %s",
+                    'APPLYING',
+                    $now,
+                    $idempotency_key,
+                    $current_json,
+                    $proposal_id,
+                    'APPROVED',
+                    $row['before_state_hash'],
+                    $row['approval_evidence_hash'],
+                    $now,
+                    $now
+                )
+            );
+            $audit_hash = $cas === 1
+                ? self::append_audit(
+                    'DRAFT_REVISION_STARTED',
+                    $proposal_id,
+                    'APPLYING',
+                    get_current_user_id()
+                )
+                : false;
+            if ($cas !== 1
+                || ! is_string($audit_hash)
+                || ! $this->publication_mutex_is_owned($mutex_name)
+                || $wpdb->query('COMMIT') === false) {
+                $wpdb->query('ROLLBACK');
+                return self::error('raos_st1704_revision_apply_cas_failed', 409);
+            }
+        } else {
+            if (! is_string($row['idempotency_key'])
+                || ! hash_equals($idempotency_key, $row['idempotency_key'])
+                || ! is_string($row['rollback_json'])
+                || ! hash_equals($row['before_state_json'], $row['rollback_json'])
+                || ! hash_equals(
+                    $row['before_state_hash'],
+                    hash('sha256', $row['rollback_json'])
+                )) {
+                return self::error('raos_st1704_revision_recovery_not_bound', 409);
+            }
+            $modified_times = self::publication_modified_times_from_gmt(
+                $row['apply_started_at']
+            );
+            if (! is_array($modified_times)) {
+                return self::error('raos_st1704_revision_recovery_not_bound', 409);
+            }
+            if ($this->revision_state_matches_successor(
+                $proposal,
+                $before,
+                $modified_times
+            )) {
+                return $this->finish_revision_success(
+                    $proposal_id,
+                    $proposal,
+                    $before,
+                    $mutex_name,
+                    $modified_times
+                );
+            }
+            if (! $this->revision_before_state_matches($proposal, $before)) {
+                return $this->finish_failure(
+                    $proposal_id,
+                    'NEEDS_RECOVERY',
+                    'DRAFT_REVISION_STATE_AMBIGUOUS',
+                    $mutex_name
+                );
+            }
+        }
+        return $this->apply_one_revision(
+            $proposal_id,
+            $proposal,
+            $before,
+            $mutex_name,
+            $modified_times
+        );
+    }
+
+    private function apply_one_revision(
+        $proposal_id,
+        array $proposal,
+        array $before,
+        $mutex_name,
+        array $modified_times
+    ) {
+        global $wpdb;
+        $post_id = $proposal['draft_post_id'];
+        $successor = $proposal['successor'];
+        $content = self::decode_canonical_base64(
+            $successor['content_base64'],
+            self::REVISION_CONTENT_MAX_BYTES
+        );
+        $excerpt = self::decode_canonical_base64(
+            $successor['excerpt_base64'],
+            2400
+        );
+        $title = self::decode_canonical_base64(
+            $successor['title_base64'],
+            1200
+        );
+        $snapshot_raw = self::decode_canonical_base64(
+            $successor['snapshot_base64'],
+            self::SNAPSHOT_MAX_BYTES
+        );
+        if (! is_string($content)
+            || ! is_string($excerpt)
+            || ! is_string($title)
+            || ! is_string($snapshot_raw)
+            || ! $this->publication_mutex_is_owned($mutex_name)) {
+            return $this->finish_failure(
+                $proposal_id,
+                'FAILED',
+                'DRAFT_REVISION_SUCCESSOR_INVALID',
+                $mutex_name
+            );
+        }
+        if ($wpdb->query('SET TRANSACTION ISOLATION LEVEL SERIALIZABLE') === false
+            || $wpdb->query('START TRANSACTION') === false
+            || ! $this->publication_mutex_is_owned($mutex_name)) {
+            $wpdb->query('ROLLBACK');
+            return $this->finish_failure(
+                $proposal_id,
+                'NEEDS_RECOVERY',
+                'DRAFT_REVISION_TRANSACTION_UNAVAILABLE',
+                $mutex_name
+            );
+        }
+        $locked = $this->capture_revision_state($proposal, true);
+        $locked_json = is_wp_error($locked) ? null : self::canonical_json($locked);
+        $before_json = self::canonical_json($before);
+        if (! is_string($locked_json)
+            || ! is_string($before_json)
+            || ! hash_equals($before_json, $locked_json)
+            || ! $this->publication_mutex_is_owned($mutex_name)) {
+            $wpdb->query('ROLLBACK');
+            return $this->finish_failure(
+                $proposal_id,
+                'NEEDS_RECOVERY',
+                'DRAFT_REVISION_LOCKED_PRESTATE_CHANGED',
+                $mutex_name
+            );
+        }
+        $old_fields = $before['storage']['restore']['post_fields'];
+        $old_content = self::decode_exact_base64($old_fields['post_content']);
+        $old_excerpt = self::decode_exact_base64($old_fields['post_excerpt']);
+        $old_title = self::decode_exact_base64($old_fields['post_title']);
+        $old_slug = self::decode_exact_base64($old_fields['post_name']);
+        $post_updated = $wpdb->query(
+            $wpdb->prepare(
+                "UPDATE {$wpdb->posts}
+                 SET post_content = %s, post_excerpt = %s, post_title = %s,
+                     post_name = %s, post_modified = %s,
+                     post_modified_gmt = %s
+                 WHERE ID = %d
+                   AND BINARY post_content = BINARY %s
+                   AND BINARY post_excerpt = BINARY %s
+                   AND BINARY post_title = BINARY %s
+                   AND BINARY post_name = BINARY %s
+                   AND BINARY post_status = BINARY %s
+                   AND BINARY post_type = BINARY %s
+                   AND (IS_USED_LOCK(%s) = CONNECTION_ID())",
+                $content,
+                $excerpt,
+                $title,
+                $successor['review_slug'],
+                $modified_times['post_modified'],
+                $modified_times['post_modified_gmt'],
+                $post_id,
+                $old_content,
+                $old_excerpt,
+                $old_title,
+                $old_slug,
+                'draft',
+                'post',
+                $mutex_name
+            )
+        );
+        $snapshot_updated = $post_updated === 1
+            ? $wpdb->query(
+                $wpdb->prepare(
+                    "UPDATE {$wpdb->postmeta}
+                     SET meta_value = %s
+                     WHERE post_id = %d
+                       AND BINARY meta_key = BINARY %s
+                       AND BINARY meta_value = BINARY %s
+                       AND (IS_USED_LOCK(%s) = CONNECTION_ID())",
+                    $snapshot_raw,
+                    $post_id,
+                    self::SNAPSHOT_META_KEY,
+                    $before['storage']['snapshot_raw'],
+                    $mutex_name
+                )
+            )
+            : false;
+        if ($post_updated !== 1
+            || $snapshot_updated !== 1
+            || ! $this->revision_state_matches_successor(
+                $proposal,
+                $before,
+                $modified_times,
+                true
+            )) {
+            $wpdb->query('ROLLBACK');
+            return $this->finish_failure(
+                $proposal_id,
+                'FAILED',
+                'DRAFT_REVISION_BOUNDED_WRITE_FAILED',
+                $mutex_name
+            );
+        }
+        $table = self::proposal_table();
+        $completed_at = gmdate('Y-m-d H:i:s');
+        $receipt_updated = $wpdb->query(
+            $wpdb->prepare(
+                "UPDATE {$table}
+                 SET state = %s, result_code = %s, completed_at = %s,
+                     state_version = state_version + 1
+                 WHERE proposal_id = %s AND state = %s
+                   AND BINARY apply_started_at = BINARY %s",
+                'APPLIED',
+                self::REVISION_RESULT_CODE,
+                $completed_at,
+                $proposal_id,
+                'APPLYING',
+                $modified_times['post_modified_gmt']
+            )
+        );
+        $audit_hash = $receipt_updated === 1
+            ? self::append_audit(
+                'DRAFT_REVISED',
+                $proposal_id,
+                self::REVISION_RESULT_CODE,
+                get_current_user_id()
+            )
+            : false;
+        if ($receipt_updated !== 1
+            || ! is_string($audit_hash)
+            || ! $this->publication_mutex_is_owned($mutex_name)
+            || $wpdb->query('COMMIT') === false) {
+            $wpdb->query('ROLLBACK');
+            return self::error('raos_st1704_revision_outcome_ambiguous', 500);
+        }
+        clean_post_cache($post_id);
+        return $this->apply_response(
+            array(
+                'proposal_id' => $proposal_id,
+                'operation' => self::REVISION_OPERATION,
+                'state' => 'APPLIED',
+                'result_code' => self::REVISION_RESULT_CODE,
+            ),
+            false
+        );
+    }
+
+    private function finish_revision_success(
+        $proposal_id,
+        array $proposal,
+        array $before,
+        $mutex_name,
+        array $modified_times
+    ) {
+        global $wpdb;
+        if ($wpdb->query('SET TRANSACTION ISOLATION LEVEL SERIALIZABLE') === false
+            || $wpdb->query('START TRANSACTION') === false
+            || ! $this->revision_state_matches_successor(
+                $proposal,
+                $before,
+                $modified_times,
+                true
+            )) {
+            $wpdb->query('ROLLBACK');
+            return $this->finish_failure(
+                $proposal_id,
+                'NEEDS_RECOVERY',
+                'DRAFT_REVISION_TERMINAL_READBACK_CHANGED',
+                $mutex_name
+            );
+        }
+        $table = self::proposal_table();
+        $updated = $wpdb->query(
+            $wpdb->prepare(
+                "UPDATE {$table}
+                 SET state = %s, result_code = %s, completed_at = %s,
+                     state_version = state_version + 1
+                 WHERE proposal_id = %s AND state = %s",
+                'APPLIED',
+                self::REVISION_RESULT_CODE,
+                gmdate('Y-m-d H:i:s'),
+                $proposal_id,
+                'APPLYING'
+            )
+        );
+        $audit_hash = $updated === 1
+            ? self::append_audit(
+                'DRAFT_REVISION_RECOVERED',
+                $proposal_id,
+                self::REVISION_RESULT_CODE,
+                get_current_user_id()
+            )
+            : false;
+        if ($updated !== 1
+            || ! is_string($audit_hash)
+            || ! $this->publication_mutex_is_owned($mutex_name)
+            || $wpdb->query('COMMIT') === false) {
+            $wpdb->query('ROLLBACK');
+            return self::error('raos_st1704_revision_outcome_ambiguous', 500);
+        }
+        clean_post_cache($proposal['draft_post_id']);
+        return $this->apply_response(
+            array(
+                'proposal_id' => $proposal_id,
+                'operation' => self::REVISION_OPERATION,
+                'state' => 'APPLIED',
+                'result_code' => self::REVISION_RESULT_CODE,
+            ),
+            true
         );
     }
 

@@ -43,6 +43,9 @@ from raos.domain.editorial.self_hosted_editorial_pilot import (
 from raos.ports.self_hosted_editorial_pilot import (
     OwnerOperatedWordPressPort,
     RecordedReviewDraftPort,
+    ReviewDraftRevisionBinding,
+    ReviewDraftRevisionDisposition,
+    ReviewDraftRevisionObservation,
 )
 
 
@@ -50,6 +53,7 @@ OWNER_DIRECTORY: Final = "st1704-self-hosted-editorial-pilot"
 RECORDED_DIRECTORY: Final = "recorded"
 JOURNAL_DIRECTORY: Final = "review-draft-journals"
 REQUEST_DIRECTORY: Final = "immutable-review-draft-requests"
+GENERATION_DIRECTORY: Final = "review-draft-generations"
 RAKUTEN_DIRECTORY: Final = "rakuten"
 SOURCE_DIRECTORY: Final = "sources"
 LOCK_FILE: Final = "journal.lock"
@@ -68,6 +72,8 @@ _PUBLIC_SCHEMA: Final = "RAOS_RECORDED_WORDPRESS_VERIFY_PUBLIC_V1"
 _JOURNAL_SCHEMA: Final = "RAOS_ST1704_REVIEW_DRAFT_JOURNAL_V1"
 _LIVE_JOURNAL_SCHEMA: Final = "RAOS_ST1704_OWNER_LIVE_REVIEW_DRAFT_JOURNAL_V1"
 _REQUEST_ARTIFACT_SCHEMA: Final = "RAOS_ST1704_OWNER_IMMUTABLE_REVIEW_DRAFT_REQUEST_V1"
+_GENERATION_LEDGER_SCHEMA: Final = "RAOS_ST1704_REVIEW_DRAFT_GENERATION_LEDGER_V1"
+_MAX_REVIEW_DRAFT_GENERATIONS: Final = 32
 _PRIVATE_DIRECTORY_MODE: Final = 0o700
 _PRIVATE_FILE_MODE: Final = 0o600
 _PRODUCT_ID = re.compile(r"PRD-[A-Z0-9]+(?:-[A-Z0-9]+)*\Z", re.ASCII)
@@ -1923,11 +1929,12 @@ def _ensure_request_artifact(
     )
     name = request_artifact_relative_path(request).name
     candidates = _request_artifact_candidates(directory, request.article_id)
-    if candidates:
-        if len(candidates) != 1 or candidates[0].name != name:
+    exact = [candidate for candidate in candidates if candidate.name == name]
+    if exact:
+        if len(exact) != 1:
             _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
         raw = _read_private_file(
-            candidates[0],
+            exact[0],
             maximum_bytes=MAX_REQUEST_ARTIFACT_BYTES,
             missing_code=EditorialPilotFailureCode.JOURNAL_UNSAFE,
         )
@@ -2245,6 +2252,978 @@ def _load_terminal_reconciliation_request_read_only(
     return request, state, artifact_sha256
 
 
+def _generation_ledger_name_for(article_id: str) -> str:
+    article_identity(article_id)
+    return f"{article_id}.generations.v1.json"
+
+
+def _generation_entry(
+    request: ReviewDraftRequest,
+    *,
+    generation: int,
+    predecessor_generation: int | None,
+    operation_sha256: str | None,
+    outcome: str,
+    response_sha256: str | None,
+    request_artifact_name: str,
+    request_artifact_sha256: str,
+) -> dict[str, object]:
+    return {
+        "generation": generation,
+        "operation_sha256": operation_sha256,
+        "outcome": outcome,
+        "packet_sha256": request.packet_sha256,
+        "predecessor_generation": predecessor_generation,
+        "request_artifact_name": request_artifact_name,
+        "request_artifact_sha256": request_artifact_sha256,
+        "request_sha256": request.request_sha256,
+        "response_sha256": response_sha256,
+    }
+
+
+def _generation_ledger_material(
+    *,
+    article_id: str,
+    draft_id: int,
+    active_generation: int,
+    generations: list[dict[str, object]],
+    pending: dict[str, object] | None,
+) -> dict[str, object]:
+    return {
+        "active_generation": active_generation,
+        "article_id": article_id,
+        "draft_id": draft_id,
+        "generations": generations,
+        "pending": pending,
+        "schema": _GENERATION_LEDGER_SCHEMA,
+    }
+
+
+def _decode_generation_ledger(
+    raw: bytes, *, expected_article_id: str
+) -> dict[str, object]:
+    """Decode the small mutable pointer ledger without trusting its artifacts."""
+
+    try:
+        document = _mapping(decode_strict_json(raw, maximum_bytes=MAX_JOURNAL_BYTES))
+        _exact_keys(
+            document,
+            {
+                "active_generation",
+                "article_id",
+                "draft_id",
+                "generations",
+                "integrity_sha256",
+                "pending",
+                "schema",
+            },
+        )
+        material = {
+            key: value for key, value in document.items() if key != "integrity_sha256"
+        }
+        draft_id = _positive_post_id(document["draft_id"])
+        active_generation = document["active_generation"]
+        generations_value = document["generations"]
+        if (
+            raw != canonical_json_bytes(dict(document)) + b"\n"
+            or document["schema"] != _GENERATION_LEDGER_SCHEMA
+            or document["article_id"] != expected_article_id
+            or document["integrity_sha256"] != canonical_sha256(material)
+            or type(active_generation) is not int
+            or type(generations_value) is not list
+            or not 1 <= len(generations_value) <= _MAX_REVIEW_DRAFT_GENERATIONS
+            or not 1 <= active_generation <= len(generations_value)
+        ):
+            _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+        del draft_id
+        entries: list[dict[str, object]] = []
+        simulated_active = 1
+        pending_entries = 0
+        completed_outcomes = {
+            disposition.value for disposition in ReviewDraftRevisionDisposition
+        }
+        for expected_generation, raw_entry in enumerate(generations_value, start=1):
+            entry = _mapping(raw_entry)
+            _exact_keys(
+                entry,
+                {
+                    "generation",
+                    "operation_sha256",
+                    "outcome",
+                    "packet_sha256",
+                    "predecessor_generation",
+                    "request_artifact_name",
+                    "request_artifact_sha256",
+                    "request_sha256",
+                    "response_sha256",
+                },
+            )
+            packet_sha256 = require_sha256(entry["packet_sha256"])
+            request_sha256 = require_sha256(entry["request_sha256"])
+            artifact_sha256 = require_sha256(entry["request_artifact_sha256"])
+            if (
+                entry["generation"] != expected_generation
+                or entry["request_artifact_name"]
+                != _request_artifact_name_for(
+                    expected_article_id, packet_sha256, request_sha256
+                )
+            ):
+                _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+            operation_sha256 = entry["operation_sha256"]
+            predecessor_generation = entry["predecessor_generation"]
+            response_sha256 = entry["response_sha256"]
+            outcome = entry["outcome"]
+            if expected_generation == 1:
+                if (
+                    predecessor_generation is not None
+                    or operation_sha256 is not None
+                    or outcome != "LEGACY_COMMITTED"
+                ):
+                    _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+                require_sha256(response_sha256)
+            else:
+                require_sha256(operation_sha256)
+                if (
+                    type(predecessor_generation) is not int
+                    or predecessor_generation != simulated_active
+                    or not 1 <= predecessor_generation < expected_generation
+                    or outcome not in completed_outcomes | {"PENDING"}
+                ):
+                    _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+                if outcome == "PENDING":
+                    pending_entries += 1
+                    if (
+                        expected_generation != len(generations_value)
+                        or response_sha256 is not None
+                    ):
+                        _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+                else:
+                    require_sha256(response_sha256)
+                    if (
+                        outcome
+                        != ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_PREDECESSOR.value
+                    ):
+                        simulated_active = expected_generation
+            del artifact_sha256
+            entries.append(dict(entry))
+        pending_value = document["pending"]
+        if pending_value is None:
+            if pending_entries != 0:
+                _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+        else:
+            pending = _mapping(pending_value)
+            _exact_keys(
+                pending,
+                {
+                    "operation_sha256",
+                    "predecessor_generation",
+                    "state",
+                    "successor_generation",
+                },
+            )
+            successor_generation = pending["successor_generation"]
+            if (
+                pending_entries != 1
+                or pending["state"] not in {"PROPOSED", "ATTEMPTED"}
+                or type(successor_generation) is not int
+                or successor_generation != len(entries)
+                or pending["predecessor_generation"] != simulated_active
+                or pending["operation_sha256"]
+                != entries[successor_generation - 1]["operation_sha256"]
+                or pending["predecessor_generation"]
+                != entries[successor_generation - 1]["predecessor_generation"]
+            ):
+                _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+            require_sha256(pending["operation_sha256"])
+        if simulated_active != active_generation:
+            _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+        active_outcome = entries[active_generation - 1]["outcome"]
+        if active_outcome in {
+            "PENDING",
+            ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_PREDECESSOR.value,
+        }:
+            _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+        return dict(document)
+    except EditorialPilotFailure as error:
+        if error.code in {
+            EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+            EditorialPilotFailureCode.JOURNAL_MISMATCH,
+            EditorialPilotFailureCode.JOURNAL_UNSAFE,
+        }:
+            raise
+        _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+    except TypeError, ValueError, KeyError, IndexError, UnicodeError:
+        _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+
+
+def _optional_private_directory(parent: Path, name: str) -> Path | None:
+    path = parent / name
+    try:
+        path.lstat()
+    except FileNotFoundError:
+        return None
+    except OSError:
+        _fail(EditorialPilotFailureCode.JOURNAL_UNSAFE)
+    _require_safe_existing_directory(path, exact_mode=_PRIVATE_DIRECTORY_MODE)
+    return path
+
+
+def _optional_generation_ledger_path(
+    generation_directory: Path | None, article_id: str
+) -> Path | None:
+    if generation_directory is None:
+        return None
+    path = generation_directory / _generation_ledger_name_for(article_id)
+    try:
+        path.lstat()
+    except FileNotFoundError:
+        return None
+    except OSError:
+        _fail(EditorialPilotFailureCode.JOURNAL_UNSAFE)
+    return path
+
+
+def _request_for_generation_entry(
+    repository_root: Path,
+    *,
+    article_id: str,
+    entry: Mapping[str, object],
+) -> ReviewDraftRequest:
+    request_directory = _request_layout(
+        repository_root,
+        create=False,
+        missing_code=EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+    )
+    artifact_name = cast(str, entry["request_artifact_name"])
+    raw = _read_private_file(
+        request_directory / artifact_name,
+        maximum_bytes=MAX_REQUEST_ARTIFACT_BYTES,
+        missing_code=EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+    )
+    request, artifact_sha256 = _decode_request_artifact(
+        raw, expected_article_id=article_id
+    )
+    if (
+        artifact_sha256 != entry["request_artifact_sha256"]
+        or request.packet_sha256 != entry["packet_sha256"]
+        or request.request_sha256 != entry["request_sha256"]
+    ):
+        _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+    return request
+
+
+def _binding_for_generation(
+    requests: list[ReviewDraftRequest],
+    entries: list[dict[str, object]],
+    *,
+    draft_id: int,
+    generation: int,
+) -> ReviewDraftRevisionBinding:
+    if not 2 <= generation <= len(entries):
+        _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+    entry = entries[generation - 1]
+    predecessor_generation = entry["predecessor_generation"]
+    if type(predecessor_generation) is not int:
+        _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+    return ReviewDraftRevisionBinding(
+        predecessor=requests[predecessor_generation - 1],
+        successor=requests[generation - 1],
+        draft_id=draft_id,
+        generation=generation,
+        operation_sha256=cast(str, entry["operation_sha256"]),
+    )
+
+
+def _load_generation_ledger_locked(
+    repository_root: Path,
+    journal_directory: Path,
+    generation_path: Path,
+    *,
+    article_id: str,
+) -> tuple[dict[str, object], list[dict[str, object]], list[ReviewDraftRequest]]:
+    raw = _read_private_file(
+        generation_path,
+        maximum_bytes=MAX_JOURNAL_BYTES,
+        missing_code=EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+    )
+    document = _decode_generation_ledger(raw, expected_article_id=article_id)
+    entries = [
+        dict(_mapping(value)) for value in cast(list[object], document["generations"])
+    ]
+    requests = [
+        _request_for_generation_entry(
+            repository_root, article_id=article_id, entry=entry
+        )
+        for entry in entries
+    ]
+    legacy_request, legacy_state = _load_journal_bound_request_locked(
+        repository_root,
+        journal_directory,
+        article_id=article_id,
+        required_state="COMMITTED",
+    )
+    first = entries[0]
+    if (
+        requests[0] != legacy_request
+        or document["draft_id"] != legacy_state["draft_id"]
+        or first["request_artifact_name"]
+        != legacy_state["request_artifact_name"]
+        or first["request_artifact_sha256"]
+        != legacy_state["request_artifact_sha256"]
+        or first["response_sha256"] != legacy_state["response_sha256"]
+    ):
+        _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+    draft_id = cast(int, document["draft_id"])
+    for generation in range(2, len(entries) + 1):
+        binding = _binding_for_generation(
+            requests, entries, draft_id=draft_id, generation=generation
+        )
+        if binding.operation_sha256 != entries[generation - 1]["operation_sha256"]:
+            _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+    return document, entries, requests
+
+
+@final
+class OwnerPrivateReviewDraftGenerationLedger:
+    """Atomic active-generation pointer for fixed-ID committed Draft revisions."""
+
+    __slots__ = ("_root",)
+
+    def __init__(self, repository_root: Path) -> None:
+        if not repository_root.is_absolute():
+            _fail(EditorialPilotFailureCode.JOURNAL_UNSAFE)
+        self._root = repository_root
+
+    def _owner_and_journal(self) -> tuple[Path, Path]:
+        owner, _secrets = _owner_base_layout(
+            self._root,
+            create=False,
+            missing_code=EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+        )
+        journal = _private_child(
+            owner,
+            JOURNAL_DIRECTORY,
+            create=False,
+            missing_code=EditorialPilotFailureCode.JOURNAL_AMBIGUOUS,
+        )
+        return owner, journal
+
+    def _legacy_active_locked(
+        self, journal: Path, article_id: str
+    ) -> tuple[ReviewDraftRequest, dict[str, object]]:
+        return _load_journal_bound_request_locked(
+            self._root,
+            journal,
+            article_id=article_id,
+            required_state="COMMITTED",
+        )
+
+    def _loaded_locked(
+        self, owner: Path, journal: Path, article_id: str
+    ) -> tuple[
+        Path | None,
+        dict[str, object] | None,
+        list[dict[str, object]] | None,
+        list[ReviewDraftRequest] | None,
+    ]:
+        generation_directory = _optional_private_directory(
+            owner, GENERATION_DIRECTORY
+        )
+        generation_path = _optional_generation_ledger_path(
+            generation_directory, article_id
+        )
+        if generation_path is None:
+            return None, None, None, None
+        document, entries, requests = _load_generation_ledger_locked(
+            self._root,
+            journal,
+            generation_path,
+            article_id=article_id,
+        )
+        return generation_path, document, entries, requests
+
+    @staticmethod
+    def _assert_binding(
+        expected: ReviewDraftRevisionBinding,
+        observed: ReviewDraftRevisionBinding,
+    ) -> None:
+        if type(expected) is not ReviewDraftRevisionBinding or expected != observed:
+            _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+
+    @staticmethod
+    def _assert_observation(
+        binding: ReviewDraftRevisionBinding,
+        observation: ReviewDraftRevisionObservation,
+        *,
+        allowed: set[ReviewDraftRevisionDisposition],
+    ) -> None:
+        if (
+            type(observation) is not ReviewDraftRevisionObservation
+            or observation.operation_sha256 != binding.operation_sha256
+            or observation.draft_id != binding.draft_id
+            or observation.disposition not in allowed
+        ):
+            _fail(EditorialPilotFailureCode.OUTCOME_AMBIGUOUS)
+
+    @staticmethod
+    def _material_from(
+        document: Mapping[str, object],
+        *,
+        active_generation: int,
+        entries: list[dict[str, object]],
+        pending: dict[str, object] | None,
+    ) -> dict[str, object]:
+        return _generation_ledger_material(
+            article_id=cast(str, document["article_id"]),
+            draft_id=cast(int, document["draft_id"]),
+            active_generation=active_generation,
+            generations=entries,
+            pending=pending,
+        )
+
+    def propose(
+        self, binding: ReviewDraftRevisionBinding
+    ) -> ReviewDraftRevisionBinding:
+        if type(binding) is not ReviewDraftRevisionBinding:
+            _fail(EditorialPilotFailureCode.JOURNAL_UNSAFE)
+        owner, journal = self._owner_and_journal()
+        with _journal_lock(journal / LOCK_FILE):
+            generation_path, document, entries, requests = self._loaded_locked(
+                owner, journal, binding.successor.article_id
+            )
+            if document is None:
+                predecessor, legacy_state = self._legacy_active_locked(
+                    journal, binding.successor.article_id
+                )
+                if (
+                    binding.generation != 2
+                    or binding.predecessor != predecessor
+                    or binding.draft_id != legacy_state["draft_id"]
+                ):
+                    _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+                generation_directory = _private_child(
+                    owner,
+                    GENERATION_DIRECTORY,
+                    create=True,
+                    missing_code=EditorialPilotFailureCode.JOURNAL_UNSAFE,
+                )
+                generation_path = (
+                    generation_directory
+                    / _generation_ledger_name_for(binding.successor.article_id)
+                )
+                entries = [
+                    _generation_entry(
+                        predecessor,
+                        generation=1,
+                        predecessor_generation=None,
+                        operation_sha256=None,
+                        outcome="LEGACY_COMMITTED",
+                        response_sha256=cast(str, legacy_state["response_sha256"]),
+                        request_artifact_name=cast(
+                            str, legacy_state["request_artifact_name"]
+                        ),
+                        request_artifact_sha256=cast(
+                            str, legacy_state["request_artifact_sha256"]
+                        ),
+                    )
+                ]
+                requests = [predecessor]
+                active_generation = 1
+                draft_id = binding.draft_id
+            else:
+                if entries is None or requests is None or generation_path is None:
+                    _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+                draft_id = cast(int, document["draft_id"])
+                active_generation = cast(int, document["active_generation"])
+                pending = document["pending"]
+                if pending is not None:
+                    pending_generation = cast(
+                        int, _mapping(pending)["successor_generation"]
+                    )
+                    observed = _binding_for_generation(
+                        requests,
+                        entries,
+                        draft_id=draft_id,
+                        generation=pending_generation,
+                    )
+                    self._assert_binding(binding, observed)
+                    return observed
+                if (
+                    len(entries) >= _MAX_REVIEW_DRAFT_GENERATIONS
+                    or binding.generation != len(entries) + 1
+                    or binding.draft_id != draft_id
+                    or binding.predecessor != requests[active_generation - 1]
+                ):
+                    _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+            artifact_name, artifact_sha256 = _ensure_request_artifact(
+                self._root, binding.successor
+            )
+            entries.append(
+                _generation_entry(
+                    binding.successor,
+                    generation=binding.generation,
+                    predecessor_generation=active_generation,
+                    operation_sha256=binding.operation_sha256,
+                    outcome="PENDING",
+                    response_sha256=None,
+                    request_artifact_name=artifact_name,
+                    request_artifact_sha256=artifact_sha256,
+                )
+            )
+            pending_document: dict[str, object] = {
+                "operation_sha256": binding.operation_sha256,
+                "predecessor_generation": active_generation,
+                "state": "PROPOSED",
+                "successor_generation": binding.generation,
+            }
+            material = _generation_ledger_material(
+                article_id=binding.successor.article_id,
+                draft_id=draft_id,
+                active_generation=active_generation,
+                generations=entries,
+                pending=pending_document,
+            )
+            _write_private_atomic(generation_path, _journal_document(material))
+            return binding
+
+    def _pending_locked(
+        self,
+        owner: Path,
+        journal: Path,
+        binding: ReviewDraftRevisionBinding,
+    ) -> tuple[
+        Path,
+        dict[str, object],
+        list[dict[str, object]],
+        list[ReviewDraftRequest],
+        dict[str, object],
+    ]:
+        path, document, entries, requests = self._loaded_locked(
+            owner, journal, binding.successor.article_id
+        )
+        if (
+            path is None
+            or document is None
+            or entries is None
+            or requests is None
+            or document["pending"] is None
+        ):
+            _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+        pending = dict(_mapping(document["pending"]))
+        observed = _binding_for_generation(
+            requests,
+            entries,
+            draft_id=cast(int, document["draft_id"]),
+            generation=cast(int, pending["successor_generation"]),
+        )
+        self._assert_binding(binding, observed)
+        return path, document, entries, requests, pending
+
+    def mark_attempted(
+        self, binding: ReviewDraftRevisionBinding
+    ) -> ReviewDraftRevisionBinding:
+        if type(binding) is not ReviewDraftRevisionBinding:
+            _fail(EditorialPilotFailureCode.JOURNAL_UNSAFE)
+        owner, journal = self._owner_and_journal()
+        with _journal_lock(journal / LOCK_FILE):
+            replay = self._completed_replay_locked(
+                owner,
+                journal,
+                binding,
+                required_outcomes={
+                    ReviewDraftRevisionDisposition.OWNER_LIVE_APPLIED,
+                    ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED,
+                    ReviewDraftRevisionDisposition.OWNER_LIVE_VERIFIED,
+                },
+                activate_successor=True,
+            )
+            if replay is not None:
+                return binding
+            path, document, entries, _requests, pending = self._pending_locked(
+                owner, journal, binding
+            )
+            if pending["state"] == "ATTEMPTED":
+                return binding
+            if pending["state"] != "PROPOSED":
+                _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+            pending["state"] = "ATTEMPTED"
+            material = self._material_from(
+                document,
+                active_generation=cast(int, document["active_generation"]),
+                entries=entries,
+                pending=pending,
+            )
+            _write_private_atomic(path, _journal_document(material))
+            return binding
+
+    def _active_result(
+        self,
+        document: Mapping[str, object],
+        requests: list[ReviewDraftRequest],
+    ) -> tuple[ReviewDraftRequest, int, int]:
+        generation = cast(int, document["active_generation"])
+        return (
+            requests[generation - 1],
+            cast(int, document["draft_id"]),
+            generation,
+        )
+
+    def _complete_pending_locked(
+        self,
+        owner: Path,
+        journal: Path,
+        binding: ReviewDraftRevisionBinding,
+        observation: ReviewDraftRevisionObservation,
+        *,
+        activate_successor: bool,
+    ) -> tuple[ReviewDraftRequest, int, int]:
+        path, document, entries, requests, pending = self._pending_locked(
+            owner, journal, binding
+        )
+        recoverable_without_local_attempt = (
+            pending["state"] == "PROPOSED"
+            and observation.disposition
+            in {
+                ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED,
+                ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_PREDECESSOR,
+            }
+        )
+        if pending["state"] != "ATTEMPTED" and not recoverable_without_local_attempt:
+            _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+        completed = dict(entries[binding.generation - 1])
+        completed["outcome"] = observation.disposition.value
+        completed["response_sha256"] = observation.response_sha256
+        entries[binding.generation - 1] = completed
+        active_generation = (
+            binding.generation
+            if activate_successor
+            else cast(int, document["active_generation"])
+        )
+        material = self._material_from(
+            document,
+            active_generation=active_generation,
+            entries=entries,
+            pending=None,
+        )
+        _write_private_atomic(path, _journal_document(material))
+        updated = {**material, "integrity_sha256": canonical_sha256(material)}
+        return self._active_result(updated, requests)
+
+    def _completed_replay_locked(
+        self,
+        owner: Path,
+        journal: Path,
+        binding: ReviewDraftRevisionBinding,
+        *,
+        required_outcomes: set[ReviewDraftRevisionDisposition],
+        activate_successor: bool,
+    ) -> tuple[ReviewDraftRequest, int, int] | None:
+        _path, document, entries, requests = self._loaded_locked(
+            owner, journal, binding.successor.article_id
+        )
+        if document is None or entries is None or requests is None:
+            return None
+        if binding.generation > len(entries):
+            return None
+        if document["pending"] is not None:
+            pending_generation = cast(
+                int,
+                _mapping(document["pending"])["successor_generation"],
+            )
+            if pending_generation == binding.generation:
+                return None
+        observed = _binding_for_generation(
+            requests,
+            entries,
+            draft_id=cast(int, document["draft_id"]),
+            generation=binding.generation,
+        )
+        self._assert_binding(binding, observed)
+        entry_outcome = entries[binding.generation - 1]["outcome"]
+        if entry_outcome not in {outcome.value for outcome in required_outcomes}:
+            _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+        expected_active_generation = (
+            binding.generation
+            if activate_successor
+            else cast(
+                int,
+                entries[binding.generation - 1]["predecessor_generation"],
+            )
+        )
+        if document["active_generation"] != expected_active_generation:
+            _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+        return self._active_result(document, requests)
+
+    def commit(
+        self,
+        binding: ReviewDraftRevisionBinding,
+        observation: ReviewDraftRevisionObservation,
+    ) -> tuple[ReviewDraftRequest, int, int]:
+        self._assert_observation(
+            binding,
+            observation,
+            allowed={ReviewDraftRevisionDisposition.OWNER_LIVE_APPLIED},
+        )
+        owner, journal = self._owner_and_journal()
+        with _journal_lock(journal / LOCK_FILE):
+            replay = self._completed_replay_locked(
+                owner,
+                journal,
+                binding,
+                required_outcomes={
+                    ReviewDraftRevisionDisposition.OWNER_LIVE_APPLIED
+                },
+                activate_successor=True,
+            )
+            if replay is not None:
+                if replay[2] != binding.generation:
+                    _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+                return replay
+            return self._complete_pending_locked(
+                owner,
+                journal,
+                binding,
+                observation,
+                activate_successor=True,
+            )
+
+    def recover(
+        self,
+        binding: ReviewDraftRevisionBinding,
+        observation: ReviewDraftRevisionObservation,
+    ) -> tuple[ReviewDraftRequest, int, int]:
+        allowed = {
+            ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED,
+            ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_PREDECESSOR,
+        }
+        self._assert_observation(binding, observation, allowed=allowed)
+        owner, journal = self._owner_and_journal()
+        with _journal_lock(journal / LOCK_FILE):
+            replay = self._completed_replay_locked(
+                owner,
+                journal,
+                binding,
+                required_outcomes=(
+                    {
+                        ReviewDraftRevisionDisposition.OWNER_LIVE_APPLIED,
+                        ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED,
+                        ReviewDraftRevisionDisposition.OWNER_LIVE_VERIFIED,
+                    }
+                    if observation.disposition
+                    is ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED
+                    else {
+                        ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_PREDECESSOR
+                    }
+                ),
+                activate_successor=(
+                    observation.disposition
+                    is ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED
+                ),
+            )
+            if replay is not None:
+                expected_generation = (
+                    binding.generation
+                    if observation.disposition
+                    is ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED
+                    else None
+                )
+                if expected_generation is not None and replay[2] != expected_generation:
+                    _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+                return replay
+            return self._complete_pending_locked(
+                owner,
+                journal,
+                binding,
+                observation,
+                activate_successor=(
+                    observation.disposition
+                    is ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED
+                ),
+            )
+
+    def verify(
+        self,
+        binding: ReviewDraftRevisionBinding,
+        observation: ReviewDraftRevisionObservation,
+    ) -> tuple[ReviewDraftRequest, int, int]:
+        self._assert_observation(
+            binding,
+            observation,
+            allowed={ReviewDraftRevisionDisposition.OWNER_LIVE_VERIFIED},
+        )
+        owner, journal = self._owner_and_journal()
+        with _journal_lock(journal / LOCK_FILE):
+            path, document, entries, requests = self._loaded_locked(
+                owner, journal, binding.successor.article_id
+            )
+            if path is None or document is None or entries is None or requests is None:
+                _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+            replay = self._completed_replay_locked(
+                owner,
+                journal,
+                binding,
+                required_outcomes={
+                    ReviewDraftRevisionDisposition.OWNER_LIVE_APPLIED,
+                    ReviewDraftRevisionDisposition.OWNER_LIVE_RECOVERED_APPLIED,
+                    ReviewDraftRevisionDisposition.OWNER_LIVE_VERIFIED,
+                },
+                activate_successor=True,
+            )
+            if replay is not None:
+                return replay
+            if document["pending"] is None:
+                observed = _binding_for_generation(
+                    requests,
+                    entries,
+                    draft_id=cast(int, document["draft_id"]),
+                    generation=binding.generation,
+                )
+                self._assert_binding(binding, observed)
+                if document["active_generation"] != binding.generation:
+                    _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+                return self._active_result(document, requests)
+            return self._complete_pending_locked(
+                owner,
+                journal,
+                binding,
+                observation,
+                activate_successor=True,
+            )
+
+    def active_request(
+        self, article_id: str
+    ) -> tuple[ReviewDraftRequest, int, int]:
+        article_identity(article_id)
+        owner, journal = self._owner_and_journal()
+        with _journal_lock(journal / LOCK_FILE):
+            _path, document, _entries, requests = self._loaded_locked(
+                owner, journal, article_id
+            )
+            if document is None:
+                request, state = self._legacy_active_locked(journal, article_id)
+                return request, _positive_post_id(state["draft_id"]), 1
+            if requests is None:
+                _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+            return self._active_result(document, requests)
+
+    def revision_preparation_context(
+        self, article_id: str
+    ) -> tuple[ReviewDraftRequest, int, int]:
+        """Return the active predecessor and monotonic next generation."""
+
+        article_identity(article_id)
+        owner, journal = self._owner_and_journal()
+        with _journal_lock(journal / LOCK_FILE):
+            _path, document, entries, requests = self._loaded_locked(
+                owner, journal, article_id
+            )
+            if document is None:
+                request, state = self._legacy_active_locked(journal, article_id)
+                return request, _positive_post_id(state["draft_id"]), 2
+            if (
+                entries is None
+                or requests is None
+                or document["pending"] is not None
+                or len(entries) >= _MAX_REVIEW_DRAFT_GENERATIONS
+            ):
+                _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+            active, draft_id, _active_generation = self._active_result(
+                document, requests
+            )
+            return active, draft_id, len(entries) + 1
+
+    def pending_binding(self, article_id: str) -> ReviewDraftRevisionBinding:
+        article_identity(article_id)
+        owner, journal = self._owner_and_journal()
+        with _journal_lock(journal / LOCK_FILE):
+            _path, document, entries, requests = self._loaded_locked(
+                owner, journal, article_id
+            )
+            if (
+                document is None
+                or entries is None
+                or requests is None
+                or document["pending"] is None
+            ):
+                _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+            generation = cast(
+                int, _mapping(document["pending"])["successor_generation"]
+            )
+            return _binding_for_generation(
+                requests,
+                entries,
+                draft_id=cast(int, document["draft_id"]),
+                generation=generation,
+            )
+
+    def revision_binding(
+        self, article_id: str, operation_sha256: str | None = None
+    ) -> ReviewDraftRevisionBinding:
+        article_identity(article_id)
+        if operation_sha256 is not None:
+            require_sha256(operation_sha256)
+        owner, journal = self._owner_and_journal()
+        with _journal_lock(journal / LOCK_FILE):
+            _path, document, entries, requests = self._loaded_locked(
+                owner, journal, article_id
+            )
+            if document is None or entries is None or requests is None:
+                _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+            if operation_sha256 is not None:
+                matching_generations = tuple(
+                    generation
+                    for generation in range(2, len(entries) + 1)
+                    if entries[generation - 1]["operation_sha256"]
+                    == operation_sha256
+                )
+                if len(matching_generations) != 1:
+                    _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+                generation = matching_generations[0]
+            elif document["pending"] is not None:
+                generation = cast(
+                    int, _mapping(document["pending"])["successor_generation"]
+                )
+            else:
+                generation = cast(int, document["active_generation"])
+                if generation == 1:
+                    _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+            binding = _binding_for_generation(
+                requests,
+                entries,
+                draft_id=cast(int, document["draft_id"]),
+                generation=generation,
+            )
+            if operation_sha256 is not None and binding.operation_sha256 != (
+                operation_sha256
+            ):
+                _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+            return binding
+
+    def revision_bindings(
+        self, article_id: str
+    ) -> tuple[ReviewDraftRevisionBinding, ...]:
+        """Return every immutable revision generation for exact intent recovery."""
+
+        article_identity(article_id)
+        owner, journal = self._owner_and_journal()
+        with _journal_lock(journal / LOCK_FILE):
+            _path, document, entries, requests = self._loaded_locked(
+                owner, journal, article_id
+            )
+            if document is None or entries is None or requests is None:
+                _fail(EditorialPilotFailureCode.JOURNAL_AMBIGUOUS)
+            draft_id = cast(int, document["draft_id"])
+            return tuple(
+                _binding_for_generation(
+                    requests,
+                    entries,
+                    draft_id=draft_id,
+                    generation=generation,
+                )
+                for generation in range(2, len(entries) + 1)
+            )
+
+
 @final
 class OwnerPrivateLiveReviewDraftJournal:
     """Write durable intent before the sole owner-gated live POST or recovery GET."""
@@ -2449,14 +3428,15 @@ class OwnerPrivateLiveReviewDraftJournal:
         return request
 
     def committed_request(self, article_id: str) -> tuple[ReviewDraftRequest, int]:
-        """Load the sole COMMITTED request and its exact public post identity."""
+        """Load the unique active generation, with a legacy-only fallback."""
 
+        if article_id != PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID:
+            request, draft_id, _generation = OwnerPrivateReviewDraftGenerationLedger(
+                self._root
+            ).active_request(article_id)
+            return request, draft_id
         request, state = self._request_for_state(article_id, "COMMITTED")
-        if article_id == "st1703-first-suitcase-comparison":
-            expected_public_post_id = _positive_post_id(state["target_public_post_id"])
-        else:
-            expected_public_post_id = _positive_post_id(state["draft_id"])
-        return request, expected_public_post_id
+        return request, _positive_post_id(state["target_public_post_id"])
 
     def carry_on_single_url_reconciliation_binding(
         self, article_id: str
@@ -2498,6 +3478,11 @@ class OwnerPrivateLiveReviewDraftJournal:
 
         if type(request) is not ReviewDraftRequest:
             _fail(EditorialPilotFailureCode.JOURNAL_UNSAFE)
+        if request.article_id != PILOT_CARRY_ON_RECONCILIATION_ARTICLE_ID:
+            stored, _draft_id = self.committed_request(request.article_id)
+            if stored != request:
+                _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+            return None
         stored, state = self._request_for_state(request.article_id, "COMMITTED")
         if stored != request:
             _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
@@ -2515,6 +3500,7 @@ class OwnerPrivateLiveReviewDraftJournal:
 
 
 __all__ = [
+    "GENERATION_DIRECTORY",
     "JOURNAL_DIRECTORY",
     "MAX_JOURNAL_BYTES",
     "MAX_REQUEST_ARTIFACT_BYTES",
@@ -2526,6 +3512,7 @@ __all__ = [
     "MAX_RECORDED_BYTES",
     "OWNER_DIRECTORY",
     "OwnerPrivateLiveReviewDraftJournal",
+    "OwnerPrivateReviewDraftGenerationLedger",
     "OwnerPrivateReviewDraftJournal",
     "RECORDED_DIRECTORY",
     "RAKUTEN_DIRECTORY",

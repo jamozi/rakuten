@@ -19,7 +19,7 @@ def _source() -> str:
 def test_exact_routes_and_combined_v1_v2_firewall_are_bound() -> None:
     source = _source()
     assert "const REST_NAMESPACE = 'raos-operator/v2';" in source
-    assert source.count("register_rest_route(") == 4
+    assert source.count("register_rest_route(") == 7
     for callback in (
         "rest_status",
         "rest_create_proposal",

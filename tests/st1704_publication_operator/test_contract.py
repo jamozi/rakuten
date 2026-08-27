@@ -141,3 +141,31 @@ def test_mutation_boundary_preserves_content_media_and_taxonomy_creation(
         "staging": "NOT_EXECUTED",
         "production_readiness": "NOT_READY",
     }
+
+
+def test_additive_revision_contract_keeps_literal_ids_and_draft_invariants() -> None:
+    revision = json.loads(
+        (
+            SLICE
+            / "contracts/self-hosted-wordpress-draft-revision.v2.json"
+        ).read_bytes()
+    )
+    assert revision["operation"] == "REVISE_ST1704_DRAFT"
+    assert revision["article_post_bindings"] == {
+        "st1704-portable-power-station-guide": 28,
+        "st1704-anker-solix-c300-c800-c1000-differences": 29,
+        "st1704-countertop-dishwasher-for-small-households": 41,
+        "st1704-compact-robot-vacuum-shortlist": 30,
+    }
+    assert "post_status_draft" in revision["immutable"]
+    assert "proposal_applied_receipt" in revision["atomic_write_set"]
+    assert revision["recovery"]["proposal_id"] == "SAME_PROPOSAL_ID_ONLY"
+    assert revision["recovery"]["applying"] == (
+        "EXACT_IDEMPOTENT_APPLY_RETRY_ONLY"
+    )
+    assert revision["recovery"]["classification"] == [
+        "EXACT_SUCCESSOR",
+        "EXACT_PREDECESSOR",
+    ]
+    assert revision["recovery"]["mutex"] == "PUBLICATION_V2_SHARED_MUTEX"
+    assert revision["recovery_route"].endswith("/{proposal_id}/revision-state")

@@ -97,6 +97,7 @@ def test_v2_stage_map_is_closed_and_does_not_import_v1_cli() -> None:
         "raos.adapters.self_hosted_wordpress_publication_operator_json_v2",
         "raos.domain.editorial.self_hosted_editorial_pilot",
         "raos.domain.operations.self_hosted_wordpress_operator",
+        "raos.domain.operations.self_hosted_wordpress_draft_revision_operator_v2",
         "raos.domain.operations.self_hosted_wordpress_publication_operator_v2",
         "raos.ports.self_hosted_editorial_pilot",
         "raos.ports.self_hosted_wordpress_publication_operator_v2",

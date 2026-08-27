@@ -151,6 +151,7 @@ ModuleSeal = dict[str, dict[str, object]]
 
 COMMANDS: Final = (
     "prepare",
+    "prepare-review-draft-revision",
     "create-review-draft",
     "recover-create-review-draft",
     "verify-carry-on-single-url",
@@ -860,6 +861,32 @@ def _prepared_result(value: Any) -> dict[str, object]:
     }
 
 
+def _prepared_revision_result(value: Any) -> dict[str, object]:
+    binding = value.binding
+    return {
+        "article_id": binding.successor.article_id,
+        "command": "prepare-review-draft-revision",
+        "draft_post_id": binding.draft_id,
+        "external_writes": value.external_writes,
+        "generation": binding.generation,
+        "network_requests": value.network_requests,
+        "operation_sha256": binding.operation_sha256,
+        "predecessor_packet_sha256": binding.predecessor.packet_sha256,
+        "predecessor_request_sha256": binding.predecessor.request_sha256,
+        "production_evidence": value.production_evidence,
+        "publication_actions": value.publication_actions,
+        "publication_authority": value.publication_authority,
+        "status": "PREPARED_FOR_OWNER_GATED_DRAFT_REVISION",
+        "successor_content_sha256": (
+            binding.successor.snapshot.payload.visible_content_sha256
+        ),
+        "successor_packet_sha256": binding.successor.packet_sha256,
+        "successor_payload_sha256": binding.successor.snapshot.payload_sha256,
+        "successor_request_sha256": binding.successor.request_sha256,
+        "successor_review_slug": binding.successor.slug,
+    }
+
+
 def _receipt_result(command: str, value: Any, request: Any) -> dict[str, object]:
     owner_apply_path: str | None = None
     if value.article_id == "st1703-first-suitcase-comparison":
@@ -991,7 +1018,11 @@ def _parser() -> argparse.ArgumentParser:
         command.add_argument(
             "--article-id",
             choices=(
-                ARTICLE_IDS[:1] if name == "verify-carry-on-single-url" else ARTICLE_IDS
+                ARTICLE_IDS[:1]
+                if name == "verify-carry-on-single-url"
+                else ARTICLE_IDS[1:]
+                if name == "prepare-review-draft-revision"
+                else ARTICLE_IDS
             ),
             required=True,
         )
@@ -1029,7 +1060,13 @@ def _run(
         https_adapter, "OfficialSelfHostedEditorialPilotWordPressAdapter", None
     )
     journal_type = getattr(json_adapter, "OwnerPrivateLiveReviewDraftJournal", None)
+    generation_ledger_type = getattr(
+        json_adapter, "OwnerPrivateReviewDraftGenerationLedger", None
+    )
     prepare_editorial_article = getattr(application, "prepare_editorial_article", None)
+    prepare_review_draft_revision = getattr(
+        application, "prepare_review_draft_revision", None
+    )
     failure_type = getattr(domain, "EditorialPilotFailure", None)
     reconciliation_evidence_type = getattr(
         domain, "CarryOnSingleUrlReconciliationEvidence", None
@@ -1037,7 +1074,9 @@ def _run(
     if (
         not callable(adapter_type)
         or not callable(journal_type)
+        or not callable(generation_ledger_type)
         or not callable(prepare_editorial_article)
+        or not callable(prepare_review_draft_revision)
         or not isinstance(failure_type, type)
         or not isinstance(reconciliation_evidence_type, type)
     ):
@@ -1059,6 +1098,22 @@ def _run(
         adapter = cast(Any, adapter_type)(REPOSITORY_ROOT)
         rebind()
         journal = cast(Any, journal_type)(REPOSITORY_ROOT, adapter)
+        if command == "prepare-review-draft-revision":
+            rebind()
+            ledger = cast(Any, generation_ledger_type)(REPOSITORY_ROOT)
+            predecessor, draft_id, next_generation = (
+                ledger.revision_preparation_context(article_id)
+            )
+            rebind()
+            prepared_revision = cast(Any, prepare_review_draft_revision)(
+                REPOSITORY_ROOT,
+                predecessor=predecessor,
+                draft_id=draft_id,
+                generation=next_generation,
+            )
+            rebind()
+            ledger.propose(prepared_revision.binding)
+            return _prepared_revision_result(prepared_revision)
         if command == "create-review-draft":
             rebind()
             prepared = cast(Any, prepare_editorial_article)(REPOSITORY_ROOT, article_id)

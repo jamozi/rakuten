@@ -25,7 +25,9 @@ def method(name: str, following: str) -> str:
 def test_routes_are_distinct_and_exactly_firewalled() -> None:
     php = source()
     assert "const REST_NAMESPACE = 'raos-operator/v2';" in php
-    assert php.count("register_rest_route(") == 4
+    assert php.count("register_rest_route(") == 7
+    assert "'/revision-status'" in php
+    assert "'/proposals/(?P<proposal_id>[a-f0-9]{64})/verify'" in php
     assert "'/proposals/(?P<proposal_id>[a-f0-9]{64})'" in php
     assert "'/proposals/(?P<proposal_id>[a-f0-9]{64})/apply'" in php
     guard = method("guard_combined_operator_rest_route", "is_exact_v2_handler")
@@ -150,7 +152,7 @@ def test_admin_approval_is_distinct_hash_bound_and_reauthenticated() -> None:
     assert "wp_check_password(" in approval
     assert "substr($proposal_id, -12)" in approval
     assert "proposer_user_id <> %d" in approval
-    assert "capture_publication_state" in approval
+    assert "capture_operation_state" in approval
     assert "approval_evidence_hash" in approval
 
 
@@ -439,8 +441,8 @@ def test_success_receipt_locks_preserved_storage_through_applied_commit() -> Non
     commit = success.index("$wpdb->query('COMMIT')", applied)
     assert isolation < start < post_lock < locked_readback < applied < commit
     assert "$modified_times,\n                true" in success
-    assert php.count("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE") == 1
-    assert php.count("$modified_times,\n                true") == 1
+    assert php.count("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE") == 3
+    assert php.count("$modified_times,\n                true") == 3
 
 
 def test_post_write_readback_rollback_and_terminal_replay_fail_closed() -> None:

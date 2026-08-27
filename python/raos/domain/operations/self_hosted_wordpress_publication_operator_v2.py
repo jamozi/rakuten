@@ -54,6 +54,7 @@ _MAX_POST_ID: Final = (1 << 63) - 1
 
 class PublicationOperatorOperation(StrEnum):
     PUBLISH_ST1704_ARTICLE = "PUBLISH_ST1704_ARTICLE"
+    REVISE_ST1704_DRAFT = "REVISE_ST1704_DRAFT"
 
 
 class PublicationProposalState(StrEnum):

@@ -27,6 +27,8 @@ def test_generated_binding_is_current_and_exact() -> None:
     assert builder.EXCLUDED_UPDATE_ARTICLE not in text
     for article_id, slug in builder.PUBLISH_BINDINGS:
         assert f'"{article_id}":"{slug}"' in text
+    for article_id, post_id in builder.REVISION_POST_IDS:
+        assert f'"{article_id}":{post_id}' in text
 
 
 def test_package_is_deterministic_and_injects_after_unchanged_v1_boot() -> None:
@@ -46,7 +48,7 @@ def test_package_is_deterministic_and_injects_after_unchanged_v1_boot() -> None:
             assert stat.S_IMODE(info.external_attr >> 16) == 0o644
         main = archive.read(builder.PACKAGE_ROOT + "raos-bounded-operator.php")
     text = main.decode("utf-8")
-    assert text.count(" * Version: 2.0.0\n") == 1
+    assert text.count(" * Version: 2.1.0\n") == 1
     assert text.count(" * Requires at least: 7.1\n") == 1
     assert text.count(" * Tested up to: 7.1\n") == 1
     assert " * Requires at least: 6.9\n" not in text
@@ -71,6 +73,10 @@ def test_runtime_manifest_matches_sources_and_package() -> None:
     assert manifest["codex_approval_authority"] == "NONE"
     assert manifest["writes_default"] == "DISABLED"
     assert manifest["production_readiness"] == "NOT_READY"
+    assert manifest["supported_mutations"] == [
+        "PUBLISH_ST1704_ARTICLE",
+        "REVISE_ST1704_DRAFT",
+    ]
     assert manifest["publication_article_ids"] == [
         item[0] for item in builder.PUBLISH_BINDINGS
     ]

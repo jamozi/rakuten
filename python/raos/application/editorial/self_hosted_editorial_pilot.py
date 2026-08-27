@@ -44,6 +44,7 @@ from raos.domain.editorial.self_hosted_editorial_pilot import (
     fail_editorial_pilot,
     require_sha256,
 )
+from raos.ports.self_hosted_editorial_pilot import ReviewDraftRevisionBinding
 
 
 SLICE_RELATIVE_PATH: Final = Path("changes/st-1704/self-hosted-editorial-pilot-v1")
@@ -1884,6 +1885,34 @@ class PreparedEditorialArticle:
     production_evidence: bool = False
 
 
+@final
+@dataclass(frozen=True, slots=True, repr=False)
+class PreparedReviewDraftRevision:
+    """Fresh preparation bound to one existing Review Draft generation."""
+
+    prepared: PreparedEditorialArticle
+    binding: ReviewDraftRevisionBinding
+    network_requests: int = 0
+    external_writes: int = 0
+    publication_actions: int = 0
+    publication_authority: bool = False
+    production_evidence: bool = False
+
+    def __post_init__(self) -> None:
+        if (
+            type(self.prepared) is not PreparedEditorialArticle
+            or type(self.binding) is not ReviewDraftRevisionBinding
+            or self.prepared.request != self.binding.successor
+            or self.prepared.article_id != self.binding.successor.article_id
+            or self.network_requests != 0
+            or self.external_writes != 0
+            or self.publication_actions != 0
+            or self.publication_authority is not False
+            or self.production_evidence is not False
+        ):
+            _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+
+
 def prepare_editorial_article(
     repository_root: Path,
     article_id: str,
@@ -2116,13 +2145,49 @@ def prepare_editorial_article(
     )
 
 
+def prepare_review_draft_revision(
+    repository_root: Path,
+    *,
+    predecessor: ReviewDraftRequest,
+    draft_id: int,
+    generation: int,
+    evidence_reader: Callable[..., RakutenProductEvidence] = (
+        read_rakuten_product_evidence
+    ),
+    source_evidence_reader: Callable[..., OfficialSourceCaptureEvidence] = (
+        read_official_source_capture_evidence
+    ),
+    clock: Callable[[], datetime] = _utc_now,
+) -> PreparedReviewDraftRevision:
+    """Prepare fresh evidence and bind it to an unchanged existing Draft ID."""
+
+    if type(predecessor) is not ReviewDraftRequest:
+        _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+    prepared = prepare_editorial_article(
+        repository_root,
+        predecessor.article_id,
+        evidence_reader=evidence_reader,
+        source_evidence_reader=source_evidence_reader,
+        clock=clock,
+    )
+    binding = ReviewDraftRevisionBinding.bind(
+        predecessor=predecessor,
+        successor=prepared.request,
+        draft_id=draft_id,
+        generation=generation,
+    )
+    return PreparedReviewDraftRevision(prepared=prepared, binding=binding)
+
+
 __all__ = [
     "ARTICLE_FACT_MAX_AGE_DAYS",
     "ARTICLE_COLLECTION_RELATIVE_PATH",
     "MEDIA_REGISTRY_RELATIVE_PATH",
     "PreparedEditorialArticle",
+    "PreparedReviewDraftRevision",
     "RAKUTEN_EVIDENCE_MAX_AGE",
     "SLICE_RELATIVE_PATH",
     "SOURCE_REGISTRY_RELATIVE_PATH",
     "prepare_editorial_article",
+    "prepare_review_draft_revision",
 ]

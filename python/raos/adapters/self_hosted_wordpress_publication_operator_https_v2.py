@@ -20,6 +20,18 @@ from raos.adapters.self_hosted_wordpress_operator_credentials import (
 from raos.domain.operations.self_hosted_wordpress_operator import (
     WordPressOperatorFailure,
 )
+from raos.domain.operations.self_hosted_wordpress_draft_revision_operator_v2 import (
+    DRAFT_REVISION_RESULT_CODE,
+    DRAFT_REVISION_OPERATOR_VERSION,
+    DRAFT_REVISION_RECOVERY_RESULT_CODE,
+    DRAFT_REVISION_VERIFY_RESULT_CODE,
+    DraftRevisionApplyReceipt,
+    DraftRevisionOperatorStatus,
+    DraftRevisionProposal,
+    DraftRevisionRecoveryDisposition,
+    DraftRevisionRecoveryReceipt,
+    DraftRevisionVerifyReceipt,
+)
 from raos.domain.operations.self_hosted_wordpress_publication_operator_v2 import (
     PUBLICATION_OPERATOR_NAMESPACE,
     PUBLICATION_OPERATOR_RESULT_CODE,
@@ -44,10 +56,14 @@ READ_TIMEOUT_SECONDS: Final = 20
 MAX_RESPONSE_BYTES: Final = 256 * 1024
 
 _STATUS_PATH: Final = f"{PUBLICATION_OPERATOR_NAMESPACE}/status"
+_REVISION_STATUS_PATH: Final = f"{PUBLICATION_OPERATOR_NAMESPACE}/revision-status"
 _PROPOSAL_PATH: Final = f"{PUBLICATION_OPERATOR_NAMESPACE}/proposals"
 _PROPOSAL_SCHEMA: Final = "RAOS_ST1704_PUBLICATION_OPERATOR_PROPOSAL_V2"
 _APPLY_SCHEMA: Final = "RAOS_ST1704_PUBLICATION_OPERATOR_APPLY_V2"
 _STATUS_SCHEMA: Final = "RAOS_ST1704_PUBLICATION_OPERATOR_STATUS_V2"
+_REVISION_VERIFY_SCHEMA: Final = "RAOS_ST1704_DRAFT_REVISION_VERIFY_V2"
+_REVISION_RECOVERY_SCHEMA: Final = "RAOS_ST1704_DRAFT_REVISION_RECOVERY_V2"
+_REVISION_STATUS_SCHEMA: Final = "RAOS_ST1704_DRAFT_REVISION_STATUS_V2"
 _CONTENT_TYPE = re.compile(
     r"application/json(?:\s*;\s*charset=(?:utf-8|UTF-8))?\Z", re.ASCII
 )
@@ -59,6 +75,7 @@ _DETERMINISTIC_CREATE_REJECTIONS: Final = frozenset(
     {
         ("raos_st1704_content_type_invalid", 400),
         ("raos_st1704_proposal_invalid", 400),
+        ("raos_st1704_revision_proposal_invalid", 400),
         ("raos_st1704_article_not_bound", 409),
         ("raos_st1704_before_state_invalid", 409),
         ("raos_st1704_capacity_check_failed", 500),
@@ -71,6 +88,13 @@ _DETERMINISTIC_CREATE_REJECTIONS: Final = frozenset(
         ("raos_st1704_publication_lock_lost", 500),
         ("raos_st1704_proposal_lookup_failed", 500),
         ("raos_st1704_request_not_bound", 409),
+        ("raos_st1704_revision_not_fresh", 409),
+        ("raos_st1704_revision_operation_not_bound", 409),
+        ("raos_st1704_revision_post_not_bound", 409),
+        ("raos_st1704_revision_predecessor_changed", 409),
+        ("raos_st1704_revision_request_not_bound", 409),
+        ("raos_st1704_revision_slug_not_unique", 409),
+        ("raos_st1704_revision_successor_invalid", 409),
         ("raos_st1704_runtime_origin_invalid", 409),
         ("raos_st1704_snapshot_not_bound", 409),
         ("raos_st1704_state_hash_failed", 500),
@@ -305,11 +329,13 @@ def _error_code(value: dict[str, object], status: int) -> str:
     return cast(str, value["code"])
 
 
-def _not_created_result(proposal_id: str) -> dict[str, object]:
+def _not_created_result(
+    proposal_id: str, operation: PublicationOperatorOperation
+) -> dict[str, object]:
     return {
         "created_at": _NOT_CREATED_AT,
         "expires_at": _NOT_CREATED_EXPIRES_AT,
-        "operation": PublicationOperatorOperation.PUBLISH_ST1704_ARTICLE.value,
+        "operation": operation.value,
         "proposal_id": require_sha256(proposal_id),
         "replayed": True,
         "schema": _PROPOSAL_SCHEMA,
@@ -331,6 +357,17 @@ def _state(value: object) -> PublicationProposalState:
         _fail(PublicationOperatorFailureCode.RESPONSE_INVALID)
     try:
         return PublicationProposalState(value)
+    except TypeError, ValueError:
+        _fail(PublicationOperatorFailureCode.RESPONSE_INVALID)
+
+
+def _revision_recovery_disposition(
+    value: object,
+) -> DraftRevisionRecoveryDisposition:
+    if type(value) is not str:
+        _fail(PublicationOperatorFailureCode.RESPONSE_INVALID)
+    try:
+        return DraftRevisionRecoveryDisposition(value)
     except TypeError, ValueError:
         _fail(PublicationOperatorFailureCode.RESPONSE_INVALID)
 
@@ -373,7 +410,7 @@ def _status_result(value: dict[str, object]) -> PublicationOperatorStatus:
 
 def _proposal_result(
     value: dict[str, object],
-    expected: PublicationProposal,
+    expected: PublicationProposal | DraftRevisionProposal,
     *,
     recovery: bool,
 ) -> PublicationProposalReceipt:
@@ -437,6 +474,134 @@ def _apply_result(
     ):
         _fail(PublicationOperatorFailureCode.RESPONSE_INVALID)
     return receipt
+
+
+def _revision_apply_result(
+    value: dict[str, object], *, proposal_id: str
+) -> DraftRevisionApplyReceipt:
+    if (
+        set(value)
+        != {
+            "operation",
+            "proposal_id",
+            "replayed",
+            "result_code",
+            "schema",
+            "state",
+        }
+        or value["schema"] != _APPLY_SCHEMA
+    ):
+        _fail(PublicationOperatorFailureCode.RESPONSE_INVALID)
+    receipt = DraftRevisionApplyReceipt(
+        proposal_id=cast(str, value["proposal_id"]),
+        operation=_operation(value["operation"]),
+        state=_state(value["state"]),
+        result_code=cast(str, value["result_code"]),
+        replayed=cast(bool, value["replayed"]),
+    )
+    if (
+        receipt.proposal_id != proposal_id
+        or receipt.result_code != DRAFT_REVISION_RESULT_CODE
+    ):
+        _fail(PublicationOperatorFailureCode.RESPONSE_INVALID)
+    return receipt
+
+
+def _revision_verify_result(
+    value: dict[str, object], *, proposal_id: str
+) -> DraftRevisionVerifyReceipt:
+    if (
+        set(value)
+        != {
+            "draft_post_id",
+            "operation",
+            "operation_sha256",
+            "proposal_id",
+            "result_code",
+            "schema",
+            "state",
+        }
+        or value["schema"] != _REVISION_VERIFY_SCHEMA
+    ):
+        _fail(PublicationOperatorFailureCode.RESPONSE_INVALID)
+    receipt = DraftRevisionVerifyReceipt(
+        proposal_id=cast(str, value["proposal_id"]),
+        operation=_operation(value["operation"]),
+        operation_sha256=cast(str, value["operation_sha256"]),
+        draft_post_id=cast(int, value["draft_post_id"]),
+        result_code=cast(str, value["result_code"]),
+        state=_state(value["state"]),
+    )
+    if (
+        receipt.proposal_id != proposal_id
+        or receipt.result_code != DRAFT_REVISION_VERIFY_RESULT_CODE
+    ):
+        _fail(PublicationOperatorFailureCode.RESPONSE_INVALID)
+    return receipt
+
+
+def _revision_recovery_result(
+    value: dict[str, object], *, proposal_id: str
+) -> DraftRevisionRecoveryReceipt:
+    if (
+        set(value)
+        != {
+            "disposition",
+            "draft_post_id",
+            "operation",
+            "operation_sha256",
+            "proposal_id",
+            "proposal_state",
+            "result_code",
+            "schema",
+        }
+        or value["schema"] != _REVISION_RECOVERY_SCHEMA
+    ):
+        _fail(PublicationOperatorFailureCode.RESPONSE_INVALID)
+    receipt = DraftRevisionRecoveryReceipt(
+        proposal_id=cast(str, value["proposal_id"]),
+        operation=_operation(value["operation"]),
+        operation_sha256=cast(str, value["operation_sha256"]),
+        draft_post_id=cast(int, value["draft_post_id"]),
+        proposal_state=_state(value["proposal_state"]),
+        disposition=_revision_recovery_disposition(value["disposition"]),
+        result_code=cast(str, value["result_code"]),
+    )
+    if (
+        receipt.proposal_id != proposal_id
+        or receipt.result_code != DRAFT_REVISION_RECOVERY_RESULT_CODE
+    ):
+        _fail(PublicationOperatorFailureCode.RESPONSE_INVALID)
+    return receipt
+
+
+def _revision_status_result(
+    value: dict[str, object],
+) -> DraftRevisionOperatorStatus:
+    expected_keys = {
+        "master_writes_enabled",
+        "operator_version",
+        "publication_writes_enabled",
+        "schema",
+        "supported_operations",
+        "writes_enabled",
+    }
+    if (
+        set(value) != expected_keys
+        or value["schema"] != _REVISION_STATUS_SCHEMA
+        or value["operator_version"] != DRAFT_REVISION_OPERATOR_VERSION
+        or value["supported_operations"]
+        != [PublicationOperatorOperation.REVISE_ST1704_DRAFT.value]
+        or type(value["master_writes_enabled"]) is not bool
+        or type(value["publication_writes_enabled"]) is not bool
+        or type(value["writes_enabled"]) is not bool
+    ):
+        _fail(PublicationOperatorFailureCode.RESPONSE_INVALID)
+    return DraftRevisionOperatorStatus(
+        master_writes_enabled=value["master_writes_enabled"],
+        publication_writes_enabled=value["publication_writes_enabled"],
+        writes_enabled=value["writes_enabled"],
+    )
 
 
 @final
@@ -569,7 +734,10 @@ class OfficialSelfHostedWordPressPublicationOperatorV2Adapter:
                         and response.status == 404
                         and code == "raos_st1704_proposal_not_found"
                     ):
-                        return _not_created_result(proposal_id)
+                        return _not_created_result(
+                            proposal_id,
+                            PublicationOperatorOperation.PUBLISH_ST1704_ARTICLE,
+                        )
                     _fail(
                         PublicationOperatorFailureCode.OUTCOME_AMBIGUOUS
                         if mutating
@@ -666,6 +834,97 @@ class OfficialSelfHostedWordPressPublicationOperatorV2Adapter:
             return _apply_result(response, proposal_id=proposal_id)
         except PublicationOperatorFailure:
             _fail(PublicationOperatorFailureCode.OUTCOME_AMBIGUOUS)
+
+    def propose_revision(
+        self, proposal: DraftRevisionProposal
+    ) -> PublicationProposalReceipt:
+        if type(proposal) is not DraftRevisionProposal:
+            _fail(PublicationOperatorFailureCode.REQUEST_INVALID)
+        response = self._execute(
+            method="POST",
+            path=_PROPOSAL_PATH,
+            body=proposal.canonical_bytes(),
+            expected_status=201,
+            mutating=True,
+            content_type="application/json",
+            proposal_id=proposal.proposal_id,
+        )
+        try:
+            return _proposal_result(response, proposal, recovery=False)
+        except PublicationOperatorFailure:
+            _fail(PublicationOperatorFailureCode.OUTCOME_AMBIGUOUS)
+
+    def revision_status(self) -> DraftRevisionOperatorStatus:
+        return _revision_status_result(
+            self._execute(
+                method="GET",
+                path=_REVISION_STATUS_PATH,
+                body=b"",
+                expected_status=200,
+                mutating=False,
+            )
+        )
+
+    def recover_revision_proposal(
+        self, proposal: DraftRevisionProposal
+    ) -> PublicationProposalReceipt:
+        if type(proposal) is not DraftRevisionProposal:
+            _fail(PublicationOperatorFailureCode.REQUEST_INVALID)
+        response = self._execute(
+            method="GET",
+            path=f"{_PROPOSAL_PATH}/{proposal.proposal_id}",
+            body=b"",
+            expected_status=200,
+            mutating=False,
+            proposal_id=proposal.proposal_id,
+        )
+        if response.get("state") == PublicationProposalState.FAILED.value and response.get(
+            "proposal_id"
+        ) == proposal.proposal_id:
+            response["operation"] = proposal.operation.value
+        return _proposal_result(response, proposal, recovery=True)
+
+    def apply_revision(self, proposal_id: str) -> DraftRevisionApplyReceipt:
+        proposal_id = require_sha256(proposal_id)
+        response = self._execute(
+            method="POST",
+            path=f"{_PROPOSAL_PATH}/{proposal_id}/apply",
+            body=b"{}",
+            expected_status=200,
+            mutating=True,
+            content_type="application/json",
+            proposal_id=proposal_id,
+        )
+        try:
+            return _revision_apply_result(response, proposal_id=proposal_id)
+        except PublicationOperatorFailure:
+            _fail(PublicationOperatorFailureCode.OUTCOME_AMBIGUOUS)
+
+    def verify_revision(self, proposal_id: str) -> DraftRevisionVerifyReceipt:
+        proposal_id = require_sha256(proposal_id)
+        response = self._execute(
+            method="GET",
+            path=f"{_PROPOSAL_PATH}/{proposal_id}/verify",
+            body=b"",
+            expected_status=200,
+            mutating=False,
+            proposal_id=proposal_id,
+        )
+        return _revision_verify_result(response, proposal_id=proposal_id)
+
+    def recover_revision_state(
+        self, proposal_id: str
+    ) -> DraftRevisionRecoveryReceipt:
+        proposal_id = require_sha256(proposal_id)
+        response = self._execute(
+            method="GET",
+            path=f"{_PROPOSAL_PATH}/{proposal_id}/revision-state",
+            body=b"",
+            expected_status=200,
+            mutating=False,
+            proposal_id=proposal_id,
+        )
+        return _revision_recovery_result(response, proposal_id=proposal_id)
 
 
 __all__ = [

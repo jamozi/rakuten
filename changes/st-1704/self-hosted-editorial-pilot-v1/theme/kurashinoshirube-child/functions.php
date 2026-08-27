@@ -12,7 +12,7 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.3.0';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.3.1';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guide.webp';
@@ -2363,3 +2363,170 @@ function kurashinoshirube_disable_yoast_auto_update($update, $item)
     return $update;
 }
 add_filter('auto_update_plugin', 'kurashinoshirube_disable_yoast_auto_update', 10, 2);
+
+/** Require an explicit visitor choice before optional categories are enabled. */
+function kurashinoshirube_wp_consent_type(): string
+{
+    return 'optin';
+}
+add_filter('wp_get_consent_type', 'kurashinoshirube_wp_consent_type');
+
+/** Keep WP Consent API choices aligned with CookieYes's reviewed 365-day term. */
+function kurashinoshirube_wp_consent_cookie_expiration(): int
+{
+    return 365;
+}
+add_filter(
+    'wp_cookie_expiration',
+    'kurashinoshirube_wp_consent_cookie_expiration'
+);
+
+/** Apply Site Kit's denied consent defaults globally, not only in EEA regions. */
+function kurashinoshirube_site_kit_global_consent_defaults($defaults)
+{
+    if (!is_array($defaults)) {
+        return $defaults;
+    }
+    unset($defaults['region']);
+    if (array_key_exists('wait_for_update', $defaults)) {
+        $defaults['wait_for_update'] = 2000;
+    }
+    return $defaults;
+}
+add_filter(
+    'googlesitekit_consent_defaults',
+    'kurashinoshirube_site_kit_global_consent_defaults'
+);
+
+/** Load Site Kit Analytics only after WP Consent API reports statistics consent. */
+function kurashinoshirube_gate_site_kit_analytics_loader($tag, $handle)
+{
+    if (
+        !is_string($tag)
+        || !is_string($handle)
+        || $handle !== 'google_gtagjs'
+    ) {
+        return $tag;
+    }
+    if (!preg_match(
+        '/<script\b(?=[^>]*\bid=(["\'])google_gtagjs-js\1)'
+            . '[^>]*\ssrc=(["\'])([^"\']+)\2[^>]*>/u',
+        $tag,
+        $source_match
+    ) || !isset($source_match[3])) {
+        return '';
+    }
+    $source = html_entity_decode(
+        $source_match[3],
+        ENT_QUOTES | ENT_HTML5,
+        'UTF-8'
+    );
+    $source_parts = wp_parse_url($source);
+    if (
+        !is_array($source_parts)
+        || ($source_parts['scheme'] ?? '') !== 'https'
+        || ($source_parts['host'] ?? '') !== 'www.googletagmanager.com'
+        || ($source_parts['path'] ?? '') !== '/gtag/js'
+    ) {
+        return '';
+    }
+    $source_json = wp_json_encode(
+        $source,
+        JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+    );
+    if (!is_string($source_json)) {
+        return '';
+    }
+    $gate = '<script id="google_gtagjs-js" data-raos-consent-gate="statistics">'
+        . '(function(){'
+        . 'var source=' . $source_json . ';'
+        . 'var initialCookieYes=typeof window.getCkyConsent==="function"'
+        . '?window.getCkyConsent():null;'
+        . 'var eligibleAtParse=!!(initialCookieYes'
+        . '&&initialCookieYes.isUserActionCompleted===true'
+        . '&&initialCookieYes.categories'
+        . '&&initialCookieYes.categories.analytics===true);'
+        . 'var activated=false;'
+        . 'function consentIsGranted(){'
+        . 'if(!eligibleAtParse'
+        . '||typeof window.getCkyConsent!=="function"'
+        . '||typeof window.wp_has_consent!=="function"){return false;}'
+        . 'var cookieYes=window.getCkyConsent();'
+        . 'return !!(cookieYes'
+        . '&&cookieYes.isUserActionCompleted===true'
+        . '&&cookieYes.categories'
+        . '&&cookieYes.categories.analytics===true'
+        . '&&window.wp_has_consent("statistics")===true'
+        . '&&window._googlesitekitConsents'
+        . '&&window._googlesitekitConsents.analytics_storage==="granted");'
+        . '}'
+        . 'function activate(){'
+        . 'if(activated||!consentIsGranted()){return;}'
+        . 'var loader=document.getElementById("google_gtagjs-js");'
+        . 'var config=document.getElementById("google_gtagjs-js-after");'
+        . 'if(!loader'
+        . '||loader.getAttribute("data-raos-consent-gate")!=="statistics"'
+        . '||!config'
+        . '||config.getAttribute("data-raos-consent-config")!=="statistics")'
+        . '{return;}'
+        . 'var parsed;'
+        . 'try{parsed=new URL(source);}catch(error){return;}'
+        . 'if(parsed.protocol!=="https:"'
+        . '||parsed.hostname!=="www.googletagmanager.com"'
+        . '||parsed.pathname!=="/gtag/js"){return;}'
+        . 'activated=true;'
+        . 'var configScript=document.createElement("script");'
+        . 'configScript.id="google_gtagjs-js-after";'
+        . 'configScript.setAttribute("data-cookieyes","cookieyes-analytics");'
+        . 'configScript.type="text/javascript";'
+        . 'configScript.text=config.textContent||"";'
+        . 'config.replaceWith(configScript);'
+        . 'var analytics=document.createElement("script");'
+        . 'analytics.id="google_gtagjs-js";'
+        . 'analytics.async=true;'
+        . 'analytics.setAttribute("data-cookieyes","cookieyes-analytics");'
+        . 'analytics.type="text/javascript";'
+        . 'analytics.src=source;'
+        . 'loader.replaceWith(analytics);'
+        . '}'
+        . 'document.addEventListener("wp_consent_type_defined",activate);'
+        . 'document.addEventListener("wp_listen_for_consent_change",activate);'
+        . 'document.addEventListener("cookieyes_consent_update",activate);'
+        . 'if(document.readyState==="complete"){activate();}'
+        . 'else{window.addEventListener("load",activate,{once:true});}'
+        . '})();'
+        . '</script>';
+    $gated_tag = preg_replace(
+        '/<script\b(?=[^>]*\bid=(["\'])google_gtagjs-js\1)'
+            . '[^>]*>\s*<\/script>/u',
+        $gate,
+        $tag,
+        1,
+        $loader_replacement_count
+    );
+    if ($loader_replacement_count !== 1 || !is_string($gated_tag)) {
+        return '';
+    }
+    $gated_tag = preg_replace_callback(
+        '/<script\b(?=[^>]*\bid=(["\'])google_gtagjs-js-after\1)'
+            . '([^>]*)>/u',
+        static function (array $match): string {
+            return '<script type="text/plain" '
+                . 'data-raos-consent-config="statistics"'
+                . ($match[2] ?? '')
+                . '>';
+        },
+        $gated_tag,
+        1,
+        $config_replacement_count
+    );
+    return $config_replacement_count === 1 && is_string($gated_tag)
+        ? $gated_tag
+        : '';
+}
+add_filter(
+    'script_loader_tag',
+    'kurashinoshirube_gate_site_kit_analytics_loader',
+    30,
+    2
+);
