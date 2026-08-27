@@ -34,6 +34,7 @@ MAX_ARCHIVE_DEPTH = 4
 MAX_COMPRESSION_RATIO = 200
 COMPRESSION_RATIO_MINIMUM_BYTES = 1024 * 1024
 GIT_TIMEOUT_SECONDS = 60
+MAX_GITFILE_BYTES = 4096
 MAX_REVIEWED_FINDINGS_BYTES = 2 * 1024 * 1024
 MAX_REVIEWED_FINDINGS_ENTRIES = 4096
 
@@ -150,6 +151,7 @@ EXCLUDED_FILE_NAMES = frozenset(
 ZIP_SIGNATURES = (b"PK\x03\x04", b"PK\x05\x06", b"PK\x07\x08")
 ZIP_SUFFIXES = (".zip", ".jar", ".whl", ".docx", ".xlsx", ".pptx")
 HEX_OBJECT_ID = re.compile(rb"[0-9a-f]{40}(?:[0-9a-f]{24})?")
+LINKED_WORKTREE_GITFILE = re.compile(rb"gitdir: (/[^\x00\r\n]+)\n?\Z")
 LOWER_HEX_SHA256 = re.compile(r"[0-9a-f]{64}")
 REVIEWED_FINDINGS_TOP_LEVEL_KEYS = frozenset(
     {"version", "status", "rule_id", "entries"}
@@ -875,6 +877,81 @@ def _empty_git_marker(root: Path) -> bool:
         return False
 
 
+def _safe_linked_worktree_gitfile(root: Path, metadata: os.stat_result) -> bool:
+    """Accept only a bounded, owner-safe Git linked-worktree marker."""
+
+    if (
+        not stat.S_ISREG(metadata.st_mode)
+        or metadata.st_nlink != 1
+        or not 1 <= metadata.st_size <= MAX_GITFILE_BYTES
+        or metadata.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
+    ):
+        return False
+    try:
+        payload = read_maintained_file(root, ".git")
+    except ScanError:
+        return False
+    match = LINKED_WORKTREE_GITFILE.fullmatch(payload)
+    if match is None:
+        return False
+
+    def read_metadata(path: Path) -> bytes | None:
+        descriptor: int | None = None
+        try:
+            descriptor = os.open(path, _file_open_flags())
+            before = os.fstat(descriptor)
+            if (
+                not stat.S_ISREG(before.st_mode)
+                or before.st_nlink != 1
+                or not 1 <= before.st_size <= MAX_GITFILE_BYTES
+                or before.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
+            ):
+                return None
+            result = os.read(descriptor, MAX_GITFILE_BYTES + 1)
+            after = os.fstat(descriptor)
+            if (
+                len(result) != before.st_size
+                or (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
+                != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)
+            ):
+                return None
+            return result
+        except OSError:
+            return None
+        finally:
+            if descriptor is not None:
+                try:
+                    os.close(descriptor)
+                except OSError:
+                    pass
+
+    try:
+        git_directory = Path(os.fsdecode(match.group(1)))
+        normalized = Path(os.path.abspath(os.path.normpath(git_directory)))
+        resolved = Path(os.path.realpath(git_directory))
+        target = git_directory.lstat()
+        common_directory = git_directory.parent.parent
+        common_target = common_directory.lstat()
+    except (OSError, UnicodeError, ValueError):
+        return False
+    backlink = read_metadata(git_directory / "gitdir")
+    commondir = read_metadata(git_directory / "commondir")
+    expected_backlink = os.fsencode(os.path.abspath(root / ".git")) + b"\n"
+    return (
+        git_directory.is_absolute()
+        and normalized == git_directory
+        and resolved == git_directory
+        and stat.S_ISDIR(target.st_mode)
+        and not target.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
+        and git_directory.parent.name == "worktrees"
+        and stat.S_ISDIR(common_target.st_mode)
+        and Path(os.path.realpath(common_directory)) == common_directory
+        and not common_target.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
+        and backlink == expected_backlink
+        and commondir == b"../..\n"
+    )
+
+
 def git_repository_available(root: Path) -> bool:
     executable = _git_executable()
     if executable is None:
@@ -889,7 +966,8 @@ def git_repository_available(root: Path) -> bool:
     except OSError:
         raise ScanError("unsafe-git-metadata", ".") from None
     if marker_metadata is not None and not stat.S_ISDIR(marker_metadata.st_mode):
-        raise ScanError("unsafe-git-metadata", ".")
+        if not _safe_linked_worktree_gitfile(root, marker_metadata):
+            raise ScanError("unsafe-git-metadata", ".")
     result = _run_git(root, ["rev-parse", "--show-toplevel"])
     if result.returncode != 0:
         if _empty_git_marker(root):

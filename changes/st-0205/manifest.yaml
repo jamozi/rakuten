@@ -85,8 +85,8 @@ source_artifacts:
   bytes: 1906
   sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
 - uri: repo://scripts/scan_secrets.py
-  bytes: 43577
-  sha256: 61d84109b5dc0f161b621bf2c343e6f1367144298280d24bafd71d76c640e7d4
+  bytes: 46610
+  sha256: b8fda20a7d00482e8855fc8ad841b6c9fe29dbb875f62420e536a5104e27f599
 generated_artifact_count: 2
 generated_artifacts:
 - uri: repo://changes/st-0205/generated/synthetic-fixtures.v1.json

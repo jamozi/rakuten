@@ -1191,6 +1191,7 @@ def run_commands(
     commands: Iterable[Sequence[str]], *, root: Path = REPOSITORY_ROOT
 ) -> None:
     environment = os.environ.copy()
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
     environment["PYTHONPATH"] = os.pathsep.join(
         value
         for value in (

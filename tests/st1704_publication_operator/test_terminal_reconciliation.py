@@ -375,7 +375,7 @@ def test_admin_auth_requires_cookie_caps_nonce_reason_hash_and_password_unset() 
         "wp_check_password(",
         "unset($_POST['current_password'])",
         "unset($_POST['reconciliation_reason'])",
-        "unset($password)",
+        "unset($reauth_input)",
         "unset($reason)",
     ):
         assert required in auth
