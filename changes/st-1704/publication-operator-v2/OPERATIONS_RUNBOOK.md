@@ -2,6 +2,12 @@
 
 ## Offline build and review
 
+The current deterministic package is `raos-bounded-operator` 2.1.2. This patch
+does not change either REST schema. It requires the exact WordPress 7.1
+priority-12 `wp_check_for_changed_slugs` and `wp_check_for_changed_dates`
+registrations, and suppresses only their target-post redirect-meta operations
+during the bounded `post_updated` replay.
+
 1. Run `make -f changes/st-1704/publication-operator-v2/Makefile check`.
 2. Review the exact runtime manifest, deterministic package SHA-256, generated
    four-article binding, controller diff, and terminal local checks.
@@ -15,6 +21,48 @@ operations. Both `RAOS_OPERATOR_WRITES_ENABLED` and
 `RAOS_ST1704_PUBLICATION_WRITES_ENABLED` must be explicitly and strictly true
 for proposal creation or apply; either false/absent closes the v2 write surface.
 Keep the existing exact executor identity and Application Password confinement.
+
+## Fixed terminal redirect-metadata reconciliation
+
+This exceptional Tools workflow is not a REST recovery route and is not a
+generic post/meta editor. It is compiled for only the portable-power article at
+post 28 and the Anker comparison at post 29. Proposal identifiers are not
+compiled into or accepted as target selection: the controller requires exactly
+one canonical terminal candidate for each fixed article/post binding and treats
+the form proposal ID only as a stale-request assertion.
+
+1. Disable normal publication writes. Set the strict booleans to master `true`,
+   publication `false`, and
+   `RAOS_ST1704_PUBLICATION_RECONCILIATION_WRITES_ENABLED` `true`. Any other
+   combination closes the reconciliation action. Keep this window under 15
+   minutes and restore all write gates to false immediately afterward.
+2. A cookie-authenticated administrator with `manage_options`, `publish_posts`,
+   and `edit_post` for the fixed post opens the same Tools page. The plugin holds
+   the publication mutex and a SERIALIZABLE transaction while verifying the
+   canonical request/rollback receipt, expired approval evidence, complete
+   hash-chained audit, exact actors/timestamps, post/category/content/protected
+   fields, and every locked `meta_id`/key/value row.
+3. Review the displayed cleanup operation SHA-256. Reauthenticate with the
+   current WordPress password, supply a 10–300 character reason, and type the
+   final 12 operation-hash characters. The administrator must differ from the
+   proposal creator.
+4. The transaction refuses missing/duplicate/unrelated metadata or any
+   pre-state that WordPress core would delete. It CAS-deletes only the exact
+   extra Review `_wp_old_slug` and conditional previous `_wp_old_date`, verifies
+   the full published state, appends `REDIRECT_META_RECONCILED`, and commits.
+   The terminal proposal state/result/count are intentionally unchanged.
+5. Produce and retain the external public verification artifact in the
+   owner-private evidence store. The Tools page does not fetch or validate
+   arbitrary HTTP content. In the second form, attest the artifact's full
+   lowercase 64-hex SHA-256, reauthenticate, give a reason, and confirm the
+   final 12 cleanup-operation characters. The plugin appends exactly one
+   `RECONCILED_PUBLIC` audit event containing only the uppercase evidence hash.
+
+An identical retry after response loss is idempotent. A different evidence
+hash, multiple/conflicting audit events, a stale operation hash, a post lock,
+audit drift, or any storage difference stops the workflow. Never create a new
+proposal or post to bypass a refusal. Passwords, reasons, nonces, metadata
+values, and URLs are not written to the reconciliation audit.
 
 ## One-article flow
 

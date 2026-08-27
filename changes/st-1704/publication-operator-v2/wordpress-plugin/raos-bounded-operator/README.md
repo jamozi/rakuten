@@ -1,12 +1,24 @@
-# RAOS Bounded Operator 2.1.0
+# RAOS Bounded Operator 2.1.2
 
 This deterministic package preserves the closed ST-1506 v1 status, Yoast, and
 child-theme surfaces and adds the ST-1704 publication controller under the
 separate `raos-operator/v2` namespace. Version 2.1 adds the bounded
 `REVISE_ST1704_DRAFT` operation while preserving the 2.0 publication status and
 proposal contract.
+Patch 2.1.1 verifies the exact WordPress 7.1 priority-12 redirect callbacks and
+suppresses only their exact `_wp_old_slug` and `_wp_old_date` metadata API
+shapes while `post_updated` is replayed. Existing metadata remains immutable,
+and the private Review URL is not converted into an old-slug redirect.
 The v2 controller supports only the WordPress 7.1.x release line and remains
 unregistered on any other core version.
+
+Patch 2.1.2 adds an admin Tools-only, two-stage reconciliation for exactly the
+fixed portable-power post 28 and Anker post 29 replay incidents. With the
+dedicated reconciliation gate in its mutually exclusive mode, a different
+cookie-authenticated administrator can remove only exact unexpected core
+redirect rows by locked `meta_id` CAS and then attest one owner-private public
+verification artifact SHA-256. The proposal remains terminal, its counts do not
+change, and the REST routes and schemas are unchanged.
 
 The v2 controller can only publish one of four generated article bindings, or
 revise the exact existing Draft IDs 28, 29, 41, and 30. A revision is
@@ -15,6 +27,9 @@ dates, taxonomy, media, and non-snapshot metadata. A different wp-admin human
 must approve the exact proposal hash. Both
 `RAOS_OPERATOR_WRITES_ENABLED` and
 `RAOS_ST1704_PUBLICATION_WRITES_ENABLED` are default-off host constants. There
+is also a default-off
+`RAOS_ST1704_PUBLICATION_RECONCILIATION_WRITES_ENABLED` incident gate, which is
+valid only while the normal publication gate is strict false. There
 is no REST approval route, generic post/taxonomy surface, term creation,
 generic content/media mutation, or Codex self-approval.
 

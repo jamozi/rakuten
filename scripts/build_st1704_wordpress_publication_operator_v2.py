@@ -19,7 +19,7 @@ ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE_RELATIVE: Final = Path("changes/st-1704/publication-operator-v2")
 SLICE_ROOT: Final = ROOT / SLICE_RELATIVE
 PLUGIN_SLUG: Final = "raos-bounded-operator"
-PLUGIN_VERSION: Final = "2.1.0"
+PLUGIN_VERSION: Final = "2.1.2"
 PACKAGE_ROOT: Final = f"{PLUGIN_SLUG}/"
 MANIFEST_RELATIVE: Final = SLICE_RELATIVE / "runtime-manifest.v2.json"
 MANIFEST_PATH: Final = ROOT / MANIFEST_RELATIVE
@@ -376,7 +376,7 @@ def _transform_v1_main() -> bytes:
     header = " * Version: 1.0.0\n"
     if text.count(header) != 1:
         _fail("ST1704_PUBLICATION_OPERATOR_V2_V1_ANCHOR_DRIFT")
-    text = text.replace(header, " * Version: 2.1.0\n", 1)
+    text = text.replace(header, f" * Version: {PLUGIN_VERSION}\n", 1)
     minimum = " * Requires at least: 6.9\n"
     if text.count(minimum) != 1 or " * Tested up to:" in text:
         _fail("ST1704_PUBLICATION_OPERATOR_V2_V1_ANCHOR_DRIFT")
@@ -491,6 +491,9 @@ def build_manifest() -> bytes:
         "gates": {
             "RAOS_OPERATOR_WRITES_ENABLED": "DEFAULT_DISABLED",
             "RAOS_ST1704_PUBLICATION_WRITES_ENABLED": "DEFAULT_DISABLED",
+            "RAOS_ST1704_PUBLICATION_RECONCILIATION_WRITES_ENABLED": (
+                "DEFAULT_DISABLED_ADMIN_ONLY_INCIDENT_RECONCILIATION"
+            ),
         },
         "operator_contract_version": 2,
         "package": {
@@ -519,6 +522,18 @@ def build_manifest() -> bytes:
                 "sha256": BASE_CANONICAL_BACKLOG_SHA256,
             },
         ],
+        "incident_reconciliation": {
+            "authority": (
+                "COOKIE_SESSION_MANAGE_OPTIONS_PUBLISH_POSTS_EDIT_POST_"
+                "DISTINCT_HUMAN"
+            ),
+            "proposal_state_mutation": "NONE",
+            "rest_authority": "NONE",
+            "targets": [
+                {"article_id": article_id, "post_id": post_id}
+                for article_id, post_id in REVISION_POST_IDS[:2]
+            ],
+        },
         "semantic_inputs": semantic_inputs,
         "predecessors": {
             "st1506_wordpress_operator": {"owner_version": 1},

@@ -82,7 +82,14 @@ def test_content_media_term_creation_and_core_publish_caps_are_bounded() -> None
     ):
         assert forbidden not in source
     assert "current_user_can('edit_posts')" not in source
-    assert "current_user_can('publish_posts')" not in source
+    executor_caps = source.split(
+        "private static function exact_executor_capabilities", 1
+    )[1].split("private function operator_user_binding", 1)[0]
+    assert "publish_posts" not in executor_caps
+    reconciliation_auth = source.split(
+        "private function reconciliation_submission_authentication", 1
+    )[1].split("public function handle_reconciliation_cleanup", 1)[0]
+    assert "current_user_can('publish_posts')" in reconciliation_auth
     # These server-side fields must be read and hash-bound for preservation;
     # they are not caller inputs and may not be sent as mutation fields.
     for preserved in ("post_title", "post_content", "post_excerpt"):
@@ -159,5 +166,10 @@ def test_apply_is_one_proposal_with_cas_idempotency_audit_and_readback() -> None
     ):
         assert f"'{hook_name}'" in mutation
     assert "POST_COMMIT_HOOK_REPLAY_UNCERTAIN" in mutation
+    assert "wp_check_for_changed_slugs" in source
+    assert "wp_check_for_changed_dates" in source
+    assert "_wp_old_slug" in mutation
+    assert "_wp_old_date" in mutation
+    assert "'delete_post_metadata'" in mutation
     assert "function_exists('wp_after_insert_post')" in mutation
     assert "wp_after_insert_post(" in mutation

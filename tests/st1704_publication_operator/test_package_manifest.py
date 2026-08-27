@@ -32,6 +32,7 @@ def test_generated_binding_is_current_and_exact() -> None:
 
 
 def test_package_is_deterministic_and_injects_after_unchanged_v1_boot() -> None:
+    assert builder.PLUGIN_VERSION == "2.1.2"
     v1_before = (ROOT / builder.V1_MAIN_RELATIVE).read_bytes()
     first = builder.build_package()
     second = builder.build_package()
@@ -48,7 +49,7 @@ def test_package_is_deterministic_and_injects_after_unchanged_v1_boot() -> None:
             assert stat.S_IMODE(info.external_attr >> 16) == 0o644
         main = archive.read(builder.PACKAGE_ROOT + "raos-bounded-operator.php")
     text = main.decode("utf-8")
-    assert text.count(" * Version: 2.1.0\n") == 1
+    assert text.count(" * Version: 2.1.2\n") == 1
     assert text.count(" * Requires at least: 7.1\n") == 1
     assert text.count(" * Tested up to: 7.1\n") == 1
     assert " * Requires at least: 6.9\n" not in text
@@ -72,6 +73,21 @@ def test_runtime_manifest_matches_sources_and_package() -> None:
     assert manifest["publication_authority"] == "DISTINCT_HUMAN_APPROVAL_ONLY"
     assert manifest["codex_approval_authority"] == "NONE"
     assert manifest["writes_default"] == "DISABLED"
+    assert manifest["gates"][
+        "RAOS_ST1704_PUBLICATION_RECONCILIATION_WRITES_ENABLED"
+    ] == "DEFAULT_DISABLED_ADMIN_ONLY_INCIDENT_RECONCILIATION"
+    assert manifest["incident_reconciliation"] == {
+        "authority": (
+            "COOKIE_SESSION_MANAGE_OPTIONS_PUBLISH_POSTS_EDIT_POST_"
+            "DISTINCT_HUMAN"
+        ),
+        "proposal_state_mutation": "NONE",
+        "rest_authority": "NONE",
+        "targets": [
+            {"article_id": article_id, "post_id": post_id}
+            for article_id, post_id in builder.REVISION_POST_IDS[:2]
+        ],
+    }
     assert manifest["production_readiness"] == "NOT_READY"
     assert manifest["supported_mutations"] == [
         "PUBLISH_ST1704_ARTICLE",

@@ -26,6 +26,8 @@ final class RAOS_ST1704_Publication_Controller_V2
     const REVISION_VERIFY_RESULT_CODE = 'ST1704_DRAFT_REVISION_VERIFIED';
     const REVISION_RECOVERY_RESULT_CODE = 'ST1704_DRAFT_REVISION_STATE_OBSERVED';
     const HOOK_REPLAY_COMPLETED = 'HOOK_REPLAY_COMPLETED';
+    const REDIRECT_META_PHASE_INACTIVE = 'INACTIVE';
+    const REDIRECT_META_PHASE_POST_UPDATED = 'POST_UPDATED';
     const DEFAULT_TTL = 900;
     const ROLE = 'raos_operator_executor';
     const CAP_READ = 'raos_operator_read';
@@ -40,6 +42,14 @@ final class RAOS_ST1704_Publication_Controller_V2
     const REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
     const ADMIN_PAGE = 'raos-st1704-publication-operator-v2';
     const APPROVAL_ACTION = 'raos_st1704_publication_approve_v2';
+    const RECONCILIATION_CLEANUP_ACTION =
+        'raos_st1704_redirect_meta_reconcile_v1';
+    const RECONCILIATION_CONFIRM_ACTION =
+        'raos_st1704_reconciled_public_confirm_v1';
+    const RECONCILIATION_FAILURE_CODE =
+        'POST_COMMIT_HOOK_REPLAY_UNCERTAIN';
+    const RECONCILIATION_CLEANUP_EVENT = 'REDIRECT_META_RECONCILED';
+    const RECONCILIATION_PUBLIC_EVENT = 'RECONCILED_PUBLIC';
     const MUTEX_PURPOSE = 'PUBLICATION_V2';
     const MAX_REASON_BYTES = 1200;
     const MAX_PASSWORD_BYTES = 4096;
@@ -47,6 +57,7 @@ final class RAOS_ST1704_Publication_Controller_V2
     const MAX_META_ROWS = 2048;
     const MAX_TERM_RELATIONSHIPS = 256;
     const MAX_REPLAY_HOOK_CALLBACKS = 256;
+    const MAX_RECONCILIATION_AUDIT_ROWS = 4096;
     const WORDPRESS_CORE_RELEASE_PATTERN = '/\A7\.1(?:\.[0-9]+)*\z/';
 
     private static $instance = null;
@@ -118,6 +129,14 @@ final class RAOS_ST1704_Publication_Controller_V2
         add_action(
             'admin_post_' . self::APPROVAL_ACTION,
             array($this, 'handle_approval')
+        );
+        add_action(
+            'admin_post_' . self::RECONCILIATION_CLEANUP_ACTION,
+            array($this, 'handle_reconciliation_cleanup')
+        );
+        add_action(
+            'admin_post_' . self::RECONCILIATION_CONFIRM_ACTION,
+            array($this, 'handle_reconciliation_public_confirmation')
         );
     }
 
@@ -416,10 +435,24 @@ final class RAOS_ST1704_Publication_Controller_V2
             && RAOS_ST1704_PUBLICATION_WRITES_ENABLED === true;
     }
 
+    private static function reconciliation_gate_enabled()
+    {
+        return defined('RAOS_ST1704_PUBLICATION_RECONCILIATION_WRITES_ENABLED')
+            && RAOS_ST1704_PUBLICATION_RECONCILIATION_WRITES_ENABLED === true;
+    }
+
     private static function writes_enabled()
     {
         return self::master_writes_enabled()
-            && self::publication_writes_enabled();
+            && self::publication_writes_enabled()
+            && ! self::reconciliation_gate_enabled();
+    }
+
+    private static function reconciliation_writes_enabled()
+    {
+        return self::master_writes_enabled()
+            && ! self::publication_writes_enabled()
+            && self::reconciliation_gate_enabled();
     }
 
     private static function runtime_origin_is_exact()
@@ -1017,6 +1050,33 @@ final class RAOS_ST1704_Publication_Controller_V2
         return self::bindings_are_exact()
             ? RAOS_ST1704_Publication_Bindings_V2::revision_post_ids()
             : array();
+    }
+
+    private static function terminal_reconciliation_targets()
+    {
+        if (! self::bindings_are_exact()) {
+            return array();
+        }
+        $articles = self::fixed_articles();
+        $post_ids = self::fixed_revision_post_ids();
+        $target_ids = array(
+            'st1704-portable-power-station-guide',
+            'st1704-anker-solix-c300-c800-c1000-differences',
+        );
+        $targets = array();
+        foreach ($target_ids as $article_id) {
+            if (! isset($articles[$article_id], $post_ids[$article_id])
+                || ! is_string($articles[$article_id])
+                || ! is_int($post_ids[$article_id])) {
+                return array();
+            }
+            $targets[$article_id] = array(
+                'article_id' => $article_id,
+                'post_id' => $post_ids[$article_id],
+                'public_slug' => $articles[$article_id],
+            );
+        }
+        return $targets;
     }
 
     private static function bindings_are_exact()
@@ -2429,6 +2489,7 @@ final class RAOS_ST1704_Publication_Controller_V2
                     </form>
                 <?php endif; ?>
             <?php endif; ?>
+            <?php $this->render_terminal_reconciliation_tools(); ?>
         </div>
         <?php
     }
@@ -2631,6 +2692,1528 @@ final class RAOS_ST1704_Publication_Controller_V2
                 $row['approval_evidence_hash'],
                 hash('sha256', $material)
             );
+    }
+
+    private function render_terminal_reconciliation_tools()
+    {
+        ?>
+        <hr>
+        <h2><?php echo esc_html('Incident-bound redirect metadata reconciliation'); ?></h2>
+        <p><?php echo esc_html(
+            'This admin-only workflow is limited to the two fixed terminal publication incidents. It never changes a proposal receipt or adds a REST authority.'
+        ); ?></p>
+        <?php
+        $notice = isset($_GET['raos_st1704_reconciliation_notice'])
+            ? sanitize_key(wp_unslash($_GET['raos_st1704_reconciliation_notice']))
+            : '';
+        if (in_array($notice, array('cleanup_complete', 'public_confirmed'), true)) :
+            ?>
+            <div class="notice notice-success"><p><?php echo esc_html(
+                $notice === 'cleanup_complete'
+                    ? 'The exact redirect metadata cleanup is recorded.'
+                    : 'The owner-private public verification evidence is recorded.'
+            ); ?></p></div>
+            <?php
+        endif;
+        if (! self::reconciliation_writes_enabled()) :
+            ?>
+            <div class="notice notice-warning"><p><?php echo esc_html(
+                'Reconciliation requires the master gate strict true, the publication gate strict false, and the dedicated reconciliation gate strict true.'
+            ); ?></p></div>
+            <?php
+            return;
+        endif;
+        $targets = self::terminal_reconciliation_targets();
+        if (count($targets) !== 2) :
+            ?>
+            <p><?php echo esc_html('The fixed reconciliation allowlist is invalid.'); ?></p>
+            <?php
+            return;
+        endif;
+        foreach ($targets as $target) :
+            $plan = $this->preview_terminal_reconciliation(
+                $target['article_id']
+            );
+            ?>
+            <h3><code><?php echo esc_html($target['article_id']); ?></code></h3>
+            <?php if (is_wp_error($plan)) : ?>
+                <p><?php echo esc_html(
+                    'No single exact terminal candidate with an unambiguous locked state is available.'
+                ); ?></p>
+                <?php continue; ?>
+            <?php endif; ?>
+            <dl>
+                <dt><?php echo esc_html('Post ID'); ?></dt>
+                <dd><code><?php echo esc_html((string) $target['post_id']); ?></code></dd>
+                <dt><?php echo esc_html('Terminal proposal assertion'); ?></dt>
+                <dd><code><?php echo esc_html($plan['proposal_id']); ?></code></dd>
+                <dt><?php echo esc_html('Cleanup operation SHA-256'); ?></dt>
+                <dd><code><?php echo esc_html($plan['operation_sha256']); ?></code></dd>
+                <dt><?php echo esc_html('Reconciliation stage'); ?></dt>
+                <dd><code><?php echo esc_html($plan['stage']); ?></code></dd>
+            </dl>
+            <?php if ($plan['stage'] === 'CLEANUP_REQUIRED') : ?>
+                <p><?php echo esc_html(
+                    'The transaction will delete only the exact locked WordPress redirect metadata rows bound by this operation hash. The terminal proposal receipt remains unchanged.'
+                ); ?></p>
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                    <input type="hidden" name="action" value="<?php echo esc_attr(self::RECONCILIATION_CLEANUP_ACTION); ?>">
+                    <input type="hidden" name="proposal_id" value="<?php echo esc_attr($plan['proposal_id']); ?>">
+                    <input type="hidden" name="operation_sha256" value="<?php echo esc_attr($plan['operation_sha256']); ?>">
+                    <?php wp_nonce_field(
+                        self::RECONCILIATION_CLEANUP_ACTION . '|'
+                            . $plan['proposal_id'] . '|'
+                            . $plan['operation_sha256']
+                    ); ?>
+                    <p><label><?php echo esc_html('Reason (10–300 characters)'); ?><br>
+                        <textarea name="reconciliation_reason" rows="3" cols="72" minlength="10" maxlength="300" required></textarea>
+                    </label></p>
+                    <p><label><?php echo esc_html('Final 12 characters of cleanup operation SHA-256'); ?><br>
+                        <input name="hash_confirmation" type="text" minlength="12" maxlength="12" autocomplete="off" required>
+                    </label></p>
+                    <p><label><?php echo esc_html('Current WordPress password'); ?><br>
+                        <input name="current_password" type="password" autocomplete="current-password" required>
+                    </label></p>
+                    <?php submit_button(
+                        'Reconcile exact redirect metadata rows',
+                        'primary',
+                        'submit',
+                        false
+                    ); ?>
+                </form>
+            <?php elseif ($plan['stage'] === 'CLEANED') : ?>
+                <p><?php echo esc_html(
+                    'After producing and retaining the owner-private external verification artifact, the administrator may attest its SHA-256 here. This form does not inspect or validate arbitrary HTTP content.'
+                ); ?></p>
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                    <input type="hidden" name="action" value="<?php echo esc_attr(self::RECONCILIATION_CONFIRM_ACTION); ?>">
+                    <input type="hidden" name="proposal_id" value="<?php echo esc_attr($plan['proposal_id']); ?>">
+                    <input type="hidden" name="operation_sha256" value="<?php echo esc_attr($plan['operation_sha256']); ?>">
+                    <?php wp_nonce_field(
+                        self::RECONCILIATION_CONFIRM_ACTION . '|'
+                            . $plan['proposal_id'] . '|'
+                            . $plan['operation_sha256']
+                    ); ?>
+                    <p><label><?php echo esc_html('Owner-private verification evidence SHA-256'); ?><br>
+                        <input name="verification_evidence_sha256" type="text" minlength="64" maxlength="64" autocomplete="off" required>
+                    </label></p>
+                    <p><label><?php echo esc_html('Reason (10–300 characters)'); ?><br>
+                        <textarea name="reconciliation_reason" rows="3" cols="72" minlength="10" maxlength="300" required></textarea>
+                    </label></p>
+                    <p><label><?php echo esc_html('Final 12 characters of cleanup operation SHA-256'); ?><br>
+                        <input name="hash_confirmation" type="text" minlength="12" maxlength="12" autocomplete="off" required>
+                    </label></p>
+                    <p><label><?php echo esc_html('Current WordPress password'); ?><br>
+                        <input name="current_password" type="password" autocomplete="current-password" required>
+                    </label></p>
+                    <?php submit_button(
+                        'Record owner-private public verification evidence',
+                        'primary',
+                        'submit',
+                        false
+                    ); ?>
+                </form>
+            <?php else : ?>
+                <p><?php echo esc_html(
+                    'The redirect metadata cleanup and one owner-private verification evidence hash are already recorded.'
+                ); ?></p>
+            <?php endif; ?>
+            <?php
+        endforeach;
+    }
+
+    private function preview_terminal_reconciliation($article_id)
+    {
+        $targets = self::terminal_reconciliation_targets();
+        if (! self::reconciliation_writes_enabled()
+            || ! current_user_can('publish_posts')
+            || ! isset($targets[$article_id])
+            || ! current_user_can('edit_post', $targets[$article_id]['post_id'])) {
+            return self::error('raos_st1704_reconciliation_disabled', 503);
+        }
+        $mutex_name = $this->publication_mutex_name();
+        if (! $this->acquire_publication_mutex($mutex_name)) {
+            return self::error('raos_st1704_reconciliation_lock_unavailable', 409);
+        }
+        global $wpdb;
+        $plan = self::error('raos_st1704_reconciliation_state_invalid', 409);
+        try {
+            if ($wpdb->query(
+                'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE'
+            ) !== false
+                && $wpdb->query('START TRANSACTION') !== false
+                && $this->publication_mutex_is_owned($mutex_name)) {
+                $plan = $this->terminal_reconciliation_plan_for_target(
+                    $article_id,
+                    $mutex_name
+                );
+            }
+            $wpdb->query('ROLLBACK');
+        } catch (Throwable $exception) {
+            $wpdb->query('ROLLBACK');
+            $plan = self::error(
+                'raos_st1704_reconciliation_state_invalid',
+                409
+            );
+        }
+        if (! $this->release_publication_mutex($mutex_name)) {
+            return self::error('raos_st1704_reconciliation_lock_lost', 500);
+        }
+        if (is_wp_error($plan)) {
+            return $plan;
+        }
+        return array(
+            'operation_sha256' => $plan['operation_sha256'],
+            'proposal_id' => $plan['proposal_id'],
+            'stage' => $plan['stage'],
+        );
+    }
+
+    private function reconciliation_submission_authentication(
+        $action,
+        $proposal_id,
+        $operation_sha256
+    ) {
+        if (! isset($_SERVER['REQUEST_METHOD'])
+            || $_SERVER['REQUEST_METHOD'] !== 'POST'
+            || ! self::runtime_origin_is_exact()
+            || ! self::reconciliation_writes_enabled()) {
+            return self::error('raos_st1704_reconciliation_disabled', 503);
+        }
+        if (! is_string($action)
+            || ! in_array(
+                $action,
+                array(
+                    self::RECONCILIATION_CLEANUP_ACTION,
+                    self::RECONCILIATION_CONFIRM_ACTION,
+                ),
+                true
+            )
+            || ! is_string($proposal_id)
+            || preg_match('/\A[a-f0-9]{64}\z/', $proposal_id) !== 1
+            || ! is_string($operation_sha256)
+            || preg_match('/\A[a-f0-9]{64}\z/', $operation_sha256) !== 1
+            || ! is_user_logged_in()
+            || ! current_user_can('manage_options')
+            || ! current_user_can('publish_posts')
+            || ! function_exists('wp_get_session_token')
+            || wp_get_session_token() === '') {
+            return self::error('raos_st1704_reconciliation_auth_failed', 403);
+        }
+        check_admin_referer(
+            $action . '|' . $proposal_id . '|' . $operation_sha256
+        );
+        $reason_input = isset($_POST['reconciliation_reason'])
+            ? wp_unslash($_POST['reconciliation_reason'])
+            : '';
+        unset($_POST['reconciliation_reason']);
+        $confirmation = isset($_POST['hash_confirmation'])
+            ? sanitize_text_field(wp_unslash($_POST['hash_confirmation']))
+            : '';
+        if (! is_string($reason_input)
+            || strlen($reason_input) > self::MAX_REASON_BYTES
+            || wp_check_invalid_utf8($reason_input) !== $reason_input
+            || preg_match('//u', $reason_input) !== 1
+            || ! is_string($confirmation)
+            || ! hash_equals(substr($operation_sha256, -12), $confirmation)) {
+            return self::error('raos_st1704_reconciliation_evidence_invalid', 400);
+        }
+        $reason = sanitize_textarea_field($reason_input);
+        unset($reason_input);
+        if (wp_check_invalid_utf8($reason) !== $reason
+            || preg_match('/\A.{10,300}\z/us', $reason) !== 1) {
+            unset($reason);
+            return self::error('raos_st1704_reconciliation_evidence_invalid', 400);
+        }
+        $password = isset($_POST['current_password'])
+            ? wp_unslash($_POST['current_password'])
+            : '';
+        unset($_POST['current_password']);
+        $approver = wp_get_current_user();
+        $password_valid = is_string($password)
+            && strlen($password) <= self::MAX_PASSWORD_BYTES
+            && $approver instanceof WP_User
+            && $approver->exists()
+            && wp_check_password(
+                $password,
+                $approver->user_pass,
+                $approver->ID
+            );
+        unset($password);
+        unset($reason);
+        if (! $password_valid) {
+            return self::error('raos_st1704_reconciliation_reauth_failed', 403);
+        }
+        return $approver;
+    }
+
+    public function handle_reconciliation_cleanup()
+    {
+        $proposal_id = isset($_POST['proposal_id'])
+            ? sanitize_text_field(wp_unslash($_POST['proposal_id']))
+            : '';
+        $operation_sha256 = isset($_POST['operation_sha256'])
+            ? sanitize_text_field(wp_unslash($_POST['operation_sha256']))
+            : '';
+        $approver = $this->reconciliation_submission_authentication(
+            self::RECONCILIATION_CLEANUP_ACTION,
+            $proposal_id,
+            $operation_sha256
+        );
+        if (is_wp_error($approver)
+            || ! $this->execute_terminal_reconciliation_cleanup(
+                $proposal_id,
+                $operation_sha256,
+                $approver
+            )) {
+            wp_die(
+                esc_html('The exact redirect metadata reconciliation was refused.'),
+                '',
+                array('response' => 409)
+            );
+        }
+        wp_safe_redirect(
+            add_query_arg(
+                array(
+                    'page' => self::ADMIN_PAGE,
+                    'raos_st1704_reconciliation_notice' => 'cleanup_complete',
+                ),
+                admin_url('tools.php')
+            )
+        );
+        exit;
+    }
+
+    public function handle_reconciliation_public_confirmation()
+    {
+        $proposal_id = isset($_POST['proposal_id'])
+            ? sanitize_text_field(wp_unslash($_POST['proposal_id']))
+            : '';
+        $operation_sha256 = isset($_POST['operation_sha256'])
+            ? sanitize_text_field(wp_unslash($_POST['operation_sha256']))
+            : '';
+        $evidence_sha256 = isset($_POST['verification_evidence_sha256'])
+            ? sanitize_text_field(
+                wp_unslash($_POST['verification_evidence_sha256'])
+            )
+            : '';
+        $approver = $this->reconciliation_submission_authentication(
+            self::RECONCILIATION_CONFIRM_ACTION,
+            $proposal_id,
+            $operation_sha256
+        );
+        if (is_wp_error($approver)
+            || ! is_string($evidence_sha256)
+            || preg_match('/\A[a-f0-9]{64}\z/', $evidence_sha256) !== 1
+            || ! $this->execute_reconciled_public_confirmation(
+                $proposal_id,
+                $operation_sha256,
+                $evidence_sha256,
+                $approver
+            )) {
+            wp_die(
+                esc_html('The public verification evidence was refused.'),
+                '',
+                array('response' => 409)
+            );
+        }
+        wp_safe_redirect(
+            add_query_arg(
+                array(
+                    'page' => self::ADMIN_PAGE,
+                    'raos_st1704_reconciliation_notice' => 'public_confirmed',
+                ),
+                admin_url('tools.php')
+            )
+        );
+        exit;
+    }
+
+    private function execute_terminal_reconciliation_cleanup(
+        $proposal_id,
+        $operation_sha256,
+        WP_User $approver
+    ) {
+        $mutex_name = $this->publication_mutex_name();
+        if (! $this->acquire_publication_mutex($mutex_name)) {
+            return false;
+        }
+        global $wpdb;
+        $committed = false;
+        $post_id = 0;
+        try {
+            if ($wpdb->query(
+                'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE'
+            ) === false
+                || $wpdb->query('START TRANSACTION') === false
+                || ! $this->publication_mutex_is_owned($mutex_name)) {
+                throw new RuntimeException('reconciliation transaction unavailable');
+            }
+            $plan = $this->terminal_reconciliation_plan_for_assertion(
+                $proposal_id,
+                $mutex_name
+            );
+            if (is_wp_error($plan)
+                || ! hash_equals(
+                    $plan['operation_sha256'],
+                    $operation_sha256
+                )
+                || (int) $plan['proposer_user_id'] === (int) $approver->ID
+                || ! current_user_can('edit_post', $plan['post_id'])) {
+                throw new RuntimeException('reconciliation assertion changed');
+            }
+            $post_id = $plan['post_id'];
+            if (in_array(
+                $plan['stage'],
+                array('CLEANED', 'PUBLIC_CONFIRMED'),
+                true
+            )) {
+                $wpdb->query('ROLLBACK');
+                $committed = true;
+            } elseif ($plan['stage'] === 'CLEANUP_REQUIRED') {
+                if (! $this->delete_exact_reconciliation_meta_rows(
+                    $plan['delete_rows'],
+                    $plan['post_id']
+                )) {
+                    throw new RuntimeException('reconciliation metadata CAS failed');
+                }
+                if (! $this->published_state_matches(
+                    $plan['proposal'],
+                    $plan['before'],
+                    $plan['modified_times'],
+                    true
+                )
+                    || ! $this->publication_mutex_is_owned($mutex_name)) {
+                    throw new RuntimeException('reconciliation readback changed');
+                }
+                $audit_hash = self::append_audit(
+                    self::RECONCILIATION_CLEANUP_EVENT,
+                    $proposal_id,
+                    strtoupper($operation_sha256),
+                    $approver->ID
+                );
+                if (! is_string($audit_hash)
+                    || ! $this->publication_mutex_is_owned($mutex_name)
+                    || $wpdb->query('COMMIT') === false) {
+                    throw new RuntimeException('reconciliation receipt failed');
+                }
+                $committed = true;
+            } else {
+                throw new RuntimeException('reconciliation stage invalid');
+            }
+        } catch (Throwable $exception) {
+            if (! $committed) {
+                $wpdb->query('ROLLBACK');
+            }
+        }
+        $released = $this->release_publication_mutex($mutex_name);
+        if ($committed && $post_id > 0) {
+            clean_post_cache($post_id);
+        }
+        return $committed && $released;
+    }
+
+    private function delete_exact_reconciliation_meta_rows(
+        array $delete_rows,
+        $post_id
+    ) {
+        if (! is_int($post_id)
+            || $post_id < 1
+            || count($delete_rows) < 1
+            || count($delete_rows) > 2) {
+            return false;
+        }
+        global $wpdb;
+        foreach ($delete_rows as $meta_row) {
+            if (! is_array($meta_row)
+                || ! self::has_exact_keys(
+                    $meta_row,
+                    array('meta_id', 'meta_key', 'meta_value')
+                )
+                || ! is_int($meta_row['meta_id'])
+                || $meta_row['meta_id'] < 1
+                || ! is_string($meta_row['meta_key'])
+                || ! in_array(
+                    $meta_row['meta_key'],
+                    array('_wp_old_slug', '_wp_old_date'),
+                    true
+                )
+                || ! is_string($meta_row['meta_value'])) {
+                return false;
+            }
+            $deleted = $wpdb->query(
+                $wpdb->prepare(
+                    "DELETE FROM {$wpdb->postmeta}
+                     WHERE meta_id = %d AND post_id = %d
+                       AND BINARY meta_key = BINARY %s
+                       AND BINARY meta_value = BINARY %s",
+                    $meta_row['meta_id'],
+                    $post_id,
+                    $meta_row['meta_key'],
+                    $meta_row['meta_value']
+                )
+            );
+            if ($deleted !== 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function execute_reconciled_public_confirmation(
+        $proposal_id,
+        $operation_sha256,
+        $evidence_sha256,
+        WP_User $approver
+    ) {
+        $mutex_name = $this->publication_mutex_name();
+        if (! $this->acquire_publication_mutex($mutex_name)) {
+            return false;
+        }
+        global $wpdb;
+        $committed = false;
+        try {
+            if ($wpdb->query(
+                'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE'
+            ) === false
+                || $wpdb->query('START TRANSACTION') === false
+                || ! $this->publication_mutex_is_owned($mutex_name)) {
+                throw new RuntimeException('confirmation transaction unavailable');
+            }
+            $plan = $this->terminal_reconciliation_plan_for_assertion(
+                $proposal_id,
+                $mutex_name
+            );
+            if (is_wp_error($plan)
+                || ! hash_equals(
+                    $plan['operation_sha256'],
+                    $operation_sha256
+                )
+                || (int) $plan['proposer_user_id'] === (int) $approver->ID
+                || ! current_user_can('edit_post', $plan['post_id'])) {
+                throw new RuntimeException('confirmation assertion changed');
+            }
+            if ($plan['stage'] === 'PUBLIC_CONFIRMED') {
+                if (! hash_equals(
+                    $plan['verification_evidence_sha256'],
+                    $evidence_sha256
+                )) {
+                    throw new RuntimeException('conflicting confirmation refused');
+                }
+                $wpdb->query('ROLLBACK');
+                $committed = true;
+            } elseif ($plan['stage'] === 'CLEANED') {
+                $audit_hash = self::append_audit(
+                    self::RECONCILIATION_PUBLIC_EVENT,
+                    $proposal_id,
+                    strtoupper($evidence_sha256),
+                    $approver->ID
+                );
+                if (! is_string($audit_hash)
+                    || ! $this->publication_mutex_is_owned($mutex_name)
+                    || $wpdb->query('COMMIT') === false) {
+                    throw new RuntimeException('confirmation receipt failed');
+                }
+                $committed = true;
+            } else {
+                throw new RuntimeException('cleanup evidence missing');
+            }
+        } catch (Throwable $exception) {
+            if (! $committed) {
+                $wpdb->query('ROLLBACK');
+            }
+        }
+        $released = $this->release_publication_mutex($mutex_name);
+        return $committed && $released;
+    }
+
+    private function terminal_reconciliation_plan_for_target(
+        $article_id,
+        $mutex_name
+    ) {
+        $targets = self::terminal_reconciliation_targets();
+        if (! is_string($article_id)
+            || ! isset($targets[$article_id])
+            || ! $this->publication_mutex_is_owned($mutex_name)) {
+            return self::error('raos_st1704_reconciliation_target_invalid', 409);
+        }
+        $candidates = $this->terminal_reconciliation_candidates_for_update();
+        if (is_wp_error($candidates)
+            || ! isset($candidates[$article_id])) {
+            return self::error('raos_st1704_reconciliation_candidate_missing', 409);
+        }
+        return $this->build_terminal_reconciliation_plan(
+            $candidates[$article_id],
+            $targets[$article_id],
+            $mutex_name
+        );
+    }
+
+    private function terminal_reconciliation_plan_for_assertion(
+        $proposal_id,
+        $mutex_name
+    ) {
+        if (! is_string($proposal_id)
+            || preg_match('/\A[a-f0-9]{64}\z/', $proposal_id) !== 1
+            || ! $this->publication_mutex_is_owned($mutex_name)) {
+            return self::error('raos_st1704_reconciliation_assertion_invalid', 409);
+        }
+        $targets = self::terminal_reconciliation_targets();
+        $candidates = $this->terminal_reconciliation_candidates_for_update();
+        if (count($targets) !== 2 || is_wp_error($candidates)) {
+            return self::error('raos_st1704_reconciliation_candidate_invalid', 409);
+        }
+        $match = null;
+        $target = null;
+        foreach ($candidates as $article_id => $candidate) {
+            if (hash_equals((string) $candidate['proposal_id'], $proposal_id)) {
+                if ($match !== null || ! isset($targets[$article_id])) {
+                    return self::error(
+                        'raos_st1704_reconciliation_candidate_ambiguous',
+                        409
+                    );
+                }
+                $match = $candidate;
+                $target = $targets[$article_id];
+            }
+        }
+        if (! is_array($match) || ! is_array($target)) {
+            return self::error('raos_st1704_reconciliation_candidate_missing', 409);
+        }
+        return $this->build_terminal_reconciliation_plan(
+            $match,
+            $target,
+            $mutex_name
+        );
+    }
+
+    private function terminal_reconciliation_candidates_for_update()
+    {
+        global $wpdb;
+        $table = self::proposal_table();
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT proposal_id, operation, request_json, state, created_at,
+                        expires_at, proposer_user_id, before_state_json,
+                        before_state_hash, approved_by_user_id, approved_at,
+                        approval_expires_at, approval_reason,
+                        approval_evidence_hash, apply_started_at, completed_at,
+                        idempotency_key, result_code, rollback_json,
+                        state_version
+                 FROM {$table}
+                 WHERE BINARY operation = BINARY %s
+                   AND BINARY state = BINARY %s
+                   AND BINARY result_code = BINARY %s
+                 ORDER BY internal_id ASC
+                 LIMIT " . (self::MAX_PROPOSAL_ROWS + 1) . ' FOR UPDATE',
+                self::OPERATION,
+                'NEEDS_RECOVERY',
+                self::RECONCILIATION_FAILURE_CODE
+            ),
+            ARRAY_A
+        );
+        if ($wpdb->last_error !== ''
+            || ! is_array($rows)
+            || count($rows) > self::MAX_PROPOSAL_ROWS) {
+            return self::error('raos_st1704_reconciliation_candidate_invalid', 409);
+        }
+        $targets = self::terminal_reconciliation_targets();
+        if (count($targets) !== 2) {
+            return self::error('raos_st1704_reconciliation_allowlist_invalid', 409);
+        }
+        $result = array();
+        foreach ($rows as $row) {
+            if (! is_array($row)
+                || ! isset($row['proposal_id'])
+                || ! is_string($row['proposal_id'])
+                || preg_match('/\A[a-f0-9]{64}\z/', $row['proposal_id']) !== 1) {
+                return self::error('raos_st1704_reconciliation_candidate_invalid', 409);
+            }
+            $stored = $this->validated_stored_proposal(
+                $row,
+                $row['proposal_id']
+            );
+            if (is_wp_error($stored)) {
+                return self::error('raos_st1704_reconciliation_candidate_invalid', 409);
+            }
+            $article_id = $stored['request']['article_id'];
+            if (! isset($targets[$article_id])) {
+                continue;
+            }
+            $target = $targets[$article_id];
+            if (isset($result[$article_id])
+                || $stored['request']['operation'] !== self::OPERATION
+                || $stored['request']['draft_post_id'] !== $target['post_id']
+                || $stored['request']['public_slug'] !== $target['public_slug']) {
+                return self::error(
+                    'raos_st1704_reconciliation_candidate_ambiguous',
+                    409
+                );
+            }
+            $row['stored'] = $stored;
+            $result[$article_id] = $row;
+        }
+        return $result;
+    }
+
+    private function validate_terminal_reconciliation_receipt(
+        array $candidate,
+        array $target
+    ) {
+        if (! isset($candidate['stored'])
+            || ! is_array($candidate['stored'])
+            || ! isset(
+                $candidate['proposal_id'],
+                $candidate['operation'],
+                $candidate['state'],
+                $candidate['result_code'],
+                $candidate['idempotency_key'],
+                $candidate['rollback_json'],
+                $candidate['before_state_json'],
+                $candidate['before_state_hash'],
+                $candidate['created_at'],
+                $candidate['expires_at'],
+                $candidate['approved_at'],
+                $candidate['approval_expires_at'],
+                $candidate['apply_started_at'],
+                $candidate['completed_at'],
+                $candidate['proposer_user_id'],
+                $candidate['approved_by_user_id'],
+                $candidate['state_version']
+            )) {
+            return self::error('raos_st1704_reconciliation_receipt_invalid', 409);
+        }
+        $proposal_id = $candidate['proposal_id'];
+        $stored = $candidate['stored'];
+        $proposal = $stored['request'];
+        $before = $stored['before_state'];
+        $review_slug = 'raos-review-' . $target['public_slug'] . '-'
+            . $proposal['snapshot_payload_sha256'];
+        $created_epoch = self::strict_mysql_utc_epoch($candidate['created_at']);
+        $expires_epoch = self::strict_mysql_utc_epoch($candidate['expires_at']);
+        $approved_epoch = self::strict_mysql_utc_epoch($candidate['approved_at']);
+        $approval_expiry_epoch = self::strict_mysql_utc_epoch(
+            $candidate['approval_expires_at']
+        );
+        $apply_epoch = self::strict_mysql_utc_epoch(
+            $candidate['apply_started_at']
+        );
+        $completed_epoch = self::strict_mysql_utc_epoch(
+            $candidate['completed_at']
+        );
+        if ($candidate['operation'] !== self::OPERATION
+            || $candidate['state'] !== 'NEEDS_RECOVERY'
+            || $candidate['result_code'] !== self::RECONCILIATION_FAILURE_CODE
+            || ! is_string($candidate['idempotency_key'])
+            || ! hash_equals($proposal_id, $candidate['idempotency_key'])
+            || ! is_string($candidate['rollback_json'])
+            || ! hash_equals(
+                $candidate['before_state_json'],
+                $candidate['rollback_json']
+            )
+            || ! hash_equals(
+                $candidate['before_state_hash'],
+                hash('sha256', $candidate['rollback_json'])
+            )
+            || (int) $candidate['state_version'] !== 4
+            || ! $this->approval_evidence_is_valid(
+                $candidate,
+                $proposal_id,
+                false
+            )
+            || ! is_int($created_epoch)
+            || ! is_int($expires_epoch)
+            || ! is_int($approved_epoch)
+            || ! is_int($approval_expiry_epoch)
+            || ! is_int($apply_epoch)
+            || ! is_int($completed_epoch)
+            || $expires_epoch - $created_epoch !== self::DEFAULT_TTL
+            || $approval_expiry_epoch !== $expires_epoch
+            || $approval_expiry_epoch > time()
+            || ! ($created_epoch <= $approved_epoch
+                && $approved_epoch <= $apply_epoch
+                && $apply_epoch < $approval_expiry_epoch
+                && $apply_epoch <= $completed_epoch)
+            || (int) $candidate['proposer_user_id'] < 1
+            || (int) $candidate['approved_by_user_id'] < 1
+            || (int) $candidate['proposer_user_id']
+                === (int) $candidate['approved_by_user_id']
+            || $proposal['article_id'] !== $target['article_id']
+            || $proposal['draft_post_id'] !== $target['post_id']
+            || $proposal['public_slug'] !== $target['public_slug']
+            || ! isset(
+                $before['article_id'],
+                $before['draft_post_id'],
+                $before['public_slug'],
+                $before['review_slug'],
+                $before['request_sha256'],
+                $before['storage']['summary']['status'],
+                $before['storage']['summary']['slug']
+            )
+            || $before['article_id'] !== $target['article_id']
+            || (int) $before['draft_post_id'] !== $target['post_id']
+            || $before['public_slug'] !== $target['public_slug']
+            || $before['review_slug'] !== $review_slug
+            || $before['storage']['summary']['status'] !== 'draft'
+            || $before['storage']['summary']['slug'] !== $review_slug
+            || ! hash_equals(
+                $proposal['request_sha256'],
+                $before['request_sha256']
+            )) {
+            return self::error('raos_st1704_reconciliation_receipt_invalid', 409);
+        }
+        $modified_times = self::publication_modified_times_from_gmt(
+            $candidate['apply_started_at']
+        );
+        $publication_dates = is_array($modified_times)
+            ? self::publication_date_fields($before, $modified_times)
+            : false;
+        if (! is_array($modified_times) || ! is_array($publication_dates)) {
+            return self::error('raos_st1704_reconciliation_dates_invalid', 409);
+        }
+        $audit = $this->validate_reconciliation_audit_chain(
+            $candidate,
+            $proposal_id
+        );
+        if (is_wp_error($audit)) {
+            return $audit;
+        }
+        return array(
+            'audit' => $audit,
+            'before' => $before,
+            'modified_times' => $modified_times,
+            'proposal' => $proposal,
+            'publication_dates' => $publication_dates,
+        );
+    }
+
+    private function validate_reconciliation_audit_chain(
+        array $candidate,
+        $proposal_id
+    ) {
+        global $wpdb;
+        $table = self::audit_table();
+        $rows = $wpdb->get_results(
+            "SELECT audit_id, occurred_at, actor_user_id, event_code,
+                    proposal_id, detail_code, previous_hash, event_hash
+             FROM {$table} ORDER BY audit_id ASC FOR UPDATE",
+            ARRAY_A
+        );
+        if ($wpdb->last_error !== ''
+            || ! is_array($rows)
+            || count($rows) < 1
+            || count($rows) > self::MAX_RECONCILIATION_AUDIT_ROWS) {
+            return self::error('raos_st1704_reconciliation_audit_invalid', 409);
+        }
+        $previous = str_repeat('0', 64);
+        $previous_audit_id = 0;
+        $proposal_events = array();
+        foreach ($rows as $audit_row) {
+            $occurred_epoch = is_array($audit_row)
+                && isset($audit_row['occurred_at'])
+                ? self::strict_mysql_utc_epoch($audit_row['occurred_at'])
+                : null;
+            if (! is_array($audit_row)
+                || ! self::has_exact_keys(
+                    $audit_row,
+                    array(
+                        'actor_user_id',
+                        'audit_id',
+                        'detail_code',
+                        'event_code',
+                        'event_hash',
+                        'occurred_at',
+                        'previous_hash',
+                        'proposal_id',
+                    )
+                )
+                || ! is_string($audit_row['audit_id'])
+                || preg_match('/\A[1-9][0-9]*\z/', $audit_row['audit_id']) !== 1
+                || (int) $audit_row['audit_id'] <= $previous_audit_id
+                || ! is_string($audit_row['actor_user_id'])
+                || preg_match('/\A(?:0|[1-9][0-9]*)\z/', $audit_row['actor_user_id']) !== 1
+                || ! is_string($audit_row['occurred_at'])
+                || ! is_int($occurred_epoch)
+                || $occurred_epoch > time()
+                || ! is_string($audit_row['event_code'])
+                || preg_match('/\A[A-Z0-9_]{1,64}\z/', $audit_row['event_code']) !== 1
+                || ! is_string($audit_row['proposal_id'])
+                || preg_match('/\A[a-f0-9]{64}\z/', $audit_row['proposal_id']) !== 1
+                || ! is_string($audit_row['detail_code'])
+                || preg_match('/\A[A-Z0-9_]{1,64}\z/', $audit_row['detail_code']) !== 1
+                || ! is_string($audit_row['previous_hash'])
+                || ! hash_equals($previous, $audit_row['previous_hash'])
+                || ! is_string($audit_row['event_hash'])
+                || preg_match('/\A[a-f0-9]{64}\z/', $audit_row['event_hash']) !== 1) {
+                return self::error('raos_st1704_reconciliation_audit_invalid', 409);
+            }
+            $material = implode(
+                "\n",
+                array(
+                    $previous,
+                    $audit_row['occurred_at'],
+                    (string) (int) $audit_row['actor_user_id'],
+                    $audit_row['event_code'],
+                    $audit_row['proposal_id'],
+                    $audit_row['detail_code'],
+                )
+            );
+            if (! hash_equals(
+                $audit_row['event_hash'],
+                hash('sha256', $material)
+            )) {
+                return self::error('raos_st1704_reconciliation_audit_invalid', 409);
+            }
+            $previous = $audit_row['event_hash'];
+            $previous_audit_id = (int) $audit_row['audit_id'];
+            if (hash_equals($proposal_id, $audit_row['proposal_id'])) {
+                $proposal_events[] = $audit_row;
+            }
+        }
+        if (count($proposal_events) < 4 || count($proposal_events) > 6) {
+            return self::error('raos_st1704_reconciliation_audit_invalid', 409);
+        }
+        $expected = array(
+            array(
+                'actor' => (int) $candidate['proposer_user_id'],
+                'detail' => 'PROPOSED',
+                'event' => 'PROPOSAL_CREATED',
+                'time' => $candidate['created_at'],
+            ),
+            array(
+                'actor' => (int) $candidate['approved_by_user_id'],
+                'detail' => 'APPROVED',
+                'event' => 'HUMAN_APPROVED',
+                'time' => $candidate['approved_at'],
+            ),
+            array(
+                'actor' => (int) $candidate['proposer_user_id'],
+                'detail' => 'APPLYING',
+                'event' => 'APPLY_STARTED',
+                'time' => $candidate['apply_started_at'],
+            ),
+            array(
+                'actor' => (int) $candidate['proposer_user_id'],
+                'detail' => self::RECONCILIATION_FAILURE_CODE,
+                'event' => 'APPLY_FAILED',
+                'time' => $candidate['completed_at'],
+            ),
+        );
+        foreach ($expected as $index => $shape) {
+            $event = $proposal_events[$index];
+            $event_epoch = self::strict_mysql_utc_epoch(
+                $event['occurred_at']
+            );
+            $row_epoch = self::strict_mysql_utc_epoch($shape['time']);
+            if ($event['event_code'] !== $shape['event']
+                || $event['detail_code'] !== $shape['detail']
+                || (int) $event['actor_user_id'] !== $shape['actor']
+                || ! is_int($event_epoch)
+                || ! is_int($row_epoch)
+                || $event_epoch < $row_epoch
+                || $event_epoch - $row_epoch > 2) {
+                return self::error('raos_st1704_reconciliation_audit_invalid', 409);
+            }
+        }
+        $stage = 'CLEANUP_REQUIRED';
+        $cleanup_operation_sha256 = null;
+        $cleanup_previous_hash = null;
+        $verification_evidence_sha256 = null;
+        if (isset($proposal_events[4])) {
+            $cleanup = $proposal_events[4];
+            if ($cleanup['event_code'] !== self::RECONCILIATION_CLEANUP_EVENT
+                || preg_match('/\A[A-F0-9]{64}\z/', $cleanup['detail_code']) !== 1
+                || (int) $cleanup['actor_user_id'] < 1
+                || (int) $cleanup['actor_user_id']
+                    === (int) $candidate['proposer_user_id']
+                || self::strict_mysql_utc_epoch($cleanup['occurred_at'])
+                    < self::strict_mysql_utc_epoch($candidate['completed_at'])) {
+                return self::error('raos_st1704_reconciliation_audit_invalid', 409);
+            }
+            $stage = 'CLEANED';
+            $cleanup_operation_sha256 = strtolower($cleanup['detail_code']);
+            $cleanup_previous_hash = $cleanup['previous_hash'];
+        }
+        if (isset($proposal_events[5])) {
+            $public = $proposal_events[5];
+            if ($stage !== 'CLEANED'
+                || $public['event_code'] !== self::RECONCILIATION_PUBLIC_EVENT
+                || preg_match('/\A[A-F0-9]{64}\z/', $public['detail_code']) !== 1
+                || (int) $public['actor_user_id'] < 1
+                || (int) $public['actor_user_id']
+                    === (int) $candidate['proposer_user_id']
+                || self::strict_mysql_utc_epoch($public['occurred_at'])
+                    < self::strict_mysql_utc_epoch(
+                        $proposal_events[4]['occurred_at']
+                    )) {
+                return self::error('raos_st1704_reconciliation_audit_invalid', 409);
+            }
+            $stage = 'PUBLIC_CONFIRMED';
+            $verification_evidence_sha256 = strtolower($public['detail_code']);
+        }
+        return array(
+            'audit_head_sha256' => $previous,
+            'cleanup_operation_sha256' => $cleanup_operation_sha256,
+            'cleanup_previous_hash' => $cleanup_previous_hash,
+            'event_hashes' => array_map(
+                function ($event) {
+                    return $event['event_hash'];
+                },
+                $proposal_events
+            ),
+            'stage' => $stage,
+            'verification_evidence_sha256' => $verification_evidence_sha256,
+        );
+    }
+
+    private function build_terminal_reconciliation_plan(
+        array $candidate,
+        array $target,
+        $mutex_name
+    ) {
+        if (! self::reconciliation_writes_enabled()
+            || ! $this->publication_mutex_is_owned($mutex_name)
+            || ! self::publication_core_redirect_callbacks_are_exact()) {
+            return self::error('raos_st1704_reconciliation_runtime_invalid', 409);
+        }
+        $receipt = $this->validate_terminal_reconciliation_receipt(
+            $candidate,
+            $target
+        );
+        if (is_wp_error($receipt)) {
+            return $receipt;
+        }
+        require_once ABSPATH . 'wp-admin/includes/post.php';
+        if (! function_exists('wp_check_post_lock')
+            || wp_check_post_lock($target['post_id']) !== false) {
+            return self::error('raos_st1704_reconciliation_post_locked', 409);
+        }
+        global $wpdb;
+        $conflicts = $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT ID FROM {$wpdb->posts}
+                 WHERE ID <> %d
+                   AND (BINARY post_name = BINARY %s
+                        OR BINARY post_name = BINARY %s)
+                 ORDER BY ID ASC FOR UPDATE",
+                $target['post_id'],
+                $target['public_slug'],
+                $receipt['before']['review_slug']
+            )
+        );
+        if ($wpdb->last_error !== ''
+            || ! is_array($conflicts)
+            || $conflicts !== array()) {
+            return self::error('raos_st1704_reconciliation_slug_conflict', 409);
+        }
+        $storage = $this->capture_reconciliation_published_storage(
+            $receipt['proposal'],
+            $receipt['before'],
+            $receipt['modified_times']
+        );
+        if (! is_array($storage)) {
+            return self::error('raos_st1704_reconciliation_post_invalid', 409);
+        }
+        $meta_plan = $this->reconciliation_meta_cleanup_plan(
+            $target['post_id'],
+            $receipt['proposal'],
+            $receipt['before'],
+            $receipt['publication_dates'],
+            $storage
+        );
+        if (is_wp_error($meta_plan)) {
+            return $meta_plan;
+        }
+        $audit = $receipt['audit'];
+        if ($audit['stage'] === 'CLEANUP_REQUIRED') {
+            if ($meta_plan['state'] !== 'EXACT_REDIRECT_EXTRAS') {
+                return self::error(
+                    'raos_st1704_reconciliation_state_ambiguous',
+                    409
+                );
+            }
+            $operation_material = self::canonical_json(
+                array(
+                    'article_id' => $target['article_id'],
+                    'apply_started_at' => $candidate['apply_started_at'],
+                    'approval_evidence_sha256' =>
+                        $candidate['approval_evidence_hash'],
+                    'approved_at' => $candidate['approved_at'],
+                    'approved_by_user_id' =>
+                        (int) $candidate['approved_by_user_id'],
+                    'audit_event_hashes' => $audit['event_hashes'],
+                    'audit_head_sha256' => $audit['audit_head_sha256'],
+                    'before_meta_multiset_sha256' =>
+                        $meta_plan['before_meta_multiset_sha256'],
+                    'before_state_sha256' => $candidate['before_state_hash'],
+                    'cleanup_rows' => $meta_plan['cleanup_row_digests'],
+                    'current_meta_rows_sha256' =>
+                        $meta_plan['current_meta_rows_sha256'],
+                    'current_published_storage_sha256' =>
+                        $meta_plan['current_published_storage_sha256'],
+                    'completed_at' => $candidate['completed_at'],
+                    'created_at' => $candidate['created_at'],
+                    'expected_after_meta_rows_sha256' =>
+                        $meta_plan['expected_after_meta_rows_sha256'],
+                    'expected_after_meta_multiset_sha256' =>
+                        $meta_plan['expected_after_meta_multiset_sha256'],
+                    'expected_post_date' =>
+                        $receipt['publication_dates']['post_date'],
+                    'expected_post_date_gmt' =>
+                        $receipt['publication_dates']['post_date_gmt'],
+                    'expected_post_modified' =>
+                        $receipt['modified_times']['post_modified'],
+                    'expected_post_modified_gmt' =>
+                        $receipt['modified_times']['post_modified_gmt'],
+                    'failure_code' => self::RECONCILIATION_FAILURE_CODE,
+                    'expires_at' => $candidate['expires_at'],
+                    'idempotency_key_sha256' => hash(
+                        'sha256',
+                        $candidate['idempotency_key']
+                    ),
+                    'operation' => 'RECONCILE_INCIDENT_REDIRECT_META',
+                    'post_id' => $target['post_id'],
+                    'proposal_id' => $candidate['proposal_id'],
+                    'proposal_state_version' =>
+                        (int) $candidate['state_version'],
+                    'proposal_state' => $candidate['state'],
+                    'proposer_user_id' =>
+                        (int) $candidate['proposer_user_id'],
+                    'public_slug_sha256' => hash(
+                        'sha256',
+                        $target['public_slug']
+                    ),
+                    'request_json_sha256' => hash(
+                        'sha256',
+                        $candidate['request_json']
+                    ),
+                    'review_slug_sha256' => hash(
+                        'sha256',
+                        $receipt['before']['review_slug']
+                    ),
+                    'rollback_json_sha256' => hash(
+                        'sha256',
+                        $candidate['rollback_json']
+                    ),
+                    'schema' => 'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1',
+                    'site_origin' => self::SITE_ORIGIN,
+                    'wordpress_release_line' => '7.1.x',
+                )
+            );
+            if (! is_string($operation_material)) {
+                return self::error(
+                    'raos_st1704_reconciliation_operation_invalid',
+                    409
+                );
+            }
+            $operation_sha256 = hash('sha256', $operation_material);
+            $stage = 'CLEANUP_REQUIRED';
+            $delete_rows = $meta_plan['delete_rows'];
+        } else {
+            // The cleanup audit row's `previous_hash` is the exact global head
+            // used by the pre-cleanup operation material. Deleted meta IDs and
+            // values are intentionally not copied into audit storage, so an
+            // idempotent replay uses the chain-validated stored operation hash
+            // rather than a new hash based on a later global audit head.
+            if ($meta_plan['state'] !== 'CLEAN'
+                || ! $this->published_state_matches(
+                    $receipt['proposal'],
+                    $receipt['before'],
+                    $receipt['modified_times'],
+                    true
+                )
+                || ! is_string($audit['cleanup_operation_sha256'])
+                || preg_match(
+                    '/\A[a-f0-9]{64}\z/',
+                    $audit['cleanup_operation_sha256']
+                ) !== 1
+                || ! is_string($audit['cleanup_previous_hash'])
+                || preg_match(
+                    '/\A[a-f0-9]{64}\z/',
+                    $audit['cleanup_previous_hash']
+                ) !== 1) {
+                return self::error(
+                    'raos_st1704_reconciliation_state_ambiguous',
+                    409
+                );
+            }
+            $operation_sha256 = $audit['cleanup_operation_sha256'];
+            $stage = $audit['stage'];
+            $delete_rows = array();
+        }
+        return array(
+            'before' => $receipt['before'],
+            'delete_rows' => $delete_rows,
+            'modified_times' => $receipt['modified_times'],
+            'operation_sha256' => $operation_sha256,
+            'post_id' => $target['post_id'],
+            'proposal' => $receipt['proposal'],
+            'proposal_id' => $candidate['proposal_id'],
+            'proposer_user_id' => (int) $candidate['proposer_user_id'],
+            'stage' => $stage,
+            'verification_evidence_sha256' =>
+                $audit['verification_evidence_sha256'],
+        );
+    }
+
+    private function capture_reconciliation_published_storage(
+        array $proposal,
+        array $before,
+        array $modified_times
+    ) {
+        if (! isset(
+            $before['category_term_id'],
+            $before['category_term_taxonomy_id'],
+            $before['storage']['summary']
+        )) {
+            return false;
+        }
+        $category = $this->resolve_exact_category();
+        if (is_wp_error($category)
+            || $category['term_id'] !== (int) $before['category_term_id']
+            || $category['term_taxonomy_id']
+                !== (int) $before['category_term_taxonomy_id']) {
+            return false;
+        }
+        $current = $this->capture_post_storage(
+            $proposal['draft_post_id'],
+            $category,
+            true
+        );
+        $publication_dates = self::publication_date_fields(
+            $before,
+            $modified_times
+        );
+        if (is_wp_error($current) || ! is_array($publication_dates)) {
+            return false;
+        }
+        $fields = $current['restore']['post_fields'];
+        $expected_fields = array(
+            'post_date' => $publication_dates['post_date'],
+            'post_date_gmt' => $publication_dates['post_date_gmt'],
+            'post_modified' => $modified_times['post_modified'],
+            'post_modified_gmt' => $modified_times['post_modified_gmt'],
+        );
+        foreach ($expected_fields as $field => $expected) {
+            $actual = isset($fields[$field])
+                ? self::decode_exact_base64($fields[$field])
+                : null;
+            if (! is_string($actual) || ! hash_equals($expected, $actual)) {
+                return false;
+            }
+        }
+        $old = $before['storage']['summary'];
+        $new = $current['summary'];
+        foreach (
+            array(
+                'content_sha256',
+                'excerpt_sha256',
+                'featured_media_id',
+                'other_taxonomy_sha256',
+                'post_id',
+                'protected_post_fields_sha256',
+                'snapshot_meta_sha256',
+                'thumbnail_meta_sha256',
+                'title_sha256',
+            ) as $key
+        ) {
+            if (! array_key_exists($key, $old)
+                || ! array_key_exists($key, $new)
+                || $old[$key] !== $new[$key]) {
+                return false;
+            }
+        }
+        $category_hash = self::canonical_hash(
+            array(
+                array(
+                    'term_order' => 0,
+                    'term_taxonomy_id' =>
+                        (int) $before['category_term_taxonomy_id'],
+                ),
+            )
+        );
+        if (! is_string($category_hash)
+            || $new['status'] !== 'publish'
+            || $new['slug'] !== $proposal['public_slug']
+            || $new['category_term_taxonomy_ids']
+                !== array($category['term_taxonomy_id'])
+            || ! hash_equals(
+                $category_hash,
+                $new['category_relationship_sha256']
+            )) {
+            return false;
+        }
+        return $current;
+    }
+
+    private function reconciliation_meta_cleanup_plan(
+        $post_id,
+        array $proposal,
+        array $before,
+        array $publication_dates,
+        array $current_storage
+    ) {
+        if (! isset(
+            $before['review_slug'],
+            $before['storage']['restore']['meta_rows'],
+            $before['storage']['restore']['post_fields']['post_date']
+        )
+            || $before['review_slug'] !== 'raos-review-'
+                . $proposal['public_slug'] . '-'
+                . $proposal['snapshot_payload_sha256']) {
+            return self::error('raos_st1704_reconciliation_meta_invalid', 409);
+        }
+        global $wpdb;
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT meta_id, meta_key, meta_value
+                 FROM {$wpdb->postmeta}
+                 WHERE post_id = %d ORDER BY meta_id ASC FOR UPDATE",
+                $post_id
+            ),
+            ARRAY_A
+        );
+        if ($wpdb->last_error !== ''
+            || ! is_array($rows)
+            || count($rows) > self::MAX_META_ROWS) {
+            return self::error('raos_st1704_reconciliation_meta_invalid', 409);
+        }
+        $current_rows = array();
+        $buckets = array();
+        $last_meta_id = 0;
+        foreach ($rows as $index => $row) {
+            if (! is_array($row)
+                || ! self::has_exact_keys(
+                    $row,
+                    array('meta_id', 'meta_key', 'meta_value')
+                )
+                || ! is_string($row['meta_id'])
+                || preg_match('/\A[1-9][0-9]*\z/', $row['meta_id']) !== 1
+                || (int) $row['meta_id'] <= $last_meta_id
+                || ! is_string($row['meta_key'])
+                || ! is_string($row['meta_value'])) {
+                return self::error('raos_st1704_reconciliation_meta_invalid', 409);
+            }
+            $last_meta_id = (int) $row['meta_id'];
+            $pair = self::encoded_pair($row['meta_key'], $row['meta_value']);
+            $pair_key = self::canonical_json($pair);
+            if (! is_string($pair_key)) {
+                return self::error('raos_st1704_reconciliation_meta_invalid', 409);
+            }
+            $current_rows[$index] = array(
+                'meta_id' => (int) $row['meta_id'],
+                'meta_key' => $row['meta_key'],
+                'meta_value' => $row['meta_value'],
+                'pair' => $pair,
+            );
+            if (! isset($buckets[$pair_key])) {
+                $buckets[$pair_key] = array();
+            }
+            $buckets[$pair_key][] = $index;
+        }
+        $before_rows = $before['storage']['restore']['meta_rows'];
+        if (! is_array($before_rows) || count($before_rows) > self::MAX_META_ROWS) {
+            return self::error('raos_st1704_reconciliation_meta_invalid', 409);
+        }
+        $matched = array();
+        foreach ($before_rows as $before_row) {
+            if (! is_array($before_row)
+                || ! self::has_exact_keys(
+                    $before_row,
+                    array('key_base64', 'value_base64')
+                )) {
+                return self::error('raos_st1704_reconciliation_meta_invalid', 409);
+            }
+            $pair_key = self::canonical_json($before_row);
+            if (! is_string($pair_key)
+                || ! isset($buckets[$pair_key])
+                || $buckets[$pair_key] === array()) {
+                return self::error('raos_st1704_reconciliation_meta_missing', 409);
+            }
+            $matched[array_shift($buckets[$pair_key])] = true;
+        }
+        $extras = array();
+        foreach ($current_rows as $index => $row) {
+            if (! isset($matched[$index])) {
+                $extras[] = $row;
+            }
+        }
+        $previous_date_value = self::decode_exact_base64(
+            $before['storage']['restore']['post_fields']['post_date']
+        );
+        if (! is_string($previous_date_value)
+            || self::strict_mysql_utc_epoch($previous_date_value) === null
+            || ! isset($publication_dates['post_date'])
+            || ! is_string($publication_dates['post_date'])) {
+            return self::error('raos_st1704_reconciliation_dates_invalid', 409);
+        }
+        $previous_epoch = strtotime($previous_date_value);
+        $published_epoch = strtotime($publication_dates['post_date']);
+        if ($previous_epoch === false || $published_epoch === false) {
+            return self::error('raos_st1704_reconciliation_dates_invalid', 409);
+        }
+        $previous_date = gmdate('Y-m-d', $previous_epoch);
+        $published_date = gmdate('Y-m-d', $published_epoch);
+        $redirect_values = self::publication_redirect_metadata_values($before);
+        if (! is_array($redirect_values)
+            || in_array(
+                $proposal['public_slug'],
+                $redirect_values['_wp_old_slug'],
+                true
+            )
+            || ($previous_date !== $published_date
+                && in_array(
+                    $published_date,
+                    $redirect_values['_wp_old_date'],
+                    true
+                ))
+            || in_array(
+                $before['review_slug'],
+                $redirect_values['_wp_old_slug'],
+                true
+            )) {
+            return self::error(
+                'raos_st1704_reconciliation_core_delete_prestate',
+                409
+            );
+        }
+        $expected_extras = array(
+            array(
+                'meta_key' => '_wp_old_slug',
+                'meta_value' => $before['review_slug'],
+            ),
+        );
+        if ($previous_date !== $published_date
+            && ! in_array(
+                $previous_date,
+                $redirect_values['_wp_old_date'],
+                true
+            )) {
+            $expected_extras[] = array(
+                'meta_key' => '_wp_old_date',
+                'meta_value' => $previous_date,
+            );
+        }
+        $delete_rows = array();
+        if ($extras !== array()) {
+            if (count($extras) !== count($expected_extras)) {
+                return self::error('raos_st1704_reconciliation_meta_extra', 409);
+            }
+            foreach ($expected_extras as $expected) {
+                $match_index = null;
+                foreach ($extras as $index => $extra) {
+                    if ($extra['meta_key'] === $expected['meta_key']
+                        && hash_equals(
+                            $expected['meta_value'],
+                            $extra['meta_value']
+                        )) {
+                        if ($match_index !== null) {
+                            return self::error(
+                                'raos_st1704_reconciliation_meta_duplicate',
+                                409
+                            );
+                        }
+                        $match_index = $index;
+                    }
+                }
+                if ($match_index === null) {
+                    return self::error('raos_st1704_reconciliation_meta_extra', 409);
+                }
+                $delete_rows[] = $extras[$match_index];
+                unset($extras[$match_index]);
+            }
+            if ($extras !== array()) {
+                return self::error('raos_st1704_reconciliation_meta_extra', 409);
+            }
+        }
+        usort(
+            $delete_rows,
+            function ($left, $right) {
+                return $left['meta_id'] - $right['meta_id'];
+            }
+        );
+        $delete_ids = array();
+        $cleanup_row_digests = array();
+        foreach ($delete_rows as $row) {
+            $delete_ids[$row['meta_id']] = true;
+            $cleanup_row_digests[] = array(
+                'key_sha256' => hash('sha256', $row['meta_key']),
+                'meta_id' => $row['meta_id'],
+                'value_sha256' => hash('sha256', $row['meta_value']),
+            );
+        }
+        $current_digest_rows = array();
+        $after_digest_rows = array();
+        $after_pairs = array();
+        foreach ($current_rows as $row) {
+            $digest = array(
+                'key_sha256' => hash('sha256', $row['meta_key']),
+                'meta_id' => $row['meta_id'],
+                'value_sha256' => hash('sha256', $row['meta_value']),
+            );
+            $current_digest_rows[] = $digest;
+            if (! isset($delete_ids[$row['meta_id']])) {
+                $after_digest_rows[] = $digest;
+                $after_pairs[] = $row['pair'];
+            }
+        }
+        $sort_pairs = function ($left, $right) {
+            $key_order = strcmp($left['key_base64'], $right['key_base64']);
+            return $key_order !== 0
+                ? $key_order
+                : strcmp($left['value_base64'], $right['value_base64']);
+        };
+        usort($after_pairs, $sort_pairs);
+        $before_pairs = $before_rows;
+        usort($before_pairs, $sort_pairs);
+        if (self::canonical_json($after_pairs)
+            !== self::canonical_json($before_pairs)) {
+            return self::error('raos_st1704_reconciliation_meta_ambiguous', 409);
+        }
+        if ($delete_rows === array() && $expected_extras !== array()) {
+            $state = 'CLEAN';
+        } elseif (count($delete_rows) === count($expected_extras)) {
+            $state = 'EXACT_REDIRECT_EXTRAS';
+        } else {
+            return self::error('raos_st1704_reconciliation_meta_ambiguous', 409);
+        }
+        $hashes = array(
+            'before_meta_multiset_sha256' => self::canonical_hash($before_pairs),
+            'cleanup_row_digests' => $cleanup_row_digests,
+            'current_meta_rows_sha256' => self::canonical_hash(
+                $current_digest_rows
+            ),
+            'current_published_storage_sha256' => self::canonical_hash(
+                $current_storage
+            ),
+            'expected_after_meta_rows_sha256' => self::canonical_hash(
+                $after_digest_rows
+            ),
+            'expected_after_meta_multiset_sha256' => self::canonical_hash(
+                $after_pairs
+            ),
+        );
+        foreach ($hashes as $key => $value) {
+            if ($key !== 'cleanup_row_digests' && ! is_string($value)) {
+                return self::error('raos_st1704_reconciliation_hash_invalid', 409);
+            }
+        }
+        return array_merge(
+            $hashes,
+            array(
+                'delete_rows' => array_map(
+                    function ($row) {
+                        return array(
+                            'meta_id' => $row['meta_id'],
+                            'meta_key' => $row['meta_key'],
+                            'meta_value' => $row['meta_value'],
+                        );
+                    },
+                    $delete_rows
+                ),
+                'state' => $state,
+            )
+        );
     }
 
     public function rest_verify_revision(WP_REST_Request $request)
@@ -3701,6 +5284,168 @@ final class RAOS_ST1704_Publication_Controller_V2
         return true;
     }
 
+    private static function publication_core_redirect_callbacks_are_exact()
+    {
+        global $wp_filter;
+        if (! is_array($wp_filter)
+            || ! isset($wp_filter['post_updated'])
+            || ! $wp_filter['post_updated'] instanceof WP_Hook
+            || ! is_array($wp_filter['post_updated']->callbacks)
+            || ! isset($wp_filter['post_updated']->callbacks[12])
+            || ! is_array($wp_filter['post_updated']->callbacks[12])) {
+            return false;
+        }
+        $priority_callbacks = $wp_filter['post_updated']->callbacks[12];
+        foreach (
+            array(
+                'wp_check_for_changed_slugs',
+                'wp_check_for_changed_dates',
+            ) as $callback_name
+        ) {
+            if (! function_exists($callback_name)
+                || ! array_key_exists($callback_name, $priority_callbacks)) {
+                return false;
+            }
+            $callback = $priority_callbacks[$callback_name];
+            if (! is_array($callback)
+                || ! self::has_exact_keys(
+                    $callback,
+                    array('accepted_args', 'function')
+                )
+                || $callback['accepted_args'] !== 3
+                || $callback['function'] !== $callback_name) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static function publication_redirect_metadata_values(array $before)
+    {
+        if (! function_exists('maybe_unserialize')
+            || ! isset($before['storage']['restore']['meta_rows'])
+            || ! is_array($before['storage']['restore']['meta_rows'])
+            || count($before['storage']['restore']['meta_rows'])
+                > self::MAX_META_ROWS) {
+            return false;
+        }
+        $values = array(
+            '_wp_old_slug' => array(),
+            '_wp_old_date' => array(),
+        );
+        foreach ($before['storage']['restore']['meta_rows'] as $row) {
+            if (! is_array($row)
+                || ! self::has_exact_keys(
+                    $row,
+                    array('key_base64', 'value_base64')
+                )
+                || ! is_string($row['key_base64'])
+                || ! is_string($row['value_base64'])) {
+                return false;
+            }
+            $key = self::decode_exact_base64($row['key_base64']);
+            $value = self::decode_exact_base64($row['value_base64']);
+            if (! is_string($key) || ! is_string($value)) {
+                return false;
+            }
+            if (array_key_exists($key, $values)) {
+                $values[$key][] = maybe_unserialize($value);
+            }
+        }
+        return $values;
+    }
+
+    private static function publication_redirect_meta_plan(
+        array $before,
+        WP_Post $post_before,
+        array $publication_dates,
+        $public_slug
+    ) {
+        $values = self::publication_redirect_metadata_values($before);
+        if (! is_array($values)
+            || ! self::has_exact_keys(
+                $publication_dates,
+                array('post_date', 'post_date_gmt')
+            )
+            || ! is_string($post_before->post_name)
+            || ! is_string($post_before->post_date)
+            || ! is_string($publication_dates['post_date'])
+            || ! is_string($public_slug)
+            || $public_slug === '') {
+            return false;
+        }
+        $previous_slug = $post_before->post_name;
+        $previous_date = gmdate(
+            'Y-m-d',
+            strtotime($post_before->post_date)
+        );
+        $published_date = gmdate(
+            'Y-m-d',
+            strtotime($publication_dates['post_date'])
+        );
+        return array(
+            '_wp_old_slug' => array(
+                'add_expected' => $previous_slug !== $public_slug
+                    && ! empty($previous_slug)
+                    && ! in_array(
+                        $previous_slug,
+                        $values['_wp_old_slug'],
+                        true
+                    ),
+                'add_value' => $previous_slug,
+                'delete_expected' => $previous_slug !== $public_slug
+                    && in_array(
+                        $public_slug,
+                        $values['_wp_old_slug'],
+                        true
+                    ),
+                'delete_value' => $public_slug,
+            ),
+            '_wp_old_date' => array(
+                'add_expected' => $previous_date !== $published_date
+                    && ! empty($previous_date)
+                    && ! in_array(
+                        $previous_date,
+                        $values['_wp_old_date'],
+                        true
+                    ),
+                'add_value' => $previous_date,
+                'delete_expected' => $previous_date !== $published_date
+                    && in_array(
+                        $published_date,
+                        $values['_wp_old_date'],
+                        true
+                    ),
+                'delete_value' => $published_date,
+            ),
+        );
+    }
+
+    private static function redirect_metadata_filter_stack_is_exact(
+        $metadata_hook
+    ) {
+        global $wp_current_filter;
+        if (! is_string($metadata_hook)
+            || ! in_array(
+                $metadata_hook,
+                array('add_post_metadata', 'delete_post_metadata'),
+                true
+            )
+            || ! is_array($wp_current_filter)
+            || count($wp_current_filter) < 2) {
+            return false;
+        }
+        $active_index = count($wp_current_filter) - 1;
+        return $wp_current_filter[$active_index] === $metadata_hook
+            && $wp_current_filter[$active_index - 1] === 'post_updated'
+            && count(
+                array_keys($wp_current_filter, 'post_updated', true)
+            ) === 1
+            && count(
+                array_keys($wp_current_filter, $metadata_hook, true)
+            ) === 1;
+    }
+
     private function capture_publication_hook_snapshot()
     {
         global $wp_actions, $wp_filter;
@@ -4196,7 +5941,8 @@ final class RAOS_ST1704_Publication_Controller_V2
             }
 
             $hook_snapshot = $this->capture_publication_hook_snapshot();
-            if (! is_array($hook_snapshot)) {
+            if (! self::publication_core_redirect_callbacks_are_exact()
+                || ! is_array($hook_snapshot)) {
                 $wpdb->query('ROLLBACK');
                 return $this->mutation_failure_result(
                     $proposal,
@@ -4232,6 +5978,23 @@ final class RAOS_ST1704_Publication_Controller_V2
                     'BOUNDED_PUBLICATION_WRITE_FAILED',
                     false,
                     $mutex_name
+                );
+            }
+            $redirect_meta_plan = self::publication_redirect_meta_plan(
+                $before,
+                $mutation['post_before'],
+                $publication_dates,
+                $proposal['public_slug']
+            );
+            if (! is_array($redirect_meta_plan)) {
+                $wpdb->query('ROLLBACK');
+                return $this->mutation_failure_result(
+                    $proposal,
+                    $before,
+                    'CORE_REDIRECT_META_PLAN_INVALID',
+                    true,
+                    $mutex_name,
+                    $modified_times
                 );
             }
             if (! $this->published_state_matches(
@@ -4286,15 +6049,68 @@ final class RAOS_ST1704_Publication_Controller_V2
 
             // WordPress 7.1 core `_publish_post_hook()` passes unique=true for
             // `_pingme` and `_encloseme`; only `_trackbackme` uses the default
-            // unique=false shape. Suppress exactly those three queue writes and
-            // let unrelated metadata proceed to the immutable-state readback.
+            // unique=false shape. Its priority-12 `post_updated` callbacks also
+            // maintain redirect metadata. Suppress only their exact add/delete
+            // API shapes while that one hook is active, so the private Review
+            // URL cannot become a redirect and all stored metadata stays bound
+            // to the immutable pre-state.
+            $redirect_meta_phase = self::REDIRECT_META_PHASE_INACTIVE;
+            $redirect_meta_suppression_counts = array(
+                'add' => array(
+                    '_wp_old_slug' => 0,
+                    '_wp_old_date' => 0,
+                ),
+                'delete' => array(
+                    '_wp_old_slug' => 0,
+                    '_wp_old_date' => 0,
+                ),
+            );
             $core_queue_meta_suppressor = function (
                 $check,
                 $object_id,
                 $meta_key,
                 $meta_value,
                 $unique
-            ) use ($post_id) {
+            ) use (
+                $post_id,
+                $redirect_meta_plan,
+                &$redirect_meta_phase,
+                &$redirect_meta_suppression_counts
+            ) {
+                if (! is_string($redirect_meta_phase)
+                    || ! in_array(
+                        $redirect_meta_phase,
+                        array(
+                            self::REDIRECT_META_PHASE_INACTIVE,
+                            self::REDIRECT_META_PHASE_POST_UPDATED,
+                        ),
+                        true
+                    )) {
+                    throw new RuntimeException('redirect metadata phase invalid');
+                }
+                if ($redirect_meta_phase
+                        === self::REDIRECT_META_PHASE_POST_UPDATED
+                    && array_key_exists($meta_key, $redirect_meta_plan)) {
+                    $shape = $redirect_meta_plan[$meta_key];
+                    if ($check !== null
+                        || ! is_int($object_id)
+                        || $object_id !== $post_id
+                        || ! is_string($meta_value)
+                        || $meta_value !== $shape['add_value']
+                        || $unique !== false
+                        || $shape['add_expected'] !== true
+                        || $redirect_meta_suppression_counts['add'][$meta_key]
+                            !== 0
+                        || ! self::redirect_metadata_filter_stack_is_exact(
+                            'add_post_metadata'
+                        )) {
+                        throw new RuntimeException(
+                            'redirect metadata add shape refused'
+                        );
+                    }
+                    $redirect_meta_suppression_counts['add'][$meta_key] = 1;
+                    return false;
+                }
                 $unique_queue_marker = ($meta_key === '_encloseme'
                         || $meta_key === '_pingme')
                     && $unique === true;
@@ -4306,6 +6122,54 @@ final class RAOS_ST1704_Publication_Controller_V2
                     return false;
                 }
                 return $check;
+            };
+            $core_redirect_meta_delete_suppressor = function (
+                $check,
+                $object_id,
+                $meta_key,
+                $meta_value,
+                $delete_all
+            ) use (
+                $post_id,
+                $redirect_meta_plan,
+                &$redirect_meta_phase,
+                &$redirect_meta_suppression_counts
+            ) {
+                if (! is_string($redirect_meta_phase)
+                    || ! in_array(
+                        $redirect_meta_phase,
+                        array(
+                            self::REDIRECT_META_PHASE_INACTIVE,
+                            self::REDIRECT_META_PHASE_POST_UPDATED,
+                        ),
+                        true
+                    )) {
+                    throw new RuntimeException('redirect metadata phase invalid');
+                }
+                if ($redirect_meta_phase
+                        !== self::REDIRECT_META_PHASE_POST_UPDATED
+                    || ! array_key_exists($meta_key, $redirect_meta_plan)) {
+                    return $check;
+                }
+                $shape = $redirect_meta_plan[$meta_key];
+                if ($check !== null
+                    || ! is_int($object_id)
+                    || $object_id !== $post_id
+                    || ! is_string($meta_value)
+                    || $meta_value !== $shape['delete_value']
+                    || $delete_all !== false
+                    || $shape['delete_expected'] !== true
+                    || $redirect_meta_suppression_counts['delete'][$meta_key]
+                        !== 0
+                    || ! self::redirect_metadata_filter_stack_is_exact(
+                        'delete_post_metadata'
+                    )) {
+                    throw new RuntimeException(
+                        'redirect metadata delete shape refused'
+                    );
+                }
+                $redirect_meta_suppression_counts['delete'][$meta_key] = 1;
+                return false;
             };
             $replay_hook_names = self::publication_replay_hook_names();
             $nested_revision_increments = $zero_action_increments;
@@ -4476,6 +6340,12 @@ final class RAOS_ST1704_Publication_Controller_V2
                 PHP_INT_MAX,
                 5
             );
+            $guards_added = add_filter(
+                'delete_post_metadata',
+                $core_redirect_meta_delete_suppressor,
+                PHP_INT_MAX,
+                5
+            ) && $guards_added;
             foreach ($replay_hook_names as $hook_name) {
                 if (! add_action(
                     $hook_name,
@@ -4501,6 +6371,11 @@ final class RAOS_ST1704_Publication_Controller_V2
                     $core_queue_meta_suppressor,
                     PHP_INT_MAX
                 );
+                remove_filter(
+                    'delete_post_metadata',
+                    $core_redirect_meta_delete_suppressor,
+                    PHP_INT_MAX
+                );
                 return array(
                     'ok' => false,
                     'state' => 'NEEDS_RECOVERY',
@@ -4509,13 +6384,29 @@ final class RAOS_ST1704_Publication_Controller_V2
             }
             $assert_guards_current = function () use (
                 $core_queue_meta_suppressor,
+                $core_redirect_meta_delete_suppressor,
+                &$redirect_meta_phase,
                 $replay_hook_names,
                 $replay_hook_reentry_guard
             ) {
-                if (has_filter(
-                    'add_post_metadata',
-                    $core_queue_meta_suppressor
-                ) !== PHP_INT_MAX) {
+                if (! is_string($redirect_meta_phase)
+                    || ! in_array(
+                        $redirect_meta_phase,
+                        array(
+                            self::REDIRECT_META_PHASE_INACTIVE,
+                            self::REDIRECT_META_PHASE_POST_UPDATED,
+                        ),
+                        true
+                    )
+                    || ! self::publication_core_redirect_callbacks_are_exact()
+                    || has_filter(
+                        'add_post_metadata',
+                        $core_queue_meta_suppressor
+                    ) !== PHP_INT_MAX
+                    || has_filter(
+                        'delete_post_metadata',
+                        $core_redirect_meta_delete_suppressor
+                    ) !== PHP_INT_MAX) {
                     throw new RuntimeException('metadata guard changed');
                 }
                 foreach ($replay_hook_names as $hook_name) {
@@ -4659,13 +6550,36 @@ final class RAOS_ST1704_Publication_Controller_V2
                     throw new RuntimeException('updated post unavailable');
                 }
                 $assert_guards_current();
-                do_action(
-                    'post_updated',
-                    $post_id,
-                    $post_after,
-                    $mutation['post_before']
-                );
+                if ($redirect_meta_phase
+                    !== self::REDIRECT_META_PHASE_INACTIVE) {
+                    throw new RuntimeException(
+                        'redirect metadata phase transition refused'
+                    );
+                }
+                $redirect_meta_phase = self::REDIRECT_META_PHASE_POST_UPDATED;
+                try {
+                    do_action(
+                        'post_updated',
+                        $post_id,
+                        $post_after,
+                        $mutation['post_before']
+                    );
+                } finally {
+                    $redirect_meta_phase = self::REDIRECT_META_PHASE_INACTIVE;
+                }
                 $action_increments['post_updated'] = 1;
+                foreach ($redirect_meta_plan as $meta_key => $shape) {
+                    $expected_add_count = $shape['add_expected'] ? 1 : 0;
+                    $expected_delete_count = $shape['delete_expected'] ? 1 : 0;
+                    if ($redirect_meta_suppression_counts['add'][$meta_key]
+                            !== $expected_add_count
+                        || $redirect_meta_suppression_counts['delete'][$meta_key]
+                            !== $expected_delete_count) {
+                        throw new RuntimeException(
+                            'redirect metadata suppression incomplete'
+                        );
+                    }
+                }
                 $assert_guards_current();
                 do_action(
                     'save_post_post',
@@ -4717,6 +6631,9 @@ final class RAOS_ST1704_Publication_Controller_V2
                 }
                 $replay_completed = true;
             } finally {
+                $redirect_meta_phase_was_inactive = $redirect_meta_phase
+                    === self::REDIRECT_META_PHASE_INACTIVE;
+                $redirect_meta_phase = self::REDIRECT_META_PHASE_INACTIVE;
                 foreach ($guarded_hooks as $hook_name) {
                     $replay_guards_removed = remove_action(
                         $hook_name,
@@ -4724,11 +6641,28 @@ final class RAOS_ST1704_Publication_Controller_V2
                         PHP_INT_MIN
                     ) && $replay_guards_removed;
                 }
-                $replay_guards_removed = remove_filter(
+                $add_meta_guard_removed = remove_filter(
                     'add_post_metadata',
                     $core_queue_meta_suppressor,
                     PHP_INT_MAX
-                ) && $replay_guards_removed;
+                );
+                $delete_meta_guard_removed = remove_filter(
+                    'delete_post_metadata',
+                    $core_redirect_meta_delete_suppressor,
+                    PHP_INT_MAX
+                );
+                $replay_guards_removed = $redirect_meta_phase_was_inactive
+                    && $add_meta_guard_removed
+                    && $delete_meta_guard_removed
+                    && has_filter(
+                        'add_post_metadata',
+                        $core_queue_meta_suppressor
+                    ) === false
+                    && has_filter(
+                        'delete_post_metadata',
+                        $core_redirect_meta_delete_suppressor
+                    ) === false
+                    && $replay_guards_removed;
             }
             if (! $replay_completed
                 || ! $replay_guards_removed

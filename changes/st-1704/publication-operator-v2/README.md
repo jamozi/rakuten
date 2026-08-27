@@ -12,7 +12,25 @@ The tracked runtime manifest binds every runtime source and each packaged file.
 The generated package advertises WordPress 7.1 and the v2 controller also
 refuses to initialize outside the 7.1.x release line.
 
-Execution still requires two default-off host gates and a distinct wp-admin
+Package 2.1.2 keeps the publication and revision REST contracts unchanged. It
+fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
+exact core registration, and prevents those callbacks from creating Review URL
+redirect metadata during bounded `post_updated` replay. All other metadata,
+including any pre-existing `_wp_old_slug` or `_wp_old_date` rows, remains part
+of the exact immutable-state readback.
+
+Patch 2.1.2 also adds a wp-admin Tools-only, two-stage incident reconciliation
+for the fixed portable-power post 28 and Anker post 29 terminal receipts. It
+discovers no arbitrary target: each fixed article/post binding must have exactly
+one canonical `NEEDS_RECOVERY` receipt with the pinned replay failure, valid
+expired approval evidence, exact audit history, and exact published storage.
+The cleanup transaction can delete only the one bound Review-slug redirect row
+and, when WordPress 7.1 would have added it, the one bound previous-date row by
+exact `meta_id` CAS. A second form records only the SHA-256 of owner-private
+public verification evidence. Neither stage changes the terminal proposal or
+adds a REST route.
+
+Normal execution still requires two default-off host gates and a distinct wp-admin
 human approval of the exact proposal hash. There is no REST approval route, no
 generic post or taxonomy surface, no unbound content/media mutation, and no Codex
 self-approval. Nothing in this directory is a live publication or Production

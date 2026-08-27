@@ -6,9 +6,25 @@
   "external_action_authority": "DISTINCT_HUMAN_APPROVAL_ONLY",
   "gates": {
     "RAOS_OPERATOR_WRITES_ENABLED": "DEFAULT_DISABLED",
+    "RAOS_ST1704_PUBLICATION_RECONCILIATION_WRITES_ENABLED": "DEFAULT_DISABLED_ADMIN_ONLY_INCIDENT_RECONCILIATION",
     "RAOS_ST1704_PUBLICATION_WRITES_ENABLED": "DEFAULT_DISABLED"
   },
   "generated_by": "scripts/build_st1704_wordpress_publication_operator_v2.py",
+  "incident_reconciliation": {
+    "authority": "COOKIE_SESSION_MANAGE_OPTIONS_PUBLISH_POSTS_EDIT_POST_DISTINCT_HUMAN",
+    "proposal_state_mutation": "NONE",
+    "rest_authority": "NONE",
+    "targets": [
+      {
+        "article_id": "st1704-portable-power-station-guide",
+        "post_id": 28
+      },
+      {
+        "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+        "post_id": 29
+      }
+    ]
+  },
   "integrity_inputs": [
     {
       "path": "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
@@ -21,14 +37,14 @@
   ],
   "operator_contract_version": 2,
   "package": {
-    "bytes": 408322,
+    "bytes": 490858,
     "compression": "ZIP_STORED",
     "file_count": 4,
     "files": [
       {
-        "bytes": 1475,
+        "bytes": 2464,
         "path": "README.md",
-        "sha256": "94b62e7807e39d47727a959b479a3b5b2557bf2ed717f622dbb5e79a80c8b0e7"
+        "sha256": "03298db093e4e4619eb89bf0fb7ea24a1fc2322c3a70408bdeadb100578e71a5"
       },
       {
         "bytes": 2491,
@@ -36,19 +52,19 @@
         "sha256": "2b3d7d828941890e799b575f24cbab690b0895cea1cd64d45fd3166ab030dc8b"
       },
       {
-        "bytes": 215265,
+        "bytes": 296812,
         "path": "includes/st1704-publication-controller.v2.php",
-        "sha256": "64ee43ac400af1dfa690ca012e71f897c1a6cb16de1471004a99e66ca2cb7798"
+        "sha256": "c5ea193ad062c9fd13a5e9f1af53e7411b9aba92517106e769920439983c7b72"
       },
       {
         "bytes": 188345,
         "path": "raos-bounded-operator.php",
-        "sha256": "e635e7d796adb16d5df5d6df9c5a3dafaff141c7b464dfca04c99715d0bd31c9"
+        "sha256": "4754fe6294c7bafc91eae7e945fbe1371c0db436ad72d0711bfc2d3c220a926f"
       }
     ],
     "root": "raos-bounded-operator/",
-    "sha256": "bccd1ef3098ec543db68fd5a63e9a53ac007f584ad1076c4090acef9056769d8",
-    "version": "2.1.0"
+    "sha256": "0ea4b8214dde3a3895c8af707a6983397c325ec219455c50de4066f5cd6b8d76",
+    "version": "2.1.2"
   },
   "predecessors": {
     "st1506_wordpress_operator": {
