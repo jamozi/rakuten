@@ -159,14 +159,14 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_3_4_successor() -> None:
+def test_theme_is_an_isolated_1_3_5_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.3.4\n") == 1
+    assert stylesheet.count("\nVersion: 1.3.5\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.4"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.4'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.5"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.5'") == 1
     at003_gate = functions.split(
         "function kurashinoshirube_existing_update_context", 1
     )[1]
@@ -206,7 +206,7 @@ def test_only_bound_public_articles_disable_wordpress_wpautop() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.3.4"
+    assert manifest["theme_version"] == "1.3.5"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 3
     for record in records:
@@ -476,6 +476,14 @@ def test_homepage_cluster_contract_is_hash_bound_and_covers_all_articles() -> No
     assert config_match.group(1) == canonical
     assert json.loads(config_match.group(1)) == configuration
     assert hash_match.group(1) == homepage["config_sha256"]
+
+    renderer = source.split(
+        "function kurashinoshirube_render_published_clusters", 1
+    )[1].split("add_shortcode(", 1)[0]
+    assert "$cluster_body = $items === ''" in renderer
+    assert "このカテゴリの記事は、根拠と公開条件の確認後に掲載します。" in renderer
+    assert ". esc_html($cluster['heading']) . '</h3>' . $cluster_body" in renderer
+    assert "if ($items === '') {\n            continue;" not in renderer
 
 
 @pytest.mark.parametrize(

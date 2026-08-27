@@ -12,7 +12,7 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.3.4';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.3.5';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guide.webp';
@@ -1899,15 +1899,15 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
             $items .= '<li><a href="' . esc_url($expected_permalink) . '">'
                 . esc_html($title) . '</a></li>';
         }
-        if ($items === '') {
-            continue;
-        }
+        $cluster_body = $items === ''
+            ? '<p class="raos-empty-state">このカテゴリの記事は、根拠と公開条件の確認後に掲載します。</p>'
+            : '<ul>' . $items . '</ul>';
         $sections .= '<section id="' . esc_attr($id) . '" class="raos-cluster" '
             . 'aria-labelledby="' . esc_attr($id) . '-title">'
             . '<p class="raos-condition-label">' . esc_html($cluster['label'])
             . '</p><h3 id="' . esc_attr($id) . '-title">'
-            . esc_html($cluster['heading']) . '</h3><ul>' . $items
-            . '</ul></section>';
+            . esc_html($cluster['heading']) . '</h3>' . $cluster_body
+            . '</section>';
     }
     if ($sections === '') {
         $sections = '<p class="raos-empty-state">カテゴリ別ガイドは、'
