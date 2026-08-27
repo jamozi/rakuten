@@ -69,10 +69,9 @@ def test_candidate_discovery_is_exact_unique_and_never_generic_latest() -> None:
     )
     assert "BINARY operation = BINARY %s" in candidates
     assert "BINARY state = BINARY %s" in candidates
-    assert "BINARY result_code = BINARY %s" in candidates
+    assert "BINARY result_code = BINARY %s" not in candidates
     assert "self::OPERATION" in candidates
     assert "'NEEDS_RECOVERY'" in candidates
-    assert "self::RECONCILIATION_FAILURE_CODE" in candidates
     assert "FOR UPDATE" in candidates
     assert "validated_stored_proposal(" in candidates
     assert "isset($result[$article_id])" in candidates
@@ -86,6 +85,28 @@ def test_candidate_discovery_is_exact_unique_and_never_generic_latest() -> None:
     assert "terminal_reconciliation_candidates_for_update" in assertion
     assert "proposal_row(" not in assertion
     assert "hash_equals" in assertion
+    target = method(
+        "terminal_reconciliation_plan_for_target",
+        "terminal_reconciliation_candidate_result_error",
+    )
+    assert "return $candidates;" in target
+    assert "terminal_reconciliation_candidate_result_error" in target
+    result = method(
+        "terminal_reconciliation_candidate_result_error",
+        "terminal_reconciliation_plan_for_assertion",
+    )
+    assert "[A-Z0-9_]{1,64}" in result
+    assert "RECONCILIATION_FAILURE_CODE" in result
+    assert "RECONCILIATION_EXCEPTION_FAILURE_CODE" in result
+    assert "candidate_replay_exception" in result
+    assert "candidate_failure_code_mismatch" in result
+    assertion = method(
+        "terminal_reconciliation_plan_for_assertion",
+        "terminal_reconciliation_candidates_for_update",
+    )
+    assert "reconciliation_allowlist_invalid" in assertion
+    assert "return $candidates;" in assertion
+    assert "terminal_reconciliation_candidate_result_error" in assertion
 
 
 def test_admin_preview_exposes_only_a_bounded_error_code_for_diagnosis() -> None:

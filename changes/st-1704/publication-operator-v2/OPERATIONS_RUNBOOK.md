@@ -2,7 +2,7 @@
 
 ## Offline build and review
 
-The current deterministic package is `raos-bounded-operator` 2.1.3. This patch
+The current deterministic package is `raos-bounded-operator` 2.1.4. This patch
 does not change either REST schema. It requires the exact WordPress 7.1
 priority-12 `wp_check_for_changed_slugs` and `wp_check_for_changed_dates`
 registrations, and suppresses only their target-post redirect-meta operations
@@ -12,6 +12,12 @@ Patch 2.1.3 additionally shows only the bounded internal `WP_Error` code on the
 administrator reconciliation preview when the dedicated write gate is active.
 It never renders error messages, error data, proposal material, or metadata
 values; this is read-only operational diagnosis and adds no REST authority.
+
+Patch 2.1.4 keeps cleanup eligibility unchanged but makes candidate diagnosis
+precise: the rolled-back preview examines all publication `NEEDS_RECOVERY`
+receipts, propagates a bounded validation class, and distinguishes the known
+replay-exception result from an otherwise mismatched result code. It never
+renders the stored result value or enables either class for cleanup.
 
 1. Run `make -f changes/st-1704/publication-operator-v2/Makefile check`.
 2. Review the exact runtime manifest, deterministic package SHA-256, generated

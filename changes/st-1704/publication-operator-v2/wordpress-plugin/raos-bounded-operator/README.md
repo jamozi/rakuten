@@ -1,4 +1,4 @@
-# RAOS Bounded Operator 2.1.3
+# RAOS Bounded Operator 2.1.4
 
 This deterministic package preserves the closed ST-1506 v1 status, Yoast, and
 child-theme surfaces and adds the ST-1704 publication controller under the
@@ -23,6 +23,10 @@ change, and the REST routes and schemas are unchanged.
 Patch 2.1.3 exposes only a bounded internal error code to an administrator when
 that gated reconciliation preview is refused. It does not render error
 messages, error data, proposal material, or metadata values.
+
+Patch 2.1.4 makes that rolled-back preview classify the known replay-exception
+receipt separately from other result-code mismatches without rendering the
+stored value. Neither class is eligible for cleanup.
 
 The v2 controller can only publish one of four generated article bindings, or
 revise the exact existing Draft IDs 28, 29, 41, and 30. A revision is

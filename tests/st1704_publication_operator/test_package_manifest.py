@@ -32,7 +32,7 @@ def test_generated_binding_is_current_and_exact() -> None:
 
 
 def test_package_is_deterministic_and_injects_after_unchanged_v1_boot() -> None:
-    assert builder.PLUGIN_VERSION == "2.1.3"
+    assert builder.PLUGIN_VERSION == "2.1.4"
     v1_before = (ROOT / builder.V1_MAIN_RELATIVE).read_bytes()
     first = builder.build_package()
     second = builder.build_package()
@@ -49,7 +49,7 @@ def test_package_is_deterministic_and_injects_after_unchanged_v1_boot() -> None:
             assert stat.S_IMODE(info.external_attr >> 16) == 0o644
         main = archive.read(builder.PACKAGE_ROOT + "raos-bounded-operator.php")
     text = main.decode("utf-8")
-    assert text.count(" * Version: 2.1.3\n") == 1
+    assert text.count(" * Version: 2.1.4\n") == 1
     assert text.count(" * Requires at least: 7.1\n") == 1
     assert text.count(" * Tested up to: 7.1\n") == 1
     assert " * Requires at least: 6.9\n" not in text

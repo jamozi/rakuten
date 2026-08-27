@@ -48,6 +48,8 @@ final class RAOS_ST1704_Publication_Controller_V2
         'raos_st1704_reconciled_public_confirm_v1';
     const RECONCILIATION_FAILURE_CODE =
         'POST_COMMIT_HOOK_REPLAY_UNCERTAIN';
+    const RECONCILIATION_EXCEPTION_FAILURE_CODE =
+        'POST_COMMIT_HOOK_REPLAY_EXCEPTION';
     const RECONCILIATION_CLEANUP_EVENT = 'REDIRECT_META_RECONCILED';
     const RECONCILIATION_PUBLIC_EVENT = 'RECONCILED_PUBLIC';
     const MUTEX_PURPOSE = 'PUBLICATION_V2';
@@ -2842,8 +2844,10 @@ final class RAOS_ST1704_Publication_Controller_V2
             'raos_st1704_reconciliation_assertion_invalid',
             'raos_st1704_reconciliation_audit_invalid',
             'raos_st1704_reconciliation_candidate_ambiguous',
+            'raos_st1704_reconciliation_candidate_failure_code_mismatch',
             'raos_st1704_reconciliation_candidate_invalid',
             'raos_st1704_reconciliation_candidate_missing',
+            'raos_st1704_reconciliation_candidate_replay_exception',
             'raos_st1704_reconciliation_core_delete_prestate',
             'raos_st1704_reconciliation_dates_invalid',
             'raos_st1704_reconciliation_disabled',
@@ -3286,14 +3290,43 @@ final class RAOS_ST1704_Publication_Controller_V2
             return self::error('raos_st1704_reconciliation_target_invalid', 409);
         }
         $candidates = $this->terminal_reconciliation_candidates_for_update();
-        if (is_wp_error($candidates)
-            || ! isset($candidates[$article_id])) {
+        if (is_wp_error($candidates)) {
+            return $candidates;
+        }
+        if (! isset($candidates[$article_id])) {
             return self::error('raos_st1704_reconciliation_candidate_missing', 409);
         }
+        $candidate = $candidates[$article_id];
+        $result_error = self::terminal_reconciliation_candidate_result_error(
+            $candidate
+        );
+        if (is_wp_error($result_error)) {
+            return $result_error;
+        }
         return $this->build_terminal_reconciliation_plan(
-            $candidates[$article_id],
+            $candidate,
             $targets[$article_id],
             $mutex_name
+        );
+    }
+
+    private static function terminal_reconciliation_candidate_result_error(
+        array $candidate
+    ) {
+        if (! isset($candidate['result_code'])
+            || ! is_string($candidate['result_code'])
+            || preg_match('/\A[A-Z0-9_]{1,64}\z/', $candidate['result_code']) !== 1) {
+            return self::error('raos_st1704_reconciliation_candidate_invalid', 409);
+        }
+        if ($candidate['result_code'] === self::RECONCILIATION_FAILURE_CODE) {
+            return null;
+        }
+        return self::error(
+            $candidate['result_code']
+                === self::RECONCILIATION_EXCEPTION_FAILURE_CODE
+                ? 'raos_st1704_reconciliation_candidate_replay_exception'
+                : 'raos_st1704_reconciliation_candidate_failure_code_mismatch',
+            409
         );
     }
 
@@ -3308,8 +3341,11 @@ final class RAOS_ST1704_Publication_Controller_V2
         }
         $targets = self::terminal_reconciliation_targets();
         $candidates = $this->terminal_reconciliation_candidates_for_update();
-        if (count($targets) !== 2 || is_wp_error($candidates)) {
-            return self::error('raos_st1704_reconciliation_candidate_invalid', 409);
+        if (count($targets) !== 2) {
+            return self::error('raos_st1704_reconciliation_allowlist_invalid', 409);
+        }
+        if (is_wp_error($candidates)) {
+            return $candidates;
         }
         $match = null;
         $target = null;
@@ -3327,6 +3363,12 @@ final class RAOS_ST1704_Publication_Controller_V2
         }
         if (! is_array($match) || ! is_array($target)) {
             return self::error('raos_st1704_reconciliation_candidate_missing', 409);
+        }
+        $result_error = self::terminal_reconciliation_candidate_result_error(
+            $match
+        );
+        if (is_wp_error($result_error)) {
+            return $result_error;
         }
         return $this->build_terminal_reconciliation_plan(
             $match,
@@ -3351,12 +3393,10 @@ final class RAOS_ST1704_Publication_Controller_V2
                  FROM {$table}
                  WHERE BINARY operation = BINARY %s
                    AND BINARY state = BINARY %s
-                   AND BINARY result_code = BINARY %s
                  ORDER BY internal_id ASC
                  LIMIT " . (self::MAX_PROPOSAL_ROWS + 1) . ' FOR UPDATE',
                 self::OPERATION,
-                'NEEDS_RECOVERY',
-                self::RECONCILIATION_FAILURE_CODE
+                'NEEDS_RECOVERY'
             ),
             ARRAY_A
         );

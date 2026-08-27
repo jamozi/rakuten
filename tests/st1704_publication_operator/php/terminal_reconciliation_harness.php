@@ -16,6 +16,11 @@ final class WP_Error
         unset($message, $data);
         $this->code = (string) $code;
     }
+
+    public function get_error_code(): string
+    {
+        return $this->code;
+    }
 }
 
 final class WP_User
@@ -328,6 +333,54 @@ $audit_method = $reflection->getMethod('validate_reconciliation_audit_chain');
 $audit_method->setAccessible(true);
 $append_method = $reflection->getMethod('append_audit');
 $append_method->setAccessible(true);
+$result_error_method = $reflection->getMethod(
+    'terminal_reconciliation_candidate_result_error'
+);
+$result_error_method->setAccessible(true);
+
+expect_true(
+    $result_error_method->invoke(
+        null,
+        array('result_code' => 'POST_COMMIT_HOOK_REPLAY_UNCERTAIN')
+    ) === null,
+    'pinned uncertain result must remain eligible'
+);
+$replay_exception = $result_error_method->invoke(
+    null,
+    array('result_code' => 'POST_COMMIT_HOOK_REPLAY_EXCEPTION')
+);
+expect_true(
+    $replay_exception instanceof WP_Error
+        && $replay_exception->get_error_code()
+            === 'raos_st1704_reconciliation_candidate_replay_exception',
+    'known replay exception must be classified but remain ineligible'
+);
+$other_result = $result_error_method->invoke(
+    null,
+    array('result_code' => 'POST_WRITE_DRIFT_DETECTED')
+);
+expect_true(
+    $other_result instanceof WP_Error
+        && $other_result->get_error_code()
+            === 'raos_st1704_reconciliation_candidate_failure_code_mismatch',
+    'other bounded result must not be rendered or become eligible'
+);
+foreach (
+    array(
+        array(),
+        array('result_code' => null),
+        array('result_code' => 'lowercase'),
+        array('result_code' => str_repeat('A', 65)),
+    ) as $invalid_candidate
+) {
+    $invalid_result = $result_error_method->invoke(null, $invalid_candidate);
+    expect_true(
+        $invalid_result instanceof WP_Error
+            && $invalid_result->get_error_code()
+                === 'raos_st1704_reconciliation_candidate_invalid',
+        'invalid result shape must fail closed'
+    );
+}
 
 $snapshot_sha = str_repeat('1', 64);
 $public_slug = 'portable-power-station-guide';
