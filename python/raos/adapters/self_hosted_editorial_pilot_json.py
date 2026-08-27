@@ -2324,15 +2324,17 @@ def _decode_generation_ledger(
         draft_id = _positive_post_id(document["draft_id"])
         active_generation = document["active_generation"]
         generations_value = document["generations"]
+        if type(generations_value) is not list:
+            _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
+        generations = cast(list[object], generations_value)
         if (
             raw != canonical_json_bytes(dict(document)) + b"\n"
             or document["schema"] != _GENERATION_LEDGER_SCHEMA
             or document["article_id"] != expected_article_id
             or document["integrity_sha256"] != canonical_sha256(material)
             or type(active_generation) is not int
-            or type(generations_value) is not list
-            or not 1 <= len(generations_value) <= _MAX_REVIEW_DRAFT_GENERATIONS
-            or not 1 <= active_generation <= len(generations_value)
+            or not 1 <= len(generations) <= _MAX_REVIEW_DRAFT_GENERATIONS
+            or not 1 <= active_generation <= len(generations)
         ):
             _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)
         del draft_id
@@ -2342,7 +2344,7 @@ def _decode_generation_ledger(
         completed_outcomes = {
             disposition.value for disposition in ReviewDraftRevisionDisposition
         }
-        for expected_generation, raw_entry in enumerate(generations_value, start=1):
+        for expected_generation, raw_entry in enumerate(generations, start=1):
             entry = _mapping(raw_entry)
             _exact_keys(
                 entry,
@@ -2393,7 +2395,7 @@ def _decode_generation_ledger(
                 if outcome == "PENDING":
                     pending_entries += 1
                     if (
-                        expected_generation != len(generations_value)
+                        expected_generation != len(generations)
                         or response_sha256 is not None
                     ):
                         _fail(EditorialPilotFailureCode.JOURNAL_MISMATCH)

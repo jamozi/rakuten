@@ -22,12 +22,12 @@
         {
           "slug": "editorial-serif",
           "name": "Editorial Serif",
-          "fontFamily": "ui-serif, 'Yu Mincho', 'Hiragino Mincho ProN', serif"
+          "fontFamily": "'Hiragino Mincho ProN', 'Yu Mincho', YuMincho, 'Noto Serif CJK JP', 'Noto Serif JP', serif"
         },
         {
           "slug": "editorial-sans",
           "name": "Editorial Sans",
-          "fontFamily": "ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif"
+          "fontFamily": "-apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', YuGothic, 'Noto Sans CJK JP', 'Noto Sans JP', sans-serif"
         }
       ]
     }

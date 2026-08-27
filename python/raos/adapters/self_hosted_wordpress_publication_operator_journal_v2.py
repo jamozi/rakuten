@@ -118,9 +118,7 @@ def _proposal_identity(
 ) -> tuple[str, int]:
     if isinstance(proposal, PublicationProposal):
         return proposal.binding.article_id, proposal.binding.draft_post_id
-    if isinstance(proposal, DraftRevisionProposal):
-        return proposal.binding.successor.article_id, proposal.binding.draft_id
-    _fail()
+    return proposal.binding.successor.article_id, proposal.binding.draft_id
 
 
 @dataclass(frozen=True, slots=True, repr=False)
@@ -217,10 +215,12 @@ def _decode_intent(payload: bytes) -> PublicationProposalIntent:
     if type(value) is not dict:
         _fail()
     mapping = cast(dict[str, object], value)
+    operation = mapping.get("operation")
     if (
         frozenset(mapping) != _INTENT_KEYS
         or mapping["schema"] != PUBLICATION_INTENT_SCHEMA
-        or mapping["operation"] not in _ALLOWED_OPERATIONS
+        or type(operation) is not str
+        or operation not in _ALLOWED_OPERATIONS
     ):
         _fail()
     try:
@@ -233,7 +233,7 @@ def _decode_intent(payload: bytes) -> PublicationProposalIntent:
                 mapping["canonical_request_sha256"]
             ),
             phase=_phase(mapping["phase"]),
-            operation=mapping["operation"],
+            operation=operation,
         )
     except PublicationOperatorFailure:
         _fail()
