@@ -39,12 +39,14 @@ article_is_allowed() {
 }
 
 case "${1-}:$#" in
-  --help:1|status:1) ;;
-  propose-article-publication:3)
+  --help:1|status:1|revision-status:1) ;;
+  propose-article-publication:3|propose-review-draft-revision:3)
     [ "$2" = --article-id ] || refuse
     article_is_allowed "$3" || refuse
     ;;
-  recover-article-publication:5|apply-article-publication:5)
+  recover-article-publication:5|apply-article-publication:5|\
+  recover-review-draft-revision:5|apply-review-draft-revision:5|\
+  verify-review-draft-revision:5)
     [ "$2" = --article-id ] || refuse
     article_is_allowed "$3" || refuse
     [ "$4" = --proposal-id ] || refuse
@@ -91,6 +93,7 @@ for runtime_path in \
   python/raos/adapters/self_hosted_wordpress_publication_operator_json_v2.py \
   python/raos/domain/editorial/self_hosted_editorial_pilot.py \
   python/raos/domain/operations/self_hosted_wordpress_operator.py \
+  python/raos/domain/operations/self_hosted_wordpress_draft_revision_operator_v2.py \
   python/raos/domain/operations/self_hosted_wordpress_publication_operator_v2.py \
   python/raos/ports/__init__.py \
   python/raos/ports/self_hosted_editorial_pilot.py \
