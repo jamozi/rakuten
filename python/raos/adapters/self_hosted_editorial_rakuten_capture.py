@@ -148,7 +148,11 @@ _DISCOVERY_ACCESSORY_TOKENS: Final = (
     "拡張バッテリー",
     "防水バッグ",
     "収納用",
-    "保証",
+    "延長保証",
+    "保証サービス",
+    "保証プラン",
+    "あんしん保証",
+    "物損保証",
 )
 _REQUEST_ELEMENTS: Final = (
     "itemCode",

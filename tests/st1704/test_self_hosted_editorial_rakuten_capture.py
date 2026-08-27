@@ -39,6 +39,13 @@ ROOT = Path(__file__).resolve().parents[2]
 ARTICLE_ID = "st1703-first-suitcase-comparison"
 DISCOVERY_ARTICLE_ID = "st1704-compact-robot-vacuum-shortlist"
 DISHWASHER_ARTICLE_ID = "st1704-countertop-dishwasher-for-small-households"
+PORTABLE_POWER_ARTICLE_ID = "st1704-portable-power-station-guide"
+CURRENT_BLUETTI_AC70_TITLE = (
+    "【在庫一掃 クーポン利用で39,600円】BLUETTI ポータブル電源 AC70 "
+    "768Wh/1000W 大容量 家庭用 蓄電池 5年保証 リン酸鉄 長寿命 "
+    "バックアップ電源 (サージ2000W) 自動切替機能 アプリ遠隔操作 "
+    "発電機 アウトドア キャンプ 車中泊 お釣り 防災 停電 台風 節電対策"
+)
 
 
 def _png(
@@ -236,6 +243,7 @@ class _Factory:
         malformed_item_url: bool = False,
         malformed_provider_json: bool = False,
         mismatched_item_url_shop: bool = False,
+        item_name_overrides: dict[str, str] | None = None,
         reflected_value: str | None = None,
         truncated_image: bool = False,
     ) -> None:
@@ -275,6 +283,7 @@ class _Factory:
         self.malformed_provider_json = malformed_provider_json
         self.malformed_item_url = malformed_item_url
         self.mismatched_item_url_shop = mismatched_item_url_shop
+        self.item_name_overrides = dict(item_name_overrides or {})
         self.use_truncated_image = truncated_image
         self.requests: list[tuple[str, str]] = []
         self.credentials_used = False
@@ -294,9 +303,11 @@ class _Factory:
             return target.fixed_item_code
         return f"{target.shop_code}:{target.product_id.lower().removeprefix('prd-')}-{variant.lower().replace(' ', '-').replace('+', 'plus')}"
 
-    @staticmethod
-    def _item_name(target: ProductCaptureTarget) -> str:
-        return " ".join([*target.required_title_tokens, target.product_kind_tokens[0]])
+    def _item_name(self, target: ProductCaptureTarget) -> str:
+        return self.item_name_overrides.get(
+            target.product_id,
+            " ".join([*target.required_title_tokens, target.product_kind_tokens[0]]),
+        )
 
     def _source_and_destination(
         self, target: ProductCaptureTarget, code: str
@@ -558,6 +569,67 @@ def test_capture_plan_binds_five_articles_and_eighteen_unique_products() -> None
         "ace-store:10009372",
         "ace-store:10009099",
     ]
+
+
+def test_capture_accepts_current_ac70_title_with_product_warranty(
+    private_root_path: Path, clean_network_environment: None
+) -> None:
+    repository = _private_root(private_root_path)
+    targets = load_product_capture_plan(repository).for_article(
+        PORTABLE_POWER_ARTICLE_ID
+    )
+    results = capture_article_products(
+        repository,
+        article_id=PORTABLE_POWER_ARTICLE_ID,
+        connection_factory=cast(
+            RakutenHttpsConnectionFactory,
+            _Factory(
+                targets,
+                item_name_overrides={"PRD-BLUETTI-AC70": CURRENT_BLUETTI_AC70_TITLE},
+            ),
+        ),
+        clock=lambda: datetime(2026, 8, 27, 12, 0, tzinfo=timezone.utc),
+    )
+
+    assert {result.product_id for result in results} == {
+        target.product_id for target in targets
+    }
+    evidence = read_rakuten_product_evidence(repository, product_id="PRD-BLUETTI-AC70")
+    assert evidence.item_code == "bluettijapan:10000107"
+    assert evidence.item_name == CURRENT_BLUETTI_AC70_TITLE
+
+
+@pytest.mark.parametrize(
+    "service_label",
+    ("延長保証", "保証サービス", "保証プラン", "あんしん保証", "物損保証"),
+)
+def test_capture_rejects_warranty_service_only_listing(
+    service_label: str,
+    private_root_path: Path,
+    clean_network_environment: None,
+) -> None:
+    repository = _private_root(private_root_path)
+    targets = load_product_capture_plan(repository).for_article(
+        PORTABLE_POWER_ARTICLE_ID
+    )
+    factory = _Factory(
+        targets,
+        item_name_overrides={
+            "PRD-BLUETTI-AC70": (f"BLUETTI AC70 ポータブル電源 {service_label} 単品")
+        },
+    )
+
+    with pytest.raises(RakutenProductCaptureFailure) as captured:
+        capture_article_products(
+            repository,
+            article_id=PORTABLE_POWER_ARTICLE_ID,
+            connection_factory=cast(RakutenHttpsConnectionFactory, factory),
+        )
+
+    assert (
+        captured.value.code is RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID
+    )
+    assert captured.value.credentials_used is True
 
 
 def test_bounded_capture_writes_exact_four_artifacts_per_product(
