@@ -2,7 +2,7 @@
 
 ## Offline build and review
 
-The current deterministic package is `raos-bounded-operator` 2.1.5. This patch
+The current deterministic package is `raos-bounded-operator` 2.1.6. This patch
 does not change either REST schema. It requires the exact WordPress 7.1
 priority-12 `wp_check_for_changed_slugs` and `wp_check_for_changed_dates`
 registrations, and suppresses only their target-post redirect-meta operations
@@ -30,6 +30,14 @@ later checked public surface. It does not prove hook replay completion or undo
 emails, webhooks, remote caches, term-count work, revisions, or any other
 external effect that may have occurred before the Throwable. A recurrence on a
 later article remains a new terminal incident and must stop publication.
+
+Patch 2.1.6 keeps cleanup execution unchanged and adds only a bounded refusal
+classification for a cookie-authenticated administrator. The page may show one
+of the fixed authentication/evidence codes or the fixed execution-refused code;
+it never shows messages, data, submitted values, proposal material, metadata,
+or database errors. Close all gates before investigating any refusal, then use
+the rolled-back Tools preview to distinguish `CLEANED` from
+`CLEANUP_REQUIRED` before considering another submission.
 
 1. Run `make -f changes/st-1704/publication-operator-v2/Makefile check`.
 2. Review the exact runtime manifest, deterministic package SHA-256, generated
@@ -60,7 +68,9 @@ the form proposal ID only as a stale-request assertion.
    combination closes the reconciliation action. Keep this window under 15
    minutes and restore all write gates to false immediately afterward.
 2. A cookie-authenticated administrator with `manage_options`, `publish_posts`,
-   and `edit_post` for the fixed post opens the same Tools page. The plugin holds
+   and `edit_post` for the fixed post opens the dedicated Tools page at
+   `/wp-admin/tools.php?page=raos-st1704-publication-operator-v2` (not the
+   legacy `page=raos-bounded-operator` screen). The plugin holds
    the publication mutex and a SERIALIZABLE transaction while verifying the
    canonical request/rollback receipt, expired approval evidence, complete
    hash-chained audit, exact actors/timestamps, post/category/content/protected

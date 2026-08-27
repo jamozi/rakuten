@@ -393,6 +393,69 @@ def test_admin_auth_requires_cookie_caps_nonce_reason_hash_and_password_unset() 
         assert "(int) $plan['proposer_user_id'] === (int) $approver->ID" in execution
 
 
+def test_cleanup_refusal_diagnostic_is_fixed_cookie_and_capability_gated() -> None:
+    diagnostic = method(
+        "reconciliation_submission_diagnostic_code",
+        "reconciliation_cleanup_refusal_message",
+    )
+    for required in (
+        "is_user_logged_in()",
+        "current_user_can('manage_options')",
+        "current_user_can('publish_posts')",
+        "function_exists('wp_get_session_token')",
+        "wp_get_session_token() === ''",
+        "$failure === false",
+        "raos_st1704_reconciliation_execution_refused",
+        "raos_st1704_reconciliation_authentication_refused",
+        "raos_st1704_reconciliation_auth_failed",
+        "raos_st1704_reconciliation_disabled",
+        "raos_st1704_reconciliation_evidence_invalid",
+        "raos_st1704_reconciliation_reauth_failed",
+        "in_array($code, $allowed, true)",
+    ):
+        assert required in diagnostic
+    for forbidden in (
+        "get_error_message",
+        "get_error_data",
+        "proposal_id",
+        "operation_sha256",
+        "current_password",
+        "reconciliation_reason",
+        "$_POST",
+    ):
+        assert forbidden not in diagnostic
+
+    message = method(
+        "reconciliation_cleanup_refusal_message",
+        "handle_reconciliation_cleanup",
+    )
+    assert "The exact redirect metadata reconciliation was refused." in message
+    assert "Administrator diagnostic code:" in message
+    assert "reconciliation_submission_diagnostic_code" in message
+    assert "get_error_message" not in message
+    assert "get_error_data" not in message
+
+    handler = method(
+        "handle_reconciliation_cleanup",
+        "handle_reconciliation_public_confirmation",
+    )
+    auth_failure = handler.index("if (is_wp_error($approver))")
+    auth_diagnostic = handler.index(
+        "reconciliation_cleanup_refusal_message($approver)",
+        auth_failure,
+    )
+    execution = handler.index(
+        "if (! $this->execute_terminal_reconciliation_cleanup(",
+        auth_diagnostic,
+    )
+    execution_diagnostic = handler.index(
+        "reconciliation_cleanup_refusal_message(false)",
+        execution,
+    )
+    assert auth_failure < auth_diagnostic < execution < execution_diagnostic
+    assert handler.count("reconciliation_cleanup_refusal_message(") == 2
+
+
 def test_public_confirmation_is_single_hash_only_and_idempotent() -> None:
     handler = method(
         "handle_reconciliation_public_confirmation",

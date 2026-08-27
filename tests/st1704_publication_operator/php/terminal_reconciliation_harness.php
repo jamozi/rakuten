@@ -10,16 +10,29 @@ date_default_timezone_set('UTC');
 final class WP_Error
 {
     public string $code;
+    private string $message;
+    private $data;
 
     public function __construct($code, $message = '', $data = array())
     {
-        unset($message, $data);
         $this->code = (string) $code;
+        $this->message = (string) $message;
+        $this->data = $data;
     }
 
     public function get_error_code(): string
     {
         return $this->code;
+    }
+
+    public function get_error_message(): string
+    {
+        throw new RuntimeException('error message accessor must not be used');
+    }
+
+    public function get_error_data()
+    {
+        throw new RuntimeException('error data accessor must not be used');
     }
 }
 
@@ -74,6 +87,27 @@ final class RAOS_ST1704_Publication_Bindings_V2
 function is_wp_error($value): bool
 {
     return $value instanceof WP_Error;
+}
+
+$GLOBALS['raos_test_logged_in'] = false;
+$GLOBALS['raos_test_capabilities'] = array();
+$GLOBALS['raos_test_session_token'] = '';
+
+function is_user_logged_in(): bool
+{
+    return $GLOBALS['raos_test_logged_in'] === true;
+}
+
+function current_user_can($capability, ...$arguments): bool
+{
+    unset($arguments);
+    return isset($GLOBALS['raos_test_capabilities'][(string) $capability])
+        && $GLOBALS['raos_test_capabilities'][(string) $capability] === true;
+}
+
+function wp_get_session_token(): string
+{
+    return (string) $GLOBALS['raos_test_session_token'];
 }
 
 function wp_json_encode($value, $flags = 0)
@@ -337,6 +371,110 @@ $result_error_method = $reflection->getMethod(
     'terminal_reconciliation_candidate_result_error'
 );
 $result_error_method->setAccessible(true);
+$submission_diagnostic_method = $reflection->getMethod(
+    'reconciliation_submission_diagnostic_code'
+);
+$submission_diagnostic_method->setAccessible(true);
+$cleanup_refusal_message_method = $reflection->getMethod(
+    'reconciliation_cleanup_refusal_message'
+);
+$cleanup_refusal_message_method->setAccessible(true);
+
+$generic_refusal = 'The exact redirect metadata reconciliation was refused.';
+$sensitive_error = new WP_Error(
+    'raos_st1704_reconciliation_reauth_failed',
+    'PASSWORD_MUST_NOT_LEAK',
+    array('credential' => 'TOKEN_MUST_NOT_LEAK')
+);
+$GLOBALS['raos_test_capabilities'] = array(
+    'manage_options' => true,
+    'publish_posts' => true,
+);
+$GLOBALS['raos_test_session_token'] = 'cookie-session';
+expect_true(
+    $submission_diagnostic_method->invoke(null, $sensitive_error) === '',
+    'logged-out requests must not receive a diagnostic'
+);
+expect_true(
+    $cleanup_refusal_message_method->invoke(null, $sensitive_error)
+        === $generic_refusal,
+    'logged-out refusal must remain generic'
+);
+
+$GLOBALS['raos_test_logged_in'] = true;
+$GLOBALS['raos_test_capabilities']['manage_options'] = false;
+expect_true(
+    $cleanup_refusal_message_method->invoke(null, $sensitive_error)
+        === $generic_refusal,
+    'non-administrators must receive the generic refusal'
+);
+$GLOBALS['raos_test_capabilities']['manage_options'] = true;
+$GLOBALS['raos_test_capabilities']['publish_posts'] = false;
+expect_true(
+    $cleanup_refusal_message_method->invoke(null, $sensitive_error)
+        === $generic_refusal,
+    'users without publication capability must receive the generic refusal'
+);
+$GLOBALS['raos_test_capabilities']['publish_posts'] = true;
+$GLOBALS['raos_test_session_token'] = '';
+expect_true(
+    $cleanup_refusal_message_method->invoke(null, $sensitive_error)
+        === $generic_refusal,
+    'non-cookie authentication must receive the generic refusal'
+);
+
+$GLOBALS['raos_test_session_token'] = 'cookie-session';
+expect_true(
+    $submission_diagnostic_method->invoke(null, $sensitive_error)
+        === 'raos_st1704_reconciliation_reauth_failed',
+    'authorized administrators must receive the allowlisted auth class'
+);
+$authorized_auth_message = $cleanup_refusal_message_method->invoke(
+    null,
+    $sensitive_error
+);
+expect_true(
+    $authorized_auth_message === $generic_refusal
+        . ' Administrator diagnostic code: '
+        . 'raos_st1704_reconciliation_reauth_failed',
+    'authorized auth refusal must contain only the fixed diagnostic'
+);
+expect_true(
+    strpos($authorized_auth_message, 'PASSWORD_MUST_NOT_LEAK') === false
+        && strpos($authorized_auth_message, 'TOKEN_MUST_NOT_LEAK') === false,
+    'error message and data must not leak'
+);
+$unknown_error = new WP_Error(
+    'SECRET_DERIVED_ERROR_CODE',
+    'SECRET_ERROR_MESSAGE',
+    array('secret' => 'SECRET_ERROR_DATA')
+);
+expect_true(
+    $submission_diagnostic_method->invoke(null, $unknown_error)
+        === 'raos_st1704_reconciliation_authentication_refused',
+    'unknown errors must collapse to one fixed authentication diagnostic'
+);
+$unknown_message = $cleanup_refusal_message_method->invoke(
+    null,
+    $unknown_error
+);
+expect_true(
+    strpos($unknown_message, 'SECRET_DERIVED_ERROR_CODE') === false
+        && strpos($unknown_message, 'SECRET_ERROR_MESSAGE') === false
+        && strpos($unknown_message, 'SECRET_ERROR_DATA') === false,
+    'unknown error fields must not reach the response'
+);
+expect_true(
+    $submission_diagnostic_method->invoke(null, false)
+        === 'raos_st1704_reconciliation_execution_refused',
+    'boolean execution refusal must map to one fixed diagnostic'
+);
+expect_true(
+    $cleanup_refusal_message_method->invoke(null, false) === $generic_refusal
+        . ' Administrator diagnostic code: '
+        . 'raos_st1704_reconciliation_execution_refused',
+    'authorized execution refusal must expose only its fixed class'
+);
 
 expect_true(
     $result_error_method->invoke(

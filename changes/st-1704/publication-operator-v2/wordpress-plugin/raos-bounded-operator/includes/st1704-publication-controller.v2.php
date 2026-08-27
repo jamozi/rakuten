@@ -2998,6 +2998,45 @@ final class RAOS_ST1704_Publication_Controller_V2
         return $approver;
     }
 
+    private static function reconciliation_submission_diagnostic_code($failure)
+    {
+        if (! is_user_logged_in()
+            || ! current_user_can('manage_options')
+            || ! current_user_can('publish_posts')
+            || ! function_exists('wp_get_session_token')
+            || wp_get_session_token() === '') {
+            return '';
+        }
+        if ($failure === false) {
+            return 'raos_st1704_reconciliation_execution_refused';
+        }
+        if (! is_wp_error($failure)) {
+            return '';
+        }
+        $code = $failure->get_error_code();
+        $allowed = array(
+            'raos_st1704_reconciliation_auth_failed',
+            'raos_st1704_reconciliation_disabled',
+            'raos_st1704_reconciliation_evidence_invalid',
+            'raos_st1704_reconciliation_reauth_failed',
+        );
+        return is_string($code) && in_array($code, $allowed, true)
+            ? $code
+            : 'raos_st1704_reconciliation_authentication_refused';
+    }
+
+    private static function reconciliation_cleanup_refusal_message($failure)
+    {
+        $message = 'The exact redirect metadata reconciliation was refused.';
+        $diagnostic_code = self::reconciliation_submission_diagnostic_code(
+            $failure
+        );
+        if ($diagnostic_code !== '') {
+            $message .= ' Administrator diagnostic code: ' . $diagnostic_code;
+        }
+        return $message;
+    }
+
     public function handle_reconciliation_cleanup()
     {
         $proposal_id = isset($_POST['proposal_id'])
@@ -3011,14 +3050,24 @@ final class RAOS_ST1704_Publication_Controller_V2
             $proposal_id,
             $operation_sha256
         );
-        if (is_wp_error($approver)
-            || ! $this->execute_terminal_reconciliation_cleanup(
-                $proposal_id,
-                $operation_sha256,
-                $approver
-            )) {
+        if (is_wp_error($approver)) {
             wp_die(
-                esc_html('The exact redirect metadata reconciliation was refused.'),
+                esc_html(
+                    self::reconciliation_cleanup_refusal_message($approver)
+                ),
+                '',
+                array('response' => 409)
+            );
+        }
+        if (! $this->execute_terminal_reconciliation_cleanup(
+            $proposal_id,
+            $operation_sha256,
+            $approver
+        )) {
+            wp_die(
+                esc_html(
+                    self::reconciliation_cleanup_refusal_message(false)
+                ),
                 '',
                 array('response' => 409)
             );
