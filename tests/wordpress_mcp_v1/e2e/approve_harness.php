@@ -35,5 +35,6 @@ $_POST = array(
     'reason' => 'Disposable E2E approval after verifying the complete hashes.',
     'hash_suffix' => substr($row['after_sha256'], -8),
 );
+$_REQUEST = $_POST;
 
 RAOS_Codex_MCP_Abilities::instance()->handle_approval();

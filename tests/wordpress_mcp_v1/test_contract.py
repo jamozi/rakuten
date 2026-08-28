@@ -190,6 +190,7 @@ def test_wordpress_plugin_hard_safety_boundaries_are_present() -> None:
         "downloads.wordpress.org",
         "RAOS_CODEX_REPO_ARTIFACT_HASHES",
         "raos_codex_wordpress_org_digest_mismatch",
+        "raos_codex_plugin_activation_failed",
     )
     for marker in expected:
         assert marker in sources
@@ -250,16 +251,31 @@ def test_disposable_wordpress_71_e2e_is_pinned_and_separate_from_live() -> None:
     assert "nginx:1.29.1-alpine@sha256:" in compose
     assert "internal: true" in compose
     assert compose.count("ports:") == 1
+    assert compose.count("target: /var/www/html") == 2
+    assert compose.count("target: /var/www/raos-code") == 2
+    assert "target: /var/www/raos-codex-private" not in compose
+    assert "RAOS_CODEX_PRIVATE_DIR', '/var/www/raos-code/private'" in compose
     assert (
         "'127.0.0.1:${RAOS_WORDPRESS_E2E_PORT:?RAOS_WORDPRESS_E2E_PORT is required}:8080'"
         in compose
     )
     assert "compose up --detach database wordpress gateway" in runner
+    assert 'install -d -m 0755 "$RAOS_WORDPRESS_E2E_DATA_DIR"' in runner
+    assert "rewrite structure '/%postname%/' --hard" in runner
+    assert "config set WP_CONTENT_DIR /var/www/raos-code/wp-content" in runner
     assert '"$(wordpress_cli core version)" == 7.1' in runner
-    assert "--prompt=admin_password >/dev/null 2>&1" in runner
+    assert "RAOS_WORDPRESS_E2E_EDITOR_ROUTE_MISSING" in runner
+    assert '--prompt=admin_password >"$install_log" 2>&1' in runner
+    assert "umask 0077" in runner
+    assert "[[:alnum:]_-]{32,}" in runner
     assert runner.count("--porcelain >/dev/null 2>&1") == 2
+    assert "approve_proposal()" in runner
+    assert "RAOS_WORDPRESS_E2E_APPROVAL_FAILED" in runner
     assert "proxy_pass http://wordpress:80;" in gateway
     assert "proxy_set_header X-Forwarded-Proto https;" in gateway
+    assert "client_max_body_size 48m;" in gateway
+    assert "location ^~ /.raos-codex-private/" in gateway
+    assert "return 404;" in gateway
     assert "RAOS_CODEX_THEME_APPLY_ENABLED', true" in compose
     assert "RAOS_CODEX_PLUGIN_APPLY_ENABLED', true" in compose
     assert "RAOS_CODEX_REPO_ARTIFACT_HASHES" in compose
@@ -274,6 +290,7 @@ def test_disposable_wordpress_71_e2e_is_pinned_and_separate_from_live() -> None:
     assert "THEME_RELEASE_APPLIED" in client
     assert "raos_codex_code_readback_failed" in client
     assert "handle_approval()" in approval
+    assert "$_REQUEST = $_POST;" in approval
     assert "RAOS_Codex_MCP_Store::approve" not in approval
 
 

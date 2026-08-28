@@ -2,6 +2,7 @@
 
 # Disposable WordPress 7.1 MCP integration test. It never contacts the live site.
 set -euo pipefail
+umask 0077
 
 readonly repository_root=/home/minami/rakuten
 readonly e2e_directory="$repository_root/tests/wordpress_mcp_v1/e2e"
@@ -33,9 +34,13 @@ readonly state_path="$e2e_temporary_directory/state.json"
 readonly code_artifact_directory="$e2e_temporary_directory/code-artifacts"
 RAOS_WORDPRESS_E2E_DATA_DIR="$e2e_temporary_directory/data"
 readonly RAOS_WORDPRESS_E2E_DATA_DIR
+install -d -m 0755 "$RAOS_WORDPRESS_E2E_DATA_DIR"
 install -d -m 0755 "$RAOS_WORDPRESS_E2E_DATA_DIR/html"
-install -d -m 0700 "$RAOS_WORDPRESS_E2E_DATA_DIR/private"
-install -d -m 0700 "$RAOS_WORDPRESS_E2E_DATA_DIR/staging"
+install -d -m 0755 "$RAOS_WORDPRESS_E2E_DATA_DIR/raos-code"
+install -d -m 0755 "$RAOS_WORDPRESS_E2E_DATA_DIR/raos-code/wp-content"
+install -d -m 0700 "$RAOS_WORDPRESS_E2E_DATA_DIR/raos-code/private"
+install -d -m 0700 "$RAOS_WORDPRESS_E2E_DATA_DIR/raos-code/staging"
+readonly install_log="$e2e_temporary_directory/install.log"
 export RAOS_WORDPRESS_E2E_DATA_DIR
 
 mapfile -t generated_passwords < <(
@@ -86,12 +91,17 @@ wordpress_cli() {
     cli "$@"
 }
 
+approve_proposal() {
+  wordpress_cli eval-file \
+    /var/www/raos-code/staging/approve_harness.php "$1" >/dev/null 2>&1 \
+    || fail RAOS_WORDPRESS_E2E_APPROVAL_FAILED
+}
+
 cleanup() {
   compose exec -T --user root wordpress chown -R \
     "$(id -u):$(id -g)" \
     /var/www/html \
-    /var/www/raos-codex-private \
-    /var/www/raos-e2e-staging >/dev/null 2>&1 || true
+    /var/www/raos-code >/dev/null 2>&1 || true
   compose down --volumes --remove-orphans >/dev/null 2>&1 || true
   if [[ "$e2e_temporary_directory" == /tmp/raos-wordpress-e2e.* ]]; then
     rm -rf -- "$e2e_temporary_directory"
@@ -166,13 +176,13 @@ done
 [[ "$wordpress_ready" == true ]] || fail RAOS_WORDPRESS_E2E_BOOT_TIMEOUT
 
 compose exec -T --user root wordpress sh -eu -c \
-  'chown www-data:www-data /var/www/raos-codex-private /var/www/raos-e2e-staging; chmod 0700 /var/www/raos-codex-private /var/www/raos-e2e-staging'
-compose cp "$adapter_zip" wordpress:/var/www/raos-e2e-staging/mcp-adapter.zip
-compose cp "$raos_plugin_zip" wordpress:/var/www/raos-e2e-staging/raos-codex-mcp-abilities.zip
-compose cp "$e2e_directory/approve_harness.php" wordpress:/var/www/raos-e2e-staging/approve_harness.php
-compose cp "$e2e_directory/mutate_harness.php" wordpress:/var/www/raos-e2e-staging/mutate_harness.php
-compose cp "$code_artifact_directory/kurashinoshirube-child-baseline.zip" wordpress:/var/www/raos-e2e-staging/kurashinoshirube-child-baseline.zip
-compose exec -T --user root wordpress chown -R www-data:www-data /var/www/raos-e2e-staging
+  'cp -a /usr/src/wordpress/wp-content/. /var/www/raos-code/wp-content/; chown -R www-data:www-data /var/www/raos-code; chmod 0700 /var/www/raos-code/private /var/www/raos-code/staging'
+compose cp "$adapter_zip" wordpress:/var/www/raos-code/staging/mcp-adapter.zip
+compose cp "$raos_plugin_zip" wordpress:/var/www/raos-code/staging/raos-codex-mcp-abilities.zip
+compose cp "$e2e_directory/approve_harness.php" wordpress:/var/www/raos-code/staging/approve_harness.php
+compose cp "$e2e_directory/mutate_harness.php" wordpress:/var/www/raos-code/staging/mutate_harness.php
+compose cp "$code_artifact_directory/kurashinoshirube-child-baseline.zip" wordpress:/var/www/raos-code/staging/kurashinoshirube-child-baseline.zip
+compose exec -T --user root wordpress chown -R www-data:www-data /var/www/raos-code/staging
 
 if ! printf '%s\n' "$RAOS_WORDPRESS_E2E_ADMIN_PASSWORD" | wordpress_cli core install \
   --url=https://kurashinoshirube.com \
@@ -180,20 +190,39 @@ if ! printf '%s\n' "$RAOS_WORDPRESS_E2E_ADMIN_PASSWORD" | wordpress_cli core ins
   --admin_user=raos-e2e-approver \
   --admin_email=approver@example.invalid \
   --skip-email \
-  --prompt=admin_password >/dev/null 2>&1; then
+  --prompt=admin_password >"$install_log" 2>&1; then
+  sed -E 's/[[:alnum:]_-]{32,}/[REDACTED]/g' "$install_log" | tail -n 8 >&2
   fail RAOS_WORDPRESS_E2E_INSTALL_FAILED
 fi
 
-wordpress_cli plugin install /var/www/raos-e2e-staging/mcp-adapter.zip --activate
-wordpress_cli plugin install /var/www/raos-e2e-staging/raos-codex-mcp-abilities.zip --activate
+wordpress_cli config set WP_CONTENT_DIR /var/www/raos-code/wp-content \
+  --type=constant >/dev/null
+wordpress_cli config set WP_CONTENT_URL https://kurashinoshirube.com/wp-content \
+  --type=constant >/dev/null
+
+wordpress_cli plugin install /var/www/raos-code/staging/mcp-adapter.zip --activate
+wordpress_cli plugin install /var/www/raos-code/staging/raos-codex-mcp-abilities.zip --activate
+wordpress_cli rewrite structure '/%postname%/' --hard >/dev/null 2>&1 \
+  || fail RAOS_WORDPRESS_E2E_REWRITE_FAILED
 wordpress_cli theme is-installed twentytwentyfive \
   || fail RAOS_WORDPRESS_E2E_PARENT_THEME_MISSING
 wordpress_cli theme install \
-  /var/www/raos-e2e-staging/kurashinoshirube-child-baseline.zip --activate
+  /var/www/raos-code/staging/kurashinoshirube-child-baseline.zip --activate
 [[ "$(wordpress_cli core version)" == 7.1 ]] \
   || fail RAOS_WORDPRESS_E2E_WORDPRESS_VERSION_INVALID
 [[ "$(wordpress_cli eval 'echo WP_MCP_VERSION;')" == 0.6.1 ]] \
   || fail RAOS_WORDPRESS_E2E_ADAPTER_VERSION_INVALID
+actual_plugin_directory="$(wordpress_cli eval 'echo WP_PLUGIN_DIR;')"
+if [[ "$actual_plugin_directory" != /var/www/raos-code/wp-content/plugins ]]; then
+  printf 'RAOS_WORDPRESS_E2E_PLUGIN_DIRECTORY=%s\n' "$actual_plugin_directory" >&2
+  fail RAOS_WORDPRESS_E2E_PLUGIN_DIRECTORY_INVALID
+fi
+wordpress_cli plugin is-active mcp-adapter \
+  || fail RAOS_WORDPRESS_E2E_ADAPTER_INACTIVE
+wordpress_cli plugin is-active raos-codex-mcp-abilities \
+  || fail RAOS_WORDPRESS_E2E_PLUGIN_INACTIVE
+[[ "$(wordpress_cli eval 'rest_get_server(); echo isset(rest_get_server()->get_routes()["/raos-codex-mcp/v1/editor"]) ? "yes" : "no";')" == yes ]] \
+  || fail RAOS_WORDPRESS_E2E_EDITOR_ROUTE_MISSING
 
 if ! printf '%s\n' "$editor_login_password" | wordpress_cli user create \
   "$editor_user" editor@example.invalid \
@@ -247,15 +276,15 @@ mapfile -t code_proposals < <(
 
 for proposal_id in "${release_proposals[@]}"; do
   [[ "$proposal_id" =~ ^[0-9a-f]{64}$ ]] || fail RAOS_WORDPRESS_E2E_PROPOSAL_INVALID
-  wordpress_cli eval-file /var/www/raos-e2e-staging/approve_harness.php "$proposal_id" >/dev/null
+  approve_proposal "$proposal_id"
 done
 [[ "$drift_proposal" =~ ^[0-9a-f]{64}$ && "$drift_post_id" =~ ^[0-9]+$ ]] \
   || fail RAOS_WORDPRESS_E2E_DRIFT_TARGET_INVALID
-wordpress_cli eval-file /var/www/raos-e2e-staging/mutate_harness.php "$drift_post_id"
-wordpress_cli eval-file /var/www/raos-e2e-staging/approve_harness.php "$drift_proposal" >/dev/null
+wordpress_cli eval-file /var/www/raos-code/staging/mutate_harness.php "$drift_post_id"
+approve_proposal "$drift_proposal"
 for proposal_id in "${code_proposals[@]}"; do
   [[ "$proposal_id" =~ ^[0-9a-f]{64}$ ]] || fail RAOS_WORDPRESS_E2E_CODE_PROPOSAL_INVALID
-  wordpress_cli eval-file /var/www/raos-e2e-staging/approve_harness.php "$proposal_id" >/dev/null
+  approve_proposal "$proposal_id"
 done
 
 "$repository_root/.venv/bin/python" "$e2e_directory/client.py" apply "$state_path"

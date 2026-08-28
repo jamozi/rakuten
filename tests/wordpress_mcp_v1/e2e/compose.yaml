@@ -38,7 +38,7 @@ services:
           'raos-e2e-safe-plugin-v1' => '${RAOS_WORDPRESS_E2E_SAFE_PLUGIN_SHA256:?RAOS_WORDPRESS_E2E_SAFE_PLUGIN_SHA256 is required}',
           'raos-e2e-broken-plugin-v1' => '${RAOS_WORDPRESS_E2E_BROKEN_PLUGIN_SHA256:?RAOS_WORDPRESS_E2E_BROKEN_PLUGIN_SHA256 is required}',
         ));
-        define('RAOS_CODEX_PRIVATE_DIR', '/var/www/raos-codex-private');
+        define('RAOS_CODEX_PRIVATE_DIR', '/var/www/raos-code/private');
         $$_SERVER['HTTPS'] = 'on';
         $$_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
     volumes:
@@ -46,11 +46,8 @@ services:
         source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/html
         target: /var/www/html
       - type: bind
-        source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/private
-        target: /var/www/raos-codex-private
-      - type: bind
-        source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/staging
-        target: /var/www/raos-e2e-staging
+        source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/raos-code
+        target: /var/www/raos-code
     networks:
       isolated:
         aliases:
@@ -100,11 +97,8 @@ services:
         source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/html
         target: /var/www/html
       - type: bind
-        source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/private
-        target: /var/www/raos-codex-private
-      - type: bind
-        source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/staging
-        target: /var/www/raos-e2e-staging
+        source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/raos-code
+        target: /var/www/raos-code
     working_dir: /var/www/html
     networks:
       - isolated

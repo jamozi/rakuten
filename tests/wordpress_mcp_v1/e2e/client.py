@@ -8,10 +8,13 @@ import base64
 import json
 import os
 from pathlib import Path
+import re
 import stat
 import sys
+import traceback
 from typing import Any
 import urllib.error
+import urllib.parse
 import urllib.request
 
 
@@ -30,8 +33,16 @@ EXPECTED_TOOLS = {
 
 
 class HttpFailure(RuntimeError):
-    def __init__(self, status: int, body: bytes):
-        super().__init__(f"HTTP {status}")
+    def __init__(self, status: int, body: bytes, route: str):
+        code = ""
+        try:
+            payload = json.loads(body)
+            candidate = payload.get("code") if isinstance(payload, dict) else None
+            if isinstance(candidate, str) and re.fullmatch(r"[a-z0-9_]{1,96}", candidate):
+                code = f" code={candidate}"
+        except UnicodeError, json.JSONDecodeError:
+            pass
+        super().__init__(f"HTTP {status} route={route}{code}")
         self.status = status
         self.body = body
 
@@ -80,7 +91,11 @@ def request(
                 raise RuntimeError("response too large")
             return response.status, body, response.headers
     except urllib.error.HTTPError as error:
-        raise HttpFailure(error.code, error.read(64 * 1024)) from None
+        raise HttpFailure(
+            error.code,
+            error.read(64 * 1024),
+            urllib.parse.urlsplit(url).path,
+        ) from None
 
 
 def error_code(failure: HttpFailure) -> str | None:
@@ -116,7 +131,7 @@ class McpClient:
         if self.session_id is not None:
             headers["Mcp-Session-Id"] = self.session_id
             headers["Mcp-Protocol-Version"] = PROTOCOL_VERSION
-        _, body, response_headers = request(
+        status, body, response_headers = request(
             self.endpoint,
             self.username,
             self.password,
@@ -129,7 +144,14 @@ class McpClient:
             },
             headers=headers,
         )
-        payload = json.loads(body)
+        try:
+            payload = json.loads(body)
+        except UnicodeError, json.JSONDecodeError:
+            content_type = response_headers.get_content_type()
+            raise RuntimeError(
+                "MCP_RESPONSE_INVALID_JSON "
+                f"status={status} content_type={content_type} bytes={len(body)}"
+            ) from None
         assert payload.get("jsonrpc") == "2.0", payload
         assert payload.get("id") == request_id, payload
         assert "error" not in payload, payload
@@ -596,5 +618,10 @@ if __name__ == "__main__":
     try:
         raise SystemExit(main())
     except (AssertionError, RuntimeError, OSError, ValueError) as error:
-        print(f"RAOS_WORDPRESS_E2E_FAILED: {error}", file=sys.stderr)
+        frames = traceback.extract_tb(error.__traceback__)
+        location = f" line={frames[-1].lineno}" if frames else ""
+        print(
+            f"RAOS_WORDPRESS_E2E_FAILED: {type(error).__name__}{location} {error}",
+            file=sys.stderr,
+        )
         raise SystemExit(1) from None

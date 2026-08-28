@@ -494,7 +494,12 @@ final class RAOS_Codex_MCP_Deployment
         }
         $activation = true;
         if ('plugin' === $descriptor['kind']) {
-            $activation = self::apply_plugin_intent($descriptor, $plugin_state);
+            try {
+                $activation = self::apply_plugin_intent($descriptor, $plugin_state);
+            } catch (Throwable $error) {
+                unset($error);
+                $activation = self::error('raos_codex_plugin_activation_failed', 500);
+            }
         }
         $readback = self::tree_hash($target);
         if (is_wp_error($activation)
