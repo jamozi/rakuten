@@ -561,11 +561,11 @@ a:hover {
 }
 
 .raos-article-title-grid h1 {
-  font-size: clamp(3.2rem, 4.7vw, 4.4rem);
+  font-size: clamp(3rem, 4.35vw, 4.1rem);
   letter-spacing: 0.01em;
   line-height: 1.28;
   margin: 0;
-  max-width: 13ch;
+  max-width: none;
   text-wrap: pretty;
 }
 
@@ -580,10 +580,6 @@ a:hover {
 
 .raos-article-standfirst :where(p, .wp-block-post-excerpt__excerpt) {
   margin: 0;
-}
-
-.raos-article-standfirst .wp-block-post-excerpt__more-link {
-  display: none;
 }
 
 .raos-article-hero-image {
@@ -634,7 +630,7 @@ a:hover {
 }
 
 .raos-lead {
-  font-family: ui-serif, "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-family: var(--raos-font-serif);
   font-size: clamp(1.15rem, 1.5vw, 1.35rem);
   line-height: 2;
   margin-block: clamp(3rem, 7vw, 5rem);
