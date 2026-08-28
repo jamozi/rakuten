@@ -67,8 +67,8 @@ source_artifacts:
 - uri: repo://AGENTS.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown
-  bytes: 4225
-  sha256: 9bc1321a39df5260efa9121b7df76802045f59add4ae27eab198890745b26d18
+  bytes: 7108
+  sha256: 251c09f7bc650161ee82f4324fed8a1fca985f5a8377253af861eb47662f6039
 - uri: repo://docs/canonical/08_codex/AGENTS.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown
@@ -138,7 +138,7 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 13324
-  sha256: 117e8d31ff22dc0b32738924b590a723c181dec8683a4bf0b1f0391ca81cd507
+  sha256: ef10a6c7375d1f5449ee44e6d9c57e820da39d61bdff4246988f61d4e96ba9f4
 - uri: repo://changes/st-0904/generated/public-projection-recorded.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
@@ -148,7 +148,7 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 12197
-  sha256: eb58ba4d1e16fff3c676bd07e6d07c5e036b762b43aa8b0318d2698a401eaeed
+  sha256: eba250902b89abe88f8ccbd0a59c3ed017028fcc74c67c980416a4cfe330c607
 - uri: repo://changes/st-0902/generated/final-approval-pass.v2.json
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/json
