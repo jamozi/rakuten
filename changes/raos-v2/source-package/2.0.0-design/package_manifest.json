@@ -1,0 +1,110 @@
+{
+  "schema": "RAOS_V2_PACKAGE_MANIFEST_V1",
+  "package_version": "2.0.0-design",
+  "generated_at": "2026-08-28T22:30:00+09:00",
+  "authority": "DESIGN_ONLY_UNAPPROVED_FOR_EXTERNAL_ACTIONS",
+  "root_directory": "RAOS_V2_DESIGN_PACKAGE",
+  "manifest_scope": "All package files except package_manifest.json and MANIFEST.sha256. MANIFEST.sha256 separately binds this manifest and every other file.",
+  "source_prompt_sha256": "bf7d6c43a352ed3150ca5b770864c3fc6eaa839bcb92b8313ad4b62b4d86e939",
+  "source_archive_sha256": "63fa06a566770882c14dc745c84c328b4ae88fc5e17c63009cf597d411741951",
+  "counts": {
+    "decisions": 34,
+    "requirements": 36,
+    "backlog": 49,
+    "tests": 51,
+    "phases": 7,
+    "external_actions": 14
+  },
+  "files": [
+    {
+      "path": "00_EXECUTIVE_DECISIONS.md",
+      "sha256": "552fcb00c80293804f9347b26337fb774c1bd6c84b363b9167729870f59530e2",
+      "size_bytes": 52413
+    },
+    {
+      "path": "01_CURRENT_STATE_AND_RESEARCH.md",
+      "sha256": "082e5f8869124b545fdeb4476767f90960455436d95904085aa7ec9569fb31d0",
+      "size_bytes": 21633
+    },
+    {
+      "path": "02_PRODUCT_BRAND_CATEGORY_STRATEGY.md",
+      "sha256": "a01f66a90c6676441b9139103cc086126730cfa624dc5c5407db541618c0dcef",
+      "size_bytes": 20214
+    },
+    {
+      "path": "03_CONTENT_SEO_EDITORIAL_SYSTEM.md",
+      "sha256": "e246fec7f226b9a9e65b39276181ec9042770cbdab069f3e6fe0724953f6bc86",
+      "size_bytes": 23020
+    },
+    {
+      "path": "04_UX_DESIGN_SYSTEM.md",
+      "sha256": "ea5554c9d8373f696dd1a1facc80e8845deabe877d17ed0557a3a2615c44ae2c",
+      "size_bytes": 20982
+    },
+    {
+      "path": "05_TECHNICAL_DATA_ANALYTICS_ARCHITECTURE.md",
+      "sha256": "5003965d8eddf43e55c8bd2b9ae7c7aaf0bd96f595deac278aa4a8e5717ce862",
+      "size_bytes": 26446
+    },
+    {
+      "path": "06_MIGRATION_ROADMAP_AND_BACKLOG.md",
+      "sha256": "4bc716192b23b2277474185a92f147e738a220521249290e2a02746856819d2f",
+      "size_bytes": 32088
+    },
+    {
+      "path": "07_DECISION_TRACEABILITY.yaml",
+      "sha256": "3310ff973aa753b624fb274bda4e3d6e4dfa7b41e2653152e1a0c2501db629af",
+      "size_bytes": 66215
+    },
+    {
+      "path": "08_TEST_AND_ACCEPTANCE_PLAN.md",
+      "sha256": "8b6abf3dcf1c955a829f3102810761f5264dd0ae7237b6ed306275c8fff95390",
+      "size_bytes": 20665
+    },
+    {
+      "path": "09_EVIDENCE_AND_SOURCE_REGISTER.yaml",
+      "sha256": "0001833543d59deeb7c490fc74a2929bbea342663c233064d11a23e920e01d7c",
+      "size_bytes": 18572
+    },
+    {
+      "path": "10_INTERFACE_CONTRACTS.yaml",
+      "sha256": "f30014d5c841b4e397097ddc62a5e5d1738b743038569f932dae92c61c1dbae7",
+      "size_bytes": 9429
+    },
+    {
+      "path": "11_EXTERNAL_ACTIONS_REGISTER.yaml",
+      "sha256": "5b60d50e3fffb6fca766df7136a6e5f8c4e934e8c52f99ecd37a2a4402071cba",
+      "size_bytes": 3737
+    },
+    {
+      "path": "12_INDEPENDENT_QUALITY_REVIEW.md",
+      "sha256": "21c0ee895fdde5c696462d7473efb5ba8cf3b82fb2f79f70e1fd36889487b76c",
+      "size_bytes": 8170
+    },
+    {
+      "path": "CODEX_MASTER_IMPLEMENTATION_PROMPT.md",
+      "sha256": "a122782725efb57b9fbaa7c916e821252736c0556c993b15604872f2a424f54f",
+      "size_bytes": 22093
+    },
+    {
+      "path": "CONTROL/implementation_contract.yaml",
+      "sha256": "cfd9f1f9ebbffc791b5636bcd31c7f38bdfe03bff72a3437291fc13c8dc3df61",
+      "size_bytes": 1829
+    },
+    {
+      "path": "CONTROL/package_validation.json",
+      "sha256": "0ff7c6c845d6d4f49c4c57e6fb42c8c8f689c006411fecdc652b65140e6c24c2",
+      "size_bytes": 1071
+    },
+    {
+      "path": "CONTROL/source_integrity.json",
+      "sha256": "cf33962d11a22ec885cf7a3c7a125c41e8668bf855204a9ab2d0966442ac6a45",
+      "size_bytes": 1450
+    },
+    {
+      "path": "README.md",
+      "sha256": "5b7e48d09d84e47c279486a21e19578a4704239c007bc5bb09f232e04976abb2",
+      "size_bytes": 3208
+    }
+  ]
+}

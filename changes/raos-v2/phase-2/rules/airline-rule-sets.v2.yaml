@@ -1,0 +1,23 @@
+schema: RAOS_V2_AIRLINE_RULE_POINTER_V1
+version: 2.0.0
+fixture: ../fixtures/recorded-airline-rules.v2.json
+default_carrier: null
+resolution: ALL_SEGMENTS_STRICT_INTERSECTION
+unknown_behavior: UNKNOWN_NEVER_OPTIMISTIC
+decimal: EXACT_BASE10_STRING
+effective_interval_semantics: FROM_INCLUSIVE_TO_EXCLUSIVE
+unpublished_effective_date_behavior: OBSERVED_CAPTURE_IS_SAFE_LOWER_BOUND
+journey_scope_behavior:
+  segment_input: DOMESTIC_OR_INTERNATIONAL_REQUIRED_UNLESS_RULE_SCOPE_ALL
+  missing_for_scoped_rule: UNKNOWN
+  known_mismatch: NO_MATCH
+  allowed_rule_scopes: [DOMESTIC, INTERNATIONAL, ALL]
+item_rule_behavior:
+  placement_required_for_item_specific_rules: true
+  missing_personal_underseat_confirmation: UNKNOWN
+  known_dimension_weight_or_fit_violation: FAIL
+  nullable_combined_limit_does_not_remove_per_item_limits: true
+future_variants:
+  - rule_set_id: AIR-JETSTAR-AIRWAYS-2027-02-02
+    effective_from: '2027-02-02T00:00:00+09:00'
+    recheck_required_before_use: true

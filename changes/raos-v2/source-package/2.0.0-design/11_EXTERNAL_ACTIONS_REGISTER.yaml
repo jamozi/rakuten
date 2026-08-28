@@ -1,0 +1,118 @@
+schema: RAOS_V2_EXTERNAL_ACTIONS_REGISTER_V1
+version: 2.0.0-design
+authority: DESIGN_ONLY_UNAPPROVED_FOR_EXTERNAL_ACTIONS
+generated_at: '2026-08-28T22:30:00+09:00'
+rule: Every external/credential/publication/deployment/spend/irreversible action remains NOT_EXECUTED until separate explicit authority and evidence.
+actions:
+- id: EXT-001
+  action: WordPress production backup/export
+  owner: HUMAN_OWNER
+  earliest_gate: P0/P3
+  reason_external: production credential and external read
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-002
+  action: WordPress draft create/update
+  owner: HUMAN_OWNER
+  earliest_gate: P3
+  reason_external: external write; exact sealed package only
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-003
+  action: WordPress publish/schedule/unpublish/delete
+  owner: HUMAN_OWNER
+  earliest_gate: P3+
+  reason_external: publication authority
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-004
+  action: theme/plugin deploy to production
+  owner: HUMAN_OWNER
+  earliest_gate: P3
+  reason_external: deployment and rollback authority
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-005
+  action: credential entry or secret-store access
+  owner: HUMAN_OWNER
+  earliest_gate: separate gated task
+  reason_external: secret values must not enter repository/log
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-006
+  action: Rakuten live API request
+  owner: HUMAN_OWNER
+  earliest_gate: separate live validation
+  reason_external: provider access/current terms
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-007
+  action: Rakuten affiliate link/image generation/download
+  owner: HUMAN_OWNER
+  earliest_gate: publication preparation
+  reason_external: current guideline/provenance required
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-008
+  action: Search Console/analytics account access/export
+  owner: HUMAN_OWNER
+  earliest_gate: P0/P4
+  reason_external: private provider data
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-009
+  action: Rakuten performance report export/import
+  owner: HUMAN_OWNER
+  earliest_gate: P5
+  reason_external: owner-private finance evidence
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-010
+  action: GA4/Site Kit/CMP configuration change
+  owner: HUMAN_OWNER
+  earliest_gate: P3
+  reason_external: privacy/external transmission/production config
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-011
+  action: legal/privacy policy approval
+  owner: HUMAN_OWNER_OR_COUNSEL
+  earliest_gate: before event activation
+  reason_external: legal conclusion outside Codex authority
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-012
+  action: new paid service/plugin/hosting/expenditure
+  owner: HUMAN_OWNER
+  earliest_gate: any phase
+  reason_external: default incremental spend ¥0
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-013
+  action: production redirect/canonical/sitemap change
+  owner: HUMAN_OWNER
+  earliest_gate: P3
+  reason_external: indexing and traffic risk
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null
+- id: EXT-014
+  action: destructive repository deletion/deprecation removal
+  owner: HUMAN_OWNER
+  earliest_gate: after two-release evidence
+  reason_external: not in first integration PR
+  status: NOT_EXECUTED
+  approval_reference: null
+  execution_evidence: null

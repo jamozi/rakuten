@@ -1,0 +1,80 @@
+{
+  "schema": "RAOS_V2_ACE_PRODUCT_MODELS_V1",
+  "version": "2.0.0",
+  "source_basis": "OFFICIAL_MANUFACTURER_RECORDED_FACTS",
+  "checked_at": "2026-08-26T13:54:33+09:00",
+  "products": [
+    {
+      "schema_version": "1.0.0",
+      "product_id": "PRD-ACE-CRESTA-06316",
+      "manufacturer": "ACE",
+      "brand": "ACE",
+      "model_name": "クレスタ",
+      "model_number": "06316",
+      "generation": "current-2026",
+      "official_source_ids": ["SRC-ACE-CRESTA-06316"],
+      "identity_status": "EXACT",
+      "variants": [
+        {
+          "schema_version": "1.0.0",
+          "variant_id": "ACE-CRESTA-06316-BASE",
+          "external_dimensions_cm": {"edges_cm": ["55", "35", "25"], "orientation": "ORDERED", "includes_wheels_and_handles": true},
+          "expanded_dimensions_cm": {"edges_cm": ["55", "35", "29"], "orientation": "ORDERED", "includes_wheels_and_handles": true},
+          "mass_kg": "3.2",
+          "capacity_l": "34",
+          "expanded_capacity_l": "39",
+          "declared_features": ["EXPANDABLE"],
+          "unknown_fields": ["REAL_WORLD_DURABILITY", "CASTER_NOISE"]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "product_id": "PRD-ACE-DIFFERENCE-05721",
+      "manufacturer": "ACE",
+      "brand": "ace.TOKYO LABEL",
+      "model_name": "ディフェレンス",
+      "model_number": "05721",
+      "generation": "current-2026",
+      "official_source_ids": ["SRC-ACE-DIFFERENCE-05721"],
+      "identity_status": "EXACT",
+      "variants": [
+        {
+          "schema_version": "1.0.0",
+          "variant_id": "ACE-DIFFERENCE-05721-BASE",
+          "external_dimensions_cm": {"edges_cm": ["55", "36", "24"], "orientation": "ORDERED", "includes_wheels_and_handles": true},
+          "expanded_dimensions_cm": {"edges_cm": ["55", "36", "27"], "orientation": "ORDERED", "includes_wheels_and_handles": true},
+          "mass_kg": "3.5",
+          "capacity_l": "32",
+          "expanded_capacity_l": "38",
+          "declared_features": ["EXPANDABLE", "TWO_WAY_OPEN", "CASTER_STOPPER"],
+          "unknown_fields": ["REAL_WORLD_DURABILITY", "CASTER_NOISE"]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "product_id": "PRD-ACE-MAXPASS4-01471",
+      "manufacturer": "ACE",
+      "brand": "PROTECA",
+      "model_name": "マックスパス4",
+      "model_number": "01471",
+      "generation": "current-2026",
+      "official_source_ids": ["SRC-ACE-MAXPASS4-01471"],
+      "identity_status": "EXACT",
+      "variants": [
+        {
+          "schema_version": "1.0.0",
+          "variant_id": "ACE-MAXPASS4-01471-BASE",
+          "external_dimensions_cm": {"edges_cm": ["50", "40", "25"], "orientation": "ORDERED", "includes_wheels_and_handles": true},
+          "expanded_dimensions_cm": null,
+          "mass_kg": "3.6",
+          "capacity_l": "40",
+          "expanded_capacity_l": null,
+          "declared_features": ["FRONT_ACCESS", "LAPTOP_14_INCH", "CASTER_STOPPER"],
+          "unknown_fields": ["REAL_WORLD_DURABILITY", "CASTER_NOISE"]
+        }
+      ]
+    }
+  ]
+}

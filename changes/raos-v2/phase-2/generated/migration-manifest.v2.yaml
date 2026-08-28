@@ -1,0 +1,77 @@
+schema: RAOS_V2_MIGRATION_MANIFEST_V1
+version: 2.0.0
+mode: LOCAL_SIMULATION_ONLY
+target_origin: https://kurashinoshirube.com
+target_route: /carry-on-suitcase-comparison/
+legacy_article_aliases:
+- legacy_article_id: st1703-first-suitcase-comparison
+  stable_article_id: A05
+  route: /carry-on-suitcase-comparison/
+  purpose: MIGRATION_REFERENCE_ONLY
+public_before:
+  evidence_class: PUBLIC_READ_ONLY
+  observed_at: '2026-08-27T21:35:05.654406Z'
+  status: 200
+  canonical: https://kurashinoshirube.com/carry-on-suitcase-comparison/
+  robots: index,follow
+  body_sha256: e2cace30f5e14b3f2783b3ef10885f2b7b958ac8a3a4aee45447fd95e9e72121
+local_candidate:
+  preview_path: changes/raos-v2/phase-2/preview/carry-on-suitcase-comparison/index.html
+  render_sha256: 0446e5c4011df9d6b1ca4841d7eb0cd4cf7cefff7d3d503fb9dbf670a9ae525d
+  preview_robots: noindex,nofollow
+  public_write: NOT_EXECUTED
+future_public_intent:
+  route_preserved: true
+  canonical: https://kurashinoshirube.com/carry-on-suitcase-comparison/
+  indexing_change: REQUIRES_PHASE3_HUMAN_APPROVAL_AND_PUBLIC_VERIFY
+rollback:
+  simulation:
+    status: PASSED_LOCAL
+    baseline_sha256: 5fd510a1cd6ae68822e2e71ed137434f8fb3c39c9c5b94c8fbab5c0d8cf6401b
+    candidate_sha256: fa7b3b6a29c287bd3325650d11518c7806146a5a7d979b9141bd35d5a5907de3
+    restored_sha256: 5fd510a1cd6ae68822e2e71ed137434f8fb3c39c9c5b94c8fbab5c0d8cf6401b
+    exact_tuple_restored: true
+    external_action: NOT_EXECUTED
+  restore_tuple:
+  - /carry-on-suitcase-comparison/
+  - 200
+  - https://kurashinoshirube.com/carry-on-suitcase-comparison/
+  - index,follow
+  plan_scope: P2_LOCAL_CONTRACT_FOR_P3_HUMAN_GATED_EXECUTION
+  ordered_restore_steps:
+  - sequence: 1
+    phase_boundary: P2_LOCAL_PREPARATION
+    action: VERIFY_PRECONDITIONS_AND_EXPORT_RECEIPT
+    requires:
+    - human approval for Phase 3
+    - recoverable content metadata theme and URL export receipt
+    production_status: NOT_EXECUTED
+  - sequence: 2
+    phase_boundary: P3_HUMAN_GATED
+    action: RESTORE_PRIOR_CONTENT_METADATA_THEME_AND_URL
+    requires:
+    - step 1 verified
+    - exact restore tuple binding
+    production_status: NOT_EXECUTED
+  - sequence: 3
+    phase_boundary: P3_HUMAN_GATED
+    action: PUBLIC_READ_ONLY_VERIFY_STATUS_CANONICAL_ROBOTS_AND_BODY
+    requires:
+    - step 2 completed
+    - same-origin credential-free capture
+    production_status: NOT_EXECUTED
+  production_backup: NOT_EXECUTED
+  production_restore: NOT_EXECUTED
+failure_conditions:
+- route or canonical differs from captured baseline
+- critical claim, disclosure, CTA, accessibility or SEO defect
+- rollback tuple binding or render digest mismatch
+external_actions: NOT_EXECUTED
+backlog_id: B-V2-031
+requirement_ids:
+- R-V2-023
+- R-V2-025
+test_ids:
+- T-V2-025
+- T-V2-035
+- T-V2-040

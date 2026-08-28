@@ -1,0 +1,520 @@
+schema: RAOS_V2_ROUTE_REGISTRY_V2
+origin: https://kurashinoshirube.com
+public_mutation_authorized: false
+collision_policy: FAIL_CLOSED
+empty_indexable_taxonomy_allowed: false
+routes:
+- route: /
+  article_id: HOME
+  primary_intent_id: INT-HOME
+  template: HOME
+  parent_hub: null
+  taxonomy: []
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PRESERVE_CURRENT
+  phase: CURRENT_PUBLIC_UNCHANGED
+- route: /carry-on/
+  article_id: A01
+  primary_intent_id: INT-A01
+  template: HUB
+  parent_hub: /
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み荷物の条件から選ぶ
+    route: /carry-on/
+  internal_links:
+  - /tools/carry-on-size-checker/
+  - /guides/carry-on-baggage-rules/
+  - /guides/low-cost-carrier-7kg-packing/
+  - /carry-on-suitcase-comparison/
+  - /guides/carry-on-bag-measurement/
+  - /guides/domestic-airline-carry-on-size/
+  - /guides/ana-carry-on-baggage/
+  - /guides/jal-carry-on-baggage/
+  - /guides/peach-carry-on-baggage/
+  - /guides/jetstar-carry-on-baggage/
+  - /guides/carry-on-expanded-suitcase/
+  - /guides/carry-on-personal-item/
+  - /guides/carry-on-weight-calculator/
+  - /comparisons/lightweight-carry-on-suitcases/
+  - /comparisons/front-open-carry-on-suitcases/
+  - /comparisons/carry-on-suitcases-with-stopper/
+  - /comparisons/soft-vs-hard-carry-on/
+  - /differences/ace-cresta-vs-difference-vs-maxpass4/
+  - /guides/business-trip-carry-on/
+  - /guides/weekend-trip-carry-on/
+  - /guides/carry-on-laptop-size/
+  - /guides/carry-on-liquid-rules/
+  - /guides/carry-on-battery-rules/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: LOCAL_CANDIDATE_NOINDEX
+  phase: PHASE_2_LOCAL
+- route: /tools/carry-on-size-checker/
+  article_id: A02
+  primary_intent_id: INT-A02
+  template: TOOL
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: 機内持ち込みサイズ・重量チェッカー
+    route: /tools/carry-on-size-checker/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: LOCAL_CANDIDATE_NOINDEX
+  phase: PHASE_2_LOCAL
+- route: /guides/carry-on-baggage-rules/
+  article_id: A03
+  primary_intent_id: INT-A03
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: 機内持ち込み手荷物の基本ルール
+    route: /guides/carry-on-baggage-rules/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: LOCAL_CANDIDATE_NOINDEX
+  phase: PHASE_2_LOCAL
+- route: /guides/low-cost-carrier-7kg-packing/
+  article_id: A04
+  primary_intent_id: INT-A04
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: LCC 7kg以内に収める考え方
+    route: /guides/low-cost-carrier-7kg-packing/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: LOCAL_CANDIDATE_NOINDEX
+  phase: PHASE_2_LOCAL
+- route: /carry-on-suitcase-comparison/
+  article_id: A05
+  primary_intent_id: INT-A05
+  template: COMPARISON
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: 機内持ち込みスーツケース3モデル条件別比較
+    route: /carry-on-suitcase-comparison/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PRESERVE_CURRENT
+  phase: PHASE_2_LOCAL
+- route: /guides/carry-on-bag-measurement/
+  article_id: A06
+  primary_intent_id: INT-A06
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: キャスター・持ち手込みで測る方法
+    route: /guides/carry-on-bag-measurement/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: LOCAL_CANDIDATE_NOINDEX
+  phase: PHASE_2_LOCAL
+- route: /guides/domestic-airline-carry-on-size/
+  article_id: A07
+  primary_intent_id: INT-A07
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: 国内線100席以上・未満のサイズ差
+    route: /guides/domestic-airline-carry-on-size/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /guides/ana-carry-on-baggage/
+  article_id: A08
+  primary_intent_id: INT-A08
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: ANAの機内持ち込み条件
+    route: /guides/ana-carry-on-baggage/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /guides/jal-carry-on-baggage/
+  article_id: A09
+  primary_intent_id: INT-A09
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: JALの機内持ち込み条件
+    route: /guides/jal-carry-on-baggage/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /guides/peach-carry-on-baggage/
+  article_id: A10
+  primary_intent_id: INT-A10
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: Peachの機内持ち込み条件
+    route: /guides/peach-carry-on-baggage/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /guides/jetstar-carry-on-baggage/
+  article_id: A11
+  primary_intent_id: INT-A11
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: Jetstarの機内持ち込み条件
+    route: /guides/jetstar-carry-on-baggage/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /guides/carry-on-expanded-suitcase/
+  article_id: A12
+  primary_intent_id: INT-A12
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: 拡張機能を使うと持ち込めない場合
+    route: /guides/carry-on-expanded-suitcase/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /guides/carry-on-personal-item/
+  article_id: A13
+  primary_intent_id: INT-A13
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: 身の回り品と手荷物の違い
+    route: /guides/carry-on-personal-item/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /guides/carry-on-weight-calculator/
+  article_id: A14
+  primary_intent_id: INT-A14
+  template: TOOL
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: 荷物の合計重量を見積もる方法
+    route: /guides/carry-on-weight-calculator/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /comparisons/lightweight-carry-on-suitcases/
+  article_id: A15
+  primary_intent_id: INT-A15
+  template: COMPARISON
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: 公称重量で比べる軽量機内持ち込み候補
+    route: /comparisons/lightweight-carry-on-suitcases/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /comparisons/front-open-carry-on-suitcases/
+  article_id: A16
+  primary_intent_id: INT-A16
+  template: COMPARISON
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: フロントオープン候補の条件比較
+    route: /comparisons/front-open-carry-on-suitcases/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /comparisons/carry-on-suitcases-with-stopper/
+  article_id: A17
+  primary_intent_id: INT-A17
+  template: COMPARISON
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: ストッパー付き候補の条件比較
+    route: /comparisons/carry-on-suitcases-with-stopper/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /comparisons/soft-vs-hard-carry-on/
+  article_id: A18
+  primary_intent_id: INT-A18
+  template: DIFFERENCE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: ソフトとハードの仕様差から選ぶ
+    route: /comparisons/soft-vs-hard-carry-on/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /differences/ace-cresta-vs-difference-vs-maxpass4/
+  article_id: A19
+  primary_intent_id: INT-A19
+  template: DIFFERENCE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: ACE 3モデルの違い
+    route: /differences/ace-cresta-vs-difference-vs-maxpass4/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /guides/business-trip-carry-on/
+  article_id: A20
+  primary_intent_id: INT-A20
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: 1〜2泊出張で先に決める条件
+    route: /guides/business-trip-carry-on/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /guides/weekend-trip-carry-on/
+  article_id: A21
+  primary_intent_id: INT-A21
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: 週末旅行の荷物から容量を決める
+    route: /guides/weekend-trip-carry-on/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /guides/carry-on-laptop-size/
+  article_id: A22
+  primary_intent_id: INT-A22
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: PC収納と外寸を同時に確認する
+    route: /guides/carry-on-laptop-size/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /guides/carry-on-liquid-rules/
+  article_id: A23
+  primary_intent_id: INT-A23
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: 液体物ルールの公式確認手順
+    route: /guides/carry-on-liquid-rules/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /guides/carry-on-battery-rules/
+  article_id: A24
+  primary_intent_id: INT-A24
+  template: GUIDE
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: モバイルバッテリー持ち込み確認手順
+    route: /guides/carry-on-battery-rules/
+  internal_links:
+  - /carry-on/
+  - /policy/how-we-compare-carry-on-products/
+  index_state: PLANNED_LOCKED_NOINDEX
+  phase: POST_GATE
+- route: /policy/how-we-compare-carry-on-products/
+  article_id: A25
+  primary_intent_id: INT-A25
+  template: POLICY
+  parent_hub: /carry-on/
+  taxonomy:
+  - carry-on
+  breadcrumbs:
+  - label: ホーム
+    route: /
+  - label: 機内持ち込み
+    route: /carry-on/
+  - label: 機内持ち込み用品の比較方法
+    route: /policy/how-we-compare-carry-on-products/
+  internal_links:
+  - /carry-on/
+  - /tools/carry-on-size-checker/
+  index_state: LOCAL_CANDIDATE_NOINDEX
+  phase: PHASE_2_LOCAL
+backlog_id: B-V2-011
+test_ids:
+- T-V2-009
+- T-V2-010
+- T-V2-027

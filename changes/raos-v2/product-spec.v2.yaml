@@ -1,0 +1,291 @@
+schema: RAOS_V2_PRODUCT_SPEC_V2
+version: 2.0.0
+brand:
+  public_name: 暮らしのしるべ
+  internal_name: RAOS V2
+  positioning: 公式ルールと製品仕様を照合し、条件に合う候補だけを残す購買支援
+  public_no_1_claim_allowed: false
+  voice:
+  - 具体的
+  - 静か
+  - 非誇張
+  - 不明を不明と表示
+wedge:
+  id: WEDGE-CARRY-ON-JP-V1
+  name: 旅の機内持ち込み条件と荷物選び
+  market: JP
+  currency: JPY
+  timezone: Asia/Tokyo
+  single_wedge: true
+  value_mechanisms:
+  - condition_input_decision_flow
+  - official_rule_and_product_spec_normalization
+  - fit_non_fit_and_unknown_visibility
+  - source_level_checked_at_and_change_tracking
+templates:
+- HOME
+- HUB
+- GUIDE
+- COMPARISON
+- DIFFERENCE
+- TOOL
+- POLICY
+portfolio:
+- article_id: A01
+  route: /carry-on/
+  working_title: 機内持ち込み荷物の条件から選ぶ
+  template: HUB
+  intent_class: RULE
+  wave: 1
+  phase_1_state: LOCAL_VERTICAL_SLICE_CANDIDATE
+- article_id: A02
+  route: /tools/carry-on-size-checker/
+  working_title: 機内持ち込みサイズ・重量チェッカー
+  template: TOOL
+  intent_class: DECISION
+  wave: 1
+  phase_1_state: LOCAL_VERTICAL_SLICE_CANDIDATE
+- article_id: A03
+  route: /guides/carry-on-baggage-rules/
+  working_title: 機内持ち込み手荷物の基本ルール
+  template: GUIDE
+  intent_class: RULE
+  wave: 1
+  phase_1_state: LOCAL_VERTICAL_SLICE_CANDIDATE
+- article_id: A04
+  route: /guides/low-cost-carrier-7kg-packing/
+  working_title: LCC 7kg以内に収める考え方
+  template: GUIDE
+  intent_class: TASK
+  wave: 1
+  phase_1_state: LOCAL_VERTICAL_SLICE_CANDIDATE
+- article_id: A05
+  route: /carry-on-suitcase-comparison/
+  working_title: 機内持ち込みスーツケース3モデル条件別比較
+  template: COMPARISON
+  intent_class: PRODUCT
+  wave: 1
+  phase_1_state: LOCAL_VERTICAL_SLICE_CANDIDATE
+- article_id: A06
+  route: /guides/carry-on-bag-measurement/
+  working_title: キャスター・持ち手込みで測る方法
+  template: GUIDE
+  intent_class: HOW_TO
+  wave: 1
+  phase_1_state: LOCAL_VERTICAL_SLICE_CANDIDATE
+- article_id: A07
+  route: /guides/domestic-airline-carry-on-size/
+  working_title: 国内線100席以上・未満のサイズ差
+  template: GUIDE
+  intent_class: RULE
+  wave: 2
+  phase_1_state: PLANNED_LOCKED
+- article_id: A08
+  route: /guides/ana-carry-on-baggage/
+  working_title: ANAの機内持ち込み条件
+  template: GUIDE
+  intent_class: RULE
+  wave: 2
+  phase_1_state: PLANNED_LOCKED
+- article_id: A09
+  route: /guides/jal-carry-on-baggage/
+  working_title: JALの機内持ち込み条件
+  template: GUIDE
+  intent_class: RULE
+  wave: 2
+  phase_1_state: PLANNED_LOCKED
+- article_id: A10
+  route: /guides/peach-carry-on-baggage/
+  working_title: Peachの機内持ち込み条件
+  template: GUIDE
+  intent_class: RULE
+  wave: 2
+  phase_1_state: PLANNED_LOCKED
+- article_id: A11
+  route: /guides/jetstar-carry-on-baggage/
+  working_title: Jetstarの機内持ち込み条件
+  template: GUIDE
+  intent_class: RULE
+  wave: 2
+  phase_1_state: PLANNED_LOCKED
+- article_id: A12
+  route: /guides/carry-on-expanded-suitcase/
+  working_title: 拡張機能を使うと持ち込めない場合
+  template: GUIDE
+  intent_class: RISK
+  wave: 2
+  phase_1_state: PLANNED_LOCKED
+- article_id: A13
+  route: /guides/carry-on-personal-item/
+  working_title: 身の回り品と手荷物の違い
+  template: GUIDE
+  intent_class: RULE
+  wave: 2
+  phase_1_state: PLANNED_LOCKED
+- article_id: A14
+  route: /guides/carry-on-weight-calculator/
+  working_title: 荷物の合計重量を見積もる方法
+  template: TOOL
+  intent_class: DECISION
+  wave: 2
+  phase_1_state: PLANNED_LOCKED
+- article_id: A15
+  route: /comparisons/lightweight-carry-on-suitcases/
+  working_title: 公称重量で比べる軽量機内持ち込み候補
+  template: COMPARISON
+  intent_class: PRODUCT
+  wave: 3
+  phase_1_state: PLANNED_LOCKED
+- article_id: A16
+  route: /comparisons/front-open-carry-on-suitcases/
+  working_title: フロントオープン候補の条件比較
+  template: COMPARISON
+  intent_class: PRODUCT
+  wave: 3
+  phase_1_state: PLANNED_LOCKED
+- article_id: A17
+  route: /comparisons/carry-on-suitcases-with-stopper/
+  working_title: ストッパー付き候補の条件比較
+  template: COMPARISON
+  intent_class: PRODUCT
+  wave: 3
+  phase_1_state: PLANNED_LOCKED
+- article_id: A18
+  route: /comparisons/soft-vs-hard-carry-on/
+  working_title: ソフトとハードの仕様差から選ぶ
+  template: DIFFERENCE
+  intent_class: DECISION
+  wave: 3
+  phase_1_state: PLANNED_LOCKED
+- article_id: A19
+  route: /differences/ace-cresta-vs-difference-vs-maxpass4/
+  working_title: ACE 3モデルの違い
+  template: DIFFERENCE
+  intent_class: PRODUCT
+  wave: 3
+  phase_1_state: PLANNED_LOCKED
+- article_id: A20
+  route: /guides/business-trip-carry-on/
+  working_title: 1〜2泊出張で先に決める条件
+  template: GUIDE
+  intent_class: TASK
+  wave: 3
+  phase_1_state: PLANNED_LOCKED
+- article_id: A21
+  route: /guides/weekend-trip-carry-on/
+  working_title: 週末旅行の荷物から容量を決める
+  template: GUIDE
+  intent_class: TASK
+  wave: 3
+  phase_1_state: PLANNED_LOCKED
+- article_id: A22
+  route: /guides/carry-on-laptop-size/
+  working_title: PC収納と外寸を同時に確認する
+  template: GUIDE
+  intent_class: TASK
+  wave: 4
+  phase_1_state: PLANNED_LOCKED
+- article_id: A23
+  route: /guides/carry-on-liquid-rules/
+  working_title: 液体物ルールの公式確認手順
+  template: GUIDE
+  intent_class: RULE
+  wave: 4
+  phase_1_state: PLANNED_LOCKED
+- article_id: A24
+  route: /guides/carry-on-battery-rules/
+  working_title: モバイルバッテリー持ち込み確認手順
+  template: GUIDE
+  intent_class: RISK
+  wave: 4
+  phase_1_state: PLANNED_LOCKED
+- article_id: A25
+  route: /policy/how-we-compare-carry-on-products/
+  working_title: 機内持ち込み用品の比較方法
+  template: POLICY
+  intent_class: TRUST
+  wave: 1
+  phase_1_state: LOCAL_VERTICAL_SLICE_CANDIDATE
+wave_1_contract:
+  six_primary_assets:
+  - A01
+  - A02
+  - A03
+  - A04
+  - A05
+  - A06
+  support_policy: A25
+  public_action: PHASE_3_HUMAN_GATED
+gates:
+  day_30:
+    continue:
+    - critical_defects=0
+    - source_sla=100%
+    - index_canonical_issues=0
+    - QDS instrumentation AVAILABLE or approved UNAVAILABLE explanation
+    - at least 2 non-brand query families observed
+    otherwise:
+    - REPAIR
+    - EXTEND
+    - RETREAT
+  day_90:
+    continue:
+    - at least 3 query families
+    - 500 monthly non-brand sessions or improving valid sample
+    - QDS rate >=20%
+    - affiliate outbound CTR >=3% planning signal
+    - major defects=0
+    - broken affiliate links=0
+    threshold_origin: PLANNING_HYPOTHESIS_NOT_MARKET_BENCHMARK
+    otherwise:
+    - REPAIR
+    - CONSOLIDATE
+    - RETREAT
+    - EXTEND
+  month_12:
+    expand_only_if:
+    - all quality guardrails pass
+    - mature economic contribution profit positive for 3 months
+    - update labor remains within ceiling
+    if_not: STOP_NEW_ARTICLES_AND_IMPROVE_CONSOLIDATE_OR_RETREAT
+north_star_hypotheses:
+  rebaseline: after Day 90 cohort and again at P5
+  12_month:
+    assets: 24-25
+    qds_monthly: 1500
+    qds_rate_min: '0.30'
+    outbound_ctr_min: '0.06'
+    confirmed_epc_jpy_min: 30
+    confirmed_rpm_jpy_min: 1800
+    economic_contribution_jpy_min: 60000
+  24_month:
+    assets: 45-50
+    qds_monthly: 8000
+    qds_rate_min: '0.32'
+    outbound_ctr_min: '0.07'
+    confirmed_epc_jpy_min: 40
+    confirmed_rpm_jpy_min: 2800
+    economic_contribution_jpy_min: 250000
+  36_month:
+    assets: 75-85
+    qds_monthly: 25000
+    qds_rate_min: '0.33'
+    outbound_ctr_min: '0.08'
+    confirmed_epc_jpy_min: 50
+    confirmed_rpm_jpy_min: 4000
+    economic_contribution_jpy_min: 700000
+  classification: INTERNAL_PLANNING_HYPOTHESES_NOT_PUBLIC_NO_1_EVIDENCE
+guardrails:
+  external_spend_jpy: 0
+  hands_on_claims_without_use: FORBIDDEN
+  product_facts: ALLOWED_PRIMARY_SOURCES_ONLY
+  competitor_content: UX_RESEARCH_ONLY
+  recommendation_business_score_coupling: FORBIDDEN
+  automatic_publication: false
+phase_planning_ceiling_hours:
+  P0: 16
+  P1: 40
+  P2: 80
+backlog_id: B-V2-010
+test_ids:
+- T-V2-007

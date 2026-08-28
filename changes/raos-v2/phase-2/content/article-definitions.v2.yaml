@@ -1,0 +1,110 @@
+schema: RAOS_V2_ARTICLE_DEFINITION_LEDGER_V1
+version: 2.0.0
+articles:
+  - schema_version: 1.0.0
+    article_id: A02
+    route: /tools/carry-on-size-checker/
+    template: TOOL
+    primary_intent_id: INT-A02
+    parent_hub: /carry-on/
+    claim_ids:
+      - CLM-A02-ANA-LARGE-RULE
+      - CLM-A02-ANA-SMALL-RULE
+      - CLM-A02-JAL-LARGE-RULE
+      - CLM-A02-JAL-SMALL-RULE
+      - CLM-A02-PEACH-STANDARD-RULE
+      - CLM-A02-JETSTAR-STANDARD-RULE
+    editorial_decisions:
+      - ED-A02-STRICT-INTERSECTION
+    blocks:
+      - {block_id: BLK-A02-01, block_type: PURPOSE_LIMITATION_PRIVACY}
+      - {block_id: BLK-A02-02, block_type: INPUTS}
+      - {block_id: BLK-A02-03, block_type: VALIDATION}
+      - {block_id: BLK-A02-04, block_type: RESULT}
+      - {block_id: BLK-A02-05, block_type: RESOLVED_RULE}
+      - {block_id: BLK-A02-06, block_type: NON_GUARANTEE}
+      - {block_id: BLK-A02-07, block_type: NEXT_ACTION}
+      - {block_id: BLK-A02-08, block_type: LOCAL_RESET_COPY}
+      - {block_id: BLK-A02-09, block_type: CTA_GUARD}
+    disclosure: このツールは広告リンクを置く場合があります。入力はブラウザ内だけで処理し、判定不能な条件を推測で補いません。
+    source_checked_at: '2026-08-28T06:41:52+09:00'
+    review_state: EVIDENCE_COMPLETE
+  - schema_version: 1.0.0
+    article_id: A03
+    route: /guides/carry-on-baggage-rules/
+    template: GUIDE
+    primary_intent_id: INT-A03
+    parent_hub: /carry-on/
+    claim_ids:
+      - CLM-A02-ANA-LARGE-RULE
+      - CLM-A02-ANA-SMALL-RULE
+      - CLM-A02-JAL-LARGE-RULE
+      - CLM-A02-JAL-SMALL-RULE
+      - CLM-A02-PEACH-STANDARD-RULE
+      - CLM-A02-JETSTAR-STANDARD-RULE
+    editorial_decisions:
+      - ED-A03-RULE-SCOPE
+    blocks:
+      - {block_id: BLK-A03-01, block_type: DISCLOSURE}
+      - {block_id: BLK-A03-02, block_type: PROBLEM_SCOPE}
+      - {block_id: BLK-A03-03, block_type: THIRTY_SECOND_CONCLUSION}
+      - {block_id: BLK-A03-04, block_type: DECISION_INPUTS}
+      - {block_id: BLK-A03-05, block_type: OFFICIAL_FACTS}
+      - {block_id: BLK-A03-06, block_type: HYPOTHETICAL_EXAMPLES}
+      - {block_id: BLK-A03-07, block_type: EXCEPTIONS_UNKNOWN}
+      - {block_id: BLK-A03-08, block_type: ALTERNATIVE_PATH}
+      - {block_id: BLK-A03-09, block_type: CONDITIONAL_NEXT_STEP}
+      - {block_id: BLK-A03-10, block_type: SOURCES_CHANGELOG_CORRECTION}
+    disclosure: このページには広告リンクを置く場合があります。航空会社の公式事実と編集上の案内を分け、搭乗可否を保証しません。
+    source_checked_at: '2026-08-28T06:41:52+09:00'
+    review_state: EVIDENCE_COMPLETE
+  - schema_version: 1.0.0
+    article_id: A05
+    route: /carry-on-suitcase-comparison/
+    template: COMPARISON
+    primary_intent_id: INT-A05
+    parent_hub: /carry-on/
+    claim_ids:
+      - CLM-A05-CRESTA-IDENTITY
+      - CLM-A05-CRESTA-DIMENSIONS
+      - CLM-A05-CRESTA-CAPACITY
+      - CLM-A05-CRESTA-MASS
+      - CLM-A05-CRESTA-FEATURES
+      - CLM-A05-CRESTA-EXPANDED-DIMENSIONS
+      - CLM-A05-CRESTA-EXPANDED-CAPACITY
+      - CLM-A05-CRESTA-USAGE-UNKNOWN
+      - CLM-A05-CRESTA-CONDITIONAL-FIT
+      - CLM-A05-DIFFERENCE-IDENTITY
+      - CLM-A05-DIFFERENCE-DIMENSIONS
+      - CLM-A05-DIFFERENCE-CAPACITY
+      - CLM-A05-DIFFERENCE-MASS
+      - CLM-A05-DIFFERENCE-FEATURES
+      - CLM-A05-DIFFERENCE-EXPANDED-DIMENSIONS
+      - CLM-A05-DIFFERENCE-EXPANDED-CAPACITY
+      - CLM-A05-DIFFERENCE-USAGE-UNKNOWN
+      - CLM-A05-DIFFERENCE-CONDITIONAL-FIT
+      - CLM-A05-MAXPASS4-IDENTITY
+      - CLM-A05-MAXPASS4-DIMENSIONS
+      - CLM-A05-MAXPASS4-CAPACITY
+      - CLM-A05-MAXPASS4-MASS
+      - CLM-A05-MAXPASS4-FEATURES
+      - CLM-A05-MAXPASS4-USAGE-UNKNOWN
+      - CLM-A05-MAXPASS4-CONDITIONAL-FIT
+      - CLM-A05-CRESTA-LIGHTEST-IN-SCOPE
+    editorial_decisions:
+      - ED-A05-LIGHTEST-IN-SCOPE
+      - ED-A05-UNKNOWN-DURABILITY
+    blocks:
+      - {block_id: BLK-A05-01, block_type: DISCLOSURE_SCOPE}
+      - {block_id: BLK-A05-02, block_type: THIRTY_SECOND_CONCLUSION}
+      - {block_id: BLK-A05-03, block_type: FIT_NON_FIT}
+      - {block_id: BLK-A05-04, block_type: METHOD}
+      - {block_id: BLK-A05-05, block_type: COMPARISON_TABLE}
+      - {block_id: BLK-A05-06, block_type: PRODUCT_CARDS}
+      - {block_id: BLK-A05-07, block_type: DECISION_CRITERIA}
+      - {block_id: BLK-A05-08, block_type: BUY_NONE_CONDITIONS}
+      - {block_id: BLK-A05-09, block_type: SOURCES_CHANGELOG_CORRECTION}
+      - {block_id: BLK-A05-10, block_type: RELATED_LINKS}
+    disclosure: このページには広告リンクを置く場合があります。報酬条件は商品の選定・掲載順に使いません。実機試験は行っていません。
+    source_checked_at: '2026-08-28T06:41:52+09:00'
+    review_state: EVIDENCE_COMPLETE

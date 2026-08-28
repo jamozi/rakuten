@@ -1,0 +1,195 @@
+schema: RAOS_V2_COMPONENT_STATES_V1
+components:
+- id: SemanticShell
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: DisclosureBar
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: DecisionHero
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: ConditionForm
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: ResultPanel
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: GuideCard
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: TrustStrip
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: SourceChip
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: ComparisonMatrix
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: ProductCard
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: AffiliateCTA
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: ChangeLog
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: CorrectionLink
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+- id: ConsentSurface
+  states:
+  - DEFAULT
+  - LOADING
+  - EMPTY
+  - ERROR
+  - STALE
+  - BLOCKED
+  - DISABLED
+  keyboard_operable: true
+  minimum_target_px: 44
+  status_never_color_only: true
+decision_states:
+- PASS
+- FAIL
+- UNKNOWN
+- STALE
+- BLOCKED
+- NO_MATCH
+affiliate_cta:
+  requires:
+  - exact_product_identity
+  - current_offer_or_nonvolatile_link
+  - advertising_disclosure
+  blocked_fallback: show reason and official/product evidence; do not fabricate CTA
+responsive_checks:
+- 390x844
+- 768x1024
+- 1440x900
+- 360px regression
+- 200% text
+- forced colors
+- reduced motion
+- no horizontal overflow
+backlog_id: B-V2-012
+test_ids:
+- T-V2-008

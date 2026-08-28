@@ -1,0 +1,102 @@
+schema: RAOS_V2_PORTS_V1
+version: 1.0.0
+network_default: DENY
+ports:
+  RuleRegistryPort:
+    input: JourneyConditions@v1 + effective timestamp
+    output: ResolvedRuleVariant@v1 | UNKNOWN
+    failure: typed closed error; carrier is never inferred
+  ProductCatalogPort:
+    input: product/model id
+    output: ProductModel@v1
+    failure: UNRESOLVED; offer title is not product truth
+  RakutenSearchPort:
+    input: RakutenSearchRequest@v1
+    output: recorded envelope
+    default_mode: RECORDED_ONLY
+    failure:
+    - TIMEOUT
+    - RATE_LIMIT
+    - INVALID_RESPONSE
+    - DISABLED
+    - STALE
+  DecisionSupportPort:
+    input: user conditions + rules + product
+    output: PASS|FAIL|UNKNOWN|STALE|BLOCKED|NO_MATCH with segment reasons and sources
+    failure: UNKNOWN; no optimistic fallback
+  ArticleRendererPort:
+    input: ArticleDefinition@v1 + resolved data
+    output: deterministic local render
+    failure: BLOCKED; no partial affiliate CTA
+  PublicationPackagePort:
+    input: review-bound render bundle
+    output: local package state
+    failure: BLOCKED; no live write capability
+  WordPressDraftPort:
+    input: package
+    output: disabled dry-run diff receipt
+    default_mode: DISABLED_DRY_RUN
+    live_write_capability: false
+    receipt_contract:
+      schema_version: 1.0.0
+      required_fields:
+      - schema_version
+      - mode
+      - external_action_count
+      - request_count
+      - target
+      - intent
+      - before
+      - after
+      - idempotency_key
+      - package_digest
+      - status
+      - external_status
+      constants:
+        mode: DISABLED_DRY_RUN
+        external_action_count: 0
+        request_count: 0
+        intent: CREATE_OR_UPDATE
+        status: DRY_RUN
+        external_status: NOT_EXECUTED
+      target_shape:
+      - origin
+      - route
+      before_shape:
+      - state
+      - reason
+      after_shape:
+      - post_status
+      - comment_status
+      - ping_status
+      - render_hash
+      opaque_hex64_fields:
+      - idempotency_key
+      - package_digest
+  EventCollectorPort:
+    input: AnalyticsEvent@v1
+    output: local receipt
+    default_mode: LOCAL_SINK_ONLY
+    failure: reject forbidden event/field without PII enrichment
+  FreshnessMonitorPort:
+    input: source/claim/product clocks
+    output: FRESH|DUE|SOFT_STALE|HARD_STALE|UNKNOWN
+    failure: UNKNOWN or HARD_STALE safe state
+publication_transitions:
+- DRAFT -> EVIDENCE_COMPLETE
+- EVIDENCE_COMPLETE -> HUMAN_REVIEWED [human only; not executed Phase 0-2]
+- HUMAN_REVIEWED -> PACKAGE_SEALED [synthetic fixture only Phase 0-2]
+- PACKAGE_SEALED -> DRY_RUN_RECEIPT [disabled WordPress port]
+forbidden_capabilities:
+- PUBLISHED transition
+- live WordPress write
+- live provider write
+- credential input
+backlog_id: B-V2-017
+test_ids:
+- T-V2-014
+- T-V2-034
+- T-V2-037
+- T-V2-038
+- T-V2-045
+- T-V2-046

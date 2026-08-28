@@ -1,0 +1,46 @@
+{
+  "backlog_id": "B-V2-002",
+  "excluded_prompt_count": 1,
+  "freshness": "REVALIDATE_EXTERNAL_FACTS_BEFORE_PUBLICATION",
+  "interface_entities": [
+    "AirlineRuleSet",
+    "AnalyticsEvent",
+    "ArticleDefinition",
+    "Claim",
+    "EditorialDecision",
+    "FreshnessAssessment",
+    "OfferObservation",
+    "ProductModel",
+    "ProviderOutcomeImport",
+    "PublicationPackage",
+    "QueryIntent",
+    "SourceRecord"
+  ],
+  "interface_ports": [
+    "ArticleRendererPort",
+    "DecisionSupportPort",
+    "EventCollectorPort",
+    "FreshnessMonitorPort",
+    "OutcomeImportPort",
+    "ProductCatalogPort",
+    "PublicationPackagePort",
+    "RakutenSearchPort",
+    "RuleRegistryPort",
+    "WordPressDraftPort"
+  ],
+  "interpretation": "DESIGN_INPUT_NOT_EXECUTABLE_INSTRUCTIONS",
+  "schema": "RAOS_V2_SOURCE_AUDIT_REPORT_V1",
+  "source_layer_file_count": 19,
+  "source_package_sha256": "7ea856e74d73589ae37d1248e08e685e5d022b90bfc45c9bf1d6cb414b5fc42a",
+  "status": "PASSED_LOCAL",
+  "test_ids": [
+    "T-V2-002",
+    "T-V2-003"
+  ],
+  "traceability_counts": {
+    "backlog": 49,
+    "decisions": 34,
+    "requirements": 36,
+    "tests": 51
+  }
+}

@@ -1,0 +1,47 @@
+schema: RAOS_V2_CLARIFICATIONS_V1
+version: 1.0.0
+authority: USER_PLAN_AND_REPOSITORY_POLICY_OVER_DESIGN_SOURCE
+source_package_sha256: 7ea856e74d73589ae37d1248e08e685e5d022b90bfc45c9bf1d6cb414b5fc42a
+clarifications:
+- id: C-V2-001
+  decision: successor source layer lives below changes/raos-v2
+  supersedes: any source suggestion to mutate canonical/upstream/zip
+- id: C-V2-002
+  decision: the machine contract has seven templates
+  value:
+  - HOME
+  - HUB
+  - GUIDE
+  - COMPARISON
+  - DIFFERENCE
+  - TOOL
+  - POLICY
+  supersedes: prose references to six templates
+- id: C-V2-003
+  decision: Phase 0 owns T-V2-001..006, T-V2-040 and T-V2-051; T-V2-007 starts Phase 1
+- id: C-V2-004
+  decision: effective phase planning ceilings are P0=16h, P1=40h and P2=80h
+  note: backlog row sums are reconciliation information, not additive gates
+- id: C-V2-005
+  decision: B-V2-009 depends on every B-V2-001..008 artifact
+- id: C-V2-006
+  decision: ArticleDefinition requires ordered blocks and temporal source fields are mandatory
+- id: C-V2-007
+  decision: Phase 0-2 real content cannot be human-reviewed or sealed; only synthetic fixtures may reach
+    PACKAGE_SEALED
+- id: C-V2-008
+  decision: B-V2-017 defines the WordPress port; its disabled adapter is Phase 2
+- id: C-V2-009
+  decision: T-V2-027 route collisions fail closed
+- id: C-V2-010
+  decision: B-V2-031 also waits B-V2-030; B-V2-033 waits B-V2-027/B-V2-029/B-V2-030; B-V2-034 waits B-V2-019..033
+- id: C-V2-011
+  decision: airline rules without a published effective date use a null effective_from plus observed_applicable_from
+    and OBSERVED_CURRENT_AT_CAPTURE_NO_PUBLISHED_EFFECTIVE_DATE; only an official date may use OFFICIAL_EFFECTIVE_DATE
+- id: C-V2-012
+  decision: airline effective intervals are machine-defined as FROM_INCLUSIVE_TO_EXCLUSIVE
+- id: C-V2-013
+  decision: packages/web-ui/src/decision-support-v2 is the authoritative UI source; its preview subtree
+    is the sole deterministic preview input and changes/raos-v2/phase-2/preview contains generated output
+    only
+  supersedes: the former duplicated changes/raos-v2/phase-2/ui-source input location

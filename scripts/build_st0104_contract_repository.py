@@ -37,6 +37,14 @@ INSTALLED_MANIFEST_NAME: Final = "contract-repository.v0.4.json"
 INSTALLED_MANIFEST: Final = INSTALL_ROOT / INSTALLED_MANIFEST_NAME
 ROOT_README: Final = CONTRACTS_ROOT / "README.md"
 
+# Repository-level contract families may coexist only when another registered
+# generator owns their complete file inventory.  ST-0104 must preserve these
+# sibling roots byte-for-byte; it never copies them into or removes them with
+# the versioned ``raos-v0.4`` installation.
+SEPARATELY_OWNED_CONTRACT_ROOTS: Final[Mapping[str, str]] = {
+    "raos-v2": "build_raos_v2_successor",
+}
+
 SOURCE_ROOT: Final = REPO_ROOT / "changes" / "st-0004"
 SOURCE_MANIFEST: Final = SOURCE_ROOT / "manifest.yaml"
 SOURCE_MANIFEST_PATH: Final = "changes/st-0004/manifest.yaml"
@@ -646,6 +654,57 @@ def _version_file_map(root: Path) -> dict[str, bytes]:
     return result
 
 
+def _registered_contract_outputs(root_name: str, owner_id: str) -> set[str]:
+    """Return one sibling contract tree's exact outputs from the build registry."""
+
+    try:
+        from scripts.raos_build_core import discover_registry
+    except ModuleNotFoundError:  # Direct ``python scripts/...`` invocation.
+        from raos_build_core import discover_registry
+
+    registry = discover_registry(root=REPO_ROOT)
+    owner = registry.get(owner_id)
+    if owner is None:
+        raise RuntimeError(
+            f"separate contract owner is not registered: {root_name}: {owner_id}"
+        )
+    prefix = Path("contracts") / root_name
+    outputs = {
+        path.relative_to(prefix).as_posix()
+        for path in owner.outputs
+        if path.is_relative_to(prefix)
+    }
+    if not outputs:
+        raise RuntimeError(
+            f"separate contract owner declares no outputs: {root_name}: {owner_id}"
+        )
+    return outputs
+
+
+def _assert_separately_owned_contract_root(root_name: str, owner_id: str) -> None:
+    """Fail closed unless a sibling contract root exactly matches its owner."""
+
+    root = CONTRACTS_ROOT / root_name
+    files, directories = _scan_tree(root)
+    expected_files = _registered_contract_outputs(root_name, owner_id)
+    actual_files = set(files)
+    if actual_files != expected_files:
+        raise RuntimeError(
+            f"separately owned contract inventory drift for {root_name}: "
+            f"owner={owner_id}, "
+            f"unexpected={sorted(actual_files - expected_files)}, "
+            f"missing={sorted(expected_files - actual_files)}"
+        )
+    expected_directories = _expected_directories(sorted(expected_files))
+    if directories != expected_directories:
+        raise RuntimeError(
+            f"separately owned contract directory drift for {root_name}: "
+            f"owner={owner_id}, "
+            f"unexpected={sorted(directories - expected_directories)}, "
+            f"missing={sorted(expected_directories - directories)}"
+        )
+
+
 def _directory_identity(path: Path) -> tuple[int, int]:
     try:
         metadata = path.lstat()
@@ -724,7 +783,7 @@ def _rename_exchange(
 
 
 def assert_owned_destination() -> tuple[tuple[int, int], dict[str, bytes] | None]:
-    """Accept only the ST-0101 README or a complete manifest-owned install."""
+    """Accept ST-0104 outputs plus complete, registered sibling contract roots."""
 
     if _has_symlink_component(CONTRACTS_ROOT):
         raise RuntimeError(f"unsafe contracts root: {CONTRACTS_ROOT}")
@@ -734,11 +793,19 @@ def assert_owned_destination() -> tuple[tuple[int, int], dict[str, bytes] | None
     except OSError as exc:
         raise RuntimeError("cannot enumerate repository contracts root") from exc
     names = {entry.name for entry in entries}
-    allowed = {"README.md", INSTALL_NAME}
+    allowed = {"README.md", INSTALL_NAME, *SEPARATELY_OWNED_CONTRACT_ROOTS}
     if names - allowed:
         raise RuntimeError(
             f"unowned entry in repository contracts root: {sorted(names - allowed)}"
         )
+    missing_sibling_roots = set(SEPARATELY_OWNED_CONTRACT_ROOTS) - names
+    if missing_sibling_roots:
+        raise RuntimeError(
+            "registered sibling contract root is missing: "
+            f"{sorted(missing_sibling_roots)}"
+        )
+    for root_name, owner_id in sorted(SEPARATELY_OWNED_CONTRACT_ROOTS.items()):
+        _assert_separately_owned_contract_root(root_name, owner_id)
     if "README.md" not in names:
         raise RuntimeError("ST-0101 contracts README is missing")
     readme_content = _read_regular(

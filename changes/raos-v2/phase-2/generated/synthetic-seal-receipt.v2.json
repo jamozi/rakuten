@@ -1,0 +1,83 @@
+{
+  "digest_verified": true,
+  "external_authority": "NONE",
+  "package": {
+    "article_id": "SYNTHETIC-ARTICLE-V2",
+    "claim_evidence": [
+      {
+        "claim_id": "CLM-SYNTHETIC-FRESH",
+        "freshness": "FRESH",
+        "risk_class": "LOW"
+      }
+    ],
+    "content_class": "SYNTHETIC_FIXTURE",
+    "created_at": "2026-08-28T12:00:00+09:00",
+    "input_hashes": {
+      "article": "de325169776820357a8e3c2e2549c87fe35ab08a49aa0c79ad5032d0e716c651",
+      "claims": "dc2da9038db8847ccfe157dfea0f88852a0ef36aa2ea8fd02899ecac46e296a5",
+      "migration": "cd7fac1f4bf9315b2cecef158f6578688844cb3ca650f6b4a384312bf5bab14d",
+      "render": "07ba402ec9024a21f2f3d3b2573d70857a63b30c91d45917591c6ed444bb185a",
+      "sources": "7849f617c078cde651a3012659ec43ad1de6ef8a86f81fec579ddf3c467e31cc"
+    },
+    "migration_manifest": {
+      "next": "synthetic",
+      "previous": null,
+      "sha256": "cd7fac1f4bf9315b2cecef158f6578688844cb3ca650f6b4a384312bf5bab14d",
+      "wordpress_intent": "CREATE_OR_UPDATE"
+    },
+    "package_digest": "a2ca7024a52c12cf3729bdb8d5ff3236d9db538aadd9313ba089676ed8008d8a",
+    "package_id": "SYNTHETIC-PACKAGE-V2",
+    "render_hash": "07ba402ec9024a21f2f3d3b2573d70857a63b30c91d45917591c6ed444bb185a",
+    "review_binding": {
+      "review_version": "SYNTHETIC-V1",
+      "reviewed_at": "2026-08-28T12:00:00+09:00",
+      "reviewer_id": "SYNTHETIC-REVIEWER-NOT-A-PERSON",
+      "synthetic": true
+    },
+    "schema_version": "1.0.0",
+    "source_snapshot_hash": "7849f617c078cde651a3012659ec43ad1de6ef8a86f81fec579ddf3c467e31cc",
+    "state": "PACKAGE_SEALED",
+    "target_origin": "https://kurashinoshirube.com",
+    "target_route": "/synthetic-contract-fixture/"
+  },
+  "package_digest": "a2ca7024a52c12cf3729bdb8d5ff3236d9db538aadd9313ba089676ed8008d8a",
+  "publication": "NOT_EXECUTED",
+  "purpose": "STATE_MACHINE_AND_DIGEST_TEST_ONLY",
+  "schema": "RAOS_V2_SYNTHETIC_SEAL_RECEIPT_V1",
+  "state_path": [
+    "DRAFT",
+    "EVIDENCE_COMPLETE",
+    "HUMAN_REVIEWED",
+    "PACKAGE_SEALED"
+  ],
+  "test_ids": [
+    "T-V2-031",
+    "T-V2-037",
+    "T-V2-038"
+  ],
+  "wordpress_dry_run": {
+    "after": {
+      "comment_status": "closed",
+      "ping_status": "closed",
+      "post_status": "draft",
+      "render_hash": "07ba402ec9024a21f2f3d3b2573d70857a63b30c91d45917591c6ed444bb185a"
+    },
+    "before": {
+      "reason": "DISABLED",
+      "state": "NOT_OBSERVED"
+    },
+    "external_action_count": 0,
+    "external_status": "NOT_EXECUTED",
+    "idempotency_key": "1a9d93ac529adc7bc50ca2a9764ad065deedd9ecf6bb6d30334f7ac722f2e7f3",
+    "intent": "CREATE_OR_UPDATE",
+    "mode": "DISABLED_DRY_RUN",
+    "package_digest": "a2ca7024a52c12cf3729bdb8d5ff3236d9db538aadd9313ba089676ed8008d8a",
+    "request_count": 0,
+    "schema_version": "1.0.0",
+    "status": "DRY_RUN",
+    "target": {
+      "origin": "https://kurashinoshirube.com",
+      "route": "/synthetic-contract-fixture/"
+    }
+  }
+}
