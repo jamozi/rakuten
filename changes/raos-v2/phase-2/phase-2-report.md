@@ -18,7 +18,7 @@ and a disabled WordPress dry-run boundary.
 - Local test receipt: `PASSED_LOCAL` for T-V2-020..046 and T-V2-051; generator does not execute tests
 - Browser/a11y recorded evidence: `PASSED_LOCAL`; raw verification: `RECORDED_NOT_REVERIFIED`; required CI must run its own gate
 - Manual visual review: `PASSED_LOCAL_MANUAL_VISUAL_REVIEW` across 27 route/viewport captures; raw verification: `RECORDED_NOT_REVERIFIED`
-- Evidence bundle SHA-256: `d5f838a00668883f4a9fd02827683c06e7cbc5fc6c1788c2cf6974fea0df0899`
+- Evidence bundle SHA-256: `c100263d658a8780f673bbe9483413a02a30ed16b31b039a513fbcabf9a75a1c`
 - Analytics: production values `UNAVAILABLE`; semantic QDS/local sink evidence only
 - Planning ceiling: 80 hours; actual human time `UNAVAILABLE`; external spend: JPY 0
 - Rollback: route/canonical/robots exact-tuple simulation `PASSED_LOCAL`; production backup/restore `NOT_EXECUTED`

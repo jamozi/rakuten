@@ -32,7 +32,7 @@
   selection, local preview, content/review/media/event contracts, publication
   candidate, migration simulation and evidence bundle.
 
-Evidence bundle SHA-256: `d5f838a00668883f4a9fd02827683c06e7cbc5fc6c1788c2cf6974fea0df0899`. Recorded local test status is
+Evidence bundle SHA-256: `c100263d658a8780f673bbe9483413a02a30ed16b31b039a513fbcabf9a75a1c`. Recorded local test status is
 `PASSED_LOCAL`, browser/a11y evidence is `PASSED_LOCAL`, and independent
 manual visual review is `PASSED_LOCAL_MANUAL_VISUAL_REVIEW`. The generator
 does not execute either gate; required repository CI remains the merge gate and
