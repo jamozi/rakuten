@@ -14,7 +14,6 @@ from scripts.validate_raos_v2_successor import (
     verify_phase3_external_state,
 )
 
-
 ROOT = Path(__file__).resolve().parents[2]
 PHASE3 = ROOT / "changes/raos-v2/phase-3"
 
@@ -134,9 +133,8 @@ def test_phase3_review_candidate_closes_claim_authority_and_update_payload() -> 
     assert candidate["update_payload"] == update_payload
     assert candidate["preaction_status"] == "HISTORICAL_BASELINE_ONLY"
     assert candidate["preaction_binding_digest"] is None
-    assert (
-        candidate["structured_data_expectation_sha256"]
-        == (update_payload["structured_data_expectation"]["json_ld_sha256"])
+    assert candidate["structured_data_expectation_sha256"] == (
+        update_payload["structured_data_expectation"]["json_ld_sha256"]
     )
     expected_binding_fields = {
         "claim_id",
@@ -182,6 +180,8 @@ def test_phase3_generated_schemas_close_cutover_and_export_evidence() -> None:
     dry_run_schema = _json("contracts/raos-v2/v2/wordpress-dry-run-receipt.schema.json")
     export_schema = _json("contracts/raos-v2/v2/wordpress-export-binding.schema.json")
     preaction_schema = _json("contracts/raos-v2/v2/preaction-binding.schema.json")
+    reissued_schema = _json("contracts/raos-v2/v2/reissued-review-bundle.schema.json")
+    cutover_schema = _json("contracts/raos-v2/v2/wordpress-cutover-binding.schema.json")
     public_schema = _json(
         "contracts/raos-v2/v2/public-verification-receipt.schema.json"
     )
@@ -254,6 +254,8 @@ def test_phase3_generated_schemas_close_cutover_and_export_evidence() -> None:
         "public_capture_sha256",
         "wordpress_export_sha256",
         "wordpress_export_bytes",
+        "owner_evidence_sha256",
+        "legacy_post_content_sha256",
     }
     Draft202012Validator(preaction_schema, format_checker=FormatChecker()).validate(
         {
@@ -273,8 +275,20 @@ def test_phase3_generated_schemas_close_cutover_and_export_evidence() -> None:
             "public_capture_sha256": "b" * 64,
             "wordpress_export_sha256": "c" * 64,
             "wordpress_export_bytes": 1024,
+            "owner_evidence_sha256": "d" * 64,
+            "legacy_post_content_sha256": "e" * 64,
         }
     )
+    assert "review_bundle_sha256" in reissued_schema["required"]
+    disabled_binding = _json(
+        "packages/web-ui/src/decision-support-v2/wordpress/plugin/"
+        "raos-v2-decision-support/cutover-binding.v1.json"
+    )
+    Draft202012Validator(cutover_schema, format_checker=FormatChecker()).validate(
+        disabled_binding
+    )
+    assert cutover_schema["additionalProperties"] is False
+    assert disabled_binding["state"] == "DEPLOYMENT_DISABLED"
     public_browser_properties = public_browser_schema["properties"]
     assert isinstance(public_browser_properties, dict)
     public_viewports = public_browser_properties["viewports"]
@@ -411,7 +425,10 @@ def test_t_v2_039_phase3_artifact_is_closed_and_hash_bound() -> None:
     manifest = json.loads(
         (artifact / "plugin-manifest.v1.json").read_text(encoding="utf-8")
     )
-    assert manifest["classification"] == "DEPLOYABLE_LOCAL_ARTIFACT_NOT_DEPLOYED"
+    assert (
+        manifest["classification"]
+        == "LOCAL_ARTIFACT_TEMPLATE_REQUIRES_OWNER_CUTOVER_BINDING"
+    )
     assert manifest["deployment_status"] == "NOT_EXECUTED"
     assert manifest["runtime"]["network_request"] is False
     assert manifest["runtime"]["database_write"] is False
@@ -513,9 +530,8 @@ def test_t_v2_035_phase3_seo_plan_preserves_slug_and_has_no_redirect() -> None:
         "NOT_EXECUTED_EXTERNAL_BLOCKER"
     )
     candidate = _json("changes/raos-v2/phase-3/generated/review-candidate.v1.json")
-    assert (
-        plan["structured_data"]["expected_graph_sha256"]
-        == (candidate["structured_data_expectation_sha256"])
+    assert plan["structured_data"]["expected_graph_sha256"] == (
+        candidate["structured_data_expectation_sha256"]
     )
 
 
@@ -535,10 +551,16 @@ def test_phase3_external_flow_requires_preaction_and_public_browser_receipts() -
         "phase0_baseline_rule": "IMMUTABLE_HISTORICAL_DO_NOT_OVERWRITE",
     }
     public_browser = by_action["PUBLIC_BROWSER_VERIFICATION"]
-    assert public_browser["status"] == "REQUIRED_VALIDATOR_NOT_IMPLEMENTED"
+    assert public_browser["status"] == (
+        "RAW_RECORDER_IMPLEMENTED_ACCEPTANCE_VERIFIER_REQUIRED"
+    )
     assert public_browser["acceptance_authority"] is False
     assert public_browser["phase_exit"] == "BLOCKED_EXTERNAL"
     assert public_browser["required_viewport_widths"] == [390, 768, 1440]
+    assert public_browser["raw_receipt_schema"] == (
+        "RAOS_V2_PHASE3_PUBLIC_BROWSER_RAW_RECEIPT_V1"
+    )
+    assert public_browser["recorder"] == ("tests/raos_v2/phase3-public-validation.mjs")
     assert public_browser["required_receipt_schema"] == (
         "RAOS_V2_PHASE3_PUBLIC_BROWSER_VERIFICATION_RECEIPT_V1"
     )

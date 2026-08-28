@@ -1,0 +1,187 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v2/wordpress-cutover-binding.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "else": {
+        "properties": {
+          "hashes": {
+            "properties": {
+              "legacy_post_content_sha256": {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "preaction_binding_sha256": {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "sealed_package_sha256": {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "source_owner_export_sha256": {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              }
+            }
+          },
+          "target": {
+            "properties": {
+              "post_id": {
+                "minimum": 1,
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "state": {
+            "const": "DEPLOYMENT_DISABLED"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "hashes": {
+            "properties": {
+              "legacy_post_content_sha256": {
+                "const": "UNAVAILABLE"
+              },
+              "preaction_binding_sha256": {
+                "const": "UNAVAILABLE"
+              },
+              "sealed_package_sha256": {
+                "const": "UNAVAILABLE"
+              },
+              "source_owner_export_sha256": {
+                "const": "UNAVAILABLE"
+              }
+            }
+          },
+          "target": {
+            "properties": {
+              "post_id": {
+                "const": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "hashes": {
+      "additionalProperties": false,
+      "properties": {
+        "legacy_post_content_sha256": {
+          "oneOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "const": "UNAVAILABLE"
+            }
+          ]
+        },
+        "preaction_binding_sha256": {
+          "oneOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "const": "UNAVAILABLE"
+            }
+          ]
+        },
+        "sealed_package_sha256": {
+          "oneOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "const": "UNAVAILABLE"
+            }
+          ]
+        },
+        "sealed_post_content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "source_owner_export_sha256": {
+          "oneOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "const": "UNAVAILABLE"
+            }
+          ]
+        }
+      },
+      "required": [
+        "legacy_post_content_sha256",
+        "sealed_post_content_sha256",
+        "source_owner_export_sha256",
+        "preaction_binding_sha256",
+        "sealed_package_sha256"
+      ],
+      "type": "object"
+    },
+    "schema": {
+      "const": "RAOS_V2_WORDPRESS_CUTOVER_BINDING_V1"
+    },
+    "state": {
+      "enum": [
+        "DEPLOYMENT_DISABLED",
+        "ARMED_EXACT_LEGACY_OR_SEALED"
+      ]
+    },
+    "target": {
+      "additionalProperties": false,
+      "properties": {
+        "article_id": {
+          "const": "A05"
+        },
+        "post_id": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "post_slug": {
+          "const": "carry-on-suitcase-comparison"
+        },
+        "route": {
+          "const": "/carry-on-suitcase-comparison/"
+        }
+      },
+      "required": [
+        "article_id",
+        "post_id",
+        "post_slug",
+        "route"
+      ],
+      "type": "object"
+    },
+    "version": {
+      "const": "1.0.0"
+    }
+  },
+  "required": [
+    "schema",
+    "version",
+    "state",
+    "target",
+    "hashes"
+  ],
+  "title": "wordpress-cutover-binding",
+  "type": "object"
+}

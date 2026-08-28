@@ -49,8 +49,9 @@ clarifications:
   decision: the effective Phase 3 planning ceiling is 20 hours and external spend remains JPY 0
   note: Phase 3 backlog row estimates are reconciliation information, not an additive budget gate
 - id: C-V2-015
-  decision: Phase 3 adds a v2 real-content seal contract that requires an exact non-synthetic human-review
-    receipt; the Phase 2 v1 synthetic-only seal remains unchanged
+  decision: Phase 3 adds a v2 real-content local simulation-seal contract for an exact non-synthetic but
+    unauthenticated owner assertion; the Phase 2 v1 synthetic-only seal remains unchanged and neither
+    contract grants production approval authority
 - id: C-V2-016
   decision: the one-URL WordPress projection suppresses every unpublished future route and keeps every
     product CTA blocked until a current exact offer binding exists
@@ -79,3 +80,42 @@ clarifications:
 - id: C-V2-023
   decision: Phase 3 external-state input is a closed sanitized object at every nesting level and rejects
     unknown or secret-like fields
+- id: C-V2-024
+  decision: the Phase 3 post-action WordPress owner export uses overlay action ID V2-P3-EXT-POSTACTION-EXPORT;
+    source EXT-014 remains reserved for destructive repository deletion
+  supersedes: the conflicting Phase 3 use of EXT-014
+- id: C-V2-025
+  decision: the route-scoped presentation plugin may be activated only with an owner-armed cutover binding;
+    it passes through only the exact bound legacy post bytes, projects only the exact bound sealed post
+    bytes, and fails closed for disabled, missing, malformed, intermediate or drifted target content
+  rationale: the two-step cutover keeps the existing article byte-exact before the approved content write
+    while preventing an unbound activation or partial content update from rendering an ambiguous public
+    state
+  supersedes: the v0.4 complete-pass-through wording that allowed activation without an armed owner binding
+- id: C-V2-026
+  decision: the 2026-08-28 bounded public read is a sanitized unpaired observation only and has no pre-action,
+    review, seal or publication acceptance authority
+  rationale: no owner-held WordPress export was captured within the required five-minute pairing window
+- id: C-V2-027
+  decision: the fixed-target public browser recorder emits owner-held raw evidence with acceptance_authority=false;
+    only a separately implemented independent recalculation may create an acceptance receipt
+- id: C-V2-028
+  decision: source and generated Phase 3 plugins require PHP lint and a fail-closed WordPress stub in
+    required CI; those results remain local CI evidence and do not prove production WordPress compatibility
+- id: C-V2-029
+  decision: an unsigned Phase 3 review receipt is an unauthenticated owner assertion and may create only
+    a local simulation package; it has no human-approval acceptance authority and cannot satisfy B-V2-040
+    or the Phase 3 exit gate
+  rationale: reviewer_id plus caller-authored digests do not authenticate a human principal or an immutable
+    artifact-specific decision
+- id: C-V2-030
+  decision: an ARMED WordPress cutover binding remains unavailable until a trusted artifact-specific approval
+    verifier and fresh PRE_WRITE_EXPORT plus disabled dry-run verifier are implemented and bound; the
+    repository-owned binding remains DEPLOYMENT_DISABLED
+  rationale: preaction evidence and a simulation seal alone cannot enforce the final pre-write gate or
+    authorize a production cutover
+- id: C-V2-031
+  decision: the unauthenticated simulation receipt persists only fixed non-personal reviewer_id=OWNER_ASSERTION_LOCAL
+    and review_version=P3-OWNER-ASSERTION-V1; arbitrary external identity strings are rejected
+  rationale: the local assertion has no approval authority, so retaining a person-identifying or caller-selected
+    identity creates privacy risk without evidentiary value

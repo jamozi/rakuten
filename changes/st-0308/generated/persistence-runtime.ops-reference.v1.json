@@ -143,13 +143,13 @@
   "owner": {
     "command": "python scripts/build_st0308_persistence.py",
     "generator": "scripts/build_st0308_persistence.py",
-    "generator_sha256": "dda2a6f044dd38d581a70a1d971dff6b68fbe0813ebcad3059cf1db5d5717df3"
+    "generator_sha256": "44385f6dd15983b1f21544324a4dcb3341685ae730644cfdc683a67ca8161643"
   },
   "physical_parity": {
     "catalog_ir_check_constraint_count": 519,
     "catalog_ir_column_count": 1376,
     "catalog_ir_relation_count": 104,
-    "catalog_ir_sha256": "fa71b14d29ce17fa3438bbbe96b2246307875be5d28557af8857a479d39d4c6e",
+    "catalog_ir_sha256": "4dea40b1261db5a8b16873918620fba1fbee8b87de22fe8ca099146f10f146c4",
     "lock_version_relation_membership_verified": 27,
     "physical_tables_matched_to_relation_contracts": 103,
     "physical_view_column_type_nullability_parity": "POSTGRESQL_RUNTIME_NOT_EXECUTED",

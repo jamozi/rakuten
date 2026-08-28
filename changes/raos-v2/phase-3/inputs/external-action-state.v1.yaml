@@ -13,7 +13,7 @@ wordpress_export:
   status: NOT_EXECUTED
   binding: null
 post_action_wordpress_export:
-  external_action_id: EXT-014
+  external_action_id: V2-P3-EXT-POSTACTION-EXPORT
   status: NOT_EXECUTED
   binding: null
 wordpress_nonpublic_preview:

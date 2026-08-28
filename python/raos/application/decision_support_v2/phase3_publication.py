@@ -53,7 +53,7 @@ def bind_human_review(
     candidate: Phase3ReviewCandidate,
     receipt: Phase3HumanReviewReceipt,
 ) -> Phase3PublicationPackage:
-    """Bind a non-synthetic human receipt without gaining write authority."""
+    """Bind an unauthenticated owner assertion without gaining approval authority."""
 
     return candidate.bind_review(receipt)
 
@@ -61,7 +61,7 @@ def bind_human_review(
 def seal_reviewed_package(
     package: Phase3PublicationPackage,
 ) -> Phase3PublicationPackage:
-    """Create a local semantic seal after all claim gates pass."""
+    """Create a simulation-only local semantic seal after all claim gates pass."""
 
     return package.seal()
 

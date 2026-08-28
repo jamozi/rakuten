@@ -29,6 +29,7 @@ try:
     from scripts.raos_build_core import atomic_write, canonical_json_bytes
     from scripts.validate_raos_v2_successor import (
         _read_local_evidence_file,
+        _phase3_capture_observation,
         ValidationFailure,
         load_json_strict,
         load_yaml_strict,
@@ -43,6 +44,7 @@ except ModuleNotFoundError:  # direct ``python scripts/...`` execution
     from raos_build_core import atomic_write, canonical_json_bytes
     from validate_raos_v2_successor import (
         _read_local_evidence_file,
+        _phase3_capture_observation,
         ValidationFailure,
         load_json_strict,
         load_yaml_strict,
@@ -95,6 +97,10 @@ PHASE3_WORDPRESS_SOURCE_PATHS: Final = (
     Path("packages/web-ui/src/decision-support-v2/wordpress/projection.py"),
     Path(
         "packages/web-ui/src/decision-support-v2/wordpress/plugin/"
+        "raos-v2-decision-support/cutover-binding.v1.json"
+    ),
+    Path(
+        "packages/web-ui/src/decision-support-v2/wordpress/plugin/"
         "raos-v2-decision-support/plugin-manifest.v1.json"
     ),
     Path(
@@ -116,6 +122,9 @@ PHASE3_EXTERNAL_STATE_PATH: Final = Path(
 )
 PHASE3_LOCAL_BROWSER_EVIDENCE_PATH: Final = Path(
     "changes/raos-v2/recorded-inputs/phase3-local-browser-evidence.v1.json"
+)
+PHASE3_PUBLIC_OBSERVATION_PATH: Final = Path(
+    "changes/raos-v2/recorded-inputs/phase3/preaction-public-20260828-v1.json"
 )
 PHASE2_IMPLEMENTATION_PATHS: Final = (
     Path("packages/web-ui/src/decision-support-v2/checker.ts"),
@@ -154,6 +163,9 @@ PHASE2_TEST_SOURCE_PATHS: Final = (
     Path("tests/raos_v2/browser-validation.mjs"),
     Path("tests/raos_v2/conftest.py"),
     Path("tests/raos_v2/phase3-local-validation.mjs"),
+    Path("tests/raos_v2/phase3-public-adversarial.mjs"),
+    Path("tests/raos_v2/phase3-public-validation.mjs"),
+    Path("tests/raos_v2/phase3-wordpress-runtime.php"),
     Path("tests/raos_v2/test_adapters_recorded.py"),
     Path("tests/raos_v2/test_browser_contract.py"),
     Path("tests/raos_v2/test_content_quality.py"),
@@ -163,7 +175,10 @@ PHASE2_TEST_SOURCE_PATHS: Final = (
     Path("tests/raos_v2/test_phase0_contracts.py"),
     Path("tests/raos_v2/test_phase3_artifacts.py"),
     Path("tests/raos_v2/test_phase3_browser_evidence.py"),
+    Path("tests/raos_v2/test_phase3_execution_operator.py"),
     Path("tests/raos_v2/test_phase3_local_validation_contract.py"),
+    Path("tests/raos_v2/test_phase3_php_runtime_contract.py"),
+    Path("tests/raos_v2/test_phase3_public_browser_contract.py"),
     Path("tests/raos_v2/test_phase3_public_capture.py"),
     Path("tests/raos_v2/test_phase3_publication.py"),
     Path("tests/raos_v2/test_phase3_wordpress_projection.py"),
@@ -187,6 +202,7 @@ PHASE2_SOURCE_PATHS: Final = (
 PHASE3_SOURCE_PATHS: Final = (
     PHASE3_EXTERNAL_STATE_PATH,
     PHASE3_LOCAL_BROWSER_EVIDENCE_PATH,
+    PHASE3_PUBLIC_OBSERVATION_PATH,
     *PHASE3_WORDPRESS_SOURCE_PATHS,
 )
 PHASE3_BROWSER_BOOTSTRAP_SOURCE_PATHS: Final = (
@@ -200,6 +216,7 @@ PHASE3_OUTPUT_PATHS: Final = (
     Path("changes/raos-v2/phase-3/production-backup-export-runbook.md"),
     PHASE3_ARTIFACT_ROOT / "raos-v2-decision-support.php",
     PHASE3_ARTIFACT_ROOT / "assets/decision-support.css",
+    PHASE3_ARTIFACT_ROOT / "cutover-binding.v1.json",
     PHASE3_ARTIFACT_ROOT / "plugin-manifest.v1.json",
     Path("changes/raos-v2/phase-3/preview/carry-on-suitcase-comparison/index.html"),
     Path("changes/raos-v2/phase-3/generated/post-content.html"),
@@ -222,10 +239,13 @@ PHASE3_OUTPUT_PATHS: Final = (
     Path("contracts/raos-v2/v2/preaction-binding.schema.json"),
     Path("contracts/raos-v2/v2/public-verification-receipt.schema.json"),
     Path("contracts/raos-v2/v2/public-browser-verification-receipt.schema.json"),
+    Path("contracts/raos-v2/v2/reissued-review-bundle.schema.json"),
+    Path("contracts/raos-v2/v2/wordpress-cutover-binding.schema.json"),
 )
 PHASE3_BROWSER_BOOTSTRAP_OUTPUT_PATHS: Final = (
     PHASE3_ARTIFACT_ROOT / "raos-v2-decision-support.php",
     PHASE3_ARTIFACT_ROOT / "assets/decision-support.css",
+    PHASE3_ARTIFACT_ROOT / "cutover-binding.v1.json",
     PHASE3_ARTIFACT_ROOT / "plugin-manifest.v1.json",
     Path("changes/raos-v2/phase-3/generated/post-content.html"),
     Path("changes/raos-v2/phase-3/preview/carry-on-suitcase-comparison/index.html"),
@@ -273,6 +293,7 @@ SOURCE_PATHS: Final = (
     *PHASE2_SOURCE_PATHS,
     *PHASE3_SOURCE_PATHS,
     Path("scripts/build_raos_v2_successor.py"),
+    Path("scripts/raos_v2_phase3_execution.py"),
     Path("scripts/raos_build_core.py"),
     Path("scripts/validate_raos_v2_successor.py"),
 )
@@ -585,7 +606,7 @@ def clarifications_document() -> dict[str, object]:
             },
             {
                 "id": "C-V2-015",
-                "decision": "Phase 3 adds a v2 real-content seal contract that requires an exact non-synthetic human-review receipt; the Phase 2 v1 synthetic-only seal remains unchanged",
+                "decision": "Phase 3 adds a v2 real-content local simulation-seal contract for an exact non-synthetic but unauthenticated owner assertion; the Phase 2 v1 synthetic-only seal remains unchanged and neither contract grants production approval authority",
             },
             {
                 "id": "C-V2-016",
@@ -620,6 +641,45 @@ def clarifications_document() -> dict[str, object]:
             {
                 "id": "C-V2-023",
                 "decision": "Phase 3 external-state input is a closed sanitized object at every nesting level and rejects unknown or secret-like fields",
+            },
+            {
+                "id": "C-V2-024",
+                "decision": "the Phase 3 post-action WordPress owner export uses overlay action ID V2-P3-EXT-POSTACTION-EXPORT; source EXT-014 remains reserved for destructive repository deletion",
+                "supersedes": "the conflicting Phase 3 use of EXT-014",
+            },
+            {
+                "id": "C-V2-025",
+                "decision": "the route-scoped presentation plugin may be activated only with an owner-armed cutover binding; it passes through only the exact bound legacy post bytes, projects only the exact bound sealed post bytes, and fails closed for disabled, missing, malformed, intermediate or drifted target content",
+                "rationale": "the two-step cutover keeps the existing article byte-exact before the approved content write while preventing an unbound activation or partial content update from rendering an ambiguous public state",
+                "supersedes": "the v0.4 complete-pass-through wording that allowed activation without an armed owner binding",
+            },
+            {
+                "id": "C-V2-026",
+                "decision": "the 2026-08-28 bounded public read is a sanitized unpaired observation only and has no pre-action, review, seal or publication acceptance authority",
+                "rationale": "no owner-held WordPress export was captured within the required five-minute pairing window",
+            },
+            {
+                "id": "C-V2-027",
+                "decision": "the fixed-target public browser recorder emits owner-held raw evidence with acceptance_authority=false; only a separately implemented independent recalculation may create an acceptance receipt",
+            },
+            {
+                "id": "C-V2-028",
+                "decision": "source and generated Phase 3 plugins require PHP lint and a fail-closed WordPress stub in required CI; those results remain local CI evidence and do not prove production WordPress compatibility",
+            },
+            {
+                "id": "C-V2-029",
+                "decision": "an unsigned Phase 3 review receipt is an unauthenticated owner assertion and may create only a local simulation package; it has no human-approval acceptance authority and cannot satisfy B-V2-040 or the Phase 3 exit gate",
+                "rationale": "reviewer_id plus caller-authored digests do not authenticate a human principal or an immutable artifact-specific decision",
+            },
+            {
+                "id": "C-V2-030",
+                "decision": "an ARMED WordPress cutover binding remains unavailable until a trusted artifact-specific approval verifier and fresh PRE_WRITE_EXPORT plus disabled dry-run verifier are implemented and bound; the repository-owned binding remains DEPLOYMENT_DISABLED",
+                "rationale": "preaction evidence and a simulation seal alone cannot enforce the final pre-write gate or authorize a production cutover",
+            },
+            {
+                "id": "C-V2-031",
+                "decision": "the unauthenticated simulation receipt persists only fixed non-personal reviewer_id=OWNER_ASSERTION_LOCAL and review_version=P3-OWNER-ASSERTION-V1; arbitrary external identity strings are rejected",
+                "rationale": "the local assertion has no approval authority, so retaining a person-identifying or caller-selected identity creates privacy risk without evidentiary value",
             },
         ],
     }
@@ -826,12 +886,16 @@ def public_url_inventory(capture: Mapping[str, object]) -> dict[str, object]:
         "schema": "RAOS_V2_PUBLIC_URL_INVENTORY_V1",
         "evidence_class": capture.get("public_observation_status"),
         "capture_contract": {
-            "scope": supporting.get("capture_scope")
-            if isinstance(supporting, dict)
-            else "UNAVAILABLE",
-            "maximum_urls": supporting.get("maximum_capture_urls")
-            if isinstance(supporting, dict)
-            else "UNAVAILABLE",
+            "scope": (
+                supporting.get("capture_scope")
+                if isinstance(supporting, dict)
+                else "UNAVAILABLE"
+            ),
+            "maximum_urls": (
+                supporting.get("maximum_capture_urls")
+                if isinstance(supporting, dict)
+                else "UNAVAILABLE"
+            ),
             "unlisted_sitemap_urls_are_silently_dropped": False,
         },
         "automatic_public_mutation": False,
@@ -1116,16 +1180,18 @@ def deprecation_ledger() -> dict[str, object]:
             "status": (
                 "NOT_APPLICABLE_RETAINED"
                 if decision == "KEEP"
-                else "SAFE_DEFAULT_PRESERVE_OR_DO_NOT_INTRODUCE"
-                if decision == "DEFER"
-                else "SUCCESSOR_DEFINED"
+                else (
+                    "SAFE_DEFAULT_PRESERVE_OR_DO_NOT_INTRODUCE"
+                    if decision == "DEFER"
+                    else "SUCCESSOR_DEFINED"
+                )
             ),
             "plan": row["migration"],
         }
         row["rollback"] = {
-            "status": "NOT_APPLICABLE_RETAINED"
-            if decision == "KEEP"
-            else "LOCAL_PLAN_ONLY",
+            "status": (
+                "NOT_APPLICABLE_RETAINED" if decision == "KEEP" else "LOCAL_PLAN_ONLY"
+            ),
             "plan": (
                 "asset remains retained; no retirement rollback is applicable"
                 if decision == "KEEP"
@@ -1750,9 +1816,11 @@ def route_registry() -> dict[str, object]:
                 "index_state": (
                     "PRESERVE_CURRENT"
                     if article_id == "A05"
-                    else "LOCAL_CANDIDATE_NOINDEX"
-                    if wave == 1
-                    else "PLANNED_LOCKED_NOINDEX"
+                    else (
+                        "LOCAL_CANDIDATE_NOINDEX"
+                        if wave == 1
+                        else "PLANNED_LOCKED_NOINDEX"
+                    )
                 ),
                 "phase": "PHASE_2_LOCAL" if wave == 1 else "POST_GATE",
             }
@@ -2143,8 +2211,7 @@ DATETIME_PATTERN: Final = (
     r"(?:\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
 )
 JST_DATETIME_PATTERN: Final = (
-    r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}"
-    r"(?:\.[0-9]+)?\+09:00$"
+    r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}" r"(?:\.[0-9]+)?\+09:00$"
 )
 
 
@@ -3192,6 +3259,8 @@ def phase3_preaction_binding_schema() -> dict[str, object]:
             "public_capture_sha256",
             "wordpress_export_sha256",
             "wordpress_export_bytes",
+            "owner_evidence_sha256",
+            "legacy_post_content_sha256",
         ),
         {
             "schema": {"const": "RAOS_V2_PHASE3_PREACTION_BINDING_V1"},
@@ -3236,6 +3305,14 @@ def phase3_preaction_binding_schema() -> dict[str, object]:
                 "pattern": HEX64_PATTERN,
             },
             "wordpress_export_bytes": {"type": "integer", "minimum": 1},
+            "owner_evidence_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "legacy_post_content_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
         },
     )
 
@@ -3532,29 +3609,27 @@ def phase3_human_review_receipt_schema() -> dict[str, object]:
             "candidate_digest",
             "payload_digest",
             "target_route",
+            "assertion_status",
+            "acceptance_authority",
         ),
         {
             "schema": {"const": "RAOS_V2_PHASE3_HUMAN_REVIEW_RECEIPT_V1"},
             "version": {"const": "1.0.0"},
-            "reviewer_id": {
-                "type": "string",
-                "pattern": r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
-            },
+            "reviewer_id": {"const": "OWNER_ASSERTION_LOCAL"},
             "reviewed_at": {
                 "type": "string",
                 "pattern": DATETIME_PATTERN,
                 "format": "date-time",
             },
-            "review_version": {
-                "type": "string",
-                "pattern": r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
-            },
+            "review_version": {"const": "P3-OWNER-ASSERTION-V1"},
             "correction_count": {"type": "integer", "minimum": 0},
             "accepted": {"const": True},
             "synthetic": {"const": False},
             "candidate_digest": {"type": "string", "pattern": HEX64_PATTERN},
             "payload_digest": {"type": "string", "pattern": HEX64_PATTERN},
             "target_route": {"const": "/carry-on-suitcase-comparison/"},
+            "assertion_status": {"const": "UNAUTHENTICATED_OWNER_ASSERTION"},
+            "acceptance_authority": {"const": False},
         },
     )
 
@@ -3690,6 +3765,8 @@ def phase3_publication_package_schema() -> dict[str, object]:
             "state",
             "review_candidate",
             "human_review_receipt",
+            "simulation_only",
+            "approval_acceptance_authority",
             "structured_data_expectation_sha256",
             "capabilities",
             "package_digest",
@@ -3702,6 +3779,8 @@ def phase3_publication_package_schema() -> dict[str, object]:
             "human_review_receipt": {
                 "$ref": "https://kurashinoshirube.com/contracts/raos-v2/v2/human-review-receipt.schema.json"
             },
+            "simulation_only": {"const": True},
+            "approval_acceptance_authority": {"const": False},
             "structured_data_expectation_sha256": {
                 "type": "string",
                 "pattern": HEX64_PATTERN,
@@ -3737,6 +3816,244 @@ def phase3_publication_package_schema() -> dict[str, object]:
                 "if": {"properties": {"state": {"const": "HUMAN_REVIEWED"}}},
                 "then": {"properties": {"package_digest": {"type": "null"}}},
             },
+        ],
+    )
+
+
+def phase3_reissued_review_bundle_schema() -> dict[str, object]:
+    publication_schema = phase3_publication_package_schema()
+    publication_properties = publication_schema.get("properties")
+    if not isinstance(publication_properties, dict):
+        fail("RAOS_V2_PHASE3_REISSUED_REVIEW_SCHEMA_INVALID")
+    review_candidate = publication_properties.get("review_candidate")
+    if not isinstance(review_candidate, dict):
+        fail("RAOS_V2_PHASE3_REISSUED_REVIEW_SCHEMA_INVALID")
+    source = {
+        "type": "object",
+        "required": [
+            "historical_review_candidate",
+            "historical_review_candidate_sha256",
+            "preaction_input",
+            "preaction_input_sha256",
+            "preaction_binding_sha256",
+        ],
+        "properties": {
+            "historical_review_candidate": {
+                "const": "changes/raos-v2/phase-3/generated/review-candidate.v1.json"
+            },
+            "historical_review_candidate_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "preaction_input": {
+                "type": "string",
+                "pattern": (
+                    r"^changes/raos-v2/recorded-inputs/phase3/"
+                    r"[A-Za-z0-9][A-Za-z0-9._-]*\.json$"
+                ),
+            },
+            "preaction_input_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "preaction_binding_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+        },
+        "additionalProperties": False,
+    }
+    review_request = {
+        "type": "object",
+        "required": [
+            "required_receipt_schema",
+            "candidate_digest",
+            "payload_digest",
+            "target_route",
+            "generic_approval_accepted",
+            "artifact_specific_review_required",
+        ],
+        "properties": {
+            "required_receipt_schema": {
+                "const": "RAOS_V2_PHASE3_HUMAN_REVIEW_RECEIPT_V1"
+            },
+            "candidate_digest": {"type": "string", "pattern": HEX64_PATTERN},
+            "payload_digest": {"type": "string", "pattern": HEX64_PATTERN},
+            "target_route": {"const": "/carry-on-suitcase-comparison/"},
+            "generic_approval_accepted": {"const": False},
+            "artifact_specific_review_required": {"const": True},
+        },
+        "additionalProperties": False,
+    }
+    return _v2_object_schema(
+        "reissued-review-bundle",
+        (
+            "schema",
+            "version",
+            "classification",
+            "state",
+            "reissued_at",
+            "reissue_age_milliseconds",
+            "public_capture_age_milliseconds",
+            "owner_export_age_milliseconds",
+            "maximum_reissue_age_seconds",
+            "source",
+            "review_candidate",
+            "candidate_digest",
+            "payload_digest",
+            "review_request",
+            "capabilities",
+            "external_actions",
+            "review_bundle_sha256",
+        ),
+        {
+            "schema": {"const": "RAOS_V2_PHASE3_REISSUED_REVIEW_BUNDLE_V1"},
+            "version": {"const": "1.0.0"},
+            "classification": {
+                "const": "LOCAL_REISSUE_FOR_ARTIFACT_SPECIFIC_HUMAN_REVIEW"
+            },
+            "state": {"const": "READY_FOR_ARTIFACT_SPECIFIC_HUMAN_REVIEW"},
+            "reissued_at": {
+                "type": "string",
+                "pattern": DATETIME_PATTERN,
+                "format": "date-time",
+            },
+            "reissue_age_milliseconds": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 300000,
+            },
+            "public_capture_age_milliseconds": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 300000,
+            },
+            "owner_export_age_milliseconds": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 300000,
+            },
+            "maximum_reissue_age_seconds": {"const": 300},
+            "source": source,
+            "review_candidate": deepcopy(review_candidate),
+            "candidate_digest": {"type": "string", "pattern": HEX64_PATTERN},
+            "payload_digest": {"type": "string", "pattern": HEX64_PATTERN},
+            "review_request": review_request,
+            "capabilities": {
+                "type": "object",
+                "required": ["network", "wordpress_read", "wordpress_write", "publish"],
+                "properties": {
+                    "network": {"const": False},
+                    "wordpress_read": {"const": False},
+                    "wordpress_write": {"const": False},
+                    "publish": {"const": False},
+                },
+                "additionalProperties": False,
+            },
+            "external_actions": {"const": "NOT_EXECUTED"},
+            "review_bundle_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+        },
+    )
+
+
+def phase3_wordpress_cutover_binding_schema() -> dict[str, object]:
+    """Closed deployment guard binding for the one Phase 3 WordPress route."""
+
+    digest_or_unavailable = {
+        "oneOf": [
+            {"type": "string", "pattern": HEX64_PATTERN},
+            {"const": "UNAVAILABLE"},
+        ]
+    }
+    return _v2_object_schema(
+        "wordpress-cutover-binding",
+        ("schema", "version", "state", "target", "hashes"),
+        {
+            "schema": {"const": "RAOS_V2_WORDPRESS_CUTOVER_BINDING_V1"},
+            "version": {"const": "1.0.0"},
+            "state": {
+                "enum": [
+                    "DEPLOYMENT_DISABLED",
+                    "ARMED_EXACT_LEGACY_OR_SEALED",
+                ]
+            },
+            "target": {
+                "type": "object",
+                "required": ["article_id", "post_id", "post_slug", "route"],
+                "properties": {
+                    "article_id": {"const": "A05"},
+                    "post_id": {"type": "integer", "minimum": 0},
+                    "post_slug": {"const": "carry-on-suitcase-comparison"},
+                    "route": {"const": "/carry-on-suitcase-comparison/"},
+                },
+                "additionalProperties": False,
+            },
+            "hashes": {
+                "type": "object",
+                "required": [
+                    "legacy_post_content_sha256",
+                    "sealed_post_content_sha256",
+                    "source_owner_export_sha256",
+                    "preaction_binding_sha256",
+                    "sealed_package_sha256",
+                ],
+                "properties": {
+                    "legacy_post_content_sha256": deepcopy(digest_or_unavailable),
+                    "sealed_post_content_sha256": {
+                        "type": "string",
+                        "pattern": HEX64_PATTERN,
+                    },
+                    "source_owner_export_sha256": deepcopy(digest_or_unavailable),
+                    "preaction_binding_sha256": deepcopy(digest_or_unavailable),
+                    "sealed_package_sha256": deepcopy(digest_or_unavailable),
+                },
+                "additionalProperties": False,
+            },
+        },
+        all_of=[
+            {
+                "if": {
+                    "properties": {"state": {"const": "DEPLOYMENT_DISABLED"}},
+                    "required": ["state"],
+                },
+                "then": {
+                    "properties": {
+                        "target": {"properties": {"post_id": {"const": 0}}},
+                        "hashes": {
+                            "properties": {
+                                name: {"const": "UNAVAILABLE"}
+                                for name in (
+                                    "legacy_post_content_sha256",
+                                    "source_owner_export_sha256",
+                                    "preaction_binding_sha256",
+                                    "sealed_package_sha256",
+                                )
+                            }
+                        },
+                    }
+                },
+                "else": {
+                    "properties": {
+                        "target": {
+                            "properties": {"post_id": {"type": "integer", "minimum": 1}}
+                        },
+                        "hashes": {
+                            "properties": {
+                                name: {"type": "string", "pattern": HEX64_PATTERN}
+                                for name in (
+                                    "legacy_post_content_sha256",
+                                    "source_owner_export_sha256",
+                                    "preaction_binding_sha256",
+                                    "sealed_package_sha256",
+                                )
+                            }
+                        },
+                    }
+                },
+            }
         ],
     )
 
@@ -4258,9 +4575,7 @@ def phase3_public_verification_receipt_schema() -> dict[str, object]:
                 "type": "string",
                 "pattern": HEX64_PATTERN,
             },
-            "resource_change_status": {
-                "const": "NO_UNAPPROVED_NEW_TRACKED_RESOURCE"
-            },
+            "resource_change_status": {"const": "NO_UNAPPROVED_NEW_TRACKED_RESOURCE"},
             "plugin_stylesheet_url": {
                 "const": (
                     "https://kurashinoshirube.com/wp-content/plugins/"
@@ -4935,9 +5250,11 @@ def effective_traceability(
             implementation_status = (
                 "VERIFIED_LOCAL_RECORDED"
                 if local_gate_passed
-                else "AWAITING_LOCAL_TEST_GATE"
-                if number == 34
-                else "IMPLEMENTED_LOCAL_PENDING_GATE"
+                else (
+                    "AWAITING_LOCAL_TEST_GATE"
+                    if number == 34
+                    else "IMPLEMENTED_LOCAL_PENDING_GATE"
+                )
             )
         elif number in {35, 36, 38, 39}:
             implementation_status = (
@@ -4968,11 +5285,11 @@ def effective_traceability(
         base_phases = (
             ["P0", "P1", "P2"]
             if number == 51
-            else ["P0"]
-            if number in {*range(1, 7), 40}
-            else ["P1"]
-            if 7 <= number <= 19
-            else ["P2"]
+            else (
+                ["P0"]
+                if number in {*range(1, 7), 40}
+                else ["P1"] if 7 <= number <= 19 else ["P2"]
+            )
         )
         phase3_test_numbers = {4, 5, 8, 10, 23, *range(35, 47), 51}
         effective["effective_phases"] = [
@@ -5124,16 +5441,20 @@ def phase1_validation_document(
         "schema": "RAOS_V2_PHASE1_VALIDATION_V1",
         "status": "GENERATED_CONTRACTS_VALIDATED",
         "checks": {
-            "one_wedge": product.get("wedge", {}).get("single_wedge") is True
-            if isinstance(product.get("wedge"), dict)
-            else False,
+            "one_wedge": (
+                product.get("wedge", {}).get("single_wedge") is True
+                if isinstance(product.get("wedge"), dict)
+                else False
+            ),
             "portfolio_count": len(portfolio) if isinstance(portfolio, list) else -1,
-            "template_count": len(product.get("templates", []))
-            if isinstance(product.get("templates"), list)
-            else -1,
-            "route_count_including_home": len(route_rows)
-            if isinstance(route_rows, list)
-            else -1,
+            "template_count": (
+                len(product.get("templates", []))
+                if isinstance(product.get("templates"), list)
+                else -1
+            ),
+            "route_count_including_home": (
+                len(route_rows) if isinstance(route_rows, list) else -1
+            ),
             "schema_count": len(schemas),
             "public_mutation_authorized": False,
             "network_used_by_generator": False,
@@ -5601,10 +5922,12 @@ def phase3_plugin_artifact_documents(
         "raos-v2-decision-support"
     )
     source_manifest_path = source_root / "plugin-manifest.v1.json"
+    source_binding_path = source_root / "cutover-binding.v1.json"
     source_php_path = source_root / "raos-v2-decision-support.php"
     source_css_path = source_root / "assets/decision-support.css"
     source_manifest = phase3_sources.get(source_manifest_path)
-    if not isinstance(source_manifest, dict):
+    source_binding = phase3_sources.get(source_binding_path)
+    if not isinstance(source_manifest, dict) or not isinstance(source_binding, dict):
         fail("RAOS_V2_PHASE3_WORDPRESS_MANIFEST_INVALID")
     try:
         php = (ROOT / source_php_path).read_bytes()
@@ -5616,6 +5939,7 @@ def phase3_plugin_artifact_documents(
         "article_id": "A05",
         "exact_route": "/carry-on-suitcase-comparison/",
         "exact_post_slug": "carry-on-suitcase-comparison",
+        "expected_post_id": "CUTOVER_BINDING_REQUIRED",
         "required_package_marker": "RAOS_V2_A05_POST_CONTENT_V1",
         "required_post_content_sha256": post_content_sha256,
         "rendered_content_envelope": "RAOS_V2_A05_ENVELOPE_V1",
@@ -5623,9 +5947,107 @@ def phase3_plugin_artifact_documents(
     expected_php_binding = (
         f"const RAOS_V2_DECISION_SUPPORT_POST_CONTENT_SHA256 = '{post_content_sha256}';"
     ).encode("ascii")
+    expected_cutover_binding = {
+        "schema": "RAOS_V2_WORDPRESS_CUTOVER_BINDING_V1",
+        "version": "1.0.0",
+        "state": "DEPLOYMENT_DISABLED",
+        "target": {
+            "article_id": "A05",
+            "post_id": 0,
+            "post_slug": "carry-on-suitcase-comparison",
+            "route": "/carry-on-suitcase-comparison/",
+        },
+        "hashes": {
+            "legacy_post_content_sha256": "UNAVAILABLE",
+            "sealed_post_content_sha256": post_content_sha256,
+            "source_owner_export_sha256": "UNAVAILABLE",
+            "preaction_binding_sha256": "UNAVAILABLE",
+            "sealed_package_sha256": "UNAVAILABLE",
+        },
+    }
+    expected_cutover_contract = {
+        "adjacent_file": "cutover-binding.v1.json",
+        "required_schema": "RAOS_V2_WORDPRESS_CUTOVER_BINDING_V1",
+        "required_version": "1.0.0",
+        "tracked_state": "DEPLOYMENT_DISABLED",
+        "activation_state": "ARMED_EXACT_LEGACY_OR_SEALED",
+        "source": "PREACTION_OWNER_EXPORT",
+        "required_hashes": [
+            "legacy_post_content_sha256",
+            "preaction_binding_sha256",
+            "sealed_package_sha256",
+            "sealed_post_content_sha256",
+            "source_owner_export_sha256",
+        ],
+    }
+    expected_runtime = {
+        "allowed_effect": (
+            "LEGACY_FILTERED_PASSTHROUGH_OR_SEALED_RAW_ENQUEUE_AND_ENVELOPE_"
+            "OTHERWISE_BLOCK_TARGET"
+        ),
+        "activation_gate": "REPLACE_BINDING_THEN_ACTIVATE_BEFORE_SEALED_WRITE",
+        "admin_ui": False,
+        "content_filter": (
+            "EXACT_RAW_DATABASE_STATE_FAIL_CLOSED_EARLIER_SEALED_FILTER_OUTPUT_"
+            "DISCARDED"
+        ),
+        "content_context_gate": (
+            "SINGULAR_TARGET_REQUEST_VERIFIED_CURRENT_POST_MAIN_QUERY_MAIN_LOOP"
+        ),
+        "content_filter_position": "TERMINATE_503_IF_NOT_LAST_AT_PHP_INT_MAX",
+        "cron": False,
+        "database_write": False,
+        "disabled_binding_behavior": "BLOCK_TARGET_ROUTE",
+        "exact_legacy_behavior": (
+            "PRESERVE_EXISTING_FILTERED_CONTENT_WITHOUT_CSS_OR_ENVELOPE"
+        ),
+        "exact_sealed_behavior": (
+            "DISCARD_FILTERED_CANDIDATE_AND_ENVELOPE_EXACT_RAW_REVIEWED_"
+            "FRAGMENT_WITH_CSS"
+        ),
+        "inactive_behavior": (
+            "NO_RUNTIME_EFFECT_WRITE_BEFORE_ACTIVATION_IS_UNPROTECTED_AND_" "PROHIBITED"
+        ),
+        "ambiguous_content_behavior": "BLOCK_TARGET_ROUTE",
+        "intermediate_content_behavior": "BLOCK_TARGET_ROUTE",
+        "network_request": False,
+        "option_write": False,
+        "post_render_verification": "PUBLIC_CAPTURE_AND_BROWSER_RECEIPT_REQUIRED",
+        "publication_capability": False,
+        "rest_route": False,
+        "secondary_content_behavior": (
+            "PRESERVE_FILTERED_INPUT_ONLY_FOR_VERIFIED_DIFFERENT_CURRENT_POST"
+        ),
+        "safe_cutover_order": [
+            "REPLACE_DISABLED_BINDING_WITH_OWNER_EXPORT_BOUND_ARTIFACT",
+            "ACTIVATE_PLUGIN_WHILE_EXACT_LEGACY_BYTES_REMAIN",
+            "WRITE_EXACT_SEALED_DATABASE_BYTES",
+        ],
+        "telemetry": False,
+    }
     if (
-        source_manifest.get("target") != expected_target
+        source_manifest.get("schema")
+        != "RAOS_V2_WORDPRESS_PRESENTATION_PLUGIN_INPUT_V1"
+        or source_manifest.get("plugin_slug") != "raos-v2-decision-support"
+        or source_manifest.get("version") != "0.6.0"
+        or source_manifest.get("target") != expected_target
+        or source_manifest.get("cutover_binding") != expected_cutover_contract
+        or source_manifest.get("runtime") != expected_runtime
+        or source_binding != expected_cutover_binding
         or php.count(expected_php_binding) != 1
+        or php.count(b"const RAOS_V2_DECISION_SUPPORT_VERSION = '0.6.0';") != 1
+        or b"trim($post->post_content)" in php
+        or b"return $content;" not in php
+        or b"return $envelope_open . $post->post_content . '</div>';" not in php
+        or b"raos_v2_decision_support_cutover_binding()" not in php
+        or b"raos_v2_decision_support_main_content_post()" not in php
+        or b"raos_v2_decision_support_current_content_post()" not in php
+        or b"is_main_query()" not in php
+        or b"in_the_loop()" not in php
+        or b"get_the_ID()" not in php
+        or b"raos_v2_decision_support_enforce_final_content_filter()" not in php
+        or php.count(b"wp_die(") != 1
+        or b"array('response' => 503, 'exit' => true)" not in php
     ):
         fail("RAOS_V2_PHASE3_WORDPRESS_CONTENT_BINDING_INVALID")
     rows = [
@@ -5635,6 +6057,11 @@ def phase3_plugin_artifact_documents(
             "sha256": sha256(php),
         },
         {
+            "path": "cutover-binding.v1.json",
+            "bytes": len(canonical_json_bytes(source_binding)),
+            "sha256": sha256(canonical_json_bytes(source_binding)),
+        },
+        {
             "path": "assets/decision-support.css",
             "bytes": len(css),
             "sha256": sha256(css),
@@ -5642,7 +6069,7 @@ def phase3_plugin_artifact_documents(
     ]
     manifest = {
         **deepcopy(source_manifest),
-        "classification": "DEPLOYABLE_LOCAL_ARTIFACT_NOT_DEPLOYED",
+        "classification": "LOCAL_ARTIFACT_TEMPLATE_REQUIRES_OWNER_CUTOVER_BINDING",
         "files": rows,
         "artifact_sha256": sha256(canonical_json_bytes({"files": rows})),
         "source_root": source_root.as_posix(),
@@ -5655,9 +6082,10 @@ def phase3_plugin_artifact_documents(
     return {
         PHASE3_ARTIFACT_ROOT / "raos-v2-decision-support.php": php,
         PHASE3_ARTIFACT_ROOT / "assets/decision-support.css": css,
-        PHASE3_ARTIFACT_ROOT / "plugin-manifest.v1.json": canonical_json_bytes(
-            manifest
-        ),
+        PHASE3_ARTIFACT_ROOT
+        / "cutover-binding.v1.json": canonical_json_bytes(source_binding),
+        PHASE3_ARTIFACT_ROOT
+        / "plugin-manifest.v1.json": canonical_json_bytes(manifest),
     }
 
 
@@ -5851,7 +6279,7 @@ def validate_phase2_source_inputs() -> dict[Path, object]:
     }
     discovered_tests = {
         path.relative_to(ROOT)
-        for pattern in ("*.py", "*.mjs")
+        for pattern in ("*.py", "*.mjs", "*.php")
         for path in (ROOT / "tests/raos_v2").glob(pattern)
         if path.is_file() and not path.is_symlink()
     }
@@ -5953,14 +6381,19 @@ def _read_phase3_source_paths(paths: Sequence[Path]) -> dict[Path, object]:
 
 def _validate_phase3_wordpress_manifest(parsed: Mapping[Path, object]) -> None:
     phase3_external_state()
-    manifest_path = next(
-        path for path in PHASE3_WORDPRESS_SOURCE_PATHS if path.name.endswith(".json")
+    manifest_path = Path(
+        "packages/web-ui/src/decision-support-v2/wordpress/plugin/"
+        "raos-v2-decision-support/plugin-manifest.v1.json"
     )
     manifest = parsed.get(manifest_path)
     if (
         not isinstance(manifest, dict)
         or manifest.get("schema") != "RAOS_V2_WORDPRESS_PRESENTATION_PLUGIN_INPUT_V1"
-        or manifest.get("installation") != "EXTERNAL_HUMAN_ACTION_NOT_EXECUTED"
+        or manifest.get("installation")
+        != (
+            "INSTALL_INACTIVE_REPLACE_BINDING_ACTIVATE_THEN_WRITE_"
+            "EXTERNAL_HUMAN_ACTIONS_NOT_EXECUTED"
+        )
     ):
         fail("RAOS_V2_PHASE3_WORDPRESS_MANIFEST_INVALID")
     runtime = manifest.get("runtime")
@@ -5995,7 +6428,11 @@ def validate_phase3_source_inputs() -> dict[Path, object]:
     """Strictly bind all Phase 3 sources after browser evidence exists."""
 
     parsed = validate_phase3_browser_bootstrap_inputs()
-    parsed.update(_read_phase3_source_paths((PHASE3_LOCAL_BROWSER_EVIDENCE_PATH,)))
+    parsed.update(
+        _read_phase3_source_paths(
+            (PHASE3_LOCAL_BROWSER_EVIDENCE_PATH, PHASE3_PUBLIC_OBSERVATION_PATH)
+        )
+    )
     return parsed
 
 
@@ -7453,9 +7890,11 @@ def local_evidence_bundle_document(
             else "GENERATED_LOCAL_PENDING_COMBINED_EVIDENCE_GATE"
         ),
         "gate_status": gate_status,
-        "source_head": capture.get("repository", {}).get("head")
-        if isinstance(capture.get("repository"), dict)
-        else None,
+        "source_head": (
+            capture.get("repository", {}).get("head")
+            if isinstance(capture.get("repository"), dict)
+            else None
+        ),
         "source_inputs": _phase2_input_inventory(),
         "generated_artifacts": artifact_rows,
         "tests": {
@@ -7714,16 +8153,80 @@ exactly, keep the historical candidate unsealable and stop.
    be overwritten.
 5. Store raw exports in recoverable owner-controlled storage. Create only a
    sanitized receipt containing opaque hashes, version identifiers, field names
-   and the exact target binding for review by the local generator.
+   and the exact target binding for review by the local generator. The local,
+   network-free derivation command is:
+
+   ```text
+   python scripts/raos_v2_phase3_execution.py derive-preaction \
+     --public-capture changes/raos-v2/recorded-inputs/phase3/<capture>.json \
+     --owner-export /absolute/owner/storage/wordpress-owner-export.json \
+     --restore-artifact /absolute/owner/storage/restore-artifact \
+     --theme-plugin-artifact /absolute/owner/storage/theme-plugin-artifact \
+     --seo-state /absolute/owner/storage/seo-state \
+     --redirect-map /absolute/owner/storage/redirect-map \
+     --sitemap-state /absolute/owner/storage/sitemap-state \
+     --output changes/raos-v2/recorded-inputs/phase3/<preaction-input>.json
+   ```
+
+   Every owner-held path must resolve to a nonsymlink regular file outside the
+   repository. The command is create-once, rejects a capture/export pair more
+   than five minutes apart and persists no raw WordPress field value or external
+   path. The currently recorded public observation is deliberately unpaired and
+   cannot be substituted for this receipt.
 
 6. Reissue the local update/review candidate from the verified pre-action
-   binding. Only that reissued digest may be given to the human reviewer.
-7. After owner review and local sealing, create `PRE_WRITE_EXPORT` and its
+   binding. Only that reissued digest may be given to the human reviewer. Run:
+
+   ```text
+   python scripts/raos_v2_phase3_execution.py reissue-candidate \
+     --preaction-input changes/raos-v2/recorded-inputs/phase3/<preaction-input>.json \
+     --output changes/raos-v2/recorded-inputs/phase3/<reissued-review-bundle>.json
+   ```
+
+   The reissue is local and create-once, rejects pre-action evidence older than
+   five minutes, reconstructs the historical candidate through the versioned
+   domain contract and leaves all network/WordPress/publication capabilities
+   false. The bundle is independently verified against
+   `contracts/raos-v2/v2/reissued-review-bundle.schema.json`, the current
+   generator-owned candidate and the exact pre-action input. A generic
+   conversation approval is not an artifact-specific receipt. The current JSON
+   receipt has no trusted signature or approval source: even with
+   `accepted=true` it is classified `UNAUTHENTICATED_OWNER_ASSERTION` with
+   `acceptance_authority=false`. The identity-bearing fields are fixed to
+   `reviewer_id=OWNER_ASSERTION_LOCAL` and
+   `review_version=P3-OWNER-ASSERTION-V1`; a name, email or caller-selected ID is
+   rejected rather than persisted. It may create only a simulation seal. After
+   the owner creates that schema-valid assertion, seal locally with:
+
+   ```text
+   python scripts/raos_v2_phase3_execution.py seal-candidate \
+     --review-bundle changes/raos-v2/recorded-inputs/phase3/<reissued-review-bundle>.json \
+     --human-review-receipt /absolute/owner/storage/human-review-receipt.json \
+     --output changes/raos-v2/recorded-inputs/phase3/<sealed-simulation-package>.json
+   ```
+
+   The seal command has no network or WordPress capability and rejects a
+   synthetic, stale, schema-mismatched or digest-mismatched assertion. Its
+   package is explicitly `simulation_only=true` and
+   `approval_acceptance_authority=false`; it never satisfies human approval,
+   public-write authority or the Phase 3 exit. The tracked plugin binding stays
+   `DEPLOYMENT_DISABLED`; never hand-edit or deploy it as armed.
+
+   `derive-cutover-binding` is deliberately fail-closed. It independently
+   reconstructs any caller-supplied sealed package through the same domain seal
+   blockers, then returns
+   `RAOS_V2_PHASE3_CUTOVER_PREWRITE_EVIDENCE_REQUIRED`. It cannot emit or certify
+   `ARMED_EXACT_LEGACY_OR_SEALED` until a separately designed trusted
+   artifact-specific approval source plus fresh post-approval `PRE_WRITE_EXPORT`
+   and disabled-plugin dry-run verifiers are all implemented. A caller-authored
+   digest or JSON receipt cannot substitute for any of them.
+7. After the local simulation seal, create `PRE_WRITE_EXPORT` and its
    disabled dry-run receipt. This pre-write export must bind the existing
    field hashes, sealed pre-action digest and same current body, be no older than
-   five minutes at evaluation and be captured after the human review. Any
+   five minutes at evaluation and be captured after the owner assertion. Any
    intervening change requires a new pre-action binding, candidate reissue and
-   review. It is not post-publication evidence.
+   assertion. It is not post-publication evidence and the current operator does
+   not consume it to arm the plugin. Keep the binding disabled and stop.
 
 If any field, restore byte sequence, target identity or checksum is unavailable,
 record `UNAVAILABLE` and stop. Missing data is never equivalent to an empty field.
@@ -7731,7 +8234,23 @@ record `UNAVAILABLE` and stop. Missing data is never equivalent to an empty fiel
 ## Deploy, preview and metadata gate
 
 The route-scoped plugin renders CSS and the exact content-verification envelope;
-it does not generate JSON-LD. The candidate therefore depends on the existing
+it does not generate JSON-LD. Plugin version 0.6.0 models one future safe cutover
+order, but the trusted approval/pre-write verifier needed to create its armed
+artifact is not implemented. Do not activate or write. If that verifier is
+implemented in a later approved phase, the order is: install inactive,
+atomically replace the disabled adjacent binding with the independently verified
+owner-export-bound artifact, activate while the exact legacy database bytes
+still remain, and only then write the exact sealed bytes.
+The exact legacy state preserves the existing filtered response without V2 CSS;
+the exact sealed state discards earlier filter output and envelopes only the
+reviewed raw fragment. Disabled, missing, partial, intermediate or drifted
+states block the target. Writing sealed bytes before activation is prohibited
+because an inactive plugin cannot protect the route. A content filter registered after RAOS at `PHP_INT_MAX`
+terminates only the target request with a fixed 503 before the later callback
+can mutate it. V2 projection is limited to the exact current target post inside
+the singular main query's main loop. Only a verified different current post is
+treated as a secondary `the_content` call and preserves its filtered input;
+missing, ambiguous or out-of-main-loop target context is blocked. The candidate depends on the existing
 Yoast or single metadata-owner configuration. Before publication, a nonpublic
 WordPress preview must prove the
 exact `Article`, `BreadcrumbList`, `Organization` and `WebSite` graph required by
@@ -7763,12 +8282,14 @@ public read-only browser receipt at 390, 768 and 1440px. It must bind the public
 body, sealed package and deployed plugin hashes while checking computed
 disclosure/blocked-CTA visibility, keyboard use, 200% zoom, axe WCAG 2.2 AA and
 resource/network behavior. Raw capture and screenshot bytes must remain in
-owner-controlled storage outside Git. A future independent recorder/verifier
-must recalculate the public HTTP receipt digest, resource manifest, screenshot
-bytes/hashes and the harness, browser binary and exact command hashes. That
-validator is not implemented here: the schema is classified
-`UNVERIFIED_EXTERNAL_TEMPLATE_NO_ACCEPTANCE_AUTHORITY`, the gate is
-`REQUIRED_VALIDATOR_NOT_IMPLEMENTED`, and Phase 3 stays `BLOCKED_EXTERNAL`.
+owner-controlled storage outside Git. The local public-read-only recorder is
+implemented in `tests/raos_v2/phase3-public-validation.mjs`; its raw receipt is
+explicitly non-authoritative and cannot complete Phase 3. An independent
+acceptance verifier must still recalculate the public HTTP receipt digest,
+resource manifest, screenshot bytes/hashes and the harness, browser binary and
+exact command hashes. Until that independent receipt exists, the generated
+acceptance schema remains an unverified template and Phase 3 stays
+`BLOCKED_EXTERNAL`.
 
 ## Restore rehearsal and triggers
 
@@ -7874,7 +8395,8 @@ def phase3_seo_change_plan_document(
         "preconditions": [
             "fresh bounded public read-only capture",
             "recoverable exact WordPress export binding",
-            "non-synthetic human review receipt and valid package seal",
+            "authenticated artifact-specific approval and semantically valid package seal",
+            "fresh PRE_WRITE_EXPORT plus disabled-plugin dry-run bound by an independent verifier",
             "one-H1 and visible/structured-data parity check",
             (
                 "exact Yoast/metadata-owner Article, BreadcrumbList, "
@@ -8067,6 +8589,18 @@ def phase3_external_action_template_document(
                         external_state, "wordpress_nonpublic_preview"
                     ),
                 },
+                "production_plugin_installation": (
+                    "INACTIVE_WITH_DEPLOYMENT_DISABLED_BINDING"
+                ),
+                "production_cutover_order": [
+                    "ATOMICALLY_REPLACE_WITH_OWNER_EXPORT_BOUND_BINDING",
+                    "ACTIVATE_WHILE_EXACT_LEGACY_DATABASE_BYTES_REMAIN",
+                    "WRITE_EXACT_SEALED_DATABASE_BYTES",
+                ],
+                "production_plugin_activation_gate": (
+                    "EXACT_LEGACY_DATABASE_BYTES_AND_VERIFIED_ARMED_BINDING"
+                ),
+                "intermediate_state_behavior": "BLOCK_TARGET_ROUTE_AND_ROLLBACK",
                 "structured_data_gate": {
                     "test_id": "T-V2-036",
                     "status": "NOT_EXECUTED_EXTERNAL_BLOCKER",
@@ -8089,7 +8623,7 @@ def phase3_external_action_template_document(
             {
                 "sequence": 7,
                 "action": "POST_ACTION_OWNER_EXPORT",
-                "external_action_id": "EXT-014",
+                "external_action_id": "V2-P3-EXT-POSTACTION-EXPORT",
                 "status": phase3_external_status(
                     external_state, "post_action_wordpress_export"
                 ),
@@ -8132,10 +8666,12 @@ def phase3_external_action_template_document(
             {
                 "sequence": 9,
                 "action": "PUBLIC_BROWSER_VERIFICATION",
-                "status": "REQUIRED_VALIDATOR_NOT_IMPLEMENTED",
+                "status": "RAW_RECORDER_IMPLEMENTED_ACCEPTANCE_VERIFIER_REQUIRED",
                 "required_receipt_schema": (
                     "RAOS_V2_PHASE3_PUBLIC_BROWSER_VERIFICATION_RECEIPT_V1"
                 ),
+                "raw_receipt_schema": ("RAOS_V2_PHASE3_PUBLIC_BROWSER_RAW_RECEIPT_V1"),
+                "recorder": "tests/raos_v2/phase3-public-validation.mjs",
                 "required_viewport_widths": [390, 768, 1440],
                 "boundary": "SEPARATELY_APPROVED_PUBLIC_READ_ONLY_BROWSER",
                 "acceptance_authority": False,
@@ -8193,8 +8729,9 @@ def phase3_human_review_request_document(
             "The exact derived JSON-LD expectation matches the title, description and canonical fields; Yoast or the current metadata owner must be externally verified because the local plugin emits no JSON-LD.",
         ],
         "reviewer_identity_rule": (
-            "Use a stable non-personal machine identifier in the sanitized receipt; "
-            "do not commit a name, email or credential."
+            "Use exactly reviewer_id=OWNER_ASSERTION_LOCAL and "
+            "review_version=P3-OWNER-ASSERTION-V1; arbitrary identities, names, "
+            "emails and credentials are rejected and must never be committed."
         ),
         "failure": "KEEP_EVIDENCE_COMPLETE_AND_DO_NOT_SEAL",
         "candidate_reissue": "BLOCKED_PENDING_VERIFIED_PREACTION_BINDING",
@@ -8359,6 +8896,44 @@ def validated_phase3_local_browser_evidence(
     return result
 
 
+def validated_phase3_public_observation(
+    parsed: Mapping[Path, object],
+) -> dict[str, object]:
+    """Bind one sanitized public read without promoting it to preaction evidence."""
+
+    value = parsed.get(PHASE3_PUBLIC_OBSERVATION_PATH)
+    if not isinstance(value, dict):
+        fail("RAOS_V2_PHASE3_PUBLIC_OBSERVATION_INPUT_INVALID")
+    try:
+        observation, _captured_at, observed_at = _phase3_capture_observation(
+            value, code="RAOS_V2_PHASE3_PUBLIC_OBSERVATION_INPUT_INVALID"
+        )
+    except ValidationFailure:
+        fail("RAOS_V2_PHASE3_PUBLIC_OBSERVATION_INPUT_INVALID")
+    if (
+        observation.get("status") != 200
+        or observation.get("redirect_chain") != []
+        or observation.get("canonical")
+        != "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+        or observation.get("canonical_tag_count") != 1
+        or observation.get("sitemap_membership") is not True
+        or observation.get("body_storage") != "DISCARDED_AFTER_HASH"
+        or value.get("public_observation_status") != "PUBLIC_READ_ONLY"
+        or value.get("external_write_actions") != "NOT_EXECUTED"
+    ):
+        fail("RAOS_V2_PHASE3_PUBLIC_OBSERVATION_INPUT_INVALID")
+    return {
+        "classification": "SANITIZED_PUBLIC_READ_ONLY_UNPAIRED",
+        "status": "PUBLIC_READ_ONLY",
+        "observed_at": observed_at.isoformat(),
+        "semantic_sha256": semantic_json_sha256(value),
+        "body_sha256": observation.get("body_sha256"),
+        "owner_export_pairing": "NOT_EXECUTED",
+        "preaction_acceptance_authority": False,
+        "external_write": "NOT_EXECUTED",
+    }
+
+
 def phase3_validation_document(
     *,
     projection: Mapping[str, object],
@@ -8369,6 +8944,7 @@ def phase3_validation_document(
     external_state: Mapping[str, object],
     schemas: Mapping[Path, object],
     browser_evidence: Mapping[str, object],
+    public_observation: Mapping[str, object],
     publication_closure_verified: bool,
 ) -> dict[str, object]:
     post_content = projection.get("post_content")
@@ -8384,9 +8960,27 @@ def phase3_validation_document(
         "preaction-binding.schema.json",
         "public-verification-receipt.schema.json",
         "public-browser-verification-receipt.schema.json",
+        "reissued-review-bundle.schema.json",
+        "wordpress-cutover-binding.schema.json",
     }
     assembly_text = local_assembly.decode("utf-8")
     browser_verification = browser_evidence.get("verification")
+    try:
+        plugin_php = plugin_documents[
+            PHASE3_ARTIFACT_ROOT / "raos-v2-decision-support.php"
+        ].decode("utf-8")
+        execution_operator = (ROOT / "scripts/raos_v2_phase3_execution.py").read_text(
+            encoding="utf-8"
+        )
+        public_browser_recorder = (
+            ROOT / "tests/raos_v2/phase3-public-validation.mjs"
+        ).read_text(encoding="utf-8")
+        php_runtime_harness = (
+            ROOT / "tests/raos_v2/phase3-wordpress-runtime.php"
+        ).read_text(encoding="utf-8")
+        required_ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    except KeyError, OSError, UnicodeError:
+        fail("RAOS_V2_PHASE3_EXECUTION_TOOLING_MISSING")
     checks = {
         "publication_authority_and_payload_closed": publication_closure_verified,
         "one_existing_route": (
@@ -8434,8 +9028,57 @@ def phase3_validation_document(
         == {
             PHASE3_ARTIFACT_ROOT / "raos-v2-decision-support.php",
             PHASE3_ARTIFACT_ROOT / "assets/decision-support.css",
+            PHASE3_ARTIFACT_ROOT / "cutover-binding.v1.json",
             PHASE3_ARTIFACT_ROOT / "plugin-manifest.v1.json",
         },
+        "plugin_activation_is_fail_closed": (
+            "cutover order is binding replacement, activation" in plugin_php
+            and 'data-raos-v2-post-content-envelope-status="BLOCKED"' in plugin_php
+            and "RAOS_V2_DECISION_SUPPORT_STATE_LEGACY" in plugin_php
+            and "return $envelope_open . $post->post_content . '</div>';" in plugin_php
+            and "RAOS_V2_DECISION_SUPPORT_VERSION = '0.6.0'" in plugin_php
+            and "raos_v2_decision_support_main_content_post" in plugin_php
+            and "raos_v2_decision_support_current_content_post" in plugin_php
+            and "is_main_query()" in plugin_php
+            and "in_the_loop()" in plugin_php
+            and "get_the_ID()" in plugin_php
+        ),
+        "preaction_execution_operator_derives_and_reissues_locally": (
+            '"derive-preaction"' in execution_operator
+            and '"reissue-candidate"' in execution_operator
+            and '"seal-candidate"' in execution_operator
+            and '"derive-cutover-binding"' in execution_operator
+            and '"--cutover-binding-output"' in execution_operator
+            and "build_wordpress_cutover_binding" in execution_operator
+            and "UNAUTHENTICATED_OWNER_ASSERTION" in execution_operator
+            and '"acceptance_authority": False' in execution_operator
+            and '"simulation_only": True' in execution_operator
+            and "RAOS_V2_PHASE3_CUTOVER_PREWRITE_EVIDENCE_REQUIRED"
+            in execution_operator
+            and "verify_phase3_sealed_package_semantics" in execution_operator
+            and "READY_FOR_ARTIFACT_SPECIFIC_HUMAN_REVIEW" in execution_operator
+            and "_write_new_phase3_capture" in execution_operator
+            and '"raw_values_persisted": False' in execution_operator
+            and '"network": False' in execution_operator
+            and "OWNER_STORAGE_ONLY_NOT_GIT" in execution_operator
+        ),
+        "php_runtime_stub_is_required_ci": (
+            "RAOS_V2_PHASE3_WORDPRESS_RUNTIME_RECEIPT_V1" in php_runtime_harness
+            and "PASSED_LOCAL_CI_STUB" in php_runtime_harness
+            and 'php -l "$raos_source_plugin"' in required_ci
+            and 'php "$raos_harness" source ' in required_ci
+            and 'php "$raos_harness" generated ' in required_ci
+        ),
+        "public_browser_raw_recorder_is_non_authoritative": (
+            "RAOS_V2_PHASE3_PUBLIC_BROWSER_RAW_RECEIPT_V1" in public_browser_recorder
+            and "OWNER_HELD_RAW_PUBLIC_BROWSER_EVIDENCE" in public_browser_recorder
+            and "acceptanceAuthority: false" in public_browser_recorder
+            and "phaseExitEligible: false" in public_browser_recorder
+            and "const TARGET_ROUTE = '/carry-on-suitcase-comparison/'"
+            in public_browser_recorder
+            and "BlockedWebSocketStream" in public_browser_recorder
+            and "MAX_NETWORK_REQUESTS = 80" in public_browser_recorder
+        ),
         "contract_set_complete": {path.name for path in schemas}
         == expected_schema_names,
         "production_sender_off": phase3_external_status(
@@ -8480,6 +9123,14 @@ def phase3_validation_document(
             and browser_verification.get("major_findings") == 0
             and browser_verification.get("external_actions") == "NOT_EXECUTED"
             and browser_verification.get("public_evidence") == "NOT_CLAIMED"
+        ),
+        "public_read_only_observation_is_sanitized_and_unpaired": (
+            public_observation.get("classification")
+            == "SANITIZED_PUBLIC_READ_ONLY_UNPAIRED"
+            and public_observation.get("status") == "PUBLIC_READ_ONLY"
+            and public_observation.get("owner_export_pairing") == "NOT_EXECUTED"
+            and public_observation.get("preaction_acceptance_authority") is False
+            and public_observation.get("external_write") == "NOT_EXECUTED"
         ),
     }
     return {
@@ -8530,6 +9181,7 @@ def phase3_validation_document(
             },
             "production_equivalence": "NOT_CLAIMED",
         },
+        "public_observation": dict(public_observation),
         "wordpress_payload_sha256": sha256(canonical_json_bytes(wordpress_payload)),
         "review_candidate_sha256": sha256(canonical_json_bytes(review_candidate)),
         "backlog_status": {
@@ -8548,9 +9200,9 @@ def phase3_validation_document(
             "production export/backup not executed",
             "post-action owner export not executed",
             "plugin deploy and WordPress write not executed",
-            "PHP lint and minimum WordPress runtime integration not executed",
+            "PHP lint/runtime harness implemented but required CI and real WordPress integration are not yet evidenced",
             "human publication and public verification not executed",
-            "public browser verification validator for 390/768/1440 not implemented",
+            "public browser raw recorder implemented but independent acceptance verifier not implemented",
             "exact Yoast/metadata-owner JSON-LD output not externally verified",
             "seven-day stability window not started",
         ],
@@ -8594,15 +9246,21 @@ or proof of production theme/KSES compatibility.
 - Local WordPress assembly: `LOCAL_WORDPRESS_ASSEMBLY_SIMULATION`; browser/a11y
   evidence is recorded separately from generator execution and never promoted
   to production evidence
-- PHP lint and minimum WordPress runtime integration: `NOT_EXECUTED`; no PHP
-  runtime is available in the local toolchain, so both remain mandatory before
-  deployment
+- PHP lint and minimum WordPress runtime harness: `IMPLEMENTED_REQUIRED_CI`;
+  source/generated lint and the fail-closed stub are mandatory in required CI.
+  No PHP runtime is available in this local toolchain, so neither has been
+  promoted to real WordPress or production evidence
 - B-V2-037 exact payload and seal path:
   `AWAITING_VERIFIED_PREACTION_BINDING`; the generated candidate is explicitly
-  `HISTORICAL_BASELINE_ONLY` and cannot seal. A new public capture plus owner
-  export must create a Phase 3 binding, then the candidate must be reissued
-  before human review. Review, fresh pre-write export, real seal and exact field
-  diff are `NOT_EXECUTED`; post-action export is a separate later gate
+  `HISTORICAL_BASELINE_ONLY` and cannot seal. The create-once, network-free
+  `derive-preaction` operator is implemented, but no owner export was supplied.
+  One bounded public read was recorded as sanitized, unpaired observation only;
+  it has no pre-action acceptance authority. A newly paired capture plus owner
+  export must create a Phase 3 binding, then the candidate must be reissued.
+  The current unsigned owner assertion can create only a simulation seal with
+  no approval authority. A trusted artifact-specific approval source, fresh
+  post-approval pre-write export, disabled dry-run and exact field diff are
+  `NOT_EXECUTED`; post-action export is a separate later gate
 - B-V2-038 route/canonical/sitemap plan: `COMPLETE_LOCAL`; change set empty and
   production mutation `NOT_EXECUTED`
 - B-V2-039 privacy/legal packet: `COMPLETE_LOCAL`; sender remains `OFF`, approval
@@ -8611,15 +9269,22 @@ or proof of production theme/KSES compatibility.
 
 ## Exit gate
 
-Phase 3 is **not complete**. Backup, owner content review, deployment, WordPress
+Phase 3 is **not complete**. The public site was observed read-only and remains
+the pre-V2 article; no write was made. Backup, owner content review, deployment, WordPress
 nonpublic review preview, approved-cutover write, publication, public read-only
 verification, rollback evidence and
 seven stable days have not occurred. The public site is not changed by this
 package. Planning ceiling: 20 hours; actual human time `UNAVAILABLE`; external
 spend: JPY 0.
 
-The route-scoped plugin adds CSS plus the exact rendered-content envelope but
-does not generate JSON-LD. Exact
+The route-scoped plugin is packaged with a disabled binding. No local command can
+create or certify an armed binding: trusted approval and pre-write/dry-run
+verifiers are not implemented. A future separately approved cutover would order
+  independently verified binding replacement, activation while exact legacy bytes remain,
+then the exact sealed write. Legacy bytes retain the existing
+filtered output; sealed bytes receive CSS and an envelope around only the raw
+reviewed fragment; every intermediate or drifted state is blocked. It does not
+generate JSON-LD. Exact
 T-V2-036 output from the current Yoast or metadata owner—`Article`,
 `BreadcrumbList`, `Organization` and `WebSite` with visible-content parity—is
 an unexecuted external blocker. The exact sealed HTML title (without an
@@ -8637,11 +9302,13 @@ allowed for Googlebot. Crawler-specific robots meta, including `googlebot` and
 `googlebot-news`, must be counted and indexability-safe; metadata hidden inside
 `template` or `noscript` does not satisfy the head-metadata gate.
 
-`PUBLIC_BROWSER_VERIFICATION` is `REQUIRED_VALIDATOR_NOT_IMPLEMENTED`. Its
-schema is an unverified external template with no acceptance authority and
-cannot complete B-V2-040. A future independent recorder/verifier must recompute
-owner-held raw capture, screenshots, browser/harness/command, public HTTP and
-resource-manifest hash bindings before any receipt can be considered.
+The fixed-target public browser raw recorder is implemented, but
+`PUBLIC_BROWSER_VERIFICATION` still has no acceptance authority. The current
+public page was probed and failed closed because the V2 marker is absent; no raw
+receipt or screenshot set was committed. A future post-cutover run plus an
+independent acceptance verifier must recompute owner-held raw capture,
+screenshots, browser/harness/command, public HTTP and resource-manifest hash
+bindings before any receipt can be considered.
 """
 
 
@@ -8656,16 +9323,20 @@ def phase3_integration_pr_body_document(
 - Target: existing `/carry-on-suitcase-comparison/` only
 - Deterministic WordPress post-content projection and route-scoped presentation plugin
 - Noindex local WordPress assembly simulation for the exact fragment and plugin CSS
-- Human review/seal v2 contract and disabled hash-only WordPress diff adapter
+- Unauthenticated owner-assertion simulation-seal v2 contract and disabled
+  hash-only WordPress diff adapter; no approval or cutover authority
 - Backup/export runbook, no-change SEO plan, privacy/legal review packet,
   rollback rehearsal and bounded Phase 3 public-capture command
 - Local preparation status: `{validation.get("status")}`
 
 ## Safety boundary
 
-The real candidate is `HISTORICAL_BASELINE_ONLY`, unreviewed and unsealed. It
-must be reissued from a verified Phase 3 pre-action capture/export binding
-before human review. All CTA states are blocked;
+The real candidate is `HISTORICAL_BASELINE_ONLY`, unreviewed and unsealed. A
+create-once local derivation operator now accepts a fresh bounded capture and
+owner-held export without persisting raw WordPress values, but those paired
+inputs do not yet exist. The candidate must be reissued from their verified
+Phase 3 pre-action binding before review. The current unsigned owner assertion
+has no approval authority and can produce only a simulation seal. All CTA states are blocked;
 no affiliate URL, image, price, stock, rate or business metric was invented.
 Unpublished hub/checker/policy routes are not linked. The existing URL,
 self-canonical, robots and sitemap membership are planned to remain unchanged;
@@ -8679,14 +9350,17 @@ post-action owner export,
 redirect/canonical/sitemap mutation, analytics/legal
 activation, public verification and rollback: `NOT_EXECUTED`. B-V2-040 and the
 Phase 3 exit gate remain `BLOCKED_EXTERNAL`; seven stable days are required after
-any separately approved publication. The plugin does not generate JSON-LD;
-PHP lint and minimum WordPress runtime integration also remain unexecuted
-deployment prerequisites because no PHP runtime is present in the local toolchain;
+any separately approved publication. A bounded public read-only observation was
+recorded but is unpaired and non-authoritative; it changed nothing. The plugin
+must remain inactive with its disabled binding: the trusted approval plus fresh
+pre-write export/dry-run verifier required to create an armed artifact is not
+implemented. It does not generate JSON-LD. PHP lint
+and a minimum WordPress runtime stub are now required CI gates, while real
+WordPress integration remains an unexecuted deployment prerequisite;
 exact T-V2-036 Yoast/metadata-owner output remains an external blocker and a
 public verification mismatch requires configuration correction or rollback.
-`PUBLIC_BROWSER_VERIFICATION` is `REQUIRED_VALIDATOR_NOT_IMPLEMENTED`; its
-current schema is an unverified template with no acceptance authority. A bound
-390/768/1440 receipt independently recalculated from owner-held raw capture is
+The fixed-target 390/768/1440 public browser raw recorder is implemented, but
+its output is non-authoritative and the independent acceptance verifier is still
 required before B-V2-040 or Phase 3 can complete.
 """
 
@@ -8720,6 +9394,41 @@ Validation: T-V2-007..019 and T-V2-051 are `{gate}` (recorded test status:
 deployment, credentials, spend, live provider writes and production changes are
 `NOT_EXECUTED`. Effective planning ceiling: 40 hours; spend ceiling: JPY 0.
 """
+
+
+def current_phase3_historical_review_candidate_document() -> dict[str, object]:
+    """Derive the current historical candidate without browser-evidence input."""
+
+    validate_phase2_source_inputs()
+    validate_phase3_browser_bootstrap_inputs()
+    capture = _capture_input()
+    pages_value = _read_json(
+        Path("packages/web-ui/src/decision-support-v2/preview/pages.v2.json")
+    )
+    if not isinstance(pages_value, dict):
+        fail("RAOS_V2_UI_PAGE_SOURCE_INVALID")
+    validate_authoritative_ui_parity(pages_value)
+    preview = preview_documents()
+    migration = migration_manifest_document(capture, preview)
+    claim_ledger = claim_ledger_document()
+    publication = publication_candidate_document(migration, preview, claim_ledger)
+    projection = phase3_wordpress_projection_document(pages_value, publication)
+    wordpress_payload, review_candidate, _candidate_digest, _payload_digest = (
+        phase3_review_candidate_document(
+            publication=publication,
+            claim_ledger=claim_ledger,
+            projection=projection,
+            migration=migration,
+        )
+    )
+    validate_phase3_publication_closure(
+        publication=publication,
+        claim_ledger=claim_ledger,
+        migration=migration,
+        wordpress_payload=wordpress_payload,
+        review_candidate=review_candidate,
+    )
+    return review_candidate
 
 
 def documents() -> dict[Path, bytes]:
@@ -8771,6 +9480,7 @@ def documents() -> dict[Path, bytes]:
     phase3_browser_evidence = validated_phase3_local_browser_evidence(
         phase3_sources, phase3_local_assembly
     )
+    phase3_public_observation = validated_phase3_public_observation(phase3_sources)
     synthetic_seal = synthetic_seal_receipt_document()
     phase2_validation = phase2_validation_document(
         phase2_sources, preview, publication, migration
@@ -8851,6 +9561,12 @@ def documents() -> dict[Path, bytes]:
         Path(
             "contracts/raos-v2/v2/public-browser-verification-receipt.schema.json"
         ): phase3_public_browser_verification_receipt_schema(),
+        Path(
+            "contracts/raos-v2/v2/reissued-review-bundle.schema.json"
+        ): phase3_reissued_review_bundle_schema(),
+        Path(
+            "contracts/raos-v2/v2/wordpress-cutover-binding.schema.json"
+        ): phase3_wordpress_cutover_binding_schema(),
     }
     phase3_validation = phase3_validation_document(
         projection=phase3_projection,
@@ -8861,6 +9577,7 @@ def documents() -> dict[Path, bytes]:
         external_state=phase3_state,
         schemas=phase3_schema_documents,
         browser_evidence=phase3_browser_evidence,
+        public_observation=phase3_public_observation,
         publication_closure_verified=True,
     )
     phase3_generated: dict[Path, bytes] = {
@@ -9188,11 +9905,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         (
             "RAOS_V2_SUCCESSOR_CHECK_OK"
             if arguments.check
-            else "RAOS_V2_PHASE3_PREVIEW_REFRESHED_UNVERIFIED"
-            if arguments.phase3_preview_only
-            else "RAOS_V2_PREVIEW_REFRESHED_UNVERIFIED"
-            if arguments.preview_only
-            else "RAOS_V2_SUCCESSOR_GENERATED"
+            else (
+                "RAOS_V2_PHASE3_PREVIEW_REFRESHED_UNVERIFIED"
+                if arguments.phase3_preview_only
+                else (
+                    "RAOS_V2_PREVIEW_REFRESHED_UNVERIFIED"
+                    if arguments.preview_only
+                    else "RAOS_V2_SUCCESSOR_GENERATED"
+                )
+            )
         )
     )
     return 0

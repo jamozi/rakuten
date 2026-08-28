@@ -1,0 +1,173 @@
+{
+  "captured_at": "2026-08-28T22:12:47.382589+09:00",
+  "external_write_actions": "NOT_EXECUTED",
+  "observation": {
+    "affiliate_url_count": 6,
+    "ambiguous_attribute_count": 0,
+    "blocked_cta_count": 0,
+    "blocked_post_content_envelope_count": 0,
+    "body_bytes": 117835,
+    "body_sha256": "e047234ae3af4f7c6bc8288601d7af2d7be240b06bbc2d7c6700da9337dc0431",
+    "body_storage": "DISCARDED_AFTER_HASH",
+    "canonical": "https://kurashinoshirube.com/carry-on-suitcase-comparison/",
+    "canonical_tag_count": 1,
+    "content_type_media_type": "text/html",
+    "crawler_robots_indexability_safe": true,
+    "crawler_robots_tag_count": 0,
+    "cta_state_count": 0,
+    "disclosure_marker_count": 0,
+    "external_script_count": 6,
+    "h1": "機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ",
+    "h1_count": 1,
+    "head_tag_count": 1,
+    "image_count": 3,
+    "inline_executable_script_count": 12,
+    "json_ld_invalid_count": 0,
+    "json_ld_script_count": 1,
+    "json_ld_sha256": "9ac5c15f47976560897c15ffd9ff4e9e413ff9cf44a2a46a659f1578302fbc0d",
+    "json_ld_types": [
+      "Article",
+      "BreadcrumbList",
+      "Organization",
+      "WebSite"
+    ],
+    "json_ld_visible_content_match": true,
+    "link_http_sha256": "9c22fac54a03df96bb4f89aac3a1bb1b1197d95fdde0eb852f2f5a76c78979f6",
+    "meta_description": "機内持ち込み候補3モデルを、軽さ・容量・開き方で条件別に比較。メーカー公表値と航空会社の条件を分けて、向く人と注意点を整理します。",
+    "meta_description_tag_count": 1,
+    "metadata_location_violation_count": 0,
+    "observed_at": "2026-08-28T22:12:48.717743+09:00",
+    "package_marker_attribute_count": 0,
+    "package_marker_count": 0,
+    "path": "/carry-on-suitcase-comparison/",
+    "post_content_envelope_attribute_count": 0,
+    "post_content_envelope_count": 0,
+    "post_content_envelope_marker_child_count": 0,
+    "post_content_envelope_valid": false,
+    "post_content_marker_subtree_count": 0,
+    "post_content_semantic_sha256": "UNAVAILABLE",
+    "redirect_chain": [],
+    "refresh_http_present": false,
+    "resource_inventory": {
+      "active_resource_sha256": [
+        "298e5abbc86d1816e2db29d1f031214b5625285fa3bcd5aad9b93ebef01c3f2c",
+        "7596a8a6f93ed8f7c30502ba6259beff894a2ff2b28f3e0081a7f28f118d18ec",
+        "8d02ad12ca19d0398b8e9de36ef9934a67bf5713bc3d19bccce8e0d4cd0638b9"
+      ],
+      "executable_attribute_sha256": [],
+      "image_resource_sha256": [
+        "0850ffe56ab27b6a3b6b3a73353f268f2013541f5db30c756296e316d18bb942",
+        "d68bef10f689c1f1328765e4ce9d06df251001e1171638406b571492cd086be7",
+        "fee7cef0c1a3ab58f9cba514ad7ceceedc7089f800905d95720ab293bea0137e"
+      ],
+      "inline_executable_script_sha256": [
+        "27b26aee4cf9ce421b96e57fb3db9d0e1adf4da7e8e52ba0ff9312e0d165868a",
+        "3754d85485fb41df9d24217c048289a04cb73427c753d8148a4e4ba5255b82b2",
+        "37c9fbaa7c998fc68fe013d5ea434540917f5791b35670c17b24e9cbf6c67c2a",
+        "3a0d2b0291e58eaea8f38fa938499f142c15289904fa06aeaeb837de0c0286fd",
+        "53f97e6a904d93b003fcd25b0b938a7be5d497c2c9d3b176ba429733d2df07b6",
+        "57da6ddaa7a71d364f1e56569bb20795e74bba128eacd348cf2150114645c6c4",
+        "5a6abe52b41724b8ffc2420ac164a2c37d5aa214c4c6e81dd690d3fdf2ed1d82",
+        "84dcbcf4e7e41c99eec26b0e5291ee4b4c29403e46d54e36dba0e656507f84a0",
+        "ab75de27006c60b92e53130a896917d6e7762998ef9db3389cf886c5a6178ac5",
+        "b9773ba8190127afdd73705d19bea7b5d32cbe85c7a735ce359dbf9002ada465",
+        "f17e303a25305c0a077726e620922cef27027cddf385618c8d57752701ee1eba",
+        "f1aac599473facb9ec81001d8e3dd82140585b941a47938f05fcb98693e31248"
+      ],
+      "inline_style_sha256": [
+        "0ba9106f7f3b68f8df9c2a02726139ed6a2b3068873caf778413cdefc4625eef",
+        "3ee744482fcfb751f1918e9227fef94f9609540efc2bb862d76430de2d47d311",
+        "40d31f7d6d23ea8d3a212e2e9538ee50debda4b556c326ef25f3e4ac9479f13d",
+        "54eb5ba04c0e4210c3560f4656c70c5d5c9db2a69b4eba45168432d9ba5323e4",
+        "60f8cc9dc2004d747c90d7b7096cd21d4565f56166edf17aab0a8eae52e00464",
+        "7a8b336280dcfc8dc1b0f7dcc33a23cbf89ab1928f625550af7acef9785f0470",
+        "81a13cf17516e10cd8fb97ae4140a14c9b36bd66cb8b49053ea0585892ed5b3c",
+        "a2284c7fcb8863abe2a8b57a4634ada4654134007da6dddcc0de80f6029745b3",
+        "a47da421900fb6f57af52ff054ff6596acba8cac91842e52841be5c890fe5a1e",
+        "ab27bae3ee005d98a419c9ea9aa1423b1e792e4e1f6bd1e79313563662930793",
+        "b7978d96566194cd48ad2c1b6ba4c891d0840b0392410a567b190687c28caa4d",
+        "bb30c393cf6568d2b6f27fe621805573d9976bdb20e597ceff6b467c77c6b67f",
+        "ddf593b26d1e0a39287a3c413810156776291d74c915d25c18dbb1e15427c0f9",
+        "df8b006031fe666f6a875c217ad32fd74a06776c3c1b665f4150cfde1cb953ec",
+        "e28505d3078fa0e7b0753d2da59df20b220059dd872aa1f58dd1601921bee0b1",
+        "f85e6f850874a32e03d9c634f7b22eab50c7bad8d803318fb35282fc4d18541b"
+      ],
+      "script_resource_sha256": [
+        "0982c18644cb1649340c0f7c87f6148ff6a2879cc05cd4bed2d9a6763a0958d7",
+        "6aebbfd43437dce509992a63226ce6207554b321b53d9348d718326c379dce40",
+        "7c709777c6d0343c9ac0fe1ebfb355c0d8909ade272da98e24575b0330246a0d",
+        "81a41583b528ce2b9bf67c030538a8e414b061ce29d28d62f632eb29c75aeb11",
+        "8b8b5b4f8f2c60be1e1b58e367891f985587de75940d18453ccdb3da55293ab1",
+        "d9ea7362d33a08e88d246551bb416089b3588f499796d2e5da3ed3b2be14c2ef"
+      ],
+      "stylesheet_resource_sha256": [
+        "2ad9612cb32fa0f70f8a8552a461488263e0ea63ef2745b4dd060e6c4a56c1d6"
+      ],
+      "unsafe_resource_count": 0
+    },
+    "robots": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+    "robots_http": "UNAVAILABLE",
+    "robots_http_indexability_safe": true,
+    "robots_meta": "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+    "robots_tag_count": 1,
+    "sitemap_membership": true,
+    "status": 200,
+    "title": "機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方",
+    "title_tag_count": 1,
+    "url": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+  },
+  "phase0_baseline_write": "PROHIBITED",
+  "public_observation_status": "PUBLIC_READ_ONLY",
+  "request_policy": {
+    "cookies": "NOT_USED",
+    "credentials": "NOT_USED",
+    "environment_proxies": "DISABLED",
+    "https_only": true,
+    "maximum_page_and_asset_requests": 3,
+    "maximum_redirects_per_request": 1,
+    "query_strings": "REJECTED",
+    "same_origin_only": true,
+    "target_page_count": 1
+  },
+  "schema": "RAOS_V2_PHASE3_PUBLIC_CAPTURE_V1",
+  "supporting_resources": {
+    "maximum_sitemaps": 8,
+    "plugin_stylesheet": {
+      "status": "NOT_OBSERVED"
+    },
+    "robots_txt": {
+      "body_storage": "DISCARDED_AFTER_HASH",
+      "bytes": 178,
+      "content_type": "text/plain; charset=utf-8",
+      "redirect_chain": [],
+      "sha256": "73af815399b0469f337ad9f499b3026f6efd40e96197d980ef7627a4c915d36f",
+      "status": 200,
+      "target_allowed_for_googlebot": true,
+      "target_path": "/carry-on-suitcase-comparison/",
+      "url": "https://kurashinoshirube.com/robots.txt"
+    },
+    "sitemap_root": "https://kurashinoshirube.com/sitemap_index.xml",
+    "sitemaps": [
+      {
+        "redirect_chain": [],
+        "sha256": "02e3821694833151f3445d0250ddb9d5ea83093b6a2490d4bfcdd04865d43630",
+        "status": 200,
+        "url": "https://kurashinoshirube.com/sitemap_index.xml"
+      },
+      {
+        "redirect_chain": [],
+        "sha256": "555c0596649e62de321874ec7d8fa02a8b13aa4b2562236eebb9c13949689a2a",
+        "status": 200,
+        "url": "https://kurashinoshirube.com/post-sitemap.xml"
+      },
+      {
+        "redirect_chain": [],
+        "sha256": "4e602b7fde2df32e9030e03fe55e0f18f0e9425b115520cfbcdf114cb666d8b7",
+        "status": 200,
+        "url": "https://kurashinoshirube.com/page-sitemap.xml"
+      }
+    ]
+  },
+  "target_url": "https://kurashinoshirube.com/carry-on-suitcase-comparison/",
+  "version": "1.0.0"
+}

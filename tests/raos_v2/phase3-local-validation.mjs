@@ -754,6 +754,26 @@ function browserVersion(executable) {
   });
 }
 
+async function stopBrowserProcess(browser) {
+  const hasExited = () => browser.child.exitCode !== null || browser.child.signalCode !== null;
+  if (hasExited()) return;
+  let resolveExit;
+  const exited = new Promise((resolvePromise) => {
+    resolveExit = resolvePromise;
+    browser.child.once('exit', resolvePromise);
+  });
+  browser.child.kill('SIGTERM');
+  await Promise.race([exited, new Promise((resolvePromise) => setTimeout(resolvePromise, 2000))]);
+  if (!hasExited()) {
+    browser.child.kill('SIGKILL');
+    await Promise.race([exited, new Promise((resolvePromise) => setTimeout(resolvePromise, 2000))]);
+  }
+  if (!hasExited()) {
+    browser.child.removeListener('exit', resolveExit);
+    fail('PHASE3_BROWSER_STOP_TIMEOUT');
+  }
+}
+
 async function main() {
   if (realpathSync(process.cwd()) !== ROOT) fail('PHASE3_WORKSPACE_ROOT_REQUIRED');
   if (Number.parseInt(process.versions.node.split('.', 1)[0] ?? '', 10) !== REQUIRED_NODE_MAJOR) {
@@ -767,6 +787,9 @@ async function main() {
   const remotePort = await reservePort();
   const browser = await launchBrowser(argumentsValue.browserExecutable, remotePort, profilePath);
   let connection = null;
+  let browserStopped = false;
+  let serverClosed = false;
+  let profileRemoved = false;
   try {
     connection = new CdpConnection(await waitForDebugger(remotePort));
     await connection.open();
@@ -899,13 +922,21 @@ async function main() {
       visualReview: 'PENDING_SEPARATE_MANUAL_REVIEW',
       viewports: Object.freeze(viewportResults),
     });
+    connection.close();
+    connection = null;
+    await stopBrowserProcess(browser);
+    browserStopped = true;
+    await server.close();
+    serverClosed = true;
+    rmSync(profilePath, { force: true, recursive: true });
+    profileRemoved = true;
     writeReceipt(argumentsValue.outputPath, receipt);
     process.stdout.write(`${JSON.stringify(receipt, null, 2)}\n`);
   } finally {
     if (connection !== null) connection.close();
-    browser.child.kill('SIGTERM');
-    await server.close();
-    rmSync(profilePath, { force: true, recursive: true });
+    if (!browserStopped) await stopBrowserProcess(browser);
+    if (!serverClosed) await server.close();
+    if (!profileRemoved) rmSync(profilePath, { force: true, recursive: true });
   }
 }
 

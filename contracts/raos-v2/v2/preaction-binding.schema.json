@@ -12,6 +12,14 @@
       "pattern": "^[0-9a-f]{64}$",
       "type": "string"
     },
+    "legacy_post_content_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "owner_evidence_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
     "provenance": {
       "const": "PUBLIC_READ_ONLY_CAPTURE_AND_OWNER_WORDPRESS_EXPORT"
     },
@@ -76,7 +84,9 @@
     "current_public_body_sha256",
     "public_capture_sha256",
     "wordpress_export_sha256",
-    "wordpress_export_bytes"
+    "wordpress_export_bytes",
+    "owner_evidence_sha256",
+    "legacy_post_content_sha256"
   ],
   "title": "preaction-binding",
   "type": "object"

@@ -44,16 +44,67 @@ exactly, keep the historical candidate unsealable and stop.
    be overwritten.
 5. Store raw exports in recoverable owner-controlled storage. Create only a
    sanitized receipt containing opaque hashes, version identifiers, field names
-   and the exact target binding for review by the local generator.
+   and the exact target binding for review by the local generator. The local,
+   network-free derivation command is:
+
+   ```text
+   python scripts/raos_v2_phase3_execution.py derive-preaction      --public-capture changes/raos-v2/recorded-inputs/phase3/<capture>.json      --owner-export /absolute/owner/storage/wordpress-owner-export.json      --restore-artifact /absolute/owner/storage/restore-artifact      --theme-plugin-artifact /absolute/owner/storage/theme-plugin-artifact      --seo-state /absolute/owner/storage/seo-state      --redirect-map /absolute/owner/storage/redirect-map      --sitemap-state /absolute/owner/storage/sitemap-state      --output changes/raos-v2/recorded-inputs/phase3/<preaction-input>.json
+   ```
+
+   Every owner-held path must resolve to a nonsymlink regular file outside the
+   repository. The command is create-once, rejects a capture/export pair more
+   than five minutes apart and persists no raw WordPress field value or external
+   path. The currently recorded public observation is deliberately unpaired and
+   cannot be substituted for this receipt.
 
 6. Reissue the local update/review candidate from the verified pre-action
-   binding. Only that reissued digest may be given to the human reviewer.
-7. After owner review and local sealing, create `PRE_WRITE_EXPORT` and its
+   binding. Only that reissued digest may be given to the human reviewer. Run:
+
+   ```text
+   python scripts/raos_v2_phase3_execution.py reissue-candidate      --preaction-input changes/raos-v2/recorded-inputs/phase3/<preaction-input>.json      --output changes/raos-v2/recorded-inputs/phase3/<reissued-review-bundle>.json
+   ```
+
+   The reissue is local and create-once, rejects pre-action evidence older than
+   five minutes, reconstructs the historical candidate through the versioned
+   domain contract and leaves all network/WordPress/publication capabilities
+   false. The bundle is independently verified against
+   `contracts/raos-v2/v2/reissued-review-bundle.schema.json`, the current
+   generator-owned candidate and the exact pre-action input. A generic
+   conversation approval is not an artifact-specific receipt. The current JSON
+   receipt has no trusted signature or approval source: even with
+   `accepted=true` it is classified `UNAUTHENTICATED_OWNER_ASSERTION` with
+   `acceptance_authority=false`. The identity-bearing fields are fixed to
+   `reviewer_id=OWNER_ASSERTION_LOCAL` and
+   `review_version=P3-OWNER-ASSERTION-V1`; a name, email or caller-selected ID is
+   rejected rather than persisted. It may create only a simulation seal. After
+   the owner creates that schema-valid assertion, seal locally with:
+
+   ```text
+   python scripts/raos_v2_phase3_execution.py seal-candidate      --review-bundle changes/raos-v2/recorded-inputs/phase3/<reissued-review-bundle>.json      --human-review-receipt /absolute/owner/storage/human-review-receipt.json      --output changes/raos-v2/recorded-inputs/phase3/<sealed-simulation-package>.json
+   ```
+
+   The seal command has no network or WordPress capability and rejects a
+   synthetic, stale, schema-mismatched or digest-mismatched assertion. Its
+   package is explicitly `simulation_only=true` and
+   `approval_acceptance_authority=false`; it never satisfies human approval,
+   public-write authority or the Phase 3 exit. The tracked plugin binding stays
+   `DEPLOYMENT_DISABLED`; never hand-edit or deploy it as armed.
+
+   `derive-cutover-binding` is deliberately fail-closed. It independently
+   reconstructs any caller-supplied sealed package through the same domain seal
+   blockers, then returns
+   `RAOS_V2_PHASE3_CUTOVER_PREWRITE_EVIDENCE_REQUIRED`. It cannot emit or certify
+   `ARMED_EXACT_LEGACY_OR_SEALED` until a separately designed trusted
+   artifact-specific approval source plus fresh post-approval `PRE_WRITE_EXPORT`
+   and disabled-plugin dry-run verifiers are all implemented. A caller-authored
+   digest or JSON receipt cannot substitute for any of them.
+7. After the local simulation seal, create `PRE_WRITE_EXPORT` and its
    disabled dry-run receipt. This pre-write export must bind the existing
    field hashes, sealed pre-action digest and same current body, be no older than
-   five minutes at evaluation and be captured after the human review. Any
+   five minutes at evaluation and be captured after the owner assertion. Any
    intervening change requires a new pre-action binding, candidate reissue and
-   review. It is not post-publication evidence.
+   assertion. It is not post-publication evidence and the current operator does
+   not consume it to arm the plugin. Keep the binding disabled and stop.
 
 If any field, restore byte sequence, target identity or checksum is unavailable,
 record `UNAVAILABLE` and stop. Missing data is never equivalent to an empty field.
@@ -61,7 +112,23 @@ record `UNAVAILABLE` and stop. Missing data is never equivalent to an empty fiel
 ## Deploy, preview and metadata gate
 
 The route-scoped plugin renders CSS and the exact content-verification envelope;
-it does not generate JSON-LD. The candidate therefore depends on the existing
+it does not generate JSON-LD. Plugin version 0.6.0 models one future safe cutover
+order, but the trusted approval/pre-write verifier needed to create its armed
+artifact is not implemented. Do not activate or write. If that verifier is
+implemented in a later approved phase, the order is: install inactive,
+atomically replace the disabled adjacent binding with the independently verified
+owner-export-bound artifact, activate while the exact legacy database bytes
+still remain, and only then write the exact sealed bytes.
+The exact legacy state preserves the existing filtered response without V2 CSS;
+the exact sealed state discards earlier filter output and envelopes only the
+reviewed raw fragment. Disabled, missing, partial, intermediate or drifted
+states block the target. Writing sealed bytes before activation is prohibited
+because an inactive plugin cannot protect the route. A content filter registered after RAOS at `PHP_INT_MAX`
+terminates only the target request with a fixed 503 before the later callback
+can mutate it. V2 projection is limited to the exact current target post inside
+the singular main query's main loop. Only a verified different current post is
+treated as a secondary `the_content` call and preserves its filtered input;
+missing, ambiguous or out-of-main-loop target context is blocked. The candidate depends on the existing
 Yoast or single metadata-owner configuration. Before publication, a nonpublic
 WordPress preview must prove the
 exact `Article`, `BreadcrumbList`, `Organization` and `WebSite` graph required by
@@ -93,12 +160,14 @@ public read-only browser receipt at 390, 768 and 1440px. It must bind the public
 body, sealed package and deployed plugin hashes while checking computed
 disclosure/blocked-CTA visibility, keyboard use, 200% zoom, axe WCAG 2.2 AA and
 resource/network behavior. Raw capture and screenshot bytes must remain in
-owner-controlled storage outside Git. A future independent recorder/verifier
-must recalculate the public HTTP receipt digest, resource manifest, screenshot
-bytes/hashes and the harness, browser binary and exact command hashes. That
-validator is not implemented here: the schema is classified
-`UNVERIFIED_EXTERNAL_TEMPLATE_NO_ACCEPTANCE_AUTHORITY`, the gate is
-`REQUIRED_VALIDATOR_NOT_IMPLEMENTED`, and Phase 3 stays `BLOCKED_EXTERNAL`.
+owner-controlled storage outside Git. The local public-read-only recorder is
+implemented in `tests/raos_v2/phase3-public-validation.mjs`; its raw receipt is
+explicitly non-authoritative and cannot complete Phase 3. An independent
+acceptance verifier must still recalculate the public HTTP receipt digest,
+resource manifest, screenshot bytes/hashes and the harness, browser binary and
+exact command hashes. Until that independent receipt exists, the generated
+acceptance schema remains an unverified template and Phase 3 stays
+`BLOCKED_EXTERNAL`.
 
 ## Restore rehearsal and triggers
 

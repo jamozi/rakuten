@@ -5,7 +5,10 @@ from __future__ import annotations
 from copy import deepcopy
 from dataclasses import replace
 import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 from sqlalchemy.dialects import postgresql
@@ -58,6 +61,28 @@ def test_owner_generation_is_deterministic_and_check_is_no_write() -> None:
     }
     assert before == after
     assert all(path in generator.render_outputs() for path in before)
+
+
+def test_direct_check_entrypoint_bootstraps_repository_imports() -> None:
+    process = subprocess.run(
+        [
+            sys.executable,
+            str(generator.REPO_ROOT / generator.GENERATOR_PATH),
+            "--check",
+        ],
+        cwd=generator.REPO_ROOT,
+        env={
+            "PATH": os.defpath,
+            "PYTHONDONTWRITEBYTECODE": "1",
+        },
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=60,
+    )
+    assert process.returncode == 0, process.stderr
+    assert process.stdout.strip() == "ST0308_PERSISTENCE_CHECK_OK"
 
 
 def test_full_catalog_ir_has_closed_exact_two_way_inventory() -> None:

@@ -10,6 +10,7 @@ and discarded.
 from __future__ import annotations
 
 import argparse
+from copy import deepcopy
 from collections.abc import Mapping, Sequence
 from datetime import datetime
 from html import escape as html_escape
@@ -45,7 +46,6 @@ import yaml
 from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
 from yaml.tokens import AliasToken, AnchorToken, TagToken
-
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 SOURCE_ROOT: Final = ROOT / "changes/raos-v2/source-package/2.0.0-design"
@@ -263,6 +263,7 @@ LOCAL_TEST_SOURCE_FILES: Final = (
     Path("changes/raos-v2/recorded-inputs/phase0-capture.v1.json"),
     Path("changes/raos-v2/recorded-inputs/phase0-visual-evidence.v1.json"),
     Path("scripts/build_raos_v2_successor.py"),
+    Path("scripts/raos_v2_phase3_execution.py"),
     Path("scripts/raos_build_core.py"),
     Path("scripts/validate_raos_v2_successor.py"),
 )
@@ -291,6 +292,7 @@ LOCAL_TEST_MACHINE_CONTRACT_FILES: Final = (
     Path("changes/raos-v2/recorded-inputs/phase2-browser-evidence.v1.json"),
     Path("changes/raos-v2/recorded-inputs/phase2-visual-evidence.v1.json"),
     Path("changes/raos-v2/recorded-inputs/phase3-local-browser-evidence.v1.json"),
+    Path("changes/raos-v2/recorded-inputs/phase3/" "preaction-public-20260828-v1.json"),
 )
 
 
@@ -317,6 +319,149 @@ def canonical_json_bytes(value: object) -> bytes:
         )
         + "\n"
     ).encode("utf-8")
+
+
+def _repository_regular_file_bytes(
+    relative: Path,
+    *,
+    root: Path,
+    maximum: int,
+    code: str,
+) -> bytes:
+    """Read one repository file through no-follow directory descriptors."""
+
+    if (
+        relative.is_absolute()
+        or not relative.parts
+        or any(part in {"", ".", ".."} for part in relative.parts)
+    ):
+        fail(code)
+    directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    directory_descriptor = -1
+    try:
+        directory_descriptor = os.open(root, directory_flags)
+        for component in relative.parts[:-1]:
+            next_descriptor = os.open(
+                component,
+                directory_flags,
+                dir_fd=directory_descriptor,
+            )
+            os.close(directory_descriptor)
+            directory_descriptor = next_descriptor
+        file_descriptor = os.open(
+            relative.parts[-1],
+            os.O_RDONLY | os.O_NOFOLLOW,
+            dir_fd=directory_descriptor,
+        )
+        try:
+            opened = os.fstat(file_descriptor)
+            if (
+                not stat.S_ISREG(opened.st_mode)
+                or opened.st_nlink != 1
+                or not 1 <= opened.st_size <= maximum
+            ):
+                fail(code)
+            chunks: list[bytes] = []
+            remaining = opened.st_size
+            while remaining:
+                chunk = os.read(file_descriptor, min(1024 * 1024, remaining))
+                if not chunk:
+                    fail(code)
+                chunks.append(chunk)
+                remaining -= len(chunk)
+            if os.read(file_descriptor, 1):
+                fail(code)
+            final = os.fstat(file_descriptor)
+            if (
+                final.st_dev != opened.st_dev
+                or final.st_ino != opened.st_ino
+                or final.st_nlink != 1
+                or final.st_size != opened.st_size
+                or final.st_mtime_ns != opened.st_mtime_ns
+                or final.st_ctime_ns != opened.st_ctime_ns
+            ):
+                fail(code)
+            return b"".join(chunks)
+        finally:
+            os.close(file_descriptor)
+    except OSError:
+        fail(code)
+    finally:
+        if directory_descriptor >= 0:
+            os.close(directory_descriptor)
+
+
+def _repository_directory_names(
+    relative: Path, *, root: Path, code: str
+) -> tuple[str, ...]:
+    """List one repository directory through a stable no-follow descriptor."""
+
+    if (
+        relative.is_absolute()
+        or not relative.parts
+        or any(part in {"", ".", ".."} for part in relative.parts)
+    ):
+        fail(code)
+    directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    directory_descriptor = -1
+    try:
+        directory_descriptor = os.open(root, directory_flags)
+        for component in relative.parts:
+            next_descriptor = os.open(
+                component,
+                directory_flags,
+                dir_fd=directory_descriptor,
+            )
+            os.close(directory_descriptor)
+            directory_descriptor = next_descriptor
+        opened = os.fstat(directory_descriptor)
+        names = os.listdir(directory_descriptor)
+        final = os.fstat(directory_descriptor)
+        if (
+            not stat.S_ISDIR(opened.st_mode)
+            or final.st_dev != opened.st_dev
+            or final.st_ino != opened.st_ino
+            or final.st_mtime_ns != opened.st_mtime_ns
+            or final.st_ctime_ns != opened.st_ctime_ns
+            or any(
+                not isinstance(name, str) or name in {"", ".", ".."} or "/" in name
+                for name in names
+            )
+        ):
+            fail(code)
+        return tuple(sorted(names))
+    except OSError:
+        fail(code)
+    finally:
+        if directory_descriptor >= 0:
+            os.close(directory_descriptor)
+
+
+def _contract_schema_documents(
+    *, root: Path, code: str
+) -> tuple[tuple[str, str, dict[str, object]], ...]:
+    rows: list[tuple[str, str, dict[str, object]]] = []
+    for version in ("v1", "v2"):
+        directory = Path("contracts/raos-v2") / version
+        for name in _repository_directory_names(directory, root=root, code=code):
+            if not name.endswith(".schema.json"):
+                continue
+            relative = directory / name
+            document = _mapping(
+                load_json_strict(
+                    _repository_regular_file_bytes(
+                        relative,
+                        root=root,
+                        maximum=MAX_RESPONSE_BYTES,
+                        code=code,
+                    )
+                ),
+                code,
+            )
+            rows.append((version, name, document))
+    if not rows:
+        fail(code)
+    return tuple(rows)
 
 
 def _sanitized_resource_ref_sha256(value: str) -> str | None:
@@ -398,7 +543,7 @@ def verify_phase3_external_state(value: Mapping[str, object]) -> None:
             "binding": None,
         },
         "post_action_wordpress_export": {
-            "external_action_id": "EXT-014",
+            "external_action_id": "V2-P3-EXT-POSTACTION-EXPORT",
             "status": "NOT_EXECUTED",
             "binding": None,
         },
@@ -460,6 +605,643 @@ def verify_phase3_external_state(value: Mapping[str, object]) -> None:
         )
     ):
         fail(code)
+
+
+def verify_phase3_preaction_execution_input(
+    value: Mapping[str, object], *, root: Path = ROOT
+) -> dict[str, object]:
+    """Verify the sanitized, raw-byte-derived input used to reissue Phase 3."""
+
+    code = "RAOS_V2_PHASE3_PREACTION_EXECUTION_INPUT_INVALID"
+    if set(value) != {
+        "schema",
+        "version",
+        "classification",
+        "status",
+        "target",
+        "pairing",
+        "public_capture",
+        "owner_export",
+        "preaction_binding",
+        "preaction_binding_sha256",
+        "capabilities",
+        "raw_values_persisted",
+    } or (
+        value.get("schema") != "RAOS_V2_PHASE3_PREACTION_EXECUTION_INPUT_V1"
+        or value.get("version") != "1.0.0"
+        or value.get("classification") != "SANITIZED_DERIVED_INPUT_NO_RAW_EXPORT_BYTES"
+        or value.get("status") != "VERIFIED_PREACTION_INPUT"
+        or value.get("capabilities")
+        != {
+            "network": False,
+            "wordpress_read": False,
+            "wordpress_write": False,
+            "publish": False,
+        }
+        or value.get("raw_values_persisted") is not False
+    ):
+        fail(code)
+    target = _mapping(value.get("target"), code)
+    if (
+        set(target) != {"origin", "route", "kind", "post_id", "exact_match_count"}
+        or target.get("origin") != ORIGIN
+        or target.get("route") != PHASE3_PUBLIC_PATH
+        or target.get("kind") != "EXISTING_POST"
+        or type(target.get("post_id")) is not int
+        or int(target["post_id"]) < 1
+        or target.get("exact_match_count") != 1
+    ):
+        fail(code)
+    pairing = _mapping(value.get("pairing"), code)
+    delta = pairing.get("observed_delta_milliseconds")
+    public_capture_age = pairing.get("public_capture_age_milliseconds")
+    owner_export_age = pairing.get("owner_export_age_milliseconds")
+    if (
+        set(pairing)
+        != {
+            "maximum_age_seconds",
+            "observed_delta_milliseconds",
+            "evaluated_at",
+            "public_capture_age_milliseconds",
+            "owner_export_age_milliseconds",
+            "status",
+        }
+        or pairing.get("maximum_age_seconds") != 300
+        or type(delta) is not int
+        or not 0 <= int(delta) <= 300_000
+        or type(public_capture_age) is not int
+        or not 0 <= int(public_capture_age) <= 300_000
+        or type(owner_export_age) is not int
+        or not 0 <= int(owner_export_age) <= 300_000
+        or pairing.get("status") != "PAIRED_WITHIN_WINDOW"
+    ):
+        fail(code)
+    public_capture = _mapping(value.get("public_capture"), code)
+    if set(public_capture) != {
+        "recorded_input",
+        "semantic_sha256",
+        "observed_at",
+        "body_sha256",
+    }:
+        fail(code)
+    relative_text = public_capture.get("recorded_input")
+    if not isinstance(relative_text, str):
+        fail(code)
+    relative = Path(relative_text)
+    allowed = PHASE3_RECORDED_ROOT.parts
+    if (
+        relative.is_absolute()
+        or relative.parts[: len(allowed)] != allowed
+        or len(relative.parts) != len(allowed) + 1
+        or relative.suffix != ".json"
+        or any(part in {"", ".", ".."} for part in relative.parts)
+    ):
+        fail(code)
+    try:
+        capture_value = load_json_strict(
+            _repository_regular_file_bytes(
+                relative,
+                root=root,
+                maximum=MAX_RESPONSE_BYTES,
+                code=code,
+            )
+        )
+    except ValidationFailure:
+        fail(code)
+    if not isinstance(capture_value, dict):
+        fail(code)
+    observation, _captured_at, observed_at = _phase3_capture_observation(
+        capture_value, code=code
+    )
+    body_sha256 = observation.get("body_sha256")
+    if (
+        observation.get("status") != 200
+        or observation.get("redirect_chain") != []
+        or observation.get("canonical") != PHASE3_PUBLIC_URL
+        or observation.get("canonical_tag_count") != 1
+        or observation.get("sitemap_membership") is not True
+        or observation.get("body_storage") != "DISCARDED_AFTER_HASH"
+        or public_capture.get("semantic_sha256") != _semantic_digest(capture_value)
+        or public_capture.get("observed_at") != observed_at.isoformat()
+        or public_capture.get("body_sha256") != body_sha256
+    ):
+        fail(code)
+    owner = _mapping(value.get("owner_export"), code)
+    if set(owner) != {
+        "captured_at",
+        "raw_export_location",
+        "raw_export_sha256",
+        "raw_export_bytes",
+        "field_hashes",
+        "legacy_post_content_sha256",
+        "restore_completeness",
+        "wordpress_environment",
+        "artifacts",
+    }:
+        fail(code)
+    try:
+        owner_at = datetime.fromisoformat(str(owner.get("captured_at")))
+        evaluated_at = datetime.fromisoformat(str(pairing.get("evaluated_at")))
+    except ValueError:
+        fail(code)
+    if (
+        owner_at.tzinfo is None
+        or owner_at.utcoffset() is None
+        or evaluated_at.tzinfo is None
+        or evaluated_at.utcoffset() is None
+        or abs(int((owner_at - observed_at).total_seconds() * 1000)) != delta
+        or int((evaluated_at - observed_at).total_seconds() * 1000)
+        != public_capture_age
+        or int((evaluated_at - owner_at).total_seconds() * 1000) != owner_export_age
+        or owner.get("raw_export_location") != "OWNER_STORAGE_ONLY_NOT_GIT"
+        or not isinstance(owner.get("raw_export_sha256"), str)
+        or HEX64.fullmatch(str(owner.get("raw_export_sha256"))) is None
+        or type(owner.get("raw_export_bytes")) is not int
+        or int(owner["raw_export_bytes"]) < 1
+        or not isinstance(owner.get("legacy_post_content_sha256"), str)
+        or HEX64.fullmatch(str(owner.get("legacy_post_content_sha256"))) is None
+    ):
+        fail(code)
+    field_hashes = _mapping(owner.get("field_hashes"), code)
+    if (
+        set(field_hashes) != PHASE3_WORDPRESS_FIELD_NAMES
+        or any(
+            not isinstance(item, str) or HEX64.fullmatch(item) is None
+            for item in field_hashes.values()
+        )
+        or field_hashes.get("post_status")
+        != _semantic_digest({"field": "post_status", "value": "publish"})
+    ):
+        fail(code)
+    restore = _mapping(owner.get("restore_completeness"), code)
+    expected_restore = {
+        "author",
+        "comment_status",
+        "content",
+        "excerpt",
+        "featured_media",
+        "modified_at",
+        "ping_status",
+        "published_at",
+        "seo_fields",
+        "slug",
+        "status",
+        "taxonomy",
+        "title",
+    }
+    if set(restore) != expected_restore or any(
+        item is not True for item in restore.values()
+    ):
+        fail(code)
+    environment = _mapping(owner.get("wordpress_environment"), code)
+    theme = _mapping(environment.get("active_theme"), code)
+    plugins = environment.get("relevant_plugins")
+    version_pattern = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]{0,63}$")
+    slug_pattern = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
+    if (
+        set(environment)
+        != {"wordpress_core_version", "active_theme", "relevant_plugins"}
+        or not isinstance(environment.get("wordpress_core_version"), str)
+        or version_pattern.fullmatch(environment["wordpress_core_version"]) is None
+        or set(theme) != {"slug", "version"}
+        or not isinstance(theme.get("slug"), str)
+        or slug_pattern.fullmatch(theme["slug"]) is None
+        or not isinstance(theme.get("version"), str)
+        or version_pattern.fullmatch(theme["version"]) is None
+        or not isinstance(plugins, list)
+    ):
+        fail(code)
+    plugin_slugs: list[str] = []
+    for plugin in plugins:
+        row = _mapping(plugin, code)
+        if (
+            set(row) != {"slug", "version"}
+            or not isinstance(row.get("slug"), str)
+            or slug_pattern.fullmatch(row["slug"]) is None
+            or not isinstance(row.get("version"), str)
+            or version_pattern.fullmatch(row["version"]) is None
+        ):
+            fail(code)
+        plugin_slugs.append(row["slug"])
+    if plugin_slugs != sorted(set(plugin_slugs)):
+        fail(code)
+    artifacts = _mapping(owner.get("artifacts"), code)
+    if set(artifacts) != {
+        "redirect_map",
+        "restore_artifact",
+        "seo_state",
+        "sitemap_state",
+        "theme_plugin_artifact",
+    }:
+        fail(code)
+    for artifact in artifacts.values():
+        row = _mapping(artifact, code)
+        if (
+            set(row) != {"bytes", "sha256"}
+            or type(row.get("bytes")) is not int
+            or int(row["bytes"]) < 1
+            or not isinstance(row.get("sha256"), str)
+            or HEX64.fullmatch(str(row.get("sha256"))) is None
+        ):
+            fail(code)
+    binding = _mapping(value.get("preaction_binding"), code)
+    if (
+        set(binding)
+        != {
+            "schema",
+            "version",
+            "status",
+            "provenance",
+            "captured_at",
+            "target",
+            "current_public_body_sha256",
+            "public_capture_sha256",
+            "wordpress_export_sha256",
+            "wordpress_export_bytes",
+            "owner_evidence_sha256",
+            "legacy_post_content_sha256",
+        }
+        or binding.get("schema") != "RAOS_V2_PHASE3_PREACTION_BINDING_V1"
+        or binding.get("version") != "1.0.0"
+        or binding.get("status") != "VERIFIED_PREACTION"
+        or binding.get("provenance")
+        != "PUBLIC_READ_ONLY_CAPTURE_AND_OWNER_WORDPRESS_EXPORT"
+        or binding.get("target") != target
+        or binding.get("captured_at") != max(observed_at, owner_at).isoformat()
+        or binding.get("current_public_body_sha256") != body_sha256
+        or binding.get("public_capture_sha256") != public_capture.get("semantic_sha256")
+        or binding.get("wordpress_export_sha256") != owner.get("raw_export_sha256")
+        or binding.get("wordpress_export_bytes") != owner.get("raw_export_bytes")
+        or binding.get("legacy_post_content_sha256")
+        != owner.get("legacy_post_content_sha256")
+        or binding.get("owner_evidence_sha256")
+        != _semantic_digest(
+            {
+                "field_hashes": field_hashes,
+                "legacy_post_content_sha256": owner.get("legacy_post_content_sha256"),
+                "restore_completeness": restore,
+                "wordpress_environment": environment,
+                "artifacts": artifacts,
+            }
+        )
+        or value.get("preaction_binding_sha256") != _semantic_digest(binding)
+    ):
+        fail(code)
+    schema_relative = Path("contracts/raos-v2/v2/preaction-binding.schema.json")
+    try:
+        from scripts import build_raos_v2_successor as successor_builder
+    except ModuleNotFoundError:
+        import build_raos_v2_successor as successor_builder  # type: ignore[no-redef]
+    try:
+        schema_document = _mapping(
+            load_json_strict(
+                _repository_regular_file_bytes(
+                    schema_relative,
+                    root=root,
+                    maximum=MAX_RESPONSE_BYTES,
+                    code=code,
+                )
+            ),
+            code,
+        )
+        if schema_document != successor_builder.phase3_preaction_binding_schema():
+            fail(code)
+        Draft202012Validator.check_schema(schema_document)
+        schema_errors = list(
+            Draft202012Validator(
+                schema_document, format_checker=FormatChecker()
+            ).iter_errors(binding)
+        )
+    except Exception as exc:
+        if isinstance(exc, ValidationFailure):
+            raise
+        fail(code)
+    if schema_errors:
+        fail(code)
+    return {
+        "status": "VERIFIED_PREACTION_INPUT",
+        "preaction_binding_sha256": value["preaction_binding_sha256"],
+        "post_id": target["post_id"],
+        "raw_values_persisted": False,
+    }
+
+
+def verify_phase3_reissued_review_bundle(
+    value: Mapping[str, object], *, root: Path = ROOT
+) -> dict[str, object]:
+    """Independently bind a reissued candidate to current generator inputs."""
+
+    code = "RAOS_V2_PHASE3_REISSUED_REVIEW_BUNDLE_INVALID"
+    expected_keys = {
+        "schema",
+        "version",
+        "classification",
+        "state",
+        "reissued_at",
+        "reissue_age_milliseconds",
+        "public_capture_age_milliseconds",
+        "owner_export_age_milliseconds",
+        "maximum_reissue_age_seconds",
+        "source",
+        "review_candidate",
+        "candidate_digest",
+        "payload_digest",
+        "review_request",
+        "capabilities",
+        "external_actions",
+        "review_bundle_sha256",
+    }
+    if (
+        set(value) != expected_keys
+        or value.get("schema") != "RAOS_V2_PHASE3_REISSUED_REVIEW_BUNDLE_V1"
+        or value.get("version") != "1.0.0"
+        or value.get("classification")
+        != "LOCAL_REISSUE_FOR_ARTIFACT_SPECIFIC_HUMAN_REVIEW"
+        or value.get("state") != "READY_FOR_ARTIFACT_SPECIFIC_HUMAN_REVIEW"
+        or value.get("maximum_reissue_age_seconds") != 300
+        or value.get("capabilities")
+        != {
+            "network": False,
+            "wordpress_read": False,
+            "wordpress_write": False,
+            "publish": False,
+        }
+        or value.get("external_actions") != "NOT_EXECUTED"
+    ):
+        fail(code)
+
+    schema_relative = Path("contracts/raos-v2/v2/reissued-review-bundle.schema.json")
+    try:
+        from scripts import build_raos_v2_successor as successor_builder
+    except ModuleNotFoundError:
+        import build_raos_v2_successor as successor_builder  # type: ignore[no-redef]
+    try:
+        schema_document = _mapping(
+            load_json_strict(
+                _repository_regular_file_bytes(
+                    schema_relative,
+                    root=root,
+                    maximum=MAX_RESPONSE_BYTES,
+                    code=code,
+                )
+            ),
+            code,
+        )
+        expected_schema = successor_builder.phase3_reissued_review_bundle_schema()
+        if schema_document != expected_schema:
+            fail(code)
+        registry = Registry()
+        for _version, _name, document in _contract_schema_documents(
+            root=root, code=code
+        ):
+            Draft202012Validator.check_schema(document)
+            identifier = document.get("$id")
+            if not isinstance(identifier, str):
+                fail(code)
+            registry = registry.with_resource(
+                identifier, Resource.from_contents(document)
+            )
+        schema_errors = list(
+            Draft202012Validator(
+                schema_document,
+                registry=registry,
+                format_checker=FormatChecker(),
+            ).iter_errors(value)
+        )
+    except Exception as exc:
+        if isinstance(exc, ValidationFailure):
+            raise
+        fail(code)
+    if schema_errors:
+        fail(code)
+    unsigned = dict(value)
+    bundle_digest = unsigned.pop("review_bundle_sha256", None)
+    if (
+        not isinstance(bundle_digest, str)
+        or HEX64.fullmatch(bundle_digest) is None
+        or bundle_digest != _semantic_digest(unsigned)
+    ):
+        fail(code)
+    try:
+        reissued_at = datetime.fromisoformat(str(value.get("reissued_at")))
+    except ValueError:
+        fail(code)
+    if reissued_at.tzinfo is None or reissued_at.utcoffset() is None:
+        fail(code)
+    source = _mapping(value.get("source"), code)
+    if set(source) != {
+        "historical_review_candidate",
+        "historical_review_candidate_sha256",
+        "preaction_input",
+        "preaction_input_sha256",
+        "preaction_binding_sha256",
+    } or source.get("historical_review_candidate") != (
+        "changes/raos-v2/phase-3/generated/review-candidate.v1.json"
+    ):
+        fail(code)
+    preaction_path_value = source.get("preaction_input")
+    if not isinstance(preaction_path_value, str):
+        fail(code)
+    preaction_path = Path(preaction_path_value)
+    allowed = PHASE3_RECORDED_ROOT.parts
+    if (
+        preaction_path.is_absolute()
+        or preaction_path.parts[: len(allowed)] != allowed
+        or len(preaction_path.parts) != len(allowed) + 1
+        or preaction_path.suffix != ".json"
+        or any(part in {"", ".", ".."} for part in preaction_path.parts)
+    ):
+        fail(code)
+    try:
+        preaction_value = load_json_strict(
+            _repository_regular_file_bytes(
+                preaction_path,
+                root=root,
+                maximum=MAX_RESPONSE_BYTES,
+                code=code,
+            )
+        )
+    except ValidationFailure:
+        fail(code)
+    if not isinstance(preaction_value, dict):
+        fail(code)
+    verified_preaction = verify_phase3_preaction_execution_input(
+        preaction_value, root=root
+    )
+    binding = _mapping(preaction_value.get("preaction_binding"), code)
+    if source.get("preaction_input_sha256") != _semantic_digest(
+        preaction_value
+    ) or source.get("preaction_binding_sha256") != verified_preaction.get(
+        "preaction_binding_sha256"
+    ):
+        fail(code)
+    public_record = _mapping(preaction_value.get("public_capture"), code)
+    owner_record = _mapping(preaction_value.get("owner_export"), code)
+    try:
+        public_at = datetime.fromisoformat(str(public_record.get("observed_at")))
+        owner_at = datetime.fromisoformat(str(owner_record.get("captured_at")))
+    except ValueError:
+        fail(code)
+    if any(
+        instant.tzinfo is None or instant.utcoffset() is None
+        for instant in (public_at, owner_at)
+    ):
+        fail(code)
+    public_age = int((reissued_at - public_at).total_seconds() * 1000)
+    owner_age = int((reissued_at - owner_at).total_seconds() * 1000)
+    if (
+        type(value.get("public_capture_age_milliseconds")) is not int
+        or value.get("public_capture_age_milliseconds") != public_age
+        or not 0 <= public_age <= 300_000
+        or type(value.get("owner_export_age_milliseconds")) is not int
+        or value.get("owner_export_age_milliseconds") != owner_age
+        or not 0 <= owner_age <= 300_000
+        or type(value.get("reissue_age_milliseconds")) is not int
+        or value.get("reissue_age_milliseconds") != max(public_age, owner_age)
+    ):
+        fail(code)
+    try:
+        current_historical = (
+            successor_builder.current_phase3_historical_review_candidate_document()
+        )
+    except successor_builder.BuildFailure:
+        fail(code)
+    historical_relative = Path(str(source["historical_review_candidate"]))
+    try:
+        historical_bytes = _repository_regular_file_bytes(
+            historical_relative,
+            root=root,
+            maximum=MAX_RESPONSE_BYTES,
+            code=code,
+        )
+    except ValidationFailure:
+        fail(code)
+    if historical_bytes != canonical_json_bytes(current_historical) or source.get(
+        "historical_review_candidate_sha256"
+    ) != sha256(historical_bytes):
+        fail(code)
+    expected_candidate = deepcopy(current_historical)
+    update = _mapping(expected_candidate.get("update_payload"), code)
+    target = _mapping(update.get("target"), code)
+    binding_digest = _semantic_digest(binding)
+    target["expected_public_body_sha256"] = binding.get("current_public_body_sha256")
+    update["preaction"] = {
+        "status": "VERIFIED_PREACTION",
+        "binding_digest": binding_digest,
+        "binding": binding,
+    }
+    expected_candidate["preaction_status"] = "VERIFIED_PREACTION"
+    expected_candidate["preaction_binding_digest"] = binding_digest
+    expected_candidate["payload_digest"] = _semantic_digest(update)
+    candidate = _mapping(value.get("review_candidate"), code)
+    candidate_digest = candidate.get("candidate_digest")
+    payload_digest = candidate.get("payload_digest")
+    review_request = _mapping(value.get("review_request"), code)
+    if (
+        candidate != expected_candidate
+        or value.get("candidate_digest") != candidate_digest
+        or value.get("payload_digest") != payload_digest
+        or review_request
+        != {
+            "required_receipt_schema": "RAOS_V2_PHASE3_HUMAN_REVIEW_RECEIPT_V1",
+            "candidate_digest": candidate_digest,
+            "payload_digest": payload_digest,
+            "target_route": PHASE3_PUBLIC_PATH,
+            "generic_approval_accepted": False,
+            "artifact_specific_review_required": True,
+        }
+    ):
+        fail(code)
+    bindings = _rows(candidate.get("claim_bindings"), code)
+    for claim in bindings:
+        try:
+            checked_at = datetime.fromisoformat(str(claim.get("checked_at")))
+            next_review_at = datetime.fromisoformat(str(claim.get("next_review_at")))
+        except ValueError:
+            fail(code)
+        if not checked_at <= reissued_at < next_review_at:
+            fail("RAOS_V2_PHASE3_REISSUED_REVIEW_BUNDLE_STALE")
+    return {
+        "state": "READY_FOR_ARTIFACT_SPECIFIC_HUMAN_REVIEW",
+        "candidate_digest": candidate_digest,
+        "payload_digest": payload_digest,
+        "preaction_binding_sha256": binding_digest,
+    }
+
+
+def verify_phase3_wordpress_cutover_binding(
+    value: Mapping[str, object],
+    *,
+    sealed_package: Mapping[str, object],
+    review_bundle: Mapping[str, object],
+    root: Path = ROOT,
+) -> dict[str, object]:
+    """Verify the activation-before-write guard against one sealed package."""
+
+    code = "RAOS_V2_PHASE3_WORDPRESS_CUTOVER_BINDING_INVALID"
+    schema_relative = Path("contracts/raos-v2/v2/wordpress-cutover-binding.schema.json")
+    try:
+        from scripts import build_raos_v2_successor as successor_builder
+    except ModuleNotFoundError:
+        import build_raos_v2_successor as successor_builder  # type: ignore[no-redef]
+    try:
+        schema_document = _mapping(
+            load_json_strict(
+                _repository_regular_file_bytes(
+                    schema_relative,
+                    root=root,
+                    maximum=MAX_RESPONSE_BYTES,
+                    code=code,
+                )
+            ),
+            code,
+        )
+        if (
+            schema_document
+            != successor_builder.phase3_wordpress_cutover_binding_schema()
+        ):
+            fail(code)
+        Draft202012Validator.check_schema(schema_document)
+        errors = list(
+            Draft202012Validator(
+                schema_document, format_checker=FormatChecker()
+            ).iter_errors(value)
+        )
+    except Exception as exc:
+        if isinstance(exc, ValidationFailure):
+            raise
+        fail(code)
+    if errors:
+        fail(code)
+    try:
+        verify_phase3_reissued_review_bundle(review_bundle, root=root)
+    except ValidationFailure:
+        fail(code)
+    try:
+        from scripts import raos_v2_phase3_execution as phase3_operator
+    except ModuleNotFoundError:
+        import raos_v2_phase3_execution as phase3_operator  # type: ignore[no-redef]
+    try:
+        semantic_verification = phase3_operator.verify_phase3_sealed_package_semantics(
+            sealed_package,
+            review_bundle=review_bundle,
+            root=root,
+        )
+    except phase3_operator.Phase3ExecutionFailure:
+        fail(code)
+    if (
+        semantic_verification.get("state") != "PACKAGE_SEALED"
+        or semantic_verification.get("simulation_only") is not True
+        or semantic_verification.get("acceptance_authority") is not False
+        or semantic_verification.get("phase_exit") != "BLOCKED_EXTERNAL"
+        or semantic_verification.get("public_write_authority") is not False
+    ):
+        fail(code)
+    # This verifier has no authenticated artifact-specific approval source and
+    # accepts neither a post-review PRE_WRITE_EXPORT nor a disabled-plugin
+    # dry-run receipt.  It therefore cannot certify an ARMED binding even when
+    # the local simulation package itself is semantically valid.
+    fail("RAOS_V2_PHASE3_CUTOVER_PREWRITE_EVIDENCE_REQUIRED")
 
 
 def compact_canonical_json_bytes(value: object) -> bytes:
@@ -539,7 +1321,7 @@ def local_test_evidence_bindings(*, root: Path = ROOT) -> dict[str, object]:
     test_paths = tuple(
         sorted(
             path.relative_to(root)
-            for pattern in ("*.py", "*.mjs")
+            for pattern in ("*.py", "*.mjs", "*.php")
             for path in (root / "tests/raos_v2").glob(pattern)
             if path.is_file() and not path.is_symlink()
         )
@@ -1392,6 +2174,101 @@ def verify_phase3_local_browser_evidence(
     }
 
 
+def record_phase3_local_browser_evidence(
+    *,
+    root: Path = ROOT,
+    visual_review_confirmed: bool,
+    reviewed_at: datetime | None = None,
+) -> dict[str, object]:
+    """Bind a successful raw harness receipt to an explicit visual review."""
+
+    if visual_review_confirmed is not True:
+        fail("RAOS_V2_PHASE3_VISUAL_REVIEW_CONFIRMATION_REQUIRED")
+    raw_path = root / PHASE3_BROWSER_RAW_RECEIPT_PATH
+    raw_payload = _read_local_evidence_file(raw_path, root=root)
+    raw_value = load_json_strict(raw_payload)
+    if not isinstance(raw_value, dict):
+        fail("RAOS_V2_PHASE3_BROWSER_RAW_RECEIPT_INVALID")
+    captures = raw_value.get("visualCaptures")
+    if not isinstance(captures, list) or len(captures) != 3:
+        fail("RAOS_V2_PHASE3_BROWSER_RAW_RECEIPT_INVALID")
+    expected_widths = [390, 768, 1440]
+    capture_hashes: list[str] = []
+    for expected_width, capture_value in zip(expected_widths, captures, strict=True):
+        capture = _mapping(capture_value, "RAOS_V2_PHASE3_BROWSER_RAW_RECEIPT_INVALID")
+        digest = capture.get("sha256")
+        path_value = capture.get("path")
+        if (
+            capture.get("width") != expected_width
+            or not isinstance(path_value, str)
+            or not isinstance(digest, str)
+            or HEX64.fullmatch(digest) is None
+        ):
+            fail("RAOS_V2_PHASE3_BROWSER_RAW_RECEIPT_INVALID")
+        image_payload = _read_local_evidence_file(root / path_value, root=root)
+        if (
+            len(image_payload) != capture.get("bytes")
+            or sha256(image_payload) != digest
+            or _phase3_png_dimensions(image_payload)
+            != (capture.get("width"), capture.get("height"))
+        ):
+            fail("RAOS_V2_PHASE3_BROWSER_CAPTURE_DRIFT")
+        capture_hashes.append(digest)
+    instant = reviewed_at or datetime.now(ZoneInfo("Asia/Tokyo"))
+    if instant.tzinfo is None or instant.utcoffset() is None:
+        fail("RAOS_V2_PHASE3_VISUAL_REVIEW_TIME_INVALID")
+    instant_jst = instant.astimezone(ZoneInfo("Asia/Tokyo"))
+    document: dict[str, object] = {
+        "schema": "RAOS_V2_RECORDED_PHASE3_LOCAL_BROWSER_EVIDENCE_V1",
+        "version": "1.0.0",
+        "recorded_date_jst": instant_jst.date().isoformat(),
+        "recorded_at_jst": instant_jst.isoformat(),
+        "classification": "PASSED_LOCAL_ASSEMBLY_SIMULATION",
+        "raw_receipt": {
+            "local_path": PHASE3_BROWSER_RAW_RECEIPT_PATH.as_posix(),
+            "sha256": sha256(raw_payload),
+            "bytes": len(raw_payload),
+            "exit_status": 0,
+            "tracked": False,
+        },
+        "receipt": raw_value,
+        "manual_visual_review": {
+            "classification": "PASSED_LOCAL_MANUAL_VISUAL_REVIEW",
+            "reviewer_class": "CODEX_MANUAL_VISUAL_REVIEW",
+            "reviewed_at_jst": instant_jst.isoformat(),
+            "reviewed_viewports": expected_widths,
+            "reviewed_capture_sha256": capture_hashes,
+            "findings": {"critical": 0, "major": 0},
+            "checks": {
+                "content_hierarchy_clear": True,
+                "cta_blocked_state_clear": True,
+                "mobile_cards_readable": True,
+                "tablet_table_contained": True,
+                "desktop_grid_readable": True,
+                "official_editorial_unknown_labels_visible": True,
+                "horizontal_clipping_observed": False,
+            },
+        },
+        "external_actions": "NOT_EXECUTED",
+        "public_evidence": "NOT_CLAIMED",
+        "formal_ci": "NOT_CLAIMED",
+        "ci_behavior": (
+            "VERIFY_COMMITTED_RECEIPT_AND_CURRENT_TREE_BINDINGS_WHEN_RAW_LOCAL_"
+            "FILES_ARE_ABSENT"
+        ),
+    }
+    expected_preview = _read_local_evidence_file(
+        root / PHASE3_BROWSER_PREVIEW_PATH, root=root
+    )
+    verify_phase3_local_browser_evidence(
+        document,
+        expected_preview=expected_preview,
+        root=root,
+        require_raw=True,
+    )
+    return document
+
+
 def record_local_test_evidence(*, root: Path = ROOT) -> dict[str, object]:
     """Sanitize an ignored pytest tee into a tree-bound local-only receipt."""
 
@@ -1552,7 +2429,11 @@ def _atomic_write(path: Path, payload: bytes) -> None:
     """Write only allowlisted recorded inputs without following links."""
 
     repository = ROOT.resolve()
-    if path not in {RECORDED_INPUT, LOCAL_TEST_EVIDENCE_INPUT}:
+    if path not in {
+        RECORDED_INPUT,
+        LOCAL_TEST_EVIDENCE_INPUT,
+        PHASE3_LOCAL_BROWSER_EVIDENCE_INPUT,
+    }:
         fail("RAOS_V2_CAPTURE_OUTPUT_UNSAFE")
     target = path
     try:
@@ -1601,8 +2482,8 @@ def _atomic_write(path: Path, payload: bytes) -> None:
         temporary.unlink(missing_ok=True)
 
 
-def _phase3_capture_output_path(output: Path) -> Path:
-    """Resolve one new Phase 3 recorded input without escaping its directory."""
+def _validate_phase3_capture_output_name(output: Path) -> None:
+    """Reject every Phase 3 output outside the single-file recorded-input scope."""
 
     allowed_prefix = PHASE3_RECORDED_ROOT.parts
     if (
@@ -1615,40 +2496,190 @@ def _phase3_capture_output_path(output: Path) -> Path:
     ):
         fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_REJECTED")
 
-    target = ROOT / output
-    try:
-        root_metadata = ROOT.lstat()
-    except OSError:
-        fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
-    if stat.S_ISLNK(root_metadata.st_mode) or not stat.S_ISDIR(root_metadata.st_mode):
-        fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
 
-    current = ROOT
-    for part in output.parts[:-1]:
-        current = current / part
+def _repair_phase3_capture_link_residue(output: Path) -> bool:
+    """Repair one interrupted link/unlink commit without inspecting its payload."""
+
+    _validate_phase3_capture_output_name(output)
+    directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    directory_descriptor = -1
+    file_descriptor = -1
+    try:
         try:
-            metadata = current.lstat()
-        except FileNotFoundError:
-            continue
+            directory_descriptor = os.open(ROOT, directory_flags)
         except OSError:
             fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
-        if stat.S_ISLNK(metadata.st_mode) or not stat.S_ISDIR(metadata.st_mode):
+        for component in output.parts[:-1]:
+            try:
+                next_descriptor = os.open(
+                    component,
+                    directory_flags,
+                    dir_fd=directory_descriptor,
+                )
+            except FileNotFoundError:
+                return False
+            except OSError:
+                fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
+            os.close(directory_descriptor)
+            directory_descriptor = next_descriptor
+        try:
+            file_descriptor = os.open(
+                output.name,
+                os.O_RDONLY | os.O_NOFOLLOW,
+                dir_fd=directory_descriptor,
+            )
+        except FileNotFoundError:
+            return False
+        except OSError:
             fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
 
-    try:
-        target.lstat()
-    except FileNotFoundError:
-        pass
+        opened = os.fstat(file_descriptor)
+        if not stat.S_ISREG(opened.st_mode):
+            fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
+        if opened.st_nlink == 1:
+            return True
+        if opened.st_nlink != 2:
+            fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
+
+        temporary_pattern = re.compile(
+            rf"\.{re.escape(output.name)}\.[0-9a-f]{{24}}\.next\Z"
+        )
+        linked_temporaries: list[str] = []
+        for name in os.listdir(directory_descriptor):
+            if temporary_pattern.fullmatch(name) is None:
+                continue
+            temporary_descriptor = -1
+            try:
+                temporary_descriptor = os.open(
+                    name,
+                    os.O_RDONLY | os.O_NOFOLLOW,
+                    dir_fd=directory_descriptor,
+                )
+                temporary_metadata = os.fstat(temporary_descriptor)
+            except OSError:
+                fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
+            finally:
+                if temporary_descriptor >= 0:
+                    os.close(temporary_descriptor)
+            if (
+                stat.S_ISREG(temporary_metadata.st_mode)
+                and temporary_metadata.st_nlink == 2
+                and temporary_metadata.st_dev == opened.st_dev
+                and temporary_metadata.st_ino == opened.st_ino
+            ):
+                linked_temporaries.append(name)
+        if len(linked_temporaries) != 1:
+            fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
+
+        os.unlink(linked_temporaries[0], dir_fd=directory_descriptor)
+        os.fsync(directory_descriptor)
+        final_descriptor = os.open(
+            output.name,
+            os.O_RDONLY | os.O_NOFOLLOW,
+            dir_fd=directory_descriptor,
+        )
+        try:
+            final = os.fstat(final_descriptor)
+            if (
+                not stat.S_ISREG(final.st_mode)
+                or final.st_dev != opened.st_dev
+                or final.st_ino != opened.st_ino
+                or final.st_nlink != 1
+            ):
+                fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
+        finally:
+            os.close(final_descriptor)
+        return True
+    except ValidationFailure:
+        raise
     except OSError:
         fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
-    else:
+    finally:
+        if file_descriptor >= 0:
+            os.close(file_descriptor)
+        if directory_descriptor >= 0:
+            os.close(directory_descriptor)
+
+
+def _phase3_capture_output_path(output: Path) -> Path:
+    """Resolve one new Phase 3 recorded input without escaping its directory."""
+
+    if _repair_phase3_capture_link_residue(output):
         fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_ALREADY_EXISTS")
-    return target
+    return ROOT / output
+
+
+def _recover_equal_phase3_capture(output: Path, payload: bytes) -> bool:
+    """Recover or accept an exact prior no-replace write, never other bytes."""
+
+    if not _repair_phase3_capture_link_residue(output):
+        return False
+    directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    directory_descriptor = -1
+    try:
+        directory_descriptor = os.open(ROOT, directory_flags)
+        for component in output.parts[:-1]:
+            next_descriptor = os.open(
+                component,
+                directory_flags,
+                dir_fd=directory_descriptor,
+            )
+            os.close(directory_descriptor)
+            directory_descriptor = next_descriptor
+        try:
+            file_descriptor = os.open(
+                output.name,
+                os.O_RDONLY | os.O_NOFOLLOW,
+                dir_fd=directory_descriptor,
+            )
+        except FileNotFoundError:
+            return False
+        try:
+            opened = os.fstat(file_descriptor)
+            if not stat.S_ISREG(opened.st_mode) or opened.st_nlink != 1:
+                fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
+            if opened.st_size != len(payload):
+                fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_ALREADY_EXISTS")
+            chunks: list[bytes] = []
+            remaining = opened.st_size
+            while remaining:
+                chunk = os.read(file_descriptor, min(1024 * 1024, remaining))
+                if not chunk:
+                    fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
+                chunks.append(chunk)
+                remaining -= len(chunk)
+            final = os.fstat(file_descriptor)
+            if (
+                b"".join(chunks) != payload
+                or final.st_dev != opened.st_dev
+                or final.st_ino != opened.st_ino
+                or final.st_size != opened.st_size
+                or final.st_nlink != opened.st_nlink
+                or final.st_mtime_ns != opened.st_mtime_ns
+                or final.st_ctime_ns != opened.st_ctime_ns
+            ):
+                fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_ALREADY_EXISTS")
+        finally:
+            os.close(file_descriptor)
+        return True
+    except FileNotFoundError:
+        return False
+    except ValidationFailure:
+        raise
+    except OSError:
+        fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
+    finally:
+        if directory_descriptor >= 0:
+            os.close(directory_descriptor)
 
 
 def _write_new_phase3_capture(output: Path, payload: bytes) -> None:
     """Create a complete Phase 3 capture atomically and never overwrite it."""
 
+    if not payload:
+        fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
+    if _recover_equal_phase3_capture(output, payload):
+        return
     target = _phase3_capture_output_path(output)
     try:
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -1674,6 +2705,7 @@ def _write_new_phase3_capture(output: Path, payload: bytes) -> None:
     current_descriptor = -1
     temporary_name = f".{target.name}.{os.urandom(12).hex()}.next"
     temporary_created = False
+    failure_code: str | None = None
     try:
         current_descriptor = os.open(ROOT, directory_flags)
         for part in output.parts[:-1]:
@@ -1697,32 +2729,38 @@ def _write_new_phase3_capture(output: Path, payload: bytes) -> None:
             stream.write(payload)
             stream.flush()
             os.fsync(stream.fileno())
-        try:
-            os.link(
-                temporary_name,
-                target.name,
-                src_dir_fd=current_descriptor,
-                dst_dir_fd=current_descriptor,
-                follow_symlinks=False,
-            )
-        except FileExistsError:
-            fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_ALREADY_EXISTS")
-        except OSError:
-            fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
+        os.link(
+            temporary_name,
+            target.name,
+            src_dir_fd=current_descriptor,
+            dst_dir_fd=current_descriptor,
+            follow_symlinks=False,
+        )
+    except FileExistsError:
+        failure_code = "RAOS_V2_PHASE3_CAPTURE_OUTPUT_ALREADY_EXISTS"
     except OSError:
-        fail("RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE")
+        failure_code = "RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE"
     finally:
         if temporary_created and current_descriptor >= 0:
             try:
                 os.unlink(temporary_name, dir_fd=current_descriptor)
             except FileNotFoundError:
-                pass
+                temporary_created = False
             except OSError:
-                pass
+                failure_code = "RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE"
+            else:
+                temporary_created = False
+        if current_descriptor >= 0:
+            try:
+                os.fsync(current_descriptor)
+            except OSError:
+                failure_code = "RAOS_V2_PHASE3_CAPTURE_OUTPUT_UNSAFE"
         if parent_descriptor >= 0:
             os.close(parent_descriptor)
         if current_descriptor >= 0:
             os.close(current_descriptor)
+    if failure_code is not None:
+        fail(failure_code)
 
 
 def validate_public_url(url: str) -> str:
@@ -2087,7 +3125,7 @@ def _semantic_digest(value: Mapping[str, object]) -> str:
 def _validate_contract_instances() -> dict[str, object]:
     schema_sets = {
         "v1": (ROOT / "contracts/raos-v2/v1", 10),
-        "v2": (ROOT / "contracts/raos-v2/v2", 8),
+        "v2": (ROOT / "contracts/raos-v2/v2", 10),
     }
     schemas_by_version: dict[str, dict[str, dict[str, object]]] = {}
     registry = Registry()
@@ -3050,24 +4088,30 @@ def _validate_effective_traceability(
             "GENERATED_LOCAL"
             if number <= 18
             else (
-                "VERIFIED_LOCAL_RECORDED"
-                if gate_passed
+                (
+                    "VERIFIED_LOCAL_RECORDED"
+                    if gate_passed
+                    else (
+                        "AWAITING_LOCAL_TEST_GATE"
+                        if number == 34
+                        else "IMPLEMENTED_LOCAL_PENDING_GATE"
+                    )
+                )
+                if number <= 34
                 else (
-                    "AWAITING_LOCAL_TEST_GATE"
-                    if number == 34
-                    else "IMPLEMENTED_LOCAL_PENDING_GATE"
+                    (
+                        "COMPLETE_LOCAL_RECORDED"
+                        if gate_passed
+                        else "IMPLEMENTED_LOCAL_PENDING_GATE"
+                    )
+                    if number in {35, 36, 38, 39}
+                    else (
+                        "REVIEW_READY_BLOCKED_EXTERNAL"
+                        if number == 37
+                        else "BLOCKED_EXTERNAL"
+                    )
                 )
             )
-            if number <= 34
-            else (
-                "COMPLETE_LOCAL_RECORDED"
-                if gate_passed
-                else "IMPLEMENTED_LOCAL_PENDING_GATE"
-            )
-            if number in {35, 36, 38, 39}
-            else "REVIEW_READY_BLOCKED_EXTERNAL"
-            if number == 37
-            else "BLOCKED_EXTERNAL"
         )
         if row.get("implementation_status") != expected:
             fail("RAOS_V2_EFFECTIVE_TRACEABILITY_STATUS_INVALID")
@@ -4145,10 +5189,7 @@ class _MetadataParser(HTMLParser):
                 or normalized_tag == "link"
                 and "canonical" in rel
                 or normalized_tag == "meta"
-                and (
-                    name in {"robots", "description"}
-                    or _is_crawler_robots_name(name)
-                )
+                and (name in {"robots", "description"} or _is_crawler_robots_name(name))
                 or any(key.startswith("data-raos-v2-") for key in values)
             )
             if sensitive:
@@ -4385,9 +5426,7 @@ class _MetadataParser(HTMLParser):
             )
             self._inline_style_parts = None
 
-    def handle_startendtag(
-        self, tag: str, attrs: list[tuple[str, str | None]]
-    ) -> None:
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         # HTML ignores the self-closing flag on non-void elements. Treat every
         # start/end token as a start here so ``<template/>`` cannot expose
         # browser-inert content to the verifier as visible document content.
@@ -5104,9 +6143,7 @@ def _phase3_robots_target_allowed(payload: bytes, *, status: int) -> bool:
     if status != 200:
         return False
     try:
-        text = payload[:PHASE3_ROBOTS_MAX_BYTES].decode(
-            "utf-8-sig", errors="strict"
-        )
+        text = payload[:PHASE3_ROBOTS_MAX_BYTES].decode("utf-8-sig", errors="strict")
     except UnicodeError:
         return False
     groups: list[tuple[tuple[str, ...], tuple[tuple[str, str], ...]]] = []
@@ -5164,7 +6201,9 @@ def _phase3_robots_target_allowed(payload: bytes, *, status: int) -> bool:
         core = candidate[:-1] if anchored else candidate
         expression = "^" + re.escape(core).replace(r"\*", ".*")
         try:
-            matched = re.search(expression + ("$" if anchored else ""), PHASE3_PUBLIC_PATH)
+            matched = re.search(
+                expression + ("$" if anchored else ""), PHASE3_PUBLIC_PATH
+            )
         except re.error:
             return False
         if matched:
@@ -5375,9 +6414,67 @@ def _phase3_capture_observation(
         or capture.get("phase0_baseline_write") != "PROHIBITED"
     ):
         fail(code)
-    observation = _mapping(capture.get("observation"), code)
-    if set(observation) != PHASE3_OBSERVATION_KEYS:
+    request_policy = _mapping(capture.get("request_policy"), code)
+    if request_policy != {
+        "target_page_count": 1,
+        "maximum_page_and_asset_requests": 3,
+        "same_origin_only": True,
+        "https_only": True,
+        "credentials": "NOT_USED",
+        "cookies": "NOT_USED",
+        "query_strings": "REJECTED",
+        "environment_proxies": "DISABLED",
+        "maximum_redirects_per_request": MAX_REDIRECTS,
+    }:
         fail(code)
+    supporting = _mapping(capture.get("supporting_resources"), code)
+    sitemaps = supporting.get("sitemaps")
+    if (
+        set(supporting)
+        != {
+            "sitemaps",
+            "plugin_stylesheet",
+            "robots_txt",
+            "sitemap_root",
+            "maximum_sitemaps",
+        }
+        or supporting.get("sitemap_root") != f"{ORIGIN}/sitemap_index.xml"
+        or supporting.get("maximum_sitemaps") != MAX_SITEMAPS
+        or not isinstance(sitemaps, list)
+        or not 1 <= len(sitemaps) <= MAX_SITEMAPS
+    ):
+        fail(code)
+    for row_value in sitemaps:
+        row = _mapping(row_value, code)
+        url = row.get("url")
+        if (
+            set(row) != {"url", "status", "redirect_chain", "sha256"}
+            or not isinstance(url, str)
+            or urlsplit(url).scheme != "https"
+            or f"{urlsplit(url).scheme}://{urlsplit(url).netloc}" != ORIGIN
+            or bool(urlsplit(url).query)
+            or urlsplit(url).fragment != ""
+            or row.get("status") != 200
+            or row.get("redirect_chain") != []
+            or not isinstance(row.get("sha256"), str)
+            or HEX64.fullmatch(str(row.get("sha256"))) is None
+        ):
+            fail(code)
+    _phase3_robots_txt_evidence(capture, required=True, code=code)
+    plugin_evidence = _mapping(supporting.get("plugin_stylesheet"), code)
+    _phase3_plugin_stylesheet_evidence(
+        capture,
+        required=plugin_evidence.get("status") != "NOT_OBSERVED",
+        code=code,
+    )
+    observation = _mapping(capture.get("observation"), code)
+    if (
+        set(observation) != PHASE3_OBSERVATION_KEYS
+        or observation.get("url") != PHASE3_PUBLIC_URL
+        or observation.get("path") != PHASE3_PUBLIC_PATH
+    ):
+        fail(code)
+    _phase3_resource_inventory(observation.get("resource_inventory"), code=code)
     try:
         captured_at = datetime.fromisoformat(str(capture.get("captured_at")))
         observed_at = datetime.fromisoformat(str(observation.get("observed_at")))
@@ -5488,6 +6585,7 @@ def _phase3_plugin_artifacts() -> dict[str, object]:
     root = ROOT / PHASE3_PLUGIN_ARTIFACT_ROOT
     paths = {
         "stylesheet": root / "assets/decision-support.css",
+        "binding": root / "cutover-binding.v1.json",
         "php": root / "raos-v2-decision-support.php",
         "manifest": root / "plugin-manifest.v1.json",
         "post_content": (ROOT / "changes/raos-v2/phase-3/generated/post-content.html"),
@@ -5509,11 +6607,49 @@ def _phase3_plugin_artifacts() -> dict[str, object]:
         "const RAOS_V2_DECISION_SUPPORT_POST_CONTENT_SHA256 = "
         f"'{expected_post_content_sha256}';"
     ).encode("ascii")
+    expected_binding = {
+        "schema": "RAOS_V2_WORDPRESS_CUTOVER_BINDING_V1",
+        "version": "1.0.0",
+        "state": "DEPLOYMENT_DISABLED",
+        "target": {
+            "article_id": "A05",
+            "post_id": 0,
+            "post_slug": "carry-on-suitcase-comparison",
+            "route": PHASE3_PUBLIC_PATH,
+        },
+        "hashes": {
+            "legacy_post_content_sha256": "UNAVAILABLE",
+            "preaction_binding_sha256": "UNAVAILABLE",
+            "sealed_package_sha256": "UNAVAILABLE",
+            "sealed_post_content_sha256": expected_post_content_sha256,
+            "source_owner_export_sha256": "UNAVAILABLE",
+        },
+    }
+    expected_cutover_contract = {
+        "adjacent_file": "cutover-binding.v1.json",
+        "required_schema": "RAOS_V2_WORDPRESS_CUTOVER_BINDING_V1",
+        "required_version": "1.0.0",
+        "tracked_state": "DEPLOYMENT_DISABLED",
+        "activation_state": "ARMED_EXACT_LEGACY_OR_SEALED",
+        "source": "PREACTION_OWNER_EXPORT",
+        "required_hashes": [
+            "legacy_post_content_sha256",
+            "preaction_binding_sha256",
+            "sealed_package_sha256",
+            "sealed_post_content_sha256",
+            "source_owner_export_sha256",
+        ],
+    }
     file_rows = [
         {
             "path": "raos-v2-decision-support.php",
             "bytes": len(payloads["php"]),
             "sha256": sha256(payloads["php"]),
+        },
+        {
+            "path": "cutover-binding.v1.json",
+            "bytes": len(payloads["binding"]),
+            "sha256": sha256(payloads["binding"]),
         },
         {
             "path": "assets/decision-support.css",
@@ -5524,21 +6660,35 @@ def _phase3_plugin_artifacts() -> dict[str, object]:
     if (
         manifest.get("schema") != "RAOS_V2_WORDPRESS_PRESENTATION_PLUGIN_INPUT_V1"
         or manifest.get("plugin_slug") != "raos-v2-decision-support"
-        or manifest.get("version") != "0.1.0"
+        or manifest.get("version") != "0.6.0"
         or manifest.get("target")
         != {
             "article_id": "A05",
             "exact_route": PHASE3_PUBLIC_PATH,
             "exact_post_slug": "carry-on-suitcase-comparison",
+            "expected_post_id": "CUTOVER_BINDING_REQUIRED",
             "required_package_marker": PHASE3_PACKAGE_MARKER,
             "required_post_content_sha256": expected_post_content_sha256,
             "rendered_content_envelope": PHASE3_CONTENT_ENVELOPE,
         }
+        or manifest.get("cutover_binding") != expected_cutover_contract
         or manifest.get("source_files")
-        != ["assets/decision-support.css", "raos-v2-decision-support.php"]
-        or manifest.get("installation") != "EXTERNAL_HUMAN_ACTION_NOT_EXECUTED"
+        != [
+            "assets/decision-support.css",
+            "cutover-binding.v1.json",
+            "raos-v2-decision-support.php",
+        ]
+        or manifest.get("installation")
+        != (
+            "INSTALL_INACTIVE_REPLACE_BINDING_ACTIVATE_THEN_WRITE_"
+            "EXTERNAL_HUMAN_ACTIONS_NOT_EXECUTED"
+        )
+        or load_json_strict(payloads["binding"]) != expected_binding
         or payloads["php"].count(expected_php_constant) != 1
-        or manifest.get("classification") != "DEPLOYABLE_LOCAL_ARTIFACT_NOT_DEPLOYED"
+        or payloads["php"].count(b"const RAOS_V2_DECISION_SUPPORT_VERSION = '0.6.0';")
+        != 1
+        or manifest.get("classification")
+        != "LOCAL_ARTIFACT_TEMPLATE_REQUIRES_OWNER_CUTOVER_BINDING"
         or manifest.get("files") != file_rows
         or manifest.get("artifact_sha256")
         != sha256(canonical_json_bytes({"files": file_rows}))
@@ -5553,8 +6703,45 @@ def _phase3_plugin_artifacts() -> dict[str, object]:
     runtime = _mapping(manifest.get("runtime"), code)
     if (
         runtime.get("allowed_effect")
-        != "ENQUEUE_BUNDLED_STYLESHEET_AND_WRAP_UNCHANGED_REVIEWED_FRAGMENT_ON_EXACT_MATCH"
-        or runtime.get("content_filter") != "FAIL_CLOSED_EXACT_BYTES_IDEMPOTENT"
+        != (
+            "LEGACY_FILTERED_PASSTHROUGH_OR_SEALED_RAW_ENQUEUE_AND_ENVELOPE_"
+            "OTHERWISE_BLOCK_TARGET"
+        )
+        or runtime.get("activation_gate")
+        != "REPLACE_BINDING_THEN_ACTIVATE_BEFORE_SEALED_WRITE"
+        or runtime.get("content_filter")
+        != (
+            "EXACT_RAW_DATABASE_STATE_FAIL_CLOSED_EARLIER_SEALED_FILTER_OUTPUT_"
+            "DISCARDED"
+        )
+        or runtime.get("content_filter_position")
+        != "TERMINATE_503_IF_NOT_LAST_AT_PHP_INT_MAX"
+        or runtime.get("content_context_gate")
+        != "SINGULAR_TARGET_REQUEST_VERIFIED_CURRENT_POST_MAIN_QUERY_MAIN_LOOP"
+        or runtime.get("disabled_binding_behavior") != "BLOCK_TARGET_ROUTE"
+        or runtime.get("exact_legacy_behavior")
+        != "PRESERVE_EXISTING_FILTERED_CONTENT_WITHOUT_CSS_OR_ENVELOPE"
+        or runtime.get("exact_sealed_behavior")
+        != (
+            "DISCARD_FILTERED_CANDIDATE_AND_ENVELOPE_EXACT_RAW_REVIEWED_"
+            "FRAGMENT_WITH_CSS"
+        )
+        or runtime.get("inactive_behavior")
+        != (
+            "NO_RUNTIME_EFFECT_WRITE_BEFORE_ACTIVATION_IS_UNPROTECTED_AND_" "PROHIBITED"
+        )
+        or runtime.get("ambiguous_content_behavior") != "BLOCK_TARGET_ROUTE"
+        or runtime.get("intermediate_content_behavior") != "BLOCK_TARGET_ROUTE"
+        or runtime.get("post_render_verification")
+        != "PUBLIC_CAPTURE_AND_BROWSER_RECEIPT_REQUIRED"
+        or runtime.get("safe_cutover_order")
+        != [
+            "REPLACE_DISABLED_BINDING_WITH_OWNER_EXPORT_BOUND_ARTIFACT",
+            "ACTIVATE_PLUGIN_WHILE_EXACT_LEGACY_BYTES_REMAIN",
+            "WRITE_EXACT_SEALED_DATABASE_BYTES",
+        ]
+        or runtime.get("secondary_content_behavior")
+        != "PRESERVE_FILTERED_INPUT_ONLY_FOR_VERIFIED_DIFFERENT_CURRENT_POST"
         or any(
             runtime.get(name) is not False
             for name in (
@@ -5694,25 +6881,23 @@ def _phase3_resource_inventory(value: object, *, code: str) -> dict[str, object]
 
 def _validate_phase3_publication_package_schema(
     value: Mapping[str, object],
+    *,
+    root: Path = ROOT,
 ) -> None:
     code = "RAOS_V2_PUBLIC_VERIFICATION_PACKAGE_INVALID"
     registry = Registry()
     publication_schema: Mapping[str, object] | None = None
     try:
-        for version in ("v1", "v2"):
-            for path in sorted(
-                (ROOT / f"contracts/raos-v2/{version}").glob("*.schema.json")
-            ):
-                document = _mapping(load_json_strict(path.read_bytes()), code)
-                Draft202012Validator.check_schema(document)
-                identifier = document.get("$id")
-                if not isinstance(identifier, str):
-                    fail(code)
-                registry = registry.with_resource(
-                    identifier, Resource.from_contents(document)
-                )
-                if version == "v2" and path.name == "publication-package.schema.json":
-                    publication_schema = document
+        for version, name, document in _contract_schema_documents(root=root, code=code):
+            Draft202012Validator.check_schema(document)
+            identifier = document.get("$id")
+            if not isinstance(identifier, str):
+                fail(code)
+            registry = registry.with_resource(
+                identifier, Resource.from_contents(document)
+            )
+            if version == "v2" and name == "publication-package.schema.json":
+                publication_schema = document
         if publication_schema is None:
             fail(code)
         errors = list(
@@ -5748,6 +6933,16 @@ def derive_phase3_public_verification_receipt(
         or evaluated_at.utcoffset() is None
     ):
         fail("RAOS_V2_PUBLIC_VERIFICATION_DERIVATION_INVALID")
+    _phase3_robots_txt_evidence(
+        capture,
+        required=True,
+        code="RAOS_V2_PUBLIC_VERIFICATION_ROBOTS_INVALID",
+    )
+    _phase3_plugin_stylesheet_evidence(
+        capture,
+        required=True,
+        code="RAOS_V2_PUBLIC_VERIFICATION_PLUGIN_STYLESHEET_INVALID",
+    )
     observation, captured_at, observed_at = _phase3_capture_observation(
         capture, code="RAOS_V2_PUBLIC_VERIFICATION_DERIVATION_INVALID"
     )
@@ -5845,6 +7040,8 @@ def derive_phase3_public_verification_receipt(
         "state",
         "review_candidate",
         "human_review_receipt",
+        "simulation_only",
+        "approval_acceptance_authority",
         "structured_data_expectation_sha256",
         "capabilities",
         "package_digest",
@@ -5876,9 +7073,14 @@ def derive_phase3_public_verification_receipt(
     )
     expected_phase2 = _mapping(
         load_json_strict(
-            (
-                ROOT / "changes/raos-v2/phase-2/generated/publication-candidate.v2.json"
-            ).read_bytes()
+            _repository_regular_file_bytes(
+                Path(
+                    "changes/raos-v2/phase-2/generated/" "publication-candidate.v2.json"
+                ),
+                root=ROOT,
+                maximum=MAX_RESPONSE_BYTES,
+                code="RAOS_V2_PUBLIC_VERIFICATION_PACKAGE_INVALID",
+            )
         ),
         "RAOS_V2_PUBLIC_VERIFICATION_PACKAGE_INVALID",
     )
@@ -5946,6 +7148,8 @@ def derive_phase3_public_verification_receipt(
         "public_capture_sha256",
         "wordpress_export_sha256",
         "wordpress_export_bytes",
+        "owner_evidence_sha256",
+        "legacy_post_content_sha256",
     }
     preaction_binding_digest = preaction.get("binding_digest")
     preaction_body_sha256 = preaction_binding.get("current_public_body_sha256")
@@ -5958,6 +7162,10 @@ def derive_phase3_public_verification_receipt(
         or review.get("payload_digest") != candidate.get("payload_digest")
         or review.get("accepted") is not True
         or review.get("synthetic") is not False
+        or review.get("assertion_status") != "UNAUTHENTICATED_OWNER_ASSERTION"
+        or review.get("acceptance_authority") is not False
+        or sealed_package.get("simulation_only") is not True
+        or sealed_package.get("approval_acceptance_authority") is not False
         or phase2.get("target_origin") != ORIGIN
         or phase2.get("target_route") != PHASE3_PUBLIC_PATH
         or update.get("intent") != "UPDATE_EXISTING_PUBLISHED_POST_AT_APPROVED_CUTOVER"
@@ -6005,6 +7213,11 @@ def derive_phase3_public_verification_receipt(
         or not isinstance(preaction_binding.get("wordpress_export_bytes"), int)
         or isinstance(preaction_binding.get("wordpress_export_bytes"), bool)
         or int(preaction_binding["wordpress_export_bytes"]) < 1
+        or not isinstance(preaction_binding.get("owner_evidence_sha256"), str)
+        or HEX64.fullmatch(str(preaction_binding.get("owner_evidence_sha256"))) is None
+        or not isinstance(preaction_binding.get("legacy_post_content_sha256"), str)
+        or HEX64.fullmatch(str(preaction_binding.get("legacy_post_content_sha256")))
+        is None
     ):
         fail("RAOS_V2_PUBLIC_VERIFICATION_PACKAGE_INVALID")
     try:
@@ -6322,6 +7535,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         "record-local-test",
         help="bind an ignored pytest tee to the current local source/test inventory",
     )
+    phase3_browser = subcommands.add_parser(
+        "record-phase3-local-browser",
+        help="bind raw local browser evidence after reviewing all three PNGs",
+    )
+    phase3_browser.add_argument(
+        "--visual-review-confirmed",
+        action="store_true",
+        help="assert that 390/768/1440 PNGs were manually reviewed",
+    )
     arguments = parser.parse_args(argv)
     try:
         if arguments.command == "validate-package":
@@ -6338,6 +7560,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         elif arguments.command == "record-local-test":
             result = record_local_test_evidence()
             _atomic_write(LOCAL_TEST_EVIDENCE_INPUT, canonical_json_bytes(result))
+        elif arguments.command == "record-phase3-local-browser":
+            result = record_phase3_local_browser_evidence(
+                visual_review_confirmed=arguments.visual_review_confirmed
+            )
+            _atomic_write(
+                PHASE3_LOCAL_BROWSER_EVIDENCE_INPUT,
+                canonical_json_bytes(result),
+            )
         else:
             result = validate_generated()
     except ValidationFailure as exc:

@@ -63,7 +63,8 @@ publication_aware_links:
 preconditions:
 - fresh bounded public read-only capture
 - recoverable exact WordPress export binding
-- non-synthetic human review receipt and valid package seal
+- authenticated artifact-specific approval and semantically valid package seal
+- fresh PRE_WRITE_EXPORT plus disabled-plugin dry-run bound by an independent verifier
 - one-H1 and visible/structured-data parity check
 - exact Yoast/metadata-owner Article, BreadcrumbList, Organization and WebSite output verified
 failure: BLOCK_AND_KEEP_CURRENT_PUBLIC_STATE

@@ -80,6 +80,16 @@ def test_two_fresh_generations_are_identical_and_check_is_no_write(
     assert before == middle == after
 
 
+def test_node_default_honors_pinned_node_environment(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    pinned_node = Path("/opt/raos/toolchain/node")
+    monkeypatch.setenv("NODE", str(pinned_node))
+    monkeypatch.setattr(generator.shutil, "which", lambda _name: "/usr/bin/node")
+
+    assert generator.parse_args([]).node == pinned_node
+
+
 def test_generator_failure_before_render_preserves_installed_outputs(
     generator_command: list[str],
 ) -> None:

@@ -28,7 +28,7 @@
     "R-V2-023",
     "R-V2-024"
   ],
-  "reviewer_identity_rule": "Use a stable non-personal machine identifier in the sanitized receipt; do not commit a name, email or credential.",
+  "reviewer_identity_rule": "Use exactly reviewer_id=OWNER_ASSERTION_LOCAL and review_version=P3-OWNER-ASSERTION-V1; arbitrary identities, names, emails and credentials are rejected and must never be committed.",
   "schema": "RAOS_V2_PHASE3_HUMAN_REVIEW_REQUEST_V1",
   "state": "AWAITING_VERIFIED_PREACTION_BINDING",
   "structured_data_expectation_sha256": "3be6e7824a9b705e90915b6fea44f10b2216f6a0f814689e6bd6e208d0267f9b",

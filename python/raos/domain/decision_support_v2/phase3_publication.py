@@ -30,7 +30,6 @@ from raos.domain.decision_support_v2.publication import (
     semantic_digest,
 )
 
-
 PHASE3_CONTRACT_SCHEMA: Final = "RAOS_V2_PHASE3_PUBLICATION_PACKAGE_V1"
 PHASE3_CONTRACT_VERSION: Final = "1.0.0"
 PHASE3_TARGET_ORIGIN: Final = "https://kurashinoshirube.com"
@@ -64,8 +63,7 @@ _STRUCTURED_DATA_TYPES: Final = (
 )
 _HTML_ENTITY = re.compile(r"&(?:#[0-9]+|#x[0-9a-f]+|[a-z][a-z0-9]+);", re.I)
 _HTML_CLASS_LIST = re.compile(
-    r"(?:raos-v2-[a-z0-9_-]+|is-blocked)"
-    r"(?: (?:raos-v2-[a-z0-9_-]+|is-blocked))*\Z",
+    r"(?:raos-v2-[a-z0-9_-]+|is-blocked)" r"(?: (?:raos-v2-[a-z0-9_-]+|is-blocked))*\Z",
     re.ASCII,
 )
 _HTML_ID = re.compile(r"raos-v2-[a-z0-9-]+\Z", re.ASCII)
@@ -549,6 +547,8 @@ class Phase3PreActionBinding:
     public_capture_sha256: str
     wordpress_export_sha256: str
     wordpress_export_bytes: int
+    owner_evidence_sha256: str
+    legacy_post_content_sha256: str
     schema: str = _PREACTION_SCHEMA
     version: str = _PREACTION_VERSION
     status: Phase3PreActionStatus = Phase3PreActionStatus.VERIFIED_PREACTION
@@ -580,6 +580,8 @@ class Phase3PreActionBinding:
             "current_public_body_sha256",
             "public_capture_sha256",
             "wordpress_export_sha256",
+            "owner_evidence_sha256",
+            "legacy_post_content_sha256",
         ):
             _require_sha256(getattr(self, field_name), field_name)
         if (
@@ -609,6 +611,8 @@ class Phase3PreActionBinding:
             "public_capture_sha256": self.public_capture_sha256,
             "wordpress_export_sha256": self.wordpress_export_sha256,
             "wordpress_export_bytes": self.wordpress_export_bytes,
+            "owner_evidence_sha256": self.owner_evidence_sha256,
+            "legacy_post_content_sha256": self.legacy_post_content_sha256,
         }
 
     @property
@@ -1070,7 +1074,7 @@ class Phase3WordPressExportBinding:
 
 @dataclass(frozen=True, slots=True)
 class Phase3HumanReviewReceipt:
-    """Content-free proof that a real person accepted the exact payload."""
+    """Content-free owner assertion bound to a payload, not authenticated approval."""
 
     reviewer_id: str
     reviewed_at: datetime
@@ -1081,12 +1085,18 @@ class Phase3HumanReviewReceipt:
     candidate_digest: str
     payload_digest: str
     target_route: str
+    assertion_status: str = "UNAUTHENTICATED_OWNER_ASSERTION"
+    acceptance_authority: bool = False
 
     def __post_init__(self) -> None:
-        if _MACHINE_ID.fullmatch(self.reviewer_id) is None:
-            raise ValueError("invalid reviewer ID")
-        if _MACHINE_ID.fullmatch(self.review_version) is None:
-            raise ValueError("invalid review version")
+        if self.reviewer_id != "OWNER_ASSERTION_LOCAL":
+            raise ValueError(
+                "reviewer ID must be the fixed non-personal assertion class"
+            )
+        if self.review_version != "P3-OWNER-ASSERTION-V1":
+            raise ValueError(
+                "review version must be the fixed owner assertion contract"
+            )
         if self.reviewed_at.tzinfo is None or self.reviewed_at.utcoffset() is None:
             raise ValueError("reviewed_at must be timezone-aware")
         if type(self.correction_count) is not int or self.correction_count < 0:
@@ -1099,6 +1109,13 @@ class Phase3HumanReviewReceipt:
         _require_sha256(self.payload_digest, "payload_digest")
         if self.target_route != PHASE3_TARGET_ROUTE:
             raise ValueError("review receipt route conflicts with Phase 3 target")
+        if self.assertion_status != "UNAUTHENTICATED_OWNER_ASSERTION":
+            raise ValueError(
+                "review receipt assertion status must remain unauthenticated"
+            )
+        _require_bool(self.acceptance_authority, "acceptance_authority")
+        if self.acceptance_authority:
+            raise ValueError("unsigned owner assertion has no acceptance authority")
 
     def to_contract_record(self) -> Mapping[str, object]:
         return {
@@ -1113,6 +1130,8 @@ class Phase3HumanReviewReceipt:
             "candidate_digest": self.candidate_digest,
             "payload_digest": self.payload_digest,
             "target_route": self.target_route,
+            "assertion_status": self.assertion_status,
+            "acceptance_authority": self.acceptance_authority,
         }
 
 
@@ -1330,6 +1349,8 @@ class Phase3PublicationPackage:
             "state": self.state.value,
             "review_candidate": dict(self.review_candidate.to_contract_record()),
             "human_review_receipt": dict(self.review_receipt.to_contract_record()),
+            "simulation_only": True,
+            "approval_acceptance_authority": False,
             "structured_data_expectation_sha256": (
                 self.review_candidate.update_payload.structured_data_expectation_sha256
             ),

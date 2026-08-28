@@ -1,0 +1,18 @@
+{
+  "hashes": {
+    "legacy_post_content_sha256": "UNAVAILABLE",
+    "preaction_binding_sha256": "UNAVAILABLE",
+    "sealed_package_sha256": "UNAVAILABLE",
+    "sealed_post_content_sha256": "270dfec22f4c659f30e498e321d96bf230f4f5d4504ab7f97c48f533f70f4ff5",
+    "source_owner_export_sha256": "UNAVAILABLE"
+  },
+  "schema": "RAOS_V2_WORDPRESS_CUTOVER_BINDING_V1",
+  "state": "DEPLOYMENT_DISABLED",
+  "target": {
+    "article_id": "A05",
+    "post_id": 0,
+    "post_slug": "carry-on-suitcase-comparison",
+    "route": "/carry-on-suitcase-comparison/"
+  },
+  "version": "1.0.0"
+}

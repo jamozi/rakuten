@@ -10,7 +10,6 @@ from types import ModuleType
 
 import pytest
 
-
 ROOT = Path(__file__).resolve().parents[2]
 WORDPRESS_SOURCE = ROOT / "packages/web-ui/src/decision-support-v2/wordpress"
 PROJECTION_PATH = WORDPRESS_SOURCE / "projection.py"
@@ -19,6 +18,7 @@ PLUGIN_ROOT = WORDPRESS_SOURCE / "plugin/raos-v2-decision-support"
 PHP_PATH = PLUGIN_ROOT / "raos-v2-decision-support.php"
 CSS_PATH = PLUGIN_ROOT / "assets/decision-support.css"
 MANIFEST_PATH = PLUGIN_ROOT / "plugin-manifest.v1.json"
+BINDING_PATH = PLUGIN_ROOT / "cutover-binding.v1.json"
 
 
 def _module() -> ModuleType:
@@ -239,31 +239,108 @@ def test_phase3_presentation_plugin_is_exactly_route_and_marker_scoped() -> None
     assert "!== RAOS_V2_DECISION_SUPPORT_ROUTE" in php
     assert "substr_count($reviewed, $exact_marker) === 1" in php
     assert php.count("wp_enqueue_style(") == 1
+    assert manifest["version"] == "0.6.0"
     assert manifest["target"] == {
         "article_id": "A05",
         "exact_route": "/carry-on-suitcase-comparison/",
         "exact_post_slug": "carry-on-suitcase-comparison",
+        "expected_post_id": "CUTOVER_BINDING_REQUIRED",
         "required_package_marker": "RAOS_V2_A05_POST_CONTENT_V1",
         "required_post_content_sha256": sha256(
             str(_projection()["post_content"]).encode("utf-8")
         ).hexdigest(),
         "rendered_content_envelope": "RAOS_V2_A05_ENVELOPE_V1",
     }
+    assert manifest["cutover_binding"] == {
+        "adjacent_file": "cutover-binding.v1.json",
+        "required_schema": "RAOS_V2_WORDPRESS_CUTOVER_BINDING_V1",
+        "required_version": "1.0.0",
+        "tracked_state": "DEPLOYMENT_DISABLED",
+        "activation_state": "ARMED_EXACT_LEGACY_OR_SEALED",
+        "source": "PREACTION_OWNER_EXPORT",
+        "required_hashes": [
+            "legacy_post_content_sha256",
+            "preaction_binding_sha256",
+            "sealed_package_sha256",
+            "sealed_post_content_sha256",
+            "source_owner_export_sha256",
+        ],
+    }
     assert manifest["runtime"] == {
         "allowed_effect": (
-            "ENQUEUE_BUNDLED_STYLESHEET_AND_WRAP_UNCHANGED_REVIEWED_FRAGMENT_"
-            "ON_EXACT_MATCH"
+            "LEGACY_FILTERED_PASSTHROUGH_OR_SEALED_RAW_ENQUEUE_AND_ENVELOPE_"
+            "OTHERWISE_BLOCK_TARGET"
         ),
+        "activation_gate": "REPLACE_BINDING_THEN_ACTIVATE_BEFORE_SEALED_WRITE",
         "admin_ui": False,
-        "content_filter": "FAIL_CLOSED_EXACT_BYTES_IDEMPOTENT",
+        "content_filter": (
+            "EXACT_RAW_DATABASE_STATE_FAIL_CLOSED_EARLIER_SEALED_FILTER_OUTPUT_"
+            "DISCARDED"
+        ),
+        "content_context_gate": (
+            "SINGULAR_TARGET_REQUEST_VERIFIED_CURRENT_POST_MAIN_QUERY_MAIN_LOOP"
+        ),
+        "content_filter_position": "TERMINATE_503_IF_NOT_LAST_AT_PHP_INT_MAX",
         "cron": False,
         "database_write": False,
+        "disabled_binding_behavior": "BLOCK_TARGET_ROUTE",
+        "exact_legacy_behavior": (
+            "PRESERVE_EXISTING_FILTERED_CONTENT_WITHOUT_CSS_OR_ENVELOPE"
+        ),
+        "exact_sealed_behavior": (
+            "DISCARD_FILTERED_CANDIDATE_AND_ENVELOPE_EXACT_RAW_REVIEWED_"
+            "FRAGMENT_WITH_CSS"
+        ),
+        "inactive_behavior": (
+            "NO_RUNTIME_EFFECT_WRITE_BEFORE_ACTIVATION_IS_UNPROTECTED_AND_" "PROHIBITED"
+        ),
+        "ambiguous_content_behavior": "BLOCK_TARGET_ROUTE",
+        "intermediate_content_behavior": "BLOCK_TARGET_ROUTE",
         "network_request": False,
         "option_write": False,
+        "post_render_verification": "PUBLIC_CAPTURE_AND_BROWSER_RECEIPT_REQUIRED",
         "publication_capability": False,
         "rest_route": False,
+        "secondary_content_behavior": (
+            "PRESERVE_FILTERED_INPUT_ONLY_FOR_VERIFIED_DIFFERENT_CURRENT_POST"
+        ),
+        "safe_cutover_order": [
+            "REPLACE_DISABLED_BINDING_WITH_OWNER_EXPORT_BOUND_ARTIFACT",
+            "ACTIVATE_PLUGIN_WHILE_EXACT_LEGACY_BYTES_REMAIN",
+            "WRITE_EXACT_SEALED_DATABASE_BYTES",
+        ],
         "telemetry": False,
     }
+
+
+def test_phase3_tracked_cutover_binding_is_deployment_disabled() -> None:
+    binding = json.loads(BINDING_PATH.read_text(encoding="utf-8"))
+    assert binding == {
+        "hashes": {
+            "legacy_post_content_sha256": "UNAVAILABLE",
+            "preaction_binding_sha256": "UNAVAILABLE",
+            "sealed_package_sha256": "UNAVAILABLE",
+            "sealed_post_content_sha256": sha256(
+                str(_projection()["post_content"]).encode("utf-8")
+            ).hexdigest(),
+            "source_owner_export_sha256": "UNAVAILABLE",
+        },
+        "schema": "RAOS_V2_WORDPRESS_CUTOVER_BINDING_V1",
+        "state": "DEPLOYMENT_DISABLED",
+        "target": {
+            "article_id": "A05",
+            "post_id": 0,
+            "post_slug": "carry-on-suitcase-comparison",
+            "route": "/carry-on-suitcase-comparison/",
+        },
+        "version": "1.0.0",
+    }
+    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    assert "cutover-binding.v1.json" in manifest["source_files"]
+    php = PHP_PATH.read_text(encoding="utf-8")
+    assert "$binding['version'] !== '1.0.0'" in php
+    for digest_field in manifest["cutover_binding"]["required_hashes"]:
+        assert f"$hashes['{digest_field}']" in php
 
 
 def test_phase3_plugin_wraps_one_exact_content_envelope_fail_closed() -> None:
@@ -275,31 +352,69 @@ def test_phase3_plugin_wraps_one_exact_content_envelope_fail_closed() -> None:
         "RAOS_V2_A05_ENVELOPE_V1",
         "data-raos-v2-post-content-envelope=",
         "esc_attr(RAOS_V2_DECISION_SUPPORT_ENVELOPE)",
-        "$reviewed = trim($post->post_content);",
-        "$candidate = trim($content);",
-        "$candidate !== $reviewed",
-        "$candidate === $already_wrapped",
-        "strpos($reviewed, $expected_root) !== 0",
-        "strpos($reviewed, $envelope_attribute) !== false",
+        "$reviewed = $post->post_content;",
+        "return $content;",
+        "return $envelope_open . $post->post_content . '</div>';",
+        "raos_v2_decision_support_cutover_binding()",
+        "raos_v2_decision_support_current_content_post()",
+        "raos_v2_decision_support_main_content_post()",
+        "is_main_query()",
+        "in_the_loop()",
+        "get_the_ID()",
+        "$current_post_id !== $post->ID",
+        "$current_post->ID !== $queried_post->ID",
+        "ARMED_EXACT_LEGACY_OR_SEALED",
+        "$post->ID !== $binding['target']['post_id']",
+        "$binding['hashes']['legacy_post_content_sha256']",
         'data-raos-v2-post-content-envelope-status="BLOCKED"',
         "公開内容の整合性を確認できないため、この記事は表示を停止しています。",
         "'the_content'",
+        "'template_redirect'",
         "PHP_INT_MAX",
+        "raos_v2_decision_support_enforce_final_content_filter()",
+        "wp_die(",
+        "array('response' => 503, 'exit' => true)",
         f"const RAOS_V2_DECISION_SUPPORT_POST_CONTENT_SHA256 = '{post_content_sha256}';",
         "hash_equals(",
         "hash('sha256', $reviewed)",
     ):
         assert contract in php
     assert php.count("add_filter(") == 1
+    assert "trim($post->post_content)" not in php
     assert php.count("RAOS_V2_DECISION_SUPPORT_ENVELOPE") == 2
+    assert "$candidate === $post->post_content" not in php
 
 
-def test_phase3_plugin_leaves_non_target_and_preview_pipeline_unmodified() -> None:
+def test_phase3_plugin_requires_binding_and_supports_safe_cutover_order() -> None:
     php = PHP_PATH.read_text(encoding="utf-8")
-    assert "if (! ($post instanceof WP_Post)) {\n        return $content;\n    }" in php
+    assert "cutover order is binding replacement, activation" in php
+    assert "then the sealed database" in php
+    assert "DEPLOYMENT_DISABLED" in php
+    assert "ARMED_EXACT_LEGACY_OR_SEALED" in php
+    assert "RAOS_V2_DECISION_SUPPORT_STATE_LEGACY" in php
+    assert "RAOS_V2_DECISION_SUPPORT_STATE_SEALED" in php
+    assert "RAOS_V2_DECISION_SUPPORT_STATE_BLOCKED" in php
+    assert "For sealed content all earlier filter output is discarded" in php
+
+
+def test_phase3_plugin_projects_only_exact_main_loop_current_post() -> None:
+    php = PHP_PATH.read_text(encoding="utf-8")
+    assert (
+        "if (! ($queried_post instanceof WP_Post)) {\n"
+        "        return $content;\n"
+        "    }"
+    ) in php
     assert "is_preview(" not in php
     assert "is_admin(" not in php
-    assert "get_the_ID(" not in php
+    assert "function raos_v2_decision_support_main_content_post(): ?WP_Post" in php
+    assert "function raos_v2_decision_support_current_content_post(): ?WP_Post" in php
+    assert "! is_main_query()" in php
+    assert "! in_the_loop()" in php
+    assert "$current_post_id = get_the_ID();" in php
+    assert "! is_int($current_post_id)" in php
+    assert "$post = raos_v2_decision_support_main_content_post();" in php
+    assert "Only a verified different current post is treated as a" in php
+    assert "target-post rendering outside the main loop are blocked" in php
 
 
 def test_phase3_plugin_does_not_reinterpret_shortcode_or_kses_output() -> None:
@@ -330,12 +445,13 @@ def test_phase3_presentation_plugin_has_no_write_network_or_telemetry_port() -> 
         "wp_schedule_event",
         "set_transient",
         "curl_",
-        "file_get_contents(",
         "fetch(",
         "sendbeacon",
         "analytics",
     ):
         assert token not in php
+    assert php.count("file_get_contents(") == 1
+    assert "__dir__ . '/cutover-binding.v1.json'" in php
 
 
 def test_phase3_css_selectors_are_fully_scoped_and_accessible() -> None:

@@ -207,8 +207,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 4251,
-          "sha256": "6a37843b4319c5c73da95b5619df0908e8a69e65cb21bb910010d44f2362b8c0",
+          "bytes": 7191,
+          "sha256": "9439f29ed64dd161b16a1a190fb8505fe958055014295e11ad6914aab4d142a1",
           "uri": "repo://changes/raos-v2/clarifications.v1.yaml"
         },
         {
@@ -287,8 +287,8 @@
           "uri": "repo://changes/raos-v2/phase-2/claims/claim-ledger.v2.yaml"
         },
         {
-          "bytes": 19713,
-          "sha256": "c69a4ac6a857d898ea43d5d69581337188514cb2c4f4bf23baafb052e4310c60",
+          "bytes": 20342,
+          "sha256": "d5f838a00668883f4a9fd02827683c06e7cbc5fc6c1788c2cf6974fea0df0899",
           "uri": "repo://changes/raos-v2/phase-2/generated/local-evidence-bundle.v2.json"
         },
         {
@@ -298,7 +298,7 @@
         },
         {
           "bytes": 7343,
-          "sha256": "10d5c1b135226dac27205f712b6a2213f1ddf77c4573019fa9772acae2f3220c",
+          "sha256": "3481854e101992cf2ef1ef0e6ad4b21fff6ae4e61b12996c3b6476b05743f774",
           "uri": "repo://changes/raos-v2/phase-2/generated/phase-2-validation.v2.json"
         },
         {
@@ -318,12 +318,12 @@
         },
         {
           "bytes": 2591,
-          "sha256": "b33305c2e0ed62935043324faf1cfbc59977998bf0e62dc8fac4ed00982cad16",
+          "sha256": "15104ee7bce40b5e04b5a9fc42b3daa7a6fe4f4accab82fe2d782d6ed79c9868",
           "uri": "repo://changes/raos-v2/phase-2/integration-pr-body.md"
         },
         {
           "bytes": 2520,
-          "sha256": "24e537ba86f1e845db85cd0f76eccd197486de1d6c8431e5e52d94491ba4e1e9",
+          "sha256": "2f7ebfed2a556b15a93128f791b23318278e27e0f0047879eeecef6361fe0ead",
           "uri": "repo://changes/raos-v2/phase-2/phase-2-report.md"
         },
         {
@@ -372,18 +372,18 @@
           "uri": "repo://changes/raos-v2/phase-2/preview/tools/carry-on-size-checker/index.html"
         },
         {
-          "bytes": 3634,
-          "sha256": "79fec74393ec5c60810b6914679320563f8a57b214d52c39d7f934b6c685ff12",
+          "bytes": 4201,
+          "sha256": "73d4a8e4ab38904c6dd51e8e0ddca3cf0778ddfcf0386493c5df31697ef6f887",
           "uri": "repo://changes/raos-v2/phase-3/generated/external-action-evidence-template.v1.yaml"
         },
         {
-          "bytes": 2762,
-          "sha256": "e171e52bd30e4eaf997bc76099472b001d0b8c5f413001a71b03504a3618cbce",
+          "bytes": 2830,
+          "sha256": "1a3e1ee1c8a6621e385fc48258b7ea16ab43f413860d8434e01caed9aca297c6",
           "uri": "repo://changes/raos-v2/phase-3/generated/human-review-request.v1.json"
         },
         {
-          "bytes": 3826,
-          "sha256": "8113be0675147e7eddd2eb220d0ebf89fb802389de9dac594ce1c53c9ddc557b",
+          "bytes": 4833,
+          "sha256": "a1754d1803d7dcc1f466cdd2320a47827a4825b3f0810bee6696aee761930fbd",
           "uri": "repo://changes/raos-v2/phase-3/generated/phase-3-validation.v1.json"
         },
         {
@@ -407,8 +407,8 @@
           "uri": "repo://changes/raos-v2/phase-3/generated/rollback-rehearsal.v1.json"
         },
         {
-          "bytes": 2257,
-          "sha256": "4895a3434131721a9d23759efff0b4792faf5724b51b9de6c9dce4d293a236a8",
+          "bytes": 2363,
+          "sha256": "1926cb5725ad3762c58e950c29cc20aed1b34ec10543e7130104948651f9f36a",
           "uri": "repo://changes/raos-v2/phase-3/generated/seo-url-change-plan.v1.yaml"
         },
         {
@@ -422,13 +422,13 @@
           "uri": "repo://changes/raos-v2/phase-3/generated/wordpress-update-candidate.v1.json"
         },
         {
-          "bytes": 2266,
-          "sha256": "09cf009fedc9f79503d42b3e49e62c9b61758867d776e8670aff41af6334ec5d",
+          "bytes": 2817,
+          "sha256": "1d3b40181f526d683f5a7534a77869c13c9cb010d7172325ea8c4be6a8b12d68",
           "uri": "repo://changes/raos-v2/phase-3/integration-pr-body.md"
         },
         {
-          "bytes": 4057,
-          "sha256": "09e9f6bbdb4f65b940bd4ec92b3a35c7e90c6bcd51a33341a12f6beddbc0fe9a",
+          "bytes": 5213,
+          "sha256": "ee5fd45191d31259b9b17157cd496339414ef6e3628f0b2715de3b9a6bcd4cc6",
           "uri": "repo://changes/raos-v2/phase-3/phase-3-preparation-report.md"
         },
         {
@@ -437,8 +437,8 @@
           "uri": "repo://changes/raos-v2/phase-3/preview/carry-on-suitcase-comparison/index.html"
         },
         {
-          "bytes": 6912,
-          "sha256": "3629583894aa9c18c6aee4b039d07ba500f1de184f3a20edb65ad9eaa0dae843",
+          "bytes": 11999,
+          "sha256": "6fb6db4141c4f8aaae368dad099f8898e6bc16398456645af1b8dfbb12f3f975",
           "uri": "repo://changes/raos-v2/phase-3/production-backup-export-runbook.md"
         },
         {
@@ -447,13 +447,18 @@
           "uri": "repo://changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/assets/decision-support.css"
         },
         {
-          "bytes": 1897,
-          "sha256": "04ad5734f8cae14a8de824a74969969c660374f689ac896c9e889e013cf5ea83",
+          "bytes": 577,
+          "sha256": "1b72663c849a8bab875be9345407c0fbe07a0b2a6cc0e096e85becdf3b5f9509",
+          "uri": "repo://changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/cutover-binding.v1.json"
+        },
+        {
+          "bytes": 3872,
+          "sha256": "f6aecb931352bc1a58d3a0e0eadf5fd4909e029a79b997d221ba45dc7d3a4af5",
           "uri": "repo://changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/plugin-manifest.v1.json"
         },
         {
-          "bytes": 4908,
-          "sha256": "0c3b03e5e4ef4b226c693be1858b8d48a9e6633c413104802802b989f5d0cc9a",
+          "bytes": 13646,
+          "sha256": "b7ebed3ffabd6a5067707ec898e15901382e1782459f5087a3798b27fdc970b1",
           "uri": "repo://changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/raos-v2-decision-support.php"
         },
         {
@@ -527,13 +532,13 @@
           "uri": "repo://contracts/raos-v2/v1/source-record.schema.json"
         },
         {
-          "bytes": 1467,
-          "sha256": "5eb77feae3fa70bf73ca1a6daf87d2457e59fb2aa6f0d6efa6c2eb44ef9810e1",
+          "bytes": 1579,
+          "sha256": "60e031237a43573e855a02d9ecd3af850f98989775746b4ff0ef6acf5fd4ac3d",
           "uri": "repo://contracts/raos-v2/v2/human-review-receipt.schema.json"
         },
         {
-          "bytes": 1968,
-          "sha256": "00d7e78892b08a9cc89123ea8db393d0279e1939a3967f2fada5e209f295e46f",
+          "bytes": 2228,
+          "sha256": "40c1ec28660fc0a9e4a4ae93e4eeba22f09e1777d6afa49e5427c4a7957ab208",
           "uri": "repo://contracts/raos-v2/v2/preaction-binding.schema.json"
         },
         {
@@ -547,9 +552,19 @@
           "uri": "repo://contracts/raos-v2/v2/public-verification-receipt.schema.json"
         },
         {
-          "bytes": 6719,
-          "sha256": "119105ddde8d44832198b2f648ca19308ebfc8f8d3528a393011992e2a1ee3f1",
+          "bytes": 6898,
+          "sha256": "7a4f7cad1f04f0cc363ac8c5446c7e72405be15d4e5d3d813199b42647acfead",
           "uri": "repo://contracts/raos-v2/v2/publication-package.schema.json"
+        },
+        {
+          "bytes": 8984,
+          "sha256": "81df5c8aa8d976bd448a3aec537cb9610bf14dc580d6a25de996861193b84b38",
+          "uri": "repo://contracts/raos-v2/v2/reissued-review-bundle.schema.json"
+        },
+        {
+          "bytes": 4351,
+          "sha256": "c56d989bef1a4969225f9a92521d8ab2fd71a4b24b0fb32043851c2b3d991d1f",
+          "uri": "repo://contracts/raos-v2/v2/wordpress-cutover-binding.schema.json"
         },
         {
           "bytes": 9057,
@@ -707,6 +722,12 @@
           "kind": "tracked",
           "semantic_id": "changes/raos-v2/recorded-inputs/phase3-local-browser-evidence.v1.json",
           "uri": "repo://changes/raos-v2/recorded-inputs/phase3-local-browser-evidence.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/recorded-inputs/phase3/preaction-public-20260828-v1.json",
+          "uri": "repo://changes/raos-v2/recorded-inputs/phase3/preaction-public-20260828-v1.json",
           "version": 2
         },
         {
@@ -881,6 +902,12 @@
           "kind": "tracked",
           "semantic_id": "packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/assets/decision-support.css",
           "uri": "repo://packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/assets/decision-support.css",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/cutover-binding.v1.json",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/cutover-binding.v1.json",
           "version": 2
         },
         {
@@ -1083,6 +1110,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "scripts/raos_v2_phase3_execution.py",
+          "uri": "repo://scripts/raos_v2_phase3_execution.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "scripts/validate_raos_v2_successor.py",
           "uri": "repo://scripts/validate_raos_v2_successor.py",
           "version": 2
@@ -1109,6 +1142,24 @@
           "kind": "tracked",
           "semantic_id": "tests/raos_v2/phase3-local-validation.mjs",
           "uri": "repo://tests/raos_v2/phase3-local-validation.mjs",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/phase3-public-adversarial.mjs",
+          "uri": "repo://tests/raos_v2/phase3-public-adversarial.mjs",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/phase3-public-validation.mjs",
+          "uri": "repo://tests/raos_v2/phase3-public-validation.mjs",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/phase3-wordpress-runtime.php",
+          "uri": "repo://tests/raos_v2/phase3-wordpress-runtime.php",
           "version": 2
         },
         {
@@ -1167,8 +1218,26 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_phase3_execution_operator.py",
+          "uri": "repo://tests/raos_v2/test_phase3_execution_operator.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "tests/raos_v2/test_phase3_local_validation_contract.py",
           "uri": "repo://tests/raos_v2/test_phase3_local_validation_contract.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_phase3_php_runtime_contract.py",
+          "uri": "repo://tests/raos_v2/test_phase3_php_runtime_contract.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_phase3_public_browser_contract.py",
+          "uri": "repo://tests/raos_v2/test_phase3_public_browser_contract.py",
           "version": 2
         },
         {
@@ -10627,37 +10696,37 @@
       "outputs": [
         {
           "bytes": 2391514,
-          "sha256": "fa71b14d29ce17fa3438bbbe96b2246307875be5d28557af8857a479d39d4c6e",
+          "sha256": "4dea40b1261db5a8b16873918620fba1fbee8b87de22fe8ca099146f10f146c4",
           "uri": "repo://changes/st-0308/generated/persistence-catalog-ir.v1.json"
         },
         {
           "bytes": 14179,
-          "sha256": "8065c07007ff028c24f5b1fce9beafe886edfb08cf8e1c734483c3e7f12a16f6",
+          "sha256": "6837dd24f7fcf4fcca7493da7a6187a739cccff6db4073319f201801eb45d7d6",
           "uri": "repo://changes/st-0308/generated/persistence-runtime.ops-reference.v1.json"
         },
         {
           "bytes": 7561,
-          "sha256": "cd060aa6468ac33f0fffd6f9e58599522fb3a8b2d23e47297999691c17e1edf8",
+          "sha256": "9529b0975913d4d3b9314ff2675cbd6e136a7676ec96cb87943c0173d7f5b55c",
           "uri": "repo://python/raos/adapters/persistence/sqlalchemy/generated/__init__.py"
         },
         {
           "bytes": 301118,
-          "sha256": "d429c57c116ffa24c62f6775dc2167130b8b5e630769d26a1262803d5ba3abaf",
+          "sha256": "f166e01755fb976fd14d1b2926709b0065e38076183a21b1c13d278a04912fca",
           "uri": "repo://python/raos/adapters/persistence/sqlalchemy/generated/catalog.py"
         },
         {
           "bytes": 21686,
-          "sha256": "4a3837c48b527644bfb4bd3168d2257f37aca6c3824ddb96d96fa068638865c8",
+          "sha256": "9f06a88589f38d522729296b913bb46f4b83fa7d5155e6291a79825a0fa04776",
           "uri": "repo://python/raos/adapters/persistence/sqlalchemy/generated/identity_contract.py"
         },
         {
           "bytes": 26732,
-          "sha256": "8196c82f8684d4904661865e49d8681e1b9f858309f653d801331001ce893b6d",
+          "sha256": "0d224b0f5fcf2b2a3be8c46efe659698fc9b895368b8f4885809375716ee4102",
           "uri": "repo://python/raos/adapters/persistence/sqlalchemy/generated/ops_reference.py"
         },
         {
           "bytes": 365732,
-          "sha256": "e45abda664c9afb5565d9a40d1c3bb2d936af14cc3b5749b0e7b058342cdf685",
+          "sha256": "be93b09e57bf53978ba32a9ac8d7a461f1c16a29e21db336437c3e9e2773ae1b",
           "uri": "repo://python/raos/adapters/persistence/sqlalchemy/generated/physical_constraints.py"
         }
       ],
@@ -15367,7 +15436,7 @@
       "outputs": [
         {
           "bytes": 32582,
-          "sha256": "7d97b2350ab190d97de79ad5361cfd820e281ac8f9b3ebc2d62564e1a8dd758d",
+          "sha256": "2255df01d3cca35d760974e18c88fbca70e7c4cd36ec63e3944151faeee31533",
           "uri": "repo://changes/st-0801/manifest.yaml"
         }
       ],

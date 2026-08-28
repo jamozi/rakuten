@@ -50,7 +50,6 @@ from raos.domain.decision_support_v2.publication import (
     semantic_digest,
 )
 
-
 ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_BODY_SHA256 = "e2cace30f5e14b3f2783b3ef10885f2b7b958ac8a3a4aee45447fd95e9e72121"
 SAFE_POST_CONTENT = (
@@ -133,6 +132,8 @@ def _preaction_binding(
         public_capture_sha256="a" * 64,
         wordpress_export_sha256="b" * 64,
         wordpress_export_bytes=4096,
+        owner_evidence_sha256="c" * 64,
+        legacy_post_content_sha256="d" * 64,
     )
 
 
@@ -170,9 +171,9 @@ def _review_candidate(
 
 def _receipt(candidate: Phase3ReviewCandidate) -> Phase3HumanReviewReceipt:
     return Phase3HumanReviewReceipt(
-        reviewer_id="TEST-REAL-REVIEWER",
+        reviewer_id="OWNER_ASSERTION_LOCAL",
         reviewed_at=candidate.phase2_candidate.created_at + timedelta(minutes=5),
-        review_version="P3-REVIEW-V1",
+        review_version="P3-OWNER-ASSERTION-V1",
         correction_count=2,
         accepted=True,
         synthetic=False,
@@ -213,6 +214,13 @@ def test_phase3_starts_from_exact_real_phase2_candidate_and_seals() -> None:
         "wordpress_write": False,
         "publish": False,
     }
+    record = sealed.to_contract_record()
+    receipt = record["human_review_receipt"]
+    assert isinstance(receipt, dict)
+    assert receipt["assertion_status"] == "UNAUTHENTICATED_OWNER_ASSERTION"
+    assert receipt["acceptance_authority"] is False
+    assert record["simulation_only"] is True
+    assert record["approval_acceptance_authority"] is False
 
 
 def test_structured_data_expectation_is_closed_and_derived_from_wordpress_fields() -> (
@@ -390,6 +398,10 @@ def test_phase3_rejects_synthetic_or_unreviewed_phase2_input() -> None:
         ({"correction_count": True}, "non-negative"),
         ({"candidate_digest": "f" * 64}, "exact candidate"),
         ({"payload_digest": "f" * 64}, "exact candidate"),
+        ({"reviewer_id": "PERSON-NAME"}, "fixed non-personal"),
+        ({"review_version": "PERSON-NAME"}, "fixed owner assertion contract"),
+        ({"assertion_status": "AUTHENTICATED"}, "remain unauthenticated"),
+        ({"acceptance_authority": True}, "no acceptance authority"),
     ],
 )
 def test_human_review_receipt_is_exact_and_non_synthetic(
@@ -397,9 +409,9 @@ def test_human_review_receipt_is_exact_and_non_synthetic(
 ) -> None:
     candidate = _review_candidate()
     values = {
-        "reviewer_id": "TEST-REAL-REVIEWER",
+        "reviewer_id": "OWNER_ASSERTION_LOCAL",
         "reviewed_at": candidate.phase2_candidate.created_at + timedelta(minutes=5),
-        "review_version": "P3-REVIEW-V1",
+        "review_version": "P3-OWNER-ASSERTION-V1",
         "correction_count": 0,
         "accepted": True,
         "synthetic": False,
@@ -452,15 +464,17 @@ def test_stale_or_unresolved_official_fact_blocks_seal(
     )
     changed_phase2 = replace(phase2, claim_evidence=evidence)
     bindings = tuple(
-        replace(
-            item,
-            freshness=freshness,
-            authoritative_source_status=(
-                ClaimStatus.VERIFIED if resolved else ClaimStatus.DRAFT
-            ),
+        (
+            replace(
+                item,
+                freshness=freshness,
+                authoritative_source_status=(
+                    ClaimStatus.VERIFIED if resolved else ClaimStatus.DRAFT
+                ),
+            )
+            if item.claim_id == official_id
+            else item
         )
-        if item.claim_id == official_id
-        else item
         for item in _claim_bindings(changed_phase2)
     )
     changed_phase2 = _bind_phase3_authority(changed_phase2, bindings)
@@ -485,12 +499,14 @@ def test_unknown_must_be_authoritatively_blocked_to_be_safely_disclosed(
         if binding.claim_type is ClaimType.UNKNOWN
     )
     changed = tuple(
-        replace(
-            binding,
-            authoritative_source_status=authoritative_source_status,
+        (
+            replace(
+                binding,
+                authoritative_source_status=authoritative_source_status,
+            )
+            if binding.claim_id == unknown_id
+            else binding
         )
-        if binding.claim_id == unknown_id
-        else binding
         for binding in bindings
     )
     phase2 = _bind_phase3_authority(phase2, changed)
@@ -522,9 +538,11 @@ def test_claim_authority_deadline_is_exclusive_at_human_review(
     target = next(item for item in bindings if item.claim_type is claim_type)
     deadline = phase2.created_at + timedelta(minutes=5)
     changed = tuple(
-        replace(item, next_review_at=deadline)
-        if item.claim_id == target.claim_id
-        else item
+        (
+            replace(item, next_review_at=deadline)
+            if item.claim_id == target.claim_id
+            else item
+        )
         for item in bindings
     )
     phase2 = _bind_phase3_authority(phase2, changed)
@@ -553,15 +571,19 @@ def test_nonfresh_editorial_judgement_blocks_seal() -> None:
         if item.claim_type is ClaimType.D_EDITORIAL_JUDGEMENT
     )
     evidence = tuple(
-        replace(item, freshness=FreshnessState.HARD_STALE)
-        if item.claim_id == editorial_id
-        else item
+        (
+            replace(item, freshness=FreshnessState.HARD_STALE)
+            if item.claim_id == editorial_id
+            else item
+        )
         for item in phase2.claim_evidence
     )
     changed = tuple(
-        replace(item, freshness=FreshnessState.HARD_STALE)
-        if item.claim_id == editorial_id
-        else item
+        (
+            replace(item, freshness=FreshnessState.HARD_STALE)
+            if item.claim_id == editorial_id
+            else item
+        )
         for item in bindings
     )
     phase2 = _bind_phase3_authority(replace(phase2, claim_evidence=evidence), changed)
@@ -807,6 +829,8 @@ def test_disabled_wordpress_requires_fresh_exact_public_export(case: str) -> Non
         ("target_route", "/wrong-route/"),
         ("captured_at", datetime.fromisoformat("2026-08-28T00:00:00")),
         ("public_capture_sha256", "not-a-hash"),
+        ("owner_evidence_sha256", "not-a-hash"),
+        ("legacy_post_content_sha256", "not-a-hash"),
         ("current_public_body_sha256", "f" * 64),
         ("wordpress_export_sha256", "e" * 64),
     ],
@@ -1014,9 +1038,11 @@ def test_phase3_rejects_claim_authority_mutation(field: str, value: object) -> N
         and item.freshness is FreshnessState.FRESH
     )
     changed = tuple(
-        replace(item, **cast(Any, {field: value}))
-        if item.claim_id == official_id
-        else item
+        (
+            replace(item, **cast(Any, {field: value}))
+            if item.claim_id == official_id
+            else item
+        )
         for item in bindings
     )
     with pytest.raises(ValueError, match="Phase 3 claim"):
