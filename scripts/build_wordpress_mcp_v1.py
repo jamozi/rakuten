@@ -255,7 +255,7 @@ def check_package() -> None:
 
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(allow_abbrev=False)
-    actions = result.add_mutually_exclusive_group(required=True)
+    actions = result.add_mutually_exclusive_group()
     actions.add_argument("--manifest", action="store_true")
     actions.add_argument("--check", action="store_true")
     actions.add_argument("--package", action="store_true")
@@ -267,7 +267,14 @@ def parser() -> argparse.ArgumentParser:
 def main() -> int:
     try:
         arguments = parser().parse_args()
-        if arguments.manifest:
+        if arguments.manifest or not any(
+            (
+                arguments.check,
+                arguments.package,
+                arguments.package_check,
+                arguments.source_check,
+            )
+        ):
             write_manifest()
         elif arguments.check:
             check_manifest()

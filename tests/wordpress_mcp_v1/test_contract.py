@@ -4,15 +4,30 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import sys
 import tomllib
 
 from jsonschema.validators import Draft202012Validator
+from scripts import build_wordpress_mcp_v1
 
 
 ROOT = Path(__file__).resolve().parents[2]
 SLICE = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN = SLICE / "wordpress-plugin/raos-codex-mcp-abilities"
 NODE = Path("/home/minami/.nvm/versions/node/v24.18.1/bin/node")
+
+
+def test_owner_generator_defaults_to_manifest_mode(monkeypatch) -> None:
+    calls: list[str] = []
+    monkeypatch.setattr(
+        build_wordpress_mcp_v1,
+        "write_manifest",
+        lambda: calls.append("manifest"),
+    )
+    monkeypatch.setattr(sys, "argv", ["build_wordpress_mcp_v1.py"])
+
+    assert build_wordpress_mcp_v1.main() == 0
+    assert calls == ["manifest"]
 
 
 def test_public_contract_and_schema_are_valid() -> None:
