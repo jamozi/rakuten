@@ -1,0 +1,86 @@
+{
+  "schema": "RAOS_WORDPRESS_MCP_CONTRACT_V1",
+  "version": "1.0.0",
+  "site_origin": "https://kurashinoshirube.com",
+  "wordpress_version": "7.1.x",
+  "mcp_adapter": {
+    "source": "https://github.com/WordPress/mcp-adapter",
+    "version": "0.6.1",
+    "constant": "WP_MCP_VERSION",
+    "server_id": "raos-codex-editor",
+    "namespace": "raos-codex-mcp/v1",
+    "route": "editor",
+    "default_server_enabled": false
+  },
+  "remote_proxy": {
+    "package": "@automattic/mcp-wordpress-remote",
+    "version": "0.4.0",
+    "endpoint": "https://kurashinoshirube.com/wp-json/raos-codex-mcp/v1/editor"
+  },
+  "local_bridge": {
+    "package": "@raos/wordpress-mcp-bridge",
+    "sdk": "@modelcontextprotocol/sdk@1.30.0",
+    "transport": "stdio"
+  },
+  "mcp_tools": [
+    "raos-codex-site-status",
+    "raos-codex-content-list",
+    "raos-codex-content-get",
+    "raos-codex-content-create-draft",
+    "raos-codex-content-update-draft",
+    "raos-codex-content-propose-release",
+    "raos-codex-operation-get"
+  ],
+  "bridge_tools": [
+    "content-apply-release",
+    "theme-propose-release",
+    "theme-apply-release",
+    "plugin-propose-change",
+    "plugin-apply-change",
+    "operation-recover"
+  ],
+  "credential_stores": {
+    "editor": ".secrets/wordpress-mcp/editor-application-password.v1.json",
+    "operator": ".secrets/wordpress-mcp/operator-application-password.v1.json",
+    "must_be_distinct": true,
+    "file_mode": "0600",
+    "parent_mode": "0700"
+  },
+  "roles": {
+    "editor": "raos_codex_mcp_editor",
+    "operator": "raos_codex_deployment_operator",
+    "administrators_forbidden": true,
+    "single_role_required": true
+  },
+  "approval": {
+    "channel": "wp-admin",
+    "ttl_seconds": 900,
+    "self_approval": false,
+    "reauthentication": true,
+    "minimum_reason_length": 10,
+    "hash_suffix_length": 8
+  },
+  "host_gates": {
+    "global_kill_switch": "RAOS_OPERATOR_WRITES_ENABLED",
+    "draft": "RAOS_CODEX_DRAFT_WRITES_ENABLED",
+    "content_apply": "RAOS_CODEX_CONTENT_APPLY_ENABLED",
+    "theme_apply": "RAOS_CODEX_THEME_APPLY_ENABLED",
+    "plugin_apply": "RAOS_CODEX_PLUGIN_APPLY_ENABLED",
+    "default": false
+  },
+  "theme": {
+    "only_slug": "kurashinoshirube-child",
+    "source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
+    "additional_css": false,
+    "untracked_templates": false
+  },
+  "plugin_policy": {
+    "sources": ["wordpress_org", "repo_artifact"],
+    "fixed_version": true,
+    "arbitrary_url": false,
+    "manual_zip": false,
+    "uninstall": false,
+    "delete_files": false,
+    "unknown_migration": "MANUAL_REVIEW_REQUIRED"
+  }
+}

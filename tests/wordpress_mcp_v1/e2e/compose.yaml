@@ -1,0 +1,92 @@
+services:
+  database:
+    image: mariadb:11.8.3@sha256:ae6119716edac6998ae85508431b3d2e666530ddf4e94c61a10710caec9b0f71
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_PASSWORD: ${RAOS_WORDPRESS_E2E_DATABASE_PASSWORD:?RAOS_WORDPRESS_E2E_DATABASE_PASSWORD is required}
+      MARIADB_ROOT_PASSWORD: ${RAOS_WORDPRESS_E2E_DATABASE_ROOT_PASSWORD:?RAOS_WORDPRESS_E2E_DATABASE_ROOT_PASSWORD is required}
+      MARIADB_USER: wordpress
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mariadb-admin ping --host=127.0.0.1 --user=root --password=$${MARIADB_ROOT_PASSWORD} --silent
+      interval: 2s
+      timeout: 2s
+      retries: 60
+    networks:
+      - isolated
+
+  wordpress:
+    image: wordpress:7.1.0-php8.3-apache@sha256:8801a1239d7ba9fb340a5fc5ba0bf7f8d3652adbd64893e3fba7992ba618108e
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: database
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_PASSWORD: ${RAOS_WORDPRESS_E2E_DATABASE_PASSWORD:?RAOS_WORDPRESS_E2E_DATABASE_PASSWORD is required}
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'https://kurashinoshirube.com');
+        define('WP_SITEURL', 'https://kurashinoshirube.com');
+        define('RAOS_OPERATOR_WRITES_ENABLED', true);
+        define('RAOS_CODEX_DRAFT_WRITES_ENABLED', true);
+        define('RAOS_CODEX_CONTENT_APPLY_ENABLED', true);
+        define('RAOS_CODEX_THEME_APPLY_ENABLED', true);
+        define('RAOS_CODEX_PLUGIN_APPLY_ENABLED', true);
+        define('RAOS_CODEX_REPO_ARTIFACT_HASHES', array(
+          'raos-e2e-safe-plugin-v1' => '${RAOS_WORDPRESS_E2E_SAFE_PLUGIN_SHA256:?RAOS_WORDPRESS_E2E_SAFE_PLUGIN_SHA256 is required}',
+          'raos-e2e-broken-plugin-v1' => '${RAOS_WORDPRESS_E2E_BROKEN_PLUGIN_SHA256:?RAOS_WORDPRESS_E2E_BROKEN_PLUGIN_SHA256 is required}',
+        ));
+        define('RAOS_CODEX_PRIVATE_DIR', '/var/www/raos-codex-private');
+        $$_SERVER['HTTPS'] = 'on';
+        $$_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+    ports:
+      - '127.0.0.1:${RAOS_WORDPRESS_E2E_PORT:?RAOS_WORDPRESS_E2E_PORT is required}:80'
+    volumes:
+      - type: bind
+        source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/html
+        target: /var/www/html
+      - type: bind
+        source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/private
+        target: /var/www/raos-codex-private
+      - type: bind
+        source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/staging
+        target: /var/www/raos-e2e-staging
+    networks:
+      isolated:
+        aliases:
+          - kurashinoshirube.com
+
+  cli:
+    image: wordpress:cli-2.12.0-php8.3@sha256:2b5e9d4d3e51909dca1aaa4732e9f5e5bf0377c2114dbd8ff39f060bff202586
+    depends_on:
+      database:
+        condition: service_healthy
+      wordpress:
+        condition: service_started
+    entrypoint:
+      - wp
+    environment:
+      WORDPRESS_DB_HOST: database
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_PASSWORD: ${RAOS_WORDPRESS_E2E_DATABASE_PASSWORD:?RAOS_WORDPRESS_E2E_DATABASE_PASSWORD is required}
+      WORDPRESS_DB_USER: wordpress
+    user: '33:33'
+    volumes:
+      - type: bind
+        source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/html
+        target: /var/www/html
+      - type: bind
+        source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/private
+        target: /var/www/raos-codex-private
+      - type: bind
+        source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/staging
+        target: /var/www/raos-e2e-staging
+    working_dir: /var/www/html
+    networks:
+      - isolated
+
+networks:
+  isolated:
+    internal: true
