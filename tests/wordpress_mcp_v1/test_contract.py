@@ -255,6 +255,9 @@ def test_disposable_wordpress_71_e2e_is_pinned_and_separate_from_live() -> None:
         in compose
     )
     assert "compose up --detach database wordpress gateway" in runner
+    assert '"$(wordpress_cli core version)" == 7.1' in runner
+    assert "--prompt=admin_password >/dev/null 2>&1" in runner
+    assert runner.count("--porcelain >/dev/null 2>&1") == 2
     assert "proxy_pass http://wordpress:80;" in gateway
     assert "proxy_set_header X-Forwarded-Proto https;" in gateway
     assert "RAOS_CODEX_THEME_APPLY_ENABLED', true" in compose

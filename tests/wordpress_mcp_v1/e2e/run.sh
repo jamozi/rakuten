@@ -174,13 +174,15 @@ compose cp "$e2e_directory/mutate_harness.php" wordpress:/var/www/raos-e2e-stagi
 compose cp "$code_artifact_directory/kurashinoshirube-child-baseline.zip" wordpress:/var/www/raos-e2e-staging/kurashinoshirube-child-baseline.zip
 compose exec -T --user root wordpress chown -R www-data:www-data /var/www/raos-e2e-staging
 
-printf '%s\n' "$RAOS_WORDPRESS_E2E_ADMIN_PASSWORD" | wordpress_cli core install \
+if ! printf '%s\n' "$RAOS_WORDPRESS_E2E_ADMIN_PASSWORD" | wordpress_cli core install \
   --url=https://kurashinoshirube.com \
   --title='RAOS WordPress MCP E2E' \
   --admin_user=raos-e2e-approver \
   --admin_email=approver@example.invalid \
   --skip-email \
-  --prompt=admin_password
+  --prompt=admin_password >/dev/null 2>&1; then
+  fail RAOS_WORDPRESS_E2E_INSTALL_FAILED
+fi
 
 wordpress_cli plugin install /var/www/raos-e2e-staging/mcp-adapter.zip --activate
 wordpress_cli plugin install /var/www/raos-e2e-staging/raos-codex-mcp-abilities.zip --activate
@@ -188,21 +190,25 @@ wordpress_cli theme is-installed twentytwentyfive \
   || fail RAOS_WORDPRESS_E2E_PARENT_THEME_MISSING
 wordpress_cli theme install \
   /var/www/raos-e2e-staging/kurashinoshirube-child-baseline.zip --activate
-[[ "$(wordpress_cli core version)" == 7.1.0 ]] \
+[[ "$(wordpress_cli core version)" == 7.1 ]] \
   || fail RAOS_WORDPRESS_E2E_WORDPRESS_VERSION_INVALID
 [[ "$(wordpress_cli eval 'echo WP_MCP_VERSION;')" == 0.6.1 ]] \
   || fail RAOS_WORDPRESS_E2E_ADAPTER_VERSION_INVALID
 
-printf '%s\n' "$editor_login_password" | wordpress_cli user create \
+if ! printf '%s\n' "$editor_login_password" | wordpress_cli user create \
   "$editor_user" editor@example.invalid \
   --role=raos_codex_mcp_editor \
   --prompt=user_pass \
-  --porcelain >/dev/null
-printf '%s\n' "$operator_login_password" | wordpress_cli user create \
+  --porcelain >/dev/null 2>&1; then
+  fail RAOS_WORDPRESS_E2E_EDITOR_CREATE_FAILED
+fi
+if ! printf '%s\n' "$operator_login_password" | wordpress_cli user create \
   "$operator_user" operator@example.invalid \
   --role=raos_codex_deployment_operator \
   --prompt=user_pass \
-  --porcelain >/dev/null
+  --porcelain >/dev/null 2>&1; then
+  fail RAOS_WORDPRESS_E2E_OPERATOR_CREATE_FAILED
+fi
 
 RAOS_WORDPRESS_E2E_EDITOR_PASSWORD="$(
   wordpress_cli user application-password create \
