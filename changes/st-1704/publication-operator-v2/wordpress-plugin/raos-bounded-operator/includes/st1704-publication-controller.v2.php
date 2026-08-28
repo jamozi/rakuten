@@ -66,13 +66,32 @@ final class RAOS_ST1704_Publication_Controller_V2
     const RECONCILIATION_PUBLIC_EVENT = 'RECONCILED_PUBLIC';
     const RECONCILIATION_EXACT_ROWS_DISPOSITION =
         'EXACT_REDIRECT_EXTRAS';
+    const RECONCILIATION_EXACT_ROWS_TARGETS = array(
+        'st1704-portable-power-station-guide' => array(
+            'post_id' => 28,
+            'public_slug' => 'portable-power-station-guide',
+        ),
+        'st1704-anker-solix-c300-c800-c1000-differences' => array(
+            'post_id' => 29,
+            'public_slug' => 'anker-solix-c300-c800-c1000-differences',
+        ),
+        'st1704-countertop-dishwasher-for-small-households' => array(
+            'post_id' => 41,
+            'public_slug' => 'countertop-dishwasher-for-small-households',
+        ),
+    );
     const RECONCILIATION_NO_ROWS_DISPOSITION =
         'VERIFIED_NO_REDIRECT_META_ROWS';
-    const RECONCILIATION_NO_ROWS_ARTICLE_ID =
-        'st1704-countertop-dishwasher-for-small-households';
-    const RECONCILIATION_NO_ROWS_POST_ID = 41;
-    const RECONCILIATION_NO_ROWS_PUBLIC_SLUG =
-        'countertop-dishwasher-for-small-households';
+    const RECONCILIATION_NO_ROWS_TARGETS = array(
+        'st1704-countertop-dishwasher-for-small-households' => array(
+            'post_id' => 41,
+            'public_slug' => 'countertop-dishwasher-for-small-households',
+        ),
+        'st1704-compact-robot-vacuum-shortlist' => array(
+            'post_id' => 30,
+            'public_slug' => 'compact-robot-vacuum-shortlist',
+        ),
+    );
     const MUTEX_PURPOSE = 'PUBLICATION_V2';
     const MAX_REASON_BYTES = 1200;
     const MAX_PASSWORD_BYTES = 4096;
@@ -1752,6 +1771,7 @@ final class RAOS_ST1704_Publication_Controller_V2
             'st1704-portable-power-station-guide',
             'st1704-anker-solix-c300-c800-c1000-differences',
             'st1704-countertop-dishwasher-for-small-households',
+            'st1704-compact-robot-vacuum-shortlist',
         );
         $targets = array();
         foreach ($target_ids as $article_id) {
@@ -1767,6 +1787,81 @@ final class RAOS_ST1704_Publication_Controller_V2
             );
         }
         return $targets;
+    }
+
+    private static function reconciliation_target_matches_literal_map(
+        array $target,
+        array $literal_targets
+    ) {
+        if (! self::has_exact_keys(
+            $target,
+            array('article_id', 'post_id', 'public_slug')
+        )
+            || ! is_string($target['article_id'])
+            || ! is_int($target['post_id'])
+            || ! is_string($target['public_slug'])
+            || ! isset($literal_targets[$target['article_id']])) {
+            return false;
+        }
+        $expected = $literal_targets[$target['article_id']];
+        return self::has_exact_keys($expected, array('post_id', 'public_slug'))
+            && is_int($expected['post_id'])
+            && is_string($expected['public_slug'])
+            && $target['post_id'] === $expected['post_id']
+            && hash_equals($expected['public_slug'], $target['public_slug']);
+    }
+
+    private static function reconciliation_exact_rows_target_is_exact(
+        array $target
+    ) {
+        return self::reconciliation_target_matches_literal_map(
+            $target,
+            self::RECONCILIATION_EXACT_ROWS_TARGETS
+        );
+    }
+
+    private static function reconciliation_no_rows_target_is_exact(
+        array $target
+    ) {
+        return self::reconciliation_target_matches_literal_map(
+            $target,
+            self::RECONCILIATION_NO_ROWS_TARGETS
+        );
+    }
+
+    private static function reconciliation_no_rows_operation_target_is_exact(
+        array $operation_fields
+    ) {
+        if (! isset(
+            $operation_fields['article_id'],
+            $operation_fields['post_id'],
+            $operation_fields['public_slug_sha256']
+        )
+            || ! is_string($operation_fields['article_id'])
+            || ! is_int($operation_fields['post_id'])
+            || ! is_string($operation_fields['public_slug_sha256'])
+            || preg_match(
+                '/\A[a-f0-9]{64}\z/',
+                $operation_fields['public_slug_sha256']
+            ) !== 1
+            || ! isset(
+                self::RECONCILIATION_NO_ROWS_TARGETS[
+                    $operation_fields['article_id']
+                ]
+            )) {
+            return false;
+        }
+        $expected = self::RECONCILIATION_NO_ROWS_TARGETS[
+            $operation_fields['article_id']
+        ];
+        return self::has_exact_keys($expected, array('post_id', 'public_slug'))
+            && is_int($expected['post_id'])
+            && is_string($expected['public_slug'])
+            && $operation_fields['post_id'] === $expected['post_id']
+            && hash_equals(
+                hash('sha256', $expected['public_slug']),
+                $operation_fields['public_slug_sha256']
+            );
     }
 
     private static function bindings_are_exact()
@@ -3390,7 +3485,7 @@ final class RAOS_ST1704_Publication_Controller_V2
         <hr>
         <h2><?php echo esc_html('Incident-bound redirect metadata reconciliation'); ?></h2>
         <p><?php echo esc_html(
-            'This admin-only workflow is limited to the three fixed terminal publication incidents. It reconciles exact redirect rows when present or the one verified dishwasher no-row case. It never changes a proposal receipt or adds a REST authority.'
+            'This admin-only workflow is limited to the four fixed terminal publication incidents. It reconciles exact redirect rows when present or either verified dishwasher or robot-vacuum no-row case. It never changes a proposal receipt or adds a REST authority.'
         ); ?></p>
         <?php
         $notice = isset($_GET['raos_st1704_reconciliation_notice'])
@@ -3414,7 +3509,7 @@ final class RAOS_ST1704_Publication_Controller_V2
             return;
         endif;
         $targets = self::terminal_reconciliation_targets();
-        if (count($targets) !== 3) :
+        if (count($targets) !== 4) :
             ?>
             <p><?php echo esc_html('The fixed reconciliation allowlist is invalid.'); ?></p>
             <?php
@@ -3456,7 +3551,7 @@ final class RAOS_ST1704_Publication_Controller_V2
                 <p><?php echo esc_html(
                     $plan['cleanup_disposition']
                         === self::RECONCILIATION_NO_ROWS_DISPOSITION
-                        ? 'The transaction has verified the fixed dishwasher no-row case and will delete no metadata. It will still read back the published state and append the reconciliation audit. The terminal proposal receipt remains unchanged.'
+                        ? 'The transaction has verified an exact fixed no-row incident and will delete no metadata. It will still read back the published state and append the reconciliation audit. The terminal proposal receipt remains unchanged.'
                         : 'The transaction will delete only the exact locked WordPress redirect metadata rows present and bound by this operation hash. The terminal proposal receipt remains unchanged.'
                 ); ?></p>
                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
@@ -3969,6 +4064,12 @@ final class RAOS_ST1704_Publication_Controller_V2
         if ($plan['cleanup_disposition']
             === self::RECONCILIATION_EXACT_ROWS_DISPOSITION) {
             return $plan['cleanup_state'] === 'EXACT_REDIRECT_EXTRAS'
+                && $plan['proposal']['draft_post_id'] === $plan['post_id']
+                && self::reconciliation_exact_rows_target_is_exact(array(
+                    'article_id' => $plan['proposal']['article_id'],
+                    'post_id' => $plan['post_id'],
+                    'public_slug' => $plan['proposal']['public_slug'],
+                ))
                 && $this->delete_exact_reconciliation_meta_rows(
                     $plan['delete_rows'],
                     $plan['post_id']
@@ -3980,13 +4081,12 @@ final class RAOS_ST1704_Publication_Controller_V2
         }
         return $plan['cleanup_state'] === 'CLEAN'
             && $plan['delete_rows'] === array()
-            && $plan['post_id'] === self::RECONCILIATION_NO_ROWS_POST_ID
-            && $plan['proposal']['article_id']
-                === self::RECONCILIATION_NO_ROWS_ARTICLE_ID
-            && $plan['proposal']['draft_post_id']
-                === self::RECONCILIATION_NO_ROWS_POST_ID
-            && $plan['proposal']['public_slug']
-                === self::RECONCILIATION_NO_ROWS_PUBLIC_SLUG;
+            && $plan['proposal']['draft_post_id'] === $plan['post_id']
+            && self::reconciliation_no_rows_target_is_exact(array(
+                'article_id' => $plan['proposal']['article_id'],
+                'post_id' => $plan['post_id'],
+                'public_slug' => $plan['proposal']['public_slug'],
+            ));
     }
 
     private function delete_exact_reconciliation_meta_rows(
@@ -4174,7 +4274,7 @@ final class RAOS_ST1704_Publication_Controller_V2
         }
         $targets = self::terminal_reconciliation_targets();
         $candidates = $this->terminal_reconciliation_candidates_for_update();
-        if (count($targets) !== 3) {
+        if (count($targets) !== 4) {
             return self::error('raos_st1704_reconciliation_allowlist_invalid', 409);
         }
         if (is_wp_error($candidates)) {
@@ -4239,7 +4339,7 @@ final class RAOS_ST1704_Publication_Controller_V2
             return self::error('raos_st1704_reconciliation_candidate_invalid', 409);
         }
         $targets = self::terminal_reconciliation_targets();
-        if (count($targets) !== 3) {
+        if (count($targets) !== 4) {
             return self::error('raos_st1704_reconciliation_allowlist_invalid', 409);
         }
         $result = array();
@@ -4622,17 +4722,14 @@ final class RAOS_ST1704_Publication_Controller_V2
             && count($meta_plan['delete_rows']) >= 1
             && count($meta_plan['delete_rows']) <= 2
             && count($meta_plan['cleanup_row_digests'])
-                === count($meta_plan['delete_rows'])) {
+                === count($meta_plan['delete_rows'])
+            && self::reconciliation_exact_rows_target_is_exact($target)) {
             return self::RECONCILIATION_EXACT_ROWS_DISPOSITION;
         }
         if ($meta_plan['state'] !== 'CLEAN'
             || $meta_plan['delete_rows'] !== array()
             || $meta_plan['cleanup_row_digests'] !== array()
-            || $target['article_id']
-                !== self::RECONCILIATION_NO_ROWS_ARTICLE_ID
-            || $target['post_id'] !== self::RECONCILIATION_NO_ROWS_POST_ID
-            || $target['public_slug']
-                !== self::RECONCILIATION_NO_ROWS_PUBLIC_SLUG
+            || ! self::reconciliation_no_rows_target_is_exact($target)
             || ! is_string($meta_plan['before_meta_multiset_sha256'])
             || ! is_string($meta_plan['current_meta_rows_sha256'])
             || ! is_string($meta_plan['expected_after_meta_rows_sha256'])
@@ -4675,7 +4772,10 @@ final class RAOS_ST1704_Publication_Controller_V2
         }
         if ($cleanup_disposition
             !== self::RECONCILIATION_NO_ROWS_DISPOSITION
-            || $cleanup_state !== 'CLEAN') {
+            || $cleanup_state !== 'CLEAN'
+            || ! self::reconciliation_no_rows_operation_target_is_exact(
+                $operation_fields
+            )) {
             return false;
         }
         $operation_fields['cleanup_disposition'] = $cleanup_disposition;

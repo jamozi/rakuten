@@ -1,4 +1,4 @@
-# RAOS Bounded Operator 2.1.12
+# RAOS Bounded Operator 2.1.13
 
 This deterministic package preserves the closed ST-1506 v1 status, Yoast, and
 child-theme surfaces and adds the ST-1704 publication controller under the
@@ -97,6 +97,20 @@ preview projection. The dishwasher no-row plan therefore renders
 plans render `ALREADY_RECONCILED`. The value still comes only from the locked
 server plan; no request field, operation material/hash, receipt, gate,
 permission, REST route, or execution behavior changes.
+
+Patch 2.1.13 adds only the observed Robot terminal incident at fixed post 30
+and its generated public slug. Robot is eligible only for the locked `CLEAN`
+state with empty cleanup rows/digests and strict current/expected and
+before/after multiset hash equality. The exact-row disposition and executor
+remain limited to Portable-power, Anker, and Dishwasher, so a Robot exact-row
+plan is refused before any metadata deletion. The no-row disposition remains
+limited to the literal Dishwasher and Robot bindings; Portable-power and
+Anker clean states remain refused. Robot V2 operation material binds its exact
+article, post, and public-slug hash. The Dishwasher V2 bytes/hash and existing
+V1 exact-row bytes/hashes are unchanged. Robot no-row execution issues no
+`DELETE` and retains the same SERIALIZABLE transaction, published readback,
+audit append, distinct-human check, terminal receipt, gates, counts, and REST
+surface.
 
 The v2 controller can only publish one of four generated article bindings, or
 revise the exact existing Draft IDs 28, 29, 41, and 30. A revision is

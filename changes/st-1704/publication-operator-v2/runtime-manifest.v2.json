@@ -54,15 +54,26 @@
       {
         "article_id": "st1704-countertop-dishwasher-for-small-households",
         "post_id": 41
+      },
+      {
+        "article_id": "st1704-compact-robot-vacuum-shortlist",
+        "post_id": 30
       }
     ],
     "verified_no_redirect_meta_rows": {
       "cleanup_disposition": "VERIFIED_NO_REDIRECT_META_ROWS",
-      "target": {
-        "article_id": "st1704-countertop-dishwasher-for-small-households",
-        "post_id": 41,
-        "public_slug": "countertop-dishwasher-for-small-households"
-      }
+      "targets": [
+        {
+          "article_id": "st1704-countertop-dishwasher-for-small-households",
+          "post_id": 41,
+          "public_slug": "countertop-dishwasher-for-small-households"
+        },
+        {
+          "article_id": "st1704-compact-robot-vacuum-shortlist",
+          "post_id": 30,
+          "public_slug": "compact-robot-vacuum-shortlist"
+        }
+      ]
     }
   },
   "integrity_inputs": [
@@ -77,14 +88,14 @@
   ],
   "operator_contract_version": 2,
   "package": {
-    "bytes": 536293,
+    "bytes": 541024,
     "compression": "ZIP_STORED",
     "file_count": 4,
     "files": [
       {
-        "bytes": 7333,
+        "bytes": 8257,
         "path": "README.md",
-        "sha256": "5c8b63362489c23314dd4804a53ce2c6bf4db8f095f267b95fcb12574c625ea6"
+        "sha256": "57fd1c39b3778377dacf8a69988b79a039d68723fbb3183c3cc52d7d8369c6ff"
       },
       {
         "bytes": 2491,
@@ -92,19 +103,19 @@
         "sha256": "2b3d7d828941890e799b575f24cbab690b0895cea1cd64d45fd3166ab030dc8b"
       },
       {
-        "bytes": 337377,
+        "bytes": 341184,
         "path": "includes/st1704-publication-controller.v2.php",
-        "sha256": "ab3de432fec8a657428888c4dc03a20836d4a661192c41c32c54f6f9fa405de2"
+        "sha256": "6ede9cfc1eed641345deca478ba039e0b2519be7ff5f686f21a65f1f36cca149"
       },
       {
         "bytes": 188346,
         "path": "raos-bounded-operator.php",
-        "sha256": "ae37deae073184b12cd0ab116e00a6d49b6c222e3589342b5568bb2707c929a2"
+        "sha256": "f8d1fe4c526c0b948e3496113a57382008eb901af52fb9c92a6986203a4a7ba7"
       }
     ],
     "root": "raos-bounded-operator/",
-    "sha256": "7d146ab9597dcd88351dd4c63f55b25d25191042790af33c06d2be5f8ab3079c",
-    "version": "2.1.12"
+    "sha256": "128a53effedefa10fe24225de651dc6aa7ee1a9739f5877b0c25c672f5c5e3b3",
+    "version": "2.1.13"
   },
   "predecessors": {
     "st1506_wordpress_operator": {

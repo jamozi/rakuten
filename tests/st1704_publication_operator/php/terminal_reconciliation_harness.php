@@ -371,6 +371,8 @@ $operation_material_method = $reflection->getMethod(
     'terminal_reconciliation_operation_material'
 );
 $operation_material_method->setAccessible(true);
+$targets_method = $reflection->getMethod('terminal_reconciliation_targets');
+$targets_method->setAccessible(true);
 $apply_disposition_method = $reflection->getMethod(
     'apply_reconciliation_metadata_disposition'
 );
@@ -395,6 +397,25 @@ $preview_projection_method = $reflection->getMethod(
     'terminal_reconciliation_preview_projection'
 );
 $preview_projection_method->setAccessible(true);
+
+$terminal_targets = $targets_method->invoke(null);
+expect_true(
+    is_array($terminal_targets)
+        && array_keys($terminal_targets) === array(
+            'st1704-portable-power-station-guide',
+            'st1704-anker-solix-c300-c800-c1000-differences',
+            'st1704-countertop-dishwasher-for-small-households',
+            'st1704-compact-robot-vacuum-shortlist',
+        )
+        && $terminal_targets[
+            'st1704-compact-robot-vacuum-shortlist'
+        ] === array(
+            'article_id' => 'st1704-compact-robot-vacuum-shortlist',
+            'post_id' => 30,
+            'public_slug' => 'compact-robot-vacuum-shortlist',
+        ),
+    'terminal reconciliation allowlist must contain four exact bindings'
+);
 
 $dishwasher_preview = $preview_projection_method->invoke(
     null,
@@ -745,7 +766,7 @@ $no_rows_disposition = $disposition_method->invoke(
 );
 expect_true(
     $no_rows_disposition === 'VERIFIED_NO_REDIRECT_META_ROWS',
-    'only the exact dishwasher clean state must select no-row reconciliation'
+    'exact dishwasher clean state must select no-row reconciliation'
 );
 $portable_target = array(
     'article_id' => 'st1704-portable-power-station-guide',
@@ -781,14 +802,46 @@ $robot_target = array(
     'post_id' => 30,
     'public_slug' => 'compact-robot-vacuum-shortlist',
 );
+$robot_no_rows_disposition = $disposition_method->invoke(
+    null,
+    $robot_target,
+    $cleanup_required,
+    $clean
+);
+expect_true(
+    $robot_no_rows_disposition === 'VERIFIED_NO_REDIRECT_META_ROWS',
+    'exact Robot clean state must select no-row reconciliation'
+);
+foreach (
+    array(
+        'expected_after_meta_rows_sha256',
+        'expected_after_meta_multiset_sha256',
+    ) as $robot_hash_drift_field
+) {
+    $robot_hash_drift = $clean;
+    $robot_hash_drift[$robot_hash_drift_field] = str_repeat('0', 64);
+    expect_true(
+        $disposition_method->invoke(
+            null,
+            $robot_target,
+            $cleanup_required,
+            $robot_hash_drift
+        ) instanceof WP_Error,
+        'Robot no-row disposition must refuse either strict hash mismatch'
+    );
+}
+$robot_digest_drift = $clean;
+$robot_digest_drift['cleanup_row_digests'] = array(
+    array('meta_id' => 99),
+);
 expect_true(
     $disposition_method->invoke(
         null,
         $robot_target,
         $cleanup_required,
-        $clean
+        $robot_digest_drift
     ) instanceof WP_Error,
-    'robot clean state must remain excluded'
+    'Robot no-row disposition must require empty cleanup digests'
 );
 expect_true(
     $disposition_method->invoke(
@@ -844,6 +897,24 @@ expect_true(
     ) === 'EXACT_REDIRECT_EXTRAS',
     'legacy exact-row cleanup disposition must remain unchanged'
 );
+expect_true(
+    $disposition_method->invoke(
+        null,
+        $dishwasher_target,
+        $cleanup_required,
+        $same_day
+    ) === 'EXACT_REDIRECT_EXTRAS',
+    'existing dishwasher exact-row cleanup disposition must remain unchanged'
+);
+expect_true(
+    $disposition_method->invoke(
+        null,
+        $robot_target,
+        $cleanup_required,
+        $same_day
+    ) instanceof WP_Error,
+    'Robot exact-row state must remain ineligible'
+);
 
 $legacy_operation_fields = array(
     'article_id' => 'st1704-portable-power-station-guide',
@@ -862,14 +933,84 @@ expect_true(
             === $legacy_operation_fields,
     'legacy exact-row material must remain byte-compatible V1 without new keys'
 );
+$legacy_operation_golden =
+    '{"article_id":"st1704-portable-power-station-guide",'
+    . '"cleanup_rows":[{"meta_id":12}],'
+    . '"schema":"RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1"}';
+expect_true(
+    $legacy_operation_material === $legacy_operation_golden
+        && hash('sha256', $legacy_operation_material)
+            === '7acd02d9224f5fd3aa911036c556d785230382481a9e714735aff8ffbeb21c81',
+    'portable V1 operation material and hash must remain byte-compatible'
+);
+$anker_operation_fields = array(
+    'article_id' => 'st1704-anker-solix-c300-c800-c1000-differences',
+    'cleanup_rows' => array(array('meta_id' => 13)),
+    'schema' => 'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1',
+);
+$anker_operation_material = $operation_material_method->invoke(
+    null,
+    $anker_operation_fields,
+    'EXACT_REDIRECT_EXTRAS',
+    'EXACT_REDIRECT_EXTRAS'
+);
+$anker_operation_golden =
+    '{"article_id":"st1704-anker-solix-c300-c800-c1000-differences",'
+    . '"cleanup_rows":[{"meta_id":13}],'
+    . '"schema":"RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1"}';
+expect_true(
+    $anker_operation_material === $anker_operation_golden
+        && hash('sha256', $anker_operation_material)
+            === '13ad0675006ae4fdaf70c8019167e38caf360027cf02c6d32aa3edda5e45f190',
+    'Anker V1 operation material and hash must remain byte-compatible'
+);
+$dishwasher_operation_fields = array(
+    'article_id' => 'st1704-countertop-dishwasher-for-small-households',
+    'apply_started_at' => '2026-08-28 01:03:00',
+    'approval_evidence_sha256' => str_repeat('1', 64),
+    'approved_at' => '2026-08-28 01:02:00',
+    'approved_by_user_id' => 2,
+    'audit_event_hashes' => array(
+        str_repeat('2', 64),
+        str_repeat('3', 64),
+    ),
+    'audit_head_sha256' => str_repeat('4', 64),
+    'before_meta_multiset_sha256' => str_repeat('5', 64),
+    'before_state_sha256' => str_repeat('6', 64),
+    'cleanup_rows' => array(),
+    'current_meta_rows_sha256' => str_repeat('7', 64),
+    'current_published_storage_sha256' => str_repeat('8', 64),
+    'completed_at' => '2026-08-28 01:04:00',
+    'created_at' => '2026-08-28 01:01:00',
+    'expected_after_meta_rows_sha256' => str_repeat('7', 64),
+    'expected_after_meta_multiset_sha256' => str_repeat('5', 64),
+    'expected_post_date' => '2026-08-28 10:03:00',
+    'expected_post_date_gmt' => '2026-08-28 01:03:00',
+    'expected_post_modified' => '2026-08-28 10:03:00',
+    'expected_post_modified_gmt' => '2026-08-28 01:03:00',
+    'failure_code' => 'POST_COMMIT_HOOK_REPLAY_UNCERTAIN',
+    'expires_at' => '2026-08-28 01:16:00',
+    'idempotency_key_sha256' => str_repeat('b', 64),
+    'operation' => 'RECONCILE_INCIDENT_REDIRECT_META',
+    'post_id' => 41,
+    'proposal_id' => str_repeat('c', 64),
+    'proposal_state' => 'NEEDS_RECOVERY',
+    'proposal_state_version' => 4,
+    'proposer_user_id' => 7,
+    'public_slug_sha256' => hash(
+        'sha256',
+        'countertop-dishwasher-for-small-households'
+    ),
+    'request_json_sha256' => str_repeat('d', 64),
+    'review_slug_sha256' => str_repeat('e', 64),
+    'rollback_json_sha256' => str_repeat('f', 64),
+    'schema' => 'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1',
+    'site_origin' => 'https://kurashinoshirube.com',
+    'wordpress_release_line' => '7.1.x',
+);
 $no_rows_operation_material = $operation_material_method->invoke(
     null,
-    array(
-        'article_id' =>
-            'st1704-countertop-dishwasher-for-small-households',
-        'cleanup_rows' => array(),
-        'schema' => 'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1',
-    ),
+    $dishwasher_operation_fields,
     'VERIFIED_NO_REDIRECT_META_ROWS',
     'CLEAN'
 );
@@ -886,17 +1027,103 @@ expect_true(
             === 'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V2'
         && $operation_material_method->invoke(
             null,
-            array(
-                'article_id' =>
-                    'st1704-countertop-dishwasher-for-small-households',
-                'cleanup_rows' => array(),
-                'schema' =>
-                    'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1',
-            ),
+            $dishwasher_operation_fields,
             'VERIFIED_NO_REDIRECT_META_ROWS',
             'CLEAN'
         ) === $no_rows_operation_material,
     'dishwasher no-row operation material must deterministically bind disposition and state'
+);
+$dishwasher_operation_expected = $dishwasher_operation_fields;
+$dishwasher_operation_expected['cleanup_disposition'] =
+    'VERIFIED_NO_REDIRECT_META_ROWS';
+$dishwasher_operation_expected['cleanup_state'] = 'CLEAN';
+$dishwasher_operation_expected['schema'] =
+    'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V2';
+expect_true(
+    $no_rows_operation == $dishwasher_operation_expected
+        && strlen($no_rows_operation_material) === 2339
+        && hash('sha256', $no_rows_operation_material)
+            === 'ec0a60a9d563003829614cfe70362af3aa244c6579407e8e78e897814ffc1d67',
+    'full-field dishwasher V2 bytes and hash must remain compatible with 2.1.12'
+);
+$robot_operation_fields = $dishwasher_operation_fields;
+$robot_operation_fields['article_id'] =
+    'st1704-compact-robot-vacuum-shortlist';
+$robot_operation_fields['post_id'] = 30;
+$robot_operation_fields['public_slug_sha256'] = hash(
+    'sha256',
+    'compact-robot-vacuum-shortlist'
+);
+$robot_operation_material = $operation_material_method->invoke(
+    null,
+    $robot_operation_fields,
+    'VERIFIED_NO_REDIRECT_META_ROWS',
+    'CLEAN'
+);
+$robot_operation = is_string($robot_operation_material)
+    ? json_decode($robot_operation_material, true)
+    : null;
+expect_true(
+    is_array($robot_operation)
+        && $robot_operation['article_id']
+            === 'st1704-compact-robot-vacuum-shortlist'
+        && $robot_operation['post_id'] === 30
+        && $robot_operation['public_slug_sha256']
+            === hash('sha256', 'compact-robot-vacuum-shortlist'),
+    'Robot V2 operation material must bind its exact target identity'
+);
+foreach (
+    array(
+        array('article_id', 'st1704-portable-power-station-guide'),
+        array('post_id', 41),
+        array(
+            'public_slug_sha256',
+            hash('sha256', 'portable-power-station-guide'),
+        ),
+    ) as $operation_target_drift
+) {
+    $drifted_robot_operation = $robot_operation_fields;
+    $drifted_robot_operation[$operation_target_drift[0]] =
+        $operation_target_drift[1];
+    expect_true(
+        $operation_material_method->invoke(
+            null,
+            $drifted_robot_operation,
+            'VERIFIED_NO_REDIRECT_META_ROWS',
+            'CLEAN'
+        ) === false,
+        'Robot V2 operation material must refuse each target identity drift'
+    );
+}
+
+$GLOBALS['wpdb'] = new FakeWpdb();
+$GLOBALS['wpdb']->meta_rows = array(
+    meta_row(99, '_wp_old_slug', $review_slug),
+);
+$portable_exact_plan = array(
+    'cleanup_disposition' => 'EXACT_REDIRECT_EXTRAS',
+    'cleanup_state' => 'EXACT_REDIRECT_EXTRAS',
+    'delete_rows' => array(
+        array(
+            'meta_id' => 99,
+            'meta_key' => '_wp_old_slug',
+            'meta_value' => $review_slug,
+        ),
+    ),
+    'post_id' => 28,
+    'proposal' => array(
+        'article_id' => 'st1704-portable-power-station-guide',
+        'draft_post_id' => 28,
+        'public_slug' => 'portable-power-station-guide',
+    ),
+);
+expect_true(
+    $apply_disposition_method->invoke(
+        $controller,
+        $portable_exact_plan
+    ) === true
+        && $GLOBALS['wpdb']->delete_calls === 1,
+    'portable exact-row executor behavior must remain eligible'
 );
 
 $GLOBALS['wpdb'] = new FakeWpdb();
@@ -916,6 +1143,43 @@ expect_true(
     $apply_disposition_method->invoke($controller, $no_delete_plan) === true
         && $GLOBALS['wpdb']->delete_calls === 0,
     'exact dishwasher no-row execution must issue no DELETE'
+);
+$robot_no_delete_plan = array(
+    'cleanup_disposition' => 'VERIFIED_NO_REDIRECT_META_ROWS',
+    'cleanup_state' => 'CLEAN',
+    'delete_rows' => array(),
+    'post_id' => 30,
+    'proposal' => array(
+        'article_id' => 'st1704-compact-robot-vacuum-shortlist',
+        'draft_post_id' => 30,
+        'public_slug' => 'compact-robot-vacuum-shortlist',
+    ),
+);
+expect_true(
+    $apply_disposition_method->invoke(
+        $controller,
+        $robot_no_delete_plan
+    ) === true
+        && $GLOBALS['wpdb']->delete_calls === 0,
+    'exact Robot no-row execution must issue no DELETE'
+);
+$forged_robot_exact_plan = $robot_no_delete_plan;
+$forged_robot_exact_plan['cleanup_disposition'] = 'EXACT_REDIRECT_EXTRAS';
+$forged_robot_exact_plan['cleanup_state'] = 'EXACT_REDIRECT_EXTRAS';
+$forged_robot_exact_plan['delete_rows'] = array(
+    array(
+        'meta_id' => 99,
+        'meta_key' => '_wp_old_slug',
+        'meta_value' => $review_slug,
+    ),
+);
+expect_true(
+    $apply_disposition_method->invoke(
+        $controller,
+        $forged_robot_exact_plan
+    ) === false
+        && $GLOBALS['wpdb']->delete_calls === 0,
+    'forged Robot exact-row execution must refuse before any DELETE'
 );
 foreach (
     array(

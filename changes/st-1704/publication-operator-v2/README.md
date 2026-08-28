@@ -12,7 +12,7 @@ The tracked runtime manifest binds every runtime source and each packaged file.
 The generated package advertises WordPress 7.1 and the v2 controller also
 refuses to initialize outside the 7.1.x release line.
 
-Package 2.1.12 keeps the publication and revision REST contracts unchanged.
+Package 2.1.13 keeps the publication and revision REST contracts unchanged.
 Patch 2.1.9 fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
 exact core registration, and prevents those callbacks from creating Review URL
 redirect metadata during bounded `post_updated` replay. All other metadata,
@@ -118,6 +118,21 @@ so the exact dishwasher state displays `VERIFIED_NO_REDIRECT_META_ROWS` and
 completed incidents display `ALREADY_RECONCILED`. It does not accept a
 disposition from a request or change operation material, hashes, receipts,
 gates, permissions, REST routes, or reconciliation execution.
+
+Patch 2.1.13 responds only to the fourth observed terminal publication
+incident by adding the fixed robot-vacuum article, post 30, and generated
+public slug to the reconciliation allowlist. Its observed state is eligible
+only for `VERIFIED_NO_REDIRECT_META_ROWS`: the locked planner must report
+`CLEAN`, empty delete rows and digests, and both strict before/after hash
+equalities. Robot exact-row cleanup is refused in both planning and execution.
+The no-row target map contains only Dishwasher and Robot; Portable-power and
+Anker remain ineligible for a clean no-row path. Robot operation material
+binds its article ID, post ID, and public-slug hash while retaining the exact
+V2 material shape, so the recorded Dishwasher V2 operation hash is unchanged.
+Exact-row cleanup retains byte-compatible V1 material and the stored
+Portable-power and Anker hashes. No `DELETE` occurs for Robot, while the same
+SERIALIZABLE transaction, published-state readback, audit append, distinct
+human, receipts, gates, counts, and REST contracts remain unchanged.
 
 Normal execution still requires two default-off host gates and a distinct wp-admin
 human approval of the exact proposal hash. There is no REST approval route, no
