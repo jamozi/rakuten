@@ -2,7 +2,7 @@
 
 ## Offline build and review
 
-The current deterministic package is `raos-bounded-operator` 2.1.11. It does
+The current deterministic package is `raos-bounded-operator` 2.1.12. It does
 not change either REST schema. It retains the exact WordPress 7.1
 priority-12 `wp_check_for_changed_slugs` and `wp_check_for_changed_dates`
 registrations, and suppresses only their target-post redirect-meta operations
@@ -89,6 +89,13 @@ continues to use byte-compatible V1 operation material so the already recorded
 portable-power and Anker operation hashes remain valid. This does not change a
 receipt, proposal state/result/count, REST schema, gate, or Robot eligibility.
 
+Patch 2.1.12 changes only the private Tools preview projection. The preview
+returns the cleanup disposition already recomputed by the locked server plan:
+`VERIFIED_NO_REDIRECT_META_ROWS` for the exact dishwasher no-row state and
+`ALREADY_RECONCILED` for completed incidents. No submitted field can select
+the disposition, and operation material/hashes, receipts, gates, permissions,
+REST routes, and execution behavior remain unchanged.
+
 1. Run `make -f changes/st-1704/publication-operator-v2/Makefile check`.
 2. Review the exact runtime manifest, deterministic package SHA-256, generated
    four-article binding, controller diff, and terminal local checks.
@@ -112,7 +119,7 @@ reuse the bound `raos_operator_executor` identity or its Application Password
 for owner verification.
 
 Do not create or install the Draft-writer Application Password until plugin
-2.1.11 or later is active and its exact package/version checks pass. The
+2.1.12 or later is active and its exact package/version checks pass. The
 temporary projection is read-only; the role's pre-existing own-Draft
 create/recover behavior is unchanged and remains bounded by its exact base
 capabilities.
@@ -127,11 +134,11 @@ If activation stops
 after normalizing the role, do not create a credential; restore or reactivate a
 known-good package and repeat exact role verification first.
 
-For the current 2.1.10 upgrade state, the role has already been activated and
+For the current 2.1.11 upgrade state, the role has already been activated and
 exactly persisted, dedicated user ID 3 is assigned, and its dedicated
-Application Password may already exist. Version 2.1.11 does not change that
-DB/role schema. Replace 2.1.10 in place without deactivation/reactivation, then
-verify active version 2.1.11, the exact persisted role, dedicated user ID 3's exact
+Application Password may already exist. Version 2.1.12 does not change that
+DB/role schema. Replace 2.1.11 in place without deactivation/reactivation, then
+verify active version 2.1.12, the exact persisted role, dedicated user ID 3's exact
 `raos-draft-writer` login and identity,
 and both operator status surfaces before creating the Application Password.
 Avoiding deactivation also avoids an unnecessary interval without the new
@@ -140,7 +147,7 @@ transport confinement.
 Before rollback, downgrade, deactivation, role removal/replacement, or any
 direct database identity change after a Draft-writer credential exists, revoke
 that Application Password first, then remove/disable the dedicated user's
-Draft-writer assignment while 2.1.11 confinement is still active. WordPress UI
+Draft-writer assignment while 2.1.12 confinement is still active. WordPress UI
 does not rename `user_login`; do not edit this immutable binding directly.
 Deactivation does not remove the persisted role or Application Password, so
 reversing that order would leave the base `read`/`edit_posts` authority without

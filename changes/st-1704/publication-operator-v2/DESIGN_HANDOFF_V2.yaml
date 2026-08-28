@@ -17,7 +17,7 @@ bindings:
   excluded_article: st1703-first-suitcase-comparison
 plugin:
   slug: raos-bounded-operator
-  package_version: 2.1.11
+  package_version: 2.1.12
   predecessor_v1_repository_bytes: UNCHANGED_AND_SHA256_PINNED
   draft_writer_role:
     role: raos_draft_writer

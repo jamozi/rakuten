@@ -3606,7 +3606,51 @@ final class RAOS_ST1704_Publication_Controller_V2
         if (is_wp_error($plan)) {
             return $plan;
         }
+        return self::terminal_reconciliation_preview_projection($plan);
+    }
+
+    private static function terminal_reconciliation_preview_projection(
+        array $plan
+    ) {
+        if (! isset(
+            $plan['cleanup_disposition'],
+            $plan['operation_sha256'],
+            $plan['proposal_id'],
+            $plan['stage']
+        )
+            || ! is_string($plan['cleanup_disposition'])
+            || ! is_string($plan['operation_sha256'])
+            || preg_match('/\A[a-f0-9]{64}\z/', $plan['operation_sha256']) !== 1
+            || ! is_string($plan['proposal_id'])
+            || preg_match('/\A[a-f0-9]{64}\z/', $plan['proposal_id']) !== 1
+            || ! is_string($plan['stage'])) {
+            return self::error(
+                'raos_st1704_reconciliation_state_invalid',
+                409
+            );
+        }
+        $cleanup_required = $plan['stage'] === 'CLEANUP_REQUIRED'
+            && in_array(
+                $plan['cleanup_disposition'],
+                array(
+                    self::RECONCILIATION_EXACT_ROWS_DISPOSITION,
+                    self::RECONCILIATION_NO_ROWS_DISPOSITION,
+                ),
+                true
+            );
+        $already_reconciled = in_array(
+            $plan['stage'],
+            array('CLEANED', 'PUBLIC_CONFIRMED'),
+            true
+        ) && $plan['cleanup_disposition'] === 'ALREADY_RECONCILED';
+        if (! $cleanup_required && ! $already_reconciled) {
+            return self::error(
+                'raos_st1704_reconciliation_state_invalid',
+                409
+            );
+        }
         return array(
+            'cleanup_disposition' => $plan['cleanup_disposition'],
             'operation_sha256' => $plan['operation_sha256'],
             'proposal_id' => $plan['proposal_id'],
             'stage' => $plan['stage'],

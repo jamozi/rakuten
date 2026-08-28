@@ -12,7 +12,7 @@ The tracked runtime manifest binds every runtime source and each packaged file.
 The generated package advertises WordPress 7.1 and the v2 controller also
 refuses to initialize outside the 7.1.x release line.
 
-Package 2.1.11 keeps the publication and revision REST contracts unchanged.
+Package 2.1.12 keeps the publication and revision REST contracts unchanged.
 Patch 2.1.9 fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
 exact core registration, and prevents those callbacks from creating Review URL
 redirect metadata during bounded `post_updated` replay. All other metadata,
@@ -111,6 +111,13 @@ readback, audit append, and commit. Exact redirect extras continue to use the
 byte-compatible V1 operation material, preserving the stored portable-power
 and Anker operation hashes. Their receipts, like the dishwasher receipt, remain
 terminal; Robot remains excluded.
+
+Patch 2.1.12 fixes only the rolled-back Tools preview projection. It now
+returns the cleanup disposition already recomputed by the locked server plan,
+so the exact dishwasher state displays `VERIFIED_NO_REDIRECT_META_ROWS` and
+completed incidents display `ALREADY_RECONCILED`. It does not accept a
+disposition from a request or change operation material, hashes, receipts,
+gates, permissions, REST routes, or reconciliation execution.
 
 Normal execution still requires two default-off host gates and a distinct wp-admin
 human approval of the exact proposal hash. There is no REST approval route, no

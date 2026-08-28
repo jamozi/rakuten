@@ -150,6 +150,33 @@ def test_admin_preview_exposes_only_a_bounded_error_code_for_diagnosis() -> None
     assert "get_error_data" not in diagnostic
 
 
+def test_preview_projects_server_computed_cleanup_disposition() -> None:
+    preview = method(
+        "preview_terminal_reconciliation",
+        "terminal_reconciliation_preview_projection",
+    )
+    assert "terminal_reconciliation_plan_for_target" in preview
+    assert "terminal_reconciliation_preview_projection($plan)" in preview
+    assert "$_GET" not in preview
+    assert "$_POST" not in preview
+    projection = method(
+        "terminal_reconciliation_preview_projection",
+        "reconciliation_submission_authentication",
+    )
+    for field in (
+        "cleanup_disposition",
+        "operation_sha256",
+        "proposal_id",
+        "stage",
+    ):
+        assert f"'{field}' => $plan['{field}']" in projection
+    assert "RECONCILIATION_EXACT_ROWS_DISPOSITION" in projection
+    assert "RECONCILIATION_NO_ROWS_DISPOSITION" in projection
+    assert "'ALREADY_RECONCILED'" in projection
+    assert "array('CLEANED', 'PUBLIC_CONFIRMED')" in projection
+    assert "raos_st1704_reconciliation_state_invalid" in projection
+
+
 def test_terminal_receipt_binds_rollback_approval_dates_and_state_without_mutation() -> None:
     receipt = method(
         "validate_terminal_reconciliation_receipt",

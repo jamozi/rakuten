@@ -391,6 +391,101 @@ $cleanup_refusal_message_method = $reflection->getMethod(
     'reconciliation_cleanup_refusal_message'
 );
 $cleanup_refusal_message_method->setAccessible(true);
+$preview_projection_method = $reflection->getMethod(
+    'terminal_reconciliation_preview_projection'
+);
+$preview_projection_method->setAccessible(true);
+
+$dishwasher_preview = $preview_projection_method->invoke(
+    null,
+    array(
+        'cleanup_disposition' => 'VERIFIED_NO_REDIRECT_META_ROWS',
+        'operation_sha256' => str_repeat('a', 64),
+        'proposal_id' => str_repeat('b', 64),
+        'stage' => 'CLEANUP_REQUIRED',
+    )
+);
+expect_true(
+    is_array($dishwasher_preview)
+        && array_keys($dishwasher_preview) === array(
+            'cleanup_disposition',
+            'operation_sha256',
+            'proposal_id',
+            'stage',
+        )
+        && $dishwasher_preview['cleanup_disposition']
+            === 'VERIFIED_NO_REDIRECT_META_ROWS'
+        && $dishwasher_preview['stage'] === 'CLEANUP_REQUIRED',
+    'dishwasher preview must expose the server-computed no-row disposition'
+);
+$exact_rows_preview = $preview_projection_method->invoke(
+    null,
+    array(
+        'cleanup_disposition' => 'EXACT_REDIRECT_EXTRAS',
+        'operation_sha256' => str_repeat('7', 64),
+        'proposal_id' => str_repeat('8', 64),
+        'stage' => 'CLEANUP_REQUIRED',
+    )
+);
+expect_true(
+    is_array($exact_rows_preview)
+        && array_keys($exact_rows_preview) === array(
+            'cleanup_disposition',
+            'operation_sha256',
+            'proposal_id',
+            'stage',
+        )
+        && $exact_rows_preview['cleanup_disposition']
+            === 'EXACT_REDIRECT_EXTRAS',
+    'existing exact-row preview must remain eligible with four exact fields'
+);
+foreach (
+    array(
+        array('portable-power', str_repeat('c', 64), str_repeat('d', 64)),
+        array('Anker', str_repeat('e', 64), str_repeat('f', 64)),
+    ) as $completed_preview_fixture
+) {
+    $completed_preview = $preview_projection_method->invoke(
+        null,
+        array(
+            'cleanup_disposition' => 'ALREADY_RECONCILED',
+            'operation_sha256' => $completed_preview_fixture[1],
+            'proposal_id' => $completed_preview_fixture[2],
+            'stage' => 'PUBLIC_CONFIRMED',
+        )
+    );
+    expect_true(
+        is_array($completed_preview)
+            && $completed_preview['cleanup_disposition']
+                === 'ALREADY_RECONCILED'
+            && $completed_preview['stage'] === 'PUBLIC_CONFIRMED',
+        $completed_preview_fixture[0]
+            . ' preview must expose ALREADY_RECONCILED'
+    );
+}
+expect_true(
+    $preview_projection_method->invoke(
+        null,
+        array(
+            'cleanup_disposition' => 'ALREADY_RECONCILED',
+            'operation_sha256' => str_repeat('1', 64),
+            'proposal_id' => str_repeat('2', 64),
+            'stage' => 'CLEANUP_REQUIRED',
+        )
+    ) instanceof WP_Error,
+    'preview projection must reject a disposition/stage mismatch'
+);
+expect_true(
+    $preview_projection_method->invoke(
+        null,
+        array(
+            'operation_sha256' => str_repeat('3', 64),
+            'proposal_id' => str_repeat('4', 64),
+            'stage' => 'CLEANUP_REQUIRED',
+        )
+    ) instanceof WP_Error,
+    'preview projection must reject a missing cleanup disposition'
+);
 
 $generic_refusal = 'The exact redirect metadata reconciliation was refused.';
 $sensitive_error = new WP_Error(

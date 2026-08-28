@@ -1,4 +1,4 @@
-# RAOS Bounded Operator 2.1.11
+# RAOS Bounded Operator 2.1.12
 
 This deterministic package preserves the closed ST-1506 v1 status, Yoast, and
 child-theme surfaces and adds the ST-1704 publication controller under the
@@ -90,6 +90,13 @@ readback, audit append, and transaction commit. Existing exact-row incidents
 retain their byte-compatible V1 operation material and stored operation hashes.
 Portable-power, Anker, Robot, another post/slug, partial redirect metadata, or
 any storage/audit drift cannot enter the no-row path.
+
+Patch 2.1.12 adds the server-computed cleanup disposition to the private Tools
+preview projection. The dishwasher no-row plan therefore renders
+`VERIFIED_NO_REDIRECT_META_ROWS`, while completed portable-power and Anker
+plans render `ALREADY_RECONCILED`. The value still comes only from the locked
+server plan; no request field, operation material/hash, receipt, gate,
+permission, REST route, or execution behavior changes.
 
 The v2 controller can only publish one of four generated article bindings, or
 revise the exact existing Draft IDs 28, 29, 41, and 30. A revision is
