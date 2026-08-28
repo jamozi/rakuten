@@ -98,9 +98,21 @@
   overflow-wrap: anywhere;
 }
 
+.raos-editorial-v2,
+.raos-editorial-v2 *,
+.raos-editorial-v2 *::before,
+.raos-editorial-v2 *::after {
+  box-sizing: border-box;
+}
+
 .raos-editorial-v2 img {
   display: block;
   max-width: 100%;
+}
+
+/* WordPress may insert empty paragraphs between adjacent block elements. */
+.raos-editorial-v2 p:empty {
+  display: none;
 }
 
 .raos-editorial-v2 a {
@@ -691,7 +703,7 @@
   font-size: 0.7rem;
 }
 
-.raos-editorial-v2 .source-list__history {
+.raos-editorial-v2 .source-list li.source-list__history {
   grid-template-columns: 1fr;
   padding-left: 3.5rem;
   border-bottom: 0;
@@ -917,7 +929,7 @@
     justify-content: center;
   }
 
-  .raos-editorial-v2 .source-list__history {
+  .raos-editorial-v2 .source-list li.source-list__history {
     padding-left: 0;
   }
 }
