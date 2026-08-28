@@ -1,27 +1,63 @@
 {
   "schema": "RAOS_V2_WORDPRESS_PRESENTATION_PLUGIN_INPUT_V1",
   "plugin_slug": "raos-v2-decision-support",
-  "version": "0.1.0",
+  "version": "0.6.0",
   "target": {
     "article_id": "A05",
     "exact_route": "/carry-on-suitcase-comparison/",
     "exact_post_slug": "carry-on-suitcase-comparison",
+    "expected_post_id": "CUTOVER_BINDING_REQUIRED",
     "required_package_marker": "RAOS_V2_A05_POST_CONTENT_V1",
     "required_post_content_sha256": "270dfec22f4c659f30e498e321d96bf230f4f5d4504ab7f97c48f533f70f4ff5",
     "rendered_content_envelope": "RAOS_V2_A05_ENVELOPE_V1"
   },
+  "cutover_binding": {
+    "adjacent_file": "cutover-binding.v1.json",
+    "required_schema": "RAOS_V2_WORDPRESS_CUTOVER_BINDING_V1",
+    "required_version": "1.0.0",
+    "tracked_state": "DEPLOYMENT_DISABLED",
+    "activation_state": "ARMED_EXACT_LEGACY_OR_SEALED",
+    "source": "PREACTION_OWNER_EXPORT",
+    "required_hashes": [
+      "legacy_post_content_sha256",
+      "preaction_binding_sha256",
+      "sealed_package_sha256",
+      "sealed_post_content_sha256",
+      "source_owner_export_sha256"
+    ]
+  },
   "runtime": {
-    "allowed_effect": "ENQUEUE_BUNDLED_STYLESHEET_AND_WRAP_UNCHANGED_REVIEWED_FRAGMENT_ON_EXACT_MATCH",
+    "allowed_effect": "LEGACY_FILTERED_PASSTHROUGH_OR_SEALED_RAW_ENQUEUE_AND_ENVELOPE_OTHERWISE_BLOCK_TARGET",
+    "activation_gate": "REPLACE_BINDING_THEN_ACTIVATE_BEFORE_SEALED_WRITE",
     "admin_ui": false,
-    "content_filter": "FAIL_CLOSED_EXACT_BYTES_IDEMPOTENT",
+    "content_filter": "EXACT_RAW_DATABASE_STATE_FAIL_CLOSED_EARLIER_SEALED_FILTER_OUTPUT_DISCARDED",
+    "content_context_gate": "SINGULAR_TARGET_REQUEST_VERIFIED_CURRENT_POST_MAIN_QUERY_MAIN_LOOP",
+    "content_filter_position": "TERMINATE_503_IF_NOT_LAST_AT_PHP_INT_MAX",
     "cron": false,
     "database_write": false,
+    "disabled_binding_behavior": "BLOCK_TARGET_ROUTE",
+    "exact_legacy_behavior": "PRESERVE_EXISTING_FILTERED_CONTENT_WITHOUT_CSS_OR_ENVELOPE",
+    "exact_sealed_behavior": "DISCARD_FILTERED_CANDIDATE_AND_ENVELOPE_EXACT_RAW_REVIEWED_FRAGMENT_WITH_CSS",
+    "inactive_behavior": "NO_RUNTIME_EFFECT_WRITE_BEFORE_ACTIVATION_IS_UNPROTECTED_AND_PROHIBITED",
+    "ambiguous_content_behavior": "BLOCK_TARGET_ROUTE",
+    "intermediate_content_behavior": "BLOCK_TARGET_ROUTE",
     "network_request": false,
     "option_write": false,
+    "post_render_verification": "PUBLIC_CAPTURE_AND_BROWSER_RECEIPT_REQUIRED",
     "publication_capability": false,
     "rest_route": false,
+    "secondary_content_behavior": "PRESERVE_FILTERED_INPUT_ONLY_FOR_VERIFIED_DIFFERENT_CURRENT_POST",
+    "safe_cutover_order": [
+      "REPLACE_DISABLED_BINDING_WITH_OWNER_EXPORT_BOUND_ARTIFACT",
+      "ACTIVATE_PLUGIN_WHILE_EXACT_LEGACY_BYTES_REMAIN",
+      "WRITE_EXACT_SEALED_DATABASE_BYTES"
+    ],
     "telemetry": false
   },
-  "source_files": ["assets/decision-support.css", "raos-v2-decision-support.php"],
-  "installation": "EXTERNAL_HUMAN_ACTION_NOT_EXECUTED"
+  "source_files": [
+    "assets/decision-support.css",
+    "cutover-binding.v1.json",
+    "raos-v2-decision-support.php"
+  ],
+  "installation": "INSTALL_INACTIVE_REPLACE_BINDING_ACTIVATE_THEN_WRITE_EXTERNAL_HUMAN_ACTIONS_NOT_EXECUTED"
 }

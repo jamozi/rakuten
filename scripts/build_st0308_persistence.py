@@ -29,10 +29,13 @@ from yaml.constructor import ConstructorError
 from yaml.nodes import MappingNode
 from yaml.tokens import TagToken
 
-from scripts.raos_build_core import input_hash_required
-
-
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+if __package__ in {None, ""} and str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from scripts.raos_build_core import input_hash_required  # noqa: E402
+
+
 GENERATOR_PATH: Final = Path("scripts/build_st0308_persistence.py")
 RUNTIME_CONTRACT_PATH: Final = Path(
     "changes/st-0308/contracts/persistence-runtime.v2.yaml"

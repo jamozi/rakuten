@@ -2122,7 +2122,9 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--verify-tools-only", action="store_true")
     parser.add_argument(
-        "--node", type=Path, default=Path(shutil.which("node") or "/usr/bin/node")
+        "--node",
+        type=Path,
+        default=Path(os.environ.get("NODE") or shutil.which("node") or "/usr/bin/node"),
     )
     parser.add_argument(
         "--openapi-ts",

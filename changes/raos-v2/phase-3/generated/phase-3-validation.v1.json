@@ -1,8 +1,9 @@
 {
   "artifact_sha256": {
     "changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/assets/decision-support.css": "fbbde22549590ac1663bc80cffe19e10d119856048528aef23ec4b657e3f421f",
-    "changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/plugin-manifest.v1.json": "04ad5734f8cae14a8de824a74969969c660374f689ac896c9e889e013cf5ea83",
-    "changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/raos-v2-decision-support.php": "0c3b03e5e4ef4b226c693be1858b8d48a9e6633c413104802802b989f5d0cc9a"
+    "changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/cutover-binding.v1.json": "1b72663c849a8bab875be9345407c0fbe07a0b2a6cc0e096e85becdf3b5f9509",
+    "changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/plugin-manifest.v1.json": "f6aecb931352bc1a58d3a0e0eadf5fd4909e029a79b997d221ba45dc7d3a4af5",
+    "changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/raos-v2-decision-support.php": "b7ebed3ffabd6a5067707ec898e15901382e1782459f5087a3798b27fdc970b1"
   },
   "backlog_status": {
     "B-V2-035": "COMPLETE_LOCAL",
@@ -21,8 +22,13 @@
     "local_browser_a11y_and_visual_evidence": true,
     "local_wordpress_assembly_fail_closed": true,
     "one_existing_route": true,
+    "php_runtime_stub_is_required_ci": true,
+    "plugin_activation_is_fail_closed": true,
     "plugin_artifact_closed": true,
+    "preaction_execution_operator_derives_and_reissues_locally": true,
     "production_sender_off": true,
+    "public_browser_raw_recorder_is_non_authoritative": true,
+    "public_read_only_observation_is_sanitized_and_unpaired": true,
     "publication_authority_and_payload_closed": true,
     "review_candidate_unsealed": true,
     "structured_data_expectation_bound_external_unverified": true,
@@ -60,12 +66,22 @@
     "production export/backup not executed",
     "post-action owner export not executed",
     "plugin deploy and WordPress write not executed",
-    "PHP lint and minimum WordPress runtime integration not executed",
+    "PHP lint/runtime harness implemented but required CI and real WordPress integration are not yet evidenced",
     "human publication and public verification not executed",
-    "public browser verification validator for 390/768/1440 not implemented",
+    "public browser raw recorder implemented but independent acceptance verifier not implemented",
     "exact Yoast/metadata-owner JSON-LD output not externally verified",
     "seven-day stability window not started"
   ],
+  "public_observation": {
+    "body_sha256": "e047234ae3af4f7c6bc8288601d7af2d7be240b06bbc2d7c6700da9337dc0431",
+    "classification": "SANITIZED_PUBLIC_READ_ONLY_UNPAIRED",
+    "external_write": "NOT_EXECUTED",
+    "observed_at": "2026-08-28T22:12:48.717743+09:00",
+    "owner_export_pairing": "NOT_EXECUTED",
+    "preaction_acceptance_authority": false,
+    "semantic_sha256": "dce364524bc319fb808e571bb00608c6678bdfbce82ee7d626236564a602186c",
+    "status": "PUBLIC_READ_ONLY"
+  },
   "review_candidate_sha256": "c91cf5c2d6322bd33a1bfabfc4b5abfdf6b3bc7173185bd49e7e31c8fda12656",
   "schema": "RAOS_V2_PHASE3_VALIDATION_V1",
   "status": "PASSED_LOCAL_PREPARATION",

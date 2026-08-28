@@ -3,8 +3,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
+    "acceptance_authority": {
+      "const": false
+    },
     "accepted": {
       "const": true
+    },
+    "assertion_status": {
+      "const": "UNAUTHENTICATED_OWNER_ASSERTION"
     },
     "candidate_digest": {
       "pattern": "^[0-9a-f]{64}$",
@@ -19,8 +25,7 @@
       "type": "string"
     },
     "review_version": {
-      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
-      "type": "string"
+      "const": "P3-OWNER-ASSERTION-V1"
     },
     "reviewed_at": {
       "format": "date-time",
@@ -28,8 +33,7 @@
       "type": "string"
     },
     "reviewer_id": {
-      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
-      "type": "string"
+      "const": "OWNER_ASSERTION_LOCAL"
     },
     "schema": {
       "const": "RAOS_V2_PHASE3_HUMAN_REVIEW_RECEIPT_V1"
@@ -55,7 +59,9 @@
     "synthetic",
     "candidate_digest",
     "payload_digest",
-    "target_route"
+    "target_route",
+    "assertion_status",
+    "acceptance_authority"
   ],
   "title": "human-review-receipt",
   "type": "object"

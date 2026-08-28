@@ -1,45 +1,11 @@
 {
-  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v2/publication-package.schema.json",
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v2/reissued-review-bundle.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "state": {
-            "const": "PACKAGE_SEALED"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "package_digest": {
-            "pattern": "^[0-9a-f]{64}$",
-            "type": "string"
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "state": {
-            "const": "HUMAN_REVIEWED"
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "package_digest": {
-            "type": "null"
-          }
-        }
-      }
-    }
-  ],
   "properties": {
-    "approval_acceptance_authority": {
-      "const": false
+    "candidate_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
     },
     "capabilities": {
       "additionalProperties": false,
@@ -50,26 +16,57 @@
         "publish": {
           "const": false
         },
+        "wordpress_read": {
+          "const": false
+        },
         "wordpress_write": {
           "const": false
         }
       },
       "required": [
         "network",
+        "wordpress_read",
         "wordpress_write",
         "publish"
       ],
       "type": "object"
     },
-    "human_review_receipt": {
-      "$ref": "https://kurashinoshirube.com/contracts/raos-v2/v2/human-review-receipt.schema.json"
+    "classification": {
+      "const": "LOCAL_REISSUE_FOR_ARTIFACT_SPECIFIC_HUMAN_REVIEW"
     },
-    "package_digest": {
+    "external_actions": {
+      "const": "NOT_EXECUTED"
+    },
+    "maximum_reissue_age_seconds": {
+      "const": 300
+    },
+    "owner_export_age_milliseconds": {
+      "maximum": 300000,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "payload_digest": {
       "pattern": "^[0-9a-f]{64}$",
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
+    },
+    "public_capture_age_milliseconds": {
+      "maximum": 300000,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "reissue_age_milliseconds": {
+      "maximum": 300000,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "reissued_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "review_bundle_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
     },
     "review_candidate": {
       "additionalProperties": false,
@@ -240,21 +237,77 @@
       ],
       "type": "object"
     },
-    "schema": {
-      "const": "RAOS_V2_PHASE3_PUBLICATION_PACKAGE_V1"
+    "review_request": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_specific_review_required": {
+          "const": true
+        },
+        "candidate_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "generic_approval_accepted": {
+          "const": false
+        },
+        "payload_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "required_receipt_schema": {
+          "const": "RAOS_V2_PHASE3_HUMAN_REVIEW_RECEIPT_V1"
+        },
+        "target_route": {
+          "const": "/carry-on-suitcase-comparison/"
+        }
+      },
+      "required": [
+        "required_receipt_schema",
+        "candidate_digest",
+        "payload_digest",
+        "target_route",
+        "generic_approval_accepted",
+        "artifact_specific_review_required"
+      ],
+      "type": "object"
     },
-    "simulation_only": {
-      "const": true
+    "schema": {
+      "const": "RAOS_V2_PHASE3_REISSUED_REVIEW_BUNDLE_V1"
+    },
+    "source": {
+      "additionalProperties": false,
+      "properties": {
+        "historical_review_candidate": {
+          "const": "changes/raos-v2/phase-3/generated/review-candidate.v1.json"
+        },
+        "historical_review_candidate_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "preaction_binding_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "preaction_input": {
+          "pattern": "^changes/raos-v2/recorded-inputs/phase3/[A-Za-z0-9][A-Za-z0-9._-]*\\.json$",
+          "type": "string"
+        },
+        "preaction_input_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "historical_review_candidate",
+        "historical_review_candidate_sha256",
+        "preaction_input",
+        "preaction_input_sha256",
+        "preaction_binding_sha256"
+      ],
+      "type": "object"
     },
     "state": {
-      "enum": [
-        "HUMAN_REVIEWED",
-        "PACKAGE_SEALED"
-      ]
-    },
-    "structured_data_expectation_sha256": {
-      "pattern": "^[0-9a-f]{64}$",
-      "type": "string"
+      "const": "READY_FOR_ARTIFACT_SPECIFIC_HUMAN_REVIEW"
     },
     "version": {
       "const": "1.0.0"
@@ -263,15 +316,22 @@
   "required": [
     "schema",
     "version",
+    "classification",
     "state",
+    "reissued_at",
+    "reissue_age_milliseconds",
+    "public_capture_age_milliseconds",
+    "owner_export_age_milliseconds",
+    "maximum_reissue_age_seconds",
+    "source",
     "review_candidate",
-    "human_review_receipt",
-    "simulation_only",
-    "approval_acceptance_authority",
-    "structured_data_expectation_sha256",
+    "candidate_digest",
+    "payload_digest",
+    "review_request",
     "capabilities",
-    "package_digest"
+    "external_actions",
+    "review_bundle_sha256"
   ],
-  "title": "publication-package",
+  "title": "reissued-review-bundle",
   "type": "object"
 }

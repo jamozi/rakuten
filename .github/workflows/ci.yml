@@ -68,6 +68,29 @@ jobs:
           persist-credentials: false
       - uses: ./.github/actions/setup
       - run: make test-parallel test-serial
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: "7.4"
+          coverage: none
+      - name: Report PHP runtime
+        run: php --version
+      - name: Lint Phase 3 source and generated plugins
+        run: |
+          set -euo pipefail
+          raos_source_plugin="packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/raos-v2-decision-support.php"
+          raos_generated_plugin="changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/raos-v2-decision-support.php"
+          php -l "$raos_source_plugin"
+          php -l "$raos_generated_plugin"
+          php -l tests/raos_v2/phase3-wordpress-runtime.php
+      - name: Execute fail-closed WordPress stub contracts
+        run: |
+          set -euo pipefail
+          raos_harness="tests/raos_v2/phase3-wordpress-runtime.php"
+          raos_candidate="changes/raos-v2/phase-3/generated/wordpress-update-candidate.v1.json"
+          raos_source_plugin="packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/raos-v2-decision-support.php"
+          raos_generated_plugin="changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/raos-v2-decision-support.php"
+          php "$raos_harness" source "$raos_source_plugin" "$raos_candidate"
+          php "$raos_harness" generated "$raos_generated_plugin" "$raos_candidate"
 
   contracts:
     name: Contracts

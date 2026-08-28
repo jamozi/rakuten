@@ -6,9 +6,9 @@ import pytest
 
 from scripts.validate_raos_v2_successor import (
     ValidationFailure,
+    record_phase3_local_browser_evidence,
     verify_phase3_local_browser_evidence,
 )
-
 
 ROOT = Path(__file__).resolve().parents[2]
 EVIDENCE_PATH = (
@@ -85,4 +85,17 @@ def test_phase3_manual_visual_review_must_bind_exact_capture_hashes() -> None:
     with pytest.raises(ValidationFailure, match="PHASE3_BROWSER_EVIDENCE_INVALID"):
         verify_phase3_local_browser_evidence(
             evidence, expected_preview=PREVIEW_PATH.read_bytes(), root=ROOT
+        )
+
+
+def test_phase3_browser_recorder_requires_explicit_visual_confirmation(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(
+        ValidationFailure,
+        match="RAOS_V2_PHASE3_VISUAL_REVIEW_CONFIRMATION_REQUIRED",
+    ):
+        record_phase3_local_browser_evidence(
+            root=tmp_path,
+            visual_review_confirmed=False,
         )

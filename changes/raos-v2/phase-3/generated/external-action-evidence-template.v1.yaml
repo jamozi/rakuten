@@ -36,6 +36,13 @@ steps:
   component_statuses:
     theme_or_plugin_deploy: NOT_EXECUTED
     wordpress_nonpublic_preview: NOT_EXECUTED
+  production_plugin_installation: INACTIVE_WITH_DEPLOYMENT_DISABLED_BINDING
+  production_cutover_order:
+  - ATOMICALLY_REPLACE_WITH_OWNER_EXPORT_BOUND_BINDING
+  - ACTIVATE_WHILE_EXACT_LEGACY_DATABASE_BYTES_REMAIN
+  - WRITE_EXACT_SEALED_DATABASE_BYTES
+  production_plugin_activation_gate: EXACT_LEGACY_DATABASE_BYTES_AND_VERIFIED_ARMED_BINDING
+  intermediate_state_behavior: BLOCK_TARGET_ROUTE_AND_ROLLBACK
   structured_data_gate:
     test_id: T-V2-036
     status: NOT_EXECUTED_EXTERNAL_BLOCKER
@@ -52,7 +59,7 @@ steps:
   status: NOT_EXECUTED
 - sequence: 7
   action: POST_ACTION_OWNER_EXPORT
-  external_action_id: EXT-014
+  external_action_id: V2-P3-EXT-POSTACTION-EXPORT
   status: NOT_EXECUTED
   required_receipt_schema: RAOS_V2_WORDPRESS_EXPORT_BINDING_V2
   ordering: AFTER_WORDPRESS_WRITE_BEFORE_HTTP_VERIFICATION
@@ -85,8 +92,10 @@ steps:
   pairing: ATOMIC_PAIRED_CAPTURE_CONTRACT
 - sequence: 9
   action: PUBLIC_BROWSER_VERIFICATION
-  status: REQUIRED_VALIDATOR_NOT_IMPLEMENTED
+  status: RAW_RECORDER_IMPLEMENTED_ACCEPTANCE_VERIFIER_REQUIRED
   required_receipt_schema: RAOS_V2_PHASE3_PUBLIC_BROWSER_VERIFICATION_RECEIPT_V1
+  raw_receipt_schema: RAOS_V2_PHASE3_PUBLIC_BROWSER_RAW_RECEIPT_V1
+  recorder: tests/raos_v2/phase3-public-validation.mjs
   required_viewport_widths:
   - 390
   - 768

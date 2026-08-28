@@ -5,13 +5,13 @@ from __future__ import annotations
 from copy import deepcopy
 from datetime import datetime, timedelta
 import json
+import os
 from pathlib import Path
 
 from jsonschema import Draft202012Validator, FormatChecker
 import pytest
 
 from scripts import validate_raos_v2_successor as validator
-
 
 SAFE_OUTPUT = Path(
     "changes/raos-v2/recorded-inputs/phase3/one-url-public-observation.v1.json"
@@ -42,7 +42,17 @@ def _capture_html(
     monkeypatch.setattr(
         validator,
         "_sitemap_urls",
-        lambda *, membership_target=None: ({validator.PHASE3_PUBLIC_URL}, []),
+        lambda *, membership_target=None: (
+            {validator.PHASE3_PUBLIC_URL},
+            [
+                {
+                    "url": f"{validator.ORIGIN}/sitemap_index.xml",
+                    "status": 200,
+                    "sha256": "a" * 64,
+                    "redirect_chain": [],
+                }
+            ],
+        ),
     )
     monkeypatch.setattr(
         validator,
@@ -56,17 +66,19 @@ def _capture_html(
             )
             if url == validator.PHASE3_PLUGIN_CSS_URL
             else (
-                200,
-                b"User-agent: *\nAllow: /\n",
-                {"Content-Type": "text/plain; charset=utf-8"},
-                [],
-            )
-            if url == validator.PHASE3_ROBOTS_URL
-            else (
-                200,
-                body,
-                page_headers or {"Content-Type": "text/html; charset=utf-8"},
-                [],
+                (
+                    200,
+                    b"User-agent: *\nAllow: /\n",
+                    {"Content-Type": "text/plain; charset=utf-8"},
+                    [],
+                )
+                if url == validator.PHASE3_ROBOTS_URL
+                else (
+                    200,
+                    body,
+                    page_headers or {"Content-Type": "text/html; charset=utf-8"},
+                    [],
+                )
             )
         ),
     )
@@ -137,6 +149,8 @@ def _sealed_package_record(
         "public_capture_sha256": validator._semantic_digest(preaction_capture),
         "wordpress_export_sha256": "a" * 64,
         "wordpress_export_bytes": 4096,
+        "owner_evidence_sha256": "b" * 64,
+        "legacy_post_content_sha256": "c" * 64,
     }
     binding_digest = validator._semantic_digest(binding)
     target = update["target"]
@@ -157,15 +171,17 @@ def _sealed_package_record(
     receipt = {
         "schema": "RAOS_V2_PHASE3_HUMAN_REVIEW_RECEIPT_V1",
         "version": "1.0.0",
-        "reviewer_id": "TEST-OWNER-REVIEW",
+        "reviewer_id": "OWNER_ASSERTION_LOCAL",
         "reviewed_at": reviewed_at.isoformat(),
-        "review_version": "P3-TEST-V1",
+        "review_version": "P3-OWNER-ASSERTION-V1",
         "correction_count": 0,
         "accepted": True,
         "synthetic": False,
         "candidate_digest": candidate["candidate_digest"],
         "payload_digest": candidate["payload_digest"],
         "target_route": validator.PHASE3_PUBLIC_PATH,
+        "assertion_status": "UNAUTHENTICATED_OWNER_ASSERTION",
+        "acceptance_authority": False,
     }
     semantic = {
         "schema": "RAOS_V2_PHASE3_PUBLICATION_PACKAGE_V1",
@@ -173,6 +189,8 @@ def _sealed_package_record(
         "state": "PACKAGE_SEALED",
         "review_candidate": candidate,
         "human_review_receipt": receipt,
+        "simulation_only": True,
+        "approval_acceptance_authority": False,
         "structured_data_expectation_sha256": structured["json_ld_sha256"],
         "capabilities": {"network": False, "wordpress_write": False, "publish": False},
     }
@@ -503,6 +521,59 @@ def test_capture_does_not_sniff_html_and_binds_navigation_headers(
     assert observation["head_tag_count"] == 0
 
 
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "credentials-used",
+        "cross-origin-policy",
+        "wrong-observation-url",
+        "wrong-observation-path",
+        "missing-supporting-resource",
+        "unsafe-sitemap-url",
+        "invalid-sitemap-hash",
+    ],
+)
+def test_phase3_capture_observation_rejects_unsafe_or_unbound_metadata(
+    monkeypatch: pytest.MonkeyPatch, mutation: str
+) -> None:
+    base_time = datetime.fromisoformat("2026-08-28T12:00:00+09:00")
+    capture = _preaction_public_capture(monkeypatch, base_time=base_time)
+    policy = capture["request_policy"]
+    observation = capture["observation"]
+    supporting = capture["supporting_resources"]
+    assert isinstance(policy, dict)
+    assert isinstance(observation, dict)
+    assert isinstance(supporting, dict)
+    sitemaps = supporting["sitemaps"]
+    assert isinstance(sitemaps, list) and len(sitemaps) == 1
+    sitemap = sitemaps[0]
+    assert isinstance(sitemap, dict)
+
+    if mutation == "credentials-used":
+        policy["credentials"] = "USED"
+    elif mutation == "cross-origin-policy":
+        policy["same_origin_only"] = False
+    elif mutation == "wrong-observation-url":
+        observation["url"] = f"{validator.ORIGIN}/other/"
+    elif mutation == "wrong-observation-path":
+        observation["path"] = "/other/"
+    elif mutation == "missing-supporting-resource":
+        supporting.pop("robots_txt")
+    elif mutation == "unsafe-sitemap-url":
+        sitemap["url"] = "https://example.invalid/sitemap.xml?leak=1"
+    else:
+        sitemap["sha256"] = "not-a-sha256"
+
+    with pytest.raises(
+        validator.ValidationFailure,
+        match="RAOS_V2_PHASE3_CAPTURE_METADATA_INVALID",
+    ):
+        validator._phase3_capture_observation(
+            capture,
+            code="RAOS_V2_PHASE3_CAPTURE_METADATA_INVALID",
+        )
+
+
 def test_v2_public_receipt_is_strictly_derived_from_capture_and_sealed_package(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -531,9 +602,7 @@ def test_v2_public_receipt_is_strictly_derived_from_capture_and_sealed_package(
     assert receipt["disclosure_marker_present"] is True
     assert receipt["blocked_cta_count"] == 3
     assert receipt["affiliate_url_count"] == 0
-    assert receipt["resource_change_status"] == (
-        "NO_UNAPPROVED_NEW_TRACKED_RESOURCE"
-    )
+    assert receipt["resource_change_status"] == ("NO_UNAPPROVED_NEW_TRACKED_RESOURCE")
     assert receipt["plugin_artifact_status"] == (
         "LOCAL_SOURCE_BOUND_AND_PUBLIC_CSS_MATCHED"
     )
@@ -790,11 +859,11 @@ def test_template_or_noscript_metadata_is_not_document_head_metadata(
 def test_self_closing_template_keeps_following_metadata_inert_like_chromium() -> None:
     parser = validator._MetadataParser()
     parser.feed(
-        '<html><head><template/><title>Hidden title</title>'
+        "<html><head><template/><title>Hidden title</title>"
         '<link rel="canonical" href="https://kurashinoshirube.com/">'
         '<meta name="robots" content="index,follow">'
         '<meta name="description" content="Hidden description">'
-        '</head><body><h1>Hidden heading</h1></body></html>'
+        "</head><body><h1>Hidden heading</h1></body></html>"
     )
     assert parser.head_tag_count == 1
     assert parser.title_tag_count == 0
@@ -806,11 +875,11 @@ def test_self_closing_template_keeps_following_metadata_inert_like_chromium() ->
 def test_inert_body_template_cannot_supply_public_content_markers() -> None:
     parser = validator._MetadataParser()
     parser.feed(
-        '<html><head><title>Visible title</title></head><body><template/>'
+        "<html><head><title>Visible title</title></head><body><template/>"
         f'<div data-raos-v2-post-content-envelope="{validator.PHASE3_CONTENT_ENVELOPE}">'
         f'<main data-raos-v2-package-marker="{validator.PHASE3_PACKAGE_MARKER}">'
         '<h1>Hidden heading</h1><span data-raos-v2-cta-state="BLOCKED">x</span>'
-        '</main></div></body></html>'
+        "</main></div></body></html>"
     )
     assert parser.package_marker_count == 0
     assert parser.post_content_envelope_count == 0
@@ -821,7 +890,7 @@ def test_inert_body_template_cannot_supply_public_content_markers() -> None:
 
 def test_mismatched_inert_container_close_is_fail_closed() -> None:
     parser = validator._MetadataParser()
-    parser.feed('<html><head><template></noscript><title>Hidden</title></head></html>')
+    parser.feed("<html><head><template></noscript><title>Hidden</title></head></html>")
     assert parser.title_tag_count == 0
     assert parser.metadata_location_violation_count >= 2
 
@@ -1190,6 +1259,130 @@ def test_phase3_writer_rejects_symlink_ancestor(
     ):
         validator._write_new_phase3_capture(SAFE_OUTPUT, b"unsafe")
     assert list(outside.iterdir()) == []
+
+
+def test_phase3_writer_recovers_equal_bytes_after_temporary_unlink_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repository = tmp_path / "repo"
+    repository.mkdir()
+    monkeypatch.setattr(validator, "ROOT", repository)
+    payload = b'{"safe":true}\n'
+    real_unlink = validator.os.unlink
+    failed_once = False
+
+    def fail_first_temporary_unlink(path: object, *, dir_fd: int | None = None) -> None:
+        nonlocal failed_once
+        if (
+            isinstance(path, str)
+            and path.startswith(f".{SAFE_OUTPUT.name}.")
+            and path.endswith(".next")
+            and not failed_once
+        ):
+            failed_once = True
+            raise OSError("injected temporary unlink failure")
+        real_unlink(path, dir_fd=dir_fd)
+
+    monkeypatch.setattr(validator.os, "unlink", fail_first_temporary_unlink)
+    with pytest.raises(
+        validator.ValidationFailure,
+        match="PHASE3_CAPTURE_OUTPUT_UNSAFE",
+    ):
+        validator._write_new_phase3_capture(SAFE_OUTPUT, payload)
+    target = repository / SAFE_OUTPUT
+    assert target.read_bytes() == payload
+    assert target.stat().st_nlink == 2
+    assert failed_once is True
+
+    monkeypatch.setattr(validator.os, "unlink", real_unlink)
+    validator._write_new_phase3_capture(SAFE_OUTPUT, payload)
+    assert target.read_bytes() == payload
+    assert target.stat().st_nlink == 1
+    assert list(target.parent.glob(f".{SAFE_OUTPUT.name}.*.next")) == []
+
+
+def test_phase3_preflight_repairs_link_residue_before_rejecting_existing_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repository = tmp_path / "repo"
+    repository.mkdir()
+    monkeypatch.setattr(validator, "ROOT", repository)
+    target = repository / SAFE_OUTPUT
+    target.parent.mkdir(parents=True)
+    target.write_bytes(b'{"captured_at":"first"}\n')
+    temporary = target.parent / f".{target.name}.{'a' * 24}.next"
+    os.link(target, temporary)
+    assert target.stat().st_nlink == 2
+
+    with pytest.raises(
+        validator.ValidationFailure,
+        match="PHASE3_CAPTURE_OUTPUT_ALREADY_EXISTS",
+    ):
+        validator._phase3_capture_output_path(SAFE_OUTPUT)
+
+    assert target.read_bytes() == b'{"captured_at":"first"}\n'
+    assert target.stat().st_nlink == 1
+    assert not temporary.exists()
+
+
+def test_phase3_writer_repairs_link_residue_before_rejecting_changed_payload(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repository = tmp_path / "repo"
+    repository.mkdir()
+    monkeypatch.setattr(validator, "ROOT", repository)
+    target = repository / SAFE_OUTPUT
+    target.parent.mkdir(parents=True)
+    original = b'{"captured_at":"2026-08-29T00:00:00+09:00"}\n'
+    target.write_bytes(original)
+    temporary = target.parent / f".{target.name}.{'b' * 24}.next"
+    os.link(target, temporary)
+
+    with pytest.raises(
+        validator.ValidationFailure,
+        match="PHASE3_CAPTURE_OUTPUT_ALREADY_EXISTS",
+    ):
+        validator._write_new_phase3_capture(
+            SAFE_OUTPUT,
+            b'{"captured_at":"2026-08-29T00:00:01+09:00"}\n',
+        )
+
+    assert target.read_bytes() == original
+    assert target.stat().st_nlink == 1
+    assert not temporary.exists()
+
+
+def test_phase3_public_capture_repairs_residue_and_rejects_before_network(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repository = tmp_path / "repo"
+    repository.mkdir()
+    monkeypatch.setattr(validator, "ROOT", repository)
+    target = repository / SAFE_OUTPUT
+    target.parent.mkdir(parents=True)
+    target.write_bytes(b'{"status":"PUBLIC_READ_ONLY"}\n')
+    temporary = target.parent / f".{target.name}.{'c' * 24}.next"
+    os.link(target, temporary)
+    fetch_called = False
+
+    def reject_fetch(_url: str) -> tuple[int, bytes, dict[str, str], list[str]]:
+        nonlocal fetch_called
+        fetch_called = True
+        raise AssertionError("network must not run for an existing output")
+
+    monkeypatch.setattr(validator, "_fetch", reject_fetch)
+    with pytest.raises(
+        validator.ValidationFailure,
+        match="PHASE3_CAPTURE_OUTPUT_ALREADY_EXISTS",
+    ):
+        validator.capture_phase3_public(
+            public_read_only=True,
+            output=SAFE_OUTPUT,
+        )
+
+    assert fetch_called is False
+    assert target.stat().st_nlink == 1
+    assert not temporary.exists()
 
 
 def test_phase3_target_membership_survives_general_url_capture_cap(
