@@ -106,8 +106,8 @@
     },
     {
       "path": "scripts/build_wordpress_mcp_v1.py",
-      "sha256": "0d5cfd2155c7313a3e879c0fedf0782f6550d18f4c1843bc810fc1d99af6041b",
-      "size": 9521
+      "sha256": "19559b3bac0946273b559aa5c24a778658fc1f2b7a0e83f4d270efdf0fc95bbc",
+      "size": 9574
     },
     {
       "path": "scripts/check_wordpress_public_ui_playwright.sh",
@@ -146,8 +146,13 @@
     },
     {
       "path": "tests/wordpress_mcp_v1/e2e/compose.yaml",
-      "sha256": "32d5f732987e2cbcf58c675616ffd260c084e6be582cf869549577ec6a863ff3",
-      "size": 3805
+      "sha256": "bdbd57e0283d37d160fce9b8cc6ea101f4a335ad9ec12c61a2675fe9719e9aeb",
+      "size": 4365
+    },
+    {
+      "path": "tests/wordpress_mcp_v1/e2e/gateway/nginx.conf",
+      "sha256": "e8521a5020d9fed6f9674856668058ec6144234707e1932ee22b2fdc316d9a30",
+      "size": 742
     },
     {
       "path": "tests/wordpress_mcp_v1/e2e/mutate_harness.php",
@@ -161,8 +166,8 @@
     },
     {
       "path": "tests/wordpress_mcp_v1/e2e/run.sh",
-      "sha256": "78e4ec2713f00509ae41bb5982a0e115ce40b55c5c126b52d3ec610b7b274fe6",
-      "size": 10703
+      "sha256": "9c850fc62b6fc30472e8c5dd92a2fe84ec0e53ab5fe29dbebb511d39357d94bf",
+      "size": 10711
     },
     {
       "path": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/README.md",
