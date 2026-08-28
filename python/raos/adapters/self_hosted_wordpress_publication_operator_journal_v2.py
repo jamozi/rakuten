@@ -118,9 +118,7 @@ def _proposal_identity(
 ) -> tuple[str, int]:
     if isinstance(proposal, PublicationProposal):
         return proposal.binding.article_id, proposal.binding.draft_post_id
-    if isinstance(proposal, DraftRevisionProposal):
-        return proposal.binding.successor.article_id, proposal.binding.draft_id
-    _fail()
+    return proposal.binding.successor.article_id, proposal.binding.draft_id
 
 
 @dataclass(frozen=True, slots=True, repr=False)
