@@ -50,7 +50,7 @@ open_decision_boundary:
 
 measurement_contract:
   schema_version: RAOS_ST1303_MEASUREMENT_ATTRIBUTION_CONTRACT_V2
-  source_contract_sha256: f6122cb16a952cf853f28041acc3eed5dd921625562e59944e283aec8e497cc2
+  source_contract_sha256: 0035dfd6329e6d168f068e0de5ac63f55464efecab22934895c7e01dc1c94fb0
   program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
   period_duration_days: 14
   articles:
@@ -67,7 +67,7 @@ measurement_contract:
     - slot: 3
       article_id: st1704-anker-solix-c300-c800-c1000-differences
       slug: anker-solix-c300-c800-c1000-differences
-      packet_sha256: 88fc4d065981fcde7c0a169181c428e519d19546f9ed451a5cc1d57b9442b645
+      packet_sha256: 53c2a7081e0fd78597fe99e398d66d876f15cea5e827d720cc0fbc1901e83997
       intent_classification: MODEL_DIFFERENCES
     - slot: 4
       article_id: st1704-countertop-dishwasher-for-small-households

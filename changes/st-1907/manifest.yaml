@@ -8,7 +8,7 @@ document:
   production_eligible: false
 provenance:
   contract_uri: repo://changes/st-1907/contracts/content-portfolio-optimizer.v1.yaml
-  contract_sha256: b1bfa0b187106b12df31c718f0710bdd2b8c27d74b495b604e66e04b630bda9a
+  contract_sha256: 61dd809a2b2e6a1d30233c07bea8aa529c6617fd826125daca2ee9682243c05a
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -44,30 +44,30 @@ provenance:
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
   dependency_inputs:
   - uri: repo://changes/st-1805/contracts/portfolio-decision.v1.yaml
-    sha256: ec398cf427a41b0760e6b99108004d317883c8139796b768d1e122c6ea7648e7
+    sha256: 7561b93bb25fbc7fd0424fe8cc81553c7d615f305c9b22b1b4e1f63207416826
   - uri: repo://changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json
     sha256: 47adc5544779c1e697a4ca1dc3ada9a251cb40fdfa9dd8e593596b34a082c793
   - uri: repo://changes/st-1805/generated/portfolio-decision.local-blocked.v1.json
-    sha256: bf9899509a376ab6a9abd1613cfe5f12ab207629a6c94b2ba3bf2106a992098e
+    sha256: cd1aec0ac8a87809389e681b8e1c67328b0120b244aa6fcc7725f11e4d15dff4
   - uri: repo://scripts/build_st1805_portfolio_decision.py
-    sha256: f0bd5722bc066178f49434de0fe2ac97d677445d6ec29a212b172ba0233d03eb
+    sha256: cf8ea58a795c8b6dcc5db4137f045387be1689427b79e0a8355d60ffcdec295c
   measurement_input:
     uri: repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: f6122cb16a952cf853f28041acc3eed5dd921625562e59944e283aec8e497cc2
+    sha256: 0035dfd6329e6d168f068e0de5ac63f55464efecab22934895c7e01dc1c94fb0
   signal_policy_input:
     uri: repo://changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml
-    sha256: 093e61611f22a39ed25839a08509795bc986f85067f32a46c85eaa045a691c5d
+    sha256: 53a16b553bdd7e06289fc9d27e63e7916ab31ec37527c3ab4c509c0980675cba
 source_artifact_count: 22
 source_artifacts:
 - uri: repo://changes/st-1907/contracts/content-portfolio-optimizer.v1.yaml
   bytes: 8347
-  sha256: b1bfa0b187106b12df31c718f0710bdd2b8c27d74b495b604e66e04b630bda9a
+  sha256: 61dd809a2b2e6a1d30233c07bea8aa529c6617fd826125daca2ee9682243c05a
 - uri: repo://changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json
   bytes: 986
-  sha256: 39f2b13b6f7173df822a2a907b3b1fe7d9954f1b3ce25ca58926d72d85c924a6
+  sha256: d4edc43b312c8d3a168115edeea0ec1d28e9e6f9781fc40d3309e8d84a8be26b
 - uri: repo://changes/st-1907/PREFLIGHT.md
   bytes: 2244
-  sha256: 25ee3b7e2c6ccad71f8934f5a5f1b20e197c488577d94a622f1a020970cae9b6
+  sha256: 417fc5b4c2208d2b0e31b31d0ad28787babb4e17f17d203ecbb33e65e6993140
 - uri: repo://changes/st-1907/README.md
   bytes: 3052
   sha256: ae63a83eb3bcb8e355c7d7197525c596ea6c1787a1655370080f869986b50168
@@ -94,7 +94,7 @@ source_artifacts:
   sha256: 8f66c9604fd23c78b4d30cb828e0f6a7ec99db3ac6d0c6684adab54869723eed
 - uri: repo://scripts/build_st1907_content_portfolio_optimizer.py
   bytes: 36143
-  sha256: c9b60ac5333f3204c3b2f1b91ea10eea654105195f87ae40547661b659623ae4
+  sha256: 34a8c7210e960bf712e48c3b9a7719afa26ec8b3c8ba0874f99dd8e172f1211c
 - uri: repo://scripts/secure_generated_publication.py
   bytes: 22651
   sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
@@ -109,7 +109,7 @@ source_artifacts:
   sha256: 87a25c9b463dec00dedb4ef0661020f35d8322bf21ebbf9f71e3fb09db177a37
 - uri: repo://tests/st1907/test_contract.py
   bytes: 3693
-  sha256: e2425e2515e16dc7c791b03775aedc8dd6e9ccdf8c7d6ae0426ea54530e7ba71
+  sha256: fc33437bae42bca8fa2e4de5ebe9784a25eed309c59adc11590a93502cf2ca70
 - uri: repo://tests/st1907/test_generation.py
   bytes: 5961
   sha256: 7fd870d7b891c4eb73cb78a6eb873be68dafb47ebc92cd74f296528096028361
@@ -128,7 +128,7 @@ source_artifacts:
 generated_artifacts:
 - uri: repo://changes/st-1907/generated/content-portfolio-optimizer-report.v1.json
   bytes: 3342
-  sha256: 9b4a3084ff81e48a22c9658651b15ec34604ed9d7b80d64a429f5cbbf02a39a7
+  sha256: 1edcc611505ced3295ea931f1c64c3ec5be5aa546ca9649b13c1015d1d4b5378
 boundary:
   default_scope: DISABLED
   executable_environments:

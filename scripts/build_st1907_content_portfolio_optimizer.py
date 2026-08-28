@@ -137,16 +137,16 @@ _EXPECTED_THREATS: Final = (
 )
 _EXPECTED_DEPENDENCY_HASHES: Final = {
     "changes/st-1805/contracts/portfolio-decision.v1.yaml": (
-        "ec398cf427a41b0760e6b99108004d317883c8139796b768d1e122c6ea7648e7"
+        "7561b93bb25fbc7fd0424fe8cc81553c7d615f305c9b22b1b4e1f63207416826"
     ),
     "changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json": (
         "47adc5544779c1e697a4ca1dc3ada9a251cb40fdfa9dd8e593596b34a082c793"
     ),
     "changes/st-1805/generated/portfolio-decision.local-blocked.v1.json": (
-        "bf9899509a376ab6a9abd1613cfe5f12ab207629a6c94b2ba3bf2106a992098e"
+        "cd1aec0ac8a87809389e681b8e1c67328b0120b244aa6fcc7725f11e4d15dff4"
     ),
     "scripts/build_st1805_portfolio_decision.py": (
-        "f0bd5722bc066178f49434de0fe2ac97d677445d6ec29a212b172ba0233d03eb"
+        "cf8ea58a795c8b6dcc5db4137f045387be1689427b79e0a8355d60ffcdec295c"
     ),
 }
 _ST1805_REPORT_PATH: Final = Path(
@@ -156,13 +156,13 @@ _MEASUREMENT_PATH: Final = Path(
     "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json"
 )
 _MEASUREMENT_SHA256: Final = (
-    "f6122cb16a952cf853f28041acc3eed5dd921625562e59944e283aec8e497cc2"
+    "0035dfd6329e6d168f068e0de5ac63f55464efecab22934895c7e01dc1c94fb0"
 )
 _SIGNAL_POLICY_PATH: Final = Path(
     "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml"
 )
 _SIGNAL_POLICY_SHA256: Final = (
-    "093e61611f22a39ed25839a08509795bc986f85067f32a46c85eaa045a691c5d"
+    "53a16b553bdd7e06289fc9d27e63e7916ab31ec37527c3ab4c509c0980675cba"
 )
 
 
