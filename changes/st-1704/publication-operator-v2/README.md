@@ -12,7 +12,7 @@ The tracked runtime manifest binds every runtime source and each packaged file.
 The generated package advertises WordPress 7.1 and the v2 controller also
 refuses to initialize outside the 7.1.x release line.
 
-Package 2.1.10 keeps the publication and revision REST contracts unchanged.
+Package 2.1.11 keeps the publication and revision REST contracts unchanged.
 Patch 2.1.9 fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
 exact core registration, and prevents those callbacks from creating Review URL
 redirect metadata during bounded `post_updated` replay. All other metadata,
@@ -99,6 +99,18 @@ stages can only remove the exact core redirect metadata proven by the locked
 pre-state and record the SHA-256 of owner-private public verification evidence.
 They cannot complete replay, change proposal state/result/counts, or add REST,
 normal publication, post, or metadata authority.
+
+Patch 2.1.11 handles the observed third incident's exact no-row shape without
+generalizing it. Only the fixed dishwasher article, post 41, and generated
+public slug may reconcile while its terminal audit is `CLEANUP_REQUIRED` and
+the locked current metadata multiset already equals the exact before multiset.
+That `VERIFIED_NO_REDIRECT_META_ROWS` operation binds the empty cleanup rows,
+cleanup disposition, and `CLEAN` state into a V2 operation hash. It issues no
+metadata `DELETE`, but still requires the same transaction, published-state
+readback, audit append, and commit. Exact redirect extras continue to use the
+byte-compatible V1 operation material, preserving the stored portable-power
+and Anker operation hashes. Their receipts, like the dishwasher receipt, remain
+terminal; Robot remains excluded.
 
 Normal execution still requires two default-off host gates and a distinct wp-admin
 human approval of the exact proposal hash. There is no REST approval route, no

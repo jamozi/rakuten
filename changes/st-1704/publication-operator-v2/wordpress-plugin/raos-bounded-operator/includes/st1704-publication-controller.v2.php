@@ -64,6 +64,15 @@ final class RAOS_ST1704_Publication_Controller_V2
         'POST_COMMIT_HOOK_REPLAY_EXCEPTION';
     const RECONCILIATION_CLEANUP_EVENT = 'REDIRECT_META_RECONCILED';
     const RECONCILIATION_PUBLIC_EVENT = 'RECONCILED_PUBLIC';
+    const RECONCILIATION_EXACT_ROWS_DISPOSITION =
+        'EXACT_REDIRECT_EXTRAS';
+    const RECONCILIATION_NO_ROWS_DISPOSITION =
+        'VERIFIED_NO_REDIRECT_META_ROWS';
+    const RECONCILIATION_NO_ROWS_ARTICLE_ID =
+        'st1704-countertop-dishwasher-for-small-households';
+    const RECONCILIATION_NO_ROWS_POST_ID = 41;
+    const RECONCILIATION_NO_ROWS_PUBLIC_SLUG =
+        'countertop-dishwasher-for-small-households';
     const MUTEX_PURPOSE = 'PUBLICATION_V2';
     const MAX_REASON_BYTES = 1200;
     const MAX_PASSWORD_BYTES = 4096;
@@ -3381,7 +3390,7 @@ final class RAOS_ST1704_Publication_Controller_V2
         <hr>
         <h2><?php echo esc_html('Incident-bound redirect metadata reconciliation'); ?></h2>
         <p><?php echo esc_html(
-            'This admin-only workflow is limited to the three fixed terminal publication incidents. It never changes a proposal receipt or adds a REST authority.'
+            'This admin-only workflow is limited to the three fixed terminal publication incidents. It reconciles exact redirect rows when present or the one verified dishwasher no-row case. It never changes a proposal receipt or adds a REST authority.'
         ); ?></p>
         <?php
         $notice = isset($_GET['raos_st1704_reconciliation_notice'])
@@ -3391,7 +3400,7 @@ final class RAOS_ST1704_Publication_Controller_V2
             ?>
             <div class="notice notice-success"><p><?php echo esc_html(
                 $notice === 'cleanup_complete'
-                    ? 'The exact redirect metadata cleanup is recorded.'
+                    ? 'The exact redirect metadata reconciliation is recorded.'
                     : 'The owner-private public verification evidence is recorded.'
             ); ?></p></div>
             <?php
@@ -3440,10 +3449,15 @@ final class RAOS_ST1704_Publication_Controller_V2
                 <dd><code><?php echo esc_html($plan['operation_sha256']); ?></code></dd>
                 <dt><?php echo esc_html('Reconciliation stage'); ?></dt>
                 <dd><code><?php echo esc_html($plan['stage']); ?></code></dd>
+                <dt><?php echo esc_html('Cleanup disposition'); ?></dt>
+                <dd><code><?php echo esc_html($plan['cleanup_disposition']); ?></code></dd>
             </dl>
             <?php if ($plan['stage'] === 'CLEANUP_REQUIRED') : ?>
                 <p><?php echo esc_html(
-                    'The transaction will delete only the exact locked WordPress redirect metadata rows bound by this operation hash. The terminal proposal receipt remains unchanged.'
+                    $plan['cleanup_disposition']
+                        === self::RECONCILIATION_NO_ROWS_DISPOSITION
+                        ? 'The transaction has verified the fixed dishwasher no-row case and will delete no metadata. It will still read back the published state and append the reconciliation audit. The terminal proposal receipt remains unchanged.'
+                        : 'The transaction will delete only the exact locked WordPress redirect metadata rows present and bound by this operation hash. The terminal proposal receipt remains unchanged.'
                 ); ?></p>
                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                     <input type="hidden" name="action" value="<?php echo esc_attr(self::RECONCILIATION_CLEANUP_ACTION); ?>">
@@ -3464,7 +3478,7 @@ final class RAOS_ST1704_Publication_Controller_V2
                         <input name="current_password" type="password" autocomplete="current-password" required>
                     </label></p>
                     <?php submit_button(
-                        'Reconcile exact redirect metadata rows',
+                        'Reconcile exact redirect metadata state',
                         'primary',
                         'submit',
                         false
@@ -3850,11 +3864,10 @@ final class RAOS_ST1704_Publication_Controller_V2
                 $wpdb->query('ROLLBACK');
                 $committed = true;
             } elseif ($plan['stage'] === 'CLEANUP_REQUIRED') {
-                if (! $this->delete_exact_reconciliation_meta_rows(
-                    $plan['delete_rows'],
-                    $plan['post_id']
-                )) {
-                    throw new RuntimeException('reconciliation metadata CAS failed');
+                if (! $this->apply_reconciliation_metadata_disposition($plan)) {
+                    throw new RuntimeException(
+                        'reconciliation metadata disposition failed'
+                    );
                 }
                 if (! $this->published_state_matches(
                     $plan['proposal'],
@@ -3890,6 +3903,46 @@ final class RAOS_ST1704_Publication_Controller_V2
             clean_post_cache($post_id);
         }
         return $committed && $released;
+    }
+
+    private function apply_reconciliation_metadata_disposition(array $plan)
+    {
+        if (! isset(
+            $plan['cleanup_disposition'],
+            $plan['cleanup_state'],
+            $plan['delete_rows'],
+            $plan['post_id'],
+            $plan['proposal']['article_id'],
+            $plan['proposal']['draft_post_id'],
+            $plan['proposal']['public_slug']
+        )
+            || ! is_string($plan['cleanup_disposition'])
+            || ! is_string($plan['cleanup_state'])
+            || ! is_array($plan['delete_rows'])
+            || ! is_int($plan['post_id'])) {
+            return false;
+        }
+        if ($plan['cleanup_disposition']
+            === self::RECONCILIATION_EXACT_ROWS_DISPOSITION) {
+            return $plan['cleanup_state'] === 'EXACT_REDIRECT_EXTRAS'
+                && $this->delete_exact_reconciliation_meta_rows(
+                    $plan['delete_rows'],
+                    $plan['post_id']
+                );
+        }
+        if ($plan['cleanup_disposition']
+            !== self::RECONCILIATION_NO_ROWS_DISPOSITION) {
+            return false;
+        }
+        return $plan['cleanup_state'] === 'CLEAN'
+            && $plan['delete_rows'] === array()
+            && $plan['post_id'] === self::RECONCILIATION_NO_ROWS_POST_ID
+            && $plan['proposal']['article_id']
+                === self::RECONCILIATION_NO_ROWS_ARTICLE_ID
+            && $plan['proposal']['draft_post_id']
+                === self::RECONCILIATION_NO_ROWS_POST_ID
+            && $plan['proposal']['public_slug']
+                === self::RECONCILIATION_NO_ROWS_PUBLIC_SLUG;
     }
 
     private function delete_exact_reconciliation_meta_rows(
@@ -4495,6 +4548,99 @@ final class RAOS_ST1704_Publication_Controller_V2
         );
     }
 
+    private static function terminal_reconciliation_cleanup_disposition(
+        array $target,
+        array $audit,
+        array $meta_plan
+    ) {
+        if (! isset(
+            $target['article_id'],
+            $target['post_id'],
+            $target['public_slug'],
+            $audit['stage'],
+            $meta_plan['state'],
+            $meta_plan['delete_rows'],
+            $meta_plan['cleanup_row_digests'],
+            $meta_plan['before_meta_multiset_sha256'],
+            $meta_plan['current_meta_rows_sha256'],
+            $meta_plan['expected_after_meta_rows_sha256'],
+            $meta_plan['expected_after_meta_multiset_sha256']
+        )
+            || $audit['stage'] !== 'CLEANUP_REQUIRED'
+            || ! is_array($meta_plan['delete_rows'])
+            || ! is_array($meta_plan['cleanup_row_digests'])) {
+            return self::error(
+                'raos_st1704_reconciliation_state_ambiguous',
+                409
+            );
+        }
+        if ($meta_plan['state'] === 'EXACT_REDIRECT_EXTRAS'
+            && count($meta_plan['delete_rows']) >= 1
+            && count($meta_plan['delete_rows']) <= 2
+            && count($meta_plan['cleanup_row_digests'])
+                === count($meta_plan['delete_rows'])) {
+            return self::RECONCILIATION_EXACT_ROWS_DISPOSITION;
+        }
+        if ($meta_plan['state'] !== 'CLEAN'
+            || $meta_plan['delete_rows'] !== array()
+            || $meta_plan['cleanup_row_digests'] !== array()
+            || $target['article_id']
+                !== self::RECONCILIATION_NO_ROWS_ARTICLE_ID
+            || $target['post_id'] !== self::RECONCILIATION_NO_ROWS_POST_ID
+            || $target['public_slug']
+                !== self::RECONCILIATION_NO_ROWS_PUBLIC_SLUG
+            || ! is_string($meta_plan['before_meta_multiset_sha256'])
+            || ! is_string($meta_plan['current_meta_rows_sha256'])
+            || ! is_string($meta_plan['expected_after_meta_rows_sha256'])
+            || ! is_string($meta_plan['expected_after_meta_multiset_sha256'])
+            || ! hash_equals(
+                $meta_plan['current_meta_rows_sha256'],
+                $meta_plan['expected_after_meta_rows_sha256']
+            )
+            || ! hash_equals(
+                $meta_plan['before_meta_multiset_sha256'],
+                $meta_plan['expected_after_meta_multiset_sha256']
+            )) {
+            return self::error(
+                'raos_st1704_reconciliation_state_ambiguous',
+                409
+            );
+        }
+        return self::RECONCILIATION_NO_ROWS_DISPOSITION;
+    }
+
+    private static function terminal_reconciliation_operation_material(
+        array $operation_fields,
+        $cleanup_disposition,
+        $cleanup_state
+    ) {
+        if (! is_string($cleanup_disposition)
+            || ! is_string($cleanup_state)
+            || ! isset($operation_fields['schema'])
+            || $operation_fields['schema']
+                !== 'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1'
+            || array_key_exists('cleanup_disposition', $operation_fields)
+            || array_key_exists('cleanup_state', $operation_fields)) {
+            return false;
+        }
+        if ($cleanup_disposition
+            === self::RECONCILIATION_EXACT_ROWS_DISPOSITION) {
+            return $cleanup_state === 'EXACT_REDIRECT_EXTRAS'
+                ? self::canonical_json($operation_fields)
+                : false;
+        }
+        if ($cleanup_disposition
+            !== self::RECONCILIATION_NO_ROWS_DISPOSITION
+            || $cleanup_state !== 'CLEAN') {
+            return false;
+        }
+        $operation_fields['cleanup_disposition'] = $cleanup_disposition;
+        $operation_fields['cleanup_state'] = $cleanup_state;
+        $operation_fields['schema'] =
+            'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V2';
+        return self::canonical_json($operation_fields);
+    }
+
     private function build_terminal_reconciliation_plan(
         array $candidate,
         array $target,
@@ -4555,14 +4701,16 @@ final class RAOS_ST1704_Publication_Controller_V2
         }
         $audit = $receipt['audit'];
         if ($audit['stage'] === 'CLEANUP_REQUIRED') {
-            if ($meta_plan['state'] !== 'EXACT_REDIRECT_EXTRAS') {
-                return self::error(
-                    'raos_st1704_reconciliation_state_ambiguous',
-                    409
+            $cleanup_disposition =
+                self::terminal_reconciliation_cleanup_disposition(
+                    $target,
+                    $audit,
+                    $meta_plan
                 );
+            if (is_wp_error($cleanup_disposition)) {
+                return $cleanup_disposition;
             }
-            $operation_material = self::canonical_json(
-                array(
+            $operation_fields = array(
                     'article_id' => $target['article_id'],
                     'apply_started_at' => $candidate['apply_started_at'],
                     'approval_evidence_sha256' =>
@@ -4627,8 +4775,13 @@ final class RAOS_ST1704_Publication_Controller_V2
                     'schema' => 'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1',
                     'site_origin' => self::SITE_ORIGIN,
                     'wordpress_release_line' => '7.1.x',
-                )
-            );
+                );
+            $operation_material =
+                self::terminal_reconciliation_operation_material(
+                    $operation_fields,
+                    $cleanup_disposition,
+                    $meta_plan['state']
+                );
             if (! is_string($operation_material)) {
                 return self::error(
                     'raos_st1704_reconciliation_operation_invalid',
@@ -4669,9 +4822,12 @@ final class RAOS_ST1704_Publication_Controller_V2
             $operation_sha256 = $audit['cleanup_operation_sha256'];
             $stage = $audit['stage'];
             $delete_rows = array();
+            $cleanup_disposition = 'ALREADY_RECONCILED';
         }
         return array(
             'before' => $receipt['before'],
+            'cleanup_disposition' => $cleanup_disposition,
+            'cleanup_state' => $meta_plan['state'],
             'delete_rows' => $delete_rows,
             'modified_times' => $receipt['modified_times'],
             'operation_sha256' => $operation_sha256,

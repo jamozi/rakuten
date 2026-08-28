@@ -1,4 +1,4 @@
-# RAOS Bounded Operator 2.1.10
+# RAOS Bounded Operator 2.1.11
 
 This deterministic package preserves the closed ST-1506 v1 status, Yoast, and
 child-theme surfaces and adds the ST-1704 publication controller under the
@@ -80,6 +80,16 @@ the workflow can only remove the exact locked redirect metadata and record one
 owner-private verification evidence SHA-256. It does not repair or complete
 hook replay, change proposal state/result/counts, broaden normal gates, or add
 a REST authority.
+
+Patch 2.1.11 permits one additional disposition only for that exact dishwasher
+binding when the terminal audit still requires cleanup and locked metadata is
+already the exact before-state multiset. `VERIFIED_NO_REDIRECT_META_ROWS` binds
+its empty cleanup set, disposition, and `CLEAN` state into V2 operation
+material, performs no metadata deletion, and then uses the same published-state
+readback, audit append, and transaction commit. Existing exact-row incidents
+retain their byte-compatible V1 operation material and stored operation hashes.
+Portable-power, Anker, Robot, another post/slug, partial redirect metadata, or
+any storage/audit drift cannot enter the no-row path.
 
 The v2 controller can only publish one of four generated article bindings, or
 revise the exact existing Draft IDs 28, 29, 41, and 30. A revision is

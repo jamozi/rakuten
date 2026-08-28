@@ -2,7 +2,7 @@
 
 ## Offline build and review
 
-The current deterministic package is `raos-bounded-operator` 2.1.10. It does
+The current deterministic package is `raos-bounded-operator` 2.1.11. It does
 not change either REST schema. It retains the exact WordPress 7.1
 priority-12 `wp_check_for_changed_slugs` and `wp_check_for_changed_dates`
 registrations, and suppresses only their target-post redirect-meta operations
@@ -76,6 +76,19 @@ cleanup followed by recording one owner-private verification evidence SHA-256;
 it does not complete replay or change proposal state, result, counts, REST
 schema, normal gates, or normal write authority.
 
+Patch 2.1.11 admits the exact observed no-row state only for that fixed
+dishwasher binding. The locked metadata planner must report `CLEAN`, an empty
+delete set and empty cleanup digests, equality between current and expected
+after rows, and equality between the before and expected after multisets while
+the audit remains `CLEANUP_REQUIRED`. The resulting
+`VERIFIED_NO_REDIRECT_META_ROWS` V2 operation material binds the disposition,
+`CLEAN` state, and empty cleanup rows. Execution performs no `DELETE`, but it
+still runs inside the same SERIALIZABLE transaction and requires the same
+published-state readback, audit append, and commit. Existing exact-row cleanup
+continues to use byte-compatible V1 operation material so the already recorded
+portable-power and Anker operation hashes remain valid. This does not change a
+receipt, proposal state/result/count, REST schema, gate, or Robot eligibility.
+
 1. Run `make -f changes/st-1704/publication-operator-v2/Makefile check`.
 2. Review the exact runtime manifest, deterministic package SHA-256, generated
    four-article binding, controller diff, and terminal local checks.
@@ -99,7 +112,7 @@ reuse the bound `raos_operator_executor` identity or its Application Password
 for owner verification.
 
 Do not create or install the Draft-writer Application Password until plugin
-2.1.10 or later is active and its exact package/version checks pass. The
+2.1.11 or later is active and its exact package/version checks pass. The
 temporary projection is read-only; the role's pre-existing own-Draft
 create/recover behavior is unchanged and remains bounded by its exact base
 capabilities.
@@ -114,11 +127,11 @@ If activation stops
 after normalizing the role, do not create a credential; restore or reactivate a
 known-good package and repeat exact role verification first.
 
-For the current 2.1.9 upgrade state, the role has already been activated and
+For the current 2.1.10 upgrade state, the role has already been activated and
 exactly persisted, dedicated user ID 3 is assigned, and its dedicated
-Application Password may already exist. Version 2.1.10 does not change that
-DB/role schema. Replace 2.1.9 in place without deactivation/reactivation, then
-verify active version 2.1.10, the exact persisted role, dedicated user ID 3's exact
+Application Password may already exist. Version 2.1.11 does not change that
+DB/role schema. Replace 2.1.10 in place without deactivation/reactivation, then
+verify active version 2.1.11, the exact persisted role, dedicated user ID 3's exact
 `raos-draft-writer` login and identity,
 and both operator status surfaces before creating the Application Password.
 Avoiding deactivation also avoids an unnecessary interval without the new
@@ -127,7 +140,7 @@ transport confinement.
 Before rollback, downgrade, deactivation, role removal/replacement, or any
 direct database identity change after a Draft-writer credential exists, revoke
 that Application Password first, then remove/disable the dedicated user's
-Draft-writer assignment while 2.1.10 confinement is still active. WordPress UI
+Draft-writer assignment while 2.1.11 confinement is still active. WordPress UI
 does not rename `user_login`; do not edit this immutable binding directly.
 Deactivation does not remove the persisted role or Application Password, so
 reversing that order would leave the base `read`/`edit_posts` authority without
@@ -163,9 +176,12 @@ expired before any preview or cleanup can succeed.
    final 12 operation-hash characters. The administrator must differ from the
    proposal creator.
 4. The transaction refuses missing/duplicate/unrelated metadata or any
-   pre-state that WordPress core would delete. It CAS-deletes only the exact
-   extra Review `_wp_old_slug` and conditional previous `_wp_old_date`, verifies
-   the full published state, appends `REDIRECT_META_RECONCILED`, and commits.
+   pre-state that WordPress core would delete. When exact redirect extras are
+   present, it CAS-deletes only the extra Review `_wp_old_slug` and conditional
+   previous `_wp_old_date`. For only the exact dishwasher incident, a verified
+   `CLEAN` multiset with zero cleanup rows performs no deletion. Both paths
+   verify the full published state, append `REDIRECT_META_RECONCILED`, and
+   commit.
    The terminal proposal state/result/count and receipt are intentionally
    unchanged; reconciliation never converts the receipt into success.
 5. Produce and retain the external public verification artifact in the

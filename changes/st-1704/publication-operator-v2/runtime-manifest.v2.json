@@ -55,7 +55,15 @@
         "article_id": "st1704-countertop-dishwasher-for-small-households",
         "post_id": 41
       }
-    ]
+    ],
+    "verified_no_redirect_meta_rows": {
+      "cleanup_disposition": "VERIFIED_NO_REDIRECT_META_ROWS",
+      "target": {
+        "article_id": "st1704-countertop-dishwasher-for-small-households",
+        "post_id": 41,
+        "public_slug": "countertop-dishwasher-for-small-households"
+      }
+    }
   },
   "integrity_inputs": [
     {
@@ -69,14 +77,14 @@
   ],
   "operator_contract_version": 2,
   "package": {
-    "bytes": 526530,
+    "bytes": 534208,
     "compression": "ZIP_STORED",
     "file_count": 4,
     "files": [
       {
-        "bytes": 6229,
+        "bytes": 6909,
         "path": "README.md",
-        "sha256": "44469e9ea62b751085098be1097ecca584cdd2552c783581dcc76127f65fb549"
+        "sha256": "ff6c8789b3337732fef2033cb0084de1bc974da2c8da53704ce7fdf4b010704a"
       },
       {
         "bytes": 2491,
@@ -84,19 +92,19 @@
         "sha256": "2b3d7d828941890e799b575f24cbab690b0895cea1cd64d45fd3166ab030dc8b"
       },
       {
-        "bytes": 328718,
+        "bytes": 335716,
         "path": "includes/st1704-publication-controller.v2.php",
-        "sha256": "e312e1a6095cab9ff428987a5d78c606efdf495992186bfa9f8b22792da0d3bb"
+        "sha256": "68ed2fd4c2d90ecca570c9b25fa3950fbdf8ff8127a4b822c1d7c454047325ce"
       },
       {
         "bytes": 188346,
         "path": "raos-bounded-operator.php",
-        "sha256": "5056136b516ed71a208fb1f2d3c73e29426c46402373b125071dd9ae9ea2a7cb"
+        "sha256": "2472b749aa79b97efa118300d62d6aa5f0dc84a8a8a343d246b6418b26b7aab8"
       }
     ],
     "root": "raos-bounded-operator/",
-    "sha256": "debcbb9ed97a199d37c5a05146f0ee14e542851752f6c269b08ae06efe648f59",
-    "version": "2.1.10"
+    "sha256": "e49449b446240994c0d425ae40e786d1e083408379207a3724dcc917cae7e738",
+    "version": "2.1.11"
   },
   "predecessors": {
     "st1506_wordpress_operator": {

@@ -363,6 +363,18 @@ $meta_plan_method = $reflection->getMethod('reconciliation_meta_cleanup_plan');
 $meta_plan_method->setAccessible(true);
 $cas_method = $reflection->getMethod('delete_exact_reconciliation_meta_rows');
 $cas_method->setAccessible(true);
+$disposition_method = $reflection->getMethod(
+    'terminal_reconciliation_cleanup_disposition'
+);
+$disposition_method->setAccessible(true);
+$operation_material_method = $reflection->getMethod(
+    'terminal_reconciliation_operation_material'
+);
+$operation_material_method->setAccessible(true);
+$apply_disposition_method = $reflection->getMethod(
+    'apply_reconciliation_metadata_disposition'
+);
+$apply_disposition_method->setAccessible(true);
 $audit_method = $reflection->getMethod('validate_reconciliation_audit_chain');
 $audit_method->setAccessible(true);
 $append_method = $reflection->getMethod('append_audit');
@@ -623,6 +635,236 @@ $clean = $meta_plan_method->invoke(
     $storage
 );
 expect_true(is_array($clean) && $clean['state'] === 'CLEAN', 'clean replay state');
+
+$cleanup_required = array('stage' => 'CLEANUP_REQUIRED');
+$dishwasher_target = array(
+    'article_id' => 'st1704-countertop-dishwasher-for-small-households',
+    'post_id' => 41,
+    'public_slug' => 'countertop-dishwasher-for-small-households',
+);
+$no_rows_disposition = $disposition_method->invoke(
+    null,
+    $dishwasher_target,
+    $cleanup_required,
+    $clean
+);
+expect_true(
+    $no_rows_disposition === 'VERIFIED_NO_REDIRECT_META_ROWS',
+    'only the exact dishwasher clean state must select no-row reconciliation'
+);
+$portable_target = array(
+    'article_id' => 'st1704-portable-power-station-guide',
+    'post_id' => 28,
+    'public_slug' => 'portable-power-station-guide',
+);
+$portable_clean_disposition = $disposition_method->invoke(
+    null,
+    $portable_target,
+    $cleanup_required,
+    $clean
+);
+expect_true(
+    $portable_clean_disposition instanceof WP_Error,
+    'portable clean state must remain ineligible for no-row reconciliation'
+);
+$anker_target = array(
+    'article_id' => 'st1704-anker-solix-c300-c800-c1000-differences',
+    'post_id' => 29,
+    'public_slug' => 'anker-solix-c300-c800-c1000-differences',
+);
+expect_true(
+    $disposition_method->invoke(
+        null,
+        $anker_target,
+        $cleanup_required,
+        $clean
+    ) instanceof WP_Error,
+    'Anker clean state must remain ineligible for no-row reconciliation'
+);
+$robot_target = array(
+    'article_id' => 'st1704-compact-robot-vacuum-shortlist',
+    'post_id' => 30,
+    'public_slug' => 'compact-robot-vacuum-shortlist',
+);
+expect_true(
+    $disposition_method->invoke(
+        null,
+        $robot_target,
+        $cleanup_required,
+        $clean
+    ) instanceof WP_Error,
+    'robot clean state must remain excluded'
+);
+expect_true(
+    $disposition_method->invoke(
+        null,
+        $dishwasher_target,
+        array('stage' => 'CLEANED'),
+        $clean
+    ) instanceof WP_Error,
+    'no-row selection requires the audit cleanup-required stage'
+);
+$nonempty_clean = $clean;
+$nonempty_clean['delete_rows'] = array(
+    array(
+        'meta_id' => 99,
+        'meta_key' => '_wp_old_slug',
+        'meta_value' => $review_slug,
+    ),
+);
+expect_true(
+    $disposition_method->invoke(
+        null,
+        $dishwasher_target,
+        $cleanup_required,
+        $nonempty_clean
+    ) instanceof WP_Error,
+    'no-row selection must reject a nonempty delete set'
+);
+foreach (
+    array(
+        array('article_id', 'st1704-portable-power-station-guide'),
+        array('post_id', 28),
+        array('public_slug', 'portable-power-station-guide'),
+    ) as $target_drift
+) {
+    $drifted_target = $dishwasher_target;
+    $drifted_target[$target_drift[0]] = $target_drift[1];
+    expect_true(
+        $disposition_method->invoke(
+            null,
+            $drifted_target,
+            $cleanup_required,
+            $clean
+        ) instanceof WP_Error,
+        'each dishwasher no-row target field must be literal and exact'
+    );
+}
+expect_true(
+    $disposition_method->invoke(
+        null,
+        $portable_target,
+        $cleanup_required,
+        $same_day
+    ) === 'EXACT_REDIRECT_EXTRAS',
+    'legacy exact-row cleanup disposition must remain unchanged'
+);
+
+$legacy_operation_fields = array(
+    'article_id' => 'st1704-portable-power-station-guide',
+    'cleanup_rows' => array(array('meta_id' => 12)),
+    'schema' => 'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1',
+);
+$legacy_operation_material = $operation_material_method->invoke(
+    null,
+    $legacy_operation_fields,
+    'EXACT_REDIRECT_EXTRAS',
+    'EXACT_REDIRECT_EXTRAS'
+);
+expect_true(
+    is_string($legacy_operation_material)
+        && json_decode($legacy_operation_material, true)
+            === $legacy_operation_fields,
+    'legacy exact-row material must remain byte-compatible V1 without new keys'
+);
+$no_rows_operation_material = $operation_material_method->invoke(
+    null,
+    array(
+        'article_id' =>
+            'st1704-countertop-dishwasher-for-small-households',
+        'cleanup_rows' => array(),
+        'schema' => 'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1',
+    ),
+    'VERIFIED_NO_REDIRECT_META_ROWS',
+    'CLEAN'
+);
+$no_rows_operation = is_string($no_rows_operation_material)
+    ? json_decode($no_rows_operation_material, true)
+    : null;
+expect_true(
+    is_array($no_rows_operation)
+        && $no_rows_operation['cleanup_disposition']
+            === 'VERIFIED_NO_REDIRECT_META_ROWS'
+        && $no_rows_operation['cleanup_state'] === 'CLEAN'
+        && $no_rows_operation['cleanup_rows'] === array()
+        && $no_rows_operation['schema']
+            === 'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V2'
+        && $operation_material_method->invoke(
+            null,
+            array(
+                'article_id' =>
+                    'st1704-countertop-dishwasher-for-small-households',
+                'cleanup_rows' => array(),
+                'schema' =>
+                    'RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1',
+            ),
+            'VERIFIED_NO_REDIRECT_META_ROWS',
+            'CLEAN'
+        ) === $no_rows_operation_material,
+    'dishwasher no-row operation material must deterministically bind disposition and state'
+);
+
+$GLOBALS['wpdb'] = new FakeWpdb();
+$no_delete_plan = array(
+    'cleanup_disposition' => 'VERIFIED_NO_REDIRECT_META_ROWS',
+    'cleanup_state' => 'CLEAN',
+    'delete_rows' => array(),
+    'post_id' => 41,
+    'proposal' => array(
+        'article_id' =>
+            'st1704-countertop-dishwasher-for-small-households',
+        'draft_post_id' => 41,
+        'public_slug' => 'countertop-dishwasher-for-small-households',
+    ),
+);
+expect_true(
+    $apply_disposition_method->invoke($controller, $no_delete_plan) === true
+        && $GLOBALS['wpdb']->delete_calls === 0,
+    'exact dishwasher no-row execution must issue no DELETE'
+);
+foreach (
+    array(
+        array('post_id', null, 28),
+        array(
+            'proposal',
+            'article_id',
+            'st1704-portable-power-station-guide',
+        ),
+        array('proposal', 'draft_post_id', 28),
+        array('proposal', 'public_slug', 'portable-power-station-guide'),
+    ) as $plan_drift
+) {
+    $wrong_no_delete_plan = $no_delete_plan;
+    if ($plan_drift[0] === 'proposal') {
+        $wrong_no_delete_plan['proposal'][$plan_drift[1]] = $plan_drift[2];
+    } else {
+        $wrong_no_delete_plan[$plan_drift[0]] = $plan_drift[2];
+    }
+    expect_true(
+        $apply_disposition_method->invoke(
+            $controller,
+            $wrong_no_delete_plan
+        ) === false
+            && $GLOBALS['wpdb']->delete_calls === 0,
+        'each no-row execution binding must refuse drift without DELETE'
+    );
+}
+$nonempty_no_delete_plan = $no_delete_plan;
+$nonempty_no_delete_plan['delete_rows'] = array(
+    array(
+        'meta_id' => 99,
+        'meta_key' => '_wp_old_slug',
+        'meta_value' => $review_slug,
+    ),
+);
+expect_true(
+    $apply_disposition_method->invoke(
+        $controller,
+        $nonempty_no_delete_plan
+    ) === false
+        && $GLOBALS['wpdb']->delete_calls === 0,
+    'no-row execution must reject rows without issuing DELETE'
+);
 
 $GLOBALS['wpdb']->meta_rows = array(
     meta_row(10, '_raos_publication_snapshot_v1', '{"fixture":true}'),

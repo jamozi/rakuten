@@ -19,7 +19,7 @@ ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE_RELATIVE: Final = Path("changes/st-1704/publication-operator-v2")
 SLICE_ROOT: Final = ROOT / SLICE_RELATIVE
 PLUGIN_SLUG: Final = "raos-bounded-operator"
-PLUGIN_VERSION: Final = "2.1.10"
+PLUGIN_VERSION: Final = "2.1.11"
 PACKAGE_ROOT: Final = f"{PLUGIN_SLUG}/"
 MANIFEST_RELATIVE: Final = SLICE_RELATIVE / "runtime-manifest.v2.json"
 MANIFEST_PATH: Final = ROOT / MANIFEST_RELATIVE
@@ -100,6 +100,11 @@ TERMINAL_RECONCILIATION_TARGETS: Final = (
     ("st1704-portable-power-station-guide", 28),
     ("st1704-anker-solix-c300-c800-c1000-differences", 29),
     ("st1704-countertop-dishwasher-for-small-households", 41),
+)
+VERIFIED_NO_REDIRECT_META_ROWS_TARGET: Final = (
+    "st1704-countertop-dishwasher-for-small-households",
+    41,
+    "countertop-dishwasher-for-small-households",
 )
 EXCLUDED_UPDATE_ARTICLE: Final = "st1703-first-suitcase-comparison"
 
@@ -308,6 +313,18 @@ def validate_publication_bindings() -> None:
             article_id == "st1704-compact-robot-vacuum-shortlist"
             for article_id, _post_id in TERMINAL_RECONCILIATION_TARGETS
         )
+        or VERIFIED_NO_REDIRECT_META_ROWS_TARGET
+        != (
+            "st1704-countertop-dishwasher-for-small-households",
+            41,
+            "countertop-dishwasher-for-small-households",
+        )
+        or VERIFIED_NO_REDIRECT_META_ROWS_TARGET[:2]
+        not in TERMINAL_RECONCILIATION_TARGETS
+        or dict(PUBLISH_BINDINGS).get(
+            VERIFIED_NO_REDIRECT_META_ROWS_TARGET[0]
+        )
+        != VERIFIED_NO_REDIRECT_META_ROWS_TARGET[2]
     ):
         _fail("ST1704_PUBLICATION_OPERATOR_V2_BINDING_DRIFT")
 
@@ -576,6 +593,14 @@ def build_manifest() -> bytes:
                 {"article_id": article_id, "post_id": post_id}
                 for article_id, post_id in TERMINAL_RECONCILIATION_TARGETS
             ],
+            "verified_no_redirect_meta_rows": {
+                "cleanup_disposition": "VERIFIED_NO_REDIRECT_META_ROWS",
+                "target": {
+                    "article_id": VERIFIED_NO_REDIRECT_META_ROWS_TARGET[0],
+                    "post_id": VERIFIED_NO_REDIRECT_META_ROWS_TARGET[1],
+                    "public_slug": VERIFIED_NO_REDIRECT_META_ROWS_TARGET[2],
+                },
+            },
         },
         "semantic_inputs": semantic_inputs,
         "predecessors": {

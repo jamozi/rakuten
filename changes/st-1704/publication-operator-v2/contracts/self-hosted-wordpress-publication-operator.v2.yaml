@@ -18,7 +18,7 @@ site:
   rest_prefix: /wp-json
   namespace: raos-operator/v2
   plugin_slug: raos-bounded-operator
-  plugin_version: 2.1.10
+  plugin_version: 2.1.11
   wordpress_core_release_line: 7.1.x
   operator_contract_version: 2
   profile_version: 2
