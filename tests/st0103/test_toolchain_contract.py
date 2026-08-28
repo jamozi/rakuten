@@ -11,9 +11,17 @@ from typing import Any
 from .support import EXPECTED_NODE_VERSION, EXPECTED_NPM_VERSION, REPOSITORY_ROOT
 
 
-EXPECTED_WORKSPACES = ["apps/web", "packages/web-contracts", "packages/web-ui"]
+EXPECTED_WORKSPACES = [
+    "apps/web",
+    "packages/wordpress-mcp-bridge",
+    "packages/web-contracts",
+    "packages/web-ui",
+]
 EXPECTED_DIRECT_PINS = {
+    "@automattic/mcp-wordpress-remote": "0.4.0",
     "@hey-api/openapi-ts": "0.99.0",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@playwright/cli": "0.1.18",
     "@types/node": "24.13.3",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
@@ -27,6 +35,7 @@ EXPECTED_DIRECT_PINS = {
     "typescript": "6.0.3",
     "vite": "8.2.0",
     "vitest": "4.1.10",
+    "zod": "4.4.3",
 }
 EXPECTED_OVERRIDES = {
     "next@16.2.12": {
@@ -105,12 +114,16 @@ def test_root_is_a_private_exactly_scoped_workspace(
 
 def test_only_the_owned_web_boundaries_are_scoped_as_private_workspaces(
     web_manifest: dict[str, Any],
+    wordpress_mcp_bridge_manifest: dict[str, Any],
     web_contracts_manifest: dict[str, Any],
     web_ui_manifest: dict[str, Any],
 ) -> None:
     assert web_manifest["name"] == "@raos/web"
     assert web_manifest["version"] == "0.0.0"
     assert web_manifest["private"] is True
+    assert wordpress_mcp_bridge_manifest["name"] == "@raos/wordpress-mcp-bridge"
+    assert wordpress_mcp_bridge_manifest["version"] == "1.0.0"
+    assert wordpress_mcp_bridge_manifest["private"] is True
     assert web_ui_manifest["name"] == "@raos/web-ui"
     assert web_ui_manifest["version"] == "0.0.0"
     assert web_ui_manifest["private"] is True
@@ -147,6 +160,7 @@ def test_only_the_owned_web_boundaries_are_scoped_as_private_workspaces(
 def test_every_direct_external_dependency_is_an_exact_approved_pin(
     package_manifest: dict[str, Any],
     web_manifest: dict[str, Any],
+    wordpress_mcp_bridge_manifest: dict[str, Any],
     web_contracts_manifest: dict[str, Any],
     web_ui_manifest: dict[str, Any],
 ) -> None:
@@ -154,6 +168,7 @@ def test_every_direct_external_dependency_is_an_exact_approved_pin(
     for manifest in (
         package_manifest,
         web_manifest,
+        wordpress_mcp_bridge_manifest,
         web_contracts_manifest,
         web_ui_manifest,
     ):
@@ -188,6 +203,8 @@ def test_root_scripts_are_fixed_non_mutating_verification_commands(
         "pyright",
         "test:unit",
         "check",
+        "wordpress:e2e",
+        "wordpress:ui:check",
     }
     serialized = "\n".join(scripts.values())
     assert "npx" not in serialized

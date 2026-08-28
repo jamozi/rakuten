@@ -12,6 +12,7 @@ from .support import REPOSITORY_ROOT
 MANIFESTS = (
     "package.json",
     "apps/web/package.json",
+    "packages/wordpress-mcp-bridge/package.json",
     "packages/web-contracts/package.json",
     "packages/web-ui/package.json",
 )

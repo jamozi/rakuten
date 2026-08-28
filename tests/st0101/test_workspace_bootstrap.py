@@ -297,8 +297,13 @@ def test_seed_materialization_is_complete_idempotent_and_checkable(
 
 def test_make_exposes_only_the_unified_development_interface() -> None:
     makefile = (REPO_ROOT / "Makefile").read_text(encoding="utf-8")
+    defined_targets = [
+        line.partition(":")[0]
+        for line in makefile.splitlines()
+        if line and not line[0].isspace() and ":" in line
+    ]
     for target in ("setup:", "generate:", "check:", "fast:", "final:"):
-        assert makefile.count(target) == 1
+        assert defined_targets.count(target.removesuffix(":")) == 1
     assert "bootstrap:" not in makefile
     assert "check-workspace:" not in makefile
 
