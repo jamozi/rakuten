@@ -17,15 +17,31 @@ bindings:
   excluded_article: st1703-first-suitcase-comparison
 plugin:
   slug: raos-bounded-operator
-  package_version: 2.1.7
+  package_version: 2.1.13
   predecessor_v1_repository_bytes: UNCHANGED_AND_SHA256_PINNED
   draft_writer_role:
     role: raos_draft_writer
     display_name: RAOS Draft Writer
+    fixed_user_login: raos-draft-writer
     exact_capabilities:
       read: true
       edit_posts: true
     install: ACTIVATION_EXACT_PERSISTENCE_VERIFIED
+    read_projection:
+      transport: EXACT_APPLICATION_PASSWORD_REST_GET_OR_POST_COLLECTION_ONLY
+      route: /wp/v2/posts
+      handler: EXACT_CORE_COLLECTION_CONTROLLER
+      query_shapes: EXACT_FORMAL_VERIFIER_ONLY
+      public_post_ids:
+      - 19
+      - 28
+      - 29
+      - 41
+      - 30
+      review_draft_post_id: 26
+      mapped_meta_cap: edit_post
+      persistent_extra_capabilities: ABSENT
+      base_own_draft_create_recover_authority: UNCHANGED
     user_assignment: ABSENT
     application_password_creation: ABSENT
   injection_order:

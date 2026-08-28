@@ -12,8 +12,8 @@ The tracked runtime manifest binds every runtime source and each packaged file.
 The generated package advertises WordPress 7.1 and the v2 controller also
 refuses to initialize outside the 7.1.x release line.
 
-Package 2.1.7 keeps the publication and revision REST contracts unchanged. It
-fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
+Package 2.1.13 keeps the publication and revision REST contracts unchanged.
+Patch 2.1.9 fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
 exact core registration, and prevents those callbacks from creating Review URL
 redirect metadata during bounded `post_updated` replay. All other metadata,
 including any pre-existing `_wp_old_slug` or `_wp_old_date` rows, remains part
@@ -60,6 +60,79 @@ persisted WordPress role option. Creation, persistence, or exact-readback
 failure stops activation. The patch does not assign the role, create a user or
 Application Password, alter the bound operator identity/firewall, or add REST
 or publication authority.
+
+Patch 2.1.8 adds a fail-closed, verify-only read projection for the distinct
+fixed-login `raos-draft-writer` Application Password without changing its
+persisted capabilities.
+The credential transport is confined to raw HTTPS `GET` or `POST` requests on
+the core `/wp/v2/posts` collection; XML-RPC, method overrides, every other
+method, and every other REST path are refused. The pre-existing base-role
+authority to create and recover the user's own Drafts is unchanged. After
+WordPress 7.1 sanitizes an exact formal-verifier `GET`, the controller requires
+the core posts-controller callback and permission callback plus one fixed query
+shape. A per-request `user_has_cap` bridge may satisfy only an `edit_post`
+check for fixed public post IDs 19, 28, 29, 41, and 30, or fixed Review Draft
+post 26 at the exact payload-hash-bound carry-on Review slug. Nonmatching
+`GET`/`POST` requests receive only base-role behavior and never arm the bridge.
+State is cleared before every callback, at the first after-callback priority,
+and at shutdown. The projection never persists an extra role/user capability,
+authorizes a write, changes article state, or changes the bound operator
+firewall. The transport guard recognizes either that immutable WordPress login
+or the role marker, so removing/replacing the role before credential revocation
+is refused rather than turning the credential into an ordinary WordPress
+Application Password.
+
+Patch 2.1.9 evaluates the transient `user_has_cap` projection at its earliest
+bounded hook priority, before ordinary capability filters can alter the
+received array.
+The existing exact full-capability comparison is retained, as are the armed
+request, controller, `get_items`/`check_update_permission` stack, fixed post
+ID/slug/status, and mapped-capability checks.
+
+Patch 2.1.10 responds only to the third observed terminal publication incident
+by adding the fixed dishwasher article, post 41, and its generated public slug
+to the existing incident reconciliation allowlist. Portable-power post 28 and
+Anker post 29 remain the other two targets; the robot-vacuum article is
+deliberately excluded. This is incident-bound expansion, not a generic recovery
+policy: the canonical receipt remains terminal and unchanged. The two Tools
+stages can only remove the exact core redirect metadata proven by the locked
+pre-state and record the SHA-256 of owner-private public verification evidence.
+They cannot complete replay, change proposal state/result/counts, or add REST,
+normal publication, post, or metadata authority.
+
+Patch 2.1.11 handles the observed third incident's exact no-row shape without
+generalizing it. Only the fixed dishwasher article, post 41, and generated
+public slug may reconcile while its terminal audit is `CLEANUP_REQUIRED` and
+the locked current metadata multiset already equals the exact before multiset.
+That `VERIFIED_NO_REDIRECT_META_ROWS` operation binds the empty cleanup rows,
+cleanup disposition, and `CLEAN` state into a V2 operation hash. It issues no
+metadata `DELETE`, but still requires the same transaction, published-state
+readback, audit append, and commit. Exact redirect extras continue to use the
+byte-compatible V1 operation material, preserving the stored portable-power
+and Anker operation hashes. Their receipts, like the dishwasher receipt, remain
+terminal; Robot remains excluded.
+
+Patch 2.1.12 fixes only the rolled-back Tools preview projection. It now
+returns the cleanup disposition already recomputed by the locked server plan,
+so the exact dishwasher state displays `VERIFIED_NO_REDIRECT_META_ROWS` and
+completed incidents display `ALREADY_RECONCILED`. It does not accept a
+disposition from a request or change operation material, hashes, receipts,
+gates, permissions, REST routes, or reconciliation execution.
+
+Patch 2.1.13 responds only to the fourth observed terminal publication
+incident by adding the fixed robot-vacuum article, post 30, and generated
+public slug to the reconciliation allowlist. Its observed state is eligible
+only for `VERIFIED_NO_REDIRECT_META_ROWS`: the locked planner must report
+`CLEAN`, empty delete rows and digests, and both strict before/after hash
+equalities. Robot exact-row cleanup is refused in both planning and execution.
+The no-row target map contains only Dishwasher and Robot; Portable-power and
+Anker remain ineligible for a clean no-row path. Robot operation material
+binds its article ID, post ID, and public-slug hash while retaining the exact
+V2 material shape, so the recorded Dishwasher V2 operation hash is unchanged.
+Exact-row cleanup retains byte-compatible V1 material and the stored
+Portable-power and Anker hashes. No `DELETE` occurs for Robot, while the same
+SERIALIZABLE transaction, published-state readback, audit append, distinct
+human, receipts, gates, counts, and REST contracts remain unchanged.
 
 Normal execution still requires two default-off host gates and a distinct wp-admin
 human approval of the exact proposal hash. There is no REST approval route, no

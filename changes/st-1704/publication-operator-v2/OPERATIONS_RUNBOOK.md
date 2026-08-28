@@ -2,8 +2,8 @@
 
 ## Offline build and review
 
-The current deterministic package is `raos-bounded-operator` 2.1.7. This patch
-does not change either REST schema. It requires the exact WordPress 7.1
+The current deterministic package is `raos-bounded-operator` 2.1.13. It does
+not change either REST schema. It retains the exact WordPress 7.1
 priority-12 `wp_check_for_changed_slugs` and `wp_check_for_changed_dates`
 registrations, and suppresses only their target-post redirect-meta operations
 during the bounded `post_updated` replay.
@@ -46,6 +46,68 @@ edit-published, edit-others, operator, or administrator capability. Activation
 stops if WordPress cannot create, persist, normalize, or exactly read back the
 role. This does not assign the role or create a credential.
 
+Patch 2.1.8 confines the distinct fixed-login `raos-draft-writer` credential's
+transport to raw HTTPS `GET` or `POST` on the core `/wp/v2/posts` collection.
+XML-RPC, method overrides, other methods, other REST paths, and
+identity/capability drift are refused. The transport guard recognizes either
+the immutable login or the role marker, including after role removal or
+replacement.
+The existing base-role authority to create and recover the user's own Drafts
+is unchanged. Only the formal verifier's exact post-sanitization `GET` query
+shapes arm the transient projection; nonmatching collection `GET`/`POST`
+requests fall back to base-role behavior. The bridge may satisfy only
+`edit_post` for fixed public posts 19, 28, 29, 41, and 30, plus fixed Review
+Draft 26 at the exact payload-hash-bound carry-on Review slug. It persists no
+extra capability and never grants publication or administration authority.
+
+Patch 2.1.9 evaluates the projection at its earliest bounded `user_has_cap`
+hook priority, before ordinary filters can alter the received capability array.
+It retains the exact full-capability comparison and every existing fixed request,
+controller, `get_items`/`check_update_permission`, post, and mapped-capability
+check.
+
+Patch 2.1.10 is limited to the third concrete terminal incident encountered
+during the dishwasher publication. It adds only the generated fixed binding
+for that article, post 41, and its public slug to the portable-power and Anker
+incident allowlist. It does not pre-authorize the later robot-vacuum article or
+establish a reusable incident policy. The canonical receipt remains terminal
+and unchanged. Reconciliation still means only exact locked redirect-metadata
+cleanup followed by recording one owner-private verification evidence SHA-256;
+it does not complete replay or change proposal state, result, counts, REST
+schema, normal gates, or normal write authority.
+
+Patch 2.1.11 admits the exact observed no-row state only for that fixed
+dishwasher binding. The locked metadata planner must report `CLEAN`, an empty
+delete set and empty cleanup digests, equality between current and expected
+after rows, and equality between the before and expected after multisets while
+the audit remains `CLEANUP_REQUIRED`. The resulting
+`VERIFIED_NO_REDIRECT_META_ROWS` V2 operation material binds the disposition,
+`CLEAN` state, and empty cleanup rows. Execution performs no `DELETE`, but it
+still runs inside the same SERIALIZABLE transaction and requires the same
+published-state readback, audit append, and commit. Existing exact-row cleanup
+continues to use byte-compatible V1 operation material so the already recorded
+portable-power and Anker operation hashes remain valid. This does not change a
+receipt, proposal state/result/count, REST schema, gate, or Robot eligibility.
+
+Patch 2.1.12 changes only the private Tools preview projection. The preview
+returns the cleanup disposition already recomputed by the locked server plan:
+`VERIFIED_NO_REDIRECT_META_ROWS` for the exact dishwasher no-row state and
+`ALREADY_RECONCILED` for completed incidents. No submitted field can select
+the disposition, and operation material/hashes, receipts, gates, permissions,
+REST routes, and execution behavior remain unchanged.
+
+Patch 2.1.13 admits only the fourth observed terminal incident: the exact
+Robot article, post 30, and generated public slug. Robot is no-row-only. Its
+locked metadata plan must be `CLEAN`, both row collections must be empty, and
+the current/expected rows and before/after multiset hashes must be equal.
+Planning and execution both refuse a Robot exact-row cleanup before `DELETE`.
+The no-row literal map contains only Dishwasher and Robot; Portable-power and
+Anker clean states stay ineligible. Robot operation material binds its exact
+article, post, and public-slug hash using the existing V2 shape. Therefore the
+Dishwasher V2 operation bytes/hash and the Portable-power/Anker V1 operation
+bytes/hashes remain unchanged. The same transaction, readback, audit,
+distinct-human, terminal-receipt, gate, count, and REST invariants apply.
+
 1. Run `make -f changes/st-1704/publication-operator-v2/Makefile check`.
 2. Review the exact runtime manifest, deterministic package SHA-256, generated
    four-article binding, controller diff, and terminal local checks.
@@ -60,21 +122,60 @@ operations. Both `RAOS_OPERATOR_WRITES_ENABLED` and
 for proposal creation or apply; either false/absent closes the v2 write surface.
 Keep the existing exact executor identity and Application Password confinement.
 For owner-private authenticated draft/public verification, a human WordPress
-administrator may create a distinct non-administrator user, assign only
-`RAOS Draft Writer`, and create a dedicated Application Password. User
+administrator may create the distinct non-administrator login
+`raos-draft-writer`, assign only `RAOS Draft Writer`, and create a dedicated
+Application Password. User
 creation, role assignment, Application Password creation/copying, and insertion
 into the owner-private credential store remain human external operations. Never
 reuse the bound `raos_operator_executor` identity or its Application Password
 for owner verification.
 
+Do not create or install the Draft-writer Application Password until plugin
+2.1.13 or later is active and its exact package/version checks pass. The
+temporary projection is read-only; the role's pre-existing own-Draft
+create/recover behavior is unchanged and remains bounded by its exact base
+capabilities.
+
+For a fresh deployment that has never activated 2.1.7 or later, keep every
+Draft-writer user and Application Password absent. Install the package, then
+explicitly activate it. Package replacement alone does not run activation
+hooks. Verify the active plugin version and exact persisted `RAOS Draft Writer`
+role (`read`, `edit_posts`, and no other capability) before assigning the role
+to the exact `raos-draft-writer` login and creating the Application Password.
+If activation stops
+after normalizing the role, do not create a credential; restore or reactivate a
+known-good package and repeat exact role verification first.
+
+For the current 2.1.12 upgrade state, the role has already been activated and
+exactly persisted, dedicated user ID 3 is assigned, and its dedicated
+Application Password may already exist. Version 2.1.13 does not change that
+DB/role schema. Replace 2.1.12 in place without deactivation/reactivation, then
+verify active version 2.1.13, the exact persisted role, dedicated user ID 3's exact
+`raos-draft-writer` login and identity,
+and both operator status surfaces before creating the Application Password.
+Avoiding deactivation also avoids an unnecessary interval without the new
+transport confinement.
+
+Before rollback, downgrade, deactivation, role removal/replacement, or any
+direct database identity change after a Draft-writer credential exists, revoke
+that Application Password first, then remove/disable the dedicated user's
+Draft-writer assignment while 2.1.13 confinement is still active. WordPress UI
+does not rename `user_login`; do not edit this immutable binding directly.
+Deactivation does not remove the persisted role or Application Password, so
+reversing that order would leave the base `read`/`edit_posts` authority without
+the transport confinement.
+
 ## Fixed terminal redirect-metadata reconciliation
 
 This exceptional Tools workflow is not a REST recovery route and is not a
-generic post/meta editor. It is compiled for only the portable-power article at
-post 28 and the Anker comparison at post 29. Proposal identifiers are not
-compiled into or accepted as target selection: the controller requires exactly
-one canonical terminal candidate for each fixed article/post binding and treats
-the form proposal ID only as a stale-request assertion.
+generic post/meta editor. It is compiled only for the four observed incidents:
+the portable-power article at post 28, the Anker comparison at post 29, and the
+dishwasher article at post 41, plus the robot-vacuum article at post 30, each
+with its exact generated public slug. Proposal identifiers are not compiled into or
+accepted as target selection: the controller requires exactly one canonical
+terminal candidate for each fixed article/post/slug binding and treats the form
+proposal ID only as a stale-request assertion. The approval TTL must already be
+expired before any preview or cleanup can succeed.
 
 1. Disable normal publication writes. Set the strict booleans to master `true`,
    publication `false`, and
@@ -94,10 +195,15 @@ the form proposal ID only as a stale-request assertion.
    final 12 operation-hash characters. The administrator must differ from the
    proposal creator.
 4. The transaction refuses missing/duplicate/unrelated metadata or any
-   pre-state that WordPress core would delete. It CAS-deletes only the exact
-   extra Review `_wp_old_slug` and conditional previous `_wp_old_date`, verifies
-   the full published state, appends `REDIRECT_META_RECONCILED`, and commits.
-   The terminal proposal state/result/count are intentionally unchanged.
+   pre-state that WordPress core would delete. When exact redirect extras are
+   present, it CAS-deletes only the extra Review `_wp_old_slug` and conditional
+   previous `_wp_old_date`. For only the exact Dishwasher or Robot incident, a
+   verified `CLEAN` multiset with zero cleanup rows performs no deletion. Robot
+   is never eligible for the exact-row deletion path. Both eligible paths
+   verify the full published state, append `REDIRECT_META_RECONCILED`, and
+   commit.
+   The terminal proposal state/result/count and receipt are intentionally
+   unchanged; reconciliation never converts the receipt into success.
 5. Produce and retain the external public verification artifact in the
    owner-private evidence store. The Tools page does not fetch or validate
    arbitrary HTTP content. In the second form, attest the artifact's full

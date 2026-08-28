@@ -48,17 +48,62 @@ def test_gate_mode_is_strict_default_off_and_mutually_exclusive() -> None:
     assert "self::reconciliation_gate_enabled()" in incident
 
 
-def test_allowlist_binds_only_two_article_post_pairs_without_proposal_constants() -> None:
-    targets = method("terminal_reconciliation_targets", "bindings_are_exact")
+def test_allowlist_binds_only_four_article_post_slug_pairs_without_proposal_constants() -> None:
+    targets = method(
+        "terminal_reconciliation_targets",
+        "reconciliation_target_matches_literal_map",
+    )
     assert "st1704-portable-power-station-guide" in targets
     assert "st1704-anker-solix-c300-c800-c1000-differences" in targets
-    assert "st1704-countertop-dishwasher-for-small-households" not in targets
-    assert "st1704-compact-robot-vacuum-shortlist" not in targets
+    assert "st1704-countertop-dishwasher-for-small-households" in targets
+    assert "st1704-compact-robot-vacuum-shortlist" in targets
     assert "self::fixed_revision_post_ids()" in targets
     assert "self::fixed_articles()" in targets
+    assert "'public_slug' => $articles[$article_id]" in targets
     assert "proposal" not in targets.lower()
     assert "RECONCILIATION_PROPOSAL_ID" not in source()
     assert "reconciliation_proposal_ids" not in source()
+    assert source().count("count($targets) !== 4") == 3
+    assert "count($targets) !== 3" not in source()
+    assert "count($targets) !== 2" not in source()
+
+
+def test_admin_copy_states_four_fixed_incidents_and_terminal_receipt_boundary() -> None:
+    render = method(
+        "render_terminal_reconciliation_tools",
+        "preview_terminal_reconciliation",
+    )
+    assert "limited to the four fixed terminal publication incidents" in render
+    assert "either verified dishwasher or robot-vacuum no-row case" in render
+    assert "Cleanup disposition" in render
+    assert "will delete no metadata" in render
+    receipt = method(
+        "validate_terminal_reconciliation_receipt",
+        "validate_reconciliation_audit_chain",
+    )
+    assert "$approval_expiry_epoch > time()" in receipt
+    assert "SET state" not in receipt
+
+
+def test_cleanup_authority_matrix_is_literal_and_robot_is_no_row_only() -> None:
+    php = source()
+    exact_map = php.split(
+        "const RECONCILIATION_EXACT_ROWS_TARGETS", 1
+    )[1].split("const RECONCILIATION_NO_ROWS_DISPOSITION", 1)[0]
+    no_row_map = php.split(
+        "const RECONCILIATION_NO_ROWS_TARGETS", 1
+    )[1].split("const MUTEX_PURPOSE", 1)[0]
+    for article_id in (
+        "st1704-portable-power-station-guide",
+        "st1704-anker-solix-c300-c800-c1000-differences",
+        "st1704-countertop-dishwasher-for-small-households",
+    ):
+        assert article_id in exact_map
+    assert "st1704-compact-robot-vacuum-shortlist" not in exact_map
+    assert "st1704-countertop-dishwasher-for-small-households" in no_row_map
+    assert "st1704-compact-robot-vacuum-shortlist" in no_row_map
+    assert "st1704-portable-power-station-guide" not in no_row_map
+    assert "st1704-anker-solix-c300-c800-c1000-differences" not in no_row_map
 
 
 def test_candidate_discovery_is_exact_unique_and_never_generic_latest() -> None:
@@ -127,6 +172,33 @@ def test_admin_preview_exposes_only_a_bounded_error_code_for_diagnosis() -> None
     assert "preg_match" not in diagnostic
     assert "get_error_message" not in diagnostic
     assert "get_error_data" not in diagnostic
+
+
+def test_preview_projects_server_computed_cleanup_disposition() -> None:
+    preview = method(
+        "preview_terminal_reconciliation",
+        "terminal_reconciliation_preview_projection",
+    )
+    assert "terminal_reconciliation_plan_for_target" in preview
+    assert "terminal_reconciliation_preview_projection($plan)" in preview
+    assert "$_GET" not in preview
+    assert "$_POST" not in preview
+    projection = method(
+        "terminal_reconciliation_preview_projection",
+        "reconciliation_submission_authentication",
+    )
+    for field in (
+        "cleanup_disposition",
+        "operation_sha256",
+        "proposal_id",
+        "stage",
+    ):
+        assert f"'{field}' => $plan['{field}']" in projection
+    assert "RECONCILIATION_EXACT_ROWS_DISPOSITION" in projection
+    assert "RECONCILIATION_NO_ROWS_DISPOSITION" in projection
+    assert "'ALREADY_RECONCILED'" in projection
+    assert "array('CLEANED', 'PUBLIC_CONFIRMED')" in projection
+    assert "raos_st1704_reconciliation_state_invalid" in projection
 
 
 def test_terminal_receipt_binds_rollback_approval_dates_and_state_without_mutation() -> None:
@@ -283,10 +355,78 @@ def test_cleanup_hash_binds_terminal_instance_audit_ids_and_before_after_hashes(
         assert f"'{field}'" in plan
     assert "'failure_code' => $receipt['failure_code']" in plan
     assert "hash('sha256', $operation_material)" in plan
+    assert "terminal_reconciliation_operation_material" in plan
     meta = method("reconciliation_meta_cleanup_plan", "rest_verify_revision")
     assert "'meta_id' => $row['meta_id']" in meta
     assert "'key_sha256' => hash('sha256', $row['meta_key'])" in meta
     assert "'value_sha256' => hash('sha256', $row['meta_value'])" in meta
+
+
+def test_cleanup_dispositions_use_exact_literal_authority_maps_and_hash_binding() -> None:
+    disposition = method(
+        "terminal_reconciliation_cleanup_disposition",
+        "terminal_reconciliation_operation_material",
+    )
+    for required in (
+        "RECONCILIATION_NO_ROWS_DISPOSITION",
+        "reconciliation_exact_rows_target_is_exact",
+        "reconciliation_no_rows_target_is_exact",
+        "$audit['stage'] !== 'CLEANUP_REQUIRED'",
+        "$meta_plan['state'] !== 'CLEAN'",
+        "$meta_plan['delete_rows'] !== array()",
+        "$meta_plan['cleanup_row_digests'] !== array()",
+        "current_meta_rows_sha256",
+        "expected_after_meta_rows_sha256",
+        "before_meta_multiset_sha256",
+        "expected_after_meta_multiset_sha256",
+    ):
+        assert required in disposition
+    operation = method(
+        "terminal_reconciliation_operation_material",
+        "build_terminal_reconciliation_plan",
+    )
+    assert "RAOS_ST1704_REDIRECT_META_RECONCILIATION_V1" in operation
+    assert "RAOS_ST1704_REDIRECT_META_RECONCILIATION_V2" in operation
+    assert "reconciliation_no_rows_operation_target_is_exact" in operation
+    assert "$operation_fields['cleanup_disposition']" in operation
+    assert "$operation_fields['cleanup_state']" in operation
+    exact_branch = operation.split(
+        "=== self::RECONCILIATION_EXACT_ROWS_DISPOSITION", 1
+    )[1].split(
+        "if ($cleanup_disposition\n            !== self::RECONCILIATION_NO_ROWS_DISPOSITION",
+        1,
+    )[0]
+    assert "canonical_json($operation_fields)" in exact_branch
+    assert "$operation_fields['cleanup_disposition']" not in exact_branch
+    assert "$operation_fields['cleanup_state']" not in exact_branch
+
+
+def test_executor_rechecks_literal_target_map_before_delete_or_no_row_audit() -> None:
+    action = method(
+        "apply_reconciliation_metadata_disposition",
+        "delete_exact_reconciliation_meta_rows",
+    )
+    assert "RECONCILIATION_EXACT_ROWS_DISPOSITION" in action
+    assert "delete_exact_reconciliation_meta_rows" in action
+    exact_rows = action.split(
+        "=== self::RECONCILIATION_EXACT_ROWS_DISPOSITION", 1
+    )[1].split(
+        "if ($plan['cleanup_disposition']\n            !== self::RECONCILIATION_NO_ROWS_DISPOSITION",
+        1,
+    )[0]
+    assert "reconciliation_exact_rows_target_is_exact" in exact_rows
+    assert "$plan['proposal']['draft_post_id'] === $plan['post_id']" in exact_rows
+    no_rows = action.split(
+        "!== self::RECONCILIATION_NO_ROWS_DISPOSITION", 1
+    )[1]
+    assert "delete_exact_reconciliation_meta_rows" not in no_rows
+    for required in (
+        "$plan['cleanup_state'] === 'CLEAN'",
+        "$plan['delete_rows'] === array()",
+        "$plan['proposal']['draft_post_id'] === $plan['post_id']",
+        "reconciliation_no_rows_target_is_exact",
+    ):
+        assert required in no_rows
 
 
 def test_cleanup_uses_exact_meta_id_cas_readback_audit_and_transaction() -> None:
@@ -297,11 +437,13 @@ def test_cleanup_uses_exact_meta_id_cas_readback_audit_and_transaction() -> None
     isolation = cleanup.index("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE")
     start = cleanup.index("START TRANSACTION", isolation)
     plan = cleanup.index("terminal_reconciliation_plan_for_assertion", start)
-    delete = cleanup.index("delete_exact_reconciliation_meta_rows", plan)
-    readback = cleanup.index("published_state_matches", delete)
+    disposition = cleanup.index(
+        "apply_reconciliation_metadata_disposition", plan
+    )
+    readback = cleanup.index("published_state_matches", disposition)
     audit = cleanup.index("RECONCILIATION_CLEANUP_EVENT", readback)
     commit = cleanup.index("$wpdb->query('COMMIT')", audit)
-    assert isolation < start < plan < delete < readback < audit < commit
+    assert isolation < start < plan < disposition < readback < audit < commit
     cas = method(
         "delete_exact_reconciliation_meta_rows",
         "execute_reconciled_public_confirmation",
@@ -326,10 +468,21 @@ def test_cleanup_fault_points_mutex_and_stale_hash_all_roll_back_closed() -> Non
     assert "acquire_publication_mutex" in cleanup
     assert cleanup.count("publication_mutex_is_owned($mutex_name)") >= 3
     assert "hash_equals(\n                    $plan['operation_sha256']" in cleanup
+    plan = cleanup.index("terminal_reconciliation_plan_for_assertion")
+    stale_hash = cleanup.index(
+        "hash_equals(\n                    $plan['operation_sha256']", plan
+    )
+    disposition = cleanup.index(
+        "apply_reconciliation_metadata_disposition", stale_hash
+    )
+    readback = cleanup.index("published_state_matches", disposition)
+    audit = cleanup.index("RECONCILIATION_CLEANUP_EVENT", readback)
+    commit = cleanup.index("$wpdb->query('COMMIT')", audit)
+    assert plan < stale_hash < disposition < readback < audit < commit
     for fault in (
         "reconciliation transaction unavailable",
         "reconciliation assertion changed",
-        "reconciliation metadata CAS failed",
+        "reconciliation metadata disposition failed",
         "reconciliation readback changed",
         "reconciliation receipt failed",
         "reconciliation stage invalid",

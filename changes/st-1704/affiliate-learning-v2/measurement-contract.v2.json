@@ -23,7 +23,7 @@
       "article_type_code": "AT-004",
       "intent_classification": "MODEL_DIFFERENCES",
       "intent_cluster": "備え",
-      "packet_sha256": "88fc4d065981fcde7c0a169181c428e519d19546f9ed451a5cc1d57b9442b645",
+      "packet_sha256": "53c2a7081e0fd78597fe99e398d66d876f15cea5e827d720cc0fbc1901e83997",
       "slot": 3,
       "slug": "anker-solix-c300-c800-c1000-differences"
     },
@@ -123,7 +123,7 @@
   "slice_id": "AFFILIATE_LEARNING_MEASUREMENT_V2",
   "source_bindings": {
     "article_collection_path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-    "article_collection_sha256": "df3856ec35e6b1f976369adf110f891265af59a9a2c97b6b418764bc36b8385a",
+    "article_collection_sha256": "a27532557d3edca285c43a1577427f645e65a1355f25b0cfbf8683e35898ed65",
     "compatibility_template_path": "changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json",
     "compatibility_template_sha256": "885735bdf2df835c6725d92a7792328d292e56555e76cc0f3ac7df1eda08fc3b"
   },
