@@ -13,8 +13,10 @@ import argparse
 from collections.abc import Mapping, Sequence
 from copy import deepcopy
 from datetime import datetime
+from html import escape
 import hashlib
 import importlib.util
+import json
 from pathlib import Path
 import re
 import stat
@@ -33,6 +35,8 @@ try:
         protected_path_changes,
         simulate_route_round_trip,
         verify_local_test_evidence,
+        verify_phase3_external_state,
+        verify_phase3_local_browser_evidence,
         verify_visual_review_evidence,
     )
 except ModuleNotFoundError:  # direct ``python scripts/...`` execution
@@ -45,6 +49,8 @@ except ModuleNotFoundError:  # direct ``python scripts/...`` execution
         protected_path_changes,
         simulate_route_round_trip,
         verify_local_test_evidence,
+        verify_phase3_external_state,
+        verify_phase3_local_browser_evidence,
         verify_visual_review_evidence,
     )
 
@@ -85,10 +91,31 @@ PHASE2_PREVIEW_INPUT_PATHS: Final = (
     Path("packages/web-ui/src/decision-support-v2/preview/checker.js"),
     Path("packages/web-ui/src/decision-support-v2/preview/render_preview.py"),
 )
+PHASE3_WORDPRESS_SOURCE_PATHS: Final = (
+    Path("packages/web-ui/src/decision-support-v2/wordpress/projection.py"),
+    Path(
+        "packages/web-ui/src/decision-support-v2/wordpress/plugin/"
+        "raos-v2-decision-support/plugin-manifest.v1.json"
+    ),
+    Path(
+        "packages/web-ui/src/decision-support-v2/wordpress/plugin/"
+        "raos-v2-decision-support/raos-v2-decision-support.php"
+    ),
+    Path(
+        "packages/web-ui/src/decision-support-v2/wordpress/plugin/"
+        "raos-v2-decision-support/assets/decision-support.css"
+    ),
+)
 PHASE2_RECORDED_EVIDENCE_PATHS: Final = (
     Path("changes/raos-v2/recorded-inputs/phase2-browser-evidence.v1.json"),
     Path("changes/raos-v2/recorded-inputs/phase2-local-test-evidence.v1.json"),
     Path("changes/raos-v2/recorded-inputs/phase2-visual-evidence.v1.json"),
+)
+PHASE3_EXTERNAL_STATE_PATH: Final = Path(
+    "changes/raos-v2/phase-3/inputs/external-action-state.v1.yaml"
+)
+PHASE3_LOCAL_BROWSER_EVIDENCE_PATH: Final = Path(
+    "changes/raos-v2/recorded-inputs/phase3-local-browser-evidence.v1.json"
 )
 PHASE2_IMPLEMENTATION_PATHS: Final = (
     Path("packages/web-ui/src/decision-support-v2/checker.ts"),
@@ -102,10 +129,12 @@ PHASE2_IMPLEMENTATION_PATHS: Final = (
     Path("python/raos/adapters/decision_support_v2/recorded_rakuten.py"),
     Path("python/raos/adapters/decision_support_v2/strict_json.py"),
     Path("python/raos/adapters/decision_support_v2/wordpress_disabled.py"),
+    Path("python/raos/adapters/decision_support_v2/wordpress_phase3_disabled.py"),
     Path("python/raos/application/decision_support_v2/__init__.py"),
     Path("python/raos/application/decision_support_v2/checker.py"),
     Path("python/raos/application/decision_support_v2/offer_lookup.py"),
     Path("python/raos/application/decision_support_v2/publication.py"),
+    Path("python/raos/application/decision_support_v2/phase3_publication.py"),
     Path("python/raos/application/decision_support_v2/selection.py"),
     Path("python/raos/domain/decision_support_v2/__init__.py"),
     Path("python/raos/domain/decision_support_v2/business.py"),
@@ -116,6 +145,7 @@ PHASE2_IMPLEMENTATION_PATHS: Final = (
     Path("python/raos/domain/decision_support_v2/media.py"),
     Path("python/raos/domain/decision_support_v2/models.py"),
     Path("python/raos/domain/decision_support_v2/publication.py"),
+    Path("python/raos/domain/decision_support_v2/phase3_publication.py"),
     Path("python/raos/domain/decision_support_v2/selection.py"),
     Path("python/raos/ports/decision_support_v2/__init__.py"),
     Path("python/raos/ports/decision_support_v2/protocols.py"),
@@ -123,6 +153,7 @@ PHASE2_IMPLEMENTATION_PATHS: Final = (
 PHASE2_TEST_SOURCE_PATHS: Final = (
     Path("tests/raos_v2/browser-validation.mjs"),
     Path("tests/raos_v2/conftest.py"),
+    Path("tests/raos_v2/phase3-local-validation.mjs"),
     Path("tests/raos_v2/test_adapters_recorded.py"),
     Path("tests/raos_v2/test_browser_contract.py"),
     Path("tests/raos_v2/test_content_quality.py"),
@@ -130,6 +161,12 @@ PHASE2_TEST_SOURCE_PATHS: Final = (
     Path("tests/raos_v2/test_decision_engine.py"),
     Path("tests/raos_v2/test_events_privacy.py"),
     Path("tests/raos_v2/test_phase0_contracts.py"),
+    Path("tests/raos_v2/test_phase3_artifacts.py"),
+    Path("tests/raos_v2/test_phase3_browser_evidence.py"),
+    Path("tests/raos_v2/test_phase3_local_validation_contract.py"),
+    Path("tests/raos_v2/test_phase3_public_capture.py"),
+    Path("tests/raos_v2/test_phase3_publication.py"),
+    Path("tests/raos_v2/test_phase3_wordpress_projection.py"),
     Path("tests/raos_v2/test_publication_contract.py"),
     Path("tests/raos_v2/test_selection_contract.py"),
     Path("tests/raos_v2/test_source_import.py"),
@@ -146,6 +183,52 @@ PHASE2_SOURCE_PATHS: Final = (
     *PHASE2_RECORDED_EVIDENCE_PATHS,
     *PHASE2_IMPLEMENTATION_PATHS,
     *PHASE2_TEST_SOURCE_PATHS,
+)
+PHASE3_SOURCE_PATHS: Final = (
+    PHASE3_EXTERNAL_STATE_PATH,
+    PHASE3_LOCAL_BROWSER_EVIDENCE_PATH,
+    *PHASE3_WORDPRESS_SOURCE_PATHS,
+)
+PHASE3_BROWSER_BOOTSTRAP_SOURCE_PATHS: Final = (
+    PHASE3_EXTERNAL_STATE_PATH,
+    *PHASE3_WORDPRESS_SOURCE_PATHS,
+)
+PHASE3_ARTIFACT_ROOT: Final = Path(
+    "changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support"
+)
+PHASE3_OUTPUT_PATHS: Final = (
+    Path("changes/raos-v2/phase-3/production-backup-export-runbook.md"),
+    PHASE3_ARTIFACT_ROOT / "raos-v2-decision-support.php",
+    PHASE3_ARTIFACT_ROOT / "assets/decision-support.css",
+    PHASE3_ARTIFACT_ROOT / "plugin-manifest.v1.json",
+    Path("changes/raos-v2/phase-3/preview/carry-on-suitcase-comparison/index.html"),
+    Path("changes/raos-v2/phase-3/generated/post-content.html"),
+    Path("changes/raos-v2/phase-3/generated/wordpress-update-candidate.v1.json"),
+    Path("changes/raos-v2/phase-3/generated/review-candidate.v1.json"),
+    Path("changes/raos-v2/phase-3/generated/human-review-request.v1.json"),
+    Path("changes/raos-v2/phase-3/generated/wordpress-dry-run-status.v1.json"),
+    Path("changes/raos-v2/phase-3/generated/seo-url-change-plan.v1.yaml"),
+    Path("changes/raos-v2/phase-3/generated/privacy-legal-review-packet.v1.yaml"),
+    Path("changes/raos-v2/phase-3/generated/rollback-rehearsal.v1.json"),
+    Path("changes/raos-v2/phase-3/generated/external-action-evidence-template.v1.yaml"),
+    Path("changes/raos-v2/phase-3/generated/phase-3-validation.v1.json"),
+    Path("changes/raos-v2/phase-3/phase-3-preparation-report.md"),
+    Path("changes/raos-v2/phase-3/integration-pr-body.md"),
+    Path("contracts/raos-v2/v2/human-review-receipt.schema.json"),
+    Path("contracts/raos-v2/v2/publication-package.schema.json"),
+    Path("contracts/raos-v2/v2/wordpress-update-payload.schema.json"),
+    Path("contracts/raos-v2/v2/wordpress-dry-run-receipt.schema.json"),
+    Path("contracts/raos-v2/v2/wordpress-export-binding.schema.json"),
+    Path("contracts/raos-v2/v2/preaction-binding.schema.json"),
+    Path("contracts/raos-v2/v2/public-verification-receipt.schema.json"),
+    Path("contracts/raos-v2/v2/public-browser-verification-receipt.schema.json"),
+)
+PHASE3_BROWSER_BOOTSTRAP_OUTPUT_PATHS: Final = (
+    PHASE3_ARTIFACT_ROOT / "raos-v2-decision-support.php",
+    PHASE3_ARTIFACT_ROOT / "assets/decision-support.css",
+    PHASE3_ARTIFACT_ROOT / "plugin-manifest.v1.json",
+    Path("changes/raos-v2/phase-3/generated/post-content.html"),
+    Path("changes/raos-v2/phase-3/preview/carry-on-suitcase-comparison/index.html"),
 )
 SOURCE_PATHS: Final = (
     Path("changes/raos-v2/source-package/2.0.0-design/00_EXECUTIVE_DECISIONS.md"),
@@ -188,6 +271,7 @@ SOURCE_PATHS: Final = (
     RECORDED_INPUT_PATH,
     PHASE0_VISUAL_EVIDENCE_PATH,
     *PHASE2_SOURCE_PATHS,
+    *PHASE3_SOURCE_PATHS,
     Path("scripts/build_raos_v2_successor.py"),
     Path("scripts/raos_build_core.py"),
     Path("scripts/validate_raos_v2_successor.py"),
@@ -246,6 +330,7 @@ OUTPUT_PATHS: Final = (
     Path(
         "changes/raos-v2/phase-2/preview/differences/ace-cresta-vs-difference-vs-maxpass4/index.html"
     ),
+    *PHASE3_OUTPUT_PATHS,
 )
 TEST_PATHS: Final = (Path("tests/raos_v2"),)
 
@@ -278,6 +363,15 @@ def fail(code: str) -> NoReturn:
 
 def sha256(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
+
+
+def semantic_json_sha256(value: Mapping[str, object]) -> str:
+    """Match the domain semantic-digest contract for closed mappings."""
+
+    payload = json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return sha256(payload)
 
 
 def exact_file_set_sha256(paths: Sequence[Path]) -> str:
@@ -318,14 +412,14 @@ def yaml_bytes(value: object) -> bytes:
 def _read_json(path: Path) -> Any:
     try:
         return load_json_strict((ROOT / path).read_bytes())
-    except (OSError, ValidationFailure):
+    except OSError, ValidationFailure:
         fail("RAOS_V2_SOURCE_JSON_INVALID")
 
 
 def _read_yaml(path: Path) -> Any:
     try:
         return load_yaml_strict((ROOT / path).read_bytes())
-    except (OSError, ValidationFailure):
+    except OSError, ValidationFailure:
         fail("RAOS_V2_SOURCE_YAML_INVALID")
 
 
@@ -337,7 +431,7 @@ def _manifest_hashes() -> dict[str, str]:
         if sha256(payload) != SOURCE_MANIFEST_SHA256:
             fail("RAOS_V2_SOURCE_MANIFEST_ANCHOR_MISMATCH")
         lines = payload.decode("utf-8").splitlines()
-    except (OSError, UnicodeError):
+    except OSError, UnicodeError:
         fail("RAOS_V2_SOURCE_MANIFEST_INVALID")
     for line in lines:
         parts = line.split("  ", 1)
@@ -484,6 +578,49 @@ def clarifications_document() -> dict[str, object]:
                 "decision": "packages/web-ui/src/decision-support-v2 is the authoritative UI source; its preview subtree is the sole deterministic preview input and changes/raos-v2/phase-2/preview contains generated output only",
                 "supersedes": "the former duplicated changes/raos-v2/phase-2/ui-source input location",
             },
+            {
+                "id": "C-V2-014",
+                "decision": "the effective Phase 3 planning ceiling is 20 hours and external spend remains JPY 0",
+                "note": "Phase 3 backlog row estimates are reconciliation information, not an additive budget gate",
+            },
+            {
+                "id": "C-V2-015",
+                "decision": "Phase 3 adds a v2 real-content seal contract that requires an exact non-synthetic human-review receipt; the Phase 2 v1 synthetic-only seal remains unchanged",
+            },
+            {
+                "id": "C-V2-016",
+                "decision": "the one-URL WordPress projection suppresses every unpublished future route and keeps every product CTA blocked until a current exact offer binding exists",
+            },
+            {
+                "id": "C-V2-017",
+                "decision": "B-V2-040 remains BLOCKED_EXTERNAL until human backup, review, deployment, WordPress write, publication, public verification, rollback evidence and seven stable days exist",
+            },
+            {
+                "id": "C-V2-018",
+                "decision": "the safe Phase 3 default preserves /carry-on-suitcase-comparison/, its self-canonical and sitemap membership with an empty redirect change set",
+            },
+            {
+                "id": "C-V2-019",
+                "decision": "B-V2-036 uses a marker-bound one-route WordPress block-presentation plugin instead of switching the active theme",
+                "rationale": "the one-URL migration must not restyle or risk unrelated public pages and remains reversible by removing one local artifact",
+            },
+            {
+                "id": "C-V2-020",
+                "decision": "the existing published A05 route uses an approved-cutover update contract whose precondition and postcondition both require post_status=publish; no Phase 3 review payload may demote it to draft",
+                "supersedes": "draft wording that could be interpreted as applying post_status=draft to the existing public post",
+            },
+            {
+                "id": "C-V2-021",
+                "decision": "each Phase 3 claim type, risk class, freshness and authoritative source status is closed by the Phase 2 candidate phase3_claim_authority digest before human review or seal",
+            },
+            {
+                "id": "C-V2-022",
+                "decision": "Phase 3 local test execution and external acceptance are reported separately; local evidence never marks an external-dependent Phase 3 acceptance complete",
+            },
+            {
+                "id": "C-V2-023",
+                "decision": "Phase 3 external-state input is a closed sanitized object at every nesting level and rejects unknown or secret-like fields",
+            },
         ],
     }
 
@@ -500,6 +637,27 @@ def _capture_input() -> dict[str, object]:
     ):
         fail("RAOS_V2_CAPTURE_INPUT_INVALID")
     return value
+
+
+def phase3_external_state() -> dict[str, object]:
+    """Load the sanitized, deny-by-default Phase 3 human/external state."""
+
+    value = _read_yaml(PHASE3_EXTERNAL_STATE_PATH)
+    if not isinstance(value, dict):
+        fail("RAOS_V2_PHASE3_EXTERNAL_STATE_INVALID")
+    try:
+        verify_phase3_external_state(value)
+    except ValidationFailure:
+        fail("RAOS_V2_PHASE3_EXTERNAL_STATE_INVALID")
+    return deepcopy(value)
+
+
+def phase3_external_status(state: Mapping[str, object], name: str) -> str:
+    section = state.get(name)
+    status = section.get("status") if isinstance(section, Mapping) else None
+    if not isinstance(status, str):
+        fail("RAOS_V2_PHASE3_EXTERNAL_STATE_INVALID")
+    return status
 
 
 def preflight_document(capture: Mapping[str, object]) -> dict[str, object]:
@@ -561,8 +719,7 @@ def _phase0_visual_evidence() -> dict[str, object]:
     value = _read_json(PHASE0_VISUAL_EVIDENCE_PATH)
     if (
         not isinstance(value, dict)
-        or value.get("schema")
-        != "RAOS_V2_RECORDED_PHASE0_VISUAL_EVIDENCE_V1"
+        or value.get("schema") != "RAOS_V2_RECORDED_PHASE0_VISUAL_EVIDENCE_V1"
         or value.get("evidence_class") != "PUBLIC_READ_ONLY_MANUAL_RECORDED"
         or value.get("raw_images") != "LOCAL_ONLY_NOT_TRACKED_NOT_REVERIFIED"
         or value.get("external_actions") != "NOT_EXECUTED"
@@ -604,9 +761,7 @@ def _phase0_visual_evidence() -> dict[str, object]:
             fail("RAOS_V2_PHASE0_VISUAL_EVIDENCE_INVALID")
         observed_pairs.add((str(path), str(viewport)))
     if observed_pairs != {
-        (path, viewport)
-        for path in expected_paths
-        for viewport in expected_viewports
+        (path, viewport) for path in expected_paths for viewport in expected_viewports
     }:
         fail("RAOS_V2_PHASE0_VISUAL_EVIDENCE_INVALID")
     return value
@@ -840,112 +995,112 @@ def deprecation_ledger() -> dict[str, object]:
     keep_gate = "NO_DELETION_SUCCESSOR_REVIEW_REQUIRED"
     removal_gate = "MINIMUM_2_RELEASES_AND_30_DAYS_UNUSED_PLUS_HUMAN_APPROVAL"
     assets = [
-            {
-                "asset": "root development policy/build/generator ownership",
-                "decision": "KEEP",
-                "reason": "dirty protection, standard commands and one generated owner are implementation safety",
-                "migration": "register V2 owner in the existing graph and retain root workflow",
-                "deletion_gate": keep_gate,
-            },
-            {
-                "asset": "docs/canonical docs/upstream and zip baselines",
-                "decision": "KEEP",
-                "reason": "immutable V1 evidence and authority cannot be rewritten by the successor",
-                "migration": "read-only reference from changes/raos-v2 overlay",
-                "deletion_gate": "NEVER_FROM_V2",
-            },
-            {
-                "asset": "secret scan denied-network authz and public/internal isolation",
-                "decision": "KEEP",
-                "reason": "validated security boundaries remain necessary",
-                "migration": "inherit as local tests and deny-default adapter policy",
-                "deletion_gate": keep_gate,
-            },
-            {
-                "asset": "publication operator journal and rollback concepts",
-                "decision": "REWORK",
-                "reason": "human gate, hash binding and rollback are valuable but the old breadth is excessive",
-                "migration": "reduce to local package states, synthetic seal test and disabled dry-run port",
-                "deletion_gate": removal_gate,
-            },
-            {
-                "asset": "claim evidence and editorial domain",
-                "decision": "REWORK",
-                "reason": "purpose is retained while the generic type surface is too broad",
-                "migration": "narrow to A_OFFICIAL_FACT D_EDITORIAL_JUDGEMENT and UNKNOWN",
-                "deletion_gate": removal_gate,
-            },
-            {
-                "asset": "Rakuten adapter",
-                "decision": "REWORK",
-                "reason": "exact identity and current provider constraints require a smaller boundary",
-                "migration": "RECORDED_ONLY fixture first; live mode absent through Phase 2",
-                "deletion_gate": removal_gate,
-            },
-            {
-                "asset": "public WordPress theme and Yoast integration",
-                "decision": "MIGRATE",
-                "reason": "public URLs must survive while UX and IA change",
-                "migration": "disabled adapter then one-URL-at-a-time human-gated migration",
-                "deletion_gate": removal_gate,
-            },
-            {
-                "asset": "published carry-on comparison article",
-                "decision": "MIGRATE",
-                "reason": "current search and reader-learning asset in the selected wedge",
-                "migration": "preserve slug/canonical until a verified V2 replacement is approved",
-                "deletion_gate": "NO_DELETE_SLUG_PRESERVING_REPLACEMENT_ONLY",
-            },
-            {
-                "asset": "portable power Anker dishwasher and robot-vacuum assets",
-                "decision": "DEFER",
-                "reason": "outside the wedge with unresolved evidence/media/safety cost",
-                "migration": "preserve current public state; re-score only after Phase 6 gate",
-                "deletion_gate": removal_gate,
-            },
-            {
-                "asset": "empty 家事 and 備え category UI",
-                "decision": "RETIRE",
-                "reason": "empty navigation harms trust and crawl quality",
-                "migration": "remove only from successor navigation after URL inventory decision",
-                "deletion_gate": removal_gate,
-            },
-            {
-                "asset": "Next.js or headless public application",
-                "decision": "DEFER",
-                "reason": "would duplicate the retained WordPress renderer",
-                "migration": "reconsider only after measured WordPress limits",
-                "deletion_gate": keep_gate,
-            },
-            {
-                "asset": "custom admin and review UI",
-                "decision": "DEFER",
-                "reason": "maintenance exceeds value at 25-page scale",
-                "migration": "reconsider at 50 pages or measured admin friction over 4h/week",
-                "deletion_gate": removal_gate,
-            },
-            {
-                "asset": "advanced causal attribution rank provider and paid dashboard",
-                "decision": "DEFER",
-                "reason": "provider evidence and zero-spend constraints do not support it",
-                "migration": "begin with GSC, first-party events and monthly sanitized reports",
-                "deletion_gate": removal_gate,
-            },
-            {
-                "asset": "automatic or partial publication",
-                "decision": "RETIRE",
-                "reason": "initial reader and production risk exceeds value",
-                "migration": "remove capability; retain only explicit human-gated contracts",
-                "deletion_gate": removal_gate,
-            },
-            {
-                "asset": "general Postgres and object-storage persistence",
-                "decision": "DEFER",
-                "reason": "versioned JSON/YAML is sufficient at current scale",
-                "migration": "reconsider after >10k records, measured latency or merge conflicts",
-                "deletion_gate": keep_gate,
-            },
-        ]
+        {
+            "asset": "root development policy/build/generator ownership",
+            "decision": "KEEP",
+            "reason": "dirty protection, standard commands and one generated owner are implementation safety",
+            "migration": "register V2 owner in the existing graph and retain root workflow",
+            "deletion_gate": keep_gate,
+        },
+        {
+            "asset": "docs/canonical docs/upstream and zip baselines",
+            "decision": "KEEP",
+            "reason": "immutable V1 evidence and authority cannot be rewritten by the successor",
+            "migration": "read-only reference from changes/raos-v2 overlay",
+            "deletion_gate": "NEVER_FROM_V2",
+        },
+        {
+            "asset": "secret scan denied-network authz and public/internal isolation",
+            "decision": "KEEP",
+            "reason": "validated security boundaries remain necessary",
+            "migration": "inherit as local tests and deny-default adapter policy",
+            "deletion_gate": keep_gate,
+        },
+        {
+            "asset": "publication operator journal and rollback concepts",
+            "decision": "REWORK",
+            "reason": "human gate, hash binding and rollback are valuable but the old breadth is excessive",
+            "migration": "reduce to local package states, synthetic seal test and disabled dry-run port",
+            "deletion_gate": removal_gate,
+        },
+        {
+            "asset": "claim evidence and editorial domain",
+            "decision": "REWORK",
+            "reason": "purpose is retained while the generic type surface is too broad",
+            "migration": "narrow to A_OFFICIAL_FACT D_EDITORIAL_JUDGEMENT and UNKNOWN",
+            "deletion_gate": removal_gate,
+        },
+        {
+            "asset": "Rakuten adapter",
+            "decision": "REWORK",
+            "reason": "exact identity and current provider constraints require a smaller boundary",
+            "migration": "RECORDED_ONLY fixture first; live mode absent through Phase 2",
+            "deletion_gate": removal_gate,
+        },
+        {
+            "asset": "public WordPress theme and Yoast integration",
+            "decision": "MIGRATE",
+            "reason": "public URLs must survive while UX and IA change",
+            "migration": "disabled adapter then one-URL-at-a-time human-gated migration",
+            "deletion_gate": removal_gate,
+        },
+        {
+            "asset": "published carry-on comparison article",
+            "decision": "MIGRATE",
+            "reason": "current search and reader-learning asset in the selected wedge",
+            "migration": "preserve slug/canonical until a verified V2 replacement is approved",
+            "deletion_gate": "NO_DELETE_SLUG_PRESERVING_REPLACEMENT_ONLY",
+        },
+        {
+            "asset": "portable power Anker dishwasher and robot-vacuum assets",
+            "decision": "DEFER",
+            "reason": "outside the wedge with unresolved evidence/media/safety cost",
+            "migration": "preserve current public state; re-score only after Phase 6 gate",
+            "deletion_gate": removal_gate,
+        },
+        {
+            "asset": "empty 家事 and 備え category UI",
+            "decision": "RETIRE",
+            "reason": "empty navigation harms trust and crawl quality",
+            "migration": "remove only from successor navigation after URL inventory decision",
+            "deletion_gate": removal_gate,
+        },
+        {
+            "asset": "Next.js or headless public application",
+            "decision": "DEFER",
+            "reason": "would duplicate the retained WordPress renderer",
+            "migration": "reconsider only after measured WordPress limits",
+            "deletion_gate": keep_gate,
+        },
+        {
+            "asset": "custom admin and review UI",
+            "decision": "DEFER",
+            "reason": "maintenance exceeds value at 25-page scale",
+            "migration": "reconsider at 50 pages or measured admin friction over 4h/week",
+            "deletion_gate": removal_gate,
+        },
+        {
+            "asset": "advanced causal attribution rank provider and paid dashboard",
+            "decision": "DEFER",
+            "reason": "provider evidence and zero-spend constraints do not support it",
+            "migration": "begin with GSC, first-party events and monthly sanitized reports",
+            "deletion_gate": removal_gate,
+        },
+        {
+            "asset": "automatic or partial publication",
+            "decision": "RETIRE",
+            "reason": "initial reader and production risk exceeds value",
+            "migration": "remove capability; retain only explicit human-gated contracts",
+            "deletion_gate": removal_gate,
+        },
+        {
+            "asset": "general Postgres and object-storage persistence",
+            "decision": "DEFER",
+            "reason": "versioned JSON/YAML is sufficient at current scale",
+            "migration": "reconsider after >10k records, measured latency or merge conflicts",
+            "deletion_gate": keep_gate,
+        },
+    ]
     for row in assets:
         decision = str(row["decision"])
         row["usage_evidence"] = {
@@ -968,7 +1123,9 @@ def deprecation_ledger() -> dict[str, object]:
             "plan": row["migration"],
         }
         row["rollback"] = {
-            "status": "NOT_APPLICABLE_RETAINED" if decision == "KEEP" else "LOCAL_PLAN_ONLY",
+            "status": "NOT_APPLICABLE_RETAINED"
+            if decision == "KEEP"
+            else "LOCAL_PLAN_ONLY",
             "plan": (
                 "asset remains retained; no retirement rollback is applicable"
                 if decision == "KEEP"
@@ -1013,8 +1170,8 @@ def validate_deprecation_ledger_document(document: Mapping[str, object]) -> None
             or row.get("decision")
             not in {"KEEP", "REWORK", "MIGRATE", "RETIRE", "DEFER"}
             or not all(
-            isinstance(row.get(key), dict)
-            for key in ("usage_evidence", "replacement", "rollback")
+                isinstance(row.get(key), dict)
+                for key in ("usage_evidence", "replacement", "rollback")
             )
         ):
             fail("RAOS_V2_DEPRECATION_LEDGER_INVALID")
@@ -1046,8 +1203,7 @@ def validate_deprecation_ledger_document(document: Mapping[str, object]) -> None
             fail("RAOS_V2_DEPRECATION_LEDGER_INVALID")
         if row.get("decision") == "RETIRE" and (
             usage.get("verified_unused") is not False
-            or row.get("removal_readiness")
-            != "BLOCKED_USAGE_NOT_VERIFIED_UNUSED"
+            or row.get("removal_readiness") != "BLOCKED_USAGE_NOT_VERIFIED_UNUSED"
         ):
             fail("RAOS_V2_DEPRECATION_LEDGER_INVALID")
 
@@ -1638,7 +1794,10 @@ def validate_cross_ledger_identity(
     route_rows = routes.get("routes")
     article_rows = article_definitions.get("articles")
     page_rows = pages.get("pages")
-    if not all(isinstance(value, list) for value in (portfolio, route_rows, article_rows, page_rows)):
+    if not all(
+        isinstance(value, list)
+        for value in (portfolio, route_rows, article_rows, page_rows)
+    ):
         fail("RAOS_V2_CROSS_LEDGER_IDENTITY_INVALID")
 
     def index(rows: object, key: str) -> dict[str, Mapping[str, object]]:
@@ -1713,7 +1872,7 @@ def validate_authoritative_ui_parity(
             if preview_checker is not None
             else (package_root / "preview/checker.js").read_text(encoding="utf-8")
         )
-    except (OSError, UnicodeError):
+    except OSError, UnicodeError:
         fail("RAOS_V2_AUTHORITATIVE_UI_PARITY_INVALID")
     rows = pages.get("pages")
     if not isinstance(rows, list) or pages.get("preview_robots") != "noindex,nofollow":
@@ -2007,6 +2166,30 @@ def _object_schema(
     }
     if all_of:
         document["allOf"] = list(all_of)
+    return document
+
+
+def _v2_object_schema(
+    name: str,
+    required: Sequence[str],
+    properties: Mapping[str, object],
+    *,
+    all_of: Sequence[object] = (),
+    definitions: Mapping[str, object] | None = None,
+) -> dict[str, object]:
+    document: dict[str, object] = {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": f"https://kurashinoshirube.com/contracts/raos-v2/v2/{name}.schema.json",
+        "title": name,
+        "type": "object",
+        "required": list(required),
+        "properties": dict(properties),
+        "additionalProperties": False,
+    }
+    if all_of:
+        document["allOf"] = list(all_of)
+    if definitions:
+        document["$defs"] = dict(definitions)
     return document
 
 
@@ -2802,7 +2985,14 @@ def editorial_decision_schema() -> dict[str, object]:
 
 def publication_package_schema() -> dict[str, object]:
     base_hashes = ("article", "claims", "sources", "render", "migration")
-    real_hashes = (*base_hashes, "editorial", "products", "review", "render_model")
+    real_required_hashes = (
+        *base_hashes,
+        "editorial",
+        "products",
+        "review",
+        "render_model",
+    )
+    real_hash_properties = (*real_required_hashes, "phase3_claim_authority")
     review_binding = {
         "anyOf": [
             {"type": "null"},
@@ -2907,7 +3097,7 @@ def publication_package_schema() -> dict[str, object]:
             "required": list(base_hashes),
             "properties": {
                 name: {"type": "string", "pattern": HEX64_PATTERN}
-                for name in real_hashes
+                for name in real_hash_properties
             },
             "additionalProperties": False,
         },
@@ -2955,7 +3145,7 @@ def publication_package_schema() -> dict[str, object]:
                             ]
                         },
                         "review_binding": {"type": "null"},
-                        "input_hashes": {"required": list(real_hashes)},
+                        "input_hashes": {"required": list(real_required_hashes)},
                         "package_digest": {"type": "null"},
                     }
                 },
@@ -2976,15 +3166,1348 @@ def publication_package_schema() -> dict[str, object]:
                         },
                         "claim_evidence": {
                             "items": {
-                                "properties": {
-                                    "freshness": {"enum": ["FRESH", "DUE"]}
-                                }
+                                "properties": {"freshness": {"enum": ["FRESH", "DUE"]}}
                             }
                         },
                     }
                 },
             },
         ],
+    )
+
+
+def phase3_preaction_binding_schema() -> dict[str, object]:
+    """Contract for the create-once public capture and owner export binding."""
+
+    return _v2_object_schema(
+        "preaction-binding",
+        (
+            "schema",
+            "version",
+            "status",
+            "provenance",
+            "captured_at",
+            "target",
+            "current_public_body_sha256",
+            "public_capture_sha256",
+            "wordpress_export_sha256",
+            "wordpress_export_bytes",
+        ),
+        {
+            "schema": {"const": "RAOS_V2_PHASE3_PREACTION_BINDING_V1"},
+            "version": {"const": "1.0.0"},
+            "status": {"const": "VERIFIED_PREACTION"},
+            "provenance": {
+                "const": "PUBLIC_READ_ONLY_CAPTURE_AND_OWNER_WORDPRESS_EXPORT"
+            },
+            "captured_at": {
+                "type": "string",
+                "pattern": DATETIME_PATTERN,
+                "format": "date-time",
+            },
+            "target": {
+                "type": "object",
+                "required": [
+                    "origin",
+                    "route",
+                    "kind",
+                    "post_id",
+                    "exact_match_count",
+                ],
+                "properties": {
+                    "origin": {"const": "https://kurashinoshirube.com"},
+                    "route": {"const": "/carry-on-suitcase-comparison/"},
+                    "kind": {"const": "EXISTING_POST"},
+                    "post_id": {"type": "integer", "minimum": 1},
+                    "exact_match_count": {"const": 1},
+                },
+                "additionalProperties": False,
+            },
+            "current_public_body_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "public_capture_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "wordpress_export_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "wordpress_export_bytes": {"type": "integer", "minimum": 1},
+        },
+    )
+
+
+def phase3_structured_data_expectation_contract_schema() -> dict[str, object]:
+    """Closed derived JSON-LD envelope embedded in the reviewed payload."""
+
+    canonical = "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+    origin = "https://kurashinoshirube.com/"
+    plain_text = {"type": "string", "minLength": 1}
+    article = {
+        "type": "object",
+        "required": [
+            "@type",
+            "headline",
+            "description",
+            "mainEntityOfPage",
+            "url",
+        ],
+        "properties": {
+            "@type": {"const": "Article"},
+            "headline": plain_text,
+            "description": plain_text,
+            "mainEntityOfPage": {
+                "type": "object",
+                "required": ["@id"],
+                "properties": {"@id": {"const": canonical}},
+                "additionalProperties": False,
+            },
+            "url": {"const": canonical},
+        },
+        "additionalProperties": False,
+    }
+    breadcrumb = {
+        "type": "object",
+        "required": ["@type", "itemListElement"],
+        "properties": {
+            "@type": {"const": "BreadcrumbList"},
+            "itemListElement": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 1,
+                "prefixItems": [
+                    {
+                        "type": "object",
+                        "required": ["@type", "position", "name", "item"],
+                        "properties": {
+                            "@type": {"const": "ListItem"},
+                            "position": {"const": 1},
+                            "name": plain_text,
+                            "item": {"const": canonical},
+                        },
+                        "additionalProperties": False,
+                    }
+                ],
+                "items": False,
+            },
+        },
+        "additionalProperties": False,
+    }
+
+    def owner_graph(node_type: str) -> dict[str, object]:
+        return {
+            "type": "object",
+            "required": ["@type", "url"],
+            "properties": {
+                "@type": {"const": node_type},
+                "url": {"const": origin},
+            },
+            "additionalProperties": False,
+        }
+
+    document = {
+        "type": "object",
+        "required": ["@context", "@graph"],
+        "properties": {
+            "@context": {"const": "https://schema.org"},
+            "@graph": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "prefixItems": [
+                    article,
+                    breadcrumb,
+                    owner_graph("Organization"),
+                    owner_graph("WebSite"),
+                ],
+                "items": False,
+            },
+        },
+        "additionalProperties": False,
+    }
+    return {
+        "type": "object",
+        "required": [
+            "schema",
+            "version",
+            "derivation",
+            "json_ld_script_count",
+            "json_ld_document_count",
+            "json_ld_types",
+            "emission",
+            "documents",
+            "json_ld_sha256",
+        ],
+        "properties": {
+            "schema": {"const": "RAOS_V2_PHASE3_STRUCTURED_DATA_EXPECTATION_V1"},
+            "version": {"const": "1.0.0"},
+            "derivation": {"const": "EXACT_WORDPRESS_FIELDS_V1"},
+            "json_ld_script_count": {"const": 1},
+            "json_ld_document_count": {"const": 1},
+            "json_ld_types": {
+                "const": [
+                    "Article",
+                    "BreadcrumbList",
+                    "Organization",
+                    "WebSite",
+                ]
+            },
+            "emission": {
+                "type": "object",
+                "required": [
+                    "owner",
+                    "local_json_ld_emission",
+                    "external_configuration_status",
+                ],
+                "properties": {
+                    "owner": {"const": "EXTERNAL_WORDPRESS_SEO_CONFIGURATION"},
+                    "local_json_ld_emission": {"const": False},
+                    "external_configuration_status": {"const": "UNVERIFIED_EXTERNAL"},
+                },
+                "additionalProperties": False,
+            },
+            "documents": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 1,
+                "prefixItems": [document],
+                "items": False,
+            },
+            "json_ld_sha256": {"type": "string", "pattern": HEX64_PATTERN},
+        },
+        "additionalProperties": False,
+    }
+
+
+def phase3_wordpress_update_payload_schema() -> dict[str, object]:
+    field_properties: dict[str, object] = {
+        "canonical_url": {
+            "const": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+        },
+        "comment_status": {"const": "closed"},
+        "meta_description": {"type": "string", "minLength": 1},
+        "ping_status": {"const": "closed"},
+        "post_content": {"type": "string", "minLength": 1},
+        "post_excerpt": {"type": "string"},
+        "post_name": {"const": "carry-on-suitcase-comparison"},
+        "post_status": {"const": "publish"},
+        "post_title": {"type": "string", "minLength": 1},
+    }
+    return _v2_object_schema(
+        "wordpress-update-payload",
+        (
+            "schema",
+            "version",
+            "intent",
+            "target",
+            "preconditions",
+            "postconditions",
+            "structured_data_expectation",
+            "preaction",
+            "fields",
+        ),
+        {
+            "schema": {"const": "RAOS_V2_PHASE3_WORDPRESS_UPDATE_PAYLOAD_V1"},
+            "version": {"const": "1.0.0"},
+            "intent": {"const": "UPDATE_EXISTING_PUBLISHED_POST_AT_APPROVED_CUTOVER"},
+            "target": {
+                "type": "object",
+                "required": [
+                    "origin",
+                    "route",
+                    "kind",
+                    "expected_match_count",
+                    "expected_public_body_sha256",
+                ],
+                "properties": {
+                    "origin": {"const": "https://kurashinoshirube.com"},
+                    "route": {"const": "/carry-on-suitcase-comparison/"},
+                    "kind": {"const": "EXISTING_POST"},
+                    "expected_match_count": {"const": 1},
+                    "expected_public_body_sha256": {
+                        "type": "string",
+                        "pattern": HEX64_PATTERN,
+                    },
+                },
+                "additionalProperties": False,
+            },
+            "preconditions": {
+                "type": "object",
+                "required": ["expected_current_post_status"],
+                "properties": {
+                    "expected_current_post_status": {"const": "publish"},
+                },
+                "additionalProperties": False,
+            },
+            "postconditions": {
+                "type": "object",
+                "required": ["required_after_post_status"],
+                "properties": {
+                    "required_after_post_status": {"const": "publish"},
+                },
+                "additionalProperties": False,
+            },
+            "structured_data_expectation": (
+                phase3_structured_data_expectation_contract_schema()
+            ),
+            "preaction": {
+                "type": "object",
+                "required": ["status", "binding_digest", "binding"],
+                "properties": {
+                    "status": {
+                        "enum": [
+                            "HISTORICAL_BASELINE_ONLY",
+                            "VERIFIED_PREACTION",
+                        ]
+                    },
+                    "binding_digest": {
+                        "type": ["string", "null"],
+                        "pattern": HEX64_PATTERN,
+                    },
+                    "binding": {
+                        "type": ["object", "null"],
+                    },
+                },
+                "additionalProperties": False,
+                "allOf": [
+                    {
+                        "if": {
+                            "properties": {
+                                "status": {"const": "HISTORICAL_BASELINE_ONLY"}
+                            }
+                        },
+                        "then": {
+                            "properties": {
+                                "binding_digest": {"type": "null"},
+                                "binding": {"type": "null"},
+                            }
+                        },
+                    },
+                    {
+                        "if": {
+                            "properties": {"status": {"const": "VERIFIED_PREACTION"}}
+                        },
+                        "then": {
+                            "properties": {
+                                "binding_digest": {
+                                    "type": "string",
+                                    "pattern": HEX64_PATTERN,
+                                },
+                                "binding": {
+                                    "$ref": (
+                                        "https://kurashinoshirube.com/contracts/"
+                                        "raos-v2/v2/preaction-binding.schema.json"
+                                    )
+                                },
+                            }
+                        },
+                    },
+                ],
+            },
+            "fields": {
+                "type": "object",
+                "required": list(field_properties),
+                "properties": field_properties,
+                "additionalProperties": False,
+            },
+        },
+    )
+
+
+def phase3_human_review_receipt_schema() -> dict[str, object]:
+    return _v2_object_schema(
+        "human-review-receipt",
+        (
+            "schema",
+            "version",
+            "reviewer_id",
+            "reviewed_at",
+            "review_version",
+            "correction_count",
+            "accepted",
+            "synthetic",
+            "candidate_digest",
+            "payload_digest",
+            "target_route",
+        ),
+        {
+            "schema": {"const": "RAOS_V2_PHASE3_HUMAN_REVIEW_RECEIPT_V1"},
+            "version": {"const": "1.0.0"},
+            "reviewer_id": {
+                "type": "string",
+                "pattern": r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+            },
+            "reviewed_at": {
+                "type": "string",
+                "pattern": DATETIME_PATTERN,
+                "format": "date-time",
+            },
+            "review_version": {
+                "type": "string",
+                "pattern": r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+            },
+            "correction_count": {"type": "integer", "minimum": 0},
+            "accepted": {"const": True},
+            "synthetic": {"const": False},
+            "candidate_digest": {"type": "string", "pattern": HEX64_PATTERN},
+            "payload_digest": {"type": "string", "pattern": HEX64_PATTERN},
+            "target_route": {"const": "/carry-on-suitcase-comparison/"},
+        },
+    )
+
+
+def phase3_publication_package_schema() -> dict[str, object]:
+    claim_binding = {
+        "type": "object",
+        "required": [
+            "claim_id",
+            "claim_type",
+            "risk_class",
+            "freshness",
+            "authoritative_source_status",
+            "checked_at",
+            "next_review_at",
+            "resolved",
+            "blocking",
+            "intentionally_disclosed",
+        ],
+        "properties": {
+            "claim_id": {"type": "string", "pattern": r"^CLM-[A-Z0-9-]+$"},
+            "claim_type": {
+                "enum": [
+                    "A_OFFICIAL_FACT",
+                    "D_EDITORIAL_JUDGEMENT",
+                    "UNKNOWN",
+                ]
+            },
+            "risk_class": {"enum": ["LOW", "MEDIUM", "HIGH"]},
+            "freshness": {
+                "enum": [
+                    "FRESH",
+                    "DUE",
+                    "SOFT_STALE",
+                    "HARD_STALE",
+                    "UNKNOWN",
+                    "UNAVAILABLE",
+                    "REJECTED",
+                ]
+            },
+            "authoritative_source_status": {
+                "enum": ["DRAFT", "VERIFIED", "STALE", "BLOCKED"]
+            },
+            "checked_at": {
+                "type": "string",
+                "pattern": DATETIME_PATTERN,
+                "format": "date-time",
+            },
+            "next_review_at": {
+                "type": "string",
+                "pattern": DATETIME_PATTERN,
+                "format": "date-time",
+            },
+            "resolved": {"type": "boolean"},
+            "blocking": {"type": "boolean"},
+            "intentionally_disclosed": {"type": "boolean"},
+        },
+        "additionalProperties": False,
+    }
+    review_candidate = {
+        "type": "object",
+        "required": [
+            "schema",
+            "version",
+            "phase2_candidate",
+            "candidate_digest",
+            "claim_bindings",
+            "update_payload",
+            "preaction_status",
+            "preaction_binding_digest",
+            "structured_data_expectation_sha256",
+            "payload_digest",
+        ],
+        "properties": {
+            "schema": {"const": "RAOS_V2_PHASE3_REVIEW_CANDIDATE_V1"},
+            "version": {"const": "1.0.0"},
+            "phase2_candidate": {
+                "$ref": "https://kurashinoshirube.com/contracts/raos-v2/v1/publication-package.schema.json"
+            },
+            "candidate_digest": {"type": "string", "pattern": HEX64_PATTERN},
+            "claim_bindings": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": True,
+                "items": claim_binding,
+            },
+            "update_payload": {
+                "$ref": "https://kurashinoshirube.com/contracts/raos-v2/v2/wordpress-update-payload.schema.json"
+            },
+            "preaction_status": {
+                "enum": ["HISTORICAL_BASELINE_ONLY", "VERIFIED_PREACTION"]
+            },
+            "preaction_binding_digest": {
+                "type": ["string", "null"],
+                "pattern": HEX64_PATTERN,
+            },
+            "structured_data_expectation_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "payload_digest": {"type": "string", "pattern": HEX64_PATTERN},
+        },
+        "additionalProperties": False,
+        "allOf": [
+            {
+                "if": {
+                    "properties": {
+                        "preaction_status": {"const": "HISTORICAL_BASELINE_ONLY"}
+                    }
+                },
+                "then": {"properties": {"preaction_binding_digest": {"type": "null"}}},
+            },
+            {
+                "if": {
+                    "properties": {"preaction_status": {"const": "VERIFIED_PREACTION"}}
+                },
+                "then": {
+                    "properties": {
+                        "preaction_binding_digest": {
+                            "type": "string",
+                            "pattern": HEX64_PATTERN,
+                        }
+                    }
+                },
+            },
+        ],
+    }
+    return _v2_object_schema(
+        "publication-package",
+        (
+            "schema",
+            "version",
+            "state",
+            "review_candidate",
+            "human_review_receipt",
+            "structured_data_expectation_sha256",
+            "capabilities",
+            "package_digest",
+        ),
+        {
+            "schema": {"const": "RAOS_V2_PHASE3_PUBLICATION_PACKAGE_V1"},
+            "version": {"const": "1.0.0"},
+            "state": {"enum": ["HUMAN_REVIEWED", "PACKAGE_SEALED"]},
+            "review_candidate": review_candidate,
+            "human_review_receipt": {
+                "$ref": "https://kurashinoshirube.com/contracts/raos-v2/v2/human-review-receipt.schema.json"
+            },
+            "structured_data_expectation_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "capabilities": {
+                "type": "object",
+                "required": ["network", "wordpress_write", "publish"],
+                "properties": {
+                    "network": {"const": False},
+                    "wordpress_write": {"const": False},
+                    "publish": {"const": False},
+                },
+                "additionalProperties": False,
+            },
+            "package_digest": {
+                "type": ["string", "null"],
+                "pattern": HEX64_PATTERN,
+            },
+        },
+        all_of=[
+            {
+                "if": {"properties": {"state": {"const": "PACKAGE_SEALED"}}},
+                "then": {
+                    "properties": {
+                        "package_digest": {
+                            "type": "string",
+                            "pattern": HEX64_PATTERN,
+                        }
+                    }
+                },
+            },
+            {
+                "if": {"properties": {"state": {"const": "HUMAN_REVIEWED"}}},
+                "then": {"properties": {"package_digest": {"type": "null"}}},
+            },
+        ],
+    )
+
+
+def phase3_wordpress_dry_run_receipt_schema() -> dict[str, object]:
+    field_diff = {
+        "type": "object",
+        "required": ["field", "before_sha256", "after_sha256", "changed"],
+        "properties": {
+            "field": {
+                "enum": [
+                    "canonical_url",
+                    "comment_status",
+                    "meta_description",
+                    "ping_status",
+                    "post_content",
+                    "post_excerpt",
+                    "post_name",
+                    "post_status",
+                    "post_title",
+                ]
+            },
+            "before_sha256": {"type": "string", "pattern": HEX64_PATTERN},
+            "after_sha256": {"type": "string", "pattern": HEX64_PATTERN},
+            "changed": {"type": "boolean"},
+        },
+        "additionalProperties": False,
+    }
+    return _v2_object_schema(
+        "wordpress-dry-run-receipt",
+        (
+            "schema",
+            "version",
+            "mode",
+            "request_count",
+            "external_action_count",
+            "external_status",
+            "status",
+            "intent",
+            "target",
+            "package_digest",
+            "payload_digest",
+            "export_binding_sha256",
+            "preconditions",
+            "postconditions",
+            "field_diff",
+            "idempotency_key",
+        ),
+        {
+            "schema": {"const": "RAOS_V2_PHASE3_WORDPRESS_DRY_RUN_RECEIPT_V1"},
+            "version": {"const": "1.0.0"},
+            "mode": {"const": "DISABLED_DRY_RUN"},
+            "request_count": {"const": 0},
+            "external_action_count": {"const": 0},
+            "external_status": {"const": "NOT_EXECUTED"},
+            "status": {"const": "DRY_RUN"},
+            "intent": {"const": "UPDATE_EXISTING_PUBLISHED_POST_AT_APPROVED_CUTOVER"},
+            "target": {
+                "type": "object",
+                "required": [
+                    "origin",
+                    "route",
+                    "kind",
+                    "post_id",
+                    "expected_match_count",
+                ],
+                "properties": {
+                    "origin": {"const": "https://kurashinoshirube.com"},
+                    "route": {"const": "/carry-on-suitcase-comparison/"},
+                    "kind": {"const": "EXISTING_POST"},
+                    "post_id": {"type": "integer", "minimum": 1},
+                    "expected_match_count": {"const": 1},
+                },
+                "additionalProperties": False,
+            },
+            "package_digest": {"type": "string", "pattern": HEX64_PATTERN},
+            "payload_digest": {"type": "string", "pattern": HEX64_PATTERN},
+            "export_binding_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "preconditions": {
+                "type": "object",
+                "required": [
+                    "export_role",
+                    "expected_current_post_status",
+                    "before_post_status_sha256",
+                    "expected_public_body_sha256",
+                    "observed_public_body_sha256",
+                    "export_captured_at",
+                    "human_reviewed_at",
+                    "preaction_status",
+                    "preaction_binding_sha256",
+                    "observed_preaction_binding_sha256",
+                    "preaction_captured_at",
+                    "evaluated_at",
+                    "max_export_age_seconds",
+                    "satisfied",
+                ],
+                "properties": {
+                    "export_role": {"const": "PRE_WRITE_EXPORT"},
+                    "expected_current_post_status": {"const": "publish"},
+                    "before_post_status_sha256": {
+                        "const": (
+                            "f25fde75eb12c3cb5c9f8108e6d53c165d19d8bd2aac192e"
+                            "37fa68f7d6312aa7"
+                        )
+                    },
+                    "expected_public_body_sha256": {
+                        "type": "string",
+                        "pattern": HEX64_PATTERN,
+                    },
+                    "observed_public_body_sha256": {
+                        "type": "string",
+                        "pattern": HEX64_PATTERN,
+                    },
+                    "export_captured_at": {
+                        "type": "string",
+                        "pattern": DATETIME_PATTERN,
+                        "format": "date-time",
+                    },
+                    "human_reviewed_at": {
+                        "type": "string",
+                        "pattern": DATETIME_PATTERN,
+                        "format": "date-time",
+                    },
+                    "preaction_status": {"const": "VERIFIED_PREACTION"},
+                    "preaction_binding_sha256": {
+                        "type": "string",
+                        "pattern": HEX64_PATTERN,
+                    },
+                    "observed_preaction_binding_sha256": {
+                        "type": "string",
+                        "pattern": HEX64_PATTERN,
+                    },
+                    "preaction_captured_at": {
+                        "type": "string",
+                        "pattern": DATETIME_PATTERN,
+                        "format": "date-time",
+                    },
+                    "evaluated_at": {
+                        "type": "string",
+                        "pattern": DATETIME_PATTERN,
+                        "format": "date-time",
+                    },
+                    "max_export_age_seconds": {"const": 300},
+                    "satisfied": {"const": True},
+                },
+                "additionalProperties": False,
+            },
+            "postconditions": {
+                "type": "object",
+                "required": [
+                    "required_after_post_status",
+                    "after_post_status_sha256",
+                    "satisfied",
+                ],
+                "properties": {
+                    "required_after_post_status": {"const": "publish"},
+                    "after_post_status_sha256": {
+                        "const": (
+                            "f25fde75eb12c3cb5c9f8108e6d53c165d19d8bd2aac192e"
+                            "37fa68f7d6312aa7"
+                        )
+                    },
+                    "satisfied": {"const": True},
+                },
+                "additionalProperties": False,
+            },
+            "field_diff": {
+                "type": "array",
+                "minItems": 9,
+                "maxItems": 9,
+                "uniqueItems": True,
+                "items": field_diff,
+                "allOf": [
+                    {
+                        "contains": {
+                            "type": "object",
+                            "properties": {"field": {"const": field_name}},
+                            "required": ["field"],
+                        },
+                        "minContains": 1,
+                        "maxContains": 1,
+                    }
+                    for field_name in (
+                        "canonical_url",
+                        "comment_status",
+                        "meta_description",
+                        "ping_status",
+                        "post_content",
+                        "post_excerpt",
+                        "post_name",
+                        "post_status",
+                        "post_title",
+                    )
+                ],
+            },
+            "idempotency_key": {"type": "string", "pattern": HEX64_PATTERN},
+        },
+    )
+
+
+def phase3_wordpress_export_binding_schema() -> dict[str, object]:
+    field_names = [
+        "canonical_url",
+        "comment_status",
+        "meta_description",
+        "ping_status",
+        "post_content",
+        "post_excerpt",
+        "post_name",
+        "post_status",
+        "post_title",
+    ]
+    return _v2_object_schema(
+        "wordpress-export-binding",
+        (
+            "schema",
+            "version",
+            "target",
+            "captured_at",
+            "field_hashes",
+            "public_body_sha256",
+            "preaction_binding_sha256",
+            "export_sha256",
+            "export_bytes",
+            "restore_artifact_sha256",
+            "theme_artifact_sha256",
+            "seo_state_sha256",
+            "redirect_map_sha256",
+            "sitemap_state_sha256",
+            "raw_export_location",
+            "status",
+            "export_role",
+        ),
+        {
+            "schema": {"const": "RAOS_V2_WORDPRESS_EXPORT_BINDING_V2"},
+            "version": {"const": "2.0.0"},
+            "target": {
+                "type": "object",
+                "required": [
+                    "origin",
+                    "route",
+                    "kind",
+                    "post_id",
+                    "exact_match_count",
+                ],
+                "properties": {
+                    "origin": {"const": "https://kurashinoshirube.com"},
+                    "route": {"const": "/carry-on-suitcase-comparison/"},
+                    "kind": {"const": "EXISTING_POST"},
+                    "post_id": {"type": "integer", "minimum": 1},
+                    "exact_match_count": {"const": 1},
+                },
+                "additionalProperties": False,
+            },
+            "public_body_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "preaction_binding_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "export_sha256": {"type": "string", "pattern": HEX64_PATTERN},
+            "export_bytes": {"type": "integer", "minimum": 1},
+            "captured_at": {
+                "type": "string",
+                "pattern": DATETIME_PATTERN,
+                "format": "date-time",
+            },
+            "field_hashes": {
+                "type": "object",
+                "required": field_names,
+                "properties": {
+                    **{
+                        name: {"type": "string", "pattern": HEX64_PATTERN}
+                        for name in field_names
+                    },
+                    "post_status": {
+                        "const": (
+                            "f25fde75eb12c3cb5c9f8108e6d53c165d19d8bd2aac192e"
+                            "37fa68f7d6312aa7"
+                        )
+                    },
+                },
+                "additionalProperties": False,
+            },
+            "restore_artifact_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "theme_artifact_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "seo_state_sha256": {"type": "string", "pattern": HEX64_PATTERN},
+            "redirect_map_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "sitemap_state_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "raw_export_location": {"const": "OWNER_STORAGE_ONLY_NOT_GIT"},
+            "status": {"const": "VERIFIED_HUMAN_EXPORT"},
+            "export_role": {"enum": ["PRE_WRITE_EXPORT", "POST_ACTION_OWNER_EXPORT"]},
+        },
+    )
+
+
+def phase3_public_verification_receipt_schema() -> dict[str, object]:
+    return _v2_object_schema(
+        "public-verification-receipt",
+        (
+            "schema",
+            "version",
+            "derivation",
+            "evidence_class",
+            "completion_scope",
+            "capture_sha256",
+            "preaction_capture_sha256",
+            "post_action_export_binding_sha256",
+            "target",
+            "observed_at",
+            "evaluated_at",
+            "max_capture_age_seconds",
+            "status",
+            "redirect_chain",
+            "canonical",
+            "canonical_tag_count",
+            "head_tag_count",
+            "metadata_location_violation_count",
+            "robots",
+            "robots_meta",
+            "robots_http",
+            "robots_http_indexability_safe",
+            "content_type_media_type",
+            "refresh_http_present",
+            "link_http_sha256",
+            "robots_txt_status",
+            "robots_txt_sha256",
+            "robots_txt_target_allowed_for_googlebot",
+            "indexability_evidence_scope",
+            "robots_tag_count",
+            "crawler_robots_tag_count",
+            "crawler_robots_indexability_safe",
+            "sitemap_membership",
+            "title",
+            "title_tag_count",
+            "meta_description",
+            "meta_description_tag_count",
+            "h1",
+            "h1_count",
+            "body_sha256",
+            "package_digest",
+            "structured_data_expectation_sha256",
+            "post_content_semantic_sha256",
+            "sealed_post_content_sha256",
+            "package_marker",
+            "package_marker_count",
+            "package_marker_attribute_count",
+            "post_content_envelope",
+            "post_content_envelope_count",
+            "post_content_envelope_attribute_count",
+            "blocked_post_content_envelope_count",
+            "post_content_envelope_marker_child_count",
+            "post_content_envelope_valid",
+            "post_content_marker_subtree_count",
+            "disclosure_marker_present",
+            "disclosure_marker_count",
+            "cta_state_count",
+            "blocked_cta_count",
+            "affiliate_url_count",
+            "ambiguous_attribute_count",
+            "image_count",
+            "inline_executable_script_count",
+            "external_script_count",
+            "resource_inventory_sha256",
+            "resource_change_status",
+            "plugin_stylesheet_url",
+            "plugin_stylesheet_resource_sha256",
+            "plugin_stylesheet_content_sha256",
+            "plugin_stylesheet_bytes",
+            "plugin_php_sha256",
+            "plugin_manifest_sha256",
+            "plugin_artifact_status",
+            "json_ld_script_count",
+            "json_ld_sha256",
+            "json_ld_types",
+            "json_ld_visible_content_match",
+            "critical_issue_count",
+            "public_browser_verification_status",
+            "phase_exit_eligible",
+            "rollback_invoked",
+        ),
+        {
+            "schema": {"const": "RAOS_V2_PUBLIC_VERIFICATION_RECEIPT_V2"},
+            "version": {"const": "2.0.0"},
+            "derivation": {
+                "const": "STRICT_PREACTION_CAPTURE_SEALED_PACKAGE_POST_ACTION_EXPORT_V2"
+            },
+            "evidence_class": {"const": "PUBLIC_READ_ONLY_HTTP_AND_OWNER_EXPORT"},
+            "completion_scope": {"const": "HTTP_AND_OWNER_EXPORT_ONLY"},
+            "capture_sha256": {"type": "string", "pattern": HEX64_PATTERN},
+            "preaction_capture_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "post_action_export_binding_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "target": {
+                "type": "object",
+                "required": ["origin", "route"],
+                "properties": {
+                    "origin": {"const": "https://kurashinoshirube.com"},
+                    "route": {"const": "/carry-on-suitcase-comparison/"},
+                },
+                "additionalProperties": False,
+            },
+            "observed_at": {
+                "type": "string",
+                "pattern": DATETIME_PATTERN,
+                "format": "date-time",
+            },
+            "evaluated_at": {
+                "type": "string",
+                "pattern": DATETIME_PATTERN,
+                "format": "date-time",
+            },
+            "max_capture_age_seconds": {"const": 300},
+            "status": {"const": 200},
+            "redirect_chain": {"const": []},
+            "canonical": {
+                "const": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+            },
+            "canonical_tag_count": {"const": 1},
+            "head_tag_count": {"const": 1},
+            "metadata_location_violation_count": {"const": 0},
+            "robots": {"const": "index,follow"},
+            "robots_meta": {"const": "index,follow"},
+            "robots_http": {
+                "type": "string",
+                "pattern": (
+                    r"^(?:UNAVAILABLE|(?!.*(?:^|,)(?:noindex|nofollow|none)"
+                    r"(?:,|$))[a-z][a-z0-9:-]*(?:,[a-z][a-z0-9:-]*)*)$"
+                ),
+            },
+            "robots_http_indexability_safe": {"const": True},
+            "content_type_media_type": {"const": "text/html"},
+            "refresh_http_present": {"const": False},
+            "link_http_sha256": {
+                "type": "string",
+                "pattern": r"^(?:UNAVAILABLE|[0-9a-f]{64})$",
+            },
+            "robots_txt_status": {
+                "type": "integer",
+                "enum": [200, 404, 410],
+            },
+            "robots_txt_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "robots_txt_target_allowed_for_googlebot": {"const": True},
+            "indexability_evidence_scope": {
+                "const": "HEAD_META_HTTP_SITEMAP_AND_ROBOTS_TXT"
+            },
+            "robots_tag_count": {"const": 1},
+            "crawler_robots_tag_count": {"type": "integer", "minimum": 0},
+            "crawler_robots_indexability_safe": {"const": True},
+            "sitemap_membership": {"const": True},
+            "title": {"type": "string", "minLength": 1},
+            "title_tag_count": {"const": 1},
+            "meta_description": {"type": "string", "minLength": 1},
+            "meta_description_tag_count": {"const": 1},
+            "h1": {"type": "string", "minLength": 1},
+            "h1_count": {"const": 1},
+            "body_sha256": {"type": "string", "pattern": HEX64_PATTERN},
+            "package_digest": {"type": "string", "pattern": HEX64_PATTERN},
+            "structured_data_expectation_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "post_content_semantic_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "sealed_post_content_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "package_marker": {"const": "RAOS_V2_A05_POST_CONTENT_V1"},
+            "package_marker_count": {"const": 1},
+            "package_marker_attribute_count": {"const": 1},
+            "post_content_envelope": {"const": "RAOS_V2_A05_ENVELOPE_V1"},
+            "post_content_envelope_count": {"const": 1},
+            "post_content_envelope_attribute_count": {"const": 1},
+            "blocked_post_content_envelope_count": {"const": 0},
+            "post_content_envelope_marker_child_count": {"const": 1},
+            "post_content_envelope_valid": {"const": True},
+            "post_content_marker_subtree_count": {"const": 1},
+            "disclosure_marker_present": {"const": True},
+            "disclosure_marker_count": {"const": 1},
+            "cta_state_count": {"const": 3},
+            "blocked_cta_count": {"const": 3},
+            "affiliate_url_count": {"const": 0},
+            "ambiguous_attribute_count": {"const": 0},
+            "image_count": {"type": "integer", "minimum": 0},
+            "inline_executable_script_count": {
+                "type": "integer",
+                "minimum": 0,
+            },
+            "external_script_count": {"type": "integer", "minimum": 0},
+            "resource_inventory_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "resource_change_status": {
+                "const": "NO_UNAPPROVED_NEW_TRACKED_RESOURCE"
+            },
+            "plugin_stylesheet_url": {
+                "const": (
+                    "https://kurashinoshirube.com/wp-content/plugins/"
+                    "raos-v2-decision-support/assets/decision-support.css"
+                )
+            },
+            "plugin_stylesheet_resource_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "plugin_stylesheet_content_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "plugin_stylesheet_bytes": {"type": "integer", "minimum": 1},
+            "plugin_php_sha256": {"type": "string", "pattern": HEX64_PATTERN},
+            "plugin_manifest_sha256": {
+                "type": "string",
+                "pattern": HEX64_PATTERN,
+            },
+            "plugin_artifact_status": {
+                "const": "LOCAL_SOURCE_BOUND_AND_PUBLIC_CSS_MATCHED"
+            },
+            "json_ld_script_count": {"const": 1},
+            "json_ld_sha256": {"type": "string", "pattern": HEX64_PATTERN},
+            "json_ld_types": {
+                "const": ["Article", "BreadcrumbList", "Organization", "WebSite"]
+            },
+            "json_ld_visible_content_match": {"const": True},
+            "critical_issue_count": {"const": 0},
+            "public_browser_verification_status": {
+                "const": "SEPARATE_RECEIPT_REQUIRED"
+            },
+            "phase_exit_eligible": {"const": False},
+            "rollback_invoked": {"const": False},
+        },
+    )
+
+
+def phase3_public_browser_verification_receipt_schema() -> dict[str, object]:
+    """Strict future receipt for the separately approved public browser gate."""
+
+    viewport = {
+        "type": "object",
+        "required": [
+            "width",
+            "height",
+            "screenshot_sha256",
+            "screenshot_bytes",
+            "disclosure_computed_visible",
+            "cta_state_count",
+            "blocked_cta_count",
+            "visible_blocked_cta_count",
+            "keyboard_only_passed",
+            "zoom_200_percent_passed",
+            "horizontal_overflow",
+            "axe_critical_count",
+            "axe_serious_count",
+        ],
+        "properties": {
+            "width": {"enum": [390, 768, 1440]},
+            "height": {"type": "integer", "minimum": 1},
+            "screenshot_sha256": {"type": "string", "pattern": HEX64_PATTERN},
+            "screenshot_bytes": {"type": "integer", "minimum": 1},
+            "disclosure_computed_visible": {"const": True},
+            "cta_state_count": {"const": 3},
+            "blocked_cta_count": {"const": 3},
+            "visible_blocked_cta_count": {"const": 3},
+            "keyboard_only_passed": {"const": True},
+            "zoom_200_percent_passed": {"const": True},
+            "horizontal_overflow": {"const": False},
+            "axe_critical_count": {"const": 0},
+            "axe_serious_count": {"const": 0},
+        },
+        "additionalProperties": False,
+    }
+    return _v2_object_schema(
+        "public-browser-verification-receipt",
+        (
+            "schema",
+            "version",
+            "classification",
+            "verification_status",
+            "acceptance_authority",
+            "phase_exit_eligible",
+            "derivation",
+            "evidence_class",
+            "target",
+            "observed_at",
+            "raw_capture_location",
+            "independent_recalculation_status",
+            "browser",
+            "bindings",
+            "viewports",
+            "network",
+            "summary",
+            "critical_issue_count",
+        ),
+        {
+            "schema": {
+                "const": "RAOS_V2_PHASE3_PUBLIC_BROWSER_VERIFICATION_RECEIPT_V1"
+            },
+            "version": {"const": "1.0.0"},
+            "classification": {
+                "const": "UNVERIFIED_EXTERNAL_TEMPLATE_NO_ACCEPTANCE_AUTHORITY"
+            },
+            "verification_status": {"const": "REQUIRED_VALIDATOR_NOT_IMPLEMENTED"},
+            "acceptance_authority": {"const": False},
+            "phase_exit_eligible": {"const": False},
+            "derivation": {"const": "PROPOSED_PUBLIC_READ_ONLY_BROWSER_CAPTURE_V1"},
+            "evidence_class": {"const": "UNVERIFIED_EXTERNAL_TEMPLATE"},
+            "target": {
+                "type": "object",
+                "required": ["origin", "route"],
+                "properties": {
+                    "origin": {"const": "https://kurashinoshirube.com"},
+                    "route": {"const": "/carry-on-suitcase-comparison/"},
+                },
+                "additionalProperties": False,
+            },
+            "observed_at": {
+                "type": "string",
+                "pattern": DATETIME_PATTERN,
+                "format": "date-time",
+            },
+            "raw_capture_location": {"const": "OWNER_CONTROLLED_NOT_GIT"},
+            "independent_recalculation_status": {"const": "NOT_IMPLEMENTED"},
+            "browser": {
+                "type": "object",
+                "required": [
+                    "engine",
+                    "version",
+                    "axe_version",
+                    "executable_sha256",
+                    "harness_sha256",
+                    "command_sha256",
+                ],
+                "properties": {
+                    "engine": {"const": "CHROMIUM"},
+                    "version": {"type": "string", "minLength": 1},
+                    "axe_version": {"const": "4.12.1"},
+                    "executable_sha256": {
+                        "type": "string",
+                        "pattern": HEX64_PATTERN,
+                    },
+                    "harness_sha256": {
+                        "type": "string",
+                        "pattern": HEX64_PATTERN,
+                    },
+                    "command_sha256": {
+                        "type": "string",
+                        "pattern": HEX64_PATTERN,
+                    },
+                },
+                "additionalProperties": False,
+            },
+            "bindings": {
+                "type": "object",
+                "required": [
+                    "public_verification_receipt_sha256",
+                    "body_sha256",
+                    "package_digest",
+                    "post_content_semantic_sha256",
+                    "plugin_artifact_sha256",
+                    "plugin_css_sha256",
+                ],
+                "properties": {
+                    name: {"type": "string", "pattern": HEX64_PATTERN}
+                    for name in (
+                        "public_verification_receipt_sha256",
+                        "body_sha256",
+                        "package_digest",
+                        "post_content_semantic_sha256",
+                        "plugin_artifact_sha256",
+                        "plugin_css_sha256",
+                    )
+                },
+                "additionalProperties": False,
+            },
+            "viewports": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "uniqueItems": True,
+                "items": viewport,
+                "allOf": [
+                    {
+                        "contains": {
+                            "type": "object",
+                            "properties": {"width": {"const": width}},
+                            "required": ["width"],
+                        },
+                        "minContains": 1,
+                        "maxContains": 1,
+                    }
+                    for width in (390, 768, 1440)
+                ],
+            },
+            "network": {
+                "type": "object",
+                "required": [
+                    "navigation_request_count",
+                    "write_request_count",
+                    "form_submission_count",
+                    "storage_mutation_count",
+                    "service_worker_registration_count",
+                    "affiliate_request_count",
+                    "unexpected_cross_origin_request_count",
+                    "resource_manifest_sha256",
+                ],
+                "properties": {
+                    "navigation_request_count": {"const": 1},
+                    "write_request_count": {"const": 0},
+                    "form_submission_count": {"const": 0},
+                    "storage_mutation_count": {"const": 0},
+                    "service_worker_registration_count": {"const": 0},
+                    "affiliate_request_count": {"const": 0},
+                    "unexpected_cross_origin_request_count": {"const": 0},
+                    "resource_manifest_sha256": {
+                        "type": "string",
+                        "pattern": HEX64_PATTERN,
+                    },
+                },
+                "additionalProperties": False,
+            },
+            "summary": {
+                "type": "object",
+                "required": [
+                    "computed_visibility_passed",
+                    "keyboard_passed",
+                    "zoom_200_percent_passed",
+                    "axe_wcag22aa_passed",
+                    "resource_and_network_gate_passed",
+                    "binding_gate_passed",
+                ],
+                "properties": {
+                    "computed_visibility_passed": {"const": True},
+                    "keyboard_passed": {"const": True},
+                    "zoom_200_percent_passed": {"const": True},
+                    "axe_wcag22aa_passed": {"const": True},
+                    "resource_and_network_gate_passed": {"const": True},
+                    "binding_gate_passed": {"const": True},
+                },
+                "additionalProperties": False,
+            },
+            "critical_issue_count": {"const": 0},
+        },
     )
 
 
@@ -3102,9 +4625,7 @@ def analytics_event_schema() -> dict[str, object]:
             {
                 "if": {
                     "properties": {
-                        "event_name": {
-                            "enum": ["comparison_view", "article_complete"]
-                        }
+                        "event_name": {"enum": ["comparison_view", "article_complete"]}
                     }
                 },
                 "then": {"properties": null_optional},
@@ -3254,7 +4775,9 @@ def recorded_local_test_evidence() -> dict[str, object]:
     return result
 
 
-def effective_traceability(*, evidence_gate_passed: bool | None = None) -> dict[str, object]:
+def effective_traceability(
+    *, evidence_gate_passed: bool | None = None
+) -> dict[str, object]:
     source = _read_yaml(SOURCE_ROOT / "07_DECISION_TRACEABILITY.yaml")
     if not isinstance(source, dict):
         fail("RAOS_V2_TRACEABILITY_INVALID")
@@ -3289,7 +4812,7 @@ def effective_traceability(*, evidence_gate_passed: bool | None = None) -> dict[
     requirements = indexed(source_requirements)
     backlog = indexed(source_backlog)
     tests = indexed(source_tests)
-    selected_backlog_ids = {f"B-V2-{value:03d}" for value in range(1, 35)}
+    selected_backlog_ids = {f"B-V2-{value:03d}" for value in range(1, 41)}
     selected_test_ids = {
         *(f"T-V2-{value:03d}" for value in range(1, 47)),
         "T-V2-051",
@@ -3300,7 +4823,7 @@ def effective_traceability(*, evidence_gate_passed: bool | None = None) -> dict[
     ):
         fail("RAOS_V2_TRACEABILITY_SCOPE_MISSING")
 
-    # Build relationship unions from both sides before restricting the P0-P2
+    # Build relationship unions from both sides before restricting the P0-P3
     # scope.  This repairs stale one-way lists without changing the imported
     # source layer and makes every effective edge explicitly bidirectional.
     b_to_r: dict[str, set[str]] = {
@@ -3387,7 +4910,7 @@ def effective_traceability(*, evidence_gate_passed: bool | None = None) -> dict[
         row = backlog[identifier]
         try:
             number = int(identifier.rsplit("-", 1)[1])
-        except (ValueError, IndexError):
+        except ValueError, IndexError:
             fail("RAOS_V2_TRACEABILITY_INVALID")
         effective = deepcopy(row)
         dependencies = {str(value) for value in effective.get("depends_on", [])}
@@ -3406,15 +4929,27 @@ def effective_traceability(*, evidence_gate_passed: bool | None = None) -> dict[
         effective["test_ids"] = sorted(
             b_to_t.get(identifier, set()) & selected_test_ids
         )
-        effective["implementation_status"] = (
-            "GENERATED_LOCAL"
-            if number <= 18
-            else "VERIFIED_LOCAL_RECORDED"
-            if local_gate_passed
-            else "AWAITING_LOCAL_TEST_GATE"
-            if number == 34
-            else "IMPLEMENTED_LOCAL_PENDING_GATE"
-        )
+        if number <= 18:
+            implementation_status = "GENERATED_LOCAL"
+        elif number <= 34:
+            implementation_status = (
+                "VERIFIED_LOCAL_RECORDED"
+                if local_gate_passed
+                else "AWAITING_LOCAL_TEST_GATE"
+                if number == 34
+                else "IMPLEMENTED_LOCAL_PENDING_GATE"
+            )
+        elif number in {35, 36, 38, 39}:
+            implementation_status = (
+                "COMPLETE_LOCAL_RECORDED"
+                if local_gate_passed
+                else "IMPLEMENTED_LOCAL_PENDING_GATE"
+            )
+        elif number == 37:
+            implementation_status = "REVIEW_READY_BLOCKED_EXTERNAL"
+        else:
+            implementation_status = "BLOCKED_EXTERNAL"
+        effective["implementation_status"] = implementation_status
         effective["external_action_status"] = "NOT_EXECUTED"
         backlog_rows.append(effective)
 
@@ -3430,7 +4965,7 @@ def effective_traceability(*, evidence_gate_passed: bool | None = None) -> dict[
             for backlog_id in selected_backlog_ids
             if identifier in b_to_t.get(backlog_id, set())
         )
-        effective["effective_phases"] = (
+        base_phases = (
             ["P0", "P1", "P2"]
             if number == 51
             else ["P0"]
@@ -3439,10 +4974,27 @@ def effective_traceability(*, evidence_gate_passed: bool | None = None) -> dict[
             if 7 <= number <= 19
             else ["P2"]
         )
-        effective["execution_status"] = (
-            "PASSED_LOCAL_RECORDED"
-            if local_gate_passed
-            else "NOT_EXECUTED_RECORDED"
+        phase3_test_numbers = {4, 5, 8, 10, 23, *range(35, 47), 51}
+        effective["effective_phases"] = [
+            *base_phases,
+            *(["P3"] if number in phase3_test_numbers else []),
+        ]
+        if number in phase3_test_numbers:
+            effective["execution_status"] = (
+                "PASSED_LOCAL_COMPONENT_RECORDED"
+                if local_gate_passed
+                else "LOCAL_COMPONENT_NOT_EXECUTED_RECORDED"
+            )
+            effective["phase3_acceptance_status"] = "BLOCKED_EXTERNAL"
+        else:
+            effective["execution_status"] = (
+                "PASSED_LOCAL_RECORDED"
+                if local_gate_passed
+                else "NOT_EXECUTED_RECORDED"
+            )
+            effective["phase3_acceptance_status"] = "NOT_APPLICABLE"
+        effective["phase3_external_execution_status"] = (
+            "NOT_EXECUTED" if number in phase3_test_numbers else "NOT_APPLICABLE"
         )
         test_rows.append(effective)
 
@@ -3472,7 +5024,7 @@ def effective_traceability(*, evidence_gate_passed: bool | None = None) -> dict[
         )
         decision_rows.append(effective)
 
-    # Validate the corrected P0-P2 backlog graph before emitting it.
+    # Validate the corrected P0-P3 backlog graph before emitting it.
     graph = {
         str(row["id"]): {str(value) for value in row.get("depends_on", [])}
         for row in backlog_rows
@@ -3522,7 +5074,7 @@ def effective_traceability(*, evidence_gate_passed: bool | None = None) -> dict[
         "source": "source-package/2.0.0-design/07_DECISION_TRACEABILITY.yaml",
         "source_package_sha256": PACKAGE_SHA256,
         "clarification_overlay": "changes/raos-v2/clarifications.v1.yaml",
-        "scope": ["P0", "P1", "P2"],
+        "scope": ["P0", "P1", "P2", "P3"],
         "source_counts": {
             "decisions": len(decisions),
             "requirements": len(requirements),
@@ -3549,6 +5101,14 @@ def effective_traceability(*, evidence_gate_passed: bool | None = None) -> dict[
                 row for row in backlog_rows if row["id"] == "B-V2-034"
             ).get("depends_on")
             == [f"B-V2-{value:03d}" for value in range(19, 34)],
+            "B_V2_040_waits_all_phase3_local_inputs": next(
+                row for row in backlog_rows if row["id"] == "B-V2-040"
+            ).get("depends_on")
+            == ["B-V2-036", "B-V2-037", "B-V2-038", "B-V2-039"],
+            "B_V2_040_is_blocked_external": next(
+                row for row in backlog_rows if row["id"] == "B-V2-040"
+            ).get("implementation_status")
+            == "BLOCKED_EXTERNAL",
         },
     }
 
@@ -3613,7 +5173,7 @@ def preview_documents() -> dict[Path, bytes]:
         )
     except BuildFailure:
         raise
-    except (AttributeError, OSError, TypeError, UnicodeError, ValueError):
+    except AttributeError, OSError, TypeError, UnicodeError, ValueError:
         fail("RAOS_V2_PREVIEW_RENDER_FAILED")
     if not isinstance(rendered, dict):
         fail("RAOS_V2_PREVIEW_RENDER_INVALID")
@@ -3657,9 +5217,451 @@ def preview_documents() -> dict[Path, bytes]:
     return result
 
 
-def media_binding_state(
-    binding: object, expected: Mapping[str, object]
-) -> str:
+def phase3_wordpress_projection_document(
+    pages: Mapping[str, object], publication: Mapping[str, object]
+) -> dict[str, object]:
+    renderer_path = (
+        ROOT / "packages/web-ui/src/decision-support-v2/wordpress/projection.py"
+    )
+    try:
+        specification = importlib.util.spec_from_file_location(
+            "raos_v2_wordpress_projection", renderer_path
+        )
+        if specification is None or specification.loader is None:
+            fail("RAOS_V2_PHASE3_PROJECTION_IMPORT_INVALID")
+        module = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(module)
+        project = getattr(module, "project_a05_wordpress_post_content_v1")
+        projection_input = deepcopy(dict(pages))
+        projection_input["checked_at"] = publication.get("created_at")
+        projected = project(projection_input)
+    except BuildFailure:
+        raise
+    except AttributeError, OSError, TypeError, UnicodeError, ValueError:
+        fail("RAOS_V2_PHASE3_PROJECTION_FAILED")
+    if (
+        not isinstance(projected, dict)
+        or projected.get("schema") != "RAOS_V2_WORDPRESS_POST_CONTENT_PROJECTION_V1"
+        or projected.get("article_id") != "A05"
+        or projected.get("route") != "/carry-on-suitcase-comparison/"
+        or projected.get("post_status") != "publish"
+        or projected.get("image_count") != 0
+        or projected.get("affiliate_url_count") != 0
+        or projected.get("blocked_cta_count") != 3
+        or projected.get("linked_internal_routes")
+        != ["/about-ad-policy/", "/privacy-policy/"]
+    ):
+        fail("RAOS_V2_PHASE3_PROJECTION_INVALID")
+    heading = projected.get("heading_contract")
+    post_content = projected.get("post_content")
+    if (
+        not isinstance(heading, dict)
+        or heading.get("document_heading_owner") != "WORDPRESS_POST_TITLE"
+        or heading.get("expected_document_h1_count") != 1
+        or heading.get("post_content_h1_count") != 0
+        or not isinstance(post_content, str)
+        or not post_content.startswith('<div class="raos-v2-decision-support"')
+        or "<h1" in post_content.casefold()
+        or "ローカルプレビュー" in post_content
+    ):
+        fail("RAOS_V2_PHASE3_PROJECTION_INVALID")
+    return projected
+
+
+def phase3_review_candidate_document(
+    *,
+    publication: Mapping[str, object],
+    claim_ledger: Mapping[str, object],
+    projection: Mapping[str, object],
+    migration: Mapping[str, object],
+) -> tuple[dict[str, object], dict[str, object], str, str]:
+    python_root = str(ROOT / "python")
+    if python_root not in sys.path:
+        sys.path.insert(0, python_root)
+    try:
+        from raos.application.decision_support_v2.phase3_publication import (
+            build_phase3_review_candidate,
+        )
+        from raos.domain.decision_support_v2.models import (
+            ClaimStatus,
+            ClaimType,
+            FreshnessState,
+            RiskClass,
+        )
+        from raos.domain.decision_support_v2.phase3_publication import (
+            Phase3ClaimBinding,
+            Phase3WordPressUpdateFields,
+            Phase3WordPressUpdatePayload,
+        )
+        from raos.domain.decision_support_v2.publication import PublicationPackage
+    except ImportError:
+        fail("RAOS_V2_PHASE3_PUBLICATION_RUNTIME_IMPORT_INVALID")
+    try:
+        phase2_candidate = PublicationPackage.from_contract_record(publication)
+    except TypeError, ValueError:
+        fail("RAOS_V2_PHASE3_PUBLICATION_CANDIDATE_INVALID")
+    claim_rows = claim_ledger.get("claims")
+    publication_claims = publication.get("claim_evidence")
+    if not isinstance(claim_rows, list) or not isinstance(publication_claims, list):
+        fail("RAOS_V2_PHASE3_CLAIM_BINDING_INVALID")
+    claims_by_id = {
+        str(row["claim_id"]): row
+        for row in claim_rows
+        if isinstance(row, dict) and isinstance(row.get("claim_id"), str)
+    }
+    claim_bindings = []
+    try:
+        for evidence in publication_claims:
+            if not isinstance(evidence, dict):
+                fail("RAOS_V2_PHASE3_CLAIM_BINDING_INVALID")
+            claim_id = evidence.get("claim_id")
+            claim = claims_by_id.get(str(claim_id))
+            if not isinstance(claim, dict):
+                fail("RAOS_V2_PHASE3_CLAIM_BINDING_INVALID")
+            claim_bindings.append(
+                Phase3ClaimBinding(
+                    claim_id=str(claim_id),
+                    claim_type=ClaimType(str(claim.get("claim_type"))),
+                    risk_class=RiskClass(str(claim.get("risk_class"))),
+                    freshness=FreshnessState(str(evidence.get("freshness"))),
+                    authoritative_source_status=ClaimStatus(str(claim.get("status"))),
+                    checked_at=datetime.fromisoformat(str(claim.get("checked_at"))),
+                    next_review_at=datetime.fromisoformat(
+                        str(claim.get("next_review_at"))
+                    ),
+                )
+            )
+    except TypeError, ValueError:
+        fail("RAOS_V2_PHASE3_CLAIM_BINDING_INVALID")
+    public_before = migration.get("public_before")
+    body_sha256 = (
+        public_before.get("body_sha256") if isinstance(public_before, dict) else None
+    )
+    field_names = (
+        "post_title",
+        "post_content",
+        "post_excerpt",
+        "post_status",
+        "comment_status",
+        "ping_status",
+    )
+    if not isinstance(body_sha256, str) or any(
+        not isinstance(projection.get(name), str) for name in field_names
+    ):
+        fail("RAOS_V2_PHASE3_WORDPRESS_PAYLOAD_INVALID")
+    try:
+        fields = Phase3WordPressUpdateFields(
+            post_title=str(projection["post_title"]),
+            post_content=str(projection["post_content"]),
+            post_excerpt=str(projection["post_excerpt"]),
+            meta_description=str(projection["post_excerpt"]),
+            post_status=str(projection["post_status"]),
+            comment_status=str(projection["comment_status"]),
+            ping_status=str(projection["ping_status"]),
+        )
+        payload = Phase3WordPressUpdatePayload(
+            fields=fields,
+            expected_public_body_sha256=body_sha256,
+        )
+        candidate = build_phase3_review_candidate(
+            phase2_candidate=phase2_candidate,
+            claim_bindings=tuple(claim_bindings),
+            update_payload=payload,
+        )
+    except TypeError, ValueError:
+        fail("RAOS_V2_PHASE3_REVIEW_CANDIDATE_INVALID")
+    blockers = candidate.seal_blockers()
+    if blockers != ("PREACTION_BINDING_MISSING_OR_HISTORICAL_BASELINE_ONLY",):
+        fail("RAOS_V2_PHASE3_REVIEW_CANDIDATE_BLOCKED")
+    return (
+        dict(payload.to_contract_record()),
+        dict(candidate.to_contract_record()),
+        candidate.candidate_digest,
+        candidate.payload_digest,
+    )
+
+
+def validate_phase3_publication_closure(
+    *,
+    publication: Mapping[str, object],
+    claim_ledger: Mapping[str, object],
+    migration: Mapping[str, object],
+    wordpress_payload: Mapping[str, object],
+    review_candidate: Mapping[str, object],
+) -> None:
+    """Recompute the complete Phase 2 -> Phase 3 authority and payload closure."""
+
+    ledger_rows = claim_ledger.get("claims")
+    evidence_rows = publication.get("claim_evidence")
+    binding_rows = review_candidate.get("claim_bindings")
+    phase2_record = review_candidate.get("phase2_candidate")
+    input_hashes = publication.get("input_hashes")
+    public_before = migration.get("public_before")
+    payload_target = wordpress_payload.get("target")
+    payload_preconditions = wordpress_payload.get("preconditions")
+    payload_postconditions = wordpress_payload.get("postconditions")
+    payload_preaction = wordpress_payload.get("preaction")
+    payload_structured_data = wordpress_payload.get("structured_data_expectation")
+    payload_fields = wordpress_payload.get("fields")
+    if not all(
+        isinstance(value, dict)
+        for value in (
+            input_hashes,
+            public_before,
+            payload_target,
+            payload_preconditions,
+            payload_postconditions,
+            payload_preaction,
+            payload_structured_data,
+            payload_fields,
+        )
+    ) or not all(
+        isinstance(value, list) for value in (ledger_rows, evidence_rows, binding_rows)
+    ):
+        fail("RAOS_V2_PHASE3_PUBLICATION_CLOSURE_INVALID")
+    assert isinstance(input_hashes, dict)
+    assert isinstance(public_before, dict)
+    assert isinstance(payload_target, dict)
+    assert isinstance(payload_preconditions, dict)
+    assert isinstance(payload_postconditions, dict)
+    assert isinstance(payload_preaction, dict)
+    assert isinstance(payload_structured_data, dict)
+    assert isinstance(payload_fields, dict)
+    assert isinstance(ledger_rows, list)
+    assert isinstance(evidence_rows, list)
+    assert isinstance(binding_rows, list)
+    ledger_by_id = {
+        str(row.get("claim_id")): row
+        for row in ledger_rows
+        if isinstance(row, dict) and isinstance(row.get("claim_id"), str)
+    }
+    evidence_by_id = {
+        str(row.get("claim_id")): row
+        for row in evidence_rows
+        if isinstance(row, dict) and isinstance(row.get("claim_id"), str)
+    }
+    bindings_by_id = {
+        str(row.get("claim_id")): row
+        for row in binding_rows
+        if isinstance(row, dict) and isinstance(row.get("claim_id"), str)
+    }
+    if (
+        len(bindings_by_id) != len(binding_rows)
+        or set(bindings_by_id) != set(evidence_by_id)
+        or not set(bindings_by_id).issubset(ledger_by_id)
+    ):
+        fail("RAOS_V2_PHASE3_PUBLICATION_CLOSURE_INVALID")
+    authority_rows: list[dict[str, object]] = []
+    for claim_id in sorted(bindings_by_id):
+        binding = bindings_by_id[claim_id]
+        ledger = ledger_by_id[claim_id]
+        evidence = evidence_by_id[claim_id]
+        authority = {
+            "claim_id": claim_id,
+            "claim_type": binding.get("claim_type"),
+            "risk_class": binding.get("risk_class"),
+            "freshness": binding.get("freshness"),
+            "authoritative_source_status": binding.get("authoritative_source_status"),
+            "checked_at": binding.get("checked_at"),
+            "next_review_at": binding.get("next_review_at"),
+        }
+        claim_type = authority["claim_type"]
+        source_status = authority["authoritative_source_status"]
+        expected_resolved = claim_type != "UNKNOWN" and source_status == "VERIFIED"
+        expected_blocking = (
+            source_status != "BLOCKED"
+            if claim_type == "UNKNOWN"
+            else source_status != "VERIFIED"
+        )
+        expected_disclosed = claim_type == "UNKNOWN" and source_status == "BLOCKED"
+        try:
+            checked_at = datetime.fromisoformat(str(authority["checked_at"]))
+            next_review_at = datetime.fromisoformat(str(authority["next_review_at"]))
+        except ValueError:
+            fail("RAOS_V2_PHASE3_PUBLICATION_CLOSURE_INVALID")
+        if (
+            claim_type != ledger.get("claim_type")
+            or authority["risk_class"] != ledger.get("risk_class")
+            or authority["risk_class"] != evidence.get("risk_class")
+            or authority["freshness"] != evidence.get("freshness")
+            or source_status != ledger.get("status")
+            or authority["checked_at"] != ledger.get("checked_at")
+            or authority["next_review_at"] != ledger.get("next_review_at")
+            or binding.get("resolved") is not expected_resolved
+            or binding.get("blocking") is not expected_blocking
+            or binding.get("intentionally_disclosed") is not expected_disclosed
+            or checked_at.tzinfo is None
+            or checked_at.utcoffset() is None
+            or next_review_at.tzinfo is None
+            or next_review_at.utcoffset() is None
+            or next_review_at <= checked_at
+        ):
+            fail("RAOS_V2_PHASE3_PUBLICATION_CLOSURE_INVALID")
+        authority_rows.append(authority)
+    authority_document = {
+        "schema": "RAOS_V2_PHASE3_CLAIM_AUTHORITY_V1",
+        "version": "1.0.0",
+        "claims": authority_rows,
+    }
+    canonical = "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+    structured_document = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Article",
+                "headline": payload_fields.get("post_title"),
+                "description": payload_fields.get("meta_description"),
+                "mainEntityOfPage": {"@id": canonical},
+                "url": canonical,
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": payload_fields.get("post_title"),
+                        "item": canonical,
+                    }
+                ],
+            },
+            {"@type": "Organization", "url": "https://kurashinoshirube.com/"},
+            {"@type": "WebSite", "url": "https://kurashinoshirube.com/"},
+        ],
+    }
+    structured_digest = semantic_json_sha256({"documents": [structured_document]})
+    expected_structured_data = {
+        "schema": "RAOS_V2_PHASE3_STRUCTURED_DATA_EXPECTATION_V1",
+        "version": "1.0.0",
+        "derivation": "EXACT_WORDPRESS_FIELDS_V1",
+        "json_ld_script_count": 1,
+        "json_ld_document_count": 1,
+        "json_ld_types": [
+            "Article",
+            "BreadcrumbList",
+            "Organization",
+            "WebSite",
+        ],
+        "emission": {
+            "owner": "EXTERNAL_WORDPRESS_SEO_CONFIGURATION",
+            "local_json_ld_emission": False,
+            "external_configuration_status": "UNVERIFIED_EXTERNAL",
+        },
+        "documents": [structured_document],
+        "json_ld_sha256": structured_digest,
+    }
+    expected_public_body = public_before.get("body_sha256")
+    expected_payload_digest = semantic_json_sha256(wordpress_payload)
+    if (
+        phase2_record != publication
+        or review_candidate.get("candidate_digest") != semantic_json_sha256(publication)
+        or review_candidate.get("update_payload") != wordpress_payload
+        or review_candidate.get("preaction_status") != "HISTORICAL_BASELINE_ONLY"
+        or review_candidate.get("preaction_binding_digest") is not None
+        or review_candidate.get("structured_data_expectation_sha256")
+        != structured_digest
+        or review_candidate.get("payload_digest") != expected_payload_digest
+        or input_hashes.get("phase3_claim_authority")
+        != semantic_json_sha256(authority_document)
+        or wordpress_payload.get("schema")
+        != "RAOS_V2_PHASE3_WORDPRESS_UPDATE_PAYLOAD_V1"
+        or wordpress_payload.get("intent")
+        != "UPDATE_EXISTING_PUBLISHED_POST_AT_APPROVED_CUTOVER"
+        or payload_target
+        != {
+            "origin": "https://kurashinoshirube.com",
+            "route": "/carry-on-suitcase-comparison/",
+            "kind": "EXISTING_POST",
+            "expected_match_count": 1,
+            "expected_public_body_sha256": expected_public_body,
+        }
+        or payload_preconditions != {"expected_current_post_status": "publish"}
+        or payload_postconditions != {"required_after_post_status": "publish"}
+        or payload_preaction
+        != {
+            "status": "HISTORICAL_BASELINE_ONLY",
+            "binding_digest": None,
+            "binding": None,
+        }
+        or payload_structured_data != expected_structured_data
+        or payload_fields.get("post_status") != "publish"
+        or payload_fields.get("canonical_url")
+        != "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+    ):
+        fail("RAOS_V2_PHASE3_PUBLICATION_CLOSURE_INVALID")
+
+
+def phase3_plugin_artifact_documents(
+    phase3_sources: Mapping[Path, object],
+    *,
+    post_content: str,
+) -> dict[Path, bytes]:
+    source_root = Path(
+        "packages/web-ui/src/decision-support-v2/wordpress/plugin/"
+        "raos-v2-decision-support"
+    )
+    source_manifest_path = source_root / "plugin-manifest.v1.json"
+    source_php_path = source_root / "raos-v2-decision-support.php"
+    source_css_path = source_root / "assets/decision-support.css"
+    source_manifest = phase3_sources.get(source_manifest_path)
+    if not isinstance(source_manifest, dict):
+        fail("RAOS_V2_PHASE3_WORDPRESS_MANIFEST_INVALID")
+    try:
+        php = (ROOT / source_php_path).read_bytes()
+        css = (ROOT / source_css_path).read_bytes()
+    except OSError:
+        fail("RAOS_V2_PHASE3_WORDPRESS_SOURCE_MISSING")
+    post_content_sha256 = sha256(post_content.encode("utf-8"))
+    expected_target = {
+        "article_id": "A05",
+        "exact_route": "/carry-on-suitcase-comparison/",
+        "exact_post_slug": "carry-on-suitcase-comparison",
+        "required_package_marker": "RAOS_V2_A05_POST_CONTENT_V1",
+        "required_post_content_sha256": post_content_sha256,
+        "rendered_content_envelope": "RAOS_V2_A05_ENVELOPE_V1",
+    }
+    expected_php_binding = (
+        f"const RAOS_V2_DECISION_SUPPORT_POST_CONTENT_SHA256 = '{post_content_sha256}';"
+    ).encode("ascii")
+    if (
+        source_manifest.get("target") != expected_target
+        or php.count(expected_php_binding) != 1
+    ):
+        fail("RAOS_V2_PHASE3_WORDPRESS_CONTENT_BINDING_INVALID")
+    rows = [
+        {
+            "path": "raos-v2-decision-support.php",
+            "bytes": len(php),
+            "sha256": sha256(php),
+        },
+        {
+            "path": "assets/decision-support.css",
+            "bytes": len(css),
+            "sha256": sha256(css),
+        },
+    ]
+    manifest = {
+        **deepcopy(source_manifest),
+        "classification": "DEPLOYABLE_LOCAL_ARTIFACT_NOT_DEPLOYED",
+        "files": rows,
+        "artifact_sha256": sha256(canonical_json_bytes({"files": rows})),
+        "source_root": source_root.as_posix(),
+        "external_action_id": "EXT-004",
+        "deployment_status": "NOT_EXECUTED",
+        "backlog_id": "B-V2-036",
+        "requirement_ids": ["R-V2-006", "R-V2-024", "R-V2-033"],
+        "test_ids": ["T-V2-008", "T-V2-039", "T-V2-051"],
+    }
+    return {
+        PHASE3_ARTIFACT_ROOT / "raos-v2-decision-support.php": php,
+        PHASE3_ARTIFACT_ROOT / "assets/decision-support.css": css,
+        PHASE3_ARTIFACT_ROOT / "plugin-manifest.v1.json": canonical_json_bytes(
+            manifest
+        ),
+    }
+
+
+def media_binding_state(binding: object, expected: Mapping[str, object]) -> str:
     """Return the closed media gate state for a recorded offer image binding."""
 
     if binding is None:
@@ -3855,9 +5857,7 @@ def validate_phase2_source_inputs() -> dict[Path, object]:
     }
     discovered_preview_inputs = {
         path.relative_to(ROOT)
-        for path in (ROOT / "packages/web-ui/src/decision-support-v2/preview").glob(
-            "*"
-        )
+        for path in (ROOT / "packages/web-ui/src/decision-support-v2/preview").glob("*")
         if path.is_file() and not path.is_symlink()
     }
     if discovered_implementation != set(PHASE2_IMPLEMENTATION_PATHS):
@@ -3908,13 +5908,101 @@ def validate_phase2_source_inputs() -> dict[Path, object]:
     return parsed
 
 
+def _validate_phase3_wordpress_source_inventory() -> None:
+    wordpress_root = ROOT / "packages/web-ui/src/decision-support-v2/wordpress"
+    discovered = {
+        path.relative_to(ROOT)
+        for path in wordpress_root.rglob("*")
+        if path.is_file() and "__pycache__" not in path.parts
+    }
+    if discovered != set(PHASE3_WORDPRESS_SOURCE_PATHS) or any(
+        path.is_symlink() for path in wordpress_root.rglob("*")
+    ):
+        fail("RAOS_V2_PHASE3_WORDPRESS_SOURCE_INVENTORY_DRIFT")
+
+
+def _read_phase3_source_paths(paths: Sequence[Path]) -> dict[Path, object]:
+    parsed: dict[Path, object] = {}
+    for relative in paths:
+        path = ROOT / relative
+        try:
+            metadata = path.lstat()
+            payload = path.read_bytes()
+        except OSError:
+            fail("RAOS_V2_PHASE3_SOURCE_MISSING")
+        if (
+            stat.S_ISLNK(metadata.st_mode)
+            or not stat.S_ISREG(metadata.st_mode)
+            or len(payload) > 2 * 1024 * 1024
+        ):
+            fail("RAOS_V2_PHASE3_SOURCE_BOUNDARY_INVALID")
+        if relative.suffix == ".json":
+            parsed[relative] = _read_json(relative)
+        elif relative.suffix in {".yaml", ".yml"}:
+            parsed[relative] = _read_yaml(relative)
+        else:
+            try:
+                text = payload.decode("utf-8")
+            except UnicodeError:
+                fail("RAOS_V2_PHASE3_SOURCE_UTF8_INVALID")
+            if "\x00" in text:
+                fail("RAOS_V2_PHASE3_SOURCE_UTF8_INVALID")
+            parsed[relative] = text
+    return parsed
+
+
+def _validate_phase3_wordpress_manifest(parsed: Mapping[Path, object]) -> None:
+    phase3_external_state()
+    manifest_path = next(
+        path for path in PHASE3_WORDPRESS_SOURCE_PATHS if path.name.endswith(".json")
+    )
+    manifest = parsed.get(manifest_path)
+    if (
+        not isinstance(manifest, dict)
+        or manifest.get("schema") != "RAOS_V2_WORDPRESS_PRESENTATION_PLUGIN_INPUT_V1"
+        or manifest.get("installation") != "EXTERNAL_HUMAN_ACTION_NOT_EXECUTED"
+    ):
+        fail("RAOS_V2_PHASE3_WORDPRESS_MANIFEST_INVALID")
+    runtime = manifest.get("runtime")
+    if not isinstance(runtime, dict) or any(
+        runtime.get(capability) is not False
+        for capability in (
+            "admin_ui",
+            "cron",
+            "database_write",
+            "network_request",
+            "option_write",
+            "publication_capability",
+            "rest_route",
+            "telemetry",
+        )
+    ):
+        fail("RAOS_V2_PHASE3_WORDPRESS_MANIFEST_INVALID")
+
+
+def validate_phase3_browser_bootstrap_inputs() -> dict[Path, object]:
+    """Bind browser inputs without requiring an earlier browser receipt."""
+
+    _validate_phase3_wordpress_source_inventory()
+    parsed = _read_phase3_source_paths(PHASE3_BROWSER_BOOTSTRAP_SOURCE_PATHS)
+    _validate_phase3_wordpress_manifest(parsed)
+    if PHASE3_LOCAL_BROWSER_EVIDENCE_PATH in parsed:
+        fail("RAOS_V2_PHASE3_BOOTSTRAP_EVIDENCE_BOUNDARY_INVALID")
+    return parsed
+
+
+def validate_phase3_source_inputs() -> dict[Path, object]:
+    """Strictly bind all Phase 3 sources after browser evidence exists."""
+
+    parsed = validate_phase3_browser_bootstrap_inputs()
+    parsed.update(_read_phase3_source_paths((PHASE3_LOCAL_BROWSER_EVIDENCE_PATH,)))
+    return parsed
+
+
 def _phase2_input_inventory() -> list[dict[str, object]]:
     roles: dict[Path, str] = {
         **{path: "DATA_OR_CONTENT_INPUT" for path in PHASE2_DATA_PATHS},
-        **{
-            path: "AUTHORITATIVE_PREVIEW_INPUT"
-            for path in PHASE2_PREVIEW_INPUT_PATHS
-        },
+        **{path: "AUTHORITATIVE_PREVIEW_INPUT" for path in PHASE2_PREVIEW_INPUT_PATHS},
         **{
             path: "RECORDED_LOCAL_EVIDENCE_INPUT"
             for path in PHASE2_RECORDED_EVIDENCE_PATHS
@@ -4027,7 +6115,10 @@ def migration_manifest_document(
                     "sequence": 3,
                     "phase_boundary": "P3_HUMAN_GATED",
                     "action": "PUBLIC_READ_ONLY_VERIFY_STATUS_CANONICAL_ROBOTS_AND_BODY",
-                    "requires": ["step 2 completed", "same-origin credential-free capture"],
+                    "requires": [
+                        "step 2 completed",
+                        "same-origin credential-free capture",
+                    ],
                     "production_status": "NOT_EXECUTED",
                 },
             ],
@@ -4100,9 +6191,7 @@ def validate_migration_restore_plan(document: Mapping[str, object]) -> None:
             or step.get("production_status") != "NOT_EXECUTED"
             or not isinstance(step.get("requires"), list)
             or not step["requires"]
-            or not all(
-                isinstance(value, str) and value for value in step["requires"]
-            )
+            or not all(isinstance(value, str) and value for value in step["requires"])
         ):
             fail("RAOS_V2_MIGRATION_RESTORE_PLAN_INVALID")
 
@@ -4117,7 +6206,9 @@ def claim_ledger_document() -> dict[str, object]:
     source_registry = _read_yaml(
         Path("changes/raos-v2/phase-2/sources/source-registry.v2.yaml")
     )
-    if not all(isinstance(value, dict) for value in (products, airlines, source_registry)):
+    if not all(
+        isinstance(value, dict) for value in (products, airlines, source_registry)
+    ):
         fail("RAOS_V2_CLAIM_LEDGER_INPUT_INVALID")
     assert isinstance(products, dict)
     assert isinstance(airlines, dict)
@@ -4300,7 +6391,10 @@ def claim_ledger_document() -> dict[str, object]:
             )
         )
         decision_inputs = [
-            {"input_id": f"IN-{prefix}-DIMENSIONS", "value_ref": identifiers["dimensions"]},
+            {
+                "input_id": f"IN-{prefix}-DIMENSIONS",
+                "value_ref": identifiers["dimensions"],
+            },
             {"input_id": f"IN-{prefix}-CAPACITY", "value_ref": identifiers["capacity"]},
             {"input_id": f"IN-{prefix}-MASS", "value_ref": identifiers["mass"]},
             {"input_id": f"IN-{prefix}-FEATURES", "value_ref": identifiers["features"]},
@@ -4329,11 +6423,14 @@ def claim_ledger_document() -> dict[str, object]:
         }
         for product_id in prefixes
     ]
-    mass_sources = [sources[source_id] for source_id in (
-        "SRC-ACE-CRESTA-06316",
-        "SRC-ACE-DIFFERENCE-05721",
-        "SRC-ACE-MAXPASS4-01471",
-    )]
+    mass_sources = [
+        sources[source_id]
+        for source_id in (
+            "SRC-ACE-CRESTA-06316",
+            "SRC-ACE-DIFFERENCE-05721",
+            "SRC-ACE-MAXPASS4-01471",
+        )
+    ]
     if not all(isinstance(row, dict) for row in mass_sources):
         fail("RAOS_V2_CLAIM_LEDGER_SOURCE_MISSING")
     mass_checked_at = max(str(row["checked_at"]) for row in mass_sources)
@@ -4374,7 +6471,9 @@ def claim_ledger_document() -> dict[str, object]:
     if not isinstance(rule_sets, list):
         fail("RAOS_V2_CLAIM_LEDGER_INPUT_INVALID")
     for rule_set in rule_sets:
-        if not isinstance(rule_set, dict) or not isinstance(rule_set.get("variants"), list):
+        if not isinstance(rule_set, dict) or not isinstance(
+            rule_set.get("variants"), list
+        ):
             fail("RAOS_V2_CLAIM_LEDGER_INPUT_INVALID")
         for variant in rule_set["variants"]:
             if not isinstance(variant, dict):
@@ -4455,7 +6554,9 @@ def publication_claim_evidence(
         claim_id = claim.get("claim_id")
         claim_type = claim.get("claim_type")
         risk_class = claim.get("risk_class")
-        if not all(isinstance(value, str) for value in (claim_id, claim_type, risk_class)):
+        if not all(
+            isinstance(value, str) for value in (claim_id, claim_type, risk_class)
+        ):
             fail("RAOS_V2_PUBLICATION_CLAIM_INVALID")
         assert isinstance(claim_id, str)
         assert isinstance(claim_type, str)
@@ -4510,7 +6611,7 @@ def publication_claim_evidence(
             claim_next_review = datetime.fromisoformat(
                 str(claim["next_review_at"]).replace("Z", "+00:00")
             )
-        except (KeyError, ValueError):
+        except KeyError, ValueError:
             fail("RAOS_V2_PUBLICATION_SOURCE_TIME_INVALID")
         if (
             claim_checked != source_checked
@@ -4546,6 +6647,79 @@ def publication_claim_evidence(
     return evidence
 
 
+def phase3_claim_authority_document(
+    *,
+    bound_claims: Sequence[Mapping[str, object]],
+    claim_evidence: Sequence[Mapping[str, object]],
+) -> dict[str, object]:
+    """Close Phase 3 claim type/risk/status over Phase 2 evidence."""
+
+    claims_by_id = {
+        str(claim.get("claim_id")): claim
+        for claim in bound_claims
+        if isinstance(claim.get("claim_id"), str)
+    }
+    evidence_by_id = {
+        str(evidence.get("claim_id")): evidence
+        for evidence in claim_evidence
+        if isinstance(evidence.get("claim_id"), str)
+    }
+    if (
+        not claims_by_id
+        or len(claims_by_id) != len(bound_claims)
+        or len(evidence_by_id) != len(claim_evidence)
+        or set(claims_by_id) != set(evidence_by_id)
+    ):
+        fail("RAOS_V2_PHASE3_CLAIM_AUTHORITY_INVALID")
+    rows: list[dict[str, object]] = []
+    for claim_id in sorted(claims_by_id):
+        claim = claims_by_id[claim_id]
+        evidence = evidence_by_id[claim_id]
+        row = {
+            "claim_id": claim_id,
+            "claim_type": claim.get("claim_type"),
+            "risk_class": claim.get("risk_class"),
+            "freshness": evidence.get("freshness"),
+            "authoritative_source_status": claim.get("status"),
+            "checked_at": claim.get("checked_at"),
+            "next_review_at": claim.get("next_review_at"),
+        }
+        try:
+            checked_at = datetime.fromisoformat(str(row["checked_at"]))
+            next_review_at = datetime.fromisoformat(str(row["next_review_at"]))
+        except ValueError:
+            fail("RAOS_V2_PHASE3_CLAIM_AUTHORITY_INVALID")
+        if (
+            row["claim_type"]
+            not in {"A_OFFICIAL_FACT", "D_EDITORIAL_JUDGEMENT", "UNKNOWN"}
+            or row["risk_class"] not in {"LOW", "MEDIUM", "HIGH"}
+            or row["freshness"]
+            not in {
+                "FRESH",
+                "DUE",
+                "SOFT_STALE",
+                "HARD_STALE",
+                "UNKNOWN",
+                "UNAVAILABLE",
+                "REJECTED",
+            }
+            or row["authoritative_source_status"] not in {"VERIFIED", "BLOCKED"}
+            or checked_at.tzinfo is None
+            or checked_at.utcoffset() is None
+            or next_review_at.tzinfo is None
+            or next_review_at.utcoffset() is None
+            or next_review_at <= checked_at
+            or evidence.get("risk_class") != row["risk_class"]
+        ):
+            fail("RAOS_V2_PHASE3_CLAIM_AUTHORITY_INVALID")
+        rows.append(row)
+    return {
+        "schema": "RAOS_V2_PHASE3_CLAIM_AUTHORITY_V1",
+        "version": "1.0.0",
+        "claims": rows,
+    }
+
+
 def validate_publication_hash_closure(document: Mapping[str, object]) -> None:
     hashes = document.get("input_hashes")
     migration = document.get("migration_manifest")
@@ -4565,9 +6739,7 @@ def publication_candidate_document(
     claim_ledger: Mapping[str, object],
 ) -> dict[str, object]:
     content_path = Path("changes/raos-v2/phase-2/content/carry-on-comparison.v2.yaml")
-    article_path = Path(
-        "changes/raos-v2/phase-2/content/article-definitions.v2.yaml"
-    )
+    article_path = Path("changes/raos-v2/phase-2/content/article-definitions.v2.yaml")
     editorial_path = Path(
         "changes/raos-v2/phase-2/editorial/editorial-decisions.v2.yaml"
     )
@@ -4602,7 +6774,8 @@ def publication_candidate_document(
         (
             row
             for row in article_rows
-            if isinstance(row, dict) and row.get("article_id") == content.get("article_id")
+            if isinstance(row, dict)
+            and row.get("article_id") == content.get("article_id")
         ),
         None,
     )
@@ -4622,9 +6795,8 @@ def publication_candidate_document(
         fail("RAOS_V2_PUBLICATION_CLAIM_CLOSURE_INVALID")
     bound_claims = [claims_by_id[str(claim_id)] for claim_id in article_claim_ids]
     if any(
-        claim.get("status") != (
-            "BLOCKED" if claim.get("claim_type") == "UNKNOWN" else "VERIFIED"
-        )
+        claim.get("status")
+        != ("BLOCKED" if claim.get("claim_type") == "UNKNOWN" else "VERIFIED")
         for claim in bound_claims
     ):
         fail("RAOS_V2_PUBLICATION_CLAIM_STATE_INVALID")
@@ -4680,6 +6852,13 @@ def publication_candidate_document(
         all_claims=claims_by_id,
         source_registry=source_registry,
         candidate_at=created_at_value,
+    )
+    phase3_claim_authority = phase3_claim_authority_document(
+        bound_claims=bound_claims,
+        claim_evidence=claim_evidence,
+    )
+    input_hashes["phase3_claim_authority"] = semantic_json_sha256(
+        phase3_claim_authority
     )
     document = {
         "schema_version": "1.0.0",
@@ -4864,7 +7043,9 @@ def validated_browser_evidence(
         "transfer_budget_routes": 9,
         "transfer_budgets": True,
     }
-    if any(assertions.get(key) != expected for key, expected in required_assertions.items()):
+    if any(
+        assertions.get(key) != expected for key, expected in required_assertions.items()
+    ):
         fail("RAOS_V2_BROWSER_EVIDENCE_ASSERTION_FAILED")
     raw_path_value = raw_receipt.get("local_path")
     harness_path_value = raw_receipt.get("harness_path")
@@ -4895,10 +7076,9 @@ def validated_browser_evidence(
             payload = _read_local_evidence_file(raw_path, root=ROOT)
         except ValidationFailure:
             fail("RAOS_V2_BROWSER_RAW_RECEIPT_INVALID")
-        if (
-            len(payload) != raw_receipt.get("bytes")
-            or sha256(payload) != raw_receipt.get("sha256")
-        ):
+        if len(payload) != raw_receipt.get("bytes") or sha256(
+            payload
+        ) != raw_receipt.get("sha256"):
             fail("RAOS_V2_BROWSER_RAW_RECEIPT_DRIFT")
         raw = load_json_strict(payload)
         if (
@@ -5169,9 +7349,7 @@ def phase2_validation_document(
     recorded_local_test = deepcopy(local_test)
     recorded_local_test["raw_verification"] = "RECORDED_NOT_REVERIFIED"
     recorded_visual_verification = deepcopy(visual_verification)
-    recorded_visual_verification["raw_verification"] = (
-        "RECORDED_NOT_REVERIFIED"
-    )
+    recorded_visual_verification["raw_verification"] = "RECORDED_NOT_REVERIFIED"
     tests = [f"T-V2-{value:03d}" for value in range(20, 47)] + ["T-V2-051"]
     gate_passed = (
         local_test.get("status") == "PASSED_LOCAL"
@@ -5189,9 +7367,7 @@ def phase2_validation_document(
     return {
         "schema": "RAOS_V2_PHASE2_VALIDATION_V1",
         "status": (
-            "PASSED_LOCAL_RECORDED"
-            if gate_passed
-            else "READY_FOR_LOCAL_TEST_GATE"
+            "PASSED_LOCAL_RECORDED" if gate_passed else "READY_FOR_LOCAL_TEST_GATE"
         ),
         "evidence_scope": "LOCAL_ONLY",
         "checks": {
@@ -5211,13 +7387,9 @@ def phase2_validation_document(
         },
         "implemented_backlog_ids": [f"B-V2-{value:03d}" for value in range(19, 34)],
         "completed_backlog_ids": (
-            [f"B-V2-{value:03d}" for value in range(19, 35)]
-            if gate_passed
-            else []
+            [f"B-V2-{value:03d}" for value in range(19, 35)] if gate_passed else []
         ),
-        "pending_exit_backlog_ids": (
-            [] if gate_passed else ["B-V2-034"]
-        ),
+        "pending_exit_backlog_ids": ([] if gate_passed else ["B-V2-034"]),
         "local_test_contracts": {
             "ids": tests,
             "status": local_test.get("status"),
@@ -5337,9 +7509,7 @@ def phase2_report_document(
     evidence_sha = sha256(canonical_json_bytes(evidence))
     test_receipt = evidence.get("tests")
     test_status = (
-        test_receipt.get("status")
-        if isinstance(test_receipt, dict)
-        else "UNAVAILABLE"
+        test_receipt.get("status") if isinstance(test_receipt, dict) else "UNAVAILABLE"
     )
     local_gate_passed = evidence.get("gate_status") == "PASSED_LOCAL_RECORDED"
     backlog_label = (
@@ -5398,7 +7568,7 @@ and a disabled WordPress dry-run boundary.
 - Analytics: production values `UNAVAILABLE`; semantic QDS/local sink evidence only
 - Planning ceiling: 80 hours; actual human time `UNAVAILABLE`; external spend: JPY 0
 - Rollback: route/canonical/robots exact-tuple simulation `PASSED_LOCAL`; production backup/restore `NOT_EXECUTED`
-- Exit gate: `{'PASS_LOCAL_RECORDED' if local_gate_passed else 'PENDING_LOCAL_TEST_GATE'}`
+- Exit gate: `{"PASS_LOCAL_RECORDED" if local_gate_passed else "PENDING_LOCAL_TEST_GATE"}`
 
 ## Publication and migration boundary
 
@@ -5424,9 +7594,7 @@ def integration_pr_body_document(evidence: Mapping[str, object]) -> str:
     evidence_sha = sha256(canonical_json_bytes(evidence))
     test_receipt = evidence.get("tests")
     test_status = (
-        test_receipt.get("status")
-        if isinstance(test_receipt, dict)
-        else "UNAVAILABLE"
+        test_receipt.get("status") if isinstance(test_receipt, dict) else "UNAVAILABLE"
     )
     browser_rows = evidence.get("visual_a11y_evidence")
     browser_status = (
@@ -5499,6 +7667,1030 @@ production migration, policy activation and irreversible deletion:
 """
 
 
+def phase3_backup_runbook_document() -> str:
+    return """# RAOS V2 Phase 3 production backup/export runbook
+
+## Boundary
+
+This is a human runbook for `B-V2-035`; no backup, credential access, WordPress
+read/write, deployment or production mutation was executed while generating it.
+Stop before any action unless the owner has separately approved the exact
+production task and has a recoverable storage location outside this repository.
+
+## Exact target
+
+- Origin: `https://kurashinoshirube.com`
+- Existing route: `/carry-on-suitcase-comparison/`
+- Migration mode: update the existing public route in place; do not create a
+  redirect, alternate public slug or second indexable page.
+
+## Create-once pre-action binding before final review
+
+The Phase 0 body hash is historical evidence only. Never overwrite or relabel it
+as current. First create a new `RAOS_V2_PHASE3_PREACTION_BINDING_V1` from one
+bounded public read-only capture and one owner-held WordPress export of the same
+existing post. If the public body, post ID or export identity cannot be bound
+exactly, keep the historical candidate unsealable and stop.
+
+1. Record the WordPress site, core version, active theme/version, relevant
+   plugin versions and the exact target post ID. Do not put credentials or raw
+   database exports in Git, logs or the review packet.
+2. Export recoverable bytes for the target post: title, slug, excerpt, content,
+   status, author, publish/modified dates, taxonomy, comment/ping state, featured
+   media references and every SEO/Yoast field that affects title, description,
+   canonical, robots or schema.
+3. Export the active theme/plugin artifact needed to restore the previous
+   presentation, and record its version plus SHA-256 outside the repository.
+4. Record public status, redirect chain, canonical, HTML/meta and HTTP robots,
+   sitemap membership, H1 and body hash using the bounded
+   `capture-phase3-public --public-read-only` command immediately before the
+   external action. The same capture must fetch the fixed same-origin
+   `/robots.txt`, accept only status 200, 404 or 410, retain only its SHA-256
+   and metadata, discard its body, and prove that the target route is allowed
+   for Googlebot. Enumerate crawler-specific robots meta such as `googlebot`
+   and `googlebot-news` and require every directive to remain indexability
+   safe; metadata nested in `template` or `noscript` is not accepted as head
+   metadata evidence. Phase 0 evidence is a historical baseline and must not
+   be overwritten.
+5. Store raw exports in recoverable owner-controlled storage. Create only a
+   sanitized receipt containing opaque hashes, version identifiers, field names
+   and the exact target binding for review by the local generator.
+
+6. Reissue the local update/review candidate from the verified pre-action
+   binding. Only that reissued digest may be given to the human reviewer.
+7. After owner review and local sealing, create `PRE_WRITE_EXPORT` and its
+   disabled dry-run receipt. This pre-write export must bind the existing
+   field hashes, sealed pre-action digest and same current body, be no older than
+   five minutes at evaluation and be captured after the human review. Any
+   intervening change requires a new pre-action binding, candidate reissue and
+   review. It is not post-publication evidence.
+
+If any field, restore byte sequence, target identity or checksum is unavailable,
+record `UNAVAILABLE` and stop. Missing data is never equivalent to an empty field.
+
+## Deploy, preview and metadata gate
+
+The route-scoped plugin renders CSS and the exact content-verification envelope;
+it does not generate JSON-LD. The candidate therefore depends on the existing
+Yoast or single metadata-owner configuration. Before publication, a nonpublic
+WordPress preview must prove the
+exact `Article`, `BreadcrumbList`, `Organization` and `WebSite` graph required by
+T-V2-036, with visible-title/canonical parity and no forbidden rich-result type.
+It must also emit exactly one HTML title equal to the sealed `post_title` (no
+unreviewed site-name suffix) and exactly one meta description equal to the
+sealed `meta_description`.
+This is an unexecuted external blocker. A mismatch must not be accepted as a
+completed publication: correct the metadata configuration before cutover, or
+restore the exported state if the mismatch is discovered after a write.
+
+After an approved publication, the HTTP verification receipt must be derived
+from three independent inputs: the fresh bounded public capture, the sealed
+package and a separate `POST_ACTION_OWNER_EXPORT` of every sealed WordPress
+field after the write. This after-state export must bind the same post ID,
+sealed AFTER field hashes, final public body and pre-action digest. It is not the
+pre-write dry-run export. The post-action HTTP capture and export form one
+atomic paired-capture contract: both must be independently derived and evaluated
+within the same five-minute window. A capture alone or a self-asserted receipt
+cannot satisfy this gate. The HTTP receipt's indexability evidence scope is
+`HEAD_META_HTTP_SITEMAP_AND_ROBOTS_TXT`: it must include the safe HTML/meta and
+HTTP robots state, sitemap membership, plus the hashed-and-discarded
+same-origin `/robots.txt` response and a positive Googlebot allowance for the
+target route. Crawler-specific meta must also be counted and free of `noindex`,
+`nofollow` and `none` directives.
+
+After any separately approved publication, B-V2-040 also requires a separate
+public read-only browser receipt at 390, 768 and 1440px. It must bind the public
+body, sealed package and deployed plugin hashes while checking computed
+disclosure/blocked-CTA visibility, keyboard use, 200% zoom, axe WCAG 2.2 AA and
+resource/network behavior. Raw capture and screenshot bytes must remain in
+owner-controlled storage outside Git. A future independent recorder/verifier
+must recalculate the public HTTP receipt digest, resource manifest, screenshot
+bytes/hashes and the harness, browser binary and exact command hashes. That
+validator is not implemented here: the schema is classified
+`UNVERIFIED_EXTERNAL_TEMPLATE_NO_ACCEPTANCE_AUTHORITY`, the gate is
+`REQUIRED_VALIDATOR_NOT_IMPLEMENTED`, and Phase 3 stays `BLOCKED_EXTERNAL`.
+
+## Restore rehearsal and triggers
+
+Before publishing, the owner must be able to restore the exact post fields,
+SEO fields, theme/plugin version and public route tuple from the export. Trigger
+rollback for a wrong fact/model/CTA, hidden advertising disclosure, canonical or
+indexability error, broken package binding, critical accessibility defect or
+publication-state mismatch. Operational targets are to start rollback within 30
+minutes of detection and verify the previous public state within two hours,
+subject to host availability; these are targets, not guarantees.
+
+## Evidence labels
+
+- This runbook: `GENERATED_LOCAL`
+- Production backup/export: `NOT_EXECUTED`
+- Production restore: `NOT_EXECUTED`
+- Public verification: `NOT_EXECUTED`
+"""
+
+
+def phase3_seo_change_plan_document(
+    *, structured_data_expectation_sha256: str
+) -> dict[str, object]:
+    route = "/carry-on-suitcase-comparison/"
+    canonical = f"https://kurashinoshirube.com{route}"
+    return {
+        "schema": "RAOS_V2_PHASE3_SEO_URL_CHANGE_PLAN_V1",
+        "version": "1.0.0",
+        "mode": "HUMAN_ACTION_PLAN_ONLY",
+        "target_origin": "https://kurashinoshirube.com",
+        "target_route": route,
+        "safe_default": "PRESERVE_EXISTING_ROUTE_AND_INDEX_STATE",
+        "route": {
+            "before": route,
+            "after": route,
+            "change": "NONE",
+        },
+        "redirects": {
+            "create": [],
+            "update": [],
+            "delete": [],
+            "maximum_hops": 1,
+            "loop_count": 0,
+            "broad_home_redirect": False,
+        },
+        "canonical": {
+            "before": canonical,
+            "after": canonical,
+            "change": "NONE",
+            "owner": "YOAST_OR_CURRENT_SINGLE_METADATA_OWNER",
+        },
+        "robots": {
+            "before": "index,follow",
+            "after": "index,follow",
+            "change": "NONE",
+        },
+        "sitemap": {
+            "before_membership": True,
+            "after_membership": True,
+            "change": "NONE",
+            "lastmod_rule": "MATERIAL_CONTENT_CHANGE_ONLY",
+        },
+        "structured_data": {
+            "single_owner": "YOAST_OR_CURRENT_WORDPRESS_METADATA_OWNER",
+            "plugin_generates_json_ld": False,
+            "verification_status": "NOT_EXECUTED_EXTERNAL_BLOCKER",
+            "test_gate": "T-V2-036",
+            "expected_graph_sha256": structured_data_expectation_sha256,
+            "allowed_types": [
+                "Article",
+                "BreadcrumbList",
+                "Organization",
+                "WebSite",
+            ],
+            "forbidden_types": [
+                "Product",
+                "Offer",
+                "Review",
+                "AggregateRating",
+                "ItemList",
+                "FAQPage",
+                "HowTo",
+            ],
+            "custom_duplicate_graph": False,
+            "failure": (
+                "DO_NOT_COMPLETE_PUBLICATION; CORRECT_METADATA_BEFORE_CUTOVER_OR_"
+                "ROLL_BACK_AFTER_WRITE"
+            ),
+        },
+        "publication_aware_links": {
+            "allowed_internal_routes": [
+                "/",
+                route,
+                "/about-ad-policy/",
+                "/privacy-policy/",
+            ],
+            "suppressed_until_published": [
+                "/carry-on/",
+                "/tools/carry-on-size-checker/",
+                "/policy/how-we-compare-carry-on-products/",
+            ],
+        },
+        "preconditions": [
+            "fresh bounded public read-only capture",
+            "recoverable exact WordPress export binding",
+            "non-synthetic human review receipt and valid package seal",
+            "one-H1 and visible/structured-data parity check",
+            (
+                "exact Yoast/metadata-owner Article, BreadcrumbList, "
+                "Organization and WebSite output verified"
+            ),
+        ],
+        "failure": "BLOCK_AND_KEEP_CURRENT_PUBLIC_STATE",
+        "production_change": "NOT_EXECUTED",
+        "external_action_ids": ["EXT-013"],
+        "backlog_id": "B-V2-038",
+        "requirement_ids": ["R-V2-003", "R-V2-022", "R-V2-025"],
+        "test_ids": [
+            "T-V2-004",
+            "T-V2-005",
+            "T-V2-010",
+            "T-V2-035",
+            "T-V2-036",
+            "T-V2-040",
+        ],
+    }
+
+
+def phase3_privacy_review_packet_document() -> dict[str, object]:
+    catalog = _read_yaml(Path("changes/raos-v2/phase-2/events/event-catalog.v2.yaml"))
+    if not isinstance(catalog, dict):
+        fail("RAOS_V2_PHASE3_PRIVACY_PACKET_INVALID")
+    events = catalog.get("events")
+    required = catalog.get("required_fields")
+    optional = catalog.get("optional_fields")
+    forbidden = catalog.get("forbidden_fields")
+    if not all(
+        isinstance(value, list) for value in (events, required, optional, forbidden)
+    ):
+        fail("RAOS_V2_PHASE3_PRIVACY_PACKET_INVALID")
+    return {
+        "schema": "RAOS_V2_PHASE3_PRIVACY_LEGAL_REVIEW_PACKET_V1",
+        "version": "1.0.0",
+        "classification": "OWNER_OR_COUNSEL_REVIEW_INPUT_NOT_LEGAL_ADVICE",
+        "target_route": "/carry-on-suitcase-comparison/",
+        "safe_default": {
+            "production_sender": "DISABLED",
+            "event_transmission": "OFF",
+            "metric_state": "UNAVAILABLE",
+            "site_and_links_remain_usable": True,
+        },
+        "proposed_catalog": {
+            "source": "changes/raos-v2/phase-2/events/event-catalog.v2.yaml",
+            "events": deepcopy(events),
+            "required_fields": deepcopy(required),
+            "optional_fields": deepcopy(optional),
+            "forbidden_fields": deepcopy(forbidden),
+            "session_rotation_minutes": catalog.get("session_rotation_minutes"),
+            "cross_device_identity": False,
+            "free_text": False,
+            "full_url_or_query": False,
+        },
+        "review_questions": [
+            "Is each proposed event necessary for the stated decision-support metric?",
+            "What consent state and disclosure are required before each transmission?",
+            "Are retention, access, deletion and processor responsibilities documented?",
+            "Does the current privacy/external-transmission notice match the approved implementation?",
+            "Can denied or unknown consent use the site and outbound links without nonessential transmission?",
+        ],
+        "activation_preconditions": [
+            "owner or counsel approval recorded outside this generated packet",
+            "approved policy wording and consent behavior implemented and tested",
+            "first-party endpoint security and retention separately approved",
+            "public mobile consent surface passes focus and accessibility review",
+        ],
+        "approval": "NOT_EXECUTED",
+        "activation": "NOT_EXECUTED",
+        "external_action_ids": ["EXT-010", "EXT-011"],
+        "backlog_id": "B-V2-039",
+        "requirement_ids": ["R-V2-029", "R-V2-036"],
+        "test_ids": ["T-V2-045", "T-V2-046", "T-V2-051"],
+    }
+
+
+def phase3_rollback_rehearsal_document(
+    migration: Mapping[str, object], external_state: Mapping[str, object]
+) -> dict[str, object]:
+    rollback = migration.get("rollback")
+    simulation = rollback.get("simulation") if isinstance(rollback, dict) else None
+    if (
+        not isinstance(simulation, dict)
+        or simulation.get("status") != "PASSED_LOCAL"
+        or simulation.get("exact_tuple_restored") is not True
+    ):
+        fail("RAOS_V2_PHASE3_ROLLBACK_REHEARSAL_INVALID")
+    return {
+        "schema": "RAOS_V2_PHASE3_ROLLBACK_REHEARSAL_V1",
+        "version": "1.0.0",
+        "target_route": "/carry-on-suitcase-comparison/",
+        "classification": "LOCAL_CONTRACT_SIMULATION_ONLY",
+        "route_tuple_simulation": deepcopy(simulation),
+        "required_restore_fields": [
+            "post_id",
+            "post_title",
+            "post_name",
+            "post_excerpt",
+            "post_content",
+            "post_status",
+            "post_author",
+            "published_at",
+            "modified_at",
+            "taxonomies",
+            "comment_status",
+            "ping_status",
+            "featured_media",
+            "yoast_title",
+            "yoast_description",
+            "yoast_canonical",
+            "yoast_robots",
+            "theme_version",
+            "plugin_versions",
+            "redirect_map",
+            "sitemap_membership",
+        ],
+        "complete_export_binding": False,
+        "pre_write_export_status": phase3_external_status(
+            external_state, "wordpress_export"
+        ),
+        "post_action_export_status": phase3_external_status(
+            external_state, "post_action_wordpress_export"
+        ),
+        "production_backup": "NOT_EXECUTED",
+        "production_restore": "NOT_EXECUTED",
+        "public_restore_verification": "NOT_EXECUTED",
+        "local_status": "PASSED_LOCAL_CONTRACT_ONLY",
+        "phase_exit_evidence": False,
+        "failure": "BLOCK_EXTERNAL_MIGRATION_UNTIL_EXACT_EXPORT_EXISTS",
+        "backlog_ids": ["B-V2-035", "B-V2-040"],
+        "requirement_ids": ["R-V2-025", "R-V2-034", "R-V2-036"],
+        "test_ids": ["T-V2-005", "T-V2-040", "T-V2-051"],
+    }
+
+
+def phase3_external_action_template_document(
+    external_state: Mapping[str, object],
+) -> dict[str, object]:
+    return {
+        "schema": "RAOS_V2_PHASE3_EXTERNAL_ACTION_EVIDENCE_TEMPLATE_V1",
+        "version": "1.0.0",
+        "classification": "SANITIZED_RECEIPT_TEMPLATE_NO_AUTHORITY",
+        "target_origin": external_state.get("target_origin"),
+        "target_route": external_state.get("target_route"),
+        "current_state_source": PHASE3_EXTERNAL_STATE_PATH.as_posix(),
+        "steps": [
+            {
+                "sequence": 1,
+                "action": "PREACTION_PUBLIC_CAPTURE_AND_OWNER_EXPORT",
+                "status": "NOT_EXECUTED",
+                "required_receipt_schema": "RAOS_V2_PHASE3_PREACTION_BINDING_V1",
+                "phase0_baseline_rule": "IMMUTABLE_HISTORICAL_DO_NOT_OVERWRITE",
+            },
+            {
+                "sequence": 2,
+                "action": "LOCAL_REISSUE_FROM_VERIFIED_PREACTION",
+                "status": "BLOCKED_PENDING_VERIFIED_PREACTION_BINDING",
+                "network": False,
+                "external_write": False,
+            },
+            {
+                "sequence": 3,
+                "action": "OWNER_CONTENT_REVIEW",
+                "status": phase3_external_status(external_state, "human_review"),
+                "required_receipt_schema": ("RAOS_V2_PHASE3_HUMAN_REVIEW_RECEIPT_V1"),
+            },
+            {
+                "sequence": 4,
+                "action": "PRE_WRITE_EXPORT_AND_DISABLED_DRY_RUN",
+                "external_action_id": "EXT-001",
+                "status": phase3_external_status(external_state, "wordpress_export"),
+                "required_receipt_schemas": [
+                    "RAOS_V2_WORDPRESS_EXPORT_BINDING_V2",
+                    "RAOS_V2_PHASE3_WORDPRESS_DRY_RUN_RECEIPT_V1",
+                ],
+                "maximum_export_age_seconds": 300,
+                "ordering": "AFTER_HUMAN_REVIEW_BEFORE_WORDPRESS_WRITE",
+            },
+            {
+                "sequence": 5,
+                "action": "DEPLOY_AND_WORDPRESS_NONPUBLIC_REVIEW_PREVIEW",
+                "external_action_ids": ["EXT-004", "EXT-002"],
+                "component_statuses": {
+                    "theme_or_plugin_deploy": phase3_external_status(
+                        external_state, "theme_or_plugin_deploy"
+                    ),
+                    "wordpress_nonpublic_preview": phase3_external_status(
+                        external_state, "wordpress_nonpublic_preview"
+                    ),
+                },
+                "structured_data_gate": {
+                    "test_id": "T-V2-036",
+                    "status": "NOT_EXECUTED_EXTERNAL_BLOCKER",
+                    "expected_types": [
+                        "Article",
+                        "BreadcrumbList",
+                        "Organization",
+                        "WebSite",
+                    ],
+                    "owner": "YOAST_OR_CURRENT_WORDPRESS_METADATA_OWNER",
+                    "plugin_generates_json_ld": False,
+                },
+            },
+            {
+                "sequence": 6,
+                "action": "HUMAN_PUBLICATION",
+                "external_action_id": "EXT-003",
+                "status": phase3_external_status(external_state, "publication"),
+            },
+            {
+                "sequence": 7,
+                "action": "POST_ACTION_OWNER_EXPORT",
+                "external_action_id": "EXT-014",
+                "status": phase3_external_status(
+                    external_state, "post_action_wordpress_export"
+                ),
+                "required_receipt_schema": "RAOS_V2_WORDPRESS_EXPORT_BINDING_V2",
+                "ordering": "AFTER_WORDPRESS_WRITE_BEFORE_HTTP_VERIFICATION",
+                "required_binding": "SEALED_AFTER_FIELD_HASHES_AND_FINAL_PUBLIC_BODY",
+            },
+            {
+                "sequence": 8,
+                "action": "ATOMIC_POST_ACTION_HTTP_AND_EXPORT_VERIFICATION",
+                "component_statuses": {
+                    "public_capture": phase3_external_status(
+                        external_state, "public_verification"
+                    ),
+                    "post_action_owner_export": phase3_external_status(
+                        external_state, "post_action_wordpress_export"
+                    ),
+                },
+                "required_receipt_schema": "RAOS_V2_PUBLIC_VERIFICATION_RECEIPT_V2",
+                "required_inputs": [
+                    "FRESH_PUBLIC_READ_ONLY_CAPTURE",
+                    "SEALED_PHASE3_PACKAGE",
+                    "FRESH_POST_ACTION_OWNER_EXPORT_BINDING",
+                ],
+                "completion_scope": "HTTP_AND_OWNER_EXPORT_ONLY",
+                "indexability_evidence": {
+                    "scope": "HEAD_META_HTTP_SITEMAP_AND_ROBOTS_TXT",
+                    "robots_txt_url": "https://kurashinoshirube.com/robots.txt",
+                    "robots_txt_allowed_statuses": [200, 404, 410],
+                    "robots_txt_body_storage": "DISCARDED_AFTER_HASH",
+                    "target_agent": "Googlebot",
+                    "target_path": "/carry-on-suitcase-comparison/",
+                    "target_allowed_required": True,
+                    "crawler_specific_meta_indexability_safe_required": True,
+                    "template_or_noscript_metadata_accepted": False,
+                },
+                "maximum_age_seconds": 300,
+                "pairing": "ATOMIC_PAIRED_CAPTURE_CONTRACT",
+            },
+            {
+                "sequence": 9,
+                "action": "PUBLIC_BROWSER_VERIFICATION",
+                "status": "REQUIRED_VALIDATOR_NOT_IMPLEMENTED",
+                "required_receipt_schema": (
+                    "RAOS_V2_PHASE3_PUBLIC_BROWSER_VERIFICATION_RECEIPT_V1"
+                ),
+                "required_viewport_widths": [390, 768, 1440],
+                "boundary": "SEPARATELY_APPROVED_PUBLIC_READ_ONLY_BROWSER",
+                "acceptance_authority": False,
+                "phase_exit": "BLOCKED_EXTERNAL",
+            },
+            {
+                "sequence": 10,
+                "action": "SEVEN_DAY_STABILITY_WINDOW",
+                "status": phase3_external_status(external_state, "stability_window"),
+                "required_days": 7,
+            },
+        ],
+        "credentials": "MUST_NOT_ENTER_REPOSITORY_OR_RECEIPT",
+        "raw_exports": "OWNER_STORAGE_ONLY_NOT_GIT",
+        "all_external_actions": "NOT_EXECUTED",
+        "phase_exit": "BLOCKED_EXTERNAL",
+        "backlog_id": "B-V2-040",
+        "test_ids": ["T-V2-005", "T-V2-023", "T-V2-039", "T-V2-040", "T-V2-051"],
+    }
+
+
+def phase3_human_review_request_document(
+    *,
+    candidate_digest: str,
+    payload_digest: str,
+    structured_data_expectation_sha256: str,
+) -> dict[str, object]:
+    return {
+        "schema": "RAOS_V2_PHASE3_HUMAN_REVIEW_REQUEST_V1",
+        "version": "1.0.0",
+        "target_route": "/carry-on-suitcase-comparison/",
+        "candidate_digest": candidate_digest,
+        "payload_digest": payload_digest,
+        "structured_data_expectation_sha256": structured_data_expectation_sha256,
+        "state": "AWAITING_VERIFIED_PREACTION_BINDING",
+        "preaction_status": "HISTORICAL_BASELINE_ONLY",
+        "preaction_binding_digest": None,
+        "receipt": None,
+        "required_preaction_schema": (
+            "contracts/raos-v2/v2/preaction-binding.schema.json"
+        ),
+        "required_receipt_schema": (
+            "contracts/raos-v2/v2/human-review-receipt.schema.json"
+        ),
+        "checklist": [
+            "Create one verified Phase 3 pre-action binding from a bounded public capture and owner-held WordPress export; never overwrite the Phase 0 historical baseline.",
+            "Reissue the candidate from that verified binding and review only the reissued candidate and payload digests.",
+            "The exact title, excerpt and post-content fragment answer one comparison intent without an unsupported universal winner.",
+            "Every A_OFFICIAL_FACT is traceable to a current eligible primary source and every D_EDITORIAL_JUDGEMENT is visibly framed as editorial reasoning.",
+            "Every UNKNOWN is visible and nonblocking; no experience, durability, noise or usability claim is implied.",
+            "All three product CTA states are BLOCKED and there is no affiliate URL, image, price, stock, point, rate, EPC or business score.",
+            "Links are limited to verified public internal policy routes and the three closed ACE official product-source URLs; future carry-on hub, checker and policy routes are absent.",
+            "Replacing the current public article without an active affiliate CTA is an intentional owner decision, not an unnoticed regression.",
+            "Advertising disclosure, correction path, accessibility and one-H1 ownership are acceptable in the exact WordPress projection.",
+            "The exact derived JSON-LD expectation matches the title, description and canonical fields; Yoast or the current metadata owner must be externally verified because the local plugin emits no JSON-LD.",
+        ],
+        "reviewer_identity_rule": (
+            "Use a stable non-personal machine identifier in the sanitized receipt; "
+            "do not commit a name, email or credential."
+        ),
+        "failure": "KEEP_EVIDENCE_COMPLETE_AND_DO_NOT_SEAL",
+        "candidate_reissue": "BLOCKED_PENDING_VERIFIED_PREACTION_BINDING",
+        "human_review": "NOT_EXECUTED",
+        "package_seal": "NOT_EXECUTED",
+        "external_write": "NOT_EXECUTED",
+        "backlog_id": "B-V2-037",
+        "requirement_ids": ["R-V2-023", "R-V2-024"],
+        "test_ids": ["T-V2-037", "T-V2-038", "T-V2-039"],
+    }
+
+
+def phase3_wordpress_dry_run_status_document(
+    *,
+    candidate_digest: str,
+    payload_digest: str,
+    structured_data_expectation_sha256: str,
+) -> dict[str, object]:
+    return {
+        "schema": "RAOS_V2_PHASE3_WORDPRESS_DRY_RUN_STATUS_V1",
+        "version": "1.0.0",
+        "mode": "DISABLED_DRY_RUN",
+        "target": {
+            "origin": "https://kurashinoshirube.com",
+            "route": "/carry-on-suitcase-comparison/",
+            "kind": "EXISTING_POST",
+            "expected_match_count": 1,
+        },
+        "intent": "UPDATE_EXISTING_PUBLISHED_POST_AT_APPROVED_CUTOVER",
+        "candidate_digest": candidate_digest,
+        "payload_digest": payload_digest,
+        "structured_data_expectation_sha256": structured_data_expectation_sha256,
+        "preaction_status": "HISTORICAL_BASELINE_ONLY",
+        "preaction_binding_digest": None,
+        "status": "BLOCKED_EXTERNAL",
+        "blockers": [
+            "VERIFIED_PREACTION_BINDING_MISSING",
+            "CANDIDATE_REISSUE_REQUIRED",
+            "NON_SYNTHETIC_HUMAN_REVIEW_RECEIPT_MISSING",
+            "FRESH_WORDPRESS_EXPORT_BINDING_MISSING",
+        ],
+        "future_receipt_schema": (
+            "contracts/raos-v2/v2/wordpress-dry-run-receipt.schema.json"
+        ),
+        "request_count": 0,
+        "external_action_count": 0,
+        "credential_fields": [],
+        "endpoint": None,
+        "human_review": "NOT_EXECUTED",
+        "wordpress_export_role": "PRE_WRITE_EXPORT",
+        "wordpress_export": "NOT_EXECUTED",
+        "post_action_wordpress_export": "NOT_APPLICABLE_BEFORE_WRITE",
+        "wordpress_write": "NOT_EXECUTED",
+        "publication": "NOT_EXECUTED",
+        "failure": "CURRENT_PUBLIC_ARTICLE_REMAINS_UNCHANGED",
+        "backlog_id": "B-V2-037",
+        "test_ids": ["T-V2-037", "T-V2-038", "T-V2-039"],
+    }
+
+
+def phase3_local_wordpress_assembly_document(
+    *,
+    projection: Mapping[str, object],
+    plugin_documents: Mapping[Path, bytes],
+) -> bytes:
+    """Assemble the exact fragment and plugin CSS in a noindex local WP shell."""
+
+    title = projection.get("post_title")
+    post_content = projection.get("post_content")
+    css_path = PHASE3_ARTIFACT_ROOT / "assets/decision-support.css"
+    css_payload = plugin_documents.get(css_path)
+    if (
+        not isinstance(title, str)
+        or not title.strip()
+        or not isinstance(post_content, str)
+        or not post_content.strip()
+        or not isinstance(css_payload, bytes)
+    ):
+        fail("RAOS_V2_PHASE3_LOCAL_ASSEMBLY_INPUT_INVALID")
+    try:
+        plugin_css = css_payload.decode("utf-8")
+    except UnicodeError:
+        fail("RAOS_V2_PHASE3_LOCAL_ASSEMBLY_INPUT_INVALID")
+    shell_css = """
+:root { color-scheme: light; font-size: 100%; }
+* { box-sizing: border-box; }
+html { overflow-x: hidden; }
+body { background: #fff; color: #17213a; margin: 0; min-width: 0; }
+.raos-v2-phase3-skip { background: #fff; color: #17213a; left: .75rem; padding: .75rem 1rem; position: fixed; top: -10rem; z-index: 10; }
+.raos-v2-phase3-skip:focus { outline: 3px solid #005fcc; outline-offset: 3px; top: .75rem; }
+.raos-v2-phase3-site-header, .raos-v2-phase3-site-footer { background: #243b6b; color: #fff; padding: 1rem max(1rem, calc((100vw - 74rem) / 2)); }
+.raos-v2-phase3-site-header p, .raos-v2-phase3-site-footer p { background-color: #243b6b; color: #fff; margin: 0; }
+.raos-v2-phase3-shell { margin-inline: auto; max-width: 74rem; padding: clamp(1rem, 3vw, 2rem); }
+.raos-v2-phase3-entry-title { font-size: clamp(1.8rem, 1.45rem + 1.4vw, 3rem); line-height: 1.35; margin-block: 1.5rem 2rem; overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; } }
+@media (forced-colors: active) { .raos-v2-phase3-site-header, .raos-v2-phase3-site-footer { border-block: 2px solid CanvasText; } }
+""".strip()
+    document = (
+        '<!doctype html><html lang="ja" '
+        'data-raos-v2-classification="LOCAL_WORDPRESS_ASSEMBLY_SIMULATION">'
+        '<head><meta charset="utf-8"><meta name="viewport" '
+        'content="width=device-width,initial-scale=1">'
+        '<meta name="robots" content="noindex,nofollow">'
+        f"<title>{escape(title)}｜ローカルWordPress組立検証</title>"
+        f"<style>{shell_css}\n{plugin_css}</style></head><body>"
+        '<a class="raos-v2-phase3-skip" href="#raos-v2-phase3-main">本文へ移動</a>'
+        '<header class="raos-v2-phase3-site-header"><p>暮らしのしるべ</p></header>'
+        '<main id="raos-v2-phase3-main" class="raos-v2-phase3-shell" tabindex="-1">'
+        '<article data-raos-v2-wordpress-route="/carry-on-suitcase-comparison/">'
+        f'<h1 class="raos-v2-phase3-entry-title">{escape(title)}</h1>'
+        '<div data-raos-v2-post-content-envelope="RAOS_V2_A05_ENVELOPE_V1">'
+        f"{post_content}</div></article></main>"
+        '<footer class="raos-v2-phase3-site-footer" '
+        'aria-label="ローカルWordPress組立検証"></footer></body></html>'
+    )
+    lowered = document.casefold()
+    absolute_hrefs = sorted(
+        href
+        for href in re.findall(r'href="([^"]+)"', document)
+        if href.startswith(("http://", "https://"))
+    )
+    expected_official_hrefs = sorted(
+        [
+            "https://store.ace.jp/shop/g/g06316-01/",
+            "https://store.ace.jp/shop/g/g05721-04",
+            "https://store.ace.jp/shop/g/g01471-02",
+        ]
+    )
+    if (
+        document.count("<h1") != 1
+        or "noindex,nofollow" not in lowered
+        or document.count(
+            'data-raos-v2-post-content-envelope="RAOS_V2_A05_ENVELOPE_V1"'
+        )
+        != 1
+        or "<script" in lowered
+        or 'src="http' in lowered
+        or absolute_hrefs != expected_official_hrefs
+        or "affiliate.rakuten" in lowered
+        or "hb.afl.rakuten" in lowered
+    ):
+        fail("RAOS_V2_PHASE3_LOCAL_ASSEMBLY_INVALID")
+    return document.encode("utf-8")
+
+
+def validated_phase3_local_browser_evidence(
+    parsed: Mapping[Path, object], local_assembly: bytes
+) -> dict[str, object]:
+    value = parsed.get(PHASE3_LOCAL_BROWSER_EVIDENCE_PATH)
+    if not isinstance(value, dict):
+        fail("RAOS_V2_PHASE3_BROWSER_EVIDENCE_INPUT_INVALID")
+    try:
+        verification = verify_phase3_local_browser_evidence(
+            value,
+            expected_preview=local_assembly,
+            root=ROOT,
+        )
+    except ValidationFailure:
+        fail("RAOS_V2_PHASE3_BROWSER_EVIDENCE_INPUT_INVALID")
+    result = deepcopy(value)
+    result["verification"] = verification
+    return result
+
+
+def phase3_validation_document(
+    *,
+    projection: Mapping[str, object],
+    plugin_documents: Mapping[Path, bytes],
+    local_assembly: bytes,
+    wordpress_payload: Mapping[str, object],
+    review_candidate: Mapping[str, object],
+    external_state: Mapping[str, object],
+    schemas: Mapping[Path, object],
+    browser_evidence: Mapping[str, object],
+    publication_closure_verified: bool,
+) -> dict[str, object]:
+    post_content = projection.get("post_content")
+    target = wordpress_payload.get("target")
+    fields = wordpress_payload.get("fields")
+    structured_data = wordpress_payload.get("structured_data_expectation")
+    expected_schema_names = {
+        "human-review-receipt.schema.json",
+        "publication-package.schema.json",
+        "wordpress-update-payload.schema.json",
+        "wordpress-dry-run-receipt.schema.json",
+        "wordpress-export-binding.schema.json",
+        "preaction-binding.schema.json",
+        "public-verification-receipt.schema.json",
+        "public-browser-verification-receipt.schema.json",
+    }
+    assembly_text = local_assembly.decode("utf-8")
+    browser_verification = browser_evidence.get("verification")
+    checks = {
+        "publication_authority_and_payload_closed": publication_closure_verified,
+        "one_existing_route": (
+            isinstance(target, dict)
+            and target.get("route") == "/carry-on-suitcase-comparison/"
+            and target.get("expected_match_count") == 1
+        ),
+        "wordpress_fragment_not_document": (
+            isinstance(post_content, str)
+            and re.search(r"<html(?:\s|>)", post_content, re.IGNORECASE) is None
+            and re.search(r"<head(?:\s|>)", post_content, re.IGNORECASE) is None
+            and re.search(r"<script(?:\s|>)", post_content, re.IGNORECASE) is None
+        ),
+        "wordpress_owns_single_h1": (
+            isinstance(post_content, str) and "<h1" not in post_content.casefold()
+        ),
+        "future_routes_suppressed": projection.get("linked_internal_routes")
+        == ["/about-ad-policy/", "/privacy-policy/"],
+        "cta_and_media_fail_closed": (
+            projection.get("blocked_cta_count") == 3
+            and projection.get("affiliate_url_count") == 0
+            and projection.get("image_count") == 0
+        ),
+        "exact_payload_fields": isinstance(fields, dict) and len(fields) == 9,
+        "structured_data_expectation_bound_external_unverified": (
+            isinstance(structured_data, dict)
+            and review_candidate.get("structured_data_expectation_sha256")
+            == structured_data.get("json_ld_sha256")
+            and structured_data.get("json_ld_types")
+            == ["Article", "BreadcrumbList", "Organization", "WebSite"]
+            and structured_data.get("emission")
+            == {
+                "owner": "EXTERNAL_WORDPRESS_SEO_CONFIGURATION",
+                "local_json_ld_emission": False,
+                "external_configuration_status": "UNVERIFIED_EXTERNAL",
+            }
+        ),
+        "review_candidate_unsealed": (
+            review_candidate.get("schema") == "RAOS_V2_PHASE3_REVIEW_CANDIDATE_V1"
+            and review_candidate.get("preaction_status") == "HISTORICAL_BASELINE_ONLY"
+            and review_candidate.get("preaction_binding_digest") is None
+            and phase3_external_status(external_state, "human_review") == "NOT_EXECUTED"
+        ),
+        "plugin_artifact_closed": set(plugin_documents)
+        == {
+            PHASE3_ARTIFACT_ROOT / "raos-v2-decision-support.php",
+            PHASE3_ARTIFACT_ROOT / "assets/decision-support.css",
+            PHASE3_ARTIFACT_ROOT / "plugin-manifest.v1.json",
+        },
+        "contract_set_complete": {path.name for path in schemas}
+        == expected_schema_names,
+        "production_sender_off": phase3_external_status(
+            external_state, "analytics_activation"
+        )
+        == "NOT_EXECUTED",
+        "external_actions_not_executed": all(
+            phase3_external_status(external_state, name) == "NOT_EXECUTED"
+            for name in (
+                "human_review",
+                "wordpress_export",
+                "post_action_wordpress_export",
+                "wordpress_nonpublic_preview",
+                "theme_or_plugin_deploy",
+                "publication",
+                "privacy_legal_review",
+                "analytics_activation",
+                "redirect_canonical_sitemap_change",
+                "public_verification",
+            )
+        ),
+        "local_wordpress_assembly_fail_closed": (
+            "LOCAL_WORDPRESS_ASSEMBLY_SIMULATION" in assembly_text
+            and "noindex,nofollow" in assembly_text.casefold()
+            and assembly_text.count("<h1") == 1
+            and assembly_text.count(
+                'data-raos-v2-post-content-envelope="RAOS_V2_A05_ENVELOPE_V1"'
+            )
+            == 1
+            and str(post_content) in assembly_text
+            and "<script" not in assembly_text.casefold()
+        ),
+        "local_browser_a11y_and_visual_evidence": (
+            isinstance(browser_verification, dict)
+            and browser_verification.get("effective_status")
+            == "PASSED_LOCAL_ASSEMBLY_SIMULATION"
+            and browser_verification.get("current_tree_binding")
+            == "CURRENT_PREVIEW_AND_HARNESS_BOUND"
+            and browser_verification.get("manual_visual_review")
+            == "PASSED_LOCAL_MANUAL_VISUAL_REVIEW"
+            and browser_verification.get("critical_findings") == 0
+            and browser_verification.get("major_findings") == 0
+            and browser_verification.get("external_actions") == "NOT_EXECUTED"
+            and browser_verification.get("public_evidence") == "NOT_CLAIMED"
+        ),
+    }
+    return {
+        "schema": "RAOS_V2_PHASE3_VALIDATION_V1",
+        "version": "1.0.0",
+        "classification": "LOCAL_PREPARATION_ONLY",
+        "status": (
+            "PASSED_LOCAL_PREPARATION"
+            if all(checks.values())
+            else "FAILED_LOCAL_PREPARATION"
+        ),
+        "checks": checks,
+        "artifact_sha256": {
+            path.as_posix(): sha256(payload)
+            for path, payload in sorted(
+                plugin_documents.items(), key=lambda item: item[0].as_posix()
+            )
+        },
+        "local_wordpress_assembly": {
+            "path": (
+                "changes/raos-v2/phase-3/preview/"
+                "carry-on-suitcase-comparison/index.html"
+            ),
+            "classification": "LOCAL_WORDPRESS_ASSEMBLY_SIMULATION",
+            "bytes": len(local_assembly),
+            "sha256": sha256(local_assembly),
+            "plugin_css_sha256": sha256(
+                plugin_documents[PHASE3_ARTIFACT_ROOT / "assets/decision-support.css"]
+            ),
+            "browser_a11y_evidence": {
+                "classification": browser_evidence.get("classification"),
+                "evidence_basis": "COMMITTED_SANITIZED_LOCAL_RECEIPT",
+                "raw_verification": "RECORDED_NOT_REVERIFIED",
+                "current_tree_binding": (
+                    browser_verification.get("current_tree_binding")
+                    if isinstance(browser_verification, dict)
+                    else None
+                ),
+                "manual_visual_review": (
+                    browser_verification.get("manual_visual_review")
+                    if isinstance(browser_verification, dict)
+                    else None
+                ),
+                "critical_findings": 0,
+                "major_findings": 0,
+                "formal_ci": "NOT_CLAIMED",
+                "public_evidence": "NOT_CLAIMED",
+            },
+            "production_equivalence": "NOT_CLAIMED",
+        },
+        "wordpress_payload_sha256": sha256(canonical_json_bytes(wordpress_payload)),
+        "review_candidate_sha256": sha256(canonical_json_bytes(review_candidate)),
+        "backlog_status": {
+            "B-V2-035": "COMPLETE_LOCAL",
+            "B-V2-036": "COMPLETE_LOCAL",
+            "B-V2-037": "AWAITING_VERIFIED_PREACTION_BINDING",
+            "B-V2-038": "COMPLETE_LOCAL",
+            "B-V2-039": "COMPLETE_LOCAL",
+            "B-V2-040": "BLOCKED_EXTERNAL",
+        },
+        "phase_exit": "BLOCKED_EXTERNAL",
+        "phase_exit_reasons": [
+            "verified create-once pre-action capture/export binding not executed",
+            "candidate reissue from current public state not executed",
+            "human review and semantic seal not executed",
+            "production export/backup not executed",
+            "post-action owner export not executed",
+            "plugin deploy and WordPress write not executed",
+            "PHP lint and minimum WordPress runtime integration not executed",
+            "human publication and public verification not executed",
+            "public browser verification validator for 390/768/1440 not implemented",
+            "exact Yoast/metadata-owner JSON-LD output not externally verified",
+            "seven-day stability window not started",
+        ],
+        "cost_ceiling_hours": 20,
+        "external_spend_jpy": 0,
+        "external_actions": "NOT_EXECUTED",
+        "test_ids": [
+            "T-V2-004",
+            "T-V2-005",
+            "T-V2-008",
+            "T-V2-010",
+            "T-V2-023",
+            *[f"T-V2-{number:03d}" for number in range(35, 47)],
+            "T-V2-051",
+        ],
+    }
+
+
+def phase3_report_document(validation: Mapping[str, object]) -> str:
+    local_test = recorded_local_test_evidence()
+    return f"""# RAOS V2 Phase 3 local preparation report
+
+## Outcome
+
+The reversible one-URL WordPress migration package is prepared locally for
+`/carry-on-suitcase-comparison/`. The production projection is a post-content
+fragment, suppresses unpublished routes, contains no affiliate URL or image and
+keeps all three product CTA states blocked. A marker-bound presentation plugin
+is packaged without switching the active theme or affecting unrelated pages.
+The exact fragment and plugin CSS are also combined in a generator-owned,
+`noindex,nofollow` local WordPress assembly simulation; it is not a public page
+or proof of production theme/KSES compatibility.
+
+## Earned status
+
+- Local preparation validation: `{validation.get("status")}`
+- Recorded local test evidence: `{local_test.get("status")}`; the generator does
+  not execute tests or claim required CI
+- B-V2-035 backup/export runbook: `COMPLETE_LOCAL`; production export `NOT_EXECUTED`
+- B-V2-036 block-presentation plugin: `COMPLETE_LOCAL`; deploy `NOT_EXECUTED`
+- Local WordPress assembly: `LOCAL_WORDPRESS_ASSEMBLY_SIMULATION`; browser/a11y
+  evidence is recorded separately from generator execution and never promoted
+  to production evidence
+- PHP lint and minimum WordPress runtime integration: `NOT_EXECUTED`; no PHP
+  runtime is available in the local toolchain, so both remain mandatory before
+  deployment
+- B-V2-037 exact payload and seal path:
+  `AWAITING_VERIFIED_PREACTION_BINDING`; the generated candidate is explicitly
+  `HISTORICAL_BASELINE_ONLY` and cannot seal. A new public capture plus owner
+  export must create a Phase 3 binding, then the candidate must be reissued
+  before human review. Review, fresh pre-write export, real seal and exact field
+  diff are `NOT_EXECUTED`; post-action export is a separate later gate
+- B-V2-038 route/canonical/sitemap plan: `COMPLETE_LOCAL`; change set empty and
+  production mutation `NOT_EXECUTED`
+- B-V2-039 privacy/legal packet: `COMPLETE_LOCAL`; sender remains `OFF`, approval
+  and activation `NOT_EXECUTED`, metrics `UNAVAILABLE`
+- B-V2-040 one-URL migration/public verification: `BLOCKED_EXTERNAL`
+
+## Exit gate
+
+Phase 3 is **not complete**. Backup, owner content review, deployment, WordPress
+nonpublic review preview, approved-cutover write, publication, public read-only
+verification, rollback evidence and
+seven stable days have not occurred. The public site is not changed by this
+package. Planning ceiling: 20 hours; actual human time `UNAVAILABLE`; external
+spend: JPY 0.
+
+The route-scoped plugin adds CSS plus the exact rendered-content envelope but
+does not generate JSON-LD. Exact
+T-V2-036 output from the current Yoast or metadata owner—`Article`,
+`BreadcrumbList`, `Organization` and `WebSite` with visible-content parity—is
+an unexecuted external blocker. The exact sealed HTML title (without an
+unreviewed suffix) and meta description must also each appear once. A public
+verifier mismatch is not success; fix
+configuration before cutover or roll back an already written change.
+
+The future HTTP verification receipt also requires a fresh post-action owner
+export binding every sealed WordPress field and the public body; public capture
+alone has no completion authority. Its indexability evidence must cover the
+HTML head/meta and HTTP robots state, sitemap membership, and a fixed
+same-origin `/robots.txt` response whose body is discarded after hashing. Only
+status 200, 404 or 410 is accepted, and the target route must evaluate as
+allowed for Googlebot. Crawler-specific robots meta, including `googlebot` and
+`googlebot-news`, must be counted and indexability-safe; metadata hidden inside
+`template` or `noscript` does not satisfy the head-metadata gate.
+
+`PUBLIC_BROWSER_VERIFICATION` is `REQUIRED_VALIDATOR_NOT_IMPLEMENTED`. Its
+schema is an unverified external template with no acceptance authority and
+cannot complete B-V2-040. A future independent recorder/verifier must recompute
+owner-held raw capture, screenshots, browser/harness/command, public HTTP and
+resource-manifest hash bindings before any receipt can be considered.
+"""
+
+
+def phase3_integration_pr_body_document(
+    validation: Mapping[str, object],
+) -> str:
+    return f"""# RAOS V2 Phase 3 one-URL migration preparation
+
+## Delivered locally
+
+- Package authority: `{PACKAGE_SHA256}`; immutable source package untouched
+- Target: existing `/carry-on-suitcase-comparison/` only
+- Deterministic WordPress post-content projection and route-scoped presentation plugin
+- Noindex local WordPress assembly simulation for the exact fragment and plugin CSS
+- Human review/seal v2 contract and disabled hash-only WordPress diff adapter
+- Backup/export runbook, no-change SEO plan, privacy/legal review packet,
+  rollback rehearsal and bounded Phase 3 public-capture command
+- Local preparation status: `{validation.get("status")}`
+
+## Safety boundary
+
+The real candidate is `HISTORICAL_BASELINE_ONLY`, unreviewed and unsealed. It
+must be reissued from a verified Phase 3 pre-action capture/export binding
+before human review. All CTA states are blocked;
+no affiliate URL, image, price, stock, rate or business metric was invented.
+Unpublished hub/checker/policy routes are not linked. The existing URL,
+self-canonical, robots and sitemap membership are planned to remain unchanged;
+the redirect change set is empty.
+
+## External/live actions
+
+Production backup/pre-write export, human content approval, plugin deployment, WordPress
+nonpublic review preview, approved-cutover write, publication,
+post-action owner export,
+redirect/canonical/sitemap mutation, analytics/legal
+activation, public verification and rollback: `NOT_EXECUTED`. B-V2-040 and the
+Phase 3 exit gate remain `BLOCKED_EXTERNAL`; seven stable days are required after
+any separately approved publication. The plugin does not generate JSON-LD;
+PHP lint and minimum WordPress runtime integration also remain unexecuted
+deployment prerequisites because no PHP runtime is present in the local toolchain;
+exact T-V2-036 Yoast/metadata-owner output remains an external blocker and a
+public verification mismatch requires configuration correction or rollback.
+`PUBLIC_BROWSER_VERIFICATION` is `REQUIRED_VALIDATOR_NOT_IMPLEMENTED`; its
+current schema is an unverified template with no acceptance authority. A bound
+390/768/1440 receipt independently recalculated from owner-held raw capture is
+required before B-V2-040 or Phase 3 can complete.
+"""
+
+
 def phase1_report_document(*, evidence_gate_passed: bool) -> str:
     local_test = recorded_local_test_evidence()
     test_status = local_test.get("status")
@@ -5533,6 +8725,8 @@ deployment, credentials, spend, live provider writes and production changes are
 def documents() -> dict[Path, bytes]:
     capture = _capture_input()
     phase2_sources = validate_phase2_source_inputs()
+    phase3_sources = validate_phase3_source_inputs()
+    phase3_state = phase3_external_state()
     product = product_specification()
     routes = route_registry()
     pages_value = _read_json(
@@ -5547,13 +8741,41 @@ def documents() -> dict[Path, bytes]:
     migration = migration_manifest_document(capture, preview)
     claim_ledger = claim_ledger_document()
     publication = publication_candidate_document(migration, preview, claim_ledger)
+    phase3_projection = phase3_wordpress_projection_document(pages_value, publication)
+    (
+        phase3_wordpress_payload,
+        phase3_review_candidate,
+        phase3_candidate_digest,
+        phase3_payload_digest,
+    ) = phase3_review_candidate_document(
+        publication=publication,
+        claim_ledger=claim_ledger,
+        projection=phase3_projection,
+        migration=migration,
+    )
+    validate_phase3_publication_closure(
+        publication=publication,
+        claim_ledger=claim_ledger,
+        migration=migration,
+        wordpress_payload=phase3_wordpress_payload,
+        review_candidate=phase3_review_candidate,
+    )
+    phase3_plugin_documents = phase3_plugin_artifact_documents(
+        phase3_sources,
+        post_content=str(phase3_projection["post_content"]),
+    )
+    phase3_local_assembly = phase3_local_wordpress_assembly_document(
+        projection=phase3_projection,
+        plugin_documents=phase3_plugin_documents,
+    )
+    phase3_browser_evidence = validated_phase3_local_browser_evidence(
+        phase3_sources, phase3_local_assembly
+    )
     synthetic_seal = synthetic_seal_receipt_document()
     phase2_validation = phase2_validation_document(
         phase2_sources, preview, publication, migration
     )
-    evidence_gate_passed = (
-        phase2_validation.get("status") == "PASSED_LOCAL_RECORDED"
-    )
+    evidence_gate_passed = phase2_validation.get("status") == "PASSED_LOCAL_RECORDED"
     phase2_generated: dict[Path, bytes] = {
         **preview,
         Path("changes/raos-v2/phase-2/claims/claim-ledger.v2.yaml"): yaml_bytes(
@@ -5603,6 +8825,113 @@ def documents() -> dict[Path, bytes]:
         Path(
             "contracts/raos-v2/v1/analytics-event.schema.json"
         ): analytics_event_schema(),
+    }
+    phase3_schema_documents: dict[Path, object] = {
+        Path(
+            "contracts/raos-v2/v2/human-review-receipt.schema.json"
+        ): phase3_human_review_receipt_schema(),
+        Path(
+            "contracts/raos-v2/v2/publication-package.schema.json"
+        ): phase3_publication_package_schema(),
+        Path(
+            "contracts/raos-v2/v2/wordpress-update-payload.schema.json"
+        ): phase3_wordpress_update_payload_schema(),
+        Path(
+            "contracts/raos-v2/v2/wordpress-dry-run-receipt.schema.json"
+        ): phase3_wordpress_dry_run_receipt_schema(),
+        Path(
+            "contracts/raos-v2/v2/wordpress-export-binding.schema.json"
+        ): phase3_wordpress_export_binding_schema(),
+        Path(
+            "contracts/raos-v2/v2/preaction-binding.schema.json"
+        ): phase3_preaction_binding_schema(),
+        Path(
+            "contracts/raos-v2/v2/public-verification-receipt.schema.json"
+        ): phase3_public_verification_receipt_schema(),
+        Path(
+            "contracts/raos-v2/v2/public-browser-verification-receipt.schema.json"
+        ): phase3_public_browser_verification_receipt_schema(),
+    }
+    phase3_validation = phase3_validation_document(
+        projection=phase3_projection,
+        plugin_documents=phase3_plugin_documents,
+        local_assembly=phase3_local_assembly,
+        wordpress_payload=phase3_wordpress_payload,
+        review_candidate=phase3_review_candidate,
+        external_state=phase3_state,
+        schemas=phase3_schema_documents,
+        browser_evidence=phase3_browser_evidence,
+        publication_closure_verified=True,
+    )
+    phase3_generated: dict[Path, bytes] = {
+        **phase3_plugin_documents,
+        Path(
+            "changes/raos-v2/phase-3/production-backup-export-runbook.md"
+        ): phase3_backup_runbook_document().encode("utf-8"),
+        Path(
+            "changes/raos-v2/phase-3/preview/carry-on-suitcase-comparison/index.html"
+        ): phase3_local_assembly,
+        Path("changes/raos-v2/phase-3/generated/post-content.html"): str(
+            phase3_projection["post_content"]
+        ).encode("utf-8"),
+        Path(
+            "changes/raos-v2/phase-3/generated/wordpress-update-candidate.v1.json"
+        ): canonical_json_bytes(phase3_wordpress_payload),
+        Path(
+            "changes/raos-v2/phase-3/generated/review-candidate.v1.json"
+        ): canonical_json_bytes(phase3_review_candidate),
+        Path(
+            "changes/raos-v2/phase-3/generated/human-review-request.v1.json"
+        ): canonical_json_bytes(
+            phase3_human_review_request_document(
+                candidate_digest=phase3_candidate_digest,
+                payload_digest=phase3_payload_digest,
+                structured_data_expectation_sha256=str(
+                    phase3_review_candidate["structured_data_expectation_sha256"]
+                ),
+            )
+        ),
+        Path(
+            "changes/raos-v2/phase-3/generated/wordpress-dry-run-status.v1.json"
+        ): canonical_json_bytes(
+            phase3_wordpress_dry_run_status_document(
+                candidate_digest=phase3_candidate_digest,
+                payload_digest=phase3_payload_digest,
+                structured_data_expectation_sha256=str(
+                    phase3_review_candidate["structured_data_expectation_sha256"]
+                ),
+            )
+        ),
+        Path(
+            "changes/raos-v2/phase-3/generated/seo-url-change-plan.v1.yaml"
+        ): yaml_bytes(
+            phase3_seo_change_plan_document(
+                structured_data_expectation_sha256=str(
+                    phase3_review_candidate["structured_data_expectation_sha256"]
+                )
+            )
+        ),
+        Path(
+            "changes/raos-v2/phase-3/generated/privacy-legal-review-packet.v1.yaml"
+        ): yaml_bytes(phase3_privacy_review_packet_document()),
+        Path(
+            "changes/raos-v2/phase-3/generated/rollback-rehearsal.v1.json"
+        ): canonical_json_bytes(
+            phase3_rollback_rehearsal_document(migration, phase3_state)
+        ),
+        Path(
+            "changes/raos-v2/phase-3/generated/"
+            "external-action-evidence-template.v1.yaml"
+        ): yaml_bytes(phase3_external_action_template_document(phase3_state)),
+        Path(
+            "changes/raos-v2/phase-3/generated/phase-3-validation.v1.json"
+        ): canonical_json_bytes(phase3_validation),
+        Path(
+            "changes/raos-v2/phase-3/phase-3-preparation-report.md"
+        ): phase3_report_document(phase3_validation).encode("utf-8"),
+        Path(
+            "changes/raos-v2/phase-3/integration-pr-body.md"
+        ): phase3_integration_pr_body_document(phase3_validation).encode("utf-8"),
     }
     result: dict[Path, bytes] = {
         Path("changes/raos-v2/source-import.v1.json"): canonical_json_bytes(
@@ -5677,7 +9006,14 @@ def documents() -> dict[Path, bytes]:
             for path, document in schema_documents.items()
         }
     )
+    result.update(
+        {
+            path: canonical_json_bytes(document)
+            for path, document in phase3_schema_documents.items()
+        }
+    )
     result.update(phase2_generated)
+    result.update(phase3_generated)
     if set(result) != set(OUTPUT_PATHS):
         fail("RAOS_V2_OUTPUT_INVENTORY_MISMATCH")
     return result
@@ -5757,6 +9093,58 @@ def generate_preview_only() -> None:
         write_generated_output(path, payload)
 
 
+def phase3_browser_bootstrap_documents() -> dict[Path, bytes]:
+    """Build only unverified Phase 3 browser inputs before evidence capture.
+
+    This deliberately does not read or validate the existing Phase 3 browser
+    receipt. It remains offline and cannot construct a reviewed/sealed package
+    or a WordPress request.
+    """
+
+    capture = _capture_input()
+    validate_phase2_source_inputs()
+    phase3_sources = validate_phase3_browser_bootstrap_inputs()
+    pages_value = _read_json(
+        Path("packages/web-ui/src/decision-support-v2/preview/pages.v2.json")
+    )
+    if not isinstance(pages_value, dict):
+        fail("RAOS_V2_UI_PAGE_SOURCE_INVALID")
+    phase2_preview = preview_documents()
+    migration = migration_manifest_document(capture, phase2_preview)
+    claim_ledger = claim_ledger_document()
+    publication = publication_candidate_document(
+        migration, phase2_preview, claim_ledger
+    )
+    projection = phase3_wordpress_projection_document(pages_value, publication)
+    plugin_documents = phase3_plugin_artifact_documents(
+        phase3_sources,
+        post_content=str(projection["post_content"]),
+    )
+    local_assembly = phase3_local_wordpress_assembly_document(
+        projection=projection,
+        plugin_documents=plugin_documents,
+    )
+    result = {
+        **plugin_documents,
+        Path("changes/raos-v2/phase-3/generated/post-content.html"): str(
+            projection["post_content"]
+        ).encode("utf-8"),
+        Path(
+            "changes/raos-v2/phase-3/preview/carry-on-suitcase-comparison/index.html"
+        ): local_assembly,
+    }
+    if set(result) != set(PHASE3_BROWSER_BOOTSTRAP_OUTPUT_PATHS):
+        fail("RAOS_V2_PHASE3_BOOTSTRAP_OUTPUT_INVENTORY_MISMATCH")
+    return result
+
+
+def generate_phase3_browser_bootstrap() -> None:
+    """Refresh local Phase 3 preview bytes without claiming test evidence."""
+
+    for path, payload in phase3_browser_bootstrap_documents().items():
+        write_generated_output(path, payload)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
@@ -5765,11 +9153,31 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
         help="refresh deterministic unverified preview before a browser evidence run",
     )
+    parser.add_argument(
+        "--phase3-preview-only",
+        action="store_true",
+        help=(
+            "refresh the unverified Phase 3 WordPress assembly before a browser "
+            "evidence run"
+        ),
+    )
     arguments = parser.parse_args(argv)
-    if arguments.check and arguments.preview_only:
-        parser.error("--check and --preview-only are mutually exclusive")
+    selected_modes = sum(
+        bool(value)
+        for value in (
+            arguments.check,
+            arguments.preview_only,
+            arguments.phase3_preview_only,
+        )
+    )
+    if selected_modes > 1:
+        parser.error(
+            "--check, --preview-only and --phase3-preview-only are mutually exclusive"
+        )
     try:
-        if arguments.preview_only:
+        if arguments.phase3_preview_only:
+            generate_phase3_browser_bootstrap()
+        elif arguments.preview_only:
             generate_preview_only()
         else:
             generate(check=arguments.check)
@@ -5780,6 +9188,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         (
             "RAOS_V2_SUCCESSOR_CHECK_OK"
             if arguments.check
+            else "RAOS_V2_PHASE3_PREVIEW_REFRESHED_UNVERIFIED"
+            if arguments.phase3_preview_only
             else "RAOS_V2_PREVIEW_REFRESHED_UNVERIFIED"
             if arguments.preview_only
             else "RAOS_V2_SUCCESSOR_GENERATED"

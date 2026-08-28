@@ -1,0 +1,350 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v2/public-browser-verification-receipt.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "acceptance_authority": {
+      "const": false
+    },
+    "bindings": {
+      "additionalProperties": false,
+      "properties": {
+        "body_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "package_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "plugin_artifact_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "plugin_css_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "post_content_semantic_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "public_verification_receipt_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "public_verification_receipt_sha256",
+        "body_sha256",
+        "package_digest",
+        "post_content_semantic_sha256",
+        "plugin_artifact_sha256",
+        "plugin_css_sha256"
+      ],
+      "type": "object"
+    },
+    "browser": {
+      "additionalProperties": false,
+      "properties": {
+        "axe_version": {
+          "const": "4.12.1"
+        },
+        "command_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "engine": {
+          "const": "CHROMIUM"
+        },
+        "executable_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "harness_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "engine",
+        "version",
+        "axe_version",
+        "executable_sha256",
+        "harness_sha256",
+        "command_sha256"
+      ],
+      "type": "object"
+    },
+    "classification": {
+      "const": "UNVERIFIED_EXTERNAL_TEMPLATE_NO_ACCEPTANCE_AUTHORITY"
+    },
+    "critical_issue_count": {
+      "const": 0
+    },
+    "derivation": {
+      "const": "PROPOSED_PUBLIC_READ_ONLY_BROWSER_CAPTURE_V1"
+    },
+    "evidence_class": {
+      "const": "UNVERIFIED_EXTERNAL_TEMPLATE"
+    },
+    "independent_recalculation_status": {
+      "const": "NOT_IMPLEMENTED"
+    },
+    "network": {
+      "additionalProperties": false,
+      "properties": {
+        "affiliate_request_count": {
+          "const": 0
+        },
+        "form_submission_count": {
+          "const": 0
+        },
+        "navigation_request_count": {
+          "const": 1
+        },
+        "resource_manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "service_worker_registration_count": {
+          "const": 0
+        },
+        "storage_mutation_count": {
+          "const": 0
+        },
+        "unexpected_cross_origin_request_count": {
+          "const": 0
+        },
+        "write_request_count": {
+          "const": 0
+        }
+      },
+      "required": [
+        "navigation_request_count",
+        "write_request_count",
+        "form_submission_count",
+        "storage_mutation_count",
+        "service_worker_registration_count",
+        "affiliate_request_count",
+        "unexpected_cross_origin_request_count",
+        "resource_manifest_sha256"
+      ],
+      "type": "object"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "phase_exit_eligible": {
+      "const": false
+    },
+    "raw_capture_location": {
+      "const": "OWNER_CONTROLLED_NOT_GIT"
+    },
+    "schema": {
+      "const": "RAOS_V2_PHASE3_PUBLIC_BROWSER_VERIFICATION_RECEIPT_V1"
+    },
+    "summary": {
+      "additionalProperties": false,
+      "properties": {
+        "axe_wcag22aa_passed": {
+          "const": true
+        },
+        "binding_gate_passed": {
+          "const": true
+        },
+        "computed_visibility_passed": {
+          "const": true
+        },
+        "keyboard_passed": {
+          "const": true
+        },
+        "resource_and_network_gate_passed": {
+          "const": true
+        },
+        "zoom_200_percent_passed": {
+          "const": true
+        }
+      },
+      "required": [
+        "computed_visibility_passed",
+        "keyboard_passed",
+        "zoom_200_percent_passed",
+        "axe_wcag22aa_passed",
+        "resource_and_network_gate_passed",
+        "binding_gate_passed"
+      ],
+      "type": "object"
+    },
+    "target": {
+      "additionalProperties": false,
+      "properties": {
+        "origin": {
+          "const": "https://kurashinoshirube.com"
+        },
+        "route": {
+          "const": "/carry-on-suitcase-comparison/"
+        }
+      },
+      "required": [
+        "origin",
+        "route"
+      ],
+      "type": "object"
+    },
+    "verification_status": {
+      "const": "REQUIRED_VALIDATOR_NOT_IMPLEMENTED"
+    },
+    "version": {
+      "const": "1.0.0"
+    },
+    "viewports": {
+      "allOf": [
+        {
+          "contains": {
+            "properties": {
+              "width": {
+                "const": 390
+              }
+            },
+            "required": [
+              "width"
+            ],
+            "type": "object"
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "width": {
+                "const": 768
+              }
+            },
+            "required": [
+              "width"
+            ],
+            "type": "object"
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "width": {
+                "const": 1440
+              }
+            },
+            "required": [
+              "width"
+            ],
+            "type": "object"
+          },
+          "maxContains": 1,
+          "minContains": 1
+        }
+      ],
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "axe_critical_count": {
+            "const": 0
+          },
+          "axe_serious_count": {
+            "const": 0
+          },
+          "blocked_cta_count": {
+            "const": 3
+          },
+          "cta_state_count": {
+            "const": 3
+          },
+          "disclosure_computed_visible": {
+            "const": true
+          },
+          "height": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "horizontal_overflow": {
+            "const": false
+          },
+          "keyboard_only_passed": {
+            "const": true
+          },
+          "screenshot_bytes": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "screenshot_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "visible_blocked_cta_count": {
+            "const": 3
+          },
+          "width": {
+            "enum": [
+              390,
+              768,
+              1440
+            ]
+          },
+          "zoom_200_percent_passed": {
+            "const": true
+          }
+        },
+        "required": [
+          "width",
+          "height",
+          "screenshot_sha256",
+          "screenshot_bytes",
+          "disclosure_computed_visible",
+          "cta_state_count",
+          "blocked_cta_count",
+          "visible_blocked_cta_count",
+          "keyboard_only_passed",
+          "zoom_200_percent_passed",
+          "horizontal_overflow",
+          "axe_critical_count",
+          "axe_serious_count"
+        ],
+        "type": "object"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "type": "array",
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema",
+    "version",
+    "classification",
+    "verification_status",
+    "acceptance_authority",
+    "phase_exit_eligible",
+    "derivation",
+    "evidence_class",
+    "target",
+    "observed_at",
+    "raw_capture_location",
+    "independent_recalculation_status",
+    "browser",
+    "bindings",
+    "viewports",
+    "network",
+    "summary",
+    "critical_issue_count"
+  ],
+  "title": "public-browser-verification-receipt",
+  "type": "object"
+}

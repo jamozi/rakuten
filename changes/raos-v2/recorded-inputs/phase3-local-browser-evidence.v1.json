@@ -1,0 +1,190 @@
+{
+  "schema": "RAOS_V2_RECORDED_PHASE3_LOCAL_BROWSER_EVIDENCE_V1",
+  "version": "1.0.0",
+  "recorded_date_jst": "2026-08-28",
+  "recorded_at_jst": "2026-08-28T20:16:14+09:00",
+  "classification": "PASSED_LOCAL_ASSEMBLY_SIMULATION",
+  "raw_receipt": {
+    "local_path": "output/playwright/raos-v2-phase3-local-browser-evidence.json",
+    "sha256": "b0960496f213bebeece8615cb9ace3be9806e825ea7b54da9492a689f008eb85",
+    "bytes": 4432,
+    "exit_status": 0,
+    "tracked": false
+  },
+  "receipt": {
+    "accessibility": {
+      "levelOneHeadings": 1,
+      "nodeCount": 506,
+      "screenReaderSmoke": true,
+      "structuralSha256": "4ab2f62dfa33a08a5655bb7d7632f4761472e81d4388460a7f828029f6e3bfc8",
+      "unnamedInteractive": 0
+    },
+    "assemblyClassification": "LOCAL_WORDPRESS_ASSEMBLY_SIMULATION",
+    "assertions": {
+      "affiliateUrls": 0,
+      "axeIncomplete": 0,
+      "axeRuns": 4,
+      "axeViolations": 0,
+      "blockedCtas": 3,
+      "externalResources": 0,
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "images": 0,
+      "inlineScripts": 0,
+      "reflowEquivalentZoomPercent": 400,
+      "viewports": [320, 390, 768, 1440]
+    },
+    "browser": {
+      "executableSha256": "696170a79640ec5b50c7518140ace06c69a49cfb295bf527d4a85e26a12b89a7",
+      "version": "Google Chrome for Testing 147.0.7727.15"
+    },
+    "classification": "PASSED_LOCAL_ASSEMBLY_SIMULATION",
+    "commandContract": "NODE24_LOCAL_CDP_AXE_PHASE3_WORDPRESS_ASSEMBLY_SANITIZED_RECEIPT_V1",
+    "externalActions": "NOT_EXECUTED",
+    "harness": {
+      "bytes": 34234,
+      "path": "tests/raos_v2/phase3-local-validation.mjs",
+      "sha256": "8bdafc0caf84ef140e401fca797873e1580b3f3977cdbc8f32355a149ff129d1"
+    },
+    "keyboard": {
+      "focusableCount": 7,
+      "focusRingMinimumPx": 3,
+      "focusTraversal": true,
+      "mainFocused": true,
+      "skipLinkFirst": true
+    },
+    "media": {
+      "forcedColors": true,
+      "maximumMotionSeconds": 0,
+      "reducedMotion": true,
+      "zoom200Percent": true
+    },
+    "network": {
+      "outboundRequests": 0,
+      "resourceRequests": 0
+    },
+    "persistence": {
+      "cookies": 0,
+      "indexedDatabases": 0,
+      "localStorageEntries": 0,
+      "serviceWorkers": 0,
+      "sessionStorageEntries": 0
+    },
+    "preview": {
+      "bytes": 21450,
+      "path": "changes/raos-v2/phase-3/preview/carry-on-suitcase-comparison/index.html",
+      "sha256": "5ec5b48563e0bae95f7daa3e53baebe83f9a1b34c15fa6d610187ee7af09e6bb"
+    },
+    "publicEvidence": "NOT_CLAIMED",
+    "runtime": {
+      "executableSha256": "f3432a45b03b2da0d270095fdd8813dc34cbea73f5fc8b18c7a384b7cf9b333a",
+      "nodeMajor": 24,
+      "nodeVersion": "24.18.1"
+    },
+    "schema": "RAOS_V2_PHASE3_LOCAL_BROWSER_EVIDENCE_V1",
+    "supportHarness": {
+      "bytes": 40878,
+      "path": "tests/raos_v2/browser-validation.mjs",
+      "sha256": "2276905a25eb31b3ed1c2b4e3976fa4c2b58d0915bf6d3befe5acb7fd7319e90"
+    },
+    "targetRoute": "/carry-on-suitcase-comparison/",
+    "visualCaptures": [
+      {
+        "bytes": 612678,
+        "height": 7725,
+        "path": "output/playwright/raos-v2-phase3-local-browser-evidence-captures/carry-on-suitcase-comparison__390.png",
+        "sha256": "b4210ccad149a73a5f6bbd8d5914dcc1f476fc7a8e9d5da8b8ec40b21ab58cfa",
+        "width": 390
+      },
+      {
+        "bytes": 583093,
+        "height": 5200,
+        "path": "output/playwright/raos-v2-phase3-local-browser-evidence-captures/carry-on-suitcase-comparison__768.png",
+        "sha256": "747b98c218a7f02cac016634f8ba4ead7c52d042ed12e3749f999a06e1d278da",
+        "width": 768
+      },
+      {
+        "bytes": 593173,
+        "height": 3810,
+        "path": "output/playwright/raos-v2-phase3-local-browser-evidence-captures/carry-on-suitcase-comparison__1440.png",
+        "sha256": "213875b0364fa86852b5b84709a6c4d7bb84a75a8aed5ead697827d3e8504eeb",
+        "width": 1440
+      }
+    ],
+    "visualReview": "PENDING_SEPARATE_MANUAL_REVIEW",
+    "viewports": {
+      "reflow-320": {
+        "axeIncomplete": 0,
+        "axeViolations": 0,
+        "blockedCtas": 3,
+        "gridColumns": 1,
+        "height": 800,
+        "horizontalOverflow": false,
+        "comparisonMode": "CARDS",
+        "tableOverflowContained": null,
+        "width": 320
+      },
+      "mobile-390": {
+        "axeIncomplete": 0,
+        "axeViolations": 0,
+        "blockedCtas": 3,
+        "gridColumns": 1,
+        "height": 844,
+        "horizontalOverflow": false,
+        "comparisonMode": "CARDS",
+        "tableOverflowContained": null,
+        "width": 390
+      },
+      "tablet-768": {
+        "axeIncomplete": 0,
+        "axeViolations": 0,
+        "blockedCtas": 3,
+        "gridColumns": 1,
+        "height": 1024,
+        "horizontalOverflow": false,
+        "comparisonMode": "TABLE",
+        "tableOverflowContained": true,
+        "width": 768
+      },
+      "desktop-1440": {
+        "axeIncomplete": 0,
+        "axeViolations": 0,
+        "blockedCtas": 3,
+        "gridColumns": 3,
+        "height": 900,
+        "horizontalOverflow": false,
+        "comparisonMode": "TABLE",
+        "tableOverflowContained": false,
+        "width": 1440
+      }
+    }
+  },
+  "manual_visual_review": {
+    "classification": "PASSED_LOCAL_MANUAL_VISUAL_REVIEW",
+    "reviewer_class": "CODEX_MANUAL_VISUAL_REVIEW",
+    "reviewed_at_jst": "2026-08-28T20:16:14+09:00",
+    "reviewed_viewports": [390, 768, 1440],
+    "reviewed_capture_sha256": [
+      "b4210ccad149a73a5f6bbd8d5914dcc1f476fc7a8e9d5da8b8ec40b21ab58cfa",
+      "747b98c218a7f02cac016634f8ba4ead7c52d042ed12e3749f999a06e1d278da",
+      "213875b0364fa86852b5b84709a6c4d7bb84a75a8aed5ead697827d3e8504eeb"
+    ],
+    "findings": {
+      "critical": 0,
+      "major": 0
+    },
+    "checks": {
+      "content_hierarchy_clear": true,
+      "cta_blocked_state_clear": true,
+      "mobile_cards_readable": true,
+      "tablet_table_contained": true,
+      "desktop_grid_readable": true,
+      "official_editorial_unknown_labels_visible": true,
+      "horizontal_clipping_observed": false
+    }
+  },
+  "external_actions": "NOT_EXECUTED",
+  "public_evidence": "NOT_CLAIMED",
+  "formal_ci": "NOT_CLAIMED",
+  "ci_behavior": "VERIFY_COMMITTED_RECEIPT_AND_CURRENT_TREE_BINDINGS_WHEN_RAW_LOCAL_FILES_ARE_ABSENT"
+}

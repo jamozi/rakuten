@@ -1,0 +1,371 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v2/wordpress-dry-run-receipt.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "export_binding_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "external_action_count": {
+      "const": 0
+    },
+    "external_status": {
+      "const": "NOT_EXECUTED"
+    },
+    "field_diff": {
+      "allOf": [
+        {
+          "contains": {
+            "properties": {
+              "field": {
+                "const": "canonical_url"
+              }
+            },
+            "required": [
+              "field"
+            ],
+            "type": "object"
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "field": {
+                "const": "comment_status"
+              }
+            },
+            "required": [
+              "field"
+            ],
+            "type": "object"
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "field": {
+                "const": "meta_description"
+              }
+            },
+            "required": [
+              "field"
+            ],
+            "type": "object"
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "field": {
+                "const": "ping_status"
+              }
+            },
+            "required": [
+              "field"
+            ],
+            "type": "object"
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "field": {
+                "const": "post_content"
+              }
+            },
+            "required": [
+              "field"
+            ],
+            "type": "object"
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "field": {
+                "const": "post_excerpt"
+              }
+            },
+            "required": [
+              "field"
+            ],
+            "type": "object"
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "field": {
+                "const": "post_name"
+              }
+            },
+            "required": [
+              "field"
+            ],
+            "type": "object"
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "field": {
+                "const": "post_status"
+              }
+            },
+            "required": [
+              "field"
+            ],
+            "type": "object"
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "field": {
+                "const": "post_title"
+              }
+            },
+            "required": [
+              "field"
+            ],
+            "type": "object"
+          },
+          "maxContains": 1,
+          "minContains": 1
+        }
+      ],
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "after_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "before_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "changed": {
+            "type": "boolean"
+          },
+          "field": {
+            "enum": [
+              "canonical_url",
+              "comment_status",
+              "meta_description",
+              "ping_status",
+              "post_content",
+              "post_excerpt",
+              "post_name",
+              "post_status",
+              "post_title"
+            ]
+          }
+        },
+        "required": [
+          "field",
+          "before_sha256",
+          "after_sha256",
+          "changed"
+        ],
+        "type": "object"
+      },
+      "maxItems": 9,
+      "minItems": 9,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "idempotency_key": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "intent": {
+      "const": "UPDATE_EXISTING_PUBLISHED_POST_AT_APPROVED_CUTOVER"
+    },
+    "mode": {
+      "const": "DISABLED_DRY_RUN"
+    },
+    "package_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "payload_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "postconditions": {
+      "additionalProperties": false,
+      "properties": {
+        "after_post_status_sha256": {
+          "const": "f25fde75eb12c3cb5c9f8108e6d53c165d19d8bd2aac192e37fa68f7d6312aa7"
+        },
+        "required_after_post_status": {
+          "const": "publish"
+        },
+        "satisfied": {
+          "const": true
+        }
+      },
+      "required": [
+        "required_after_post_status",
+        "after_post_status_sha256",
+        "satisfied"
+      ],
+      "type": "object"
+    },
+    "preconditions": {
+      "additionalProperties": false,
+      "properties": {
+        "before_post_status_sha256": {
+          "const": "f25fde75eb12c3cb5c9f8108e6d53c165d19d8bd2aac192e37fa68f7d6312aa7"
+        },
+        "evaluated_at": {
+          "format": "date-time",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+          "type": "string"
+        },
+        "expected_current_post_status": {
+          "const": "publish"
+        },
+        "expected_public_body_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "export_captured_at": {
+          "format": "date-time",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+          "type": "string"
+        },
+        "export_role": {
+          "const": "PRE_WRITE_EXPORT"
+        },
+        "human_reviewed_at": {
+          "format": "date-time",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+          "type": "string"
+        },
+        "max_export_age_seconds": {
+          "const": 300
+        },
+        "observed_preaction_binding_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "observed_public_body_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "preaction_binding_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "preaction_captured_at": {
+          "format": "date-time",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+          "type": "string"
+        },
+        "preaction_status": {
+          "const": "VERIFIED_PREACTION"
+        },
+        "satisfied": {
+          "const": true
+        }
+      },
+      "required": [
+        "export_role",
+        "expected_current_post_status",
+        "before_post_status_sha256",
+        "expected_public_body_sha256",
+        "observed_public_body_sha256",
+        "export_captured_at",
+        "human_reviewed_at",
+        "preaction_status",
+        "preaction_binding_sha256",
+        "observed_preaction_binding_sha256",
+        "preaction_captured_at",
+        "evaluated_at",
+        "max_export_age_seconds",
+        "satisfied"
+      ],
+      "type": "object"
+    },
+    "request_count": {
+      "const": 0
+    },
+    "schema": {
+      "const": "RAOS_V2_PHASE3_WORDPRESS_DRY_RUN_RECEIPT_V1"
+    },
+    "status": {
+      "const": "DRY_RUN"
+    },
+    "target": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_match_count": {
+          "const": 1
+        },
+        "kind": {
+          "const": "EXISTING_POST"
+        },
+        "origin": {
+          "const": "https://kurashinoshirube.com"
+        },
+        "post_id": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "route": {
+          "const": "/carry-on-suitcase-comparison/"
+        }
+      },
+      "required": [
+        "origin",
+        "route",
+        "kind",
+        "post_id",
+        "expected_match_count"
+      ],
+      "type": "object"
+    },
+    "version": {
+      "const": "1.0.0"
+    }
+  },
+  "required": [
+    "schema",
+    "version",
+    "mode",
+    "request_count",
+    "external_action_count",
+    "external_status",
+    "status",
+    "intent",
+    "target",
+    "package_digest",
+    "payload_digest",
+    "export_binding_sha256",
+    "preconditions",
+    "postconditions",
+    "field_diff",
+    "idempotency_key"
+  ],
+  "title": "wordpress-dry-run-receipt",
+  "type": "object"
+}

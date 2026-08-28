@@ -1,0 +1,410 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v2/wordpress-update-payload.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "fields": {
+      "additionalProperties": false,
+      "properties": {
+        "canonical_url": {
+          "const": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+        },
+        "comment_status": {
+          "const": "closed"
+        },
+        "meta_description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "ping_status": {
+          "const": "closed"
+        },
+        "post_content": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "post_excerpt": {
+          "type": "string"
+        },
+        "post_name": {
+          "const": "carry-on-suitcase-comparison"
+        },
+        "post_status": {
+          "const": "publish"
+        },
+        "post_title": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "canonical_url",
+        "comment_status",
+        "meta_description",
+        "ping_status",
+        "post_content",
+        "post_excerpt",
+        "post_name",
+        "post_status",
+        "post_title"
+      ],
+      "type": "object"
+    },
+    "intent": {
+      "const": "UPDATE_EXISTING_PUBLISHED_POST_AT_APPROVED_CUTOVER"
+    },
+    "postconditions": {
+      "additionalProperties": false,
+      "properties": {
+        "required_after_post_status": {
+          "const": "publish"
+        }
+      },
+      "required": [
+        "required_after_post_status"
+      ],
+      "type": "object"
+    },
+    "preaction": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "HISTORICAL_BASELINE_ONLY"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "binding": {
+                "type": "null"
+              },
+              "binding_digest": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "VERIFIED_PREACTION"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "binding": {
+                "$ref": "https://kurashinoshirube.com/contracts/raos-v2/v2/preaction-binding.schema.json"
+              },
+              "binding_digest": {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "binding": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "binding_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "enum": [
+            "HISTORICAL_BASELINE_ONLY",
+            "VERIFIED_PREACTION"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "binding_digest",
+        "binding"
+      ],
+      "type": "object"
+    },
+    "preconditions": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_current_post_status": {
+          "const": "publish"
+        }
+      },
+      "required": [
+        "expected_current_post_status"
+      ],
+      "type": "object"
+    },
+    "schema": {
+      "const": "RAOS_V2_PHASE3_WORDPRESS_UPDATE_PAYLOAD_V1"
+    },
+    "structured_data_expectation": {
+      "additionalProperties": false,
+      "properties": {
+        "derivation": {
+          "const": "EXACT_WORDPRESS_FIELDS_V1"
+        },
+        "documents": {
+          "items": false,
+          "maxItems": 1,
+          "minItems": 1,
+          "prefixItems": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "@context": {
+                  "const": "https://schema.org"
+                },
+                "@graph": {
+                  "items": false,
+                  "maxItems": 4,
+                  "minItems": 4,
+                  "prefixItems": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "@type": {
+                          "const": "Article"
+                        },
+                        "description": {
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "headline": {
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "mainEntityOfPage": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "@id": {
+                              "const": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+                            }
+                          },
+                          "required": [
+                            "@id"
+                          ],
+                          "type": "object"
+                        },
+                        "url": {
+                          "const": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+                        }
+                      },
+                      "required": [
+                        "@type",
+                        "headline",
+                        "description",
+                        "mainEntityOfPage",
+                        "url"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "@type": {
+                          "const": "BreadcrumbList"
+                        },
+                        "itemListElement": {
+                          "items": false,
+                          "maxItems": 1,
+                          "minItems": 1,
+                          "prefixItems": [
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "@type": {
+                                  "const": "ListItem"
+                                },
+                                "item": {
+                                  "const": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+                                },
+                                "name": {
+                                  "minLength": 1,
+                                  "type": "string"
+                                },
+                                "position": {
+                                  "const": 1
+                                }
+                              },
+                              "required": [
+                                "@type",
+                                "position",
+                                "name",
+                                "item"
+                              ],
+                              "type": "object"
+                            }
+                          ],
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "@type",
+                        "itemListElement"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "@type": {
+                          "const": "Organization"
+                        },
+                        "url": {
+                          "const": "https://kurashinoshirube.com/"
+                        }
+                      },
+                      "required": [
+                        "@type",
+                        "url"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "@type": {
+                          "const": "WebSite"
+                        },
+                        "url": {
+                          "const": "https://kurashinoshirube.com/"
+                        }
+                      },
+                      "required": [
+                        "@type",
+                        "url"
+                      ],
+                      "type": "object"
+                    }
+                  ],
+                  "type": "array"
+                }
+              },
+              "required": [
+                "@context",
+                "@graph"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "array"
+        },
+        "emission": {
+          "additionalProperties": false,
+          "properties": {
+            "external_configuration_status": {
+              "const": "UNVERIFIED_EXTERNAL"
+            },
+            "local_json_ld_emission": {
+              "const": false
+            },
+            "owner": {
+              "const": "EXTERNAL_WORDPRESS_SEO_CONFIGURATION"
+            }
+          },
+          "required": [
+            "owner",
+            "local_json_ld_emission",
+            "external_configuration_status"
+          ],
+          "type": "object"
+        },
+        "json_ld_document_count": {
+          "const": 1
+        },
+        "json_ld_script_count": {
+          "const": 1
+        },
+        "json_ld_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "json_ld_types": {
+          "const": [
+            "Article",
+            "BreadcrumbList",
+            "Organization",
+            "WebSite"
+          ]
+        },
+        "schema": {
+          "const": "RAOS_V2_PHASE3_STRUCTURED_DATA_EXPECTATION_V1"
+        },
+        "version": {
+          "const": "1.0.0"
+        }
+      },
+      "required": [
+        "schema",
+        "version",
+        "derivation",
+        "json_ld_script_count",
+        "json_ld_document_count",
+        "json_ld_types",
+        "emission",
+        "documents",
+        "json_ld_sha256"
+      ],
+      "type": "object"
+    },
+    "target": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_match_count": {
+          "const": 1
+        },
+        "expected_public_body_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "const": "EXISTING_POST"
+        },
+        "origin": {
+          "const": "https://kurashinoshirube.com"
+        },
+        "route": {
+          "const": "/carry-on-suitcase-comparison/"
+        }
+      },
+      "required": [
+        "origin",
+        "route",
+        "kind",
+        "expected_match_count",
+        "expected_public_body_sha256"
+      ],
+      "type": "object"
+    },
+    "version": {
+      "const": "1.0.0"
+    }
+  },
+  "required": [
+    "schema",
+    "version",
+    "intent",
+    "target",
+    "preconditions",
+    "postconditions",
+    "structured_data_expectation",
+    "preaction",
+    "fields"
+  ],
+  "title": "wordpress-update-payload",
+  "type": "object"
+}

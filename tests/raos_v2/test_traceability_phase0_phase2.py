@@ -1,4 +1,4 @@
-"""Bidirectional P0-P2 decision/requirement/backlog/test traceability."""
+"""Bidirectional P0-P3 decision/requirement/backlog/test traceability."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ def effective() -> dict[str, object]:
     return value
 
 
-def test_source_counts_are_preserved_and_effective_scope_is_p0_to_p2() -> None:
+def test_source_counts_are_preserved_and_effective_scope_is_p0_to_p3() -> None:
     value = effective()
     assert value["source_counts"] == {
         "decisions": 34,
@@ -28,8 +28,8 @@ def test_source_counts_are_preserved_and_effective_scope_is_p0_to_p2() -> None:
         "backlog": 49,
         "tests": 51,
     }
-    assert value["scope"] == ["P0", "P1", "P2"]
-    assert len(value["backlog"]) == 34
+    assert value["scope"] == ["P0", "P1", "P2", "P3"]
+    assert len(value["backlog"]) == 40
     assert len(value["tests"]) == 47
     assert all(value["invariants"].values())
 
@@ -45,6 +45,14 @@ def test_effective_dependency_corrections_are_closed_and_acyclic() -> None:
     assert rows["B-V2-034"]["depends_on"] == [
         f"B-V2-{number:03d}" for number in range(19, 34)
     ]
+    assert rows["B-V2-040"]["depends_on"] == [
+        "B-V2-036",
+        "B-V2-037",
+        "B-V2-038",
+        "B-V2-039",
+    ]
+    assert rows["B-V2-040"]["implementation_status"] == "BLOCKED_EXTERNAL"
+    assert rows["B-V2-040"]["external_action_status"] == "NOT_EXECUTED"
     pending = {identifier: set(row["depends_on"]) for identifier, row in rows.items()}
     while pending:
         ready = {
@@ -82,5 +90,6 @@ def test_test_phase_correction_matches_user_plan() -> None:
     assert rows["T-V2-007"]["effective_phases"] == ["P1"]
     assert rows["T-V2-019"]["effective_phases"] == ["P1"]
     assert rows["T-V2-020"]["effective_phases"] == ["P2"]
-    assert rows["T-V2-040"]["effective_phases"] == ["P0"]
-    assert rows["T-V2-051"]["effective_phases"] == ["P0", "P1", "P2"]
+    assert rows["T-V2-040"]["effective_phases"] == ["P0", "P3"]
+    assert rows["T-V2-051"]["effective_phases"] == ["P0", "P1", "P2", "P3"]
+    assert rows["T-V2-040"]["phase3_external_execution_status"] == "NOT_EXECUTED"

@@ -1,0 +1,383 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v2/public-verification-receipt.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "affiliate_url_count": {
+      "const": 0
+    },
+    "ambiguous_attribute_count": {
+      "const": 0
+    },
+    "blocked_cta_count": {
+      "const": 3
+    },
+    "blocked_post_content_envelope_count": {
+      "const": 0
+    },
+    "body_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "canonical": {
+      "const": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+    },
+    "canonical_tag_count": {
+      "const": 1
+    },
+    "capture_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "completion_scope": {
+      "const": "HTTP_AND_OWNER_EXPORT_ONLY"
+    },
+    "content_type_media_type": {
+      "const": "text/html"
+    },
+    "crawler_robots_indexability_safe": {
+      "const": true
+    },
+    "crawler_robots_tag_count": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "critical_issue_count": {
+      "const": 0
+    },
+    "cta_state_count": {
+      "const": 3
+    },
+    "derivation": {
+      "const": "STRICT_PREACTION_CAPTURE_SEALED_PACKAGE_POST_ACTION_EXPORT_V2"
+    },
+    "disclosure_marker_count": {
+      "const": 1
+    },
+    "disclosure_marker_present": {
+      "const": true
+    },
+    "evaluated_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "evidence_class": {
+      "const": "PUBLIC_READ_ONLY_HTTP_AND_OWNER_EXPORT"
+    },
+    "external_script_count": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "h1": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "h1_count": {
+      "const": 1
+    },
+    "head_tag_count": {
+      "const": 1
+    },
+    "image_count": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "indexability_evidence_scope": {
+      "const": "HEAD_META_HTTP_SITEMAP_AND_ROBOTS_TXT"
+    },
+    "inline_executable_script_count": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "json_ld_script_count": {
+      "const": 1
+    },
+    "json_ld_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "json_ld_types": {
+      "const": [
+        "Article",
+        "BreadcrumbList",
+        "Organization",
+        "WebSite"
+      ]
+    },
+    "json_ld_visible_content_match": {
+      "const": true
+    },
+    "link_http_sha256": {
+      "pattern": "^(?:UNAVAILABLE|[0-9a-f]{64})$",
+      "type": "string"
+    },
+    "max_capture_age_seconds": {
+      "const": 300
+    },
+    "meta_description": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "meta_description_tag_count": {
+      "const": 1
+    },
+    "metadata_location_violation_count": {
+      "const": 0
+    },
+    "observed_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "package_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "package_marker": {
+      "const": "RAOS_V2_A05_POST_CONTENT_V1"
+    },
+    "package_marker_attribute_count": {
+      "const": 1
+    },
+    "package_marker_count": {
+      "const": 1
+    },
+    "phase_exit_eligible": {
+      "const": false
+    },
+    "plugin_artifact_status": {
+      "const": "LOCAL_SOURCE_BOUND_AND_PUBLIC_CSS_MATCHED"
+    },
+    "plugin_manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "plugin_php_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "plugin_stylesheet_bytes": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "plugin_stylesheet_content_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "plugin_stylesheet_resource_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "plugin_stylesheet_url": {
+      "const": "https://kurashinoshirube.com/wp-content/plugins/raos-v2-decision-support/assets/decision-support.css"
+    },
+    "post_action_export_binding_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "post_content_envelope": {
+      "const": "RAOS_V2_A05_ENVELOPE_V1"
+    },
+    "post_content_envelope_attribute_count": {
+      "const": 1
+    },
+    "post_content_envelope_count": {
+      "const": 1
+    },
+    "post_content_envelope_marker_child_count": {
+      "const": 1
+    },
+    "post_content_envelope_valid": {
+      "const": true
+    },
+    "post_content_marker_subtree_count": {
+      "const": 1
+    },
+    "post_content_semantic_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "preaction_capture_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "public_browser_verification_status": {
+      "const": "SEPARATE_RECEIPT_REQUIRED"
+    },
+    "redirect_chain": {
+      "const": []
+    },
+    "refresh_http_present": {
+      "const": false
+    },
+    "resource_change_status": {
+      "const": "NO_UNAPPROVED_NEW_TRACKED_RESOURCE"
+    },
+    "resource_inventory_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "robots": {
+      "const": "index,follow"
+    },
+    "robots_http": {
+      "pattern": "^(?:UNAVAILABLE|(?!.*(?:^|,)(?:noindex|nofollow|none)(?:,|$))[a-z][a-z0-9:-]*(?:,[a-z][a-z0-9:-]*)*)$",
+      "type": "string"
+    },
+    "robots_http_indexability_safe": {
+      "const": true
+    },
+    "robots_meta": {
+      "const": "index,follow"
+    },
+    "robots_tag_count": {
+      "const": 1
+    },
+    "robots_txt_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "robots_txt_status": {
+      "enum": [
+        200,
+        404,
+        410
+      ],
+      "type": "integer"
+    },
+    "robots_txt_target_allowed_for_googlebot": {
+      "const": true
+    },
+    "rollback_invoked": {
+      "const": false
+    },
+    "schema": {
+      "const": "RAOS_V2_PUBLIC_VERIFICATION_RECEIPT_V2"
+    },
+    "sealed_post_content_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "sitemap_membership": {
+      "const": true
+    },
+    "status": {
+      "const": 200
+    },
+    "structured_data_expectation_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "target": {
+      "additionalProperties": false,
+      "properties": {
+        "origin": {
+          "const": "https://kurashinoshirube.com"
+        },
+        "route": {
+          "const": "/carry-on-suitcase-comparison/"
+        }
+      },
+      "required": [
+        "origin",
+        "route"
+      ],
+      "type": "object"
+    },
+    "title": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "title_tag_count": {
+      "const": 1
+    },
+    "version": {
+      "const": "2.0.0"
+    }
+  },
+  "required": [
+    "schema",
+    "version",
+    "derivation",
+    "evidence_class",
+    "completion_scope",
+    "capture_sha256",
+    "preaction_capture_sha256",
+    "post_action_export_binding_sha256",
+    "target",
+    "observed_at",
+    "evaluated_at",
+    "max_capture_age_seconds",
+    "status",
+    "redirect_chain",
+    "canonical",
+    "canonical_tag_count",
+    "head_tag_count",
+    "metadata_location_violation_count",
+    "robots",
+    "robots_meta",
+    "robots_http",
+    "robots_http_indexability_safe",
+    "content_type_media_type",
+    "refresh_http_present",
+    "link_http_sha256",
+    "robots_txt_status",
+    "robots_txt_sha256",
+    "robots_txt_target_allowed_for_googlebot",
+    "indexability_evidence_scope",
+    "robots_tag_count",
+    "crawler_robots_tag_count",
+    "crawler_robots_indexability_safe",
+    "sitemap_membership",
+    "title",
+    "title_tag_count",
+    "meta_description",
+    "meta_description_tag_count",
+    "h1",
+    "h1_count",
+    "body_sha256",
+    "package_digest",
+    "structured_data_expectation_sha256",
+    "post_content_semantic_sha256",
+    "sealed_post_content_sha256",
+    "package_marker",
+    "package_marker_count",
+    "package_marker_attribute_count",
+    "post_content_envelope",
+    "post_content_envelope_count",
+    "post_content_envelope_attribute_count",
+    "blocked_post_content_envelope_count",
+    "post_content_envelope_marker_child_count",
+    "post_content_envelope_valid",
+    "post_content_marker_subtree_count",
+    "disclosure_marker_present",
+    "disclosure_marker_count",
+    "cta_state_count",
+    "blocked_cta_count",
+    "affiliate_url_count",
+    "ambiguous_attribute_count",
+    "image_count",
+    "inline_executable_script_count",
+    "external_script_count",
+    "resource_inventory_sha256",
+    "resource_change_status",
+    "plugin_stylesheet_url",
+    "plugin_stylesheet_resource_sha256",
+    "plugin_stylesheet_content_sha256",
+    "plugin_stylesheet_bytes",
+    "plugin_php_sha256",
+    "plugin_manifest_sha256",
+    "plugin_artifact_status",
+    "json_ld_script_count",
+    "json_ld_sha256",
+    "json_ld_types",
+    "json_ld_visible_content_match",
+    "critical_issue_count",
+    "public_browser_verification_status",
+    "phase_exit_eligible",
+    "rollback_invoked"
+  ],
+  "title": "public-verification-receipt",
+  "type": "object"
+}

@@ -73,8 +73,8 @@ source_artifacts:
   bytes: 3960
   sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
 - uri: repo://Makefile
-  bytes: 2077
-  sha256: d505133bfc56b259cdb3a3279d6f242a885998f239a3e29fc003ec63dfbbb9e9
+  bytes: 2141
+  sha256: eae55d7c0646b1b17abcbd9ab1f1ff68a857482ea1649b60ed02a307aa75daa3
 - uri: repo://docs/execplans/ST-0307.md
   bytes: 2270
   sha256: 237d9c6369926402c8afe12de8f5a58c8bda76af36e735dbda0475ba336e0fb8
@@ -116,19 +116,19 @@ source_artifacts:
   sha256: 46f38c965c0e966929f68fdeeeb411230b30a23a4702d4ca06214850f333f542
 - uri: repo://changes/st-0302/manifest.yaml
   bytes: 8657
-  sha256: f99c4fc88bd909d4cb3c1137f6a592a5089b8d0332bb511805f110740526821b
+  sha256: bfd5e2f7eff87b11b4f1b675bea2b9a281d1299efd87109183fe144e0ce1a9c4
 - uri: repo://changes/st-0303/manifest.yaml
   bytes: 11451
-  sha256: 07899ece7c39b15bb7b25fc335cd030bbb70e413657556806572f75d0dc98059
+  sha256: a7c31ac050ff1d16290cfeae92ae19a5605b59dda67e7564bbe0cf2bd0a50e18
 - uri: repo://changes/st-0304/manifest.yaml
   bytes: 11664
-  sha256: 195a25fe839e23c5c8f28c15bea1e96ce9f1fc6f0698a2d987302eaf5e96cf63
+  sha256: f0d5ccab066999069ae3d12405c102d8e28a17d394147c4f2177c8222817e678
 - uri: repo://changes/st-0305/manifest.yaml
   bytes: 14860
-  sha256: 221ccfdb41036e7cb34352ec2726d6f6b2b9b0cd956a56754915a0eb93ee362e
+  sha256: f8c034a04df5f0897dd6fa449692036453c219972c0fed10d4cfa1e74a76d3a0
 - uri: repo://changes/st-0306/manifest.yaml
   bytes: 8657
-  sha256: 65057492ef89d0e4c80f8400ba756e7dca5f9ddac958f651fe2e60178658ce53
+  sha256: 3c638183976ac3e71fc90db4035f8f9c38c72d94b53b9b9aac2cc21bee5db0f5
 - uri: repo://python/raos/migrations/catalog.py
   bytes: 20363
   sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642

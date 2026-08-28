@@ -31,7 +31,7 @@ final-lock:
 
 final-static:
 	$(PYTHON) -m ruff check python scripts tests
-	$(PYTHON) -m mypy python/raos
+	$(PYTHON) -m mypy python/raos packages/web-ui/src/decision-support-v2/wordpress/projection.py
 	$(NPM) run format:check
 	$(NPM) run lint
 	$(NPM) run typecheck

@@ -34,14 +34,14 @@
       "sha256": "3692c6e35154424ab2c1eb1d4e478b646b531596cc8258213d3513e7a035fa5f"
     },
     {
-      "bytes": 7342,
+      "bytes": 7343,
       "path": "changes/raos-v2/phase-2/generated/phase-2-validation.v2.json",
-      "sha256": "5486aa1fd4556718dec976b83d4ffcac91e1efc8470ec53d80db66663b4f6bdf"
+      "sha256": "10d5c1b135226dac27205f712b6a2213f1ddf77c4573019fa9772acae2f3220c"
     },
     {
-      "bytes": 4716,
+      "bytes": 4814,
       "path": "changes/raos-v2/phase-2/generated/publication-candidate.v2.json",
-      "sha256": "a7a5f72ec340e5001fabcba0674e443414c2709bfc5f2334e0e9c14a01bd6c68"
+      "sha256": "a5a4c13d5e3b1c2e13fe55b370f8792ce1b1ec18a48b28fb01efc2b13da0c312"
     },
     {
       "bytes": 5173,
@@ -246,6 +246,10 @@
       "role": "IMPLEMENTATION_SOURCE"
     },
     {
+      "path": "python/raos/adapters/decision_support_v2/wordpress_phase3_disabled.py",
+      "role": "IMPLEMENTATION_SOURCE"
+    },
+    {
       "path": "python/raos/application/decision_support_v2/__init__.py",
       "role": "IMPLEMENTATION_SOURCE"
     },
@@ -255,6 +259,10 @@
     },
     {
       "path": "python/raos/application/decision_support_v2/offer_lookup.py",
+      "role": "IMPLEMENTATION_SOURCE"
+    },
+    {
+      "path": "python/raos/application/decision_support_v2/phase3_publication.py",
       "role": "IMPLEMENTATION_SOURCE"
     },
     {
@@ -298,6 +306,10 @@
       "role": "IMPLEMENTATION_SOURCE"
     },
     {
+      "path": "python/raos/domain/decision_support_v2/phase3_publication.py",
+      "role": "IMPLEMENTATION_SOURCE"
+    },
+    {
       "path": "python/raos/domain/decision_support_v2/publication.py",
       "role": "IMPLEMENTATION_SOURCE"
     },
@@ -319,6 +331,10 @@
     },
     {
       "path": "tests/raos_v2/conftest.py",
+      "role": "TEST_SOURCE"
+    },
+    {
+      "path": "tests/raos_v2/phase3-local-validation.mjs",
       "role": "TEST_SOURCE"
     },
     {
@@ -347,6 +363,30 @@
     },
     {
       "path": "tests/raos_v2/test_phase0_contracts.py",
+      "role": "TEST_SOURCE"
+    },
+    {
+      "path": "tests/raos_v2/test_phase3_artifacts.py",
+      "role": "TEST_SOURCE"
+    },
+    {
+      "path": "tests/raos_v2/test_phase3_browser_evidence.py",
+      "role": "TEST_SOURCE"
+    },
+    {
+      "path": "tests/raos_v2/test_phase3_local_validation_contract.py",
+      "role": "TEST_SOURCE"
+    },
+    {
+      "path": "tests/raos_v2/test_phase3_public_capture.py",
+      "role": "TEST_SOURCE"
+    },
+    {
+      "path": "tests/raos_v2/test_phase3_publication.py",
+      "role": "TEST_SOURCE"
+    },
+    {
+      "path": "tests/raos_v2/test_phase3_wordpress_projection.py",
       "role": "TEST_SOURCE"
     },
     {
@@ -430,31 +470,31 @@
       "classification": "LOCAL_ONLY",
       "command": "TMPDIR=/tmp uv run --offline pytest -s -q tests/raos_v2",
       "command_contract": "BASH_PIPEFAIL_TEE_TEMP_PROMOTED_BY_RECORDER_V2",
-      "executed_at_jst": "2026-08-28T12:27:50.525569+09:00",
-      "executed_head": "6461bafde03b8f58920cc28b38b81e77b072572d",
+      "executed_at_jst": "2026-08-28T21:19:19.423465+09:00",
+      "executed_head": "9cc223f91fd3fd7a58cbc429d280e808f965cd65",
       "exit_code": 0,
       "external_actions": "NOT_EXECUTED",
       "failed": 0,
       "formal_ci": "NOT_CLAIMED",
       "implementation_source_inventory": {
-        "content_inventory_sha256": "05a229a5c5dfc289f085e57b12ed890866965969157591a10b1da23e19a60898",
-        "file_count": 53,
-        "path_set_sha256": "4db6a50a2928f136bd20f8f3853197fa9e55687314b65fee77ee96e8282bddf8",
+        "content_inventory_sha256": "a7e6b343065a6c5c1a6ba4bce5321ef64133b3d00d44b76ec841e44b1fdf1e94",
+        "file_count": 60,
+        "path_set_sha256": "0d678e9b9ef3ad169ea6dbd98fc9636a1578b5bce0028ecbdb44912b28da5426",
         "schema": "RAOS_V2_FILE_INVENTORY_BINDING_V1",
-        "total_bytes": 717064
+        "total_bytes": 1090426
       },
       "machine_contract_inventory": {
-        "content_inventory_sha256": "9097433725558ead9f6c6acebb1032065e27b105187e710924dab7e793fb813d",
-        "file_count": 43,
-        "path_set_sha256": "4fa13ec6d712c35d66b3feba248a8b9f7909ab6de4e3ae29881d7759c1ee05dd",
+        "content_inventory_sha256": "4e538dac47272fc432a194d4e098fe58390c9d36820d75cea5271da759190742",
+        "file_count": 68,
+        "path_set_sha256": "3838d6b069c44937cfe20dac337220871e1394f551ae1bb848729dabef22e22b",
         "schema": "RAOS_V2_FILE_INVENTORY_BINDING_V1",
-        "total_bytes": 398199
+        "total_bytes": 581032
       },
-      "passed": 305,
+      "passed": 600,
       "raw_output": {
-        "bytes": 326,
+        "bytes": 621,
         "local_path": "output/pytest/raos-v2-local-test-output.txt",
-        "sha256": "15367adf55b48922ed9ef36a66f9c844d17bebedb8bf33b437fcbcc467a649d5"
+        "sha256": "00d4795e88e16229bae956f6fddce6f904f895e9142204f9ba49915eb9d41a95"
       },
       "raw_verification": "RECORDED_NOT_REVERIFIED",
       "recorded_date_jst": "2026-08-28",
@@ -462,11 +502,11 @@
       "skipped": 0,
       "status": "PASSED_LOCAL",
       "test_inventory": {
-        "content_inventory_sha256": "61edc224eafa4a5a892be3175eab235474997f6869cd0cb6ccee67e167ada3ff",
-        "file_count": 18,
-        "path_set_sha256": "5c7f624bd6f1b3f6202df91e9167a6b30653e2fd11cb9761ecfc61632495d117",
+        "content_inventory_sha256": "f8f5f2feedce9ead29010ef792b7ad01040dd147a43d8747a3fdcfc755771446",
+        "file_count": 25,
+        "path_set_sha256": "d906d0742cfe152a826caf90cc3329f2a9f93c7b827c707ef39f57320eaf3160",
         "schema": "RAOS_V2_FILE_INVENTORY_BINDING_V1",
-        "total_bytes": 231347
+        "total_bytes": 404986
       },
       "version": "2.0.0"
     },

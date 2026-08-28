@@ -1,0 +1,269 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v2/publication-package.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "PACKAGE_SEALED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "package_digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "HUMAN_REVIEWED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "package_digest": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "capabilities": {
+      "additionalProperties": false,
+      "properties": {
+        "network": {
+          "const": false
+        },
+        "publish": {
+          "const": false
+        },
+        "wordpress_write": {
+          "const": false
+        }
+      },
+      "required": [
+        "network",
+        "wordpress_write",
+        "publish"
+      ],
+      "type": "object"
+    },
+    "human_review_receipt": {
+      "$ref": "https://kurashinoshirube.com/contracts/raos-v2/v2/human-review-receipt.schema.json"
+    },
+    "package_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "review_candidate": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "preaction_status": {
+                "const": "HISTORICAL_BASELINE_ONLY"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "preaction_binding_digest": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "preaction_status": {
+                "const": "VERIFIED_PREACTION"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "preaction_binding_digest": {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "candidate_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "claim_bindings": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "authoritative_source_status": {
+                "enum": [
+                  "DRAFT",
+                  "VERIFIED",
+                  "STALE",
+                  "BLOCKED"
+                ]
+              },
+              "blocking": {
+                "type": "boolean"
+              },
+              "checked_at": {
+                "format": "date-time",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+                "type": "string"
+              },
+              "claim_id": {
+                "pattern": "^CLM-[A-Z0-9-]+$",
+                "type": "string"
+              },
+              "claim_type": {
+                "enum": [
+                  "A_OFFICIAL_FACT",
+                  "D_EDITORIAL_JUDGEMENT",
+                  "UNKNOWN"
+                ]
+              },
+              "freshness": {
+                "enum": [
+                  "FRESH",
+                  "DUE",
+                  "SOFT_STALE",
+                  "HARD_STALE",
+                  "UNKNOWN",
+                  "UNAVAILABLE",
+                  "REJECTED"
+                ]
+              },
+              "intentionally_disclosed": {
+                "type": "boolean"
+              },
+              "next_review_at": {
+                "format": "date-time",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+                "type": "string"
+              },
+              "resolved": {
+                "type": "boolean"
+              },
+              "risk_class": {
+                "enum": [
+                  "LOW",
+                  "MEDIUM",
+                  "HIGH"
+                ]
+              }
+            },
+            "required": [
+              "claim_id",
+              "claim_type",
+              "risk_class",
+              "freshness",
+              "authoritative_source_status",
+              "checked_at",
+              "next_review_at",
+              "resolved",
+              "blocking",
+              "intentionally_disclosed"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "payload_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "phase2_candidate": {
+          "$ref": "https://kurashinoshirube.com/contracts/raos-v2/v1/publication-package.schema.json"
+        },
+        "preaction_binding_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "preaction_status": {
+          "enum": [
+            "HISTORICAL_BASELINE_ONLY",
+            "VERIFIED_PREACTION"
+          ]
+        },
+        "schema": {
+          "const": "RAOS_V2_PHASE3_REVIEW_CANDIDATE_V1"
+        },
+        "structured_data_expectation_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "update_payload": {
+          "$ref": "https://kurashinoshirube.com/contracts/raos-v2/v2/wordpress-update-payload.schema.json"
+        },
+        "version": {
+          "const": "1.0.0"
+        }
+      },
+      "required": [
+        "schema",
+        "version",
+        "phase2_candidate",
+        "candidate_digest",
+        "claim_bindings",
+        "update_payload",
+        "preaction_status",
+        "preaction_binding_digest",
+        "structured_data_expectation_sha256",
+        "payload_digest"
+      ],
+      "type": "object"
+    },
+    "schema": {
+      "const": "RAOS_V2_PHASE3_PUBLICATION_PACKAGE_V1"
+    },
+    "state": {
+      "enum": [
+        "HUMAN_REVIEWED",
+        "PACKAGE_SEALED"
+      ]
+    },
+    "structured_data_expectation_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "version": {
+      "const": "1.0.0"
+    }
+  },
+  "required": [
+    "schema",
+    "version",
+    "state",
+    "review_candidate",
+    "human_review_receipt",
+    "structured_data_expectation_sha256",
+    "capabilities",
+    "package_digest"
+  ],
+  "title": "publication-package",
+  "type": "object"
+}

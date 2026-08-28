@@ -1,0 +1,62 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v2/human-review-receipt.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "accepted": {
+      "const": true
+    },
+    "candidate_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "correction_count": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "payload_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "review_version": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+      "type": "string"
+    },
+    "reviewed_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "reviewer_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "RAOS_V2_PHASE3_HUMAN_REVIEW_RECEIPT_V1"
+    },
+    "synthetic": {
+      "const": false
+    },
+    "target_route": {
+      "const": "/carry-on-suitcase-comparison/"
+    },
+    "version": {
+      "const": "1.0.0"
+    }
+  },
+  "required": [
+    "schema",
+    "version",
+    "reviewer_id",
+    "reviewed_at",
+    "review_version",
+    "correction_count",
+    "accepted",
+    "synthetic",
+    "candidate_digest",
+    "payload_digest",
+    "target_route"
+  ],
+  "title": "human-review-receipt",
+  "type": "object"
+}

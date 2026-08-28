@@ -1,0 +1,60 @@
+{
+  "backlog_ids": [
+    "B-V2-035",
+    "B-V2-040"
+  ],
+  "classification": "LOCAL_CONTRACT_SIMULATION_ONLY",
+  "complete_export_binding": false,
+  "failure": "BLOCK_EXTERNAL_MIGRATION_UNTIL_EXACT_EXPORT_EXISTS",
+  "local_status": "PASSED_LOCAL_CONTRACT_ONLY",
+  "phase_exit_evidence": false,
+  "post_action_export_status": "NOT_EXECUTED",
+  "pre_write_export_status": "NOT_EXECUTED",
+  "production_backup": "NOT_EXECUTED",
+  "production_restore": "NOT_EXECUTED",
+  "public_restore_verification": "NOT_EXECUTED",
+  "required_restore_fields": [
+    "post_id",
+    "post_title",
+    "post_name",
+    "post_excerpt",
+    "post_content",
+    "post_status",
+    "post_author",
+    "published_at",
+    "modified_at",
+    "taxonomies",
+    "comment_status",
+    "ping_status",
+    "featured_media",
+    "yoast_title",
+    "yoast_description",
+    "yoast_canonical",
+    "yoast_robots",
+    "theme_version",
+    "plugin_versions",
+    "redirect_map",
+    "sitemap_membership"
+  ],
+  "requirement_ids": [
+    "R-V2-025",
+    "R-V2-034",
+    "R-V2-036"
+  ],
+  "route_tuple_simulation": {
+    "baseline_sha256": "5fd510a1cd6ae68822e2e71ed137434f8fb3c39c9c5b94c8fbab5c0d8cf6401b",
+    "candidate_sha256": "fa7b3b6a29c287bd3325650d11518c7806146a5a7d979b9141bd35d5a5907de3",
+    "exact_tuple_restored": true,
+    "external_action": "NOT_EXECUTED",
+    "restored_sha256": "5fd510a1cd6ae68822e2e71ed137434f8fb3c39c9c5b94c8fbab5c0d8cf6401b",
+    "status": "PASSED_LOCAL"
+  },
+  "schema": "RAOS_V2_PHASE3_ROLLBACK_REHEARSAL_V1",
+  "target_route": "/carry-on-suitcase-comparison/",
+  "test_ids": [
+    "T-V2-005",
+    "T-V2-040",
+    "T-V2-051"
+  ],
+  "version": "1.0.0"
+}

@@ -159,6 +159,10 @@
           "pattern": "^[0-9a-f]{64}$",
           "type": "string"
         },
+        "phase3_claim_authority": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
         "products": {
           "pattern": "^[0-9a-f]{64}$",
           "type": "string"
