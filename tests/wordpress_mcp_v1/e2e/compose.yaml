@@ -41,8 +41,6 @@ services:
         define('RAOS_CODEX_PRIVATE_DIR', '/var/www/raos-codex-private');
         $$_SERVER['HTTPS'] = 'on';
         $$_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
-    ports:
-      - '127.0.0.1:${RAOS_WORDPRESS_E2E_PORT:?RAOS_WORDPRESS_E2E_PORT is required}:80'
     volumes:
       - type: bind
         source: ${RAOS_WORDPRESS_E2E_DATA_DIR:?RAOS_WORDPRESS_E2E_DATA_DIR is required}/html
@@ -57,6 +55,30 @@ services:
       isolated:
         aliases:
           - kurashinoshirube.com
+
+  gateway:
+    image: nginx:1.29.1-alpine@sha256:42a516af16b852e33b7682d5ef8acbd5d13fe08fecadc7ed98605ba5e3b26ab8
+    depends_on:
+      wordpress:
+        condition: service_started
+    user: '101:101'
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - '127.0.0.1:${RAOS_WORDPRESS_E2E_PORT:?RAOS_WORDPRESS_E2E_PORT is required}:8080'
+    tmpfs:
+      - /tmp:mode=0700,uid=101,gid=101
+    volumes:
+      - type: bind
+        source: ./gateway/nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
+    networks:
+      - isolated
+      - loopback
 
   cli:
     image: wordpress:cli-2.12.0-php8.3@sha256:2b5e9d4d3e51909dca1aaa4732e9f5e5bf0377c2114dbd8ff39f060bff202586
@@ -90,3 +112,5 @@ services:
 networks:
   isolated:
     internal: true
+  loopback:
+    driver: bridge

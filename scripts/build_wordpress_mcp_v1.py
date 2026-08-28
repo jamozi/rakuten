@@ -52,6 +52,7 @@ RUNTIME_PATHS: Final = (
     "tests/wordpress_mcp_v1/e2e/approve_harness.php",
     "tests/wordpress_mcp_v1/e2e/client.py",
     "tests/wordpress_mcp_v1/e2e/compose.yaml",
+    "tests/wordpress_mcp_v1/e2e/gateway/nginx.conf",
     "tests/wordpress_mcp_v1/e2e/mutate_harness.php",
     "tests/wordpress_mcp_v1/e2e/prepare_packages.py",
     "tests/wordpress_mcp_v1/e2e/run.sh",

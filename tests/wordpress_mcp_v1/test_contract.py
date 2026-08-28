@@ -240,13 +240,23 @@ def test_private_credential_launchers_enforce_purpose_and_non_reuse() -> None:
 def test_disposable_wordpress_71_e2e_is_pinned_and_separate_from_live() -> None:
     e2e = ROOT / "tests/wordpress_mcp_v1/e2e"
     compose = (e2e / "compose.yaml").read_text()
+    gateway = (e2e / "gateway/nginx.conf").read_text()
     runner = (e2e / "run.sh").read_text()
     client = (e2e / "client.py").read_text()
     approval = (e2e / "approve_harness.php").read_text()
     assert "wordpress:7.1.0-php8.3-apache@sha256:" in compose
     assert "wordpress:cli-2.12.0-php8.3@sha256:" in compose
     assert "mariadb:11.8.3@sha256:" in compose
+    assert "nginx:1.29.1-alpine@sha256:" in compose
     assert "internal: true" in compose
+    assert compose.count("ports:") == 1
+    assert (
+        "'127.0.0.1:${RAOS_WORDPRESS_E2E_PORT:?RAOS_WORDPRESS_E2E_PORT is required}:8080'"
+        in compose
+    )
+    assert "compose up --detach database wordpress gateway" in runner
+    assert "proxy_pass http://wordpress:80;" in gateway
+    assert "proxy_set_header X-Forwarded-Proto https;" in gateway
     assert "RAOS_CODEX_THEME_APPLY_ENABLED', true" in compose
     assert "RAOS_CODEX_PLUGIN_APPLY_ENABLED', true" in compose
     assert "RAOS_CODEX_REPO_ARTIFACT_HASHES" in compose

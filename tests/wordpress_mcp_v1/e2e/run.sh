@@ -147,7 +147,7 @@ export \
   RAOS_WORDPRESS_E2E_BROKEN_PLUGIN_SHA256 \
   RAOS_WORDPRESS_E2E_SAFE_PLUGIN_SHA256
 
-compose up --detach database wordpress
+compose up --detach database wordpress gateway
 
 wordpress_ready=false
 for _attempt in $(seq 1 90); do
