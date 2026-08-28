@@ -252,6 +252,7 @@ def test_real_content_cannot_be_sealed_in_phase_0_to_2() -> None:
         "products",
         "review",
         "render_model",
+        "phase3_claim_authority",
     }
     package = {
         "schema_version": "1.0.0",

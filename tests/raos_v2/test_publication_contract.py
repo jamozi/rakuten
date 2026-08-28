@@ -33,6 +33,7 @@ HASHES = {
     "products": "2" * 64,
     "review": "3" * 64,
     "render_model": "4" * 64,
+    "phase3_claim_authority": "5" * 64,
 }
 FRESH_CLAIMS = (
     ClaimEvidenceBinding("CLM-SYNTHETIC-FACT", RiskClass.HIGH, FreshnessState.FRESH),
@@ -85,12 +86,45 @@ def test_real_content_stops_at_evidence_complete_without_review() -> None:
         render_hash="d" * 64,
         source_snapshot_hash="c" * 64,
         claim_evidence=FRESH_CLAIMS,
-        migration_manifest={"action": "KEEP_ROUTE", "sha256": "e" * 64},
+        migration_manifest={
+            "schema": "RAOS_V2_MIGRATION_MANIFEST_V1",
+            "mode": "LOCAL_SIMULATION_ONLY",
+            "target_route": "/carry-on-suitcase-comparison/",
+            "sha256": "e" * 64,
+        },
         created_at=CREATED,
     )
     assert package.state is PublicationState.EVIDENCE_COMPLETE
     with pytest.raises(ValueError):
         package.transition(PublicationState.HUMAN_REVIEWED)
+
+
+def test_v1_real_candidate_remains_compatible_without_phase3_authority() -> None:
+    legacy_hashes = {
+        name: digest
+        for name, digest in HASHES.items()
+        if name != "phase3_claim_authority"
+    }
+    package = build_evidence_candidate(
+        package_id="REAL-V1-COMPATIBLE-CANDIDATE",
+        route="/carry-on-suitcase-comparison/",
+        article_id="A05",
+        input_hashes=legacy_hashes,
+        render_hash="d" * 64,
+        source_snapshot_hash="c" * 64,
+        claim_evidence=FRESH_CLAIMS,
+        migration_manifest={
+            "schema": "RAOS_V2_MIGRATION_MANIFEST_V1",
+            "mode": "LOCAL_SIMULATION_ONLY",
+            "target_route": "/carry-on-suitcase-comparison/",
+            "sha256": "e" * 64,
+        },
+        created_at=CREATED,
+    )
+    Draft202012Validator(successor_builder.publication_package_schema()).validate(
+        package.to_contract_record()
+    )
+    assert package.state is PublicationState.EVIDENCE_COMPLETE
 
 
 def test_t_v2_031_only_structured_synthetic_review_can_seal() -> None:
@@ -176,7 +210,9 @@ def test_t_v2_038_seal_requires_every_binding(missing: str) -> None:
         package.transition(PublicationState.EVIDENCE_COMPLETE)
 
 
-@pytest.mark.parametrize("missing", sorted(HASHES))
+@pytest.mark.parametrize(
+    "missing", sorted(set(HASHES) - {"phase3_claim_authority"})
+)
 def test_real_evidence_candidate_requires_full_nine_hash_closure(missing: str) -> None:
     with pytest.raises(ValueError):
         build_evidence_candidate(

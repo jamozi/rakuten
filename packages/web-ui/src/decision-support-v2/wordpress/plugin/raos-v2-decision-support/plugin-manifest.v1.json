@@ -1,0 +1,27 @@
+{
+  "schema": "RAOS_V2_WORDPRESS_PRESENTATION_PLUGIN_INPUT_V1",
+  "plugin_slug": "raos-v2-decision-support",
+  "version": "0.1.0",
+  "target": {
+    "article_id": "A05",
+    "exact_route": "/carry-on-suitcase-comparison/",
+    "exact_post_slug": "carry-on-suitcase-comparison",
+    "required_package_marker": "RAOS_V2_A05_POST_CONTENT_V1",
+    "required_post_content_sha256": "270dfec22f4c659f30e498e321d96bf230f4f5d4504ab7f97c48f533f70f4ff5",
+    "rendered_content_envelope": "RAOS_V2_A05_ENVELOPE_V1"
+  },
+  "runtime": {
+    "allowed_effect": "ENQUEUE_BUNDLED_STYLESHEET_AND_WRAP_UNCHANGED_REVIEWED_FRAGMENT_ON_EXACT_MATCH",
+    "admin_ui": false,
+    "content_filter": "FAIL_CLOSED_EXACT_BYTES_IDEMPOTENT",
+    "cron": false,
+    "database_write": false,
+    "network_request": false,
+    "option_write": false,
+    "publication_capability": false,
+    "rest_route": false,
+    "telemetry": false
+  },
+  "source_files": ["assets/decision-support.css", "raos-v2-decision-support.php"],
+  "installation": "EXTERNAL_HUMAN_ACTION_NOT_EXECUTED"
+}

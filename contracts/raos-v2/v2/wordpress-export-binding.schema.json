@@ -1,0 +1,168 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v2/wordpress-export-binding.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "captured_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "export_bytes": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "export_role": {
+      "enum": [
+        "PRE_WRITE_EXPORT",
+        "POST_ACTION_OWNER_EXPORT"
+      ]
+    },
+    "export_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "field_hashes": {
+      "additionalProperties": false,
+      "properties": {
+        "canonical_url": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "comment_status": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "meta_description": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "ping_status": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "post_content": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "post_excerpt": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "post_name": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "post_status": {
+          "const": "f25fde75eb12c3cb5c9f8108e6d53c165d19d8bd2aac192e37fa68f7d6312aa7"
+        },
+        "post_title": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "canonical_url",
+        "comment_status",
+        "meta_description",
+        "ping_status",
+        "post_content",
+        "post_excerpt",
+        "post_name",
+        "post_status",
+        "post_title"
+      ],
+      "type": "object"
+    },
+    "preaction_binding_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "public_body_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "raw_export_location": {
+      "const": "OWNER_STORAGE_ONLY_NOT_GIT"
+    },
+    "redirect_map_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "restore_artifact_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "RAOS_V2_WORDPRESS_EXPORT_BINDING_V2"
+    },
+    "seo_state_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "sitemap_state_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "status": {
+      "const": "VERIFIED_HUMAN_EXPORT"
+    },
+    "target": {
+      "additionalProperties": false,
+      "properties": {
+        "exact_match_count": {
+          "const": 1
+        },
+        "kind": {
+          "const": "EXISTING_POST"
+        },
+        "origin": {
+          "const": "https://kurashinoshirube.com"
+        },
+        "post_id": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "route": {
+          "const": "/carry-on-suitcase-comparison/"
+        }
+      },
+      "required": [
+        "origin",
+        "route",
+        "kind",
+        "post_id",
+        "exact_match_count"
+      ],
+      "type": "object"
+    },
+    "theme_artifact_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "version": {
+      "const": "2.0.0"
+    }
+  },
+  "required": [
+    "schema",
+    "version",
+    "target",
+    "captured_at",
+    "field_hashes",
+    "public_body_sha256",
+    "preaction_binding_sha256",
+    "export_sha256",
+    "export_bytes",
+    "restore_artifact_sha256",
+    "theme_artifact_sha256",
+    "seo_state_sha256",
+    "redirect_map_sha256",
+    "sitemap_state_sha256",
+    "raw_export_location",
+    "status",
+    "export_role"
+  ],
+  "title": "wordpress-export-binding",
+  "type": "object"
+}

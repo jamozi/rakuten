@@ -6,6 +6,7 @@ scope:
 - P0
 - P1
 - P2
+- P3
 source_counts:
   decisions: 34
   requirements: 36
@@ -883,6 +884,8 @@ requirements:
   - B-V2-003
   - B-V2-004
   - B-V2-007
+  - B-V2-035
+  - B-V2-038
   test_ids:
   - T-V2-004
   - T-V2-005
@@ -923,6 +926,7 @@ requirements:
   acceptance: token schemaとcomponent state matrixがvalidation可能。
   backlog_ids:
   - B-V2-012
+  - B-V2-036
   test_ids:
   - T-V2-008
 - id: R-V2-007
@@ -1131,6 +1135,7 @@ requirements:
   backlog_ids:
   - B-V2-027
   - B-V2-031
+  - B-V2-038
   test_ids:
   - T-V2-010
   - T-V2-035
@@ -1146,6 +1151,7 @@ requirements:
   backlog_ids:
   - B-V2-017
   - B-V2-031
+  - B-V2-037
   test_ids:
   - T-V2-037
   - T-V2-038
@@ -1159,6 +1165,9 @@ requirements:
   acceptance: localではpayload previewのみ、network/write capabilityなし。
   backlog_ids:
   - B-V2-004
+  - B-V2-036
+  - B-V2-037
+  - B-V2-040
   test_ids:
   - T-V2-039
 - id: R-V2-025
@@ -1171,6 +1180,9 @@ requirements:
   backlog_ids:
   - B-V2-008
   - B-V2-031
+  - B-V2-035
+  - B-V2-038
+  - B-V2-040
   test_ids:
   - T-V2-005
   - T-V2-040
@@ -1216,6 +1228,7 @@ requirements:
   backlog_ids:
   - B-V2-017
   - B-V2-032
+  - B-V2-039
   test_ids:
   - T-V2-045
   - T-V2-046
@@ -1256,6 +1269,8 @@ requirements:
   - B-V2-021
   - B-V2-026
   - B-V2-033
+  - B-V2-036
+  - B-V2-040
   test_ids:
   - T-V2-051
 - id: R-V2-034
@@ -1269,6 +1284,7 @@ requirements:
   backlog_ids:
   - B-V2-001
   - B-V2-033
+  - B-V2-040
   test_ids:
   - T-V2-023
   - T-V2-039
@@ -1298,6 +1314,8 @@ requirements:
   - B-V2-009
   - B-V2-018
   - B-V2-034
+  - B-V2-035
+  - B-V2-039
   test_ids:
   - T-V2-051
 backlog:
@@ -1877,6 +1895,116 @@ backlog:
   - T-V2-051
   implementation_status: VERIFIED_LOCAL_RECORDED
   external_action_status: NOT_EXECUTED
+- id: B-V2-035
+  phase: P3
+  title: production backup/export human runbook
+  depends_on: []
+  requirement_ids:
+  - R-V2-003
+  - R-V2-025
+  - R-V2-036
+  output: human runbook only
+  cost_ceiling_hours: 2
+  test_ids:
+  - T-V2-004
+  - T-V2-005
+  - T-V2-040
+  - T-V2-051
+  implementation_status: COMPLETE_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-036
+  phase: P3
+  title: WordPress child theme/block migration package
+  depends_on:
+  - B-V2-034
+  requirement_ids:
+  - R-V2-006
+  - R-V2-024
+  - R-V2-033
+  output: deployable artifact; no deploy
+  cost_ceiling_hours: 12
+  test_ids:
+  - T-V2-008
+  - T-V2-039
+  - T-V2-051
+  implementation_status: COMPLETE_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-037
+  phase: P3
+  title: exact sealed WP draft payload and dry-run diff
+  depends_on:
+  - B-V2-034
+  requirement_ids:
+  - R-V2-023
+  - R-V2-024
+  output: draft payload preview
+  cost_ceiling_hours: 5
+  test_ids:
+  - T-V2-037
+  - T-V2-038
+  - T-V2-039
+  implementation_status: REVIEW_READY_BLOCKED_EXTERNAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-038
+  phase: P3
+  title: production redirect/canonical/sitemap change plan
+  depends_on:
+  - B-V2-035
+  - B-V2-037
+  requirement_ids:
+  - R-V2-003
+  - R-V2-022
+  - R-V2-025
+  output: human action plan
+  cost_ceiling_hours: 5
+  test_ids:
+  - T-V2-004
+  - T-V2-005
+  - T-V2-010
+  - T-V2-035
+  - T-V2-036
+  - T-V2-040
+  implementation_status: COMPLETE_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-039
+  phase: P3
+  title: privacy/legal review packet for event activation
+  depends_on:
+  - B-V2-032
+  requirement_ids:
+  - R-V2-029
+  - R-V2-036
+  output: owner/counsel review packet
+  cost_ceiling_hours: 3
+  test_ids:
+  - T-V2-045
+  - T-V2-046
+  - T-V2-051
+  implementation_status: COMPLETE_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-040
+  phase: P3
+  title: one-URL human migration, public verification and rollback evidence
+  depends_on:
+  - B-V2-036
+  - B-V2-037
+  - B-V2-038
+  - B-V2-039
+  requirement_ids:
+  - R-V2-024
+  - R-V2-025
+  - R-V2-033
+  - R-V2-034
+  output: external gated evidence
+  cost_ceiling_hours: 8
+  test_ids:
+  - T-V2-005
+  - T-V2-023
+  - T-V2-039
+  - T-V2-040
+  - T-V2-051
+  implementation_status: BLOCKED_EXTERNAL
+  external_action_status: NOT_EXECUTED
 tests:
 - id: T-V2-001
   category: SECURITY
@@ -1890,6 +2018,8 @@ tests:
   effective_phases:
   - P0
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-002
   category: SECURITY
   title: dirty/unrelated paths are not edited or staged
@@ -1904,6 +2034,8 @@ tests:
   effective_phases:
   - P0
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-003
   category: CONTRACT
   title: live preflight records AGENTS/HEAD/branch/status/generator owner
@@ -1916,6 +2048,8 @@ tests:
   effective_phases:
   - P0
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-004
   category: DATA
   title: URL inventory parses sitemap, canonical, robots and status
@@ -1926,9 +2060,14 @@ tests:
   - B-V2-003
   - B-V2-004
   - B-V2-007
+  - B-V2-035
+  - B-V2-038
   effective_phases:
   - P0
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-005
   category: MIGRATION
   title: redirect map rejects loops, chains >1 and many-to-home
@@ -1942,9 +2081,15 @@ tests:
   - B-V2-007
   - B-V2-008
   - B-V2-031
+  - B-V2-035
+  - B-V2-038
+  - B-V2-040
   effective_phases:
   - P0
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-006
   category: ANALYTICS
   title: metric dictionary rejects missing source/maturity/unavailable rule
@@ -1956,6 +2101,8 @@ tests:
   effective_phases:
   - P0
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-007
   category: CONTRACT
   title: product spec contains one wedge and locked portfolio waves
@@ -1967,6 +2114,8 @@ tests:
   effective_phases:
   - P1
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-008
   category: VISUAL
   title: design token contrast pairs meet declared AA thresholds
@@ -1975,9 +2124,13 @@ tests:
   evidence_output: contrast report
   backlog_ids:
   - B-V2-012
+  - B-V2-036
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-009
   category: CONTRACT
   title: every route has one primary intent/template/parent hub
@@ -1989,6 +2142,8 @@ tests:
   effective_phases:
   - P1
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-010
   category: SEO
   title: no orphan or empty indexable taxonomy route
@@ -2000,9 +2155,13 @@ tests:
   - B-V2-011
   - B-V2-027
   - B-V2-031
+  - B-V2-038
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-011
   category: CONTRACT
   title: claim enum permits A/D/UNKNOWN only in initial V2
@@ -2014,6 +2173,8 @@ tests:
   effective_phases:
   - P1
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-012
   category: EDITORIAL
   title: A claim without allowed primary source fails
@@ -2027,6 +2188,8 @@ tests:
   effective_phases:
   - P1
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-013
   category: EDITORIAL
   title: B/C claim and false hands-on language fail
@@ -2042,6 +2205,8 @@ tests:
   effective_phases:
   - P1
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-014
   category: FRESHNESS
   title: hard-stale high-risk claim blocks package seal
@@ -2057,6 +2222,8 @@ tests:
   effective_phases:
   - P1
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-015
   category: DATA
   title: product model dimensions include units and external/expanded states
@@ -2068,6 +2235,8 @@ tests:
   effective_phases:
   - P1
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-016
   category: DATA
   title: ambiguous model/variant/accessory identity is rejected
@@ -2081,6 +2250,8 @@ tests:
   effective_phases:
   - P1
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-017
   category: RULE
   title: airline rule effective date and fare/aircraft variant resolve deterministically
@@ -2093,6 +2264,8 @@ tests:
   effective_phases:
   - P1
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-018
   category: RULE
   title: missing route/aircraft/fare information returns UNKNOWN not PASS
@@ -2108,6 +2281,8 @@ tests:
   effective_phases:
   - P1
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-019
   category: EDITORIAL
   title: each article template enforces required block order
@@ -2119,6 +2294,8 @@ tests:
   effective_phases:
   - P1
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-020
   category: TOOL
   title: checker returns PASS for exact compatible fixture with cited rule
@@ -2131,6 +2308,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-021
   category: TOOL
   title: checker returns FAIL for any single-edge violation
@@ -2143,6 +2322,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-022
   category: TOOL
   title: checker handles orientation by all permitted permutations only when rule allows
@@ -2155,6 +2336,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-023
   category: PRIVACY
   title: checker makes no network request and stores no input persistently
@@ -2167,9 +2350,13 @@ tests:
   - B-V2-020
   - B-V2-021
   - B-V2-033
+  - B-V2-040
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-024
   category: EDITORIAL
   title: guide contains disclosure, 30-second conclusion, unknowns and official links
@@ -2184,6 +2371,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-025
   category: MIGRATION
   title: existing comparison retains exact public slug and one H1
@@ -2196,6 +2385,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-026
   category: EDITORIAL
   title: comparison names exact 3-model scope and no universal winner
@@ -2211,6 +2402,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-027
   category: EDITORIAL
   title: difference page rejects query overlap with comparison above threshold
@@ -2222,6 +2415,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-028
   category: RECOMMENDATION
   title: hard-ineligible product can never be ranked
@@ -2233,6 +2428,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-029
   category: RECOMMENDATION
   title: fit score is deterministic and tie-break is model ID
@@ -2244,6 +2441,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-030
   category: FINANCE
   title: finance input changes do not change product order or render hash
@@ -2255,6 +2454,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-031
   category: AI_GOV
   title: AI-originated text lacks seal without human reviewer/version
@@ -2266,6 +2467,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-032
   category: AI_GOV
   title: correction rate numerator/denominator is reproducible
@@ -2277,6 +2480,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-033
   category: EDITORIAL
   title: quality gate rejects missing fit/non-fit/trade-off/unknown/disclosure
@@ -2290,6 +2495,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-034
   category: FRESHNESS
   title: SLA classification is deterministic at exact boundaries
@@ -2302,6 +2509,8 @@ tests:
   effective_phases:
   - P2
   execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-035
   category: SEO
   title: title/description/canonical/robots/sitemap are internally consistent
@@ -2311,9 +2520,13 @@ tests:
   backlog_ids:
   - B-V2-027
   - B-V2-031
+  - B-V2-038
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-036
   category: SEO
   title: JSON-LD matches visible Article/Breadcrumb/Organization/WebSite only
@@ -2323,9 +2536,13 @@ tests:
   backlog_ids:
   - B-V2-027
   - B-V2-031
+  - B-V2-038
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-037
   category: PUBLICATION
   title: package digest changes for any semantic input drift
@@ -2335,9 +2552,13 @@ tests:
   backlog_ids:
   - B-V2-017
   - B-V2-031
+  - B-V2-037
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-038
   category: PUBLICATION
   title: sealed package rejects missing review/source/target binding
@@ -2347,9 +2568,13 @@ tests:
   backlog_ids:
   - B-V2-017
   - B-V2-031
+  - B-V2-037
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-039
   category: NETWORK
   title: WordPress adapter defaults disabled and dry-run emits no request
@@ -2361,9 +2586,15 @@ tests:
   - B-V2-001
   - B-V2-004
   - B-V2-033
+  - B-V2-036
+  - B-V2-037
+  - B-V2-040
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-040
   category: MIGRATION
   title: rollback manifest restores previous content/route metadata in simulation
@@ -2373,9 +2604,15 @@ tests:
   backlog_ids:
   - B-V2-008
   - B-V2-031
+  - B-V2-035
+  - B-V2-038
+  - B-V2-040
   effective_phases:
   - P0
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-041
   category: RAKUTEN
   title: 2026-07-01 recorded response parses without credentials
@@ -2386,7 +2623,10 @@ tests:
   - B-V2-029
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-042
   category: RAKUTEN
   title: unknown/missing response fields fail or become UNKNOWN per schema
@@ -2397,7 +2637,10 @@ tests:
   - B-V2-029
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-043
   category: IDENTITY
   title: case/spacing alone normalize but model generation/accessory never normalize
@@ -2408,7 +2651,10 @@ tests:
   - B-V2-029
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-044
   category: MEDIA
   title: unbound or modified product image blocks CTA/render according to policy
@@ -2419,7 +2665,10 @@ tests:
   - B-V2-030
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-045
   category: ANALYTICS
   title: event collector rejects raw IP/UA/referrer/query/email and unknown attributes
@@ -2429,9 +2678,13 @@ tests:
   backlog_ids:
   - B-V2-017
   - B-V2-032
+  - B-V2-039
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-046
   category: ANALYTICS
   title: QDS sequence, 30-minute rotation and dedupe are deterministic
@@ -2441,9 +2694,13 @@ tests:
   backlog_ids:
   - B-V2-017
   - B-V2-032
+  - B-V2-039
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-051
   category: UAT
   title: phase exit report includes outcome, tests, rollback, cost, gaps and external NOT_EXECUTED
@@ -2463,11 +2720,18 @@ tests:
   - B-V2-026
   - B-V2-033
   - B-V2-034
+  - B-V2-035
+  - B-V2-036
+  - B-V2-039
+  - B-V2-040
   effective_phases:
   - P0
   - P1
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
 invariants:
   D_to_R_and_R_to_D_complete: true
   R_to_B_and_B_to_R_complete: true
@@ -2478,3 +2742,5 @@ invariants:
   each_backlog_has_test: true
   B_V2_009_waits_all_phase0: true
   B_V2_034_waits_all_phase2_builders: true
+  B_V2_040_waits_all_phase3_local_inputs: true
+  B_V2_040_is_blocked_external: true

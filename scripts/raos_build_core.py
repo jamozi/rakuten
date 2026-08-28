@@ -558,6 +558,8 @@ def _path_value(
     node: ast.AST, known: Mapping[str, tuple[Path, ...]] | None = None
 ) -> tuple[Path, ...]:
     known = {} if known is None else known
+    if isinstance(node, ast.Starred):
+        return _path_value(node.value, known)
     if isinstance(node, ast.Name):
         return known.get(node.id, ())
     if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):

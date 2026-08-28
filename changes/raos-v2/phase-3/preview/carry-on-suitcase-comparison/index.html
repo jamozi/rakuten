@@ -1,0 +1,303 @@
+<!doctype html><html lang="ja" data-raos-v2-classification="LOCAL_WORDPRESS_ASSEMBLY_SIMULATION"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>ACEのスーツケース3モデルを機内持ち込み条件で比較｜ローカルWordPress組立検証</title><style>:root { color-scheme: light; font-size: 100%; }
+* { box-sizing: border-box; }
+html { overflow-x: hidden; }
+body { background: #fff; color: #17213a; margin: 0; min-width: 0; }
+.raos-v2-phase3-skip { background: #fff; color: #17213a; left: .75rem; padding: .75rem 1rem; position: fixed; top: -10rem; z-index: 10; }
+.raos-v2-phase3-skip:focus { outline: 3px solid #005fcc; outline-offset: 3px; top: .75rem; }
+.raos-v2-phase3-site-header, .raos-v2-phase3-site-footer { background: #243b6b; color: #fff; padding: 1rem max(1rem, calc((100vw - 74rem) / 2)); }
+.raos-v2-phase3-site-header p, .raos-v2-phase3-site-footer p { background-color: #243b6b; color: #fff; margin: 0; }
+.raos-v2-phase3-shell { margin-inline: auto; max-width: 74rem; padding: clamp(1rem, 3vw, 2rem); }
+.raos-v2-phase3-entry-title { font-size: clamp(1.8rem, 1.45rem + 1.4vw, 3rem); line-height: 1.35; margin-block: 1.5rem 2rem; overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; } }
+@media (forced-colors: active) { .raos-v2-phase3-site-header, .raos-v2-phase3-site-footer { border-block: 2px solid CanvasText; } }
+.raos-v2-decision-support {
+  --raos-v2-ink: #17213a;
+  --raos-v2-paper: #fbf8f1;
+  --raos-v2-surface: #ffffff;
+  --raos-v2-muted: #f1f5f4;
+  --raos-v2-indigo: #243b6b;
+  --raos-v2-accent: #a4492c;
+  --raos-v2-border: #d9d5cb;
+  --raos-v2-focus: #005fcc;
+  color: var(--raos-v2-ink);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', YuGothic,
+    sans-serif;
+  line-height: 1.8;
+  margin-inline: auto;
+  max-width: 70rem;
+  overflow-wrap: anywhere;
+}
+
+.raos-v2-decision-support *,
+.raos-v2-decision-support *::before,
+.raos-v2-decision-support *::after {
+  box-sizing: border-box;
+}
+
+.raos-v2-decision-support a:focus-visible,
+.raos-v2-decision-support button:focus-visible,
+.raos-v2-decision-support [tabindex='0']:focus-visible {
+  outline: 3px solid var(--raos-v2-focus);
+  outline-offset: 3px;
+}
+
+.raos-v2-decision-support a {
+  color: var(--raos-v2-indigo);
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.2em;
+}
+
+.raos-v2-decision-support__disclosure {
+  background: #f8eee8;
+  border: 1px solid #dbb8a9;
+  border-radius: 0.75rem;
+  margin-block: 1.5rem 2rem;
+  padding: 1rem 1.25rem;
+}
+
+.raos-v2-decision-support__disclosure > :last-child {
+  margin-bottom: 0;
+}
+
+.raos-v2-decision-support__intro {
+  background: var(--raos-v2-paper);
+  border-left: 0.35rem solid var(--raos-v2-indigo);
+  margin-block: 2rem;
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.raos-v2-decision-support__eyebrow {
+  color: var(--raos-v2-accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.raos-v2-decision-support__lead {
+  font-size: clamp(1.08rem, 1rem + 0.4vw, 1.3rem);
+  font-weight: 650;
+}
+
+.raos-v2-decision-support__metadata,
+.raos-v2-decision-support__judgement,
+.raos-v2-decision-support__evidence-method dl {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.raos-v2-decision-support__metadata > div,
+.raos-v2-decision-support__judgement > div,
+.raos-v2-decision-support__evidence-method dl > div {
+  border-top: 1px solid var(--raos-v2-border);
+  display: grid;
+  gap: 0.4rem;
+  grid-template-columns: minmax(7.5rem, 0.35fr) minmax(0, 1fr);
+  padding-block: 0.65rem;
+}
+
+.raos-v2-decision-support__metadata dt,
+.raos-v2-decision-support__judgement dt,
+.raos-v2-decision-support__evidence-method dt {
+  font-weight: 700;
+}
+
+.raos-v2-decision-support__metadata dd,
+.raos-v2-decision-support__judgement dd,
+.raos-v2-decision-support__evidence-method dd {
+  margin: 0;
+}
+
+.raos-v2-decision-support__section {
+  margin-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.raos-v2-decision-support__section > h2 {
+  border-bottom: 2px solid var(--raos-v2-indigo);
+  line-height: 1.4;
+  padding-bottom: 0.5rem;
+}
+
+.raos-v2-decision-support__table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.raos-v2-decision-support__comparison-cards {
+  display: none;
+}
+
+.raos-v2-decision-support table {
+  border-collapse: collapse;
+  min-width: 46rem;
+  width: 100%;
+}
+
+.raos-v2-decision-support caption {
+  font-weight: 700;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.raos-v2-decision-support th,
+.raos-v2-decision-support td {
+  border: 1px solid var(--raos-v2-border);
+  padding: 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.raos-v2-decision-support thead th,
+.raos-v2-decision-support tbody th {
+  background: var(--raos-v2-muted);
+}
+
+.raos-v2-decision-support__axis-title,
+.raos-v2-decision-support__axis-evidence {
+  display: block;
+}
+
+.raos-v2-decision-support__axis-evidence {
+  color: #46524f;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-top: 0.25rem;
+}
+
+.raos-v2-decision-support__product-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.raos-v2-decision-support__product {
+  background: var(--raos-v2-surface);
+  border: 1px solid var(--raos-v2-border);
+  border-radius: 0.75rem;
+  min-width: 0;
+  padding: 1.25rem;
+}
+
+.raos-v2-decision-support__product h3 {
+  line-height: 1.45;
+  margin-top: 0.4rem;
+}
+
+.raos-v2-decision-support__model,
+.raos-v2-decision-support__evidence {
+  color: #46524f;
+  font-size: 0.9rem;
+}
+
+.raos-v2-decision-support__judgement [data-raos-v2-claim-state='UNKNOWN'],
+.raos-v2-decision-support__unknown {
+  background: #fff7df;
+  border-color: #c89a27;
+}
+
+.raos-v2-decision-support__cta {
+  border-radius: 0.5rem;
+  margin-top: 1.25rem;
+  padding: 1rem;
+}
+
+.raos-v2-decision-support__cta.is-blocked {
+  background: var(--raos-v2-muted);
+  border: 2px solid #66716e;
+}
+
+.raos-v2-decision-support__cta button[disabled] {
+  background: #5a6461;
+  border: 0;
+  border-radius: 0.35rem;
+  color: #ffffff;
+  cursor: not-allowed;
+  font: inherit;
+  font-weight: 700;
+  min-height: 2.75rem;
+  opacity: 1;
+  padding: 0.65rem 1rem;
+  width: 100%;
+}
+
+.raos-v2-decision-support__evidence-method,
+.raos-v2-decision-support__unknown {
+  border: 1px solid var(--raos-v2-border);
+  border-radius: 0.75rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.raos-v2-decision-support__policies {
+  border-top: 1px solid var(--raos-v2-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+}
+
+@media (max-width: 60rem) {
+  .raos-v2-decision-support__product-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 40rem) {
+  .raos-v2-decision-support__table-scroll {
+    display: none;
+  }
+
+  .raos-v2-decision-support__comparison-cards {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .raos-v2-decision-support__comparison-card {
+    border: 1px solid var(--raos-v2-border);
+    border-radius: 0.75rem;
+    padding: 1rem;
+  }
+
+  .raos-v2-decision-support__comparison-card h3 {
+    margin-top: 0;
+  }
+
+  .raos-v2-decision-support__comparison-card dl {
+    margin-bottom: 0;
+  }
+
+  .raos-v2-decision-support__comparison-card dl > div {
+    border-top: 1px solid var(--raos-v2-border);
+    display: grid;
+    gap: 0.25rem;
+    grid-template-columns: minmax(8rem, 0.9fr) minmax(0, 1.1fr);
+    padding-block: 0.65rem;
+  }
+
+  .raos-v2-decision-support__comparison-card dt {
+    font-weight: 700;
+  }
+
+  .raos-v2-decision-support__comparison-card dd {
+    margin: 0;
+  }
+
+  .raos-v2-decision-support__metadata > div,
+  .raos-v2-decision-support__judgement > div,
+  .raos-v2-decision-support__evidence-method dl > div {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (forced-colors: active) {
+  .raos-v2-decision-support__disclosure,
+  .raos-v2-decision-support__intro,
+  .raos-v2-decision-support__comparison-card,
+  .raos-v2-decision-support__product,
+  .raos-v2-decision-support__evidence-method,
+  .raos-v2-decision-support__unknown,
+  .raos-v2-decision-support__cta.is-blocked {
+    border: 2px solid CanvasText;
+  }
+}
+</style></head><body><a class="raos-v2-phase3-skip" href="#raos-v2-phase3-main">本文へ移動</a><header class="raos-v2-phase3-site-header"><p>暮らしのしるべ</p></header><main id="raos-v2-phase3-main" class="raos-v2-phase3-shell" tabindex="-1"><article data-raos-v2-wordpress-route="/carry-on-suitcase-comparison/"><h1 class="raos-v2-phase3-entry-title">ACEのスーツケース3モデルを機内持ち込み条件で比較</h1><div data-raos-v2-post-content-envelope="RAOS_V2_A05_ENVELOPE_V1"><div class="raos-v2-decision-support" data-raos-v2-package-marker="RAOS_V2_A05_POST_CONTENT_V1" data-raos-v2-article-id="A05"><aside class="raos-v2-decision-support__disclosure" aria-label="広告表示"><strong>広告リンクに関する表示</strong><p>広告リンクを設置する場合があります。現在、確認済みでない商品リンクは表示しません。報酬は商品の選定・掲載順に影響しません。実機試験を行っていない比較では、公式情報と編集判断を分けて表示します。</p><p><a href="/about-ad-policy/">運営・広告方針を確認する</a></p></aside><header class="raos-v2-decision-support__intro"><p class="raos-v2-decision-support__eyebrow">条件で結論が変わる比較</p><p class="raos-v2-decision-support__lead">最軽量、開き方、容量のどれを優先するかで候補は変わります。実機試験は行っていません。</p><dl class="raos-v2-decision-support__metadata"><div><dt>編集主体</dt><dd>暮らしのしるべ編集部</dd></div><div><dt>根拠パケット基準日</dt><dd><time datetime="2026-08-28">2026-08-28</time></dd></div><div><dt>実機試験</dt><dd>実施していません</dd></div></dl></header><section class="raos-v2-decision-support__section" aria-labelledby="raos-v2-conditional-conclusion"><h2 id="raos-v2-conditional-conclusion">30秒で条件別の結論</h2><p>公表重量を優先するなら3.2kgのクレスタ、2通りの開き方とストッパーを条件にするならディフェレンス、非拡張40Lとフロントアクセスを条件にするならマックスパス4が比較候補です。</p><p>これは公式仕様から導いた編集判断です。搭乗できるかは航空会社・機材・拡張状態・合計重量を別に確認してください。</p></section><section class="raos-v2-decision-support__section" aria-labelledby="raos-v2-comparison"><h2 id="raos-v2-comparison">仕様を同じ軸で比較</h2><div class="raos-v2-decision-support__table-scroll" role="region" aria-label="ACE 3モデル比較表" tabindex="0"><table><caption>公式仕様と条件別の編集判断</caption><thead><tr><th scope="col">比較軸</th><th scope="col">ACE クレスタ 06316</th><th scope="col">ace. ディフェレンス 05721</th><th scope="col">PROTECA マックスパス4 01471</th></tr></thead><tbody><tr data-raos-v2-evidence="A_OFFICIAL_FACT"><th scope="row"><span class="raos-v2-decision-support__axis-title">通常時の外寸</span><span class="raos-v2-decision-support__axis-evidence">公式情報</span></th><td>55×35×25cm</td><td>55×36×24cm</td><td>50×40×25cm</td></tr><tr data-raos-v2-evidence="A_OFFICIAL_FACT"><th scope="row"><span class="raos-v2-decision-support__axis-title">通常時の容量</span><span class="raos-v2-decision-support__axis-evidence">公式情報</span></th><td>34L</td><td>32L</td><td>40L</td></tr><tr data-raos-v2-evidence="A_OFFICIAL_FACT"><th scope="row"><span class="raos-v2-decision-support__axis-title">公表重量</span><span class="raos-v2-decision-support__axis-evidence">公式情報</span></th><td>3.2kg</td><td>3.5kg</td><td>3.6kg</td></tr><tr data-raos-v2-evidence="D_EDITORIAL_JUDGEMENT"><th scope="row"><span class="raos-v2-decision-support__axis-title">条件別の特徴</span><span class="raos-v2-decision-support__axis-evidence">編集判断</span></th><td>3モデルで最軽量</td><td>2通りの開き方・ストッパー</td><td>40L・フロントアクセス</td></tr></tbody></table></div><div class="raos-v2-decision-support__comparison-cards" role="region" aria-label="ACE 3モデル比較（モバイル表示）"><article class="raos-v2-decision-support__comparison-card" data-raos-v2-evidence="A_OFFICIAL_FACT" aria-labelledby="raos-v2-mobile-axis-1"><h3 id="raos-v2-mobile-axis-1">通常時の外寸</h3><p class="raos-v2-decision-support__axis-evidence">公式情報</p><dl><div><dt>ACE クレスタ 06316</dt><dd>55×35×25cm</dd></div><div><dt>ace. ディフェレンス 05721</dt><dd>55×36×24cm</dd></div><div><dt>PROTECA マックスパス4 01471</dt><dd>50×40×25cm</dd></div></dl></article><article class="raos-v2-decision-support__comparison-card" data-raos-v2-evidence="A_OFFICIAL_FACT" aria-labelledby="raos-v2-mobile-axis-2"><h3 id="raos-v2-mobile-axis-2">通常時の容量</h3><p class="raos-v2-decision-support__axis-evidence">公式情報</p><dl><div><dt>ACE クレスタ 06316</dt><dd>34L</dd></div><div><dt>ace. ディフェレンス 05721</dt><dd>32L</dd></div><div><dt>PROTECA マックスパス4 01471</dt><dd>40L</dd></div></dl></article><article class="raos-v2-decision-support__comparison-card" data-raos-v2-evidence="A_OFFICIAL_FACT" aria-labelledby="raos-v2-mobile-axis-3"><h3 id="raos-v2-mobile-axis-3">公表重量</h3><p class="raos-v2-decision-support__axis-evidence">公式情報</p><dl><div><dt>ACE クレスタ 06316</dt><dd>3.2kg</dd></div><div><dt>ace. ディフェレンス 05721</dt><dd>3.5kg</dd></div><div><dt>PROTECA マックスパス4 01471</dt><dd>3.6kg</dd></div></dl></article><article class="raos-v2-decision-support__comparison-card" data-raos-v2-evidence="D_EDITORIAL_JUDGEMENT" aria-labelledby="raos-v2-mobile-axis-4"><h3 id="raos-v2-mobile-axis-4">条件別の特徴</h3><p class="raos-v2-decision-support__axis-evidence">編集判断</p><dl><div><dt>ACE クレスタ 06316</dt><dd>3モデルで最軽量</dd></div><div><dt>ace. ディフェレンス 05721</dt><dd>2通りの開き方・ストッパー</dd></div><div><dt>PROTECA マックスパス4 01471</dt><dd>40L・フロントアクセス</dd></div></dl></article></div></section><section class="raos-v2-decision-support__section" aria-labelledby="raos-v2-products"><h2 id="raos-v2-products">条件ごとの候補</h2><div class="raos-v2-decision-support__product-grid"><section class="raos-v2-decision-support__product" aria-labelledby="raos-v2-product-prd-ace-cresta-06316" data-raos-v2-product-id="PRD-ACE-CRESTA-06316"><p class="raos-v2-decision-support__model">メーカー型番 06316</p><h3 id="raos-v2-product-prd-ace-cresta-06316">ACE クレスタ 06316</h3><h4>公式仕様</h4><ul><li>通常時 55×35×25cm・34L</li><li>公表重量 3.2kg</li><li>拡張時 奥行29cm・39L</li></ul><dl class="raos-v2-decision-support__judgement"><div><dt>向く条件</dt><dd>3モデルの公表重量で最軽量を優先し、通常状態で条件へ合う人。</dd></div><div><dt>向かない条件</dt><dd>拡張時の奥行29cmが搭乗条件を超える区間、または40Lを必須にする人。</dd></div><div><dt>トレードオフ</dt><dd>軽さを優先する一方、非拡張容量はマックスパス4より小さい。</dd></div><div data-raos-v2-claim-state="UNKNOWN"><dt>未確認</dt><dd>耐久性、走行感、収納の使い勝手は実機未試験。</dd></div></dl><p class="raos-v2-decision-support__evidence" data-raos-v2-evidence="A_OFFICIAL_FACT">公式情報：<a href="https://store.ace.jp/shop/g/g06316-01/">クレスタ06316公式仕様</a>（エース公式オンラインストア）／確認日 <time datetime="2026-08-26">2026-08-26</time></p><div class="raos-v2-decision-support__cta is-blocked" data-raos-v2-cta-state="BLOCKED" role="status"><strong>楽天市場の商品リンク：確認待ち</strong><p>型番・世代・販売単位を一意に確認できるまで、商品リンクを表示しません。</p><button type="button" disabled aria-disabled="true">現在は商品リンクを利用できません</button></div></section><section class="raos-v2-decision-support__product" aria-labelledby="raos-v2-product-prd-ace-difference-05721" data-raos-v2-product-id="PRD-ACE-DIFFERENCE-05721"><p class="raos-v2-decision-support__model">メーカー型番 05721</p><h3 id="raos-v2-product-prd-ace-difference-05721">ace. ディフェレンス 05721</h3><h4>公式仕様</h4><ul><li>通常時 55×36×24cm・32L</li><li>公表重量 3.5kg</li><li>拡張時 奥行27cm・38L</li><li>2通りの開き方・キャスターストッパー</li></ul><dl class="raos-v2-decision-support__judgement"><div><dt>向く条件</dt><dd>開き方の選択肢とストッパーを条件にし、通常状態で搭乗条件へ合う人。</dd></div><div><dt>向かない条件</dt><dd>3モデルで最軽量または非拡張40Lを最優先する人。</dd></div><div><dt>トレードオフ</dt><dd>開閉機能が比較軸になる一方、通常容量は3モデルで最小。</dd></div><div data-raos-v2-claim-state="UNKNOWN"><dt>未確認</dt><dd>開閉操作感、ストッパーの使い勝手、耐久性は実機未試験。</dd></div></dl><p class="raos-v2-decision-support__evidence" data-raos-v2-evidence="A_OFFICIAL_FACT">公式情報：<a href="https://store.ace.jp/shop/g/g05721-04">ディフェレンス05721公式仕様</a>（エース公式オンラインストア）／確認日 <time datetime="2026-08-26">2026-08-26</time></p><div class="raos-v2-decision-support__cta is-blocked" data-raos-v2-cta-state="BLOCKED" role="status"><strong>楽天市場の商品リンク：確認待ち</strong><p>型番・世代・販売単位を一意に確認できるまで、商品リンクを表示しません。</p><button type="button" disabled aria-disabled="true">現在は商品リンクを利用できません</button></div></section><section class="raos-v2-decision-support__product" aria-labelledby="raos-v2-product-prd-ace-maxpass4-01471" data-raos-v2-product-id="PRD-ACE-MAXPASS4-01471"><p class="raos-v2-decision-support__model">メーカー型番 01471</p><h3 id="raos-v2-product-prd-ace-maxpass4-01471">PROTECA マックスパス4 01471</h3><h4>公式仕様</h4><ul><li>50×40×25cm・40L</li><li>公表重量 3.6kg</li><li>フロントアクセス・14インチPC収納・キャスターストッパー</li></ul><dl class="raos-v2-decision-support__judgement"><div><dt>向く条件</dt><dd>非拡張40Lとフロントアクセスを条件にし、外寸と合計重量が搭乗条件へ合う人。</dd></div><div><dt>向かない条件</dt><dd>公表重量を最小にしたい人、幅40cmが区間条件へ合わない人。</dd></div><div><dt>トレードオフ</dt><dd>3モデルで容量が最大である一方、公表重量も最大。</dd></div><div data-raos-v2-claim-state="UNKNOWN"><dt>未確認</dt><dd>PC収納の保護性、走行感、取り回し、耐久性は実機未試験。</dd></div></dl><p class="raos-v2-decision-support__evidence" data-raos-v2-evidence="A_OFFICIAL_FACT">公式情報：<a href="https://store.ace.jp/shop/g/g01471-02">マックスパス4 01471公式仕様</a>（エース公式オンラインストア）／確認日 <time datetime="2026-08-26">2026-08-26</time></p><div class="raos-v2-decision-support__cta is-blocked" data-raos-v2-cta-state="BLOCKED" role="status"><strong>楽天市場の商品リンク：確認待ち</strong><p>型番・世代・販売単位を一意に確認できるまで、商品リンクを表示しません。</p><button type="button" disabled aria-disabled="true">現在は商品リンクを利用できません</button></div></section></div></section><section class="raos-v2-decision-support__section raos-v2-decision-support__evidence-method" aria-labelledby="raos-v2-evidence-method"><h2 id="raos-v2-evidence-method">根拠と編集判断の分け方</h2><dl><div><dt>公式情報</dt><dd>メーカーが公表した仕様を、発行主体と確認日付きで示します。</dd></div><div><dt>編集判断</dt><dd>公式仕様から導いた条件別の判断として明示します。</dd></div><div><dt>未確認</dt><dd>実機を使わなければ確認できない事項は推測しません。</dd></div></dl></section><section class="raos-v2-decision-support__section raos-v2-decision-support__unknown" data-raos-v2-result-state="UNKNOWN" aria-labelledby="raos-v2-unknown"><h2 id="raos-v2-unknown">未確認（UNKNOWN）の事項</h2><ul><li><strong>ACE クレスタ 06316：</strong>耐久性、走行感、収納の使い勝手は実機未試験。</li><li><strong>ace. ディフェレンス 05721：</strong>開閉操作感、ストッパーの使い勝手、耐久性は実機未試験。</li><li><strong>PROTECA マックスパス4 01471：</strong>PC収納の保護性、走行感、取り回し、耐久性は実機未試験。</li></ul><p>未確認事項を購入判断に使わず、必要な場合は確認できるまで判断を止めます。</p></section><nav class="raos-v2-decision-support__policies" aria-label="関連方針"><a href="/about-ad-policy/">運営・広告方針</a><a href="/privacy-policy/">プライバシーポリシー</a></nav></div></div></article></main><footer class="raos-v2-phase3-site-footer" aria-label="ローカルWordPress組立検証"></footer></body></html>

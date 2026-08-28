@@ -77,9 +77,7 @@ def test_public_inventory_preserves_observed_urls_without_mutation() -> None:
         "raw_images": "LOCAL_ONLY_NOT_TRACKED_NOT_REVERIFIED",
         "capture_contract": "PLAYWRIGHT_CLI_SNAPSHOT_FIRST_390_768_1440_V1",
     }
-    assert {
-        (row["path"], row["viewport"]) for row in value["visual_baseline"]
-    } == {
+    assert {(row["path"], row["viewport"]) for row in value["visual_baseline"]} == {
         (path, viewport)
         for path in {
             "/",
@@ -269,6 +267,11 @@ def test_route_round_trip_rejects_tampered_baseline_binding() -> None:
         "https://kurashinoshirube.com/%77p-admin/",
         "https://kurashinoshirube.com/%2e%2e/private/",
         "https://kurashinoshirube.com/a/../wp-admin/",
+        "https://kurashinoshirube.com/\\wp-admin/",
+        "https://kurashinoshirube.com/ wp-admin/",
+        "https://kurashinoshirube.com/\twp-admin/",
+        "https://kurashinoshirube.com/\x7fwp-admin/",
+        "https://kurashinoshirube.com/ｗｐ-admin/",
     ],
 )
 def test_capture_url_policy_rejects_unsafe_targets(url: str) -> None:

@@ -1,0 +1,58 @@
+{
+  "artifact_sha256": "7795937bb4a967d49627e139828c889da1f01c5a1cd7d209153d1f4c677a7a38",
+  "backlog_id": "B-V2-036",
+  "classification": "DEPLOYABLE_LOCAL_ARTIFACT_NOT_DEPLOYED",
+  "deployment_status": "NOT_EXECUTED",
+  "external_action_id": "EXT-004",
+  "files": [
+    {
+      "bytes": 4908,
+      "path": "raos-v2-decision-support.php",
+      "sha256": "0c3b03e5e4ef4b226c693be1858b8d48a9e6633c413104802802b989f5d0cc9a"
+    },
+    {
+      "bytes": 6584,
+      "path": "assets/decision-support.css",
+      "sha256": "fbbde22549590ac1663bc80cffe19e10d119856048528aef23ec4b657e3f421f"
+    }
+  ],
+  "installation": "EXTERNAL_HUMAN_ACTION_NOT_EXECUTED",
+  "plugin_slug": "raos-v2-decision-support",
+  "requirement_ids": [
+    "R-V2-006",
+    "R-V2-024",
+    "R-V2-033"
+  ],
+  "runtime": {
+    "admin_ui": false,
+    "allowed_effect": "ENQUEUE_BUNDLED_STYLESHEET_AND_WRAP_UNCHANGED_REVIEWED_FRAGMENT_ON_EXACT_MATCH",
+    "content_filter": "FAIL_CLOSED_EXACT_BYTES_IDEMPOTENT",
+    "cron": false,
+    "database_write": false,
+    "network_request": false,
+    "option_write": false,
+    "publication_capability": false,
+    "rest_route": false,
+    "telemetry": false
+  },
+  "schema": "RAOS_V2_WORDPRESS_PRESENTATION_PLUGIN_INPUT_V1",
+  "source_files": [
+    "assets/decision-support.css",
+    "raos-v2-decision-support.php"
+  ],
+  "source_root": "packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support",
+  "target": {
+    "article_id": "A05",
+    "exact_post_slug": "carry-on-suitcase-comparison",
+    "exact_route": "/carry-on-suitcase-comparison/",
+    "rendered_content_envelope": "RAOS_V2_A05_ENVELOPE_V1",
+    "required_package_marker": "RAOS_V2_A05_POST_CONTENT_V1",
+    "required_post_content_sha256": "270dfec22f4c659f30e498e321d96bf230f4f5d4504ab7f97c48f533f70f4ff5"
+  },
+  "test_ids": [
+    "T-V2-008",
+    "T-V2-039",
+    "T-V2-051"
+  ],
+  "version": "0.1.0"
+}

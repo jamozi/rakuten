@@ -1,0 +1,42 @@
+{
+  "backlog_id": "B-V2-037",
+  "candidate_digest": "7ce3573f87cfd4731b8b28657864a5e21e381d093ba4b231f0ef64ef166e8735",
+  "candidate_reissue": "BLOCKED_PENDING_VERIFIED_PREACTION_BINDING",
+  "checklist": [
+    "Create one verified Phase 3 pre-action binding from a bounded public capture and owner-held WordPress export; never overwrite the Phase 0 historical baseline.",
+    "Reissue the candidate from that verified binding and review only the reissued candidate and payload digests.",
+    "The exact title, excerpt and post-content fragment answer one comparison intent without an unsupported universal winner.",
+    "Every A_OFFICIAL_FACT is traceable to a current eligible primary source and every D_EDITORIAL_JUDGEMENT is visibly framed as editorial reasoning.",
+    "Every UNKNOWN is visible and nonblocking; no experience, durability, noise or usability claim is implied.",
+    "All three product CTA states are BLOCKED and there is no affiliate URL, image, price, stock, point, rate, EPC or business score.",
+    "Links are limited to verified public internal policy routes and the three closed ACE official product-source URLs; future carry-on hub, checker and policy routes are absent.",
+    "Replacing the current public article without an active affiliate CTA is an intentional owner decision, not an unnoticed regression.",
+    "Advertising disclosure, correction path, accessibility and one-H1 ownership are acceptable in the exact WordPress projection.",
+    "The exact derived JSON-LD expectation matches the title, description and canonical fields; Yoast or the current metadata owner must be externally verified because the local plugin emits no JSON-LD."
+  ],
+  "external_write": "NOT_EXECUTED",
+  "failure": "KEEP_EVIDENCE_COMPLETE_AND_DO_NOT_SEAL",
+  "human_review": "NOT_EXECUTED",
+  "package_seal": "NOT_EXECUTED",
+  "payload_digest": "40323f7c5ad2be56f79977f4e19dd65c471cf0c5b6394780db0b0232df6e1077",
+  "preaction_binding_digest": null,
+  "preaction_status": "HISTORICAL_BASELINE_ONLY",
+  "receipt": null,
+  "required_preaction_schema": "contracts/raos-v2/v2/preaction-binding.schema.json",
+  "required_receipt_schema": "contracts/raos-v2/v2/human-review-receipt.schema.json",
+  "requirement_ids": [
+    "R-V2-023",
+    "R-V2-024"
+  ],
+  "reviewer_identity_rule": "Use a stable non-personal machine identifier in the sanitized receipt; do not commit a name, email or credential.",
+  "schema": "RAOS_V2_PHASE3_HUMAN_REVIEW_REQUEST_V1",
+  "state": "AWAITING_VERIFIED_PREACTION_BINDING",
+  "structured_data_expectation_sha256": "3be6e7824a9b705e90915b6fea44f10b2216f6a0f814689e6bd6e208d0267f9b",
+  "target_route": "/carry-on-suitcase-comparison/",
+  "test_ids": [
+    "T-V2-037",
+    "T-V2-038",
+    "T-V2-039"
+  ],
+  "version": "1.0.0"
+}

@@ -207,8 +207,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 2124,
-          "sha256": "7cd052d57e14df07e4c078defdae4ae07a0ee9d9b01a4aee28c6a28ef374371c",
+          "bytes": 4251,
+          "sha256": "6a37843b4319c5c73da95b5619df0908e8a69e65cb21bb910010d44f2362b8c0",
           "uri": "repo://changes/raos-v2/clarifications.v1.yaml"
         },
         {
@@ -222,8 +222,8 @@
           "uri": "repo://changes/raos-v2/design/design-tokens.v2.json"
         },
         {
-          "bytes": 68411,
-          "sha256": "b74ffcf52feb9cc258a5c567ec76f7cc921533d122b501f5931706789dd81c27",
+          "bytes": 76068,
+          "sha256": "dfc7367d1b607216d86350aed6dffb4884d68a993ac1b77be7c8888a3518c989",
           "uri": "repo://changes/raos-v2/generated/decision-traceability.effective.v1.yaml"
         },
         {
@@ -287,8 +287,8 @@
           "uri": "repo://changes/raos-v2/phase-2/claims/claim-ledger.v2.yaml"
         },
         {
-          "bytes": 18588,
-          "sha256": "056a491a68ad95d59ca913832b9abc1f020c2db0cc1113fe58d9b608c8d28bcf",
+          "bytes": 19713,
+          "sha256": "c69a4ac6a857d898ea43d5d69581337188514cb2c4f4bf23baafb052e4310c60",
           "uri": "repo://changes/raos-v2/phase-2/generated/local-evidence-bundle.v2.json"
         },
         {
@@ -297,13 +297,13 @@
           "uri": "repo://changes/raos-v2/phase-2/generated/migration-manifest.v2.yaml"
         },
         {
-          "bytes": 7342,
-          "sha256": "5486aa1fd4556718dec976b83d4ffcac91e1efc8470ec53d80db66663b4f6bdf",
+          "bytes": 7343,
+          "sha256": "10d5c1b135226dac27205f712b6a2213f1ddf77c4573019fa9772acae2f3220c",
           "uri": "repo://changes/raos-v2/phase-2/generated/phase-2-validation.v2.json"
         },
         {
-          "bytes": 4716,
-          "sha256": "a7a5f72ec340e5001fabcba0674e443414c2709bfc5f2334e0e9c14a01bd6c68",
+          "bytes": 4814,
+          "sha256": "a5a4c13d5e3b1c2e13fe55b370f8792ce1b1ec18a48b28fb01efc2b13da0c312",
           "uri": "repo://changes/raos-v2/phase-2/generated/publication-candidate.v2.json"
         },
         {
@@ -318,12 +318,12 @@
         },
         {
           "bytes": 2591,
-          "sha256": "eac31b8c9e5c0aa6c63e288f1e01cca8cc27c47a0265050fbba1aaba34ca48cc",
+          "sha256": "b33305c2e0ed62935043324faf1cfbc59977998bf0e62dc8fac4ed00982cad16",
           "uri": "repo://changes/raos-v2/phase-2/integration-pr-body.md"
         },
         {
           "bytes": 2520,
-          "sha256": "63680be8cf5301c2d863763837400b8f464f5ee5dedde64823863c6ee04174a8",
+          "sha256": "24e537ba86f1e845db85cd0f76eccd197486de1d6c8431e5e52d94491ba4e1e9",
           "uri": "repo://changes/raos-v2/phase-2/phase-2-report.md"
         },
         {
@@ -370,6 +370,91 @@
           "bytes": 44944,
           "sha256": "acd8c8e3fd1cc201fa4427b355f45bc381f63518b33908b2c465f78d7599d35e",
           "uri": "repo://changes/raos-v2/phase-2/preview/tools/carry-on-size-checker/index.html"
+        },
+        {
+          "bytes": 3634,
+          "sha256": "79fec74393ec5c60810b6914679320563f8a57b214d52c39d7f934b6c685ff12",
+          "uri": "repo://changes/raos-v2/phase-3/generated/external-action-evidence-template.v1.yaml"
+        },
+        {
+          "bytes": 2762,
+          "sha256": "e171e52bd30e4eaf997bc76099472b001d0b8c5f413001a71b03504a3618cbce",
+          "uri": "repo://changes/raos-v2/phase-3/generated/human-review-request.v1.json"
+        },
+        {
+          "bytes": 3826,
+          "sha256": "8113be0675147e7eddd2eb220d0ebf89fb802389de9dac594ce1c53c9ddc557b",
+          "uri": "repo://changes/raos-v2/phase-3/generated/phase-3-validation.v1.json"
+        },
+        {
+          "bytes": 12663,
+          "sha256": "270dfec22f4c659f30e498e321d96bf230f4f5d4504ab7f97c48f533f70f4ff5",
+          "uri": "repo://changes/raos-v2/phase-3/generated/post-content.html"
+        },
+        {
+          "bytes": 1974,
+          "sha256": "43b3b45acb443de2b9e7b327c9704b4f9f2b801e56ec65d24f678142f7f76650",
+          "uri": "repo://changes/raos-v2/phase-3/generated/privacy-legal-review-packet.v1.yaml"
+        },
+        {
+          "bytes": 32343,
+          "sha256": "c91cf5c2d6322bd33a1bfabfc4b5abfdf6b3bc7173185bd49e7e31c8fda12656",
+          "uri": "repo://changes/raos-v2/phase-3/generated/review-candidate.v1.json"
+        },
+        {
+          "bytes": 1655,
+          "sha256": "45c34eea6b91e3569e6669284618e0e02be39b456fce9fa5898df0c554deccf4",
+          "uri": "repo://changes/raos-v2/phase-3/generated/rollback-rehearsal.v1.json"
+        },
+        {
+          "bytes": 2257,
+          "sha256": "4895a3434131721a9d23759efff0b4792faf5724b51b9de6c9dce4d293a236a8",
+          "uri": "repo://changes/raos-v2/phase-3/generated/seo-url-change-plan.v1.yaml"
+        },
+        {
+          "bytes": 1541,
+          "sha256": "143d4ac03a72a16ba924f422bf5b029e0070a09384771b8ed5946d769b8627e7",
+          "uri": "repo://changes/raos-v2/phase-3/generated/wordpress-dry-run-status.v1.json"
+        },
+        {
+          "bytes": 16156,
+          "sha256": "ad4240a5b69c76200eddabf5b731863dc2a94f87aecf04a7eca8ad7f00a86526",
+          "uri": "repo://changes/raos-v2/phase-3/generated/wordpress-update-candidate.v1.json"
+        },
+        {
+          "bytes": 2266,
+          "sha256": "09cf009fedc9f79503d42b3e49e62c9b61758867d776e8670aff41af6334ec5d",
+          "uri": "repo://changes/raos-v2/phase-3/integration-pr-body.md"
+        },
+        {
+          "bytes": 4057,
+          "sha256": "09e9f6bbdb4f65b940bd4ec92b3a35c7e90c6bcd51a33341a12f6beddbc0fe9a",
+          "uri": "repo://changes/raos-v2/phase-3/phase-3-preparation-report.md"
+        },
+        {
+          "bytes": 21450,
+          "sha256": "5ec5b48563e0bae95f7daa3e53baebe83f9a1b34c15fa6d610187ee7af09e6bb",
+          "uri": "repo://changes/raos-v2/phase-3/preview/carry-on-suitcase-comparison/index.html"
+        },
+        {
+          "bytes": 6912,
+          "sha256": "3629583894aa9c18c6aee4b039d07ba500f1de184f3a20edb65ad9eaa0dae843",
+          "uri": "repo://changes/raos-v2/phase-3/production-backup-export-runbook.md"
+        },
+        {
+          "bytes": 6584,
+          "sha256": "fbbde22549590ac1663bc80cffe19e10d119856048528aef23ec4b657e3f421f",
+          "uri": "repo://changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/assets/decision-support.css"
+        },
+        {
+          "bytes": 1897,
+          "sha256": "04ad5734f8cae14a8de824a74969969c660374f689ac896c9e889e013cf5ea83",
+          "uri": "repo://changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/plugin-manifest.v1.json"
+        },
+        {
+          "bytes": 4908,
+          "sha256": "0c3b03e5e4ef4b226c693be1858b8d48a9e6633c413104802802b989f5d0cc9a",
+          "uri": "repo://changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/raos-v2-decision-support.php"
         },
         {
           "bytes": 8169,
@@ -432,14 +517,54 @@
           "uri": "repo://contracts/raos-v2/v1/product-variant.schema.json"
         },
         {
-          "bytes": 7835,
-          "sha256": "e4090405e8e7f645792df5a3da8b0f5e498659710601b8d92c943e974d796ef2",
+          "bytes": 7948,
+          "sha256": "2cfabe6e66d9205686f42d62c5d88dddf4402e7d78d4b9c31c6991928902130b",
           "uri": "repo://contracts/raos-v2/v1/publication-package.schema.json"
         },
         {
           "bytes": 3099,
           "sha256": "6148d8ee2daf3a612bd1f9751e9ae68cf3e3b199456e9c19a4693af9aff13287",
           "uri": "repo://contracts/raos-v2/v1/source-record.schema.json"
+        },
+        {
+          "bytes": 1467,
+          "sha256": "5eb77feae3fa70bf73ca1a6daf87d2457e59fb2aa6f0d6efa6c2eb44ef9810e1",
+          "uri": "repo://contracts/raos-v2/v2/human-review-receipt.schema.json"
+        },
+        {
+          "bytes": 1968,
+          "sha256": "00d7e78892b08a9cc89123ea8db393d0279e1939a3967f2fada5e209f295e46f",
+          "uri": "repo://contracts/raos-v2/v2/preaction-binding.schema.json"
+        },
+        {
+          "bytes": 8475,
+          "sha256": "436e0030ebc4686280d6a7c3bf4d1740bc95f8a27793c17685431b161305ba72",
+          "uri": "repo://contracts/raos-v2/v2/public-browser-verification-receipt.schema.json"
+        },
+        {
+          "bytes": 9278,
+          "sha256": "522857781d7cda587b3dfbb7cf33ef1e778044fd6d8933ba259b3fe3fee41682",
+          "uri": "repo://contracts/raos-v2/v2/public-verification-receipt.schema.json"
+        },
+        {
+          "bytes": 6719,
+          "sha256": "119105ddde8d44832198b2f648ca19308ebfc8f8d3528a393011992e2a1ee3f1",
+          "uri": "repo://contracts/raos-v2/v2/publication-package.schema.json"
+        },
+        {
+          "bytes": 9057,
+          "sha256": "4767a04c35d07e45efd46ea621339e2b0383332dd2ddcd1a9a421cdd72e12e35",
+          "uri": "repo://contracts/raos-v2/v2/wordpress-dry-run-receipt.schema.json"
+        },
+        {
+          "bytes": 4005,
+          "sha256": "12178459ed1f3bf493770058233ba9407b6c205e6fa420aa312ebb3d0d01108f",
+          "uri": "repo://contracts/raos-v2/v2/wordpress-export-binding.schema.json"
+        },
+        {
+          "bytes": 11424,
+          "sha256": "454fecb8821fbf2f3f9912ba6f1f5dc62cab3cf04725a81af22aeccf939e44da",
+          "uri": "repo://contracts/raos-v2/v2/wordpress-update-payload.schema.json"
         }
       ],
       "owner_dependencies": [],
@@ -538,6 +663,18 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-3/inputs/external-action-state.v1.yaml",
+          "uri": "repo://changes/raos-v2/phase-3/inputs/external-action-state.v1.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support",
+          "uri": "repo://changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/raos-v2/recorded-inputs/phase0-capture.v1.json",
           "uri": "repo://changes/raos-v2/recorded-inputs/phase0-capture.v1.json",
           "version": 2
@@ -564,6 +701,12 @@
           "kind": "tracked",
           "semantic_id": "changes/raos-v2/recorded-inputs/phase2-visual-evidence.v1.json",
           "uri": "repo://changes/raos-v2/recorded-inputs/phase2-visual-evidence.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/recorded-inputs/phase3-local-browser-evidence.v1.json",
+          "uri": "repo://changes/raos-v2/recorded-inputs/phase3-local-browser-evidence.v1.json",
           "version": 2
         },
         {
@@ -736,6 +879,30 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/assets/decision-support.css",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/assets/decision-support.css",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/plugin-manifest.v1.json",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/plugin-manifest.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/raos-v2-decision-support.php",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/raos-v2-decision-support.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/wordpress/projection.py",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/wordpress/projection.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "python/raos/adapters/decision_support_v2/__init__.py",
           "uri": "repo://python/raos/adapters/decision_support_v2/__init__.py",
           "version": 2
@@ -784,6 +951,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "python/raos/adapters/decision_support_v2/wordpress_phase3_disabled.py",
+          "uri": "repo://python/raos/adapters/decision_support_v2/wordpress_phase3_disabled.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "python/raos/application/decision_support_v2/__init__.py",
           "uri": "repo://python/raos/application/decision_support_v2/__init__.py",
           "version": 2
@@ -798,6 +971,12 @@
           "kind": "tracked",
           "semantic_id": "python/raos/application/decision_support_v2/offer_lookup.py",
           "uri": "repo://python/raos/application/decision_support_v2/offer_lookup.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/decision_support_v2/phase3_publication.py",
+          "uri": "repo://python/raos/application/decision_support_v2/phase3_publication.py",
           "version": 2
         },
         {
@@ -862,6 +1041,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "python/raos/domain/decision_support_v2/phase3_publication.py",
+          "uri": "repo://python/raos/domain/decision_support_v2/phase3_publication.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "python/raos/domain/decision_support_v2/publication.py",
           "uri": "repo://python/raos/domain/decision_support_v2/publication.py",
           "version": 2
@@ -922,6 +1107,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "tests/raos_v2/phase3-local-validation.mjs",
+          "uri": "repo://tests/raos_v2/phase3-local-validation.mjs",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "tests/raos_v2/test_adapters_recorded.py",
           "uri": "repo://tests/raos_v2/test_adapters_recorded.py",
           "version": 2
@@ -960,6 +1151,42 @@
           "kind": "tracked",
           "semantic_id": "tests/raos_v2/test_phase0_contracts.py",
           "uri": "repo://tests/raos_v2/test_phase0_contracts.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_phase3_artifacts.py",
+          "uri": "repo://tests/raos_v2/test_phase3_artifacts.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_phase3_browser_evidence.py",
+          "uri": "repo://tests/raos_v2/test_phase3_browser_evidence.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_phase3_local_validation_contract.py",
+          "uri": "repo://tests/raos_v2/test_phase3_local_validation_contract.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_phase3_public_capture.py",
+          "uri": "repo://tests/raos_v2/test_phase3_public_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_phase3_publication.py",
+          "uri": "repo://tests/raos_v2/test_phase3_publication.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_phase3_wordpress_projection.py",
+          "uri": "repo://tests/raos_v2/test_phase3_wordpress_projection.py",
           "version": 2
         },
         {
@@ -8286,7 +8513,7 @@
       "outputs": [
         {
           "bytes": 5784,
-          "sha256": "f76f6c8d2526c68e7e837dc833f0ff2827ad8e4a724a74e7dea95af05f9a7fc5",
+          "sha256": "e7a7c760b5560407ccb4691e25a3b04dbaf2d8bd7c160dabace80e04520261af",
           "uri": "repo://changes/st-0203/manifest.yaml"
         }
       ],
@@ -8437,7 +8664,7 @@
       "outputs": [
         {
           "bytes": 5972,
-          "sha256": "23f3980db3778f078bfc57524db84abd7236290bbda64fe3d981ab1f2c2b1fe1",
+          "sha256": "5f8fe7a9e6488e2ac2c847f29e0888ab5e2f96114ab5dde9472588831b9f999e",
           "uri": "repo://changes/st-0204/manifest.yaml"
         }
       ],
@@ -8606,7 +8833,7 @@
         },
         {
           "bytes": 5351,
-          "sha256": "b72e7cbda7dbfbd681bf8080c661c22cc5f3e28183e29cad86f26f4abdd96acf",
+          "sha256": "d2829a07377617de755f3eee843c7222df094c93ae37bd0861ee10dfb3f669f6",
           "uri": "repo://changes/st-0205/manifest.yaml"
         }
       ],
@@ -8929,7 +9156,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "f99c4fc88bd909d4cb3c1137f6a592a5089b8d0332bb511805f110740526821b",
+          "sha256": "bfd5e2f7eff87b11b4f1b675bea2b9a281d1299efd87109183fe144e0ce1a9c4",
           "uri": "repo://changes/st-0302/manifest.yaml"
         },
         {
@@ -9220,7 +9447,7 @@
         },
         {
           "bytes": 11451,
-          "sha256": "07899ece7c39b15bb7b25fc335cd030bbb70e413657556806572f75d0dc98059",
+          "sha256": "a7c31ac050ff1d16290cfeae92ae19a5605b59dda67e7564bbe0cf2bd0a50e18",
           "uri": "repo://changes/st-0303/manifest.yaml"
         },
         {
@@ -9577,7 +9804,7 @@
         },
         {
           "bytes": 11664,
-          "sha256": "195a25fe839e23c5c8f28c15bea1e96ce9f1fc6f0698a2d987302eaf5e96cf63",
+          "sha256": "f0d5ccab066999069ae3d12405c102d8e28a17d394147c4f2177c8222817e678",
           "uri": "repo://changes/st-0304/manifest.yaml"
         },
         {
@@ -9797,7 +10024,7 @@
         },
         {
           "bytes": 14860,
-          "sha256": "221ccfdb41036e7cb34352ec2726d6f6b2b9b0cd956a56754915a0eb93ee362e",
+          "sha256": "f8c034a04df5f0897dd6fa449692036453c219972c0fed10d4cfa1e74a76d3a0",
           "uri": "repo://changes/st-0305/manifest.yaml"
         },
         {
@@ -10028,7 +10255,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "65057492ef89d0e4c80f8400ba756e7dca5f9ddac958f651fe2e60178658ce53",
+          "sha256": "3c638183976ac3e71fc90db4035f8f9c38c72d94b53b9b9aac2cc21bee5db0f5",
           "uri": "repo://changes/st-0306/manifest.yaml"
         },
         {
@@ -10280,7 +10507,7 @@
         },
         {
           "bytes": 15335,
-          "sha256": "213cd33f1e2a200d595c7222c8419b6abe97660a128a2240c5fdafae025b2bc3",
+          "sha256": "88f8c6b7b25fdc03f62e9b2f50add90a8c5ee04382e01038fdaffd647fb064ab",
           "uri": "repo://changes/st-0307/manifest.yaml"
         },
         {
@@ -13881,7 +14108,7 @@
         },
         {
           "bytes": 15112,
-          "sha256": "26e27239ec5f379413939c6f722a760ed94150d2b5454382566741fbffcee2b9",
+          "sha256": "8f691241672bb87bdc5ef959b443379e9283562dd97b2b76866a98a8db256003",
           "uri": "repo://changes/st-0701/manifest.yaml"
         }
       ],
@@ -14915,7 +15142,7 @@
       "outputs": [
         {
           "bytes": 7913,
-          "sha256": "09aca6a44208c556fe0e58da52c0e39efc04de3ac01fb135b5ef997b99d8ce5c",
+          "sha256": "9ee384e74e2507d5c9835ac355cda52a7f3975d6d0d033ec4baafabcd03f932d",
           "uri": "repo://changes/st-0709/runtime-manifest.v2.json"
         }
       ],
@@ -15140,7 +15367,7 @@
       "outputs": [
         {
           "bytes": 32582,
-          "sha256": "040d82bcf4f998c8f68d05365bc27795dd7cd6af1149a9a79485f436eb2b460e",
+          "sha256": "7d97b2350ab190d97de79ad5361cfd820e281ac8f9b3ebc2d62564e1a8dd758d",
           "uri": "repo://changes/st-0801/manifest.yaml"
         }
       ],
@@ -23357,9 +23584,39 @@
           "uri": "repo://changes/st-1501/manifest.yaml"
         },
         {
+          "bytes": 1095,
+          "sha256": "e4d826ee2881a74f2cc1c49f80ef817d090fb9c0f86040a30f37c231af663787",
+          "uri": "repo://infra/terraform/foundation/checks.tf"
+        },
+        {
+          "bytes": 2108,
+          "sha256": "a113d24697b1f00c6f3fe32459280672d271dd5a1757364e8e2aac97db1c3b3c",
+          "uri": "repo://infra/terraform/foundation/locals.tf"
+        },
+        {
+          "bytes": 712,
+          "sha256": "dac1835d490dc50355a9d4510d6ee8991f2a945ad1bfc1ee395e8c2134431d72",
+          "uri": "repo://infra/terraform/foundation/outputs.tf"
+        },
+        {
           "bytes": 12526,
           "sha256": "bb5a6bb86ab13cf465a980eccea75bc3742eb818af142dc74ba6cea90aef6a72",
           "uri": "repo://infra/terraform/foundation/terraform-foundation.reference-plan.v1.json"
+        },
+        {
+          "bytes": 2919,
+          "sha256": "696c1e06b4dbb93c952a32e181d145ce8cdf6980b3434fee7e4795296f887f44",
+          "uri": "repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json"
+        },
+        {
+          "bytes": 4238,
+          "sha256": "ce13d5d7eb4ed483c5afd170e1ec74738aa73455e5b4036e861cf5786ff6e76e",
+          "uri": "repo://infra/terraform/foundation/variables.tf"
+        },
+        {
+          "bytes": 127,
+          "sha256": "87d23505f127e84430a32ac458b67b46b6614f3d2f976c2539fe3163b4eecab7",
+          "uri": "repo://infra/terraform/foundation/versions.tf"
         }
       ],
       "owner_dependencies": [],
@@ -23388,42 +23645,6 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1501/contracts/terraform-foundation.v1.yaml",
           "uri": "repo://changes/st-1501/contracts/terraform-foundation.v1.yaml",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/foundation/checks.tf",
-          "uri": "repo://infra/terraform/foundation/checks.tf",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/foundation/locals.tf",
-          "uri": "repo://infra/terraform/foundation/locals.tf",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/foundation/outputs.tf",
-          "uri": "repo://infra/terraform/foundation/outputs.tf",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json",
-          "uri": "repo://infra/terraform/foundation/terraform-validation-toolchain.lock.v1.json",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/foundation/variables.tf",
-          "uri": "repo://infra/terraform/foundation/variables.tf",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/foundation/versions.tf",
-          "uri": "repo://infra/terraform/foundation/versions.tf",
           "version": 2
         },
         {
@@ -23479,9 +23700,19 @@
           "uri": "repo://changes/st-1502/manifest.yaml"
         },
         {
+          "bytes": 39827,
+          "sha256": "a112654696a47ae0ad3833573a38beeb986a360c332603edd369a15a772d15c8",
+          "uri": "repo://infra/terraform/data-services/data-services.logical-plan.v1.json"
+        },
+        {
           "bytes": 26132,
           "sha256": "b359042fd260b589e285b79f8196a85e8a080ef0fb834fa406682cd9820225dd",
           "uri": "repo://infra/terraform/data-services/data-services.reference-plan.v1.json"
+        },
+        {
+          "bytes": 3406,
+          "sha256": "9e770cf9440594f315e504b6cd3d3317570df5ea2585a890c32f1a7f35d004cf",
+          "uri": "repo://infra/terraform/data-services/terraform-validation-toolchain.lock.v1.json"
         }
       ],
       "owner_dependencies": [
@@ -23512,18 +23743,6 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1502/contracts/data-services-foundation.v1.yaml",
           "uri": "repo://changes/st-1502/contracts/data-services-foundation.v1.yaml",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/data-services/data-services.logical-plan.v1.json",
-          "uri": "repo://infra/terraform/data-services/data-services.logical-plan.v1.json",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/data-services/terraform-validation-toolchain.lock.v1.json",
-          "uri": "repo://infra/terraform/data-services/terraform-validation-toolchain.lock.v1.json",
           "version": 2
         },
         {
@@ -23577,9 +23796,19 @@
           "uri": "repo://changes/st-1503/manifest.yaml"
         },
         {
+          "bytes": 58235,
+          "sha256": "8535331c0a43fcc1f9309c855b51d814d8165fa05eaed9edf5f520e56eb408ff",
+          "uri": "repo://infra/terraform/compute-edge/compute-edge.logical-plan.v1.json"
+        },
+        {
           "bytes": 27375,
           "sha256": "21c351b64e957f8332a7fe43de1ca2ecf45b1f4475c58be46b5255f7a56a5581",
           "uri": "repo://infra/terraform/compute-edge/compute-edge.reference-plan.v1.json"
+        },
+        {
+          "bytes": 3444,
+          "sha256": "620a9afd1a8e7ad82bf13071fb8c432854bbd5f9ea56a4781e39fb70c9ba67fe",
+          "uri": "repo://infra/terraform/compute-edge/terraform-validation-toolchain.lock.v1.json"
         }
       ],
       "owner_dependencies": [
@@ -23610,18 +23839,6 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1503/contracts/compute-edge-foundation.v1.yaml",
           "uri": "repo://changes/st-1503/contracts/compute-edge-foundation.v1.yaml",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/compute-edge/compute-edge.logical-plan.v1.json",
-          "uri": "repo://infra/terraform/compute-edge/compute-edge.logical-plan.v1.json",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/compute-edge/terraform-validation-toolchain.lock.v1.json",
-          "uri": "repo://infra/terraform/compute-edge/terraform-validation-toolchain.lock.v1.json",
           "version": 2
         },
         {
@@ -23676,9 +23893,29 @@
           "uri": "repo://changes/st-1504/manifest.yaml"
         },
         {
+          "bytes": 470,
+          "sha256": "cadc782476354b69edfae82aab89545eb33629530671a45608a51b655168b5bb",
+          "uri": "repo://infra/terraform/deployment-identity/github-oidc-deploy.disabled.workflow.yml"
+        },
+        {
+          "bytes": 1285,
+          "sha256": "26f648c750b80e2af2b36dc60d3e12d66c8acc16e5ba909a6013a30843505764",
+          "uri": "repo://infra/terraform/deployment-identity/github-oidc.claims.recorded.v1.json"
+        },
+        {
+          "bytes": 842,
+          "sha256": "8fe2ae11254670d9b78c1df2e495da88ccf6687b0f31fb7db035fb3e339dd73e",
+          "uri": "repo://infra/terraform/deployment-identity/github-oidc.evaluation.recorded.v1.json"
+        },
+        {
           "bytes": 22190,
           "sha256": "2fc71d3040d593274c0597f492c9e9eae90d6bb943d168a1a73620bb8891b6db",
           "uri": "repo://infra/terraform/deployment-identity/github-oidc.reference-plan.v1.json"
+        },
+        {
+          "bytes": 2649,
+          "sha256": "2f523c0bd274247c62f43a0a0f60ece7acd998637ba36e196dc58cd6ee522875",
+          "uri": "repo://infra/terraform/deployment-identity/github-oidc.trust-policy.recorded.v1.json"
         }
       ],
       "owner_dependencies": [
@@ -23710,30 +23947,6 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1504/contracts/github-oidc-deployment.v1.yaml",
           "uri": "repo://changes/st-1504/contracts/github-oidc-deployment.v1.yaml",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/deployment-identity/github-oidc-deploy.disabled.workflow.yml",
-          "uri": "repo://infra/terraform/deployment-identity/github-oidc-deploy.disabled.workflow.yml",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/deployment-identity/github-oidc.claims.recorded.v1.json",
-          "uri": "repo://infra/terraform/deployment-identity/github-oidc.claims.recorded.v1.json",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/deployment-identity/github-oidc.evaluation.recorded.v1.json",
-          "uri": "repo://infra/terraform/deployment-identity/github-oidc.evaluation.recorded.v1.json",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "infra/terraform/deployment-identity/github-oidc.trust-policy.recorded.v1.json",
-          "uri": "repo://infra/terraform/deployment-identity/github-oidc.trust-policy.recorded.v1.json",
           "version": 2
         },
         {
@@ -25032,6 +25245,26 @@
       "output_scope": "tracked",
       "outputs": [
         {
+          "bytes": 206,
+          "sha256": "e284d8195144c740e748846e0da6ae6ae3f77812388fc796ce410d4e19e2db05",
+          "uri": "repo://changes/st-1701/generated/canonical-revision-request.v1.md"
+        },
+        {
+          "bytes": 308,
+          "sha256": "9675e25c749b332cdf62925f333ae95c55e0ce1c577048f5d836179f918d8419",
+          "uri": "repo://changes/st-1701/generated/gold-evidence-validation.v1.json"
+        },
+        {
+          "bytes": 12096,
+          "sha256": "f21122b2a1c704ab579c4725f70b92747cf8137c16b6a12aaf7f719ec8db6c99",
+          "uri": "repo://changes/st-1701/generated/mvp-business-decision-package.v1.json"
+        },
+        {
+          "bytes": 10383,
+          "sha256": "2866b126e659b6c940a20b73d7d9034730cee7b5d14fd001c38d45f65e8be1d7",
+          "uri": "repo://changes/st-1701/generated/unresolved-mvp-business-inputs.v1.json"
+        },
+        {
           "bytes": 2121,
           "sha256": "a2459fa477762806587d791311816e763460a2083cbc37ded42dc4974cb55510",
           "uri": "repo://changes/st-1701/manifest.yaml"
@@ -25051,30 +25284,6 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml",
           "uri": "repo://changes/st-1701/contracts/unresolved-mvp-business-inputs.v1.yaml",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/st-1701/generated/canonical-revision-request.v1.md",
-          "uri": "repo://changes/st-1701/generated/canonical-revision-request.v1.md",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/st-1701/generated/gold-evidence-validation.v1.json",
-          "uri": "repo://changes/st-1701/generated/gold-evidence-validation.v1.json",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/st-1701/generated/mvp-business-decision-package.v1.json",
-          "uri": "repo://changes/st-1701/generated/mvp-business-decision-package.v1.json",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/st-1701/generated/unresolved-mvp-business-inputs.v1.json",
-          "uri": "repo://changes/st-1701/generated/unresolved-mvp-business-inputs.v1.json",
           "version": 2
         },
         {
@@ -27185,7 +27394,7 @@
       "outputs": [
         {
           "bytes": 5708,
-          "sha256": "35375b01a7a0279ef051e473ce747414fc4a9a8c30baf6162148a5f5f581ed57",
+          "sha256": "054afece56601a112bde6d22c1e0f4bd1e3bd9e6243c615d745d4d8a1b5cd44e",
           "uri": "repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json"
         }
       ],

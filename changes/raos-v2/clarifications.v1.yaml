@@ -45,3 +45,37 @@ clarifications:
     is the sole deterministic preview input and changes/raos-v2/phase-2/preview contains generated output
     only
   supersedes: the former duplicated changes/raos-v2/phase-2/ui-source input location
+- id: C-V2-014
+  decision: the effective Phase 3 planning ceiling is 20 hours and external spend remains JPY 0
+  note: Phase 3 backlog row estimates are reconciliation information, not an additive budget gate
+- id: C-V2-015
+  decision: Phase 3 adds a v2 real-content seal contract that requires an exact non-synthetic human-review
+    receipt; the Phase 2 v1 synthetic-only seal remains unchanged
+- id: C-V2-016
+  decision: the one-URL WordPress projection suppresses every unpublished future route and keeps every
+    product CTA blocked until a current exact offer binding exists
+- id: C-V2-017
+  decision: B-V2-040 remains BLOCKED_EXTERNAL until human backup, review, deployment, WordPress write,
+    publication, public verification, rollback evidence and seven stable days exist
+- id: C-V2-018
+  decision: the safe Phase 3 default preserves /carry-on-suitcase-comparison/, its self-canonical and
+    sitemap membership with an empty redirect change set
+- id: C-V2-019
+  decision: B-V2-036 uses a marker-bound one-route WordPress block-presentation plugin instead of switching
+    the active theme
+  rationale: the one-URL migration must not restyle or risk unrelated public pages and remains reversible
+    by removing one local artifact
+- id: C-V2-020
+  decision: the existing published A05 route uses an approved-cutover update contract whose precondition
+    and postcondition both require post_status=publish; no Phase 3 review payload may demote it to draft
+  supersedes: draft wording that could be interpreted as applying post_status=draft to the existing public
+    post
+- id: C-V2-021
+  decision: each Phase 3 claim type, risk class, freshness and authoritative source status is closed by
+    the Phase 2 candidate phase3_claim_authority digest before human review or seal
+- id: C-V2-022
+  decision: Phase 3 local test execution and external acceptance are reported separately; local evidence
+    never marks an external-dependent Phase 3 acceptance complete
+- id: C-V2-023
+  decision: Phase 3 external-state input is a closed sanitized object at every nesting level and rejects
+    unknown or secret-like fields
