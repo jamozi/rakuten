@@ -54,6 +54,22 @@ async (page) => {
       if (!response || !response.ok()) {
         throw new Error(`RAOS_WORDPRESS_LOCAL_PREVIEW_HTTP_FAILED_${surface.name}`);
       }
+      await page.evaluate(async () => {
+        await Promise.all(
+          [...document.images].map(
+            (image) =>
+              new Promise((resolve) => {
+                image.loading = 'eager';
+                if (image.complete) {
+                  resolve();
+                  return;
+                }
+                image.addEventListener('load', resolve, { once: true });
+                image.addEventListener('error', resolve, { once: true });
+              }),
+          ),
+        );
+      });
       const audit = await page.evaluate(() => {
         const ids = [...document.querySelectorAll('[id]')]
           .map((element) => element.id)
@@ -91,6 +107,9 @@ async (page) => {
           lang: document.documentElement.lang,
           mainCount: document.querySelectorAll('main').length,
           missingAlt: document.querySelectorAll('img:not([alt])').length,
+          unloadedImages: [...document.images].filter(
+            (image) => !image.complete || image.naturalWidth === 0,
+          ).length,
           purchaseCautionCount: document.querySelectorAll('.purchase-caution').length,
           scrollWidth: document.documentElement.scrollWidth,
           sourcesSectionCount: document.querySelectorAll('.sources-section').length,
@@ -112,6 +131,7 @@ async (page) => {
         audit.h1Count !== 1 ||
         audit.mainCount !== 1 ||
         audit.missingAlt !== 0 ||
+        audit.unloadedImages !== 0 ||
         audit.unlabeledControls !== 0 ||
         audit.duplicateIds.length !== 0 ||
         audit.brokenAriaReferences !== 0 ||

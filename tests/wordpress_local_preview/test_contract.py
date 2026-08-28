@@ -276,6 +276,7 @@ def test_browser_audit_covers_home_and_five_articles_at_four_widths() -> None:
         "audit.h1Count !== 1",
         "audit.mainCount !== 1",
         "audit.missingAlt !== 0",
+        "audit.unloadedImages !== 0",
         "audit.duplicateIds.length !== 0",
         "audit.brokenAriaReferences !== 0",
         "audit.scrollWidth > audit.clientWidth",
