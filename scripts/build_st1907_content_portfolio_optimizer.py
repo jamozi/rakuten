@@ -162,7 +162,7 @@ _SIGNAL_POLICY_PATH: Final = Path(
     "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml"
 )
 _SIGNAL_POLICY_SHA256: Final = (
-    "53a16b553bdd7e06289fc9d27e63e7916ab31ec37527c3ab4c509c0980675cba"
+    "42c3fc918669c58df7033c13760f8d241bba275236408e3331f63731ce9c45af"
 )
 
 
