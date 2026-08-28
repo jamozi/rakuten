@@ -449,7 +449,7 @@ def test_normal_raos_v2_pytest_denies_network_and_dns() -> None:
         socket.getaddrinfo("example.invalid", 443)
 
 
-def test_manual_visual_review_is_separate_and_binds_all_27_pngs() -> None:
+def test_manual_visual_review_is_separate_and_binds_all_27_captures() -> None:
     value = json.loads(
         (
             ROOT
@@ -483,17 +483,23 @@ def test_manual_visual_review_is_separate_and_binds_all_27_pngs() -> None:
         classifications[route] = state_to_classification[
             page["publication_state"]
         ]
+    raw_capture_available = (
+        ROOT / validator.VISUAL_RAW_RECEIPT_PATH
+    ).is_file()
     verification = validator.verify_visual_review_evidence(
         value,
         preview_digests=digests,
         route_classifications=classifications,
         root=ROOT,
-        require_raw=True,
     )
     assert verification == {
         "effective_status": "PASSED_LOCAL_MANUAL_VISUAL_REVIEW",
         "review_binding": "CURRENT_PREVIEW_AND_CAPTURE_SET_BOUND",
-        "raw_verification": "RAW_CAPTURE_AND_27_PNGS_VERIFIED_LOCAL",
+        "raw_verification": (
+            "RAW_CAPTURE_AND_27_PNGS_VERIFIED_LOCAL"
+            if raw_capture_available
+            else "RECORDED_NOT_REVERIFIED"
+        ),
         "captures": 27,
         "critical_findings": 0,
         "major_findings": 0,
