@@ -77,6 +77,41 @@ function raos_local_preview_styles(): void
 }
 add_action('wp_head', 'raos_local_preview_styles', 99);
 
+/** Identify the closed set of seeded editorial preview posts. */
+function raos_local_preview_is_editorial_article(): bool
+{
+    if (! is_singular('post')) {
+        return false;
+    }
+    $slug = get_post_field('post_name', get_queried_object_id(), 'raw');
+    return is_string($slug) && str_starts_with($slug, 'local-preview-');
+}
+
+/** Add a local-only hook without changing the production child theme. */
+function raos_local_preview_body_class(array $classes): array
+{
+    if (raos_local_preview_is_editorial_article()) {
+        $classes[] = 'raos-local-editorial-v2-page';
+    }
+    return $classes;
+}
+add_filter('body_class', 'raos_local_preview_body_class');
+
+/** Load the reference-matched editorial stylesheet only for seeded articles. */
+function raos_local_preview_editorial_stylesheet(): void
+{
+    if (! raos_local_preview_is_editorial_article()) {
+        return;
+    }
+    wp_enqueue_style(
+        'raos-local-editorial-v2',
+        content_url('mu-plugins/raos-editorial-v2.css'),
+        array('kurashinoshirube-editorial'),
+        '2026-08-29.1'
+    );
+}
+add_action('wp_enqueue_scripts', 'raos_local_preview_editorial_stylesheet', 100);
+
 /** Make the boundary equally visible to an authenticated editor. */
 function raos_local_preview_admin_notice(): void
 {

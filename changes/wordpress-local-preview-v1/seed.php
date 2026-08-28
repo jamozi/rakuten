@@ -111,8 +111,12 @@ foreach ($fixture['posts'] as $index => $post) {
         || preg_match('/\A2026-08-(?:2[5-9]) 00:00:00\z/D', $post['date']) !== 1
         || isset($seen_ids[$post['article_id']])
         || isset($seen_slugs[$post['slug']])
-        || ! in_array($post['category'], array('移動', '家事', '備え'), true)
-        || ! ($post['content_file'] === null || $post['content_file'] === 'article-preview.html')
+        || ! in_array($post['category'], array('移動', '家事'), true)
+        || ! is_string($post['content_file'])
+        || preg_match('/\Aarticles\/[a-z0-9-]+\.html\z/D', $post['content_file']) !== 1
+        || $post['article_id'] !== $post['slug']
+        || $post['content_file'] !== 'articles/'
+            . substr($post['slug'], strlen('local-preview-')) . '.html'
     ) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POST_FIXTURE_INVALID');
     }
@@ -131,19 +135,26 @@ foreach ($fixture['posts'] as $index => $post) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_CATEGORY_SEED_FAILED');
     }
 
-    if ($post['content_file'] === 'article-preview.html') {
-        $content_path = $fixture_root . '/' . $post['content_file'];
-        $content = ! is_link($content_path) && is_file($content_path)
-            ? file_get_contents($content_path)
+    $content_path = $fixture_root . '/' . $post['content_file'];
+    $fixture_real = realpath($fixture_root);
+    $content_real = ! is_link($content_path) ? realpath($content_path) : false;
+    $content = is_string($content_real) && is_string($fixture_real)
+        && str_starts_with($content_real, $fixture_real . '/articles/')
+        && is_file($content_real) && is_readable($content_real)
+            ? file_get_contents($content_real)
             : false;
-        if (! is_string($content) || $content === '' || stripos($content, 'http://') !== false || stripos($content, 'https://') !== false) {
-            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_INVALID');
-        }
-    } else {
-        $content = '<p class="raos-article-scope"><strong>LOCAL FIXTURE：</strong>本番表示ではありません。</p>'
-            . '<h2>表示確認用の記事</h2><p>' . esc_html($post['excerpt']) . '</p>'
-            . '<h2>確認項目</h2><ul><li>見出しと本文の余白</li><li>長い日本語タイトルの折り返し</li><li>スマートフォン表示</li></ul>'
-            . '<p><span class="raos-local-disabled" aria-disabled="true">外部CTAなし</span></p>';
+    if (
+        ! is_string($content)
+        || $content === ''
+        || strlen($content) > 1048576
+        || stripos($content, 'http://') !== false
+        || stripos($content, 'https://') !== false
+        || stripos($content, '<script') !== false
+        || stripos($content, '<style') !== false
+        || stripos($content, '<h1') !== false
+        || strpos($content, '<div class="raos-editorial-v2">') === false
+    ) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_INVALID');
     }
 
     $existing = get_page_by_path($post['slug'], OBJECT, 'post');
@@ -164,6 +175,24 @@ foreach ($fixture['posts'] as $index => $post) {
     $result = wp_insert_post($post_data, true);
     if (is_wp_error($result) || (int) $result <= 0) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POST_SEED_FAILED_' . (string) $index);
+    }
+}
+
+foreach (
+    array(
+        'local-preview-carry-on-suitcase-comparison',
+        'local-preview-portable-power-station-guide',
+        'local-preview-compact-dishwasher-guide',
+        'local-preview-power-model-differences',
+        'local-preview-robot-vacuum-shortlist',
+    ) as $retired_slug
+) {
+    if (isset($seen_slugs[$retired_slug])) {
+        continue;
+    }
+    $retired = get_page_by_path($retired_slug, OBJECT, 'post');
+    if ($retired instanceof WP_Post) {
+        wp_delete_post((int) $retired->ID, true);
     }
 }
 

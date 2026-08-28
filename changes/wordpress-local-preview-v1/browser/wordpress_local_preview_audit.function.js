@@ -4,8 +4,29 @@ async (page) => {
   const surfaces = [
     { name: 'home', path: '/' },
     {
-      name: 'article',
-      path: '/local-preview-carry-on-suitcase-comparison/',
+      article: true,
+      name: 'under100',
+      path: '/local-preview-carry-on-suitcase-under-100-seats/',
+    },
+    {
+      article: true,
+      name: 'under3kg',
+      path: '/local-preview-lightweight-carry-on-suitcase-under-3kg/',
+    },
+    {
+      article: true,
+      name: 'frontstop',
+      path: '/local-preview-front-open-carry-on-suitcase-with-stopper/',
+    },
+    {
+      article: true,
+      name: 'roomba',
+      path: '/local-preview-roomba-mini-vs-switchbot-k11-pro/',
+    },
+    {
+      article: true,
+      name: 'dishwasher',
+      path: '/local-preview-solota-vs-rakua-mini-plus/',
     },
   ];
   const widths = [360, 390, 768, 1440];
@@ -62,16 +83,28 @@ async (page) => {
           bannerText: banner?.textContent?.trim() || '',
           brokenAriaReferences,
           clientWidth: document.documentElement.clientWidth,
+          comparisonSectionCount: document.querySelectorAll('.comparison-section').length,
+          decisionListCount: document.querySelectorAll('.decision-list').length,
           duplicateIds,
+          editorialRootCount: document.querySelectorAll('.raos-editorial-v2').length,
           h1Count: document.querySelectorAll('h1').length,
           lang: document.documentElement.lang,
           mainCount: document.querySelectorAll('main').length,
           missingAlt: document.querySelectorAll('img:not([alt])').length,
+          purchaseCautionCount: document.querySelectorAll('.purchase-caution').length,
           scrollWidth: document.documentElement.scrollWidth,
+          sourcesSectionCount: document.querySelectorAll('.sources-section').length,
           title: document.title,
           unlabeledControls,
         };
       });
+      const articleAuditFailed =
+        surface.article &&
+        (audit.editorialRootCount !== 1 ||
+          audit.decisionListCount === 0 ||
+          audit.comparisonSectionCount === 0 ||
+          audit.purchaseCautionCount === 0 ||
+          audit.sourcesSectionCount === 0);
       if (
         audit.title.trim() === '' ||
         !audit.lang.toLowerCase().startsWith('ja') ||
@@ -82,7 +115,8 @@ async (page) => {
         audit.unlabeledControls !== 0 ||
         audit.duplicateIds.length !== 0 ||
         audit.brokenAriaReferences !== 0 ||
-        audit.scrollWidth > audit.clientWidth
+        audit.scrollWidth > audit.clientWidth ||
+        articleAuditFailed
       ) {
         throw new Error(`RAOS_WORDPRESS_LOCAL_PREVIEW_AUDIT_FAILED_${surface.name}_${width}`);
       }

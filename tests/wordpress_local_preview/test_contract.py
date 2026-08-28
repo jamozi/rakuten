@@ -12,9 +12,11 @@ ROOT = Path(__file__).resolve().parents[2]
 SLICE = ROOT / "changes/wordpress-local-preview-v1"
 COMPOSE = SLICE / "compose.yaml"
 WRAPPER = SLICE / "bin/wordpress_preview.sh"
-ARTICLE = SLICE / "fixtures/article-preview.html"
-POSTS = SLICE / "fixtures/posts.json"
+FIXTURES = SLICE / "fixtures"
+ARTICLES = FIXTURES / "articles"
+POSTS = FIXTURES / "posts.json"
 MU_PLUGIN = SLICE / "mu-plugins/raos-local-preview.php"
+EDITORIAL_CSS = SLICE / "mu-plugins/raos-editorial-v2.css"
 SEED = SLICE / "seed.php"
 
 MARIADB_IMAGE = (
@@ -37,6 +39,12 @@ NGINX_IMAGE = (
 
 def _compose() -> dict[str, object]:
     value = yaml.safe_load(COMPOSE.read_text(encoding="utf-8"))
+    assert isinstance(value, dict)
+    return value
+
+
+def _posts_fixture() -> dict[str, object]:
+    value = json.loads(POSTS.read_text(encoding="utf-8"))
     assert isinstance(value, dict)
     return value
 
@@ -107,9 +115,17 @@ def test_wordpress_runtime_is_explicitly_local_and_non_mutating() -> None:
         "define('AUTOMATIC_UPDATER_DISABLED', true);",
     ):
         assert marker in extra
+    runtime_paths = (
+        COMPOSE,
+        WRAPPER,
+        SEED,
+        POSTS,
+        MU_PLUGIN,
+        EDITORIAL_CSS,
+        *sorted(FIXTURES.rglob("*.html")),
+    )
     runtime_material = "\n".join(
-        path.read_text(encoding="utf-8")
-        for path in (COMPOSE, WRAPPER, SEED, ARTICLE, MU_PLUGIN)
+        path.read_text(encoding="utf-8") for path in runtime_paths
     )
     assert "https://kurashinoshirube.com" not in runtime_material
     assert "wordpressEditor" not in runtime_material
@@ -117,25 +133,74 @@ def test_wordpress_runtime_is_explicitly_local_and_non_mutating() -> None:
     assert "RAOS_OPERATOR_WRITES_ENABLED" not in runtime_material
 
 
-def test_synthetic_fixture_has_five_closed_local_posts() -> None:
-    fixture = json.loads(POSTS.read_text(encoding="utf-8"))
+def test_synthetic_fixture_has_five_closed_local_articles() -> None:
+    fixture = _posts_fixture()
     assert set(fixture) == {"schema", "seed_version", "posts"}
     assert fixture["schema"] == "RAOS_WORDPRESS_LOCAL_PREVIEW_FIXTURE_V1"
-    assert len(fixture["posts"]) == 5
-    assert {row["category"] for row in fixture["posts"]} == {"移動", "家事", "備え"}
-    assert len({row["article_id"] for row in fixture["posts"]}) == 5
-    assert len({row["slug"] for row in fixture["posts"]}) == 5
-    for row in fixture["posts"]:
-        assert re.fullmatch(r"local-preview-[a-z0-9-]+", row["article_id"])
+    posts = fixture["posts"]
+    assert isinstance(posts, list)
+    assert len(posts) == 5
+    assert {row["category"] for row in posts} == {"移動", "家事"}
+    assert len({row["article_id"] for row in posts}) == 5
+    assert len({row["slug"] for row in posts}) == 5
+    assert len({row["content_file"] for row in posts}) == 5
+    for row in posts:
+        assert row["article_id"] == row["slug"]
         assert re.fullmatch(r"local-preview-[a-z0-9-]+", row["slug"])
         assert "http://" not in row["excerpt"]
         assert "https://" not in row["excerpt"]
-    article = ARTICLE.read_text(encoding="utf-8")
-    assert "http://" not in article
-    assert "https://" not in article
-    assert 'data-raos-placement="comparison_table"' in article
-    assert "外部CTAなし" in article
-    assert "在庫なしfixture・CTAなし" in article
+        content_file = row["content_file"]
+        assert isinstance(content_file, str)
+        assert re.fullmatch(r"articles/[a-z0-9-]+\.html", content_file)
+        article_path = FIXTURES / content_file
+        assert article_path.parent == ARTICLES
+        assert article_path.is_file()
+
+        article = article_path.read_text(encoding="utf-8")
+        assert re.search(r"<\s*h1\b", article, re.IGNORECASE) is None
+        assert re.search(r"https?://", article, re.IGNORECASE) is None
+        assert re.search(r"<\s*(?:script|style)\b", article, re.IGNORECASE) is None
+        assert len(re.findall(r'class="raos-editorial-v2"', article)) == 1
+        assert '<table class="comparison-table">' in article
+        assert 'href="#local-only"' in article
+        assert 'id="local-only"' in article
+        assert "公開前" in article
+        assert "再確認" in article
+        assert "ローカル" in article
+
+
+def test_editorial_mu_plugin_and_stylesheet_contract() -> None:
+    plugin = MU_PLUGIN.read_text(encoding="utf-8")
+    for marker in (
+        "function raos_local_preview_is_editorial_article(): bool",
+        "str_starts_with($slug, 'local-preview-')",
+        "'raos-local-editorial-v2-page'",
+        "add_filter('body_class', 'raos_local_preview_body_class')",
+        "wp_enqueue_style(",
+        "'raos-local-editorial-v2'",
+        "content_url('mu-plugins/raos-editorial-v2.css')",
+        "array('kurashinoshirube-editorial')",
+        "add_action('wp_enqueue_scripts', 'raos_local_preview_editorial_stylesheet', 100)",
+    ):
+        assert marker in plugin
+
+    stylesheet = EDITORIAL_CSS.read_text(encoding="utf-8")
+    for marker in (
+        ".raos-local-editorial-v2-page",
+        ".raos-local-editorial-v2-page .raos-article-ruleline",
+        ".raos-local-editorial-v2-page .raos-article-title-grid",
+        ".raos-local-editorial-v2-page .raos-article-standfirst",
+        ".raos-editorial-v2 .hero-photo",
+        ".raos-editorial-v2 .decision-list",
+        ".raos-editorial-v2 .comparison-section",
+        ".raos-editorial-v2 .comparison-table",
+        ".raos-editorial-v2 .product-profile",
+        ".raos-editorial-v2 .rakuten-cta",
+        ".raos-editorial-v2 .purchase-caution",
+        ".raos-editorial-v2 .sources-section",
+        "@media (max-width: 48rem)",
+    ):
+        assert marker in stylesheet
 
 
 def test_local_guard_blocks_indexing_mail_http_and_updates() -> None:
@@ -191,13 +256,21 @@ def test_root_makefile_exposes_the_documented_interface() -> None:
     assert 'CONFIRM="$(CONFIRM)"' in makefile
 
 
-def test_browser_audit_covers_home_and_article_at_four_widths() -> None:
+def test_browser_audit_covers_home_and_five_articles_at_four_widths() -> None:
     audit = (SLICE / "browser/wordpress_local_preview_audit.function.js").read_text(
         encoding="utf-8"
     )
     check = (SLICE / "browser/check.sh").read_text(encoding="utf-8")
     assert "{ name: 'home', path: '/' }" in audit
-    assert "'/local-preview-carry-on-suitcase-comparison/'" in audit
+    for route in (
+        "/local-preview-carry-on-suitcase-under-100-seats/",
+        "/local-preview-lightweight-carry-on-suitcase-under-3kg/",
+        "/local-preview-front-open-carry-on-suitcase-with-stopper/",
+        "/local-preview-roomba-mini-vs-switchbot-k11-pro/",
+        "/local-preview-solota-vs-rakua-mini-plus/",
+    ):
+        assert f"path: '{route}'" in audit
+    assert audit.count("article: true") == 5
     assert "const widths = [360, 390, 768, 1440];" in audit
     for marker in (
         "audit.h1Count !== 1",
@@ -207,6 +280,14 @@ def test_browser_audit_covers_home_and_article_at_four_widths() -> None:
         "audit.brokenAriaReferences !== 0",
         "audit.scrollWidth > audit.clientWidth",
         "RAOS_WORDPRESS_LOCAL_PREVIEW_EXTERNAL_REQUEST",
+        "document.querySelectorAll('.raos-editorial-v2').length",
+        "document.querySelectorAll('.decision-list').length",
+        "document.querySelectorAll('.comparison-section').length",
+        "document.querySelectorAll('.purchase-caution').length",
+        "document.querySelectorAll('.sources-section').length",
+        "surface.article &&",
+        "editorialRootCount !== 1",
+        "fullPage: true",
     ):
         assert marker in audit
     assert "output/playwright/local-preview" in audit
