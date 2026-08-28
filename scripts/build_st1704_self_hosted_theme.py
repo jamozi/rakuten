@@ -19,7 +19,7 @@ from xml.etree import ElementTree
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 THEME_SLUG: Final = "kurashinoshirube-child"
-THEME_VERSION: Final = "1.3.6"
+THEME_VERSION: Final = "1.3.7"
 THEME_ROOT: Final = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme" / THEME_SLUG
 )
@@ -30,6 +30,7 @@ MAX_PACKAGE_BYTES: Final = 16 * 1024 * 1024
 ZIP_TIMESTAMP: Final = (2026, 8, 23, 0, 0, 0)
 
 SOURCE_FILES: Final = (
+    "assets/images/article-portable-power-guide.png",
     "assets/images/article-suitcase-guide.webp",
     "assets/images/brand-mark.svg",
     "assets/images/home-hero.webp",
