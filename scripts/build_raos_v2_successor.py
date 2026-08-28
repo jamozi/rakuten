@@ -5166,6 +5166,12 @@ def phase2_validation_document(
     visual_verification = visual.get("verification")
     if not isinstance(visual_verification, dict):
         fail("RAOS_V2_VISUAL_REVIEW_EVIDENCE_INPUT_INVALID")
+    recorded_local_test = deepcopy(local_test)
+    recorded_local_test["raw_verification"] = "RECORDED_NOT_REVERIFIED"
+    recorded_visual_verification = deepcopy(visual_verification)
+    recorded_visual_verification["raw_verification"] = (
+        "RECORDED_NOT_REVERIFIED"
+    )
     tests = [f"T-V2-{value:03d}" for value in range(20, 47)] + ["T-V2-051"]
     gate_passed = (
         local_test.get("status") == "PASSED_LOCAL"
@@ -5216,7 +5222,7 @@ def phase2_validation_document(
             "ids": tests,
             "status": local_test.get("status"),
             "required_owner": "tests/raos_v2",
-            "receipt": local_test,
+            "receipt": recorded_local_test,
             "generator_execution": "NOT_EXECUTED_BY_GENERATOR",
         },
         "browser_evidence": {
@@ -5228,7 +5234,7 @@ def phase2_validation_document(
             "receipt_sha256": raw_receipt.get("sha256"),
             "receipt_bytes": raw_receipt.get("bytes"),
             "tracked": False,
-            "raw_verification": browser.get("raw_verification"),
+            "raw_verification": "RECORDED_NOT_REVERIFIED",
             "ci_without_raw": "RECORDED_NOT_REVERIFIED",
         },
         "visual_review_evidence": {
@@ -5238,7 +5244,7 @@ def phase2_validation_document(
             "capture_receipt": visual.get("capture_receipt"),
             "aggregate_findings": visual.get("aggregate_findings"),
             "capture_hash_review": visual.get("capture_hash_review"),
-            "verification": visual_verification,
+            "verification": recorded_visual_verification,
             "evidence_basis": "SEPARATE_MANUAL_REVIEW_BOUND_TO_CAPTURE_AND_27_PNG_HASHES",
             "tracked": True,
             "ci_without_raw": "RECORDED_NOT_REVERIFIED",

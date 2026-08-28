@@ -16,9 +16,9 @@ and a disabled WordPress dry-run boundary.
 - Worktree after: `LOCAL_IMPLEMENTATION_CHANGES_PRESENT` (not production state)
 - Backlog status: B-V2-019, B-V2-020, B-V2-021, B-V2-022, B-V2-023, B-V2-024, B-V2-025, B-V2-026, B-V2-027, B-V2-028, B-V2-029, B-V2-030, B-V2-031, B-V2-032, B-V2-033, B-V2-034
 - Local test receipt: `PASSED_LOCAL` for T-V2-020..046 and T-V2-051; generator does not execute tests
-- Browser/a11y recorded evidence: `PASSED_LOCAL`; raw verification: `RAW_RECEIPT_VERIFIED_LOCAL`; required CI must run its own gate
-- Manual visual review: `PASSED_LOCAL_MANUAL_VISUAL_REVIEW` across 27 route/viewport captures; raw verification: `RAW_CAPTURE_AND_27_PNGS_VERIFIED_LOCAL`
-- Evidence bundle SHA-256: `fbfc90c9a744993ef6e94a54abe64f88b77443e6245b86fd75fe9d3a2a7b8e3f`
+- Browser/a11y recorded evidence: `PASSED_LOCAL`; raw verification: `RECORDED_NOT_REVERIFIED`; required CI must run its own gate
+- Manual visual review: `PASSED_LOCAL_MANUAL_VISUAL_REVIEW` across 27 route/viewport captures; raw verification: `RECORDED_NOT_REVERIFIED`
+- Evidence bundle SHA-256: `f935babbe72e8a8508fa82e347509e3d9e38fb3c4f4e5bac54e54bfb761c32ca`
 - Analytics: production values `UNAVAILABLE`; semantic QDS/local sink evidence only
 - Planning ceiling: 80 hours; actual human time `UNAVAILABLE`; external spend: JPY 0
 - Rollback: route/canonical/robots exact-tuple simulation `PASSED_LOCAL`; production backup/restore `NOT_EXECUTED`

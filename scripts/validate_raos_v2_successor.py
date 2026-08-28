@@ -2240,9 +2240,11 @@ def _validate_effective_traceability(
         or generated_receipt.get("binding_verification")
         != verification["binding_verification"]
         or generated_receipt.get("raw_verification")
-        != verification["raw_verification"]
+        != "RECORDED_NOT_REVERIFIED"
         or generated_browser.get("classification")
         != recorded_browser.get("classification")
+        or generated_browser.get("raw_verification")
+        != "RECORDED_NOT_REVERIFIED"
         or generated_browser.get("receipt_sha256")
         != recorded_browser_raw.get("sha256")
         or generated_browser.get("receipt_bytes")
@@ -2264,6 +2266,8 @@ def _validate_effective_traceability(
         or generated_visual_verification.get("captures") != 27
         or generated_visual_verification.get("critical_findings") != 0
         or generated_visual_verification.get("major_findings") != 0
+        or generated_visual_verification.get("raw_verification")
+        != "RECORDED_NOT_REVERIFIED"
     ):
         fail("RAOS_V2_EFFECTIVE_TRACEABILITY_STATUS_INVALID")
     return {

@@ -34,9 +34,9 @@
       "sha256": "3692c6e35154424ab2c1eb1d4e478b646b531596cc8258213d3513e7a035fa5f"
     },
     {
-      "bytes": 7362,
+      "bytes": 7342,
       "path": "changes/raos-v2/phase-2/generated/phase-2-validation.v2.json",
-      "sha256": "0b2c8bc418f9aa177d941c79b530686f0e4d44f80a64f00bd88b2a3a4c828eb4"
+      "sha256": "7600df71fb7c42714a294f5350b584d627342a60ecaffcf9e0942f02b90e3154"
     },
     {
       "bytes": 4716,
@@ -430,18 +430,18 @@
       "classification": "LOCAL_ONLY",
       "command": "TMPDIR=/tmp uv run --offline pytest -s -q tests/raos_v2",
       "command_contract": "BASH_PIPEFAIL_TEE_TEMP_PROMOTED_BY_RECORDER_V2",
-      "executed_at_jst": "2026-08-28T10:59:10.531738+09:00",
-      "executed_head": "ae92eb8f50e9d439c1c292cc6c76d5a9c50f85c7",
+      "executed_at_jst": "2026-08-28T11:54:47.554218+09:00",
+      "executed_head": "f0c2c08adac16a5debd85bbab0943784a5f69e80",
       "exit_code": 0,
       "external_actions": "NOT_EXECUTED",
       "failed": 0,
       "formal_ci": "NOT_CLAIMED",
       "implementation_source_inventory": {
-        "content_inventory_sha256": "648cb1c1b2f4e15bfa315794f28e4199a1add4a4ee2dd723fa0d4442e4e35885",
+        "content_inventory_sha256": "05a229a5c5dfc289f085e57b12ed890866965969157591a10b1da23e19a60898",
         "file_count": 53,
         "path_set_sha256": "4db6a50a2928f136bd20f8f3853197fa9e55687314b65fee77ee96e8282bddf8",
         "schema": "RAOS_V2_FILE_INVENTORY_BINDING_V1",
-        "total_bytes": 716606
+        "total_bytes": 717064
       },
       "machine_contract_inventory": {
         "content_inventory_sha256": "9097433725558ead9f6c6acebb1032065e27b105187e710924dab7e793fb813d",
@@ -454,9 +454,9 @@
       "raw_output": {
         "bytes": 326,
         "local_path": "output/pytest/raos-v2-local-test-output.txt",
-        "sha256": "df0f9823e22a05314cbe2296c1f32eb96307cd18f1a39d90d7ed68c33f4230a2"
+        "sha256": "e5f4f2f8613073984d13a0b70e699d6da4f5967af54b68583ae64b3c44f69150"
       },
-      "raw_verification": "RAW_OUTPUT_VERIFIED_LOCAL",
+      "raw_verification": "RECORDED_NOT_REVERIFIED",
       "recorded_date_jst": "2026-08-28",
       "schema": "RAOS_V2_RECORDED_LOCAL_TEST_EVIDENCE_V1",
       "skipped": 0,
@@ -505,7 +505,7 @@
       "keyboard_routes": 9,
       "outbound_requests": 0,
       "persistent_records": 0,
-      "raw_verification": "RAW_RECEIPT_VERIFIED_LOCAL",
+      "raw_verification": "RECORDED_NOT_REVERIFIED",
       "receipt_bytes": 26340,
       "receipt_path": "output/playwright/raos-v2-local-browser-evidence.json",
       "receipt_sha256": "87c7e5e2013da9e237f692a77f01f7917b5777002051f133d5ad692ebc1d204c",
@@ -559,7 +559,7 @@
         "critical_findings": 0,
         "effective_status": "PASSED_LOCAL_MANUAL_VISUAL_REVIEW",
         "major_findings": 0,
-        "raw_verification": "RAW_CAPTURE_AND_27_PNGS_VERIFIED_LOCAL",
+        "raw_verification": "RECORDED_NOT_REVERIFIED",
         "review_binding": "CURRENT_PREVIEW_AND_CAPTURE_SET_BOUND"
       }
     }

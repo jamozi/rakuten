@@ -1192,7 +1192,6 @@ def check_active_manifest(
 def generation_relevant_paths(paths: Iterable[Path]) -> tuple[Path, ...]:
     ignored_prefixes = (
         ".codex/",
-        ".github/",
         "docs/execplans/",
         "docs/worklogs/",
         "tests/",

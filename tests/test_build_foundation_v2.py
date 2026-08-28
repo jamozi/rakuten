@@ -17,6 +17,7 @@ from scripts.raos_build_core import (
     active_manifest_document,
     affected_owners,
     discover_registry,
+    generation_relevant_paths,
     run_commands,
 )
 
@@ -48,6 +49,15 @@ def test_st0005_git_attributes_source_selects_its_generator() -> None:
     )
 
 
+def test_ci_workflow_source_selects_owners_that_hash_it() -> None:
+    registry = discover_registry()
+    changed = {Path(".github/workflows/ci.yml")}
+
+    assert generation_relevant_paths(changed) == tuple(changed)
+    selected = affected_owners(registry, generation_relevant_paths(changed))
+    assert "build_st0801_content_ast" in selected
+
+
 def test_v2_validation_jobs_fetch_the_immutable_baseline_history() -> None:
     workflow = yaml.safe_load(
         (REPOSITORY_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
@@ -56,6 +66,26 @@ def test_v2_validation_jobs_fetch_the_immutable_baseline_history() -> None:
         checkout = workflow["jobs"][job]["steps"][0]
         assert checkout["with"]["fetch-depth"] == 0
         assert checkout["with"]["persist-credentials"] is False
+
+
+def test_v2_generated_evidence_is_independent_of_ignored_raw_receipts() -> None:
+    validation = json.loads(
+        (
+            REPOSITORY_ROOT
+            / "changes/raos-v2/phase-2/generated/phase-2-validation.v2.json"
+        ).read_bytes()
+    )
+
+    assert (
+        validation["local_test_contracts"]["receipt"]["raw_verification"]
+        == "RECORDED_NOT_REVERIFIED"
+    )
+    assert validation["browser_evidence"]["raw_verification"] == (
+        "RECORDED_NOT_REVERIFIED"
+    )
+    assert validation["visual_review_evidence"]["verification"][
+        "raw_verification"
+    ] == "RECORDED_NOT_REVERIFIED"
 
 
 def test_owner_commands_do_not_write_python_bytecode(tmp_path: Path) -> None:
