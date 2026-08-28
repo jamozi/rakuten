@@ -61,8 +61,8 @@
   "runtime_files": [
     {
       "path": ".codex/config.toml",
-      "sha256": "9eb6f0c5bad55d8e59f7a07ae2d60bb760c3fda37d26e971f8b1775ae5326925",
-      "size": 5985
+      "sha256": "583da3e6a12a545da4f30f308de3cdc42b3d75d82477016bd95c0f1196e4c522",
+      "size": 6005
     },
     {
       "path": "changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json",
@@ -106,8 +106,8 @@
     },
     {
       "path": "scripts/build_wordpress_mcp_v1.py",
-      "sha256": "d9b9db3708f0fdbe0074860e45b68ccb692a80c3dfe78434711f3f4ac14e2c04",
-      "size": 9335
+      "sha256": "0d5cfd2155c7313a3e879c0fedf0782f6550d18f4c1843bc810fc1d99af6041b",
+      "size": 9521
     },
     {
       "path": "scripts/check_wordpress_public_ui_playwright.sh",

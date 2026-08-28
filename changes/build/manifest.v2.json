@@ -2,7 +2,7 @@
   "document": {
     "id": "RAOS-BUILD-MANIFEST-002",
     "mutable_source_hash_authority": false,
-    "owner_count": 138,
+    "owner_count": 140,
     "version": "2.0.0"
   },
   "owners": [
@@ -8902,7 +8902,7 @@
         },
         {
           "bytes": 5351,
-          "sha256": "d2829a07377617de755f3eee843c7222df094c93ae37bd0861ee10dfb3f669f6",
+          "sha256": "993488a4edaf6ab892b40c1d7ee368798dbf50cf66b37648dcedf54007b052a2",
           "uri": "repo://changes/st-0205/manifest.yaml"
         }
       ],
@@ -19241,7 +19241,7 @@
         },
         {
           "bytes": 12124,
-          "sha256": "2ab49f213cfa38c3c9297a164c7287c8a845c316f060dd2da397ab74695eafa5",
+          "sha256": "69a4540ac78b1716b7bc4ab4b450914bbae96d77f0359b7a1eb9cdac885d13f4",
           "uri": "repo://changes/st-0906/runtime-manifest.v2.yaml"
         },
         {
@@ -19379,7 +19379,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b",
+          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
           "uri": "repo://package-lock.json"
         },
         {
@@ -19539,7 +19539,7 @@
         },
         {
           "bytes": 8827,
-          "sha256": "ef5d49a1dd4f761b2c8fd4e714bba2478bae6bbed8687be09ac577606dafd439",
+          "sha256": "25ba9b8fcbeafdd14c9a8cfac285fa4d986cf7b42765eb392b6de320e3e982dd",
           "uri": "repo://changes/st-1001/runtime-manifest.v2.yaml"
         }
       ],
@@ -19701,7 +19701,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b",
+          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
           "uri": "repo://package-lock.json"
         },
         {
@@ -19781,7 +19781,7 @@
         },
         {
           "bytes": 8759,
-          "sha256": "2d3850058317304b12632587c8373abf2e01d7e86e722cd9ab7a47969674a69e",
+          "sha256": "d719fa0b0bce6770769193b9b42abfed8eea2956a99cc9a340ab0859e879a055",
           "uri": "repo://changes/st-1002/runtime-manifest.v2.yaml"
         },
         {
@@ -19940,7 +19940,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b",
+          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
           "uri": "repo://package-lock.json"
         },
         {
@@ -20038,7 +20038,7 @@
         },
         {
           "bytes": 7245,
-          "sha256": "15918e5c5aac4835de7706835c8df9ad1d5a6a9f15fca4c7252ade53b4616960",
+          "sha256": "514dcf5ed641fd8d7844107c2a259e3e30dccfa92e49884e60852bad995cc167",
           "uri": "repo://changes/st-1004/runtime-manifest.v2.yaml"
         }
       ],
@@ -20137,7 +20137,7 @@
         },
         {
           "bytes": 4108,
-          "sha256": "30d398cff260be7292f5aa7b0cea7aa1bced9840cd5779432ec8901ceaba903a",
+          "sha256": "113703e0f26c19fff53978a12bbcd2ec8116a172a0298fde71f9e0a548b1eaf5",
           "uri": "repo://changes/st-1006/runtime-manifest.v2.yaml"
         }
       ],
@@ -20291,7 +20291,7 @@
         },
         {
           "bytes": 6739,
-          "sha256": "f42ee2d06ca48295a91e248067f9f3f1117f6563e0d9467f44bac08c3626d039",
+          "sha256": "1122aef6f97272ea14331ecff4a7e8dc5f13c44cb654a429fe20399309e6ec34",
           "uri": "repo://changes/st-1102/runtime-manifest.v2.yaml"
         },
         {
@@ -20437,7 +20437,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b",
+          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
           "uri": "repo://package-lock.json"
         },
         {
@@ -20588,7 +20588,7 @@
         },
         {
           "bytes": 9372,
-          "sha256": "576a43474c5172e5ea9d9f061e87db1bb77c6ba72eb3846df05deddae48b7ac2",
+          "sha256": "db3fb0a1a6347fd0724b2f30aad7dc9dd53847db53a343164e88700e6564cedd",
           "uri": "repo://changes/st-1103/runtime-manifest.v2.yaml"
         },
         {
@@ -20665,7 +20665,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b",
+          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
           "uri": "repo://package-lock.json"
         },
         {
@@ -20899,7 +20899,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b",
+          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
           "uri": "repo://package-lock.json"
         },
         {
@@ -21018,7 +21018,7 @@
         },
         {
           "bytes": 16756,
-          "sha256": "95d66dbc93bc5bddf6a7e26775beca1c5d17bf6bc82691883959ee417a5d885e",
+          "sha256": "db7ec01fc640ac78d6e1e039562d4a89ce6cdd85b982586aca20aa7f1c1e961d",
           "uri": "repo://changes/st-1105/runtime-manifest.v2.json"
         }
       ],
@@ -21102,7 +21102,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b",
+          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
           "uri": "repo://package-lock.json"
         },
         {
@@ -21366,7 +21366,7 @@
         },
         {
           "bytes": 9166,
-          "sha256": "8e8285d77c9093449b1e48700179469e5bd2f5a424e7ab168c9b8d050f6f6ab6",
+          "sha256": "7ace5a5140c99c14f627613a12aa5d20e93159f43d6a77c6d1ce0ad65d7f0738",
           "uri": "repo://changes/st-1202/runtime-manifest.v2.yaml"
         }
       ],
@@ -25768,8 +25768,123 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 70563,
-          "sha256": "f396ac2a956c0eb5171c8a3907954fac06cfb44f113447656864ebd1478793c7",
+          "bytes": 87985,
+          "sha256": "d3b9ac443a74baf48ebde7b3cb8814efd9586890fa6bb3fc75dbda833825a215",
+          "uri": "repo://changes/st-1704/reliability-product-selection-v1/contracts/schema-catalog.v1.json"
+        },
+        {
+          "bytes": 2349,
+          "sha256": "255bfe7c582dd56455de6cb8ded9b58c083b9c682b57d61f9dc917fdb279c3fb",
+          "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/article-evidence-snapshot.v1.json"
+        },
+        {
+          "bytes": 2526,
+          "sha256": "e583867ff63bc8c05db5d9aa853fbe40df9ab69fb1195e839ed8da5699de4667",
+          "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/candidate-ledger.v1.json"
+        },
+        {
+          "bytes": 4180,
+          "sha256": "25f8dfdc357693bdb15f699ea9a7d3a36723392f3515027f893ade7e8747c43b",
+          "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/discovery-run.v1.json"
+        },
+        {
+          "bytes": 2739,
+          "sha256": "20e487fd95afe1c8c343ad21cd95f3561496e25bd7fd38ee3dac8b2de6a640f2",
+          "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/fit-scores.v1.json"
+        },
+        {
+          "bytes": 660,
+          "sha256": "2df8ccbe8c388c3991ca31de913ee73ee372ebb780495aac944cbaae21a1dca4",
+          "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/monitoring-policy.v1.json"
+        },
+        {
+          "bytes": 5223,
+          "sha256": "1828f02f0110ed35f8f90c265040e4c7961c65cdbc54fd1e8c898335048318a7",
+          "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/recorded-provider-pages.v1.json"
+        },
+        {
+          "bytes": 921,
+          "sha256": "e8dd57a9355c0e40064f7d7345cd9b715c0750ed367676b34e8e8563a09999f1",
+          "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/research-plan.v1.json"
+        },
+        {
+          "bytes": 3768,
+          "sha256": "86f6c85a69bcb873ad48fd0d7c8f08fcc6a5431bd398f4c4368ac2acfda32ab8",
+          "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/review-aggregates.v1.json"
+        },
+        {
+          "bytes": 2398,
+          "sha256": "6aa8223e2288befb7d35975a7a763a935e240d0b897c6c000c6fdee2a0f06c3c",
+          "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/review-packet.v1.json"
+        },
+        {
+          "bytes": 3763,
+          "sha256": "a677f4a4d348de7abc9fceabd03a8d217419d39b194a86ebe94387b0f701ef62",
+          "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/source-policy.v1.json"
+        },
+        {
+          "bytes": 4132,
+          "sha256": "f31102793b507e48e4df58d79e09c190ab1c3b1a85d27a5a0ed77ac243129f29",
+          "uri": "repo://changes/st-1704/reliability-product-selection-v1/runtime-manifest.v1.json"
+        }
+      ],
+      "owner_dependencies": [],
+      "owner_id": "build_st1704_reliability_product_selection_v1",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/reliability_product_research_v1.py",
+          "uri": "repo://python/raos/adapters/reliability_product_research_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reliability_research_v1.py",
+          "uri": "repo://python/raos/application/editorial/reliability_research_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/reliability/contracts_v1.py",
+          "uri": "repo://python/raos/domain/reliability/contracts_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/reliability/selection_v1.py",
+          "uri": "repo://python/raos/domain/reliability/selection_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/ports/reliability/research_v1.py",
+          "uri": "repo://python/raos/ports/reliability/research_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_reliability_product_selection_v1.py",
+          "uri": "repo://scripts/build_st1704_reliability_product_selection_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_product_research.py",
+          "uri": "repo://scripts/raos_product_research.py",
+          "version": 2
+        }
+      ],
+      "story_ids": [
+        "ST-1704"
+      ]
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
+          "bytes": 70824,
+          "sha256": "fef2d8784533488a8e6023eb2225639b87354bb1fea5d7730c7bec01c5a898d0",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -27457,6 +27572,34 @@
         "ST-1908",
         "ST-0707"
       ]
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
+          "bytes": 7342,
+          "sha256": "a1fcbce36912fce8cd52417a0f5b8997b87e1eb29510f4e3ab186fff4cc0dc06",
+          "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
+        }
+      ],
+      "owner_dependencies": [],
+      "owner_id": "build_wordpress_mcp_v1",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-mcp-v1",
+          "uri": "repo://changes/wordpress-mcp-v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_wordpress_mcp_v1.py",
+          "uri": "repo://scripts/build_wordpress_mcp_v1.py",
+          "version": 2
+        }
+      ],
+      "story_ids": []
     },
     {
       "output_scope": "tracked",
