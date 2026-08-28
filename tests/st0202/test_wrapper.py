@@ -27,6 +27,9 @@ EXPECTED_IMAGE = (
 EXPECTED_CONFIG_DIGEST = (
     "sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd"
 )
+EXPECTED_INDEX_DIGEST = (
+    "sha256:d47c7ee99fcb951351d7194915f4e3a5ea604a8e8871183d713907dec4fb9bf5"
+)
 EXPECTED_EPHEMERAL_OVERRIDE = b"""services:
   object-storage:
     ports: !override
@@ -186,9 +189,12 @@ if payload and payload[0] == "inspect":
     if ".Config.Image" in template:
         print("seaweedfs:latest" if mode == "wrong_image" else {EXPECTED_IMAGE!r})
     elif ".Image" in template:
-        print("sha256:" + "f" * 64 if mode == "wrong_config" else {
-        EXPECTED_CONFIG_DIGEST!r
-    })
+        if mode == "wrong_config":
+            print("sha256:" + "f" * 64)
+        elif mode == "containerd_image_store":
+            print({EXPECTED_INDEX_DIGEST!r})
+        else:
+            print({EXPECTED_CONFIG_DIGEST!r})
     elif ".HostConfig.Init" in template:
         print("false" if mode == "runtime_init_false" else "true")
     else:
@@ -935,12 +941,21 @@ def test_persistent_commands_accept_fixed_range_without_ephemeral_override(
     assert _test_directories(tmp_path) == []
 
 
+def test_up_accepts_pinned_index_identity_from_containerd_image_store(
+    tmp_path: Path,
+) -> None:
+    wrapper, _fixture_log = _isolated_repository(tmp_path)
+    docker, _log = _fake_docker(tmp_path, "containerd_image_store")
+    result = _run(wrapper, docker, "up", tmp_path)
+    assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
+
+
 @pytest.mark.parametrize(
     ("mode", "message"),
     [
         ("unhealthy", "not healthy"),
         ("wrong_image", "image reference differs"),
-        ("wrong_config", "image config digest differs"),
+        ("wrong_config", "image identity digest differs"),
         ("wrong_platform", "platform differs"),
         ("wrong_labels", "image labels differ"),
         ("public_port", "not published on one bounded loopback port"),

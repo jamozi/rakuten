@@ -11,6 +11,8 @@ unset BASH_ENV ENV CDPATH GLOBIGNORE
 readonly docker_host='unix:///var/run/docker.sock'
 readonly minimum_compose_version='2.24.4'
 readonly expected_image='docker.io/chrislusf/seaweedfs:4.29@sha256:d47c7ee99fcb951351d7194915f4e3a5ea604a8e8871183d713907dec4fb9bf5'
+readonly expected_image_index_digest='sha256:d47c7ee99fcb951351d7194915f4e3a5ea604a8e8871183d713907dec4fb9bf5'
+readonly expected_image_manifest_digest='sha256:f16591b02e7a1d79dca57801405eec2c784711436edf65c0aa6394ef52800a3e'
 readonly expected_image_config_digest='sha256:10b004ca7cc8ee13615dbe670e1be047270ab30a742a5944e82330017d64d8fd'
 readonly expected_platform='linux/amd64'
 readonly expected_revision='1355c7a102194d6c461baf090eff50367b575afb'
@@ -474,7 +476,7 @@ assert_service() {
   local container_id
   local health
   local runtime_image
-  local image_config_digest
+  local image_identity_digest
   local image_platform
   local image_revision
   local image_version
@@ -509,20 +511,24 @@ assert_service() {
     error 'the running object-storage image reference differs from the pinned contract'
     return 1
   fi
-  image_config_digest=$(run_docker inspect --format '{{.Image}}' "$container_id")
-  if [[ $image_config_digest != "$expected_image_config_digest" ]]; then
-    error 'the running object-storage image config digest differs from the pinned contract'
-    return 1
-  fi
-  image_platform=$(run_docker image inspect --format '{{.Os}}/{{.Architecture}}' "$image_config_digest")
+  image_identity_digest=$(run_docker inspect --format '{{.Image}}' "$container_id")
+  case $image_identity_digest in
+    "$expected_image_index_digest" | "$expected_image_manifest_digest" | "$expected_image_config_digest")
+      ;;
+    *)
+      error 'the running object-storage image identity digest differs from the pinned contract'
+      return 1
+      ;;
+  esac
+  image_platform=$(run_docker image inspect --format '{{.Os}}/{{.Architecture}}' "$image_identity_digest")
   if [[ $image_platform != "$expected_platform" ]]; then
     error 'the running object-storage image platform differs from linux/amd64'
     return 1
   fi
-  image_revision=$(run_docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$image_config_digest")
-  image_version=$(run_docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.version"}}' "$image_config_digest")
-  image_license=$(run_docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.licenses"}}' "$image_config_digest")
-  image_source=$(run_docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.source"}}' "$image_config_digest")
+  image_revision=$(run_docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$image_identity_digest")
+  image_version=$(run_docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.version"}}' "$image_identity_digest")
+  image_license=$(run_docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.licenses"}}' "$image_identity_digest")
+  image_source=$(run_docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.source"}}' "$image_identity_digest")
   if [[ $image_revision != "$expected_revision" || $image_version != 4.29 || \
     $image_license != Apache-2.0 || \
     $image_source != https://github.com/seaweedfs/seaweedfs ]]; then
