@@ -4,8 +4,15 @@
 <!-- wp:shortcode -->[kurashinoshirube_breadcrumb]<!-- /wp:shortcode -->
 <!-- wp:group {"tagName":"article","className":"raos-article","layout":{"type":"constrained"}} -->
 <article class="wp-block-group raos-article">
-<!-- wp:shortcode -->[kurashinoshirube_article_category]<!-- /wp:shortcode -->
-<!-- wp:post-title {"level":1} /-->
+<!-- wp:group {"className":"raos-article-ruleline","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"}} -->
+<div class="wp-block-group raos-article-ruleline"><!-- wp:shortcode -->[kurashinoshirube_article_category]<!-- /wp:shortcode -->
+<!-- wp:post-date {"format":"Y.m.d","displayType":"modified","className":"raos-article-date"} /--></div>
+<!-- /wp:group -->
+<!-- wp:group {"className":"raos-article-title-grid","layout":{"type":"default"}} -->
+<div class="wp-block-group raos-article-title-grid"><!-- wp:post-title {"level":1} /-->
+<!-- wp:post-excerpt {"moreText":"","showMoreOnNewLine":false,"className":"raos-article-standfirst"} /--></div>
+<!-- /wp:group -->
+<!-- wp:shortcode -->[kurashinoshirube_article_hero]<!-- /wp:shortcode -->
 <!-- wp:post-content {"layout":{"type":"constrained"}} /-->
 <!-- wp:shortcode -->[kurashinoshirube_related_guides]<!-- /wp:shortcode -->
 </article><!-- /wp:group -->
