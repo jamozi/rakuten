@@ -1900,9 +1900,13 @@ def _public_connections(
         ),
         _Connection(
             _Response(
-                b"<html><body>not found</body></html>",
-                status=404,
+                b"",
+                status=301,
                 content_type="text/html; charset=UTF-8",
+                headers={
+                    "Location": "https://kurashinoshirube.com/sitemap_index.xml",
+                    "X-Redirect-By": "Yoast SEO",
+                },
             )
         ),
         _Connection(
@@ -2374,6 +2378,22 @@ def test_verify_public_checks_exact_anonymous_surface_and_bound_post_id(
     )
 
 
+def test_verify_public_binds_exact_yoast_core_sitemap_redirect(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    candidate = _prepared_request()
+    connections = _public_connections(candidate)
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=_QueueFactory(*connections)
+    )
+
+    verification = adapter.verify_public(candidate, 1704)
+
+    assert verification.public_surface_verified
+    assert verification.core_sitemap_sha256 == bytes_sha256(b"")
+
+
 def test_verify_public_binds_the_retained_at003_review_draft(
     private_root: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -2538,6 +2558,14 @@ def test_verify_public_rejects_missing_or_mismatched_at003_review_draft(
         ("page-sitemap-review-url-percent-encoded", 9),
         ("wrong-category", 1),
         ("core-sitemap-enabled", 10),
+        ("core-sitemap-legacy-404", 10),
+        ("core-sitemap-temporary-redirect", 10),
+        ("core-sitemap-missing-redirect-target", 10),
+        ("core-sitemap-wrong-redirect-target", 10),
+        ("core-sitemap-query-redirect-target", 10),
+        ("core-sitemap-wrong-redirect-owner", 10),
+        ("core-sitemap-pagination-header", 10),
+        ("core-sitemap-nonempty-body", 10),
         ("promoted-review-draft-still-present", 11),
         ("review-public-rest-nonempty", 12),
         ("review-url-redirect", 13),
@@ -2713,6 +2741,28 @@ def test_verify_public_rejects_duplicate_or_unindexable_public_surfaces(
         response.status = 200
         response.content_type = "application/xml"
         response.body = _sitemap_index()
+    elif mutation == "core-sitemap-legacy-404":
+        response.status = 404
+        response.headers = {}
+        response.body = b"<html><body>not found</body></html>"
+    elif mutation == "core-sitemap-temporary-redirect":
+        response.status = 302
+    elif mutation == "core-sitemap-missing-redirect-target":
+        response.headers.pop("Location")
+    elif mutation == "core-sitemap-wrong-redirect-target":
+        response.headers["Location"] = (
+            "https://kurashinoshirube.com/page-sitemap.xml"
+        )
+    elif mutation == "core-sitemap-query-redirect-target":
+        response.headers["Location"] = (
+            "https://kurashinoshirube.com/sitemap_index.xml?unexpected=1"
+        )
+    elif mutation == "core-sitemap-wrong-redirect-owner":
+        response.headers["X-Redirect-By"] = "Unexpected Redirector"
+    elif mutation == "core-sitemap-pagination-header":
+        response.total = "0"
+    elif mutation == "core-sitemap-nonempty-body":
+        response.body = b"redirecting"
     elif mutation == "promoted-review-draft-still-present":
         response.body = canonical_json_bytes([_wp_post("draft", candidate, post_id=26)])
         response.total = "1"
@@ -2772,6 +2822,27 @@ def test_review_404_leak_guard_allows_clean_canonical_navigation_only(
         '<html><body><a href="'
         f"{candidate.snapshot.payload.canonical_url}"
         '">公開記事へ戻る</a></body></html>'
+    ).encode()
+    adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
+        private_root, connection_factory=_QueueFactory(*connections)
+    )
+
+    verification = adapter.verify_public(candidate, 1704)
+
+    assert verification.public_surface_verified is True
+
+
+def test_review_404_leak_guard_allows_expected_review_route_metadata(
+    private_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _install_fake_live_boundary(monkeypatch)
+    candidate = _prepared_request()
+    connections = _public_connections(candidate)
+    review_url = f"https://kurashinoshirube.com/{candidate.slug}/"
+    connections[13].response.body = (
+        '<html><head><meta property="og:url" content="'
+        f'{review_url}"><link rel="canonical" href="{review_url}">'
+        "</head><body>ページが見つかりません。</body></html>"
     ).encode()
     adapter = OfficialSelfHostedEditorialPilotWordPressAdapter(
         private_root, connection_factory=_QueueFactory(*connections)

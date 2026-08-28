@@ -12,7 +12,7 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.3.3';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.3.6';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guide.webp';
@@ -24,8 +24,8 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_ACTION = 'kurashinoshirube_apply_at003_re
 const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1_';
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
-const KURASHINOSHIRUBE_RELATED_ARTICLE_MAP_SHA256 = 'c8c266182695745fa59caee6cdde1796da261820093b66ca9a2573508283ba31';
-const KURASHINOSHIRUBE_RELATED_ARTICLE_MAP_JSON = '{"st1703-first-suitcase-comparison":{"home_anchor":"cluster-mobility","home_label":"暮らしの道具「移動」の一覧へ","targets":{}},"st1704-anker-solix-c300-c800-c1000-differences":{"home_anchor":"cluster-ready","home_label":"暮らしの道具「備え」の一覧へ","targets":{"st1704-portable-power-station-guide":"停電対策用ポータブル電源の選び方"}},"st1704-compact-robot-vacuum-shortlist":{"home_anchor":"cluster-home","home_label":"暮らしの道具「家事」の一覧へ","targets":{"st1704-countertop-dishwasher-for-small-households":"工事不要の食洗機を1〜2人暮らし向けに比較"}},"st1704-countertop-dishwasher-for-small-households":{"home_anchor":"cluster-home","home_label":"暮らしの道具「家事」の一覧へ","targets":{"st1704-compact-robot-vacuum-shortlist":"省スペースのロボット掃除機を条件で絞る"}},"st1704-portable-power-station-guide":{"home_anchor":"cluster-ready","home_label":"暮らしの道具「備え」の一覧へ","targets":{"st1704-anker-solix-c300-c800-c1000-differences":"Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い"}}}';
+const KURASHINOSHIRUBE_RELATED_ARTICLE_MAP_SHA256 = '5db17f3cff259d4abe35cf616b2e953d25f33b5187ac637d6c1c6f3a86174028';
+const KURASHINOSHIRUBE_RELATED_ARTICLE_MAP_JSON = '{"st1703-first-suitcase-comparison":{"home_anchor":"cluster-mobility","home_label":"暮らしの道具「移動」の一覧へ","targets":{}},"st1704-anker-solix-c300-c800-c1000-differences":{"home_anchor":"cluster-ready","home_label":"暮らしの道具「備え」の一覧へ","targets":{"st1704-portable-power-station-guide":"停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める"}},"st1704-compact-robot-vacuum-shortlist":{"home_anchor":"cluster-home","home_label":"暮らしの道具「家事」の一覧へ","targets":{"st1704-countertop-dishwasher-for-small-households":"工事不要の食洗機を1〜2人暮らし向けに比較"}},"st1704-countertop-dishwasher-for-small-households":{"home_anchor":"cluster-home","home_label":"暮らしの道具「家事」の一覧へ","targets":{"st1704-compact-robot-vacuum-shortlist":"省スペースのロボット掃除機を条件で絞る"}},"st1704-portable-power-station-guide":{"home_anchor":"cluster-ready","home_label":"暮らしの道具「備え」の一覧へ","targets":{"st1704-anker-solix-c300-c800-c1000-differences":"Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い"}}}';
 const KURASHINOSHIRUBE_HOMEPAGE_CLUSTERS_SHA256 = 'd9e2e40d369723e2e8dc2f6d5bfc0e74e2873c7748936a287f04a4acbc7dc7da';
 const KURASHINOSHIRUBE_HOMEPAGE_CLUSTERS_JSON = '{"clusters":{"cluster-home":{"description":"置き場所と手間から、無理のない一台を選ぶ。","heading":"置き場所と日々の手間を整える","label":"家事","post_order":["st1704-countertop-dishwasher-for-small-households","st1704-compact-robot-vacuum-shortlist"],"posts":{"st1704-compact-robot-vacuum-shortlist":"省スペースのロボット掃除機を条件で絞る","st1704-countertop-dishwasher-for-small-households":"工事不要の食洗機を1〜2人暮らし向けに比較"}},"cluster-mobility":{"description":"軽さ、容量、持ち運び方の違いをほどく。","heading":"持ち運ぶ負担を小さくする","label":"移動","post_order":["st1703-first-suitcase-comparison"],"posts":{"st1703-first-suitcase-comparison":"エースの機内持ち込みスーツケース3モデル比較"}},"cluster-ready":{"description":"必要な容量と出力を、使う場面から逆算する。","heading":"必要な電力を過不足なく備える","label":"備え","post_order":["st1704-portable-power-station-guide","st1704-anker-solix-c300-c800-c1000-differences"],"posts":{"st1704-anker-solix-c300-c800-c1000-differences":"Anker Solix 4モデルの違い","st1704-portable-power-station-guide":"停電対策用ポータブル電源の選び方"}}},"display_order":["cluster-mobility","cluster-home","cluster-ready"]}';
 
@@ -658,6 +658,28 @@ function kurashinoshirube_current_snapshot(): ?array
     }
     return $cache[$post_id];
 }
+
+/** Preserve authored RAOS HTML instead of applying WordPress auto-paragraphs. */
+function kurashinoshirube_disable_wpautop_for_bound_public_article(): void
+{
+    if (! is_singular('post')) {
+        return;
+    }
+    $post_id = (int) get_queried_object_id();
+    if (
+        $post_id <= 0
+        || get_post_status($post_id) !== 'publish'
+        || kurashinoshirube_bound_post_snapshot($post_id, false) === null
+    ) {
+        return;
+    }
+    remove_filter('the_content', 'wpautop', 10);
+}
+add_action(
+    'wp',
+    'kurashinoshirube_disable_wpautop_for_bound_public_article',
+    0
+);
 
 /** Read one exact lower-case SHA-256 assertion from a request boundary. */
 function kurashinoshirube_read_sha256_input(int $input_type, string $name): ?string
@@ -1877,15 +1899,15 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
             $items .= '<li><a href="' . esc_url($expected_permalink) . '">'
                 . esc_html($title) . '</a></li>';
         }
-        if ($items === '') {
-            continue;
-        }
+        $cluster_body = $items === ''
+            ? '<p class="raos-empty-state">このカテゴリの記事は、根拠と公開条件の確認後に掲載します。</p>'
+            : '<ul>' . $items . '</ul>';
         $sections .= '<section id="' . esc_attr($id) . '" class="raos-cluster" '
             . 'aria-labelledby="' . esc_attr($id) . '-title">'
             . '<p class="raos-condition-label">' . esc_html($cluster['label'])
             . '</p><h3 id="' . esc_attr($id) . '-title">'
-            . esc_html($cluster['heading']) . '</h3><ul>' . $items
-            . '</ul></section>';
+            . esc_html($cluster['heading']) . '</h3>' . $cluster_body
+            . '</section>';
     }
     if ($sections === '') {
         $sections = '<p class="raos-empty-state">カテゴリ別ガイドは、'

@@ -2,7 +2,7 @@
   "schema_version": "2.0.0",
   "profile": "RAOS_ST1303_RECORDED_SYNTHETIC_V2",
   "scenario_id": "ST1303.RECORDED.SYNTHETIC.0001",
-  "contract_sha256": "e023c517ffedd8ea823fa78750d992fb5dc0b62a4d2ea9094220caa32a6c4128",
+  "contract_sha256": "1b4b665ea19674d242a5f320f2d9ee8cf76f45c3380ee3a3c2065279570c133b",
   "request": {
     "run_id": "018f3e90-7b00-7000-8000-000000001303",
     "requested_at": "2026-09-08T00:00:00Z",
@@ -80,7 +80,7 @@
           "slot": 3,
           "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
           "slug": "anker-solix-c300-c800-c1000-differences",
-          "packet_sha256": "88fc4d065981fcde7c0a169181c428e519d19546f9ed451a5cc1d57b9442b645",
+          "packet_sha256": "53c2a7081e0fd78597fe99e398d66d876f15cea5e827d720cc0fbc1901e83997",
           "intent_classification": "MODEL_DIFFERENCES"
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
@@ -194,5 +194,5 @@
       }
     ]
   },
-  "expected_input_sha256": "f886eabfde7f7296d007fa1574181f9fe60eeed173686932a5bc080fce90ebc0"
+  "expected_input_sha256": "4c5c3853a71b3bd1ecd70b6560d2c24df0fe7699c258e854c5fb007c24856c36"
 }

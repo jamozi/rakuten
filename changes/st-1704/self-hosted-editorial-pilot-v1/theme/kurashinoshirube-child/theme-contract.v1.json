@@ -302,7 +302,7 @@
         "home_anchor": "cluster-ready",
         "home_label": "暮らしの道具「備え」の一覧へ",
         "targets": {
-          "st1704-portable-power-station-guide": "停電対策用ポータブル電源の選び方"
+          "st1704-portable-power-station-guide": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める"
         }
       },
       "st1704-compact-robot-vacuum-shortlist": {
@@ -327,7 +327,7 @@
         }
       }
     },
-    "map_sha256": "c8c266182695745fa59caee6cdde1796da261820093b66ca9a2573508283ba31",
+    "map_sha256": "5db17f3cff259d4abe35cf616b2e953d25f33b5187ac637d6c1c6f3a86174028",
     "owner": "THEME_FIXED_ALLOWLIST",
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_BOUND_RAOS_SNAPSHOT"
   },
@@ -392,5 +392,5 @@
     "wrapper_keys": ["payload", "payload_sha256", "schema"]
   },
   "theme_slug": "kurashinoshirube-child",
-  "theme_version": "1.3.3"
+  "theme_version": "1.3.6"
 }

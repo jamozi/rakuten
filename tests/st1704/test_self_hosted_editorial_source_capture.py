@@ -1638,7 +1638,7 @@ def test_capture_cli_refuses_arbitrary_identifier_url_and_output(
     assert rejected.value.code == 2
 
 
-def test_existing_wordpress_cli_remains_exactly_six_commands() -> None:
+def test_existing_wordpress_cli_remains_exactly_six_closed_commands() -> None:
     namespace = runpy.run_path(str(WORDPRESS_SCRIPT))
     assert namespace["COMMANDS"] == (
         "prepare",

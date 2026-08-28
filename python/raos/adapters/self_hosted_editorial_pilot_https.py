@@ -145,6 +145,8 @@ _SOCIAL_IMAGE_URL: Final = (
 _WORDPRESS_API_DISCOVERY_LINK: Final = (
     f'<{PILOT_ORIGIN}/wp-json/>; rel="https://api.w.org/"'
 )
+_YOAST_CORE_SITEMAP_REDIRECT: Final = f"{PILOT_ORIGIN}/sitemap_index.xml"
+_YOAST_REDIRECT_BY: Final = "Yoast SEO"
 _PUBLIC_KINDS: Final = frozenset(
     {
         "wordpress-post",
@@ -1845,6 +1847,20 @@ def _validate_review_not_found_body(raw: bytes, *, request: ReviewDraftRequest) 
         "raos-structured-data",
     )
     observed_views = _review_leak_views(document)
+    visible_views = _review_visible_leak_views(document)
+    allowed_review_route_views = _review_leak_views(
+        f"{PILOT_ORIGIN}/{request.slug}/"
+    ) + _review_leak_views(request.slug)
+    observed_without_expected_route: list[str] = []
+    for observed in observed_views:
+        cleaned = observed
+        for allowed in sorted(
+            set(allowed_review_route_views), key=len, reverse=True
+        ):
+            cleaned = cleaned.replace(allowed, "")
+        if cleaned:
+            observed_without_expected_route.append(cleaned)
+    content_views = tuple(dict.fromkeys(observed_without_expected_route))
     normalized_exact_values = tuple(
         _normalized_review_leak_text(value) for value in exact_committed_values
     )
@@ -1886,7 +1902,7 @@ def _validate_review_not_found_body(raw: bytes, *, request: ReviewDraftRequest) 
         or any(
             token in observed
             for token in meaningful_tokens
-            for observed in observed_views
+            for observed in content_views
         )
         or _contains_review_cta_fragment(observed_views)
         or _contains_review_leak_fragment(
@@ -1894,7 +1910,7 @@ def _validate_review_not_found_body(raw: bytes, *, request: ReviewDraftRequest) 
             _review_leak_fragments(article_fragment_sources),
         )
         or _contains_review_leak_fragment(
-            observed_views,
+            visible_views,
             _review_snapshot_leak_fragments(
                 snapshot_json,
                 canonical_url=request.snapshot.payload.canonical_url,
@@ -2127,7 +2143,10 @@ def _bounded_body(
     response: SelfHostedWordPressHttpsResponse,
     *,
     maximum: int = MAX_RESPONSE_BYTES,
+    minimum: int = 2,
 ) -> bytes:
+    if type(minimum) is not int or not 0 <= minimum <= maximum:
+        _fail(EditorialPilotFailureCode.OUTCOME_AMBIGUOUS)
     if not hasattr(response, "getheader") or not hasattr(response, "read"):
         _fail(EditorialPilotFailureCode.OUTCOME_AMBIGUOUS)
     getheader = response.getheader
@@ -2148,7 +2167,7 @@ def _bounded_body(
         ):
             _fail(EditorialPilotFailureCode.OUTCOME_AMBIGUOUS)
     body = response.read(maximum + 1)
-    if type(body) is not bytes or not 2 <= len(body) <= maximum:
+    if type(body) is not bytes or not minimum <= len(body) <= maximum:
         _fail(EditorialPilotFailureCode.OUTCOME_AMBIGUOUS)
     if content_length is not None and len(body) != int(content_length):
         _fail(EditorialPilotFailureCode.OUTCOME_AMBIGUOUS)
@@ -2576,7 +2595,7 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                 _HTML_CONTENT_TYPE,
                 MAX_RESPONSE_BYTES,
                 False,
-                404,
+                301,
             ),
             "review-draft-rest": (
                 f"{PILOT_POSTS_PATH}?context=edit&slug={request.slug}"
@@ -2636,14 +2655,28 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                 http_status = response.status
                 content_type = response.getheader("Content-Type")
                 location_header = response.getheader("Location")
+                redirect_by_header = response.getheader("X-Redirect-By")
                 x_wp_total = response.getheader("X-WP-Total")
                 x_wp_total_pages = response.getheader("X-WP-TotalPages")
+                exact_yoast_core_sitemap_redirect = (
+                    kind == "core-sitemap"
+                    and http_status == 301
+                    and location_header == _YOAST_CORE_SITEMAP_REDIRECT
+                    and redirect_by_header == _YOAST_REDIRECT_BY
+                    and response.getheader("Content-Length") == "0"
+                    and response.getheader("Content-Encoding") is None
+                    and response.getheader("Transfer-Encoding") is None
+                    and response.getheader("Link") is None
+                    and x_wp_total is None
+                    and x_wp_total_pages is None
+                )
                 if (
                     type(http_status) is not int
-                    or http_status != expected_status
+                    or (kind == "core-sitemap" and not exact_yoast_core_sitemap_redirect)
+                    or (kind != "core-sitemap" and http_status != expected_status)
                     or type(content_type) is not str
                     or content_type_pattern.fullmatch(content_type) is None
-                    or location_header is not None
+                    or (kind != "core-sitemap" and location_header is not None)
                     or (x_wp_total is not None and type(x_wp_total) is not str)
                     or (
                         x_wp_total_pages is not None
@@ -2661,7 +2694,13 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                         }
                         if x_robots_tokens & {"noindex", "none"}:
                             _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-                raw = _bounded_body(response, maximum=maximum)
+                raw = _bounded_body(
+                    response,
+                    maximum=maximum,
+                    minimum=0 if kind == "core-sitemap" else 2,
+                )
+                if kind == "core-sitemap" and raw:
+                    _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
                 if kind == "wordpress-post":
                     decoded = _decode_response(raw)
                     if type(decoded) is not list:

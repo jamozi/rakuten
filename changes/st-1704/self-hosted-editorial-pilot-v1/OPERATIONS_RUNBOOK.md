@@ -61,7 +61,7 @@ Review URL appears on the home page or in the Yoast post sitemap. Post ID 19 rem
 unchanged until its separate AT-003 snapshot update. Any mismatch stops later
 publication; it does not authorize an automated retry or a broader WordPress write.
 
-Child theme 1.3.3 independently excludes every temporary Review slug and every
+Child theme 1.3.6 independently excludes every temporary Review slug and every
 allowlisted final slug without an exact bound public snapshot from both the Yoast
 post sitemap and the front-page latest-guides Query block. This is defense in depth,
 not authority to perform the human containment action.
@@ -278,7 +278,7 @@ recover and verify do not rebuild the confirmed request from current provider fi
    must be `summary_large_image`, and the default social image must be the verified
    1600×900 theme asset with an empty attachment ID. These are persisted human
    settings, not values written by the theme.
-3. A human WordPress administrator installs and activates the generated child-theme 1.3.3
+3. A human WordPress administrator installs and activates the generated child-theme 1.3.6
    package only after reviewing its exact hash. No repository command activates
    either component.
 4. Start a fresh WordPress request and require the Site Health test
@@ -339,7 +339,11 @@ recover and verify do not rebuild the confirmed request from current provider fi
    OG/X set, sole RAOS JSON-LD graph, exact related-navigation state, the current
    article's exact homepage cluster/link/title with no unbound future article link,
    Yoast sitemap index/post/page maps, and that the WordPress core sitemap is not a
-   second public owner. The command also derives the exact digest-bound Review URL
+   second public owner. With the fixed Yoast SEO 28.3 profile, `/wp-sitemap.xml`
+   must be the exact empty-body HTTP 301 delegation to the same-origin
+   `/sitemap_index.xml` with `X-Redirect-By: Yoast SEO`; other redirect targets,
+   statuses, owners, or response bodies fail closed. The command also derives the
+   exact digest-bound Review URL
    from the journal-bound immutable request; an anonymous GET must return HTTP 404 with no
    `Location`, and an anonymous public posts REST lookup for that exact slug must be
    empty. Through the same existing owner gate and credential header, an exact-slug
