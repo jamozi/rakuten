@@ -1,4 +1,4 @@
-# RAOS Bounded Operator 2.1.9
+# RAOS Bounded Operator 2.1.10
 
 This deterministic package preserves the closed ST-1506 v1 status, Yoast, and
 child-theme surfaces and adds the ST-1704 publication controller under the
@@ -70,6 +70,16 @@ Patch 2.1.9 runs the transient capability projection at its earliest bounded
 persisted role baseline before ordinary filters can alter the received array.
 The exact request, controller, `get_items`/`check_update_permission` stack,
 post, and mapped-capability gates are unchanged.
+
+Patch 2.1.10 adds only the observed dishwasher terminal publication incident
+to the fixed reconciliation allowlist, bound through generated data to article
+`st1704-countertop-dishwasher-for-small-households`, post 41, and its fixed
+public slug. The portable-power and Anker incidents remain eligible and the
+robot-vacuum article remains excluded. The canonical receipt stays terminal;
+the workflow can only remove the exact locked redirect metadata and record one
+owner-private verification evidence SHA-256. It does not repair or complete
+hook replay, change proposal state/result/counts, broaden normal gates, or add
+a REST authority.
 
 The v2 controller can only publish one of four generated article bindings, or
 revise the exact existing Draft IDs 28, 29, 41, and 30. A revision is

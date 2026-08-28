@@ -1742,6 +1742,7 @@ final class RAOS_ST1704_Publication_Controller_V2
         $target_ids = array(
             'st1704-portable-power-station-guide',
             'st1704-anker-solix-c300-c800-c1000-differences',
+            'st1704-countertop-dishwasher-for-small-households',
         );
         $targets = array();
         foreach ($target_ids as $article_id) {
@@ -3380,7 +3381,7 @@ final class RAOS_ST1704_Publication_Controller_V2
         <hr>
         <h2><?php echo esc_html('Incident-bound redirect metadata reconciliation'); ?></h2>
         <p><?php echo esc_html(
-            'This admin-only workflow is limited to the two fixed terminal publication incidents. It never changes a proposal receipt or adds a REST authority.'
+            'This admin-only workflow is limited to the three fixed terminal publication incidents. It never changes a proposal receipt or adds a REST authority.'
         ); ?></p>
         <?php
         $notice = isset($_GET['raos_st1704_reconciliation_notice'])
@@ -3404,7 +3405,7 @@ final class RAOS_ST1704_Publication_Controller_V2
             return;
         endif;
         $targets = self::terminal_reconciliation_targets();
-        if (count($targets) !== 2) :
+        if (count($targets) !== 3) :
             ?>
             <p><?php echo esc_html('The fixed reconciliation allowlist is invalid.'); ?></p>
             <?php
@@ -4076,7 +4077,7 @@ final class RAOS_ST1704_Publication_Controller_V2
         }
         $targets = self::terminal_reconciliation_targets();
         $candidates = $this->terminal_reconciliation_candidates_for_update();
-        if (count($targets) !== 2) {
+        if (count($targets) !== 3) {
             return self::error('raos_st1704_reconciliation_allowlist_invalid', 409);
         }
         if (is_wp_error($candidates)) {
@@ -4141,7 +4142,7 @@ final class RAOS_ST1704_Publication_Controller_V2
             return self::error('raos_st1704_reconciliation_candidate_invalid', 409);
         }
         $targets = self::terminal_reconciliation_targets();
-        if (count($targets) !== 2) {
+        if (count($targets) !== 3) {
             return self::error('raos_st1704_reconciliation_allowlist_invalid', 409);
         }
         $result = array();

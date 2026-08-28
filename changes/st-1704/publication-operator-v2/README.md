@@ -12,8 +12,8 @@ The tracked runtime manifest binds every runtime source and each packaged file.
 The generated package advertises WordPress 7.1 and the v2 controller also
 refuses to initialize outside the 7.1.x release line.
 
-Package 2.1.9 keeps the publication and revision REST contracts unchanged. It
-fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
+Package 2.1.10 keeps the publication and revision REST contracts unchanged.
+Patch 2.1.9 fail-closes unless the WordPress 7.1 old-slug and old-date callbacks have their
 exact core registration, and prevents those callbacks from creating Review URL
 redirect metadata during bounded `post_updated` replay. All other metadata,
 including any pre-existing `_wp_old_slug` or `_wp_old_date` rows, remains part
@@ -88,6 +88,17 @@ received array.
 The existing exact full-capability comparison is retained, as are the armed
 request, controller, `get_items`/`check_update_permission` stack, fixed post
 ID/slug/status, and mapped-capability checks.
+
+Patch 2.1.10 responds only to the third observed terminal publication incident
+by adding the fixed dishwasher article, post 41, and its generated public slug
+to the existing incident reconciliation allowlist. Portable-power post 28 and
+Anker post 29 remain the other two targets; the robot-vacuum article is
+deliberately excluded. This is incident-bound expansion, not a generic recovery
+policy: the canonical receipt remains terminal and unchanged. The two Tools
+stages can only remove the exact core redirect metadata proven by the locked
+pre-state and record the SHA-256 of owner-private public verification evidence.
+They cannot complete replay, change proposal state/result/counts, or add REST,
+normal publication, post, or metadata authority.
 
 Normal execution still requires two default-off host gates and a distinct wp-admin
 human approval of the exact proposal hash. There is no REST approval route, no

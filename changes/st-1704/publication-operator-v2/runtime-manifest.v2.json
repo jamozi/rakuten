@@ -50,6 +50,10 @@
       {
         "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
         "post_id": 29
+      },
+      {
+        "article_id": "st1704-countertop-dishwasher-for-small-households",
+        "post_id": 41
       }
     ]
   },
@@ -65,14 +69,14 @@
   ],
   "operator_contract_version": 2,
   "package": {
-    "bytes": 525823,
+    "bytes": 526530,
     "compression": "ZIP_STORED",
     "file_count": 4,
     "files": [
       {
-        "bytes": 5590,
+        "bytes": 6229,
         "path": "README.md",
-        "sha256": "74bf2ea4dd4c4f15b28d5efa2a315869bb1f7f94c0b3e53f5a54b18abe284452"
+        "sha256": "44469e9ea62b751085098be1097ecca584cdd2552c783581dcc76127f65fb549"
       },
       {
         "bytes": 2491,
@@ -80,19 +84,19 @@
         "sha256": "2b3d7d828941890e799b575f24cbab690b0895cea1cd64d45fd3166ab030dc8b"
       },
       {
-        "bytes": 328651,
+        "bytes": 328718,
         "path": "includes/st1704-publication-controller.v2.php",
-        "sha256": "93617d7d6ef22ab224a5c2c78eeffcccba5ee06d4328b8f0c48c88ab238850db"
+        "sha256": "e312e1a6095cab9ff428987a5d78c606efdf495992186bfa9f8b22792da0d3bb"
       },
       {
-        "bytes": 188345,
+        "bytes": 188346,
         "path": "raos-bounded-operator.php",
-        "sha256": "1bb3bde6e9ad3696dace946cc9ae3203dec8da5b53e84e0818b820c967d41aec"
+        "sha256": "5056136b516ed71a208fb1f2d3c73e29426c46402373b125071dd9ae9ea2a7cb"
       }
     ],
     "root": "raos-bounded-operator/",
-    "sha256": "fc688e4a709dee9370cabeb1303dcca0f059e38429dac5b2f57b6311bc51e925",
-    "version": "2.1.9"
+    "sha256": "debcbb9ed97a199d37c5a05146f0ee14e542851752f6c269b08ae06efe648f59",
+    "version": "2.1.10"
   },
   "predecessors": {
     "st1506_wordpress_operator": {

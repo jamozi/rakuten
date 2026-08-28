@@ -49,17 +49,34 @@ def test_gate_mode_is_strict_default_off_and_mutually_exclusive() -> None:
     assert "self::reconciliation_gate_enabled()" in incident
 
 
-def test_allowlist_binds_only_two_article_post_pairs_without_proposal_constants() -> None:
+def test_allowlist_binds_only_three_article_post_slug_pairs_without_proposal_constants() -> None:
     targets = method("terminal_reconciliation_targets", "bindings_are_exact")
     assert "st1704-portable-power-station-guide" in targets
     assert "st1704-anker-solix-c300-c800-c1000-differences" in targets
-    assert "st1704-countertop-dishwasher-for-small-households" not in targets
+    assert "st1704-countertop-dishwasher-for-small-households" in targets
     assert "st1704-compact-robot-vacuum-shortlist" not in targets
     assert "self::fixed_revision_post_ids()" in targets
     assert "self::fixed_articles()" in targets
+    assert "'public_slug' => $articles[$article_id]" in targets
     assert "proposal" not in targets.lower()
     assert "RECONCILIATION_PROPOSAL_ID" not in source()
     assert "reconciliation_proposal_ids" not in source()
+    assert source().count("count($targets) !== 3") == 3
+    assert "count($targets) !== 2" not in source()
+
+
+def test_admin_copy_states_three_fixed_incidents_and_terminal_receipt_boundary() -> None:
+    render = method(
+        "render_terminal_reconciliation_tools",
+        "preview_terminal_reconciliation",
+    )
+    assert "limited to the three fixed terminal publication incidents" in render
+    receipt = method(
+        "validate_terminal_reconciliation_receipt",
+        "validate_reconciliation_audit_chain",
+    )
+    assert "$approval_expiry_epoch > time()" in receipt
+    assert "SET state" not in receipt
 
 
 def test_candidate_discovery_is_exact_unique_and_never_generic_latest() -> None:

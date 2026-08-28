@@ -19,7 +19,7 @@ ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE_RELATIVE: Final = Path("changes/st-1704/publication-operator-v2")
 SLICE_ROOT: Final = ROOT / SLICE_RELATIVE
 PLUGIN_SLUG: Final = "raos-bounded-operator"
-PLUGIN_VERSION: Final = "2.1.9"
+PLUGIN_VERSION: Final = "2.1.10"
 PACKAGE_ROOT: Final = f"{PLUGIN_SLUG}/"
 MANIFEST_RELATIVE: Final = SLICE_RELATIVE / "runtime-manifest.v2.json"
 MANIFEST_PATH: Final = ROOT / MANIFEST_RELATIVE
@@ -95,6 +95,11 @@ REVISION_POST_IDS: Final = (
     ("st1704-anker-solix-c300-c800-c1000-differences", 29),
     ("st1704-countertop-dishwasher-for-small-households", 41),
     ("st1704-compact-robot-vacuum-shortlist", 30),
+)
+TERMINAL_RECONCILIATION_TARGETS: Final = (
+    ("st1704-portable-power-station-guide", 28),
+    ("st1704-anker-solix-c300-c800-c1000-differences", 29),
+    ("st1704-countertop-dishwasher-for-small-households", 41),
 )
 EXCLUDED_UPDATE_ARTICLE: Final = "st1703-first-suitcase-comparison"
 
@@ -289,6 +294,20 @@ def validate_publication_bindings() -> None:
         != tuple(article_id for article_id, _slug in PUBLISH_BINDINGS)
         or len({post_id for _article_id, post_id in REVISION_POST_IDS}) != 4
         or any(post_id < 1 for _article_id, post_id in REVISION_POST_IDS)
+        or TERMINAL_RECONCILIATION_TARGETS
+        != (
+            ("st1704-portable-power-station-guide", 28),
+            ("st1704-anker-solix-c300-c800-c1000-differences", 29),
+            ("st1704-countertop-dishwasher-for-small-households", 41),
+        )
+        or any(
+            target not in REVISION_POST_IDS
+            for target in TERMINAL_RECONCILIATION_TARGETS
+        )
+        or any(
+            article_id == "st1704-compact-robot-vacuum-shortlist"
+            for article_id, _post_id in TERMINAL_RECONCILIATION_TARGETS
+        )
     ):
         _fail("ST1704_PUBLICATION_OPERATOR_V2_BINDING_DRIFT")
 
@@ -555,7 +574,7 @@ def build_manifest() -> bytes:
             "rest_authority": "NONE",
             "targets": [
                 {"article_id": article_id, "post_id": post_id}
-                for article_id, post_id in REVISION_POST_IDS[:2]
+                for article_id, post_id in TERMINAL_RECONCILIATION_TARGETS
             ],
         },
         "semantic_inputs": semantic_inputs,
