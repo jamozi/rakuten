@@ -153,12 +153,12 @@ source_artifacts:
     sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
     role: DEPENDENCY_ARTIFACT
   - uri: repo://package.json
-    bytes: 1906
-    sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
+    bytes: 2245
+    sha256: e1665573013d997af81a1b64717a8c176d3619d0e7f1f742c2630802dabc0992
     role: LOCKED_TOOLCHAIN
   - uri: repo://package-lock.json
-    bytes: 271352
-    sha256: d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b
+    bytes: 329409
+    sha256: 8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d
     role: LOCKED_TOOLCHAIN
   - uri: repo://apps/web/package.json
     bytes: 572

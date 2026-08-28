@@ -106,7 +106,7 @@ source_artifacts:
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1002/runtime-manifest.v2.yaml
   bytes: 8759
-  sha256: 2d3850058317304b12632587c8373abf2e01d7e86e722cd9ab7a47969674a69e
+  sha256: d719fa0b0bce6770769193b9b42abfed8eea2956a99cc9a340ab0859e879a055
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-0503/README.md
   bytes: 6403

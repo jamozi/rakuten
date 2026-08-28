@@ -65,7 +65,12 @@ describe('ST-0103 TypeScript toolchain contract', () => {
 
   it('keeps the workspace allowlist ordered and explicit', () => {
     const root = readObject('package.json');
-    expect(root['workspaces']).toEqual(['apps/web', 'packages/web-contracts', 'packages/web-ui']);
+    expect(root['workspaces']).toEqual([
+      'apps/web',
+      'packages/wordpress-mcp-bridge',
+      'packages/web-contracts',
+      'packages/web-ui',
+    ]);
   });
 
   it('keeps the supply-chain overrides exact and closed', () => {
