@@ -1,0 +1,371 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="5660" viewBox="0 0 1440 5660" role="img" aria-labelledby="title desc">
+  <title id="title">暮らしのしるべ 比較記事テンプレート デスクトップ</title>
+  <desc id="desc">商品カード、比較表、選定根拠、向く人と向かない人、楽天CTA、出典を含む落ち着いた比較記事テンプレート</desc>
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="10" stdDeviation="22" flood-color="#17243F" flood-opacity="0.08"/>
+    </filter>
+    <pattern id="paper-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#D6DFDC" stroke-width="1" opacity="0.42"/>
+    </pattern>
+    <style>
+      .sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; }
+      .serif { font-family: ui-serif, "Yu Mincho", "Hiragino Mincho ProN", serif; }
+      .ink { fill: #17243F; }
+      .muted { fill: #4F5B57; }
+      .indigo { fill: #24365F; }
+      .warm { fill: #983F25; }
+      .white { fill: #FFFFFF; }
+      .caps { font-size: 13px; font-weight: 700; letter-spacing: 2.2px; }
+      .body { font-size: 17px; font-weight: 400; }
+      .small { font-size: 14px; font-weight: 400; }
+      .label { font-size: 13px; font-weight: 700; letter-spacing: 0.5px; }
+      .h2 { font-size: 34px; font-weight: 600; letter-spacing: 0.2px; }
+      .h3 { font-size: 23px; font-weight: 600; }
+      .rule { stroke: #9BA9A5; stroke-width: 1; }
+      .soft-rule { stroke: #D6DFDC; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <rect id="Page/Background" width="1440" height="5660" fill="#F7F2E9"/>
+
+  <g id="Header">
+    <rect width="1440" height="84" fill="#FFFDF8"/>
+    <line x1="0" y1="83.5" x2="1440" y2="83.5" stroke="#17243F" stroke-opacity="0.15"/>
+    <g id="Brand" transform="translate(220 22)">
+      <rect width="40" height="40" rx="8" fill="#17243F"/>
+      <path d="M11 11h18v3H11zm0 8h14v3H11zm0 8h10v3H11z" fill="#F7F2E9"/>
+      <text class="serif indigo" x="55" y="27" font-size="22" font-weight="600" letter-spacing="2.6">暮らしのしるべ</text>
+    </g>
+    <g id="Navigation" class="sans muted" font-size="14" font-weight="700" transform="translate(910 33)">
+      <text x="0" y="15">選び方</text>
+      <text x="92" y="15">比較記事</text>
+      <text x="194" y="15">編集方針</text>
+      <text x="300" y="15">出典について</text>
+    </g>
+  </g>
+
+  <g id="Article" transform="translate(220 0)">
+    <g id="Breadcrumb" transform="translate(0 126)">
+      <text class="sans muted small" x="0" y="16">ホーム　/　家電　/　ポータブル電源の比較</text>
+    </g>
+
+    <g id="Hero" transform="translate(0 178)">
+      <text class="sans warm caps" x="0" y="16">比較・選び方</text>
+      <text class="serif ink" x="0" y="84" font-size="52" font-weight="600" letter-spacing="0.5">ポータブル電源2モデルを比較。</text>
+      <text class="serif ink" x="0" y="148" font-size="52" font-weight="600" letter-spacing="0.5">容量より先に、使い方から選ぶ</text>
+      <text class="sans muted body" x="0" y="208">
+        <tspan x="0" dy="0">日常の備えと週末の持ち出しでは、重視する条件が異なります。</tspan>
+        <tspan x="0" dy="31">仕様・保証・携帯性を同じ基準で比べ、どちらが合うかを整理しました。</tspan>
+      </text>
+      <g id="ArticleMeta" transform="translate(0 288)">
+        <rect width="1000" height="74" rx="6" fill="#FFFDF8" stroke="#9BA9A5"/>
+        <g class="sans" transform="translate(24 18)">
+          <text class="muted label" x="0" y="14">執筆</text>
+          <text class="ink small" x="0" y="38" font-weight="700">暮らしのしるべ編集部</text>
+          <line x1="240" y1="0" x2="240" y2="38" class="soft-rule"/>
+          <text class="muted label" x="274" y="14">最終確認</text>
+          <text class="ink small" x="274" y="38" font-weight="700">2026年8月29日</text>
+          <line x1="506" y1="0" x2="506" y2="38" class="soft-rule"/>
+          <text class="muted label" x="540" y="14">比較対象</text>
+          <text class="ink small" x="540" y="38" font-weight="700">公式仕様を確認できた2商品</text>
+          <line x1="784" y1="0" x2="784" y2="38" class="soft-rule"/>
+          <text class="muted label" x="818" y="14">読み時間</text>
+          <text class="ink small" x="818" y="38" font-weight="700">約8分</text>
+        </g>
+      </g>
+    </g>
+
+    <g id="Disclosure" transform="translate(0 600)">
+      <rect width="1000" height="116" fill="#FFF8F3" stroke="#9BA9A5"/>
+      <rect width="5" height="116" fill="#983F25"/>
+      <text class="sans ink" x="26" y="34" font-size="15" font-weight="700">広告・アフィリエイトについて</text>
+      <text class="sans muted small" x="26" y="64">
+        <tspan x="26" dy="0">本記事には楽天市場へのアフィリエイトリンクを含みます。購入によって運営者に報酬が入る場合がありますが、</tspan>
+        <tspan x="26" dy="24">掲載順や評価は報酬条件ではなく、公開した選定基準と確認できた情報に基づきます。</tspan>
+      </text>
+    </g>
+
+    <g id="DecisionSummary" transform="translate(0 772)">
+      <text class="sans warm caps" x="0" y="16">先に結論</text>
+      <text class="serif ink h2" x="0" y="64">使い方が決まれば、候補は絞れます</text>
+      <g transform="translate(0 100)">
+        <rect width="488" height="184" rx="8" fill="#FFFDF8" stroke="#9BA9A5"/>
+        <rect width="5" height="184" fill="#24365F"/>
+        <text class="sans muted label" x="26" y="34">持ち運びを優先</text>
+        <text class="serif ink h3" x="26" y="72">モデルAを第一候補に</text>
+        <text class="sans muted small" x="26" y="105">
+          <tspan x="26" dy="0">重量と収納サイズを抑えたい人向け。</tspan>
+          <tspan x="26" dy="24">容量は用途を限定して選びます。</tspan>
+        </text>
+        <text class="sans indigo small" x="26" y="165" font-weight="700">理由を読む　→</text>
+      </g>
+      <g transform="translate(512 100)">
+        <rect width="488" height="184" rx="8" fill="#FFFDF8" stroke="#9BA9A5"/>
+        <rect width="5" height="184" fill="#983F25"/>
+        <text class="sans muted label" x="26" y="34">停電時の余裕を優先</text>
+        <text class="serif ink h3" x="26" y="72">モデルBを第一候補に</text>
+        <text class="sans muted small" x="26" y="105">
+          <tspan x="26" dy="0">容量と出力の余裕を取りたい人向け。</tspan>
+          <tspan x="26" dy="24">持ち出し頻度が低い前提です。</tspan>
+        </text>
+        <text class="sans indigo small" x="26" y="165" font-weight="700">理由を読む　→</text>
+      </g>
+    </g>
+
+    <g id="IntendedReader" transform="translate(0 1125)">
+      <line x1="0" y1="0" x2="1000" y2="0" class="rule"/>
+      <text class="sans warm caps" x="0" y="54">この記事の前提</text>
+      <text class="serif ink h2" x="0" y="102">向く人・向かない人</text>
+      <g transform="translate(0 138)">
+        <rect width="488" height="196" fill="#EEF3F2"/>
+        <text class="sans indigo" x="28" y="38" font-size="16" font-weight="700">向く人</text>
+        <circle cx="34" cy="76" r="8" fill="#24365F"/><path d="m30 76 3 3 6-7" fill="none" stroke="#fff" stroke-width="2"/>
+        <text class="sans ink small" x="54" y="82">国内で購入し、停電や持ち出しに備えたい</text>
+        <circle cx="34" cy="116" r="8" fill="#24365F"/><path d="m30 116 3 3 6-7" fill="none" stroke="#fff" stroke-width="2"/>
+        <text class="sans ink small" x="54" y="122">容量・重量・保証の差を同じ基準で見たい</text>
+        <circle cx="34" cy="156" r="8" fill="#24365F"/><path d="m30 156 3 3 6-7" fill="none" stroke="#fff" stroke-width="2"/>
+        <text class="sans ink small" x="54" y="162">価格より用途との相性を優先したい</text>
+      </g>
+      <g transform="translate(512 138)">
+        <rect width="488" height="196" fill="#FFF8F3"/>
+        <text class="sans warm" x="28" y="38" font-size="16" font-weight="700">向かない人</text>
+        <line x1="28" y1="70" x2="40" y2="82" stroke="#983F25" stroke-width="2"/><line x1="40" y1="70" x2="28" y2="82" stroke="#983F25" stroke-width="2"/>
+        <text class="sans ink small" x="54" y="82">業務用や医療用途の電源を探している</text>
+        <line x1="28" y1="110" x2="40" y2="122" stroke="#983F25" stroke-width="2"/><line x1="40" y1="110" x2="28" y2="122" stroke="#983F25" stroke-width="2"/>
+        <text class="sans ink small" x="54" y="122">実機テストだけを基準に選びたい</text>
+        <line x1="28" y1="150" x2="40" y2="162" stroke="#983F25" stroke-width="2"/><line x1="40" y1="150" x2="28" y2="162" stroke="#983F25" stroke-width="2"/>
+        <text class="sans ink small" x="54" y="162">購入時点の最安値だけを知りたい</text>
+      </g>
+    </g>
+
+    <g id="Methodology" transform="translate(0 1532)">
+      <text class="sans warm caps" x="0" y="16">選定根拠</text>
+      <text class="serif ink h2" x="0" y="64">比較する前に、選び方を公開します</text>
+      <text class="sans muted body" x="0" y="104">候補・確認日・除外条件を先に明示し、結論から都合よく基準を変えません。</text>
+      <g transform="translate(0 142)">
+        <rect width="1000" height="282" rx="8" fill="#24365F"/>
+        <text class="serif white h3" x="34" y="50">今回の比較方法</text>
+        <g class="sans" transform="translate(34 84)">
+          <text fill="#FFC3AA" class="label" x="0" y="16">01　候補</text>
+          <text class="white small" x="0" y="48">国内流通・公式仕様・保証窓口を確認できる製品</text>
+          <line x1="0" y1="72" x2="932" y2="72" stroke="#FFFFFF" stroke-opacity="0.24"/>
+          <text fill="#FFC3AA" class="label" x="0" y="108">02　比較軸</text>
+          <text class="white small" x="0" y="140">容量 / 定格出力 / 重量 / 保証 / 不明値</text>
+          <line x1="0" y1="164" x2="932" y2="164" stroke="#FFFFFF" stroke-opacity="0.24"/>
+          <text fill="#FFC3AA" class="label" x="0" y="200">03　確認時点</text>
+          <text class="white small" x="0" y="232">公式情報：2026年8月29日　価格・在庫：遷移先で都度確認</text>
+        </g>
+      </g>
+    </g>
+
+    <g id="ComparisonTable" transform="translate(0 2036)">
+      <text class="sans warm caps" x="0" y="16">違いを一覧で確認</text>
+      <text class="serif ink h2" x="0" y="64">2モデル比較表</text>
+      <text class="sans muted small" x="0" y="98">差があるセルだけを淡い陶土色で示します。「未確認」は推測せず、そのまま表示します。</text>
+      <g transform="translate(0 132)">
+        <rect width="1000" height="504" rx="8" fill="#FFFDF8" stroke="#9BA9A5"/>
+        <rect width="1000" height="80" rx="8" fill="#24365F"/>
+        <rect y="70" width="1000" height="10" fill="#24365F"/>
+        <line x1="260" y1="0" x2="260" y2="504" stroke="#9BA9A5"/>
+        <line x1="630" y1="0" x2="630" y2="504" stroke="#9BA9A5"/>
+        <g class="sans white" font-size="16" font-weight="700">
+          <text x="24" y="48">比較軸</text>
+          <text x="284" y="48">モデルA</text>
+          <text x="654" y="48">モデルB</text>
+        </g>
+        <g class="sans" font-size="15">
+          <rect x="260" y="80" width="370" height="84" fill="#FFF4EC"/>
+          <rect x="630" y="164" width="370" height="84" fill="#FFF4EC"/>
+          <rect x="260" y="248" width="370" height="84" fill="#FFF4EC"/>
+          <rect x="630" y="416" width="370" height="88" fill="#FFF4EC"/>
+          <line x1="0" y1="164" x2="1000" y2="164" class="rule"/>
+          <line x1="0" y1="248" x2="1000" y2="248" class="rule"/>
+          <line x1="0" y1="332" x2="1000" y2="332" class="rule"/>
+          <line x1="0" y1="416" x2="1000" y2="416" class="rule"/>
+          <g class="ink" font-weight="700">
+            <text x="24" y="128">容量</text><text x="24" y="212">定格出力</text><text x="24" y="296">重量</text><text x="24" y="380">保証</text><text x="24" y="464">静音性</text>
+          </g>
+          <g class="ink">
+            <text x="284" y="128">512Wh</text><text x="654" y="128">768Wh</text>
+            <text x="284" y="212">600W</text><text x="654" y="212">1000W</text>
+            <text x="284" y="296">約6.1kg</text><text x="654" y="296">約8.4kg</text>
+            <text x="284" y="380">5年</text><text x="654" y="380">5年</text>
+            <text x="284" y="464">未確認（一次情報なし）</text><text x="654" y="464">公式値あり</text>
+          </g>
+          <g class="sans muted" font-size="12">
+            <text x="284" y="148">公式仕様</text><text x="654" y="148">公式仕様</text>
+            <text x="284" y="232">公式仕様</text><text x="654" y="232">公式仕様</text>
+            <text x="284" y="316">公式仕様</text><text x="654" y="316">公式仕様</text>
+            <text x="284" y="400">登録後の条件を確認</text><text x="654" y="400">登録後の条件を確認</text>
+            <text x="284" y="484">2026年8月29日確認</text><text x="654" y="484">2026年8月29日確認</text>
+          </g>
+        </g>
+      </g>
+    </g>
+
+    <g id="ProductCards" transform="translate(0 2760)">
+      <text class="sans warm caps" x="0" y="16">候補を詳しく見る</text>
+      <text class="serif ink h2" x="0" y="64">商品カード</text>
+      <text class="sans muted body" x="0" y="104">総合順位ではなく、どの条件に合うかをカードごとに明記します。</text>
+
+      <g id="ProductCard/A" transform="translate(0 144)" filter="url(#shadow)">
+        <rect width="488" height="820" rx="8" fill="#FFFDF8" stroke="#9BA9A5"/>
+        <rect width="488" height="6" rx="3" fill="#24365F"/>
+        <g id="ImagePlaceholder/A" transform="translate(28 34)">
+          <rect width="432" height="208" rx="6" fill="url(#paper-grid)" stroke="#D6DFDC"/>
+          <rect x="154" y="47" width="124" height="112" rx="10" fill="#FFFFFF" stroke="#9BA9A5" stroke-width="2"/>
+          <rect x="176" y="69" width="80" height="30" rx="4" fill="#EEF3F2"/>
+          <circle cx="190" cy="130" r="8" fill="#24365F"/><circle cx="220" cy="130" r="8" fill="#983F25"/>
+          <text class="sans muted" x="216" y="190" font-size="12" text-anchor="middle">商品画像 4:3</text>
+        </g>
+        <g transform="translate(28 278)">
+          <text class="sans warm caps" x="0" y="14">持ち運びを優先するなら</text>
+          <text class="serif ink" x="0" y="56" font-size="28" font-weight="600">モデルA</text>
+          <text class="sans muted small" x="0" y="88">軽さと収納しやすさが強み。容量は用途を絞って判断。</text>
+          <line x1="0" y1="116" x2="432" y2="116" class="soft-rule"/>
+          <text class="sans muted label" x="0" y="148">確認できた要点</text>
+          <g class="sans ink small">
+            <text x="0" y="181">・512Wh / 600W</text><text x="0" y="211">・約6.1kg</text><text x="0" y="241">・保証5年（登録条件あり）</text>
+          </g>
+          <g transform="translate(0 270)">
+            <rect width="432" height="74" rx="6" fill="#EEF3F2"/>
+            <text class="sans indigo label" x="16" y="24">向く人</text>
+            <text class="sans ink small" x="16" y="51">車や家の中で持ち運ぶ頻度が高い人</text>
+          </g>
+          <g transform="translate(0 356)">
+            <rect width="432" height="74" rx="6" fill="#FFF8F3"/>
+            <text class="sans warm label" x="16" y="24">向かない人</text>
+            <text class="sans ink small" x="16" y="51">高出力家電を同時に長く使いたい人</text>
+          </g>
+          <text class="sans muted" x="0" y="468" font-size="13">価格・在庫・販売条件は楽天市場の遷移先で確認してください。</text>
+          <g id="RakutenCTA/A" transform="translate(0 488)">
+            <rect width="432" height="56" rx="6" fill="#983F25"/>
+            <text class="sans white" x="216" y="35" font-size="16" font-weight="700" text-anchor="middle">楽天市場で価格・在庫を見る　→</text>
+          </g>
+          <text class="sans muted" x="0" y="574" font-size="12">アフィリエイトリンク　｜　最終確認 2026.08.29</text>
+        </g>
+      </g>
+
+      <g id="ProductCard/B" transform="translate(512 144)" filter="url(#shadow)">
+        <rect width="488" height="820" rx="8" fill="#FFFDF8" stroke="#9BA9A5"/>
+        <rect width="488" height="6" rx="3" fill="#983F25"/>
+        <g id="ImagePlaceholder/B" transform="translate(28 34)">
+          <rect width="432" height="208" rx="6" fill="url(#paper-grid)" stroke="#D6DFDC"/>
+          <rect x="134" y="38" width="164" height="130" rx="10" fill="#FFFFFF" stroke="#9BA9A5" stroke-width="2"/>
+          <rect x="164" y="66" width="104" height="34" rx="4" fill="#EEF3F2"/>
+          <circle cx="182" cy="135" r="9" fill="#24365F"/><circle cx="216" cy="135" r="9" fill="#983F25"/><circle cx="250" cy="135" r="9" fill="#D6DFDC"/>
+          <text class="sans muted" x="216" y="190" font-size="12" text-anchor="middle">商品画像 4:3</text>
+        </g>
+        <g transform="translate(28 278)">
+          <text class="sans warm caps" x="0" y="14">停電時の余裕を優先するなら</text>
+          <text class="serif ink" x="0" y="56" font-size="28" font-weight="600">モデルB</text>
+          <text class="sans muted small" x="0" y="88">容量と定格出力に余裕。重さを許容できるかが分かれ目。</text>
+          <line x1="0" y1="116" x2="432" y2="116" class="soft-rule"/>
+          <text class="sans muted label" x="0" y="148">確認できた要点</text>
+          <g class="sans ink small">
+            <text x="0" y="181">・768Wh / 1000W</text><text x="0" y="211">・約8.4kg</text><text x="0" y="241">・保証5年（登録条件あり）</text>
+          </g>
+          <g transform="translate(0 270)">
+            <rect width="432" height="74" rx="6" fill="#EEF3F2"/>
+            <text class="sans indigo label" x="16" y="24">向く人</text>
+            <text class="sans ink small" x="16" y="51">家に据え置き、容量と出力の余裕を取りたい人</text>
+          </g>
+          <g transform="translate(0 356)">
+            <rect width="432" height="74" rx="6" fill="#FFF8F3"/>
+            <text class="sans warm label" x="16" y="24">向かない人</text>
+            <text class="sans ink small" x="16" y="51">階段や徒歩で持ち運ぶ機会が多い人</text>
+          </g>
+          <text class="sans muted" x="0" y="468" font-size="13">価格・在庫・販売条件は楽天市場の遷移先で確認してください。</text>
+          <g id="RakutenCTA/B" transform="translate(0 488)">
+            <rect width="432" height="56" rx="6" fill="#983F25"/>
+            <text class="sans white" x="216" y="35" font-size="16" font-weight="700" text-anchor="middle">楽天市場で価格・在庫を見る　→</text>
+          </g>
+          <text class="sans muted" x="0" y="574" font-size="12">アフィリエイトリンク　｜　最終確認 2026.08.29</text>
+        </g>
+      </g>
+    </g>
+
+    <g id="SelectionRationale" transform="translate(0 3810)">
+      <line x1="0" y1="0" x2="1000" y2="0" class="rule"/>
+      <text class="sans warm caps" x="0" y="56">判断の裏側</text>
+      <text class="serif ink h2" x="0" y="104">なぜ、この2商品を候補にしたのか</text>
+      <text class="sans muted body" x="0" y="145">点数の合計ではなく、暮らしの条件に影響する4つの根拠を順に確認しました。</text>
+      <g transform="translate(0 188)">
+        <g id="Reason/01">
+          <text class="sans warm caps" x="0" y="16">01</text>
+          <text class="serif ink h3" x="0" y="52">用途に必要な出力</text>
+          <text class="sans muted small" x="0" y="84">使う家電を先に決め、定格出力と容量を確認。</text>
+        </g>
+        <g id="Reason/02" transform="translate(260 0)">
+          <text class="sans warm caps" x="0" y="16">02</text>
+          <text class="serif ink h3" x="0" y="52">持ち出せる重さ</text>
+          <text class="sans muted small" x="0" y="84">保管場所から運べる重量かを確認。</text>
+        </g>
+        <g id="Reason/03" transform="translate(520 0)">
+          <text class="sans warm caps" x="0" y="16">03</text>
+          <text class="serif ink h3" x="0" y="52">保証と窓口</text>
+          <text class="sans muted small" x="0" y="84">期間だけでなく、登録条件も記載。</text>
+        </g>
+        <g id="Reason/04" transform="translate(780 0)">
+          <text class="sans warm caps" x="0" y="16">04</text>
+          <text class="serif ink h3" x="0" y="52">不明値の扱い</text>
+          <text class="sans muted small" x="0" y="84">確認できない値は推測せず表示。</text>
+        </g>
+        <line x1="0" y1="116" x2="1000" y2="116" class="soft-rule"/>
+      </g>
+      <g transform="translate(0 352)">
+        <rect width="1000" height="146" fill="#EEF3F2"/>
+        <text class="sans indigo" x="28" y="38" font-size="16" font-weight="700">編集部の判断</text>
+        <text class="sans ink body" x="28" y="74">
+          <tspan x="28" dy="0">モデルAは携帯性、モデルBは容量と出力が決定要因です。</tspan>
+          <tspan x="28" dy="30">どちらも万能ではないため、使用場所と運搬頻度を先に決めることを勧めます。</tspan>
+        </text>
+      </g>
+    </g>
+
+    <g id="Caution" transform="translate(0 4400)">
+      <rect width="1000" height="110" fill="#FFF8F3" stroke="#9BA9A5"/>
+      <rect width="5" height="110" fill="#983F25"/>
+      <text class="sans warm" x="26" y="36" font-size="16" font-weight="700">購入前の注意</text>
+      <text class="sans ink small" x="26" y="68">価格、在庫、付属品、保証条件は変わることがあります。注文前に楽天市場の商品ページとメーカー公式情報を確認してください。</text>
+    </g>
+
+    <g id="Sources" transform="translate(0 4582)">
+      <text class="sans warm caps" x="0" y="16">出典・確認情報</text>
+      <text class="serif ink h2" x="0" y="64">根拠をたどれるようにする</text>
+      <text class="sans muted body" x="0" y="104">本文中の仕様と判断は、次の情報を2026年8月29日に確認したものです。</text>
+      <g class="sans" transform="translate(0 146)">
+        <rect width="1000" height="286" rx="8" fill="#FFFDF8" stroke="#9BA9A5"/>
+        <g transform="translate(28 28)">
+          <text class="indigo" x="0" y="18" font-size="15" font-weight="700">[1] メーカー公式　モデルA 製品仕様</text>
+          <text class="muted small" x="0" y="46">容量、定格出力、重量、保証条件を確認　｜　一次情報</text>
+          <line x1="0" y1="68" x2="944" y2="68" class="soft-rule"/>
+          <text class="indigo" x="0" y="106" font-size="15" font-weight="700">[2] メーカー公式　モデルB 製品仕様</text>
+          <text class="muted small" x="0" y="134">容量、定格出力、重量、保証条件を確認　｜　一次情報</text>
+          <line x1="0" y1="156" x2="944" y2="156" class="soft-rule"/>
+          <text class="indigo" x="0" y="194" font-size="15" font-weight="700">[3] 楽天市場　各販売ページ</text>
+          <text class="muted small" x="0" y="222">価格、在庫、販売者、付属品を確認　｜　購入時に再確認</text>
+        </g>
+      </g>
+      <g transform="translate(0 462)">
+        <rect width="1000" height="100" fill="none" stroke="#9BA9A5" stroke-dasharray="5 5"/>
+        <text class="sans muted small" x="24" y="38">更新履歴　2026.08.29　初回公開 / 比較軸・公式仕様・リンク切れを確認</text>
+        <text class="sans indigo small" x="24" y="70" font-weight="700">編集方針と情報更新の基準を見る　→</text>
+      </g>
+    </g>
+  </g>
+
+  <g id="Footer" transform="translate(0 5320)">
+    <rect width="1440" height="340" fill="#17243F"/>
+    <g transform="translate(220 70)">
+      <text class="serif white" x="0" y="32" font-size="25" font-weight="600" letter-spacing="2">暮らしのしるべ</text>
+      <text class="sans" x="0" y="76" fill="#F7F2E9" font-size="14">選ぶ前に、条件と根拠を整理する生活情報メディア。</text>
+      <line x1="0" y1="116" x2="1000" y2="116" stroke="#FFFFFF" stroke-opacity="0.25"/>
+      <g class="sans" fill="#F7F2E9" font-size="14" font-weight="700" transform="translate(0 156)">
+        <text x="0" y="16">編集方針</text><text x="140" y="16">広告掲載方針</text><text x="300" y="16">出典について</text><text x="470" y="16">お問い合わせ</text>
+      </g>
+      <text class="sans" x="0" y="230" fill="#D6DFDC" font-size="12">© 暮らしのしるべ</text>
+    </g>
+  </g>
+</svg>

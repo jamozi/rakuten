@@ -1,0 +1,119 @@
+{
+    "schema": "RAOS_FULL_REDESIGN_AUDIT_PACKET_INPUTS_V1",
+    "archive_name": "RAOS_FULL_REDESIGN_AUDIT_PACKET_v1.tar.gz",
+    "max_member_bytes": 4194304,
+    "max_total_bytes": 67108864,
+    "exact_files": [
+        ".gitignore",
+        ".node-version",
+        ".python-version",
+        "AGENTS.md",
+        "Makefile",
+        "README.md",
+        "changes/build/manifest.v2.json",
+        "changes/full-redesign-v2/PRO_FULL_REDESIGN_PROMPT.md",
+        "changes/full-redesign-v2/README.md",
+        "changes/full-redesign-v2/audit-packet-inputs.v1.json",
+        "docs/execplans/RAOS-IMPLEMENTATION-FIRST.md",
+        "docs/runbooks/self-hosted-minimum-start.md",
+        "docs/worklogs/RAOS-IMPLEMENTATION-DEBT.md",
+        "package-lock.json",
+        "package.json",
+        "pyproject.toml",
+        "scripts/prepare_full_redesign_audit_packet.py",
+        "tests/full_redesign/test_audit_packet.py"
+    ],
+    "tracked_prefixes": [
+        "apps/web",
+        "changes/st-1704/affiliate-learning-v2",
+        "changes/st-1704/carry-on-single-url-evidence-loop-v1",
+        "changes/st-1704/publication-operator-v2",
+        "changes/st-1704/self-hosted-editorial-pilot-v1",
+        "contracts/raos-v0.4/contracts/ai",
+        "contracts/raos-v0.4/contracts/content",
+        "docs/canonical",
+        "docs/upstream/key_documents",
+        "packages/web-ui/src",
+        "python/raos/adapters/publishing",
+        "python/raos/application/analytics",
+        "python/raos/application/editorial",
+        "python/raos/application/evidence",
+        "python/raos/application/finance",
+        "python/raos/application/freshness",
+        "python/raos/application/publishing",
+        "python/raos/domain/analytics",
+        "python/raos/domain/catalog",
+        "python/raos/domain/editorial",
+        "python/raos/domain/evidence",
+        "python/raos/domain/finance",
+        "python/raos/domain/freshness",
+        "python/raos/domain/publishing",
+        "python/raos/ports/editorial",
+        "python/raos/ports/evidence",
+        "python/raos/ports/publishing",
+        "tests/st1704",
+        "tests/st1704_publication_operator"
+    ],
+    "inventory_roots": [
+        "apps",
+        "changes/st-1704",
+        "contracts",
+        "docs",
+        "packages",
+        "python",
+        "scripts",
+        "tests"
+    ],
+    "allowed_extensions": [
+        ".css",
+        ".csv",
+        ".html",
+        ".json",
+        ".md",
+        ".mjs",
+        ".php",
+        ".png",
+        ".py",
+        ".svg",
+        ".ts",
+        ".tsx",
+        ".txt",
+        ".webp",
+        ".yaml",
+        ".yml"
+    ],
+    "excluded_path_fragments": [
+        "/__pycache__/",
+        "/node_modules/",
+        "/source-captures/",
+        "/raw-provider/",
+        "/raw-prompts/",
+        "/raw-responses/"
+    ],
+    "browser_evidence": [
+        "public-home-1440.png",
+        "public-home-390.png",
+        "public-carry-on-1440.png",
+        "public-carry-on-390.png"
+    ],
+    "public_urls": [
+        {"id": "home", "url": "https://kurashinoshirube.com/"},
+        {
+            "id": "carry-on-suitcase-comparison",
+            "url": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+        },
+        {"id": "about", "url": "https://kurashinoshirube.com/about/"},
+        {
+            "id": "advertising-policy",
+            "url": "https://kurashinoshirube.com/about-ad-policy/"
+        },
+        {"id": "privacy-policy", "url": "https://kurashinoshirube.com/privacy-policy/"},
+        {"id": "robots", "url": "https://kurashinoshirube.com/robots.txt"},
+        {
+            "id": "sitemap-index",
+            "url": "https://kurashinoshirube.com/sitemap_index.xml"
+        },
+        {"id": "post-sitemap", "url": "https://kurashinoshirube.com/post-sitemap.xml"},
+        {"id": "page-sitemap", "url": "https://kurashinoshirube.com/page-sitemap.xml"}
+    ]
+}
