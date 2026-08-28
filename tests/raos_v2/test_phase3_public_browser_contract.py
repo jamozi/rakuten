@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import shlex
 import subprocess
@@ -9,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 HARNESS = ROOT / "tests/raos_v2/phase3-public-validation.mjs"
 ADVERSARIAL_HARNESS = ROOT / "tests/raos_v2/phase3-public-adversarial.mjs"
+NODE_EXECUTABLE = os.environ.get("NODE") or shutil.which("node") or "node"
 
 
 def _source() -> str:
@@ -31,6 +33,15 @@ def test_phase3_public_harness_is_fixed_to_one_public_read_only_target() -> None
     assert "? 'CROSS_ORIGIN'" in source
     assert "launchSandboxedBrowser" in source
     assert "await stopBrowserProcess(browser)" in source
+    assert "INTERNAL_BROWSER_SUPERVISOR" in source
+    assert "detached: true" in source
+    assert "browser.child.kill('SIGUSR1')" in source
+    assert "process.kill(-pid, signal)" in source
+    assert "signalOwnedBrowserProcessGroup" in source
+    assert "linuxProcessGroupMembers" in source
+    assert "stableEmptyObservations >= 2" in source
+    assert "emergencyKillOwnedBrowserGroup" in source
+    assert "PHASE3_PUBLIC_BROWSER_PROCESS_GROUP_UNSUPPORTED" in source
     assert "--no-sandbox" not in source
     assert "Target.setAutoAttach" in source
     assert "waitForDebuggerOnStart: true" in source
@@ -190,7 +201,7 @@ def test_phase3_public_raw_receipt_is_owner_held_sanitized_and_non_authoritative
 
 def test_phase3_public_harness_has_valid_node_syntax() -> None:
     completed = subprocess.run(
-        ["node", "--check", str(HARNESS)],
+        [NODE_EXECUTABLE, "--check", str(HARNESS)],
         cwd=ROOT,
         check=False,
         capture_output=True,
@@ -216,7 +227,7 @@ def test_phase3_public_response_header_guard_rejects_browser_state_registrations
         "process.stdout.write(JSON.stringify(observed));"
     )
     completed = subprocess.run(
-        ["node", "--input-type=module", "--eval", script],
+        [NODE_EXECUTABLE, "--input-type=module", "--eval", script],
         cwd=ROOT,
         check=False,
         capture_output=True,
@@ -246,26 +257,107 @@ def test_phase3_public_browser_runtime_argv_keeps_chromium_sandbox(
     profile = tmp_path / "profile"
     profile.mkdir()
     script = (
-        f"import {{ launchSandboxedBrowser }} from {json.dumps(HARNESS.as_uri())};"
+        "import { existsSync } from 'node:fs';"
+        f"import {{ launchSandboxedBrowser, stopBrowserProcess }} from {json.dumps(HARNESS.as_uri())};"
         f"const browser = await launchSandboxedBrowser({json.dumps(str(fake_browser))}, 32123, "
         f"{json.dumps(str(profile))});"
-        "await new Promise((resolvePromise, rejectPromise) => {"
-        "browser.child.once('error', rejectPromise);"
-        "browser.child.once('exit', resolvePromise);"
-        "});"
+        "const deadline = Date.now() + 2000;"
+        f"while (!existsSync({json.dumps(str(argv_receipt))}) && Date.now() < deadline) "
+        "await new Promise((resolvePromise) => setTimeout(resolvePromise, 20));"
+        f"if (!existsSync({json.dumps(str(argv_receipt))})) "
+        "throw new Error('ARGV_RECEIPT_MISSING');"
+        "await stopBrowserProcess(browser);"
     )
     completed = subprocess.run(
-        ["node", "--input-type=module", "--eval", script],
+        [NODE_EXECUTABLE, "--input-type=module", "--eval", script],
         cwd=ROOT,
         check=False,
         capture_output=True,
         text=True,
+        timeout=10,
     )
     assert completed.returncode == 0, completed.stderr
     arguments = argv_receipt.read_text(encoding="utf-8").splitlines()
     assert "--no-sandbox" not in arguments
     assert "--remote-debugging-address=127.0.0.1" in arguments
     assert "--headless=new" in arguments
+
+
+def test_phase3_public_browser_stop_kills_early_exit_descendant_tree(
+    tmp_path: Path,
+) -> None:
+    fake_browser = tmp_path / "fake-browser"
+    fake_browser.write_text(
+        """#!/bin/sh
+profile=''
+for argument in "$@"; do
+  case "$argument" in
+    --user-data-dir=*) profile=${argument#*=} ;;
+  esac
+done
+test -n "$profile" || exit 2
+mkdir -p "$profile"
+printf '%s\n' "$$" > "$profile/root.pid"
+(
+  trap '' TERM INT
+  while true; do
+    mkdir -p "$profile"
+    printf 'alive\n' > "$profile/descendant-alive"
+    sleep 0.02
+  done
+) &
+descendant_pid=$!
+printf '%s\n' "$descendant_pid" > "$profile/descendant.pid"
+printf 'exiting\n' > "$profile/root-exiting"
+exit 0
+""",
+        encoding="utf-8",
+    )
+    fake_browser.chmod(0o700)
+    profile = tmp_path / "profile"
+    profile.mkdir()
+    script = (
+        "import { existsSync, readFileSync, rmSync } from 'node:fs';"
+        f"import {{ launchSandboxedBrowser, stopBrowserProcess }} from {json.dumps(HARNESS.as_uri())};"
+        "const delay = (milliseconds) => new Promise((resolvePromise) => "
+        "setTimeout(resolvePromise, milliseconds));"
+        f"const profile = {json.dumps(str(profile))};"
+        f"const browser = await launchSandboxedBrowser({json.dumps(str(fake_browser))}, "
+        f"32124, profile);"
+        "const pidPath = `${profile}/descendant.pid`;"
+        "const rootPidPath = `${profile}/root.pid`;"
+        "const rootExitingPath = `${profile}/root-exiting`;"
+        "const readyDeadline = Date.now() + 2000;"
+        "while ((!existsSync(pidPath) || !existsSync(rootExitingPath)) && "
+        "Date.now() < readyDeadline) await delay(20);"
+        "if (!existsSync(pidPath) || !existsSync(rootExitingPath)) "
+        "throw new Error('DESCENDANT_NOT_STARTED');"
+        "const rootPid = Number(readFileSync(rootPidPath, 'utf8').trim());"
+        "const descendantPid = Number(readFileSync(pidPath, 'utf8').trim());"
+        "const rootExitDeadline = Date.now() + 2000;"
+        "let rootAlive = true;"
+        "while (rootAlive && Date.now() < rootExitDeadline) {"
+        "try { process.kill(rootPid, 0); }"
+        "catch (error) { if (error?.code === 'ESRCH') rootAlive = false; else throw error; }"
+        "if (rootAlive) await delay(20);"
+        "}"
+        "if (rootAlive) throw new Error('BROWSER_ROOT_DID_NOT_EXIT_EARLY');"
+        "await stopBrowserProcess(browser);"
+        "try { process.kill(descendantPid, 0); throw new Error('DESCENDANT_SURVIVED'); }"
+        "catch (error) { if (error?.code !== 'ESRCH') throw error; }"
+        "rmSync(profile, { force: true, recursive: true });"
+        "await delay(250);"
+        "if (existsSync(profile)) throw new Error('PROFILE_RECREATED');"
+    )
+    completed = subprocess.run(
+        [NODE_EXECUTABLE, "--input-type=module", "--eval", script],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    assert completed.returncode == 0, completed.stderr
 
 
 def test_phase3_public_receipt_commit_does_not_replace_competing_output(
@@ -289,7 +381,7 @@ def test_phase3_public_receipt_commit_does_not_replace_competing_output(
         "}"
     )
     completed = subprocess.run(
-        ["node", "--input-type=module", "--eval", script],
+        [NODE_EXECUTABLE, "--input-type=module", "--eval", script],
         cwd=ROOT,
         check=False,
         capture_output=True,
@@ -303,7 +395,7 @@ def test_phase3_public_receipt_commit_does_not_replace_competing_output(
 
 def test_phase3_public_harness_blocks_adversarial_runtime_channels() -> None:
     completed = subprocess.run(
-        ["node", str(ADVERSARIAL_HARNESS)],
+        [NODE_EXECUTABLE, str(ADVERSARIAL_HARNESS)],
         cwd=ROOT,
         check=False,
         capture_output=True,
@@ -318,7 +410,7 @@ def test_phase3_public_harness_blocks_real_chromium_persistence_cycles() -> None
     if browser is None:
         raise AssertionError("REAL_CHROMIUM_REQUIRED_FOR_PHASE3_PUBLIC_GUARD")
     completed = subprocess.run(
-        ["node", str(ADVERSARIAL_HARNESS), "--browser-executable", browser],
+        [NODE_EXECUTABLE, str(ADVERSARIAL_HARNESS), "--browser-executable", browser],
         cwd=ROOT,
         check=False,
         capture_output=True,

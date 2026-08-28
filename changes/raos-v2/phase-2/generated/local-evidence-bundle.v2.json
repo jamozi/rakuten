@@ -36,7 +36,7 @@
     {
       "bytes": 7343,
       "path": "changes/raos-v2/phase-2/generated/phase-2-validation.v2.json",
-      "sha256": "fa7dd71152279826beeb9cf8d7fc1760e0631d5d523c1483fafcc793f418fac3"
+      "sha256": "3481854e101992cf2ef1ef0e6ad4b21fff6ae4e61b12996c3b6476b05743f774"
     },
     {
       "bytes": 4814,
@@ -494,8 +494,8 @@
       "classification": "LOCAL_ONLY",
       "command": "TMPDIR=/tmp uv run --offline pytest -s -q tests/raos_v2",
       "command_contract": "BASH_PIPEFAIL_TEE_TEMP_PROMOTED_BY_RECORDER_V2",
-      "executed_at_jst": "2026-08-29T01:03:55.135606+09:00",
-      "executed_head": "a442e02115814e24a1b8fe1321d8cd4799d70035",
+      "executed_at_jst": "2026-08-29T03:09:44.587698+09:00",
+      "executed_head": "95aa56143a9b96cfb18c4114952ee74ae70142ea",
       "exit_code": 0,
       "external_actions": "NOT_EXECUTED",
       "failed": 0,
@@ -514,11 +514,11 @@
         "schema": "RAOS_V2_FILE_INVENTORY_BINDING_V1",
         "total_bytes": 624156
       },
-      "passed": 660,
+      "passed": 661,
       "raw_output": {
-        "bytes": 682,
+        "bytes": 683,
         "local_path": "output/pytest/raos-v2-local-test-output.txt",
-        "sha256": "7d0c7ffd992b36524a0942dac202be3c456c0d94a6b5b8a7ce2d9517357fb3c1"
+        "sha256": "ec61970bbbc8bbb0ca63229ab407165753889eed31f84c12e2417c3f46bb0e97"
       },
       "raw_verification": "RECORDED_NOT_REVERIFIED",
       "recorded_date_jst": "2026-08-29",
@@ -526,11 +526,11 @@
       "skipped": 0,
       "status": "PASSED_LOCAL",
       "test_inventory": {
-        "content_inventory_sha256": "4904f2570e388df1a182d5d0c1a5685f4f656fe4c5573b8ac07f96f8f0f51a7c",
+        "content_inventory_sha256": "418eb75413f351dd64d5b4f689da4c1ec8d4cf7bba42843659637e5df811145e",
         "file_count": 31,
         "path_set_sha256": "7433ae9118d690ea662ac57210b168d59902b97c5a335102e8e2e3b8f99f9429",
         "schema": "RAOS_V2_FILE_INVENTORY_BINDING_V1",
-        "total_bytes": 578488
+        "total_bytes": 587619
       },
       "version": "2.0.0"
     },

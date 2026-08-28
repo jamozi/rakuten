@@ -49,6 +49,9 @@ const OUTPUT_ROOT = join(ROOT, 'output/playwright');
 const MAX_DOCUMENT_BYTES = 4 * 1024 * 1024;
 const MAX_SCREENSHOT_HEIGHT = 30_000;
 const MAX_NETWORK_REQUESTS = 80;
+const BROWSER_STOP_TIMEOUT_MS = 5000;
+const BROWSER_GRACEFUL_STOP_MS = 250;
+const INTERNAL_BROWSER_SUPERVISOR = '--internal-browser-supervisor';
 const VIEWPORTS = Object.freeze([
   Object.freeze({ height: 844, name: 'mobile-390', width: 390 }),
   Object.freeze({ height: 1024, name: 'tablet-768', width: 768 }),
@@ -302,26 +305,135 @@ function browserVersion(executable) {
   });
 }
 
-export async function launchSandboxedBrowser(browserExecutable, remotePort, profilePath) {
+function chromiumArguments(remotePort, profilePath) {
+  return [
+    '--headless=new',
+    '--disable-background-networking',
+    '--disable-component-update',
+    '--disable-default-apps',
+    '--disable-domain-reliability',
+    '--disable-features=MediaRouter,OptimizationHints,Translate',
+    '--disable-sync',
+    '--metrics-recording-only',
+    '--no-first-run',
+    '--remote-debugging-address=127.0.0.1',
+    `--remote-debugging-port=${remotePort}`,
+    `--user-data-dir=${profilePath}`,
+    'about:blank',
+  ];
+}
+
+async function superviseBrowser(argv) {
+  if (process.platform !== 'linux') fail('PHASE3_PUBLIC_BROWSER_PROCESS_GROUP_UNSUPPORTED');
+  if (argv.length !== 3) fail('PHASE3_PUBLIC_BROWSER_SUPERVISOR_ARGUMENT_INVALID');
+  const [browserExecutable, remotePortText, profilePath] = argv;
+  if (!/^[1-9][0-9]{0,4}$/u.test(remotePortText) || Number(remotePortText) > 65535) {
+    fail('PHASE3_PUBLIC_BROWSER_SUPERVISOR_PORT_INVALID');
+  }
+  if (!isAbsolute(profilePath)) fail('PHASE3_PUBLIC_BROWSER_SUPERVISOR_PROFILE_INVALID');
   const executable = realpathSync(browserExecutable);
   const child = spawn(
     executable,
-    [
-      '--headless=new',
-      '--disable-background-networking',
-      '--disable-component-update',
-      '--disable-default-apps',
-      '--disable-domain-reliability',
-      '--disable-features=MediaRouter,OptimizationHints,Translate',
-      '--disable-sync',
-      '--metrics-recording-only',
-      '--no-first-run',
-      '--remote-debugging-address=127.0.0.1',
-      `--remote-debugging-port=${remotePort}`,
-      `--user-data-dir=${profilePath}`,
-      'about:blank',
-    ],
+    chromiumArguments(Number(remotePortText), profilePath),
     {
+      env: {
+        LANG: 'C.UTF-8',
+        LC_ALL: 'C.UTF-8',
+        PATH: '/usr/bin:/bin',
+      },
+      stdio: ['ignore', 'ignore', 'pipe'],
+    },
+  );
+  child.stderr.pipe(process.stderr);
+  child.once('error', () => {
+    process.stderr.write('PHASE3_PUBLIC_BROWSER_CHILD_LAUNCH_FAILED\n');
+  });
+
+  // The supervisor deliberately stays alive even if Chromium's root exits.
+  // This keeps ownership of the detached process group continuous until the
+  // parent harness freezes and terminates the whole group.
+  process.on('SIGTERM', () => {});
+  let stopping = false;
+  process.on('SIGUSR1', () => {
+    if (stopping) return;
+    stopping = true;
+    void shutdownSupervisedBrowserGroup().catch(() => emergencyKillOwnedBrowserGroup());
+  });
+  const parentPid = process.ppid;
+  setInterval(() => {
+    if (process.ppid === parentPid) return;
+    emergencyKillOwnedBrowserGroup();
+  }, 250);
+  await new Promise(() => {});
+}
+
+function emergencyKillOwnedBrowserGroup() {
+  try {
+    process.kill(-process.pid, 'SIGKILL');
+  } catch {
+    process.exit(1);
+  }
+}
+
+function linuxProcessGroupMembers(groupId) {
+  const members = [];
+  for (const entry of readdirSync('/proc')) {
+    if (!/^[1-9][0-9]*$/u.test(entry)) continue;
+    let stat;
+    try {
+      stat = readFileSync(`/proc/${entry}/stat`, 'utf8');
+    } catch (error) {
+      if (error?.code === 'ENOENT') continue;
+      fail('PHASE3_PUBLIC_BROWSER_PROCESS_GROUP_INSPECTION_FAILED');
+    }
+    const commandEnd = stat.lastIndexOf(') ');
+    if (commandEnd < 0) fail('PHASE3_PUBLIC_BROWSER_PROCESS_STAT_INVALID');
+    const fields = stat.slice(commandEnd + 2).trim().split(/\s+/u);
+    if (fields.length < 3) fail('PHASE3_PUBLIC_BROWSER_PROCESS_STAT_INVALID');
+    if (Number(fields[2]) === groupId) members.push(Number(entry));
+  }
+  return members.sort((left, right) => left - right);
+}
+
+async function shutdownSupervisedBrowserGroup() {
+  const groupId = process.pid;
+  try {
+    process.kill(-groupId, 'SIGTERM');
+  } catch (error) {
+    if (error?.code !== 'ESRCH') emergencyKillOwnedBrowserGroup();
+  }
+  await delay(BROWSER_GRACEFUL_STOP_MS);
+  const deadline = Date.now() + BROWSER_STOP_TIMEOUT_MS;
+  let stableEmptyObservations = 0;
+  while (Date.now() < deadline) {
+    const members = linuxProcessGroupMembers(groupId).filter((pid) => pid !== groupId);
+    if (members.length === 0) {
+      stableEmptyObservations += 1;
+      if (stableEmptyObservations >= 2) process.exit(0);
+      await delay(50);
+      continue;
+    }
+    stableEmptyObservations = 0;
+    for (const pid of members) {
+      try {
+        process.kill(pid, 'SIGKILL');
+      } catch (error) {
+        if (error?.code !== 'ESRCH') emergencyKillOwnedBrowserGroup();
+      }
+    }
+    await delay(20);
+  }
+  emergencyKillOwnedBrowserGroup();
+}
+
+export async function launchSandboxedBrowser(browserExecutable, remotePort, profilePath) {
+  if (process.platform !== 'linux') fail('PHASE3_PUBLIC_BROWSER_PROCESS_GROUP_UNSUPPORTED');
+  const executable = realpathSync(browserExecutable);
+  const child = spawn(
+    realpathSync(process.execPath),
+    [SCRIPT_PATH, INTERNAL_BROWSER_SUPERVISOR, executable, String(remotePort), profilePath],
+    {
+      detached: true,
       env: {
         LANG: 'C.UTF-8',
         LC_ALL: 'C.UTF-8',
@@ -334,26 +446,58 @@ export async function launchSandboxedBrowser(browserExecutable, remotePort, prof
   child.stderr.on('data', (chunk) => {
     if (stderr.length < 1024 * 1024) stderr += String(chunk);
   });
-  return Object.freeze({ child, executable, stderr: () => stderr });
+  return Object.freeze({ child, executable, ownsProcessGroup: true, stderr: () => stderr });
+}
+
+function delay(milliseconds) {
+  return new Promise((resolvePromise) => setTimeout(resolvePromise, milliseconds));
+}
+
+function signalOwnedBrowserProcessGroup(browser, signal) {
+  const pid = browser.child.pid;
+  if (!Number.isSafeInteger(pid) || pid <= 0) fail('PHASE3_PUBLIC_BROWSER_PID_INVALID');
+  if (!browser.ownsProcessGroup) fail('PHASE3_PUBLIC_BROWSER_PROCESS_GROUP_UNSUPPORTED');
+  if (browser.child.exitCode !== null || browser.child.signalCode !== null) {
+    fail('PHASE3_PUBLIC_BROWSER_SUPERVISOR_EXITED');
+  }
+  try {
+    process.kill(-pid, signal);
+  } catch (error) {
+    if (error?.code === 'ESRCH') fail('PHASE3_PUBLIC_BROWSER_SUPERVISOR_EXITED');
+    fail('PHASE3_PUBLIC_BROWSER_GROUP_SIGNAL_FAILED');
+  }
+}
+
+function waitForBrowserSupervisorExit(browser) {
+  return new Promise((resolvePromise) => {
+    const timeout = setTimeout(() => {
+      browser.child.removeListener('exit', onExit);
+      resolvePromise(false);
+    }, BROWSER_STOP_TIMEOUT_MS);
+    function onExit() {
+      clearTimeout(timeout);
+      resolvePromise(true);
+    }
+    browser.child.once('exit', onExit);
+  });
 }
 
 export async function stopBrowserProcess(browser) {
   const hasExited = () => browser.child.exitCode !== null || browser.child.signalCode !== null;
-  if (hasExited()) return;
-  let resolveExit;
-  const exited = new Promise((resolvePromise) => {
-    resolveExit = resolvePromise;
-    browser.child.once('exit', resolvePromise);
-  });
-  browser.child.kill('SIGTERM');
-  await Promise.race([exited, new Promise((resolvePromise) => setTimeout(resolvePromise, 2000))]);
-  if (!hasExited()) {
-    browser.child.kill('SIGKILL');
-    await Promise.race([exited, new Promise((resolvePromise) => setTimeout(resolvePromise, 2000))]);
-  }
-  if (!hasExited()) {
-    browser.child.removeListener('exit', resolveExit);
+  if (hasExited()) fail('PHASE3_PUBLIC_BROWSER_SUPERVISOR_EXITED');
+  const exited = waitForBrowserSupervisorExit(browser);
+
+  // The supervisor retains process-group ownership while it terminates and
+  // observes every other group member. Exit code zero is the receipt that the
+  // ephemeral profile can be removed without a surviving writer.
+  if (!browser.child.kill('SIGUSR1')) fail('PHASE3_PUBLIC_BROWSER_SUPERVISOR_EXITED');
+  if (!(await exited)) {
+    signalOwnedBrowserProcessGroup(browser, 'SIGKILL');
+    await waitForBrowserSupervisorExit(browser);
     fail('PHASE3_PUBLIC_BROWSER_STOP_TIMEOUT');
+  }
+  if (!hasExited() || browser.child.exitCode !== 0) {
+    fail('PHASE3_PUBLIC_BROWSER_GROUP_SHUTDOWN_FAILED');
   }
 }
 
@@ -1419,7 +1563,11 @@ async function main() {
 
 const invokedPath = process.argv[1] === undefined ? null : realpathSync(resolve(process.argv[1]));
 if (invokedPath === SCRIPT_PATH) {
-  main().catch((error) => {
+  const operation =
+    process.argv[2] === INTERNAL_BROWSER_SUPERVISOR
+      ? superviseBrowser(process.argv.slice(3))
+      : main();
+  operation.catch((error) => {
     process.stderr.write(`${classifiedErrorCode(error)}\n`);
     process.exitCode = 1;
   });
