@@ -1,0 +1,103 @@
+{
+  "article_id": "raos-reliability-suitcase-pilot-001",
+  "authority": {
+    "activation_authorized": false,
+    "live_validation": "NOT_EXECUTED",
+    "publication_authorized": false,
+    "wordpress_write_count": 0
+  },
+  "generated_artifacts": [
+    {
+      "bytes": 87985,
+      "sha256": "d3b9ac443a74baf48ebde7b3cb8814efd9586890fa6bb3fc75dbda833825a215",
+      "uri": "repo://changes/st-1704/reliability-product-selection-v1/contracts/schema-catalog.v1.json"
+    },
+    {
+      "bytes": 921,
+      "sha256": "e8dd57a9355c0e40064f7d7345cd9b715c0750ed367676b34e8e8563a09999f1",
+      "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/research-plan.v1.json"
+    },
+    {
+      "bytes": 3763,
+      "sha256": "a677f4a4d348de7abc9fceabd03a8d217419d39b194a86ebe94387b0f701ef62",
+      "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/source-policy.v1.json"
+    },
+    {
+      "bytes": 5223,
+      "sha256": "1828f02f0110ed35f8f90c265040e4c7961c65cdbc54fd1e8c898335048318a7",
+      "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/recorded-provider-pages.v1.json"
+    },
+    {
+      "bytes": 4180,
+      "sha256": "25f8dfdc357693bdb15f699ea9a7d3a36723392f3515027f893ade7e8747c43b",
+      "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/discovery-run.v1.json"
+    },
+    {
+      "bytes": 2526,
+      "sha256": "e583867ff63bc8c05db5d9aa853fbe40df9ab69fb1195e839ed8da5699de4667",
+      "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/candidate-ledger.v1.json"
+    },
+    {
+      "bytes": 2739,
+      "sha256": "20e487fd95afe1c8c343ad21cd95f3561496e25bd7fd38ee3dac8b2de6a640f2",
+      "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/fit-scores.v1.json"
+    },
+    {
+      "bytes": 3768,
+      "sha256": "86f6c85a69bcb873ad48fd0d7c8f08fcc6a5431bd398f4c4368ac2acfda32ab8",
+      "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/review-aggregates.v1.json"
+    },
+    {
+      "bytes": 2349,
+      "sha256": "255bfe7c582dd56455de6cb8ded9b58c083b9c682b57d61f9dc917fdb279c3fb",
+      "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/article-evidence-snapshot.v1.json"
+    },
+    {
+      "bytes": 2398,
+      "sha256": "6aa8223e2288befb7d35975a7a763a935e240d0b897c6c000c6fdee2a0f06c3c",
+      "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/review-packet.v1.json"
+    },
+    {
+      "bytes": 660,
+      "sha256": "2df8ccbe8c388c3991ca31de913ee73ee372ebb780495aac944cbaae21a1dca4",
+      "uri": "repo://changes/st-1704/reliability-product-selection-v1/generated/monitoring-policy.v1.json"
+    }
+  ],
+  "local_status": "LOCAL_IMPLEMENTATION_COMPLETE_RECORDED_FIXTURES",
+  "owner_generator": "repo://scripts/build_st1704_reliability_product_selection_v1.py",
+  "schema_version": 1,
+  "slice_id": "RELIABILITY_PRODUCT_SELECTION_V1",
+  "source_artifacts": [
+    {
+      "bytes": 26856,
+      "sha256": "f54c44e02f09c2ff3cb046740f1041e2b6a5a978b24130d2901448aa10cc341a",
+      "uri": "repo://python/raos/domain/reliability/contracts_v1.py"
+    },
+    {
+      "bytes": 26886,
+      "sha256": "b9e77d05dc00caa077077a0759a7ffa1128948e5c61e4756f6fc99930bf28b78",
+      "uri": "repo://python/raos/domain/reliability/selection_v1.py"
+    },
+    {
+      "bytes": 24649,
+      "sha256": "a82b0f8439ba88d618b542429519005fbe03c4d8af385607dbd98e68a39f79f3",
+      "uri": "repo://python/raos/application/editorial/reliability_research_v1.py"
+    },
+    {
+      "bytes": 1408,
+      "sha256": "ba3a023e868240a713062e353158224ae32128ce5e7aae3f5ab0a718db5975e2",
+      "uri": "repo://python/raos/ports/reliability/research_v1.py"
+    },
+    {
+      "bytes": 29624,
+      "sha256": "011f26cbbe0b9e243990054abf02494c66b27f75c448a6e2b8d85626bb2a7fe2",
+      "uri": "repo://python/raos/adapters/reliability_product_research_v1.py"
+    },
+    {
+      "bytes": 20902,
+      "sha256": "158f721369559831c441228c0012e5f7b4e58e22a79459a5d530ae776bc4e296",
+      "uri": "repo://scripts/raos_product_research.py"
+    }
+  ],
+  "story_id": "ST-1704"
+}

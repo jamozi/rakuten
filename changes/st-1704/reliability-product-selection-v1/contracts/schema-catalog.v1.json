@@ -1,0 +1,3236 @@
+{
+  "profile": "TRUST_SELECTION_STRICT_ARTIFACT_SCHEMAS_V1",
+  "schema_version": 1,
+  "schemas": {
+    "ArticleEvidenceSnapshotV1": {
+      "$defs": {
+        "ArtifactRefV1": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "artifact_type": {
+              "maxLength": 100,
+              "minLength": 3,
+              "title": "Artifact Type",
+              "type": "string"
+            },
+            "byte_size": {
+              "maximum": 16777216,
+              "minimum": 2,
+              "title": "Byte Size",
+              "type": "integer"
+            },
+            "content_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Content Sha256",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_type",
+            "artifact_id",
+            "content_sha256",
+            "byte_size"
+          ],
+          "title": "ArtifactRefV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "candidate_count": {
+          "minimum": 0,
+          "title": "Candidate Count",
+          "type": "integer"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "disclosure_affiliate_independence": {
+          "const": true,
+          "default": true,
+          "title": "Disclosure Affiliate Independence",
+          "type": "boolean"
+        },
+        "disclosure_airline_limits_vary": {
+          "const": true,
+          "default": true,
+          "title": "Disclosure Airline Limits Vary",
+          "type": "boolean"
+        },
+        "disclosure_no_hands_on_test": {
+          "const": true,
+          "default": true,
+          "title": "Disclosure No Hands On Test",
+          "type": "boolean"
+        },
+        "evidence_refs": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRefV1"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "excluded_count": {
+          "minimum": 0,
+          "title": "Excluded Count",
+          "type": "integer"
+        },
+        "included_count": {
+          "minimum": 0,
+          "title": "Included Count",
+          "type": "integer"
+        },
+        "price_as_of": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Price As Of"
+        },
+        "publication_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Publication Authorized",
+          "type": "boolean"
+        },
+        "recommendation_refs": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRefV1"
+          },
+          "title": "Recommendation Refs",
+          "type": "array"
+        },
+        "route_created": {
+          "const": false,
+          "default": false,
+          "title": "Route Created",
+          "type": "boolean"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "state": {
+          "const": "UNPUBLISHED_REVIEW_PACKET",
+          "default": "UNPUBLISHED_REVIEW_PACKET",
+          "title": "State",
+          "type": "string"
+        },
+        "unknown_items": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unknown Items",
+          "type": "array"
+        },
+        "wordpress_written": {
+          "const": false,
+          "default": false,
+          "title": "Wordpress Written",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "evidence_refs",
+        "recommendation_refs",
+        "candidate_count",
+        "included_count",
+        "excluded_count",
+        "price_as_of",
+        "unknown_items",
+        "created_at"
+      ],
+      "title": "ArticleEvidenceSnapshotV1",
+      "type": "object"
+    },
+    "CandidateDecisionV1": {
+      "$defs": {
+        "ArtifactRefV1": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "artifact_type": {
+              "maxLength": 100,
+              "minLength": 3,
+              "title": "Artifact Type",
+              "type": "string"
+            },
+            "byte_size": {
+              "maximum": 16777216,
+              "minimum": 2,
+              "title": "Byte Size",
+              "type": "integer"
+            },
+            "content_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Content Sha256",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_type",
+            "artifact_id",
+            "content_sha256",
+            "byte_size"
+          ],
+          "title": "ArtifactRefV1",
+          "type": "object"
+        },
+        "CandidateDecisionCodeV1": {
+          "enum": [
+            "INCLUDED",
+            "ACCESSORY",
+            "BUNDLE",
+            "PARALLEL_IMPORT",
+            "USED",
+            "IDENTITY_UNRESOLVED",
+            "VARIANT_AMBIGUOUS",
+            "HARD_CONSTRAINT_FAILED"
+          ],
+          "title": "CandidateDecisionCodeV1",
+          "type": "string"
+        },
+        "IdentityConfidenceV1": {
+          "enum": [
+            "CONFIRMED",
+            "PARTIAL",
+            "UNRESOLVED"
+          ],
+          "title": "IdentityConfidenceV1",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "canonical_product_key": {
+          "maxLength": 300,
+          "minLength": 3,
+          "title": "Canonical Product Key",
+          "type": "string"
+        },
+        "decided_at": {
+          "format": "date-time",
+          "title": "Decided At",
+          "type": "string"
+        },
+        "decision": {
+          "$ref": "#/$defs/CandidateDecisionCodeV1"
+        },
+        "identity_confidence": {
+          "$ref": "#/$defs/IdentityConfidenceV1"
+        },
+        "identity_evidence_refs": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ArtifactRefV1"
+          },
+          "title": "Identity Evidence Refs",
+          "type": "array"
+        },
+        "product_id": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Product Id"
+        },
+        "reason_codes": {
+          "items": {
+            "$ref": "#/$defs/CandidateDecisionCodeV1"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_offer_keys": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Offer Keys",
+          "type": "array"
+        },
+        "variant_key": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Variant Key"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "product_id",
+        "canonical_product_key",
+        "source_offer_keys",
+        "identity_confidence",
+        "decision",
+        "reason_codes",
+        "decided_at"
+      ],
+      "title": "CandidateDecisionV1",
+      "type": "object"
+    },
+    "DiscoveryCheckpointV1": {
+      "$defs": {
+        "DiscoveryOfferV1": {
+          "additionalProperties": false,
+          "properties": {
+            "brand": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Brand"
+            },
+            "displayed_price_jpy": {
+              "anyOf": [
+                {
+                  "maximum": 100000000,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Displayed Price Jpy"
+            },
+            "item_url": {
+              "maxLength": 2048,
+              "minLength": 8,
+              "title": "Item Url",
+              "type": "string"
+            },
+            "jan_gtin": {
+              "anyOf": [
+                {
+                  "pattern": "^[0-9]{8,14}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Jan Gtin"
+            },
+            "manufacturer_part_number": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Manufacturer Part Number"
+            },
+            "observed_at": {
+              "format": "date-time",
+              "title": "Observed At",
+              "type": "string"
+            },
+            "provider_item_id": {
+              "maxLength": 300,
+              "minLength": 1,
+              "title": "Provider Item Id",
+              "type": "string"
+            },
+            "review_average": {
+              "anyOf": [
+                {
+                  "maximum": 5.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Review Average"
+            },
+            "review_count": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Review Count"
+            },
+            "source_id": {
+              "pattern": "^[A-Z][A-Z0-9_-]{2,79}$",
+              "title": "Source Id",
+              "type": "string"
+            },
+            "title": {
+              "maxLength": 500,
+              "minLength": 1,
+              "title": "Title",
+              "type": "string"
+            },
+            "variant_label": {
+              "anyOf": [
+                {
+                  "maxLength": 160,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Variant Label"
+            }
+          },
+          "required": [
+            "source_id",
+            "provider_item_id",
+            "item_url",
+            "title",
+            "observed_at"
+          ],
+          "title": "DiscoveryOfferV1",
+          "type": "object"
+        },
+        "DiscoveryPageReceiptV1": {
+          "additionalProperties": false,
+          "properties": {
+            "hit_count": {
+              "maximum": 10000,
+              "minimum": 0,
+              "title": "Hit Count",
+              "type": "integer"
+            },
+            "page": {
+              "maximum": 10000,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            },
+            "query_index": {
+              "maximum": 1,
+              "minimum": 0,
+              "title": "Query Index",
+              "type": "integer"
+            },
+            "request_fingerprint": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Request Fingerprint",
+              "type": "string"
+            },
+            "response_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Response Sha256",
+              "type": "string"
+            },
+            "source_id": {
+              "pattern": "^[A-Z][A-Z0-9_-]{2,79}$",
+              "title": "Source Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "source_id",
+            "query_index",
+            "page",
+            "request_fingerprint",
+            "response_sha256",
+            "hit_count"
+          ],
+          "title": "DiscoveryPageReceiptV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "ended_searches": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ended Searches",
+          "type": "array"
+        },
+        "mode": {
+          "enum": [
+            "RECORDED",
+            "LIVE"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "next_pages": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Next Pages",
+          "type": "object"
+        },
+        "offers": {
+          "items": {
+            "$ref": "#/$defs/DiscoveryOfferV1"
+          },
+          "title": "Offers",
+          "type": "array"
+        },
+        "queries": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Queries",
+          "type": "array"
+        },
+        "receipts": {
+          "items": {
+            "$ref": "#/$defs/DiscoveryPageReceiptV1"
+          },
+          "title": "Receipts",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_stop_reasons": {
+          "additionalProperties": {
+            "enum": [
+              "END_OF_RESULTS",
+              "OFFER_LIMIT"
+            ],
+            "type": "string"
+          },
+          "title": "Source Stop Reasons",
+          "type": "object"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "mode",
+        "queries",
+        "receipts",
+        "offers",
+        "next_pages",
+        "ended_searches",
+        "source_stop_reasons",
+        "started_at",
+        "updated_at"
+      ],
+      "title": "DiscoveryCheckpointV1",
+      "type": "object"
+    },
+    "DiscoveryRunV1": {
+      "$defs": {
+        "DiscoveryOfferV1": {
+          "additionalProperties": false,
+          "properties": {
+            "brand": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Brand"
+            },
+            "displayed_price_jpy": {
+              "anyOf": [
+                {
+                  "maximum": 100000000,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Displayed Price Jpy"
+            },
+            "item_url": {
+              "maxLength": 2048,
+              "minLength": 8,
+              "title": "Item Url",
+              "type": "string"
+            },
+            "jan_gtin": {
+              "anyOf": [
+                {
+                  "pattern": "^[0-9]{8,14}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Jan Gtin"
+            },
+            "manufacturer_part_number": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Manufacturer Part Number"
+            },
+            "observed_at": {
+              "format": "date-time",
+              "title": "Observed At",
+              "type": "string"
+            },
+            "provider_item_id": {
+              "maxLength": 300,
+              "minLength": 1,
+              "title": "Provider Item Id",
+              "type": "string"
+            },
+            "review_average": {
+              "anyOf": [
+                {
+                  "maximum": 5.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Review Average"
+            },
+            "review_count": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Review Count"
+            },
+            "source_id": {
+              "pattern": "^[A-Z][A-Z0-9_-]{2,79}$",
+              "title": "Source Id",
+              "type": "string"
+            },
+            "title": {
+              "maxLength": 500,
+              "minLength": 1,
+              "title": "Title",
+              "type": "string"
+            },
+            "variant_label": {
+              "anyOf": [
+                {
+                  "maxLength": 160,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Variant Label"
+            }
+          },
+          "required": [
+            "source_id",
+            "provider_item_id",
+            "item_url",
+            "title",
+            "observed_at"
+          ],
+          "title": "DiscoveryOfferV1",
+          "type": "object"
+        },
+        "DiscoveryPageReceiptV1": {
+          "additionalProperties": false,
+          "properties": {
+            "hit_count": {
+              "maximum": 10000,
+              "minimum": 0,
+              "title": "Hit Count",
+              "type": "integer"
+            },
+            "page": {
+              "maximum": 10000,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            },
+            "query_index": {
+              "maximum": 1,
+              "minimum": 0,
+              "title": "Query Index",
+              "type": "integer"
+            },
+            "request_fingerprint": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Request Fingerprint",
+              "type": "string"
+            },
+            "response_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Response Sha256",
+              "type": "string"
+            },
+            "source_id": {
+              "pattern": "^[A-Z][A-Z0-9_-]{2,79}$",
+              "title": "Source Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "source_id",
+            "query_index",
+            "page",
+            "request_fingerprint",
+            "response_sha256",
+            "hit_count"
+          ],
+          "title": "DiscoveryPageReceiptV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "completed_at": {
+          "format": "date-time",
+          "title": "Completed At",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "RECORDED",
+            "LIVE"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "offers": {
+          "items": {
+            "$ref": "#/$defs/DiscoveryOfferV1"
+          },
+          "title": "Offers",
+          "type": "array"
+        },
+        "queries": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Queries",
+          "type": "array"
+        },
+        "receipts": {
+          "items": {
+            "$ref": "#/$defs/DiscoveryPageReceiptV1"
+          },
+          "title": "Receipts",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_stop_reasons": {
+          "additionalProperties": {
+            "enum": [
+              "END_OF_RESULTS",
+              "OFFER_LIMIT"
+            ],
+            "type": "string"
+          },
+          "title": "Source Stop Reasons",
+          "type": "object"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "unique_offer_count_by_source": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Unique Offer Count By Source",
+          "type": "object"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "mode",
+        "queries",
+        "receipts",
+        "offers",
+        "source_stop_reasons",
+        "unique_offer_count_by_source",
+        "started_at",
+        "completed_at"
+      ],
+      "title": "DiscoveryRunV1",
+      "type": "object"
+    },
+    "EvidenceDimensionScoresV1": {
+      "additionalProperties": false,
+      "properties": {
+        "freshness_consistency": {
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Freshness Consistency",
+          "type": "integer"
+        },
+        "identity": {
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Identity",
+          "type": "integer"
+        },
+        "independent_evidence": {
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Independent Evidence",
+          "type": "integer"
+        },
+        "official_information": {
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Official Information",
+          "type": "integer"
+        },
+        "review_diversity": {
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Review Diversity",
+          "type": "integer"
+        },
+        "safety": {
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Safety",
+          "type": "integer"
+        },
+        "safety_required": {
+          "default": false,
+          "title": "Safety Required",
+          "type": "boolean"
+        },
+        "source_family_count": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Source Family Count",
+          "type": "integer"
+        },
+        "unresolved_major_conflict": {
+          "default": false,
+          "title": "Unresolved Major Conflict",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "identity",
+        "official_information",
+        "safety",
+        "independent_evidence",
+        "review_diversity",
+        "freshness_consistency",
+        "source_family_count"
+      ],
+      "title": "EvidenceDimensionScoresV1",
+      "type": "object"
+    },
+    "FitScoreV1": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_coverage": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Evidence Coverage"
+        },
+        "fit_score": {
+          "anyOf": [
+            {
+              "maximum": 100.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Fit Score"
+        },
+        "hard_gate_passed": {
+          "title": "Hard Gate Passed",
+          "type": "boolean"
+        },
+        "median_price_jpy": {
+          "anyOf": [
+            {
+              "minimum": 1.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Median Price Jpy"
+        },
+        "price_current": {
+          "title": "Price Current",
+          "type": "boolean"
+        },
+        "product_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "profile_id": {
+          "enum": [
+            "LIGHTWEIGHT",
+            "CAPACITY",
+            "ACCESS"
+          ],
+          "title": "Profile Id",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "product_id",
+        "profile_id",
+        "hard_gate_passed",
+        "fit_score",
+        "evidence_coverage",
+        "price_current",
+        "reason_codes"
+      ],
+      "title": "FitScoreV1",
+      "type": "object"
+    },
+    "MonitorDiffV1": {
+      "additionalProperties": false,
+      "properties": {
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "automatic_publication_action_count": {
+          "const": 0,
+          "default": 0,
+          "title": "Automatic Publication Action Count",
+          "type": "integer"
+        },
+        "changed_artifact_types": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Changed Artifact Types",
+          "type": "array"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "current_snapshot_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Current Snapshot Sha256",
+          "type": "string"
+        },
+        "previous_snapshot_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Previous Snapshot Sha256",
+          "type": "string"
+        },
+        "required_regeneration_stages": {
+          "items": {
+            "enum": [
+              "RECOMMENDATION_V2",
+              "TRUSTED_RECOMMENDATION_V3",
+              "ARTICLE_PACKET"
+            ],
+            "type": "string"
+          },
+          "title": "Required Regeneration Stages",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "update_required": {
+          "title": "Update Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "previous_snapshot_sha256",
+        "current_snapshot_sha256",
+        "changed_artifact_types",
+        "update_required",
+        "required_regeneration_stages",
+        "created_at"
+      ],
+      "title": "MonitorDiffV1",
+      "type": "object"
+    },
+    "MonitoringPolicyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "active_recall_action": {
+          "const": "EXCLUDE_AND_REVIEW",
+          "default": "EXCLUDE_AND_REVIEW",
+          "title": "Active Recall Action",
+          "type": "string"
+        },
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "automatic_publication_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Automatic Publication Allowed",
+          "type": "boolean"
+        },
+        "availability_hours": {
+          "const": 24,
+          "default": 24,
+          "title": "Availability Hours",
+          "type": "integer"
+        },
+        "evidence_hash_change_action": {
+          "const": "REGENERATE_V2_V3_ARTICLE_PACKET",
+          "default": "REGENERATE_V2_V3_ARTICLE_PACKET",
+          "title": "Evidence Hash Change Action",
+          "type": "string"
+        },
+        "independent_evidence_days": {
+          "const": 365,
+          "default": 365,
+          "title": "Independent Evidence Days",
+          "type": "integer"
+        },
+        "official_spec_days": {
+          "const": 90,
+          "default": 90,
+          "title": "Official Spec Days",
+          "type": "integer"
+        },
+        "possible_recall_action": {
+          "const": "WATCH",
+          "default": "WATCH",
+          "title": "Possible Recall Action",
+          "type": "string"
+        },
+        "price_hours": {
+          "const": 24,
+          "default": 24,
+          "title": "Price Hours",
+          "type": "integer"
+        },
+        "review_days": {
+          "const": 30,
+          "default": 30,
+          "title": "Review Days",
+          "type": "integer"
+        },
+        "runner_interval_hours": {
+          "const": 24,
+          "default": 24,
+          "title": "Runner Interval Hours",
+          "type": "integer"
+        },
+        "safety_hours": {
+          "const": 24,
+          "default": 24,
+          "title": "Safety Hours",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "social_days": {
+          "const": 30,
+          "default": 30,
+          "title": "Social Days",
+          "type": "integer"
+        },
+        "social_enabled": {
+          "const": false,
+          "default": false,
+          "title": "Social Enabled",
+          "type": "boolean"
+        },
+        "source_terms_change_action": {
+          "const": "FAIL_CLOSED",
+          "default": "FAIL_CLOSED",
+          "title": "Source Terms Change Action",
+          "type": "string"
+        },
+        "source_terms_days": {
+          "const": 90,
+          "default": 90,
+          "title": "Source Terms Days",
+          "type": "integer"
+        },
+        "stale_price_action": {
+          "const": "MAX_CONDITIONAL",
+          "default": "MAX_CONDITIONAL",
+          "title": "Stale Price Action",
+          "type": "string"
+        },
+        "stale_review_action": {
+          "const": "ZERO_ADJUSTMENT_MAX_CONDITIONAL",
+          "default": "ZERO_ADJUSTMENT_MAX_CONDITIONAL",
+          "title": "Stale Review Action",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id"
+      ],
+      "title": "MonitoringPolicyV1",
+      "type": "object"
+    },
+    "ProductReviewSignalV1": {
+      "$defs": {
+        "ReviewContributionV1": {
+          "additionalProperties": false,
+          "properties": {
+            "bayesian_rating": {
+              "anyOf": [
+                {
+                  "maximum": 5.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                }
+              ],
+              "title": "Bayesian Rating"
+            },
+            "final_weight": {
+              "anyOf": [
+                {
+                  "maximum": 0.5,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                }
+              ],
+              "title": "Final Weight"
+            },
+            "percentile": {
+              "anyOf": [
+                {
+                  "maximum": 100.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                }
+              ],
+              "title": "Percentile"
+            },
+            "rating_count": {
+              "minimum": 0,
+              "title": "Rating Count",
+              "type": "integer"
+            },
+            "source_id": {
+              "pattern": "^[A-Z][A-Z0-9_-]{2,79}$",
+              "title": "Source Id",
+              "type": "string"
+            },
+            "verified_purchase": {
+              "$ref": "#/$defs/VerificationStateV1"
+            }
+          },
+          "required": [
+            "source_id",
+            "rating_count",
+            "bayesian_rating",
+            "percentile",
+            "final_weight",
+            "verified_purchase"
+          ],
+          "title": "ReviewContributionV1",
+          "type": "object"
+        },
+        "ReviewEvidenceStatusV1": {
+          "enum": [
+            "SUFFICIENT",
+            "INSUFFICIENT",
+            "CONFLICTING"
+          ],
+          "title": "ReviewEvidenceStatusV1",
+          "type": "string"
+        },
+        "VerificationStateV1": {
+          "enum": [
+            "VERIFIED",
+            "UNVERIFIED",
+            "UNAVAILABLE"
+          ],
+          "title": "VerificationStateV1",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "contributions": {
+          "items": {
+            "$ref": "#/$defs/ReviewContributionV1"
+          },
+          "title": "Contributions",
+          "type": "array"
+        },
+        "maximum_percentile_spread": {
+          "anyOf": [
+            {
+              "maximum": 100.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Percentile Spread"
+        },
+        "product_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "review_adjustment": {
+          "anyOf": [
+            {
+              "maximum": 5.0,
+              "minimum": -8.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Review Adjustment"
+        },
+        "review_signal": {
+          "anyOf": [
+            {
+              "maximum": 100.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Review Signal"
+        },
+        "status": {
+          "$ref": "#/$defs/ReviewEvidenceStatusV1"
+        },
+        "structural_anomaly_detected": {
+          "default": false,
+          "title": "Structural Anomaly Detected",
+          "type": "boolean"
+        },
+        "total_rating_count": {
+          "minimum": 0,
+          "title": "Total Rating Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "product_id",
+        "status",
+        "total_rating_count",
+        "review_signal",
+        "review_adjustment",
+        "contributions"
+      ],
+      "title": "ProductReviewSignalV1",
+      "type": "object"
+    },
+    "ProviderPageV1": {
+      "$defs": {
+        "DiscoveryOfferV1": {
+          "additionalProperties": false,
+          "properties": {
+            "brand": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Brand"
+            },
+            "displayed_price_jpy": {
+              "anyOf": [
+                {
+                  "maximum": 100000000,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Displayed Price Jpy"
+            },
+            "item_url": {
+              "maxLength": 2048,
+              "minLength": 8,
+              "title": "Item Url",
+              "type": "string"
+            },
+            "jan_gtin": {
+              "anyOf": [
+                {
+                  "pattern": "^[0-9]{8,14}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Jan Gtin"
+            },
+            "manufacturer_part_number": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Manufacturer Part Number"
+            },
+            "observed_at": {
+              "format": "date-time",
+              "title": "Observed At",
+              "type": "string"
+            },
+            "provider_item_id": {
+              "maxLength": 300,
+              "minLength": 1,
+              "title": "Provider Item Id",
+              "type": "string"
+            },
+            "review_average": {
+              "anyOf": [
+                {
+                  "maximum": 5.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Review Average"
+            },
+            "review_count": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Review Count"
+            },
+            "source_id": {
+              "pattern": "^[A-Z][A-Z0-9_-]{2,79}$",
+              "title": "Source Id",
+              "type": "string"
+            },
+            "title": {
+              "maxLength": 500,
+              "minLength": 1,
+              "title": "Title",
+              "type": "string"
+            },
+            "variant_label": {
+              "anyOf": [
+                {
+                  "maxLength": 160,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Variant Label"
+            }
+          },
+          "required": [
+            "source_id",
+            "provider_item_id",
+            "item_url",
+            "title",
+            "observed_at"
+          ],
+          "title": "DiscoveryOfferV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "is_last_page": {
+          "title": "Is Last Page",
+          "type": "boolean"
+        },
+        "offers": {
+          "items": {
+            "$ref": "#/$defs/DiscoveryOfferV1"
+          },
+          "title": "Offers",
+          "type": "array"
+        },
+        "page": {
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "query_index": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Query Index",
+          "type": "integer"
+        },
+        "request_fingerprint": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Request Fingerprint",
+          "type": "string"
+        },
+        "response_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Response Sha256",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^[A-Z][A-Z0-9_-]{2,79}$",
+          "title": "Source Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "query_index",
+        "page",
+        "offers",
+        "request_fingerprint",
+        "response_sha256",
+        "is_last_page"
+      ],
+      "title": "ProviderPageV1",
+      "type": "object"
+    },
+    "ResearchPlanV1": {
+      "$defs": {
+        "RecommendationProfileV1": {
+          "additionalProperties": false,
+          "properties": {
+            "access_weight": {
+              "maximum": 100,
+              "minimum": 0,
+              "title": "Access Weight",
+              "type": "integer"
+            },
+            "capacity_weight": {
+              "maximum": 100,
+              "minimum": 0,
+              "title": "Capacity Weight",
+              "type": "integer"
+            },
+            "price_weight": {
+              "maximum": 100,
+              "minimum": 0,
+              "title": "Price Weight",
+              "type": "integer"
+            },
+            "profile_id": {
+              "enum": [
+                "LIGHTWEIGHT",
+                "CAPACITY",
+                "ACCESS"
+              ],
+              "title": "Profile Id",
+              "type": "string"
+            },
+            "support_weight": {
+              "maximum": 100,
+              "minimum": 0,
+              "title": "Support Weight",
+              "type": "integer"
+            },
+            "weight_weight": {
+              "maximum": 100,
+              "minimum": 0,
+              "title": "Weight Weight",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "profile_id",
+            "weight_weight",
+            "capacity_weight",
+            "access_weight",
+            "support_weight",
+            "price_weight"
+          ],
+          "title": "RecommendationProfileV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "allowed_sale_condition": {
+          "const": "NEW_DOMESTIC_REGULAR",
+          "default": "NEW_DOMESTIC_REGULAR",
+          "title": "Allowed Sale Condition",
+          "type": "string"
+        },
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "category_code": {
+          "const": "CARRY_ON_SUITCASE",
+          "default": "CARRY_ON_SUITCASE",
+          "title": "Category Code",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "market_country": {
+          "const": "JP",
+          "default": "JP",
+          "title": "Market Country",
+          "type": "string"
+        },
+        "maximum_depth_cm": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "25",
+          "title": "Maximum Depth Cm"
+        },
+        "maximum_height_cm": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "55",
+          "title": "Maximum Height Cm"
+        },
+        "maximum_linear_cm": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "115",
+          "title": "Maximum Linear Cm"
+        },
+        "maximum_width_cm": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "40",
+          "title": "Maximum Width Cm"
+        },
+        "price_freshness_hours": {
+          "const": 24,
+          "default": 24,
+          "title": "Price Freshness Hours",
+          "type": "integer"
+        },
+        "profiles": {
+          "items": {
+            "$ref": "#/$defs/RecommendationProfileV1"
+          },
+          "title": "Profiles",
+          "type": "array"
+        },
+        "provider_offer_limit": {
+          "const": 3000,
+          "default": 3000,
+          "title": "Provider Offer Limit",
+          "type": "integer"
+        },
+        "queries": {
+          "default": [
+            "機内持ち込み スーツケース",
+            "機内持ち込み キャリーケース"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Queries",
+          "type": "array"
+        },
+        "review_freshness_days": {
+          "const": 30,
+          "default": 30,
+          "title": "Review Freshness Days",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "profiles",
+        "created_at"
+      ],
+      "title": "ResearchPlanV1",
+      "type": "object"
+    },
+    "ReviewAggregateSetV1": {
+      "$defs": {
+        "ProductReviewSignalV1": {
+          "additionalProperties": false,
+          "properties": {
+            "contributions": {
+              "items": {
+                "$ref": "#/$defs/ReviewContributionV1"
+              },
+              "title": "Contributions",
+              "type": "array"
+            },
+            "maximum_percentile_spread": {
+              "anyOf": [
+                {
+                  "maximum": 100.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Maximum Percentile Spread"
+            },
+            "product_id": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "title": "Product Id",
+              "type": "string"
+            },
+            "review_adjustment": {
+              "anyOf": [
+                {
+                  "maximum": 5.0,
+                  "minimum": -8.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                }
+              ],
+              "title": "Review Adjustment"
+            },
+            "review_signal": {
+              "anyOf": [
+                {
+                  "maximum": 100.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Review Signal"
+            },
+            "status": {
+              "$ref": "#/$defs/ReviewEvidenceStatusV1"
+            },
+            "structural_anomaly_detected": {
+              "default": false,
+              "title": "Structural Anomaly Detected",
+              "type": "boolean"
+            },
+            "total_rating_count": {
+              "minimum": 0,
+              "title": "Total Rating Count",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "product_id",
+            "status",
+            "total_rating_count",
+            "review_signal",
+            "review_adjustment",
+            "contributions"
+          ],
+          "title": "ProductReviewSignalV1",
+          "type": "object"
+        },
+        "ReviewContributionV1": {
+          "additionalProperties": false,
+          "properties": {
+            "bayesian_rating": {
+              "anyOf": [
+                {
+                  "maximum": 5.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                }
+              ],
+              "title": "Bayesian Rating"
+            },
+            "final_weight": {
+              "anyOf": [
+                {
+                  "maximum": 0.5,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                }
+              ],
+              "title": "Final Weight"
+            },
+            "percentile": {
+              "anyOf": [
+                {
+                  "maximum": 100.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                }
+              ],
+              "title": "Percentile"
+            },
+            "rating_count": {
+              "minimum": 0,
+              "title": "Rating Count",
+              "type": "integer"
+            },
+            "source_id": {
+              "pattern": "^[A-Z][A-Z0-9_-]{2,79}$",
+              "title": "Source Id",
+              "type": "string"
+            },
+            "verified_purchase": {
+              "$ref": "#/$defs/VerificationStateV1"
+            }
+          },
+          "required": [
+            "source_id",
+            "rating_count",
+            "bayesian_rating",
+            "percentile",
+            "final_weight",
+            "verified_purchase"
+          ],
+          "title": "ReviewContributionV1",
+          "type": "object"
+        },
+        "ReviewEvidenceStatusV1": {
+          "enum": [
+            "SUFFICIENT",
+            "INSUFFICIENT",
+            "CONFLICTING"
+          ],
+          "title": "ReviewEvidenceStatusV1",
+          "type": "string"
+        },
+        "ReviewObservationV1": {
+          "additionalProperties": false,
+          "properties": {
+            "acquired_at": {
+              "format": "date-time",
+              "title": "Acquired At",
+              "type": "string"
+            },
+            "anomaly_factor": {
+              "anyOf": [
+                {
+                  "maximum": 1.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                }
+              ],
+              "title": "Anomaly Factor"
+            },
+            "category_code": {
+              "const": "CARRY_ON_SUITCASE",
+              "default": "CARRY_ON_SUITCASE",
+              "title": "Category Code",
+              "type": "string"
+            },
+            "identity_match_confirmed": {
+              "title": "Identity Match Confirmed",
+              "type": "boolean"
+            },
+            "product_id": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "title": "Product Id",
+              "type": "string"
+            },
+            "rating_average": {
+              "anyOf": [
+                {
+                  "maximum": 5.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                }
+              ],
+              "title": "Rating Average"
+            },
+            "rating_count": {
+              "maximum": 1000000000,
+              "minimum": 0,
+              "title": "Rating Count",
+              "type": "integer"
+            },
+            "source_id": {
+              "pattern": "^[A-Z][A-Z0-9_-]{2,79}$",
+              "title": "Source Id",
+              "type": "string"
+            },
+            "verified_purchase": {
+              "$ref": "#/$defs/VerificationStateV1"
+            }
+          },
+          "required": [
+            "product_id",
+            "source_id",
+            "rating_average",
+            "rating_count",
+            "identity_match_confirmed",
+            "anomaly_factor",
+            "verified_purchase",
+            "acquired_at"
+          ],
+          "title": "ReviewObservationV1",
+          "type": "object"
+        },
+        "VerificationStateV1": {
+          "enum": [
+            "VERIFIED",
+            "UNVERIFIED",
+            "UNAVAILABLE"
+          ],
+          "title": "VerificationStateV1",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "acquired_at": {
+          "format": "date-time",
+          "title": "Acquired At",
+          "type": "string"
+        },
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "bayesian_prior_weight": {
+          "const": 50,
+          "default": 50,
+          "title": "Bayesian Prior Weight",
+          "type": "integer"
+        },
+        "count_cap": {
+          "const": 500,
+          "default": 500,
+          "title": "Count Cap",
+          "type": "integer"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "minimum_domains": {
+          "const": 2,
+          "default": 2,
+          "title": "Minimum Domains",
+          "type": "integer"
+        },
+        "minimum_total_reviews": {
+          "const": 30,
+          "default": 30,
+          "title": "Minimum Total Reviews",
+          "type": "integer"
+        },
+        "multi_domain_weight_cap": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0.4",
+          "title": "Multi Domain Weight Cap"
+        },
+        "observations": {
+          "items": {
+            "$ref": "#/$defs/ReviewObservationV1"
+          },
+          "title": "Observations",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "signals": {
+          "items": {
+            "$ref": "#/$defs/ProductReviewSignalV1"
+          },
+          "title": "Signals",
+          "type": "array"
+        },
+        "two_domain_weight": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "default": "0.5",
+          "title": "Two Domain Weight"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "observations",
+        "signals",
+        "acquired_at",
+        "expires_at"
+      ],
+      "title": "ReviewAggregateSetV1",
+      "type": "object"
+    },
+    "ReviewDecisionV1": {
+      "$defs": {
+        "ArtifactRefV1": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "artifact_type": {
+              "maxLength": 100,
+              "minLength": 3,
+              "title": "Artifact Type",
+              "type": "string"
+            },
+            "byte_size": {
+              "maximum": 16777216,
+              "minimum": 2,
+              "title": "Byte Size",
+              "type": "integer"
+            },
+            "content_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Content Sha256",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_type",
+            "artifact_id",
+            "content_sha256",
+            "byte_size"
+          ],
+          "title": "ArtifactRefV1",
+          "type": "object"
+        },
+        "ReviewDecisionActionV1": {
+          "enum": [
+            "APPROVE",
+            "REJECT"
+          ],
+          "title": "ReviewDecisionActionV1",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/ReviewDecisionActionV1"
+        },
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "decided_at": {
+          "format": "date-time",
+          "title": "Decided At",
+          "type": "string"
+        },
+        "packet_ref": {
+          "$ref": "#/$defs/ArtifactRefV1"
+        },
+        "publication_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Publication Authorized",
+          "type": "boolean"
+        },
+        "reason": {
+          "maxLength": 1000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "reviewer_ref": {
+          "maxLength": 120,
+          "minLength": 3,
+          "title": "Reviewer Ref",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "packet_ref",
+        "action",
+        "reviewer_ref",
+        "reason",
+        "decided_at"
+      ],
+      "title": "ReviewDecisionV1",
+      "type": "object"
+    },
+    "ReviewPacketV1": {
+      "$defs": {
+        "ArtifactRefV1": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "artifact_type": {
+              "maxLength": 100,
+              "minLength": 3,
+              "title": "Artifact Type",
+              "type": "string"
+            },
+            "byte_size": {
+              "maximum": 16777216,
+              "minimum": 2,
+              "title": "Byte Size",
+              "type": "integer"
+            },
+            "content_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Content Sha256",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_type",
+            "artifact_id",
+            "content_sha256",
+            "byte_size"
+          ],
+          "title": "ArtifactRefV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "blocker_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Blocker Codes",
+          "type": "array"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "input_refs": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRefV1"
+          },
+          "title": "Input Refs",
+          "type": "array"
+        },
+        "override_forbidden_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Override Forbidden Codes",
+          "type": "array"
+        },
+        "publication_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Publication Authorized",
+          "type": "boolean"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "summary": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Summary",
+          "type": "object"
+        },
+        "warning_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warning Codes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "input_refs",
+        "blocker_codes",
+        "warning_codes",
+        "override_forbidden_codes",
+        "summary",
+        "created_at"
+      ],
+      "title": "ReviewPacketV1",
+      "type": "object"
+    },
+    "ReviewThemeSetV1": {
+      "$defs": {
+        "ReviewThemeV1": {
+          "additionalProperties": false,
+          "properties": {
+            "human_validated": {
+              "title": "Human Validated",
+              "type": "boolean"
+            },
+            "identity_match_confirmed": {
+              "title": "Identity Match Confirmed",
+              "type": "boolean"
+            },
+            "matching_observation_count": {
+              "minimum": 1,
+              "title": "Matching Observation Count",
+              "type": "integer"
+            },
+            "severity": {
+              "$ref": "#/$defs/ThemeSeverityV1"
+            },
+            "source_domains": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Source Domains",
+              "type": "array"
+            },
+            "theme_code": {
+              "pattern": "^[A-Z][A-Z0-9_]{2,79}$",
+              "title": "Theme Code",
+              "type": "string"
+            }
+          },
+          "required": [
+            "theme_code",
+            "severity",
+            "matching_observation_count",
+            "source_domains",
+            "identity_match_confirmed",
+            "human_validated"
+          ],
+          "title": "ReviewThemeV1",
+          "type": "object"
+        },
+        "ThemeSeverityV1": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ],
+          "title": "ThemeSeverityV1",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "derived_at": {
+          "format": "date-time",
+          "title": "Derived At",
+          "type": "string"
+        },
+        "eligible_for_article": {
+          "title": "Eligible For Article",
+          "type": "boolean"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "product_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "quotations_persisted": {
+          "const": false,
+          "default": false,
+          "title": "Quotations Persisted",
+          "type": "boolean"
+        },
+        "raw_body_persisted": {
+          "const": false,
+          "default": false,
+          "title": "Raw Body Persisted",
+          "type": "boolean"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "themes": {
+          "items": {
+            "$ref": "#/$defs/ReviewThemeV1"
+          },
+          "title": "Themes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "product_id",
+        "themes",
+        "eligible_for_article",
+        "derived_at",
+        "expires_at"
+      ],
+      "title": "ReviewThemeSetV1",
+      "type": "object"
+    },
+    "SafetyObservationV1": {
+      "$defs": {
+        "ArtifactRefV1": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "artifact_type": {
+              "maxLength": 100,
+              "minLength": 3,
+              "title": "Artifact Type",
+              "type": "string"
+            },
+            "byte_size": {
+              "maximum": 16777216,
+              "minimum": 2,
+              "title": "Byte Size",
+              "type": "integer"
+            },
+            "content_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Content Sha256",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_type",
+            "artifact_id",
+            "content_sha256",
+            "byte_size"
+          ],
+          "title": "ArtifactRefV1",
+          "type": "object"
+        },
+        "SafetyStateV1": {
+          "enum": [
+            "CLEAR",
+            "POSSIBLE_MATCH",
+            "ACTIVE_RECALL",
+            "NOT_CHECKED"
+          ],
+          "title": "SafetyStateV1",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "checked_at": {
+          "format": "date-time",
+          "title": "Checked At",
+          "type": "string"
+        },
+        "expires_at": {
+          "format": "date-time",
+          "title": "Expires At",
+          "type": "string"
+        },
+        "model_match_confirmed": {
+          "title": "Model Match Confirmed",
+          "type": "boolean"
+        },
+        "product_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_refs": {
+          "items": {
+            "$ref": "#/$defs/ArtifactRefV1"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "state": {
+          "$ref": "#/$defs/SafetyStateV1"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "product_id",
+        "state",
+        "source_refs",
+        "model_match_confirmed",
+        "checked_at",
+        "expires_at"
+      ],
+      "title": "SafetyObservationV1",
+      "type": "object"
+    },
+    "SocialSignalSetV1": {
+      "additionalProperties": false,
+      "properties": {
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "checked_at": {
+          "format": "date-time",
+          "title": "Checked At",
+          "type": "string"
+        },
+        "direct_rank_adjustment": {
+          "const": 0,
+          "default": 0,
+          "title": "Direct Rank Adjustment",
+          "type": "integer"
+        },
+        "enabled": {
+          "const": false,
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "status": {
+          "const": "DISABLED_BY_SOURCE_POLICY",
+          "default": "DISABLED_BY_SOURCE_POLICY",
+          "title": "Status",
+          "type": "string"
+        },
+        "watch_product_ids": {
+          "default": [],
+          "items": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            "type": "string"
+          },
+          "title": "Watch Product Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "checked_at"
+      ],
+      "title": "SocialSignalSetV1",
+      "type": "object"
+    },
+    "SourcePolicyV1": {
+      "$defs": {
+        "AcquisitionMethodV1": {
+          "enum": [
+            "JSON_API",
+            "EXACT_URL_HTML",
+            "TRANSIENT_REVIEW_BODY",
+            "DISABLED"
+          ],
+          "title": "AcquisitionMethodV1",
+          "type": "string"
+        },
+        "SourceDecisionV1": {
+          "enum": [
+            "ALLOW_STRUCTURED_FIELDS",
+            "ALLOW_AGGREGATE_ONLY",
+            "ALLOW_DERIVED_THEMES",
+            "LINK_ONLY",
+            "PROHIBITED",
+            "UNKNOWN"
+          ],
+          "title": "SourceDecisionV1",
+          "type": "string"
+        },
+        "SourceRuleV1": {
+          "additionalProperties": false,
+          "properties": {
+            "acquisition_method": {
+              "$ref": "#/$defs/AcquisitionMethodV1"
+            },
+            "allowed_exact_urls": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Allowed Exact Urls",
+              "type": "array"
+            },
+            "allowed_fields": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Allowed Fields",
+              "type": "array"
+            },
+            "allowed_hosts": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Allowed Hosts",
+              "type": "array"
+            },
+            "allowed_path_prefixes": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Allowed Path Prefixes",
+              "type": "array"
+            },
+            "credential_ref": {
+              "anyOf": [
+                {
+                  "maxLength": 256,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Credential Ref"
+            },
+            "decision": {
+              "$ref": "#/$defs/SourceDecisionV1"
+            },
+            "derived_storage_allowed": {
+              "title": "Derived Storage Allowed",
+              "type": "boolean"
+            },
+            "freshness_hours": {
+              "maximum": 8760,
+              "minimum": 1,
+              "title": "Freshness Hours",
+              "type": "integer"
+            },
+            "minimum_request_interval_ms": {
+              "maximum": 60000,
+              "minimum": 0,
+              "title": "Minimum Request Interval Ms",
+              "type": "integer"
+            },
+            "quotation_storage_allowed": {
+              "title": "Quotation Storage Allowed",
+              "type": "boolean"
+            },
+            "raw_body_storage_allowed": {
+              "title": "Raw Body Storage Allowed",
+              "type": "boolean"
+            },
+            "retention_months": {
+              "maximum": 120,
+              "minimum": 0,
+              "title": "Retention Months",
+              "type": "integer"
+            },
+            "source_id": {
+              "pattern": "^[A-Z][A-Z0-9_-]{2,79}$",
+              "title": "Source Id",
+              "type": "string"
+            },
+            "terms_checked_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Terms Checked At"
+            },
+            "terms_checked_by": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Terms Checked By"
+            }
+          },
+          "required": [
+            "source_id",
+            "decision",
+            "acquisition_method",
+            "allowed_hosts",
+            "allowed_path_prefixes",
+            "allowed_exact_urls",
+            "allowed_fields",
+            "raw_body_storage_allowed",
+            "quotation_storage_allowed",
+            "derived_storage_allowed",
+            "minimum_request_interval_ms",
+            "freshness_hours",
+            "retention_months"
+          ],
+          "title": "SourceRuleV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "affiliate_inputs_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Affiliate Inputs Allowed",
+          "type": "boolean"
+        },
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "points_inputs_allowed": {
+          "const": false,
+          "default": false,
+          "title": "Points Inputs Allowed",
+          "type": "boolean"
+        },
+        "policy_profile": {
+          "const": "TRUST_SELECTION_CLAIM_EVIDENCE_V1",
+          "default": "TRUST_SELECTION_CLAIM_EVIDENCE_V1",
+          "title": "Policy Profile",
+          "type": "string"
+        },
+        "review_body_retention_months": {
+          "const": 0,
+          "default": 0,
+          "title": "Review Body Retention Months",
+          "type": "integer"
+        },
+        "review_derived_retention_months": {
+          "const": 13,
+          "default": 13,
+          "title": "Review Derived Retention Months",
+          "type": "integer"
+        },
+        "rules": {
+          "items": {
+            "$ref": "#/$defs/SourceRuleV1"
+          },
+          "title": "Rules",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "social_rank_adjustment": {
+          "const": 0,
+          "default": 0,
+          "title": "Social Rank Adjustment",
+          "type": "integer"
+        },
+        "terms_attestation_days": {
+          "const": 90,
+          "default": 90,
+          "title": "Terms Attestation Days",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "rules",
+        "created_at"
+      ],
+      "title": "SourcePolicyV1",
+      "type": "object"
+    },
+    "TrustedRecommendationResultV1": {
+      "$defs": {
+        "ConfidenceGradeV1": {
+          "enum": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E"
+          ],
+          "title": "ConfidenceGradeV1",
+          "type": "string"
+        },
+        "RecommendationStatusV1": {
+          "enum": [
+            "RECOMMENDED",
+            "CONDITIONAL",
+            "WATCH",
+            "INSUFFICIENT_EVIDENCE",
+            "EXCLUDED"
+          ],
+          "title": "RecommendationStatusV1",
+          "type": "string"
+        },
+        "RiskLevelV1": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH",
+            "UNKNOWN"
+          ],
+          "title": "RiskLevelV1",
+          "type": "string"
+        },
+        "TrustedRecommendationCandidateV1": {
+          "additionalProperties": false,
+          "properties": {
+            "confidence_grade": {
+              "$ref": "#/$defs/ConfidenceGradeV1"
+            },
+            "confidence_score": {
+              "maximum": 12,
+              "minimum": 0,
+              "title": "Confidence Score",
+              "type": "integer"
+            },
+            "fit_score": {
+              "anyOf": [
+                {
+                  "maximum": 100.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fit Score"
+            },
+            "internal_rank_score": {
+              "anyOf": [
+                {
+                  "maximum": 105.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Internal Rank Score"
+            },
+            "product_id": {
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "title": "Product Id",
+              "type": "string"
+            },
+            "rank": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Rank"
+            },
+            "reason_codes": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Reason Codes",
+              "type": "array"
+            },
+            "recommendation_status": {
+              "$ref": "#/$defs/RecommendationStatusV1"
+            },
+            "review_adjustment": {
+              "anyOf": [
+                {
+                  "maximum": 5.0,
+                  "minimum": -8.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                }
+              ],
+              "title": "Review Adjustment"
+            },
+            "review_signal": {
+              "anyOf": [
+                {
+                  "maximum": 100.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Review Signal"
+            },
+            "risk_level": {
+              "$ref": "#/$defs/RiskLevelV1"
+            },
+            "risk_penalty": {
+              "anyOf": [
+                {
+                  "maximum": 15.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                }
+              ],
+              "title": "Risk Penalty"
+            },
+            "tie_group": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Tie Group"
+            }
+          },
+          "required": [
+            "product_id",
+            "fit_score",
+            "review_signal",
+            "review_adjustment",
+            "confidence_score",
+            "confidence_grade",
+            "risk_level",
+            "risk_penalty",
+            "recommendation_status",
+            "reason_codes"
+          ],
+          "title": "TrustedRecommendationCandidateV1",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "activation_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Activation Authorized",
+          "type": "boolean"
+        },
+        "article_id": {
+          "const": "raos-reliability-suitcase-pilot-001",
+          "default": "raos-reliability-suitcase-pilot-001",
+          "title": "Article Id",
+          "type": "string"
+        },
+        "artifact_id": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "calculated_at": {
+          "format": "date-time",
+          "title": "Calculated At",
+          "type": "string"
+        },
+        "candidates": {
+          "items": {
+            "$ref": "#/$defs/TrustedRecommendationCandidateV1"
+          },
+          "title": "Candidates",
+          "type": "array"
+        },
+        "methodology_id": {
+          "const": "TRUST_SELECTION_RECOMMENDATION_V3",
+          "default": "TRUST_SELECTION_RECOMMENDATION_V3",
+          "title": "Methodology Id",
+          "type": "string"
+        },
+        "profile_id": {
+          "enum": [
+            "LIGHTWEIGHT",
+            "CAPACITY",
+            "ACCESS"
+          ],
+          "title": "Profile Id",
+          "type": "string"
+        },
+        "publication_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Publication Authorized",
+          "type": "boolean"
+        },
+        "ranking_order": {
+          "items": {
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            "type": "string"
+          },
+          "title": "Ranking Order",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "1.0.0",
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "v2_report_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "V2 Report Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "profile_id",
+        "v2_report_sha256",
+        "candidates",
+        "ranking_order",
+        "calculated_at"
+      ],
+      "title": "TrustedRecommendationResultV1",
+      "type": "object"
+    }
+  }
+}

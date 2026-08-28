@@ -1,0 +1,96 @@
+{
+  "article_id": "raos-reliability-suitcase-pilot-001",
+  "schema_version": 1,
+  "scores": [
+    {
+      "evidence_coverage": "1.0000",
+      "fit_score": "40.0000",
+      "hard_gate_passed": true,
+      "median_price_jpy": "79050",
+      "price_current": true,
+      "product_id": "8004a281-5048-5285-b7b6-af6cfdf72b6c",
+      "profile_id": "LIGHTWEIGHT",
+      "reason_codes": []
+    },
+    {
+      "evidence_coverage": "1.0000",
+      "fit_score": "87.5000",
+      "hard_gate_passed": true,
+      "median_price_jpy": "32175",
+      "price_current": true,
+      "product_id": "90d12d54-b318-5dbe-bdb6-967dcd4153f4",
+      "profile_id": "LIGHTWEIGHT",
+      "reason_codes": []
+    },
+    {
+      "evidence_coverage": "1.0000",
+      "fit_score": "59.6567",
+      "hard_gate_passed": true,
+      "median_price_jpy": "39850",
+      "price_current": true,
+      "product_id": "eb7d542f-6c67-55c7-a38e-e6f97c79fc66",
+      "profile_id": "LIGHTWEIGHT",
+      "reason_codes": []
+    },
+    {
+      "evidence_coverage": "1.0000",
+      "fit_score": "65.0000",
+      "hard_gate_passed": true,
+      "median_price_jpy": "79050",
+      "price_current": true,
+      "product_id": "8004a281-5048-5285-b7b6-af6cfdf72b6c",
+      "profile_id": "CAPACITY",
+      "reason_codes": []
+    },
+    {
+      "evidence_coverage": "1.0000",
+      "fit_score": "68.7500",
+      "hard_gate_passed": true,
+      "median_price_jpy": "32175",
+      "price_current": true,
+      "product_id": "90d12d54-b318-5dbe-bdb6-967dcd4153f4",
+      "profile_id": "CAPACITY",
+      "reason_codes": []
+    },
+    {
+      "evidence_coverage": "1.0000",
+      "fit_score": "53.4067",
+      "hard_gate_passed": true,
+      "median_price_jpy": "39850",
+      "price_current": true,
+      "product_id": "eb7d542f-6c67-55c7-a38e-e6f97c79fc66",
+      "profile_id": "CAPACITY",
+      "reason_codes": []
+    },
+    {
+      "evidence_coverage": "1.0000",
+      "fit_score": "65.0000",
+      "hard_gate_passed": true,
+      "median_price_jpy": "79050",
+      "price_current": true,
+      "product_id": "8004a281-5048-5285-b7b6-af6cfdf72b6c",
+      "profile_id": "ACCESS",
+      "reason_codes": []
+    },
+    {
+      "evidence_coverage": "1.0000",
+      "fit_score": "73.7500",
+      "hard_gate_passed": true,
+      "median_price_jpy": "32175",
+      "price_current": true,
+      "product_id": "90d12d54-b318-5dbe-bdb6-967dcd4153f4",
+      "profile_id": "ACCESS",
+      "reason_codes": []
+    },
+    {
+      "evidence_coverage": "1.0000",
+      "fit_score": "73.4067",
+      "hard_gate_passed": true,
+      "median_price_jpy": "39850",
+      "price_current": true,
+      "product_id": "eb7d542f-6c67-55c7-a38e-e6f97c79fc66",
+      "profile_id": "ACCESS",
+      "reason_codes": []
+    }
+  ]
+}
