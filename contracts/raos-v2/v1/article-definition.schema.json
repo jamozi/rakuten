@@ -1,0 +1,726 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v1/article-definition.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "template": {
+            "const": "HOME"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "blocks": {
+            "minItems": 8,
+            "prefixItems": [
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "MASTHEAD_DISCLOSURE"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "HERO"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "QUICK_CHECK"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "VERIFIED_GUIDES"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "DECISION_PATHS"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "TRUST_STRIP"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "EDITORIAL_METHOD"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "FOOTER_POLICIES"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "template": {
+            "const": "HUB"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "blocks": {
+            "minItems": 9,
+            "prefixItems": [
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "SCOPE"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "DECISION_MAP"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "TOOL_ENTRY"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "AIRLINE_RULE_CARDS"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "TASK_GUIDES"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "PRODUCT_COMPARISONS"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "UNKNOWN_EDGE_CASES"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "METHOD_FRESHNESS_CORRECTION"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "PUBLISHED_RELATED_LINKS"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "template": {
+            "const": "GUIDE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "blocks": {
+            "minItems": 10,
+            "prefixItems": [
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "DISCLOSURE"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "PROBLEM_SCOPE"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "THIRTY_SECOND_CONCLUSION"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "DECISION_INPUTS"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "OFFICIAL_FACTS"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "HYPOTHETICAL_EXAMPLES"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "EXCEPTIONS_UNKNOWN"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "ALTERNATIVE_PATH"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "CONDITIONAL_NEXT_STEP"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "SOURCES_CHANGELOG_CORRECTION"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "template": {
+            "const": "COMPARISON"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "blocks": {
+            "minItems": 10,
+            "prefixItems": [
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "DISCLOSURE_SCOPE"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "THIRTY_SECOND_CONCLUSION"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "FIT_NON_FIT"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "METHOD"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "COMPARISON_TABLE"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "PRODUCT_CARDS"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "DECISION_CRITERIA"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "BUY_NONE_CONDITIONS"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "SOURCES_CHANGELOG_CORRECTION"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "RELATED_LINKS"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "template": {
+            "const": "DIFFERENCE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "blocks": {
+            "minItems": 7,
+            "prefixItems": [
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "SCOPE_NON_DUPLICATION"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "DECISIVE_DIFFERENCES"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "FACT_TABLE"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "CONDITIONAL_BRANCH"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "COMMON_NON_FIT"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "SOURCES_CHECKED_DATE"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "COMPARISON_OR_TOOL_LINK"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "template": {
+            "const": "TOOL"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "blocks": {
+            "minItems": 9,
+            "prefixItems": [
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "PURPOSE_LIMITATION_PRIVACY"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "INPUTS"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "VALIDATION"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "RESULT"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "RESOLVED_RULE"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "NON_GUARANTEE"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "NEXT_ACTION"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "LOCAL_RESET_COPY"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "CTA_GUARD"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "template": {
+            "const": "POLICY"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "blocks": {
+            "minItems": 8,
+            "prefixItems": [
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "SCOPE"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "SOURCE_AND_CLAIM_LABELS"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "NO_HANDS_ON_POLICY"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "AI_AND_HUMAN_RESPONSIBILITY"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "RECOMMENDATION_BUSINESS_SEPARATION"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "AFFILIATE_AND_CTA_RULES"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "FRESHNESS_CORRECTIONS_HISTORY"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "block_type": {
+                    "const": "PRIVACY_MEASUREMENT_LINK"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "article_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "blocks": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "block_id": {
+            "pattern": "^BLK-[A-Z0-9-]+$",
+            "type": "string"
+          },
+          "block_type": {
+            "enum": [
+              "AFFILIATE_AND_CTA_RULES",
+              "AIRLINE_RULE_CARDS",
+              "AI_AND_HUMAN_RESPONSIBILITY",
+              "ALTERNATIVE_PATH",
+              "BUY_NONE_CONDITIONS",
+              "COMMON_NON_FIT",
+              "COMPARISON_OR_TOOL_LINK",
+              "COMPARISON_TABLE",
+              "CONDITIONAL_BRANCH",
+              "CONDITIONAL_NEXT_STEP",
+              "CTA_GUARD",
+              "DECISION_CRITERIA",
+              "DECISION_INPUTS",
+              "DECISION_MAP",
+              "DECISION_PATHS",
+              "DECISIVE_DIFFERENCES",
+              "DISCLOSURE",
+              "DISCLOSURE_SCOPE",
+              "EDITORIAL_METHOD",
+              "EXCEPTIONS_UNKNOWN",
+              "FACT_TABLE",
+              "FIT_NON_FIT",
+              "FOOTER_POLICIES",
+              "FRESHNESS_CORRECTIONS_HISTORY",
+              "HERO",
+              "HYPOTHETICAL_EXAMPLES",
+              "INPUTS",
+              "LOCAL_RESET_COPY",
+              "MASTHEAD_DISCLOSURE",
+              "METHOD",
+              "METHOD_FRESHNESS_CORRECTION",
+              "NEXT_ACTION",
+              "NON_GUARANTEE",
+              "NO_HANDS_ON_POLICY",
+              "OFFICIAL_FACTS",
+              "PRIVACY_MEASUREMENT_LINK",
+              "PROBLEM_SCOPE",
+              "PRODUCT_CARDS",
+              "PRODUCT_COMPARISONS",
+              "PUBLISHED_RELATED_LINKS",
+              "PURPOSE_LIMITATION_PRIVACY",
+              "QUICK_CHECK",
+              "RECOMMENDATION_BUSINESS_SEPARATION",
+              "RELATED_LINKS",
+              "RESOLVED_RULE",
+              "RESULT",
+              "SCOPE",
+              "SCOPE_NON_DUPLICATION",
+              "SOURCES_CHANGELOG_CORRECTION",
+              "SOURCES_CHECKED_DATE",
+              "SOURCE_AND_CLAIM_LABELS",
+              "TASK_GUIDES",
+              "THIRTY_SECOND_CONCLUSION",
+              "TOOL_ENTRY",
+              "TRUST_STRIP",
+              "UNKNOWN_EDGE_CASES",
+              "VALIDATION",
+              "VERIFIED_GUIDES"
+            ]
+          }
+        },
+        "required": [
+          "block_id",
+          "block_type"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "claim_ids": {
+      "items": {
+        "pattern": "^CLM-[A-Z0-9-]+$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "disclosure": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "editorial_decisions": {
+      "items": {
+        "pattern": "^ED-[A-Z0-9-]+$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "parent_hub": {
+      "pattern": "^/(?:[a-z0-9-]+/)*$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "primary_intent_id": {
+      "pattern": "^INT-[A-Z0-9-]+$",
+      "type": "string"
+    },
+    "review_state": {
+      "enum": [
+        "DRAFT",
+        "EVIDENCE_COMPLETE",
+        "REVIEW_REQUIRED",
+        "HUMAN_REVIEWED"
+      ]
+    },
+    "route": {
+      "pattern": "^/(?:[a-z0-9-]+/)*$",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "source_checked_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "template": {
+      "enum": [
+        "HOME",
+        "HUB",
+        "GUIDE",
+        "COMPARISON",
+        "DIFFERENCE",
+        "TOOL",
+        "POLICY"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "article_id",
+    "route",
+    "template",
+    "primary_intent_id",
+    "parent_hub",
+    "claim_ids",
+    "editorial_decisions",
+    "blocks",
+    "disclosure",
+    "source_checked_at",
+    "review_state"
+  ],
+  "title": "article-definition",
+  "type": "object"
+}

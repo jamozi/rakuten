@@ -11,6 +11,7 @@ import os
 from pathlib import Path, PurePosixPath
 import stat
 import sys
+from collections.abc import Sequence
 from typing import Final, NoReturn
 import zipfile
 
@@ -201,10 +202,23 @@ def check() -> dict[str, object]:
     return {"bytes": len(package), "sha256": sha256(package), "status": "PASS"}
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=("generate", "check", "package"))
-    command = parser.parse_args().command
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(allow_abbrev=False)
+    parser.add_argument(
+        "command",
+        choices=("generate", "check", "package"),
+        nargs="?",
+        help="legacy positional command; no command generates tracked outputs",
+    )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="verify tracked outputs without writing",
+    )
+    arguments = parser.parse_args(argv)
+    if arguments.check and arguments.command is not None:
+        parser.error("--check does not accept a positional command")
+    command = "check" if arguments.check else (arguments.command or "generate")
     try:
         if command == "generate":
             atomic_write(MANIFEST, manifest_bytes(), 0o644)

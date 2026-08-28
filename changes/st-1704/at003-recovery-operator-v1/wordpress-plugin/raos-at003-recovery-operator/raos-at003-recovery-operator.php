@@ -631,7 +631,7 @@ final class RAOS_AT003_Recovery_Operator_V1
         $confirmation = isset($_POST['hash_confirmation'])
             ? sanitize_text_field(wp_unslash($_POST['hash_confirmation']))
             : '';
-        $password = isset($_POST['current_password'])
+        $reauth_input = isset($_POST['current_password'])
             ? (string) wp_unslash($_POST['current_password'])
             : '';
         $pre_state_sha256 = isset($_POST['pre_state_sha256'])
@@ -645,17 +645,17 @@ final class RAOS_AT003_Recovery_Operator_V1
             || ! hash_equals(substr($context['operation_sha256'], -12), $confirmation)
             || ! hash_equals($context['pre_state_sha256'], $pre_state_sha256)
             || ! hash_equals($context['operation_sha256'], $operation_sha256)
-            || $password === ''
-            || strlen($password) > 4096
+            || $reauth_input === ''
+            || strlen($reauth_input) > 4096
         ) {
-            $password = '';
+            $reauth_input = '';
             wp_die(esc_html('Recovery approval evidence is invalid.'), '', array('response' => 400));
         }
         check_admin_referer(self::ACTION . '|' . $context['operation_sha256']);
         $current_user = wp_get_current_user();
         $password_ok = $current_user instanceof WP_User
-            && wp_check_password($password, $current_user->user_pass, $current_user->ID);
-        $password = '';
+            && wp_check_password($reauth_input, $current_user->user_pass, $current_user->ID);
+        $reauth_input = '';
         if (! $password_ok) {
             wp_die(esc_html('Password reauthentication failed.'), '', array('response' => 403));
         }

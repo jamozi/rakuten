@@ -1,0 +1,346 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v1/airline-rule-set.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "applicability_basis": {
+            "const": "OFFICIAL_EFFECTIVE_DATE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "effective_from": {
+            "not": {
+              "type": "null"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "applicability_basis": {
+            "const": "OBSERVED_CURRENT_AT_CAPTURE_NO_PUBLISHED_EFFECTIVE_DATE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "effective_from": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "applicability_basis": {
+      "enum": [
+        "OBSERVED_CURRENT_AT_CAPTURE_NO_PUBLISHED_EFFECTIVE_DATE",
+        "OFFICIAL_EFFECTIVE_DATE"
+      ]
+    },
+    "carrier": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "checked_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "effective_from": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "format": "date-time",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+          "type": "string"
+        }
+      ]
+    },
+    "effective_interval_semantics": {
+      "const": "FROM_INCLUSIVE_TO_EXCLUSIVE"
+    },
+    "effective_to": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "format": "date-time",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+          "type": "string"
+        }
+      ]
+    },
+    "journey_scope": {
+      "enum": [
+        "DOMESTIC",
+        "INTERNATIONAL",
+        "ALL"
+      ]
+    },
+    "observed_applicable_from": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "recheck_required_before_use": {
+      "type": "boolean"
+    },
+    "rule_set_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "source_content_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_id": {
+      "pattern": "^SRC-[A-Z0-9][A-Z0-9-]{0,127}$",
+      "type": "string"
+    },
+    "source_next_review_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "variants": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "applicability": {
+            "additionalProperties": false,
+            "properties": {
+              "fare_classes": {
+                "items": {
+                  "pattern": "^[A-Z0-9][A-Z0-9_-]{0,63}$",
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "forbidden_options": {
+                "items": {
+                  "pattern": "^[A-Z0-9][A-Z0-9_-]{0,63}$",
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "max_seat_count": {
+                "minimum": 1,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "min_seat_count": {
+                "minimum": 1,
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "operator": {
+                "pattern": "^[A-Z0-9][A-Z0-9_-]{0,63}$",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "required_options": {
+                "items": {
+                  "pattern": "^[A-Z0-9][A-Z0-9_-]{0,63}$",
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "operator"
+            ],
+            "type": "object"
+          },
+          "bag_count": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "dimension_edges_cm": {
+            "items": {
+              "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+              "type": "string"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "type": "array"
+          },
+          "includes_wheels_and_handles": {
+            "type": "boolean"
+          },
+          "item_allowances": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "dimension_edges_cm": {
+                  "items": {
+                    "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+                    "type": "string"
+                  },
+                  "maxItems": 3,
+                  "minItems": 3,
+                  "type": [
+                    "array",
+                    "null"
+                  ]
+                },
+                "fit_requirement": {
+                  "enum": [
+                    "UNDERSEAT",
+                    null
+                  ]
+                },
+                "includes_wheels_and_handles": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "max_weight_kg": {
+                  "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "orientation": {
+                  "enum": [
+                    "ORDERED",
+                    "PERMUTABLE"
+                  ]
+                },
+                "placement": {
+                  "enum": [
+                    "MAIN",
+                    "UNDERSEAT",
+                    "OVERHEAD"
+                  ]
+                },
+                "slot_id": {
+                  "pattern": "^[A-Z][A-Z0-9_-]{0,63}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "slot_id",
+                "placement",
+                "dimension_edges_cm",
+                "orientation",
+                "includes_wheels_and_handles",
+                "max_weight_kg",
+                "fit_requirement"
+              ],
+              "type": "object"
+            },
+            "maxItems": 4,
+            "type": "array"
+          },
+          "max_per_item_weight_kg": {
+            "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "orientation": {
+            "enum": [
+              "ORDERED",
+              "PERMUTABLE"
+            ]
+          },
+          "personal_item_count": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "resolution_requirements": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sum_edges_cm": {
+            "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "total_weight_kg": {
+            "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "variant_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "variant_id",
+          "applicability",
+          "bag_count",
+          "personal_item_count",
+          "dimension_edges_cm",
+          "orientation",
+          "sum_edges_cm",
+          "total_weight_kg",
+          "includes_wheels_and_handles",
+          "notes",
+          "resolution_requirements"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "rule_set_id",
+    "carrier",
+    "journey_scope",
+    "effective_interval_semantics",
+    "effective_from",
+    "observed_applicable_from",
+    "applicability_basis",
+    "effective_to",
+    "variants",
+    "source_id",
+    "source_content_sha256",
+    "source_next_review_at",
+    "recheck_required_before_use",
+    "checked_at"
+  ],
+  "title": "airline-rule-set",
+  "type": "object"
+}

@@ -1,0 +1,36 @@
+{
+  "checks": {
+    "external_actions": "NOT_EXECUTED",
+    "network_used_by_generator": false,
+    "one_wedge": true,
+    "portfolio_count": 25,
+    "public_mutation_authorized": false,
+    "route_count_including_home": 26,
+    "schema_count": 10,
+    "template_count": 7
+  },
+  "expected": {
+    "portfolio_count": 25,
+    "route_count_including_home": 26,
+    "schema_count": 10,
+    "template_count": 7
+  },
+  "schema": "RAOS_V2_PHASE1_VALIDATION_V1",
+  "status": "GENERATED_CONTRACTS_VALIDATED",
+  "test_ids": [
+    "T-V2-007",
+    "T-V2-008",
+    "T-V2-009",
+    "T-V2-010",
+    "T-V2-011",
+    "T-V2-012",
+    "T-V2-013",
+    "T-V2-014",
+    "T-V2-015",
+    "T-V2-016",
+    "T-V2-017",
+    "T-V2-018",
+    "T-V2-019",
+    "T-V2-051"
+  ]
+}

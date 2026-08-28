@@ -1,0 +1,698 @@
+schema: RAOS_V2_CLAIM_LEDGER_V1
+version: 2.0.0
+generation: NORMALIZED_FROM_RECORDED_PRODUCT_AND_AIRLINE_FACTS
+claims:
+- schema_version: 1.0.0
+  claim_id: CLM-A05-CRESTA-IDENTITY
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-CRESTA-06316
+  predicate: product_identity
+  value:
+    brand: ACE
+    model_name: クレスタ
+    model_number: '06316'
+  unit: null
+  source_ids:
+  - SRC-ACE-CRESTA-06316
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-CRESTA-DIMENSIONS
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-CRESTA-06316
+  predicate: external_dimensions_cm
+  value:
+    edges_cm:
+    - '55'
+    - '35'
+    - '25'
+    orientation: ORDERED
+    includes_wheels_and_handles: true
+  unit: cm
+  source_ids:
+  - SRC-ACE-CRESTA-06316
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-CRESTA-CAPACITY
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-CRESTA-06316
+  predicate: capacity_l
+  value: '34'
+  unit: L
+  source_ids:
+  - SRC-ACE-CRESTA-06316
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-CRESTA-MASS
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-CRESTA-06316
+  predicate: mass_kg
+  value: '3.2'
+  unit: kg
+  source_ids:
+  - SRC-ACE-CRESTA-06316
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-CRESTA-FEATURES
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-CRESTA-06316
+  predicate: declared_features
+  value:
+  - EXPANDABLE
+  unit: null
+  source_ids:
+  - SRC-ACE-CRESTA-06316
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-CRESTA-EXPANDED-DIMENSIONS
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-CRESTA-06316
+  predicate: expanded_dimensions_cm
+  value:
+    edges_cm:
+    - '55'
+    - '35'
+    - '29'
+    orientation: ORDERED
+    includes_wheels_and_handles: true
+  unit: cm
+  source_ids:
+  - SRC-ACE-CRESTA-06316
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-CRESTA-EXPANDED-CAPACITY
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-CRESTA-06316
+  predicate: expanded_capacity_l
+  value: '39'
+  unit: L
+  source_ids:
+  - SRC-ACE-CRESTA-06316
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-CRESTA-USAGE-UNKNOWN
+  claim_type: UNKNOWN
+  subject_id: PRD-ACE-CRESTA-06316
+  predicate: hands_on_usage
+  value: null
+  unit: null
+  source_ids: []
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: BLOCKED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-CRESTA-CONDITIONAL-FIT
+  claim_type: D_EDITORIAL_JUDGEMENT
+  subject_id: A05
+  predicate: conditional_fit
+  value: PRD-ACE-CRESTA-06316
+  unit: null
+  source_ids:
+  - SRC-ACE-CRESTA-06316
+  logic_inputs:
+  - input_id: IN-CRESTA-DIMENSIONS
+    value_ref: CLM-A05-CRESTA-DIMENSIONS
+  - input_id: IN-CRESTA-CAPACITY
+    value_ref: CLM-A05-CRESTA-CAPACITY
+  - input_id: IN-CRESTA-MASS
+    value_ref: CLM-A05-CRESTA-MASS
+  - input_id: IN-CRESTA-FEATURES
+    value_ref: CLM-A05-CRESTA-FEATURES
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-DIFFERENCE-IDENTITY
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-DIFFERENCE-05721
+  predicate: product_identity
+  value:
+    brand: ace.TOKYO LABEL
+    model_name: ディフェレンス
+    model_number: '05721'
+  unit: null
+  source_ids:
+  - SRC-ACE-DIFFERENCE-05721
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-DIFFERENCE-DIMENSIONS
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-DIFFERENCE-05721
+  predicate: external_dimensions_cm
+  value:
+    edges_cm:
+    - '55'
+    - '36'
+    - '24'
+    orientation: ORDERED
+    includes_wheels_and_handles: true
+  unit: cm
+  source_ids:
+  - SRC-ACE-DIFFERENCE-05721
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-DIFFERENCE-CAPACITY
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-DIFFERENCE-05721
+  predicate: capacity_l
+  value: '32'
+  unit: L
+  source_ids:
+  - SRC-ACE-DIFFERENCE-05721
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-DIFFERENCE-MASS
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-DIFFERENCE-05721
+  predicate: mass_kg
+  value: '3.5'
+  unit: kg
+  source_ids:
+  - SRC-ACE-DIFFERENCE-05721
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-DIFFERENCE-FEATURES
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-DIFFERENCE-05721
+  predicate: declared_features
+  value:
+  - EXPANDABLE
+  - TWO_WAY_OPEN
+  - CASTER_STOPPER
+  unit: null
+  source_ids:
+  - SRC-ACE-DIFFERENCE-05721
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-DIFFERENCE-EXPANDED-DIMENSIONS
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-DIFFERENCE-05721
+  predicate: expanded_dimensions_cm
+  value:
+    edges_cm:
+    - '55'
+    - '36'
+    - '27'
+    orientation: ORDERED
+    includes_wheels_and_handles: true
+  unit: cm
+  source_ids:
+  - SRC-ACE-DIFFERENCE-05721
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-DIFFERENCE-EXPANDED-CAPACITY
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-DIFFERENCE-05721
+  predicate: expanded_capacity_l
+  value: '38'
+  unit: L
+  source_ids:
+  - SRC-ACE-DIFFERENCE-05721
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-DIFFERENCE-USAGE-UNKNOWN
+  claim_type: UNKNOWN
+  subject_id: PRD-ACE-DIFFERENCE-05721
+  predicate: hands_on_usage
+  value: null
+  unit: null
+  source_ids: []
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: BLOCKED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-DIFFERENCE-CONDITIONAL-FIT
+  claim_type: D_EDITORIAL_JUDGEMENT
+  subject_id: A05
+  predicate: conditional_fit
+  value: PRD-ACE-DIFFERENCE-05721
+  unit: null
+  source_ids:
+  - SRC-ACE-DIFFERENCE-05721
+  logic_inputs:
+  - input_id: IN-DIFFERENCE-DIMENSIONS
+    value_ref: CLM-A05-DIFFERENCE-DIMENSIONS
+  - input_id: IN-DIFFERENCE-CAPACITY
+    value_ref: CLM-A05-DIFFERENCE-CAPACITY
+  - input_id: IN-DIFFERENCE-MASS
+    value_ref: CLM-A05-DIFFERENCE-MASS
+  - input_id: IN-DIFFERENCE-FEATURES
+    value_ref: CLM-A05-DIFFERENCE-FEATURES
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-MAXPASS4-IDENTITY
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-MAXPASS4-01471
+  predicate: product_identity
+  value:
+    brand: PROTECA
+    model_name: マックスパス4
+    model_number: '01471'
+  unit: null
+  source_ids:
+  - SRC-ACE-MAXPASS4-01471
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-MAXPASS4-DIMENSIONS
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-MAXPASS4-01471
+  predicate: external_dimensions_cm
+  value:
+    edges_cm:
+    - '50'
+    - '40'
+    - '25'
+    orientation: ORDERED
+    includes_wheels_and_handles: true
+  unit: cm
+  source_ids:
+  - SRC-ACE-MAXPASS4-01471
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-MAXPASS4-CAPACITY
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-MAXPASS4-01471
+  predicate: capacity_l
+  value: '40'
+  unit: L
+  source_ids:
+  - SRC-ACE-MAXPASS4-01471
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-MAXPASS4-MASS
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-MAXPASS4-01471
+  predicate: mass_kg
+  value: '3.6'
+  unit: kg
+  source_ids:
+  - SRC-ACE-MAXPASS4-01471
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-MAXPASS4-FEATURES
+  claim_type: A_OFFICIAL_FACT
+  subject_id: PRD-ACE-MAXPASS4-01471
+  predicate: declared_features
+  value:
+  - FRONT_ACCESS
+  - LAPTOP_14_INCH
+  - CASTER_STOPPER
+  unit: null
+  source_ids:
+  - SRC-ACE-MAXPASS4-01471
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-MAXPASS4-USAGE-UNKNOWN
+  claim_type: UNKNOWN
+  subject_id: PRD-ACE-MAXPASS4-01471
+  predicate: hands_on_usage
+  value: null
+  unit: null
+  source_ids: []
+  logic_inputs: []
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: BLOCKED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-MAXPASS4-CONDITIONAL-FIT
+  claim_type: D_EDITORIAL_JUDGEMENT
+  subject_id: A05
+  predicate: conditional_fit
+  value: PRD-ACE-MAXPASS4-01471
+  unit: null
+  source_ids:
+  - SRC-ACE-MAXPASS4-01471
+  logic_inputs:
+  - input_id: IN-MAXPASS4-DIMENSIONS
+    value_ref: CLM-A05-MAXPASS4-DIMENSIONS
+  - input_id: IN-MAXPASS4-CAPACITY
+    value_ref: CLM-A05-MAXPASS4-CAPACITY
+  - input_id: IN-MAXPASS4-MASS
+    value_ref: CLM-A05-MAXPASS4-MASS
+  - input_id: IN-MAXPASS4-FEATURES
+    value_ref: CLM-A05-MAXPASS4-FEATURES
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A05-CRESTA-LIGHTEST-IN-SCOPE
+  claim_type: D_EDITORIAL_JUDGEMENT
+  subject_id: A05
+  predicate: conditional_lightest_product
+  value: PRD-ACE-CRESTA-06316
+  unit: null
+  source_ids:
+  - SRC-ACE-CRESTA-06316
+  - SRC-ACE-DIFFERENCE-05721
+  - SRC-ACE-MAXPASS4-01471
+  logic_inputs:
+  - input_id: IN-CRESTA-MASS
+    value_ref: CLM-A05-CRESTA-MASS
+  - input_id: IN-DIFFERENCE-MASS
+    value_ref: CLM-A05-DIFFERENCE-MASS
+  - input_id: IN-MAXPASS4-MASS
+    value_ref: CLM-A05-MAXPASS4-MASS
+  checked_at: '2026-08-26T13:54:33+09:00'
+  next_review_at: '2026-11-24T13:54:33+09:00'
+  risk_class: MEDIUM
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A02-ANA-LARGE-RULE
+  claim_type: A_OFFICIAL_FACT
+  subject_id: AIR-ANA-DOMESTIC-2026
+  predicate: carry_on_rule_variant
+  value:
+    carrier: ANA
+    effective_from: null
+    observed_applicable_from: '2026-08-28T06:41:52+09:00'
+    effective_to: null
+    variant:
+      variant_id: ANA-100-SEATS-OR-MORE
+      applicability:
+        operator: null
+        min_seat_count: 100
+      bag_count: 1
+      personal_item_count: 1
+      dimension_edges_cm:
+      - '55'
+      - '40'
+      - '25'
+      sum_edges_cm: '115'
+      total_weight_kg: '10'
+      orientation: PERMUTABLE
+      includes_wheels_and_handles: true
+      notes:
+      - Handles and wheels are included in dimensions.
+      resolution_requirements:
+      - seat_count
+      - combined_weight
+      - appendages_included
+  unit: null
+  source_ids:
+  - SRC-V2-ANA-CARRY-ON
+  logic_inputs: []
+  checked_at: '2026-08-28T06:41:52+09:00'
+  next_review_at: '2026-09-27T06:41:52+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A02-ANA-SMALL-RULE
+  claim_type: A_OFFICIAL_FACT
+  subject_id: AIR-ANA-DOMESTIC-2026
+  predicate: carry_on_rule_variant
+  value:
+    carrier: ANA
+    effective_from: null
+    observed_applicable_from: '2026-08-28T06:41:52+09:00'
+    effective_to: null
+    variant:
+      variant_id: ANA-UNDER-100-SEATS
+      applicability:
+        operator: null
+        max_seat_count: 99
+      bag_count: 1
+      personal_item_count: 1
+      dimension_edges_cm:
+      - '45'
+      - '35'
+      - '20'
+      sum_edges_cm: '100'
+      total_weight_kg: '10'
+      orientation: PERMUTABLE
+      includes_wheels_and_handles: true
+      notes:
+      - Handles and wheels are included in dimensions.
+      resolution_requirements:
+      - seat_count
+      - combined_weight
+      - appendages_included
+  unit: null
+  source_ids:
+  - SRC-V2-ANA-CARRY-ON
+  logic_inputs: []
+  checked_at: '2026-08-28T06:41:52+09:00'
+  next_review_at: '2026-09-27T06:41:52+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A02-JAL-LARGE-RULE
+  claim_type: A_OFFICIAL_FACT
+  subject_id: AIR-JAL-DOMESTIC-2026
+  predicate: carry_on_rule_variant
+  value:
+    carrier: JAL
+    effective_from: null
+    observed_applicable_from: '2026-08-28T06:41:52+09:00'
+    effective_to: null
+    variant:
+      variant_id: JAL-100-SEATS-OR-MORE
+      applicability:
+        operator: null
+        min_seat_count: 100
+      bag_count: 1
+      personal_item_count: 1
+      dimension_edges_cm:
+      - '55'
+      - '40'
+      - '25'
+      sum_edges_cm: '115'
+      total_weight_kg: '10'
+      orientation: PERMUTABLE
+      includes_wheels_and_handles: true
+      notes:
+      - Use the smaller-aircraft rule for a connection operated by a smaller aircraft.
+      resolution_requirements:
+      - seat_count
+      - combined_weight
+      - appendages_included
+  unit: null
+  source_ids:
+  - SRC-V2-JAL-CARRY-ON
+  logic_inputs: []
+  checked_at: '2026-08-28T06:41:52+09:00'
+  next_review_at: '2026-09-27T06:41:52+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A02-JAL-SMALL-RULE
+  claim_type: A_OFFICIAL_FACT
+  subject_id: AIR-JAL-DOMESTIC-2026
+  predicate: carry_on_rule_variant
+  value:
+    carrier: JAL
+    effective_from: null
+    observed_applicable_from: '2026-08-28T06:41:52+09:00'
+    effective_to: null
+    variant:
+      variant_id: JAL-UNDER-100-SEATS
+      applicability:
+        operator: null
+        max_seat_count: 99
+      bag_count: 1
+      personal_item_count: 1
+      dimension_edges_cm:
+      - '45'
+      - '35'
+      - '20'
+      sum_edges_cm: '100'
+      total_weight_kg: '10'
+      orientation: PERMUTABLE
+      includes_wheels_and_handles: true
+      notes:
+      - Use this rule for every small-aircraft segment.
+      resolution_requirements:
+      - seat_count
+      - combined_weight
+      - appendages_included
+  unit: null
+  source_ids:
+  - SRC-V2-JAL-CARRY-ON
+  logic_inputs: []
+  checked_at: '2026-08-28T06:41:52+09:00'
+  next_review_at: '2026-09-27T06:41:52+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A02-PEACH-STANDARD-RULE
+  claim_type: A_OFFICIAL_FACT
+  subject_id: AIR-PEACH-2026
+  predicate: carry_on_rule_variant
+  value:
+    carrier: PEACH
+    effective_from: null
+    observed_applicable_from: '2026-08-28T06:41:52+09:00'
+    effective_to: null
+    variant:
+      variant_id: PEACH-STANDARD
+      applicability:
+        operator: null
+      bag_count: 1
+      personal_item_count: 1
+      dimension_edges_cm:
+      - '115'
+      - '115'
+      - '115'
+      sum_edges_cm: '115'
+      total_weight_kg: '7'
+      orientation: PERMUTABLE
+      includes_wheels_and_handles: true
+      notes:
+      - The official normalized rule publishes the three-edge sum as the controlling dimensional limit.
+      resolution_requirements:
+      - combined_weight
+      - appendages_included
+  unit: null
+  source_ids:
+  - SRC-V2-PEACH-CARRY-ON
+  logic_inputs: []
+  checked_at: '2026-08-28T06:41:52+09:00'
+  next_review_at: '2026-09-27T06:41:52+09:00'
+  risk_class: HIGH
+  status: VERIFIED
+- schema_version: 1.0.0
+  claim_id: CLM-A02-JETSTAR-STANDARD-RULE
+  claim_type: A_OFFICIAL_FACT
+  subject_id: AIR-JETSTAR-JAPAN-2026
+  predicate: carry_on_rule_variant
+  value:
+    carrier: JETSTAR_JAPAN
+    effective_from: null
+    observed_applicable_from: '2026-08-28T06:41:52+09:00'
+    effective_to: null
+    variant:
+      variant_id: JETSTAR-JAPAN-STANDARD-7KG
+      applicability:
+        operator: JETSTAR_JAPAN
+        forbidden_options:
+        - PLUS-14KG
+      bag_count: 1
+      personal_item_count: 1
+      dimension_edges_cm:
+      - '56'
+      - '36'
+      - '23'
+      sum_edges_cm: null
+      total_weight_kg: '7'
+      max_per_item_weight_kg: '10'
+      item_allowances:
+      - slot_id: GK-MAIN
+        placement: MAIN
+        dimension_edges_cm:
+        - '56'
+        - '36'
+        - '23'
+        orientation: ORDERED
+        includes_wheels_and_handles: true
+        max_weight_kg: '10'
+        fit_requirement: null
+      - slot_id: GK-PERSONAL
+        placement: UNDERSEAT
+        dimension_edges_cm: null
+        orientation: ORDERED
+        includes_wheels_and_handles: null
+        max_weight_kg: '10'
+        fit_requirement: UNDERSEAT
+      orientation: ORDERED
+      includes_wheels_and_handles: true
+      notes:
+      - Two items total; verify fare or paid option when using an increased allowance.
+      resolution_requirements:
+      - operator
+      - options
+      - item_details
+      - underseat_fit
+      - combined_weight
+      - per_item_weight
+  unit: null
+  source_ids:
+  - SRC-V2-JETSTAR-CARRY-ON
+  logic_inputs: []
+  checked_at: '2026-08-28T06:41:52+09:00'
+  next_review_at: '2026-09-27T06:41:52+09:00'
+  risk_class: HIGH
+  status: VERIFIED

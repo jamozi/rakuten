@@ -1,0 +1,275 @@
+schema: RAOS_V2_DEPRECATION_LEDGER_V1
+automatic_deletion: false
+default_removal_gate: MINIMUM_2_RELEASES_AND_30_DAYS_UNUSED_PLUS_HUMAN_APPROVAL
+retire_requires_verified_unused: true
+assets:
+- asset: root development policy/build/generator ownership
+  decision: KEEP
+  reason: dirty protection, standard commands and one generated owner are implementation safety
+  migration: register V2 owner in the existing graph and retain root workflow
+  deletion_gate: NO_DELETION_SUCCESSOR_REVIEW_REQUIRED
+  usage_evidence:
+    status: CURRENT_OR_REFERENCED
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: NOT_APPLICABLE_RETAINED
+    plan: register V2 owner in the existing graph and retain root workflow
+  rollback:
+    status: NOT_APPLICABLE_RETAINED
+    plan: asset remains retained; no retirement rollback is applicable
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+- asset: docs/canonical docs/upstream and zip baselines
+  decision: KEEP
+  reason: immutable V1 evidence and authority cannot be rewritten by the successor
+  migration: read-only reference from changes/raos-v2 overlay
+  deletion_gate: NEVER_FROM_V2
+  usage_evidence:
+    status: CURRENT_OR_REFERENCED
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: NOT_APPLICABLE_RETAINED
+    plan: read-only reference from changes/raos-v2 overlay
+  rollback:
+    status: NOT_APPLICABLE_RETAINED
+    plan: asset remains retained; no retirement rollback is applicable
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+- asset: secret scan denied-network authz and public/internal isolation
+  decision: KEEP
+  reason: validated security boundaries remain necessary
+  migration: inherit as local tests and deny-default adapter policy
+  deletion_gate: NO_DELETION_SUCCESSOR_REVIEW_REQUIRED
+  usage_evidence:
+    status: CURRENT_OR_REFERENCED
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: NOT_APPLICABLE_RETAINED
+    plan: inherit as local tests and deny-default adapter policy
+  rollback:
+    status: NOT_APPLICABLE_RETAINED
+    plan: asset remains retained; no retirement rollback is applicable
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+- asset: publication operator journal and rollback concepts
+  decision: REWORK
+  reason: human gate, hash binding and rollback are valuable but the old breadth is excessive
+  migration: reduce to local package states, synthetic seal test and disabled dry-run port
+  deletion_gate: MINIMUM_2_RELEASES_AND_30_DAYS_UNUSED_PLUS_HUMAN_APPROVAL
+  usage_evidence:
+    status: CURRENT_OR_REFERENCED
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: SUCCESSOR_DEFINED
+    plan: reduce to local package states, synthetic seal test and disabled dry-run port
+  rollback:
+    status: LOCAL_PLAN_ONLY
+    plan: restore the prior owner/configuration from version control and rerun focused contracts before
+      any external action
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+- asset: claim evidence and editorial domain
+  decision: REWORK
+  reason: purpose is retained while the generic type surface is too broad
+  migration: narrow to A_OFFICIAL_FACT D_EDITORIAL_JUDGEMENT and UNKNOWN
+  deletion_gate: MINIMUM_2_RELEASES_AND_30_DAYS_UNUSED_PLUS_HUMAN_APPROVAL
+  usage_evidence:
+    status: CURRENT_OR_REFERENCED
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: SUCCESSOR_DEFINED
+    plan: narrow to A_OFFICIAL_FACT D_EDITORIAL_JUDGEMENT and UNKNOWN
+  rollback:
+    status: LOCAL_PLAN_ONLY
+    plan: restore the prior owner/configuration from version control and rerun focused contracts before
+      any external action
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+- asset: Rakuten adapter
+  decision: REWORK
+  reason: exact identity and current provider constraints require a smaller boundary
+  migration: RECORDED_ONLY fixture first; live mode absent through Phase 2
+  deletion_gate: MINIMUM_2_RELEASES_AND_30_DAYS_UNUSED_PLUS_HUMAN_APPROVAL
+  usage_evidence:
+    status: CURRENT_OR_REFERENCED
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: SUCCESSOR_DEFINED
+    plan: RECORDED_ONLY fixture first; live mode absent through Phase 2
+  rollback:
+    status: LOCAL_PLAN_ONLY
+    plan: restore the prior owner/configuration from version control and rerun focused contracts before
+      any external action
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+- asset: public WordPress theme and Yoast integration
+  decision: MIGRATE
+  reason: public URLs must survive while UX and IA change
+  migration: disabled adapter then one-URL-at-a-time human-gated migration
+  deletion_gate: MINIMUM_2_RELEASES_AND_30_DAYS_UNUSED_PLUS_HUMAN_APPROVAL
+  usage_evidence:
+    status: CURRENT_OR_REFERENCED
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: SUCCESSOR_DEFINED
+    plan: disabled adapter then one-URL-at-a-time human-gated migration
+  rollback:
+    status: LOCAL_PLAN_ONLY
+    plan: restore the prior owner/configuration from version control and rerun focused contracts before
+      any external action
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+- asset: published carry-on comparison article
+  decision: MIGRATE
+  reason: current search and reader-learning asset in the selected wedge
+  migration: preserve slug/canonical until a verified V2 replacement is approved
+  deletion_gate: NO_DELETE_SLUG_PRESERVING_REPLACEMENT_ONLY
+  usage_evidence:
+    status: CURRENT_OR_REFERENCED
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: SUCCESSOR_DEFINED
+    plan: preserve slug/canonical until a verified V2 replacement is approved
+  rollback:
+    status: LOCAL_PLAN_ONLY
+    plan: restore the prior owner/configuration from version control and rerun focused contracts before
+      any external action
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+- asset: portable power Anker dishwasher and robot-vacuum assets
+  decision: DEFER
+  reason: outside the wedge with unresolved evidence/media/safety cost
+  migration: preserve current public state; re-score only after Phase 6 gate
+  deletion_gate: MINIMUM_2_RELEASES_AND_30_DAYS_UNUSED_PLUS_HUMAN_APPROVAL
+  usage_evidence:
+    status: NOT_ADOPTED_IN_V2_CURRENT_USAGE_UNAVAILABLE
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: SAFE_DEFAULT_PRESERVE_OR_DO_NOT_INTRODUCE
+    plan: preserve current public state; re-score only after Phase 6 gate
+  rollback:
+    status: LOCAL_PLAN_ONLY
+    plan: restore the prior owner/configuration from version control and rerun focused contracts before
+      any external action
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+- asset: empty 家事 and 備え category UI
+  decision: RETIRE
+  reason: empty navigation harms trust and crawl quality
+  migration: remove only from successor navigation after URL inventory decision
+  deletion_gate: MINIMUM_2_RELEASES_AND_30_DAYS_UNUSED_PLUS_HUMAN_APPROVAL
+  usage_evidence:
+    status: NOT_ADOPTED_IN_V2_CURRENT_USAGE_UNAVAILABLE
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: SUCCESSOR_DEFINED
+    plan: remove only from successor navigation after URL inventory decision
+  rollback:
+    status: LOCAL_PLAN_ONLY
+    plan: restore the prior owner/configuration from version control and rerun focused contracts before
+      any external action
+    production_execution: NOT_EXECUTED
+  removal_readiness: BLOCKED_USAGE_NOT_VERIFIED_UNUSED
+- asset: Next.js or headless public application
+  decision: DEFER
+  reason: would duplicate the retained WordPress renderer
+  migration: reconsider only after measured WordPress limits
+  deletion_gate: NO_DELETION_SUCCESSOR_REVIEW_REQUIRED
+  usage_evidence:
+    status: NOT_ADOPTED_IN_V2_CURRENT_USAGE_UNAVAILABLE
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: SAFE_DEFAULT_PRESERVE_OR_DO_NOT_INTRODUCE
+    plan: reconsider only after measured WordPress limits
+  rollback:
+    status: LOCAL_PLAN_ONLY
+    plan: restore the prior owner/configuration from version control and rerun focused contracts before
+      any external action
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+- asset: custom admin and review UI
+  decision: DEFER
+  reason: maintenance exceeds value at 25-page scale
+  migration: reconsider at 50 pages or measured admin friction over 4h/week
+  deletion_gate: MINIMUM_2_RELEASES_AND_30_DAYS_UNUSED_PLUS_HUMAN_APPROVAL
+  usage_evidence:
+    status: NOT_ADOPTED_IN_V2_CURRENT_USAGE_UNAVAILABLE
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: SAFE_DEFAULT_PRESERVE_OR_DO_NOT_INTRODUCE
+    plan: reconsider at 50 pages or measured admin friction over 4h/week
+  rollback:
+    status: LOCAL_PLAN_ONLY
+    plan: restore the prior owner/configuration from version control and rerun focused contracts before
+      any external action
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+- asset: advanced causal attribution rank provider and paid dashboard
+  decision: DEFER
+  reason: provider evidence and zero-spend constraints do not support it
+  migration: begin with GSC, first-party events and monthly sanitized reports
+  deletion_gate: MINIMUM_2_RELEASES_AND_30_DAYS_UNUSED_PLUS_HUMAN_APPROVAL
+  usage_evidence:
+    status: NOT_ADOPTED_IN_V2_CURRENT_USAGE_UNAVAILABLE
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: SAFE_DEFAULT_PRESERVE_OR_DO_NOT_INTRODUCE
+    plan: begin with GSC, first-party events and monthly sanitized reports
+  rollback:
+    status: LOCAL_PLAN_ONLY
+    plan: restore the prior owner/configuration from version control and rerun focused contracts before
+      any external action
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+- asset: automatic or partial publication
+  decision: RETIRE
+  reason: initial reader and production risk exceeds value
+  migration: remove capability; retain only explicit human-gated contracts
+  deletion_gate: MINIMUM_2_RELEASES_AND_30_DAYS_UNUSED_PLUS_HUMAN_APPROVAL
+  usage_evidence:
+    status: NOT_ADOPTED_IN_V2_CURRENT_USAGE_UNAVAILABLE
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: SUCCESSOR_DEFINED
+    plan: remove capability; retain only explicit human-gated contracts
+  rollback:
+    status: LOCAL_PLAN_ONLY
+    plan: restore the prior owner/configuration from version control and rerun focused contracts before
+      any external action
+    production_execution: NOT_EXECUTED
+  removal_readiness: BLOCKED_USAGE_NOT_VERIFIED_UNUSED
+- asset: general Postgres and object-storage persistence
+  decision: DEFER
+  reason: versioned JSON/YAML is sufficient at current scale
+  migration: reconsider after >10k records, measured latency or merge conflicts
+  deletion_gate: NO_DELETION_SUCCESSOR_REVIEW_REQUIRED
+  usage_evidence:
+    status: NOT_ADOPTED_IN_V2_CURRENT_USAGE_UNAVAILABLE
+    source: REPOSITORY_AND_PUBLIC_URL_INVENTORY
+    verified_unused: false
+  replacement:
+    status: SAFE_DEFAULT_PRESERVE_OR_DO_NOT_INTRODUCE
+    plan: reconsider after >10k records, measured latency or merge conflicts
+  rollback:
+    status: LOCAL_PLAN_ONLY
+    plan: restore the prior owner/configuration from version control and rerun focused contracts before
+      any external action
+    production_execution: NOT_EXECUTED
+  removal_readiness: NOT_REQUESTED
+backlog_id: B-V2-006
+test_ids:
+- T-V2-051

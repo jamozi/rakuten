@@ -1,0 +1,201 @@
+schema: RAOS_V2_PUBLIC_URL_INVENTORY_V1
+evidence_class: PUBLIC_READ_ONLY
+capture_contract:
+  scope: KNOWN_UNION_SITEMAP_BOUNDED
+  maximum_urls: 40
+  unlisted_sitemap_urls_are_silently_dropped: false
+automatic_public_mutation: false
+visual_baseline_evidence:
+  source: changes/raos-v2/recorded-inputs/phase0-visual-evidence.v1.json
+  classification: PUBLIC_READ_ONLY_MANUAL_RECORDED
+  raw_images: LOCAL_ONLY_NOT_TRACKED_NOT_REVERIFIED
+  capture_contract: PLAYWRIGHT_CLI_SNAPSHOT_FIRST_390_768_1440_V1
+visual_baseline:
+- bytes: 120672
+  path: /
+  sha256: 8c2b6a59f1dafae73880c2bd758d9d67280f903fe617f93ec6244c276de45e18
+  viewport: 390x844
+- bytes: 244351
+  path: /
+  sha256: 20556c60c2094e102e86f8d607a7337e06e99f8386d317e1dfb45c781c3e754a
+  viewport: 768x1024
+- bytes: 373306
+  path: /
+  sha256: b27091628163eb228d64393d04e5815d0163263253e5c9d929d9c88397ef4a4c
+  viewport: 1440x900
+- bytes: 70005
+  path: /carry-on-suitcase-comparison/
+  sha256: 21f74b8e0f81a723254eb479f695a74e6a01f6ca73b0b3fa982c4e2b4a558cbb
+  viewport: 390x844
+- bytes: 172849
+  path: /carry-on-suitcase-comparison/
+  sha256: 276a992800cf3374af93275b7c0c1a519df51cb916707acb5aee751c8c69a8fb
+  viewport: 768x1024
+- bytes: 160802
+  path: /carry-on-suitcase-comparison/
+  sha256: a3b3bd3f4092508e7d1090723da8b1e8f7e3537d8d1b1f1d49cdae32d8eacea7
+  viewport: 1440x900
+- bytes: 66462
+  path: /portable-power-station-guide/
+  sha256: 59a588cc72a9931792e937d5cd44e388203a10bff26c07237cb764fbab0f6121
+  viewport: 390x844
+- bytes: 141385
+  path: /portable-power-station-guide/
+  sha256: 80f7291d7f12e45a8756d7c471b783307fbc8ed4d2f13d88f375c647e6f7ffca
+  viewport: 768x1024
+- bytes: 155925
+  path: /portable-power-station-guide/
+  sha256: 91eed78b511a5cec76b2f2bb0639795a033b021045fecc8e70c4fbbd761b8c83
+  viewport: 1440x900
+- bytes: 54715
+  path: /anker-solix-c300-c800-c1000-differences/
+  sha256: b76501aee862ac9464e7dd9f79ac1916617108a3221ac92b68cbd92f4e38a9cd
+  viewport: 390x844
+- bytes: 112292
+  path: /anker-solix-c300-c800-c1000-differences/
+  sha256: 82aae1a6520c210ea3c1a0b728ec86a240f6f26dd9181f743894301ac910ae92
+  viewport: 768x1024
+- bytes: 133305
+  path: /anker-solix-c300-c800-c1000-differences/
+  sha256: d2a19d5bda3116d4270e5b634a3118341cb540c72583e8a1f8d0a13f96124403
+  viewport: 1440x900
+urls:
+- url: https://kurashinoshirube.com/
+  path: /
+  role: home
+  safe_initial_disposition: KEEP_CURRENT
+  observation:
+    body_bytes: 120109
+    body_sha256: 2dd1f1fad1991c3792b0659fc84b16db3db6492b6fdeeb38793d694c8f5c2216
+    canonical: https://kurashinoshirube.com/
+    h1: 暮らしの道具を、 根拠から選ぶ。
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    path: /
+    redirect_chain: []
+    robots: index,follow
+    sitemap_membership: true
+    status: 200
+- url: https://kurashinoshirube.com/carry-on-suitcase-comparison/
+  path: /carry-on-suitcase-comparison/
+  role: pilot
+  safe_initial_disposition: MIGRATE_AFTER_VERTICAL_SLICE
+  observation:
+    body_bytes: 117835
+    body_sha256: e2cace30f5e14b3f2783b3ef10885f2b7b958ac8a3a4aee45447fd95e9e72121
+    canonical: https://kurashinoshirube.com/carry-on-suitcase-comparison/
+    h1: 機内持ち込み対応スーツケース3モデルを条件別比較｜軽さ・容量・開き方で選ぶ
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    path: /carry-on-suitcase-comparison/
+    redirect_chain: []
+    robots: index,follow
+    sitemap_membership: true
+    status: 200
+- url: https://kurashinoshirube.com/portable-power-station-guide/
+  path: /portable-power-station-guide/
+  role: pilot
+  safe_initial_disposition: KEEP_CURRENT_DEFER_V2
+  observation:
+    body_bytes: 133635
+    body_sha256: af7cc20535408cec058246f676d74b1e133a700e9548547aae552d2cd2848801
+    canonical: https://kurashinoshirube.com/portable-power-station-guide/
+    h1: 停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    path: /portable-power-station-guide/
+    redirect_chain: []
+    robots: index,follow
+    sitemap_membership: true
+    status: 200
+- url: https://kurashinoshirube.com/anker-solix-c300-c800-c1000-differences/
+  path: /anker-solix-c300-c800-c1000-differences/
+  role: pilot
+  safe_initial_disposition: KEEP_CURRENT_DEFER_V2
+  observation:
+    body_bytes: 134213
+    body_sha256: 017acf3b38f2f6eccfd18d12fff932ef8cb4e43679fae1426c5b98ce0dfc03ee
+    canonical: https://kurashinoshirube.com/anker-solix-c300-c800-c1000-differences/
+    h1: Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    path: /anker-solix-c300-c800-c1000-differences/
+    redirect_chain: []
+    robots: index,follow
+    sitemap_membership: true
+    status: 200
+- url: https://kurashinoshirube.com/countertop-dishwasher-for-small-households/
+  path: /countertop-dishwasher-for-small-households/
+  role: pilot
+  safe_initial_disposition: NO_ROUTE_OR_REDIRECT
+  observation:
+    body_bytes: 93946
+    body_sha256: c4ae0bb8d1729ca5a5dafd2ae3067f982370822bb01ed8fd95edda3aea88c99f
+    canonical: null
+    h1: ページが見つかりません
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    path: /countertop-dishwasher-for-small-households/
+    redirect_chain: []
+    robots: noindex
+    sitemap_membership: false
+    status: 404
+- url: https://kurashinoshirube.com/compact-robot-vacuum-shortlist/
+  path: /compact-robot-vacuum-shortlist/
+  role: pilot
+  safe_initial_disposition: NO_ROUTE_OR_REDIRECT
+  observation:
+    body_bytes: 93934
+    body_sha256: d559cc437c04f7ca7a40e43040595b5f1d7c16f204d72c64a76b58ad1da446ef
+    canonical: null
+    h1: ページが見つかりません
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    path: /compact-robot-vacuum-shortlist/
+    redirect_chain: []
+    robots: noindex
+    sitemap_membership: false
+    status: 404
+- url: https://kurashinoshirube.com/about-ad-policy/
+  path: /about-ad-policy/
+  role: policy
+  safe_initial_disposition: KEEP_CURRENT
+  observation:
+    body_bytes: 103493
+    body_sha256: 3739f120dc314943e9161dd82e034d0b2b6d2adc08bbc618df62749b0c83c79f
+    canonical: https://kurashinoshirube.com/about-ad-policy/
+    h1: 運営者情報・広告ポリシー
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    path: /about-ad-policy/
+    redirect_chain: []
+    robots: index,follow
+    sitemap_membership: true
+    status: 200
+- url: https://kurashinoshirube.com/advertising-policy/
+  path: /advertising-policy/
+  role: observed_candidate
+  safe_initial_disposition: NO_ROUTE_OR_REDIRECT
+  observation:
+    body_bytes: 93922
+    body_sha256: 9f21ae673a7b052040b3ecb6d61063ed5af1711b21ed65ced789016702a4a90c
+    canonical: null
+    h1: ページが見つかりません
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    path: /advertising-policy/
+    redirect_chain: []
+    robots: noindex
+    sitemap_membership: false
+    status: 404
+- url: https://kurashinoshirube.com/privacy-policy/
+  path: /privacy-policy/
+  role: policy
+  safe_initial_disposition: KEEP_CURRENT
+  observation:
+    body_bytes: 107985
+    body_sha256: 390ea6f3fd3042235d45690cc2a61903264406ad2f515dbcd3edde832cbedeb0
+    canonical: https://kurashinoshirube.com/privacy-policy/
+    h1: プライバシーポリシー
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    path: /privacy-policy/
+    redirect_chain: []
+    robots: index,follow
+    sitemap_membership: true
+    status: 200
+backlog_id: B-V2-003
+test_ids:
+- T-V2-004
+- T-V2-005

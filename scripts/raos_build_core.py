@@ -558,6 +558,8 @@ def _path_value(
     node: ast.AST, known: Mapping[str, tuple[Path, ...]] | None = None
 ) -> tuple[Path, ...]:
     known = {} if known is None else known
+    if isinstance(node, ast.Starred):
+        return _path_value(node.value, known)
     if isinstance(node, ast.Name):
         return known.get(node.id, ())
     if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
@@ -679,6 +681,30 @@ def _test_paths(story_ids: Sequence[str], *, root: Path) -> tuple[Path, ...]:
             if candidate.is_dir():
                 found.add(candidate.relative_to(root))
     return tuple(sorted(found))
+
+
+def _declared_test_paths(
+    paths_by_name: Mapping[str, tuple[Path, ...]], *, root: Path
+) -> tuple[Path, ...]:
+    """Return an owner's optional, explicit TEST_PATHS declaration.
+
+    Story-derived discovery remains the default.  Owners which are intentionally
+    not named after a legacy Story (for example a successor overlay) can opt in
+    by declaring a top-level tuple of repository-relative paths named
+    ``TEST_PATHS``.  Restricting the declaration to the tests tree prevents a
+    generator from broadening focused execution to arbitrary repository paths.
+    """
+
+    declared: set[Path] = set()
+    for path in paths_by_name.get("TEST_PATHS", ()):
+        if path.is_absolute() or any(part in {"", ".", ".."} for part in path.parts):
+            raise BuildRegistryError(f"TEST_PATHS contains an unsafe path: {path}")
+        if not path.parts or path.parts[0] != "tests":
+            raise BuildRegistryError(f"TEST_PATHS must remain below tests/: {path}")
+        if not (root / path).exists():
+            raise BuildRegistryError(f"TEST_PATHS path does not exist: {path}")
+        declared.add(path)
+    return tuple(sorted(declared))
 
 
 def _input_kind(path: Path) -> InputKind:
@@ -887,7 +913,14 @@ def discover_registry(*, root: Path = REPOSITORY_ROOT) -> dict[str, BuildSpec]:
             inputs=tuple(sorted(set(inputs), key=lambda value: value.uri)),
             outputs=tuple(sorted(outputs)),
             owner_dependencies=tuple(sorted(dependencies)),
-            test_paths=_test_paths(item["story_ids"], root=root),
+            test_paths=tuple(
+                sorted(
+                    set(_test_paths(item["story_ids"], root=root))
+                    | set(
+                        _declared_test_paths(_top_level_paths(source), root=root)
+                    )
+                )
+            ),
             supports_check='"--check"' in source or "'--check'" in source,
             isolated_python="sys.flags.isolated" in source,
         )
@@ -1161,7 +1194,6 @@ def check_active_manifest(
 def generation_relevant_paths(paths: Iterable[Path]) -> tuple[Path, ...]:
     ignored_prefixes = (
         ".codex/",
-        ".github/",
         "docs/execplans/",
         "docs/worklogs/",
         "tests/",
@@ -1191,6 +1223,7 @@ def run_commands(
     commands: Iterable[Sequence[str]], *, root: Path = REPOSITORY_ROOT
 ) -> None:
     environment = os.environ.copy()
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
     environment["PYTHONPATH"] = os.pathsep.join(
         value
         for value in (

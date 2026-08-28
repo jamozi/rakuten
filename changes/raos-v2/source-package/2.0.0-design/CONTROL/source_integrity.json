@@ -1,0 +1,40 @@
+{
+  "schema": "RAOS_V2_SOURCE_INTEGRITY_V1",
+  "generated_at": "2026-08-28T22:30:00+09:00",
+  "prompt": {
+    "path": "PRO_FULL_REDESIGN_PROMPT.md",
+    "sha256": "bf7d6c43a352ed3150ca5b770864c3fc6eaa839bcb92b8313ad4b62b4d86e939",
+    "size_bytes": 19226
+  },
+  "audit_archive": {
+    "path": "RAOS_FULL_REDESIGN_AUDIT_PACKET_v1.tar.gz",
+    "sha256": "63fa06a566770882c14dc745c84c328b4ae88fc5e17c63009cf597d411741951",
+    "size_bytes": 8455756
+  },
+  "audit_packet_manifest": {
+    "path": "MANIFEST.sha256",
+    "sha256": "52b534b51634b5dd12c4f86caeace7755631f65070b872e50f78fe09abc52262",
+    "entries": 561,
+    "verified_entries": 561,
+    "failures": [],
+    "status": "PASS"
+  },
+  "packet_metadata": {
+    "assembled_at": "2026-08-27T13:47:34Z",
+    "authority": "UNAPPROVED_DESIGN_INPUT_ONLY",
+    "canonical_mutated": false,
+    "credentials_used": false,
+    "external_writes": false,
+    "payload_members_before_manifest": 560,
+    "private_general_scan_performed": false,
+    "private_inputs": [
+      "four exact public screenshots",
+      "one exact public-capture document"
+    ],
+    "pro_submission": "NOT_PERFORMED_BY_PACKET_BUILDER",
+    "repository_branch": "codex/st1704-publish-five-articles",
+    "repository_head": "83cfa17f91dddbee2bcd4e781545fd2bb4a5bcc4",
+    "schema": "RAOS_FULL_REDESIGN_AUDIT_PACKET_V1"
+  },
+  "source_boundary": "time-bounded evidence; live facts must be rechecked at implementation/release gates"
+}

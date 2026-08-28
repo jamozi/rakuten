@@ -1,0 +1,110 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v1/offer-observation.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "affiliate_url_ref": {
+      "pattern": "^OPAQUE-[A-Z0-9][A-Z0-9._:-]{0,127}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "availability": {
+      "pattern": "^[A-Z][A-Z0-9_-]{0,63}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "identity_evidence": {
+      "items": {
+        "pattern": "^[A-Z][A-Z0-9_-]{0,63}$",
+        "type": "string"
+      },
+      "maxItems": 32,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "image_ref": {
+      "pattern": "^OPAQUE-[A-Z0-9][A-Z0-9._:-]{0,127}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "item_code": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "mode": {
+      "enum": [
+        "RECORDED_ONLY",
+        "LIVE_APPROVED"
+      ]
+    },
+    "observed_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "offer_id": {
+      "pattern": "^[A-Z0-9][A-Z0-9-]{0,127}$",
+      "type": "string"
+    },
+    "price_jpy": {
+      "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "product_id": {
+      "pattern": "^PRD-[A-Z0-9-]+$",
+      "type": "string"
+    },
+    "provider": {
+      "const": "RAKUTEN"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "shop_code": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "enum": [
+        "CURRENT",
+        "STALE",
+        "OUT_OF_STOCK",
+        "IDENTITY_BLOCKED",
+        "UNAVAILABLE"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "offer_id",
+    "product_id",
+    "provider",
+    "mode",
+    "item_code",
+    "shop_code",
+    "observed_at",
+    "price_jpy",
+    "availability",
+    "affiliate_url_ref",
+    "image_ref",
+    "identity_evidence",
+    "status"
+  ],
+  "title": "offer-observation",
+  "type": "object"
+}

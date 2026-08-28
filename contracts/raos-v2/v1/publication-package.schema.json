@@ -1,0 +1,345 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v1/publication-package.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "content_class": {
+            "const": "REAL_CONTENT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "input_hashes": {
+            "required": [
+              "article",
+              "claims",
+              "sources",
+              "render",
+              "migration",
+              "editorial",
+              "products",
+              "review",
+              "render_model"
+            ]
+          },
+          "package_digest": {
+            "type": "null"
+          },
+          "review_binding": {
+            "type": "null"
+          },
+          "state": {
+            "enum": [
+              "DRAFT",
+              "EVIDENCE_COMPLETE",
+              "BLOCKED",
+              "REVIEW_REQUIRED"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "PACKAGE_SEALED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "claim_evidence": {
+            "items": {
+              "properties": {
+                "freshness": {
+                  "enum": [
+                    "FRESH",
+                    "DUE"
+                  ]
+                }
+              }
+            }
+          },
+          "content_class": {
+            "const": "SYNTHETIC_FIXTURE"
+          },
+          "package_digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "review_binding": {
+            "properties": {
+              "synthetic": {
+                "const": true
+              }
+            },
+            "required": [
+              "synthetic"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "article_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+      "type": "string"
+    },
+    "claim_evidence": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "claim_id": {
+            "pattern": "^CLM-[A-Z0-9-]+$",
+            "type": "string"
+          },
+          "freshness": {
+            "enum": [
+              "FRESH",
+              "DUE",
+              "SOFT_STALE",
+              "HARD_STALE",
+              "UNKNOWN",
+              "UNAVAILABLE",
+              "REJECTED"
+            ]
+          },
+          "risk_class": {
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH"
+            ]
+          }
+        },
+        "required": [
+          "claim_id",
+          "risk_class",
+          "freshness"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "content_class": {
+      "enum": [
+        "REAL_CONTENT",
+        "SYNTHETIC_FIXTURE"
+      ]
+    },
+    "created_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "input_hashes": {
+      "additionalProperties": false,
+      "properties": {
+        "article": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "claims": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "editorial": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "migration": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "phase3_claim_authority": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "products": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "render": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "render_model": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "review": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "sources": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "article",
+        "claims",
+        "sources",
+        "render",
+        "migration"
+      ],
+      "type": "object"
+    },
+    "migration_manifest": {
+      "anyOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "const": "LOCAL_SIMULATION_ONLY"
+            },
+            "schema": {
+              "const": "RAOS_V2_MIGRATION_MANIFEST_V1"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "target_route": {
+              "pattern": "^/(?:[a-z0-9-]+/)*$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "schema",
+            "mode",
+            "target_route",
+            "sha256"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "next": {
+              "const": "synthetic"
+            },
+            "previous": {
+              "type": "null"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            "wordpress_intent": {
+              "const": "CREATE_OR_UPDATE"
+            }
+          },
+          "required": [
+            "previous",
+            "next",
+            "wordpress_intent",
+            "sha256"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "package_digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "package_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+      "type": "string"
+    },
+    "render_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "review_binding": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "review_version": {
+              "pattern": "^[A-Z0-9][A-Z0-9._:-]{0,127}$",
+              "type": "string"
+            },
+            "reviewed_at": {
+              "format": "date-time",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+              "type": "string"
+            },
+            "reviewer_id": {
+              "pattern": "^[A-Z0-9][A-Z0-9._:-]{0,127}$",
+              "type": "string"
+            },
+            "synthetic": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "reviewer_id",
+            "reviewed_at",
+            "review_version",
+            "synthetic"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "source_snapshot_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "DRAFT",
+        "EVIDENCE_COMPLETE",
+        "HUMAN_REVIEWED",
+        "PACKAGE_SEALED",
+        "BLOCKED",
+        "REVIEW_REQUIRED"
+      ]
+    },
+    "target_origin": {
+      "const": "https://kurashinoshirube.com"
+    },
+    "target_route": {
+      "pattern": "^/(?:[a-z0-9-]+/)*$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "package_id",
+    "target_origin",
+    "target_route",
+    "article_id",
+    "input_hashes",
+    "render_hash",
+    "source_snapshot_hash",
+    "review_binding",
+    "migration_manifest",
+    "claim_evidence",
+    "created_at",
+    "content_class",
+    "package_digest",
+    "state"
+  ],
+  "title": "publication-package",
+  "type": "object"
+}

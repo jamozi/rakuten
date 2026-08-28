@@ -1,0 +1,49 @@
+schema: RAOS_V2_PHASE3_EXTERNAL_ACTION_STATE_V1
+version: 1.0.0
+classification: SANITIZED_OVERLAY_INPUT
+target_origin: https://kurashinoshirube.com
+target_route: /carry-on-suitcase-comparison/
+rule: Missing external evidence blocks the affected transition and is never treated as zero or success.
+human_review:
+  action_id: OWNER-CONTENT-REVIEW
+  status: NOT_EXECUTED
+  receipt: null
+wordpress_export:
+  external_action_id: EXT-001
+  status: NOT_EXECUTED
+  binding: null
+post_action_wordpress_export:
+  external_action_id: EXT-014
+  status: NOT_EXECUTED
+  binding: null
+wordpress_nonpublic_preview:
+  external_action_id: EXT-002
+  status: NOT_EXECUTED
+  receipt: null
+theme_or_plugin_deploy:
+  external_action_id: EXT-004
+  status: NOT_EXECUTED
+  receipt: null
+publication:
+  external_action_id: EXT-003
+  status: NOT_EXECUTED
+  receipt: null
+privacy_legal_review:
+  external_action_id: EXT-011
+  status: NOT_EXECUTED
+  receipt: null
+analytics_activation:
+  external_action_id: EXT-010
+  status: NOT_EXECUTED
+  receipt: null
+redirect_canonical_sitemap_change:
+  external_action_id: EXT-013
+  status: NOT_EXECUTED
+  receipt: null
+public_verification:
+  status: NOT_EXECUTED
+  receipt: null
+stability_window:
+  required_days: 7
+  status: NOT_STARTED
+  receipt: null

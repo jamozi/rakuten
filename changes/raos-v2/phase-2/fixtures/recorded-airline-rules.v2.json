@@ -1,0 +1,298 @@
+{
+  "schema": "RAOS_V2_RECORDED_AIRLINE_RULES_V1",
+  "version": "2.0.0",
+  "capture_mode": "PUBLIC_READ_ONLY_NORMALIZED_NO_BODY",
+  "capture_status": "CAPTURED_PUBLIC_READ_ONLY",
+  "capture_window_ended_at": "2026-08-27T21:41:52Z",
+  "capture_provenance": "ALLOWLIST_BROWSER_UA_NO_CREDENTIAL_NO_COOKIE_NO_QUERY",
+  "external_write": "NOT_EXECUTED",
+  "source_captures": [
+    {"source_id": "SRC-V2-ANA-CARRY-ON", "status": "FRESH", "body_sha256": "1e1afc3493de41f8708abb17fba57329ba44ea52870812eca50510d37a2c34e1"},
+    {"source_id": "SRC-V2-JAL-CARRY-ON", "status": "FRESH", "body_sha256": "20fea29b436f2ce04ee1c2bbe9680291e1cc022de3bd76a8c5f3cfb64e41f920"},
+    {"source_id": "SRC-V2-PEACH-CARRY-ON", "status": "FRESH", "body_sha256": "ae72dc384c2c5dd75ee8cf008a81f0d73e1e97636c0bd5a354225daf793536f0"},
+    {"source_id": "SRC-V2-JETSTAR-CARRY-ON", "status": "FRESH", "body_sha256": "a51eca8bba0cc124b54ee738ef8241db3236343dcab2404c3bfbe2e3e87fae25"},
+    {"source_id": "SRC-V2-JETSTAR-CARRY-ON-2027", "status": "FRESH", "body_sha256": "0f13d41c17ed98c96dd3f4449b3d877899f6b90a1b3d1730e3dd27ca28fb9453"}
+  ],
+  "rule_sets": [
+    {
+      "schema_version": "1.0.0",
+      "rule_set_id": "AIR-ANA-DOMESTIC-2026",
+      "carrier": "ANA",
+      "journey_scope": "DOMESTIC",
+      "effective_from": null,
+      "observed_applicable_from": "2026-08-28T06:41:52+09:00",
+      "applicability_basis": "OBSERVED_CURRENT_AT_CAPTURE_NO_PUBLISHED_EFFECTIVE_DATE",
+      "effective_interval_semantics": "FROM_INCLUSIVE_TO_EXCLUSIVE",
+      "effective_to": null,
+      "source_id": "SRC-V2-ANA-CARRY-ON",
+      "checked_at": "2026-08-28T06:41:52+09:00",
+      "source_next_review_at": "2026-09-27T06:41:52+09:00",
+      "source_content_sha256": "1e1afc3493de41f8708abb17fba57329ba44ea52870812eca50510d37a2c34e1",
+      "recheck_required_before_use": false,
+      "variants": [
+        {
+          "variant_id": "ANA-100-SEATS-OR-MORE",
+          "applicability": {"operator": null, "min_seat_count": 100},
+          "bag_count": 1,
+          "personal_item_count": 1,
+          "dimension_edges_cm": ["55", "40", "25"],
+          "sum_edges_cm": "115",
+          "total_weight_kg": "10",
+          "orientation": "PERMUTABLE",
+          "includes_wheels_and_handles": true,
+          "notes": ["Handles and wheels are included in dimensions."],
+          "resolution_requirements": ["seat_count", "combined_weight", "appendages_included"]
+        },
+        {
+          "variant_id": "ANA-UNDER-100-SEATS",
+          "applicability": {"operator": null, "max_seat_count": 99},
+          "bag_count": 1,
+          "personal_item_count": 1,
+          "dimension_edges_cm": ["45", "35", "20"],
+          "sum_edges_cm": "100",
+          "total_weight_kg": "10",
+          "orientation": "PERMUTABLE",
+          "includes_wheels_and_handles": true,
+          "notes": ["Handles and wheels are included in dimensions."],
+          "resolution_requirements": ["seat_count", "combined_weight", "appendages_included"]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "rule_set_id": "AIR-JAL-DOMESTIC-2026",
+      "carrier": "JAL",
+      "journey_scope": "DOMESTIC",
+      "effective_from": null,
+      "observed_applicable_from": "2026-08-28T06:41:52+09:00",
+      "applicability_basis": "OBSERVED_CURRENT_AT_CAPTURE_NO_PUBLISHED_EFFECTIVE_DATE",
+      "effective_interval_semantics": "FROM_INCLUSIVE_TO_EXCLUSIVE",
+      "effective_to": null,
+      "source_id": "SRC-V2-JAL-CARRY-ON",
+      "checked_at": "2026-08-28T06:41:52+09:00",
+      "source_next_review_at": "2026-09-27T06:41:52+09:00",
+      "source_content_sha256": "20fea29b436f2ce04ee1c2bbe9680291e1cc022de3bd76a8c5f3cfb64e41f920",
+      "recheck_required_before_use": false,
+      "variants": [
+        {
+          "variant_id": "JAL-100-SEATS-OR-MORE",
+          "applicability": {"operator": null, "min_seat_count": 100},
+          "bag_count": 1,
+          "personal_item_count": 1,
+          "dimension_edges_cm": ["55", "40", "25"],
+          "sum_edges_cm": "115",
+          "total_weight_kg": "10",
+          "orientation": "PERMUTABLE",
+          "includes_wheels_and_handles": true,
+          "notes": ["Use the smaller-aircraft rule for a connection operated by a smaller aircraft."],
+          "resolution_requirements": ["seat_count", "combined_weight", "appendages_included"]
+        },
+        {
+          "variant_id": "JAL-UNDER-100-SEATS",
+          "applicability": {"operator": null, "max_seat_count": 99},
+          "bag_count": 1,
+          "personal_item_count": 1,
+          "dimension_edges_cm": ["45", "35", "20"],
+          "sum_edges_cm": "100",
+          "total_weight_kg": "10",
+          "orientation": "PERMUTABLE",
+          "includes_wheels_and_handles": true,
+          "notes": ["Use this rule for every small-aircraft segment."],
+          "resolution_requirements": ["seat_count", "combined_weight", "appendages_included"]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "rule_set_id": "AIR-PEACH-2026",
+      "carrier": "PEACH",
+      "journey_scope": "ALL",
+      "effective_from": null,
+      "observed_applicable_from": "2026-08-28T06:41:52+09:00",
+      "applicability_basis": "OBSERVED_CURRENT_AT_CAPTURE_NO_PUBLISHED_EFFECTIVE_DATE",
+      "effective_interval_semantics": "FROM_INCLUSIVE_TO_EXCLUSIVE",
+      "effective_to": null,
+      "source_id": "SRC-V2-PEACH-CARRY-ON",
+      "checked_at": "2026-08-28T06:41:52+09:00",
+      "source_next_review_at": "2026-09-27T06:41:52+09:00",
+      "source_content_sha256": "ae72dc384c2c5dd75ee8cf008a81f0d73e1e97636c0bd5a354225daf793536f0",
+      "recheck_required_before_use": false,
+      "variants": [
+        {
+          "variant_id": "PEACH-STANDARD",
+          "applicability": {"operator": null},
+          "bag_count": 1,
+          "personal_item_count": 1,
+          "dimension_edges_cm": ["115", "115", "115"],
+          "sum_edges_cm": "115",
+          "total_weight_kg": "7",
+          "orientation": "PERMUTABLE",
+          "includes_wheels_and_handles": true,
+          "notes": ["The official normalized rule publishes the three-edge sum as the controlling dimensional limit."],
+          "resolution_requirements": ["combined_weight", "appendages_included"]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "rule_set_id": "AIR-JETSTAR-JAPAN-2026",
+      "carrier": "JETSTAR_JAPAN",
+      "journey_scope": "ALL",
+      "effective_from": null,
+      "observed_applicable_from": "2026-08-28T06:41:52+09:00",
+      "applicability_basis": "OBSERVED_CURRENT_AT_CAPTURE_NO_PUBLISHED_EFFECTIVE_DATE",
+      "effective_interval_semantics": "FROM_INCLUSIVE_TO_EXCLUSIVE",
+      "effective_to": null,
+      "source_id": "SRC-V2-JETSTAR-CARRY-ON",
+      "checked_at": "2026-08-28T06:41:52+09:00",
+      "source_next_review_at": "2026-09-27T06:41:52+09:00",
+      "source_content_sha256": "a51eca8bba0cc124b54ee738ef8241db3236343dcab2404c3bfbe2e3e87fae25",
+      "recheck_required_before_use": false,
+      "variants": [
+        {
+          "variant_id": "JETSTAR-JAPAN-STANDARD-7KG",
+          "applicability": {"operator": "JETSTAR_JAPAN", "forbidden_options": ["PLUS-14KG"]},
+          "bag_count": 1,
+          "personal_item_count": 1,
+          "dimension_edges_cm": ["56", "36", "23"],
+          "sum_edges_cm": null,
+          "total_weight_kg": "7",
+          "max_per_item_weight_kg": "10",
+          "item_allowances": [
+            {"slot_id": "GK-MAIN", "placement": "MAIN", "dimension_edges_cm": ["56", "36", "23"], "orientation": "ORDERED", "includes_wheels_and_handles": true, "max_weight_kg": "10", "fit_requirement": null},
+            {"slot_id": "GK-PERSONAL", "placement": "UNDERSEAT", "dimension_edges_cm": null, "orientation": "ORDERED", "includes_wheels_and_handles": null, "max_weight_kg": "10", "fit_requirement": "UNDERSEAT"}
+          ],
+          "orientation": "ORDERED",
+          "includes_wheels_and_handles": true,
+          "notes": ["Two items total; verify fare or paid option when using an increased allowance."],
+          "resolution_requirements": ["operator", "options", "item_details", "underseat_fit", "combined_weight", "per_item_weight"]
+        },
+        {
+          "variant_id": "JETSTAR-JAPAN-PLUS-14KG",
+          "applicability": {"operator": "JETSTAR_JAPAN", "required_options": ["PLUS-14KG"]},
+          "bag_count": 1,
+          "personal_item_count": 1,
+          "dimension_edges_cm": ["56", "36", "23"],
+          "sum_edges_cm": null,
+          "total_weight_kg": "14",
+          "max_per_item_weight_kg": "10",
+          "item_allowances": [
+            {"slot_id": "GK-MAIN-PLUS", "placement": "MAIN", "dimension_edges_cm": ["56", "36", "23"], "orientation": "ORDERED", "includes_wheels_and_handles": true, "max_weight_kg": "10", "fit_requirement": null},
+            {"slot_id": "GK-PERSONAL-PLUS", "placement": "UNDERSEAT", "dimension_edges_cm": null, "orientation": "ORDERED", "includes_wheels_and_handles": null, "max_weight_kg": "10", "fit_requirement": "UNDERSEAT"}
+          ],
+          "orientation": "ORDERED",
+          "includes_wheels_and_handles": true,
+          "notes": ["Each individual item must not exceed 10 kg."],
+          "resolution_requirements": ["operator", "options", "item_details", "underseat_fit", "combined_weight", "per_item_weight"]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "rule_set_id": "AIR-JETSTAR-AIRWAYS-CURRENT-TO-2027-02-02",
+      "carrier": "JETSTAR_AIRWAYS",
+      "journey_scope": "ALL",
+      "effective_from": null,
+      "observed_applicable_from": "2026-08-28T06:41:52+09:00",
+      "applicability_basis": "OBSERVED_CURRENT_AT_CAPTURE_NO_PUBLISHED_EFFECTIVE_DATE",
+      "effective_interval_semantics": "FROM_INCLUSIVE_TO_EXCLUSIVE",
+      "effective_to": "2027-02-02T00:00:00+09:00",
+      "source_id": "SRC-V2-JETSTAR-CARRY-ON",
+      "checked_at": "2026-08-28T06:41:52+09:00",
+      "source_next_review_at": "2026-09-27T06:41:52+09:00",
+      "source_content_sha256": "a51eca8bba0cc124b54ee738ef8241db3236343dcab2404c3bfbe2e3e87fae25",
+      "recheck_required_before_use": false,
+      "variants": [
+        {
+          "variant_id": "JETSTAR-AIRWAYS-CURRENT-STANDARD-7KG",
+          "applicability": {"operator": "JETSTAR_AIRWAYS", "forbidden_options": ["PLUS-14KG"]},
+          "bag_count": 1,
+          "personal_item_count": 1,
+          "dimension_edges_cm": ["56", "36", "23"],
+          "sum_edges_cm": null,
+          "total_weight_kg": "7",
+          "max_per_item_weight_kg": "10",
+          "item_allowances": [
+            {"slot_id": "JQ-CURRENT-MAIN", "placement": "MAIN", "dimension_edges_cm": ["56", "36", "23"], "orientation": "ORDERED", "includes_wheels_and_handles": true, "max_weight_kg": "10", "fit_requirement": null},
+            {"slot_id": "JQ-CURRENT-PERSONAL", "placement": "UNDERSEAT", "dimension_edges_cm": null, "orientation": "ORDERED", "includes_wheels_and_handles": null, "max_weight_kg": "10", "fit_requirement": "UNDERSEAT"}
+          ],
+          "orientation": "ORDERED",
+          "includes_wheels_and_handles": true,
+          "notes": ["Two items total under the recorded current rule; the personal item must fit under the seat."],
+          "resolution_requirements": ["operator", "options", "item_details", "underseat_fit", "combined_weight", "per_item_weight"]
+        },
+        {
+          "variant_id": "JETSTAR-AIRWAYS-CURRENT-PLUS-14KG",
+          "applicability": {"operator": "JETSTAR_AIRWAYS", "required_options": ["PLUS-14KG"]},
+          "bag_count": 1,
+          "personal_item_count": 1,
+          "dimension_edges_cm": ["56", "36", "23"],
+          "sum_edges_cm": null,
+          "total_weight_kg": "14",
+          "max_per_item_weight_kg": "10",
+          "item_allowances": [
+            {"slot_id": "JQ-CURRENT-MAIN-PLUS", "placement": "MAIN", "dimension_edges_cm": ["56", "36", "23"], "orientation": "ORDERED", "includes_wheels_and_handles": true, "max_weight_kg": "10", "fit_requirement": null},
+            {"slot_id": "JQ-CURRENT-PERSONAL-PLUS", "placement": "UNDERSEAT", "dimension_edges_cm": null, "orientation": "ORDERED", "includes_wheels_and_handles": null, "max_weight_kg": "10", "fit_requirement": "UNDERSEAT"}
+          ],
+          "orientation": "ORDERED",
+          "includes_wheels_and_handles": true,
+          "notes": ["The recorded 14 kg option still limits each item to 10 kg."],
+          "resolution_requirements": ["operator", "options", "item_details", "underseat_fit", "combined_weight", "per_item_weight"]
+        }
+      ]
+    },
+    {
+      "schema_version": "1.0.0",
+      "rule_set_id": "AIR-JETSTAR-AIRWAYS-2027-02-02",
+      "carrier": "JETSTAR_AIRWAYS",
+      "journey_scope": "ALL",
+      "effective_from": "2027-02-02T00:00:00+09:00",
+      "observed_applicable_from": "2026-08-28T06:41:52+09:00",
+      "applicability_basis": "OFFICIAL_EFFECTIVE_DATE",
+      "effective_interval_semantics": "FROM_INCLUSIVE_TO_EXCLUSIVE",
+      "effective_to": null,
+      "source_id": "SRC-V2-JETSTAR-CARRY-ON-2027",
+      "checked_at": "2026-08-28T06:41:52+09:00",
+      "source_next_review_at": "2026-09-27T06:41:52+09:00",
+      "source_content_sha256": "0f13d41c17ed98c96dd3f4449b3d877899f6b90a1b3d1730e3dd27ca28fb9453",
+      "recheck_required_before_use": true,
+      "variants": [
+        {
+          "variant_id": "JETSTAR-AIRWAYS-UNDERSEAT-2027",
+          "applicability": {"operator": "JETSTAR_AIRWAYS", "forbidden_options": ["PRIORITY-CARRY-ON"]},
+          "bag_count": 0,
+          "personal_item_count": 1,
+          "dimension_edges_cm": ["40", "30", "20"],
+          "sum_edges_cm": null,
+          "total_weight_kg": null,
+          "max_per_item_weight_kg": "10",
+          "item_allowances": [
+            {"slot_id": "JQ-UNDERSEAT-2027", "placement": "UNDERSEAT", "dimension_edges_cm": ["40", "30", "20"], "orientation": "ORDERED", "includes_wheels_and_handles": true, "max_weight_kg": "10", "fit_requirement": null}
+          ],
+          "orientation": "ORDERED",
+          "includes_wheels_and_handles": true,
+          "notes": ["One underseat item by default from the published effective date; reconfirm before travel."],
+          "resolution_requirements": ["operator", "options", "item_dimensions", "per_item_weight", "appendages_included"]
+        },
+        {
+          "variant_id": "JETSTAR-AIRWAYS-OVERHEAD-2027",
+          "applicability": {"operator": "JETSTAR_AIRWAYS", "required_options": ["PRIORITY-CARRY-ON"]},
+          "bag_count": 1,
+          "personal_item_count": 1,
+          "dimension_edges_cm": ["56", "36", "23"],
+          "sum_edges_cm": null,
+          "total_weight_kg": null,
+          "max_per_item_weight_kg": "10",
+          "item_allowances": [
+            {"slot_id": "JQ-UNDERSEAT-PRIORITY-2027", "placement": "UNDERSEAT", "dimension_edges_cm": ["40", "30", "20"], "orientation": "ORDERED", "includes_wheels_and_handles": true, "max_weight_kg": "10", "fit_requirement": null},
+            {"slot_id": "JQ-OVERHEAD-PRIORITY-2027", "placement": "OVERHEAD", "dimension_edges_cm": ["56", "36", "23"], "orientation": "ORDERED", "includes_wheels_and_handles": true, "max_weight_kg": "10", "fit_requirement": null}
+          ],
+          "orientation": "ORDERED",
+          "includes_wheels_and_handles": true,
+          "notes": ["One underseat and one overhead item require priority or an eligible fare; each item is limited to 10 kg."],
+          "resolution_requirements": ["operator", "options", "item_dimensions", "per_item_weight", "appendages_included"]
+        }
+      ]
+    }
+  ]
+}

@@ -76,8 +76,8 @@ source_artifacts:
   bytes: 3362
   sha256: 2ff9163b43b7c445190d5a01a31485ab9e2c4474c5bade65041f541ea90dc333
 - uri: repo://Makefile
-  bytes: 2077
-  sha256: d505133bfc56b259cdb3a3279d6f242a885998f239a3e29fc003ec63dfbbb9e9
+  bytes: 2141
+  sha256: eae55d7c0646b1b17abcbd9ab1f1ff68a857482ea1649b60ed02a307aa75daa3
 - uri: repo://README.md
   bytes: 3960
   sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
@@ -85,8 +85,8 @@ source_artifacts:
   bytes: 1906
   sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
 - uri: repo://scripts/scan_secrets.py
-  bytes: 43577
-  sha256: 61d84109b5dc0f161b621bf2c343e6f1367144298280d24bafd71d76c640e7d4
+  bytes: 46610
+  sha256: b8fda20a7d00482e8855fc8ad841b6c9fe29dbb875f62420e536a5104e27f599
 generated_artifact_count: 2
 generated_artifacts:
 - uri: repo://changes/st-0205/generated/synthetic-fixtures.v1.json

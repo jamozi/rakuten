@@ -88,7 +88,7 @@
   ],
   "operator_contract_version": 2,
   "package": {
-    "bytes": 541024,
+    "bytes": 541044,
     "compression": "ZIP_STORED",
     "file_count": 4,
     "files": [
@@ -103,9 +103,9 @@
         "sha256": "2b3d7d828941890e799b575f24cbab690b0895cea1cd64d45fd3166ab030dc8b"
       },
       {
-        "bytes": 341184,
+        "bytes": 341204,
         "path": "includes/st1704-publication-controller.v2.php",
-        "sha256": "6ede9cfc1eed641345deca478ba039e0b2519be7ff5f686f21a65f1f36cca149"
+        "sha256": "1dcc93629c9a7e1b07ce4e4322e889af1888b386c2d08e8a9ab02dc0b52a5f23"
       },
       {
         "bytes": 188346,
@@ -114,7 +114,7 @@
       }
     ],
     "root": "raos-bounded-operator/",
-    "sha256": "128a53effedefa10fe24225de651dc6aa7ee1a9739f5877b0c25c672f5c5e3b3",
+    "sha256": "bf5544abd581d8c4d80a4b1dc952cd0be45bb61f76957acf57b17d69a5d055d7",
     "version": "2.1.13"
   },
   "predecessors": {

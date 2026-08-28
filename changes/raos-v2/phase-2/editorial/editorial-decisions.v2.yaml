@@ -1,0 +1,64 @@
+schema: RAOS_V2_EDITORIAL_DECISION_LEDGER_V1
+version: 2.0.0
+finance_inputs_allowed: false
+decisions:
+  - schema_version: 1.0.0
+    decision_id: ED-A05-LIGHTEST-IN-SCOPE
+    decision_type: FIT
+    inputs:
+      - input_id: IN-CRESTA-MASS
+        value_ref: CLM-A05-CRESTA-MASS
+      - input_id: IN-DIFFERENCE-MASS
+        value_ref: CLM-A05-DIFFERENCE-MASS
+      - input_id: IN-MAXPASS4-MASS
+        value_ref: CLM-A05-MAXPASS4-MASS
+    logic_version: LOGIC-A05-MASS-V1
+    outcome: PRD-ACE-CRESTA-06316
+    rationale: 公表質量が比較対象3型番の中で最小であるため、軽さを優先する条件に限って候補とする。
+    non_fit:
+      - 実使用時の軽快さや耐久性を求める場合は未確認のため判断しない。
+    reviewer: null
+  - schema_version: 1.0.0
+    decision_id: ED-A05-UNKNOWN-DURABILITY
+    decision_type: UNKNOWN_HANDLING
+    inputs:
+      - input_id: IN-DURABILITY-UNKNOWN
+        value_ref: CLM-A05-CRESTA-USAGE-UNKNOWN
+    logic_version: LOGIC-UNKNOWN-V1
+    outcome: UNKNOWNを表示し、耐久性を推薦理由に使わない。
+    rationale: 実機試験または適格な一次情報がなく、値を補完できないため。
+    non_fit:
+      - 耐久性の実測比較を必要とする読者
+    reviewer: null
+  - schema_version: 1.0.0
+    decision_id: ED-A02-STRICT-INTERSECTION
+    decision_type: ELIGIBILITY
+    inputs:
+      - {input_id: IN-ANA-LARGE-RULE, value_ref: CLM-A02-ANA-LARGE-RULE}
+      - {input_id: IN-ANA-SMALL-RULE, value_ref: CLM-A02-ANA-SMALL-RULE}
+      - {input_id: IN-JAL-LARGE-RULE, value_ref: CLM-A02-JAL-LARGE-RULE}
+      - {input_id: IN-JAL-SMALL-RULE, value_ref: CLM-A02-JAL-SMALL-RULE}
+      - {input_id: IN-PEACH-RULE, value_ref: CLM-A02-PEACH-STANDARD-RULE}
+      - {input_id: IN-JETSTAR-RULE, value_ref: CLM-A02-JETSTAR-STANDARD-RULE}
+    logic_version: LOGIC-STRICT-SEGMENT-INTERSECTION-V1
+    outcome: 全区間の適用可能な公式条件のうち最も厳しい共通条件で判定し、不足はUNKNOWNへ閉じる。
+    rationale: 航空会社・便・運賃・オプションを推測せず、一区間でも未確定なら楽観的なPASSを返さないため。
+    non_fit:
+      - 搭乗当日の収納可否や係員判断の保証を求める場合
+    reviewer: null
+  - schema_version: 1.0.0
+    decision_id: ED-A03-RULE-SCOPE
+    decision_type: ARTICLE_SCOPE
+    inputs:
+      - {input_id: IN-ANA-LARGE-RULE, value_ref: CLM-A02-ANA-LARGE-RULE}
+      - {input_id: IN-ANA-SMALL-RULE, value_ref: CLM-A02-ANA-SMALL-RULE}
+      - {input_id: IN-JAL-LARGE-RULE, value_ref: CLM-A02-JAL-LARGE-RULE}
+      - {input_id: IN-JAL-SMALL-RULE, value_ref: CLM-A02-JAL-SMALL-RULE}
+      - {input_id: IN-PEACH-RULE, value_ref: CLM-A02-PEACH-STANDARD-RULE}
+      - {input_id: IN-JETSTAR-RULE, value_ref: CLM-A02-JETSTAR-STANDARD-RULE}
+    logic_version: LOGIC-RULE-GUIDE-SCOPE-V1
+    outcome: 記録済みの現行公式規定を条件付き事実として示し、共同運航・当日判断・未入力条件は保証しない。
+    rationale: 公開規定で確認できる範囲と個別運用で変わる範囲を分離するため。
+    non_fit:
+      - 記録後の変更確認なしに将来便の持ち込み可否を確定したい場合
+    reviewer: null

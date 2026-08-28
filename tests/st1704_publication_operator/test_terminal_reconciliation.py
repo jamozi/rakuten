@@ -37,7 +37,6 @@ def test_reconciliation_is_admin_only_and_rest_surface_is_unchanged() -> None:
 
 
 def test_gate_mode_is_strict_default_off_and_mutually_exclusive() -> None:
-    php = source()
     gate = method("reconciliation_gate_enabled", "writes_enabled")
     normal = method("writes_enabled", "reconciliation_writes_enabled")
     incident = method("reconciliation_writes_enabled", "runtime_origin_is_exact")
@@ -529,7 +528,7 @@ def test_admin_auth_requires_cookie_caps_nonce_reason_hash_and_password_unset() 
         "wp_check_password(",
         "unset($_POST['current_password'])",
         "unset($_POST['reconciliation_reason'])",
-        "unset($password)",
+        "unset($reauth_input)",
         "unset($reason)",
     ):
         assert required in auth

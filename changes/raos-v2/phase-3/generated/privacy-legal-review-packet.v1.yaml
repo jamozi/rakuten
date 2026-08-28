@@ -1,0 +1,70 @@
+schema: RAOS_V2_PHASE3_PRIVACY_LEGAL_REVIEW_PACKET_V1
+version: 1.0.0
+classification: OWNER_OR_COUNSEL_REVIEW_INPUT_NOT_LEGAL_ADVICE
+target_route: /carry-on-suitcase-comparison/
+safe_default:
+  production_sender: DISABLED
+  event_transmission: 'OFF'
+  metric_state: UNAVAILABLE
+  site_and_links_remain_usable: true
+proposed_catalog:
+  source: changes/raos-v2/phase-2/events/event-catalog.v2.yaml
+  events:
+  - tool_result_view
+  - comparison_view
+  - evidence_link_open
+  - official_source_open
+  - affiliate_outbound_activate
+  - article_complete
+  - error_state_view
+  required_fields:
+  - event_name
+  - event_version
+  - event_time_jst
+  - session_token_hmac
+  - article_id
+  - placement
+  - consent_state
+  optional_fields:
+  - result_state
+  - source_id
+  - product_id
+  forbidden_fields:
+  - raw_ip
+  - raw_user_agent
+  - full_referrer
+  - query_string
+  - email
+  - name
+  - address
+  - provider_order_id
+  - credential
+  - full_url
+  session_rotation_minutes: 30
+  cross_device_identity: false
+  free_text: false
+  full_url_or_query: false
+review_questions:
+- Is each proposed event necessary for the stated decision-support metric?
+- What consent state and disclosure are required before each transmission?
+- Are retention, access, deletion and processor responsibilities documented?
+- Does the current privacy/external-transmission notice match the approved implementation?
+- Can denied or unknown consent use the site and outbound links without nonessential transmission?
+activation_preconditions:
+- owner or counsel approval recorded outside this generated packet
+- approved policy wording and consent behavior implemented and tested
+- first-party endpoint security and retention separately approved
+- public mobile consent surface passes focus and accessibility review
+approval: NOT_EXECUTED
+activation: NOT_EXECUTED
+external_action_ids:
+- EXT-010
+- EXT-011
+backlog_id: B-V2-039
+requirement_ids:
+- R-V2-029
+- R-V2-036
+test_ids:
+- T-V2-045
+- T-V2-046
+- T-V2-051

@@ -1,0 +1,133 @@
+schema: RAOS_V2_RECORDED_SOURCE_REGISTRY_V1
+version: 2.0.0
+capture_mode: MIXED_RECORDED_NORMALIZED_NO_BODY
+external_write: NOT_EXECUTED
+sources:
+  - schema_version: 1.0.0
+    source_id: SRC-V2-ANA-CARRY-ON
+    source_class: AIRLINE_PRIMARY
+    publisher: ANA
+    title: 国内線・機内持ち込み手荷物のサイズとルール
+    canonical_url: https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/
+    published_at: null
+    effective_from: null
+    effective_to: null
+    checked_at: '2026-08-28T06:41:52+09:00'
+    next_review_at: '2026-09-27T06:41:52+09:00'
+    content_sha256: 1e1afc3493de41f8708abb17fba57329ba44ea52870812eca50510d37a2c34e1
+    capture_provenance:
+      mode: PUBLIC_READ_ONLY
+      captured_at: '2026-08-28T06:41:52+09:00'
+    status: FRESH
+  - schema_version: 1.0.0
+    source_id: SRC-V2-JAL-CARRY-ON
+    source_class: AIRLINE_PRIMARY
+    publisher: JAL
+    title: 国内線・機内持ち込みお手荷物
+    canonical_url: https://www.jal.co.jp/jp/ja/dom/baggage/inflight/
+    published_at: null
+    effective_from: null
+    effective_to: null
+    checked_at: '2026-08-28T06:41:52+09:00'
+    next_review_at: '2026-09-27T06:41:52+09:00'
+    content_sha256: 20fea29b436f2ce04ee1c2bbe9680291e1cc022de3bd76a8c5f3cfb64e41f920
+    capture_provenance:
+      mode: PUBLIC_READ_ONLY
+      captured_at: '2026-08-28T06:41:52+09:00'
+    status: FRESH
+  - schema_version: 1.0.0
+    source_id: SRC-V2-PEACH-CARRY-ON
+    source_class: AIRLINE_PRIMARY
+    publisher: Peach Aviation
+    title: 機内持ち込み手荷物
+    canonical_url: https://www.flypeach.com/lm/ai/airports/baggage/carry_on_bag
+    published_at: null
+    effective_from: null
+    effective_to: null
+    checked_at: '2026-08-28T06:41:52+09:00'
+    next_review_at: '2026-09-27T06:41:52+09:00'
+    content_sha256: ae72dc384c2c5dd75ee8cf008a81f0d73e1e97636c0bd5a354225daf793536f0
+    capture_provenance:
+      mode: PUBLIC_READ_ONLY
+      captured_at: '2026-08-28T06:41:52+09:00'
+    status: FRESH
+  - schema_version: 1.0.0
+    source_id: SRC-V2-JETSTAR-CARRY-ON
+    source_class: AIRLINE_PRIMARY
+    publisher: Jetstar
+    title: 機内持込手荷物（現行規定）
+    canonical_url: https://www.jetstar.com/jp/ja/flights/baggage/carry-on-baggage
+    published_at: null
+    effective_from: null
+    effective_to: null
+    checked_at: '2026-08-28T06:41:52+09:00'
+    next_review_at: '2026-09-27T06:41:52+09:00'
+    content_sha256: a51eca8bba0cc124b54ee738ef8241db3236343dcab2404c3bfbe2e3e87fae25
+    capture_provenance:
+      mode: PUBLIC_READ_ONLY
+      captured_at: '2026-08-28T06:41:52+09:00'
+    status: FRESH
+  - schema_version: 1.0.0
+    source_id: SRC-V2-JETSTAR-CARRY-ON-2027
+    source_class: AIRLINE_PRIMARY
+    publisher: Jetstar
+    title: 機内持込手荷物（2027年2月2日からの規定）
+    canonical_url: https://www.jetstar.com/jp/ja/flights/baggage/carry-on-baggage-updated
+    published_at: null
+    effective_from: '2027-02-02T00:00:00+09:00'
+    effective_to: null
+    checked_at: '2026-08-28T06:41:52+09:00'
+    next_review_at: '2026-09-27T06:41:52+09:00'
+    content_sha256: 0f13d41c17ed98c96dd3f4449b3d877899f6b90a1b3d1730e3dd27ca28fb9453
+    capture_provenance:
+      mode: PUBLIC_READ_ONLY
+      captured_at: '2026-08-28T06:41:52+09:00'
+    status: FRESH
+  - schema_version: 1.0.0
+    source_id: SRC-ACE-CRESTA-06316
+    source_class: MANUFACTURER_PRIMARY
+    publisher: ACE
+    title: クレスタ 06316 公式商品情報
+    canonical_url: https://store.ace.jp/shop/g/g06316-01/
+    published_at: null
+    effective_from: null
+    effective_to: null
+    checked_at: '2026-08-26T13:54:33+09:00'
+    next_review_at: '2026-11-24T13:54:33+09:00'
+    content_sha256: 1aa1c75d603d46e583f401cd28a6b7bb77290c3a2e24016f40277875fbbdca7b
+    capture_provenance:
+      mode: RECORDED_FIXTURE
+      captured_at: '2026-08-26T13:54:33+09:00'
+    status: FRESH
+  - schema_version: 1.0.0
+    source_id: SRC-ACE-DIFFERENCE-05721
+    source_class: MANUFACTURER_PRIMARY
+    publisher: ACE
+    title: ディフェレンス 05721 公式商品情報
+    canonical_url: https://store.ace.jp/shop/g/g05721-04
+    published_at: null
+    effective_from: null
+    effective_to: null
+    checked_at: '2026-08-26T13:54:33+09:00'
+    next_review_at: '2026-11-24T13:54:33+09:00'
+    content_sha256: a24939625b65f2871350d76a16be79b5ae6885cce611f2d01f2e7acc40506e41
+    capture_provenance:
+      mode: RECORDED_FIXTURE
+      captured_at: '2026-08-26T13:54:33+09:00'
+    status: FRESH
+  - schema_version: 1.0.0
+    source_id: SRC-ACE-MAXPASS4-01471
+    source_class: MANUFACTURER_PRIMARY
+    publisher: ACE
+    title: マックスパス4 01471 公式商品情報
+    canonical_url: https://store.ace.jp/shop/g/g01471-02
+    published_at: null
+    effective_from: null
+    effective_to: null
+    checked_at: '2026-08-26T13:54:33+09:00'
+    next_review_at: '2026-11-24T13:54:33+09:00'
+    content_sha256: 6fc106466db9b179978dc49e8a30b9e21364b98c6a38793392470644b034120e
+    capture_provenance:
+      mode: RECORDED_FIXTURE
+      captured_at: '2026-08-26T13:54:33+09:00'
+    status: FRESH

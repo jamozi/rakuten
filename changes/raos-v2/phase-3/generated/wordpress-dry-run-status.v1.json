@@ -1,0 +1,42 @@
+{
+  "backlog_id": "B-V2-037",
+  "blockers": [
+    "VERIFIED_PREACTION_BINDING_MISSING",
+    "CANDIDATE_REISSUE_REQUIRED",
+    "NON_SYNTHETIC_HUMAN_REVIEW_RECEIPT_MISSING",
+    "FRESH_WORDPRESS_EXPORT_BINDING_MISSING"
+  ],
+  "candidate_digest": "7ce3573f87cfd4731b8b28657864a5e21e381d093ba4b231f0ef64ef166e8735",
+  "credential_fields": [],
+  "endpoint": null,
+  "external_action_count": 0,
+  "failure": "CURRENT_PUBLIC_ARTICLE_REMAINS_UNCHANGED",
+  "future_receipt_schema": "contracts/raos-v2/v2/wordpress-dry-run-receipt.schema.json",
+  "human_review": "NOT_EXECUTED",
+  "intent": "UPDATE_EXISTING_PUBLISHED_POST_AT_APPROVED_CUTOVER",
+  "mode": "DISABLED_DRY_RUN",
+  "payload_digest": "40323f7c5ad2be56f79977f4e19dd65c471cf0c5b6394780db0b0232df6e1077",
+  "post_action_wordpress_export": "NOT_APPLICABLE_BEFORE_WRITE",
+  "preaction_binding_digest": null,
+  "preaction_status": "HISTORICAL_BASELINE_ONLY",
+  "publication": "NOT_EXECUTED",
+  "request_count": 0,
+  "schema": "RAOS_V2_PHASE3_WORDPRESS_DRY_RUN_STATUS_V1",
+  "status": "BLOCKED_EXTERNAL",
+  "structured_data_expectation_sha256": "3be6e7824a9b705e90915b6fea44f10b2216f6a0f814689e6bd6e208d0267f9b",
+  "target": {
+    "expected_match_count": 1,
+    "kind": "EXISTING_POST",
+    "origin": "https://kurashinoshirube.com",
+    "route": "/carry-on-suitcase-comparison/"
+  },
+  "test_ids": [
+    "T-V2-037",
+    "T-V2-038",
+    "T-V2-039"
+  ],
+  "version": "1.0.0",
+  "wordpress_export": "NOT_EXECUTED",
+  "wordpress_export_role": "PRE_WRITE_EXPORT",
+  "wordpress_write": "NOT_EXECUTED"
+}

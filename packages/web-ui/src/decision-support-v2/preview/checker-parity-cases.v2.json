@@ -1,0 +1,230 @@
+{
+  "schema": "RAOS_V2_CHECKER_PARITY_CASES_V1",
+  "cases": [
+    {
+      "id": "ANA_EXACT_DECIMAL_PASS",
+      "expected": "PASS",
+      "bag": {
+        "dimensions": ["45", "35", "20"],
+        "weight": "6.0000000000000000001",
+        "carry_on_count": "1",
+        "personal_item_count": "1",
+        "bag_state": "NORMAL",
+        "appendages_included": true,
+        "personal_item_underseat_confirmed": false
+      },
+      "segments": [
+        {
+          "segment_id": "S1",
+          "carrier": "ANA",
+          "journey_scope": "DOMESTIC",
+          "aircraft": "LARGE",
+          "fare_or_option": null,
+          "departure_local": "2026-09-01T10:00",
+          "departure_jst": "2026-09-01T10:00:00+09:00"
+        }
+      ]
+    },
+    {
+      "id": "ANA_EXACT_DECIMAL_DIMENSION_FAIL",
+      "expected": "FAIL",
+      "bag": {
+        "dimensions": ["45.0000000000000000001", "35", "19"],
+        "weight": "6",
+        "carry_on_count": "1",
+        "personal_item_count": "1",
+        "bag_state": "NORMAL",
+        "appendages_included": true,
+        "personal_item_underseat_confirmed": false
+      },
+      "segments": [
+        {
+          "segment_id": "S1",
+          "carrier": "ANA",
+          "journey_scope": "DOMESTIC",
+          "aircraft": "SMALL",
+          "fare_or_option": null,
+          "departure_local": "2026-09-01T10:00",
+          "departure_jst": "2026-09-01T10:00:00+09:00"
+        }
+      ]
+    },
+    {
+      "id": "ALL_SEGMENTS_STRICT_INTERSECTION_FAIL",
+      "expected": "FAIL",
+      "bag": {
+        "dimensions": ["45", "35", "20"],
+        "weight": "8",
+        "carry_on_count": "1",
+        "personal_item_count": "1",
+        "bag_state": "NORMAL",
+        "appendages_included": true,
+        "personal_item_underseat_confirmed": false
+      },
+      "segments": [
+        {
+          "segment_id": "S1",
+          "carrier": "ANA",
+          "journey_scope": "DOMESTIC",
+          "aircraft": "LARGE",
+          "fare_or_option": null,
+          "departure_local": "2026-09-01T10:00",
+          "departure_jst": "2026-09-01T10:00:00+09:00"
+        },
+        {
+          "segment_id": "S2",
+          "carrier": "PEACH",
+          "journey_scope": "DOMESTIC",
+          "aircraft": null,
+          "fare_or_option": null,
+          "departure_local": "2026-09-01T12:00",
+          "departure_jst": "2026-09-01T12:00:00+09:00"
+        }
+      ]
+    },
+    {
+      "id": "ANA_UNKNOWN_SCOPE",
+      "expected": "UNKNOWN",
+      "bag": {
+        "dimensions": ["45", "35", "20"],
+        "weight": "6",
+        "carry_on_count": "1",
+        "personal_item_count": "1",
+        "bag_state": "NORMAL",
+        "appendages_included": true,
+        "personal_item_underseat_confirmed": false
+      },
+      "segments": [
+        {
+          "segment_id": "S1",
+          "carrier": "ANA",
+          "journey_scope": "UNKNOWN",
+          "aircraft": "LARGE",
+          "fare_or_option": null,
+          "departure_local": "2026-09-01T10:00",
+          "departure_jst": "2026-09-01T10:00:00+09:00"
+        }
+      ]
+    },
+    {
+      "id": "ANA_MISSING_AIRCRAFT_OVERSIZE_UNKNOWN",
+      "expected": "UNKNOWN",
+      "bag": {
+        "dimensions": ["60", "60", "60"],
+        "weight": "6",
+        "carry_on_count": "1",
+        "personal_item_count": "1",
+        "bag_state": "NORMAL",
+        "appendages_included": true,
+        "personal_item_underseat_confirmed": false
+      },
+      "segments": [
+        {
+          "segment_id": "S1",
+          "carrier": "ANA",
+          "journey_scope": "DOMESTIC",
+          "aircraft": null,
+          "fare_or_option": null,
+          "departure_local": "2026-09-01T10:00",
+          "departure_jst": "2026-09-01T10:00:00+09:00"
+        }
+      ]
+    },
+    {
+      "id": "ANA_INTERNATIONAL_NO_MATCH",
+      "expected": "NO_MATCH",
+      "bag": {
+        "dimensions": ["45", "35", "20"],
+        "weight": "6",
+        "carry_on_count": "1",
+        "personal_item_count": "1",
+        "bag_state": "NORMAL",
+        "appendages_included": true,
+        "personal_item_underseat_confirmed": false
+      },
+      "segments": [
+        {
+          "segment_id": "S1",
+          "carrier": "ANA",
+          "journey_scope": "INTERNATIONAL",
+          "aircraft": "LARGE",
+          "fare_or_option": null,
+          "departure_local": "2026-09-01T10:00",
+          "departure_jst": "2026-09-01T10:00:00+09:00"
+        }
+      ]
+    },
+    {
+      "id": "JETSTAR_UNDERSEAT_UNKNOWN",
+      "expected": "UNKNOWN",
+      "bag": {
+        "dimensions": ["45", "35", "20"],
+        "weight": "6",
+        "carry_on_count": "1",
+        "personal_item_count": "1",
+        "bag_state": "NORMAL",
+        "appendages_included": true,
+        "personal_item_underseat_confirmed": false
+      },
+      "segments": [
+        {
+          "segment_id": "S1",
+          "carrier": "JETSTAR_JAPAN",
+          "journey_scope": "DOMESTIC",
+          "aircraft": null,
+          "fare_or_option": "STANDARD_7KG",
+          "departure_local": "2026-09-01T10:00",
+          "departure_jst": "2026-09-01T10:00:00+09:00"
+        }
+      ]
+    },
+    {
+      "id": "REVIEW_DEADLINE_STALE",
+      "expected": "STALE",
+      "bag": {
+        "dimensions": ["45", "35", "20"],
+        "weight": "6",
+        "carry_on_count": "1",
+        "personal_item_count": "1",
+        "bag_state": "NORMAL",
+        "appendages_included": true,
+        "personal_item_underseat_confirmed": true
+      },
+      "segments": [
+        {
+          "segment_id": "S1",
+          "carrier": "JETSTAR_JAPAN",
+          "journey_scope": "DOMESTIC",
+          "aircraft": null,
+          "fare_or_option": "STANDARD_7KG",
+          "departure_local": "2026-09-27T06:42",
+          "departure_jst": "2026-09-27T06:42:00+09:00"
+        }
+      ]
+    },
+    {
+      "id": "ZERO_DIMENSION_UNKNOWN",
+      "expected": "UNKNOWN",
+      "bag": {
+        "dimensions": ["0", "35", "20"],
+        "weight": "6",
+        "carry_on_count": "1",
+        "personal_item_count": "1",
+        "bag_state": "NORMAL",
+        "appendages_included": true,
+        "personal_item_underseat_confirmed": false
+      },
+      "segments": [
+        {
+          "segment_id": "S1",
+          "carrier": "ANA",
+          "journey_scope": "DOMESTIC",
+          "aircraft": "LARGE",
+          "fare_or_option": null,
+          "departure_local": "2026-09-01T10:00",
+          "departure_jst": "2026-09-01T10:00:00+09:00"
+        }
+      ]
+    }
+  ]
+}

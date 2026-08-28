@@ -1,0 +1,31 @@
+schema: RAOS_V2_ROLLBACK_CONTRACT_V1
+scope: LOCAL_SIMULATION_ONLY
+production_backup: NOT_EXECUTED
+production_restore: NOT_EXECUTED
+public_mutation: NOT_EXECUTED
+invariants:
+- existing public URL remains unchanged through Phase 2
+- redirect chain length is at most one hop
+- redirect loops are rejected
+- many unrelated sources cannot redirect to home
+- rollback restores the exact prior route/canonical/robots tuple
+- sealed-package round trip preserves every input hash
+simulation:
+  states:
+  - BASELINE_CAPTURED
+  - CANDIDATE_RENDERED
+  - DIFF_VERIFIED
+  - ROLLBACK_SIMULATED
+  result: PASSED_LOCAL
+  route_tuple_round_trip:
+    status: PASSED_LOCAL
+    baseline_sha256: 5fd510a1cd6ae68822e2e71ed137434f8fb3c39c9c5b94c8fbab5c0d8cf6401b
+    candidate_sha256: fa7b3b6a29c287bd3325650d11518c7806146a5a7d979b9141bd35d5a5907de3
+    restored_sha256: 5fd510a1cd6ae68822e2e71ed137434f8fb3c39c9c5b94c8fbab5c0d8cf6401b
+    exact_tuple_restored: true
+    external_action: NOT_EXECUTED
+  redirect_rules: []
+backlog_id: B-V2-008
+test_ids:
+- T-V2-005
+- T-V2-040

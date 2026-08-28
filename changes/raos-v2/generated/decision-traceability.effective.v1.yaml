@@ -1,0 +1,2746 @@
+schema: RAOS_V2_EFFECTIVE_TRACEABILITY_V1
+source: source-package/2.0.0-design/07_DECISION_TRACEABILITY.yaml
+source_package_sha256: 7ea856e74d73589ae37d1248e08e685e5d022b90bfc45c9bf1d6cb414b5fc42a
+clarification_overlay: changes/raos-v2/clarifications.v1.yaml
+scope:
+- P0
+- P1
+- P2
+- P3
+source_counts:
+  decisions: 34
+  requirements: 36
+  backlog: 49
+  tests: 51
+decisions:
+- id: D-V2-001
+  decision: kurashinoshirube.comだけを固定し、現行公開面を保護したURL単位の段階移行を採用する。
+  evidence:
+  - AUD-001
+  - AUD-002
+  - AUD-008
+  - AUD-009
+  - AUD-010
+  rationale: ドメイン履歴と唯一の公開記事を保持しつつ、名称以外の設計をゼロベースで置換できる。
+  rejected:
+  - 一括リプレース
+  - 新ドメイン移転
+  - 現状凍結
+  consequences: 旧URL inventory・redirect map・rollback snapshotがPhase 0の必須成果物になる。
+  migration: 現行URLをbaseline化し、1 URLずつV2 templateへ置換する。
+  acceptance: 公開URLのcanonical/status/indexabilityが移行前後でintentional mapと一致し、404増加がない。
+  confidence: HIGH
+  unknown: production構成はPhase 0でlive read-only再確認。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-001
+  - R-V2-003
+  - R-V2-025
+  migration_phases:
+  - P0
+  - P2/P3
+- id: D-V2-002
+  decision: 公開ブランド名は「暮らしのしるべ」を維持し、RAOSは内部システム名に限定する。
+  evidence:
+  - AUD-008
+  - AUD-009
+  - AUD-020
+  - AUD-023
+  rationale: 名称は落ち着いた購買支援に適合し、変更による学習損失よりpositioning明確化の利益が大きい。
+  rejected:
+  - RAOSを公開ブランド化
+  - スーツケース専用名へ改名
+  - 完全匿名の一般名
+  consequences: ロゴ・copy・taxonomyは刷新するが、運営者・広告方針との整合を保つ。
+  migration: header/footer/policy/metadataを同一brand contractへ統合。
+  acceptance: 全公開面で名称・価値提案・運営主体・広告表示が矛盾しない。
+  confidence: MEDIUM_HIGH
+  unknown: brand recallは現時点で未計測。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-005
+  migration_phases:
+  - P1
+- id: D-V2-003
+  decision: 価値提案を「公式ルールと製品仕様を照合し、あなたの条件で買える候補だけを残す。」に固定する。
+  evidence:
+  - AUD-020
+  - AUD-024
+  - WEB-006
+  - WEB-007
+  rationale: 実機試験なしでも一次情報から独自のdecision supportを作れ、競合のtest/rankingと正面衝突しない。
+  rejected:
+  - 総合おすすめランキング
+  - AIで大量の商品紹介
+  - 生活情報全般
+  consequences: 全記事は条件、official fact、判断、非適合条件、未確認を中心に構成する。
+  migration: home hero、article intro、policy、CTAをこのpromiseへ合わせる。
+  acceptance: 5秒テストで対象読者が「条件適合を公式根拠で確認するサイト」と説明できる。
+  confidence: HIGH
+  unknown: 5秒テストはPhase 2 UATで実施。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-005
+  - R-V2-013
+  - R-V2-014
+  migration_phases:
+  - P1
+  - P2
+- id: D-V2-004
+  decision: 初期wedgeを「旅の機内持ち込み条件と荷物選び」に限定する。
+  evidence:
+  - AUD-009
+  - AUD-015
+  - AUD-023
+  - WEB-016
+  - WEB-017
+  - WEB-018
+  - WEB-019
+  rationale: 意思決定が難しく、航空会社一次情報と製品外寸を組み合わせる固有価値が高く、実機なしでも誠実に適合判定できる。
+  rejected:
+  - 移動・家事・備えを同時展開
+  - ポータブル電源
+  - 食洗機/ロボット掃除機
+  - 価格中心のスーツケース総合ランキング
+  consequences: home、nav、article portfolio、source freshnessをこのwedgeへ集中する。
+  migration: 公開スーツケース記事を核にWave 1の6 assetsを先行。既存4 draftは保管してDEFER。
+  acceptance: Day 90 gateまでwedge外の記事を新規公開せず、6 assetsでQDSとclick learningを取得する。
+  confidence: HIGH
+  unknown: 検索需要・楽天商品厚みの定量値はPhase 0で仮説検証。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-005
+  - R-V2-011
+  - R-V2-013
+  migration_phases:
+  - P1
+  - P2
+- id: D-V2-005
+  decision: 最初のportfolioは25 assets、Wave 1は6 assetsに固定し、残りは数値gateで解放する。
+  evidence:
+  - AUD-015
+  - AUD-017
+  - AUD-025
+  - WEB-006
+  - WEB-007
+  rationale: 25本のauthority mapを設計しつつ、実装・公開を一括量産せず学習単位を小さくできる。
+  rejected:
+  - 最初から30〜45本公開
+  - 1記事だけで終了
+  - query variantごとの大量ページ
+  consequences: portfolio itemごとにrole、route、intent、wave、source SLAを持つ。
+  migration: Wave 1→Day 30→Day 90の順で次Waveを判定。
+  acceptance: Wave 2以降はexit gateを満たすまでstatus=PLANNED_LOCKED。
+  confidence: HIGH
+  unknown: 実際のquery幅はGSC取得後に統合/追加を判断。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-005
+  - R-V2-032
+  migration_phases:
+  - P1
+  - P4/P5
+- id: D-V2-006
+  decision: 「国内トップ級」を12/24/36か月の読者判断・検索・送客・確定利益・品質・運営費KPIで定義し、公開コピーには使わない。
+  evidence:
+  - AUD-017
+  - AUD-025
+  - WEB-006
+  - WEB-013
+  rationale: 記事数や主観でなく、取得可能な複数指標とguardrailで事業目標を管理できる。
+  rejected:
+  - 検索順位1位だけ
+  - 記事数/生成量
+  - 売上だけ
+  - 根拠のないNo.1表示
+  consequences: KPIはinternal planning hypothesisで、Day 30/90に再設定履歴を残す。
+  migration: Phase 0でmetric dictionaryとbaselineを作り、Phase 4以降にmature cohort評価。
+  acceptance: 全KPIにformula、source、maturity、unavailable handling、ownerがある。
+  confidence: MEDIUM
+  unknown: 初期baseline不在のため絶対値は仮説。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-004
+  - R-V2-032
+  - R-V2-036
+  migration_phases:
+  - P0
+  - P0-P6
+  - P4/P5
+- id: D-V2-007
+  decision: 公開rendererはself-hosted WordPressを維持し、GitのV2 successor overlayを編集・根拠・検証のsource of truthにする。
+  evidence:
+  - AUD-002
+  - AUD-026
+  - AUD-028
+  - AUD-030
+  rationale: 既存URL/Yoast/公開運用を守りながら、structured evidenceと再現可能なdraft packageを実現する最小TCO案。
+  rejected:
+  - WordPressのみSoT
+  - Headless WordPress+Next.js
+  - Next.js全面移行
+  - 現行RAOS全機能完成
+  consequences: Git→sealed package→WordPress draftの一方向flowを採用し、public edit driftを検出する。
+  migration: Phase 1/2はlocal previewのみ、Phase 3から人間操作で1 URLずつ移行。
+  acceptance: 同一inputから同一render digestを生成し、production書込みなしでpreviewできる。
+  confidence: HIGH
+  unknown: live plugin/theme/versionはPhase 0再確認。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-023
+  migration_phases:
+  - P2
+- id: D-V2-008
+  decision: V2 successor specificationは`changes/raos-v2/**`と`contracts/raos-v2/**`を正とし、`docs/canonical/**`を変更しない。
+  evidence:
+  - AUD-003
+  - AUD-005
+  - AUD-006
+  - AUD-028
+  rationale: checksum保護されたv1 authorityを保持しながら、後継設計を独立進化できる。
+  rejected:
+  - canonical直接改訂
+  - 非構造化Markdownだけ
+  - 既存ST-1704出力をそのまま正本化
+  consequences: generator ownershipとschema versionが必要。
+  migration: V1はread-only reference、V2はexplicit import/adapterを通す。
+  acceptance: 禁止path diff 0、V2 manifestで全generated ownerを解決。
+  confidence: HIGH
+  unknown: live repositoryのowner registryはCodex開始時に再確認。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-001
+  - R-V2-002
+  - R-V2-005
+  migration_phases:
+  - P0
+  - P1
+- id: D-V2-009
+  decision: WordPress productionはpublic content、URL、redirect、Yoast metadataのdelivery surfaceに限定し、編集判断の正本にしない。
+  evidence:
+  - AUD-008
+  - AUD-009
+  - AUD-010
+  - AUD-026
+  rationale: 手編集driftと根拠切断を防ぎながら既存配信を利用できる。
+  rejected:
+  - WordPress画面で全編集
+  - 自動同期で双方向SoT
+  - production DBを直接読む設計
+  consequences: sealed package hashとpublic verification snapshotを保持する。
+  migration: 既存記事は一度V2へimportし、人間review後にsuccessor draftを作る。
+  acceptance: 公開HTMLのcontent fingerprintがapproved packageと一致、またはDRIFT_BLOCKED。
+  confidence: HIGH
+  unknown: WordPress REST capabilityは別read-only調査。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-023
+  - R-V2-024
+  migration_phases:
+  - P2
+  - P2/P3
+- id: D-V2-010
+  decision: Next.js/headless public migrationとcustom admin UIはPhase 6までDEFERする。
+  evidence:
+  - AUD-030
+  - AUD-023
+  - AUD-028
+  rationale: 1人運営の初期規模で二重renderer、auth、cache、preview、deployを保有する利益がない。
+  rejected:
+  - 今すぐNext.js化
+  - 完全headless
+  - 管理画面先行
+  consequences: 既存web codeはpreview/reference用途に限定し、public authorityを持たせない。
+  migration: WordPress限界を計測し、50 pagesまたは週4h超のadmin friction等で再評価。
+  acceptance: Phase 0〜5にpublic Next deploy taskが存在しない。
+  confidence: HIGH
+  unknown: 将来のtraffic/運用負荷。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-035
+  migration_phases:
+  - P0-P6
+- id: D-V2-011
+  decision: 公開claimをA=公式事実、B=第三者実測、C=利用者傾向、D=編集判断、UNKNOWN=未確認に型付けし、初期V2はA/D/UNKNOWNだけを許可する。
+  evidence:
+  - AUD-020
+  - AUD-018
+  - WEB-006
+  rationale: 商品事実と判断を分離し、実機やreview evidenceのないB/Cを誤用しない。
+  rejected:
+  - 全文章を同じ事実扱い
+  - AI confidence score
+  - 競合記事をB/C根拠にする
+  consequences: claim-source binding、表示label、validatorが必須。
+  migration: 既存記事の各文をclaim unitへ変換する。
+  acceptance: 公開claim 100%がtype、source/logic、checked_at、freshnessを持つ。
+  confidence: HIGH
+  unknown: 将来B/C導入は別evidence contract。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-008
+  - R-V2-020
+  migration_phases:
+  - P1
+  - P2
+- id: D-V2-012
+  decision: 商品事実の根拠はメーカー・行政・航空会社・許可された楽天data等の一次情報に限定し、競合はUX研究だけに使う。
+  evidence:
+  - AUD-018
+  - AUD-024
+  - WEB-001
+  - WEB-005
+  rationale: 一次情報だけで成立するwedgeを選んだため、二次情報依存を避けられる。
+  rejected:
+  - 競合claimの再利用
+  - marketplace titleだけで仕様確定
+  - review本文の収集
+  consequences: source allowlist、robots/terms確認、snapshot policyが必要。
+  migration: source registryへtier、publisher、effective date、capture hashを追加。
+  acceptance: A claimに許可外source 0、競合URLがproduct claim relationに出現しない。
+  confidence: HIGH
+  unknown: メーカーpageの保存許容はsource別policyで確認。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-008
+  - R-V2-009
+  - R-V2-020
+  migration_phases:
+  - P1
+  - P2
+- id: D-V2-013
+  decision: 実機試験・所有・使用体験を基本戦略に含めず、未実施を結論前に明示する。
+  evidence:
+  - AUD-020
+  - AUD-024
+  rationale: ユーザー固定条件を守り、操作性・耐久性・静音性等を経験したように書かない。
+  rejected:
+  - 擬似体験文
+  - 第三者reviewを自分の体験として要約
+  - 実機購入を前提化
+  consequences: recommendationはcompatibility/declared specs/trade-offに限定。
+  migration: templateとlintでhands-on languageをblock。
+  acceptance: 禁止語/意味検査とhuman reviewでfalse experience claim 0。
+  confidence: HIGH
+  unknown: なし。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-008
+  - R-V2-020
+  migration_phases:
+  - P1
+  - P2
+- id: D-V2-014
+  decision: 推薦はhard eligibility後に非財務fit scoreで並べ、公開面では点数を見せず条件別結論を示す。
+  evidence:
+  - AUD-020
+  - AUD-025
+  - WEB-006
+  rationale: 適合しない商品を高得点化せず、推薦理由を説明可能にする。
+  rejected:
+  - 総合1位
+  - commission/EPC順
+  - 人気順
+  - AI主観点数
+  consequences: hard filter=identity/evidence/rule/availability、fit weightsをversion管理する。
+  migration: 既存3モデル記事を条件別pickへ再計算。
+  acceptance: 財務入力を変えても推薦順が不変、同一入力で決定的。
+  confidence: HIGH
+  unknown: fit weightはDay 30 interviewで再校正可能。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-015
+  - R-V2-017
+  migration_phases:
+  - P2
+- id: D-V2-015
+  decision: business scoreは記事投資判断だけに使い、商品推薦score/順序へ接続しない。
+  evidence:
+  - AUD-017
+  - AUD-025
+  rationale: 収益学習は必要だが読者推薦の独立性を守る。
+  rejected:
+  - 高料率商品を上位
+  - EPCをproduct scoreへ加算
+  - 収益データを公開ranking化
+  consequences: コード・schema・testでdataflowを分離。
+  migration: 既存finance_signal_policyをV2 invariantへ。
+  acceptance: finance fixtureを変更してもarticle product order/hashが不変。
+  confidence: HIGH
+  unknown: なし。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-018
+  migration_phases:
+  - P2
+- id: D-V2-016
+  decision: page typeをhome/category/hub、guide、comparison、difference、tool、policyに固定し、各templateの必須block順を定義する。
+  evidence:
+  - AUD-021
+  - AUD-024
+  - WEB-009
+  rationale: query intentごとの役割を明確にし、重複・thin affiliate・カニバリを防ぐ。
+  rejected:
+  - 全記事同じtemplate
+  - 自由構成のみ
+  - 商品カードの羅列
+  consequences: content modelとrenderer contractが増えるがreviewが短縮される。
+  migration: 既存記事をcomparison templateへmapping。
+  acceptance: 全routeが1 primary intent、1 template、1 parent hub、重複判定を持つ。
+  confidence: HIGH
+  unknown: なし。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-007
+  - R-V2-012
+  - R-V2-014
+  - R-V2-015
+  - R-V2-016
+  - R-V2-020
+  - R-V2-022
+  migration_phases:
+  - P1
+  - P2
+- id: D-V2-017
+  decision: AIはsource extraction候補、構造化、差分検出、draft補助に限定し、source採否・事実確定・推薦・公開承認を行わない。
+  evidence:
+  - AUD-020
+  - WEB-008
+  - WEB-007
+  rationale: 効率化しつつhallucinationとscaled contentを抑える。
+  rejected:
+  - AI自動公開
+  - AIだけでsource判定
+  - 記事量KPI
+  consequences: provenance、human reviewer、AI correction rate、fail-closed validatorが必要。
+  migration: 既存AI統制をwedge最小schemaへ再実装。
+  acceptance: 人間review IDなしではPACKAGE_SEALEDへ遷移しない。
+  confidence: HIGH
+  unknown: AI provider/modelはimplementation時に固定せずinterface化。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-012
+  - R-V2-019
+  - R-V2-020
+  migration_phases:
+  - P1
+  - P2
+- id: D-V2-018
+  decision: 公開workflowはDRAFT→EVIDENCE_COMPLETE→HUMAN_REVIEWED→PACKAGE_SEALED→WP_DRAFT_CREATED→HUMAN_PUBLISHED→PUBLIC_VERIFIEDとし、publish
+    capabilityは人間だけに残す。
+  evidence:
+  - AUD-016
+  - AUD-026
+  - AUD-003
+  rationale: 既存の安全なpublication boundaryを維持しつつ段階移行できる。
+  rejected:
+  - 自動公開
+  - 部分自動公開
+  - WordPress live editを即正本化
+  consequences: 各transitionにhash、actor、timestamp、precondition、rollbackを持つ。
+  migration: publication operator概念をV2 schemaへ縮小。
+  acceptance: Codex/local testにpublish/schedule/delete/network write pathがない。
+  confidence: HIGH
+  unknown: WordPress draft creationも別承認までNOT_EXECUTED。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-019
+  - R-V2-023
+  - R-V2-024
+  - R-V2-034
+  migration_phases:
+  - P0-P3
+  - P2
+  - P2/P3
+- id: D-V2-019
+  decision: Rakuten adapterは2026-07-01 versioned contract、recorded fixture first、live disabled default、credential-free
+    local testとする。
+  evidence:
+  - AUD-019
+  - WEB-005
+  - AUD-003
+  rationale: current API contractへ追随しつつprovider requestとsecretを設計から分離する。
+  rejected:
+  - 画面scraping
+  - legacy API固定
+  - liveをCIで実行
+  consequences: applicationId/accessKey/affiliateIdはowner-only secret boundary、response provenanceとrate
+    handlingが必要。
+  migration: 既存adapterをREWORKしexact version/fields/error taxonomyを追加。
+  acceptance: 資格情報なしでcontract suite合格、live flag false、network deniedで成功。
+  confidence: HIGH
+  unknown: live quota/responseは別TSTで確認。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-010
+  - R-V2-026
+  - R-V2-034
+  migration_phases:
+  - P0-P3
+  - P1
+  - P2
+- id: D-V2-020
+  decision: 商品identityはmanufacturer model numberを主キーとし、JAN/itemCode/variant/title tokenを補助証拠にする。
+  evidence:
+  - AUD-018
+  - AUD-019
+  - WEB-005
+  rationale: 商品・ケース・部品・旧世代・セットの誤同定を防ぐ。
+  rejected:
+  - 楽天title完全一致だけ
+  - 商品名のfuzzy matchだけ
+  - shop単位の信頼で代替
+  consequences: match resultはEXACT/AMBIGUOUS/REJECTED/UNRESOLVED。AMBIGUOUS以下はCTA不可。
+  migration: 既存media registryのrequired/forbidden tokenを一般化。
+  acceptance: negative fixtureでアクセサリ・旧型・容量variantをfail closed。
+  confidence: HIGH
+  unknown: JAN非公開商品はmanufacturer model+itemCode+human review。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-010
+  - R-V2-017
+  - R-V2-027
+  migration_phases:
+  - P1
+  - P2
+- id: D-V2-021
+  decision: 計測はSearch Console、privacy-minimized first-party event、成熟した楽天成果reportを採用し、新しいthird-party senderは既定OFFとする。
+  evidence:
+  - AUD-017
+  - AUD-027
+  - WEB-014
+  rationale: 流入・判断・送客・確定成果を最小dataでつなぎ、1人運営のTCOを抑える。
+  rejected:
+  - GA4だけ
+  - cookieなしの過剰fingerprinting
+  - 初期からCDP/dashboard SaaS
+  consequences: event allowlist、retention、consent/policy gate、UNAVAILABLE処理が必要。
+  migration: 既存Site Kit/GA4は30日parallel observation後にretain/remove判断、勝手に変更しない。
+  acceptance: 禁止属性がcollectorへ送られず、production activationはprivacy approvalなしでOFF。
+  confidence: MEDIUM_HIGH
+  unknown: 現行analytics設定と履歴はPhase 0で確認。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-004
+  - R-V2-029
+  migration_phases:
+  - P0
+  - P2/P3
+- id: D-V2-022
+  decision: Qualified Decision Sessionは「tool result」または「比較/根拠の閲覧後にofficial source・affiliate actionへ進んだsession」と定義する。
+  evidence:
+  - AUD-017
+  - AUD-024
+  rationale: 単なるpageviewでなく意思決定進捗を測り、記事タイプ間で共通化できる。
+  rejected:
+  - 滞在時間だけ
+  - scrollだけ
+  - affiliate clickだけ
+  consequences: event sequenceとsession windowを定義。
+  migration: semantic markupをevent catalogへ拡張。
+  acceptance: synthetic sequenceでQDS=true/falseが決定的、重複排除が再現可能。
+  confidence: MEDIUM
+  unknown: Day 30 UATで閾値を再確認。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-004
+  - R-V2-013
+  - R-V2-029
+  migration_phases:
+  - P0
+  - P2
+  - P2/P3
+- id: D-V2-023
+  decision: 成果帰属はDIRECT_PROVIDER、CLICK_COHORT、UNATTRIBUTED_PROGRAMの3分類とし、provider keyがない記事別確定報酬を発明しない。
+  evidence:
+  - AUD-025
+  - AUD-027
+  rationale: 楽天reportの粒度に応じて正確さを保ち、誤った記事別EPCを防ぐ。
+  rejected:
+  - last-clickを自前推定
+  - program totalを記事へ按分
+  - 発生報酬を確定扱い
+  consequences: maturity date、currency、source hash、row count、provider total reconciliationが必要。
+  migration: owner-private import interfaceをV2 schemaへ。
+  acceptance: unattributed totalがarticle metricに流入しないcontract test。
+  confidence: HIGH
+  unknown: 現行provider exportのdirect key可否。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-004
+  - R-V2-030
+  migration_phases:
+  - P0
+  - P4/P5
+- id: D-V2-024
+  decision: 月次確定貢献利益をcash版とeconomic版に分け、economic版は確定報酬−変動費−人間時間×内部時給で計算する。
+  evidence:
+  - AUD-025
+  rationale: 1人運営の機会費用を含む持続性と現金採算を混同しない。
+  rejected:
+  - 発生報酬ベース
+  - 売上/クリックだけ
+  - 人件費を常に0
+  consequences: 初期内部時給は仮説¥3,000/h、owner実績で再設定。
+  migration: production time ledgerとmonthly reportを作る。
+  acceptance: pending/immature outcomeを除外し、formula/version/sourceが監査可能。
+  confidence: MEDIUM
+  unknown: ownerの実際の時間価値。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-004
+  - R-V2-031
+  migration_phases:
+  - P0
+  - P5
+- id: D-V2-025
+  decision: 実験は30日、90日、12か月のgateとし、一度に1変数、既存記事改善を新規記事より優先する条件を定義する。
+  evidence:
+  - AUD-025
+  - WEB-006
+  rationale: 小標本で因果を誤認せず、制作量より学習速度と利益を最大化する。
+  rejected:
+  - 毎週全面改稿
+  - 同時多変量
+  - クリックがないだけで即撤退
+  consequences: sample不足はUNAVAILABLE/EXTEND、zero扱いしない。
+  migration: experiment registryへpre-register。
+  acceptance: 実験ごとにhypothesis、primary metric、guardrail、sample/maturity、keep/rollback ruleがある。
+  confidence: HIGH
+  unknown: 初期trafficによる期間延長。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-032
+  migration_phases:
+  - P4/P5
+- id: D-V2-026
+  decision: 情報設計は`/carry-on/`をwedge hubとし、`/guides/`、`/comparisons/`、`/differences/`、`/tools/`、`/policy/`へ役割分離する。
+  evidence:
+  - AUD-008
+  - AUD-010
+  - AUD-021
+  - WEB-009
+  rationale: 検索intentとreader journeyを明確にし、homeの空カテゴリを解消する。
+  rejected:
+  - 移動/家事/備えの空カテゴリ
+  - date archive中心
+  - タグの無制限index
+  consequences: breadcrumbと内部link graphが必須。
+  migration: 既存記事URLは維持、空taxonomyはnavから除外しinventory別にnoindex/redirect。
+  acceptance: 全indexable pageがhubから3 click以内、orphan 0、empty indexable archive 0。
+  confidence: HIGH
+  unknown: 既存WordPress taxonomyのlive inventory。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-007
+  - R-V2-022
+  migration_phases:
+  - P1
+  - P2
+- id: D-V2-027
+  decision: デザインはpaper/indigo/warm accentを維持しつつ、system font、読書幅720px、wide 1120px、mobile-first component
+    hierarchyへ再定義する。
+  evidence:
+  - AUD-011
+  - AUD-012
+  - AUD-013
+  - AUD-014
+  - AUD-021
+  - AUD-022
+  rationale: ブランド資産を残し、現行の過大な空白・小さい本文・cookie banner占有・比較可読性を改善する。
+  rejected:
+  - 競合copy/CSS模倣
+  - 画像主体hero
+  - 装飾優先の雑誌layout
+  consequences: token contractとvisual regressionが必要。
+  migration: 新child theme/blocksをroute単位で適用。
+  acceptance: 390/768/1440、200% zoom、long text、no imageで情報階層と機能が保たれる。
+  confidence: HIGH
+  unknown: 実機端末のfont renderingはUAT。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-006
+  - R-V2-033
+  migration_phases:
+  - P1
+  - P2/P3
+- id: D-V2-028
+  decision: WCAG 2.2 AAを目標とし、CWV p75と厳格なpage budgetを受入条件にする。
+  evidence:
+  - AUD-021
+  - AUD-022
+  - WEB-012
+  - WEB-015
+  rationale: モバイル購買支援の利用性と検索品質を同時に担保する。
+  rejected:
+  - desktop優先
+  - 画像/JS無制限
+  - 自動auditだけでconformance宣言
+  consequences: keyboard、screen reader smoke、focus、reflow、contrast、no-JS、field dataを分離評価。
+  migration: Phase 2 local budget、Phase 3/4 field validation。
+  acceptance: LCP≤2.5s、INP≤200ms、CLS≤0.1 p75を目標、article JS≤60KB gzip、CSS≤40KB gzip、page≤1.2MB。
+  confidence: HIGH
+  unknown: field CWVは公開後のみ取得可能。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-006
+  - R-V2-013
+  - R-V2-033
+  migration_phases:
+  - P1
+  - P2
+  - P2/P3
+- id: D-V2-029
+  decision: 画像は許可された楽天API画像または自作の非商品diagramのみ。商品画像不足時は捏造せずneutral placeholderで公開可否を明示する。
+  evidence:
+  - AUD-019
+  - WEB-001
+  - WEB-005
+  rationale: 著作権・規約・商品identityを守り、画像不足を虚偽で埋めない。
+  rejected:
+  - メーカー画像転載
+  - 競合画像
+  - 生成AIで商品外観を再現
+  - 無断crop/overlay
+  consequences: provenance、exact product binding、no modification、alt、expiryが必要。
+  migration: 現行PENDING mediaはpublication blockerのまま。
+  acceptance: 商品画像はsource URL/itemCode/hash/check timeを持ち、identity unresolvedならCTAもblock。
+  confidence: HIGH
+  unknown: 各provider image保存・cache条件はrelease時再確認。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-010
+  - R-V2-028
+  migration_phases:
+  - P1
+  - P2/P3
+- id: D-V2-030
+  decision: freshness SLAは航空ルール30日、高risk安全情報30日、商品仕様90日、offer/在庫24時間、一般編集判断180日とする。
+  evidence:
+  - AUD-018
+  - AUD-019
+  - WEB-016
+  - WEB-017
+  - WEB-018
+  - WEB-019
+  rationale: 変更コストと誤認リスクに応じて更新頻度を変える。
+  rejected:
+  - 全情報を毎日
+  - 公開日だけ表示
+  - 期限切れでも無表示
+  consequences: claim単位next_review_at、stale state、public banner/CTA blockが必要。
+  migration: 既存source checked dateをnormalize。
+  acceptance: 期限超過high-risk claimは公開buildをfail、offer staleは価格非表示/CTA再確認へ。
+  confidence: MEDIUM_HIGH
+  unknown: 実際のchange frequencyで90日後に調整。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-009
+  - R-V2-011
+  - R-V2-021
+  migration_phases:
+  - P1
+  - P2
+- id: D-V2-031
+  decision: URL移行はkeep/redirect/noindex/removeをinventory単位で決め、既存`/carry-on-suitcase-comparison/`を維持する。
+  evidence:
+  - AUD-009
+  - AUD-010
+  - WEB-009
+  rationale: 唯一の公開記事とcanonical equityを守り、空/thin archiveを整理する。
+  rejected:
+  - slug一括変更
+  - 全旧URLをhomeへredirect
+  - 無計画404
+  consequences: redirect chain/loop、canonical、sitemap、internal link testが必要。
+  migration: Phase 0 map→local simulation→human production apply→public verify→rollback。
+  acceptance: redirect hop≤1、loop 0、canonical self/target一致、sitemapにindexable final URLのみ。
+  confidence: HIGH
+  unknown: live URL inventoryは再取得。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-003
+  - R-V2-007
+  - R-V2-015
+  - R-V2-022
+  - R-V2-025
+  migration_phases:
+  - P0
+  - P1
+  - P2
+  - P2/P3
+- id: D-V2-032
+  decision: 既存資産をKEEP/REWORK/MIGRATE/RETIRE/DEFERへ分類し、security/publication/evidence/rollback invariantをKEEPする。
+  evidence:
+  - AUD-003
+  - AUD-005
+  - AUD-026
+  - AUD-027
+  - AUD-028
+  rationale: sunk costで全維持せず、検証済み安全境界も捨てない。
+  rejected:
+  - 全部残す
+  - 全部捨てる
+  consequences: deprecation ledgerと二release observationが必要。
+  migration: 初回PRは削除なし、wrapper/deprecation noticeのみ。
+  acceptance: 各対象にowner、replacement、usage evidence、removal gate、rollbackがある。
+  confidence: HIGH
+  unknown: live code usageはCodex Phase 0で再計測。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-035
+  migration_phases:
+  - P0-P6
+- id: D-V2-033
+  decision: 最初のintegration PRはPhase 0〜2のoffline vertical sliceとPhase 3以降のdisabled contract/runbookだけに限定する。
+  evidence:
+  - AUD-002
+  - AUD-003
+  - AUD-028
+  rationale: 読者が使えるchecker+guide+比較previewを先に完成し、巨大基盤追加とexternal riskを避ける。
+  rejected:
+  - 全Phase一括実装
+  - architectureだけのPR
+  - production migration同梱
+  consequences: isolated worktree、allowed path、one PR、no destructive deletion。
+  migration: live HEADからbranchを作り、current dirty pathを触らない。
+  acceptance: local preview、contract/unit/browser/a11y/SEO/security/rollback testがgreen、external register全NOT_EXECUTED。
+  confidence: HIGH
+  unknown: 実装開始時HEAD/branch/path availability。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-001
+  - R-V2-002
+  - R-V2-035
+  - R-V2-036
+  migration_phases:
+  - P0
+  - P0-P6
+- id: D-V2-034
+  decision: 公開、deployment、credential、live provider request/write、規約同意、支出、production migration、不可逆削除は設計/ローカル実装から分離し人間承認必須とする。
+  evidence:
+  - AUD-001
+  - AUD-003
+  - AUD-016
+  - AUD-026
+  rationale: ユーザー要求とrepository安全境界を維持する。
+  rejected:
+  - 暗黙承認
+  - 設計packageを実行権限とみなす
+  - local evidenceをproduction evidenceと呼ぶ
+  consequences: external actions register、approval record、NOT_EXECUTED reportingが必要。
+  migration: 各Phase exit reportでexternal未実行を明示。
+  acceptance: package/初回PRにsecret値、external write、publish/deploy、費用発生がない。
+  confidence: HIGH
+  unknown: なし。
+  status: ADOPTED_IN_SUCCESSOR_DESIGN
+  requirement_ids:
+  - R-V2-001
+  - R-V2-024
+  - R-V2-034
+  - R-V2-036
+  migration_phases:
+  - P0
+  - P0-P3
+  - P0-P6
+  - P2/P3
+requirements:
+- id: R-V2-001
+  title: immutable pathと既存dirty変更を保護する
+  phase: P0
+  decision_ids:
+  - D-V2-001
+  - D-V2-008
+  - D-V2-033
+  - D-V2-034
+  acceptance: '`docs/canonical/**`,`docs/upstream/**`,`zip/**` diff 0。reset/clean/delete 0。'
+  backlog_ids:
+  - B-V2-001
+  - B-V2-010
+  test_ids:
+  - T-V2-001
+  - T-V2-002
+- id: R-V2-002
+  title: 実装開始時にroot AGENTS、HEAD、branch、status、generator ownershipをlive再確認する
+  phase: P0
+  decision_ids:
+  - D-V2-008
+  - D-V2-033
+  acceptance: 監査snapshotとの差を記録し、矛盾時は変更前にescalate。
+  backlog_ids:
+  - B-V2-001
+  - B-V2-002
+  test_ids:
+  - T-V2-002
+  - T-V2-003
+- id: R-V2-003
+  title: public URL/canonical/robots/sitemap/status inventoryとrollback snapshotを固定する
+  phase: P0
+  decision_ids:
+  - D-V2-001
+  - D-V2-031
+  acceptance: 全URLにkeep/redirect/noindex/remove/unknownと証拠時刻がある。
+  backlog_ids:
+  - B-V2-003
+  - B-V2-004
+  - B-V2-007
+  - B-V2-035
+  - B-V2-038
+  test_ids:
+  - T-V2-004
+  - T-V2-005
+- id: R-V2-004
+  title: metric dictionary、data source、maturity、baseline/unavailableを定義する
+  phase: P0
+  decision_ids:
+  - D-V2-006
+  - D-V2-021
+  - D-V2-022
+  - D-V2-023
+  - D-V2-024
+  acceptance: 全KPIが計算可能またはUNAVAILABLE理由を返す。
+  backlog_ids:
+  - B-V2-005
+  test_ids:
+  - T-V2-006
+- id: R-V2-005
+  title: V2 successor product specificationをversioned schemaで管理する
+  phase: P1
+  decision_ids:
+  - D-V2-002
+  - D-V2-003
+  - D-V2-004
+  - D-V2-005
+  - D-V2-008
+  acceptance: wedge、audience、JTBD、portfolio、gateがmachine-readable。
+  backlog_ids:
+  - B-V2-010
+  test_ids:
+  - T-V2-007
+- id: R-V2-006
+  title: design token、layout、responsive、state contractを固定する
+  phase: P1
+  decision_ids:
+  - D-V2-027
+  - D-V2-028
+  acceptance: token schemaとcomponent state matrixがvalidation可能。
+  backlog_ids:
+  - B-V2-012
+  - B-V2-036
+  test_ids:
+  - T-V2-008
+- id: R-V2-007
+  title: IA、route role、taxonomy、breadcrumb、internal link contractを固定する
+  phase: P1
+  decision_ids:
+  - D-V2-016
+  - D-V2-026
+  - D-V2-031
+  acceptance: indexable routeにprimary intent/parent hub/templateがある。
+  backlog_ids:
+  - B-V2-011
+  test_ids:
+  - T-V2-009
+  - T-V2-010
+- id: R-V2-008
+  title: Claim schemaとA/D/UNKNOWN validatorを実装する
+  phase: P1
+  decision_ids:
+  - D-V2-011
+  - D-V2-012
+  - D-V2-013
+  acceptance: unsupported claim、期限切れhigh-risk、B/Cをfail closed。
+  backlog_ids:
+  - B-V2-013
+  test_ids:
+  - T-V2-011
+  - T-V2-012
+  - T-V2-013
+- id: R-V2-009
+  title: Source registryにtier、publisher、URL、effective/checked/next review、capture provenanceを持たせる
+  phase: P1
+  decision_ids:
+  - D-V2-012
+  - D-V2-030
+  acceptance: A claimから一次sourceへ一意に追跡可能。
+  backlog_ids:
+  - B-V2-013
+  - B-V2-019
+  test_ids:
+  - T-V2-012
+  - T-V2-014
+- id: R-V2-010
+  title: Product model/variant/identity schemaを固定する
+  phase: P1
+  decision_ids:
+  - D-V2-019
+  - D-V2-020
+  - D-V2-029
+  acceptance: model number、dimensions、weight、state、identity evidenceが型検証。
+  backlog_ids:
+  - B-V2-014
+  test_ids:
+  - T-V2-015
+  - T-V2-016
+- id: R-V2-011
+  title: Airline rule setをeffective date・route/aircraft/fare variant付きで表現する
+  phase: P1
+  decision_ids:
+  - D-V2-004
+  - D-V2-030
+  acceptance: 曖昧なruleはUNKNOWNを返し、一般化しない。
+  backlog_ids:
+  - B-V2-015
+  - B-V2-019
+  test_ids:
+  - T-V2-017
+  - T-V2-018
+- id: R-V2-012
+  title: Article definitionと6 templateのrequired block orderを固定する
+  phase: P1
+  decision_ids:
+  - D-V2-016
+  - D-V2-017
+  acceptance: 各articleがtemplate contractを満たす。
+  backlog_ids:
+  - B-V2-016
+  test_ids:
+  - T-V2-019
+- id: R-V2-013
+  title: carry-on size checkerをclient-side/no personal transmissionで実装する
+  phase: P2
+  decision_ids:
+  - D-V2-003
+  - D-V2-004
+  - D-V2-022
+  - D-V2-028
+  acceptance: 入力→PASS/FAIL/UNKNOWNと根拠、checked date、official linkを返す。
+  backlog_ids:
+  - B-V2-020
+  - B-V2-021
+  test_ids:
+  - T-V2-018
+  - T-V2-020
+  - T-V2-021
+  - T-V2-022
+  - T-V2-023
+- id: R-V2-014
+  title: basic rule guideをreader-first templateで実装する
+  phase: P2
+  decision_ids:
+  - D-V2-003
+  - D-V2-016
+  acceptance: 問題→30秒結論→rule→例→unknown→source→next action。
+  backlog_ids:
+  - B-V2-022
+  test_ids:
+  - T-V2-024
+- id: R-V2-015
+  title: 既存comparison URLをV2 templateへlocal migrationする
+  phase: P2
+  decision_ids:
+  - D-V2-014
+  - D-V2-016
+  - D-V2-031
+  acceptance: URL維持、3 model scope、fit/non-fit/unknown、no hands-on。
+  backlog_ids:
+  - B-V2-023
+  - B-V2-026
+  test_ids:
+  - T-V2-025
+  - T-V2-026
+- id: R-V2-016
+  title: difference templateをcomparisonと重複しないquery roleで実装する
+  phase: P2
+  decision_ids:
+  - D-V2-016
+  acceptance: 対象差分と選択分岐だけを扱う。
+  backlog_ids:
+  - B-V2-027
+  test_ids:
+  - T-V2-027
+- id: R-V2-017
+  title: hard eligibilityとfit scoreを決定的に実装する
+  phase: P2
+  decision_ids:
+  - D-V2-014
+  - D-V2-020
+  acceptance: 非適合/identity unresolvedを除外し、同一inputで同一order。
+  backlog_ids:
+  - B-V2-024
+  test_ids:
+  - T-V2-028
+  - T-V2-029
+- id: R-V2-018
+  title: business scoreを推薦dataflowから物理的に分離する
+  phase: P2
+  decision_ids:
+  - D-V2-015
+  acceptance: finance input変更でrender/recommendation hash不変。
+  backlog_ids:
+  - B-V2-025
+  test_ids:
+  - T-V2-030
+- id: R-V2-019
+  title: AI draft provenanceとhuman review bindingを実装する
+  phase: P2
+  decision_ids:
+  - D-V2-017
+  - D-V2-018
+  acceptance: reviewer/version/correction countなしでseal不可。
+  backlog_ids:
+  - B-V2-028
+  test_ids:
+  - T-V2-031
+  - T-V2-032
+- id: R-V2-020
+  title: content quality gateを実装する
+  phase: P2
+  decision_ids:
+  - D-V2-011
+  - D-V2-012
+  - D-V2-013
+  - D-V2-016
+  - D-V2-017
+  acceptance: source、scope、disclosure、trade-off、unknown、no false experienceを検証。
+  backlog_ids:
+  - B-V2-022
+  - B-V2-023
+  - B-V2-028
+  test_ids:
+  - T-V2-013
+  - T-V2-024
+  - T-V2-026
+  - T-V2-033
+- id: R-V2-021
+  title: freshness stateとSLA job contractを実装する
+  phase: P2
+  decision_ids:
+  - D-V2-030
+  acceptance: FRESH/DUE/SOFT_STALE/HARD_STALE/UNKNOWNを決定。
+  backlog_ids:
+  - B-V2-017
+  - B-V2-031
+  test_ids:
+  - T-V2-014
+  - T-V2-034
+- id: R-V2-022
+  title: SEO metadata、canonical、robots、sitemap、structured data contractを実装する
+  phase: P2
+  decision_ids:
+  - D-V2-016
+  - D-V2-026
+  - D-V2-031
+  acceptance: visible contentとmetadata/JSON-LD一致、unsupported schema 0。
+  backlog_ids:
+  - B-V2-027
+  - B-V2-031
+  - B-V2-038
+  test_ids:
+  - T-V2-010
+  - T-V2-035
+  - T-V2-036
+- id: R-V2-023
+  title: hash-bound publication packageを生成する
+  phase: P2
+  decision_ids:
+  - D-V2-007
+  - D-V2-009
+  - D-V2-018
+  acceptance: input/output/source/review hashとtarget routeをseal。
+  backlog_ids:
+  - B-V2-017
+  - B-V2-031
+  - B-V2-037
+  test_ids:
+  - T-V2-037
+  - T-V2-038
+- id: R-V2-024
+  title: WordPress draft adapterをdisabled defaultで定義する
+  phase: P2/P3
+  decision_ids:
+  - D-V2-009
+  - D-V2-018
+  - D-V2-034
+  acceptance: localではpayload previewのみ、network/write capabilityなし。
+  backlog_ids:
+  - B-V2-004
+  - B-V2-036
+  - B-V2-037
+  - B-V2-040
+  test_ids:
+  - T-V2-039
+- id: R-V2-025
+  title: migration/rollback manifestを生成する
+  phase: P2/P3
+  decision_ids:
+  - D-V2-001
+  - D-V2-031
+  acceptance: before/after URL、content hash、restore step、failure conditionを持つ。
+  backlog_ids:
+  - B-V2-008
+  - B-V2-031
+  - B-V2-035
+  - B-V2-038
+  - B-V2-040
+  test_ids:
+  - T-V2-005
+  - T-V2-040
+- id: R-V2-026
+  title: Rakuten 2026-07-01 recorded fixture adapterを実装する
+  phase: P2
+  decision_ids:
+  - D-V2-019
+  acceptance: credential/networkなしでcurrent schemaをparse。
+  backlog_ids:
+  - B-V2-029
+  test_ids:
+  - T-V2-041
+  - T-V2-042
+- id: R-V2-027
+  title: exact product identity matchingとnegative casesを実装する
+  phase: P2
+  decision_ids:
+  - D-V2-020
+  acceptance: accessory/old generation/set/variant ambiguityをreject。
+  backlog_ids:
+  - B-V2-029
+  test_ids:
+  - T-V2-016
+  - T-V2-043
+- id: R-V2-028
+  title: media provenance registryとfail-closed display policyを実装する
+  phase: P2/P3
+  decision_ids:
+  - D-V2-029
+  acceptance: source/itemCode/hash/alt/checked_atなしの商品画像をblock。
+  backlog_ids:
+  - B-V2-030
+  test_ids:
+  - T-V2-044
+- id: R-V2-029
+  title: privacy-minimized event catalogとcollector contractを実装する
+  phase: P2/P3
+  decision_ids:
+  - D-V2-021
+  - D-V2-022
+  acceptance: allowlist外attribute送信不可、production default OFF。
+  backlog_ids:
+  - B-V2-017
+  - B-V2-032
+  - B-V2-039
+  test_ids:
+  - T-V2-045
+  - T-V2-046
+- id: R-V2-030
+  title: provider outcome import/reconciliationをowner-private境界で実装する
+  phase: P4/P5
+  decision_ids:
+  - D-V2-023
+  acceptance: source hash/period/currency/rows/provider total/maturityを検証。
+  backlog_ids: []
+  test_ids: []
+- id: R-V2-031
+  title: cash/economic contribution profit calculationを実装する
+  phase: P5
+  decision_ids:
+  - D-V2-024
+  acceptance: pending除外、internal rate version、article/category/program scopeを分離。
+  backlog_ids: []
+  test_ids: []
+- id: R-V2-032
+  title: 30/90/12mo experiment and gate reportを生成する
+  phase: P4/P5
+  decision_ids:
+  - D-V2-005
+  - D-V2-006
+  - D-V2-025
+  acceptance: one-variable、sample/maturity、keep/rollback/extendが明示。
+  backlog_ids: []
+  test_ids: []
+- id: R-V2-033
+  title: browser/visual/a11y/performance matrixを実装する
+  phase: P2/P3
+  decision_ids:
+  - D-V2-027
+  - D-V2-028
+  acceptance: 390/768/1440、200% zoom、keyboard、screen reader smoke、budgetを検証。
+  backlog_ids:
+  - B-V2-021
+  - B-V2-026
+  - B-V2-033
+  - B-V2-036
+  - B-V2-040
+  test_ids:
+  - T-V2-051
+- id: R-V2-034
+  title: security/auth/network/publication invariantを継承する
+  phase: P0-P3
+  decision_ids:
+  - D-V2-018
+  - D-V2-019
+  - D-V2-034
+  acceptance: secret 0、denied network、publish capability 0、public/internal isolation。
+  backlog_ids:
+  - B-V2-001
+  - B-V2-033
+  - B-V2-040
+  test_ids:
+  - T-V2-023
+  - T-V2-039
+  - T-V2-051
+- id: R-V2-035
+  title: deprecation ledgerを作り初回PRでは削除しない
+  phase: P0-P6
+  decision_ids:
+  - D-V2-010
+  - D-V2-032
+  - D-V2-033
+  acceptance: 各assetにdisposition/replacement/usage/removal gate/rollback。
+  backlog_ids:
+  - B-V2-006
+  - B-V2-007
+  test_ids:
+  - T-V2-051
+- id: R-V2-036
+  title: 各Phaseのevidence reportとexternal NOT_EXECUTEDを出力する
+  phase: P0-P6
+  decision_ids:
+  - D-V2-006
+  - D-V2-033
+  - D-V2-034
+  acceptance: local/formal/staging/prodを混同せず、exit/rollback/gapを報告。
+  backlog_ids:
+  - B-V2-009
+  - B-V2-018
+  - B-V2-034
+  - B-V2-035
+  - B-V2-039
+  test_ids:
+  - T-V2-051
+backlog:
+- id: B-V2-001
+  phase: P0
+  title: live repository preflightとisolated worktree safety check
+  depends_on: []
+  requirement_ids:
+  - R-V2-001
+  - R-V2-002
+  - R-V2-034
+  output: preflight-report.json
+  cost_ceiling_hours: 2
+  test_ids:
+  - T-V2-001
+  - T-V2-002
+  - T-V2-003
+  - T-V2-023
+  - T-V2-039
+  - T-V2-051
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-002
+  phase: P0
+  title: audit packet integrity/source inventory再検証
+  depends_on:
+  - B-V2-001
+  requirement_ids:
+  - R-V2-002
+  output: source-audit-report.json
+  cost_ceiling_hours: 2
+  test_ids:
+  - T-V2-002
+  - T-V2-003
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-003
+  phase: P0
+  title: public URL/canonical/status inventory
+  depends_on:
+  - B-V2-001
+  requirement_ids:
+  - R-V2-003
+  output: public-url-inventory.yaml
+  cost_ceiling_hours: 4
+  test_ids:
+  - T-V2-004
+  - T-V2-005
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-004
+  phase: P0
+  title: WordPress/Yoast/theme/plugin read-only inventory plan
+  depends_on:
+  - B-V2-003
+  requirement_ids:
+  - R-V2-003
+  - R-V2-024
+  output: production-observation-plan.md
+  cost_ceiling_hours: 2
+  test_ids:
+  - T-V2-004
+  - T-V2-005
+  - T-V2-039
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-005
+  phase: P0
+  title: analytics/GSC/Rakuten metric dictionary and unavailable policy
+  depends_on:
+  - B-V2-001
+  requirement_ids:
+  - R-V2-004
+  output: metric-dictionary.yaml
+  cost_ceiling_hours: 4
+  test_ids:
+  - T-V2-006
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-006
+  phase: P0
+  title: existing asset KEEP/REWORK/MIGRATE/RETIRE/DEFER ledger
+  depends_on:
+  - B-V2-001
+  requirement_ids:
+  - R-V2-035
+  output: deprecation-ledger.yaml
+  cost_ceiling_hours: 4
+  test_ids:
+  - T-V2-051
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-007
+  phase: P0
+  title: existing five-article pilot import/status reconciliation
+  depends_on:
+  - B-V2-002
+  requirement_ids:
+  - R-V2-003
+  - R-V2-035
+  output: pilot-reconciliation.yaml
+  cost_ceiling_hours: 3
+  test_ids:
+  - T-V2-004
+  - T-V2-005
+  - T-V2-051
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-008
+  phase: P0
+  title: backup/restore/redirect simulation contract
+  depends_on:
+  - B-V2-003
+  requirement_ids:
+  - R-V2-025
+  output: rollback-contract.yaml
+  cost_ceiling_hours: 3
+  test_ids:
+  - T-V2-005
+  - T-V2-040
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-009
+  phase: P0
+  title: Phase 0 evidence and owner external-action packet
+  depends_on:
+  - B-V2-001
+  - B-V2-002
+  - B-V2-003
+  - B-V2-004
+  - B-V2-005
+  - B-V2-006
+  - B-V2-007
+  - B-V2-008
+  requirement_ids:
+  - R-V2-036
+  output: phase-0-report.md
+  cost_ceiling_hours: 2
+  test_ids:
+  - T-V2-051
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-010
+  phase: P1
+  title: V2 product specification schema/generator registration
+  depends_on:
+  - B-V2-009
+  requirement_ids:
+  - R-V2-001
+  - R-V2-005
+  output: product-spec.v2.yaml + generator owner
+  cost_ceiling_hours: 6
+  test_ids:
+  - T-V2-001
+  - T-V2-002
+  - T-V2-007
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-011
+  phase: P1
+  title: IA/route/taxonomy/internal-link contract
+  depends_on:
+  - B-V2-010
+  requirement_ids:
+  - R-V2-007
+  output: route-registry.v2.yaml
+  cost_ceiling_hours: 5
+  test_ids:
+  - T-V2-009
+  - T-V2-010
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-012
+  phase: P1
+  title: design token and component-state contracts
+  depends_on:
+  - B-V2-010
+  requirement_ids:
+  - R-V2-006
+  output: design-tokens.v2.json + component-states.yaml
+  cost_ceiling_hours: 6
+  test_ids:
+  - T-V2-008
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-013
+  phase: P1
+  title: claim/source schema and validators
+  depends_on:
+  - B-V2-010
+  requirement_ids:
+  - R-V2-008
+  - R-V2-009
+  output: claim/source contracts
+  cost_ceiling_hours: 8
+  test_ids:
+  - T-V2-011
+  - T-V2-012
+  - T-V2-013
+  - T-V2-014
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-014
+  phase: P1
+  title: product/variant/identity schema
+  depends_on:
+  - B-V2-010
+  requirement_ids:
+  - R-V2-010
+  output: product-model contract
+  cost_ceiling_hours: 6
+  test_ids:
+  - T-V2-015
+  - T-V2-016
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-015
+  phase: P1
+  title: airline rule-set/effective-date schema
+  depends_on:
+  - B-V2-013
+  requirement_ids:
+  - R-V2-011
+  output: airline-rule-set contract
+  cost_ceiling_hours: 6
+  test_ids:
+  - T-V2-017
+  - T-V2-018
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-016
+  phase: P1
+  title: article/template schema and block-order contracts
+  depends_on:
+  - B-V2-011
+  - B-V2-013
+  requirement_ids:
+  - R-V2-012
+  output: article-definition contract
+  cost_ceiling_hours: 6
+  test_ids:
+  - T-V2-019
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-017
+  phase: P1
+  title: publication/analytics/freshness interface contracts
+  depends_on:
+  - B-V2-013
+  - B-V2-016
+  requirement_ids:
+  - R-V2-021
+  - R-V2-023
+  - R-V2-029
+  output: interface contracts
+  cost_ceiling_hours: 6
+  test_ids:
+  - T-V2-014
+  - T-V2-034
+  - T-V2-037
+  - T-V2-038
+  - T-V2-045
+  - T-V2-046
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-018
+  phase: P1
+  title: Phase 1 generated design review and drift check
+  depends_on:
+  - B-V2-012
+  - B-V2-014
+  - B-V2-015
+  - B-V2-016
+  - B-V2-017
+  requirement_ids:
+  - R-V2-036
+  output: phase-1-report.md
+  cost_ceiling_hours: 3
+  test_ids:
+  - T-V2-051
+  implementation_status: GENERATED_LOCAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-019
+  phase: P2
+  title: recorded official airline rule fixtures
+  depends_on:
+  - B-V2-015
+  requirement_ids:
+  - R-V2-009
+  - R-V2-011
+  output: recorded source fixtures
+  cost_ceiling_hours: 6
+  test_ids:
+  - T-V2-012
+  - T-V2-014
+  - T-V2-017
+  - T-V2-018
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-020
+  phase: P2
+  title: carry-on checker decision engine
+  depends_on:
+  - B-V2-019
+  requirement_ids:
+  - R-V2-013
+  output: pure decision engine
+  cost_ceiling_hours: 10
+  test_ids:
+  - T-V2-018
+  - T-V2-020
+  - T-V2-021
+  - T-V2-022
+  - T-V2-023
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-021
+  phase: P2
+  title: checker UI and no-transmission client behavior
+  depends_on:
+  - B-V2-012
+  - B-V2-020
+  requirement_ids:
+  - R-V2-013
+  - R-V2-033
+  output: local checker page
+  cost_ceiling_hours: 10
+  test_ids:
+  - T-V2-018
+  - T-V2-020
+  - T-V2-021
+  - T-V2-022
+  - T-V2-023
+  - T-V2-051
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-022
+  phase: P2
+  title: basic carry-on rules guide content packet
+  depends_on:
+  - B-V2-016
+  - B-V2-019
+  requirement_ids:
+  - R-V2-014
+  - R-V2-020
+  output: guide packet
+  cost_ceiling_hours: 8
+  test_ids:
+  - T-V2-013
+  - T-V2-024
+  - T-V2-026
+  - T-V2-033
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-023
+  phase: P2
+  title: existing public comparison import and claim decomposition
+  depends_on:
+  - B-V2-007
+  - B-V2-013
+  - B-V2-014
+  requirement_ids:
+  - R-V2-015
+  - R-V2-020
+  output: comparison source packet
+  cost_ceiling_hours: 8
+  test_ids:
+  - T-V2-013
+  - T-V2-024
+  - T-V2-025
+  - T-V2-026
+  - T-V2-033
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-024
+  phase: P2
+  title: hard eligibility and fit scoring engine
+  depends_on:
+  - B-V2-014
+  - B-V2-015
+  requirement_ids:
+  - R-V2-017
+  output: selection engine
+  cost_ceiling_hours: 8
+  test_ids:
+  - T-V2-028
+  - T-V2-029
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-025
+  phase: P2
+  title: business score isolated module and non-interference proof
+  depends_on:
+  - B-V2-024
+  requirement_ids:
+  - R-V2-018
+  output: business score module
+  cost_ceiling_hours: 5
+  test_ids:
+  - T-V2-030
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-026
+  phase: P2
+  title: V2 comparison renderer and product cards
+  depends_on:
+  - B-V2-012
+  - B-V2-023
+  - B-V2-024
+  requirement_ids:
+  - R-V2-015
+  - R-V2-033
+  output: comparison local preview
+  cost_ceiling_hours: 12
+  test_ids:
+  - T-V2-025
+  - T-V2-026
+  - T-V2-051
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-027
+  phase: P2
+  title: difference template skeleton and duplication guard
+  depends_on:
+  - B-V2-016
+  requirement_ids:
+  - R-V2-016
+  - R-V2-022
+  output: difference preview fixture
+  cost_ceiling_hours: 5
+  test_ids:
+  - T-V2-010
+  - T-V2-027
+  - T-V2-035
+  - T-V2-036
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-028
+  phase: P2
+  title: AI provenance/human review/content quality gate
+  depends_on:
+  - B-V2-013
+  - B-V2-016
+  requirement_ids:
+  - R-V2-019
+  - R-V2-020
+  output: review packet + validators
+  cost_ceiling_hours: 8
+  test_ids:
+  - T-V2-013
+  - T-V2-024
+  - T-V2-026
+  - T-V2-031
+  - T-V2-032
+  - T-V2-033
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-029
+  phase: P2
+  title: Rakuten 2026-07-01 recorded adapter and identity matcher
+  depends_on:
+  - B-V2-014
+  requirement_ids:
+  - R-V2-026
+  - R-V2-027
+  output: recorded adapter + negative fixtures
+  cost_ceiling_hours: 10
+  test_ids:
+  - T-V2-016
+  - T-V2-041
+  - T-V2-042
+  - T-V2-043
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-030
+  phase: P2
+  title: media registry and neutral placeholder policy
+  depends_on:
+  - B-V2-012
+  - B-V2-029
+  requirement_ids:
+  - R-V2-028
+  output: media contract/preview states
+  cost_ceiling_hours: 5
+  test_ids:
+  - T-V2-044
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-031
+  phase: P2
+  title: SEO/structured data/freshness/publication package generators
+  depends_on:
+  - B-V2-021
+  - B-V2-022
+  - B-V2-026
+  - B-V2-028
+  - B-V2-030
+  requirement_ids:
+  - R-V2-021
+  - R-V2-022
+  - R-V2-023
+  - R-V2-025
+  output: sealed local vertical slice
+  cost_ceiling_hours: 12
+  test_ids:
+  - T-V2-005
+  - T-V2-010
+  - T-V2-014
+  - T-V2-034
+  - T-V2-035
+  - T-V2-036
+  - T-V2-037
+  - T-V2-038
+  - T-V2-040
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-032
+  phase: P2
+  title: event catalog semantic instrumentation with sender OFF
+  depends_on:
+  - B-V2-017
+  - B-V2-021
+  - B-V2-026
+  requirement_ids:
+  - R-V2-029
+  output: event catalog + local sink
+  cost_ceiling_hours: 6
+  test_ids:
+  - T-V2-045
+  - T-V2-046
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-033
+  phase: P2
+  title: browser/visual/a11y/performance/security test matrix
+  depends_on:
+  - B-V2-027
+  - B-V2-029
+  - B-V2-030
+  - B-V2-031
+  - B-V2-032
+  requirement_ids:
+  - R-V2-033
+  - R-V2-034
+  output: local evidence bundle
+  cost_ceiling_hours: 10
+  test_ids:
+  - T-V2-023
+  - T-V2-039
+  - T-V2-051
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-034
+  phase: P2
+  title: Phase 2 UAT and first integration PR report
+  depends_on:
+  - B-V2-019
+  - B-V2-020
+  - B-V2-021
+  - B-V2-022
+  - B-V2-023
+  - B-V2-024
+  - B-V2-025
+  - B-V2-026
+  - B-V2-027
+  - B-V2-028
+  - B-V2-029
+  - B-V2-030
+  - B-V2-031
+  - B-V2-032
+  - B-V2-033
+  requirement_ids:
+  - R-V2-036
+  output: phase-2-report + PR body
+  cost_ceiling_hours: 4
+  test_ids:
+  - T-V2-051
+  implementation_status: VERIFIED_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-035
+  phase: P3
+  title: production backup/export human runbook
+  depends_on: []
+  requirement_ids:
+  - R-V2-003
+  - R-V2-025
+  - R-V2-036
+  output: human runbook only
+  cost_ceiling_hours: 2
+  test_ids:
+  - T-V2-004
+  - T-V2-005
+  - T-V2-040
+  - T-V2-051
+  implementation_status: COMPLETE_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-036
+  phase: P3
+  title: WordPress child theme/block migration package
+  depends_on:
+  - B-V2-034
+  requirement_ids:
+  - R-V2-006
+  - R-V2-024
+  - R-V2-033
+  output: deployable artifact; no deploy
+  cost_ceiling_hours: 12
+  test_ids:
+  - T-V2-008
+  - T-V2-039
+  - T-V2-051
+  implementation_status: COMPLETE_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-037
+  phase: P3
+  title: exact sealed WP draft payload and dry-run diff
+  depends_on:
+  - B-V2-034
+  requirement_ids:
+  - R-V2-023
+  - R-V2-024
+  output: draft payload preview
+  cost_ceiling_hours: 5
+  test_ids:
+  - T-V2-037
+  - T-V2-038
+  - T-V2-039
+  implementation_status: REVIEW_READY_BLOCKED_EXTERNAL
+  external_action_status: NOT_EXECUTED
+- id: B-V2-038
+  phase: P3
+  title: production redirect/canonical/sitemap change plan
+  depends_on:
+  - B-V2-035
+  - B-V2-037
+  requirement_ids:
+  - R-V2-003
+  - R-V2-022
+  - R-V2-025
+  output: human action plan
+  cost_ceiling_hours: 5
+  test_ids:
+  - T-V2-004
+  - T-V2-005
+  - T-V2-010
+  - T-V2-035
+  - T-V2-036
+  - T-V2-040
+  implementation_status: COMPLETE_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-039
+  phase: P3
+  title: privacy/legal review packet for event activation
+  depends_on:
+  - B-V2-032
+  requirement_ids:
+  - R-V2-029
+  - R-V2-036
+  output: owner/counsel review packet
+  cost_ceiling_hours: 3
+  test_ids:
+  - T-V2-045
+  - T-V2-046
+  - T-V2-051
+  implementation_status: COMPLETE_LOCAL_RECORDED
+  external_action_status: NOT_EXECUTED
+- id: B-V2-040
+  phase: P3
+  title: one-URL human migration, public verification and rollback evidence
+  depends_on:
+  - B-V2-036
+  - B-V2-037
+  - B-V2-038
+  - B-V2-039
+  requirement_ids:
+  - R-V2-024
+  - R-V2-025
+  - R-V2-033
+  - R-V2-034
+  output: external gated evidence
+  cost_ceiling_hours: 8
+  test_ids:
+  - T-V2-005
+  - T-V2-023
+  - T-V2-039
+  - T-V2-040
+  - T-V2-051
+  implementation_status: BLOCKED_EXTERNAL
+  external_action_status: NOT_EXECUTED
+tests:
+- id: T-V2-001
+  category: SECURITY
+  title: immutable paths remain byte-identical
+  requirement_ids:
+  - R-V2-001
+  evidence_output: git diff path assertion
+  backlog_ids:
+  - B-V2-001
+  - B-V2-010
+  effective_phases:
+  - P0
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-002
+  category: SECURITY
+  title: dirty/unrelated paths are not edited or staged
+  requirement_ids:
+  - R-V2-001
+  - R-V2-002
+  evidence_output: pre/post status comparison
+  backlog_ids:
+  - B-V2-001
+  - B-V2-002
+  - B-V2-010
+  effective_phases:
+  - P0
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-003
+  category: CONTRACT
+  title: live preflight records AGENTS/HEAD/branch/status/generator owner
+  requirement_ids:
+  - R-V2-002
+  evidence_output: preflight JSON schema
+  backlog_ids:
+  - B-V2-001
+  - B-V2-002
+  effective_phases:
+  - P0
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-004
+  category: DATA
+  title: URL inventory parses sitemap, canonical, robots and status
+  requirement_ids:
+  - R-V2-003
+  evidence_output: inventory fixture diff
+  backlog_ids:
+  - B-V2-003
+  - B-V2-004
+  - B-V2-007
+  - B-V2-035
+  - B-V2-038
+  effective_phases:
+  - P0
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-005
+  category: MIGRATION
+  title: redirect map rejects loops, chains >1 and many-to-home
+  requirement_ids:
+  - R-V2-003
+  - R-V2-025
+  evidence_output: negative redirect fixtures
+  backlog_ids:
+  - B-V2-003
+  - B-V2-004
+  - B-V2-007
+  - B-V2-008
+  - B-V2-031
+  - B-V2-035
+  - B-V2-038
+  - B-V2-040
+  effective_phases:
+  - P0
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-006
+  category: ANALYTICS
+  title: metric dictionary rejects missing source/maturity/unavailable rule
+  requirement_ids:
+  - R-V2-004
+  evidence_output: schema validation
+  backlog_ids:
+  - B-V2-005
+  effective_phases:
+  - P0
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-007
+  category: CONTRACT
+  title: product spec contains one wedge and locked portfolio waves
+  requirement_ids:
+  - R-V2-005
+  evidence_output: schema + invariant
+  backlog_ids:
+  - B-V2-010
+  effective_phases:
+  - P1
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-008
+  category: VISUAL
+  title: design token contrast pairs meet declared AA thresholds
+  requirement_ids:
+  - R-V2-006
+  evidence_output: contrast report
+  backlog_ids:
+  - B-V2-012
+  - B-V2-036
+  effective_phases:
+  - P1
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-009
+  category: CONTRACT
+  title: every route has one primary intent/template/parent hub
+  requirement_ids:
+  - R-V2-007
+  evidence_output: route registry validation
+  backlog_ids:
+  - B-V2-011
+  effective_phases:
+  - P1
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-010
+  category: SEO
+  title: no orphan or empty indexable taxonomy route
+  requirement_ids:
+  - R-V2-007
+  - R-V2-022
+  evidence_output: link graph report
+  backlog_ids:
+  - B-V2-011
+  - B-V2-027
+  - B-V2-031
+  - B-V2-038
+  effective_phases:
+  - P1
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-011
+  category: CONTRACT
+  title: claim enum permits A/D/UNKNOWN only in initial V2
+  requirement_ids:
+  - R-V2-008
+  evidence_output: schema negative cases
+  backlog_ids:
+  - B-V2-013
+  effective_phases:
+  - P1
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-012
+  category: EDITORIAL
+  title: A claim without allowed primary source fails
+  requirement_ids:
+  - R-V2-008
+  - R-V2-009
+  evidence_output: unsupported claim fixture
+  backlog_ids:
+  - B-V2-013
+  - B-V2-019
+  effective_phases:
+  - P1
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-013
+  category: EDITORIAL
+  title: B/C claim and false hands-on language fail
+  requirement_ids:
+  - R-V2-008
+  - R-V2-020
+  evidence_output: language/claim fixtures
+  backlog_ids:
+  - B-V2-013
+  - B-V2-022
+  - B-V2-023
+  - B-V2-028
+  effective_phases:
+  - P1
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-014
+  category: FRESHNESS
+  title: hard-stale high-risk claim blocks package seal
+  requirement_ids:
+  - R-V2-009
+  - R-V2-021
+  evidence_output: clock-controlled test
+  backlog_ids:
+  - B-V2-013
+  - B-V2-017
+  - B-V2-019
+  - B-V2-031
+  effective_phases:
+  - P1
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-015
+  category: DATA
+  title: product model dimensions include units and external/expanded states
+  requirement_ids:
+  - R-V2-010
+  evidence_output: schema test
+  backlog_ids:
+  - B-V2-014
+  effective_phases:
+  - P1
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-016
+  category: DATA
+  title: ambiguous model/variant/accessory identity is rejected
+  requirement_ids:
+  - R-V2-010
+  - R-V2-027
+  evidence_output: negative identity matrix
+  backlog_ids:
+  - B-V2-014
+  - B-V2-029
+  effective_phases:
+  - P1
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-017
+  category: RULE
+  title: airline rule effective date and fare/aircraft variant resolve deterministically
+  requirement_ids:
+  - R-V2-011
+  evidence_output: rule fixtures
+  backlog_ids:
+  - B-V2-015
+  - B-V2-019
+  effective_phases:
+  - P1
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-018
+  category: RULE
+  title: missing route/aircraft/fare information returns UNKNOWN not PASS
+  requirement_ids:
+  - R-V2-011
+  - R-V2-013
+  evidence_output: unknown case fixtures
+  backlog_ids:
+  - B-V2-015
+  - B-V2-019
+  - B-V2-020
+  - B-V2-021
+  effective_phases:
+  - P1
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-019
+  category: EDITORIAL
+  title: each article template enforces required block order
+  requirement_ids:
+  - R-V2-012
+  evidence_output: template contract tests
+  backlog_ids:
+  - B-V2-016
+  effective_phases:
+  - P1
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-020
+  category: TOOL
+  title: checker returns PASS for exact compatible fixture with cited rule
+  requirement_ids:
+  - R-V2-013
+  evidence_output: unit snapshot
+  backlog_ids:
+  - B-V2-020
+  - B-V2-021
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-021
+  category: TOOL
+  title: checker returns FAIL for any single-edge violation
+  requirement_ids:
+  - R-V2-013
+  evidence_output: boundary-value matrix
+  backlog_ids:
+  - B-V2-020
+  - B-V2-021
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-022
+  category: TOOL
+  title: checker handles orientation by all permitted permutations only when rule allows
+  requirement_ids:
+  - R-V2-013
+  evidence_output: dimension permutation tests
+  backlog_ids:
+  - B-V2-020
+  - B-V2-021
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-023
+  category: PRIVACY
+  title: checker makes no network request and stores no input persistently
+  requirement_ids:
+  - R-V2-013
+  - R-V2-034
+  evidence_output: browser network/storage assertion
+  backlog_ids:
+  - B-V2-001
+  - B-V2-020
+  - B-V2-021
+  - B-V2-033
+  - B-V2-040
+  effective_phases:
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-024
+  category: EDITORIAL
+  title: guide contains disclosure, 30-second conclusion, unknowns and official links
+  requirement_ids:
+  - R-V2-014
+  - R-V2-020
+  evidence_output: render DOM assertions
+  backlog_ids:
+  - B-V2-022
+  - B-V2-023
+  - B-V2-028
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-025
+  category: MIGRATION
+  title: existing comparison retains exact public slug and one H1
+  requirement_ids:
+  - R-V2-015
+  evidence_output: route/render test
+  backlog_ids:
+  - B-V2-023
+  - B-V2-026
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-026
+  category: EDITORIAL
+  title: comparison names exact 3-model scope and no universal winner
+  requirement_ids:
+  - R-V2-015
+  - R-V2-020
+  evidence_output: copy contract
+  backlog_ids:
+  - B-V2-022
+  - B-V2-023
+  - B-V2-026
+  - B-V2-028
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-027
+  category: EDITORIAL
+  title: difference page rejects query overlap with comparison above threshold
+  requirement_ids:
+  - R-V2-016
+  evidence_output: intent similarity fixture
+  backlog_ids:
+  - B-V2-027
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-028
+  category: RECOMMENDATION
+  title: hard-ineligible product can never be ranked
+  requirement_ids:
+  - R-V2-017
+  evidence_output: property test
+  backlog_ids:
+  - B-V2-024
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-029
+  category: RECOMMENDATION
+  title: fit score is deterministic and tie-break is model ID
+  requirement_ids:
+  - R-V2-017
+  evidence_output: property/snapshot test
+  backlog_ids:
+  - B-V2-024
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-030
+  category: FINANCE
+  title: finance input changes do not change product order or render hash
+  requirement_ids:
+  - R-V2-018
+  evidence_output: non-interference test
+  backlog_ids:
+  - B-V2-025
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-031
+  category: AI_GOV
+  title: AI-originated text lacks seal without human reviewer/version
+  requirement_ids:
+  - R-V2-019
+  evidence_output: state transition negative test
+  backlog_ids:
+  - B-V2-028
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-032
+  category: AI_GOV
+  title: correction rate numerator/denominator is reproducible
+  requirement_ids:
+  - R-V2-019
+  evidence_output: calculation test
+  backlog_ids:
+  - B-V2-028
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-033
+  category: EDITORIAL
+  title: quality gate rejects missing fit/non-fit/trade-off/unknown/disclosure
+  requirement_ids:
+  - R-V2-020
+  evidence_output: negative packet fixtures
+  backlog_ids:
+  - B-V2-022
+  - B-V2-023
+  - B-V2-028
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-034
+  category: FRESHNESS
+  title: SLA classification is deterministic at exact boundaries
+  requirement_ids:
+  - R-V2-021
+  evidence_output: frozen clock matrix
+  backlog_ids:
+  - B-V2-017
+  - B-V2-031
+  effective_phases:
+  - P2
+  execution_status: PASSED_LOCAL_RECORDED
+  phase3_acceptance_status: NOT_APPLICABLE
+  phase3_external_execution_status: NOT_APPLICABLE
+- id: T-V2-035
+  category: SEO
+  title: title/description/canonical/robots/sitemap are internally consistent
+  requirement_ids:
+  - R-V2-022
+  evidence_output: SEO contract suite
+  backlog_ids:
+  - B-V2-027
+  - B-V2-031
+  - B-V2-038
+  effective_phases:
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-036
+  category: SEO
+  title: JSON-LD matches visible Article/Breadcrumb/Organization/WebSite only
+  requirement_ids:
+  - R-V2-022
+  evidence_output: structured data snapshot
+  backlog_ids:
+  - B-V2-027
+  - B-V2-031
+  - B-V2-038
+  effective_phases:
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-037
+  category: PUBLICATION
+  title: package digest changes for any semantic input drift
+  requirement_ids:
+  - R-V2-023
+  evidence_output: tamper test
+  backlog_ids:
+  - B-V2-017
+  - B-V2-031
+  - B-V2-037
+  effective_phases:
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-038
+  category: PUBLICATION
+  title: sealed package rejects missing review/source/target binding
+  requirement_ids:
+  - R-V2-023
+  evidence_output: negative schema cases
+  backlog_ids:
+  - B-V2-017
+  - B-V2-031
+  - B-V2-037
+  effective_phases:
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-039
+  category: NETWORK
+  title: WordPress adapter defaults disabled and dry-run emits no request
+  requirement_ids:
+  - R-V2-024
+  - R-V2-034
+  evidence_output: network denial test
+  backlog_ids:
+  - B-V2-001
+  - B-V2-004
+  - B-V2-033
+  - B-V2-036
+  - B-V2-037
+  - B-V2-040
+  effective_phases:
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-040
+  category: MIGRATION
+  title: rollback manifest restores previous content/route metadata in simulation
+  requirement_ids:
+  - R-V2-025
+  evidence_output: round-trip test
+  backlog_ids:
+  - B-V2-008
+  - B-V2-031
+  - B-V2-035
+  - B-V2-038
+  - B-V2-040
+  effective_phases:
+  - P0
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-041
+  category: RAKUTEN
+  title: 2026-07-01 recorded response parses without credentials
+  requirement_ids:
+  - R-V2-026
+  evidence_output: contract fixture
+  backlog_ids:
+  - B-V2-029
+  effective_phases:
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-042
+  category: RAKUTEN
+  title: unknown/missing response fields fail or become UNKNOWN per schema
+  requirement_ids:
+  - R-V2-026
+  evidence_output: mutation test
+  backlog_ids:
+  - B-V2-029
+  effective_phases:
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-043
+  category: IDENTITY
+  title: case/spacing alone normalize but model generation/accessory never normalize
+  requirement_ids:
+  - R-V2-027
+  evidence_output: identity mutation matrix
+  backlog_ids:
+  - B-V2-029
+  effective_phases:
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-044
+  category: MEDIA
+  title: unbound or modified product image blocks CTA/render according to policy
+  requirement_ids:
+  - R-V2-028
+  evidence_output: media negative fixtures
+  backlog_ids:
+  - B-V2-030
+  effective_phases:
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-045
+  category: ANALYTICS
+  title: event collector rejects raw IP/UA/referrer/query/email and unknown attributes
+  requirement_ids:
+  - R-V2-029
+  evidence_output: allowlist tests
+  backlog_ids:
+  - B-V2-017
+  - B-V2-032
+  - B-V2-039
+  effective_phases:
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-046
+  category: ANALYTICS
+  title: QDS sequence, 30-minute rotation and dedupe are deterministic
+  requirement_ids:
+  - R-V2-029
+  evidence_output: event sequence tests
+  backlog_ids:
+  - B-V2-017
+  - B-V2-032
+  - B-V2-039
+  effective_phases:
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+- id: T-V2-051
+  category: UAT
+  title: phase exit report includes outcome, tests, rollback, cost, gaps and external NOT_EXECUTED
+  requirement_ids:
+  - R-V2-033
+  - R-V2-034
+  - R-V2-035
+  - R-V2-036
+  evidence_output: UAT checklist and signed local evidence
+  backlog_ids:
+  - B-V2-001
+  - B-V2-006
+  - B-V2-007
+  - B-V2-009
+  - B-V2-018
+  - B-V2-021
+  - B-V2-026
+  - B-V2-033
+  - B-V2-034
+  - B-V2-035
+  - B-V2-036
+  - B-V2-039
+  - B-V2-040
+  effective_phases:
+  - P0
+  - P1
+  - P2
+  - P3
+  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  phase3_acceptance_status: BLOCKED_EXTERNAL
+  phase3_external_execution_status: NOT_EXECUTED
+invariants:
+  D_to_R_and_R_to_D_complete: true
+  R_to_B_and_B_to_R_complete: true
+  R_to_T_and_T_to_R_complete: true
+  B_to_T_and_T_to_B_complete: true
+  backlog_acyclic: true
+  each_backlog_has_requirement: true
+  each_backlog_has_test: true
+  B_V2_009_waits_all_phase0: true
+  B_V2_034_waits_all_phase2_builders: true
+  B_V2_040_waits_all_phase3_local_inputs: true
+  B_V2_040_is_blocked_external: true

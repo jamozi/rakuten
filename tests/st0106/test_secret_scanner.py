@@ -739,6 +739,67 @@ def test_git_worktree_scans_tracked_and_untracked_but_not_ignored(
     assert_values_are_redacted(result, [untracked_value, ignored_value])
 
 
+def test_linked_worktree_gitfile_is_validated_and_scanned(tmp_path: Path) -> None:
+    repository = tmp_path / "repository"
+    linked = tmp_path / "linked"
+    repository.mkdir()
+    install_scanner(repository)
+    initialize_repository(repository)
+    (repository / "tracked.txt").write_text("clean\n", encoding="utf-8")
+    commit_all(repository, "initial")
+    git(repository, "worktree", "add", "--detach", str(linked), "HEAD")
+
+    result = run_scanner(linked, "--worktree")
+
+    assert (linked / ".git").is_file()
+    assert result.returncode == 0, combined_output(result)
+
+
+def test_out_of_repository_gitfile_is_rejected_without_following_it(
+    tmp_path: Path,
+) -> None:
+    install_scanner(tmp_path)
+    external = tmp_path.parent / f"{tmp_path.name}-unbound-gitdir"
+    external.mkdir()
+    try:
+        (tmp_path / ".git").write_text(
+            f"gitdir: {external}\n", encoding="utf-8"
+        )
+
+        result = run_scanner(tmp_path, "--worktree")
+    finally:
+        shutil.rmtree(external, ignore_errors=True)
+
+    assert result.returncode == 2
+    assert "unsafe-git-metadata" in result.stderr
+
+
+@pytest.mark.parametrize("payload", ["gitdir: ../relative\n", "not-a-gitfile\n"])
+def test_unsafe_gitfile_content_is_rejected(tmp_path: Path, payload: str) -> None:
+    install_scanner(tmp_path)
+    (tmp_path / ".git").write_text(payload, encoding="utf-8")
+
+    result = run_scanner(tmp_path, "--worktree")
+
+    assert result.returncode == 2
+    assert "unsafe-git-metadata" in result.stderr
+
+
+def test_gitfile_symlink_is_rejected_without_following_it(tmp_path: Path) -> None:
+    install_scanner(tmp_path)
+    outside = tmp_path / "git-metadata"
+    outside.mkdir()
+    try:
+        (tmp_path / ".git").symlink_to(outside, target_is_directory=True)
+    except OSError:
+        pytest.skip("symlinks are not supported")
+
+    result = run_scanner(tmp_path, "--worktree")
+
+    assert result.returncode == 2
+    assert "unsafe-git-metadata" in result.stderr
+
+
 def test_worktree_rejects_symlink_and_special_file_without_following_it(
     tmp_path: Path,
 ) -> None:

@@ -1,0 +1,56 @@
+schema: RAOS_V2_MEDIA_POLICY_V1
+version: 2.0.0
+default_state: NO_IMAGE_INTENTIONAL
+rules:
+  - Do not fabricate a product photograph.
+  - Render no remote image when permission or identity is unresolved.
+  - Product identity ambiguity blocks the CTA as well as the image.
+  - Alternative text must describe only visible or official known information.
+remote_media: DISABLED_IN_OFFLINE_SLICE
+image_binding_contract:
+  required_when_offer_image_ref_present:
+    - source_id
+    - item_code
+    - content_sha256
+    - alt
+    - checked_at
+  missing_or_modified_state: BLOCKED
+  no_image_state: NO_IMAGE_INTENTIONAL
+  no_image_render: NEUTRAL_PLACEHOLDER
+product_registry:
+  - product_id: PRD-ACE-CRESTA-06316
+    state: NO_IMAGE_INTENTIONAL
+    image_binding: null
+    render: NEUTRAL_PLACEHOLDER
+  - product_id: PRD-ACE-DIFFERENCE-05721
+    state: NO_IMAGE_INTENTIONAL
+    image_binding: null
+    render: NEUTRAL_PLACEHOLDER
+  - product_id: PRD-ACE-MAXPASS4-01471
+    state: NO_IMAGE_INTENTIONAL
+    image_binding: null
+    render: NEUTRAL_PLACEHOLDER
+negative_fixtures:
+  - fixture_id: MEDIA-MISSING-SOURCE
+    binding:
+      item_code: synthetic:item-1
+      content_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      alt: 合成契約画像
+      checked_at: '2026-08-28T06:41:52+09:00'
+    expected:
+      source_id: SRC-SYNTHETIC-MEDIA
+      item_code: synthetic:item-1
+      content_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    expected_state: BLOCKED
+  - fixture_id: MEDIA-MODIFIED-HASH
+    binding:
+      source_id: SRC-SYNTHETIC-MEDIA
+      item_code: synthetic:item-1
+      content_sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+      alt: 合成契約画像
+      checked_at: '2026-08-28T06:41:52+09:00'
+    expected:
+      source_id: SRC-SYNTHETIC-MEDIA
+      item_code: synthetic:item-1
+      content_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    expected_state: BLOCKED

@@ -1,0 +1,123 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v1/source-record.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "canonical_url": {
+      "pattern": "^https://(?![^/?#]*@)(?:[A-Za-z0-9.-]+|\\[[0-9A-Fa-f:.]+\\])(?::443)?(?:/[^?#]*)?$",
+      "type": "string"
+    },
+    "capture_provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "captured_at": {
+          "format": "date-time",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "PUBLIC_READ_ONLY",
+            "RECORDED_FIXTURE",
+            "OWNER_SUPPLIED"
+          ]
+        }
+      },
+      "required": [
+        "mode",
+        "captured_at"
+      ],
+      "type": "object"
+    },
+    "checked_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "content_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "effective_from": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "effective_to": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "next_review_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "published_at": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "publisher": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "source_class": {
+      "enum": [
+        "MANUFACTURER_PRIMARY",
+        "AIRLINE_PRIMARY",
+        "GOVERNMENT_PRIMARY",
+        "RAKUTEN_PERMITTED_DATA",
+        "COMPETITOR_UX_ONLY"
+      ]
+    },
+    "source_id": {
+      "pattern": "^SRC-[A-Z0-9-]+$",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "FRESH",
+        "DUE",
+        "SOFT_STALE",
+        "HARD_STALE",
+        "UNAVAILABLE",
+        "REJECTED"
+      ]
+    },
+    "title": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "source_id",
+    "source_class",
+    "publisher",
+    "title",
+    "canonical_url",
+    "published_at",
+    "effective_from",
+    "effective_to",
+    "checked_at",
+    "next_review_at",
+    "content_sha256",
+    "capture_provenance",
+    "status"
+  ],
+  "title": "source-record",
+  "type": "object"
+}

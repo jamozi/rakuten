@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 import re
+import subprocess
+import sys
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -87,3 +89,17 @@ def test_deterministic_package_and_manifest() -> None:
     second = module.package_bytes()
     assert first == second
     assert module.MANIFEST.read_bytes() == module.manifest_bytes()
+
+
+def test_builder_accepts_standard_and_legacy_check_commands() -> None:
+    for arguments in (["--check"], ["check"]):
+        completed = subprocess.run(
+            [sys.executable, str(BUILD), *arguments],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        assert completed.returncode == 0, completed.stderr
+        assert '"command": "check"' in completed.stdout
+        assert '"status": "PASS"' in completed.stdout

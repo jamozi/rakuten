@@ -203,6 +203,29 @@ def test_only_bound_public_articles_disable_wordpress_wpautop() -> None:
     ) in registration
 
 
+def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
+    css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    theme_json = _load_json(THEME_ROOT / "theme.json")
+    typography = theme_json["settings"]["typography"]
+    families = {
+        record["slug"]: record["fontFamily"]
+        for record in typography["fontFamilies"]
+    }
+    serif = (
+        "'Hiragino Mincho ProN', 'Yu Mincho', YuMincho, "
+        "'Noto Serif CJK JP', 'Noto Serif JP', serif"
+    )
+    sans = (
+        "-apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', "
+        "'Yu Gothic', YuGothic, 'Noto Sans CJK JP', 'Noto Sans JP', sans-serif"
+    )
+    assert families == {"editorial-serif": serif, "editorial-sans": sans}
+    assert "--raos-font-serif: " + serif.replace("'", '"') + ";" in css
+    assert css.count("font-family: var(--raos-font-serif);") == 4
+    assert "ui-serif" not in css
+    assert "ui-serif" not in families["editorial-serif"]
+
+
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"

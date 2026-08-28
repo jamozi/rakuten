@@ -3808,21 +3808,21 @@ final class RAOS_ST1704_Publication_Controller_V2
             unset($reason);
             return self::error('raos_st1704_reconciliation_evidence_invalid', 400);
         }
-        $password = isset($_POST['current_password'])
+        $reauth_input = isset($_POST['current_password'])
             ? wp_unslash($_POST['current_password'])
             : '';
         unset($_POST['current_password']);
         $approver = wp_get_current_user();
-        $password_valid = is_string($password)
-            && strlen($password) <= self::MAX_PASSWORD_BYTES
+        $password_valid = is_string($reauth_input)
+            && strlen($reauth_input) <= self::MAX_PASSWORD_BYTES
             && $approver instanceof WP_User
             && $approver->exists()
             && wp_check_password(
-                $password,
+                $reauth_input,
                 $approver->user_pass,
                 $approver->ID
             );
-        unset($password);
+        unset($reauth_input);
         unset($reason);
         if (! $password_valid) {
             return self::error('raos_st1704_reconciliation_reauth_failed', 403);

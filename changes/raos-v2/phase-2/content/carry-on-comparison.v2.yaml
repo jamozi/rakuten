@@ -1,0 +1,31 @@
+schema: RAOS_V2_CONTENT_PACKET_V1
+article_id: A05
+route: /carry-on-suitcase-comparison/
+template: COMPARISON
+review_state: EVIDENCE_COMPLETE
+scope:
+  kind: EXACT_THREE_MODEL_SCOPE
+  product_ids:
+    - PRD-ACE-CRESTA-06316
+    - PRD-ACE-DIFFERENCE-05721
+    - PRD-ACE-MAXPASS4-01471
+  universal_winner: false
+disclosure: このページには広告リンクを置く場合があります。価格・在庫・ポイント・料率は推薦順位に使いません。
+thirty_second_conclusion: 軽さならクレスタ、2WAY開閉ならディフェレンス、非拡張容量ならマックスパス4が比較上の特徴です。便の条件を別に確認してください。
+unknowns:
+  - 実走行、耐久性、キャスター音、長期使用感は確認していません。
+  - 価格、在庫、リンク状態はrecorded fixtureではUNAVAILABLEです。
+fits:
+  - 同一メーカーの照合済み3型番を公表仕様で比べたい人
+non_fits:
+  - 市場全体のランキングや実機レビューを求める人
+tradeoffs:
+  - 拡張容量を使うと機内持ち込み候補から外れる場合があります。
+official_source_ids:
+  - SRC-ACE-CRESTA-06316
+  - SRC-ACE-DIFFERENCE-05721
+  - SRC-ACE-MAXPASS4-01471
+experience_claims: []
+ai_provenance: STRUCTURED_DRAFT_AND_VALIDATION_ONLY
+human_review: NOT_EXECUTED
+publication: NOT_EXECUTED

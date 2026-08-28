@@ -1,0 +1,59 @@
+schema: RAOS_V2_IMPLEMENTATION_CONTRACT_V1
+version: 2.0.0-design
+authority: DESIGN_ONLY_UNAPPROVED_FOR_EXTERNAL_ACTIONS
+target_repository: /home/minami/rakuten
+audit_snapshot_head: 83cfa17f91dddbee2bcd4e781545fd2bb4a5bcc4
+audit_snapshot_is_current_authority: false
+live_preflight_required: true
+proposed_branch: codex/raos-v2-vertical-slice
+proposed_worktree: /home/minami/rakuten-raos-v2
+base_selection: CURRENT_LIVE_HEAD_AFTER_READ_ONLY_PREFLIGHT
+first_pr:
+  phases:
+  - P0
+  - P1
+  - P2
+  backlog_range:
+  - B-V2-001
+  - B-V2-034
+  integration_pr_count: 1
+  public_or_external_actions_allowed: false
+  local_vertical_slice: carry-on airline-rule/product decision support using recorded fixtures
+immutable_paths:
+- docs/canonical/**
+- docs/upstream/**
+- zip/**
+preserve:
+- user/other-agent dirty changes
+- untracked files
+- generator ownership
+- security/publication/evidence/rollback invariants
+destructive_commands_forbidden:
+- git reset
+- git clean
+- destructive checkout/restore
+- history rewrite
+- force push
+- bulk delete
+default_modes:
+  RakutenSearchPort: RECORDED_ONLY
+  WordPressDraftPort: DISABLED_DRY_RUN
+  EventCollectorPort: LOCAL_SINK_ONLY
+  production_analytics_sender: 'OFF'
+external_actions_register: 11_EXTERNAL_ACTIONS_REGISTER.yaml
+stop_conditions:
+- live instruction or ownership conflict
+- branch/worktree collision
+- new architecture decision required
+- credential/live write/publication/deployment/spending/irreversible action required
+- secret/private/PII material required
+- primary fact unavailable and UNKNOWN cannot satisfy acceptance
+- accepted decision contradiction or invariant weakening required
+required_commands_as_live_rules_apply:
+- make setup
+- make generate
+- make check
+- make fast
+- make final
+evidence_label: PASSED_LOCAL
+production_or_formal_claims_forbidden_without_evidence: true

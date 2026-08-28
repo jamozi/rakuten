@@ -186,6 +186,29 @@ def test_check_is_read_only_and_machine_readable() -> None:
     assert after == before
 
 
+def test_st0104_preserves_exact_separately_owned_v2_contract_root(
+    monkeypatch: pytest.MonkeyPatch, installer_module: ModuleType
+) -> None:
+    assert installer_module.SEPARATELY_OWNED_CONTRACT_ROOTS == {
+        "raos-v2": "build_raos_v2_successor"
+    }
+    installer_module._assert_separately_owned_contract_root(
+        "raos-v2", "build_raos_v2_successor"
+    )
+
+    real_scan_tree = installer_module._scan_tree
+
+    def scan_with_unowned_file(root: Path) -> tuple[dict[str, Path], set[str]]:
+        files, directories = real_scan_tree(root)
+        return {**files, "unowned.schema.json": root / "unowned.schema.json"}, directories
+
+    monkeypatch.setattr(installer_module, "_scan_tree", scan_with_unowned_file)
+    with pytest.raises(RuntimeError, match="separately owned contract inventory drift"):
+        installer_module._assert_separately_owned_contract_root(
+            "raos-v2", "build_raos_v2_successor"
+        )
+
+
 def test_manifest_render_is_deterministic(installer_module: ModuleType) -> None:
     artifacts = installer_module.verify_source_bundle()
     first = installer_module.render_manifest(artifacts)

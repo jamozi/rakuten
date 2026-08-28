@@ -1,0 +1,575 @@
+{
+  "candidate_digest": "7ce3573f87cfd4731b8b28657864a5e21e381d093ba4b231f0ef64ef166e8735",
+  "claim_bindings": [
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-CRESTA-CAPACITY",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-CRESTA-CONDITIONAL-FIT",
+      "claim_type": "D_EDITORIAL_JUDGEMENT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-CRESTA-DIMENSIONS",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "HIGH"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-CRESTA-EXPANDED-CAPACITY",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "HIGH"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-CRESTA-EXPANDED-DIMENSIONS",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "HIGH"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-CRESTA-FEATURES",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-CRESTA-IDENTITY",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "HIGH"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-CRESTA-LIGHTEST-IN-SCOPE",
+      "claim_type": "D_EDITORIAL_JUDGEMENT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-CRESTA-MASS",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "BLOCKED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-CRESTA-USAGE-UNKNOWN",
+      "claim_type": "UNKNOWN",
+      "freshness": "UNKNOWN",
+      "intentionally_disclosed": true,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": false,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-DIFFERENCE-CAPACITY",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-DIFFERENCE-CONDITIONAL-FIT",
+      "claim_type": "D_EDITORIAL_JUDGEMENT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-DIFFERENCE-DIMENSIONS",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "HIGH"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-DIFFERENCE-EXPANDED-CAPACITY",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "HIGH"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-DIFFERENCE-EXPANDED-DIMENSIONS",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "HIGH"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-DIFFERENCE-FEATURES",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-DIFFERENCE-IDENTITY",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "HIGH"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-DIFFERENCE-MASS",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "BLOCKED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-DIFFERENCE-USAGE-UNKNOWN",
+      "claim_type": "UNKNOWN",
+      "freshness": "UNKNOWN",
+      "intentionally_disclosed": true,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": false,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-MAXPASS4-CAPACITY",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-MAXPASS4-CONDITIONAL-FIT",
+      "claim_type": "D_EDITORIAL_JUDGEMENT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-MAXPASS4-DIMENSIONS",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "HIGH"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-MAXPASS4-FEATURES",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-MAXPASS4-IDENTITY",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "HIGH"
+    },
+    {
+      "authoritative_source_status": "VERIFIED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-MAXPASS4-MASS",
+      "claim_type": "A_OFFICIAL_FACT",
+      "freshness": "FRESH",
+      "intentionally_disclosed": false,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": true,
+      "risk_class": "MEDIUM"
+    },
+    {
+      "authoritative_source_status": "BLOCKED",
+      "blocking": false,
+      "checked_at": "2026-08-26T13:54:33+09:00",
+      "claim_id": "CLM-A05-MAXPASS4-USAGE-UNKNOWN",
+      "claim_type": "UNKNOWN",
+      "freshness": "UNKNOWN",
+      "intentionally_disclosed": true,
+      "next_review_at": "2026-11-24T13:54:33+09:00",
+      "resolved": false,
+      "risk_class": "MEDIUM"
+    }
+  ],
+  "payload_digest": "40323f7c5ad2be56f79977f4e19dd65c471cf0c5b6394780db0b0232df6e1077",
+  "phase2_candidate": {
+    "article_id": "A05",
+    "claim_evidence": [
+      {
+        "claim_id": "CLM-A05-CRESTA-CAPACITY",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-CRESTA-CONDITIONAL-FIT",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-CRESTA-DIMENSIONS",
+        "freshness": "FRESH",
+        "risk_class": "HIGH"
+      },
+      {
+        "claim_id": "CLM-A05-CRESTA-EXPANDED-CAPACITY",
+        "freshness": "FRESH",
+        "risk_class": "HIGH"
+      },
+      {
+        "claim_id": "CLM-A05-CRESTA-EXPANDED-DIMENSIONS",
+        "freshness": "FRESH",
+        "risk_class": "HIGH"
+      },
+      {
+        "claim_id": "CLM-A05-CRESTA-FEATURES",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-CRESTA-IDENTITY",
+        "freshness": "FRESH",
+        "risk_class": "HIGH"
+      },
+      {
+        "claim_id": "CLM-A05-CRESTA-LIGHTEST-IN-SCOPE",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-CRESTA-MASS",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-CRESTA-USAGE-UNKNOWN",
+        "freshness": "UNKNOWN",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-DIFFERENCE-CAPACITY",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-DIFFERENCE-CONDITIONAL-FIT",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-DIFFERENCE-DIMENSIONS",
+        "freshness": "FRESH",
+        "risk_class": "HIGH"
+      },
+      {
+        "claim_id": "CLM-A05-DIFFERENCE-EXPANDED-CAPACITY",
+        "freshness": "FRESH",
+        "risk_class": "HIGH"
+      },
+      {
+        "claim_id": "CLM-A05-DIFFERENCE-EXPANDED-DIMENSIONS",
+        "freshness": "FRESH",
+        "risk_class": "HIGH"
+      },
+      {
+        "claim_id": "CLM-A05-DIFFERENCE-FEATURES",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-DIFFERENCE-IDENTITY",
+        "freshness": "FRESH",
+        "risk_class": "HIGH"
+      },
+      {
+        "claim_id": "CLM-A05-DIFFERENCE-MASS",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-DIFFERENCE-USAGE-UNKNOWN",
+        "freshness": "UNKNOWN",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-MAXPASS4-CAPACITY",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-MAXPASS4-CONDITIONAL-FIT",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-MAXPASS4-DIMENSIONS",
+        "freshness": "FRESH",
+        "risk_class": "HIGH"
+      },
+      {
+        "claim_id": "CLM-A05-MAXPASS4-FEATURES",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-MAXPASS4-IDENTITY",
+        "freshness": "FRESH",
+        "risk_class": "HIGH"
+      },
+      {
+        "claim_id": "CLM-A05-MAXPASS4-MASS",
+        "freshness": "FRESH",
+        "risk_class": "MEDIUM"
+      },
+      {
+        "claim_id": "CLM-A05-MAXPASS4-USAGE-UNKNOWN",
+        "freshness": "UNKNOWN",
+        "risk_class": "MEDIUM"
+      }
+    ],
+    "content_class": "REAL_CONTENT",
+    "created_at": "2026-08-28T06:41:52+09:00",
+    "input_hashes": {
+      "article": "620e28d5e39875b2c9256c98647bc7473f85c5df8438c9cb3af767c5899ae948",
+      "claims": "28ef74a0e315477dd69fe532bf51e2a3597d1230f4e433485758f0b8bf628fb9",
+      "editorial": "64978e96aa901a5461bebdfc2850ee9e92df4ca94ad88a71446ddd6e7823b47c",
+      "migration": "3692c6e35154424ab2c1eb1d4e478b646b531596cc8258213d3513e7a035fa5f",
+      "phase3_claim_authority": "d86858e4ac974326e6850850ab219219e1df0b6622e701deb367675f3cf986cb",
+      "products": "e56b796e68d70b859788e1b87dc8a5fd3671fdbc82e7c8913a43a434fa3dcc7a",
+      "render": "0446e5c4011df9d6b1ca4841d7eb0cd4cf7cefff7d3d503fb9dbf670a9ae525d",
+      "render_model": "f82a6e77fa352f58111ff6c5cbb905c2c5e5ee2133a539cc5a88f10f4e489b8e",
+      "review": "038929c1e75d83df35bae2e5c41f5bec37f17f53291f216452ca41776a4c36ab",
+      "sources": "fe7ceb62f6575c230008c8e0beaa946b13340383bec4421adc6ae77afc2791f6"
+    },
+    "migration_manifest": {
+      "mode": "LOCAL_SIMULATION_ONLY",
+      "schema": "RAOS_V2_MIGRATION_MANIFEST_V1",
+      "sha256": "3692c6e35154424ab2c1eb1d4e478b646b531596cc8258213d3513e7a035fa5f",
+      "target_route": "/carry-on-suitcase-comparison/"
+    },
+    "package_digest": null,
+    "package_id": "PKG-V2-CARRY-ON-COMPARISON-CANDIDATE",
+    "render_hash": "0446e5c4011df9d6b1ca4841d7eb0cd4cf7cefff7d3d503fb9dbf670a9ae525d",
+    "review_binding": null,
+    "schema_version": "1.0.0",
+    "source_snapshot_hash": "fe7ceb62f6575c230008c8e0beaa946b13340383bec4421adc6ae77afc2791f6",
+    "state": "EVIDENCE_COMPLETE",
+    "target_origin": "https://kurashinoshirube.com",
+    "target_route": "/carry-on-suitcase-comparison/"
+  },
+  "preaction_binding_digest": null,
+  "preaction_status": "HISTORICAL_BASELINE_ONLY",
+  "schema": "RAOS_V2_PHASE3_REVIEW_CANDIDATE_V1",
+  "structured_data_expectation_sha256": "3be6e7824a9b705e90915b6fea44f10b2216f6a0f814689e6bd6e208d0267f9b",
+  "update_payload": {
+    "fields": {
+      "canonical_url": "https://kurashinoshirube.com/carry-on-suitcase-comparison/",
+      "comment_status": "closed",
+      "meta_description": "クレスタ06316、ディフェレンス05721、マックスパス4 01471を公式仕様と条件別の編集判断で比較します。",
+      "ping_status": "closed",
+      "post_content": "<div class=\"raos-v2-decision-support\" data-raos-v2-package-marker=\"RAOS_V2_A05_POST_CONTENT_V1\" data-raos-v2-article-id=\"A05\"><aside class=\"raos-v2-decision-support__disclosure\" aria-label=\"広告表示\"><strong>広告リンクに関する表示</strong><p>広告リンクを設置する場合があります。現在、確認済みでない商品リンクは表示しません。報酬は商品の選定・掲載順に影響しません。実機試験を行っていない比較では、公式情報と編集判断を分けて表示します。</p><p><a href=\"/about-ad-policy/\">運営・広告方針を確認する</a></p></aside><header class=\"raos-v2-decision-support__intro\"><p class=\"raos-v2-decision-support__eyebrow\">条件で結論が変わる比較</p><p class=\"raos-v2-decision-support__lead\">最軽量、開き方、容量のどれを優先するかで候補は変わります。実機試験は行っていません。</p><dl class=\"raos-v2-decision-support__metadata\"><div><dt>編集主体</dt><dd>暮らしのしるべ編集部</dd></div><div><dt>根拠パケット基準日</dt><dd><time datetime=\"2026-08-28\">2026-08-28</time></dd></div><div><dt>実機試験</dt><dd>実施していません</dd></div></dl></header><section class=\"raos-v2-decision-support__section\" aria-labelledby=\"raos-v2-conditional-conclusion\"><h2 id=\"raos-v2-conditional-conclusion\">30秒で条件別の結論</h2><p>公表重量を優先するなら3.2kgのクレスタ、2通りの開き方とストッパーを条件にするならディフェレンス、非拡張40Lとフロントアクセスを条件にするならマックスパス4が比較候補です。</p><p>これは公式仕様から導いた編集判断です。搭乗できるかは航空会社・機材・拡張状態・合計重量を別に確認してください。</p></section><section class=\"raos-v2-decision-support__section\" aria-labelledby=\"raos-v2-comparison\"><h2 id=\"raos-v2-comparison\">仕様を同じ軸で比較</h2><div class=\"raos-v2-decision-support__table-scroll\" role=\"region\" aria-label=\"ACE 3モデル比較表\" tabindex=\"0\"><table><caption>公式仕様と条件別の編集判断</caption><thead><tr><th scope=\"col\">比較軸</th><th scope=\"col\">ACE クレスタ 06316</th><th scope=\"col\">ace. ディフェレンス 05721</th><th scope=\"col\">PROTECA マックスパス4 01471</th></tr></thead><tbody><tr data-raos-v2-evidence=\"A_OFFICIAL_FACT\"><th scope=\"row\"><span class=\"raos-v2-decision-support__axis-title\">通常時の外寸</span><span class=\"raos-v2-decision-support__axis-evidence\">公式情報</span></th><td>55×35×25cm</td><td>55×36×24cm</td><td>50×40×25cm</td></tr><tr data-raos-v2-evidence=\"A_OFFICIAL_FACT\"><th scope=\"row\"><span class=\"raos-v2-decision-support__axis-title\">通常時の容量</span><span class=\"raos-v2-decision-support__axis-evidence\">公式情報</span></th><td>34L</td><td>32L</td><td>40L</td></tr><tr data-raos-v2-evidence=\"A_OFFICIAL_FACT\"><th scope=\"row\"><span class=\"raos-v2-decision-support__axis-title\">公表重量</span><span class=\"raos-v2-decision-support__axis-evidence\">公式情報</span></th><td>3.2kg</td><td>3.5kg</td><td>3.6kg</td></tr><tr data-raos-v2-evidence=\"D_EDITORIAL_JUDGEMENT\"><th scope=\"row\"><span class=\"raos-v2-decision-support__axis-title\">条件別の特徴</span><span class=\"raos-v2-decision-support__axis-evidence\">編集判断</span></th><td>3モデルで最軽量</td><td>2通りの開き方・ストッパー</td><td>40L・フロントアクセス</td></tr></tbody></table></div><div class=\"raos-v2-decision-support__comparison-cards\" role=\"region\" aria-label=\"ACE 3モデル比較（モバイル表示）\"><article class=\"raos-v2-decision-support__comparison-card\" data-raos-v2-evidence=\"A_OFFICIAL_FACT\" aria-labelledby=\"raos-v2-mobile-axis-1\"><h3 id=\"raos-v2-mobile-axis-1\">通常時の外寸</h3><p class=\"raos-v2-decision-support__axis-evidence\">公式情報</p><dl><div><dt>ACE クレスタ 06316</dt><dd>55×35×25cm</dd></div><div><dt>ace. ディフェレンス 05721</dt><dd>55×36×24cm</dd></div><div><dt>PROTECA マックスパス4 01471</dt><dd>50×40×25cm</dd></div></dl></article><article class=\"raos-v2-decision-support__comparison-card\" data-raos-v2-evidence=\"A_OFFICIAL_FACT\" aria-labelledby=\"raos-v2-mobile-axis-2\"><h3 id=\"raos-v2-mobile-axis-2\">通常時の容量</h3><p class=\"raos-v2-decision-support__axis-evidence\">公式情報</p><dl><div><dt>ACE クレスタ 06316</dt><dd>34L</dd></div><div><dt>ace. ディフェレンス 05721</dt><dd>32L</dd></div><div><dt>PROTECA マックスパス4 01471</dt><dd>40L</dd></div></dl></article><article class=\"raos-v2-decision-support__comparison-card\" data-raos-v2-evidence=\"A_OFFICIAL_FACT\" aria-labelledby=\"raos-v2-mobile-axis-3\"><h3 id=\"raos-v2-mobile-axis-3\">公表重量</h3><p class=\"raos-v2-decision-support__axis-evidence\">公式情報</p><dl><div><dt>ACE クレスタ 06316</dt><dd>3.2kg</dd></div><div><dt>ace. ディフェレンス 05721</dt><dd>3.5kg</dd></div><div><dt>PROTECA マックスパス4 01471</dt><dd>3.6kg</dd></div></dl></article><article class=\"raos-v2-decision-support__comparison-card\" data-raos-v2-evidence=\"D_EDITORIAL_JUDGEMENT\" aria-labelledby=\"raos-v2-mobile-axis-4\"><h3 id=\"raos-v2-mobile-axis-4\">条件別の特徴</h3><p class=\"raos-v2-decision-support__axis-evidence\">編集判断</p><dl><div><dt>ACE クレスタ 06316</dt><dd>3モデルで最軽量</dd></div><div><dt>ace. ディフェレンス 05721</dt><dd>2通りの開き方・ストッパー</dd></div><div><dt>PROTECA マックスパス4 01471</dt><dd>40L・フロントアクセス</dd></div></dl></article></div></section><section class=\"raos-v2-decision-support__section\" aria-labelledby=\"raos-v2-products\"><h2 id=\"raos-v2-products\">条件ごとの候補</h2><div class=\"raos-v2-decision-support__product-grid\"><section class=\"raos-v2-decision-support__product\" aria-labelledby=\"raos-v2-product-prd-ace-cresta-06316\" data-raos-v2-product-id=\"PRD-ACE-CRESTA-06316\"><p class=\"raos-v2-decision-support__model\">メーカー型番 06316</p><h3 id=\"raos-v2-product-prd-ace-cresta-06316\">ACE クレスタ 06316</h3><h4>公式仕様</h4><ul><li>通常時 55×35×25cm・34L</li><li>公表重量 3.2kg</li><li>拡張時 奥行29cm・39L</li></ul><dl class=\"raos-v2-decision-support__judgement\"><div><dt>向く条件</dt><dd>3モデルの公表重量で最軽量を優先し、通常状態で条件へ合う人。</dd></div><div><dt>向かない条件</dt><dd>拡張時の奥行29cmが搭乗条件を超える区間、または40Lを必須にする人。</dd></div><div><dt>トレードオフ</dt><dd>軽さを優先する一方、非拡張容量はマックスパス4より小さい。</dd></div><div data-raos-v2-claim-state=\"UNKNOWN\"><dt>未確認</dt><dd>耐久性、走行感、収納の使い勝手は実機未試験。</dd></div></dl><p class=\"raos-v2-decision-support__evidence\" data-raos-v2-evidence=\"A_OFFICIAL_FACT\">公式情報：<a href=\"https://store.ace.jp/shop/g/g06316-01/\">クレスタ06316公式仕様</a>（エース公式オンラインストア）／確認日 <time datetime=\"2026-08-26\">2026-08-26</time></p><div class=\"raos-v2-decision-support__cta is-blocked\" data-raos-v2-cta-state=\"BLOCKED\" role=\"status\"><strong>楽天市場の商品リンク：確認待ち</strong><p>型番・世代・販売単位を一意に確認できるまで、商品リンクを表示しません。</p><button type=\"button\" disabled aria-disabled=\"true\">現在は商品リンクを利用できません</button></div></section><section class=\"raos-v2-decision-support__product\" aria-labelledby=\"raos-v2-product-prd-ace-difference-05721\" data-raos-v2-product-id=\"PRD-ACE-DIFFERENCE-05721\"><p class=\"raos-v2-decision-support__model\">メーカー型番 05721</p><h3 id=\"raos-v2-product-prd-ace-difference-05721\">ace. ディフェレンス 05721</h3><h4>公式仕様</h4><ul><li>通常時 55×36×24cm・32L</li><li>公表重量 3.5kg</li><li>拡張時 奥行27cm・38L</li><li>2通りの開き方・キャスターストッパー</li></ul><dl class=\"raos-v2-decision-support__judgement\"><div><dt>向く条件</dt><dd>開き方の選択肢とストッパーを条件にし、通常状態で搭乗条件へ合う人。</dd></div><div><dt>向かない条件</dt><dd>3モデルで最軽量または非拡張40Lを最優先する人。</dd></div><div><dt>トレードオフ</dt><dd>開閉機能が比較軸になる一方、通常容量は3モデルで最小。</dd></div><div data-raos-v2-claim-state=\"UNKNOWN\"><dt>未確認</dt><dd>開閉操作感、ストッパーの使い勝手、耐久性は実機未試験。</dd></div></dl><p class=\"raos-v2-decision-support__evidence\" data-raos-v2-evidence=\"A_OFFICIAL_FACT\">公式情報：<a href=\"https://store.ace.jp/shop/g/g05721-04\">ディフェレンス05721公式仕様</a>（エース公式オンラインストア）／確認日 <time datetime=\"2026-08-26\">2026-08-26</time></p><div class=\"raos-v2-decision-support__cta is-blocked\" data-raos-v2-cta-state=\"BLOCKED\" role=\"status\"><strong>楽天市場の商品リンク：確認待ち</strong><p>型番・世代・販売単位を一意に確認できるまで、商品リンクを表示しません。</p><button type=\"button\" disabled aria-disabled=\"true\">現在は商品リンクを利用できません</button></div></section><section class=\"raos-v2-decision-support__product\" aria-labelledby=\"raos-v2-product-prd-ace-maxpass4-01471\" data-raos-v2-product-id=\"PRD-ACE-MAXPASS4-01471\"><p class=\"raos-v2-decision-support__model\">メーカー型番 01471</p><h3 id=\"raos-v2-product-prd-ace-maxpass4-01471\">PROTECA マックスパス4 01471</h3><h4>公式仕様</h4><ul><li>50×40×25cm・40L</li><li>公表重量 3.6kg</li><li>フロントアクセス・14インチPC収納・キャスターストッパー</li></ul><dl class=\"raos-v2-decision-support__judgement\"><div><dt>向く条件</dt><dd>非拡張40Lとフロントアクセスを条件にし、外寸と合計重量が搭乗条件へ合う人。</dd></div><div><dt>向かない条件</dt><dd>公表重量を最小にしたい人、幅40cmが区間条件へ合わない人。</dd></div><div><dt>トレードオフ</dt><dd>3モデルで容量が最大である一方、公表重量も最大。</dd></div><div data-raos-v2-claim-state=\"UNKNOWN\"><dt>未確認</dt><dd>PC収納の保護性、走行感、取り回し、耐久性は実機未試験。</dd></div></dl><p class=\"raos-v2-decision-support__evidence\" data-raos-v2-evidence=\"A_OFFICIAL_FACT\">公式情報：<a href=\"https://store.ace.jp/shop/g/g01471-02\">マックスパス4 01471公式仕様</a>（エース公式オンラインストア）／確認日 <time datetime=\"2026-08-26\">2026-08-26</time></p><div class=\"raos-v2-decision-support__cta is-blocked\" data-raos-v2-cta-state=\"BLOCKED\" role=\"status\"><strong>楽天市場の商品リンク：確認待ち</strong><p>型番・世代・販売単位を一意に確認できるまで、商品リンクを表示しません。</p><button type=\"button\" disabled aria-disabled=\"true\">現在は商品リンクを利用できません</button></div></section></div></section><section class=\"raos-v2-decision-support__section raos-v2-decision-support__evidence-method\" aria-labelledby=\"raos-v2-evidence-method\"><h2 id=\"raos-v2-evidence-method\">根拠と編集判断の分け方</h2><dl><div><dt>公式情報</dt><dd>メーカーが公表した仕様を、発行主体と確認日付きで示します。</dd></div><div><dt>編集判断</dt><dd>公式仕様から導いた条件別の判断として明示します。</dd></div><div><dt>未確認</dt><dd>実機を使わなければ確認できない事項は推測しません。</dd></div></dl></section><section class=\"raos-v2-decision-support__section raos-v2-decision-support__unknown\" data-raos-v2-result-state=\"UNKNOWN\" aria-labelledby=\"raos-v2-unknown\"><h2 id=\"raos-v2-unknown\">未確認（UNKNOWN）の事項</h2><ul><li><strong>ACE クレスタ 06316：</strong>耐久性、走行感、収納の使い勝手は実機未試験。</li><li><strong>ace. ディフェレンス 05721：</strong>開閉操作感、ストッパーの使い勝手、耐久性は実機未試験。</li><li><strong>PROTECA マックスパス4 01471：</strong>PC収納の保護性、走行感、取り回し、耐久性は実機未試験。</li></ul><p>未確認事項を購入判断に使わず、必要な場合は確認できるまで判断を止めます。</p></section><nav class=\"raos-v2-decision-support__policies\" aria-label=\"関連方針\"><a href=\"/about-ad-policy/\">運営・広告方針</a><a href=\"/privacy-policy/\">プライバシーポリシー</a></nav></div>",
+      "post_excerpt": "クレスタ06316、ディフェレンス05721、マックスパス4 01471を公式仕様と条件別の編集判断で比較します。",
+      "post_name": "carry-on-suitcase-comparison",
+      "post_status": "publish",
+      "post_title": "ACEのスーツケース3モデルを機内持ち込み条件で比較"
+    },
+    "intent": "UPDATE_EXISTING_PUBLISHED_POST_AT_APPROVED_CUTOVER",
+    "postconditions": {
+      "required_after_post_status": "publish"
+    },
+    "preaction": {
+      "binding": null,
+      "binding_digest": null,
+      "status": "HISTORICAL_BASELINE_ONLY"
+    },
+    "preconditions": {
+      "expected_current_post_status": "publish"
+    },
+    "schema": "RAOS_V2_PHASE3_WORDPRESS_UPDATE_PAYLOAD_V1",
+    "structured_data_expectation": {
+      "derivation": "EXACT_WORDPRESS_FIELDS_V1",
+      "documents": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Article",
+              "description": "クレスタ06316、ディフェレンス05721、マックスパス4 01471を公式仕様と条件別の編集判断で比較します。",
+              "headline": "ACEのスーツケース3モデルを機内持ち込み条件で比較",
+              "mainEntityOfPage": {
+                "@id": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+              },
+              "url": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "item": "https://kurashinoshirube.com/carry-on-suitcase-comparison/",
+                  "name": "ACEのスーツケース3モデルを機内持ち込み条件で比較",
+                  "position": 1
+                }
+              ]
+            },
+            {
+              "@type": "Organization",
+              "url": "https://kurashinoshirube.com/"
+            },
+            {
+              "@type": "WebSite",
+              "url": "https://kurashinoshirube.com/"
+            }
+          ]
+        }
+      ],
+      "emission": {
+        "external_configuration_status": "UNVERIFIED_EXTERNAL",
+        "local_json_ld_emission": false,
+        "owner": "EXTERNAL_WORDPRESS_SEO_CONFIGURATION"
+      },
+      "json_ld_document_count": 1,
+      "json_ld_script_count": 1,
+      "json_ld_sha256": "3be6e7824a9b705e90915b6fea44f10b2216f6a0f814689e6bd6e208d0267f9b",
+      "json_ld_types": [
+        "Article",
+        "BreadcrumbList",
+        "Organization",
+        "WebSite"
+      ],
+      "schema": "RAOS_V2_PHASE3_STRUCTURED_DATA_EXPECTATION_V1",
+      "version": "1.0.0"
+    },
+    "target": {
+      "expected_match_count": 1,
+      "expected_public_body_sha256": "e2cace30f5e14b3f2783b3ef10885f2b7b958ac8a3a4aee45447fd95e9e72121",
+      "kind": "EXISTING_POST",
+      "origin": "https://kurashinoshirube.com",
+      "route": "/carry-on-suitcase-comparison/"
+    },
+    "version": "1.0.0"
+  },
+  "version": "1.0.0"
+}

@@ -1,0 +1,111 @@
+schema: RAOS_V2_PHASE3_EXTERNAL_ACTION_EVIDENCE_TEMPLATE_V1
+version: 1.0.0
+classification: SANITIZED_RECEIPT_TEMPLATE_NO_AUTHORITY
+target_origin: https://kurashinoshirube.com
+target_route: /carry-on-suitcase-comparison/
+current_state_source: changes/raos-v2/phase-3/inputs/external-action-state.v1.yaml
+steps:
+- sequence: 1
+  action: PREACTION_PUBLIC_CAPTURE_AND_OWNER_EXPORT
+  status: NOT_EXECUTED
+  required_receipt_schema: RAOS_V2_PHASE3_PREACTION_BINDING_V1
+  phase0_baseline_rule: IMMUTABLE_HISTORICAL_DO_NOT_OVERWRITE
+- sequence: 2
+  action: LOCAL_REISSUE_FROM_VERIFIED_PREACTION
+  status: BLOCKED_PENDING_VERIFIED_PREACTION_BINDING
+  network: false
+  external_write: false
+- sequence: 3
+  action: OWNER_CONTENT_REVIEW
+  status: NOT_EXECUTED
+  required_receipt_schema: RAOS_V2_PHASE3_HUMAN_REVIEW_RECEIPT_V1
+- sequence: 4
+  action: PRE_WRITE_EXPORT_AND_DISABLED_DRY_RUN
+  external_action_id: EXT-001
+  status: NOT_EXECUTED
+  required_receipt_schemas:
+  - RAOS_V2_WORDPRESS_EXPORT_BINDING_V2
+  - RAOS_V2_PHASE3_WORDPRESS_DRY_RUN_RECEIPT_V1
+  maximum_export_age_seconds: 300
+  ordering: AFTER_HUMAN_REVIEW_BEFORE_WORDPRESS_WRITE
+- sequence: 5
+  action: DEPLOY_AND_WORDPRESS_NONPUBLIC_REVIEW_PREVIEW
+  external_action_ids:
+  - EXT-004
+  - EXT-002
+  component_statuses:
+    theme_or_plugin_deploy: NOT_EXECUTED
+    wordpress_nonpublic_preview: NOT_EXECUTED
+  structured_data_gate:
+    test_id: T-V2-036
+    status: NOT_EXECUTED_EXTERNAL_BLOCKER
+    expected_types:
+    - Article
+    - BreadcrumbList
+    - Organization
+    - WebSite
+    owner: YOAST_OR_CURRENT_WORDPRESS_METADATA_OWNER
+    plugin_generates_json_ld: false
+- sequence: 6
+  action: HUMAN_PUBLICATION
+  external_action_id: EXT-003
+  status: NOT_EXECUTED
+- sequence: 7
+  action: POST_ACTION_OWNER_EXPORT
+  external_action_id: EXT-014
+  status: NOT_EXECUTED
+  required_receipt_schema: RAOS_V2_WORDPRESS_EXPORT_BINDING_V2
+  ordering: AFTER_WORDPRESS_WRITE_BEFORE_HTTP_VERIFICATION
+  required_binding: SEALED_AFTER_FIELD_HASHES_AND_FINAL_PUBLIC_BODY
+- sequence: 8
+  action: ATOMIC_POST_ACTION_HTTP_AND_EXPORT_VERIFICATION
+  component_statuses:
+    public_capture: NOT_EXECUTED
+    post_action_owner_export: NOT_EXECUTED
+  required_receipt_schema: RAOS_V2_PUBLIC_VERIFICATION_RECEIPT_V2
+  required_inputs:
+  - FRESH_PUBLIC_READ_ONLY_CAPTURE
+  - SEALED_PHASE3_PACKAGE
+  - FRESH_POST_ACTION_OWNER_EXPORT_BINDING
+  completion_scope: HTTP_AND_OWNER_EXPORT_ONLY
+  indexability_evidence:
+    scope: HEAD_META_HTTP_SITEMAP_AND_ROBOTS_TXT
+    robots_txt_url: https://kurashinoshirube.com/robots.txt
+    robots_txt_allowed_statuses:
+    - 200
+    - 404
+    - 410
+    robots_txt_body_storage: DISCARDED_AFTER_HASH
+    target_agent: Googlebot
+    target_path: /carry-on-suitcase-comparison/
+    target_allowed_required: true
+    crawler_specific_meta_indexability_safe_required: true
+    template_or_noscript_metadata_accepted: false
+  maximum_age_seconds: 300
+  pairing: ATOMIC_PAIRED_CAPTURE_CONTRACT
+- sequence: 9
+  action: PUBLIC_BROWSER_VERIFICATION
+  status: REQUIRED_VALIDATOR_NOT_IMPLEMENTED
+  required_receipt_schema: RAOS_V2_PHASE3_PUBLIC_BROWSER_VERIFICATION_RECEIPT_V1
+  required_viewport_widths:
+  - 390
+  - 768
+  - 1440
+  boundary: SEPARATELY_APPROVED_PUBLIC_READ_ONLY_BROWSER
+  acceptance_authority: false
+  phase_exit: BLOCKED_EXTERNAL
+- sequence: 10
+  action: SEVEN_DAY_STABILITY_WINDOW
+  status: NOT_STARTED
+  required_days: 7
+credentials: MUST_NOT_ENTER_REPOSITORY_OR_RECEIPT
+raw_exports: OWNER_STORAGE_ONLY_NOT_GIT
+all_external_actions: NOT_EXECUTED
+phase_exit: BLOCKED_EXTERNAL
+backlog_id: B-V2-040
+test_ids:
+- T-V2-005
+- T-V2-023
+- T-V2-039
+- T-V2-040
+- T-V2-051

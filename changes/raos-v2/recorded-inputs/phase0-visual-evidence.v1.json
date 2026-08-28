@@ -1,0 +1,25 @@
+{
+  "schema": "RAOS_V2_RECORDED_PHASE0_VISUAL_EVIDENCE_V1",
+  "version": "1.0.0",
+  "observed_at": "2026-08-27T21:35:05.654406Z",
+  "evidence_class": "PUBLIC_READ_ONLY_MANUAL_RECORDED",
+  "capture_contract": "PLAYWRIGHT_CLI_SNAPSHOT_FIRST_390_768_1440_V1",
+  "cookie_banner_interaction": "NONE",
+  "policy_pages": "METADATA_ONLY",
+  "raw_images": "LOCAL_ONLY_NOT_TRACKED_NOT_REVERIFIED",
+  "screenshots": [
+    {"bytes": 120672, "path": "/", "sha256": "8c2b6a59f1dafae73880c2bd758d9d67280f903fe617f93ec6244c276de45e18", "viewport": "390x844"},
+    {"bytes": 244351, "path": "/", "sha256": "20556c60c2094e102e86f8d607a7337e06e99f8386d317e1dfb45c781c3e754a", "viewport": "768x1024"},
+    {"bytes": 373306, "path": "/", "sha256": "b27091628163eb228d64393d04e5815d0163263253e5c9d929d9c88397ef4a4c", "viewport": "1440x900"},
+    {"bytes": 70005, "path": "/carry-on-suitcase-comparison/", "sha256": "21f74b8e0f81a723254eb479f695a74e6a01f6ca73b0b3fa982c4e2b4a558cbb", "viewport": "390x844"},
+    {"bytes": 172849, "path": "/carry-on-suitcase-comparison/", "sha256": "276a992800cf3374af93275b7c0c1a519df51cb916707acb5aee751c8c69a8fb", "viewport": "768x1024"},
+    {"bytes": 160802, "path": "/carry-on-suitcase-comparison/", "sha256": "a3b3bd3f4092508e7d1090723da8b1e8f7e3537d8d1b1f1d49cdae32d8eacea7", "viewport": "1440x900"},
+    {"bytes": 66462, "path": "/portable-power-station-guide/", "sha256": "59a588cc72a9931792e937d5cd44e388203a10bff26c07237cb764fbab0f6121", "viewport": "390x844"},
+    {"bytes": 141385, "path": "/portable-power-station-guide/", "sha256": "80f7291d7f12e45a8756d7c471b783307fbc8ed4d2f13d88f375c647e6f7ffca", "viewport": "768x1024"},
+    {"bytes": 155925, "path": "/portable-power-station-guide/", "sha256": "91eed78b511a5cec76b2f2bb0639795a033b021045fecc8e70c4fbbd761b8c83", "viewport": "1440x900"},
+    {"bytes": 54715, "path": "/anker-solix-c300-c800-c1000-differences/", "sha256": "b76501aee862ac9464e7dd9f79ac1916617108a3221ac92b68cbd92f4e38a9cd", "viewport": "390x844"},
+    {"bytes": 112292, "path": "/anker-solix-c300-c800-c1000-differences/", "sha256": "82aae1a6520c210ea3c1a0b728ec86a240f6f26dd9181f743894301ac910ae92", "viewport": "768x1024"},
+    {"bytes": 133305, "path": "/anker-solix-c300-c800-c1000-differences/", "sha256": "d2a19d5bda3116d4270e5b634a3118341cb540c72583e8a1f8d0a13f96124403", "viewport": "1440x900"}
+  ],
+  "external_actions": "NOT_EXECUTED"
+}

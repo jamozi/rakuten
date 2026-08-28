@@ -1,0 +1,84 @@
+schema: RAOS_V2_PHASE3_SEO_URL_CHANGE_PLAN_V1
+version: 1.0.0
+mode: HUMAN_ACTION_PLAN_ONLY
+target_origin: https://kurashinoshirube.com
+target_route: /carry-on-suitcase-comparison/
+safe_default: PRESERVE_EXISTING_ROUTE_AND_INDEX_STATE
+route:
+  before: /carry-on-suitcase-comparison/
+  after: /carry-on-suitcase-comparison/
+  change: NONE
+redirects:
+  create: []
+  update: []
+  delete: []
+  maximum_hops: 1
+  loop_count: 0
+  broad_home_redirect: false
+canonical:
+  before: https://kurashinoshirube.com/carry-on-suitcase-comparison/
+  after: https://kurashinoshirube.com/carry-on-suitcase-comparison/
+  change: NONE
+  owner: YOAST_OR_CURRENT_SINGLE_METADATA_OWNER
+robots:
+  before: index,follow
+  after: index,follow
+  change: NONE
+sitemap:
+  before_membership: true
+  after_membership: true
+  change: NONE
+  lastmod_rule: MATERIAL_CONTENT_CHANGE_ONLY
+structured_data:
+  single_owner: YOAST_OR_CURRENT_WORDPRESS_METADATA_OWNER
+  plugin_generates_json_ld: false
+  verification_status: NOT_EXECUTED_EXTERNAL_BLOCKER
+  test_gate: T-V2-036
+  expected_graph_sha256: 3be6e7824a9b705e90915b6fea44f10b2216f6a0f814689e6bd6e208d0267f9b
+  allowed_types:
+  - Article
+  - BreadcrumbList
+  - Organization
+  - WebSite
+  forbidden_types:
+  - Product
+  - Offer
+  - Review
+  - AggregateRating
+  - ItemList
+  - FAQPage
+  - HowTo
+  custom_duplicate_graph: false
+  failure: DO_NOT_COMPLETE_PUBLICATION; CORRECT_METADATA_BEFORE_CUTOVER_OR_ROLL_BACK_AFTER_WRITE
+publication_aware_links:
+  allowed_internal_routes:
+  - /
+  - /carry-on-suitcase-comparison/
+  - /about-ad-policy/
+  - /privacy-policy/
+  suppressed_until_published:
+  - /carry-on/
+  - /tools/carry-on-size-checker/
+  - /policy/how-we-compare-carry-on-products/
+preconditions:
+- fresh bounded public read-only capture
+- recoverable exact WordPress export binding
+- non-synthetic human review receipt and valid package seal
+- one-H1 and visible/structured-data parity check
+- exact Yoast/metadata-owner Article, BreadcrumbList, Organization and WebSite output verified
+failure: BLOCK_AND_KEEP_CURRENT_PUBLIC_STATE
+production_change: NOT_EXECUTED
+external_action_ids:
+- EXT-013
+backlog_id: B-V2-038
+requirement_ids:
+- R-V2-003
+- R-V2-022
+- R-V2-025
+test_ids:
+- T-V2-004
+- T-V2-005
+- T-V2-010
+- T-V2-035
+- T-V2-036
+- T-V2-040
