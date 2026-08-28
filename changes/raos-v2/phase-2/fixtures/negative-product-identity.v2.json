@@ -1,0 +1,9 @@
+{
+  "schema": "RAOS_V2_NEGATIVE_IDENTITY_FIXTURES_V1",
+  "cases": [
+    {"case_id": "ACCESSORY", "product_id": "PRD-ACE-CRESTA-06316", "observed_model_number": "06316", "title": "06316 交換用キャスター", "expected": "REJECTED"},
+    {"case_id": "MODEL_MISMATCH", "product_id": "PRD-ACE-CRESTA-06316", "observed_model_number": "06315", "title": "ACE クレスタ 06315", "expected": "AMBIGUOUS"},
+    {"case_id": "MISSING_MODEL", "product_id": "PRD-ACE-CRESTA-06316", "observed_model_number": null, "title": "ACE クレスタ", "expected": "UNRESOLVED"},
+    {"case_id": "CASE_AND_SPACING_ONLY", "product_id": "PRD-ACE-CRESTA-06316", "observed_model_number": " 06316 ", "title": "ace CRESTA 06316", "expected": "EXACT"}
+  ]
+}

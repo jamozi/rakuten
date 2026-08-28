@@ -1,0 +1,23 @@
+schema: RAOS_V2_CONTENT_PACKET_V1
+article_id: V2-POLICY-CARRY-ON-COMPARE
+route: /policy/how-we-compare-carry-on-products/
+template: POLICY
+review_state: EVIDENCE_COMPLETE
+disclosure: 楽天アフィリエイトを主な収益源としますが、報酬率や売上指標は商品評価に使用しません。
+thirty_second_conclusion: メーカーと航空会社の一次情報、型番同一性、用途別の条件適合だけで比較します。
+unknowns:
+  - 実機を使用していないため使用感・耐久・実測は評価しません。
+fits:
+  - 根拠と未確認事項を見ながら選びたい人
+non_fits:
+  - 使用体験レビューを求める人
+tradeoffs:
+  - 一次情報だけでは判断できない要素はUNKNOWNとして残します。
+official_source_ids:
+  - SRC-ACE-CRESTA-06316
+  - SRC-ACE-DIFFERENCE-05721
+  - SRC-ACE-MAXPASS4-01471
+experience_claims: []
+ai_provenance: STRUCTURED_DRAFT_AND_VALIDATION_ONLY
+human_review: NOT_EXECUTED
+publication: NOT_EXECUTED

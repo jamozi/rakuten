@@ -1,0 +1,10 @@
+schema: RAOS_V2_DIFFERENCE_TEMPLATE_FIXTURE_V1
+article_id: V2-A19-DIFFERENCE-SYNTHETIC
+route: /differences/ace-cresta-vs-difference-vs-maxpass4/
+template: DIFFERENCE
+status: TEMPLATE_FIXTURE_NOT_PUBLIC_CANDIDATE
+primary_intent: 型番間の公表仕様差だけを短く確認する
+comparison_overlap_threshold: 0.72
+duplicate_route_creation: FORBIDDEN
+human_review: NOT_EXECUTED
+publication: NOT_EXECUTED

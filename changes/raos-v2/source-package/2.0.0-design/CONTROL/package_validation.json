@@ -1,0 +1,52 @@
+{
+  "schema": "RAOS_V2_PACKAGE_VALIDATION_V1",
+  "version": "2.0.0-design",
+  "generated_at": "2026-08-28T22:30:00+09:00",
+  "authority": "DESIGN_ONLY_UNAPPROVED_FOR_EXTERNAL_ACTIONS",
+  "status": "PASS",
+  "checks": {
+    "exact_counts": {
+      "expected": {
+        "decisions": 34,
+        "requirements": 36,
+        "backlog": 49,
+        "tests": 51
+      },
+      "actual": {
+        "decisions": 34,
+        "requirements": 36,
+        "backlog": 49,
+        "tests": 51
+      },
+      "ok": true
+    },
+    "unique_ids": true,
+    "cross_references": {
+      "ok": true,
+      "errors": []
+    },
+    "backlog_acyclic": {
+      "ok": true,
+      "cycle": []
+    },
+    "external_actions_not_executed": true,
+    "assumptions_closed_with_safe_default": true,
+    "mandatory_files": {
+      "ok": true,
+      "missing": []
+    },
+    "design_only_file_types": {
+      "ok": true,
+      "bad_files": []
+    },
+    "utf8": {
+      "ok": true,
+      "failures": []
+    },
+    "unfinished_markers": {
+      "ok": true,
+      "matches": []
+    }
+  },
+  "errors": []
+}

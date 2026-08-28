@@ -1,0 +1,58 @@
+schema: RAOS_V2_PILOT_RECONCILIATION_V1
+automatic_public_action: false
+articles:
+- article_id: st1703-first-suitcase-comparison
+  route: /carry-on-suitcase-comparison/
+  safe_action: KEEP_PUBLIC_AND_MIGRATE
+  observation:
+    status: 200
+    canonical: https://kurashinoshirube.com/carry-on-suitcase-comparison/
+    sitemap_membership: true
+    body_sha256: e2cace30f5e14b3f2783b3ef10885f2b7b958ac8a3a4aee45447fd95e9e72121
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    evidence_class: PUBLIC_READ_ONLY
+- article_id: st1704-portable-power-station-guide
+  route: /portable-power-station-guide/
+  safe_action: KEEP_PUBLIC_DEFER_V2
+  observation:
+    status: 200
+    canonical: https://kurashinoshirube.com/portable-power-station-guide/
+    sitemap_membership: true
+    body_sha256: af7cc20535408cec058246f676d74b1e133a700e9548547aae552d2cd2848801
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    evidence_class: PUBLIC_READ_ONLY
+- article_id: st1704-anker-solix-c300-c800-c1000-differences
+  route: /anker-solix-c300-c800-c1000-differences/
+  safe_action: KEEP_PUBLIC_DEFER_V2
+  observation:
+    status: 200
+    canonical: https://kurashinoshirube.com/anker-solix-c300-c800-c1000-differences/
+    sitemap_membership: true
+    body_sha256: 017acf3b38f2f6eccfd18d12fff932ef8cb4e43679fae1426c5b98ce0dfc03ee
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    evidence_class: PUBLIC_READ_ONLY
+- article_id: st1704-countertop-dishwasher-for-small-households
+  route: /countertop-dishwasher-for-small-households/
+  safe_action: NO_NEW_ROUTE_NO_REDIRECT
+  observation:
+    status: 404
+    canonical: null
+    sitemap_membership: false
+    body_sha256: c4ae0bb8d1729ca5a5dafd2ae3067f982370822bb01ed8fd95edda3aea88c99f
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    evidence_class: PUBLIC_READ_ONLY
+- article_id: st1704-compact-robot-vacuum-shortlist
+  route: /compact-robot-vacuum-shortlist/
+  safe_action: NO_NEW_ROUTE_NO_REDIRECT
+  observation:
+    status: 404
+    canonical: null
+    sitemap_membership: false
+    body_sha256: d559cc437c04f7ca7a40e43040595b5f1d7c16f204d72c64a76b58ad1da446ef
+    observed_at: '2026-08-27T21:35:05.654406Z'
+    evidence_class: PUBLIC_READ_ONLY
+backlog_id: B-V2-007
+test_ids:
+- T-V2-004
+- T-V2-005
+- T-V2-051

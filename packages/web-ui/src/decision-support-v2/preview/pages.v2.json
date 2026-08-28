@@ -1,0 +1,440 @@
+{
+  "schema_version": "2.0.0",
+  "classification": "DETERMINISTIC_LOCAL_PREVIEW_INPUT",
+  "target_origin": "https://kurashinoshirube.com",
+  "publication_authority": "NONE",
+  "preview_robots": "noindex,nofollow",
+  "disclosure": "広告リンクを設置する場合があります。現在、確認済みでない商品リンクは表示しません。報酬は商品の選定・掲載順に影響しません。実機試験を行っていない比較では、公式情報と編集判断を分けて表示します。",
+  "checked_at": "2026-08-28T00:00:00+09:00",
+  "pages": [
+    {
+      "route": "/",
+      "template": "HOME",
+      "article_id": "HOME",
+      "publication_state": "LOCAL_PREVIEW",
+      "public_candidate": true,
+      "intended_index_candidate": true,
+      "title": "この荷物、機内に持ち込める？",
+      "description": "航空会社の公式条件と商品の公表仕様を分けて確認できる、機内持ち込みの意思決定ガイドです。",
+      "eyebrow": "OFFICIAL RULE × PRODUCT SPEC",
+      "summary": "航空会社を推測せず、外寸・合計重量・個数を公式条件と照合します。",
+      "breadcrumbs": [{ "href": "/", "label": "ホーム" }],
+      "show_checker": true,
+      "sections": [
+        {
+          "id": "start-here",
+          "title": "まず確認する3つのこと",
+          "paragraphs": [
+            "航空会社と機材、キャスターやハンドルを含む外寸、身の回り品を含む合計重量と個数を確認します。",
+            "記録済みの公式条件だけでは決められない場合はUNKNOWNと表示し、推測で合格にしません。"
+          ],
+          "links": [
+            { "href": "/guides/carry-on-baggage-rules/", "label": "基本ルールを読む" },
+            { "href": "/carry-on-suitcase-comparison/", "label": "ACE 3モデルを条件で比べる" }
+          ]
+        }
+      ],
+      "products": [],
+      "comparison_axes": []
+    },
+    {
+      "route": "/carry-on/",
+      "template": "HUB",
+      "article_id": "A01",
+      "publication_state": "LOCAL_PREVIEW",
+      "public_candidate": true,
+      "intended_index_candidate": true,
+      "title": "機内持ち込みを条件から決める",
+      "description": "航空会社のルール確認、荷物の測り方、条件別の商品比較へ進むための案内です。",
+      "eyebrow": "CARRY-ON DECISION HUB",
+      "summary": "搭乗条件、荷物条件、商品条件の順に分けると、買う前の見落としを減らせます。",
+      "breadcrumbs": [
+        { "href": "/", "label": "ホーム" },
+        { "href": "/carry-on/", "label": "機内持ち込み" }
+      ],
+      "show_checker": false,
+      "sections": [
+        {
+          "id": "decision-path",
+          "title": "条件確認の順番",
+          "paragraphs": [
+            "先に搭乗する全区間の航空会社・機材・運賃条件を確認します。次に、荷物を通常状態で測ります。最後に条件へ合う型番だけを比較します。",
+            "まだ本文が完成していないガイドは一覧に混ぜません。"
+          ],
+          "links": [
+            { "href": "/tools/carry-on-size-checker/", "label": "条件チェッカーを使う" },
+            { "href": "/guides/carry-on-baggage-rules/", "label": "航空会社ルールの読み方" },
+            { "href": "/carry-on-suitcase-comparison/", "label": "3モデル比較" }
+          ]
+        }
+      ],
+      "products": [],
+      "comparison_axes": []
+    },
+    {
+      "route": "/tools/carry-on-size-checker/",
+      "template": "TOOL",
+      "article_id": "A02",
+      "publication_state": "LOCAL_PREVIEW",
+      "public_candidate": true,
+      "intended_index_candidate": true,
+      "title": "機内持ち込み条件チェッカー",
+      "description": "航空会社と荷物の外寸・合計重量・個数をブラウザ内だけで照合します。入力は送信・保存しません。",
+      "eyebrow": "LOCAL-ONLY CHECKER",
+      "summary": "全区間を厳しい共通条件で判定し、根拠不足はUNKNOWN、期限超過はSTALEとして止めます。",
+      "breadcrumbs": [
+        { "href": "/", "label": "ホーム" },
+        { "href": "/tools/carry-on-size-checker/", "label": "条件チェッカー" }
+      ],
+      "show_checker": true,
+      "sections": [
+        {
+          "id": "checker-limitations",
+          "title": "判定できること・できないこと",
+          "paragraphs": [
+            "判定対象は記録済み公式ルールの外寸、合計重量、個数です。危険物、空港での個別判断、共同運航便などはこの判定だけで確定できません。",
+            "PASSでも搭乗前に各航空会社の公式ページで最終確認してください。FAILまたはUNKNOWNでは購入CTAを表示しません。"
+          ],
+          "links": [
+            { "href": "/guides/carry-on-baggage-rules/", "label": "ルールの例外を確認する" }
+          ]
+        }
+      ],
+      "products": [],
+      "comparison_axes": []
+    },
+    {
+      "route": "/guides/carry-on-baggage-rules/",
+      "template": "GUIDE",
+      "article_id": "A03",
+      "publication_state": "LOCAL_PREVIEW",
+      "public_candidate": true,
+      "intended_index_candidate": true,
+      "title": "機内持ち込み手荷物の基本ルール",
+      "description": "ANA、JAL、Peach、Jetstar Japanの公式案内を、外寸・重量・個数・適用条件に分けて確認します。",
+      "eyebrow": "30秒で結論",
+      "summary": "同じ国内線でも航空会社、機材、運賃・オプション、適用日で条件が変わります。全区間を個別に確認してください。",
+      "breadcrumbs": [
+        { "href": "/", "label": "ホーム" },
+        { "href": "/carry-on/", "label": "機内持ち込み" },
+        { "href": "/guides/carry-on-baggage-rules/", "label": "基本ルール" }
+      ],
+      "show_checker": false,
+      "sections": [
+        {
+          "id": "rule-summary",
+          "title": "外寸だけでは決められない",
+          "paragraphs": [
+            "ANAとJALは座席数による寸法条件があり、PeachとJetstar Japanは合計重量を含む条件が異なります。乗り継ぎでは全区間の条件を満たす必要があります。",
+            "外寸にはキャスター、ハンドル、ポケットなどの付属部分を含めます。拡張できるバッグは実際に搭乗する状態で確認します。"
+          ],
+          "links": [
+            {
+              "href": "https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/",
+              "label": "ANA公式の機内持ち込み案内",
+              "external": true
+            },
+            {
+              "href": "https://www.jal.co.jp/jp/ja/dom/baggage/inflight/",
+              "label": "JAL公式の機内持ち込み案内",
+              "external": true
+            },
+            {
+              "href": "https://www.flypeach.com/lm/ai/airports/baggage/carry_on_bag",
+              "label": "Peach公式の機内持ち込み案内",
+              "external": true
+            },
+            {
+              "href": "https://www.jetstar.com/jp/ja/flights/baggage/carry-on-baggage",
+              "label": "Jetstar公式の機内持ち込み案内",
+              "external": true
+            }
+          ]
+        },
+        {
+          "id": "unknown-cases",
+          "title": "UNKNOWNになる主な条件",
+          "paragraphs": [
+            "運航会社、座席数、共同運航便の扱い、運賃に含まれるオプション、適用日が不明なときは、最も都合のよい条件を選びません。",
+            "公式ページ同士の記述が矛盾する場合や更新確認期限を過ぎた場合も、確定判定を止めます。"
+          ],
+          "links": [{ "href": "/tools/carry-on-size-checker/", "label": "記録済み条件で照合する" }]
+        }
+      ],
+      "products": [],
+      "comparison_axes": []
+    },
+    {
+      "route": "/guides/low-cost-carrier-7kg-packing/",
+      "template": "GUIDE",
+      "article_id": "A04",
+      "publication_state": "PLANNED_LOCKED",
+      "public_candidate": false,
+      "intended_index_candidate": false,
+      "title": "LCC 7kg条件の荷造りガイド（制作中）",
+      "description": "公開候補ではないローカル設計確認用ページです。本文・推薦・広告リンクは未承認です。",
+      "eyebrow": "PLANNED_LOCKED",
+      "summary": "この記事は構成確認用です。根拠付き本文が完成するまで公開・インデックス・商品誘導を行いません。",
+      "breadcrumbs": [
+        { "href": "/", "label": "ホーム" },
+        { "href": "/carry-on/", "label": "機内持ち込み" },
+        { "href": "/guides/low-cost-carrier-7kg-packing/", "label": "7kg荷造り（制作中）" }
+      ],
+      "show_checker": false,
+      "sections": [
+        {
+          "id": "locked-scope",
+          "title": "公開前に必要な確認",
+          "paragraphs": [
+            "航空会社・運賃・オプションごとの適用条件、荷物と身の回り品を合わせる範囲、確認日を一次情報へ結び付けます。",
+            "実測や使用体験は行っていないため、体験したかのような表現や根拠のない軽量化効果は掲載しません。"
+          ],
+          "links": []
+        }
+      ],
+      "products": [],
+      "comparison_axes": []
+    },
+    {
+      "route": "/carry-on-suitcase-comparison/",
+      "template": "COMPARISON",
+      "article_id": "A05",
+      "publication_state": "LOCAL_PREVIEW",
+      "public_candidate": true,
+      "intended_index_candidate": true,
+      "title": "ACEのスーツケース3モデルを機内持ち込み条件で比較",
+      "description": "クレスタ06316、ディフェレンス05721、マックスパス4 01471を公式仕様と条件別の編集判断で比較します。",
+      "eyebrow": "NO UNIVERSAL WINNER",
+      "summary": "最軽量、開き方、容量のどれを優先するかで候補は変わります。実機試験は行っていません。",
+      "breadcrumbs": [
+        { "href": "/", "label": "ホーム" },
+        { "href": "/carry-on/", "label": "機内持ち込み" },
+        { "href": "/carry-on-suitcase-comparison/", "label": "ACE 3モデル比較" }
+      ],
+      "show_checker": false,
+      "sections": [
+        {
+          "id": "conditional-conclusion",
+          "title": "30秒で条件別の結論",
+          "paragraphs": [
+            "公表重量を優先するなら3.2kgのクレスタ、2通りの開き方とストッパーを条件にするならディフェレンス、非拡張40Lとフロントアクセスを条件にするならマックスパス4が比較候補です。",
+            "これは公式仕様から導いた編集判断です。搭乗できるかは航空会社・機材・拡張状態・合計重量を別に確認してください。"
+          ],
+          "links": [
+            { "href": "/tools/carry-on-size-checker/", "label": "搭乗条件を先に確認する" },
+            { "href": "/policy/how-we-compare-carry-on-products/", "label": "比較方法を確認する" }
+          ]
+        }
+      ],
+      "products": ["PRD-ACE-CRESTA-06316", "PRD-ACE-DIFFERENCE-05721", "PRD-ACE-MAXPASS4-01471"],
+      "comparison_axes": [
+        {
+          "label": "通常時の外寸",
+          "values": {
+            "PRD-ACE-CRESTA-06316": "55×35×25cm",
+            "PRD-ACE-DIFFERENCE-05721": "55×36×24cm",
+            "PRD-ACE-MAXPASS4-01471": "50×40×25cm"
+          }
+        },
+        {
+          "label": "通常時の容量",
+          "values": {
+            "PRD-ACE-CRESTA-06316": "34L",
+            "PRD-ACE-DIFFERENCE-05721": "32L",
+            "PRD-ACE-MAXPASS4-01471": "40L"
+          }
+        },
+        {
+          "label": "公表重量",
+          "values": {
+            "PRD-ACE-CRESTA-06316": "3.2kg",
+            "PRD-ACE-DIFFERENCE-05721": "3.5kg",
+            "PRD-ACE-MAXPASS4-01471": "3.6kg"
+          }
+        },
+        {
+          "label": "条件別の特徴",
+          "values": {
+            "PRD-ACE-CRESTA-06316": "3モデルで最軽量",
+            "PRD-ACE-DIFFERENCE-05721": "2通りの開き方・ストッパー",
+            "PRD-ACE-MAXPASS4-01471": "40L・フロントアクセス"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/guides/carry-on-bag-measurement/",
+      "template": "GUIDE",
+      "article_id": "A06",
+      "publication_state": "PLANNED_LOCKED",
+      "public_candidate": false,
+      "intended_index_candidate": false,
+      "title": "機内持ち込みバッグの測り方（制作中）",
+      "description": "公開候補ではないローカル設計確認用ページです。測定手順の根拠確認が完了するまで公開しません。",
+      "eyebrow": "PLANNED_LOCKED",
+      "summary": "キャスター・ハンドル・外ポケットを含める測定範囲を、公式情報へ結び付けている段階です。",
+      "breadcrumbs": [
+        { "href": "/", "label": "ホーム" },
+        { "href": "/carry-on/", "label": "機内持ち込み" },
+        { "href": "/guides/carry-on-bag-measurement/", "label": "測り方（制作中）" }
+      ],
+      "show_checker": false,
+      "sections": [
+        {
+          "id": "measurement-scope",
+          "title": "公開前に固定する測定条件",
+          "paragraphs": [
+            "荷物を通常使用する状態にして、高さ・幅・奥行の最大部分を付属部品込みで扱います。拡張機能を使う場合は拡張時を別状態として判定します。",
+            "写真や実測値を作らず、航空会社とメーカーが公表した範囲、編集上の手順、未確認事項を分けます。"
+          ],
+          "links": []
+        }
+      ],
+      "products": [],
+      "comparison_axes": []
+    },
+    {
+      "route": "/policy/how-we-compare-carry-on-products/",
+      "template": "POLICY",
+      "article_id": "A25",
+      "publication_state": "LOCAL_PREVIEW",
+      "public_candidate": true,
+      "intended_index_candidate": true,
+      "title": "機内持ち込み商品の比較方法",
+      "description": "公式事実、編集判断、未確認事項、広告報酬を分離する比較・更新・訂正方針です。",
+      "eyebrow": "EDITORIAL METHOD",
+      "summary": "推薦順位は条件適合と根拠で決め、料率・報酬・EPCなどの事業指標を混ぜません。",
+      "breadcrumbs": [
+        { "href": "/", "label": "ホーム" },
+        { "href": "/policy/how-we-compare-carry-on-products/", "label": "比較方法" }
+      ],
+      "show_checker": false,
+      "sections": [
+        {
+          "id": "evidence-policy",
+          "title": "事実と判断を分ける",
+          "paragraphs": [
+            "商品仕様と航空会社ルールはメーカー・航空会社などの一次情報だけに結び付けます。競合記事やレビュー本文を商品主張の根拠にしません。",
+            "公式事実、そこから条件を明示して導く編集判断、確認できないUNKNOWNを別レコード・別表示にします。"
+          ],
+          "links": []
+        },
+        {
+          "id": "commercial-independence",
+          "title": "広告報酬から独立した選定",
+          "paragraphs": [
+            "料率、価格報酬、EPC、売上は推薦スコアや掲載順の入力にしません。商品同一性を一意に確認できない販売リンクはBLOCKEDにします。",
+            "実機を使っていない場合は、耐久性、操作感、音、使い勝手を経験したかのように書きません。"
+          ],
+          "links": []
+        },
+        {
+          "id": "corrections",
+          "title": "更新と訂正",
+          "paragraphs": [
+            "確認日と根拠を表示し、更新期限超過では確定表示を止めます。重大な誤りは訂正履歴と影響範囲を残します。",
+            "このローカルプレビューは法務・運営者レビュー前であり、公開・WordPress書き込み・計測送信は行っていません。"
+          ],
+          "links": []
+        }
+      ],
+      "products": [],
+      "comparison_axes": []
+    },
+    {
+      "route": "/differences/ace-cresta-vs-difference-vs-maxpass4/",
+      "template": "DIFFERENCE",
+      "article_id": "A19",
+      "publication_state": "FIXTURE_ONLY",
+      "public_candidate": false,
+      "intended_index_candidate": false,
+      "title": "ACE 3モデルの違い（テンプレート検証専用）",
+      "description": "比較記事との検索意図重複を検査する、noindexのローカルfixtureです。公開候補ではありません。",
+      "eyebrow": "FIXTURE_ONLY / NOINDEX",
+      "summary": "このページはDIFFERENCEテンプレートと重複防止を検証するだけで、独立した公開候補URLではありません。",
+      "breadcrumbs": [
+        { "href": "/", "label": "ホーム" },
+        { "href": "/differences/ace-cresta-vs-difference-vs-maxpass4/", "label": "違いfixture" }
+      ],
+      "show_checker": false,
+      "sections": [
+        {
+          "id": "fixture-intent",
+          "title": "比較記事と分離する条件",
+          "paragraphs": [
+            "対象を2つ以上の明確な差分判断へ絞れない場合、DIFFERENCE記事を公開せず比較記事へ統合します。",
+            "現状は検索意図が比較記事と重なるためFIXTURE_ONLYです。商品順位、販売リンク、公開用構造化データを持ちません。"
+          ],
+          "links": [{ "href": "/carry-on-suitcase-comparison/", "label": "正規の比較候補へ戻る" }]
+        }
+      ],
+      "products": [],
+      "comparison_axes": []
+    }
+  ],
+  "products": {
+    "PRD-ACE-CRESTA-06316": {
+      "product_id": "PRD-ACE-CRESTA-06316",
+      "name": "ACE クレスタ 06316",
+      "model_number": "06316",
+      "facts": ["通常時 55×35×25cm・34L", "公表重量 3.2kg", "拡張時 奥行29cm・39L"],
+      "fit": "3モデルの公表重量で最軽量を優先し、通常状態で条件へ合う人。",
+      "non_fit": "拡張時の奥行29cmが搭乗条件を超える区間、または40Lを必須にする人。",
+      "tradeoff": "軽さを優先する一方、非拡張容量はマックスパス4より小さい。",
+      "unknown": "耐久性、走行感、収納の使い勝手は実機未試験。",
+      "source": {
+        "publisher": "エース公式オンラインストア",
+        "checked_at": "2026-08-26",
+        "status": "FRESH",
+        "href": "https://store.ace.jp/shop/g/g06316-01/",
+        "label": "クレスタ06316公式仕様"
+      },
+      "cta_state": "IDENTITY_BLOCKED"
+    },
+    "PRD-ACE-DIFFERENCE-05721": {
+      "product_id": "PRD-ACE-DIFFERENCE-05721",
+      "name": "ace. ディフェレンス 05721",
+      "model_number": "05721",
+      "facts": [
+        "通常時 55×36×24cm・32L",
+        "公表重量 3.5kg",
+        "拡張時 奥行27cm・38L",
+        "2通りの開き方・キャスターストッパー"
+      ],
+      "fit": "開き方の選択肢とストッパーを条件にし、通常状態で搭乗条件へ合う人。",
+      "non_fit": "3モデルで最軽量または非拡張40Lを最優先する人。",
+      "tradeoff": "開閉機能が比較軸になる一方、通常容量は3モデルで最小。",
+      "unknown": "開閉操作感、ストッパーの使い勝手、耐久性は実機未試験。",
+      "source": {
+        "publisher": "エース公式オンラインストア",
+        "checked_at": "2026-08-26",
+        "status": "FRESH",
+        "href": "https://store.ace.jp/shop/g/g05721-04",
+        "label": "ディフェレンス05721公式仕様"
+      },
+      "cta_state": "IDENTITY_BLOCKED"
+    },
+    "PRD-ACE-MAXPASS4-01471": {
+      "product_id": "PRD-ACE-MAXPASS4-01471",
+      "name": "PROTECA マックスパス4 01471",
+      "model_number": "01471",
+      "facts": [
+        "50×40×25cm・40L",
+        "公表重量 3.6kg",
+        "フロントアクセス・14インチPC収納・キャスターストッパー"
+      ],
+      "fit": "非拡張40Lとフロントアクセスを条件にし、外寸と合計重量が搭乗条件へ合う人。",
+      "non_fit": "公表重量を最小にしたい人、幅40cmが区間条件へ合わない人。",
+      "tradeoff": "3モデルで容量が最大である一方、公表重量も最大。",
+      "unknown": "PC収納の保護性、走行感、取り回し、耐久性は実機未試験。",
+      "source": {
+        "publisher": "エース公式オンラインストア",
+        "checked_at": "2026-08-26",
+        "status": "FRESH",
+        "href": "https://store.ace.jp/shop/g/g01471-02",
+        "label": "マックスパス4 01471公式仕様"
+      },
+      "cta_state": "IDENTITY_BLOCKED"
+    }
+  }
+}

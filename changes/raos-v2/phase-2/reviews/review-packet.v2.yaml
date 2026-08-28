@@ -1,0 +1,28 @@
+schema: RAOS_V2_REVIEW_PACKET_V1
+version: 2.0.0
+real_content:
+  state: EVIDENCE_COMPLETE
+  next_state: REVIEW_REQUIRED
+  human_reviewer: null
+  human_review: NOT_EXECUTED
+  publication: NOT_EXECUTED
+  deploy: NOT_EXECUTED
+synthetic_contract_fixture:
+  state_path:
+    - DRAFT
+    - EVIDENCE_COMPLETE
+    - HUMAN_REVIEWED
+    - PACKAGE_SEALED
+  reviewer_binding: SYNTHETIC-REVIEWER-NOT-A-PERSON
+  purpose: STATE_MACHINE_AND_DIGEST_TEST_ONLY
+  external_authority: NONE
+ai_policy:
+  allowed:
+    - STRUCTURED_DRAFT
+    - CLAIM_SOURCE_LINK_CHECK
+    - QUALITY_GATE_ASSISTANCE
+  forbidden:
+    - UNSOURCED_FACT
+    - EXPERIENCE_LANGUAGE
+    - PUBLICATION_APPROVAL
+    - RECOMMENDATION_RANKING

@@ -1,0 +1,72 @@
+{
+  "schema": "RAOS_V2_RECORDED_BROWSER_EVIDENCE_V1",
+  "version": "1.0.0",
+  "recorded_date_jst": "2026-08-28",
+  "classification": "PASSED_LOCAL",
+  "raw_receipt": {
+    "schema": "RAOS_V2_LOCAL_BROWSER_EVIDENCE_V1",
+    "local_path": "output/playwright/raos-v2-local-browser-evidence.json",
+    "sha256": "87c7e5e2013da9e237f692a77f01f7917b5777002051f133d5ad692ebc1d204c",
+    "bytes": 26340,
+    "harness_path": "tests/raos_v2/browser-validation.mjs",
+    "harness_sha256": "2276905a25eb31b3ed1c2b4e3976fa4c2b58d0915bf6d3befe5acb7fd7319e90",
+    "harness_bytes": 40878,
+    "command_contract": "NODE24_LOCAL_CDP_AXE_WITH_ABSOLUTE_BROWSER_AND_OUTPUT_PLAYWRIGHT_RECEIPT_V1",
+    "exit_status": 0,
+    "tracked": false
+  },
+  "browser": {
+    "version": "Google Chrome 146.0.7680.164",
+    "executable_sha256": "a75e953fc0fa6108e4fbe67fc9ab8ff8800b851f914b63504a4e26a431b7b22f"
+  },
+  "assertions": {
+    "routes": 9,
+    "viewports": [320, 360, 390, 768, 1440],
+    "axe_runs": 45,
+    "axe_violations": 0,
+    "axe_incomplete": 0,
+    "horizontal_overflow": 0,
+    "outbound_requests": 0,
+    "persistent_records": 0,
+    "keyboard_only": true,
+    "zoom_200_percent": true,
+    "forced_colors": true,
+    "reduced_motion": true,
+    "accessibility_tree_routes": 9,
+    "screen_reader_smoke": true,
+    "unnamed_interactive_count": 0,
+    "keyboard_routes": 9,
+    "reflow_400_percent": true,
+    "javascript_disabled_routes": 2,
+    "javascript_disabled_fallback": true,
+    "transfer_budget_routes": 9,
+    "transfer_budgets": true,
+    "checker_states": {
+      "pass": "PASS",
+      "fail": "FAIL",
+      "count_fail": "FAIL",
+      "unknown": "UNKNOWN",
+      "underseat_unknown": "UNKNOWN",
+      "before_observed_boundary_unknown": "UNKNOWN",
+      "review_deadline_stale": "STALE",
+      "ana_international_no_match": "NO_MATCH",
+      "ana_unknown_scope": "UNKNOWN",
+      "peach_international_pass": "PASS",
+      "unknown_dominates_no_match": "UNKNOWN",
+      "all_segment_intersection": true
+    }
+  },
+  "preview_digests": {
+    "/": "20e8a492115375a49a517784441eae82026ecb345174dce242dbd0f03efa515b",
+    "/carry-on/": "041202e032e835bc57780e79c3a7a741c24d0a73b2df1e687a239165b11b1864",
+    "/tools/carry-on-size-checker/": "acd8c8e3fd1cc201fa4427b355f45bc381f63518b33908b2c465f78d7599d35e",
+    "/guides/carry-on-baggage-rules/": "8dd3e3170a53b68af0476ff6f5f3f89e4aed822aa419083b051bbe2824708654",
+    "/guides/low-cost-carrier-7kg-packing/": "f4f6c724f66bc938890cfa80587edfa81583a70afe466fff17d20eceb72a58db",
+    "/carry-on-suitcase-comparison/": "0446e5c4011df9d6b1ca4841d7eb0cd4cf7cefff7d3d503fb9dbf670a9ae525d",
+    "/guides/carry-on-bag-measurement/": "55abfb0f37874d7b92524443e594eab1c33b6c8e3e05f6cf00544cfd817a17b0",
+    "/policy/how-we-compare-carry-on-products/": "e1bba9fa409773ae7acfd8c883e7a83227ae9ceaac1a72d1d66311aaf0dad3a5",
+    "/differences/ace-cresta-vs-difference-vs-maxpass4/": "cd6b73a947a126018b62dfd34b4acb12cee09c488f5ae13de893629d69a19cce"
+  },
+  "external_actions": "NOT_EXECUTED",
+  "ci_behavior": "VERIFY_COMMITTED_RECORDED_RECEIPT_WHEN_RAW_LOCAL_RECEIPT_IS_ABSENT"
+}

@@ -54,11 +54,11 @@ safety:
   owned_tree_enforced: true
 source_artifacts:
 - path: .gitattributes
-  bytes: 92
-  sha256: 1a20f87f9fdd174ccd6fccada520e54e2634cf31c38c31b5401f6818ef43d8e5
+  bytes: 347
+  sha256: 0c457d0a68e0c65fed00ae0f95ca16c05bd626d7fa7b75965e7f867b7f199923
 - path: scripts/build_st0005_status.py
-  bytes: 151961
-  sha256: bcf693d9d39efbea7e221229f6cb6c426ef922a59cbf25d9a2a619887ad320ad
+  bytes: 152010
+  sha256: 066a8e18761e97926508ea824ad66f1a0d93f2642d360c345779f5bf47872c2e
 - path: scripts/import_raos_design.py
   bytes: 30495
   sha256: 13c36b2104ebf1d51b07f4774939e2ee89180d9d479f905176eaaa71dadd4f37

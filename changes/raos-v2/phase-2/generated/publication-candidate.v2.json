@@ -1,0 +1,163 @@
+{
+  "article_id": "A05",
+  "claim_evidence": [
+    {
+      "claim_id": "CLM-A05-CRESTA-CAPACITY",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-CRESTA-CONDITIONAL-FIT",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-CRESTA-DIMENSIONS",
+      "freshness": "FRESH",
+      "risk_class": "HIGH"
+    },
+    {
+      "claim_id": "CLM-A05-CRESTA-EXPANDED-CAPACITY",
+      "freshness": "FRESH",
+      "risk_class": "HIGH"
+    },
+    {
+      "claim_id": "CLM-A05-CRESTA-EXPANDED-DIMENSIONS",
+      "freshness": "FRESH",
+      "risk_class": "HIGH"
+    },
+    {
+      "claim_id": "CLM-A05-CRESTA-FEATURES",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-CRESTA-IDENTITY",
+      "freshness": "FRESH",
+      "risk_class": "HIGH"
+    },
+    {
+      "claim_id": "CLM-A05-CRESTA-LIGHTEST-IN-SCOPE",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-CRESTA-MASS",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-CRESTA-USAGE-UNKNOWN",
+      "freshness": "UNKNOWN",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-DIFFERENCE-CAPACITY",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-DIFFERENCE-CONDITIONAL-FIT",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-DIFFERENCE-DIMENSIONS",
+      "freshness": "FRESH",
+      "risk_class": "HIGH"
+    },
+    {
+      "claim_id": "CLM-A05-DIFFERENCE-EXPANDED-CAPACITY",
+      "freshness": "FRESH",
+      "risk_class": "HIGH"
+    },
+    {
+      "claim_id": "CLM-A05-DIFFERENCE-EXPANDED-DIMENSIONS",
+      "freshness": "FRESH",
+      "risk_class": "HIGH"
+    },
+    {
+      "claim_id": "CLM-A05-DIFFERENCE-FEATURES",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-DIFFERENCE-IDENTITY",
+      "freshness": "FRESH",
+      "risk_class": "HIGH"
+    },
+    {
+      "claim_id": "CLM-A05-DIFFERENCE-MASS",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-DIFFERENCE-USAGE-UNKNOWN",
+      "freshness": "UNKNOWN",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-MAXPASS4-CAPACITY",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-MAXPASS4-CONDITIONAL-FIT",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-MAXPASS4-DIMENSIONS",
+      "freshness": "FRESH",
+      "risk_class": "HIGH"
+    },
+    {
+      "claim_id": "CLM-A05-MAXPASS4-FEATURES",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-MAXPASS4-IDENTITY",
+      "freshness": "FRESH",
+      "risk_class": "HIGH"
+    },
+    {
+      "claim_id": "CLM-A05-MAXPASS4-MASS",
+      "freshness": "FRESH",
+      "risk_class": "MEDIUM"
+    },
+    {
+      "claim_id": "CLM-A05-MAXPASS4-USAGE-UNKNOWN",
+      "freshness": "UNKNOWN",
+      "risk_class": "MEDIUM"
+    }
+  ],
+  "content_class": "REAL_CONTENT",
+  "created_at": "2026-08-28T06:41:52+09:00",
+  "input_hashes": {
+    "article": "620e28d5e39875b2c9256c98647bc7473f85c5df8438c9cb3af767c5899ae948",
+    "claims": "28ef74a0e315477dd69fe532bf51e2a3597d1230f4e433485758f0b8bf628fb9",
+    "editorial": "64978e96aa901a5461bebdfc2850ee9e92df4ca94ad88a71446ddd6e7823b47c",
+    "migration": "3692c6e35154424ab2c1eb1d4e478b646b531596cc8258213d3513e7a035fa5f",
+    "products": "e56b796e68d70b859788e1b87dc8a5fd3671fdbc82e7c8913a43a434fa3dcc7a",
+    "render": "0446e5c4011df9d6b1ca4841d7eb0cd4cf7cefff7d3d503fb9dbf670a9ae525d",
+    "render_model": "f82a6e77fa352f58111ff6c5cbb905c2c5e5ee2133a539cc5a88f10f4e489b8e",
+    "review": "038929c1e75d83df35bae2e5c41f5bec37f17f53291f216452ca41776a4c36ab",
+    "sources": "fe7ceb62f6575c230008c8e0beaa946b13340383bec4421adc6ae77afc2791f6"
+  },
+  "migration_manifest": {
+    "mode": "LOCAL_SIMULATION_ONLY",
+    "schema": "RAOS_V2_MIGRATION_MANIFEST_V1",
+    "sha256": "3692c6e35154424ab2c1eb1d4e478b646b531596cc8258213d3513e7a035fa5f",
+    "target_route": "/carry-on-suitcase-comparison/"
+  },
+  "package_digest": null,
+  "package_id": "PKG-V2-CARRY-ON-COMPARISON-CANDIDATE",
+  "render_hash": "0446e5c4011df9d6b1ca4841d7eb0cd4cf7cefff7d3d503fb9dbf670a9ae525d",
+  "review_binding": null,
+  "schema_version": "1.0.0",
+  "source_snapshot_hash": "fe7ceb62f6575c230008c8e0beaa946b13340383bec4421adc6ae77afc2791f6",
+  "state": "EVIDENCE_COMPLETE",
+  "target_origin": "https://kurashinoshirube.com",
+  "target_route": "/carry-on-suitcase-comparison/"
+}

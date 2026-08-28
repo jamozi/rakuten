@@ -1,0 +1,93 @@
+{
+  "accessibility_target": "WCAG_2_2_AA",
+  "backlog_id": "B-V2-012",
+  "color": {
+    "accent": "#A4492C",
+    "border": "#D9D5CB",
+    "danger": "#A23434",
+    "focus": "#005FCC",
+    "indigo": "#243B6B",
+    "indigo_dark": "#172A52",
+    "ink": "#17213A",
+    "muted": "#F1F5F4",
+    "paper": "#FBF8F1",
+    "success": "#216E5A",
+    "surface": "#FFFFFF",
+    "warning": "#8A5A00"
+  },
+  "contrast_pairs": [
+    {
+      "background": "paper",
+      "foreground": "ink",
+      "minimum": "4.5"
+    },
+    {
+      "background": "surface",
+      "foreground": "indigo",
+      "minimum": "4.5"
+    },
+    {
+      "background": "surface",
+      "foreground": "accent",
+      "minimum": "4.5"
+    },
+    {
+      "background": "surface",
+      "foreground": "focus",
+      "minimum": "4.5"
+    }
+  ],
+  "layout": {
+    "gutter_px": {
+      "desktop": 32,
+      "mobile": 16,
+      "tablet": 24
+    },
+    "reading_max_px": 720,
+    "shell_max_px": 1280,
+    "viewports_px": [
+      390,
+      768,
+      1440
+    ],
+    "wide_max_px": 1120
+  },
+  "minimum_target_px": 44,
+  "motion": {
+    "essential_motion_only": true,
+    "reduced_motion_respected": true
+  },
+  "radius_px": [
+    6,
+    12,
+    20
+  ],
+  "schema": "RAOS_V2_DESIGN_TOKENS_V2",
+  "spacing_px": [
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48,
+    64,
+    96
+  ],
+  "test_ids": [
+    "T-V2-008"
+  ],
+  "typography": {
+    "body": {
+      "line_height": "1.8",
+      "size_px": 16
+    },
+    "external_font_requests": 0,
+    "font_family": "system-ui, -apple-system, BlinkMacSystemFont, 'Noto Sans JP', sans-serif",
+    "meta": {
+      "line_height": "1.6",
+      "size_px": 14
+    }
+  },
+  "version": "2.0.0"
+}

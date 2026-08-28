@@ -1,0 +1,39 @@
+{
+  "backlog_id": "B-V2-001",
+  "boundaries": {
+    "external_actions": "NOT_EXECUTED",
+    "generator_owner": "scripts/build_raos_v2_successor.py",
+    "immutable_paths": [
+      "docs/canonical/**",
+      "docs/upstream/**",
+      "zip/**"
+    ],
+    "local_evidence_label": "PASSED_LOCAL",
+    "public_observation": "PUBLIC_READ_ONLY"
+  },
+  "captured_at": "2026-08-27T21:35:05.654406Z",
+  "immutable_base_head": "ae92eb8f50e9d439c1c292cc6c76d5a9c50f85c7",
+  "package": {
+    "prompt_executed": false,
+    "sha256": "7ea856e74d73589ae37d1248e08e685e5d022b90bfc45c9bf1d6cb414b5fc42a",
+    "source_import": "changes/raos-v2/source-import.v1.json"
+  },
+  "repository": {
+    "branch": "codex/raos-v2-vertical-slice",
+    "generator_owner": "scripts/build_raos_v2_successor.py",
+    "head": "ae92eb8f50e9d439c1c292cc6c76d5a9c50f85c7",
+    "initial_diffstat": [],
+    "initial_status_porcelain": [],
+    "initial_worktree_state": "CLEAN",
+    "original_dirty_worktree_preserved": true,
+    "root_agents_read": true,
+    "worktree": "/home/minami/rakuten-raos-v2"
+  },
+  "schema": "RAOS_V2_PREFLIGHT_REPORT_V1",
+  "test_ids": [
+    "T-V2-001",
+    "T-V2-002",
+    "T-V2-003",
+    "T-V2-051"
+  ]
+}

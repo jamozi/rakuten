@@ -2,3 +2,9 @@
 /docs/upstream/** -text
 /docs/manifest.json -text
 /zip/*.zip -text
+
+# Byte-exact successor source imports retain author-significant Markdown spaces.
+/changes/raos-v2/source-package/** -whitespace
+
+# Deterministic preview bytes are hash-bound browser/visual evidence inputs.
+/changes/raos-v2/phase-2/preview/** -whitespace

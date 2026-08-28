@@ -1,0 +1,231 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v1/analytics-event.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "event_name": {
+            "const": "tool_result_view"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "product_id": {
+            "type": "null"
+          },
+          "result_state": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "UNKNOWN",
+              "STALE",
+              "BLOCKED",
+              "NO_MATCH"
+            ]
+          },
+          "source_id": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "result_state"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_name": {
+            "enum": [
+              "evidence_link_open",
+              "official_source_open"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "product_id": {
+            "type": "null"
+          },
+          "result_state": {
+            "type": "null"
+          },
+          "source_id": {
+            "pattern": "^SRC-[A-Z0-9][A-Z0-9-]{0,127}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_name": {
+            "const": "affiliate_outbound_activate"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "product_id": {
+            "pattern": "^PRD-[A-Z0-9-]+$",
+            "type": "string"
+          },
+          "result_state": {
+            "type": "null"
+          },
+          "source_id": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_name": {
+            "const": "error_state_view"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "product_id": {
+            "type": "null"
+          },
+          "result_state": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "UNKNOWN",
+              "STALE",
+              "BLOCKED",
+              "NO_MATCH"
+            ]
+          },
+          "source_id": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "result_state"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_name": {
+            "enum": [
+              "comparison_view",
+              "article_complete"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "product_id": {
+            "type": "null"
+          },
+          "result_state": {
+            "type": "null"
+          },
+          "source_id": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "article_id": {
+      "pattern": "^[A-Z0-9][A-Z0-9._:-]{0,127}$",
+      "type": "string"
+    },
+    "consent_state": {
+      "enum": [
+        "UNKNOWN",
+        "DENIED",
+        "GRANTED"
+      ]
+    },
+    "event_name": {
+      "enum": [
+        "tool_result_view",
+        "comparison_view",
+        "evidence_link_open",
+        "official_source_open",
+        "affiliate_outbound_activate",
+        "article_complete",
+        "error_state_view"
+      ]
+    },
+    "event_time_jst": {
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?\\+09:00$",
+      "type": "string"
+    },
+    "event_version": {
+      "const": 1
+    },
+    "placement": {
+      "pattern": "^[a-z0-9_-]{1,64}$",
+      "type": "string"
+    },
+    "product_id": {
+      "pattern": "^PRD-[A-Z0-9-]+$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "result_state": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "UNKNOWN",
+        "STALE",
+        "BLOCKED",
+        "NO_MATCH",
+        null
+      ]
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "session_token_hmac": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_id": {
+      "pattern": "^SRC-[A-Z0-9][A-Z0-9-]{0,127}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "event_name",
+    "event_version",
+    "event_time_jst",
+    "session_token_hmac",
+    "article_id",
+    "placement",
+    "consent_state"
+  ],
+  "title": "analytics-event",
+  "type": "object"
+}

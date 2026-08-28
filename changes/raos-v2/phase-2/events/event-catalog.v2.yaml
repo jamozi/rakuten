@@ -1,0 +1,80 @@
+schema: RAOS_V2_EVENT_CATALOG_V1
+version: 2.0.0
+default_mode: LOCAL_SINK_ONLY
+production_sender: DISABLED
+session_rotation_minutes: 30
+session_rotation_basis: INACTIVITY
+events:
+  - tool_result_view
+  - comparison_view
+  - evidence_link_open
+  - official_source_open
+  - affiliate_outbound_activate
+  - article_complete
+  - error_state_view
+required_fields:
+  - event_name
+  - event_version
+  - event_time_jst
+  - session_token_hmac
+  - article_id
+  - placement
+  - consent_state
+optional_fields:
+  - result_state
+  - source_id
+  - product_id
+event_field_matrix:
+  tool_result_view:
+    required_non_null: [result_state]
+    must_be_null: [source_id, product_id]
+  comparison_view:
+    required_non_null: []
+    must_be_null: [result_state, source_id, product_id]
+  evidence_link_open:
+    required_non_null: [source_id]
+    must_be_null: [result_state, product_id]
+  official_source_open:
+    required_non_null: [source_id]
+    must_be_null: [result_state, product_id]
+  affiliate_outbound_activate:
+    required_non_null: [product_id]
+    must_be_null: [result_state, source_id]
+  article_complete:
+    required_non_null: []
+    must_be_null: [result_state, source_id, product_id]
+  error_state_view:
+    required_non_null: [result_state]
+    must_be_null: [source_id, product_id]
+event_version: 1
+event_time_offset: '+09:00'
+qualified_decision_session:
+  grouping: session_token_hmac_and_article_id
+  paths:
+    - tool_result_view_with_any_allowlisted_result_state
+    - comparison_or_evidence_view_followed_by_official_source_or_affiliate_activation
+  supporting_only:
+    - article_complete
+  tool_result_states:
+    - PASS
+    - FAIL
+    - UNKNOWN
+    - STALE
+    - BLOCKED
+    - NO_MATCH
+consent_states:
+  - UNKNOWN
+  - DENIED
+  - GRANTED
+forbidden_fields:
+  - raw_ip
+  - raw_user_agent
+  - full_referrer
+  - query_string
+  - email
+  - name
+  - address
+  - provider_order_id
+  - credential
+  - full_url
+external_write: NOT_EXECUTED

@@ -2,7 +2,7 @@
   "document": {
     "id": "RAOS-BUILD-MANIFEST-002",
     "mutable_source_hash_authority": false,
-    "owner_count": 137,
+    "owner_count": 138,
     "version": "2.0.0"
   },
   "owners": [
@@ -202,6 +202,822 @@
         "ST-0201",
         "ST-0202"
       ]
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
+          "bytes": 2124,
+          "sha256": "7cd052d57e14df07e4c078defdae4ae07a0ee9d9b01a4aee28c6a28ef374371c",
+          "uri": "repo://changes/raos-v2/clarifications.v1.yaml"
+        },
+        {
+          "bytes": 3162,
+          "sha256": "07c283e9a805e0842f2308c9de2f34be61c946d6ff2696ef5a99ec4ecf362de0",
+          "uri": "repo://changes/raos-v2/design/component-states.yaml"
+        },
+        {
+          "bytes": 1683,
+          "sha256": "ccb1d60fa92c2f8a42ebd4c962346b76ec1f63f84cacc65618f8f302c1bf6c29",
+          "uri": "repo://changes/raos-v2/design/design-tokens.v2.json"
+        },
+        {
+          "bytes": 68411,
+          "sha256": "b74ffcf52feb9cc258a5c567ec76f7cc921533d122b501f5931706789dd81c27",
+          "uri": "repo://changes/raos-v2/generated/decision-traceability.effective.v1.yaml"
+        },
+        {
+          "bytes": 746,
+          "sha256": "e15cd92bf93bac8cc94b5bbb3d0bb5806bbeeea1a37ba5e10b2acc93f09aeb82",
+          "uri": "repo://changes/raos-v2/generated/phase-1-validation.v1.json"
+        },
+        {
+          "bytes": 11961,
+          "sha256": "4b6114b4aad6ab3e93500ba2e8dfc5cf4c232a4cccc33c7cd2d0abb81623e0af",
+          "uri": "repo://changes/raos-v2/phase-0/deprecation-ledger.yaml"
+        },
+        {
+          "bytes": 6588,
+          "sha256": "4e83d41459390a0ec7d2628b3599dead63abffed395b9b957d6a624795ce855c",
+          "uri": "repo://changes/raos-v2/phase-0/metric-dictionary.yaml"
+        },
+        {
+          "bytes": 1271,
+          "sha256": "57fb591344c5d72389d50f889a3d0f9386a4ce79945d7303c023da2f5fcc9f7d",
+          "uri": "repo://changes/raos-v2/phase-0/phase-0-report.md"
+        },
+        {
+          "bytes": 2242,
+          "sha256": "24de9e639577ff2c65cf247f63c757210cf7d4d9103408d215b947f7f926e4e5",
+          "uri": "repo://changes/raos-v2/phase-0/pilot-reconciliation.yaml"
+        },
+        {
+          "bytes": 1194,
+          "sha256": "4da311eae3f5600325505e5f7cb02ea6a47b6b6a5424462c8c424b11c9f07b53",
+          "uri": "repo://changes/raos-v2/phase-0/preflight-report.json"
+        },
+        {
+          "bytes": 1251,
+          "sha256": "2a13311e3cc40c81e5c258e97ef544e1efb67353facfda763ac4e7a1b54e3e87",
+          "uri": "repo://changes/raos-v2/phase-0/production-observation-plan.md"
+        },
+        {
+          "bytes": 7434,
+          "sha256": "dea8bc5e8ca2c0ff2eb322410499ff7c93577bfa9ad106813c99ac8ca8fd89cc",
+          "uri": "repo://changes/raos-v2/phase-0/public-url-inventory.yaml"
+        },
+        {
+          "bytes": 1051,
+          "sha256": "a7aade42c824eeb1ea0f3d73398da3e1b57b80c1096476316fbd0c8d4b78caec",
+          "uri": "repo://changes/raos-v2/phase-0/rollback-contract.yaml"
+        },
+        {
+          "bytes": 1147,
+          "sha256": "b71d447dcf80afa1e0e25a382de94343896055cba0ad66303cd5618911023570",
+          "uri": "repo://changes/raos-v2/phase-0/source-audit-report.json"
+        },
+        {
+          "bytes": 1193,
+          "sha256": "03c4daa10d45f8bae974508b6c3fe4792fd70ea4644bba6c4ea56b9365e9987e",
+          "uri": "repo://changes/raos-v2/phase-1-report.md"
+        },
+        {
+          "bytes": 18606,
+          "sha256": "28ef74a0e315477dd69fe532bf51e2a3597d1230f4e433485758f0b8bf628fb9",
+          "uri": "repo://changes/raos-v2/phase-2/claims/claim-ledger.v2.yaml"
+        },
+        {
+          "bytes": 18588,
+          "sha256": "056a491a68ad95d59ca913832b9abc1f020c2db0cc1113fe58d9b608c8d28bcf",
+          "uri": "repo://changes/raos-v2/phase-2/generated/local-evidence-bundle.v2.json"
+        },
+        {
+          "bytes": 2763,
+          "sha256": "3692c6e35154424ab2c1eb1d4e478b646b531596cc8258213d3513e7a035fa5f",
+          "uri": "repo://changes/raos-v2/phase-2/generated/migration-manifest.v2.yaml"
+        },
+        {
+          "bytes": 7342,
+          "sha256": "5486aa1fd4556718dec976b83d4ffcac91e1efc8470ec53d80db66663b4f6bdf",
+          "uri": "repo://changes/raos-v2/phase-2/generated/phase-2-validation.v2.json"
+        },
+        {
+          "bytes": 4716,
+          "sha256": "a7a5f72ec340e5001fabcba0674e443414c2709bfc5f2334e0e9c14a01bd6c68",
+          "uri": "repo://changes/raos-v2/phase-2/generated/publication-candidate.v2.json"
+        },
+        {
+          "bytes": 5173,
+          "sha256": "9496e1022d4c0f2961fecbdead2c700f0d816b95d62ea0c09ae8ffec637424e9",
+          "uri": "repo://changes/raos-v2/phase-2/generated/sitemap-candidates.v2.yaml"
+        },
+        {
+          "bytes": 2934,
+          "sha256": "4a09fba02b8afd95d8699de5218094a08ab8222cfc1e771f6e390377a08a4015",
+          "uri": "repo://changes/raos-v2/phase-2/generated/synthetic-seal-receipt.v2.json"
+        },
+        {
+          "bytes": 2591,
+          "sha256": "eac31b8c9e5c0aa6c63e288f1e01cca8cc27c47a0265050fbba1aaba34ca48cc",
+          "uri": "repo://changes/raos-v2/phase-2/integration-pr-body.md"
+        },
+        {
+          "bytes": 2520,
+          "sha256": "63680be8cf5301c2d863763837400b8f464f5ee5dedde64823863c6ee04174a8",
+          "uri": "repo://changes/raos-v2/phase-2/phase-2-report.md"
+        },
+        {
+          "bytes": 16817,
+          "sha256": "041202e032e835bc57780e79c3a7a741c24d0a73b2df1e687a239165b11b1864",
+          "uri": "repo://changes/raos-v2/phase-2/preview/carry-on/index.html"
+        },
+        {
+          "bytes": 24714,
+          "sha256": "0446e5c4011df9d6b1ca4841d7eb0cd4cf7cefff7d3d503fb9dbf670a9ae525d",
+          "uri": "repo://changes/raos-v2/phase-2/preview/carry-on-suitcase-comparison/index.html"
+        },
+        {
+          "bytes": 16855,
+          "sha256": "cd6b73a947a126018b62dfd34b4acb12cee09c488f5ae13de893629d69a19cce",
+          "uri": "repo://changes/raos-v2/phase-2/preview/differences/ace-cresta-vs-difference-vs-maxpass4/index.html"
+        },
+        {
+          "bytes": 16810,
+          "sha256": "55abfb0f37874d7b92524443e594eab1c33b6c8e3e05f6cf00544cfd817a17b0",
+          "uri": "repo://changes/raos-v2/phase-2/preview/guides/carry-on-bag-measurement/index.html"
+        },
+        {
+          "bytes": 18308,
+          "sha256": "8dd3e3170a53b68af0476ff6f5f3f89e4aed822aa419083b051bbe2824708654",
+          "uri": "repo://changes/raos-v2/phase-2/preview/guides/carry-on-baggage-rules/index.html"
+        },
+        {
+          "bytes": 16753,
+          "sha256": "f4f6c724f66bc938890cfa80587edfa81583a70afe466fff17d20eceb72a58db",
+          "uri": "repo://changes/raos-v2/phase-2/preview/guides/low-cost-carrier-7kg-packing/index.html"
+        },
+        {
+          "bytes": 44800,
+          "sha256": "20e8a492115375a49a517784441eae82026ecb345174dce242dbd0f03efa515b",
+          "uri": "repo://changes/raos-v2/phase-2/preview/index.html"
+        },
+        {
+          "bytes": 17601,
+          "sha256": "e1bba9fa409773ae7acfd8c883e7a83227ae9ceaac1a72d1d66311aaf0dad3a5",
+          "uri": "repo://changes/raos-v2/phase-2/preview/policy/how-we-compare-carry-on-products/index.html"
+        },
+        {
+          "bytes": 44944,
+          "sha256": "acd8c8e3fd1cc201fa4427b355f45bc381f63518b33908b2c465f78d7599d35e",
+          "uri": "repo://changes/raos-v2/phase-2/preview/tools/carry-on-size-checker/index.html"
+        },
+        {
+          "bytes": 8169,
+          "sha256": "133fa6d59a10b1788621d74c5b07aca94060776e25049165dd3eb577c9fc29a3",
+          "uri": "repo://changes/raos-v2/product-spec.v2.yaml"
+        },
+        {
+          "bytes": 13799,
+          "sha256": "ae395926d969b3311430501f74c02f0c610402f2a3a83ef51232c4b2cfd9037b",
+          "uri": "repo://changes/raos-v2/route-registry.v2.yaml"
+        },
+        {
+          "bytes": 3898,
+          "sha256": "959b0cf57a4a7370a395e180f0b4f1150c5993546adf8fa94c72baca1fe3a95f",
+          "uri": "repo://changes/raos-v2/source-import.v1.json"
+        },
+        {
+          "bytes": 9158,
+          "sha256": "57be2113c5794633694a9c423ce50396ca51f31d77eb67787ab4ffaa5b4575cf",
+          "uri": "repo://contracts/raos-v2/v1/airline-rule-set.schema.json"
+        },
+        {
+          "bytes": 4618,
+          "sha256": "10144275c17781ff13ebcf0d777072b09eb6d5cd395b4d6e4baf5eafdb08ba75",
+          "uri": "repo://contracts/raos-v2/v1/analytics-event.schema.json"
+        },
+        {
+          "bytes": 17793,
+          "sha256": "73185e342d6ae745cd7b679b2d0288137a2ec41ac23ead762351d3c1c3192aa3",
+          "uri": "repo://contracts/raos-v2/v1/article-definition.schema.json"
+        },
+        {
+          "bytes": 3620,
+          "sha256": "5b8b33070ca574500f48efa58942f12f5457a2d410816d651faf568a92b7904a",
+          "uri": "repo://contracts/raos-v2/v1/claim.schema.json"
+        },
+        {
+          "bytes": 1923,
+          "sha256": "436e4fcd6f0819af9cc4f53a650f6bbd3d7697b62deec707a468d3b381f143e8",
+          "uri": "repo://contracts/raos-v2/v1/editorial-decision.schema.json"
+        },
+        {
+          "bytes": 2327,
+          "sha256": "654ec4432947351ce8c60c6c7759acff6ea85057b1b2707d28d318d7a4bb9c20",
+          "uri": "repo://contracts/raos-v2/v1/offer-observation.schema.json"
+        },
+        {
+          "bytes": 2832,
+          "sha256": "f18faffd0ac69418fc36873e0f97ddf9feeae665e5eac333b6c6290b91e23146",
+          "uri": "repo://contracts/raos-v2/v1/ports.v1.yaml"
+        },
+        {
+          "bytes": 1844,
+          "sha256": "6603350241e88950c72138a3a79dc54b6472a16eba5bba3066aa7b7c3ebd7438",
+          "uri": "repo://contracts/raos-v2/v1/product-model.schema.json"
+        },
+        {
+          "bytes": 3558,
+          "sha256": "1c9f21d03a0a53039ab75fd5ba66eaf3ccfc65ba07bb3f51eff861cbb46c599d",
+          "uri": "repo://contracts/raos-v2/v1/product-variant.schema.json"
+        },
+        {
+          "bytes": 7835,
+          "sha256": "e4090405e8e7f645792df5a3da8b0f5e498659710601b8d92c943e974d796ef2",
+          "uri": "repo://contracts/raos-v2/v1/publication-package.schema.json"
+        },
+        {
+          "bytes": 3099,
+          "sha256": "6148d8ee2daf3a612bd1f9751e9ae68cf3e3b199456e9c19a4693af9aff13287",
+          "uri": "repo://contracts/raos-v2/v1/source-record.schema.json"
+        }
+      ],
+      "owner_dependencies": [],
+      "owner_id": "build_raos_v2_successor",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/content/article-definitions.v2.yaml",
+          "uri": "repo://changes/raos-v2/phase-2/content/article-definitions.v2.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/content/carry-on-comparison.v2.yaml",
+          "uri": "repo://changes/raos-v2/phase-2/content/carry-on-comparison.v2.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/content/carry-on-rules-guide.v2.yaml",
+          "uri": "repo://changes/raos-v2/phase-2/content/carry-on-rules-guide.v2.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/content/comparison-policy.v2.yaml",
+          "uri": "repo://changes/raos-v2/phase-2/content/comparison-policy.v2.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/content/difference-template-fixture.v2.yaml",
+          "uri": "repo://changes/raos-v2/phase-2/content/difference-template-fixture.v2.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/data/ace-carry-on-models.v2.json",
+          "uri": "repo://changes/raos-v2/phase-2/data/ace-carry-on-models.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/editorial/editorial-decisions.v2.yaml",
+          "uri": "repo://changes/raos-v2/phase-2/editorial/editorial-decisions.v2.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/events/event-catalog.v2.yaml",
+          "uri": "repo://changes/raos-v2/phase-2/events/event-catalog.v2.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/fixtures/negative-product-identity.v2.json",
+          "uri": "repo://changes/raos-v2/phase-2/fixtures/negative-product-identity.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/fixtures/recorded-airline-rules.v2.json",
+          "uri": "repo://changes/raos-v2/phase-2/fixtures/recorded-airline-rules.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/fixtures/recorded-rakuten-item-search-2026-07-01.json",
+          "uri": "repo://changes/raos-v2/phase-2/fixtures/recorded-rakuten-item-search-2026-07-01.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/media/media-policy.v2.yaml",
+          "uri": "repo://changes/raos-v2/phase-2/media/media-policy.v2.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/reviews/review-packet.v2.yaml",
+          "uri": "repo://changes/raos-v2/phase-2/reviews/review-packet.v2.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/rules/airline-rule-sets.v2.yaml",
+          "uri": "repo://changes/raos-v2/phase-2/rules/airline-rule-sets.v2.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/phase-2/sources/source-registry.v2.yaml",
+          "uri": "repo://changes/raos-v2/phase-2/sources/source-registry.v2.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/recorded-inputs/phase0-capture.v1.json",
+          "uri": "repo://changes/raos-v2/recorded-inputs/phase0-capture.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/recorded-inputs/phase0-visual-evidence.v1.json",
+          "uri": "repo://changes/raos-v2/recorded-inputs/phase0-visual-evidence.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/recorded-inputs/phase2-browser-evidence.v1.json",
+          "uri": "repo://changes/raos-v2/recorded-inputs/phase2-browser-evidence.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/recorded-inputs/phase2-local-test-evidence.v1.json",
+          "uri": "repo://changes/raos-v2/recorded-inputs/phase2-local-test-evidence.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/recorded-inputs/phase2-visual-evidence.v1.json",
+          "uri": "repo://changes/raos-v2/recorded-inputs/phase2-visual-evidence.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/00_EXECUTIVE_DECISIONS.md",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/00_EXECUTIVE_DECISIONS.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/01_CURRENT_STATE_AND_RESEARCH.md",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/01_CURRENT_STATE_AND_RESEARCH.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/02_PRODUCT_BRAND_CATEGORY_STRATEGY.md",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/02_PRODUCT_BRAND_CATEGORY_STRATEGY.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/03_CONTENT_SEO_EDITORIAL_SYSTEM.md",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/03_CONTENT_SEO_EDITORIAL_SYSTEM.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/04_UX_DESIGN_SYSTEM.md",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/04_UX_DESIGN_SYSTEM.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/05_TECHNICAL_DATA_ANALYTICS_ARCHITECTURE.md",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/05_TECHNICAL_DATA_ANALYTICS_ARCHITECTURE.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/06_MIGRATION_ROADMAP_AND_BACKLOG.md",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/06_MIGRATION_ROADMAP_AND_BACKLOG.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/07_DECISION_TRACEABILITY.yaml",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/07_DECISION_TRACEABILITY.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/08_TEST_AND_ACCEPTANCE_PLAN.md",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/08_TEST_AND_ACCEPTANCE_PLAN.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/09_EVIDENCE_AND_SOURCE_REGISTER.yaml",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/09_EVIDENCE_AND_SOURCE_REGISTER.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/10_INTERFACE_CONTRACTS.yaml",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/10_INTERFACE_CONTRACTS.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/11_EXTERNAL_ACTIONS_REGISTER.yaml",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/11_EXTERNAL_ACTIONS_REGISTER.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/12_INDEPENDENT_QUALITY_REVIEW.md",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/12_INDEPENDENT_QUALITY_REVIEW.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/CONTROL/implementation_contract.yaml",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/CONTROL/implementation_contract.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/CONTROL/package_validation.json",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/CONTROL/package_validation.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/CONTROL/source_integrity.json",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/CONTROL/source_integrity.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/MANIFEST.sha256",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/MANIFEST.sha256",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/README.md",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/README.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/raos-v2/source-package/2.0.0-design/package_manifest.json",
+          "uri": "repo://changes/raos-v2/source-package/2.0.0-design/package_manifest.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/checker.ts",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/checker.ts",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/contracts.ts",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/contracts.ts",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/preview/checker-parity-cases.v2.json",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/preview/checker-parity-cases.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/preview/checker.js",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/preview/checker.js",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/preview/pages.v2.json",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/preview/pages.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/preview/render_preview.py",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/preview/render_preview.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/preview/styles.css",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/preview/styles.css",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/web-ui/src/decision-support-v2/renderer.ts",
+          "uri": "repo://packages/web-ui/src/decision-support-v2/renderer.ts",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/decision_support_v2/__init__.py",
+          "uri": "repo://python/raos/adapters/decision_support_v2/__init__.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/decision_support_v2/errors.py",
+          "uri": "repo://python/raos/adapters/decision_support_v2/errors.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/decision_support_v2/local_events.py",
+          "uri": "repo://python/raos/adapters/decision_support_v2/local_events.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/decision_support_v2/recorded_airline.py",
+          "uri": "repo://python/raos/adapters/decision_support_v2/recorded_airline.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/decision_support_v2/recorded_catalog.py",
+          "uri": "repo://python/raos/adapters/decision_support_v2/recorded_catalog.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/decision_support_v2/recorded_rakuten.py",
+          "uri": "repo://python/raos/adapters/decision_support_v2/recorded_rakuten.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/decision_support_v2/strict_json.py",
+          "uri": "repo://python/raos/adapters/decision_support_v2/strict_json.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/decision_support_v2/wordpress_disabled.py",
+          "uri": "repo://python/raos/adapters/decision_support_v2/wordpress_disabled.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/decision_support_v2/__init__.py",
+          "uri": "repo://python/raos/application/decision_support_v2/__init__.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/decision_support_v2/checker.py",
+          "uri": "repo://python/raos/application/decision_support_v2/checker.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/decision_support_v2/offer_lookup.py",
+          "uri": "repo://python/raos/application/decision_support_v2/offer_lookup.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/decision_support_v2/publication.py",
+          "uri": "repo://python/raos/application/decision_support_v2/publication.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/decision_support_v2/selection.py",
+          "uri": "repo://python/raos/application/decision_support_v2/selection.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/decision_support_v2/__init__.py",
+          "uri": "repo://python/raos/domain/decision_support_v2/__init__.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/decision_support_v2/business.py",
+          "uri": "repo://python/raos/domain/decision_support_v2/business.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/decision_support_v2/content_quality.py",
+          "uri": "repo://python/raos/domain/decision_support_v2/content_quality.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/decision_support_v2/decision.py",
+          "uri": "repo://python/raos/domain/decision_support_v2/decision.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/decision_support_v2/events.py",
+          "uri": "repo://python/raos/domain/decision_support_v2/events.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/decision_support_v2/freshness.py",
+          "uri": "repo://python/raos/domain/decision_support_v2/freshness.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/decision_support_v2/media.py",
+          "uri": "repo://python/raos/domain/decision_support_v2/media.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/decision_support_v2/models.py",
+          "uri": "repo://python/raos/domain/decision_support_v2/models.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/decision_support_v2/publication.py",
+          "uri": "repo://python/raos/domain/decision_support_v2/publication.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/decision_support_v2/selection.py",
+          "uri": "repo://python/raos/domain/decision_support_v2/selection.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/ports/decision_support_v2/__init__.py",
+          "uri": "repo://python/raos/ports/decision_support_v2/__init__.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/ports/decision_support_v2/protocols.py",
+          "uri": "repo://python/raos/ports/decision_support_v2/protocols.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_raos_v2_successor.py",
+          "uri": "repo://scripts/build_raos_v2_successor.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_build_core.py",
+          "uri": "repo://scripts/raos_build_core.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/validate_raos_v2_successor.py",
+          "uri": "repo://scripts/validate_raos_v2_successor.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2",
+          "uri": "repo://tests/raos_v2",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/browser-validation.mjs",
+          "uri": "repo://tests/raos_v2/browser-validation.mjs",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/conftest.py",
+          "uri": "repo://tests/raos_v2/conftest.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_adapters_recorded.py",
+          "uri": "repo://tests/raos_v2/test_adapters_recorded.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_browser_contract.py",
+          "uri": "repo://tests/raos_v2/test_browser_contract.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_content_quality.py",
+          "uri": "repo://tests/raos_v2/test_content_quality.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_contracts_phase1.py",
+          "uri": "repo://tests/raos_v2/test_contracts_phase1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_decision_engine.py",
+          "uri": "repo://tests/raos_v2/test_decision_engine.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_events_privacy.py",
+          "uri": "repo://tests/raos_v2/test_events_privacy.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_phase0_contracts.py",
+          "uri": "repo://tests/raos_v2/test_phase0_contracts.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_publication_contract.py",
+          "uri": "repo://tests/raos_v2/test_publication_contract.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_selection_contract.py",
+          "uri": "repo://tests/raos_v2/test_selection_contract.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_source_import.py",
+          "uri": "repo://tests/raos_v2/test_source_import.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_traceability_phase0_phase2.py",
+          "uri": "repo://tests/raos_v2/test_traceability_phase0_phase2.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_ui_contracts.py",
+          "uri": "repo://tests/raos_v2/test_ui_contracts.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_ui_parity.py",
+          "uri": "repo://tests/raos_v2/test_ui_parity.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/test_visual_contract.py",
+          "uri": "repo://tests/raos_v2/test_visual_contract.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/ui-parity.mjs",
+          "uri": "repo://tests/raos_v2/ui-parity.mjs",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/raos_v2/visual-validation.mjs",
+          "uri": "repo://tests/raos_v2/visual-validation.mjs",
+          "version": 2
+        }
+      ],
+      "story_ids": []
     },
     {
       "output_scope": "tracked",
@@ -3680,8 +4496,8 @@
           "uri": "repo://changes/st-0005/contracts/status-transition-request.schema.json"
         },
         {
-          "bytes": 214072,
-          "sha256": "8f648da6208634365a8f552beaad8de950a47a8ad3c662043fd6d4bb778c66a7",
+          "bytes": 214073,
+          "sha256": "9c4feff08ad8d987a6998bcc756f57466cd773ded34c7be78fa4db392ab43e99",
           "uri": "repo://changes/st-0005/manifest.yaml"
         },
         {
@@ -3694,6 +4510,12 @@
       "owner_id": "build_st0005_status",
       "owner_version": 2,
       "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": ".gitattributes",
+          "uri": "repo://.gitattributes",
+          "version": 2
+        },
         {
           "kind": "tracked",
           "semantic_id": "changes/st-0005",
@@ -14318,7 +15140,7 @@
       "outputs": [
         {
           "bytes": 32582,
-          "sha256": "7bbfa617e8c1461174f9c435bd17dfa828da819c04908258846ffb2a679961bc",
+          "sha256": "040d82bcf4f998c8f68d05365bc27795dd7cd6af1149a9a79485f436eb2b460e",
           "uri": "repo://changes/st-0801/manifest.yaml"
         }
       ],

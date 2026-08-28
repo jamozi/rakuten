@@ -42,3 +42,9 @@ Thumbs.db
 *.tmp
 *.swp
 *~
+
+# Local-only browser and visual evidence; never generator or release input.
+output/playwright/
+
+# Local-only test execution evidence; tracked receipts contain only hashes.
+output/pytest/

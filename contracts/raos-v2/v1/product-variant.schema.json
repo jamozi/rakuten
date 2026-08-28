@@ -1,0 +1,138 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v1/product-variant.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "capacity_l": {
+      "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+      "type": "string"
+    },
+    "declared_features": {
+      "items": {
+        "pattern": "^[A-Z][A-Z0-9_-]{0,63}$",
+        "type": "string"
+      },
+      "maxItems": 64,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "expanded_capacity_l": {
+      "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "expanded_dimensions_cm": {
+      "anyOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "edges_cm": {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+                  "type": "string"
+                },
+                {
+                  "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+                  "type": "string"
+                },
+                {
+                  "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+                  "type": "string"
+                }
+              ],
+              "type": "array"
+            },
+            "includes_wheels_and_handles": {
+              "const": true
+            },
+            "orientation": {
+              "const": "ORDERED"
+            }
+          },
+          "required": [
+            "edges_cm",
+            "orientation",
+            "includes_wheels_and_handles"
+          ],
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "external_dimensions_cm": {
+      "additionalProperties": false,
+      "properties": {
+        "edges_cm": {
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+              "type": "string"
+            },
+            {
+              "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+              "type": "string"
+            },
+            {
+              "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        },
+        "includes_wheels_and_handles": {
+          "const": true
+        },
+        "orientation": {
+          "const": "ORDERED"
+        }
+      },
+      "required": [
+        "edges_cm",
+        "orientation",
+        "includes_wheels_and_handles"
+      ],
+      "type": "object"
+    },
+    "mass_kg": {
+      "pattern": "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.(?:0*[1-9][0-9]*))$",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "unknown_fields": {
+      "items": {
+        "pattern": "^[A-Z][A-Z0-9_-]{0,63}$",
+        "type": "string"
+      },
+      "maxItems": 64,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "variant_id": {
+      "pattern": "^[A-Z0-9][A-Z0-9-]{0,127}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "variant_id",
+    "external_dimensions_cm",
+    "expanded_dimensions_cm",
+    "mass_kg",
+    "capacity_l",
+    "declared_features",
+    "unknown_fields"
+  ],
+  "title": "product-variant",
+  "type": "object"
+}

@@ -1,0 +1,1435 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src data:; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="data:,">
+  <title>機内持ち込み条件チェッカー | 暮らしのしるべ</title>
+  <meta name="description" content="航空会社と荷物の外寸・合計重量・個数をブラウザ内だけで照合します。入力は送信・保存しません。">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="canonical" href="https://kurashinoshirube.com/tools/carry-on-size-checker/">
+  
+  <style>:root {
+  --color-ink: #17213a;
+  --color-paper: #fbf8f1;
+  --color-surface: #fff;
+  --color-muted: #f1f5f4;
+  --color-indigo: #243b6b;
+  --color-indigo-dark: #172a52;
+  --color-accent: #a4492c;
+  --color-success: #216e5a;
+  --color-warning: #8a5a00;
+  --color-danger: #a23434;
+  --color-focus: #005fcc;
+  --color-border: #d9d5cb;
+  --font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Kaku Gothic ProN',
+    'Yu Gothic', Meiryo, sans-serif;
+  --font-serif: 'Hiragino Mincho ProN', 'Yu Mincho', YuMincho, serif;
+  --reading: 45rem;
+  --wide: 70rem;
+  --shell: 80rem;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  font-family: var(--font-sans);
+  font-size: 100%;
+  line-height: 1.8;
+  overflow-wrap: break-word;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-padding-top: 1rem;
+}
+
+body {
+  margin: 0;
+  min-width: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+a {
+  color: var(--color-indigo);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--color-indigo-dark);
+  text-decoration-thickness: 0.14em;
+}
+
+:focus,
+:focus-visible {
+  outline: 3px solid var(--color-focus) !important;
+  outline-offset: 3px !important;
+}
+
+button,
+input,
+select,
+summary,
+a {
+  min-height: 44px;
+}
+
+button,
+input,
+select {
+  color: inherit;
+  font: inherit;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  inset: 8px auto auto 8px;
+  padding: 8px 16px;
+  min-height: 44px;
+  translate: 0 -160%;
+  background: var(--color-surface);
+  border: 2px solid var(--color-focus);
+  border-radius: 6px;
+}
+
+.skip-link:focus {
+  translate: 0;
+}
+
+.shell,
+.reading,
+.wide {
+  width: min(100% - 32px, var(--shell));
+  margin-inline: auto;
+}
+
+.reading {
+  max-width: var(--reading);
+}
+
+.wide {
+  max-width: var(--wide);
+}
+
+.site-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.site-header .shell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  gap: 16px;
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-indigo-dark);
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px 20px;
+}
+
+.nav-links a,
+.site-footer a {
+  display: inline-flex;
+  align-items: center;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+.disclosure-bar {
+  background: var(--color-muted);
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.disclosure-bar .shell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+  padding-block: 8px;
+}
+
+.disclosure-bar strong {
+  color: var(--color-accent);
+}
+
+.breadcrumbs {
+  margin-block: 16px 0;
+  font-size: 0.875rem;
+}
+
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.breadcrumbs li:not(:last-child)::after {
+  content: '/';
+  margin-inline-start: 8px;
+  color: #586174;
+}
+
+.decision-hero {
+  padding-block: 48px 32px;
+}
+
+.eyebrow,
+.meta {
+  margin: 0 0 8px;
+  color: var(--color-accent);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin-block: 0 16px;
+  color: var(--color-indigo-dark);
+  line-height: 1.35;
+}
+
+h1 {
+  max-width: 18ch;
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.25;
+  text-wrap: balance;
+  word-break: auto-phrase;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+h3 {
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+h4 {
+  font-size: 1rem;
+}
+
+.lead {
+  max-width: 42rem;
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 16px 0 0;
+  color: #586174;
+  font-size: 0.875rem;
+}
+
+.content-section,
+.trust-strip,
+.change-log,
+.comparison-matrix,
+.wide[aria-labelledby='product-cards-title'] {
+  margin-block: 32px 64px;
+}
+
+.content-section,
+.trust-strip,
+.change-log {
+  padding: 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.link-list {
+  display: grid;
+  gap: 8px;
+  padding-inline-start: 24px;
+}
+
+.link-list a {
+  display: inline-flex;
+  align-items: center;
+}
+
+.tool-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 32px;
+  margin-block: 0 64px;
+  padding: 32px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+}
+
+.tool-panel form {
+  min-width: 0;
+}
+
+fieldset {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+legend {
+  padding-inline: 8px;
+  font-weight: 700;
+}
+
+label {
+  display: grid;
+  gap: 4px;
+  font-weight: 650;
+}
+
+label span,
+.privacy-note {
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.check-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.check-label input {
+  flex: 0 0 44px;
+  width: 44px;
+  min-height: 44px;
+  margin: 0;
+}
+
+.tool-panel details {
+  margin-block: 0 24px;
+}
+
+.tool-panel summary {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-indigo);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.no-js-note {
+  grid-column: 1 / -1;
+  padding: 16px;
+  color: var(--color-danger);
+  background: var(--color-surface);
+  border: 3px solid currentColor;
+  border-radius: 6px;
+}
+
+input,
+select {
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 12px;
+  background: var(--color-surface);
+  border: 1px solid #687084;
+  border-radius: 6px;
+}
+
+[aria-invalid='true'] {
+  border: 3px solid var(--color-danger);
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 10rem;
+  padding: 9px 18px;
+  border: 2px solid var(--color-indigo);
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button.primary {
+  color: #fff;
+  background: var(--color-indigo);
+}
+
+.button.primary:hover {
+  background: var(--color-indigo-dark);
+}
+
+.button.secondary {
+  margin-inline-start: 8px;
+  color: var(--color-indigo);
+  background: var(--color-surface);
+}
+
+.error-summary {
+  margin-block-end: 16px;
+  padding: 16px;
+  color: var(--color-danger);
+  border: 3px solid currentColor;
+  border-radius: 6px;
+}
+
+.result-panel {
+  grid-column: 1 / -1;
+  padding: 24px;
+  background: var(--color-muted);
+  border: 3px solid var(--color-warning);
+  border-radius: 12px;
+}
+
+.result-panel[data-state='PASS'] {
+  border-color: var(--color-success);
+}
+
+.result-panel[data-state='FAIL'],
+.result-panel[data-state='BLOCKED'] {
+  border-color: var(--color-danger);
+}
+
+.result-panel[data-state='STALE'],
+.result-panel[data-state='UNKNOWN'],
+.result-panel[data-state='NO_MATCH'] {
+  border-color: var(--color-warning);
+}
+
+.result-panel .state-label {
+  font-weight: 800;
+}
+
+.comparison-matrix {
+  min-width: 0;
+}
+
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+  min-width: 52rem;
+  border-collapse: collapse;
+}
+
+caption {
+  padding: 12px 16px;
+  font-weight: 700;
+  text-align: start;
+}
+
+th,
+td {
+  padding: 12px 16px;
+  border-block-start: 1px solid var(--color-border);
+  text-align: start;
+  vertical-align: top;
+}
+
+thead th,
+tbody th {
+  background: var(--color-muted);
+}
+
+.matrix-mobile {
+  display: none;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.product-card {
+  display: grid;
+  grid-template-rows: auto auto auto auto 1fr auto auto;
+  min-width: 0;
+  padding: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.product-placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 128px;
+  margin-block: 0 24px;
+  color: #586174;
+  background: var(--color-muted);
+  border: 1px dashed #687084;
+  border-radius: 6px;
+}
+
+.judgement-list,
+.trust-strip dl {
+  display: grid;
+  gap: 12px;
+}
+
+.judgement-list div,
+.trust-strip dl div {
+  padding: 12px;
+  background: var(--color-muted);
+  border-inline-start: 4px solid var(--color-indigo);
+}
+
+dt {
+  font-weight: 700;
+}
+
+dd {
+  margin: 0;
+}
+
+.source-chip {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  font-size: 0.875rem;
+  background: var(--color-muted);
+  border-radius: 6px;
+}
+
+.affiliate-cta {
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.affiliate-cta button:disabled {
+  width: 100%;
+  min-height: 44px;
+  color: #4f586c;
+  background: var(--color-muted);
+  border: 1px solid #687084;
+  opacity: 1;
+}
+
+.none-fit {
+  margin-block-start: 24px;
+  padding: 20px;
+  background: var(--color-muted);
+  border-inline-start: 6px solid var(--color-warning);
+}
+
+.trust-strip dl {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.site-footer {
+  margin-block-start: 64px;
+  padding-block: 32px;
+  color: #fff;
+  background: var(--color-indigo-dark);
+}
+
+.site-footer .shell,
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.site-footer a {
+  color: #fff;
+}
+
+@media (max-width: 767px) {
+  .desktop-nav {
+    display: none;
+  }
+
+  .mobile-menu {
+    display: block;
+    position: relative;
+  }
+
+  .mobile-menu summary {
+    display: inline-flex;
+    align-items: center;
+    padding-inline: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .mobile-menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-menu .nav-links {
+    position: absolute;
+    z-index: 10;
+    inset: calc(100% + 4px) 0 auto auto;
+    display: grid;
+    width: min(19rem, calc(100vw - 32px));
+    padding: 8px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
+
+  .mobile-menu .nav-links a {
+    padding-inline: 12px;
+  }
+
+  .decision-hero {
+    padding-block: 32px 24px;
+  }
+
+  .tool-panel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    padding: 20px 16px;
+  }
+
+  .field-grid,
+  .product-grid,
+  .trust-strip dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .button.secondary {
+    margin: 8px 0 0;
+  }
+
+  .table-scroll {
+    display: none;
+  }
+
+  .matrix-mobile {
+    display: grid;
+    gap: 12px;
+  }
+
+  .matrix-mobile-card {
+    padding: 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+  }
+
+  .matrix-mobile-card dl {
+    display: grid;
+    gap: 8px;
+  }
+
+  .matrix-mobile-card dl div {
+    display: grid;
+    grid-template-columns: minmax(7rem, 2fr) minmax(0, 3fr);
+    gap: 8px;
+    padding-block: 8px;
+    border-block-start: 1px solid var(--color-border);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .shell,
+  .reading,
+  .wide {
+    width: min(100% - 48px, var(--shell));
+  }
+}
+
+@media (min-width: 1280px) {
+  .shell,
+  .reading,
+  .wide {
+    width: min(100% - 64px, var(--shell));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .result-panel,
+  .product-card,
+  .content-section,
+  .affiliate-cta,
+  .tool-panel {
+    border: 2px solid CanvasText;
+  }
+
+  .result-panel::before {
+    content: '判定状態: ' attr(data-state);
+    display: block;
+    font-weight: 700;
+  }
+}
+
+@media print {
+  .mobile-menu,
+  .button,
+  .affiliate-cta {
+    display: none;
+  }
+}
+</style>
+</head>
+<body data-template="TOOL" data-route="/tools/carry-on-size-checker/" data-publication-state="LOCAL_PREVIEW">
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <header class="site-header"><nav class="shell" aria-label="主要ナビゲーション"><a class="wordmark" href="/">暮らしのしるべ</a><div class="nav-links desktop-nav"><a href="/carry-on/">機内持ち込み</a><a href="/tools/carry-on-size-checker/">条件チェッカー</a><a href="/carry-on-suitcase-comparison/">比較ガイド</a><a href="/policy/how-we-compare-carry-on-products/">比較方法</a></div><details class="mobile-menu"><summary>メニュー</summary><div class="nav-links"><a href="/carry-on/">機内持ち込み</a><a href="/tools/carry-on-size-checker/">条件チェッカー</a><a href="/carry-on-suitcase-comparison/">比較ガイド</a><a href="/policy/how-we-compare-carry-on-products/">比較方法</a></div></details></nav></header>
+  <aside class="disclosure-bar" aria-label="広告表示"><div class="shell"><strong>広告リンクに関する表示</strong><span>広告リンクを設置する場合があります。現在、確認済みでない商品リンクは表示しません。報酬は商品の選定・掲載順に影響しません。実機試験を行っていない比較では、公式情報と編集判断を分けて表示します。</span><a href="/policy/how-we-compare-carry-on-products/">比較・広告方針</a></div></aside>
+  <nav class="breadcrumbs reading" aria-label="パンくず"><ol><li><a href="/">ホーム</a></li><li aria-current="page">条件チェッカー</li></ol></nav>
+  <main id="main" tabindex="-1">
+    <header class="decision-hero reading">
+      <p class="eyebrow">LOCAL-ONLY CHECKER</p>
+      <h1>機内持ち込み条件チェッカー</h1>
+      <p class="lead">全区間を厳しい共通条件で判定し、根拠不足はUNKNOWN、期限超過はSTALEとして止めます。</p>
+      
+    </header>
+    <section class="wide tool-panel" aria-labelledby="checker-title">
+  <div>
+    <p class="eyebrow">入力はこのブラウザ内だけで処理</p>
+    <h2 id="checker-title">機内持ち込み条件チェッカー</h2>
+    <p>航空会社を推測しません。キャスターとハンドルを含む外寸、身の回り品を含む合計重量・個数を入力してください。</p>
+  </div>
+  <form id="carry-on-checker" novalidate>
+    <div id="form-errors" class="error-summary" tabindex="-1" hidden><h3>入力を確認してください</h3><ul></ul></div>
+    <fieldset>
+      <legend>搭乗区間1（必須）</legend>
+      <label for="carrier">航空会社<select id="carrier" name="carrier" required><option value="">選択してください</option><option value="ANA">ANA</option><option value="JAL">JAL</option><option value="PEACH">Peach</option><option value="JETSTAR_JAPAN">Jetstar Japan（GK運航便）</option></select></label>
+      <label for="journey-scope">路線区分<select id="journey-scope" name="journey-scope" required><option value="">選択してください</option><option value="DOMESTIC">国内線</option><option value="INTERNATIONAL">国際線</option><option value="UNKNOWN">わからない・確認中</option></select></label>
+      <label for="aircraft">便・機材条件<select id="aircraft" name="aircraft"><option value="">わからない</option><option value="LARGE">100席以上</option><option value="SMALL">100席未満</option></select></label>
+      <label for="fare-option">運賃・手荷物オプション<select id="fare-option" name="fare-option"><option value="">わからない・確認中</option><option value="STANDARD_7KG">標準7kg条件</option><option value="UP_TO_14KG_OPTION">機内持込手荷物オプション（最大14kg）</option><option value="NOT_APPLICABLE">該当なし</option></select></label>
+      <label for="departure-at-jst">出発日時（JST）<input id="departure-at-jst" name="departure-at-jst" type="datetime-local" required></label>
+    </fieldset>
+    <details>
+      <summary>乗り継ぎ区間を追加</summary>
+      <fieldset>
+        <legend>搭乗区間2（任意）</legend>
+        <label for="carrier-2">航空会社<select id="carrier-2" name="carrier-2"><option value="">選択してください</option><option value="ANA">ANA</option><option value="JAL">JAL</option><option value="PEACH">Peach</option><option value="JETSTAR_JAPAN">Jetstar Japan（GK運航便）</option></select></label>
+        <label for="journey-scope-2">路線区分<select id="journey-scope-2" name="journey-scope-2"><option value="">選択してください</option><option value="DOMESTIC">国内線</option><option value="INTERNATIONAL">国際線</option><option value="UNKNOWN">わからない・確認中</option></select></label>
+        <label for="aircraft-2">便・機材条件<select id="aircraft-2" name="aircraft-2"><option value="">わからない</option><option value="LARGE">100席以上</option><option value="SMALL">100席未満</option></select></label>
+        <label for="fare-option-2">運賃・手荷物オプション<select id="fare-option-2" name="fare-option-2"><option value="">わからない・確認中</option><option value="STANDARD_7KG">標準7kg条件</option><option value="UP_TO_14KG_OPTION">機内持込手荷物オプション（最大14kg）</option><option value="NOT_APPLICABLE">該当なし</option></select></label>
+        <label for="departure-at-jst-2">出発日時（JST）<input id="departure-at-jst-2" name="departure-at-jst-2" type="datetime-local"></label>
+      </fieldset>
+    </details>
+    <fieldset>
+      <legend>荷物（付属部品を含む）</legend>
+      <label for="bag-state">測定状態<select id="bag-state" name="bag-state" required><option value="">選択してください</option><option value="NORMAL">通常時</option><option value="EXPANDED">拡張時</option></select></label>
+      <div class="field-grid">
+        <label for="height">高さ <span>cm</span><input id="height" name="height" inputmode="decimal" autocomplete="off" required></label>
+        <label for="width">幅 <span>cm</span><input id="width" name="width" inputmode="decimal" autocomplete="off" required></label>
+        <label for="depth">奥行 <span>cm</span><input id="depth" name="depth" inputmode="decimal" autocomplete="off" required></label>
+      </div>
+      <label for="weight">身の回り品を含む合計重量 <span>kg</span><input id="weight" name="weight" inputmode="decimal" autocomplete="off" required></label>
+      <div class="field-grid">
+        <label for="carry-on-count">機内持ち込み手荷物の個数<input id="carry-on-count" name="carry-on-count" inputmode="numeric" autocomplete="off" value="1" required></label>
+        <label for="personal-item-count">身の回り品の個数<input id="personal-item-count" name="personal-item-count" inputmode="numeric" autocomplete="off" value="1" required></label>
+      </div>
+      <label class="check-label" for="appendages-included"><input id="appendages-included" name="appendages-included" type="checkbox" value="yes" required>キャスター・ハンドル・外ポケットを含む最大外寸です</label>
+      <label class="check-label" for="personal-item-underseat-confirmed"><input id="personal-item-underseat-confirmed" name="personal-item-underseat-confirmed" type="checkbox" value="yes">Jetstar Japanを利用する場合、身の回り品を前の座席の下に収納できることを確認しました</label>
+    </fieldset>
+    <button class="button primary" type="submit">結果を見る</button>
+    <button class="button secondary" type="reset">入力を消す</button>
+    <p class="privacy-note">入力値は送信・保存しません。判定後も航空会社の公式ページで最終確認してください。</p>
+  </form>
+  <div id="checker-result" class="result-panel" data-state="UNKNOWN" role="status" aria-live="polite" aria-atomic="true">
+    <h3>まだ判定していません</h3><p>航空会社と荷物条件を入力してください。</p>
+  </div>
+  <noscript><p class="no-js-note">JavaScriptが無効なため自動判定は使えません。航空会社の公式リンクと入力項目を照らし合わせてください。</p></noscript>
+</section>
+    <section class="reading content-section" aria-labelledby="checker-limitations"><h2 id="checker-limitations">判定できること・できないこと</h2><p>判定対象は記録済み公式ルールの外寸、合計重量、個数です。危険物、空港での個別判断、共同運航便などはこの判定だけで確定できません。</p><p>PASSでも搭乗前に各航空会社の公式ページで最終確認してください。FAILまたはUNKNOWNでは購入CTAを表示しません。</p><ul class="link-list"><li><a href="/guides/carry-on-baggage-rules/">ルールの例外を確認する</a></li></ul></section>
+    
+    <section class="reading trust-strip" aria-labelledby="trust-title">
+      <h2 id="trust-title">根拠の読み方</h2>
+      <dl><div><dt>公式情報</dt><dd>発行主体と確認日を表示します。</dd></div><div><dt>編集判断</dt><dd>条件と理由を明記します。</dd></div><div><dt>未確認</dt><dd>推測せず、購入判断を止めます。</dd></div></dl>
+    </section>
+    <section class="reading change-log" aria-labelledby="change-log-title">
+      <h2 id="change-log-title">確認・変更履歴</h2>
+      <p>ローカルプレビュー。公開・配信・WordPress書き込みは実行していません。</p>
+      <a href="/policy/how-we-compare-carry-on-products/#corrections">誤りを知らせる</a>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="shell"><p>暮らしのしるべ — 公式情報と編集判断を分ける購買支援</p><nav aria-label="方針"><a href="/policy/how-we-compare-carry-on-products/">比較方法</a><a href="/privacy-policy/">プライバシー</a></nav></div></footer>
+  <script>(() => {
+  'use strict';
+
+  const RESULT_STATES = Object.freeze(['PASS', 'FAIL', 'UNKNOWN', 'STALE', 'BLOCKED', 'NO_MATCH']);
+  const STATE_PRIORITY = Object.freeze({
+    PASS: 0,
+    NO_MATCH: 1,
+    UNKNOWN: 2,
+    STALE: 3,
+    BLOCKED: 4,
+    FAIL: 5,
+  });
+  const RULES = Object.freeze([
+    Object.freeze({
+      carrier: 'ANA',
+      journeyScope: 'DOMESTIC',
+      aircraft: 'LARGE',
+      fareOrOption: null,
+      effectiveFrom: '2026-08-28T06:41:52+09:00',
+      effectiveUntil: null,
+      maxDimensions: Object.freeze(['55', '40', '25']),
+      maxSum: '115',
+      maxWeight: '10',
+      maxItems: 2,
+      maxCarryOnCount: 1,
+      maxPersonalItemCount: 1,
+      requiresPersonalItemUnderseat: false,
+      orientation: 'PERMUTABLE',
+      checkedAt: '2026-08-28T06:41:52+09:00',
+      nextReviewAt: '2026-09-27T06:41:52+09:00',
+      sourceId: 'SRC-V2-ANA-CARRY-ON',
+      status: 'FRESH',
+    }),
+    Object.freeze({
+      carrier: 'ANA',
+      journeyScope: 'DOMESTIC',
+      aircraft: 'SMALL',
+      fareOrOption: null,
+      effectiveFrom: '2026-08-28T06:41:52+09:00',
+      effectiveUntil: null,
+      maxDimensions: Object.freeze(['45', '35', '20']),
+      maxSum: '100',
+      maxWeight: '10',
+      maxItems: 2,
+      maxCarryOnCount: 1,
+      maxPersonalItemCount: 1,
+      requiresPersonalItemUnderseat: false,
+      orientation: 'PERMUTABLE',
+      checkedAt: '2026-08-28T06:41:52+09:00',
+      nextReviewAt: '2026-09-27T06:41:52+09:00',
+      sourceId: 'SRC-V2-ANA-CARRY-ON',
+      status: 'FRESH',
+    }),
+    Object.freeze({
+      carrier: 'JAL',
+      journeyScope: 'DOMESTIC',
+      aircraft: 'LARGE',
+      fareOrOption: null,
+      effectiveFrom: '2026-08-28T06:41:52+09:00',
+      effectiveUntil: null,
+      maxDimensions: Object.freeze(['55', '40', '25']),
+      maxSum: '115',
+      maxWeight: '10',
+      maxItems: 2,
+      maxCarryOnCount: 1,
+      maxPersonalItemCount: 1,
+      requiresPersonalItemUnderseat: false,
+      orientation: 'PERMUTABLE',
+      checkedAt: '2026-08-28T06:41:52+09:00',
+      nextReviewAt: '2026-09-27T06:41:52+09:00',
+      sourceId: 'SRC-V2-JAL-CARRY-ON',
+      status: 'FRESH',
+    }),
+    Object.freeze({
+      carrier: 'JAL',
+      journeyScope: 'DOMESTIC',
+      aircraft: 'SMALL',
+      fareOrOption: null,
+      effectiveFrom: '2026-08-28T06:41:52+09:00',
+      effectiveUntil: null,
+      maxDimensions: Object.freeze(['45', '35', '20']),
+      maxSum: '100',
+      maxWeight: '10',
+      maxItems: 2,
+      maxCarryOnCount: 1,
+      maxPersonalItemCount: 1,
+      requiresPersonalItemUnderseat: false,
+      orientation: 'PERMUTABLE',
+      checkedAt: '2026-08-28T06:41:52+09:00',
+      nextReviewAt: '2026-09-27T06:41:52+09:00',
+      sourceId: 'SRC-V2-JAL-CARRY-ON',
+      status: 'FRESH',
+    }),
+    Object.freeze({
+      carrier: 'PEACH',
+      journeyScope: 'ALL',
+      aircraft: null,
+      fareOrOption: null,
+      effectiveFrom: '2026-08-28T06:41:52+09:00',
+      effectiveUntil: null,
+      maxDimensions: Object.freeze(['115', '115', '115']),
+      maxSum: '115',
+      maxWeight: '7',
+      maxItems: 2,
+      maxCarryOnCount: 1,
+      maxPersonalItemCount: 1,
+      requiresPersonalItemUnderseat: false,
+      orientation: 'PERMUTABLE',
+      checkedAt: '2026-08-28T06:41:52+09:00',
+      nextReviewAt: '2026-09-27T06:41:52+09:00',
+      sourceId: 'SRC-V2-PEACH-CARRY-ON',
+      status: 'FRESH',
+    }),
+    Object.freeze({
+      carrier: 'JETSTAR_JAPAN',
+      journeyScope: 'ALL',
+      aircraft: null,
+      fareOrOption: 'STANDARD_7KG',
+      effectiveFrom: '2026-08-28T06:41:52+09:00',
+      effectiveUntil: null,
+      maxDimensions: Object.freeze(['56', '36', '23']),
+      maxSum: null,
+      maxWeight: '7',
+      maxItems: 2,
+      maxCarryOnCount: 1,
+      maxPersonalItemCount: 1,
+      requiresPersonalItemUnderseat: true,
+      orientation: 'ORDERED',
+      checkedAt: '2026-08-28T06:41:52+09:00',
+      nextReviewAt: '2026-09-27T06:41:52+09:00',
+      sourceId: 'SRC-V2-JETSTAR-CARRY-ON',
+      status: 'FRESH',
+    }),
+  ]);
+  const DECIMAL = /^(?:0|[1-9][0-9]*)(?:\.([0-9]+))?$/u;
+  const JST_LOCAL = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/u;
+  const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
+
+  function parseDecimal(raw) {
+    const value = String(raw).trim();
+    const match = DECIMAL.exec(value);
+    if (match === null) return null;
+    const fraction = match[1] || '';
+    return Object.freeze({
+      coefficient: BigInt(value.replace('.', '')),
+      scale: fraction.length,
+    });
+  }
+
+  function align(value, scale) {
+    return value.coefficient * 10n ** BigInt(scale - value.scale);
+  }
+
+  function compare(left, right) {
+    const scale = Math.max(left.scale, right.scale);
+    const leftAligned = align(left, scale);
+    const rightAligned = align(right, scale);
+    return leftAligned < rightAligned ? -1 : leftAligned > rightAligned ? 1 : 0;
+  }
+
+  function add(left, right) {
+    const scale = Math.max(left.scale, right.scale);
+    return Object.freeze({
+      coefficient: align(left, scale) + align(right, scale),
+      scale,
+    });
+  }
+
+  function parseJstLocalInstant(raw) {
+    const match = JST_LOCAL.exec(String(raw));
+    if (match === null) return null;
+    const parts = match.slice(1).map((value) => Number(value || '0'));
+    const [year, month, day, hour, minute, second] = parts;
+    const utc = Date.UTC(year, month - 1, day, hour - 9, minute, second);
+    const local = new Date(utc + JST_OFFSET_MS);
+    if (
+      local.getUTCFullYear() !== year ||
+      local.getUTCMonth() + 1 !== month ||
+      local.getUTCDate() !== day ||
+      local.getUTCHours() !== hour ||
+      local.getUTCMinutes() !== minute ||
+      local.getUTCSeconds() !== second
+    ) {
+      return null;
+    }
+    return utc;
+  }
+
+  function parseRuleInstant(raw) {
+    const value = Date.parse(raw);
+    return Number.isFinite(value) ? value : null;
+  }
+
+  function permutations(values) {
+    return [
+      [values[0], values[1], values[2]],
+      [values[0], values[2], values[1]],
+      [values[1], values[0], values[2]],
+      [values[1], values[2], values[0]],
+      [values[2], values[0], values[1]],
+      [values[2], values[1], values[0]],
+    ];
+  }
+
+  function evaluateRule(input, rule) {
+    if (rule.status === 'BLOCKED') {
+      return { state: 'BLOCKED', reasons: ['根拠確認が完了していないルールです。'], rule };
+    }
+    if (rule.status === 'HARD_STALE') {
+      return { state: 'STALE', reasons: ['公式情報の再確認期限を過ぎています。'], rule };
+    }
+    const reasons = [];
+    if (rule.maxDimensions !== null) {
+      const maximums = rule.maxDimensions.map(parseDecimal);
+      const candidates =
+        rule.orientation === 'PERMUTABLE' ? permutations(input.dimensions) : [input.dimensions];
+      const fits = candidates.some((candidate) =>
+        candidate.every((value, index) => compare(value, maximums[index]) <= 0),
+      );
+      if (!fits) reasons.push('外寸の少なくとも1辺が上限を超えています。');
+    }
+    if (rule.maxSum !== null) {
+      const sum = add(add(input.dimensions[0], input.dimensions[1]), input.dimensions[2]);
+      if (compare(sum, parseDecimal(rule.maxSum)) > 0) {
+        reasons.push('3辺の合計が上限を超えています。');
+      }
+    }
+    if (compare(input.weight, parseDecimal(rule.maxWeight)) > 0) {
+      reasons.push('身の回り品を含む合計重量が上限を超えています。');
+    }
+    if (input.items > rule.maxItems) {
+      reasons.push('身の回り品を含む合計個数が上限を超えています。');
+    }
+    if (input.carryOnCount > rule.maxCarryOnCount) {
+      reasons.push('機内持ち込み手荷物の個数が上限を超えています。');
+    }
+    if (input.personalItemCount > rule.maxPersonalItemCount) {
+      reasons.push('身の回り品の個数が上限を超えています。');
+    }
+    if (
+      reasons.length === 0 &&
+      rule.requiresPersonalItemUnderseat &&
+      input.personalItemCount > 0 &&
+      !input.personalItemUnderseatConfirmed
+    ) {
+      return {
+        state: 'UNKNOWN',
+        reasons: ['身の回り品を前の座席の下に収納できるか確認してください。'],
+        rule,
+      };
+    }
+    return {
+      state: reasons.length === 0 ? 'PASS' : 'FAIL',
+      reasons:
+        reasons.length === 0 ? ['外寸・合計重量・個数は記録済みルールの範囲内です。'] : reasons,
+      rule,
+    };
+  }
+
+  function evaluateSegment(input, segment) {
+    const { carrier, journeyScope, aircraft, fareOrOption, departureAtJst } = segment;
+    if (carrier === '') {
+      return { state: 'UNKNOWN', reasons: ['航空会社が選択されていません。'], rules: [] };
+    }
+    const carrierRules = RULES.filter((rule) => rule.carrier === carrier);
+    if (carrierRules.length === 0) {
+      return { state: 'NO_MATCH', reasons: ['一致する記録済みルールがありません。'], rules: [] };
+    }
+    const departureInstant = parseJstLocalInstant(departureAtJst);
+    if (departureInstant === null) {
+      return {
+        state: 'UNKNOWN',
+        reasons: ['出発日時（JST）を入力してください。'],
+        rules: carrierRules,
+      };
+    }
+    if (!['DOMESTIC', 'INTERNATIONAL'].includes(journeyScope)) {
+      return {
+        state: 'UNKNOWN',
+        reasons: ['国内線または国際線の区分を確認してください。'],
+        rules: carrierRules,
+      };
+    }
+    const scopeRules = carrierRules.filter(
+      (rule) => rule.journeyScope === 'ALL' || rule.journeyScope === journeyScope,
+    );
+    if (scopeRules.length === 0) {
+      return {
+        state: 'NO_MATCH',
+        reasons: ['この路線区分に一致する記録済みルールがありません。'],
+        rules: carrierRules,
+      };
+    }
+    const effectiveRules = scopeRules.filter((rule) => {
+      const effectiveFrom = parseRuleInstant(rule.effectiveFrom);
+      const effectiveUntil =
+        rule.effectiveUntil === null ? null : parseRuleInstant(rule.effectiveUntil);
+      return (
+        effectiveFrom !== null &&
+        effectiveFrom <= departureInstant &&
+        (rule.effectiveUntil === null ||
+          (effectiveUntil !== null && departureInstant < effectiveUntil))
+      );
+    });
+    if (effectiveRules.length === 0) {
+      return {
+        state: 'UNKNOWN',
+        reasons: ['出発日に適用できる記録済みルールがありません。'],
+        rules: carrierRules,
+      };
+    }
+    const staleRules = effectiveRules.filter((rule) => {
+      const nextReviewAt = parseRuleInstant(rule.nextReviewAt);
+      return nextReviewAt === null || departureInstant >= nextReviewAt;
+    });
+    if (staleRules.length > 0) {
+      return {
+        state: staleRules.some((rule) => parseRuleInstant(rule.nextReviewAt) === null)
+          ? 'UNKNOWN'
+          : 'STALE',
+        reasons: [
+          staleRules.some((rule) => parseRuleInstant(rule.nextReviewAt) === null)
+            ? '公式情報の再確認期限を検証できません。'
+            : '出発日時が公式情報の再確認期限以後です。航空会社の公式ページを再確認してください。',
+        ],
+        rules: staleRules,
+      };
+    }
+    const aircraftRequired = effectiveRules.some((rule) => rule.aircraft !== null);
+    const fareRequired = effectiveRules.some((rule) => rule.fareOrOption !== null);
+    const applicabilityMissing =
+      (aircraftRequired && aircraft === '') || (fareRequired && fareOrOption === '');
+    const matchingRules = effectiveRules.filter(
+      (rule) =>
+        (aircraft === '' || rule.aircraft === null || rule.aircraft === aircraft) &&
+        (rule.fareOrOption === null || rule.fareOrOption === fareOrOption),
+    );
+    if (matchingRules.length === 0) {
+      return {
+        state: 'UNKNOWN',
+        reasons: ['機材または運賃・オプションの適用条件を確認できません。'],
+        rules: effectiveRules,
+      };
+    }
+    const specificity = (rule) =>
+      Number(rule.aircraft !== null) + Number(rule.fareOrOption !== null);
+    const maximumSpecificity = Math.max(...matchingRules.map(specificity));
+    const exactRules = matchingRules.filter((rule) => specificity(rule) === maximumSpecificity);
+    const results = exactRules.map((rule) => evaluateRule(input, rule));
+    const allFail = results.every((result) => result.state === 'FAIL');
+    const allPass = results.every((result) => result.state === 'PASS');
+    if (!applicabilityMissing && (allFail || allPass || results.length === 1)) {
+      const selected = results.reduce((current, result) =>
+        STATE_PRIORITY[result.state] > STATE_PRIORITY[current.state] ? result : current,
+      );
+      return { state: selected.state, reasons: selected.reasons, rules: exactRules };
+    }
+    return {
+      state: 'UNKNOWN',
+      reasons: ['座席数・機材・運賃によって判定が変わります。搭乗便の条件を確認してください。'],
+      rules: exactRules,
+    };
+  }
+
+  function readInput(form) {
+    const values = new FormData(form);
+    const dimensionValues = ['height', 'width', 'depth'].map((name) =>
+      parseDecimal(values.get(name)),
+    );
+    const weight = parseDecimal(values.get('weight'));
+    const carryOnText = String(values.get('carry-on-count') || '').trim();
+    const personalText = String(values.get('personal-item-count') || '').trim();
+    const carryOnCount = /^(?:0|[1-9][0-9]*)$/u.test(carryOnText)
+      ? Number(carryOnText)
+      : Number.NaN;
+    const personalItemCount = /^(?:0|[1-9][0-9]*)$/u.test(personalText)
+      ? Number(personalText)
+      : Number.NaN;
+    const items = carryOnCount + personalItemCount;
+    const invalid = [];
+    if (dimensionValues.some((value) => value === null || value.coefficient <= 0n)) {
+      invalid.push('外寸3項目を0より大きい数値で入力してください。');
+    }
+    if (weight === null || weight.coefficient <= 0n) {
+      invalid.push('合計重量を0より大きい数値で入力してください。');
+    }
+    if (
+      !Number.isSafeInteger(carryOnCount) ||
+      carryOnCount < 0 ||
+      !Number.isSafeInteger(personalItemCount) ||
+      personalItemCount < 0 ||
+      items < 1
+    ) {
+      invalid.push('機内持ち込み手荷物と身の回り品を、それぞれ0以上の整数で入力してください。');
+    }
+    const bagState = String(values.get('bag-state') || '');
+    if (bagState !== 'NORMAL' && bagState !== 'EXPANDED') {
+      invalid.push('通常時または拡張時を選択してください。');
+    }
+    if (values.get('appendages-included') !== 'yes') {
+      invalid.push('キャスター・ハンドル・ポケットを含む外寸であることを確認してください。');
+    }
+    const carrier = String(values.get('carrier') || '');
+    if (carrier === '') invalid.push('航空会社を選択してください。');
+    return {
+      invalid,
+      input:
+        invalid.length === 0
+          ? {
+              dimensions: dimensionValues,
+              weight,
+              items,
+              carryOnCount,
+              personalItemCount,
+              bagState,
+              appendagesIncluded: true,
+              personalItemUnderseatConfirmed:
+                values.get('personal-item-underseat-confirmed') === 'yes',
+            }
+          : null,
+      segments: [
+        {
+          carrier,
+          journeyScope: String(values.get('journey-scope') || ''),
+          aircraft: String(values.get('aircraft') || ''),
+          fareOrOption: String(values.get('fare-option') || ''),
+          departureAtJst: String(values.get('departure-at-jst') || ''),
+          label: '区間1',
+        },
+        {
+          carrier: String(values.get('carrier-2') || ''),
+          journeyScope: String(values.get('journey-scope-2') || ''),
+          aircraft: String(values.get('aircraft-2') || ''),
+          fareOrOption: String(values.get('fare-option-2') || ''),
+          departureAtJst: String(values.get('departure-at-jst-2') || ''),
+          label: '区間2',
+          optional: true,
+        },
+      ],
+    };
+  }
+
+  function evaluateDecision(input, segments) {
+    const results = segments.map((segment) => evaluateSegment(input, segment));
+    const state = results.reduce(
+      (current, result) =>
+        STATE_PRIORITY[result.state] > STATE_PRIORITY[current] ? result.state : current,
+      'PASS',
+    );
+    return Object.freeze({
+      results: Object.freeze(results),
+      state,
+      segments: Object.freeze(results.map((result) => result.state)),
+    });
+  }
+
+  function evaluateContractCase(bag, segments) {
+    const dimensions = bag.dimensions.map(parseDecimal);
+    const weight = parseDecimal(bag.weight);
+    const carryOnCount = /^(?:0|[1-9][0-9]*)$/u.test(String(bag.carryOnCount))
+      ? Number(bag.carryOnCount)
+      : Number.NaN;
+    const personalItemCount = /^(?:0|[1-9][0-9]*)$/u.test(String(bag.personalItemCount))
+      ? Number(bag.personalItemCount)
+      : Number.NaN;
+    const items = carryOnCount + personalItemCount;
+    if (
+      dimensions.length !== 3 ||
+      dimensions.some((value) => value === null || value.coefficient <= 0n) ||
+      weight === null ||
+      weight.coefficient <= 0n ||
+      !Number.isSafeInteger(carryOnCount) ||
+      !Number.isSafeInteger(personalItemCount) ||
+      carryOnCount < 0 ||
+      personalItemCount < 0 ||
+      items < 1 ||
+      !['NORMAL', 'EXPANDED'].includes(bag.bagState) ||
+      bag.appendagesIncluded !== true
+    ) {
+      return Object.freeze({
+        state: 'UNKNOWN',
+        segments: Object.freeze(segments.map(() => 'UNKNOWN')),
+      });
+    }
+    return evaluateDecision(
+      Object.freeze({
+        appendagesIncluded: true,
+        bagState: bag.bagState,
+        carryOnCount,
+        dimensions,
+        items,
+        personalItemCount,
+        personalItemUnderseatConfirmed: bag.personalItemUnderseatConfirmed === true,
+        weight,
+      }),
+      segments,
+    );
+  }
+
+  function renderErrors(form, messages) {
+    const summary = form.querySelector('#form-errors');
+    const list = summary.querySelector('ul');
+    list.replaceChildren(
+      ...messages.map((message) => {
+        const item = document.createElement('li');
+        item.textContent = message;
+        return item;
+      }),
+    );
+    summary.hidden = messages.length === 0;
+    if (messages.length > 0) summary.focus();
+  }
+
+  function renderResult(panel, state, reasons, rules) {
+    if (!RESULT_STATES.includes(state)) throw new TypeError('RESULT_STATE_INVALID');
+    const heading = document.createElement('h3');
+    const stateLabels = {
+      PASS: 'PASS：入力した条件では記録済み規定内',
+      FAIL: 'FAIL：規定を超える項目があります',
+      UNKNOWN: 'UNKNOWN：条件を確定できません',
+      STALE: 'STALE：公式情報の再確認が必要です',
+      BLOCKED: 'BLOCKED：根拠確認が完了していません',
+      NO_MATCH: 'NO_MATCH：一致する記録済み条件がありません',
+    };
+    heading.textContent = stateLabels[state];
+    const list = document.createElement('ul');
+    list.replaceChildren(
+      ...reasons.map((reason) => {
+        const item = document.createElement('li');
+        item.textContent = reason;
+        return item;
+      }),
+    );
+    const evidence = document.createElement('p');
+    evidence.className = 'meta';
+    const sourceIds = [...new Set(rules.map((rule) => rule.sourceId))];
+    const checkedDates = [...new Set(rules.map((rule) => rule.checkedAt))];
+    evidence.textContent =
+      sourceIds.length === 0
+        ? '根拠ルール：未確定'
+        : `根拠 ${sourceIds.join(' / ')}・確認 ${checkedDates.join(' / ')}`;
+    const finalCheck = document.createElement('p');
+    finalCheck.textContent =
+      state === 'PASS'
+        ? '航空会社の公式ページで搭乗便の最新条件を最終確認してください。'
+        : '購入より先に、不足条件または超過項目を確認してください。';
+    panel.replaceChildren(heading, list, evidence, finalCheck);
+    panel.dataset.state = state;
+  }
+
+  function initialize(form) {
+    const panel = document.querySelector('#checker-result');
+    if (!(panel instanceof HTMLElement)) return;
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const parsed = readInput(form);
+      renderErrors(form, parsed.invalid);
+      if (parsed.input === null) {
+        renderResult(panel, 'UNKNOWN', parsed.invalid, []);
+        return;
+      }
+      const activeSegments = parsed.segments.filter(
+        (segment) => !segment.optional || segment.carrier !== '',
+      );
+      const decision = evaluateDecision(parsed.input, activeSegments);
+      renderResult(
+        panel,
+        decision.state,
+        decision.results.flatMap((result) => result.reasons),
+        decision.results.flatMap((result) => result.rules),
+      );
+    });
+    form.addEventListener('reset', () => {
+      queueMicrotask(() => {
+        renderErrors(form, []);
+        renderResult(panel, 'UNKNOWN', ['航空会社と荷物条件を入力してください。'], []);
+      });
+    });
+  }
+
+  if (globalThis.__RAOS_V2_TEST_MODE__ === true) {
+    Object.defineProperty(globalThis, '__RAOS_V2_CHECKER_CONTRACT__', {
+      configurable: false,
+      enumerable: false,
+      value: Object.freeze({
+        evaluate: evaluateContractCase,
+        resultStates: RESULT_STATES,
+        rules: RULES,
+      }),
+      writable: false,
+    });
+  }
+  if (typeof document === 'undefined') return;
+
+  for (const form of document.querySelectorAll('#carry-on-checker')) {
+    if (form instanceof HTMLFormElement) initialize(form);
+  }
+})();
+</script>
+</body>
+</html>

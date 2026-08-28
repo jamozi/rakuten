@@ -1,0 +1,101 @@
+schema: RAOS_V2_SITEMAP_CANDIDATES_V1
+mode: LOCAL_CONTRACT_ONLY
+target_origin: https://kurashinoshirube.com
+production_sitemap_write: NOT_EXECUTED
+candidate_count: 6
+entries:
+- route: /
+  article_id: HOME
+  title: この荷物、機内に持ち込める？
+  description: 航空会社の公式条件と商品の公表仕様を分けて確認できる、機内持ち込みの意思決定ガイドです。
+  canonical_candidate: https://kurashinoshirube.com/
+  preview_robots: noindex,nofollow
+  phase2_sitemap_included: false
+  phase3_intended_candidate: true
+  lastmod: UNAVAILABLE
+  render_sha256: 20e8a492115375a49a517784441eae82026ecb345174dce242dbd0f03efa515b
+- route: /carry-on/
+  article_id: A01
+  title: 機内持ち込みを条件から決める
+  description: 航空会社のルール確認、荷物の測り方、条件別の商品比較へ進むための案内です。
+  canonical_candidate: https://kurashinoshirube.com/carry-on/
+  preview_robots: noindex,nofollow
+  phase2_sitemap_included: false
+  phase3_intended_candidate: true
+  lastmod: UNAVAILABLE
+  render_sha256: 041202e032e835bc57780e79c3a7a741c24d0a73b2df1e687a239165b11b1864
+- route: /tools/carry-on-size-checker/
+  article_id: A02
+  title: 機内持ち込み条件チェッカー
+  description: 航空会社と荷物の外寸・合計重量・個数をブラウザ内だけで照合します。入力は送信・保存しません。
+  canonical_candidate: https://kurashinoshirube.com/tools/carry-on-size-checker/
+  preview_robots: noindex,nofollow
+  phase2_sitemap_included: false
+  phase3_intended_candidate: true
+  lastmod: UNAVAILABLE
+  render_sha256: acd8c8e3fd1cc201fa4427b355f45bc381f63518b33908b2c465f78d7599d35e
+- route: /guides/carry-on-baggage-rules/
+  article_id: A03
+  title: 機内持ち込み手荷物の基本ルール
+  description: ANA、JAL、Peach、Jetstar Japanの公式案内を、外寸・重量・個数・適用条件に分けて確認します。
+  canonical_candidate: https://kurashinoshirube.com/guides/carry-on-baggage-rules/
+  preview_robots: noindex,nofollow
+  phase2_sitemap_included: false
+  phase3_intended_candidate: true
+  lastmod: UNAVAILABLE
+  render_sha256: 8dd3e3170a53b68af0476ff6f5f3f89e4aed822aa419083b051bbe2824708654
+- route: /guides/low-cost-carrier-7kg-packing/
+  article_id: A04
+  title: LCC 7kg条件の荷造りガイド（制作中）
+  description: 公開候補ではないローカル設計確認用ページです。本文・推薦・広告リンクは未承認です。
+  canonical_candidate: https://kurashinoshirube.com/guides/low-cost-carrier-7kg-packing/
+  preview_robots: noindex,nofollow
+  phase2_sitemap_included: false
+  phase3_intended_candidate: false
+  lastmod: UNAVAILABLE
+  render_sha256: f4f6c724f66bc938890cfa80587edfa81583a70afe466fff17d20eceb72a58db
+- route: /carry-on-suitcase-comparison/
+  article_id: A05
+  title: ACEのスーツケース3モデルを機内持ち込み条件で比較
+  description: クレスタ06316、ディフェレンス05721、マックスパス4 01471を公式仕様と条件別の編集判断で比較します。
+  canonical_candidate: https://kurashinoshirube.com/carry-on-suitcase-comparison/
+  preview_robots: noindex,nofollow
+  phase2_sitemap_included: false
+  phase3_intended_candidate: true
+  lastmod: UNAVAILABLE
+  render_sha256: 0446e5c4011df9d6b1ca4841d7eb0cd4cf7cefff7d3d503fb9dbf670a9ae525d
+- route: /guides/carry-on-bag-measurement/
+  article_id: A06
+  title: 機内持ち込みバッグの測り方（制作中）
+  description: 公開候補ではないローカル設計確認用ページです。測定手順の根拠確認が完了するまで公開しません。
+  canonical_candidate: https://kurashinoshirube.com/guides/carry-on-bag-measurement/
+  preview_robots: noindex,nofollow
+  phase2_sitemap_included: false
+  phase3_intended_candidate: false
+  lastmod: UNAVAILABLE
+  render_sha256: 55abfb0f37874d7b92524443e594eab1c33b6c8e3e05f6cf00544cfd817a17b0
+- route: /policy/how-we-compare-carry-on-products/
+  article_id: A25
+  title: 機内持ち込み商品の比較方法
+  description: 公式事実、編集判断、未確認事項、広告報酬を分離する比較・更新・訂正方針です。
+  canonical_candidate: https://kurashinoshirube.com/policy/how-we-compare-carry-on-products/
+  preview_robots: noindex,nofollow
+  phase2_sitemap_included: false
+  phase3_intended_candidate: true
+  lastmod: UNAVAILABLE
+  render_sha256: e1bba9fa409773ae7acfd8c883e7a83227ae9ceaac1a72d1d66311aaf0dad3a5
+- route: /differences/ace-cresta-vs-difference-vs-maxpass4/
+  article_id: A19
+  title: ACE 3モデルの違い（テンプレート検証専用）
+  description: 比較記事との検索意図重複を検査する、noindexのローカルfixtureです。公開候補ではありません。
+  canonical_candidate: https://kurashinoshirube.com/differences/ace-cresta-vs-difference-vs-maxpass4/
+  preview_robots: noindex,nofollow
+  phase2_sitemap_included: false
+  phase3_intended_candidate: false
+  lastmod: UNAVAILABLE
+  render_sha256: cd6b73a947a126018b62dfd34b4acb12cee09c488f5ae13de893629d69a19cce
+backlog_id: B-V2-031
+requirement_ids:
+- R-V2-022
+test_ids:
+- T-V2-035

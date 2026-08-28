@@ -1,0 +1,26 @@
+schema: RAOS_V2_CONTENT_PACKET_V1
+article_id: A03
+route: /guides/carry-on-baggage-rules/
+template: GUIDE
+review_state: EVIDENCE_COMPLETE
+disclosure: このページには広告リンクを置く場合があります。事実確認と推薦判断に報酬条件は使用しません。
+thirty_second_conclusion: 持ち込み条件は航空会社・運航会社・機材・運賃・オプション・搭乗日で変わります。全区間を公式情報で確認してください。
+unknowns:
+  - 当日の収納状況や係員判断は事前に確定できません。
+  - 便、機材、運賃、オプションが未入力なら判定はUNKNOWNです。
+fits:
+  - 公開された寸法・個数・重量条件を区間ごとに確認したい人
+non_fits:
+  - 当日の持ち込みを保証する情報を求める人
+tradeoffs:
+  - 共通条件は安全側ですが、個別区間だけなら許容される荷物を除外することがあります。
+official_source_ids:
+  - SRC-V2-ANA-CARRY-ON
+  - SRC-V2-JAL-CARRY-ON
+  - SRC-V2-PEACH-CARRY-ON
+  - SRC-V2-JETSTAR-CARRY-ON
+  - SRC-V2-JETSTAR-CARRY-ON-2027
+experience_claims: []
+ai_provenance: STRUCTURED_DRAFT_AND_VALIDATION_ONLY
+human_review: NOT_EXECUTED
+publication: NOT_EXECUTED

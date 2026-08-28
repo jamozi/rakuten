@@ -1,0 +1,434 @@
+schema: RAOS_V2_EVIDENCE_REGISTER_V1
+version: 2.0.0-design
+generated_at: '2026-08-28T22:30:00+09:00'
+packet_sources:
+- id: AUD-001
+  kind: AUDIT_PACKET
+  title: 監査パケットの権限・作成時点・snapshot HEAD
+  path: PACKET-METADATA.json
+  sha256: 0f33ba60e9efa3eb23f5d731c3f63b3ce8a20dd368ecd7f525353589e21aa54e
+  line_hint: 2
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-002
+  kind: AUDIT_PACKET
+  title: 監査時のGit branch・HEAD・dirty status
+  path: context/repository-state.json
+  sha256: 9237acba71a1a080d7056fc1d0ca5b152dd9f9f65a2403376cd41ed2a42f7826
+  line_hint: 15
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-003
+  kind: AUDIT_PACKET
+  title: root開発規則、dirty保護、immutable path、external boundary
+  path: repository/AGENTS.md
+  sha256: 9bc1321a39df5260efa9121b7df76802045f59add4ae27eab198890745b26d18
+  line_hint: 7
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-004
+  kind: AUDIT_PACKET
+  title: 収録ソースinventory
+  path: context/source-inventory.json
+  sha256: 7e76bbd1ef72af86dfd1d333c5210779f10b576f7444b97b53e4d3353ff7489d
+  line_hint: 5
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-005
+  kind: AUDIT_PACKET
+  title: generator ownership manifest
+  path: repository/changes/build/manifest.v2.json
+  sha256: 0653ada20fd8d54fe67fac6c8608f73e40c5cce6a4748c65aa9d88aaeffa0a6f
+  line_hint: 5
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-006
+  kind: AUDIT_PACKET
+  title: canonical実装status registry
+  path: repository/docs/canonical/00_master/RAOS_implementation_status_registry_v1.0.yaml
+  sha256: 1411f55ce60f6316e83567110fb2847e0db49239cb63dcabf9e81612c3b72ab8
+  line_hint: 2
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-007
+  kind: AUDIT_PACKET
+  title: canonical open decision list
+  path: repository/docs/canonical/00_master/RAOS_open_decisions_v1.0.csv
+  sha256: 23a2d5afbdf83e4afeceaa2cbd784cd0e5da4c34fd2eb0ce4fc1dda5671f3276
+  line_hint: 1
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-008
+  kind: AUDIT_PACKET
+  title: 公開home HTML capture
+  path: public/home.html
+  sha256: 2a4d2dd070740f853b25d5a06ffdb7cad3f4b6a73bba7e39fd65ece779c18240
+  line_hint: 233
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-009
+  kind: AUDIT_PACKET
+  title: 公開carry-on comparison HTML capture
+  path: public/carry-on-suitcase-comparison.html
+  sha256: f4a56e07742fab611136c3fd0177eb2d2a2ba59e319a533929d77b5f30f1243a
+  line_hint: 17
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-010
+  kind: AUDIT_PACKET
+  title: 公開sitemap/robots capture
+  path: public/sitemap-index.xml
+  sha256: cdc76756d745be59d82c8abe46119a19add380b53ad1e9bb3490f317e8c667d2
+  line_hint: 1
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-011
+  kind: AUDIT_PACKET
+  title: 公開home desktop screenshot
+  path: browser/public-home-1440.png
+  sha256: 80e0833173730a7a060aef63c89c0579292b6e1440737ec433f613df3bafd8f0
+  line_hint: null
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-012
+  kind: AUDIT_PACKET
+  title: 公開home mobile screenshot
+  path: browser/public-home-390.png
+  sha256: 27e777ba55345d5b7c55001e5054573c133798e4b85459819831abab6ad2a04d
+  line_hint: null
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-013
+  kind: AUDIT_PACKET
+  title: 公開article desktop screenshot
+  path: browser/public-carry-on-1440.png
+  sha256: b4eb6d35dfed83cd90d54186c25959ab47e85a1e038edf83a67395a15c1ec6b9
+  line_hint: null
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-014
+  kind: AUDIT_PACKET
+  title: 公開article mobile screenshot
+  path: browser/public-carry-on-390.png
+  sha256: 1d28f005cba4c7b6b0b30c88ad6e63fe8e26d116ae232df96537c83abea67d19
+  line_hint: null
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-015
+  kind: AUDIT_PACKET
+  title: 5記事editorial pilot definition
+  path: repository/changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json
+  sha256: df3856ec35e6b1f976369adf110f891265af59a9a2c97b6b418764bc36b8385a
+  line_hint: 58
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-016
+  kind: AUDIT_PACKET
+  title: 5記事publication plan
+  path: repository/changes/st-1704/self-hosted-editorial-pilot-v1/operations/publication-plan.v1.json
+  sha256: 53db8c8277da9dbd3b5b98a107327845307f58a9e3b767042ea9e64757f0e163
+  line_hint: 9
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-017
+  kind: AUDIT_PACKET
+  title: measurement ledger
+  path: repository/changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json
+  sha256: 885735bdf2df835c6725d92a7792328d292e56555e76cc0f3ac7df1eda08fc3b
+  line_hint: 13
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-018
+  kind: AUDIT_PACKET
+  title: official source registry
+  path: repository/changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json
+  sha256: 941050e8d3d81dd1cdd6b1cd4c436d9ee18bc934867274dc6a027b7acb909b31
+  line_hint: 10
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-019
+  kind: AUDIT_PACKET
+  title: product media registry
+  path: repository/changes/st-1704/self-hosted-editorial-pilot-v1/media/product-media-registry.v1.json
+  sha256: 5ca6b7a52fa9657f74728490920a9ace3f6666800cf31d58e82e033b76f21dce
+  line_hint: 23
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-020
+  kind: AUDIT_PACKET
+  title: brand voice and claim boundaries
+  path: repository/changes/st-1704/self-hosted-editorial-pilot-v1/BRAND_VOICE.md
+  sha256: 4199b8064f381a9052375de473e4e1d9935e0aa1a5c8975b817020a9360f7019
+  line_hint: 20
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-021
+  kind: AUDIT_PACKET
+  title: existing editorial design system
+  path: repository/changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_SYSTEM.md
+  sha256: 181b0679a1a7faf6f093972eb1556302e1249415b91ffcc97c1d7ccea34c6871
+  line_hint: 10
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-022
+  kind: AUDIT_PACKET
+  title: local UI review and limits
+  path: repository/changes/st-1704/self-hosted-editorial-pilot-v1/UI_REVIEW.md
+  sha256: 4df15812a2a03a5979c3151716e9596eb552b39b984bd444e95502d7ea260319
+  line_hint: 3
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-023
+  kind: AUDIT_PACKET
+  title: competitor benchmark 2026-08-26
+  path: repository/changes/st-1704/self-hosted-editorial-pilot-v1/BENCHMARK_2026-08-26.md
+  sha256: 4f1374b642681f3685923fec612c5abe6474043f22889ec5ab04efd2093ece74
+  line_hint: 21
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-024
+  kind: AUDIT_PACKET
+  title: editorial experience research record
+  path: repository/changes/st-1704/self-hosted-editorial-pilot-v1/EDITORIAL_RESEARCH_NOTES.md
+  sha256: 4c1fed7b4a4679ead75ca706d9064853325d06256858052a7321b13ed08daf1b
+  line_hint: 7
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-025
+  kind: AUDIT_PACKET
+  title: revenue experiment runbook
+  path: repository/changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_EXPERIMENT_RUNBOOK.md
+  sha256: 217e2dab5519432a2e43cc84449aa4bf7e5691908cd610e4c85b5dd8111e58eb
+  line_hint: 23
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-026
+  kind: AUDIT_PACKET
+  title: publication operator boundary
+  path: repository/changes/st-1704/publication-operator-v2/README.md
+  sha256: 39605fcc658dd3863aa838c198a0c4b832d6c9af4335ca66fb8f95e90486ea66
+  line_hint: 4
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-027
+  kind: AUDIT_PACKET
+  title: affiliate learning boundary
+  path: repository/changes/st-1704/affiliate-learning-v2/README.md
+  sha256: c942ffcd13aa5cd1b7b69275fd3b70e41a8a0ff4b3c932450430fceaa230ce43
+  line_hint: 9
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-028
+  kind: AUDIT_PACKET
+  title: root README and monorepo map
+  path: repository/README.md
+  sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
+  line_hint: 43
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-029
+  kind: AUDIT_PACKET
+  title: root Makefile and standard commands
+  path: repository/Makefile
+  sha256: d505133bfc56b259cdb3a3279d6f242a885998f239a3e29fc003ec63dfbbb9e9
+  line_hint: 67
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-030
+  kind: AUDIT_PACKET
+  title: Node/Next manifest
+  path: repository/package.json
+  sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
+  line_hint: 44
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+- id: AUD-031
+  kind: AUDIT_PACKET
+  title: Python manifest
+  path: repository/pyproject.toml
+  sha256: 34ee344782dbaf4135cb235e2fec215a1c709089c0994415fdeadf33979a6207
+  line_hint: 6
+  observed_at: '2026-08-27T13:47:34Z'
+  authority: TIME_BOUNDED_UNTRUSTED_EVIDENCE
+official_web_sources:
+- id: WEB-001
+  publisher: 楽天グループ
+  title: 楽天アフィリエイトガイドライン
+  url: https://affiliate.rakuten.co.jp/guideline/rule/
+  checked_at: '2026-08-28'
+  finding: 広告表示、掲載禁止面、リンク・画像の取扱いをpublication前に再確認する。ページ上の更新表示は2025-06-26。
+- id: WEB-002
+  publisher: 楽天グループ
+  title: 楽天アフィリエイト パートナー規約
+  url: https://affiliate.rakuten.co.jp/guideline/terms/
+  checked_at: '2026-08-28'
+  finding: 成果・禁止行為・変更可能性はprovider authority。設計は規約を複製せずrelease gateで再確認する。
+- id: WEB-003
+  publisher: 楽天グループ
+  title: 楽天アフィリエイト広告掲載基準
+  url: https://affiliate.rakuten.co.jp/guideline/adrule/
+  checked_at: '2026-08-28'
+  finding: 誤認を招く表示、クリック誘導の過剰化、許容されない改変を禁止する。
+- id: WEB-004
+  publisher: 楽天グループ
+  title: ステルスマーケティング規制の対応について
+  url: https://affiliate.rakuten.co.jp/guideline/stealth_marketing_regulation/
+  checked_at: '2026-08-28'
+  finding: 楽天アフィリエイト投稿では広告であることが分かりやすい表示を行う。
+- id: WEB-005
+  publisher: 楽天Web Service
+  title: Rakuten Ichiba Item Search API version 2026-07-01
+  url: https://webservice.rakuten.co.jp/documentation/ichiba-item-search
+  checked_at: '2026-08-28'
+  finding: 2026-07-01版をversion pin。applicationIdとaccessKeyを要求し、live requestは別承認。商品identityはitemCode等を保存する。
+- id: WEB-006
+  publisher: Google Search Central
+  title: Creating helpful, reliable, people-first content
+  url: https://developers.google.com/search/docs/fundamentals/creating-helpful-content
+  checked_at: '2026-08-28'
+  finding: 検索順位目的ではなく、対象読者が判断を完了できる固有価値をquality gateとする。
+- id: WEB-007
+  publisher: Google Search Central
+  title: Spam policies for Google Web Search
+  url: https://developers.google.com/search/docs/essentials/spam-policies
+  checked_at: '2026-08-28'
+  finding: 大量の低独自性ページを検索操作目的で生成するscaled content abuseを禁止する。
+- id: WEB-008
+  publisher: Google Search Central
+  title: Guidance on generative AI content
+  url: https://developers.google.com/search/docs/fundamentals/using-gen-ai-content
+  checked_at: '2026-08-28'
+  finding: AIは効率化に使えるが、正確性・品質・独自価値・人間責任を代替しない。
+- id: WEB-009
+  publisher: Google Search Central
+  title: Google Search Essentials
+  url: https://developers.google.com/search/docs/essentials
+  checked_at: '2026-08-28'
+  finding: crawlable links、検索語を反映したtitle/H1、technical eligibilityを守る。
+- id: WEB-010
+  publisher: Google Search Central
+  title: Introduction to structured data
+  url: https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data
+  checked_at: '2026-08-28'
+  finding: 可視内容と一致し、page contextに適合するmarkupだけを出力する。
+- id: WEB-011
+  publisher: Google Search Central
+  title: Article structured data
+  url: https://developers.google.com/search/docs/appearance/structured-data/article
+  checked_at: '2026-08-28'
+  finding: Article metadataを記事可視情報と一致させる。
+- id: WEB-012
+  publisher: Google Search Central
+  title: Core Web Vitals
+  url: https://developers.google.com/search/docs/appearance/core-web-vitals
+  checked_at: '2026-08-28'
+  finding: p75目標をLCP 2.5秒以内、INP 200ms以内、CLS 0.1以下とする。
+- id: WEB-013
+  publisher: 消費者庁
+  title: ステルスマーケティングに関するQ&A
+  url: https://www.caa.go.jp/policies/policy/representation/fair_labeling/faq/stealth_marketing/
+  checked_at: '2026-08-28'
+  finding: アフィリエイト表示はページ全体・位置・文字サイズ・色等から明瞭である必要がある。冒頭文言だけで常に足りるとは扱わない。
+- id: WEB-014
+  publisher: 個人情報保護委員会
+  title: 個人情報保護法ガイドライン（通則編）
+  url: https://www.ppc.go.jp/personalinfo/legal/guidelines_tsusoku/
+  checked_at: '2026-08-28'
+  finding: eventは利用目的・最小化・保管・安全管理をprivacy reviewへ接続する。
+- id: WEB-015
+  publisher: W3C
+  title: Web Content Accessibility Guidelines 2.2
+  url: https://www.w3.org/TR/WCAG22/
+  checked_at: '2026-08-28'
+  finding: WCAG 2.2 AAを目標。keyboard、focus visibility/not obscured、contrast、reflow、target size等を検証する。
+- id: WEB-016
+  publisher: ANA
+  title: 機内に持ち込める手荷物のサイズとルール（日本国内線）
+  url: https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/
+  checked_at: '2026-08-28'
+  finding: 座席数別の各辺・3辺合計、身の回り品、総重量、付属品をdecision ruleにする。2026年変更を含むためeffective date必須。
+- id: WEB-017
+  publisher: JAL
+  title: 機内持ち込みお手荷物
+  url: https://www.jal.co.jp/jp/ja/dom/baggage/inflight/
+  checked_at: '2026-08-28'
+  finding: 座席数別の寸法・総重量・付属品を記録し、乗継は最も厳しい区間を採用する。
+- id: WEB-018
+  publisher: Peach Aviation
+  title: 機内持ち込み手荷物について
+  url: https://www.flypeach.com/lm/ai/airports/baggage/carry_on_bag
+  checked_at: '2026-08-28'
+  finding: 身の回り品込み2個、合計7kg、3辺合計115cm等をairline-specific ruleとして扱う。
+- id: WEB-019
+  publisher: Jetstar
+  title: 機内持込手荷物
+  url: https://www.jetstar.com/jp/ja/help/articles/carry-on-baggage
+  checked_at: '2026-08-28'
+  finding: 運賃/option別の重量条件をvariant化し、常にstandard 7kgと断定しない。
+competitor_surfaces:
+- id: COMP-01
+  name: SAKIDORI
+  url: https://sakidori.co/
+  strength: 広い商品カテゴリ、視覚的商品探索、短い推薦導線
+  gap_or_boundary: 独自実測の境界や型番同一性・更新根拠を公開面で一貫表示する余地
+  checked_at: 2026-08-26/28
+- id: COMP-02
+  name: mybest
+  url: https://my-best.com/
+  strength: 多数商品の比較検証、評価軸、表・ランキング
+  gap_or_boundary: 実機試験規模では競わず、航空ルール×公式仕様の条件判定で差別化
+  checked_at: 2026-08-26/28
+- id: COMP-03
+  name: 360LiFE
+  url: https://360life.shinyusha.co.jp/
+  strength: 検証ラボ・雑誌編集・明確なランキング
+  gap_or_boundary: 実機検証をしないRAOSが同じ訴求を模倣するのは禁止
+  checked_at: 2026-08-26/28
+- id: COMP-04
+  name: Picky's
+  url: https://pickys-life.jp/
+  strength: カテゴリ専門性、見つけやすい比較構造
+  gap_or_boundary: 広告密度・長文化を避け、条件入力から短く決める
+  checked_at: 2026-08-26/28
+- id: COMP-05
+  name: HEIM
+  url: https://heim.jp/
+  strength: 広いロングテール、商品分類、更新運用
+  gap_or_boundary: 量ではなくsource freshnessと差分可視化で勝つ
+  checked_at: 2026-08-26/28
+- id: COMP-06
+  name: Rentio PRESS
+  url: https://www.rentio.jp/matome/
+  strength: 生活条件起点、レンタル知見、カテゴリ導線
+  gap_or_boundary: レンタル/実機体験を使わず、公式条件の適合判定へ限定
+  checked_at: 2026-08-26/28
+- id: COMP-07
+  name: ROOMIE
+  url: https://www.roomie.jp/
+  strength: 生活場面から始まる物語、落ち着いた編集体験
+  gap_or_boundary: 一人称実体験は使わず、困る場面→仕様→意味の順序だけ採用
+  checked_at: 2026-08-26/28
+- id: COMP-08
+  name: 価格.com
+  url: https://kakaku.com/
+  strength: 価格・在庫・商品網・比較機能
+  gap_or_boundary: 価格網羅性で競わず、楽天内のexact identityと意思決定説明へ限定
+  checked_at: 2026-08-26/28
+- id: COMP-09
+  name: Fav-Log
+  url: https://nlab.itmedia.co.jp/fav/
+  strength: ニュース性・更新頻度・商品紹介
+  gap_or_boundary: 速報量ではなく確認日・変更履歴・向かない条件を強化
+  checked_at: 2026-08-26/28
+- id: COMP-10
+  name: GoodsPress
+  url: https://www.goodspress.jp/
+  strength: プロダクトニュースと雑誌的編集
+  gap_or_boundary: 新製品ニュースはwedge外。購入条件解決へ集中
+  checked_at: 2026-08-26/28
+- id: COMP-11
+  name: Wirecutter
+  url: https://www.nytimes.com/wirecutter/
+  strength: 透明な推薦方針、用途別pick、affiliate independence
+  gap_or_boundary: testなしで同等を名乗らず、推薦と事業スコア分離だけ採用
+  checked_at: 2026-08-26/28

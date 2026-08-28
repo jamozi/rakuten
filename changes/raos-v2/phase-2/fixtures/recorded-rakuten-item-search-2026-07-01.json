@@ -1,0 +1,67 @@
+{
+  "schema": "RAOS_V2_RAKUTEN_RECORDED_SEARCH_2026_07_01",
+  "version": "2026-07-01",
+  "mode": "RECORDED_ONLY",
+  "fixture_kind": "SYNTHETIC_CONTRACT_FIXTURE",
+  "synthetic_created_at": "2026-08-28T06:41:52+09:00",
+  "source_sha256": "63e6dd0762f52df0606fc39727cf1820ba779ac54d5ee21bdadfef7caef02816",
+  "offers": [
+    {
+      "offer_observation": {
+        "schema_version": "1.0.0",
+        "offer_id": "SYNTH-OFFER-CRESTA-001",
+        "product_id": "PRD-ACE-CRESTA-06316",
+        "provider": "RAKUTEN",
+        "mode": "RECORDED_ONLY",
+        "item_code": "synthetic:cresta-06316",
+        "shop_code": "synthetic-recorded",
+        "observed_at": "2026-08-28T06:41:52+09:00",
+        "price_jpy": null,
+        "availability": null,
+        "affiliate_url_ref": null,
+        "image_ref": null,
+        "identity_evidence": ["MODEL_NUMBER_AND_TITLE"],
+        "status": "UNAVAILABLE"
+      },
+      "identity_input": {"observed_model_number": "06316", "title": "ACE クレスタ 06316"}
+    },
+    {
+      "offer_observation": {
+        "schema_version": "1.0.0",
+        "offer_id": "SYNTH-OFFER-DIFFERENCE-001",
+        "product_id": "PRD-ACE-DIFFERENCE-05721",
+        "provider": "RAKUTEN",
+        "mode": "RECORDED_ONLY",
+        "item_code": "synthetic:difference-05721",
+        "shop_code": "synthetic-recorded",
+        "observed_at": "2026-08-28T06:41:52+09:00",
+        "price_jpy": null,
+        "availability": null,
+        "affiliate_url_ref": null,
+        "image_ref": null,
+        "identity_evidence": ["MODEL_NUMBER_AND_TITLE"],
+        "status": "UNAVAILABLE"
+      },
+      "identity_input": {"observed_model_number": "05721", "title": "ace.TOKYO LABEL ディフェレンス 05721"}
+    },
+    {
+      "offer_observation": {
+        "schema_version": "1.0.0",
+        "offer_id": "SYNTH-OFFER-MAXPASS4-001",
+        "product_id": "PRD-ACE-MAXPASS4-01471",
+        "provider": "RAKUTEN",
+        "mode": "RECORDED_ONLY",
+        "item_code": "synthetic:maxpass4-01471",
+        "shop_code": "synthetic-recorded",
+        "observed_at": "2026-08-28T06:41:52+09:00",
+        "price_jpy": null,
+        "availability": null,
+        "affiliate_url_ref": null,
+        "image_ref": null,
+        "identity_evidence": ["MODEL_NUMBER_AND_TITLE"],
+        "status": "UNAVAILABLE"
+      },
+      "identity_input": {"observed_model_number": "01471", "title": "PROTECA マックスパス4 01471"}
+    }
+  ]
+}

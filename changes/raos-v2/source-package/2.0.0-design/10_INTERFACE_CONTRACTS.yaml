@@ -1,0 +1,394 @@
+schema: RAOS_V2_INTERFACE_CONTRACTS_V1
+version: 2.0.0-design
+authority: DESIGN_ONLY_UNAPPROVED_FOR_EXTERNAL_ACTIONS
+entities:
+  QueryIntent:
+    required:
+    - intent_id
+    - query_family
+    - intent_class
+    - primary_question
+    - article_role
+    - parent_hub
+    - status
+    enums:
+      intent_class:
+      - RULE
+      - DECISION
+      - TASK
+      - PRODUCT
+      - RISK
+      - HOW_TO
+      - TRUST
+      status:
+      - PLANNED_LOCKED
+      - ACTIVE
+      - MERGED
+      - RETIRED
+    invariants:
+    - one primary article role per query family
+    - overlap review required before ACTIVE
+  SourceRecord:
+    required:
+    - source_id
+    - source_class
+    - publisher
+    - title
+    - canonical_url
+    - checked_at
+    - next_review_at
+    - capture_provenance
+    - status
+    enums:
+      source_class:
+      - MANUFACTURER_PRIMARY
+      - AIRLINE_PRIMARY
+      - GOVERNMENT_PRIMARY
+      - RAKUTEN_PERMITTED_DATA
+      - COMPETITOR_UX_ONLY
+      status:
+      - FRESH
+      - DUE
+      - SOFT_STALE
+      - HARD_STALE
+      - UNAVAILABLE
+      - REJECTED
+    invariants:
+    - COMPETITOR_UX_ONLY cannot support product claim
+    - credentials/private data/raw review text prohibited
+  Claim:
+    required:
+    - claim_id
+    - claim_type
+    - subject_id
+    - predicate
+    - value
+    - unit
+    - source_ids
+    - checked_at
+    - next_review_at
+    - risk_class
+    - status
+    enums:
+      claim_type:
+      - A_OFFICIAL_FACT
+      - D_EDITORIAL_JUDGEMENT
+      - UNKNOWN
+      risk_class:
+      - LOW
+      - MEDIUM
+      - HIGH
+      status:
+      - DRAFT
+      - VERIFIED
+      - STALE
+      - BLOCKED
+    invariants:
+    - A requires at least one allowed primary source
+    - D requires explicit logic inputs
+    - UNKNOWN has no fabricated value
+    - B/C forbidden in initial V2
+  AirlineRuleSet:
+    required:
+    - rule_set_id
+    - carrier
+    - journey_scope
+    - effective_from
+    - effective_to
+    - variants
+    - source_id
+    - checked_at
+    variant_required:
+    - variant_id
+    - applicability
+    - bag_count
+    - personal_item_count
+    - dimension_edges_cm
+    - sum_edges_cm
+    - total_weight_kg
+    - notes
+    - resolution_requirements
+    invariants:
+    - all dimensions include handles/wheels rule if source says so
+    - missing applicability input resolves UNKNOWN
+  ProductModel:
+    required:
+    - product_id
+    - manufacturer
+    - brand
+    - model_name
+    - model_number
+    - generation
+    - variants
+    - official_source_ids
+    - identity_status
+    variant_required:
+    - variant_id
+    - external_dimensions_cm
+    - expanded_dimensions_cm
+    - mass_kg
+    - capacity_l
+    - declared_features
+    - unknown_fields
+    enums:
+      identity_status:
+      - EXACT
+      - AMBIGUOUS
+      - REJECTED
+      - UNRESOLVED
+    invariants:
+    - model number is primary identity
+    - offer data cannot overwrite manufacturer facts
+  OfferObservation:
+    required:
+    - offer_id
+    - product_id
+    - provider
+    - item_code
+    - shop_code
+    - observed_at
+    - affiliate_url_ref
+    - image_ref
+    - identity_evidence
+    - status
+    enums:
+      status:
+      - CURRENT
+      - STALE
+      - OUT_OF_STOCK
+      - IDENTITY_BLOCKED
+      - UNAVAILABLE
+    invariants:
+    - price/inventory never become persistent product fact
+    - commission is forbidden recommendation input
+  ArticleDefinition:
+    required:
+    - article_id
+    - route
+    - template
+    - primary_intent_id
+    - parent_hub
+    - claim_ids
+    - editorial_decisions
+    - disclosure
+    - source_checked_at
+    - review_state
+    enums:
+      template:
+      - HOME
+      - HUB
+      - GUIDE
+      - COMPARISON
+      - DIFFERENCE
+      - TOOL
+      - POLICY
+    invariants:
+    - one H1
+    - required block order
+    - fit and non-fit for recommendations
+    - no unverified popularity
+  EditorialDecision:
+    required:
+    - decision_id
+    - decision_type
+    - inputs
+    - logic_version
+    - outcome
+    - rationale
+    - non_fit
+    - reviewer
+    enums:
+      decision_type:
+      - ELIGIBILITY
+      - FIT
+      - ARTICLE_SCOPE
+      - TRADE_OFF
+      - UNKNOWN_HANDLING
+    invariants:
+    - finance fields absent
+    - outcome reproducible from inputs
+  PublicationPackage:
+    required:
+    - package_id
+    - target_origin
+    - target_route
+    - article_id
+    - input_hashes
+    - render_hash
+    - source_snapshot_hash
+    - review_binding
+    - migration_manifest
+    - created_at
+    - state
+    enums:
+      state:
+      - DRAFT
+      - EVIDENCE_COMPLETE
+      - HUMAN_REVIEWED
+      - PACKAGE_SEALED
+      - WP_DRAFT_CREATED
+      - HUMAN_PUBLISHED
+      - PUBLIC_VERIFIED
+      - BLOCKED
+      - REVIEW_REQUIRED
+      - ROLLED_BACK
+    invariants:
+    - seal requires human review and fresh evidence
+    - no publish command/capability
+    - any semantic drift invalidates seal
+  AnalyticsEvent:
+    required:
+    - event_name
+    - event_version
+    - event_time_jst
+    - session_token_hmac
+    - article_id
+    - placement
+    - consent_state
+    allowlist_events:
+    - tool_result_view
+    - comparison_view
+    - evidence_link_open
+    - official_source_open
+    - affiliate_outbound_activate
+    - article_complete
+    - error_state_view
+    forbidden_fields:
+    - raw_ip
+    - raw_user_agent
+    - full_referrer
+    - query_string
+    - email
+    - name
+    - address
+    - provider_order_id
+    invariants:
+    - production sender disabled until approval
+    - session token rotates after 30 minutes
+    - no cross-device identity
+  ProviderOutcomeImport:
+    required:
+    - import_id
+    - provider
+    - period_start
+    - period_end
+    - currency
+    - source_sha256
+    - row_count
+    - provider_total
+    - maturity_state
+    - attribution_class
+    - imported_by
+    - imported_at
+    enums:
+      maturity_state:
+      - PENDING
+      - IMMATURE
+      - CONFIRMED
+      - CANCELLED
+      attribution_class:
+      - DIRECT_PROVIDER
+      - CLICK_COHORT
+      - UNATTRIBUTED_PROGRAM
+    invariants:
+    - UNATTRIBUTED_PROGRAM cannot populate article reward
+    - source totals reconcile exactly
+  FreshnessAssessment:
+    required:
+    - subject_id
+    - subject_type
+    - checked_at
+    - next_review_at
+    - risk_class
+    - state
+    - action
+    enums:
+      state:
+      - FRESH
+      - DUE
+      - SOFT_STALE
+      - HARD_STALE
+      - UNKNOWN
+    invariants:
+    - HARD_STALE high-risk blocks seal/public successor
+    - offer stale suppresses volatile values
+ports:
+  RuleRegistryPort:
+    input: journey conditions + effective timestamp
+    output: resolved rule variant or UNKNOWN
+    failure: closed typed error; no implicit default carrier
+  ProductCatalogPort:
+    input: product/model ID
+    output: official product model
+    failure: UNRESOLVED; no offer-title substitution
+  RakutenSearchPort:
+    input: versioned search request
+    output: recorded/live response envelope
+    default_mode: RECORDED_ONLY
+    live_preconditions:
+    - owner-approved credentials
+    - current terms recheck
+    - network gate
+    - rate/timeout budget
+    failure: typed provider error; no retry storm
+  DecisionSupportPort:
+    input: user-entered dimensions/weight/journey + rule/product data
+    output: PASS/FAIL/UNKNOWN + reason/source
+    failure: UNKNOWN with missing fields
+  ArticleRendererPort:
+    input: ArticleDefinition + resolved claims/products
+    output: deterministic HTML/metadata/JSON-LD
+    failure: no partial affiliate rendering
+  PublicationPackagePort:
+    input: reviewed render bundle
+    output: sealed package
+    failure: BLOCKED and reason; no external write
+  WordPressDraftPort:
+    input: sealed package
+    output: dry-run diff or external draft receipt
+    default_mode: DISABLED_DRY_RUN
+    failure: no retry/write without new approval
+  EventCollectorPort:
+    input: allowlisted event
+    output: local/approved first-party receipt
+    default_mode: LOCAL_SINK_ONLY
+    failure: drop/reject forbidden event, never enrich with PII
+  OutcomeImportPort:
+    input: owner-supplied sanitized export
+    output: reconciled immutable import
+    failure: reject mismatch; preserve source hash
+  FreshnessMonitorPort:
+    input: source/claim/product clocks
+    output: assessment and action queue
+    failure: UNKNOWN/HARD_STALE safe state
+state_transitions:
+  content:
+  - DRAFT -> EVIDENCE_COMPLETE
+  - EVIDENCE_COMPLETE -> HUMAN_REVIEWED
+  - HUMAN_REVIEWED -> PACKAGE_SEALED
+  - PACKAGE_SEALED -> WP_DRAFT_CREATED [external]
+  - WP_DRAFT_CREATED -> HUMAN_PUBLISHED [external]
+  - HUMAN_PUBLISHED -> PUBLIC_VERIFIED [read-only verification]
+  - any mutable pre-public state -> BLOCKED/REVIEW_REQUIRED
+  - public verification failure -> ROLLED_BACK [external human action]
+  identity:
+  - UNRESOLVED -> EXACT
+  - UNRESOLVED -> AMBIGUOUS
+  - AMBIGUOUS -> EXACT [new evidence + human review]
+  - any -> REJECTED [contradiction/accessory/old generation]
+  freshness:
+  - FRESH -> DUE -> SOFT_STALE -> HARD_STALE
+  - new verified capture -> FRESH
+  - source unavailable -> UNKNOWN
+repository_overlay_paths:
+- changes/raos-v2/**
+- contracts/raos-v2/**
+- python/raos/domain/decision_support_v2/**
+- python/raos/application/decision_support_v2/**
+- python/raos/ports/decision_support_v2/**
+- python/raos/adapters/decision_support_v2/**
+- packages/web-ui/src/decision-support-v2/**
+- tests/raos_v2/**
+- scripts/build_raos_v2_successor.py
+- scripts/validate_raos_v2_successor.py
+- docs/runbooks/raos-v2/**

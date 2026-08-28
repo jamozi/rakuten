@@ -1,0 +1,92 @@
+{
+  "$id": "https://kurashinoshirube.com/contracts/raos-v2/v1/editorial-decision.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "decision_id": {
+      "pattern": "^ED-[A-Z0-9-]+$",
+      "type": "string"
+    },
+    "decision_type": {
+      "enum": [
+        "ELIGIBILITY",
+        "FIT",
+        "ARTICLE_SCOPE",
+        "TRADE_OFF",
+        "UNKNOWN_HANDLING"
+      ]
+    },
+    "inputs": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "input_id": {
+            "not": {
+              "enum": [
+                "IN-COMMISSION",
+                "IN-EPC",
+                "IN-BUSINESS-SCORE",
+                "IN-PRICE",
+                "IN-REWARD-RATE"
+              ]
+            },
+            "pattern": "^IN-[A-Z0-9-]+$",
+            "type": "string"
+          },
+          "value_ref": {
+            "pattern": "^CLM-[A-Z0-9-]+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "input_id",
+          "value_ref"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "logic_version": {
+      "pattern": "^LOGIC-[A-Z0-9.-]+$",
+      "type": "string"
+    },
+    "non_fit": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "outcome": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "rationale": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "reviewer": {
+      "pattern": "^REVIEWER-[A-Z0-9-]+$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    }
+  },
+  "required": [
+    "schema_version",
+    "decision_id",
+    "decision_type",
+    "inputs",
+    "logic_version",
+    "outcome",
+    "rationale",
+    "non_fit",
+    "reviewer"
+  ],
+  "title": "editorial-decision",
+  "type": "object"
+}

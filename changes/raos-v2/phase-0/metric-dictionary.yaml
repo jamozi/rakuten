@@ -1,0 +1,147 @@
+schema: RAOS_V2_METRIC_DICTIONARY_V1
+currency: JPY
+timezone: Asia/Tokyo
+rules:
+  missing_value: UNAVAILABLE
+  missing_never_equals_zero: true
+  pending_never_equals_confirmed: true
+  unattributed_program_total_never_populates_article_reward: true
+metrics:
+- id: QDS
+  formula: distinct eligible 30-minute sessions with tool result OR comparison/evidence followed by official-source
+    or affiliate activation
+  source: LOCAL_FIRST_PARTY_EVENTS
+  required_maturity: EVENT_OBSERVED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: NON_BRAND_ORGANIC_SESSIONS
+  formula: Search Console organic sessions excluding approved brand query set
+  source: SEARCH_CONSOLE_EXPORT
+  required_maturity: GSC_FINAL
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: NON_BRAND_IMPRESSIONS
+  formula: Search Console impressions excluding approved brand query set
+  source: SEARCH_CONSOLE_EXPORT
+  required_maturity: GSC_FINAL
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: NON_BRAND_QUERY_WIDTH
+  formula: count(distinct eligible non-brand queries)
+  source: SEARCH_CONSOLE_EXPORT
+  required_maturity: GSC_FINAL
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: AFFILIATE_OUTBOUND_CTR
+  formula: verified affiliate outbound activations / eligible decision sessions
+  source: LOCAL_FIRST_PARTY_EVENTS
+  required_maturity: EVENT_OBSERVED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: CONFIRMED_EPC
+  formula: mature confirmed reward JPY / attributable verified outbound clicks
+  source: SANITIZED_RAKUTEN_EXPORT
+  required_maturity: CONFIRMED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: CONFIRMED_RPM
+  formula: mature confirmed reward JPY / eligible sessions * 1000
+  source: SANITIZED_RAKUTEN_EXPORT_AND_EVENTS
+  required_maturity: CONFIRMED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: CASH_CONTRIBUTION_PROFIT
+  formula: confirmed reward JPY - paid variable cash cost JPY
+  source: FINANCE_LEDGER
+  required_maturity: CONFIRMED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: ECONOMIC_CONTRIBUTION_PROFIT
+  formula: confirmed reward JPY - variable cash cost JPY - human hours * internal hourly cost JPY
+  source: FINANCE_AND_TIME_LEDGER
+  required_maturity: CONFIRMED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: MONTHLY_CONFIRMED_CONTRIBUTION_PROFIT
+  formula: monthly confirmed reward JPY - monthly variable cash cost JPY - monthly human hours * internal
+    hourly cost JPY
+  source: FINANCE_AND_TIME_LEDGER
+  required_maturity: CONFIRMED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: ARTICLE_PAYBACK_MONTHS
+  formula: article production economic cost / mature monthly article contribution
+  source: ATTRIBUTION_AND_COST_LEDGER
+  required_maturity: CONFIRMED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: CATEGORY_PAYBACK_MONTHS
+  formula: category production and maintenance economic cost / mature monthly confirmed category contribution
+  source: CATEGORY_ATTRIBUTION_AND_COST_LEDGER
+  required_maturity: CONFIRMED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: DIRECT_AND_RETURN_RATE
+  formula: eligible direct or returning sessions / eligible sessions
+  source: LOCAL_FIRST_PARTY_EVENTS
+  required_maturity: EVENT_OBSERVED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: CORRECTION_RATE
+  formula: published corrections / reviewed published assets
+  source: EDITORIAL_LEDGER
+  required_maturity: HUMAN_REVIEWED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: MAJOR_FACT_DEFECTS
+  formula: count of confirmed high-severity factual defects
+  source: EDITORIAL_INCIDENT_LEDGER
+  required_maturity: HUMAN_CONFIRMED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: COMPLAINT_FIRST_RESPONSE_WITHIN_72H_RATE
+  formula: eligible complaints receiving a recorded first response within 72 hours / eligible complaints
+  source: EDITORIAL_COMPLAINT_LEDGER
+  required_maturity: HUMAN_CONFIRMED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: STALE_EXPOSURE_RATE
+  formula: sessions exposed to overdue claims / eligible sessions
+  source: FRESHNESS_AND_EVENT_LEDGER
+  required_maturity: EVENT_OBSERVED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: HUMAN_HOURS_PER_ARTICLE
+  formula: human logged production hours / completed articles
+  source: TIME_LEDGER
+  required_maturity: HUMAN_RECORDED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+- id: UPDATE_COST_PER_PAGE
+  formula: human update hours * internal hourly cost / updated pages
+  source: TIME_LEDGER
+  required_maturity: HUMAN_RECORDED
+  current_value: UNAVAILABLE
+  unavailable_rule: return UNAVAILABLE when any required numerator, denominator, maturity or attribution
+    input is absent
+backlog_id: B-V2-005
+test_ids:
+- T-V2-006
