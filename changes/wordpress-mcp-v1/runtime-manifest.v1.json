@@ -166,8 +166,8 @@
     },
     {
       "path": "tests/wordpress_mcp_v1/e2e/run.sh",
-      "sha256": "9c850fc62b6fc30472e8c5dd92a2fe84ec0e53ab5fe29dbebb511d39357d94bf",
-      "size": 10711
+      "sha256": "b2585f42c524699c8f889020c75188b889c46b86d23084e8214662338f0659c9",
+      "size": 10914
     },
     {
       "path": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/README.md",
