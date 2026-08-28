@@ -19,7 +19,7 @@ DESIGN_HANDOFF_V1:
       exact_origin: https://kurashinoshirube.com
       cms: SELF_HOSTED_WORDPRESS
       hosting_migration: DISABLED
-      child_theme_version: 1.3.5
+      child_theme_version: 1.3.6
     editorial:
       article_slots: 5
       existing_article_counts_as_slot_one: true

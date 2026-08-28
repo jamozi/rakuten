@@ -9,7 +9,7 @@ The slice owns five things:
 1. five closed article/resource packets covering all MVP article types;
 2. a deterministic renderer and draft-only WordPress review boundary;
 3. a credential-free, allowlisted official-source capture boundary;
-4. child theme 1.3.5 with the five-article editorial UI and RAOS/Yoast bridge;
+4. child theme 1.3.6 with the five-article editorial UI and RAOS/Yoast bridge;
 5. local/CI evidence and a handoff for the remaining human-controlled actions.
 
 It does **not** publish, activate plugins or themes, enter credentials, accept terms,
@@ -138,7 +138,7 @@ post-activation Site Health readback must confirm the exact persisted configurat
 The archive digest alone is never promoted to installed-file evidence.
 
 The existing suitcase post is never replaced by a clone. Its reviewed draft uses a
-digest-bound temporary slug, and theme 1.3.5 exposes one POST-only administrator
+digest-bound temporary slug, and theme 1.3.6 exposes one POST-only administrator
 screen that can copy only the approved title, excerpt, content, and closed snapshot
 back to the exact existing public post. That screen requires an explicit nonce-bound
 human action, preserves the target ID/slug/status/date/author/taxonomies, uses a

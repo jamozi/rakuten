@@ -159,14 +159,14 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_3_5_successor() -> None:
+def test_theme_is_an_isolated_1_3_6_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.3.5\n") == 1
+    assert stylesheet.count("\nVersion: 1.3.6\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.5"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.5'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.6"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.6'") == 1
     at003_gate = functions.split(
         "function kurashinoshirube_existing_update_context", 1
     )[1]
@@ -206,7 +206,7 @@ def test_only_bound_public_articles_disable_wordpress_wpautop() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.3.5"
+    assert manifest["theme_version"] == "1.3.6"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 3
     for record in records:
@@ -402,7 +402,11 @@ def test_related_navigation_is_fixed_reciprocal_and_contract_hashed() -> None:
     }
     assert relation_map["st1704-anker-solix-c300-c800-c1000-differences"][
         "targets"
-    ] == {"st1704-portable-power-station-guide": ("停電対策用ポータブル電源の選び方")}
+    ] == {
+        "st1704-portable-power-station-guide": (
+            "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める"
+        )
+    }
     assert all(len(value["targets"]) <= 1 for value in relation_map.values())
 
     articles = _load_json(ARTICLES_PATH)
