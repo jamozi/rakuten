@@ -48,6 +48,16 @@ def test_st0005_git_attributes_source_selects_its_generator() -> None:
     )
 
 
+def test_static_ci_fetches_the_v2_immutable_baseline_history() -> None:
+    workflow = yaml.safe_load(
+        (REPOSITORY_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    )
+    checkout = workflow["jobs"]["static"]["steps"][0]
+
+    assert checkout["with"]["fetch-depth"] == 0
+    assert checkout["with"]["persist-credentials"] is False
+
+
 def test_owner_commands_do_not_write_python_bytecode(tmp_path: Path) -> None:
     (tmp_path / "owner_module.py").write_text("VALUE = 1\n", encoding="utf-8")
 
