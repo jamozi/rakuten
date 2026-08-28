@@ -1,0 +1,51 @@
+{
+  "schema": "RAOS_WORDPRESS_LOCAL_PREVIEW_FIXTURE_V1",
+  "seed_version": "2026-08-29.1",
+  "posts": [
+    {
+      "article_id": "local-preview-carry-on-suitcase-comparison",
+      "category": "移動",
+      "content_file": "article-preview.html",
+      "date": "2026-08-29 00:00:00",
+      "excerpt": "軽さ・容量・開き方の違いを、合成データだけで確認するローカル表示用の記事です。",
+      "slug": "local-preview-carry-on-suitcase-comparison",
+      "title": "機内持ち込みスーツケース3モデル比較｜ローカル表示確認"
+    },
+    {
+      "article_id": "local-preview-portable-power-station-guide",
+      "category": "備え",
+      "content_file": null,
+      "date": "2026-08-28 00:00:00",
+      "excerpt": "容量と定格出力を使う場面から整理する、外部リンクなしの合成ガイドです。",
+      "slug": "local-preview-portable-power-station-guide",
+      "title": "停電対策用ポータブル電源の選び方｜ローカル表示確認"
+    },
+    {
+      "article_id": "local-preview-compact-dishwasher-guide",
+      "category": "家事",
+      "content_file": null,
+      "date": "2026-08-27 00:00:00",
+      "excerpt": "設置寸法と給水方法を比べる、1〜2人暮らし向けの合成記事です。",
+      "slug": "local-preview-compact-dishwasher-guide",
+      "title": "省スペース食洗機の比較｜ローカル表示確認"
+    },
+    {
+      "article_id": "local-preview-power-model-differences",
+      "category": "備え",
+      "content_file": null,
+      "date": "2026-08-26 00:00:00",
+      "excerpt": "複数モデルの差をカードと表で確認するための合成記事です。",
+      "slug": "local-preview-power-model-differences",
+      "title": "ポータブル電源4モデルの違い｜ローカル表示確認"
+    },
+    {
+      "article_id": "local-preview-robot-vacuum-shortlist",
+      "category": "家事",
+      "content_file": null,
+      "date": "2026-08-25 00:00:00",
+      "excerpt": "本体寸法と手入れ条件から候補を絞る、合成データだけの記事です。",
+      "slug": "local-preview-robot-vacuum-shortlist",
+      "title": "コンパクトなロボット掃除機の選び方｜ローカル表示確認"
+    }
+  ]
+}
