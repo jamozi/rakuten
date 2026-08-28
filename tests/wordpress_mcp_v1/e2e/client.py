@@ -38,7 +38,9 @@ class HttpFailure(RuntimeError):
         try:
             payload = json.loads(body)
             candidate = payload.get("code") if isinstance(payload, dict) else None
-            if isinstance(candidate, str) and re.fullmatch(r"[a-z0-9_]{1,96}", candidate):
+            if isinstance(candidate, str) and re.fullmatch(
+                r"[a-z0-9_]{1,96}", candidate
+            ):
                 code = f" code={candidate}"
         except UnicodeError, json.JSONDecodeError:
             pass
@@ -55,8 +57,10 @@ def required_environment(name: str) -> str:
 
 
 def authorization(username: str, password: str) -> str:
-    token = base64.b64encode(f"{username}:{password}".encode()).decode("ascii")
-    return f"Basic {token}"
+    encoded_authorization = base64.b64encode(f"{username}:{password}".encode()).decode(
+        "ascii"
+    )
+    return f"Basic {encoded_authorization}"
 
 
 def request(

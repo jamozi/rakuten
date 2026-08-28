@@ -157,12 +157,14 @@ def main() -> int:
         if target.exists() or target.is_symlink():
             fail("WORDPRESS_MCP_CREDENTIAL_ALREADY_EXISTS")
         username = input("Dedicated WordPress username: ").strip()
-        password = getpass.getpass("Dedicated WordPress Application Password: ")
+        application_password = getpass.getpass(
+            "Dedicated WordPress Application Password: "
+        )
         if (
             not username
             or len(username) > 100
-            or len(password) < 20
-            or len(password) > 512
+            or len(application_password) < 20
+            or len(application_password) > 512
         ):
             fail("WORDPRESS_MCP_CREDENTIAL_INPUT_INVALID")
         other_purpose = (
@@ -171,13 +173,13 @@ def main() -> int:
         other = DIRECTORY / PURPOSES[other_purpose]
         if other.exists():
             other_record = secure_existing(other)
-            if other_record.get("application_password") == password:
+            if other_record.get("application_password") == application_password:
                 fail("WORDPRESS_MCP_CREDENTIAL_REUSE_FORBIDDEN")
         record = {
             "schema": "RAOS_WORDPRESS_APPLICATION_PASSWORD_V1",
             "origin": ORIGIN,
             "username": username,
-            "application_password": password,
+            "application_password": application_password,
             "purpose": purpose,
         }
         payload = record_bytes(record)

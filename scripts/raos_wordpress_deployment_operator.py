@@ -195,11 +195,13 @@ def request_json(
 ) -> dict[str, object]:
     if method not in {"GET", "POST"} or not path.startswith("/") or ".." in path:
         fail("WORDPRESS_MCP_TRANSPORT_INVALID")
-    username, password = credentials()
+    username, application_password = credentials()
     headers = {
         "Accept": "application/json",
         "Authorization": "Basic "
-        + base64.b64encode(f"{username}:{password}".encode()).decode("ascii"),
+        + base64.b64encode(f"{username}:{application_password}".encode()).decode(
+            "ascii"
+        ),
         "User-Agent": "raos-wordpress-bridge/1.0.0",
     }
     data = None

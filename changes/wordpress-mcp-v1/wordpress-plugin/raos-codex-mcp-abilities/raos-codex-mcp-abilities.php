@@ -437,13 +437,13 @@ final class RAOS_Codex_MCP_Abilities
         }
         check_admin_referer('raos_codex_mcp_approve_' . $proposal_id);
         $row = RAOS_Codex_MCP_Store::get($proposal_id);
-        $password = isset($_POST['current_password']) ? (string) wp_unslash($_POST['current_password']) : '';
+        $current_password = isset($_POST['current_password']) ? (string) wp_unslash($_POST['current_password']) : '';
         $reason = isset($_POST['reason']) ? sanitize_textarea_field(wp_unslash($_POST['reason'])) : '';
         $suffix = isset($_POST['hash_suffix']) ? sanitize_text_field(wp_unslash($_POST['hash_suffix'])) : '';
         $user = wp_get_current_user();
         if (is_wp_error($row)
             || ! $user instanceof WP_User
-            || ! wp_check_password($password, $user->user_pass, $user->ID)
+            || ! wp_check_password($current_password, $user->user_pass, $user->ID)
             || ! is_string($row['after_sha256'])
             || ! hash_equals(substr($row['after_sha256'], -8), $suffix)) {
             wp_die(
