@@ -35,6 +35,7 @@ else:
 
 
 REPO_ROOT: Final = SCRIPT_REPO_ROOT
+GIT_ATTRIBUTES_PATH: Final = REPO_ROOT / ".gitattributes"
 DOCS_ROOT: Final = REPO_ROOT / "docs"
 DEFAULT_BUNDLE_ROOT: Final = REPO_ROOT / "changes" / "st-0005"
 REQUESTS_ROOT: Final = DEFAULT_BUNDLE_ROOT / "requests"
@@ -3296,7 +3297,7 @@ def build_policy() -> dict[str, Any]:
 
 def source_paths() -> list[Path]:
     fixed = [
-        REPO_ROOT / ".gitattributes",
+        GIT_ATTRIBUTES_PATH,
         REPO_ROOT / GENERATOR_PATH,
         REPO_ROOT / "scripts" / "import_raos_design.py",
         REPO_ROOT / "docs" / "README.md",

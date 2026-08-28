@@ -4496,8 +4496,8 @@
           "uri": "repo://changes/st-0005/contracts/status-transition-request.schema.json"
         },
         {
-          "bytes": 214072,
-          "sha256": "8f648da6208634365a8f552beaad8de950a47a8ad3c662043fd6d4bb778c66a7",
+          "bytes": 214073,
+          "sha256": "9c4feff08ad8d987a6998bcc756f57466cd773ded34c7be78fa4db392ab43e99",
           "uri": "repo://changes/st-0005/manifest.yaml"
         },
         {
@@ -4510,6 +4510,12 @@
       "owner_id": "build_st0005_status",
       "owner_version": 2,
       "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": ".gitattributes",
+          "uri": "repo://.gitattributes",
+          "version": 2
+        },
         {
           "kind": "tracked",
           "semantic_id": "changes/st-0005",

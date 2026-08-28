@@ -38,6 +38,16 @@ def test_build_infrastructure_change_selects_the_complete_graph() -> None:
     assert set(selected) == set(registry)
 
 
+def test_st0005_git_attributes_source_selects_its_generator() -> None:
+    registry = discover_registry()
+    owner = registry["build_st0005_status"]
+
+    assert any(item.uri == "repo://.gitattributes" for item in owner.inputs)
+    assert "build_st0005_status" in affected_owners(
+        registry, {Path(".gitattributes")}
+    )
+
+
 def test_owner_commands_do_not_write_python_bytecode(tmp_path: Path) -> None:
     (tmp_path / "owner_module.py").write_text("VALUE = 1\n", encoding="utf-8")
 
