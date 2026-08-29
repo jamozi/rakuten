@@ -25739,7 +25739,7 @@
       "outputs": [
         {
           "bytes": 3170,
-          "sha256": "68cc76c38f0091856e023e01c6abe4edfd91a74914ec38eef364ca7b06217560",
+          "sha256": "ed6350d8f8f26cb143e2dc83ec85a3f859b84db86eacf1dc8173c5d0732a1ca5",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -25883,8 +25883,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 71060,
-          "sha256": "4e14c380d78bdf044361445798759aace6f5587834d390aa2324eace287bd91b",
+          "bytes": 71063,
+          "sha256": "cf54caf419069d62ded06c6eeeb94da328f669ee4e46a5ae2b8b8462fe460dc9",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
