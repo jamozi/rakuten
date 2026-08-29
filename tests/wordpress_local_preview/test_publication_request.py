@@ -285,6 +285,19 @@ class ReconcileClient:
         raise AssertionError(name)
 
 
+class MultiReconcileClient:
+    def __init__(self, readbacks: list[dict[str, Any]]) -> None:
+        self.readbacks = {document["id"]: document for document in readbacks}
+        self.calls: list[tuple[str, dict[str, object]]] = []
+
+    def call(self, name: str, arguments: dict[str, object]) -> dict[str, Any]:
+        self.calls.append((name, arguments))
+        assert name == "raos-codex-content-get"
+        post_id = arguments["id"]
+        assert isinstance(post_id, int)
+        return self.readbacks[post_id]
+
+
 def _private_path(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
     os.chmod(tmp_path, 0o700)
     directory = tmp_path / "publication-requests"
@@ -353,6 +366,43 @@ def test_published_slug_conflict_fails_closed(
         publication.reconcile_drafts(
             ReconcileClient(published), [article], [published], receipt, path
         )
+
+
+def test_replaced_applied_attempt_reconciles_multiple_known_published_targets(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    articles = publication.load_articles(
+        "roomba-mini-vs-switchbot-k11-pro,solota-vs-rakua-mini-plus"
+    )
+    published = [
+        _document(article, post_id=85 + index, status="publish")
+        for index, article in enumerate(articles)
+    ]
+    path = _private_path(monkeypatch, tmp_path)
+    receipt = publication._fresh_receipt(articles, path)
+    receipt["state"] = "APPLIED_ATTEMPT_REPLACED"
+    receipt["drafts"] = {
+        article.production_slug: {
+            "id": document["id"],
+            "content_sha256": document["content_sha256"],
+        }
+        for article, document in zip(articles, published, strict=True)
+    }
+    client = MultiReconcileClient(published)
+
+    result = publication.reconcile_drafts(
+        client, articles, published, receipt, path
+    )
+
+    assert result == {
+        article.production_slug: document
+        for article, document in zip(articles, published, strict=True)
+    }
+    assert [name for name, _ in client.calls] == [
+        "raos-codex-content-get",
+        "raos-codex-content-get",
+    ]
+    assert receipt["state"] == "DRAFTS_READY"
 
 
 class PaginatedClient:
