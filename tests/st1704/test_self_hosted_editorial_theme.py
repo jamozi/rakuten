@@ -159,14 +159,14 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_3_7_successor() -> None:
+def test_theme_is_an_isolated_1_3_8_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.3.7\n") == 1
+    assert stylesheet.count("\nVersion: 1.3.8\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.7"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.7'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.8"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.8'") == 1
     at003_gate = functions.split(
         "function kurashinoshirube_existing_update_context", 1
     )[1]
@@ -221,7 +221,7 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
     )
     assert families == {"editorial-serif": serif, "editorial-sans": sans}
     assert "--raos-font-serif: " + serif.replace("'", '"') + ";" in css
-    assert css.count("font-family: var(--raos-font-serif);") == 5
+    assert css.count("font-family: var(--raos-font-serif);") == 11
     assert "ui-serif" not in css
     assert "ui-serif" not in families["editorial-serif"]
 
@@ -229,7 +229,7 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.3.7"
+    assert manifest["theme_version"] == "1.3.8"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 4
     for record in records:
@@ -376,38 +376,101 @@ def test_brand_mark_is_bounded_accessible_svg() -> None:
     assert "<script" not in mark.read_text(encoding="utf-8").lower()
 
 
-def test_homepage_has_one_h1_three_clusters_and_the_brand_promise() -> None:
+def test_variant_a_homepage_has_one_h1_explicit_navigation_and_nine_sections() -> None:
     header = (THEME_ROOT / "parts/header.html").read_text(encoding="utf-8")
     front = (THEME_ROOT / "templates/front-page.html").read_text(encoding="utf-8")
-    functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+
     assert header.count('"level":0') == 1
     assert "raos-skip-link" not in header
-    assert front.count('<h1 class="') == 1
-    assert front.count('"level":1') == 1
-    assert "<span>暮らしの道具を、</span><span>根拠から選ぶ。</span>" in front
-    assert front.count('class="wp-block-group raos-hero__proof"') == 1
-    assert "THE EDITORIAL STANDARD" in front
-    assert front.count('class="raos-trust-bar__number"') == 3
-    assert "最新の比較ガイドを見る" in front
+    assert header.count("<!-- wp:navigation-link ") == 4
+    for label, url in (
+        ("目的から探す", "/#categories"),
+        ("選び方・比較記事", "/#featured"),
+        ("新しい記事", "/#latest"),
+        ("このサイトについて", "/#about"),
+    ):
+        assert (
+            f'<!-- wp:navigation-link {{"label":"{label}","url":"{url}",'
+            in header
+        )
+    assert header.count("<!-- wp:search ") == 1
+    for search_setting in (
+        '"label":"記事を検索"',
+        '"showLabel":false',
+        '"buttonPosition":"button-only"',
+        '"buttonUseIcon":true',
+        '"isSearchFieldHidden":true',
+    ):
+        assert search_setting in header
+
+    css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    expanded_search = (
+        ".raos-site-header .raos-header-search:not("
+        ".wp-block-search__searchfield-hidden)"
+    )
+    assert css.count(expanded_search) == 4
+    assert f"{expanded_search} {{" in css
+    assert "position: absolute;" in css.split(f"{expanded_search} {{", 1)[1].split(
+        "}", 1
+    )[0]
+    assert "width: 100%;" in css.split(f"{expanded_search} {{", 1)[1].split(
+        "}", 1
+    )[0]
+    assert "padding: 0.5rem clamp(1rem, 4vw, 2rem);" in css
+    assert "):last-child:nth-child(odd) {" in css
+
+    assert front.count('<main id="main-content"') == 1
+    assert front.count("<h1") == 1
+    assert front.count("</h1>") == 1
+    assert '"level":1' not in front
+    assert (
+        '<h1 id="home-hero-title">暮らしの選択に、<br>'
+        "たしかな道しるべを。</h1>"
+    ) in front
+
+    section_markers = [
+        '<section class="raos-home-hero"',
+        '<section class="raos-home-promise"',
+        '<section class="raos-home-purpose',
+        "[kurashinoshirube_featured_guide]",
+        '<section class="raos-home-problems',
+        '<section id="latest"',
+        "[kurashinoshirube_published_clusters]",
+        '<section class="raos-home-method',
+        '<section class="raos-home-about',
+    ]
+    assert all(front.count(marker) == 1 for marker in section_markers)
+    assert [front.index(marker) for marker in section_markers] == sorted(
+        front.index(marker) for marker in section_markers
+    )
+
+    promise = front.split('<section class="raos-home-promise"', 1)[1].split(
+        "</section>", 1
+    )[0]
+    assert "EDITORIAL PROMISE" in promise
+    assert promise.count("<li><span>") == 3
+    for heading in ("条件から比較する", "確認できる情報を使う", "向かない人も伝える"):
+        assert f"<h3>{heading}</h3>" in promise
+
+    purpose = front.split('<section class="raos-home-purpose', 1)[1].split(
+        "</section>", 1
+    )[0]
+    for heading, anchor in (
+        ("移動を軽やかに", "cluster-mobility"),
+        ("家事の手間を減らす", "cluster-home"),
+        ("もしもの時に備える", "cluster-ready"),
+    ):
+        assert purpose.count(f'href="#{anchor}"') == 1
+        assert f"<h3>{heading}</h3>" in purpose
+
     assert front.count("[kurashinoshirube_featured_guide]") == 1
     assert front.count("[kurashinoshirube_published_clusters]") == 1
-    for label, anchor in (
-        ("移動", "cluster-mobility"),
-        ("家事", "cluster-home"),
-        ("備え", "cluster-ready"),
-    ):
-        assert label in functions
-        assert functions.count(anchor) >= 1
-    assert "広告報酬をおすすめ順位の判断材料にしません" in front
+    assert front.count(
+        '<!-- wp:query {"query":{"inherit":false,"perPage":4,'
+        '"postType":"post","order":"desc","orderBy":"modified"}} -->'
+    ) == 1
+    assert "商品選定・評価は報酬条件とは切り離して行います。" in front
     assert "よく読まれている" not in front
-    assert "注目ガイド" in functions
-    assert "公開済みの注目ガイドはまだありません" not in functions
-    assert "カテゴリ別ガイドは、" in functions
-    assert "条件から選ぶ" in functions
-    assert "カテゴリから選ぶ" in functions
-    assert '"inherit":false' in front
-    assert "get_page_by_path($slug, OBJECT, 'post')" in functions
-    assert "get_post_status($post) !== 'publish'" in functions
     for unpublished_path in (
         "/portable-power-station-guide/",
         "/countertop-dishwasher-for-small-households/",
@@ -415,6 +478,85 @@ def test_homepage_has_one_h1_three_clusters_and_the_brand_promise() -> None:
         "/compact-robot-vacuum-shortlist/",
     ):
         assert unpublished_path not in front
+
+
+def test_fixed_featured_guide_requires_one_published_bound_article() -> None:
+    contract = _load_json(CONTRACT_PATH)
+    assert contract["homepage_featured"] == {
+        "article_id": "st1704-portable-power-station-guide",
+        "exclude_from_latest": True,
+        "local_preview_substitute": "LATEST_SYNTHETIC_POST_LAYOUT_ONLY",
+        "selection": "FIXED_ARTICLE_ID_WITH_PUBLISHED_BOUND_SNAPSHOT",
+    }
+
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    assert source.count(
+        "KURASHINOSHIRUBE_HOMEPAGE_FEATURED_ARTICLE_ID = "
+        "'st1704-portable-power-station-guide'"
+    ) == 1
+    selector = source.split(
+        "function kurashinoshirube_homepage_featured_post(): ?WP_Post", 1
+    )[1].split("/** Resolve a bounded reader-facing section label", 1)[0]
+    for eligibility_check in (
+        "$article_id = KURASHINOSHIRUBE_HOMEPAGE_FEATURED_ARTICLE_ID;",
+        "$binding = kurashinoshirube_article_bindings()[$article_id] ?? null;",
+        "get_page_by_path($slug, OBJECT, 'post')",
+        "kurashinoshirube_bound_post_snapshot((int) $post->ID, false)",
+        "get_post_status($post) === 'publish'",
+        "$snapshot['article_id'] === $article_id",
+        "get_permalink($post) === $expected_permalink",
+    ):
+        assert eligibility_check in selector
+    assert selector.index("get_post_status($post) === 'publish'") < selector.index(
+        "$cached = $post;"
+    )
+    assert selector.index("$snapshot['article_id'] === $article_id") < selector.index(
+        "$cached = $post;"
+    )
+
+    renderer = source.split(
+        "function kurashinoshirube_render_featured_guide", 1
+    )[1].split("add_shortcode(", 1)[0]
+    assert "|| ! is_front_page()" in renderer
+    assert "if (! ($post instanceof WP_Post))" in renderer
+    assert 'id="featured"' in renderer
+    assert "人気順ではなく、いまの比較テーマを編集部が案内します。" in renderer
+    assert "よく読まれている" not in renderer
+
+
+def test_local_preview_substitution_is_locked_to_the_isolated_fixture_origin() -> None:
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    guard = source.split(
+        "function kurashinoshirube_is_local_preview(): bool", 1
+    )[1].split("/**\n * Resolve the fixed featured article", 1)[0]
+    assert source.count("RAOS_LOCAL_PREVIEW") == 2
+    for boundary in (
+        "defined('RAOS_LOCAL_PREVIEW')",
+        "RAOS_LOCAL_PREVIEW === true",
+        "function_exists('wp_get_environment_type')",
+        "wp_get_environment_type() === 'local'",
+        "home_url('/') === 'http://127.0.0.1:8888/'",
+        "site_url('/') === 'http://127.0.0.1:8888/'",
+    ):
+        assert boundary in guard
+
+    selector = source.split(
+        "function kurashinoshirube_homepage_featured_post(): ?WP_Post", 1
+    )[1].split("/** Resolve a bounded reader-facing section label", 1)[0]
+    assert selector.count("get_posts(") == 1
+    assert "if (! kurashinoshirube_is_local_preview())" in selector
+    assert selector.index("if (! kurashinoshirube_is_local_preview())") < (
+        selector.index("get_posts(")
+    )
+    for preview_constraint in (
+        "'fields' => 'ids'",
+        "'numberposts' => 1",
+        "'orderby' => 'modified'",
+        "'post_status' => 'publish'",
+        "'post_type' => 'post'",
+        "preg_match('/\\Alocal-preview-[a-z0-9-]+\\z/D', $slug) !== 1",
+    ):
+        assert preview_constraint in selector
 
 
 def test_wordpress_block_templates_are_balanced() -> None:
@@ -566,7 +708,7 @@ def test_homepage_cluster_contract_is_hash_bound_and_covers_all_articles() -> No
         "function kurashinoshirube_render_published_clusters", 1
     )[1].split("add_shortcode(", 1)[0]
     assert "$cluster_body = $items === ''" in renderer
-    assert "このカテゴリの記事は、根拠と公開条件の確認後に掲載します。" in renderer
+    assert "このテーマの記事は、根拠と公開条件の確認後に掲載します。" in renderer
     assert ". esc_html($cluster['heading']) . '</h3>' . $cluster_body" in renderer
     assert "if ($items === '') {\n            continue;" not in renderer
 
@@ -642,6 +784,7 @@ def test_sitemap_and_front_page_share_one_public_listing_exclusion_policy() -> N
     assert contract["publication_authority"] == "NONE"
     assert policy["consumers"] == {
         "front_page_latest_posts": {
+            "additional_exclusion": "FIXED_FEATURED_POST_WHEN_ELIGIBLE",
             "filter": "query_loop_block_query_vars",
             "merge_target": "post__not_in",
         },
@@ -703,8 +846,17 @@ def test_sitemap_and_front_page_share_one_public_listing_exclusion_policy() -> N
     assert "kurashinoshirube_merge_public_listing_exclusions($post_ids)" in sitemap
     assert "if (! is_front_page())" in latest
     assert "$query['post__not_in'] ?? array()" in latest
+    assert "$featured = kurashinoshirube_homepage_featured_post();" in latest
+    assert "if ($featured instanceof WP_Post)" in latest
+    assert "$requested_exclusions[] = (int) $featured->ID;" in latest
     assert "kurashinoshirube_merge_public_listing_exclusions(" in latest
     assert "$query['post__in'] = array(0);" in latest
+    assert latest.index("$requested_exclusions[] = (int) $featured->ID;") < (
+        latest.index("kurashinoshirube_merge_public_listing_exclusions(")
+    )
+    assert latest.index("$query['post__in'] = array(0);") < latest.index(
+        "$query['post__not_in'] = $excluded;"
+    )
     post_type = source.split("function kurashinoshirube_sitemap_exclude_post_type", 1)[
         1
     ].split("function kurashinoshirube_sitemap_exclude_taxonomy", 1)[0]
@@ -789,7 +941,7 @@ def test_footer_removes_the_broken_subscription_link() -> None:
     footer = (THEME_ROOT / "parts/footer.html").read_text(encoding="utf-8")
     assert "/subscribe/" not in footer
     assert "新着案内を受け取る" not in footer
-    assert "/about/" in footer
+    assert footer.count('"url":"/#about"') == 1
     assert "/about-ad-policy/" in footer
 
 
@@ -858,11 +1010,15 @@ def test_comparison_and_cta_contracts_are_accessible_and_closed() -> None:
     ]
     assert contract["measurement"]["analytics_transmission_added"] is False
     assert contract["homepage_section_order"] == [
-        "最新のガイド",
-        "注目ガイド",
-        "条件から選ぶ",
-        "カテゴリから選ぶ",
-        "編集部の比較方針",
+        "ヒーロー",
+        "編集方針の約束",
+        "暮らしの目的",
+        "今、読んでほしい選び方",
+        "困りごとから探す",
+        "新しい記事",
+        "目的別の記事",
+        "商品選びの方法",
+        "このサイトについて",
     ]
     cta = markup["affiliate_cta"]
     assert cta["exact_label"] == "楽天市場で現在の価格・在庫・カラーを見る"
@@ -890,7 +1046,7 @@ def test_focus_and_text_color_pairs_meet_wcag_aa() -> None:
     definitions = set(re.findall(r"(?m)^\s*(--raos-[a-z-]+):", css))
     assert references <= definitions
     assert "outline: 3px solid var(--raos-focus)" in css
-    assert ".raos-hero :where(a, button):focus-visible" in css
+    assert ".raos-home-v2 :where(a, button, input, summary):focus-visible" in css
     assert ".raos-masthead nav a" in css
     assert ".raos-wordmark:focus-visible" in css
     assert "outline-color: var(--raos-focus)" in css

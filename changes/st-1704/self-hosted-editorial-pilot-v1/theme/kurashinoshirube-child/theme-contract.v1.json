@@ -88,11 +88,15 @@
     }
   },
   "homepage_section_order": [
-    "最新のガイド",
-    "注目ガイド",
-    "条件から選ぶ",
-    "カテゴリから選ぶ",
-    "編集部の比較方針"
+    "ヒーロー",
+    "編集方針の約束",
+    "暮らしの目的",
+    "今、読んでほしい選び方",
+    "困りごとから探す",
+    "新しい記事",
+    "目的別の記事",
+    "商品選びの方法",
+    "このサイトについて"
   ],
   "measurement": {
     "analytics_transmission_added": false,
@@ -257,6 +261,12 @@
     "link_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_BOUND_RAOS_SNAPSHOT",
     "owner": "THEME_FIXED_ALLOWLIST"
   },
+  "homepage_featured": {
+    "article_id": "st1704-portable-power-station-guide",
+    "exclude_from_latest": true,
+    "local_preview_substitute": "LATEST_SYNTHETIC_POST_LAYOUT_ONLY",
+    "selection": "FIXED_ARTICLE_ID_WITH_PUBLISHED_BOUND_SNAPSHOT"
+  },
   "publication_authority": "NONE",
   "public_listing_eligibility": {
     "candidate_query": {
@@ -273,6 +283,7 @@
     "candidate_overflow_policy": "LOOKUP_FAILURE_WHEN_RESULT_COUNT_EXCEEDS_MAX_ROWS",
     "consumers": {
       "front_page_latest_posts": {
+        "additional_exclusion": "FIXED_FEATURED_POST_WHEN_ELIGIBLE",
         "filter": "query_loop_block_query_vars",
         "merge_target": "post__not_in"
       },
@@ -411,5 +422,5 @@
     "wrapper_keys": ["payload", "payload_sha256", "schema"]
   },
   "theme_slug": "kurashinoshirube-child",
-  "theme_version": "1.3.7"
+  "theme_version": "1.3.8"
 }
