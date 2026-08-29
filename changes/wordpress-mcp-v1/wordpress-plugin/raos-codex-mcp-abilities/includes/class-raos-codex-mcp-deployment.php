@@ -706,12 +706,12 @@ final class RAOS_Codex_MCP_Deployment
             }
             $authorization = self::validate_approval_lease($claimed);
             if (is_wp_error($authorization)) {
-                $failed = RAOS_Codex_MCP_Store::mark_failed(
+                $failed = self::mark_failed_and_finalize(
                     $proposal_id,
                     'RAOS_CODEX_APPROVAL_LEASE_INVALID'
                 );
-                if (! is_wp_error($failed) && 'FAILED' === $failed['state']) {
-                    self::cleanup_completed_code_operation($failed);
+                if (is_wp_error($failed)) {
+                    return $failed;
                 }
                 return $authorization;
             }
@@ -740,9 +740,9 @@ final class RAOS_Codex_MCP_Deployment
                 if (preg_match('/\A[A-Z0-9_]{3,96}\z/D', $code) !== 1) {
                     $code = 'OPERATION_FAILED';
                 }
-                $failed = RAOS_Codex_MCP_Store::mark_failed($proposal_id, $code);
-                if (! is_wp_error($failed) && 'FAILED' === $failed['state']) {
-                    self::cleanup_completed_code_operation($failed);
+                $failed = self::mark_failed_and_finalize($proposal_id, $code);
+                if (is_wp_error($failed)) {
+                    return $failed;
                 }
             }
             return $receipt;
@@ -780,6 +780,12 @@ final class RAOS_Codex_MCP_Deployment
             }
             if ('APPLIED' === $row['state'] && is_array($row['receipt'])) {
                 return self::finalize_applied_receipt($row);
+            }
+            if ('FAILED' === $row['state']) {
+                $cleanup = self::finalize_failed_operation($row);
+                return true === $cleanup
+                    ? RAOS_Codex_MCP_Store::public_operation($row)
+                    : $cleanup;
             }
             if ('APPLYING' !== $row['state']) {
                 return RAOS_Codex_MCP_Store::public_operation($row);
@@ -1014,20 +1020,14 @@ final class RAOS_Codex_MCP_Deployment
                         if (preg_match('/\A[A-Z0-9_]{3,96}\z/D', $code) !== 1) {
                             $code = 'OPCACHE_INVALIDATION_FAILED';
                         }
-                        $failed = RAOS_Codex_MCP_Store::mark_failed(
+                        $failed = self::mark_failed_and_finalize(
                             $row['proposal_id'],
                             $code
                         );
                         if (is_wp_error($failed)) {
-                            return self::recoverable_from_error($failed);
+                            return $failed;
                         }
-                        $updated = RAOS_Codex_MCP_Store::get($row['proposal_id']);
-                        if (! is_wp_error($updated) && 'FAILED' === $updated['state']) {
-                            self::cleanup_completed_code_operation($updated);
-                        }
-                        return is_wp_error($updated)
-                            ? self::recoverable_from_error($updated)
-                            : RAOS_Codex_MCP_Store::public_operation($updated);
+                        return RAOS_Codex_MCP_Store::public_operation($failed);
                     }
                 }
                 if ('PLUGIN_CHANGE' === $row['kind']) {
@@ -1078,17 +1078,14 @@ final class RAOS_Codex_MCP_Deployment
                         return $plugin_recovery;
                     }
                 }
-                RAOS_Codex_MCP_Store::mark_failed(
+                $failed = self::mark_failed_and_finalize(
                     $row['proposal_id'],
                     'OPERATION_RECOVERED_AT_BEFORE_STATE'
                 );
-                $updated = RAOS_Codex_MCP_Store::get($row['proposal_id']);
-                if (! is_wp_error($updated) && 'FAILED' === $updated['state']) {
-                    self::cleanup_completed_code_operation($updated);
+                if (is_wp_error($failed)) {
+                    return $failed;
                 }
-                return is_wp_error($updated)
-                    ? $updated
-                    : RAOS_Codex_MCP_Store::public_operation($updated);
+                return RAOS_Codex_MCP_Store::public_operation($failed);
             }
 
             // An unknown content hash may be a later human/third-party edit.  It
@@ -1137,17 +1134,14 @@ final class RAOS_Codex_MCP_Deployment
                     )
                     : self::recoverable_error('raos_codex_code_rollback_indeterminate', 409);
                 if (true === $restored) {
-                    RAOS_Codex_MCP_Store::mark_failed(
+                    $failed = self::mark_failed_and_finalize(
                         $row['proposal_id'],
                         'OPERATION_RECOVERED_BY_CODE_ROLLBACK'
                     );
-                    $updated = RAOS_Codex_MCP_Store::get($row['proposal_id']);
-                    if (! is_wp_error($updated) && 'FAILED' === $updated['state']) {
-                        self::cleanup_completed_code_operation($updated);
+                    if (is_wp_error($failed)) {
+                        return $failed;
                     }
-                    return is_wp_error($updated)
-                        ? $updated
-                        : RAOS_Codex_MCP_Store::public_operation($updated);
+                    return RAOS_Codex_MCP_Store::public_operation($failed);
                 }
                 return $restored;
             }
@@ -1540,10 +1534,14 @@ final class RAOS_Codex_MCP_Deployment
         }
         $operation_root = $private . '/operation-' . $row['proposal_id'];
         $lease_path = $private . '/approval-lease-' . $row['proposal_id'] . '.json';
-        $deferred_cleanup = file_exists($operation_root)
-            || is_link($operation_root)
-            || file_exists($lease_path)
-            || is_link($lease_path);
+        $operation_pending = file_exists($operation_root) || is_link($operation_root);
+        $lease_pending = file_exists($lease_path) || is_link($lease_path);
+        $package_path = isset($row['package_path']) && is_string($row['package_path'])
+            ? $row['package_path']
+            : null;
+        $package_pending = is_string($package_path)
+            && (file_exists($package_path) || is_link($package_path));
+        $deferred_cleanup = $operation_pending || $lease_pending || $package_pending;
         if (! $deferred_cleanup) {
             return $row['receipt'];
         }
@@ -1551,11 +1549,14 @@ final class RAOS_Codex_MCP_Deployment
         if (is_wp_error($gate)) {
             return self::recoverable_from_error($gate);
         }
-        $authorization = self::validate_approval_lease($row, false);
-        if (is_wp_error($authorization)) {
-            return self::recoverable_from_error($authorization);
+        if ($lease_pending) {
+            $authorization = self::validate_approval_lease($row, false);
+            if (is_wp_error($authorization)) {
+                return self::recoverable_from_error($authorization);
+            }
         }
-        if (in_array($row['kind'], array('THEME_RELEASE', 'PLUGIN_CHANGE'), true)) {
+        if ($operation_pending
+            && in_array($row['kind'], array('THEME_RELEASE', 'PLUGIN_CHANGE'), true)) {
             $descriptor = isset($row['payload']['code_package'])
                 && is_array($row['payload']['code_package'])
                     ? $row['payload']['code_package']
@@ -1626,6 +1627,15 @@ final class RAOS_Codex_MCP_Deployment
                 return $verified;
             }
         }
+        $cleanup = self::cleanup_completed_code_operation($row);
+        if (true !== $cleanup) {
+            return is_wp_error($cleanup)
+                ? $cleanup
+                : self::recoverable_error(
+                    'raos_codex_recovery_cleanup_indeterminate',
+                    500
+                );
+        }
         if (! self::remove_approval_lease($row['proposal_id'])) {
             return self::recoverable_error(
                 'raos_codex_recovery_cleanup_indeterminate',
@@ -1638,15 +1648,6 @@ final class RAOS_Codex_MCP_Deployment
                 500
             );
         }
-        $cleanup = self::cleanup_completed_code_operation($row);
-        if (true !== $cleanup) {
-            return is_wp_error($cleanup)
-                ? $cleanup
-                : self::recoverable_error(
-                    'raos_codex_recovery_cleanup_indeterminate',
-                    500
-                );
-        }
         if (in_array($row['kind'], array('THEME_RELEASE', 'PLUGIN_CHANGE'), true)
             && (file_exists($operation_root) || is_link($operation_root))) {
             return self::recoverable_error(
@@ -1655,6 +1656,78 @@ final class RAOS_Codex_MCP_Deployment
             );
         }
         return $row['receipt'];
+    }
+
+    /**
+     * Persist the terminal failure before deleting any recovery evidence, then
+     * finish only owner-private cleanup. The failed result never re-enters the
+     * live mutation state machine.
+     */
+    private static function mark_failed_and_finalize($proposal_id, $result_code)
+    {
+        $failed = RAOS_Codex_MCP_Store::mark_failed($proposal_id, $result_code);
+        if (is_wp_error($failed)) {
+            return self::recoverable_from_error($failed);
+        }
+        if (! is_array($failed)
+            || ! isset($failed['proposal_id'], $failed['state'], $failed['result_code'])
+            || ! is_string($failed['proposal_id'])
+            || ! is_string($failed['result_code'])
+            || ! hash_equals($proposal_id, $failed['proposal_id'])
+            || 'FAILED' !== $failed['state']
+            || ! hash_equals($result_code, $failed['result_code'])) {
+            return self::recoverable_error(
+                'raos_codex_recovery_failed_state_indeterminate',
+                500
+            );
+        }
+        $cleanup = self::finalize_failed_operation($failed);
+        return true === $cleanup ? $failed : $cleanup;
+    }
+
+    /**
+     * Retry cleanup for a persisted FAILED operation without touching its live
+     * content, code tree, activation state, result code, or receipt.
+     */
+    private static function finalize_failed_operation($row, $package_unlinker = null)
+    {
+        if (! is_array($row)
+            || ! isset($row['proposal_id'], $row['kind'], $row['state'])
+            || 'FAILED' !== $row['state']
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['proposal_id'])
+            || ! in_array(
+                $row['kind'],
+                array('CONTENT_RELEASE', 'THEME_RELEASE', 'PLUGIN_CHANGE'),
+                true
+            )) {
+            return self::recoverable_error(
+                'raos_codex_recovery_failed_state_indeterminate',
+                500
+            );
+        }
+        $cleanup = self::cleanup_completed_code_operation($row, $package_unlinker);
+        if (true !== $cleanup) {
+            return is_wp_error($cleanup)
+                ? $cleanup
+                : self::recoverable_error(
+                    'raos_codex_recovery_cleanup_indeterminate',
+                    500
+                );
+        }
+        $private = self::private_directory();
+        if (is_wp_error($private)) {
+            return self::recoverable_from_error($private);
+        }
+        $lease_path = $private . '/approval-lease-' . $row['proposal_id'] . '.json';
+        if (! self::remove_approval_lease($row['proposal_id'])
+            || file_exists($lease_path)
+            || is_link($lease_path)) {
+            return self::recoverable_error(
+                'raos_codex_recovery_cleanup_indeterminate',
+                500
+            );
+        }
+        return true;
     }
 
     private static function deferred_code_before_manifest($row, $operation_root)
@@ -1738,7 +1811,7 @@ final class RAOS_Codex_MCP_Deployment
                 );
     }
 
-    private static function cleanup_completed_code_operation($row)
+    private static function cleanup_completed_code_operation($row, $package_unlinker = null)
     {
         if (! is_array($row)
             || ! isset($row['proposal_id'], $row['kind'], $row['state'])
@@ -1746,6 +1819,12 @@ final class RAOS_Codex_MCP_Deployment
             || ! in_array($row['state'], array('APPLIED', 'FAILED', 'EXPIRED'), true)
             || ! RAOS_Codex_MCP_Store::is_sha256($row['proposal_id'])) {
             return true;
+        }
+        if (! is_null($package_unlinker) && ! is_callable($package_unlinker)) {
+            return self::recoverable_error(
+                'raos_codex_recovery_cleanup_indeterminate',
+                500
+            );
         }
         $private = self::private_directory();
         if (is_wp_error($private)) {
@@ -1756,6 +1835,57 @@ final class RAOS_Codex_MCP_Deployment
         if (true !== $quarantine) {
             return $quarantine;
         }
+        $package_path = isset($row['package_path']) ? $row['package_path'] : null;
+        if (! is_string($package_path)
+            || ! hash_equals(dirname($package_path), $private)
+            || preg_match('/\Apackage-[0-9a-f]{48}\.zip\z/D', basename($package_path)) !== 1) {
+            return self::recoverable_error(
+                'raos_codex_recovery_cleanup_indeterminate',
+                500
+            );
+        }
+        if (file_exists($package_path) || is_link($package_path)) {
+            $descriptor = isset($row['payload']['code_package'])
+                && is_array($row['payload']['code_package'])
+                    ? $row['payload']['code_package']
+                    : null;
+            $expected_package_sha256 = is_array($descriptor)
+                && isset($descriptor['package_sha256'])
+                && RAOS_Codex_MCP_Store::is_sha256($descriptor['package_sha256'])
+                    ? $descriptor['package_sha256']
+                    : null;
+            $package_real = ! is_link($package_path) ? realpath($package_path) : false;
+            $package_sha256 = self::secure_staged_file($package_path)
+                ? @hash_file('sha256', $package_path)
+                : false;
+            if (! is_string($package_real)
+                || ! hash_equals($package_path, $package_real)
+                || ! is_string($expected_package_sha256)
+                || ! is_string($package_sha256)
+                || ! hash_equals($expected_package_sha256, $package_sha256)) {
+                return self::recoverable_error(
+                    'raos_codex_recovery_cleanup_indeterminate',
+                    500
+                );
+            }
+            $unlink = is_callable($package_unlinker)
+                ? $package_unlinker
+                : static function ($path) {
+                    return @unlink($path);
+                };
+            try {
+                $removed = true === $unlink($package_real);
+            } catch (Throwable $error) {
+                unset($error);
+                $removed = false;
+            }
+            if (! $removed || file_exists($package_path) || is_link($package_path)) {
+                return self::recoverable_error(
+                    'raos_codex_recovery_cleanup_indeterminate',
+                    500
+                );
+            }
+        }
         if ((file_exists($operation_root) || is_link($operation_root))
             && ! self::remove_tree($operation_root)) {
             return self::recoverable_error(
@@ -1763,17 +1893,10 @@ final class RAOS_Codex_MCP_Deployment
                 500
             );
         }
-        if (! file_exists($operation_root) && ! is_link($operation_root)) {
-            $package_path = isset($row['package_path']) ? $row['package_path'] : null;
-            $package_real = is_string($package_path) ? realpath($package_path) : false;
-            if (is_string($package_real)
-                && hash_equals(dirname($package_real), $private)
-                && preg_match('/\Apackage-[0-9a-f]{48}\.zip\z/D', basename($package_real)) === 1
-                && self::secure_staged_file($package_real)) {
-                @unlink($package_real);
-            }
-        }
-        return ! file_exists($operation_root) && ! is_link($operation_root)
+        return ! file_exists($operation_root)
+            && ! is_link($operation_root)
+            && ! file_exists($package_path)
+            && ! is_link($package_path)
             ? true
             : self::recoverable_error(
                 'raos_codex_recovery_cleanup_indeterminate',

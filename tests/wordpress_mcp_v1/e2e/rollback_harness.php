@@ -209,6 +209,7 @@ $apply_content = raos_e2e_rollback_method('apply_content');
 $complete_recovered_content = raos_e2e_rollback_method('complete_recovered_content');
 $complete_recovered_code = raos_e2e_rollback_method('complete_recovered_code');
 $finalize_applied = raos_e2e_rollback_method('finalize_applied_receipt');
+$finalize_failed = raos_e2e_rollback_method('finalize_failed_operation');
 $validate_quarantine = raos_e2e_rollback_method('validate_code_operation_quarantine');
 $write_content = raos_e2e_rollback_method('write_content_document');
 $begin_content = raos_e2e_rollback_method('begin_content_transaction');
@@ -652,15 +653,22 @@ if (! $held_publication_lock_valid
 $cleanup_id = str_repeat('b', 64);
 $cleanup_root = $private . '/operation-' . $cleanup_id;
 $cleanup_package = $private . '/package-' . str_repeat('c', 48) . '.zip';
+$cleanup_package_payload = 'staged package';
 mkdir($cleanup_root, 0700, true);
 file_put_contents($cleanup_root . '/before.txt', 'only recovery copy');
-file_put_contents($cleanup_package, 'staged package');
+file_put_contents($cleanup_package, $cleanup_package_payload);
 chmod($cleanup_package, 0600);
 $cleanup_row = array(
     'proposal_id' => $cleanup_id,
     'kind' => 'THEME_RELEASE',
     'state' => 'APPLYING',
+    'after_sha256' => str_repeat('d', 64),
     'package_path' => $cleanup_package,
+    'payload' => array(
+        'code_package' => array(
+            'package_sha256' => hash('sha256', $cleanup_package_payload),
+        ),
+    ),
 );
 $cleanup_code->invoke(null, $cleanup_row);
 if (! is_dir($cleanup_root) || ! is_file($cleanup_package)) {
@@ -671,6 +679,143 @@ $cleanup_code->invoke(null, $cleanup_row);
 if (file_exists($cleanup_root) || file_exists($cleanup_package)) {
     raos_e2e_rollback_fail('RAOS_E2E_ROLLBACK_TERMINAL_CLEANUP_FAILED');
 }
+
+// FAILED remains terminal for the live target while bounded recovery retries
+// only owner-private cleanup. Refused, dishonest, digest-drifted, and symlinked
+// package deletion attempts must preserve all evidence for the next retry.
+$failed_cleanup_slug = 'raos-e2e-failed-cleanup-' . bin2hex(random_bytes(3));
+$failed_cleanup_target = WP_PLUGIN_DIR . '/' . $failed_cleanup_slug;
+$failed_cleanup_package = $private . '/package-' . bin2hex(random_bytes(24)) . '.zip';
+$failed_cleanup_payload = 'failed cleanup staged package';
+mkdir($failed_cleanup_target, 0700, true);
+file_put_contents($failed_cleanup_target . '/sentinel.txt', 'live target remains unchanged');
+$failed_cleanup_before = RAOS_Codex_MCP_Deployment::tree_hash($failed_cleanup_target);
+file_put_contents($failed_cleanup_package, $failed_cleanup_payload);
+chmod($failed_cleanup_package, 0600);
+$failed_cleanup_after = str_repeat('e', 64);
+$failed_cleanup_row = RAOS_Codex_MCP_Store::create(
+    'PLUGIN_CHANGE',
+    array(
+        'schema' => 'CodeReleaseProposalV1',
+        'kind' => 'PLUGIN_CHANGE',
+        'code_package' => array(
+            'kind' => 'plugin',
+            'slug' => $failed_cleanup_slug,
+            'package_sha256' => hash('sha256', $failed_cleanup_payload),
+        ),
+        'before_tree_sha256' => $failed_cleanup_before,
+        'after_tree_sha256' => $failed_cleanup_after,
+    ),
+    $failed_cleanup_before,
+    $failed_cleanup_after,
+    true,
+    $failed_cleanup_package
+);
+if (is_wp_error($failed_cleanup_row)) {
+    raos_e2e_rollback_fail('RAOS_E2E_FAILED_CLEANUP_SETUP_FAILED');
+}
+$failed_cleanup_root = $private . '/operation-' . $failed_cleanup_row['proposal_id'];
+mkdir($failed_cleanup_root, 0700, true);
+file_put_contents($failed_cleanup_root . '/evidence.txt', 'terminal cleanup evidence');
+$wpdb->update(
+    RAOS_Codex_MCP_Store::table_name(),
+    array(
+        'state' => 'APPLYING',
+        'result_code' => 'OPERATION_APPLYING',
+        'applying_at_gmt' => gmdate('Y-m-d H:i:s', time() - 300),
+    ),
+    array('proposal_id' => $failed_cleanup_row['proposal_id'])
+);
+$failed_cleanup_row = RAOS_Codex_MCP_Store::mark_failed(
+    $failed_cleanup_row['proposal_id'],
+    'E2E_TERMINAL_CLEANUP_FAILED'
+);
+if (is_wp_error($failed_cleanup_row) || 'FAILED' !== $failed_cleanup_row['state']) {
+    raos_e2e_rollback_fail('RAOS_E2E_FAILED_CLEANUP_TERMINAL_SETUP_FAILED');
+}
+$failed_cleanup_public = RAOS_Codex_MCP_Store::public_operation($failed_cleanup_row);
+foreach (
+    array(
+        static function ($path) {
+            unset($path);
+            return false;
+        },
+        static function ($path) {
+            unset($path);
+            return true;
+        },
+    ) as $refused_unlink
+) {
+    $failed_cleanup_result = $finalize_failed->invoke(
+        null,
+        $failed_cleanup_row,
+        $refused_unlink
+    );
+    if (! is_wp_error($failed_cleanup_result)
+        || 'raos_codex_recovery_cleanup_indeterminate'
+            !== $failed_cleanup_result->get_error_code()
+        || ! raos_e2e_recovery_required($failed_cleanup_result)
+        || ! is_file($failed_cleanup_package)
+        || ! is_dir($failed_cleanup_root)) {
+        raos_e2e_rollback_fail('RAOS_E2E_FAILED_CLEANUP_UNLINK_FAILED');
+    }
+}
+file_put_contents($failed_cleanup_package, 'digest drift');
+chmod($failed_cleanup_package, 0600);
+$failed_cleanup_digest = $finalize_failed->invoke(null, $failed_cleanup_row);
+if (! is_wp_error($failed_cleanup_digest)
+    || 'raos_codex_recovery_cleanup_indeterminate'
+        !== $failed_cleanup_digest->get_error_code()
+    || ! is_file($failed_cleanup_package)
+    || ! is_dir($failed_cleanup_root)) {
+    raos_e2e_rollback_fail('RAOS_E2E_FAILED_CLEANUP_DIGEST_FAILED');
+}
+file_put_contents($failed_cleanup_package, $failed_cleanup_payload);
+chmod($failed_cleanup_package, 0600);
+$failed_cleanup_held = $failed_cleanup_package . '.held';
+rename($failed_cleanup_package, $failed_cleanup_held);
+symlink($failed_cleanup_held, $failed_cleanup_package);
+$failed_cleanup_symlink = $finalize_failed->invoke(null, $failed_cleanup_row);
+if (! is_wp_error($failed_cleanup_symlink)
+    || 'raos_codex_recovery_cleanup_indeterminate'
+        !== $failed_cleanup_symlink->get_error_code()
+    || ! is_link($failed_cleanup_package)
+    || ! is_file($failed_cleanup_held)
+    || ! is_dir($failed_cleanup_root)) {
+    raos_e2e_rollback_fail('RAOS_E2E_FAILED_CLEANUP_SYMLINK_FAILED');
+}
+@unlink($failed_cleanup_package);
+rename($failed_cleanup_held, $failed_cleanup_package);
+$failed_cleanup_request = new WP_REST_Request('POST', '/');
+$failed_cleanup_request->set_url_params(
+    array('operation_id' => $failed_cleanup_row['proposal_id'])
+);
+$failed_cleanup_recovered = $deployment->recover_operation($failed_cleanup_request);
+$failed_cleanup_stored = RAOS_Codex_MCP_Store::get($failed_cleanup_row['proposal_id']);
+$failed_cleanup_idempotent = $deployment->recover_operation($failed_cleanup_request);
+$failed_cleanup_target_after = RAOS_Codex_MCP_Deployment::tree_hash(
+    $failed_cleanup_target
+);
+if ($failed_cleanup_public !== $failed_cleanup_recovered
+    || $failed_cleanup_recovered !== $failed_cleanup_idempotent
+    || is_wp_error($failed_cleanup_stored)
+    || 'FAILED' !== $failed_cleanup_stored['state']
+    || 'E2E_TERMINAL_CLEANUP_FAILED' !== $failed_cleanup_stored['result_code']
+    || file_exists($failed_cleanup_package)
+    || is_link($failed_cleanup_package)
+    || file_exists($failed_cleanup_root)
+    || is_link($failed_cleanup_root)
+    || ! is_string($failed_cleanup_before)
+    || ! is_string($failed_cleanup_target_after)
+    || ! hash_equals($failed_cleanup_before, $failed_cleanup_target_after)) {
+    raos_e2e_rollback_fail('RAOS_E2E_FAILED_CLEANUP_RECOVERY_FAILED');
+}
+$wpdb->delete(
+    RAOS_Codex_MCP_Store::table_name(),
+    array('proposal_id' => $failed_cleanup_row['proposal_id'])
+);
+@unlink($private . '/operation-lock-' . $failed_cleanup_row['proposal_id'] . '.lock');
+raos_e2e_rollback_remove_tree($failed_cleanup_target);
 
 // old -> backup succeeds, new -> target fails, exact backup restore succeeds.
 $case = $fixture_root . '/install-restore';

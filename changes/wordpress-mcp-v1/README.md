@@ -132,9 +132,13 @@ owner-private receipts are stored under
 - Content apply, theme apply, and recovery share one server-side publication
   lock. Each content mutation rechecks the reviewed active-theme tree after its
   write and rolls the content back if that binding changed. Administrators must
-  still avoid manual theme activation or file changes during the approval/apply
-  window because those external wp-admin writes do not participate in this
-  plugin lock.
+  still exclude every external updater or file writer during the complete
+  approval/apply/recovery window. Native WordPress core, plugin, and theme
+  updaters, the Theme/Plugin File Editor, hosting deployment panels, FTP, SFTP,
+  SSH, and direct filesystem writes do not acquire this plugin lock and are
+  outside its strict linearization boundary. Before/after compare-and-swap and
+  readback remain fail-closed race detectors; they do not make those external
+  writers participants in the lock.
 - Apply requires the approval plus `If-Match`, the same idempotency key, global
   kill switch, the scoped authorization lease, unchanged before hash, backup,
   replacement, and after-hash readback. The lease is removed after success or

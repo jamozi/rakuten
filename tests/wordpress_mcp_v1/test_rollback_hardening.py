@@ -179,6 +179,12 @@ def test_code_cleanup_requires_a_persisted_terminal_state() -> None:
     cleanup = method("cleanup_completed_code_operation", "begin_content_transaction")
     assert "isset($row['proposal_id'], $row['kind'], $row['state'])" in cleanup
     assert "array('APPLIED', 'FAILED', 'EXPIRED')" in cleanup
+    assert "self::secure_staged_file($package_path)" in cleanup
+    assert "@hash_file('sha256', $package_path)" in cleanup
+    assert "hash_equals($expected_package_sha256, $package_sha256)" in cleanup
+    assert "! is_link($package_path)" in cleanup
+    assert "$removed = true === $unlink($package_real)" in cleanup
+    assert "file_exists($package_path) || is_link($package_path)" in cleanup
     code = method("apply_code", "install_code_tree")
     assert "'APPLIED' !== $completed['state']" in code
     assert "self::finalize_applied_receipt($completed)" in code
@@ -279,7 +285,7 @@ def test_code_rollback_and_recovery_never_terminalize_stale_php_runtime() -> Non
     invalidation_failure = recover.split("if (is_wp_error($invalidation))", 1)[1]
     assert "self::validate_approval_lease($row)" in invalidation_failure
     assert "self::restore_code_before(" in invalidation_failure
-    assert "RAOS_Codex_MCP_Store::mark_failed" in invalidation_failure
+    assert "self::mark_failed_and_finalize" in invalidation_failure
 
 
 def test_equal_code_hash_recovery_requires_exact_install_backup_evidence() -> None:
@@ -397,8 +403,10 @@ def test_code_recovery_rechecks_full_tree_around_receipt_storage() -> None:
     cached_invalidation = applied.index("self::invalidate_cached_target_php")
     second_verify = applied.rindex("self::verify_recovered_code_after")
     cleanup = applied.index("self::cleanup_completed_code_operation")
+    lease_cleanup = applied.index("self::remove_approval_lease")
     assert gate < lease < first_verify < invalidation
     assert invalidation < cached_invalidation < second_verify < cleanup
+    assert cleanup < lease_cleanup
     assert "self::deferred_code_before_manifest" in applied
     assert "self::validate_code_operation_quarantine" in applied
     assert "file_exists($operation_root) || is_link($operation_root)" in applied
@@ -416,11 +424,33 @@ def test_code_recovery_rechecks_full_tree_around_receipt_storage() -> None:
     assert apply.count("self::finalize_applied_receipt") == 2
     assert recover.count("self::finalize_applied_receipt") == 1
 
+    failed_transition = method("mark_failed_and_finalize", "finalize_failed_operation")
+    failed_cleanup = method("finalize_failed_operation", "deferred_code_before_manifest")
+    assert "RAOS_Codex_MCP_Store::mark_failed" in failed_transition
+    assert "self::finalize_failed_operation($failed)" in failed_transition
+    assert "'FAILED' !== $failed['state']" in failed_transition
+    assert "self::cleanup_completed_code_operation($row, $package_unlinker)" in failed_cleanup
+    assert "self::remove_approval_lease($row['proposal_id'])" in failed_cleanup
+    for forbidden_live_mutation in (
+        "write_content_document",
+        "install_code_tree",
+        "restore_code_before",
+        "apply_plugin_intent",
+    ):
+        assert forbidden_live_mutation not in failed_cleanup
+
+    assert apply.count("self::mark_failed_and_finalize") == 2
+    assert recover.count("self::mark_failed_and_finalize") == 3
+    failed_retry = recover.index("if ('FAILED' === $row['state'])")
+    generic_terminal = recover.index("if ('APPLYING' !== $row['state'])")
+    assert failed_retry < generic_terminal
+    assert "self::finalize_failed_operation($row)" in recover[failed_retry:generic_terminal]
+
     at_before = recover.split("if (! $current_read_error", 1)[1].split(
         "// An unknown content hash", 1
     )[0]
     assert at_before.index("self::validate_code_operation_quarantine") < at_before.index(
-        "RAOS_Codex_MCP_Store::mark_failed"
+        "self::mark_failed_and_finalize"
     )
 
     plugin_before = method("plugin_state_matches_before", "plugin_state_matches_after")
