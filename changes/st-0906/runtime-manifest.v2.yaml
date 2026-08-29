@@ -223,7 +223,7 @@ source_artifacts:
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/json
   bytes: 329409
-  sha256: 8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d
+  sha256: 8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca
 - uri: repo://pyproject.toml
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/octet-stream

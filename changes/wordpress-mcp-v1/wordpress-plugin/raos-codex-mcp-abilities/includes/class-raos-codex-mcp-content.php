@@ -101,11 +101,34 @@ final class RAOS_Codex_MCP_Content
                     'id' => array('type' => 'integer', 'minimum' => 1),
                     'precondition' => self::precondition_schema(),
                     'document' => self::document_write_schema(false),
+                    'idempotency_key' => array('type' => 'string', 'pattern' => '^[0-9a-f]{64}$'),
                 ),
             ),
             array($this, 'content_propose_release'),
             false,
-            false
+            true
+        );
+        $this->register(
+            'raos-codex/publication-batch-register',
+            'Register an exact publication approval batch',
+            'Bind one immutable server-side review token to an exact set of pending content and optional theme proposals.',
+            array(
+                'type' => 'object',
+                'additionalProperties' => false,
+                'required' => array('proposal_ids'),
+                'properties' => array(
+                    'proposal_ids' => array(
+                        'type' => 'array',
+                        'minItems' => 1,
+                        'maxItems' => 20,
+                        'uniqueItems' => true,
+                        'items' => array('type' => 'string', 'pattern' => '^[0-9a-f]{64}$'),
+                    ),
+                ),
+            ),
+            array($this, 'publication_batch_register'),
+            false,
+            true
         );
         $this->register(
             'raos-codex/operation-get',
@@ -422,9 +445,14 @@ final class RAOS_Codex_MCP_Content
     public function content_propose_release($input)
     {
         if (! is_array($input)
-            || ! isset($input['id'], $input['precondition'], $input['document'])) {
+            || ! isset($input['id'], $input['precondition'], $input['document'])
+            || (array_key_exists('idempotency_key', $input)
+                && ! RAOS_Codex_MCP_Store::is_sha256($input['idempotency_key']))) {
             return self::error('raos_codex_release_input_invalid', 400);
         }
+        $idempotency_key = array_key_exists('idempotency_key', $input)
+            ? $input['idempotency_key']
+            : null;
         $before = self::document((int) $input['id']);
         if (is_wp_error($before)) {
             return $before;
@@ -479,7 +507,10 @@ final class RAOS_Codex_MCP_Content
             'CONTENT_RELEASE',
             $proposal,
             $before['content_sha256'],
-            $after['content_sha256']
+            $after['content_sha256'],
+            true,
+            null,
+            $idempotency_key
         );
         return is_wp_error($row) ? $row : $row['payload'];
     }
@@ -498,6 +529,19 @@ final class RAOS_Codex_MCP_Content
             return self::error('raos_codex_operation_forbidden', 403);
         }
         return RAOS_Codex_MCP_Store::public_operation($row);
+    }
+
+    public function publication_batch_register($input)
+    {
+        if (! is_array($input)
+            || array('proposal_ids') !== array_keys($input)
+            || ! is_array($input['proposal_ids'])) {
+            return self::error('raos_codex_publication_batch_input_invalid', 400);
+        }
+        $batch = RAOS_Codex_MCP_Store::register_publication_batch($input['proposal_ids']);
+        return is_wp_error($batch)
+            ? $batch
+            : RAOS_Codex_MCP_Store::public_publication_batch($batch);
     }
 
     private function draft_write_gate()

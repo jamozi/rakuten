@@ -1,4 +1,4 @@
-# RAOS Codex MCP Abilities 1.1.0
+# RAOS Codex MCP Abilities 1.2.0
 
 This plugin is the WordPress-side half of the browser-independent RAOS Codex
 workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.
@@ -6,7 +6,8 @@ workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.
 It exposes one custom MCP server at
 `/wp-json/raos-codex-mcp/v1/editor`. The server lists only site status,
 post/page reads, draft creation/update, immutable release proposal creation,
-and operation lookup. It does not expose MCP Adapter's generic/default server.
+exact publication-batch registration, and operation lookup. It does not expose
+MCP Adapter's generic/default server.
 
 Activation creates two non-administrator roles but no users or Application
 Passwords. A human administrator must create one dedicated user per role and
@@ -40,10 +41,15 @@ failure. Content, theme, and plugin applies therefore require no per-deployment
 
 Publication, theme replacement, and plugin changes need an unexpired proposal
 approved by a different cookie-authenticated administrator in **Tools → RAOS
-Codex proposals**. Approval requires current-password reauthentication, a
-reason, and the final eight characters of the after hash. Approval issues the
-scoped lease but does not apply anything; the bounded operator still performs
-the apply, backup, readback, and rollback workflow.
+Codex proposals**. The editor first registers an immutable exact-ID publication
+batch containing content plus at most one theme; unrelated pending proposals
+and plugin changes cannot enter that batch. One batch approval requires current
+password reauthentication, a reason, and the visible final eight characters of
+the batch manifest hash. The transaction either approves the complete unchanged
+registered batch and creates every scoped lease, or approves none.
+Approval does not apply anything; the bounded operator still performs the
+apply, backup, readback, and rollback workflow. Individual approval remains
+available for deliberate single-proposal handling.
 
 The plugin has no uninstall handler: users, bindings, proposals, receipts,
 packages, and backups are deliberately preserved for owner recovery/audit.

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RAOS Codex MCP Abilities
  * Description: Browser-independent, approval-bound content and deployment abilities for kurashinoshirube.com.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Requires at least: 7.1
  * Requires PHP: 8.1
  * Author: RAOS
@@ -14,7 +14,7 @@
 
 defined('ABSPATH') || exit;
 
-define('RAOS_CODEX_MCP_VERSION', '1.1.0');
+define('RAOS_CODEX_MCP_VERSION', '1.2.0');
 define('RAOS_CODEX_MCP_FILE', __FILE__);
 
 require_once __DIR__ . '/includes/class-raos-codex-mcp-store.php';
@@ -56,6 +56,7 @@ final class RAOS_Codex_MCP_Abilities
         add_action('wp_abilities_api_init', array($this, 'register_abilities'));
         add_action('mcp_adapter_init', array($this, 'register_mcp_server'));
         add_action('rest_api_init', array($this->deployment, 'register_routes'));
+        add_action('init', array('RAOS_Codex_MCP_Store', 'maybe_upgrade'), 0);
         add_action(
             'wp_authenticate_application_password_errors',
             array($this, 'constrain_application_password'),
@@ -70,6 +71,7 @@ final class RAOS_Codex_MCP_Abilities
         );
         add_action('admin_menu', array($this, 'register_admin_page'));
         add_action('admin_post_raos_codex_mcp_approve', array($this, 'handle_approval'));
+        add_action('admin_post_raos_codex_mcp_approve_batch', array($this, 'handle_batch_approval'));
         add_action('admin_notices', array($this, 'compatibility_notice'));
     }
 
@@ -178,6 +180,7 @@ final class RAOS_Codex_MCP_Abilities
                 'raos-codex/content-create-draft',
                 'raos-codex/content-update-draft',
                 'raos-codex/content-propose-release',
+                'raos-codex/publication-batch-register',
                 'raos-codex/operation-get',
             ),
             array(),
@@ -291,6 +294,10 @@ final class RAOS_Codex_MCP_Abilities
             return 'POST' === $http_method
                 && preg_match('#\A/raos-codex-deploy/v1/proposals/[0-9a-f]{64}/apply\z#D', $route) === 1;
         }
+        if ('get_operation' === $method) {
+            return 'GET' === $http_method
+                && preg_match('#\A/raos-codex-deploy/v1/operations/[0-9a-f]{64}\z#D', $route) === 1;
+        }
         if ('recover_operation' === $method) {
             return 'POST' === $http_method
                 && preg_match('#\A/raos-codex-deploy/v1/operations/[0-9a-f]{64}/recover\z#D', $route) === 1;
@@ -387,20 +394,96 @@ final class RAOS_Codex_MCP_Abilities
             wp_die(esc_html__('Permission denied.', 'raos-codex-mcp'));
         }
         $rows = RAOS_Codex_MCP_Store::pending_for_admin(50);
+        $batches = RAOS_Codex_MCP_Store::pending_publication_batches_for_admin(20);
         echo '<div class="wrap"><h1>' . esc_html__('RAOS Codex proposals', 'raos-codex-mcp') . '</h1>';
         echo '<p>' . esc_html__('Review the complete before/after hashes and payload. Approval issues one proposal-bound, single-use authorization; it never applies the change. The bounded operator must still pass If-Match, idempotency, TTL, the global kill switch, drift, backup, and readback checks.', 'raos-codex-mcp') . '</p>';
+        if (isset($_GET['approved']) && '1' === sanitize_text_field(wp_unslash($_GET['approved']))) {
+            echo '<div class="notice notice-success inline"><p><strong>'
+                . esc_html__('Approval completed.', 'raos-codex-mcp')
+                . '</strong> '
+                . esc_html__('State: APPROVED. The proposal is authorized for one bounded apply; it has not been applied by this form.', 'raos-codex-mcp')
+                . '</p></div>';
+        }
+        if (isset($_GET['batch_approved'])) {
+            $approved_count = absint(wp_unslash($_GET['batch_approved']));
+            if ($approved_count > 0) {
+                echo '<div class="notice notice-success inline"><p><strong>'
+                    . esc_html(sprintf(__('Batch approval completed for %d proposals.', 'raos-codex-mcp'), $approved_count))
+                    . '</strong> '
+                    . esc_html__('State: APPROVED. Each proposal now has one proposal-bound lease; no change was applied by this form.', 'raos-codex-mcp')
+                    . '</p></div>';
+            }
+        }
         if (empty($rows)) {
             echo '<p>' . esc_html__('No pending proposals.', 'raos-codex-mcp') . '</p></div>';
             return;
+        }
+        foreach ($batches as $batch) {
+            $batch_hash = $batch['batch_manifest_sha256'];
+            $batch_token = $batch['batch_token'];
+            $batch_suffix = substr($batch_hash, -8);
+            $batch_manifest = wp_json_encode(
+                $batch['manifest'],
+                JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+            );
+            $self_created = false;
+            foreach ($batch['manifest']['proposals'] as $batch_entry) {
+                if ((int) $batch_entry['created_by'] === get_current_user_id()) {
+                    $self_created = true;
+                    break;
+                }
+            }
+            $heading_id = 'raos-batch-' . substr($batch_token, -12);
+            echo '<hr><section aria-labelledby="' . esc_attr($heading_id) . '"><h2 id="' . esc_attr($heading_id) . '">'
+                . esc_html__('Approve this requested publication batch', 'raos-codex-mcp')
+                . '</h2>';
+            echo '<p><strong>'
+                . esc_html(sprintf(__('%d exact content/theme proposals / server state: REGISTERED', 'raos-codex-mcp'), count($batch['proposal_ids'])))
+                . '</strong></p>';
+            echo '<p>' . esc_html__('This server-side request is bound only to the complete proposal IDs and hashes shown below. Other pending proposals, including every plugin proposal, are not part of this approval.', 'raos-codex-mcp') . '</p>';
+            echo '<p>' . esc_html__('Server batch token:', 'raos-codex-mcp') . ' <code>' . esc_html($batch_token) . '</code></p>';
+            echo '<p>' . esc_html__('Batch manifest SHA-256:', 'raos-codex-mcp')
+                . ' <code>' . esc_html($batch_hash) . '</code><br><strong>'
+                . esc_html__('Enter this visible final 8-character batch suffix:', 'raos-codex-mcp')
+                . ' <code style="font-size:1.15em">' . esc_html($batch_suffix) . '</code></strong></p>';
+            echo '<details><summary>' . esc_html__('Complete canonical batch manifest (full IDs and hashes)', 'raos-codex-mcp')
+                . '</summary><pre style="white-space:pre-wrap;max-height:40rem;overflow:auto">'
+                . esc_html((string) $batch_manifest) . '</pre></details>';
+            if ($self_created) {
+                echo '<p><strong>'
+                    . esc_html__('This administrator created at least one proposal in the batch. A different administrator must approve the complete batch.', 'raos-codex-mcp')
+                    . '</strong></p>';
+            } else {
+                echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
+                echo '<input type="hidden" name="action" value="raos_codex_mcp_approve_batch">';
+                echo '<input type="hidden" name="batch_token" value="' . esc_attr($batch_token) . '">';
+                echo '<input type="hidden" name="batch_manifest_sha256" value="' . esc_attr($batch_hash) . '">';
+                wp_nonce_field('raos_codex_mcp_approve_batch_' . $batch_token . '_' . $batch_hash);
+                echo '<p><label>' . esc_html__('Current password (one reauthentication for the complete batch)', 'raos-codex-mcp') . '<br><input type="password" name="current_password" autocomplete="current-password" required></label></p>';
+                echo '<p><label>' . esc_html__('Approval reason for the complete batch (10+ characters)', 'raos-codex-mcp') . '<br><textarea name="reason" rows="3" cols="80" minlength="10" maxlength="2000" required></textarea></label></p>';
+                echo '<p><label>' . esc_html__('Type the visible final 8 characters of the batch manifest hash', 'raos-codex-mcp') . '<br><input type="text" name="hash_suffix" minlength="8" maxlength="8" pattern="[0-9a-f]{8}" required> <code>' . esc_html($batch_suffix) . '</code></label></p>';
+                submit_button(__('Approve complete batch', 'raos-codex-mcp'), 'primary', 'submit', false);
+                echo '</form>';
+            }
+            echo '</section>';
         }
         foreach ($rows as $row) {
             $payload = wp_json_encode($row['payload'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             echo '<hr><h2><code>' . esc_html($row['proposal_id']) . '</code></h2>';
             echo '<p>' . esc_html($row['kind'] . ' / ' . $row['state'] . ' / expires ' . $row['expires_at_gmt'] . ' GMT') . '</p>';
-            echo '<p>before: <code>' . esc_html((string) $row['before_sha256']) . '</code><br>after: <code>' . esc_html((string) $row['after_sha256']) . '</code></p>';
+            $after_suffix = is_string($row['after_sha256']) ? substr($row['after_sha256'], -8) : '';
+            echo '<p>before: <code>' . esc_html((string) $row['before_sha256']) . '</code><br>after: <code>' . esc_html((string) $row['after_sha256']) . '</code>';
+            if ('' !== $after_suffix) {
+                echo '<br><strong>' . esc_html__('Visible after-hash suffix to enter:', 'raos-codex-mcp') . ' <code>' . esc_html($after_suffix) . '</code></strong>';
+            }
+            echo '</p>';
             echo '<details><summary>' . esc_html__('Complete immutable payload', 'raos-codex-mcp') . '</summary><pre style="white-space:pre-wrap;max-height:40rem;overflow:auto">' . esc_html((string) $payload) . '</pre></details>';
             if ('MANUAL_REQUIRED' === $row['state']) {
                 echo '<p><strong>' . esc_html__('Automatic approval/apply is unavailable because migration safety could not be established.', 'raos-codex-mcp') . '</strong></p>';
+                continue;
+            }
+            if ((int) $row['created_by'] === get_current_user_id()) {
+                echo '<p><strong>' . esc_html__('A different administrator must approve this proposal.', 'raos-codex-mcp') . '</strong></p>';
                 continue;
             }
             echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
@@ -409,7 +492,7 @@ final class RAOS_Codex_MCP_Abilities
             wp_nonce_field('raos_codex_mcp_approve_' . $row['proposal_id']);
             echo '<p><label>' . esc_html__('Current password (reauthentication)', 'raos-codex-mcp') . '<br><input type="password" name="current_password" autocomplete="current-password" required></label></p>';
             echo '<p><label>' . esc_html__('Approval reason (10+ characters)', 'raos-codex-mcp') . '<br><textarea name="reason" rows="3" cols="80" minlength="10" maxlength="2000" required></textarea></label></p>';
-            echo '<p><label>' . esc_html__('Type the final 8 characters of the after hash', 'raos-codex-mcp') . '<br><input type="text" name="hash_suffix" minlength="8" maxlength="8" pattern="[0-9a-f]{8}" required></label></p>';
+            echo '<p><label>' . esc_html__('Type the visible final 8 characters of the after hash', 'raos-codex-mcp') . '<br><input type="text" name="hash_suffix" minlength="8" maxlength="8" pattern="[0-9a-f]{8}" required> <code>' . esc_html($after_suffix) . '</code></label></p>';
             submit_button(__('Approve proposal only', 'raos-codex-mcp'), 'primary', 'submit', false);
             echo '</form>';
         }
@@ -461,6 +544,70 @@ final class RAOS_Codex_MCP_Abilities
             );
         }
         wp_safe_redirect(admin_url('tools.php?page=raos-codex-proposals&approved=1'));
+        exit;
+    }
+
+    public function handle_batch_approval()
+    {
+        if (! current_user_can('manage_options')
+            || ! isset($_SERVER['REQUEST_METHOD'])
+            || 'POST' !== $_SERVER['REQUEST_METHOD']) {
+            wp_die(
+                esc_html__('Batch approval refused.', 'raos-codex-mcp'),
+                '',
+                array('response' => 403)
+            );
+        }
+        $batch_hash = isset($_POST['batch_manifest_sha256'])
+            ? sanitize_text_field(wp_unslash($_POST['batch_manifest_sha256']))
+            : '';
+        $batch_token = isset($_POST['batch_token'])
+            ? sanitize_text_field(wp_unslash($_POST['batch_token']))
+            : '';
+        if (! RAOS_Codex_MCP_Store::is_sha256($batch_token)
+            || ! RAOS_Codex_MCP_Store::is_sha256($batch_hash)) {
+            wp_die(
+                esc_html__('Batch approval refused.', 'raos-codex-mcp'),
+                '',
+                array('response' => 400)
+            );
+        }
+        check_admin_referer('raos_codex_mcp_approve_batch_' . $batch_token . '_' . $batch_hash);
+        $current_password = isset($_POST['current_password']) ? (string) wp_unslash($_POST['current_password']) : '';
+        $reason = isset($_POST['reason']) ? sanitize_textarea_field(wp_unslash($_POST['reason'])) : '';
+        $suffix = isset($_POST['hash_suffix']) ? sanitize_text_field(wp_unslash($_POST['hash_suffix'])) : '';
+        $user = wp_get_current_user();
+        if (! $user instanceof WP_User
+            || ! wp_check_password($current_password, $user->user_pass, $user->ID)
+            || ! hash_equals(substr($batch_hash, -8), $suffix)) {
+            wp_die(
+                esc_html__('Batch approval preconditions failed.', 'raos-codex-mcp'),
+                '',
+                array('response' => 403)
+            );
+        }
+        $approved = RAOS_Codex_MCP_Store::approve_publication_batch(
+            $batch_token,
+            $batch_hash,
+            $user->ID,
+            $reason
+        );
+        if (is_wp_error($approved)) {
+            $error_data = $approved->get_error_data();
+            $status = is_array($error_data) && isset($error_data['status'])
+                ? (int) $error_data['status']
+                : 409;
+            wp_die(
+                esc_html($approved->get_error_code()),
+                '',
+                array('response' => $status)
+            );
+        }
+        wp_safe_redirect(
+            admin_url(
+                'tools.php?page=raos-codex-proposals&batch_approved=' . absint($approved['proposal_count'])
+            )
+        );
         exit;
     }
 

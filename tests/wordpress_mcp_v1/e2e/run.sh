@@ -136,7 +136,7 @@ actual_adapter_sha256="$(sha256sum "$adapter_zip" | awk '{print $1}')"
 
 "$repository_root/.venv/bin/python" \
   "$repository_root/scripts/build_wordpress_mcp_v1.py" --package
-readonly raos_plugin_zip="$repository_root/.secrets/wordpress-mcp/plugin/raos-codex-mcp-abilities-1.1.0.zip"
+readonly raos_plugin_zip="$repository_root/.secrets/wordpress-mcp/plugin/raos-codex-mcp-abilities-1.2.0.zip"
 "$repository_root/.venv/bin/python" \
   "$repository_root/scripts/build_wordpress_mcp_v1.py" --package-check
 
@@ -183,7 +183,10 @@ compose exec -T --user root wordpress sh -eu -c \
 compose cp "$adapter_zip" wordpress:/var/www/raos-code/staging/mcp-adapter.zip
 compose cp "$raos_plugin_zip" wordpress:/var/www/raos-code/staging/raos-codex-mcp-abilities.zip
 compose cp "$e2e_directory/approve_harness.php" wordpress:/var/www/raos-code/staging/approve_harness.php
+compose cp "$e2e_directory/batch_approve_harness.php" wordpress:/var/www/raos-code/staging/batch_approve_harness.php
+compose cp "$e2e_directory/idempotency_harness.php" wordpress:/var/www/raos-code/staging/idempotency_harness.php
 compose cp "$e2e_directory/mutate_harness.php" wordpress:/var/www/raos-code/staging/mutate_harness.php
+compose cp "$e2e_directory/store_upgrade_harness.php" wordpress:/var/www/raos-code/staging/store_upgrade_harness.php
 compose cp "$code_artifact_directory/kurashinoshirube-child-baseline.zip" wordpress:/var/www/raos-code/staging/kurashinoshirube-child-baseline.zip
 compose exec -T --user root wordpress chown -R www-data:www-data /var/www/raos-code/staging
 
@@ -224,6 +227,10 @@ wordpress_cli plugin is-active mcp-adapter \
   || fail RAOS_WORDPRESS_E2E_ADAPTER_INACTIVE
 wordpress_cli plugin is-active raos-codex-mcp-abilities \
   || fail RAOS_WORDPRESS_E2E_PLUGIN_INACTIVE
+wordpress_cli eval-file /var/www/raos-code/staging/store_upgrade_harness.php degrade \
+  || fail RAOS_WORDPRESS_E2E_STORE_DEGRADE_FAILED
+wordpress_cli eval-file /var/www/raos-code/staging/store_upgrade_harness.php check \
+  || fail RAOS_WORDPRESS_E2E_STORE_UPGRADE_FAILED
 [[ "$(wordpress_cli eval 'rest_get_server(); echo isset(rest_get_server()->get_routes()["/raos-codex-mcp/v1/editor"]) ? "yes" : "no";')" == yes ]] \
   || fail RAOS_WORDPRESS_E2E_EDITOR_ROUTE_MISSING
 
@@ -259,6 +266,8 @@ export \
   RAOS_WORDPRESS_E2E_OPERATOR_USER
 
 "$repository_root/.venv/bin/python" "$e2e_directory/client.py" propose "$state_path"
+wordpress_cli eval-file /var/www/raos-code/staging/idempotency_harness.php \
+  || fail RAOS_WORDPRESS_E2E_IDEMPOTENCY_FAILED
 
 mapfile -t release_proposals < <(
   "$repository_root/.venv/bin/python" -c \
@@ -276,17 +285,37 @@ mapfile -t code_proposals < <(
     'import json,sys; print("\n".join(item["proposal_id"] for item in json.load(open(sys.argv[1], encoding="utf-8"))["code_proposals"]))' \
     "$state_path"
 )
+mapfile -t plugin_proposals < <(
+  "$repository_root/.venv/bin/python" -c \
+    'import json,sys; print("\n".join(item["proposal_id"] for item in json.load(open(sys.argv[1], encoding="utf-8"))["code_proposals"] if item["name"] != "theme"))' \
+    "$state_path"
+)
 
 for proposal_id in "${release_proposals[@]}"; do
   [[ "$proposal_id" =~ ^[0-9a-f]{64}$ ]] || fail RAOS_WORDPRESS_E2E_PROPOSAL_INVALID
-  approve_proposal "$proposal_id"
 done
 [[ "$drift_proposal" =~ ^[0-9a-f]{64}$ && "$drift_post_id" =~ ^[0-9]+$ ]] \
   || fail RAOS_WORDPRESS_E2E_DRIFT_TARGET_INVALID
 wordpress_cli eval-file /var/www/raos-code/staging/mutate_harness.php "$drift_post_id"
-approve_proposal "$drift_proposal"
 for proposal_id in "${code_proposals[@]}"; do
   [[ "$proposal_id" =~ ^[0-9a-f]{64}$ ]] || fail RAOS_WORDPRESS_E2E_CODE_PROPOSAL_INVALID
+done
+
+wordpress_cli eval-file \
+  /var/www/raos-code/staging/batch_approve_harness.php expect-rollback \
+  || fail RAOS_WORDPRESS_E2E_BATCH_APPROVAL_ROLLBACK_FAILED
+if ! wordpress_cli eval-file \
+  /var/www/raos-code/staging/batch_approve_harness.php approve \
+  >"$e2e_temporary_directory/batch-approval.log" 2>&1; then
+  tail -c 4096 "$e2e_temporary_directory/batch-approval.log" >&2 || true
+  fail RAOS_WORDPRESS_E2E_BATCH_APPROVAL_FAILED
+fi
+
+for proposal_id in "${plugin_proposals[@]}"; do
+  approval_lease="/var/www/raos-code/private/approval-lease-$proposal_id.json"
+  if compose exec -T wordpress test -e "$approval_lease"; then
+    fail RAOS_WORDPRESS_E2E_PUBLICATION_BATCH_APPROVED_PLUGIN
+  fi
   approve_proposal "$proposal_id"
 done
 

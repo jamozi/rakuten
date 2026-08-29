@@ -34,17 +34,36 @@ def test_public_contract_and_schema_are_valid() -> None:
     contract = json.loads((SLICE / "contracts/wordpress-mcp.v1.json").read_text())
     schema = json.loads((SLICE / "contracts/wordpress-mcp.v1.schema.json").read_text())
     Draft202012Validator.check_schema(schema)
+    assert contract["version"] == "1.1.0"
     assert contract["wordpress_version"] == "7.1.x"
     assert contract["mcp_adapter"]["version"] == "0.6.1"
     assert contract["remote_proxy"]["version"] == "0.4.0"
     assert contract["local_bridge"]["sdk"].endswith("@1.30.0")
     assert contract["approval"] == {
         "channel": "wp-admin",
+        "batch": True,
+        "batch_all_or_nothing": True,
+        "batch_manifest_bound": True,
+        "batch_registered_exact_ids": True,
+        "batch_plugin_excluded": True,
         "hash_suffix_length": 8,
         "minimum_reason_length": 10,
         "reauthentication": True,
         "self_approval": False,
         "ttl_seconds": 900,
+    }
+    assert contract["publication_request"] == {
+        "command": "make wordpress-production-request ARTICLES=all",
+        "mapping": "changes/wordpress-local-preview-v1/production-mapping.v1.json",
+        "local_preview_required": True,
+        "proposal_idempotency": True,
+        "deployment_transport": "wordpressDeployment stdio MCP",
+        "approval_wait_seconds": 900,
+        "theme_before_content": True,
+        "theme_tree_sha256_bound": True,
+        "plugin_in_release_batch": False,
+        "production_readback": True,
+        "receipt_storage": ".secrets/wordpress-mcp/publication-requests",
     }
     assert contract["host_gates"] == {
         "global_kill_switch": "RAOS_OPERATOR_WRITES_ENABLED",
@@ -61,6 +80,38 @@ def test_public_contract_and_schema_are_valid() -> None:
         "ttl_seconds": 900,
         "removed_after_terminal_state": True,
     }
+
+
+def test_public_batch_and_aggregate_receipt_schema_fail_closed() -> None:
+    schema = json.loads((SLICE / "contracts/wordpress-mcp.v1.schema.json").read_text())
+    validator = Draft202012Validator(schema)
+    batch = {
+        "schema": "RAOSWordPressPublicationBatchV1",
+        "batch_token": "a" * 64,
+        "batch_manifest_sha256": "b" * 64,
+        "proposal_count": 2,
+        "proposal_ids": ["c" * 64],
+        "expires_at_gmt": "2026-08-29T12:00:00Z",
+        "review_url": "https://kurashinoshirube.com/wp-admin/tools.php?page=raos-codex-proposals",
+    }
+    assert not validator.is_valid(batch)
+
+    operation = {
+        "schema": "OperationReceiptV1",
+        "proposal_id": "d" * 64,
+        "operation_id": "d" * 64,
+        "state": "PENDING",
+        "result_code": "PROPOSAL_PENDING_APPROVAL",
+        "before_sha256": "e" * 64,
+        "after_sha256": "f" * 64,
+        "audit_id": "0" * 64,
+    }
+    aggregate = {
+        "schema": "ReleaseWaitApplyReceiptV1",
+        "state": "APPLIED",
+        "receipts": [operation],
+    }
+    assert not validator.is_valid(aggregate)
 
 
 def test_codex_project_enables_only_two_mcp_servers_without_secrets() -> None:
@@ -81,9 +132,12 @@ def test_codex_project_enables_only_two_mcp_servers_without_secrets() -> None:
         "raos-codex-content-create-draft",
         "raos-codex-content-update-draft",
         "raos-codex-content-propose-release",
+        "raos-codex-publication-batch-register",
         "raos-codex-operation-get",
     ]
     assert deployment["enabled_tools"] == [
+        "deployment-status",
+        "release-wait-and-apply",
         "content-apply-release",
         "theme-propose-release",
         "theme-apply-release",
@@ -95,6 +149,12 @@ def test_codex_project_enables_only_two_mcp_servers_without_secrets() -> None:
     assert b"application_password" not in lowered
     assert b"bearer_token =" not in lowered
     assert b"wp_api_password" not in lowered
+
+
+def test_root_final_static_checks_wordpress_owner_manifest() -> None:
+    makefile = (ROOT / "Makefile").read_text()
+    final_static = makefile.split("final-static:", 1)[1].split("\n\n", 1)[0]
+    assert "$(MAKE) -C changes/wordpress-mcp-v1 manifest-check" in final_static
 
 
 def test_lockfile_has_exact_mcp_versions() -> None:
@@ -167,6 +227,8 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
         assert boundary in instructions
     tools = {tool["name"]: tool for tool in listed["result"]["tools"]}
     assert set(tools) == {
+        "deployment-status",
+        "release-wait-and-apply",
         "content-apply-release",
         "theme-propose-release",
         "theme-apply-release",
@@ -177,9 +239,22 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
     assert tools["content-apply-release"]["inputSchema"]["properties"] == {
         "proposal_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
     }
+    assert tools["release-wait-and-apply"]["inputSchema"]["properties"] == {
+        "batch_token": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "batch_manifest_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+        },
+        "proposal_ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        }
+    }
     assert tools["content-apply-release"]["annotations"] == {
         "readOnlyHint": False,
-        "destructiveHint": False,
+        "destructiveHint": True,
         "idempotentHint": True,
         "openWorldHint": False,
     }

@@ -51,6 +51,8 @@ const MAX_SCREENSHOT_HEIGHT = 30_000;
 const MAX_NETWORK_REQUESTS = 80;
 const BROWSER_STOP_TIMEOUT_MS = 5000;
 const BROWSER_GRACEFUL_STOP_MS = 250;
+const BROWSER_SUPERVISOR_EXIT_TIMEOUT_MS =
+  BROWSER_GRACEFUL_STOP_MS + BROWSER_STOP_TIMEOUT_MS + 1000;
 const INTERNAL_BROWSER_SUPERVISOR = '--internal-browser-supervisor';
 const VIEWPORTS = Object.freeze([
   Object.freeze({ height: 844, name: 'mobile-390', width: 390 }),
@@ -390,7 +392,10 @@ function linuxProcessGroupMembers(groupId) {
     if (commandEnd < 0) fail('PHASE3_PUBLIC_BROWSER_PROCESS_STAT_INVALID');
     const fields = stat.slice(commandEnd + 2).trim().split(/\s+/u);
     if (fields.length < 3) fail('PHASE3_PUBLIC_BROWSER_PROCESS_STAT_INVALID');
-    if (Number(fields[2]) === groupId) members.push(Number(entry));
+    // A zombie has already exited and cannot retain or recreate the profile.
+    // Waiting for an overloaded parent runtime to reap it can otherwise consume
+    // the supervisor's entire bounded shutdown window.
+    if (fields[0] !== 'Z' && Number(fields[2]) === groupId) members.push(Number(entry));
   }
   return members.sort((left, right) => left - right);
 }
@@ -473,7 +478,7 @@ function waitForBrowserSupervisorExit(browser) {
     const timeout = setTimeout(() => {
       browser.child.removeListener('exit', onExit);
       resolvePromise(false);
-    }, BROWSER_STOP_TIMEOUT_MS);
+    }, BROWSER_SUPERVISOR_EXIT_TIMEOUT_MS);
     function onExit() {
       clearTimeout(timeout);
       resolvePromise(true);
