@@ -180,8 +180,12 @@ def test_code_cleanup_requires_a_persisted_terminal_state() -> None:
     assert "isset($row['proposal_id'], $row['kind'], $row['state'])" in cleanup
     assert "array('APPLIED', 'FAILED', 'EXPIRED')" in cleanup
     code = method("apply_code", "install_code_tree")
-    assert "'APPLIED' === $completed['state']" in code
-    assert "cleanup_completed_code_operation($completed)" in code
+    assert "'APPLIED' !== $completed['state']" in code
+    assert "self::finalize_applied_receipt($completed)" in code
+    completion = code.split("RAOS_Codex_MCP_Store::complete(", 1)[1].split(
+        ");", 1
+    )[0]
+    assert "true" in completion
 
     plugin = (
         ROOT
@@ -366,7 +370,7 @@ def test_code_recovery_rechecks_full_tree_around_receipt_storage() -> None:
     code = method("complete_recovered_code", "verify_recovered_code_after")
     before = code.index("$final_before = self::verify_recovered_code_after")
     receipt = code.index("RAOS_Codex_MCP_Store::complete(")
-    after = code.index("self::finalize_applied_receipt($completed)")
+    after = code.index("self::finalize_applied_receipt(")
     assert before < receipt < after
     assert "raos_codex_recovery_code_drift" in code
     assert "raos_codex_recovery_code_postcomplete_drift" in code
@@ -386,6 +390,17 @@ def test_code_recovery_rechecks_full_tree_around_receipt_storage() -> None:
         "self::cleanup_completed_code_operation"
     )
     assert "raos_codex_recovery_code_postcomplete_drift" in applied
+    first_verify = applied.index("self::verify_recovered_code_after")
+    gate = applied.index("self::apply_gate($row['kind'])")
+    lease = applied.index("self::validate_approval_lease($row, false)")
+    invalidation = applied.index("self::invalidate_php_manifest")
+    cached_invalidation = applied.index("self::invalidate_cached_target_php")
+    second_verify = applied.rindex("self::verify_recovered_code_after")
+    cleanup = applied.index("self::cleanup_completed_code_operation")
+    assert gate < lease < first_verify < invalidation
+    assert invalidation < cached_invalidation < second_verify < cleanup
+    assert "self::deferred_code_before_manifest" in applied
+    assert "self::validate_code_operation_quarantine" in applied
     assert "file_exists($operation_root) || is_link($operation_root)" in applied
     assert "file_exists($lease_path) || is_link($lease_path)" in applied
     assert "raos_codex_recovery_cleanup_indeterminate" in applied
@@ -400,6 +415,44 @@ def test_code_recovery_rechecks_full_tree_around_receipt_storage() -> None:
     recover = method("recover_operation", "apply_content")
     assert apply.count("self::finalize_applied_receipt") == 2
     assert recover.count("self::finalize_applied_receipt") == 1
+
+    at_before = recover.split("if (! $current_read_error", 1)[1].split(
+        "// An unknown content hash", 1
+    )[0]
+    assert at_before.index("self::validate_code_operation_quarantine") < at_before.index(
+        "RAOS_Codex_MCP_Store::mark_failed"
+    )
+
+    plugin_before = method("plugin_state_matches_before", "plugin_state_matches_after")
+    plugin_after = method("plugin_state_matches_after", "refresh_plugin_activation_cache")
+    cache = method("refresh_plugin_activation_cache", "recover_plugin_activation")
+    assert "self::refresh_plugin_activation_cache()" in plugin_before
+    assert "self::refresh_plugin_activation_cache()" in plugin_after
+    assert "wp_cache_delete('alloptions', 'options')" in cache
+    assert "active_sitewide_plugins" in cache
+    assert "$network_id . ':notoptions'" in cache
+
+    lease_validation = method("validate_approval_lease", "create_approval_lease")
+    assert "$require_unexpired = false" in lease_validation
+    assert "array('APPROVED', 'APPLYING', 'APPLIED')" in lease_validation
+    assert "('APPROVED' === $row['state'] || $require_unexpired)" in lease_validation
+
+    cached = method("invalidate_cached_target_php", "tree_manifest")
+    assert "opcache_get_status(true)" in cached
+    assert "$status['scripts']" in cached
+    assert "str_starts_with($path, $root . '/')" in cached
+    assert "self::MAX_FILE_COUNT" in cached
+    assert "$invalidate($path, true)" in cached
+
+    quarantine = method(
+        "validate_code_operation_quarantine", "cleanup_completed_code_operation"
+    )
+    absent = quarantine.index(
+        "! file_exists($operation_root) && ! is_link($operation_root)"
+    )
+    root_guard = quarantine.index("! is_dir($operation_root) || is_link($operation_root)")
+    assert absent < root_guard
+    assert "self::tree_hash($quarantine)" in quarantine
 
 
 def test_deployment_status_exposes_loaded_theme_runtime_identity() -> None:
@@ -571,6 +624,12 @@ def test_disposable_e2e_has_concrete_failure_injection_cases() -> None:
         "RAOS_E2E_PLUGIN_RECOVERY_POSTCOMPLETE_RETRY_FAILED",
         "RAOS_E2E_RECOVERY_BROKEN_LEASE_CLEANUP_FAILED",
         "RAOS_E2E_RECOVERY_BROKEN_ROOT_CLEANUP_FAILED",
+        "RAOS_E2E_CODE_RECOVERY_DEFERRED_OPCACHE_FAILED",
+        "RAOS_E2E_CODE_RECOVERY_DEFERRED_LEASE_FAILED",
+        "RAOS_E2E_CODE_RECOVERY_EXPIRED_LEASE_SETUP_FAILED",
+        "RAOS_E2E_CODE_RECOVERY_QUARANTINE_FAILED",
+        "RAOS_E2E_RECOVERY_RESTORED_BEFORE_QUARANTINE_FAILED",
+        "RAOS_E2E_RECOVERY_ABSENT_BEFORE_QUARANTINE_FAILED",
         "RAOS_E2E_CONTENT_ONLY_THEME_REGISTER_DRIFT_FAILED",
         "RAOS_E2E_CONTENT_ONLY_THEME_APPROVAL_DRIFT_FAILED",
         "RAOS_E2E_CONTENT_ONLY_THEME_CLAIM_DRIFT_FAILED",
