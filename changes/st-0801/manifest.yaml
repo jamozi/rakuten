@@ -359,7 +359,7 @@ source_artifacts:
   sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
 - uri: repo://changes/st-0105/manifest.json
   bytes: 250888
-  sha256: 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7
+  sha256: 9d264a1a39a6781bc6a24973e0a14b1a52fd7a8485b8f2d563b357c56834eb0d
 - uri: repo://contracts/raos-v0.4/contract-repository.v0.4.json
   bytes: 65443
   sha256: 54fc0cbb0c943f0b876881dbd2d55b49bb354f3cd8e533caef99dbbff4efaeef

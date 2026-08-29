@@ -271,7 +271,6 @@ server.registerTool(
   },
 );
 
-
 server.registerTool(
   'plugin-propose-change',
   {
