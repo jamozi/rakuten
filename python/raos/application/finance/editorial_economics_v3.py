@@ -8,6 +8,7 @@ binds its exact header and status vocabulary.
 
 from __future__ import annotations
 
+from calendar import monthrange
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
 import csv
@@ -1214,6 +1215,16 @@ def build_baseline_report(
         if period_alignment == "PASS"
         else {"date_from": "UNAVAILABLE", "date_to": "UNAVAILABLE"}
     )
+    complete_calendar_month = False
+    if period_alignment == "PASS":
+        first_day = date.fromisoformat(periods[0]["date_from"])
+        last_day = date.fromisoformat(periods[0]["date_to"])
+        complete_calendar_month = (
+            first_day.day == 1
+            and first_day.year == last_day.year
+            and first_day.month == last_day.month
+            and last_day.day == monthrange(last_day.year, last_day.month)[1]
+        )
 
     article_rows: list[dict[str, object]] = []
     total_external_cost = 0
@@ -1301,6 +1312,7 @@ def build_baseline_report(
         confirmed_reward = cast(dict[str, int], rakuten["totals_jpy"])["CONFIRMED"]
         north_star: dict[str, object] = {
             "state": "AVAILABLE_PROGRAM_BASIS",
+            "metric": "CONFIRMED_CONTRIBUTION_PROFIT_JPY_ALIGNED_PERIOD",
             "value_jpy": confirmed_reward - total_external_cost - total_human_cost,
             "confirmed_reward_jpy": confirmed_reward,
             "variable_external_cost_jpy": total_external_cost,
@@ -1310,6 +1322,7 @@ def build_baseline_report(
             ),
             "unattributed_reward_included_at_program_level": True,
             "unattributed_reward_allocated_to_articles": False,
+            "monthly_north_star_eligible": complete_calendar_month,
         }
     else:
         north_star = {
@@ -1333,6 +1346,13 @@ def build_baseline_report(
         ),
         "period": report_period,
         "period_alignment": period_alignment,
+        "period_kind": (
+            "COMPLETE_CALENDAR_MONTH"
+            if complete_calendar_month
+            else "PARTIAL_OR_NON_MONTHLY_BASELINE"
+            if period_alignment == "PASS"
+            else "UNAVAILABLE"
+        ),
         "sources": {
             "rakuten": _source_state(rakuten),
             "cost": _source_state(costs),
