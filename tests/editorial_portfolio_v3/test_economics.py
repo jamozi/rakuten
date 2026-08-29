@@ -327,7 +327,9 @@ def test_actual_baseline_keeps_program_and_article_attribution_separate(
     first = report["articles"][0]
 
     assert report["period_alignment"] == "PASS"
+    assert report["period_kind"] == "PARTIAL_OR_NON_MONTHLY_BASELINE"
     assert report["north_star"]["value_jpy"] == -1900
+    assert report["north_star"]["monthly_north_star_eligible"] is False
     assert report["north_star"]["unattributed_reward_allocated_to_articles"] is False
     assert first["gsc"]["impressions"] == 10
     assert first["ga4"]["events"] == {"affiliate_click": 3}
