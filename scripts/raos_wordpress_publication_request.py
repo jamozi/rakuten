@@ -17,6 +17,7 @@ from datetime import UTC, datetime, timedelta
 import fcntl
 import grp
 import hashlib
+from html.parser import HTMLParser
 import json
 import os
 from pathlib import Path
@@ -26,6 +27,7 @@ import secrets
 import stat
 import subprocess
 import sys
+import time
 from typing import Any, Final, NoReturn
 import urllib.error
 import urllib.request
@@ -56,6 +58,7 @@ PROTOCOL_VERSION: Final = "2025-11-25"
 EXPECTED_PLUGIN_VERSION: Final = "1.2.0"
 MAX_CONTENT_BYTES: Final = 1024 * 1024
 MAX_RESPONSE_BYTES: Final = 16 * 1024 * 1024
+MAX_PUBLIC_PAGE_BYTES: Final = 4 * 1024 * 1024
 MAX_RECEIPT_BYTES: Final = 4 * 1024 * 1024
 MAX_THEME_PACKAGE_BYTES: Final = 32 * 1024 * 1024
 MAX_THEME_FILE_BYTES: Final = 8 * 1024 * 1024
@@ -77,10 +80,9 @@ EXPECTED_TOOLS: Final = {
 }
 EXPECTED_DEPLOYMENT_TOOLS: Final = {
     "deployment-status",
+    "publication-batch-status",
     "release-wait-and-apply",
-    "content-apply-release",
     "theme-propose-release",
-    "theme-apply-release",
     "plugin-propose-change",
     "plugin-apply-change",
     "operation-recover",
@@ -105,6 +107,105 @@ class _RefuseRedirectHandler(urllib.request.HTTPRedirectHandler):
 
     def redirect_request(self, *_: object, **__: object) -> None:
         return None
+
+
+def _robots_blocks_indexing(value: object) -> bool:
+    """Recognize robots directives without depending on separator style."""
+
+    if type(value) is not str or len(value) > 16 * 1024:
+        return False
+    directives = {token for token in re.split(r"[\s,;:]+", value.casefold()) if token}
+    # `none` is defined as the noindex,nofollow shorthand.
+    return bool(directives & {"noindex", "none"})
+
+
+def _response_header_values(headers: object, name: str) -> list[str]:
+    """Read a response header case-insensitively, including repeated fields."""
+
+    get_all = getattr(headers, "get_all", None)
+    if callable(get_all):
+        try:
+            values = get_all(name, [])
+        except TypeError, ValueError:
+            values = []
+        return [value for value in values if type(value) is str]
+    items = getattr(headers, "items", None)
+    if not callable(items):
+        return []
+    try:
+        pairs = items()
+    except TypeError, ValueError:
+        return []
+    return [
+        value
+        for key, value in pairs
+        if type(key) is str and key.casefold() == name.casefold() and type(value) is str
+    ]
+
+
+class _PublicPageEvidenceParser(HTMLParser):
+    """Collect only bounded public-page evidence needed for post-publish checks."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.canonical_urls: list[str] = []
+        self.headings: list[str] = []
+        self.h1_titles: list[str] = []
+        self.visible_text: list[str] = []
+        self.noindex = False
+        self._suppressed_depth = 0
+        self._heading_tag: str | None = None
+        self._heading_parts: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        lowered = tag.lower()
+        attributes = {
+            key.lower(): value for key, value in attrs if isinstance(key, str)
+        }
+        if lowered in {"script", "style", "noscript", "template"}:
+            self._suppressed_depth += 1
+        if lowered == "link":
+            rel = (attributes.get("rel") or "").lower().split()
+            href = attributes.get("href")
+            if "canonical" in rel and isinstance(href, str):
+                self.canonical_urls.append(href)
+        if lowered == "meta" and (attributes.get("name") or "").casefold() in {
+            "robots",
+            "googlebot",
+            "googlebot-news",
+        }:
+            if _robots_blocks_indexing(attributes.get("content")):
+                self.noindex = True
+        if self._suppressed_depth == 0 and lowered in {
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+        }:
+            self._heading_tag = lowered
+            self._heading_parts = []
+
+    def handle_endtag(self, tag: str) -> None:
+        lowered = tag.lower()
+        if lowered == self._heading_tag:
+            heading = _normalized_public_text(self._heading_parts)
+            if heading:
+                self.headings.append(heading)
+                if lowered == "h1":
+                    self.h1_titles.append(heading)
+            self._heading_tag = None
+            self._heading_parts = []
+        if lowered in {"script", "style", "noscript", "template"}:
+            self._suppressed_depth = max(0, self._suppressed_depth - 1)
+
+    def handle_data(self, data: str) -> None:
+        if self._suppressed_depth:
+            return
+        self.visible_text.append(data)
+        if self._heading_tag is not None:
+            self._heading_parts.append(data)
 
 
 def fail(code: str) -> NoReturn:
@@ -555,7 +656,7 @@ class EditorMcpClient:
 
     def __init__(self) -> None:
         self.endpoint = EDITOR_ENDPOINT
-        self.username, self.password = _secure_credential()
+        self.username, self._basic_auth_value = _secure_credential()
         self.session_id: str | None = None
         self.next_id = 1
 
@@ -564,7 +665,7 @@ class EditorMcpClient:
     ) -> tuple[int, bytes, Mapping[str, str]]:
         data = canonical_json_bytes(value)
         authorization = base64.b64encode(
-            f"{self.username}:{self.password}".encode("utf-8")
+            f"{self.username}:{self._basic_auth_value}".encode("utf-8")
         ).decode("ascii")
         headers = {
             "Accept": "application/json, text/event-stream",
@@ -711,11 +812,16 @@ def validate_tool_contract(tools: Mapping[str, Mapping[str, object]]) -> None:
     proposal_ids = (
         batch_properties.get("proposal_ids") if type(batch_properties) is dict else None
     )
+    expected_theme = (
+        batch_properties.get("expected_theme_tree_sha256")
+        if type(batch_properties) is dict
+        else None
+    )
     items = proposal_ids.get("items") if type(proposal_ids) is dict else None
     if (
         type(batch) is not dict
         or batch.get("additionalProperties") is not False
-        or batch.get("required") != ["proposal_ids"]
+        or batch.get("required") != ["proposal_ids", "expected_theme_tree_sha256"]
         or type(proposal_ids) is not dict
         or proposal_ids.get("type") != "array"
         or proposal_ids.get("minItems") != 1
@@ -724,6 +830,9 @@ def validate_tool_contract(tools: Mapping[str, Mapping[str, object]]) -> None:
         or type(items) is not dict
         or items.get("type") != "string"
         or items.get("pattern") != "^[0-9a-f]{64}$"
+        or type(expected_theme) is not dict
+        or expected_theme.get("type") != "string"
+        or expected_theme.get("pattern") != "^[0-9a-f]{64}$"
     ):
         fail("RAOS_WORDPRESS_REQUEST_BATCH_BOOTSTRAP_REQUIRED")
 
@@ -1002,6 +1111,7 @@ def _fresh_receipt(
         "batch_registration": None,
         "review_url": REVIEW_URL,
         "apply_receipt": None,
+        "public_readback": None,
         "updated_at_gmt": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
 
@@ -1026,7 +1136,8 @@ def _validate_receipt(
         "apply_receipt",
         "updated_at_gmt",
     }
-    exact_object(receipt, required)
+    exact_object(receipt, required, {"public_readback"})
+    receipt.setdefault("public_readback", None)
     selected = sorted(article.production_slug for article in articles)
     if (
         receipt["schema"] != "RAOS_WORDPRESS_PUBLICATION_REQUEST_RECEIPT_V1"
@@ -1037,6 +1148,10 @@ def _validate_receipt(
         or type(receipt["drafts"]) is not dict
         or type(receipt["proposal_keys"]) is not dict
         or type(receipt["proposals"]) is not list
+        or (
+            receipt["public_readback"] is not None
+            and type(receipt["public_readback"]) is not dict
+        )
         or receipt["review_url"] != REVIEW_URL
         or type(receipt["state"]) is not str
     ):
@@ -1084,15 +1199,25 @@ def reconcile_drafts(
         if len(candidates) > 1:
             fail("RAOS_WORDPRESS_REQUEST_SLUG_CONFLICT")
         desired = article.document()
+        published_target = False
         if not candidates:
             document = client.call("raos-codex-content-create-draft", desired)
         else:
             current = candidates[0]
             if current.get("status") == "publish":
-                fail("RAOS_WORDPRESS_REQUEST_PUBLISHED_CONFLICT")
-            if current.get("status") != "draft":
+                if receipt.get(
+                    "state"
+                ) != "APPLIED_ATTEMPT_REPLACED" or not _known_draft(
+                    receipt, article.production_slug, current
+                ):
+                    fail("RAOS_WORDPRESS_REQUEST_PUBLISHED_CONFLICT")
+                # Build the next immutable release proposal directly from the
+                # exact prior applied target. Never unpublish it into a draft.
+                document = dict(current)
+                published_target = True
+            elif current.get("status") != "draft":
                 fail("RAOS_WORDPRESS_REQUEST_DRAFT_TARGET_INVALID")
-            if document_projection(current) == desired:
+            elif document_projection(current) == desired:
                 document = dict(current)
             elif _known_draft(receipt, article.production_slug, current):
                 document = client.call(
@@ -1106,17 +1231,25 @@ def reconcile_drafts(
                 )
             else:
                 fail("RAOS_WORDPRESS_REQUEST_UNKNOWN_DRAFT_DRIFT")
-        if (
-            document.get("status") != "draft"
-            or document_projection(document) != desired
-            or type(document.get("id")) is not int
+        if type(document.get("id")) is not int or (
+            not published_target
+            and (
+                document.get("status") != "draft"
+                or document_projection(document) != desired
+            )
         ):
             fail("RAOS_WORDPRESS_REQUEST_DRAFT_WRITE_INVALID")
         readback = client.call("raos-codex-content-get", {"id": document["id"]})
         if (
-            readback.get("status") != "draft"
-            or document_projection(readback) != desired
-            or readback.get("content_sha256") != document.get("content_sha256")
+            readback.get("content_sha256") != document.get("content_sha256")
+            or (published_target and readback.get("status") != "publish")
+            or (
+                not published_target
+                and (
+                    readback.get("status") != "draft"
+                    or document_projection(readback) != desired
+                )
+            )
         ):
             fail("RAOS_WORDPRESS_REQUEST_DRAFT_READBACK_FAILED")
         precondition(readback)
@@ -1142,11 +1275,9 @@ def _validate_deployment_tools(tools: object) -> None:
         fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
     for name, tool in by_name.items():
         annotations = tool.get("annotations")
-        read_only = name == "deployment-status"
+        read_only = name in {"deployment-status", "publication-batch-status"}
         destructive = name in {
             "release-wait-and-apply",
-            "content-apply-release",
-            "theme-apply-release",
             "plugin-apply-change",
             "operation-recover",
         }
@@ -1163,6 +1294,7 @@ def _validate_deployment_tools(tools: object) -> None:
     status_schema = by_name["deployment-status"].get("inputSchema")
     theme_schema = by_name["theme-propose-release"].get("inputSchema")
     wait_schema = by_name["release-wait-and-apply"].get("inputSchema")
+    batch_status_schema = by_name["publication-batch-status"].get("inputSchema")
     theme_properties = (
         theme_schema.get("properties") if type(theme_schema) is dict else None
     )
@@ -1177,7 +1309,20 @@ def _validate_deployment_tools(tools: object) -> None:
     wait_ids = (
         wait_properties.get("proposal_ids") if type(wait_properties) is dict else None
     )
+    wait_batch_token = (
+        wait_properties.get("batch_token") if type(wait_properties) is dict else None
+    )
+    wait_manifest_hash = (
+        wait_properties.get("batch_manifest_sha256")
+        if type(wait_properties) is dict
+        else None
+    )
     wait_items = wait_ids.get("items") if type(wait_ids) is dict else None
+    batch_status_properties = (
+        batch_status_schema.get("properties")
+        if type(batch_status_schema) is dict
+        else None
+    )
     if (
         type(status_schema) is not dict
         or status_schema.get("type") != "object"
@@ -1189,13 +1334,26 @@ def _validate_deployment_tools(tools: object) -> None:
         or theme_key.get("pattern") != "^[0-9a-f]{64}$"
         or type(wait_ids) is not dict
         or wait_schema.get("type") != "object"
-        or wait_schema.get("required") != ["proposal_ids"]
+        or wait_schema.get("required")
+        != ["batch_token", "batch_manifest_sha256", "proposal_ids"]
+        or type(wait_batch_token) is not dict
+        or wait_batch_token.get("type") != "string"
+        or wait_batch_token.get("pattern") != "^[0-9a-f]{64}$"
+        or type(wait_manifest_hash) is not dict
+        or wait_manifest_hash.get("type") != "string"
+        or wait_manifest_hash.get("pattern") != "^[0-9a-f]{64}$"
         or wait_ids.get("type") != "array"
         or wait_ids.get("minItems") != 1
         or wait_ids.get("maxItems") != 20
         or type(wait_items) is not dict
         or wait_items.get("type") != "string"
         or wait_items.get("pattern") != "^[0-9a-f]{64}$"
+        or type(batch_status_schema) is not dict
+        or batch_status_schema.get("type") != "object"
+        or batch_status_schema.get("additionalProperties") is not False
+        or batch_status_schema.get("required")
+        != ["batch_token", "batch_manifest_sha256", "proposal_ids"]
+        or batch_status_properties != wait_properties
     ):
         fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
 
@@ -1209,6 +1367,7 @@ def _deployment_mcp_call(
 ) -> dict[str, object]:
     if command not in {
         "deployment-status",
+        "publication-batch-status",
         "theme-propose-release",
         "release-wait-and-apply",
     }:
@@ -1452,6 +1611,8 @@ def _prepare_attempt(
         )
         receipt["proposals"] = []
         receipt["batch_registration"] = None
+        receipt["apply_receipt"] = None
+        receipt["public_readback"] = None
         receipt["proposal_keys"] = {}
     keys = receipt["proposal_keys"]
     if type(keys) is not dict:
@@ -1651,9 +1812,18 @@ def register_publication_batch(
     path: Path,
 ) -> dict[str, object]:
     proposal_ids = sorted(_proposal_ids(receipt))
+    expected_theme_tree_sha256 = receipt.get("desired_theme_tree_sha256")
+    if (
+        type(expected_theme_tree_sha256) is not str
+        or SHA256_RE.fullmatch(expected_theme_tree_sha256) is None
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     response = client.call(
         "raos-codex-publication-batch-register",
-        {"proposal_ids": proposal_ids},
+        {
+            "proposal_ids": proposal_ids,
+            "expected_theme_tree_sha256": expected_theme_tree_sha256,
+        },
     )
     batch_token = response.get("batch_token")
     manifest_hash = response.get("batch_manifest_sha256")
@@ -1664,8 +1834,10 @@ def register_publication_batch(
         or SHA256_RE.fullmatch(batch_token) is None
         or type(manifest_hash) is not str
         or SHA256_RE.fullmatch(manifest_hash) is None
+        or response.get("expected_theme_tree_sha256") != expected_theme_tree_sha256
         or response.get("proposal_count") != len(proposal_ids)
         or response.get("proposal_ids") != proposal_ids
+        or response.get("state") not in {"REGISTERED", "APPROVED", "EXPIRED"}
         or type(expires) is not str
         or re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", expires) is None
         or response.get("review_url") != REVIEW_URL
@@ -1688,6 +1860,8 @@ def _registered_proposal_ids(receipt: Mapping[str, object]) -> list[str]:
         or SHA256_RE.fullmatch(registration["batch_token"]) is None
         or type(registration.get("batch_manifest_sha256")) is not str
         or SHA256_RE.fullmatch(registration["batch_manifest_sha256"]) is None
+        or registration.get("expected_theme_tree_sha256")
+        != receipt.get("desired_theme_tree_sha256")
         or type(proposal_ids) is not list
         or proposal_ids != sorted(proposal_ids)
         or len(proposal_ids) != len(set(proposal_ids))
@@ -1697,6 +1871,7 @@ def _registered_proposal_ids(receipt: Mapping[str, object]) -> list[str]:
         )
         or proposal_ids != sorted(_proposal_ids(receipt))
         or registration.get("proposal_count") != len(proposal_ids)
+        or registration.get("state") not in {"REGISTERED", "APPROVED", "EXPIRED"}
         or type(registration.get("expires_at_gmt")) is not str
         or re.fullmatch(
             r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
@@ -1707,6 +1882,59 @@ def _registered_proposal_ids(receipt: Mapping[str, object]) -> list[str]:
     ):
         fail("RAOS_WORDPRESS_REQUEST_BATCH_REGISTRATION_INVALID")
     return proposal_ids
+
+
+def publication_batch_status(
+    receipt: Mapping[str, object],
+    runner: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run,
+) -> dict[str, object]:
+    proposal_ids = _registered_proposal_ids(receipt)
+    registration = receipt.get("batch_registration")
+    if type(registration) is not dict:
+        fail("RAOS_WORDPRESS_REQUEST_BATCH_REGISTRATION_INVALID")
+    batch_token = registration.get("batch_token")
+    manifest_hash = registration.get("batch_manifest_sha256")
+    if type(batch_token) is not str or type(manifest_hash) is not str:
+        fail("RAOS_WORDPRESS_REQUEST_BATCH_REGISTRATION_INVALID")
+    response = _deployment_mcp_call(
+        "publication-batch-status",
+        {
+            "batch_token": batch_token,
+            "batch_manifest_sha256": manifest_hash,
+            "proposal_ids": proposal_ids,
+        },
+        timeout=120,
+        runner=runner,
+    )
+    if (
+        set(response)
+        != {
+            "schema",
+            "batch_token",
+            "batch_manifest_sha256",
+            "proposal_count",
+            "proposal_ids",
+            "state",
+            "expires_at_gmt",
+            "preconditions_ready",
+        }
+        or response.get("schema") != "RAOSWordPressPublicationBatchStatusV1"
+        or response.get("batch_token") != batch_token
+        or response.get("batch_manifest_sha256") != manifest_hash
+        or response.get("proposal_count") != len(proposal_ids)
+        or response.get("proposal_ids") != proposal_ids
+        or response.get("state")
+        not in {"REGISTERED", "APPROVED", "APPLIED", "EXPIRED", "FAILED"}
+        or type(response.get("expires_at_gmt")) is not str
+        or re.fullmatch(
+            r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
+            response["expires_at_gmt"],
+        )
+        is None
+        or type(response.get("preconditions_ready")) is not bool
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_BATCH_STATUS_INVALID")
+    return response
 
 
 def wait_and_apply(
@@ -1733,12 +1961,20 @@ def wait_and_apply(
     _touch_receipt(path, receipt, "WAITING_FOR_APPROVAL")
     aggregate = _deployment_mcp_call(
         "release-wait-and-apply",
-        {"proposal_ids": proposal_ids},
+        {
+            "batch_token": batch_token,
+            "batch_manifest_sha256": manifest_hash,
+            "proposal_ids": proposal_ids,
+        },
         timeout=1080,
         runner=runner,
     )
     if (
         aggregate.get("schema") != "ReleaseWaitApplyReceiptV1"
+        or aggregate.get("batch_token") != batch_token
+        or aggregate.get("batch_manifest_sha256") != manifest_hash
+        or aggregate.get("proposal_count") != len(proposal_ids)
+        or aggregate.get("proposal_ids") != proposal_ids
         or aggregate.get("state") != "APPLIED"
         or type(aggregate.get("receipts")) is not list
         or len(aggregate["receipts"]) != len(proposal_ids)
@@ -1781,6 +2017,118 @@ def wait_and_apply(
     return aggregate
 
 
+def _normalized_public_text(parts: Sequence[str]) -> str:
+    return re.sub(r"\s+", " ", " ".join(parts)).strip()
+
+
+def _public_page_evidence(
+    article: Article,
+    opener: urllib.request.OpenerDirector,
+) -> dict[str, object]:
+    url = f"{ORIGIN}/{article.production_slug}/"
+    request = urllib.request.Request(
+        url,
+        headers={
+            "Accept": "text/html,application/xhtml+xml",
+            "User-Agent": "raos-publication-readback/1.0",
+        },
+        method="GET",
+    )
+    try:
+        with opener.open(request, timeout=30) as response:
+            status = response.getcode()
+            final_url = response.geturl()
+            content_type = (
+                (response.headers.get("Content-Type") or "").split(";", 1)[0].lower()
+            )
+            response_noindex = any(
+                _robots_blocks_indexing(value)
+                for value in _response_header_values(
+                    response.headers,
+                    "X-Robots-Tag",
+                )
+            )
+            payload = response.read(MAX_PUBLIC_PAGE_BYTES + 1)
+    except urllib.error.HTTPError as error:
+        if 300 <= error.code < 400:
+            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_REDIRECT_REFUSED")
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_HTTP_FAILED")
+    except urllib.error.URLError, TimeoutError, OSError:
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_TRANSPORT_FAILED")
+    if (
+        status != 200
+        or final_url != url
+        or content_type not in {"text/html", "application/xhtml+xml"}
+        or len(payload) > MAX_PUBLIC_PAGE_BYTES
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_RESPONSE_INVALID")
+    try:
+        markup = payload.decode("utf-8", errors="strict")
+    except UnicodeError:
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_RESPONSE_INVALID")
+
+    parser = _PublicPageEvidenceParser()
+    desired = _PublicPageEvidenceParser()
+    try:
+        parser.feed(markup)
+        parser.close()
+        desired.feed(article.block_markup)
+        desired.close()
+    except Exception:
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_HTML_INVALID")
+    visible = _normalized_public_text(parser.visible_text)
+    required_headings = list(dict.fromkeys(desired.headings))
+    if (
+        response_noindex
+        or parser.noindex
+        or parser.canonical_urls != [url]
+        or article.title not in parser.h1_titles
+        or not required_headings
+        or any(heading not in visible for heading in required_headings)
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED")
+    return {
+        "url": url,
+        "status": 200,
+        "canonical_url": parser.canonical_urls[0],
+        "title": article.title,
+        "heading_count": len(required_headings),
+    }
+
+
+def verify_public_pages(
+    articles: Sequence[Article],
+    *,
+    attempts: int = 6,
+    sleeper: Callable[[float], None] = time.sleep,
+    opener: urllib.request.OpenerDirector | None = None,
+) -> dict[str, object]:
+    if not 1 <= attempts <= 10:
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_INVALID")
+    public_opener = opener or urllib.request.build_opener(
+        urllib.request.ProxyHandler({}),
+        _RefuseRedirectHandler(),
+    )
+    evidence: dict[str, object] = {}
+    for article in articles:
+        last_error: PublicationFailure | None = None
+        for attempt in range(attempts):
+            try:
+                evidence[article.production_slug] = _public_page_evidence(
+                    article,
+                    public_opener,
+                )
+                last_error = None
+                break
+            except PublicationFailure as error:
+                last_error = error
+                if attempt + 1 < attempts:
+                    sleeper(2.0)
+        if last_error is not None:
+            raise last_error
+    return evidence
+
+
 def verify_published(
     client: Any,
     articles: Sequence[Article],
@@ -1818,6 +2166,7 @@ def verify_published(
         or deployed_theme.get("tree_sha256") != expected_theme_tree_sha256
     ):
         fail("RAOS_WORDPRESS_REQUEST_THEME_READBACK_FAILED")
+    receipt["public_readback"] = verify_public_pages(articles)
     _touch_receipt(path, receipt, "APPLIED")
 
 
@@ -1844,6 +2193,21 @@ def _resume_ready(receipt: Mapping[str, object], expected_count: int) -> bool:
     )
 
 
+def _unregistered_proposal_set_ready(
+    receipt: Mapping[str, object],
+    content_count: int,
+) -> bool:
+    proposals = receipt.get("proposals")
+    if (
+        receipt.get("state") != "PROPOSALS_READY"
+        or type(proposals) is not list
+        or len(proposals) not in {content_count, content_count + 1}
+        or receipt.get("batch_registration") is not None
+    ):
+        return False
+    return len(_proposal_ids(receipt)) == len(proposals)
+
+
 def execute(
     selection: str,
     *,
@@ -1853,12 +2217,21 @@ def execute(
         ..., subprocess.CompletedProcess[bytes]
     ] = subprocess.run,
 ) -> Path:
-    articles = load_articles(selection)
     with request_lock():
         # This ordering is a safety invariant: no credential read, remote status,
         # draft write, or proposal can happen before all local checks pass.
+        articles_before_preview = load_articles(selection)
+        reviewed_article_hashes = {
+            article.production_slug: article.desired_sha256()
+            for article in articles_before_preview
+        }
         theme_tree_before_preview = tracked_theme_tree_sha256()
         preview()
+        articles = load_articles(selection)
+        if {
+            article.production_slug: article.desired_sha256() for article in articles
+        } != reviewed_article_hashes:
+            fail("RAOS_WORDPRESS_REQUEST_ARTICLE_CHANGED_DURING_PREVIEW")
         local_theme_version = theme_version()
         local_theme_tree_sha256 = tracked_theme_tree_sha256()
         if local_theme_tree_sha256 != theme_tree_before_preview:
@@ -1871,13 +2244,34 @@ def execute(
             if loaded is None
             else _validate_receipt(loaded, articles)
         )
+
+        client = client_factory()
+        client.initialize()
+        tools = client.tools()
+        validate_tool_contract(tools)
+        status = client.call("raos-codex-site-status", {})
+        validate_site_status(status)
+        live_theme = status["theme"]
+        if type(live_theme) is not dict:
+            fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
+
+        if _unregistered_proposal_set_ready(receipt, len(articles)):
+            # Reconcile a potentially lost registration response before
+            # comparing against newly edited local inputs. The exact reviewed
+            # old proposal set must first regain its authoritative batch token.
+            register_publication_batch(client, receipt, path)
+
         desired_matches = _same_desired(receipt, articles, local_theme_tree_sha256)
-        if not desired_matches and receipt.get("proposals"):
-            if not _attempt_expired(receipt):
+        desired_change_with_proposals = bool(
+            not desired_matches and receipt.get("proposals")
+        )
+        if desired_change_with_proposals:
+            # The receipt's creation-time expiry is not authoritative: human
+            # approval extends server leases. Preserve the old attempt until the
+            # exact remote batch proves that authority expired or every member
+            # reached its exact applied readback.
+            if type(receipt.get("batch_registration")) is not dict:
                 fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
-            receipt = _fresh_receipt(articles, path, local_theme_tree_sha256) | {
-                "drafts": receipt.get("drafts", {})
-            }
         elif not desired_matches:
             receipt["desired_sha256"] = {
                 article.production_slug: article.desired_sha256()
@@ -1890,20 +2284,54 @@ def execute(
             receipt["proposals"] = []
             receipt["batch_registration"] = None
             receipt["apply_receipt"] = None
-        if is_new_receipt or not desired_matches:
+            receipt["public_readback"] = None
+        if is_new_receipt or (
+            not desired_matches and not desired_change_with_proposals
+        ):
             _touch_receipt(path, receipt, "LOCAL_VERIFIED")
         else:
             _atomic_receipt(path, receipt)
 
-        client = client_factory()
-        client.initialize()
-        tools = client.tools()
-        validate_tool_contract(tools)
-        status = client.call("raos-codex-site-status", {})
-        validate_site_status(status)
-        live_theme = status["theme"]
-        if type(live_theme) is not dict:
-            fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
+        if desired_change_with_proposals:
+            old_batch = publication_batch_status(receipt, deployment_runner)
+            terminal_state = old_batch["state"]
+            if terminal_state not in {"EXPIRED", "APPLIED"}:
+                fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
+            preserved_drafts = receipt.get("drafts", {})
+            if terminal_state == "APPLIED":
+                if type(preserved_drafts) is not dict:
+                    fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+                preserved_drafts = {
+                    slug: dict(value)
+                    for slug, value in preserved_drafts.items()
+                    if type(slug) is str and type(value) is dict
+                }
+                proposals = receipt.get("proposals")
+                if type(proposals) is not list:
+                    fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+                for proposal in proposals:
+                    if (
+                        type(proposal) is not dict
+                        or proposal.get("kind") != "CONTENT_RELEASE"
+                    ):
+                        continue
+                    slug = proposal.get("slug")
+                    after_sha256 = proposal.get("after_sha256")
+                    target = preserved_drafts.get(slug) if type(slug) is str else None
+                    if (
+                        type(target) is not dict
+                        or type(target.get("id")) is not int
+                        or type(after_sha256) is not str
+                        or SHA256_RE.fullmatch(after_sha256) is None
+                    ):
+                        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+                    target["content_sha256"] = after_sha256
+            receipt = _fresh_receipt(
+                articles,
+                path,
+                local_theme_tree_sha256,
+            ) | {"drafts": preserved_drafts}
+            _touch_receipt(path, receipt, f"{terminal_state}_ATTEMPT_REPLACED")
         deployed_before = deployment_status(deployment_runner)
         deployed_theme = deployed_before.get("theme")
         if type(deployed_theme) is not dict:
@@ -1939,6 +2367,7 @@ def execute(
                 receipt["proposals"] = []
                 receipt["batch_registration"] = None
                 receipt["apply_receipt"] = None
+                receipt["public_readback"] = None
                 _touch_receipt(path, receipt, "EXPIRED_ATTEMPT_REPLACED")
             else:
                 verify_published(
@@ -1960,6 +2389,7 @@ def execute(
             receipt["proposals"] = []
             receipt["batch_registration"] = None
             receipt["apply_receipt"] = None
+            receipt["public_readback"] = None
             _touch_receipt(path, receipt, "EXPIRED_ATTEMPT_REPLACED")
 
         documents = list_all_documents(client)

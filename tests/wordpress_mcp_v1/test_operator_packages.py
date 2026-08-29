@@ -166,7 +166,7 @@ def test_theme_package_is_reproducible_from_the_tracked_child_theme() -> None:
 def test_cli_refuses_unknown_fields_before_credentials_or_transport() -> None:
     result = operator.run
     with pytest.raises(operator.OperatorFailure) as raised:
-        result("content-apply-release", {"proposal_id": "0" * 64, "url": "https://x"})
+        result("deployment-status", {"url": "https://x"})
     assert str(raised.value) == "WORDPRESS_MCP_INPUT_INVALID"
 
 

@@ -7,6 +7,8 @@
     { "$ref": "#/$defs/ContentDocumentV1" },
     { "$ref": "#/$defs/ContentReleaseProposalV1" },
     { "$ref": "#/$defs/PublicationBatchV1" },
+    { "$ref": "#/$defs/PublicationBatchStatusV1" },
+    { "$ref": "#/$defs/PublicationBatchClaimV1" },
     { "$ref": "#/$defs/CodePackageV1" },
     { "$ref": "#/$defs/OperationReceiptV1" },
     { "$ref": "#/$defs/ReleaseWaitApplyReceiptV1" }
@@ -137,8 +139,10 @@
         "schema",
         "batch_token",
         "batch_manifest_sha256",
+        "expected_theme_tree_sha256",
         "proposal_count",
         "proposal_ids",
+        "state",
         "expires_at_gmt",
         "review_url"
       ],
@@ -146,6 +150,7 @@
         "schema": { "const": "RAOSWordPressPublicationBatchV1" },
         "batch_token": { "$ref": "#/$defs/Sha256" },
         "batch_manifest_sha256": { "$ref": "#/$defs/Sha256" },
+        "expected_theme_tree_sha256": { "$ref": "#/$defs/Sha256" },
         "proposal_count": { "type": "integer", "minimum": 1, "maximum": 20 },
         "proposal_ids": {
           "type": "array",
@@ -154,6 +159,7 @@
           "maxItems": 20,
           "uniqueItems": true
         },
+        "state": { "enum": ["REGISTERED", "APPROVED", "EXPIRED"] },
         "expires_at_gmt": { "$ref": "#/$defs/UtcTimestamp" },
         "review_url": {
           "const": "https://kurashinoshirube.com/wp-admin/tools.php?page=raos-codex-proposals"
@@ -180,6 +186,113 @@
         { "properties": { "proposal_count": { "const": 18 }, "proposal_ids": { "minItems": 18, "maxItems": 18 } } },
         { "properties": { "proposal_count": { "const": 19 }, "proposal_ids": { "minItems": 19, "maxItems": 19 } } },
         { "properties": { "proposal_count": { "const": 20 }, "proposal_ids": { "minItems": 20, "maxItems": 20 } } }
+      ]
+    },
+    "PublicationBatchStatusV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "batch_token",
+        "batch_manifest_sha256",
+        "proposal_count",
+        "proposal_ids",
+        "state",
+        "expires_at_gmt",
+        "preconditions_ready"
+      ],
+      "properties": {
+        "schema": { "const": "RAOSWordPressPublicationBatchStatusV1" },
+        "batch_token": { "$ref": "#/$defs/Sha256" },
+        "batch_manifest_sha256": { "$ref": "#/$defs/Sha256" },
+        "proposal_count": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "proposal_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Sha256" },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "state": { "enum": ["REGISTERED", "APPROVED", "APPLIED", "EXPIRED", "FAILED"] },
+        "expires_at_gmt": { "$ref": "#/$defs/UtcTimestamp" },
+        "preconditions_ready": { "type": "boolean" }
+      },
+      "oneOf": [
+        { "properties": { "proposal_count": { "const": 1 }, "proposal_ids": { "minItems": 1, "maxItems": 1 } } },
+        { "properties": { "proposal_count": { "const": 2 }, "proposal_ids": { "minItems": 2, "maxItems": 2 } } },
+        { "properties": { "proposal_count": { "const": 3 }, "proposal_ids": { "minItems": 3, "maxItems": 3 } } },
+        { "properties": { "proposal_count": { "const": 4 }, "proposal_ids": { "minItems": 4, "maxItems": 4 } } },
+        { "properties": { "proposal_count": { "const": 5 }, "proposal_ids": { "minItems": 5, "maxItems": 5 } } },
+        { "properties": { "proposal_count": { "const": 6 }, "proposal_ids": { "minItems": 6, "maxItems": 6 } } },
+        { "properties": { "proposal_count": { "const": 7 }, "proposal_ids": { "minItems": 7, "maxItems": 7 } } },
+        { "properties": { "proposal_count": { "const": 8 }, "proposal_ids": { "minItems": 8, "maxItems": 8 } } },
+        { "properties": { "proposal_count": { "const": 9 }, "proposal_ids": { "minItems": 9, "maxItems": 9 } } },
+        { "properties": { "proposal_count": { "const": 10 }, "proposal_ids": { "minItems": 10, "maxItems": 10 } } },
+        { "properties": { "proposal_count": { "const": 11 }, "proposal_ids": { "minItems": 11, "maxItems": 11 } } },
+        { "properties": { "proposal_count": { "const": 12 }, "proposal_ids": { "minItems": 12, "maxItems": 12 } } },
+        { "properties": { "proposal_count": { "const": 13 }, "proposal_ids": { "minItems": 13, "maxItems": 13 } } },
+        { "properties": { "proposal_count": { "const": 14 }, "proposal_ids": { "minItems": 14, "maxItems": 14 } } },
+        { "properties": { "proposal_count": { "const": 15 }, "proposal_ids": { "minItems": 15, "maxItems": 15 } } },
+        { "properties": { "proposal_count": { "const": 16 }, "proposal_ids": { "minItems": 16, "maxItems": 16 } } },
+        { "properties": { "proposal_count": { "const": 17 }, "proposal_ids": { "minItems": 17, "maxItems": 17 } } },
+        { "properties": { "proposal_count": { "const": 18 }, "proposal_ids": { "minItems": 18, "maxItems": 18 } } },
+        { "properties": { "proposal_count": { "const": 19 }, "proposal_ids": { "minItems": 19, "maxItems": 19 } } },
+        { "properties": { "proposal_count": { "const": 20 }, "proposal_ids": { "minItems": 20, "maxItems": 20 } } }
+      ]
+    },
+    "PublicationBatchClaimV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "batch_token",
+        "batch_manifest_sha256",
+        "proposal_count",
+        "proposal_ids",
+        "batch_claimed_at_gmt",
+        "proposals"
+      ],
+      "properties": {
+        "schema": { "const": "RAOSWordPressPublicationBatchClaimV1" },
+        "batch_token": { "$ref": "#/$defs/Sha256" },
+        "batch_manifest_sha256": { "$ref": "#/$defs/Sha256" },
+        "proposal_count": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "proposal_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Sha256" },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "batch_claimed_at_gmt": { "$ref": "#/$defs/UtcTimestamp" },
+        "proposals": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/OperationReceiptV1" },
+          "minItems": 1,
+          "maxItems": 20
+        }
+      },
+      "oneOf": [
+        { "properties": { "proposal_count": { "const": 1 }, "proposal_ids": { "minItems": 1, "maxItems": 1 }, "proposals": { "minItems": 1, "maxItems": 1 } } },
+        { "properties": { "proposal_count": { "const": 2 }, "proposal_ids": { "minItems": 2, "maxItems": 2 }, "proposals": { "minItems": 2, "maxItems": 2 } } },
+        { "properties": { "proposal_count": { "const": 3 }, "proposal_ids": { "minItems": 3, "maxItems": 3 }, "proposals": { "minItems": 3, "maxItems": 3 } } },
+        { "properties": { "proposal_count": { "const": 4 }, "proposal_ids": { "minItems": 4, "maxItems": 4 }, "proposals": { "minItems": 4, "maxItems": 4 } } },
+        { "properties": { "proposal_count": { "const": 5 }, "proposal_ids": { "minItems": 5, "maxItems": 5 }, "proposals": { "minItems": 5, "maxItems": 5 } } },
+        { "properties": { "proposal_count": { "const": 6 }, "proposal_ids": { "minItems": 6, "maxItems": 6 }, "proposals": { "minItems": 6, "maxItems": 6 } } },
+        { "properties": { "proposal_count": { "const": 7 }, "proposal_ids": { "minItems": 7, "maxItems": 7 }, "proposals": { "minItems": 7, "maxItems": 7 } } },
+        { "properties": { "proposal_count": { "const": 8 }, "proposal_ids": { "minItems": 8, "maxItems": 8 }, "proposals": { "minItems": 8, "maxItems": 8 } } },
+        { "properties": { "proposal_count": { "const": 9 }, "proposal_ids": { "minItems": 9, "maxItems": 9 }, "proposals": { "minItems": 9, "maxItems": 9 } } },
+        { "properties": { "proposal_count": { "const": 10 }, "proposal_ids": { "minItems": 10, "maxItems": 10 }, "proposals": { "minItems": 10, "maxItems": 10 } } },
+        { "properties": { "proposal_count": { "const": 11 }, "proposal_ids": { "minItems": 11, "maxItems": 11 }, "proposals": { "minItems": 11, "maxItems": 11 } } },
+        { "properties": { "proposal_count": { "const": 12 }, "proposal_ids": { "minItems": 12, "maxItems": 12 }, "proposals": { "minItems": 12, "maxItems": 12 } } },
+        { "properties": { "proposal_count": { "const": 13 }, "proposal_ids": { "minItems": 13, "maxItems": 13 }, "proposals": { "minItems": 13, "maxItems": 13 } } },
+        { "properties": { "proposal_count": { "const": 14 }, "proposal_ids": { "minItems": 14, "maxItems": 14 }, "proposals": { "minItems": 14, "maxItems": 14 } } },
+        { "properties": { "proposal_count": { "const": 15 }, "proposal_ids": { "minItems": 15, "maxItems": 15 }, "proposals": { "minItems": 15, "maxItems": 15 } } },
+        { "properties": { "proposal_count": { "const": 16 }, "proposal_ids": { "minItems": 16, "maxItems": 16 }, "proposals": { "minItems": 16, "maxItems": 16 } } },
+        { "properties": { "proposal_count": { "const": 17 }, "proposal_ids": { "minItems": 17, "maxItems": 17 }, "proposals": { "minItems": 17, "maxItems": 17 } } },
+        { "properties": { "proposal_count": { "const": 18 }, "proposal_ids": { "minItems": 18, "maxItems": 18 }, "proposals": { "minItems": 18, "maxItems": 18 } } },
+        { "properties": { "proposal_count": { "const": 19 }, "proposal_ids": { "minItems": 19, "maxItems": 19 }, "proposals": { "minItems": 19, "maxItems": 19 } } },
+        { "properties": { "proposal_count": { "const": 20 }, "proposal_ids": { "minItems": 20, "maxItems": 20 }, "proposals": { "minItems": 20, "maxItems": 20 } } }
       ]
     },
     "CodePackageV1": {
@@ -278,9 +391,27 @@
     "ReleaseWaitApplyReceiptV1": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["schema", "state", "receipts"],
+      "required": [
+        "schema",
+        "batch_token",
+        "batch_manifest_sha256",
+        "proposal_count",
+        "proposal_ids",
+        "state",
+        "receipts"
+      ],
       "properties": {
         "schema": { "const": "ReleaseWaitApplyReceiptV1" },
+        "batch_token": { "$ref": "#/$defs/Sha256" },
+        "batch_manifest_sha256": { "$ref": "#/$defs/Sha256" },
+        "proposal_count": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "proposal_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Sha256" },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        },
         "state": { "const": "APPLIED" },
         "receipts": {
           "type": "array",
@@ -299,7 +430,29 @@
           "maxItems": 20,
           "uniqueItems": true
         }
-      }
+      },
+      "oneOf": [
+        { "properties": { "proposal_count": { "const": 1 }, "proposal_ids": { "minItems": 1, "maxItems": 1 }, "receipts": { "minItems": 1, "maxItems": 1 } } },
+        { "properties": { "proposal_count": { "const": 2 }, "proposal_ids": { "minItems": 2, "maxItems": 2 }, "receipts": { "minItems": 2, "maxItems": 2 } } },
+        { "properties": { "proposal_count": { "const": 3 }, "proposal_ids": { "minItems": 3, "maxItems": 3 }, "receipts": { "minItems": 3, "maxItems": 3 } } },
+        { "properties": { "proposal_count": { "const": 4 }, "proposal_ids": { "minItems": 4, "maxItems": 4 }, "receipts": { "minItems": 4, "maxItems": 4 } } },
+        { "properties": { "proposal_count": { "const": 5 }, "proposal_ids": { "minItems": 5, "maxItems": 5 }, "receipts": { "minItems": 5, "maxItems": 5 } } },
+        { "properties": { "proposal_count": { "const": 6 }, "proposal_ids": { "minItems": 6, "maxItems": 6 }, "receipts": { "minItems": 6, "maxItems": 6 } } },
+        { "properties": { "proposal_count": { "const": 7 }, "proposal_ids": { "minItems": 7, "maxItems": 7 }, "receipts": { "minItems": 7, "maxItems": 7 } } },
+        { "properties": { "proposal_count": { "const": 8 }, "proposal_ids": { "minItems": 8, "maxItems": 8 }, "receipts": { "minItems": 8, "maxItems": 8 } } },
+        { "properties": { "proposal_count": { "const": 9 }, "proposal_ids": { "minItems": 9, "maxItems": 9 }, "receipts": { "minItems": 9, "maxItems": 9 } } },
+        { "properties": { "proposal_count": { "const": 10 }, "proposal_ids": { "minItems": 10, "maxItems": 10 }, "receipts": { "minItems": 10, "maxItems": 10 } } },
+        { "properties": { "proposal_count": { "const": 11 }, "proposal_ids": { "minItems": 11, "maxItems": 11 }, "receipts": { "minItems": 11, "maxItems": 11 } } },
+        { "properties": { "proposal_count": { "const": 12 }, "proposal_ids": { "minItems": 12, "maxItems": 12 }, "receipts": { "minItems": 12, "maxItems": 12 } } },
+        { "properties": { "proposal_count": { "const": 13 }, "proposal_ids": { "minItems": 13, "maxItems": 13 }, "receipts": { "minItems": 13, "maxItems": 13 } } },
+        { "properties": { "proposal_count": { "const": 14 }, "proposal_ids": { "minItems": 14, "maxItems": 14 }, "receipts": { "minItems": 14, "maxItems": 14 } } },
+        { "properties": { "proposal_count": { "const": 15 }, "proposal_ids": { "minItems": 15, "maxItems": 15 }, "receipts": { "minItems": 15, "maxItems": 15 } } },
+        { "properties": { "proposal_count": { "const": 16 }, "proposal_ids": { "minItems": 16, "maxItems": 16 }, "receipts": { "minItems": 16, "maxItems": 16 } } },
+        { "properties": { "proposal_count": { "const": 17 }, "proposal_ids": { "minItems": 17, "maxItems": 17 }, "receipts": { "minItems": 17, "maxItems": 17 } } },
+        { "properties": { "proposal_count": { "const": 18 }, "proposal_ids": { "minItems": 18, "maxItems": 18 }, "receipts": { "minItems": 18, "maxItems": 18 } } },
+        { "properties": { "proposal_count": { "const": 19 }, "proposal_ids": { "minItems": 19, "maxItems": 19 }, "receipts": { "minItems": 19, "maxItems": 19 } } },
+        { "properties": { "proposal_count": { "const": 20 }, "proposal_ids": { "minItems": 20, "maxItems": 20 }, "receipts": { "minItems": 20, "maxItems": 20 } } }
+      ]
     }
   }
 }

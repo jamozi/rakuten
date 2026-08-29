@@ -17,7 +17,7 @@ There are exactly two project MCP servers:
 The WordPress plugin requires WordPress 7.1.x and exactly MCP Adapter 0.6.1.
 It disables MCP Adapter's generic default server and exposes only the eight
 tools listed in `contracts/wordpress-mcp.v1.json`. The local bridge exposes only
-eight typed operations. Neither path includes a generic request, command, PHP,
+seven typed operations. Neither path includes a generic request, command, PHP,
 SQL, filesystem-path, URL, media-write, delete, unpublish, uninstall, or
 arbitrary ZIP tool.
 
@@ -106,20 +106,42 @@ owner-private receipts are stored under
   immutable server-side publication batch; unrelated pending proposals and all
   plugin proposals are excluded. A different cookie-authenticated
   administrator reviews that registered batch in **Tools → RAOS Codex
-  proposals**, reauthenticates once, gives a reason, and types the visible final
-  eight characters of its canonical manifest hash. Approval is all-or-nothing:
+  proposals**. The review page loads every exact member by manifest ID and
+  shows the complete content/theme payload; if any member or hash is missing or
+  inconsistent, it withholds the approval form. The administrator
+  reauthenticates once, gives a reason, and types the visible final eight
+  characters of the canonical manifest hash. Approval is all-or-nothing:
   it creates one proposal-bound, single-use authorization lease per proposal
   outside the web root. The leases expire after 15 minutes and approval itself
-  does not apply anything.
+  does not apply anything. An atomic claim made before that deadline consumes
+  the authorization and keeps the exact batch recoverable until every claimed
+  operation reaches a terminal state; the 15-minute clock does not interrupt a
+  batch already being applied.
 - The bounded `release-wait-and-apply` operator waits for that approval, refuses
-  plugin proposals and malformed or terminal batches, converges at most one
-  theme first, then converges the content proposals (up to 20 content-only, or
-  up to 19 when a theme is included). Reruns recover or accept only
-  already-bound operations.
+  plugin proposals and malformed or terminal batches, and binds the server's
+  exact batch token, canonical manifest hash, and sorted proposal IDs through
+  the final aggregate receipt. Before its first mutation, WordPress verifies
+  every member is still at its immutable before/after state and atomically
+  claims the whole exact batch in one transaction. It then converges at most
+  one theme first, followed by the content proposals (up to 20
+  content-only, or up to 19 when a theme is included). Reruns recover or accept
+  only already-bound operations. A separate read-only batch-status tool lets a
+  changed local request discard an old receipt only after the server confirms
+  that every member expired without starting; individual content/theme apply
+  tools are not exposed.
+- Content apply, theme apply, and recovery share one server-side publication
+  lock. Each content mutation rechecks the reviewed active-theme tree after its
+  write and rolls the content back if that binding changed. Administrators must
+  still avoid manual theme activation or file changes during the approval/apply
+  window because those external wp-admin writes do not participate in this
+  plugin lock.
 - Apply requires the approval plus `If-Match`, the same idempotency key, global
   kill switch, the scoped authorization lease, unchanged before hash, backup,
   replacement, and after-hash readback. The lease is removed after success or
   failure. Communication-loss recovery accepts only the existing operation ID.
+- Completion also performs an unauthenticated HTTPS readback of every canonical
+  production URL. It requires an exact 200 response without redirects, one
+  matching canonical URL, the reviewed title/headings, and no `noindex` marker.
 
 ## Verification
 
