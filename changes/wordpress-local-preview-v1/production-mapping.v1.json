@@ -1,0 +1,68 @@
+{
+  "schema": "RAOS_WORDPRESS_PRODUCTION_MAPPING_V1",
+  "origin": "https://kurashinoshirube.com",
+  "editor_endpoint": "https://kurashinoshirube.com/wp-json/raos-codex-mcp/v1/editor",
+  "review_url": "https://kurashinoshirube.com/wp-admin/tools.php?page=raos-codex-proposals",
+  "articles": [
+    {
+      "local_slug": "local-preview-carry-on-suitcase-under-100-seats",
+      "production_slug": "carry-on-suitcase-under-100-seats",
+      "local_category": "移動",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      }
+    },
+    {
+      "local_slug": "local-preview-lightweight-carry-on-suitcase-under-3kg",
+      "production_slug": "lightweight-carry-on-suitcase-under-3kg",
+      "local_category": "移動",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      }
+    },
+    {
+      "local_slug": "local-preview-front-open-carry-on-suitcase-with-stopper",
+      "production_slug": "front-open-carry-on-suitcase-with-stopper",
+      "local_category": "移動",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      }
+    },
+    {
+      "local_slug": "local-preview-roomba-mini-vs-switchbot-k11-pro",
+      "production_slug": "roomba-mini-vs-switchbot-k11-pro",
+      "local_category": "家事",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      }
+    },
+    {
+      "local_slug": "local-preview-solota-vs-rakua-mini-plus",
+      "production_slug": "solota-vs-rakua-mini-plus",
+      "local_category": "家事",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      }
+    }
+  ]
+}

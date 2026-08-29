@@ -10,6 +10,13 @@ const repositoryRoot = fileURLToPath(new URL('../../..', import.meta.url));
 const operator = `${repositoryRoot}/scripts/raos_wordpress_deployment_operator.py`;
 const python = `${repositoryRoot}/.venv/bin/python`;
 const sha256 = z.string().regex(/^[0-9a-f]{64}$/);
+const releaseProposalIds = z
+  .array(sha256)
+  .min(1)
+  .max(20)
+  .refine((values) => new Set(values).size === values.length, {
+    message: 'proposal_ids must be unique',
+  });
 const resultCode = /^[A-Z0-9_]{3,96}$/;
 
 function assertPinnedRuntimePackage(relativePath: string, version: string) {
@@ -34,6 +41,8 @@ assertPinnedRuntimePackage('node_modules/@modelcontextprotocol/sdk/package.json'
 assertPinnedRuntimePackage('node_modules/zod/package.json', '4.4.3');
 
 type OperatorCommand =
+  | 'deployment-status'
+  | 'release-wait-and-apply'
   | 'content-apply-release'
   | 'theme-propose-release'
   | 'theme-apply-release'
@@ -73,13 +82,14 @@ function runOperator(
     let stderrBytes = 0;
     let settled = false;
 
+    const timeoutMs = command === 'release-wait-and-apply' ? 17 * 60_000 : 90_000;
     const timer = setTimeout(() => {
       if (!settled) {
         settled = true;
         child.kill('SIGKILL');
         reject(new OperatorError('WORDPRESS_MCP_OPERATOR_TIMEOUT'));
       }
-    }, 90_000);
+    }, timeoutMs);
 
     child.stdout.on('data', (chunk: Buffer) => {
       stdoutBytes += chunk.length;
@@ -143,10 +153,66 @@ function toolError(error: unknown) {
 }
 
 const server = new McpServer(
-  { name: 'raos-wordpress-bridge', version: '1.0.0' },
+  { name: 'raos-wordpress-bridge', version: '1.1.0' },
   {
     instructions:
       'Bounded deployment bridge for kurashinoshirube.com. It cannot approve, publish without a separate wp-admin approval, run commands, PHP, or SQL, delete content, uninstall plugins, accept URLs, or accept caller-selected package paths. Apply calls require an unexpired hash-bound proposal, If-Match, idempotency, the global kill switch, and a proposal-bound single-use approval lease.',
+  },
+);
+
+server.registerTool(
+  'deployment-status',
+  {
+    title: 'Read WordPress deployment status',
+    description:
+      'Read the fixed production deployment status, including the active child-theme tree SHA-256. It does not create, approve, or apply anything.',
+    inputSchema: {},
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  async () => {
+    try {
+      return toolResult(await runOperator('deployment-status', {}));
+    } catch (error) {
+      return toolError(error);
+    }
+  },
+);
+
+server.registerTool(
+  'release-wait-and-apply',
+  {
+    title: 'Wait for approval and apply one release set',
+    description:
+      'Wait up to the fixed approval window for one server-registered exact content/theme batch, then apply only that approved batch. At most one theme is accepted and it is always converged before content. Plugin proposals and terminal failure states are refused.',
+    inputSchema: {
+      batch_token: sha256,
+      batch_manifest_sha256: sha256,
+      proposal_ids: releaseProposalIds,
+    },
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: true,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  async ({ batch_token, batch_manifest_sha256, proposal_ids }) => {
+    try {
+      return toolResult(
+        await runOperator('release-wait-and-apply', {
+          batch_token,
+          batch_manifest_sha256,
+          proposal_ids,
+        }),
+      );
+    } catch (error) {
+      return toolError(error);
+    }
   },
 );
 
@@ -158,7 +224,7 @@ server.registerTool(
     inputSchema: { proposal_id: sha256 },
     annotations: {
       readOnlyHint: false,
-      destructiveHint: false,
+      destructiveHint: true,
       idempotentHint: true,
       openWorldHint: false,
     },
@@ -178,7 +244,7 @@ server.registerTool(
     title: 'Propose tracked child-theme release',
     description:
       'Build and propose the committed kurashinoshirube-child tree. Caller paths and ZIP files are not accepted.',
-    inputSchema: {},
+    inputSchema: { idempotency_key: sha256.optional() },
     annotations: {
       readOnlyHint: false,
       destructiveHint: false,
@@ -186,9 +252,9 @@ server.registerTool(
       openWorldHint: false,
     },
   },
-  async () => {
+  async (input) => {
     try {
-      return toolResult(await runOperator('theme-propose-release', {}));
+      return toolResult(await runOperator('theme-propose-release', input));
     } catch (error) {
       return toolError(error);
     }
@@ -204,7 +270,7 @@ server.registerTool(
     inputSchema: { proposal_id: sha256 },
     annotations: {
       readOnlyHint: false,
-      destructiveHint: false,
+      destructiveHint: true,
       idempotentHint: true,
       openWorldHint: false,
     },
@@ -265,7 +331,7 @@ server.registerTool(
     inputSchema: { proposal_id: sha256 },
     annotations: {
       readOnlyHint: false,
-      destructiveHint: false,
+      destructiveHint: true,
       idempotentHint: true,
       openWorldHint: false,
     },
@@ -288,7 +354,7 @@ server.registerTool(
     inputSchema: { operation_id: sha256 },
     annotations: {
       readOnlyHint: false,
-      destructiveHint: false,
+      destructiveHint: true,
       idempotentHint: true,
       openWorldHint: false,
     },

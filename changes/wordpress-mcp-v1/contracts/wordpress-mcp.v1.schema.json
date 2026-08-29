@@ -6,8 +6,10 @@
   "oneOf": [
     { "$ref": "#/$defs/ContentDocumentV1" },
     { "$ref": "#/$defs/ContentReleaseProposalV1" },
+    { "$ref": "#/$defs/PublicationBatchV1" },
     { "$ref": "#/$defs/CodePackageV1" },
-    { "$ref": "#/$defs/OperationReceiptV1" }
+    { "$ref": "#/$defs/OperationReceiptV1" },
+    { "$ref": "#/$defs/ReleaseWaitApplyReceiptV1" }
   ],
   "$defs": {
     "Sha256": {
@@ -109,7 +111,8 @@
         "after": { "$ref": "#/$defs/ContentDocumentV1" },
         "before_sha256": { "$ref": "#/$defs/Sha256" },
         "after_sha256": { "$ref": "#/$defs/Sha256" },
-        "publication_manifest_sha256": { "$ref": "#/$defs/Sha256" }
+        "publication_manifest_sha256": { "$ref": "#/$defs/Sha256" },
+        "idempotency_key": { "$ref": "#/$defs/Sha256" }
       }
     },
     "FileManifestEntryV1": {
@@ -126,6 +129,58 @@
         "size": { "type": "integer", "minimum": 0, "maximum": 8388608 },
         "sha256": { "$ref": "#/$defs/Sha256" }
       }
+    },
+    "PublicationBatchV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "batch_token",
+        "batch_manifest_sha256",
+        "proposal_count",
+        "proposal_ids",
+        "expires_at_gmt",
+        "review_url"
+      ],
+      "properties": {
+        "schema": { "const": "RAOSWordPressPublicationBatchV1" },
+        "batch_token": { "$ref": "#/$defs/Sha256" },
+        "batch_manifest_sha256": { "$ref": "#/$defs/Sha256" },
+        "proposal_count": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "proposal_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Sha256" },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "expires_at_gmt": { "$ref": "#/$defs/UtcTimestamp" },
+        "review_url": {
+          "const": "https://kurashinoshirube.com/wp-admin/tools.php?page=raos-codex-proposals"
+        }
+      },
+      "oneOf": [
+        { "properties": { "proposal_count": { "const": 1 }, "proposal_ids": { "minItems": 1, "maxItems": 1 } } },
+        { "properties": { "proposal_count": { "const": 2 }, "proposal_ids": { "minItems": 2, "maxItems": 2 } } },
+        { "properties": { "proposal_count": { "const": 3 }, "proposal_ids": { "minItems": 3, "maxItems": 3 } } },
+        { "properties": { "proposal_count": { "const": 4 }, "proposal_ids": { "minItems": 4, "maxItems": 4 } } },
+        { "properties": { "proposal_count": { "const": 5 }, "proposal_ids": { "minItems": 5, "maxItems": 5 } } },
+        { "properties": { "proposal_count": { "const": 6 }, "proposal_ids": { "minItems": 6, "maxItems": 6 } } },
+        { "properties": { "proposal_count": { "const": 7 }, "proposal_ids": { "minItems": 7, "maxItems": 7 } } },
+        { "properties": { "proposal_count": { "const": 8 }, "proposal_ids": { "minItems": 8, "maxItems": 8 } } },
+        { "properties": { "proposal_count": { "const": 9 }, "proposal_ids": { "minItems": 9, "maxItems": 9 } } },
+        { "properties": { "proposal_count": { "const": 10 }, "proposal_ids": { "minItems": 10, "maxItems": 10 } } },
+        { "properties": { "proposal_count": { "const": 11 }, "proposal_ids": { "minItems": 11, "maxItems": 11 } } },
+        { "properties": { "proposal_count": { "const": 12 }, "proposal_ids": { "minItems": 12, "maxItems": 12 } } },
+        { "properties": { "proposal_count": { "const": 13 }, "proposal_ids": { "minItems": 13, "maxItems": 13 } } },
+        { "properties": { "proposal_count": { "const": 14 }, "proposal_ids": { "minItems": 14, "maxItems": 14 } } },
+        { "properties": { "proposal_count": { "const": 15 }, "proposal_ids": { "minItems": 15, "maxItems": 15 } } },
+        { "properties": { "proposal_count": { "const": 16 }, "proposal_ids": { "minItems": 16, "maxItems": 16 } } },
+        { "properties": { "proposal_count": { "const": 17 }, "proposal_ids": { "minItems": 17, "maxItems": 17 } } },
+        { "properties": { "proposal_count": { "const": 18 }, "proposal_ids": { "minItems": 18, "maxItems": 18 } } },
+        { "properties": { "proposal_count": { "const": 19 }, "proposal_ids": { "minItems": 19, "maxItems": 19 } } },
+        { "properties": { "proposal_count": { "const": 20 }, "proposal_ids": { "minItems": 20, "maxItems": 20 } } }
+      ]
     },
     "CodePackageV1": {
       "type": "object",
@@ -218,6 +273,32 @@
         "before_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
         "after_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
         "audit_id": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "ReleaseWaitApplyReceiptV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "state", "receipts"],
+      "properties": {
+        "schema": { "const": "ReleaseWaitApplyReceiptV1" },
+        "state": { "const": "APPLIED" },
+        "receipts": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              { "$ref": "#/$defs/OperationReceiptV1" },
+              {
+                "properties": {
+                  "state": { "const": "APPLIED" },
+                  "after_sha256": { "$ref": "#/$defs/Sha256" }
+                }
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
       }
     }
   }
