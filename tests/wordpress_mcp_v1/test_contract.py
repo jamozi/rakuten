@@ -195,7 +195,7 @@ def test_root_final_static_checks_wordpress_owner_manifest() -> None:
     assert "$(MAKE) -C changes/wordpress-mcp-v1 manifest-check" in final_static
 
 
-def test_editor_status_exposes_the_loaded_child_theme_runtime_version() -> None:
+def test_editor_status_exposes_loaded_theme_runtime_version_and_revision() -> None:
     content = (
         PLUGIN / "includes/class-raos-codex-mcp-content.php"
     ).read_text(encoding="utf-8")
@@ -206,6 +206,24 @@ def test_editor_status_exposes_the_loaded_child_theme_runtime_version() -> None:
     assert "defined('KURASHINOSHIRUBE_THEME_VERSION')" in status
     assert "constant('KURASHINOSHIRUBE_THEME_VERSION')" in status
     assert "'runtime_version' => $theme_runtime_version" in status
+    assert "defined('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
+    assert "constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
+    assert "'runtime_revision' => $theme_runtime_revision" in status
+
+
+def test_deployment_status_exposes_loaded_theme_runtime_version_and_revision() -> None:
+    deployment = (
+        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
+    ).read_text(encoding="utf-8")
+    status = deployment.split("public function status", 1)[1].split(
+        "public function create_proposal", 1
+    )[0]
+    assert "defined('KURASHINOSHIRUBE_THEME_VERSION')" in status
+    assert "constant('KURASHINOSHIRUBE_THEME_VERSION')" in status
+    assert "'runtime_version' => $theme_runtime_version" in status
+    assert "defined('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
+    assert "constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
+    assert "'runtime_revision' => $theme_runtime_revision" in status
 
 
 def test_lockfile_has_exact_mcp_versions() -> None:

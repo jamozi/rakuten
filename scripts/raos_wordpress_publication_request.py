@@ -59,6 +59,7 @@ THEME_STYLE_PATH: Final = (
     "kurashinoshirube-child/style.css"
 )
 THEME_ROOT: Final = THEME_STYLE_PATH.parent
+THEME_FUNCTIONS_PATH: Final = THEME_ROOT / "functions.php"
 ORIGIN: Final = "https://kurashinoshirube.com"
 EDITOR_ENDPOINT: Final = f"{ORIGIN}/wp-json/raos-codex-mcp/v1/editor"
 REVIEW_URL: Final = f"{ORIGIN}/wp-admin/tools.php?page=raos-codex-proposals"
@@ -73,7 +74,14 @@ SG_BIN: Final = Path("/usr/bin/sg")
 DOCKER_SOCKET: Final = Path("/var/run/docker.sock")
 PROTOCOL_VERSION: Final = "2025-11-25"
 EXPECTED_PLUGIN_VERSION: Final = "1.2.1"
-EXPECTED_THEME_VERSION: Final = "1.3.9"
+EXPECTED_THEME_VERSION: Final = "1.3.10"
+EXPECTED_THEME_RUNTIME_REVISION: Final = (
+    "c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9"
+)
+THEME_RUNTIME_SENTINEL_PROPERTIES: Final = {
+    "assets/theme.css": "--raos-theme-runtime-revision-base",
+    "assets/editorial-v2.css": "--raos-theme-runtime-revision-editorial-v2",
+}
 DIRECT_THEME_STYLESHEET_PATHS: Final = frozenset(
     {
         "/wp-content/themes/kurashinoshirube-child/assets/theme.css",
@@ -87,6 +95,8 @@ EXPECTED_ALL_ARTICLE_COUNT: Final = 10
 MAX_CONTENT_BYTES: Final = 1024 * 1024
 MAX_RESPONSE_BYTES: Final = 16 * 1024 * 1024
 MAX_PUBLIC_PAGE_BYTES: Final = 4 * 1024 * 1024
+MAX_PUBLIC_STYLESHEET_BYTES: Final = 1024 * 1024
+MAX_PUBLIC_STYLESHEET_CACHE_ENTRIES: Final = EXPECTED_ALL_ARTICLE_COUNT * 2
 MAX_RECEIPT_BYTES: Final = 4 * 1024 * 1024
 MAX_THEME_PACKAGE_BYTES: Final = 32 * 1024 * 1024
 MAX_THEME_FILE_BYTES: Final = 8 * 1024 * 1024
@@ -914,6 +924,30 @@ def theme_version() -> str:
     return value
 
 
+def theme_runtime_revision() -> str:
+    """Read the exact loaded-code revision declared by the reviewed theme source."""
+
+    try:
+        payload = THEME_FUNCTIONS_PATH.read_bytes()
+    except OSError:
+        fail("RAOS_WORDPRESS_REQUEST_THEME_SOURCE_INVALID")
+    if not 1 <= len(payload) <= MAX_THEME_FILE_BYTES:
+        fail("RAOS_WORDPRESS_REQUEST_THEME_SOURCE_INVALID")
+    matches = re.findall(
+        rb"(?m)^const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '([0-9a-f]{64})';$",
+        payload,
+    )
+    if len(matches) != 1:
+        fail("RAOS_WORDPRESS_REQUEST_THEME_SOURCE_INVALID")
+    try:
+        value = matches[0].decode("ascii", errors="strict")
+    except UnicodeError:
+        fail("RAOS_WORDPRESS_REQUEST_THEME_SOURCE_INVALID")
+    if value != EXPECTED_THEME_RUNTIME_REVISION:
+        fail("RAOS_WORDPRESS_REQUEST_THEME_RUNTIME_REVISION_INVALID")
+    return value
+
+
 def _git(*arguments: str) -> bytes:
     try:
         completed = subprocess.run(
@@ -1314,6 +1348,13 @@ def validate_site_status(status: Mapping[str, object]) -> None:
         or VERSION_RE.fullmatch(theme["version"]) is None
         or type(theme.get("runtime_version")) is not str
         or VERSION_RE.fullmatch(theme["runtime_version"]) is None
+        or (
+            theme.get("runtime_revision") is not None
+            and (
+                type(theme.get("runtime_revision")) is not str
+                or SHA256_RE.fullmatch(theme["runtime_revision"]) is None
+            )
+        )
         or authorization
         != {
             "mode": "approval_scoped_lease",
@@ -1558,6 +1599,7 @@ def _fresh_receipt(
             article.production_slug: article.desired_sha256() for article in articles
         },
         "desired_theme_tree_sha256": theme_tree,
+        "desired_theme_runtime_revision": EXPECTED_THEME_RUNTIME_REVISION,
         "state": "LOCAL_VERIFIED",
         "attempt_id": None,
         "attempt_created_at_gmt": None,
@@ -1575,6 +1617,7 @@ def _fresh_receipt(
         "review_url": REVIEW_URL,
         "apply_receipt": None,
         "authenticated_readback": None,
+        "prior_applied_reconciliation": None,
         "public_readback": None,
         "updated_at_gmt": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
@@ -1644,6 +1687,62 @@ def _validate_baseline_record(value: object, slug: str) -> dict[str, object]:
     return value
 
 
+def _validate_prior_applied_reconciliation(
+    value: object,
+    selected_slugs: Sequence[str],
+) -> None:
+    if value is None:
+        return
+    if type(value) is not dict or set(value) != {
+        "schema",
+        "captured_at_gmt",
+        "documents",
+        "operations",
+    }:
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    documents = value.get("documents")
+    operations = value.get("operations")
+    if (
+        value.get("schema")
+        != "RAOS_WORDPRESS_PRIOR_APPLIED_RECONCILIATION_V1"
+        or type(value.get("captured_at_gmt")) is not str
+        or re.fullmatch(
+            r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
+            value["captured_at_gmt"],
+        )
+        is None
+        or type(documents) is not dict
+        or set(documents) != set(selected_slugs)
+        or type(operations) is not dict
+        or not operations
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    for slug, document in documents.items():
+        if (
+            type(slug) is not str
+            or type(document) is not dict
+            or document.get("status") != "publish"
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+        _validate_baseline_record(document, slug)
+    for proposal_id, operation in operations.items():
+        if (
+            type(proposal_id) is not str
+            or SHA256_RE.fullmatch(proposal_id) is None
+            or type(operation) is not dict
+            or operation.get("schema") != "OperationReceiptV1"
+            or operation.get("proposal_id") != proposal_id
+            or operation.get("state") != "APPLIED"
+            or type(operation.get("operation_id")) is not str
+            or SHA256_RE.fullmatch(operation["operation_id"]) is None
+            or type(operation.get("after_sha256")) is not str
+            or SHA256_RE.fullmatch(operation["after_sha256"]) is None
+            or type(operation.get("audit_id")) is not str
+            or SHA256_RE.fullmatch(operation["audit_id"]) is None
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+
+
 def _validate_receipt(
     receipt: dict[str, object], articles: Sequence[Article]
 ) -> dict[str, object]:
@@ -1670,15 +1769,22 @@ def _validate_receipt(
         {
             "authenticated_readback",
             "baselines",
+            "desired_theme_runtime_revision",
             "materialization_binding",
             "operation_ids",
+            "prior_applied_reconciliation",
             "public_readback",
         },
     )
     receipt.setdefault("authenticated_readback", None)
     receipt.setdefault("baselines", {})
+    receipt.setdefault(
+        "desired_theme_runtime_revision",
+        None,
+    )
     receipt.setdefault("materialization_binding", None)
     receipt.setdefault("operation_ids", {})
+    receipt.setdefault("prior_applied_reconciliation", None)
     receipt.setdefault("public_readback", None)
     selected = sorted(article.production_slug for article in articles)
     desired = receipt.get("desired_sha256")
@@ -1693,6 +1799,16 @@ def _validate_receipt(
         )
         or type(receipt["desired_theme_tree_sha256"]) is not str
         or SHA256_RE.fullmatch(receipt["desired_theme_tree_sha256"]) is None
+        or (
+            receipt["desired_theme_runtime_revision"] is not None
+            and (
+                type(receipt["desired_theme_runtime_revision"]) is not str
+                or SHA256_RE.fullmatch(
+                    receipt["desired_theme_runtime_revision"]
+                )
+                is None
+            )
+        )
         or type(receipt["baselines"]) is not dict
         or type(receipt["drafts"]) is not dict
         or type(receipt["proposal_keys"]) is not dict
@@ -1710,11 +1826,19 @@ def _validate_receipt(
             receipt["public_readback"] is not None
             and type(receipt["public_readback"]) is not dict
         )
+        or (
+            receipt["prior_applied_reconciliation"] is not None
+            and type(receipt["prior_applied_reconciliation"]) is not dict
+        )
         or receipt["review_url"] != REVIEW_URL
         or type(receipt["state"]) is not str
     ):
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     _validate_materialization_binding(receipt["materialization_binding"])
+    _validate_prior_applied_reconciliation(
+        receipt["prior_applied_reconciliation"],
+        selected,
+    )
     baselines = receipt["baselines"]
     if any(type(slug) is not str or slug not in selected for slug in baselines):
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
@@ -2249,6 +2373,13 @@ def deployment_status(
         or VERSION_RE.fullmatch(theme["version"]) is None
         or type(theme.get("runtime_version")) is not str
         or VERSION_RE.fullmatch(theme["runtime_version"]) is None
+        or (
+            theme.get("runtime_revision") is not None
+            and (
+                type(theme.get("runtime_revision")) is not str
+                or SHA256_RE.fullmatch(theme["runtime_revision"]) is None
+            )
+        )
         or type(theme.get("tree_sha256")) is not str
         or SHA256_RE.fullmatch(theme["tree_sha256"]) is None
         or type(gates) is not dict
@@ -2350,6 +2481,7 @@ def _prepare_attempt(
                     "schema": "RAOS_WORDPRESS_THEME_PROPOSAL_KEY_V1",
                     "attempt_id": attempt,
                     "theme_version": theme_version(),
+                    "theme_runtime_revision": theme_runtime_revision(),
                     "theme_tree_sha256": desired_tree,
                 }
             ),
@@ -2916,6 +3048,184 @@ def _public_theme_stylesheets_are_valid(stylesheet_urls: Sequence[str]) -> bool:
     return False
 
 
+def _absolute_public_stylesheet_url(href: str) -> str:
+    """Resolve one already-validated root-relative or fixed-origin CSS URL."""
+
+    parsed = urlsplit(href)
+    if not parsed.scheme and not parsed.netloc:
+        return f"{ORIGIN}{href}"
+    return href
+
+
+def _css_code_without_comments_or_strings(source: str) -> str:
+    """Mask non-code CSS regions so comments/strings cannot forge a sentinel."""
+
+    output: list[str] = []
+    index = 0
+    while index < len(source):
+        if source.startswith("/*", index):
+            end = source.find("*/", index + 2)
+            if end < 0:
+                fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+            output.append(" ")
+            index = end + 2
+            continue
+        character = source[index]
+        if character in {'"', "'"}:
+            quote = character
+            index += 1
+            while index < len(source):
+                character = source[index]
+                if character == "\\":
+                    index += 2
+                    continue
+                index += 1
+                if character == quote:
+                    break
+            else:
+                fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+            output.append(" ")
+            continue
+        output.append(character)
+        index += 1
+    return "".join(output)
+
+
+def _public_stylesheet_sentinels(payload: bytes) -> tuple[str, ...]:
+    """Return the one exact runtime sentinel carried by a fetched stylesheet."""
+
+    if not payload or len(payload) > MAX_PUBLIC_STYLESHEET_BYTES:
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+    try:
+        source = payload.decode("utf-8", errors="strict")
+    except UnicodeError:
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+    if "\x00" in source:
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+    code = _css_code_without_comments_or_strings(source)
+    found: list[str] = []
+    whitespace = r"[\t\n\f\r ]*"
+    for asset, property_name in THEME_RUNTIME_SENTINEL_PROPERTIES.items():
+        property_pattern = re.compile(
+            rf"(?<![-_A-Za-z0-9]){re.escape(property_name)}(?={whitespace}:)"
+        )
+        exact_pattern = re.compile(
+            rf"(?<![-_A-Za-z0-9]){re.escape(property_name)}"
+            rf"{whitespace}:{whitespace}{EXPECTED_THEME_RUNTIME_REVISION}"
+            rf"(?={whitespace}(?:;|\}}))"
+        )
+        property_count = len(property_pattern.findall(code))
+        exact_count = len(exact_pattern.findall(code))
+        if property_count:
+            if property_count != 1 or exact_count != 1:
+                fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+            found.append(asset)
+    if len(found) != 1:
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+    return tuple(found)
+
+
+def _fetch_public_stylesheet_sentinels(
+    href: str,
+    opener: urllib.request.OpenerDirector,
+    cache: dict[str, dict[str, object]],
+    *,
+    authorization: str | None,
+) -> dict[str, object]:
+    """Fetch one fixed-origin CSS response without redirects and cache its verdict."""
+
+    url = _absolute_public_stylesheet_url(href)
+    cached = cache.get(url)
+    if cached is not None:
+        return cached
+    if len(cache) >= MAX_PUBLIC_STYLESHEET_CACHE_ENTRIES:
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+    headers = {
+        "Accept": "text/css",
+        "Cache-Control": "no-cache",
+        "User-Agent": "raos-publication-readback/1.0",
+    }
+    if authorization is not None:
+        headers["Authorization"] = authorization
+    request = urllib.request.Request(url, headers=headers, method="GET")
+    try:
+        with opener.open(request, timeout=30) as response:
+            status = response.getcode()
+            final_url = response.geturl()
+            content_types = _response_header_values(response.headers, "Content-Type")
+            payload = response.read(MAX_PUBLIC_STYLESHEET_BYTES + 1)
+    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+    if (
+        status != 200
+        or final_url != url
+        or len(content_types) != 1
+        or content_types[0].split(";", 1)[0].strip().casefold() != "text/css"
+        or len(payload) > MAX_PUBLIC_STYLESHEET_BYTES
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+    result: dict[str, object] = {
+        "sentinels": _public_stylesheet_sentinels(payload),
+        "content_sha256": hashlib.sha256(payload).hexdigest(),
+        "bytes": len(payload),
+    }
+    cache[url] = result
+    return result
+
+
+def _public_theme_stylesheet_evidence(
+    stylesheet_urls: Sequence[str],
+    opener: urllib.request.OpenerDirector,
+    cache: dict[str, dict[str, object]],
+    *,
+    authorization: str | None,
+) -> list[dict[str, object]]:
+    """Bind the accepted URL pair to two distinct fetched runtime sentinels."""
+
+    if not _public_theme_stylesheets_are_valid(stylesheet_urls):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED")
+    candidates = [
+        (kind, href)
+        for href in stylesheet_urls
+        if (kind := _public_stylesheet_candidate_kind(href)) is not None
+    ]
+    kind = candidates[0][0]
+    evidence_by_asset: dict[str, dict[str, object]] = {}
+    for _candidate_kind, href in candidates:
+        fetched = _fetch_public_stylesheet_sentinels(
+            href,
+            opener,
+            cache,
+            authorization=authorization,
+        )
+        sentinels = fetched.get("sentinels")
+        if type(sentinels) is not tuple or len(sentinels) != 1:
+            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+        asset = sentinels[0]
+        if asset in evidence_by_asset:
+            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+        if kind == "direct":
+            path = urlsplit(href).path
+            expected_asset = path.removeprefix(
+                "/wp-content/themes/kurashinoshirube-child/"
+            )
+            if asset != expected_asset:
+                fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+        evidence_by_asset[asset] = {
+            "asset": asset,
+            "url": _absolute_public_stylesheet_url(href),
+            "status": 200,
+            "content_type": "text/css",
+            "content_sha256": fetched["content_sha256"],
+            "bytes": fetched["bytes"],
+            "sentinel_property": THEME_RUNTIME_SENTINEL_PROPERTIES[asset],
+            "runtime_revision": EXPECTED_THEME_RUNTIME_REVISION,
+        }
+    if set(evidence_by_asset) != set(THEME_RUNTIME_SENTINEL_PROPERTIES):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
+    return [evidence_by_asset[asset] for asset in sorted(evidence_by_asset)]
+
+
 def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]]:
     result: list[dict[str, object]] = []
     identities: set[tuple[str, str]] = set()
@@ -3026,6 +3336,7 @@ def _public_page_evidence(
     opener: urllib.request.OpenerDirector,
     *,
     authorization: str | None = None,
+    stylesheet_cache: dict[str, dict[str, object]] | None = None,
 ) -> dict[str, object]:
     url = f"{ORIGIN}/{article.production_slug}/"
     request_headers = {
@@ -3124,6 +3435,12 @@ def _public_page_evidence(
         or not _public_theme_stylesheets_are_valid(parser.stylesheet_urls)
     ):
         fail("RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED")
+    stylesheet_evidence = _public_theme_stylesheet_evidence(
+        parser.stylesheet_urls,
+        opener,
+        stylesheet_cache if stylesheet_cache is not None else {},
+        authorization=authorization,
+    )
     return {
         "url": url,
         "status": 200,
@@ -3135,6 +3452,8 @@ def _public_page_evidence(
         "product_images": actual_images,
         "advertising_disclosure": actual_disclosure,
         "theme_version": EXPECTED_THEME_VERSION,
+        "theme_runtime_revision": EXPECTED_THEME_RUNTIME_REVISION,
+        "theme_stylesheets": stylesheet_evidence,
     }
 
 
@@ -3153,6 +3472,7 @@ def verify_public_pages(
         _RefuseRedirectHandler(),
     )
     evidence: dict[str, object] = {}
+    stylesheet_cache: dict[str, dict[str, object]] = {}
     for article in articles:
         last_error: PublicationFailure | None = None
         for attempt in range(attempts):
@@ -3161,6 +3481,7 @@ def verify_public_pages(
                     article,
                     public_opener,
                     authorization=authorization,
+                    stylesheet_cache=stylesheet_cache,
                 )
                 last_error = None
                 break
@@ -3170,6 +3491,37 @@ def verify_public_pages(
                     sleeper(2.0)
         if last_error is not None:
             raise last_error
+    return evidence
+
+
+def _published_document_evidence(
+    client: Any,
+    articles: Sequence[Article],
+    receipt: Mapping[str, object],
+) -> dict[str, object]:
+    drafts = receipt.get("drafts")
+    if type(drafts) is not dict:
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    evidence: dict[str, object] = {}
+    for article in articles:
+        draft = drafts.get(article.production_slug)
+        if type(draft) is not dict or type(draft.get("id")) is not int:
+            fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+        post_id = draft["id"]
+        document = client.call("raos-codex-content-get", {"id": post_id})
+        if (
+            document.get("status") != "publish"
+            or document_projection(document) != article.document()
+            or document.get("content_sha256")
+            != _content_after_sha256(article.document(), post_id)
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_PUBLISH_READBACK_FAILED")
+        evidence[article.production_slug] = {
+            "id": post_id,
+            "slug": article.production_slug,
+            "status": "publish",
+            **precondition(document),
+        }
     return evidence
 
 
@@ -3185,28 +3537,15 @@ def verify_published(
     deployment_runner: Callable[..., subprocess.CompletedProcess[bytes]],
 ) -> None:
     drafts = receipt.get("drafts")
-    if type(drafts) is not dict:
+    expected_theme_runtime_revision = receipt.get(
+        "desired_theme_runtime_revision"
+    )
+    if (
+        type(drafts) is not dict
+        or expected_theme_runtime_revision != EXPECTED_THEME_RUNTIME_REVISION
+    ):
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
-    document_evidence: dict[str, object] = {}
-    for article in articles:
-        draft = drafts.get(article.production_slug)
-        if type(draft) is not dict or type(draft.get("id")) is not int:
-            fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
-        document = client.call("raos-codex-content-get", {"id": draft["id"]})
-        if (
-            document.get("status") != "publish"
-            or document_projection(document) != article.document()
-            or document.get("content_sha256")
-            != _content_after_sha256(article.document(), draft["id"])
-        ):
-            fail("RAOS_WORDPRESS_REQUEST_PUBLISH_READBACK_FAILED")
-        condition = precondition(document)
-        document_evidence[article.production_slug] = {
-            "id": draft["id"],
-            "slug": article.production_slug,
-            "status": "publish",
-            **condition,
-        }
+    document_evidence = _published_document_evidence(client, articles, receipt)
     status = client.call("raos-codex-site-status", {})
     validate_site_status(status)
     theme = status.get("theme")
@@ -3214,6 +3553,7 @@ def verify_published(
         type(theme) is not dict
         or theme.get("version") != expected_theme_version
         or theme.get("runtime_version") != expected_theme_version
+        or theme.get("runtime_revision") != expected_theme_runtime_revision
         or expected_theme_version != EXPECTED_THEME_VERSION
     ):
         fail("RAOS_WORDPRESS_REQUEST_THEME_READBACK_FAILED")
@@ -3223,6 +3563,7 @@ def verify_published(
         type(deployed_theme) is not dict
         or deployed_theme.get("version") != expected_theme_version
         or deployed_theme.get("runtime_version") != expected_theme_version
+        or deployed_theme.get("runtime_revision") != expected_theme_runtime_revision
         or deployed_theme.get("tree_sha256") != expected_theme_tree_sha256
     ):
         fail("RAOS_WORDPRESS_REQUEST_THEME_READBACK_FAILED")
@@ -3248,6 +3589,7 @@ def verify_published(
         "theme": {
             "version": expected_theme_version,
             "runtime_version": expected_theme_version,
+            "runtime_revision": expected_theme_runtime_revision,
             "tree_sha256": expected_theme_tree_sha256,
             "proposed": theme_was_proposed,
         },
@@ -3256,7 +3598,7 @@ def verify_published(
     _touch_receipt(path, receipt, "APPLIED")
 
 
-def _same_desired(
+def _receipt_matches_captured_inputs(
     receipt: Mapping[str, object],
     articles: Sequence[Article],
     desired_theme_tree_sha256: str,
@@ -3272,6 +3614,24 @@ def _same_desired(
             if materialization_binding is not None
             else None
         )
+    )
+
+
+def _same_desired(
+    receipt: Mapping[str, object],
+    articles: Sequence[Article],
+    desired_theme_tree_sha256: str,
+    materialization_binding: Mapping[str, object] | None,
+) -> bool:
+    return (
+        _receipt_matches_captured_inputs(
+            receipt,
+            articles,
+            desired_theme_tree_sha256,
+            materialization_binding,
+        )
+        and receipt.get("desired_theme_runtime_revision")
+        == EXPECTED_THEME_RUNTIME_REVISION
     )
 
 
@@ -3341,7 +3701,12 @@ def _resume_existing_all_attempt(
     if (
         type(desired_tree) is not str
         or SHA256_RE.fullmatch(desired_tree) is None
-        or not _same_desired(receipt, articles, desired_tree, binding)
+        or not _receipt_matches_captured_inputs(
+            receipt,
+            articles,
+            desired_tree,
+            binding,
+        )
     ):
         fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
 
@@ -3352,17 +3717,23 @@ def _resume_existing_all_attempt(
     read_content_operations(client, receipt)
     if batch["state"] != "APPLIED":
         wait_and_apply(receipt, path, deployment_runner)
-    verify_published(
-        client,
-        articles,
-        receipt,
-        path,
-        expected_theme_version=EXPECTED_THEME_VERSION,
-        expected_theme_tree_sha256=desired_tree,
-        theme_was_proposed=len(receipt["proposals"]) == len(articles) + 1,
-        deployment_runner=deployment_runner,
-    )
-    return True
+    operations = read_content_operations(client, receipt)
+    if any(
+        operation.get("state") != "APPLIED" for operation in operations.values()
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_OPERATION_READBACK_INVALID")
+    documents = _published_document_evidence(client, articles, receipt)
+    receipt["prior_applied_reconciliation"] = {
+        "schema": "RAOS_WORDPRESS_PRIOR_APPLIED_RECONCILIATION_V1",
+        "captured_at_gmt": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "documents": documents,
+        "operations": operations,
+    }
+    # This terminal state belongs only to the old immutable attempt.  The same
+    # foreground execution continues through fresh capture/preview. The normal
+    # path either verifies an unchanged release or replaces a changed one.
+    _touch_receipt(path, receipt, "APPLIED")
+    return False
 
 
 def execute(
@@ -3422,6 +3793,9 @@ def execute(
         local_theme_version = theme_version()
         if local_theme_version != EXPECTED_THEME_VERSION:
             fail("RAOS_WORDPRESS_REQUEST_THEME_VERSION_INVALID")
+        local_theme_runtime_revision = theme_runtime_revision()
+        if local_theme_runtime_revision != EXPECTED_THEME_RUNTIME_REVISION:
+            fail("RAOS_WORDPRESS_REQUEST_THEME_RUNTIME_REVISION_INVALID")
         local_theme_tree_sha256 = tracked_theme_tree_sha256()
         if local_theme_tree_sha256 != theme_tree_before_preview:
             fail("RAOS_WORDPRESS_REQUEST_THEME_CHANGED_DURING_PREVIEW")
@@ -3487,6 +3861,9 @@ def execute(
                 for article in articles
             }
             receipt["desired_theme_tree_sha256"] = local_theme_tree_sha256
+            receipt["desired_theme_runtime_revision"] = (
+                EXPECTED_THEME_RUNTIME_REVISION
+            )
             receipt["materialization_binding"] = materialization_binding
             receipt["attempt_id"] = None
             receipt["attempt_created_at_gmt"] = None
@@ -3511,6 +3888,7 @@ def execute(
                 fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
             preserved_drafts = receipt.get("drafts", {})
             preserved_baselines = receipt.get("baselines", {})
+            prior_reconciliation = receipt.get("prior_applied_reconciliation")
             if terminal_state == "APPLIED":
                 if type(preserved_drafts) is not dict:
                     fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
@@ -3547,6 +3925,7 @@ def execute(
             ) | {
                 "baselines": preserved_baselines,
                 "drafts": preserved_drafts,
+                "prior_applied_reconciliation": prior_reconciliation,
             }
             _touch_receipt(path, receipt, f"{terminal_state}_ATTEMPT_REPLACED")
             documents = capture_existing_baselines(
@@ -3565,6 +3944,12 @@ def execute(
             deployed_theme.get("tree_sha256") != local_theme_tree_sha256
             or deployed_theme.get("version") != EXPECTED_THEME_VERSION
             or deployed_theme.get("runtime_version") != EXPECTED_THEME_VERSION
+            or deployed_theme.get("runtime_revision")
+            != EXPECTED_THEME_RUNTIME_REVISION
+            or live_theme.get("version") != EXPECTED_THEME_VERSION
+            or live_theme.get("runtime_version") != EXPECTED_THEME_VERSION
+            or live_theme.get("runtime_revision")
+            != EXPECTED_THEME_RUNTIME_REVISION
         )
 
         if _resume_ready(receipt, len(articles)):

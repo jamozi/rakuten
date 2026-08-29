@@ -183,14 +183,44 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_3_9_successor() -> None:
+def test_theme_is_an_isolated_1_3_10_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.3.9\n") == 1
+    assert stylesheet.count("\nVersion: 1.3.10\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.9"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.9'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.10"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.10'") == 1
+    runtime_revision = (
+        "c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9"
+    )
+    assert functions.count(
+        "KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = "
+        f"'{runtime_revision}'"
+    ) == 1
+    contract = _load_json(CONTRACT_PATH)
+    assert contract["runtime_evidence"] == {
+        "revision": runtime_revision,
+        "stylesheets": {
+            "assets/editorial-v2.css": (
+                "--raos-theme-runtime-revision-editorial-v2"
+            ),
+            "assets/theme.css": "--raos-theme-runtime-revision-base",
+        },
+    }
+    assert _load_json(ASSET_MANIFEST_PATH)["theme_runtime_revision"] == (
+        runtime_revision
+    )
+    assert (
+        "--raos-theme-runtime-revision-base: " + runtime_revision + ";"
+        in (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    )
+    assert (
+        "--raos-theme-runtime-revision-editorial-v2: "
+        + runtime_revision
+        + ";"
+        in (THEME_ROOT / "assets/editorial-v2.css").read_text(encoding="utf-8")
+    )
     at003_gate = functions.split(
         "function kurashinoshirube_existing_update_context", 1
     )[1]
@@ -253,7 +283,7 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.3.9"
+    assert manifest["theme_version"] == "1.3.10"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 4
     for record in records:

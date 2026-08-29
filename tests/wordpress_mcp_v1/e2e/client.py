@@ -22,6 +22,9 @@ import urllib.request
 ORIGIN = "https://kurashinoshirube.com"
 HOST = "kurashinoshirube.com"
 PROTOCOL_VERSION = "2025-11-25"
+EXPECTED_THEME_RUNTIME_REVISION = (
+    "c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9"
+)
 EXPECTED_TOOLS = {
     "raos-codex-site-status",
     "raos-codex-content-list",
@@ -355,6 +358,7 @@ def phase_propose(
         "plugin_apply": True,
     }
     assert status["theme"]["runtime_version"] == status["theme"]["version"]
+    assert status["theme"]["runtime_revision"] == EXPECTED_THEME_RUNTIME_REVISION
 
     deploy_base = site_url + "/wp-json/raos-codex-deploy/v1"
     _, deploy_status_body, _ = request(deploy_base + "/status", *operator)
@@ -669,6 +673,7 @@ def phase_apply(
     assert status["theme"]["tree_sha256"] == theme_item["after_sha256"]
     assert status["theme"]["active"] is True
     assert status["theme"]["runtime_version"] == status["theme"]["version"]
+    assert status["theme"]["runtime_revision"] == EXPECTED_THEME_RUNTIME_REVISION
 
     first_receipt: dict[str, object] | None = None
     for item in state["proposals"]:

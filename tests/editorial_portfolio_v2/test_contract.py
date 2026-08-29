@@ -91,7 +91,10 @@ def test_portfolio_closes_ten_articles_thirty_two_products_and_thirty_seven_card
     portfolio = load_editorial_portfolio_v2(ROOT)
 
     assert portfolio.version == "2.0.0"
-    assert portfolio.theme_version == "1.3.9"
+    assert portfolio.theme_version == "1.3.10"
+    assert portfolio.theme_runtime_revision == (
+        "c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9"
+    )
     assert len(portfolio.articles) == 10
     assert len(portfolio.products) == 32
     assert sum(len(article.product_ids) for article in portfolio.articles) == 37
@@ -315,7 +318,8 @@ def test_status_receipt_binds_each_product_to_its_own_evidence_row(
     portfolio = EditorialPortfolioV2(
         version="test",
         target_origin="https://example.com",
-        theme_version="1.3.9",
+        theme_version="1.3.10",
+        theme_runtime_revision="a" * 64,
         articles=(),
         products=products,
     )
@@ -416,7 +420,8 @@ def test_expired_verified_row_falls_back_without_loading_private_evidence(
     portfolio = EditorialPortfolioV2(
         version="test",
         target_origin="https://example.com",
-        theme_version="1.3.9",
+        theme_version="1.3.10",
+        theme_runtime_revision="a" * 64,
         articles=(),
         products=(product,),
     )

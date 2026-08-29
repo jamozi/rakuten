@@ -201,6 +201,7 @@ class EditorialPortfolioV2:
     version: str
     target_origin: str
     theme_version: str
+    theme_runtime_revision: str
     articles: tuple[ArticleBindingV2, ...]
     products: tuple[ProductBindingV2, ...]
     freshness: timedelta = FRESHNESS
@@ -236,6 +237,7 @@ def load_editorial_portfolio_v2(repository_root: Path) -> EditorialPortfolioV2:
         "version",
         "target_origin",
         "theme_version",
+        "theme_runtime_revision",
         "evidence_policy",
         "content_contract",
         "common_forbidden_title_tokens",
@@ -489,10 +491,17 @@ def load_editorial_portfolio_v2(repository_root: Path) -> EditorialPortfolioV2:
         != "TK-MDW22B"
     ):
         _fail("RAOS_EDITORIAL_PORTFOLIO_REPRESENTATIVE_INVALID")
+    theme_runtime_revision = _text(
+        document["theme_runtime_revision"],
+        maximum=64,
+    )
+    if SHA256_RE.fullmatch(theme_runtime_revision) is None:
+        _fail("RAOS_EDITORIAL_PORTFOLIO_CONTRACT_INVALID")
     return EditorialPortfolioV2(
         version=_text(document["version"], maximum=30),
         target_origin=_https_url(document["target_origin"]),
         theme_version=_text(document["theme_version"], maximum=30),
+        theme_runtime_revision=theme_runtime_revision,
         articles=tuple(articles),
         products=tuple(products),
     )
