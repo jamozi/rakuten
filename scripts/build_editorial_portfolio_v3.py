@@ -70,6 +70,12 @@ ARTICLE_CONTENT_PATHS: Final = (
         "solota-vs-rakua-mini-plus.html"
     ),
 )
+RUNTIME_PATHS: Final = (
+    Path("python/raos/application/editorial/editorial_portfolio_v3.py"),
+    Path("python/raos/application/finance/editorial_economics_v3.py"),
+    Path("scripts/raos_editorial_economics_v3.py"),
+    Path("changes/editorial-portfolio-v3/README.md"),
+)
 OUTPUT_PATHS: Final = (
     Path("changes/editorial-portfolio-v3/editorial-portfolio.v3.json"),
     Path("changes/editorial-portfolio-v3/generated/navigation.v3.json"),
