@@ -222,8 +222,8 @@
           "uri": "repo://changes/raos-v2/design/design-tokens.v2.json"
         },
         {
-          "bytes": 76310,
-          "sha256": "9335b2c50ba689e401cec4e53cf32452ff63452ba5c3b5c881cba97937e38a9b",
+          "bytes": 76068,
+          "sha256": "dfc7367d1b607216d86350aed6dffb4884d68a993ac1b77be7c8888a3518c989",
           "uri": "repo://changes/raos-v2/generated/decision-traceability.effective.v1.yaml"
         },
         {
@@ -277,8 +277,8 @@
           "uri": "repo://changes/raos-v2/phase-0/source-audit-report.json"
         },
         {
-          "bytes": 1210,
-          "sha256": "b7f14a76cc78e379bc3224de720188676e4530e79caaebe95ed2ffed1225ae05",
+          "bytes": 1193,
+          "sha256": "03c4daa10d45f8bae974508b6c3fe4792fd70ea4644bba6c4ea56b9365e9987e",
           "uri": "repo://changes/raos-v2/phase-1-report.md"
         },
         {
@@ -287,8 +287,8 @@
           "uri": "repo://changes/raos-v2/phase-2/claims/claim-ledger.v2.yaml"
         },
         {
-          "bytes": 20381,
-          "sha256": "22f2e1448a09a28720f56dd7059452bd96cc273b91094157ddaba8d75d7c47bb",
+          "bytes": 20342,
+          "sha256": "b0ed7e2fd5c5935eb20671c7e5b3c8cb897821e768de530ff90188446012d0ce",
           "uri": "repo://changes/raos-v2/phase-2/generated/local-evidence-bundle.v2.json"
         },
         {
@@ -297,8 +297,8 @@
           "uri": "repo://changes/raos-v2/phase-2/generated/migration-manifest.v2.yaml"
         },
         {
-          "bytes": 7157,
-          "sha256": "9e04b40a5a959ee9cbca9083a4f1c8983d3cd17fbab2e66efa138d06e0b552ea",
+          "bytes": 7343,
+          "sha256": "06fb85aa952910302db5f3c21efd61128ddb0e1fa89ee22a1738a8d0b7ac34df",
           "uri": "repo://changes/raos-v2/phase-2/generated/phase-2-validation.v2.json"
         },
         {
@@ -317,13 +317,13 @@
           "uri": "repo://changes/raos-v2/phase-2/generated/synthetic-seal-receipt.v2.json"
         },
         {
-          "bytes": 2606,
-          "sha256": "a33d46cbe91875e18916c44e0899e6afcad8f387d7c97e9f18274b2831825407",
+          "bytes": 2591,
+          "sha256": "f6df88a4e8224d1180ad6128cdcc4ef7f0c3bd1010216058ccb05455f01217cc",
           "uri": "repo://changes/raos-v2/phase-2/integration-pr-body.md"
         },
         {
-          "bytes": 2563,
-          "sha256": "44ab17b987f362341a024caca4faf7c2df5492c0d1ee9035115a964efe5444a5",
+          "bytes": 2520,
+          "sha256": "81e54e7bcf3b2e0434ad3509ab3e6a7e9c821af7d638501cc7e20c73722fdb3c",
           "uri": "repo://changes/raos-v2/phase-2/phase-2-report.md"
         },
         {
@@ -427,8 +427,8 @@
           "uri": "repo://changes/raos-v2/phase-3/integration-pr-body.md"
         },
         {
-          "bytes": 5228,
-          "sha256": "14c22d37a94dfb9d76dd8362e43f719ab277a1985a8ed92c2bfd7cc414fd9369",
+          "bytes": 5213,
+          "sha256": "ee5fd45191d31259b9b17157cd496339414ef6e3628f0b2715de3b9a6bcd4cc6",
           "uri": "repo://changes/raos-v2/phase-3/phase-3-preparation-report.md"
         },
         {

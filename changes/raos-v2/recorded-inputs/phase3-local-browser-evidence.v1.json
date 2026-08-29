@@ -18,11 +18,11 @@
       "critical": 0,
       "major": 0
     },
-    "reviewed_at_jst": "2026-08-29T00:20:43.982603+09:00",
+    "reviewed_at_jst": "2026-08-30T00:05:16.036514+09:00",
     "reviewed_capture_sha256": [
-      "b4210ccad149a73a5f6bbd8d5914dcc1f476fc7a8e9d5da8b8ec40b21ab58cfa",
-      "747b98c218a7f02cac016634f8ba4ead7c52d042ed12e3749f999a06e1d278da",
-      "213875b0364fa86852b5b84709a6c4d7bb84a75a8aed5ead697827d3e8504eeb"
+      "2667a6dd4c90ee135a1e41c6eef9ec26de6df3fd64ad94a80a0f3a50f4587991",
+      "8130b3c8e3f329a6f814a756464f287cd1c67bbef75512fd2684ea2da3d89e1f",
+      "cd5efc8f81c0c7e616b1130cdb2ecba74835ae1d30fb059750a14aab34b5801c"
     ],
     "reviewed_viewports": [
       390,
@@ -33,18 +33,18 @@
   },
   "public_evidence": "NOT_CLAIMED",
   "raw_receipt": {
-    "bytes": 4432,
+    "bytes": 4421,
     "exit_status": 0,
     "local_path": "output/playwright/raos-v2-phase3-local-browser-evidence.json",
-    "sha256": "13ecfd5a000162ba716ae40fd99de14360fb197d41ea4b7ec1ff0639d2594f0d",
+    "sha256": "2afc8eec6fd289c12c58eac7154c550e2cb55ef7c170763710156d7fab4deb25",
     "tracked": false
   },
   "receipt": {
     "accessibility": {
       "levelOneHeadings": 1,
-      "nodeCount": 506,
+      "nodeCount": 507,
       "screenReaderSmoke": true,
-      "structuralSha256": "4ab2f62dfa33a08a5655bb7d7632f4761472e81d4388460a7f828029f6e3bfc8",
+      "structuralSha256": "735234117ae91dd5934e561b465386d53d6f1c935595afc7ddf09b0e9b0599d0",
       "unnamedInteractive": 0
     },
     "assemblyClassification": "LOCAL_WORDPRESS_ASSEMBLY_SIMULATION",
@@ -68,8 +68,8 @@
       ]
     },
     "browser": {
-      "executableSha256": "696170a79640ec5b50c7518140ace06c69a49cfb295bf527d4a85e26a12b89a7",
-      "version": "Google Chrome for Testing 147.0.7727.15"
+      "executableSha256": "a75e953fc0fa6108e4fbe67fc9ab8ff8800b851f914b63504a4e26a431b7b22f",
+      "version": "Google Chrome 146.0.7680.164"
     },
     "classification": "PASSED_LOCAL_ASSEMBLY_SIMULATION",
     "commandContract": "NODE24_LOCAL_CDP_AXE_PHASE3_WORDPRESS_ASSEMBLY_SANITIZED_RECEIPT_V1",
@@ -116,9 +116,9 @@
     },
     "schema": "RAOS_V2_PHASE3_LOCAL_BROWSER_EVIDENCE_V1",
     "supportHarness": {
-      "bytes": 40878,
+      "bytes": 40977,
       "path": "tests/raos_v2/browser-validation.mjs",
-      "sha256": "2276905a25eb31b3ed1c2b4e3976fa4c2b58d0915bf6d3befe5acb7fd7319e90"
+      "sha256": "33fc4fe96cfae62d6d9506a31244311f97e5a01571b35521909739df2cfc9d70"
     },
     "targetRoute": "/carry-on-suitcase-comparison/",
     "viewports": {
@@ -169,31 +169,31 @@
     },
     "visualCaptures": [
       {
-        "bytes": 612678,
-        "height": 7725,
+        "bytes": 629350,
+        "height": 7764,
         "path": "output/playwright/raos-v2-phase3-local-browser-evidence-captures/carry-on-suitcase-comparison__390.png",
-        "sha256": "b4210ccad149a73a5f6bbd8d5914dcc1f476fc7a8e9d5da8b8ec40b21ab58cfa",
+        "sha256": "2667a6dd4c90ee135a1e41c6eef9ec26de6df3fd64ad94a80a0f3a50f4587991",
         "width": 390
       },
       {
-        "bytes": 583093,
+        "bytes": 598769,
         "height": 5200,
         "path": "output/playwright/raos-v2-phase3-local-browser-evidence-captures/carry-on-suitcase-comparison__768.png",
-        "sha256": "747b98c218a7f02cac016634f8ba4ead7c52d042ed12e3749f999a06e1d278da",
+        "sha256": "8130b3c8e3f329a6f814a756464f287cd1c67bbef75512fd2684ea2da3d89e1f",
         "width": 768
       },
       {
-        "bytes": 593173,
+        "bytes": 609170,
         "height": 3810,
         "path": "output/playwright/raos-v2-phase3-local-browser-evidence-captures/carry-on-suitcase-comparison__1440.png",
-        "sha256": "213875b0364fa86852b5b84709a6c4d7bb84a75a8aed5ead697827d3e8504eeb",
+        "sha256": "cd5efc8f81c0c7e616b1130cdb2ecba74835ae1d30fb059750a14aab34b5801c",
         "width": 1440
       }
     ],
     "visualReview": "PENDING_SEPARATE_MANUAL_REVIEW"
   },
-  "recorded_at_jst": "2026-08-29T00:20:43.982603+09:00",
-  "recorded_date_jst": "2026-08-29",
+  "recorded_at_jst": "2026-08-30T00:05:16.036514+09:00",
+  "recorded_date_jst": "2026-08-30",
   "schema": "RAOS_V2_RECORDED_PHASE3_LOCAL_BROWSER_EVIDENCE_V1",
   "version": "1.0.0"
 }
