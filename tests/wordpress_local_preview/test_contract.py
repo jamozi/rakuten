@@ -42,6 +42,7 @@ NGINX_IMAGE = (
 )
 
 REVIEWED_SOURCE_HOSTS = {
+    "hb.afl.rakuten.co.jp",
     "panasonic.jp",
     "store.ace.jp",
     "store.irobot-jp.com",
@@ -191,7 +192,29 @@ def test_synthetic_fixture_has_five_closed_local_articles() -> None:
             r'<a\b[^>]*href="https://[^"<>]+"[^>]*>', article, re.IGNORECASE
         )
         assert len(external_anchors) == len(urls)
-        assert all('rel="noopener noreferrer"' in tag for tag in external_anchors)
+        rel_tokens = [
+            set(re.search(r'\brel="([^"]+)"', tag).group(1).split())
+            for tag in external_anchors
+        ]
+        assert all({"noopener", "noreferrer"} <= tokens for tokens in rel_tokens)
+        rakuten_anchors = [
+            tag
+            for tag in external_anchors
+            if 'href="https://hb.afl.rakuten.co.jp/' in tag
+        ]
+        if article_path.name in {
+            "roomba-mini-vs-switchbot-k11-pro.html",
+            "solota-vs-rakua-mini-plus.html",
+        }:
+            assert rakuten_anchors
+            assert article.count('class="rakuten-cta"') == article.count(
+                'class="product-profile '
+            )
+        assert all(
+            'rel="sponsored nofollow noopener noreferrer"' in tag
+            for tag in rakuten_anchors
+        )
+        assert all('data-rakuten-product-id="' in tag for tag in rakuten_anchors)
         assert re.search(r'\b(?:src|poster)="https://', article, re.IGNORECASE) is None
         assert 'href="#local-only"' not in article
         assert "LOCAL DRAFT" not in article
@@ -248,6 +271,7 @@ def test_seed_is_local_only_versioned_and_initialize_is_non_overwriting() -> Non
     assert "RAOS_WORDPRESS_PREVIEW_ALREADY_INITIALIZED" in seed
     assert "count($fixture['posts']) !== 5" in seed
     assert "update_option('blog_public', '0')" in seed
+    assert "'hb.afl.rakuten.co.jp'" in seed
 
 
 def test_wrapper_preserves_data_by_default_and_gates_reset() -> None:
