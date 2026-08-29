@@ -259,6 +259,10 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
         "plugin-apply-change",
         "operation-recover",
     }
+    assert all(
+        tool["inputSchema"].get("additionalProperties") is False
+        for tool in tools.values()
+    )
     assert tools["publication-batch-status"]["inputSchema"]["properties"] == {
         "batch_token": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
         "batch_manifest_sha256": {
