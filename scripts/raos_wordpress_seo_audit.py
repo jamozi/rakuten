@@ -515,11 +515,22 @@ def _xml_locations(body: bytes) -> tuple[str, set[str]]:
     root_name = root.tag.rsplit("}", 1)[-1]
     if root_name not in {"sitemapindex", "urlset"}:
         _fail("SITEMAP_ROOT_INVALID")
-    locations = {
-        (element.text or "").strip()
-        for element in root.iter()
-        if element.tag.rsplit("}", 1)[-1] == "loc" and (element.text or "").strip()
-    }
+    expected_parent = "sitemap" if root_name == "sitemapindex" else "url"
+    locations: set[str] = set()
+    for child in root:
+        if child.tag.rsplit("}", 1)[-1] != expected_parent:
+            _fail("SITEMAP_CHILD_INVALID")
+        direct_locations = [
+            (element.text or "").strip()
+            for element in child
+            if element.tag.rsplit("}", 1)[-1] == "loc"
+        ]
+        if len(direct_locations) != 1 or not direct_locations[0]:
+            _fail("SITEMAP_LOCATION_INVALID")
+        location = direct_locations[0]
+        if location in locations:
+            _fail("SITEMAP_LOCATION_DUPLICATE")
+        locations.add(location)
     return root_name, locations
 
 
@@ -679,14 +690,30 @@ def run_audit(
             pending.extend(sorted(locations - seen))
         else:
             content_urls.update(locations)
+    home_urls = [item.url for item in contract.items if item.role == "home"]
+    if len(home_urls) != 1:
+        _fail("HOME_INVENTORY_INVALID")
+    home_url = home_urls[0]
+    home_in_sitemap = home_url in content_urls
+    content_urls.discard(home_url)
     sitemap_ok = content_urls == set(contract.content_urls)
-    sitemap_check = _check(
-        sitemap_ok,
-        _sha256(_canonical_json(sorted(sitemap_evidence))),
+    sitemap_evidence_sha256 = _sha256(_canonical_json(sorted(sitemap_evidence)))
+    sitemap_observed_at = (
         max(sitemap_observed)
         if sitemap_observed
-        else datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        else datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    )
+    sitemap_check = _check(
+        sitemap_ok,
+        sitemap_evidence_sha256,
+        sitemap_observed_at,
         "EXACT_13_CONTENT_URLS",
+    )
+    sitemap_home_check = _check(
+        True,
+        sitemap_evidence_sha256,
+        sitemap_observed_at,
+        "PRESENT_SEPARATE" if home_in_sitemap else "ABSENT_ALLOWED",
     )
 
     llms = transport.get(contract.llms_url)
@@ -700,6 +727,7 @@ def run_audit(
         all(page["status"] == "PASS" for page in pages)
         and robots_check["status"] == "PASS"
         and sitemap_check["status"] == "PASS"
+        and sitemap_home_check["status"] == "PASS"
         and llms_check["status"] == "PASS"
     )
     return {
@@ -715,6 +743,7 @@ def run_audit(
         "surfaces": {
             "robots": robots_check,
             "sitemap": sitemap_check,
+            "sitemap_home": sitemap_home_check,
             "llms_txt_absent": llms_check,
         },
         "index_state_basis": (

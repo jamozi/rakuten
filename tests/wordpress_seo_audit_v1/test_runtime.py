@@ -300,6 +300,69 @@ def test_sitemap_must_equal_exact_thirteen_content_urls(
     assert report["surfaces"]["sitemap"]["status"] == "FAIL"
 
 
+def test_yoast_image_locations_are_not_content_urls(
+    contract: audit.AuditContract,
+    valid_responses: dict[str, audit.HttpResponse],
+) -> None:
+    post_url = contract.origin + "/post-sitemap.xml"
+    article_urls = [item.url for item in contract.items if item.role == "article"]
+    entries = []
+    for index, url in enumerate(article_urls):
+        image = (
+            "<image:image><image:loc>"
+            f"{contract.origin}/wp-content/uploads/article-{index}.webp"
+            "</image:loc></image:image>"
+        )
+        entries.append(f"<url><loc>{url}</loc>{image}</url>")
+    sitemap = (
+        "<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9' "
+        "xmlns:image='http://www.google.com/schemas/sitemap-image/1.1'>"
+        + "".join(entries)
+        + "</urlset>"
+    )
+    valid_responses[post_url] = response(post_url, 200, sitemap)
+
+    report = run(contract, valid_responses)
+
+    assert report["surfaces"]["sitemap"]["status"] == "PASS"
+    assert report["status"] == "PASS"
+
+
+def test_home_is_validated_separately_from_exact_content_inventory(
+    contract: audit.AuditContract,
+    valid_responses: dict[str, audit.HttpResponse],
+) -> None:
+    page_url = contract.origin + "/page-sitemap.xml"
+    page_urls = [item.url for item in contract.items if item.role == "fixed_page"]
+    home_url = next(item.url for item in contract.items if item.role == "home")
+    valid_responses[page_url] = response(
+        page_url,
+        200,
+        urlset([home_url, *page_urls]),
+        **{"Content-Type": "application/xml"},
+    )
+
+    report = run(contract, valid_responses)
+
+    assert report["surfaces"]["sitemap"]["status"] == "PASS"
+    assert report["surfaces"]["sitemap_home"] == {
+        "status": "PASS",
+        "detail": "PRESENT_SEPARATE",
+        "evidence_sha256": report["surfaces"]["sitemap"]["evidence_sha256"],
+        "observed_at": OBSERVED,
+    }
+    assert report["status"] == "PASS"
+
+
+def test_home_may_be_absent_from_sitemap(
+    contract: audit.AuditContract,
+    valid_responses: dict[str, audit.HttpResponse],
+) -> None:
+    report = run(contract, valid_responses)
+    assert report["surfaces"]["sitemap_home"]["status"] == "PASS"
+    assert report["surfaces"]["sitemap_home"]["detail"] == "ABSENT_ALLOWED"
+
+
 def test_llms_txt_presence_fails(
     contract: audit.AuditContract,
     valid_responses: dict[str, audit.HttpResponse],
