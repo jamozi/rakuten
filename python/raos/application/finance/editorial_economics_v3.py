@@ -49,6 +49,13 @@ DATE_FORMATS: Final = {
 }
 CANONICAL_STATUSES: Final = ("PENDING", "CONFIRMED", "CANCELLED")
 ATTRIBUTION_BASES: Final = ("DIRECT", "ESTIMATED", "UNATTRIBUTED")
+READBACK_COMPONENTS: Final = (
+    "RAKUTEN_MEASUREMENT_IDS",
+    "FIRST_PARTY_COLLECTOR",
+    "GA4",
+)
+NEW_ARTICLE_CANDIDATE_ID: Final = "rakua-mini-color-vs-mini-plus"
+NEW_ARTICLE_SOURCE_ID: Final = "solota-vs-rakua-mini-plus"
 
 
 class EditorialEconomicsV3Failure(RuntimeError):
@@ -886,6 +893,227 @@ def validate_cost_input(
     }
 
 
+def production_readback_template(
+    portfolio: EditorialPortfolioV3,
+) -> dict[str, object]:
+    """Return a disabled template; it is not evidence until fully attested."""
+
+    return {
+        "schema": "RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INPUT_V1",
+        "version": "1.0.0",
+        "owner_attested": False,
+        "target_origin": portfolio.target_origin,
+        "observations": [
+            {
+                "component": "RAKUTEN_MEASUREMENT_IDS",
+                "state": "NOT_RECORDED",
+                "observed_at": None,
+                "request_sha256": None,
+                "response_sha256": None,
+                "details": {
+                    "measurement_ids": sorted(portfolio.cta_by_measurement_id),
+                    "live_link_count": None,
+                    "all_ids_echo_verified": False,
+                },
+            },
+            {
+                "component": "FIRST_PARTY_COLLECTOR",
+                "state": "NOT_RECORDED",
+                "observed_at": None,
+                "request_sha256": None,
+                "response_sha256": None,
+                "details": {
+                    "endpoint": "/wp-json/raos/v1/events",
+                    "http_status": None,
+                    "aggregate_readback_observed": False,
+                    "event_id_sha256": None,
+                },
+            },
+            {
+                "component": "GA4",
+                "state": "NOT_RECORDED",
+                "observed_at": None,
+                "request_sha256": None,
+                "response_sha256": None,
+                "details": {
+                    "property_id_sha256": None,
+                    "event_name": "article_view",
+                    "article_id": None,
+                    "event_observed": False,
+                },
+            },
+        ],
+    }
+
+
+def establish_t0_receipt(
+    *,
+    document: Mapping[str, object],
+    observation_sha256: str,
+    portfolio: EditorialPortfolioV3,
+    evaluated_at: datetime | None = None,
+) -> dict[str, object]:
+    if set(document) != {
+        "schema",
+        "version",
+        "owner_attested",
+        "target_origin",
+        "observations",
+    }:
+        _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
+    if (
+        document["schema"] != "RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INPUT_V1"
+        or document["version"] != "1.0.0"
+        or document["owner_attested"] is not True
+        or document["target_origin"] != portfolio.target_origin
+    ):
+        _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
+    source_sha256 = _sha256(observation_sha256)
+    now = (evaluated_at or datetime.now(UTC)).astimezone(UTC)
+    expected_measurements = set(portfolio.cta_by_measurement_id)
+    article_ids = set(portfolio.article_by_id)
+    earliest_success: dict[str, dict[str, str]] = {}
+    for raw in _list(document["observations"]):
+        row = _mapping(raw)
+        if set(row) != {
+            "component",
+            "state",
+            "observed_at",
+            "request_sha256",
+            "response_sha256",
+            "details",
+        }:
+            _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
+        component = _text(row["component"])
+        if component not in READBACK_COMPONENTS or row["state"] != "SUCCESS":
+            _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
+        observed_at = _iso_datetime(row["observed_at"])
+        observed_time = datetime.fromisoformat(observed_at.replace("Z", "+00:00"))
+        request_sha256 = _sha256(row["request_sha256"])
+        response_sha256 = _sha256(row["response_sha256"])
+        if observed_time > now:
+            _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
+        details = _mapping(row["details"])
+        if component == "RAKUTEN_MEASUREMENT_IDS":
+            if set(details) != {
+                "measurement_ids",
+                "live_link_count",
+                "all_ids_echo_verified",
+            }:
+                _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
+            measurement_ids = {
+                _text(value, maximum=64) for value in _list(details["measurement_ids"])
+            }
+            if (
+                measurement_ids != expected_measurements
+                or _positive_integer(details["live_link_count"])
+                != len(expected_measurements)
+                or details["all_ids_echo_verified"] is not True
+            ):
+                _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
+        elif component == "FIRST_PARTY_COLLECTOR":
+            if set(details) != {
+                "endpoint",
+                "http_status",
+                "aggregate_readback_observed",
+                "event_id_sha256",
+            } or (
+                details["endpoint"] != "/wp-json/raos/v1/events"
+                or details["http_status"] != 202
+                or details["aggregate_readback_observed"] is not True
+                or _sha256(details["event_id_sha256"]) != details["event_id_sha256"]
+            ):
+                _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
+        else:
+            if set(details) != {
+                "property_id_sha256",
+                "event_name",
+                "article_id",
+                "event_observed",
+            } or (
+                _sha256(details["property_id_sha256"]) != details["property_id_sha256"]
+                or details["event_name"] != "article_view"
+                or details["article_id"] not in article_ids
+                or details["event_observed"] is not True
+            ):
+                _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
+        candidate = {
+            "component": component,
+            "observed_at": observed_at,
+            "request_sha256": request_sha256,
+            "response_sha256": response_sha256,
+        }
+        previous = earliest_success.get(component)
+        if previous is None or observed_at < previous["observed_at"]:
+            earliest_success[component] = candidate
+    if set(earliest_success) != set(READBACK_COMPONENTS):
+        _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INCOMPLETE")
+    ordered = [earliest_success[component] for component in READBACK_COMPONENTS]
+    t0 = max(row["observed_at"] for row in ordered)
+    return {
+        "schema": "RAOS_EDITORIAL_V3_T0_RECEIPT_V1",
+        "version": "1.0.0",
+        "state": "ESTABLISHED_FROM_EXACT_PRODUCTION_READBACKS",
+        "target_origin": portfolio.target_origin,
+        "observation_sha256": source_sha256,
+        "t0": t0,
+        "derivation": "MAX_OF_EARLIEST_SUCCESS_PER_REQUIRED_COMPONENT",
+        "components": ordered,
+        "automatic_publication": False,
+        "external_mutation_performed": False,
+    }
+
+
+def validate_t0_receipt(
+    document: Mapping[str, object], portfolio: EditorialPortfolioV3
+) -> str:
+    if set(document) != {
+        "schema",
+        "version",
+        "state",
+        "target_origin",
+        "observation_sha256",
+        "t0",
+        "derivation",
+        "components",
+        "automatic_publication",
+        "external_mutation_performed",
+    }:
+        _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
+    if (
+        document["schema"] != "RAOS_EDITORIAL_V3_T0_RECEIPT_V1"
+        or document["version"] != "1.0.0"
+        or document["state"] != "ESTABLISHED_FROM_EXACT_PRODUCTION_READBACKS"
+        or document["target_origin"] != portfolio.target_origin
+        or _sha256(document["observation_sha256"]) != document["observation_sha256"]
+        or document["derivation"] != "MAX_OF_EARLIEST_SUCCESS_PER_REQUIRED_COMPONENT"
+        or document["automatic_publication"] is not False
+        or document["external_mutation_performed"] is not False
+    ):
+        _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
+    components: list[Mapping[str, object]] = []
+    for raw in _list(document["components"]):
+        row = _mapping(raw)
+        if set(row) != {
+            "component",
+            "observed_at",
+            "request_sha256",
+            "response_sha256",
+        }:
+            _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
+        _iso_datetime(row["observed_at"])
+        _sha256(row["request_sha256"])
+        _sha256(row["response_sha256"])
+        components.append(row)
+    if [row["component"] for row in components] != list(READBACK_COMPONENTS):
+        _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
+    expected_t0 = max(_text(row["observed_at"]) for row in components)
+    t0 = _iso_datetime(document["t0"])
+    if t0 != expected_t0:
+        _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
+    return t0
+
+
 def _strict_number(value: object, *, minimum: float = 0.0) -> float:
     if type(value) not in {int, float}:
         _fail("RAOS_EDITORIAL_V3_GOOGLE_INPUT_INVALID")
@@ -1182,7 +1410,7 @@ def build_baseline_report(
     cost_input: Mapping[str, object] | None,
     gsc_input: Mapping[str, object] | None,
     ga4_input: Mapping[str, object] | None,
-    t0: str | None,
+    t0_receipt: Mapping[str, object] | None,
     generated_at: datetime | None = None,
 ) -> dict[str, object]:
     rakuten = (
@@ -1195,7 +1423,9 @@ def build_baseline_report(
     )
     gsc = summarize_gsc(gsc_input, portfolio) if gsc_input is not None else None
     ga4 = summarize_ga4(ga4_input, portfolio) if ga4_input is not None else None
-    normalized_t0 = _iso_datetime(t0) if t0 is not None else None
+    normalized_t0 = (
+        validate_t0_receipt(t0_receipt, portfolio) if t0_receipt is not None else None
+    )
     now = (generated_at or datetime.now(UTC)).astimezone(UTC)
     periods = [
         cast(Mapping[str, str], source["period"])
@@ -1339,6 +1569,11 @@ def build_baseline_report(
         "classification": "OWNER_PRIVATE_FINANCIAL_AND_PROVIDER_DATA",
         "generated_at": now.isoformat().replace("+00:00", "Z"),
         "t0": normalized_t0 or "UNAVAILABLE",
+        "t0_receipt_sha256": (
+            sha256_bytes(canonical_json_bytes(t0_receipt))
+            if t0_receipt is not None
+            else "UNAVAILABLE"
+        ),
         "cohort": (
             "POST_T0_OR_MIXED_REVIEW_REQUIRED"
             if normalized_t0 is not None
@@ -1358,6 +1593,7 @@ def build_baseline_report(
             "cost": _source_state(costs),
             "gsc": _source_state(gsc),
             "ga4": _source_state(ga4),
+            "t0_receipt": _source_state(t0_receipt),
         },
         "north_star": north_star,
         "unattributed_reward_jpy": (
@@ -1381,6 +1617,125 @@ def build_baseline_report(
             "gsc_unmapped_row_count": (
                 gsc["unmapped_row_count"] if gsc is not None else "UNAVAILABLE"
             ),
+        },
+    }
+
+
+def evaluate_followups(
+    *,
+    baseline: Mapping[str, object],
+    baseline_sha256: str,
+    portfolio: EditorialPortfolioV3,
+    as_of: str,
+    generated_at: datetime | None = None,
+) -> dict[str, object]:
+    if baseline.get("schema") != "RAOS_EDITORIAL_V3_ACTUAL_BASELINE_REPORT_V1":
+        _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
+    source_sha256 = _sha256(baseline_sha256)
+    if _sha256(baseline.get("t0_receipt_sha256")) != baseline.get("t0_receipt_sha256"):
+        _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
+    t0 = baseline.get("t0")
+    if t0 == "UNAVAILABLE":
+        _fail("RAOS_EDITORIAL_V3_FOLLOWUP_T0_UNAVAILABLE")
+    normalized_t0 = _iso_datetime(t0)
+    t0_time = datetime.fromisoformat(normalized_t0.replace("Z", "+00:00"))
+    as_of_date = date.fromisoformat(_iso_date(as_of))
+    now = (generated_at or datetime.now(UTC)).astimezone(UTC)
+    if as_of_date > now.date() or as_of_date < t0_time.date():
+        _fail("RAOS_EDITORIAL_V3_FOLLOWUP_DATE_INVALID")
+    elapsed_days = (as_of_date - t0_time.date()).days
+    period = _mapping(baseline.get("period"))
+    period_date_to = period.get("date_to")
+    coverage_days = 0
+    if period_date_to != "UNAVAILABLE":
+        coverage_end = min(date.fromisoformat(_iso_date(period_date_to)), as_of_date)
+        coverage_days = max(0, (coverage_end - t0_time.date()).days + 1)
+
+    candidate_article = portfolio.article_by_id.get(NEW_ARTICLE_SOURCE_ID)
+    if candidate_article is None:
+        _fail("RAOS_EDITORIAL_V3_CANDIDATE_SOURCE_INVALID")
+    article_rows = {
+        _text(_mapping(raw).get("article_id")): _mapping(raw)
+        for raw in _list(baseline.get("articles"))
+    }
+    if set(article_rows) != set(portfolio.article_by_id):
+        _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
+    source = article_rows[NEW_ARTICLE_SOURCE_ID]
+    gsc = _mapping(source.get("gsc"))
+    direct = _mapping(source.get("rakuten_direct_jpy"))
+    impressions = (
+        _nonnegative_integer(gsc["impressions"])
+        if gsc.get("state") == "OBSERVED" and "impressions" in gsc
+        else None
+    )
+    clicks = (
+        _nonnegative_integer(gsc["clicks"])
+        if gsc.get("state") == "OBSERVED" and "clicks" in gsc
+        else None
+    )
+    confirmed_reward = (
+        _nonnegative_integer(direct["CONFIRMED"])
+        if direct.get("state") == "RECONCILED" and "CONFIRMED" in direct
+        else None
+    )
+    conditions = {
+        "observation_days_ge_28": elapsed_days >= 28 and coverage_days >= 28,
+        "impressions_ge_200": impressions is not None and impressions >= 200,
+        "measurable_clicks": clicks is not None and clicks > 0,
+        "mature_confirmed_result": (
+            confirmed_reward is not None and confirmed_reward > 0
+        ),
+    }
+    eligible = all(conditions.values())
+
+    def review(day: int, areas: Sequence[str]) -> dict[str, object]:
+        due = elapsed_days >= day
+        return {
+            "day": day,
+            "due": due,
+            "status": "HUMAN_REVIEW_REQUIRED" if due else "NOT_DUE",
+            "review_areas": list(areas),
+            "automatic_pass": False,
+            "automatic_publication": False,
+        }
+
+    return {
+        "schema": "RAOS_EDITORIAL_V3_FOLLOWUP_EVALUATION_V1",
+        "version": "1.0.0",
+        "generated_at": now.isoformat().replace("+00:00", "Z"),
+        "baseline_sha256": source_sha256,
+        "t0": normalized_t0,
+        "as_of": as_of_date.isoformat(),
+        "elapsed_days": elapsed_days,
+        "actual_data_coverage_days_after_t0": coverage_days,
+        "reviews": {
+            "day_30": review(
+                30,
+                ("indexing", "search_intent", "cta", "generated_reward"),
+            ),
+            "day_90": review(
+                90,
+                ("confirmed_reward", "contribution_profit", "gate_readiness"),
+            ),
+        },
+        "new_article_candidate_gate": {
+            "candidate_id": NEW_ARTICLE_CANDIDATE_ID,
+            "source_article_id": candidate_article.article_id,
+            "source_article_code": candidate_article.article_code,
+            "observations": {
+                "impressions": impressions
+                if impressions is not None
+                else "UNAVAILABLE",
+                "clicks": clicks if clicks is not None else "UNAVAILABLE",
+                "direct_confirmed_reward_jpy": (
+                    confirmed_reward if confirmed_reward is not None else "UNAVAILABLE"
+                ),
+            },
+            "conditions": conditions,
+            "status": ("ELIGIBLE_FOR_HUMAN_PROPOSAL" if eligible else "NOT_ELIGIBLE"),
+            "automatic_article_creation": False,
+            "automatic_pass": False,
+            "automatic_publication": False,
         },
     }
 
@@ -1451,8 +1806,11 @@ __all__ = [
     "cost_input_template",
     "detect_rakuten_sample",
     "ensure_private_root",
+    "establish_t0_receipt",
+    "evaluate_followups",
     "parse_rakuten_report",
     "private_path",
+    "production_readback_template",
     "rakuten_binding_template",
     "read_private_bytes",
     "read_private_json",
@@ -1461,6 +1819,7 @@ __all__ = [
     "summarize_ga4",
     "summarize_gsc",
     "validate_cost_input",
+    "validate_t0_receipt",
     "write_private_bytes",
     "write_private_json",
 ]

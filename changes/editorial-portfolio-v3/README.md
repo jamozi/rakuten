@@ -67,3 +67,33 @@ copied into the JSON/HTML baseline report.
 The `baseline` command writes private JSON plus `noindex,nofollow` HTML. Program
 profit includes reconciled Unattributed reward at program level; article profit
 uses Direct reward only and never allocates the Unattributed total.
+
+## Production readback, T0, and follow-ups
+
+T0 is never accepted as a free-form CLI timestamp. Generate `t0-template`, then
+fill it only from successful production readbacks for all 74 Rakuten measurement
+IDs, the same-origin event collector (202 plus aggregate increment readback), and
+the GA4 `article_view` event. Every observation binds its timestamp, request
+hash, and response hash. After owner attestation, `establish-t0` selects the
+earliest successful observation for each component and records the maximum of
+those three timestamps—the earliest moment when every component had succeeded.
+
+```sh
+.venv/bin/python scripts/raos_editorial_economics_v3.py t0-template \
+  --output production-readbacks.json
+# Fill and attest production-readbacks.json, retaining mode 0600.
+.venv/bin/python scripts/raos_editorial_economics_v3.py establish-t0 \
+  --observation production-readbacks.json --output t0-receipt.json
+.venv/bin/python scripts/raos_editorial_economics_v3.py baseline \
+  --rakuten-commit rakuten-commit.json --cost-input costs.json \
+  --gsc-input gsc.json --ga4-input ga4.json --t0-receipt t0-receipt.json \
+  --json-output baseline.json --html-output baseline.html
+```
+
+`evaluate-followups` marks Day 30 and Day 90 as `NOT_DUE` or
+`HUMAN_REVIEW_REQUIRED`; it never emits an automatic pass or publication. The
+Rakua mini color/mini Plus candidate remains `NOT_ELIGIBLE` unless actual data
+covers at least 28 days after T0, the source article has at least 200 GSC
+impressions and one click, and a positive reconciled Direct confirmed result.
+Even when all conditions hold, the result is only
+`ELIGIBLE_FOR_HUMAN_PROPOSAL`; article creation and publication stay disabled.

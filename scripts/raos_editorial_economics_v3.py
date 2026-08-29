@@ -27,7 +27,10 @@ from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
     commit_rakuten_report,
     cost_input_template,
     detect_rakuten_sample,
+    establish_t0_receipt,
+    evaluate_followups,
     parse_rakuten_report,
+    production_readback_template,
     rakuten_binding_template,
     read_private_bytes,
     read_private_json,
@@ -98,6 +101,17 @@ def _parser() -> argparse.ArgumentParser:
     )
     cost.add_argument("--output", required=True)
 
+    t0_template = commands.add_parser(
+        "t0-template", help="create a disabled production-readback template"
+    )
+    t0_template.add_argument("--output", required=True)
+
+    establish_t0 = commands.add_parser(
+        "establish-t0", help="derive T0 from all exact successful readbacks"
+    )
+    establish_t0.add_argument("--observation", required=True)
+    establish_t0.add_argument("--output", required=True)
+
     baseline = commands.add_parser(
         "baseline", help="build owner-private JSON and noindex HTML reports"
     )
@@ -105,9 +119,17 @@ def _parser() -> argparse.ArgumentParser:
     baseline.add_argument("--cost-input")
     baseline.add_argument("--gsc-input")
     baseline.add_argument("--ga4-input")
-    baseline.add_argument("--t0")
+    baseline.add_argument("--t0-receipt")
     baseline.add_argument("--json-output", required=True)
     baseline.add_argument("--html-output", required=True)
+
+    followups = commands.add_parser(
+        "evaluate-followups",
+        help="emit Day 30/90 reviews and the non-automatic article gate",
+    )
+    followups.add_argument("--baseline", required=True)
+    followups.add_argument("--as-of", required=True)
+    followups.add_argument("--output", required=True)
     return parser
 
 
@@ -186,6 +208,24 @@ def main(argv: list[str] | None = None) -> int:
             write_private_json(
                 private_root, arguments.output, cost_input_template(portfolio)
             )
+        elif arguments.command == "t0-template":
+            write_private_json(
+                private_root,
+                arguments.output,
+                production_readback_template(portfolio),
+            )
+        elif arguments.command == "establish-t0":
+            observation_content = read_private_bytes(
+                private_root, arguments.observation
+            )
+            observation = read_private_json(private_root, arguments.observation)
+            receipt = establish_t0_receipt(
+                document=observation,
+                observation_sha256=sha256_bytes(observation_content),
+                portfolio=portfolio,
+                evaluated_at=datetime.now(UTC),
+            )
+            write_private_json(private_root, arguments.output, receipt)
         elif arguments.command == "baseline":
             report = build_baseline_report(
                 portfolio=portfolio,
@@ -193,7 +233,7 @@ def main(argv: list[str] | None = None) -> int:
                 cost_input=_optional_json(private_root, arguments.cost_input),
                 gsc_input=_optional_json(private_root, arguments.gsc_input),
                 ga4_input=_optional_json(private_root, arguments.ga4_input),
-                t0=arguments.t0,
+                t0_receipt=_optional_json(private_root, arguments.t0_receipt),
                 generated_at=datetime.now(UTC),
             )
             write_private_bytes(
@@ -202,6 +242,16 @@ def main(argv: list[str] | None = None) -> int:
             write_private_bytes(
                 private_root, arguments.html_output, render_baseline_html(report)
             )
+        elif arguments.command == "evaluate-followups":
+            baseline_content = read_private_bytes(private_root, arguments.baseline)
+            evaluation = evaluate_followups(
+                baseline=read_private_json(private_root, arguments.baseline),
+                baseline_sha256=sha256_bytes(baseline_content),
+                portfolio=portfolio,
+                as_of=arguments.as_of,
+                generated_at=datetime.now(UTC),
+            )
+            write_private_json(private_root, arguments.output, evaluation)
         else:
             raise AssertionError("unreachable")
         print(

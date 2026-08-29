@@ -19,11 +19,15 @@ from raos.application.finance.editorial_economics_v3 import (
     commit_rakuten_report,
     cost_input_template,
     detect_rakuten_sample,
+    establish_t0_receipt,
+    evaluate_followups,
     parse_rakuten_report,
+    production_readback_template,
     rakuten_binding_template,
     read_private_bytes,
     render_baseline_html,
     sha256_bytes,
+    validate_t0_receipt,
 )
 
 
@@ -312,6 +316,37 @@ def _ga4_input(portfolio: EditorialPortfolioV3) -> dict[str, object]:
     }
 
 
+def _t0_receipt(portfolio: EditorialPortfolioV3) -> dict[str, object]:
+    document = production_readback_template(portfolio)
+    document["owner_attested"] = True
+    observed_at = (
+        "2026-08-01T00:01:00Z",
+        "2026-08-01T00:02:00Z",
+        "2026-08-01T00:03:00Z",
+    )
+    for row, timestamp in zip(document["observations"], observed_at, strict=True):
+        row["state"] = "SUCCESS"
+        row["observed_at"] = timestamp
+        row["request_sha256"] = HASH
+        row["response_sha256"] = "b" * 64
+    document["observations"][0]["details"]["live_link_count"] = 74
+    document["observations"][0]["details"]["all_ids_echo_verified"] = True
+    document["observations"][1]["details"]["http_status"] = 202
+    document["observations"][1]["details"]["aggregate_readback_observed"] = True
+    document["observations"][1]["details"]["event_id_sha256"] = "c" * 64
+    document["observations"][2]["details"]["property_id_sha256"] = "d" * 64
+    document["observations"][2]["details"]["article_id"] = portfolio.articles[
+        0
+    ].article_id
+    document["observations"][2]["details"]["event_observed"] = True
+    return establish_t0_receipt(
+        document=document,
+        observation_sha256=sha256_bytes(canonical_json_bytes(document)),
+        portfolio=portfolio,
+        evaluated_at=datetime(2026, 8, 4, tzinfo=UTC),
+    )
+
+
 def test_actual_baseline_keeps_program_and_article_attribution_separate(
     portfolio: EditorialPortfolioV3,
 ) -> None:
@@ -321,13 +356,15 @@ def test_actual_baseline_keeps_program_and_article_attribution_separate(
         cost_input=_cost_input(portfolio),
         gsc_input=_gsc_input(portfolio),
         ga4_input=_ga4_input(portfolio),
-        t0="2026-08-01T00:00:00Z",
+        t0_receipt=_t0_receipt(portfolio),
         generated_at=datetime(2026, 8, 4, tzinfo=UTC),
     )
     first = report["articles"][0]
 
     assert report["period_alignment"] == "PASS"
     assert report["period_kind"] == "PARTIAL_OR_NON_MONTHLY_BASELINE"
+    assert report["t0"] == "2026-08-01T00:03:00Z"
+    assert len(report["t0_receipt_sha256"]) == 64
     assert report["north_star"]["value_jpy"] == -1900
     assert report["north_star"]["monthly_north_star_eligible"] is False
     assert report["north_star"]["unattributed_reward_allocated_to_articles"] is False
@@ -350,7 +387,7 @@ def test_missing_cost_is_unavailable_not_zero(
         cost_input=None,
         gsc_input=None,
         ga4_input=None,
-        t0=None,
+        t0_receipt=None,
         generated_at=datetime(2026, 8, 4, tzinfo=UTC),
     )
 
@@ -360,6 +397,135 @@ def test_missing_cost_is_unavailable_not_zero(
     }
     assert report["articles"][0]["cost"]["state"] == "UNAVAILABLE"
     assert report["t0"] == "UNAVAILABLE"
+
+
+def test_mixed_periods_block_contribution_profit(
+    portfolio: EditorialPortfolioV3,
+) -> None:
+    costs = _cost_input(portfolio)
+    costs["period"] = {"date_from": "2026-08-01", "date_to": "2026-08-04"}
+
+    report = build_baseline_report(
+        portfolio=portfolio,
+        rakuten_commit=_commit(portfolio),
+        cost_input=costs,
+        gsc_input=None,
+        ga4_input=None,
+        t0_receipt=_t0_receipt(portfolio),
+        generated_at=datetime(2026, 8, 5, tzinfo=UTC),
+    )
+
+    assert report["period_alignment"] == "MISMATCH"
+    assert report["period_kind"] == "UNAVAILABLE"
+    assert report["north_star"] == {
+        "state": "UNAVAILABLE",
+        "reason": "PERIOD_MISMATCH",
+    }
+    assert report["articles"][0]["confirmed_contribution_profit_jpy"] == {
+        "state": "UNAVAILABLE",
+        "reason": "PERIOD_MISMATCH",
+    }
+
+
+def test_t0_requires_all_exact_successful_production_readbacks(
+    portfolio: EditorialPortfolioV3,
+) -> None:
+    receipt = _t0_receipt(portfolio)
+
+    assert receipt["t0"] == "2026-08-01T00:03:00Z"
+    assert receipt["derivation"] == "MAX_OF_EARLIEST_SUCCESS_PER_REQUIRED_COMPONENT"
+    assert validate_t0_receipt(receipt, portfolio) == "2026-08-01T00:03:00Z"
+    assert receipt["automatic_publication"] is False
+    incomplete = production_readback_template(portfolio)
+    incomplete["owner_attested"] = True
+    with pytest.raises(
+        EditorialEconomicsV3Failure,
+        match="RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID",
+    ):
+        establish_t0_receipt(
+            document=incomplete,
+            observation_sha256=HASH,
+            portfolio=portfolio,
+            evaluated_at=datetime(2026, 8, 4, tzinfo=UTC),
+        )
+
+
+def _baseline_with_t0(portfolio: EditorialPortfolioV3) -> dict[str, object]:
+    return build_baseline_report(
+        portfolio=portfolio,
+        rakuten_commit=_commit(portfolio),
+        cost_input=_cost_input(portfolio),
+        gsc_input=_gsc_input(portfolio),
+        ga4_input=_ga4_input(portfolio),
+        t0_receipt=_t0_receipt(portfolio),
+        generated_at=datetime(2026, 8, 4, tzinfo=UTC),
+    )
+
+
+def test_followup_reviews_never_auto_pass_and_candidate_defaults_not_eligible(
+    portfolio: EditorialPortfolioV3,
+) -> None:
+    baseline = _baseline_with_t0(portfolio)
+    evaluation = evaluate_followups(
+        baseline=baseline,
+        baseline_sha256=sha256_bytes(canonical_json_bytes(baseline)),
+        portfolio=portfolio,
+        as_of="2026-08-29",
+        generated_at=datetime(2026, 8, 30, tzinfo=UTC),
+    )
+
+    assert evaluation["reviews"]["day_30"]["status"] == "NOT_DUE"
+    assert evaluation["reviews"]["day_90"]["status"] == "NOT_DUE"
+    assert evaluation["reviews"]["day_30"]["automatic_pass"] is False
+    gate = evaluation["new_article_candidate_gate"]
+    assert gate["status"] == "NOT_ELIGIBLE"
+    assert gate["automatic_article_creation"] is False
+    assert gate["automatic_publication"] is False
+
+
+def test_followup_gate_can_only_propose_after_all_actual_thresholds(
+    portfolio: EditorialPortfolioV3,
+) -> None:
+    baseline = _baseline_with_t0(portfolio)
+    baseline["period"]["date_to"] = "2026-10-31"
+    source = next(
+        row
+        for row in baseline["articles"]
+        if row["article_id"] == "solota-vs-rakua-mini-plus"
+    )
+    source["gsc"] = {
+        "state": "OBSERVED",
+        "clicks": 1,
+        "impressions": 200,
+        "ctr": 0.005,
+        "average_position": 10.0,
+    }
+    source["rakuten_direct_jpy"] = {
+        "state": "RECONCILED",
+        "PENDING": 0,
+        "CONFIRMED": 1,
+        "CANCELLED": 0,
+    }
+    evaluation = evaluate_followups(
+        baseline=baseline,
+        baseline_sha256=sha256_bytes(canonical_json_bytes(baseline)),
+        portfolio=portfolio,
+        as_of="2026-10-31",
+        generated_at=datetime(2026, 11, 1, tzinfo=UTC),
+    )
+
+    assert evaluation["reviews"]["day_30"]["status"] == "HUMAN_REVIEW_REQUIRED"
+    assert evaluation["reviews"]["day_90"]["status"] == "HUMAN_REVIEW_REQUIRED"
+    gate = evaluation["new_article_candidate_gate"]
+    assert gate["conditions"] == {
+        "observation_days_ge_28": True,
+        "impressions_ge_200": True,
+        "measurable_clicks": True,
+        "mature_confirmed_result": True,
+    }
+    assert gate["status"] == "ELIGIBLE_FOR_HUMAN_PROPOSAL"
+    assert gate["automatic_pass"] is False
+    assert gate["automatic_publication"] is False
 
 
 def test_private_reader_requires_0700_root_and_0600_file(tmp_path: Path) -> None:
