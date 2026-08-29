@@ -1613,7 +1613,7 @@ backlog:
   - T-V2-014
   - T-V2-017
   - T-V2-018
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-020
   phase: P2
@@ -1630,7 +1630,7 @@ backlog:
   - T-V2-021
   - T-V2-022
   - T-V2-023
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-021
   phase: P2
@@ -1650,7 +1650,7 @@ backlog:
   - T-V2-022
   - T-V2-023
   - T-V2-051
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-022
   phase: P2
@@ -1668,7 +1668,7 @@ backlog:
   - T-V2-024
   - T-V2-026
   - T-V2-033
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-023
   phase: P2
@@ -1688,7 +1688,7 @@ backlog:
   - T-V2-025
   - T-V2-026
   - T-V2-033
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-024
   phase: P2
@@ -1703,7 +1703,7 @@ backlog:
   test_ids:
   - T-V2-028
   - T-V2-029
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-025
   phase: P2
@@ -1716,7 +1716,7 @@ backlog:
   cost_ceiling_hours: 5
   test_ids:
   - T-V2-030
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-026
   phase: P2
@@ -1734,7 +1734,7 @@ backlog:
   - T-V2-025
   - T-V2-026
   - T-V2-051
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-027
   phase: P2
@@ -1751,7 +1751,7 @@ backlog:
   - T-V2-027
   - T-V2-035
   - T-V2-036
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-028
   phase: P2
@@ -1771,7 +1771,7 @@ backlog:
   - T-V2-031
   - T-V2-032
   - T-V2-033
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-029
   phase: P2
@@ -1788,7 +1788,7 @@ backlog:
   - T-V2-041
   - T-V2-042
   - T-V2-043
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-030
   phase: P2
@@ -1802,7 +1802,7 @@ backlog:
   cost_ceiling_hours: 5
   test_ids:
   - T-V2-044
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-031
   phase: P2
@@ -1830,7 +1830,7 @@ backlog:
   - T-V2-037
   - T-V2-038
   - T-V2-040
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-032
   phase: P2
@@ -1846,7 +1846,7 @@ backlog:
   test_ids:
   - T-V2-045
   - T-V2-046
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-033
   phase: P2
@@ -1866,7 +1866,7 @@ backlog:
   - T-V2-023
   - T-V2-039
   - T-V2-051
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-034
   phase: P2
@@ -1893,7 +1893,7 @@ backlog:
   cost_ceiling_hours: 4
   test_ids:
   - T-V2-051
-  implementation_status: VERIFIED_LOCAL_RECORDED
+  implementation_status: AWAITING_LOCAL_TEST_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-035
   phase: P3
@@ -1910,7 +1910,7 @@ backlog:
   - T-V2-005
   - T-V2-040
   - T-V2-051
-  implementation_status: COMPLETE_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-036
   phase: P3
@@ -1927,7 +1927,7 @@ backlog:
   - T-V2-008
   - T-V2-039
   - T-V2-051
-  implementation_status: COMPLETE_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-037
   phase: P3
@@ -1964,7 +1964,7 @@ backlog:
   - T-V2-035
   - T-V2-036
   - T-V2-040
-  implementation_status: COMPLETE_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-039
   phase: P3
@@ -1980,7 +1980,7 @@ backlog:
   - T-V2-045
   - T-V2-046
   - T-V2-051
-  implementation_status: COMPLETE_LOCAL_RECORDED
+  implementation_status: IMPLEMENTED_LOCAL_PENDING_GATE
   external_action_status: NOT_EXECUTED
 - id: B-V2-040
   phase: P3
@@ -2017,7 +2017,7 @@ tests:
   - B-V2-010
   effective_phases:
   - P0
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-002
@@ -2033,7 +2033,7 @@ tests:
   - B-V2-010
   effective_phases:
   - P0
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-003
@@ -2047,7 +2047,7 @@ tests:
   - B-V2-002
   effective_phases:
   - P0
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-004
@@ -2065,7 +2065,7 @@ tests:
   effective_phases:
   - P0
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-005
@@ -2087,7 +2087,7 @@ tests:
   effective_phases:
   - P0
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-006
@@ -2100,7 +2100,7 @@ tests:
   - B-V2-005
   effective_phases:
   - P0
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-007
@@ -2113,7 +2113,7 @@ tests:
   - B-V2-010
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-008
@@ -2128,7 +2128,7 @@ tests:
   effective_phases:
   - P1
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-009
@@ -2141,7 +2141,7 @@ tests:
   - B-V2-011
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-010
@@ -2159,7 +2159,7 @@ tests:
   effective_phases:
   - P1
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-011
@@ -2172,7 +2172,7 @@ tests:
   - B-V2-013
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-012
@@ -2187,7 +2187,7 @@ tests:
   - B-V2-019
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-013
@@ -2204,7 +2204,7 @@ tests:
   - B-V2-028
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-014
@@ -2221,7 +2221,7 @@ tests:
   - B-V2-031
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-015
@@ -2234,7 +2234,7 @@ tests:
   - B-V2-014
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-016
@@ -2249,7 +2249,7 @@ tests:
   - B-V2-029
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-017
@@ -2263,7 +2263,7 @@ tests:
   - B-V2-019
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-018
@@ -2280,7 +2280,7 @@ tests:
   - B-V2-021
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-019
@@ -2293,7 +2293,7 @@ tests:
   - B-V2-016
   effective_phases:
   - P1
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-020
@@ -2307,7 +2307,7 @@ tests:
   - B-V2-021
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-021
@@ -2321,7 +2321,7 @@ tests:
   - B-V2-021
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-022
@@ -2335,7 +2335,7 @@ tests:
   - B-V2-021
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-023
@@ -2354,7 +2354,7 @@ tests:
   effective_phases:
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-024
@@ -2370,7 +2370,7 @@ tests:
   - B-V2-028
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-025
@@ -2384,7 +2384,7 @@ tests:
   - B-V2-026
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-026
@@ -2401,7 +2401,7 @@ tests:
   - B-V2-028
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-027
@@ -2414,7 +2414,7 @@ tests:
   - B-V2-027
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-028
@@ -2427,7 +2427,7 @@ tests:
   - B-V2-024
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-029
@@ -2440,7 +2440,7 @@ tests:
   - B-V2-024
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-030
@@ -2453,7 +2453,7 @@ tests:
   - B-V2-025
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-031
@@ -2466,7 +2466,7 @@ tests:
   - B-V2-028
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-032
@@ -2479,7 +2479,7 @@ tests:
   - B-V2-028
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-033
@@ -2494,7 +2494,7 @@ tests:
   - B-V2-028
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-034
@@ -2508,7 +2508,7 @@ tests:
   - B-V2-031
   effective_phases:
   - P2
-  execution_status: PASSED_LOCAL_RECORDED
+  execution_status: NOT_EXECUTED_RECORDED
   phase3_acceptance_status: NOT_APPLICABLE
   phase3_external_execution_status: NOT_APPLICABLE
 - id: T-V2-035
@@ -2524,7 +2524,7 @@ tests:
   effective_phases:
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-036
@@ -2540,7 +2540,7 @@ tests:
   effective_phases:
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-037
@@ -2556,7 +2556,7 @@ tests:
   effective_phases:
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-038
@@ -2572,7 +2572,7 @@ tests:
   effective_phases:
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-039
@@ -2592,7 +2592,7 @@ tests:
   effective_phases:
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-040
@@ -2610,7 +2610,7 @@ tests:
   effective_phases:
   - P0
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-041
@@ -2624,7 +2624,7 @@ tests:
   effective_phases:
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-042
@@ -2638,7 +2638,7 @@ tests:
   effective_phases:
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-043
@@ -2652,7 +2652,7 @@ tests:
   effective_phases:
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-044
@@ -2666,7 +2666,7 @@ tests:
   effective_phases:
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-045
@@ -2682,7 +2682,7 @@ tests:
   effective_phases:
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-046
@@ -2698,7 +2698,7 @@ tests:
   effective_phases:
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 - id: T-V2-051
@@ -2729,7 +2729,7 @@ tests:
   - P1
   - P2
   - P3
-  execution_status: PASSED_LOCAL_COMPONENT_RECORDED
+  execution_status: LOCAL_COMPONENT_NOT_EXECUTED_RECORDED
   phase3_acceptance_status: BLOCKED_EXTERNAL
   phase3_external_execution_status: NOT_EXECUTED
 invariants:
