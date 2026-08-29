@@ -959,6 +959,7 @@ class RakutenProductEvidence:
             "image_url": self.image_url,
             "item_code": self.item_code,
             "item_name": self.item_name,
+            "jan": self.jan,
             "schema": PILOT_RAKUTEN_IDENTITY_SCHEMA,
             "source_url": self.source_url,
         }
@@ -970,6 +971,7 @@ class RakutenProductEvidence:
             "item_code": self.item_code,
             "item_name": self.item_name,
             "item_url": self.destination_url,
+            "jan": self.jan,
             "schema": PILOT_RAKUTEN_AFFILIATE_IDENTITY_SCHEMA,
         }
 

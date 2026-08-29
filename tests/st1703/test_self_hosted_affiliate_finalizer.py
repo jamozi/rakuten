@@ -91,38 +91,18 @@ def _pending_slot_html(slot_id: str) -> str:
 def _pending_repository(tmp_path: Path) -> Path:
     content_path = tmp_path / CONTENT_PACKET_RELATIVE_PATH
     content_path.parent.mkdir(parents=True)
-    packet = json.loads(
-        (REPOSITORY_ROOT / CONTENT_PACKET_RELATIVE_PATH).read_text(encoding="utf-8")
+    shutil.copyfile(
+        REPOSITORY_ROOT / CONTENT_PACKET_RELATIVE_PATH,
+        content_path,
     )
-    article = packet["article"]
-    content = article["content_html"]
-    for slot in article["affiliate_slots"]:
-        slot_id = slot["slot_id"]
-        destination = slot["destination_url"]
-        content = content.replace(
-            affiliate_cta_html(slot_id, destination),
-            _pending_slot_html(slot_id),
-        )
-        product_name = slot["product_name"]
-        slot.clear()
-        slot.update(
-            {
-                "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
-                "product_name": product_name,
-                "required_rel": "sponsored nofollow",
-                "slot_id": slot_id,
-                "status": "PENDING_OFFICIAL_RAKUTEN_LINK",
-            }
-        )
-    article["content_html"] = content.replace(f"{RAKUTEN_CREDIT_SNIPPET}\n", "")
-    article["content_html"] = article["content_html"].replace(
-        AFFILIATE_FINAL_DISCLOSURE_HTML,
-        AFFILIATE_PENDING_DISCLOSURE_HTML,
+    packet = json.loads(content_path.read_text(encoding="utf-8"))
+    assert all(
+        slot["status"] == "PENDING_OFFICIAL_RAKUTEN_LINK"
+        and "destination_url" not in slot
+        and "evidence" not in slot
+        for slot in packet["article"]["affiliate_slots"]
     )
-    content_path.write_text(
-        json.dumps(packet, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
+    assert "hb.afl.rakuten.co.jp" not in content_path.read_text(encoding="utf-8")
     _candidate, status = load_first_article_candidate_with_affiliate_status(
         tmp_path,
         operation=SelfHostedWordPressOperation.CREATE_DRAFT,
@@ -1084,11 +1064,14 @@ def test_finalizer_rejects_manual_link_in_pending_packet(tmp_path: Path) -> None
     ],
 )
 def test_content_rejects_non_https_non_rakuten_or_raos_redirect(
-    tmp_path: Path, bad_url: str
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    bad_url: str,
 ) -> None:
-    content_path = tmp_path / CONTENT_PACKET_RELATIVE_PATH
-    content_path.parent.mkdir(parents=True)
-    shutil.copyfile(REPOSITORY_ROOT / CONTENT_PACKET_RELATIVE_PATH, content_path)
+    root, _store, _requests, _fingerprints = _complete_final_inputs(
+        tmp_path, monkeypatch
+    )
+    content_path = root / CONTENT_PACKET_RELATIVE_PATH
     packet = json.loads(content_path.read_text(encoding="utf-8"))
     slot = packet["article"]["affiliate_slots"][0]
     old_url = slot["destination_url"]
@@ -1114,11 +1097,14 @@ def test_content_rejects_non_https_non_rakuten_or_raos_redirect(
 
 @pytest.mark.parametrize("mutation", ["rel", "cta", "credit", "url"])
 def test_content_rejects_rel_cta_credit_or_url_mutation(
-    tmp_path: Path, mutation: str
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
 ) -> None:
-    content_path = tmp_path / CONTENT_PACKET_RELATIVE_PATH
-    content_path.parent.mkdir(parents=True)
-    shutil.copyfile(REPOSITORY_ROOT / CONTENT_PACKET_RELATIVE_PATH, content_path)
+    root, _store, _requests, _fingerprints = _complete_final_inputs(
+        tmp_path, monkeypatch
+    )
+    content_path = root / CONTENT_PACKET_RELATIVE_PATH
     packet = json.loads(content_path.read_text(encoding="utf-8"))
     article = packet["article"]
     first = article["affiliate_slots"][0]
@@ -1145,10 +1131,13 @@ def test_content_rejects_rel_cta_credit_or_url_mutation(
         )
 
 
-def test_content_rejects_mixed_pending_and_final_states(tmp_path: Path) -> None:
-    content_path = tmp_path / CONTENT_PACKET_RELATIVE_PATH
-    content_path.parent.mkdir(parents=True)
-    shutil.copyfile(REPOSITORY_ROOT / CONTENT_PACKET_RELATIVE_PATH, content_path)
+def test_content_rejects_mixed_pending_and_final_states(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, _store, _requests, _fingerprints = _complete_final_inputs(
+        tmp_path, monkeypatch
+    )
+    content_path = root / CONTENT_PACKET_RELATIVE_PATH
     packet = json.loads(content_path.read_text(encoding="utf-8"))
     article = packet["article"]
     slot = article["affiliate_slots"][0]
@@ -1400,15 +1389,17 @@ def test_finalizer_rejects_result_store_inode_replacement(
 
 def test_content_rejects_synchronized_destination_and_cta_mutation(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    content_path = tmp_path / CONTENT_PACKET_RELATIVE_PATH
-    content_path.parent.mkdir(parents=True)
-    shutil.copyfile(REPOSITORY_ROOT / CONTENT_PACKET_RELATIVE_PATH, content_path)
+    root, _store, _requests, _fingerprints = _complete_final_inputs(
+        tmp_path, monkeypatch
+    )
+    content_path = root / CONTENT_PACKET_RELATIVE_PATH
     packet = json.loads(content_path.read_text(encoding="utf-8"))
     article = packet["article"]
     slot = article["affiliate_slots"][0]
     old_url = slot["destination_url"]
-    new_url = _affiliate_url("06316")
+    new_url = _affiliate_url("06316", token="mutated")
     article["content_html"] = article["content_html"].replace(
         affiliate_cta_html(slot["slot_id"], old_url),
         affiliate_cta_html(slot["slot_id"], new_url),
@@ -1454,12 +1445,14 @@ def test_runtime_cta_rejects_cross_slot_mobile_item_target() -> None:
 )
 def test_content_rejects_arbitrary_provider_evidence_even_with_new_attestation(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
     evidence_key: str,
     replacement: str,
 ) -> None:
-    content_path = tmp_path / CONTENT_PACKET_RELATIVE_PATH
-    content_path.parent.mkdir(parents=True)
-    shutil.copyfile(REPOSITORY_ROOT / CONTENT_PACKET_RELATIVE_PATH, content_path)
+    root, _store, _requests, _fingerprints = _complete_final_inputs(
+        tmp_path, monkeypatch
+    )
+    content_path = root / CONTENT_PACKET_RELATIVE_PATH
     packet = json.loads(content_path.read_text(encoding="utf-8"))
     slot = packet["article"]["affiliate_slots"][0]
     slot["evidence"][evidence_key] = replacement

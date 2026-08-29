@@ -30,11 +30,15 @@ def fake_runtime(tmp_path: Path) -> Iterator[dict[str, str]]:
     docker_log = tmp_path / "docker.log"
     fake_docker = tmp_path / "docker"
     fake_curl = tmp_path / "curl"
+    fake_materializer = tmp_path / "materialize"
     _write_executable(
         fake_docker,
         """#!/usr/bin/env bash
 set -eu
 printf '%s\\n' "$*" >>"$RAOS_FAKE_DOCKER_LOG"
+printf 'article_fixture_root=%s\\n' "${RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_ROOT:-}" >>"$RAOS_FAKE_DOCKER_LOG"
+printf 'post_fixture=%s\\n' "${RAOS_WORDPRESS_PREVIEW_POST_FIXTURE:-}" >>"$RAOS_FAKE_DOCKER_LOG"
+printf 'product_media_root=%s\\n' "${RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT:-}" >>"$RAOS_FAKE_DOCKER_LOG"
 if [[ "$*" == "compose version" ]]; then
   exit 0
 fi
@@ -54,6 +58,19 @@ exit 0
 """,
     )
     _write_executable(fake_curl, "#!/usr/bin/env bash\nexit 0\n")
+    _write_executable(
+        fake_materializer,
+        """#!/usr/bin/env bash
+set -eu
+private_root="$1"
+fixture_root="$private_root/materialized-fixtures-v2"
+mkdir -p "$fixture_root/articles" "$private_root/product-media"
+printf '{}\n' >"$fixture_root/posts.json"
+for index in {1..10}; do
+  printf '<div></div>\n' >"$fixture_root/articles/article-$index.html"
+done
+""",
+    )
     private_root = _private_root(tmp_path)
     shutil.rmtree(private_root, ignore_errors=True)
     yield {
@@ -61,6 +78,7 @@ exit 0
         "RAOS_WORDPRESS_PREVIEW_CURL_BIN": str(fake_curl),
         "RAOS_WORDPRESS_PREVIEW_DOCKER_BIN": str(fake_docker),
         "RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT": str(private_root),
+        "RAOS_WORDPRESS_PREVIEW_TEST_MATERIALIZER_BIN": str(fake_materializer),
     }
     shutil.rmtree(private_root, ignore_errors=True)
 
@@ -123,7 +141,17 @@ def test_up_generates_private_credentials_and_runs_initial_seed(
     credentials = (
         Path(environment["RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT"]) / "credentials.env"
     )
+    fixture_root = (
+        Path(environment["RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT"])
+        / "materialized-fixtures-v2"
+    )
+    media_root = (
+        Path(environment["RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT"]) / "product-media"
+    )
     assert stat.S_IMODE(credentials.stat().st_mode) == 0o600
+    assert (fixture_root / "posts.json").is_file()
+    assert len(list((fixture_root / "articles").glob("*.html"))) == 10
+    assert media_root.is_dir()
     values = [line.split("=", 1)[1] for line in credentials.read_text().splitlines()]
     assert len(values) == 3
     assert len(set(values)) == 3
@@ -133,6 +161,9 @@ def test_up_generates_private_credentials_and_runs_initial_seed(
     assert "core install" in docker_log
     assert "theme activate kurashinoshirube-child" in docker_log
     assert "RAOS_PREVIEW_SEED_MODE=initialize" in docker_log
+    assert f"article_fixture_root={fixture_root / 'articles'}" in docker_log
+    assert f"post_fixture={fixture_root / 'posts.json'}" in docker_log
+    assert f"product_media_root={media_root}" in docker_log
     assert all(value not in docker_log for value in values)
     assert all(value not in result.stdout for value in values)
 

@@ -71,58 +71,58 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/README.md",
-      "sha256": "8902cf1b2cef35089a32cf05d1f7366a14780229e7fde9ae8a0f15d658a8334e",
-      "size": 7127
+      "sha256": "a519aaa9e8746db68a8ebb1c7acb03c2621bfc0b6fecec8803465eb8024ee855",
+      "size": 7937
     },
     {
       "path": "changes/wordpress-local-preview-v1/bin/wordpress_preview.sh",
-      "sha256": "fbfe03b3ec334b4a200a17b3cc35e6955c6fda874a374135d9be135ebc34fa84",
-      "size": 8670
+      "sha256": "a4ee3fb0e9e07a16aed3af7d632d7928ca759e3540f7e1ca1c6eacdbbff2ab30",
+      "size": 10983
     },
     {
       "path": "changes/wordpress-local-preview-v1/compose.yaml",
-      "sha256": "d78c10e6cc75f6ced47ba0beee6a4f862140fa2a21224646eb92bad6116ef55d",
-      "size": 5352
+      "sha256": "02ce2e7661b5296c23b17343bff68e5f6ff64f019af194c65705505cec954cdc",
+      "size": 6360
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
-      "sha256": "0fdfc2b8fa5f065e3b90a6f7dfcc194fc7f557a7b753fdeec5a43b1339cbfa55",
-      "size": 26646
+      "sha256": "f15d30ec2f4940a462d48c30319490ea43adcc158cf4fbc63ce25eff816e5055",
+      "size": 31770
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
-      "sha256": "41add6f397df33a68b9847b1570d168b2b078374f55829d93d32761df70eabb9",
-      "size": 30860
+      "sha256": "3e58bc997690daf8318b1786dad3f143e764fce068d8659053f895cd02725f2a",
+      "size": 35659
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
-      "sha256": "3e641331c7723d08b57dbdfb90729e7588249d7b65a411e96573db606df5adda",
-      "size": 26941
+      "sha256": "d7901b98a9aecd0055c0e6709049680f5ed25c930c1ba15a739c6d36606ce86e",
+      "size": 32511
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
-      "sha256": "a277833809b883807379b80acfc4c4333d3cb371310e9be2cbe41986a84d505b",
-      "size": 28565
+      "sha256": "42fe256a76de981db370d490e6ce30137d1d751e192faadd06b90eccf36175a9",
+      "size": 31798
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
-      "sha256": "8c674ecd32888fb85e9d85839454bd619b859cd1514433610117ee3bec4709d0",
-      "size": 32184
+      "sha256": "79f1a818a501493f792018f6063cdf5cc699c7cd5001de55905e5ecce448bea0",
+      "size": 35633
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/posts.json",
-      "sha256": "747c8c0a49f0407203340253bb6ea712b8a8163e5bff1a1c8897f6b7bdacbc2e",
-      "size": 2983
+      "sha256": "93d3d6381689fae76d4cabb074450d3b6b6373424a3ea9d69c4d375b827d07a9",
+      "size": 5981
     },
     {
       "path": "changes/wordpress-local-preview-v1/production-mapping.v1.json",
-      "sha256": "a732ae88328e2e50f0876112191396aef595bbe91c4056afa1335239a4e749aa",
-      "size": 1833
+      "sha256": "78ab9f438d06325974f0922c66e02ac05f2624d9363305acfb039338e8ede75f",
+      "size": 3422
     },
     {
       "path": "changes/wordpress-local-preview-v1/seed.php",
-      "sha256": "cc431c082677a077c3699e62a41c4e4744a6c98f25b404cebc81acc2ff2b208d",
-      "size": 10012
+      "sha256": "add0845463639973a5c44d54cc11daa2b639fd394bc064967b099ee6d7ebd572",
+      "size": 10248
     },
     {
       "path": "changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json",
@@ -181,8 +181,8 @@
     },
     {
       "path": "scripts/raos_wordpress_publication_request.py",
-      "sha256": "541dc28bf901bbd22282fcf232849f054f08cdca56431531455d5b0510f0d527",
-      "size": 93361
+      "sha256": "ca3338b99c3c72a62adf65c1a590cc39a3ee4f6e72e86b19aa943147518d1e7c",
+      "size": 136803
     },
     {
       "path": "scripts/raos_wordpress_editor_mcp_launcher.mjs",
@@ -261,8 +261,8 @@
     },
     {
       "path": "tests/wordpress_local_preview/test_publication_request.py",
-      "sha256": "2ea8f1d407812dd793ab80a5c424f9eea8daff7feb6b1caef605d660ac2521d8",
-      "size": 49894
+      "sha256": "a85929e18408cd0a00e6f6f797db9fc68466622f878c863e146df4ce35fcd33f",
+      "size": 72199
     },
     {
       "path": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/README.md",

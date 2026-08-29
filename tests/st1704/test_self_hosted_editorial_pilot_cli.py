@@ -120,19 +120,18 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
     )
     tail = product_id.lower().removeprefix("prd-")
     item_url = f"https://item.rakuten.co.jp/test-shop/{tail}/"
-    destination = affiliate["destination_url"]
-    if destination is None:
-        destination = "https://hb.afl.rakuten.co.jp/hgc/test.abc/?" + urlencode(
-            {
-                "m": f"https://m.rakuten.co.jp/test-shop/i/{tail}/",
-                "pc": item_url,
-                "rafcid": "synthetic-test",
-            }
-        )
-    else:
-        item_url = parse_qs(urlsplit(cast(str, destination)).query)["pc"][0]
+    assert affiliate["destination_url"] is None
+    assert affiliate["evidence"] is None
+    destination = "https://hb.afl.rakuten.co.jp/hgc/test.abc/?" + urlencode(
+        {
+            "m": f"https://m.rakuten.co.jp/test-shop/i/{tail}/",
+            "pc": item_url,
+            "rafcid": "synthetic-test",
+        }
+    )
     item_code = f"{urlsplit(item_url).path.split('/')[1]}:{tail}"
     identity = cast(dict[str, object], asset["identity"])
+    jan = cast(str | None, identity["jan"])
     variant = cast(list[str], identity["allowed_variants"])[0]
     required_tokens = cast(list[str], identity["required_title_tokens"])
     kind_token = cast(list[str], identity["product_kind_tokens"])[0]
@@ -185,6 +184,7 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
         "image_url": image_url,
         "item_code": item_code,
         "item_name": item_name,
+        "jan": jan,
         "schema": "RAOS_ST1704_RAKUTEN_PROVIDER_IDENTITY_V1",
         "source_url": item_url,
     }
@@ -221,6 +221,7 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
         "item_code": item_code,
         "item_name": item_name,
         "item_url": destination,
+        "jan": jan,
         "schema": "RAOS_ST1704_RAKUTEN_AFFILIATE_PROVIDER_IDENTITY_V1",
     }
     return RakutenProductEvidence(
@@ -229,7 +230,7 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
         media_asset_ref=cast(str, asset["media_asset_ref"]),
         item_code=item_code,
         item_name=item_name,
-        jan=cast(str | None, identity["jan"]),
+        jan=jan,
         variant=variant,
         source_url=item_url,
         destination_url=cast(str, destination),
@@ -780,12 +781,17 @@ def test_all_five_packets_render_deterministically_with_closed_draft_payload() -
             PILOT_SNAPSHOT_META_KEY
         }
         content = first.request.content
-        assert content.startswith('<dl class="raos-article-facts')
+        assert content.startswith(
+            '<div class="raos-editorial-v2">\n<dl class="raos-article-facts'
+        )
+        assert content.endswith("</div>\n")
         assert content.index('<dl class="raos-article-facts') < content.index(
-            '<aside class="raos-disclosure"'
+            '<aside class="raos-disclosure disclosure"'
         )
         assert "<h1" not in content.lower()
-        assert content.count('class="raos-product-card"') == first.product_count
+        assert content.count('class="raos-product-card product-profile ') == (
+            first.product_count
+        )
         assert content.count('class="raos-product-card__media"') == first.product_count
         assert content.count('class="raos-comparison__table-view"') == 1
         assert content.count('data-raos-placement="comparison_table"') == 1
@@ -793,7 +799,9 @@ def test_all_five_packets_render_deterministically_with_closed_draft_payload() -
         assert content.count('class="raos-comparison-card"') == first.product_count
         assert "<dl><div><dt>商品</dt><dd>" in content
         assert content.count('width="128" height="128"') == first.product_count
-        assert content.count('class="raos-cta"') == first.product_count * 2
+        assert content.count('class="raos-cta rakuten-cta"') == (
+            first.product_count * 2
+        )
         assert content.count(PILOT_CTA_LABEL) == first.product_count * 2
         assert 'data-raos-evidence-level="A"' in content
         assert "A：公式仕様" in content
@@ -804,15 +812,19 @@ def test_all_five_packets_render_deterministically_with_closed_draft_payload() -
         )
         assert content.count("Supported by Rakuten Developers") == 1
         assert 'rel="sponsored nofollow"' in content
-        assert 'data-raos-placement="product_card"' in content
-        assert 'data-raos-placement="final_summary"' in content
+        assert content.count('data-raos-placement="product_card"') == (
+            first.product_count
+        )
+        assert content.count('data-raos-placement="final_summary"') == (
+            first.product_count
+        )
         assert "公式サイトで仕様を確認する" in content
-        assert "この商品の注意点を先に読む" in content
+        assert 'class="raos-decision-summary__link"' in content
         if identity.article_id == "st1703-first-suitcase-comparison":
-            assert 'class="raos-article-facts"' in content
+            assert 'class="raos-article-facts article-meta"' in content
             assert "エース系3モデル" in content
             assert "市場全体のおすすめ順位ではなく" in content
-            assert "<dt>実機試験</dt><dd>未実施" in content
+            assert "<dt>実機確認</dt><dd>未実施" in content
             assert content.index("<dt>対象読者</dt>") < content.index("広告を含みます。")
             assert content.index("広告を含みます。") < content.index("比較範囲：")
             assert "D：編集部の判断" in content
@@ -829,6 +841,67 @@ def test_all_five_packets_render_deterministically_with_closed_draft_payload() -
         assert first.network_requests == first.external_writes == 0
         total_cards += first.product_count
     assert total_cards == 19
+
+
+def test_rendered_content_parser_accepts_strict_official_cta_arrow() -> None:
+    parser = https_module._RenderedContentParser()  # type: ignore[attr-defined]
+    parser.feed(
+        '<a class="official-product-link raos-cta" '
+        'href="https://www.ankerjapan.com/products/a1722" '
+        'rel="noopener noreferrer" '
+        'data-raos-article-id="st1704-portable-power-station-guide" '
+        'data-raos-product-id="PRD-ANKER-SOLIX-C300" '
+        'data-raos-placement="final_summary">'
+        'メーカー公式で仕様を確認する '
+        '<span aria-hidden="true">→</span></a>'
+    )
+    parser.close()
+
+    assert parser.cta_active is None
+    assert parser.cta_span_open is False
+    assert parser.rakuten_hrefs == []
+    assert parser.cta_records == [
+        (
+            "https://www.ankerjapan.com/products/a1722",
+            "noopener noreferrer",
+            "st1704-portable-power-station-guide",
+            "PRD-ANKER-SOLIX-C300",
+            "final_summary",
+            "メーカー公式で仕様を確認する →",
+        )
+    ]
+
+
+@pytest.mark.parametrize(
+    "nested_markup",
+    [
+        '<span aria-hidden="false">→</span>',
+        "<strong>→</strong>",
+        (
+            '<span aria-hidden="true"><span aria-hidden="true">'
+            "→</span></span>"
+        ),
+        '<span aria-hidden="true">→</a>',
+    ],
+)
+def test_rendered_content_parser_rejects_noncanonical_cta_arrow(
+    nested_markup: str,
+) -> None:
+    parser = https_module._RenderedContentParser()  # type: ignore[attr-defined]
+    markup = (
+        '<a class="official-product-link raos-cta" '
+        'href="https://www.ankerjapan.com/products/a1722" '
+        'rel="noopener noreferrer" '
+        'data-raos-article-id="st1704-portable-power-station-guide" '
+        'data-raos-product-id="PRD-ANKER-SOLIX-C300" '
+        'data-raos-placement="final_summary">'
+        f"メーカー公式で仕様を確認する {nested_markup}</a>"
+    )
+
+    with pytest.raises(EditorialPilotFailure) as failure:
+        parser.feed(markup)
+
+    assert failure.value.code is EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH
 
 
 def test_committed_request_survives_three_day_freshness_and_shared_c300_refresh(
@@ -2623,8 +2696,9 @@ def test_verify_public_rejects_duplicate_or_unindexable_public_surfaces(
             b'<article vocab="https://schema.org/" typeof="Product">',
         )
     elif mutation == "body-text-change":
+        assert "比較のしかた".encode() in response.body
         response.body = response.body.replace(
-            "比較方法".encode(), "比較手法".encode(), 1
+            "比較のしかた".encode(), "比較手順".encode(), 1
         )
     elif mutation == "bot-noindex":
         response.body = response.body.replace(
@@ -2779,7 +2853,8 @@ def test_verify_public_rejects_duplicate_or_unindexable_public_surfaces(
         response.body = _public_article_html(candidate)
     elif mutation == "review-url-partial-content-leak":
         fragment = (
-            "容量が大きいほど自分に合うとは限らないことです。使いたい機器の消費電力"
+            "停電への備えは、容量が大きいほど合うとは限りません。"
+            "使いたい機器の消費電力"
         )
         assert fragment in candidate.content
         response.body = f"<html><body>{fragment}</body></html>".encode()

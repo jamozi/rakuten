@@ -20,9 +20,9 @@
       "sha256": "a0556636a999e5fc7fa7bb9a714fe7299278d2d9a164c09f8cbf1dd48349f569"
     },
     {
-      "bytes": 16495,
+      "bytes": 11841,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/content/first-suitcase-comparison.v1.json",
-      "sha256": "dd0d4cf4cf49ab9c2db97482f81567e782d7ae56c04325f142db1c01df617881"
+      "sha256": "47bcb62a262c7adc92e3c6a5a32cbc03bf248b7c8c9076a90a73703a3e522c73"
     },
     {
       "bytes": 112138,
@@ -120,9 +120,9 @@
       "sha256": "4103ce178e92e12a5357e2e9c35b05485b67e18889fc057a8f41b4e16d61e4f8"
     },
     {
-      "bytes": 31407,
+      "bytes": 31377,
       "path": "python/raos/application/editorial/self_hosted_minimum_start.py",
-      "sha256": "2618616d3f3f5222c9ee957e4a738403bc4d1e0f264077b36dd4bd0daf23b26b"
+      "sha256": "050ebecd90db82a3b33cd95672cb417e82ea25eb1c604272c91e12398da4ec5f"
     },
     {
       "bytes": 26586,

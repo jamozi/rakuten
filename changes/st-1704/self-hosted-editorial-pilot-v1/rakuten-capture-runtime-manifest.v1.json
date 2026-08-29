@@ -12,7 +12,7 @@
     {
       "bytes": 8131,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "afb5b0c682ab2197743bfcc7333031a5e377440a00c805240406d576f46fdf8f"
+      "sha256": "ad8b5c863a73d8ecaf1b1e770a2a37b0a91215779f52921338edf50069ffb4d4"
     },
     {
       "bytes": 3612,
@@ -22,7 +22,7 @@
     {
       "bytes": 29116,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "95950a604bc95b76071b2c7748680bef0b1e6294d860d39a690051e8e41dc61e"
+      "sha256": "249394237997b0a7bc74eff7aa33a717286a5bda0d5d8146acf8134657143b2d"
     },
     {
       "bytes": 2486,
@@ -37,32 +37,32 @@
     {
       "bytes": 11248,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
-      "sha256": "c9f98ce7cb6d2d53cb8e60fc8363617a18f1b9c457c686f3ef5a5d219f85b4a5"
+      "sha256": "d351a5ec55f4cd77400cda58d0f0b7ee158a510465391c0f971debc49d25fe9f"
     },
     {
-      "bytes": 117623,
+      "bytes": 138191,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-      "sha256": "a27532557d3edca285c43a1577427f645e65a1355f25b0cfbf8683e35898ed65"
+      "sha256": "d71db81d91c2b11bdc3cdbb30075b9340aa7d1a6010da2bea50aacb2ea57d6ab"
     },
     {
-      "bytes": 23979,
+      "bytes": 23745,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/product-media-registry.v1.json",
-      "sha256": "5ca6b7a52fa9657f74728490920a9ace3f6666800cf31d58e82e033b76f21dce"
+      "sha256": "ccbe2d3fd6cac694b0007993bd8ef60dbeaad64150a9c301941f250baa5692f0"
     },
     {
-      "bytes": 42611,
+      "bytes": 39908,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
-      "sha256": "941050e8d3d81dd1cdd6b1cd4c436d9ee18bc934867274dc6a027b7acb909b31"
+      "sha256": "ce155edeb91fc98b4bd225a5dc6315994e5bfd1403cd3a7fab47da8b97915a4f"
     },
     {
-      "bytes": 86888,
+      "bytes": 85865,
       "path": "python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
-      "sha256": "df388a19ddadf37c511023c0628c07a3adaf1428e36918949955dc2348455eb3"
+      "sha256": "e478ae49f329489a524cfa8abef5e66acc44b6060dcb6817ebc58737fcf57faf"
     },
     {
-      "bytes": 68558,
+      "bytes": 68616,
       "path": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
-      "sha256": "87db3782630560ed99b2d14696349b994901b2db6a025840883c87dc2dc114c8"
+      "sha256": "eec8ad72e616b78cc8418978dfc26e32528429aea48381be98de379fd27f3feb"
     },
     {
       "bytes": 3128,

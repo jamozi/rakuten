@@ -40,5 +40,16 @@ trap cleanup EXIT HUP INT TERM
   http://127.0.0.1:8888 --browser chrome >/dev/null
 "$node_bin" "$cli_js" -s="$session" run-code --filename="$audit_function"
 
-/usr/bin/busybox sha256sum "$artifact_directory"/local-preview-*.png
-
+screenshots=''
+for surface in \
+  home carryclassic powerguide ankermodels smalldishwasher compactrobot \
+  under100 under3kg frontstop roomba dishwasher; do
+  for width in 360 390 768 1440; do
+    screenshot="$artifact_directory/local-preview-$surface-$width.png"
+    [ -f "$screenshot" ] && [ ! -L "$screenshot" ] || refuse
+    screenshots="$screenshots $screenshot"
+  done
+done
+set -- $screenshots
+[ "$#" -eq 44 ] || refuse
+/usr/bin/busybox sha256sum "$@"

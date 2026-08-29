@@ -564,11 +564,8 @@ def test_capture_plan_binds_five_articles_and_eighteen_unique_products() -> None
         "edion",
     ]
     assert "掃除機&床拭きロボット" in rows[4][0].product_kind_tokens
-    assert [target.fixed_item_code for target in rows[0]] == [
-        "ace-store:10007275",
-        "ace-store:10009372",
-        "ace-store:10009099",
-    ]
+    assert [target.fixed_item_code for target in rows[0]] == [None, None, None]
+    assert [target.fixed_destination_url for target in rows[0]] == [None, None, None]
 
 
 def test_capture_accepts_current_ac70_title_with_product_warranty(
@@ -651,6 +648,7 @@ def test_bounded_capture_writes_exact_four_artifacts_per_product(
         evidence = read_rakuten_product_evidence(
             repository, product_id=target.product_id
         )
+        assert evidence.jan is None
         assert evidence.width == evidence.height == 128
         assert evidence.no_modification_policy == (
             ("aspect_ratio_change_allowed", False),
@@ -668,6 +666,29 @@ def test_bounded_capture_writes_exact_four_artifacts_per_product(
             path = directory / f"{target.product_id}{suffix}"
             assert path.is_file()
             assert path.stat().st_mode & 0o777 == 0o600
+
+
+def test_capture_requests_only_supported_item_search_elements(
+    private_root_path: Path, clean_network_environment: None
+) -> None:
+    repository = _private_root(private_root_path)
+    targets = load_product_capture_plan(repository).for_article(ARTICLE_ID)
+    factory = _Factory(targets)
+
+    capture_article_products(
+        repository,
+        article_id=ARTICLE_ID,
+        connection_factory=cast(RakutenHttpsConnectionFactory, factory),
+        clock=lambda: datetime(2026, 8, 24, 12, 0, tzinfo=timezone.utc),
+    )
+
+    api_queries = [
+        parse_qs(urlsplit(path).query)
+        for host, path in factory.requests
+        if host == "openapi.rakuten.co.jp"
+    ]
+    assert api_queries
+    assert all("jan" not in query["elements"][0].split(",") for query in api_queries)
 
 
 def test_capture_accepts_documented_lowercase_envelope_and_validates_evidence(
@@ -689,7 +710,8 @@ def test_capture_accepts_documented_lowercase_envelope_and_validates_evidence(
         evidence = read_rakuten_product_evidence(
             repository, product_id=target.product_id
         )
-        assert evidence.item_code == target.fixed_item_code
+        assert target.fixed_item_code is None
+        assert evidence.item_code.startswith(f"{target.shop_code}:")
 
 
 def test_capture_selects_first_provider_image_with_exact_128_dimensions(
@@ -711,7 +733,7 @@ def test_capture_selects_first_provider_image_with_exact_128_dimensions(
         )
         assert "-non-square.png" not in evidence.image_url
         assert evidence.width == evidence.height == 128
-    assert [result.request_count for result in results] == [4, 4, 4]
+    assert [result.request_count for result in results] == [5, 5, 5]
 
 
 def test_capture_rejects_unrequested_provider_fields(

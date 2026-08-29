@@ -14,6 +14,11 @@ readonly curl_bin="${RAOS_WORDPRESS_PREVIEW_CURL_BIN:-curl}"
 readonly default_private_root="$repository_root/.secrets/wordpress-local-preview"
 readonly private_root="${RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT:-$default_private_root}"
 readonly credentials_file="$private_root/credentials.env"
+readonly materialized_fixture_root="$private_root/materialized-fixtures-v2"
+readonly product_media_root="$private_root/product-media"
+readonly python_bin="${RAOS_WORDPRESS_PREVIEW_PYTHON_BIN:-$repository_root/.venv/bin/python}"
+readonly materializer_script="$repository_root/scripts/raos_editorial_portfolio_v2.py"
+readonly test_materializer_bin="${RAOS_WORDPRESS_PREVIEW_TEST_MATERIALIZER_BIN:-}"
 
 fail() {
   printf '%s\n' "${1:-RAOS_WORDPRESS_PREVIEW_REFUSED}" >&2
@@ -108,12 +113,50 @@ require_docker() {
 }
 
 compose() {
-  RAOS_REPOSITORY_ROOT="$repository_root" "$docker_bin" compose \
+  RAOS_REPOSITORY_ROOT="$repository_root" \
+  RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_ROOT="$materialized_fixture_root/articles" \
+  RAOS_WORDPRESS_PREVIEW_POST_FIXTURE="$materialized_fixture_root/posts.json" \
+  RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT="$product_media_root" \
+  "$docker_bin" compose \
     --project-directory "$slice_directory" \
     --project-name "$project_name" \
     --env-file "$credentials_file" \
     --file "$compose_file" \
     "$@"
+}
+
+validate_materialized_runtime() {
+  [[ -d "$materialized_fixture_root" && ! -L "$materialized_fixture_root" ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_MATERIALIZED_FIXTURE_INVALID
+  [[ -d "$materialized_fixture_root/articles" && ! -L "$materialized_fixture_root/articles" ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_MATERIALIZED_FIXTURE_INVALID
+  [[ -f "$materialized_fixture_root/posts.json" && ! -L "$materialized_fixture_root/posts.json" ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_MATERIALIZED_FIXTURE_INVALID
+  [[ -d "$product_media_root" && ! -L "$product_media_root" ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_INVALID
+
+  local article_count
+  article_count="$(find "$materialized_fixture_root/articles" \
+    -mindepth 1 -maxdepth 1 -type f -name '*.html' -printf '.' | wc -c | tr -d '[:space:]')"
+  [[ "$article_count" == 10 ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_MATERIALIZED_FIXTURE_INVALID
+}
+
+materialize_runtime() {
+  if [[ -n "$test_materializer_bin" ]]; then
+    [[ "$private_root" != "$default_private_root" \
+      && -x "$test_materializer_bin" && -f "$test_materializer_bin" \
+      && ! -L "$test_materializer_bin" ]] \
+      || fail RAOS_WORDPRESS_PREVIEW_TEST_MATERIALIZER_INVALID
+    "$test_materializer_bin" "$private_root"
+    validate_materialized_runtime
+    return 0
+  fi
+  [[ -x "$python_bin" && -f "$materializer_script" && ! -L "$materializer_script" ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_MATERIALIZER_UNAVAILABLE
+  PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$materializer_script" \
+    materialize-local --output-root "$private_root"
+  validate_materialized_runtime
 }
 
 wordpress_cli() {
@@ -174,6 +217,7 @@ seed() {
 do_up() {
   require_docker
   load_credentials
+  materialize_runtime
   compose up --detach database wordpress gateway
   wait_until_ready
   install_wordpress_if_needed
@@ -191,6 +235,7 @@ do_status() {
     return 0
   fi
   load_credentials
+  validate_materialized_runtime
   compose ps
   wordpress_cli core is-installed >/dev/null \
     || fail RAOS_WORDPRESS_PREVIEW_WORDPRESS_NOT_INSTALLED
@@ -204,6 +249,7 @@ do_status() {
 do_sync() {
   require_docker
   load_credentials
+  materialize_runtime
   wordpress_cli core is-installed >/dev/null \
     || fail RAOS_WORDPRESS_PREVIEW_WORDPRESS_NOT_INSTALLED
   activate_theme

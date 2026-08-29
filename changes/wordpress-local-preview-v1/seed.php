@@ -37,7 +37,7 @@ if (
     || ! is_string($fixture['seed_version'])
     || preg_match('/\A[0-9]{4}-[0-9]{2}-[0-9]{2}\.[1-9][0-9]*\z/D', $fixture['seed_version']) !== 1
     || ! is_array($fixture['posts'])
-    || count($fixture['posts']) !== 5
+    || count($fixture['posts']) !== 10
 ) {
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_FIXTURE_INVALID');
 }
@@ -58,6 +58,8 @@ function raos_local_preview_has_only_reviewed_https_links(string $content): bool
     }
     $allowed_hosts = array(
         'hb.afl.rakuten.co.jp',
+        'developers.rakuten.com',
+        'jp.ecoflow.com',
         'panasonic.jp',
         'store.ace.jp',
         'store.irobot-jp.com',
@@ -65,7 +67,11 @@ function raos_local_preview_has_only_reviewed_https_links(string $content): bool
         'shop.innovator.co.jp',
         'www.americantourister.jp',
         'www.ana.co.jp',
+        'www.ankerjapan.com',
+        'www.bagworld.co.jp',
         'www.bermas.co.jp',
+        'www.bluetti.jp',
+        'www.jackery.jp',
         'www.jal.co.jp',
         'www.proteca.jp',
         'www.samsonite.co.jp',
@@ -163,10 +169,10 @@ foreach ($fixture['posts'] as $index => $post) {
     if (
         preg_match('/\Alocal-preview-[a-z0-9-]+\z/D', $post['article_id']) !== 1
         || preg_match('/\Alocal-preview-[a-z0-9-]+\z/D', $post['slug']) !== 1
-        || preg_match('/\A2026-08-(?:2[5-9]) 00:00:00\z/D', $post['date']) !== 1
+        || preg_match('/\A2026-08-(?:2[0-9]) 00:00:00\z/D', $post['date']) !== 1
         || isset($seen_ids[$post['article_id']])
         || isset($seen_slugs[$post['slug']])
-        || ! in_array($post['category'], array('移動', '家事'), true)
+        || ! in_array($post['category'], array('暮らしの道具', '移動', '家事'), true)
         || ! is_string($post['content_file'])
         || preg_match('/\Aarticles\/[a-z0-9-]+\.html\z/D', $post['content_file']) !== 1
         || $post['article_id'] !== $post['slug']
@@ -214,7 +220,9 @@ foreach ($fixture['posts'] as $index => $post) {
         || stripos($content, '<h1') !== false
         || strpos($content, '<div class="raos-editorial-v2">') === false
     ) {
-        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_INVALID');
+        WP_CLI::error(
+            'RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_INVALID_' . (string) $index
+        );
     }
 
     $existing = get_page_by_path($post['slug'], OBJECT, 'post');

@@ -156,13 +156,13 @@ _MEASUREMENT_PATH: Final = Path(
     "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json"
 )
 _MEASUREMENT_SHA256: Final = (
-    "0035dfd6329e6d168f068e0de5ac63f55464efecab22934895c7e01dc1c94fb0"
+    "5df78f2afc00531dcd52dddebdbf88a696f58d6969dbe9cf6c315a49f1ea0e54"
 )
 _SIGNAL_POLICY_PATH: Final = Path(
     "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml"
 )
 _SIGNAL_POLICY_SHA256: Final = (
-    "42c3fc918669c58df7033c13760f8d241bba275236408e3331f63731ce9c45af"
+    "a86332fb57faeeea2379abc1ddc804da5aef520afa2485702388b4134be21f72"
 )
 
 

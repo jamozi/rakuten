@@ -58,6 +58,14 @@ services:
         source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/wordpress-local-preview-v1
         target: /var/www/raos-local-preview
         read_only: true
+      - type: bind
+        source: ${RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_ROOT:?materialized article fixture root is required}
+        target: /var/www/raos-local-preview/fixtures/articles
+        read_only: true
+      - type: bind
+        source: ${RAOS_WORDPRESS_PREVIEW_POST_FIXTURE:?materialized post fixture is required}
+        target: /var/www/raos-local-preview/fixtures/posts.json
+        read_only: true
     networks:
       - preview_internal
 
@@ -81,6 +89,10 @@ services:
       - type: bind
         source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/wordpress-local-preview-v1/gateway/nginx.conf
         target: /etc/nginx/nginx.conf
+        read_only: true
+      - type: bind
+        source: ${RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT:?product media root is required}
+        target: /srv/raos-product-media
         read_only: true
     networks:
       - preview_internal
@@ -131,6 +143,14 @@ services:
       - type: bind
         source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/wordpress-local-preview-v1
         target: /var/www/raos-local-preview
+        read_only: true
+      - type: bind
+        source: ${RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_ROOT:?materialized article fixture root is required}
+        target: /var/www/raos-local-preview/fixtures/articles
+        read_only: true
+      - type: bind
+        source: ${RAOS_WORDPRESS_PREVIEW_POST_FIXTURE:?materialized post fixture is required}
+        target: /var/www/raos-local-preview/fixtures/posts.json
         read_only: true
     networks:
       - preview_internal

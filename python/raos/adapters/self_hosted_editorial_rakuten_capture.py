@@ -26,7 +26,7 @@ import stat
 import time
 from typing import Final, NoReturn, Protocol, cast, final, runtime_checkable
 import unicodedata
-from urllib.parse import parse_qsl, unquote, urlencode, urlsplit
+from urllib.parse import unquote, urlencode, urlsplit
 import zlib
 
 from raos.domain.editorial.self_hosted_editorial_pilot import (
@@ -78,6 +78,7 @@ PUBLICATION_AUTHORITY: Final = "NONE"
 
 _PRODUCT_ID = re.compile(r"PRD-[A-Z0-9]+(?:-[A-Z0-9]+)*\Z", re.ASCII)
 _ITEM_CODE = re.compile(r"[A-Za-z0-9._~-]{1,100}:[A-Za-z0-9._~-]{1,200}\Z", re.ASCII)
+_JAN = re.compile(r"[0-9]{8,14}\Z", re.ASCII)
 _CONTENT_LENGTH = re.compile(r"0|[1-9][0-9]*\Z", re.ASCII)
 _JSON_CONTENT_TYPE = re.compile(
     r'application/json(?:\s*;\s*charset="?(?:utf-8|UTF-8)"?)?\Z', re.ASCII
@@ -418,55 +419,6 @@ def _tuple_text(value: object, *, maximum: int = 300) -> tuple[str, ...]:
     return result
 
 
-def _fixed_item_code(destination_url: str | None) -> str | None:
-    if destination_url is None:
-        return None
-    try:
-        destination = urlsplit(destination_url)
-        query = dict(
-            parse_qsl(
-                destination.query,
-                keep_blank_values=True,
-                strict_parsing=True,
-                max_num_fields=3,
-            )
-        )
-        item = urlsplit(query["pc"])
-        mobile = urlsplit(query["m"])
-    except KeyError, ValueError:
-        _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
-    item_parts = item.path.strip("/").split("/")
-    mobile_parts = mobile.path.strip("/").split("/")
-    if (
-        destination.scheme != "https"
-        or destination.netloc != "hb.afl.rakuten.co.jp"
-        or set(query) != {"m", "pc", "rafcid"}
-        or item.scheme != "https"
-        or item.netloc != "item.rakuten.co.jp"
-        or item.username is not None
-        or item.password is not None
-        or item.port is not None
-        or item.query
-        or item.fragment
-        or len(item_parts) != 2
-        or mobile.scheme not in {"http", "https"}
-        or mobile.netloc != "m.rakuten.co.jp"
-        or mobile.username is not None
-        or mobile.password is not None
-        or mobile.port is not None
-        or mobile.query
-        or mobile.fragment
-        or len(mobile_parts) != 3
-        or mobile_parts[1] != "i"
-        or mobile_parts[0] != item_parts[0]
-    ):
-        _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
-    item_code = f"{mobile_parts[0]}:{mobile_parts[2]}"
-    if _ITEM_CODE.fullmatch(item_code) is None:
-        _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
-    return item_code
-
-
 def load_product_capture_plan(repository_root: Path) -> ProductCapturePlan:
     """Cross-bind the five article packets, 18 affiliates, and 18 media targets."""
 
@@ -545,18 +497,21 @@ def load_product_capture_plan(repository_root: Path) -> ProductCapturePlan:
         if jan is not None and type(jan) is not str:
             _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
         destination = affiliate.get("destination_url")
-        if destination is not None and type(destination) is not str:
+        if (
+            affiliate.get("status") != "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE"
+            or destination is not None
+            or affiliate.get("evidence") is not None
+            or affiliate.get("publication_blocker")
+            != "PENDING_AFFILIATE_EVIDENCE"
+        ):
             _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
-        derived_item_code = _fixed_item_code(destination)
         selected_item_code = _FIXED_PRODUCT_ITEM_CODES.get(
             product_id,
-            fixed_item_code if fixed_item_code is not None else derived_item_code,
+            fixed_item_code,
         )
         if (
             fixed_item_code is not None
             and selected_item_code != fixed_item_code
-            or derived_item_code is not None
-            and selected_item_code != derived_item_code
             or selected_item_code is not None
             and not selected_item_code.startswith(f"{shop_codes[product_id]}:")
         ):
@@ -572,7 +527,7 @@ def load_product_capture_plan(repository_root: Path) -> ProductCapturePlan:
             forbidden_title_tokens=_tuple_text(identity.get("forbidden_title_tokens")),
             jan=jan,
             fixed_item_code=selected_item_code,
-            fixed_destination_url=destination,
+            fixed_destination_url=None,
         )
         if (
             asset.get("provider") != "RAKUTEN_ICHIBA_ITEM_SEARCH"
@@ -1380,10 +1335,20 @@ def _reject_credential_reflection(
 def _valid_identity(target: ProductCaptureTarget, row: Mapping[str, object]) -> bool:
     item_code = row.get("itemCode")
     item_name = row.get("itemName")
+    provider_jan = row.get("jan")
     return bool(
         type(item_code) is str
         and _ITEM_CODE.fullmatch(item_code) is not None
         and type(item_name) is str
+        and (
+            provider_jan in {None, ""}
+            or (type(provider_jan) is str and _JAN.fullmatch(provider_jan) is not None)
+        )
+        and (
+            target.jan is None
+            or provider_jan in {None, ""}
+            or provider_jan == target.jan
+        )
         and all(
             _provider_title_has_token(item_name, token)
             for token in target.required_title_tokens
@@ -2159,6 +2124,10 @@ def _capture_product(
     item_name = _text(row["itemName"], maximum=1000)
     if affiliate_row.get("itemName") != item_name:
         _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
+    # Rakuten Ichiba Item Search does not expose JAN as an output element.
+    # Keep the nullable evidence field for compatibility with other authoritative
+    # provider surfaces, but never synthesize a provider JAN from our registry.
+    provider_jan: str | None = None
     image_urls = _image_urls(row)
     if _image_urls(affiliate_row) != image_urls:
         _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
@@ -2203,6 +2172,7 @@ def _capture_product(
         "image_url": image_url,
         "item_code": item_code,
         "item_name": item_name,
+        "jan": provider_jan,
         "schema": "RAOS_ST1704_RAKUTEN_PROVIDER_IDENTITY_V1",
         "source_url": source_url,
     }
@@ -2212,6 +2182,7 @@ def _capture_product(
         "item_code": item_code,
         "item_name": item_name,
         "item_url": destination_url,
+        "jan": provider_jan,
         "schema": "RAOS_ST1704_RAKUTEN_AFFILIATE_PROVIDER_IDENTITY_V1",
     }
     try:
@@ -2221,7 +2192,7 @@ def _capture_product(
             media_asset_ref=target.media_asset_ref,
             item_code=item_code,
             item_name=item_name,
-            jan=target.jan,
+            jan=provider_jan,
             variant=variant,
             source_url=source_url,
             destination_url=destination_url,
