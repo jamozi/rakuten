@@ -172,8 +172,19 @@ def test_anonymous_public_readback_requires_exact_canonical_title_and_headings()
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
             f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
         ),
+        _stylesheet_links(
+            "https://example.invalid/unrelated.css?build=42",
+            "/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
+            "/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
+        ),
     ],
-    ids=("absolute-direct-theme-assets", "autoptimize-single-assets"),
+    ids=(
+        "absolute-direct-theme-assets",
+        "autoptimize-single-assets",
+        "root-relative-autoptimize-single-assets",
+    ),
 )
 def test_public_readback_accepts_exact_theme_stylesheet_materializations(
     stylesheets: str,
@@ -292,12 +303,6 @@ def test_public_readback_requires_one_exact_trailing_site_footer_heading(
             f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
         ),
         _stylesheet_links(
-            "/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
-            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
-        ),
-        _stylesheet_links(
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
             f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
@@ -320,7 +325,6 @@ def test_public_readback_requires_one_exact_trailing_site_footer_heading(
         "cross-origin-autoptimize-url",
         "fragment-autoptimize-url",
         "extra-query-autoptimize-url",
-        "relative-autoptimize-url",
         "third-autoptimize-url",
         "extra-query-direct-url",
     ),
@@ -1000,6 +1004,7 @@ class WorkflowClient:
         self.document = _document(article)
         self.published = False
         self.batch_registration_state = "REGISTERED"
+        self.runtime_version = publication.theme_version()
 
     def initialize(self) -> None:
         self.events.append("remote-initialize")
@@ -1037,6 +1042,7 @@ class WorkflowClient:
                 "exists": True,
                 "active": True,
                 "version": publication.theme_version(),
+                "runtime_version": self.runtime_version,
             },
             "apply_authorization": {
                 "mode": "approval_scoped_lease",
@@ -1132,6 +1138,7 @@ class DeploymentRunner:
         self.theme_proposed = False
         self.local_tree = publication.tracked_theme_tree_sha256()
         self.live_tree = "9" * 64
+        self.runtime_version = publication.theme_version()
 
     def status(self) -> dict[str, object]:
         return {
@@ -1142,6 +1149,7 @@ class DeploymentRunner:
             "theme": {
                 "slug": "kurashinoshirube-child",
                 "version": publication.theme_version(),
+                "runtime_version": self.runtime_version,
                 "active": True,
                 "tree_sha256": self.live_tree,
             },
@@ -1229,6 +1237,8 @@ class DeploymentRunner:
             self.client.published = True
             if self.theme_proposed:
                 self.live_tree = self.local_tree
+                self.runtime_version = publication.theme_version()
+                self.client.runtime_version = publication.theme_version()
             receipts: list[dict[str, object]] = []
             if self.theme_proposed:
                 receipts.append(
@@ -1339,6 +1349,31 @@ def test_full_workflow_checks_local_before_remote_and_runs_foreground_watcher(
     assert "承認対象バッチtoken末尾12文字: cccccccccccc" in output
     assert "入力するbatch manifest hash末尾8文字: dddddddd" in output
     assert publication.REVIEW_URL in output
+
+
+def test_stale_theme_runtime_forces_a_theme_proposal_even_when_tree_matches(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    _private_path(monkeypatch, tmp_path)
+    deployment = DeploymentRunner(client, events)
+    deployment.live_tree = deployment.local_tree
+    deployment.runtime_version = "1.3.8"
+    client.runtime_version = "1.3.8"
+
+    path = publication.execute(
+        article.production_slug,
+        preview=lambda: events.append("local-preview"),
+        client_factory=lambda: client,
+        deployment_runner=deployment,
+    )
+
+    assert "deployment:theme-propose-release" in events
+    assert deployment.runtime_version == publication.EXPECTED_THEME_VERSION
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+    assert receipt["authenticated_readback"]["theme"]["runtime_version"] == "1.3.9"
 
 
 def test_article_change_during_preview_stops_before_remote_access(
@@ -1863,11 +1898,18 @@ def test_missing_idempotency_schema_stops_before_mutation() -> None:
         publication.validate_tool_contract(tools)
 
 
-def test_site_status_requires_plugin_1_2_and_scoped_approval_lease() -> None:
+def test_site_status_requires_plugin_1_2_1_runtime_and_scoped_approval_lease() -> None:
     article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
     client = WorkflowClient(article, [])
     status = client.status()
     status["plugin_version"] = "1.1.0"
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status)
+    status = client.status()
+    status["theme"]["runtime_version"] = None
     with pytest.raises(
         publication.PublicationFailure,
         match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",

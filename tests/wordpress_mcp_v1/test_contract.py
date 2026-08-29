@@ -30,6 +30,18 @@ def test_owner_generator_defaults_to_manifest_mode(monkeypatch) -> None:
     assert calls == ["manifest"]
 
 
+def test_owner_plugin_version_is_bound_across_package_and_runtime() -> None:
+    assert build_wordpress_mcp_v1.PLUGIN_VERSION == "1.2.1"
+    entrypoint = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(
+        encoding="utf-8"
+    )
+    assert " * Version: 1.2.1" in entrypoint
+    assert "define('RAOS_CODEX_MCP_VERSION', '1.2.1');" in entrypoint
+    assert (PLUGIN / "README.md").read_text(encoding="utf-8").startswith(
+        "# RAOS Codex MCP Abilities 1.2.1\n"
+    )
+
+
 def test_public_contract_and_schema_are_valid() -> None:
     contract = json.loads((SLICE / "contracts/wordpress-mcp.v1.json").read_text())
     schema = json.loads((SLICE / "contracts/wordpress-mcp.v1.schema.json").read_text())
@@ -64,6 +76,8 @@ def test_public_contract_and_schema_are_valid() -> None:
         "atomic_batch_claim_before_mutation": True,
         "theme_before_content": True,
         "theme_tree_sha256_bound": True,
+        "php_opcache_manifest_invalidation": True,
+        "loaded_theme_runtime_readback": True,
         "plugin_in_release_batch": False,
         "production_readback": True,
         "anonymous_public_readback": True,
@@ -179,6 +193,19 @@ def test_root_final_static_checks_wordpress_owner_manifest() -> None:
     makefile = (ROOT / "Makefile").read_text()
     final_static = makefile.split("final-static:", 1)[1].split("\n\n", 1)[0]
     assert "$(MAKE) -C changes/wordpress-mcp-v1 manifest-check" in final_static
+
+
+def test_editor_status_exposes_the_loaded_child_theme_runtime_version() -> None:
+    content = (
+        PLUGIN / "includes/class-raos-codex-mcp-content.php"
+    ).read_text(encoding="utf-8")
+    status = content.split("public function site_status", 1)[1].split(
+        "public function content_list", 1
+    )[0]
+    assert "get_stylesheet() === 'kurashinoshirube-child'" in status
+    assert "defined('KURASHINOSHIRUBE_THEME_VERSION')" in status
+    assert "constant('KURASHINOSHIRUBE_THEME_VERSION')" in status
+    assert "'runtime_version' => $theme_runtime_version" in status
 
 
 def test_lockfile_has_exact_mcp_versions() -> None:

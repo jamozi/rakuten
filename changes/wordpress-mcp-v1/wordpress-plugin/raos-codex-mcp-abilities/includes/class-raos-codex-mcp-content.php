@@ -243,6 +243,12 @@ final class RAOS_Codex_MCP_Content
         unset($input);
         global $wp_version;
         $theme = wp_get_theme('kurashinoshirube-child');
+        $theme_active = get_stylesheet() === 'kurashinoshirube-child';
+        $theme_runtime_version = $theme_active
+            && defined('KURASHINOSHIRUBE_THEME_VERSION')
+            && is_string(constant('KURASHINOSHIRUBE_THEME_VERSION'))
+                ? constant('KURASHINOSHIRUBE_THEME_VERSION')
+                : null;
         $global_writes = defined('RAOS_OPERATOR_WRITES_ENABLED')
             && true === RAOS_OPERATOR_WRITES_ENABLED;
         $private_ready = ! is_wp_error(RAOS_Codex_MCP_Deployment::private_directory());
@@ -272,7 +278,8 @@ final class RAOS_Codex_MCP_Content
                 'slug' => 'kurashinoshirube-child',
                 'exists' => $theme->exists(),
                 'version' => $theme->exists() ? (string) $theme->get('Version') : null,
-                'active' => get_stylesheet() === 'kurashinoshirube-child',
+                'runtime_version' => $theme_runtime_version,
+                'active' => $theme_active,
             ),
             'server' => array(
                 'endpoint' => home_url('/wp-json/raos-codex-mcp/v1/editor'),

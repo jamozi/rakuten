@@ -72,7 +72,7 @@ MAKE_BIN: Final = Path("/usr/bin/make")
 SG_BIN: Final = Path("/usr/bin/sg")
 DOCKER_SOCKET: Final = Path("/var/run/docker.sock")
 PROTOCOL_VERSION: Final = "2025-11-25"
-EXPECTED_PLUGIN_VERSION: Final = "1.2.0"
+EXPECTED_PLUGIN_VERSION: Final = "1.2.1"
 EXPECTED_THEME_VERSION: Final = "1.3.9"
 DIRECT_THEME_STYLESHEET_PATHS: Final = frozenset(
     {
@@ -1311,6 +1311,9 @@ def validate_site_status(status: Mapping[str, object]) -> None:
         or theme.get("exists") is not True
         or theme.get("active") is not True
         or type(theme.get("version")) is not str
+        or VERSION_RE.fullmatch(theme["version"]) is None
+        or type(theme.get("runtime_version")) is not str
+        or VERSION_RE.fullmatch(theme["runtime_version"]) is None
         or authorization
         != {
             "mode": "approval_scoped_lease",
@@ -2243,6 +2246,9 @@ def deployment_status(
         or theme.get("slug") != "kurashinoshirube-child"
         or theme.get("active") is not True
         or type(theme.get("version")) is not str
+        or VERSION_RE.fullmatch(theme["version"]) is None
+        or type(theme.get("runtime_version")) is not str
+        or VERSION_RE.fullmatch(theme["runtime_version"]) is None
         or type(theme.get("tree_sha256")) is not str
         or SHA256_RE.fullmatch(theme["tree_sha256"]) is None
         or type(gates) is not dict
@@ -2891,7 +2897,7 @@ def _public_theme_stylesheets_are_valid(stylesheet_urls: Sequence[str]) -> bool:
         for _kind, href in candidates:
             if len(href) > 8192 or not _public_stylesheet_origin_is_valid(
                 href,
-                allow_root_relative=False,
+                allow_root_relative=True,
             ):
                 return False
             try:
@@ -3207,6 +3213,7 @@ def verify_published(
     if (
         type(theme) is not dict
         or theme.get("version") != expected_theme_version
+        or theme.get("runtime_version") != expected_theme_version
         or expected_theme_version != EXPECTED_THEME_VERSION
     ):
         fail("RAOS_WORDPRESS_REQUEST_THEME_READBACK_FAILED")
@@ -3215,6 +3222,7 @@ def verify_published(
     if (
         type(deployed_theme) is not dict
         or deployed_theme.get("version") != expected_theme_version
+        or deployed_theme.get("runtime_version") != expected_theme_version
         or deployed_theme.get("tree_sha256") != expected_theme_tree_sha256
     ):
         fail("RAOS_WORDPRESS_REQUEST_THEME_READBACK_FAILED")
@@ -3239,6 +3247,7 @@ def verify_published(
         "public_pages": authenticated_pages,
         "theme": {
             "version": expected_theme_version,
+            "runtime_version": expected_theme_version,
             "tree_sha256": expected_theme_tree_sha256,
             "proposed": theme_was_proposed,
         },
@@ -3555,6 +3564,7 @@ def execute(
         include_theme = (
             deployed_theme.get("tree_sha256") != local_theme_tree_sha256
             or deployed_theme.get("version") != EXPECTED_THEME_VERSION
+            or deployed_theme.get("runtime_version") != EXPECTED_THEME_VERSION
         )
 
         if _resume_ready(receipt, len(articles)):

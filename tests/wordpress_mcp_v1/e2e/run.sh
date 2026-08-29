@@ -136,7 +136,7 @@ actual_adapter_sha256="$(sha256sum "$adapter_zip" | awk '{print $1}')"
 
 "$repository_root/.venv/bin/python" \
   "$repository_root/scripts/build_wordpress_mcp_v1.py" --package
-readonly raos_plugin_zip="$repository_root/.secrets/wordpress-mcp/plugin/raos-codex-mcp-abilities-1.2.0.zip"
+readonly raos_plugin_zip="$repository_root/.secrets/wordpress-mcp/plugin/raos-codex-mcp-abilities-1.2.1.zip"
 "$repository_root/.venv/bin/python" \
   "$repository_root/scripts/build_wordpress_mcp_v1.py" --package-check
 

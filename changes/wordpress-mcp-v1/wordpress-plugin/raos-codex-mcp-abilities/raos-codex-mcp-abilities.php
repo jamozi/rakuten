@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RAOS Codex MCP Abilities
  * Description: Browser-independent, approval-bound content and deployment abilities for kurashinoshirube.com.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Requires at least: 7.1
  * Requires PHP: 8.1
  * Author: RAOS
@@ -14,7 +14,7 @@
 
 defined('ABSPATH') || exit;
 
-define('RAOS_CODEX_MCP_VERSION', '1.2.0');
+define('RAOS_CODEX_MCP_VERSION', '1.2.1');
 define('RAOS_CODEX_MCP_FILE', __FILE__);
 
 require_once __DIR__ . '/includes/class-raos-codex-mcp-store.php';

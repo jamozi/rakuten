@@ -334,7 +334,7 @@ def phase_propose(
 ) -> None:
     mcp = McpClient(site_url + "/wp-json/raos-codex-mcp/v1/editor", *editor)
     initialized = mcp.initialize()
-    assert initialized["serverInfo"]["version"] == "1.2.0"
+    assert initialized["serverInfo"]["version"] == "1.2.1"
     tools = mcp.tools()
     assert set(tools) == EXPECTED_TOOLS
     for tool in tools.values():
@@ -354,6 +354,7 @@ def phase_propose(
         "theme_apply": True,
         "plugin_apply": True,
     }
+    assert status["theme"]["runtime_version"] == status["theme"]["version"]
 
     deploy_base = site_url + "/wp-json/raos-codex-deploy/v1"
     _, deploy_status_body, _ = request(deploy_base + "/status", *operator)

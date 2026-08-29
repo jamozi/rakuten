@@ -18,7 +18,7 @@ import zipfile
 ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE: Final = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN_SLUG: Final = "raos-codex-mcp-abilities"
-PLUGIN_VERSION: Final = "1.2.0"
+PLUGIN_VERSION: Final = "1.2.1"
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
 MANIFEST: Final = SLICE / "runtime-manifest.v1.json"
 OUTPUT: Final = (
@@ -39,9 +39,14 @@ RUNTIME_PATHS: Final = (
     "changes/wordpress-local-preview-v1/README.md",
     "changes/wordpress-local-preview-v1/bin/wordpress_preview.sh",
     "changes/wordpress-local-preview-v1/compose.yaml",
+    "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
+    "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
     "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
+    "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
+    "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
     "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
     "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
+    "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
     "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
     "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
     "changes/wordpress-local-preview-v1/fixtures/posts.json",
