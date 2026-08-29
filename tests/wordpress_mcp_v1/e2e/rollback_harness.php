@@ -154,6 +154,9 @@ $restore = raos_e2e_rollback_method('restore_code_before');
 $invalidate_php = raos_e2e_rollback_method('invalidate_php_manifest');
 $tree_manifest = raos_e2e_rollback_method('tree_manifest');
 $apply_content = raos_e2e_rollback_method('apply_content');
+$complete_recovered_content = raos_e2e_rollback_method('complete_recovered_content');
+$complete_recovered_code = raos_e2e_rollback_method('complete_recovered_code');
+$finalize_applied = raos_e2e_rollback_method('finalize_applied_receipt');
 $write_content = raos_e2e_rollback_method('write_content_document');
 $begin_content = raos_e2e_rollback_method('begin_content_transaction');
 $rollback_content = raos_e2e_rollback_method('rollback_content_transaction');
@@ -162,6 +165,53 @@ $batch_status_method = raos_e2e_rollback_method('publication_batch_status');
 $acquire_publication_lock = raos_e2e_rollback_method('acquire_publication_mutation_lock');
 $release_publication_lock = raos_e2e_rollback_method('release_operation_lock');
 $deployment = new RAOS_Codex_MCP_Deployment(null);
+
+// Deferred cleanup never reports success while a broken recovery symlink is
+// still present. This fixes both the approval-lease and code-operation paths.
+$broken_lease_id = hash('sha256', 'raos-e2e-broken-recovery-lease');
+$broken_lease = $private . '/approval-lease-' . $broken_lease_id . '.json';
+symlink($fixture_root . '/missing-lease-target', $broken_lease);
+$broken_lease_row = array(
+    'proposal_id' => $broken_lease_id,
+    'kind' => 'CONTENT_RELEASE',
+    'state' => 'APPLIED',
+    'receipt' => array('state' => 'APPLIED'),
+);
+$broken_lease_result = $finalize_applied->invoke(null, $broken_lease_row);
+if (! is_wp_error($broken_lease_result)
+    || 'raos_codex_recovery_cleanup_indeterminate' !== $broken_lease_result->get_error_code()
+    || ! is_link($broken_lease)) {
+    raos_e2e_rollback_fail('RAOS_E2E_RECOVERY_BROKEN_LEASE_CLEANUP_FAILED');
+}
+@unlink($broken_lease);
+
+$broken_root_id = hash('sha256', 'raos-e2e-broken-recovery-root');
+$broken_root = $private . '/operation-' . $broken_root_id;
+$theme_target = get_theme_root(RAOS_Codex_MCP_Deployment::THEME_SLUG)
+    . '/' . RAOS_Codex_MCP_Deployment::THEME_SLUG;
+$theme_hash = RAOS_Codex_MCP_Deployment::tree_hash($theme_target);
+symlink($fixture_root . '/missing-operation-target', $broken_root);
+$broken_root_row = array(
+    'proposal_id' => $broken_root_id,
+    'kind' => 'THEME_RELEASE',
+    'state' => 'APPLIED',
+    'after_sha256' => $theme_hash,
+    'payload' => array(
+        'code_package' => array(
+            'kind' => 'theme',
+            'slug' => RAOS_Codex_MCP_Deployment::THEME_SLUG,
+        ),
+    ),
+    'receipt' => array('state' => 'APPLIED'),
+);
+$broken_root_result = $finalize_applied->invoke(null, $broken_root_row);
+if (is_wp_error($theme_hash)
+    || ! is_wp_error($broken_root_result)
+    || 'raos_codex_recovery_cleanup_indeterminate' !== $broken_root_result->get_error_code()
+    || ! is_link($broken_root)) {
+    raos_e2e_rollback_fail('RAOS_E2E_RECOVERY_BROKEN_ROOT_CLEANUP_FAILED');
+}
+@unlink($broken_root);
 
 // The installed descriptor manifest is the sole invalidation allow-list. Only
 // its exact PHP path is invalidated and force=true is mandatory. The injected
@@ -1698,6 +1748,123 @@ $wpdb->delete(
 wp_delete_post($post_id, true);
 wp_delete_user((int) $approver_id);
 
+// Non-equivalent recovery locks the exact after document and operation row in
+// one transaction. A same-connection injected wp-admin-style third edit just
+// before the authoritative readback is rolled back, remains APPLYING, and does
+// not consume the approval lease. The unchanged retry may then complete.
+$post_id = raos_e2e_create_post('recovery-final-cas');
+$before = RAOS_Codex_MCP_Content::document($post_id);
+$after = raos_e2e_after_document($before);
+$payload = array(
+    'schema' => 'ContentReleaseProposalV1',
+    'target_status' => 'publish',
+    'before' => $before,
+    'after' => $after,
+    'before_sha256' => $before['content_sha256'],
+    'after_sha256' => $after['content_sha256'],
+    'publication_manifest_sha256' => raos_e2e_publication_manifest_hash($before, $after),
+);
+$row = RAOS_Codex_MCP_Store::create(
+    'CONTENT_RELEASE',
+    $payload,
+    $before['content_sha256'],
+    $after['content_sha256']
+);
+$published = is_wp_error($row) ? $row : $write_content->invoke(null, $after);
+$recovery_after = is_wp_error($published)
+    ? $published
+    : RAOS_Codex_MCP_Content::document($post_id);
+if (is_wp_error($row) || is_wp_error($published) || is_wp_error($recovery_after)) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_RECOVERY_FINAL_CAS_SETUP_FAILED');
+}
+$wpdb->update(
+    RAOS_Codex_MCP_Store::table_name(),
+    array(
+        'state' => 'APPLYING',
+        'result_code' => 'OPERATION_APPLYING',
+        'applying_at_gmt' => gmdate('Y-m-d H:i:s', time() - 300),
+    ),
+    array('proposal_id' => $row['proposal_id'])
+);
+$lease_path = $private . '/approval-lease-' . $row['proposal_id'] . '.json';
+file_put_contents($lease_path, 'recovery-lease-evidence');
+chmod($lease_path, 0600);
+$race = $complete_recovered_content->invoke(
+    $deployment,
+    $row,
+    RAOS_Codex_MCP_Deployment::active_theme_tree_sha256(),
+    static function ($expected) {
+        wp_update_post(
+            array(
+                'ID' => (int) $expected['id'],
+                'post_title' => 'Injected third state before final recovery readback',
+            )
+        );
+    }
+);
+$race_stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+$race_content = RAOS_Codex_MCP_Content::document($post_id);
+if (! is_wp_error($race)
+    || 'raos_codex_recovery_content_drift' !== $race->get_error_code()
+    || ! raos_e2e_recovery_required($race)
+    || is_wp_error($race_stored)
+    || 'APPLYING' !== $race_stored['state']
+    || ! is_file($lease_path)
+    || ! is_array($race_content)
+    || ! hash_equals($after['content_sha256'], $race_content['content_sha256'])
+    || $recovery_after['revision_id'] !== $race_content['revision_id']
+    || ! hash_equals($recovery_after['modified_gmt'], $race_content['modified_gmt'])
+    || $recovery_after['taxonomies'] !== $race_content['taxonomies']) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_RECOVERY_FINAL_CAS_FAILED');
+}
+$commit_failure = $complete_recovered_content->invoke(
+    $deployment,
+    $row,
+    RAOS_Codex_MCP_Deployment::active_theme_tree_sha256(),
+    null,
+    static function () {
+        return false;
+    }
+);
+$commit_failure_stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+$commit_failure_content = RAOS_Codex_MCP_Content::document($post_id);
+if (! is_wp_error($commit_failure)
+    || 'raos_codex_recovery_content_commit_indeterminate' !== $commit_failure->get_error_code()
+    || ! raos_e2e_recovery_required($commit_failure)
+    || is_wp_error($commit_failure_stored)
+    || 'APPLYING' !== $commit_failure_stored['state']
+    || ! is_file($lease_path)
+    || ! is_array($commit_failure_content)
+    || ! hash_equals($after['content_sha256'], $commit_failure_content['content_sha256'])
+    || $recovery_after['revision_id'] !== $commit_failure_content['revision_id']
+    || ! hash_equals(
+        $recovery_after['modified_gmt'],
+        $commit_failure_content['modified_gmt']
+    )
+    || $recovery_after['taxonomies'] !== $commit_failure_content['taxonomies']) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_RECOVERY_COMMIT_FAILED');
+}
+$receipt = $complete_recovered_content->invoke(
+    $deployment,
+    $row,
+    RAOS_Codex_MCP_Deployment::active_theme_tree_sha256()
+);
+$stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+$completed_content = RAOS_Codex_MCP_Content::document($post_id);
+if (! is_array($receipt)
+    || 'OPERATION_RECOVERED_AFTER_READBACK' !== $receipt['result_code']
+    || is_wp_error($stored)
+    || 'APPLIED' !== $stored['state']
+    || file_exists($lease_path)
+    || ! is_array($completed_content)
+    || $recovery_after['revision_id'] !== $completed_content['revision_id']
+    || ! hash_equals($recovery_after['modified_gmt'], $completed_content['modified_gmt'])
+    || $recovery_after['taxonomies'] !== $completed_content['taxonomies']) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_RECOVERY_FINAL_CAS_RETRY_FAILED');
+}
+$wpdb->delete(RAOS_Codex_MCP_Store::table_name(), array('proposal_id' => $row['proposal_id']));
+wp_delete_post($post_id, true);
+
 // Recover on an APPLYING content operation with a third hash must not write the
 // immutable before document over the later edit.
 $post_id = raos_e2e_create_post('recover-drift');
@@ -1913,6 +2080,179 @@ $wpdb->delete(
 );
 @unlink($private . '/operation-lock-' . $row['proposal_id'] . '.lock');
 wp_delete_user((int) $equal_theme_approver_id);
+
+// The code recovery finalizer re-hashes the whole tree and re-checks plugin
+// activation immediately before and after receipt storage. Pre-receipt drift
+// stays APPLYING; post-receipt drift keeps the backup and lease so every later
+// APPLIED retry fails closed until the exact after state is restored.
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
+$slug = 'raos-e2e-final-cas-' . bin2hex(random_bytes(4));
+$plugin_file = $slug . '/' . $slug . '.php';
+$target = WP_PLUGIN_DIR . '/' . $slug;
+$before_template = $fixture_root . '/code-recovery-final-cas-before';
+mkdir($target, 0700, true);
+mkdir($before_template, 0700, true);
+file_put_contents(
+    $target . '/' . $slug . '.php',
+    "<?php\n/*\nPlugin Name: RAOS recovery final CAS\nVersion: 1.0.0\n*/\n"
+);
+file_put_contents($target . '/style.css', "body{color:green}\n");
+file_put_contents(
+    $before_template . '/' . $slug . '.php',
+    "<?php\n/*\nPlugin Name: RAOS recovery final CAS\nVersion: 0.9.0\n*/\n"
+);
+$before_hash = RAOS_Codex_MCP_Deployment::tree_hash($before_template);
+$after_hash = RAOS_Codex_MCP_Deployment::tree_hash($target);
+$row = RAOS_Codex_MCP_Store::create(
+    'PLUGIN_CHANGE',
+    array(
+        'schema' => 'CodeReleaseProposalV1',
+        'kind' => 'PLUGIN_CHANGE',
+        'code_package' => array(
+            'kind' => 'plugin',
+            'slug' => $slug,
+            'activation_intent' => 'activate',
+        ),
+    ),
+    $before_hash,
+    $after_hash
+);
+if (is_wp_error($row)) {
+    raos_e2e_rollback_fail('RAOS_E2E_CODE_RECOVERY_FINAL_CAS_SETUP_FAILED');
+}
+$operation_root = $private . '/operation-' . $row['proposal_id'];
+$backup = $operation_root . '/before';
+mkdir($operation_root, 0700, true);
+rename($before_template, $backup);
+$plugin_state = array(
+    'old_file' => null,
+    'old_active' => false,
+    'new_file' => $plugin_file,
+);
+$plugin_state_payload = RAOS_Codex_MCP_Store::canonical_json($plugin_state);
+$plugin_state_path = $operation_root . '/plugin-before-state.json';
+file_put_contents($plugin_state_path, $plugin_state_payload);
+chmod($plugin_state_path, 0600);
+$activation = activate_plugin($plugin_file, '', false, true);
+$wpdb->update(
+    RAOS_Codex_MCP_Store::table_name(),
+    array(
+        'state' => 'APPLYING',
+        'result_code' => 'OPERATION_APPLYING',
+        'applying_at_gmt' => gmdate('Y-m-d H:i:s', time() - 300),
+    ),
+    array('proposal_id' => $row['proposal_id'])
+);
+$lease_path = $private . '/approval-lease-' . $row['proposal_id'] . '.json';
+file_put_contents($lease_path, 'recovery-lease-evidence');
+chmod($lease_path, 0600);
+if (! is_string($plugin_state_payload)
+    || is_wp_error($activation)
+    || ! is_plugin_active($plugin_file)) {
+    raos_e2e_rollback_fail('RAOS_E2E_CODE_RECOVERY_FINAL_CAS_SETUP_FAILED');
+}
+$race = $complete_recovered_code->invoke(
+    null,
+    $row,
+    $target,
+    static function ($live_target) {
+        file_put_contents($live_target . '/style.css', "body{color:red}\n");
+    }
+);
+$race_stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+if (! is_wp_error($race)
+    || 'raos_codex_recovery_code_drift' !== $race->get_error_code()
+    || ! raos_e2e_recovery_required($race)
+    || is_wp_error($race_stored)
+    || 'APPLYING' !== $race_stored['state']
+    || ! is_dir($backup)
+    || ! is_file($lease_path)
+    || "body{color:red}\n" !== file_get_contents($target . '/style.css')) {
+    raos_e2e_rollback_fail('RAOS_E2E_CODE_RECOVERY_FINAL_CAS_FAILED');
+}
+file_put_contents($target . '/style.css', "body{color:green}\n");
+$activation_race = $complete_recovered_code->invoke(
+    null,
+    $row,
+    $target,
+    static function () use ($plugin_file) {
+        deactivate_plugins($plugin_file, true, false);
+    }
+);
+$activation_race_stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+if (! is_wp_error($activation_race)
+    || 'raos_codex_recovery_plugin_activation_drift' !== $activation_race->get_error_code()
+    || ! raos_e2e_recovery_required($activation_race)
+    || is_wp_error($activation_race_stored)
+    || 'APPLYING' !== $activation_race_stored['state']
+    || is_plugin_active($plugin_file)
+    || ! is_dir($backup)
+    || ! is_file($lease_path)) {
+    raos_e2e_rollback_fail('RAOS_E2E_PLUGIN_RECOVERY_FINAL_CAS_FAILED');
+}
+$activation = activate_plugin($plugin_file, '', false, true);
+if (is_wp_error($activation) || ! is_plugin_active($plugin_file)) {
+    raos_e2e_rollback_fail('RAOS_E2E_PLUGIN_RECOVERY_FINAL_CAS_SETUP_FAILED');
+}
+$postcomplete = $complete_recovered_code->invoke(
+    null,
+    $row,
+    $target,
+    null,
+    static function ($live_target) use ($plugin_file) {
+        file_put_contents($live_target . '/style.css', "body{color:red}\n");
+        deactivate_plugins($plugin_file, true, false);
+    }
+);
+$postcomplete_stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+if (! is_wp_error($postcomplete)
+    || 'raos_codex_recovery_code_postcomplete_drift' !== $postcomplete->get_error_code()
+    || ! raos_e2e_recovery_required($postcomplete)
+    || is_wp_error($postcomplete_stored)
+    || 'APPLIED' !== $postcomplete_stored['state']
+    || ! is_dir($backup)
+    || ! is_file($lease_path)
+    || is_plugin_active($plugin_file)
+    || "body{color:red}\n" !== file_get_contents($target . '/style.css')) {
+    raos_e2e_rollback_fail('RAOS_E2E_CODE_RECOVERY_POSTCOMPLETE_CAS_FAILED');
+}
+$request = new WP_REST_Request('POST', '/');
+$request->set_url_params(array('operation_id' => $row['proposal_id']));
+$postcomplete_retry = $deployment->recover_operation($request);
+if (! is_wp_error($postcomplete_retry)
+    || 'raos_codex_recovery_code_postcomplete_drift' !== $postcomplete_retry->get_error_code()
+    || ! is_dir($backup)
+    || ! is_file($lease_path)) {
+    raos_e2e_rollback_fail('RAOS_E2E_CODE_RECOVERY_POSTCOMPLETE_RETRY_FAILED');
+}
+file_put_contents($target . '/style.css', "body{color:green}\n");
+$activation_retry = $deployment->recover_operation($request);
+if (! is_wp_error($activation_retry)
+    || 'raos_codex_recovery_plugin_activation_drift' !== $activation_retry->get_error_code()
+    || ! is_dir($backup)
+    || ! is_file($lease_path)) {
+    raos_e2e_rollback_fail('RAOS_E2E_PLUGIN_RECOVERY_POSTCOMPLETE_RETRY_FAILED');
+}
+$activation = activate_plugin($plugin_file, '', false, true);
+$receipt = is_wp_error($activation)
+    ? $activation
+    : $deployment->recover_operation($request);
+$stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+$idempotent = $deployment->recover_operation($request);
+if (! is_array($receipt)
+    || 'OPERATION_RECOVERED_AFTER_READBACK' !== $receipt['result_code']
+    || is_wp_error($stored)
+    || 'APPLIED' !== $stored['state']
+    || file_exists($operation_root)
+    || file_exists($lease_path)
+    || ! is_plugin_active($plugin_file)
+    || $idempotent !== $receipt) {
+    raos_e2e_rollback_fail('RAOS_E2E_CODE_RECOVERY_FINAL_CAS_RETRY_FAILED');
+}
+$wpdb->delete(RAOS_Codex_MCP_Store::table_name(), array('proposal_id' => $row['proposal_id']));
+deactivate_plugins($plugin_file, true, false);
+@unlink($private . '/operation-lock-' . $row['proposal_id'] . '.lock');
+raos_e2e_rollback_remove_tree($target);
 
 // Equivalent public recover drift test for a code tree with a preserved backup.
 $slug = 'raos-e2e-recovery-drift';

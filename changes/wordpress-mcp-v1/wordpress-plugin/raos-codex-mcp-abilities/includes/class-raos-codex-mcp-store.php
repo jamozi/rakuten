@@ -2375,12 +2375,19 @@ final class RAOS_Codex_MCP_Store
         return true;
     }
 
-    public static function complete($proposal_id, $result_code, $before_sha256, $after_sha256)
+    public static function complete(
+        $proposal_id,
+        $result_code,
+        $before_sha256,
+        $after_sha256,
+        $defer_approval_lease_cleanup = false
+    )
     {
         global $wpdb;
         if (! preg_match('/\A[A-Z0-9_]{3,96}\z/D', $result_code)
             || (! is_null($before_sha256) && ! self::is_sha256($before_sha256))
-            || (! is_null($after_sha256) && ! self::is_sha256($after_sha256))) {
+            || (! is_null($after_sha256) && ! self::is_sha256($after_sha256))
+            || ! is_bool($defer_approval_lease_cleanup)) {
             return new WP_Error('raos_codex_receipt_invalid', 'Receipt is invalid.', array('status' => 500));
         }
         $row = self::get($proposal_id);
@@ -2418,7 +2425,9 @@ final class RAOS_Codex_MCP_Store
         if (1 !== $updated) {
             return new WP_Error('raos_codex_receipt_conflict', 'Receipt storage conflicted.', array('status' => 409));
         }
-        RAOS_Codex_MCP_Deployment::remove_approval_lease($proposal_id);
+        if (! $defer_approval_lease_cleanup) {
+            RAOS_Codex_MCP_Deployment::remove_approval_lease($proposal_id);
+        }
         return $receipt;
     }
 

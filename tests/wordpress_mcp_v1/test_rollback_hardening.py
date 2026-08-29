@@ -24,7 +24,7 @@ def test_only_confirmed_rollbacks_are_terminalized() -> None:
     assert "! self::error_requires_recovery($receipt)" in apply
     assert "raos_codex_operation_recovery_required" in apply
 
-    content = method("apply_content", "begin_content_transaction")
+    content = method("apply_content", "complete_recovered_content")
     assert "begin_content_transaction" in content
     assert content.count("rollback_content_transaction") == 3
     assert "recoverable_from_error($receipt)" in content
@@ -74,6 +74,11 @@ def test_plugin_activation_recovery_is_not_inferred_from_tree_hash_alone() -> No
     assert recover.count("recover_plugin_activation") == 3
     assert "plugin_state_matches_before" in code
     assert "plugin_state_matches_after" in code
+    verifier = method("verify_recovered_code_after", "finalize_applied_receipt")
+    assert verifier.index("self::tree_hash($target)") < verifier.index(
+        "self::plugin_state_matches_after"
+    )
+    assert "raos_codex_recovery_plugin_activation_drift" in verifier
 
 
 def test_content_compare_and_swap_locks_then_rechecks_precondition() -> None:
@@ -95,7 +100,7 @@ def test_content_compare_and_swap_locks_then_rechecks_precondition() -> None:
 
 
 def test_equivalent_content_apply_is_a_locked_assertion_without_a_post_write() -> None:
-    content = method("apply_content", "cleanup_completed_code_operation")
+    content = method("apply_content", "complete_recovered_content")
     assert "$equivalent_release = hash_equals(" in content
     assert content.index("begin_content_transaction") < content.index(
         "$equivalent_release = hash_equals("
@@ -129,7 +134,7 @@ def test_equivalent_content_recovery_replays_the_exact_batch_assertion() -> None
     assert "$this->apply_content(" in equivalent
     assert "RAOS_Codex_MCP_Store::complete(" not in equivalent
     assert recover.index("get_claimed_publication_batch_for_proposal") < recover.index(
-        "RAOS_Codex_MCP_Store::complete("
+        "$this->complete_recovered_content("
     )
 
 
@@ -254,8 +259,8 @@ def test_code_rollback_and_recovery_never_terminalize_stale_php_runtime() -> Non
 
     recover = method("recover_operation", "apply_content")
     after_runtime = recover.index("self::invalidate_php_manifest")
-    after_receipt = recover.index("RAOS_Codex_MCP_Store::complete")
-    assert after_runtime < after_receipt
+    after_finalizer = recover.index("self::complete_recovered_code")
+    assert after_runtime < after_finalizer
     assert recover.count("self::invalidate_php_manifest") == 2
     after_branch = recover.split("if (is_string($current_hash)", 1)[1].split(
         "if (! $current_read_error", 1
@@ -264,7 +269,7 @@ def test_code_rollback_and_recovery_never_terminalize_stale_php_runtime() -> Non
         "self::validate_approval_lease($row)"
     ) < after_branch.index("self::invalidate_php_manifest")
     assert after_branch.index("self::validate_approval_lease($row)") < after_branch.index(
-        "RAOS_Codex_MCP_Store::complete("
+        "self::complete_recovered_code("
     )
     assert "self::recoverable_from_error($invalidation)" in recover
     invalidation_failure = recover.split("if (is_wp_error($invalidation))", 1)[1]
@@ -287,7 +292,7 @@ def test_equal_code_hash_recovery_requires_exact_install_backup_evidence() -> No
     assert "remove_tree" not in equal
     assert "restore_code_before" not in equal
     assert recover.index("$equal_code_hashes") < recover.index(
-        "RAOS_Codex_MCP_Store::complete("
+        "self::complete_recovered_code("
     )
 
 
@@ -311,18 +316,111 @@ def test_equivalent_content_recovery_rechecks_gate_and_approval_lease() -> None:
     assert "raos_codex_global_kill_switch_disabled" in apply_gate
 
 
-def test_deployment_status_exposes_loaded_theme_runtime_version() -> None:
+def test_non_equivalent_content_recovery_linearizes_cas_and_receipt() -> None:
+    recover = method("recover_operation", "apply_content")
+    assert recover.index("self::validate_approval_lease($row)") < recover.index(
+        "$this->complete_recovered_content("
+    )
+
+    content = method("complete_recovered_content", "complete_recovered_code")
+    assert "begin_content_transaction(" in content
+    assert "false," in content
+    assert "true" in content
+    assert content.index("RAOS_Codex_MCP_Content::document") < content.index(
+        "RAOS_Codex_MCP_Store::complete("
+    )
+    completion = content.split("RAOS_Codex_MCP_Store::complete(", 1)[1].split(
+        ");", 1
+    )[0]
+    assert "true" in completion
+    assert content.index("RAOS_Codex_MCP_Store::complete(") < content.index(
+        "$wpdb->query('COMMIT')"
+    )
+    assert content.index("$wpdb->query('COMMIT')") < content.rindex(
+        "self::finalize_applied_receipt"
+    )
+    assert "'APPLIED' === $stored['state']" in content
+    assert "raos_codex_recovery_content_commit_indeterminate" in content
+    assert "$commit_transaction" in content
+    assert "! $commit_allowed" in content
+    assert "raos_codex_recovery_content_drift" in content
+
+    transaction = method("begin_content_transaction", "rollback_content_transaction")
+    assert "$include_operation_store" in transaction
+    assert "RAOS_Codex_MCP_Store::table_name()" in transaction
+
+    store = (
+        ROOT
+        / "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/includes/class-raos-codex-mcp-store.php"
+    ).read_text(encoding="utf-8")
+    complete = store.split("function complete", 1)[1].split("function mark_failed", 1)[0]
+    assert "$defer_approval_lease_cleanup = false" in complete
+    assert "if (! $defer_approval_lease_cleanup)" in complete
+
+
+def test_code_recovery_rechecks_full_tree_around_receipt_storage() -> None:
+    recover = method("recover_operation", "apply_content")
+    assert recover.index("self::invalidate_php_manifest") < recover.index(
+        "self::complete_recovered_code("
+    )
+    code = method("complete_recovered_code", "verify_recovered_code_after")
+    before = code.index("$final_before = self::verify_recovered_code_after")
+    receipt = code.index("RAOS_Codex_MCP_Store::complete(")
+    after = code.index("self::finalize_applied_receipt($completed)")
+    assert before < receipt < after
+    assert "raos_codex_recovery_code_drift" in code
+    assert "raos_codex_recovery_code_postcomplete_drift" in code
+    assert "$after_receipt_stored" in code
+
+    verifier = method("verify_recovered_code_after", "finalize_applied_receipt")
+    assert "self::tree_hash($target)" in verifier
+    assert "self::plugin_state_matches_after" in verifier
+    assert "raos_codex_recovery_plugin_activation_drift" in verifier
+
+    applied = method("finalize_applied_receipt", "cleanup_completed_code_operation")
+    assert "$deferred_cleanup" in applied
+    assert applied.index("self::verify_recovered_code_after") < applied.index(
+        "self::remove_approval_lease"
+    )
+    assert applied.index("self::verify_recovered_code_after") < applied.index(
+        "self::cleanup_completed_code_operation"
+    )
+    assert "raos_codex_recovery_code_postcomplete_drift" in applied
+    assert "file_exists($operation_root) || is_link($operation_root)" in applied
+    assert "file_exists($lease_path) || is_link($lease_path)" in applied
+    assert "raos_codex_recovery_cleanup_indeterminate" in applied
+
+    lease = method("remove_approval_lease", "acquire_operation_lock")
+    assert lease.index("if (is_link($path))") < lease.index(
+        "if (! file_exists($path))"
+    )
+    assert "return is_file($path) && @unlink($path)" in lease
+
+    apply = method("apply_proposal", "recover_operation")
+    recover = method("recover_operation", "apply_content")
+    assert apply.count("self::finalize_applied_receipt") == 2
+    assert recover.count("self::finalize_applied_receipt") == 1
+
+
+def test_deployment_status_exposes_loaded_theme_runtime_identity() -> None:
     status = method("status", "active_theme_tree_sha256")
     assert "get_stylesheet() === self::THEME_SLUG" in status
     assert "defined('KURASHINOSHIRUBE_THEME_VERSION')" in status
     assert "constant('KURASHINOSHIRUBE_THEME_VERSION')" in status
     assert "'runtime_version' => $theme_runtime_version" in status
+    assert "defined('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
+    assert "constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
+    assert "'runtime_revision' => $theme_runtime_revision" in status
     assert ": null" in status
 
     client = (ROOT / "tests/wordpress_mcp_v1/e2e/client.py").read_text(
         encoding="utf-8"
     )
     assert 'status["theme"]["runtime_version"] == status["theme"]["version"]' in client
+    assert (
+        'status["theme"]["runtime_revision"] == EXPECTED_THEME_RUNTIME_REVISION'
+        in client
+    )
 
 
 def test_content_and_theme_apply_are_bound_to_the_exact_ready_batch() -> None:
@@ -464,6 +562,15 @@ def test_disposable_e2e_has_concrete_failure_injection_cases() -> None:
         "RAOS_E2E_CONTENT_EQUIVALENT_NO_WRITE_FAILED",
         "RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_BINDING_FAILED",
         "RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_FAILED",
+        "RAOS_E2E_CONTENT_RECOVERY_FINAL_CAS_FAILED",
+        "RAOS_E2E_CONTENT_RECOVERY_COMMIT_FAILED",
+        "RAOS_E2E_CODE_RECOVERY_FINAL_CAS_FAILED",
+        "RAOS_E2E_PLUGIN_RECOVERY_FINAL_CAS_FAILED",
+        "RAOS_E2E_CODE_RECOVERY_POSTCOMPLETE_CAS_FAILED",
+        "RAOS_E2E_CODE_RECOVERY_POSTCOMPLETE_RETRY_FAILED",
+        "RAOS_E2E_PLUGIN_RECOVERY_POSTCOMPLETE_RETRY_FAILED",
+        "RAOS_E2E_RECOVERY_BROKEN_LEASE_CLEANUP_FAILED",
+        "RAOS_E2E_RECOVERY_BROKEN_ROOT_CLEANUP_FAILED",
         "RAOS_E2E_CONTENT_ONLY_THEME_REGISTER_DRIFT_FAILED",
         "RAOS_E2E_CONTENT_ONLY_THEME_APPROVAL_DRIFT_FAILED",
         "RAOS_E2E_CONTENT_ONLY_THEME_CLAIM_DRIFT_FAILED",

@@ -643,8 +643,7 @@ final class RAOS_Codex_MCP_Deployment
                 return $batch_authorization;
             }
             if ('APPLIED' === $row['state'] && is_array($row['receipt'])) {
-                self::cleanup_completed_code_operation($row);
-                return $row['receipt'];
+                return self::finalize_applied_receipt($row);
             }
             $gate = self::apply_gate($row['kind']);
             if (is_wp_error($gate)) {
@@ -670,8 +669,7 @@ final class RAOS_Codex_MCP_Deployment
                 return $claimed;
             }
             if ('APPLIED' === $claimed['state'] && is_array($claimed['receipt'])) {
-                self::cleanup_completed_code_operation($claimed);
-                return $claimed['receipt'];
+                return self::finalize_applied_receipt($claimed);
             }
             $authorization = self::validate_approval_lease($claimed);
             if (is_wp_error($authorization)) {
@@ -744,8 +742,7 @@ final class RAOS_Codex_MCP_Deployment
                 }
             }
             if ('APPLIED' === $row['state'] && is_array($row['receipt'])) {
-                self::cleanup_completed_code_operation($row);
-                return $row['receipt'];
+                return self::finalize_applied_receipt($row);
             }
             if ('APPLYING' !== $row['state']) {
                 return RAOS_Codex_MCP_Store::public_operation($row);
@@ -915,6 +912,10 @@ final class RAOS_Codex_MCP_Deployment
                             409
                         );
                     }
+                    return $this->complete_recovered_content(
+                        $row,
+                        $batch['manifest']['expected_theme_tree_sha256']
+                    );
                 }
                 if ('CONTENT_RELEASE' !== $row['kind']) {
                     $descriptor = isset($row['payload']['code_package'])
@@ -998,19 +999,7 @@ final class RAOS_Codex_MCP_Deployment
                         return $plugin_recovery;
                     }
                 }
-                $receipt = RAOS_Codex_MCP_Store::complete(
-                    $row['proposal_id'],
-                    'OPERATION_RECOVERED_AFTER_READBACK',
-                    $row['before_sha256'],
-                    $current_hash
-                );
-                if (! is_wp_error($receipt)) {
-                    $completed = RAOS_Codex_MCP_Store::get($row['proposal_id']);
-                    if (! is_wp_error($completed) && 'APPLIED' === $completed['state']) {
-                        self::cleanup_completed_code_operation($completed);
-                    }
-                }
-                return $receipt;
+                return self::complete_recovered_code($row, $target);
             }
             if (! $current_read_error
                 && ((is_null($row['before_sha256']) && is_null($current_hash) && ! $target_exists)
@@ -1211,6 +1200,337 @@ final class RAOS_Codex_MCP_Deployment
         return $receipt;
     }
 
+    /**
+     * Complete an interrupted non-equivalent content release while the exact
+     * after document and operation receipt remain in one database transaction.
+     * The optional callback is private failure injection for the disposable E2E.
+     */
+    private function complete_recovered_content(
+        $row,
+        $expected_theme_tree_sha256,
+        $before_final_readback = null,
+        $commit_transaction = null
+    ) {
+        $after = isset($row['payload']['after']) && is_array($row['payload']['after'])
+            ? $row['payload']['after']
+            : null;
+        if (! is_array($after)
+            || ! isset($after['id'], $after['post_type'])
+            || ! is_string($row['after_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($expected_theme_tree_sha256)
+            || (! is_null($before_final_readback) && ! is_callable($before_final_readback))
+            || (! is_null($commit_transaction) && ! is_callable($commit_transaction))) {
+            return self::recoverable_error(
+                'raos_codex_recovery_content_precondition_indeterminate',
+                500
+            );
+        }
+        $locked = self::begin_content_transaction(
+            $after,
+            $row['after_sha256'],
+            false,
+            true
+        );
+        if (is_wp_error($locked)) {
+            return self::recoverable_from_error($locked);
+        }
+        if (is_callable($before_final_readback)) {
+            try {
+                $before_final_readback($after);
+            } catch (Throwable $error) {
+                unset($error);
+                $rollback = self::rollback_content_transaction(
+                    $after,
+                    $row['after_sha256']
+                );
+                return true === $rollback
+                    ? self::recoverable_error('raos_codex_recovery_content_drift', 409)
+                    : $rollback;
+            }
+        }
+        self::clean_content_read_cache((int) $after['id'], $after['post_type']);
+        $final = RAOS_Codex_MCP_Content::document((int) $after['id']);
+        if (! is_array($final)
+            || ! isset($final['content_sha256'])
+            || ! hash_equals($row['after_sha256'], $final['content_sha256'])) {
+            $rollback = self::rollback_content_transaction(
+                $after,
+                $row['after_sha256']
+            );
+            return true === $rollback
+                ? self::recoverable_error('raos_codex_recovery_content_drift', 409)
+                : $rollback;
+        }
+        $theme_readback = self::active_theme_tree_sha256();
+        if (is_wp_error($theme_readback)
+            || ! hash_equals($expected_theme_tree_sha256, $theme_readback)) {
+            $rollback = self::rollback_content_transaction(
+                $after,
+                $row['after_sha256']
+            );
+            if (true !== $rollback) {
+                return $rollback;
+            }
+            return self::recoverable_error(
+                is_wp_error($theme_readback)
+                    ? 'raos_codex_recovery_content_theme_readback_failed'
+                    : 'raos_codex_recovery_content_theme_drift',
+                is_wp_error($theme_readback) ? 503 : 409
+            );
+        }
+        $receipt = RAOS_Codex_MCP_Store::complete(
+            $row['proposal_id'],
+            'OPERATION_RECOVERED_AFTER_READBACK',
+            $row['before_sha256'],
+            $final['content_sha256'],
+            true
+        );
+        if (is_wp_error($receipt)) {
+            $rollback = self::rollback_content_transaction(
+                $after,
+                $row['after_sha256']
+            );
+            return true === $rollback
+                ? self::recoverable_from_error($receipt)
+                : $rollback;
+        }
+        global $wpdb;
+        $commit_allowed = true;
+        if (is_callable($commit_transaction)) {
+            try {
+                $commit_allowed = $commit_transaction();
+            } catch (Throwable $error) {
+                unset($error);
+                $commit_allowed = false;
+            }
+        }
+        if (! is_bool($commit_allowed)
+            || ! $commit_allowed
+            || false === $wpdb->query('COMMIT')) {
+            $wpdb->query('ROLLBACK');
+            self::clean_content_read_cache((int) $after['id'], $after['post_type']);
+            $stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+            if (is_array($stored)
+                && 'APPLIED' === $stored['state']
+                && is_array($stored['receipt'])) {
+                return self::finalize_applied_receipt($stored);
+            }
+            return self::recoverable_error(
+                'raos_codex_recovery_content_commit_indeterminate',
+                500
+            );
+        }
+        $completed = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+        if (is_wp_error($completed)
+            || 'APPLIED' !== $completed['state']
+            || ! is_array($completed['receipt'])) {
+            return is_wp_error($completed)
+                ? self::recoverable_from_error($completed)
+                : self::recoverable_error(
+                    'raos_codex_recovery_content_receipt_indeterminate',
+                    500
+                );
+        }
+        return self::finalize_applied_receipt($completed);
+    }
+
+    /**
+     * Re-read the entire code tree immediately before and after receipt storage.
+     * Deferred cleanup keeps the lease and exact backup available if the live
+     * tree changes during that narrow non-transactional filesystem window.
+     */
+    private static function complete_recovered_code(
+        $row,
+        $target,
+        $before_final_readback = null,
+        $after_receipt_stored = null
+    ) {
+        if (! is_array($row)
+            || ! is_string($target)
+            || ! is_string($row['after_sha256'])
+            || (! is_null($before_final_readback) && ! is_callable($before_final_readback))
+            || (! is_null($after_receipt_stored) && ! is_callable($after_receipt_stored))) {
+            return self::recoverable_error(
+                'raos_codex_recovery_code_readback_failed',
+                500
+            );
+        }
+        if (is_callable($before_final_readback)) {
+            try {
+                $before_final_readback($target);
+            } catch (Throwable $error) {
+                unset($error);
+                return self::recoverable_error('raos_codex_recovery_code_drift', 409);
+            }
+        }
+        $final_before = self::verify_recovered_code_after(
+            $row,
+            $target,
+            'raos_codex_recovery_code_drift'
+        );
+        if (true !== $final_before) {
+            return $final_before;
+        }
+        $receipt = RAOS_Codex_MCP_Store::complete(
+            $row['proposal_id'],
+            'OPERATION_RECOVERED_AFTER_READBACK',
+            $row['before_sha256'],
+            $row['after_sha256'],
+            true
+        );
+        if (is_wp_error($receipt)) {
+            return self::recoverable_from_error($receipt);
+        }
+        if (is_callable($after_receipt_stored)) {
+            try {
+                $after_receipt_stored($target);
+            } catch (Throwable $error) {
+                unset($error);
+                return self::recoverable_error(
+                    'raos_codex_recovery_code_postcomplete_drift',
+                    409
+                );
+            }
+        }
+        $completed = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+        if (is_wp_error($completed)
+            || 'APPLIED' !== $completed['state']
+            || ! is_array($completed['receipt'])) {
+            return is_wp_error($completed)
+                ? self::recoverable_from_error($completed)
+                : self::recoverable_error(
+                    'raos_codex_recovery_code_receipt_indeterminate',
+                    500
+                );
+        }
+        return self::finalize_applied_receipt($completed);
+    }
+
+    /**
+     * Require the whole installed tree and, for plugins, the saved activation
+     * intent to describe the exact proposal after state.
+     */
+    private static function verify_recovered_code_after($row, $target, $drift_code)
+    {
+        if (! is_array($row)
+            || ! isset($row['proposal_id'], $row['kind'], $row['after_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['proposal_id'])
+            || ! in_array($row['kind'], array('THEME_RELEASE', 'PLUGIN_CHANGE'), true)
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['after_sha256'])
+            || ! is_string($target)
+            || ! is_string($drift_code)
+            || preg_match('/\Araos_codex_[a-z0-9_]{3,96}\z/D', $drift_code) !== 1) {
+            return self::recoverable_error(
+                'raos_codex_recovery_code_readback_failed',
+                500
+            );
+        }
+        $descriptor = isset($row['payload']['code_package'])
+            && is_array($row['payload']['code_package'])
+                ? $row['payload']['code_package']
+                : null;
+        $expected_target = is_array($descriptor) ? self::target_path($descriptor) : null;
+        if (! is_string($expected_target) || ! hash_equals($expected_target, $target)) {
+            return self::recoverable_error(
+                'raos_codex_recovery_code_readback_failed',
+                500
+            );
+        }
+        $tree = is_dir($target) && ! is_link($target)
+            ? self::tree_hash($target)
+            : null;
+        if (! is_string($tree) || ! hash_equals($row['after_sha256'], $tree)) {
+            return self::recoverable_error($drift_code, 409);
+        }
+        if ('PLUGIN_CHANGE' === $row['kind']) {
+            $state = self::read_plugin_recovery_state($row['proposal_id']);
+            if (is_wp_error($state)) {
+                return self::recoverable_from_error($state);
+            }
+            if (! self::plugin_state_matches_after($descriptor, $state)) {
+                return self::recoverable_error(
+                    'raos_codex_recovery_plugin_activation_drift',
+                    409
+                );
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Finish cleanup for a receipt that was stored with deferred evidence. A
+     * normal already-clean APPLIED retry stays idempotent, while an interrupted
+     * recovery must prove the exact after state before its backup or lease is
+     * discarded.
+     */
+    private static function finalize_applied_receipt($row)
+    {
+        if (! is_array($row)
+            || ! isset($row['proposal_id'], $row['kind'], $row['state'])
+            || 'APPLIED' !== $row['state']
+            || ! is_array($row['receipt'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['proposal_id'])
+            || ! in_array(
+                $row['kind'],
+                array('CONTENT_RELEASE', 'THEME_RELEASE', 'PLUGIN_CHANGE'),
+                true
+            )) {
+            return self::recoverable_error(
+                'raos_codex_recovery_receipt_indeterminate',
+                500
+            );
+        }
+        $private = self::private_directory();
+        if (is_wp_error($private)) {
+            return self::recoverable_from_error($private);
+        }
+        $operation_root = $private . '/operation-' . $row['proposal_id'];
+        $lease_path = $private . '/approval-lease-' . $row['proposal_id'] . '.json';
+        $deferred_cleanup = file_exists($operation_root)
+            || is_link($operation_root)
+            || file_exists($lease_path)
+            || is_link($lease_path);
+        if (! $deferred_cleanup) {
+            return $row['receipt'];
+        }
+        if (in_array($row['kind'], array('THEME_RELEASE', 'PLUGIN_CHANGE'), true)) {
+            $descriptor = isset($row['payload']['code_package'])
+                && is_array($row['payload']['code_package'])
+                    ? $row['payload']['code_package']
+                    : null;
+            $target = is_array($descriptor) ? self::target_path($descriptor) : null;
+            $verified = self::verify_recovered_code_after(
+                $row,
+                $target,
+                'raos_codex_recovery_code_postcomplete_drift'
+            );
+            if (true !== $verified) {
+                return $verified;
+            }
+        }
+        if (! self::remove_approval_lease($row['proposal_id'])) {
+            return self::recoverable_error(
+                'raos_codex_recovery_cleanup_indeterminate',
+                500
+            );
+        }
+        if (file_exists($lease_path) || is_link($lease_path)) {
+            return self::recoverable_error(
+                'raos_codex_recovery_cleanup_indeterminate',
+                500
+            );
+        }
+        self::cleanup_completed_code_operation($row);
+        if (in_array($row['kind'], array('THEME_RELEASE', 'PLUGIN_CHANGE'), true)
+            && (file_exists($operation_root) || is_link($operation_root))) {
+            return self::recoverable_error(
+                'raos_codex_recovery_cleanup_indeterminate',
+                500
+            );
+        }
+        return $row['receipt'];
+    }
+
     private static function cleanup_completed_code_operation($row)
     {
         if (! is_array($row)
@@ -1239,16 +1559,33 @@ final class RAOS_Codex_MCP_Deployment
      * immutable precondition.  Standard wp-admin writes cannot pass between the
      * authoritative comparison and this transaction's content mutation.
      */
-    private static function begin_content_transaction($before, $before_sha256)
+    private static function begin_content_transaction(
+        $before,
+        $before_sha256,
+        $strict_revision_precondition = true,
+        $include_operation_store = false
+    )
     {
         global $wpdb;
         if (! is_array($before)
-            || ! isset($before['id'], $before['post_type'], $before['revision_id'], $before['modified_gmt'])
-            || ! is_string($before_sha256)) {
+            || ! isset($before['id'], $before['post_type'])
+            || ($strict_revision_precondition
+                && ! isset($before['revision_id'], $before['modified_gmt']))
+            || ! is_string($before_sha256)
+            || ! is_bool($strict_revision_precondition)
+            || ! is_bool($include_operation_store)) {
             return self::error('raos_codex_content_transaction_failed', 500);
         }
+        $transaction_tables = array(
+            $wpdb->posts,
+            $wpdb->term_relationships,
+            $wpdb->term_taxonomy,
+        );
+        if ($include_operation_store) {
+            $transaction_tables[] = RAOS_Codex_MCP_Store::table_name();
+        }
         $transactional = RAOS_Codex_MCP_Store::require_transactional_tables(
-            array($wpdb->posts, $wpdb->term_relationships, $wpdb->term_taxonomy)
+            $transaction_tables
         );
         if (is_wp_error($transactional)) {
             return $transactional;
@@ -1283,8 +1620,9 @@ final class RAOS_Codex_MCP_Deployment
         if (is_wp_error($current)
             || ! isset($current['content_sha256'], $current['revision_id'], $current['modified_gmt'])
             || ! hash_equals($before_sha256, $current['content_sha256'])
-            || (int) $current['revision_id'] !== (int) $before['revision_id']
-            || ! hash_equals($current['modified_gmt'], $before['modified_gmt'])) {
+            || ($strict_revision_precondition
+                && ((int) $current['revision_id'] !== (int) $before['revision_id']
+                    || ! hash_equals($current['modified_gmt'], $before['modified_gmt'])))) {
             $observed_hash = is_array($current) && isset($current['content_sha256'])
                 ? $current['content_sha256']
                 : null;
@@ -2770,10 +3108,16 @@ final class RAOS_Codex_MCP_Deployment
     public static function remove_approval_lease($proposal_id)
     {
         $path = self::approval_lease_path($proposal_id);
-        if (! is_string($path) || ! file_exists($path)) {
+        if (! is_string($path)) {
             return true;
         }
-        return ! is_link($path) && is_file($path) && @unlink($path);
+        if (is_link($path)) {
+            return false;
+        }
+        if (! file_exists($path)) {
+            return true;
+        }
+        return is_file($path) && @unlink($path);
     }
 
     private static function acquire_operation_lock($proposal_id)
