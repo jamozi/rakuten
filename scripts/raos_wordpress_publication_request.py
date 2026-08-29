@@ -1348,6 +1348,7 @@ def validate_site_status(status: Mapping[str, object]) -> None:
         or VERSION_RE.fullmatch(theme["version"]) is None
         or type(theme.get("runtime_version")) is not str
         or VERSION_RE.fullmatch(theme["runtime_version"]) is None
+        or "runtime_revision" not in theme
         or (
             theme.get("runtime_revision") is not None
             and (
@@ -2436,6 +2437,7 @@ def deployment_status(
         or VERSION_RE.fullmatch(theme["version"]) is None
         or type(theme.get("runtime_version")) is not str
         or VERSION_RE.fullmatch(theme["runtime_version"]) is None
+        or "runtime_revision" not in theme
         or (
             theme.get("runtime_revision") is not None
             and (
@@ -2932,6 +2934,8 @@ def wait_and_apply(
     receipt: dict[str, object],
     path: Path,
     runner: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run,
+    *,
+    finalize_applied: bool = False,
 ) -> dict[str, object]:
     proposal_ids = _registered_proposal_ids(receipt)
     operation_ids = _operation_ids(receipt)
@@ -2945,12 +2949,19 @@ def wait_and_apply(
     proposals = receipt.get("proposals")
     if type(proposals) is not list:
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
-    print("\nWordPress管理画面で内容を確認し、「一括承認」を押してください。")
-    print(f"承認対象バッチtoken末尾12文字: {batch_token[-12:]}")
-    print(f"入力するbatch manifest hash末尾8文字: {manifest_hash[-8:]}")
-    print(REVIEW_URL)
-    print("承認待機中です。このコマンドは閉じないでください。", flush=True)
-    _touch_receipt(path, receipt, "WAITING_FOR_APPROVAL")
+    if finalize_applied:
+        print(
+            "\n適用済みバッチのdeferred cleanupとruntime反映を確認中です。",
+            flush=True,
+        )
+        _touch_receipt(path, receipt, "FINALIZING_APPLIED")
+    else:
+        print("\nWordPress管理画面で内容を確認し、「一括承認」を押してください。")
+        print(f"承認対象バッチtoken末尾12文字: {batch_token[-12:]}")
+        print(f"入力するbatch manifest hash末尾8文字: {manifest_hash[-8:]}")
+        print(REVIEW_URL)
+        print("承認待機中です。このコマンドは閉じないでください。", flush=True)
+        _touch_receipt(path, receipt, "WAITING_FOR_APPROVAL")
     aggregate = _deployment_mcp_call(
         "release-wait-and-apply",
         {
@@ -3778,8 +3789,12 @@ def _resume_existing_all_attempt(
     validate_tool_contract(client.tools())
     validate_site_status(client.call("raos-codex-site-status", {}))
     read_content_operations(client, receipt)
-    if batch["state"] != "APPLIED":
-        wait_and_apply(receipt, path, deployment_runner)
+    wait_and_apply(
+        receipt,
+        path,
+        deployment_runner,
+        finalize_applied=batch["state"] == "APPLIED",
+    )
     operations = read_content_operations(client, receipt)
     if any(
         operation.get("state") != "APPLIED" for operation in operations.values()

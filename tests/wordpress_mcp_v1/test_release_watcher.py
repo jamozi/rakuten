@@ -18,6 +18,7 @@ operator = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(operator)
 ORIGINAL_RELEASE_BATCH_STATUS = operator._release_batch_status
 ORIGINAL_RELEASE_BATCH_CLAIM = operator._release_batch_claim
+ORIGINAL_FINALIZE_APPLIED_OPERATION = operator._finalize_applied_operation
 BATCH_TOKEN = "4" * 64
 BATCH_MANIFEST_SHA256 = "5" * 64
 
@@ -41,6 +42,13 @@ def exact_approved_batch(monkeypatch: pytest.MonkeyPatch) -> None:
         operator,
         "_release_batch_claim",
         lambda batch_token, batch_manifest_sha256, proposal_ids: {},
+    )
+    # Most watcher tests isolate approval, ordering, or polling. Dedicated
+    # finalization tests below exercise the real mandatory recovery boundary.
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        lambda _proposal_id, _kind, operation: operation,
     )
 
 
@@ -224,11 +232,17 @@ def test_release_waits_for_exact_batch_approval_before_reading_operations(
     ]
 
 
-def test_terminal_applied_batch_reconstructs_receipts_without_reclaim(
+def test_terminal_applied_batch_finalizes_and_reconstructs_without_reclaim(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     proposal_id = "a" * 64
     events: list[str] = []
+    response = public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        ORIGINAL_FINALIZE_APPLIED_OPERATION,
+    )
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
@@ -242,13 +256,159 @@ def test_terminal_applied_batch_reconstructs_receipts_without_reclaim(
 
     def request_json(method, path, *args, **kwargs):
         events.append(f"{method}:{path}")
-        return public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+        return response if method == "GET" else response["operation"]
 
     monkeypatch.setattr(operator, "request_json", request_json)
     result = operator.release_wait_and_apply(release_input([proposal_id]))
 
     assert result["state"] == "APPLIED"
-    assert events == [f"GET:/operations/{proposal_id}"]
+    assert events == [
+        f"GET:/operations/{proposal_id}",
+        f"POST:/operations/{proposal_id}/recover",
+        f"GET:/operations/{proposal_id}",
+    ]
+
+
+def test_applied_members_finalize_theme_then_content_before_aggregate_acceptance(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    content_id = "a" * 64
+    theme_id = "b" * 64
+    kinds = {content_id: "CONTENT_RELEASE", theme_id: "THEME_RELEASE"}
+    responses = {
+        proposal_id: public_operation(proposal_id, kind, "APPLIED")
+        for proposal_id, kind in kinds.items()
+    }
+    events: list[str] = []
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        ORIGINAL_FINALIZE_APPLIED_OPERATION,
+    )
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *_args: ("APPLIED", False),
+    )
+
+    def request_json(method, path, *args, **kwargs):
+        events.append(f"{method}:{path}")
+        proposal_id = path.split("/")[2]
+        response = responses[proposal_id]
+        return response if method == "GET" else response["operation"]
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    result = operator.release_wait_and_apply(release_input([content_id, theme_id]))
+
+    assert [receipt["proposal_id"] for receipt in result["receipts"]] == [
+        theme_id,
+        content_id,
+    ]
+    assert events == [
+        f"GET:/operations/{content_id}",
+        f"GET:/operations/{theme_id}",
+        f"POST:/operations/{theme_id}/recover",
+        f"GET:/operations/{theme_id}",
+        f"POST:/operations/{content_id}/recover",
+        f"GET:/operations/{content_id}",
+    ]
+
+
+def test_applied_member_recovery_failure_aborts_before_aggregate(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    response = public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+    events: list[str] = []
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        ORIGINAL_FINALIZE_APPLIED_OPERATION,
+    )
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *_args: ("APPLIED", False),
+    )
+
+    def request_json(method, path, *args, **kwargs):
+        events.append(f"{method}:{path}")
+        if method == "POST":
+            raise operator.OperatorFailure(
+                "RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE"
+            )
+        return response
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    assert_failure(
+        "RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE",
+        lambda: operator.release_wait_and_apply(release_input([proposal_id])),
+    )
+    assert events == [
+        f"GET:/operations/{proposal_id}",
+        f"POST:/operations/{proposal_id}/recover",
+    ]
+
+
+def test_recovered_applied_receipt_must_match_exact_operation_readback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    response = public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+    read_count = 0
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        ORIGINAL_FINALIZE_APPLIED_OPERATION,
+    )
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *_args: ("APPLIED", False),
+    )
+
+    def request_json(method, path, *args, **kwargs):
+        nonlocal read_count
+        if method == "POST":
+            return response["operation"]
+        read_count += 1
+        current = json.loads(json.dumps(response))
+        if read_count == 2:
+            current["operation"]["audit_id"] = "9" * 64
+        return current
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    assert_failure(
+        "WORDPRESS_MCP_OPERATION_RECOVERY_INVALID",
+        lambda: operator.release_wait_and_apply(release_input([proposal_id])),
+    )
+
+
+def test_recovery_response_must_be_an_exact_applied_receipt(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    response = public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        ORIGINAL_FINALIZE_APPLIED_OPERATION,
+    )
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *_args: ("APPLIED", False),
+    )
+    monkeypatch.setattr(
+        operator,
+        "request_json",
+        lambda method, *_args, **_kwargs: response,
+    )
+
+    assert_failure(
+        "WORDPRESS_MCP_OPERATION_RECOVERY_INVALID",
+        lambda: operator.release_wait_and_apply(release_input([proposal_id])),
+    )
 
 
 def test_atomic_batch_claim_retries_an_ambiguous_response_before_member_read(

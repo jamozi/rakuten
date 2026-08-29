@@ -2174,6 +2174,13 @@ def test_site_status_requires_plugin_1_2_1_runtime_and_scoped_approval_lease() -
     ):
         publication.validate_site_status(status)
     status = client.status()
+    del status["theme"]["runtime_revision"]
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status)
+    status = client.status()
     status["theme"]["runtime_revision"] = None
     publication.validate_site_status(status)
     status = client.status()
@@ -2188,6 +2195,31 @@ def test_site_status_requires_plugin_1_2_1_runtime_and_scoped_approval_lease() -
         match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
     ):
         publication.validate_site_status(status)
+
+
+def test_deployment_status_requires_runtime_revision_key_but_accepts_null(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    deployment = DeploymentRunner(client, events)
+    status = deployment.status()
+    del status["theme"]["runtime_revision"]
+    monkeypatch.setattr(
+        publication,
+        "_deployment_mcp_call",
+        lambda *_args, **_kwargs: status,
+    )
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_DEPLOYMENT_STATUS_INVALID",
+    ):
+        publication.deployment_status()
+
+    status = deployment.status()
+    status["theme"]["runtime_revision"] = None
+    assert publication.deployment_status()["theme"]["runtime_revision"] is None
 
 
 def test_portfolio_refresh_runs_capture_then_both_materializations_in_foreground() -> (
@@ -2467,7 +2499,9 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
     monkeypatch.setattr(
         publication,
         "wait_and_apply",
-        lambda *_args: calls.append("apply"),
+        lambda *_args, **kwargs: calls.append(
+            f"apply:{kwargs.get('finalize_applied')}"
+        ),
     )
     monkeypatch.setattr(publication, "_published_document_evidence", lambda *_args: {})
     monkeypatch.setattr(publication, "_touch_receipt", lambda *_args: calls.append("touch"))
@@ -2485,7 +2519,7 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
         "initialize",
         "site-status",
         "operations",
-        "apply",
+        "apply:False",
         "operations",
         "touch",
     ]
@@ -2670,13 +2704,13 @@ def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
         "register_publication_batch",
         lambda *_args: calls.append("registered"),
     )
-    monkeypatch.setattr(
-        publication,
-        "wait_and_apply",
-        lambda *_args: (_ for _ in ()).throw(
-            publication.PublicationFailure("WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT")
-        ),
-    )
+    def wait_for_batch(*_args: object, **kwargs: object) -> None:
+        if kwargs.get("finalize_applied") is True:
+            calls.append("finalized-old")
+            return
+        raise publication.PublicationFailure("WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT")
+
+    monkeypatch.setattr(publication, "wait_and_apply", wait_for_batch)
 
     with pytest.raises(
         publication.PublicationFailure,
@@ -2689,9 +2723,79 @@ def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
             client_factory=Client,
         )
 
-    assert calls == ["refresh", "preview", "registered"]
+    assert calls == ["finalized-old", "refresh", "preview", "registered"]
     assert replacement_includes_theme is True
     assert replacement_count == 11
+
+
+def test_all_mode_applied_recovery_failure_stops_before_fresh_cycle(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles, path, _old_tree, operations, _documents, _drafts = (
+        _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+    )
+    lifecycle: list[str] = []
+
+    class Client:
+        def initialize(self) -> None:
+            return None
+
+        def tools(self) -> dict[str, object]:
+            return {}
+
+        def call(self, name: str, _arguments: dict[str, object]) -> dict[str, object]:
+            assert name == "raos-codex-site-status"
+            return {"theme": {}}
+
+    monkeypatch.setattr(publication, "_receipt_path", lambda _articles: path)
+    monkeypatch.setattr(publication, "load_articles", lambda *_args, **_kwargs: articles)
+    monkeypatch.setattr(
+        publication,
+        "production_materialization_binding",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
+    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "publication_batch_status",
+        lambda *_args, **_kwargs: {"state": "APPLIED"},
+    )
+    monkeypatch.setattr(
+        publication,
+        "read_content_operations",
+        lambda *_args: operations,
+    )
+
+    def recovery_failure(*_args: object, **kwargs: object) -> None:
+        assert kwargs == {"finalize_applied": True}
+        lifecycle.append("recover")
+        raise publication.PublicationFailure(
+            "RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE"
+        )
+
+    monkeypatch.setattr(publication, "wait_and_apply", recovery_failure)
+    monkeypatch.setattr(
+        publication,
+        "_published_document_evidence",
+        lambda *_args: (_ for _ in ()).throw(
+            AssertionError("readback must follow successful recovery")
+        ),
+    )
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE",
+    ):
+        publication.execute(
+            "all",
+            portfolio_refresh=lambda: lifecycle.append("refresh"),
+            preview=lambda: lifecycle.append("preview"),
+            client_factory=Client,
+        )
+
+    assert lifecycle == ["recover"]
 
 
 def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
@@ -2768,6 +2872,13 @@ def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
         "read_content_operations",
         lambda *_args: operations,
     )
+    monkeypatch.setattr(
+        publication,
+        "wait_and_apply",
+        lambda *_args, **kwargs: lifecycle.append(
+            f"finalize:{kwargs.get('finalize_applied')}"
+        ),
+    )
 
     def reconciled_documents(*_args: object) -> dict[str, dict[str, object]]:
         lifecycle.append("resume-readback")
@@ -2801,7 +2912,7 @@ def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
     )
 
     def preview() -> None:
-        assert lifecycle == ["resume-readback", "refresh"]
+        assert lifecycle == ["finalize:True", "resume-readback", "refresh"]
         lifecycle.append("preview")
         slug = articles[0].production_slug
         revised = dict(current_documents[slug])
@@ -2821,7 +2932,12 @@ def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
             client_factory=lambda: client,
         )
 
-    assert lifecycle == ["resume-readback", "refresh", "preview"]
+    assert lifecycle == [
+        "finalize:True",
+        "resume-readback",
+        "refresh",
+        "preview",
+    ]
     assert "raos-codex-content-update-draft" not in remote_calls
     assert "raos-codex-content-propose-release" not in remote_calls
     stored = json.loads(path.read_text(encoding="utf-8"))

@@ -348,6 +348,28 @@ def _release_operation(proposal_id: str) -> tuple[str, dict[str, object]]:
     return kind, operation
 
 
+def _finalize_applied_operation(
+    proposal_id: str,
+    expected_kind: str,
+    operation: dict[str, object],
+) -> dict[str, object]:
+    """Finalize deferred artifacts and bind the exact terminal readback."""
+
+    if operation.get("state") != "APPLIED":
+        fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    response = request_json("POST", f"/operations/{proposal_id}/recover", {})
+    try:
+        recovered = _validated_release_operation(response, proposal_id)
+    except OperatorFailure:
+        fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    if recovered.get("state") != "APPLIED" or recovered != operation:
+        fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    kind, readback = _release_operation(proposal_id)
+    if kind != expected_kind or readback != recovered:
+        fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    return readback
+
+
 def _release_terminal_state(state: object) -> None:
     result_codes = {
         "EXPIRED": "WORDPRESS_MCP_RELEASE_EXPIRED",
@@ -588,6 +610,11 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
             state = operation["state"]
             _release_terminal_state(state)
             if state == "APPLIED":
+                operation = _finalize_applied_operation(
+                    proposal_id,
+                    expected_kind,
+                    operation,
+                )
                 receipts.append(operation)
                 break
             if time.monotonic() >= deadline:
