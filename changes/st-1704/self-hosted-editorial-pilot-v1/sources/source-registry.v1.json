@@ -637,67 +637,37 @@
       "affiliate_ref": "AFF-ACE-CRESTA-06316",
       "product_id": "PRD-ACE-CRESTA-06316",
       "product_name": "ACE クレスタ 06316",
-      "status": "FINAL_OFFICIAL_RAKUTEN_LINK",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
-      "destination_url": "https://hb.afl.rakuten.co.jp/hgc/g00qlfdo.0l0f20c2.g00qlfdo.0l0f32e9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06316%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Face-store%2Fi%2F10007275%2F&rafcid=wsc_i_is_bff71885-68be-4da1-a7e2-a4d1c4a46aaa",
+      "destination_url": null,
       "required_rel": "sponsored nofollow",
       "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
-      "evidence": {
-        "api": "item-search",
-        "api_version": "2026-07-01",
-        "endpoint_id": "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701",
-        "evidence_authority": "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE",
-        "request_fingerprint": "fa04354fe072ffcab2db3bfc757314a0eb62d78fcdbd3c068595d99094c41941",
-        "response_sha256": "74fff9cd8d0133f04ea9feee15de9b00d9362a5aff6114b066db67bef346e694",
-        "result_sha256": "696958a39b640c237eea64c51946a1dbcbe6f2ee2d05af545cf20b2e613b5956",
-        "destination_attestation_sha256": "103334aac9f8856524d50cdc43f7e321767cb6944f11ac71f65c4e48b03d895b",
-        "retrieved_at": "2026-08-22T22:31:01.675356Z"
-      },
-      "publication_blocker": null
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
     {
       "affiliate_ref": "AFF-ACE-DIFFERENCE-05721",
       "product_id": "PRD-ACE-DIFFERENCE-05721",
       "product_name": "ace.TOKYO LABEL ディフェレンス 05721",
-      "status": "FINAL_OFFICIAL_RAKUTEN_LINK",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
-      "destination_url": "https://hb.afl.rakuten.co.jp/hgc/g00qlfdo.0l0f20c2.g00qlfdo.0l0f32e9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F05721%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Face-store%2Fi%2F10009372%2F&rafcid=wsc_i_is_bff71885-68be-4da1-a7e2-a4d1c4a46aaa",
+      "destination_url": null,
       "required_rel": "sponsored nofollow",
       "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
-      "evidence": {
-        "api": "item-search",
-        "api_version": "2026-07-01",
-        "endpoint_id": "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701",
-        "evidence_authority": "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE",
-        "request_fingerprint": "1726d81e71f5faf2cf465dfe761156d26eea557d4ec58ced081aed86844ebbc6",
-        "response_sha256": "b145d6833c00807d8eb9ce7f6870c5d39823bffc4af14d705cc9bf29f1aeb81f",
-        "result_sha256": "1a88bd2518e89f7c99fc6b8d41a4d212c21cff54f77d99cc7ce075d8fdf839cc",
-        "destination_attestation_sha256": "cc29a4323bed079013b24acbe3f6f7a7bce368eb5c6fca82b656fc4e7d0b5087",
-        "retrieved_at": "2026-08-22T22:31:14.775883Z"
-      },
-      "publication_blocker": null
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
     {
       "affiliate_ref": "AFF-ACE-MAXPASS4-01471",
       "product_id": "PRD-ACE-MAXPASS4-01471",
       "product_name": "PROTECA マックスパス4 01471",
-      "status": "FINAL_OFFICIAL_RAKUTEN_LINK",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
-      "destination_url": "https://hb.afl.rakuten.co.jp/hgc/g00qlfdo.0l0f20c2.g00qlfdo.0l0f32e9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01471%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Face-store%2Fi%2F10009099%2F&rafcid=wsc_i_is_bff71885-68be-4da1-a7e2-a4d1c4a46aaa",
+      "destination_url": null,
       "required_rel": "sponsored nofollow",
       "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
-      "evidence": {
-        "api": "item-search",
-        "api_version": "2026-07-01",
-        "endpoint_id": "RAKUTEN_ICHIBA_ITEM_SEARCH_20260701",
-        "evidence_authority": "OWNER_LOCAL_NON_FORMAL_LIVE_EVIDENCE",
-        "request_fingerprint": "1d8a40a227adce462cd85f5d700284517a1d6d35ee9c5d620fc75463e0d670cf",
-        "response_sha256": "3523722f71c42cab6926637e58a4fb97c49f5d9441e4223e15904733bfa3da81",
-        "result_sha256": "d830eba23e21c938f0d26482138f5fdfe8caf5b5eb8bac6c420e0a7994ed1800",
-        "destination_attestation_sha256": "737ccd609ed98fda741c921a79b1bff6106c72e7299a47c9e50791e07e858b5e",
-        "retrieved_at": "2026-08-22T22:31:15.266800Z"
-      },
-      "publication_blocker": null
+      "evidence": null,
+      "publication_blocker": "PENDING_AFFILIATE_EVIDENCE"
     },
     {
       "affiliate_ref": "AFF-ANKER-SOLIX-C300",
@@ -750,7 +720,7 @@
     {
       "affiliate_ref": "AFF-PANASONIC-NP-TMLK1",
       "product_id": "PRD-PANASONIC-NP-TMLK1",
-      "product_name": "Panasonic NP-TMLK1",
+      "product_name": "SOLOTA",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
@@ -762,7 +732,7 @@
     {
       "affiliate_ref": "AFF-THANKO-RAKUA-MINI-COLOR",
       "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
-      "product_name": "THANKO ラクアmini color",
+      "product_name": "ラクアmini color",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
@@ -774,7 +744,7 @@
     {
       "affiliate_ref": "AFF-SIROCA-SS-MA251",
       "product_id": "PRD-SIROCA-SS-MA251",
-      "product_name": "siroca SS-MA251",
+      "product_name": "SS-MA251",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
@@ -786,7 +756,7 @@
     {
       "affiliate_ref": "AFF-PANASONIC-NP-TSP1",
       "product_id": "PRD-PANASONIC-NP-TSP1",
-      "product_name": "Panasonic NP-TSP1",
+      "product_name": "NP-TSP1",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
@@ -834,7 +804,7 @@
     {
       "affiliate_ref": "AFF-IROBOT-ROOMBA-MINI-AUTOEMPTY",
       "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
-      "product_name": "Roomba Mini 掃除機＆床拭きロボット + AutoEmpty 充電ステーション",
+      "product_name": "Roomba Mini + AutoEmpty F155260",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,
@@ -870,7 +840,7 @@
     {
       "affiliate_ref": "AFF-IROBOT-ROOMBA-PLUS-515-COMBO",
       "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
-      "product_name": "Roomba Plus 515 Combo ロボット + AutoWash 充電ステーション",
+      "product_name": "Roomba Plus 515 Combo + AutoWash N285060",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
       "destination_url": null,

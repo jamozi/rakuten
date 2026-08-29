@@ -1,0 +1,593 @@
+{
+  "schema": "RAOS_EDITORIAL_PORTFOLIO_V2",
+  "version": "2.0.0",
+  "target_origin": "https://kurashinoshirube.com",
+  "theme_version": "1.3.9",
+  "evidence_policy": {
+    "freshness_hours": 24,
+    "states": [
+      "verified",
+      "not_found",
+      "ambiguous",
+      "expired"
+    ],
+    "verified_cta_placements": [
+      "product_card",
+      "final_summary"
+    ],
+    "affiliate_rel": "sponsored nofollow",
+    "unverified_destination": "manufacturer_official",
+    "allow_search_result_destination": false,
+    "allow_short_url_destination": false,
+    "allow_variant_substitution": false,
+    "identity_validation": {
+      "representative_model": "required_exact",
+      "jan": "match_when_provider_value_is_available",
+      "title_tokens": "required",
+      "pc_mobile_item_code": "required_exact"
+    },
+    "local_product_image_origin": "/raos-product-media/"
+  },
+  "content_contract": {
+    "body_format": "html_fragment",
+    "required_editorial_root": "raos-editorial-v2",
+    "required_ad_disclosure": "広告を含みます。購入リンクから成果報酬を受け取る場合がありますが、選定・掲載順には使いません。",
+    "fixed_breaks_forbidden_in": [
+      "h1",
+      "h2",
+      "th"
+    ],
+    "article_metadata_fields": [
+      "title",
+      "excerpt",
+      "content_ref"
+    ],
+    "primary_product_sources": "products[].official_url"
+  },
+  "common_forbidden_title_tokens": [
+    "中古",
+    "レンタル",
+    "ふるさと納税",
+    "収納ケース",
+    "専用ケース",
+    "保護ケース",
+    "交換用",
+    "互換",
+    "カバー",
+    "バッグ単品",
+    "フィルター",
+    "ブラシ単品",
+    "モップパッド",
+    "バッテリー単体",
+    "アクセサリー"
+  ],
+  "articles": [
+    {
+      "article_id": "st1703-first-suitcase-comparison",
+      "source_kind": "st1704_renderer",
+      "source_ref": "st1703-first-suitcase-comparison",
+      "local_slug": "local-preview-carry-on-suitcase-comparison",
+      "production_slug": "carry-on-suitcase-comparison",
+      "category": "暮らしの道具",
+      "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ",
+      "excerpt": "型番と一次情報を照合できたエース系3モデルを、軽さ・容量・開き方で条件別に比較。市場全体の順位ではなく、向く人と注意点を整理します。",
+      "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
+      "product_ids": [
+        "PRD-ACE-CRESTA-06316",
+        "PRD-ACE-DIFFERENCE-05721",
+        "PRD-ACE-MAXPASS4-01471"
+      ]
+    },
+    {
+      "article_id": "st1704-portable-power-station-guide",
+      "source_kind": "st1704_renderer",
+      "source_ref": "st1704-portable-power-station-guide",
+      "local_slug": "local-preview-portable-power-station-guide",
+      "production_slug": "portable-power-station-guide",
+      "category": "暮らしの道具",
+      "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める",
+      "excerpt": "停電対策のポータブル電源4モデルを、容量・定格出力・重量・大きさで比較。使いたい機器と持ち運び条件から候補を絞ります。",
+      "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
+      "product_ids": [
+        "PRD-ANKER-SOLIX-C300",
+        "PRD-JACKERY-500-NEW",
+        "PRD-BLUETTI-AC70",
+        "PRD-ECOFLOW-DELTA3-CLASSIC"
+      ]
+    },
+    {
+      "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "source_kind": "st1704_renderer",
+      "source_ref": "st1704-anker-solix-c300-c800-c1000-differences",
+      "local_slug": "local-preview-anker-solix-c300-c800-c1000-differences",
+      "production_slug": "anker-solix-c300-c800-c1000-differences",
+      "category": "暮らしの道具",
+      "title": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い",
+      "excerpt": "Anker Solix 4モデルの容量・定格出力・重量・寸法を同じ表で比較。持ち運び、出力、C1000の世代差から条件別に選びます。",
+      "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
+      "product_ids": [
+        "PRD-ANKER-SOLIX-C300",
+        "PRD-ANKER-SOLIX-C800-PLUS",
+        "PRD-ANKER-SOLIX-C1000",
+        "PRD-ANKER-SOLIX-C1000-GEN2"
+      ]
+    },
+    {
+      "article_id": "st1704-countertop-dishwasher-for-small-households",
+      "source_kind": "st1704_renderer",
+      "source_ref": "st1704-countertop-dishwasher-for-small-households",
+      "local_slug": "local-preview-countertop-dishwasher-for-small-households",
+      "production_slug": "countertop-dishwasher-for-small-households",
+      "category": "暮らしの道具",
+      "title": "工事不要の食洗機を1〜2人暮らし向けに比較",
+      "excerpt": "工事不要で使えるタンク式食洗機4モデルを、設置寸法・食器点数・使用水量・乾燥方法で比較。狭いキッチンで向く条件を整理します。",
+      "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
+      "product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ]
+    },
+    {
+      "article_id": "st1704-compact-robot-vacuum-shortlist",
+      "source_kind": "st1704_renderer",
+      "source_ref": "st1704-compact-robot-vacuum-shortlist",
+      "local_slug": "local-preview-compact-robot-vacuum-shortlist",
+      "production_slug": "compact-robot-vacuum-shortlist",
+      "category": "暮らしの道具",
+      "title": "省スペースのロボット掃除機を条件で絞る",
+      "excerpt": "省スペース候補のロボット掃除機4モデルを、本体の底面寸法・高さ・ステーション寸法・水拭き方式で比較。置ける条件から候補を絞ります。",
+      "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
+      "product_ids": [
+        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "PRD-SWITCHBOT-K11-PRO",
+        "PRD-SWITCHBOT-K10-PRO-COMBO",
+        "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+      ]
+    },
+    {
+      "article_id": "carry-on-suitcase-under-100-seats",
+      "source_kind": "html_fixture",
+      "source_ref": "articles/carry-on-suitcase-under-100-seats.html",
+      "local_slug": "local-preview-carry-on-suitcase-under-100-seats",
+      "production_slug": "carry-on-suitcase-under-100-seats",
+      "category": "移動",
+      "title": "100席未満の国内線向けスーツケース4モデルを機内持ち込み規定で比較",
+      "excerpt": "100席未満の国内線で確認したい幅35×奥行20×高さ45cm・3辺100cm以内を基準に、4モデルの外寸、重量、容量、開き方を公式情報から比較します。",
+      "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
+      "product_ids": [
+        "PRD-PROTECA-STARIA-CXR-02350",
+        "PRD-PROTECA-FRESTER-EX-01550",
+        "PRD-ACE-PALISADES3-Z-06910",
+        "PRD-BERMAS-INTER-CITY-60524"
+      ]
+    },
+    {
+      "article_id": "lightweight-carry-on-suitcase-under-3kg",
+      "source_kind": "html_fixture",
+      "source_ref": "articles/lightweight-carry-on-suitcase-under-3kg.html",
+      "local_slug": "local-preview-lightweight-carry-on-suitcase-under-3kg",
+      "production_slug": "lightweight-carry-on-suitcase-under-3kg",
+      "category": "移動",
+      "title": "30L以上・3kg以下の機内持ち込みスーツケース4モデルを比較",
+      "excerpt": "30L以上・本体3kg以下の機内持ち込み候補4モデルを、容量、素材、ストッパー、拡張時寸法、交換可能車輪から公式情報で比較します。",
+      "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
+      "product_ids": [
+        "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+        "PRD-FREQUENTER-LIEVE-1-250"
+      ]
+    },
+    {
+      "article_id": "front-open-carry-on-suitcase-with-stopper",
+      "source_kind": "html_fixture",
+      "source_ref": "articles/front-open-carry-on-suitcase-with-stopper.html",
+      "local_slug": "local-preview-front-open-carry-on-suitcase-with-stopper",
+      "production_slug": "front-open-carry-on-suitcase-with-stopper",
+      "category": "移動",
+      "title": "フロントオープンとキャスターストッパーを備えた機内持ち込みスーツケース4モデル比較",
+      "excerpt": "前開きとキャスターストッパーを備えた4モデルを、前面構造、容量、重量、PC収納、拡張時寸法から公式情報で比較します。",
+      "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
+      "product_ids": [
+        "PRD-INNOVATOR-INV50",
+        "PRD-ACE-DIFFERENCE-05721",
+        "PRD-PROTECA-FRESTER-EX-01551",
+        "PRD-BERMAS-INTER-CITY-II-60561"
+      ]
+    },
+    {
+      "article_id": "roomba-mini-vs-switchbot-k11-pro",
+      "source_kind": "html_fixture",
+      "source_ref": "articles/roomba-mini-vs-switchbot-k11-pro.html",
+      "local_slug": "local-preview-roomba-mini-vs-switchbot-k11-pro",
+      "production_slug": "roomba-mini-vs-switchbot-k11-pro",
+      "category": "家事",
+      "title": "Roomba MiniとSwitchBot K11+ Proを公式仕様で比較",
+      "excerpt": "Roomba MiniとSwitchBot K11+ Proを、本体・ステーション寸法、自動ゴミ収集、水拭き、Wi-Fi、消耗品から公式仕様で比べます。",
+      "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
+      "product_ids": [
+        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "PRD-SWITCHBOT-K11-PRO",
+        "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060"
+      ]
+    },
+    {
+      "article_id": "solota-vs-rakua-mini-plus",
+      "source_kind": "html_fixture",
+      "source_ref": "articles/solota-vs-rakua-mini-plus.html",
+      "local_slug": "local-preview-solota-vs-rakua-mini-plus",
+      "production_slug": "solota-vs-rakua-mini-plus",
+      "category": "家事",
+      "title": "SOLOTAとラクアmini Plusを設置条件から比較",
+      "excerpt": "SOLOTAとラクアmini Plusを、本体・開扉時奥行き、食器点数、使用水量、乾燥方式から公式仕様で比べます。",
+      "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
+      "product_ids": [
+        "PRD-PANASONIC-SOLOTA-NP-TML1-W",
+        "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B",
+        "PRD-SIROCA-SS-MA251"
+      ]
+    }
+  ],
+  "products": [
+    {
+      "product_id": "PRD-ACE-CRESTA-06316",
+      "official_name": "ACE クレスタ 06316",
+      "official_models": ["06316"],
+      "representative_model": "06316",
+      "official_url": "https://store.ace.jp/shop/g/g06316-01/",
+      "rakuten_shop_code": "ace-store",
+      "rakuten_item_code": "ace-store:10007275",
+      "required_title_tokens": ["ACE", "クレスタ", "06316"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-ACE-DIFFERENCE-05721",
+      "official_name": "ace.TOKYO LABEL ディフェレンス 05721",
+      "official_models": ["05721"],
+      "representative_model": "05721",
+      "official_url": "https://store.ace.jp/shop/g/g05721-04",
+      "rakuten_shop_code": "ace-store",
+      "rakuten_item_code": "ace-store:10009372",
+      "required_title_tokens": ["ディフェレンス", "05721"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-ACE-MAXPASS4-01471",
+      "official_name": "PROTECA マックスパス4 01471",
+      "official_models": ["01471"],
+      "representative_model": "01471",
+      "official_url": "https://store.ace.jp/shop/g/g01471-02",
+      "rakuten_shop_code": "ace-store",
+      "rakuten_item_code": "ace-store:10009099",
+      "required_title_tokens": ["マックスパス4", "01471"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C300",
+      "official_name": "Anker Solix C300 Portable Power Station",
+      "official_models": ["A17225Z1", "A1722511"],
+      "representative_model": "A17225Z1",
+      "official_url": "https://www.ankerjapan.com/products/a1722",
+      "rakuten_shop_code": "anker",
+      "rakuten_item_code": "anker:10002036",
+      "required_title_tokens": ["Anker", "Solix", "C300"],
+      "product_kind_tokens": ["ポータブル電源", "Portable Power Station"]
+    },
+    {
+      "product_id": "PRD-JACKERY-500-NEW",
+      "official_name": "Jackery ポータブル電源 500 New",
+      "official_models": ["500 New"],
+      "representative_model": "500 New",
+      "official_jan": "7640974000206",
+      "official_url": "https://www.jackery.jp/products/explorer-500-new",
+      "rakuten_shop_code": "jackery-japan",
+      "rakuten_item_code": "jackery-japan:10000000",
+      "required_title_tokens": ["Jackery", "500 New"],
+      "product_kind_tokens": ["ポータブル電源", "Portable Power Station"]
+    },
+    {
+      "product_id": "PRD-BLUETTI-AC70",
+      "official_name": "BLUETTI AC70",
+      "official_models": ["AC70"],
+      "representative_model": "AC70",
+      "official_url": "https://www.bluetti.jp/products/bluetti-ac70",
+      "rakuten_shop_code": "bluettijapan",
+      "rakuten_item_code": "bluettijapan:10000107",
+      "required_title_tokens": ["BLUETTI", "AC70"],
+      "product_kind_tokens": ["ポータブル電源", "Portable Power Station"]
+    },
+    {
+      "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+      "official_name": "EcoFlow DELTA 3 Classic",
+      "official_models": ["DELTA 3 Classic"],
+      "representative_model": "DELTA 3 Classic",
+      "official_url": "https://jp.ecoflow.com/products/delta-3-classic",
+      "rakuten_shop_code": "ecoflow",
+      "rakuten_item_code": "ecoflow:10000092",
+      "required_title_tokens": ["EcoFlow", "DELTA 3 Classic"],
+      "product_kind_tokens": ["ポータブル電源", "Portable Power Station"]
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+      "official_name": "Anker Solix C800 Plus Portable Power Station",
+      "official_models": ["A1754"],
+      "representative_model": "A1754",
+      "official_url": "https://www.ankerjapan.com/products/a1754",
+      "rakuten_shop_code": "anker",
+      "rakuten_item_code": "anker:10001890",
+      "required_title_tokens": ["Anker", "Solix", "C800 Plus"],
+      "product_kind_tokens": ["ポータブル電源", "Portable Power Station"]
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C1000",
+      "official_name": "Anker Solix C1000 Portable Power Station",
+      "official_models": ["A17615Z1", "A1761521", "A1761511"],
+      "representative_model": "A17615Z1",
+      "official_url": "https://www.ankerjapan.com/products/a1761",
+      "rakuten_shop_code": "anker",
+      "rakuten_item_code": "anker:10001654",
+      "required_title_tokens": ["Anker", "Solix", "C1000"],
+      "product_kind_tokens": ["ポータブル電源", "Portable Power Station"],
+      "additional_forbidden_title_tokens": ["Gen 2", "Gen2"]
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+      "official_name": "Anker Solix C1000 Gen 2 Portable Power Station",
+      "official_models": ["A17635Z1", "A1763521"],
+      "representative_model": "A17635Z1",
+      "official_url": "https://www.ankerjapan.com/products/a1763",
+      "rakuten_shop_code": "anker",
+      "rakuten_item_code": "anker:10002336",
+      "required_title_tokens": ["Anker", "Solix", "C1000 Gen 2"],
+      "product_kind_tokens": ["ポータブル電源", "Portable Power Station"]
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "official_name": "Panasonic SOLOTA NP-TMLK1-H",
+      "official_models": ["NP-TMLK1-H"],
+      "representative_model": "NP-TMLK1-H",
+      "official_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+      "rakuten_shop_code": null,
+      "rakuten_item_code": null,
+      "required_title_tokens": ["TMLK1"],
+      "product_kind_tokens": ["食器洗い乾燥機", "食洗機"]
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "official_name": "THANKO ラクアmini color",
+      "official_models": ["TDWS25SBL", "TDWS25SRD"],
+      "representative_model": "TDWS25SBL",
+      "official_url": "https://www.thanko.jp/view/item/000000004715",
+      "rakuten_shop_code": "thanko",
+      "rakuten_item_code": "thanko:10005443",
+      "required_title_tokens": ["ラクア", "mini", "color"],
+      "product_kind_tokens": ["食器洗い乾燥機", "食洗機"],
+      "additional_forbidden_title_tokens": ["スチールラックセット", "RSET"]
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "official_name": "siroca 食器洗い乾燥機 SS-MA251",
+      "official_models": ["SS-MA251"],
+      "representative_model": "SS-MA251",
+      "official_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+      "rakuten_shop_code": "siroca",
+      "rakuten_item_code": "siroca:10000024",
+      "required_title_tokens": ["SS-MA251"],
+      "product_kind_tokens": ["食器洗い乾燥機", "食洗機"]
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "official_name": "Panasonic NP-TSP1-W",
+      "official_models": ["NP-TSP1-W"],
+      "representative_model": "NP-TSP1-W",
+      "official_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+      "rakuten_shop_code": "jyupro",
+      "rakuten_item_code": "jyupro:10136298",
+      "required_title_tokens": ["NP-TSP1"],
+      "product_kind_tokens": ["食器洗い乾燥機", "食洗機"]
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+      "official_name": "Roomba Mini + AutoEmpty F155260",
+      "official_models": ["F155260"],
+      "representative_model": "F155260",
+      "official_jan": "0885155053053",
+      "official_url": "https://store.irobot-jp.com/item/F155260.html",
+      "rakuten_shop_code": "edion",
+      "rakuten_item_code": "edion:10895202",
+      "required_title_tokens": ["Roomba", "Mini", "AutoEmpty"],
+      "product_kind_tokens": ["ロボット掃除機", "掃除機&床拭きロボット"]
+    },
+    {
+      "product_id": "PRD-SWITCHBOT-K11-PRO",
+      "official_name": "SwitchBot ロボット掃除機 K11+ Pro",
+      "official_models": ["K11+ Pro"],
+      "representative_model": "K11+ Pro",
+      "official_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+      "rakuten_shop_code": "switchbot",
+      "rakuten_item_code": "switchbot:10000327",
+      "required_title_tokens": ["SwitchBot", "K11+ Pro"],
+      "product_kind_tokens": ["ロボット掃除機", "Robot Vacuum"]
+    },
+    {
+      "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+      "official_name": "SwitchBot ロボット掃除機 K10+ Pro Combo",
+      "official_models": ["K10+ Pro Combo"],
+      "representative_model": "K10+ Pro Combo",
+      "official_jan": "8113238474927",
+      "official_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+      "rakuten_shop_code": "switchbot",
+      "rakuten_item_code": "switchbot:10000240",
+      "required_title_tokens": ["SwitchBot", "K10+ProCombo"],
+      "product_kind_tokens": ["ロボット掃除機", "Robot Vacuum"]
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "official_name": "Roomba Plus 515 Combo + AutoWash N285060",
+      "official_models": ["N285060"],
+      "representative_model": "N285060",
+      "official_jan": "0885155054982",
+      "official_url": "https://store.irobot-jp.com/item/N285060.html",
+      "rakuten_shop_code": "edion",
+      "rakuten_item_code": "edion:10909675",
+      "required_title_tokens": ["Roomba", "Plus 515 Combo", "AutoWash"],
+      "product_kind_tokens": ["Roomba", "ロボット掃除機"]
+    },
+    {
+      "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+      "official_name": "PROTECA スタリアCXR 02350",
+      "official_models": ["02350"],
+      "representative_model": "02350",
+      "official_url": "https://store.ace.jp/shop/g/g02350-12/",
+      "rakuten_shop_code": "ace-store",
+      "rakuten_item_code": "ace-store:10008100",
+      "required_title_tokens": ["PROTECA", "スタリアCXR", "02350"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+      "official_name": "PROTECA フレスターEX 01550",
+      "official_models": ["01550"],
+      "representative_model": "01550",
+      "official_url": "https://store.ace.jp/shop/g/g01550-11/",
+      "rakuten_shop_code": "ace-store",
+      "rakuten_item_code": "ace-store:10009746",
+      "required_title_tokens": ["PROTECA", "フレスターEX", "01550"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-ACE-PALISADES3-Z-06910",
+      "official_name": "ace. パリセイド3-Z 06910",
+      "official_models": ["06910"],
+      "representative_model": "06910",
+      "official_url": "https://store.ace.jp/shop/g/g06910-03/",
+      "rakuten_shop_code": "ace-store",
+      "rakuten_item_code": "ace-store:10009334",
+      "required_title_tokens": ["パリセイド3-Z", "06910"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-60524",
+      "official_name": "BERMAS INTER CITY 60524",
+      "official_models": ["60524"],
+      "representative_model": "60524",
+      "official_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+      "rakuten_shop_code": "selection",
+      "rakuten_item_code": "selection:10014300",
+      "required_title_tokens": ["BERMAS", "INTER CITY", "60524"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+      "official_name": "PROTECA エアロフレックスDX2 01521",
+      "official_models": ["01521"],
+      "representative_model": "01521",
+      "official_url": "https://www.proteca.jp/product/aeroflexDX2/",
+      "rakuten_shop_code": "ace-store",
+      "rakuten_item_code": "ace-store:10009188",
+      "required_title_tokens": ["PROTECA", "エアロフレックスDX2", "01521"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+      "official_name": "Samsonite C-Lite Spinner 55 Expandable CS2*09007",
+      "official_models": ["CS2*09007"],
+      "representative_model": "CS2*09007",
+      "official_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+      "rakuten_shop_code": null,
+      "rakuten_item_code": null,
+      "required_title_tokens": ["C-Lite", "Spinner 55", "CS2*09007"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+      "official_name": "American Tourister APPLITE 4.0 Spinner 55 Expandable QJ6-68002",
+      "official_models": ["QJ6-68002"],
+      "representative_model": "QJ6-68002",
+      "official_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+      "rakuten_shop_code": null,
+      "rakuten_item_code": null,
+      "required_title_tokens": ["APPLITE 4.0", "QJ6-68002"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+      "official_name": "FREQUENTER LIEVE 1-250",
+      "official_models": ["1-250"],
+      "representative_model": "1-250",
+      "official_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+      "rakuten_shop_code": "selection",
+      "rakuten_item_code": "selection:10016302",
+      "required_title_tokens": ["FREQUENTER", "LIEVE", "1-250"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-INNOVATOR-INV50",
+      "official_name": "innovator INV50",
+      "official_models": ["INV50"],
+      "representative_model": "INV50",
+      "official_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+      "rakuten_shop_code": "selection",
+      "rakuten_item_code": "selection:10015011",
+      "required_title_tokens": ["innovator", "INV50"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-PROTECA-FRESTER-EX-01551",
+      "official_name": "PROTECA フレスターEX 01551",
+      "official_models": ["01551"],
+      "representative_model": "01551",
+      "official_url": "https://store.ace.jp/shop/g/g01551-01/",
+      "rakuten_shop_code": "ace-store",
+      "rakuten_item_code": "ace-store:10009516",
+      "required_title_tokens": ["PROTECA", "フレスターEX", "01551"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
+      "official_name": "BERMAS INTER CITY II 60561",
+      "official_models": ["60561"],
+      "representative_model": "60561",
+      "official_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+      "rakuten_shop_code": "e-bagshop",
+      "rakuten_item_code": "e-bagshop:10001461",
+      "required_title_tokens": ["BERMAS", "INTER CITY2", "60561"],
+      "product_kind_tokens": ["スーツケース", "キャリーケース"]
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+      "official_name": "Roomba Mini Slim + SlimCharge F115060",
+      "official_models": ["F115060"],
+      "representative_model": "F115060",
+      "official_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+      "rakuten_shop_code": "edion",
+      "rakuten_item_code": "edion:10895187",
+      "required_title_tokens": ["Roomba", "Mini Slim", "F115060"],
+      "product_kind_tokens": ["ロボット掃除機", "掃除機&床拭きロボット"]
+    },
+    {
+      "product_id": "PRD-PANASONIC-SOLOTA-NP-TML1-W",
+      "official_name": "Panasonic SOLOTA NP-TML1-W",
+      "official_models": ["NP-TML1-W"],
+      "representative_model": "NP-TML1-W",
+      "official_url": "https://panasonic.jp/dish/products/NP-TML1.html",
+      "rakuten_shop_code": "panasonic-store",
+      "rakuten_item_code": "panasonic-store:10000735",
+      "required_title_tokens": ["SOLOTA", "NP-TML1"],
+      "product_kind_tokens": ["食器洗い乾燥機", "食洗機"]
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B",
+      "official_name": "THANKO ラクアmini Plus TK-MDW22B",
+      "official_models": ["TK-MDW22B", "TK-STTDPSWH"],
+      "representative_model": "TK-MDW22B",
+      "official_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+      "rakuten_shop_code": null,
+      "rakuten_item_code": null,
+      "required_title_tokens": ["ラクアmini Plus", "TK-MDW22B"],
+      "product_kind_tokens": ["食器洗い乾燥機", "食洗機"]
+    }
+  ]
+}

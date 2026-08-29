@@ -13,9 +13,11 @@ ROOT = Path(__file__).resolve().parents[2]
 SLICE = ROOT / "changes/wordpress-local-preview-v1"
 COMPOSE = SLICE / "compose.yaml"
 WRAPPER = SLICE / "bin/wordpress_preview.sh"
+GATEWAY = SLICE / "gateway/nginx.conf"
 FIXTURES = SLICE / "fixtures"
 ARTICLES = FIXTURES / "articles"
 POSTS = FIXTURES / "posts.json"
+PRODUCTION_MAPPING = SLICE / "production-mapping.v1.json"
 MU_PLUGIN = SLICE / "mu-plugins/raos-local-preview.php"
 EDITORIAL_CSS = (
     ROOT
@@ -42,7 +44,8 @@ NGINX_IMAGE = (
 )
 
 REVIEWED_SOURCE_HOSTS = {
-    "hb.afl.rakuten.co.jp",
+    "developers.rakuten.com",
+    "jp.ecoflow.com",
     "panasonic.jp",
     "store.ace.jp",
     "store.irobot-jp.com",
@@ -50,7 +53,11 @@ REVIEWED_SOURCE_HOSTS = {
     "shop.innovator.co.jp",
     "www.americantourister.jp",
     "www.ana.co.jp",
+    "www.ankerjapan.com",
+    "www.bagworld.co.jp",
     "www.bermas.co.jp",
+    "www.bluetti.jp",
+    "www.jackery.jp",
     "www.jal.co.jp",
     "www.proteca.jp",
     "www.samsonite.co.jp",
@@ -58,6 +65,15 @@ REVIEWED_SOURCE_HOSTS = {
     "www.switchbot.jp",
     "www.thanko.jp",
 }
+
+
+def _html_attributes(tag: str) -> dict[str, str]:
+    return {
+        name.casefold(): value
+        for name, _quote, value in re.findall(
+            r"([:\w-]+)\s*=\s*([\"'])(.*?)\2", tag, re.DOTALL
+        )
+    }
 
 
 def _compose() -> dict[str, object]:
@@ -106,7 +122,7 @@ def test_theme_and_local_material_are_read_only_bind_mounts() -> None:
     for service_name in ("wordpress", "cli"):
         service = services[service_name]
         mounts = [item for item in service["volumes"] if isinstance(item, dict)]
-        assert len(mounts) == 3
+        assert len(mounts) == 5
         assert all(
             item["type"] == "bind" and item["read_only"] is True for item in mounts
         )
@@ -115,6 +131,8 @@ def test_theme_and_local_material_are_read_only_bind_mounts() -> None:
             "/var/www/html/wp-content/themes/kurashinoshirube-child",
             "/var/www/html/wp-content/mu-plugins",
             "/var/www/raos-local-preview",
+            "/var/www/raos-local-preview/fixtures/articles",
+            "/var/www/raos-local-preview/fixtures/posts.json",
         }
         theme_mount = next(
             item for item in mounts if item["target"].endswith("kurashinoshirube-child")
@@ -122,6 +140,40 @@ def test_theme_and_local_material_are_read_only_bind_mounts() -> None:
         assert theme_mount["source"].endswith(
             "/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
         )
+        fixture_mount = next(
+            item
+            for item in mounts
+            if item["target"] == "/var/www/raos-local-preview/fixtures/articles"
+        )
+        assert fixture_mount["source"] == (
+            "${RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_ROOT:"
+            "?materialized article fixture root is required}"
+        )
+        posts_mount = next(
+            item
+            for item in mounts
+            if item["target"] == "/var/www/raos-local-preview/fixtures/posts.json"
+        )
+        assert posts_mount["source"] == (
+            "${RAOS_WORDPRESS_PREVIEW_POST_FIXTURE:"
+            "?materialized post fixture is required}"
+        )
+
+    gateway_mounts = [
+        item for item in services["gateway"]["volumes"] if isinstance(item, dict)
+    ]
+    product_media_mount = next(
+        item for item in gateway_mounts if item["target"] == "/srv/raos-product-media"
+    )
+    assert product_media_mount == {
+        "type": "bind",
+        "source": (
+            "${RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT:"
+            "?product media root is required}"
+        ),
+        "target": "/srv/raos-product-media",
+        "read_only": True,
+    }
 
 
 def test_wordpress_runtime_is_explicitly_local_and_non_mutating() -> None:
@@ -156,17 +208,17 @@ def test_wordpress_runtime_is_explicitly_local_and_non_mutating() -> None:
     assert "RAOS_OPERATOR_WRITES_ENABLED" not in runtime_material
 
 
-def test_synthetic_fixture_has_five_closed_local_articles() -> None:
+def test_synthetic_fixture_has_ten_closed_local_articles() -> None:
     fixture = _posts_fixture()
     assert set(fixture) == {"schema", "seed_version", "posts"}
     assert fixture["schema"] == "RAOS_WORDPRESS_LOCAL_PREVIEW_FIXTURE_V1"
     posts = fixture["posts"]
     assert isinstance(posts, list)
-    assert len(posts) == 5
-    assert {row["category"] for row in posts} == {"移動", "家事"}
-    assert len({row["article_id"] for row in posts}) == 5
-    assert len({row["slug"] for row in posts}) == 5
-    assert len({row["content_file"] for row in posts}) == 5
+    assert len(posts) == 10
+    assert {row["category"] for row in posts} == {"暮らしの道具", "移動", "家事"}
+    assert len({row["article_id"] for row in posts}) == 10
+    assert len({row["slug"] for row in posts}) == 10
+    assert len({row["content_file"] for row in posts}) == 10
     for row in posts:
         assert row["article_id"] == row["slug"]
         assert re.fullmatch(r"local-preview-[a-z0-9-]+", row["slug"])
@@ -192,36 +244,87 @@ def test_synthetic_fixture_has_five_closed_local_articles() -> None:
             r'<a\b[^>]*href="https://[^"<>]+"[^>]*>', article, re.IGNORECASE
         )
         assert len(external_anchors) == len(urls)
-        rel_tokens = [
-            set(re.search(r'\brel="([^"]+)"', tag).group(1).split())
-            for tag in external_anchors
-        ]
-        assert all({"noopener", "noreferrer"} <= tokens for tokens in rel_tokens)
         rakuten_anchors = [
             tag
             for tag in external_anchors
             if 'href="https://hb.afl.rakuten.co.jp/' in tag
         ]
-        if article_path.name in {
-            "roomba-mini-vs-switchbot-k11-pro.html",
-            "solota-vs-rakua-mini-plus.html",
-        }:
-            assert rakuten_anchors
-            assert article.count('class="rakuten-cta"') == article.count(
-                'class="product-profile '
+        assert not rakuten_anchors
+
+        product_ids = []
+        for tag in re.findall(r"<article\b[^>]*>", article, re.IGNORECASE):
+            attributes = _html_attributes(tag)
+            if "product-profile" in attributes.get("class", "").split():
+                product_ids.append(attributes.get("data-raos-product-id"))
+        assert product_ids
+        assert None not in product_ids
+        assert len(product_ids) == len(set(product_ids))
+
+        cta_counts: dict[tuple[str, str], int] = {}
+        cta_anchors = []
+        for tag in re.findall(r"<a\b[^>]*>", article, re.IGNORECASE):
+            attributes = _html_attributes(tag)
+            if "raos-cta" not in attributes.get("class", "").split():
+                continue
+            cta_anchors.append(attributes)
+            assert "official-product-link" in attributes["class"].split()
+            assert {"noopener", "noreferrer"} <= set(attributes["rel"].split())
+            key = (
+                attributes.get("data-raos-product-id", ""),
+                attributes.get("data-raos-placement", ""),
             )
-        assert all(
-            'rel="sponsored nofollow noopener noreferrer"' in tag
-            for tag in rakuten_anchors
-        )
-        assert all('data-rakuten-product-id="' in tag for tag in rakuten_anchors)
+            cta_counts[key] = cta_counts.get(key, 0) + 1
+            assert attributes.get("data-raos-article-id")
+            assert attributes.get("href", "").startswith("https://")
+        assert len(cta_anchors) == len(product_ids) * 2
+        assert cta_counts == {
+            (product_id, placement): 1
+            for product_id in product_ids
+            for placement in ("product_card", "final_summary")
+        }
+
         assert re.search(r'\b(?:src|poster)="https://', article, re.IGNORECASE) is None
+        assert re.search(r"\sdecoding=", article, re.IGNORECASE) is None
+        assert all(
+            re.search(r"<br\b", heading, re.I) is None
+            for heading in re.findall(
+                r"<h[12]\b[^>]*>(.*?)</h[12]>", article, re.I | re.S
+            )
+        )
         assert 'href="#local-only"' not in article
         assert "LOCAL DRAFT" not in article
         assert "ローカル" not in article
         assert "ローカル草稿" not in article
         assert "公開前一次情報再確認は未実施" not in article
-        assert "確認日：2026年8月29日" in article
+        assert "広告を含みます" in article
+        assert "比較テーマの共通イメージ" not in article
+        assert re.search(r"2026年8月2[0-9]日", article)
+
+
+def test_production_mapping_matches_all_ten_local_articles() -> None:
+    fixture_rows = _posts_fixture()["posts"]
+    mapping = json.loads(PRODUCTION_MAPPING.read_text(encoding="utf-8"))
+    assert mapping["schema"] == "RAOS_WORDPRESS_PRODUCTION_MAPPING_V1"
+    rows = mapping["articles"]
+    assert len(rows) == 10
+    assert {row["local_slug"] for row in rows} == {
+        row["slug"] for row in fixture_rows
+    }
+    assert len({row["production_slug"] for row in rows}) == 10
+    for row in rows:
+        assert row["local_slug"] == f"local-preview-{row['production_slug']}"
+        assert row["local_category"] in {"暮らしの道具", "移動", "家事"}
+        assert set(row["taxonomies"]) == {"category", "post_format", "post_tag"}
+
+
+def test_roomba_f155260_station_dimensions_keep_width_depth_order() -> None:
+    article = (
+        ARTICLES / "roomba-mini-vs-switchbot-k11-pro.html"
+    ).read_text(encoding="utf-8")
+
+    assert "21.2×17.8×28.5cm" not in article
+    assert article.count("17.8×21.2×28.5cm") == 2
+    assert "幅約17.8×奥行約21.2×高さ約28.5cm" in article
 
 
 def test_editorial_stylesheet_is_owned_by_the_production_theme() -> None:
@@ -269,7 +372,7 @@ def test_seed_is_local_only_versioned_and_initialize_is_non_overwriting() -> Non
     assert "array('initialize', 'sync')" in seed
     assert "raos_local_preview_seed_version" in seed
     assert "RAOS_WORDPRESS_PREVIEW_ALREADY_INITIALIZED" in seed
-    assert "count($fixture['posts']) !== 5" in seed
+    assert "count($fixture['posts']) !== 10" in seed
     assert "update_option('blog_public', '0')" in seed
     assert "'hb.afl.rakuten.co.jp'" in seed
 
@@ -287,6 +390,39 @@ def test_wrapper_preserves_data_by_default_and_gates_reset() -> None:
     assert "printf '%s\\n' \"$RAOS_WORDPRESS_PREVIEW_ADMIN_PASSWORD\"" in wrapper
 
 
+def test_runtime_materialization_is_private_and_bound_read_only() -> None:
+    wrapper = WRAPPER.read_text(encoding="utf-8")
+    for marker in (
+        'materialized_fixture_root="$private_root/materialized-fixtures-v2"',
+        'product_media_root="$private_root/product-media"',
+        "scripts/raos_editorial_portfolio_v2.py",
+        "materialize-local --output-root \"$private_root\"",
+        (
+            "RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_ROOT="
+            '"$materialized_fixture_root/articles"'
+        ),
+        (
+            "RAOS_WORDPRESS_PREVIEW_POST_FIXTURE="
+            '"$materialized_fixture_root/posts.json"'
+        ),
+        "RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT=\"$product_media_root\"",
+        "validate_materialized_runtime",
+    ):
+        assert marker in wrapper
+    assert wrapper.count("materialize_runtime") >= 3
+
+    gateway = GATEWAY.read_text(encoding="utf-8")
+    for marker in (
+        "/raos-product-media/",
+        "/srv/raos-product-media/",
+        "PRD-[A-Z0-9]+",
+        "default_type image/jpeg",
+        'add_header Cache-Control "private, no-store" always;',
+        "return 404;",
+    ):
+        assert marker in gateway
+
+
 def test_root_makefile_exposes_the_documented_interface() -> None:
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
     for target in (
@@ -302,13 +438,18 @@ def test_root_makefile_exposes_the_documented_interface() -> None:
     assert 'CONFIRM="$(CONFIRM)"' in makefile
 
 
-def test_browser_audit_covers_home_and_five_articles_at_four_widths() -> None:
+def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
     audit = (SLICE / "browser/wordpress_local_preview_audit.function.js").read_text(
         encoding="utf-8"
     )
     check = (SLICE / "browser/check.sh").read_text(encoding="utf-8")
     assert "{ name: 'home', path: '/' }" in audit
     for route in (
+        "/local-preview-carry-on-suitcase-comparison/",
+        "/local-preview-portable-power-station-guide/",
+        "/local-preview-anker-solix-c300-c800-c1000-differences/",
+        "/local-preview-countertop-dishwasher-for-small-households/",
+        "/local-preview-compact-robot-vacuum-shortlist/",
         "/local-preview-carry-on-suitcase-under-100-seats/",
         "/local-preview-lightweight-carry-on-suitcase-under-3kg/",
         "/local-preview-front-open-carry-on-suitcase-with-stopper/",
@@ -316,17 +457,38 @@ def test_browser_audit_covers_home_and_five_articles_at_four_widths() -> None:
         "/local-preview-solota-vs-rakua-mini-plus/",
     ):
         assert f"path: '{route}'" in audit
-    assert audit.count("article: true") == 5
+    assert audit.count("article: true") == 10
     assert "const widths = [360, 390, 768, 1440];" in audit
     for marker in (
         "audit.h1Count !== 1",
+        "audit.h1Bounds.length !== 1",
+        "audit.invalidH1Bounds !== 0",
         "audit.mainCount !== 1",
+        "audit.cookieSettingsBounds.length !== 1",
+        "audit.invalidCookieSettingsBounds !== 0",
+        "audit.cookieConsentBounds.length !== 1",
+        "audit.cookieButtonBounds.length !== 3",
+        "audit.cookieButtonOrder.join('|') !== '設定|拒否|同意'",
+        "audit.cookieOverlapsH1",
+        "audit.cookieOverlapsCta !== 0",
+        "audit.h1LastLineCharacters === 1",
+        "audit.h1LineCount > 6",
+        "audit.h1LineCount > 4",
+        "bounds.height < 44",
+        "audit.comparisonCardsVisible === 0",
+        "audit.comparisonTablesVisible !== 0",
+        "audit.comparisonCardsVisible !== 0",
+        "audit.comparisonTablesVisible === 0",
+        "audit.ctaBounds.length === 0",
+        "audit.invalidCtaBounds !== 0",
         "audit.missingAlt !== 0",
         "audit.unloadedImages !== 0",
         "audit.duplicateIds.length !== 0",
         "audit.brokenAriaReferences !== 0",
         "audit.scrollWidth > audit.clientWidth",
         "RAOS_WORDPRESS_LOCAL_PREVIEW_EXTERNAL_REQUEST",
+        "RAOS_WORDPRESS_LOCAL_PREVIEW_RUNTIME_ERROR",
+        "RAOS_WORDPRESS_LOCAL_PREVIEW_SCREEN_COUNT_INVALID",
         "document.querySelectorAll('.raos-editorial-v2').length",
         "document.querySelectorAll('.decision-list').length",
         "document.querySelectorAll('.comparison-section').length",
@@ -339,6 +501,7 @@ def test_browser_audit_covers_home_and_five_articles_at_four_widths() -> None:
         assert marker in audit
     assert "output/playwright/local-preview" in audit
     assert "output/playwright/local-preview" in check
+    assert '[ "$#" -eq 44 ]' in check
 
 
 def test_shell_entrypoints_parse() -> None:

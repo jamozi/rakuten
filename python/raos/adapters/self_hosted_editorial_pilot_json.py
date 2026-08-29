@@ -1086,6 +1086,7 @@ def _validate_rakuten_response(
         image_urls.append(raw_image)
     if (
         selected["itemName"] != evidence.item_name
+        or evidence.jan is not None
         or image_urls.count(evidence.image_url) != 1
     ):
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)

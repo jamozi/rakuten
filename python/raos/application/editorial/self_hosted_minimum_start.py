@@ -137,7 +137,6 @@ _SOURCE_KEYS = frozenset({"title", "url", "retrieved_on"})
 _ALLOWED_SOURCE_HOSTS = frozenset(
     {
         "store.ace.jp",
-        "item.rakuten.co.jp",
         "www.ana.co.jp",
     }
 )
@@ -850,7 +849,7 @@ def load_first_article_candidate_with_affiliate_status(
     }:
         _fail()
     sources = cast(list[object], packet["sources"])
-    if len(sources) != 7:
+    if len(sources) != 4:
         _fail()
     for item in sources:
         if type(item) is not dict:

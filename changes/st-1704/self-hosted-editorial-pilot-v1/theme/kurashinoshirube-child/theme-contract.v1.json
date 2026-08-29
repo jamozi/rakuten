@@ -14,7 +14,7 @@
     "comparison": {
       "class": "raos-comparison",
       "desktop_view_class": "raos-comparison__table-view",
-      "mobile_breakpoint_max_px": 640,
+      "mobile_breakpoint_max_px": 768,
       "mobile_card_class": "raos-comparison-card",
       "mobile_semantics": "article>dl>div>dt+dd",
       "mobile_view_class": "raos-comparison__cards",
@@ -78,11 +78,17 @@
     "content_root": "<div class=\"raos-editorial-v2\">",
     "detection": "EXACT_RAW_CONTENT_PREFIX_ON_SINGULAR_POST",
     "publication_snapshot_required": false,
+    "publication_identity_predicate": "PUBLISH_POST_EXACT_SINGLE_EDITORIAL_V2_ROOT_AND_CLOSED_SLUG_ARTICLE_ID_MATCH",
     "scope": "ORDINARY_WORDPRESS_POST_ONLY",
     "section_slug_allowlist": {
+      "anker-solix-c300-c800-c1000-differences": "備え",
+      "carry-on-suitcase-comparison": "移動",
       "carry-on-suitcase-under-100-seats": "移動",
+      "compact-robot-vacuum-shortlist": "家事",
+      "countertop-dishwasher-for-small-households": "家事",
       "front-open-carry-on-suitcase-with-stopper": "移動",
       "lightweight-carry-on-suitcase-under-3kg": "移動",
+      "portable-power-station-guide": "備え",
       "roomba-mini-vs-switchbot-k11-pro": "家事",
       "solota-vs-rakua-mini-plus": "家事"
     }
@@ -140,8 +146,8 @@
       "removed_route": "/yoast/v1/get_head"
     },
     "robots": {
-      "invalid_or_unpublished_pilot": "noindex, nofollow",
-      "published_bound_pilot": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+      "invalid_or_unpublished_portfolio_route": "noindex, nofollow",
+      "published_public_article_identity": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
       "unneeded_archives": "noindex, follow"
     },
     "sitemap": {
@@ -150,6 +156,11 @@
       "taxonomies": []
     },
     "structured_data_owner": "RAOS_THEME",
+    "structured_data_article_values": {
+      "editorial_v2": "CLOSED_PUBLISHED_IDENTITY_PLUS_CLEAN_RAW_TITLE_8_TO_100_AND_EXCERPT_30_TO_180_WITH_FIXED_ORIGIN_CANONICAL",
+      "legacy": "VALID_BOUND_RAOS_SNAPSHOT",
+      "unknown_or_invalid": "NO_OUTPUT"
+    },
     "yoast_configuration_authority": "HUMAN_PERSISTED_OPTIONS_WITH_THEME_READBACK_GATE",
     "yoast_social_option_values": {
       "og_default_image": "VERIFIED_THEME_SOCIAL_IMAGE_URI",
@@ -258,27 +269,28 @@
       "display_order": ["cluster-mobility", "cluster-home", "cluster-ready"]
     },
     "config_sha256": "d9e2e40d369723e2e8dc2f6d5bfc0e74e2873c7748936a287f04a4acbc7dc7da",
-    "link_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_BOUND_RAOS_SNAPSHOT",
+    "link_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY",
     "owner": "THEME_FIXED_ALLOWLIST"
   },
   "homepage_featured": {
     "article_id": "st1704-portable-power-station-guide",
     "exclude_from_latest": true,
     "local_preview_substitute": "LATEST_SYNTHETIC_POST_LAYOUT_ONLY",
-    "selection": "FIXED_ARTICLE_ID_WITH_PUBLISHED_BOUND_SNAPSHOT"
+    "selection": "FIXED_ARTICLE_ID_WITH_EXACT_PUBLIC_ARTICLE_IDENTITY"
   },
   "publication_authority": "NONE",
   "public_listing_eligibility": {
     "candidate_query": {
       "max_candidates_per_slot": 2,
-      "max_rows": 10,
+      "max_rows": 20,
       "post_type": "post",
-      "query_limit": 11,
+      "query_limit": 21,
       "slug_classes": [
         "raos-review-*",
-        "snapshot.article_bindings[].slug"
+        "editorial_v2_publication_bindings[].slug",
+        "raw_content_prefix:<div class=\"raos-editorial-v2\">"
       ],
-      "slot_count": 5
+      "slot_count": 10
     },
     "candidate_overflow_policy": "LOOKUP_FAILURE_WHEN_RESULT_COUNT_EXCEEDS_MAX_ROWS",
     "consumers": {
@@ -302,13 +314,13 @@
       },
       {
         "eligible": false,
-        "slug_class": "ALLOWLISTED_FINAL",
-        "snapshot_state": "MISSING_INVALID_OR_ARTICLE_ID_MISMATCH"
+        "slug_class": "PORTFOLIO_FINAL",
+        "snapshot_state": "PUBLIC_ARTICLE_IDENTITY_MISSING_OR_MISMATCH"
       },
       {
         "eligible": true,
-        "slug_class": "ALLOWLISTED_FINAL",
-        "snapshot_state": "EXACT_PUBLISHED_BOUND_MATCHING_ARTICLE_ID"
+        "slug_class": "PORTFOLIO_FINAL",
+        "snapshot_state": "EXACT_STORED_SNAPSHOT_OR_EDITORIAL_V2_PUBLISHED_IDENTITY"
       },
       {
         "eligible": true,
@@ -317,7 +329,7 @@
       }
     ],
     "query_cache": "REQUEST_LOCAL_ONLY",
-    "snapshot_validator": "kurashinoshirube_bound_post_snapshot(post_id,false)"
+    "snapshot_validator": "kurashinoshirube_public_article_identity(post_id)"
   },
   "related_navigation": {
     "availability_transition": "TARGET_HUMAN_PUBLICATION_ONLY",
@@ -359,7 +371,7 @@
     },
     "map_sha256": "5db17f3cff259d4abe35cf616b2e953d25f33b5187ac637d6c1c6f3a86174028",
     "owner": "THEME_FIXED_ALLOWLIST",
-    "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_BOUND_RAOS_SNAPSHOT"
+    "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "schema": "SELF_HOSTED_EDITORIAL_THEME_CONTRACT_V1",
   "snapshot": {
@@ -422,5 +434,5 @@
     "wrapper_keys": ["payload", "payload_sha256", "schema"]
   },
   "theme_slug": "kurashinoshirube-child",
-  "theme_version": "1.3.8"
+  "theme_version": "1.3.9"
 }

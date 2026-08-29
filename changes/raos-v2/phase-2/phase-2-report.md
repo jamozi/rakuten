@@ -14,15 +14,15 @@ and a disabled WordPress dry-run boundary.
 - Source head: `ae92eb8f50e9d439c1c292cc6c76d5a9c50f85c7`
 - Worktree before: `CLEAN` at the recorded dedicated-worktree baseline
 - Worktree after: `LOCAL_IMPLEMENTATION_CHANGES_PRESENT` (not production state)
-- Backlog status: B-V2-019, B-V2-020, B-V2-021, B-V2-022, B-V2-023, B-V2-024, B-V2-025, B-V2-026, B-V2-027, B-V2-028, B-V2-029, B-V2-030, B-V2-031, B-V2-032, B-V2-033; B-V2-034 pending local test gate
-- Local test receipt: `AWAITING_GATE_STALE_BINDING` for T-V2-020..046 and T-V2-051; generator does not execute tests
+- Backlog status: B-V2-019, B-V2-020, B-V2-021, B-V2-022, B-V2-023, B-V2-024, B-V2-025, B-V2-026, B-V2-027, B-V2-028, B-V2-029, B-V2-030, B-V2-031, B-V2-032, B-V2-033, B-V2-034
+- Local test receipt: `PASSED_LOCAL` for T-V2-020..046 and T-V2-051; generator does not execute tests
 - Browser/a11y recorded evidence: `PASSED_LOCAL`; raw verification: `RECORDED_NOT_REVERIFIED`; required CI must run its own gate
 - Manual visual review: `PASSED_LOCAL_MANUAL_VISUAL_REVIEW` across 27 route/viewport captures; raw verification: `RECORDED_NOT_REVERIFIED`
-- Evidence bundle SHA-256: `22f2e1448a09a28720f56dd7059452bd96cc273b91094157ddaba8d75d7c47bb`
+- Evidence bundle SHA-256: `b0ed7e2fd5c5935eb20671c7e5b3c8cb897821e768de530ff90188446012d0ce`
 - Analytics: production values `UNAVAILABLE`; semantic QDS/local sink evidence only
 - Planning ceiling: 80 hours; actual human time `UNAVAILABLE`; external spend: JPY 0
 - Rollback: route/canonical/robots exact-tuple simulation `PASSED_LOCAL`; production backup/restore `NOT_EXECUTED`
-- Exit gate: `PENDING_LOCAL_TEST_GATE`
+- Exit gate: `PASS_LOCAL_RECORDED`
 
 ## Publication and migration boundary
 

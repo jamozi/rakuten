@@ -12,7 +12,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.3.8';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.3.9';
+const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guide.webp';
@@ -54,6 +55,53 @@ function kurashinoshirube_article_bindings(): array
         ),
         'st1704-compact-robot-vacuum-shortlist' => array(
             'slug' => 'compact-robot-vacuum-shortlist',
+            'section' => '家事',
+        ),
+    );
+}
+
+/** Closed identities allowed to use the Editorial V2 publication fallback. */
+function kurashinoshirube_editorial_v2_publication_bindings(): array
+{
+    return array(
+        'st1703-first-suitcase-comparison' => array(
+            'slug' => 'carry-on-suitcase-comparison',
+            'section' => '移動',
+        ),
+        'st1704-portable-power-station-guide' => array(
+            'slug' => 'portable-power-station-guide',
+            'section' => '備え',
+        ),
+        'st1704-countertop-dishwasher-for-small-households' => array(
+            'slug' => 'countertop-dishwasher-for-small-households',
+            'section' => '家事',
+        ),
+        'st1704-anker-solix-c300-c800-c1000-differences' => array(
+            'slug' => 'anker-solix-c300-c800-c1000-differences',
+            'section' => '備え',
+        ),
+        'st1704-compact-robot-vacuum-shortlist' => array(
+            'slug' => 'compact-robot-vacuum-shortlist',
+            'section' => '家事',
+        ),
+        'carry-on-suitcase-under-100-seats' => array(
+            'slug' => 'carry-on-suitcase-under-100-seats',
+            'section' => '移動',
+        ),
+        'front-open-carry-on-suitcase-with-stopper' => array(
+            'slug' => 'front-open-carry-on-suitcase-with-stopper',
+            'section' => '移動',
+        ),
+        'lightweight-carry-on-suitcase-under-3kg' => array(
+            'slug' => 'lightweight-carry-on-suitcase-under-3kg',
+            'section' => '移動',
+        ),
+        'roomba-mini-vs-switchbot-k11-pro' => array(
+            'slug' => 'roomba-mini-vs-switchbot-k11-pro',
+            'section' => '家事',
+        ),
+        'solota-vs-rakua-mini-plus' => array(
+            'slug' => 'solota-vs-rakua-mini-plus',
             'section' => '家事',
         ),
     );
@@ -642,6 +690,98 @@ function kurashinoshirube_bound_post_snapshot(
     return $payload;
 }
 
+/** Detect the exact authored Editorial V2 raw-content prefix on one post. */
+function kurashinoshirube_post_has_editorial_v2_root(int $post_id): bool
+{
+    if ($post_id <= 0 || get_post_type($post_id) !== 'post') {
+        return false;
+    }
+    $content = get_post_field('post_content', $post_id, 'raw');
+    return is_string($content)
+        && str_starts_with($content, KURASHINOSHIRUBE_EDITORIAL_V2_ROOT);
+}
+
+/**
+ * Resolve one exact published Editorial V2 identity without snapshot metadata.
+ *
+ * The fallback is deliberately unavailable to drafts, unknown routes, and
+ * content whose single authored root or article identity does not match the
+ * closed ten-article portfolio.
+ */
+function kurashinoshirube_published_editorial_v2_identity(
+    int $post_id
+): ?array {
+    if (
+        $post_id <= 0
+        || get_post_type($post_id) !== 'post'
+        || get_post_status($post_id) !== 'publish'
+    ) {
+        return null;
+    }
+    $slug = get_post_field('post_name', $post_id, 'raw');
+    $content = get_post_field('post_content', $post_id, 'raw');
+    if (! is_string($slug) || ! is_string($content)) {
+        return null;
+    }
+    $article_id = null;
+    $binding = null;
+    foreach (
+        kurashinoshirube_editorial_v2_publication_bindings()
+        as $candidate_article_id => $candidate_binding
+    ) {
+        if (
+            is_array($candidate_binding)
+            && ($candidate_binding['slug'] ?? null) === $slug
+        ) {
+            $article_id = $candidate_article_id;
+            $binding = $candidate_binding;
+            break;
+        }
+    }
+    if (
+        ! is_string($article_id)
+        || ! is_array($binding)
+        || ! kurashinoshirube_post_has_editorial_v2_root($post_id)
+        || substr_count($content, KURASHINOSHIRUBE_EDITORIAL_V2_ROOT) !== 1
+        || ! str_ends_with($content, "</div>\n")
+    ) {
+        return null;
+    }
+    $matched = preg_match_all(
+        '/\bdata-raos-article-id="([a-z0-9]+(?:-[a-z0-9]+)*)"/',
+        $content,
+        $matches
+    );
+    if (
+        ! is_int($matched)
+        || $matched < 1
+        || ! isset($matches[1])
+        || ! is_array($matches[1])
+        || array_values(array_unique($matches[1])) !== array($article_id)
+    ) {
+        return null;
+    }
+    return array(
+        'article_id' => $article_id,
+        'section' => $binding['section'],
+        'slug' => $slug,
+    );
+}
+
+/** One predicate for every public presentation and discovery consumer. */
+function kurashinoshirube_public_article_identity(int $post_id): ?array
+{
+    $snapshot = kurashinoshirube_bound_post_snapshot($post_id, false);
+    if ($snapshot !== null) {
+        return array(
+            'article_id' => $snapshot['article_id'],
+            'section' => $snapshot['section'],
+            'slug' => $snapshot['slug'],
+        );
+    }
+    return kurashinoshirube_published_editorial_v2_identity($post_id);
+}
+
 /** Bind the singular presentation to one exact public post or Review Draft. */
 function kurashinoshirube_current_snapshot(): ?array
 {
@@ -662,7 +802,7 @@ function kurashinoshirube_current_snapshot(): ?array
     return $cache[$post_id];
 }
 
-/** Preserve authored RAOS HTML instead of applying WordPress auto-paragraphs. */
+/** Preserve authored RAOS HTML only for an exact public article identity. */
 function kurashinoshirube_disable_wpautop_for_bound_public_article(): void
 {
     if (! is_singular('post')) {
@@ -672,7 +812,7 @@ function kurashinoshirube_disable_wpautop_for_bound_public_article(): void
     if (
         $post_id <= 0
         || get_post_status($post_id) !== 'publish'
-        || kurashinoshirube_bound_post_snapshot($post_id, false) === null
+        || kurashinoshirube_public_article_identity($post_id) === null
     ) {
         return;
     }
@@ -1605,21 +1745,23 @@ function kurashinoshirube_is_editorial_v2_post(): bool
     if ($post_id <= 0 || get_post_type($post_id) !== 'post') {
         return false;
     }
-    $content = get_post_field('post_content', $post_id, 'raw');
-    return is_string($content)
-        && str_starts_with($content, '<div class="raos-editorial-v2">');
+    return kurashinoshirube_post_has_editorial_v2_root($post_id);
 }
 
-/** Keep the five production Editorial V2 section labels slug-bound and closed. */
+/** Keep all ten production Editorial V2 section labels slug-bound and closed. */
 function kurashinoshirube_editorial_v2_section_map(): array
 {
-    return array(
-        'carry-on-suitcase-under-100-seats' => '移動',
-        'front-open-carry-on-suitcase-with-stopper' => '移動',
-        'lightweight-carry-on-suitcase-under-3kg' => '移動',
-        'roomba-mini-vs-switchbot-k11-pro' => '家事',
-        'solota-vs-rakua-mini-plus' => '家事',
-    );
+    $sections = array();
+    foreach (kurashinoshirube_editorial_v2_publication_bindings() as $binding) {
+        if (
+            is_array($binding)
+            && is_string($binding['slug'] ?? null)
+            && is_string($binding['section'] ?? null)
+        ) {
+            $sections[$binding['slug']] = $binding['section'];
+        }
+    }
+    return count($sections) === 10 ? $sections : array();
 }
 
 /** Add the page-level style hook only for exact Editorial V2 post markup. */
@@ -1812,11 +1954,15 @@ function kurashinoshirube_render_related_guides($attributes, $content, $tag): st
     ) {
         return '';
     }
-    $snapshot = kurashinoshirube_current_snapshot();
-    if ($snapshot === null || get_post_status(get_the_ID()) !== 'publish') {
+    $post_id = (int) get_the_ID();
+    $identity = kurashinoshirube_public_article_identity($post_id);
+    if (
+        $identity === null
+        || get_post_status($post_id) !== 'publish'
+    ) {
         return '';
     }
-    $relation = kurashinoshirube_related_article_map()[$snapshot['article_id']] ?? null;
+    $relation = kurashinoshirube_related_article_map()[$identity['article_id']] ?? null;
     if (! is_array($relation)) {
         return '';
     }
@@ -1837,13 +1983,12 @@ function kurashinoshirube_render_related_guides($attributes, $content, $tag): st
         ) {
             continue;
         }
-        $target_snapshot = kurashinoshirube_bound_post_snapshot(
-            (int) $target->ID,
-            false
+        $target_identity = kurashinoshirube_public_article_identity(
+            (int) $target->ID
         );
         if (
-            $target_snapshot === null
-            || $target_snapshot['article_id'] !== $target_id
+            $target_identity === null
+            || $target_identity['article_id'] !== $target_id
         ) {
             continue;
         }
@@ -1890,15 +2035,15 @@ function kurashinoshirube_homepage_featured_post(): ?WP_Post
     if (is_array($binding)) {
         $slug = $binding['slug'];
         $post = get_page_by_path($slug, OBJECT, 'post');
-        $snapshot = $post instanceof WP_Post
-            ? kurashinoshirube_bound_post_snapshot((int) $post->ID, false)
+        $identity = $post instanceof WP_Post
+            ? kurashinoshirube_public_article_identity((int) $post->ID)
             : null;
         $expected_permalink = KURASHINOSHIRUBE_SITE_ORIGIN . '/' . $slug . '/';
         if (
             $post instanceof WP_Post
             && get_post_status($post) === 'publish'
-            && $snapshot !== null
-            && $snapshot['article_id'] === $article_id
+            && $identity !== null
+            && $identity['article_id'] === $article_id
             && get_permalink($post) === $expected_permalink
         ) {
             $cached = $post;
@@ -2120,15 +2265,15 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
             }
             $slug = $binding['slug'];
             $post = get_page_by_path($slug, OBJECT, 'post');
-            $snapshot = $post instanceof WP_Post
-                ? kurashinoshirube_bound_post_snapshot((int) $post->ID, false)
+            $identity = $post instanceof WP_Post
+                ? kurashinoshirube_public_article_identity((int) $post->ID)
                 : null;
             $expected_permalink = KURASHINOSHIRUBE_SITE_ORIGIN . '/' . $slug . '/';
             if (
                 ! $post instanceof WP_Post
                 || get_post_status($post) !== 'publish'
-                || $snapshot === null
-                || $snapshot['article_id'] !== $article_id
+                || $identity === null
+                || $identity['article_id'] !== $article_id
                 || get_permalink($post) !== $expected_permalink
             ) {
                 continue;
@@ -2246,7 +2391,7 @@ add_filter('wpseo_twitter_description', 'kurashinoshirube_filter_og_description'
 add_filter('wpseo_twitter_image', 'kurashinoshirube_filter_social_image');
 add_filter('wpseo_twitter_card_type', 'kurashinoshirube_filter_twitter_card');
 
-/** Index only a published pilot post with a snapshot bound to its visible bytes. */
+/** Index only a review-safe route or one exact public article identity. */
 function kurashinoshirube_filter_robots($robots, $presentation)
 {
     if (is_singular('post')) {
@@ -2254,25 +2399,38 @@ function kurashinoshirube_filter_robots($robots, $presentation)
         $slug = get_post_field('post_name', $post_id, 'raw');
         $status = get_post_status($post_id);
         $snapshot = kurashinoshirube_current_snapshot();
-        if (is_string($slug) && is_string($status) && $snapshot !== null) {
-            if (
-                $status === 'draft'
-                && kurashinoshirube_review_slug($snapshot) === $slug
-            ) {
-                return 'noindex, nofollow';
-            }
-            if ($status === 'publish' && $snapshot['slug'] === $slug) {
-                return 'index, follow, max-image-preview:large, max-snippet:-1, '
-                    . 'max-video-preview:-1';
-            }
+        if (
+            is_string($slug)
+            && is_string($status)
+            && $status === 'draft'
+            && $snapshot !== null
+            && kurashinoshirube_review_slug($snapshot) === $slug
+        ) {
+            return 'noindex, nofollow';
+        }
+        $identity = kurashinoshirube_public_article_identity($post_id);
+        if (
+            is_string($slug)
+            && $status === 'publish'
+            && $identity !== null
+            && $identity['slug'] === $slug
+        ) {
+            return 'index, follow, max-image-preview:large, max-snippet:-1, '
+                . 'max-video-preview:-1';
         }
         if (is_string($slug)) {
-            foreach (kurashinoshirube_article_bindings() as $binding) {
+            if (str_starts_with($slug, 'raos-review-')) {
+                return 'noindex, nofollow';
+            }
+            if (kurashinoshirube_post_has_editorial_v2_root($post_id)) {
+                return 'noindex, nofollow';
+            }
+            foreach (
+                kurashinoshirube_editorial_v2_publication_bindings()
+                as $binding
+            ) {
                 $public_slug = $binding['slug'];
-                if (
-                    $slug === $public_slug
-                    || strpos($slug, 'raos-review-' . $public_slug . '-') === 0
-                ) {
+                if ($slug === $public_slug) {
                     return 'noindex, nofollow';
                 }
             }
@@ -2296,9 +2454,9 @@ add_filter('wpseo_robots', 'kurashinoshirube_filter_robots', 20, 2);
 /**
  * Apply the one public-listing policy to a candidate post.
  *
- * Review routes are never public-listing eligible. An allowlisted final route
- * is eligible only when its published post bytes and exact article identity
- * remain bound to the stored snapshot. All unrelated posts remain eligible.
+ * Review routes are never public-listing eligible. A portfolio final route is
+ * eligible only through the shared exact public-identity predicate. All
+ * unrelated posts remain eligible.
  */
 function kurashinoshirube_public_listing_post_is_eligible(
     int $post_id,
@@ -2307,15 +2465,18 @@ function kurashinoshirube_public_listing_post_is_eligible(
     if ($post_id <= 0 || strpos($slug, 'raos-review-') === 0) {
         return false;
     }
-    foreach (kurashinoshirube_article_bindings() as $article_id => $binding) {
+    foreach (
+        kurashinoshirube_editorial_v2_publication_bindings()
+        as $article_id => $binding
+    ) {
         if (! is_array($binding) || $slug !== ($binding['slug'] ?? null)) {
             continue;
         }
-        $snapshot = kurashinoshirube_bound_post_snapshot($post_id, false);
-        return $snapshot !== null
-            && ($snapshot['article_id'] ?? null) === $article_id;
+        $identity = kurashinoshirube_public_article_identity($post_id);
+        return $identity !== null
+            && ($identity['article_id'] ?? null) === $article_id;
     }
-    return true;
+    return ! kurashinoshirube_post_has_editorial_v2_root($post_id);
 }
 
 /**
@@ -2347,32 +2508,35 @@ function kurashinoshirube_public_listing_excluded_post_ids(): ?array
     }
 
     $final_slugs = array();
-    foreach (kurashinoshirube_article_bindings() as $binding) {
+    foreach (kurashinoshirube_editorial_v2_publication_bindings() as $binding) {
         if (is_array($binding) && is_string($binding['slug'] ?? null)) {
             $final_slugs[] = $binding['slug'];
         }
     }
     sort($final_slugs, SORT_STRING);
-    if (count($final_slugs) !== 5 || count(array_unique($final_slugs)) !== 5) {
+    if (count($final_slugs) !== 10 || count(array_unique($final_slugs)) !== 10) {
         return null;
     }
 
-    // The five-slot pilot permits at most two candidate rows per slot. Fetch
+    // The ten-slot portfolio permits at most two candidate rows per slot. Fetch
     // one sentinel row beyond that closed bound so overflow fails closed.
     $max_candidates_per_slot = 2;
     $max_candidate_rows = count($final_slugs) * $max_candidates_per_slot;
     $query_row_limit = $max_candidate_rows + 1;
 
     $placeholders = implode(', ', array_fill(0, count($final_slugs), '%s'));
+    $editorial_root_like = $wpdb->esc_like(
+        KURASHINOSHIRUBE_EDITORIAL_V2_ROOT
+    ) . '%';
     $query = $wpdb->prepare(
         "SELECT ID, post_name FROM {$wpdb->posts} "
             . "WHERE post_type = %s AND (post_name LIKE %s "
-            . "OR post_name IN ({$placeholders})) "
+            . "OR post_name IN ({$placeholders}) OR post_content LIKE %s) "
             . "ORDER BY ID ASC LIMIT %d",
         array_merge(
             array('post', $wpdb->esc_like('raos-review-') . '%'),
             $final_slugs,
-            array($query_row_limit)
+            array($editorial_root_like, $query_row_limit)
         )
     );
     if (! is_string($query)) {
@@ -2541,12 +2705,56 @@ add_filter(
 /** Yoast remains the head owner, but RAOS exclusively owns frontend JSON-LD. */
 add_filter('wpseo_json_ld_output', '__return_false', PHP_INT_MAX);
 
+/**
+ * Resolve bounded Article values from a legacy snapshot or closed Editorial V2.
+ */
+function kurashinoshirube_structured_data_article_values(
+    int $post_id
+): ?array {
+    if (
+        ! is_singular('post')
+        || $post_id <= 0
+        || get_post_status($post_id) !== 'publish'
+    ) {
+        return null;
+    }
+    $snapshot = kurashinoshirube_current_snapshot();
+    if ($snapshot !== null) {
+        return array(
+            'canonical_url' => $snapshot['canonical_url'],
+            'description' => $snapshot['description'],
+            'section' => $snapshot['section'],
+            'title' => $snapshot['title'],
+        );
+    }
+    $identity = kurashinoshirube_published_editorial_v2_identity($post_id);
+    $title = get_post_field('post_title', $post_id, 'raw');
+    $description = get_post_field('post_excerpt', $post_id, 'raw');
+    $slug = get_post_field('post_name', $post_id, 'raw');
+    if (
+        $identity === null
+        || ! is_string($slug)
+        || ($identity['slug'] ?? null) !== $slug
+        || ! kurashinoshirube_is_clean_text($title, 8, 100)
+        || ! kurashinoshirube_is_clean_text($description, 30, 180)
+        || ! is_string($identity['section'] ?? null)
+    ) {
+        return null;
+    }
+    return array(
+        'canonical_url' => KURASHINOSHIRUBE_SITE_ORIGIN . '/' . $slug . '/',
+        'description' => $description,
+        'section' => $identity['section'],
+        'title' => $title,
+    );
+}
+
 /** Emit exactly Article, BreadcrumbList, Organization, and WebSite. */
 function kurashinoshirube_emit_json_ld(): void
 {
-    $snapshot = kurashinoshirube_current_snapshot();
     $post_id = (int) get_queried_object_id();
-    if ($snapshot === null || $post_id <= 0 || get_post_status($post_id) !== 'publish') {
+    $article = kurashinoshirube_structured_data_article_values($post_id);
+    if ($article === null) {
         return;
     }
     $published = get_post_time('Y-m-d\TH:i:s\Z', true, $post_id);
@@ -2555,10 +2763,17 @@ function kurashinoshirube_emit_json_ld(): void
         KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH,
         KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256
     );
-    if (! is_string($published) || ! is_string($modified) || $image === null) {
+    if (
+        ! is_string($published)
+        || ! is_string($modified)
+        || ! kurashinoshirube_is_nullable_timestamp($published)
+        || ! kurashinoshirube_is_nullable_timestamp($modified)
+        || strcmp($modified, $published) < 0
+        || $image === null
+    ) {
         return;
     }
-    $canonical = $snapshot['canonical_url'];
+    $canonical = $article['canonical_url'];
     $organization_id = KURASHINOSHIRUBE_SITE_ORIGIN . '/#organization';
     $website_id = KURASHINOSHIRUBE_SITE_ORIGIN . '/#website';
     $graph = array(
@@ -2567,12 +2782,12 @@ function kurashinoshirube_emit_json_ld(): void
             array(
                 '@id' => $canonical . '#article',
                 '@type' => 'Article',
-                'articleSection' => $snapshot['section'],
+                'articleSection' => $article['section'],
                 'author' => array('@id' => $organization_id),
                 'dateModified' => $modified,
                 'datePublished' => $published,
-                'description' => $snapshot['description'],
-                'headline' => $snapshot['title'],
+                'description' => $article['description'],
+                'headline' => $article['title'],
                 'image' => array($image),
                 'inLanguage' => 'ja-JP',
                 'mainEntityOfPage' => $canonical,
@@ -2591,7 +2806,7 @@ function kurashinoshirube_emit_json_ld(): void
                     array(
                         '@type' => 'ListItem',
                         'item' => $canonical,
-                        'name' => $snapshot['title'],
+                        'name' => $article['title'],
                         'position' => 2,
                     ),
                 ),

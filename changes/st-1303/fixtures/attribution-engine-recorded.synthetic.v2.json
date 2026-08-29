@@ -2,7 +2,7 @@
   "schema_version": "2.0.0",
   "profile": "RAOS_ST1303_RECORDED_SYNTHETIC_V2",
   "scenario_id": "ST1303.RECORDED.SYNTHETIC.0001",
-  "contract_sha256": "1b4b665ea19674d242a5f320f2d9ee8cf76f45c3380ee3a3c2065279570c133b",
+  "contract_sha256": "26f01a8bfd67cc735190d899cf0f1babfed2b9f33dba3490a5b786285d0afe03",
   "request": {
     "run_id": "018f3e90-7b00-7000-8000-000000001303",
     "requested_at": "2026-09-08T00:00:00Z",
@@ -18,7 +18,7 @@
           "slot": 1,
           "article_id": "st1703-first-suitcase-comparison",
           "slug": "carry-on-suitcase-comparison",
-          "packet_sha256": "1f8b057b007a217a8541483a58ebb1f3f9fd481a2fd241c5486f72ab85924f57",
+          "packet_sha256": "6eac2b0cc7404072adf98bc3a9ee77e6c338ab378cef4a0dd8a9c74679b08ee9",
           "intent_classification": "CONDITION_COMPARISON"
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
@@ -54,7 +54,7 @@
           "slot": 2,
           "article_id": "st1704-portable-power-station-guide",
           "slug": "portable-power-station-guide",
-          "packet_sha256": "029c58eca30c5106db8f54ba228e2d6767c85971228d273286c5c745e4319564",
+          "packet_sha256": "5f3c4e5f77ef76472c426350fd0860e07a79f38c1d1e4b68a06455326ddd19f4",
           "intent_classification": "SELECTION_GUIDE"
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
@@ -80,7 +80,7 @@
           "slot": 3,
           "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
           "slug": "anker-solix-c300-c800-c1000-differences",
-          "packet_sha256": "53c2a7081e0fd78597fe99e398d66d876f15cea5e827d720cc0fbc1901e83997",
+          "packet_sha256": "d04e67a061a8f79a647d935924c3f7b81ac12136e87b2c9e7f0fd464823f29e8",
           "intent_classification": "MODEL_DIFFERENCES"
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
@@ -106,7 +106,7 @@
           "slot": 4,
           "article_id": "st1704-countertop-dishwasher-for-small-households",
           "slug": "countertop-dishwasher-for-small-households",
-          "packet_sha256": "8376928e4a442b9e6ffb16fc8a030ffa1fee151d52e6f879ec8d69ec0fb60540",
+          "packet_sha256": "ac0d4f69b9ad135688e371d333949b0536c93811a6feb053aea19902694e5a8d",
           "intent_classification": "HOUSEHOLD_FIT_COMPARISON"
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
@@ -132,7 +132,7 @@
           "slot": 5,
           "article_id": "st1704-compact-robot-vacuum-shortlist",
           "slug": "compact-robot-vacuum-shortlist",
-          "packet_sha256": "1594da95466b454f123d32fe31b91136b4df84b833af85a789fd8f03ce7b0390",
+          "packet_sha256": "dc5e1e11c2b1de1d7a238635c048d72b0daa4642bed5029b70c673294e7c5677",
           "intent_classification": "CONDITION_SHORTLIST"
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
@@ -194,5 +194,5 @@
       }
     ]
   },
-  "expected_input_sha256": "4c5c3853a71b3bd1ecd70b6560d2c24df0fe7699c258e854c5fb007c24856c36"
+  "expected_input_sha256": "9ef7547ea5a4b3abcbb482207c52793b92da66c8d605c63743b3ca00645c40bf"
 }

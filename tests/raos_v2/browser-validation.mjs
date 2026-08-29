@@ -223,14 +223,20 @@ function requestJson(url, method = 'GET') {
   return new Promise((resolvePromise, rejectPromise) => {
     const request = globalThis.fetch(url, { method, redirect: 'error' });
     const timer = setTimeout(() => rejectPromise(new Error('HTTP_TIMEOUT')), TIMEOUT_MS);
-    request.then(async (response) => {
-      clearTimeout(timer);
-      if (!response.ok) {
-        rejectPromise(new Error(`HTTP_${response.status}`));
-        return;
-      }
-      resolvePromise(await response.json());
-    }, rejectPromise);
+    request.then(
+      async (response) => {
+        clearTimeout(timer);
+        if (!response.ok) {
+          rejectPromise(new Error(`HTTP_${response.status}`));
+          return;
+        }
+        resolvePromise(await response.json());
+      },
+      (error) => {
+        clearTimeout(timer);
+        rejectPromise(error);
+      },
+    );
   });
 }
 

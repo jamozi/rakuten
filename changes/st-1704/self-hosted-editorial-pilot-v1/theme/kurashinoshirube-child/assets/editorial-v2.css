@@ -6,7 +6,7 @@
   --rev2-clay: #8a3924;
   --rev2-line: #8d9994;
   --rev2-line-soft: #dce2df;
-  --rev2-content: 75rem;
+  --rev2-content: 80rem;
   --rev2-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --rev2-sans: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", YuGothic, "Noto Sans CJK JP", "Noto Sans JP", sans-serif;
   background: var(--rev2-page);
@@ -35,7 +35,7 @@
 .raos-editorial-v2-page .raos-breadcrumbs {
   margin-bottom: 2rem;
   color: var(--rev2-muted);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
 }
 
 .raos-editorial-v2-page .raos-article-category {
@@ -43,7 +43,7 @@
   padding: 0;
   border: 0;
   color: var(--rev2-clay);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -60,8 +60,8 @@
 
 .raos-editorial-v2-page .raos-article-title-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 20rem;
-  gap: clamp(3rem, 6vw, 5rem);
+  grid-template-columns: minmax(0, 1fr) 18rem;
+  gap: clamp(2.5rem, 4vw, 3.5rem);
   padding-block: clamp(3rem, 6vw, 5.25rem);
   align-items: center;
 }
@@ -71,10 +71,11 @@
   margin: 0;
   color: var(--rev2-ink);
   font-family: var(--rev2-serif);
-  font-size: clamp(3rem, 4.7vw, 4.35rem);
+  font-size: clamp(2.7rem, 3.5vw, 3.75rem);
   font-weight: 600;
   letter-spacing: 0.01em;
-  line-height: 1.28;
+  line-height: 1.22;
+  text-wrap: balance;
   word-break: auto-phrase;
 }
 
@@ -95,6 +96,7 @@
 
 .raos-editorial-v2 {
   color: var(--rev2-ink);
+  font-size: 1rem;
   overflow-wrap: anywhere;
 }
 
@@ -151,7 +153,7 @@
   gap: 2rem;
   padding-top: 0.65rem;
   color: var(--rev2-muted);
-  font-size: 0.67rem;
+  font-size: 0.8rem;
   justify-content: space-between;
 }
 
@@ -178,10 +180,12 @@
   margin: 1rem 0 0;
   color: var(--rev2-ink);
   font-family: var(--rev2-serif);
-  font-size: clamp(2.15rem, 3.6vw, 3.4rem);
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
   font-weight: 600;
   letter-spacing: 0.01em;
   line-height: 1.35;
+  text-wrap: balance;
+  word-break: auto-phrase;
 }
 
 .raos-editorial-v2 .section-heading--side {
@@ -189,7 +193,7 @@
 }
 
 .raos-editorial-v2 .section-heading--side h2 {
-  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-size: clamp(1.7rem, 2.6vw, 2.4rem);
 }
 
 .raos-editorial-v2 .section-heading--side > p:last-child:not(.section-number) {
@@ -202,7 +206,7 @@
 .raos-editorial-v2 .section-number {
   margin: 0;
   color: var(--rev2-clay);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.16em;
 }
@@ -238,14 +242,14 @@
 .raos-editorial-v2 .article-meta dt,
 .raos-editorial-v2 .product-profile dt {
   color: var(--rev2-muted);
-  font-size: 0.68rem;
+  font-size: 0.875rem;
   font-weight: 700;
 }
 
 .raos-editorial-v2 .article-meta dd,
 .raos-editorial-v2 .product-profile dd {
   margin-top: 0.2rem;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   font-weight: 700;
 }
 
@@ -309,7 +313,7 @@
 .raos-editorial-v2 .decision-list small {
   display: block;
   color: var(--rev2-muted);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 700;
 }
 
@@ -328,9 +332,12 @@
 }
 
 .raos-editorial-v2 .decision-list a {
-  font-size: 0.78rem;
+  font-size: 0.875rem;
   font-weight: 700;
-  white-space: nowrap;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
+  white-space: normal;
 }
 
 .raos-editorial-v2 .reader-columns {
@@ -425,7 +432,7 @@
 .raos-editorial-v2 .section-heading--inline > p {
   margin: 0 0 0.7rem;
   color: var(--rev2-muted);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
 }
 
 .raos-editorial-v2 .comparison-table-wrap {
@@ -459,12 +466,12 @@
 
 .raos-editorial-v2 .comparison-table thead th {
   border-bottom-color: var(--rev2-line);
-  font-size: 0.76rem;
+  font-size: 0.875rem;
 }
 
 .raos-editorial-v2 .comparison-table tbody th,
 .raos-editorial-v2 .comparison-table tbody td {
-  font-size: 0.82rem;
+  font-size: 0.875rem;
 }
 
 .raos-editorial-v2 .comparison-table tbody td:last-child {
@@ -474,7 +481,7 @@
 .raos-editorial-v2 .comparison-table td small {
   display: block;
   color: var(--rev2-muted);
-  font-size: 0.64rem;
+  font-size: 0.8rem;
 }
 
 .raos-editorial-v2 .comparison-table tr.has-difference td:not(:last-child) {
@@ -492,7 +499,7 @@
 .raos-editorial-v2 .table-note,
 .raos-editorial-v2 .cta-note {
   color: var(--rev2-muted);
-  font-size: 0.68rem;
+  font-size: 0.8rem;
 }
 
 .raos-editorial-v2 .product-profile {
@@ -505,16 +512,28 @@
 }
 
 .raos-editorial-v2 .product-profile figure {
+  display: grid;
   height: 20.5rem;
   margin: 0;
   overflow: hidden;
   background: #f3eee5;
+  place-items: center;
 }
 
 .raos-editorial-v2 .product-profile figure img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+.raos-editorial-v2
+  .product-profile
+  figure
+  img[data-raos-product-image-state="verified"] {
+  width: 128px;
+  height: 128px;
+  padding: 0;
 }
 
 .raos-editorial-v2 .product-profile--b {
@@ -567,7 +586,13 @@
   font-size: 0.88rem;
   font-weight: 700;
   gap: 1rem;
+  justify-content: center;
+  line-height: 1.45;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
   text-decoration: none;
+  white-space: normal;
 }
 
 .raos-editorial-v2 .rakuten-cta:hover {
@@ -585,9 +610,11 @@
   margin: 0 0 2rem;
   color: var(--rev2-ink);
   font-family: var(--rev2-serif);
-  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
   font-weight: 600;
   line-height: 1.35;
+  text-wrap: balance;
+  word-break: auto-phrase;
 }
 
 .raos-editorial-v2 .editorial-body-section h3,
@@ -700,7 +727,7 @@
 
 .raos-editorial-v2 .source-list small {
   color: var(--rev2-muted);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
 }
 
 .raos-editorial-v2 .source-list li.source-list__history {
@@ -724,8 +751,8 @@
   }
 
   .raos-editorial-v2-page .raos-article-title-grid h1 {
-    font-size: clamp(2.2rem, 10.4vw, 3.35rem);
-    line-height: 1.38;
+    font-size: clamp(1.9rem, 8.5vw, 2.15rem);
+    line-height: 1.33;
   }
 
   .raos-editorial-v2-page .raos-article-standfirst {
@@ -741,7 +768,7 @@
 
   .raos-editorial-v2 .hero-photo figcaption {
     gap: 1rem;
-    font-size: 0.55rem;
+    font-size: 0.8rem;
   }
 
   .raos-editorial-v2 .lead-section,
@@ -769,7 +796,7 @@
   }
 
   .raos-editorial-v2 .section-heading h2 {
-    font-size: 2rem;
+    font-size: clamp(1.7rem, 7.5vw, 2.2rem);
   }
 
   .raos-editorial-v2 .article-meta {
@@ -835,7 +862,8 @@
     margin-top: 1rem;
   }
 
-  .raos-editorial-v2 .comparison-table-wrap {
+  .raos-editorial-v2 .comparison-table-wrap > table,
+  .raos-editorial-v2 .comparison-table-wrap > .raos-comparison__table-view {
     display: none;
   }
 
@@ -869,7 +897,7 @@
 
   .raos-editorial-v2 .comparison-cards header p {
     color: var(--rev2-muted);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
 
   .raos-editorial-v2 .comparison-cards dl {
@@ -885,13 +913,13 @@
 
   .raos-editorial-v2 .comparison-cards dt {
     color: var(--rev2-muted);
-    font-size: 0.78rem;
+    font-size: 0.875rem;
     font-weight: 700;
   }
 
   .raos-editorial-v2 .comparison-cards dd {
     margin: 0;
-    font-size: 0.82rem;
+    font-size: 0.875rem;
   }
 
   .raos-editorial-v2 .product-profile,

@@ -1,16 +1,16 @@
 {
   "schema": "RAOS_V2_RECORDED_BROWSER_EVIDENCE_V1",
   "version": "1.0.0",
-  "recorded_date_jst": "2026-08-28",
+  "recorded_date_jst": "2026-08-30",
   "classification": "PASSED_LOCAL",
   "raw_receipt": {
     "schema": "RAOS_V2_LOCAL_BROWSER_EVIDENCE_V1",
     "local_path": "output/playwright/raos-v2-local-browser-evidence.json",
-    "sha256": "87c7e5e2013da9e237f692a77f01f7917b5777002051f133d5ad692ebc1d204c",
+    "sha256": "10ff61faa12c0be7eaef5029629ea4a6101b93a278b55f5762f4f65363b11c38",
     "bytes": 26340,
     "harness_path": "tests/raos_v2/browser-validation.mjs",
-    "harness_sha256": "2276905a25eb31b3ed1c2b4e3976fa4c2b58d0915bf6d3befe5acb7fd7319e90",
-    "harness_bytes": 40878,
+    "harness_sha256": "33fc4fe96cfae62d6d9506a31244311f97e5a01571b35521909739df2cfc9d70",
+    "harness_bytes": 40977,
     "command_contract": "NODE24_LOCAL_CDP_AXE_WITH_ABSOLUTE_BROWSER_AND_OUTPUT_PLAYWRIGHT_RECEIPT_V1",
     "exit_status": 0,
     "tracked": false

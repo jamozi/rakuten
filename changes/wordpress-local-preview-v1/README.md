@@ -9,11 +9,15 @@ and Nginx 1.29.1 images. A read-only, unprivileged Nginx gateway is the only
 service attached to the loopback bridge and binds only to
 `http://127.0.0.1:8888`; WordPress and MariaDB remain on their internal network.
 WordPress and database state live in named Docker volumes, the tracked
-child-theme source is mounted read-only, and five local-only editorial drafts
-are seeded. The drafts use a research brief dated 2026-08-29 and remain marked
-for primary-source rechecking before any publication workflow. No live post,
-production credential, affiliate destination, analytics integration, MCP
-publication tool, or external image is loaded.
+child-theme source is mounted read-only, and ten local-only editorial drafts
+are seeded. Before startup or synchronization, the tracked ten-article source
+portfolio is materialized below `.secrets/wordpress-local-preview/`. Fresh,
+exactly matched product evidence may supply an affiliate destination and a
+local copy of its 128px product image; missing, ambiguous, or expired evidence
+falls back to the manufacturer page and the tracked neutral image. The browser
+never loads a product image or script from an external origin. No live post,
+production credential, analytics integration, or MCP publication tool is used
+by the preview.
 
 ## Promotion rule
 
@@ -92,15 +96,21 @@ make wordpress-preview-down
 
 `wordpress-preview-up` creates owner-private random bootstrap credentials under
 `.secrets/wordpress-local-preview/`, starts WordPress and MariaDB, activates the
-tracked child theme, and seeds the fixture only on first initialization. It does
-not print any password. The public preview URLs are:
+tracked child theme, refreshes the owner-private materialized fixture, and seeds
+it only on first initialization. It does not print any password. The local
+preview URLs are:
 
 - home: `http://127.0.0.1:8888/`
-- article 1: `http://127.0.0.1:8888/local-preview-carry-on-suitcase-under-100-seats/`
-- article 2: `http://127.0.0.1:8888/local-preview-lightweight-carry-on-suitcase-under-3kg/`
-- article 3: `http://127.0.0.1:8888/local-preview-front-open-carry-on-suitcase-with-stopper/`
-- article 4: `http://127.0.0.1:8888/local-preview-roomba-mini-vs-switchbot-k11-pro/`
-- article 5: `http://127.0.0.1:8888/local-preview-solota-vs-rakua-mini-plus/`
+- article 1: `http://127.0.0.1:8888/local-preview-carry-on-suitcase-comparison/`
+- article 2: `http://127.0.0.1:8888/local-preview-portable-power-station-guide/`
+- article 3: `http://127.0.0.1:8888/local-preview-anker-solix-c300-c800-c1000-differences/`
+- article 4: `http://127.0.0.1:8888/local-preview-countertop-dishwasher-for-small-households/`
+- article 5: `http://127.0.0.1:8888/local-preview-compact-robot-vacuum-shortlist/`
+- article 6: `http://127.0.0.1:8888/local-preview-carry-on-suitcase-under-100-seats/`
+- article 7: `http://127.0.0.1:8888/local-preview-lightweight-carry-on-suitcase-under-3kg/`
+- article 8: `http://127.0.0.1:8888/local-preview-front-open-carry-on-suitcase-with-stopper/`
+- article 9: `http://127.0.0.1:8888/local-preview-roomba-mini-vs-switchbot-k11-pro/`
+- article 10: `http://127.0.0.1:8888/local-preview-solota-vs-rakua-mini-plus/`
 
 Edit the tracked child theme on the host and refresh the browser. The container
 cannot edit that mount. WordPress database changes made while experimenting are
@@ -121,8 +131,8 @@ the same `wp_strip_all_tags` / `wp_kses_post` checks used by the production MCP
 writer. This validation runs during the mandatory sync before production is
 contacted.
 
-To overwrite the five preview posts and two fixed pages with the tracked
-fixture, run:
+To overwrite the ten preview posts and two fixed pages with a newly
+materialized fixture, run:
 
 ```sh
 make wordpress-preview-sync
@@ -134,13 +144,13 @@ fixture or theme source.
 
 ## Browser evidence
 
-`make wordpress-preview-check` audits the home page and all five editorial
+`make wordpress-preview-check` audits the home page and all ten editorial
 drafts at widths 360, 390, 768, and 1440 pixels. It fails on HTTP errors,
 console/page errors, external requests, horizontal overflow, missing image
 alternatives, duplicate IDs, broken ARIA references, missing Japanese language
-metadata, incorrect H1/main counts, or a missing Editorial V2 article module.
-The 24 screenshots are ignored build artifacts under
-`output/playwright/local-preview/`.
+metadata, incorrect H1/main counts, out-of-bounds H1, Cookie-settings, or CTA
+boxes, or a missing Editorial V2 article module. The 44 screenshots are ignored
+build artifacts under `output/playwright/local-preview/`.
 
 ## Reset and boundaries
 

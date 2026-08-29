@@ -222,8 +222,8 @@
           "uri": "repo://changes/raos-v2/design/design-tokens.v2.json"
         },
         {
-          "bytes": 76310,
-          "sha256": "9335b2c50ba689e401cec4e53cf32452ff63452ba5c3b5c881cba97937e38a9b",
+          "bytes": 76068,
+          "sha256": "dfc7367d1b607216d86350aed6dffb4884d68a993ac1b77be7c8888a3518c989",
           "uri": "repo://changes/raos-v2/generated/decision-traceability.effective.v1.yaml"
         },
         {
@@ -277,8 +277,8 @@
           "uri": "repo://changes/raos-v2/phase-0/source-audit-report.json"
         },
         {
-          "bytes": 1210,
-          "sha256": "b7f14a76cc78e379bc3224de720188676e4530e79caaebe95ed2ffed1225ae05",
+          "bytes": 1193,
+          "sha256": "03c4daa10d45f8bae974508b6c3fe4792fd70ea4644bba6c4ea56b9365e9987e",
           "uri": "repo://changes/raos-v2/phase-1-report.md"
         },
         {
@@ -287,8 +287,8 @@
           "uri": "repo://changes/raos-v2/phase-2/claims/claim-ledger.v2.yaml"
         },
         {
-          "bytes": 20381,
-          "sha256": "22f2e1448a09a28720f56dd7059452bd96cc273b91094157ddaba8d75d7c47bb",
+          "bytes": 20342,
+          "sha256": "b0ed7e2fd5c5935eb20671c7e5b3c8cb897821e768de530ff90188446012d0ce",
           "uri": "repo://changes/raos-v2/phase-2/generated/local-evidence-bundle.v2.json"
         },
         {
@@ -297,8 +297,8 @@
           "uri": "repo://changes/raos-v2/phase-2/generated/migration-manifest.v2.yaml"
         },
         {
-          "bytes": 7157,
-          "sha256": "9e04b40a5a959ee9cbca9083a4f1c8983d3cd17fbab2e66efa138d06e0b552ea",
+          "bytes": 7343,
+          "sha256": "06fb85aa952910302db5f3c21efd61128ddb0e1fa89ee22a1738a8d0b7ac34df",
           "uri": "repo://changes/raos-v2/phase-2/generated/phase-2-validation.v2.json"
         },
         {
@@ -317,13 +317,13 @@
           "uri": "repo://changes/raos-v2/phase-2/generated/synthetic-seal-receipt.v2.json"
         },
         {
-          "bytes": 2606,
-          "sha256": "a33d46cbe91875e18916c44e0899e6afcad8f387d7c97e9f18274b2831825407",
+          "bytes": 2591,
+          "sha256": "f6df88a4e8224d1180ad6128cdcc4ef7f0c3bd1010216058ccb05455f01217cc",
           "uri": "repo://changes/raos-v2/phase-2/integration-pr-body.md"
         },
         {
-          "bytes": 2563,
-          "sha256": "44ab17b987f362341a024caca4faf7c2df5492c0d1ee9035115a964efe5444a5",
+          "bytes": 2520,
+          "sha256": "81e54e7bcf3b2e0434ad3509ab3e6a7e9c821af7d638501cc7e20c73722fdb3c",
           "uri": "repo://changes/raos-v2/phase-2/phase-2-report.md"
         },
         {
@@ -427,8 +427,8 @@
           "uri": "repo://changes/raos-v2/phase-3/integration-pr-body.md"
         },
         {
-          "bytes": 5228,
-          "sha256": "14c22d37a94dfb9d76dd8362e43f719ab277a1985a8ed92c2bfd7cc414fd9369",
+          "bytes": 5213,
+          "sha256": "ee5fd45191d31259b9b17157cd496339414ef6e3628f0b2715de3b9a6bcd4cc6",
           "uri": "repo://changes/raos-v2/phase-3/phase-3-preparation-report.md"
         },
         {
@@ -20846,12 +20846,12 @@
       "outputs": [
         {
           "bytes": 30334,
-          "sha256": "e9b49bfe3ed0c9d917f1c873e28f8e1e22b95226dbf5d295f414fc9bec0b3eff",
+          "sha256": "642d358bf793fedee64b0b5b792cc9355b39aeee114ec9fa9bbf7e57ef4f282d",
           "uri": "repo://changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json"
         },
         {
           "bytes": 11818,
-          "sha256": "5570093477414d4a0a9e68d03713e3ad37bb2ed60685cb156a8cf8ed96422f93",
+          "sha256": "0961d8112be124300b4a88547f0f110400f3e54e288409c43cdfb021f2522c86",
           "uri": "repo://changes/st-1104/runtime-manifest.v2.yaml"
         }
       ],
@@ -22383,7 +22383,7 @@
       "outputs": [
         {
           "bytes": 18895,
-          "sha256": "d655c26a14407108940b785280a54c1a0b3307ceaf8e8bcc0b05de241f5e6c61",
+          "sha256": "c98b058eeca9a8afc25cffa7e021ad5989904b8454acd8824241fffcd5a4df79",
           "uri": "repo://changes/st-1303/generated/attribution-engine-recorded.v2.json"
         }
       ],
@@ -22645,7 +22645,7 @@
       "outputs": [
         {
           "bytes": 39444,
-          "sha256": "eaba04eec85662a0d46b4aefe04f76af457f037dade0def5cc121d1abee82c49",
+          "sha256": "242babe554f9b925f4a849c1c00224945a58e3bbe3c8a34c3e71a13cb1eca8b3",
           "uri": "repo://changes/st-1304/generated/cost-unit-economics-recorded.v2.json"
         }
       ],
@@ -22886,7 +22886,7 @@
       "outputs": [
         {
           "bytes": 31267,
-          "sha256": "5a46d8f44da3e748c2f5aaf8387b4d9b11080fb50fc904637d56d22e0bac77b4",
+          "sha256": "8c2122359cfa0dafc5b883c5780b1a1f7cedffd701268223a0969bef8dddfb91",
           "uri": "repo://changes/st-1305/generated/finance-reconciliation-recorded.v2.json"
         }
       ],
@@ -25571,7 +25571,7 @@
       "outputs": [
         {
           "bytes": 7283,
-          "sha256": "d97792abe1b0d9fd6172c4c48220f27c238a58be63e9a9d111465ee8288654ac",
+          "sha256": "a63c978492ef206f6375e16756fdd3ea988ac9f040c6702f6a47fb4c654e04ae",
           "uri": "repo://changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json"
         }
       ],
@@ -25619,7 +25619,7 @@
       "outputs": [
         {
           "bytes": 2428,
-          "sha256": "3d18ebfe0b282d3cd54d06d13a1c45d5798fa6291edf7328714b7088892c0e82",
+          "sha256": "7a6d56fc6848828a656d3444a3b3c22fbdd0ed423a99a3efb80b4612974136e3",
           "uri": "repo://changes/st-1704/affiliate-learning-v2/runtime-manifest.v2.json"
         }
       ],
@@ -25739,7 +25739,7 @@
       "outputs": [
         {
           "bytes": 3170,
-          "sha256": "ed6350d8f8f26cb143e2dc83ec85a3f859b84db86eacf1dc8173c5d0732a1ca5",
+          "sha256": "a9e78cfb40727e49d38f250adc250f5b611607d2a4ebd6ed0748a61075df2361",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -25884,7 +25884,7 @@
       "outputs": [
         {
           "bytes": 71063,
-          "sha256": "cf54caf419069d62ded06c6eeeb94da328f669ee4e46a5ae2b8b8462fe460dc9",
+          "sha256": "750a97c2a36bf5c2ec3a0ce2cef09489ad971b077d7456e0a951826636f19d94",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -26376,7 +26376,7 @@
       "outputs": [
         {
           "bytes": 29183,
-          "sha256": "c0b12f3d72d6bdb954e0ec630e5c4318f444d9dc3779ee242b20b00d57344c9e",
+          "sha256": "a16cf659d5ebcf5576ae6c222984c4b0535f863309c27d6fb73aa49c015e2a0c",
           "uri": "repo://changes/st-1804/generated/gate3-economics.local-blocked.v1.json"
         }
       ],
@@ -27272,12 +27272,12 @@
       "outputs": [
         {
           "bytes": 3342,
-          "sha256": "7fb79df5a7812e78ec8a362206ee1be0ea4d0189c6a9102110d309350eae9ea2",
+          "sha256": "fe0974851e466f78d9e8a04501a76b39055b81eaa792287ba68eb470957adf23",
           "uri": "repo://changes/st-1907/generated/content-portfolio-optimizer-report.v1.json"
         },
         {
           "bytes": 8474,
-          "sha256": "3f4d1700521cc6f5e0251ded9f5cecdf3109287813a3584fab825257fdeb5dab",
+          "sha256": "a5776dc4013b8305659fcd337466ac128b770c5527ffdcbcc88b06d454196164",
           "uri": "repo://changes/st-1907/manifest.yaml"
         }
       ],
@@ -27577,8 +27577,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 11208,
-          "sha256": "8be1f420c4bf63aed3029a7e279331982325d2a93f392b3913ce67453bf8a81e",
+          "bytes": 11210,
+          "sha256": "4ae9be96d45fc9ebb0c0fd7cb11ee266da97d0c9f7c268acaa7f57888361cb0a",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],

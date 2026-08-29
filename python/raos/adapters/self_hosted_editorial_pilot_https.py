@@ -372,7 +372,7 @@ def _load_theme_related_navigation(
     if (
         related.get("owner") != "THEME_FIXED_ALLOWLIST"
         or related.get("target_requirement")
-        != "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_BOUND_RAOS_SNAPSHOT"
+        != "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
         or related.get("map_sha256") != canonical_sha256(dict(raw_map))
         or set(raw_map) != article_ids
     ):
@@ -425,7 +425,7 @@ def _load_theme_homepage_clusters(
         set(homepage) != {"config", "config_sha256", "link_requirement", "owner"}
         or homepage.get("owner") != "THEME_FIXED_ALLOWLIST"
         or homepage.get("link_requirement")
-        != "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_BOUND_RAOS_SNAPSHOT"
+        != "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
         or homepage.get("config_sha256") != canonical_sha256(dict(config))
         or set(config) != {"clusters", "display_order"}
         or type(display_order) is not list
@@ -907,6 +907,7 @@ class _RenderedContentParser(HTMLParser):
         "cta_active",
         "cta_parts",
         "cta_records",
+        "cta_span_open",
         "h1_count",
         "h1_open",
         "h1_parts",
@@ -920,6 +921,7 @@ class _RenderedContentParser(HTMLParser):
         self.cta_active: tuple[str, ...] | None = None
         self.cta_parts: list[str] = []
         self.cta_records: list[tuple[str, ...]] = []
+        self.cta_span_open = False
         self.h1_count = 0
         self.h1_open = False
         self.h1_parts: list[str] = []
@@ -932,9 +934,18 @@ class _RenderedContentParser(HTMLParser):
         self.rakuten_hrefs: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        if self.h1_open or self.cta_active is not None:
+        if self.h1_open:
             _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
         attributes = _html_attributes(attrs)
+        if self.cta_active is not None:
+            if (
+                tag != "span"
+                or self.cta_span_open
+                or attributes != {"aria-hidden": "true"}
+            ):
+                _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+            self.cta_span_open = True
+            return
         class_value = attributes.get("class")
         classes = set(class_value.split()) if type(class_value) is str else set[str]()
         for marker in self.marker_counts:
@@ -953,27 +964,56 @@ class _RenderedContentParser(HTMLParser):
                 "href",
                 "rel",
             }
-            if set(attributes) != required or any(
+            allowed = required | {"aria-describedby"}
+            if not required.issubset(attributes) or not set(attributes).issubset(
+                allowed
+            ) or any(
                 type(attributes[key]) is not str for key in required
             ):
                 _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+            placement = cast(str, attributes["data-raos-placement"])
+            described_by = attributes.get("aria-describedby")
+            if (
+                placement not in {"product_card", "final_summary"}
+                or not cast(str, attributes["data-raos-article-id"])
+                or not cast(str, attributes["data-raos-product-id"])
+                or (placement == "product_card")
+                != (type(described_by) is str and bool(described_by))
+            ):
+                _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
             rel_tokens = cast(str, attributes["rel"]).split()
-            if len(rel_tokens) != 2 or set(rel_tokens) != {"nofollow", "sponsored"}:
+            try:
+                cta_url = urlsplit(cast(str, attributes["href"]))
+            except ValueError:
+                _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+            if (
+                cta_url.scheme != "https"
+                or cta_url.hostname is None
+                or cta_url.username is not None
+                or cta_url.password is not None
+            ):
+                _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+            if cta_url.hostname == "hb.afl.rakuten.co.jp":
+                if (
+                    classes != {"rakuten-cta", "raos-cta"}
+                    or len(rel_tokens) != 2
+                    or set(rel_tokens) != {"nofollow", "sponsored"}
+                ):
+                    _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+                self.rakuten_hrefs.append(cast(str, attributes["href"]))
+            elif (
+                classes != {"official-product-link", "raos-cta"}
+                or len(rel_tokens) != 2
+                or set(rel_tokens) != {"noopener", "noreferrer"}
+            ):
                 _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
             self.cta_active = (
                 cast(str, attributes["href"]),
                 " ".join(sorted(rel_tokens)),
                 cast(str, attributes["data-raos-article-id"]),
                 cast(str, attributes["data-raos-product-id"]),
-                cast(str, attributes["data-raos-placement"]),
+                placement,
             )
-            try:
-                cta_host = urlsplit(cast(str, attributes["href"])).hostname
-            except ValueError:
-                _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-            if cta_host != "hb.afl.rakuten.co.jp":
-                _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-            self.rakuten_hrefs.append(cast(str, attributes["href"]))
             self.cta_parts = []
             return
         if tag == "a":
@@ -1025,7 +1065,7 @@ class _RenderedContentParser(HTMLParser):
                     )
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        if tag in {"a", "h1"}:
+        if tag in {"a", "h1"} or self.cta_active is not None:
             _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
         self.handle_starttag(tag, attrs)
 
@@ -1035,7 +1075,14 @@ class _RenderedContentParser(HTMLParser):
                 _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
             self.h1_open = False
             return
-        if tag == "a" and self.cta_active is not None:
+        if self.cta_active is not None:
+            if tag == "span":
+                if not self.cta_span_open:
+                    _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+                self.cta_span_open = False
+                return
+            if tag != "a" or self.cta_span_open:
+                _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
             self.cta_records.append((*self.cta_active, "".join(self.cta_parts)))
             self.cta_active = None
             self.cta_parts = []
@@ -1651,14 +1698,20 @@ def _validate_article_html(
         expected_content.h1_count != 0
         or expected_content.h1_open
         or expected_content.cta_active is not None
+        or expected_content.cta_span_open
         or public_content.h1_count != 1
         or public_content.h1_open
         or "".join(public_content.h1_parts) != payload.title
         or public_content.cta_active is not None
+        or public_content.cta_span_open
         or public_content.marker_counts != expected_content.marker_counts
         or public_content.cta_records != expected_content.cta_records
         or expected_content.rakuten_hrefs
-        != [record[0] for record in expected_content.cta_records]
+        != [
+            record[0]
+            for record in expected_content.cta_records
+            if record[1] == "nofollow sponsored"
+        ]
         or public_content.rakuten_hrefs != expected_content.rakuten_hrefs
         or public_content.product_images != expected_content.product_images
         or not public_content.product_images

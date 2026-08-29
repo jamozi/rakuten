@@ -306,45 +306,81 @@ def test_source_fact_packets_are_ready_hash_bound_and_cover_every_claim() -> Non
         assert source["immutable_capture_sha256"] == _canonical_sha256(preimage)
 
 
-def test_suitcase_presentation_is_scope_bounded_evidence_labeled_and_reader_led() -> None:
+def test_every_article_has_explicit_reader_led_product_presentation() -> None:
     collection = _load(CONTENT_PATH)
-    article = cast(dict[str, object], collection["articles"][0])
-    render = cast(dict[str, object], article["render_model"])
-    presentation = cast(dict[str, object], render["presentation"])
-    assert article["title"] == (
+    for article in collection["articles"]:
+        render = cast(dict[str, object], article["render_model"])
+        presentation = cast(dict[str, object], render["presentation"])
+        assert set(presentation) == {
+            "fact_checker",
+            "first_hand_test",
+            "reader_summary",
+            "scope_label",
+            "scope_note",
+        }
+        assert presentation["first_hand_test"] == "未実施"
+        assert all(cast(str, value).strip() for value in presentation.values())
+
+        cards = cast(list[dict[str, object]], render["product_cards"])
+        anchors: set[str] = set()
+        for card in cards:
+            detail = cast(dict[str, object], card["presentation_v2"])
+            assert set(detail) == {
+                "benefit",
+                "cta_context",
+                "detail_anchor",
+                "facts_checked_on",
+                "fits",
+                "not_fits",
+                "official_source_ref",
+                "recommendation_reason",
+            }
+            assert detail["facts_checked_on"] == article["freshness"][
+                "facts_checked_on"
+            ]
+            assert detail["official_source_ref"] in card["source_refs"]
+            assert cast(list[object], detail["fits"])
+            assert cast(list[object], detail["not_fits"])
+            assert detail["benefit"] != detail["recommendation_reason"]
+            assert card["caution"] not in cast(list[object], detail["not_fits"])
+            anchor = cast(str, detail["detail_anchor"])
+            assert anchor not in anchors
+            anchors.add(anchor)
+
+        recommendations = {
+            value["recommendation_ref"]: value
+            for value in render["recommendations"]
+        }
+        cards_by_ref = {
+            value["product_selection_ref"]: value for value in cards
+        }
+        decision = article["content_ast"]["blocks"][2]
+        for item in decision["items"]:
+            recommendation = recommendations[item["recommendation_ref"]]
+            card = cards_by_ref[recommendation["product_selection_ref"]]
+            summary = "".join(part["text"] for part in item["summary"])
+            assert card["product_name"] not in summary
+
+        body = json.dumps(article, ensure_ascii=False)
+        for prohibited in (
+            "今すぐ購入",
+            "絶対に買うべき",
+            "残りわずか",
+            "最安",
+            "最強",
+            "これを選べば間違いない",
+            "構成と表現整理にはAIを補助的に使います",
+        ):
+            assert prohibited not in body
+
+    suitcase = collection["articles"][0]
+    suitcase_presentation = suitcase["render_model"]["presentation"]
+    assert suitcase["title"] == (
         "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ"
     )
-    assert presentation["scope_label"] == "エース系3モデル"
-    assert "市場全体" in cast(str, presentation["scope_note"])
-    assert presentation["first_hand_test"] == "未実施"
-    cards = cast(list[dict[str, object]], render["product_cards"])
-    assert len(cards) == 3
-    for card in cards:
-        detail = cast(dict[str, object], card["presentation_v2"])
-        assert set(detail) == {
-            "benefit",
-            "cta_context",
-            "detail_anchor",
-            "facts_checked_on",
-            "fits",
-            "not_fits",
-            "official_source_ref",
-            "recommendation_reason",
-        }
-        assert detail["facts_checked_on"] == "2026-08-26"
-        assert detail["official_source_ref"] in card["source_refs"]
-        assert cast(list[object], detail["fits"])
-        assert cast(list[object], detail["not_fits"])
-    body = json.dumps(article, ensure_ascii=False)
-    for prohibited in (
-        "今すぐ購入",
-        "絶対に買うべき",
-        "残りわずか",
-        "最安",
-        "最強",
-        "これを選べば間違いない",
-    ):
-        assert prohibited not in body
+    assert suitcase_presentation["scope_label"] == "エース系3モデル"
+    assert "市場全体" in suitcase_presentation["scope_note"]
+
 
 def test_product_cards_bind_only_exact_rakuten_resources_and_pending_media_blocks() -> (
     None
@@ -386,24 +422,12 @@ def test_product_cards_bind_only_exact_rakuten_resources_and_pending_media_block
         assert asset["required_width"] == asset["required_height"] == 128
         assert asset["alt"] == f"{card['product_name']}の商品画像"
 
-    final = [
-        resource
-        for resource in affiliates.values()
-        if resource["status"] == "FINAL_OFFICIAL_RAKUTEN_LINK"
-    ]
     pending = [
         resource
         for resource in affiliates.values()
         if resource["status"] == "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE"
     ]
-    assert len(final) == 3
-    assert len(pending) == 15
-    for resource in final:
-        assert resource["destination_url"].startswith(
-            "https://hb.afl.rakuten.co.jp/hgc/"
-        )
-        assert resource["evidence"] is not None
-        assert resource["publication_blocker"] is None
+    assert len(pending) == 18
     for resource in pending:
         assert resource["destination_url"] is None
         assert resource["evidence"] is None
@@ -466,7 +490,7 @@ def test_disclosure_seo_and_copy_keep_editorial_independence() -> None:
         disclosure = article["render_model"]["disclosure"]
         disclosure_text = " ".join(disclosure["paragraphs"])
         assert disclosure["label"] == "広告と編集について"
-        for required in ("楽天アフィリエイト", "報酬率", "AI", "公開判断"):
+        for required in ("楽天アフィリエイト", "報酬率", "編集部", "実機"):
             assert required in disclosure_text
         assert article["render_model"]["cta_policy"] == {
             "copy": CTA_COPY,
@@ -513,6 +537,86 @@ def test_disclosure_seo_and_copy_keep_editorial_independence() -> None:
             term in ranking_material for term in ("報酬率", "EPC", "RPM", "利益")
         )
     assert len(meta_titles) == len(meta_descriptions) == 5
+
+
+def test_reader_copy_and_dimension_notation_are_normalized() -> None:
+    forbidden_copy = (
+        "公開前",
+        "構成です",
+        "自分で確認",
+        "できない人",
+        "確認せず",
+        "推測しない",
+        "公式表記順",
+        "定格定格",
+        "条件には合",
+        "楽天の商品ページ",
+        "楽天の商品名",
+    )
+    expected_disclosure = [
+        "型番が一致する楽天商品を確認できた場合に、楽天アフィリエイトの購入リンクを掲載します。リンク経由で商品を購入すると、運営者が成果報酬を受け取る場合があります。",
+        "成果報酬の有無や報酬率、価格、ポイント、在庫は、商品の評価や掲載順に影響しません。",
+        "掲載内容はメーカーなどの一次情報をもとに編集部が確認しています。実機を使用したレビューではありません。",
+    ]
+    dimension_axes = {
+        "AXIS-SUITCASE-DIMENSIONS",
+        "AXIS-POWER-SIZE",
+        "AXIS-ANKER-SIZE",
+        "AXIS-DISH-SIZE",
+        "AXIS-ROBOT-BODY",
+        "AXIS-ROBOT-STATION",
+    }
+    dimension_pattern = re.compile(
+        r"幅(?:約)?\d+(?:\.\d+)?×"
+        r"奥行(?:約)?\d+(?:\.\d+)?×"
+        r"高さ(?:約)?\d+(?:\.\d+)?cm"
+    )
+    observed_dimensions = 0
+    collection = _load(CONTENT_PATH)
+
+    for article in collection["articles"]:
+        article_text = " ".join(_strings(article))
+        for forbidden in forbidden_copy:
+            assert forbidden not in article_text
+        assert "<br" not in article_text.casefold()
+        assert article["render_model"]["disclosure"]["paragraphs"] == expected_disclosure
+        for table in article["render_model"]["comparison_tables"]:
+            for row in table["rows"]:
+                for cell in row["cells"]:
+                    if cell["axis_ref"] not in dimension_axes:
+                        continue
+                    observed_dimensions += 1
+                    assert cell["state"] == "KNOWN"
+                    assert dimension_pattern.fullmatch(cell["value"])
+
+    assert observed_dimensions == 23
+    collection_text = CONTENT_PATH.read_text(encoding="utf-8")
+    assert "購入前に本体の色と販売単位を型番で確認してください" in collection_text
+    assert "購入先の商品名と型番を照合してください" in collection_text
+    articles = {article["article_id"]: article for article in collection["articles"]}
+    dishwasher = articles["st1704-countertop-dishwasher-for-small-households"]
+    dishwasher_text = " ".join(_strings(dishwasher))
+    for formal_name in (
+        "Panasonic SOLOTA NP-TMLK1-H（以下、SOLOTA）",
+        "THANKO ラクアmini color TDWS25SBL（以下、ラクアmini color）",
+        "siroca 食器洗い乾燥機 SS-MA251（以下、SS-MA251）",
+        "Panasonic NP-TSP1-W（以下、NP-TSP1）",
+    ):
+        assert formal_name in dishwasher_text
+    assert [
+        card["product_name"]
+        for card in dishwasher["render_model"]["product_cards"]
+    ] == ["SOLOTA", "ラクアmini color", "SS-MA251", "NP-TSP1"]
+    robot = articles["st1704-compact-robot-vacuum-shortlist"]
+    robot_text = " ".join(_strings(robot))
+    assert "F155260（以下、Roomba Mini）" in robot_text
+    assert "N285060（以下、Roomba Plus 515 Combo）" in robot_text
+    assert "幅条件" not in robot_text
+    power_text = " ".join(
+        _strings(articles["st1704-portable-power-station-guide"])
+    )
+    assert "約5.7kg" not in power_text
+    assert power_text.count("5.7kg") >= 7
 
 
 def test_internal_routes_are_closed_and_topic_pairs_cross_link() -> None:
@@ -591,11 +695,11 @@ def test_relative_comparisons_bind_the_complete_comparison_evidence_set() -> Non
                 observed_carry_on_records += 1
                 assert "CLM-ST1704-SUITCASE-CARRYON-LIMITS" in claims
 
-    assert observed_relative_records >= 25
+    assert observed_relative_records >= 23
     assert observed_carry_on_records == 2
 
 
-def test_unknown_cells_and_k11_sheet_fact_remain_fail_closed() -> None:
+def test_jackery_dimensions_and_k11_sheet_fact_remain_source_bound() -> None:
     articles = {
         article["article_id"]: article for article in _load(CONTENT_PATH)["articles"]
     }
@@ -619,9 +723,9 @@ def test_unknown_cells_and_k11_sheet_fact_remain_fail_closed() -> None:
         "AXIS-POWER-SIZE",
     ) == {
         "axis_ref": "AXIS-POWER-SIZE",
-        "value": "未確定",
-        "claim_ids": [],
-        "state": "UNKNOWN",
+        "value": "幅31.1×奥行20.5×高さ15.7cm",
+        "claim_ids": ["CLM-ST1704-POWER-JACKERY-SPECS"],
+        "state": "KNOWN",
     }
     assert cell(
         "st1704-countertop-dishwasher-for-small-households",
@@ -676,4 +780,6 @@ def test_regressions_for_ecoflow_roomba_and_switchbot_dimension_semantics() -> N
     robot_text = " ".join(_strings(robot))
     assert "ステーション幅" not in robot_text
     assert "最大底面辺" in robot_text
-    assert "公式表記順" in robot_text
+    assert "公式表記順" not in robot_text
+    assert "幅24.0×奥行18.0×高さ25.0cm" in robot_text
+    assert "幅19.5×奥行29.7×高さ41.0cm" in robot_text

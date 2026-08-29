@@ -2,8 +2,8 @@
   "classification": "LOCAL_ONLY",
   "command": "TMPDIR=/tmp uv run --offline pytest -s -q tests/raos_v2",
   "command_contract": "BASH_PIPEFAIL_TEE_TEMP_PROMOTED_BY_RECORDER_V2",
-  "executed_at_jst": "2026-08-29T11:59:34.153017+09:00",
-  "executed_head": "49ceb42fdf3bb02dd268d3793b3056eb9e75d479",
+  "executed_at_jst": "2026-08-30T00:12:32.895359+09:00",
+  "executed_head": "b3da75529b9e741ab3f20c1478241661015604ed",
   "exit_code": 0,
   "external_actions": "NOT_EXECUTED",
   "failed": 0,
@@ -16,28 +16,28 @@
     "total_bytes": 1234671
   },
   "machine_contract_inventory": {
-    "content_inventory_sha256": "5bc7860c1426fa7c272055f49b68d1308b918889bbd07e11be79082937db1e08",
+    "content_inventory_sha256": "440c4cd7d05757679e5ce2f1a3b86d886c819d89fbb51396f19010233e6c720b",
     "file_count": 72,
     "path_set_sha256": "7c2fd508f148228537dfd6bf1e247d9167228ef13ee1b8a9fb3dc118754894f9",
     "schema": "RAOS_V2_FILE_INVENTORY_BINDING_V1",
-    "total_bytes": 624156
+    "total_bytes": 624145
   },
-  "passed": 661,
+  "passed": 662,
   "raw_output": {
-    "bytes": 683,
+    "bytes": 684,
     "local_path": "output/pytest/raos-v2-local-test-output.txt",
-    "sha256": "ba2c297387f8b3ca8ee3399ad4a4d92d7fdb82474149117852795348054c96b9"
+    "sha256": "18685fe9c4fcca0cd9afd4af9ca1e9ff8dbc880554b87c08b59a39cb03b9cefe"
   },
-  "recorded_date_jst": "2026-08-29",
+  "recorded_date_jst": "2026-08-30",
   "schema": "RAOS_V2_RECORDED_LOCAL_TEST_EVIDENCE_V1",
   "skipped": 0,
   "status": "PASSED_LOCAL",
   "test_inventory": {
-    "content_inventory_sha256": "418eb75413f351dd64d5b4f689da4c1ec8d4cf7bba42843659637e5df811145e",
+    "content_inventory_sha256": "f335f05891aff1bb4d333f246da8b6f4f8229b03c1001dbab737d9cac0523cb0",
     "file_count": 31,
     "path_set_sha256": "7433ae9118d690ea662ac57210b168d59902b97c5a335102e8e2e3b8f99f9429",
     "schema": "RAOS_V2_FILE_INVENTORY_BINDING_V1",
-    "total_bytes": 587619
+    "total_bytes": 589475
   },
   "version": "2.0.0"
 }

@@ -93,13 +93,13 @@ source_bindings:
     sha256: 864e0f4f7d6925b3fe513ed329ad5b21a8fec32a193a18cd3aee91cbbac0b0f0
   st1304_runtime:
     path: changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
-    sha256: bfd30d6b1dac63d35a8a74f62b118275170d943b31a24b4c59c1ead11dec491a
+    sha256: fe47e6a3019f9ba56fe84d52cd9c02950fdbc1bde4ad2dd56ed2a150166e3e41
   st1304_projection:
     path: changes/st-1304/generated/cost-unit-economics-recorded.v2.json
-    sha256: eaba04eec85662a0d46b4aefe04f76af457f037dade0def5cc121d1abee82c49
+    sha256: 242babe554f9b925f4a849c1c00224945a58e3bbe3c8a34c3e71a13cb1eca8b3
   st1304_fixture:
     path: changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
-    sha256: 4d81d55fe6daf8246c5e0251d9ee8441d823ab5137889eb6e0e768a21b02b758
+    sha256: 0d3c525e57d093619f6ae4f9f7a4032ee9cbc8a761661262d8fa0d7909f8b084
   st1304_domain:
     path: python/raos/domain/finance/unit_economics.py
     sha256: 5f21551473f0c3ac3a56d7b385c43b77f554ea45c1c55b28f1d0f3aee4e9a575
@@ -114,23 +114,23 @@ source_bindings:
     sha256: 0956071070accd9752cc0e404b685f9d4d2ceeb6da70fafd0b1bb187efde7841
   st1303_generator:
     path: scripts/build_st1303_attribution_engine.py
-    sha256: 1f545ca4dd1aae2a7546c3b36122a417fcb7d6b89a3b60e58afe0792a36934f8
+    sha256: 558b23071b2cca6377d4dcb3dcf42a6c6a8dafad458c1feb0ffaf95b3f1ce168
   st1303_contract:
     path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: 192f16e48e11abd2078724d3d177d8b0dcb44fea06122a283cde2fb4ab8b4005
+    sha256: 0eed320ba8a715b062870f9619b01c2e29210ce518e883ec8cd80739b6475d58
   st1303_fixture:
     path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
-    sha256: d219f2a7bd958f5572ee77a3298ef9208cac3fd59a9b6d2c496be6227c7b6c58
+    sha256: 8423c2edc53f47779006162d85914413bfc04e31e56e1e1d64bc086352b2c748
 
 recorded_fixture:
   path: changes/st-1104/fixtures/analytics-finance-dashboard-recorded.synthetic.v2.json
-  sha256: 5bb285514ce70bb7277d45ba9e03e653eae329427a1e593073a740a393ee2efb
+  sha256: 3f168f34238a7e30509bb993cbae278dc55e5ad782d0d658ec8172750d418f0f
   bytes: 1734
   synthetic: true
   environment: ENV-CI
   st1205_input_sha256: 5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92
-  st1304_input_sha256: 211f2c3fea34dacab26e0d8facc2dded2168e013bd5449f38d5cab42902c7b12
-  st1304_result_sha256: 2280ce8346dc70f5156ee411694a5beee400dc1fdd69b95de742cb06ede981b3
+  st1304_input_sha256: 9c9b9885f602d8b5e1275ec1581d4d0109ca4953c41e92b438e663eee8cfcef4
+  st1304_result_sha256: 6088215182b8bb70fefda832011bdcbac44fd83ed2b2e03628f96cc25353ab61
   provider_execution: NOT_EXECUTED
 
 screen_contract:

@@ -19,7 +19,7 @@ from xml.etree import ElementTree
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 THEME_SLUG: Final = "kurashinoshirube-child"
-THEME_VERSION: Final = "1.3.8"
+THEME_VERSION: Final = "1.3.9"
 THEME_ROOT: Final = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme" / THEME_SLUG
 )
@@ -50,14 +50,15 @@ SOURCE_FILES: Final = (
 PUBLIC_LISTING_ELIGIBILITY: Final = {
     "candidate_query": {
         "max_candidates_per_slot": 2,
-        "max_rows": 10,
+        "max_rows": 20,
         "post_type": "post",
-        "query_limit": 11,
+        "query_limit": 21,
         "slug_classes": [
             "raos-review-*",
-            "snapshot.article_bindings[].slug",
+            "editorial_v2_publication_bindings[].slug",
+            'raw_content_prefix:<div class="raos-editorial-v2">',
         ],
-        "slot_count": 5,
+        "slot_count": 10,
     },
     "candidate_overflow_policy": "LOOKUP_FAILURE_WHEN_RESULT_COUNT_EXCEEDS_MAX_ROWS",
     "consumers": {
@@ -81,13 +82,15 @@ PUBLIC_LISTING_ELIGIBILITY: Final = {
         },
         {
             "eligible": False,
-            "slug_class": "ALLOWLISTED_FINAL",
-            "snapshot_state": "MISSING_INVALID_OR_ARTICLE_ID_MISMATCH",
+            "slug_class": "PORTFOLIO_FINAL",
+            "snapshot_state": "PUBLIC_ARTICLE_IDENTITY_MISSING_OR_MISMATCH",
         },
         {
             "eligible": True,
-            "slug_class": "ALLOWLISTED_FINAL",
-            "snapshot_state": "EXACT_PUBLISHED_BOUND_MATCHING_ARTICLE_ID",
+            "slug_class": "PORTFOLIO_FINAL",
+            "snapshot_state": (
+                "EXACT_STORED_SNAPSHOT_OR_EDITORIAL_V2_PUBLISHED_IDENTITY"
+            ),
         },
         {
             "eligible": True,
@@ -96,7 +99,7 @@ PUBLIC_LISTING_ELIGIBILITY: Final = {
         },
     ],
     "query_cache": "REQUEST_LOCAL_ONLY",
-    "snapshot_validator": "kurashinoshirube_bound_post_snapshot(post_id,false)",
+    "snapshot_validator": "kurashinoshirube_public_article_identity(post_id)",
 }
 
 DOCUMENT_TITLE_DEDUPLICATION: Final = {
@@ -117,12 +120,20 @@ EDITORIAL_V2_PRESENTATION: Final = {
     "category_fallback_allowlist": ["移動", "家事"],
     "content_root": '<div class="raos-editorial-v2">',
     "detection": "EXACT_RAW_CONTENT_PREFIX_ON_SINGULAR_POST",
+    "publication_identity_predicate": (
+        "PUBLISH_POST_EXACT_SINGLE_EDITORIAL_V2_ROOT_AND_CLOSED_SLUG_ARTICLE_ID_MATCH"
+    ),
     "publication_snapshot_required": False,
     "scope": "ORDINARY_WORDPRESS_POST_ONLY",
     "section_slug_allowlist": {
+        "anker-solix-c300-c800-c1000-differences": "備え",
+        "carry-on-suitcase-comparison": "移動",
         "carry-on-suitcase-under-100-seats": "移動",
+        "compact-robot-vacuum-shortlist": "家事",
+        "countertop-dishwasher-for-small-households": "家事",
         "front-open-carry-on-suitcase-with-stopper": "移動",
         "lightweight-carry-on-suitcase-under-3kg": "移動",
+        "portable-power-station-guide": "備え",
         "roomba-mini-vs-switchbot-k11-pro": "家事",
         "solota-vs-rakua-mini-plus": "家事",
     },
@@ -414,7 +425,7 @@ def validate_sources() -> dict[str, str]:
         "article_id": "st1704-portable-power-station-guide",
         "exclude_from_latest": True,
         "local_preview_substitute": "LATEST_SYNTHETIC_POST_LAYOUT_ONLY",
-        "selection": "FIXED_ARTICLE_ID_WITH_PUBLISHED_BOUND_SNAPSHOT",
+        "selection": "FIXED_ARTICLE_ID_WITH_EXACT_PUBLIC_ARTICLE_IDENTITY",
     }:
         _fail()
     assets = _json("raos-assets.v1.json")

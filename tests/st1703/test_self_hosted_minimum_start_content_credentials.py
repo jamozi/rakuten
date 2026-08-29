@@ -58,14 +58,19 @@ def _make_all_slots_pending(packet: dict[str, object]) -> None:
     for slot in slots:
         assert isinstance(slot, dict)
         slot_id = slot["slot_id"]
-        destination = slot["destination_url"]
-        assert isinstance(slot_id, str) and isinstance(destination, str)
         pending = (
             f"<!-- RAOS-AFFILIATE-SLOT:{slot_id} BEGIN -->"
             f'<div class="raos-affiliate-slot" data-raos-affiliate-slot="{slot_id}">'
             "<p>公式楽天アフィリエイトリンク未設定</p></div>"
             f"<!-- RAOS-AFFILIATE-SLOT:{slot_id} END -->"
         )
+        if slot.get("status") == "PENDING_OFFICIAL_RAKUTEN_LINK":
+            assert "destination_url" not in slot
+            assert "evidence" not in slot
+            assert content.count(pending) == 1
+            continue
+        destination = slot["destination_url"]
+        assert isinstance(slot_id, str) and isinstance(destination, str)
         content = content.replace(affiliate_cta_html(slot_id, destination), pending)
         product_name = slot["product_name"]
         slot.clear()
@@ -113,9 +118,9 @@ def test_content_packet_builds_only_bound_create_and_positive_id_update() -> Non
     assert create.content_html.startswith(f"{FIRST_ARTICLE_THEME_SHORTCODE}\n")
     assert create.content_html.count(FIRST_ARTICLE_THEME_SHORTCODE) == 1
     assert create.content_html.count("PENDING_OFFICIAL_RAKUTEN_LINK") == 0
-    assert create.content_html.count("公式楽天アフィリエイトリンク未設定") == 0
-    assert create.content_html.count(AFFILIATE_CTA_LABEL) == 3
-    assert create.content_html.count(RAKUTEN_CREDIT_SNIPPET) == 1
+    assert create.content_html.count("公式楽天アフィリエイトリンク未設定") == 3
+    assert create.content_html.count(AFFILIATE_CTA_LABEL) == 0
+    assert create.content_html.count(RAKUTEN_CREDIT_SNIPPET) == 0
 
 
 def test_self_hosted_draft_slug_is_strict_and_content_hash_bound() -> None:
@@ -385,7 +390,6 @@ def test_content_packet_rejects_active_html_fake_experience_or_disclosure_loss(
     ("pending", "wrong_disclosure", "right_disclosure"),
     [
         (True, AFFILIATE_FINAL_DISCLOSURE_HTML, AFFILIATE_PENDING_DISCLOSURE_HTML),
-        (False, AFFILIATE_PENDING_DISCLOSURE_HTML, AFFILIATE_FINAL_DISCLOSURE_HTML),
     ],
 )
 def test_content_packet_enforces_state_specific_affiliate_disclosure(

@@ -1,13 +1,58 @@
 {
   "schema": "RAOS_WORDPRESS_LOCAL_PREVIEW_FIXTURE_V1",
-  "seed_version": "2026-08-29.3",
+  "seed_version": "2026-08-29.4",
   "posts": [
+    {
+      "article_id": "local-preview-carry-on-suitcase-comparison",
+      "category": "暮らしの道具",
+      "content_file": "articles/carry-on-suitcase-comparison.html",
+      "date": "2026-08-24 00:00:00",
+      "excerpt": "型番と一次情報を照合できたエース系3モデルを、軽さ・容量・開き方で条件別に比較。市場全体の順位ではなく、向く人と注意点を整理します。",
+      "slug": "local-preview-carry-on-suitcase-comparison",
+      "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ"
+    },
+    {
+      "article_id": "local-preview-portable-power-station-guide",
+      "category": "暮らしの道具",
+      "content_file": "articles/portable-power-station-guide.html",
+      "date": "2026-08-23 00:00:00",
+      "excerpt": "停電対策のポータブル電源4モデルを、容量・定格出力・重量・大きさで比較。使いたい機器と持ち運び条件から候補を絞ります。",
+      "slug": "local-preview-portable-power-station-guide",
+      "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める"
+    },
+    {
+      "article_id": "local-preview-anker-solix-c300-c800-c1000-differences",
+      "category": "暮らしの道具",
+      "content_file": "articles/anker-solix-c300-c800-c1000-differences.html",
+      "date": "2026-08-22 00:00:00",
+      "excerpt": "Anker Solix 4モデルの容量・定格出力・重量・寸法を同じ表で比較。持ち運び、出力、C1000の世代差から条件別に選びます。",
+      "slug": "local-preview-anker-solix-c300-c800-c1000-differences",
+      "title": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い"
+    },
+    {
+      "article_id": "local-preview-countertop-dishwasher-for-small-households",
+      "category": "暮らしの道具",
+      "content_file": "articles/countertop-dishwasher-for-small-households.html",
+      "date": "2026-08-21 00:00:00",
+      "excerpt": "工事不要で使えるタンク式食洗機4モデルを、設置寸法・食器点数・使用水量・乾燥方法で比較。狭いキッチンで向く条件を整理します。",
+      "slug": "local-preview-countertop-dishwasher-for-small-households",
+      "title": "工事不要の食洗機を1〜2人暮らし向けに比較"
+    },
+    {
+      "article_id": "local-preview-compact-robot-vacuum-shortlist",
+      "category": "暮らしの道具",
+      "content_file": "articles/compact-robot-vacuum-shortlist.html",
+      "date": "2026-08-20 00:00:00",
+      "excerpt": "省スペース候補のロボット掃除機4モデルを、本体の底面寸法・高さ・ステーション寸法・水拭き方式で比較。置ける条件から候補を絞ります。",
+      "slug": "local-preview-compact-robot-vacuum-shortlist",
+      "title": "省スペースのロボット掃除機を条件で絞る"
+    },
     {
       "article_id": "local-preview-carry-on-suitcase-under-100-seats",
       "category": "移動",
       "content_file": "articles/carry-on-suitcase-under-100-seats.html",
       "date": "2026-08-29 00:00:00",
-      "excerpt": "100席未満の国内線で確認したい45×35×20cm・3辺100cm以内を基準に、4モデルの外寸、重量、容量、開き方を公式情報から比較します。",
+      "excerpt": "100席未満の国内線で確認したい幅35×奥行20×高さ45cm・3辺100cm以内を基準に、4モデルの外寸、重量、容量、開き方を公式情報から比較します。",
       "slug": "local-preview-carry-on-suitcase-under-100-seats",
       "title": "100席未満の国内線向けスーツケース4モデルを機内持ち込み規定で比較"
     },
