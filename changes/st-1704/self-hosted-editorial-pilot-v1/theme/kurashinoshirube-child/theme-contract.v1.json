@@ -120,6 +120,11 @@
       "Organization",
       "WebSite"
     ],
+    "canonical": {
+      "editorial_v2_fallback": "FIXED_SITE_ORIGIN_PLUS_SLUG_FOR_SINGULAR_PUBLISHED_CLOSED_PUBLIC_ARTICLE_IDENTITY",
+      "invalid_or_unpublished_policy": "PRESERVE_UPSTREAM_VALUE",
+      "snapshot_precedence": "VALID_BOUND_RAOS_SNAPSHOT"
+    },
     "document_title_deduplication": {
       "active_when": "WPSEO_VERSION_DEFINED",
       "hook": "wp_head",
@@ -138,7 +143,7 @@
       "Product",
       "Review"
     ],
-    "metadata_owner": "YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_AND_CONFIG_READBACK",
+    "metadata_owner": "YOAST_SEO_FILTERS_WITH_SNAPSHOT_METADATA_AND_CLOSED_EDITORIAL_V2_CANONICAL_FALLBACK",
     "raos_metadata_delivery": "YOAST_METADATA_FILTERS_ONLY",
     "rest_output": {
       "preserved_route": "/wp/v2/posts",

@@ -2330,7 +2330,24 @@ function kurashinoshirube_filter_description($value)
 }
 function kurashinoshirube_filter_canonical($value)
 {
-    return kurashinoshirube_filter_snapshot_value($value, 'canonical_url');
+    $snapshot = kurashinoshirube_current_snapshot();
+    if ($snapshot !== null) {
+        return $snapshot['canonical_url'];
+    }
+    if (! is_singular('post')) {
+        return $value;
+    }
+    $post_id = (int) get_queried_object_id();
+    $identity = $post_id > 0
+        ? kurashinoshirube_public_article_identity($post_id)
+        : null;
+    if (
+        $identity === null
+        || get_post_status($post_id) !== 'publish'
+    ) {
+        return $value;
+    }
+    return KURASHINOSHIRUBE_SITE_ORIGIN . '/' . $identity['slug'] . '/';
 }
 function kurashinoshirube_filter_og_title($value)
 {
