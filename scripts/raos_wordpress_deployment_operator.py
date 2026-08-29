@@ -4,7 +4,8 @@
 The caller selects one of six closed operations and supplies JSON on stdin.  It
 cannot provide a URL, command, PHP, SQL, credential path, or local package path.
 Publication and code mutation remain impossible until a distinct administrator
-has approved the hash-bound proposal in wp-admin and all host gates are true.
+has approved the hash-bound proposal in wp-admin, its single-use authorization
+lease is valid, and the global host kill switch is true.
 """
 
 from __future__ import annotations

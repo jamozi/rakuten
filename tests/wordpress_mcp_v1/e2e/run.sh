@@ -4,7 +4,7 @@
 set -euo pipefail
 umask 0077
 
-readonly repository_root=/home/minami/rakuten
+readonly repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd -P)"
 readonly e2e_directory="$repository_root/tests/wordpress_mcp_v1/e2e"
 readonly compose_file="$e2e_directory/compose.yaml"
 readonly adapter_url=https://github.com/WordPress/mcp-adapter/releases/download/v0.6.1/mcp-adapter.zip
@@ -92,9 +92,12 @@ wordpress_cli() {
 }
 
 approve_proposal() {
-  wordpress_cli eval-file \
-    /var/www/raos-code/staging/approve_harness.php "$1" >/dev/null 2>&1 \
-    || fail RAOS_WORDPRESS_E2E_APPROVAL_FAILED
+  local approval_log="$e2e_temporary_directory/approval.log"
+  if ! wordpress_cli eval-file \
+    /var/www/raos-code/staging/approve_harness.php "$1" >"$approval_log" 2>&1; then
+    tail -c 4096 "$approval_log" >&2 || true
+    fail RAOS_WORDPRESS_E2E_APPROVAL_FAILED
+  fi
 }
 
 cleanup() {
@@ -133,7 +136,7 @@ actual_adapter_sha256="$(sha256sum "$adapter_zip" | awk '{print $1}')"
 
 "$repository_root/.venv/bin/python" \
   "$repository_root/scripts/build_wordpress_mcp_v1.py" --package
-readonly raos_plugin_zip="$repository_root/.secrets/wordpress-mcp/plugin/raos-codex-mcp-abilities-1.0.2.zip"
+readonly raos_plugin_zip="$repository_root/.secrets/wordpress-mcp/plugin/raos-codex-mcp-abilities-1.1.0.zip"
 "$repository_root/.venv/bin/python" \
   "$repository_root/scripts/build_wordpress_mcp_v1.py" --package-check
 
@@ -287,7 +290,20 @@ for proposal_id in "${code_proposals[@]}"; do
   approve_proposal "$proposal_id"
 done
 
+for proposal_id in "${release_proposals[@]}" "$drift_proposal" "${code_proposals[@]}"; do
+  approval_lease="/var/www/raos-code/private/approval-lease-$proposal_id.json"
+  if ! compose exec -T wordpress sh -eu -c \
+    'path="$1"; [ -f "$path" ] && [ ! -L "$path" ] && [ "$(stat -c "%a" "$path")" = 600 ]' \
+    sh "$approval_lease"; then
+    fail RAOS_WORDPRESS_E2E_APPROVAL_LEASE_MISSING
+  fi
+done
+
 "$repository_root/.venv/bin/python" "$e2e_directory/client.py" apply "$state_path"
+if compose exec -T wordpress sh -eu -c \
+  'find /var/www/raos-code/private -maxdepth 1 -type f -name "approval-lease-*.json" -print -quit | grep -q .'; then
+  fail RAOS_WORDPRESS_E2E_APPROVAL_LEASE_NOT_CONSUMED
+fi
 wordpress_cli plugin is-active raos-e2e-safe-plugin/raos-e2e-safe-plugin.php \
   || fail RAOS_WORDPRESS_E2E_PLUGIN_ACTIVATION_FAILED
 if wordpress_cli plugin is-installed raos-e2e-broken-plugin; then

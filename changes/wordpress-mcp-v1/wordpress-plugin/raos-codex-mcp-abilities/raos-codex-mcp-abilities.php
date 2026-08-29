@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RAOS Codex MCP Abilities
  * Description: Browser-independent, approval-bound content and deployment abilities for kurashinoshirube.com.
- * Version: 1.0.2
+ * Version: 1.1.0
  * Requires at least: 7.1
  * Requires PHP: 8.1
  * Author: RAOS
@@ -14,7 +14,7 @@
 
 defined('ABSPATH') || exit;
 
-define('RAOS_CODEX_MCP_VERSION', '1.0.2');
+define('RAOS_CODEX_MCP_VERSION', '1.1.0');
 define('RAOS_CODEX_MCP_FILE', __FILE__);
 
 require_once __DIR__ . '/includes/class-raos-codex-mcp-store.php';
@@ -388,7 +388,7 @@ final class RAOS_Codex_MCP_Abilities
         }
         $rows = RAOS_Codex_MCP_Store::pending_for_admin(50);
         echo '<div class="wrap"><h1>' . esc_html__('RAOS Codex proposals', 'raos-codex-mcp') . '</h1>';
-        echo '<p>' . esc_html__('Review the complete before/after hashes and payload. Approval never applies the change; the bounded operator must still pass If-Match, idempotency, TTL, kill-switch, host-gate, drift, backup, and readback checks.', 'raos-codex-mcp') . '</p>';
+        echo '<p>' . esc_html__('Review the complete before/after hashes and payload. Approval issues one proposal-bound, single-use authorization; it never applies the change. The bounded operator must still pass If-Match, idempotency, TTL, the global kill switch, drift, backup, and readback checks.', 'raos-codex-mcp') . '</p>';
         if (empty($rows)) {
             echo '<p>' . esc_html__('No pending proposals.', 'raos-codex-mcp') . '</p></div>';
             return;

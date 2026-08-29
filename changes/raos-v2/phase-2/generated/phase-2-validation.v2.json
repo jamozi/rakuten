@@ -142,8 +142,8 @@
       "classification": "LOCAL_ONLY",
       "command": "TMPDIR=/tmp uv run --offline pytest -s -q tests/raos_v2",
       "command_contract": "BASH_PIPEFAIL_TEE_TEMP_PROMOTED_BY_RECORDER_V2",
-      "executed_at_jst": "2026-08-29T07:02:19.630266+09:00",
-      "executed_head": "26db06528f0b7a0815a6165822890ba2d62f335b",
+      "executed_at_jst": "2026-08-29T11:59:34.153017+09:00",
+      "executed_head": "49ceb42fdf3bb02dd268d3793b3056eb9e75d479",
       "exit_code": 0,
       "external_actions": "NOT_EXECUTED",
       "failed": 0,
@@ -166,7 +166,7 @@
       "raw_output": {
         "bytes": 683,
         "local_path": "output/pytest/raos-v2-local-test-output.txt",
-        "sha256": "daf0023bbbf7d788828a9d4135ed52f00a9ac4261a3646a59f322d4c6bebeddf"
+        "sha256": "ba2c297387f8b3ca8ee3399ad4a4d92d7fdb82474149117852795348054c96b9"
       },
       "raw_verification": "RECORDED_NOT_REVERIFIED",
       "recorded_date_jst": "2026-08-29",

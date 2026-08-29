@@ -34,7 +34,7 @@ the build or tests:
    `23cb53e0b82f39238eec1c38cb055e28aa30fa7c`).
 2. Run `make -C changes/wordpress-mcp-v1 plugin-package`, verify the hash in
    `runtime-manifest.v1.json`, and install/activate the resulting owner-private
-   `raos-codex-mcp-abilities-1.0.2.zip` in wp-admin.
+   `raos-codex-mcp-abilities-1.1.0.zip` in wp-admin.
 3. Create one non-administrator user for each activation-created role, with no
    second role or direct capabilities:
    `raos_codex_mcp_editor` and `raos_codex_deployment_operator`.
@@ -60,8 +60,9 @@ the build or tests:
    ```
 
 6. Configure an owner-private, same-filesystem directory outside WordPress and
-   the web root, mode `0700`, as `RAOS_CODEX_PRIVATE_DIR`. Enable only the
-   default-off host gates needed for the current operation.
+   the web root, mode `0700`, as `RAOS_CODEX_PRIVATE_DIR`. Keep the global
+   `RAOS_OPERATOR_WRITES_ENABLED` kill switch owner-controlled. Individual
+   content, theme, and plugin applies do not require `wp-config.php` changes.
 7. Restart Codex so project MCP configuration is reloaded, then run
    `codex mcp list`. Only `wordpressEditor` and `wordpressDeployment` may be
    enabled.
@@ -86,12 +87,13 @@ the build or tests:
   this automatic path.
 - A different cookie-authenticated administrator reviews the complete payload
   in **Tools → RAOS Codex proposals**, reauthenticates, gives a reason, and
-  types the after-hash suffix. Approval expires after 15 minutes and does not
-  apply the proposal.
+  types the after-hash suffix. Approval creates one proposal-bound, single-use
+  authorization lease outside the web root. It expires after 15 minutes and
+  does not apply the proposal.
 - Apply requires the approval plus `If-Match`, the same idempotency key, global
-  kill switch, purpose host gate, unchanged before hash, backup, replacement,
-  and after-hash readback. Communication-loss recovery accepts only the
-  existing operation ID.
+  kill switch, the scoped authorization lease, unchanged before hash, backup,
+  replacement, and after-hash readback. The lease is removed after success or
+  failure. Communication-loss recovery accepts only the existing operation ID.
 
 ## Verification
 
@@ -117,8 +119,8 @@ console/page errors, missing landmarks/alternative text/form labels, duplicate
 IDs, and broken ARIA references. Set `RAOS_WORDPRESS_UI_BASELINE_DIR` to an
 absolute owner-approved baseline directory to require byte-exact screenshot
 comparison in the disposable deterministic environment. Live credentials,
-activation, host-gate changes, and publishing stay human-owned external steps
-and are not implied by local test success.
+activation, the global kill switch, and publishing stay human-owned external
+steps and are not implied by local test success.
 
 The destructive-path integration suite is isolated from the live host and owns
 its containers, database, fixed test identities, and volume:
@@ -135,8 +137,8 @@ update/replace, non-mutating proposals, refusal before approval, the real
 wp-admin approval handler under a separate administrator, hash-drift refusal,
 idempotent apply, tracked child-theme replacement, fixed-hash plugin
 activation, failed plugin-activation rollback, recovery, readback, and audit
-receipt state. Code gates and disposable repo-artifact hashes are enabled only
-inside this isolated test environment. The unique Compose project and
+receipt state. Approval-scoped leases and disposable repo-artifact hashes are
+enabled only inside this isolated test environment. The unique Compose project and
 same-filesystem temporary bind tree are removed on exit.
 Supplying an already downloaded release asset is supported only through an
 absolute regular file in

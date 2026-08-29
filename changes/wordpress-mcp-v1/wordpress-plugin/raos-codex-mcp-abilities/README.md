@@ -1,4 +1,4 @@
-# RAOS Codex MCP Abilities 1.0.2
+# RAOS Codex MCP Abilities 1.1.0
 
 This plugin is the WordPress-side half of the browser-independent RAOS Codex
 workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.
@@ -19,27 +19,31 @@ Both roles are single-role identities. Their Application Passwords are denied
 on XML-RPC, normal login, every core REST route, and every REST callback except
 their exact MCP/deployment callback.
 
-All write constants are default-off because undefined is false:
+The global write kill switch and draft-writing gate remain host-owned and
+default-off because undefined is false:
 
 ```php
 define('RAOS_OPERATOR_WRITES_ENABLED', true);
 define('RAOS_CODEX_DRAFT_WRITES_ENABLED', true);
-define('RAOS_CODEX_CONTENT_APPLY_ENABLED', true);
-define('RAOS_CODEX_THEME_APPLY_ENABLED', true);
-define('RAOS_CODEX_PLUGIN_APPLY_ENABLED', true);
 define('RAOS_CODEX_PRIVATE_DIR', '/owner-private/same-filesystem/raos-codex');
 ```
 
-Set only the gates needed for the current operation. `RAOS_CODEX_PRIVATE_DIR`
-must already exist outside the web/WordPress roots, be owned by the PHP worker,
-be writable, have mode `0700`, and share a filesystem with the theme/plugin
-target so directory replacement and rollback can be atomic.
+`RAOS_CODEX_PRIVATE_DIR` must already exist outside the web/WordPress roots, be
+owned by the PHP worker, be writable, have mode `0700`, and share a filesystem
+with the theme/plugin target so directory replacement and rollback can be
+atomic. A successful separate wp-admin approval creates one mode-`0600`,
+proposal-bound authorization lease in that directory. The lease binds the
+operation kind, creator, approver, timestamps, and complete before/after hashes;
+it is single-use, expires with the proposal, and is removed after success or
+failure. Content, theme, and plugin applies therefore require no per-deployment
+`wp-config.php` edit.
 
 Publication, theme replacement, and plugin changes need an unexpired proposal
 approved by a different cookie-authenticated administrator in **Tools → RAOS
 Codex proposals**. Approval requires current-password reauthentication, a
-reason, and the final eight characters of the after hash. Approval does not
-apply anything.
+reason, and the final eight characters of the after hash. Approval issues the
+scoped lease but does not apply anything; the bounded operator still performs
+the apply, backup, readback, and rollback workflow.
 
 The plugin has no uninstall handler: users, bindings, proposals, receipts,
 packages, and backups are deliberately preserved for owner recovery/audit.

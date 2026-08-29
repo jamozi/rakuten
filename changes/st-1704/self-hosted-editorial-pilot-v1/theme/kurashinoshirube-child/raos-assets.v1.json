@@ -41,6 +41,7 @@
   ],
   "schema": "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1",
   "source_files": [
+    "assets/editorial-v2.css",
     "assets/images/article-portable-power-guide.png",
     "assets/images/article-suitcase-guide.webp",
     "assets/images/brand-mark.svg",

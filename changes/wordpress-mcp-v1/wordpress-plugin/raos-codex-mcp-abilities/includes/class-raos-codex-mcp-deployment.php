@@ -64,6 +64,8 @@ final class RAOS_Codex_MCP_Deployment
     public function status()
     {
         $theme = wp_get_theme(self::THEME_SLUG);
+        $private_ready = ! is_wp_error(self::private_directory());
+        $apply_ready = self::gate('RAOS_OPERATOR_WRITES_ENABLED') && $private_ready;
         $theme_hash = $theme->exists()
             ? self::tree_hash(get_theme_root(self::THEME_SLUG) . '/' . self::THEME_SLUG)
             : null;
@@ -83,11 +85,17 @@ final class RAOS_Codex_MCP_Deployment
             ),
             'gates' => array(
                 'global' => self::gate('RAOS_OPERATOR_WRITES_ENABLED'),
-                'content_apply' => self::gate('RAOS_CODEX_CONTENT_APPLY_ENABLED'),
-                'theme_apply' => self::gate('RAOS_CODEX_THEME_APPLY_ENABLED'),
-                'plugin_apply' => self::gate('RAOS_CODEX_PLUGIN_APPLY_ENABLED'),
+                'content_apply' => $apply_ready,
+                'theme_apply' => $apply_ready,
+                'plugin_apply' => $apply_ready,
             ),
-            'private_directory_ready' => ! is_wp_error(self::private_directory()),
+            'apply_authorization' => array(
+                'mode' => 'approval_scoped_lease',
+                'default' => false,
+                'single_use' => true,
+                'ttl_seconds' => RAOS_Codex_MCP_Store::TTL_SECONDS,
+            ),
+            'private_directory_ready' => $private_ready,
         );
     }
 
@@ -191,6 +199,14 @@ final class RAOS_Codex_MCP_Deployment
         if ('APPLIED' === $claimed['state'] && is_array($claimed['receipt'])) {
             return $claimed['receipt'];
         }
+        $authorization = self::validate_approval_lease($claimed);
+        if (is_wp_error($authorization)) {
+            RAOS_Codex_MCP_Store::mark_failed(
+                $proposal_id,
+                'RAOS_CODEX_APPROVAL_LEASE_INVALID'
+            );
+            return $authorization;
+        }
         try {
             if ('CONTENT_RELEASE' === $claimed['kind']) {
                 $receipt = $this->apply_content($claimed);
@@ -265,6 +281,10 @@ final class RAOS_Codex_MCP_Deployment
         $gate = self::apply_gate($row['kind']);
         if (is_wp_error($gate)) {
             return $gate;
+        }
+        $authorization = self::validate_approval_lease($row);
+        if (is_wp_error($authorization)) {
+            return $authorization;
         }
         if ('CONTENT_RELEASE' === $row['kind']
             && isset($row['payload']['before'])
@@ -1006,7 +1026,7 @@ final class RAOS_Codex_MCP_Deployment
         }
     }
 
-    private static function private_directory()
+    public static function private_directory()
     {
         if (! defined('RAOS_CODEX_PRIVATE_DIR')
             || ! is_string(RAOS_CODEX_PRIVATE_DIR)
@@ -1033,6 +1053,181 @@ final class RAOS_Codex_MCP_Deployment
             return self::error('raos_codex_private_directory_insecure', 503);
         }
         return $real;
+    }
+
+    public static function create_approval_lease($row, $approver_id, $approved_at_gmt)
+    {
+        if (! is_array($row)
+            || ! isset(
+                $row['proposal_id'],
+                $row['kind'],
+                $row['created_by'],
+                $row['expires_at_gmt']
+            )
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['proposal_id'])
+            || ! in_array($row['kind'], array('CONTENT_RELEASE', 'THEME_RELEASE', 'PLUGIN_CHANGE'), true)
+            || (int) $approver_id < 1
+            || (int) $approver_id === (int) $row['created_by']
+            || ! is_string($approved_at_gmt)
+            || false === strtotime($approved_at_gmt . ' UTC')) {
+            return self::error('raos_codex_approval_lease_input_invalid', 500);
+        }
+        $private = self::private_directory();
+        if (is_wp_error($private)) {
+            return $private;
+        }
+        try {
+            $nonce_sha256 = hash('sha256', random_bytes(32));
+        } catch (Throwable $error) {
+            unset($error);
+            return self::error('raos_codex_random_unavailable', 500);
+        }
+        $material = array(
+            'schema' => 'RAOS_CODEX_APPROVAL_LEASE_V1',
+            'proposal_id' => $row['proposal_id'],
+            'kind' => $row['kind'],
+            'created_by' => (int) $row['created_by'],
+            'approved_by' => (int) $approver_id,
+            'approved_at_gmt' => RAOS_Codex_MCP_Store::timestamp_iso($approved_at_gmt),
+            'expires_at_gmt' => RAOS_Codex_MCP_Store::timestamp_iso($row['expires_at_gmt']),
+            'before_sha256' => $row['before_sha256'],
+            'after_sha256' => $row['after_sha256'],
+            'nonce_sha256' => $nonce_sha256,
+        );
+        $lease_id = RAOS_Codex_MCP_Store::hash($material);
+        if (! RAOS_Codex_MCP_Store::is_sha256($lease_id)
+            || ! is_string($material['approved_at_gmt'])
+            || ! is_string($material['expires_at_gmt'])) {
+            return self::error('raos_codex_approval_lease_input_invalid', 500);
+        }
+        $lease = $material;
+        $lease['lease_id'] = $lease_id;
+        $payload = RAOS_Codex_MCP_Store::canonical_json($lease);
+        $path = self::approval_lease_path($row['proposal_id']);
+        if (! is_string($payload)
+            || ! is_string($path)
+            || ! self::write_exclusive_file($path, $payload)
+            || ! self::secure_approval_lease_file($path)) {
+            if (is_string($path)) {
+                @unlink($path);
+            }
+            return self::error('raos_codex_approval_lease_create_failed', 500);
+        }
+        return $lease;
+    }
+
+    public static function validate_approval_lease($row)
+    {
+        if (! is_array($row)
+            || ! isset($row['proposal_id'], $row['kind'], $row['created_by'], $row['approved_by'])
+            || ! in_array($row['state'], array('APPROVED', 'APPLYING'), true)
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['proposal_id'])) {
+            return self::error('raos_codex_approval_lease_invalid', 409);
+        }
+        $path = self::approval_lease_path($row['proposal_id']);
+        if (! is_string($path) || ! self::secure_approval_lease_file($path)) {
+            return self::error('raos_codex_approval_lease_invalid', 409);
+        }
+        $payload = @file_get_contents($path);
+        $lease = is_string($payload) ? json_decode($payload, true, 8) : null;
+        $expected_keys = array(
+            'schema',
+            'proposal_id',
+            'kind',
+            'created_by',
+            'approved_by',
+            'approved_at_gmt',
+            'expires_at_gmt',
+            'before_sha256',
+            'after_sha256',
+            'nonce_sha256',
+            'lease_id',
+        );
+        if (! self::has_exact_keys($lease, $expected_keys)) {
+            return self::error('raos_codex_approval_lease_invalid', 409);
+        }
+        $material = $lease;
+        $lease_id = $material['lease_id'];
+        unset($material['lease_id']);
+        $expected_approved_at = RAOS_Codex_MCP_Store::timestamp_iso($row['approved_at_gmt']);
+        $expected_expires_at = RAOS_Codex_MCP_Store::timestamp_iso($row['expires_at_gmt']);
+        $lease_expires = strtotime($lease['expires_at_gmt']);
+        if ('RAOS_CODEX_APPROVAL_LEASE_V1' !== $lease['schema']
+            || ! is_string($lease_id)
+            || ! RAOS_Codex_MCP_Store::is_sha256($lease_id)
+            || ! hash_equals($lease_id, (string) RAOS_Codex_MCP_Store::hash($material))
+            || ! hash_equals($row['proposal_id'], (string) $lease['proposal_id'])
+            || ! hash_equals($row['kind'], (string) $lease['kind'])
+            || (int) $row['created_by'] !== (int) $lease['created_by']
+            || (int) $row['approved_by'] !== (int) $lease['approved_by']
+            || (int) $row['created_by'] === (int) $row['approved_by']
+            || ! is_string($expected_approved_at)
+            || ! hash_equals($expected_approved_at, (string) $lease['approved_at_gmt'])
+            || ! is_string($expected_expires_at)
+            || ! hash_equals($expected_expires_at, (string) $lease['expires_at_gmt'])
+            || ! self::nullable_hash_matches($row['before_sha256'], $lease['before_sha256'])
+            || ! self::nullable_hash_matches($row['after_sha256'], $lease['after_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($lease['nonce_sha256'])
+            || false === $lease_expires
+            || ('APPROVED' === $row['state'] && $lease_expires <= time())) {
+            return self::error('raos_codex_approval_lease_invalid', 409);
+        }
+        return true;
+    }
+
+    public static function remove_approval_lease($proposal_id)
+    {
+        $path = self::approval_lease_path($proposal_id);
+        if (! is_string($path) || ! file_exists($path)) {
+            return true;
+        }
+        return ! is_link($path) && is_file($path) && @unlink($path);
+    }
+
+    private static function approval_lease_path($proposal_id)
+    {
+        if (! RAOS_Codex_MCP_Store::is_sha256($proposal_id)) {
+            return null;
+        }
+        $private = self::private_directory();
+        return is_wp_error($private)
+            ? null
+            : $private . '/approval-lease-' . $proposal_id . '.json';
+    }
+
+    private static function secure_approval_lease_file($path)
+    {
+        $private = self::private_directory();
+        if (is_wp_error($private)
+            || ! is_string($path)
+            || is_link($path)
+            || ! is_file($path)) {
+            return false;
+        }
+        $real = realpath($path);
+        $mode = @fileperms($path);
+        $metadata = @stat($path);
+        $size = @filesize($path);
+        return is_string($real)
+            && str_starts_with($real, $private . '/approval-lease-')
+            && str_ends_with($real, '.json')
+            && false !== $mode
+            && 0600 === ($mode & 0777)
+            && is_array($metadata)
+            && 1 === (int) $metadata['nlink']
+            && is_int($size)
+            && $size > 0
+            && $size <= 8192;
+    }
+
+    private static function nullable_hash_matches($expected, $actual)
+    {
+        if (is_null($expected) || is_null($actual)) {
+            return is_null($expected) && is_null($actual);
+        }
+        return RAOS_Codex_MCP_Store::is_sha256($expected)
+            && RAOS_Codex_MCP_Store::is_sha256($actual)
+            && hash_equals($expected, $actual);
     }
 
     private static function has_exact_keys($value, $expected)
@@ -1130,13 +1325,8 @@ final class RAOS_Codex_MCP_Deployment
         if (! self::gate('RAOS_OPERATOR_WRITES_ENABLED')) {
             return self::error('raos_codex_global_kill_switch_disabled', 503);
         }
-        $specific = array(
-            'CONTENT_RELEASE' => 'RAOS_CODEX_CONTENT_APPLY_ENABLED',
-            'THEME_RELEASE' => 'RAOS_CODEX_THEME_APPLY_ENABLED',
-            'PLUGIN_CHANGE' => 'RAOS_CODEX_PLUGIN_APPLY_ENABLED',
-        );
-        if (! isset($specific[$kind]) || ! self::gate($specific[$kind])) {
-            return self::error('raos_codex_purpose_gate_disabled', 503);
+        if (! in_array($kind, array('CONTENT_RELEASE', 'THEME_RELEASE', 'PLUGIN_CHANGE'), true)) {
+            return self::error('raos_codex_operation_kind_invalid', 409);
         }
         return true;
     }
