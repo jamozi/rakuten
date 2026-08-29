@@ -7,7 +7,7 @@ source_artifacts:
 - uri: repo://changes/st-1104/contracts/analytics-finance-dashboard.v2.yaml
   role: OWNER_SOURCE
   bytes: 9624
-  sha256: 3bdd9fba4f42f661358733ac6ec53ef6c792557453ae0b19d65033a7f14ec941
+  sha256: bfc473fc018165f0f4439ca661ace32a4ad5acd8e11ca0eb8bea13c244ac2ccc
 - uri: repo://changes/st-1104/fixtures/analytics-finance-dashboard-recorded.synthetic.v2.json
   role: OWNER_SOURCE
   bytes: 1734
@@ -86,12 +86,12 @@ source_artifacts:
   sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
 - uri: repo://package.json
   role: LOCKED_TOOLCHAIN
-  bytes: 1906
-  sha256: a0950c27297484369deb85e1f6f96629aae0ed8bb3247a50e7333a3cf9f6c6fd
+  bytes: 2245
+  sha256: e1665573013d997af81a1b64717a8c176d3619d0e7f1f742c2630802dabc0992
 - uri: repo://package-lock.json
   role: LOCKED_TOOLCHAIN
-  bytes: 271352
-  sha256: d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b
+  bytes: 329409
+  sha256: 8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d
 - uri: repo://scripts/secure_generated_publication.py
   role: GENERATION_SECURITY_CONTROL
   bytes: 22651
@@ -207,11 +207,11 @@ source_artifacts:
 - uri: repo://changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
   role: BOUND_INPUT
   bytes: 8101
-  sha256: 8798b7eb4223a75fb2581605d0d21aba5a9dee022f6cfbf300a75e3e3d75ed58
+  sha256: bfd30d6b1dac63d35a8a74f62b118275170d943b31a24b4c59c1ead11dec491a
 - uri: repo://changes/st-1304/generated/cost-unit-economics-recorded.v2.json
   role: BOUND_INPUT
   bytes: 39444
-  sha256: 377bc4f3970dd1fd0972bb34cf057fe85f546cead321c58670dcea8d226afb8f
+  sha256: eaba04eec85662a0d46b4aefe04f76af457f037dade0def5cc121d1abee82c49
 - uri: repo://changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
   role: BOUND_INPUT
   bytes: 15482

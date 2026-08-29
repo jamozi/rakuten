@@ -101,6 +101,17 @@ NPM_PARENT_OVERRIDE_SPECS = {
     ("next", "16.2.12", "postcss"): "8.5.25",
     ("next", "16.2.12", "sharp"): "0.35.3",
 }
+NPM_REVIEWED_LOCK_PARTIAL_SPECS = {
+    ("express-rate-limit", "8.6.2", "express", ">= 4.11"): ">=4.11.0",
+    ("https-proxy-agent", "7.0.6", "debug", "4"): ">=4.0.0 <5.0.0",
+    (
+        "iconv-lite",
+        "0.4.24",
+        "safer-buffer",
+        ">= 2.1.2 < 3",
+    ): ">=2.1.2 <3.0.0",
+    ("once", "1.4.0", "wrappy", "1"): ">=1.0.0 <2.0.0",
+}
 
 NPM_DEPENDENCY_SECTIONS = (
     "dependencies",
@@ -1500,11 +1511,29 @@ def _validate_lock_dependency_specs(
             dependency_name = _validate_npm_package_name(name, "package-lock.json")
             # package-lock dependency descriptors may be arbitrary npm package
             # specs (including VCS and local sources). Accept only the ASCII
-            # semver-range shapes present in the reviewed lock contract.
-            if (
-                not isinstance(specifier, str)
-                or _parse_supported_npm_range(specifier) is None
-            ):
+            # semver-range shapes present in the reviewed lock contract. npm
+            # retains a small number of partial descriptors from upstream
+            # package metadata; normalize only their exact package/version/
+            # dependency tuple so the general partial-range rejection remains.
+            reviewed_specifier = (
+                NPM_REVIEWED_LOCK_PARTIAL_SPECS.get(
+                    (
+                        _lock_package_name(package_path),
+                        package_version,
+                        dependency_name,
+                        specifier,
+                    )
+                )
+                if isinstance(specifier, str)
+                else None
+            )
+            supported_specifier = (
+                specifier
+                if isinstance(specifier, str)
+                and _parse_supported_npm_range(specifier) is not None
+                else reviewed_specifier
+            )
+            if supported_specifier is None:
                 reject("UNSAFE_NPM_LOCK_REFERENCE", "package-lock.json")
             captured_path = _captured_lock_dependency_path(
                 package_path, dependency_name, package_paths
@@ -1521,7 +1550,7 @@ def _validate_lock_dependency_specs(
                 package_path,
                 package_version,
                 dependency_name,
-                specifier,
+                supported_specifier,
             )
             if not isinstance(
                 captured_version, str

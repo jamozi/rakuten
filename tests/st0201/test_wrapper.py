@@ -23,6 +23,9 @@ EXPECTED_IMAGE = (
 EXPECTED_CONFIG_DIGEST = (
     "sha256:0a314d409a9633cff4f89dc18482262625c0ee78cb1aa2ff8e47bc6da0251e1b"
 )
+EXPECTED_INDEX_DIGEST = (
+    "sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296"
+)
 
 
 def _fake_docker(tmp_path: Path, mode: str = "ok") -> tuple[Path, Path]:
@@ -75,7 +78,12 @@ if payload and payload[0] == "inspect":
     if ".Config.Image" in template:
         print("postgres:latest" if mode == "wrong_image" else {EXPECTED_IMAGE!r})
     elif ".Image" in template:
-        print("sha256:" + "f" * 64 if mode == "wrong_config" else {EXPECTED_CONFIG_DIGEST!r})
+        if mode == "wrong_config":
+            print("sha256:" + "f" * 64)
+        elif mode == "containerd_image_store":
+            print({EXPECTED_INDEX_DIGEST!r})
+        else:
+            print({EXPECTED_CONFIG_DIGEST!r})
     else:
         print("starting" if mode == "unhealthy" else "healthy")
     raise SystemExit(0)
@@ -259,12 +267,20 @@ def test_up_waits_pulls_checks_health_image_and_exact_version(tmp_path: Path) ->
     assert "psql" in exec_row["argv"]
 
 
+def test_up_accepts_pinned_index_identity_from_containerd_image_store(
+    tmp_path: Path,
+) -> None:
+    docker, _ = _fake_docker(tmp_path, "containerd_image_store")
+    result = _run(docker, "up", tmp_path)
+    assert result.returncode == 0, f"{result.stdout}\n{result.stderr}"
+
+
 @pytest.mark.parametrize(
     ("mode", "message"),
     [
         ("unhealthy", "not healthy"),
         ("wrong_image", "image reference differs"),
-        ("wrong_config", "image config digest differs"),
+        ("wrong_config", "image identity digest differs"),
         ("wrong_platform", "image platform differs"),
         ("wrong_version", "differs from the exact 18.4 contract"),
         ("extra_running", "not the sole requested running service"),

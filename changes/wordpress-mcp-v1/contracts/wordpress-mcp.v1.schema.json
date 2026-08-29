@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raos.invalid/contracts/wordpress-mcp.v1.schema.json",
+  "title": "RAOS browserless WordPress MCP contracts",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/$defs/ContentDocumentV1" },
+    { "$ref": "#/$defs/ContentReleaseProposalV1" },
+    { "$ref": "#/$defs/CodePackageV1" },
+    { "$ref": "#/$defs/OperationReceiptV1" }
+  ],
+  "$defs": {
+    "Sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "UtcTimestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "ContentPreconditionV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision_id", "modified_gmt", "content_sha256"],
+      "properties": {
+        "revision_id": { "type": "integer", "minimum": 1 },
+        "modified_gmt": { "$ref": "#/$defs/UtcTimestamp" },
+        "content_sha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "ContentDocumentV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "post_type",
+        "id",
+        "status",
+        "title",
+        "slug",
+        "excerpt",
+        "block_markup",
+        "taxonomies",
+        "media_ids",
+        "revision_id",
+        "modified_gmt",
+        "content_sha256"
+      ],
+      "properties": {
+        "schema": { "const": "ContentDocumentV1" },
+        "post_type": { "enum": ["post", "page"] },
+        "id": { "type": "integer", "minimum": 1 },
+        "status": { "enum": ["draft", "publish"] },
+        "title": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "slug": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "excerpt": { "type": "string", "maxLength": 10000 },
+        "block_markup": { "type": "string", "maxLength": 1048576 },
+        "taxonomies": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "integer", "minimum": 1 },
+            "uniqueItems": true,
+            "maxItems": 128
+          },
+          "maxProperties": 32
+        },
+        "media_ids": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 },
+          "uniqueItems": true,
+          "maxItems": 256
+        },
+        "revision_id": { "type": "integer", "minimum": 1 },
+        "modified_gmt": { "$ref": "#/$defs/UtcTimestamp" },
+        "content_sha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "ContentReleaseProposalV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "proposal_id",
+        "target_status",
+        "created_by",
+        "created_at_gmt",
+        "expires_at_gmt",
+        "before",
+        "after",
+        "before_sha256",
+        "after_sha256",
+        "publication_manifest_sha256"
+      ],
+      "properties": {
+        "schema": { "const": "ContentReleaseProposalV1" },
+        "proposal_id": { "$ref": "#/$defs/Sha256" },
+        "target_status": { "const": "publish" },
+        "created_by": { "type": "integer", "minimum": 1 },
+        "created_at_gmt": { "$ref": "#/$defs/UtcTimestamp" },
+        "expires_at_gmt": { "$ref": "#/$defs/UtcTimestamp" },
+        "before": { "$ref": "#/$defs/ContentDocumentV1" },
+        "after": { "$ref": "#/$defs/ContentDocumentV1" },
+        "before_sha256": { "$ref": "#/$defs/Sha256" },
+        "after_sha256": { "$ref": "#/$defs/Sha256" },
+        "publication_manifest_sha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "FileManifestEntryV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "size", "sha256"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300,
+          "pattern": "^[A-Za-z0-9._/-]+$"
+        },
+        "size": { "type": "integer", "minimum": 0, "maximum": 8388608 },
+        "sha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "CodePackageV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "kind",
+        "source",
+        "slug",
+        "old_version",
+        "new_version",
+        "package_sha256",
+        "file_manifest_sha256",
+        "file_manifest",
+        "activation_intent",
+        "migration_assessment",
+        "automatic_apply_eligible"
+      ],
+      "properties": {
+        "schema": { "const": "CodePackageV1" },
+        "kind": { "enum": ["theme", "plugin"] },
+        "source": {
+          "enum": ["tracked_child_theme", "wordpress_org", "repo_artifact"]
+        },
+        "artifact_id": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,127}$"
+        },
+        "git_commit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "maxLength": 100
+        },
+        "old_version": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+(?:\\.[0-9]+){1,3}(?:[-+][0-9A-Za-z.-]+)?$"
+        },
+        "new_version": {
+          "type": "string",
+          "pattern": "^[0-9]+(?:\\.[0-9]+){1,3}(?:[-+][0-9A-Za-z.-]+)?$"
+        },
+        "package_sha256": { "$ref": "#/$defs/Sha256" },
+        "file_manifest_sha256": { "$ref": "#/$defs/Sha256" },
+        "file_manifest": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/FileManifestEntryV1" },
+          "minItems": 1,
+          "maxItems": 2048
+        },
+        "activation_intent": { "enum": ["preserve", "activate", "deactivate"] },
+        "migration_assessment": {
+          "enum": ["NO_IRREVERSIBLE_MIGRATION_SIGNALS", "MANUAL_REVIEW_REQUIRED"]
+        },
+        "automatic_apply_eligible": { "type": "boolean" }
+      }
+    },
+    "OperationReceiptV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "proposal_id",
+        "operation_id",
+        "state",
+        "result_code",
+        "before_sha256",
+        "after_sha256",
+        "audit_id"
+      ],
+      "properties": {
+        "schema": { "const": "OperationReceiptV1" },
+        "proposal_id": { "$ref": "#/$defs/Sha256" },
+        "operation_id": { "$ref": "#/$defs/Sha256" },
+        "state": {
+          "enum": [
+            "PENDING",
+            "MANUAL_REQUIRED",
+            "APPROVED",
+            "APPLYING",
+            "APPLIED",
+            "FAILED",
+            "EXPIRED"
+          ]
+        },
+        "result_code": { "type": "string", "pattern": "^[A-Z0-9_]{3,96}$" },
+        "before_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "after_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+        "audit_id": { "$ref": "#/$defs/Sha256" }
+      }
+    }
+  }
+}

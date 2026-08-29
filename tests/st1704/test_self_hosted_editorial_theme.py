@@ -159,14 +159,14 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_3_6_successor() -> None:
+def test_theme_is_an_isolated_1_3_7_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.3.6\n") == 1
+    assert stylesheet.count("\nVersion: 1.3.7\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.6"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.6'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.7"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.7'") == 1
     at003_gate = functions.split(
         "function kurashinoshirube_existing_update_context", 1
     )[1]
@@ -221,7 +221,7 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
     )
     assert families == {"editorial-serif": serif, "editorial-sans": sans}
     assert "--raos-font-serif: " + serif.replace("'", '"') + ";" in css
-    assert css.count("font-family: var(--raos-font-serif);") == 4
+    assert css.count("font-family: var(--raos-font-serif);") == 5
     assert "ui-serif" not in css
     assert "ui-serif" not in families["editorial-serif"]
 
@@ -229,9 +229,9 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.3.6"
+    assert manifest["theme_version"] == "1.3.7"
     records = manifest["required_images"]
-    assert isinstance(records, list) and len(records) == 3
+    assert isinstance(records, list) and len(records) == 4
     for record in records:
         assert isinstance(record, dict)
         path = THEME_ROOT / str(record["path"])

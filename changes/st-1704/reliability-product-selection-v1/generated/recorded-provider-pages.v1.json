@@ -1,0 +1,143 @@
+{
+  "pages": [
+    {
+      "is_last_page": true,
+      "offers": [
+        {
+          "brand": "ACE",
+          "displayed_price_jpy": 31900,
+          "item_url": "https://item.rakuten.co.jp/fixture/ace-06316",
+          "jan_gtin": "4549531590011",
+          "manufacturer_part_number": "06316",
+          "observed_at": "2026-08-27T00:00:00Z",
+          "provider_item_id": "ace:06316",
+          "review_average": "4.50",
+          "review_count": 120,
+          "source_id": "RAKUTEN_ICHIBA",
+          "title": "ACE クレスタ 06316 機内持ち込み スーツケース 34L",
+          "variant_label": "06316"
+        },
+        {
+          "brand": "PROTECA",
+          "displayed_price_jpy": 79200,
+          "item_url": "https://item.rakuten.co.jp/fixture/ace-01471",
+          "jan_gtin": "4549531570037",
+          "manufacturer_part_number": "01471",
+          "observed_at": "2026-08-27T00:00:00Z",
+          "provider_item_id": "ace:01471",
+          "review_average": "4.70",
+          "review_count": 55,
+          "source_id": "RAKUTEN_ICHIBA",
+          "title": "PROTECA マックスパス4 01471 40L",
+          "variant_label": "01471"
+        }
+      ],
+      "page": 1,
+      "query_index": 0,
+      "request_fingerprint": "19535f62f98c51756b0b7f821e0b0df8347d6461cea869ad4239c524e06e66da",
+      "response_sha256": "f28ca9f6d3aa8a5a778adc7cef20eabdcbac9c75c4d3c4c0cd52af73f4c2358f",
+      "source_id": "RAKUTEN_ICHIBA"
+    },
+    {
+      "is_last_page": true,
+      "offers": [
+        {
+          "brand": "ACE",
+          "displayed_price_jpy": 39600,
+          "item_url": "https://item.rakuten.co.jp/fixture/ace-05721",
+          "jan_gtin": "4549531580029",
+          "manufacturer_part_number": "05721",
+          "observed_at": "2026-08-27T00:00:00Z",
+          "provider_item_id": "ace:05721",
+          "review_average": "4.35",
+          "review_count": 72,
+          "source_id": "RAKUTEN_ICHIBA",
+          "title": "ace.TOKYO ディフェレンス 05721 32L",
+          "variant_label": "05721"
+        },
+        {
+          "brand": null,
+          "displayed_price_jpy": 1980,
+          "item_url": "https://item.rakuten.co.jp/fixture/parts-cover01",
+          "jan_gtin": null,
+          "manufacturer_part_number": null,
+          "observed_at": "2026-08-27T00:00:00Z",
+          "provider_item_id": "parts:cover01",
+          "review_average": "4.20",
+          "review_count": 200,
+          "source_id": "RAKUTEN_ICHIBA",
+          "title": "スーツケース 保護カバー 機内持ち込み用",
+          "variant_label": null
+        }
+      ],
+      "page": 1,
+      "query_index": 1,
+      "request_fingerprint": "02bbd005f41ac8986f5a4f7637f7e7203ba2ec34ade83af47461b0fbbee5287a",
+      "response_sha256": "25450acb7b0b926513766112bd046d2364d5a208a30078e65d198159add98e5f",
+      "source_id": "RAKUTEN_ICHIBA"
+    },
+    {
+      "is_last_page": true,
+      "offers": [
+        {
+          "brand": "ACE",
+          "displayed_price_jpy": 32450,
+          "item_url": "https://store.shopping.yahoo.co.jp/fixture/ace-06316",
+          "jan_gtin": "4549531590011",
+          "manufacturer_part_number": "06316",
+          "observed_at": "2026-08-27T00:00:00Z",
+          "provider_item_id": "ace-06316",
+          "review_average": "4.42",
+          "review_count": 88,
+          "source_id": "YAHOO_SHOPPING",
+          "title": "ACE クレスタ 06316 機内持ち込み 34L",
+          "variant_label": "06316"
+        },
+        {
+          "brand": "PROTECA",
+          "displayed_price_jpy": 78900,
+          "item_url": "https://store.shopping.yahoo.co.jp/fixture/ace-01471",
+          "jan_gtin": "4549531570037",
+          "manufacturer_part_number": "01471",
+          "observed_at": "2026-08-27T00:00:00Z",
+          "provider_item_id": "ace-01471",
+          "review_average": "4.61",
+          "review_count": 31,
+          "source_id": "YAHOO_SHOPPING",
+          "title": "PROTECA マックスパス4 01471 40L",
+          "variant_label": "01471"
+        }
+      ],
+      "page": 1,
+      "query_index": 0,
+      "request_fingerprint": "311c8b5826dc10487da09efb85ae6d23c4d521b3b1f58b2a5f538d9975cd5a71",
+      "response_sha256": "541e76cc77df94aded1ae2b72f8f0142d1485f632b9aad0ff01791a324b09dc1",
+      "source_id": "YAHOO_SHOPPING"
+    },
+    {
+      "is_last_page": true,
+      "offers": [
+        {
+          "brand": "ACE",
+          "displayed_price_jpy": 40100,
+          "item_url": "https://store.shopping.yahoo.co.jp/fixture/ace-05721",
+          "jan_gtin": "4549531580029",
+          "manufacturer_part_number": "05721",
+          "observed_at": "2026-08-27T00:00:00Z",
+          "provider_item_id": "ace-05721",
+          "review_average": "4.30",
+          "review_count": 42,
+          "source_id": "YAHOO_SHOPPING",
+          "title": "ace.TOKYO ディフェレンス 05721 32L",
+          "variant_label": "05721"
+        }
+      ],
+      "page": 1,
+      "query_index": 1,
+      "request_fingerprint": "83d97b1951fb6718a00f5b738f3f179da3943ef8d1383657fcff4d7d1de5b155",
+      "response_sha256": "e559470a751d827036c0fb30cd3142cbae8d47648c028f89ad097c8cede4c204",
+      "source_id": "YAHOO_SHOPPING"
+    }
+  ],
+  "schema_version": 1
+}

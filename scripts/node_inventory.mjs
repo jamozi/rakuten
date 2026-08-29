@@ -36,7 +36,13 @@ const UNSUPPORTED_LOCK_MANIFEST_FIELDS = [
 
 const EXPECTED_LOCK_TOP_LEVEL_KEYS = ['name', 'version', 'lockfileVersion', 'requires', 'packages'];
 
-const EXPECTED_LOCK_MANIFEST_KEYS = ['', 'apps/web', 'packages/web-contracts', 'packages/web-ui'];
+const EXPECTED_LOCK_MANIFEST_KEYS = [
+  '',
+  'apps/web',
+  'packages/wordpress-mcp-bridge',
+  'packages/web-contracts',
+  'packages/web-ui',
+];
 
 function fail(message) {
   process.stderr.write(`error: ${message}\n`);
@@ -253,7 +259,7 @@ function verifyLockRepositoryStructure(lock) {
 
 async function verifyLockManifests(lockPath, manifestPaths) {
   if (manifestPaths.length !== EXPECTED_LOCK_MANIFEST_KEYS.length) {
-    rejectLockManifest('verify-lock-manifests requires exactly four package manifests');
+    rejectLockManifest('verify-lock-manifests requires exactly five package manifests');
   }
 
   const physicalLock = await requirePhysicalRegularFile(lockPath, 'package-lock.json');
@@ -631,9 +637,9 @@ try {
       await guardFiles(arguments_, { allowMissing: true });
       break;
     case 'verify-lock-manifests':
-      if (arguments_.length !== 5) {
+      if (arguments_.length !== 6) {
         throw new Error(
-          'verify-lock-manifests requires package-lock.json and exactly four package manifests',
+          'verify-lock-manifests requires package-lock.json and exactly five package manifests',
         );
       }
       await verifyLockManifests(arguments_[0], arguments_.slice(1));

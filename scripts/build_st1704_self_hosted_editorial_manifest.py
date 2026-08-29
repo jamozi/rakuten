@@ -51,6 +51,7 @@ _BASE_RUNTIME_PATHS: Final[tuple[str, ...]] = (
     f"{SLICE}/operations/publication-plan.v1.json",
     f"{SLICE}/sources/source-locator-contract.v1.json",
     f"{SLICE}/sources/source-registry.v1.json",
+    f"{SLICE}/theme/kurashinoshirube-child/assets/images/article-portable-power-guide.png",
     f"{SLICE}/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
     f"{SLICE}/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
     f"{SLICE}/theme/kurashinoshirube-child/assets/images/home-hero.webp",

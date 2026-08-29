@@ -54,16 +54,16 @@ source_bindings:
     sha256: 295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb
   st1303_runtime:
     path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: f8fc2b3113387d419e675e9a286e008c806728a056281a3376ca367356b1d758
+    sha256: 192f16e48e11abd2078724d3d177d8b0dcb44fea06122a283cde2fb4ab8b4005
   st1303_projection:
     path: changes/st-1303/generated/attribution-engine-recorded.v2.json
-    sha256: a45dd5a69bc97a8983c1c30f60588a3c366cfbc97a677257295f6d4f78804277
+    sha256: d655c26a14407108940b785280a54c1a0b3307ceaf8e8bcc0b05de241f5e6c61
   st1303_fixture:
     path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
-    sha256: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b
+    sha256: d219f2a7bd958f5572ee77a3298ef9208cac3fd59a9b6d2c496be6227c7b6c58
   five_slot_measurement:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+    sha256: 0035dfd6329e6d168f068e0de5ac63f55464efecab22934895c7e01dc1c94fb0
 
 open_decision_boundary:
   labor:

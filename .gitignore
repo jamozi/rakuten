@@ -25,6 +25,8 @@ node_modules/
 dist/
 build/
 coverage/
+/.playwright-cli/
+/output/playwright/
 
 # The repository-wide generator registry is a tracked product artifact.
 !changes/build/

@@ -145,8 +145,8 @@
     {
       "uri": "repo://package-lock.json",
       "role": "DEPENDENCY_LOCK",
-      "bytes": 271352,
-      "sha256": "d8c01cf7fdaa630870590d59761bd71bbf340715525f9d68827983290d170c9b"
+      "bytes": 329409,
+      "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d"
     },
     {
       "uri": "repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",

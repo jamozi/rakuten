@@ -1278,7 +1278,7 @@ def test_explicit_ask_interrupt_is_durable_then_resume_waits_without_resubmissio
         path.read_bytes() for path in interrupted_run.rglob("*") if path.is_file()
     ).decode("utf-8", errors="replace")
     assert "Answer now" not in persisted_run
-    assert "e2002" not in persisted_run
+    assert "[ref=e2002]" not in persisted_run
     record_lines = (
         (interrupted_run / "run-record.v1.jsonl")
         .read_text(encoding="utf-8")

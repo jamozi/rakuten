@@ -1,0 +1,81 @@
+{
+  "article_id": "raos-reliability-suitcase-pilot-001",
+  "decisions": [
+    {
+      "article_id": "raos-reliability-suitcase-pilot-001",
+      "artifact_id": "candidate:5b9433c84995c79d9b3e3cd1",
+      "canonical_product_key": "JAN:4549531570037",
+      "decided_at": "2026-08-27T00:00:00Z",
+      "decision": "INCLUDED",
+      "identity_confidence": "CONFIRMED",
+      "identity_evidence_refs": [],
+      "product_id": "8004a281-5048-5285-b7b6-af6cfdf72b6c",
+      "reason_codes": [
+        "INCLUDED"
+      ],
+      "schema_version": "1.0.0",
+      "source_offer_keys": [
+        "RAKUTEN_ICHIBA:ace:01471",
+        "YAHOO_SHOPPING:ace-01471"
+      ],
+      "variant_key": "01471"
+    },
+    {
+      "article_id": "raos-reliability-suitcase-pilot-001",
+      "artifact_id": "candidate:e7769e4d26899384983ba8ea",
+      "canonical_product_key": "JAN:4549531580029",
+      "decided_at": "2026-08-27T00:00:00Z",
+      "decision": "INCLUDED",
+      "identity_confidence": "CONFIRMED",
+      "identity_evidence_refs": [],
+      "product_id": "eb7d542f-6c67-55c7-a38e-e6f97c79fc66",
+      "reason_codes": [
+        "INCLUDED"
+      ],
+      "schema_version": "1.0.0",
+      "source_offer_keys": [
+        "RAKUTEN_ICHIBA:ace:05721",
+        "YAHOO_SHOPPING:ace-05721"
+      ],
+      "variant_key": "05721"
+    },
+    {
+      "article_id": "raos-reliability-suitcase-pilot-001",
+      "artifact_id": "candidate:3e70a90a8a08e809e64baa87",
+      "canonical_product_key": "JAN:4549531590011",
+      "decided_at": "2026-08-27T00:00:00Z",
+      "decision": "INCLUDED",
+      "identity_confidence": "CONFIRMED",
+      "identity_evidence_refs": [],
+      "product_id": "90d12d54-b318-5dbe-bdb6-967dcd4153f4",
+      "reason_codes": [
+        "INCLUDED"
+      ],
+      "schema_version": "1.0.0",
+      "source_offer_keys": [
+        "RAKUTEN_ICHIBA:ace:06316",
+        "YAHOO_SHOPPING:ace-06316"
+      ],
+      "variant_key": "06316"
+    },
+    {
+      "article_id": "raos-reliability-suitcase-pilot-001",
+      "artifact_id": "candidate:46a27c3d4617979415f78cc5",
+      "canonical_product_key": "UNRESOLVED:b4b6fb1947715f190e6ac517",
+      "decided_at": "2026-08-27T00:00:00Z",
+      "decision": "ACCESSORY",
+      "identity_confidence": "UNRESOLVED",
+      "identity_evidence_refs": [],
+      "product_id": null,
+      "reason_codes": [
+        "ACCESSORY"
+      ],
+      "schema_version": "1.0.0",
+      "source_offer_keys": [
+        "RAKUTEN_ICHIBA:parts:cover01"
+      ],
+      "variant_key": null
+    }
+  ],
+  "schema_version": 1
+}

@@ -35,6 +35,8 @@ NODE_PROJECT_FILES = (
     "scripts/node_toolchain.sh",
     "scripts/node_inventory.mjs",
     "apps/web/package.json",
+    "packages/wordpress-mcp-bridge/package.json",
+    "packages/wordpress-mcp-bridge/tsconfig.json",
     "packages/web-contracts/package.json",
     "packages/web-contracts/tsconfig.json",
     "packages/web-ui/package.json",
@@ -62,6 +64,13 @@ def web_manifest() -> dict[str, Any]:
     """Load the intentionally package-only Next.js workspace boundary."""
 
     return load_json(REPOSITORY_ROOT / "apps/web/package.json")
+
+
+@pytest.fixture(scope="session")
+def wordpress_mcp_bridge_manifest() -> dict[str, Any]:
+    """Load the bounded WordPress MCP bridge workspace boundary."""
+
+    return load_json(REPOSITORY_ROOT / "packages/wordpress-mcp-bridge/package.json")
 
 
 @pytest.fixture(scope="session")

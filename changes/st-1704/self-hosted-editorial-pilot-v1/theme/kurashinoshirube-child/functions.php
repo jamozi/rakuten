@@ -12,11 +12,13 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.3.6';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.3.7';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guide.webp';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_SHA256 = '23c585a03598a8521fd797c036d2caad4350139ad709ca9b0cfc3ab18ad993ad';
+const KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_PATH = 'assets/images/article-portable-power-guide.png';
+const KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_SHA256 = '703444cdf29740bb72de42d09c7c7222a3ee46a09bcaf4f78875df9131cc56d6';
 const KURASHINOSHIRUBE_BRAND_MARK_PATH = 'assets/images/brand-mark.svg';
 const KURASHINOSHIRUBE_BRAND_MARK_SHA256 = 'bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_ARTICLE_ID = 'st1703-first-suitcase-comparison';
@@ -1624,6 +1626,43 @@ function kurashinoshirube_render_first_article_lead_image($attributes, $content,
 add_shortcode(
     'kurashinoshirube_first_article_lead_image',
     'kurashinoshirube_render_first_article_lead_image'
+);
+
+/** Render a theme-owned, non-product hero for the two portable-power guides. */
+function kurashinoshirube_render_article_hero($attributes, $content, $tag): string
+{
+    if (
+        $attributes !== array()
+        || ! in_array($content, array(null, ''), true)
+        || $tag !== 'kurashinoshirube_article_hero'
+        || ! is_singular('post')
+        || ! in_array(
+            get_post_field('post_name', get_the_ID(), 'raw'),
+            array(
+                'portable-power-station-guide',
+                'anker-solix-c300-c800-c1000-differences',
+            ),
+            true
+        )
+        || get_stylesheet() !== 'kurashinoshirube-child'
+    ) {
+        return '';
+    }
+    $image_uri = kurashinoshirube_verified_asset_uri(
+        KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_PATH,
+        KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_SHA256
+    );
+    if ($image_uri === null) {
+        return '';
+    }
+    return '<figure class="wp-block-image size-full raos-article-hero-image">'
+        . '<img src="' . esc_url($image_uri) . '" alt="" width="1536" height="1024">'
+        . '<figcaption>停電への備えを、置き場所と持ち運び方から考えるためのイメージ</figcaption>'
+        . '</figure>';
+}
+add_shortcode(
+    'kurashinoshirube_article_hero',
+    'kurashinoshirube_render_article_hero'
 );
 
 /** Render a visible breadcrumb whose current label cannot inject markup. */

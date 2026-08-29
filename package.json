@@ -24,19 +24,23 @@
   },
   "workspaces": [
     "apps/web",
+    "packages/wordpress-mcp-bridge",
     "packages/web-contracts",
     "packages/web-ui"
   ],
   "scripts": {
-    "format:check": "prettier --check --ignore-unknown package.json apps/web packages/web-contracts/package.json packages/web-contracts/tsconfig.json packages/web-ui tsconfig.base.json tsconfig.json eslint.config.mjs prettier.config.mjs vitest.config.ts pyrightconfig.json scripts/node_inventory.mjs tests/st0103",
+    "format:check": "prettier --check --ignore-unknown package.json apps/web packages/wordpress-mcp-bridge packages/web-contracts/package.json packages/web-contracts/tsconfig.json packages/web-ui tsconfig.base.json tsconfig.json eslint.config.mjs prettier.config.mjs vitest.config.ts pyrightconfig.json scripts/node_inventory.mjs tests/st0103",
     "lint": "eslint --max-warnings=0 --no-warn-ignored eslint.config.mjs prettier.config.mjs vitest.config.ts scripts/node_inventory.mjs tests/st0103",
-    "typecheck": "tsc --noEmit --project tsconfig.json && tsc --noEmit --project packages/web-ui/tsconfig.json",
+    "typecheck": "tsc --noEmit --project tsconfig.json && tsc --noEmit --project packages/web-ui/tsconfig.json && tsc --noEmit --project packages/wordpress-mcp-bridge/tsconfig.json",
     "pyright": "pyright --project pyrightconfig.json",
     "test:unit": "vitest run --config vitest.config.ts --configLoader native",
+    "wordpress:ui:check": "/usr/bin/busybox sh scripts/check_wordpress_public_ui_playwright.sh",
+    "wordpress:e2e": "/usr/bin/bash tests/wordpress_mcp_v1/e2e/run.sh",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm run pyright && npm run test:unit"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "0.99.0",
+    "@playwright/cli": "0.1.18",
     "@types/node": "24.13.3",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",

@@ -36,7 +36,7 @@
     {
       "bytes": 7343,
       "path": "changes/raos-v2/phase-2/generated/phase-2-validation.v2.json",
-      "sha256": "3481854e101992cf2ef1ef0e6ad4b21fff6ae4e61b12996c3b6476b05743f774"
+      "sha256": "c765a2bc32cdab848a26ba094eefda05370f952cf472b82f9bef84f281110988"
     },
     {
       "bytes": 4814,
@@ -494,8 +494,8 @@
       "classification": "LOCAL_ONLY",
       "command": "TMPDIR=/tmp uv run --offline pytest -s -q tests/raos_v2",
       "command_contract": "BASH_PIPEFAIL_TEE_TEMP_PROMOTED_BY_RECORDER_V2",
-      "executed_at_jst": "2026-08-29T03:09:44.587698+09:00",
-      "executed_head": "95aa56143a9b96cfb18c4114952ee74ae70142ea",
+      "executed_at_jst": "2026-08-29T07:02:19.630266+09:00",
+      "executed_head": "26db06528f0b7a0815a6165822890ba2d62f335b",
       "exit_code": 0,
       "external_actions": "NOT_EXECUTED",
       "failed": 0,
@@ -518,7 +518,7 @@
       "raw_output": {
         "bytes": 683,
         "local_path": "output/pytest/raos-v2-local-test-output.txt",
-        "sha256": "ec61970bbbc8bbb0ca63229ab407165753889eed31f84c12e2417c3f46bb0e97"
+        "sha256": "daf0023bbbf7d788828a9d4135ed52f00a9ac4261a3646a59f322d4c6bebeddf"
       },
       "raw_verification": "RECORDED_NOT_REVERIFIED",
       "recorded_date_jst": "2026-08-29",

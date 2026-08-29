@@ -17,7 +17,12 @@ from .test_toolchain_contract import (
 
 
 NPM_REGISTRY = "https://registry.npmjs.org/"
-WORKSPACE_PATHS = {"apps/web", "packages/web-contracts", "packages/web-ui"}
+WORKSPACE_PATHS = {
+    "apps/web",
+    "packages/wordpress-mcp-bridge",
+    "packages/web-contracts",
+    "packages/web-ui",
+}
 FORBIDDEN_SPECIFIER_PREFIXES = (
     "file:",
     "git:",
@@ -121,12 +126,14 @@ def test_lock_contains_no_git_file_remote_alias_or_floating_direct_pin(
     package_lock: dict[str, Any],
     package_manifest: dict[str, Any],
     web_manifest: dict[str, Any],
+    wordpress_mcp_bridge_manifest: dict[str, Any],
     web_contracts_manifest: dict[str, Any],
     web_ui_manifest: dict[str, Any],
 ) -> None:
     for manifest in (
         package_manifest,
         web_manifest,
+        wordpress_mcp_bridge_manifest,
         web_contracts_manifest,
         web_ui_manifest,
     ):
@@ -154,6 +161,7 @@ def test_direct_manifest_pins_and_locked_versions_are_identical(
     package_lock: dict[str, Any],
     package_manifest: dict[str, Any],
     web_manifest: dict[str, Any],
+    wordpress_mcp_bridge_manifest: dict[str, Any],
     web_contracts_manifest: dict[str, Any],
     web_ui_manifest: dict[str, Any],
 ) -> None:
@@ -161,6 +169,7 @@ def test_direct_manifest_pins_and_locked_versions_are_identical(
     for manifest in (
         package_manifest,
         web_manifest,
+        wordpress_mcp_bridge_manifest,
         web_contracts_manifest,
         web_ui_manifest,
     ):
@@ -201,12 +210,14 @@ def test_security_overrides_replace_every_vulnerable_lock_entry(
 def test_lock_workspace_metadata_matches_each_source_manifest(
     package_lock: dict[str, Any],
     web_manifest: dict[str, Any],
+    wordpress_mcp_bridge_manifest: dict[str, Any],
     web_contracts_manifest: dict[str, Any],
     web_ui_manifest: dict[str, Any],
 ) -> None:
     packages = lock_packages(package_lock)
     for path, manifest in (
         ("apps/web", web_manifest),
+        ("packages/wordpress-mcp-bridge", wordpress_mcp_bridge_manifest),
         ("packages/web-contracts", web_contracts_manifest),
         ("packages/web-ui", web_ui_manifest),
     ):

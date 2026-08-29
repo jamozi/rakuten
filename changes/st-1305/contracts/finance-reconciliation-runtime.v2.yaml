@@ -45,25 +45,25 @@ source_bindings:
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
   st1303_runtime:
     path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: f8fc2b3113387d419e675e9a286e008c806728a056281a3376ca367356b1d758
+    sha256: 192f16e48e11abd2078724d3d177d8b0dcb44fea06122a283cde2fb4ab8b4005
   st1303_projection:
     path: changes/st-1303/generated/attribution-engine-recorded.v2.json
-    sha256: a45dd5a69bc97a8983c1c30f60588a3c366cfbc97a677257295f6d4f78804277
+    sha256: d655c26a14407108940b785280a54c1a0b3307ceaf8e8bcc0b05de241f5e6c61
   st1303_fixture:
     path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
-    sha256: 3d2990cae6d75de81eef0599a4c5ac57f21eef79d83d6b38c508807c168fb43b
+    sha256: d219f2a7bd958f5572ee77a3298ef9208cac3fd59a9b6d2c496be6227c7b6c58
   st1304_runtime:
     path: changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
-    sha256: db28dd7d53e3098e940a2a8497e4f7ea631482cf54f14f40509d30680634d6b3
+    sha256: bfd30d6b1dac63d35a8a74f62b118275170d943b31a24b4c59c1ead11dec491a
   st1304_projection:
     path: changes/st-1304/generated/cost-unit-economics-recorded.v2.json
-    sha256: 1e0e5b4c1e4bd44fd0c55dceeeb6f16e22de8db65f23233b167500ea1ddf0c53
+    sha256: eaba04eec85662a0d46b4aefe04f76af457f037dade0def5cc121d1abee82c49
   st1304_fixture:
     path: changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
-    sha256: 90b3ccaecc1345b26054f563365936f4fd06b5def3259c5786adeea0327a8942
+    sha256: 4d81d55fe6daf8246c5e0251d9ee8441d823ab5137889eb6e0e768a21b02b758
   five_slot_measurement:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: 9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8
+    sha256: 0035dfd6329e6d168f068e0de5ac63f55464efecab22934895c7e01dc1c94fb0
 
 open_decision_boundary:
   report_sample:

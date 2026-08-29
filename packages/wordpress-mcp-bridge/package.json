@@ -1,0 +1,19 @@
+{
+  "name": "@raos/wordpress-mcp-bridge",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bounded local MCP bridge for approved RAOS WordPress deployments",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": "24.18.1"
+  },
+  "dependencies": {
+    "@automattic/mcp-wordpress-remote": "0.4.0",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "zod": "4.4.3"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit --project tsconfig.json"
+  }
+}

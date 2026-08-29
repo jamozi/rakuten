@@ -28,6 +28,7 @@ ROOT_INPUTS = (
 )
 WORKSPACE_MANIFESTS = (
     "apps/web/package.json",
+    "packages/wordpress-mcp-bridge/package.json",
     "packages/web-contracts/package.json",
     "packages/web-ui/package.json",
 )
@@ -118,10 +119,10 @@ def test_current_tree_passes_under_isolated_system_python_deterministically() ->
     assert first.stdout == second.stdout
     assert json.loads(first.stdout) == {
         "npm": {
-            "external_packages": 505,
+            "external_packages": 631,
             "lockfile_version": 3,
-            "manifests": 4,
-            "workspaces": 3,
+            "manifests": 5,
+            "workspaces": 4,
         },
         "python": {
             "artifacts": 377,

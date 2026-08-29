@@ -6,7 +6,12 @@ BASE ?=
 BASE_ARGUMENT := $(if $(strip $(BASE)),--base $(BASE),)
 
 .PHONY: setup generate check fast final final-lock final-static final-secrets \
-	status-v2 test-parallel test-serial contracts database storage
+	status-v2 test-parallel test-serial contracts database storage \
+	wordpress-preview-up wordpress-preview-status wordpress-preview-sync \
+	wordpress-preview-password wordpress-preview-check wordpress-preview-down \
+	wordpress-preview-reset
+
+WORDPRESS_PREVIEW := changes/wordpress-local-preview-v1/bin/wordpress_preview.sh
 
 setup:
 	$(UV) sync --locked --group dev
@@ -63,6 +68,28 @@ database:
 
 storage:
 	scripts/object_storage_service.sh --docker "$(DOCKER)" test
+
+wordpress-preview-up:
+	RAOS_WORDPRESS_PREVIEW_DOCKER_BIN="$(DOCKER)" $(WORDPRESS_PREVIEW) up
+
+wordpress-preview-status:
+	RAOS_WORDPRESS_PREVIEW_DOCKER_BIN="$(DOCKER)" $(WORDPRESS_PREVIEW) status
+
+wordpress-preview-sync:
+	RAOS_WORDPRESS_PREVIEW_DOCKER_BIN="$(DOCKER)" $(WORDPRESS_PREVIEW) sync
+
+wordpress-preview-password:
+	RAOS_WORDPRESS_PREVIEW_DOCKER_BIN="$(DOCKER)" $(WORDPRESS_PREVIEW) password
+
+wordpress-preview-check:
+	RAOS_WORDPRESS_PREVIEW_DOCKER_BIN="$(DOCKER)" $(WORDPRESS_PREVIEW) check
+
+wordpress-preview-down:
+	RAOS_WORDPRESS_PREVIEW_DOCKER_BIN="$(DOCKER)" $(WORDPRESS_PREVIEW) down
+
+wordpress-preview-reset:
+	CONFIRM="$(CONFIRM)" RAOS_WORDPRESS_PREVIEW_DOCKER_BIN="$(DOCKER)" \
+		$(WORDPRESS_PREVIEW) reset
 
 final: final-lock final-static final-secrets status-v2
 	TMPDIR=/tmp $(PYTHON) scripts/raos_build.py final

@@ -11,6 +11,8 @@ unset BASH_ENV ENV CDPATH GLOBIGNORE
 readonly docker_host='unix:///var/run/docker.sock'
 readonly minimum_compose_version='2.24.4'
 readonly expected_image='postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296'
+readonly expected_image_index_digest='sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296'
+readonly expected_image_manifest_digest='sha256:16fa100a3a6e92c0556632870455e7f8c6f3df5cefddd67d6b95292732bd7ff0'
 readonly expected_image_config_digest='sha256:0a314d409a9633cff4f89dc18482262625c0ee78cb1aa2ff8e47bc6da0251e1b'
 readonly expected_platform='linux/amd64'
 readonly expected_compose_sha256='a6cd0109a2bc63dae10be59bd9aa32ab85e9c3fec3847bc43c413b452cb871f5'
@@ -239,7 +241,7 @@ assert_service() {
   local container_id
   local health
   local runtime_image
-  local image_config_digest
+  local image_identity_digest
   local image_platform
   local version
 
@@ -263,12 +265,16 @@ assert_service() {
     error 'the running PostgreSQL container image reference differs from the pinned contract'
     return 1
   fi
-  image_config_digest=$(run_docker inspect --format '{{.Image}}' "$container_id")
-  if [[ $image_config_digest != "$expected_image_config_digest" ]]; then
-    error 'the running PostgreSQL image config digest differs from the pinned linux/amd64 contract'
-    return 1
-  fi
-  image_platform=$(run_docker image inspect --format '{{.Os}}/{{.Architecture}}' "$image_config_digest")
+  image_identity_digest=$(run_docker inspect --format '{{.Image}}' "$container_id")
+  case $image_identity_digest in
+    "$expected_image_index_digest" | "$expected_image_manifest_digest" | "$expected_image_config_digest")
+      ;;
+    *)
+      error 'the running PostgreSQL image identity digest differs from the pinned linux/amd64 contract'
+      return 1
+      ;;
+  esac
+  image_platform=$(run_docker image inspect --format '{{.Os}}/{{.Architecture}}' "$image_identity_digest")
   if [[ $image_platform != "$expected_platform" ]]; then
     error 'the running PostgreSQL image platform differs from linux/amd64'
     return 1

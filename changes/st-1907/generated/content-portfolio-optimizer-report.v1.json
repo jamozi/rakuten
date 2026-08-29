@@ -37,8 +37,8 @@
       "RECORDED_SYNTHETIC_ONLY",
       "SEPARATE_RELEASE_DECISION_REQUIRED"
     ],
-    "command_sha256": "cab8bf6a2e0cefc549d0213f7cdc7d4540e12ea3c25368f8abe957aca8121c6c",
-    "contract_sha256": "61dd809a2b2e6a1d30233c07bea8aa529c6617fd826125daca2ee9682243c05a",
+    "command_sha256": "f189af2ab1bd3a0b29214a42bb92a031a573d13795d5b42823eeb0562b734b58",
+    "contract_sha256": "9b9d312a6a9b2d64ad48a0a869db97424ca22e20a3f675b7a465d5646bc10100",
     "dependency": {
       "acceptance_criteria_satisfied": false,
       "actual_observation_count": 0,
@@ -80,16 +80,16 @@
     "proposal_count": 0,
     "proposal_state": "NO_PROPOSALS",
     "proposals": [],
-    "report_sha256": "b625b1cefc9786cb74a1670bff4e98feeedf6b166b7fb2638c42f25112dac408",
-    "signal_policy_sha256": "53a16b553bdd7e06289fc9d27e63e7916ab31ec37527c3ab4c509c0980675cba",
-    "source_sha256": "d4edc43b312c8d3a168115edeea0ec1d28e9e6f9781fc40d3309e8d84a8be26b",
+    "report_sha256": "df2ddb26fa7ba6b826029b8f028a050e2210d8dae331352ad95f368a249ba131",
+    "signal_policy_sha256": "42c3fc918669c58df7033c13760f8d241bba275236408e3331f63731ce9c45af",
+    "source_sha256": "1b0a85b16119b2407db68b1bd10010226706cd84c8cab6a6ca84294bd29d8e23",
     "unavailable_reason": "DEPENDENCY_BLOCKED_NO_DECISION"
   },
   "source": {
     "bytes": 986,
     "fixture_profile": "RAOS_ST1907_RECORDED_SYNTHETIC_V1",
     "path": "changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json",
-    "sha256": "d4edc43b312c8d3a168115edeea0ec1d28e9e6f9781fc40d3309e8d84a8be26b",
+    "sha256": "1b0a85b16119b2407db68b1bd10010226706cd84c8cab6a6ca84294bd29d8e23",
     "synthetic": true
   }
 }

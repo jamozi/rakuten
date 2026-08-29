@@ -48,6 +48,20 @@ Pro 不在、formal/live evidence 未実行も停止条件ではなく、修正�
   kill-switch invariant は code と test で維持する。Local result を formal CI、staging、release、
   Production evidence と呼ばない。
 
+## WordPress ローカル確認ルール
+
+- 記事・固定ページ、ホームページ、子テーマ、テンプレート、CSS、表示系プラグインの変更は、最初に `changes/wordpress-local-preview-v1/` の非本番データとローカル WordPress へ反映し、本番を試作・初回確認の場にしない。
+- 本番送付・公開提案前に `make wordpress-preview-up`、必要なら `make wordpress-preview-sync`、`make wordpress-preview-check` を実行し、ローカル URL と対象 viewport のスクリーンショットを確認する。
+- 未確認または失敗中は本番送付・公開提案・テーマ／プラグイン反映を行わない。合格は本番承認ではなく、MCP、別人承認、proposal、hash/precondition、kill switch、default-off gate を別途満たす。
+- 最終報告には確認 URL、検査、スクリーンショット保存先、本番送付・公開の実施／未実施を記す。
+
+## WordPress MCP 優先ルール
+
+- `kurashinoshirube.com` の状態確認と記事・固定ページ・子テーマ・プラグイン作業は、対応能力がある限り他経路より先に project MCP の `wordpressEditor`／`wordpressDeployment` を実際に呼び、設定や過去結果だけで live 状態を推測しない。
+- 状態確認、一覧・取得、下書き更新、公開提案は `wordpressEditor`、別人が wp-admin 承認済みの公開反映、追跡テーマ／固定pluginの提案・反映、通信断回復は bounded `wordpressDeployment` を使う。
+- MCPで完結しない初回bootstrap、明示UI検証、障害診断だけを例外とし、先に `codex mcp list` とread-only statusを確認して利用不能理由と代替経路を報告する。
+- MCP優先は権限を広げない。別人承認、未失効proposal、hash/precondition、idempotency、kill switch、用途別default-offを維持し、自己承認、credential開示、gate有効化、任意command/PHP/SQL/URL実行を行わない。
+
 ## 開発 workflow
 
 - `make setup`: lock 済み dependency を cache 利用で同期する。

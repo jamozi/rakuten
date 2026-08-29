@@ -6,7 +6,7 @@
     "color": {
       "defaultPalette": false,
       "palette": [
-        {"slug": "paper", "name": "Paper", "color": "#f7f2e9"},
+        {"slug": "paper", "name": "Paper", "color": "#ffffff"},
         {"slug": "ink", "name": "Ink", "color": "#17243f"},
         {"slug": "indigo", "name": "Deep Indigo", "color": "#24365f"},
         {"slug": "warm", "name": "Warm Clay", "color": "#983f25"},
@@ -33,7 +33,7 @@
     }
   },
   "styles": {
-    "color": {"background": "#f7f2e9", "text": "#17243f"},
+    "color": {"background": "#ffffff", "text": "#17243f"},
     "spacing": {"blockGap": "1.5rem"},
     "typography": {
       "fontFamily": "var(--wp--preset--font-family--editorial-sans)",
@@ -43,7 +43,7 @@
     "elements": {
       "button": {
         "color": {"background": "#24365f", "text": "#ffffff"},
-        "border": {"radius": "0.35rem"},
+        "border": {"radius": "0"},
         "typography": {"fontWeight": "700"}
       },
       "heading": {
