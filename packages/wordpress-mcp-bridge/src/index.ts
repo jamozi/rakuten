@@ -146,7 +146,7 @@ const server = new McpServer(
   { name: 'raos-wordpress-bridge', version: '1.0.0' },
   {
     instructions:
-      'Bounded deployment bridge for kurashinoshirube.com. It cannot approve, publish without a separate wp-admin approval, run commands, PHP, or SQL, delete content, uninstall plugins, accept URLs, or accept caller-selected package paths. Apply calls require an unexpired hash-bound proposal, If-Match, idempotency, global kill switch, and a purpose-specific default-off host gate.',
+      'Bounded deployment bridge for kurashinoshirube.com. It cannot approve, publish without a separate wp-admin approval, run commands, PHP, or SQL, delete content, uninstall plugins, accept URLs, or accept caller-selected package paths. Apply calls require an unexpired hash-bound proposal, If-Match, idempotency, the global kill switch, and a proposal-bound single-use approval lease.',
   },
 );
 

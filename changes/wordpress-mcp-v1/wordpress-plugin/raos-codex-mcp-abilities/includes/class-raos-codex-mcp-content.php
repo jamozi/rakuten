@@ -216,6 +216,10 @@ final class RAOS_Codex_MCP_Content
         unset($input);
         global $wp_version;
         $theme = wp_get_theme('kurashinoshirube-child');
+        $global_writes = defined('RAOS_OPERATOR_WRITES_ENABLED')
+            && true === RAOS_OPERATOR_WRITES_ENABLED;
+        $private_ready = ! is_wp_error(RAOS_Codex_MCP_Deployment::private_directory());
+        $apply_ready = $global_writes && $private_ready;
         return array(
             'schema' => 'RAOSWordPressSiteStatusV1',
             'origin' => home_url(),
@@ -225,11 +229,17 @@ final class RAOS_Codex_MCP_Content
             'mcp_adapter_version_compatible' => defined('WP_MCP_VERSION') && '0.6.1' === WP_MCP_VERSION,
             'plugin_version' => RAOS_CODEX_MCP_VERSION,
             'writes_enabled' => array(
-                'global' => defined('RAOS_OPERATOR_WRITES_ENABLED') && true === RAOS_OPERATOR_WRITES_ENABLED,
+                'global' => $global_writes,
                 'draft' => defined('RAOS_CODEX_DRAFT_WRITES_ENABLED') && true === RAOS_CODEX_DRAFT_WRITES_ENABLED,
-                'content_apply' => defined('RAOS_CODEX_CONTENT_APPLY_ENABLED') && true === RAOS_CODEX_CONTENT_APPLY_ENABLED,
-                'theme_apply' => defined('RAOS_CODEX_THEME_APPLY_ENABLED') && true === RAOS_CODEX_THEME_APPLY_ENABLED,
-                'plugin_apply' => defined('RAOS_CODEX_PLUGIN_APPLY_ENABLED') && true === RAOS_CODEX_PLUGIN_APPLY_ENABLED,
+                'content_apply' => $apply_ready,
+                'theme_apply' => $apply_ready,
+                'plugin_apply' => $apply_ready,
+            ),
+            'apply_authorization' => array(
+                'mode' => 'approval_scoped_lease',
+                'default' => false,
+                'single_use' => true,
+                'ttl_seconds' => RAOS_Codex_MCP_Store::TTL_SECONDS,
             ),
             'theme' => array(
                 'slug' => 'kurashinoshirube-child',

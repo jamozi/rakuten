@@ -31,9 +31,6 @@ services:
         define('WP_SITEURL', 'https://kurashinoshirube.com');
         define('RAOS_OPERATOR_WRITES_ENABLED', true);
         define('RAOS_CODEX_DRAFT_WRITES_ENABLED', true);
-        define('RAOS_CODEX_CONTENT_APPLY_ENABLED', true);
-        define('RAOS_CODEX_THEME_APPLY_ENABLED', true);
-        define('RAOS_CODEX_PLUGIN_APPLY_ENABLED', true);
         define('RAOS_CODEX_REPO_ARTIFACT_HASHES', array(
           'raos-e2e-safe-plugin-v1' => '${RAOS_WORDPRESS_E2E_SAFE_PLUGIN_SHA256:?RAOS_WORDPRESS_E2E_SAFE_PLUGIN_SHA256 is required}',
           'raos-e2e-broken-plugin-v1' => '${RAOS_WORDPRESS_E2E_BROKEN_PLUGIN_SHA256:?RAOS_WORDPRESS_E2E_BROKEN_PLUGIN_SHA256 is required}',
@@ -91,6 +88,8 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DB_PASSWORD: ${RAOS_WORDPRESS_E2E_DATABASE_PASSWORD:?RAOS_WORDPRESS_E2E_DATABASE_PASSWORD is required}
       WORDPRESS_DB_USER: wordpress
+      WORDPRESS_CONFIG_EXTRA: |
+        define('RAOS_CODEX_PRIVATE_DIR', '/var/www/raos-code/private');
     user: '33:33'
     volumes:
       - type: bind

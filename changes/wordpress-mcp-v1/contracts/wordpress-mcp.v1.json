@@ -63,10 +63,17 @@
   "host_gates": {
     "global_kill_switch": "RAOS_OPERATOR_WRITES_ENABLED",
     "draft": "RAOS_CODEX_DRAFT_WRITES_ENABLED",
-    "content_apply": "RAOS_CODEX_CONTENT_APPLY_ENABLED",
-    "theme_apply": "RAOS_CODEX_THEME_APPLY_ENABLED",
-    "plugin_apply": "RAOS_CODEX_PLUGIN_APPLY_ENABLED",
     "default": false
+  },
+  "approval_scoped_apply_gate": {
+    "storage": "RAOS_CODEX_PRIVATE_DIR",
+    "created_by": "separate_wp_admin_approval",
+    "kinds": ["CONTENT_RELEASE", "THEME_RELEASE", "PLUGIN_CHANGE"],
+    "proposal_bound": true,
+    "hash_bound": true,
+    "single_use": true,
+    "ttl_seconds": 900,
+    "removed_after_terminal_state": true
   },
   "theme": {
     "only_slug": "kurashinoshirube-child",

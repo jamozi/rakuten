@@ -46,6 +46,21 @@ def test_public_contract_and_schema_are_valid() -> None:
         "self_approval": False,
         "ttl_seconds": 900,
     }
+    assert contract["host_gates"] == {
+        "global_kill_switch": "RAOS_OPERATOR_WRITES_ENABLED",
+        "draft": "RAOS_CODEX_DRAFT_WRITES_ENABLED",
+        "default": False,
+    }
+    assert contract["approval_scoped_apply_gate"] == {
+        "storage": "RAOS_CODEX_PRIVATE_DIR",
+        "created_by": "separate_wp_admin_approval",
+        "kinds": ["CONTENT_RELEASE", "THEME_RELEASE", "PLUGIN_CHANGE"],
+        "proposal_bound": True,
+        "hash_bound": True,
+        "single_use": True,
+        "ttl_seconds": 900,
+        "removed_after_terminal_state": True,
+    }
 
 
 def test_codex_project_enables_only_two_mcp_servers_without_secrets() -> None:
@@ -142,7 +157,13 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
     listed = next(response for response in responses if response.get("id") == 2)
     assert initialized["result"]["protocolVersion"] == "2025-11-25"
     instructions = initialized["result"]["instructions"]
-    for boundary in ("cannot approve", "PHP", "SQL", "If-Match", "host gate"):
+    for boundary in (
+        "cannot approve",
+        "PHP",
+        "SQL",
+        "If-Match",
+        "approval lease",
+    ):
         assert boundary in instructions
     tools = {tool["name"]: tool for tool in listed["result"]["tools"]}
     assert set(tools) == {
@@ -174,9 +195,9 @@ def test_wordpress_plugin_hard_safety_boundaries_are_present() -> None:
         "mcp_adapter_create_default_server",
         "WP_MCP_VERSION",
         "'0.6.1'",
-        "RAOS_CODEX_CONTENT_APPLY_ENABLED",
-        "RAOS_CODEX_THEME_APPLY_ENABLED",
-        "RAOS_CODEX_PLUGIN_APPLY_ENABLED",
+        "RAOS_CODEX_APPROVAL_LEASE_V1",
+        "approval_scoped_lease",
+        "approval-lease-",
         "wp_authenticate_application_password_errors",
         "rest_request_before_callbacks",
         "XMLRPC_REQUEST",
@@ -203,6 +224,12 @@ def test_wordpress_plugin_hard_safety_boundaries_are_present() -> None:
     assert "manage_plugins" not in sources
     assert "uninstall_plugin(" not in sources
     assert "eval(" not in sources
+    for retired_gate in (
+        "RAOS_CODEX_CONTENT_APPLY_ENABLED",
+        "RAOS_CODEX_THEME_APPLY_ENABLED",
+        "RAOS_CODEX_PLUGIN_APPLY_ENABLED",
+    ):
+        assert retired_gate not in sources
     assert not re.search(r"register_rest_route\([^)]*(?:wp/v2|xmlrpc)", sources)
 
 
@@ -278,8 +305,10 @@ def test_disposable_wordpress_71_e2e_is_pinned_and_separate_from_live() -> None:
     assert "client_max_body_size 48m;" in gateway
     assert "location ^~ /.raos-codex-private/" in gateway
     assert "return 404;" in gateway
-    assert "RAOS_CODEX_THEME_APPLY_ENABLED', true" in compose
-    assert "RAOS_CODEX_PLUGIN_APPLY_ENABLED', true" in compose
+    assert "RAOS_CODEX_CONTENT_APPLY_ENABLED" not in compose
+    assert "RAOS_CODEX_THEME_APPLY_ENABLED" not in compose
+    assert "RAOS_CODEX_PLUGIN_APPLY_ENABLED" not in compose
+    assert "RAOS_OPERATOR_WRITES_ENABLED', true" in compose
     assert "RAOS_CODEX_REPO_ARTIFACT_HASHES" in compose
     assert "1c3cd47c32e99b4e7d8690a44a7890256e92a8b96f61776cbe1894e5483cf676" in runner
     assert "docker compose" in runner

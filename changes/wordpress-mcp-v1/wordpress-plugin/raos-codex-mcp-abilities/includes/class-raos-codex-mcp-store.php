@@ -216,7 +216,7 @@ final class RAOS_Codex_MCP_Store
         }
         if (in_array($row['state'], array('PENDING', 'MANUAL_REQUIRED', 'APPROVED'), true)
             && strtotime($row['expires_at_gmt'] . ' UTC') <= time()) {
-            $wpdb->query(
+            $expired = $wpdb->query(
                 $wpdb->prepare(
                     'UPDATE ' . self::table_name()
                     . " SET state = 'EXPIRED', result_code = 'PROPOSAL_EXPIRED'"
@@ -226,6 +226,9 @@ final class RAOS_Codex_MCP_Store
             );
             $row['state'] = 'EXPIRED';
             $row['result_code'] = 'PROPOSAL_EXPIRED';
+            if (1 === $expired && class_exists('RAOS_Codex_MCP_Deployment')) {
+                RAOS_Codex_MCP_Deployment::remove_approval_lease($proposal_id);
+            }
         }
         $payload = json_decode($row['payload_json'], true);
         $receipt = is_string($row['receipt_json'])
@@ -255,6 +258,15 @@ final class RAOS_Codex_MCP_Store
         if (! is_string($reason) || strlen(trim($reason)) < 10 || strlen($reason) > 2000) {
             return new WP_Error('raos_codex_approval_reason_invalid', 'Approval reason is invalid.', array('status' => 400));
         }
+        $approved_at = self::now_mysql();
+        $lease = RAOS_Codex_MCP_Deployment::create_approval_lease(
+            $row,
+            (int) $approver_id,
+            $approved_at
+        );
+        if (is_wp_error($lease)) {
+            return $lease;
+        }
         $updated = $wpdb->query(
             $wpdb->prepare(
                 'UPDATE ' . self::table_name()
@@ -262,13 +274,14 @@ final class RAOS_Codex_MCP_Store
                 . ' approved_by = %d, approved_at_gmt = %s, approval_reason = %s'
                 . " WHERE proposal_id = %s AND state = 'PENDING' AND expires_at_gmt > %s",
                 (int) $approver_id,
-                self::now_mysql(),
+                $approved_at,
                 trim($reason),
                 $proposal_id,
                 self::now_mysql()
             )
         );
         if (1 !== $updated) {
+            RAOS_Codex_MCP_Deployment::remove_approval_lease($proposal_id);
             return new WP_Error('raos_codex_approval_conflict', 'Proposal approval conflicted or expired.', array('status' => 409));
         }
         return self::get($proposal_id);
@@ -341,6 +354,7 @@ final class RAOS_Codex_MCP_Store
         if (1 !== $updated) {
             return new WP_Error('raos_codex_receipt_conflict', 'Receipt storage conflicted.', array('status' => 409));
         }
+        RAOS_Codex_MCP_Deployment::remove_approval_lease($proposal_id);
         return $receipt;
     }
 
@@ -350,7 +364,7 @@ final class RAOS_Codex_MCP_Store
         if (! preg_match('/\A[A-Z0-9_]{3,96}\z/D', $result_code)) {
             $result_code = 'OPERATION_FAILED';
         }
-        $wpdb->query(
+        $updated = $wpdb->query(
             $wpdb->prepare(
                 'UPDATE ' . self::table_name()
                 . " SET state = 'FAILED', result_code = %s, completed_at_gmt = %s"
@@ -360,6 +374,9 @@ final class RAOS_Codex_MCP_Store
                 $proposal_id
             )
         );
+        if (1 === $updated) {
+            RAOS_Codex_MCP_Deployment::remove_approval_lease($proposal_id);
+        }
         return self::get($proposal_id);
     }
 

@@ -25883,8 +25883,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 70824,
-          "sha256": "a0e3a89b4a0b951a832e3b75ece8b1cab4f5443d056a924104055ad5a7411f41",
+          "bytes": 71060,
+          "sha256": "4e14c380d78bdf044361445798759aace6f5587834d390aa2324eace287bd91b",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -27578,7 +27578,7 @@
       "outputs": [
         {
           "bytes": 7520,
-          "sha256": "31bb95d9bc69dd06025cff73280c836e2f8f1d5c2cef8c4c1467b898f60ac261",
+          "sha256": "f9a5d3cb4c9012f1eab225d3a5b8ad8ce7569655ee61db9eef878ddb6f1f7b3e",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
