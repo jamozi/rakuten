@@ -57,6 +57,7 @@ function raos_local_preview_has_only_reviewed_https_links(string $content): bool
         return false;
     }
     $allowed_hosts = array(
+        'hb.afl.rakuten.co.jp',
         'panasonic.jp',
         'store.ace.jp',
         'store.irobot-jp.com',

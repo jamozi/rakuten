@@ -101,13 +101,13 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
-      "sha256": "199777c00e84faec9fd9823d2c36550785a0fda8061645ff185a60f3900e18bc",
-      "size": 26803
+      "sha256": "a277833809b883807379b80acfc4c4333d3cb371310e9be2cbe41986a84d505b",
+      "size": 28565
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
-      "sha256": "6ee47720ffa6c79743629756f16bf209462c6e72ab2ba2ffabbf47211545d563",
-      "size": 30597
+      "sha256": "8c674ecd32888fb85e9d85839454bd619b859cd1514433610117ee3bec4709d0",
+      "size": 32184
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/posts.json",
@@ -121,8 +121,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/seed.php",
-      "sha256": "b4fb3c0c8e6a995c93664b8715e74016db37f3c272e20cfc63342f6ac39b23f8",
-      "size": 9980
+      "sha256": "cc431c082677a077c3699e62a41c4e4744a6c98f25b404cebc81acc2ff2b208d",
+      "size": 10012
     },
     {
       "path": "changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json",
