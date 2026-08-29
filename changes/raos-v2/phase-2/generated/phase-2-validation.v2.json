@@ -66,24 +66,7 @@
     "strict_source_inputs": 85,
     "wordpress_adapter": "DISABLED_DRY_RUN"
   },
-  "completed_backlog_ids": [
-    "B-V2-019",
-    "B-V2-020",
-    "B-V2-021",
-    "B-V2-022",
-    "B-V2-023",
-    "B-V2-024",
-    "B-V2-025",
-    "B-V2-026",
-    "B-V2-027",
-    "B-V2-028",
-    "B-V2-029",
-    "B-V2-030",
-    "B-V2-031",
-    "B-V2-032",
-    "B-V2-033",
-    "B-V2-034"
-  ],
+  "completed_backlog_ids": [],
   "evidence_scope": "LOCAL_ONLY",
   "external_actions": "NOT_EXECUTED",
   "formal_ci": "NOT_CLAIMED_BY_LOCAL_ARTIFACT",
@@ -137,7 +120,7 @@
       "T-V2-051"
     ],
     "receipt": {
-      "binding_verification": "CURRENT_TREE_BOUND",
+      "binding_verification": "STALE_IMPLEMENTATION_OR_TEST_INVENTORY",
       "claimed_status": "PASSED_LOCAL",
       "classification": "LOCAL_ONLY",
       "command": "TMPDIR=/tmp uv run --offline pytest -s -q tests/raos_v2",
@@ -172,7 +155,7 @@
       "recorded_date_jst": "2026-08-29",
       "schema": "RAOS_V2_RECORDED_LOCAL_TEST_EVIDENCE_V1",
       "skipped": 0,
-      "status": "PASSED_LOCAL",
+      "status": "AWAITING_GATE_STALE_BINDING",
       "test_inventory": {
         "content_inventory_sha256": "418eb75413f351dd64d5b4f689da4c1ec8d4cf7bba42843659637e5df811145e",
         "file_count": 31,
@@ -183,11 +166,13 @@
       "version": "2.0.0"
     },
     "required_owner": "tests/raos_v2",
-    "status": "PASSED_LOCAL"
+    "status": "AWAITING_GATE_STALE_BINDING"
   },
-  "pending_exit_backlog_ids": [],
+  "pending_exit_backlog_ids": [
+    "B-V2-034"
+  ],
   "schema": "RAOS_V2_PHASE2_VALIDATION_V1",
-  "status": "PASSED_LOCAL_RECORDED",
+  "status": "READY_FOR_LOCAL_TEST_GATE",
   "visual_review_evidence": {
     "aggregate_findings": {
       "critical": 0,
