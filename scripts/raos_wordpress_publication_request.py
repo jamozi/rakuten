@@ -74,6 +74,15 @@ DOCKER_SOCKET: Final = Path("/var/run/docker.sock")
 PROTOCOL_VERSION: Final = "2025-11-25"
 EXPECTED_PLUGIN_VERSION: Final = "1.2.0"
 EXPECTED_THEME_VERSION: Final = "1.3.9"
+DIRECT_THEME_STYLESHEET_PATHS: Final = frozenset(
+    {
+        "/wp-content/themes/kurashinoshirube-child/assets/theme.css",
+        "/wp-content/themes/kurashinoshirube-child/assets/editorial-v2.css",
+    }
+)
+AUTOPTIMIZE_SINGLE_STYLESHEET_PREFIX: Final = (
+    "/wp-content/cache/autoptimize/autoptimize_single_"
+)
 EXPECTED_ALL_ARTICLE_COUNT: Final = 10
 MAX_CONTENT_BYTES: Final = 1024 * 1024
 MAX_RESPONSE_BYTES: Final = 16 * 1024 * 1024
@@ -194,7 +203,7 @@ class _PublicPageEvidenceParser(HTMLParser):
         self.affiliate_links: list[dict[str, object]] = []
         self.product_images: list[dict[str, str]] = []
         self.disclosure_text: list[str] = []
-        self.theme_stylesheets: set[tuple[str, str]] = set()
+        self.stylesheet_urls: list[str] = []
         self.noindex = False
         self._suppressed_depth = 0
         self._heading_tag: str | None = None
@@ -226,15 +235,7 @@ class _PublicPageEvidenceParser(HTMLParser):
             if "canonical" in rel and isinstance(href, str):
                 self.canonical_urls.append(href)
             if "stylesheet" in rel and isinstance(href, str):
-                match = re.search(
-                    r"/wp-content/themes/kurashinoshirube-child/assets/"
-                    r"(theme|editorial-v2)\.css\?ver=([^&#]+)",
-                    href,
-                )
-                if match is not None:
-                    self.theme_stylesheets.add(
-                        (f"{match.group(1)}.css", match.group(2))
-                    )
+                self.stylesheet_urls.append(href)
         if lowered == "meta" and (attributes.get("name") or "").casefold() in {
             "robots",
             "googlebot",
@@ -2815,6 +2816,100 @@ def _normalized_public_text(parts: Sequence[str]) -> str:
     return re.sub(r"\s+", " ", " ".join(parts)).strip()
 
 
+def _public_stylesheet_candidate_kind(href: str) -> str | None:
+    """Classify only child-theme stylesheet evidence; ignore unrelated CSS."""
+
+    try:
+        parsed = urlsplit(href)
+    except ValueError:
+        if (
+            any(path in href for path in DIRECT_THEME_STYLESHEET_PATHS)
+            or AUTOPTIMIZE_SINGLE_STYLESHEET_PREFIX in href
+        ):
+            return "invalid"
+        return None
+    if any(parsed.path.startswith(path) for path in DIRECT_THEME_STYLESHEET_PATHS):
+        return "direct"
+    if parsed.path.startswith(AUTOPTIMIZE_SINGLE_STYLESHEET_PREFIX):
+        return "autoptimize"
+    return None
+
+
+def _public_stylesheet_origin_is_valid(
+    href: str,
+    *,
+    allow_root_relative: bool,
+) -> bool:
+    try:
+        parsed = urlsplit(href)
+        port = parsed.port
+    except ValueError:
+        return False
+    if parsed.username is not None or parsed.password is not None or parsed.fragment:
+        return False
+    if not parsed.scheme and not parsed.netloc:
+        return allow_root_relative and parsed.path.startswith("/")
+    return (
+        parsed.scheme == "https"
+        and parsed.hostname == urlsplit(ORIGIN).hostname
+        and port is None
+    )
+
+
+def _public_theme_stylesheets_are_valid(stylesheet_urls: Sequence[str]) -> bool:
+    """Validate direct or Autoptimize materialization of the two theme assets."""
+
+    candidates = [
+        (kind, href)
+        for href in stylesheet_urls
+        if (kind := _public_stylesheet_candidate_kind(href)) is not None
+    ]
+    if len(candidates) != 2 or len({kind for kind, _href in candidates}) != 1:
+        return False
+    kind = candidates[0][0]
+    if kind == "direct":
+        paths: set[str] = set()
+        for _kind, href in candidates:
+            if len(href) > 8192 or not _public_stylesheet_origin_is_valid(
+                href,
+                allow_root_relative=True,
+            ):
+                return False
+            try:
+                parsed = urlsplit(href)
+            except ValueError:
+                return False
+            if (
+                parsed.path not in DIRECT_THEME_STYLESHEET_PATHS
+                or parsed.query != f"ver={EXPECTED_THEME_VERSION}"
+            ):
+                return False
+            paths.add(parsed.path)
+        return paths == DIRECT_THEME_STYLESHEET_PATHS
+    if kind == "autoptimize":
+        hashes: set[str] = set()
+        for _kind, href in candidates:
+            if len(href) > 8192 or not _public_stylesheet_origin_is_valid(
+                href,
+                allow_root_relative=False,
+            ):
+                return False
+            try:
+                parsed = urlsplit(href)
+            except ValueError:
+                return False
+            match = re.fullmatch(
+                re.escape(AUTOPTIMIZE_SINGLE_STYLESHEET_PREFIX)
+                + r"([0-9a-f]{32})\.php",
+                parsed.path,
+            )
+            if match is None or parsed.query != f"ver={EXPECTED_THEME_VERSION}":
+                return False
+            hashes.add(match.group(1))
+        return len(hashes) == 2
+    return False
+
+
 def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]]:
     result: list[dict[str, object]] = []
     identities: set[tuple[str, str]] = set()
@@ -3010,17 +3105,17 @@ def _public_page_evidence(
         or parser.h1_titles != [article.title]
         or not required_headings
         or parser.heading_outline
-        != [("h1", article.title), *desired.heading_outline]
+        != [
+            ("h1", article.title),
+            *desired.heading_outline,
+            ("h2", "暮らしのしるべ"),
+        ]
         or any(heading not in visible for heading in required_headings)
         or expected_ctas != actual_ctas
         or expected_images != actual_images
         or "広告を含みます" not in expected_disclosure
         or expected_disclosure != actual_disclosure
-        or parser.theme_stylesheets
-        != {
-            ("theme.css", EXPECTED_THEME_VERSION),
-            ("editorial-v2.css", EXPECTED_THEME_VERSION),
-        }
+        or not _public_theme_stylesheets_are_valid(parser.stylesheet_urls)
     ):
         fail("RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED")
     return {

@@ -96,16 +96,23 @@ def _public_markup(
     *,
     head_extra: str = "",
     block_markup: str | None = None,
+    stylesheets: str | None = None,
+    footer_markup: str = "<footer><h2>暮らしのしるべ</h2></footer>",
 ) -> str:
     url = f"{publication.ORIGIN}/{article.production_slug}/"
+    stylesheet_markup = stylesheets
+    if stylesheet_markup is None:
+        stylesheet_markup = (
+            '<link rel="stylesheet" href="/wp-content/themes/'
+            'kurashinoshirube-child/assets/theme.css?ver=1.3.9">'
+            '<link rel="stylesheet" href="/wp-content/themes/'
+            'kurashinoshirube-child/assets/editorial-v2.css?ver=1.3.9">'
+        )
     return (
         "<!doctype html><html><head><title>"
         + article.title
         + " | 暮らしのしるべ</title>"
-        + '<link rel="stylesheet" href="/wp-content/themes/'
-        'kurashinoshirube-child/assets/theme.css?ver=1.3.9">'
-        + '<link rel="stylesheet" href="/wp-content/themes/'
-        'kurashinoshirube-child/assets/editorial-v2.css?ver=1.3.9">'
+        + stylesheet_markup
         + '<link rel="canonical" href="'
         + url
         + '">'
@@ -114,7 +121,15 @@ def _public_markup(
         + article.title
         + "</h1>"
         + (article.block_markup if block_markup is None else block_markup)
-        + "</main></body></html>"
+        + "</main>"
+        + footer_markup
+        + "</body></html>"
+    )
+
+
+def _stylesheet_links(*hrefs: str) -> str:
+    return "".join(
+        f'<link rel="stylesheet" href="{href.replace("&", "&amp;")}">' for href in hrefs
     )
 
 
@@ -138,6 +153,196 @@ def test_anonymous_public_readback_requires_exact_canonical_title_and_headings()
     request = opener.requests[0]
     assert request.full_url == url
     assert request.get_header("Authorization") is None
+
+
+@pytest.mark.parametrize(
+    "stylesheets",
+    [
+        _stylesheet_links(
+            "https://example.invalid/unrelated.css?build=42",
+            f"{publication.ORIGIN}/wp-content/themes/kurashinoshirube-child/"
+            "assets/theme.css?ver=1.3.9",
+            f"{publication.ORIGIN}/wp-content/themes/kurashinoshirube-child/"
+            "assets/editorial-v2.css?ver=1.3.9",
+        ),
+        _stylesheet_links(
+            "https://example.invalid/unrelated.css?build=42",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
+        ),
+    ],
+    ids=("absolute-direct-theme-assets", "autoptimize-single-assets"),
+)
+def test_public_readback_accepts_exact_theme_stylesheet_materializations(
+    stylesheets: str,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+
+    evidence = ORIGINAL_VERIFY_PUBLIC_PAGES(
+        [article],
+        attempts=1,
+        sleeper=lambda seconds: None,
+        opener=_PublicOpener(
+            _PublicResponse(url, _public_markup(article, stylesheets=stylesheets))
+        ),
+    )
+
+    assert evidence[article.production_slug]["theme_version"] == "1.3.9"
+
+
+@pytest.mark.parametrize(
+    "footer_markup",
+    [
+        "",
+        "<footer><h3>暮らしのしるべ</h3></footer>",
+        "<footer><h2>別のサイト名</h2></footer>",
+        "<footer><h2>暮らしのしるべ</h2><h2>暮らしのしるべ</h2></footer>",
+        "<footer><h2>暮らしのしるべ</h2><h3>追加見出し</h3></footer>",
+        "<footer><h3>追加見出し</h3><h2>暮らしのしるべ</h2></footer>",
+    ],
+    ids=(
+        "missing",
+        "wrong-level",
+        "wrong-copy",
+        "duplicate",
+        "not-trailing",
+        "extra-before-footer",
+    ),
+)
+def test_public_readback_requires_one_exact_trailing_site_footer_heading(
+    footer_markup: str,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(
+                    url,
+                    _public_markup(article, footer_markup=footer_markup),
+                )
+            ),
+        )
+
+
+@pytest.mark.parametrize(
+    "stylesheets",
+    [
+        _stylesheet_links(
+            "/wp-content/themes/kurashinoshirube-child/assets/theme.css?ver=1.3.9",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
+        ),
+        _stylesheet_links(
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
+        ),
+        _stylesheet_links(
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'A' * 32}.php?ver=1.3.9",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
+        ),
+        _stylesheet_links(
+            "http://kurashinoshirube.com/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
+        ),
+        _stylesheet_links(
+            "https://user@kurashinoshirube.com/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
+        ),
+        _stylesheet_links(
+            "https://kurashinoshirube.com:443/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
+        ),
+        _stylesheet_links(
+            "https://example.invalid/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
+        ),
+        _stylesheet_links(
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9#fragment",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
+        ),
+        _stylesheet_links(
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9&extra=1",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
+        ),
+        _stylesheet_links(
+            "/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
+        ),
+        _stylesheet_links(
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.9",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.9",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'c' * 32}.php?ver=1.3.9",
+        ),
+        _stylesheet_links(
+            "/wp-content/themes/kurashinoshirube-child/assets/theme.css?ver=1.3.9&extra=1",
+            "/wp-content/themes/kurashinoshirube-child/assets/editorial-v2.css?ver=1.3.9",
+        ),
+    ],
+    ids=(
+        "mixed-direct-and-autoptimize",
+        "duplicate-autoptimize-hash",
+        "uppercase-autoptimize-hash",
+        "http-autoptimize-url",
+        "userinfo-autoptimize-url",
+        "port-autoptimize-url",
+        "cross-origin-autoptimize-url",
+        "fragment-autoptimize-url",
+        "extra-query-autoptimize-url",
+        "relative-autoptimize-url",
+        "third-autoptimize-url",
+        "extra-query-direct-url",
+    ),
+)
+def test_public_readback_rejects_invalid_theme_stylesheet_materialization(
+    stylesheets: str,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(url, _public_markup(article, stylesheets=stylesheets))
+            ),
+        )
 
 
 def test_anonymous_public_readback_rejects_noindex() -> None:
