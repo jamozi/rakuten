@@ -44,10 +44,9 @@ enabled = true
 default_tools_approval_mode = "prompt"
 enabled_tools = [
   "deployment-status",
+  "publication-batch-status",
   "release-wait-and-apply",
-  "content-apply-release",
   "theme-propose-release",
-  "theme-apply-release",
   "plugin-propose-change",
   "plugin-apply-change",
   "operation-recover",

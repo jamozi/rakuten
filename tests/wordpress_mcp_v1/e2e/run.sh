@@ -186,6 +186,7 @@ compose cp "$e2e_directory/approve_harness.php" wordpress:/var/www/raos-code/sta
 compose cp "$e2e_directory/batch_approve_harness.php" wordpress:/var/www/raos-code/staging/batch_approve_harness.php
 compose cp "$e2e_directory/idempotency_harness.php" wordpress:/var/www/raos-code/staging/idempotency_harness.php
 compose cp "$e2e_directory/mutate_harness.php" wordpress:/var/www/raos-code/staging/mutate_harness.php
+compose cp "$e2e_directory/rollback_harness.php" wordpress:/var/www/raos-code/staging/rollback_harness.php
 compose cp "$e2e_directory/store_upgrade_harness.php" wordpress:/var/www/raos-code/staging/store_upgrade_harness.php
 compose cp "$code_artifact_directory/kurashinoshirube-child-baseline.zip" wordpress:/var/www/raos-code/staging/kurashinoshirube-child-baseline.zip
 compose exec -T --user root wordpress chown -R www-data:www-data /var/www/raos-code/staging
@@ -231,6 +232,12 @@ wordpress_cli eval-file /var/www/raos-code/staging/store_upgrade_harness.php deg
   || fail RAOS_WORDPRESS_E2E_STORE_DEGRADE_FAILED
 wordpress_cli eval-file /var/www/raos-code/staging/store_upgrade_harness.php check \
   || fail RAOS_WORDPRESS_E2E_STORE_UPGRADE_FAILED
+wordpress_cli eval-file /var/www/raos-code/staging/store_upgrade_harness.php degrade-v3 \
+  || fail RAOS_WORDPRESS_E2E_STORE_V3_DEGRADE_FAILED
+wordpress_cli eval-file /var/www/raos-code/staging/store_upgrade_harness.php check \
+  || fail RAOS_WORDPRESS_E2E_STORE_V3_UPGRADE_FAILED
+wordpress_cli eval-file /var/www/raos-code/staging/rollback_harness.php \
+  || fail RAOS_WORDPRESS_E2E_ROLLBACK_FAILED
 [[ "$(wordpress_cli eval 'rest_get_server(); echo isset(rest_get_server()->get_routes()["/raos-codex-mcp/v1/editor"]) ? "yes" : "no";')" == yes ]] \
   || fail RAOS_WORDPRESS_E2E_EDITOR_ROUTE_MISSING
 
@@ -296,7 +303,6 @@ for proposal_id in "${release_proposals[@]}"; do
 done
 [[ "$drift_proposal" =~ ^[0-9a-f]{64}$ && "$drift_post_id" =~ ^[0-9]+$ ]] \
   || fail RAOS_WORDPRESS_E2E_DRIFT_TARGET_INVALID
-wordpress_cli eval-file /var/www/raos-code/staging/mutate_harness.php "$drift_post_id"
 for proposal_id in "${code_proposals[@]}"; do
   [[ "$proposal_id" =~ ^[0-9a-f]{64}$ ]] || fail RAOS_WORDPRESS_E2E_CODE_PROPOSAL_INVALID
 done
@@ -310,6 +316,12 @@ if ! wordpress_cli eval-file \
   tail -c 4096 "$e2e_temporary_directory/batch-approval.log" >&2 || true
   fail RAOS_WORDPRESS_E2E_BATCH_APPROVAL_FAILED
 fi
+wordpress_cli eval-file \
+  /var/www/raos-code/staging/batch_approve_harness.php claim-ambiguous-reset \
+  || fail RAOS_WORDPRESS_E2E_BATCH_CLAIM_FAILED
+wordpress_cli eval-file \
+  /var/www/raos-code/staging/batch_approve_harness.php plugin-ambiguous-reset \
+  || fail RAOS_WORDPRESS_E2E_PLUGIN_APPROVAL_CRASH_CONSISTENCY_FAILED
 
 for proposal_id in "${plugin_proposals[@]}"; do
   approval_lease="/var/www/raos-code/private/approval-lease-$proposal_id.json"
@@ -318,8 +330,9 @@ for proposal_id in "${plugin_proposals[@]}"; do
   fi
   approve_proposal "$proposal_id"
 done
+wordpress_cli eval-file /var/www/raos-code/staging/mutate_harness.php "$drift_post_id"
 
-for proposal_id in "${release_proposals[@]}" "$drift_proposal" "${code_proposals[@]}"; do
+for proposal_id in "${release_proposals[@]}" "${code_proposals[@]}"; do
   approval_lease="/var/www/raos-code/private/approval-lease-$proposal_id.json"
   if ! compose exec -T wordpress sh -eu -c \
     'path="$1"; [ -f "$path" ] && [ ! -L "$path" ] && [ "$(stat -c "%a" "$path")" = 600 ]' \

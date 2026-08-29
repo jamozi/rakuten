@@ -298,6 +298,14 @@ final class RAOS_Codex_MCP_Abilities
             return 'GET' === $http_method
                 && preg_match('#\A/raos-codex-deploy/v1/operations/[0-9a-f]{64}\z#D', $route) === 1;
         }
+        if ('get_publication_batch' === $method) {
+            return 'GET' === $http_method
+                && preg_match('#\A/raos-codex-deploy/v1/publication-batches/[0-9a-f]{64}\z#D', $route) === 1;
+        }
+        if ('claim_publication_batch' === $method) {
+            return 'POST' === $http_method
+                && preg_match('#\A/raos-codex-deploy/v1/publication-batches/[0-9a-f]{64}/claim\z#D', $route) === 1;
+        }
         if ('recover_operation' === $method) {
             return 'POST' === $http_method
                 && preg_match('#\A/raos-codex-deploy/v1/operations/[0-9a-f]{64}/recover\z#D', $route) === 1;
@@ -388,6 +396,425 @@ final class RAOS_Codex_MCP_Abilities
         );
     }
 
+    private static function has_exact_keys($value, $expected)
+    {
+        if (! is_array($value) || ! is_array($expected)) {
+            return false;
+        }
+        $actual = array_keys($value);
+        sort($actual, SORT_STRING);
+        sort($expected, SORT_STRING);
+        return $actual === $expected;
+    }
+
+    private static function nullable_hash_matches($expected, $actual)
+    {
+        if (is_null($expected) || is_null($actual)) {
+            return is_null($expected) && is_null($actual);
+        }
+        return RAOS_Codex_MCP_Store::is_sha256($expected)
+            && RAOS_Codex_MCP_Store::is_sha256($actual)
+            && hash_equals($expected, $actual);
+    }
+
+    private static function publication_batch_review_error($code)
+    {
+        return new WP_Error(
+            $code,
+            'The exact publication batch members could not be verified for human review.',
+            array('status' => 409)
+        );
+    }
+
+    /**
+     * Load the exact rows named by a registered manifest. This deliberately does
+     * not use the bounded recent-proposal list rendered elsewhere on the page.
+     */
+    private static function publication_batch_review($batch)
+    {
+        $manifest_keys = array(
+            'schema',
+            'expected_theme_tree_sha256',
+            'proposal_count',
+            'proposals',
+        );
+        $entry_keys = array(
+            'proposal_id',
+            'kind',
+            'created_by',
+            'created_at_gmt',
+            'expires_at_gmt',
+            'before_sha256',
+            'after_sha256',
+        );
+        if (! is_array($batch)
+            || ! isset(
+                $batch['batch_token'],
+                $batch['state'],
+                $batch['created_by'],
+                $batch['batch_manifest_sha256'],
+                $batch['proposal_ids'],
+                $batch['manifest']
+            )
+            || 'REGISTERED' !== $batch['state']
+            || ! RAOS_Codex_MCP_Store::is_sha256($batch['batch_token'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($batch['batch_manifest_sha256'])
+            || (int) $batch['created_by'] < 1
+            || ! is_array($batch['proposal_ids'])
+            || ! is_array($batch['manifest'])
+            || ! self::has_exact_keys($batch['manifest'], $manifest_keys)) {
+            return self::publication_batch_review_error('raos_codex_batch_review_manifest_invalid');
+        }
+        $manifest = $batch['manifest'];
+        $proposal_ids = $batch['proposal_ids'];
+        $manifest_hash = RAOS_Codex_MCP_Store::hash($manifest);
+        if ('RAOSWordPressPublicationBatchManifestV1' !== $manifest['schema']
+            || ! RAOS_Codex_MCP_Store::is_sha256($manifest['expected_theme_tree_sha256'])
+            || ! is_int($manifest['proposal_count'])
+            || ! is_array($manifest['proposals'])
+            || empty($proposal_ids)
+            || count($proposal_ids) > 20
+            || $proposal_ids !== array_values($proposal_ids)
+            || count(array_unique($proposal_ids)) !== count($proposal_ids)
+            || count($proposal_ids) !== $manifest['proposal_count']
+            || count($proposal_ids) !== count($manifest['proposals'])
+            || $manifest['proposals'] !== array_values($manifest['proposals'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($manifest_hash)
+            || ! hash_equals($batch['batch_manifest_sha256'], $manifest_hash)) {
+            return self::publication_batch_review_error('raos_codex_batch_review_manifest_invalid');
+        }
+        $sorted_ids = $proposal_ids;
+        sort($sorted_ids, SORT_STRING);
+        if ($proposal_ids !== $sorted_ids) {
+            return self::publication_batch_review_error('raos_codex_batch_review_manifest_invalid');
+        }
+
+        $rows = array();
+        $seen_ids = array();
+        $content_target_ids = array();
+        $content_target_slugs = array();
+        $content_count = 0;
+        $theme_count = 0;
+        foreach ($manifest['proposals'] as $index => $entry) {
+            if (! self::has_exact_keys($entry, $entry_keys)
+                || ! is_string($entry['proposal_id'])
+                || ! isset($proposal_ids[$index])
+                || ! is_string($proposal_ids[$index])
+                || ! RAOS_Codex_MCP_Store::is_sha256($entry['proposal_id'])
+                || ! hash_equals($proposal_ids[$index], $entry['proposal_id'])
+                || isset($seen_ids[$entry['proposal_id']])
+                || ! in_array($entry['kind'], array('CONTENT_RELEASE', 'THEME_RELEASE'), true)
+                || ! is_int($entry['created_by'])
+                || $entry['created_by'] < 1
+                || ! is_string($entry['created_at_gmt'])
+                || ! is_string($entry['expires_at_gmt'])
+                || (! is_null($entry['before_sha256'])
+                    && ! RAOS_Codex_MCP_Store::is_sha256($entry['before_sha256']))
+                || (! is_null($entry['after_sha256'])
+                    && ! RAOS_Codex_MCP_Store::is_sha256($entry['after_sha256']))) {
+                return self::publication_batch_review_error('raos_codex_batch_review_manifest_invalid');
+            }
+            $proposal_id = $entry['proposal_id'];
+            $seen_ids[$proposal_id] = true;
+            $row = RAOS_Codex_MCP_Store::get($proposal_id);
+            if (is_wp_error($row)) {
+                return self::publication_batch_review_error('raos_codex_batch_review_member_unavailable');
+            }
+            $integrity = RAOS_Codex_MCP_Store::validate_proposal_integrity($row);
+            $created_iso = isset($row['created_at_gmt']) && is_string($row['created_at_gmt'])
+                ? RAOS_Codex_MCP_Store::timestamp_iso($row['created_at_gmt'])
+                : null;
+            $expires_iso = isset($row['expires_at_gmt']) && is_string($row['expires_at_gmt'])
+                ? RAOS_Codex_MCP_Store::timestamp_iso($row['expires_at_gmt'])
+                : null;
+            if (true !== $integrity
+                || ! is_array($row)
+                || ! isset($row['proposal_id'], $row['kind'], $row['state'], $row['created_by'])
+                || ! array_key_exists('before_sha256', $row)
+                || ! array_key_exists('after_sha256', $row)
+                || 'PENDING' !== $row['state']
+                || ! is_string($row['proposal_id'])
+                || ! hash_equals($proposal_id, $row['proposal_id'])
+                || ! is_string($row['kind'])
+                || ! hash_equals($entry['kind'], $row['kind'])
+                || (int) $row['created_by'] !== $entry['created_by']
+                || ! is_string($created_iso)
+                || ! hash_equals($entry['created_at_gmt'], $created_iso)
+                || ! is_string($expires_iso)
+                || ! hash_equals($entry['expires_at_gmt'], $expires_iso)
+                || ! self::nullable_hash_matches($entry['before_sha256'], $row['before_sha256'])
+                || ! self::nullable_hash_matches($entry['after_sha256'], $row['after_sha256'])) {
+                return self::publication_batch_review_error('raos_codex_batch_review_member_integrity_invalid');
+            }
+
+            if ('CONTENT_RELEASE' === $row['kind']) {
+                $target = self::publication_batch_content_review_target(
+                    $row,
+                    $content_target_ids,
+                    $content_target_slugs
+                );
+                ++$content_count;
+                if ((int) $row['created_by'] !== (int) $batch['created_by']) {
+                    return self::publication_batch_review_error('raos_codex_batch_review_owner_invalid');
+                }
+            } else {
+                $target = self::publication_batch_theme_review_target(
+                    $row,
+                    $manifest['expected_theme_tree_sha256']
+                );
+                ++$theme_count;
+                if ((int) $row['created_by'] === (int) $batch['created_by']) {
+                    return self::publication_batch_review_error('raos_codex_batch_review_owner_invalid');
+                }
+            }
+            if (true !== $target) {
+                return $target instanceof WP_Error
+                    ? $target
+                    : self::publication_batch_review_error('raos_codex_batch_review_target_invalid');
+            }
+            $rows[] = $row;
+        }
+        if ($content_count < 1 || $theme_count > 1 || count($rows) !== count($proposal_ids)) {
+            return self::publication_batch_review_error('raos_codex_batch_review_target_invalid');
+        }
+        return array('rows' => $rows);
+    }
+
+    private static function publication_batch_content_review_target(
+        $row,
+        &$content_target_ids,
+        &$content_target_slugs
+    ) {
+        if (! isset($row['payload'])
+            || ! is_array($row['payload'])
+            || ! isset(
+                $row['payload']['schema'],
+                $row['payload']['target_status'],
+                $row['payload']['before'],
+                $row['payload']['after'],
+                $row['payload']['before_sha256'],
+                $row['payload']['after_sha256'],
+                $row['payload']['publication_manifest_sha256']
+            )
+            || 'ContentReleaseProposalV1' !== $row['payload']['schema']
+            || 'publish' !== $row['payload']['target_status']
+            || ! is_array($row['payload']['before'])
+            || ! is_array($row['payload']['after'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['before_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['after_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['payload']['before_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['payload']['after_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['payload']['publication_manifest_sha256'])
+            || ! hash_equals($row['before_sha256'], $row['payload']['before_sha256'])
+            || ! hash_equals($row['after_sha256'], $row['payload']['after_sha256'])) {
+            return self::publication_batch_review_error('raos_codex_batch_review_content_target_invalid');
+        }
+        $before = $row['payload']['before'];
+        $after = $row['payload']['after'];
+        foreach (array('title', 'slug', 'excerpt', 'block_markup') as $field) {
+            if (! isset($before[$field], $after[$field])
+                || ! is_string($before[$field])
+                || ! is_string($after[$field])) {
+                return self::publication_batch_review_error('raos_codex_batch_review_content_target_invalid');
+            }
+        }
+        if (! isset(
+            $before['schema'],
+            $before['post_type'],
+            $before['id'],
+            $before['status'],
+            $before['content_sha256'],
+            $after['schema'],
+            $after['post_type'],
+            $after['id'],
+            $after['status'],
+            $after['content_sha256']
+        )
+            || 'ContentDocumentV1' !== $before['schema']
+            || 'ContentDocumentV1' !== $after['schema']
+            || ! in_array($before['post_type'], array('post', 'page'), true)
+            || ! is_string($after['post_type'])
+            || ! hash_equals($before['post_type'], $after['post_type'])
+            || ! is_int($before['id'])
+            || ! is_int($after['id'])
+            || $before['id'] < 1
+            || $before['id'] !== $after['id']
+            || ! in_array($before['status'], array('draft', 'publish'), true)
+            || 'publish' !== $after['status']
+            || ! RAOS_Codex_MCP_Store::is_sha256($before['content_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($after['content_sha256'])
+            || ! hash_equals($row['before_sha256'], $before['content_sha256'])
+            || ! hash_equals($row['after_sha256'], $after['content_sha256'])) {
+            return self::publication_batch_review_error('raos_codex_batch_review_content_target_invalid');
+        }
+        $target_id = (string) $after['id'];
+        $target_slug = strtolower(trim($after['slug']));
+        if ('' === $target_slug
+            || isset($content_target_ids[$target_id])
+            || isset($content_target_slugs[$target_slug])) {
+            return self::publication_batch_review_error('raos_codex_batch_review_content_target_conflict');
+        }
+        $content_target_ids[$target_id] = true;
+        $content_target_slugs[$target_slug] = true;
+        return true;
+    }
+
+    private static function publication_batch_theme_review_target($row, $expected_theme_tree_sha256)
+    {
+        $descriptor_keys = array(
+            'schema',
+            'kind',
+            'source',
+            'artifact_id',
+            'git_commit',
+            'slug',
+            'old_version',
+            'new_version',
+            'package_sha256',
+            'file_manifest_sha256',
+            'file_manifest',
+            'activation_intent',
+            'migration_assessment',
+            'automatic_apply_eligible',
+        );
+        if (! isset($row['payload'])
+            || ! is_array($row['payload'])
+            || ! isset(
+                $row['payload']['schema'],
+                $row['payload']['kind'],
+                $row['payload']['code_package'],
+                $row['payload']['before_tree_sha256'],
+                $row['payload']['after_tree_sha256']
+            )
+            || 'CodeReleaseProposalV1' !== $row['payload']['schema']
+            || 'THEME_RELEASE' !== $row['payload']['kind']
+            || ! is_array($row['payload']['code_package'])
+            || ! self::has_exact_keys($row['payload']['code_package'], $descriptor_keys)
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['before_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['after_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['payload']['before_tree_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['payload']['after_tree_sha256'])
+            || ! hash_equals($row['before_sha256'], $row['payload']['before_tree_sha256'])
+            || ! hash_equals($row['after_sha256'], $row['payload']['after_tree_sha256'])) {
+            return self::publication_batch_review_error('raos_codex_batch_review_theme_target_invalid');
+        }
+        $descriptor = $row['payload']['code_package'];
+        $file_manifest_json = RAOS_Codex_MCP_Store::canonical_json($descriptor['file_manifest']);
+        if ('CodePackageV1' !== $descriptor['schema']
+            || 'theme' !== $descriptor['kind']
+            || 'tracked_child_theme' !== $descriptor['source']
+            || RAOS_Codex_MCP_Deployment::THEME_SLUG !== $descriptor['slug']
+            || ! is_null($descriptor['artifact_id'])
+            || ! is_string($descriptor['git_commit'])
+            || preg_match('/\A[0-9a-f]{40}\z/D', $descriptor['git_commit']) !== 1
+            || (! is_null($descriptor['old_version']) && ! is_string($descriptor['old_version']))
+            || ! is_string($descriptor['new_version'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($descriptor['package_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($descriptor['file_manifest_sha256'])
+            || ! is_array($descriptor['file_manifest'])
+            || empty($descriptor['file_manifest'])
+            || 'preserve' !== $descriptor['activation_intent']
+            || 'NO_IRREVERSIBLE_MIGRATION_SIGNALS' !== $descriptor['migration_assessment']
+            || true !== $descriptor['automatic_apply_eligible']
+            || ! is_string($file_manifest_json)
+            || ! hash_equals($descriptor['file_manifest_sha256'], hash('sha256', $file_manifest_json))
+            || ! hash_equals($row['after_sha256'], $descriptor['file_manifest_sha256'])
+            || ! hash_equals($expected_theme_tree_sha256, $descriptor['file_manifest_sha256'])) {
+            return self::publication_batch_review_error('raos_codex_batch_review_theme_target_invalid');
+        }
+        return true;
+    }
+
+    private static function render_publication_batch_member($row, $position, $count)
+    {
+        $heading_id = 'raos-batch-member-' . substr($row['proposal_id'], -12);
+        echo '<article aria-labelledby="' . esc_attr($heading_id) . '" style="margin:1.5rem 0;padding:1rem;border:1px solid #c3c4c7">';
+        echo '<h3 id="' . esc_attr($heading_id) . '">'
+            . esc_html(sprintf(__('Batch member %1$d of %2$d: %3$s', 'raos-codex-mcp'), $position, $count, $row['kind']))
+            . '</h3>';
+        echo '<p><strong>' . esc_html__('Proposal ID:', 'raos-codex-mcp') . '</strong> <code>'
+            . esc_html($row['proposal_id']) . '</code><br><strong>'
+            . esc_html__('Before SHA-256:', 'raos-codex-mcp') . '</strong> <code>'
+            . esc_html($row['before_sha256']) . '</code><br><strong>'
+            . esc_html__('After SHA-256:', 'raos-codex-mcp') . '</strong> <code>'
+            . esc_html($row['after_sha256']) . '</code></p>';
+        if ('CONTENT_RELEASE' === $row['kind']) {
+            self::render_publication_batch_content_member($row['payload']);
+        } else {
+            self::render_publication_batch_theme_member($row['payload']);
+        }
+        $payload = wp_json_encode(
+            $row['payload'],
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+        );
+        echo '<details><summary>'
+            . esc_html__('Complete immutable member payload (all fields)', 'raos-codex-mcp')
+            . '</summary><pre style="white-space:pre-wrap;max-height:40rem;overflow:auto">'
+            . esc_html((string) $payload) . '</pre></details>';
+        echo '</article>';
+    }
+
+    private static function render_publication_batch_content_member($payload)
+    {
+        $before = $payload['before'];
+        $after = $payload['after'];
+        echo '<p><strong>' . esc_html__('Exact content target:', 'raos-codex-mcp') . '</strong> '
+            . esc_html($after['post_type'] . ' #' . $after['id'] . ' / publish') . '</p>';
+        echo '<table class="widefat striped" style="margin-bottom:1rem"><thead><tr><th>'
+            . esc_html__('Field', 'raos-codex-mcp') . '</th><th>'
+            . esc_html__('Before', 'raos-codex-mcp') . '</th><th>'
+            . esc_html__('After', 'raos-codex-mcp') . '</th></tr></thead><tbody>';
+        $fields = array(
+            'title' => __('Title', 'raos-codex-mcp'),
+            'slug' => __('Slug', 'raos-codex-mcp'),
+            'excerpt' => __('Excerpt', 'raos-codex-mcp'),
+        );
+        foreach ($fields as $field => $label) {
+            echo '<tr><th scope="row">' . esc_html($label) . '</th><td><pre style="white-space:pre-wrap">'
+                . esc_html($before[$field]) . '</pre></td><td><pre style="white-space:pre-wrap">'
+                . esc_html($after[$field]) . '</pre></td></tr>';
+        }
+        echo '</tbody></table>';
+        echo '<h4>' . esc_html__('Before block markup', 'raos-codex-mcp') . '</h4><pre style="white-space:pre-wrap;max-height:40rem;overflow:auto">'
+            . esc_html($before['block_markup']) . '</pre>';
+        echo '<h4>' . esc_html__('After block markup', 'raos-codex-mcp') . '</h4><pre style="white-space:pre-wrap;max-height:40rem;overflow:auto">'
+            . esc_html($after['block_markup']) . '</pre>';
+    }
+
+    private static function render_publication_batch_theme_member($payload)
+    {
+        $descriptor = $payload['code_package'];
+        echo '<p><strong>' . esc_html__('Exact theme target:', 'raos-codex-mcp') . '</strong> <code>'
+            . esc_html($descriptor['slug']) . '</code></p>';
+        echo '<table class="widefat striped" style="margin-bottom:1rem"><tbody>';
+        $metadata = array(
+            'source' => __('Source', 'raos-codex-mcp'),
+            'artifact_id' => __('Artifact ID', 'raos-codex-mcp'),
+            'git_commit' => __('Git commit', 'raos-codex-mcp'),
+            'slug' => __('Theme slug', 'raos-codex-mcp'),
+            'old_version' => __('Old version', 'raos-codex-mcp'),
+            'new_version' => __('New version', 'raos-codex-mcp'),
+            'package_sha256' => __('Package SHA-256', 'raos-codex-mcp'),
+            'file_manifest_sha256' => __('File manifest SHA-256', 'raos-codex-mcp'),
+            'activation_intent' => __('Activation intent', 'raos-codex-mcp'),
+            'migration_assessment' => __('Migration assessment', 'raos-codex-mcp'),
+            'automatic_apply_eligible' => __('Automatic apply eligible', 'raos-codex-mcp'),
+        );
+        foreach ($metadata as $key => $label) {
+            $value = wp_json_encode($descriptor[$key], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            echo '<tr><th scope="row">' . esc_html($label) . '</th><td><code>'
+                . esc_html((string) $value) . '</code></td></tr>';
+        }
+        echo '</tbody></table>';
+        $file_manifest = wp_json_encode(
+            $descriptor['file_manifest'],
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+        );
+        echo '<h4>' . esc_html__('Complete theme file manifest', 'raos-codex-mcp')
+            . '</h4><pre style="white-space:pre-wrap;max-height:40rem;overflow:auto">'
+            . esc_html((string) $file_manifest) . '</pre>';
+    }
+
     public function render_admin_page()
     {
         if (! current_user_can('manage_options')) {
@@ -414,11 +841,12 @@ final class RAOS_Codex_MCP_Abilities
                     . '</p></div>';
             }
         }
-        if (empty($rows)) {
+        if (empty($rows) && empty($batches)) {
             echo '<p>' . esc_html__('No pending proposals.', 'raos-codex-mcp') . '</p></div>';
             return;
         }
         foreach ($batches as $batch) {
+            $review = self::publication_batch_review($batch);
             $batch_hash = $batch['batch_manifest_sha256'];
             $batch_token = $batch['batch_token'];
             $batch_suffix = substr($batch_hash, -8);
@@ -427,10 +855,12 @@ final class RAOS_Codex_MCP_Abilities
                 JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
             );
             $self_created = false;
-            foreach ($batch['manifest']['proposals'] as $batch_entry) {
-                if ((int) $batch_entry['created_by'] === get_current_user_id()) {
-                    $self_created = true;
-                    break;
+            if (! is_wp_error($review)) {
+                foreach ($review['rows'] as $review_row) {
+                    if ((int) $review_row['created_by'] === get_current_user_id()) {
+                        $self_created = true;
+                        break;
+                    }
                 }
             }
             $heading_id = 'raos-batch-' . substr($batch_token, -12);
@@ -449,21 +879,39 @@ final class RAOS_Codex_MCP_Abilities
             echo '<details><summary>' . esc_html__('Complete canonical batch manifest (full IDs and hashes)', 'raos-codex-mcp')
                 . '</summary><pre style="white-space:pre-wrap;max-height:40rem;overflow:auto">'
                 . esc_html((string) $batch_manifest) . '</pre></details>';
-            if ($self_created) {
-                echo '<p><strong>'
-                    . esc_html__('This administrator created at least one proposal in the batch. A different administrator must approve the complete batch.', 'raos-codex-mcp')
-                    . '</strong></p>';
+            if (is_wp_error($review)) {
+                echo '<div class="notice notice-error inline"><p><strong>'
+                    . esc_html__('Approval disabled: the exact batch member review could not be verified.', 'raos-codex-mcp')
+                    . '</strong> '
+                    . esc_html__('At least one member is missing, duplicated, no longer pending, or inconsistent with the registered manifest. Do not approve this batch; create a new exact publication request after resolving the mismatch.', 'raos-codex-mcp')
+                    . ' <code>' . esc_html($review->get_error_code()) . '</code></p></div>';
             } else {
-                echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
-                echo '<input type="hidden" name="action" value="raos_codex_mcp_approve_batch">';
-                echo '<input type="hidden" name="batch_token" value="' . esc_attr($batch_token) . '">';
-                echo '<input type="hidden" name="batch_manifest_sha256" value="' . esc_attr($batch_hash) . '">';
-                wp_nonce_field('raos_codex_mcp_approve_batch_' . $batch_token . '_' . $batch_hash);
-                echo '<p><label>' . esc_html__('Current password (one reauthentication for the complete batch)', 'raos-codex-mcp') . '<br><input type="password" name="current_password" autocomplete="current-password" required></label></p>';
-                echo '<p><label>' . esc_html__('Approval reason for the complete batch (10+ characters)', 'raos-codex-mcp') . '<br><textarea name="reason" rows="3" cols="80" minlength="10" maxlength="2000" required></textarea></label></p>';
-                echo '<p><label>' . esc_html__('Type the visible final 8 characters of the batch manifest hash', 'raos-codex-mcp') . '<br><input type="text" name="hash_suffix" minlength="8" maxlength="8" pattern="[0-9a-f]{8}" required> <code>' . esc_html($batch_suffix) . '</code></label></p>';
-                submit_button(__('Approve complete batch', 'raos-codex-mcp'), 'primary', 'submit', false);
-                echo '</form>';
+                echo '<h3>' . esc_html__('Exact batch members for human review', 'raos-codex-mcp') . '</h3>';
+                foreach ($review['rows'] as $index => $review_row) {
+                    self::render_publication_batch_member(
+                        $review_row,
+                        $index + 1,
+                        count($review['rows'])
+                    );
+                }
+            }
+            if (! is_wp_error($review)) {
+                if ($self_created) {
+                    echo '<p><strong>'
+                        . esc_html__('This administrator created at least one proposal in the batch. A different administrator must approve the complete batch.', 'raos-codex-mcp')
+                        . '</strong></p>';
+                } else {
+                    echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
+                    echo '<input type="hidden" name="action" value="raos_codex_mcp_approve_batch">';
+                    echo '<input type="hidden" name="batch_token" value="' . esc_attr($batch_token) . '">';
+                    echo '<input type="hidden" name="batch_manifest_sha256" value="' . esc_attr($batch_hash) . '">';
+                    wp_nonce_field('raos_codex_mcp_approve_batch_' . $batch_token . '_' . $batch_hash);
+                    echo '<p><label>' . esc_html__('Current password (one reauthentication for the complete batch)', 'raos-codex-mcp') . '<br><input type="password" name="current_password" autocomplete="current-password" required></label></p>';
+                    echo '<p><label>' . esc_html__('Approval reason for the complete batch (10+ characters)', 'raos-codex-mcp') . '<br><textarea name="reason" rows="3" cols="80" minlength="10" maxlength="2000" required></textarea></label></p>';
+                    echo '<p><label>' . esc_html__('Type the visible final 8 characters of the batch manifest hash', 'raos-codex-mcp') . '<br><input type="text" name="hash_suffix" minlength="8" maxlength="8" pattern="[0-9a-f]{8}" required> <code>' . esc_html($batch_suffix) . '</code></label></p>';
+                    submit_button(__('Approve complete batch', 'raos-codex-mcp'), 'primary', 'submit', false);
+                    echo '</form>';
+                }
             }
             echo '</section>';
         }
@@ -480,6 +928,12 @@ final class RAOS_Codex_MCP_Abilities
             echo '<details><summary>' . esc_html__('Complete immutable payload', 'raos-codex-mcp') . '</summary><pre style="white-space:pre-wrap;max-height:40rem;overflow:auto">' . esc_html((string) $payload) . '</pre></details>';
             if ('MANUAL_REQUIRED' === $row['state']) {
                 echo '<p><strong>' . esc_html__('Automatic approval/apply is unavailable because migration safety could not be established.', 'raos-codex-mcp') . '</strong></p>';
+                continue;
+            }
+            if ('PLUGIN_CHANGE' !== $row['kind']) {
+                echo '<p><strong>'
+                    . esc_html__('Content and theme proposals cannot be approved individually. Review and approve only the complete registered publication batch above.', 'raos-codex-mcp')
+                    . '</strong></p>';
                 continue;
             }
             if ((int) $row['created_by'] === get_current_user_id()) {
