@@ -2491,10 +2491,17 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
     ]
 
 
-def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
+def _write_remote_applied_legacy_all_attempt(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
-) -> None:
+) -> tuple[
+    list[Any],
+    Path,
+    str,
+    dict[str, dict[str, object]],
+    dict[str, dict[str, object]],
+    dict[str, dict[str, object]],
+]:
     articles = publication.load_articles("all")
     path = _private_path(monkeypatch, tmp_path)
     old_tree = "0" * 64
@@ -2560,6 +2567,16 @@ def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
     receipt["batch_registration"] = {}
     receipt["drafts"] = drafts
     publication._atomic_receipt(path, receipt)
+    return articles, path, old_tree, operations, documents, drafts
+
+
+def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles, path, old_tree, operations, documents, drafts = (
+        _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+    )
 
     class Client:
         def initialize(self) -> None:
@@ -2675,6 +2692,141 @@ def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
     assert calls == ["refresh", "preview", "registered"]
     assert replacement_includes_theme is True
     assert replacement_count == 11
+
+
+def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles, path, _old_tree, operations, documents, _drafts = (
+        _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+    )
+    current_documents = {
+        article.production_slug: article.document()
+        | {"schema": "ContentDocumentV1"}
+        | documents[article.production_slug]
+        for article in articles
+    }
+    lifecycle: list[str] = []
+    remote_calls: list[str] = []
+
+    class Client:
+        def initialize(self) -> None:
+            remote_calls.append("initialize")
+
+        def tools(self) -> dict[str, object]:
+            return {}
+
+        def call(
+            self,
+            name: str,
+            arguments: dict[str, object],
+        ) -> dict[str, object]:
+            remote_calls.append(name)
+            if name == "raos-codex-site-status":
+                return {"theme": {}}
+            if name == "raos-codex-content-list":
+                assert arguments == {
+                    "post_type": "post",
+                    "status": "any",
+                    "page": 1,
+                    "per_page": publication.LIST_PER_PAGE,
+                }
+                return {
+                    "schema": "ContentDocumentListV1",
+                    "page": 1,
+                    "per_page": publication.LIST_PER_PAGE,
+                    "total": len(current_documents),
+                    "documents": list(current_documents.values()),
+                }
+            if name == "raos-codex-content-get":
+                post_id = arguments.get("id")
+                return next(
+                    document
+                    for document in current_documents.values()
+                    if document["id"] == post_id
+                )
+            raise AssertionError(f"unexpected mutation/proposal call: {name}")
+
+    client = Client()
+    monkeypatch.setattr(publication, "_receipt_path", lambda _articles: path)
+    monkeypatch.setattr(publication, "load_articles", lambda *_args, **_kwargs: articles)
+    monkeypatch.setattr(
+        publication,
+        "production_materialization_binding",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
+    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "publication_batch_status",
+        lambda *_args, **_kwargs: {"state": "APPLIED"},
+    )
+    monkeypatch.setattr(
+        publication,
+        "read_content_operations",
+        lambda *_args: operations,
+    )
+
+    def reconciled_documents(*_args: object) -> dict[str, dict[str, object]]:
+        lifecycle.append("resume-readback")
+        return documents
+
+    monkeypatch.setattr(
+        publication,
+        "_published_document_evidence",
+        reconciled_documents,
+    )
+    monkeypatch.setattr(
+        publication,
+        "deployment_status",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("deployment status must follow exact baseline verification")
+        ),
+    )
+    monkeypatch.setattr(
+        publication,
+        "reconcile_drafts",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("draft reconciliation must not run after unknown drift")
+        ),
+    )
+    monkeypatch.setattr(
+        publication,
+        "create_proposals",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("proposal creation must not run after unknown drift")
+        ),
+    )
+
+    def preview() -> None:
+        assert lifecycle == ["resume-readback", "refresh"]
+        lifecycle.append("preview")
+        slug = articles[0].production_slug
+        revised = dict(current_documents[slug])
+        revised["revision_id"] = int(revised["revision_id"]) + 1
+        revised["modified_gmt"] = "2026-08-29T00:01:00Z"
+        assert revised["content_sha256"] == documents[slug]["content_sha256"]
+        current_documents[slug] = revised
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT",
+    ):
+        publication.execute(
+            "all",
+            portfolio_refresh=lambda: lifecycle.append("refresh"),
+            preview=preview,
+            client_factory=lambda: client,
+        )
+
+    assert lifecycle == ["resume-readback", "refresh", "preview"]
+    assert "raos-codex-content-update-draft" not in remote_calls
+    assert "raos-codex-content-propose-release" not in remote_calls
+    stored = json.loads(path.read_text(encoding="utf-8"))
+    assert stored["state"] == "APPLIED"
+    assert stored["prior_applied_reconciliation"]["documents"] == documents
 
 
 def test_stale_docker_group_uses_only_fixed_sg_commands(

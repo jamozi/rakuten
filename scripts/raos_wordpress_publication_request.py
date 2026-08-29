@@ -1931,6 +1931,53 @@ def _known_applied_target(
     )
 
 
+def _prior_applied_documents_for_fresh_capture(
+    receipt: Mapping[str, object],
+    selected: set[str],
+) -> Mapping[str, object] | None:
+    """Return the just-reconciled old attempt's exact document evidence.
+
+    The evidence is pending only while the receipt still carries the same old
+    content proposal set that produced its applied operation receipts. After a
+    replacement attempt is created, the historical evidence remains in the
+    receipt but must not become a permanent baseline for future releases.
+    """
+
+    reconciliation = receipt.get("prior_applied_reconciliation")
+    if receipt.get("state") != "APPLIED" or reconciliation is None:
+        return None
+    if type(reconciliation) is not dict:
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    documents = reconciliation.get("documents")
+    operations = reconciliation.get("operations")
+    proposals = receipt.get("proposals")
+    if (
+        type(documents) is not dict
+        or type(operations) is not dict
+        or type(proposals) is not list
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    proposal_ids: set[str] = set()
+    for proposal in proposals:
+        if type(proposal) is not dict:
+            fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+        if proposal.get("kind") != "CONTENT_RELEASE":
+            continue
+        proposal_id = proposal.get("proposal_id")
+        if type(proposal_id) is not str or SHA256_RE.fullmatch(proposal_id) is None:
+            fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+        proposal_ids.add(proposal_id)
+    if set(operations) != proposal_ids:
+        return None
+    if (
+        len(selected) != EXPECTED_ALL_ARTICLE_COUNT
+        or len(proposal_ids) != EXPECTED_ALL_ARTICLE_COUNT
+        or set(documents) != selected
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    return documents
+
+
 def capture_existing_baselines(
     client: Any,
     articles: Sequence[Article],
@@ -1943,6 +1990,10 @@ def capture_existing_baselines(
     """Read every existing selected target and bind its exact CAS baseline."""
 
     selected = {article.production_slug for article in articles}
+    prior_applied_documents = _prior_applied_documents_for_fresh_capture(
+        receipt,
+        selected,
+    )
     listed: dict[str, list[Mapping[str, object]]] = {}
     for document in documents:
         slug = document.get("slug")
@@ -1961,7 +2012,11 @@ def capture_existing_baselines(
             fail("RAOS_WORDPRESS_REQUEST_SLUG_CONFLICT")
         prior = baselines.get(slug)
         if not candidates:
-            if prior is not None or require_existing_published:
+            if (
+                prior is not None
+                or require_existing_published
+                or prior_applied_documents is not None
+            ):
                 fail("RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT")
             continue
         listed_document = candidates[0]
@@ -1977,6 +2032,14 @@ def capture_existing_baselines(
             fail("RAOS_WORDPRESS_REQUEST_BASELINE_CHANGED_DURING_READ")
         if current_baseline["slug"] != slug:
             fail("RAOS_WORDPRESS_REQUEST_BASELINE_CHANGED_DURING_READ")
+        if (
+            prior_applied_documents is not None
+            and prior_applied_documents.get(slug) != current_baseline
+        ):
+            # This comparison intentionally precedes both known-target
+            # exceptions below. A same-content save still changes the exact CAS
+            # precondition and is an unknown production write.
+            fail("RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT")
         if prior is None:
             proposals = receipt.get("proposals")
             if (
